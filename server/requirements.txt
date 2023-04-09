@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+pydantic
+pandas
+openai
+beautifulsoup4
+numpy
+pydantic
+langchain
+lxml
+faiss-cpu
