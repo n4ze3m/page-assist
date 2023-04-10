@@ -1,4 +1,4 @@
-import { createServerSupabaseClient } from "@supabase/auth-helpers-nextjs";
+import { createServerSupabaseClient } from "@supabase/auth-helpers-nextjs"; 
 import { GetServerSideProps, NextPage } from "next";
 import DashboardLayout from "~/components/Layouts/DashboardLayout";
 
