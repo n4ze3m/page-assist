@@ -1,8 +1,8 @@
 import { createServerSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
-import DashboardBoby from "~/components/Dashboard";
 import DashboardLayout from "~/components/Layouts/DashboardLayout";
+import SettingsBody from "~/components/Settings";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const supabase = createServerSupabaseClient(ctx);
@@ -24,15 +24,15 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   };
 };
 
-const DashboardPage: NextPage = () => {
+const DashboardSettingsPage: NextPage = () => {
   return (
     <DashboardLayout>
       <Head>
-        <title>Dashboard / PageAssist</title>
+        <title>Settings / PageAssist</title>
       </Head>
-      <DashboardBoby />
+      <SettingsBody />
     </DashboardLayout>
   );
 };
 
-export default DashboardPage;
+export default DashboardSettingsPage;

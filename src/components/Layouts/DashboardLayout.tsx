@@ -8,10 +8,12 @@ import {
 } from "@heroicons/react/24/outline";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import { useUser } from "@supabase/auth-helpers-react";
+import { useRouter } from "next/router";
+import Link from "next/link";
 
 const navigation = [
-  { name: "Home", href: "#", icon: HomeIcon, current: true },
-  { name: "Settings", href: "#", icon: CogIcon, current: false },
+  { name: "Home", href: "/dashboard", icon: HomeIcon, current: true },
+  { name: "Settings", href: "/dashboard/settings", icon: CogIcon, current: false },
 ];
 
 //@ts-ignore
@@ -26,6 +28,7 @@ export default function DashboardLayout({
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const user = useUser();
+  const router = useRouter();
 
   return (
     <>
@@ -95,20 +98,22 @@ export default function DashboardLayout({
                   >
                     <div className="space-y-1 px-2">
                       {navigation.map((item) => (
-                        <a
+                        <Link
                           key={item.name}
                           href={item.href}
                           className={classNames(
-                            item.current
+                            router.pathname === item.href
                               ? "bg-gray-100 text-gray-900"
                               : "text-gray-600 hover:bg-gray-50 hover:text-gray-900",
                             "group flex items-center rounded-md px-2 py-2 text-sm font-medium"
                           )}
-                          aria-current={item.current ? "page" : undefined}
+                          aria-current={
+                            router.pathname === item.href ? "page" : undefined
+                          }
                         >
                           <item.icon
                             className={classNames(
-                              item.current
+                              router.pathname === item.href
                                 ? "text-gray-500"
                                 : "text-gray-400 group-hover:text-gray-500",
                               "mr-3 h-6 w-6 flex-shrink-0"
@@ -116,7 +121,7 @@ export default function DashboardLayout({
                             aria-hidden="true"
                           />
                           {item.name}
-                        </a>
+                        </Link>
                       ))}
                     </div>
                   </nav>
@@ -144,16 +149,16 @@ export default function DashboardLayout({
                     key={item.name}
                     href={item.href}
                     className={classNames(
-                      item.current
+                      router.pathname === item.href
                         ? "bg-gray-100 text-gray-900"
                         : "text-gray-600 hover:bg-gray-50 hover:text-gray-900",
                       "group flex items-center rounded-md px-2 py-2 text-sm font-medium"
                     )}
-                    aria-current={item.current ? "page" : undefined}
+                    aria-current={router.pathname === item.href ? "page" : undefined}
                   >
                     <item.icon
                       className={classNames(
-                        item.current
+                        router.pathname === item.href
                           ? "text-gray-500"
                           : "text-gray-400 group-hover:text-gray-500",
                         "mr-3 h-6 w-6 flex-shrink-0"
