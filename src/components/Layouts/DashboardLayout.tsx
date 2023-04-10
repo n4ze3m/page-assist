@@ -6,9 +6,7 @@ import {
   HomeIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
-import {
-  ChevronDownIcon,
-} from "@heroicons/react/20/solid";
+import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import { useUser } from "@supabase/auth-helpers-react";
 
 const navigation = [
@@ -27,7 +25,7 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const user = useUser()
+  const user = useUser();
 
   return (
     <>
@@ -121,7 +119,6 @@ export default function DashboardLayout({
                         </a>
                       ))}
                     </div>
-         
                   </nav>
                 </Dialog.Panel>
               </Transition.Child>
@@ -133,7 +130,7 @@ export default function DashboardLayout({
         </Transition.Root>
 
         <div className="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-64 lg:flex-col">
-          <div className="flex flex-grow flex-col overflow-y-auto bg-white pb-4 pt-5 border-r border-gray-200">
+          <div className="flex flex-grow flex-col overflow-y-auto border-r border-gray-200 bg-white pb-4 pt-5">
             <div className="flex flex-shrink-0 items-center px-4">
               <img className="h-10 w-auto" src="/logo.png" alt="PageAssist" />
             </div>
@@ -147,15 +144,19 @@ export default function DashboardLayout({
                     key={item.name}
                     href={item.href}
                     className={classNames(
-                        item.current ? 'bg-gray-100 text-gray-900' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900',
-                        'group flex items-center px-2 py-2 text-sm font-medium rounded-md'
-                      )}
+                      item.current
+                        ? "bg-gray-100 text-gray-900"
+                        : "text-gray-600 hover:bg-gray-50 hover:text-gray-900",
+                      "group flex items-center rounded-md px-2 py-2 text-sm font-medium"
+                    )}
                     aria-current={item.current ? "page" : undefined}
                   >
                     <item.icon
-                     className={classNames(
-                        item.current ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500',
-                        'mr-3 flex-shrink-0 h-6 w-6'
+                      className={classNames(
+                        item.current
+                          ? "text-gray-500"
+                          : "text-gray-400 group-hover:text-gray-500",
+                        "mr-3 h-6 w-6 flex-shrink-0"
                       )}
                       aria-hidden="true"
                     />
@@ -191,9 +192,7 @@ export default function DashboardLayout({
                       />
                       <span className="ml-3 hidden text-sm font-medium text-gray-700 lg:block">
                         <span className="sr-only">Open user menu for </span>
-                        {
-                            user?.email
-                        }
+                        {user?.email}
                       </span>
                       <ChevronDownIcon
                         className="ml-1 hidden h-5 w-5 flex-shrink-0 text-gray-400 lg:block"
@@ -232,7 +231,6 @@ export default function DashboardLayout({
                               active ? "bg-gray-100" : "",
                               "block px-4 py-2 text-sm text-gray-700"
                             )}
-                            
                           >
                             Logout
                           </a>
