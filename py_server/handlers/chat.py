@@ -12,6 +12,8 @@ from langchain.prompts.chat import (
     SystemMessagePromptTemplate,
     HumanMessagePromptTemplate
 )
+from langchain.vectorstores import Chroma
+
 
 async def chat_extension_handler(body: ChatBody):
     try:
@@ -35,11 +37,11 @@ async def chat_extension_handler(body: ChatBody):
         print(f'Number of documents: {len(doc)}')
         
 
-        vectorstore = FAISS.from_documents(doc, OpenAIEmbeddings())
+        vectorstore = Chroma.from_documents(doc, OpenAIEmbeddings())
 
 
         messages = [
-            SystemMessagePromptTemplate.from_template("""I want you to act as a webpage that I am having a conversation witu. Your name is "OpenChatX". You will provide me with answers from the given text from webpage. Your answer should be original, concise, accurate, and helpful. You can recommend, translate and can do anything based on the context given. If the answer is not included in the text and you know the answer you can resonpond the answer othwerwise say exactly "I don't know the answer " and stop after that. Never break character. Answer must be in markdown format.
+            SystemMessagePromptTemplate.from_template("""You are PageAssist bot. Follow the user's instructions carefully and generate answer from given context and You can recommend, translate and can do anything one the given context.  If the answer is not included in the context say exactly "Sorry, I don't know" and if you know the answer you can resonpond it.  Respond using markdown
 -----------------
 {context}
             """),
@@ -49,11 +51,9 @@ async def chat_extension_handler(body: ChatBody):
         prompt = ChatPromptTemplate.from_messages(messages)
 
 
-        chat =  ConversationalRetrievalChain.from_llm(OpenAI(temperature=0, model_name="gpt-3.5-turbo"), vectorstore.as_retriever(), return_source_documents=True, qa_prompt=prompt,)
+        chat =  ConversationalRetrievalChain.from_llm(OpenAI(temperature=0, model_name="gpt-3.5-turbo"), vectorstore.as_retriever(search_kwargs={"k": 1}), return_source_documents=True, qa_prompt=prompt,)
 
         history = [(d["human_message"], d["bot_response"]) for d in body.history]
-
-        print(history)
 
         response = chat({
             "question": body.user_message,

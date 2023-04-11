@@ -11,3 +11,4 @@ lxml
 faiss-cpu
 supabase
 tiktoken
+chromadb 
