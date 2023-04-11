@@ -9,3 +9,4 @@ pydantic
 langchain
 lxml
 faiss-cpu
+supabase
