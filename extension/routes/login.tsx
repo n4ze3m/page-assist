@@ -21,7 +21,7 @@ export default function Login() {
 
   const onSubmit = async (token: string) => {
     const response = await axios.post(
-      `${process.env.PLASMO_PUBLIC_CLIENT_URL}/api/verify`,
+      `${process.env.PLASMO_PUBLIC_API_URL}/user/validate`,
       {
         token
       }
@@ -39,13 +39,16 @@ export default function Login() {
       },
       onError: (e:any) => {
         if (axios.isAxiosError(e)) {
-          setErr(e.response?.data.error)
+          setErr(e.response?.data.detail)
         } else {
           setErr(e?.message)
         }
       }
     }
   )
+
+
+  
 
   return (
     <div className="isolate bg-gray-100 text-gray-800">

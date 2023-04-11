@@ -13,6 +13,9 @@ import axios from "axios"
 import logoImage from "data-base64:~assets/icon.png"
 import ReactMarkdown from "react-markdown"
 import { Link, useNavigate } from "react-router-dom"
+import { toast } from "react-toastify"
+
+import { useStorage } from "@plasmohq/storage/hook"
 
 function Chat() {
   type Message = {
@@ -33,6 +36,7 @@ function Chat() {
   ])
 
   const [history, setHistory] = useState<History[]>([])
+  const [userToken] = useStorage("pa-token", null)
 
   const route = useNavigate()
 
@@ -53,24 +57,54 @@ function Chat() {
     return new Promise((resolve, reject) => {
       window.addEventListener("message", (event) => {
         if (event.data.type === "pageassist-html") {
-          resolve(event.data.html)
+          resolve(event.data)
         } else {
           reject("Error")
         }
       })
     })
   }
-  const sendToBot = async (message: string) => {
-    const html = await getHtmlFromParent()
 
-    const response = await axios.post(process.env.PLASMO_PUBLIC_API_URL!, {
-      user_message: message,
-      html: html,
-      history: history
-    })
+  const sendToBot = async (message: string) => {
+    // @ts-ignore
+    const { html } = await getHtmlFromParent()
+
+    const response = await axios.post(
+      `${process.env.PLASMO_PUBLIC_API_URL}/chat/chrome`,
+      {
+        user_message: message,
+        html: html,
+        history: history
+      }
+    )
 
     return response.data
   }
+
+  const onSave = async () => {
+    const data = await getHtmlFromParent()
+    const response = await axios.post(
+      `${process.env.PLASMO_PUBLIC_API_URL}/user/save`,
+      data,
+      {
+        headers: {
+          "x-auth-token": userToken
+        }
+      }
+    )
+
+    return response.data
+  }
+
+  const { mutateAsync: saveAsync, isLoading: isSaving } = useMutation(onSave, {
+    onSuccess: (data) => {
+      toast.success("Saved Successfully")
+    },
+    onError: (er) => {
+      console.log(er)
+      toast.error("Error in saving")
+    }
+  })
 
   const { mutateAsync: sendToBotAsync, isLoading: isSending } = useMutation(
     sendToBot,
@@ -125,14 +159,15 @@ function Chat() {
           <button
             type="button"
             className="inline-flex items-center rounded-md border border-transparent bg-white px-3 py-2 text-sm font-medium leading-4  text-gray-800 hover:text-gray-500 shadow-sm hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-            onClick={() => {
+            onClick={async () => {
               // Send data to the app
+              await saveAsync()
             }}>
             <ArrowUpOnSquareIcon
               className="-ml-1 mr-3 h-5 w-5"
               aria-hidden="true"
             />
-            Send to App
+            {isSaving ? "Saving..." : "Send to App"}
           </button>
           <button
             type="button"
@@ -205,14 +240,49 @@ function Chat() {
                 form.reset()
                 await sendToBotAsync(values.message)
               })}>
-              <input
-                disabled={isSending}
-                className="flex items-center h-10 w-full rounded px-3 text-sm"
-                type="text"
-                required
-                placeholder="Type your message…"
-                {...form.getInputProps("message")}
-              />
+              <div className="flex-grow space-y-6">
+                <div className="flex">
+                  <span className="mr-3">
+                    <button
+                      disabled={isSending || isSaving}
+                      onClick={() => {
+                        setHistory([])
+                        setMessages([
+                          {
+                            message: "Hi, I'm PageAssist. How can I help you?",
+                            isBot: true
+                          }
+                        ])
+                      }}
+                      className="inline-flex items-center rounded-md border border-gray-700 bg-white px-3 h-10 text-sm font-medium text-gray-700  hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2"
+                      type="button">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        className="h-5 w-5 text-gray-600">
+                        <path d="M18.37 2.63 14 7l-1.59-1.59a2 2 0 0 0-2.82 0L8 7l9 9 1.59-1.59a2 2 0 0 0 0-2.82L17 10l4.37-4.37a2.12 2.12 0 1 0-3-3Z"></path>
+                        <path d="M9 8c-2 3-4 3.5-7 4l8 10c2-1 6-5 6-7"></path>
+                        <path d="M14.5 17.5 4.5 15"></path>
+                      </svg>
+                    </button>
+                  </span>
+                  <div className="flex-grow">
+                    <input
+                      disabled={isSending || isSaving}
+                      className="flex items-center h-10 w-full rounded px-3 text-sm"
+                      type="text"
+                      required
+                      placeholder="Type your message…"
+                      {...form.getInputProps("message")}
+                    />
+                  </div>
+                </div>
+              </div>
             </form>
           </div>
         </div>

@@ -88,10 +88,12 @@ const main = async () => {
     } else if (event.data === "pageassist-html") {
       console.log("pageassist-html");
       let html = document.documentElement.outerHTML;
+      let url = window.location.href;
 
       iframe.contentWindow.postMessage({
         type: "pageassist-html",
         html: html,
+        url: url,
       }, "*");
     }
   });
