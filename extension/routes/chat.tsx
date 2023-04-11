@@ -63,7 +63,7 @@ function Chat() {
   const sendToBot = async (message: string) => {
     const html = await getHtmlFromParent()
 
-    const response = await axios.post(process.env.PLASMO_PUBLIC_API_KEY!, {
+    const response = await axios.post(process.env.PLASMO_PUBLIC_API_URL!, {
       user_message: message,
       html: html,
       history: history

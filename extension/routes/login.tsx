@@ -1,5 +1,7 @@
 import { XMarkIcon } from "@heroicons/react/20/solid"
 import { useForm } from "@mantine/form"
+import { useMutation } from "@tanstack/react-query"
+import axios from "axios"
 import logoImage from "data-base64:~assets/icon.png"
 import React from "react"
 import { Link, useNavigate } from "react-router-dom"
@@ -9,12 +11,41 @@ import { useStorage } from "@plasmohq/storage/hook"
 export default function Login() {
   const navigate = useNavigate()
   const [_, setToken] = useStorage("pa-token", null)
+  const [err, setErr] = React.useState<string | null>(null)
 
   const form = useForm({
     initialValues: {
       passcode: ""
     }
   })
+
+  const onSubmit = async (token: string) => {
+    const response = await axios.post(
+      `${process.env.PLASMO_PUBLIC_CLIENT_URL}/api/verify`,
+      {
+        token
+      }
+    )
+
+    return response.data
+  }
+
+  const { mutateAsync: verifyToken, isLoading: isVerifyingToken } = useMutation(
+    onSubmit,
+    {
+      onSuccess: () => {
+        setToken(form.values.passcode)
+        navigate("/")
+      },
+      onError: (e:any) => {
+        if (axios.isAxiosError(e)) {
+          setErr(e.response?.data.error)
+        } else {
+          setErr(e?.message)
+        }
+      }
+    }
+  )
 
   return (
     <div className="isolate bg-gray-100 text-gray-800">
@@ -84,9 +115,9 @@ export default function Login() {
           <form
             className="space-y-6"
             onSubmit={form.onSubmit(async (values) => {
-              setToken(values.passcode)
-              navigate("/")
+              await verifyToken(values.passcode)
             })}>
+        
             <div>
               <div className="mt-3">
                 <input
@@ -99,13 +130,21 @@ export default function Login() {
                   {...form.getInputProps("passcode")}
                   className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
                 />
+                      {
+                err && (
+                  <div className="text-red-500 text-sm mt-2">
+                    {err}
+                  </div>
+                )
+              }
               </div>
             </div>
             <div>
               <button
                 type="submit"
+                disabled={isVerifyingToken}
                 className="flex w-full justify-center rounded-md border border-transparent bg-teal-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2">
-                Save
+                {isVerifyingToken ? "Saving..." : "Save"}
               </button>
             </div>
           </form>
