@@ -10,3 +10,4 @@ langchain
 lxml
 faiss-cpu
 supabase
+tiktoken
