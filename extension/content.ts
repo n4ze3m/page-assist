@@ -83,8 +83,10 @@ const main = async () => {
   window.addEventListener("message", function (event) {
     if (event.data === "pageassist-close") {
       iframe.style.display = "none";
-      toggleIcon.style.display = "block";
-      toggleIcon.classList.remove("hidden");
+      if (!isChatWidgetEnabled) {
+        toggleIcon.style.display = "block";
+        toggleIcon.classList.remove("hidden");
+      }
     } else if (event.data === "pageassist-html") {
       console.log("pageassist-html");
       let html = document.documentElement.outerHTML;

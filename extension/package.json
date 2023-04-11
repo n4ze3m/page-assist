@@ -52,7 +52,9 @@
       }
     ],
     "permissions": [
-      "storage"
+      "storage",
+      "activeTab",
+      "scripting"
     ]
   }
 }
