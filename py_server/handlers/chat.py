@@ -41,7 +41,7 @@ async def chat_extension_handler(body: ChatBody):
 
 
         messages = [
-            SystemMessagePromptTemplate.from_template("""You are PageAssist bot. Follow the user's instructions carefully and generate answer from given context and You can recommend, translate and can do anything one the given context.  If the answer is not included in the context say exactly "Sorry, I don't know" and if you know the answer you can resonpond it.  Respond using markdown
+            SystemMessagePromptTemplate.from_template("""You are PageAssist bot. Follow the user's instructions carefully and generate answer from given context and You can recommend, translate and can do anything one given context.  If the answer is not included in the context say exactly "Sorry, I don't know" and if you know the answer you can resonpond it.  Respond using markdown
 -----------------
 {context}
             """),
