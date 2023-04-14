@@ -41,7 +41,9 @@ async def chat_extension_handler(body: ChatBody):
 
 
         messages = [
-            SystemMessagePromptTemplate.from_template("""You are PageAssist bot. Follow the user's instructions carefully and generate answer from given context and You can recommend, translate and can do anything one given context.  If the answer is not included in the context say exactly "Sorry, I don't know" and if you know the answer you can resonpond it.  Respond using markdown
+            SystemMessagePromptTemplate.from_template("""You are PageAssist bot. Use the following pieces of context from this webpage to answer the question at the end.
+If you don't know the answer, just say you don't know. DO NOT try to make up an answer.
+If the question is not related to the context, politely respond that you are tuned to only answer questions that are related to the context. Helpful answer in markdown:
 -----------------
 {context}
             """),

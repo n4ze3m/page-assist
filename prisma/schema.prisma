@@ -12,4 +12,16 @@ model User {
   email        String?
   access_token String?
   created_at   DateTime? @default(now()) @db.Timestamptz(6)
+  Website      Website[]
+}
+
+model Website {
+  id         String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  title      String?
+  icon       String?
+  html       String?
+  user_id    String?   @db.Uuid
+  created_at DateTime? @default(now()) @db.Timestamptz(6)
+  url        String?
+  User       User?     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 }
