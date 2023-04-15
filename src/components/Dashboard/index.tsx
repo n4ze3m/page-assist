@@ -3,27 +3,13 @@ import Empty from "./Empty";
 import Loading from "./Loading";
 import { api } from "~/utils/api";
 import { ChevronRightIcon } from "@heroicons/react/24/outline";
+import Link from "next/link";
+import { iconUrl } from "~/utils/icon";
 
 export default function DashboardBoby() {
   const { data: savedSites, status } = api.chat.getSavedSitesForChat.useQuery();
 
-  const iconUrl = (icon: string, url: string) => {
-    // check if icon is valid url  (http:// or https://)
-    if (icon.startsWith("http://") || icon.startsWith("https://")) {
-      return icon;
-    }
-
-    // check if icon is valid url  (//)
-    if (icon.startsWith("//")) {
-      return `https:${icon}`;
-    }
-
-    const host = new URL(url).hostname;
-    const protocol = new URL(url).protocol;
-
-    return `${protocol}//${host}/${icon}`;
-  };
-
+  
   return (
     <>
       {status === "loading" && <Loading />}
@@ -31,7 +17,8 @@ export default function DashboardBoby() {
       {status === "success" && savedSites.data.length > 0 && (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           {savedSites.data.map((site, idx) => (
-            <div
+            <Link
+              href={`/dashboard/chat/${site.id}`}
               key={idx}
               className="bg-panel-header-light  border-panel-border-light  hover:bg-panel-border-light hover:border-panel-border-hover-light  h-30 group relative flex cursor-pointer flex-row rounded-md border px-6 py-4 text-left transition duration-150 ease-in-out hover:border-gray-300"
             >
@@ -65,7 +52,7 @@ export default function DashboardBoby() {
                   </div>
                 </div>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       )}

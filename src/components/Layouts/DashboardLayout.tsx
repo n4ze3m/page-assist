@@ -7,13 +7,18 @@ import {
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
-import { useUser } from "@supabase/auth-helpers-react";
+import { useSupabaseClient, useUser } from "@supabase/auth-helpers-react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 
 const navigation = [
   { name: "Home", href: "/dashboard", icon: HomeIcon, current: true },
-  { name: "Settings", href: "/dashboard/settings", icon: CogIcon, current: false },
+  {
+    name: "Settings",
+    href: "/dashboard/settings",
+    icon: CogIcon,
+    current: false,
+  },
 ];
 
 //@ts-ignore
@@ -29,6 +34,7 @@ export default function DashboardLayout({
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const user = useUser();
   const router = useRouter();
+  const supabase = useSupabaseClient();
 
   return (
     <>
@@ -127,13 +133,9 @@ export default function DashboardLayout({
                   </nav>
                 </Dialog.Panel>
               </Transition.Child>
-              <div className="w-14 flex-shrink-0" aria-hidden="true">
-                {/* Dummy element to force sidebar to shrink to fit close icon */}
-              </div>
             </div>
           </Dialog>
         </Transition.Root>
-
         <div className="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-64 lg:flex-col">
           <div className="flex flex-grow flex-col overflow-y-auto border-r border-gray-200 bg-white pb-4 pt-5">
             <div className="flex flex-shrink-0 items-center px-4">
@@ -145,7 +147,7 @@ export default function DashboardLayout({
             >
               <div className="space-y-1 px-2">
                 {navigation.map((item) => (
-                  <a
+                  <Link
                     key={item.name}
                     href={item.href}
                     className={classNames(
@@ -154,7 +156,9 @@ export default function DashboardLayout({
                         : "text-gray-600 hover:bg-gray-50 hover:text-gray-900",
                       "group flex items-center rounded-md px-2 py-2 text-sm font-medium"
                     )}
-                    aria-current={router.pathname === item.href ? "page" : undefined}
+                    aria-current={
+                      router.pathname === item.href ? "page" : undefined
+                    }
                   >
                     <item.icon
                       className={classNames(
@@ -166,7 +170,7 @@ export default function DashboardLayout({
                       aria-hidden="true"
                     />
                     {item.name}
-                  </a>
+                  </Link>
                 ))}
               </div>
             </nav>
@@ -217,28 +221,31 @@ export default function DashboardLayout({
                     <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                       <Menu.Item>
                         {({ active }) => (
-                          <a
-                            href="#"
+                          <Link
+                            href="/dashboard/settings"
                             className={classNames(
                               active ? "bg-gray-100" : "",
                               "block px-4 py-2 text-sm text-gray-700"
                             )}
                           >
                             Settings
-                          </a>
+                          </Link>
                         )}
                       </Menu.Item>
                       <Menu.Item>
                         {({ active }) => (
-                          <a
-                            href="#"
+                          <div
+                            onClick={async () => {
+                              await supabase.auth.signOut();
+                              router.push("/");
+                            }}
                             className={classNames(
                               active ? "bg-gray-100" : "",
                               "block px-4 py-2 text-sm text-gray-700"
                             )}
                           >
                             Logout
-                          </a>
+                          </div>
                         )}
                       </Menu.Item>
                     </Menu.Items>
