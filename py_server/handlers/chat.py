@@ -64,8 +64,8 @@ async def chat_app_handler(body: ChatAppBody, jwt: str):
 
         messages = [
             SystemMessagePromptTemplate.from_template("""You are PageAssist bot. Use the following pieces of context from this webpage to answer the question from the user.
-If you don't know the answer, just say you don't know. DO NOT try to make up an answer.
 If user want recommendation, help from the context, or any other information, please provide it.
+If you don't know the answer, just say you don't know. DO NOT try to make up an answer.
 If the question is not related to the context, politely respond that you are tuned to only answer questions that are related to the context. Helpful answer in markdown:
 -----------------
 {context}
@@ -133,8 +133,8 @@ async def chat_extension_handler(body: ChatBody):
 
         messages = [
             SystemMessagePromptTemplate.from_template("""You are PageAssist bot. Use the following pieces of context from this webpage to answer the question from the user.
-If you don't know the answer, just say you don't know. DO NOT try to make up an answer.
 If user want recommendation, help from the context, or any other information, please provide it.
+If you don't know the answer, just say you don't know. DO NOT try to make up an answer.
 If the question is not related to the context, politely respond that you are tuned to only answer questions that are related to the context. Helpful answer in markdown:
 -----------------
 {context}

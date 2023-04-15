@@ -1,3 +1,20 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+.yt-video {
+    height: 500px;
+}
+
+@media screen and (max-width: 768px) {
+    .yt-video {
+        height: 300px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .yt-video {
+        height: 200px;
+    }
+}
