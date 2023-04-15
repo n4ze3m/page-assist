@@ -23,3 +23,18 @@ class SupaService:
                 "user_id": user_id
             }).execute()
         return result
+    
+
+
+    def find_website(self, id: str, user_id: str):
+        result = self.supabase.table("Website").select("*").eq("id", id).eq("user_id", user_id).execute()
+        return result
+    
+
+    def get_user(self, jwt: str):
+        try:
+            result = self.supabase.auth.get_user(jwt)
+            return result
+        except:
+            return None
+        

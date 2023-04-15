@@ -48,7 +48,6 @@ export const chatRouter = createTRPCRouter({
       });
     }
 
-
     const site = await prisma.website.findFirst({
       where: {
         id: input.id,
@@ -71,6 +70,41 @@ export const chatRouter = createTRPCRouter({
         "message": "Chat not found",
       });
     }
+
+    return site;
+  }),
+
+  deleteChatById: publicProcedure.input(z.object({
+    id: z.string(),
+  })).mutation(async ({ ctx, input }) => {
+    const user = ctx.user;
+    const prisma = ctx.prisma;
+    if (!user) {
+      throw new TRPCError({
+        "code": "UNAUTHORIZED",
+        "message": "You are not authorized to access this resource",
+      });
+    }
+
+    const site = await prisma.website.findFirst({
+      where: {
+        id: input.id,
+        user_id: user.id,
+      },
+    });
+
+    if (!site) {
+      throw new TRPCError({
+        "code": "NOT_FOUND",
+        "message": "Chat not found",
+      });
+    }
+
+    await prisma.website.delete({
+      where: {
+        id: input.id,
+      },
+    });
 
     return site;
   }),

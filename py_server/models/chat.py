@@ -5,3 +5,9 @@ class ChatBody(BaseModel):
     html: str
     history: list
     # url: str
+
+class ChatAppBody(BaseModel):
+    id: str
+    user_message: str
+    url: str
+    history: list

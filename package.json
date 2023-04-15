@@ -12,6 +12,7 @@
   "dependencies": {
     "@headlessui/react": "^1.7.13",
     "@heroicons/react": "^2.0.17",
+    "@mantine/form": "^6.0.7",
     "@prisma/client": "^4.11.0",
     "@supabase/auth-helpers-nextjs": "^0.6.0",
     "@supabase/auth-helpers-react": "^0.3.1",
@@ -24,6 +25,7 @@
     "@trpc/next": "^10.18.0",
     "@trpc/react-query": "^10.18.0",
     "@trpc/server": "^10.18.0",
+    "axios": "^1.3.5",
     "langchain": "^0.0.55",
     "next": "^13.2.4",
     "react": "18.2.0",
