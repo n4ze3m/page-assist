@@ -20,10 +20,8 @@ from db.supa import SupaService
 supabase = SupaService()
 
 
-
 async def chat_app_handler(body: ChatAppBody, jwt: str):
     try:
-
 
         user = supabase.get_user(jwt)
 
@@ -32,10 +30,8 @@ async def chat_app_handler(body: ChatAppBody, jwt: str):
                 "bot_response": "You are not logged in",
                 "human_message": body.user_message,
             }
-        
 
         user_id = user.user.id
-
 
         website_response = supabase.find_website(body.id, user_id)
 
@@ -46,28 +42,26 @@ async def chat_app_handler(body: ChatAppBody, jwt: str):
                 "bot_response": "Website not found",
                 "human_message": body.user_message,
             }
-        
+
         website = website[0]
 
-
         text = website["html"]
+        text = text.strip()
 
         result = [LDocument(page_content=text, metadata={"source": "test"})]
-        token_splitter =  CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
+        token_splitter = CharacterTextSplitter(
+            chunk_size=1000, chunk_overlap=0)
         doc = token_splitter.split_documents(result)
 
         print(f'Number of documents: {len(doc)}')
-        
 
         vectorstore = Chroma.from_documents(doc, OpenAIEmbeddings())
 
-
         messages = [
-            SystemMessagePromptTemplate.from_template("""You are PageAssist bot. Use the following pieces of context from this webpage to answer the question from the user.
-If user want recommendation, help from the context, or any other information, please provide it.
-If you don't know the answer, just say you don't know. DO NOT try to make up an answer.
-If the question is not related to the context, politely respond that you are tuned to only answer questions that are related to the context. Helpful answer in markdown:
+            SystemMessagePromptTemplate.from_template("""You are PageAssist bot. Answer the question based on the following context from the webpage you are on.
+Answer must be in markdown format.
 -----------------
+context:
 {context}
             """),
             HumanMessagePromptTemplate.from_template("{question}")
@@ -75,21 +69,20 @@ If the question is not related to the context, politely respond that you are tun
 
         prompt = ChatPromptTemplate.from_messages(messages)
 
+        chat = ConversationalRetrievalChain.from_llm(OpenAI(temperature=0, model_name="gpt-3.5-turbo"), vectorstore.as_retriever(
+            search_kwargs={"k": 1}), return_source_documents=True, qa_prompt=prompt,)
 
-        chat =  ConversationalRetrievalChain.from_llm(OpenAI(temperature=0, model_name="gpt-3.5-turbo"), vectorstore.as_retriever(search_kwargs={"k": 1}), return_source_documents=True, qa_prompt=prompt,)
-
-        history = [(d["human_message"], d["bot_response"]) for d in body.history]
+        history = [(d["human_message"], d["bot_response"])
+                   for d in body.history]
 
         response = chat({
             "question": body.user_message,
             "chat_history": history
         })
-        
 
         answer = response["answer"]
         answer = answer[answer.find(":")+1:].strip()
 
-        
         return {
             "bot_response": answer,
             "human_message": body.user_message,
@@ -101,9 +94,6 @@ If the question is not related to the context, politely respond that you are tun
             "bot_response": "Something went wrong please try again later",
             "human_message": body.user_message,
         }
-
-
-
 
 
 async def chat_extension_handler(body: ChatBody):
@@ -120,23 +110,22 @@ async def chat_extension_handler(body: ChatBody):
         if div:
             div.decompose()
         text = soup.get_text()
+        text = text.strip()
 
         result = [LDocument(page_content=text, metadata={"source": "test"})]
-        token_splitter =  CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
+        token_splitter = CharacterTextSplitter(
+            chunk_size=1000, chunk_overlap=0)
         doc = token_splitter.split_documents(result)
 
         print(f'Number of documents: {len(doc)}')
-        
 
         vectorstore = Chroma.from_documents(doc, OpenAIEmbeddings())
 
-
         messages = [
-            SystemMessagePromptTemplate.from_template("""You are PageAssist bot. Use the following pieces of context from this webpage to answer the question from the user.
-If user want recommendation, help from the context, or any other information, please provide it.
-If you don't know the answer, just say you don't know. DO NOT try to make up an answer.
-If the question is not related to the context, politely respond that you are tuned to only answer questions that are related to the context. Helpful answer in markdown:
+            SystemMessagePromptTemplate.from_template("""You are PageAssist bot. Answer the question based on the following context from the webpage you are on.
+Answer must be in markdown format.
 -----------------
+context:
 {context}
             """),
             HumanMessagePromptTemplate.from_template("{question}")
@@ -144,21 +133,20 @@ If the question is not related to the context, politely respond that you are tun
 
         prompt = ChatPromptTemplate.from_messages(messages)
 
+        chat = ConversationalRetrievalChain.from_llm(OpenAI(temperature=0, model_name="gpt-3.5-turbo"), vectorstore.as_retriever(
+            search_kwargs={"k": 1}), return_source_documents=True, qa_prompt=prompt,)
 
-        chat =  ConversationalRetrievalChain.from_llm(OpenAI(temperature=0, model_name="gpt-3.5-turbo"), vectorstore.as_retriever(search_kwargs={"k": 1}), return_source_documents=True, qa_prompt=prompt,)
-
-        history = [(d["human_message"], d["bot_response"]) for d in body.history]
+        history = [(d["human_message"], d["bot_response"])
+                   for d in body.history]
 
         response = chat({
             "question": body.user_message,
             "chat_history": history
         })
-        
 
         answer = response["answer"]
         answer = answer[answer.find(":")+1:].strip()
 
-        
         return {
             "bot_response": answer,
             "human_message": body.user_message,
@@ -170,4 +158,3 @@ If the question is not related to the context, politely respond that you are tun
             "bot_response": "Something went wrong please try again later",
             "human_message": body.user_message,
         }
-
