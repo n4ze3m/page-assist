@@ -163,7 +163,7 @@ export default function Hero() {
               </div>
               <iframe
                 className="yt-video relative mx-auto mt-12 w-full max-w-4xl rounded-3xl border border-gray-300 shadow-2xl dark:border-gray-700 lg:mt-20"
-                src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+                src="https://www.youtube.com/embed/UB1PdZ32vBc"
                 title="YouTube video player"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
