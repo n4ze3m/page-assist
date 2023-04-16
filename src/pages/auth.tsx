@@ -64,6 +64,7 @@ const AuthPage: NextPage = () => {
               appearance={{ theme: ThemeSupa }}
               view="magic_link"
               showLinks={false}
+              magicLink={true}
             />
           </div>
         </div>
