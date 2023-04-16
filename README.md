@@ -25,6 +25,10 @@ Here's a demo of how it works:
 
 - USed Supabase Python client for FastAPI
 
+## Demo
+
+- [PageAssist](https://pageassist.n4ze3m.com/)
+- [Chrome Extension](https://chrome.google.com/webstore/detail/page-assist/ehkjdalbpmmaddcfdilplgknkgepeakd?hl=en&authuser=2)
 
 ## Team
 
