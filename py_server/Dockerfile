@@ -1,5 +1,3 @@
-FROM python:3.9.16
-
 FROM tiangolo/uvicorn-gunicorn-fastapi:python3.11                                                                       
 
 ENV PORT=5000
