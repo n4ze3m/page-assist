@@ -1,15 +1,11 @@
 FROM python:3.9.16
 
-WORKDIR  /app
+FROM tiangolo/uvicorn-gunicorn-fastapi:python3.11                                                                       
 
-RUN apt-get update && apt-get install -y wget unzip libgconf-2-4 libnss3 libcurl4
-
-RUN pip install --no-cache-dir -U pip
+ENV PORT=5000
 
 COPY requirements.txt .
 
 RUN pip install -r requirements.txt
 
 COPY  . .
-
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "80"]
