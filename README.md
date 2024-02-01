@@ -1,35 +1,33 @@
-# Page Assist
+This is a [Plasmo extension](https://docs.plasmo.com/) project bootstrapped with [`plasmo init`](https://www.npmjs.com/package/plasmo).
 
-Revolutionize your browsing experience with PageAssist, an open source Chrome extension that allows you to easily chat with any webpage using the power of ChatGPT API.
+## Getting Started
 
-Here's a demo of how it works:
+First, run the development server:
 
-[![PageAssist Demo](https://img.youtube.com/vi/UB1PdZ32vBc/0.jpg)](https://www.youtube.com/watch?v=UB1PdZ32vBc)
+```bash
+pnpm dev
+# or
+npm run dev
+```
 
+Open your browser and load the appropriate development build. For example, if you are developing for the chrome browser, using manifest v3, use: `build/chrome-mv3-dev`.
 
-## Tools
+You can start editing the popup by modifying `popup.tsx`. It should auto-update as you make changes. To add an options page, simply add a `options.tsx` file to the root of the project, with a react component default exported. Likewise to add a content page, add a `content.ts` file to the root of the project, importing some module and do some logic, then reload the extension on your browser.
 
-- NextJs
-- Supabase
-- FastAPI
-- OpenAI's ChatGPT api
-- Docker
-- Plasmo for chrome extension
+For further guidance, [visit our Documentation](https://docs.plasmo.com/)
 
+## Making production build
 
-## Supabase
+Run the following:
 
-- Used for Authentication and Database
+```bash
+pnpm build
+# or
+npm run build
+```
 
-- Used Supabase Auth UI in the dashboard for authentication
+This should create a production bundle for your extension, ready to be zipped and published to the stores.
 
-- USed Supabase Python client for FastAPI
+## Submit to the webstores
 
-## Demo
-
-- [PageAssist](https://pageassist.n4ze3m.com/)
-- [Chrome Extension](https://chrome.google.com/webstore/detail/page-assist/ehkjdalbpmmaddcfdilplgknkgepeakd?hl=en&authuser=2)
-
-## Team
-
-- [Muhammad Nazeem](https://twitter.com/n4ze3m)
+The easiest way to deploy your Plasmo extension is to use the built-in [bpp](https://bpp.browser.market) GitHub action. Prior to using this action however, make sure to build your extension and upload the first version to the store to establish the basic credentials. Then, simply follow [this setup instruction](https://docs.plasmo.com/framework/workflows/submit) and you should be on your way for automated submission!
