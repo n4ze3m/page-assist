@@ -1,6 +1,6 @@
-import { SidePanelBody } from "~components/Sidepanel/body"
-import { SidepanelForm } from "~components/Sidepanel/form"
-import { SidepanelHeader } from "~components/Sidepanel/header"
+import { SidePanelBody } from "~components/Sidepanel/Chat/body"
+import { SidepanelForm } from "~components/Sidepanel/Chat/form"
+import { SidepanelHeader } from "~components/Sidepanel/Chat/header"
 
 export const SidepanelChat = () => {
   return (

@@ -2,6 +2,7 @@ import logoImage from "data-base64:~assets/icon.png"
 import CogIcon from "@heroicons/react/24/outline/CogIcon"
 import { ArrowPathIcon } from "@heroicons/react/24/outline"
 import { useMessage } from "~hooks/useMessage"
+import { Link } from "react-router-dom"
 export const SidepanelHeader = () => {
   const { clearChat } = useMessage()
   return (
@@ -19,7 +20,9 @@ export const SidepanelHeader = () => {
           className="flex items-center space-x-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-700">
           <ArrowPathIcon className="h-5 w-5 text-gray-500 dark:text-gray-400" />
         </button>
-        <CogIcon className="h-5 w-5 text-gray-500 dark:text-gray-400" />
+        <Link to="/settings">
+          <CogIcon className="h-5 w-5 text-gray-500 dark:text-gray-400" />
+        </Link>
       </div>
     </div>
   )
