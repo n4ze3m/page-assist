@@ -19,6 +19,7 @@ export const SidePanelBody = () => {
           key={index}
           isBot={message.isBot}
           message={message.message}
+          name={message.name}
         />
       ))}
       <div className="w-full h-32 md:h-48 flex-shrink-0"></div>

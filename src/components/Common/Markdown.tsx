@@ -4,9 +4,10 @@ import { nightOwl } from "react-syntax-highlighter/dist/cjs/styles/prism"
 import rehypeMathjax from "rehype-mathjax"
 import remarkMath from "remark-math"
 import ReactMarkdown from "react-markdown"
-import { ClipboardIcon, CheckIcon, EyeIcon } from "@heroicons/react/24/outline"
+import "property-information"
+import { ClipboardIcon, CheckIcon } from "@heroicons/react/24/outline"
 import React from "react"
-import {  Tooltip } from "antd"
+import { Tooltip } from "antd"
 
 export default function Markdown({ message }: { message: string }) {
   const [isBtnPressed, setIsBtnPressed] = React.useState(false)
@@ -23,8 +24,8 @@ export default function Markdown({ message }: { message: string }) {
     <React.Fragment>
       <ReactMarkdown
         className="prose break-words dark:prose-invert text-sm prose-p:leading-relaxed prose-pre:p-0 dark:prose-dark"
-        remarkPlugins={[remarkGfm, remarkMath]}
-        rehypePlugins={[rehypeMathjax]}
+        // remarkPlugins={[remarkGfm, remarkMath]}
+        // rehypePlugins={[rehypeMathjax]}
         components={{
           code({ node, inline, className, children, ...props }) {
             const match = /language-(\w+)/.exec(className || "")
@@ -36,7 +37,6 @@ export default function Markdown({ message }: { message: string }) {
                   </span>
 
                   <div className="flex items-center">
-                    
                     <Tooltip title="Copy to clipboard">
                       <button
                         onClick={() => {
@@ -92,7 +92,6 @@ export default function Markdown({ message }: { message: string }) {
         }}>
         {message}
       </ReactMarkdown>
-
     </React.Fragment>
   )
 }

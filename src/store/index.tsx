@@ -2,6 +2,7 @@ import { create } from "zustand"
 
 export type Message = {
   isBot: boolean
+  name: string
   message: string
   sources: any[]
 }

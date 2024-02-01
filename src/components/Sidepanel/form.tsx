@@ -1,15 +1,11 @@
 import { useForm } from "@mantine/form"
 import { useMutation } from "@tanstack/react-query"
 import React from "react"
+import useDynamicTextareaSize from "~hooks/useDynamicTextareaSize"
 import { useMessage } from "~hooks/useMessage"
 
 export const SidepanelForm = () => {
   const textareaRef = React.useRef<HTMLTextAreaElement>(null)
-  React.useEffect(() => {
-    if (textareaRef.current) {
-      textareaRef.current.focus()
-    }
-  }, [])
 
   const resetHeight = () => {
     const textarea = textareaRef.current
@@ -22,6 +18,11 @@ export const SidepanelForm = () => {
       message: ""
     }
   })
+
+  useDynamicTextareaSize(
+    textareaRef,
+    form.values.message,
+  )
 
   const { onSubmit, selectedModel } = useMessage()
 
@@ -44,7 +45,7 @@ export const SidepanelForm = () => {
               await sendMessage(value.message)
             })}
             className="shrink-0 flex-grow  flex items-center ">
-            <div className="flex items-center p-2 rounded-full border  bg-gray-100 w-full dark:bg-black dark:border-gray-800">
+            <div className="flex items-center p-2 rounded-2xl border  bg-gray-100 w-full dark:bg-black dark:border-gray-800">
               <textarea
                 disabled={isSending}
                 onKeyDown={(e) => {

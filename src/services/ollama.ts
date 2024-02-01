@@ -71,3 +71,8 @@ export const setOllamaURL = async (ollamaURL: string) => {
   await chromeRunTime(cleanUrl(ollamaURL))
   await storage.set("ollamaURL", cleanUrl(ollamaURL))
 }
+
+export const systemPromptForNonRag = async () => {
+  const prompt = await storage.get("systemPromptForNonRag")
+  return prompt
+}

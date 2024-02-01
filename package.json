@@ -22,9 +22,10 @@
     "axios": "^1.6.7",
     "langchain": "^0.1.9",
     "plasmo": "0.84.1",
+    "property-information": "^6.4.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-markdown": "8.0.7",
+    "react-markdown": "8.0.0",
     "react-router-dom": "6.10.0",
     "react-syntax-highlighter": "^15.5.0",
     "react-toastify": "^10.0.4",
@@ -73,6 +74,23 @@
       "scripting",
       "declarativeNetRequest",
       "declarativeNetRequestFeedback"
-    ]
+    ],
+    "commands": {
+      "open-ai-sidebar": {
+        "suggested_key": {
+          "default": "Ctrl+Shift+0",
+          "mac": "Command+Shift+0"
+        },
+        "description": "Open AI Sidebar for Page Assist"
+      },
+      "_execute_action": {
+        "suggested_key": {
+          "windows": "Ctrl+Shift+0",
+          "mac": "Command+Shift+0",
+          "chromeos": "Ctrl+Shift+0",
+          "linux": "Ctrl+Shift+0"
+        }
+      }
+    }
   }
 }

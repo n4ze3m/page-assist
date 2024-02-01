@@ -1,7 +1,7 @@
 import React from "react"
 import { cleanUrl } from "~libs/clean-url"
-import { getOllamaURL, isOllamaRunning } from "~services/ollama"
-import { useStoreMessage, type ChatHistory } from "~store"
+import { getOllamaURL, systemPromptForNonRag } from "~services/ollama"
+import { useStoreMessage, type ChatHistory, type Message } from "~store"
 import { ChatOllama } from "@langchain/community/chat_models/ollama"
 import { HumanMessage, AIMessage } from "@langchain/core/messages"
 
@@ -88,15 +88,17 @@ export const useMessage = () => {
       baseUrl: cleanUrl(url)
     })
 
-    let newMessage = [
+    let newMessage: Message[] = [
       ...messages,
       {
         isBot: false,
+        name: "You",
         message,
         sources: []
       },
       {
         isBot: true,
+        name: selectedModel,
         message: "▋",
         sources: []
       }
@@ -106,8 +108,15 @@ export const useMessage = () => {
     setMessages(newMessage)
 
     try {
+      const prompt = await systemPromptForNonRag()
+
+
+     
+      
+
       const chunks = await ollama.stream(
         [
+          
           ...generateHistory(history),
           new HumanMessage({
             content: [
@@ -165,6 +174,7 @@ export const useMessage = () => {
         ...messages,
         {
           isBot: true,
+          name: selectedModel,
           message: `Something went wrong. Check out the following logs:
         \`\`\`
         ${e?.message}
