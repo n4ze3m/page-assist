@@ -1,7 +1,12 @@
 const _getHtml = () => {
-    const url = window.location.href
-    const html = document.documentElement.outerHTML
-    return { url, html }
+  const url = window.location.href
+  const html = Array.from(document.querySelectorAll("script")).reduce(
+    (acc, script) => {
+      return acc.replace(script.outerHTML, "")
+    },
+    document.documentElement.outerHTML
+  )
+  return { url, html }
 }
 
 export const getHtmlOfCurrentTab = async () => {

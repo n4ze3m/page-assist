@@ -72,7 +72,9 @@ export const useMessage = () => {
     isProcessing,
     setIsProcessing,
     selectedModel,
-    setSelectedModel
+    setSelectedModel,
+    chatMode,
+    setChatMode
   } = useStoreMessage()
 
   const abortControllerRef = React.useRef<AbortController | null>(null)
@@ -89,7 +91,7 @@ export const useMessage = () => {
     setIsFirstMessage(true)
   }
 
-  const voyEmbedding = async (
+  const memoryEmbedding = async (
     url: string,
     html: string,
     ollamaEmbedding: OllamaEmbeddings
@@ -155,7 +157,7 @@ export const useMessage = () => {
     if (isAlreadyExistEmbedding) {
       vectorstore = isAlreadyExistEmbedding
     } else {
-      vectorstore = await voyEmbedding(url, html, ollamaEmbedding)
+      vectorstore = await memoryEmbedding(url, html, ollamaEmbedding)
     }
 
     const questionPrompt =
@@ -172,8 +174,6 @@ export const useMessage = () => {
       response_template: systemPrompt,
       retriever: vectorstore.asRetriever()
     })
-
-    
 
     try {
       const chunks = await chain.stream({
@@ -336,7 +336,11 @@ export const useMessage = () => {
   }
 
   const onSubmit = async (message: string) => {
-    await chatWithWebsiteMode(message)
+    if (chatMode === "normal") {
+      await normalChatMode(message)
+    } else {
+      await chatWithWebsiteMode(message)
+    }
   }
 
   const stopStreamingRequest = () => {
@@ -362,6 +366,8 @@ export const useMessage = () => {
     stopStreamingRequest,
     clearChat,
     selectedModel,
-    setSelectedModel
+    setSelectedModel,
+    chatMode,
+    setChatMode
   }
 }

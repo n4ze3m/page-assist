@@ -29,6 +29,8 @@ type State = {
   setIsProcessing: (isProcessing: boolean) => void
   selectedModel: string | null
   setSelectedModel: (selectedModel: string) => void
+  chatMode: "normal" | "rag"
+  setChatMode: (chatMode: "normal" | "rag") => void
 }
 
 export const useStoreMessage = create<State>((set) => ({
@@ -48,5 +50,7 @@ export const useStoreMessage = create<State>((set) => ({
   setIsProcessing: (isProcessing) => set({ isProcessing }),
   defaultSpeechToTextLanguage: "en-US",
   selectedModel: null,
-  setSelectedModel: (selectedModel) => set({ selectedModel })
+  setSelectedModel: (selectedModel) => set({ selectedModel }),
+  chatMode: "normal",
+  setChatMode: (chatMode) => set({ chatMode }),
 }))
