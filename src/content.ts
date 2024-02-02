@@ -23,6 +23,7 @@ const sidePanelController = async () => {
       chrome.runtime.sendMessage({ type: "sidepanel" })
     }
   })
+
 }
 
 sidePanelController()

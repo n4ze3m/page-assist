@@ -98,9 +98,13 @@ export const EmptySidePanel = () => {
               }}
               value={selectedModel}
               className="bg-gray-100 truncate w-full dark:bg-black dark:text-gray-100 rounded-md px-4 py-2 mt-2">
-              <option value={""}>Select a model</option>
-              {ollamaInfo.models.map((model) => (
-                <option value={model.name}>{model.name}</option>
+              <option key="0x" value={""}>
+                Select a model
+              </option>
+              {ollamaInfo.models.map((model, index) => (
+                <option key={index} value={model.name}>
+                  {model.name}
+                </option>
               ))}
             </select>
           </div>
