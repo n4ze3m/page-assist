@@ -47,7 +47,6 @@ export const SidepanelForm = () => {
             className="shrink-0 flex-grow  flex items-center ">
             <div className="flex items-center p-2 rounded-2xl border  bg-gray-100 w-full dark:bg-black dark:border-gray-800">
               <textarea
-                disabled={isSending}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && !e.shiftKey && !isSending) {
                     e.preventDefault()

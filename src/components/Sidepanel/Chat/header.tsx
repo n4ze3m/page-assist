@@ -1,10 +1,12 @@
 import logoImage from "data-base64:~assets/icon.png"
 import CogIcon from "@heroicons/react/24/outline/CogIcon"
+import Squares2X2Icon from "@heroicons/react/24/outline/Squares2X2Icon"
 import { ArrowPathIcon } from "@heroicons/react/24/outline"
 import { useMessage } from "~hooks/useMessage"
 import { Link } from "react-router-dom"
+import { Tooltip } from "antd"
 export const SidepanelHeader = () => {
-  const { clearChat } = useMessage()
+  const { clearChat, isEmbedding } = useMessage()
   return (
     <div className="flex px-3 justify-between bg-white dark:bg-black border-b border-gray-200 dark:border-gray-800 py-4 items-center">
       <div className="focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-700 flex items-center dark:text-white">
@@ -13,6 +15,14 @@ export const SidepanelHeader = () => {
       </div>
 
       <div className="flex items-center space-x-3">
+        {isEmbedding ? (
+          <Tooltip 
+          title="It may take a few minutes to embed the page. Please wait..."
+          >
+          <Squares2X2Icon className="h-5 w-5 text-gray-500 dark:text-gray-400 animate-bounce animate-infinite" />
+
+          </Tooltip>
+        ) : null}
         <button
           onClick={() => {
             clearChat()

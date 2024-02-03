@@ -74,7 +74,9 @@ export const useMessage = () => {
     selectedModel,
     setSelectedModel,
     chatMode,
-    setChatMode
+    setChatMode,
+    setIsEmbedding,
+    isEmbedding
   } = useStoreMessage()
 
   const abortControllerRef = React.useRef<AbortController | null>(null)
@@ -89,6 +91,9 @@ export const useMessage = () => {
     setHistory([])
     setHistoryId(null)
     setIsFirstMessage(true)
+    setIsLoading(false)
+    setIsProcessing(false)
+    setStreaming(false)
   }
 
   const memoryEmbedding = async (
@@ -110,12 +115,14 @@ export const useMessage = () => {
 
     const store = new MemoryVectorStore(ollamaEmbedding)
 
-    await store.addDocuments(chunks)
+    setIsEmbedding(true)
 
+    await store.addDocuments(chunks)
     setKeepTrackOfEmbedding({
       ...keepTrackOfEmbedding,
       [url]: store
     })
+    setIsEmbedding(false)
 
     return store
   }
@@ -368,6 +375,7 @@ export const useMessage = () => {
     selectedModel,
     setSelectedModel,
     chatMode,
-    setChatMode
+    setChatMode,
+    isEmbedding
   }
 }

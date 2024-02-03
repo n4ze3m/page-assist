@@ -31,6 +31,8 @@ type State = {
   setSelectedModel: (selectedModel: string) => void
   chatMode: "normal" | "rag"
   setChatMode: (chatMode: "normal" | "rag") => void
+  isEmbedding: boolean
+  setIsEmbedding: (isEmbedding: boolean) => void
 }
 
 export const useStoreMessage = create<State>((set) => ({
@@ -53,4 +55,6 @@ export const useStoreMessage = create<State>((set) => ({
   setSelectedModel: (selectedModel) => set({ selectedModel }),
   chatMode: "normal",
   setChatMode: (chatMode) => set({ chatMode }),
+  isEmbedding: false,
+  setIsEmbedding: (isEmbedding) => set({ isEmbedding }),
 }))
