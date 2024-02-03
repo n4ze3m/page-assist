@@ -1,7 +1,4 @@
-import {
-  CheckIcon,
-  ClipboardIcon,
-} from "@heroicons/react/24/outline"
+import { CheckIcon, ClipboardIcon } from "@heroicons/react/24/outline"
 import Markdown from "../../Common/Markdown"
 import React from "react"
 
@@ -12,6 +9,7 @@ type Props = {
   userAvatar?: JSX.Element
   isBot: boolean
   name: string
+  images?: string[]
 }
 
 export const PlaygroundMessage = (props: Props) => {
@@ -48,13 +46,11 @@ export const PlaygroundMessage = (props: Props) => {
             </div>
           </div>
           <div className="relative flex w-[calc(100%-50px)] flex-col gap-1 md:gap-3 lg:w-[calc(100%-115px)]">
-          {
-            props.isBot && (
+            {props.isBot && (
               <span className="absolute mb-8 -top-4 left-0 text-xs text-gray-400 dark:text-gray-500">
                 {props.name}
               </span>
-            )
-          }
+            )}
             <div className="flex flex-grow flex-col gap-3">
               <Markdown message={props.message} />
             </div>
@@ -81,6 +77,19 @@ export const PlaygroundMessage = (props: Props) => {
           )}
         </div>
       </div>
+      {props.images && (
+        <div className="flex md:max-w-2xl lg:max-w-xl xl:max-w-3xl p-3 m-auto w-full">
+          {props.images.map((image, index) => (
+            <div key={index} className="h-full rounded-md shadow relative">
+              <img
+                src={image}
+                alt="Uploaded"
+                className="h-full w-auto object-cover rounded-md min-w-[50px]"
+              />
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   )
 }

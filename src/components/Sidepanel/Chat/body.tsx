@@ -20,6 +20,7 @@ export const SidePanelBody = () => {
           isBot={message.isBot}
           message={message.message}
           name={message.name}
+          images={message.images || []}
         />
       ))}
       <div className="w-full h-32 md:h-48 flex-shrink-0"></div>

@@ -5,11 +5,13 @@ export type Message = {
   name: string
   message: string
   sources: any[]
+  images?: string[]
 }
 
 export type ChatHistory = {
   role: "user" | "assistant" | "system"
-  content: string
+  content: string,
+  image?: string
 }[]
 
 type State = {

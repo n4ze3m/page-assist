@@ -3,12 +3,15 @@ import { cleanUrl } from "~libs/clean-url"
 import { getOllamaURL, systemPromptForNonRag } from "~services/ollama"
 import { useStoreMessage, type ChatHistory, type Message } from "~store"
 import { ChatOllama } from "@langchain/community/chat_models/ollama"
-import { HumanMessage, AIMessage } from "@langchain/core/messages"
+import {
+  HumanMessage,
+  AIMessage,
+  type MessageContent
+} from "@langchain/core/messages"
 import { getHtmlOfCurrentTab } from "~libs/get-html"
 import { PageAssistHtmlLoader } from "~loader/html"
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter"
-import { OllamaEmbeddings } from "langchain/embeddings/ollama"
-import { Voy as VoyClient } from "voy-search"
+import { OllamaEmbeddings } from "@langchain/community/embeddings/ollama"
 import { createChatWithWebsiteChain } from "~chain/chat-with-website"
 import { MemoryVectorStore } from "langchain/vectorstores/memory"
 
@@ -25,19 +28,34 @@ const generateHistory = (
   messages: {
     role: "user" | "assistant" | "system"
     content: string
+    image?: string
   }[]
 ) => {
   let history = []
   for (const message of messages) {
     if (message.role === "user") {
+      let content: MessageContent = [
+        {
+          type: "text",
+          text: message.content
+        }
+      ]
+
+      if (message.image) {
+        content = [
+          {
+            type: "image_url",
+            image_url: message.image
+          },
+          {
+            type: "text",
+            text: message.content
+          }
+        ]
+      }
       history.push(
         new HumanMessage({
-          content: [
-            {
-              type: "text",
-              text: message.content
-            }
-          ]
+          content: content
         })
       )
     } else if (message.role === "assistant") {
@@ -239,9 +257,12 @@ export const useMessage = () => {
     }
   }
 
-  const normalChatMode = async (message: string) => {
+  const normalChatMode = async (message: string, image: string) => {
     const url = await getOllamaURL()
 
+    if (image.length > 0) {
+      image = `data:image/jpeg;base64,${image.split(",")[1]}`
+    }
     abortControllerRef.current = new AbortController()
 
     const ollama = new ChatOllama({
@@ -255,13 +276,14 @@ export const useMessage = () => {
         isBot: false,
         name: "You",
         message,
-        sources: []
+        sources: [],
+        images: [image]
       },
       {
         isBot: true,
         name: selectedModel,
         message: "▋",
-        sources: []
+        sources: [],
       }
     ]
 
@@ -271,17 +293,35 @@ export const useMessage = () => {
     try {
       const prompt = await systemPromptForNonRag()
 
+      let humanMessage =  new HumanMessage({
+        content: [
+          {
+            text: message,
+            type: "text"
+          }
+        ]
+      })
+      if (image.length > 0) {
+        humanMessage = new HumanMessage({
+          content: [
+            {
+              text: message,
+              type: "text"
+            },
+            {
+              image_url: image,
+              type: "image_url"
+            }
+          ]
+        }) 
+      }
+
+      console.log("humanMessage", humanMessage)
+
       const chunks = await ollama.stream(
         [
           ...generateHistory(history),
-          new HumanMessage({
-            content: [
-              {
-                type: "text",
-                text: message
-              }
-            ]
-          })
+          humanMessage
         ],
         {
           signal: abortControllerRef.current.signal
@@ -312,7 +352,8 @@ export const useMessage = () => {
         ...history,
         {
           role: "user",
-          content: message
+          content: message,
+          image
         },
         {
           role: "assistant",
@@ -342,9 +383,15 @@ export const useMessage = () => {
     }
   }
 
-  const onSubmit = async (message: string) => {
+  const onSubmit = async ({
+    message,
+    image
+  }: {
+    message: string
+    image: string
+  }) => {
     if (chatMode === "normal") {
-      await normalChatMode(message)
+      await normalChatMode(message, image)
     } else {
       await chatWithWebsiteMode(message)
     }

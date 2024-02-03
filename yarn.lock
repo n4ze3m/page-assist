@@ -537,6 +537,23 @@
     uuid "^9.0.0"
     zod "^3.22.3"
 
+"@langchain/core@^0.1.22":
+  version "0.1.22"
+  resolved "https://registry.yarnpkg.com/@langchain/core/-/core-0.1.22.tgz#b558f4675f5ad4dea473899362469220a96b4144"
+  integrity sha512-I3KMv87D5AFeAvuJhzaGOYdppFL4h/bRm7LeJfwF2PspQIZwvDE9GP7hkw4n+7jwNaBxjU8ZTj6o3LZAh1R5LQ==
+  dependencies:
+    ansi-styles "^5.0.0"
+    camelcase "6"
+    decamelize "1.2.0"
+    js-tiktoken "^1.0.8"
+    langsmith "~0.0.48"
+    ml-distance "^4.0.0"
+    p-queue "^6.6.2"
+    p-retry "4"
+    uuid "^9.0.0"
+    zod "^3.22.4"
+    zod-to-json-schema "^3.22.3"
+
 "@langchain/core@~0.1.13", "@langchain/core@~0.1.16":
   version "0.1.20"
   resolved "https://registry.yarnpkg.com/@langchain/core/-/core-0.1.20.tgz#599d3a8de1faa4692b03d3e8939d8e08e1dc2413"

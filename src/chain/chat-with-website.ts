@@ -1,5 +1,5 @@
 import { BaseLanguageModel } from "langchain/base_language";
-import { Document } from "langchain/document";
+import { Document } from "@langchain/core/documents";
 import {
   ChatPromptTemplate,
   MessagesPlaceholder,

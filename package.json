@@ -14,6 +14,7 @@
     "@headlessui/react": "^1.7.18",
     "@heroicons/react": "^2.1.1",
     "@langchain/community": "^0.0.21",
+    "@langchain/core": "^0.1.22",
     "@mantine/form": "^7.5.0",
     "@plasmohq/storage": "^1.9.0",
     "@tailwindcss/forms": "^0.5.7",

@@ -68,8 +68,15 @@ export const fetchModels = async () => {
 }
 
 export const setOllamaURL = async (ollamaURL: string) => {
-  await chromeRunTime(cleanUrl(ollamaURL))
-  await storage.set("ollamaURL", cleanUrl(ollamaURL))
+  let formattedUrl = ollamaURL
+  if (formattedUrl.startsWith("http://localhost:")) {
+    formattedUrl = formattedUrl.replace(
+      "http://localhost:",
+      "http://127.0.0.1:"
+    )
+  }
+  await chromeRunTime(cleanUrl(formattedUrl))
+  await storage.set("ollamaURL", cleanUrl(formattedUrl))
 }
 
 export const systemPromptForNonRag = async () => {
