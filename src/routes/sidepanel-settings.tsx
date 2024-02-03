@@ -1,3 +1,4 @@
+import { SettingsBody } from "~components/Sidepanel/Settings/body"
 import { SidepanelSettingsHeader } from "~components/Sidepanel/Settings/header"
 
 export const SidepanelSettings = () => {
@@ -6,6 +7,7 @@ export const SidepanelSettings = () => {
       <div className="sticky top-0 z-10">
         <SidepanelSettingsHeader />
       </div>
+      <SettingsBody />
     </div>
   )
 }

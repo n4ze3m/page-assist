@@ -1,7 +1,7 @@
 import { Route, Routes } from "react-router-dom"
 import { SidepanelChat } from "./sidepanel-chat"
-import { SidepanelSettingsHeader } from "~components/Sidepanel/Settings/header"
 import { useDarkMode } from "~hooks/useDarkmode"
+import { SidepanelSettings } from "./sidepanel-settings"
 
 export const Routing = () => <Routes></Routes>
 
@@ -12,7 +12,7 @@ export const SidepanelRouting = () => {
     <div className={mode === "dark" ? "dark" : "light"}>
       <Routes>
         <Route path="/" element={<SidepanelChat />} />
-        <Route path="/settings" element={<SidepanelSettingsHeader />} />
+        <Route path="/settings" element={<SidepanelSettings />} />
       </Routes>
     </div>
   )

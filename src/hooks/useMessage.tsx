@@ -1,12 +1,17 @@
 import React from "react"
 import { cleanUrl } from "~libs/clean-url"
-import { getOllamaURL, systemPromptForNonRag } from "~services/ollama"
+import {
+  getOllamaURL,
+  promptForRag,
+  systemPromptForNonRag
+} from "~services/ollama"
 import { useStoreMessage, type ChatHistory, type Message } from "~store"
 import { ChatOllama } from "@langchain/community/chat_models/ollama"
 import {
   HumanMessage,
   AIMessage,
-  type MessageContent
+  type MessageContent,
+  SystemMessage
 } from "@langchain/core/messages"
 import { getHtmlOfCurrentTab } from "~libs/get-html"
 import { PageAssistHtmlLoader } from "~loader/html"
@@ -185,10 +190,8 @@ export const useMessage = () => {
       vectorstore = await memoryEmbedding(url, html, ollamaEmbedding)
     }
 
-    const questionPrompt =
-      "Given the following conversation and a follow up question, rephrase the follow up question to be a standalone question.   Chat History: {chat_history} Follow Up Input: {question} Standalone question:"
-
-    const systemPrompt = `You are a helpful AI assistant. Use the following pieces of context to answer the question at the end. If you don't know the answer, just say you don't know. DO NOT try to make up an answer. If the question is not related to the context, politely respond that you are tuned to only answer questions that are related to the context.  {context}  Question: {question} Helpful answer in markdown:`
+    const { ragPrompt: systemPrompt, ragQuestionPrompt: questionPrompt } =
+      await promptForRag()
 
     const sanitizedQuestion = message.trim().replaceAll("\n", " ")
 
@@ -247,9 +250,9 @@ export const useMessage = () => {
           isBot: true,
           name: selectedModel,
           message: `Something went wrong. Check out the following logs:
-        \`\`\`
-        ${e?.message}
-        \`\`\`
+~~~
+${e?.message}
+ ~~~
         `,
           sources: []
         }
@@ -283,7 +286,7 @@ export const useMessage = () => {
         isBot: true,
         name: selectedModel,
         message: "▋",
-        sources: [],
+        sources: []
       }
     ]
 
@@ -293,7 +296,9 @@ export const useMessage = () => {
     try {
       const prompt = await systemPromptForNonRag()
 
-      let humanMessage =  new HumanMessage({
+      message = message.trim().replaceAll("\n", " ")
+
+      let humanMessage = new HumanMessage({
         content: [
           {
             text: message,
@@ -313,16 +318,26 @@ export const useMessage = () => {
               type: "image_url"
             }
           ]
-        }) 
+        })
       }
 
-      console.log("humanMessage", humanMessage)
+      const applicationChatHistory = generateHistory(history)
+
+      if (prompt) {
+        applicationChatHistory.unshift(
+          new SystemMessage({
+            content: [
+              {
+                text: prompt,
+                type: "text"
+              }
+            ]
+          })
+        )
+      }
 
       const chunks = await ollama.stream(
-        [
-          ...generateHistory(history),
-          humanMessage
-        ],
+        [...applicationChatHistory, humanMessage],
         {
           signal: abortControllerRef.current.signal
         }

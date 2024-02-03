@@ -79,15 +79,17 @@ export const PlaygroundMessage = (props: Props) => {
       </div>
       {props.images && (
         <div className="flex md:max-w-2xl lg:max-w-xl xl:max-w-3xl p-3 m-auto w-full">
-          {props.images.map((image, index) => (
-            <div key={index} className="h-full rounded-md shadow relative">
-              <img
-                src={image}
-                alt="Uploaded"
-                className="h-full w-auto object-cover rounded-md min-w-[50px]"
-              />
-            </div>
-          ))}
+          {props.images
+            .filter((image) => image.length > 0)
+            .map((image, index) => (
+              <div key={index} className="h-full rounded-md shadow relative">
+                <img
+                  src={image}
+                  alt="Uploaded"
+                  className="h-full w-auto object-cover rounded-md min-w-[50px]"
+                />
+              </div>
+            ))}
         </div>
       )}
     </div>

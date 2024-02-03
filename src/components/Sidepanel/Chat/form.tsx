@@ -57,7 +57,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
   })
 
   return (
-    <div className="p-3 md:p-6 md:bg-white dark:bg-[#0a0a0a] border rounded-t-xl   border-black/10 dark:border-gray-900/50">
+    <div className="p-3 md:p-6 md:bg-white dark:bg-[#1a1919] border rounded-t-xl border-black/10 dark:border-gray-900/50">
       <div className="flex-grow space-y-6 ">
         {chatMode === "normal" && form.values.image && (
           <div className="h-full rounded-md shadow relative">
@@ -136,7 +136,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                   }
                 }}
                 ref={textareaRef}
-                className="pl-4 pr-2 py-2 w-full resize-none bg-transparent focus-within:outline-none sm:text-sm focus:ring-0 focus-visible:ring-0 ring-0 dark:ring-0 border-0 dark:text-gray-100"
+                className="px-2 py-2 w-full resize-none bg-transparent focus-within:outline-none sm:text-sm focus:ring-0 focus-visible:ring-0 ring-0 dark:ring-0 border-0 dark:text-gray-100"
                 required
                 rows={1}
                 tabIndex={0}
@@ -145,7 +145,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
               />
               <button
                 disabled={isSending || form.values.message.length === 0}
-                className="mx-2  flex items-center justify-center w-10 h-10  text-white bg-black rounded-xl disabled:opacity-50">
+                className="ml-2 flex items-center justify-center w-10 h-10  text-white bg-black rounded-xl disabled:opacity-50">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"

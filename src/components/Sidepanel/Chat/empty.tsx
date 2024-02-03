@@ -79,7 +79,7 @@ export const EmptySidePanel = () => {
                   saveOllamaURL(ollamaURL)
                   refetch()
                 }}
-                className="bg-blue-500 mt-4 hover:bg-blue-600 text-white px-4 py-2 rounded-md">
+                className="bg-pink-500 mt-4 hover:bg-pink-600 text-white px-4 py-2 rounded-md dark:bg-pink-600 dark:hover:bg-pink-700">
                 Retry
               </button>
             </div>
