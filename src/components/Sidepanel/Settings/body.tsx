@@ -11,6 +11,7 @@ import {
 
 import { Skeleton, Radio } from "antd"
 import { useDarkMode } from "~hooks/useDarkmode"
+import { SaveButton } from "~components/Common/SaveButton"
 
 export const SettingsBody = () => {
   const [ollamaURL, setOllamaURL] = React.useState<string>("")
@@ -78,13 +79,11 @@ export const SettingsBody = () => {
           placeholder="Enter Ollama URL here"
         />
         <div className="flex justify-end">
-          <button
+          <SaveButton
             onClick={() => {
               saveOllamaURL(ollamaURL)
             }}
-            className="bg-pink-500 text-r mt-4 hover:bg-pink-600 text-white px-4 py-2 rounded-md dark:bg-pink-600 dark:hover:bg-pink-700">
-            Save
-          </button>
+          />
         </div>
       </div>
       <div className="border border-gray-300 dark:border-gray-700 rounded p-4">
@@ -109,13 +108,11 @@ export const SettingsBody = () => {
               onChange={(e) => setSystemPrompt(e.target.value)}
             />
             <div className="flex justify-end">
-              <button
+              <SaveButton
                 onClick={() => {
                   setSystemPromptForNonRag(systemPrompt)
                 }}
-                className="bg-pink-500 text-r mt-4 hover:bg-pink-600 text-white px-4 py-2 rounded-md dark:bg-pink-600 dark:hover:bg-pink-700">
-                Save
-              </button>
+              />
             </div>
           </div>
         )}
@@ -144,13 +141,11 @@ export const SettingsBody = () => {
             </div>
 
             <div className="flex justify-end">
-              <button
+              <SaveButton
                 onClick={() => {
                   setPromptForRag(ragPrompt, ragQuestionPrompt)
                 }}
-                className="bg-pink-500  hover:bg-pink-600 text-white px-4 py-2 rounded-md dark:bg-pink-600 dark:hover:bg-pink-700">
-                Save
-              </button>
+              />
             </div>
           </div>
         )}

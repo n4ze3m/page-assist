@@ -1,6 +1,5 @@
 export {}
 
-
 chrome.runtime.onMessage.addListener(async (message) => {
   if (message.type === "sidepanel") {
     chrome.tabs.query({ active: true, currentWindow: true }, async (tabs) => {
@@ -10,4 +9,13 @@ chrome.runtime.onMessage.addListener(async (message) => {
       })
     })
   }
+})
+
+chrome.action.onClicked.addListener((tab) => {
+  chrome.tabs.create({url: chrome.runtime.getURL("options.html")});
+});
+
+// listen to commadns
+chrome.commands.onCommand.addListener((command) => {
+  console.log('Command', command)
 })

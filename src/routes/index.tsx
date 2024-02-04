@@ -2,8 +2,13 @@ import { Route, Routes } from "react-router-dom"
 import { SidepanelChat } from "./sidepanel-chat"
 import { useDarkMode } from "~hooks/useDarkmode"
 import { SidepanelSettings } from "./sidepanel-settings"
+import { OptionIndex } from "./option-index"
 
-export const Routing = () => <Routes></Routes>
+export const OptionRouting = () => (
+  <Routes>
+    <Route path="/" element={<OptionIndex />} />
+  </Routes>
+)
 
 export const SidepanelRouting = () => {
   const { mode } = useDarkMode()

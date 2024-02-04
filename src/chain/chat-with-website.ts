@@ -14,12 +14,13 @@ import {
   RunnableMap,
   RunnableSequence,
 } from "langchain/schema/runnable";
+import type { ChatHistory } from "~store";
 type RetrievalChainInput = {
   chat_history: string;
   question: string;
 };
 
-export function groupMessagesByConversation(messages: any[]) {
+export function groupMessagesByConversation(messages: ChatHistory) {
   if (messages.length % 2 !== 0) {
     messages.pop();
   }

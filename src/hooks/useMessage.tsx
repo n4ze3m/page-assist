@@ -17,7 +17,7 @@ import { getHtmlOfCurrentTab } from "~libs/get-html"
 import { PageAssistHtmlLoader } from "~loader/html"
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter"
 import { OllamaEmbeddings } from "@langchain/community/embeddings/ollama"
-import { createChatWithWebsiteChain } from "~chain/chat-with-website"
+import { createChatWithWebsiteChain, groupMessagesByConversation } from "~chain/chat-with-website"
 import { MemoryVectorStore } from "langchain/vectorstores/memory"
 
 export type BotResponse = {
@@ -205,7 +205,8 @@ export const useMessage = () => {
 
     try {
       const chunks = await chain.stream({
-        question: sanitizedQuestion
+        question: sanitizedQuestion,
+        chat_history: groupMessagesByConversation(history),
       })
       let count = 0
       for await (const chunk of chunks) {
