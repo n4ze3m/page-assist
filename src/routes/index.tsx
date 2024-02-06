@@ -4,11 +4,17 @@ import { useDarkMode } from "~hooks/useDarkmode"
 import { SidepanelSettings } from "./sidepanel-settings"
 import { OptionIndex } from "./option-index"
 
-export const OptionRouting = () => (
-  <Routes>
-    <Route path="/" element={<OptionIndex />} />
-  </Routes>
-)
+export const OptionRouting = () => {
+  const { mode } = useDarkMode()
+
+  return (
+    <div className={mode === "dark" ? "dark" : "light"}>
+      <Routes>
+        <Route path="/" element={<OptionIndex />} />
+      </Routes>
+    </div>
+  )
+}
 
 export const SidepanelRouting = () => {
   const { mode } = useDarkMode()

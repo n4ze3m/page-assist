@@ -24,6 +24,7 @@
     "axios": "^1.6.7",
     "html-to-text": "^9.0.5",
     "langchain": "^0.1.9",
+    "lucide-react": "^0.323.0",
     "plasmo": "0.84.1",
     "property-information": "^6.4.1",
     "react": "18.2.0",
@@ -78,7 +79,8 @@
       "scripting",
       "declarativeNetRequest",
       "declarativeNetRequestFeedback",
-      "action"
+      "action",
+      "unlimitedStorage"
     ]
   }
 }

@@ -7,6 +7,7 @@ import "./css/tailwind.css"
 import { ConfigProvider, theme } from "antd"
 import { StyleProvider } from "@ant-design/cssinjs"
 import { useDarkMode } from "~hooks/useDarkmode"
+import { OptionRouting } from "~routes"
 function IndexOption() {
   const { mode } = useDarkMode()
   return (
@@ -18,6 +19,7 @@ function IndexOption() {
         }}>
         <StyleProvider hashPriority="high">
           <QueryClientProvider client={queryClient}>
+            <OptionRouting />
             <ToastContainer />
           </QueryClientProvider>
         </StyleProvider>

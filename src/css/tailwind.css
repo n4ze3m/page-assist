@@ -2,7 +2,7 @@
   font-family: 'font';
   src: url('font.ttf') format('truetype');
 }
-body {
+* {
   font-family: 'font' !important;
 }
 
