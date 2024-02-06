@@ -95,7 +95,7 @@ export const useMessageOption = () => {
   const abortControllerRef = React.useRef<AbortController | null>(null)
 
   const clearChat = () => {
-    stopStreamingRequest()
+    // stopStreamingRequest()
     setMessages([])
     setHistory([])
     setHistoryId(null)

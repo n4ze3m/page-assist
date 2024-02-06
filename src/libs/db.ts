@@ -1,4 +1,7 @@
-im
+import {
+  type ChatHistory as ChatHistoryType,
+  type Message as MessageType
+} from "~store/option"
 
 type HistoryInfo = {
   id: string
@@ -13,6 +16,7 @@ type Message = {
   role: string
   content: string
   images?: string[]
+  sources?: string[]
   createdAt: number
 }
 
@@ -84,8 +88,6 @@ const generateID = () => {
   })
 }
 
-
-
 export const saveHistory = async (title: string) => {
   const id = generateID()
   const createdAt = Date.now()
@@ -108,4 +110,30 @@ export const saveMessage = async (
   const db = new PageAssitDatabase()
   await db.addMessage(message)
   return message
+}
+
+export const formatToChatHistory = (
+  messages: MessageHistory
+): ChatHistoryType => {
+  messages.sort((a, b) => a.createdAt - b.createdAt)
+  return messages.map((message) => {
+    return {
+      content: message.content,
+      role: message.role as "user" | "assistant" | "system",
+      images: message.images
+    }
+  })
+}
+
+export const formatToMessage = (messages: MessageHistory): MessageType[] => {
+  messages.sort((a, b) => a.createdAt - b.createdAt)
+  return messages.map((message) => {
+    return {
+      isBot: message.role === "assistant",
+      message: message.content,
+      name: message.name,
+      sources: message?.sources || [],
+      images: message.images || []
+    }
+  })
 }

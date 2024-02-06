@@ -1,5 +1,5 @@
 import { useForm } from "@mantine/form"
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import React from "react"
 import useDynamicTextareaSize from "~hooks/useDynamicTextareaSize"
 import PhotoIcon from "@heroicons/react/24/outline/PhotoIcon"
@@ -50,12 +50,19 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
     }
   }, [dropedFile])
 
-  useDynamicTextareaSize(textareaRef, form.values.message, 120)
+  useDynamicTextareaSize(textareaRef, form.values.message, 300)
 
-  const { onSubmit, selectedModel, chatMode } = useMessageOption()
+  const { onSubmit, selectedModel, chatMode, clearChat } = useMessageOption()
+
+  const queryClient = useQueryClient()
 
   const { mutateAsync: sendMessage, isPending: isSending } = useMutation({
-    mutationFn: onSubmit
+    mutationFn: onSubmit,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["fetchChatHistory"]
+      })
+    }
   })
 
   return (
@@ -82,7 +89,9 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
         </div>
         <div className="flex">
           <Tooltip title="New Chat">
-            <button className="text-gray-500 dark:text-gray-100 mr-3">
+            <button
+              onClick={clearChat}
+              className="text-gray-500 dark:text-gray-100 mr-3">
               <ArrowPathIcon className="h-5 w-5" />
             </button>
           </Tooltip>
