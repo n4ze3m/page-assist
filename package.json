@@ -1,8 +1,8 @@
 {
   "name": "pageassist",
-  "displayName": "Page Assist - AI Powered Browser Assistant",
-  "version": "0.0.1",
-  "description": "Use your local AI models to assist you in your daily browsing.",
+  "displayName": "Page Assist - Browse the Internet with Your Local AI Models",
+  "version": "1.0.0",
+  "description": "Page Assist is a browser extension that allows you to browse the internet with your local AI models. It is a privacy-focused and open-source project.",
   "author": "n4ze3m",
   "scripts": {
     "dev": "plasmo dev",
@@ -55,32 +55,30 @@
   },
   "manifest": {
     "host_permissions": [
-      "https://*/*",
       "http://*/*",
-      "http://*:11434/api/tags",
-      "http://*:11434/api/chat",
-      "https://*:11434/api/tags",
-      "https://*:11434/api/chat"
+      "https://*/*"
     ],
-    "web_accessible_resources": [
-      {
-        "resources": [
-          "popup.html"
-        ],
-        "matches": [
-          "https://*/*",
-          "http://*/*"
-        ]
+    "commands": {
+      "_execute_action": {
+        "suggested_key": {
+          "default": "Ctrl+Shift+L"
+        }
+      },
+      "execute_side_panel": {
+        "description": "Open the side panel",
+        "suggested_key": {
+          "default": "Ctrl+Shift+P"
+        }
       }
-    ],
+    },
     "permissions": [
       "storage",
       "activeTab",
       "scripting",
       "declarativeNetRequest",
-      "declarativeNetRequestFeedback",
       "action",
-      "unlimitedStorage"
+      "unlimitedStorage",
+      "contextMenus"
     ]
   }
 }

@@ -15,11 +15,13 @@ import logoImage from "data-base64:~assets/icon.png"
 
 import { Link, useParams, useLocation, useNavigate } from "react-router-dom"
 import { Sidebar } from "./Sidebar"
-import { Drawer, Layout, Select } from "antd"
+import { Drawer, Layout, Modal, Select } from "antd"
 import { useQuery } from "@tanstack/react-query"
 import { fetchModels } from "~services/ollama"
 import { useMessageOption } from "~hooks/useMessageOption"
 import { PanelLeftIcon, Settings2 } from "lucide-react"
+import { Settings } from "./Settings"
+import { useDarkMode } from "~hooks/useDarkmode"
 
 const navigation = [
   { name: "Embed", href: "/bot/:id", icon: TagIcon },
@@ -51,8 +53,7 @@ export default function OptionLayout({
   children: React.ReactNode
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
-  const params = useParams<{ id: string }>()
-  const location = useLocation()
+  const [open, setOpen] = useState(false)
 
   const {
     data: models,
@@ -66,9 +67,10 @@ export default function OptionLayout({
 
   const { selectedModel, setSelectedModel } = useMessageOption()
 
+
   return (
     <Layout className="bg-white dark:bg-[#171717] md:flex">
-      <div className="flex items-center p-3 fixed flex-row justify-between border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-[#171717] w-full z-10">
+      <div className="flex items-center p-3 fixed flex-row justify-between border-b border-gray-200 dark:border-gray-600 bg-white dark:bg-[#171717] w-full z-10">
         <div className="flex items-center flex-row gap-3">
           <div>
             <button
@@ -92,7 +94,12 @@ export default function OptionLayout({
             />
           </div>
         </div>
-        <button className="text-gray-500 dark:text-gray-400">
+        <button>
+
+        </button>
+        <button
+          onClick={() => setOpen(true)}
+          className="text-gray-500 dark:text-gray-400">
           <CogIcon className="w-6 h-6" />
         </button>
       </div>
@@ -104,10 +111,19 @@ export default function OptionLayout({
         placement="left"
         closeIcon={null}
         onClose={() => setSidebarOpen(false)}
-        open={sidebarOpen}
-      >
+        open={sidebarOpen}>
         <Sidebar />
       </Drawer>
+
+      <Modal
+        open={open}
+        width={800}
+        title={"Settings"}
+        onOk={() => setOpen(false)}
+        footer={null}
+        onCancel={() => setOpen(false)}>
+        <Settings setClose={() => setOpen(false)} />
+      </Modal>
     </Layout>
   )
 }

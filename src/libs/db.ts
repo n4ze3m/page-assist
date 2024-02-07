@@ -79,6 +79,14 @@ export class PageAssitDatabase {
   async clear() {
     this.db.clear()
   }
+
+  async deleteChatHistory() {
+    const chatHistories = await this.getChatHistories()
+    for (const history of chatHistories) {
+      this.db.remove(history.id)
+    }
+    this.db.remove("chatHistories")
+  }
 }
 
 const generateID = () => {

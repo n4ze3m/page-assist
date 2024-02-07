@@ -1,6 +1,6 @@
 import React from "react"
 import { cleanUrl } from "~libs/clean-url"
-import { getOllamaURL, systemPromptForNonRag } from "~services/ollama"
+import { getOllamaURL, systemPromptForNonRagOption } from "~services/ollama"
 import { type ChatHistory, type Message } from "~store/option"
 import { ChatOllama } from "@langchain/community/chat_models/ollama"
 import {
@@ -139,7 +139,7 @@ export const useMessageOption = () => {
     setMessages(newMessage)
 
     try {
-      const prompt = await systemPromptForNonRag()
+      const prompt = await systemPromptForNonRagOption()
 
       message = message.trim().replaceAll("\n", " ")
 

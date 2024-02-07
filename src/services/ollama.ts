@@ -121,3 +121,12 @@ export const setPromptForRag = async (
   await storage.set("systemPromptForRag", prompt)
   await storage.set("questionPromptForRag", questionPrompt)
 }
+
+export const systemPromptForNonRagOption = async () => {
+  const prompt = await storage.get("systemPromptForNonRagOption")
+  return prompt
+}
+
+export const setSystemPromptForNonRagOption = async (prompt: string) => {
+  await storage.set("systemPromptForNonRagOption", prompt)
+}

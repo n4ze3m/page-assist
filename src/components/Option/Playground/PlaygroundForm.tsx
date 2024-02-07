@@ -66,7 +66,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
   })
 
   return (
-    <div className="p-3 md:p-6 md:bg-white dark:bg-black border rounded-t-xl border-black/10 dark:border-gray-800">
+    <div className="p-3 md:p-6 md:bg-white dark:bg-[#262626] border rounded-t-xl border-black/10 dark:border-gray-600">
       <div className="flex-grow space-y-6 ">
         <div
           className={`h-full rounded-md shadow relative ${
@@ -82,7 +82,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
               onClick={() => {
                 form.setFieldValue("image", "")
               }}
-              className="absolute top-2 right-2 bg-white dark:bg-black p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-600 text-black dark:text-gray-100">
+              className="absolute top-2 right-2 bg-white  dark:bg-[#262626] p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-600 text-black dark:text-gray-100">
               <XMarkIcon className="h-5 w-5" />
             </button>
           </div>
@@ -109,7 +109,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
               })
             })}
             className="shrink-0 flex-grow  flex items-center ">
-            <div className="flex items-center p-2 rounded-2xl border  bg-gray-100 w-full dark:bg-black dark:border-gray-800">
+            <div className="flex items-center p-2 rounded-2xl border  bg-gray-100 w-full dark:bg-[#262626] dark:border-gray-600">
               <button
                 type="button"
                 onClick={() => {
@@ -162,7 +162,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
               />
               <button
                 disabled={isSending || form.values.message.length === 0}
-                className="ml-2 flex items-center justify-center w-10 h-10  text-white bg-black rounded-xl disabled:opacity-50">
+                className="ml-2 flex items-center justify-center w-10 h-10  text-white bg-[#262626] rounded-xl disabled:opacity-50">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"

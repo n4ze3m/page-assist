@@ -2,6 +2,7 @@ import React from "react"
 import { useMessage } from "~hooks/useMessage"
 import { useMessageOption } from "~hooks/useMessageOption"
 import { PlaygroundMessage } from "./PlaygroundMessage"
+import { PlaygroundEmpty } from "./PlaygroundEmpty"
 
 export const PlaygroundChat = () => {
   const { messages } = useMessageOption()
@@ -13,7 +14,11 @@ export const PlaygroundChat = () => {
   })
   return (
     <div className="grow flex flex-col md:translate-x-0 transition-transform duration-300 ease-in-out">
-      {/* {messages.length === 0 && <div>no message</div>} */}
+      {messages.length === 0 && (
+        <div className="mt-32">
+          <PlaygroundEmpty />
+        </div>
+      )}
       {messages.length > 0 && <div className="w-full h-14 flex-shrink-0"></div>}
       {messages.map((message, index) => (
         <PlaygroundMessage
