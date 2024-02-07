@@ -67,12 +67,12 @@ export const SettingsBody = () => {
 
   return (
     <div className="flex flex-col gap-4 p-4 max-w-2xl mx-auto lg:max-w-3xl xl:max-w-4xl 2xl:max-w-5xl">
-      <div className="border border-gray-300 dark:border-gray-700 rounded p-4">
+      <div className="border border-gray-300 dark:border-gray-700 rounded p-4 bg-white dark:bg-[#171717]">
         <h2 className="text-md mb-4 font-semibold dark:text-white">
           Ollama URL
         </h2>
         <input
-          className="w-full border border-gray-300 dark:border-gray-700 rounded p-2 dark:bg-black dark:text-white dark:placeholder-gray-400"
+          className="w-full border border-gray-300 dark:border-gray-700 rounded p-2 dark:bg-[#171717] dark:text-white dark:placeholder-gray-400"
           value={ollamaURL}
           type="url"
           onChange={(e) => setOllamaURL(e.target.value)}
@@ -86,7 +86,7 @@ export const SettingsBody = () => {
           />
         </div>
       </div>
-      <div className="border border-gray-300 dark:border-gray-700 rounded p-4">
+      <div className="border border-gray-300 dark:border-gray-700 rounded p-4 bg-white dark:bg-[#171717]">
         <h2 className="text-md font-semibold dark:text-white">Prompt</h2>
         <div className="my-3 flex justify-end">
           <Radio.Group
@@ -103,7 +103,7 @@ export const SettingsBody = () => {
               System Prompt
             </span>
             <textarea
-              className="w-full border border-gray-300 dark:border-gray-700 rounded p-2 dark:bg-black dark:text-white dark:placeholder-gray-400"
+              className="w-full border border-gray-300 dark:border-gray-700 rounded p-2 dark:bg-[#171717] dark:text-white dark:placeholder-gray-400"
               value={systemPrompt}
               onChange={(e) => setSystemPrompt(e.target.value)}
             />
@@ -124,7 +124,7 @@ export const SettingsBody = () => {
                 System Prompt
               </span>
               <textarea
-                className="w-full border border-gray-300 dark:border-gray-700 rounded p-2 dark:bg-black dark:text-white dark:placeholder-gray-400"
+                className="w-full border border-gray-300 dark:border-gray-700 rounded p-2 dark:bg-[#171717] dark:text-white dark:placeholder-gray-400"
                 value={ragPrompt}
                 onChange={(e) => setRagPrompt(e.target.value)}
               />
@@ -134,7 +134,7 @@ export const SettingsBody = () => {
                 Question Prompt
               </span>
               <textarea
-                className="w-full border border-gray-300 dark:border-gray-700 rounded p-2 dark:bg-black dark:text-white dark:placeholder-gray-400"
+                className="w-full border border-gray-300 dark:border-gray-700 rounded p-2 dark:bg-[#171717] dark:text-white dark:placeholder-gray-400"
                 value={ragQuestionPrompt}
                 onChange={(e) => setRagQuestionPrompt(e.target.value)}
               />
@@ -151,7 +151,7 @@ export const SettingsBody = () => {
         )}
       </div>
 
-      <div className="border border-gray-300 dark:border-gray-700 rounded p-4">
+      <div className="border border-gray-300 dark:border-gray-700 rounded p-4 bg-white dark:bg-[#171717]">
         <h2 className="text-md mb-4 font-semibold dark:text-white">Theme</h2>
         {mode === "dark" ? (
           <button

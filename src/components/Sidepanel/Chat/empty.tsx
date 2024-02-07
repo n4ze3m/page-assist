@@ -41,7 +41,7 @@ export const EmptySidePanel = () => {
 
   return (
     <div className="mx-auto sm:max-w-md px-4 mt-10">
-      <div className="rounded-lg justify-center items-center flex flex-col border p-8 bg-white dark:bg-black shadow-sm">
+      <div className="rounded-lg justify-center items-center flex flex-col border dark:border-gray-700 p-8 bg-white dark:bg-[#262626] shadow-sm">
         {(ollamaStatus === "pending" || isRefetching) && (
           <div className="inline-flex items-center space-x-2">
             <div className="w-3 h-3 bg-blue-500 rounded-full animate-bounce"></div>
@@ -98,7 +98,7 @@ export const EmptySidePanel = () => {
                 setSelectedModel(e.target.value)
               }}
               value={selectedModel}
-              className="bg-gray-100 truncate w-full dark:bg-black dark:text-gray-100 rounded-md px-4 py-2 mt-2">
+              className="bg-gray-100 truncate w-full dark:bg-[#171717] dark:text-gray-100 rounded-md px-4 py-2 mt-2">
               <option key="0x" value={""}>
                 Select a model
               </option>

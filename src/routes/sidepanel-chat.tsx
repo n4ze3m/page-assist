@@ -72,8 +72,8 @@ export const SidepanelChat = () => {
       ref={drop}
       className={`flex ${
         dropState === "dragging" && chatMode === "normal"
-          ? "bg-gray-100 dark:bg-gray-800 z-10"
-          : "bg-white dark:bg-black"
+          ? "bg-neutral-200 dark:bg-gray-800 z-10"
+          : "bg-neutral-50 dark:bg-[#171717]"
       } flex-col min-h-screen mx-auto max-w-7xl`}>
       <div className="sticky top-0 z-10">
         <SidepanelHeader />

@@ -8,7 +8,7 @@ import { Tooltip } from "antd"
 export const SidepanelHeader = () => {
   const { clearChat, isEmbedding } = useMessage()
   return (
-    <div className="flex px-3 justify-between bg-white dark:bg-black border-b border-gray-200 dark:border-gray-800 py-4 items-center">
+    <div className="flex px-3 justify-between bg-white dark:bg-[#171717] border-b border-gray-300 dark:border-gray-700 py-4 items-center">
       <div className="focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-700 flex items-center dark:text-white">
         <img className="h-6 w-auto" src={logoImage} alt="Page Assist" />
         <span className="ml-1 text-sm ">Page Assist</span>
