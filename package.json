@@ -1,8 +1,8 @@
 {
   "name": "pageassist",
-  "displayName": "Page Assist - Browse the Internet with Your Local AI Models",
+  "displayName": "Page Assist - A Web UI for Local AI Models",
   "version": "1.0.0",
-  "description": "Page Assist is a browser extension that allows you to browse the internet with your local AI models. It is a privacy-focused and open-source project.",
+  "description": "Use your locally running AI models to assist you in your web browsing.",
   "author": "n4ze3m",
   "scripts": {
     "dev": "plasmo dev",
