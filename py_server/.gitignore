@@ -1,5 +1,0 @@
-dev.bat
-*.pyc
-*.pyo
-.pytest_cache/
-*/.env

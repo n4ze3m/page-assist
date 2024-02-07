@@ -1,0 +1,12 @@
+@font-face {
+  font-family: 'font';
+  src: url('font.ttf') format('truetype');
+}
+* {
+  font-family: 'font' !important;
+}
+
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

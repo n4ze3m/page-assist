@@ -1,58 +1,84 @@
 {
-  "name": "page-assist",
-  "version": "0.1.0",
-  "private": true,
+  "name": "pageassist",
+  "displayName": "Page Assist - A Web UI for Local AI Models",
+  "version": "1.0.0",
+  "description": "Use your locally running AI models to assist you in your web browsing.",
+  "author": "n4ze3m",
   "scripts": {
-    "build": "next build",
-    "dev": "next dev",
-    "postinstall": "prisma generate",
-    "lint": "next lint",
-    "start": "next start"
+    "dev": "plasmo dev",
+    "build": "plasmo build",
+    "package": "plasmo package"
   },
   "dependencies": {
-    "@headlessui/react": "^1.7.13",
-    "@heroicons/react": "^2.0.17",
-    "@mantine/form": "^6.0.7",
-    "@prisma/client": "^4.11.0",
-    "@supabase/auth-helpers-nextjs": "^0.6.0",
-    "@supabase/auth-helpers-react": "^0.3.1",
-    "@supabase/auth-ui-react": "^0.3.5",
-    "@supabase/auth-ui-shared": "^0.1.3",
-    "@supabase/supabase-js": "^2.15.0",
-    "@tailwindcss/forms": "^0.5.3",
-    "@tanstack/react-query": "^4.28.0",
-    "@trpc/client": "^10.18.0",
-    "@trpc/next": "^10.18.0",
-    "@trpc/react-query": "^10.18.0",
-    "@trpc/server": "^10.18.0",
-    "axios": "^1.3.5",
-    "langchain": "^0.0.55",
-    "next": "^13.2.4",
+    "@ant-design/cssinjs": "^1.18.4",
+    "@headlessui/react": "^1.7.18",
+    "@heroicons/react": "^2.1.1",
+    "@langchain/community": "^0.0.21",
+    "@langchain/core": "^0.1.22",
+    "@mantine/form": "^7.5.0",
+    "@plasmohq/storage": "^1.9.0",
+    "@tailwindcss/forms": "^0.5.7",
+    "@tailwindcss/typography": "^0.5.10",
+    "@tanstack/react-query": "^5.17.19",
+    "antd": "^5.13.3",
+    "axios": "^1.6.7",
+    "html-to-text": "^9.0.5",
+    "langchain": "^0.1.9",
+    "lucide-react": "^0.323.0",
+    "plasmo": "0.84.1",
+    "property-information": "^6.4.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-youtube": "^10.1.0",
-    "superjson": "1.12.2",
-    "zod": "^3.21.4"
+    "react-markdown": "8.0.0",
+    "react-router-dom": "6.10.0",
+    "react-syntax-highlighter": "^15.5.0",
+    "react-toastify": "^10.0.4",
+    "rehype-mathjax": "4.0.3",
+    "remark-gfm": "3.0.1",
+    "remark-math": "5.1.1",
+    "voy-search": "^0.6.3",
+    "zustand": "^4.5.0"
   },
   "devDependencies": {
-    "@types/eslint": "^8.21.3",
-    "@types/node": "^18.15.5",
-    "@types/prettier": "^2.7.2",
-    "@types/react": "^18.0.28",
-    "@types/react-dom": "^18.0.11",
-    "@typescript-eslint/eslint-plugin": "^5.56.0",
-    "@typescript-eslint/parser": "^5.56.0",
-    "autoprefixer": "^10.4.14",
-    "eslint": "^8.36.0",
-    "eslint-config-next": "^13.2.4",
-    "postcss": "^8.4.21",
-    "prettier": "^2.8.6",
-    "prettier-plugin-tailwindcss": "^0.2.6",
-    "prisma": "^4.11.0",
-    "tailwindcss": "^3.3.0",
-    "typescript": "^5.0.2"
+    "@plasmohq/prettier-plugin-sort-imports": "4.0.1",
+    "@types/chrome": "0.0.259",
+    "@types/html-to-text": "^9.0.4",
+    "@types/node": "20.11.9",
+    "@types/react": "18.2.48",
+    "@types/react-dom": "18.2.18",
+    "@types/react-syntax-highlighter": "^15.5.11",
+    "autoprefixer": "^10.4.17",
+    "postcss": "^8.4.33",
+    "prettier": "3.2.4",
+    "tailwindcss": "^3.4.1",
+    "typescript": "5.3.3"
   },
-  "ct3aMetadata": {
-    "initVersion": "7.10.3"
+  "manifest": {
+    "host_permissions": [
+      "http://*/*",
+      "https://*/*"
+    ],
+    "commands": {
+      "_execute_action": {
+        "suggested_key": {
+          "default": "Ctrl+Shift+L"
+        }
+      },
+      "execute_side_panel": {
+        "description": "Open the side panel",
+        "suggested_key": {
+          "default": "Ctrl+Shift+P"
+        }
+      }
+    },
+    "permissions": [
+      "storage",
+      "activeTab",
+      "scripting",
+      "declarativeNetRequest",
+      "action",
+      "unlimitedStorage",
+      "contextMenus"
+    ]
   }
 }
