@@ -109,6 +109,15 @@ Contributions are welcome. If you have any feature requests, bug reports, or que
 
 If you are looking for the v0.0.1 of this project, you can find it on v0.0.1 branch. I created it as a hackathon project and it is not maintained anymore.
 
+
+## Support
+
+If you like the project and want to support it, you can buy me a coffee. It will help me to keep working on the project.
+
+<a href='https://ko-fi.com/M4M3EMCLL' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi2.png?v=3' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
+
+or you can sponsor me on GitHub.
+
 ## License
 
 MIT
