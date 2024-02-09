@@ -1,21 +1,113 @@
 # Page Assist
 
-A simple browser extension to assist you in talking with the current page, along with a web UI for the [Ollama](https://github.com/ollama/ollama) project.
+Page Assist is an open-source Chrome Extension that provides a Sidebar and Web UI for your Local AI model. It allows you to interact with your model from any webpage.
 
+Checkout the Demo:
+
+<div align="center">
+
+[![Page Assist Demo](https://img.youtube.com/vi/8VTjlLGXA4s/0.jpg)](https://www.youtube.com/watch?v=8VTjlLGXA4s)
+
+</div>
 
 ## Features
 
-- [X] Fully local, no data is sent to any server
-- [x] Chat with the current page 
-- [X] Web UI for Ollama
-- [ ] Chat with Youtube videos
-- [ ] Chat with PDFs
-- [ ] Other Local AI providers
+- **Sidebar**: A sidebar that can be opened on any webpage. It allows you to interact with your model and see the results.
 
+- **Web UI**: A web UI that allows you to interact with your model like a ChatGPT Website.
 
-## V1
+- **Chat With Webpage**: You can chat with the webpage and ask questions about the content.
 
-If you are looking for the V1 of this project, you can find it on v1 branch. I created it as a hackathon project and it is not maintained anymore.
+want more features? Create an issue and let me know.
+
+## Installation
+
+### Chrome Web Store
+
+You can install the extension from the [Chrome Web Store](https://chromewebstore.google.com/detail/page-assist-a-web-ui-for/jfgfiigpkhlkbnfnbobbkinehhfdhndo)
+
+Note: You can install the extension on any Chromium-based browser. It is not limited to Chrome.
+
+### Manual Installation
+
+1. Clone the repository
+
+```bash
+git clone https://github.com/n4ze3m/page-assist.git
+cd page-assist
+```
+
+2. Install the dependencies
+
+```bash
+npm install
+```
+
+3. Build the extension
+
+```bash
+npm run build
+```
+
+4. Load the extension
+
+- Open the Extension Management page by navigating to `chrome://extensions`.
+
+- Enable Developer Mode by clicking the toggle switch next to Developer mode.
+
+- Click the `Load unpacked` button and select the `build` directory.
+
+## Usage
+
+### Sidebar
+
+Once the extension is installed, you can open the sidebar via context menu or keyboard shortcut.
+
+Default Keyboard Shortcut: `Ctrl+Shift+P`
+
+### Web UI
+
+You can open the Web UI by clicking on the extension icon which will open a new tab with the Web UI.
+
+Default Keyboard Shortcut: `Ctrl+Shift+L`
+
+Note: You can change the keyboard shortcuts from the extension settings on the Chrome Extension Management page.
+
+## Development
+
+You can run the extension in development mode to make changes and test them.
+
+```bash
+npm run dev
+```
+
+This will start a development server and watch for changes in the source files. You can load the extension in your browser and test the changes.
+
+## Browser Support
+
+- Any Chromium-based browser that supports Chrome Extensions.
+
+- Firefox support is planned for the future.
+
+## Local AI Provider
+
+- [Ollama](https://github.com/ollama/ollama) (Currently the only supported provider. More providers will be added in the future.)
+
+## Roadmap
+
+- [ ] Firefox Support
+- [ ] More Local AI Providers
+- [ ] More Features
+- [ ] More Customization Options
+- [ ] Better UI/UX
+
+## Contributing
+
+Contributions are welcome. If you have any feature requests, bug reports, or questions, feel free to create an issue.
+
+## 0.0.1
+
+If you are looking for the v0.0.1 of this project, you can find it on v0.0.1 branch. I created it as a hackathon project and it is not maintained anymore.
 
 ## License
 
