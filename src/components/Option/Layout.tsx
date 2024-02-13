@@ -19,7 +19,7 @@ import { Drawer, Layout, Modal, Select } from "antd"
 import { useQuery } from "@tanstack/react-query"
 import { fetchModels } from "~services/ollama"
 import { useMessageOption } from "~hooks/useMessageOption"
-import { PanelLeftIcon, Settings2 } from "lucide-react"
+import { GithubIcon, PanelLeftIcon, Settings2, SquarePen } from "lucide-react"
 import { Settings } from "./Settings"
 import { useDarkMode } from "~hooks/useDarkmode"
 
@@ -67,7 +67,6 @@ export default function OptionLayout({
 
   const { selectedModel, setSelectedModel } = useMessageOption()
 
-
   return (
     <Layout className="bg-white dark:bg-[#171717] md:flex">
       <div className="flex items-center p-3 fixed flex-row justify-between border-b border-gray-200 dark:border-gray-600 bg-white dark:bg-[#171717] w-full z-10">
@@ -77,6 +76,12 @@ export default function OptionLayout({
               className="text-gray-500 dark:text-gray-400"
               onClick={() => setSidebarOpen(true)}>
               <PanelLeftIcon className="w-6 h-6" />
+            </button>
+          </div>
+          <div>
+            <button className="inline-flex items-center rounded-md border border-transparent bg-black px-2 py-2 text-sm font-medium leading-4 text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-white dark:text-gray-800 dark:hover:bg-gray-100 dark:focus:ring-gray-500 dark:focus:ring-offset-gray-100 disabled:opacity-50 ">
+              <SquarePen className="h-4 w-4 mr-3" />
+              New Chat
             </button>
           </div>
           <div>
@@ -94,14 +99,19 @@ export default function OptionLayout({
             />
           </div>
         </div>
-        <button>
-
-        </button>
-        <button
-          onClick={() => setOpen(true)}
-          className="text-gray-500 dark:text-gray-400">
-          <CogIcon className="w-6 h-6" />
-        </button>
+        <div className="flex gap-3 items-center">
+          <a
+            href="https://github.com/n4ze3m/page-assist"
+            target="_blank"
+            className="text-gray-500 dark:text-gray-400">
+            <GithubIcon className="w-6 h-6" />
+          </a>
+          <button
+            onClick={() => setOpen(true)}
+            className="text-gray-500 dark:text-gray-400">
+            <CogIcon className="w-6 h-6" />
+          </button>
+        </div>
       </div>
 
       <Layout.Content>{children}</Layout.Content>
