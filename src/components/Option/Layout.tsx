@@ -65,7 +65,7 @@ export default function OptionLayout({
     queryFn: fetchModels
   })
 
-  const { selectedModel, setSelectedModel } = useMessageOption()
+  const { selectedModel, setSelectedModel, clearChat } = useMessageOption()
 
   return (
     <Layout className="bg-white dark:bg-[#171717] md:flex">
@@ -79,19 +79,29 @@ export default function OptionLayout({
             </button>
           </div>
           <div>
-            <button className="inline-flex items-center rounded-md border border-transparent bg-black px-2 py-2 text-sm font-medium leading-4 text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-white dark:text-gray-800 dark:hover:bg-gray-100 dark:focus:ring-gray-500 dark:focus:ring-offset-gray-100 disabled:opacity-50 ">
+            <button
+              onClick={clearChat}
+              className="inline-flex items-center rounded-lg border  dark:border-gray-700 bg-transparent px-3 py-3 text-sm font-medium leading-4 text-gray-800 shadow-sm  dark:text-white disabled:opacity-50 ">
               <SquarePen className="h-4 w-4 mr-3" />
               New Chat
             </button>
           </div>
+          <span className="text-lg font-thin text-zinc-300 dark:text-zinc-600">
+            {"/"}
+          </span>
           <div>
             <Select
               value={selectedModel}
               onChange={setSelectedModel}
               size="large"
               loading={isModelsLoading || isModelsFetching}
+              filterOption={(input, option) =>
+                option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0 ||
+                option.value.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              }
+              showSearch
               placeholder="Select a model"
-              className="w-64"
+              className="w-64 "
               options={models?.map((model) => ({
                 label: model.name,
                 value: model.model

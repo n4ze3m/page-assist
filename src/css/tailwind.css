@@ -10,3 +10,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.ant-select-selection-search-input {
+  border: none !important;
+  box-shadow: none !important;
+}

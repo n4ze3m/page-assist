@@ -89,7 +89,9 @@ export const useMessageOption = () => {
     selectedModel,
     setSelectedModel,
     chatMode,
-    setChatMode
+    setChatMode,
+    speechToTextLanguage,
+    setSpeechToTextLanguage
   } = useStoreMessageOption()
 
   const abortControllerRef = React.useRef<AbortController | null>(null)
@@ -301,6 +303,8 @@ export const useMessageOption = () => {
     selectedModel,
     setSelectedModel,
     chatMode,
-    setChatMode
+    setChatMode,
+    speechToTextLanguage,
+    setSpeechToTextLanguage
   }
 }

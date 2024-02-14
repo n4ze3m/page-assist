@@ -26,7 +26,7 @@ export const SaveButton = ({
         }, 1000)
       }}
       disabled={disabled}
-      className={`bg-pink-500 text-r mt-4 hover:bg-pink-600 text-white px-4 py-2 rounded-md dark:bg-pink-600 dark:hover:bg-pink-700 ${className}`}>
+      className={`inline-flex mt-4 items-center rounded-md border border-transparent bg-black px-2 py-2 text-sm font-medium leading-4 text-white shadow-sm dark:bg-white dark:text-gray-800 disabled:opacity-50 ${className}`}>
       {clickedSave ? textOnSave : text}
     </button>
   )

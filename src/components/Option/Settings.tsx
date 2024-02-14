@@ -9,7 +9,7 @@ type Props = {
 
 export const Settings = ({ setClose }: Props) => {
   return (
-    <div className="my-6">
+    <div className="my-6 max-h-[80vh] overflow-y-auto">
       <Tabs
         tabPosition="left"
         defaultActiveKey="1"
@@ -23,14 +23,14 @@ export const Settings = ({ setClose }: Props) => {
           {
             id: "2",
             key: "2",
-            label: "Ollama",
-            children: <SettingsOllama />
+            label: "Web UI Settings",
+            children: <SettingOther />
           },
           {
             id: "3",
             key: "3",
-            label: "Other",
-            children: <SettingOther />
+            label: "Ollama Settings",
+            children: <SettingsOllama />
           }
         ]}
       />

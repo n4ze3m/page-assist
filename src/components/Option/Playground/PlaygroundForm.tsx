@@ -7,8 +7,9 @@ import XMarkIcon from "@heroicons/react/24/outline/XMarkIcon"
 import { toBase64 } from "~libs/to-base64"
 import { useMessageOption } from "~hooks/useMessageOption"
 import { Tooltip } from "antd"
-import { MicIcon } from "lucide-react"
+import { MicIcon, MicOffIcon } from "lucide-react"
 import { Image } from "antd"
+import { useSpeechRecognition } from "~hooks/useSpeechRecognition"
 
 type Props = {
   dropedFile: File | undefined
@@ -59,7 +60,16 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
 
   useDynamicTextareaSize(textareaRef, form.values.message, 300)
 
-  const { onSubmit, selectedModel, chatMode, clearChat } = useMessageOption()
+  const { onSubmit, selectedModel, chatMode, speechToTextLanguage } =
+    useMessageOption()
+
+  const { isListening, start, stop, transcript } = useSpeechRecognition()
+
+  React.useEffect(() => {
+    if (isListening) {
+      form.setFieldValue("message", transcript)
+    }
+  }, [transcript])
 
   const queryClient = useQueryClient()
 
@@ -74,7 +84,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
 
   return (
     <div className="px-3 pt-3 md:px-6 md:pt-6 md:bg-white dark:bg-[#262626] border rounded-t-xl border-black/10 dark:border-gray-600">
-      <div 
+      <div
         className={`h-full rounded-md shadow relative ${
           form.values.image.length === 0 ? "hidden" : "block"
         }`}>
@@ -165,8 +175,25 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                 <Tooltip title="Voice Message">
                   <button
                     type="button"
+                    onClick={() => {
+                      if (isListening) {
+                        stop()
+                      } else {
+                        start({
+                          lang: speechToTextLanguage,
+                          continuous: true
+                        })
+                      }
+                    }}
                     className={`flex items-center justify-center dark:text-gray-300`}>
-                    <MicIcon className="h-5 w-5" />
+                    {!isListening ? (
+                      <MicIcon className="h-5 w-5" />
+                    ) : (
+                      <div className="relative">
+                        <span className="animate-ping absolute inline-flex h-3 w-3 rounded-full bg-red-400 opacity-75"></span>
+                        <MicIcon className="h-5 w-5" />
+                      </div>
+                    )}
                   </button>
                 </Tooltip>
                 <Tooltip title="Upload Image">
