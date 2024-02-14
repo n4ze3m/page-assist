@@ -60,6 +60,7 @@ export const PlaygroundMessage = (props: Props) => {
                   .filter((image) => image.length > 0)
                   .map((image, index) => (
                     <Image
+                      key={index}
                       src={image}
                       alt="Uploaded Image"
                       width={180}
