@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query"
+import { RotateCcw } from "lucide-react"
 import { useEffect, useState } from "react"
 import { useMessage } from "~hooks/useMessage"
 import {
@@ -79,7 +80,8 @@ export const EmptySidePanel = () => {
                   saveOllamaURL(ollamaURL)
                   refetch()
                 }}
-                className="bg-pink-500 mt-4 hover:bg-pink-600 text-white px-4 py-2 rounded-md dark:bg-pink-600 dark:hover:bg-pink-700">
+                className="inline-flex mt-4 items-center rounded-md border border-transparent bg-black px-2 py-2 text-sm font-medium leading-4 text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-white dark:text-gray-800 dark:hover:bg-gray-100 dark:focus:ring-gray-500 dark:focus:ring-offset-gray-100 disabled:opacity-50 ">
+                <RotateCcw className="h-4 w-4 mr-3" />
                 Retry
               </button>
             </div>

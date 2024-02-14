@@ -9,9 +9,12 @@ import {
   setSystemPromptForNonRag
 } from "~services/ollama"
 
-import { Skeleton, Radio } from "antd"
+import { Skeleton, Radio, Select } from "antd"
 import { useDarkMode } from "~hooks/useDarkmode"
 import { SaveButton } from "~components/Common/SaveButton"
+import { Moon, Sun } from "lucide-react"
+import { SUPPORTED_LANGUAGES } from "~utils/supporetd-languages"
+import { useMessage } from "~hooks/useMessage"
 
 export const SettingsBody = () => {
   const [ollamaURL, setOllamaURL] = React.useState<string>("")
@@ -21,6 +24,8 @@ export const SettingsBody = () => {
   const [selectedValue, setSelectedValue] = React.useState<"normal" | "rag">(
     "normal"
   )
+
+  const { speechToTextLanguage, setSpeechToTextLanguage } = useMessage()
   const { mode, toggleDarkMode } = useDarkMode()
 
   const { data, status } = useQuery({
@@ -67,25 +72,6 @@ export const SettingsBody = () => {
 
   return (
     <div className="flex flex-col gap-4 p-4 max-w-2xl mx-auto lg:max-w-3xl xl:max-w-4xl 2xl:max-w-5xl">
-      <div className="border border-gray-300 dark:border-gray-700 rounded p-4 bg-white dark:bg-[#171717]">
-        <h2 className="text-md mb-4 font-semibold dark:text-white">
-          Ollama URL
-        </h2>
-        <input
-          className="w-full border border-gray-300 dark:border-gray-700 rounded p-2 dark:bg-[#171717] dark:text-white dark:placeholder-gray-400"
-          value={ollamaURL}
-          type="url"
-          onChange={(e) => setOllamaURL(e.target.value)}
-          placeholder="Enter Ollama URL here"
-        />
-        <div className="flex justify-end">
-          <SaveButton
-            onClick={() => {
-              saveOllamaURL(ollamaURL)
-            }}
-          />
-        </div>
-      </div>
       <div className="border border-gray-300 dark:border-gray-700 rounded p-4 bg-white dark:bg-[#171717]">
         <h2 className="text-md font-semibold dark:text-white">Prompt</h2>
         <div className="my-3 flex justify-end">
@@ -152,18 +138,61 @@ export const SettingsBody = () => {
       </div>
 
       <div className="border border-gray-300 dark:border-gray-700 rounded p-4 bg-white dark:bg-[#171717]">
+        <h2 className="text-md mb-4 font-semibold dark:text-white">
+          Ollama URL
+        </h2>
+        <input
+          className="w-full border border-gray-300 dark:border-gray-700 rounded p-2 dark:bg-[#171717] dark:text-white dark:placeholder-gray-400"
+          value={ollamaURL}
+          type="url"
+          onChange={(e) => setOllamaURL(e.target.value)}
+          placeholder="Enter Ollama URL here"
+        />
+        <div className="flex justify-end">
+          <SaveButton
+            onClick={() => {
+              saveOllamaURL(ollamaURL)
+            }}
+          />
+        </div>
+      </div>
+      <div className="border border-gray-300 dark:border-gray-700 rounded p-4 bg-white dark:bg-[#171717]">
+        <h2 className="text-md mb-4 font-semibold dark:text-white">
+          Speech Recognition Language
+        </h2>
+        <Select
+          placeholder="Select Language"
+          allowClear
+          showSearch
+          options={SUPPORTED_LANGUAGES}
+          value={speechToTextLanguage}
+          filterOption={(input, option) =>
+            option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0 ||
+            option.value.toLowerCase().indexOf(input.toLowerCase()) >= 0
+          }
+          onChange={(value) => {
+            setSpeechToTextLanguage(value)
+          }}
+          style={{
+            width: "100%"
+          }}
+        />
+      </div>
+      <div className="border border-gray-300 dark:border-gray-700 rounded p-4 bg-white dark:bg-[#171717]">
         <h2 className="text-md mb-4 font-semibold dark:text-white">Theme</h2>
         {mode === "dark" ? (
           <button
             onClick={toggleDarkMode}
-            className="select-none w-full rounded-lg border border-gray-900 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-gray-900 transition-all hover:opacity-75 focus:ring focus:ring-gray-300 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none dark:border-gray-100 dark:text-white dark:hover:opacity-75 dark:focus:ring-dark dark:active:opacity-75 dark:disabled:pointer-events-none dark:disabled:opacity-50 dark:disabled:shadow-none">
-            Light Mode
+            className="select-none inline-flex w-full rounded-lg border border-gray-900 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-gray-900 transition-all hover:opacity-75 focus:ring focus:ring-gray-300 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none dark:border-gray-100 dark:text-white dark:hover:opacity-75 dark:focus:ring-dark dark:active:opacity-75 dark:disabled:pointer-events-none dark:disabled:opacity-50 dark:disabled:shadow-none">
+            <Sun className="h-4 w-4 mr-2" />
+            Light
           </button>
         ) : (
           <button
             onClick={toggleDarkMode}
-            className="select-none w-full rounded-lg border border-gray-900 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-gray-900 transition-all hover:opacity-75 focus:ring focus:ring-gray-300 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none dark:border-gray-100 dark:text-white dark:hover:opacity-75 dark:focus:ring-dark dark:active:opacity-75 dark:disabled:pointer-events-none dark:disabled:opacity-50 dark:disabled:shadow-none">
-            Dark Mode
+            className="select-none inline-flex w-full rounded-lg border border-gray-900 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-gray-900 transition-all hover:opacity-75 focus:ring focus:ring-gray-300 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none dark:border-gray-100 dark:text-white dark:hover:opacity-75 dark:focus:ring-dark dark:active:opacity-75 dark:disabled:pointer-events-none dark:disabled:opacity-50 dark:disabled:shadow-none">
+            <Moon className="h-4 w-4 mr-2" />
+            Dark
           </button>
         )}
       </div>

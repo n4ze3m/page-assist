@@ -2,9 +2,13 @@ import { useQueryClient } from "@tanstack/react-query"
 import { useDarkMode } from "~hooks/useDarkmode"
 import { useMessageOption } from "~hooks/useMessageOption"
 import { PageAssitDatabase } from "~libs/db"
+import { Select } from "antd"
+import { Sun, Moon } from "lucide-react"
+import { SUPPORTED_LANGUAGES } from "~utils/supporetd-languages"
 
 export const SettingOther = () => {
-  const { clearChat } = useMessageOption()
+  const { clearChat, speechToTextLanguage, setSpeechToTextLanguage } =
+    useMessageOption()
 
   const queryClient = useQueryClient()
 
@@ -13,18 +17,43 @@ export const SettingOther = () => {
   return (
     <div className="flex flex-col space-y-4">
       <div className="flex flex-row justify-between">
-        <span className="text-gray-500 dark:text-gray-400 text-lg">
+        <span className="text-gray-500 dark:text-gray-400 text-md">
+          Speech Recognition Language
+        </span>
+
+        <Select
+          placeholder="Select Language"
+          allowClear
+          showSearch
+          options={SUPPORTED_LANGUAGES}
+          value={speechToTextLanguage}
+          filterOption={(input, option) =>
+                option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0 ||
+                option.value.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              }
+          onChange={(value) => {
+            setSpeechToTextLanguage(value)
+          }}
+        />
+      </div>
+      <div className="flex flex-row justify-between">
+        <span className="text-gray-500 dark:text-gray-400 text-md">
           Change Theme
         </span>
 
         <button
           onClick={toggleDarkMode}
-          className="bg-blue-500 dark:bg-blue-600 text-white dark:text-gray-200 px-4 py-2 rounded-md">
+          className={`inline-flex mt-4 items-center rounded-md border border-transparent bg-black px-2 py-2 text-sm font-medium leading-4 text-white shadow-sm  dark:bg-white dark:text-gray-800 disabled:opacity-50 `}>
+          {mode === "dark" ? (
+            <Sun className="w-4 h-4 mr-2" />
+          ) : (
+            <Moon className="w-4 h-4 mr-2" />
+          )}
           {mode === "dark" ? "Light" : "Dark"}
         </button>
       </div>
       <div className="flex flex-row justify-between">
-        <span className="text-gray-500 dark:text-gray-400 text-lg">
+        <span className="text-gray-500 dark:text-gray-400 text-md">
           Delete Chat History
         </span>
 

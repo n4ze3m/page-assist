@@ -19,7 +19,7 @@ import { Drawer, Layout, Modal, Select } from "antd"
 import { useQuery } from "@tanstack/react-query"
 import { fetchModels } from "~services/ollama"
 import { useMessageOption } from "~hooks/useMessageOption"
-import { PanelLeftIcon, Settings2 } from "lucide-react"
+import { GithubIcon, PanelLeftIcon, Settings2, SquarePen } from "lucide-react"
 import { Settings } from "./Settings"
 import { useDarkMode } from "~hooks/useDarkmode"
 
@@ -65,8 +65,7 @@ export default function OptionLayout({
     queryFn: fetchModels
   })
 
-  const { selectedModel, setSelectedModel } = useMessageOption()
-
+  const { selectedModel, setSelectedModel, clearChat } = useMessageOption()
 
   return (
     <Layout className="bg-white dark:bg-[#171717] md:flex">
@@ -80,13 +79,29 @@ export default function OptionLayout({
             </button>
           </div>
           <div>
+            <button
+              onClick={clearChat}
+              className="inline-flex items-center rounded-lg border  dark:border-gray-700 bg-transparent px-3 py-3 text-sm font-medium leading-4 text-gray-800 shadow-sm  dark:text-white disabled:opacity-50 ">
+              <SquarePen className="h-4 w-4 mr-3" />
+              New Chat
+            </button>
+          </div>
+          <span className="text-lg font-thin text-zinc-300 dark:text-zinc-600">
+            {"/"}
+          </span>
+          <div>
             <Select
               value={selectedModel}
               onChange={setSelectedModel}
               size="large"
               loading={isModelsLoading || isModelsFetching}
+              filterOption={(input, option) =>
+                option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0 ||
+                option.value.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              }
+              showSearch
               placeholder="Select a model"
-              className="w-64"
+              className="w-64 "
               options={models?.map((model) => ({
                 label: model.name,
                 value: model.model
@@ -94,14 +109,19 @@ export default function OptionLayout({
             />
           </div>
         </div>
-        <button>
-
-        </button>
-        <button
-          onClick={() => setOpen(true)}
-          className="text-gray-500 dark:text-gray-400">
-          <CogIcon className="w-6 h-6" />
-        </button>
+        <div className="flex gap-3 items-center">
+          <a
+            href="https://github.com/n4ze3m/page-assist"
+            target="_blank"
+            className="text-gray-500 dark:text-gray-400">
+            <GithubIcon className="w-6 h-6" />
+          </a>
+          <button
+            onClick={() => setOpen(true)}
+            className="text-gray-500 dark:text-gray-400">
+            <CogIcon className="w-6 h-6" />
+          </button>
+        </div>
       </div>
 
       <Layout.Content>{children}</Layout.Content>

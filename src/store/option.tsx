@@ -10,7 +10,7 @@ export type Message = {
 
 export type ChatHistory = {
   role: "user" | "assistant" | "system"
-  content: string,
+  content: string
   image?: string
 }[]
 
@@ -35,6 +35,8 @@ type State = {
   setChatMode: (chatMode: "normal" | "rag") => void
   isEmbedding: boolean
   setIsEmbedding: (isEmbedding: boolean) => void
+  speechToTextLanguage: string
+  setSpeechToTextLanguage: (language: string) => void
 }
 
 export const useStoreMessageOption = create<State>((set) => ({
@@ -52,11 +54,13 @@ export const useStoreMessageOption = create<State>((set) => ({
   setIsLoading: (isLoading) => set({ isLoading }),
   isProcessing: false,
   setIsProcessing: (isProcessing) => set({ isProcessing }),
-  defaultSpeechToTextLanguage: "en-US",
+  speechToTextLanguage: "en-US",
+  setSpeechToTextLanguage: (language) =>
+    set({ speechToTextLanguage: language }),
   selectedModel: null,
   setSelectedModel: (selectedModel) => set({ selectedModel }),
   chatMode: "normal",
   setChatMode: (chatMode) => set({ chatMode }),
   isEmbedding: false,
-  setIsEmbedding: (isEmbedding) => set({ isEmbedding }),
+  setIsEmbedding: (isEmbedding) => set({ isEmbedding })
 }))

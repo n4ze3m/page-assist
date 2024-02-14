@@ -1,6 +1,7 @@
 import { CheckIcon, ClipboardIcon } from "@heroicons/react/24/outline"
 import Markdown from "../../Common/Markdown"
 import React from "react"
+import { Image } from "antd"
 
 type Props = {
   message: string
@@ -55,19 +56,21 @@ export const PlaygroundMessage = (props: Props) => {
             {/* source if aviable */}
             {props.images && (
               <div className="flex md:max-w-2xl lg:max-w-xl xl:max-w-3xl mt-4 m-auto w-full">
-                {props.images
-                  .filter((image) => image.length > 0)
-                  .map((image, index) => (
-                    <div
-                      key={index}
-                      className="h-full rounded-md shadow relative">
-                      <img
-                        src={image}
-                        alt="Uploaded"
-                        className="h-full w-auto object-cover rounded-md min-w-[50px]"
-                      />
-                    </div>
-                  ))}
+                {props.images && (
+                  <div className="flex md:max-w-2xl lg:max-w-xl xl:max-w-3xl mt-4 m-auto w-full">
+                    {props.images
+                      .filter((image) => image.length > 0)
+                      .map((image, index) => (
+                        <Image
+                          key={index}
+                          src={image}
+                          alt="Uploaded Image"
+                          width={180}
+                          className="rounded-md relative"
+                        />
+                      ))}
+                  </div>
+                )}
               </div>
             )}
 
