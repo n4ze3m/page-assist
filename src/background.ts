@@ -1,4 +1,79 @@
+import { getOllamaURL, isOllamaRunning } from "~services/ollama"
+
 export {}
+
+const progressHuman = (completed: number, total: number) => {
+  return ((completed / total) * 100).toFixed(0) + "%"
+}
+
+const clearBadge = () => {
+  chrome.action.setBadgeText({ text: "" })
+  chrome.action.setTitle({ title: "" })
+}
+
+const streamDownload = async (url: string, model: string) => {
+  url += "/api/pull"
+  const response = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ model, stream: true })
+  })
+
+  const reader = response.body?.getReader()
+
+  const decoder = new TextDecoder()
+
+  let isSuccess = true
+  while (true) {
+    const { done, value } = await reader.read()
+
+    if (done) {
+      break
+    }
+
+    const text = decoder.decode(value)
+    try {
+      const json = JSON.parse(text.trim()) as {
+        status: string
+        total?: number
+        completed?: number
+      }
+      if (json.total && json.completed) {
+        chrome.action.setBadgeText({
+          text: progressHuman(json.completed, json.total)
+        })
+        chrome.action.setBadgeBackgroundColor({ color: "#0000FF" })
+      } else {
+        chrome.action.setBadgeText({ text: "🏋️‍♂️" })
+        chrome.action.setBadgeBackgroundColor({ color: "#FFFFFF" })
+      }
+
+      chrome.action.setTitle({ title: json.status })
+
+      if (json.status === "success") {
+        isSuccess = true
+      }
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
+  if (isSuccess) {
+    chrome.action.setBadgeText({ text: "✅" })
+    chrome.action.setBadgeBackgroundColor({ color: "#00FF00" })
+    chrome.action.setTitle({ title: "Model pulled successfully" })
+  } else {
+    chrome.action.setBadgeText({ text: "❌" })
+    chrome.action.setBadgeBackgroundColor({ color: "#FF0000" })
+    chrome.action.setTitle({ title: "Model pull failed" })
+  }
+
+  setTimeout(() => {
+    clearBadge()
+  }, 5000)
+}
 
 chrome.runtime.onMessage.addListener(async (message) => {
   if (message.type === "sidepanel") {
@@ -8,6 +83,22 @@ chrome.runtime.onMessage.addListener(async (message) => {
         tabId: tab.id
       })
     })
+  } else if (message.type === "pull_model") {
+    const ollamaURL = await getOllamaURL()
+
+    const isRunning = await isOllamaRunning()
+
+    if (!isRunning) {
+      chrome.action.setBadgeText({ text: "E" })
+      chrome.action.setBadgeBackgroundColor({ color: "#FF0000" })
+      chrome.action.setTitle({ title: "Ollama is not running" })
+      setTimeout(() => {
+        clearBadge()
+      }, 5000)
+    }
+    console.log("Pulling model", message.modelName)
+
+    await streamDownload(ollamaURL, message.modelName)
   }
 })
 
