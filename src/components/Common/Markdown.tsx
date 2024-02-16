@@ -24,8 +24,8 @@ export default function Markdown({ message }: { message: string }) {
     <React.Fragment>
       <ReactMarkdown
         className="prose break-words dark:prose-invert text-sm prose-p:leading-relaxed prose-pre:p-0 dark:prose-dark"
-        // remarkPlugins={[remarkGfm, remarkMath]}
-        // rehypePlugins={[rehypeMathjax]}
+        remarkPlugins={[remarkGfm, remarkMath]}
+        rehypePlugins={[rehypeMathjax]}
         components={{
           code({ node, inline, className, children, ...props }) {
             const match = /language-(\w+)/.exec(className || "")

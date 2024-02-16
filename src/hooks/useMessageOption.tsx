@@ -11,6 +11,7 @@ import {
 } from "@langchain/core/messages"
 import { useStoreMessageOption } from "~store/option"
 import { saveHistory, saveMessage } from "~libs/db"
+import { useNavigate } from "react-router-dom"
 
 export type BotResponse = {
   bot: {
@@ -94,6 +95,8 @@ export const useMessageOption = () => {
     setSpeechToTextLanguage
   } = useStoreMessageOption()
 
+  const navigate = useNavigate()
+
   const abortControllerRef = React.useRef<AbortController | null>(null)
 
   const clearChat = () => {
@@ -105,6 +108,7 @@ export const useMessageOption = () => {
     setIsLoading(false)
     setIsProcessing(false)
     setStreaming(false)
+    navigate("/")
   }
 
   const normalChatMode = async (message: string, image: string) => {
