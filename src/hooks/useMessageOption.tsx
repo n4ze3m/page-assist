@@ -11,6 +11,8 @@ import {
 } from "@langchain/core/messages"
 import { useStoreMessageOption } from "~store/option"
 import { saveHistory, saveMessage } from "~libs/db"
+import { useNavigate } from "react-router-dom"
+import { notification } from "antd"
 
 export type BotResponse = {
   bot: {
@@ -94,6 +96,8 @@ export const useMessageOption = () => {
     setSpeechToTextLanguage
   } = useStoreMessageOption()
 
+  const navigate = useNavigate()
+
   const abortControllerRef = React.useRef<AbortController | null>(null)
 
   const clearChat = () => {
@@ -105,6 +109,7 @@ export const useMessageOption = () => {
     setIsLoading(false)
     setIsProcessing(false)
     setStreaming(false)
+    navigate("/")
   }
 
   const normalChatMode = async (message: string, image: string) => {
@@ -249,22 +254,58 @@ export const useMessageOption = () => {
 
       setIsProcessing(false)
     } catch (e) {
+      console.log(e)
+      
+      if (e?.name === "AbortError") {
+        newMessage[appendingIndex].message = newMessage[
+          appendingIndex
+        ].message.slice(0, -1)
+
+        setHistory([
+          ...history,
+          {
+            role: "user",
+            content: message,
+            image
+          },
+          {
+            role: "assistant",
+            content: newMessage[appendingIndex].message
+          }
+        ])
+
+        if (historyId) {
+          await saveMessage(historyId, selectedModel, "user", message, [image])
+          await saveMessage(
+            historyId,
+            selectedModel,
+            "assistant",
+            newMessage[appendingIndex].message,
+            []
+          )
+        } else {
+          const newHistoryId = await saveHistory(message)
+          await saveMessage(newHistoryId.id, selectedModel, "user", message, [
+            image
+          ])
+          await saveMessage(
+            newHistoryId.id,
+            selectedModel,
+            "assistant",
+            newMessage[appendingIndex].message,
+            []
+          )
+          setHistoryId(newHistoryId.id)
+        }
+      } else {
+        notification.error({
+          message: "Error",
+          description: e?.message || "Something went wrong"
+        })
+      }
+
       setIsProcessing(false)
       setStreaming(false)
-
-      setMessages([
-        ...messages,
-        {
-          isBot: true,
-          name: selectedModel,
-          message: `Something went wrong. Check out the following logs:
-        \`\`\`
-        ${e?.message}
-        \`\`\`
-        `,
-          sources: []
-        }
-      ])
     }
   }
 

@@ -4,7 +4,6 @@ import { useMessage } from "../../../hooks/useMessage"
 export const PlaygroundNewChat = () => {
   const { setHistory, setMessages, setHistoryId } = useMessage()
 
-
   const handleClick = () => {
     setHistoryId(null)
     setMessages([])

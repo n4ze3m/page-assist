@@ -7,7 +7,7 @@ import XMarkIcon from "@heroicons/react/24/outline/XMarkIcon"
 import { toBase64 } from "~libs/to-base64"
 import { useMessageOption } from "~hooks/useMessageOption"
 import { Tooltip } from "antd"
-import { MicIcon, MicOffIcon } from "lucide-react"
+import { MicIcon, StopCircleIcon } from "lucide-react"
 import { Image } from "antd"
 import { useSpeechRecognition } from "~hooks/useSpeechRecognition"
 
@@ -60,8 +60,13 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
 
   useDynamicTextareaSize(textareaRef, form.values.message, 300)
 
-  const { onSubmit, selectedModel, chatMode, speechToTextLanguage } =
-    useMessageOption()
+  const {
+    onSubmit,
+    selectedModel,
+    chatMode,
+    speechToTextLanguage,
+    stopStreamingRequest
+  } = useMessageOption()
 
   const { isListening, start, stop, transcript } = useSpeechRecognition()
 
@@ -208,23 +213,34 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                     <PhotoIcon className="h-5 w-5" />
                   </button>
                 </Tooltip>
-                <button
-                  disabled={isSending || form.values.message.length === 0}
-                  className="inline-flex items-center rounded-md border border-transparent bg-black px-2 py-2 text-sm font-medium leading-4 text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-white dark:text-gray-800 dark:hover:bg-gray-100 dark:focus:ring-gray-500 dark:focus:ring-offset-gray-100 disabled:opacity-50 ">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    className="h-4 w-4 mr-2"
-                    viewBox="0 0 24 24">
-                    <path d="M9 10L4 15 9 20"></path>
-                    <path d="M20 4v7a4 4 0 01-4 4H4"></path>
-                  </svg>
-                  Send
-                </button>
+                {!isSending ? (
+                  <button
+                    disabled={isSending || form.values.message.length === 0}
+                    className="inline-flex items-center rounded-md border border-transparent bg-black px-2 py-2 text-sm font-medium leading-4 text-white shadow-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-white dark:text-gray-800 dark:hover:bg-gray-100 dark:focus:ring-gray-500 dark:focus:ring-offset-gray-100 disabled:opacity-50 ">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      className="h-4 w-4 mr-2"
+                      viewBox="0 0 24 24">
+                      <path d="M9 10L4 15 9 20"></path>
+                      <path d="M20 4v7a4 4 0 01-4 4H4"></path>
+                    </svg>
+                    Send
+                  </button>
+                ) : (
+                  <Tooltip title="Stop Streaming">
+                    <button
+                      type="button"
+                      onClick={stopStreamingRequest}
+                      className="text-gray-800 dark:text-gray-300">
+                      <StopCircleIcon className="h-6 w-6" />
+                    </button>
+                  </Tooltip>
+                )}
               </div>
             </div>
           </form>

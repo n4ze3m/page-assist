@@ -3,6 +3,7 @@ import { SidepanelChat } from "./sidepanel-chat"
 import { useDarkMode } from "~hooks/useDarkmode"
 import { SidepanelSettings } from "./sidepanel-settings"
 import { OptionIndex } from "./option-index"
+import { OptionModal } from "./option-model"
 
 export const OptionRouting = () => {
   const { mode } = useDarkMode()
@@ -11,6 +12,7 @@ export const OptionRouting = () => {
     <div className={mode === "dark" ? "dark" : "light"}>
       <Routes>
         <Route path="/" element={<OptionIndex />} />
+        <Route path="/models" element={<OptionModal />} />
       </Routes>
     </div>
   )

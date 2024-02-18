@@ -26,7 +26,7 @@ export const PlaygroundMessage = (props: Props) => {
 
   return (
     <div
-      className={`group w-full text-gray-800 dark:text-gray-100 border-b border-black/10 dark:border-gray-900/50 `}>
+      className={`group w-full text-gray-800 dark:text-gray-100`}>
       <div className="text-base gap-4 md:gap-6 md:max-w-2xl lg:max-w-xl xl:max-w-3xl flex lg:px-0 m-auto w-full">
         <div className="flex flex-row gap-4 md:gap-6 md:max-w-2xl lg:max-w-xl xl:max-w-3xl p-4 md:py-6 lg:px-0 m-auto w-full">
           <div className="w-8 flex flex-col relative items-end">
