@@ -53,6 +53,47 @@ export const isOllamaRunning = async () => {
   }
 }
 
+export const getAllModels = async () => {
+  const baseUrl = await getOllamaURL()
+  const response = await fetch(`${cleanUrl(baseUrl)}/api/tags`)
+  if (!response.ok) {
+    throw new Error(response.statusText)
+  }
+  const json = await response.json()
+
+  return json.models as {
+    name: string
+    model: string
+    modified_at: string
+    size: number
+    digest: string
+    details: {
+      parent_model: string
+      format: string
+      family: string
+      families: string[]
+      parameter_size: string
+      quantization_level: string
+    }
+  }[]
+}
+
+export const deleteModel= async (model: string) => {
+  const baseUrl = await getOllamaURL()
+  const response = await fetch(`${cleanUrl(baseUrl)}/api/delete`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ name: model })
+  })
+
+  if (!response.ok) {
+    throw new Error(response.statusText)
+  }
+  return response.json()
+}
+
 export const fetchModels = async () => {
   try {
     const baseUrl = await getOllamaURL()
@@ -65,6 +106,17 @@ export const fetchModels = async () => {
     return json.models as {
       name: string
       model: string
+      modified_at: string
+      size: number
+      digest: string
+      details: {
+        parent_model: string
+        format: string
+        family: string
+        families: string[]
+        parameter_size: string
+        quantization_level: string
+      }
     }[]
   } catch (e) {
     console.error(e)

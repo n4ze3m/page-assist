@@ -93,14 +93,14 @@ export default function OptionLayout({
             <a
               href="https://github.com/n4ze3m/page-assist"
               target="_blank"
-              className="text-gray-500 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+              className="!text-gray-500 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
               <GithubIcon className="w-6 h-6" />
             </a>
           </Tooltip>
           <Tooltip title="Manage Ollama Models">
             <NavLink
               to="/models"
-              className="text-gray-500 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+              className="!text-gray-500 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
               <BrainCircuit className="w-6 h-6" />
             </NavLink>
           </Tooltip>
