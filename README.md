@@ -121,3 +121,7 @@ or you can sponsor me on GitHub.
 ## License
 
 MIT
+
+## Last but not least
+
+Made in [Alappuzha](https://en.wikipedia.org/wiki/Alappuzha) with ❤️
