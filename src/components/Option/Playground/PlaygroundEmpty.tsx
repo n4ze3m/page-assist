@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
-import { RotateCcw } from "lucide-react"
 import { useEffect, useState } from "react"
+import { RotateCcw } from "~icons/RotateCcw"
 import {
   getOllamaURL,
   isOllamaRunning,

@@ -1,9 +1,9 @@
 import { useQuery } from "@tanstack/react-query"
-import { RotateCcw } from "lucide-react"
 import { useEffect, useState } from "react"
 import { useMessage } from "~hooks/useMessage"
+import { RotateCcw } from "~icons/RotateCcw"
 import {
-  fetchModels,
+  fetchChatModels,
   getOllamaURL,
   isOllamaRunning,
   setOllamaURL as saveOllamaURL
@@ -21,7 +21,7 @@ export const EmptySidePanel = () => {
     queryFn: async () => {
       const ollamaURL = await getOllamaURL()
       const isOk = await isOllamaRunning()
-      const models = await fetchModels()
+      const models = await fetchChatModels()
 
       return {
         isOk,

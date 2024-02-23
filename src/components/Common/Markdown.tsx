@@ -5,9 +5,10 @@ import rehypeMathjax from "rehype-mathjax"
 import remarkMath from "remark-math"
 import ReactMarkdown from "react-markdown"
 import "property-information"
-import { ClipboardIcon, CheckIcon } from "@heroicons/react/24/outline"
 import React from "react"
 import { Tooltip } from "antd"
+import { ClipboardIcon } from "~icons/ClipboardIcon"
+import { CheckIcon } from "~icons/CheckIcon"
 
 export default function Markdown({ message }: { message: string }) {
   const [isBtnPressed, setIsBtnPressed] = React.useState(false)

@@ -78,7 +78,7 @@ export const getAllModels = async () => {
   }[]
 }
 
-export const deleteModel= async (model: string) => {
+export const deleteModel = async (model: string) => {
   const baseUrl = await getOllamaURL()
   const response = await fetch(`${cleanUrl(baseUrl)}/api/delete`, {
     method: "DELETE",
@@ -94,7 +94,7 @@ export const deleteModel= async (model: string) => {
   return response.json()
 }
 
-export const fetchModels = async () => {
+export const fetchChatModels = async () => {
   try {
     const baseUrl = await getOllamaURL()
     const response = await fetch(`${cleanUrl(baseUrl)}/api/tags`)
@@ -102,8 +102,7 @@ export const fetchModels = async () => {
       throw new Error(response.statusText)
     }
     const json = await response.json()
-
-    return json.models as {
+    const models = json.models as {
       name: string
       model: string
       modified_at: string
@@ -118,6 +117,12 @@ export const fetchModels = async () => {
         quantization_level: string
       }
     }[]
+    return models.filter((model) => {
+      return (
+        !model.details.families.includes("bert") &&
+        !model.details.families.includes("nomic-bert")
+      )
+    })
   } catch (e) {
     console.error(e)
     return []

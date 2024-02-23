@@ -2,11 +2,13 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Skeleton, Table, Tag, Tooltip, notification, Modal, Input } from "antd"
 import { bytePerSecondFormatter } from "~libs/byte-formater"
 import { deleteModel, getAllModels } from "~services/ollama"
-import { Trash, RotateCcw, Download } from "lucide-react"
 import dayjs from "dayjs"
 import relativeTime from "dayjs/plugin/relativeTime"
 import { useState } from "react"
 import { useForm } from "@mantine/form"
+import { Download } from "~icons/Download"
+import { RotateCcw } from "~icons/RotateCcw"
+import { Trash } from "~icons/Trash"
 
 dayjs.extend(relativeTime)
 

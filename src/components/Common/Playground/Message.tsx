@@ -1,7 +1,8 @@
-import { CheckIcon, ClipboardIcon } from "@heroicons/react/24/outline"
 import Markdown from "../../Common/Markdown"
 import React from "react"
 import { Image } from "antd"
+import { ClipboardIcon } from "~icons/ClipboardIcon"
+import { CheckIcon } from "~icons/CheckIcon"
 
 type Props = {
   message: string

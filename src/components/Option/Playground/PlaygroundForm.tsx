@@ -2,14 +2,15 @@ import { useForm } from "@mantine/form"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import React from "react"
 import useDynamicTextareaSize from "~hooks/useDynamicTextareaSize"
-import PhotoIcon from "@heroicons/react/24/outline/PhotoIcon"
-import XMarkIcon from "@heroicons/react/24/outline/XMarkIcon"
 import { toBase64 } from "~libs/to-base64"
 import { useMessageOption } from "~hooks/useMessageOption"
 import { Tooltip } from "antd"
-import { MicIcon, StopCircleIcon } from "lucide-react"
 import { Image } from "antd"
 import { useSpeechRecognition } from "~hooks/useSpeechRecognition"
+import { MicIcon } from "~icons/MicIcon"
+import { StopCircleIcon } from "~icons/StopCircleIcon"
+import { PhotoIcon } from "~icons/PhotoIcon"
+import { XMarkIcon } from "~icons/XMarkIcon"
 
 type Props = {
   dropedFile: File | undefined

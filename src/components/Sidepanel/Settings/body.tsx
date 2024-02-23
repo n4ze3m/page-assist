@@ -12,9 +12,10 @@ import {
 import { Skeleton, Radio, Select } from "antd"
 import { useDarkMode } from "~hooks/useDarkmode"
 import { SaveButton } from "~components/Common/SaveButton"
-import { Moon, Sun } from "lucide-react"
 import { SUPPORTED_LANGUAGES } from "~utils/supporetd-languages"
 import { useMessage } from "~hooks/useMessage"
+import { Sun } from "~icons/Sun"
+import { Moon } from "~icons/Moon"
 
 export const SettingsBody = () => {
   const [ollamaURL, setOllamaURL] = React.useState<string>("")

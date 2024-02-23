@@ -1,4 +1,4 @@
-import { PencilSquareIcon } from "@heroicons/react/24/outline"
+import { PencilSquareIcon } from "~icons/PencilSquareIcon"
 import { useMessage } from "../../../hooks/useMessage"
 
 export const PlaygroundNewChat = () => {
@@ -8,7 +8,6 @@ export const PlaygroundNewChat = () => {
     setHistoryId(null)
     setMessages([])
     setHistory([])
-    // navigate(`/bot/${params.id}`);
   }
 
   return (

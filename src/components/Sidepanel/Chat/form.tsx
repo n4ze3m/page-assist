@@ -3,12 +3,12 @@ import { useMutation } from "@tanstack/react-query"
 import React from "react"
 import useDynamicTextareaSize from "~hooks/useDynamicTextareaSize"
 import { useMessage } from "~hooks/useMessage"
-import PhotoIcon from "@heroicons/react/24/outline/PhotoIcon"
-import XMarkIcon from "@heroicons/react/24/outline/XMarkIcon"
 import { toBase64 } from "~libs/to-base64"
-import { MicIcon } from "lucide-react"
 import { Image, Tooltip } from "antd"
 import { useSpeechRecognition } from "~hooks/useSpeechRecognition"
+import { MicIcon } from "~icons/MicIcon"
+import { PhotoIcon } from "~icons/PhotoIcon"
+import { XMarkIcon } from "~icons/XMarkIcon"
 
 type Props = {
   dropedFile: File | undefined

@@ -3,8 +3,9 @@ import { useDarkMode } from "~hooks/useDarkmode"
 import { useMessageOption } from "~hooks/useMessageOption"
 import { PageAssitDatabase } from "~libs/db"
 import { Select } from "antd"
-import { Sun, Moon } from "lucide-react"
 import { SUPPORTED_LANGUAGES } from "~utils/supporetd-languages"
+import { Sun } from "~icons/Sun"
+import { Moon } from "~icons/Moon"
 
 export const SettingOther = () => {
   const { clearChat, speechToTextLanguage, setSpeechToTextLanguage } =
