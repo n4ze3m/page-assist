@@ -9,7 +9,6 @@ export const SettingsOllama = () => {
     queryKey: ["fetchOllamURL"],
     queryFn: async () => {
       const ollamaURL = await getOllamaURL()
-
       return {
         ollamaURL
       }

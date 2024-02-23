@@ -87,6 +87,10 @@ export class PageAssitDatabase {
     }
     this.db.remove("chatHistories")
   }
+
+  async deleteMessage(history_id: string) {
+    await this.db.remove(history_id)
+  }
 }
 
 const generateID = () => {
@@ -144,4 +148,23 @@ export const formatToMessage = (messages: MessageHistory): MessageType[] => {
       images: message.images || []
     }
   })
+}
+
+export const deleteByHistoryId = async (history_id: string) => {
+  const db = new PageAssitDatabase()
+  await db.deleteMessage(history_id)
+  await db.removeChatHistory(history_id)
+  return history_id
+}
+
+export const updateHistory = async (id: string, title: string) => {
+  const db = new PageAssitDatabase()
+  const chatHistories = await db.getChatHistories()
+  const newChatHistories = chatHistories.map((history) => {
+    if (history.id === id) {
+      history.title = title
+    }
+    return history
+  })
+  db.db.set({ chatHistories: newChatHistories })
 }
