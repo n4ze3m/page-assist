@@ -1,11 +1,21 @@
 import { create } from "zustand"
 
+type WebSearch = {
+  search_engine: string
+  search_url: string
+  search_query: string
+  search_results: {
+    title: string
+    link: string
+  }[]
+}
 export type Message = {
   isBot: boolean
   name: string
   message: string
   sources: any[]
   images?: string[]
+  search?: WebSearch
 }
 
 export type ChatHistory = {
@@ -44,7 +54,7 @@ export const useStoreMessageOption = create<State>((set) => ({
   setMessages: (messages) => set({ messages }),
   history: [],
   setHistory: (history) => set({ history }),
-  streaming: true,
+  streaming: false,
   setStreaming: (streaming) => set({ streaming }),
   isFirstMessage: true,
   setIsFirstMessage: (isFirstMessage) => set({ isFirstMessage }),

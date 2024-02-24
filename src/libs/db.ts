@@ -9,6 +9,16 @@ type HistoryInfo = {
   createdAt: number
 }
 
+type WebSearch = {
+  search_engine: string
+  search_url: string
+  search_query: string
+  search_results: {
+    title: string
+    link: string
+  }[]
+}
+
 type Message = {
   id: string
   history_id: string
@@ -17,6 +27,7 @@ type Message = {
   content: string
   images?: string[]
   sources?: string[]
+  search?: WebSearch
   createdAt: number
 }
 
@@ -167,4 +178,12 @@ export const updateHistory = async (id: string, title: string) => {
     return history
   })
   db.db.set({ chatHistories: newChatHistories })
+}
+
+export const removeMessageUsingHistoryId = async (history_id: string) => {
+  // remove the last message
+  const db = new PageAssitDatabase()
+  const chatHistory = await db.getChatHistory(history_id)
+  const newChatHistory = chatHistory.slice(0, -1)
+  await db.db.set({ [history_id]: newChatHistory })
 }

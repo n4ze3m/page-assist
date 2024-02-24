@@ -1,7 +1,14 @@
 import { BaseDocumentLoader } from "langchain/document_loaders/base"
 import { Document } from "@langchain/core/documents"
 import { compile } from "html-to-text"
+import { chromeRunTime } from "~libs/runtime"
 
+const isPDFFetch = async (url: string) => {
+  await chromeRunTime(url)
+  const response = await fetch(url)
+  const blob = await response.blob()
+  return blob.type === "application/pdf"
+}
 export interface WebLoaderParams {
   html: string
   url: string

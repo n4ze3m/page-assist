@@ -4,13 +4,14 @@ import React from "react"
 import useDynamicTextareaSize from "~hooks/useDynamicTextareaSize"
 import { toBase64 } from "~libs/to-base64"
 import { useMessageOption } from "~hooks/useMessageOption"
-import { Tooltip } from "antd"
+import { Checkbox, Dropdown, Tooltip } from "antd"
 import { Image } from "antd"
 import { useSpeechRecognition } from "~hooks/useSpeechRecognition"
 import { MicIcon } from "~icons/MicIcon"
 import { StopCircleIcon } from "~icons/StopCircleIcon"
 import { PhotoIcon } from "~icons/PhotoIcon"
 import { XMarkIcon } from "~icons/XMarkIcon"
+import { useWebUI } from "~store/webui"
 
 type Props = {
   dropedFile: File | undefined
@@ -66,10 +67,12 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
     selectedModel,
     chatMode,
     speechToTextLanguage,
-    stopStreamingRequest
+    stopStreamingRequest,
+    streaming: isSending
   } = useMessageOption()
 
   const { isListening, start, stop, transcript } = useSpeechRecognition()
+  const { sendWhenEnter, setSendWhenEnter } = useWebUI()
 
   React.useEffect(() => {
     if (isListening) {
@@ -79,7 +82,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
 
   const queryClient = useQueryClient()
 
-  const { mutateAsync: sendMessage, isPending: isSending } = useMutation({
+  const { mutateAsync: sendMessage } = useMutation({
     mutationFn: onSubmit,
     onSuccess: () => {
       queryClient.invalidateQueries({
@@ -149,7 +152,12 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
             <div className="w-full border-x border-t flex flex-col dark:border-gray-600 rounded-t-xl p-2">
               <textarea
                 onKeyDown={(e) => {
-                  if (e.key === "Enter" && !e.shiftKey && !isSending) {
+                  if (
+                    e.key === "Enter" &&
+                    !e.shiftKey &&
+                    !isSending &&
+                    sendWhenEnter
+                  ) {
                     e.preventDefault()
                     form.onSubmit(async (value) => {
                       if (value.message.trim().length === 0) {
@@ -177,7 +185,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                 placeholder="Type a message..."
                 {...form.getInputProps("message")}
               />
-              <div className="flex mt-4 justify-end gap-3">
+              <div className="flex mt-4 !justify-end gap-3">
                 <Tooltip title="Voice Message">
                   <button
                     type="button"
@@ -215,23 +223,60 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                   </button>
                 </Tooltip>
                 {!isSending ? (
-                  <button
-                    disabled={isSending || form.values.message.length === 0}
-                    className="inline-flex items-center rounded-md border border-transparent bg-black px-2 py-2 text-sm font-medium leading-4 text-white shadow-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-white dark:text-gray-800 dark:hover:bg-gray-100 dark:focus:ring-gray-500 dark:focus:ring-offset-gray-100 disabled:opacity-50 ">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      className="h-4 w-4 mr-2"
-                      viewBox="0 0 24 24">
-                      <path d="M9 10L4 15 9 20"></path>
-                      <path d="M20 4v7a4 4 0 01-4 4H4"></path>
-                    </svg>
-                    Send
-                  </button>
+                  <Dropdown.Button
+                    htmlType="submit"
+                    disabled={
+                      isSending || form.values.message.trim().length === 0
+                    }
+                    className="!justify-end !w-auto"
+                    icon={
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="w-5 h-5">
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="m19.5 8.25-7.5 7.5-7.5-7.5"
+                        />
+                      </svg>
+                    }
+                    menu={{
+                      items: [
+                        {
+                          key: 1,
+                          label: (
+                            <Checkbox
+                              onChange={(e) =>
+                                setSendWhenEnter(e.target.checked)
+                              }>
+                              Send when Enter pressed
+                            </Checkbox>
+                          )
+                        }
+                      ]
+                    }}>
+                    <div className="inline-flex gap-2">
+                      {sendWhenEnter ? (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          className="h-5 w-5"
+                          viewBox="0 0 24 24">
+                          <path d="M9 10L4 15 9 20"></path>
+                          <path d="M20 4v7a4 4 0 01-4 4H4"></path>
+                        </svg>
+                      ) : null}
+                      Submit
+                    </div>
+                  </Dropdown.Button>
                 ) : (
                   <Tooltip title="Stop Streaming">
                     <button

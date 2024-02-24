@@ -1,11 +1,12 @@
 import { useState } from "react"
 
 type Props = {
-  onClick: () => void
+  onClick?: () => void
   disabled?: boolean
   className?: string
   text?: string
   textOnSave?: string
+  btnType?: "button" | "submit" | "reset"
 }
 
 export const SaveButton = ({
@@ -13,11 +14,13 @@ export const SaveButton = ({
   disabled,
   className,
   text = "Save",
-  textOnSave = "Saved"
+  textOnSave = "Saved",
+  btnType = "button"
 }: Props) => {
   const [clickedSave, setClickedSave] = useState(false)
   return (
     <button
+      type={btnType}
       onClick={() => {
         setClickedSave(true)
         onClick()

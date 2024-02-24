@@ -187,3 +187,63 @@ export const systemPromptForNonRagOption = async () => {
 export const setSystemPromptForNonRagOption = async (prompt: string) => {
   await storage.set("systemPromptForNonRagOption", prompt)
 }
+
+export const sendWhenEnter = async () => {
+  const sendWhenEnter = await storage.get("sendWhenEnter")
+  if (!sendWhenEnter || sendWhenEnter.length === 0) {
+    return true
+  }
+  return sendWhenEnter === "true"
+}
+
+export const setSendWhenEnter = async (sendWhenEnter: boolean) => {
+  await storage.set("sendWhenEnter", sendWhenEnter.toString())
+}
+
+export const defaultEmbeddingModelForRag = async () => {
+  const embeddingMode = await storage.get("defaultEmbeddingModel")
+  if (!embeddingMode || embeddingMode.length === 0) {
+    return null
+  }
+  return embeddingMode
+}
+
+export const defaultEmbeddingChunkSize = async () => {
+  const embeddingChunkSize = await storage.get("defaultEmbeddingChunkSize")
+  if (!embeddingChunkSize || embeddingChunkSize.length === 0) {
+    return 1000
+  }
+  return parseInt(embeddingChunkSize)
+}
+
+export const defaultEmbeddingChunkOverlap = async () => {
+  const embeddingChunkOverlap = await storage.get(
+    "defaultEmbeddingChunkOverlap"
+  )
+  if (!embeddingChunkOverlap || embeddingChunkOverlap.length === 0) {
+    return 200
+  }
+  return parseInt(embeddingChunkOverlap)
+}
+
+export const setDefaultEmbeddingModelForRag = async (model: string) => {
+  await storage.set("defaultEmbeddingModel", model)
+}
+
+export const setDefaultEmbeddingChunkSize = async (size: number) => {
+  await storage.set("defaultEmbeddingChunkSize", size.toString())
+}
+
+export const setDefaultEmbeddingChunkOverlap = async (overlap: number) => {
+  await storage.set("defaultEmbeddingChunkOverlap", overlap.toString())
+}
+
+export const saveForRag = async (
+  model: string,
+  chunkSize: number,
+  overlap: number
+) => {
+  await setDefaultEmbeddingModelForRag(model)
+  await setDefaultEmbeddingChunkSize(chunkSize)
+  await setDefaultEmbeddingChunkOverlap(overlap)
+}

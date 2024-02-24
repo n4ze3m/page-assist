@@ -8,11 +8,11 @@ const _getHtml = () => {
   )
   return { url, html }
 }
-
 export const getHtmlOfCurrentTab = async () => {
   const result = new Promise((resolve) => {
     chrome.tabs.query({ active: true, currentWindow: true }, async (tabs) => {
       const tab = tabs[0]
+
       const data = await chrome.scripting.executeScript({
         target: { tabId: tab.id },
         func: _getHtml

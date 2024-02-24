@@ -10,7 +10,7 @@ import {
   SystemMessage
 } from "@langchain/core/messages"
 import { useStoreMessageOption } from "~store/option"
-import { saveHistory, saveMessage } from "~libs/db"
+import { removeMessageUsingHistoryId, saveHistory, saveMessage } from "~libs/db"
 import { useNavigate } from "react-router-dom"
 import { notification } from "antd"
 
@@ -112,7 +112,11 @@ export const useMessageOption = () => {
     navigate("/")
   }
 
-  const normalChatMode = async (message: string, image: string) => {
+  const normalChatMode = async (
+    message: string,
+    image: string,
+    isRegenerate: boolean
+  ) => {
     const url = await getOllamaURL()
 
     if (image.length > 0) {
@@ -143,7 +147,9 @@ export const useMessageOption = () => {
     ]
 
     const appendingIndex = newMessage.length - 1
-    setMessages(newMessage)
+    if (!isRegenerate) {
+      setMessages(newMessage)
+    }
 
     try {
       const prompt = await systemPromptForNonRagOption()
@@ -215,21 +221,33 @@ export const useMessageOption = () => {
         appendingIndex
       ].message.slice(0, -1)
 
-      setHistory([
-        ...history,
-        {
-          role: "user",
-          content: message,
-          image
-        },
-        {
-          role: "assistant",
-          content: newMessage[appendingIndex].message
-        }
-      ])
+      if (!isRegenerate) {
+        setHistory([
+          ...history,
+          {
+            role: "user",
+            content: message,
+            image
+          },
+          {
+            role: "assistant",
+            content: newMessage[appendingIndex].message
+          }
+        ])
+      } else {
+        setHistory([
+          ...history,
+          {
+            role: "assistant",
+            content: newMessage[appendingIndex].message
+          }
+        ])
+      }
 
       if (historyId) {
-        await saveMessage(historyId, selectedModel, "user", message, [image])
+        if (!isRegenerate) {
+          await saveMessage(historyId, selectedModel, "user", message, [image])
+        }
         await saveMessage(
           historyId,
           selectedModel,
@@ -253,9 +271,10 @@ export const useMessageOption = () => {
       }
 
       setIsProcessing(false)
+      setStreaming(false)
     } catch (e) {
       console.log(e)
-      
+
       if (e?.name === "AbortError") {
         newMessage[appendingIndex].message = newMessage[
           appendingIndex
@@ -311,12 +330,33 @@ export const useMessageOption = () => {
 
   const onSubmit = async ({
     message,
-    image
+    image,
+    isRegenerate = false
   }: {
     message: string
     image: string
+    isRegenerate?: boolean
   }) => {
-    await normalChatMode(message, image)
+    setStreaming(true)
+    // const web = await localGoogleSearch(message)
+    // console.log(web)
+    await normalChatMode(message, image, isRegenerate)
+  }
+
+  const regenerateLastMessage = async () => {
+    if (history.length > 0) {
+      const lastMessage = history[history.length - 2]
+      setHistory(history.slice(0, -1))
+      setMessages(messages.slice(0, -1))
+      await removeMessageUsingHistoryId(historyId)
+      if (lastMessage.role === "user") {
+        await onSubmit({
+          message: lastMessage.content,
+          image: lastMessage.image || "",
+          isRegenerate: true
+        })
+      }
+    }
   }
 
   const stopStreamingRequest = () => {
@@ -346,6 +386,7 @@ export const useMessageOption = () => {
     chatMode,
     setChatMode,
     speechToTextLanguage,
-    setSpeechToTextLanguage
+    setSpeechToTextLanguage,
+    regenerateLastMessage
   }
 }
