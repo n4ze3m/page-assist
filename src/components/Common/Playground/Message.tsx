@@ -1,9 +1,8 @@
 import Markdown from "../../Common/Markdown"
 import React from "react"
 import { Image, Tooltip } from "antd"
-import { ClipboardIcon } from "~icons/ClipboardIcon"
-import { CheckIcon } from "~icons/CheckIcon"
-import { ArrowPathIcon } from "~icons/ArrowPathIcon"
+import { WebSearch } from "./WebSearch"
+import { CheckIcon, ClipboardIcon } from "lucide-react"
 
 type Props = {
   message: string
@@ -17,9 +16,8 @@ type Props = {
   totalMessages: number
   onRengerate: () => void
   isProcessing: boolean
-  webSearch?: {
-    
-  }
+  webSearch?: {}
+  isSearchingInternet?: boolean
 }
 
 export const PlaygroundMessage = (props: Props) => {
@@ -48,6 +46,12 @@ export const PlaygroundMessage = (props: Props) => {
             <span className="text-xs font-bold text-gray-800 dark:text-white">
               {props.isBot ? props.name : "You"}
             </span>
+
+            {props.isBot &&
+            props.isSearchingInternet &&
+            props.currentMessageIndex === props.totalMessages - 1 ? (
+              <WebSearch />
+            ) : null}
 
             <div className="flex flex-grow flex-col">
               <Markdown message={props.message} />

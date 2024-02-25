@@ -6,11 +6,9 @@ import { useMessage } from "~hooks/useMessage"
 import { toBase64 } from "~libs/to-base64"
 import { Checkbox, Dropdown, Image, Tooltip } from "antd"
 import { useSpeechRecognition } from "~hooks/useSpeechRecognition"
-import { MicIcon } from "~icons/MicIcon"
-import { PhotoIcon } from "~icons/PhotoIcon"
-import { XMarkIcon } from "~icons/XMarkIcon"
 import { useWebUI } from "~store/webui"
 import { defaultEmbeddingModelForRag } from "~services/ollama"
+import { ImageIcon, MicIcon, X } from "lucide-react"
 
 type Props = {
   dropedFile: File | undefined
@@ -88,7 +86,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
               form.setFieldValue("image", "")
             }}
             className="flex items-center justify-center absolute top-0 m-2 bg-white  dark:bg-[#262626] p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-600 text-black dark:text-gray-100">
-            <XMarkIcon className="h-5 w-5" />
+            <X className="h-5 w-5" />
           </button>
         </div>
       </div>
@@ -166,7 +164,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                   }
                 }}
                 ref={textareaRef}
-                className="px-2 py-2 w-full resize-none bg-transparent focus-within:outline-none sm:text-sm focus:ring-0 focus-visible:ring-0 ring-0 dark:ring-0 border-0 dark:text-gray-100"
+                className="px-2 py-2 w-full resize-none bg-transparent focus-within:outline-none focus:ring-0 focus-visible:ring-0 ring-0 dark:ring-0 border-0 dark:text-gray-100"
                 required
                 rows={1}
                 style={{ minHeight: "60px" }}
@@ -208,7 +206,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                     className={`flex items-center justify-center dark:text-gray-300 ${
                       chatMode === "rag" ? "hidden" : "block"
                     }`}>
-                    <PhotoIcon className="h-5 w-5" />
+                    <ImageIcon className="h-5 w-5" />
                   </button>
                 </Tooltip>
                 <Dropdown.Button
@@ -238,6 +236,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                         key: 1,
                         label: (
                           <Checkbox
+                            value={sendWhenEnter}
                             onChange={(e) =>
                               setSendWhenEnter(e.target.checked)
                             }>

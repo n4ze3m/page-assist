@@ -3,12 +3,6 @@ import { Document } from "@langchain/core/documents"
 import { compile } from "html-to-text"
 import { chromeRunTime } from "~libs/runtime"
 
-const isPDFFetch = async (url: string) => {
-  await chromeRunTime(url)
-  const response = await fetch(url)
-  const blob = await response.blob()
-  return blob.type === "application/pdf"
-}
 export interface WebLoaderParams {
   html: string
   url: string
@@ -16,8 +10,7 @@ export interface WebLoaderParams {
 
 export class PageAssistHtmlLoader
   extends BaseDocumentLoader
-  implements WebLoaderParams
-{
+  implements WebLoaderParams {
   html: string
   url: string
 
@@ -32,6 +25,22 @@ export class PageAssistHtmlLoader
       wordwrap: false
     })
     const text = htmlCompiler(this.html)
+    const metadata = { source: this.url }
+    return [new Document({ pageContent: text, metadata })]
+  }
+
+  async loadByURL(): Promise<Document<Record<string, any>>[]> {
+    await chromeRunTime(this.url)
+    const fetchHTML = await fetch(this.url)
+    const html = await fetchHTML.text()
+    const htmlCompiler = compile({
+      wordwrap: false,
+      selectors: [
+        { selector: "img", format: "skip" },
+        { selector: "script", format: "skip" }
+      ]
+    })
+    const text = htmlCompiler(html)
     const metadata = { source: this.url }
     return [new Document({ pageContent: text, metadata })]
   }

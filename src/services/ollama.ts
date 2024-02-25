@@ -12,6 +12,13 @@ const DEFAULT_RAG_QUESTION_PROMPT =
 
 const DEFAUTL_RAG_SYSTEM_PROMPT = `You are a helpful AI assistant. Use the following pieces of context to answer the question at the end. If you don't know the answer, just say you don't know. DO NOT try to make up an answer. If the question is not related to the context, politely respond that you are tuned to only answer questions that are related to the context.  {context}  Question: {question} Helpful answer in markdown:`
 
+
+const DEFAULT_WEBSEARCH_PROMP = `You are a helpful assistant that can answer any questions. You can use the following search results in case you want to answer questions about anything in real-time. The current date and time are {current_date_time}.  
+
+Search results: 
+
+{search_results}`
+
 export const getOllamaURL = async () => {
   const ollamaURL = await storage.get("ollamaURL")
   if (!ollamaURL || ollamaURL.length === 0) {
@@ -246,4 +253,17 @@ export const saveForRag = async (
   await setDefaultEmbeddingModelForRag(model)
   await setDefaultEmbeddingChunkSize(chunkSize)
   await setDefaultEmbeddingChunkOverlap(overlap)
+}
+
+
+export const getWebSearchPrompt = async () => {
+  const prompt = await storage.get("webSearchPrompt")
+  if (!prompt || prompt.length === 0) {
+    return DEFAULT_WEBSEARCH_PROMP
+  }
+  return prompt
+}
+
+export const setWebSearchPrompt = async (prompt: string) => {
+  await storage.set("webSearchPrompt", prompt)
 }

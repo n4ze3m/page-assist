@@ -4,7 +4,7 @@ import { PlaygroundEmpty } from "./PlaygroundEmpty"
 import { PlaygroundMessage } from "~components/Common/Playground/Message"
 
 export const PlaygroundChat = () => {
-  const { messages, streaming, regenerateLastMessage } = useMessageOption()
+  const { messages, streaming, regenerateLastMessage, isSearchingInternet } = useMessageOption()
   const divRef = React.useRef<HTMLDivElement>(null)
   React.useEffect(() => {
     if (divRef.current) {
@@ -30,6 +30,7 @@ export const PlaygroundChat = () => {
           totalMessages={messages.length}
           onRengerate={regenerateLastMessage}
           isProcessing={streaming}
+          isSearchingInternet={isSearchingInternet}
         />
       ))}
       {messages.length > 0 && (

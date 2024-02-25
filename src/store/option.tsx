@@ -47,6 +47,10 @@ type State = {
   setIsEmbedding: (isEmbedding: boolean) => void
   speechToTextLanguage: string
   setSpeechToTextLanguage: (language: string) => void
+  webSearch: boolean;
+  setWebSearch: (webSearch: boolean) => void;
+  isSearchingInternet: boolean;
+  setIsSearchingInternet: (isSearchingInternet: boolean) => void;
 }
 
 export const useStoreMessageOption = create<State>((set) => ({
@@ -72,5 +76,9 @@ export const useStoreMessageOption = create<State>((set) => ({
   chatMode: "normal",
   setChatMode: (chatMode) => set({ chatMode }),
   isEmbedding: false,
-  setIsEmbedding: (isEmbedding) => set({ isEmbedding })
+  setIsEmbedding: (isEmbedding) => set({ isEmbedding }),
+  webSearch: false,
+  setWebSearch: (webSearch) => set({ webSearch }),
+  isSearchingInternet: false,
+  setIsSearchingInternet: (isSearchingInternet) => set({ isSearchingInternet }),
 }))
