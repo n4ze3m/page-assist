@@ -2,9 +2,7 @@ import logoImage from "data-base64:~assets/icon.png"
 import { useMessage } from "~hooks/useMessage"
 import { Link } from "react-router-dom"
 import { Tooltip } from "antd"
-import { CogIcon } from "~icons/CogIcon"
-import { BoxesIcon } from "~icons/BoxesIcon"
-import { ArrowPathIcon } from "~icons/ArrowPathIcon"
+import { BoxesIcon, CogIcon, RefreshCcw } from "lucide-react"
 export const SidepanelHeader = () => {
   const { clearChat, isEmbedding } = useMessage()
   return (
@@ -25,7 +23,7 @@ export const SidepanelHeader = () => {
             clearChat()
           }}
           className="flex items-center space-x-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-700">
-          <ArrowPathIcon className="h-5 w-5 text-gray-500 dark:text-gray-400" />
+          <RefreshCcw className="h-5 w-5 text-gray-500 dark:text-gray-400" />
         </button>
         <Link to="/settings">
           <CogIcon className="h-5 w-5 text-gray-500 dark:text-gray-400" />

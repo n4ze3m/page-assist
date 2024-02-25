@@ -6,13 +6,10 @@ import {
   deleteByHistoryId,
   updateHistory
 } from "~libs/db"
-import { Dropdown, Empty, Skeleton, Spin } from "antd"
+import { Empty, Skeleton } from "antd"
 import { useMessageOption } from "~hooks/useMessageOption"
-import { Trash } from "~icons/Trash"
-import { Fragment, useState } from "react"
-import { PencilIcon } from "~icons/PencilIcon"
-import { EllipsisHorizontalIcon } from "~icons/EllipsisHorizontalIcon"
-import { Menu, Transition } from "@headlessui/react"
+import { useState } from "react"
+import { PencilIcon, Trash2 } from "lucide-react"
 
 type Props = {}
 
@@ -117,7 +114,7 @@ export const Sidebar = ({}: Props) => {
                     setProcessingId(chat.id)
                   }}
                   className="text-red-500 dark:text-red-400 opacity-80">
-                  <Trash className=" w-4 h-4 " />
+                  <Trash2 className=" w-4 h-4 " />
                 </button>
               </div>
             </div>

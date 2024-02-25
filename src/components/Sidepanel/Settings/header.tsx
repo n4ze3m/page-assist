@@ -1,6 +1,6 @@
 import logoImage from "data-base64:~assets/icon.png"
+import { ChevronLeft } from "lucide-react"
 import { Link } from "react-router-dom"
-import { ChevronLeft } from "~icons/ChevronLeft"
 export const SidepanelSettingsHeader = () => {
   return (
     <div className="flex px-3 justify-start gap-3 bg-white dark:bg-[#171717] border-b border-gray-300 dark:border-gray-700  py-4 items-center">

@@ -7,12 +7,8 @@ import { useQuery } from "@tanstack/react-query"
 import { fetchChatModels } from "~services/ollama"
 import { useMessageOption } from "~hooks/useMessageOption"
 import { Settings } from "./Settings"
-import { GithubIcon } from "~icons/GithubIcon"
-import { PanelLeftIcon } from "~icons/PanelLeftIcon"
-import { BrainCircuit } from "~icons/BrainCircuit"
-import { SquarePen } from "~icons/SquarePen"
-import { ChevronLeft } from "~icons/ChevronLeft"
-import { CogIcon } from "~icons/CogIcon"
+import { BrainCircuit, ChevronLeft, CogIcon, GithubIcon, PanelLeftIcon, SquarePen } from "lucide-react"
+
 
 export default function OptionLayout({
   children

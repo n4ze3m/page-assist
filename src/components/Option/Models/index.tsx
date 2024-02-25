@@ -6,9 +6,7 @@ import dayjs from "dayjs"
 import relativeTime from "dayjs/plugin/relativeTime"
 import { useState } from "react"
 import { useForm } from "@mantine/form"
-import { Download } from "~icons/Download"
-import { RotateCcw } from "~icons/RotateCcw"
-import { Trash } from "~icons/Trash"
+import { Download, RotateCcw, Trash2 } from "lucide-react"
 
 dayjs.extend(relativeTime)
 
@@ -134,7 +132,7 @@ export const ModelsBody = () => {
                           }
                         }}
                         className="text-red-500 dark:text-red-400">
-                        <Trash className="w-5 h-5" />
+                        <Trash2 className="w-5 h-5" />
                       </button>
                     </Tooltip>
                     <Tooltip title="Re-Pull Model">

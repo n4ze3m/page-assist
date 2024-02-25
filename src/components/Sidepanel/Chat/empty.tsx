@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query"
 import { Select } from "antd"
+import { RotateCcw } from "lucide-react"
 import { useEffect, useState } from "react"
 import { useMessage } from "~hooks/useMessage"
-import { RotateCcw } from "~icons/RotateCcw"
 import {
   fetchChatModels,
   getOllamaURL,

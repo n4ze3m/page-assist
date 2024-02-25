@@ -19,8 +19,7 @@ import { useDarkMode } from "~hooks/useDarkmode"
 import { SaveButton } from "~components/Common/SaveButton"
 import { SUPPORTED_LANGUAGES } from "~utils/supporetd-languages"
 import { useMessage } from "~hooks/useMessage"
-import { Sun } from "~icons/Sun"
-import { Moon } from "~icons/Moon"
+import { MoonIcon, SunIcon } from "lucide-react"
 
 export const SettingsBody = () => {
   const [ollamaURL, setOllamaURL] = React.useState<string>("")
@@ -281,14 +280,14 @@ export const SettingsBody = () => {
           <button
             onClick={toggleDarkMode}
             className="select-none inline-flex w-full rounded-lg border border-gray-900 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-gray-900 transition-all hover:opacity-75 focus:ring focus:ring-gray-300 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none dark:border-gray-100 dark:text-white dark:hover:opacity-75 dark:focus:ring-dark dark:active:opacity-75 dark:disabled:pointer-events-none dark:disabled:opacity-50 dark:disabled:shadow-none">
-            <Sun className="h-4 w-4 mr-2" />
+            <SunIcon className="h-4 w-4 mr-2" />
             Light
           </button>
         ) : (
           <button
             onClick={toggleDarkMode}
             className="select-none inline-flex w-full rounded-lg border border-gray-900 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-gray-900 transition-all hover:opacity-75 focus:ring focus:ring-gray-300 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none dark:border-gray-100 dark:text-white dark:hover:opacity-75 dark:focus:ring-dark dark:active:opacity-75 dark:disabled:pointer-events-none dark:disabled:opacity-50 dark:disabled:shadow-none">
-            <Moon className="h-4 w-4 mr-2" />
+            <MoonIcon className="h-4 w-4 mr-2" />
             Dark
           </button>
         )}
