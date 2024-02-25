@@ -1,9 +1,10 @@
 import { useQuery } from "@tanstack/react-query"
+import { Select } from "antd"
 import { RotateCcw } from "lucide-react"
 import { useEffect, useState } from "react"
 import { useMessage } from "~hooks/useMessage"
 import {
-  fetchModels,
+  fetchChatModels,
   getOllamaURL,
   isOllamaRunning,
   setOllamaURL as saveOllamaURL
@@ -21,7 +22,7 @@ export const EmptySidePanel = () => {
     queryFn: async () => {
       const ollamaURL = await getOllamaURL()
       const isOk = await isOllamaRunning()
-      const models = await fetchModels()
+      const models = await fetchChatModels()
 
       return {
         isOk,
@@ -92,24 +93,25 @@ export const EmptySidePanel = () => {
           <div className="mt-4">
             <p className="dark:text-gray-400 text-gray-900">Models:</p>
 
-            <select
+            <Select
               onChange={(e) => {
-                if (e.target.value === "") {
-                  return
-                }
-                setSelectedModel(e.target.value)
+                setSelectedModel(e)
               }}
               value={selectedModel}
-              className="bg-gray-100 truncate w-full dark:bg-[#171717] dark:text-gray-100 rounded-md px-4 py-2 mt-2">
-              <option key="0x" value={""}>
-                Select a model
-              </option>
-              {ollamaInfo.models.map((model, index) => (
-                <option key={index} value={model.name}>
-                  {model.name}
-                </option>
-              ))}
-            </select>
+              size="large"
+              filterOption={(input, option) =>
+                option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0 ||
+                option.value.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              }
+              showSearch
+              placeholder="Select a model"
+              style={{ width: "100%" }}
+              className="mt-4"
+              options={ollamaInfo.models?.map((model) => ({
+                label: model.name,
+                value: model.model
+              }))}
+            />
 
             <div className="mt-4">
               <div className="inline-flex items-center">

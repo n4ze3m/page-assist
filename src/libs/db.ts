@@ -9,6 +9,16 @@ type HistoryInfo = {
   createdAt: number
 }
 
+type WebSearch = {
+  search_engine: string
+  search_url: string
+  search_query: string
+  search_results: {
+    title: string
+    link: string
+  }[]
+}
+
 type Message = {
   id: string
   history_id: string
@@ -17,6 +27,7 @@ type Message = {
   content: string
   images?: string[]
   sources?: string[]
+  search?: WebSearch
   createdAt: number
 }
 
@@ -87,6 +98,10 @@ export class PageAssitDatabase {
     }
     this.db.remove("chatHistories")
   }
+
+  async deleteMessage(history_id: string) {
+    await this.db.remove(history_id)
+  }
 }
 
 const generateID = () => {
@@ -110,11 +125,12 @@ export const saveMessage = async (
   name: string,
   role: string,
   content: string,
-  images: string[]
+  images: string[],
+  source?: any[]
 ) => {
   const id = generateID()
   const createdAt = Date.now()
-  const message = { id, history_id, name, role, content, images, createdAt }
+  const message = { id, history_id, name, role, content, images, createdAt, sources: source }
   const db = new PageAssitDatabase()
   await db.addMessage(message)
   return message
@@ -144,4 +160,31 @@ export const formatToMessage = (messages: MessageHistory): MessageType[] => {
       images: message.images || []
     }
   })
+}
+
+export const deleteByHistoryId = async (history_id: string) => {
+  const db = new PageAssitDatabase()
+  await db.deleteMessage(history_id)
+  await db.removeChatHistory(history_id)
+  return history_id
+}
+
+export const updateHistory = async (id: string, title: string) => {
+  const db = new PageAssitDatabase()
+  const chatHistories = await db.getChatHistories()
+  const newChatHistories = chatHistories.map((history) => {
+    if (history.id === id) {
+      history.title = title
+    }
+    return history
+  })
+  db.db.set({ chatHistories: newChatHistories })
+}
+
+export const removeMessageUsingHistoryId = async (history_id: string) => {
+  // remove the last message
+  const db = new PageAssitDatabase()
+  const chatHistory = await db.getChatHistory(history_id)
+  const newChatHistory = chatHistory.slice(0, -1)
+  await db.db.set({ [history_id]: newChatHistory })
 }

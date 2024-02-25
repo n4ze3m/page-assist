@@ -3,12 +3,12 @@ import { useMutation } from "@tanstack/react-query"
 import React from "react"
 import useDynamicTextareaSize from "~hooks/useDynamicTextareaSize"
 import { useMessage } from "~hooks/useMessage"
-import PhotoIcon from "@heroicons/react/24/outline/PhotoIcon"
-import XMarkIcon from "@heroicons/react/24/outline/XMarkIcon"
 import { toBase64 } from "~libs/to-base64"
-import { MicIcon } from "lucide-react"
-import { Image, Tooltip } from "antd"
+import { Checkbox, Dropdown, Image, Tooltip } from "antd"
 import { useSpeechRecognition } from "~hooks/useSpeechRecognition"
+import { useWebUI } from "~store/webui"
+import { defaultEmbeddingModelForRag } from "~services/ollama"
+import { ImageIcon, MicIcon, X } from "lucide-react"
 
 type Props = {
   dropedFile: File | undefined
@@ -17,6 +17,7 @@ type Props = {
 export const SidepanelForm = ({ dropedFile }: Props) => {
   const textareaRef = React.useRef<HTMLTextAreaElement>(null)
   const inputRef = React.useRef<HTMLInputElement>(null)
+  const { sendWhenEnter, setSendWhenEnter } = useWebUI()
 
   const resetHeight = () => {
     const textarea = textareaRef.current
@@ -85,19 +86,10 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
               form.setFieldValue("image", "")
             }}
             className="flex items-center justify-center absolute top-0 m-2 bg-white  dark:bg-[#262626] p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-600 text-black dark:text-gray-100">
-            <XMarkIcon className="h-5 w-5" />
+            <X className="h-5 w-5" />
           </button>
         </div>
       </div>
-      {/* <div className="flex gap-3 justify-end">
-      <Tooltip title="New Chat">
-        <button
-          onClick={clearChat}
-          className="text-gray-500 dark:text-gray-100 mr-3">
-          <ArrowPathIcon className="h-5 w-5" />
-        </button>
-      </Tooltip>
-    </div> */}
       <div>
         <div className="flex">
           <form
@@ -105,6 +97,16 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
               if (!selectedModel || selectedModel.length === 0) {
                 form.setFieldError("message", "Please select a model")
                 return
+              }
+              if (chatMode === "rag") {
+                const defaultEM = await defaultEmbeddingModelForRag()
+                if (!defaultEM) {
+                  form.setFieldError(
+                    "message",
+                    "Please set an embedding model on the settings page"
+                  )
+                  return
+                }
               }
               form.reset()
               resetHeight()
@@ -127,7 +129,12 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
             <div className="w-full border-x border-t flex flex-col dark:border-gray-600 rounded-t-xl p-2">
               <textarea
                 onKeyDown={(e) => {
-                  if (e.key === "Enter" && !e.shiftKey && !isSending) {
+                  if (
+                    e.key === "Enter" &&
+                    !e.shiftKey &&
+                    !isSending &&
+                    sendWhenEnter
+                  ) {
                     e.preventDefault()
                     form.onSubmit(async (value) => {
                       if (value.message.trim().length === 0) {
@@ -136,6 +143,16 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                       if (!selectedModel || selectedModel.length === 0) {
                         form.setFieldError("message", "Please select a model")
                         return
+                      }
+                      if (chatMode === "rag") {
+                        const defaultEM = await defaultEmbeddingModelForRag()
+                        if (!defaultEM) {
+                          form.setFieldError(
+                            "message",
+                            "Please set an embedding model on the settings page"
+                          )
+                          return
+                        }
                       }
                       form.reset()
                       resetHeight()
@@ -147,7 +164,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                   }
                 }}
                 ref={textareaRef}
-                className="px-2 py-2 w-full resize-none bg-transparent focus-within:outline-none sm:text-sm focus:ring-0 focus-visible:ring-0 ring-0 dark:ring-0 border-0 dark:text-gray-100"
+                className="px-2 py-2 w-full resize-none bg-transparent focus-within:outline-none focus:ring-0 focus-visible:ring-0 ring-0 dark:ring-0 border-0 dark:text-gray-100"
                 required
                 rows={1}
                 style={{ minHeight: "60px" }}
@@ -189,26 +206,64 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                     className={`flex items-center justify-center dark:text-gray-300 ${
                       chatMode === "rag" ? "hidden" : "block"
                     }`}>
-                    <PhotoIcon className="h-5 w-5" />
+                    <ImageIcon className="h-5 w-5" />
                   </button>
                 </Tooltip>
-                <button
-                  disabled={isSending || form.values.message.length === 0}
-                  className="inline-flex items-center rounded-md border border-transparent bg-black px-2 py-2 text-sm font-medium leading-4 text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-white dark:text-gray-800 dark:hover:bg-gray-100 dark:focus:ring-gray-500 dark:focus:ring-offset-gray-100 disabled:opacity-50 ">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    className="h-4 w-4 mr-2"
-                    viewBox="0 0 24 24">
-                    <path d="M9 10L4 15 9 20"></path>
-                    <path d="M20 4v7a4 4 0 01-4 4H4"></path>
-                  </svg>
-                  Send
-                </button>
+                <Dropdown.Button
+                  htmlType="submit"
+                  disabled={
+                    isSending
+                  }
+                  className="!justify-end !w-auto"
+                  icon={
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      className="w-5 h-5">
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="m19.5 8.25-7.5 7.5-7.5-7.5"
+                      />
+                    </svg>
+                  }
+                  menu={{
+                    items: [
+                      {
+                        key: 1,
+                        label: (
+                          <Checkbox
+                            checked={sendWhenEnter}
+                            onChange={(e) =>
+                              setSendWhenEnter(e.target.checked)
+                            }>
+                            Send when Enter pressed
+                          </Checkbox>
+                        )
+                      }
+                    ]
+                  }}>
+                  <div className="inline-flex gap-2">
+                    {sendWhenEnter ? (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        className="h-5 w-5"
+                        viewBox="0 0 24 24">
+                        <path d="M9 10L4 15 9 20"></path>
+                        <path d="M20 4v7a4 4 0 01-4 4H4"></path>
+                      </svg>
+                    ) : null}
+                    Submit
+                  </div>
+                </Dropdown.Button>
               </div>
             </div>
           </form>

@@ -12,6 +12,13 @@ const DEFAULT_RAG_QUESTION_PROMPT =
 
 const DEFAUTL_RAG_SYSTEM_PROMPT = `You are a helpful AI assistant. Use the following pieces of context to answer the question at the end. If you don't know the answer, just say you don't know. DO NOT try to make up an answer. If the question is not related to the context, politely respond that you are tuned to only answer questions that are related to the context.  {context}  Question: {question} Helpful answer in markdown:`
 
+
+const DEFAULT_WEBSEARCH_PROMP = `You are a helpful assistant that can answer any questions. You can use the following search results in case you want to answer questions about anything in real-time. The current date and time are {current_date_time}.  
+
+Search results: 
+
+{search_results}`
+
 export const getOllamaURL = async () => {
   const ollamaURL = await storage.get("ollamaURL")
   if (!ollamaURL || ollamaURL.length === 0) {
@@ -78,7 +85,7 @@ export const getAllModels = async () => {
   }[]
 }
 
-export const deleteModel= async (model: string) => {
+export const deleteModel = async (model: string) => {
   const baseUrl = await getOllamaURL()
   const response = await fetch(`${cleanUrl(baseUrl)}/api/delete`, {
     method: "DELETE",
@@ -94,7 +101,7 @@ export const deleteModel= async (model: string) => {
   return response.json()
 }
 
-export const fetchModels = async () => {
+export const fetchChatModels = async () => {
   try {
     const baseUrl = await getOllamaURL()
     const response = await fetch(`${cleanUrl(baseUrl)}/api/tags`)
@@ -102,8 +109,7 @@ export const fetchModels = async () => {
       throw new Error(response.statusText)
     }
     const json = await response.json()
-
-    return json.models as {
+    const models = json.models as {
       name: string
       model: string
       modified_at: string
@@ -118,6 +124,12 @@ export const fetchModels = async () => {
         quantization_level: string
       }
     }[]
+    return models.filter((model) => {
+      return (
+        !model.details.families.includes("bert") &&
+        !model.details.families.includes("nomic-bert")
+      )
+    })
   } catch (e) {
     console.error(e)
     return []
@@ -181,4 +193,96 @@ export const systemPromptForNonRagOption = async () => {
 
 export const setSystemPromptForNonRagOption = async (prompt: string) => {
   await storage.set("systemPromptForNonRagOption", prompt)
+}
+
+export const sendWhenEnter = async () => {
+  const sendWhenEnter = await storage.get("sendWhenEnter")
+  if (!sendWhenEnter || sendWhenEnter.length === 0) {
+    return true
+  }
+  return sendWhenEnter === "true"
+}
+
+export const setSendWhenEnter = async (sendWhenEnter: boolean) => {
+  await storage.set("sendWhenEnter", sendWhenEnter.toString())
+}
+
+export const defaultEmbeddingModelForRag = async () => {
+  const embeddingMode = await storage.get("defaultEmbeddingModel")
+  if (!embeddingMode || embeddingMode.length === 0) {
+    return null
+  }
+  return embeddingMode
+}
+
+export const defaultEmbeddingChunkSize = async () => {
+  const embeddingChunkSize = await storage.get("defaultEmbeddingChunkSize")
+  if (!embeddingChunkSize || embeddingChunkSize.length === 0) {
+    return 1000
+  }
+  return parseInt(embeddingChunkSize)
+}
+
+export const defaultEmbeddingChunkOverlap = async () => {
+  const embeddingChunkOverlap = await storage.get(
+    "defaultEmbeddingChunkOverlap"
+  )
+  if (!embeddingChunkOverlap || embeddingChunkOverlap.length === 0) {
+    return 200
+  }
+  return parseInt(embeddingChunkOverlap)
+}
+
+export const setDefaultEmbeddingModelForRag = async (model: string) => {
+  await storage.set("defaultEmbeddingModel", model)
+}
+
+export const setDefaultEmbeddingChunkSize = async (size: number) => {
+  await storage.set("defaultEmbeddingChunkSize", size.toString())
+}
+
+export const setDefaultEmbeddingChunkOverlap = async (overlap: number) => {
+  await storage.set("defaultEmbeddingChunkOverlap", overlap.toString())
+}
+
+export const saveForRag = async (
+  model: string,
+  chunkSize: number,
+  overlap: number
+) => {
+  await setDefaultEmbeddingModelForRag(model)
+  await setDefaultEmbeddingChunkSize(chunkSize)
+  await setDefaultEmbeddingChunkOverlap(overlap)
+}
+
+
+export const getWebSearchPrompt = async () => {
+  const prompt = await storage.get("webSearchPrompt")
+  if (!prompt || prompt.length === 0) {
+    return DEFAULT_WEBSEARCH_PROMP
+  }
+  return prompt
+}
+
+export const setWebSearchPrompt = async (prompt: string) => {
+  await storage.set("webSearchPrompt", prompt)
+}
+
+export const geWebSearchFollowUpPrompt = async () => {
+  const prompt = await storage.get("webSearchFollowUpPrompt")
+  if (!prompt || prompt.length === 0) {
+    return DEFAULT_RAG_QUESTION_PROMPT;
+  }
+  return prompt
+}
+
+
+export const setWebSearchFollowUpPrompt = async (prompt: string) => {
+  await storage.set("webSearchFollowUpPrompt", prompt)
+}
+
+
+export const setWebPrompts = async (prompt: string, followUpPrompt: string) => {
+  await setWebSearchPrompt(prompt)
+  await setWebSearchFollowUpPrompt(followUpPrompt)
 }

@@ -1,6 +1,9 @@
 import React from "react"
 import { cleanUrl } from "~libs/clean-url"
 import {
+  defaultEmbeddingChunkOverlap,
+  defaultEmbeddingChunkSize,
+  defaultEmbeddingModelForRag,
   getOllamaURL,
   promptForRag,
   systemPromptForNonRag
@@ -131,9 +134,11 @@ export const useMessage = () => {
       url
     })
     const docs = await loader.load()
+    const chunkSize = await defaultEmbeddingChunkSize();
+    const chunkOverlap = await defaultEmbeddingChunkOverlap();
     const textSplitter = new RecursiveCharacterTextSplitter({
-      chunkSize: 1000,
-      chunkOverlap: 200
+      chunkSize,
+      chunkOverlap,
     })
 
     const chunks = await textSplitter.splitDocuments(docs)
@@ -174,10 +179,12 @@ export const useMessage = () => {
 
     const appendingIndex = newMessage.length - 1
     setMessages(newMessage)
+    const embeddingModle = await defaultEmbeddingModelForRag()
     const ollamaEmbedding = new OllamaEmbeddings({
-      model: selectedModel,
+      model: embeddingModle || selectedModel,
       baseUrl: cleanUrl(ollamaUrl)
     })
+
 
     const ollamaChat = new ChatOllama({
       model: selectedModel,

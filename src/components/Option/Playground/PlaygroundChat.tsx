@@ -1,11 +1,10 @@
 import React from "react"
-import { useMessage } from "~hooks/useMessage"
 import { useMessageOption } from "~hooks/useMessageOption"
-import { PlaygroundMessage } from "./PlaygroundMessage"
 import { PlaygroundEmpty } from "./PlaygroundEmpty"
+import { PlaygroundMessage } from "~components/Common/Playground/Message"
 
 export const PlaygroundChat = () => {
-  const { messages } = useMessageOption()
+  const { messages, streaming, regenerateLastMessage, isSearchingInternet } = useMessageOption()
   const divRef = React.useRef<HTMLDivElement>(null)
   React.useEffect(() => {
     if (divRef.current) {
@@ -19,7 +18,7 @@ export const PlaygroundChat = () => {
           <PlaygroundEmpty />
         </div>
       )}
-      {messages.length > 0 && <div className="w-full h-14 flex-shrink-0"></div>}
+      {messages.length > 0 && <div className="w-full h-16 flex-shrink-0"></div>}
       {messages.map((message, index) => (
         <PlaygroundMessage
           key={index}
@@ -27,6 +26,12 @@ export const PlaygroundChat = () => {
           message={message.message}
           name={message.name}
           images={message.images || []}
+          currentMessageIndex={index}
+          totalMessages={messages.length}
+          onRengerate={regenerateLastMessage}
+          isProcessing={streaming}
+          isSearchingInternet={isSearchingInternet}
+          sources={message.sources}
         />
       ))}
       {messages.length > 0 && (

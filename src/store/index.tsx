@@ -44,7 +44,7 @@ export const useStoreMessage = create<State>((set) => ({
   setMessages: (messages) => set({ messages }),
   history: [],
   setHistory: (history) => set({ history }),
-  streaming: true,
+  streaming: false,
   setStreaming: (streaming) => set({ streaming }),
   isFirstMessage: true,
   setIsFirstMessage: (isFirstMessage) => set({ isFirstMessage }),

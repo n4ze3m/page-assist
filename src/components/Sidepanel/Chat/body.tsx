@@ -4,7 +4,7 @@ import { useMessage } from "~hooks/useMessage"
 import { EmptySidePanel } from "../Chat/empty"
 
 export const SidePanelBody = () => {
-  const { messages } = useMessage()
+  const { messages, streaming } = useMessage()
   const divRef = React.useRef<HTMLDivElement>(null)
   React.useEffect(() => {
     if (divRef.current) {
@@ -21,6 +21,10 @@ export const SidePanelBody = () => {
           message={message.message}
           name={message.name}
           images={message.images || []}
+          currentMessageIndex={index}
+          totalMessages={messages.length}
+          onRengerate={() => {}}
+          isProcessing={streaming}
         />
       ))}
       <div className="w-full h-32 md:h-48 flex-shrink-0"></div>

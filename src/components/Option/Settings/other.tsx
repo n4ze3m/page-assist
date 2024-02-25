@@ -3,8 +3,8 @@ import { useDarkMode } from "~hooks/useDarkmode"
 import { useMessageOption } from "~hooks/useMessageOption"
 import { PageAssitDatabase } from "~libs/db"
 import { Select } from "antd"
-import { Sun, Moon } from "lucide-react"
 import { SUPPORTED_LANGUAGES } from "~utils/supporetd-languages"
+import { MoonIcon, SunIcon } from "lucide-react"
 
 export const SettingOther = () => {
   const { clearChat, speechToTextLanguage, setSpeechToTextLanguage } =
@@ -28,9 +28,9 @@ export const SettingOther = () => {
           options={SUPPORTED_LANGUAGES}
           value={speechToTextLanguage}
           filterOption={(input, option) =>
-                option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0 ||
-                option.value.toLowerCase().indexOf(input.toLowerCase()) >= 0
-              }
+            option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0 ||
+            option.value.toLowerCase().indexOf(input.toLowerCase()) >= 0
+          }
           onChange={(value) => {
             setSpeechToTextLanguage(value)
           }}
@@ -45,9 +45,9 @@ export const SettingOther = () => {
           onClick={toggleDarkMode}
           className={`inline-flex mt-4 items-center rounded-md border border-transparent bg-black px-2 py-2 text-sm font-medium leading-4 text-white shadow-sm  dark:bg-white dark:text-gray-800 disabled:opacity-50 `}>
           {mode === "dark" ? (
-            <Sun className="w-4 h-4 mr-2" />
+            <SunIcon className="w-4 h-4 mr-2" />
           ) : (
-            <Moon className="w-4 h-4 mr-2" />
+            <MoonIcon className="w-4 h-4 mr-2" />
           )}
           {mode === "dark" ? "Light" : "Dark"}
         </button>

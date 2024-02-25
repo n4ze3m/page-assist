@@ -1,20 +1,14 @@
 import React, { useState } from "react"
-import { CogIcon } from "@heroicons/react/24/outline"
 
 import { useLocation, NavLink } from "react-router-dom"
 import { Sidebar } from "./Sidebar"
 import { Drawer, Layout, Modal, Select, Tooltip } from "antd"
 import { useQuery } from "@tanstack/react-query"
-import { fetchModels } from "~services/ollama"
+import { fetchChatModels } from "~services/ollama"
 import { useMessageOption } from "~hooks/useMessageOption"
-import {
-  GithubIcon,
-  PanelLeftIcon,
-  BrainCircuit,
-  SquarePen,
-  ChevronLeft
-} from "lucide-react"
 import { Settings } from "./Settings"
+import { BrainCircuit, ChevronLeft, CogIcon, GithubIcon, PanelLeftIcon, SquarePen } from "lucide-react"
+
 
 export default function OptionLayout({
   children
@@ -30,7 +24,7 @@ export default function OptionLayout({
     isFetching: isModelsFetching
   } = useQuery({
     queryKey: ["fetchModel"],
-    queryFn: fetchModels,
+    queryFn: fetchChatModels,
     refetchInterval: 15000
   })
 

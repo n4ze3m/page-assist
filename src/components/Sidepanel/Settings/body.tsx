@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery } from "@tanstack/react-query"
 import React from "react"
 import {
   getOllamaURL,
@@ -6,15 +6,20 @@ import {
   promptForRag,
   setOllamaURL as saveOllamaURL,
   setPromptForRag,
-  setSystemPromptForNonRag
+  setSystemPromptForNonRag,
+  getAllModels,
+  defaultEmbeddingChunkOverlap,
+  defaultEmbeddingChunkSize,
+  defaultEmbeddingModelForRag,
+  saveForRag
 } from "~services/ollama"
 
-import { Skeleton, Radio, Select } from "antd"
+import { Skeleton, Radio, Select, Form, InputNumber } from "antd"
 import { useDarkMode } from "~hooks/useDarkmode"
 import { SaveButton } from "~components/Common/SaveButton"
-import { Moon, Sun } from "lucide-react"
 import { SUPPORTED_LANGUAGES } from "~utils/supporetd-languages"
 import { useMessage } from "~hooks/useMessage"
+import { MoonIcon, SunIcon } from "lucide-react"
 
 export const SettingsBody = () => {
   const [ollamaURL, setOllamaURL] = React.useState<string>("")
@@ -31,18 +36,44 @@ export const SettingsBody = () => {
   const { data, status } = useQuery({
     queryKey: ["sidebarSettings"],
     queryFn: async () => {
-      const [ollamaURL, systemPrompt, ragPrompt] = await Promise.all([
+      const [
+        ollamaURL,
+        systemPrompt,
+        ragPrompt,
+        allModels,
+        chunkOverlap,
+        chunkSize,
+        defaultEM
+      ] = await Promise.all([
         getOllamaURL(),
         systemPromptForNonRag(),
-        promptForRag()
+        promptForRag(),
+        getAllModels(),
+        defaultEmbeddingChunkOverlap(),
+        defaultEmbeddingChunkSize(),
+        defaultEmbeddingModelForRag()
       ])
 
       return {
         url: ollamaURL,
         normalSystemPrompt: systemPrompt,
         ragSystemPrompt: ragPrompt.ragPrompt,
-        ragQuestionPrompt: ragPrompt.ragQuestionPrompt
+        ragQuestionPrompt: ragPrompt.ragQuestionPrompt,
+        models: allModels,
+        chunkOverlap,
+        chunkSize,
+        defaultEM
       }
+    }
+  })
+
+  const { mutate: saveRAG, isPending: isSaveRAGPending } = useMutation({
+    mutationFn: async (data: {
+      model: string
+      chunkSize: number
+      overlap: number
+    }) => {
+      await saveForRag(data.model, data.chunkSize, data.overlap)
     }
   })
 
@@ -156,6 +187,71 @@ export const SettingsBody = () => {
           />
         </div>
       </div>
+
+      <div className="border border-gray-300 dark:border-gray-700 rounded p-4 bg-white dark:bg-[#171717]">
+        <h2 className="text-md mb-4 font-semibold dark:text-white">
+          RAG Configuration
+        </h2>
+        <Form
+          onFinish={(data) => {
+            saveRAG({
+              model: data.defaultEM,
+              chunkSize: data.chunkSize,
+              overlap: data.chunkOverlap
+            })
+          }}
+          initialValues={{
+            chunkSize: data.chunkSize,
+            chunkOverlap: data.chunkOverlap,
+            defaultEM: data.defaultEM
+          }}>
+          <Form.Item
+            name="defaultEM"
+            label="Embedding Model"
+            help="Highly recommended to use embedding models like `nomic-embed-text`."
+            rules={[{ required: true, message: "Please select a model!" }]}>
+            <Select
+              size="large"
+              filterOption={(input, option) =>
+                option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0 ||
+                option.value.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              }
+              showSearch
+              placeholder="Select a model"
+              style={{ width: "100%" }}
+              className="mt-4"
+              options={data.models?.map((model) => ({
+                label: model.name,
+                value: model.model
+              }))}
+            />
+          </Form.Item>
+
+          <Form.Item
+            name="chunkSize"
+            label="Chunk Size"
+            rules={[
+              { required: true, message: "Please input your chunk size!" }
+            ]}>
+            <InputNumber style={{ width: "100%" }} placeholder="Chunk Size" />
+          </Form.Item>
+          <Form.Item
+            name="chunkOverlap"
+            label="Chunk Overlap"
+            rules={[
+              { required: true, message: "Please input your chunk overlap!" }
+            ]}>
+            <InputNumber
+              style={{ width: "100%" }}
+              placeholder="Chunk Overlap"
+            />
+          </Form.Item>
+
+          <div className="flex justify-end">
+            <SaveButton disabled={isSaveRAGPending} btnType="submit" />
+          </div>
+        </Form>
+      </div>
       <div className="border border-gray-300 dark:border-gray-700 rounded p-4 bg-white dark:bg-[#171717]">
         <h2 className="text-md mb-4 font-semibold dark:text-white">
           Speech Recognition Language
@@ -184,14 +280,14 @@ export const SettingsBody = () => {
           <button
             onClick={toggleDarkMode}
             className="select-none inline-flex w-full rounded-lg border border-gray-900 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-gray-900 transition-all hover:opacity-75 focus:ring focus:ring-gray-300 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none dark:border-gray-100 dark:text-white dark:hover:opacity-75 dark:focus:ring-dark dark:active:opacity-75 dark:disabled:pointer-events-none dark:disabled:opacity-50 dark:disabled:shadow-none">
-            <Sun className="h-4 w-4 mr-2" />
+            <SunIcon className="h-4 w-4 mr-2" />
             Light
           </button>
         ) : (
           <button
             onClick={toggleDarkMode}
             className="select-none inline-flex w-full rounded-lg border border-gray-900 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-gray-900 transition-all hover:opacity-75 focus:ring focus:ring-gray-300 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none dark:border-gray-100 dark:text-white dark:hover:opacity-75 dark:focus:ring-dark dark:active:opacity-75 dark:disabled:pointer-events-none dark:disabled:opacity-50 dark:disabled:shadow-none">
-            <Moon className="h-4 w-4 mr-2" />
+            <MoonIcon className="h-4 w-4 mr-2" />
             Dark
           </button>
         )}

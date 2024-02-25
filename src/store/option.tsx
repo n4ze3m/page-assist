@@ -1,11 +1,21 @@
 import { create } from "zustand"
 
+type WebSearch = {
+  search_engine: string
+  search_url: string
+  search_query: string
+  search_results: {
+    title: string
+    link: string
+  }[]
+}
 export type Message = {
   isBot: boolean
   name: string
   message: string
   sources: any[]
   images?: string[]
+  search?: WebSearch
 }
 
 export type ChatHistory = {
@@ -37,6 +47,10 @@ type State = {
   setIsEmbedding: (isEmbedding: boolean) => void
   speechToTextLanguage: string
   setSpeechToTextLanguage: (language: string) => void
+  webSearch: boolean;
+  setWebSearch: (webSearch: boolean) => void;
+  isSearchingInternet: boolean;
+  setIsSearchingInternet: (isSearchingInternet: boolean) => void;
 }
 
 export const useStoreMessageOption = create<State>((set) => ({
@@ -44,7 +58,7 @@ export const useStoreMessageOption = create<State>((set) => ({
   setMessages: (messages) => set({ messages }),
   history: [],
   setHistory: (history) => set({ history }),
-  streaming: true,
+  streaming: false,
   setStreaming: (streaming) => set({ streaming }),
   isFirstMessage: true,
   setIsFirstMessage: (isFirstMessage) => set({ isFirstMessage }),
@@ -62,5 +76,9 @@ export const useStoreMessageOption = create<State>((set) => ({
   chatMode: "normal",
   setChatMode: (chatMode) => set({ chatMode }),
   isEmbedding: false,
-  setIsEmbedding: (isEmbedding) => set({ isEmbedding })
+  setIsEmbedding: (isEmbedding) => set({ isEmbedding }),
+  webSearch: false,
+  setWebSearch: (webSearch) => set({ webSearch }),
+  isSearchingInternet: false,
+  setIsSearchingInternet: (isSearchingInternet) => set({ isSearchingInternet }),
 }))

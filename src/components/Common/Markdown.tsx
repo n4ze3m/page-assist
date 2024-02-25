@@ -5,9 +5,9 @@ import rehypeMathjax from "rehype-mathjax"
 import remarkMath from "remark-math"
 import ReactMarkdown from "react-markdown"
 import "property-information"
-import { ClipboardIcon, CheckIcon } from "@heroicons/react/24/outline"
 import React from "react"
 import { Tooltip } from "antd"
+import { CheckIcon, ClipboardIcon } from "lucide-react"
 
 export default function Markdown({ message }: { message: string }) {
   const [isBtnPressed, setIsBtnPressed] = React.useState(false)
@@ -23,7 +23,7 @@ export default function Markdown({ message }: { message: string }) {
   return (
     <React.Fragment>
       <ReactMarkdown
-        className="prose break-words dark:prose-invert text-sm prose-p:leading-relaxed prose-pre:p-0 dark:prose-dark"
+        className="prose break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0 dark:prose-dark"
         remarkPlugins={[remarkGfm, remarkMath]}
         rehypePlugins={[rehypeMathjax]}
         components={{
