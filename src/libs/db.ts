@@ -125,11 +125,12 @@ export const saveMessage = async (
   name: string,
   role: string,
   content: string,
-  images: string[]
+  images: string[],
+  source?: any[]
 ) => {
   const id = generateID()
   const createdAt = Date.now()
-  const message = { id, history_id, name, role, content, images, createdAt }
+  const message = { id, history_id, name, role, content, images, createdAt, sources: source }
   const db = new PageAssitDatabase()
   await db.addMessage(message)
   return message

@@ -7,8 +7,7 @@ import ReactMarkdown from "react-markdown"
 import "property-information"
 import React from "react"
 import { Tooltip } from "antd"
-import { ClipboardIcon } from "~icons/ClipboardIcon"
-import { CheckIcon } from "~icons/CheckIcon"
+import { CheckIcon, ClipboardIcon } from "lucide-react"
 
 export default function Markdown({ message }: { message: string }) {
   const [isBtnPressed, setIsBtnPressed] = React.useState(false)

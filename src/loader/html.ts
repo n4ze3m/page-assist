@@ -41,7 +41,7 @@ export class PageAssistHtmlLoader
       ]
     })
     const text = htmlCompiler(html)
-    const metadata = { source: this.url }
+    const metadata = { url: this.url }
     return [new Document({ pageContent: text, metadata })]
   }
 }

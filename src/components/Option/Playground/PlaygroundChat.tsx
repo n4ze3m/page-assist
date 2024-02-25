@@ -31,6 +31,7 @@ export const PlaygroundChat = () => {
           onRengerate={regenerateLastMessage}
           isProcessing={streaming}
           isSearchingInternet={isSearchingInternet}
+          sources={message.sources}
         />
       ))}
       {messages.length > 0 && (

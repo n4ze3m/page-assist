@@ -16,6 +16,7 @@
     "@langchain/community": "^0.0.21",
     "@langchain/core": "^0.1.22",
     "@mantine/form": "^7.5.0",
+    "@mantine/hooks": "^7.5.3",
     "@plasmohq/storage": "^1.9.0",
     "@tailwindcss/forms": "^0.5.7",
     "@tailwindcss/typography": "^0.5.10",

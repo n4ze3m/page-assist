@@ -1,6 +1,10 @@
 import React from "react"
 import { cleanUrl } from "~libs/clean-url"
-import { getOllamaURL, systemPromptForNonRagOption } from "~services/ollama"
+import {
+  geWebSearchFollowUpPrompt,
+  getOllamaURL,
+  systemPromptForNonRagOption
+} from "~services/ollama"
 import { type ChatHistory, type Message } from "~store/option"
 import { ChatOllama } from "@langchain/community/chat_models/ollama"
 import {
@@ -101,7 +105,6 @@ export const useMessageOption = () => {
     setIsSearchingInternet
   } = useStoreMessageOption()
 
-
   const navigate = useNavigate()
 
   const abortControllerRef = React.useRef<AbortController | null>(null)
@@ -158,7 +161,30 @@ export const useMessageOption = () => {
 
     try {
       setIsSearchingInternet(true)
-      const prompt = await getSystemPromptForWeb(message)
+
+      let query = message
+
+      if (newMessage.length > 2) {
+        let questionPrompt = await geWebSearchFollowUpPrompt()
+        const lastTenMessages = newMessage.slice(-10)
+        lastTenMessages.pop()
+        const chat_history = lastTenMessages
+          .map((message) => {
+            return `${message.isBot ? "Assistant: " : "Human: "}${message.message}`
+          })
+          .join("\n")
+        const promptForQuestion = questionPrompt
+          .replaceAll("{chat_history}", chat_history)
+          .replaceAll("{question}", message)
+        const questionOllama = new ChatOllama({
+          model: selectedModel,
+          baseUrl: cleanUrl(url)
+        })
+        const response = await questionOllama.invoke(promptForQuestion)
+        query = response.content.toString()
+      }
+
+      const { prompt, source } = await getSystemPromptForWeb(query)
       setIsSearchingInternet(false)
 
       message = message.trim().replaceAll("\n", " ")
@@ -228,6 +254,8 @@ export const useMessageOption = () => {
         appendingIndex
       ].message.slice(0, -1)
 
+      newMessage[appendingIndex].sources = source
+
       if (!isRegenerate) {
         setHistory([
           ...history,
@@ -260,7 +288,8 @@ export const useMessageOption = () => {
           selectedModel,
           "assistant",
           newMessage[appendingIndex].message,
-          []
+          [],
+          source
         )
       } else {
         const newHistoryId = await saveHistory(message)
@@ -272,7 +301,8 @@ export const useMessageOption = () => {
           selectedModel,
           "assistant",
           newMessage[appendingIndex].message,
-          []
+          [],
+          source
         )
         setHistoryId(newHistoryId.id)
       }
@@ -615,6 +645,6 @@ export const useMessageOption = () => {
     regenerateLastMessage,
     webSearch,
     setWebSearch,
-    isSearchingInternet,
+    isSearchingInternet
   }
 }

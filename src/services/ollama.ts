@@ -267,3 +267,16 @@ export const getWebSearchPrompt = async () => {
 export const setWebSearchPrompt = async (prompt: string) => {
   await storage.set("webSearchPrompt", prompt)
 }
+
+export const geWebSearchFollowUpPrompt = async () => {
+  const prompt = await storage.get("webSearchFollowUpPrompt")
+  if (!prompt || prompt.length === 0) {
+    return DEFAULT_RAG_QUESTION_PROMPT;
+  }
+  return prompt
+}
+
+
+export const setWebSearchFollowUpPrompt = async (prompt: string) => {
+  await storage.set("webSearchFollowUpPrompt", prompt)
+}
