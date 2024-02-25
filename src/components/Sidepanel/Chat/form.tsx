@@ -212,7 +212,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                 <Dropdown.Button
                   htmlType="submit"
                   disabled={
-                    isSending || form.values.message.trim().length === 0
+                    isSending
                   }
                   className="!justify-end !w-auto"
                   icon={
@@ -236,7 +236,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                         key: 1,
                         label: (
                           <Checkbox
-                            value={sendWhenEnter}
+                            checked={sendWhenEnter}
                             onChange={(e) =>
                               setSendWhenEnter(e.target.checked)
                             }>

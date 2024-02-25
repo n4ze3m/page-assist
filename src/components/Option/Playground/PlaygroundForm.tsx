@@ -262,9 +262,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                   {!isSending ? (
                     <Dropdown.Button
                       htmlType="submit"
-                      disabled={
-                        isSending || form.values.message.trim().length === 0
-                      }
+                      disabled={isSending}
                       className="!justify-end !w-auto"
                       icon={
                         <svg
@@ -287,7 +285,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                             key: 1,
                             label: (
                               <Checkbox
-                                value={sendWhenEnter}
+                                checked={sendWhenEnter}
                                 onChange={(e) =>
                                   setSendWhenEnter(e.target.checked)
                                 }>

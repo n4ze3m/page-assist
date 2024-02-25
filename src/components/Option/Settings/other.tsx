@@ -28,9 +28,9 @@ export const SettingOther = () => {
           options={SUPPORTED_LANGUAGES}
           value={speechToTextLanguage}
           filterOption={(input, option) =>
-                option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0 ||
-                option.value.toLowerCase().indexOf(input.toLowerCase()) >= 0
-              }
+            option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0 ||
+            option.value.toLowerCase().indexOf(input.toLowerCase()) >= 0
+          }
           onChange={(value) => {
             setSpeechToTextLanguage(value)
           }}

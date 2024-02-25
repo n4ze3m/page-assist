@@ -280,3 +280,9 @@ export const geWebSearchFollowUpPrompt = async () => {
 export const setWebSearchFollowUpPrompt = async (prompt: string) => {
   await storage.set("webSearchFollowUpPrompt", prompt)
 }
+
+
+export const setWebPrompts = async (prompt: string, followUpPrompt: string) => {
+  await setWebSearchPrompt(prompt)
+  await setWebSearchFollowUpPrompt(followUpPrompt)
+}
