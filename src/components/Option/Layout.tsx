@@ -4,7 +4,7 @@ import { useLocation, NavLink } from "react-router-dom"
 import { Sidebar } from "./Sidebar"
 import { Drawer, Layout, Modal, Select, Tooltip } from "antd"
 import { useQuery } from "@tanstack/react-query"
-import { fetchChatModels } from "~services/ollama"
+import {  getAllModels } from "~services/ollama"
 import { useMessageOption } from "~hooks/useMessageOption"
 import { Settings } from "./Settings"
 import { BrainCircuit, ChevronLeft, CogIcon, GithubIcon, PanelLeftIcon, SquarePen } from "lucide-react"
@@ -24,7 +24,7 @@ export default function OptionLayout({
     isFetching: isModelsFetching
   } = useQuery({
     queryKey: ["fetchModel"],
-    queryFn: fetchChatModels,
+    queryFn: getAllModels,
     refetchInterval: 15000
   })
 

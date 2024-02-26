@@ -4,7 +4,7 @@ import { RotateCcw } from "lucide-react"
 import { useEffect, useState } from "react"
 import { useMessage } from "~hooks/useMessage"
 import {
-  fetchChatModels,
+  getAllModels,
   getOllamaURL,
   isOllamaRunning,
   setOllamaURL as saveOllamaURL
@@ -22,7 +22,7 @@ export const EmptySidePanel = () => {
     queryFn: async () => {
       const ollamaURL = await getOllamaURL()
       const isOk = await isOllamaRunning()
-      const models = await fetchChatModels()
+      const models = await getAllModels()
 
       return {
         isOk,

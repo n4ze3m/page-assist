@@ -126,8 +126,8 @@ export const fetchChatModels = async () => {
     }[]
     return models.filter((model) => {
       return (
-        !model.details.families.includes("bert") &&
-        !model.details.families.includes("nomic-bert")
+        !model?.details?.families?.includes("bert") &&
+        !model?.details?.families?.includes("nomic-bert")
       )
     })
   } catch (e) {
