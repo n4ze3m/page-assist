@@ -40,7 +40,14 @@ export const localGoogleSearch = async (query: string) => {
     (result) => {
       const title = result.querySelector("h3")?.textContent
       const link = result.querySelector("a")?.getAttribute("href")
-      return { title, link }
+      let content = result.querySelector("div[data-sncf='2']")?.textContent 
+      if(content === "") {
+        content = result.querySelector("div[data-sncf='1']")?.textContent
+        if(content === "") {
+          content = result.querySelector("div[data-sncf='3']")?.textContent
+        }
+      }
+      return { title, link, content }
     }
   )
   const filteredSearchResults = searchResults

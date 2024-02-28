@@ -4,6 +4,7 @@ import { useDarkMode } from "~hooks/useDarkmode"
 import { SidepanelSettings } from "./sidepanel-settings"
 import { OptionIndex } from "./option-index"
 import { OptionModal } from "./option-model"
+import { OptionPrompt } from "./option-prompt"
 
 export const OptionRouting = () => {
   const { mode } = useDarkMode()
@@ -13,6 +14,7 @@ export const OptionRouting = () => {
       <Routes>
         <Route path="/" element={<OptionIndex />} />
         <Route path="/models" element={<OptionModal />} />
+        <Route path="/prompts" element={<OptionPrompt />} />
       </Routes>
     </div>
   )

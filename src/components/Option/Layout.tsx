@@ -4,11 +4,17 @@ import { useLocation, NavLink } from "react-router-dom"
 import { Sidebar } from "./Sidebar"
 import { Drawer, Layout, Modal, Select, Tooltip } from "antd"
 import { useQuery } from "@tanstack/react-query"
-import {  getAllModels } from "~services/ollama"
+import { getAllModels } from "~services/ollama"
 import { useMessageOption } from "~hooks/useMessageOption"
 import { Settings } from "./Settings"
-import { BrainCircuit, ChevronLeft, CogIcon, GithubIcon, PanelLeftIcon, SquarePen } from "lucide-react"
-
+import {
+  Book,
+  BrainCircuit,
+  ChevronLeft,
+  CogIcon,
+  PanelLeftIcon,
+  SquarePen
+} from "lucide-react"
 
 export default function OptionLayout({
   children
@@ -83,14 +89,21 @@ export default function OptionLayout({
           </div>
         </div>
         <div className="flex gap-4 items-center">
-          <Tooltip title="Github Repository">
+          <Tooltip title="Manage Prompts">
+            <NavLink
+              to="/prompts"
+              className="!text-gray-500 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+              <Book className="w-6 h-6" />
+            </NavLink>
+          </Tooltip>
+          {/* <Tooltip title="Github Repository">
             <a
               href="https://github.com/n4ze3m/page-assist"
               target="_blank"
               className="!text-gray-500 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
               <GithubIcon className="w-6 h-6" />
             </a>
-          </Tooltip>
+          </Tooltip> */}
           <Tooltip title="Manage Ollama Models">
             <NavLink
               to="/models"

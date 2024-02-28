@@ -31,9 +31,21 @@ type Message = {
   createdAt: number
 }
 
+
+type Prompt = {
+  id: string
+  title: string
+  content: string
+  is_system: boolean
+  createdBy?: string
+  createdAt: number
+}
+
 type MessageHistory = Message[]
 
 type ChatHistory = HistoryInfo[]
+
+type Prompts = Prompt[]
 
 export class PageAssitDatabase {
   db: chrome.storage.StorageArea
@@ -102,7 +114,48 @@ export class PageAssitDatabase {
   async deleteMessage(history_id: string) {
     await this.db.remove(history_id)
   }
+
+
+  async getAllPrompts(): Promise<Prompts> {
+    return new Promise((resolve, reject) => {
+      this.db.get("prompts", (result) => {
+        resolve(result.prompts || [])
+      })
+    })
+  }
+
+  async addPrompt(prompt: Prompt) {
+    const prompts = await this.getAllPrompts()
+    const newPrompts = [prompt, ...prompts]
+    this.db.set({ prompts: newPrompts })
+  }
+
+  async deletePrompt(id: string) {
+    const prompts = await this.getAllPrompts()
+    const newPrompts = prompts.filter((prompt) => prompt.id !== id)
+    this.db.set({ prompts: newPrompts })
+  }
+
+  async updatePrompt(id: string, title: string, content: string, is_system: boolean) {
+    const prompts = await this.getAllPrompts()
+    const newPrompts = prompts.map((prompt) => {
+      if (prompt.id === id) {
+        prompt.title = title
+        prompt.content = content
+        prompt.is_system = is_system
+      }
+      return prompt
+    })
+    this.db.set({ prompts: newPrompts })
+  }
+
+  async getPromptById(id: string) {
+    const prompts = await this.getAllPrompts()
+    return prompts.find((prompt) => prompt.id === id)
+  }
+
 }
+
 
 const generateID = () => {
   return "pa_xxxx-xxxx-xxx-xxxx".replace(/[x]/g, () => {
@@ -187,4 +240,40 @@ export const removeMessageUsingHistoryId = async (history_id: string) => {
   const chatHistory = await db.getChatHistory(history_id)
   const newChatHistory = chatHistory.slice(0, -1)
   await db.db.set({ [history_id]: newChatHistory })
+}
+
+
+export const getAllPrompts = async () => {
+  const db = new PageAssitDatabase()
+  return await db.getAllPrompts()
+}
+
+
+export const savePrompt = async ({ content, title, is_system = false }: { title: string, content: string, is_system: boolean }) => {
+  const db = new PageAssitDatabase()
+  const id = generateID()
+  const createdAt = Date.now()
+  const prompt = { id, title, content, is_system, createdAt }
+  await db.addPrompt(prompt)
+  return prompt
+}
+
+
+export const deletePromptById = async (id: string) => {
+  const db = new PageAssitDatabase()
+  await db.deletePrompt(id)
+  return id
+}
+
+
+export const updatePrompt = async ({ content, id, title, is_system }: { id: string, title: string, content: string, is_system: boolean }) => {
+  const db = new PageAssitDatabase()
+  await db.updatePrompt(id, title, content, is_system)
+  return id
+}
+
+
+export const getPromptById = async (id: string) => {
+  const db = new PageAssitDatabase()
+  return await db.getPromptById(id)
 }
