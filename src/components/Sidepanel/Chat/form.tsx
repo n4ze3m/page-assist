@@ -216,9 +216,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                 </Tooltip>
                 <Dropdown.Button
                   htmlType="submit"
-                  disabled={
-                    isSending
-                  }
+                  disabled={isSending}
                   className="!justify-end !w-auto"
                   icon={
                     <svg
