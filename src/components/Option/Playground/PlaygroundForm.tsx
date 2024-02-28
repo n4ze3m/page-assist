@@ -19,23 +19,21 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
   const textareaRef = React.useRef<HTMLTextAreaElement>(null)
   const inputRef = React.useRef<HTMLInputElement>(null)
 
-  const resetHeight = () => {
-    const textarea = textareaRef.current
-    if (textarea) {
-      textarea.style.height = "auto"
+  const textAreaFocus = () => {
+    if (textareaRef.current) {
+      textareaRef.current.focus()
     }
   }
   const form = useForm({
     initialValues: {
       message: "",
       image: ""
-    }
+    },
+    
   })
 
   React.useEffect(() => {
-    if (textareaRef.current) {
-      textareaRef.current.focus()
-    }
+    textAreaFocus()
   }, [])
 
   const onInputChange = async (
@@ -85,9 +83,13 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
   const { mutateAsync: sendMessage } = useMutation({
     mutationFn: onSubmit,
     onSuccess: () => {
+      textAreaFocus()
       queryClient.invalidateQueries({
         queryKey: ["fetchChatHistory"]
       })
+    },
+    onError: (error) => {
+      textAreaFocus()
     }
   })
 
@@ -133,11 +135,12 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                 }
               }
               form.reset()
-              resetHeight()
+              textAreaFocus()
               await sendMessage({
                 image: value.image,
                 message: value.message.trim()
               })
+       
             })}
             className="shrink-0 flex-grow  flex flex-col items-center ">
             <input
@@ -179,7 +182,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                         }
                       }
                       form.reset()
-                      resetHeight()
+                      textAreaFocus()
                       await sendMessage({
                         image: value.image,
                         message: value.message.trim()

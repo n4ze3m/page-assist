@@ -19,10 +19,9 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
   const inputRef = React.useRef<HTMLInputElement>(null)
   const { sendWhenEnter, setSendWhenEnter } = useWebUI()
 
-  const resetHeight = () => {
-    const textarea = textareaRef.current
-    if (textarea) {
-      textarea.style.height = "auto"
+  const textAreaFocus = () => {
+    if (textareaRef.current) {
+      textareaRef.current.focus()
     }
   }
   const form = useForm({
@@ -64,7 +63,13 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
     }
   }, [transcript])
   const { mutateAsync: sendMessage, isPending: isSending } = useMutation({
-    mutationFn: onSubmit
+    mutationFn: onSubmit,
+    onSuccess: () => {
+      textAreaFocus()
+    },
+    onError: (error) => {
+      textAreaFocus()
+    }
   })
 
   return (
@@ -109,7 +114,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                 }
               }
               form.reset()
-              resetHeight()
+              textAreaFocus()
               await sendMessage({
                 image: value.image,
                 message: value.message.trim()
@@ -155,7 +160,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                         }
                       }
                       form.reset()
-                      resetHeight()
+                      textAreaFocus()
                       await sendMessage({
                         image: value.image,
                         message: value.message.trim()
