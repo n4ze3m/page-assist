@@ -21,7 +21,6 @@
     "@tailwindcss/forms": "^0.5.7",
     "@tailwindcss/typography": "^0.5.10",
     "@tanstack/react-query": "^5.17.19",
-    "@types/pdf-parse": "^1.1.4",
     "antd": "^5.13.3",
     "axios": "^1.6.7",
     "dayjs": "^1.11.10",
@@ -39,7 +38,6 @@
     "rehype-mathjax": "4.0.3",
     "remark-gfm": "3.0.1",
     "remark-math": "5.1.1",
-    "voy-search": "^0.6.3",
     "zustand": "^4.5.0"
   },
   "devDependencies": {

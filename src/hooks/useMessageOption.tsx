@@ -310,7 +310,7 @@ export const useMessageOption = () => {
       setIsProcessing(false)
       setStreaming(false)
     } catch (e) {
-      console.log(e)
+      (e)
 
       if (e?.name === "AbortError") {
         newMessage[appendingIndex].message = newMessage[
@@ -526,7 +526,6 @@ export const useMessageOption = () => {
       setIsProcessing(false)
       setStreaming(false)
     } catch (e) {
-      console.log(e)
 
       if (e?.name === "AbortError") {
         newMessage[appendingIndex].message = newMessage[
