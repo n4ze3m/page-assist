@@ -17,8 +17,20 @@ type Props = {
 }
 
 export const PlaygroundForm = ({ dropedFile }: Props) => {
-  const textareaRef = React.useRef<HTMLTextAreaElement>(null)
   const inputRef = React.useRef<HTMLInputElement>(null)
+  const {
+    onSubmit,
+    selectedModel,
+    chatMode,
+    speechToTextLanguage,
+    stopStreamingRequest,
+    streaming: isSending,
+    webSearch,
+    setWebSearch,
+    selectedQuickPrompt,
+    textareaRef,
+    setSelectedQuickPrompt
+  } = useMessageOption()
 
   const textAreaFocus = () => {
     if (textareaRef.current) {
@@ -62,19 +74,6 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
 
   useDynamicTextareaSize(textareaRef, form.values.message, 300)
 
-  const {
-    onSubmit,
-    selectedModel,
-    chatMode,
-    speechToTextLanguage,
-    stopStreamingRequest,
-    streaming: isSending,
-    webSearch,
-    setWebSearch,
-    selectedQuickPrompt,
-    setSelectedQuickPrompt
-  } = useMessageOption()
-
   const { isListening, start, stop, transcript } = useSpeechRecognition()
   const { sendWhenEnter, setSendWhenEnter } = useWebUI()
 
@@ -92,6 +91,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
         textareaRef.current?.focus()
         const interval = setTimeout(() => {
           textareaRef.current?.setSelectionRange(word.start, word.end)
+          setSelectedQuickPrompt(null)
         }, 100)
         return () => {
           clearInterval(interval)

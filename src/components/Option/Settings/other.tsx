@@ -5,6 +5,7 @@ import { PageAssitDatabase } from "~libs/db"
 import { Select } from "antd"
 import { SUPPORTED_LANGUAGES } from "~utils/supporetd-languages"
 import { MoonIcon, SunIcon } from "lucide-react"
+import { SearchModeSettings } from "./search-mode"
 
 export const SettingOther = () => {
   const { clearChat, speechToTextLanguage, setSpeechToTextLanguage } =
@@ -82,6 +83,7 @@ export const SettingOther = () => {
           Delete
         </button>
       </div>
+      <SearchModeSettings />
     </dl>
   )
 }

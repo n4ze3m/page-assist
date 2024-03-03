@@ -115,6 +115,7 @@ export const useMessageOption = () => {
   } = useStoreMessageOption()
 
   const navigate = useNavigate()
+  const textareaRef = React.useRef<HTMLTextAreaElement>(null)
 
   const abortControllerRef = React.useRef<AbortController | null>(null)
 
@@ -126,6 +127,7 @@ export const useMessageOption = () => {
     setIsLoading(false)
     setIsProcessing(false)
     setStreaming(false)
+    textareaRef?.current?.focus()
     navigate("/")
   }
 
@@ -671,6 +673,7 @@ export const useMessageOption = () => {
     selectedQuickPrompt,
     setSelectedQuickPrompt,
     selectedSystemPrompt,
-    setSelectedSystemPrompt
+    setSelectedSystemPrompt,
+    textareaRef
   }
 }
