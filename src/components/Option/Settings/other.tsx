@@ -15,9 +15,15 @@ export const SettingOther = () => {
   const { mode, toggleDarkMode } = useDarkMode()
 
   return (
-    <div className="flex flex-col space-y-4">
+    <dl className="flex flex-col space-y-6">
+      <div>
+        <h2 className="text-base font-semibold leading-7 text-gray-900 dark:text-white">
+          Web UI Settings
+        </h2>
+        <div className="border border-b border-gray-200 dark:border-gray-600 mt-3"></div>
+      </div>
       <div className="flex flex-row justify-between">
-        <span className="text-gray-500 dark:text-gray-400 text-md">
+        <span className="text-gray-500 dark:text-gray-400 text-lg">
           Speech Recognition Language
         </span>
 
@@ -37,7 +43,7 @@ export const SettingOther = () => {
         />
       </div>
       <div className="flex flex-row justify-between">
-        <span className="text-gray-500 dark:text-gray-400 text-md">
+        <span className="text-gray-500 dark:text-gray-400 text-lg">
           Change Theme
         </span>
 
@@ -53,7 +59,7 @@ export const SettingOther = () => {
         </button>
       </div>
       <div className="flex flex-row justify-between">
-        <span className="text-gray-500 dark:text-gray-400 text-md">
+        <span className="text-gray-500 dark:text-gray-400 text-lg">
           Delete Chat History
         </span>
 
@@ -76,6 +82,6 @@ export const SettingOther = () => {
           Delete
         </button>
       </div>
-    </div>
+    </dl>
   )
 }

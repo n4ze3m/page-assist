@@ -60,10 +60,13 @@ export const isOllamaRunning = async () => {
   }
 }
 
-export const getAllModels = async () => {
+export const getAllModels = async ({ returnEmpty = false }: { returnEmpty?: boolean }) => {
   const baseUrl = await getOllamaURL()
   const response = await fetch(`${cleanUrl(baseUrl)}/api/tags`)
   if (!response.ok) {
+    if (returnEmpty) {
+      return []
+    }
     throw new Error(response.statusText)
   }
   const json = await response.json()

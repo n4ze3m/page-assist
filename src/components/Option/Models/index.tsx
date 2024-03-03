@@ -22,7 +22,7 @@ export const ModelsBody = () => {
 
   const { data, status } = useQuery({
     queryKey: ["fetchAllModels"],
-    queryFn: getAllModels
+    queryFn: () => getAllModels({ returnEmpty: true })
   })
 
   const { mutate: deleteOllamaModel } = useMutation({
@@ -67,8 +67,8 @@ export const ModelsBody = () => {
   })
 
   return (
-    <div className="z-10 min-h-screen">
-      <div className="mt-16 mx-auto py-10 max-w-7xl px-3 sm:px-6 lg:px-8">
+    <div>
+      <div>
         {/* Add new model button */}
         <div className="mb-6">
           <div className="-ml-4 -mt-2 flex flex-wrap items-center justify-end sm:flex-nowrap">

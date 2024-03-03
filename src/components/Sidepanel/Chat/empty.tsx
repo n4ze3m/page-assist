@@ -22,7 +22,7 @@ export const EmptySidePanel = () => {
     queryFn: async () => {
       const ollamaURL = await getOllamaURL()
       const isOk = await isOllamaRunning()
-      const models = await getAllModels()
+      const models = await getAllModels({ returnEmpty: false })
 
       return {
         isOk,
