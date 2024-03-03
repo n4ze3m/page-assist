@@ -274,6 +274,7 @@ export const updatePrompt = async ({ content, id, title, is_system }: { id: stri
 
 
 export const getPromptById = async (id: string) => {
+  if (!id || id.trim() === "") return null
   const db = new PageAssitDatabase()
   return await db.getPromptById(id)
 }

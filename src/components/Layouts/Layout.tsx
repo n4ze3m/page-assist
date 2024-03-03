@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 
 import { useLocation, NavLink } from "react-router-dom"
-import { Sidebar } from "./Sidebar"
+import { Sidebar } from "../Option/Sidebar"
 import { Drawer, Select, Tooltip } from "antd"
 import { useQuery } from "@tanstack/react-query"
 import { getAllModels } from "~services/ollama"
@@ -9,10 +9,13 @@ import { useMessageOption } from "~hooks/useMessageOption"
 import {
   ChevronLeft,
   CogIcon,
+  ComputerIcon,
   GithubIcon,
   PanelLeftIcon,
-  SquarePen
+  SquarePen,
+  ZapIcon
 } from "lucide-react"
+import { getAllPrompts } from "~libs/db"
 
 export default function OptionLayout({
   children
@@ -20,6 +23,14 @@ export default function OptionLayout({
   children: React.ReactNode
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const {
+    selectedModel,
+    setSelectedModel,
+    clearChat,
+    selectedSystemPrompt,
+    setSelectedQuickPrompt,
+    setSelectedSystemPrompt
+  } = useMessageOption()
 
   const {
     data: models,
@@ -27,12 +38,30 @@ export default function OptionLayout({
     isFetching: isModelsFetching
   } = useQuery({
     queryKey: ["fetchModel"],
-    queryFn: getAllModels,
+    queryFn: () => getAllModels({ returnEmpty: true }),
     refetchInterval: 15000
   })
 
+  const { data: prompts, isLoading: isPromptLoading } = useQuery({
+    queryKey: ["fetchAllPromptsLayout"],
+    queryFn: getAllPrompts
+  })
+
   const { pathname } = useLocation()
-  const { selectedModel, setSelectedModel, clearChat } = useMessageOption()
+
+  const getPromptInfoById = (id: string) => {
+    return prompts?.find((prompt) => prompt.id === id)
+  }
+
+  const handlePromptChange = (value: string) => {
+    const prompt = getPromptInfoById(value)
+    if (prompt?.is_system) {
+      setSelectedSystemPrompt(prompt.id)
+    } else {
+      setSelectedQuickPrompt(prompt.content)
+      setSelectedSystemPrompt(null)
+    }
+  }
 
   return (
     <div>
@@ -84,6 +113,41 @@ export default function OptionLayout({
                   options={models?.map((model) => ({
                     label: model.name,
                     value: model.model
+                  }))}
+                />
+              </div>
+              <span className="text-lg font-thin text-zinc-300 dark:text-zinc-600">
+                {"/"}
+              </span>
+              <div>
+                <Select
+                  size="large"
+                  loading={isPromptLoading}
+                  showSearch
+                  placeholder="Select a prompt"
+                  className="w-60"
+                  allowClear
+                  onChange={handlePromptChange}
+                  value={selectedSystemPrompt}
+                  filterOption={(input, option) =>
+                    option.label.key
+                      .toLowerCase()
+                      .indexOf(input.toLowerCase()) >= 0
+                  }
+                  options={prompts?.map((prompt) => ({
+                    label: (
+                      <span
+                        key={prompt.title}
+                        className="flex flex-row justify-between items-center">
+                        {prompt.title}
+                        {prompt.is_system ? (
+                          <ComputerIcon className="w-4 h-4" />
+                        ) : (
+                          <ZapIcon className="w-4 h-4" />
+                        )}
+                      </span>
+                    ),
+                    value: prompt.id
                   }))}
                 />
               </div>

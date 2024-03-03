@@ -10,6 +10,7 @@ import { useSpeechRecognition } from "~hooks/useSpeechRecognition"
 import { useWebUI } from "~store/webui"
 import { defaultEmbeddingModelForRag } from "~services/ollama"
 import { ImageIcon, MicIcon, StopCircleIcon, X } from "lucide-react"
+import { getVariable } from "~utils/select-varaible"
 
 type Props = {
   dropedFile: File | undefined
@@ -21,7 +22,11 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
 
   const textAreaFocus = () => {
     if (textareaRef.current) {
-      textareaRef.current.focus()
+      if (
+        textareaRef.current.selectionStart === textareaRef.current.selectionEnd
+      ) {
+        textareaRef.current.focus()
+      }
     }
   }
   const form = useForm({
@@ -65,7 +70,9 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
     stopStreamingRequest,
     streaming: isSending,
     webSearch,
-    setWebSearch
+    setWebSearch,
+    selectedQuickPrompt,
+    setSelectedQuickPrompt
   } = useMessageOption()
 
   const { isListening, start, stop, transcript } = useSpeechRecognition()
@@ -76,6 +83,22 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
       form.setFieldValue("message", transcript)
     }
   }, [transcript])
+
+  React.useEffect(() => {
+    if (selectedQuickPrompt) {
+      const word = getVariable(selectedQuickPrompt)
+      form.setFieldValue("message", selectedQuickPrompt)
+      if (word) {
+        textareaRef.current?.focus()
+        const interval = setTimeout(() => {
+          textareaRef.current?.setSelectionRange(word.start, word.end)
+        }, 100)
+        return () => {
+          clearInterval(interval)
+        }
+      }
+    }
+  }, [selectedQuickPrompt])
 
   const queryClient = useQueryClient()
 

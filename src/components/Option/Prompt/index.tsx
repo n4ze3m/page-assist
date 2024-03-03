@@ -2,7 +2,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import {
   Skeleton,
   Table,
-  Tag,
   Tooltip,
   notification,
   Modal,
@@ -10,7 +9,7 @@ import {
   Form,
   Switch
 } from "antd"
-import { Trash2, Pen } from "lucide-react"
+import { Trash2, Pen, Computer, Zap } from "lucide-react"
 import { useState } from "react"
 import {
   deletePromptById,
@@ -131,14 +130,21 @@ export const PromptBody = () => {
                 key: "content"
               },
               {
-                title: "Is System Prompt",
+                title: "Prompt Type",
                 dataIndex: "is_system",
                 key: "is_system",
-                render: (is_system) => (
-                  <Tag color={is_system ? "green" : "blue"}>
-                    {is_system ? "Yes" : "No"}
-                  </Tag>
-                )
+                render: (is_system) =>
+                  is_system ? (
+                    <span className="flex justify-between">
+                       <Computer className="w-5 h-5 mr-3" />
+                       System Prompt
+                    </span>
+                  ) : (
+                    <span className="flex justify-between">
+                      <Zap className="w-5 h-5 mr-3" />
+                      Quick Prompt
+                    </span>
+                  )
               },
               {
                 title: "Action",
