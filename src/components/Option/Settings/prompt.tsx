@@ -1,5 +1,5 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query"
-import { Skeleton, Radio, Form } from "antd"
+import { Skeleton, Radio, Form, Alert } from "antd"
 import React from "react"
 import { SaveButton } from "~components/Common/SaveButton"
 import {
@@ -12,7 +12,7 @@ import {
 
 export const SettingPrompt = () => {
   const [selectedValue, setSelectedValue] = React.useState<"normal" | "web">(
-    "normal"
+    "web"
   )
 
   const queryClient = useQueryClient()
@@ -41,7 +41,6 @@ export const SettingPrompt = () => {
 
       {status === "success" && (
         <div>
-          <h2 className="text-md font-semibold dark:text-white">Prompt</h2>
           <div className="my-3 flex justify-end">
             <Radio.Group
               defaultValue={selectedValue}
@@ -63,6 +62,14 @@ export const SettingPrompt = () => {
               initialValues={{
                 prompt: data.prompt
               }}>
+              <Form.Item>
+                <Alert
+                  message="Configuring the system prompt here is deprecated. Please use the Manage Prompts section to add or edit prompts. This section will be removed in a future release"
+                  type="warning"
+                  showIcon
+                  closable
+                />
+              </Form.Item>
               <Form.Item label="System Prompt" name="prompt">
                 <textarea
                   value={data.prompt}

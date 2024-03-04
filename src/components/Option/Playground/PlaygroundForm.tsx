@@ -10,19 +10,35 @@ import { useSpeechRecognition } from "~hooks/useSpeechRecognition"
 import { useWebUI } from "~store/webui"
 import { defaultEmbeddingModelForRag } from "~services/ollama"
 import { ImageIcon, MicIcon, StopCircleIcon, X } from "lucide-react"
+import { getVariable } from "~utils/select-varaible"
 
 type Props = {
   dropedFile: File | undefined
 }
 
 export const PlaygroundForm = ({ dropedFile }: Props) => {
-  const textareaRef = React.useRef<HTMLTextAreaElement>(null)
   const inputRef = React.useRef<HTMLInputElement>(null)
+  const {
+    onSubmit,
+    selectedModel,
+    chatMode,
+    speechToTextLanguage,
+    stopStreamingRequest,
+    streaming: isSending,
+    webSearch,
+    setWebSearch,
+    selectedQuickPrompt,
+    textareaRef,
+    setSelectedQuickPrompt
+  } = useMessageOption()
 
-  const resetHeight = () => {
-    const textarea = textareaRef.current
-    if (textarea) {
-      textarea.style.height = "auto"
+  const textAreaFocus = () => {
+    if (textareaRef.current) {
+      if (
+        textareaRef.current.selectionStart === textareaRef.current.selectionEnd
+      ) {
+        textareaRef.current.focus()
+      }
     }
   }
   const form = useForm({
@@ -33,9 +49,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
   })
 
   React.useEffect(() => {
-    if (textareaRef.current) {
-      textareaRef.current.focus()
-    }
+    textAreaFocus()
   }, [])
 
   const onInputChange = async (
@@ -60,17 +74,6 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
 
   useDynamicTextareaSize(textareaRef, form.values.message, 300)
 
-  const {
-    onSubmit,
-    selectedModel,
-    chatMode,
-    speechToTextLanguage,
-    stopStreamingRequest,
-    streaming: isSending,
-    webSearch,
-    setWebSearch
-  } = useMessageOption()
-
   const { isListening, start, stop, transcript } = useSpeechRecognition()
   const { sendWhenEnter, setSendWhenEnter } = useWebUI()
 
@@ -80,17 +83,75 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
     }
   }, [transcript])
 
+  React.useEffect(() => {
+    if (selectedQuickPrompt) {
+      const word = getVariable(selectedQuickPrompt)
+      form.setFieldValue("message", selectedQuickPrompt)
+      if (word) {
+        textareaRef.current?.focus()
+        const interval = setTimeout(() => {
+          textareaRef.current?.setSelectionRange(word.start, word.end)
+          setSelectedQuickPrompt(null)
+        }, 100)
+        return () => {
+          clearInterval(interval)
+        }
+      }
+    }
+  }, [selectedQuickPrompt])
+
   const queryClient = useQueryClient()
 
   const { mutateAsync: sendMessage } = useMutation({
     mutationFn: onSubmit,
     onSuccess: () => {
+      textAreaFocus()
       queryClient.invalidateQueries({
         queryKey: ["fetchChatHistory"]
       })
+    },
+    onError: (error) => {
+      textAreaFocus()
     }
   })
 
+  const handleKeyDown = (e: KeyboardEvent) => {
+    if (e.key === "Process" || e.key === "229") return
+    if (
+      e.key === "Enter" &&
+      !e.shiftKey &&
+      !isSending &&
+      sendWhenEnter &&
+      !e.isComposing
+    ) {
+      e.preventDefault()
+      form.onSubmit(async (value) => {
+        if (value.message.trim().length === 0) {
+          return
+        }
+        if (!selectedModel || selectedModel.length === 0) {
+          form.setFieldError("message", "Please select a model")
+          return
+        }
+        if (webSearch) {
+          const defaultEM = await defaultEmbeddingModelForRag()
+          if (!defaultEM) {
+            form.setFieldError(
+              "message",
+              "Please set an embedding model on the Settings > Ollama page"
+            )
+            return
+          }
+        }
+        form.reset()
+        textAreaFocus()
+        await sendMessage({
+          image: value.image,
+          message: value.message.trim()
+        })
+      })()
+    }
+  }
   return (
     <div className="px-3 pt-3 md:px-6 md:pt-6 md:bg-white dark:bg-[#262626] border rounded-t-xl border-black/10 dark:border-gray-600">
       <div
@@ -133,7 +194,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                 }
               }
               form.reset()
-              resetHeight()
+              textAreaFocus()
               await sendMessage({
                 image: value.image,
                 message: value.message.trim()
@@ -152,41 +213,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
             />
             <div className="w-full border-x border-t flex flex-col dark:border-gray-600 rounded-t-xl p-2">
               <textarea
-                onKeyDown={(e) => {
-                  if (
-                    e.key === "Enter" &&
-                    !e.shiftKey &&
-                    !isSending &&
-                    sendWhenEnter
-                  ) {
-                    e.preventDefault()
-                    form.onSubmit(async (value) => {
-                      if (value.message.trim().length === 0) {
-                        return
-                      }
-                      if (!selectedModel || selectedModel.length === 0) {
-                        form.setFieldError("message", "Please select a model")
-                        return
-                      }
-                      if (webSearch) {
-                        const defaultEM = await defaultEmbeddingModelForRag()
-                        if (!defaultEM) {
-                          form.setFieldError(
-                            "message",
-                            "Please set an embedding model on the Settings > Ollama page"
-                          )
-                          return
-                        }
-                      }
-                      form.reset()
-                      resetHeight()
-                      await sendMessage({
-                        image: value.image,
-                        message: value.message.trim()
-                      })
-                    })()
-                  }
-                }}
+                onKeyDown={(e) => handleKeyDown(e as unknown as KeyboardEvent)}
                 ref={textareaRef}
                 className="px-2 py-2 w-full resize-none bg-transparent focus-within:outline-none focus:ring-0 focus-visible:ring-0 ring-0 dark:ring-0 border-0 dark:text-gray-100"
                 required

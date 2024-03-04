@@ -60,10 +60,13 @@ export const isOllamaRunning = async () => {
   }
 }
 
-export const getAllModels = async () => {
+export const getAllModels = async ({ returnEmpty = false }: { returnEmpty?: boolean }) => {
   const baseUrl = await getOllamaURL()
   const response = await fetch(`${cleanUrl(baseUrl)}/api/tags`)
   if (!response.ok) {
+    if (returnEmpty) {
+      return []
+    }
     throw new Error(response.statusText)
   }
   const json = await response.json()
@@ -285,4 +288,18 @@ export const setWebSearchFollowUpPrompt = async (prompt: string) => {
 export const setWebPrompts = async (prompt: string, followUpPrompt: string) => {
   await setWebSearchPrompt(prompt)
   await setWebSearchFollowUpPrompt(followUpPrompt)
+}
+
+export const getIsSimpleInternetSearch = async () => {
+  const isSimpleInternetSearch = await storage.get("isSimpleInternetSearch")
+  if (!isSimpleInternetSearch || isSimpleInternetSearch.length === 0) {
+    return true
+  }
+  return isSimpleInternetSearch === "true"
+}
+
+
+
+export const setIsSimpleInternetSearch = async (isSimpleInternetSearch: boolean) => {
+  await storage.set("isSimpleInternetSearch", isSimpleInternetSearch.toString())
 }

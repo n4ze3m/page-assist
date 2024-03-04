@@ -19,10 +19,9 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
   const inputRef = React.useRef<HTMLInputElement>(null)
   const { sendWhenEnter, setSendWhenEnter } = useWebUI()
 
-  const resetHeight = () => {
-    const textarea = textareaRef.current
-    if (textarea) {
-      textarea.style.height = "auto"
+  const textAreaFocus = () => {
+    if (textareaRef.current) {
+      textareaRef.current.focus()
     }
   }
   const form = useForm({
@@ -64,8 +63,52 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
     }
   }, [transcript])
   const { mutateAsync: sendMessage, isPending: isSending } = useMutation({
-    mutationFn: onSubmit
+    mutationFn: onSubmit,
+    onSuccess: () => {
+      textAreaFocus()
+    },
+    onError: (error) => {
+      textAreaFocus()
+    }
   })
+
+  const handleKeyDown = (e: KeyboardEvent) => {
+    if (e.key === "Process" || e.key === "229") return
+    if (
+      e.key === "Enter" &&
+      !e.shiftKey &&
+      !isSending &&
+      sendWhenEnter &&
+      !e.isComposing
+    ) {
+      e.preventDefault()
+      form.onSubmit(async (value) => {
+        if (value.message.trim().length === 0) {
+          return
+        }
+        if (!selectedModel || selectedModel.length === 0) {
+          form.setFieldError("message", "Please select a model")
+          return
+        }
+        if (chatMode === "rag") {
+          const defaultEM = await defaultEmbeddingModelForRag()
+          if (!defaultEM) {
+            form.setFieldError(
+              "message",
+              "Please set an embedding model on the settings page"
+            )
+            return
+          }
+        }
+        form.reset()
+        textAreaFocus()
+        await sendMessage({
+          image: value.image,
+          message: value.message.trim()
+        })
+      })()
+    }
+  }
 
   return (
     <div className="px-3 pt-3 md:px-6 md:pt-6 md:bg-white dark:bg-[#262626] border rounded-t-xl border-black/10 dark:border-gray-600">
@@ -109,7 +152,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                 }
               }
               form.reset()
-              resetHeight()
+              textAreaFocus()
               await sendMessage({
                 image: value.image,
                 message: value.message.trim()
@@ -128,41 +171,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
             />
             <div className="w-full border-x border-t flex flex-col dark:border-gray-600 rounded-t-xl p-2">
               <textarea
-                onKeyDown={(e) => {
-                  if (
-                    e.key === "Enter" &&
-                    !e.shiftKey &&
-                    !isSending &&
-                    sendWhenEnter
-                  ) {
-                    e.preventDefault()
-                    form.onSubmit(async (value) => {
-                      if (value.message.trim().length === 0) {
-                        return
-                      }
-                      if (!selectedModel || selectedModel.length === 0) {
-                        form.setFieldError("message", "Please select a model")
-                        return
-                      }
-                      if (chatMode === "rag") {
-                        const defaultEM = await defaultEmbeddingModelForRag()
-                        if (!defaultEM) {
-                          form.setFieldError(
-                            "message",
-                            "Please set an embedding model on the settings page"
-                          )
-                          return
-                        }
-                      }
-                      form.reset()
-                      resetHeight()
-                      await sendMessage({
-                        image: value.image,
-                        message: value.message.trim()
-                      })
-                    })()
-                  }
-                }}
+                onKeyDown={(e) => handleKeyDown(e as unknown as KeyboardEvent)}
                 ref={textareaRef}
                 className="px-2 py-2 w-full resize-none bg-transparent focus-within:outline-none focus:ring-0 focus-visible:ring-0 ring-0 dark:ring-0 border-0 dark:text-gray-100"
                 required
@@ -211,9 +220,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                 </Tooltip>
                 <Dropdown.Button
                   htmlType="submit"
-                  disabled={
-                    isSending
-                  }
+                  disabled={isSending}
                   className="!justify-end !w-auto"
                   icon={
                     <svg

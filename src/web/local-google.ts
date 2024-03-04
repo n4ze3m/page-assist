@@ -5,7 +5,7 @@ import { MemoryVectorStore } from "langchain/vectorstores/memory"
 import { cleanUrl } from "~libs/clean-url"
 import { chromeRunTime } from "~libs/runtime"
 import { PageAssistHtmlLoader } from "~loader/html"
-import { defaultEmbeddingChunkOverlap, defaultEmbeddingChunkSize, defaultEmbeddingModelForRag, getOllamaURL } from "~services/ollama"
+import { defaultEmbeddingChunkOverlap, defaultEmbeddingChunkSize, defaultEmbeddingModelForRag, getIsSimpleInternetSearch, getOllamaURL } from "~services/ollama"
 
 const BLOCKED_HOSTS = [
   "google.com",
@@ -40,7 +40,8 @@ export const localGoogleSearch = async (query: string) => {
     (result) => {
       const title = result.querySelector("h3")?.textContent
       const link = result.querySelector("a")?.getAttribute("href")
-      return { title, link }
+      const content = Array.from(result.querySelectorAll("span")).map((span) => span.textContent).join(" ")
+      return { title, link, content }
     }
   )
   const filteredSearchResults = searchResults
@@ -57,6 +58,18 @@ export const localGoogleSearch = async (query: string) => {
 export const webSearch = async (query: string) => {
   const results = await localGoogleSearch(query)
   const searchResults = results.slice(0, TOTAL_SEARCH_RESULTS)
+
+  const isSimpleMode = await getIsSimpleInternetSearch()
+
+  if (isSimpleMode) {
+    await getOllamaURL()
+    return searchResults.map((result) => {
+      return {
+        url: result.link,
+        content: result.content
+      }
+    })
+  }
 
   const docs: Document<Record<string, any>>[] = [];
   for (const result of searchResults) {

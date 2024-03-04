@@ -1,4 +1,4 @@
-import OptionLayout from "~components/Option/Layout"
+import OptionLayout from "~components/Layouts/Layout"
 import { Playground } from "~components/Option/Playground/Playground"
 
 export const OptionIndex = () => {

@@ -96,7 +96,6 @@ chrome.runtime.onMessage.addListener(async (message) => {
         clearBadge()
       }, 5000)
     }
-    console.log("Pulling model", message.modelName)
 
     await streamDownload(ollamaURL, message.modelName)
   }

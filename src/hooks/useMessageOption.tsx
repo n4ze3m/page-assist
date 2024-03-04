@@ -14,7 +14,12 @@ import {
   SystemMessage
 } from "@langchain/core/messages"
 import { useStoreMessageOption } from "~store/option"
-import { removeMessageUsingHistoryId, saveHistory, saveMessage } from "~libs/db"
+import {
+  getPromptById,
+  removeMessageUsingHistoryId,
+  saveHistory,
+  saveMessage
+} from "~libs/db"
 import { useNavigate } from "react-router-dom"
 import { notification } from "antd"
 import { getSystemPromptForWeb } from "~web/web"
@@ -102,14 +107,20 @@ export const useMessageOption = () => {
     webSearch,
     setWebSearch,
     isSearchingInternet,
-    setIsSearchingInternet
+    setIsSearchingInternet,
+    selectedQuickPrompt,
+    setSelectedQuickPrompt,
+    selectedSystemPrompt,
+    setSelectedSystemPrompt
   } = useStoreMessageOption()
 
   const navigate = useNavigate()
+  const textareaRef = React.useRef<HTMLTextAreaElement>(null)
 
   const abortControllerRef = React.useRef<AbortController | null>(null)
 
   const clearChat = () => {
+    navigate("/")
     setMessages([])
     setHistory([])
     setHistoryId(null)
@@ -117,7 +128,7 @@ export const useMessageOption = () => {
     setIsLoading(false)
     setIsProcessing(false)
     setStreaming(false)
-    navigate("/")
+    textareaRef?.current?.focus()
   }
 
   const searchChatMode = async (
@@ -310,7 +321,7 @@ export const useMessageOption = () => {
       setIsProcessing(false)
       setStreaming(false)
     } catch (e) {
-      console.log(e)
+      e
 
       if (e?.name === "AbortError") {
         newMessage[appendingIndex].message = newMessage[
@@ -406,6 +417,7 @@ export const useMessageOption = () => {
 
     try {
       const prompt = await systemPromptForNonRagOption()
+      const selectedPrompt = await getPromptById(selectedSystemPrompt)
 
       message = message.trim().replaceAll("\n", " ")
 
@@ -434,12 +446,25 @@ export const useMessageOption = () => {
 
       const applicationChatHistory = generateHistory(history)
 
-      if (prompt) {
+      if (prompt && !selectedPrompt) {
         applicationChatHistory.unshift(
           new SystemMessage({
             content: [
               {
                 text: prompt,
+                type: "text"
+              }
+            ]
+          })
+        )
+      }
+
+      if (selectedPrompt) {
+        applicationChatHistory.unshift(
+          new SystemMessage({
+            content: [
+              {
+                text: selectedPrompt.content,
                 type: "text"
               }
             ]
@@ -526,8 +551,6 @@ export const useMessageOption = () => {
       setIsProcessing(false)
       setStreaming(false)
     } catch (e) {
-      console.log(e)
-
       if (e?.name === "AbortError") {
         newMessage[appendingIndex].message = newMessage[
           appendingIndex
@@ -645,6 +668,12 @@ export const useMessageOption = () => {
     regenerateLastMessage,
     webSearch,
     setWebSearch,
-    isSearchingInternet
+    isSearchingInternet,
+    setIsSearchingInternet,
+    selectedQuickPrompt,
+    setSelectedQuickPrompt,
+    selectedSystemPrompt,
+    setSelectedSystemPrompt,
+    textareaRef
   }
 }

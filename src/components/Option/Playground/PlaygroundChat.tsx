@@ -18,7 +18,7 @@ export const PlaygroundChat = () => {
           <PlaygroundEmpty />
         </div>
       )}
-      {messages.length > 0 && <div className="w-full h-16 flex-shrink-0"></div>}
+      {/* {messages.length > 0 && <div className="w-full h-16 flex-shrink-0"></div>} */}
       {messages.map((message, index) => (
         <PlaygroundMessage
           key={index}

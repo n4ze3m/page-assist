@@ -250,7 +250,6 @@ export const useMessage = () => {
 
       setIsProcessing(false)
     } catch (e) {
-      console.log(e)
       setIsProcessing(false)
       setStreaming(false)
 
@@ -388,7 +387,6 @@ ${e?.message}
 
       setIsProcessing(false)
     } catch (e) {
-      console.log(e)
       setIsProcessing(false)
       setStreaming(false)
 

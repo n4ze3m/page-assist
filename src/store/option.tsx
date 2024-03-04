@@ -51,6 +51,12 @@ type State = {
   setWebSearch: (webSearch: boolean) => void;
   isSearchingInternet: boolean;
   setIsSearchingInternet: (isSearchingInternet: boolean) => void;
+
+  selectedSystemPrompt: string | null
+  setSelectedSystemPrompt: (selectedSystemPrompt: string) => void
+
+  selectedQuickPrompt: string | null
+  setSelectedQuickPrompt: (selectedQuickPrompt: string) => void
 }
 
 export const useStoreMessageOption = create<State>((set) => ({
@@ -81,4 +87,8 @@ export const useStoreMessageOption = create<State>((set) => ({
   setWebSearch: (webSearch) => set({ webSearch }),
   isSearchingInternet: false,
   setIsSearchingInternet: (isSearchingInternet) => set({ isSearchingInternet }),
+  selectedSystemPrompt: null,
+  setSelectedSystemPrompt: (selectedSystemPrompt) => set({ selectedSystemPrompt }),
+  selectedQuickPrompt: null,
+  setSelectedQuickPrompt: (selectedQuickPrompt) => set({ selectedQuickPrompt }),
 }))

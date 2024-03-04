@@ -48,7 +48,7 @@ export const SettingsBody = () => {
         getOllamaURL(),
         systemPromptForNonRag(),
         promptForRag(),
-        getAllModels(),
+        getAllModels({ returnEmpty: true }),
         defaultEmbeddingChunkOverlap(),
         defaultEmbeddingChunkSize(),
         defaultEmbeddingModelForRag()
