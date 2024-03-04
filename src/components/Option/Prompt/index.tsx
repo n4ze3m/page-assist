@@ -135,13 +135,13 @@ export const PromptBody = () => {
                 key: "is_system",
                 render: (is_system) =>
                   is_system ? (
-                    <span className="flex justify-between">
-                       <Computer className="w-5 h-5 mr-3" />
+                    <span className="flex items-center gap-2">
+                       <Computer className="w-5 h-5 " />
                        System Prompt
                     </span>
                   ) : (
-                    <span className="flex justify-between">
-                      <Zap className="w-5 h-5 mr-3" />
+                    <span className="flex items-center gap-2">
+                      <Zap className="w-5 h-5" />
                       Quick Prompt
                     </span>
                   )

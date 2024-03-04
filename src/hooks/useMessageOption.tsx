@@ -120,6 +120,7 @@ export const useMessageOption = () => {
   const abortControllerRef = React.useRef<AbortController | null>(null)
 
   const clearChat = () => {
+    navigate("/")
     setMessages([])
     setHistory([])
     setHistoryId(null)
@@ -128,7 +129,6 @@ export const useMessageOption = () => {
     setIsProcessing(false)
     setStreaming(false)
     textareaRef?.current?.focus()
-    navigate("/")
   }
 
   const searchChatMode = async (
