@@ -179,6 +179,8 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                 rows={1}
                 style={{ minHeight: "60px" }}
                 tabIndex={0}
+                onCompositionStart={() => setTyping(true)}
+                onCompositionEnd={() => setTyping(false)}
                 placeholder="Type a message..."
                 {...form.getInputProps("message")}
               />
