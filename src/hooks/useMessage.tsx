@@ -20,9 +20,12 @@ import { getHtmlOfCurrentTab } from "~libs/get-html"
 import { PageAssistHtmlLoader } from "~loader/html"
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter"
 import { OllamaEmbeddings } from "@langchain/community/embeddings/ollama"
-import { createChatWithWebsiteChain, groupMessagesByConversation } from "~chain/chat-with-website"
+import {
+  createChatWithWebsiteChain,
+  groupMessagesByConversation
+} from "~chain/chat-with-website"
 import { MemoryVectorStore } from "langchain/vectorstores/memory"
-
+import { chromeRunTime } from "~libs/runtime"
 export type BotResponse = {
   bot: {
     text: string
@@ -134,11 +137,11 @@ export const useMessage = () => {
       url
     })
     const docs = await loader.load()
-    const chunkSize = await defaultEmbeddingChunkSize();
-    const chunkOverlap = await defaultEmbeddingChunkOverlap();
+    const chunkSize = await defaultEmbeddingChunkSize()
+    const chunkOverlap = await defaultEmbeddingChunkOverlap()
     const textSplitter = new RecursiveCharacterTextSplitter({
       chunkSize,
-      chunkOverlap,
+      chunkOverlap
     })
 
     const chunks = await textSplitter.splitDocuments(docs)
@@ -158,64 +161,65 @@ export const useMessage = () => {
   }
 
   const chatWithWebsiteMode = async (message: string) => {
-    const ollamaUrl = await getOllamaURL()
-    const { html, url } = await getHtmlOfCurrentTab()
-    const isAlreadyExistEmbedding = keepTrackOfEmbedding[url]
-    let newMessage: Message[] = [
-      ...messages,
-      {
-        isBot: false,
-        name: "You",
-        message,
-        sources: []
-      },
-      {
-        isBot: true,
-        name: selectedModel,
-        message: "▋",
-        sources: []
-      }
-    ]
-
-    const appendingIndex = newMessage.length - 1
-    setMessages(newMessage)
-    const embeddingModle = await defaultEmbeddingModelForRag()
-    const ollamaEmbedding = new OllamaEmbeddings({
-      model: embeddingModle || selectedModel,
-      baseUrl: cleanUrl(ollamaUrl)
-    })
-
-
-    const ollamaChat = new ChatOllama({
-      model: selectedModel,
-      baseUrl: cleanUrl(ollamaUrl)
-    })
-
-    let vectorstore: MemoryVectorStore
-
-    if (isAlreadyExistEmbedding) {
-      vectorstore = isAlreadyExistEmbedding
-    } else {
-      vectorstore = await memoryEmbedding(url, html, ollamaEmbedding)
-    }
-
-    const { ragPrompt: systemPrompt, ragQuestionPrompt: questionPrompt } =
-      await promptForRag()
-
-    const sanitizedQuestion = message.trim().replaceAll("\n", " ")
-
-    const chain = createChatWithWebsiteChain({
-      llm: ollamaChat,
-      question_llm: ollamaChat,
-      question_template: questionPrompt,
-      response_template: systemPrompt,
-      retriever: vectorstore.asRetriever()
-    })
-
     try {
+      let isAlreadyExistEmbedding: MemoryVectorStore
+      const { html, url } = await getHtmlOfCurrentTab()
+      isAlreadyExistEmbedding = keepTrackOfEmbedding[url]
+      let newMessage: Message[] = [
+        ...messages,
+        {
+          isBot: false,
+          name: "You",
+          message,
+          sources: []
+        },
+        {
+          isBot: true,
+          name: selectedModel,
+          message: "▋",
+          sources: []
+        }
+      ]
+
+      const appendingIndex = newMessage.length - 1
+      setMessages(newMessage)
+      const ollamaUrl = await getOllamaURL()
+      const embeddingModle = await defaultEmbeddingModelForRag()
+
+      const ollamaEmbedding = new OllamaEmbeddings({
+        model: embeddingModle || selectedModel,
+        baseUrl: cleanUrl(ollamaUrl)
+      })
+
+      const ollamaChat = new ChatOllama({
+        model: selectedModel,
+        baseUrl: cleanUrl(ollamaUrl)
+      })
+
+      let vectorstore: MemoryVectorStore
+
+      if (isAlreadyExistEmbedding) {
+        vectorstore = isAlreadyExistEmbedding
+      } else {
+        vectorstore = await memoryEmbedding(url, html, ollamaEmbedding)
+      }
+
+      const { ragPrompt: systemPrompt, ragQuestionPrompt: questionPrompt } =
+        await promptForRag()
+
+      const sanitizedQuestion = message.trim().replaceAll("\n", " ")
+
+      const chain = createChatWithWebsiteChain({
+        llm: ollamaChat,
+        question_llm: ollamaChat,
+        question_template: questionPrompt,
+        response_template: systemPrompt,
+        retriever: vectorstore.asRetriever()
+      })
+
       const chunks = await chain.stream({
         question: sanitizedQuestion,
-        chat_history: groupMessagesByConversation(history),
+        chat_history: groupMessagesByConversation(history)
       })
       let count = 0
       for await (const chunk of chunks) {
@@ -258,7 +262,8 @@ export const useMessage = () => {
         {
           isBot: true,
           name: selectedModel,
-          message: `Something went wrong. Check out the following logs:
+          message: `Error in chat with website mode. Check out the following logs:
+          
 ~~~
 ${e?.message}
  ~~~

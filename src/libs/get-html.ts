@@ -1,3 +1,4 @@
+
 const _getHtml = () => {
   const url = window.location.href
   const html = Array.from(document.querySelectorAll("script")).reduce(
@@ -29,3 +30,4 @@ export const getHtmlOfCurrentTab = async () => {
 
   return result
 }
+

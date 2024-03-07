@@ -4967,10 +4967,10 @@ lru-cache@^6.0.0:
   resolved "https://registry.yarnpkg.com/lru-cache/-/lru-cache-10.2.0.tgz#0bd445ca57363465900f4d1f9bd8db343a4d95c3"
   integrity sha512-2bIM8x+VAf6JT4bKAljS1qUWgMsqZRPGJS6FSahIMPVvctcNhyVp7AJu7quxOW9jwkryBReKZY5tY5JYv2n/7Q==
 
-lucide-react@^0.340.0:
-  version "0.340.0"
-  resolved "https://registry.yarnpkg.com/lucide-react/-/lucide-react-0.340.0.tgz#67a6fac6a5e257f2036dffae0dd94d6ccb28ce8e"
-  integrity sha512-mWzYhbyy2d+qKuKHh+GWElPwa+kIquTnKbmSLGWOuZy+bjfZCkYD8DQWVFlqI4mQwc4HNxcqcOvtQ7ZS2PwURg==
+lucide-react@^0.350.0:
+  version "0.350.0"
+  resolved "https://registry.yarnpkg.com/lucide-react/-/lucide-react-0.350.0.tgz#78b45342f4daff4535290e37b1ea7eb0961a3dab"
+  integrity sha512-5IZVKsxxG8Nn81gpsz4XLNgCAXkppCh0Y0P0GLO39h5iVD2WEaB9of6cPkLtzys1GuSfxJxmwsDh487y7LAf/g==
 
 magic-string@^0.30.0:
   version "0.30.6"
@@ -7772,6 +7772,13 @@ ws@^8.11.0:
   resolved "https://registry.yarnpkg.com/ws/-/ws-8.16.0.tgz#d1cd774f36fbc07165066a60e40323eab6446fd4"
   integrity sha512-HS0c//TP7Ina87TfiPUz1rQzMhHrl/SG2guqRcTOIUYD2q8uhUdNHZYJUaQ8aTGPzCh+c6oawMKW35nFl1dxyQ==
 
+xml-js@^1.6.11:
+  version "1.6.11"
+  resolved "https://registry.yarnpkg.com/xml-js/-/xml-js-1.6.11.tgz#927d2f6947f7f1c19a316dd8eea3614e8b18f8e9"
+  integrity sha512-7rVi2KMfwfWFl+GpPg6m80IVMWXLRjO+PxTq7V2CDhoGak0wzYzFgUY2m4XJ47OGdXd8eLE8EmwfAmdjw7lC1g==
+  dependencies:
+    sax "^1.2.4"
+
 xml-name-validator@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/xml-name-validator/-/xml-name-validator-4.0.0.tgz#79a006e2e63149a8600f15430f0a4725d1524835"
@@ -7816,6 +7823,14 @@ yaml@^2.2.1, yaml@^2.3.4:
   version "2.3.4"
   resolved "https://registry.yarnpkg.com/yaml/-/yaml-2.3.4.tgz#53fc1d514be80aabf386dc6001eb29bf3b7523b2"
   integrity sha512-8aAvwVUSHpfEqTQ4w/KMlf3HcRdt50E5ODIQJBw1fQ5RL34xabzxtUlzTXVqc4rkZsPbvrXKWnABCD7kWSmocA==
+
+yt-transcript@^0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/yt-transcript/-/yt-transcript-0.0.2.tgz#1c54aede89bb8a03bbca3ba58520dbbd9c828571"
+  integrity sha512-+cNRqW6tSQNDkQDVrWNT6hc6X2TnaQLvUJIepzn9r7XdEvPtUDkfsyhptW5+j0EPIEpnlsKyA/epCUrE4QKn2g==
+  dependencies:
+    axios "^1.6.7"
+    xml-js "^1.6.11"
 
 zod-to-json-schema@^3.22.3:
   version "3.22.4"
