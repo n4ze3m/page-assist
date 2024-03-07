@@ -85,9 +85,14 @@ This will start a development server and watch for changes in the source files. 
 
 ## Browser Support
 
-- Any Chromium-based browser that supports Chrome Extensions.
-
-- Firefox support is planned for the future.
+| Browser  | Sidebar | Chat With Webpage | Web UI |
+| -------- | ------- | ----------------- | ------ |
+| Chrome   | ✅      | ✅                | ✅     |
+| Brave    | ✅      | ✅                | ✅     |
+| Edge     | ✅      | ❌                | ✅     |
+| Opera GX | ❌      | ❌                | ✅     |
+| Arc      | ❌      | ❌                | ✅     |
+| Firefox  | ❌      | ❌                | ❌     |
 
 ## Local AI Provider
 
@@ -104,11 +109,6 @@ This will start a development server and watch for changes in the source files. 
 ## Contributing
 
 Contributions are welcome. If you have any feature requests, bug reports, or questions, feel free to create an issue.
-
-## 0.0.1
-
-If you are looking for the v0.0.1 of this project, you can find it on v0.0.1 branch. I created it as a hackathon project and it is not maintained anymore.
-
 
 ## Support
 
