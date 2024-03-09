@@ -2,7 +2,8 @@ import {
   Book,
   BrainCircuit,
   CircuitBoardIcon,
-  Orbit
+  Orbit,
+  Share
 } from "lucide-react"
 import { Link, useLocation } from "react-router-dom"
 
@@ -46,7 +47,7 @@ export const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <>
       <div className="mx-auto max-w-7xl lg:flex lg:gap-x-16 lg:px-8">
-        <aside className="flex lg:rounded-md bg-white lg:h-56 lg:p-4 lg:mt-20 overflow-x-auto lg:border border-b  py-4 lg:block lg:w-64 lg:flex-none  dark:bg-[#171717] dark:border-gray-600">
+        <aside className="flex lg:rounded-md bg-white lg:p-4 lg:mt-20 overflow-x-auto lg:border-0 border-b  py-4 lg:block lg:w-64 lg:flex-none  dark:bg-[#171717] dark:border-gray-600">
           <nav className="flex-none  px-4 sm:px-6 lg:px-0">
             <ul
               role="list"
@@ -73,6 +74,12 @@ export const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
                 href="/settings/prompt"
                 name="Manage Prompt"
                 icon={Book}
+                current={location.pathname}
+              />
+               <LinkComponent
+                href="/settings/share"
+                name="Manage Share"
+                icon={Share}
                 current={location.pathname}
               />
             </ul>

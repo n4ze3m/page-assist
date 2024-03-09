@@ -7,6 +7,7 @@ import { OptionModal } from "./option-settings-model"
 import { OptionPrompt } from "./option-settings-prompt"
 import { OptionOllamaSettings } from "./options-settings-ollama"
 import { OptionSettings } from "./option-settings"
+import { OptionShare } from "./option-settings-share"
 
 export const OptionRouting = () => {
   const { mode } = useDarkMode()
@@ -19,6 +20,7 @@ export const OptionRouting = () => {
         <Route path="/settings/model" element={<OptionModal />} />
         <Route path="/settings/prompt" element={<OptionPrompt />} />
         <Route path="/settings/ollama" element={<OptionOllamaSettings />} />
+        <Route path="/settings/share" element={<OptionShare />} />
       </Routes>
     </div>
   )

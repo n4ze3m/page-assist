@@ -16,6 +16,7 @@ import {
   ZapIcon
 } from "lucide-react"
 import { getAllPrompts } from "~libs/db"
+import { ShareBtn } from "~components/Common/ShareBtn"
 
 export default function OptionLayout({
   children
@@ -29,7 +30,9 @@ export default function OptionLayout({
     clearChat,
     selectedSystemPrompt,
     setSelectedQuickPrompt,
-    setSelectedSystemPrompt
+    setSelectedSystemPrompt,
+    messages,
+    streaming
   } = useMessageOption()
 
   const {
@@ -155,6 +158,9 @@ export default function OptionLayout({
             <div className="flex flex-1 justify-end px-4">
               <div className="ml-4 flex items-center md:ml-6">
                 <div className="flex gap-4 items-center">
+                  {pathname === "/" && messages.length > 0 && !streaming && (
+                    <ShareBtn messages={messages} />
+                  )}
                   {/* <Tooltip title="Manage Prompts">
                     <NavLink
                       to="/prompts"
