@@ -107,7 +107,9 @@ export const useMessage = () => {
     setIsEmbedding,
     isEmbedding,
     speechToTextLanguage,
-    setSpeechToTextLanguage
+    setSpeechToTextLanguage,
+    currentURL,
+    setCurrentURL
   } = useStoreMessage()
 
   const abortControllerRef = React.useRef<AbortController | null>(null)
@@ -163,8 +165,17 @@ export const useMessage = () => {
   const chatWithWebsiteMode = async (message: string) => {
     try {
       let isAlreadyExistEmbedding: MemoryVectorStore
-      const { html, url } = await getHtmlOfCurrentTab()
-      isAlreadyExistEmbedding = keepTrackOfEmbedding[url]
+      let embedURL: string, embedHTML: string
+      if (messages.length === 0) {
+        const { html, url } = await getHtmlOfCurrentTab()
+        embedHTML = html
+        embedURL = url
+        setCurrentURL(url)
+        isAlreadyExistEmbedding = keepTrackOfEmbedding[currentURL]
+      } else {
+        isAlreadyExistEmbedding = keepTrackOfEmbedding[currentURL]
+        embedURL = currentURL
+      }
       let newMessage: Message[] = [
         ...messages,
         {
@@ -201,7 +212,11 @@ export const useMessage = () => {
       if (isAlreadyExistEmbedding) {
         vectorstore = isAlreadyExistEmbedding
       } else {
-        vectorstore = await memoryEmbedding(url, html, ollamaEmbedding)
+        vectorstore = await memoryEmbedding(
+          embedURL,
+          embedHTML,
+          ollamaEmbedding
+        )
       }
 
       const { ragPrompt: systemPrompt, ragQuestionPrompt: questionPrompt } =
