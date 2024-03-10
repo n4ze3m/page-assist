@@ -1,7 +1,7 @@
 {
   "name": "pageassist",
   "displayName": "Page Assist - A Web UI for Local AI Models",
-  "version": "1.0.5",
+  "version": "1.0.8",
   "description": "Use your locally running AI models to assist you in your web browsing.",
   "author": "n4ze3m",
   "scripts": {
@@ -26,7 +26,7 @@
     "dayjs": "^1.11.10",
     "html-to-text": "^9.0.5",
     "langchain": "^0.1.9",
-    "lucide-react": "^0.340.0",
+    "lucide-react": "^0.350.0",
     "plasmo": "0.84.1",
     "property-information": "^6.4.1",
     "react": "18.2.0",
@@ -38,6 +38,7 @@
     "rehype-mathjax": "4.0.3",
     "remark-gfm": "3.0.1",
     "remark-math": "5.1.1",
+    "yt-transcript": "^0.0.2",
     "zustand": "^4.5.0"
   },
   "devDependencies": {

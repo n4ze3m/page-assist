@@ -32,6 +32,16 @@ type Message = {
 }
 
 
+type Webshare = {
+  id: string
+  title: string
+  url: string
+  api_url: string
+  share_id: string
+  createdAt: number
+}
+
+
 type Prompt = {
   id: string
   title: string
@@ -154,6 +164,47 @@ export class PageAssitDatabase {
     return prompts.find((prompt) => prompt.id === id)
   }
 
+
+  async getWebshare(id: string) {
+    return new Promise((resolve, reject) => {
+      this.db.get(id, (result) => {
+        resolve(result[id] || [])
+      })
+    })
+  }
+
+
+  async getAllWebshares(): Promise<Webshare[]> {
+    return new Promise((resolve, reject) => {
+      this.db.get("webshares", (result) => {
+        resolve(result.webshares || [])
+      })
+    })
+  }
+
+  async addWebshare(webshare: Webshare) {
+    const webshares = await this.getAllWebshares()
+    const newWebshares = [webshare, ...webshares]
+    this.db.set({ webshares: newWebshares })
+  }
+
+  async deleteWebshare(id: string) {
+    const webshares = await this.getAllWebshares()
+    const newWebshares = webshares.filter((webshare) => webshare.id !== id)
+    this.db.set({ webshares: newWebshares })
+  }
+
+  async getUserID() {
+    return new Promise((resolve, reject) => {
+      this.db.get("user_id", (result) => {
+        resolve(result.user_id || "")
+      })
+    })
+  }
+
+  async setUserID(id: string) {
+    this.db.set({ user_id: id })
+  }
 }
 
 
@@ -277,4 +328,39 @@ export const getPromptById = async (id: string) => {
   if (!id || id.trim() === "") return null
   const db = new PageAssitDatabase()
   return await db.getPromptById(id)
+}
+
+export const getAllWebshares = async () => {
+  const db = new PageAssitDatabase()
+  return await db.getAllWebshares()
+}
+
+export const deleteWebshare = async (id: string) => {
+  const db = new PageAssitDatabase()
+  await db.deleteWebshare(id)
+  return id
+
+}
+
+export const saveWebshare = async ({ title, url, api_url, share_id }: { title: string, url: string, api_url: string, share_id: string }) => {
+  const db = new PageAssitDatabase()
+  const id = generateID()
+  const createdAt = Date.now()
+  const webshare = { id, title, url, share_id, createdAt, api_url }
+  await db.addWebshare(webshare)
+  return webshare
+}
+
+export const getUserId = async () => {
+  const db = new PageAssitDatabase()
+  const id = await db.getUserID() as string
+  if (!id || id?.trim() === "") {
+    const user_id = "user_xxxx-xxxx-xxx-xxxx-xxxx".replace(/[x]/g, () => {
+      const r = Math.floor(Math.random() * 16)
+      return r.toString(16)
+    })
+    db.setUserID(user_id)
+    return user_id
+  }
+  return id
 }

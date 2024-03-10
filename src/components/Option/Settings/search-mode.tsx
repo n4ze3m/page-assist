@@ -19,7 +19,7 @@ export const SearchModeSettings = () => {
 
   return (
     <div className="flex flex-row justify-between">
-      <span className="text-gray-500 dark:text-gray-400 text-lg">
+      <span className="text-gray-500 dark:text-neutral-50 ">
         Perform Simple Internet Search
       </span>
 

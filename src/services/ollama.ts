@@ -6,6 +6,7 @@ const storage = new Storage()
 
 const DEFAULT_OLLAMA_URL = "http://127.0.0.1:11434"
 const DEFAULT_ASK_FOR_MODEL_SELECTION_EVERY_TIME = true
+const DEFAULT_PAGE_SHARE_URL = "https://pageassist.xyz"
 
 const DEFAULT_RAG_QUESTION_PROMPT =
   "Given the following conversation and a follow up question, rephrase the follow up question to be a standalone question.   Chat History: {chat_history} Follow Up Input: {question} Standalone question:"
@@ -302,4 +303,17 @@ export const getIsSimpleInternetSearch = async () => {
 
 export const setIsSimpleInternetSearch = async (isSimpleInternetSearch: boolean) => {
   await storage.set("isSimpleInternetSearch", isSimpleInternetSearch.toString())
+}
+
+export const getPageShareUrl = async () => {
+  const pageShareUrl = await storage.get("pageShareUrl")
+  if (!pageShareUrl || pageShareUrl.length === 0) {
+    return DEFAULT_PAGE_SHARE_URL
+  }
+  return pageShareUrl
+}
+
+
+export const setPageShareUrl = async (pageShareUrl: string) => {
+  await storage.set("pageShareUrl", pageShareUrl)
 }

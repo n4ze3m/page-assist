@@ -37,6 +37,8 @@ type State = {
   setIsEmbedding: (isEmbedding: boolean) => void
   speechToTextLanguage: string
   setSpeechToTextLanguage: (speechToTextLanguage: string) => void
+  currentURL: string
+  setCurrentURL: (currentURL: string) => void
 }
 
 export const useStoreMessage = create<State>((set) => ({
@@ -63,5 +65,7 @@ export const useStoreMessage = create<State>((set) => ({
   setIsEmbedding: (isEmbedding) => set({ isEmbedding }),
   speechToTextLanguage: "en-US",
   setSpeechToTextLanguage: (speechToTextLanguage) =>
-    set({ speechToTextLanguage })
+    set({ speechToTextLanguage }),
+  currentURL: "",
+  setCurrentURL: (currentURL) => set({ currentURL })
 }))

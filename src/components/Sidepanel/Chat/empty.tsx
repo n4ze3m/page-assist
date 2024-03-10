@@ -38,7 +38,7 @@ export const EmptySidePanel = () => {
     }
   }, [ollamaInfo])
 
-  const { setSelectedModel, selectedModel, chatMode, setChatMode } =
+  const { setSelectedModel, selectedModel, chatMode, setChatMode,  } =
     useMessage()
 
   return (

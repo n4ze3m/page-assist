@@ -18,6 +18,7 @@ type Props = {
 
 export const PlaygroundForm = ({ dropedFile }: Props) => {
   const inputRef = React.useRef<HTMLInputElement>(null)
+  const [typing, setTyping] = React.useState<boolean>(false)
   const {
     onSubmit,
     selectedModel,
@@ -115,14 +116,14 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
     }
   })
 
-  const handleKeyDown = (e: KeyboardEvent) => {
-    if (e.key === "Process" || e.key === "229") return
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Process" || e.key === "229" ) return
     if (
+      !typing &&
       e.key === "Enter" &&
       !e.shiftKey &&
       !isSending &&
-      sendWhenEnter &&
-      !e.isComposing
+      sendWhenEnter 
     ) {
       e.preventDefault()
       form.onSubmit(async (value) => {
@@ -153,7 +154,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
     }
   }
   return (
-    <div className="px-3 pt-3 md:px-6 md:pt-6 md:bg-white dark:bg-[#262626] border rounded-t-xl border-black/10 dark:border-gray-600">
+    <div className="px-3 pt-3 md:px-6 md:pt-6 md:bg-white dark:bg-[#262626] border rounded-t-xl  dark:border-gray-600">
       <div
         className={`h-full rounded-md shadow relative ${
           form.values.image.length === 0 ? "hidden" : "block"
@@ -213,7 +214,9 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
             />
             <div className="w-full border-x border-t flex flex-col dark:border-gray-600 rounded-t-xl p-2">
               <textarea
-                onKeyDown={(e) => handleKeyDown(e as unknown as KeyboardEvent)}
+                onCompositionStart={() => setTyping(true)}
+                onCompositionEnd={() => setTyping(false)}
+                onKeyDown={(e) => handleKeyDown(e)}
                 ref={textareaRef}
                 className="px-2 py-2 w-full resize-none bg-transparent focus-within:outline-none focus:ring-0 focus-visible:ring-0 ring-0 dark:ring-0 border-0 dark:text-gray-100"
                 required
