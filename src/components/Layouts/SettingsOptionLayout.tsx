@@ -23,15 +23,15 @@ const LinkComponent = (item: {
         to={item.href}
         className={classNames(
           item.current === item.href
-            ? "bg-gray-100 text-indigo-600 dark:bg-[#262626] dark:text-white"
-            : "text-gray-700 hover:text-indigo-600 hover:bg-gray-100 dark:text-gray-200 dark:hover:text-white dark:hover:bg-[#262626]",
+            ? "bg-gray-100 text-gray-600 dark:bg-[#262626] dark:text-white"
+            : "text-gray-700 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-200 dark:hover:text-white dark:hover:bg-[#262626]",
           "group flex gap-x-3 rounded-md py-2 pl-2 pr-3 text-sm leading-6 font-semibold"
         )}>
         <item.icon
           className={classNames(
             item.current === item.href
-              ? "text-indigo-600 dark:text-white"
-              : "text-gray-400 group-hover:text-indigo-600 dark:text-gray-200 dark:group-hover:text-white",
+              ? "text-gray-600 dark:text-white"
+              : "text-gray-400 group-hover:text-gray-600 dark:text-gray-200 dark:group-hover:text-white",
             "h-6 w-6 shrink-0"
           )}
           aria-hidden="true"

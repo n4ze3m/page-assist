@@ -70,7 +70,7 @@ export default function OptionLayout({
     <div>
       <div>
         <div className="flex flex-col">
-          <div className="sticky top-0 z-[999] flex h-16 p-3  bg-white border-b border-gray-200 dark:bg-[#171717] dark:border-gray-600">
+          <div className="sticky top-0 z-[999] flex h-16 p-3  bg-white border-b  dark:bg-[#171717] dark:border-gray-600">
             <div className="flex gap-2 items-center">
               {pathname !== "/" && (
                 <div>
@@ -91,7 +91,7 @@ export default function OptionLayout({
               <div>
                 <button
                   onClick={clearChat}
-                  className="inline-flex items-center rounded-lg border  dark:border-gray-700 bg-transparent px-3 py-3 text-sm font-medium leading-4 text-gray-800 shadow-sm  dark:text-white disabled:opacity-50 ">
+                  className="inline-flex items-center rounded-lg border  dark:border-gray-700 bg-transparent px-3 py-3 text-sm font-medium leading-4 text-gray-800  dark:text-white disabled:opacity-50 ">
                   <SquarePen className="h-4 w-4 mr-3" />
                   New Chat
                 </button>
@@ -161,13 +161,6 @@ export default function OptionLayout({
                   {pathname === "/" && messages.length > 0 && !streaming && (
                     <ShareBtn messages={messages} />
                   )}
-                  {/* <Tooltip title="Manage Prompts">
-                    <NavLink
-                      to="/prompts"
-                      className="!text-gray-500 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
-                      <Book className="w-6 h-6" />
-                    </NavLink>
-                  </Tooltip> */}
                   <Tooltip title="Github Repository">
                     <a
                       href="https://github.com/n4ze3m/page-assist"
@@ -176,13 +169,6 @@ export default function OptionLayout({
                       <GithubIcon className="w-6 h-6" />
                     </a>
                   </Tooltip>
-                  {/* <Tooltip title="Manage Ollama Models">
-                    <NavLink
-                      to="/models"
-                      className="!text-gray-500 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
-                      <BrainCircuit className="w-6 h-6" />
-                    </NavLink>
-                  </Tooltip> */}
                   <Tooltip title="Manage Ollama Models">
                     <NavLink
                       to="/settings"
@@ -204,7 +190,9 @@ export default function OptionLayout({
         closeIcon={null}
         onClose={() => setSidebarOpen(false)}
         open={sidebarOpen}>
-        <Sidebar />
+        <Sidebar 
+        onClose={() => setSidebarOpen(false)}
+        />
       </Drawer>
     </div>
   )

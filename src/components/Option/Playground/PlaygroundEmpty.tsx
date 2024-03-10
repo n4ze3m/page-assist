@@ -35,7 +35,7 @@ export const PlaygroundEmpty = () => {
 
   return (
     <div className="mx-auto sm:max-w-xl px-4 mt-10">
-      <div className="rounded-lg justify-center items-center flex flex-col border p-8 bg-white dark:bg-[#262626] shadow-sm dark:border-gray-600">
+      <div className="rounded-lg justify-center items-center flex flex-col border p-8 bg-white dark:bg-[#262626]  dark:border-gray-600">
         {(ollamaStatus === "pending" || isRefetching) && (
           <div className="inline-flex items-center space-x-2">
             <div className="w-3 h-3 bg-blue-500 rounded-full animate-bounce"></div>

@@ -24,7 +24,7 @@ export const SettingOther = () => {
         <div className="border border-b border-gray-200 dark:border-gray-600 mt-3"></div>
       </div>
       <div className="flex flex-row justify-between">
-        <span className="text-gray-500 dark:text-gray-400 text-lg">
+        <span className="text-gray-500 dark:text-neutral-50">
           Speech Recognition Language
         </span>
 
@@ -44,9 +44,7 @@ export const SettingOther = () => {
         />
       </div>
       <div className="flex flex-row justify-between">
-        <span className="text-gray-500 dark:text-gray-400 text-lg">
-          Change Theme
-        </span>
+        <span className="text-gray-500 dark:text-neutral-50 ">Change Theme</span>
 
         <button
           onClick={toggleDarkMode}
@@ -59,8 +57,9 @@ export const SettingOther = () => {
           {mode === "dark" ? "Light" : "Dark"}
         </button>
       </div>
+      <SearchModeSettings />
       <div className="flex flex-row justify-between">
-        <span className="text-gray-500 dark:text-gray-400 text-lg">
+        <span className="text-gray-500 dark:text-neutral-50 ">
           Delete Chat History
         </span>
 
@@ -83,7 +82,6 @@ export const SettingOther = () => {
           Delete
         </button>
       </div>
-      <SearchModeSettings />
     </dl>
   )
 }
