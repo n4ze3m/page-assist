@@ -2,7 +2,7 @@
 
 Page Share allows you to share the chat publicly, similar to ChatGPT Share. You can self-host Page Share for privacy and security.
 
-The default Page Share is hosted at [https://pageshare.xyz](https://pageshare.xyz).
+The default Page Share is hosted at [https://pageassist.xyz](https://pageassist.xyz).
 
 ## Self-Host
 
