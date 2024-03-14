@@ -148,27 +148,37 @@ export const useMessageOption = () => {
       baseUrl: cleanUrl(url)
     })
 
-    let newMessage: Message[] = [
-      ...messages,
-      {
-        isBot: false,
-        name: "You",
-        message,
-        sources: [],
-        images: [image]
-      },
-      {
-        isBot: true,
-        name: selectedModel,
-        message: "▋",
-        sources: []
-      }
-    ]
-
-    const appendingIndex = newMessage.length - 1
+    let newMessage: Message[] = []
     if (!isRegenerate) {
-      setMessages(newMessage)
+      newMessage = [
+        ...messages,
+        {
+          isBot: false,
+          name: "You",
+          message,
+          sources: [],
+          images: [image]
+        },
+        {
+          isBot: true,
+          name: selectedModel,
+          message: "▋",
+          sources: []
+        }
+      ]
+    } else {
+      newMessage = [
+        ...messages,
+        {
+          isBot: true,
+          name: selectedModel,
+          message: "▋",
+          sources: []
+        }
+      ]
     }
+    setMessages(newMessage)
+    const appendingIndex = newMessage.length - 1
 
     try {
       setIsSearchingInternet(true)
@@ -321,8 +331,6 @@ export const useMessageOption = () => {
       setIsProcessing(false)
       setStreaming(false)
     } catch (e) {
-      e
-
       if (e?.name === "AbortError") {
         newMessage[appendingIndex].message = newMessage[
           appendingIndex
@@ -393,27 +401,37 @@ export const useMessageOption = () => {
       baseUrl: cleanUrl(url)
     })
 
-    let newMessage: Message[] = [
-      ...messages,
-      {
-        isBot: false,
-        name: "You",
-        message,
-        sources: [],
-        images: [image]
-      },
-      {
-        isBot: true,
-        name: selectedModel,
-        message: "▋",
-        sources: []
-      }
-    ]
-
-    const appendingIndex = newMessage.length - 1
+    let newMessage: Message[] = []
     if (!isRegenerate) {
-      setMessages(newMessage)
+      newMessage = [
+        ...messages,
+        {
+          isBot: false,
+          name: "You",
+          message,
+          sources: [],
+          images: [image]
+        },
+        {
+          isBot: true,
+          name: selectedModel,
+          message: "▋",
+          sources: []
+        }
+      ]
+    } else {
+      newMessage = [
+        ...messages,
+        {
+          isBot: true,
+          name: selectedModel,
+          message: "▋",
+          sources: []
+        }
+      ]
     }
+    setMessages(newMessage)
+    const appendingIndex = newMessage.length - 1
 
     try {
       const prompt = await systemPromptForNonRagOption()
@@ -624,8 +642,12 @@ export const useMessageOption = () => {
   const regenerateLastMessage = async () => {
     if (history.length > 0) {
       const lastMessage = history[history.length - 2]
-      setHistory(history.slice(0, -1))
-      setMessages(messages.slice(0, -1))
+      let newHistory = history
+      let mewMessages = messages
+      newHistory.pop()
+      mewMessages.pop()
+      setHistory(newHistory)
+      setMessages(mewMessages)
       await removeMessageUsingHistoryId(historyId)
       if (lastMessage.role === "user") {
         await onSubmit({
