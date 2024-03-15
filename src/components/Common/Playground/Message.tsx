@@ -3,6 +3,7 @@ import React from "react"
 import { Image, Tooltip } from "antd"
 import { WebSearch } from "./WebSearch"
 import { CheckIcon, ClipboardIcon, Pen, RotateCcw } from "lucide-react"
+import { EditMessageForm } from "./EditMessageForm"
 
 type Props = {
   message: string
@@ -15,6 +16,7 @@ type Props = {
   currentMessageIndex: number
   totalMessages: number
   onRengerate: () => void
+  onEditFormSubmit: (value: string) => void
   isProcessing: boolean
   webSearch?: {}
   isSearchingInternet?: boolean
@@ -23,6 +25,7 @@ type Props = {
 
 export const PlaygroundMessage = (props: Props) => {
   const [isBtnPressed, setIsBtnPressed] = React.useState(false)
+  const [editMode, setEditMode] = React.useState(false)
 
   return (
     <div className="group w-full text-gray-800 dark:text-gray-100">
@@ -55,7 +58,16 @@ export const PlaygroundMessage = (props: Props) => {
             ) : null}
 
             <div className="flex flex-grow flex-col">
-              <Markdown message={props.message} />
+              {!editMode ? (
+                <Markdown message={props.message} />
+              ) : (
+                <EditMessageForm
+                  value={props.message}
+                  onSumbit={props.onEditFormSubmit}
+                  onClose={() => setEditMode(false)}
+                  isBot={props.isBot}
+                />
+              )}
             </div>
             {/* source if aviable */}
             {props.images &&
@@ -89,7 +101,7 @@ export const PlaygroundMessage = (props: Props) => {
                 ))}
               </div>
             )}
-            {!props.isProcessing && (
+            {!props.isProcessing && !editMode && (
               <div
                 className={`space-x-2 gap-2 mt-3 ${
                   props.currentMessageIndex !== props.totalMessages - 1
@@ -130,7 +142,9 @@ export const PlaygroundMessage = (props: Props) => {
                   </>
                 )}
                 <Tooltip title="Edit">
-                  <button className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                  <button
+                    onClick={() => setEditMode(true)}
+                    className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
                     <Pen className="w-3 h-3 text-gray-400 group-hover:text-gray-500" />
                   </button>
                 </Tooltip>

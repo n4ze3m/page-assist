@@ -299,6 +299,22 @@ export const getAllPrompts = async () => {
 }
 
 
+export const updateMessageByIndex = async (history_id: string, index: number, message: string) => {
+  const db = new PageAssitDatabase()
+  const chatHistory = (await db.getChatHistory(history_id)).reverse()
+  chatHistory[index].content = message
+  await db.db.set({ [history_id]: chatHistory.reverse() })
+
+}
+
+export const deleteChatForEdit = async (history_id: string, index: number) => {
+  const db = new PageAssitDatabase()
+  const chatHistory = (await db.getChatHistory(history_id)).reverse()
+  const previousHistory = chatHistory.slice(0, index + 1)
+  // console.log(previousHistory)
+  await db.db.set({ [history_id]: previousHistory.reverse() })
+}
+
 export const savePrompt = async ({ content, title, is_system = false }: { title: string, content: string, is_system: boolean }) => {
   const db = new PageAssitDatabase()
   const id = generateID()

@@ -16,6 +16,7 @@ export const SidePanelBody = () => {
       {messages.length === 0 && <EmptySidePanel />}
       {messages.map((message, index) => (
         <PlaygroundMessage
+        onEditFormSubmit={(value) => {}}
           key={index}
           isBot={message.isBot}
           message={message.message}
