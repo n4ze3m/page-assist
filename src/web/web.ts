@@ -1,6 +1,15 @@
 import { getWebSearchPrompt } from "~services/ollama"
 import { webSearch } from "./local-google"
 
+const getHostName = (url: string) => {
+    try {
+        const hostname = new URL(url).hostname
+        return hostname
+    } catch (e) {
+        return ""
+    }
+}
+
 export const getSystemPromptForWeb = async (query: string) => {
     try {
         const search = await webSearch(query)
@@ -18,7 +27,7 @@ export const getSystemPromptForWeb = async (query: string) => {
             source: search.map((result) => {
                 return {
                     url: result.url,
-                    name: new URL(result.url).hostname,
+                    name: getHostName(result.url),
                     type: "url",
                 }
             })

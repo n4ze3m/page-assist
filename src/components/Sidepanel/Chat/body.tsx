@@ -26,6 +26,7 @@ export const SidePanelBody = () => {
           totalMessages={messages.length}
           onRengerate={() => {}}
           isProcessing={streaming}
+          hideEditAndRegenerate
         />
       ))}
       <div className="w-full h-32 md:h-48 flex-shrink-0"></div>

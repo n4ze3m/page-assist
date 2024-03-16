@@ -21,6 +21,7 @@ type Props = {
   webSearch?: {}
   isSearchingInternet?: boolean
   sources?: any[]
+  hideEditAndRegenerate?: boolean
 }
 
 export const PlaygroundMessage = (props: Props) => {
@@ -130,24 +131,27 @@ export const PlaygroundMessage = (props: Props) => {
                       </Tooltip>
                     )}
 
-                    {props.currentMessageIndex === props.totalMessages - 1 && (
-                      <Tooltip title="Regenerate">
-                        <button
-                          onClick={props.onRengerate}
-                          className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
-                          <RotateCcw className="w-3 h-3 text-gray-400 group-hover:text-gray-500" />
-                        </button>
-                      </Tooltip>
-                    )}
+                    {!props.hideEditAndRegenerate &&
+                      props.currentMessageIndex === props.totalMessages - 1 && (
+                        <Tooltip title="Regenerate">
+                          <button
+                            onClick={props.onRengerate}
+                            className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                            <RotateCcw className="w-3 h-3 text-gray-400 group-hover:text-gray-500" />
+                          </button>
+                        </Tooltip>
+                      )}
                   </>
                 )}
-                <Tooltip title="Edit">
-                  <button
-                    onClick={() => setEditMode(true)}
-                    className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
-                    <Pen className="w-3 h-3 text-gray-400 group-hover:text-gray-500" />
-                  </button>
-                </Tooltip>
+                {!props.hideEditAndRegenerate && (
+                  <Tooltip title="Edit">
+                    <button
+                      onClick={() => setEditMode(true)}
+                      className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                      <Pen className="w-3 h-3 text-gray-400 group-hover:text-gray-500" />
+                    </button>
+                  </Tooltip>
+                )}
               </div>
             )}
           </div>
