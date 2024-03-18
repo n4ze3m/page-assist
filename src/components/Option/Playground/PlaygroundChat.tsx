@@ -4,7 +4,13 @@ import { PlaygroundEmpty } from "./PlaygroundEmpty"
 import { PlaygroundMessage } from "~components/Common/Playground/Message"
 
 export const PlaygroundChat = () => {
-  const { messages, streaming, regenerateLastMessage, isSearchingInternet } = useMessageOption()
+  const {
+    messages,
+    streaming,
+    regenerateLastMessage,
+    isSearchingInternet,
+    editMessage
+  } = useMessageOption()
   const divRef = React.useRef<HTMLDivElement>(null)
   React.useEffect(() => {
     if (divRef.current) {
@@ -32,6 +38,9 @@ export const PlaygroundChat = () => {
           isProcessing={streaming}
           isSearchingInternet={isSearchingInternet}
           sources={message.sources}
+          onEditFormSubmit={(value) => {
+            editMessage(index, value, !message.isBot)
+          }}
         />
       ))}
       {messages.length > 0 && (

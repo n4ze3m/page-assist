@@ -15,10 +15,12 @@ import {
 } from "@langchain/core/messages"
 import { useStoreMessageOption } from "~store/option"
 import {
+  deleteChatForEdit,
   getPromptById,
   removeMessageUsingHistoryId,
   saveHistory,
-  saveMessage
+  saveMessage,
+  updateMessageByIndex
 } from "~libs/db"
 import { useNavigate } from "react-router-dom"
 import { notification } from "antd"
@@ -114,6 +116,8 @@ export const useMessageOption = () => {
     setSelectedSystemPrompt
   } = useStoreMessageOption()
 
+  // const { notification } = App.useApp()
+
   const navigate = useNavigate()
   const textareaRef = React.useRef<HTMLTextAreaElement>(null)
 
@@ -134,7 +138,9 @@ export const useMessageOption = () => {
   const searchChatMode = async (
     message: string,
     image: string,
-    isRegenerate: boolean
+    isRegenerate: boolean,
+    messages: Message[],
+    history: ChatHistory
   ) => {
     const url = await getOllamaURL()
 
@@ -148,27 +154,37 @@ export const useMessageOption = () => {
       baseUrl: cleanUrl(url)
     })
 
-    let newMessage: Message[] = [
-      ...messages,
-      {
-        isBot: false,
-        name: "You",
-        message,
-        sources: [],
-        images: [image]
-      },
-      {
-        isBot: true,
-        name: selectedModel,
-        message: "▋",
-        sources: []
-      }
-    ]
-
-    const appendingIndex = newMessage.length - 1
+    let newMessage: Message[] = []
     if (!isRegenerate) {
-      setMessages(newMessage)
+      newMessage = [
+        ...messages,
+        {
+          isBot: false,
+          name: "You",
+          message,
+          sources: [],
+          images: [image]
+        },
+        {
+          isBot: true,
+          name: selectedModel,
+          message: "▋",
+          sources: []
+        }
+      ]
+    } else {
+      newMessage = [
+        ...messages,
+        {
+          isBot: true,
+          name: selectedModel,
+          message: "▋",
+          sources: []
+        }
+      ]
     }
+    setMessages(newMessage)
+    const appendingIndex = newMessage.length - 1
 
     try {
       setIsSearchingInternet(true)
@@ -321,8 +337,6 @@ export const useMessageOption = () => {
       setIsProcessing(false)
       setStreaming(false)
     } catch (e) {
-      e
-
       if (e?.name === "AbortError") {
         newMessage[appendingIndex].message = newMessage[
           appendingIndex
@@ -379,7 +393,9 @@ export const useMessageOption = () => {
   const normalChatMode = async (
     message: string,
     image: string,
-    isRegenerate: boolean
+    isRegenerate: boolean,
+    messages: Message[],
+    history: ChatHistory
   ) => {
     const url = await getOllamaURL()
 
@@ -393,27 +409,37 @@ export const useMessageOption = () => {
       baseUrl: cleanUrl(url)
     })
 
-    let newMessage: Message[] = [
-      ...messages,
-      {
-        isBot: false,
-        name: "You",
-        message,
-        sources: [],
-        images: [image]
-      },
-      {
-        isBot: true,
-        name: selectedModel,
-        message: "▋",
-        sources: []
-      }
-    ]
-
-    const appendingIndex = newMessage.length - 1
+    let newMessage: Message[] = []
     if (!isRegenerate) {
-      setMessages(newMessage)
+      newMessage = [
+        ...messages,
+        {
+          isBot: false,
+          name: "You",
+          message,
+          sources: [],
+          images: [image]
+        },
+        {
+          isBot: true,
+          name: selectedModel,
+          message: "▋",
+          sources: []
+        }
+      ]
+    } else {
+      newMessage = [
+        ...messages,
+        {
+          isBot: true,
+          name: selectedModel,
+          message: "▋",
+          sources: []
+        }
+      ]
     }
+    setMessages(newMessage)
+    const appendingIndex = newMessage.length - 1
 
     try {
       const prompt = await systemPromptForNonRagOption()
@@ -607,31 +633,57 @@ export const useMessageOption = () => {
   const onSubmit = async ({
     message,
     image,
-    isRegenerate = false
+    isRegenerate = false,
+    messages: chatHistory,
+    memory
   }: {
     message: string
     image: string
     isRegenerate?: boolean
+    messages?: Message[]
+    memory?: ChatHistory
   }) => {
     setStreaming(true)
     if (webSearch) {
-      await searchChatMode(message, image, isRegenerate)
+      await searchChatMode(
+        message,
+        image,
+        isRegenerate,
+        chatHistory || messages,
+        memory || history
+      )
     } else {
-      await normalChatMode(message, image, isRegenerate)
+      await normalChatMode(
+        message,
+        image,
+        isRegenerate,
+        chatHistory || messages,
+        memory || history
+      )
     }
   }
 
   const regenerateLastMessage = async () => {
+    const isOk = validateBeforeSubmit()
+
+    if (!isOk) {
+      return
+    }
     if (history.length > 0) {
       const lastMessage = history[history.length - 2]
-      setHistory(history.slice(0, -1))
-      setMessages(messages.slice(0, -1))
+      let newHistory = history
+      let mewMessages = messages
+      newHistory.pop()
+      mewMessages.pop()
+      setHistory(newHistory)
+      setMessages(mewMessages)
       await removeMessageUsingHistoryId(historyId)
       if (lastMessage.role === "user") {
         await onSubmit({
           message: lastMessage.content,
           image: lastMessage.image || "",
-          isRegenerate: true
+          isRegenerate: true,
+          memory: newHistory
         })
       }
     }
@@ -644,7 +696,61 @@ export const useMessageOption = () => {
     }
   }
 
+  const validateBeforeSubmit = () => {
+    if (!selectedModel || selectedModel?.trim()?.length === 0) {
+      notification.error({
+        message: "Error",
+        description: "Please select a model to continue"
+      })
+      return false
+    }
+
+    return true
+  }
+
+  const editMessage = async (
+    index: number,
+    message: string,
+    isHuman: boolean
+  ) => {
+    // update message and history by index
+    let newMessages = messages
+    let newHistory = history
+
+    if (isHuman) {
+      const isOk = validateBeforeSubmit()
+
+      if (!isOk) {
+        return
+      }
+
+      const currentHumanMessage = newMessages[index]
+      newMessages[index].message = message
+      newHistory[index].content = message
+      const previousMessages = newMessages.slice(0, index + 1)
+      setMessages(previousMessages)
+      const previousHistory = newHistory.slice(0, index + 1)
+      setHistory(previousHistory)
+      await updateMessageByIndex(historyId, index, message)
+      await deleteChatForEdit(historyId, index)
+      await onSubmit({
+        message: message,
+        image: currentHumanMessage.images[0] || "",
+        isRegenerate: true,
+        messages: previousMessages,
+        memory: previousHistory
+      })
+    } else {
+      newMessages[index].message = message
+      setMessages(newMessages)
+      newHistory[index].content = message
+      setHistory(newHistory)
+      await updateMessageByIndex(historyId, index, message)
+    }
+  }
+
   return {
+    editMessage,
     messages,
     setMessages,
     onSubmit,

@@ -16,6 +16,7 @@ export const SidePanelBody = () => {
       {messages.length === 0 && <EmptySidePanel />}
       {messages.map((message, index) => (
         <PlaygroundMessage
+        onEditFormSubmit={(value) => {}}
           key={index}
           isBot={message.isBot}
           message={message.message}
@@ -25,6 +26,7 @@ export const SidePanelBody = () => {
           totalMessages={messages.length}
           onRengerate={() => {}}
           isProcessing={streaming}
+          hideEditAndRegenerate
         />
       ))}
       <div className="w-full h-32 md:h-48 flex-shrink-0"></div>
