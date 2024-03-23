@@ -1,14 +1,14 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { Skeleton, Radio, Form, Alert } from "antd"
 import React from "react"
-import { SaveButton } from "~components/Common/SaveButton"
+import { SaveButton } from "~/components/Common/SaveButton"
 import {
   getWebSearchPrompt,
   setSystemPromptForNonRagOption,
   systemPromptForNonRagOption,
   geWebSearchFollowUpPrompt,
   setWebPrompts
-} from "~services/ollama"
+} from "~/services/ollama"
 
 export const SettingPrompt = () => {
   const [selectedValue, setSelectedValue] = React.useState<"normal" | "web">(

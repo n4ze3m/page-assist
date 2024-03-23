@@ -14,7 +14,7 @@ import {
   RunnableMap,
   RunnableSequence,
 } from "langchain/schema/runnable";
-import type { ChatHistory } from "~store";
+import type { ChatHistory } from "~/store";
 type RetrievalChainInput = {
   chat_history: string;
   question: string;

@@ -1,16 +1,14 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { MemoryRouter } from "react-router-dom"
-import { SidepanelRouting } from "~routes"
 import { ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 const queryClient = new QueryClient()
-import "./css/tailwind.css"
 import { ConfigProvider, theme } from "antd"
 import { StyleProvider } from "@ant-design/cssinjs"
-import { useDarkMode } from "~hooks/useDarkmode"
-function IndexSidepanel() {
+import { useDarkMode } from "~/hooks/useDarkmode"
+import { OptionRouting } from "~/routes"
+function IndexOption() {
   const { mode } = useDarkMode()
-
   return (
     <MemoryRouter>
       <ConfigProvider
@@ -20,7 +18,7 @@ function IndexSidepanel() {
         }}>
         <StyleProvider hashPriority="high">
           <QueryClientProvider client={queryClient}>
-            <SidepanelRouting />
+            <OptionRouting />
             <ToastContainer />
           </QueryClientProvider>
         </StyleProvider>
@@ -29,4 +27,4 @@ function IndexSidepanel() {
   )
 }
 
-export default IndexSidepanel
+export default IndexOption

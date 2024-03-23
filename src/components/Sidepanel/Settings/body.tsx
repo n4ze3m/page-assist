@@ -12,13 +12,13 @@ import {
   defaultEmbeddingChunkSize,
   defaultEmbeddingModelForRag,
   saveForRag
-} from "~services/ollama"
+} from "~/services/ollama"
 
 import { Skeleton, Radio, Select, Form, InputNumber } from "antd"
-import { useDarkMode } from "~hooks/useDarkmode"
-import { SaveButton } from "~components/Common/SaveButton"
-import { SUPPORTED_LANGUAGES } from "~utils/supporetd-languages"
-import { useMessage } from "~hooks/useMessage"
+import { useDarkMode } from "~/hooks/useDarkmode"
+import { SaveButton } from "~/components/Common/SaveButton"
+import { SUPPORTED_LANGUAGES } from "~/utils/supporetd-languages"
+import { useMessage } from "~/hooks/useMessage"
 import { MoonIcon, SunIcon } from "lucide-react"
 
 export const SettingsBody = () => {

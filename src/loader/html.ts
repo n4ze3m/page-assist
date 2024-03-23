@@ -1,7 +1,7 @@
 import { BaseDocumentLoader } from "langchain/document_loaders/base"
 import { Document } from "@langchain/core/documents"
 import { compile } from "html-to-text"
-import { chromeRunTime } from "~libs/runtime"
+import { chromeRunTime } from "~/libs/runtime"
 import { YtTranscript } from "yt-transcript"
 
 const YT_REGEX =

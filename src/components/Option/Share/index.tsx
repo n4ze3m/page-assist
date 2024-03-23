@@ -1,10 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Form, Input, Skeleton, Table, Tooltip, message } from "antd"
 import { Trash2 } from "lucide-react"
-import { SaveButton } from "~components/Common/SaveButton"
-import { deleteWebshare, getAllWebshares, getUserId } from "~libs/db"
-import { getPageShareUrl, setPageShareUrl } from "~services/ollama"
-import { verifyPageShareURL } from "~utils/verify-page-share"
+import { SaveButton } from "~/components/Common/SaveButton"
+import { deleteWebshare, getAllWebshares, getUserId } from "~/libs/db"
+import { getPageShareUrl, setPageShareUrl } from "~/services/ollama"
+import { verifyPageShareURL } from "~/utils/verify-page-share"
 
 export const OptionShareBody = () => {
   const queryClient = useQueryClient()

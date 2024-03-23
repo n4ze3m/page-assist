@@ -4,8 +4,8 @@ import { useLocation, NavLink } from "react-router-dom"
 import { Sidebar } from "../Option/Sidebar"
 import { Drawer, Select, Tooltip } from "antd"
 import { useQuery } from "@tanstack/react-query"
-import { getAllModels } from "~services/ollama"
-import { useMessageOption } from "~hooks/useMessageOption"
+import { getAllModels } from "~/services/ollama"
+import { useMessageOption } from "~/hooks/useMessageOption"
 import {
   ChevronLeft,
   CogIcon,
@@ -15,8 +15,8 @@ import {
   SquarePen,
   ZapIcon
 } from "lucide-react"
-import { getAllPrompts } from "~libs/db"
-import { ShareBtn } from "~components/Common/ShareBtn"
+import { getAllPrompts } from "~/libs/db"
+import { ShareBtn } from "~/components/Common/ShareBtn"
 
 export default function OptionLayout({
   children

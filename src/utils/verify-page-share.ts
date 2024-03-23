@@ -1,4 +1,4 @@
-import { cleanUrl } from "~libs/clean-url"
+import { cleanUrl } from "~/libs/clean-url"
 
 export const verifyPageShareURL = async (url: string) => {
     const res = await fetch(`${cleanUrl(url)}/api/v1/ping`)

@@ -1,16 +1,16 @@
 import { useForm } from "@mantine/form"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import React from "react"
-import useDynamicTextareaSize from "~hooks/useDynamicTextareaSize"
-import { toBase64 } from "~libs/to-base64"
-import { useMessageOption } from "~hooks/useMessageOption"
+import useDynamicTextareaSize from "~/hooks/useDynamicTextareaSize"
+import { toBase64 } from "~/libs/to-base64"
+import { useMessageOption } from "~/hooks/useMessageOption"
 import { Checkbox, Dropdown, Switch, Tooltip } from "antd"
 import { Image } from "antd"
-import { useSpeechRecognition } from "~hooks/useSpeechRecognition"
-import { useWebUI } from "~store/webui"
-import { defaultEmbeddingModelForRag } from "~services/ollama"
+import { useSpeechRecognition } from "~/hooks/useSpeechRecognition"
+import { useWebUI } from "~/store/webui"
+import { defaultEmbeddingModelForRag } from "~/services/ollama"
 import { ImageIcon, MicIcon, StopCircleIcon, X } from "lucide-react"
-import { getVariable } from "~utils/select-varaible"
+import { getVariable } from "~/utils/select-varaible"
 
 type Props = {
   dropedFile: File | undefined

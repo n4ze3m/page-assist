@@ -5,9 +5,14 @@
   "description": "Use your locally running AI models to assist you in your web browsing.",
   "author": "n4ze3m",
   "scripts": {
-    "dev": "plasmo dev",
-    "build": "plasmo build",
-    "package": "plasmo package"
+    "dev": "wxt",
+    "dev:firefox": "wxt -b firefox",
+    "build": "wxt build",
+    "build:firefox": "wxt build -b firefox",
+    "zip": "wxt zip",
+    "zip:firefox": "wxt zip -b firefox",
+    "compile": "tsc --noEmit",
+    "postinstall": "wxt prepare"
   },
   "dependencies": {
     "@ant-design/cssinjs": "^1.18.4",
@@ -21,6 +26,7 @@
     "@tailwindcss/forms": "^0.5.7",
     "@tailwindcss/typography": "^0.5.10",
     "@tanstack/react-query": "^5.17.19",
+    "@vitejs/plugin-react": "^4.2.1",
     "antd": "^5.13.3",
     "axios": "^1.6.7",
     "dayjs": "^1.11.10",
@@ -53,34 +59,7 @@
     "postcss": "^8.4.33",
     "prettier": "3.2.4",
     "tailwindcss": "^3.4.1",
-    "typescript": "5.3.3"
-  },
-  "manifest": {
-    "host_permissions": [
-      "http://*/*",
-      "https://*/*"
-    ],
-    "commands": {
-      "_execute_action": {
-        "suggested_key": {
-          "default": "Ctrl+Shift+L"
-        }
-      },
-      "execute_side_panel": {
-        "description": "Open the side panel",
-        "suggested_key": {
-          "default": "Ctrl+Shift+P"
-        }
-      }
-    },
-    "permissions": [
-      "storage",
-      "activeTab",
-      "scripting",
-      "declarativeNetRequest",
-      "action",
-      "unlimitedStorage",
-      "contextMenus"
-    ]
+    "typescript": "5.3.3",
+    "wxt": "^0.17.7"
   }
 }

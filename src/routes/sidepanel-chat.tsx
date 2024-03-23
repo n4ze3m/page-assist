@@ -1,8 +1,8 @@
 import React from "react"
-import { SidePanelBody } from "~components/Sidepanel/Chat/body"
-import { SidepanelForm } from "~components/Sidepanel/Chat/form"
-import { SidepanelHeader } from "~components/Sidepanel/Chat/header"
-import { useMessage } from "~hooks/useMessage"
+import { SidePanelBody } from "~/components/Sidepanel/Chat/body"
+import { SidepanelForm } from "~/components/Sidepanel/Chat/form"
+import { SidepanelHeader } from "~/components/Sidepanel/Chat/header"
+import { useMessage } from "~/hooks/useMessage"
 
 export const SidepanelChat = () => {
   const drop = React.useRef<HTMLDivElement>(null)
