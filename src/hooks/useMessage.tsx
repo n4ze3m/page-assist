@@ -1,5 +1,5 @@
 import React from "react"
-import { cleanUrl } from "~libs/clean-url"
+import { cleanUrl } from "~/libs/clean-url"
 import {
   defaultEmbeddingChunkOverlap,
   defaultEmbeddingChunkSize,
@@ -7,8 +7,8 @@ import {
   getOllamaURL,
   promptForRag,
   systemPromptForNonRag
-} from "~services/ollama"
-import { useStoreMessage, type ChatHistory, type Message } from "~store"
+} from "~/services/ollama"
+import { useStoreMessage, type ChatHistory, type Message } from "~/store"
 import { ChatOllama } from "@langchain/community/chat_models/ollama"
 import {
   HumanMessage,
@@ -16,16 +16,16 @@ import {
   type MessageContent,
   SystemMessage
 } from "@langchain/core/messages"
-import { getHtmlOfCurrentTab } from "~libs/get-html"
-import { PageAssistHtmlLoader } from "~loader/html"
+import { getHtmlOfCurrentTab } from "~/libs/get-html"
+import { PageAssistHtmlLoader } from "~/loader/html"
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter"
 import { OllamaEmbeddings } from "@langchain/community/embeddings/ollama"
 import {
   createChatWithWebsiteChain,
   groupMessagesByConversation
-} from "~chain/chat-with-website"
+} from "~/chain/chat-with-website"
 import { MemoryVectorStore } from "langchain/vectorstores/memory"
-import { chromeRunTime } from "~libs/runtime"
+import { chromeRunTime } from "~/libs/runtime"
 export type BotResponse = {
   bot: {
     text: string

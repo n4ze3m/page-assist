@@ -1,4 +1,4 @@
-import { getWebSearchPrompt } from "~services/ollama"
+import { getWebSearchPrompt } from "~/services/ollama"
 import { webSearch } from "./local-google"
 
 const getHostName = (url: string) => {

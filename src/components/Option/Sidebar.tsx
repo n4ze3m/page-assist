@@ -5,9 +5,9 @@ import {
   formatToMessage,
   deleteByHistoryId,
   updateHistory
-} from "~libs/db"
+} from "~/libs/db"
 import { Empty, Skeleton } from "antd"
-import { useMessageOption } from "~hooks/useMessageOption"
+import { useMessageOption } from "~/hooks/useMessageOption"
 import { useState } from "react"
 import { PencilIcon, Trash2 } from "lucide-react"
 import { useNavigate } from "react-router-dom"

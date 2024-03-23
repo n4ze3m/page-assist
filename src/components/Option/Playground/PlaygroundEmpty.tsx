@@ -5,7 +5,7 @@ import {
   getOllamaURL,
   isOllamaRunning,
   setOllamaURL as saveOllamaURL
-} from "~services/ollama"
+} from "~/services/ollama"
 
 export const PlaygroundEmpty = () => {
   const [ollamaURL, setOllamaURL] = useState<string>("")

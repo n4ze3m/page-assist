@@ -1,5 +1,5 @@
-import logoImage from "data-base64:~assets/icon.png"
-import { useMessage } from "~hooks/useMessage"
+import logoImage from "~/assets/icon.png"
+import { useMessage } from "~/hooks/useMessage"
 import { Link } from "react-router-dom"
 import { Tooltip } from "antd"
 import { BoxesIcon, CogIcon, RefreshCcw } from "lucide-react"

@@ -16,7 +16,7 @@ import {
   getAllPrompts,
   savePrompt,
   updatePrompt
-} from "~libs/db"
+} from "~/libs/db"
 
 export const PromptBody = () => {
   const queryClient = useQueryClient()

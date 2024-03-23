@@ -1,11 +1,11 @@
 import React from "react"
-import { cleanUrl } from "~libs/clean-url"
+import { cleanUrl } from "~/libs/clean-url"
 import {
   geWebSearchFollowUpPrompt,
   getOllamaURL,
   systemPromptForNonRagOption
-} from "~services/ollama"
-import { type ChatHistory, type Message } from "~store/option"
+} from "~/services/ollama"
+import { type ChatHistory, type Message } from "~/store/option"
 import { ChatOllama } from "@langchain/community/chat_models/ollama"
 import {
   HumanMessage,
@@ -13,7 +13,7 @@ import {
   type MessageContent,
   SystemMessage
 } from "@langchain/core/messages"
-import { useStoreMessageOption } from "~store/option"
+import { useStoreMessageOption } from "~/store/option"
 import {
   deleteChatForEdit,
   getPromptById,
@@ -21,10 +21,10 @@ import {
   saveHistory,
   saveMessage,
   updateMessageByIndex
-} from "~libs/db"
+} from "~/libs/db"
 import { useNavigate } from "react-router-dom"
 import { notification } from "antd"
-import { getSystemPromptForWeb } from "~web/web"
+import { getSystemPromptForWeb } from "~/web/web"
 
 export type BotResponse = {
   bot: {

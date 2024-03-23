@@ -1,7 +1,7 @@
 import {
   type ChatHistory as ChatHistoryType,
   type Message as MessageType
-} from "~store/option"
+} from "~/store/option"
 
 type HistoryInfo = {
   id: string

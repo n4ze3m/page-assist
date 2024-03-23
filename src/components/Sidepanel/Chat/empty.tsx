@@ -2,13 +2,13 @@ import { useQuery } from "@tanstack/react-query"
 import { Select } from "antd"
 import { RotateCcw } from "lucide-react"
 import { useEffect, useState } from "react"
-import { useMessage } from "~hooks/useMessage"
+import { useMessage } from "~/hooks/useMessage"
 import {
   getAllModels,
   getOllamaURL,
   isOllamaRunning,
   setOllamaURL as saveOllamaURL
-} from "~services/ollama"
+} from "~/services/ollama"
 
 export const EmptySidePanel = () => {
   const [ollamaURL, setOllamaURL] = useState<string>("")

@@ -1,13 +1,13 @@
 import { Form, Image, Input, Modal, Tooltip, message } from "antd"
 import { Share } from "lucide-react"
 import { useState } from "react"
-import type { Message } from "~store/option"
+import type { Message } from "~/store/option"
 import Markdown from "./Markdown"
 import React from "react"
 import { useMutation } from "@tanstack/react-query"
-import { getPageShareUrl } from "~services/ollama"
-import { cleanUrl } from "~libs/clean-url"
-import { getUserId, saveWebshare } from "~libs/db"
+import { getPageShareUrl } from "~/services/ollama"
+import { cleanUrl } from "~/libs/clean-url"
+import { getUserId, saveWebshare } from "~/libs/db"
 
 type Props = {
   messages: Message[]

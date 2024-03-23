@@ -3,7 +3,7 @@ import { Skeleton, Switch } from "antd"
 import {
   getIsSimpleInternetSearch,
   setIsSimpleInternetSearch
-} from "~services/ollama"
+} from "~/services/ollama"
 
 export const SearchModeSettings = () => {
   const { data, status } = useQuery({

@@ -1,6 +1,6 @@
 import { useForm } from "@mantine/form"
 import React from "react"
-import useDynamicTextareaSize from "~hooks/useDynamicTextareaSize"
+import useDynamicTextareaSize from "~/hooks/useDynamicTextareaSize"
 
 type Props = {
   value: string

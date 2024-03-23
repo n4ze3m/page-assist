@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { Form, InputNumber, Select, Skeleton } from "antd"
 import { useState } from "react"
-import { SaveButton } from "~components/Common/SaveButton"
+import { SaveButton } from "~/components/Common/SaveButton"
 import {
   defaultEmbeddingChunkOverlap,
   defaultEmbeddingChunkSize,
@@ -10,7 +10,7 @@ import {
   getOllamaURL,
   saveForRag,
   setOllamaURL as saveOllamaURL
-} from "~services/ollama"
+} from "~/services/ollama"
 import { SettingPrompt } from "./prompt"
 
 export const SettingsOllama = () => {
