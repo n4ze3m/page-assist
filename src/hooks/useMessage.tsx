@@ -16,7 +16,7 @@ import {
   type MessageContent,
   SystemMessage
 } from "@langchain/core/messages"
-import { getHtmlOfCurrentTab } from "~/libs/get-html"
+import { getDataFromCurrentTab } from "~/libs/get-html"
 import { PageAssistHtmlLoader } from "~/loader/html"
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter"
 import { OllamaEmbeddings } from "@langchain/community/embeddings/ollama"
@@ -167,7 +167,7 @@ export const useMessage = () => {
       let isAlreadyExistEmbedding: MemoryVectorStore
       let embedURL: string, embedHTML: string
       if (messages.length === 0) {
-        const { html, url } = await getHtmlOfCurrentTab()
+        const { content: html, url, type } = await getDataFromCurrentTab()
         embedHTML = html
         embedURL = url
         setCurrentURL(url)

@@ -1,10 +1,24 @@
 import { defineConfig } from "wxt"
 import react from "@vitejs/plugin-react"
+import topLevelAwait from "vite-plugin-top-level-await"
 
 // See https://wxt.dev/api/config.html
 export default defineConfig({
   vite: () => ({
-    plugins: [react()],
+    plugins: [react(),
+      topLevelAwait({
+        promiseExportName: '__tla',
+        promiseImportName: i => `__tla_${i}`,
+      }),
+    ],
+    build: {
+      rollupOptions: {
+        external: [
+          "langchain",
+          "@langchain/community",
+        ]
+      }
+    }
   }),
   entrypointsDir: "entries",
   srcDir: "src",
@@ -16,7 +30,7 @@ export default defineConfig({
     default_locale: 'en',
     action: {},
     author: "n4ze3m",
-    host_permissions: ["http://*/*", "https://*/*"],
+    host_permissions: ["http://*/*", "https://*/*", "file://*/*"],
     commands: {
       _execute_action: {
         suggested_key: {
