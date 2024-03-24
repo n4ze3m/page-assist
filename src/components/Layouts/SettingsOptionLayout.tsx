@@ -5,6 +5,7 @@ import {
   Orbit,
   Share
 } from "lucide-react"
+import { useTranslation } from "react-i18next"
 import { Link, useLocation } from "react-router-dom"
 
 function classNames(...classes: string[]) {
@@ -44,6 +45,8 @@ const LinkComponent = (item: {
 
 export const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
   const location = useLocation()
+  const { t } = useTranslation("option")
+
   return (
     <>
       <div className="mx-auto max-w-7xl lg:flex lg:gap-x-16 lg:px-8">
@@ -54,31 +57,31 @@ export const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
               className="flex gap-x-3 gap-y-1 whitespace-nowrap lg:flex-col">
               <LinkComponent
                 href="/settings"
-                name="General Settings"
+                name={t("generalSettings.title")}
                 icon={Orbit}
                 current={location.pathname}
               />
               <LinkComponent
                 href="/settings/ollama"
-                name="Ollama Settings"
+                name={t("ollamaSettings.title")}
                 icon={CircuitBoardIcon}
                 current={location.pathname}
               />
               <LinkComponent
                 href="/settings/model"
-                name="Manage Model"
+                name={t("manageModels.title")}
                 current={location.pathname}
                 icon={BrainCircuit}
               />
               <LinkComponent
                 href="/settings/prompt"
-                name="Manage Prompt"
+                name={t("managePrompts.title")}
                 icon={Book}
                 current={location.pathname}
               />
-               <LinkComponent
+              <LinkComponent
                 href="/settings/share"
-                name="Manage Share"
+                name={t("manageShare.title")}
                 icon={Share}
                 current={location.pathname}
               />

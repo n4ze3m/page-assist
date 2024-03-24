@@ -7,12 +7,7 @@ import {
 } from "~/services/ollama"
 import { type ChatHistory, type Message } from "~/store/option"
 import { ChatOllama } from "@langchain/community/chat_models/ollama"
-import {
-  HumanMessage,
-  AIMessage,
-  type MessageContent,
-  SystemMessage
-} from "@langchain/core/messages"
+import { HumanMessage, SystemMessage } from "@langchain/core/messages"
 import { useStoreMessageOption } from "~/store/option"
 import {
   deleteChatForEdit,
@@ -25,65 +20,8 @@ import {
 import { useNavigate } from "react-router-dom"
 import { notification } from "antd"
 import { getSystemPromptForWeb } from "~/web/web"
-
-export type BotResponse = {
-  bot: {
-    text: string
-    sourceDocuments: any[]
-  }
-  history: ChatHistory
-  history_id: string
-}
-
-const generateHistory = (
-  messages: {
-    role: "user" | "assistant" | "system"
-    content: string
-    image?: string
-  }[]
-) => {
-  let history = []
-  for (const message of messages) {
-    if (message.role === "user") {
-      let content: MessageContent = [
-        {
-          type: "text",
-          text: message.content
-        }
-      ]
-
-      if (message.image) {
-        content = [
-          {
-            type: "image_url",
-            image_url: message.image
-          },
-          {
-            type: "text",
-            text: message.content
-          }
-        ]
-      }
-      history.push(
-        new HumanMessage({
-          content: content
-        })
-      )
-    } else if (message.role === "assistant") {
-      history.push(
-        new AIMessage({
-          content: [
-            {
-              type: "text",
-              text: message.content
-            }
-          ]
-        })
-      )
-    }
-  }
-  return history
-}
+import { generateHistory } from "@/utils/generate-history"
+import { useTranslation } from "react-i18next"
 
 export const useMessageOption = () => {
   const {
@@ -116,7 +54,7 @@ export const useMessageOption = () => {
     setSelectedSystemPrompt
   } = useStoreMessageOption()
 
-  // const { notification } = App.useApp()
+  const { t } = useTranslation("option")
 
   const navigate = useNavigate()
   const textareaRef = React.useRef<HTMLTextAreaElement>(null)
@@ -150,7 +88,7 @@ export const useMessageOption = () => {
     abortControllerRef.current = new AbortController()
 
     const ollama = new ChatOllama({
-      model: selectedModel,
+      model: selectedModel!,
       baseUrl: cleanUrl(url)
     })
 
@@ -204,7 +142,7 @@ export const useMessageOption = () => {
           .replaceAll("{chat_history}", chat_history)
           .replaceAll("{question}", message)
         const questionOllama = new ChatOllama({
-          model: selectedModel,
+          model: selectedModel!,
           baseUrl: cleanUrl(url)
         })
         const response = await questionOllama.invoke(promptForQuestion)
@@ -308,11 +246,11 @@ export const useMessageOption = () => {
 
       if (historyId) {
         if (!isRegenerate) {
-          await saveMessage(historyId, selectedModel, "user", message, [image])
+          await saveMessage(historyId, selectedModel!, "user", message, [image])
         }
         await saveMessage(
           historyId,
-          selectedModel,
+          selectedModel!,
           "assistant",
           newMessage[appendingIndex].message,
           [],
@@ -320,12 +258,12 @@ export const useMessageOption = () => {
         )
       } else {
         const newHistoryId = await saveHistory(message)
-        await saveMessage(newHistoryId.id, selectedModel, "user", message, [
+        await saveMessage(newHistoryId.id, selectedModel!, "user", message, [
           image
         ])
         await saveMessage(
           newHistoryId.id,
-          selectedModel,
+          selectedModel!,
           "assistant",
           newMessage[appendingIndex].message,
           [],
@@ -337,6 +275,7 @@ export const useMessageOption = () => {
       setIsProcessing(false)
       setStreaming(false)
     } catch (e) {
+      //@ts-ignore
       if (e?.name === "AbortError") {
         newMessage[appendingIndex].message = newMessage[
           appendingIndex
@@ -356,22 +295,22 @@ export const useMessageOption = () => {
         ])
 
         if (historyId) {
-          await saveMessage(historyId, selectedModel, "user", message, [image])
+          await saveMessage(historyId, selectedModel!, "user", message, [image])
           await saveMessage(
             historyId,
-            selectedModel,
+            selectedModel!,
             "assistant",
             newMessage[appendingIndex].message,
             []
           )
         } else {
           const newHistoryId = await saveHistory(message)
-          await saveMessage(newHistoryId.id, selectedModel, "user", message, [
+          await saveMessage(newHistoryId.id, selectedModel!, "user", message, [
             image
           ])
           await saveMessage(
             newHistoryId.id,
-            selectedModel,
+            selectedModel!,
             "assistant",
             newMessage[appendingIndex].message,
             []
@@ -379,9 +318,10 @@ export const useMessageOption = () => {
           setHistoryId(newHistoryId.id)
         }
       } else {
+        //@ts-ignore
         notification.error({
-          message: "Error",
-          description: e?.message || "Something went wrong"
+          message: t("error"),
+          description: e?.message || t("somethingWentWrong")
         })
       }
 
@@ -405,7 +345,7 @@ export const useMessageOption = () => {
     abortControllerRef.current = new AbortController()
 
     const ollama = new ChatOllama({
-      model: selectedModel,
+      model: selectedModel!,
       baseUrl: cleanUrl(url)
     })
 
@@ -620,8 +560,8 @@ export const useMessageOption = () => {
         }
       } else {
         notification.error({
-          message: "Error",
-          description: e?.message || "Something went wrong"
+          message: t("error"),
+          description: e?.message || t("somethingWentWrong")
         })
       }
 
@@ -699,8 +639,8 @@ export const useMessageOption = () => {
   const validateBeforeSubmit = () => {
     if (!selectedModel || selectedModel?.trim()?.length === 0) {
       notification.error({
-        message: "Error",
-        description: "Please select a model to continue"
+        message: t("error"),
+        description: t("validationSelectModel")
       })
       return false
     }

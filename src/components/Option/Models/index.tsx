@@ -7,12 +7,14 @@ import relativeTime from "dayjs/plugin/relativeTime"
 import { useState } from "react"
 import { useForm } from "@mantine/form"
 import { Download, RotateCcw, Trash2 } from "lucide-react"
+import { useTranslation } from "react-i18next"
 
 dayjs.extend(relativeTime)
 
 export const ModelsBody = () => {
   const queryClient = useQueryClient()
   const [open, setOpen] = useState(false)
+  const { t } = useTranslation("option")
 
   const form = useForm({
     initialValues: {
@@ -32,22 +34,24 @@ export const ModelsBody = () => {
         queryKey: ["fetchAllModels"]
       })
       notification.success({
-        message: "Model Deleted",
-        description: "Model has been deleted successfully"
+        message: t("manageModels.notification.success"),
+        description: t("manageModels.notification.successDeleteDescription")
       })
     },
     onError: (error) => {
       notification.error({
         message: "Error",
-        description: error?.message || "Something went wrong"
+        description: error?.message || t("manageModels.notification.someError")
       })
     }
   })
 
   const pullModel = async (modelName: string) => {
     notification.info({
-      message: "Pulling Model",
-      description: `Pulling ${modelName} model. For more details, check the extension icon.`
+      message: t("manageModels.notification.pullModel"),
+      description: t("manageModels.notification.pullModelDescription", {
+        modelName
+      })
     })
 
     setOpen(false)
@@ -76,7 +80,7 @@ export const ModelsBody = () => {
               <button
                 onClick={() => setOpen(true)}
                 className="inline-flex items-center rounded-md border border-transparent bg-black px-2 py-2 text-md font-medium leading-4 text-white shadow-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-white dark:text-gray-800 dark:hover:bg-gray-100 dark:focus:ring-gray-500 dark:focus:ring-offset-gray-100 disabled:opacity-50">
-                Add New Model
+                {t("manageModels.addBtn")}
               </button>
             </div>
           </div>
@@ -88,12 +92,12 @@ export const ModelsBody = () => {
           <Table
             columns={[
               {
-                title: "Name",
+                title: t("manageModels.columns.name"),
                 dataIndex: "name",
                 key: "name"
               },
               {
-                title: "Digest",
+                title: t("manageModels.columns.digest"),
                 dataIndex: "digest",
                 key: "digest",
                 render: (text: string) => (
@@ -105,28 +109,26 @@ export const ModelsBody = () => {
                 )
               },
               {
-                title: "Modified",
+                title: t("manageModels.columns.modifiedAt"),
                 dataIndex: "modified_at",
                 key: "modified_at",
                 render: (text: string) => dayjs(text).fromNow(true)
               },
               {
-                title: "Size",
+                title: t("manageModels.columns.size"),
                 dataIndex: "size",
                 key: "size",
                 render: (text: number) => bytePerSecondFormatter(text)
               },
               {
-                title: "Action",
+                title: t("manageModels.columns.actions"),
                 render: (_, record) => (
                   <div className="flex gap-4">
-                    <Tooltip title="Delete Model">
+                    <Tooltip title={t("manageModels.tooltip.delete")}>
                       <button
                         onClick={() => {
                           if (
-                            window.confirm(
-                              "Are you sure you want to delete this model?"
-                            )
+                            window.confirm(t("manageModels.confirm.delete"))
                           ) {
                             deleteOllamaModel(record.model)
                           }
@@ -135,13 +137,11 @@ export const ModelsBody = () => {
                         <Trash2 className="w-5 h-5" />
                       </button>
                     </Tooltip>
-                    <Tooltip title="Re-Pull Model">
+                    <Tooltip title={t("manageModels.tooltip.repull")}>
                       <button
                         onClick={() => {
                           if (
-                            window.confirm(
-                              "Are you sure you want to re-pull this model?"
-                            )
+                            window.confirm(t("manageModels.confirm.repull"))
                           ) {
                             pullOllamaModel(record.model)
                           }
@@ -160,27 +160,29 @@ export const ModelsBody = () => {
                   pagination={false}
                   columns={[
                     {
-                      title: "Parent Model",
+                      title: t("manageModels.expandedColumns.parentModel"),
                       key: "parent_model",
                       dataIndex: "parent_model"
                     },
                     {
-                      title: "Format",
+                      title: t("manageModels.expandedColumns.format"),
                       key: "format",
                       dataIndex: "format"
                     },
                     {
-                      title: "Family",
+                      title: t("manageModels.expandedColumns.family"),
                       key: "family",
                       dataIndex: "family"
                     },
                     {
-                      title: "Parameter Size",
+                      title: t("manageModels.expandedColumns.parameterSize"),
                       key: "parameter_size",
                       dataIndex: "parameter_size"
                     },
                     {
-                      title: "Quantization Level",
+                      title: t(
+                        "manageModels.expandedColumns.quantizationLevel"
+                      ),
                       key: "quantization_level",
                       dataIndex: "quantization_level"
                     }
@@ -200,13 +202,13 @@ export const ModelsBody = () => {
       <Modal
         footer={null}
         open={open}
-        title="Add New Model"
+        title={t("manageModels.modal.title")}
         onCancel={() => setOpen(false)}>
         <form
           onSubmit={form.onSubmit((values) => pullOllamaModel(values.model))}>
           <Input
             {...form.getInputProps("model")}
-            placeholder="Enter model name"
+            placeholder={t("manageModels.modal.placeholder")}
             size="large"
           />
 
@@ -214,7 +216,7 @@ export const ModelsBody = () => {
             type="submit"
             className="inline-flex justify-center w-full text-center mt-4 items-center rounded-md border border-transparent bg-black px-2 py-2 text-sm font-medium leading-4 text-white shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-white dark:text-gray-800 dark:hover:bg-gray-100 dark:focus:ring-gray-500 dark:focus:ring-offset-gray-100 disabled:opacity-50 ">
             <Download className="w-5 h-5 mr-3" />
-            Pull Model
+            {t("manageModels.modal.pull")}
           </button>
         </form>
       </Modal>

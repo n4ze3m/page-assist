@@ -7,6 +7,8 @@ const queryClient = new QueryClient()
 import { ConfigProvider, theme } from "antd"
 import { StyleProvider } from "@ant-design/cssinjs"
 import { useDarkMode } from "~/hooks/useDarkmode"
+import "~/i18n"
+
 function IndexSidepanel() {
   const { mode } = useDarkMode()
 

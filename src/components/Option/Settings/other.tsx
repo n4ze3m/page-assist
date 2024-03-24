@@ -6,6 +6,7 @@ import { Select } from "antd"
 import { SUPPORTED_LANGUAGES } from "~/utils/supporetd-languages"
 import { MoonIcon, SunIcon } from "lucide-react"
 import { SearchModeSettings } from "./search-mode"
+import { useTranslation } from "react-i18next"
 
 export const SettingOther = () => {
   const { clearChat, speechToTextLanguage, setSpeechToTextLanguage } =
@@ -14,29 +15,31 @@ export const SettingOther = () => {
   const queryClient = useQueryClient()
 
   const { mode, toggleDarkMode } = useDarkMode()
+  const { t } = useTranslation("option")
+
 
   return (
-    <dl className="flex flex-col space-y-6">
+    <dl className="flex flex-col space-y-6 text-sm">
       <div>
         <h2 className="text-base font-semibold leading-7 text-gray-900 dark:text-white">
-          Web UI Settings
+          {t("generalSettings.heading")}
         </h2>
         <div className="border border-b border-gray-200 dark:border-gray-600 mt-3"></div>
       </div>
       <div className="flex flex-row justify-between">
-        <span className="text-gray-500 dark:text-neutral-50">
-          Speech Recognition Language
+        <span className="text-gray-500   dark:text-neutral-50">
+          {t("generalSettings.settings.speechRecognitionLang.label")}
         </span>
 
         <Select
-          placeholder="Select Language"
+          placeholder={t("generalSettings.settings.speechRecognitionLang.placeholder")}
           allowClear
           showSearch
           options={SUPPORTED_LANGUAGES}
           value={speechToTextLanguage}
           filterOption={(input, option) =>
-            option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0 ||
-            option.value.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            option!.label.toLowerCase().indexOf(input.toLowerCase()) >= 0 ||
+            option!.value.toLowerCase().indexOf(input.toLowerCase()) >= 0
           }
           onChange={(value) => {
             setSpeechToTextLanguage(value)
@@ -44,7 +47,9 @@ export const SettingOther = () => {
         />
       </div>
       <div className="flex flex-row justify-between">
-        <span className="text-gray-500 dark:text-neutral-50 ">Change Theme</span>
+        <span className="text-gray-500 dark:text-neutral-50 ">
+          {t("generalSettings.settings.darkMode.label")}
+        </span>
 
         <button
           onClick={toggleDarkMode}
@@ -54,19 +59,19 @@ export const SettingOther = () => {
           ) : (
             <MoonIcon className="w-4 h-4 mr-2" />
           )}
-          {mode === "dark" ? "Light" : "Dark"}
+          {mode === "dark" ? t("generalSettings.settings.darkMode.options.light") : t("generalSettings.settings.darkMode.options.dark")}
         </button>
       </div>
       <SearchModeSettings />
       <div className="flex flex-row justify-between">
         <span className="text-gray-500 dark:text-neutral-50 ">
-          Delete Chat History
+          {t("generalSettings.settings.deleteChatHistory.label")}
         </span>
 
         <button
           onClick={async () => {
             const confirm = window.confirm(
-              "Are you sure you want to delete your chat history? This action cannot be undone."
+              t("generalSettings.settings.deleteChatHistory.confirm")
             )
 
             if (confirm) {
@@ -79,7 +84,7 @@ export const SettingOther = () => {
             }
           }}
           className="bg-red-500 dark:bg-red-600 text-white dark:text-gray-200 px-4 py-2 rounded-md">
-          Delete
+          {t("generalSettings.settings.deleteChatHistory.button")}
         </button>
       </div>
     </dl>

@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Form, Input, Skeleton, Table, Tooltip, message } from "antd"
 import { Trash2 } from "lucide-react"
+import { Trans, useTranslation } from "react-i18next"
 import { SaveButton } from "~/components/Common/SaveButton"
 import { deleteWebshare, getAllWebshares, getUserId } from "~/libs/db"
 import { getPageShareUrl, setPageShareUrl } from "~/services/ollama"
@@ -8,6 +9,8 @@ import { verifyPageShareURL } from "~/utils/verify-page-share"
 
 export const OptionShareBody = () => {
   const queryClient = useQueryClient()
+  const { t } = useTranslation("option")
+
   const { status, data } = useQuery({
     queryKey: ["fetchShareInfo"],
     queryFn: async () => {
@@ -58,10 +61,10 @@ export const OptionShareBody = () => {
         queryClient.invalidateQueries({
           queryKey: ["fetchShareInfo"]
         })
-        message.success("Page Share URL updated successfully")
+        message.success(t("manageShare.notification.pageShareSuccess"))
       },
       onError: (error) => {
-        message.error(error?.message || "Failed to update Page Share URL")
+        message.error(error?.message || t("manageShare.notification.someError"))
       }
     })
 
@@ -69,12 +72,16 @@ export const OptionShareBody = () => {
     mutationFn: onDelete,
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["fetchShareInfo"]
+        queryKey: ["fetchShareInfo"],
       })
-      message.success("Webshare deleted successfully")
+      message.success(
+        t("manageShare.notification.webShareDeleteSuccess")
+      )
     },
     onError: (error) => {
-      message.error(error?.message || "Failed to delete Webshare")
+      message.error(
+        error?.message || t("manageShare.notification.someError")
+      )
     }
   })
 
@@ -86,7 +93,7 @@ export const OptionShareBody = () => {
           <div>
             <div>
               <h2 className="text-base font-semibold leading-7 text-gray-900 dark:text-white">
-                Configure Page Share URL
+                {t("manageShare.heading")}
               </h2>
               <div className="border border-b border-gray-200 dark:border-gray-600 mt-3 mb-6"></div>
             </div>
@@ -99,25 +106,29 @@ export const OptionShareBody = () => {
               <Form.Item
                 name="url"
                 help={
-                  <span>
-                    For privacy reasons, you can self-host the page share and
-                    provide the URL here.{" "}
-                    <a
-                      href="https://github.com/n4ze3m/page-assist/blob/main/page-share.md"
-                      target="__blank"
-                      className="text-blue-600 dark:text-blue-400">
-                      Learn more
-                    </a>
-                  </span>
+                  <Trans
+                    i18nKey="option:manageShare.form.url.help"
+                    components={{
+                      anchor: (
+                        <a
+                          href="https://github.com/n4ze3m/page-assist/blob/main/page-share.md"
+                          target="__blank"
+                          className="text-blue-600 dark:text-blue-400"></a>
+                      )
+                    }}
+                  />
                 }
                 rules={[
                   {
                     required: true,
-                    message: "Please input your Page Share URL!"
+                    message: t("manageShare.form.url.required")
                   }
                 ]}
-                label="Page Share URL">
-                <Input placeholder="Page Share URL" size="large" />
+                label={t("manageShare.form.url.label")}>
+                <Input
+                  placeholder={t("manageShare.form.url.placeholder")}
+                  size="large"
+                />
               </Form.Item>
               <Form.Item>
                 <div className="flex justify-end">
@@ -129,7 +140,7 @@ export const OptionShareBody = () => {
           <div>
             <div>
               <h2 className="text-base font-semibold leading-7 text-gray-900 dark:text-white">
-                Webshares
+                {t("manageShare.webshare.heading")}
               </h2>
               <div className="border border-b border-gray-200 dark:border-gray-600 mt-3 mb-6"></div>
             </div>
@@ -138,12 +149,12 @@ export const OptionShareBody = () => {
                 dataSource={data.shares}
                 columns={[
                   {
-                    title: "Title",
+                    title: t("manageShare.webshare.columns.title"),
                     dataIndex: "title",
                     key: "title"
                   },
                   {
-                    title: "URL",
+                    title: t("manageShare.webshare.columns.url"),
                     dataIndex: "url",
                     key: "url",
                     render: (url: string) => (
@@ -156,14 +167,14 @@ export const OptionShareBody = () => {
                     )
                   },
                   {
-                    title: "Actions",
+                    title: t("manageShare.webshare.columns.actions"),
                     render: (_, render) => (
-                      <Tooltip title="Delete Share">
+                      <Tooltip title={t("manageShare.webshare.tooltip.delete")}>
                         <button
                           onClick={() => {
                             if (
                               window.confirm(
-                                "Are you sure you want to delete this webshare?"
+                                t("manageShare.webshare.confirm.delete")
                               )
                             ) {
                               deleteMutation({

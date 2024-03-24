@@ -7,6 +7,8 @@ import { ConfigProvider, theme } from "antd"
 import { StyleProvider } from "@ant-design/cssinjs"
 import { useDarkMode } from "~/hooks/useDarkmode"
 import { OptionRouting } from "~/routes"
+import "~/i18n"
+
 function IndexOption() {
   const { mode } = useDarkMode()
   return (

@@ -62,31 +62,36 @@ export const isOllamaRunning = async () => {
 }
 
 export const getAllModels = async ({ returnEmpty = false }: { returnEmpty?: boolean }) => {
-  const baseUrl = await getOllamaURL()
-  const response = await fetch(`${cleanUrl(baseUrl)}/api/tags`)
-  if (!response.ok) {
-    if (returnEmpty) {
-      return []
+  try {
+    const baseUrl = await getOllamaURL()
+    const response = await fetch(`${cleanUrl(baseUrl)}/api/tags`)
+    if (!response.ok) {
+      if (returnEmpty) {
+        return []
+      }
+      throw new Error(response.statusText)
     }
-    throw new Error(response.statusText)
-  }
-  const json = await response.json()
+    const json = await response.json()
 
-  return json.models as {
-    name: string
-    model: string
-    modified_at: string
-    size: number
-    digest: string
-    details: {
-      parent_model: string
-      format: string
-      family: string
-      families: string[]
-      parameter_size: string
-      quantization_level: string
-    }
-  }[]
+    return json.models as {
+      name: string
+      model: string
+      modified_at: string
+      size: number
+      digest: string
+      details: {
+        parent_model: string
+        format: string
+        family: string
+        families: string[]
+        parameter_size: string
+        quantization_level: string
+      }
+    }[]
+  } catch (e) {
+    console.error(e)
+    return []
+  }
 }
 
 export const deleteModel = async (model: string) => {

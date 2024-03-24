@@ -10,10 +10,10 @@ export default defineConfig({
   srcDir: "src",
   outDir: "build",
   manifest: {
-    name: "Page Assist - A Web UI for Local AI Models",
     version: "1.1.0",
-    description:
-      "Use your locally running AI models to assist you in your web browsing.",
+    name: '__MSG_extName__',
+    description: '__MSG_extDescription__',
+    default_locale: 'en',
     action: {},
     author: "n4ze3m",
     host_permissions: ["http://*/*", "https://*/*"],
