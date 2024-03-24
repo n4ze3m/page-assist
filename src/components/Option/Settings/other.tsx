@@ -61,6 +61,7 @@ export const SettingOther = () => {
           placeholder={t("generalSettings.settings.language.placeholder")}
           allowClear
           showSearch
+          style={{ width: "200px" }}
           options={supportLanguage}
           value={locale}
           filterOption={(input, option) =>
