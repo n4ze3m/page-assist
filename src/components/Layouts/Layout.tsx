@@ -25,7 +25,7 @@ export default function OptionLayout({
   children: React.ReactNode
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
-  const { t } = useTranslation("option")
+  const { t } = useTranslation(["option", "common"])
 
   const {
     selectedModel,
@@ -115,7 +115,7 @@ export default function OptionLayout({
                       0
                   }
                   showSearch
-                  placeholder={t("selectAModel")}
+                  placeholder={t("common:selectAModel")}
                   className="w-64 "
                   options={models?.map((model) => ({
                     label: model.name,

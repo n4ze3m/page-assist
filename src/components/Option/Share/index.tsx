@@ -9,7 +9,7 @@ import { verifyPageShareURL } from "~/utils/verify-page-share"
 
 export const OptionShareBody = () => {
   const queryClient = useQueryClient()
-  const { t } = useTranslation("option")
+  const { t } = useTranslation(["settings"])
 
   const { status, data } = useQuery({
     queryKey: ["fetchShareInfo"],
@@ -72,16 +72,12 @@ export const OptionShareBody = () => {
     mutationFn: onDelete,
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["fetchShareInfo"],
+        queryKey: ["fetchShareInfo"]
       })
-      message.success(
-        t("manageShare.notification.webShareDeleteSuccess")
-      )
+      message.success(t("manageShare.notification.webShareDeleteSuccess"))
     },
     onError: (error) => {
-      message.error(
-        error?.message || t("manageShare.notification.someError")
-      )
+      message.error(error?.message || t("manageShare.notification.someError"))
     }
   })
 
@@ -107,7 +103,7 @@ export const OptionShareBody = () => {
                 name="url"
                 help={
                   <Trans
-                    i18nKey="option:manageShare.form.url.help"
+                    i18nKey="settings:manageShare.form.url.help"
                     components={{
                       anchor: (
                         <a

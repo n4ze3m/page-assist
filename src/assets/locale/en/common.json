@@ -1,4 +1,6 @@
 {
+    "pageAssist": "Page Assist",
+    "selectAModel": "Select a Model",
     "save": "Save",
     "saved": "Saved",
     "cancel": "Cancel",
@@ -45,5 +47,6 @@
     },
     "submit": "Submit",
     "noData": "No data",
-    "noHistory": "No chat history"
+    "noHistory": "No chat history",
+    "chatWithCurrentPage": "Chat with current page"
 }

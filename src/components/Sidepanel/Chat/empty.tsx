@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query"
 import { Select } from "antd"
 import { RotateCcw } from "lucide-react"
 import { useEffect, useState } from "react"
+import { useTranslation } from "react-i18next"
 import { useMessage } from "~/hooks/useMessage"
 import {
   getAllModels,
@@ -12,6 +13,7 @@ import {
 
 export const EmptySidePanel = () => {
   const [ollamaURL, setOllamaURL] = useState<string>("")
+  const { t } = useTranslation(["playground", "common"])
   const {
     data: ollamaInfo,
     status: ollamaStatus,
@@ -38,7 +40,7 @@ export const EmptySidePanel = () => {
     }
   }, [ollamaInfo])
 
-  const { setSelectedModel, selectedModel, chatMode, setChatMode,  } =
+  const { setSelectedModel, selectedModel, chatMode, setChatMode } =
     useMessage()
 
   return (
@@ -48,7 +50,7 @@ export const EmptySidePanel = () => {
           <div className="inline-flex items-center space-x-2">
             <div className="w-3 h-3 bg-blue-500 rounded-full animate-bounce"></div>
             <p className="dark:text-gray-400 text-gray-900">
-              Searching for your Ollama 🦙
+              {t("ollamaState.searching")}
             </p>
           </div>
         )}
@@ -57,7 +59,7 @@ export const EmptySidePanel = () => {
             <div className="inline-flex  items-center space-x-2">
               <div className="w-3 h-3 bg-green-500 rounded-full"></div>
               <p className="dark:text-gray-400 text-gray-900">
-                Ollama is running 🦙
+                {t("ollamaState.running")}
               </p>
             </div>
           ) : (
@@ -65,7 +67,7 @@ export const EmptySidePanel = () => {
               <div className="inline-flex  space-x-2">
                 <div className="w-3 h-3 bg-red-500 rounded-full"></div>
                 <p className="dark:text-gray-400 text-gray-900">
-                  We couldn't find your Ollama 🦙
+                  {t("ollamaState.notRunning")}
                 </p>
               </div>
 
@@ -83,7 +85,7 @@ export const EmptySidePanel = () => {
                 }}
                 className="inline-flex mt-4 items-center rounded-md border border-transparent bg-black px-2 py-2 text-sm font-medium leading-4 text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-white dark:text-gray-800 dark:hover:bg-gray-100 dark:focus:ring-gray-500 dark:focus:ring-offset-gray-100 disabled:opacity-50 ">
                 <RotateCcw className="h-4 w-4 mr-3" />
-                Retry
+                {t("common:retry")}
               </button>
             </div>
           )
@@ -91,8 +93,6 @@ export const EmptySidePanel = () => {
 
         {ollamaStatus === "success" && ollamaInfo.isOk && (
           <div className="mt-4">
-            <p className="dark:text-gray-400 text-gray-900">Models:</p>
-
             <Select
               onChange={(e) => {
                 setSelectedModel(e)
@@ -104,7 +104,7 @@ export const EmptySidePanel = () => {
                 option.value.toLowerCase().indexOf(input.toLowerCase()) >= 0
               }
               showSearch
-              placeholder="Select a model"
+              placeholder={t("common:selectAModel")}
               style={{ width: "100%" }}
               className="mt-4"
               options={ollamaInfo.models?.map((model) => ({
@@ -145,7 +145,7 @@ export const EmptySidePanel = () => {
                 <label
                   className="mt-px font-light  cursor-pointer select-none text-gray-900 dark:text-gray-400"
                   htmlFor="check">
-                  Chat with Current Page
+                  {t("common:chatWithCurrentPage")}
                 </label>
               </div>
             </div>

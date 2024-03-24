@@ -27,7 +27,7 @@ export const PromptBody = () => {
   const [editId, setEditId] = useState("")
   const [createForm] = Form.useForm()
   const [editForm] = Form.useForm()
-  const { t } = useTranslation("option")
+  const { t } = useTranslation("settings")
 
   const { data, status } = useQuery({
     queryKey: ["fetchAllPrompts"],

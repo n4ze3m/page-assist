@@ -14,7 +14,7 @@ dayjs.extend(relativeTime)
 export const ModelsBody = () => {
   const queryClient = useQueryClient()
   const [open, setOpen] = useState(false)
-  const { t } = useTranslation(["option", "common"])
+  const { t } = useTranslation(["settings", "common"])
 
   const form = useForm({
     initialValues: {

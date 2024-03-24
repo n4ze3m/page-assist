@@ -7,7 +7,7 @@ import {
 } from "~/services/ollama"
 
 export const SearchModeSettings = () => {
-  const { t } = useTranslation("option")
+  const { t } = useTranslation("settings")
   
   const { data, status } = useQuery({
     queryKey: ["fetchIsSimpleInternetSearch"],

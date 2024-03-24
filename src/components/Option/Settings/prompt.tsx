@@ -12,7 +12,7 @@ import {
 } from "~/services/ollama"
 
 export const SettingPrompt = () => {
-  const { t } = useTranslation("option")
+  const { t } = useTranslation("settings")
 
   const [selectedValue, setSelectedValue] = React.useState<"normal" | "web">(
     "web"

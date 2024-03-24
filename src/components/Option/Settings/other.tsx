@@ -16,7 +16,7 @@ export const SettingOther = () => {
   const queryClient = useQueryClient()
 
   const { mode, toggleDarkMode } = useDarkMode()
-  const { t } = useTranslation("option")
+  const { t } = useTranslation("settings")
   const {
     changeLocale,
     locale,

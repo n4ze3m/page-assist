@@ -45,7 +45,7 @@ const LinkComponent = (item: {
 
 export const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
   const location = useLocation()
-  const { t } = useTranslation("option")
+  const { t } = useTranslation("settings")
 
   return (
     <>

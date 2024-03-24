@@ -284,7 +284,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                       }`}>
                       <ImageIcon className="h-5 w-5" />
                     </button>
-                  </Tooltip>
+                  </Tooltip> 
                   {!isSending ? (
                     <Dropdown.Button
                       htmlType="submit"

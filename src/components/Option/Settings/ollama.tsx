@@ -16,7 +16,7 @@ import { useTranslation } from "react-i18next"
 
 export const SettingsOllama = () => {
   const [ollamaURL, setOllamaURL] = useState<string>("")
-  const { t } = useTranslation("option")
+  const { t } = useTranslation("settings")
 
   const { data: ollamaInfo, status } = useQuery({
     queryKey: ["fetchOllamURL"],
