@@ -7,6 +7,7 @@ import { SUPPORTED_LANGUAGES } from "~/utils/supporetd-languages"
 import { MoonIcon, SunIcon } from "lucide-react"
 import { SearchModeSettings } from "./search-mode"
 import { useTranslation } from "react-i18next"
+import { useI18n } from "@/hooks/useI18n"
 
 export const SettingOther = () => {
   const { clearChat, speechToTextLanguage, setSpeechToTextLanguage } =
@@ -16,6 +17,11 @@ export const SettingOther = () => {
 
   const { mode, toggleDarkMode } = useDarkMode()
   const { t } = useTranslation("option")
+  const {
+    changeLocale,
+    locale,
+    supportLanguage
+  }= useI18n()
 
 
   return (
@@ -43,6 +49,26 @@ export const SettingOther = () => {
           }
           onChange={(value) => {
             setSpeechToTextLanguage(value)
+          }}
+        />
+      </div>
+      <div className="flex flex-row justify-between">
+        <span className="text-gray-500   dark:text-neutral-50">
+          {t("generalSettings.settings.language.label")}
+        </span>
+
+        <Select
+          placeholder={t("generalSettings.settings.language.placeholder")}
+          allowClear
+          showSearch
+          options={supportLanguage}
+          value={locale}
+          filterOption={(input, option) =>
+            option!.label.toLowerCase().indexOf(input.toLowerCase()) >= 0 ||
+            option!.value.toLowerCase().indexOf(input.toLowerCase()) >= 0
+          }
+          onChange={(value) => {
+            changeLocale(value)
           }}
         />
       </div>

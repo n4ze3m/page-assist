@@ -86,26 +86,27 @@ export default defineBackground({
         })
       } else if (message.type === "pull_model") {
         const ollamaURL = await getOllamaURL()
-  
+
         const isRunning = await isOllamaRunning()
-  
+
         if (!isRunning) {
           chrome.action.setBadgeText({ text: "E" })
           chrome.action.setBadgeBackgroundColor({ color: "#FF0000" })
-          chrome.action.setTitle({ title: "Ollama is not running" })
+          chrome.action.setTitle({ title: "Ollama is not running"
+         })
           setTimeout(() => {
             clearBadge()
           }, 5000)
         }
-  
+
         await streamDownload(ollamaURL, message.modelName)
       }
     })
-  
+
     chrome.action.onClicked.addListener((tab) => {
       chrome.tabs.create({ url: chrome.runtime.getURL("options.html") })
     })
-  
+
     chrome.commands.onCommand.addListener((command) => {
       switch (command) {
         case "execute_side_panel":
@@ -120,13 +121,13 @@ export default defineBackground({
           break
       }
     })
-  
+
     chrome.contextMenus.create({
       id: "open-side-panel-pa",
-      title: "Open Side Panel to Chat",
+      title: browser.i18n.getMessage("openSidePanelToChat"),
       contexts: ["all"]
     })
-  
+
     chrome.contextMenus.onClicked.addListener((info, tab) => {
       if (info.menuItemId === "open-side-panel-pa") {
         chrome.tabs.query({ active: true, currentWindow: true }, async (tabs) => {

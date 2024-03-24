@@ -8,12 +8,18 @@
     "error": "Error",
     "somethingWentWrong": "Something went wrong",
     "validationSelectModel": "Please select a model to continue",
+    "deleteHistoryConfirmation": "Are you sure you want to delete this history?",
+    "editHistoryTitle": "Enter a new title",
     "generalSettings": {
         "title": "General Settings",
         "heading": "Web UI Settings",
         "settings": {
             "speechRecognitionLang": {
                 "label": "Speech Recognition Language",
+                "placeholder": "Select a language"
+            },
+            "language": {
+                "label": "Language",
                 "placeholder": "Select a language"
             },
             "darkMode": {

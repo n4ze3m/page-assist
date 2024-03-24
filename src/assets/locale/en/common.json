@@ -2,6 +2,7 @@
     "save": "Save",
     "saved": "Saved",
     "cancel": "Cancel",
+    "retry": "Retry",
     "share": {
         "tooltip": {
             "share": "Share"
@@ -41,5 +42,8 @@
     "saveAndSubmit": "Save & Submit",
     "editMessage": {
         "placeholder": "Type a message..."
-    }
+    },
+    "submit": "Submit",
+    "noData": "No data",
+    "noHistory": "No chat history"
 }

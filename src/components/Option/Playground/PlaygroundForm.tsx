@@ -11,12 +11,14 @@ import { useWebUI } from "~/store/webui"
 import { defaultEmbeddingModelForRag } from "~/services/ollama"
 import { ImageIcon, MicIcon, StopCircleIcon, X } from "lucide-react"
 import { getVariable } from "~/utils/select-varaible"
+import { useTranslation } from "react-i18next"
 
 type Props = {
   dropedFile: File | undefined
 }
 
 export const PlaygroundForm = ({ dropedFile }: Props) => {
+  const { t } = useTranslation(["playground", "common"])
   const inputRef = React.useRef<HTMLInputElement>(null)
   const [typing, setTyping] = React.useState<boolean>(false)
   const {
@@ -117,13 +119,13 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
   })
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Process" || e.key === "229" ) return
+    if (e.key === "Process" || e.key === "229") return
     if (
       !typing &&
       e.key === "Enter" &&
       !e.shiftKey &&
       !isSending &&
-      sendWhenEnter 
+      sendWhenEnter
     ) {
       e.preventDefault()
       form.onSubmit(async (value) => {
@@ -131,16 +133,13 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
           return
         }
         if (!selectedModel || selectedModel.length === 0) {
-          form.setFieldError("message", "Please select a model")
+          form.setFieldError("message", t("formError.noModel"))
           return
         }
         if (webSearch) {
           const defaultEM = await defaultEmbeddingModelForRag()
           if (!defaultEM) {
-            form.setFieldError(
-              "message",
-              "Please set an embedding model on the Settings > Ollama page"
-            )
+            form.setFieldError("message", t("formError.noEmbeddingModel"))
             return
           }
         }
@@ -181,16 +180,13 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
           <form
             onSubmit={form.onSubmit(async (value) => {
               if (!selectedModel || selectedModel.length === 0) {
-                form.setFieldError("message", "Please select a model")
+                form.setFieldError("message", t("formError.noModel"))
                 return
               }
               if (webSearch) {
                 const defaultEM = await defaultEmbeddingModelForRag()
                 if (!defaultEM) {
-                  form.setFieldError(
-                    "message",
-                    "Please set an embedding model on the Settings > Ollama page"
-                  )
+                  form.setFieldError("message", t("formError.noEmbeddingModel"))
                   return
                 }
               }
@@ -223,12 +219,12 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                 rows={1}
                 style={{ minHeight: "60px" }}
                 tabIndex={0}
-                placeholder="Type a message..."
+                placeholder={t("form.textarea.placeholder")}
                 {...form.getInputProps("message")}
               />
               <div className="mt-4 flex justify-between items-center">
                 <div className="flex">
-                  <Tooltip title="Search Internet">
+                  <Tooltip title={t("tooltip.searchInternet")}>
                     <div className="inline-flex items-center gap-2">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -246,14 +242,14 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                       <Switch
                         value={webSearch}
                         onChange={(e) => setWebSearch(e)}
-                        checkedChildren="On"
-                        unCheckedChildren="Off"
+                        checkedChildren={t("form.webSearch.on")}
+                        unCheckedChildren={t("form.webSearch.off")}
                       />
                     </div>
                   </Tooltip>
                 </div>
                 <div className="flex !justify-end gap-3">
-                  <Tooltip title="Voice Message">
+                  <Tooltip title={t("tooltip.speechToText")}>
                     <button
                       type="button"
                       onClick={() => {
@@ -277,7 +273,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                       )}
                     </button>
                   </Tooltip>
-                  <Tooltip title="Upload Image">
+                  <Tooltip title={t("tooltip.uploadImage")}>
                     <button
                       type="button"
                       onClick={() => {
@@ -319,7 +315,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                                 onChange={(e) =>
                                   setSendWhenEnter(e.target.checked)
                                 }>
-                                Send when Enter pressed
+                                {t("sendWhenEnter")}
                               </Checkbox>
                             )
                           }
@@ -340,11 +336,11 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                             <path d="M20 4v7a4 4 0 01-4 4H4"></path>
                           </svg>
                         ) : null}
-                        Submit
+                        {t("common:submit")}
                       </div>
                     </Dropdown.Button>
                   ) : (
-                    <Tooltip title="Stop Streaming">
+                    <Tooltip title={t("tooltip.stopStreaming")}>
                       <button
                         type="button"
                         onClick={stopStreamingRequest}

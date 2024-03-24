@@ -14,7 +14,7 @@ dayjs.extend(relativeTime)
 export const ModelsBody = () => {
   const queryClient = useQueryClient()
   const [open, setOpen] = useState(false)
-  const { t } = useTranslation("option")
+  const { t } = useTranslation(["option", "common"])
 
   const form = useForm({
     initialValues: {
@@ -188,9 +188,13 @@ export const ModelsBody = () => {
                     }
                   ]}
                   dataSource={[record.details]}
+                  locale={{
+                    emptyText: t("common:noData")
+                  }}
                 />
               ),
-              defaultExpandAllRows: false
+              defaultExpandAllRows: false,
+              
             }}
             bordered
             dataSource={data}
