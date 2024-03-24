@@ -8,17 +8,11 @@ import "property-information"
 import React from "react"
 import { Tooltip } from "antd"
 import { CheckIcon, ClipboardIcon } from "lucide-react"
+import { useTranslation } from "react-i18next"
 
 export default function Markdown({ message }: { message: string }) {
   const [isBtnPressed, setIsBtnPressed] = React.useState(false)
-
-  React.useEffect(() => {
-    if (isBtnPressed) {
-      setTimeout(() => {
-        setIsBtnPressed(false)
-      }, 4000)
-    }
-  }, [isBtnPressed])
+  const { t } = useTranslation("common")
 
   return (
     <React.Fragment>
@@ -37,11 +31,14 @@ export default function Markdown({ message }: { message: string }) {
                   </span>
 
                   <div className="flex items-center">
-                    <Tooltip title="Copy to clipboard">
+                    <Tooltip title={t("copyToClipboard")}>
                       <button
                         onClick={() => {
                           navigator.clipboard.writeText(children[0] as string)
                           setIsBtnPressed(true)
+                          setTimeout(() => {
+                            setIsBtnPressed(false)
+                          }, 4000)
                         }}
                         className="flex gap-1.5 items-center rounded bg-none p-1 text-xs text-gray-200 hover:bg-gray-700 hover:text-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-100">
                         {!isBtnPressed ? (

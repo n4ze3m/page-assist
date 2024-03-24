@@ -4,6 +4,7 @@ import { Image, Tooltip } from "antd"
 import { WebSearch } from "./WebSearch"
 import { CheckIcon, ClipboardIcon, Pen, RotateCcw } from "lucide-react"
 import { EditMessageForm } from "./EditMessageForm"
+import { useTranslation } from "react-i18next"
 
 type Props = {
   message: string
@@ -27,6 +28,8 @@ type Props = {
 export const PlaygroundMessage = (props: Props) => {
   const [isBtnPressed, setIsBtnPressed] = React.useState(false)
   const [editMode, setEditMode] = React.useState(false)
+
+  const { t } = useTranslation("common")
 
   return (
     <div className="group w-full text-gray-800 dark:text-gray-100">
@@ -112,7 +115,8 @@ export const PlaygroundMessage = (props: Props) => {
                 {props.isBot && (
                   <>
                     {!props.hideCopy && (
-                      <Tooltip title="Copy to clipboard">
+                      <Tooltip title={t("copyToClipboard")}
+                      >
                         <button
                           onClick={() => {
                             navigator.clipboard.writeText(props.message)
@@ -133,7 +137,8 @@ export const PlaygroundMessage = (props: Props) => {
 
                     {!props.hideEditAndRegenerate &&
                       props.currentMessageIndex === props.totalMessages - 1 && (
-                        <Tooltip title="Regenerate">
+                        <Tooltip title={t("regenerate")}
+                        >
                           <button
                             onClick={props.onRengerate}
                             className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
@@ -144,7 +149,8 @@ export const PlaygroundMessage = (props: Props) => {
                   </>
                 )}
                 {!props.hideEditAndRegenerate && (
-                  <Tooltip title="Edit">
+                  <Tooltip title={t("edit")}
+                  >
                     <button
                       onClick={() => setEditMode(true)}
                       className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">

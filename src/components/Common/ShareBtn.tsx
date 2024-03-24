@@ -8,6 +8,7 @@ import { useMutation } from "@tanstack/react-query"
 import { getPageShareUrl } from "~/services/ollama"
 import { cleanUrl } from "~/libs/clean-url"
 import { getUserId, saveWebshare } from "~/libs/db"
+import { useTranslation } from "react-i18next"
 
 type Props = {
   messages: Message[]
@@ -75,6 +76,7 @@ export const PlaygroundMessage = (
 }
 
 export const ShareBtn: React.FC<Props> = ({ messages }) => {
+  const { t } = useTranslation("common")
   const [open, setOpen] = useState(false)
   const [form] = Form.useForm()
   const name = Form.useWatch("name", form)
@@ -104,7 +106,7 @@ export const ShareBtn: React.FC<Props> = ({ messages }) => {
       })
     })
 
-    if (!res.ok) throw new Error("Failed to create share link")
+    if (!res.ok) throw new Error(t("share.notification.failGenerate"))
 
     const data = await res.json()
 
@@ -121,18 +123,23 @@ export const ShareBtn: React.FC<Props> = ({ messages }) => {
     onSuccess: async (data) => {
       const url = data.url
       navigator.clipboard.writeText(url)
-      message.success("Link copied to clipboard")
-      await saveWebshare({ title: data.title, url, api_url: data.api_url, share_id: data.share_id })
+      message.success(t("share.notification.successGenerate"))
+      await saveWebshare({
+        title: data.title,
+        url,
+        api_url: data.api_url,
+        share_id: data.share_id
+      })
       setOpen(false)
     },
     onError: (error) => {
-      message.error(error?.message || "Failed to create share link")
+      message.error(error?.message || t("share.notification.failGenerate"))
     }
   })
 
   return (
     <>
-      <Tooltip title="Share">
+      <Tooltip title={t("share.tooltip.share")}>
         <button
           onClick={() => setOpen(true)}
           className="!text-gray-500 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
@@ -141,7 +148,7 @@ export const ShareBtn: React.FC<Props> = ({ messages }) => {
       </Tooltip>
 
       <Modal
-        title="Share link to Chat"
+        title={t("share.modal.title")}
         open={open}
         footer={null}
         width={600}
@@ -151,20 +158,30 @@ export const ShareBtn: React.FC<Props> = ({ messages }) => {
           layout="vertical"
           onFinish={createShareLink}
           initialValues={{
-            title: "Untitled Chat",
-            name: "Anonymous"
+            title: t("share.form.defaultValue.title"),
+            name: t("share.form.defaultValue.name")
           }}>
           <Form.Item
             name="title"
-            label="Chat Title"
-            rules={[{ required: true, message: "Please enter chat title" }]}>
-            <Input size="large" placeholder="Enter chat title" />
+            label={t("share.form.title.label")}
+            rules={[
+              { required: true, message: t("share.form.title.required") }
+            ]}>
+            <Input
+              size="large"
+              placeholder={t("share.form.title.placeholder")}
+            />
           </Form.Item>
           <Form.Item
             name="name"
-            label="Your Name"
-            rules={[{ required: true, message: "Please enter your name" }]}>
-            <Input size="large" placeholder="Enter your name" />
+            label={t("share.form.name.label")}
+            rules={[
+              { required: true, message: t("share.form.name.required") }
+            ]}>
+            <Input
+              size="large"
+              placeholder={t("share.form.name.placeholder")}
+            />
           </Form.Item>
 
           <Form.Item>
@@ -182,7 +199,9 @@ export const ShareBtn: React.FC<Props> = ({ messages }) => {
               <button
                 type="submit"
                 className="inline-flex items-center rounded-md border border-transparent bg-black px-2 py-2.5 text-md font-medium leading-4 text-white shadow-sm dark:bg-white dark:text-gray-800 disabled:opacity-50 ">
-                {isPending ? "Generating link..." : "Generate Link"}
+                {isPending
+                  ? t("share.form.btn.saving")
+                  : t("share.form.btn.save")}
               </button>
             </div>
           </Form.Item>
