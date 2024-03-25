@@ -26,10 +26,7 @@ export const getPdf = async (data: ArrayBuffer) => {
 
 const _getHtml = async () => {
   const url = window.location.href
-  // check the content type
   if (document.contentType === "application/pdf") {
-
-
     return { url, content: "", type: "pdf" }
   }
   const html = Array.from(document.querySelectorAll("script")).reduce(
@@ -40,6 +37,7 @@ const _getHtml = async () => {
   )
   return { url, content: html, type: "html" }
 }
+
 export const getDataFromCurrentTab = async () => {
   const result = new Promise((resolve) => {
     chrome.tabs.query({ active: true, currentWindow: true }, async (tabs) => {
@@ -66,7 +64,10 @@ export const getDataFromCurrentTab = async () => {
   if (type === "pdf") {
     const res = await fetch(url)
     const data = await res.arrayBuffer()
-    let pdfHtml: string[] = []
+    let pdfHtml: {
+      content: string
+      page: number
+    }[] = []
     const pdf = await getPdf(data)
 
     for (let i = 1; i <= pdf.numPages; i += 1) {
@@ -79,18 +80,22 @@ export const getDataFromCurrentTab = async () => {
 
       const text = content?.items.map((item: any) => item.str).join("\n")
         .replace(/\x00/g, "").trim();
-      pdfHtml.push(`<div class="pdf-page">${text}</div>`)
+      pdfHtml.push({
+        content: text,
+        page: i
+      })
     }
 
 
     return {
       url,
-      content: pdfHtml.join(""),
-      type: "html"
+      content: "",
+      pdf: pdfHtml,
+      type: "pdf"
     }
 
   }
 
-  return { url, content, type }
+  return { url, content, type, pdf: [] }
 }
 
