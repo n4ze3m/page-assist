@@ -2,10 +2,10 @@ import { OllamaEmbeddings } from "@langchain/community/embeddings/ollama"
 import type { Document } from "@langchain/core/documents"
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter"
 import { MemoryVectorStore } from "langchain/vectorstores/memory"
-import { cleanUrl } from "~libs/clean-url"
-import { chromeRunTime } from "~libs/runtime"
-import { PageAssistHtmlLoader } from "~loader/html"
-import { defaultEmbeddingChunkOverlap, defaultEmbeddingChunkSize, defaultEmbeddingModelForRag, getIsSimpleInternetSearch, getOllamaURL } from "~services/ollama"
+import { cleanUrl } from "~/libs/clean-url"
+import { chromeRunTime } from "~/libs/runtime"
+import { PageAssistHtmlLoader } from "~/loader/html"
+import { defaultEmbeddingChunkOverlap, defaultEmbeddingChunkSize, defaultEmbeddingModelForRag, getIsSimpleInternetSearch, getOllamaURL } from "~/services/ollama"
 
 const BLOCKED_HOSTS = [
   "google.com",

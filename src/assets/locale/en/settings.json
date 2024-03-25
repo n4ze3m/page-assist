@@ -1,0 +1,207 @@
+{
+    "generalSettings": {
+        "title": "General Settings",
+        "heading": "Web UI Settings",
+        "settings": {
+            "speechRecognitionLang": {
+                "label": "Speech Recognition Language",
+                "placeholder": "Select a language"
+            },
+            "language": {
+                "label": "Language",
+                "placeholder": "Select a language"
+            },
+            "darkMode": {
+                "label": "Change Theme",
+                "options": {
+                    "light": "Light",
+                    "dark": "Dark"
+                }
+            },
+            "searchMode": {
+                "label": "Perform Simple Internet Search"
+            },
+            "deleteChatHistory": {
+                "label": "Delete Chat History",
+                "button": "Delete",
+                "confirm": "Are you sure you want to delete your chat history? This action cannot be undone."
+            }
+        }
+    },
+    "manageModels": {
+        "title": "Manage Models",
+        "addBtn": "Add New Model",
+        "columns": {
+            "name": "Name",
+            "digest": "Digest",
+            "modifiedAt": "Modified At",
+            "size": "Size",
+            "actions": "Actions"
+        },
+        "expandedColumns": {
+            "parentModel": "Parent Model",
+            "format": "Format",
+            "family": "Family",
+            "parameterSize": "Parameter Size",
+            "quantizationLevel": "Quantization Level"
+        },
+        "tooltip": {
+            "delete": "Delete Model",
+            "repull": "Re-Pull Model"
+        },
+        "confirm": {
+            "delete": "Are you sure you want to delete this model?",
+            "repull": "Are you sure you want to re-pull this model?"
+        },
+        "modal": {
+            "title": "Add New Model",
+            "placeholder": "Enter Model Name",
+            "pull": "Pull Model"
+        },
+        "notification": {
+            "pullModel": "Pulling Model",
+            "pullModelDescription": "Pulling {{modelName}} model. For more details, check the extension icon.",
+            "success": "Success",
+            "error": "Error",
+            "successDescription": "Successfully pulled the model",
+            "successDeleteDescription": "Successfully deleted the model",
+            "someError": "Something went wrong. Please try again later"
+        }
+    },
+    "managePrompts": {
+        "title": "Manage Prompts",
+        "addBtn": "Add New Prompt",
+        "option1": "Normal",
+        "option2": "RAG",
+        "questionPrompt": "Question Prompt",
+        "columns": {
+            "title": "Title",
+            "prompt": "Prompt",
+            "type": "Prompt Type",
+            "actions": "Actions"
+        },
+        "systemPrompt": "System Prompt",
+        "quickPrompt": "Quick Prompt",
+        "tooltip": {
+            "delete": "Delete Prompt",
+            "edit": "Edit Prompt"
+        },
+        "confirm": {
+            "delete": "Are you sure you want to delete this prompt? This action cannot be undone."
+        },
+        "modal": {
+            "addTitle": "Add New Prompt",
+            "editTitle": "Edit Prompt"
+        },
+        "form": {
+            "title": {
+                "label": "Title",
+                "placeholder": "My Awesome Prompt",
+                "required": "Please enter a title"
+            },
+            "prompt": {
+                "label": "Prompt",
+                "placeholder": "Enter Prompt",
+                "required": "Please enter a prompt",
+                "help": "You can use {key} as variable in your prompt."
+            },
+            "isSystem": {
+                "label": "Is System Prompt"
+            },
+            "btnSave": {
+                "saving": "Adding Prompt...",
+                "save": "Add Prompt"
+            },
+            "btnEdit": {
+                "saving": "Updating Prompt...",
+                "save": "Update Prompt"
+            }
+        },
+        "notification": {
+            "addSuccess": "Prompt Added",
+            "addSuccessDesc": "Prompt has been added successfully",
+            "error": "Error",
+            "someError": "Something went wrong. Please try again later",
+            "updatedSuccess": "Prompt Updated",
+            "updatedSuccessDesc": "Prompt has been updated successfully",
+            "deletedSuccess": "Prompt Deleted",
+            "deletedSuccessDesc": "Prompt has been deleted successfully"
+        }
+    },
+    "manageShare": {
+        "title": "Manage Share",
+        "heading": "Configure Page Share URL",
+        "form": {
+            "url": {
+                "label": "Page Share URL",
+                "placeholder": "Enter Page Share URL",
+                "required": "Please input your Page Share URL!",
+                "help": "For privacy reasons, you can self-host the page share and provide the URL here. <anchor>Learn More</anchor>."
+            }
+        },
+        "webshare": {
+            "heading": "Web Share",
+            "columns": {
+                "title": "Title",
+                "url": "URL",
+                "actions": "Actions"
+            },
+            "tooltip": {
+                "delete": "Delete Share"
+            },
+            "confirm": {
+                "delete": "Are you sure you want to delete this share? This action cannot be undone."
+            }
+        },
+        "notification": {
+            "pageShareSuccess": "Page Share URL updated successfully",
+            "someError": "Something went wrong. Please try again later",
+            "webShareDeleteSuccess": "Web Share deleted successfully"
+        }
+    },
+    "ollamaSettings": {
+        "title": "Ollama Settings",
+        "heading": "Configure Ollama",
+        "settings": {
+            "ollamaUrl": {
+                "label": "Ollama URL",
+                "placeholder": "Enter Ollama URL"
+            },
+            "ragSettings": {
+                "label": "RAG Settings",
+                "model": {
+                    "label": "Embedding Model",
+                    "required": "Please select a model",
+                    "help": "Highly recommended to use embedding models like `nomic-embed-text`.",
+                    "placeholder": "Select a model"
+                },
+                "chunkSize": {
+                    "label": "Chunk Size",
+                    "placeholder": "Enter Chunk Size",
+                    "required": "Please enter a chunk size"
+                },
+                "chunkOverlap": {
+                    "label": "Chunk Overlap",
+                    "placeholder": "Enter Chunk Overlap",
+                    "required": "Please enter a chunk overlap"
+                }
+            },
+            "prompt": {
+                "label": "Configure RAG Prompt",
+                "option1": "Normal",
+                "option2": "Web",
+                "alert": "Configuring the system prompt here is deprecated. Please use the Manage Prompts section to add or edit prompts. This section will be removed in a future release",
+                "systemPrompt": "System Prompt",
+                "systemPromptPlaceholder": "Enter System Prompt",
+                "webSearchPrompt": "Web Search Prompt",
+                "webSearchPromptHelp": "Do not remove `{search_results}` from the prompt.",
+                "webSearchPromptError": "Please enter a web search prompt",
+                "webSearchPromptPlaceholder": "Enter Web Search Prompt",
+                "webSearchFollowUpPrompt": "Web Search Follow Up Prompt",
+                "webSearchFollowUpPromptHelp": "Do not remove `{chat_history}` and `{question}` from the prompt.",
+                "webSearchFollowUpPromptError": "Please input your Web Search Follow Up Prompt!",
+                "webSearchFollowUpPromptPlaceholder": "Your Web Search Follow Up Prompt"
+            }
+        }
+    }
+}

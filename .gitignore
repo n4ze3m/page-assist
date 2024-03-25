@@ -40,3 +40,4 @@ keys.json
 
 # typescript
 .tsbuildinfo
+.wxt

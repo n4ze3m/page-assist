@@ -1,11 +1,14 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { Skeleton, Switch } from "antd"
+import { useTranslation } from "react-i18next"
 import {
   getIsSimpleInternetSearch,
   setIsSimpleInternetSearch
-} from "~services/ollama"
+} from "~/services/ollama"
 
 export const SearchModeSettings = () => {
+  const { t } = useTranslation("settings")
+  
   const { data, status } = useQuery({
     queryKey: ["fetchIsSimpleInternetSearch"],
     queryFn: () => getIsSimpleInternetSearch()
@@ -20,7 +23,7 @@ export const SearchModeSettings = () => {
   return (
     <div className="flex flex-row justify-between">
       <span className="text-gray-500 dark:text-neutral-50 ">
-        Perform Simple Internet Search
+        {t("generalSettings.settings.searchMode.label")}
       </span>
 
       <Switch

@@ -7,16 +7,18 @@ import {
   Modal,
   Input,
   Form,
-  Switch
+  Switch,
+  Empty
 } from "antd"
 import { Trash2, Pen, Computer, Zap } from "lucide-react"
 import { useState } from "react"
+import { useTranslation } from "react-i18next"
 import {
   deletePromptById,
   getAllPrompts,
   savePrompt,
   updatePrompt
-} from "~libs/db"
+} from "~/libs/db"
 
 export const PromptBody = () => {
   const queryClient = useQueryClient()
@@ -25,6 +27,7 @@ export const PromptBody = () => {
   const [editId, setEditId] = useState("")
   const [createForm] = Form.useForm()
   const [editForm] = Form.useForm()
+  const { t } = useTranslation("settings")
 
   const { data, status } = useQuery({
     queryKey: ["fetchAllPrompts"],
@@ -38,14 +41,14 @@ export const PromptBody = () => {
         queryKey: ["fetchAllPrompts"]
       })
       notification.success({
-        message: "Model Deleted",
-        description: "Model has been deleted successfully"
+        message: t("managePrompts.notification.deletedSuccess"),
+        description: t("managePrompts.notification.deletedSuccessDesc")
       })
     },
     onError: (error) => {
       notification.error({
-        message: "Error",
-        description: error?.message || "Something went wrong"
+        message: t("managePrompts.notification.error"),
+        description: error?.message || t("managePrompts.notification.someError")
       })
     }
   })
@@ -60,14 +63,15 @@ export const PromptBody = () => {
         setOpen(false)
         createForm.resetFields()
         notification.success({
-          message: "Prompt Added",
-          description: "Prompt has been added successfully"
+          message: t("managePrompts.notification.addSuccess"),
+          description: t("managePrompts.notification.addSuccessDesc")
         })
       },
       onError: (error) => {
         notification.error({
-          message: "Error",
-          description: error?.message || "Something went wrong"
+          message: t("managePrompts.notification.error"),
+          description:
+            error?.message || t("managePrompts.notification.someError")
         })
       }
     })
@@ -87,14 +91,15 @@ export const PromptBody = () => {
         setOpenEdit(false)
         editForm.resetFields()
         notification.success({
-          message: "Prompt Updated",
-          description: "Prompt has been updated successfully"
+          message: t("managePrompts.notification.updatedSuccess"),
+          description: t("managePrompts.notification.updatedSuccessDesc")
         })
       },
       onError: (error) => {
         notification.error({
-          message: "Error",
-          description: error?.message || "Something went wrong"
+          message: t("managePrompts.notification.error"),
+          description:
+            error?.message || t("managePrompts.notification.someError")
         })
       }
     })
@@ -108,7 +113,7 @@ export const PromptBody = () => {
               <button
                 onClick={() => setOpen(true)}
                 className="inline-flex items-center rounded-md border border-transparent bg-black px-2 py-2 text-md font-medium leading-4 text-white shadow-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-white dark:text-gray-800 dark:hover:bg-gray-100 dark:focus:ring-gray-500 dark:focus:ring-offset-gray-100 disabled:opacity-50">
-                Add New Prompt
+                {t("managePrompts.addBtn")}
               </button>
             </div>
           </div>
@@ -120,43 +125,41 @@ export const PromptBody = () => {
           <Table
             columns={[
               {
-                title: "Title",
+                title: t("managePrompts.columns.title"),
                 dataIndex: "title",
                 key: "title"
               },
               {
-                title: "Prompt",
+                title: t("managePrompts.columns.prompt"),
                 dataIndex: "content",
                 key: "content"
               },
               {
-                title: "Prompt Type",
+                title: t("managePrompts.columns.type"),
                 dataIndex: "is_system",
                 key: "is_system",
                 render: (is_system) =>
                   is_system ? (
                     <span className="flex items-center gap-2">
-                       <Computer className="w-5 h-5 " />
-                       System Prompt
+                      <Computer className="w-5 h-5 " />
+                      {t("managePrompts.systemPrompt")}
                     </span>
                   ) : (
                     <span className="flex items-center gap-2">
                       <Zap className="w-5 h-5" />
-                      Quick Prompt
+                      {t("managePrompts.quickPrompt")}
                     </span>
                   )
               },
               {
-                title: "Action",
+                title: t("managePrompts.columns.actions"),
                 render: (_, record) => (
                   <div className="flex gap-4">
-                    <Tooltip title="Delete Prompt">
+                    <Tooltip title={t("managePrompts.tooltip.delete")}>
                       <button
                         onClick={() => {
                           if (
-                            window.confirm(
-                              "Are you sure you want to delete this prompt? This action cannot be undone."
-                            )
+                            window.confirm(t("managePrompts.confirm.delete"))
                           ) {
                             deletePrompt(record.id)
                           }
@@ -165,7 +168,7 @@ export const PromptBody = () => {
                         <Trash2 className="w-5 h-5" />
                       </button>
                     </Tooltip>
-                    <Tooltip title="Edit Prompt">
+                    <Tooltip title={t("managePrompts.tooltip.edit")}>
                       <button
                         onClick={() => {
                           setEditId(record.id)
@@ -188,7 +191,7 @@ export const PromptBody = () => {
       </div>
 
       <Modal
-        title="Add New Prompt"
+        title={t("managePrompts.modal.addTitle")}
         open={open}
         onCancel={() => setOpen(false)}
         footer={null}>
@@ -198,25 +201,35 @@ export const PromptBody = () => {
           form={createForm}>
           <Form.Item
             name="title"
-            label="Title"
-            rules={[{ required: true, message: "Title is required" }]}>
-            <Input placeholder="My Awesome Prompt" />
+            label={t("managePrompts.form.title.label")}
+            rules={[
+              {
+                required: true,
+                message: t("managePrompts.form.title.required")
+              }
+            ]}>
+            <Input placeholder={t("managePrompts.form.title.placeholder")} />
           </Form.Item>
 
           <Form.Item
             name="content"
-            label="Prompt"
-            rules={[{ required: true, message: "Prompt is required" }]}
-            help="You can use {key} as variable in your prompt.">
+            label={t("managePrompts.form.prompt.label")}
+            rules={[
+              {
+                required: true,
+                message: t("managePrompts.form.prompt.required")
+              }
+            ]}
+            help={t("managePrompts.form.prompt.help")}>
             <Input.TextArea
-              placeholder="Your prompt goes here..."
+              placeholder={t("managePrompts.form.prompt.placeholder")}
               autoSize={{ minRows: 3, maxRows: 10 }}
             />
           </Form.Item>
 
           <Form.Item
             name="is_system"
-            label="Is System Prompt"
+            label={t("managePrompts.form.isSystem.label")}
             valuePropName="checked">
             <Switch />
           </Form.Item>
@@ -225,14 +238,16 @@ export const PromptBody = () => {
             <button
               disabled={savePromptLoading}
               className="inline-flex justify-center w-full text-center mt-4 items-center rounded-md border border-transparent bg-black px-2 py-2 text-sm font-medium leading-4 text-white shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-white dark:text-gray-800 dark:hover:bg-gray-100 dark:focus:ring-gray-500 dark:focus:ring-offset-gray-100 disabled:opacity-50 ">
-              {savePromptLoading ? "Adding Prompt..." : "Add Prompt"}
+              {savePromptLoading
+                ? t("managePrompts.form.btnSave.saving")
+                : t("managePrompts.form.btnSave.save")}
             </button>
           </Form.Item>
         </Form>
       </Modal>
 
       <Modal
-        title="Update Prompt"
+        title={t("managePrompts.modal.editTitle")}
         open={openEdit}
         onCancel={() => setOpenEdit(false)}
         footer={null}>
@@ -242,25 +257,35 @@ export const PromptBody = () => {
           form={editForm}>
           <Form.Item
             name="title"
-            label="Title"
-            rules={[{ required: true, message: "Title is required" }]}>
-            <Input placeholder="My Awesome Prompt" />
+            label={t("managePrompts.form.title.label")}
+            rules={[
+              {
+                required: true,
+                message: t("managePrompts.form.title.required")
+              }
+            ]}>
+            <Input placeholder={t("managePrompts.form.title.placeholder")} />
           </Form.Item>
 
           <Form.Item
             name="content"
-            label="Prompt"
-            rules={[{ required: true, message: "Prompt is required" }]}
-            help="You can use {key} as variable in your prompt.">
+            label={t("managePrompts.form.prompt.label")}
+            rules={[
+              {
+                required: true,
+                message: t("managePrompts.form.prompt.required")
+              }
+            ]}
+            help={t("managePrompts.form.prompt.help")}>
             <Input.TextArea
-              placeholder="Your prompt goes here..."
+              placeholder={t("managePrompts.form.prompt.placeholder")}
               autoSize={{ minRows: 3, maxRows: 10 }}
             />
           </Form.Item>
 
           <Form.Item
             name="is_system"
-            label="Is System Prompt"
+            label={t("managePrompts.form.isSystem.label")}
             valuePropName="checked">
             <Switch />
           </Form.Item>
@@ -269,7 +294,9 @@ export const PromptBody = () => {
             <button
               disabled={isUpdatingPrompt}
               className="inline-flex justify-center w-full text-center mt-4 items-center rounded-md border border-transparent bg-black px-2 py-2 text-sm font-medium leading-4 text-white shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-white dark:text-gray-800 dark:hover:bg-gray-100 dark:focus:ring-gray-500 dark:focus:ring-offset-gray-100 disabled:opacity-50 ">
-              {isUpdatingPrompt ? "Updating Prompt..." : "Update Prompt"}
+              {isUpdatingPrompt
+                ? t("managePrompts.form.btnEdit.saving")
+                : t("managePrompts.form.btnEdit.save")}
             </button>
           </Form.Item>
         </Form>

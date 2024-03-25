@@ -4,8 +4,8 @@ import { useLocation, NavLink } from "react-router-dom"
 import { Sidebar } from "../Option/Sidebar"
 import { Drawer, Select, Tooltip } from "antd"
 import { useQuery } from "@tanstack/react-query"
-import { getAllModels } from "~services/ollama"
-import { useMessageOption } from "~hooks/useMessageOption"
+import { getAllModels } from "~/services/ollama"
+import { useMessageOption } from "~/hooks/useMessageOption"
 import {
   ChevronLeft,
   CogIcon,
@@ -15,8 +15,9 @@ import {
   SquarePen,
   ZapIcon
 } from "lucide-react"
-import { getAllPrompts } from "~libs/db"
-import { ShareBtn } from "~components/Common/ShareBtn"
+import { getAllPrompts } from "~/libs/db"
+import { ShareBtn } from "~/components/Common/ShareBtn"
+import { useTranslation } from "react-i18next"
 
 export default function OptionLayout({
   children
@@ -24,6 +25,8 @@ export default function OptionLayout({
   children: React.ReactNode
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const { t } = useTranslation(["option", "common"])
+
   const {
     selectedModel,
     setSelectedModel,
@@ -61,8 +64,8 @@ export default function OptionLayout({
     if (prompt?.is_system) {
       setSelectedSystemPrompt(prompt.id)
     } else {
-      setSelectedQuickPrompt(prompt.content)
-      setSelectedSystemPrompt(null)
+      setSelectedQuickPrompt(prompt!.content)
+      setSelectedSystemPrompt("")
     }
   }
 
@@ -93,7 +96,7 @@ export default function OptionLayout({
                   onClick={clearChat}
                   className="inline-flex items-center rounded-lg border  dark:border-gray-700 bg-transparent px-3 py-3 text-sm font-medium leading-4 text-gray-800  dark:text-white disabled:opacity-50 ">
                   <SquarePen className="h-4 w-4 mr-3" />
-                  New Chat
+                  {t("newChat")}
                 </button>
               </div>
               <span className="text-lg font-thin text-zinc-300 dark:text-zinc-600">
@@ -106,12 +109,13 @@ export default function OptionLayout({
                   size="large"
                   loading={isModelsLoading || isModelsFetching}
                   filterOption={(input, option) =>
-                    option.label.toLowerCase().indexOf(input.toLowerCase()) >=
+                    option!.label.toLowerCase().indexOf(input.toLowerCase()) >=
                       0 ||
-                    option.value.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    option!.value.toLowerCase().indexOf(input.toLowerCase()) >=
+                      0
                   }
                   showSearch
-                  placeholder="Select a model"
+                  placeholder={t("common:selectAModel")}
                   className="w-64 "
                   options={models?.map((model) => ({
                     label: model.name,
@@ -127,12 +131,13 @@ export default function OptionLayout({
                   size="large"
                   loading={isPromptLoading}
                   showSearch
-                  placeholder="Select a prompt"
+                  placeholder={t("selectAPrompt")}
                   className="w-60"
                   allowClear
                   onChange={handlePromptChange}
                   value={selectedSystemPrompt}
                   filterOption={(input, option) =>
+                    //@ts-ignore
                     option.label.key
                       .toLowerCase()
                       .indexOf(input.toLowerCase()) >= 0
@@ -161,7 +166,8 @@ export default function OptionLayout({
                   {pathname === "/" && messages.length > 0 && !streaming && (
                     <ShareBtn messages={messages} />
                   )}
-                  <Tooltip title="Github Repository">
+                  <Tooltip title={t("githubRepository")}
+                  >
                     <a
                       href="https://github.com/n4ze3m/page-assist"
                       target="_blank"
@@ -169,7 +175,8 @@ export default function OptionLayout({
                       <GithubIcon className="w-6 h-6" />
                     </a>
                   </Tooltip>
-                  <Tooltip title="Manage Ollama Models">
+                  <Tooltip title={t("settings")}
+                  >
                     <NavLink
                       to="/settings"
                       className="!text-gray-500 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
@@ -185,14 +192,12 @@ export default function OptionLayout({
       </div>
 
       <Drawer
-        title={"Chat History"}
+        title={t("sidebarTitle")}
         placement="left"
         closeIcon={null}
         onClose={() => setSidebarOpen(false)}
         open={sidebarOpen}>
-        <Sidebar 
-        onClose={() => setSidebarOpen(false)}
-        />
+        <Sidebar onClose={() => setSidebarOpen(false)} />
       </Drawer>
     </div>
   )

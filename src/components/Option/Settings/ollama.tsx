@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { Form, InputNumber, Select, Skeleton } from "antd"
 import { useState } from "react"
-import { SaveButton } from "~components/Common/SaveButton"
+import { SaveButton } from "~/components/Common/SaveButton"
 import {
   defaultEmbeddingChunkOverlap,
   defaultEmbeddingChunkSize,
@@ -10,18 +10,21 @@ import {
   getOllamaURL,
   saveForRag,
   setOllamaURL as saveOllamaURL
-} from "~services/ollama"
+} from "~/services/ollama"
 import { SettingPrompt } from "./prompt"
+import { useTranslation } from "react-i18next"
 
 export const SettingsOllama = () => {
   const [ollamaURL, setOllamaURL] = useState<string>("")
+  const { t } = useTranslation("settings")
+
   const { data: ollamaInfo, status } = useQuery({
     queryKey: ["fetchOllamURL"],
     queryFn: async () => {
       const [ollamaURL, allModels, chunkOverlap, chunkSize, defaultEM] =
         await Promise.all([
           getOllamaURL(),
-          getAllModels({returnEmpty: true}),
+          getAllModels({ returnEmpty: true }),
           defaultEmbeddingChunkOverlap(),
           defaultEmbeddingChunkSize(),
           defaultEmbeddingModelForRag()
@@ -54,7 +57,7 @@ export const SettingsOllama = () => {
           <div>
             <div>
               <h2 className="text-base font-semibold leading-7 text-gray-900 dark:text-white">
-                Configure Ollama
+                {t("ollamaSettings.heading")}
               </h2>
               <div className="border border-b border-gray-200 dark:border-gray-600 mt-3 mb-6"></div>
             </div>
@@ -62,7 +65,7 @@ export const SettingsOllama = () => {
               <label
                 htmlFor="ollamaURL"
                 className="text-sm font-medium dark:text-gray-200">
-                Ollama URL
+                {t("ollamaSettings.settings.ollamaUrl.label")}
               </label>
               <input
                 type="url"
@@ -71,7 +74,7 @@ export const SettingsOllama = () => {
                 onChange={(e) => {
                   setOllamaURL(e.target.value)
                 }}
-                placeholder="Your Ollama URL"
+                placeholder={t("ollamaSettings.settings.ollamaUrl.placeholder")}
                 className="w-full p-2 border border-gray-300 rounded-md dark:bg-[#262626] dark:text-gray-100"
               />
             </div>
@@ -88,7 +91,7 @@ export const SettingsOllama = () => {
           <div>
             <div>
               <h2 className="text-base font-semibold leading-7 text-gray-900 dark:text-white">
-                Configure RAG
+                {t("ollamaSettings.settings.ragSettings.label")}
               </h2>
               <div className="border border-b border-gray-200 dark:border-gray-600 mt-3 mb-6"></div>
             </div>
@@ -108,18 +111,26 @@ export const SettingsOllama = () => {
               }}>
               <Form.Item
                 name="defaultEM"
-                label="Embedding Model"
-                help="Highly recommended to use embedding models like `nomic-embed-text`."
-                rules={[{ required: true, message: "Please select a model!" }]}>
+                label={t("ollamaSettings.settings.ragSettings.model.label")}
+                help={t("ollamaSettings.settings.ragSettings.model.help")}
+                rules={[
+                  {
+                    required: true,
+                    message: t(
+                      "ollamaSettings.settings.ragSettings.model.required"
+                    )
+                  }
+                ]}>
                 <Select
                   size="large"
                   filterOption={(input, option) =>
-                    option.label.toLowerCase().indexOf(input.toLowerCase()) >=
+                    option!.label.toLowerCase().indexOf(input.toLowerCase()) >=
                       0 ||
-                    option.value.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    option!.value.toLowerCase().indexOf(input.toLowerCase()) >=
+                      0
                   }
                   showSearch
-                  placeholder="Select a model"
+                  placeholder={t("ollamaSettings.settings.ragSettings.model.placeholder")}
                   style={{ width: "100%" }}
                   className="mt-4"
                   options={ollamaInfo.models?.map((model) => ({
@@ -131,27 +142,28 @@ export const SettingsOllama = () => {
 
               <Form.Item
                 name="chunkSize"
-                label="Chunk Size"
+                label={t("ollamaSettings.settings.ragSettings.chunkSize.label")}
                 rules={[
-                  { required: true, message: "Please input your chunk size!" }
+                  { required: true, message: t("ollamaSettings.settings.ragSettings.chunkSize.required")
+                 }
                 ]}>
                 <InputNumber
                   style={{ width: "100%" }}
-                  placeholder="Chunk Size"
+                  placeholder={t("ollamaSettings.settings.ragSettings.chunkSize.placeholder")}
                 />
               </Form.Item>
               <Form.Item
                 name="chunkOverlap"
-                label="Chunk Overlap"
+                label={t("ollamaSettings.settings.ragSettings.chunkOverlap.label")}
                 rules={[
                   {
                     required: true,
-                    message: "Please input your chunk overlap!"
+                    message: t("ollamaSettings.settings.ragSettings.chunkOverlap.required")
                   }
                 ]}>
                 <InputNumber
                   style={{ width: "100%" }}
-                  placeholder="Chunk Overlap"
+                  placeholder={t("ollamaSettings.settings.ragSettings.chunkOverlap.placeholder")}
                 />
               </Form.Item>
 
@@ -164,7 +176,7 @@ export const SettingsOllama = () => {
           <div>
             <div>
               <h2 className="text-base font-semibold leading-7 text-gray-900 dark:text-white">
-                Configure RAG Prompt
+                {t("ollamaSettings.settings.prompt.label")}
               </h2>
               <div className="border border-b border-gray-200 dark:border-gray-600 mt-3 mb-6"></div>
             </div>

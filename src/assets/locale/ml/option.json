@@ -1,0 +1,12 @@
+{
+    "newChat": "പുതിയ ചാറ്റ്",
+    "selectAPrompt": "ഒരു പ്രോംപ്റ്റ് തിരഞ്ഞെടുക്കുക",
+    "githubRepository": "ഗിറ്റ്ഹബ് റെപ്പോസിറ്ററി",
+    "settings": "ക്രമീകരണങ്ങള്‍",
+    "sidebarTitle": "ചാറ്റ് ചരിത്രം",
+    "error": "പിശക്",
+    "somethingWentWrong": "എന്തോ തെറ്റായി",
+    "deleteHistoryConfirmation": "നിങ്ങളുടെ ചാറ്റ് ചരിത്രം ഇല്ലാതാക്കണമെന്ന് തീർച്ചയാണോ?",
+    "editHistoryTitle": "ചാറ്റ് title എഡിറ്റുചെയ്യുക",
+    "validationSelectModel": "തുടരുന്നതിന് ഒരു മോഡല്‍ തിരഞ്ഞെടുക്കുക"
+}

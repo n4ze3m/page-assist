@@ -1,0 +1,52 @@
+{
+    "pageAssist": "Page Assist",
+    "selectAModel": "Select a Model",
+    "save": "Save",
+    "saved": "Saved",
+    "cancel": "Cancel",
+    "retry": "Retry",
+    "share": {
+        "tooltip": {
+            "share": "Share"
+        },
+        "modal": {
+            "title": "Share link to Chat"
+        },
+        "form": {
+            "defaultValue": {
+                "name": "Anonymous",
+                "title": "Untitled chat"
+            },
+            "title": {
+                "label": "Chat title",
+                "placeholder": "Enter Chat title",
+                "required": "Chat title is required"
+            },
+            "name": {
+                "label": "Your name",
+                "placeholder": "Enter your name",
+                "required": "Your name is required"
+            },
+            "btn": {
+                "save": "Generate Link",
+                "saving": "Generating Link..."
+            }
+        },
+        "notification": {
+            "successGenerate": "Link copied to clipboard",
+            "failGenerate": "Failed to generate link"
+        }
+    },
+    "copyToClipboard": "Copy to clipboard",
+    "webSearch": "Searching the web",
+    "regenerate": "Regenerate",
+    "edit": "Edit",
+    "saveAndSubmit": "Save & Submit",
+    "editMessage": {
+        "placeholder": "Type a message..."
+    },
+    "submit": "Submit",
+    "noData": "No data",
+    "noHistory": "No chat history",
+    "chatWithCurrentPage": "Chat with current page"
+}

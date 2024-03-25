@@ -5,6 +5,7 @@ import {
   Orbit,
   Share
 } from "lucide-react"
+import { useTranslation } from "react-i18next"
 import { Link, useLocation } from "react-router-dom"
 
 function classNames(...classes: string[]) {
@@ -25,7 +26,7 @@ const LinkComponent = (item: {
           item.current === item.href
             ? "bg-gray-100 text-gray-600 dark:bg-[#262626] dark:text-white"
             : "text-gray-700 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-200 dark:hover:text-white dark:hover:bg-[#262626]",
-          "group flex gap-x-3 rounded-md py-2 pl-2 pr-3 text-sm leading-6 font-semibold"
+          "group flex gap-x-3 rounded-md py-2 pl-2 pr-3 text-sm font-semibold"
         )}>
         <item.icon
           className={classNames(
@@ -44,6 +45,8 @@ const LinkComponent = (item: {
 
 export const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
   const location = useLocation()
+  const { t } = useTranslation("settings")
+
   return (
     <>
       <div className="mx-auto max-w-7xl lg:flex lg:gap-x-16 lg:px-8">
@@ -54,31 +57,31 @@ export const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
               className="flex gap-x-3 gap-y-1 whitespace-nowrap lg:flex-col">
               <LinkComponent
                 href="/settings"
-                name="General Settings"
+                name={t("generalSettings.title")}
                 icon={Orbit}
                 current={location.pathname}
               />
               <LinkComponent
                 href="/settings/ollama"
-                name="Ollama Settings"
+                name={t("ollamaSettings.title")}
                 icon={CircuitBoardIcon}
                 current={location.pathname}
               />
               <LinkComponent
                 href="/settings/model"
-                name="Manage Model"
+                name={t("manageModels.title")}
                 current={location.pathname}
                 icon={BrainCircuit}
               />
               <LinkComponent
                 href="/settings/prompt"
-                name="Manage Prompt"
+                name={t("managePrompts.title")}
                 icon={Book}
                 current={location.pathname}
               />
-               <LinkComponent
+              <LinkComponent
                 href="/settings/share"
-                name="Manage Share"
+                name={t("manageShare.title")}
                 icon={Share}
                 current={location.pathname}
               />

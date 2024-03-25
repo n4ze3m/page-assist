@@ -1,6 +1,6 @@
 import { Route, Routes } from "react-router-dom"
 import { SidepanelChat } from "./sidepanel-chat"
-import { useDarkMode } from "~hooks/useDarkmode"
+import { useDarkMode } from "~/hooks/useDarkmode"
 import { SidepanelSettings } from "./sidepanel-settings"
 import { OptionIndex } from "./option-index"
 import { OptionModal } from "./option-settings-model"

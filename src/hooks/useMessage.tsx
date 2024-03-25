@@ -1,89 +1,22 @@
 import React from "react"
-import { cleanUrl } from "~libs/clean-url"
+import { cleanUrl } from "~/libs/clean-url"
 import {
-  defaultEmbeddingChunkOverlap,
-  defaultEmbeddingChunkSize,
   defaultEmbeddingModelForRag,
   getOllamaURL,
   promptForRag,
   systemPromptForNonRag
-} from "~services/ollama"
-import { useStoreMessage, type ChatHistory, type Message } from "~store"
+} from "~/services/ollama"
+import { useStoreMessage, type Message } from "~/store"
 import { ChatOllama } from "@langchain/community/chat_models/ollama"
-import {
-  HumanMessage,
-  AIMessage,
-  type MessageContent,
-  SystemMessage
-} from "@langchain/core/messages"
-import { getHtmlOfCurrentTab } from "~libs/get-html"
-import { PageAssistHtmlLoader } from "~loader/html"
-import { RecursiveCharacterTextSplitter } from "langchain/text_splitter"
+import { HumanMessage, SystemMessage } from "@langchain/core/messages"
+import { getDataFromCurrentTab } from "~/libs/get-html"
 import { OllamaEmbeddings } from "@langchain/community/embeddings/ollama"
 import {
   createChatWithWebsiteChain,
   groupMessagesByConversation
-} from "~chain/chat-with-website"
+} from "~/chain/chat-with-website"
 import { MemoryVectorStore } from "langchain/vectorstores/memory"
-import { chromeRunTime } from "~libs/runtime"
-export type BotResponse = {
-  bot: {
-    text: string
-    sourceDocuments: any[]
-  }
-  history: ChatHistory
-  history_id: string
-}
-
-const generateHistory = (
-  messages: {
-    role: "user" | "assistant" | "system"
-    content: string
-    image?: string
-  }[]
-) => {
-  let history = []
-  for (const message of messages) {
-    if (message.role === "user") {
-      let content: MessageContent = [
-        {
-          type: "text",
-          text: message.content
-        }
-      ]
-
-      if (message.image) {
-        content = [
-          {
-            type: "image_url",
-            image_url: message.image
-          },
-          {
-            type: "text",
-            text: message.content
-          }
-        ]
-      }
-      history.push(
-        new HumanMessage({
-          content: content
-        })
-      )
-    } else if (message.role === "assistant") {
-      history.push(
-        new AIMessage({
-          content: [
-            {
-              type: "text",
-              text: message.content
-            }
-          ]
-        })
-      )
-    }
-  }
-  return history
-}
+import { memoryEmbedding } from "@/utils/memory-embeddings"
 
 export const useMessage = () => {
   const {
@@ -129,47 +62,18 @@ export const useMessage = () => {
     setStreaming(false)
   }
 
-  const memoryEmbedding = async (
-    url: string,
-    html: string,
-    ollamaEmbedding: OllamaEmbeddings
-  ) => {
-    const loader = new PageAssistHtmlLoader({
-      html,
-      url
-    })
-    const docs = await loader.load()
-    const chunkSize = await defaultEmbeddingChunkSize()
-    const chunkOverlap = await defaultEmbeddingChunkOverlap()
-    const textSplitter = new RecursiveCharacterTextSplitter({
-      chunkSize,
-      chunkOverlap
-    })
-
-    const chunks = await textSplitter.splitDocuments(docs)
-
-    const store = new MemoryVectorStore(ollamaEmbedding)
-
-    setIsEmbedding(true)
-
-    await store.addDocuments(chunks)
-    setKeepTrackOfEmbedding({
-      ...keepTrackOfEmbedding,
-      [url]: store
-    })
-    setIsEmbedding(false)
-
-    return store
-  }
-
   const chatWithWebsiteMode = async (message: string) => {
     try {
       let isAlreadyExistEmbedding: MemoryVectorStore
-      let embedURL: string, embedHTML: string
+      let embedURL: string, embedHTML: string, embedType: string
+      let embedPDF: { content: string; page: number }[] = []
+
       if (messages.length === 0) {
-        const { html, url } = await getHtmlOfCurrentTab()
+        const { content: html, url, type, pdf } = await getDataFromCurrentTab()
         embedHTML = html
         embedURL = url
+        embedType = type
+        embedPDF = pdf
         setCurrentURL(url)
         isAlreadyExistEmbedding = keepTrackOfEmbedding[currentURL]
       } else {
@@ -212,11 +116,16 @@ export const useMessage = () => {
       if (isAlreadyExistEmbedding) {
         vectorstore = isAlreadyExistEmbedding
       } else {
-        vectorstore = await memoryEmbedding(
-          embedURL,
-          embedHTML,
-          ollamaEmbedding
-        )
+        vectorstore = await memoryEmbedding({
+          html: embedHTML,
+          keepTrackOfEmbedding: keepTrackOfEmbedding,
+          ollamaEmbedding: ollamaEmbedding,
+          pdf: embedPDF,
+          setIsEmbedding: setIsEmbedding,
+          setKeepTrackOfEmbedding: setKeepTrackOfEmbedding,
+          type: embedType,
+          url: embedURL
+        })
       }
 
       const { ragPrompt: systemPrompt, ragQuestionPrompt: questionPrompt } =

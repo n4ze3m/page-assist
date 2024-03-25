@@ -1,6 +1,6 @@
 import React from "react"
-import { PlaygroundMessage } from "~components/Common/Playground/Message"
-import { useMessage } from "~hooks/useMessage"
+import { PlaygroundMessage } from "~/components/Common/Playground/Message"
+import { useMessage } from "~/hooks/useMessage"
 import { EmptySidePanel } from "../Chat/empty"
 
 export const SidePanelBody = () => {

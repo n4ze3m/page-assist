@@ -5,12 +5,12 @@ import {
   formatToMessage,
   deleteByHistoryId,
   updateHistory
-} from "~libs/db"
+} from "~/libs/db"
 import { Empty, Skeleton } from "antd"
-import { useMessageOption } from "~hooks/useMessageOption"
-import { useState } from "react"
+import { useMessageOption } from "~/hooks/useMessageOption"
 import { PencilIcon, Trash2 } from "lucide-react"
 import { useNavigate } from "react-router-dom"
+import { useTranslation } from "react-i18next"
 
 type Props = {
   onClose: () => void
@@ -19,6 +19,7 @@ type Props = {
 export const Sidebar = ({ onClose }: Props) => {
   const { setMessages, setHistory, setHistoryId, historyId, clearChat } =
     useMessageOption()
+  const { t } = useTranslation(["option", "common"])
   const client = useQueryClient()
   const navigate = useNavigate()
 
@@ -60,7 +61,7 @@ export const Sidebar = ({ onClose }: Props) => {
     <div className="overflow-y-auto z-99">
       {status === "success" && chatHistories.length === 0 && (
         <div className="flex justify-center items-center mt-20 overflow-hidden">
-          <Empty description="No history yet" />
+          <Empty description={t("common:noHistory")} />
         </div>
       )}
       {status === "pending" && (
@@ -95,7 +96,7 @@ export const Sidebar = ({ onClose }: Props) => {
               <div className="flex flex-row gap-3">
                 <button
                   onClick={() => {
-                    const newTitle = prompt("Enter new title", chat.title)
+                    const newTitle = prompt(t("editHistoryTitle"), chat.title)
 
                     if (newTitle) {
                       editHistory({ id: chat.id, title: newTitle })
@@ -107,10 +108,7 @@ export const Sidebar = ({ onClose }: Props) => {
 
                 <button
                   onClick={() => {
-                    if (
-                      !confirm("Are you sure you want to delete this history?")
-                    )
-                      return
+                    if (!confirm(t("deleteHistoryConfirmation"))) return
                     deleteHistory(chat.id)
                   }}
                   className="text-red-500 dark:text-red-400 opacity-80">

@@ -1,0 +1,27 @@
+{
+    "ollamaState": {
+        "searching": "Searching for Your Ollama 🦙",
+        "running": "Ollama is running 🦙",
+        "notRunning": "Unable to connect to Ollama 🦙"
+    },
+    "formError": {
+        "noModel": "Please select a model",
+        "noEmbeddingModel": "Please set an embedding model on the Settings > Ollama page"
+    },
+    "form": {
+        "textarea": {
+            "placeholder": "Type a message..."
+        },
+        "webSearch": {
+            "on": "On",
+            "off": "Off"
+        }
+    },
+    "tooltip": {
+        "searchInternet": "Search Internet",
+        "speechToText": "Speech to Text",
+        "uploadImage": "Upload Image",
+        "stopStreaming": "Stop Streaming"
+    },
+    "sendWhenEnter": "Send when Enter pressed"
+}

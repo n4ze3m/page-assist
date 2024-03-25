@@ -1,0 +1,12 @@
+{
+    "newChat": "New Chat",
+    "selectAPrompt": "Select a Prompt",
+    "githubRepository": "GitHub Repository",
+    "settings": "Settings",
+    "sidebarTitle": "Chat History",
+    "error": "Error",
+    "somethingWentWrong": "Something went wrong",
+    "validationSelectModel": "Please select a model to continue",
+    "deleteHistoryConfirmation": "Are you sure you want to delete this history?",
+    "editHistoryTitle": "Enter a new title"
+}
