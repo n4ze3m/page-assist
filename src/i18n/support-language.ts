@@ -7,9 +7,9 @@ export const supportLanguage = [
     {
         label: "മലയാളം",
         value: "ml"
-    }
+    },
     {
-        label: "Chinese",
-        value: "zh"
+        label: "简体中文",
+        value: "zh-CN"
     }
 ]

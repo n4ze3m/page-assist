@@ -10,6 +10,7 @@ i18n
         resources: {
             en: en,
             ml: ml,
+            "zh-CN": zh,
             zh: zh
         },
         fallbackLng: "en",

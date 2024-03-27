@@ -1,7 +1,7 @@
 {
     "generalSettings": {
-        "title": "പൊതുവായ ക്രമീകരണങ്ങള്‍",
-        "heading": "വെബ് UI ക്രമീകരണങ്ങള്‍",
+        "title": "പൊതുവായ സെറ്റിംഗുകൾ",
+        "heading": "വെബ് UI സെറ്റിംഗുകൾ",
         "settings": {
             "speechRecognitionLang": {
                 "label": "സംഭാഷണ തിരിച്ചറിയല്‍ ഭാഷ",
@@ -160,15 +160,15 @@
         }
     },
     "ollamaSettings": {
-        "title": "ഒല്ലാമാ ക്രമീകരണങ്ങള്‍",
-        "heading": "ഒല്ലാമാ കോൺഫിഗർ ചെയ്യുക",
+        "title": "Ollama സെറ്റിംഗുകൾ",
+        "heading": "Ollama കോൺഫിഗർ ചെയ്യുക",
         "settings": {
             "ollamaUrl": {
-                "label": "ഒല്ലാമാ URL",
-                "placeholder": "ഒല്ലാമാ URL നല്കുക"
+                "label": "Ollama URL",
+                "placeholder": "Ollama URL നല്കുക"
             },
             "ragSettings": {
-                "label": "RAG ക്രമീകരണങ്ങള്‍",
+                "label": "RAG സെറ്റിംഗുകൾ",
                 "model": {
                     "label": "എംബെഡിംഗ് മോഡല്‍",
                     "required": "ദയവായി ഒരു മോഡല്‍ തിരഞ്ഞെടുക്കുക",
