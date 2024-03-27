@@ -1,0 +1,12 @@
+{
+    "newChat": "新聊天",
+    "selectAPrompt": "选择一个提示词",
+    "githubRepository": "GitHub 仓库",
+    "settings": "设置",
+    "sidebarTitle": "聊天历史",
+    "error": "错误",
+    "somethingWentWrong": "出现了错误",
+    "validationSelectModel": "请选择一个模型以继续",
+    "deleteHistoryConfirmation": "你确定要删除这个历史记录吗？",
+    "editHistoryTitle": "输入一个新的标题"
+}

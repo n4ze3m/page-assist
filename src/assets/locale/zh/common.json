@@ -1,0 +1,52 @@
+{
+    "pageAssist": "Page Assist",
+    "selectAModel": "选择一个模型",
+    "save": "保存",
+    "saved": "已保存",
+    "cancel": "取消",
+    "retry": "重试",
+    "share": {
+        "tooltip": {
+            "share": "分享"
+        },
+        "modal": {
+            "title": "为聊天创建分享链接"
+        },
+        "form": {
+            "defaultValue": {
+                "name": "匿名",
+                "title": "未命名聊天"
+            },
+            "title": {
+                "label": "聊天标题",
+                "placeholder": "输入聊天标题",
+                "required": "聊天标题是必填的"
+            },
+            "name": {
+                "label": "您的名字",
+                "placeholder": "输入您的名字",
+                "required": "您的名字是必填的"
+            },
+            "btn": {
+                "save": "生成链接",
+                "saving": "正在生成链接..."
+            }
+        },
+        "notification": {
+            "successGenerate": "链接已复制到剪贴板",
+            "failGenerate": "生成链接失败"
+        }
+    },
+    "copyToClipboard": "复制到剪贴板",
+    "webSearch": "搜索网络",
+    "regenerate": "重新生成",
+    "edit": "编辑",
+    "saveAndSubmit": "保存 & 提交",
+    "editMessage": {
+        "placeholder": "输入一条消息..."
+    },
+    "submit": "提交",
+    "noData": "无数据",
+    "noHistory": "无聊天记录",
+    "chatWithCurrentPage": "与当前页面聊天"
+}
