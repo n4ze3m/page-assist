@@ -1,0 +1,11 @@
+{
+    "extName": {
+        "message": "Page Assist - 本地 AI 模型的 Web UI"
+    },
+    "extDescription": {
+        "message": "使用本地运行的 AI 模型来辅助您的网络浏览。"
+    },
+    "openSidePanelToChat": {
+        "message": "打开侧边栏进行聊天"
+    }
+}
