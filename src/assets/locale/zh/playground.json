@@ -1,0 +1,27 @@
+{
+    "ollamaState": {
+        "searching": "正在搜索您的Ollama 🦙",
+        "running": "Ollama正在运行 🦙",
+        "notRunning": "无法连接到Ollama 🦙"
+    },
+    "formError": {
+        "noModel": "请选择一个模型",
+        "noEmbeddingModel": "请在设置>Ollama页面设置一个文本嵌入模型"
+    },
+    "form": {
+        "textarea": {
+            "placeholder": "输入一条消息..."
+        },
+        "webSearch": {
+            "on": "开",
+            "off": "关"
+        }
+    },
+    "tooltip": {
+        "searchInternet": "搜索互联网",
+        "speechToText": "语音到文本",
+        "uploadImage": "上传图片",
+        "stopStreaming": "停止流媒体"
+    },
+    "sendWhenEnter": "按Enter发送"
+}
