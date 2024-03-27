@@ -1,0 +1,52 @@
+{
+    "pageAssist": "ページアシスト",
+    "selectAModel": "モデルを選択",
+    "save": "保存",
+    "saved": "保存済み",
+    "cancel": "キャンセル",
+    "retry": "再試行",
+    "share": {
+      "tooltip": {
+        "share": "共有"
+      },
+      "modal": {
+        "title": "チャットリンクを共有"
+      },
+      "form": {
+        "defaultValue": {
+          "name": "匿名",
+          "title": "無題のチャット"
+        },
+        "title": {
+          "label": "チャットタイトル",
+          "placeholder": "チャットタイトルを入力",
+          "required": "チャットタイトルは必須です"
+        },
+        "name": {
+          "label": "あなたの名前",
+          "placeholder": "名前を入力",
+          "required": "名前は必須です"
+        },
+        "btn": {
+          "save": "リンクを生成",
+          "saving": "リンクを生成中..."
+        }
+      },
+      "notification": {
+        "successGenerate": "リンクがクリップボードにコピーされました",
+        "failGenerate": "リンクの生成に失敗しました"
+      }
+    },
+    "copyToClipboard": "クリップボードにコピー",
+    "webSearch": "ウェブを検索中",
+    "regenerate": "再生成",
+    "edit": "編集",
+    "saveAndSubmit": "保存して送信",
+    "editMessage": {
+      "placeholder": "メッセージを入力..."
+    },
+    "submit": "送信",
+    "noData": "データがありません",
+    "noHistory": "チャット履歴がありません", 
+    "chatWithCurrentPage": "現在のページでチャット"
+  }

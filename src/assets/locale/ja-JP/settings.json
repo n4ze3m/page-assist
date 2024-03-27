@@ -1,0 +1,207 @@
+{
+    "generalSettings": {
+        "title": "一般設定",
+        "heading": "Web UIの設定",
+        "settings": {
+            "speechRecognitionLang": {
+                "label": "音声認識の言語",
+                "placeholder": "言語を選択"
+            },
+            "language": {
+                "label": "言語",
+                "placeholder": "言語を選択"
+            },
+            "darkMode": {
+                "label": "テーマを変更",
+                "options": {
+                    "light": "ライト",
+                    "dark": "ダーク"
+                }
+            },
+            "searchMode": {
+                "label": "簡易インターネット検索を実行"
+            },
+            "deleteChatHistory": {
+                "label": "チャット履歴を削除",
+                "button": "削除",
+                "confirm": "チャット履歴を削除してもよろしいですか？この操作は元に戻せません。"
+            }
+        }
+    },
+    "manageModels": {
+        "title": "モデルを管理",
+        "addBtn": "新しいモデルを追加",
+        "columns": {
+            "name": "名前",
+            "digest": "ダイジェスト",
+            "modifiedAt": "修正日時",
+            "size": "サイズ",
+            "actions": "アクション"
+        },
+        "expandedColumns": {
+            "parentModel": "親モデル",
+            "format": "フォーマット",
+            "family": "ファミリー",
+            "parameterSize": "パラメータサイズ",
+            "quantizationLevel": "量子化レベル"
+        },
+        "tooltip": {
+            "delete": "モデルを削除",
+            "repull": "モデルを再取得"
+        },
+        "confirm": {
+            "delete": "本当にこのモデルを削除しますか？",
+            "repull": "本当にこのモデルを再取得しますか？"
+        },
+        "modal": {
+            "title": "新しいモデルを追加",
+            "placeholder": "モデル名を入力",
+            "pull": "モデルを取得"
+        },
+        "notification": {
+            "pullModel": "モデルを取得中",
+            "pullModelDescription": "{{modelName}}モデルを取得中。詳細は拡張機能のアイコンをご確認ください。",
+            "success": "成功",
+            "error": "エラー",
+            "successDescription": "モデルの取得が完了しました",
+            "successDeleteDescription": "モデルの削除が完了しました",
+            "someError": "問題が発生しました。後ほど再度お試しください。"
+        }
+    },
+    "managePrompts": {
+        "title": "プロンプトを管理",
+        "addBtn": "新しいプロンプトを追加",
+        "option1": "通常",
+        "option2": "RAG",
+        "questionPrompt": "質問プロンプト",
+        "columns": {
+            "title": "タイトル",
+            "prompt": "プロンプト",
+            "type": "プロンプトタイプ",
+            "actions": "アクション"
+        },
+        "systemPrompt": "システムプロンプト",
+        "quickPrompt": "クイックプロンプト",
+        "tooltip": {
+            "delete": "プロンプトを削除",
+            "edit": "プロンプトを編集"
+        },
+        "confirm": {
+            "delete": "本当にこのプロンプトを削除しますか？この操作は元に戻せません。"
+        },
+        "modal": {
+            "addTitle": "新しいプロンプトを追加",
+            "editTitle": "プロンプトを編集"
+        },
+        "form": {
+            "title": {
+                "label": "タイトル",
+                "placeholder": "素晴らしいプロンプト",
+                "required": "タイトルを入力してください"
+            },
+            "prompt": {
+                "label": "プロンプト",
+                "placeholder": "プロンプトを入力",
+                "required": "プロンプトを入力してください",
+                "help": "プロンプト内で{key}を変数として使用できます。"
+            },
+            "isSystem": {
+                "label": "システムプロンプト"
+            },
+            "btnSave": {
+                "saving": "プロンプトを追加中...",
+                "save": "プロンプトを追加"
+            },
+            "btnEdit": {
+                "saving": "プロンプトを更新中...",
+                "save": "プロンプトを更新"
+            }
+        },
+        "notification": {
+            "addSuccess": "プロンプトが追加されました",
+            "addSuccessDesc": "プロンプトが正常に追加されました",
+            "error": "エラー",
+            "someError": "問題が発生しました。後ほど再度お試しください。",
+            "updatedSuccess": "プロンプトが更新されました",
+            "updatedSuccessDesc": "プロンプトが正常に更新されました",
+            "deletedSuccess": "プロンプトが削除されました",
+            "deletedSuccessDesc": "プロンプトが正常に削除されました"
+        }
+    },
+    "manageShare": {
+        "title": "共有を管理",
+        "heading": "ページ共有URLを設定",
+        "form": {
+            "url": {
+                "label": "ページ共有URL",
+                "placeholder": "ページ共有URLを入力",
+                "required": "ページ共有URLを入力してください！",
+                "help": "プライバシー保護のため、ページ共有を自身でホストし、そのURLをここに入力することができます。<anchor>詳細</anchor>"
+            }
+        },
+        "webshare": {
+            "heading": "ウェブ共有",
+            "columns": {
+                "title": "タイトル",
+                "url": "URL",
+                "actions": "アクション"
+            },
+            "tooltip": {
+                "delete": "共有を削除"
+            },
+            "confirm": {
+                "delete": "本当にこの共有を削除しますか？この操作は元に戻せません。"
+            }
+        },
+        "notification": {
+            "pageShareSuccess": "ページ共有URLが正常に更新されました",
+            "someError": "問題が発生しました。後ほど再度お試しください。",
+            "webShareDeleteSuccess": "ウェブ共有が正常に削除されました"
+        }
+    },
+    "ollamaSettings": {
+        "title": "Ollamaの設定",
+        "heading": "Ollamaを設定",
+        "settings": {
+            "ollamaUrl": {
+                "label": "OllamaのURL",
+                "placeholder": "OllamaのURLを入力"
+            },
+            "ragSettings": {
+                "label": "RAGの設定",
+                "model": {
+                    "label": "エンベディングモデル",
+                    "required": "モデルを選択してください",
+                    "help": "`nomic-embed-text`などのエンベディングモデルの使用を強くおすすめします。",
+                    "placeholder": "モデルを選択"
+                },
+                "chunkSize": {
+                    "label": "チャンクサイズ",
+                    "placeholder": "チャンクサイズを入力",
+                    "required": "チャンクサイズを入力してください"
+                },
+                "chunkOverlap": {
+                    "label": "チャンクオーバーラップ",
+                    "placeholder": "チャンクオーバーラップを入力",
+                    "required": "チャンクオーバーラップを入力してください"
+                }
+            },
+            "prompt": {
+                "label": "RAGプロンプトを設定",
+                "option1": "通常",
+                "option2": "Web",
+                "alert": "ここでシステムプロンプトを設定することは非推奨となりました。プロンプトの追加や編集には「プロンプトを管理」セクションをご利用ください。このセクションは今後のリリースで削除される予定です。",
+                "systemPrompt": "システムプロンプト",
+                "systemPromptPlaceholder": "システムプロンプトを入力",
+                "webSearchPrompt": "Web検索プロンプト",
+                "webSearchPromptHelp": "プロンプトから`{search_results}`を削除しないでください。",
+                "webSearchPromptError": "Web検索プロンプトを入力してください",
+                "webSearchPromptPlaceholder": "Web検索プロンプトを入力",
+                "webSearchFollowUpPrompt": "Web検索フォローアッププロンプト",
+                "webSearchFollowUpPromptHelp": "プロンプトから`{chat_history}`と`{question}`を削除しないでください。",
+                "webSearchFollowUpPromptError": "Web検索フォローアッププロンプトを入力してください！",
+                "webSearchFollowUpPromptPlaceholder": "Web検索フォローアッププロンプト"
+            }
+        }
+    }
+}

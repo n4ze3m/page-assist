@@ -11,5 +11,9 @@ export const supportLanguage = [
     {
         label: "简体中文",
         value: "zh-CN"
+    },
+    {
+        label: "日本語",
+        value: "ja-JP"
     }
 ]

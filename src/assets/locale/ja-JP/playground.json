@@ -1,0 +1,27 @@
+{
+    "ollamaState": {
+        "searching": "Ollamaを検索中 🦙",
+        "running": "Ollamaが実行中 🦙",
+        "notRunning": "Ollamaに接続できません 🦙"
+    },
+    "formError": {
+        "noModel": "モデルを選択してください",
+        "noEmbeddingModel": "設定 > Ollamaページでembeddingモデルを設定してください"
+    },
+    "form": {
+        "textarea": {
+            "placeholder": "メッセージを入力..."
+        },
+        "webSearch": {
+            "on": "オン",
+            "off": "オフ"
+        }
+    },
+    "tooltip": {
+        "searchInternet": "インターネットを検索",
+        "speechToText": "音声入力",
+        "uploadImage": "画像をアップロード",
+        "stopStreaming": "ストリーミングを停止"
+    },
+    "sendWhenEnter": "Enterキーを押すと送信"
+}
