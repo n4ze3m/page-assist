@@ -1,12 +1,12 @@
 import {
   Book,
   BrainCircuit,
-  CircuitBoardIcon,
   Orbit,
   Share
 } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { Link, useLocation } from "react-router-dom"
+import { OllamaIcon } from "../Icons/Ollama"
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ")
@@ -64,7 +64,7 @@ export const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
               <LinkComponent
                 href="/settings/ollama"
                 name={t("ollamaSettings.title")}
-                icon={CircuitBoardIcon}
+                icon={OllamaIcon}
                 current={location.pathname}
               />
               <LinkComponent
