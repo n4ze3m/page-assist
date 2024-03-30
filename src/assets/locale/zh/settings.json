@@ -204,5 +204,9 @@
                 "webSearchFollowUpPromptPlaceholder": "您的网页搜索追问提示词"
             }
         }
+    },
+    "manageSearch": {
+        "heading": "配置网络搜索",
+        "title": "管理网络搜索"
     }
 }

@@ -31,7 +31,6 @@ type Message = {
   createdAt: number
 }
 
-
 type Webshare = {
   id: string
   title: string
@@ -40,7 +39,6 @@ type Webshare = {
   share_id: string
   createdAt: number
 }
-
 
 type Prompt = {
   id: string
@@ -125,7 +123,6 @@ export class PageAssitDatabase {
     await this.db.remove(history_id)
   }
 
-
   async getAllPrompts(): Promise<Prompts> {
     return new Promise((resolve, reject) => {
       this.db.get("prompts", (result) => {
@@ -146,7 +143,12 @@ export class PageAssitDatabase {
     this.db.set({ prompts: newPrompts })
   }
 
-  async updatePrompt(id: string, title: string, content: string, is_system: boolean) {
+  async updatePrompt(
+    id: string,
+    title: string,
+    content: string,
+    is_system: boolean
+  ) {
     const prompts = await this.getAllPrompts()
     const newPrompts = prompts.map((prompt) => {
       if (prompt.id === id) {
@@ -164,7 +166,6 @@ export class PageAssitDatabase {
     return prompts.find((prompt) => prompt.id === id)
   }
 
-
   async getWebshare(id: string) {
     return new Promise((resolve, reject) => {
       this.db.get(id, (result) => {
@@ -172,7 +173,6 @@ export class PageAssitDatabase {
       })
     })
   }
-
 
   async getAllWebshares(): Promise<Webshare[]> {
     return new Promise((resolve, reject) => {
@@ -207,8 +207,7 @@ export class PageAssitDatabase {
   }
 }
 
-
-const generateID = () => {
+export const generateID = () => {
   return "pa_xxxx-xxxx-xxx-xxxx".replace(/[x]/g, () => {
     const r = Math.floor(Math.random() * 16)
     return r.toString(16)
@@ -230,11 +229,24 @@ export const saveMessage = async (
   role: string,
   content: string,
   images: string[],
-  source?: any[]
+  source?: any[],
+  time?: number
 ) => {
   const id = generateID()
-  const createdAt = Date.now()
-  const message = { id, history_id, name, role, content, images, createdAt, sources: source }
+  let createdAt = Date.now()
+  if (time) {
+    createdAt += time
+  }
+  const message = {
+    id,
+    history_id,
+    name,
+    role,
+    content,
+    images,
+    createdAt,
+    sources: source
+  }
   const db = new PageAssitDatabase()
   await db.addMessage(message)
   return message
@@ -292,19 +304,20 @@ export const removeMessageUsingHistoryId = async (history_id: string) => {
   await db.db.set({ [history_id]: chatHistory })
 }
 
-
 export const getAllPrompts = async () => {
   const db = new PageAssitDatabase()
   return await db.getAllPrompts()
 }
 
-
-export const updateMessageByIndex = async (history_id: string, index: number, message: string) => {
+export const updateMessageByIndex = async (
+  history_id: string,
+  index: number,
+  message: string
+) => {
   const db = new PageAssitDatabase()
   const chatHistory = (await db.getChatHistory(history_id)).reverse()
   chatHistory[index].content = message
   await db.db.set({ [history_id]: chatHistory.reverse() })
-
 }
 
 export const deleteChatForEdit = async (history_id: string, index: number) => {
@@ -315,7 +328,15 @@ export const deleteChatForEdit = async (history_id: string, index: number) => {
   await db.db.set({ [history_id]: previousHistory.reverse() })
 }
 
-export const savePrompt = async ({ content, title, is_system = false }: { title: string, content: string, is_system: boolean }) => {
+export const savePrompt = async ({
+  content,
+  title,
+  is_system = false
+}: {
+  title: string
+  content: string
+  is_system: boolean
+}) => {
   const db = new PageAssitDatabase()
   const id = generateID()
   const createdAt = Date.now()
@@ -324,20 +345,27 @@ export const savePrompt = async ({ content, title, is_system = false }: { title:
   return prompt
 }
 
-
 export const deletePromptById = async (id: string) => {
   const db = new PageAssitDatabase()
   await db.deletePrompt(id)
   return id
 }
 
-
-export const updatePrompt = async ({ content, id, title, is_system }: { id: string, title: string, content: string, is_system: boolean }) => {
+export const updatePrompt = async ({
+  content,
+  id,
+  title,
+  is_system
+}: {
+  id: string
+  title: string
+  content: string
+  is_system: boolean
+}) => {
   const db = new PageAssitDatabase()
   await db.updatePrompt(id, title, content, is_system)
   return id
 }
-
 
 export const getPromptById = async (id: string) => {
   if (!id || id.trim() === "") return null
@@ -354,10 +382,19 @@ export const deleteWebshare = async (id: string) => {
   const db = new PageAssitDatabase()
   await db.deleteWebshare(id)
   return id
-
 }
 
-export const saveWebshare = async ({ title, url, api_url, share_id }: { title: string, url: string, api_url: string, share_id: string }) => {
+export const saveWebshare = async ({
+  title,
+  url,
+  api_url,
+  share_id
+}: {
+  title: string
+  url: string
+  api_url: string
+  share_id: string
+}) => {
   const db = new PageAssitDatabase()
   const id = generateID()
   const createdAt = Date.now()
@@ -368,7 +405,7 @@ export const saveWebshare = async ({ title, url, api_url, share_id }: { title: s
 
 export const getUserId = async () => {
   const db = new PageAssitDatabase()
-  const id = await db.getUserID() as string
+  const id = (await db.getUserID()) as string
   if (!id || id?.trim() === "") {
     const user_id = "user_xxxx-xxxx-xxx-xxxx-xxxx".replace(/[x]/g, () => {
       const r = Math.floor(Math.random() * 16)

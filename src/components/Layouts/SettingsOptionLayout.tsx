@@ -1,9 +1,4 @@
-import {
-  Book,
-  BrainCircuit,
-  Orbit,
-  Share
-} from "lucide-react"
+import { Book, BrainCircuit, Orbit, Share } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { Link, useLocation } from "react-router-dom"
 import { OllamaIcon } from "../Icons/Ollama"

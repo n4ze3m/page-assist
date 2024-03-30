@@ -203,5 +203,9 @@
                 "webSearchFollowUpPromptPlaceholder": "നിങ്ങളുടെ വെബ് തിരയല്‍ തുടര്‍പ്രോംപ്റ്റ്"
             }
         }
+    },
+    "manageSearch": {
+        "heading": "Web തിരയൽ സജ്ജമാക്കുക",
+        "title": "Web തിരയൽ നിയന്ത്രിക്കുക"
     }
 }

@@ -203,5 +203,9 @@
                 "webSearchFollowUpPromptPlaceholder": "Your Web Search Follow Up Prompt"
             }
         }
+    },
+    "manageSearch": {
+        "title":  "Manage Web Search",
+        "heading": "Configure Web Search"
     }
 }
