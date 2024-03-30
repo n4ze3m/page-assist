@@ -37,10 +37,10 @@ export const PlaygroundEmpty = () => {
 
   return (
     <div className="mx-auto sm:max-w-xl px-4 mt-10">
-      <div className="rounded-lg justify-center items-center flex flex-col border p-8 bg-white dark:bg-[#262626]  dark:border-gray-600">
+      <div className="rounded-lg justify-center items-center flex flex-col border p-8 bg-gray-50 dark:bg-[#262626]  dark:border-gray-600">
         {(ollamaStatus === "pending" || isRefetching) && (
           <div className="inline-flex items-center space-x-2">
-            <div className="w-3 h-3 bg-blue-500 rounded-full animate-bounce"></div>
+            <div className="w-3 h-3 bg-blue-500 rounded-full animate-pulse"></div>
             <p className="dark:text-gray-400 text-gray-900">
               {t("ollamaState.searching")}
             </p>
@@ -49,7 +49,7 @@ export const PlaygroundEmpty = () => {
         {!isRefetching && ollamaStatus === "success" ? (
           ollamaInfo.isOk ? (
             <div className="inline-flex  items-center space-x-2">
-              <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+              <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
               <p className="dark:text-gray-400 text-gray-900">
                 {t("ollamaState.running")}
               </p>
@@ -57,7 +57,7 @@ export const PlaygroundEmpty = () => {
           ) : (
             <div className="flex flex-col space-y-2 justify-center items-center">
               <div className="inline-flex  space-x-2">
-                <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+                <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
                 <p className="dark:text-gray-400 text-gray-900">
                   {t("ollamaState.notRunning")}
                 </p>
