@@ -235,5 +235,15 @@
     "manageSearch": {
         "title": "Web検索の管理",
         "heading": "Web検索を設定する"
-    }
+    },
+    "about": {
+        "title": "About",
+        "heading": "About",
+        "chromeVersion": "Page Assistのバージョン",
+        "ollamaVersion": "Ollamaのバージョン",
+        "support": "Page Assistプロジェクトは、以下のプラットフォームで寄付やスポンサーシップをすることで支援できます:",
+        "koFi": "Ko-fiで支援する",
+        "githubSponsor": "GitHubでスポンサーする",
+        "githubRepo": "GitHubリポジトリ"
+      }
 }

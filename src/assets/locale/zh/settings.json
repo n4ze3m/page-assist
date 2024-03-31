@@ -236,5 +236,15 @@
     "manageSearch": {
         "heading": "配置网络搜索",
         "title": "管理网络搜索"
-    }
+    },
+    "about": {
+        "title": "关于",
+        "heading": "关于",
+        "chromeVersion": "Page Assist版本",
+        "ollamaVersion": "Ollama版本",
+        "support": "您可以通过以下平台捐赠或赞助Page Assist项目:",
+        "koFi": "在Ko-fi上支持",
+        "githubSponsor": "在GitHub上赞助",
+        "githubRepo": "GitHub仓库"
+      }
 }

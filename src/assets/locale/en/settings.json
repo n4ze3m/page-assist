@@ -232,5 +232,15 @@
     "manageSearch": {
         "title": "Manage Web Search",
         "heading": "Configure Web Search"
+    },
+    "about": {
+        "title": "About",
+        "heading": "About",
+        "chromeVersion": "Page Assist Version",
+        "ollamaVersion": "Ollama Version",
+        "support": "You can support the Page Assist project by donating or sponsoring through the following platforms:",
+        "koFi": "Support on Ko-fi",
+        "githubSponsor": "Sponsor on GitHub",
+        "githubRepo": "GitHub Repository"
     }
 }

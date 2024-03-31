@@ -6,6 +6,7 @@ import {
 type HistoryInfo = {
   id: string
   title: string
+  is_rag: boolean
   createdAt: number
 }
 
@@ -214,10 +215,10 @@ export const generateID = () => {
   })
 }
 
-export const saveHistory = async (title: string) => {
+export const saveHistory = async (title: string, is_rag?: boolean) => {
   const id = generateID()
   const createdAt = Date.now()
-  const history = { id, title, createdAt }
+  const history = { id, title, createdAt, is_rag }
   const db = new PageAssitDatabase()
   await db.addChatHistory(history)
   return history
