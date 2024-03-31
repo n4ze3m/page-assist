@@ -20,27 +20,41 @@
             },
             "searchMode": {
                 "label": "簡易インターネット検索を実行"
-            },
-            "deleteChatHistory": {
-                "label": "チャット履歴を削除",
-                "button": "削除",
-                "confirm": "チャット履歴を削除してもよろしいですか？この操作は元に戻せません。"
             }
         },
         "webSearch": {
             "heading": "ウェブ検索を管理する",
             "searchMode": {
-              "label": "簡単なインターネット検索を実行する"
+                "label": "簡単なインターネット検索を実行する"
             },
             "provider": {
-              "label": "検索エンジン",
-              "placeholder": "検索エンジンを選択する"
+                "label": "検索エンジン",
+                "placeholder": "検索エンジンを選択する"
             },
             "totalSearchResults": {
-              "label": "合計検索結果",
-              "placeholder": "合計検索結果を入力する"
+                "label": "合計検索結果",
+                "placeholder": "合計検索結果を入力する"
             }
-          }
+        },
+        "system": {
+            "heading": "システム設定",
+            "deleteChatHistory": {
+                "label": "チャット履歴を削除する",
+                "button": "削除",
+                "confirm": "チャット履歴を削除してもよろしいですか？この操作は元に戻せません。"
+            },
+            "export": {
+                "label": "チャット履歴、設定、プロンプトをエクスポートする",
+                "button": "データをエクスポート",
+                "success": "エクスポート成功"
+            },
+            "import": {
+                "label": "チャット履歴、設定、プロンプトをインポートする",
+                "button": "データをインポート",
+                "success": "インポート成功",
+                "error": "インポートエラー"
+            }
+        }
     },
     "manageModels": {
         "title": "モデルを管理",

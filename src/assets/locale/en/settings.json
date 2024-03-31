@@ -17,11 +17,6 @@
                     "light": "Light",
                     "dark": "Dark"
                 }
-            },
-            "deleteChatHistory": {
-                "label": "Delete Chat History",
-                "button": "Delete",
-                "confirm": "Are you sure you want to delete your chat history? This action cannot be undone."
             }
         },
         "webSearch": {
@@ -36,6 +31,25 @@
             "totalSearchResults": {
                 "label": "Total Search Results",
                 "placeholder": "Enter Total Search Results"
+            }
+        },
+        "system": {
+            "heading": "System Settings",
+            "deleteChatHistory": {
+                "label": "Delete Chat History",
+                "button": "Delete",
+                "confirm": "Are you sure you want to delete your chat history? This action cannot be undone."
+            },
+            "export": {
+                "label": "Export Chat History, Settings, and Prompts",
+                "button": "Export Data",
+                "success": "Export Success"
+            },
+            "import": {
+                "label": "Import Chat History, Settings, and Prompts",
+                "button": "Import Data",
+                "success": "Import Success",
+                "error": "Import Error"
             }
         }
     },
