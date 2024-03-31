@@ -1,8 +1,8 @@
 {
     "generalSettings": {
         "title": "一般設定",
-        "heading": "Web UIの設定",
         "settings": {
+            "heading": "Web UIの設定",
             "speechRecognitionLang": {
                 "label": "音声認識の言語",
                 "placeholder": "言語を選択"
@@ -26,7 +26,21 @@
                 "button": "削除",
                 "confirm": "チャット履歴を削除してもよろしいですか？この操作は元に戻せません。"
             }
-        }
+        },
+        "webSearch": {
+            "heading": "ウェブ検索を管理する",
+            "searchMode": {
+              "label": "簡単なインターネット検索を実行する"
+            },
+            "provider": {
+              "label": "検索エンジン",
+              "placeholder": "検索エンジンを選択する"
+            },
+            "totalSearchResults": {
+              "label": "合計検索結果",
+              "placeholder": "合計検索結果を入力する"
+            }
+          }
     },
     "manageModels": {
         "title": "モデルを管理",

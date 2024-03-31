@@ -1,8 +1,8 @@
 {
     "generalSettings": {
         "title": "一般设置",
-        "heading": "Web UI 设置",
         "settings": {
+            "heading": "Web UI 设置",
             "speechRecognitionLang": {
                 "label": "语音识别语言",
                 "placeholder": "选择一种语言"
@@ -26,7 +26,21 @@
                 "button": "删除",
                 "confirm": "您确定要删除聊天历史记录吗？这个操作不能撤销。"
             }
-        }
+        },
+        "webSearch": {
+            "heading": "管理网络搜索",
+            "searchMode": {
+              "label": "执行简单的网际网路搜索"
+            },
+            "provider": {
+              "label": "搜索引擎",
+              "placeholder": "选择一个搜索引擎"
+            },
+            "totalSearchResults": {
+              "label": "总搜索结果",
+              "placeholder": "输入总搜索结果"
+            }
+          }
     },
     "manageModels": {
         "title": "管理模型",

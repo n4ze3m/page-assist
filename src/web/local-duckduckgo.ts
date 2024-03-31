@@ -1,31 +1,30 @@
+import { cleanUrl } from "@/libs/clean-url"
+import { chromeRunTime } from "@/libs/runtime"
+import { PageAssistHtmlLoader } from "@/loader/html"
+import {
+  defaultEmbeddingChunkOverlap,
+  defaultEmbeddingChunkSize,
+  defaultEmbeddingModelForRag,
+  getOllamaURL
+} from "@/services/ollama"
 import {
   getIsSimpleInternetSearch,
   totalSearchResults
 } from "@/services/search"
 import { OllamaEmbeddings } from "@langchain/community/embeddings/ollama"
 import type { Document } from "@langchain/core/documents"
+import * as cheerio from "cheerio"
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter"
 import { MemoryVectorStore } from "langchain/vectorstores/memory"
-import { cleanUrl } from "~/libs/clean-url"
-import { chromeRunTime } from "~/libs/runtime"
-import { PageAssistHtmlLoader } from "~/loader/html"
-import {
-  defaultEmbeddingChunkOverlap,
-  defaultEmbeddingChunkSize,
-  defaultEmbeddingModelForRag,
-  getOllamaURL
-} from "~/services/ollama"
 
+export const localDuckDuckGoSearch = async (query: string) => {
+  await chromeRunTime(cleanUrl("https://html.duckduckgo.com/html/?q=" + query))
 
-export const localGoogleSearch = async (query: string) => {
-  await chromeRunTime(
-    cleanUrl("https://www.google.com/search?hl=en&q=" + query)
-  )
   const abortController = new AbortController()
   setTimeout(() => abortController.abort(), 10000)
 
   const htmlString = await fetch(
-    "https://www.google.com/search?hl=en&q=" + query,
+    "https://html.duckduckgo.com/html/?q=" + query,
     {
       signal: abortController.signal
     }
@@ -33,25 +32,26 @@ export const localGoogleSearch = async (query: string) => {
     .then((response) => response.text())
     .catch()
 
-  const parser = new DOMParser()
+  const $ = cheerio.load(htmlString)
 
-  const doc = parser.parseFromString(htmlString, "text/html")
-
-  const searchResults = Array.from(doc.querySelectorAll("div.g")).map(
+  const searchResults = Array.from($("div.results_links_deep")).map(
     (result) => {
-      const title = result.querySelector("h3")?.textContent
-      const link = result.querySelector("a")?.getAttribute("href")
-      const content = Array.from(result.querySelectorAll("span"))
-        .map((span) => span.textContent)
-        .join(" ")
-      return { title, link, content }
+      const title = $(result).find("a.result__a").text()
+      const link = $(result)
+        .find("a.result__snippet")
+        .attr("href")
+        .replace("//duckduckgo.com/l/?uddg=", "")
+      const content = $(result).find("a.result__snippet").text()
+      const decodedLink = decodeURIComponent(link)
+      return { title, link: decodedLink, content }
     }
   )
+
   return searchResults
 }
 
-export const webGoogleSearch = async (query: string) => {
-  const results = await localGoogleSearch(query)
+export const webDuckDuckGoSearch = async (query: string) => {
+  const results = await localDuckDuckGoSearch(query)
   const TOTAL_SEARCH_RESULTS = await totalSearchResults()
   const searchResults = results.slice(0, TOTAL_SEARCH_RESULTS)
 

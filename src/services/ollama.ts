@@ -296,19 +296,6 @@ export const setWebPrompts = async (prompt: string, followUpPrompt: string) => {
   await setWebSearchFollowUpPrompt(followUpPrompt)
 }
 
-export const getIsSimpleInternetSearch = async () => {
-  const isSimpleInternetSearch = await storage.get("isSimpleInternetSearch")
-  if (!isSimpleInternetSearch || isSimpleInternetSearch.length === 0) {
-    return true
-  }
-  return isSimpleInternetSearch === "true"
-}
-
-
-
-export const setIsSimpleInternetSearch = async (isSimpleInternetSearch: boolean) => {
-  await storage.set("isSimpleInternetSearch", isSimpleInternetSearch.toString())
-}
 
 export const getPageShareUrl = async () => {
   const pageShareUrl = await storage.get("pageShareUrl")

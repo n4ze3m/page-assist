@@ -17,18 +17,13 @@ export const SettingOther = () => {
 
   const { mode, toggleDarkMode } = useDarkMode()
   const { t } = useTranslation("settings")
-  const {
-    changeLocale,
-    locale,
-    supportLanguage
-  }= useI18n()
-
+  const { changeLocale, locale, supportLanguage } = useI18n()
 
   return (
     <dl className="flex flex-col space-y-6 text-sm">
       <div>
         <h2 className="text-base font-semibold leading-7 text-gray-900 dark:text-white">
-          {t("generalSettings.heading")}
+          {t("generalSettings.settings.heading")}
         </h2>
         <div className="border border-b border-gray-200 dark:border-gray-600 mt-3"></div>
       </div>
@@ -38,7 +33,9 @@ export const SettingOther = () => {
         </span>
 
         <Select
-          placeholder={t("generalSettings.settings.speechRecognitionLang.placeholder")}
+          placeholder={t(
+            "generalSettings.settings.speechRecognitionLang.placeholder"
+          )}
           allowClear
           showSearch
           options={SUPPORTED_LANGUAGES}
@@ -86,7 +83,9 @@ export const SettingOther = () => {
           ) : (
             <MoonIcon className="w-4 h-4 mr-2" />
           )}
-          {mode === "dark" ? t("generalSettings.settings.darkMode.options.light") : t("generalSettings.settings.darkMode.options.dark")}
+          {mode === "dark"
+            ? t("generalSettings.settings.darkMode.options.light")
+            : t("generalSettings.settings.darkMode.options.dark")}
         </button>
       </div>
       <SearchModeSettings />
