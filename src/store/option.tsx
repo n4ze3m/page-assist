@@ -16,6 +16,7 @@ export type Message = {
   sources: any[]
   images?: string[]
   search?: WebSearch
+  id?: string
 }
 
 export type ChatHistory = {

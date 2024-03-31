@@ -11,10 +11,9 @@ import { HumanMessage, SystemMessage } from "@langchain/core/messages"
 import { useStoreMessageOption } from "~/store/option"
 import {
   deleteChatForEdit,
+  generateID,
   getPromptById,
   removeMessageUsingHistoryId,
-  saveHistory,
-  saveMessage,
   updateMessageByIndex
 } from "~/libs/db"
 import { useNavigate } from "react-router-dom"
@@ -22,13 +21,19 @@ import { notification } from "antd"
 import { getSystemPromptForWeb } from "~/web/web"
 import { generateHistory } from "@/utils/generate-history"
 import { useTranslation } from "react-i18next"
+import { saveMessageOnError, saveMessageOnSuccess } from "./chat-helper"
+import { usePageAssist } from "@/context"
 
 export const useMessageOption = () => {
   const {
-    history,
+    controller: abortController,
+    setController: setAbortController,
     messages,
+    setMessages
+  } = usePageAssist()
+  const {
+    history,
     setHistory,
-    setMessages,
     setStreaming,
     streaming,
     setIsFirstMessage,
@@ -59,8 +64,6 @@ export const useMessageOption = () => {
   const navigate = useNavigate()
   const textareaRef = React.useRef<HTMLTextAreaElement>(null)
 
-  const abortControllerRef = React.useRef<AbortController | null>(null)
-
   const clearChat = () => {
     navigate("/")
     setMessages([])
@@ -78,14 +81,14 @@ export const useMessageOption = () => {
     image: string,
     isRegenerate: boolean,
     messages: Message[],
-    history: ChatHistory
+    history: ChatHistory,
+    signal: AbortSignal
   ) => {
     const url = await getOllamaURL()
 
     if (image.length > 0) {
       image = `data:image/jpeg;base64,${image.split(",")[1]}`
     }
-    abortControllerRef.current = new AbortController()
 
     const ollama = new ChatOllama({
       model: selectedModel!,
@@ -93,6 +96,8 @@ export const useMessageOption = () => {
     })
 
     let newMessage: Message[] = []
+    let generateMessageId = generateID()
+
     if (!isRegenerate) {
       newMessage = [
         ...messages,
@@ -107,7 +112,8 @@ export const useMessageOption = () => {
           isBot: true,
           name: selectedModel,
           message: "▋",
-          sources: []
+          sources: [],
+          id: generateMessageId
         }
       ]
     } else {
@@ -117,12 +123,14 @@ export const useMessageOption = () => {
           isBot: true,
           name: selectedModel,
           message: "▋",
-          sources: []
+          sources: [],
+          id: generateMessageId
         }
       ]
     }
     setMessages(newMessage)
-    const appendingIndex = newMessage.length - 1
+    let fullText = ""
+    let contentToSave = ""
 
     try {
       setIsSearchingInternet(true)
@@ -195,138 +203,93 @@ export const useMessageOption = () => {
       const chunks = await ollama.stream(
         [...applicationChatHistory, humanMessage],
         {
-          signal: abortControllerRef.current.signal
+          signal: signal
         }
       )
       let count = 0
       for await (const chunk of chunks) {
+        contentToSave += chunk.content
+        fullText += chunk.content
         if (count === 0) {
           setIsProcessing(true)
-          newMessage[appendingIndex].message = chunk.content + "▋"
-          setMessages(newMessage)
-        } else {
-          newMessage[appendingIndex].message =
-            newMessage[appendingIndex].message.slice(0, -1) +
-            chunk.content +
-            "▋"
-          setMessages(newMessage)
         }
-
+        setMessages((prev) => {
+          return prev.map((message) => {
+            if (message.id === generateMessageId) {
+              return {
+                ...message,
+                message: fullText.slice(0, -1) + "▋"
+              }
+            }
+            return message
+          })
+        })
         count++
       }
-
-      newMessage[appendingIndex].message = newMessage[
-        appendingIndex
-      ].message.slice(0, -1)
-
-      newMessage[appendingIndex].sources = source
-
-      if (!isRegenerate) {
-        setHistory([
-          ...history,
-          {
-            role: "user",
-            content: message,
-            image
-          },
-          {
-            role: "assistant",
-            content: newMessage[appendingIndex].message
+      // update the message with the full text
+      setMessages((prev) => {
+        return prev.map((message) => {
+          if (message.id === generateMessageId) {
+            return {
+              ...message,
+              message: fullText,
+              sources: source
+            }
           }
-        ])
-      } else {
-        setHistory([
-          ...history,
-          {
-            role: "assistant",
-            content: newMessage[appendingIndex].message
-          }
-        ])
-      }
+          return message
+        })
+      })
 
-      if (historyId) {
-        if (!isRegenerate) {
-          await saveMessage(historyId, selectedModel!, "user", message, [image])
-        }
-        await saveMessage(
-          historyId,
-          selectedModel!,
-          "assistant",
-          newMessage[appendingIndex].message,
-          [],
-          source
-        )
-      } else {
-        const newHistoryId = await saveHistory(message)
-        await saveMessage(newHistoryId.id, selectedModel!, "user", message, [
+      setHistory([
+        ...history,
+        {
+          role: "user",
+          content: message,
           image
-        ])
-        await saveMessage(
-          newHistoryId.id,
-          selectedModel!,
-          "assistant",
-          newMessage[appendingIndex].message,
-          [],
-          source
-        )
-        setHistoryId(newHistoryId.id)
-      }
+        },
+        {
+          role: "assistant",
+          content: fullText
+        }
+      ])
+
+      await saveMessageOnSuccess({
+        historyId,
+        setHistoryId,
+        isRegenerate,
+        selectedModel: selectedModel,
+        message,
+        image,
+        fullText,
+        source
+      })
 
       setIsProcessing(false)
       setStreaming(false)
     } catch (e) {
-      //@ts-ignore
-      if (e?.name === "AbortError") {
-        newMessage[appendingIndex].message = newMessage[
-          appendingIndex
-        ].message.slice(0, -1)
+      const errorSave = await saveMessageOnError({
+        e,
+        botMessage: fullText,
+        history,
+        historyId,
+        image,
+        selectedModel,
+        setHistory,
+        setHistoryId,
+        userMessage: message,
+        isRegenerating: isRegenerate
+      })
 
-        setHistory([
-          ...history,
-          {
-            role: "user",
-            content: message,
-            image
-          },
-          {
-            role: "assistant",
-            content: newMessage[appendingIndex].message
-          }
-        ])
-
-        if (historyId) {
-          await saveMessage(historyId, selectedModel!, "user", message, [image])
-          await saveMessage(
-            historyId,
-            selectedModel!,
-            "assistant",
-            newMessage[appendingIndex].message,
-            []
-          )
-        } else {
-          const newHistoryId = await saveHistory(message)
-          await saveMessage(newHistoryId.id, selectedModel!, "user", message, [
-            image
-          ])
-          await saveMessage(
-            newHistoryId.id,
-            selectedModel!,
-            "assistant",
-            newMessage[appendingIndex].message,
-            []
-          )
-          setHistoryId(newHistoryId.id)
-        }
-      } else {
-        //@ts-ignore
+      if (!errorSave) {
         notification.error({
           message: t("error"),
           description: e?.message || t("somethingWentWrong")
         })
       }
-
       setIsProcessing(false)
       setStreaming(false)
+    } finally {
+      setAbortController(null)
     }
   }
 
@@ -335,14 +298,14 @@ export const useMessageOption = () => {
     image: string,
     isRegenerate: boolean,
     messages: Message[],
-    history: ChatHistory
+    history: ChatHistory,
+    signal: AbortSignal
   ) => {
     const url = await getOllamaURL()
 
     if (image.length > 0) {
       image = `data:image/jpeg;base64,${image.split(",")[1]}`
     }
-    abortControllerRef.current = new AbortController()
 
     const ollama = new ChatOllama({
       model: selectedModel!,
@@ -350,6 +313,8 @@ export const useMessageOption = () => {
     })
 
     let newMessage: Message[] = []
+    let generateMessageId = generateID()
+
     if (!isRegenerate) {
       newMessage = [
         ...messages,
@@ -364,7 +329,8 @@ export const useMessageOption = () => {
           isBot: true,
           name: selectedModel,
           message: "▋",
-          sources: []
+          sources: [],
+          id: generateMessageId
         }
       ]
     } else {
@@ -374,12 +340,14 @@ export const useMessageOption = () => {
           isBot: true,
           name: selectedModel,
           message: "▋",
-          sources: []
+          sources: [],
+          id: generateMessageId
         }
       ]
     }
     setMessages(newMessage)
-    const appendingIndex = newMessage.length - 1
+    let fullText = ""
+    let contentToSave = ""
 
     try {
       const prompt = await systemPromptForNonRagOption()
@@ -441,132 +409,94 @@ export const useMessageOption = () => {
       const chunks = await ollama.stream(
         [...applicationChatHistory, humanMessage],
         {
-          signal: abortControllerRef.current.signal
+          signal: signal
         }
       )
       let count = 0
       for await (const chunk of chunks) {
+        contentToSave += chunk.content
+        fullText += chunk.content
         if (count === 0) {
           setIsProcessing(true)
-          newMessage[appendingIndex].message = chunk.content + "▋"
-          setMessages(newMessage)
-        } else {
-          newMessage[appendingIndex].message =
-            newMessage[appendingIndex].message.slice(0, -1) +
-            chunk.content +
-            "▋"
-          setMessages(newMessage)
         }
-
+        setMessages((prev) => {
+          return prev.map((message) => {
+            if (message.id === generateMessageId) {
+              return {
+                ...message,
+                message: fullText.slice(0, -1) + "▋"
+              }
+            }
+            return message
+          })
+        })
         count++
       }
 
-      newMessage[appendingIndex].message = newMessage[
-        appendingIndex
-      ].message.slice(0, -1)
-
-      if (!isRegenerate) {
-        setHistory([
-          ...history,
-          {
-            role: "user",
-            content: message,
-            image
-          },
-          {
-            role: "assistant",
-            content: newMessage[appendingIndex].message
+      setMessages((prev) => {
+        return prev.map((message) => {
+          if (message.id === generateMessageId) {
+            return {
+              ...message,
+              message: fullText.slice(0, -1)
+            }
           }
-        ])
-      } else {
-        setHistory([
-          ...history,
-          {
-            role: "assistant",
-            content: newMessage[appendingIndex].message
-          }
-        ])
-      }
+          return message
+        })
+      })
 
-      if (historyId) {
-        if (!isRegenerate) {
-          await saveMessage(historyId, selectedModel, "user", message, [image])
-        }
-        await saveMessage(
-          historyId,
-          selectedModel,
-          "assistant",
-          newMessage[appendingIndex].message,
-          []
-        )
-      } else {
-        const newHistoryId = await saveHistory(message)
-        await saveMessage(newHistoryId.id, selectedModel, "user", message, [
+      setHistory([
+        ...history,
+        {
+          role: "user",
+          content: message,
           image
-        ])
-        await saveMessage(
-          newHistoryId.id,
-          selectedModel,
-          "assistant",
-          newMessage[appendingIndex].message,
-          []
-        )
-        setHistoryId(newHistoryId.id)
-      }
+        },
+        {
+          role: "assistant",
+          content: fullText
+        }
+      ])
+
+      await saveMessageOnSuccess({
+        historyId,
+        setHistoryId,
+        isRegenerate,
+        selectedModel: selectedModel,
+        message,
+        image,
+        fullText,
+        source: []
+      })
 
       setIsProcessing(false)
       setStreaming(false)
+      setIsProcessing(false)
+      setStreaming(false)
     } catch (e) {
-      if (e?.name === "AbortError") {
-        newMessage[appendingIndex].message = newMessage[
-          appendingIndex
-        ].message.slice(0, -1)
+      const errorSave = await saveMessageOnError({
+        e,
+        botMessage: fullText,
+        history,
+        historyId,
+        image,
+        selectedModel,
+        setHistory,
+        setHistoryId,
+        userMessage: message,
+        isRegenerating: isRegenerate
+      })
 
-        setHistory([
-          ...history,
-          {
-            role: "user",
-            content: message,
-            image
-          },
-          {
-            role: "assistant",
-            content: newMessage[appendingIndex].message
-          }
-        ])
-
-        if (historyId) {
-          await saveMessage(historyId, selectedModel, "user", message, [image])
-          await saveMessage(
-            historyId,
-            selectedModel,
-            "assistant",
-            newMessage[appendingIndex].message,
-            []
-          )
-        } else {
-          const newHistoryId = await saveHistory(message)
-          await saveMessage(newHistoryId.id, selectedModel, "user", message, [
-            image
-          ])
-          await saveMessage(
-            newHistoryId.id,
-            selectedModel,
-            "assistant",
-            newMessage[appendingIndex].message,
-            []
-          )
-          setHistoryId(newHistoryId.id)
-        }
-      } else {
+      if (!errorSave) {
         notification.error({
           message: t("error"),
           description: e?.message || t("somethingWentWrong")
         })
       }
-
       setIsProcessing(false)
       setStreaming(false)
+    } finally {
+      setAbortController(null)
     }
   }
 
@@ -575,22 +505,34 @@ export const useMessageOption = () => {
     image,
     isRegenerate = false,
     messages: chatHistory,
-    memory
+    memory,
+    controller
   }: {
     message: string
     image: string
     isRegenerate?: boolean
     messages?: Message[]
     memory?: ChatHistory
+    controller?: AbortController
   }) => {
     setStreaming(true)
+    let signal: AbortSignal
+    if (!controller) {
+      const newController = new AbortController()
+      signal = newController.signal
+      setAbortController(newController)
+    } else {
+      setAbortController(controller)
+      signal = controller.signal
+    }
     if (webSearch) {
       await searchChatMode(
         message,
         image,
         isRegenerate,
         chatHistory || messages,
-        memory || history
+        memory || history,
+        signal
       )
     } else {
       await normalChatMode(
@@ -598,7 +540,8 @@ export const useMessageOption = () => {
         image,
         isRegenerate,
         chatHistory || messages,
-        memory || history
+        memory || history,
+        signal
       )
     }
   }
@@ -611,28 +554,29 @@ export const useMessageOption = () => {
     }
     if (history.length > 0) {
       const lastMessage = history[history.length - 2]
-      let newHistory = history
+      let newHistory = history.slice(0, -2)
       let mewMessages = messages
-      newHistory.pop()
       mewMessages.pop()
       setHistory(newHistory)
       setMessages(mewMessages)
       await removeMessageUsingHistoryId(historyId)
       if (lastMessage.role === "user") {
+        const newController = new AbortController()
         await onSubmit({
           message: lastMessage.content,
           image: lastMessage.image || "",
           isRegenerate: true,
-          memory: newHistory
+          memory: newHistory,
+          controller: newController
         })
       }
     }
   }
 
   const stopStreamingRequest = () => {
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort()
-      abortControllerRef.current = null
+    if (abortController) {
+      abortController.abort()
+      setAbortController(null)
     }
   }
 
@@ -653,7 +597,6 @@ export const useMessageOption = () => {
     message: string,
     isHuman: boolean
   ) => {
-    // update message and history by index
     let newMessages = messages
     let newHistory = history
 
@@ -665,20 +608,21 @@ export const useMessageOption = () => {
       }
 
       const currentHumanMessage = newMessages[index]
-      newMessages[index].message = message
-      newHistory[index].content = message
+
       const previousMessages = newMessages.slice(0, index + 1)
       setMessages(previousMessages)
-      const previousHistory = newHistory.slice(0, index + 1)
+      const previousHistory = newHistory.slice(0, index)
       setHistory(previousHistory)
       await updateMessageByIndex(historyId, index, message)
       await deleteChatForEdit(historyId, index)
+      const abortController = new AbortController()
       await onSubmit({
         message: message,
         image: currentHumanMessage.images[0] || "",
         isRegenerate: true,
         messages: previousMessages,
-        memory: previousHistory
+        memory: previousHistory,
+        controller: abortController
       })
     } else {
       newMessages[index].message = message

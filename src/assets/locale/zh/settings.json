@@ -1,8 +1,8 @@
 {
     "generalSettings": {
         "title": "一般设置",
-        "heading": "Web UI 设置",
         "settings": {
+            "heading": "Web UI 设置",
             "speechRecognitionLang": {
                 "label": "语音识别语言",
                 "placeholder": "选择一种语言"
@@ -20,11 +20,39 @@
             },
             "searchMode": {
                 "label": "使用简化的互联网搜索"
+            }
+        },
+        "webSearch": {
+            "heading": "管理网络搜索",
+            "searchMode": {
+                "label": "执行简单的网际网路搜索"
             },
+            "provider": {
+                "label": "搜索引擎",
+                "placeholder": "选择一个搜索引擎"
+            },
+            "totalSearchResults": {
+                "label": "总搜索结果",
+                "placeholder": "输入总搜索结果"
+            }
+        },
+        "system": {
+            "heading": "系统设置",
             "deleteChatHistory": {
-                "label": "删除聊天历史记录",
+                "label": "删除聊天记录",
                 "button": "删除",
-                "confirm": "您确定要删除聊天历史记录吗？这个操作不能撤销。"
+                "confirm": "您确定要删除聊天记录吗?此操作无法撤销。"
+            },
+            "export": {
+                "label": "导出聊天记录、设置和提示",
+                "button": "导出数据",
+                "success": "导出成功"
+            },
+            "import": {
+                "label": "导入聊天记录、设置和提示",
+                "button": "导入数据",
+                "success": "导入成功",
+                "error": "导入错误"
             }
         }
     },
@@ -204,5 +232,19 @@
                 "webSearchFollowUpPromptPlaceholder": "您的网页搜索追问提示词"
             }
         }
-    }
+    },
+    "manageSearch": {
+        "heading": "配置网络搜索",
+        "title": "管理网络搜索"
+    },
+    "about": {
+        "title": "关于",
+        "heading": "关于",
+        "chromeVersion": "Page Assist版本",
+        "ollamaVersion": "Ollama版本",
+        "support": "您可以通过以下平台捐赠或赞助Page Assist项目:",
+        "koFi": "在Ko-fi上支持",
+        "githubSponsor": "在GitHub上赞助",
+        "githubRepo": "GitHub仓库"
+      }
 }

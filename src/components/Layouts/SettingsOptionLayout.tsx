@@ -1,12 +1,7 @@
-import {
-  Book,
-  BrainCircuit,
-  CircuitBoardIcon,
-  Orbit,
-  Share
-} from "lucide-react"
+import { Book, BrainCircuit, Orbit, Share, BlocksIcon , InfoIcon} from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { Link, useLocation } from "react-router-dom"
+import { OllamaIcon } from "../Icons/Ollama"
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ")
@@ -64,7 +59,7 @@ export const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
               <LinkComponent
                 href="/settings/ollama"
                 name={t("ollamaSettings.title")}
-                icon={CircuitBoardIcon}
+                icon={OllamaIcon}
                 current={location.pathname}
               />
               <LinkComponent
@@ -73,6 +68,12 @@ export const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
                 current={location.pathname}
                 icon={BrainCircuit}
               />
+               {/* <LinkComponent
+                href="/settings/knowledge"
+                name={t("manageKnowledge.title")}
+                icon={BlocksIcon}
+                current={location.pathname}
+              /> */}
               <LinkComponent
                 href="/settings/prompt"
                 name={t("managePrompts.title")}
@@ -83,6 +84,12 @@ export const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
                 href="/settings/share"
                 name={t("manageShare.title")}
                 icon={Share}
+                current={location.pathname}
+              />
+              <LinkComponent
+                href="/settings/about"
+                name={t("about.title")}
+                icon={InfoIcon}
                 current={location.pathname}
               />
             </ul>

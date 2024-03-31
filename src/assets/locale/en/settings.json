@@ -1,8 +1,8 @@
 {
     "generalSettings": {
         "title": "General Settings",
-        "heading": "Web UI Settings",
         "settings": {
+            "heading": "Web UI Settings",
             "speechRecognitionLang": {
                 "label": "Speech Recognition Language",
                 "placeholder": "Select a language"
@@ -17,14 +17,39 @@
                     "light": "Light",
                     "dark": "Dark"
                 }
-            },
+            }
+        },
+        "webSearch": {
+            "heading": "Manage Web Search",
             "searchMode": {
                 "label": "Perform Simple Internet Search"
             },
+            "provider": {
+                "label": "Search Engine",
+                "placeholder": "Select a search engine"
+            },
+            "totalSearchResults": {
+                "label": "Total Search Results",
+                "placeholder": "Enter Total Search Results"
+            }
+        },
+        "system": {
+            "heading": "System Settings",
             "deleteChatHistory": {
                 "label": "Delete Chat History",
                 "button": "Delete",
                 "confirm": "Are you sure you want to delete your chat history? This action cannot be undone."
+            },
+            "export": {
+                "label": "Export Chat History, Settings, and Prompts",
+                "button": "Export Data",
+                "success": "Export Success"
+            },
+            "import": {
+                "label": "Import Chat History, Settings, and Prompts",
+                "button": "Import Data",
+                "success": "Import Success",
+                "error": "Import Error"
             }
         }
     },
@@ -203,5 +228,19 @@
                 "webSearchFollowUpPromptPlaceholder": "Your Web Search Follow Up Prompt"
             }
         }
+    },
+    "manageSearch": {
+        "title": "Manage Web Search",
+        "heading": "Configure Web Search"
+    },
+    "about": {
+        "title": "About",
+        "heading": "About",
+        "chromeVersion": "Page Assist Version",
+        "ollamaVersion": "Ollama Version",
+        "support": "You can support the Page Assist project by donating or sponsoring through the following platforms:",
+        "koFi": "Support on Ko-fi",
+        "githubSponsor": "Sponsor on GitHub",
+        "githubRepo": "GitHub Repository"
     }
 }

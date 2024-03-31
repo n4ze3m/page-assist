@@ -153,7 +153,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
     }
   }
   return (
-    <div className="px-3 pt-3 md:px-6 md:pt-6 md:bg-white dark:bg-[#262626] border rounded-t-xl  dark:border-gray-600">
+    <div className="px-3 pt-3 md:px-6 md:pt-6 bg-gray-50 dark:bg-[#262626] border rounded-t-xl  dark:border-gray-600">
       <div
         className={`h-full rounded-md shadow relative ${
           form.values.image.length === 0 ? "hidden" : "block"
@@ -176,7 +176,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
         </div>
       </div>
       <div>
-        <div className="flex">
+        <div className="flex bg-white dark:bg-transparent">
           <form
             onSubmit={form.onSubmit(async (value) => {
               if (!selectedModel || selectedModel.length === 0) {

@@ -81,7 +81,8 @@ export default defineBackground({
         chrome.tabs.query({ active: true, currentWindow: true }, async (tabs) => {
           const tab = tabs[0]
           chrome.sidePanel.open({
-            tabId: tab.id!
+            // tabId: tab.id!,
+            windowId: tab.windowId!,
           })
         })
       } else if (message.type === "pull_model") {
@@ -113,7 +114,7 @@ export default defineBackground({
           chrome.tabs.query({ active: true, currentWindow: true }, async (tabs) => {
             const tab = tabs[0]
             chrome.sidePanel.open({
-              tabId: tab.id!
+              windowId: tab.windowId!
             })
           })
           break
@@ -133,7 +134,7 @@ export default defineBackground({
         chrome.tabs.query({ active: true, currentWindow: true }, async (tabs) => {
           const tab = tabs[0]
           await chrome.sidePanel.open({
-            tabId: tab.id!
+            windowId: tab.windowId!,
           })
         })
       }

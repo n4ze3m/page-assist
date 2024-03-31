@@ -1,14 +1,13 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { MemoryRouter } from "react-router-dom"
 import { SidepanelRouting } from "~/routes"
-import { ToastContainer } from "react-toastify"
-import "react-toastify/dist/ReactToastify.css"
 const queryClient = new QueryClient()
 import { ConfigProvider, Empty, theme } from "antd"
 import { StyleProvider } from "@ant-design/cssinjs"
 import { useDarkMode } from "~/hooks/useDarkmode"
 import "~/i18n"
 import { useTranslation } from "react-i18next"
+import { PageAssistProvider } from "@/components/Common/PageAssistProvider"
 
 function IndexSidepanel() {
   const { mode } = useDarkMode()
@@ -28,12 +27,12 @@ function IndexSidepanel() {
             }}
             description={t("common:noData")}
           />
-        )}
-        >
+        )}>
         <StyleProvider hashPriority="high">
           <QueryClientProvider client={queryClient}>
-            <SidepanelRouting />
-            <ToastContainer />
+            <PageAssistProvider>
+              <SidepanelRouting />
+            </PageAssistProvider>
           </QueryClientProvider>
         </StyleProvider>
       </ConfigProvider>

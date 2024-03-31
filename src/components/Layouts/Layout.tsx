@@ -18,6 +18,7 @@ import {
 import { getAllPrompts } from "~/libs/db"
 import { ShareBtn } from "~/components/Common/ShareBtn"
 import { useTranslation } from "react-i18next"
+import { OllamaIcon } from "../Icons/Ollama"
 
 export default function OptionLayout({
   children
@@ -73,7 +74,7 @@ export default function OptionLayout({
     <div>
       <div>
         <div className="flex flex-col">
-          <div className="sticky top-0 z-[999] flex h-16 p-3  bg-white border-b  dark:bg-[#171717] dark:border-gray-600">
+          <div className="sticky top-0 z-[999] flex h-16 p-3  bg-gray-50 border-b  dark:bg-[#171717] dark:border-gray-600">
             <div className="flex gap-2 items-center">
               {pathname !== "/" && (
                 <div>
@@ -94,7 +95,7 @@ export default function OptionLayout({
               <div>
                 <button
                   onClick={clearChat}
-                  className="inline-flex items-center rounded-lg border  dark:border-gray-700 bg-transparent px-3 py-3 text-sm font-medium leading-4 text-gray-800  dark:text-white disabled:opacity-50 ">
+                  className="inline-flex dark:bg-transparent bg-white items-center rounded-lg border  dark:border-gray-700 bg-transparent px-3 py-3 text-sm font-medium leading-4 text-gray-800  dark:text-white disabled:opacity-50 ease-in-out transition-colors duration-200 hover:bg-gray-100 dark:hover:bg-gray-800 dark:hover:text-white">
                   <SquarePen className="h-4 w-4 mr-3" />
                   {t("newChat")}
                 </button>
@@ -109,16 +110,22 @@ export default function OptionLayout({
                   size="large"
                   loading={isModelsLoading || isModelsFetching}
                   filterOption={(input, option) =>
-                    option!.label.toLowerCase().indexOf(input.toLowerCase()) >=
-                      0 ||
-                    option!.value.toLowerCase().indexOf(input.toLowerCase()) >=
-                      0
+                    option.label.key
+                      .toLowerCase()
+                      .indexOf(input.toLowerCase()) >= 0
                   }
                   showSearch
                   placeholder={t("common:selectAModel")}
                   className="w-64 "
                   options={models?.map((model) => ({
-                    label: model.name,
+                    label: (
+                      <span
+                        key={model.model}
+                        className="flex flex-row gap-3 items-center">
+                        <OllamaIcon className="w-5 h-5" />
+                        {model.name}
+                      </span>
+                    ),
                     value: model.model
                   }))}
                 />
@@ -146,13 +153,13 @@ export default function OptionLayout({
                     label: (
                       <span
                         key={prompt.title}
-                        className="flex flex-row justify-between items-center">
-                        {prompt.title}
+                        className="flex flex-row gap-3 items-center">
                         {prompt.is_system ? (
                           <ComputerIcon className="w-4 h-4" />
                         ) : (
                           <ZapIcon className="w-4 h-4" />
                         )}
+                        {prompt.title}
                       </span>
                     ),
                     value: prompt.id
@@ -166,8 +173,7 @@ export default function OptionLayout({
                   {pathname === "/" && messages.length > 0 && !streaming && (
                     <ShareBtn messages={messages} />
                   )}
-                  <Tooltip title={t("githubRepository")}
-                  >
+                  <Tooltip title={t("githubRepository")}>
                     <a
                       href="https://github.com/n4ze3m/page-assist"
                       target="_blank"
@@ -175,8 +181,7 @@ export default function OptionLayout({
                       <GithubIcon className="w-6 h-6" />
                     </a>
                   </Tooltip>
-                  <Tooltip title={t("settings")}
-                  >
+                  <Tooltip title={t("settings")}>
                     <NavLink
                       to="/settings"
                       className="!text-gray-500 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
