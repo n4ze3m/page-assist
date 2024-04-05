@@ -15,7 +15,7 @@ import {
   SquarePen,
   ZapIcon
 } from "lucide-react"
-import { getAllPrompts } from "~/libs/db"
+import { getAllPrompts } from "@/db"
 import { ShareBtn } from "~/components/Common/ShareBtn"
 import { useTranslation } from "react-i18next"
 import { OllamaIcon } from "../Icons/Ollama"

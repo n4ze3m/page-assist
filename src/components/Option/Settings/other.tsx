@@ -1,7 +1,7 @@
 import { useQueryClient } from "@tanstack/react-query"
 import { useDarkMode } from "~/hooks/useDarkmode"
 import { useMessageOption } from "~/hooks/useMessageOption"
-import { PageAssitDatabase } from "~/libs/db"
+import { PageAssitDatabase } from "@/db"
 import { Select } from "antd"
 import { SUPPORTED_LANGUAGES } from "~/utils/supporetd-languages"
 import { MoonIcon, SunIcon } from "lucide-react"

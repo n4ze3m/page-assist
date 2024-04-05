@@ -21,7 +21,8 @@
         "searchInternet": "搜索互联网",
         "speechToText": "语音到文本",
         "uploadImage": "上传图片",
-        "stopStreaming": "停止流媒体"
+        "stopStreaming": "停止流媒体",
+        "knowledge": "知识"
     },
     "sendWhenEnter": "按Enter发送"
 }

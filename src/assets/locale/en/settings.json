@@ -242,5 +242,9 @@
         "koFi": "Support on Ko-fi",
         "githubSponsor": "Sponsor on GitHub",
         "githubRepo": "GitHub Repository"
+    },
+    "manageKnowledge": {
+        "title": "Manage Knowledge",
+        "heading": "Configure Knowledge Base"
     }
 }

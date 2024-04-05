@@ -68,12 +68,12 @@ export const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
                 current={location.pathname}
                 icon={BrainCircuit}
               />
-               {/* <LinkComponent
+               <LinkComponent
                 href="/settings/knowledge"
                 name={t("manageKnowledge.title")}
                 icon={BlocksIcon}
                 current={location.pathname}
-              /> */}
+              />
               <LinkComponent
                 href="/settings/prompt"
                 name={t("managePrompts.title")}

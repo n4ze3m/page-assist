@@ -4,7 +4,7 @@ import React from "react"
 import useDynamicTextareaSize from "~/hooks/useDynamicTextareaSize"
 import { toBase64 } from "~/libs/to-base64"
 import { useMessageOption } from "~/hooks/useMessageOption"
-import { Checkbox, Dropdown, Switch, Tooltip } from "antd"
+import { Checkbox, Dropdown, Select, Switch, Tooltip } from "antd"
 import { Image } from "antd"
 import { useSpeechRecognition } from "~/hooks/useSpeechRecognition"
 import { useWebUI } from "~/store/webui"
@@ -12,6 +12,7 @@ import { defaultEmbeddingModelForRag } from "~/services/ollama"
 import { ImageIcon, MicIcon, StopCircleIcon, X } from "lucide-react"
 import { getVariable } from "~/utils/select-varaible"
 import { useTranslation } from "react-i18next"
+import { KnowledgeSelect } from "../Knowledge/KnowledgeSelect"
 
 type Props = {
   dropedFile: File | undefined
@@ -249,6 +250,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                   </Tooltip>
                 </div>
                 <div className="flex !justify-end gap-3">
+                  <KnowledgeSelect />
                   <Tooltip title={t("tooltip.speechToText")}>
                     <button
                       type="button"
@@ -273,6 +275,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                       )}
                     </button>
                   </Tooltip>
+
                   <Tooltip title={t("tooltip.uploadImage")}>
                     <button
                       type="button"
@@ -284,7 +287,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                       }`}>
                       <ImageIcon className="h-5 w-5" />
                     </button>
-                  </Tooltip> 
+                  </Tooltip>
                   {!isSending ? (
                     <Dropdown.Button
                       htmlType="submit"

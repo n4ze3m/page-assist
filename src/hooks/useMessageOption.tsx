@@ -15,7 +15,7 @@ import {
   getPromptById,
   removeMessageUsingHistoryId,
   updateMessageByIndex
-} from "~/libs/db"
+} from "@/db"
 import { useNavigate } from "react-router-dom"
 import { notification } from "antd"
 import { getSystemPromptForWeb } from "~/web/web"

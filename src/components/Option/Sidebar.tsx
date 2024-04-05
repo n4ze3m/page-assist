@@ -5,7 +5,7 @@ import {
   formatToMessage,
   deleteByHistoryId,
   updateHistory
-} from "~/libs/db"
+} from "@/db"
 import { Empty, Skeleton } from "antd"
 import { useMessageOption } from "~/hooks/useMessageOption"
 import { PencilIcon, Trash2 } from "lucide-react"

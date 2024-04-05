@@ -1,28 +1,4 @@
-import { pdfDist } from "./pdfjs"
-
-export const getPdf = async (data: ArrayBuffer) => {
-  const pdf = pdfDist.getDocument({
-    data,
-    useWorkerFetch: false,
-    isEvalSupported: false,
-    useSystemFonts: true,
-  });
-
-  pdf.onPassword = (callback: any) => {
-    const password = prompt("Enter the password: ")
-    if (!password) {
-      throw new Error("Password required to open the PDF.");
-    }
-    callback(password);
-  };
-
-
-  const pdfDocument = await pdf.promise;
-
-
-  return pdfDocument
-
-}
+import { getPdf } from "./pdf"
 
 const _getHtml = async () => {
   const url = window.location.href
