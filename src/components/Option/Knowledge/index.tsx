@@ -1,19 +1,21 @@
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
 import { AddKnowledge } from "./AddKnowledge"
-import {
-  useMutation,
-  useQuery,
-  useQueryClient
-} from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { deleteKnowledge, getAllKnowledge } from "@/db/knowledge"
 import { Skeleton, Table, Tag, Tooltip, message } from "antd"
 import { Trash2 } from "lucide-react"
+import { KnowledgeIcon } from "./KnowledgeIcon"
+import { useMessageOption } from "@/hooks/useMessageOption"
 
 export const KnowledgeSettings = () => {
   const { t } = useTranslation(["knownledge", "common"])
   const [open, setOpen] = useState(false)
   const queryClient = useQueryClient()
+  const {
+    selectedKnowledge,
+    setSelectedKnowledge
+  } = useMessageOption()
 
   const { data, status } = useQuery({
     queryKey: ["fetchAllKnowledge"],
@@ -91,6 +93,9 @@ export const KnowledgeSettings = () => {
                         onClick={() => {
                           if (window.confirm(t("confirm.delete"))) {
                             deleteKnowledgeMutation(record.id)
+                            if(selectedKnowledge.id === record.id) {
+                              setSelectedKnowledge(null)
+                            }
                           }
                         }}
                         className="text-red-500 dark:text-red-400">
@@ -110,11 +115,6 @@ export const KnowledgeSettings = () => {
                       title: t("expandedColumns.name"),
                       key: "filename",
                       dataIndex: "filename"
-                    },
-                    {
-                      title: t("expandedColumns.type"),
-                      key: "type",
-                      dataIndex: "type"
                     }
                   ]}
                   dataSource={record.source}

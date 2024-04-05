@@ -1,4 +1,5 @@
 import { getAllKnowledge } from "@/db/knowledge"
+import { useMessageOption } from "@/hooks/useMessageOption"
 import { useQuery } from "@tanstack/react-query"
 import { Dropdown, Tooltip } from "antd"
 import { Blocks } from "lucide-react"
@@ -7,6 +8,7 @@ import { useTranslation } from "react-i18next"
 
 export const KnowledgeSelect: React.FC = () => {
   const { t } = useTranslation("playground")
+  const { setSelectedKnowledge, selectedKnowledge } = useMessageOption()
   const { data } = useQuery({
     queryKey: ["getAllKnowledge"],
     queryFn: async () => {
@@ -30,14 +32,21 @@ export const KnowledgeSelect: React.FC = () => {
                 {d.title}
               </div>
             ),
-            onClick: () => {}
+            onClick: () => {
+              const knowledge = data?.find((k) => k.id === d.id)
+              if (selectedKnowledge?.id === d.id) {
+                setSelectedKnowledge(null)
+              } else {
+                setSelectedKnowledge(knowledge)
+              }
+            }
           })) || [],
         style: {
           maxHeight: 500,
           overflowY: "scroll"
         },
-        // hidescrollbars: true
-        className: "no-scrollbar"
+        className: "no-scrollbar",
+        activeKey: selectedKnowledge?.id
       }}
       placement={"topLeft"}
       trigger={["click"]}>

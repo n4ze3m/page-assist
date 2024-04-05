@@ -13,6 +13,7 @@ import { ImageIcon, MicIcon, StopCircleIcon, X } from "lucide-react"
 import { getVariable } from "~/utils/select-varaible"
 import { useTranslation } from "react-i18next"
 import { KnowledgeSelect } from "../Knowledge/KnowledgeSelect"
+import { SelectedKnowledge } from "../Knowledge/SelectedKnwledge"
 
 type Props = {
   dropedFile: File | undefined
@@ -33,7 +34,9 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
     setWebSearch,
     selectedQuickPrompt,
     textareaRef,
-    setSelectedQuickPrompt
+    setSelectedQuickPrompt,
+    selectedKnowledge,
+    setSelectedKnowledge
   } = useMessageOption()
 
   const textAreaFocus = () => {
@@ -155,6 +158,14 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
   }
   return (
     <div className="px-3 pt-3 md:px-6 md:pt-6 bg-gray-50 dark:bg-[#262626] border rounded-t-xl  dark:border-gray-600">
+      {selectedKnowledge && (
+        <SelectedKnowledge
+          onClose={() => {
+            setSelectedKnowledge(null)
+          }}
+          knowledge={selectedKnowledge}
+        />
+      )}
       <div
         className={`h-full rounded-md shadow relative ${
           form.values.image.length === 0 ? "hidden" : "block"
@@ -225,29 +236,31 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
               />
               <div className="mt-4 flex justify-between items-center">
                 <div className="flex">
-                  <Tooltip title={t("tooltip.searchInternet")}>
-                    <div className="inline-flex items-center gap-2">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={1.5}
-                        stroke="currentColor"
-                        className="w-5 h-5 dark:text-gray-300">
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418"
+                  {!selectedKnowledge && (
+                    <Tooltip title={t("tooltip.searchInternet")}>
+                      <div className="inline-flex items-center gap-2">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth={1.5}
+                          stroke="currentColor"
+                          className="w-5 h-5 dark:text-gray-300">
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418"
+                          />
+                        </svg>
+                        <Switch
+                          value={webSearch}
+                          onChange={(e) => setWebSearch(e)}
+                          checkedChildren={t("form.webSearch.on")}
+                          unCheckedChildren={t("form.webSearch.off")}
                         />
-                      </svg>
-                      <Switch
-                        value={webSearch}
-                        onChange={(e) => setWebSearch(e)}
-                        checkedChildren={t("form.webSearch.on")}
-                        unCheckedChildren={t("form.webSearch.off")}
-                      />
-                    </div>
-                  </Tooltip>
+                      </div>
+                    </Tooltip>
+                  )}
                 </div>
                 <div className="flex !justify-end gap-3">
                   <KnowledgeSelect />
@@ -276,18 +289,20 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                     </button>
                   </Tooltip>
 
-                  <Tooltip title={t("tooltip.uploadImage")}>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        inputRef.current?.click()
-                      }}
-                      className={`flex items-center justify-center dark:text-gray-300 ${
-                        chatMode === "rag" ? "hidden" : "block"
-                      }`}>
-                      <ImageIcon className="h-5 w-5" />
-                    </button>
-                  </Tooltip>
+                  {!selectedKnowledge && (
+                    <Tooltip title={t("tooltip.uploadImage")}>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          inputRef.current?.click()
+                        }}
+                        className={`flex items-center justify-center dark:text-gray-300 ${
+                          chatMode === "rag" ? "hidden" : "block"
+                        }`}>
+                        <ImageIcon className="h-5 w-5" />
+                      </button>
+                    </Tooltip>
+                  )}
                   {!isSending ? (
                     <Dropdown.Button
                       htmlType="submit"

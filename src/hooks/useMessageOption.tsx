@@ -29,7 +29,7 @@ export const useMessageOption = () => {
     controller: abortController,
     setController: setAbortController,
     messages,
-    setMessages
+    setMessages,
   } = usePageAssist()
   const {
     history,
@@ -56,7 +56,9 @@ export const useMessageOption = () => {
     selectedQuickPrompt,
     setSelectedQuickPrompt,
     selectedSystemPrompt,
-    setSelectedSystemPrompt
+    setSelectedSystemPrompt,
+    selectedKnowledge,
+    setSelectedKnowledge
   } = useStoreMessageOption()
 
   const { t } = useTranslation("option")
@@ -664,6 +666,8 @@ export const useMessageOption = () => {
     setSelectedQuickPrompt,
     selectedSystemPrompt,
     setSelectedSystemPrompt,
-    textareaRef
+    textareaRef,
+    selectedKnowledge,
+    setSelectedKnowledge
   }
 }
