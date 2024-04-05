@@ -28,8 +28,8 @@ export class PageAssistVectorDb {
         } else {
           const data = result[id] as VectorData
           if (!data) {
-            console.log("Creating new vector")
-            this.db.set({ [id]: { id, vectors: [vector] } }, () => {
+            console.log("Creating new vector", vector)
+            this.db.set({ [id]: { id, vectors: vector } }, () => {
               if (chrome.runtime.lastError) {
                 reject(chrome.runtime.lastError)
               } else {

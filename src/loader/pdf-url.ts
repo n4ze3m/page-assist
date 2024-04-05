@@ -40,7 +40,7 @@ export class PageAssistPDFUrlLoader
         .trim()
       documents.push({
         pageContent: text,
-        metadata: { source: this.name, page: i }
+        metadata: { source: this.name, page: i, type: "pdf" }
       })
     }
 

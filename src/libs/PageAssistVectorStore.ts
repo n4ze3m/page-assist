@@ -3,6 +3,7 @@ import { VectorStore } from "@langchain/core/vectorstores"
 import type { EmbeddingsInterface } from "@langchain/core/embeddings"
 import { Document } from "@langchain/core/documents"
 import { getVector, insertVector } from "@/db/vector"
+import { cp } from "fs"
 
 /**
  * Interface representing a vector in memory. It includes the content
@@ -116,8 +117,10 @@ export class PageAssistVectorStore extends VectorStore {
       })
       return filter(doc)
     }
-    const pgVector = await getVector(`vector:${this.knownledge_id}`)
-    const filteredMemoryVectors = pgVector.vectors.filter(filterFunction)
+    const data = await getVector(`vector:${this.knownledge_id}`)
+    const pgVector = [...data.vectors]
+    const filteredMemoryVectors = pgVector.filter(filterFunction)
+    console.log(filteredMemoryVectors)
     const searches = filteredMemoryVectors
       .map((vector, index) => ({
         similarity: this.similarity(query, vector.embedding),
@@ -125,7 +128,7 @@ export class PageAssistVectorStore extends VectorStore {
       }))
       .sort((a, b) => (a.similarity > b.similarity ? -1 : 0))
       .slice(0, k)
-
+    console.log(searches)
     const result: [Document, number][] = searches.map((search) => [
       new Document({
         metadata: filteredMemoryVectors[search.index].metadata,
@@ -133,7 +136,7 @@ export class PageAssistVectorStore extends VectorStore {
       }),
       search.similarity
     ])
-
+    console.log(result)
     return result
   }
 

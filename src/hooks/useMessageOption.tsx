@@ -1,8 +1,10 @@
 import React from "react"
 import { cleanUrl } from "~/libs/clean-url"
 import {
+  defaultEmbeddingModelForRag,
   geWebSearchFollowUpPrompt,
   getOllamaURL,
+  promptForRag,
   systemPromptForNonRagOption
 } from "~/services/ollama"
 import { type ChatHistory, type Message } from "~/store/option"
@@ -23,13 +25,16 @@ import { generateHistory } from "@/utils/generate-history"
 import { useTranslation } from "react-i18next"
 import { saveMessageOnError, saveMessageOnSuccess } from "./chat-helper"
 import { usePageAssist } from "@/context"
+import { OllamaEmbeddings } from "@langchain/community/embeddings/ollama"
+import { PageAssistVectorStore } from "@/libs/PageAssistVectorStore"
+import { formatDocs } from "@/chain/chat-with-x"
 
 export const useMessageOption = () => {
   const {
     controller: abortController,
     setController: setAbortController,
     messages,
-    setMessages,
+    setMessages
   } = usePageAssist()
   const {
     history,
@@ -502,6 +507,213 @@ export const useMessageOption = () => {
     }
   }
 
+  const ragMode = async (
+    message: string,
+    image: string,
+    isRegenerate: boolean,
+    messages: Message[],
+    history: ChatHistory,
+    signal: AbortSignal
+  ) => {
+    const url = await getOllamaURL()
+
+    const ollama = new ChatOllama({
+      model: selectedModel!,
+      baseUrl: cleanUrl(url)
+    })
+
+    let newMessage: Message[] = []
+    let generateMessageId = generateID()
+
+    if (!isRegenerate) {
+      newMessage = [
+        ...messages,
+        {
+          isBot: false,
+          name: "You",
+          message,
+          sources: [],
+          images: []
+        },
+        {
+          isBot: true,
+          name: selectedModel,
+          message: "▋",
+          sources: [],
+          id: generateMessageId
+        }
+      ]
+    } else {
+      newMessage = [
+        ...messages,
+        {
+          isBot: true,
+          name: selectedModel,
+          message: "▋",
+          sources: [],
+          id: generateMessageId
+        }
+      ]
+    }
+    setMessages(newMessage)
+    let fullText = ""
+    let contentToSave = ""
+
+    const embeddingModle = await defaultEmbeddingModelForRag()
+    const ollamaUrl = await getOllamaURL()
+    const ollamaEmbedding = new OllamaEmbeddings({
+      model: embeddingModle || selectedModel,
+      baseUrl: cleanUrl(ollamaUrl)
+    })
+
+    let vectorstore = await PageAssistVectorStore.fromExistingIndex(
+      ollamaEmbedding,
+      {
+        file_id: null,
+        knownledge_id: selectedKnowledge.id
+      }
+    )
+
+    try {
+      let query = message
+      const { ragPrompt: systemPrompt, ragQuestionPrompt: questionPrompt } =
+        await promptForRag()
+      if (newMessage.length > 2) {
+        const lastTenMessages = newMessage.slice(-10)
+        lastTenMessages.pop()
+        const chat_history = lastTenMessages
+          .map((message) => {
+            return `${message.isBot ? "Assistant: " : "Human: "}${message.message}`
+          })
+          .join("\n")
+        const promptForQuestion = questionPrompt
+          .replaceAll("{chat_history}", chat_history)
+          .replaceAll("{question}", message)
+        const questionOllama = new ChatOllama({
+          model: selectedModel!,
+          baseUrl: cleanUrl(url)
+        })
+        const response = await questionOllama.invoke(promptForQuestion)
+        query = response.content.toString()
+      }
+
+      const docs = await vectorstore.similaritySearch(query, 4)
+      const context = formatDocs(docs)
+      const source = docs.map((doc) => {
+        return {
+          name: doc?.metadata?.source || "untitled",
+          type: doc?.metadata?.type || "unknown",
+          url: ""
+        }
+      })
+      message = message.trim().replaceAll("\n", " ")
+
+      let humanMessage = new HumanMessage({
+        content: [
+          {
+            text: systemPrompt
+              .replace("{context}", context)
+              .replace("{question}", message),
+            type: "text"
+          }
+        ]
+      })
+
+      const applicationChatHistory = generateHistory(history)
+
+      const chunks = await ollama.stream(
+        [...applicationChatHistory, humanMessage],
+        {
+          signal: signal
+        }
+      )
+      let count = 0
+      for await (const chunk of chunks) {
+        contentToSave += chunk.content
+        fullText += chunk.content
+        if (count === 0) {
+          setIsProcessing(true)
+        }
+        setMessages((prev) => {
+          return prev.map((message) => {
+            if (message.id === generateMessageId) {
+              return {
+                ...message,
+                message: fullText.slice(0, -1) + "▋"
+              }
+            }
+            return message
+          })
+        })
+        count++
+      }
+      // update the message with the full text
+      setMessages((prev) => {
+        return prev.map((message) => {
+          if (message.id === generateMessageId) {
+            return {
+              ...message,
+              message: fullText,
+              sources: source
+            }
+          }
+          return message
+        })
+      })
+
+      setHistory([
+        ...history,
+        {
+          role: "user",
+          content: message,
+          image
+        },
+        {
+          role: "assistant",
+          content: fullText
+        }
+      ])
+
+      await saveMessageOnSuccess({
+        historyId,
+        setHistoryId,
+        isRegenerate,
+        selectedModel: selectedModel,
+        message,
+        image,
+        fullText,
+        source
+      })
+
+      setIsProcessing(false)
+      setStreaming(false)
+    } catch (e) {
+      const errorSave = await saveMessageOnError({
+        e,
+        botMessage: fullText,
+        history,
+        historyId,
+        image,
+        selectedModel,
+        setHistory,
+        setHistoryId,
+        userMessage: message,
+        isRegenerating: isRegenerate
+      })
+
+      if (!errorSave) {
+        notification.error({
+          message: t("error"),
+          description: e?.message || t("somethingWentWrong")
+        })
+      }
+      setIsProcessing(false)
+      setStreaming(false)
+    } finally {
+      setAbortController(null)
+    }
+  }
+
   const onSubmit = async ({
     message,
     image,
@@ -527,8 +739,8 @@ export const useMessageOption = () => {
       setAbortController(controller)
       signal = controller.signal
     }
-    if (webSearch) {
-      await searchChatMode(
+    if (selectedKnowledge) {
+      await ragMode(
         message,
         image,
         isRegenerate,
@@ -537,14 +749,25 @@ export const useMessageOption = () => {
         signal
       )
     } else {
-      await normalChatMode(
-        message,
-        image,
-        isRegenerate,
-        chatHistory || messages,
-        memory || history,
-        signal
-      )
+      if (webSearch) {
+        await searchChatMode(
+          message,
+          image,
+          isRegenerate,
+          chatHistory || messages,
+          memory || history,
+          signal
+        )
+      } else {
+        await normalChatMode(
+          message,
+          image,
+          isRegenerate,
+          chatHistory || messages,
+          memory || history,
+          signal
+        )
+      }
     }
   }
 

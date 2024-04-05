@@ -12,7 +12,7 @@ export const SelectedKnowledge = ({ knowledge, onClose }: Props) => {
     <div className="mb-3 border flex justify-between items-center rounded-md p-2 dark:border-gray-600">
       <div className="flex flex-col gap-2">
         <div>
-          <h3 className="text-lg font-semibold dark:text-gray-100">
+          <h3 className="text-sm font-semibold dark:text-gray-100">
             {knowledge.title}
           </h3>
         </div>
@@ -20,7 +20,7 @@ export const SelectedKnowledge = ({ knowledge, onClose }: Props) => {
           {knowledge.source.map((source, index) => (
             <div
               key={index}
-              className="inline-flex gap-2 border rounded-md p-1 dark:border-gray-600 dark:text-gray-100">
+              className="inline-flex gap-2 text-xs border rounded-md p-1 dark:border-gray-600 dark:text-gray-100">
               <KnowledgeIcon type={source.type} className="w-4 h-4" />
               {source.filename}
             </div>

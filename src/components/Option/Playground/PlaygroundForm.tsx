@@ -158,14 +158,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
   }
   return (
     <div className="px-3 pt-3 md:px-6 md:pt-6 bg-gray-50 dark:bg-[#262626] border rounded-t-xl  dark:border-gray-600">
-      {selectedKnowledge && (
-        <SelectedKnowledge
-          onClose={() => {
-            setSelectedKnowledge(null)
-          }}
-          knowledge={selectedKnowledge}
-        />
-      )}
+    
       <div
         className={`h-full rounded-md shadow relative ${
           form.values.image.length === 0 ? "hidden" : "block"
