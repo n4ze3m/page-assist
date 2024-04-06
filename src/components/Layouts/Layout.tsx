@@ -19,6 +19,7 @@ import { getAllPrompts } from "@/db"
 import { ShareBtn } from "~/components/Common/ShareBtn"
 import { useTranslation } from "react-i18next"
 import { OllamaIcon } from "../Icons/Ollama"
+import { SelectedKnowledge } from "../Option/Knowledge/SelectedKnwledge"
 
 export default function OptionLayout({
   children
@@ -166,6 +167,7 @@ export default function OptionLayout({
                   }))}
                 />
               </div>
+              <SelectedKnowledge />
             </div>
             <div className="flex flex-1 justify-end px-4">
               <div className="ml-4 flex items-center md:ml-6">

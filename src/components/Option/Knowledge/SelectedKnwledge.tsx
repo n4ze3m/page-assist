@@ -1,38 +1,31 @@
-import { Knowledge } from "@/db/knowledge"
-import { XIcon } from "lucide-react"
-import { KnowledgeIcon } from "./KnowledgeIcon"
+import { Blocks, XIcon } from "lucide-react"
+import { useMessageOption } from "@/hooks/useMessageOption"
 
-type Props = {
-  knowledge: Knowledge
-  onClose: () => void
-}
+export const SelectedKnowledge = () => {
+  const { selectedKnowledge: knowledge, setSelectedKnowledge } =
+    useMessageOption()
 
-export const SelectedKnowledge = ({ knowledge, onClose }: Props) => {
+  if (!knowledge) return <></>
+
   return (
-    <div className="mb-3 border flex justify-between items-center rounded-md p-2 dark:border-gray-600">
-      <div className="flex flex-col gap-2">
-        <div>
-          <h3 className="text-sm font-semibold dark:text-gray-100">
+    <div className="flex flex-row items-center gap-3">
+      <span className="text-lg font-thin text-zinc-300 dark:text-zinc-600">
+        {"/"}
+      </span>
+      <div className="border flex justify-between items-center rounded-md p-1 gap-2 bg-gray-100 dark:bg-gray-800 dark:border-gray-700">
+        <div className="inline-flex items-center gap-2">
+          <Blocks className="h-6 w-6 text-gray-400" />
+          <span className="text-xs font-semibold dark:text-gray-100">
             {knowledge.title}
-          </h3>
+          </span>
         </div>
-        <div className="flex flex-row overflow-x-auto gap-2 w-full">
-          {knowledge.source.map((source, index) => (
-            <div
-              key={index}
-              className="inline-flex gap-2 text-xs border rounded-md p-1 dark:border-gray-600 dark:text-gray-100">
-              <KnowledgeIcon type={source.type} className="w-4 h-4" />
-              {source.filename}
-            </div>
-          ))}
+        <div>
+          <button
+            onClick={() => setSelectedKnowledge(null)}
+            className="flex items-center justify-center   bg-white  dark:bg-[#262626] p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-600 text-black dark:text-gray-100">
+            <XIcon className="h-3 w-3" />
+          </button>
         </div>
-      </div>
-      <div>
-        <button
-          onClick={onClose}
-          className="flex items-center justify-center   bg-white  dark:bg-[#262626] p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-600 text-black dark:text-gray-100">
-          <XIcon className="h-5 w-5" />
-        </button>
       </div>
     </div>
   )

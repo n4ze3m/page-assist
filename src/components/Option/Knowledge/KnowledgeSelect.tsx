@@ -19,42 +19,46 @@ export const KnowledgeSelect: React.FC = () => {
   })
 
   return (
-    <Dropdown
-      menu={{
-        items:
-          data?.map((d) => ({
-            key: d.id,
-            label: (
-              <div className="w-52 gap-2 text-lg truncate inline-flex line-clamp-3  items-center  dark:border-gray-700">
-                <div>
-                  <Blocks className="h-6 w-6 text-gray-400" />
-                </div>
-                {d.title}
-              </div>
-            ),
-            onClick: () => {
-              const knowledge = data?.find((k) => k.id === d.id)
-              if (selectedKnowledge?.id === d.id) {
-                setSelectedKnowledge(null)
-              } else {
-                setSelectedKnowledge(knowledge)
-              }
-            }
-          })) || [],
-        style: {
-          maxHeight: 500,
-          overflowY: "scroll"
-        },
-        className: "no-scrollbar",
-        activeKey: selectedKnowledge?.id
-      }}
-      placement={"topLeft"}
-      trigger={["click"]}>
-      <Tooltip title={t("tooltip.knowledge")}>
-        <button type="button" className="dark:text-gray-300">
-          <Blocks className="h-6 w-6" />
-        </button>
-      </Tooltip>
-    </Dropdown>
+    <>
+      {data && data.length > 0 && (
+        <Dropdown
+          menu={{
+            items:
+              data?.map((d) => ({
+                key: d.id,
+                label: (
+                  <div className="w-52 gap-2 text-lg truncate inline-flex line-clamp-3  items-center  dark:border-gray-700">
+                    <div>
+                      <Blocks className="h-6 w-6 text-gray-400" />
+                    </div>
+                    {d.title}
+                  </div>
+                ),
+                onClick: () => {
+                  const knowledge = data?.find((k) => k.id === d.id)
+                  if (selectedKnowledge?.id === d.id) {
+                    setSelectedKnowledge(null)
+                  } else {
+                    setSelectedKnowledge(knowledge)
+                  }
+                }
+              })) || [],
+            style: {
+              maxHeight: 500,
+              overflowY: "scroll"
+            },
+            className: "no-scrollbar",
+            activeKey: selectedKnowledge?.id
+          }}
+          placement={"topLeft"}
+          trigger={["click"]}>
+          <Tooltip title={t("tooltip.knowledge")}>
+            <button type="button" className="dark:text-gray-300">
+              <Blocks className="h-6 w-6" />
+            </button>
+          </Tooltip>
+        </Dropdown>
+      )}
+    </>
   )
 }
