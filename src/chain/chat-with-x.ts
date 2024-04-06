@@ -27,6 +27,10 @@ const formatChatHistoryAsString = (history: BaseMessage[]) => {
 
 export const formatDocs = (docs: Document[]) => {
   return docs
+    .filter(
+      (doc, i, self) =>
+        self.findIndex((d) => d.pageContent === doc.pageContent) === i
+    )
     .map((doc, i) => `<doc id='${i}'>${doc.pageContent}</doc>`)
     .join("\n")
 }
@@ -145,7 +149,7 @@ export const createChatWithXChain = ({
         runName: "Itemgetter:question"
       }),
       chat_history: RunnableLambda.from(serializeHistory).withConfig({
-        runName: "SerializeHistory",
+        runName: "SerializeHistory"
       })
     },
     context,

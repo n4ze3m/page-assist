@@ -32,7 +32,7 @@ export class PageAssisTXTUrlLoader
     const raw = await res.text()
 
     const parsed = await this.parse(raw)
-    let metadata = { source: this.name, type: "csv" }
+    let metadata = { source: this.name, type: "txt" }
     parsed.forEach((pageContent, i) => {
       if (typeof pageContent !== "string") {
         throw new Error(

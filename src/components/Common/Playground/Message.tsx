@@ -5,6 +5,7 @@ import { WebSearch } from "./WebSearch"
 import { CheckIcon, ClipboardIcon, Pen, RotateCcw } from "lucide-react"
 import { EditMessageForm } from "./EditMessageForm"
 import { useTranslation } from "react-i18next"
+import { MessageSource } from "./MessageSource"
 
 type Props = {
   message: string
@@ -23,6 +24,7 @@ type Props = {
   isSearchingInternet?: boolean
   sources?: any[]
   hideEditAndRegenerate?: boolean
+  onSourceClick?: (source: any) => void
 }
 
 export const PlaygroundMessage = (props: Props) => {
@@ -95,13 +97,9 @@ export const PlaygroundMessage = (props: Props) => {
             {props.isBot && props?.sources && props?.sources.length > 0 && (
               <div className="mb-3 flex flex-wrap gap-2">
                 {props?.sources?.map((source, index) => (
-                  <a
-                    key={index}
-                    href={source?.url}
-                    target="_blank"
-                    className="inline-flex cursor-pointer transition-shadow duration-300 ease-in-out hover:shadow-lg  items-center rounded-md bg-gray-100 p-1 text-xs text-gray-800 border border-gray-300 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100 opacity-80 hover:opacity-100">
-                    <span className="text-xs">{source.name}</span>
-                  </a>
+                  <MessageSource
+                  onSourceClick={props.onSourceClick}
+                  key={index} source={source} />
                 ))}
               </div>
             )}

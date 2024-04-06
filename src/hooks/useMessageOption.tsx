@@ -601,8 +601,10 @@ export const useMessageOption = () => {
       const context = formatDocs(docs)
       const source = docs.map((doc) => {
         return {
+          ...doc,
           name: doc?.metadata?.source || "untitled",
           type: doc?.metadata?.type || "unknown",
+          mode: "rag",
           url: ""
         }
       })

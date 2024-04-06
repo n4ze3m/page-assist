@@ -136,7 +136,6 @@ export class PageAssistVectorStore extends VectorStore {
       }),
       search.similarity
     ])
-    console.log(result)
     return result
   }
 
