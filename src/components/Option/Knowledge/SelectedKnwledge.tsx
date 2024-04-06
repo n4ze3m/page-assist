@@ -12,9 +12,9 @@ export const SelectedKnowledge = () => {
       <span className="text-lg font-thin text-zinc-300 dark:text-zinc-600">
         {"/"}
       </span>
-      <div className="border flex justify-between items-center rounded-md p-1 gap-2 bg-gray-100 dark:bg-gray-800 dark:border-gray-700">
+      <div className="border flex justify-between items-center rounded-full px-2 py-1 gap-2 bg-gray-100 dark:bg-slate-800 dark:border-slate-700">
         <div className="inline-flex items-center gap-2">
-          <Blocks className="h-6 w-6 text-gray-400" />
+          <Blocks className="h-5 w-5 text-gray-400" />
           <span className="text-xs font-semibold dark:text-gray-100">
             {knowledge.title}
           </span>

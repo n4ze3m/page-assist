@@ -29,6 +29,7 @@
     "antd": "^5.13.3",
     "axios": "^1.6.7",
     "cheerio": "^1.0.0-rc.12",
+    "d3-dsv": "2",
     "dayjs": "^1.11.10",
     "html-to-text": "^9.0.5",
     "i18next": "^23.10.1",
@@ -55,6 +56,7 @@
   "devDependencies": {
     "@plasmohq/prettier-plugin-sort-imports": "4.0.1",
     "@types/chrome": "0.0.259",
+    "@types/d3-dsv": "^3.0.7",
     "@types/html-to-text": "^9.0.4",
     "@types/node": "20.11.9",
     "@types/pubsub-js": "^1.8.6",

@@ -7,6 +7,8 @@ import {
 import { OllamaEmbeddings } from "@langchain/community/embeddings/ollama"
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter"
 import { PageAssistVectorStore } from "./PageAssistVectorStore"
+import { PageAssisCSVUrlLoader } from "@/loader/csv"
+import { PageAssisTXTUrlLoader } from "@/loader/txt"
 
 export const processKnowledge = async (msg: any, id: string): Promise<void> => {
   console.log(`Processing knowledge with id: ${id}`)
@@ -38,6 +40,34 @@ export const processKnowledge = async (msg: any, id: string): Promise<void> => {
         })
         let docs = await loader.load()
         const chunks = await textSplitter.splitDocuments(docs)
+        await PageAssistVectorStore.fromDocuments(chunks, ollamaEmbedding, {
+          knownledge_id: knowledge.id,
+          file_id: doc.source_id
+        })
+      } else if (doc.type === "csv" || doc.type === "text/csv") {
+        const loader = new PageAssisCSVUrlLoader({
+          name: doc.filename,
+          url: doc.content,
+          options: {}
+        })
+
+        let docs = await loader.load()
+
+        const chunks = await textSplitter.splitDocuments(docs)
+        await PageAssistVectorStore.fromDocuments(chunks, ollamaEmbedding, {
+          knownledge_id: knowledge.id,
+          file_id: doc.source_id
+        })
+      } else if (doc.type === "txt" || doc.type === "text/plain") {
+        const loader = new PageAssisTXTUrlLoader({
+          name: doc.filename,
+          url: doc.content
+        })
+
+        let docs = await loader.load()
+
+        const chunks = await textSplitter.splitDocuments(docs)
+
         await PageAssistVectorStore.fromDocuments(chunks, ollamaEmbedding, {
           knownledge_id: knowledge.id,
           file_id: doc.source_id
