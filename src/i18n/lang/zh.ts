@@ -3,7 +3,7 @@ import playground from "@/assets/locale/zh/playground.json";
 import common from "@/assets/locale/zh/common.json";
 import sidepanel from "@/assets/locale/zh/sidepanel.json";
 import settings from "@/assets/locale/zh/settings.json";
-import knownledge from "@/assets/locale/zh/knownledge.json";
+import knowledge from "@/assets/locale/zh/knowledge.json";
 
 
 export const zh = {
@@ -12,5 +12,5 @@ export const zh = {
     common,
     sidepanel,
     settings,
-    knownledge
+    knowledge
 }

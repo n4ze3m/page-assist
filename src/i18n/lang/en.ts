@@ -3,7 +3,7 @@ import playground from "@/assets/locale/en/playground.json";
 import common from "@/assets/locale/en/common.json";
 import sidepanel from "@/assets/locale/en/sidepanel.json";
 import settings from "@/assets/locale/en/settings.json";
-import knownledge from "@/assets/locale/en/knownledge.json";
+import knowledge from "@/assets/locale/en/knowledge.json";
 
 export const en = {
     option,
@@ -11,5 +11,5 @@ export const en = {
     common,
     sidepanel,
     settings,
-    knownledge
+    knowledge
 }

@@ -14,7 +14,7 @@ type Props = {
 }
 
 export const AddKnowledge = ({ open, setOpen }: Props) => {
-  const { t } = useTranslation("knowledge")
+  const { t } = useTranslation(["knowledge", "common"])
   const [form] = Form.useForm()
 
   const onUploadHandler = async (data: {
@@ -51,6 +51,7 @@ export const AddKnowledge = ({ open, setOpen }: Props) => {
     onSuccess: async (id) => {
       message.success(t("form.success"))
       PubSub.publish(KNOWLEDGE_QUEUE, id)
+      form.resetFields()
       setOpen(false)
     }
   })

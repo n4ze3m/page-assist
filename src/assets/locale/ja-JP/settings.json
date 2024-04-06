@@ -245,5 +245,9 @@
         "koFi": "Ko-fiで支援する",
         "githubSponsor": "GitHubでスポンサーする",
         "githubRepo": "GitHubリポジトリ"
-      }
+    },
+    "manageKnowledge": {
+        "title": "知識を管理する",
+        "heading": "知識ベースを構成する"
+    }
 }

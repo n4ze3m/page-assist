@@ -1,0 +1,42 @@
+{
+    "addBtn": "新しい知識を追加",
+    "columns": {
+        "title": "タイトル",
+        "status": "ステータス",
+        "embeddings": "埋め込みモデル",
+        "createdAt": "作成日",
+        "action": "アクション"
+    },
+    "expandedColumns": {
+        "name": "名前"
+    },
+    "tooltip": {
+        "delete": "削除"
+    },
+    "confirm": {
+        "delete": "この知識を削除してもよろしいですか?"
+    },
+    "deleteSuccess": "知識が正常に削除されました",
+    "status": {
+        "pending": "保留中",
+        "finished": "完了",
+        "processing": "処理中"
+    },
+    "addKnowledge": "知識を追加",
+    "form": {
+        "title": {
+            "label": "知識タイトル",
+            "placeholder": "知識のタイトルを入力してください",
+            "required": "知識のタイトルは必須です"
+        },
+        "uploadFile": {
+            "label": "ファイルをアップロード",
+            "uploadText": "ファイルをここにドラッグアンドドロップするか、クリックしてアップロード",
+            "uploadHint": "サポートされているファイルタイプ: .pdf、.csv、.txt",
+            "required": "ファイルは必須です"
+        },
+        "submit": "送信",
+        "success": "知識が正常に追加されました"
+    },
+    "noEmbeddingModel": "最初にOllamaの設定ページから埋め込みモデルを追加してください"
+}

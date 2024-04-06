@@ -9,13 +9,10 @@ import { KnowledgeIcon } from "./KnowledgeIcon"
 import { useMessageOption } from "@/hooks/useMessageOption"
 
 export const KnowledgeSettings = () => {
-  const { t } = useTranslation(["knownledge", "common"])
+  const { t } = useTranslation(["knowledge", "common"])
   const [open, setOpen] = useState(false)
   const queryClient = useQueryClient()
-  const {
-    selectedKnowledge,
-    setSelectedKnowledge
-  } = useMessageOption()
+  const { selectedKnowledge, setSelectedKnowledge } = useMessageOption()
 
   const { data, status } = useQuery({
     queryKey: ["fetchAllKnowledge"],
@@ -37,6 +34,12 @@ export const KnowledgeSettings = () => {
         message.error(error.message)
       }
     })
+
+  const statusColor = {
+    finished: "green",
+    processing: "blue",
+    pending: "gray"
+  }
 
   return (
     <div>
@@ -68,7 +71,7 @@ export const KnowledgeSettings = () => {
                 dataIndex: "status",
                 key: "status",
                 render: (text: string) => (
-                  <Tag color="blue">{t(`status.${text}`)}</Tag>
+                  <Tag color={statusColor[text]}>{t(`status.${text}`)}</Tag>
                 )
               },
               {
@@ -93,7 +96,7 @@ export const KnowledgeSettings = () => {
                         onClick={() => {
                           if (window.confirm(t("confirm.delete"))) {
                             deleteKnowledgeMutation(record.id)
-                            if(selectedKnowledge.id === record.id) {
+                            if (selectedKnowledge.id === record.id) {
                               setSelectedKnowledge(null)
                             }
                           }

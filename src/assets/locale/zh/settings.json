@@ -246,5 +246,9 @@
         "koFi": "在Ko-fi上支持",
         "githubSponsor": "在GitHub上赞助",
         "githubRepo": "GitHub仓库"
-      }
+    },
+    "manageKnowledge": {
+        "title": "管理知识",
+        "heading": "配置知识库"
+    }
 }
