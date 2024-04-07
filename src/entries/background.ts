@@ -1,4 +1,3 @@
-import { processKnowledge } from "@/libs/process-knowledge"
 import { getOllamaURL, isOllamaRunning } from "../services/ollama"
 const progressHuman = (completed: number, total: number) => {
   return ((completed / total) * 100).toFixed(0) + "%"
