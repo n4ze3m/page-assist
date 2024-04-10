@@ -10,7 +10,8 @@ export const PlaygroundChat = () => {
     streaming,
     regenerateLastMessage,
     isSearchingInternet,
-    editMessage
+    editMessage,
+    ttsEnabled
   } = useMessageOption()
   const divRef = React.useRef<HTMLDivElement>(null)
   const [isSourceOpen, setIsSourceOpen] = React.useState(false)
@@ -50,6 +51,7 @@ export const PlaygroundChat = () => {
               setSource(data)
               setIsSourceOpen(true)
             }}
+            isTTSEnabled={ttsEnabled}
           />
         ))}
         {messages.length > 0 && (

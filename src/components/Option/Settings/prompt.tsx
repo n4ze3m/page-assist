@@ -5,8 +5,6 @@ import { useTranslation } from "react-i18next"
 import { SaveButton } from "~/components/Common/SaveButton"
 import {
   getWebSearchPrompt,
-  setSystemPromptForNonRagOption,
-  systemPromptForNonRagOption,
   geWebSearchFollowUpPrompt,
   setWebPrompts,
   promptForRag,

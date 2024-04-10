@@ -24,7 +24,7 @@ export default defineConfig({
   srcDir: "src",
   outDir: "build",
   manifest: {
-    version: "1.1.2",
+    version: "1.1.3",
     name: '__MSG_extName__',
     description: '__MSG_extDescription__',
     default_locale: 'en',
@@ -52,7 +52,8 @@ export default defineConfig({
       "declarativeNetRequest",
       "action",
       "unlimitedStorage",
-      "contextMenus"
+      "contextMenus",
+      "tts"
     ]
   }
 })

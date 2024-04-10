@@ -28,6 +28,8 @@ import { usePageAssist } from "@/context"
 import { OllamaEmbeddings } from "@langchain/community/embeddings/ollama"
 import { PageAssistVectorStore } from "@/libs/PageAssistVectorStore"
 import { formatDocs } from "@/chain/chat-with-x"
+import { useWebUI } from "@/store/webui"
+import { isTTSEnabled } from "@/services/tts"
 
 export const useMessageOption = () => {
   const {
@@ -66,10 +68,21 @@ export const useMessageOption = () => {
     setSelectedKnowledge
   } = useStoreMessageOption()
 
+  const { ttsEnabled, setTTSEnabled } = useWebUI()
+
   const { t } = useTranslation("option")
 
   const navigate = useNavigate()
   const textareaRef = React.useRef<HTMLTextAreaElement>(null)
+
+  React.useEffect(() => {
+    const checkTTSEnabled = async () => {
+      const tts = await isTTSEnabled()
+      setTTSEnabled(tts)
+    }
+
+    checkTTSEnabled()
+  }, [])
 
   const clearChat = () => {
     navigate("/")
@@ -835,7 +848,7 @@ export const useMessageOption = () => {
       }
 
       const currentHumanMessage = newMessages[index]
-
+      newMessages[index].message = message
       const previousMessages = newMessages.slice(0, index + 1)
       setMessages(previousMessages)
       const previousHistory = newHistory.slice(0, index)
@@ -893,6 +906,7 @@ export const useMessageOption = () => {
     setSelectedSystemPrompt,
     textareaRef,
     selectedKnowledge,
-    setSelectedKnowledge
+    setSelectedKnowledge,
+    ttsEnabled
   }
 }
