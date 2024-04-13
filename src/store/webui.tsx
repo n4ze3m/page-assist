@@ -12,6 +12,6 @@ export const useWebUI = create<State>((set) => ({
   sendWhenEnter: true,
   setSendWhenEnter: (sendWhenEnter) => set({ sendWhenEnter }),
 
-  ttsEnabled: false,
+  ttsEnabled: true,
   setTTSEnabled: (ttsEnabled) => set({ ttsEnabled })
 }))

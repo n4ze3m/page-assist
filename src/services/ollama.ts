@@ -113,11 +113,18 @@ export const deleteModel = async (model: string) => {
   return response.json()
 }
 
-export const fetchChatModels = async () => {
+export const fetchChatModels = async ({
+  returnEmpty = false
+}: {
+  returnEmpty?: boolean
+}) => {
   try {
     const baseUrl = await getOllamaURL()
     const response = await fetch(`${cleanUrl(baseUrl)}/api/tags`)
     if (!response.ok) {
+      if (returnEmpty) {
+        return []
+      }
       throw new Error(response.statusText)
     }
     const json = await response.json()
@@ -127,8 +134,8 @@ export const fetchChatModels = async () => {
       modified_at: string
       size: number
       digest: string
-      details: {
-        parent_model: string
+      details?: {
+        parent_model?: string
         format: string
         family: string
         families: string[]
@@ -136,7 +143,7 @@ export const fetchChatModels = async () => {
         quantization_level: string
       }
     }[]
-    return models.filter((model) => {
+    return models?.filter((model) => {
       return (
         !model?.details?.families?.includes("bert") &&
         !model?.details?.families?.includes("nomic-bert")
@@ -144,7 +151,7 @@ export const fetchChatModels = async () => {
     })
   } catch (e) {
     console.error(e)
-    return []
+    return await getAllModels({ returnEmpty })
   }
 }
 

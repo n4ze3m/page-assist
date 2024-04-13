@@ -1,6 +1,7 @@
 import { SaveButton } from "@/components/Common/SaveButton"
 import { getSearchSettings, setSearchSettings } from "@/services/search"
 import { getTTSSettings, setTTSSettings } from "@/services/tts"
+import { useWebUI } from "@/store/webui"
 import { SUPPORTED_SERACH_PROVIDERS } from "@/utils/search-provider"
 import { useForm } from "@mantine/form"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
@@ -9,7 +10,7 @@ import { useTranslation } from "react-i18next"
 
 export const TTSModeSettings = ({ hideTitle }: { hideTitle?: boolean }) => {
   const { t } = useTranslation("settings")
-  const queryClient = useQueryClient()
+  const { setTTSEnabled } = useWebUI()
 
   const form = useForm({
     initialValues: {
@@ -46,6 +47,7 @@ export const TTSModeSettings = ({ hideTitle }: { hideTitle?: boolean }) => {
       <form
         onSubmit={form.onSubmit(async (values) => {
           await setTTSSettings(values)
+          setTTSEnabled(values.ttsEnabled)
         })}
         className="space-y-4">
         <div className="flex sm:flex-row flex-col space-y-4 sm:space-y-0 sm:justify-between">

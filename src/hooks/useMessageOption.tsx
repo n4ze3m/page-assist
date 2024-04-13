@@ -75,14 +75,6 @@ export const useMessageOption = () => {
   const navigate = useNavigate()
   const textareaRef = React.useRef<HTMLTextAreaElement>(null)
 
-  React.useEffect(() => {
-    const checkTTSEnabled = async () => {
-      const tts = await isTTSEnabled()
-      setTTSEnabled(tts)
-    }
-
-    checkTTSEnabled()
-  }, [])
 
   const clearChat = () => {
     navigate("/")

@@ -4,7 +4,7 @@ import { useLocation, NavLink } from "react-router-dom"
 import { Sidebar } from "../Option/Sidebar"
 import { Drawer, Select, Tooltip } from "antd"
 import { useQuery } from "@tanstack/react-query"
-import { getAllModels } from "~/services/ollama"
+import { fetchChatModels, getAllModels } from "~/services/ollama"
 import { useMessageOption } from "~/hooks/useMessageOption"
 import {
   ChevronLeft,
@@ -46,7 +46,7 @@ export default function OptionLayout({
     isFetching: isModelsFetching
   } = useQuery({
     queryKey: ["fetchModel"],
-    queryFn: () => getAllModels({ returnEmpty: true }),
+    queryFn: () => fetchChatModels({ returnEmpty: true }),
     refetchInterval: 15000
   })
 
