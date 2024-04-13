@@ -54,6 +54,23 @@
                 "success": "インポート成功",
                 "error": "インポートエラー"
             }
+        },
+        "tts": {
+            "heading": "テキスト読み上げ設定",
+            "ttsEnabled": {
+                "label": "テキスト読み上げを有効にする"
+            },
+            "ttsProvider": {
+                "label": "テキスト読み上げプロバイダー",
+                "placeholder": "プロバイダーを選択"
+            },
+            "ttsVoice": {
+                "label": "テキスト読み上げの音声",
+                "placeholder": "音声を選択"
+            },
+            "ssmlEnabled": {
+                "label": "SSML (Speech Synthesis Markup Language) を有効にする"
+            }
         }
     },
     "manageModels": {

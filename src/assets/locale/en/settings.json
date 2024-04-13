@@ -51,6 +51,23 @@
                 "success": "Import Success",
                 "error": "Import Error"
             }
+        },
+        "tts": {
+            "heading": "Text-to-Speech Settings",
+            "ttsEnabled": {
+                "label": "Enable Text-to-Speech"
+            },
+            "ttsProvider": {
+                "label": "Text-to-Speech Provider",
+                "placeholder": "Select a provider"
+            },
+            "ttsVoice": {
+                "label": "Text-to-Speech Voice",
+                "placeholder": "Select a voice"
+            },
+            "ssmlEnabled": {
+                "label": "Enable SSML (Speech Synthesis Markup Language)"
+            }
         }
     },
     "manageModels": {
