@@ -48,9 +48,6 @@ export const setTTSEnabled = async (isTTSEnabled: boolean) => {
 
 export const isSSMLEnabled = async () => {
   const data = await storage.get("isSSMLEnabled")
-  if(!data  || data.length === 0) {
-    return true
-  }
   return data === "true"
 }
 
