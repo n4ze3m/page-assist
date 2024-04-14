@@ -36,7 +36,7 @@ export const setVoice = async (voice: string) => {
 
 export const isTTSEnabled = async () => {
   const data = await storage.get("isTTSEnabled")
-  if(!data  || data.length === 0) {
+  if (!data || data.length === 0) {
     return true
   }
   return data === "true"
