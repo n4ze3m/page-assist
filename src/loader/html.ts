@@ -3,6 +3,7 @@ import { Document } from "@langchain/core/documents"
 import { compile } from "html-to-text"
 import { chromeRunTime } from "~/libs/runtime"
 import { YtTranscript } from "yt-transcript"
+import { isWikipedia, parseWikipedia } from "@/parser/wiki"
 
 const YT_REGEX =
   /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=)?([a-zA-Z0-9_-]+)/
@@ -16,7 +17,6 @@ const getTranscript = async (url: string) => {
   return await ytTranscript.getTranscript()
 }
 
-
 export interface WebLoaderParams {
   html: string
   url: string
@@ -24,7 +24,8 @@ export interface WebLoaderParams {
 
 export class PageAssistHtmlLoader
   extends BaseDocumentLoader
-  implements WebLoaderParams {
+  implements WebLoaderParams
+{
   html: string
   url: string
 
@@ -47,7 +48,6 @@ export class PageAssistHtmlLoader
         text += item.text + " "
       })
 
-
       return [
         {
           metadata: {
@@ -58,10 +58,23 @@ export class PageAssistHtmlLoader
         }
       ]
     }
+
+    let html = this.html
+
+    if (isWikipedia(this.url)) {
+      console.log("Wikipedia URL detected")
+      html = parseWikipedia(html)
+    } 
+    
+    // else if (isTwitter(this.url)) {
+    //   console.log("Twitter URL detected")
+    //   html = parseTweet(html, this.url)
+    // }
+
     const htmlCompiler = compile({
       wordwrap: false
     })
-    const text = htmlCompiler(this.html)
+    const text = htmlCompiler(html)
     const metadata = { source: this.url }
     return [new Document({ pageContent: text, metadata })]
   }
@@ -79,7 +92,6 @@ export class PageAssistHtmlLoader
         text += item.text + " "
       })
 
-
       return [
         {
           metadata: {
@@ -92,7 +104,18 @@ export class PageAssistHtmlLoader
     }
     await chromeRunTime(this.url)
     const fetchHTML = await fetch(this.url)
-    const html = await fetchHTML.text()
+    let html = await fetchHTML.text()
+
+    if (isWikipedia(this.url)) {
+      console.log("Wikipedia URL detected")
+      html = parseWikipedia(await fetchHTML.text())
+    }
+    
+    // else if (isTwitter(this.url)) {
+    //   console.log("Twitter URL detected")
+    //   html = parseTweet(await fetchHTML.text(), this.url)
+    // }
+
     const htmlCompiler = compile({
       wordwrap: false,
       selectors: [

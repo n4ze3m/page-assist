@@ -8,7 +8,8 @@ import {
   getAllModels,
   getOllamaURL,
   isOllamaRunning,
-  setOllamaURL as saveOllamaURL
+  setOllamaURL as saveOllamaURL,
+  fetchChatModels
 } from "~/services/ollama"
 
 export const EmptySidePanel = () => {
@@ -24,7 +25,7 @@ export const EmptySidePanel = () => {
     queryFn: async () => {
       const ollamaURL = await getOllamaURL()
       const isOk = await isOllamaRunning()
-      const models = await getAllModels({ returnEmpty: false })
+      const models = await fetchChatModels({ returnEmpty: false })
 
       return {
         isOk,

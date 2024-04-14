@@ -1,14 +1,12 @@
 import { SaveButton } from "@/components/Common/SaveButton"
-import { getSearchSettings, setSearchSettings } from "@/services/search"
 import { getTTSSettings, setTTSSettings } from "@/services/tts"
 import { useWebUI } from "@/store/webui"
-import { SUPPORTED_SERACH_PROVIDERS } from "@/utils/search-provider"
 import { useForm } from "@mantine/form"
-import { useQuery, useQueryClient } from "@tanstack/react-query"
-import { Select, Skeleton, Switch, InputNumber } from "antd"
+import { useQuery } from "@tanstack/react-query"
+import { Select, Skeleton, Switch } from "antd"
 import { useTranslation } from "react-i18next"
 
-export const TTSModeSettings = ({ hideTitle }: { hideTitle?: boolean }) => {
+export const TTSModeSettings = ({ hideBorder }: { hideBorder?: boolean }) => {
   const { t } = useTranslation("settings")
   const { setTTSEnabled } = useWebUI()
 
@@ -36,14 +34,14 @@ export const TTSModeSettings = ({ hideTitle }: { hideTitle?: boolean }) => {
 
   return (
     <div>
-      {!hideTitle && (
-        <div className="mb-5">
-          <h2 className="text-base font-semibold leading-7 text-gray-900 dark:text-white">
-            {t("generalSettings.tts.heading")}
-          </h2>
+      <div className="mb-5">
+        <h2 className="text-base font-semibold leading-7 text-gray-900 dark:text-white">
+          {t("generalSettings.tts.heading")}
+        </h2>
+        {!hideBorder && (
           <div className="border border-b border-gray-200 dark:border-gray-600 mt-3"></div>
-        </div>
-      )}
+        )}
+      </div>
       <form
         onSubmit={form.onSubmit(async (values) => {
           await setTTSSettings(values)

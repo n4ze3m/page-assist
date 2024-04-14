@@ -2,10 +2,10 @@ import logoImage from "~/assets/icon.png"
 import { useMessage } from "~/hooks/useMessage"
 import { Link } from "react-router-dom"
 import { Tooltip } from "antd"
-import { BoxesIcon, CogIcon, RefreshCcw } from "lucide-react"
+import { BoxesIcon, CogIcon, EraserIcon, HistoryIcon } from "lucide-react"
 import { useTranslation } from "react-i18next"
 export const SidepanelHeader = () => {
-  const { clearChat, isEmbedding } = useMessage()
+  const { clearChat, isEmbedding, messages } = useMessage()
   const { t } = useTranslation(["sidepanel", "common"])
 
   return (
@@ -25,13 +25,22 @@ export const SidepanelHeader = () => {
             <BoxesIcon className="h-5 w-5 text-gray-500 dark:text-gray-400 animate-bounce animate-infinite" />
           </Tooltip>
         ) : null}
-        <button
-          onClick={() => {
-            clearChat()
-          }}
-          className="flex items-center space-x-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-700">
-          <RefreshCcw className="h-5 w-5 text-gray-500 dark:text-gray-400" />
-        </button>
+        {messages.length > 0 && (
+          <Tooltip title={t("tooltip.clear")}>
+            <button
+              onClick={() => {
+                clearChat()
+              }}
+              className="flex items-center space-x-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-700">
+              <EraserIcon className="h-5 w-5 text-gray-500 dark:text-gray-400" />
+            </button>
+          </Tooltip>
+        )}
+        {/* <Tooltip title={t("tooltip.history")}>
+          <Link to="/history">
+            <HistoryIcon className="h-5 w-5 text-gray-500 dark:text-gray-400" />
+          </Link>
+        </Tooltip> */}
         <Link to="/settings">
           <CogIcon className="h-5 w-5 text-gray-500 dark:text-gray-400" />
         </Link>

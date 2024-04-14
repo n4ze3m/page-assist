@@ -1,4 +1,6 @@
 import { getOllamaURL, isOllamaRunning } from "../services/ollama"
+import { Storage } from "@plasmohq/storage"
+
 const progressHuman = (completed: number, total: number) => {
   return ((completed / total) * 100).toFixed(0) + "%"
 }
@@ -75,6 +77,8 @@ const streamDownload = async (url: string, model: string) => {
 }
 export default defineBackground({
   main() {
+    const storage = new Storage()
+
     chrome.runtime.onMessage.addListener(async (message) => {
       if (message.type === "sidepanel") {
         chrome.tabs.query(
@@ -139,8 +143,8 @@ export default defineBackground({
           { active: true, currentWindow: true },
           async (tabs) => {
             const tab = tabs[0]
-            await chrome.sidePanel.open({
-              windowId: tab.windowId!
+            chrome.sidePanel.open({
+              tabId: tab.id!
             })
           }
         )

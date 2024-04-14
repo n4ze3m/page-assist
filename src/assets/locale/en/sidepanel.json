@@ -1,5 +1,7 @@
 {
     "tooltip": {
-        "embed": "It may take a few minutes to embed the page. Please wait..."
+        "embed": "It may take a few minutes to embed the page. Please wait...",
+        "clear": "Erase chat history",
+        "history": "Chat history"
     }
 }
