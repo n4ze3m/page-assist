@@ -2,89 +2,101 @@ import * as cheerio from "cheerio"
 
 export const isTweet = (url: string) => {
   const TWEET_REGEX = /twitter\.com\/[a-zA-Z0-9_]+\/status\/[0-9]+/g
-  return TWEET_REGEX.test(url)
+  const X_REGEX = /x\.com\/[a-zA-Z0-9_]+\/status\/[0-9]+/g
+  return TWEET_REGEX.test(url) || X_REGEX.test(url)
+}
+
+export const isTwitterTimeline = (url: string) => {
+  return url === "https://twitter.com/home" || url === "https://x.com/home"
 }
 
 export const isTwitterProfile = (url: string) => {
   const PROFILE_REGEX = /twitter\.com\/[a-zA-Z0-9_]+/g
-  return PROFILE_REGEX.test(url)
+  const X_REGEX = /x\.com\/[a-zA-Z0-9_]+/g
+  return PROFILE_REGEX.test(url) || X_REGEX.test(url)
 }
 
-export const isTwitterTimeline = (url: string) => {
-  const TIMELINE_REGEX = /twitter\.com\/home/g
-  return TIMELINE_REGEX.test(url)
+export const parseTwitterTimeline = (html: string) => {
+  const $ = cheerio.load(html)
+  const postElements = $("[data-testid=tweetText]")
+  const authorElements = $("[data-testid=User-Name]")
+
+  const posts = postElements
+    .map((index, element) => {
+      const post = $(element).text()
+      const author = $(authorElements[index]).text()
+      return {
+        author,
+        post
+      }
+    })
+    .get()
+
+  return posts
+    .map((post) => {
+      return `## Author: ${post.author}\n\n${post.post}\n\n---\n\n`
+    })
+    .filter((value, index, self) => self.indexOf(value) === index)
+    .join("\n")
 }
 
-export const isTwitter = (url: string) => {
-  return isTweet(url) || isTwitterProfile(url) || isTwitterTimeline(url)
+export const parseTweet = (html: string) => {
+  const $ = cheerio.load(html)
+  const postElements = $("[data-testid=tweetText]")
+  const authorElements = $("[data-testid=User-Name]")
+
+  const posts = postElements
+    .map((index, element) => {
+      const post = $(element).text()
+      const author = $(authorElements[index]).text()
+      return {
+        author,
+        post,
+        isReply: index !== 0
+      }
+    })
+    .get()
+
+  return posts
+    .map((post) => {
+      return `##Author: ${post.author}\n\n${post.isReply ? "Reply:" : "Post:"} ${post.post}\n\n---\n\n`
+    })
+    .join("\n")
 }
 
-export const isTwitterNotification = (url: string) => {
-  const NOTIFICATION_REGEX = /twitter\.com\/notifications/g
-  return NOTIFICATION_REGEX.test(url)
-}
-
-export const parseTweet = (html: string, url: string) => {
-  if (!html) {
-    return ""
-  }
-
+export const parseTweetProfile = (html: string) => {
   const $ = cheerio.load(html)
 
-  if (isTweet(url)) {
-    console.log("tweet")
-    const tweet = $("div[data-testid='tweet']")
-    const tweetContent = tweet.find("div[lang]")
-    const tweetMedia = tweet.find("div[role='group']")
-    const author = tweet.find("a[role='link']").text()
-    const date = tweet.find("time").text()
-    return `<div>${author} ${tweetContent.text()} ${tweetMedia.html()} ${date}</div>`
-  }
+  const profileName = $("[data-testid=UserProfileHeader_Items]")
+    .find("h1")
+    .text()
+  const profileBio = $("[data-testid=UserProfileHeader_Items]").find("p").text()
+  const profileLocation = $("[data-testid=UserProfileHeader_Items]")
+    .find("span")
+    .text()
+  const profileJoinDate = $("[data-testid=UserProfileHeader_Items]")
+    .find("span")
+    .text()
+  const profileFollowers = $(
+    "[data-testid=UserProfileHeader_Items] span"
+  ).text()
+  const profileFollowing = $(
+    "[data-testid=UserProfileHeader_Items] span"
+  ).text()
 
-  if (isTwitterTimeline(url)) {
-    console.log("timeline")
-    const timeline = $("div[data-testid='primaryColumn']")
-    const timelineContent = timeline.find("div[data-testid='tweet']")
-    console.log(timelineContent.html())
-    const tweet = timelineContent
-      .map((i, el) => {
-        const author = $(el).find("a[role='link']").text()
-        const content = $(el).find("div[lang]").text()
-        const media = $(el).find("div[role='group']").html()
-        const date = $(el).find("time").text()
-        return `<div>${author} ${content} ${media} ${date}</div>`
-      })
-      .get()
-      .join("")
-    console.log(tweet)
-    return `<div>${tweet}</div>`
-  }
+  const postElements = $("[data-testid=tweetText]")
+  const authorElements = $("[data-testid=User-Name]")
 
-  if (isTwitterNotification(url)) {
-    console.log("notification")
-    const notification = $("div[data-testid='primaryColumn']")
-    const notificationContent = notification.find("div[data-testid='tweet']")
-    return `<div>${notificationContent.html()}</div>`
-  }
-  if (isTwitterProfile(url)) {
-    console.log("profile")
-    const profile = $("div[data-testid='primaryColumn']")
-    const profileContent = profile.find(
-      "div[data-testid='UserProfileHeader_Items']"
-    )
-    const profileTweets = profile.find("div[data-testid='tweet']")
-    return `<div>${profileContent.html()}</div><div>${profileTweets.html()}</div>`
-  }
-  console.log("no match")
-  const timeline = $("div[data-testid='primaryColumn']")
-  const timelineContent = timeline.find("div[data-testid='tweet']")
-  const tweet = timelineContent.map((i, el) => {
-    const author = $(el).find("a[role='link']").text()
-    const content = $(el).find("div[lang]").text()
-    const media = $(el).find("div[role='group']").html()
-    const date = $(el).find("time").text()
-    return `<div>${author} ${content} ${media} ${date}</div>`
-  })
+  const posts = postElements
+    .map((index, element) => {
+      const post = $(element).text()
+      const author = $(authorElements[index]).text()
+      return {
+        author,
+        post
+      }
+    })
+    .get()
 
-  return `<div>${tweet}</div>`
+  return `## Profile: ${profileName}\n\nBio: ${profileBio}\n\nLocation: ${profileLocation}\n\nJoin Date: ${profileJoinDate}\n\nFollowers: ${profileFollowers}\n\nFollowing: ${profileFollowing}\n\nPosts: ${posts.map((post) => `Author: ${post.author}\n\nPost: ${post.post}\n\n---\n\n`).join("\n")}`
 }

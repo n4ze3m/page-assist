@@ -81,6 +81,7 @@ export const useMessage = () => {
     signal: AbortSignal,
     embeddingSignal: AbortSignal
   ) => {
+    setStreaming(true)
     const url = await getOllamaURL()
 
     const ollama = new ChatOllama({
@@ -320,6 +321,7 @@ export const useMessage = () => {
     history: ChatHistory,
     signal: AbortSignal
   ) => {
+    setStreaming(true)
     const url = await getOllamaURL()
 
     if (image.length > 0) {

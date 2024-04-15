@@ -5,7 +5,7 @@ import { Tooltip } from "antd"
 import { BoxesIcon, CogIcon, EraserIcon, HistoryIcon } from "lucide-react"
 import { useTranslation } from "react-i18next"
 export const SidepanelHeader = () => {
-  const { clearChat, isEmbedding, messages } = useMessage()
+  const { clearChat, isEmbedding, messages, streaming } = useMessage()
   const { t } = useTranslation(["sidepanel", "common"])
 
   return (
@@ -25,16 +25,15 @@ export const SidepanelHeader = () => {
             <BoxesIcon className="h-5 w-5 text-gray-500 dark:text-gray-400 animate-bounce animate-infinite" />
           </Tooltip>
         ) : null}
-        {messages.length > 0 && (
-          <Tooltip title={t("tooltip.clear")}>
-            <button
-              onClick={() => {
-                clearChat()
-              }}
-              className="flex items-center space-x-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-700">
-              <EraserIcon className="h-5 w-5 text-gray-500 dark:text-gray-400" />
-            </button>
-          </Tooltip>
+        {messages.length > 0 && !streaming && (
+          <button
+            title={t("tooltip.clear")}
+            onClick={() => {
+              clearChat()
+            }}
+            className="flex items-center space-x-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-700">
+            <EraserIcon className="h-5 w-5 text-gray-500 dark:text-gray-400" />
+          </button>
         )}
         {/* <Tooltip title={t("tooltip.history")}>
           <Link to="/history">

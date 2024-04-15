@@ -59,24 +59,24 @@ export class PageAssistHtmlLoader
       ]
     }
 
-    let html = this.html
+    // let html = this.html
 
-    if (isWikipedia(this.url)) {
-      console.log("Wikipedia URL detected")
-      html = parseWikipedia(html)
-    } 
-    
-    // else if (isTwitter(this.url)) {
-    //   console.log("Twitter URL detected")
-    //   html = parseTweet(html, this.url)
+    // if (isWikipedia(this.url)) {
+    //   console.log("Wikipedia URL detected")
+    //   html = parseWikipedia(html)
     // }
 
-    const htmlCompiler = compile({
-      wordwrap: false
-    })
-    const text = htmlCompiler(html)
+    // // else if (isTwitter(this.url)) {
+    // //   console.log("Twitter URL detected")
+    // //   html = parseTweet(html, this.url)
+    // // }
+
+    // const htmlCompiler = compile({
+    //   wordwrap: false
+    // })
+    // const text = htmlCompiler(html)
     const metadata = { source: this.url }
-    return [new Document({ pageContent: text, metadata })]
+    return [new Document({ pageContent: this.html, metadata })]
   }
 
   async loadByURL(): Promise<Document<Record<string, any>>[]> {
@@ -110,7 +110,7 @@ export class PageAssistHtmlLoader
       console.log("Wikipedia URL detected")
       html = parseWikipedia(await fetchHTML.text())
     }
-    
+
     // else if (isTwitter(this.url)) {
     //   console.log("Twitter URL detected")
     //   html = parseTweet(await fetchHTML.text(), this.url)
