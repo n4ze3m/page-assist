@@ -7,7 +7,7 @@ import { useWebUI } from "@/store/webui"
 export const SidePanelBody = () => {
   const { messages, streaming } = useMessage()
   const divRef = React.useRef<HTMLDivElement>(null)
-  const {ttsEnabled} = useWebUI()
+  const { ttsEnabled } = useWebUI()
   React.useEffect(() => {
     if (divRef.current) {
       divRef.current.scrollIntoView({ behavior: "smooth" })
@@ -18,7 +18,7 @@ export const SidePanelBody = () => {
       {messages.length === 0 && <EmptySidePanel />}
       {messages.map((message, index) => (
         <PlaygroundMessage
-        onEditFormSubmit={(value) => {}}
+          onEditFormSubmit={(value) => {}}
           key={index}
           isBot={message.isBot}
           message={message.message}

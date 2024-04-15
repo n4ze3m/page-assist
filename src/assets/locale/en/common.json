@@ -49,5 +49,6 @@
     "noData": "No data",
     "noHistory": "No chat history",
     "chatWithCurrentPage": "Chat with current page",
-    "beta": "Beta"
+    "beta": "Beta",
+    "tts": "Read aloud"
 }
