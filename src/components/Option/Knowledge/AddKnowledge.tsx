@@ -90,7 +90,7 @@ export const AddKnowledge = ({ open, setOpen }: Props) => {
             return e?.fileList
           }}>
           <Upload.Dragger
-            accept={".pdf, .csv, .txt"}
+            accept={".pdf, .csv, .txt, .md"}
             multiple={true}
             maxCount={10}
             beforeUpload={(file) => {
@@ -113,8 +113,8 @@ export const AddKnowledge = ({ open, setOpen }: Props) => {
               return false
             }}>
             <div className="p-3">
-              <p className="ant-upload-drag-icon justify-center flex">
-                <InboxIcon className="h-10 w-10 text-gray-400" />
+              <p className="flex justify-center ant-upload-drag-icon">
+                <InboxIcon className="w-10 h-10 text-gray-400" />
               </p>
               <p className="ant-upload-text">
                 {t("form.uploadFile.uploadText")}
@@ -130,7 +130,7 @@ export const AddKnowledge = ({ open, setOpen }: Props) => {
           <button
             type="submit"
             disabled={isSaving}
-            className="inline-flex w-full text-center justify-center items-center rounded-md border border-transparent bg-black px-2 py-2 text-md font-medium leading-4 text-white shadow-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-white dark:text-gray-800 dark:hover:bg-gray-100 dark:focus:ring-gray-500 dark:focus:ring-offset-gray-100 disabled:opacity-50">
+            className="inline-flex items-center justify-center w-full px-2 py-2 font-medium leading-4 text-center text-white bg-black border border-transparent rounded-md shadow-sm text-md hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-white dark:text-gray-800 dark:hover:bg-gray-100 dark:focus:ring-gray-500 dark:focus:ring-offset-gray-100 disabled:opacity-50">
             {t("form.submit")}
           </button>
         </Form.Item>
