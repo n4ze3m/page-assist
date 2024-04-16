@@ -8,6 +8,7 @@ import { useState } from "react"
 import { useForm } from "@mantine/form"
 import { Download, RotateCcw, Trash2 } from "lucide-react"
 import { useTranslation } from "react-i18next"
+import { useStorage } from "@plasmohq/storage/hook"
 
 dayjs.extend(relativeTime)
 
@@ -15,6 +16,7 @@ export const ModelsBody = () => {
   const queryClient = useQueryClient()
   const [open, setOpen] = useState(false)
   const { t } = useTranslation(["settings", "common"])
+  const [selectedModel, setSelectedModel] = useStorage("selectedModel")
 
   const form = useForm({
     initialValues: {
@@ -131,6 +133,12 @@ export const ModelsBody = () => {
                             window.confirm(t("manageModels.confirm.delete"))
                           ) {
                             deleteOllamaModel(record.model)
+                            if (
+                              selectedModel &&
+                              selectedModel === record.model
+                            ) {
+                              setSelectedModel(null)
+                            }
                           }
                         }}
                         className="text-red-500 dark:text-red-400">
@@ -193,8 +201,7 @@ export const ModelsBody = () => {
                   }}
                 />
               ),
-              defaultExpandAllRows: false,
-              
+              defaultExpandAllRows: false
             }}
             bordered
             dataSource={data}
