@@ -32,7 +32,7 @@
         "uploadFile": {
             "label": "Upload File",
             "uploadText": "Drag and drop a file here or click to upload",
-            "uploadHint": "Supported file types: .pdf, .csv, .txt",
+            "uploadHint": "Supported file types: .pdf, .csv, .txt, .md",
             "required": "File is required"
         },
         "submit": "Submit",
