@@ -30,6 +30,7 @@ import { PageAssistVectorStore } from "@/libs/PageAssistVectorStore"
 import { formatDocs } from "@/chain/chat-with-x"
 import { useWebUI } from "@/store/webui"
 import { isTTSEnabled } from "@/services/tts"
+import { useStorage } from "@plasmohq/storage/hook"
 
 export const useMessageOption = () => {
   const {
@@ -50,8 +51,6 @@ export const useMessageOption = () => {
     setIsLoading,
     isProcessing,
     setIsProcessing,
-    selectedModel,
-    setSelectedModel,
     chatMode,
     setChatMode,
     speechToTextLanguage,
@@ -67,8 +66,9 @@ export const useMessageOption = () => {
     selectedKnowledge,
     setSelectedKnowledge
   } = useStoreMessageOption()
+  const [selectedModel, setSelectedModel] = useStorage("selectedModel")
 
-  const { ttsEnabled, setTTSEnabled } = useWebUI()
+  const { ttsEnabled } = useWebUI()
 
   const { t } = useTranslation("option")
 

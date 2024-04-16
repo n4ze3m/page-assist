@@ -314,3 +314,4 @@ export const getPageShareUrl = async () => {
 export const setPageShareUrl = async (pageShareUrl: string) => {
   await storage.set("pageShareUrl", pageShareUrl)
 }
+

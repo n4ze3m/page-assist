@@ -97,6 +97,7 @@ export const EmptySidePanel = () => {
             <Select
               onChange={(e) => {
                 setSelectedModel(e)
+                localStorage.setItem("selectedModel", e)
               }}
               value={selectedModel}
               size="large"

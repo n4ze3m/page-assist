@@ -107,7 +107,10 @@ export default function OptionLayout({
               <div>
                 <Select
                   value={selectedModel}
-                  onChange={setSelectedModel}
+                  onChange={(e) =>  {
+                    setSelectedModel(e)
+                    localStorage.setItem("selectedModel", e)
+                  }}
                   size="large"
                   loading={isModelsLoading || isModelsFetching}
                   filterOption={(input, option) =>

@@ -96,7 +96,7 @@ export const KnowledgeSettings = () => {
                         onClick={() => {
                           if (window.confirm(t("confirm.delete"))) {
                             deleteKnowledgeMutation(record.id)
-                            if (selectedKnowledge.id === record.id) {
+                            if (selectedKnowledge?.id === record?.id) {
                               setSelectedKnowledge(null)
                             }
                           }

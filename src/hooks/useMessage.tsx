@@ -22,6 +22,7 @@ import { useTranslation } from "react-i18next"
 import { usePageAssist } from "@/context"
 import { formatDocs } from "@/chain/chat-with-x"
 import { OllamaEmbeddingsPageAssist } from "@/models/OllamaEmbedding"
+import { useStorage } from "@plasmohq/storage/hook"
 
 export const useMessage = () => {
   const {
@@ -33,6 +34,8 @@ export const useMessage = () => {
     setEmbeddingController
   } = usePageAssist()
   const { t } = useTranslation("option")
+  const [selectedModel, setSelectedModel] = useStorage("selectedModel")
+
   const {
     history,
     setHistory,
@@ -45,8 +48,6 @@ export const useMessage = () => {
     setIsLoading,
     isProcessing,
     setIsProcessing,
-    selectedModel,
-    setSelectedModel,
     chatMode,
     setChatMode,
     setIsEmbedding,
