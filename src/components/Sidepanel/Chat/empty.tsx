@@ -8,7 +8,8 @@ import {
   getAllModels,
   getOllamaURL,
   isOllamaRunning,
-  setOllamaURL as saveOllamaURL
+  setOllamaURL as saveOllamaURL,
+  fetchChatModels
 } from "~/services/ollama"
 
 export const EmptySidePanel = () => {
@@ -24,7 +25,7 @@ export const EmptySidePanel = () => {
     queryFn: async () => {
       const ollamaURL = await getOllamaURL()
       const isOk = await isOllamaRunning()
-      const models = await getAllModels({ returnEmpty: false })
+      const models = await fetchChatModels({ returnEmpty: false })
 
       return {
         isOk,
@@ -96,6 +97,7 @@ export const EmptySidePanel = () => {
             <Select
               onChange={(e) => {
                 setSelectedModel(e)
+                localStorage.setItem("selectedModel", e)
               }}
               value={selectedModel}
               size="large"
@@ -134,11 +136,11 @@ export const EmptySidePanel = () => {
                       viewBox="0 0 20 20"
                       fill="currentColor"
                       stroke="currentColor"
-                      stroke-width="1">
+                      strokeWidth="1">
                       <path
-                        fill-rule="evenodd"
+                        fillRule="evenodd"
                         d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                        clip-rule="evenodd"></path>
+                        clipRule="evenodd"></path>
                     </svg>
                   </span>
                 </label>

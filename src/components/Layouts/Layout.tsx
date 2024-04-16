@@ -4,7 +4,7 @@ import { useLocation, NavLink } from "react-router-dom"
 import { Sidebar } from "../Option/Sidebar"
 import { Drawer, Select, Tooltip } from "antd"
 import { useQuery } from "@tanstack/react-query"
-import { getAllModels } from "~/services/ollama"
+import { fetchChatModels, getAllModels } from "~/services/ollama"
 import { useMessageOption } from "~/hooks/useMessageOption"
 import {
   ChevronLeft,
@@ -15,10 +15,11 @@ import {
   SquarePen,
   ZapIcon
 } from "lucide-react"
-import { getAllPrompts } from "~/libs/db"
+import { getAllPrompts } from "@/db"
 import { ShareBtn } from "~/components/Common/ShareBtn"
 import { useTranslation } from "react-i18next"
 import { OllamaIcon } from "../Icons/Ollama"
+import { SelectedKnowledge } from "../Option/Knowledge/SelectedKnwledge"
 
 export default function OptionLayout({
   children
@@ -45,7 +46,7 @@ export default function OptionLayout({
     isFetching: isModelsFetching
   } = useQuery({
     queryKey: ["fetchModel"],
-    queryFn: () => getAllModels({ returnEmpty: true }),
+    queryFn: () => fetchChatModels({ returnEmpty: true }),
     refetchInterval: 15000
   })
 
@@ -106,7 +107,10 @@ export default function OptionLayout({
               <div>
                 <Select
                   value={selectedModel}
-                  onChange={setSelectedModel}
+                  onChange={(e) =>  {
+                    setSelectedModel(e)
+                    localStorage.setItem("selectedModel", e)
+                  }}
                   size="large"
                   loading={isModelsLoading || isModelsFetching}
                   filterOption={(input, option) =>
@@ -166,6 +170,7 @@ export default function OptionLayout({
                   }))}
                 />
               </div>
+              <SelectedKnowledge />
             </div>
             <div className="flex flex-1 justify-end px-4">
               <div className="ml-4 flex items-center md:ml-6">

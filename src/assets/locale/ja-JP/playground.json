@@ -21,7 +21,8 @@
         "searchInternet": "インターネットを検索",
         "speechToText": "音声入力",
         "uploadImage": "画像をアップロード",
-        "stopStreaming": "ストリーミングを停止"
+        "stopStreaming": "ストリーミングを停止",
+        "knowledge": "知識"
     },
     "sendWhenEnter": "Enterキーを押すと送信"
 }

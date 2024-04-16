@@ -48,5 +48,7 @@
     "submit": "Submit",
     "noData": "No data",
     "noHistory": "No chat history",
-    "chatWithCurrentPage": "Chat with current page"
+    "chatWithCurrentPage": "Chat with current page",
+    "beta": "Beta",
+    "tts": "Read aloud"
 }

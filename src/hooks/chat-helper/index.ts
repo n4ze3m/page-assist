@@ -1,4 +1,4 @@
-import { saveHistory, saveMessage } from "@/libs/db"
+import { saveHistory, saveMessage } from "@/db"
 import { ChatHistory } from "@/store/option"
 
 export const saveMessageOnError = async ({

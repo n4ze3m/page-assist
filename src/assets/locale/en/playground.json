@@ -21,7 +21,8 @@
         "searchInternet": "Search Internet",
         "speechToText": "Speech to Text",
         "uploadImage": "Upload Image",
-        "stopStreaming": "Stop Streaming"
+        "stopStreaming": "Stop Streaming",
+        "knowledge": "Knowledge"
     },
     "sendWhenEnter": "Send when Enter pressed"
 }

@@ -1,11 +1,11 @@
 {
-    "extName": {
-      "message": "Page Assist - ローカルAIモデル用のWeb UI"
-    },
-    "extDescription": {
-      "message": "ローカルで実行中のAIモデルを使って、Webブラウジングをアシストします。"
-    },
-    "openSidePanelToChat": {
-      "message": "サイドパネルを開いてチャット"
-    }
+  "extName": {
+    "message": "Page Assist - ローカルAIモデル用のWeb UI"
+  },
+  "extDescription": {
+    "message": "ローカルで実行中のAIモデルを使って、Webブラウジングをアシストします。"
+  },
+  "openSidePanelToChat": {
+    "message": "チャットするためにCopilotを開く"
   }
+}

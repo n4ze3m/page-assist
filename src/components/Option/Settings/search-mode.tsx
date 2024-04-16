@@ -44,43 +44,50 @@ export const SearchModeSettings = () => {
           await setSearchSettings(values)
         })}
         className="space-y-4">
-        <div className="flex flex-row justify-between">
+        <div className="flex sm:flex-row flex-col space-y-4 sm:space-y-0 sm:justify-between">
           <span className="text-gray-500 dark:text-neutral-50 ">
             {t("generalSettings.webSearch.provider.label")}
           </span>
-          <Select
-            placeholder={t("generalSettings.webSearch.provider.placeholder")}
-            showSearch
-            style={{ width: "200px" }}
-            options={SUPPORTED_SERACH_PROVIDERS}
-            filterOption={(input, option) =>
-              option!.label.toLowerCase().indexOf(input.toLowerCase()) >= 0 ||
-              option!.value.toLowerCase().indexOf(input.toLowerCase()) >= 0
-            }
-            {...form.getInputProps("searchProvider")}
-          />
+          <div>
+            <Select
+              placeholder={t("generalSettings.webSearch.provider.placeholder")}
+              showSearch
+              className="w-full mt-4 sm:mt-0 sm:w-[200px]"
+              options={SUPPORTED_SERACH_PROVIDERS}
+              filterOption={(input, option) =>
+                option!.label.toLowerCase().indexOf(input.toLowerCase()) >= 0 ||
+                option!.value.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              }
+              {...form.getInputProps("searchProvider")}
+            />
+          </div>
         </div>
-        <div className="flex flex-row justify-between">
+        <div className="flex sm:flex-row flex-col space-y-4 sm:space-y-0 sm:justify-between">
           <span className="text-gray-500 dark:text-neutral-50 ">
             {t("generalSettings.webSearch.searchMode.label")}
           </span>
-          <Switch
-            {...form.getInputProps("isSimpleInternetSearch", {
-              type: "checkbox"
-            })}
-          />
+          <div>
+            <Switch
+            className="mt-4 sm:mt-0"
+              {...form.getInputProps("isSimpleInternetSearch", {
+                type: "checkbox"
+              })}
+            />
+          </div>
         </div>
-        <div className="flex flex-row justify-between">
+        <div className="flex sm:flex-row flex-col space-y-4 sm:space-y-0 sm:justify-between">
           <span className="text-gray-500 dark:text-neutral-50 ">
             {t("generalSettings.webSearch.totalSearchResults.label")}
           </span>
-          <InputNumber
-            placeholder={t(
-              "generalSettings.webSearch.totalSearchResults.placeholder"
-            )}
-            {...form.getInputProps("totalSearchResults")}
-            style={{ width: "200px" }}
-          />
+          <div>
+            <InputNumber
+              placeholder={t(
+                "generalSettings.webSearch.totalSearchResults.placeholder"
+              )}
+              {...form.getInputProps("totalSearchResults")}
+              className="!w-full mt-4 sm:mt-0 sm:w-[200px]"
+            />
+          </div>
         </div>
 
         <div className="flex justify-end">

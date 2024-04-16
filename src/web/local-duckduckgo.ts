@@ -41,6 +41,8 @@ export const localDuckDuckGoSearch = async (query: string) => {
         .find("a.result__snippet")
         .attr("href")
         .replace("//duckduckgo.com/l/?uddg=", "")
+        .replace(/&rut=.*/, "")
+
       const content = $(result).find("a.result__snippet").text()
       const decodedLink = decodeURIComponent(link)
       return { title, link: decodedLink, content }
@@ -93,7 +95,7 @@ export const webDuckDuckGoSearch = async (query: string) => {
   const textSplitter = new RecursiveCharacterTextSplitter({
     chunkSize,
     chunkOverlap
-  })
+  }) 
 
   const chunks = await textSplitter.splitDocuments(docs)
 

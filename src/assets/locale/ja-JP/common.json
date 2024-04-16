@@ -48,5 +48,7 @@
     "submit": "送信",
     "noData": "データがありません",
     "noHistory": "チャット履歴がありません", 
-    "chatWithCurrentPage": "現在のページでチャット"
+    "chatWithCurrentPage": "現在のページでチャット",
+    "beta": "ベータ",
+    "tts": "読み上げ"
   }

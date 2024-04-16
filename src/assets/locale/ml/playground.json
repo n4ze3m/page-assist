@@ -21,7 +21,8 @@
         "searchInternet": "ഇന്റര്‍നെറ്റ് തിരയുക",
         "speechToText": "സംഭാഷണം ടെക്സ്റ്റായി",
         "uploadImage": "ഇമേജ് അപ്‌ലോഡ് ചെയ്യുക",
-        "stopStreaming": "സ്ട്രീമിംഗ് നിർത്തുക"
+        "stopStreaming": "സ്ട്രീമിംഗ് നിർത്തുക",
+        "knowledge": "അറിവ്"
     },
     "sendWhenEnter": "എന്റര്‍ അമര്‍ത്തുമ്പോള്‍ അയയ്ക്കുക"
 }

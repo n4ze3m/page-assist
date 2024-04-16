@@ -54,6 +54,23 @@
                 "success": "导入成功",
                 "error": "导入错误"
             }
+        },
+        "tts": {
+            "heading": "文本转语音设置",
+            "ttsEnabled": {
+                "label": "启用文本转语音"
+            },
+            "ttsProvider": {
+                "label": "文本转语音提供商",
+                "placeholder": "选择一个提供商"
+            },
+            "ttsVoice": {
+                "label": "文本转语音语音",
+                "placeholder": "选择一种语音"
+            },
+            "ssmlEnabled": {
+                "label": "启用SSML(语音合成标记语言)"
+            }
         }
     },
     "manageModels": {
@@ -246,5 +263,9 @@
         "koFi": "在Ko-fi上支持",
         "githubSponsor": "在GitHub上赞助",
         "githubRepo": "GitHub仓库"
-      }
+    },
+    "manageKnowledge": {
+        "title": "管理知识",
+        "heading": "配置知识库"
+    }
 }

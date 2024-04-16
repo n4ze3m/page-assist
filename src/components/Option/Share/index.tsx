@@ -3,7 +3,7 @@ import { Form, Input, Skeleton, Table, Tooltip, message } from "antd"
 import { Trash2 } from "lucide-react"
 import { Trans, useTranslation } from "react-i18next"
 import { SaveButton } from "~/components/Common/SaveButton"
-import { deleteWebshare, getAllWebshares, getUserId } from "~/libs/db"
+import { deleteWebshare, getAllWebshares, getUserId } from "@/db"
 import { getPageShareUrl, setPageShareUrl } from "~/services/ollama"
 import { verifyPageShareURL } from "~/utils/verify-page-share"
 

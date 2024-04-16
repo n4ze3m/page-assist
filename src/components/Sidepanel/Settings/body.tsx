@@ -22,6 +22,7 @@ import { useMessage } from "~/hooks/useMessage"
 import { MoonIcon, SunIcon } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useI18n } from "@/hooks/useI18n"
+import { TTSModeSettings } from "@/components/Option/Settings/tts-mode"
 
 export const SettingsBody = () => {
   const { t } = useTranslation("settings")
@@ -284,6 +285,9 @@ export const SettingsBody = () => {
             <SaveButton disabled={isSaveRAGPending} btnType="submit" />
           </div>
         </Form>
+      </div>
+      <div className="border border-gray-300 dark:border-gray-700 rounded p-4 bg-white dark:bg-[#171717]">
+        <TTSModeSettings hideBorder />
       </div>
       <div className="border border-gray-300 dark:border-gray-700 rounded p-4 bg-white dark:bg-[#171717]">
         <h2 className="text-md mb-4 font-semibold dark:text-white">

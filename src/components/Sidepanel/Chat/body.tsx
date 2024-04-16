@@ -2,10 +2,12 @@ import React from "react"
 import { PlaygroundMessage } from "~/components/Common/Playground/Message"
 import { useMessage } from "~/hooks/useMessage"
 import { EmptySidePanel } from "../Chat/empty"
+import { useWebUI } from "@/store/webui"
 
 export const SidePanelBody = () => {
   const { messages, streaming } = useMessage()
   const divRef = React.useRef<HTMLDivElement>(null)
+  const { ttsEnabled } = useWebUI()
   React.useEffect(() => {
     if (divRef.current) {
       divRef.current.scrollIntoView({ behavior: "smooth" })
@@ -16,7 +18,7 @@ export const SidePanelBody = () => {
       {messages.length === 0 && <EmptySidePanel />}
       {messages.map((message, index) => (
         <PlaygroundMessage
-        onEditFormSubmit={(value) => {}}
+          onEditFormSubmit={(value) => {}}
           key={index}
           isBot={message.isBot}
           message={message.message}
@@ -27,6 +29,7 @@ export const SidePanelBody = () => {
           onRengerate={() => {}}
           isProcessing={streaming}
           hideEditAndRegenerate
+          isTTSEnabled={ttsEnabled}
         />
       ))}
       <div className="w-full h-32 md:h-48 flex-shrink-0"></div>

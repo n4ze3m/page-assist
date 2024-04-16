@@ -1,22 +1,20 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query"
-import { Skeleton, Radio, Form, Alert } from "antd"
+import { Skeleton, Radio, Form, Input } from "antd"
 import React from "react"
 import { useTranslation } from "react-i18next"
 import { SaveButton } from "~/components/Common/SaveButton"
 import {
   getWebSearchPrompt,
-  setSystemPromptForNonRagOption,
-  systemPromptForNonRagOption,
   geWebSearchFollowUpPrompt,
-  setWebPrompts
+  setWebPrompts,
+  promptForRag,
+  setPromptForRag
 } from "~/services/ollama"
 
 export const SettingPrompt = () => {
   const { t } = useTranslation("settings")
 
-  const [selectedValue, setSelectedValue] = React.useState<"normal" | "web">(
-    "web"
-  )
+  const [selectedValue, setSelectedValue] = React.useState<"web" | "rag">("rag")
 
   const queryClient = useQueryClient()
 
@@ -25,7 +23,7 @@ export const SettingPrompt = () => {
     queryFn: async () => {
       const [prompt, webSearchPrompt, webSearchFollowUpPrompt] =
         await Promise.all([
-          systemPromptForNonRagOption(),
+          promptForRag(),
           getWebSearchPrompt(),
           geWebSearchFollowUpPrompt()
         ])
@@ -48,46 +46,60 @@ export const SettingPrompt = () => {
             <Radio.Group
               defaultValue={selectedValue}
               onChange={(e) => setSelectedValue(e.target.value)}>
-              <Radio.Button value="normal">
-                {t("ollamaSettings.settings.prompt.option1")}
-              </Radio.Button>
+              <Radio.Button value="rag">RAG</Radio.Button>
               <Radio.Button value="web">
                 {t("ollamaSettings.settings.prompt.option2")}
               </Radio.Button>
             </Radio.Group>
           </div>
 
-          {selectedValue === "normal" && (
+          {selectedValue === "rag" && (
             <Form
               layout="vertical"
               onFinish={(values) => {
-                setSystemPromptForNonRagOption(values?.prompt || "")
+                // setSystemPromptForNonRagOption(values?.prompt || "")
+                setPromptForRag(
+                  values?.systemPrompt || "",
+                  values?.questionPrompt || ""
+                )
                 queryClient.invalidateQueries({
                   queryKey: ["fetchOllaPrompt"]
                 })
               }}
               initialValues={{
-                prompt: data.prompt
+                systemPrompt: data.prompt.ragPrompt,
+                questionPrompt: data.prompt.ragQuestionPrompt
               }}>
-              <Form.Item>
-                <Alert
-                  message={t("ollamaSettings.settings.prompt.alert")}
-                  type="warning"
-                  showIcon
-                  closable
+              <Form.Item
+                label={t("managePrompts.systemPrompt")}
+                name="systemPrompt"
+                rules={[
+                  {
+                    required: true,
+                    message: "Enter a prompt."
+                  }
+                ]}>
+                <Input.TextArea
+                  value={data.webSearchPrompt}
+                  rows={5}
+                  placeholder="Enter a prompt."
                 />
               </Form.Item>
               <Form.Item
-                label={t("ollamaSettings.settings.prompt.systemPrompt")}
-                name="prompt">
-                <textarea
-                  value={data.prompt}
+                label={t("managePrompts.questionPrompt")}
+                name="questionPrompt"
+                rules={[
+                  {
+                    required: true,
+                    message: "Enter a follow up prompt."
+                  }
+                ]}>
+                <Input.TextArea
+                  value={data.webSearchFollowUpPrompt}
                   rows={5}
-                  id="ollamaPrompt"
                   placeholder={t(
-                    "ollamaSettings.settings.prompt.systemPromptPlaceholder"
+                    "ollamaSettings.settings.prompt.webSearchFollowUpPromptPlaceholder"
                   )}
-                  className="w-full p-2 border border-gray-300 rounded-md dark:bg-[#262626] dark:text-gray-100"
                 />
               </Form.Item>
               <Form.Item>
@@ -126,32 +138,36 @@ export const SettingPrompt = () => {
                     )
                   }
                 ]}>
-                <textarea
+                <Input.TextArea
                   value={data.webSearchPrompt}
                   rows={5}
-                  id="ollamaWebSearchPrompt"
                   placeholder={t(
                     "ollamaSettings.settings.prompt.webSearchPromptPlaceholder"
                   )}
-                  className="w-full p-2 border border-gray-300 rounded-md dark:bg-[#262626] dark:text-gray-100"
                 />
               </Form.Item>
               <Form.Item
-                label={t("ollamaSettings.settings.prompt.webSearchFollowUpPrompt")}
+                label={t(
+                  "ollamaSettings.settings.prompt.webSearchFollowUpPrompt"
+                )}
                 name="webSearchFollowUpPrompt"
-                help={t("ollamaSettings.settings.prompt.webSearchFollowUpPromptHelp")}
+                help={t(
+                  "ollamaSettings.settings.prompt.webSearchFollowUpPromptHelp"
+                )}
                 rules={[
                   {
                     required: true,
-                    message: t("ollamaSettings.settings.prompt.webSearchFollowUpPromptError")
+                    message: t(
+                      "ollamaSettings.settings.prompt.webSearchFollowUpPromptError"
+                    )
                   }
                 ]}>
-                <textarea
+                <Input.TextArea
                   value={data.webSearchFollowUpPrompt}
                   rows={5}
-                  id="ollamaWebSearchFollowUpPrompt"
-                  placeholder={t("ollamaSettings.settings.prompt.webSearchFollowUpPromptPlaceholder")}
-                  className="w-full p-2 border border-gray-300 rounded-md dark:bg-[#262626] dark:text-gray-100"
+                  placeholder={t(
+                    "ollamaSettings.settings.prompt.webSearchFollowUpPromptPlaceholder"
+                  )}
                 />
               </Form.Item>
               <Form.Item>

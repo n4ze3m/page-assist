@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next"
 import { useQuery } from "@tanstack/react-query"
 import { Skeleton } from "antd"
 import { cleanUrl } from "@/libs/clean-url"
+import { Descriptions } from "antd"
 
 export const AboutApp = () => {
   const { t } = useTranslation("settings")
@@ -41,37 +42,23 @@ export const AboutApp = () => {
       {status === "pending" && <Skeleton paragraph={{ rows: 4 }} active />}
       {status === "success" && (
         <div className="flex flex-col space-y-4">
-          <div>
-            <div>
-              <h2 className="text-base font-semibold leading-7 text-gray-900 dark:text-white">
-                {t("about.heading")}
-              </h2>
-              <div className="border border-b border-gray-200 dark:border-gray-600 mt-3 mb-6"></div>
-            </div>
-          </div>
-
-          <div>
-            <div className="flex flex-col space-y-6">
-              <div className="flex gap-6">
-                <span className="text-sm text-gray-500 dark:text-gray-400">
-                  {t("about.chromeVersion")}
-                </span>
-                <span className="text-sm text-gray-900 dark:text-white">
-                  {data.chromeVersion}
-                </span>
-              </div>
-
-              <div className="flex gap-6">
-                <span className="text-sm text-gray-500 dark:text-gray-400">
-                  {t("about.ollamaVersion")}
-                </span>
-                <span className="text-sm text-gray-900 dark:text-white">
-                  {data.ollama}
-                </span>
-              </div>
-            </div>
-          </div>
-
+          <Descriptions
+            title={t("about.heading")}
+            column={1}
+            size="middle"
+            items={[
+              {
+                key: 1,
+                label: t("about.chromeVersion"),
+                children: data.chromeVersion
+              },
+              {
+                key: 1,
+                label: t("about.ollamaVersion"),
+                children: data.ollama
+              }
+            ]}
+          />
           <div>
             <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
               {t("about.support")}

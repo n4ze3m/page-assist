@@ -7,7 +7,7 @@ import React from "react"
 import { useMutation } from "@tanstack/react-query"
 import { getPageShareUrl } from "~/services/ollama"
 import { cleanUrl } from "~/libs/clean-url"
-import { getUserId, saveWebshare } from "~/libs/db"
+import { getUserId, saveWebshare } from "@/db"
 import { useTranslation } from "react-i18next"
 
 type Props = {

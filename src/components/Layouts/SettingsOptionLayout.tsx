@@ -1,7 +1,15 @@
-import { Book, BrainCircuit, Orbit, Share, BlocksIcon , InfoIcon} from "lucide-react"
+import {
+  Book,
+  BrainCircuit,
+  Orbit,
+  Share,
+  BlocksIcon,
+  InfoIcon
+} from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { Link, useLocation } from "react-router-dom"
 import { OllamaIcon } from "../Icons/Ollama"
+import { Tag } from "antd"
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ")
@@ -9,7 +17,7 @@ function classNames(...classes: string[]) {
 
 const LinkComponent = (item: {
   href: string
-  name: string
+  name: string | JSX.Element
   icon: any
   current: string
 }) => {
@@ -40,12 +48,12 @@ const LinkComponent = (item: {
 
 export const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
   const location = useLocation()
-  const { t } = useTranslation("settings")
+  const { t } = useTranslation(["settings", "common"])
 
   return (
     <>
       <div className="mx-auto max-w-7xl lg:flex lg:gap-x-16 lg:px-8">
-        <aside className="flex lg:rounded-md bg-white lg:p-4 lg:mt-20 overflow-x-auto lg:border-0 border-b  py-4 lg:block lg:w-64 lg:flex-none  dark:bg-[#171717] dark:border-gray-600">
+        <aside className="flex lg:rounded-md bg-white lg:p-4 lg:mt-20 overflow-x-auto lg:border-0 border-b  py-4 lg:block lg:w-72 lg:flex-none  dark:bg-[#171717] dark:border-gray-600">
           <nav className="flex-none  px-4 sm:px-6 lg:px-0">
             <ul
               role="list"
@@ -68,12 +76,17 @@ export const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
                 current={location.pathname}
                 icon={BrainCircuit}
               />
-               {/* <LinkComponent
+              <LinkComponent
                 href="/settings/knowledge"
-                name={t("manageKnowledge.title")}
+                name={
+                  <div className="inline-flex items-center gap-2">
+                    {t("manageKnowledge.title")}
+                    <Tag color="yellow">{t("common:beta")}</Tag>
+                  </div>
+                }
                 icon={BlocksIcon}
                 current={location.pathname}
-              /> */}
+              />
               <LinkComponent
                 href="/settings/prompt"
                 name={t("managePrompts.title")}

@@ -1,5 +1,6 @@
-
 import { getOllamaURL, isOllamaRunning } from "../services/ollama"
+import { Storage } from "@plasmohq/storage"
+
 const progressHuman = (completed: number, total: number) => {
   return ((completed / total) * 100).toFixed(0) + "%"
 }
@@ -76,15 +77,20 @@ const streamDownload = async (url: string, model: string) => {
 }
 export default defineBackground({
   main() {
+    const storage = new Storage()
+
     chrome.runtime.onMessage.addListener(async (message) => {
       if (message.type === "sidepanel") {
-        chrome.tabs.query({ active: true, currentWindow: true }, async (tabs) => {
-          const tab = tabs[0]
-          chrome.sidePanel.open({
-            // tabId: tab.id!,
-            windowId: tab.windowId!,
-          })
-        })
+        chrome.tabs.query(
+          { active: true, currentWindow: true },
+          async (tabs) => {
+            const tab = tabs[0]
+            chrome.sidePanel.open({
+              // tabId: tab.id!,
+              windowId: tab.windowId!
+            })
+          }
+        )
       } else if (message.type === "pull_model") {
         const ollamaURL = await getOllamaURL()
 
@@ -93,8 +99,7 @@ export default defineBackground({
         if (!isRunning) {
           chrome.action.setBadgeText({ text: "E" })
           chrome.action.setBadgeBackgroundColor({ color: "#FF0000" })
-          chrome.action.setTitle({ title: "Ollama is not running"
-         })
+          chrome.action.setTitle({ title: "Ollama is not running" })
           setTimeout(() => {
             clearBadge()
           }, 5000)
@@ -111,12 +116,15 @@ export default defineBackground({
     chrome.commands.onCommand.addListener((command) => {
       switch (command) {
         case "execute_side_panel":
-          chrome.tabs.query({ active: true, currentWindow: true }, async (tabs) => {
-            const tab = tabs[0]
-            chrome.sidePanel.open({
-              windowId: tab.windowId!
-            })
-          })
+          chrome.tabs.query(
+            { active: true, currentWindow: true },
+            async (tabs) => {
+              const tab = tabs[0]
+              chrome.sidePanel.open({
+                windowId: tab.windowId!
+              })
+            }
+          )
           break
         default:
           break
@@ -131,12 +139,15 @@ export default defineBackground({
 
     chrome.contextMenus.onClicked.addListener((info, tab) => {
       if (info.menuItemId === "open-side-panel-pa") {
-        chrome.tabs.query({ active: true, currentWindow: true }, async (tabs) => {
-          const tab = tabs[0]
-          await chrome.sidePanel.open({
-            windowId: tab.windowId!,
-          })
-        })
+        chrome.tabs.query(
+          { active: true, currentWindow: true },
+          async (tabs) => {
+            const tab = tabs[0]
+            chrome.sidePanel.open({
+              tabId: tab.id!
+            })
+          }
+        )
       }
     })
   },

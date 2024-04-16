@@ -8,7 +8,7 @@ import { Checkbox, Dropdown, Image, Tooltip } from "antd"
 import { useSpeechRecognition } from "~/hooks/useSpeechRecognition"
 import { useWebUI } from "~/store/webui"
 import { defaultEmbeddingModelForRag } from "~/services/ollama"
-import { ImageIcon, MicIcon, X } from "lucide-react"
+import { ImageIcon, MicIcon, StopCircleIcon, X } from "lucide-react"
 import { useTranslation } from "react-i18next"
 
 type Props = {
@@ -56,8 +56,13 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
 
   useDynamicTextareaSize(textareaRef, form.values.message, 120)
 
-  const { onSubmit, selectedModel, chatMode, speechToTextLanguage } =
-    useMessage()
+  const {
+    onSubmit,
+    selectedModel,
+    chatMode,
+    speechToTextLanguage,
+    stopStreamingRequest
+  } = useMessage()
   const { isListening, start, stop, transcript } = useSpeechRecognition()
 
   React.useEffect(() => {
@@ -217,59 +222,70 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                     <ImageIcon className="h-5 w-5" />
                   </button>
                 </Tooltip>
-                <Dropdown.Button
-                  htmlType="submit"
-                  disabled={isSending}
-                  className="!justify-end !w-auto"
-                  icon={
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth={1.5}
-                      stroke="currentColor"
-                      className="w-5 h-5">
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="m19.5 8.25-7.5 7.5-7.5-7.5"
-                      />
-                    </svg>
-                  }
-                  menu={{
-                    items: [
-                      {
-                        key: 1,
-                        label: (
-                          <Checkbox
-                            checked={sendWhenEnter}
-                            onChange={(e) =>
-                              setSendWhenEnter(e.target.checked)
-                            }>
-                            {t("sendWhenEnter")}
-                          </Checkbox>
-                        )
-                      }
-                    ]
-                  }}>
-                  <div className="inline-flex gap-2">
-                    {sendWhenEnter ? (
+                {!isSending ? (
+                  <Dropdown.Button
+                    htmlType="submit"
+                    disabled={isSending}
+                    className="!justify-end !w-auto"
+                    icon={
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
                         stroke="currentColor"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        className="h-5 w-5"
-                        viewBox="0 0 24 24">
-                        <path d="M9 10L4 15 9 20"></path>
-                        <path d="M20 4v7a4 4 0 01-4 4H4"></path>
+                        className="w-5 h-5">
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="m19.5 8.25-7.5 7.5-7.5-7.5"
+                        />
                       </svg>
-                    ) : null}
-                    {t("common:submit")}
-                  </div>
-                </Dropdown.Button>
+                    }
+                    menu={{
+                      items: [
+                        {
+                          key: 1,
+                          label: (
+                            <Checkbox
+                              checked={sendWhenEnter}
+                              onChange={(e) =>
+                                setSendWhenEnter(e.target.checked)
+                              }>
+                              {t("sendWhenEnter")}
+                            </Checkbox>
+                          )
+                        }
+                      ]
+                    }}>
+                    <div className="inline-flex gap-2">
+                      {sendWhenEnter ? (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          className="h-5 w-5"
+                          viewBox="0 0 24 24">
+                          <path d="M9 10L4 15 9 20"></path>
+                          <path d="M20 4v7a4 4 0 01-4 4H4"></path>
+                        </svg>
+                      ) : null}
+                      {t("common:submit")}
+                    </div>
+                  </Dropdown.Button>
+                ) : (
+                  <Tooltip title={t("tooltip.stopStreaming")}>
+                    <button
+                      type="button"
+                      onClick={stopStreamingRequest}
+                      className="text-gray-800 dark:text-gray-300">
+                      <StopCircleIcon className="h-6 w-6" />
+                    </button>
+                  </Tooltip>
+                )}
               </div>
             </div>
           </form>

@@ -7,6 +7,9 @@ interface PageAssistContext {
 
   controller: AbortController | null
   setController: Dispatch<SetStateAction<AbortController>>
+
+  embeddingController: AbortController | null
+  setEmbeddingController: Dispatch<SetStateAction<AbortController>>
 }
 
 export const PageAssistContext = createContext<PageAssistContext>({
@@ -14,7 +17,10 @@ export const PageAssistContext = createContext<PageAssistContext>({
   setMessages: () => {},
 
   controller: null,
-  setController: () => {}
+  setController: () => {},
+
+  embeddingController: null,
+  setEmbeddingController: () => {}
 })
 
 export const usePageAssist = () => {

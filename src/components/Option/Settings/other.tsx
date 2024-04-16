@@ -1,13 +1,14 @@
 import { useQueryClient } from "@tanstack/react-query"
 import { useDarkMode } from "~/hooks/useDarkmode"
 import { useMessageOption } from "~/hooks/useMessageOption"
-import { PageAssitDatabase } from "~/libs/db"
+import { PageAssitDatabase } from "@/db"
 import { Select } from "antd"
 import { SUPPORTED_LANGUAGES } from "~/utils/supporetd-languages"
 import { MoonIcon, SunIcon } from "lucide-react"
 import { SearchModeSettings } from "./search-mode"
 import { useTranslation } from "react-i18next"
 import { useI18n } from "@/hooks/useI18n"
+import { TTSModeSettings } from "./tts-mode"
 
 export const SettingOther = () => {
   const { clearChat, speechToTextLanguage, setSpeechToTextLanguage } =
@@ -89,6 +90,7 @@ export const SettingOther = () => {
         </button>
       </div>
       <SearchModeSettings />
+      <TTSModeSettings  />
       <div>
         <div className="mb-5">
           <h2 className="text-base font-semibold leading-7 text-gray-900 dark:text-white">

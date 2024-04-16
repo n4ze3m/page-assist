@@ -8,7 +8,6 @@ import {
   Input,
   Form,
   Switch,
-  Empty
 } from "antd"
 import { Trash2, Pen, Computer, Zap } from "lucide-react"
 import { useState } from "react"
@@ -18,7 +17,7 @@ import {
   getAllPrompts,
   savePrompt,
   updatePrompt
-} from "~/libs/db"
+} from "@/db"
 
 export const PromptBody = () => {
   const queryClient = useQueryClient()
