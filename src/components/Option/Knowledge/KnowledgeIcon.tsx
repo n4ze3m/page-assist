@@ -12,7 +12,7 @@ export const KnowledgeIcon = ({ type, className = "w-6 h-6" }: Props) => {
     return <PDFIcon className={className} />
   } else if (type === "csv" || type === "text/csv") {
     return <CSVIcon className={className} />
-  } else if (type === "txt" || type === "text/plain") {
+  } else if (type === "txt" || type === "md" || type === "text/plain") {
     return <TXTIcon className={className} />
   }
 }

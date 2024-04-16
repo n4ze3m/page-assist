@@ -58,7 +58,7 @@ export const processKnowledge = async (msg: any, id: string): Promise<void> => {
           knownledge_id: knowledge.id,
           file_id: doc.source_id
         })
-      } else if (doc.type === "txt" || doc.type === "text/plain") {
+      } else if (doc.type === "txt" || doc.type === ".md" || doc.type === "text/plain") {
         const loader = new PageAssisTXTUrlLoader({
           name: doc.filename,
           url: doc.content
