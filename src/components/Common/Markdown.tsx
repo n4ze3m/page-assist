@@ -12,7 +12,6 @@ import { useTranslation } from "react-i18next"
 export default function Markdown({ message }: { message: string }) {
   const [isBtnPressed, setIsBtnPressed] = React.useState(false)
   const { t } = useTranslation("common")
-
   return (
     <React.Fragment>
       <ReactMarkdown

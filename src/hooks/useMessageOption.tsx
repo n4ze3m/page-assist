@@ -172,7 +172,7 @@ export const useMessageOption = () => {
       const { prompt, source } = await getSystemPromptForWeb(query)
       setIsSearchingInternet(false)
 
-      message = message.trim().replaceAll("\n", " ")
+    //  message = message.trim().replaceAll("\n", " ")
 
       let humanMessage = new HumanMessage({
         content: [
@@ -365,7 +365,7 @@ export const useMessageOption = () => {
       const prompt = await systemPromptForNonRagOption()
       const selectedPrompt = await getPromptById(selectedSystemPrompt)
 
-      message = message.trim().replaceAll("\n", " ")
+      // message = message.trim().replaceAll("\n", " ")
 
       let humanMessage = new HumanMessage({
         content: [
@@ -613,7 +613,7 @@ export const useMessageOption = () => {
           url: ""
         }
       })
-      message = message.trim().replaceAll("\n", " ")
+    //  message = message.trim().replaceAll("\n", " ")
 
       let humanMessage = new HumanMessage({
         content: [

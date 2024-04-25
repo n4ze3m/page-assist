@@ -75,7 +75,13 @@ export const PlaygroundMessage = (props: Props) => {
 
             <div className="flex flex-grow flex-col">
               {!editMode ? (
-                <Markdown message={props.message} />
+                props.isBot ? (
+                  <Markdown message={props.message} />
+                ) : (
+                  <p className="prose dark:prose-invert whitespace-pre-line	 prose-p:leading-relaxed prose-pre:p-0 dark:prose-dark">
+                    {props.message}
+                  </p>
+                )
               ) : (
                 <EditMessageForm
                   value={props.message}

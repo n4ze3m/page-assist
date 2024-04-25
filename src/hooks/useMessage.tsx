@@ -202,7 +202,7 @@ export const useMessage = () => {
           url: ""
         }
       })
-      message = message.trim().replaceAll("\n", " ")
+     // message = message.trim().replaceAll("\n", " ")
 
       let humanMessage = new HumanMessage({
         content: [
@@ -331,7 +331,8 @@ export const useMessage = () => {
 
     const ollama = new ChatOllama({
       model: selectedModel!,
-      baseUrl: cleanUrl(url)
+      baseUrl: cleanUrl(url),
+      verbose: true
     })
 
     let newMessage: Message[] = []
@@ -373,8 +374,6 @@ export const useMessage = () => {
 
     try {
       const prompt = await systemPromptForNonRag()
-
-      message = message.trim().replaceAll("\n", " ")
 
       let humanMessage = new HumanMessage({
         content: [
