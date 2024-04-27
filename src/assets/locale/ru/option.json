@@ -1,0 +1,12 @@
+{
+    "newChat": "Новый чат",
+    "selectAPrompt": "Выберите подсказку",
+    "githubRepository": "Репозиторий GitHub",
+    "settings": "Настройки",
+    "sidebarTitle": "История чата",
+    "error": "Ошибка",
+    "somethingWentWrong": "Что-то пошло не так",
+    "validationSelectModel": "Пожалуйста, выберите модель, чтобы продолжить",
+    "deleteHistoryConfirmation": "Вы уверены, что хотите удалить эту историю?",
+    "editHistoryTitle": "Введите новое название"
+}
