@@ -1,9 +1,19 @@
 @font-face {
-  font-family: "font";
-  src: url("font.ttf") format("truetype");
+  font-family: "Inter";
+  src: url("inter.ttf") format("truetype");
 }
-* {
-  font-family: "font" !important;
+
+@font-face {
+  font-family: "Onest";
+  src: url("onest.ttf") format("truetype");
+}
+
+.inter {
+  font-family: "Inter", sans-serif !important;
+}
+
+.onest {
+  font-family: "Onest", sans-serif !important;
 }
 
 @tailwind base;
@@ -47,7 +57,7 @@
 @keyframes animatedgradient {
   0% {
     background-position: 0% 50%;
-  }  
+  }
   50% {
     background-position: 100% 50%;
   }
@@ -62,6 +72,6 @@
 
 /* Hide scrollbar for IE, Edge and Firefox */
 .no-scrollbar {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }

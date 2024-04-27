@@ -10,12 +10,17 @@ import { OptionSettings } from "./option-settings"
 import { OptionShare } from "./option-settings-share"
 import { OptionKnowledgeBase } from "./option-settings-knowledge"
 import { OptionAbout } from "./option-settings-about"
+import { useTranslation } from "react-i18next"
 
 export const OptionRouting = () => {
   const { mode } = useDarkMode()
+  const { i18n } = useTranslation()
 
   return (
-    <div className={mode === "dark" ? "dark" : "light"}>
+    <div
+      className={`${mode === "dark" ? "dark" : "light"} ${
+        i18n.language === "ru" ? "onest" : "inter"
+      }`}>
       <Routes>
         <Route path="/" element={<OptionIndex />} />
         <Route path="/settings" element={<OptionSettings />} />
@@ -32,9 +37,13 @@ export const OptionRouting = () => {
 
 export const SidepanelRouting = () => {
   const { mode } = useDarkMode()
+  const { i18n } = useTranslation()
 
   return (
-    <div className={mode === "dark" ? "dark" : "light"}>
+    <div
+      className={`${mode === "dark" ? "dark" : "light"} ${
+        i18n.language === "ru" ? "onest" : "inter"
+      }`}>
       <Routes>
         <Route path="/" element={<SidepanelChat />} />
         <Route path="/settings" element={<SidepanelSettings />} />
