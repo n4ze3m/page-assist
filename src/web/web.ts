@@ -1,7 +1,8 @@
 import { getWebSearchPrompt } from "~/services/ollama"
-import { webGoogleSearch } from "./local-google"
-import { webDuckDuckGoSearch } from "./local-duckduckgo"
+import { webGoogleSearch } from "./search-engines/google"
+import { webDuckDuckGoSearch } from "./search-engines/duckduckgo"
 import { getSearchProvider } from "@/services/search"
+import { webSogouSearch } from "./search-engines/sogou"
 
 const getHostName = (url: string) => {
   try {
@@ -16,6 +17,8 @@ const searchWeb = (provider: string, query: string) => {
   switch (provider) {
     case "duckduckgo":
       return webDuckDuckGoSearch(query)
+    case "sogou":
+      return webSogouSearch(query)
     default:
       return webGoogleSearch(query)
   }
