@@ -1,15 +1,17 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { Form, Input, Skeleton, Table, Tooltip, message } from "antd"
+import { Form, Input, Skeleton, Switch, Table, Tooltip, message } from "antd"
 import { Trash2 } from "lucide-react"
 import { Trans, useTranslation } from "react-i18next"
 import { SaveButton } from "~/components/Common/SaveButton"
 import { deleteWebshare, getAllWebshares, getUserId } from "@/db"
 import { getPageShareUrl, setPageShareUrl } from "~/services/ollama"
 import { verifyPageShareURL } from "~/utils/verify-page-share"
+import { useStorage } from "@plasmohq/storage/hook"
 
 export const OptionShareBody = () => {
   const queryClient = useQueryClient()
   const { t } = useTranslation(["settings"])
+  const [shareModeEnabled, setShareModelEnabled] = useStorage("shareMode", true)
 
   const { status, data } = useQuery({
     queryKey: ["fetchShareInfo"],
@@ -132,6 +134,20 @@ export const OptionShareBody = () => {
                 </div>
               </Form.Item>
             </Form>
+            <div className="space-y-2 flex mb-4 flex-row items-center justify-between rounded-lg  dark:border-gray-600 ">
+              <div className="space-y-0.5">
+                <label className="text-sm font-semibold leading-5 text-gray-900 dark:text-white">
+                  {t("manageShare.webshare.label")}
+                </label>
+                <p className="text-sm font-normal leading-5 text-gray-500 dark:text-gray-400">
+                  {t("manageShare.webshare.description")}
+                </p>
+              </div>
+              <Switch
+                checked={shareModeEnabled}
+                onChange={setShareModelEnabled}
+              />
+            </div>
           </div>
           <div>
             <div>
