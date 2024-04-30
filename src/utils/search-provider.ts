@@ -6,5 +6,9 @@ export const SUPPORTED_SERACH_PROVIDERS = [
     {
         label: "DuckDuckGo",
         value: "duckduckgo"
+    },
+    {
+        label: "Sogou",
+        value: "sogou"
     }
 ]

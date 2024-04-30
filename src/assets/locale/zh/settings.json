@@ -197,7 +197,9 @@
             },
             "confirm": {
                 "delete": "您确定要删除此对话共享吗？这个操作不能撤销。"
-            }
+            },
+            "label": "管理页面分享",
+            "description": "启用或禁用页面分享功能。默认情况下，页面分享功能已启用。"
         },
         "notification": {
             "pageShareSuccess": "对话共享服务 URL 已成功更新",

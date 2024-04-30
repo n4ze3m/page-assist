@@ -1,6 +1,7 @@
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 import { en } from "./lang/en";
+import { ru } from "./lang/ru";
 import { ml } from "./lang/ml";
 import { zh } from "./lang/zh";
 import { ja } from "./lang/ja";
@@ -14,6 +15,8 @@ i18n
             en: en,
             ml: ml,
             "zh-CN": zh,
+            ru: ru,
+            "ru-RU": ru,
             zh: zh,
             ja: ja,
             "ja-JP": ja

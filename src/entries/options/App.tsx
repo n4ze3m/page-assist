@@ -11,13 +11,16 @@ import { PageAssistProvider } from "@/components/Common/PageAssistProvider"
 
 function IndexOption() {
   const { mode } = useDarkMode()
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   return (
     <MemoryRouter>
       <ConfigProvider
         theme={{
           algorithm:
-            mode === "dark" ? theme.darkAlgorithm : theme.defaultAlgorithm
+            mode === "dark" ? theme.darkAlgorithm : theme.defaultAlgorithm,
+          token: {
+            fontFamily: i18n.language === "ru" ? "Onest" : "Inter"
+          }
         }}
         renderEmpty={() => (
           <Empty

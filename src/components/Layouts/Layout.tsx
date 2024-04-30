@@ -20,6 +20,7 @@ import { ShareBtn } from "~/components/Common/ShareBtn"
 import { useTranslation } from "react-i18next"
 import { OllamaIcon } from "../Icons/Ollama"
 import { SelectedKnowledge } from "../Option/Knowledge/SelectedKnwledge"
+import { useStorage } from "@plasmohq/storage/hook"
 
 export default function OptionLayout({
   children
@@ -28,6 +29,7 @@ export default function OptionLayout({
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const { t } = useTranslation(["option", "common"])
+  const [shareModeEnabled] = useStorage("shareMode", true)
 
   const {
     selectedModel,
@@ -107,7 +109,7 @@ export default function OptionLayout({
               <div>
                 <Select
                   value={selectedModel}
-                  onChange={(e) =>  {
+                  onChange={(e) => {
                     setSelectedModel(e)
                     localStorage.setItem("selectedModel", e)
                   }}
@@ -175,9 +177,10 @@ export default function OptionLayout({
             <div className="flex flex-1 justify-end px-4">
               <div className="ml-4 flex items-center md:ml-6">
                 <div className="flex gap-4 items-center">
-                  {pathname === "/" && messages.length > 0 && !streaming && (
-                    <ShareBtn messages={messages} />
-                  )}
+                  {pathname === "/" &&
+                    messages.length > 0 &&
+                    !streaming &&
+                    shareModeEnabled && <ShareBtn messages={messages} />}
                   <Tooltip title={t("githubRepository")}>
                     <a
                       href="https://github.com/n4ze3m/page-assist"

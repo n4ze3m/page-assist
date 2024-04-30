@@ -24,7 +24,7 @@ export default defineConfig({
   srcDir: "src",
   outDir: "build",
   manifest: {
-    version: "1.1.4",
+    version: "1.1.5",
     name: '__MSG_extName__',
     description: '__MSG_extDescription__',
     default_locale: 'en',
