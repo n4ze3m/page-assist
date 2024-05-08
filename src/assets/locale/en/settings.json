@@ -41,12 +41,12 @@
                 "confirm": "Are you sure you want to delete your chat history? This action cannot be undone."
             },
             "export": {
-                "label": "Export Chat History, Settings, and Prompts",
+                "label": "Export Chat History, Knowledge Base, and Prompts",
                 "button": "Export Data",
                 "success": "Export Success"
             },
             "import": {
-                "label": "Import Chat History, Settings, and Prompts",
+                "label": "Import Chat History, Knowledge Base, and Prompts",
                 "button": "Import Data",
                 "success": "Import Success",
                 "error": "Import Error"

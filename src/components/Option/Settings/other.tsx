@@ -9,6 +9,11 @@ import { SearchModeSettings } from "./search-mode"
 import { useTranslation } from "react-i18next"
 import { useI18n } from "@/hooks/useI18n"
 import { TTSModeSettings } from "./tts-mode"
+import {
+  exportPageAssistData,
+  importPageAssistData
+} from "@/libs/export-import"
+import { BetaTag } from "@/components/Common/Beta"
 
 export const SettingOther = () => {
   const { clearChat, speechToTextLanguage, setSpeechToTextLanguage } =
@@ -90,7 +95,7 @@ export const SettingOther = () => {
         </button>
       </div>
       <SearchModeSettings />
-      <TTSModeSettings  />
+      <TTSModeSettings />
       <div>
         <div className="mb-5">
           <h2 className="text-base font-semibold leading-7 text-gray-900 dark:text-white">
@@ -98,7 +103,7 @@ export const SettingOther = () => {
           </h2>
           <div className="border border-b border-gray-200 dark:border-gray-600 mt-3"></div>
         </div>
-        <div className="flex flex-row justify-between">
+        <div className="flex flex-row mb-3 justify-between">
           <span className="text-gray-500 dark:text-neutral-50 ">
             {t("generalSettings.system.deleteChatHistory.label")}
           </span>
@@ -121,6 +126,37 @@ export const SettingOther = () => {
             className="bg-red-500 dark:bg-red-600 text-white dark:text-gray-200 px-4 py-2 rounded-md">
             {t("generalSettings.system.deleteChatHistory.button")}
           </button>
+        </div>
+        <div className="flex flex-row mb-3 justify-between">
+          <span className="text-gray-500 dark:text-neutral-50 ">
+          <BetaTag />    {t("generalSettings.system.export.label")}
+          </span>
+          <button
+            onClick={exportPageAssistData}
+            className="bg-gray-800 dark:bg-white text-white dark:text-gray-900 px-4 py-2 rounded-md cursor-pointer">
+            {t("generalSettings.system.export.button")}
+          </button>
+        </div>
+        <div className="flex flex-row mb-3 justify-between">
+          <span className="text-gray-500 dark:text-neutral-50 ">
+          <BetaTag /> {t("generalSettings.system.import.label")}
+          </span>
+          <label
+            htmlFor="import"
+            className="bg-gray-800 dark:bg-white text-white dark:text-gray-900 px-4 py-2 rounded-md cursor-pointer">
+            {t("generalSettings.system.import.button")}
+          </label>
+          <input
+            type="file"
+            accept=".json"
+            id="import"
+            className="hidden"
+            onChange={(e) => {
+              if (e.target.files) {
+                importPageAssistData(e.target.files[0])
+              }
+            }}
+          />
         </div>
       </div>
     </dl>

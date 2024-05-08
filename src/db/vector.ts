@@ -100,6 +100,34 @@ export class PageAssistVectorDb {
       })
     })
   }
+
+  getAll = async (): Promise<VectorData[]> => {
+    return new Promise((resolve, reject) => {
+      this.db.get(null, (result) => {
+        if (chrome.runtime.lastError) {
+          reject(chrome.runtime.lastError)
+        } else {
+          resolve(Object.values(result))
+        }
+      })
+    })
+  }
+
+  saveImportedData = async (data: VectorData[]): Promise<void> => {
+    return new Promise((resolve, reject) => {
+      const obj: Record<string, VectorData> = {}
+      data.forEach((d) => {
+        obj[d.id] = d
+      })
+      this.db.set(obj, () => {
+        if (chrome.runtime.lastError) {
+          reject(chrome.runtime.lastError)
+        } else {
+          resolve()
+        }
+      })
+    })
+  }
 }
 
 export const insertVector = async (
@@ -126,4 +154,15 @@ export const deleteVectorByFileId = async (
 ): Promise<void> => {
   const db = new PageAssistVectorDb()
   return db.deleteVectorByFileId(id, file_id)
+}
+
+export const exportVectors = async () => {
+  const db = new PageAssistVectorDb()
+  const data = await db.getAll()
+  return data
+}
+
+export const importVectors = async (data: VectorData[]) => {
+  const db = new PageAssistVectorDb()
+  return db.saveImportedData(data) 
 }

@@ -230,7 +230,7 @@ export const useMessageOption = () => {
             if (message.id === generateMessageId) {
               return {
                 ...message,
-                message: fullText.slice(0, -1) + "▋"
+                message: fullText + "▋"
               }
             }
             return message
@@ -436,7 +436,7 @@ export const useMessageOption = () => {
             if (message.id === generateMessageId) {
               return {
                 ...message,
-                message: fullText.slice(0, -1) + "▋"
+                message: fullText + "▋"
               }
             }
             return message
@@ -450,7 +450,7 @@ export const useMessageOption = () => {
           if (message.id === generateMessageId) {
             return {
               ...message,
-              message: fullText.slice(0, -1)
+              message: fullText
             }
           }
           return message
@@ -646,7 +646,7 @@ export const useMessageOption = () => {
             if (message.id === generateMessageId) {
               return {
                 ...message,
-                message: fullText.slice(0, -1) + "▋"
+                message: fullText + "▋"
               }
             }
             return message

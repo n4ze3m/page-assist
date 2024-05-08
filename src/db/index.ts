@@ -417,3 +417,42 @@ export const getUserId = async () => {
   }
   return id
 }
+
+export const exportChatHistory = async () => {
+  const db = new PageAssitDatabase()
+  const chatHistories = await db.getChatHistories()
+  const messages = await Promise.all(
+    chatHistories.map(async (history) => {
+      const messages = await db.getChatHistory(history.id)
+      return { history, messages }
+    })
+  )
+  return messages
+}
+
+export const importChatHistory = async (
+  data: {
+    history: HistoryInfo
+    messages: MessageHistory
+  }[]
+) => {
+  const db = new PageAssitDatabase()
+  for (const { history, messages } of data) {
+    await db.addChatHistory(history)
+    for (const message of messages) {
+      await db.addMessage(message)
+    }
+  }
+}
+
+export const exportPrompts = async () => {
+  const db = new PageAssitDatabase()
+  return await db.getAllPrompts()
+}
+
+export const importPrompts = async (prompts: Prompts) => {
+  const db = new PageAssitDatabase()
+  for (const prompt of prompts) {
+    await db.addPrompt(prompt)
+  }
+}
