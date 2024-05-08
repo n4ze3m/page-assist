@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { Select } from "antd"
 import { RotateCcw } from "lucide-react"
 import { useEffect, useState } from "react"
@@ -15,6 +15,7 @@ import {
 export const EmptySidePanel = () => {
   const [ollamaURL, setOllamaURL] = useState<string>("")
   const { t } = useTranslation(["playground", "common"])
+  const queryClient = useQueryClient()
   const {
     data: ollamaInfo,
     status: ollamaStatus,
@@ -26,7 +27,9 @@ export const EmptySidePanel = () => {
       const ollamaURL = await getOllamaURL()
       const isOk = await isOllamaRunning()
       const models = await fetchChatModels({ returnEmpty: false })
-
+      queryClient.invalidateQueries({
+        queryKey: ["getAllModelsForSelect"]
+      })
       return {
         isOk,
         models,

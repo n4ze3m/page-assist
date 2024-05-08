@@ -10,6 +10,7 @@ import { useWebUI } from "~/store/webui"
 import { defaultEmbeddingModelForRag } from "~/services/ollama"
 import { ImageIcon, MicIcon, StopCircleIcon, X } from "lucide-react"
 import { useTranslation } from "react-i18next"
+import { ModelSelect } from "@/components/Common/ModelSelect"
 
 type Props = {
   dropedFile: File | undefined
@@ -186,6 +187,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                 {...form.getInputProps("message")}
               />
               <div className="flex mt-4 justify-end gap-3">
+                <ModelSelect />
                 <Tooltip title={t("tooltip.speechToText")}>
                   <button
                     type="button"
