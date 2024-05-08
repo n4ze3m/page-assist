@@ -444,3 +444,15 @@ export const importChatHistory = async (
     }
   }
 }
+
+export const exportPrompts = async () => {
+  const db = new PageAssitDatabase()
+  return await db.getAllPrompts()
+}
+
+export const importPrompts = async (prompts: Prompts) => {
+  const db = new PageAssitDatabase()
+  for (const prompt of prompts) {
+    await db.addPrompt(prompt)
+  }
+}

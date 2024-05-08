@@ -112,6 +112,22 @@ export class PageAssistVectorDb {
       })
     })
   }
+
+  saveImportedData = async (data: VectorData[]): Promise<void> => {
+    return new Promise((resolve, reject) => {
+      const obj: Record<string, VectorData> = {}
+      data.forEach((d) => {
+        obj[d.id] = d
+      })
+      this.db.set(obj, () => {
+        if (chrome.runtime.lastError) {
+          reject(chrome.runtime.lastError)
+        } else {
+          resolve()
+        }
+      })
+    })
+  }
 }
 
 export const insertVector = async (
@@ -148,7 +164,5 @@ export const exportVectors = async () => {
 
 export const importVectors = async (data: VectorData[]) => {
   const db = new PageAssistVectorDb()
-  for (const d of data) {
-    await db.insertVector(d.id, d.vectors)
-  }
+  return db.saveImportedData(data) 
 }
