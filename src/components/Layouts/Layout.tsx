@@ -63,13 +63,18 @@ export default function OptionLayout({
     return prompts?.find((prompt) => prompt.id === id)
   }
 
-  const handlePromptChange = (value: string) => {
+  const handlePromptChange = (value?: string) => {
+    if (!value) {
+      setSelectedSystemPrompt(undefined)
+      setSelectedQuickPrompt(undefined)
+      return
+    }
     const prompt = getPromptInfoById(value)
     if (prompt?.is_system) {
       setSelectedSystemPrompt(prompt.id)
     } else {
+      setSelectedSystemPrompt(undefined)
       setSelectedQuickPrompt(prompt!.content)
-      setSelectedSystemPrompt("")
     }
   }
 
