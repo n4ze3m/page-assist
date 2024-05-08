@@ -37,7 +37,7 @@
     "langchain": "^0.1.28",
     "lucide-react": "^0.350.0",
     "ml-distance": "^4.0.1",
-    "pdfjs-dist": "^4.0.379",
+    "pdfjs-dist": "4.0.379",
     "property-information": "^6.4.1",
     "pubsub-js": "^1.9.4",
     "react": "18.2.0",

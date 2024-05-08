@@ -190,3 +190,16 @@ export const deleteSource = async (id: string, source_id: string) => {
   await db.deleteSource(id, source_id)
   await deleteVectorByFileId(`vector:${id}`, source_id)
 }
+
+export const exportKnowledge = async () => {
+  const db = new PageAssistKnowledge()
+  const data = await db.getAll()
+  return data
+}
+
+export const importKnowledge = async (data: Knowledge[]) => {
+  const db = new PageAssistKnowledge()
+  for (const d of data) {
+    await db.create(d)
+  }
+}
