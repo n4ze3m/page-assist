@@ -1,7 +1,6 @@
-
 export const isGoogleDocs = (url: string) => {
-    const GOOGLE_DOCS_REGEX = /docs\.google\.com\/document/g
-    return GOOGLE_DOCS_REGEX.test(url)
+  const GOOGLE_DOCS_REGEX = /docs\.google\.com\/document/g
+  return GOOGLE_DOCS_REGEX.test(url)
 }
 
 const getGoogleDocs = () => {
@@ -114,6 +113,6 @@ export const parseGoogleDocs = async () => {
   }>
 
   const { content } = await result
-  
+
   return content
 }

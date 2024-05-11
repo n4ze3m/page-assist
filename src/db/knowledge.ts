@@ -1,3 +1,4 @@
+import { Storage, browser } from "wxt/browser"
 import { deleteVector, deleteVectorByFileId } from "./vector"
 
 export type Source = {
@@ -24,89 +25,105 @@ export const generateID = () => {
   })
 }
 export class PageAssistKnowledge {
-  db: chrome.storage.StorageArea
+  db: Storage.LocalStorageArea
 
   constructor() {
-    this.db = chrome.storage.local
+    this.db = browser.storage.local
   }
 
   getAll = async (): Promise<Knowledge[]> => {
     return new Promise((resolve, reject) => {
-      this.db.get(null, (result) => {
-        if (chrome.runtime.lastError) {
-          reject(chrome.runtime.lastError)
-        } else {
-          const data = Object.keys(result).map((key) => result[key])
-          resolve(data)
-        }
+      // this.db.get(null, (result) => {
+      //   if (chrome.runtime.lastError) {
+      //     reject(chrome.runtime.lastError)
+      //   } else {
+      //     const data = Object.keys(result).map((key) => result[key])
+      //     resolve(data)
+      //   }
+      // })
+      this.db.get(null).then((result) => {
+        const data = Object.keys(result).map((key) => result[key])
+        resolve(data)
       })
     })
   }
 
   getById = async (id: string): Promise<Knowledge> => {
     return new Promise((resolve, reject) => {
-      this.db.get(id, (result) => {
-        if (chrome.runtime.lastError) {
-          reject(chrome.runtime.lastError)
-        } else {
-          resolve(result[id])
-        }
+      this.db.get(id).then((result) => {
+        resolve(result[id])
       })
     })
+    
   }
-
   create = async (knowledge: Knowledge): Promise<void> => {
     return new Promise((resolve, reject) => {
-      this.db.set({ [knowledge.id]: knowledge }, () => {
-        if (chrome.runtime.lastError) {
-          reject(chrome.runtime.lastError)
-        } else {
-          resolve()
-        }
+      // this.db.set({ [knowledge.id]: knowledge }, () => {
+      //   if (chrome.runtime.lastError) {
+      //     reject(chrome.runtime.lastError)
+      //   } else {
+      //     resolve()
+      //   }
+      // })
+      this.db.set({ [knowledge.id]: knowledge }).then(() => {
+        resolve()
       })
     })
   }
 
   update = async (knowledge: Knowledge): Promise<void> => {
     return new Promise((resolve, reject) => {
-      this.db.set({ [knowledge.id]: knowledge }, () => {
-        if (chrome.runtime.lastError) {
-          reject(chrome.runtime.lastError)
-        } else {
-          resolve()
-        }
+      // this.db.set({ [knowledge.id]: knowledge }, () => {
+      //   if (chrome.runtime.lastError) {
+      //     reject(chrome.runtime.lastError)
+      //   } else {
+      //     resolve()
+      //   }
+      // })
+      this.db.set({ [knowledge.id]: knowledge }).then(() => {
+        resolve()
       })
     })
   }
 
   delete = async (id: string): Promise<void> => {
     return new Promise((resolve, reject) => {
-      this.db.remove(id, () => {
-        if (chrome.runtime.lastError) {
-          reject(chrome.runtime.lastError)
-        } else {
-          resolve()
-        }
+      // this.db.remove(id, () => {
+      //   if (chrome.runtime.lastError) {
+      //     reject(chrome.runtime.lastError)
+      //   } else {
+      //     resolve()
+      //   }
+      // })
+      this.db.remove(id).then(() => {
+        resolve()
       })
     })
   }
 
   deleteSource = async (id: string, source_id: string): Promise<void> => {
     return new Promise((resolve, reject) => {
-      this.db.get(id, (result) => {
-        if (chrome.runtime.lastError) {
-          reject(chrome.runtime.lastError)
-        } else {
-          const data = result[id] as Knowledge
-          data.source = data.source.filter((s) => s.source_id !== source_id)
-          this.db.set({ [id]: data }, () => {
-            if (chrome.runtime.lastError) {
-              reject(chrome.runtime.lastError)
-            } else {
-              resolve()
-            }
-          })
-        }
+      // this.db.get(id, (result) => {
+      //   if (chrome.runtime.lastError) {
+      //     reject(chrome.runtime.lastError)
+      //   } else {
+      //     const data = result[id] as Knowledge
+      //     data.source = data.source.filter((s) => s.source_id !== source_id)
+      //     this.db.set({ [id]: data }, () => {
+      //       if (chrome.runtime.lastError) {
+      //         reject(chrome.runtime.lastError)
+      //       } else {
+      //         resolve()
+      //       }
+      //     })
+      //   }
+      // })
+      this.db.get(id).then((result) => {
+        const data = result[id] as Knowledge
+        data.source = data.source.filter((s) => s.source_id !== source_id)
+        this.db.set({ [id]: data }).then(() => {
+          resolve()
+        })
       })
     })
   }
