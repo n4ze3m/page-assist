@@ -21,8 +21,16 @@ export const setTTSProvider = async (ttsProvider: string) => {
 }
 
 export const getBrowserTTSVoices = async () => {
-  const tts = await chrome.tts.getVoices()
-  return tts
+  if (import.meta.env.BROWSER === "chrome") {
+    const tts = await chrome.tts.getVoices()
+    return tts
+  } else {
+    const tts = await speechSynthesis.getVoices()
+    return tts.map((voice) => ({
+      voiceName: voice.name,
+      lang: voice.lang
+    }))
+  }
 }
 
 export const getVoice = async () => {

@@ -1,13 +1,13 @@
 import { getOllamaURL, isOllamaRunning } from "../services/ollama"
-import { Storage } from "@plasmohq/storage"
-
+import { browser } from "wxt/browser"
+import { setBadgeBackgroundColor, setBadgeText, setTitle } from "@/utils/action"
 const progressHuman = (completed: number, total: number) => {
   return ((completed / total) * 100).toFixed(0) + "%"
 }
 
 const clearBadge = () => {
-  chrome.action.setBadgeText({ text: "" })
-  chrome.action.setTitle({ title: "" })
+  setBadgeText({ text: "" })
+  setTitle({ title: "" })
 }
 const streamDownload = async (url: string, model: string) => {
   url += "/api/pull"
@@ -42,16 +42,16 @@ const streamDownload = async (url: string, model: string) => {
         completed?: number
       }
       if (json.total && json.completed) {
-        chrome.action.setBadgeText({
+        setBadgeText({
           text: progressHuman(json.completed, json.total)
         })
-        chrome.action.setBadgeBackgroundColor({ color: "#0000FF" })
+        setBadgeBackgroundColor({ color: "#0000FF" })
       } else {
-        chrome.action.setBadgeText({ text: "🏋️‍♂️" })
-        chrome.action.setBadgeBackgroundColor({ color: "#FFFFFF" })
+        setBadgeText({ text: "🏋️‍♂️" })
+        setBadgeBackgroundColor({ color: "#FFFFFF" })
       }
 
-      chrome.action.setTitle({ title: json.status })
+      setTitle({ title: json.status })
 
       if (json.status === "success") {
         isSuccess = true
@@ -62,13 +62,13 @@ const streamDownload = async (url: string, model: string) => {
   }
 
   if (isSuccess) {
-    chrome.action.setBadgeText({ text: "✅" })
-    chrome.action.setBadgeBackgroundColor({ color: "#00FF00" })
-    chrome.action.setTitle({ title: "Model pulled successfully" })
+    setBadgeText({ text: "✅" })
+    setBadgeBackgroundColor({ color: "#00FF00" })
+    setTitle({ title: "Model pulled successfully" })
   } else {
-    chrome.action.setBadgeText({ text: "❌" })
-    chrome.action.setBadgeBackgroundColor({ color: "#FF0000" })
-    chrome.action.setTitle({ title: "Model pull failed" })
+    setBadgeText({ text: "❌" })
+    setBadgeBackgroundColor({ color: "#FF0000" })
+    setTitle({ title: "Model pull failed" })
   }
 
   setTimeout(() => {
@@ -77,29 +77,18 @@ const streamDownload = async (url: string, model: string) => {
 }
 export default defineBackground({
   main() {
-    const storage = new Storage()
-
-    chrome.runtime.onMessage.addListener(async (message) => {
+    browser.runtime.onMessage.addListener(async (message) => {
       if (message.type === "sidepanel") {
-        chrome.tabs.query(
-          { active: true, currentWindow: true },
-          async (tabs) => {
-            const tab = tabs[0]
-            chrome.sidePanel.open({
-              // tabId: tab.id!,
-              windowId: tab.windowId!
-            })
-          }
-        )
+        browser.sidebarAction.open()
       } else if (message.type === "pull_model") {
         const ollamaURL = await getOllamaURL()
 
         const isRunning = await isOllamaRunning()
 
         if (!isRunning) {
-          chrome.action.setBadgeText({ text: "E" })
-          chrome.action.setBadgeBackgroundColor({ color: "#FF0000" })
-          chrome.action.setTitle({ title: "Ollama is not running" })
+          setBadgeText({ text: "E" })
+          setBadgeBackgroundColor({ color: "#FF0000" })
+          setTitle({ title: "Ollama is not running" })
           setTimeout(() => {
             clearBadge()
           }, 5000)
@@ -109,47 +98,73 @@ export default defineBackground({
       }
     })
 
-    chrome.action.onClicked.addListener((tab) => {
-      chrome.tabs.create({ url: chrome.runtime.getURL("options.html") })
-    })
+    if (import.meta.env.BROWSER === "chrome") {
+      chrome.action.onClicked.addListener((tab) => {
+        browser.tabs.create({ url: browser.runtime.getURL("/options.html") })
+      })
+    } else {
+      browser.browserAction.onClicked.addListener((tab) => {
+        console.log("browser.browserAction.onClicked.addListener")
+        browser.tabs.create({ url: browser.runtime.getURL("/options.html") })
+      })
+    }
 
-    chrome.commands.onCommand.addListener((command) => {
-      switch (command) {
-        case "execute_side_panel":
+    browser.contextMenus.create({
+      id: "open-side-panel-pa",
+      title: browser.i18n.getMessage("openSidePanelToChat"),
+      contexts: ["all"]
+    })
+    if (import.meta.env.BROWSER === "chrome") {
+      browser.contextMenus.onClicked.addListener((info, tab) => {
+        if (info.menuItemId === "open-side-panel-pa") {
           chrome.tabs.query(
             { active: true, currentWindow: true },
             async (tabs) => {
               const tab = tabs[0]
               chrome.sidePanel.open({
-                windowId: tab.windowId!
+                tabId: tab.id!
               })
             }
           )
-          break
-        default:
-          break
-      }
-    })
+        }
+      })
 
-    chrome.contextMenus.create({
-      id: "open-side-panel-pa",
-      title: browser.i18n.getMessage("openSidePanelToChat"),
-      contexts: ["all"]
-    })
+      browser.commands.onCommand.addListener((command) => {
+        switch (command) {
+          case "execute_side_panel":
+            chrome.tabs.query(
+              { active: true, currentWindow: true },
+              async (tabs) => {
+                const tab = tabs[0]
+                chrome.sidePanel.open({
+                  tabId: tab.id!
+                })
+              }
+            )
+            break
+          default:
+            break
+        }
+      })
+    }
 
-    chrome.contextMenus.onClicked.addListener((info, tab) => {
-      if (info.menuItemId === "open-side-panel-pa") {
-        chrome.tabs.query(
-          { active: true, currentWindow: true },
-          async (tabs) => {
-            const tab = tabs[0]
-            chrome.sidePanel.open({
-              tabId: tab.id!
-            })
-          }
-        )
-      }
-    })
+    if (import.meta.env.BROWSER === "firefox") {
+      browser.contextMenus.onClicked.addListener((info, tab) => {
+        if (info.menuItemId === "open-side-panel-pa") {
+          browser.sidebarAction.toggle()
+        }
+      })
+
+      browser.commands.onCommand.addListener((command) => {
+        switch (command) {
+          case "execute_side_panel":
+            browser.sidebarAction.toggle()
+            break
+          default:
+            break
+        }
+      })
+    }
   },
   persistent: true
 })

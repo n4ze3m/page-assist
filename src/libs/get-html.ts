@@ -4,7 +4,7 @@ import {
   isTweet,
   isTwitterTimeline,
   parseTweet,
-  parseTwitterTimeline,
+  parseTwitterTimeline
 } from "@/parser/twitter"
 import { isGoogleDocs, parseGoogleDocs } from "@/parser/google-docs"
 import { cleanUnwantedUnicode } from "@/utils/clean"
@@ -24,18 +24,35 @@ const _getHtml = () => {
 
 export const getDataFromCurrentTab = async () => {
   const result = new Promise((resolve) => {
-    chrome.tabs.query({ active: true, currentWindow: true }, async (tabs) => {
-      const tab = tabs[0]
+    if (import.meta.env.BROWSER === "chrome") {
+      chrome.tabs.query({ active: true, currentWindow: true }, async (tabs) => {
+        const tab = tabs[0]
 
-      const data = await chrome.scripting.executeScript({
-        target: { tabId: tab.id },
-        func: _getHtml
+        const data = await chrome.scripting.executeScript({
+          target: { tabId: tab.id },
+          func: _getHtml
+        })
+
+        if (data.length > 0) {
+          resolve(data[0].result)
+        }
       })
+    } else {
+      browser.tabs
+        .query({ active: true, currentWindow: true })
+        .then(async (tabs) => {
+          const tab = tabs[0]
 
-      if (data.length > 0) {
-        resolve(data[0].result)
-      }
-    })
+          const data = await browser.scripting.executeScript({
+            target: { tabId: tab.id },
+            func: _getHtml
+          })
+
+          if (data.length > 0) {
+            resolve(data[0].result)
+          }
+        })
+    }
   }) as Promise<{
     url: string
     content: string

@@ -23,7 +23,7 @@ Click the button below to deploy the code to Railway.
 
 ```bash
 git clone https://github.com/n4ze3m/page-share-app.git
-cd page-assist-app
+cd page-share-app
 ```
 
 2. Run the server

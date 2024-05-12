@@ -60,7 +60,7 @@ export const ModelsBody = () => {
 
     form.reset()
 
-    chrome.runtime.sendMessage({
+    browser.runtime.sendMessage({
       type: "pull_model",
       modelName
     })

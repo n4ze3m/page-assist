@@ -42,4 +42,7 @@ keys.json
 
 # typescript
 .tsbuildinfo
+# WXT
 .wxt
+# WebStorm
+.idea
