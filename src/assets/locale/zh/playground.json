@@ -2,7 +2,8 @@
     "ollamaState": {
         "searching": "正在搜索您的Ollama 🦙",
         "running": "Ollama正在运行 🦙",
-        "notRunning": "无法连接到Ollama 🦙"
+        "notRunning": "无法连接到Ollama 🦙",
+        "connectionError": "看起来你正在遇到连接错误。请参阅这<anchor>文档</anchor>进行故障排除。"
     },
     "formError": {
         "noModel": "请选择一个模型",
