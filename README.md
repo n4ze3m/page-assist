@@ -89,10 +89,10 @@ This will start a development server and watch for changes in the source files. 
 | -------- | ------- | ----------------- | ------ |
 | Chrome   | ✅      | ✅                | ✅     |
 | Brave    | ✅      | ✅                | ✅     |
+| Firefox  | ✅      | ✅                | ✅     |
 | Edge     | ✅      | ❌                | ✅     |
 | Opera GX | ❌      | ❌                | ✅     |
 | Arc      | ❌      | ❌                | ✅     |
-| Firefox  | ❌      | ❌                | ❌     |
 
 ## Local AI Provider
 
@@ -100,7 +100,7 @@ This will start a development server and watch for changes in the source files. 
 
 ## Roadmap
 
-- [ ] Firefox Support
+- [X] Firefox Support
 - [ ] More Local AI Providers
 - [ ] More Features
 - [ ] More Customization Options
