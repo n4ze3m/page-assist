@@ -7,7 +7,7 @@ import type { Document } from "@langchain/core/documents"
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter"
 import { MemoryVectorStore } from "langchain/vectorstores/memory"
 import { cleanUrl } from "~/libs/clean-url"
-import { chromeRunTime } from "~/libs/runtime"
+import { urlRewriteRuntime } from "~/libs/runtime"
 import { PageAssistHtmlLoader } from "~/loader/html"
 import {
   defaultEmbeddingChunkOverlap,
@@ -18,7 +18,7 @@ import {
 
 
 export const localGoogleSearch = async (query: string) => {
-  await chromeRunTime(
+  await urlRewriteRuntime(
     cleanUrl("https://www.google.com/search?hl=en&q=" + query)
   )
   const abortController = new AbortController()

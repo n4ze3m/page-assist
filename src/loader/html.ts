@@ -1,7 +1,7 @@
 import { BaseDocumentLoader } from "langchain/document_loaders/base"
 import { Document } from "@langchain/core/documents"
 import { compile } from "html-to-text"
-import { chromeRunTime } from "~/libs/runtime"
+import { urlRewriteRuntime } from "~/libs/runtime"
 import { YtTranscript } from "yt-transcript"
 import { isWikipedia, parseWikipedia } from "@/parser/wiki"
 
@@ -102,7 +102,7 @@ export class PageAssistHtmlLoader
         }
       ]
     }
-    await chromeRunTime(this.url)
+    await urlRewriteRuntime(this.url)
     const fetchHTML = await fetch(this.url)
     let html = await fetchHTML.text()
 

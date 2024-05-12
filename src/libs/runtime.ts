@@ -1,8 +1,15 @@
-export const chromeRunTime = async function (domain: string) {
+import { getAdvancedOllamaSettings } from "@/services/app"
+
+export const urlRewriteRuntime = async function (domain: string) {
   if (browser.runtime && browser.runtime.id) {
+    const { isEnableRewriteUrl, rewriteUrl } = await getAdvancedOllamaSettings()
     if (import.meta.env.BROWSER === "chrome") {
       const url = new URL(domain)
       const domains = [url.hostname]
+      let origin = `${url.protocol}//${url.hostname}`
+      if (!isEnableRewriteUrl && rewriteUrl) {
+        origin = rewriteUrl
+      }
       const rules = [
         {
           id: 1,
@@ -16,13 +23,12 @@ export const chromeRunTime = async function (domain: string) {
               {
                 header: "Origin",
                 operation: "set",
-                value: `${url.protocol}//${url.hostname}`
+                value: origin
               }
             ]
           }
         }
       ]
-
       await browser.declarativeNetRequest.updateDynamicRules({
         removeRuleIds: rules.map((r) => r.id),
         // @ts-ignore
@@ -35,10 +41,13 @@ export const chromeRunTime = async function (domain: string) {
       const domains = [`*://${url.hostname}/*`]
       browser.webRequest.onBeforeSendHeaders.addListener(
         (details) => {
+          let origin = `${url.protocol}//${url.hostname}`
+          if (!isEnableRewriteUrl && rewriteUrl) {
+            origin = rewriteUrl
+          }
           for (let i = 0; i < details.requestHeaders.length; i++) {
             if (details.requestHeaders[i].name === "Origin") {
-              details.requestHeaders[i].value =
-                `${url.protocol}//${url.hostname}`
+              details.requestHeaders[i].value = origin
             }
           }
           return { requestHeaders: details.requestHeaders }

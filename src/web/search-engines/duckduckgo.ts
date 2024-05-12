@@ -1,5 +1,5 @@
 import { cleanUrl } from "@/libs/clean-url"
-import { chromeRunTime } from "@/libs/runtime"
+import { urlRewriteRuntime } from "@/libs/runtime"
 import { PageAssistHtmlLoader } from "@/loader/html"
 import {
   defaultEmbeddingChunkOverlap,
@@ -18,7 +18,7 @@ import { RecursiveCharacterTextSplitter } from "langchain/text_splitter"
 import { MemoryVectorStore } from "langchain/vectorstores/memory"
 
 export const localDuckDuckGoSearch = async (query: string) => {
-  await chromeRunTime(cleanUrl("https://html.duckduckgo.com/html/?q=" + query))
+  await urlRewriteRuntime(cleanUrl("https://html.duckduckgo.com/html/?q=" + query))
 
   const abortController = new AbortController()
   setTimeout(() => abortController.abort(), 10000)

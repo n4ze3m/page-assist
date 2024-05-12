@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query"
-import { Form, InputNumber, Select, Skeleton } from "antd"
+import { Collapse, Form, InputNumber, Select, Skeleton } from "antd"
 import { useState } from "react"
 import { SaveButton } from "~/components/Common/SaveButton"
 import {
@@ -13,9 +13,12 @@ import {
 } from "~/services/ollama"
 import { SettingPrompt } from "./prompt"
 import { useTranslation } from "react-i18next"
+import { useStorage } from "@plasmohq/storage/hook"
+import { AdvanceOllamaSettings } from "@/components/Common/AdvanceOllamaSettings"
 
 export const SettingsOllama = () => {
   const [ollamaURL, setOllamaURL] = useState<string>("")
+
   const { t } = useTranslation("settings")
 
   const { data: ollamaInfo, status } = useQuery({
@@ -61,7 +64,7 @@ export const SettingsOllama = () => {
               </h2>
               <div className="border border-b border-gray-200 dark:border-gray-600 mt-3 mb-6"></div>
             </div>
-            <div>
+            <div className="mb-3">
               <label
                 htmlFor="ollamaURL"
                 className="text-sm font-medium dark:text-gray-200">
@@ -78,6 +81,21 @@ export const SettingsOllama = () => {
                 className="w-full p-2 border border-gray-300 rounded-md dark:bg-[#262626] dark:text-gray-100"
               />
             </div>
+            <Collapse
+              size="small"
+              items={[
+                {
+                  key: "1",
+                  label: (
+                    <h2 className="text-base font-semibold leading-7 text-gray-900 dark:text-white">
+                      {t("ollamaSettings.settings.advanced.label")}
+                    </h2>
+                  ),
+                  children: <AdvanceOllamaSettings />
+                }
+              ]}
+            />
+
             <div className="flex justify-end">
               <SaveButton
                 onClick={() => {
@@ -130,7 +148,9 @@ export const SettingsOllama = () => {
                       0
                   }
                   showSearch
-                  placeholder={t("ollamaSettings.settings.ragSettings.model.placeholder")}
+                  placeholder={t(
+                    "ollamaSettings.settings.ragSettings.model.placeholder"
+                  )}
                   style={{ width: "100%" }}
                   className="mt-4"
                   options={ollamaInfo.models?.map((model) => ({
@@ -144,26 +164,38 @@ export const SettingsOllama = () => {
                 name="chunkSize"
                 label={t("ollamaSettings.settings.ragSettings.chunkSize.label")}
                 rules={[
-                  { required: true, message: t("ollamaSettings.settings.ragSettings.chunkSize.required")
-                 }
-                ]}>
-                <InputNumber
-                  style={{ width: "100%" }}
-                  placeholder={t("ollamaSettings.settings.ragSettings.chunkSize.placeholder")}
-                />
-              </Form.Item>
-              <Form.Item
-                name="chunkOverlap"
-                label={t("ollamaSettings.settings.ragSettings.chunkOverlap.label")}
-                rules={[
                   {
                     required: true,
-                    message: t("ollamaSettings.settings.ragSettings.chunkOverlap.required")
+                    message: t(
+                      "ollamaSettings.settings.ragSettings.chunkSize.required"
+                    )
                   }
                 ]}>
                 <InputNumber
                   style={{ width: "100%" }}
-                  placeholder={t("ollamaSettings.settings.ragSettings.chunkOverlap.placeholder")}
+                  placeholder={t(
+                    "ollamaSettings.settings.ragSettings.chunkSize.placeholder"
+                  )}
+                />
+              </Form.Item>
+              <Form.Item
+                name="chunkOverlap"
+                label={t(
+                  "ollamaSettings.settings.ragSettings.chunkOverlap.label"
+                )}
+                rules={[
+                  {
+                    required: true,
+                    message: t(
+                      "ollamaSettings.settings.ragSettings.chunkOverlap.required"
+                    )
+                  }
+                ]}>
+                <InputNumber
+                  style={{ width: "100%" }}
+                  placeholder={t(
+                    "ollamaSettings.settings.ragSettings.chunkOverlap.placeholder"
+                  )}
                 />
               </Form.Item>
 
