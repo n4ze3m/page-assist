@@ -5,9 +5,6 @@ const DEFAULT_URL_REWRITE_URL = "http://127.0.0.1:11434"
 
 export const isUrlRewriteEnabled = async () => {
   const enabled = await storage.get<boolean | undefined>("urlRewriteEnabled")
-  if (typeof enabled === "undefined") {
-    return true
-  }
   return enabled
 }
 export const setUrlRewriteEnabled = async (enabled: boolean) => {

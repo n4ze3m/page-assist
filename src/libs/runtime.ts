@@ -1,13 +1,16 @@
 import { getAdvancedOllamaSettings } from "@/services/app"
 
-export const urlRewriteRuntime = async function (domain: string) {
+export const urlRewriteRuntime = async function (
+  domain: string,
+  type = "ollama"
+) {
   if (browser.runtime && browser.runtime.id) {
     const { isEnableRewriteUrl, rewriteUrl } = await getAdvancedOllamaSettings()
     if (import.meta.env.BROWSER === "chrome") {
       const url = new URL(domain)
       const domains = [url.hostname]
       let origin = `${url.protocol}//${url.hostname}`
-      if (!isEnableRewriteUrl && rewriteUrl) {
+      if (isEnableRewriteUrl && rewriteUrl && type === "ollama") {
         origin = rewriteUrl
       }
       const rules = [
@@ -42,7 +45,7 @@ export const urlRewriteRuntime = async function (domain: string) {
       browser.webRequest.onBeforeSendHeaders.addListener(
         (details) => {
           let origin = `${url.protocol}//${url.hostname}`
-          if (!isEnableRewriteUrl && rewriteUrl) {
+          if (isEnableRewriteUrl && rewriteUrl && type === "ollama") {
             origin = rewriteUrl
           }
           for (let i = 0; i < details.requestHeaders.length; i++) {

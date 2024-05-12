@@ -19,7 +19,8 @@ import {
 
 export const localGoogleSearch = async (query: string) => {
   await urlRewriteRuntime(
-    cleanUrl("https://www.google.com/search?hl=en&q=" + query)
+    cleanUrl("https://www.google.com/search?hl=en&q=" + query),
+    "google"
   )
   const abortController = new AbortController()
   setTimeout(() => abortController.abort(), 10000)

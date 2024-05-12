@@ -25,7 +25,10 @@ const getCorrectTargeUrl = async (url: string) => {
   return matches?.[1] || ""
 }
 export const localSogouSearch = async (query: string) => {
-  await urlRewriteRuntime(cleanUrl("https://www.sogou.com/web?query=" + query))
+  await urlRewriteRuntime(
+    cleanUrl("https://www.sogou.com/web?query=" + query),
+    "sogou"
+  )
 
   const abortController = new AbortController()
 

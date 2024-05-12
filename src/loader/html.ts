@@ -102,7 +102,7 @@ export class PageAssistHtmlLoader
         }
       ]
     }
-    await urlRewriteRuntime(this.url)
+    await urlRewriteRuntime(this.url, "web")
     const fetchHTML = await fetch(this.url)
     let html = await fetchHTML.text()
 
@@ -110,11 +110,6 @@ export class PageAssistHtmlLoader
       console.log("Wikipedia URL detected")
       html = parseWikipedia(await fetchHTML.text())
     }
-
-    // else if (isTwitter(this.url)) {
-    //   console.log("Twitter URL detected")
-    //   html = parseTweet(await fetchHTML.text(), this.url)
-    // }
 
     const htmlCompiler = compile({
       wordwrap: false,

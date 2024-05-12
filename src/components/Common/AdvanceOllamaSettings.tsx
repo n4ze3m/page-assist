@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next"
 export const AdvanceOllamaSettings = () => {
   const [urlRewriteEnabled, setUrlRewriteEnabled] = useStorage(
     "urlRewriteEnabled",
-    true
+    false
   )
 
   const [rewriteUrl, setRewriteUrl] = useStorage(
@@ -18,7 +18,7 @@ export const AdvanceOllamaSettings = () => {
     <div className="space-y-4">
       <div className="flex sm:flex-row flex-col space-y-4 sm:space-y-0 sm:justify-between">
         <span className="text-gray-500 dark:text-neutral-50 ">
-          {t("generalSettings.settings.advanced.urlRewriteEnabled.label")}
+          {t("ollamaSettings.settings.advanced.urlRewriteEnabled.label")}
         </span>
         <div>
           <Switch
@@ -30,15 +30,15 @@ export const AdvanceOllamaSettings = () => {
       </div>
       <div className="flex flex-col space-y-4 sm:space-y-0 sm:justify-between">
         <span className="text-gray-500 dark:text-neutral-50 mb-3">
-          {t("generalSettings.settings.advanced.urlRewriteEnabled.label")}
+          {t("ollamaSettings.settings.advanced.rewriteUrl.label")}
         </span>
         <div>
           <Input
             className="w-full"
             value={rewriteUrl}
-            disabled={urlRewriteEnabled}
+            disabled={!urlRewriteEnabled}
             placeholder={t(
-              "generalSettings.settings.advanced.urlRewriteEnabled.placeholder"
+              "ollamaSettings.settings.advanced.rewriteUrl.placeholder"
             )}
             onChange={(e) => setRewriteUrl(e.target.value)}
           />

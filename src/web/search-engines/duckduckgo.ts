@@ -18,7 +18,7 @@ import { RecursiveCharacterTextSplitter } from "langchain/text_splitter"
 import { MemoryVectorStore } from "langchain/vectorstores/memory"
 
 export const localDuckDuckGoSearch = async (query: string) => {
-  await urlRewriteRuntime(cleanUrl("https://html.duckduckgo.com/html/?q=" + query))
+  await urlRewriteRuntime(cleanUrl("https://html.duckduckgo.com/html/?q=" + query), "duckduckgo")
 
   const abortController = new AbortController()
   setTimeout(() => abortController.abort(), 10000)

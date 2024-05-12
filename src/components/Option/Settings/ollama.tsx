@@ -12,7 +12,7 @@ import {
   setOllamaURL as saveOllamaURL
 } from "~/services/ollama"
 import { SettingPrompt } from "./prompt"
-import { useTranslation } from "react-i18next"
+import { Trans, useTranslation } from "react-i18next"
 import { useStorage } from "@plasmohq/storage/hook"
 import { AdvanceOllamaSettings } from "@/components/Common/AdvanceOllamaSettings"
 
@@ -87,9 +87,24 @@ export const SettingsOllama = () => {
                 {
                   key: "1",
                   label: (
-                    <h2 className="text-base font-semibold leading-7 text-gray-900 dark:text-white">
-                      {t("ollamaSettings.settings.advanced.label")}
-                    </h2>
+                    <div>
+                      <h2 className="text-base font-semibold leading-7 text-gray-900 dark:text-white">
+                        {t("ollamaSettings.settings.advanced.label")}
+                      </h2>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">
+                        <Trans
+                          i18nKey="settings:ollamaSettings.settings.advanced.help"
+                          components={{
+                            anchor: (
+                              <a
+                                href="https://github.com/n4ze3m/page-assist/blob/main/docs/connection-issue.md"
+                                target="__blank"
+                                className="text-blue-600 dark:text-blue-400"></a>
+                            )
+                          }}
+                        />
+                      </p>
+                    </div>
                   ),
                   children: <AdvanceOllamaSettings />
                 }

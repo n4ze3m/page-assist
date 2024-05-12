@@ -2,7 +2,8 @@
     "ollamaState": {
         "searching": "Searching for Your Ollama 🦙",
         "running": "Ollama is running 🦙",
-        "notRunning": "Unable to connect to Ollama 🦙"
+        "notRunning": "Unable to connect to Ollama 🦙",
+        "connectionError": "It seems like you are having a connection error. Please refer to this <anchor>documentation</anchor> for troubleshooting."
     },
     "formError": {
         "noModel": "Please select a model",
