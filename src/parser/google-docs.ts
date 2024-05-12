@@ -95,19 +95,36 @@ const getGoogleDocs = () => {
 
 export const parseGoogleDocs = async () => {
   const result = new Promise((resolve) => {
-    chrome.tabs.query({ active: true, currentWindow: true }, async (tabs) => {
-      const tab = tabs[0]
+    if (import.meta.env.BROWSER === "chrome") {
+      chrome.tabs.query({ active: true, currentWindow: true }, async (tabs) => {
+        const tab = tabs[0]
 
-      const data = await chrome.scripting.executeScript({
-        target: { tabId: tab.id },
-        world: "MAIN",
-        func: getGoogleDocs
+        const data = await chrome.scripting.executeScript({
+          target: { tabId: tab.id },
+          world: "MAIN",
+          func: getGoogleDocs
+        })
+
+        if (data.length > 0) {
+          resolve(data[0].result)
+        }
       })
+    } else {
+      browser.tabs
+        .query({ active: true, currentWindow: true })
+        .then(async (tabs) => {
+          const tab = tabs[0]
 
-      if (data.length > 0) {
-        resolve(data[0].result)
-      }
-    })
+          const data = await browser.scripting.executeScript({
+            target: { tabId: tab.id },
+            func: getGoogleDocs
+          })
+
+          if (data.length > 0) {
+            resolve(data[0].result)
+          }
+        })
+    }
   }) as Promise<{
     content?: string
   }>

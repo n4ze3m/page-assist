@@ -1,5 +1,3 @@
-import { Storage, browser } from "wxt/browser"
-
 interface PageAssistVector {
   file_id: string
   content: string
@@ -13,10 +11,10 @@ export type VectorData = {
 }
 
 export class PageAssistVectorDb {
-  db: Storage.LocalStorageArea
+  db: chrome.storage.StorageArea
 
   constructor() {
-    this.db = browser.storage.local
+    this.db = chrome.storage.local
   }
 
   insertVector = async (
@@ -24,55 +22,36 @@ export class PageAssistVectorDb {
     vector: PageAssistVector[]
   ): Promise<void> => {
     return new Promise((resolve, reject) => {
-      // this.db.get(id, (result) => {
-      //   if (chrome.runtime.lastError) {
-      //     reject(chrome.runtime.lastError)
-      //   } else {
-      //     const data = result[id] as VectorData
-      //     if (!data) {
-      //       this.db.set({ [id]: { id, vectors: vector } }, () => {
-      //         if (chrome.runtime.lastError) {
-      //           reject(chrome.runtime.lastError)
-      //         } else {
-      //           resolve()
-      //         }
-      //       })
-      //     } else {
-      //       this.db.set(
-      //         {
-      //           [id]: {
-      //             ...data,
-      //             vectors: data.vectors.concat(vector)
-      //           }
-      //         },
-      //         () => {
-      //           if (chrome.runtime.lastError) {
-      //             reject(chrome.runtime.lastError)
-      //           } else {
-      //             resolve()
-      //           }
-      //         }
-      //       )
-      //     }
-      //   }
-      // })
-      this.db.get(id).then((result) => {
-        const data = result[id] as VectorData
-        if (!data) {
-          this.db.set({ [id]: { id, vectors: vector } }).then(() => {
-            resolve()
-          })
+      this.db.get(id, (result) => {
+        if (chrome.runtime.lastError) {
+          reject(chrome.runtime.lastError)
         } else {
-          this.db
-            .set({
-              [id]: {
-                ...data,
-                vectors: data.vectors.concat(vector)
+          const data = result[id] as VectorData
+          if (!data) {
+            this.db.set({ [id]: { id, vectors: vector } }, () => {
+              if (chrome.runtime.lastError) {
+                reject(chrome.runtime.lastError)
+              } else {
+                resolve()
               }
             })
-            .then(() => {
-              resolve()
-            })
+          } else {
+            this.db.set(
+              {
+                [id]: {
+                  ...data,
+                  vectors: data.vectors.concat(vector)
+                }
+              },
+              () => {
+                if (chrome.runtime.lastError) {
+                  reject(chrome.runtime.lastError)
+                } else {
+                  resolve()
+                }
+              }
+            )
+          }
         }
       })
     })
@@ -80,72 +59,56 @@ export class PageAssistVectorDb {
 
   deleteVector = async (id: string): Promise<void> => {
     return new Promise((resolve, reject) => {
-      // this.db.remove(id, () => {
-      //   if (chrome.runtime.lastError) {
-      //     reject(chrome.runtime.lastError)
-      //   } else {
-      //     resolve()
-      //   }
-      // })
-      this.db.remove(id).then(() => {
-        resolve()
+      this.db.remove(id, () => {
+        if (chrome.runtime.lastError) {
+          reject(chrome.runtime.lastError)
+        } else {
+          resolve()
+        }
       })
     })
   }
 
   deleteVectorByFileId = async (id: string, file_id: string): Promise<void> => {
     return new Promise((resolve, reject) => {
-      // this.db.get(id, (result) => {
-      //   if (chrome.runtime.lastError) {
-      //     reject(chrome.runtime.lastError)
-      //   } else {
-      //     const data = result[id] as VectorData
-      //     data.vectors = data.vectors.filter((v) => v.file_id !== file_id)
-      //     this.db.set({ [id]: data }, () => {
-      //       if (chrome.runtime.lastError) {
-      //         reject(chrome.runtime.lastError)
-      //       } else {
-      //         resolve()
-      //       }
-      //     })
-      //   }
-      // })
-      this.db.get(id).then((result) => {
-        const data = result[id] as VectorData
-        data.vectors = data.vectors.filter((v) => v.file_id !== file_id)
-        this.db.set({ [id]: data }).then(() => {
-          resolve()
-        })
+      this.db.get(id, (result) => {
+        if (chrome.runtime.lastError) {
+          reject(chrome.runtime.lastError)
+        } else {
+          const data = result[id] as VectorData
+          data.vectors = data.vectors.filter((v) => v.file_id !== file_id)
+          this.db.set({ [id]: data }, () => {
+            if (chrome.runtime.lastError) {
+              reject(chrome.runtime.lastError)
+            } else {
+              resolve()
+            }
+          })
+        }
       })
     })
   }
 
   getVector = async (id: string): Promise<VectorData> => {
     return new Promise((resolve, reject) => {
-      // this.db.get(id, (result) => {
-      //   if (chrome.runtime.lastError) {
-      //     reject(chrome.runtime.lastError)
-      //   } else {
-      //     resolve(result[id] as VectorData)
-      //   }
-      // })
-      this.db.get(id).then((result) => {
-        resolve(result[id] as VectorData)
+      this.db.get(id, (result) => {
+        if (chrome.runtime.lastError) {
+          reject(chrome.runtime.lastError)
+        } else {
+          resolve(result[id] as VectorData)
+        }
       })
     })
   }
 
   getAll = async (): Promise<VectorData[]> => {
     return new Promise((resolve, reject) => {
-      // this.db.get(null, (result) => {
-      //   if (chrome.runtime.lastError) {
-      //     reject(chrome.runtime.lastError)
-      //   } else {
-      //     resolve(Object.values(result))
-      //   }
-      // })
-      this.db.get(null).then((result) => {
-        resolve(Object.values(result))
+      this.db.get(null, (result) => {
+        if (chrome.runtime.lastError) {
+          reject(chrome.runtime.lastError)
+        } else {
+          resolve(Object.values(result))
+        }
       })
     })
   }
@@ -156,15 +119,12 @@ export class PageAssistVectorDb {
       data.forEach((d) => {
         obj[d.id] = d
       })
-      // this.db.set(obj, () => {
-      //   if (chrome.runtime.lastError) {
-      //     reject(chrome.runtime.lastError)
-      //   } else {
-      //     resolve()
-      //   }
-      // })
-      this.db.set(obj).then(() => {
-        resolve()
+      this.db.set(obj, () => {
+        if (chrome.runtime.lastError) {
+          reject(chrome.runtime.lastError)
+        } else {
+          resolve()
+        }
       })
     })
   }
@@ -204,5 +164,5 @@ export const exportVectors = async () => {
 
 export const importVectors = async (data: VectorData[]) => {
   const db = new PageAssistVectorDb()
-  return db.saveImportedData(data)
+  return db.saveImportedData(data) 
 }

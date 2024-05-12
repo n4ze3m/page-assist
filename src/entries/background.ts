@@ -1,13 +1,13 @@
 import { getOllamaURL, isOllamaRunning } from "../services/ollama"
 import { browser } from "wxt/browser"
-
+import { setBadgeBackgroundColor, setBadgeText, setTitle } from "@/utils/action"
 const progressHuman = (completed: number, total: number) => {
   return ((completed / total) * 100).toFixed(0) + "%"
 }
 
 const clearBadge = () => {
-  browser.action.setBadgeText({ text: "" })
-  browser.action.setTitle({ title: "" })
+  setBadgeText({ text: "" })
+  setTitle({ title: "" })
 }
 const streamDownload = async (url: string, model: string) => {
   url += "/api/pull"
@@ -42,16 +42,16 @@ const streamDownload = async (url: string, model: string) => {
         completed?: number
       }
       if (json.total && json.completed) {
-        browser.action.setBadgeText({
+        setBadgeText({
           text: progressHuman(json.completed, json.total)
         })
-        browser.action.setBadgeBackgroundColor({ color: "#0000FF" })
+        setBadgeBackgroundColor({ color: "#0000FF" })
       } else {
-        browser.action.setBadgeText({ text: "🏋️‍♂️" })
-        browser.action.setBadgeBackgroundColor({ color: "#FFFFFF" })
+        setBadgeText({ text: "🏋️‍♂️" })
+        setBadgeBackgroundColor({ color: "#FFFFFF" })
       }
 
-      browser.action.setTitle({ title: json.status })
+      setTitle({ title: json.status })
 
       if (json.status === "success") {
         isSuccess = true
@@ -62,13 +62,13 @@ const streamDownload = async (url: string, model: string) => {
   }
 
   if (isSuccess) {
-    browser.action.setBadgeText({ text: "✅" })
-    browser.action.setBadgeBackgroundColor({ color: "#00FF00" })
-    browser.action.setTitle({ title: "Model pulled successfully" })
+    setBadgeText({ text: "✅" })
+    setBadgeBackgroundColor({ color: "#00FF00" })
+    setTitle({ title: "Model pulled successfully" })
   } else {
-    browser.action.setBadgeText({ text: "❌" })
-    browser.action.setBadgeBackgroundColor({ color: "#FF0000" })
-    browser.action.setTitle({ title: "Model pull failed" })
+    setBadgeText({ text: "❌" })
+    setBadgeBackgroundColor({ color: "#FF0000" })
+    setTitle({ title: "Model pull failed" })
   }
 
   setTimeout(() => {
@@ -86,9 +86,9 @@ export default defineBackground({
         const isRunning = await isOllamaRunning()
 
         if (!isRunning) {
-          browser.action.setBadgeText({ text: "E" })
-          browser.action.setBadgeBackgroundColor({ color: "#FF0000" })
-          browser.action.setTitle({ title: "Ollama is not running" })
+          setBadgeText({ text: "E" })
+          setBadgeBackgroundColor({ color: "#FF0000" })
+          setTitle({ title: "Ollama is not running" })
           setTimeout(() => {
             clearBadge()
           }, 5000)
@@ -98,9 +98,8 @@ export default defineBackground({
       }
     })
 
-    if (browser?.action) {
-      browser.action.onClicked.addListener((tab) => {
-        console.log("browser.action.onClicked.addListener")
+    if (import.meta.env.BROWSER === "chrome") {
+      chrome.action.onClicked.addListener((tab) => {
         browser.tabs.create({ url: browser.runtime.getURL("/options.html") })
       })
     } else {

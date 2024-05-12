@@ -2,7 +2,6 @@ import {
   type ChatHistory as ChatHistoryType,
   type Message as MessageType
 } from "~/store/option"
-import { Storage, browser } from "wxt/browser"
 
 type HistoryInfo = {
   id: string
@@ -58,18 +57,15 @@ type ChatHistory = HistoryInfo[]
 type Prompts = Prompt[]
 
 export class PageAssitDatabase {
-  db: Storage.LocalStorageArea
+  db: chrome.storage.StorageArea
 
   constructor() {
-    this.db = browser.storage.local
+    this.db = chrome.storage.local
   }
 
   async getChatHistory(id: string): Promise<MessageHistory> {
     return new Promise((resolve, reject) => {
-      // this.db.get(id, (result) => {
-      //   resolve(result[id] || [])
-      // })
-      this.db.get(id).then((result) => {
+      this.db.get(id, (result) => {
         resolve(result[id] || [])
       })
     })
@@ -77,10 +73,7 @@ export class PageAssitDatabase {
 
   async getChatHistories(): Promise<ChatHistory> {
     return new Promise((resolve, reject) => {
-      // this.db.get("chatHistories", (result) => {
-      //   resolve(result.chatHistories || [])
-      // })
-      this.db.get("chatHistories").then((result) => {
+      this.db.get("chatHistories", (result) => {
         resolve(result.chatHistories || [])
       })
     })
@@ -133,10 +126,7 @@ export class PageAssitDatabase {
 
   async getAllPrompts(): Promise<Prompts> {
     return new Promise((resolve, reject) => {
-      // this.db.get("prompts", (result) => {
-      //   resolve(result.prompts || [])
-      // })
-      this.db.get("prompts").then((result) => {
+      this.db.get("prompts", (result) => {
         resolve(result.prompts || [])
       })
     })
@@ -179,10 +169,7 @@ export class PageAssitDatabase {
 
   async getWebshare(id: string) {
     return new Promise((resolve, reject) => {
-      // this.db.get(id, (result) => {
-      //   resolve(result[id] || [])
-      // })
-      this.db.get(id).then((result) => {
+      this.db.get(id, (result) => {
         resolve(result[id] || [])
       })
     })
@@ -190,10 +177,7 @@ export class PageAssitDatabase {
 
   async getAllWebshares(): Promise<Webshare[]> {
     return new Promise((resolve, reject) => {
-      // this.db.get("webshares", (result) => {
-      //   resolve(result.webshares || [])
-      // })
-      this.db.get("webshares").then((result) => {
+      this.db.get("webshares", (result) => {
         resolve(result.webshares || [])
       })
     })
@@ -213,10 +197,7 @@ export class PageAssitDatabase {
 
   async getUserID() {
     return new Promise((resolve, reject) => {
-      // this.db.get("user_id", (result) => {
-      //   resolve(result.user_id || "")
-      // })
-      this.db.get("user_id").then((result) => {
+      this.db.get("user_id", (result) => {
         resolve(result.user_id || "")
       })
     })
