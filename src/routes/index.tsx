@@ -4,6 +4,7 @@ import { useDarkMode } from "~/hooks/useDarkmode"
 import { Skeleton } from "antd"
 import { OptionRoutingChrome, SidepanelRoutingChrome } from "./chrome"
 import { OptionRoutingFirefox, SidepanelRoutingFirefox } from "./firefox"
+import { PageAssistLoader } from "@/components/Common/PageAssistLoader"
 
 export const OptionRouting = () => {
   const { mode } = useDarkMode()
@@ -14,7 +15,7 @@ export const OptionRouting = () => {
       className={`${mode === "dark" ? "dark" : "light"} ${
         i18n.language === "ru" ? "onest" : "inter"
       }`}>
-      <Suspense fallback={<Skeleton />}>
+      <Suspense fallback={<PageAssistLoader />}>
           {import.meta.env.BROWSER === "chrome" ? (
             <OptionRoutingChrome />
           ) : (
@@ -34,7 +35,7 @@ export const SidepanelRouting = () => {
       className={`${mode === "dark" ? "dark" : "light"} ${
         i18n.language === "ru" ? "onest" : "inter"
       }`}>
-      <Suspense fallback={<Skeleton />}>
+      <Suspense fallback={<PageAssistLoader />}>
           {import.meta.env.BROWSER === "chrome" ? (
             <SidepanelRoutingChrome />
           ) : (
