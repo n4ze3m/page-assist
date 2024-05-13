@@ -1,16 +1,9 @@
-import { Route, Routes } from "react-router-dom"
-import { SidepanelChat } from "./sidepanel-chat"
-import { useDarkMode } from "~/hooks/useDarkmode"
-import { SidepanelSettings } from "./sidepanel-settings"
-import { OptionIndex } from "./option-index"
-import { OptionModal } from "./option-settings-model"
-import { OptionPrompt } from "./option-settings-prompt"
-import { OptionOllamaSettings } from "./options-settings-ollama"
-import { OptionSettings } from "./option-settings"
-import { OptionShare } from "./option-settings-share"
-import { OptionKnowledgeBase } from "./option-settings-knowledge"
-import { OptionAbout } from "./option-settings-about"
+import { Suspense } from "react"
 import { useTranslation } from "react-i18next"
+import { useDarkMode } from "~/hooks/useDarkmode"
+import { Skeleton } from "antd"
+import { OptionRoutingChrome, SidepanelRoutingChrome } from "./chrome"
+import { OptionRoutingFirefox, SidepanelRoutingFirefox } from "./firefox"
 
 export const OptionRouting = () => {
   const { mode } = useDarkMode()
@@ -21,16 +14,13 @@ export const OptionRouting = () => {
       className={`${mode === "dark" ? "dark" : "light"} ${
         i18n.language === "ru" ? "onest" : "inter"
       }`}>
-      <Routes>
-        <Route path="/" element={<OptionIndex />} />
-        <Route path="/settings" element={<OptionSettings />} />
-        <Route path="/settings/model" element={<OptionModal />} />
-        <Route path="/settings/prompt" element={<OptionPrompt />} />
-        <Route path="/settings/ollama" element={<OptionOllamaSettings />} />
-        <Route path="/settings/share" element={<OptionShare />} />
-        <Route path="/settings/knowledge" element={<OptionKnowledgeBase />} />
-        <Route path="/settings/about" element={<OptionAbout />} />
-      </Routes>
+      <Suspense fallback={<Skeleton />}>
+          {import.meta.env.BROWSER === "chrome" ? (
+            <OptionRoutingChrome />
+          ) : (
+            <OptionRoutingFirefox />
+          )}
+      </Suspense>
     </div>
   )
 }
@@ -44,10 +34,13 @@ export const SidepanelRouting = () => {
       className={`${mode === "dark" ? "dark" : "light"} ${
         i18n.language === "ru" ? "onest" : "inter"
       }`}>
-      <Routes>
-        <Route path="/" element={<SidepanelChat />} />
-        <Route path="/settings" element={<SidepanelSettings />} />
-      </Routes>
+      <Suspense fallback={<Skeleton />}>
+          {import.meta.env.BROWSER === "chrome" ? (
+            <SidepanelRoutingChrome />
+          ) : (
+            <SidepanelRoutingFirefox />
+          )}
+      </Suspense>
     </div>
   )
 }
