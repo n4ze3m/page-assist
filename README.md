@@ -30,6 +30,13 @@ Note: You can install the extension on any Chromium-based browser. It is not lim
 
 ### Manual Installation
 
+#### Pre-requisites
+
+- Node.js (v18 or higher)
+- npm
+- Ollama (Local AI Provider)
+
+
 1. Clone the repository
 
 ```bash
@@ -43,19 +50,32 @@ cd page-assist
 npm install
 ```
 
-3. Build the extension
+3. Build the extension (by default it will build for Chrome)
 
 ```bash
 npm run build
 ```
 
-4. Load the extension
+or you can build for Firefox
+
+```bash
+npm run build:firefox
+```
+
+4. Load the extension (chrome)
 
 - Open the Extension Management page by navigating to `chrome://extensions`.
 
 - Enable Developer Mode by clicking the toggle switch next to Developer mode.
 
 - Click the `Load unpacked` button and select the `build` directory.
+
+5. Load the extension (firefox)
+
+- Open the Add-ons page by navigating to `about:addons`.
+- Click the `Extensions` tab.
+- Click the `Manage Your Extensions` button.
+- Click the `Load Temporary Add-on` button and select the `manifest.json` file from the `build` directory.
 
 ## Usage
 
