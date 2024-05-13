@@ -61,7 +61,7 @@ export default defineConfig({
       process.env.TARGET === "firefox"
         ? {
             gecko: {
-              id: "page-assist@n4ze3m"
+              id: "page-assist@nazeem"
             }
           }
         : undefined,
