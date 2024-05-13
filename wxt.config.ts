@@ -49,7 +49,10 @@ export default defineConfig({
 
   manifest: {
     version: "1.1.7",
-    name: "__MSG_extName__",
+    name:
+      process.env.TARGET === "firefox"
+        ? "Page Assist - A Web UI for Local AI Models"
+        : "__MSG_extName__",
     description: "__MSG_extDescription__",
     default_locale: "en",
     action: {},
