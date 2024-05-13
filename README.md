@@ -32,9 +32,9 @@ Note: You can install the extension on any Chromium-based browser. It is not lim
 
 #### Pre-requisites
 
-- Node.js (v18 or higher)
+- Node.js (v18 or higher) - [Installation Guide](https://nodejs.org)
 - npm
-- Ollama (Local AI Provider)
+- Ollama (Local AI Provider) - [Installation Guide](https://ollama.com)
 
 
 1. Clone the repository
