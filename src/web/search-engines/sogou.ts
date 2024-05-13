@@ -1,5 +1,5 @@
 import { cleanUrl } from "@/libs/clean-url"
-import { chromeRunTime } from "@/libs/runtime"
+import { urlRewriteRuntime } from "@/libs/runtime"
 import { PageAssistHtmlLoader } from "@/loader/html"
 import {
   defaultEmbeddingChunkOverlap,
@@ -25,7 +25,10 @@ const getCorrectTargeUrl = async (url: string) => {
   return matches?.[1] || ""
 }
 export const localSogouSearch = async (query: string) => {
-  await chromeRunTime(cleanUrl("https://www.sogou.com/web?query=" + query))
+  await urlRewriteRuntime(
+    cleanUrl("https://www.sogou.com/web?query=" + query),
+    "sogou"
+  )
 
   const abortController = new AbortController()
 

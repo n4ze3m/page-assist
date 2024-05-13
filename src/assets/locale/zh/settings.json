@@ -249,6 +249,17 @@
                 "webSearchFollowUpPromptHelp": "请勿从提示词中删除 `{chat_history}` 和 `{question}`。",
                 "webSearchFollowUpPromptError": "请输入您的网页搜索追问提示词！",
                 "webSearchFollowUpPromptPlaceholder": "您的网页搜索追问提示词"
+            },
+            "advanced": {
+                "label": "Ollama URL 高级配置",
+                "urlRewriteEnabled": {
+                    "label": "启用或禁用自定义来源 URL"
+                },
+                "rewriteUrl": {
+                    "label": "自定义来源 URL",
+                    "placeholder": "输入自定义来源 URL"
+                },
+                "help": "如果您在 Page Assist 上与 Ollama 有连接问题,您可以配置自定义来源 URL。要了解更多关于配置的信息,<anchor>点击此处</anchor>。"
             }
         }
     },

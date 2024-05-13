@@ -4,7 +4,7 @@ import { SidepanelForm } from "~/components/Sidepanel/Chat/form"
 import { SidepanelHeader } from "~/components/Sidepanel/Chat/header"
 import { useMessage } from "~/hooks/useMessage"
 
-export const SidepanelChat = () => {
+ const SidepanelChat = () => {
   const drop = React.useRef<HTMLDivElement>(null)
   const [dropedFile, setDropedFile] = React.useState<File | undefined>()
   const [dropState, setDropState] = React.useState<
@@ -90,3 +90,5 @@ export const SidepanelChat = () => {
     </div>
   )
 }
+
+export default SidepanelChat

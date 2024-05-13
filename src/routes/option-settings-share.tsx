@@ -2,7 +2,7 @@ import { SettingsLayout } from "~/components/Layouts/SettingsOptionLayout"
 import OptionLayout from "~/components/Layouts/Layout"
 import { OptionShareBody } from "~/components/Option/Share"
 
-export const OptionShare = () => {
+ const OptionShare = () => {
   return (
     <OptionLayout>
       <SettingsLayout>
@@ -11,3 +11,5 @@ export const OptionShare = () => {
     </OptionLayout>
   )
 }
+
+export default OptionShare

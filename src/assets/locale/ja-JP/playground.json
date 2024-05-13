@@ -2,7 +2,8 @@
     "ollamaState": {
         "searching": "Ollamaを検索中 🦙",
         "running": "Ollamaが実行中 🦙",
-        "notRunning": "Ollamaに接続できません 🦙"
+        "notRunning": "Ollamaに接続できません 🦙",
+        "connectionError": "接続エラーが発生しているようです。トラブルシューティングについては<anchor>ドキュメント</anchor>をご覧ください。"
     },
     "formError": {
         "noModel": "モデルを選択してください",

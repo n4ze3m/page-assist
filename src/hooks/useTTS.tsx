@@ -2,7 +2,6 @@ import { useEffect, useState } from "react"
 import { notification } from "antd"
 import { getVoice, isSSMLEnabled } from "@/services/tts"
 import { markdownToSSML } from "@/utils/markdown-to-ssml"
-
 type VoiceOptions = {
   utterance: string
 }
@@ -17,16 +16,28 @@ export const useTTS = () => {
       if (isSSML) {
         utterance = markdownToSSML(utterance)
       }
-      chrome.tts.speak(utterance, {
-        voiceName: voice,
-        onEvent(event) {
-          if (event.type === "start") {
-            setIsSpeaking(true)
-          } else if (event.type === "end") {
-            setIsSpeaking(false)
+      if (import.meta.env.BROWSER === "chrome") {
+        chrome.tts.speak(utterance, {
+          voiceName: voice,
+          onEvent(event) {
+            if (event.type === "start") {
+              setIsSpeaking(true)
+            } else if (event.type === "end") {
+              setIsSpeaking(false)
+            }
           }
+        })
+      } else {
+        // browser tts
+        window.speechSynthesis.speak(new SpeechSynthesisUtterance(utterance))
+        window.speechSynthesis.onvoiceschanged = () => {
+          const voices = window.speechSynthesis.getVoices()
+          const voice = voices.find((v) => v.name === voice)
+          const utter = new SpeechSynthesisUtterance(utterance)
+          utter.voice = voice
+          window.speechSynthesis.speak(utter)
         }
-      })
+      }
     } catch (error) {
       notification.error({
         message: "Error",
@@ -36,7 +47,11 @@ export const useTTS = () => {
   }
 
   const cancel = () => {
-    chrome.tts.stop()
+    if (import.meta.env.BROWSER === "chrome") {
+      chrome.tts.stop()
+    } else {
+      window.speechSynthesis.cancel()
+    }
     setIsSpeaking(false)
   }
 

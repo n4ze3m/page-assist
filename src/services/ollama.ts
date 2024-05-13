@@ -1,6 +1,6 @@
 import { Storage } from "@plasmohq/storage"
 import { cleanUrl } from "../libs/clean-url"
-import { chromeRunTime } from "../libs/runtime"
+import { urlRewriteRuntime } from "../libs/runtime"
 
 const storage = new Storage()
 
@@ -22,10 +22,10 @@ Search results:
 export const getOllamaURL = async () => {
   const ollamaURL = await storage.get("ollamaURL")
   if (!ollamaURL || ollamaURL.length === 0) {
-    await chromeRunTime(DEFAULT_OLLAMA_URL)
+    await urlRewriteRuntime(DEFAULT_OLLAMA_URL)
     return DEFAULT_OLLAMA_URL
   }
-  await chromeRunTime(cleanUrl(ollamaURL))
+  await urlRewriteRuntime(cleanUrl(ollamaURL))
   return ollamaURL
 }
 
@@ -163,7 +163,7 @@ export const setOllamaURL = async (ollamaURL: string) => {
       "http://127.0.0.1:"
     )
   }
-  await chromeRunTime(cleanUrl(formattedUrl))
+  await urlRewriteRuntime(cleanUrl(formattedUrl))
   await storage.set("ollamaURL", cleanUrl(formattedUrl))
 }
 

@@ -245,6 +245,17 @@
                 "webSearchFollowUpPromptHelp": "Не удаляйте `{chat_history}` и `{question}` из подсказки.",
                 "webSearchFollowUpPromptError": "Введите подсказку для последующего веб-поиска!",
                 "webSearchFollowUpPromptPlaceholder": "Ваша подсказка для последующего веб-поиска"
+            },
+            "advanced": {
+                "label": "Расширенная конфигурация URL Ollama",
+                "urlRewriteEnabled": {
+                    "label": "Включить или отключить пользовательский исходный URL"
+                },
+                "rewriteUrl": {
+                    "label": "Пользовательский исходный URL",
+                    "placeholder": "Введите пользовательский исходный URL"
+                },
+                "help": "Если у вас возникают проблемы с подключением к Ollama на странице помощника, вы можете настроить пользовательский исходный URL. Чтобы узнать больше о конфигурации, <anchor>нажмите здесь</anchor>."
             }
         }
     },

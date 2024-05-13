@@ -248,6 +248,17 @@
                 "webSearchFollowUpPromptHelp": "プロンプトから`{chat_history}`と`{question}`を削除しないでください。",
                 "webSearchFollowUpPromptError": "Web検索フォローアッププロンプトを入力してください！",
                 "webSearchFollowUpPromptPlaceholder": "Web検索フォローアッププロンプト"
+            },
+            "advanced": {
+                "label": "Ollama URL の高度な設定",
+                "urlRewriteEnabled": {
+                    "label": "カスタムOriginのURLを有効化または無効化する"
+                },
+                "rewriteUrl": {
+                    "label": "カスタムOriginのURL",
+                    "placeholder": "カスタムOriginのURLを入力"
+                },
+                "help": "PageAssistでOllamaに接続の問題がある場合は、カスタムOriginのURLを設定できます。設定の詳細については、<anchor>ここをクリック</anchor>してください。"
             }
         }
     },

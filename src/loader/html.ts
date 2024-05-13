@@ -1,7 +1,7 @@
 import { BaseDocumentLoader } from "langchain/document_loaders/base"
 import { Document } from "@langchain/core/documents"
 import { compile } from "html-to-text"
-import { chromeRunTime } from "~/libs/runtime"
+import { urlRewriteRuntime } from "~/libs/runtime"
 import { YtTranscript } from "yt-transcript"
 import { isWikipedia, parseWikipedia } from "@/parser/wiki"
 
@@ -102,7 +102,7 @@ export class PageAssistHtmlLoader
         }
       ]
     }
-    await chromeRunTime(this.url)
+    await urlRewriteRuntime(this.url, "web")
     const fetchHTML = await fetch(this.url)
     let html = await fetchHTML.text()
 
@@ -110,11 +110,6 @@ export class PageAssistHtmlLoader
       console.log("Wikipedia URL detected")
       html = parseWikipedia(await fetchHTML.text())
     }
-
-    // else if (isTwitter(this.url)) {
-    //   console.log("Twitter URL detected")
-    //   html = parseTweet(await fetchHTML.text(), this.url)
-    // }
 
     const htmlCompiler = compile({
       wordwrap: false,

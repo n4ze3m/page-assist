@@ -47,13 +47,13 @@
                 "label": "ചാറ്റ് ചരിത്രം, അറിവ് അടിസ്ഥാനം, പ്രോംപ്റ്റുകൾ എക്സ്പോർട്ട് ചെയ്യുക",
                 "button": "ഡാറ്റ എക്സ്പോർട്ട് ചെയ്യുക",
                 "success": "എക്സ്പോർട്ട് വിജയകരമായി"
-              },
-              "import": {
+            },
+            "import": {
                 "label": "ചാറ്റ് ചരിത്രം, അറിവ് അടിസ്ഥാനം, പ്രോംപ്റ്റുകൾ ഇമ്പോർട്ട് ചെയ്യുക",
                 "button": "ഡാറ്റ ഇമ്പോർട്ട് ചെയ്യുക",
                 "success": "ഇമ്പോർട്ട് വിജയകരമായി",
                 "error": "ഇമ്പോർട്ട് പിശക്"
-              }
+            }
         },
         "tts": {
             "heading": "ടെക്സ്റ്റ്-ടു-സ്പീച്ച് ക്രമീകരണങ്ങൾ",
@@ -248,6 +248,17 @@
                 "webSearchFollowUpPromptHelp": "പ്രോംപ്റ്റില്‍ നിന്ന് `{chat_history}` യും `{question}` യും നീക്കം ചെയ്യരുത്.",
                 "webSearchFollowUpPromptError": "ദയവായി നിങ്ങളുടെ വെബ് തിരയല്‍ തുടര്‍പ്രോംപ്റ്റ് നല്കുക!",
                 "webSearchFollowUpPromptPlaceholder": "നിങ്ങളുടെ വെബ് തിരയല്‍ തുടര്‍പ്രോംപ്റ്റ്"
+            },
+            "advanced": {
+                "label": "Advance Ollama URL Configuration",
+                "urlRewriteEnabled": {
+                    "label": "Enable or Disable Custom Origin URL"
+                },
+                "rewriteUrl": {
+                    "label": "Custom Origin URL",
+                    "placeholder": "Enter Custom Origin URL"
+                },
+                "help": "ഏജ് അസിസ്റ്റന്റിൽ Ollama-യുമായി ബന്ധപ്പെടുമ്പോൾ ബന്ധതടസ്സം ഉണ്ടെങ്കിൽ, നിങ്ങൾക്ക് ഒരു വ്യക്തിഗത അസ്ഥിരത്വം URL കോൺഫിഗർ ചെയ്യാം. കോൺഫിഗറേഷനെക്കുറിച്ച് കൂടുതലറിയാൻ, <anchor>ഇവിടെ ക്ലിക്കുചെയ്യുക</anchor>."
             }
         }
     },

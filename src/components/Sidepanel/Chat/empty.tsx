@@ -1,8 +1,9 @@
+import { cleanUrl } from "@/libs/clean-url"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { Select } from "antd"
 import { RotateCcw } from "lucide-react"
 import { useEffect, useState } from "react"
-import { useTranslation } from "react-i18next"
+import { Trans, useTranslation } from "react-i18next"
 import { useMessage } from "~/hooks/useMessage"
 import {
   getAllModels,
@@ -91,6 +92,22 @@ export const EmptySidePanel = () => {
                 <RotateCcw className="h-4 w-4 mr-3" />
                 {t("common:retry")}
               </button>
+              {ollamaURL &&
+                cleanUrl(ollamaURL) !== "http://127.0.0.1:11434" && (
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mb-4 text-center">
+                    <Trans
+                      i18nKey="playground:ollamaState.connectionError"
+                      components={{
+                        anchor: (
+                          <a
+                            href="https://github.com/n4ze3m/page-assist/blob/main/docs/connection-issue.md"
+                            target="__blank"
+                            className="text-blue-600 dark:text-blue-400"></a>
+                        )
+                      }}
+                    />
+                  </p>
+                )}
             </div>
           )
         ) : null}
