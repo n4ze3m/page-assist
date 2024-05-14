@@ -71,6 +71,7 @@ export default defineConfig({
         : undefined,
     commands: {
       _execute_action: {
+        description: "Open the Web UI",
         suggested_key: {
           default: "Ctrl+Shift+L"
         }
