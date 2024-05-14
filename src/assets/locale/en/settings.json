@@ -195,7 +195,7 @@
                 "delete": "Are you sure you want to delete this share? This action cannot be undone."
             },
             "label": "Manage Page Share",
-            "description": "Enable or disable the page share feature. By default, the page share feature is enabled."
+            "description": "Enable or disable the page share feature"
         },
         "notification": {
             "pageShareSuccess": "Page Share URL updated successfully",
