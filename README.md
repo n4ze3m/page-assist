@@ -2,7 +2,15 @@
 
 Page Assist is an open-source Chrome Extension that provides a Sidebar and Web UI for your Local AI model. It allows you to interact with your model from any webpage.
 
-Checkout the Demo:
+## Installation
+
+Page Assist supports Chromium-based browsers like Chrome, Brave, Edge, and Firefox.
+
+[![Chrome Web Store](https://pub-35424b4473484be483c0afa08c69e7da.r2.dev/UV4C4ybeBTsZt43U4xis.png)](https://chrome.google.com/webstore/detail/page-assist/jfgfiigpkhlkbnfnbobbkinehhfdhndo)
+[![Firefox Add-on](https://pub-35424b4473484be483c0afa08c69e7da.r2.dev/get-the-addon.png)](https://addons.mozilla.org/en-US/firefox/addon/page-assist/)
+
+
+Checkout the Demo (v1.0.0):
 
 <div align="center">
 
@@ -20,12 +28,13 @@ Checkout the Demo:
 
 want more features? Create an issue and let me know.
 
-## Installation
+<!-- ## Installation
 
 ### Chrome Web Store
 
 You can install the extension from the [Chrome Web Store](https://chromewebstore.google.com/detail/page-assist-a-web-ui-for/jfgfiigpkhlkbnfnbobbkinehhfdhndo)
 
+Note: You can install the extension on any Chromium-based browser. It is not limited to Chrome. -->
 
 ### Manual Installation
 
