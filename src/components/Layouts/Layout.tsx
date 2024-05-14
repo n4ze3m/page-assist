@@ -29,7 +29,7 @@ export default function OptionLayout({
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const { t } = useTranslation(["option", "common"])
-  const [shareModeEnabled] = useStorage("shareMode", true)
+  const [shareModeEnabled] = useStorage("shareMode", false)
 
   const {
     selectedModel,

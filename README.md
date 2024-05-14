@@ -26,7 +26,6 @@ want more features? Create an issue and let me know.
 
 You can install the extension from the [Chrome Web Store](https://chromewebstore.google.com/detail/page-assist-a-web-ui-for/jfgfiigpkhlkbnfnbobbkinehhfdhndo)
 
-Note: You can install the extension on any Chromium-based browser. It is not limited to Chrome.
 
 ### Manual Installation
 
@@ -125,6 +124,13 @@ This will start a development server and watch for changes in the source files. 
 - [ ] More Features
 - [ ] More Customization Options
 - [ ] Better UI/UX
+
+
+## Privacy
+
+Page Assist does not collect any personal data. The only time the extension communicates with the server is when you are using the share feature, which can be disabled from the settings. 
+
+All the data is stored locally in the browser storage. You can view the source code and verify it yourself.
 
 ## Contributing
 

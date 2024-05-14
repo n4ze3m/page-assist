@@ -11,7 +11,10 @@ import { useStorage } from "@plasmohq/storage/hook"
 export const OptionShareBody = () => {
   const queryClient = useQueryClient()
   const { t } = useTranslation(["settings"])
-  const [shareModeEnabled, setShareModelEnabled] = useStorage("shareMode", true)
+  const [shareModeEnabled, setShareModelEnabled] = useStorage(
+    "shareMode",
+    false
+  )
 
   const { status, data } = useQuery({
     queryKey: ["fetchShareInfo"],
@@ -25,8 +28,12 @@ export const OptionShareBody = () => {
   })
 
   const onSubmit = async (values: { url: string }) => {
-    const isOk = await verifyPageShareURL(values.url)
-    if (isOk) {
+    if (shareModeEnabled) {
+      const isOk = await verifyPageShareURL(values.url)
+      if (isOk) {
+        await setPageShareUrl(values.url)
+      }
+    } else {
       await setPageShareUrl(values.url)
     }
   }
