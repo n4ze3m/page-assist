@@ -121,6 +121,14 @@ export class PageAssitDatabase {
     this.db.remove(id)
   }
 
+  async deleteAllChatHistory() {
+    const chatHistories = await this.getChatHistories()
+    chatHistories.forEach((history) => {
+      this.db.remove(history.id)
+    })
+    this.db.set({ chatHistories: [] })
+  }
+
   async deleteMessage(history_id: string) {
     await this.db.remove(history_id)
   }

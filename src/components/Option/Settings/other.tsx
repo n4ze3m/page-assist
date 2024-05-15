@@ -116,7 +116,7 @@ export const SettingOther = () => {
 
               if (confirm) {
                 const db = new PageAssitDatabase()
-                await db.deleteChatHistory()
+                await db.deleteAllChatHistory()
                 queryClient.invalidateQueries({
                   queryKey: ["fetchChatHistory"]
                 })
