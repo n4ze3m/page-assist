@@ -153,6 +153,15 @@ If you like the project and want to support it, you can buy me a coffee. It will
 
 or you can sponsor me on GitHub.
 
+
+## Blogs and Videos About Page Assist
+
+This are some of the blogs and videos about Page Assist. If you have written a blog or made a video about Page Assist, feel free to create a PR and add it here.
+
+- [OllamaをChromeAddonのPage Assistで簡単操作](https://note.com/lucas_san/n/nf00d01a02c3a) by [LucasChatGPT](https://twitter.com/LucasChatGPT)
+
+- [This Chrome Extension Surprised Me](https://www.youtube.com/watch?v=IvLTlDy9G8c) by [Matt Williams](https://www.youtube.com/@technovangelist)
+
 ## License
 
 MIT
