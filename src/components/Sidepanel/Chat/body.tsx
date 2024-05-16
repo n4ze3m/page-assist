@@ -32,7 +32,9 @@ export const SidePanelBody = () => {
           isTTSEnabled={ttsEnabled}
         />
       ))}
-      <div className="w-full h-32 md:h-48 flex-shrink-0"></div>
+      {
+        import.meta.env.BROWSER === "chrome" ? <div className="w-full h-32 md:h-48 flex-shrink-0"></div> : <div className="w-full h-48 flex-shrink-0"></div>
+      }
       <div ref={divRef} />
     </div>
   )
