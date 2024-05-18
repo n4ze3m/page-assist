@@ -91,7 +91,10 @@ export const ModelsBody = () => {
         {status === "pending" && <Skeleton paragraph={{ rows: 8 }} />}
 
         {status === "success" && (
-          <Table
+          <div
+          className="overflow-x-auto"
+          >
+            <Table
             columns={[
               {
                 title: t("manageModels.columns.name"),
@@ -207,6 +210,7 @@ export const ModelsBody = () => {
             dataSource={data}
             rowKey={(record) => `${record.model}-${record.digest}`}
           />
+          </div>
         )}
       </div>
 

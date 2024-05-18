@@ -89,7 +89,7 @@ export class PageAssitDatabase {
     const history_id = message.history_id
     const chatHistory = await this.getChatHistory(history_id)
     const newChatHistory = [message, ...chatHistory]
-    this.db.set({ [history_id]: newChatHistory })
+    await this.db.set({ [history_id]: newChatHistory })
   }
 
   async removeChatHistory(id: string) {
@@ -112,12 +112,21 @@ export class PageAssitDatabase {
     this.db.clear()
   }
 
-  async deleteChatHistory() {
+  async deleteChatHistory(id: string) {
     const chatHistories = await this.getChatHistories()
-    for (const history of chatHistories) {
+    const newChatHistories = chatHistories.filter(
+      (history) => history.id !== id
+    )
+    this.db.set({ chatHistories: newChatHistories })
+    this.db.remove(id)
+  }
+
+  async deleteAllChatHistory() {
+    const chatHistories = await this.getChatHistories()
+    chatHistories.forEach((history) => {
       this.db.remove(history.id)
-    }
-    this.db.remove("chatHistories")
+    })
+    this.db.set({ chatHistories: [] })
   }
 
   async deleteMessage(history_id: string) {

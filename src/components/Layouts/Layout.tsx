@@ -12,6 +12,7 @@ import {
   ComputerIcon,
   GithubIcon,
   PanelLeftIcon,
+  SlashIcon,
   SquarePen,
   ZapIcon
 } from "lucide-react"
@@ -21,6 +22,8 @@ import { useTranslation } from "react-i18next"
 import { OllamaIcon } from "../Icons/Ollama"
 import { SelectedKnowledge } from "../Option/Knowledge/SelectedKnwledge"
 import { useStorage } from "@plasmohq/storage/hook"
+import { ModelSelect } from "../Common/ModelSelect"
+import { PromptSelect } from "../Common/PromptSelect"
 
 export default function OptionLayout({
   children
@@ -29,7 +32,7 @@ export default function OptionLayout({
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const { t } = useTranslation(["option", "common"])
-  const [shareModeEnabled] = useStorage("shareMode", true)
+  const [shareModeEnabled] = useStorage("shareMode", false)
 
   const {
     selectedModel,
@@ -89,7 +92,7 @@ export default function OptionLayout({
                   <NavLink
                     to="/"
                     className="text-gray-500 items-center dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
-                    <ChevronLeft className="w-6 h-6" />
+                    <ChevronLeft className="w-4 h-4" />
                   </NavLink>
                 </div>
               )}
@@ -103,15 +106,17 @@ export default function OptionLayout({
               <div>
                 <button
                   onClick={clearChat}
-                  className="inline-flex dark:bg-transparent bg-white items-center rounded-lg border  dark:border-gray-700 bg-transparent px-3 py-3 text-sm font-medium leading-4 text-gray-800  dark:text-white disabled:opacity-50 ease-in-out transition-colors duration-200 hover:bg-gray-100 dark:hover:bg-gray-800 dark:hover:text-white">
-                  <SquarePen className="h-4 w-4 mr-3" />
-                  {t("newChat")}
+                  className="inline-flex  dark:bg-transparent bg-white items-center rounded-lg border  dark:border-gray-700 bg-transparent px-3 py-2.5 text-xs lg:text-sm font-medium leading-4 text-gray-800  dark:text-white disabled:opacity-50 ease-in-out transition-colors duration-200 hover:bg-gray-100 dark:hover:bg-gray-800 dark:hover:text-white">
+                  <SquarePen className="h-5 w-5 " />
+                  <span className=" truncate ml-3">
+                    {t("newChat")}
+                  </span>
                 </button>
               </div>
               <span className="text-lg font-thin text-zinc-300 dark:text-zinc-600">
                 {"/"}
               </span>
-              <div>
+              <div className="hidden lg:block">
                 <Select
                   value={selectedModel}
                   onChange={(e) => {
@@ -141,10 +146,13 @@ export default function OptionLayout({
                   }))}
                 />
               </div>
+              <div className="lg:hidden">
+                <ModelSelect />
+              </div>
               <span className="text-lg font-thin text-zinc-300 dark:text-zinc-600">
                 {"/"}
               </span>
-              <div>
+              <div className="hidden lg:block">
                 <Select
                   size="large"
                   loading={isPromptLoading}
@@ -177,6 +185,9 @@ export default function OptionLayout({
                   }))}
                 />
               </div>
+              <div className="lg:hidden">
+                <PromptSelect />
+              </div>
               <SelectedKnowledge />
             </div>
             <div className="flex flex-1 justify-end px-4">
@@ -190,7 +201,7 @@ export default function OptionLayout({
                     <a
                       href="https://github.com/n4ze3m/page-assist"
                       target="_blank"
-                      className="!text-gray-500 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+                      className="!text-gray-500 hidden lg:block dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
                       <GithubIcon className="w-6 h-6" />
                     </a>
                   </Tooltip>

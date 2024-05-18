@@ -14,15 +14,16 @@ import {
   saveForRag
 } from "~/services/ollama"
 
-import { Skeleton, Radio, Select, Form, InputNumber } from "antd"
+import { Skeleton, Radio, Select, Form, InputNumber, Collapse } from "antd"
 import { useDarkMode } from "~/hooks/useDarkmode"
 import { SaveButton } from "~/components/Common/SaveButton"
 import { SUPPORTED_LANGUAGES } from "~/utils/supporetd-languages"
 import { useMessage } from "~/hooks/useMessage"
 import { MoonIcon, SunIcon } from "lucide-react"
-import { useTranslation } from "react-i18next"
+import { Trans, useTranslation } from "react-i18next"
 import { useI18n } from "@/hooks/useI18n"
 import { TTSModeSettings } from "@/components/Option/Settings/tts-mode"
+import { AdvanceOllamaSettings } from "@/components/Common/AdvanceOllamaSettings"
 
 export const SettingsBody = () => {
   const { t } = useTranslation("settings")
@@ -180,8 +181,8 @@ export const SettingsBody = () => {
         )}
       </div>
 
-      <div className="border border-gray-300 dark:border-gray-700 rounded p-4 bg-white dark:bg-[#171717]">
-        <h2 className="text-md mb-4 font-semibold dark:text-white">
+      <div className="border flex flex-col gap-4 border-gray-300 dark:border-gray-700 rounded p-4 bg-white dark:bg-[#171717]">
+        <h2 className="text-md font-semibold dark:text-white">
           {t("ollamaSettings.heading")}
         </h2>
         <input
@@ -191,6 +192,37 @@ export const SettingsBody = () => {
           onChange={(e) => setOllamaURL(e.target.value)}
           placeholder={t("ollamaSettings.settings.ollamaUrl.placeholder")}
         />
+
+        <Collapse
+          size="small"
+          items={[
+            {
+              key: "1",
+              label: (
+                <div>
+                  <h2 className="text-base font-semibold leading-7 text-gray-900 dark:text-white">
+                    {t("ollamaSettings.settings.advanced.label")}
+                  </h2>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">
+                    <Trans
+                      i18nKey="settings:ollamaSettings.settings.advanced.help"
+                      components={{
+                        anchor: (
+                          <a
+                            href="https://github.com/n4ze3m/page-assist/blob/main/docs/connection-issue.md#solutions"
+                            target="__blank"
+                            className="text-blue-600 dark:text-blue-400"></a>
+                        )
+                      }}
+                    />
+                  </p>
+                </div>
+              ),
+              children: <AdvanceOllamaSettings />
+            }
+          ]}
+        />
+
         <div className="flex justify-end">
           <SaveButton
             onClick={() => {

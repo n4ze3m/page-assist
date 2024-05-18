@@ -118,8 +118,9 @@ This will start a development server and watch for changes in the source files. 
 | Chrome   | ✅      | ✅                | ✅     |
 | Brave    | ✅      | ✅                | ✅     |
 | Firefox  | ✅      | ✅                | ✅     |
+| Vivaldi  | ✅      | ✅                | ✅     |
 | Edge     | ✅      | ❌                | ✅     |
-| Opera GX | ❌      | ❌                | ✅     |
+| Opera    | ❌      | ❌                | ✅     |
 | Arc      | ❌      | ❌                | ✅     |
 
 ## Local AI Provider
@@ -134,6 +135,13 @@ This will start a development server and watch for changes in the source files. 
 - [ ] More Customization Options
 - [ ] Better UI/UX
 
+
+## Privacy
+
+Page Assist does not collect any personal data. The only time the extension communicates with the server is when you are using the share feature, which can be disabled from the settings. 
+
+All the data is stored locally in the browser storage. You can view the source code and verify it yourself.
+
 ## Contributing
 
 Contributions are welcome. If you have any feature requests, bug reports, or questions, feel free to create an issue.
@@ -145,6 +153,17 @@ If you like the project and want to support it, you can buy me a coffee. It will
 <a href='https://ko-fi.com/M4M3EMCLL' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi2.png?v=3' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
 
 or you can sponsor me on GitHub.
+
+
+## Blogs and Videos About Page Assist
+
+This are some of the blogs and videos about Page Assist. If you have written a blog or made a video about Page Assist, feel free to create a PR and add it here.
+
+- [OllamaをChromeAddonのPage Assistで簡単操作](https://note.com/lucas_san/n/nf00d01a02c3a) by [LucasChatGPT](https://twitter.com/LucasChatGPT)
+
+- [This Chrome Extension Surprised Me](https://www.youtube.com/watch?v=IvLTlDy9G8c) by [Matt Williams](https://www.youtube.com/@technovangelist)
+
+- [Ollama With 1 Click](https://www.youtube.com/watch?v=61uN5jtj2wo) by [Yaron Been From EcomXFactor](https://www.youtube.com/@ecomxfactor-YaronBeen)
 
 ## License
 
