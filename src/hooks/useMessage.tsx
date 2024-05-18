@@ -11,11 +11,15 @@ import { useStoreMessage } from "~/store"
 import { ChatOllama } from "@langchain/community/chat_models/ollama"
 import { HumanMessage, SystemMessage } from "@langchain/core/messages"
 import { getDataFromCurrentTab } from "~/libs/get-html"
-import { OllamaEmbeddings } from "@langchain/community/embeddings/ollama"
 import { MemoryVectorStore } from "langchain/vectorstores/memory"
 import { memoryEmbedding } from "@/utils/memory-embeddings"
 import { ChatHistory } from "@/store/option"
-import { generateID } from "@/db"
+import {
+  deleteChatForEdit,
+  generateID,
+  removeMessageUsingHistoryId,
+  updateMessageByIndex
+} from "@/db"
 import { saveMessageOnError, saveMessageOnSuccess } from "./chat-helper"
 import { notification } from "antd"
 import { useTranslation } from "react-i18next"
@@ -139,8 +143,20 @@ export const useMessage = () => {
       setCurrentURL(url)
       isAlreadyExistEmbedding = keepTrackOfEmbedding[currentURL]
     } else {
-      isAlreadyExistEmbedding = keepTrackOfEmbedding[currentURL]
-      embedURL = currentURL
+      const { content: html, url, type, pdf } = await getDataFromCurrentTab()
+      if (currentURL !== url) {
+        embedHTML = html
+        embedURL = url
+        embedType = type
+        embedPDF = pdf
+        setCurrentURL(url)
+      } else {
+        embedHTML = html
+        embedURL = currentURL
+        embedType = type
+        embedPDF = pdf
+      }
+      isAlreadyExistEmbedding = keepTrackOfEmbedding[url]
     }
 
     setMessages(newMessage)
@@ -157,6 +173,7 @@ export const useMessage = () => {
     try {
       if (isAlreadyExistEmbedding) {
         vectorstore = isAlreadyExistEmbedding
+        console.log("Embedding already exist")
       } else {
         vectorstore = await memoryEmbedding({
           html: embedHTML,
@@ -168,6 +185,8 @@ export const useMessage = () => {
           type: embedType,
           url: embedURL
         })
+
+        console.log("Embedding created")
       }
       let query = message
       const { ragPrompt: systemPrompt, ragQuestionPrompt: questionPrompt } =
@@ -202,7 +221,7 @@ export const useMessage = () => {
           url: ""
         }
       })
-     // message = message.trim().replaceAll("\n", " ")
+      // message = message.trim().replaceAll("\n", " ")
 
       let humanMessage = new HumanMessage({
         content: [
@@ -478,8 +497,6 @@ export const useMessage = () => {
 
       setIsProcessing(false)
       setStreaming(false)
-      setIsProcessing(false)
-      setStreaming(false)
     } catch (e) {
       const errorSave = await saveMessageOnError({
         e,
@@ -509,17 +526,38 @@ export const useMessage = () => {
 
   const onSubmit = async ({
     message,
-    image
+    image,
+    isRegenerate,
+    controller,
+    memory,
+    messages: chatHistory
   }: {
     message: string
     image: string
+    isRegenerate?: boolean
+    messages?: Message[]
+    memory?: ChatHistory
+    controller?: AbortController
   }) => {
-    const newController = new AbortController()
-    let signal = newController.signal
-    setAbortController(newController)
+    let signal: AbortSignal
+    if (!controller) {
+      const newController = new AbortController()
+      signal = newController.signal
+      setAbortController(newController)
+    } else {
+      setAbortController(controller)
+      signal = controller.signal
+    }
 
     if (chatMode === "normal") {
-      await normalChatMode(message, image, false, messages, history, signal)
+      await normalChatMode(
+        message,
+        image,
+        isRegenerate,
+        chatHistory || messages,
+        memory || history,
+        signal
+      )
     } else {
       const newEmbeddingController = new AbortController()
       let embeddingSignal = newEmbeddingController.signal
@@ -527,9 +565,9 @@ export const useMessage = () => {
       await chatWithWebsiteMode(
         message,
         image,
-        false,
-        messages,
-        history,
+        isRegenerate,
+        chatHistory || messages,
+        memory || history,
         signal,
         embeddingSignal
       )
@@ -548,9 +586,68 @@ export const useMessage = () => {
       setAbortController(null)
     }
   }
+
+  const editMessage = async (
+    index: number,
+    message: string,
+    isHuman: boolean
+  ) => {
+    let newMessages = messages
+    let newHistory = history
+
+    if (isHuman) {
+      const currentHumanMessage = newMessages[index]
+      newMessages[index].message = message
+      const previousMessages = newMessages.slice(0, index + 1)
+      setMessages(previousMessages)
+      const previousHistory = newHistory.slice(0, index)
+      setHistory(previousHistory)
+      await updateMessageByIndex(historyId, index, message)
+      await deleteChatForEdit(historyId, index)
+      const abortController = new AbortController()
+      await onSubmit({
+        message: message,
+        image: currentHumanMessage.images[0] || "",
+        isRegenerate: true,
+        messages: previousMessages,
+        memory: previousHistory,
+        controller: abortController
+      })
+    } else {
+      newMessages[index].message = message
+      setMessages(newMessages)
+      newHistory[index].content = message
+      setHistory(newHistory)
+      await updateMessageByIndex(historyId, index, message)
+    }
+  }
+
+  const regenerateLastMessage = async () => {
+    if (history.length > 0) {
+      const lastMessage = history[history.length - 2]
+      let newHistory = history.slice(0, -2)
+      let mewMessages = messages
+      mewMessages.pop()
+      setHistory(newHistory)
+      setMessages(mewMessages)
+      await removeMessageUsingHistoryId(historyId)
+      if (lastMessage.role === "user") {
+        const newController = new AbortController()
+        await onSubmit({
+          message: lastMessage.content,
+          image: lastMessage.image || "",
+          isRegenerate: true,
+          memory: newHistory,
+          controller: newController
+        })
+      }
+    }
+  }
+
   return {
     messages,
     setMessages,
+    editMessage,
     onSubmit,
     setStreaming,
     streaming,
@@ -569,6 +666,7 @@ export const useMessage = () => {
     setChatMode,
     isEmbedding,
     speechToTextLanguage,
-    setSpeechToTextLanguage
+    setSpeechToTextLanguage,
+    regenerateLastMessage
   }
 }

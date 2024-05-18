@@ -23,11 +23,6 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
   const [typing, setTyping] = React.useState<boolean>(false)
   const { t } = useTranslation(["playground", "common"])
 
-  const textAreaFocus = () => {
-    if (textareaRef.current) {
-      textareaRef.current.focus()
-    }
-  }
   const form = useForm({
     initialValues: {
       message: "",
@@ -48,39 +43,11 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
       }
     }
   }
-
-  React.useEffect(() => {
-    if (dropedFile) {
-      onInputChange(dropedFile)
+  const textAreaFocus = () => {
+    if (textareaRef.current) {
+      textareaRef.current.focus()
     }
-  }, [dropedFile])
-
-  useDynamicTextareaSize(textareaRef, form.values.message, 120)
-
-  const {
-    onSubmit,
-    selectedModel,
-    chatMode,
-    speechToTextLanguage,
-    stopStreamingRequest
-  } = useMessage()
-  const { isListening, start, stop, transcript } = useSpeechRecognition()
-
-  React.useEffect(() => {
-    if (isListening) {
-      form.setFieldValue("message", transcript)
-    }
-  }, [transcript])
-  const { mutateAsync: sendMessage, isPending: isSending } = useMutation({
-    mutationFn: onSubmit,
-    onSuccess: () => {
-      textAreaFocus()
-    },
-    onError: (error) => {
-      textAreaFocus()
-    }
-  })
-
+  }
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Process" || e.key === "229") return
     if (
@@ -115,6 +82,39 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
       })()
     }
   }
+
+  const {
+    onSubmit,
+    selectedModel,
+    chatMode,
+    speechToTextLanguage,
+    stopStreamingRequest,
+    streaming
+  } = useMessage()
+  const { isListening, start, stop, transcript } = useSpeechRecognition()
+
+  React.useEffect(() => {
+    if (dropedFile) {
+      onInputChange(dropedFile)
+    }
+  }, [dropedFile])
+
+  useDynamicTextareaSize(textareaRef, form.values.message, 120)
+
+  React.useEffect(() => {
+    if (isListening) {
+      form.setFieldValue("message", transcript)
+    }
+  }, [transcript])
+  const { mutateAsync: sendMessage, isPending: isSending } = useMutation({
+    mutationFn: onSubmit,
+    onSuccess: () => {
+      textAreaFocus()
+    },
+    onError: (error) => {
+      textAreaFocus()
+    }
+  })
 
   return (
     <div className="px-3 pt-3 md:px-6 md:pt-6 bg-gray-50 dark:bg-[#262626] border rounded-t-xl border-black/10 dark:border-gray-600">
@@ -224,7 +224,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                     <ImageIcon className="h-5 w-5" />
                   </button>
                 </Tooltip>
-                {!isSending ? (
+                {!streaming ? (
                   <Dropdown.Button
                     htmlType="submit"
                     disabled={isSending}
