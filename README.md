@@ -118,8 +118,9 @@ This will start a development server and watch for changes in the source files. 
 | Chrome   | ✅      | ✅                | ✅     |
 | Brave    | ✅      | ✅                | ✅     |
 | Firefox  | ✅      | ✅                | ✅     |
+| Vivaldi  | ✅      | ✅                | ✅     |
 | Edge     | ✅      | ❌                | ✅     |
-| Opera GX | ❌      | ❌                | ✅     |
+| Opera    | ❌      | ❌                | ✅     |
 | Arc      | ❌      | ❌                | ✅     |
 
 ## Local AI Provider
@@ -161,6 +162,8 @@ This are some of the blogs and videos about Page Assist. If you have written a b
 - [OllamaをChromeAddonのPage Assistで簡単操作](https://note.com/lucas_san/n/nf00d01a02c3a) by [LucasChatGPT](https://twitter.com/LucasChatGPT)
 
 - [This Chrome Extension Surprised Me](https://www.youtube.com/watch?v=IvLTlDy9G8c) by [Matt Williams](https://www.youtube.com/@technovangelist)
+
+- [Ollama With 1 Click](https://www.youtube.com/watch?v=61uN5jtj2wo) by [Yaron Been From EcomXFactor](https://www.youtube.com/@ecomxfactor-YaronBeen)
 
 ## License
 
