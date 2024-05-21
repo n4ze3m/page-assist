@@ -1,5 +1,7 @@
 # Page Assist
 
+[![Join dialoqbase #welcome](https://img.shields.io/badge/discord-join%20chat-blue.svg)](https://discord.gg/bu54382uBd)
+
 Page Assist is an open-source Chrome Extension that provides a Sidebar and Web UI for your Local AI model. It allows you to interact with your model from any webpage.
 
 ## Installation
