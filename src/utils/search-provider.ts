@@ -10,5 +10,9 @@ export const SUPPORTED_SERACH_PROVIDERS = [
     {
         label: "Sogou",
         value: "sogou"
+    },
+    {
+        label: "Brave",
+        value: "brave"
     }
 ]
