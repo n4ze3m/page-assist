@@ -49,11 +49,11 @@
     "noData": "No data",
     "noHistory": "No chat history",
     "chatWithCurrentPage": "Chat with current page",
+    "currentChatModelSettings":"Current Chat Model Settings",
     "beta": "Beta",
     "tts": "Read aloud",
     "modelSettings": {
         "label": "Model Settings",
-        "currentChatModelSettings":"Current Chat Model Settings",
         "description": "Set the model options globally for all chats",
         "form": {
             "keepAlive": {

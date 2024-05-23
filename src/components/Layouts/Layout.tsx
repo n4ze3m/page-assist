@@ -13,7 +13,6 @@ import {
   ComputerIcon,
   GithubIcon,
   PanelLeftIcon,
-  SlashIcon,
   SquarePen,
   ZapIcon
 } from "lucide-react"
@@ -195,7 +194,7 @@ export default function OptionLayout({
             <div className="flex flex-1 justify-end px-4">
               <div className="ml-4 flex items-center md:ml-6">
                 <div className="flex gap-4 items-center">
-                  <Tooltip title={t("currentChatModelSettings")}>
+                  <Tooltip title={t("common:currentChatModelSettings")}>
                     <button
                       onClick={() => setOpenModelSettings(true)}
                       className="!text-gray-500 dark:text-gray-300 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
