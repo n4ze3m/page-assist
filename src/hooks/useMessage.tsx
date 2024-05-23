@@ -8,7 +8,6 @@ import {
 } from "~/services/ollama"
 import { type Message } from "~/store/option"
 import { useStoreMessage } from "~/store"
-import { ChatOllama } from "@langchain/community/chat_models/ollama"
 import { HumanMessage, SystemMessage } from "@langchain/core/messages"
 import { getDataFromCurrentTab } from "~/libs/get-html"
 import { MemoryVectorStore } from "langchain/vectorstores/memory"
@@ -27,6 +26,9 @@ import { usePageAssist } from "@/context"
 import { formatDocs } from "@/chain/chat-with-x"
 import { OllamaEmbeddingsPageAssist } from "@/models/OllamaEmbedding"
 import { useStorage } from "@plasmohq/storage/hook"
+import { useStoreChatModelSettings } from "@/store/model"
+import { ChatOllama } from "@/models/ChatOllama"
+import { getAllDefaultModelSettings } from "@/services/model-settings"
 
 export const useMessage = () => {
   const {
@@ -39,7 +41,7 @@ export const useMessage = () => {
   } = usePageAssist()
   const { t } = useTranslation("option")
   const [selectedModel, setSelectedModel] = useStorage("selectedModel")
-
+  const currentChatModelSettings = useStoreChatModelSettings()
   const {
     history,
     setHistory,
@@ -75,6 +77,7 @@ export const useMessage = () => {
     setIsLoading(false)
     setIsProcessing(false)
     setStreaming(false)
+    currentChatModelSettings.reset()
   }
 
   const chatWithWebsiteMode = async (
@@ -88,10 +91,22 @@ export const useMessage = () => {
   ) => {
     setStreaming(true)
     const url = await getOllamaURL()
+    const userDefaultModelSettings = await getAllDefaultModelSettings()
 
     const ollama = new ChatOllama({
       model: selectedModel!,
-      baseUrl: cleanUrl(url)
+      baseUrl: cleanUrl(url),
+      keepAlive:
+        currentChatModelSettings?.keepAlive ??
+        userDefaultModelSettings?.keepAlive,
+      temperature:
+        currentChatModelSettings?.temperature ??
+        userDefaultModelSettings?.temperature,
+      topK: currentChatModelSettings?.topK ?? userDefaultModelSettings?.topK,
+      topP: currentChatModelSettings?.topP ?? userDefaultModelSettings?.topP,
+      numCtx:
+        currentChatModelSettings?.numCtx ?? userDefaultModelSettings?.numCtx,
+      seed: currentChatModelSettings?.seed
     })
 
     let newMessage: Message[] = []
@@ -166,7 +181,10 @@ export const useMessage = () => {
     const ollamaEmbedding = new OllamaEmbeddingsPageAssist({
       model: embeddingModle || selectedModel,
       baseUrl: cleanUrl(ollamaUrl),
-      signal: embeddingSignal
+      signal: embeddingSignal,
+      keepAlive:
+        currentChatModelSettings?.keepAlive ??
+        userDefaultModelSettings?.keepAlive
     })
     let vectorstore: MemoryVectorStore
 
@@ -204,7 +222,21 @@ export const useMessage = () => {
           .replaceAll("{question}", message)
         const questionOllama = new ChatOllama({
           model: selectedModel!,
-          baseUrl: cleanUrl(url)
+          baseUrl: cleanUrl(url),
+          keepAlive:
+            currentChatModelSettings?.keepAlive ??
+            userDefaultModelSettings?.keepAlive,
+          temperature:
+            currentChatModelSettings?.temperature ??
+            userDefaultModelSettings?.temperature,
+          topK:
+            currentChatModelSettings?.topK ?? userDefaultModelSettings?.topK,
+          topP:
+            currentChatModelSettings?.topP ?? userDefaultModelSettings?.topP,
+          numCtx:
+            currentChatModelSettings?.numCtx ??
+            userDefaultModelSettings?.numCtx,
+          seed: currentChatModelSettings?.seed
         })
         const response = await questionOllama.invoke(promptForQuestion)
         query = response.content.toString()
@@ -343,6 +375,7 @@ export const useMessage = () => {
   ) => {
     setStreaming(true)
     const url = await getOllamaURL()
+    const userDefaultModelSettings = await getAllDefaultModelSettings()
 
     if (image.length > 0) {
       image = `data:image/jpeg;base64,${image.split(",")[1]}`
@@ -351,7 +384,17 @@ export const useMessage = () => {
     const ollama = new ChatOllama({
       model: selectedModel!,
       baseUrl: cleanUrl(url),
-      verbose: true
+      keepAlive:
+        currentChatModelSettings?.keepAlive ??
+        userDefaultModelSettings?.keepAlive,
+      temperature:
+        currentChatModelSettings?.temperature ??
+        userDefaultModelSettings?.temperature,
+      topK: currentChatModelSettings?.topK ?? userDefaultModelSettings?.topK,
+      topP: currentChatModelSettings?.topP ?? userDefaultModelSettings?.topP,
+      numCtx:
+        currentChatModelSettings?.numCtx ?? userDefaultModelSettings?.numCtx,
+      seed: currentChatModelSettings?.seed
     })
 
     let newMessage: Message[] = []

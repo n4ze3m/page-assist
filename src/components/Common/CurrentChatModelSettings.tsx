@@ -33,7 +33,7 @@ export const CurrentChatModelSettings = ({ open, setOpen }: Props) => {
   })
   return (
     <Modal
-      title={t("modelSettings.currentChatModelSettings")}
+      title={t("currentChatModelSettings")}
       open={open}
       onOk={() => setOpen(false)}
       onCancel={() => setOpen(false)}
