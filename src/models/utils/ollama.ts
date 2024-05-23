@@ -7,7 +7,7 @@ export interface OllamaInput {
   f16KV?: boolean;
   frequencyPenalty?: number;
   headers?: Record<string, string>;
-  keepAlive?: string;
+  keepAlive?: any;
   logitsAll?: boolean;
   lowVram?: boolean;
   mainGpu?: number;
@@ -198,4 +198,12 @@ export async function* createOllamaChatStream(
   options: OllamaCallOptions
 ): AsyncGenerator<OllamaChatGenerationChunk> {
   yield* createOllamaStream(`${baseUrl}/api/chat`, params, options);
+}
+
+
+export const parseKeepAlive = (keepAlive: any) => {
+  if (keepAlive === "-1") {
+    return -1
+  }
+  return keepAlive
 }

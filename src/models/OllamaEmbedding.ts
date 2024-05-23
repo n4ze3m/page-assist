@@ -1,12 +1,13 @@
 import { Embeddings, EmbeddingsParams } from "@langchain/core/embeddings"
 import type { StringWithAutocomplete } from "@langchain/core/utils/types"
+import { parseKeepAlive } from "./utils/ollama"
 
 export interface OllamaInput {
   embeddingOnly?: boolean
   f16KV?: boolean
   frequencyPenalty?: number
   headers?: Record<string, string>
-  keepAlive?: string
+  keepAlive?: any
   logitsAll?: boolean
   lowVram?: boolean
   mainGpu?: number
@@ -98,7 +99,7 @@ interface OllamaEmbeddingsParams extends EmbeddingsParams {
   headers?: Record<string, string>
 
   /** Defaults to "5m" */
-  keepAlive?: string
+  keepAlive?: any
 
   /** Advanced Ollama API request parameters in camelCase, see
    * https://github.com/jmorganca/ollama/blob/main/docs/modelfile.md#valid-parameters-and-values
@@ -138,7 +139,7 @@ export class OllamaEmbeddingsPageAssist extends Embeddings {
     }
 
     if (params?.keepAlive) {
-      this.keepAlive = params.keepAlive
+      this.keepAlive = parseKeepAlive(params.keepAlive)
     }
 
     if (params?.requestOptions) {

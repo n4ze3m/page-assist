@@ -15,6 +15,7 @@ import type { StringWithAutocomplete } from "@langchain/core/utils/types";
 import {
     createOllamaChatStream,
     createOllamaGenerateStream,
+    parseKeepAlive,
     type OllamaInput,
     type OllamaMessage,
 } from "./utils/ollama";
@@ -112,7 +113,7 @@ export class ChatOllama
         this.baseUrl = fields.baseUrl?.endsWith("/")
             ? fields.baseUrl.slice(0, -1)
             : fields.baseUrl ?? this.baseUrl;
-        this.keepAlive = fields.keepAlive ?? this.keepAlive;
+        this.keepAlive = parseKeepAlive(fields.keepAlive) ?? this.keepAlive;
         this.embeddingOnly = fields.embeddingOnly;
         this.f16KV = fields.f16KV;
         this.frequencyPenalty = fields.frequencyPenalty;
