@@ -36,6 +36,7 @@
     "i18next-browser-languagedetector": "^7.2.0",
     "langchain": "^0.1.28",
     "lucide-react": "^0.350.0",
+    "mammoth": "^1.7.2",
     "ml-distance": "^4.0.1",
     "pdfjs-dist": "4.0.379",
     "property-information": "^6.4.1",

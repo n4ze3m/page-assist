@@ -1,16 +1,34 @@
+import {
+  formatToChatHistory,
+  formatToMessage,
+  getRecentChatFromCopilot
+} from "@/db"
 import React from "react"
 import { SidePanelBody } from "~/components/Sidepanel/Chat/body"
 import { SidepanelForm } from "~/components/Sidepanel/Chat/form"
 import { SidepanelHeader } from "~/components/Sidepanel/Chat/header"
 import { useMessage } from "~/hooks/useMessage"
 
- const SidepanelChat = () => {
+const SidepanelChat = () => {
   const drop = React.useRef<HTMLDivElement>(null)
   const [dropedFile, setDropedFile] = React.useState<File | undefined>()
   const [dropState, setDropState] = React.useState<
     "idle" | "dragging" | "error"
   >("idle")
-  const {chatMode} = useMessage()
+  const { chatMode, messages, setHistory, setHistoryId, setMessages } =
+    useMessage()
+
+  const setRecentMessagesOnLoad = async () => {
+    if (messages.length === 0) {
+      const recentChat = await getRecentChatFromCopilot()
+      if (recentChat) {
+        setHistoryId(recentChat.history.id)
+        setHistory(formatToChatHistory(recentChat.messages))
+        setMessages(formatToMessage(recentChat.messages))
+      }
+    }
+  }
+
   React.useEffect(() => {
     if (!drop.current) {
       return
@@ -67,6 +85,7 @@ import { useMessage } from "~/hooks/useMessage"
       }
     }
   }, [])
+
   return (
     <div
       ref={drop}

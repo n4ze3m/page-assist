@@ -329,7 +329,8 @@ export const useMessage = () => {
         message,
         image,
         fullText,
-        source
+        source,
+        message_source: "copilot"
       })
 
       setIsProcessing(false)
@@ -345,7 +346,8 @@ export const useMessage = () => {
         setHistory,
         setHistoryId,
         userMessage: message,
-        isRegenerating: isRegenerate
+        isRegenerating: isRegenerate,
+        message_source: "copilot"
       })
 
       if (!errorSave) {
@@ -535,7 +537,8 @@ export const useMessage = () => {
         message,
         image,
         fullText,
-        source: []
+        source: [],
+        message_source: "copilot"
       })
 
       setIsProcessing(false)
@@ -551,7 +554,8 @@ export const useMessage = () => {
         setHistory,
         setHistoryId,
         userMessage: message,
-        isRegenerating: isRegenerate
+        isRegenerating: isRegenerate,
+        message_source: "copilot"
       })
 
       if (!errorSave) {
