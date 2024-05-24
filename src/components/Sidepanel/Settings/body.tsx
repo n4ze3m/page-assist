@@ -14,7 +14,15 @@ import {
   saveForRag
 } from "~/services/ollama"
 
-import { Skeleton, Radio, Select, Form, InputNumber, Collapse } from "antd"
+import {
+  Skeleton,
+  Radio,
+  Select,
+  Form,
+  InputNumber,
+  Collapse,
+  Switch
+} from "antd"
 import { useDarkMode } from "~/hooks/useDarkmode"
 import { SaveButton } from "~/components/Common/SaveButton"
 import { SUPPORTED_LANGUAGES } from "~/utils/supporetd-languages"
@@ -24,6 +32,8 @@ import { Trans, useTranslation } from "react-i18next"
 import { useI18n } from "@/hooks/useI18n"
 import { TTSModeSettings } from "@/components/Option/Settings/tts-mode"
 import { AdvanceOllamaSettings } from "@/components/Common/Settings/AdvanceOllamaSettings"
+import { useStorage } from "@plasmohq/storage/hook"
+import { BetaTag } from "@/components/Common/Beta"
 
 export const SettingsBody = () => {
   const { t } = useTranslation("settings")
@@ -34,6 +44,13 @@ export const SettingsBody = () => {
   const [selectedValue, setSelectedValue] = React.useState<"normal" | "rag">(
     "normal"
   )
+  const [copilotResumeLastChat, setCopilotResumeLastChat] = useStorage(
+    "copilotResumeLastChat",
+    false
+  )
+
+  const [hideCurrentChatModelSettings, setHideCurrentChatModelSettings] =
+    useStorage("hideCurrentChatModelSettings", false)
 
   const { speechToTextLanguage, setSpeechToTextLanguage } = useMessage()
   const { mode, toggleDarkMode } = useDarkMode()
@@ -318,53 +335,86 @@ export const SettingsBody = () => {
           </div>
         </Form>
       </div>
+
+      <div className="border space-y-3 w-full border-gray-300 dark:border-gray-700 rounded p-4 bg-white dark:bg-[#171717]">
+        <h2 className="text-base mb-4 font-semibold leading-7 text-gray-900 dark:text-white">
+          {t("generalSettings.title")}
+        </h2>
+        <div className="flex flex-col  space-y-4">
+          <span className="text-gray-500   dark:text-neutral-50">
+            {t("generalSettings.settings.copilotResumeLastChat.label")}
+          </span>
+
+          <div>
+            <Switch
+              checked={copilotResumeLastChat}
+              onChange={(checked) => setCopilotResumeLastChat(checked)}
+            />
+          </div>
+        </div>
+        <div className="flex flex-col space-y-4">
+          <div className="inline-flex items-center gap-2">
+            <span className="text-gray-500   dark:text-neutral-50">
+              {t("generalSettings.settings.hideCurrentChatModelSettings.label")}
+            </span>
+          </div>
+          <div>
+            <Switch
+              checked={hideCurrentChatModelSettings}
+              onChange={(checked) => setHideCurrentChatModelSettings(checked)}
+            />
+          </div>
+        </div>
+        <div>
+          <div className="text-xs mb-2  dark:text-white">
+            {t("generalSettings.settings.speechRecognitionLang.label")}{" "}
+          </div>
+          <Select
+            placeholder={t(
+              "generalSettings.settings.speechRecognitionLang.placeholder"
+            )}
+            allowClear
+            showSearch
+            options={SUPPORTED_LANGUAGES}
+            value={speechToTextLanguage}
+            filterOption={(input, option) =>
+              option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0 ||
+              option.value.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
+            onChange={(value) => {
+              setSpeechToTextLanguage(value)
+            }}
+            style={{
+              width: "100%"
+            }}
+          />
+        </div>
+        <div>
+          <div className="text-xs mb-2  dark:text-white">
+            {t("generalSettings.settings.language.label")}{" "}
+          </div>
+
+          <Select
+            placeholder={t("generalSettings.settings.language.placeholder")}
+            showSearch
+            options={supportLanguage}
+            value={locale}
+            filterOption={(input, option) =>
+              option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0 ||
+              option.value.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
+            onChange={(value) => {
+              changeLocale(value)
+            }}
+            style={{
+              width: "100%"
+            }}
+          />
+        </div>
+      </div>
+
       <div className="border border-gray-300 dark:border-gray-700 rounded p-4 bg-white dark:bg-[#171717]">
         <TTSModeSettings hideBorder />
-      </div>
-      <div className="border border-gray-300 dark:border-gray-700 rounded p-4 bg-white dark:bg-[#171717]">
-        <h2 className="text-md mb-4 font-semibold dark:text-white">
-          {t("generalSettings.settings.language.label")}{" "}
-        </h2>
-        <Select
-          placeholder={t("generalSettings.settings.language.placeholder")}
-          showSearch
-          options={supportLanguage}
-          value={locale}
-          filterOption={(input, option) =>
-            option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0 ||
-            option.value.toLowerCase().indexOf(input.toLowerCase()) >= 0
-          }
-          onChange={(value) => {
-            changeLocale(value)
-          }}
-          style={{
-            width: "100%"
-          }}
-        />
-      </div>
-      <div className="border border-gray-300 dark:border-gray-700 rounded p-4 bg-white dark:bg-[#171717]">
-        <h2 className="text-md mb-4 font-semibold dark:text-white">
-          {t("generalSettings.settings.speechRecognitionLang.label")}{" "}
-        </h2>
-        <Select
-          placeholder={t(
-            "generalSettings.settings.speechRecognitionLang.placeholder"
-          )}
-          allowClear
-          showSearch
-          options={SUPPORTED_LANGUAGES}
-          value={speechToTextLanguage}
-          filterOption={(input, option) =>
-            option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0 ||
-            option.value.toLowerCase().indexOf(input.toLowerCase()) >= 0
-          }
-          onChange={(value) => {
-            setSpeechToTextLanguage(value)
-          }}
-          style={{
-            width: "100%"
-          }}
-        />
       </div>
       <div className="border border-gray-300 dark:border-gray-700 rounded p-4 bg-white dark:bg-[#171717]">
         <h2 className="text-md mb-4 font-semibold dark:text-white">
