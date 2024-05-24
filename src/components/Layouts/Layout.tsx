@@ -24,7 +24,6 @@ import { SelectedKnowledge } from "../Option/Knowledge/SelectedKnwledge"
 import { useStorage } from "@plasmohq/storage/hook"
 import { ModelSelect } from "../Common/ModelSelect"
 import { PromptSelect } from "../Common/PromptSelect"
-import { ChatSettings } from "../Icons/ChatSettings"
 import { CurrentChatModelSettings } from "../Common/Settings/CurrentChatModelSettings"
 
 export default function OptionLayout({
@@ -36,6 +35,10 @@ export default function OptionLayout({
   const { t } = useTranslation(["option", "common"])
   const [shareModeEnabled] = useStorage("shareMode", false)
   const [openModelSettings, setOpenModelSettings] = useState(false)
+  const [hideCurrentChatModelSettings] = useStorage(
+    "hideCurrentChatModelSettings",
+    false
+  )
 
   const {
     selectedModel,
@@ -194,13 +197,15 @@ export default function OptionLayout({
             <div className="flex flex-1 justify-end px-4">
               <div className="ml-4 flex items-center md:ml-6">
                 <div className="flex gap-4 items-center">
-                  <Tooltip title={t("common:currentChatModelSettings")}>
-                    <button
-                      onClick={() => setOpenModelSettings(true)}
-                      className="!text-gray-500 dark:text-gray-300 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
-                      <BrainCog className="w-6 h-6" />
-                    </button>
-                  </Tooltip>
+                  {!hideCurrentChatModelSettings && (
+                    <Tooltip title={t("common:currentChatModelSettings")}>
+                      <button
+                        onClick={() => setOpenModelSettings(true)}
+                        className="!text-gray-500 dark:text-gray-300 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+                        <BrainCog className="w-6 h-6" />
+                      </button>
+                    </Tooltip>
+                  )}
                   {pathname === "/" &&
                     messages.length > 0 &&
                     !streaming &&

@@ -3,6 +3,7 @@ import {
   formatToMessage,
   getRecentChatFromCopilot
 } from "@/db"
+import { copilotResumeLastChat } from "@/services/app"
 import React from "react"
 import { SidePanelBody } from "~/components/Sidepanel/Chat/body"
 import { SidepanelForm } from "~/components/Sidepanel/Chat/form"
@@ -19,6 +20,11 @@ const SidepanelChat = () => {
     useMessage()
 
   const setRecentMessagesOnLoad = async () => {
+
+    const isEnabled = await copilotResumeLastChat();
+    if (!isEnabled) {
+      return;
+    }
     if (messages.length === 0) {
       const recentChat = await getRecentChatFromCopilot()
       if (recentChat) {
@@ -84,6 +90,11 @@ const SidepanelChat = () => {
         drop.current.removeEventListener("dragleave", handleDragLeave)
       }
     }
+  }, [])
+
+
+  React.useEffect(() => {
+    setRecentMessagesOnLoad()
   }, [])
 
   return (

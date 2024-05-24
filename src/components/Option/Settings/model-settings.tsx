@@ -1,13 +1,11 @@
+import { BetaTag } from "@/components/Common/Beta"
 import { SaveButton } from "@/components/Common/SaveButton"
 import { getAllModelSettings, setModelSetting } from "@/services/model-settings"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { Form, Skeleton, Input, InputNumber, Collapse } from "antd"
 import React from "react"
 import { useTranslation } from "react-i18next"
-// keepAlive?: string
-// temperature?: number
-// topK?: number
-// topP?: number
+
 
 export const ModelSettings = () => {
   const { t } = useTranslation("common")
@@ -25,9 +23,12 @@ export const ModelSettings = () => {
   return (
     <div>
       <div>
+        <div className="inline-flex items-center gap-3">
+        <BetaTag />
         <h2 className="text-base font-semibold leading-7 text-gray-900 dark:text-white">
-          {t("modelSettings.label")}
+          {t("modelSettings.label")} 
         </h2>
+        </div>
         <p className="text-sm text-gray-500 dark:text-neutral-400 mt-1">
           {t("modelSettings.description")}
         </p>
