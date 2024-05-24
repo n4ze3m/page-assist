@@ -95,7 +95,8 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
     chatMode,
     speechToTextLanguage,
     stopStreamingRequest,
-    streaming
+    streaming,
+    setChatMode
   } = useMessage()
   const { isListening, start, stop, transcript } = useSpeechRecognition()
 
@@ -262,6 +263,18 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                                 setSendWhenEnter(e.target.checked)
                               }>
                               {t("sendWhenEnter")}
+                            </Checkbox>
+                          )
+                        },
+                        {
+                          key: 2,
+                          label: (
+                            <Checkbox
+                              checked={chatMode === "rag"}
+                              onChange={(e) => {
+                                setChatMode(e.target.checked ? "rag" : "normal")
+                              }}>
+                              {t("common:chatWithCurrentPage")}
                             </Checkbox>
                           )
                         }
