@@ -23,7 +23,7 @@ import { MoonIcon, SunIcon } from "lucide-react"
 import { Trans, useTranslation } from "react-i18next"
 import { useI18n } from "@/hooks/useI18n"
 import { TTSModeSettings } from "@/components/Option/Settings/tts-mode"
-import { AdvanceOllamaSettings } from "@/components/Common/AdvanceOllamaSettings"
+import { AdvanceOllamaSettings } from "@/components/Common/Settings/AdvanceOllamaSettings"
 
 export const SettingsBody = () => {
   const { t } = useTranslation("settings")

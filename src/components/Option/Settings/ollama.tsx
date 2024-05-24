@@ -14,7 +14,7 @@ import {
 import { SettingPrompt } from "./prompt"
 import { Trans, useTranslation } from "react-i18next"
 import { useStorage } from "@plasmohq/storage/hook"
-import { AdvanceOllamaSettings } from "@/components/Common/AdvanceOllamaSettings"
+import { AdvanceOllamaSettings } from "@/components/Common/Settings/AdvanceOllamaSettings"
 import { ModelSettings } from "./model-settings"
 
 export const SettingsOllama = () => {

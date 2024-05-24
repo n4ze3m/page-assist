@@ -25,7 +25,7 @@ import { useStorage } from "@plasmohq/storage/hook"
 import { ModelSelect } from "../Common/ModelSelect"
 import { PromptSelect } from "../Common/PromptSelect"
 import { ChatSettings } from "../Icons/ChatSettings"
-import { CurrentChatModelSettings } from "../Common/CurrentChatModelSettings"
+import { CurrentChatModelSettings } from "../Common/Settings/CurrentChatModelSettings"
 
 export default function OptionLayout({
   children

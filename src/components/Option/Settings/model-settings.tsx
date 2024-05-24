@@ -1,7 +1,7 @@
 import { SaveButton } from "@/components/Common/SaveButton"
 import { getAllModelSettings, setModelSetting } from "@/services/model-settings"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
-import { Form, Skeleton, Input, Switch, InputNumber, Collapse } from "antd"
+import { Form, Skeleton, Input, InputNumber, Collapse } from "antd"
 import React from "react"
 import { useTranslation } from "react-i18next"
 // keepAlive?: string

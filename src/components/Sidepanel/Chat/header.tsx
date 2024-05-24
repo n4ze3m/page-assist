@@ -4,7 +4,7 @@ import { Link } from "react-router-dom"
 import { Tooltip } from "antd"
 import { BoxesIcon, BrainCog, CogIcon, EraserIcon } from "lucide-react"
 import { useTranslation } from "react-i18next"
-import { CurrentChatModelSettings } from "@/components/Common/CurrentChatModelSettings"
+import { CurrentChatModelSettings } from "@/components/Common/Settings/CurrentChatModelSettings"
 import React from "react"
 export const SidepanelHeader = () => {
   const { clearChat, isEmbedding, messages, streaming } = useMessage()
