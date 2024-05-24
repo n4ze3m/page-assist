@@ -33,7 +33,6 @@ import { useI18n } from "@/hooks/useI18n"
 import { TTSModeSettings } from "@/components/Option/Settings/tts-mode"
 import { AdvanceOllamaSettings } from "@/components/Common/Settings/AdvanceOllamaSettings"
 import { useStorage } from "@plasmohq/storage/hook"
-import { BetaTag } from "@/components/Common/Beta"
 
 export const SettingsBody = () => {
   const { t } = useTranslation("settings")
