@@ -49,9 +49,9 @@
     "noData": "No data",
     "noHistory": "No chat history",
     "chatWithCurrentPage": "Chat with current page",
-    "currentChatModelSettings":"Current Chat Model Settings",
     "beta": "Beta",
     "tts": "Read aloud",
+    "currentChatModelSettings":"Current Chat Model Settings",
     "modelSettings": {
         "label": "Model Settings",
         "description": "Set the model options globally for all chats",

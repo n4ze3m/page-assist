@@ -17,6 +17,12 @@
                     "light": "Light",
                     "dark": "Dark"
                 }
+            },
+            "copilotResumeLastChat": {
+                "label": "Resume the last chat when opening the SidePanel (Copilot)"
+            },
+            "hideCurrentChatModelSettings": {
+                "label": "Hide the current Chat Model Settings"
             }
         },
         "webSearch": {

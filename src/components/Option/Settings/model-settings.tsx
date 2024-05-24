@@ -23,7 +23,7 @@ export const ModelSettings = () => {
   return (
     <div>
       <div>
-        <div className="inline-flex items-center gap-3">
+        <div className="inline-flex items-center gap-2">
         <BetaTag />
         <h2 className="text-base font-semibold leading-7 text-gray-900 dark:text-white">
           {t("modelSettings.label")} 

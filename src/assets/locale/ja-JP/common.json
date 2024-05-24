@@ -50,5 +50,39 @@
     "noHistory": "チャット履歴がありません", 
     "chatWithCurrentPage": "現在のページでチャット",
     "beta": "ベータ",
-    "tts": "読み上げ"
+    "tts": "読み上げ",
+    "currentChatModelSettings": "現在のチャットモデル設定",
+    "modelSettings": {
+        "label": "モデル設定",
+        "description": "すべてのチャットに対してモデルオプションをグローバルに設定します",
+        "form": {
+            "keepAlive": {
+                "label": "キープアライブ",
+                "help": "リクエスト後にモデルがメモリに保持される時間をコントロールします（デフォルト: 5 分）",
+                "placeholder": "キープアライブの期間を入力してください（例：5分、10分、1時間）"
+            },
+            "temperature": {
+                "label": "温度",
+                "placeholder": "温度値を入力してください（例：0.7、1.0）"
+            },
+            "numCtx": {
+                "label": "コンテキストの数",
+                "placeholder": "コンテキスト数を入力してください（デフォルト：2048）"
+            },
+            "seed": {
+                "label": "シード",
+                "placeholder": "シード値を入力してください（例：1234）",
+                "help": "モデル出力の再現性"
+            },
+            "topK": {
+                "label": "Top K",
+                "placeholder": "Top K値を入力してください（例：40、100）"
+            },
+            "topP": {
+                "label": "Top P",
+                "placeholder": "Top P値を入力してください（例：0.9、0.95）"
+            }
+        },
+        "advanced": "その他のモデル設定"
+    }
   }

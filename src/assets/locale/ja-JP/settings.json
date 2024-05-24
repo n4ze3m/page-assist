@@ -20,6 +20,12 @@
             },
             "searchMode": {
                 "label": "簡易インターネット検索を実行"
+            },
+            "copilotResumeLastChat": {
+                "label": "サイドパネルを開いたときに最後のチャットを再開 (Copilot)"
+            },
+            "hideCurrentChatModelSettings": {
+                "label": "現在のチャットモデル設定を非表示"
             }
         },
         "webSearch": {
