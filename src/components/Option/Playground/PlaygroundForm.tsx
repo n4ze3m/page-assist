@@ -6,14 +6,14 @@ import { toBase64 } from "~/libs/to-base64"
 import { useMessageOption } from "~/hooks/useMessageOption"
 import { Checkbox, Dropdown, Select, Switch, Tooltip } from "antd"
 import { Image } from "antd"
-import { useSpeechRecognition } from "~/hooks/useSpeechRecognition"
 import { useWebUI } from "~/store/webui"
 import { defaultEmbeddingModelForRag } from "~/services/ollama"
 import { ImageIcon, MicIcon, StopCircleIcon, X } from "lucide-react"
 import { getVariable } from "~/utils/select-varaible"
 import { useTranslation } from "react-i18next"
 import { KnowledgeSelect } from "../Knowledge/KnowledgeSelect"
-import { SelectedKnowledge } from "../Knowledge/SelectedKnwledge"
+import { useSpeechRecognition } from "react-speech-recognition"
+import SpeechRecognition from "react-speech-recognition"
 
 type Props = {
   dropedFile: File | undefined
@@ -84,7 +84,13 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
 
   useDynamicTextareaSize(textareaRef, form.values.message, 300)
 
-  const { isListening, start, stop, transcript } = useSpeechRecognition()
+  const {
+    transcript,
+    listening: isListening,
+    resetTranscript,
+    browserSupportsSpeechRecognition
+  } = useSpeechRecognition()
+
   const { sendWhenEnter, setSendWhenEnter } = useWebUI()
 
   React.useEffect(() => {
@@ -135,6 +141,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
       sendWhenEnter
     ) {
       e.preventDefault()
+      stopListening()
       form.onSubmit(async (value) => {
         if (value.message.trim().length === 0) {
           return
@@ -159,6 +166,13 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
       })()
     }
   }
+
+  const stopListening = async () => {
+    if (isListening) {
+      SpeechRecognition.stopListening()
+    }
+  }
+
   return (
     <div className="px-3 pt-3 md:px-6 md:pt-6 bg-gray-50 dark:bg-[#262626] border rounded-t-xl  dark:border-gray-600">
       <div
@@ -186,6 +200,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
         <div className="flex bg-white dark:bg-transparent">
           <form
             onSubmit={form.onSubmit(async (value) => {
+              stopListening()
               if (!selectedModel || selectedModel.length === 0) {
                 form.setFieldError("message", t("formError.noModel"))
                 return
@@ -260,30 +275,33 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                 </div>
                 <div className="flex !justify-end gap-3">
                   <KnowledgeSelect />
-                  <Tooltip title={t("tooltip.speechToText")}>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        if (isListening) {
-                          stop()
-                        } else {
-                          start({
-                            lang: speechToTextLanguage,
-                            continuous: true
-                          })
-                        }
-                      }}
-                      className={`flex items-center justify-center dark:text-gray-300`}>
-                      {!isListening ? (
-                        <MicIcon className="h-5 w-5" />
-                      ) : (
-                        <div className="relative">
-                          <span className="animate-ping absolute inline-flex h-3 w-3 rounded-full bg-red-400 opacity-75"></span>
+                  {browserSupportsSpeechRecognition && (
+                    <Tooltip title={t("tooltip.speechToText")}>
+                      <button
+                        type="button"
+                        onClick={async () => {
+                          if (isListening) {
+                            SpeechRecognition.stopListening()
+                          } else {
+                            resetTranscript()
+                            SpeechRecognition.startListening({
+                              continuous: true,
+                              language: speechToTextLanguage
+                            })
+                          }
+                        }}
+                        className={`flex items-center justify-center dark:text-gray-300`}>
+                        {!isListening ? (
                           <MicIcon className="h-5 w-5" />
-                        </div>
-                      )}
-                    </button>
-                  </Tooltip>
+                        ) : (
+                          <div className="relative">
+                            <span className="animate-ping absolute inline-flex h-3 w-3 rounded-full bg-red-400 opacity-75"></span>
+                            <MicIcon className="h-5 w-5" />
+                          </div>
+                        )}
+                      </button>
+                    </Tooltip>
+                  )}
 
                   {!selectedKnowledge && (
                     <Tooltip title={t("tooltip.uploadImage")}>

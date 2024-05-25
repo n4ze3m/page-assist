@@ -2,7 +2,7 @@ import { useQueryClient } from "@tanstack/react-query"
 import { useDarkMode } from "~/hooks/useDarkmode"
 import { useMessageOption } from "~/hooks/useMessageOption"
 import { PageAssitDatabase } from "@/db"
-import { Select } from "antd"
+import { Select, Switch } from "antd"
 import { SUPPORTED_LANGUAGES } from "~/utils/supporetd-languages"
 import { MoonIcon, SunIcon } from "lucide-react"
 import { SearchModeSettings } from "./search-mode"
@@ -14,10 +14,19 @@ import {
   importPageAssistData
 } from "@/libs/export-import"
 import { BetaTag } from "@/components/Common/Beta"
+import { useStorage } from "@plasmohq/storage/hook"
 
 export const SettingOther = () => {
   const { clearChat, speechToTextLanguage, setSpeechToTextLanguage } =
     useMessageOption()
+
+  const [copilotResumeLastChat, setCopilotResumeLastChat] = useStorage(
+    "copilotResumeLastChat",
+    false
+  )
+
+  const [hideCurrentChatModelSettings, setHideCurrentChatModelSettings] =
+    useStorage("hideCurrentChatModelSettings", false)
 
   const queryClient = useQueryClient()
 
@@ -29,12 +38,12 @@ export const SettingOther = () => {
     <dl className="flex flex-col space-y-6 text-sm">
       <div>
         <h2 className="text-base font-semibold leading-7 text-gray-900 dark:text-white">
-          {t("generalSettings.settings.heading")}
+          {t("generalSettings.title")}
         </h2>
         <div className="border border-b border-gray-200 dark:border-gray-600 mt-3"></div>
       </div>
       <div className="flex flex-row justify-between">
-        <span className="text-gray-500   dark:text-neutral-50">
+        <span className="text-gray-500 dark:text-neutral-50">
           {t("generalSettings.settings.speechRecognitionLang.label")}
         </span>
 
@@ -74,6 +83,31 @@ export const SettingOther = () => {
           onChange={(value) => {
             changeLocale(value)
           }}
+        />
+      </div>
+      <div className="flex flex-row justify-between">
+        <div className="inline-flex items-center gap-2">
+          <BetaTag />
+          <span className="text-gray-500   dark:text-neutral-50">
+            {t("generalSettings.settings.copilotResumeLastChat.label")}
+          </span>
+        </div>
+        <Switch
+          checked={copilotResumeLastChat}
+          onChange={(checked) => setCopilotResumeLastChat(checked)}
+        />
+      </div>
+      <div className="flex flex-row justify-between">
+        <div className="inline-flex items-center gap-2">
+          <BetaTag />
+          <span className="text-gray-500   dark:text-neutral-50">
+            {t("generalSettings.settings.hideCurrentChatModelSettings.label")}
+          </span>
+        </div>
+
+        <Switch
+          checked={hideCurrentChatModelSettings}
+          onChange={(checked) => setHideCurrentChatModelSettings(checked)}
         />
       </div>
       <div className="flex flex-row justify-between">
@@ -129,7 +163,7 @@ export const SettingOther = () => {
         </div>
         <div className="flex flex-row mb-3 justify-between">
           <span className="text-gray-500 dark:text-neutral-50 ">
-          <BetaTag />    {t("generalSettings.system.export.label")}
+            {t("generalSettings.system.export.label")}
           </span>
           <button
             onClick={exportPageAssistData}
@@ -139,7 +173,7 @@ export const SettingOther = () => {
         </div>
         <div className="flex flex-row mb-3 justify-between">
           <span className="text-gray-500 dark:text-neutral-50 ">
-          <BetaTag /> {t("generalSettings.system.import.label")}
+            {t("generalSettings.system.import.label")}
           </span>
           <label
             htmlFor="import"

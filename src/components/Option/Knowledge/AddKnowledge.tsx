@@ -90,15 +90,16 @@ export const AddKnowledge = ({ open, setOpen }: Props) => {
             return e?.fileList
           }}>
           <Upload.Dragger
-            accept={".pdf, .csv, .txt, .md"}
+            accept={".pdf, .csv, .txt, .md, .docx"}
             multiple={true}
             maxCount={10}
             beforeUpload={(file) => {
               const allowedTypes = [
                 "application/pdf",
-                // "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
                 "text/csv",
-                "text/plain"
+                "text/plain",
+                "text/markdown",
+                "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
               ]
                 .map((type) => type.toLowerCase())
                 .join(", ")

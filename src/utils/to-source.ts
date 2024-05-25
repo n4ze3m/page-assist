@@ -10,6 +10,7 @@ export const toBase64 = (file: File | Blob): Promise<string> => {
   })
 }
 
+
 export const toArrayBufferFromBase64 = async (base64: string) => {
   const res = await fetch(base64)
   const blob = await res.blob()

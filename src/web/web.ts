@@ -3,6 +3,7 @@ import { webGoogleSearch } from "./search-engines/google"
 import { webDuckDuckGoSearch } from "./search-engines/duckduckgo"
 import { getSearchProvider } from "@/services/search"
 import { webSogouSearch } from "./search-engines/sogou"
+import { webBraveSearch } from "./search-engines/brave"
 
 const getHostName = (url: string) => {
   try {
@@ -19,6 +20,8 @@ const searchWeb = (provider: string, query: string) => {
       return webDuckDuckGoSearch(query)
     case "sogou":
       return webSogouSearch(query)
+    case "brave":
+      return webBraveSearch(query)
     default:
       return webGoogleSearch(query)
   }

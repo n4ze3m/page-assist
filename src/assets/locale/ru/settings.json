@@ -17,6 +17,12 @@
                     "light": "Светлая",
                     "dark": "Темная"
                 }
+            },
+            "copilotResumeLastChat": {
+                "label": "Возобновить последний чат при открытии боковой панели (Copilot)"
+            },
+            "hideCurrentChatModelSettings": {
+                "label": "Скрыть текущие настройки модели чата"
             }
         },
         "webSearch": {

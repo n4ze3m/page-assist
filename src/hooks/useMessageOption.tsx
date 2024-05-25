@@ -8,7 +8,6 @@ import {
   systemPromptForNonRagOption
 } from "~/services/ollama"
 import { type ChatHistory, type Message } from "~/store/option"
-import { ChatOllama } from "@langchain/community/chat_models/ollama"
 import { HumanMessage, SystemMessage } from "@langchain/core/messages"
 import { useStoreMessageOption } from "~/store/option"
 import {
@@ -29,8 +28,10 @@ import { OllamaEmbeddings } from "@langchain/community/embeddings/ollama"
 import { PageAssistVectorStore } from "@/libs/PageAssistVectorStore"
 import { formatDocs } from "@/chain/chat-with-x"
 import { useWebUI } from "@/store/webui"
-import { isTTSEnabled } from "@/services/tts"
 import { useStorage } from "@plasmohq/storage/hook"
+import { useStoreChatModelSettings } from "@/store/model"
+import { getAllDefaultModelSettings } from "@/services/model-settings"
+import { ChatOllama } from "@/models/ChatOllama"
 
 export const useMessageOption = () => {
   const {
@@ -66,6 +67,7 @@ export const useMessageOption = () => {
     selectedKnowledge,
     setSelectedKnowledge
   } = useStoreMessageOption()
+  const currentChatModelSettings = useStoreChatModelSettings()
   const [selectedModel, setSelectedModel] = useStorage("selectedModel")
 
   const { ttsEnabled } = useWebUI()
@@ -74,7 +76,6 @@ export const useMessageOption = () => {
 
   const navigate = useNavigate()
   const textareaRef = React.useRef<HTMLTextAreaElement>(null)
-
 
   const clearChat = () => {
     navigate("/")
@@ -85,6 +86,7 @@ export const useMessageOption = () => {
     setIsLoading(false)
     setIsProcessing(false)
     setStreaming(false)
+    currentChatModelSettings.reset()
     textareaRef?.current?.focus()
   }
 
@@ -97,14 +99,25 @@ export const useMessageOption = () => {
     signal: AbortSignal
   ) => {
     const url = await getOllamaURL()
-
+    const userDefaultModelSettings = await getAllDefaultModelSettings()
     if (image.length > 0) {
       image = `data:image/jpeg;base64,${image.split(",")[1]}`
     }
 
     const ollama = new ChatOllama({
       model: selectedModel!,
-      baseUrl: cleanUrl(url)
+      baseUrl: cleanUrl(url),
+      keepAlive:
+        currentChatModelSettings?.keepAlive ??
+        userDefaultModelSettings?.keepAlive,
+      temperature:
+        currentChatModelSettings?.temperature ??
+        userDefaultModelSettings?.temperature,
+      topK: currentChatModelSettings?.topK ?? userDefaultModelSettings?.topK,
+      topP: currentChatModelSettings?.topP ?? userDefaultModelSettings?.topP,
+      numCtx:
+        currentChatModelSettings?.numCtx ?? userDefaultModelSettings?.numCtx,
+      seed: currentChatModelSettings?.seed
     })
 
     let newMessage: Message[] = []
@@ -163,7 +176,21 @@ export const useMessageOption = () => {
           .replaceAll("{question}", message)
         const questionOllama = new ChatOllama({
           model: selectedModel!,
-          baseUrl: cleanUrl(url)
+          baseUrl: cleanUrl(url),
+          keepAlive:
+            currentChatModelSettings?.keepAlive ??
+            userDefaultModelSettings?.keepAlive,
+          temperature:
+            currentChatModelSettings?.temperature ??
+            userDefaultModelSettings?.temperature,
+          topK:
+            currentChatModelSettings?.topK ?? userDefaultModelSettings?.topK,
+          topP:
+            currentChatModelSettings?.topP ?? userDefaultModelSettings?.topP,
+          numCtx:
+            currentChatModelSettings?.numCtx ??
+            userDefaultModelSettings?.numCtx,
+          seed: currentChatModelSettings?.seed
         })
         const response = await questionOllama.invoke(promptForQuestion)
         query = response.content.toString()
@@ -172,7 +199,7 @@ export const useMessageOption = () => {
       const { prompt, source } = await getSystemPromptForWeb(query)
       setIsSearchingInternet(false)
 
-    //  message = message.trim().replaceAll("\n", " ")
+      //  message = message.trim().replaceAll("\n", " ")
 
       let humanMessage = new HumanMessage({
         content: [
@@ -314,6 +341,7 @@ export const useMessageOption = () => {
     signal: AbortSignal
   ) => {
     const url = await getOllamaURL()
+    const userDefaultModelSettings = await getAllDefaultModelSettings()
 
     if (image.length > 0) {
       image = `data:image/jpeg;base64,${image.split(",")[1]}`
@@ -321,7 +349,18 @@ export const useMessageOption = () => {
 
     const ollama = new ChatOllama({
       model: selectedModel!,
-      baseUrl: cleanUrl(url)
+      baseUrl: cleanUrl(url),
+      keepAlive:
+        currentChatModelSettings?.keepAlive ??
+        userDefaultModelSettings?.keepAlive,
+      temperature:
+        currentChatModelSettings?.temperature ??
+        userDefaultModelSettings?.temperature,
+      topK: currentChatModelSettings?.topK ?? userDefaultModelSettings?.topK,
+      topP: currentChatModelSettings?.topP ?? userDefaultModelSettings?.topP,
+      numCtx:
+        currentChatModelSettings?.numCtx ?? userDefaultModelSettings?.numCtx,
+      seed: currentChatModelSettings?.seed
     })
 
     let newMessage: Message[] = []
@@ -521,10 +560,22 @@ export const useMessageOption = () => {
     signal: AbortSignal
   ) => {
     const url = await getOllamaURL()
+    const userDefaultModelSettings = await getAllDefaultModelSettings()
 
     const ollama = new ChatOllama({
       model: selectedModel!,
-      baseUrl: cleanUrl(url)
+      baseUrl: cleanUrl(url),
+      keepAlive:
+        currentChatModelSettings?.keepAlive ??
+        userDefaultModelSettings?.keepAlive,
+      temperature:
+        currentChatModelSettings?.temperature ??
+        userDefaultModelSettings?.temperature,
+      topK: currentChatModelSettings?.topK ?? userDefaultModelSettings?.topK,
+      topP: currentChatModelSettings?.topP ?? userDefaultModelSettings?.topP,
+      numCtx:
+        currentChatModelSettings?.numCtx ?? userDefaultModelSettings?.numCtx,
+      seed: currentChatModelSettings?.seed
     })
 
     let newMessage: Message[] = []
@@ -568,7 +619,10 @@ export const useMessageOption = () => {
     const ollamaUrl = await getOllamaURL()
     const ollamaEmbedding = new OllamaEmbeddings({
       model: embeddingModle || selectedModel,
-      baseUrl: cleanUrl(ollamaUrl)
+      baseUrl: cleanUrl(ollamaUrl),
+      keepAlive:
+        currentChatModelSettings?.keepAlive ??
+        userDefaultModelSettings?.keepAlive
     })
 
     let vectorstore = await PageAssistVectorStore.fromExistingIndex(
@@ -596,7 +650,21 @@ export const useMessageOption = () => {
           .replaceAll("{question}", message)
         const questionOllama = new ChatOllama({
           model: selectedModel!,
-          baseUrl: cleanUrl(url)
+          baseUrl: cleanUrl(url),
+          keepAlive:
+            currentChatModelSettings?.keepAlive ??
+            userDefaultModelSettings?.keepAlive,
+          temperature:
+            currentChatModelSettings?.temperature ??
+            userDefaultModelSettings?.temperature,
+          topK:
+            currentChatModelSettings?.topK ?? userDefaultModelSettings?.topK,
+          topP:
+            currentChatModelSettings?.topP ?? userDefaultModelSettings?.topP,
+          numCtx:
+            currentChatModelSettings?.numCtx ??
+            userDefaultModelSettings?.numCtx,
+          seed: currentChatModelSettings?.seed
         })
         const response = await questionOllama.invoke(promptForQuestion)
         query = response.content.toString()
@@ -613,7 +681,7 @@ export const useMessageOption = () => {
           url: ""
         }
       })
-    //  message = message.trim().replaceAll("\n", " ")
+      //  message = message.trim().replaceAll("\n", " ")
 
       let humanMessage = new HumanMessage({
         content: [

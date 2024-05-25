@@ -20,6 +20,12 @@
             },
             "searchMode": {
                 "label": "使用简化的互联网搜索"
+            },
+            "copilotResumeLastChat": {
+                "label": "打开侧边栏时恢复上次聊天（Copilot）"
+            },
+            "hideCurrentChatModelSettings": {
+                "label": "隐藏当前聊天模型设置"
             }
         },
         "webSearch": {

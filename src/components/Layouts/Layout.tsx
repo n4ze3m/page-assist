@@ -7,12 +7,12 @@ import { useQuery } from "@tanstack/react-query"
 import { fetchChatModels, getAllModels } from "~/services/ollama"
 import { useMessageOption } from "~/hooks/useMessageOption"
 import {
+  BrainCog,
   ChevronLeft,
   CogIcon,
   ComputerIcon,
   GithubIcon,
   PanelLeftIcon,
-  SlashIcon,
   SquarePen,
   ZapIcon
 } from "lucide-react"
@@ -24,6 +24,7 @@ import { SelectedKnowledge } from "../Option/Knowledge/SelectedKnwledge"
 import { useStorage } from "@plasmohq/storage/hook"
 import { ModelSelect } from "../Common/ModelSelect"
 import { PromptSelect } from "../Common/PromptSelect"
+import { CurrentChatModelSettings } from "../Common/Settings/CurrentChatModelSettings"
 
 export default function OptionLayout({
   children
@@ -33,6 +34,11 @@ export default function OptionLayout({
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const { t } = useTranslation(["option", "common"])
   const [shareModeEnabled] = useStorage("shareMode", false)
+  const [openModelSettings, setOpenModelSettings] = useState(false)
+  const [hideCurrentChatModelSettings] = useStorage(
+    "hideCurrentChatModelSettings",
+    false
+  )
 
   const {
     selectedModel,
@@ -108,9 +114,7 @@ export default function OptionLayout({
                   onClick={clearChat}
                   className="inline-flex  dark:bg-transparent bg-white items-center rounded-lg border  dark:border-gray-700 bg-transparent px-3 py-2.5 text-xs lg:text-sm font-medium leading-4 text-gray-800  dark:text-white disabled:opacity-50 ease-in-out transition-colors duration-200 hover:bg-gray-100 dark:hover:bg-gray-800 dark:hover:text-white">
                   <SquarePen className="h-5 w-5 " />
-                  <span className=" truncate ml-3">
-                    {t("newChat")}
-                  </span>
+                  <span className=" truncate ml-3">{t("newChat")}</span>
                 </button>
               </div>
               <span className="text-lg font-thin text-zinc-300 dark:text-zinc-600">
@@ -193,6 +197,15 @@ export default function OptionLayout({
             <div className="flex flex-1 justify-end px-4">
               <div className="ml-4 flex items-center md:ml-6">
                 <div className="flex gap-4 items-center">
+                  {!hideCurrentChatModelSettings && (
+                    <Tooltip title={t("common:currentChatModelSettings")}>
+                      <button
+                        onClick={() => setOpenModelSettings(true)}
+                        className="!text-gray-500 dark:text-gray-300 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+                        <BrainCog className="w-6 h-6" />
+                      </button>
+                    </Tooltip>
+                  )}
                   {pathname === "/" &&
                     messages.length > 0 &&
                     !streaming &&
@@ -228,6 +241,11 @@ export default function OptionLayout({
         open={sidebarOpen}>
         <Sidebar onClose={() => setSidebarOpen(false)} />
       </Drawer>
+
+      <CurrentChatModelSettings
+        open={openModelSettings}
+        setOpen={setOpenModelSettings}
+      />
     </div>
   )
 }

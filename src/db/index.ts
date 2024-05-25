@@ -7,6 +7,7 @@ type HistoryInfo = {
   id: string
   title: string
   is_rag: boolean
+  message_source?: "copilot" | "web-ui"
   createdAt: number
 }
 
@@ -224,10 +225,10 @@ export const generateID = () => {
   })
 }
 
-export const saveHistory = async (title: string, is_rag?: boolean) => {
+export const saveHistory = async (title: string, is_rag?: boolean, message_source?: "copilot" | "web-ui") => {
   const id = generateID()
   const createdAt = Date.now()
-  const history = { id, title, createdAt, is_rag }
+  const history = { id, title, createdAt, is_rag, message_source }
   const db = new PageAssitDatabase()
   await db.addChatHistory(history)
   return history
@@ -464,4 +465,18 @@ export const importPrompts = async (prompts: Prompts) => {
   for (const prompt of prompts) {
     await db.addPrompt(prompt)
   }
+}
+
+export const getRecentChatFromCopilot = async () => {
+  const db = new PageAssitDatabase()
+  const chatHistories = await db.getChatHistories()
+  if (chatHistories.length === 0) return null
+  const history = chatHistories.find(
+    (history) => history.message_source === "copilot"
+  )
+  if (!history) return null
+
+  const messages = await db.getChatHistory(history.id)
+
+  return { history, messages }
 }

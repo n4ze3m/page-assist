@@ -11,7 +11,8 @@ export const saveMessageOnError = async ({
   historyId,
   selectedModel,
   setHistoryId,
-  isRegenerating
+  isRegenerating,
+  message_source = "web-ui"
 }: {
   e: any
   setHistory: (history: ChatHistory) => void
@@ -22,7 +23,8 @@ export const saveMessageOnError = async ({
   historyId: string | null
   selectedModel: string
   setHistoryId: (historyId: string) => void
-  isRegenerating: boolean
+  isRegenerating: boolean,
+  message_source?: "copilot" | "web-ui"
 }) => {
   if (
     e?.name === "AbortError" ||
@@ -65,7 +67,7 @@ export const saveMessageOnError = async ({
         2
       )
     } else {
-      const newHistoryId = await saveHistory(userMessage)
+      const newHistoryId = await saveHistory(userMessage, false, message_source)
       if (!isRegenerating) {
         await saveMessage(
           newHistoryId.id,
@@ -103,7 +105,8 @@ export const saveMessageOnSuccess = async ({
   message,
   image,
   fullText,
-  source
+  source,
+  message_source = "web-ui"
 }: {
   historyId: string | null
   setHistoryId: (historyId: string) => void
@@ -112,7 +115,8 @@ export const saveMessageOnSuccess = async ({
   message: string
   image: string
   fullText: string
-  source: any[]
+  source: any[],
+  message_source?: "copilot" | "web-ui"
 }) => {
   if (historyId) {
     if (!isRegenerate) {
@@ -136,7 +140,7 @@ export const saveMessageOnSuccess = async ({
       2
     )
   } else {
-    const newHistoryId = await saveHistory(message)
+    const newHistoryId = await saveHistory(message, false, message_source)
     await saveMessage(
       newHistoryId.id,
       selectedModel,

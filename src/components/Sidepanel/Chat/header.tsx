@@ -2,11 +2,20 @@ import logoImage from "~/assets/icon.png"
 import { useMessage } from "~/hooks/useMessage"
 import { Link } from "react-router-dom"
 import { Tooltip } from "antd"
-import { BoxesIcon, CogIcon, EraserIcon, HistoryIcon } from "lucide-react"
+import { BoxesIcon, BrainCog, CogIcon, EraserIcon } from "lucide-react"
 import { useTranslation } from "react-i18next"
+import { CurrentChatModelSettings } from "@/components/Common/Settings/CurrentChatModelSettings"
+import React from "react"
+import { useStorage } from "@plasmohq/storage/hook"
 export const SidepanelHeader = () => {
+  const [hideCurrentChatModelSettings] = useStorage(
+    "hideCurrentChatModelSettings",
+    false
+  )
+
   const { clearChat, isEmbedding, messages, streaming } = useMessage()
   const { t } = useTranslation(["sidepanel", "common"])
+  const [openModelSettings, setOpenModelSettings] = React.useState(false)
 
   return (
     <div className="flex px-3 justify-between bg-white dark:bg-[#171717] border-b border-gray-300 dark:border-gray-700 py-4 items-center">
@@ -40,10 +49,23 @@ export const SidepanelHeader = () => {
             <HistoryIcon className="h-5 w-5 text-gray-500 dark:text-gray-400" />
           </Link>
         </Tooltip> */}
+        {!hideCurrentChatModelSettings && (
+          <Tooltip title={t("common:currentChatModelSettings")}>
+            <button
+              onClick={() => setOpenModelSettings(true)}
+              className="text-gray-500 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+              <BrainCog className="w-5 h-5" />
+            </button>
+          </Tooltip>
+        )}
         <Link to="/settings">
           <CogIcon className="h-5 w-5 text-gray-500 dark:text-gray-400" />
         </Link>
       </div>
+      <CurrentChatModelSettings
+        open={openModelSettings}
+        setOpen={setOpenModelSettings}
+      />
     </div>
   )
 }

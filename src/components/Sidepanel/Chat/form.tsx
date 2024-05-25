@@ -5,12 +5,13 @@ import useDynamicTextareaSize from "~/hooks/useDynamicTextareaSize"
 import { useMessage } from "~/hooks/useMessage"
 import { toBase64 } from "~/libs/to-base64"
 import { Checkbox, Dropdown, Image, Tooltip } from "antd"
-import { useSpeechRecognition } from "~/hooks/useSpeechRecognition"
 import { useWebUI } from "~/store/webui"
 import { defaultEmbeddingModelForRag } from "~/services/ollama"
 import { ImageIcon, MicIcon, StopCircleIcon, X } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { ModelSelect } from "@/components/Common/ModelSelect"
+import { useSpeechRecognition } from "react-speech-recognition"
+import SpeechRecognition from "react-speech-recognition"
 
 type Props = {
   dropedFile: File | undefined
@@ -29,6 +30,20 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
       image: ""
     }
   })
+  const {
+    transcript,
+    listening: isListening,
+    resetTranscript,
+    browserSupportsSpeechRecognition
+  } = useSpeechRecognition({
+
+  })
+
+  const stopListening = async () => {
+    if (isListening) {
+       SpeechRecognition.stopListening()
+    }
+  }
 
   const onInputChange = async (
     e: React.ChangeEvent<HTMLInputElement> | File
@@ -59,6 +74,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
     ) {
       e.preventDefault()
       form.onSubmit(async (value) => {
+        await stopListening()
         if (value.message.trim().length === 0) {
           return
         }
@@ -95,9 +111,9 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
     chatMode,
     speechToTextLanguage,
     stopStreamingRequest,
-    streaming
+    streaming,
+    setChatMode
   } = useMessage()
-  const { isListening, start, stop, transcript } = useSpeechRecognition()
 
   React.useEffect(() => {
     if (dropedFile) {
@@ -160,6 +176,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                   return
                 }
               }
+              await stopListening()
               form.reset()
               textAreaFocus()
               await sendMessage({
@@ -195,30 +212,33 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
               />
               <div className="flex mt-4 justify-end gap-3">
                 <ModelSelect />
-                <Tooltip title={t("tooltip.speechToText")}>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      if (isListening) {
-                        stop()
-                      } else {
-                        start({
-                          lang: speechToTextLanguage,
-                          continuous: true
-                        })
-                      }
-                    }}
-                    className={`flex items-center justify-center dark:text-gray-300`}>
-                    {!isListening ? (
-                      <MicIcon className="h-5 w-5" />
-                    ) : (
-                      <div className="relative">
-                        <span className="animate-ping absolute inline-flex h-3 w-3 rounded-full bg-red-400 opacity-75"></span>
+                {browserSupportsSpeechRecognition && (
+                  <Tooltip title={t("tooltip.speechToText")}>
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        if (isListening) {
+                           SpeechRecognition.stopListening()
+                        } else {
+                          resetTranscript()
+                          SpeechRecognition.startListening({
+                            continuous: true,
+                            language: speechToTextLanguage
+                          })
+                        }
+                      }}
+                      className={`flex items-center justify-center dark:text-gray-300`}>
+                      {!isListening ? (
                         <MicIcon className="h-5 w-5" />
-                      </div>
-                    )}
-                  </button>
-                </Tooltip>
+                      ) : (
+                        <div className="relative">
+                          <span className="animate-ping absolute inline-flex h-3 w-3 rounded-full bg-red-400 opacity-75"></span>
+                          <MicIcon className="h-5 w-5" />
+                        </div>
+                      )}
+                    </button>
+                  </Tooltip>
+                )}
                 <Tooltip title={t("tooltip.uploadImage")}>
                   <button
                     type="button"
@@ -262,6 +282,18 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                                 setSendWhenEnter(e.target.checked)
                               }>
                               {t("sendWhenEnter")}
+                            </Checkbox>
+                          )
+                        },
+                        {
+                          key: 2,
+                          label: (
+                            <Checkbox
+                              checked={chatMode === "rag"}
+                              onChange={(e) => {
+                                setChatMode(e.target.checked ? "rag" : "normal")
+                              }}>
+                              {t("common:chatWithCurrentPage")}
                             </Checkbox>
                           )
                         }

@@ -8,7 +8,6 @@ import { useTranslation } from "react-i18next"
 
 export const SearchModeSettings = () => {
   const { t } = useTranslation("settings")
-  const queryClient = useQueryClient()
 
   const form = useForm({
     initialValues: {

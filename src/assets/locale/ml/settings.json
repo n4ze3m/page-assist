@@ -20,6 +20,12 @@
             },
             "searchMode": {
                 "label": "സാധാരണ ഇന്റർനെറ്റ് അന്വേഷണം നടത്തുക"
+            },
+            "copilotResumeLastChat": {
+                "label": "സൈഡ്പാനൽ തുറക്കുമ്പോൾ അവസാനത്തെ ചാറ്റ് പുനരാരംഭിക്കുക (Copilot)"
+            },
+            "hideCurrentChatModelSettings": {
+                "label": "നിലവിലുള്ള ചാറ്റ് മോഡൽ ക്രമീകരണങ്ങൾ മറയ്ക്കുക"
             }
         },
         "webSearch": {

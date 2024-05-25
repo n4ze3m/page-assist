@@ -34,3 +34,8 @@ export const getAdvancedOllamaSettings = async () => {
     rewriteUrl
   }
 }
+
+
+export const copilotResumeLastChat = async () => {
+  return await storage.get<boolean>("copilotResumeLastChat")
+}
