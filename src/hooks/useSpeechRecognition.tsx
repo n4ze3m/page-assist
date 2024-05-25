@@ -48,6 +48,7 @@ type SpeechRecognitionHook = {
   stop: () => void
   supported: boolean
   transcript: string
+  resetTranscript: () => void
 }
 
 const useEventCallback = <T extends (...args: any[]) => any>(
@@ -87,6 +88,10 @@ export const useSpeechRecognition = (
       recognition.current = new window.SpeechRecognition()
     }
   }, [])
+
+  const resetTranscript = () => {
+    setLiveTranscript("")
+  }
 
   const processResult = (event: SpeechRecognitionEvent) => {
     const transcript = Array.from(event.results)
@@ -167,6 +172,7 @@ export const useSpeechRecognition = (
     isListening: listening,
     stop,
     supported,
-    transcript: liveTranscript
+    transcript: liveTranscript,
+    resetTranscript
   }
 }

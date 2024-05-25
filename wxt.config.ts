@@ -48,7 +48,7 @@ export default defineConfig({
   outDir: "build",
 
   manifest: {
-    version: "1.1.9",
+    version: "1.1.10",
     name:
       process.env.TARGET === "firefox"
         ? "Page Assist - A Web UI for Local AI Models"
@@ -60,10 +60,10 @@ export default defineConfig({
     browser_specific_settings:
       process.env.TARGET === "firefox"
         ? {
-            gecko: {
-              id: "page-assist@nazeem"
-            }
+          gecko: {
+            id: "page-assist@nazeem"
           }
+        }
         : undefined,
     host_permissions:
       process.env.TARGET !== "firefox"
