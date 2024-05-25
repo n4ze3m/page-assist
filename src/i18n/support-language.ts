@@ -5,6 +5,10 @@ export const supportLanguage = [
         value: "en"
     },
     {
+        label: "Italiano",
+        value: "it"
+    },
+    {
         label: "Russian",
         value: "ru"
     },    
