@@ -10,7 +10,6 @@ import { useTranslation } from "react-i18next"
 import { Link, useLocation } from "react-router-dom"
 import { OllamaIcon } from "../Icons/Ollama"
 import { Tag } from "antd"
-import { BetaTag } from "../Common/Beta"
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ")
@@ -82,7 +81,6 @@ export const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
                 name={
                   <div className="inline-flex items-center gap-2">
                     {t("manageKnowledge.title")}
-                    <BetaTag />
                   </div>
                 }
                 icon={BlocksIcon}

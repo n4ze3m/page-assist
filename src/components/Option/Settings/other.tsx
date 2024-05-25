@@ -86,10 +86,12 @@ export const SettingOther = () => {
         />
       </div>
       <div className="flex flex-row justify-between">
-        <span className="text-gray-500   dark:text-neutral-50">
-          {t("generalSettings.settings.copilotResumeLastChat.label")}
-        </span>
-
+        <div className="inline-flex items-center gap-2">
+          <BetaTag />
+          <span className="text-gray-500   dark:text-neutral-50">
+            {t("generalSettings.settings.copilotResumeLastChat.label")}
+          </span>
+        </div>
         <Switch
           checked={copilotResumeLastChat}
           onChange={(checked) => setCopilotResumeLastChat(checked)}
