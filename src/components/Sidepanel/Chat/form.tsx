@@ -10,8 +10,7 @@ import { defaultEmbeddingModelForRag } from "~/services/ollama"
 import { ImageIcon, MicIcon, StopCircleIcon, X } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { ModelSelect } from "@/components/Common/ModelSelect"
-import { useSpeechRecognition } from "react-speech-recognition"
-import SpeechRecognition from "react-speech-recognition"
+import { useSpeechRecognition } from "@/hooks/useSpeechRecognition"
 
 type Props = {
   dropedFile: File | undefined
@@ -32,16 +31,16 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
   })
   const {
     transcript,
-    listening: isListening,
+    isListening,
     resetTranscript,
-    browserSupportsSpeechRecognition
-  } = useSpeechRecognition({
-
-  })
+    start: startListening,
+    stop: stopSpeechRecognition,
+    supported: browserSupportsSpeechRecognition
+  } = useSpeechRecognition()
 
   const stopListening = async () => {
     if (isListening) {
-       SpeechRecognition.stopListening()
+      stopSpeechRecognition()
     }
   }
 
@@ -218,12 +217,12 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                       type="button"
                       onClick={async () => {
                         if (isListening) {
-                           SpeechRecognition.stopListening()
+                          stopListening()
                         } else {
                           resetTranscript()
-                          SpeechRecognition.startListening({
+                          startListening({
                             continuous: true,
-                            language: speechToTextLanguage
+                            lang: speechToTextLanguage
                           })
                         }
                       }}

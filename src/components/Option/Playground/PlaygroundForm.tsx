@@ -12,8 +12,7 @@ import { ImageIcon, MicIcon, StopCircleIcon, X } from "lucide-react"
 import { getVariable } from "~/utils/select-varaible"
 import { useTranslation } from "react-i18next"
 import { KnowledgeSelect } from "../Knowledge/KnowledgeSelect"
-import { useSpeechRecognition } from "react-speech-recognition"
-import SpeechRecognition from "react-speech-recognition"
+import { useSpeechRecognition } from "@/hooks/useSpeechRecognition"
 
 type Props = {
   dropedFile: File | undefined
@@ -86,11 +85,12 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
 
   const {
     transcript,
-    listening: isListening,
+    isListening,
     resetTranscript,
-    browserSupportsSpeechRecognition
+    start: startListening,
+    stop: stopSpeechRecognition,
+    supported: browserSupportsSpeechRecognition
   } = useSpeechRecognition()
-
   const { sendWhenEnter, setSendWhenEnter } = useWebUI()
 
   React.useEffect(() => {
@@ -169,7 +169,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
 
   const stopListening = async () => {
     if (isListening) {
-      SpeechRecognition.stopListening()
+      stopSpeechRecognition()
     }
   }
 
@@ -281,12 +281,12 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                         type="button"
                         onClick={async () => {
                           if (isListening) {
-                            SpeechRecognition.stopListening()
+                            stopSpeechRecognition()
                           } else {
                             resetTranscript()
-                            SpeechRecognition.startListening({
+                            startListening({
                               continuous: true,
-                              language: speechToTextLanguage
+                              lang: speechToTextLanguage
                             })
                           }
                         }}
