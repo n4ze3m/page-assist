@@ -141,9 +141,9 @@ export default function OptionLayout({
                     label: (
                       <span
                         key={model.model}
-                        className="flex flex-row gap-3 items-center">
+                        className="flex flex-row gap-3 items-center truncate">
                         <OllamaIcon className="w-5 h-5" />
-                        {model.name}
+                        <span className="truncate">{model.name}</span>
                       </span>
                     ),
                     value: model.model
