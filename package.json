@@ -8,7 +8,7 @@
     "dev": "cross-env TARGET=chrome wxt",
     "dev:firefox": "cross-env TARGET=firefox wxt -b firefox",
     "build": "cross-env TARGET=chrome wxt build",
-    "build:firefox": "cross-env TARGET=chrome cross-env TARGET=firefox wxt build -b firefox",
+    "build:firefox": "cross-env TARGET=firefox wxt build -b firefox",
     "zip": "cross-env TARGET=chrome wxt zip",
     "zip:firefox": "cross-env TARGET=firefox wxt zip -b firefox",
     "compile": "tsc --noEmit",
