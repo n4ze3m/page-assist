@@ -136,7 +136,7 @@ export default function OptionLayout({
                   }
                   showSearch
                   placeholder={t("common:selectAModel")}
-                  className="w-64 "
+                  className="w-72"
                   options={models?.map((model) => ({
                     label: (
                       <span
