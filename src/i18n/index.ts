@@ -1,6 +1,7 @@
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 import { en } from "./lang/en";
+import { fr } from "./lang/fr";
 import { ru } from "./lang/ru";
 import { ml } from "./lang/ml";
 import { zh } from "./lang/zh";
@@ -13,6 +14,7 @@ i18n
     .init({
         resources: {
             en: en,
+            fr: fr,
             ml: ml,
             "zh-CN": zh,
             ru: ru,
