@@ -5,13 +5,17 @@ export const supportLanguage = [
         value: "en"
     },
     {
+        label: "Français",
+        value: "fr"
+    },
+    {
         label: "Italiano",
         value: "it"
     },
     {
         label: "Russian",
         value: "ru"
-    },    
+    },
     {
         label: "മലയാളം",
         value: "ml"
