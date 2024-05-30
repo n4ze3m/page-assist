@@ -1,0 +1,12 @@
+{
+    "newChat": "Nuova Chat",
+    "selectAPrompt": "Scegli un Prompt",
+    "githubRepository": "GitHub Repository",
+    "settings": "Impsotazioni",
+    "sidebarTitle": "Cronologia Chat",
+    "error": "Errore",
+    "somethingWentWrong": "Qualcosa è andato storto",
+    "validationSelectModel": "Scegliere un modello per continuare",
+    "deleteHistoryConfirmation": "Sei sicuro che vuoi eliminare la cronologia?",
+    "editHistoryTitle": "Inserisci un nuovo titolo"
+}
