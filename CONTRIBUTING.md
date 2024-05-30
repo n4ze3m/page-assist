@@ -19,10 +19,10 @@ Thank you for your interest in contributing to Page Assist! We welcome contribut
 
 3. **Install dependencies**
 
-   Page Assist uses [Yarn](https://yarnpkg.com/) for dependency management. Install the required dependencies by running the following command in the project root directory:
+   Page Assist uses [Bun](https://bun.sh/) for dependency management. Install the required dependencies by running the following command in the project root directory:
 
    ```
-   yarn install
+   bun install
    ```
 
 4. **Start the development server**
@@ -30,10 +30,16 @@ Thank you for your interest in contributing to Page Assist! We welcome contribut
    To run the extension in development mode, use the following command:
 
    ```
-   yarn dev
+   bun dev
    ```
 
-   This will open a browser window with the extension loaded.
+   This will open a  chrome browser window with the extension loaded.
+
+   for firefox:
+
+   ```
+   bun dev:firefox
+   ```
 
 5. **Install Ollama locally**
 
