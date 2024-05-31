@@ -24,7 +24,7 @@ export default function OptionLayout({
           setSidebarOpen={setSidebarOpen}
           setOpenModelSettings={setOpenModelSettings}
         />
-        <main className="flex-1 flex flex-col ">{children}</main>
+        <main className="flex-1">{children}</main>
       </div>
 
       <Drawer
