@@ -7,6 +7,10 @@ export const supportLanguage = [
     {
         label: "Russian",
         value: "ru"
+    },
+    {
+        label: "Português",
+        value: "pt-BR"
     },    
     {
         label: "മലയാളം",
