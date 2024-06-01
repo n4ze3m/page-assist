@@ -1,0 +1,42 @@
+{
+    "addBtn": "Aggiungi nuova Knowledge Base",
+    "columns": {
+        "title": "Titolo",
+        "status": "Stato",
+        "embeddings": "Modello di Embedding",
+        "createdAt": "Creato da",
+        "action": "Azioni"
+    },
+    "expandedColumns": {
+        "name": "Nome"
+    },
+    "tooltip": {
+        "delete": "Elimina"
+    },
+    "confirm": {
+        "delete": "Sei sicuro di voler eliminare questa Knowledge Base?"
+    },
+    "deleteSuccess": "Knowledge Base eliminata correttamente",
+    "status": {
+        "pending": "In attesa",
+        "finished": "Completato",
+        "processing": "In corso"
+    },
+    "addKnowledge": "Aggiungi Knowledge Base",
+    "form": {
+        "title": {
+            "label": "Titolo Knowledge Base",
+            "placeholder": "Inserisci il titolo della Knowledge Base",
+            "required": "Il Titolo è obbligatorio"
+        },
+        "uploadFile": {
+            "label": "Carica File",
+            "uploadText": "Trascina un file qui or scegli upload",
+            "uploadHint": "Tipi di file supportati: .pdf, .csv, .txt, .md, .docx",
+            "required": "File è obbligatorio"
+        },
+        "submit": "Invia",
+        "success": "Knowledge Base aggiunta correttamente"
+    },
+    "noEmbeddingModel": "Aggiungi prima un modello dalla pagina di impostazione di Ollama"
+}

@@ -1,0 +1,29 @@
+{
+    "ollamaState": {
+        "searching": "Sto cercando Ollama 🦙",
+        "running": "Ollama è attivo 🦙",
+        "notRunning": "Impossibile connettersi a Ollama 🦙",
+        "connectionError": "C'è stato un problema di connessione. Controlla la <anchor>documentazione</anchor> per investigare."
+    },
+    "formError": {
+        "noModel": "Seleziona un modello",
+        "noEmbeddingModel": "Imposta un modello di embedding da Impostazioni > Ollama"
+    },
+    "form": {
+        "textarea": {
+            "placeholder": "Scrivi un messaggio..."
+        },
+        "webSearch": {
+            "on": "Attivo",
+            "off": "Disattivato"
+        }
+    },
+    "tooltip": {
+        "searchInternet": "Cerca su Internet",
+        "speechToText": "Speech to Text",
+        "uploadImage": "Carica immagine",
+        "stopStreaming": "Ferma lo Streaming",
+        "knowledge": "Conoscenza"
+    },
+    "sendWhenEnter": "Invia subito dopo Enter"
+}

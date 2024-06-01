@@ -2,7 +2,8 @@ import { getKnowledgeById, updateKnowledgeStatus } from "@/db/knowledge"
 import { PageAssistPDFUrlLoader } from "@/loader/pdf-url"
 import {
   defaultEmbeddingChunkOverlap,
-  defaultEmbeddingChunkSize
+  defaultEmbeddingChunkSize,
+  getOllamaURL
 } from "@/services/ollama"
 import { OllamaEmbeddings } from "@langchain/community/embeddings/ollama"
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter"
@@ -10,22 +11,14 @@ import { PageAssistVectorStore } from "./PageAssistVectorStore"
 import { PageAssisCSVUrlLoader } from "@/loader/csv"
 import { PageAssisTXTUrlLoader } from "@/loader/txt"
 import { PageAssistDocxLoader } from "@/loader/docx"
+import { cleanUrl } from "./clean-url"
 
-const readAsArrayBuffer = (file: File): Promise<ArrayBuffer> => {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader()
-    reader.onload = () => {
-      resolve(reader.result as ArrayBuffer)
-    }
-    reader.onerror = reject
-    reader.readAsArrayBuffer(file)
-  })
-}
 
 export const processKnowledge = async (msg: any, id: string): Promise<void> => {
   console.log(`Processing knowledge with id: ${id}`)
   try {
     const knowledge = await getKnowledgeById(id)
+    const ollamaUrl = await getOllamaURL()
 
     if (!knowledge) {
       console.error(`Knowledge with id ${id} not found`)
@@ -35,6 +28,7 @@ export const processKnowledge = async (msg: any, id: string): Promise<void> => {
     await updateKnowledgeStatus(id, "processing")
 
     const ollamaEmbedding = new OllamaEmbeddings({
+      baseUrl: cleanUrl(ollamaUrl),
       model: knowledge.embedding_model
     })
     const chunkSize = await defaultEmbeddingChunkSize()

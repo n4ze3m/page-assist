@@ -1,0 +1,88 @@
+{
+    "pageAssist": "Page Assist",
+    "selectAModel": "Sélectionnez un modèle",
+    "save": "Sauvegarder",
+    "saved": "Enregistrée",
+    "cancel": "Annuler",
+    "retry": "Recommencez",
+    "share": {
+        "tooltip": {
+            "share": "Partager"
+        },
+        "modal": {
+            "title": "Partagez le lien vers le chat"
+        },
+        "form": {
+            "defaultValue": {
+                "name": "Anonyme",
+                "title": "Chat sans titre"
+            },
+            "title": {
+                "label": "Titre de chat",
+                "placeholder": "Entrez le titre du chat",
+                "required": "Le titre de chat est requis"
+            },
+            "name": {
+                "label": "Votre nom",
+                "placeholder": "Entrez votre nome",
+                "required": "Votre nom est requis"
+            },
+            "btn": {
+                "save": "Générer un lien",
+                "saving": "Génération de lien..."
+            }
+        },
+        "notification": {
+            "successGenerate": "Lien copié dans le presse-papiers",
+            "failGenerate": "Échec de la génération de lien"
+        }
+    },
+    "copyToClipboard": "Copier dans le presse-papier",
+    "webSearch": "Recherche sur le Web",
+    "regenerate": "Régénérer",
+    "edit": "Modifier",
+    "saveAndSubmit": "Enregistrer et soumettre",
+    "editMessage": {
+        "placeholder": "Tapez un message..."
+    },
+    "submit": "Soumettre",
+    "noData": "Pas de données",
+    "noHistory": "Pas d'historique de chat",
+    "chatWithCurrentPage": "Discuter avec la page actuelle",
+    "beta": "Bêta",
+    "tts": "Synthèse vocale",
+    "currentChatModelSettings":"Paramètres actuels du modèle de chat",
+    "modelSettings": {
+        "label": "Paramètres du modèle",
+        "description": "Définissez les options de modèle globale pour tous les chats",
+        "form": {
+            "keepAlive": {
+                "label": "Maintenir en mémoire",
+                "help": "contrôle combien de temps le modèle restera chargé en mémoire après la demande (par défaut: 5m)",
+                "placeholder": "Entrer la durée du maintien en mémoire (p. ex., 5 m, 10 m, 1 h)"
+            },
+            "temperature": {
+                "label": "Température",
+                "placeholder": "Entrez la valeur de la température (par exemple 0,7, 1,0)"
+            },
+            "numCtx": {
+                "label": "Nombre de contextes",
+                "placeholder": "Entrez la valeur du nombre de contextes (par défaut: 2048)"
+            },
+            "seed": {
+                "label": "Graine",
+                "placeholder": "Entrez la valeur des semences (par exemple 1234)",
+                "help": "Reproductibilité de la sortie du modèle"
+            },
+            "topK": {
+                "label": "Top K",
+                "placeholder": "Entrez la valeur Top K (par exemple 40, 100)"
+            },
+            "topP": {
+                "label": "Top P",
+                "placeholder": "Entrez la valeur Top P (par exemple 0,9, 0,95)"
+            }
+        },
+        "advanced": "Plus de paramètres du modèle"
+    }
+}

@@ -30,13 +30,6 @@ Checkout the Demo (v1.0.0):
 
 want more features? Create an issue and let me know.
 
-<!-- ## Installation
-
-### Chrome Web Store
-
-You can install the extension from the [Chrome Web Store](https://chromewebstore.google.com/detail/page-assist-a-web-ui-for/jfgfiigpkhlkbnfnbobbkinehhfdhndo)
-
-Note: You can install the extension on any Chromium-based browser. It is not limited to Chrome. -->
 
 ### Manual Installation
 
@@ -125,6 +118,8 @@ This will start a development server and watch for changes in the source files. 
 | Opera    | ❌      | ❌                | ✅     |
 | Arc      | ❌      | ❌                | ✅     |
 
+
+
 ## Local AI Provider
 
 - [Ollama](https://github.com/ollama/ollama) (Currently the only supported provider. More providers will be added in the future.)
@@ -132,8 +127,8 @@ This will start a development server and watch for changes in the source files. 
 ## Roadmap
 
 - [X] Firefox Support
+- [ ] Code Completion support for Web based IDEs (like Colab, Jupyter, etc.)
 - [ ] More Local AI Providers
-- [ ] More Features
 - [ ] More Customization Options
 - [ ] Better UI/UX
 

@@ -1,0 +1,42 @@
+{
+    "addBtn": "Ajouter de nouvelles connaissances",
+    "columns": {
+        "title": "Titre",
+        "status": "Statut",
+        "embeddings": "Modèle d'embedding",
+        "createdAt": "Créé à",
+        "action": "actions"
+    },
+    "expandedColumns": {
+        "name": "Nom"
+    },
+    "tooltip": {
+        "delete": "Supprimer"
+    },
+    "confirm": {
+        "delete": "Êtes-vous sûr de vouloir supprimer ces connaissances ?"
+    },
+    "deleteSuccess": "Connaissances supprimées avec succès",
+    "status": {
+        "pending": "En attente",
+        "finished": "Terminé",
+        "processing": "Traitement"
+    },
+    "addKnowledge": "Ajouter des connaissances",
+    "form": {
+        "title": {
+            "label": "Titre de la connaissance",
+            "placeholder": "Entrez le titre de la connaissances",
+            "required": "Le titre de la connaissance est requis"
+        },
+        "uploadFile": {
+            "label": "Téléverser un fichier",
+            "uploadText": "Faites glisser et déposez un fichier ici ou cliquez pour téléverser",
+            "uploadHint": "Types de fichiers pris en charge: .pdf, .csv, .txt, .md, .docx",
+            "required": "Le fichier est requis"
+        },
+        "submit": "Soumettre",
+        "success": "Les connaissances ont ajouté avec succès"
+    },
+    "noEmbeddingModel": "Veuillez d'abord ajouter un modèle d'embedding depuis la page des paramètres de Ollama"
+}
