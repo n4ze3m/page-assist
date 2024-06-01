@@ -17,6 +17,10 @@ export const supportLanguage = [
         value: "ru"
     },
     {
+        label: "Português",
+        value: "pt-BR"
+    },    
+    {
         label: "മലയാളം",
         value: "ml"
     },
