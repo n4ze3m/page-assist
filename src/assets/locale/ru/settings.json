@@ -217,41 +217,7 @@
                 "label": "URL Ollama",
                 "placeholder": "Введите URL Ollama"
             },
-            "ragSettings": {
-                "label": "Настройки RAG",
-                "model": {
-                    "label": "Модель вложения",
-                    "required": "Пожалуйста, выберите модель",
-                    "help": "Настоятельно рекомендуется использовать модели вложения, например, `nomic-embed-text`.",
-                    "placeholder": "Выберите модель"
-                },
-                "chunkSize": {
-                    "label": "Размер фрагмента",
-                    "placeholder": "Введите размер фрагмента",
-                    "required": "Пожалуйста, введите размер фрагмента"
-                },
-                "chunkOverlap": {
-                    "label": "Перекрытие фрагментов",
-                    "placeholder": "Введите перекрытие фрагментов",
-                    "required": "Пожалуйста, введите перекрытие фрагментов"
-                }
-            },
-            "prompt": {
-                "label": "Настройка системной подсказки RAG",
-                "option1": "Обычная",
-                "option2": "Веб",
-                "alert": "Настройка системной подсказки здесь устарела. Используйте раздел Управление подсказками для добавления или редактирования подсказок. Этот раздел будет удален в будущем выпуске",
-                "systemPrompt": "Системная подсказка",
-                "systemPromptPlaceholder": "Введите системную подсказку",
-                "webSearchPrompt": "Подсказка для веб-поиска",
-                "webSearchPromptHelp": "Не удаляйте `{search_results}` из подсказки.",
-                "webSearchPromptError": "Пожалуйста, введите подсказку для веб-поиска",
-                "webSearchPromptPlaceholder": "Введите подсказку для веб-поиска",
-                "webSearchFollowUpPrompt": "Последующая подсказка для веб-поиска",
-                "webSearchFollowUpPromptHelp": "Не удаляйте `{chat_history}` и `{question}` из подсказки.",
-                "webSearchFollowUpPromptError": "Введите подсказку для последующего веб-поиска!",
-                "webSearchFollowUpPromptPlaceholder": "Ваша подсказка для последующего веб-поиска"
-            },
+            
             "advanced": {
                 "label": "Расширенная конфигурация URL Ollama",
                 "urlRewriteEnabled": {
@@ -282,5 +248,43 @@
     "manageKnowledge": {
         "title": "Управление знаниями",
         "heading": "Настройка базы знаний"
+    },
+    "rag": {
+        "title": "Настройки RAG",
+        "ragSettings": {
+            "label": "Настройки RAG",
+            "model": {
+                "label": "Модель вложения",
+                "required": "Пожалуйста, выберите модель",
+                "help": "Настоятельно рекомендуется использовать модели вложения, например, `nomic-embed-text`.",
+                "placeholder": "Выберите модель"
+            },
+            "chunkSize": {
+                "label": "Размер фрагмента",
+                "placeholder": "Введите размер фрагмента",
+                "required": "Пожалуйста, введите размер фрагмента"
+            },
+            "chunkOverlap": {
+                "label": "Перекрытие фрагментов",
+                "placeholder": "Введите перекрытие фрагментов",
+                "required": "Пожалуйста, введите перекрытие фрагментов"
+            }
+        },
+        "prompt": {
+            "label": "Настройка системной подсказки RAG",
+            "option1": "Обычная",
+            "option2": "Веб",
+            "alert": "Настройка системной подсказки здесь устарела. Используйте раздел Управление подсказками для добавления или редактирования подсказок. Этот раздел будет удален в будущем выпуске",
+            "systemPrompt": "Системная подсказка",
+            "systemPromptPlaceholder": "Введите системную подсказку",
+            "webSearchPrompt": "Подсказка для веб-поиска",
+            "webSearchPromptHelp": "Не удаляйте `{search_results}` из подсказки.",
+            "webSearchPromptError": "Пожалуйста, введите подсказку для веб-поиска",
+            "webSearchPromptPlaceholder": "Введите подсказку для веб-поиска",
+            "webSearchFollowUpPrompt": "Последующая подсказка для веб-поиска",
+            "webSearchFollowUpPromptHelp": "Не удаляйте `{chat_history}` и `{question}` из подсказки.",
+            "webSearchFollowUpPromptError": "Введите подсказку для последующего веб-поиска!",
+            "webSearchFollowUpPromptPlaceholder": "Ваша подсказка для последующего веб-поиска"
+        }
     }
 }

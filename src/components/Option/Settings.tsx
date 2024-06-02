@@ -1,7 +1,7 @@
 import { Tabs } from "antd"
 import { SettingsOllama } from "./Settings/ollama"
 import { SettingPrompt } from "./Settings/prompt"
-import { SettingOther } from "./Settings/other"
+import { SettingOther } from "./Settings/general-settings"
 
 type Props = {
   setClose: (close: boolean) => void

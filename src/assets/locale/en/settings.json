@@ -217,41 +217,6 @@
                 "label": "Ollama URL",
                 "placeholder": "Enter Ollama URL"
             },
-            "ragSettings": {
-                "label": "RAG Settings",
-                "model": {
-                    "label": "Embedding Model",
-                    "required": "Please select a model",
-                    "help": "Highly recommended to use embedding models like `nomic-embed-text`.",
-                    "placeholder": "Select a model"
-                },
-                "chunkSize": {
-                    "label": "Chunk Size",
-                    "placeholder": "Enter Chunk Size",
-                    "required": "Please enter a chunk size"
-                },
-                "chunkOverlap": {
-                    "label": "Chunk Overlap",
-                    "placeholder": "Enter Chunk Overlap",
-                    "required": "Please enter a chunk overlap"
-                }
-            },
-            "prompt": {
-                "label": "Configure RAG Prompt",
-                "option1": "Normal",
-                "option2": "Web",
-                "alert": "Configuring the system prompt here is deprecated. Please use the Manage Prompts section to add or edit prompts. This section will be removed in a future release",
-                "systemPrompt": "System Prompt",
-                "systemPromptPlaceholder": "Enter System Prompt",
-                "webSearchPrompt": "Web Search Prompt",
-                "webSearchPromptHelp": "Do not remove `{search_results}` from the prompt.",
-                "webSearchPromptError": "Please enter a web search prompt",
-                "webSearchPromptPlaceholder": "Enter Web Search Prompt",
-                "webSearchFollowUpPrompt": "Web Search Follow Up Prompt",
-                "webSearchFollowUpPromptHelp": "Do not remove `{chat_history}` and `{question}` from the prompt.",
-                "webSearchFollowUpPromptError": "Please input your Web Search Follow Up Prompt!",
-                "webSearchFollowUpPromptPlaceholder": "Your Web Search Follow Up Prompt"
-            },
             "advanced": {
                 "label": "Advance Ollama URL Configuration",
                 "urlRewriteEnabled": {
@@ -282,5 +247,43 @@
     "manageKnowledge": {
         "title": "Manage Knowledge",
         "heading": "Configure Knowledge Base"
+    },
+    "rag": {
+        "title": "RAG Settings",
+        "ragSettings": {
+            "label": "RAG Settings",
+            "model": {
+                "label": "Embedding Model",
+                "required": "Please select a model",
+                "help": "Highly recommended to use embedding models like `nomic-embed-text`.",
+                "placeholder": "Select a model"
+            },
+            "chunkSize": {
+                "label": "Chunk Size",
+                "placeholder": "Enter Chunk Size",
+                "required": "Please enter a chunk size"
+            },
+            "chunkOverlap": {
+                "label": "Chunk Overlap",
+                "placeholder": "Enter Chunk Overlap",
+                "required": "Please enter a chunk overlap"
+            }
+        },
+        "prompt": {
+            "label": "Configure RAG Prompt",
+            "option1": "Normal",
+            "option2": "Web",
+            "alert": "Configuring the system prompt here is deprecated. Please use the Manage Prompts section to add or edit prompts. This section will be removed in a future release",
+            "systemPrompt": "System Prompt",
+            "systemPromptPlaceholder": "Enter System Prompt",
+            "webSearchPrompt": "Web Search Prompt",
+            "webSearchPromptHelp": "Do not remove `{search_results}` from the prompt.",
+            "webSearchPromptError": "Please enter a web search prompt",
+            "webSearchPromptPlaceholder": "Enter Web Search Prompt",
+            "webSearchFollowUpPrompt": "Web Search Follow Up Prompt",
+            "webSearchFollowUpPromptHelp": "Do not remove `{chat_history}` and `{question}` from the prompt.",
+            "webSearchFollowUpPromptError": "Please input your Web Search Follow Up Prompt!",
+            "webSearchFollowUpPromptPlaceholder": "Your Web Search Follow Up Prompt"
+        }
     }
 }

@@ -217,41 +217,6 @@
                 "label": "Ollama URL",
                 "placeholder": "Inserici l'URL di Ollama"
             },
-            "ragSettings": {
-                "label": "Impostazioni RAG",
-                "model": {
-                    "label": "Modello di Embedding",
-                    "required": "Scegliere il modello",
-                    "help": "E' raccomandato l'uso di modelli come `nomic-embed-text`.",
-                    "placeholder": "Seleziona un modello"
-                },
-                "chunkSize": {
-                    "label": "Dimensione del Blocco (Chunk Size)",
-                    "placeholder": "Inserisci la Dimensione del Blocco (Chunk Size)",
-                    "required": "Inserisci la Dimensione del Blocco (chunk size)"
-                },
-                "chunkOverlap": {
-                    "label": "Sovrapposizione del Blocco (Chunk Overlap)",
-                    "placeholder": "Inserisci la Sovrapposizione del Blocco (Chunk Overlap)",
-                    "required": "Inserisci la Sovrapposizione del Blocco"
-                }
-            },
-            "prompt": {
-                "label": "Configura il Prompt RAG",
-                "option1": "Normale",
-                "option2": "Web",
-                "alert": "La configurazione del prompt di sistema qui è deprecato. Usa la sezione Gestione Prompt per aggiungere o modificare i prompts.Questa sezione sarà eliminata nelle prossime release",
-                "systemPrompt": "Prompt di Sistema",
-                "systemPromptPlaceholder": "Inserisci il Prompt di Sistema",
-                "webSearchPrompt": "Prompt per la Ricerca Web",
-                "webSearchPromptHelp": "Non rimuovere `{search_results}` dal prompt.",
-                "webSearchPromptError": "Inserisci il prompt per la ricerca web",
-                "webSearchPromptPlaceholder": "Imserosco il Prompt per la Ricerca Web",
-                "webSearchFollowUpPrompt": "Prompt di Follow Up sulla Ricerca Web",
-                "webSearchFollowUpPromptHelp": "Non rimuovere `{chat_history}` e `{question}` dal prompt.",
-                "webSearchFollowUpPromptError": "Inserisci il Prompt di Follow Up della Ricerca Web!",
-                "webSearchFollowUpPromptPlaceholder": "I tuoi Prompt di Follow Up delle Ricerche Web"
-            },
             "advanced": {
                 "label": "Configurazione Avanzata Ollama URL",
                 "urlRewriteEnabled": {
@@ -282,5 +247,43 @@
     "manageKnowledge": {
         "title": "Gestisci Conoscenza",
         "heading": "Configura Base di Conoscenza"
+    },
+    "rag": {
+        "title": "Impostazioni RAG",
+        "ragSettings": {
+            "label": "Impostazioni RAG",
+            "model": {
+                "label": "Modello di Embedding",
+                "required": "Scegliere il modello",
+                "help": "E' raccomandato l'uso di modelli come `nomic-embed-text`.",
+                "placeholder": "Seleziona un modello"
+            },
+            "chunkSize": {
+                "label": "Dimensione del Blocco (Chunk Size)",
+                "placeholder": "Inserisci la Dimensione del Blocco (Chunk Size)",
+                "required": "Inserisci la Dimensione del Blocco (chunk size)"
+            },
+            "chunkOverlap": {
+                "label": "Sovrapposizione del Blocco (Chunk Overlap)",
+                "placeholder": "Inserisci la Sovrapposizione del Blocco (Chunk Overlap)",
+                "required": "Inserisci la Sovrapposizione del Blocco"
+            }
+        },
+        "prompt": {
+            "label": "Configura il Prompt RAG",
+            "option1": "Normale",
+            "option2": "Web",
+            "alert": "La configurazione del prompt di sistema qui è deprecato. Usa la sezione Gestione Prompt per aggiungere o modificare i prompts.Questa sezione sarà eliminata nelle prossime release",
+            "systemPrompt": "Prompt di Sistema",
+            "systemPromptPlaceholder": "Inserisci il Prompt di Sistema",
+            "webSearchPrompt": "Prompt per la Ricerca Web",
+            "webSearchPromptHelp": "Non rimuovere `{search_results}` dal prompt.",
+            "webSearchPromptError": "Inserisci il prompt per la ricerca web",
+            "webSearchPromptPlaceholder": "Imserosco il Prompt per la Ricerca Web",
+            "webSearchFollowUpPrompt": "Prompt di Follow Up sulla Ricerca Web",
+            "webSearchFollowUpPromptHelp": "Non rimuovere `{chat_history}` e `{question}` dal prompt.",
+            "webSearchFollowUpPromptError": "Inserisci il Prompt di Follow Up della Ricerca Web!",
+            "webSearchFollowUpPromptPlaceholder": "I tuoi Prompt di Follow Up delle Ricerche Web"
+        }
     }
 }

@@ -19,7 +19,7 @@ export const SettingPrompt = () => {
   const queryClient = useQueryClient()
 
   const { status, data } = useQuery({
-    queryKey: ["fetchOllaPrompt"],
+    queryKey: ["fetchRagPrompt"],
     queryFn: async () => {
       const [prompt, webSearchPrompt, webSearchFollowUpPrompt] =
         await Promise.all([
@@ -47,9 +47,7 @@ export const SettingPrompt = () => {
               defaultValue={selectedValue}
               onChange={(e) => setSelectedValue(e.target.value)}>
               <Radio.Button value="rag">RAG</Radio.Button>
-              <Radio.Button value="web">
-                {t("ollamaSettings.settings.prompt.option2")}
-              </Radio.Button>
+              <Radio.Button value="web">{t("rag.prompt.option2")}</Radio.Button>
             </Radio.Group>
           </div>
 
@@ -63,7 +61,7 @@ export const SettingPrompt = () => {
                   values?.questionPrompt || ""
                 )
                 queryClient.invalidateQueries({
-                  queryKey: ["fetchOllaPrompt"]
+                  queryKey: ["fetchRagPrompt"]
                 })
               }}
               initialValues={{
@@ -98,7 +96,7 @@ export const SettingPrompt = () => {
                   value={data.webSearchFollowUpPrompt}
                   rows={5}
                   placeholder={t(
-                    "ollamaSettings.settings.prompt.webSearchFollowUpPromptPlaceholder"
+                    "rag.prompt.webSearchFollowUpPromptPlaceholder"
                   )}
                 />
               </Form.Item>
@@ -119,7 +117,7 @@ export const SettingPrompt = () => {
                   values?.webSearchFollowUpPrompt || ""
                 )
                 queryClient.invalidateQueries({
-                  queryKey: ["fetchOllaPrompt"]
+                  queryKey: ["fetchRagPrompt"]
                 })
               }}
               initialValues={{
@@ -127,46 +125,36 @@ export const SettingPrompt = () => {
                 webSearchFollowUpPrompt: data.webSearchFollowUpPrompt
               }}>
               <Form.Item
-                label={t("ollamaSettings.settings.prompt.webSearchPrompt")}
+                label={t("rag.prompt.webSearchPrompt")}
                 name="webSearchPrompt"
-                help={t("ollamaSettings.settings.prompt.webSearchPromptHelp")}
+                help={t("rag.prompt.webSearchPromptHelp")}
                 rules={[
                   {
                     required: true,
-                    message: t(
-                      "ollamaSettings.settings.prompt.webSearchPromptError"
-                    )
+                    message: t("rag.prompt.webSearchPromptError")
                   }
                 ]}>
                 <Input.TextArea
                   value={data.webSearchPrompt}
                   rows={5}
-                  placeholder={t(
-                    "ollamaSettings.settings.prompt.webSearchPromptPlaceholder"
-                  )}
+                  placeholder={t("rag.prompt.webSearchPromptPlaceholder")}
                 />
               </Form.Item>
               <Form.Item
-                label={t(
-                  "ollamaSettings.settings.prompt.webSearchFollowUpPrompt"
-                )}
+                label={t("rag.prompt.webSearchFollowUpPrompt")}
                 name="webSearchFollowUpPrompt"
-                help={t(
-                  "ollamaSettings.settings.prompt.webSearchFollowUpPromptHelp"
-                )}
+                help={t("rag.prompt.webSearchFollowUpPromptHelp")}
                 rules={[
                   {
                     required: true,
-                    message: t(
-                      "ollamaSettings.settings.prompt.webSearchFollowUpPromptError"
-                    )
+                    message: t("rag.prompt.webSearchFollowUpPromptError")
                   }
                 ]}>
                 <Input.TextArea
                   value={data.webSearchFollowUpPrompt}
                   rows={5}
                   placeholder={t(
-                    "ollamaSettings.settings.prompt.webSearchFollowUpPromptPlaceholder"
+                    "rag.prompt.webSearchFollowUpPromptPlaceholder"
                   )}
                 />
               </Form.Item>

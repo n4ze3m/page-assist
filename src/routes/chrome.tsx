@@ -9,6 +9,7 @@ import OptionKnowledgeBase from "./option-settings-knowledge"
 import OptionAbout from "./option-settings-about"
 import SidepanelChat from "./sidepanel-chat"
 import SidepanelSettings from "./sidepanel-settings"
+import OptionRagSettings from "./option-rag"
 
 export const OptionRoutingChrome = () => {
   return (
@@ -20,6 +21,7 @@ export const OptionRoutingChrome = () => {
       <Route path="/settings/ollama" element={<OptionOllamaSettings />} />
       <Route path="/settings/share" element={<OptionShare />} />
       <Route path="/settings/knowledge" element={<OptionKnowledgeBase />} />
+      <Route path="/settings/rag" element={<OptionRagSettings />} />
       <Route path="/settings/about" element={<OptionAbout />} />
     </Routes>
   )

@@ -220,41 +220,6 @@
                 "label": "OllamaのURL",
                 "placeholder": "OllamaのURLを入力"
             },
-            "ragSettings": {
-                "label": "RAGの設定",
-                "model": {
-                    "label": "エンベディングモデル",
-                    "required": "モデルを選択してください",
-                    "help": "`nomic-embed-text`などのエンベディングモデルの使用を強くおすすめします。",
-                    "placeholder": "モデルを選択"
-                },
-                "chunkSize": {
-                    "label": "チャンクサイズ",
-                    "placeholder": "チャンクサイズを入力",
-                    "required": "チャンクサイズを入力してください"
-                },
-                "chunkOverlap": {
-                    "label": "チャンクオーバーラップ",
-                    "placeholder": "チャンクオーバーラップを入力",
-                    "required": "チャンクオーバーラップを入力してください"
-                }
-            },
-            "prompt": {
-                "label": "RAGプロンプトを設定",
-                "option1": "通常",
-                "option2": "Web",
-                "alert": "ここでシステムプロンプトを設定することは非推奨となりました。プロンプトの追加や編集には「プロンプトを管理」セクションをご利用ください。このセクションは今後のリリースで削除される予定です。",
-                "systemPrompt": "システムプロンプト",
-                "systemPromptPlaceholder": "システムプロンプトを入力",
-                "webSearchPrompt": "Web検索プロンプト",
-                "webSearchPromptHelp": "プロンプトから`{search_results}`を削除しないでください。",
-                "webSearchPromptError": "Web検索プロンプトを入力してください",
-                "webSearchPromptPlaceholder": "Web検索プロンプトを入力",
-                "webSearchFollowUpPrompt": "Web検索フォローアッププロンプト",
-                "webSearchFollowUpPromptHelp": "プロンプトから`{chat_history}`と`{question}`を削除しないでください。",
-                "webSearchFollowUpPromptError": "Web検索フォローアッププロンプトを入力してください！",
-                "webSearchFollowUpPromptPlaceholder": "Web検索フォローアッププロンプト"
-            },
             "advanced": {
                 "label": "Ollama URL の高度な設定",
                 "urlRewriteEnabled": {
@@ -285,5 +250,43 @@
     "manageKnowledge": {
         "title": "知識を管理する",
         "heading": "知識ベースを構成する"
+    },
+    "rag": {
+        "title": "RAGの設定",
+        "ragSettings": {
+            "label": "RAGの設定",
+            "model": {
+                "label": "エンベディングモデル",
+                "required": "モデルを選択してください",
+                "help": "`nomic-embed-text`などのエンベディングモデルの使用を強くおすすめします。",
+                "placeholder": "モデルを選択"
+            },
+            "chunkSize": {
+                "label": "チャンクサイズ",
+                "placeholder": "チャンクサイズを入力",
+                "required": "チャンクサイズを入力してください"
+            },
+            "chunkOverlap": {
+                "label": "チャンクオーバーラップ",
+                "placeholder": "チャンクオーバーラップを入力",
+                "required": "チャンクオーバーラップを入力してください"
+            }
+        },
+        "prompt": {
+            "label": "RAGプロンプトを設定",
+            "option1": "通常",
+            "option2": "Web",
+            "alert": "ここでシステムプロンプトを設定することは非推奨となりました。プロンプトの追加や編集には「プロンプトを管理」セクションをご利用ください。このセクションは今後のリリースで削除される予定です。",
+            "systemPrompt": "システムプロンプト",
+            "systemPromptPlaceholder": "システムプロンプトを入力",
+            "webSearchPrompt": "Web検索プロンプト",
+            "webSearchPromptHelp": "プロンプトから`{search_results}`を削除しないでください。",
+            "webSearchPromptError": "Web検索プロンプトを入力してください",
+            "webSearchPromptPlaceholder": "Web検索プロンプトを入力",
+            "webSearchFollowUpPrompt": "Web検索フォローアッププロンプト",
+            "webSearchFollowUpPromptHelp": "プロンプトから`{chat_history}`と`{question}`を削除しないでください。",
+            "webSearchFollowUpPromptError": "Web検索フォローアッププロンプトを入力してください！",
+            "webSearchFollowUpPromptPlaceholder": "Web検索フォローアッププロンプト"
+        }
     }
 }

@@ -221,41 +221,7 @@
                 "label": "Ollama URL",
                 "placeholder": "输入 Ollama URL"
             },
-            "ragSettings": {
-                "label": "RAG 设置",
-                "model": {
-                    "label": "文本嵌入模型",
-                    "required": "请选择一个模型",
-                    "help": "建议使用文本嵌入模型，如 `nomic-embed-text`。",
-                    "placeholder": "选择一个模型"
-                },
-                "chunkSize": {
-                    "label": "嵌入大小",
-                    "placeholder": "1024-∞",
-                    "required": "请输入块大小"
-                },
-                "chunkOverlap": {
-                    "label": "嵌入重叠",
-                    "placeholder": "256-∞",
-                    "required": "请输入嵌入重叠"
-                }
-            },
-            "prompt": {
-                "label": "配置 RAG 提示词",
-                "option1": "普通",
-                "option2": "搜索",
-                "alert": "在此配置系统提示词已过时。请使用管理提示词部分添加或编辑提示词。此部分将在未来版本中删除",
-                "systemPrompt": "系统提示词",
-                "systemPromptPlaceholder": "输入系统提示词",
-                "webSearchPrompt": "网页搜索提示词",
-                "webSearchPromptHelp": "请勿从提示词中删除 `{search_results}`。",
-                "webSearchPromptError": "请输入一个网页搜索提示词",
-                "webSearchPromptPlaceholder": "输入网页搜索提示词",
-                "webSearchFollowUpPrompt": "网页搜索追问提示词",
-                "webSearchFollowUpPromptHelp": "请勿从提示词中删除 `{chat_history}` 和 `{question}`。",
-                "webSearchFollowUpPromptError": "请输入您的网页搜索追问提示词！",
-                "webSearchFollowUpPromptPlaceholder": "您的网页搜索追问提示词"
-            },
+            
             "advanced": {
                 "label": "Ollama URL 高级配置",
                 "urlRewriteEnabled": {
@@ -286,5 +252,43 @@
     "manageKnowledge": {
         "title": "管理知识",
         "heading": "配置知识库"
+    },
+    "rag": {
+        "title": "RAG 设置",
+        "ragSettings": {
+            "label": "RAG 设置",
+            "model": {
+                "label": "文本嵌入模型",
+                "required": "请选择一个模型",
+                "help": "建议使用文本嵌入模型，如 `nomic-embed-text`。",
+                "placeholder": "选择一个模型"
+            },
+            "chunkSize": {
+                "label": "嵌入大小",
+                "placeholder": "1024-∞",
+                "required": "请输入块大小"
+            },
+            "chunkOverlap": {
+                "label": "嵌入重叠",
+                "placeholder": "256-∞",
+                "required": "请输入嵌入重叠"
+            }
+        },
+        "prompt": {
+            "label": "配置 RAG 提示词",
+            "option1": "普通",
+            "option2": "搜索",
+            "alert": "在此配置系统提示词已过时。请使用管理提示词部分添加或编辑提示词。此部分将在未来版本中删除",
+            "systemPrompt": "系统提示词",
+            "systemPromptPlaceholder": "输入系统提示词",
+            "webSearchPrompt": "网页搜索提示词",
+            "webSearchPromptHelp": "请勿从提示词中删除 `{search_results}`。",
+            "webSearchPromptError": "请输入一个网页搜索提示词",
+            "webSearchPromptPlaceholder": "输入网页搜索提示词",
+            "webSearchFollowUpPrompt": "网页搜索追问提示词",
+            "webSearchFollowUpPromptHelp": "请勿从提示词中删除 `{chat_history}` 和 `{question}`。",
+            "webSearchFollowUpPromptError": "请输入您的网页搜索追问提示词！",
+            "webSearchFollowUpPromptPlaceholder": "您的网页搜索追问提示词"
+        }
     }
 }

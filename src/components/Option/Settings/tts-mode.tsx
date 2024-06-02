@@ -49,7 +49,7 @@ export const TTSModeSettings = ({ hideBorder }: { hideBorder?: boolean }) => {
         })}
         className="space-y-4">
         <div className="flex sm:flex-row flex-col space-y-4 sm:space-y-0 sm:justify-between">
-          <span className="text-gray-500 dark:text-neutral-50 ">
+          <span className="text-gray-700 dark:text-neutral-50 ">
             {t("generalSettings.tts.ttsEnabled.label")}
           </span>
           <div>
@@ -62,7 +62,7 @@ export const TTSModeSettings = ({ hideBorder }: { hideBorder?: boolean }) => {
           </div>
         </div>
         <div className="flex sm:flex-row flex-col space-y-4 sm:space-y-0 sm:justify-between">
-          <span className="text-gray-500 dark:text-neutral-50 ">
+          <span className="text-gray-700 dark:text-neutral-50 ">
             {t("generalSettings.tts.ttsProvider.label")}
           </span>
           <div>
@@ -75,7 +75,7 @@ export const TTSModeSettings = ({ hideBorder }: { hideBorder?: boolean }) => {
           </div>
         </div>
         <div className="flex sm:flex-row flex-col space-y-4 sm:space-y-0 sm:justify-between">
-          <span className="text-gray-500 dark:text-neutral-50 ">
+          <span className="text-gray-700 dark:text-neutral-50 ">
             {t("generalSettings.tts.ttsVoice.label")}
           </span>
           <div>
@@ -94,7 +94,7 @@ export const TTSModeSettings = ({ hideBorder }: { hideBorder?: boolean }) => {
           </div>
         </div>
         <div className="flex sm:flex-row flex-col space-y-4 sm:space-y-0 sm:justify-between">
-          <span className="text-gray-500 dark:text-neutral-50 ">
+          <span className="text-gray-700 dark:text-neutral-50 ">
             {t("generalSettings.tts.ssmlEnabled.label")}
           </span>
           <div>

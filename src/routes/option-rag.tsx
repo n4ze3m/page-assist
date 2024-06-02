@@ -1,15 +1,15 @@
 import { SettingsLayout } from "~/components/Layouts/SettingsOptionLayout"
 import OptionLayout from "~/components/Layouts/Layout"
-import { GeneralSettings } from "~/components/Option/Settings/general-settings"
+import { RagSettings } from "@/components/Option/Settings/rag"
 
- const OptionSettings = () => {
+const OptionRagSettings = () => {
   return (
     <OptionLayout>
       <SettingsLayout>
-        <GeneralSettings />
+        <RagSettings />
       </SettingsLayout>
     </OptionLayout>
   )
 }
 
-export default OptionSettings
+export default OptionRagSettings

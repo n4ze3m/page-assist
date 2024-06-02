@@ -17,7 +17,7 @@ export const AdvanceOllamaSettings = () => {
   return (
     <div className="space-y-4">
       <div className="flex sm:flex-row flex-col space-y-4 sm:space-y-0 sm:justify-between">
-        <span className="text-gray-500 dark:text-neutral-50 ">
+        <span className="text-gray-700 dark:text-neutral-50 ">
           {t("ollamaSettings.settings.advanced.urlRewriteEnabled.label")}
         </span>
         <div>
@@ -29,7 +29,7 @@ export const AdvanceOllamaSettings = () => {
         </div>
       </div>
       <div className="flex flex-col space-y-4 sm:space-y-0 sm:justify-between">
-        <span className="text-gray-500 dark:text-neutral-50 mb-3">
+        <span className="text-gray-700 dark:text-neutral-50 mb-3">
           {t("ollamaSettings.settings.advanced.rewriteUrl.label")}
         </span>
         <div>
