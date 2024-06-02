@@ -56,6 +56,32 @@ export const AboutApp = () => {
                 key: 1,
                 label: t("about.ollamaVersion"),
                 children: data.ollama
+              },
+              {
+                key: 2,
+                label: "Community",
+                children: (
+                  <a
+                    href="https://discord.com/invite/bu54382uBd"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-blue-500 dark:text-blue-400">
+                    Discord Server
+                  </a>
+                )
+              },
+              {
+                key: 3,
+                label: "X (formerly Twitter)",
+                children: (
+                  <a
+                    href="https://twitter.com/n4ze3m"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-blue-500 dark:text-blue-400">
+                    @n4ze3m
+                  </a>
+                )
               }
             ]}
           />
