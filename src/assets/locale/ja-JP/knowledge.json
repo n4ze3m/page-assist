@@ -38,5 +38,5 @@
         "submit": "送信",
         "success": "知識が正常に追加されました"
     },
-    "noEmbeddingModel": "最初にOllamaの設定ページから埋め込みモデルを追加してください"
+    "noEmbeddingModel": "最初にRAGの設定ページから埋め込みモデルを追加してください"
 }

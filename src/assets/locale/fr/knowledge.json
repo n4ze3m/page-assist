@@ -38,5 +38,5 @@
         "submit": "Soumettre",
         "success": "Les connaissances ont ajouté avec succès"
     },
-    "noEmbeddingModel": "Veuillez d'abord ajouter un modèle d'embedding depuis la page des paramètres de Ollama"
+    "noEmbeddingModel": "Veuillez d'abord ajouter un modèle d'embedding depuis la page des paramètres de RAG"
 }

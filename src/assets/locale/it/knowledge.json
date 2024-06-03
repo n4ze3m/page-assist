@@ -38,5 +38,5 @@
         "submit": "Invia",
         "success": "Knowledge Base aggiunta correttamente"
     },
-    "noEmbeddingModel": "Aggiungi prima un modello dalla pagina di impostazione di Ollama"
+    "noEmbeddingModel": "Aggiungi prima un modello dalla pagina di impostazione di RAG"
 }

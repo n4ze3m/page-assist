@@ -7,7 +7,7 @@
     },
     "formError": {
         "noModel": "Por favor, selecione um modelo",
-        "noEmbeddingModel": "Por favor, defina um modelo de embedding na página de configurações > Ollama"
+        "noEmbeddingModel": "Por favor, defina um modelo de embedding na página de configurações > RAG"
     },
     "form": {
         "textarea": {
