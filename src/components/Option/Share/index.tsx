@@ -146,7 +146,7 @@ export const OptionShareBody = () => {
                 <label className="text-sm font-semibold leading-5 text-gray-900 dark:text-white">
                   {t("manageShare.webshare.label")}
                 </label>
-                <p className="text-sm font-normal leading-5 text-gray-500 dark:text-gray-400">
+                <p className="text-sm font-normal leading-5 text-gray-700 dark:text-gray-400">
                   {t("manageShare.webshare.description")}
                 </p>
               </div>

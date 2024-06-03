@@ -7,7 +7,7 @@
     },
     "formError": {
         "noModel": "モデルを選択してください",
-        "noEmbeddingModel": "設定 > Ollamaページでembeddingモデルを設定してください"
+        "noEmbeddingModel": "設定 > RAGページでembeddingモデルを設定してください"
     },
     "form": {
         "textarea": {

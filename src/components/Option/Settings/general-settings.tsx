@@ -16,7 +16,7 @@ import {
 import { BetaTag } from "@/components/Common/Beta"
 import { useStorage } from "@plasmohq/storage/hook"
 
-export const SettingOther = () => {
+export const GeneralSettings = () => {
   const { clearChat, speechToTextLanguage, setSpeechToTextLanguage } =
     useMessageOption()
 
@@ -43,7 +43,7 @@ export const SettingOther = () => {
         <div className="border border-b border-gray-200 dark:border-gray-600 mt-3"></div>
       </div>
       <div className="flex flex-row justify-between">
-        <span className="text-gray-500 dark:text-neutral-50">
+        <span className="text-gray-700 dark:text-neutral-50">
           {t("generalSettings.settings.speechRecognitionLang.label")}
         </span>
 
@@ -65,7 +65,7 @@ export const SettingOther = () => {
         />
       </div>
       <div className="flex flex-row justify-between">
-        <span className="text-gray-500   dark:text-neutral-50">
+        <span className="text-gray-700   dark:text-neutral-50">
           {t("generalSettings.settings.language.label")}
         </span>
 
@@ -88,7 +88,7 @@ export const SettingOther = () => {
       <div className="flex flex-row justify-between">
         <div className="inline-flex items-center gap-2">
           <BetaTag />
-          <span className="text-gray-500   dark:text-neutral-50">
+          <span className="text-gray-700   dark:text-neutral-50">
             {t("generalSettings.settings.copilotResumeLastChat.label")}
           </span>
         </div>
@@ -100,7 +100,7 @@ export const SettingOther = () => {
       <div className="flex flex-row justify-between">
         <div className="inline-flex items-center gap-2">
           <BetaTag />
-          <span className="text-gray-500   dark:text-neutral-50">
+          <span className="text-gray-700   dark:text-neutral-50">
             {t("generalSettings.settings.hideCurrentChatModelSettings.label")}
           </span>
         </div>
@@ -111,7 +111,7 @@ export const SettingOther = () => {
         />
       </div>
       <div className="flex flex-row justify-between">
-        <span className="text-gray-500 dark:text-neutral-50 ">
+        <span className="text-gray-700 dark:text-neutral-50 ">
           {t("generalSettings.settings.darkMode.label")}
         </span>
 
@@ -138,7 +138,7 @@ export const SettingOther = () => {
           <div className="border border-b border-gray-200 dark:border-gray-600 mt-3"></div>
         </div>
         <div className="flex flex-row mb-3 justify-between">
-          <span className="text-gray-500 dark:text-neutral-50 ">
+          <span className="text-gray-700 dark:text-neutral-50 ">
             {t("generalSettings.system.deleteChatHistory.label")}
           </span>
 
@@ -162,7 +162,7 @@ export const SettingOther = () => {
           </button>
         </div>
         <div className="flex flex-row mb-3 justify-between">
-          <span className="text-gray-500 dark:text-neutral-50 ">
+          <span className="text-gray-700 dark:text-neutral-50 ">
             {t("generalSettings.system.export.label")}
           </span>
           <button
@@ -172,7 +172,7 @@ export const SettingOther = () => {
           </button>
         </div>
         <div className="flex flex-row mb-3 justify-between">
-          <span className="text-gray-500 dark:text-neutral-50 ">
+          <span className="text-gray-700 dark:text-neutral-50 ">
             {t("generalSettings.system.import.label")}
           </span>
           <label

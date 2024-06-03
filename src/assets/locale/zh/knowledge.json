@@ -38,5 +38,5 @@
         "submit": "提交",
         "success": "知识添加成功"
     },
-    "noEmbeddingModel": "请先从Ollama设置页面添加一个嵌入模型"
+    "noEmbeddingModel": "请先从RAG设置页面添加一个嵌入模型"
 }

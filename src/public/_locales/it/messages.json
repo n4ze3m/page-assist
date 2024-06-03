@@ -1,0 +1,11 @@
+{
+    "extName": {
+        "message": "Page Assist - Un'interfaccia web per modelli AI locali"
+    },
+    "extDescription": {
+        "message": "Usa i tuoi modelli AI in esecuzione locale per assisterti nella navigazione web."
+    },
+    "openSidePanelToChat": {
+        "message": "Apri Copilot per chattare"
+    }
+}

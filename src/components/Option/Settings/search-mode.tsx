@@ -44,7 +44,7 @@ export const SearchModeSettings = () => {
         })}
         className="space-y-4">
         <div className="flex sm:flex-row flex-col space-y-4 sm:space-y-0 sm:justify-between">
-          <span className="text-gray-500 dark:text-neutral-50 ">
+          <span className="text-gray-700 dark:text-neutral-50 ">
             {t("generalSettings.webSearch.provider.label")}
           </span>
           <div>
@@ -62,7 +62,7 @@ export const SearchModeSettings = () => {
           </div>
         </div>
         <div className="flex sm:flex-row flex-col space-y-4 sm:space-y-0 sm:justify-between">
-          <span className="text-gray-500 dark:text-neutral-50 ">
+          <span className="text-gray-700 dark:text-neutral-50 ">
             {t("generalSettings.webSearch.searchMode.label")}
           </span>
           <div>
@@ -75,7 +75,7 @@ export const SearchModeSettings = () => {
           </div>
         </div>
         <div className="flex sm:flex-row flex-col space-y-4 sm:space-y-0 sm:justify-between">
-          <span className="text-gray-500 dark:text-neutral-50 ">
+          <span className="text-gray-700 dark:text-neutral-50 ">
             {t("generalSettings.webSearch.totalSearchResults.label")}
           </span>
           <div>

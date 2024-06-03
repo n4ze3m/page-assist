@@ -250,7 +250,7 @@ export const SettingsBody = () => {
 
       <div className="border border-gray-300 dark:border-gray-700 rounded p-4 bg-white dark:bg-[#171717]">
         <h2 className="text-md mb-4 font-semibold dark:text-white">
-          {t("ollamaSettings.settings.ragSettings.label")}
+          {t("rag.ragSettings.label")}
         </h2>
         <Form
           onFinish={(data) => {
@@ -267,12 +267,12 @@ export const SettingsBody = () => {
           }}>
           <Form.Item
             name="defaultEM"
-            label={t("ollamaSettings.settings.ragSettings.model.label")}
-            help={t("ollamaSettings.settings.ragSettings.model.help")}
+            label={t("rag.ragSettings.model.label")}
+            help={t("rag.ragSettings.model.help")}
             rules={[
               {
                 required: true,
-                message: t("ollamaSettings.settings.ragSettings.model.required")
+                message: t("rag.ragSettings.model.required")
               }
             ]}>
             <Select
@@ -294,37 +294,37 @@ export const SettingsBody = () => {
 
           <Form.Item
             name="chunkSize"
-            label={t("ollamaSettings.settings.ragSettings.chunkSize.label")}
+            label={t("rag.ragSettings.chunkSize.label")}
             rules={[
               {
                 required: true,
                 message: t(
-                  "ollamaSettings.settings.ragSettings.chunkSize.required"
+                  "rag.ragSettings.chunkSize.required"
                 )
               }
             ]}>
             <InputNumber
               style={{ width: "100%" }}
               placeholder={t(
-                "ollamaSettings.settings.ragSettings.chunkSize.placeholder"
+                "rag.ragSettings.chunkSize.placeholder"
               )}
             />
           </Form.Item>
           <Form.Item
             name="chunkOverlap"
-            label={t("ollamaSettings.settings.ragSettings.chunkOverlap.label")}
+            label={t("rag.ragSettings.chunkOverlap.label")}
             rules={[
               {
                 required: true,
                 message: t(
-                  "ollamaSettings.settings.ragSettings.chunkOverlap.required"
+                  "rag.ragSettings.chunkOverlap.required"
                 )
               }
             ]}>
             <InputNumber
               style={{ width: "100%" }}
               placeholder={t(
-                "ollamaSettings.settings.ragSettings.chunkOverlap.placeholder"
+                "rag.ragSettings.chunkOverlap.placeholder"
               )}
             />
           </Form.Item>

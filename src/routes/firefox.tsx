@@ -1,7 +1,7 @@
 // this is a temp fix for firefox
 // because chunks getting 4mb+ and it's not working on firefox addon store
 import { lazy } from "react"
-import { Route , Routes} from "react-router-dom"
+import { Route, Routes } from "react-router-dom"
 
 const SidepanelChat = lazy(() => import("./sidepanel-chat"))
 const SidepanelSettings = lazy(() => import("./sidepanel-settings"))
@@ -13,6 +13,7 @@ const OptionSettings = lazy(() => import("./option-settings"))
 const OptionShare = lazy(() => import("./option-settings-share"))
 const OptionKnowledgeBase = lazy(() => import("./option-settings-knowledge"))
 const OptionAbout = lazy(() => import("./option-settings-about"))
+const OptionRagSettings = lazy(() => import("./option-rag"))
 
 export const OptionRoutingFirefox = () => {
   return (
@@ -25,6 +26,7 @@ export const OptionRoutingFirefox = () => {
       <Route path="/settings/share" element={<OptionShare />} />
       <Route path="/settings/knowledge" element={<OptionKnowledgeBase />} />
       <Route path="/settings/about" element={<OptionAbout />} />
+      <Route path="/settings/rag" element={<OptionRagSettings />} />
     </Routes>
   )
 }

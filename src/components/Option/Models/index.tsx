@@ -155,7 +155,7 @@ export const ModelsBody = () => {
                               pullOllamaModel(record.model)
                             }
                           }}
-                          className="text-gray-500 dark:text-gray-400">
+                          className="text-gray-700 dark:text-gray-400">
                           <RotateCcw className="w-5 h-5" />
                         </button>
                       </Tooltip>

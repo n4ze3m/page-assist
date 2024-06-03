@@ -220,41 +220,6 @@
                 "label": "Ollama URL",
                 "placeholder": "Ollama URL നല്കുക"
             },
-            "ragSettings": {
-                "label": "RAG സെറ്റിംഗുകൾ",
-                "model": {
-                    "label": "എംബെഡിംഗ് മോഡല്‍",
-                    "required": "ദയവായി ഒരു മോഡല്‍ തിരഞ്ഞെടുക്കുക",
-                    "help": "`nomic-embed-text` പോലുള്ള എംബെഡിംഗ് മോഡലുകള്‍ ഉപയോഗിക്കുന്നത് വളരെ നന്നായിരിക്കും.",
-                    "placeholder": "ഒരു മോഡല്‍ തിരഞ്ഞെടുക്കുക"
-                },
-                "chunkSize": {
-                    "label": "ചങ്ക് വലുപ്പം",
-                    "placeholder": "ചങ്ക് വലുപ്പം നല്കുക",
-                    "required": "ദയവായി ചങ്ക് വലുപ്പം നല്കുക"
-                },
-                "chunkOverlap": {
-                    "label": "ചങ്ക് ഓവര്‍ലാപ്പ്",
-                    "placeholder": "ചങ്ക് ഓവര്‍ലാപ്പ് നല്കുക",
-                    "required": "ദയവായി ചങ്ക് ഓവര്‍ലാപ്പ് നല്കുക"
-                }
-            },
-            "prompt": {
-                "label": "RAG പ്രോംപ്റ്റ് കോൺഫിഗർ ചെയ്യുക",
-                "option1": "സാധാരണ",
-                "option2": "വെബ്",
-                "alert": "സിസ്റ്റം പ്രോംപ്റ്റ് ഇവിടെ കോൺഫിഗർ ചെയ്യുന്നത് പഴയൗഖികമായി. ദയവായി പ്രോംപ്റ്റുകള്‍ ചേര്‍ക്കാനോ എഡിറ്റുചെയ്യാനോ മാനേജ് പ്രോംപ്റ്റ്‌സ് സെക്ഷന്‍ ഉപയോഗിക്കുക. ഈ സെക്ഷന്‍ ഭാവിയില്‍ നീക്കം ചെയ്യപ്പെടും.",
-                "systemPrompt": "സിസ്റ്റം പ്രോംപ്റ്റ്",
-                "systemPromptPlaceholder": "സിസ്റ്റം പ്രോംപ്റ്റ് നല്കുക",
-                "webSearchPrompt": "വെബ് തിരയല്‍ പ്രോംപ്റ്റ്",
-                "webSearchPromptHelp": "പ്രോംപ്റ്റില്‍ നിന്ന് `{search_results}` നീക്കം ചെയ്യരുത്.",
-                "webSearchPromptError": "ദയവായി ഒരു വെബ് തിരയല്‍ പ്രോംപ്റ്റ് നല്കുക",
-                "webSearchPromptPlaceholder": "വെബ് തിരയല്‍ പ്രോംപ്റ്റ് നല്കുക",
-                "webSearchFollowUpPrompt": "വെബ് തിരയല്‍ തുടര്‍പ്രോംപ്റ്റ്",
-                "webSearchFollowUpPromptHelp": "പ്രോംപ്റ്റില്‍ നിന്ന് `{chat_history}` യും `{question}` യും നീക്കം ചെയ്യരുത്.",
-                "webSearchFollowUpPromptError": "ദയവായി നിങ്ങളുടെ വെബ് തിരയല്‍ തുടര്‍പ്രോംപ്റ്റ് നല്കുക!",
-                "webSearchFollowUpPromptPlaceholder": "നിങ്ങളുടെ വെബ് തിരയല്‍ തുടര്‍പ്രോംപ്റ്റ്"
-            },
             "advanced": {
                 "label": "Advance Ollama URL Configuration",
                 "urlRewriteEnabled": {
@@ -285,5 +250,43 @@
     "manageKnowledge": {
         "title": "വിജ്ഞാനം നിര്‍വ്വഹിക്കുക",
         "heading": "വിജ്ഞാനാധാരം കോണ്‍ഫിഗര്‍ ചെയ്യുക"
+    },
+    "rag": {
+        "title": "RAG സെറ്റിംഗുകൾ",
+        "ragSettings": {
+            "label": "RAG സെറ്റിംഗുകൾ",
+            "model": {
+                "label": "എംബെഡിംഗ് മോഡല്‍",
+                "required": "ദയവായി ഒരു മോഡല്‍ തിരഞ്ഞെടുക്കുക",
+                "help": "`nomic-embed-text` പോലുള്ള എംബെഡിംഗ് മോഡലുകള്‍ ഉപയോഗിക്കുന്നത് വളരെ നന്നായിരിക്കും.",
+                "placeholder": "ഒരു മോഡല്‍ തിരഞ്ഞെടുക്കുക"
+            },
+            "chunkSize": {
+                "label": "ചങ്ക് വലുപ്പം",
+                "placeholder": "ചങ്ക് വലുപ്പം നല്കുക",
+                "required": "ദയവായി ചങ്ക് വലുപ്പം നല്കുക"
+            },
+            "chunkOverlap": {
+                "label": "ചങ്ക് ഓവര്‍ലാപ്പ്",
+                "placeholder": "ചങ്ക് ഓവര്‍ലാപ്പ് നല്കുക",
+                "required": "ദയവായി ചങ്ക് ഓവര്‍ലാപ്പ് നല്കുക"
+            }
+        },
+        "prompt": {
+            "label": "RAG പ്രോംപ്റ്റ് കോൺഫിഗർ ചെയ്യുക",
+            "option1": "സാധാരണ",
+            "option2": "വെബ്",
+            "alert": "സിസ്റ്റം പ്രോംപ്റ്റ് ഇവിടെ കോൺഫിഗർ ചെയ്യുന്നത് പഴയൗഖികമായി. ദയവായി പ്രോംപ്റ്റുകള്‍ ചേര്‍ക്കാനോ എഡിറ്റുചെയ്യാനോ മാനേജ് പ്രോംപ്റ്റ്‌സ് സെക്ഷന്‍ ഉപയോഗിക്കുക. ഈ സെക്ഷന്‍ ഭാവിയില്‍ നീക്കം ചെയ്യപ്പെടും.",
+            "systemPrompt": "സിസ്റ്റം പ്രോംപ്റ്റ്",
+            "systemPromptPlaceholder": "സിസ്റ്റം പ്രോംപ്റ്റ് നല്കുക",
+            "webSearchPrompt": "വെബ് തിരയല്‍ പ്രോംപ്റ്റ്",
+            "webSearchPromptHelp": "പ്രോംപ്റ്റില്‍ നിന്ന് `{search_results}` നീക്കം ചെയ്യരുത്.",
+            "webSearchPromptError": "ദയവായി ഒരു വെബ് തിരയല്‍ പ്രോംപ്റ്റ് നല്കുക",
+            "webSearchPromptPlaceholder": "വെബ് തിരയല്‍ പ്രോംപ്റ്റ് നല്കുക",
+            "webSearchFollowUpPrompt": "വെബ് തിരയല്‍ തുടര്‍പ്രോംപ്റ്റ്",
+            "webSearchFollowUpPromptHelp": "പ്രോംപ്റ്റില്‍ നിന്ന് `{chat_history}` യും `{question}` യും നീക്കം ചെയ്യരുത്.",
+            "webSearchFollowUpPromptError": "ദയവായി നിങ്ങളുടെ വെബ് തിരയല്‍ തുടര്‍പ്രോംപ്റ്റ് നല്കുക!",
+            "webSearchFollowUpPromptPlaceholder": "നിങ്ങളുടെ വെബ് തിരയല്‍ തുടര്‍പ്രോംപ്റ്റ്"
+        }
     }
 }

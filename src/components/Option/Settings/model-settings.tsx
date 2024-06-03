@@ -29,7 +29,7 @@ export const ModelSettings = () => {
           {t("modelSettings.label")} 
         </h2>
         </div>
-        <p className="text-sm text-gray-500 dark:text-neutral-400 mt-1">
+        <p className="text-sm text-gray-700 dark:text-neutral-400 mt-1">
           {t("modelSettings.description")}
         </p>
         <div className="border border-b border-gray-200 dark:border-gray-600 mt-3 mb-6"></div>

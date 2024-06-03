@@ -7,7 +7,7 @@
     },
     "formError": {
         "noModel": "请选择一个模型",
-        "noEmbeddingModel": "请在设置>Ollama页面设置一个文本嵌入模型"
+        "noEmbeddingModel": "请在设置>RAG页面设置一个文本嵌入模型"
     },
     "form": {
         "textarea": {

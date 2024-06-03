@@ -1,0 +1,88 @@
+{
+    "pageAssist": "Page Assist",
+    "selectAModel": "Seleziona un Modello",
+    "save": "Salva",
+    "saved": "Salvato",
+    "cancel": "Annulla",
+    "retry": "Riprova",
+    "share": {
+        "tooltip": {
+            "share": "Condividi"
+        },
+        "modal": {
+            "title": "Condividi Collegamento alla Chat"
+        },
+        "form": {
+            "defaultValue": {
+                "name": "Anonimo",
+                "title": "Chat Senza Titolo"
+            },
+            "title": {
+                "label": "Titolo della Chat",
+                "placeholder": "Inserisci il Titolo della Chat",
+                "required": "Titolo della Chat obbligatorio"
+            },
+            "name": {
+                "label": "Il tuo Nome",
+                "placeholder": "Inserisci il tuo Nome",
+                "required": "Nome obbligatorio"
+            },
+            "btn": {
+                "save": "Genera Link",
+                "saving": "Sto generando il Link..."
+            }
+        },
+        "notification": {
+            "successGenerate": "Link copiato negli appunti",
+            "failGenerate": "Impossibile generare il link"
+        }
+    },
+    "copyToClipboard": "Copia negli Appunti",
+    "webSearch": "Ricerca nel Web",
+    "regenerate": "Rigenera",
+    "edit": "Modifica",
+    "saveAndSubmit": "Salva e Invia",
+    "editMessage": {
+        "placeholder": "Scrivi un messaggio..."
+    },
+    "submit": "Invia",
+    "noData": "Nessun Dato",
+    "noHistory": "Nessuna Cronologia Chat",
+    "chatWithCurrentPage": "Chatta con la Pagina Corrente",
+    "beta": "Beta",
+    "tts": "Leggi ad Alta Voce",
+    "currentChatModelSettings": "Impostazioni del Modello Corrente",
+    "modelSettings": {
+        "label": "Impostazioni del Modello",
+        "description": "Imposta le opzioni del modello globalmente per tutte le chat",
+        "form": {
+            "keepAlive": {
+                "label": "Keep Alive",
+                "help": "Imposta il tempo per cui il modello deve rimanere caricato in memoria (default: 5m)",
+                "placeholder": "Inserisci la durata del Keep Alive (e.g. 5m, 10m, 1h)"
+            },
+            "temperature": {
+                "label": "Temperatura",
+                "placeholder": "Inserisci la Temperatura (e.g. 0.7, 1.0)"
+            },
+            "numCtx": {
+                "label": "Dimensione del Contesto",
+                "placeholder": "Inserisci la Dimensione del Contesto (default: 2048)"
+            },
+            "seed": {
+                "label": "Seed",
+                "placeholder": "Inserisci il Valore Seed (e.g. 1234)",
+                "help": "Riproducibilità dell'output del modello"
+            },
+            "topK": {
+                "label": "Top K",
+                "placeholder": "Inserisci il Valore Top K (e.g. 40, 100)"
+            },
+            "topP": {
+                "label": "Top P",
+                "placeholder": "Inserisci il Valore Top P (e.g. 0.9, 0.95)"
+            }
+        },
+        "advanced": "Altre Impostazioni del Modello"
+    }
+}
