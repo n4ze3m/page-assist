@@ -1,6 +1,6 @@
 import { Tooltip } from "antd"
 import { CheckIcon, ClipboardIcon } from "lucide-react"
-import { FC, memo, useState } from "react"
+import { FC,  useState } from "react"
 import { useTranslation } from "react-i18next"
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter"
 import { coldarkDark } from "react-syntax-highlighter/dist/cjs/styles/prism"
@@ -10,7 +10,7 @@ interface Props {
   value: string
 }
 
-export const CodeBlock: FC<Props> = memo(({ language, value }) => {
+export const CodeBlock: FC<Props> =({ language, value }) => {
   const [isBtnPressed, setIsBtnPressed] = useState(false)
   const { t } = useTranslation("common")
   return (
@@ -63,4 +63,4 @@ export const CodeBlock: FC<Props> = memo(({ language, value }) => {
       </div>
     </>
   )
-})
+}

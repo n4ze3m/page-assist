@@ -1,28 +1,16 @@
 import remarkGfm from "remark-gfm"
 import remarkMath from "remark-math"
-import ReactMarkdown, { Options } from "react-markdown"
-
+import ReactMarkdown from "react-markdown"
 import "property-information"
 import React from "react"
-import { Tooltip } from "antd"
-import { CheckIcon, ClipboardIcon } from "lucide-react"
-import { useTranslation } from "react-i18next"
-
-import { FC, memo } from "react"
 import { CodeBlock } from "./CodeBlock"
 
-export const MemoizedReactMarkdown: FC<Options> = memo(
-  ReactMarkdown,
-  (prevProps, nextProps) =>
-    prevProps.children === nextProps.children &&
-    prevProps.className === nextProps.className
-)
 
 export default function Markdown({ message }: { message: string }) {
 
   return (
     <React.Fragment>
-      <MemoizedReactMarkdown
+      <ReactMarkdown
         className="prose break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0 dark:prose-dark"
         remarkPlugins={[remarkGfm, remarkMath]}
         components={{
@@ -55,7 +43,7 @@ export default function Markdown({ message }: { message: string }) {
           }
         }}>
         {message}
-      </MemoizedReactMarkdown>
+      </ReactMarkdown>
     </React.Fragment>
   )
 }
