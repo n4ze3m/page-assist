@@ -24,7 +24,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
   const [typing, setTyping] = React.useState<boolean>(false)
   const {
     onSubmit,
-    selectedModel,
+    selectedModel, 
     chatMode,
     speechToTextLanguage,
     stopStreamingRequest,

@@ -2,11 +2,12 @@ import React from "react"
 import { cleanUrl } from "~/libs/clean-url"
 import {
   defaultEmbeddingModelForRag,
+  geWebSearchFollowUpPrompt,
   getOllamaURL,
   promptForRag,
   systemPromptForNonRag
 } from "~/services/ollama"
-import { type Message } from "~/store/option"
+import { useStoreMessageOption, type Message } from "~/store/option"
 import { useStoreMessage } from "~/store"
 import { HumanMessage, SystemMessage } from "@langchain/core/messages"
 import { getDataFromCurrentTab } from "~/libs/get-html"
@@ -29,6 +30,7 @@ import { useStorage } from "@plasmohq/storage/hook"
 import { useStoreChatModelSettings } from "@/store/model"
 import { ChatOllama } from "@/models/ChatOllama"
 import { getAllDefaultModelSettings } from "@/services/model-settings"
+import { getSystemPromptForWeb } from "@/web/web"
 
 export const useMessage = () => {
   const {
@@ -42,6 +44,9 @@ export const useMessage = () => {
   const { t } = useTranslation("option")
   const [selectedModel, setSelectedModel] = useStorage("selectedModel")
   const currentChatModelSettings = useStoreChatModelSettings()
+  const { setIsSearchingInternet, webSearch, setWebSearch, isSearchingInternet } =
+    useStoreMessageOption()
+
   const {
     history,
     setHistory,
@@ -571,6 +576,249 @@ export const useMessage = () => {
     }
   }
 
+  const searchChatMode = async (
+    message: string,
+    image: string,
+    isRegenerate: boolean,
+    messages: Message[],
+    history: ChatHistory,
+    signal: AbortSignal
+  ) => {
+    const url = await getOllamaURL()
+    setStreaming(true)
+    const userDefaultModelSettings = await getAllDefaultModelSettings()
+    if (image.length > 0) {
+      image = `data:image/jpeg;base64,${image.split(",")[1]}`
+    }
+
+    const ollama = new ChatOllama({
+      model: selectedModel!,
+      baseUrl: cleanUrl(url),
+      keepAlive:
+        currentChatModelSettings?.keepAlive ??
+        userDefaultModelSettings?.keepAlive,
+      temperature:
+        currentChatModelSettings?.temperature ??
+        userDefaultModelSettings?.temperature,
+      topK: currentChatModelSettings?.topK ?? userDefaultModelSettings?.topK,
+      topP: currentChatModelSettings?.topP ?? userDefaultModelSettings?.topP,
+      numCtx:
+        currentChatModelSettings?.numCtx ?? userDefaultModelSettings?.numCtx,
+      seed: currentChatModelSettings?.seed
+    })
+
+    let newMessage: Message[] = []
+    let generateMessageId = generateID()
+
+    if (!isRegenerate) {
+      newMessage = [
+        ...messages,
+        {
+          isBot: false,
+          name: "You",
+          message,
+          sources: [],
+          images: [image]
+        },
+        {
+          isBot: true,
+          name: selectedModel,
+          message: "▋",
+          sources: [],
+          id: generateMessageId
+        }
+      ]
+    } else {
+      newMessage = [
+        ...messages,
+        {
+          isBot: true,
+          name: selectedModel,
+          message: "▋",
+          sources: [],
+          id: generateMessageId
+        }
+      ]
+    }
+    setMessages(newMessage)
+    let fullText = ""
+    let contentToSave = ""
+
+    try {
+      setIsSearchingInternet(true)
+
+      let query = message
+
+      if (newMessage.length > 2) {
+        let questionPrompt = await geWebSearchFollowUpPrompt()
+        const lastTenMessages = newMessage.slice(-10)
+        lastTenMessages.pop()
+        const chat_history = lastTenMessages
+          .map((message) => {
+            return `${message.isBot ? "Assistant: " : "Human: "}${message.message}`
+          })
+          .join("\n")
+        const promptForQuestion = questionPrompt
+          .replaceAll("{chat_history}", chat_history)
+          .replaceAll("{question}", message)
+        const questionOllama = new ChatOllama({
+          model: selectedModel!,
+          baseUrl: cleanUrl(url),
+          keepAlive:
+            currentChatModelSettings?.keepAlive ??
+            userDefaultModelSettings?.keepAlive,
+          temperature:
+            currentChatModelSettings?.temperature ??
+            userDefaultModelSettings?.temperature,
+          topK:
+            currentChatModelSettings?.topK ?? userDefaultModelSettings?.topK,
+          topP:
+            currentChatModelSettings?.topP ?? userDefaultModelSettings?.topP,
+          numCtx:
+            currentChatModelSettings?.numCtx ??
+            userDefaultModelSettings?.numCtx,
+          seed: currentChatModelSettings?.seed
+        })
+        const response = await questionOllama.invoke(promptForQuestion)
+        query = response.content.toString()
+      }
+
+      const { prompt, source } = await getSystemPromptForWeb(query)
+      setIsSearchingInternet(false)
+
+      //  message = message.trim().replaceAll("\n", " ")
+
+      let humanMessage = new HumanMessage({
+        content: [
+          {
+            text: message,
+            type: "text"
+          }
+        ]
+      })
+      if (image.length > 0) {
+        humanMessage = new HumanMessage({
+          content: [
+            {
+              text: message,
+              type: "text"
+            },
+            {
+              image_url: image,
+              type: "image_url"
+            }
+          ]
+        })
+      }
+
+      const applicationChatHistory = generateHistory(history)
+
+      if (prompt) {
+        applicationChatHistory.unshift(
+          new SystemMessage({
+            content: [
+              {
+                text: prompt,
+                type: "text"
+              }
+            ]
+          })
+        )
+      }
+
+      const chunks = await ollama.stream(
+        [...applicationChatHistory, humanMessage],
+        {
+          signal: signal
+        }
+      )
+      let count = 0
+      for await (const chunk of chunks) {
+        contentToSave += chunk.content
+        fullText += chunk.content
+        if (count === 0) {
+          setIsProcessing(true)
+        }
+        setMessages((prev) => {
+          return prev.map((message) => {
+            if (message.id === generateMessageId) {
+              return {
+                ...message,
+                message: fullText + "▋"
+              }
+            }
+            return message
+          })
+        })
+        count++
+      }
+      // update the message with the full text
+      setMessages((prev) => {
+        return prev.map((message) => {
+          if (message.id === generateMessageId) {
+            return {
+              ...message,
+              message: fullText,
+              sources: source
+            }
+          }
+          return message
+        })
+      })
+
+      setHistory([
+        ...history,
+        {
+          role: "user",
+          content: message,
+          image
+        },
+        {
+          role: "assistant",
+          content: fullText
+        }
+      ])
+
+      await saveMessageOnSuccess({
+        historyId,
+        setHistoryId,
+        isRegenerate,
+        selectedModel: selectedModel,
+        message,
+        image,
+        fullText,
+        source
+      })
+
+      setIsProcessing(false)
+      setStreaming(false)
+    } catch (e) {
+      const errorSave = await saveMessageOnError({
+        e,
+        botMessage: fullText,
+        history,
+        historyId,
+        image,
+        selectedModel,
+        setHistory,
+        setHistoryId,
+        userMessage: message,
+        isRegenerating: isRegenerate
+      })
+
+      if (!errorSave) {
+        notification.error({
+          message: t("error"),
+          description: e?.message || t("somethingWentWrong")
+        })
+      }
+      setIsProcessing(false)
+      setStreaming(false)
+    } finally {
+      setAbortController(null)
+    }
+  }
+
   const onSubmit = async ({
     message,
     image,
@@ -597,14 +845,25 @@ export const useMessage = () => {
     }
 
     if (chatMode === "normal") {
-      await normalChatMode(
-        message,
-        image,
-        isRegenerate,
-        chatHistory || messages,
-        memory || history,
-        signal
-      )
+      if (webSearch) {
+        await searchChatMode(
+          message,
+          image,
+          isRegenerate || false,
+          messages,
+          memory || history,
+          signal
+        )
+      } else {
+        await normalChatMode(
+          message,
+          image,
+          isRegenerate,
+          chatHistory || messages,
+          memory || history,
+          signal
+        )
+      }
     } else {
       const newEmbeddingController = new AbortController()
       let embeddingSignal = newEmbeddingController.signal
@@ -714,6 +973,9 @@ export const useMessage = () => {
     isEmbedding,
     speechToTextLanguage,
     setSpeechToTextLanguage,
-    regenerateLastMessage
+    regenerateLastMessage,
+    webSearch,
+    setWebSearch,
+    isSearchingInternet,
   }
 }

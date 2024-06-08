@@ -3,11 +3,19 @@ import { PlaygroundMessage } from "~/components/Common/Playground/Message"
 import { useMessage } from "~/hooks/useMessage"
 import { EmptySidePanel } from "../Chat/empty"
 import { useWebUI } from "@/store/webui"
+import { MessageSourcePopup } from "@/components/Common/Playground/MessageSourcePopup"
 
 export const SidePanelBody = () => {
-  const { messages, streaming, regenerateLastMessage, editMessage } =
-    useMessage()
+  const {
+    messages,
+    streaming,
+    regenerateLastMessage,
+    editMessage,
+    isSearchingInternet
+  } = useMessage()
   const divRef = React.useRef<HTMLDivElement>(null)
+  const [isSourceOpen, setIsSourceOpen] = React.useState(false)
+  const [source, setSource] = React.useState<any>(null)
   const { ttsEnabled } = useWebUI()
   React.useEffect(() => {
     if (divRef.current) {
@@ -27,19 +35,26 @@ export const SidePanelBody = () => {
           currentMessageIndex={index}
           totalMessages={messages.length}
           onRengerate={regenerateLastMessage}
+          isProcessing={streaming}
+          isSearchingInternet={isSearchingInternet}
+          sources={message.sources}
           onEditFormSubmit={(value) => {
             editMessage(index, value, !message.isBot)
           }}
-          isProcessing={streaming}
+          onSourceClick={(data) => {
+            setSource(data)
+            setIsSourceOpen(true)
+          }}
           isTTSEnabled={ttsEnabled}
         />
       ))}
-      {import.meta.env.BROWSER === "chrome" ? (
-        <div className="w-full h-32 md:h-48 flex-shrink-0"></div>
-      ) : (
-        <div className="w-full h-48 flex-shrink-0"></div>
-      )}
+      <div className="w-full h-48 flex-shrink-0"></div>
       <div ref={divRef} />
+      <MessageSourcePopup
+        open={isSourceOpen}
+        setOpen={setIsSourceOpen}
+        source={source}
+      />
     </div>
   )
 }

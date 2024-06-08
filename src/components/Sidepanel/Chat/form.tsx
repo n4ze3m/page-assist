@@ -4,10 +4,17 @@ import React from "react"
 import useDynamicTextareaSize from "~/hooks/useDynamicTextareaSize"
 import { useMessage } from "~/hooks/useMessage"
 import { toBase64 } from "~/libs/to-base64"
-import { Checkbox, Dropdown, Image, Tooltip } from "antd"
+import { Checkbox, Dropdown, Image, Switch, Tooltip } from "antd"
 import { useWebUI } from "~/store/webui"
 import { defaultEmbeddingModelForRag } from "~/services/ollama"
-import { ImageIcon, MicIcon, StopCircleIcon, X } from "lucide-react"
+import {
+  ImageIcon,
+  MicIcon,
+  StopCircleIcon,
+  X,
+  Wifi,
+  WifiOff
+} from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { ModelSelect } from "@/components/Common/ModelSelect"
 import { useSpeechRecognition } from "@/hooks/useSpeechRecognition"
@@ -88,6 +95,13 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
             return
           }
         }
+        if (webSearch) {
+          const defaultEM = await defaultEmbeddingModelForRag()
+          if (!defaultEM) {
+            form.setFieldError("message", t("formError.noEmbeddingModel"))
+            return
+          }
+        }
         form.reset()
         textAreaFocus()
         await sendMessage({
@@ -111,7 +125,9 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
     speechToTextLanguage,
     stopStreamingRequest,
     streaming,
-    setChatMode
+    setChatMode,
+    webSearch,
+    setWebSearch
   } = useMessage()
 
   React.useEffect(() => {
@@ -175,6 +191,13 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                   return
                 }
               }
+              if (webSearch) {
+                const defaultEM = await defaultEmbeddingModelForRag()
+                if (!defaultEM) {
+                  form.setFieldError("message", t("formError.noEmbeddingModel"))
+                  return
+                }
+              }
               await stopListening()
               form.reset()
               textAreaFocus()
@@ -211,6 +234,20 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
               />
               <div className="flex mt-4 justify-end gap-3">
                 <ModelSelect />
+                <Tooltip title={t("tooltip.searchInternet")}>
+                  <button
+                    type="button"
+                    onClick={() => setWebSearch(!webSearch)}
+                    className={`inline-flex items-center gap-2   ${
+                      chatMode === "rag" ? "hidden" : "block"
+                    }`}>
+                    {webSearch ? (
+                      <Wifi className="h-5 w-5 text-gray-900 dark:text-gray-300" />
+                    ) : (
+                      <WifiOff className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+                    )}
+                  </button>
+                </Tooltip>
                 {browserSupportsSpeechRecognition && (
                   <Tooltip title={t("tooltip.speechToText")}>
                     <button
