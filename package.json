@@ -48,6 +48,7 @@
     "react-router-dom": "6.10.0",
     "react-syntax-highlighter": "^15.5.0",
     "react-toastify": "^10.0.4",
+    "rehype-katex": "6.0.3",
     "rehype-mathjax": "4.0.3",
     "remark-gfm": "3.0.1",
     "remark-math": "5.1.1",
