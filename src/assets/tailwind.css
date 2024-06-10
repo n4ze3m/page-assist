@@ -1,24 +1,18 @@
 @font-face {
-  font-family: "Inter";
-  src: url("inter.ttf") format("truetype");
+  font-family: "Arimo";
+  src: url("fonts/Arimo.ttf");
+  font-display: swap;
 }
 
-@font-face {
-  font-family: "Onest";
-  src: url("onest.ttf") format("truetype");
-}
-
-.inter {
-  font-family: "Inter", sans-serif !important;
-}
-
-.onest {
-  font-family: "Onest", sans-serif !important;
+.arimo {
+  font-family: "Arimo", sans-serif !important;
 }
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
 
 .ant-select-selection-search-input {
   border: none !important;
