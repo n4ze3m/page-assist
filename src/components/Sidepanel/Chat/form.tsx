@@ -12,12 +12,11 @@ import {
   MicIcon,
   StopCircleIcon,
   X,
-  Wifi,
-  WifiOff
 } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { ModelSelect } from "@/components/Common/ModelSelect"
 import { useSpeechRecognition } from "@/hooks/useSpeechRecognition"
+import { PiGlobeX,  PiGlobe} from "react-icons/pi";
 
 type Props = {
   dropedFile: File | undefined
@@ -233,7 +232,6 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                 {...form.getInputProps("message")}
               />
               <div className="flex mt-4 justify-end gap-3">
-                <ModelSelect />
                 <Tooltip title={t("tooltip.searchInternet")}>
                   <button
                     type="button"
@@ -242,12 +240,13 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                       chatMode === "rag" ? "hidden" : "block"
                     }`}>
                     {webSearch ? (
-                      <Wifi className="h-5 w-5 text-gray-900 dark:text-gray-300" />
+                      <PiGlobe className="h-5 w-5  dark:text-gray-300" />
                     ) : (
-                      <WifiOff className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+                      <PiGlobeX className="h-5 w-5 text-gray-600 dark:text-gray-400" />
                     )}
                   </button>
                 </Tooltip>
+                <ModelSelect />
                 {browserSupportsSpeechRecognition && (
                   <Tooltip title={t("tooltip.speechToText")}>
                     <button
