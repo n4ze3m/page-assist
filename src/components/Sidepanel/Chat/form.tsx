@@ -7,16 +7,11 @@ import { toBase64 } from "~/libs/to-base64"
 import { Checkbox, Dropdown, Image, Switch, Tooltip } from "antd"
 import { useWebUI } from "~/store/webui"
 import { defaultEmbeddingModelForRag } from "~/services/ollama"
-import {
-  ImageIcon,
-  MicIcon,
-  StopCircleIcon,
-  X,
-} from "lucide-react"
+import { ImageIcon, MicIcon, StopCircleIcon, X } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { ModelSelect } from "@/components/Common/ModelSelect"
 import { useSpeechRecognition } from "@/hooks/useSpeechRecognition"
-import { PiGlobeX,  PiGlobe} from "react-icons/pi";
+import { PiGlobeX, PiGlobe } from "react-icons/pi"
 
 type Props = {
   dropedFile: File | undefined
@@ -151,6 +146,30 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
       textAreaFocus()
     }
   })
+
+  React.useEffect(() => {
+    const handleDrop = (e: DragEvent) => {
+      e.preventDefault()
+      if (e.dataTransfer?.items) {
+        for (let i = 0; i < e.dataTransfer.items.length; i++) {
+          if (e.dataTransfer.items[i].type === "text/plain") {
+            e.dataTransfer.items[i].getAsString((text) => {
+              form.setFieldValue("message", text)
+            })
+          }
+        }
+      }
+    }
+    const handleDragOver = (e: DragEvent) => {
+      e.preventDefault()
+    }
+    textareaRef.current?.addEventListener("drop", handleDrop)
+    textareaRef.current?.addEventListener("dragover", handleDragOver)
+    return () => {
+      textareaRef.current?.removeEventListener("drop", handleDrop)
+      textareaRef.current?.removeEventListener("dragover", handleDragOver)
+    }
+  }, [])
 
   return (
     <div className="px-3 pt-3 md:px-6 md:pt-6 bg-gray-50 dark:bg-[#262626] border rounded-t-xl border-black/10 dark:border-gray-600">
