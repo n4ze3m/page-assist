@@ -6,7 +6,7 @@
 
 .arimo {
   font-family: "Arimo", sans-serif;
-  font-weight: 400;
+  font-weight: 500;
   font-style: normal;
 }
 
@@ -60,7 +60,7 @@
 }
 
 .animated-gradient-border {
-  border: 4px solid;
+  border: 3px solid;
   border-image-slice: 1;
   animation: gradient-border 3s infinite;
   border-radius: 10px;
