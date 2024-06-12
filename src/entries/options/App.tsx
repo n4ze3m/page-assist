@@ -19,7 +19,7 @@ function IndexOption() {
           algorithm:
             mode === "dark" ? theme.darkAlgorithm : theme.defaultAlgorithm,
           token: {
-            fontFamily: i18n.language === "ru" ? "Onest" : "Inter"
+            fontFamily: "Arimo"
           }
         }}
         renderEmpty={() => (

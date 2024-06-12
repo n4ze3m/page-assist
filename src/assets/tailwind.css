@@ -1,70 +1,26 @@
 @font-face {
-  font-family: "Inter";
-  src: url("inter.ttf") format("truetype");
+  font-family: "Arimo";
+  src: url("fonts/Arimo.ttf");
+  font-display: swap;
 }
 
-@font-face {
-  font-family: "Onest";
-  src: url("onest.ttf") format("truetype");
-}
-
-.inter {
-  font-family: "Inter", sans-serif !important;
-}
-
-.onest {
-  font-family: "Onest", sans-serif !important;
+.arimo {
+  font-family: "Arimo", sans-serif;
+  font-weight: 500;
+  font-style: normal;
 }
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+
+
 .ant-select-selection-search-input {
   border: none !important;
   box-shadow: none !important;
 }
 
-.gradient-border {
-  --borderWidth: 3px;
-  position: relative;
-  border-radius: var(--borderWidth);
-}
-.gradient-border:after {
-  content: "";
-  position: absolute;
-  top: calc(-1 * var(--borderWidth));
-  left: calc(-1 * var(--borderWidth));
-  height: calc(100% + var(--borderWidth) * 2);
-  width: calc(100% + var(--borderWidth) * 2);
-  background: linear-gradient(
-    60deg,
-    #f79533,
-    #f37055,
-    #ef4e7b,
-    #a166ab,
-    #5073b8,
-    #1098ad,
-    #07b39b,
-    #6fba82
-  );
-  border-radius: calc(2 * var(--borderWidth));
-  z-index: -1;
-  animation: animatedgradient 3s ease alternate infinite;
-  background-size: 300% 300%;
-}
-
-@keyframes animatedgradient {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
 /* Hide scrollbar for Chrome, Safari and Opera */
 .no-scrollbar::-webkit-scrollbar {
   display: none;
@@ -74,4 +30,38 @@
 .no-scrollbar {
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
+}
+
+@keyframes gradient-border {
+  0% {
+    border-image-source: linear-gradient(
+      45deg,
+      #f79533,
+      #f37055,
+      #ef4e7b,
+      #a166ab
+    );
+  }
+  50% {
+    border-image-source: linear-gradient(45deg, #ef4e7b, #a166ab);
+  }
+  74% {
+    border-image-source: linear-gradient(60deg, #5073b8, #1098ad);
+  }
+  100% {
+    border-image-source: linear-gradient(
+      45deg,
+      #f79533,
+      #f37055,
+      #ef4e7b,
+      #a166ab
+    );
+  }
+}
+
+.animated-gradient-border {
+  border: 3px solid;
+  border-image-slice: 1;
+  animation: gradient-border 3s infinite;
+  border-radius: 10px;
 }

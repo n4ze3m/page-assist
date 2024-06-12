@@ -1,13 +1,12 @@
 import remarkGfm from "remark-gfm"
 import remarkMath from "remark-math"
 import ReactMarkdown from "react-markdown"
+
 import "property-information"
 import React from "react"
 import { CodeBlock } from "./CodeBlock"
 
-
 export default function Markdown({ message }: { message: string }) {
-
   return (
     <React.Fragment>
       <ReactMarkdown
@@ -17,10 +16,10 @@ export default function Markdown({ message }: { message: string }) {
           code({ node, inline, className, children, ...props }) {
             const match = /language-(\w+)/.exec(className || "")
             return !inline ? (
-            <CodeBlock
-              language={match ? match[1] : ""}
-              value={String(children).replace(/\n$/, "")}
-            />
+              <CodeBlock
+                language={match ? match[1] : ""}
+                value={String(children).replace(/\n$/, "")}
+              />
             ) : (
               <code className={`${className} font-semibold`} {...props}>
                 {children}

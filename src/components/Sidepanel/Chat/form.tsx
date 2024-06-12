@@ -4,13 +4,14 @@ import React from "react"
 import useDynamicTextareaSize from "~/hooks/useDynamicTextareaSize"
 import { useMessage } from "~/hooks/useMessage"
 import { toBase64 } from "~/libs/to-base64"
-import { Checkbox, Dropdown, Image, Tooltip } from "antd"
+import { Checkbox, Dropdown, Image, Switch, Tooltip } from "antd"
 import { useWebUI } from "~/store/webui"
 import { defaultEmbeddingModelForRag } from "~/services/ollama"
 import { ImageIcon, MicIcon, StopCircleIcon, X } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { ModelSelect } from "@/components/Common/ModelSelect"
 import { useSpeechRecognition } from "@/hooks/useSpeechRecognition"
+import { PiGlobeX, PiGlobe } from "react-icons/pi"
 
 type Props = {
   dropedFile: File | undefined
@@ -88,6 +89,13 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
             return
           }
         }
+        if (webSearch) {
+          const defaultEM = await defaultEmbeddingModelForRag()
+          if (!defaultEM) {
+            form.setFieldError("message", t("formError.noEmbeddingModel"))
+            return
+          }
+        }
         form.reset()
         textAreaFocus()
         await sendMessage({
@@ -111,7 +119,9 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
     speechToTextLanguage,
     stopStreamingRequest,
     streaming,
-    setChatMode
+    setChatMode,
+    webSearch,
+    setWebSearch
   } = useMessage()
 
   React.useEffect(() => {
@@ -136,6 +146,30 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
       textAreaFocus()
     }
   })
+
+  React.useEffect(() => {
+    const handleDrop = (e: DragEvent) => {
+      e.preventDefault()
+      if (e.dataTransfer?.items) {
+        for (let i = 0; i < e.dataTransfer.items.length; i++) {
+          if (e.dataTransfer.items[i].type === "text/plain") {
+            e.dataTransfer.items[i].getAsString((text) => {
+              form.setFieldValue("message", text)
+            })
+          }
+        }
+      }
+    }
+    const handleDragOver = (e: DragEvent) => {
+      e.preventDefault()
+    }
+    textareaRef.current?.addEventListener("drop", handleDrop)
+    textareaRef.current?.addEventListener("dragover", handleDragOver)
+    return () => {
+      textareaRef.current?.removeEventListener("drop", handleDrop)
+      textareaRef.current?.removeEventListener("dragover", handleDragOver)
+    }
+  }, [])
 
   return (
     <div className="px-3 pt-3 md:px-6 md:pt-6 bg-gray-50 dark:bg-[#262626] border rounded-t-xl border-black/10 dark:border-gray-600">
@@ -169,6 +203,13 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                 return
               }
               if (chatMode === "rag") {
+                const defaultEM = await defaultEmbeddingModelForRag()
+                if (!defaultEM) {
+                  form.setFieldError("message", t("formError.noEmbeddingModel"))
+                  return
+                }
+              }
+              if (webSearch) {
                 const defaultEM = await defaultEmbeddingModelForRag()
                 if (!defaultEM) {
                   form.setFieldError("message", t("formError.noEmbeddingModel"))
@@ -210,6 +251,20 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                 {...form.getInputProps("message")}
               />
               <div className="flex mt-4 justify-end gap-3">
+                <Tooltip title={t("tooltip.searchInternet")}>
+                  <button
+                    type="button"
+                    onClick={() => setWebSearch(!webSearch)}
+                    className={`inline-flex items-center gap-2   ${
+                      chatMode === "rag" ? "hidden" : "block"
+                    }`}>
+                    {webSearch ? (
+                      <PiGlobe className="h-5 w-5  dark:text-gray-300" />
+                    ) : (
+                      <PiGlobeX className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+                    )}
+                  </button>
+                </Tooltip>
                 <ModelSelect />
                 {browserSupportsSpeechRecognition && (
                   <Tooltip title={t("tooltip.speechToText")}>
