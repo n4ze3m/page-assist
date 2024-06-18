@@ -1,0 +1,29 @@
+{
+    "ollamaState": {
+        "searching": "Buscando tu Ollama 🦙",
+        "running": "Ollama está funcionando 🦙",
+        "notRunning": "No fue posible conectar con Ollama 🦙",
+        "connectionError": "Hubo un error de conexión. Por favor, consulte la <anchor>documentación</anchor> para solucionar el problema."
+    },
+    "formError": {
+        "noModel": "Por favor, selecione un modelo",
+        "noEmbeddingModel": "Por favor, defina un modelo de embedding para la página de configuraciones > RAG"
+    },
+    "form": {
+        "textarea": {
+            "placeholder": "Ingrese un mensaje..."
+        },
+        "webSearch": {
+            "on": "On",
+            "off": "Off"
+        }
+    },
+    "tooltip": {
+        "searchInternet": "Buscar en Internet",
+        "speechToText": "Voz a Texto",
+        "uploadImage": "Subir Imagén",
+        "stopStreaming": "Parar Transmisión",
+        "knowledge": "Conocimiento"
+    },
+    "sendWhenEnter": "Enviar cuando presione Enter"
+}
