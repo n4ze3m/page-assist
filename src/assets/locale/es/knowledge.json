@@ -1,0 +1,42 @@
+{
+    "addBtn": "Agregar Nuevo Conocimiento",
+    "columns": {
+        "title": "Título",
+        "status": "Estado",
+        "embeddings": "Modelo de Embedding",
+        "createdAt": "Creado",
+        "action": "Acciones"
+    },
+    "expandedColumns": {
+        "name": "Nombre"
+    },
+    "tooltip": {
+        "delete": "Borrar"
+    },
+    "confirm": {
+        "delete": "¿Esta seguro que desea borrar este conocimiento?"
+    },
+    "deleteSuccess": "Conocimiento borrado",
+    "status": {
+        "pending": "Pendiente",
+        "finished": "Finalizado",
+        "processing": "Procesando"
+    },
+    "addKnowledge": "Agregar Conocimiento",
+    "form": {
+        "title": {
+            "label": "Título del Conocimiento",
+            "placeholder": "Ingresar un título de conocimiento",
+            "required": "El Título de conocimiento es obligatorio"
+        },
+        "uploadFile": {
+            "label": "Subir un Archivo",
+            "uploadText": "Arraste y suelte un archivo aquí o haga click para subirlo",
+            "uploadHint": "Tipos de archivo soportados: .pdf, .csv, .txt, .md, .docx",
+            "required": "El archivo es obligatorio"
+        },
+        "submit": "Enviar",
+        "success": "Conocimiento agregado exitosamente"
+    },
+    "noEmbeddingModel": "Por favor, agregue un modelo de embedding de la página de configuraciones de RAG primero"
+}

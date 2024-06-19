@@ -5,6 +5,10 @@ export const supportLanguage = [
         value: "en"
     },
     {
+        label: "Español",
+        value: "es"
+    },
+    {
         label: "Français",
         value: "fr"
     },
@@ -19,7 +23,7 @@ export const supportLanguage = [
     {
         label: "Português (Brasil)",
         value: "pt-BR"
-    },    
+    },
     {
         label: "മലയാളം",
         value: "ml"
