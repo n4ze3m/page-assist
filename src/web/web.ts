@@ -1,7 +1,7 @@
 import { getWebSearchPrompt } from "~/services/ollama"
 import { webGoogleSearch } from "./search-engines/google"
 import { webDuckDuckGoSearch } from "./search-engines/duckduckgo"
-import { getSearchProvider } from "@/services/search"
+import { getIsVisitSpecificWebsite, getSearchProvider } from "@/services/search"
 import { webSogouSearch } from "./search-engines/sogou"
 import { webBraveSearch } from "./search-engines/brave"
 import { getWebsiteFromQuery, processSingleWebsite } from "./website"
@@ -37,7 +37,9 @@ export const getSystemPromptForWeb = async (query: string) => {
       content: string;
     }[] = []
 
-    if (websiteVisit.hasUrl) {
+    const isVisitSpecificWebsite = await getIsVisitSpecificWebsite()
+
+    if (isVisitSpecificWebsite && websiteVisit.hasUrl) {
 
       const url = websiteVisit.url
       const queryWithoutUrl = websiteVisit.queryWithouUrls

@@ -37,6 +37,9 @@
             "totalSearchResults": {
                 "label": "Total Search Results",
                 "placeholder": "Enter Total Search Results"
+            },
+            "visitSpecificWebsite": {
+                "label": "Visit the website mentioned in the message"
             }
         },
         "system": {

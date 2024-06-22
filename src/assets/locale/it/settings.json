@@ -37,6 +37,9 @@
             "totalSearchResults": {
                 "label": "Risultati della ricerca",
                 "placeholder": "Inserisci il totale delle ricerche"
+            },
+            "visitSpecificWebsite": {
+                "label": "Visita il sito web menzionato nel messaggio"
             }
         },
         "system": {

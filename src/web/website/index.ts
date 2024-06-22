@@ -10,16 +10,16 @@ import { MemoryVectorStore } from "langchain/vectorstores/memory"
 export const processSingleWebsite = async (url: string, query: string) => {
     let content = await extractReadabilityContent(url)
 
-    const isSimpleMode = await getIsSimpleInternetSearch()
+    // const isSimpleMode = await getIsSimpleInternetSearch()
 
-    if (isSimpleMode) {
-        return [
-            {
-                url,
-                content: content.length > 5000 ? content.slice(0, 5000) : content
-            }
-        ]
-    }
+    // if (isSimpleMode) {
+    //     return [
+    //         {
+    //             url,
+    //             content: content.length > 5000 ? content.slice(0, 5000) : content
+    //         }
+    //     ]
+    // }
 
     const docs: Document<Record<string, any>>[] = [
         {

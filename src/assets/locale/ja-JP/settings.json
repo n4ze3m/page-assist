@@ -40,6 +40,9 @@
             "totalSearchResults": {
                 "label": "合計検索結果",
                 "placeholder": "合計検索結果を入力する"
+            },
+            "visitSpecificWebsite": {
+                "label": "メッセージに記載されたウェブサイトを訪問してください"
             }
         },
         "system": {
