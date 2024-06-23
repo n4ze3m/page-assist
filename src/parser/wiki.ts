@@ -1,4 +1,5 @@
 import * as cheerio from "cheerio"
+import { defaultExtractContent } from "./default"
 
 export const isWikipedia = (url: string) => {
   const WIKI_REGEX = /wikipedia\.org\/wiki\//g
@@ -24,5 +25,5 @@ export const parseWikipedia = (html: string) => {
   content?.find("div.toc")?.remove()
   const newHtml = content?.html()
 
-  return `<div>TITLE: ${title?.text()}</div><div>${newHtml}</div>`
+  return defaultExtractContent(`<div>TITLE: ${title?.text()}</div><div>${newHtml}</div>`)
 }

@@ -18,7 +18,7 @@ export const getIsSimpleInternetSearch = async () => {
 export const getIsVisitSpecificWebsite = async () => {
   const isVisitSpecificWebsite = await storage.get("isVisitSpecificWebsite")
   if (!isVisitSpecificWebsite || isVisitSpecificWebsite.length === 0) {
-    return false
+    return true
   }
   return isVisitSpecificWebsite === "true"
 }
