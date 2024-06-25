@@ -1,87 +1,106 @@
 import { useCallback, useEffect, useRef, useState } from "react"
+import { useMessageOption } from "./useMessageOption"
 
 export const useScrollAnchor = () => {
-  const messagesRef = useRef<HTMLDivElement>(null)
-  const scrollRef = useRef<HTMLDivElement>(null)
-  const visibilityRef = useRef<HTMLDivElement>(null)
+  const { isProcessing, messages } = useMessageOption()
 
+  const [isAtTop, setIsAtTop] = useState(false)
   const [isAtBottom, setIsAtBottom] = useState(true)
-  const [isVisible, setIsVisible] = useState(false)
+  const [userScrolled, setUserScrolled] = useState(false)
+  const [isOverflowing, setIsOverflowing] = useState(false)
+
+  const messagesStartRef = useRef<HTMLDivElement>(null)
+  const messagesEndRef = useRef<HTMLDivElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
+  const isAutoScrolling = useRef(false)
+
+  console.log(`isAtTop: ${isAtTop}, isAtBottom: ${isAtBottom}, userScrolled: ${userScrolled}, isOverflowing: ${isOverflowing}`)
+
+  useEffect(() => {
+    if (!isProcessing && userScrolled) {
+      console.log("userScrolled")
+      setUserScrolled(false)
+    }
+  }, [isProcessing])
+
+  useEffect(() => {
+    if (isProcessing && !userScrolled) {
+      scrollToBottom()
+    }
+  }, [messages])
+
+  useEffect(() => {
+    const container = containerRef.current
+    if (!container) return
+
+    const topObserver = new IntersectionObserver(
+      ([entry]) => {
+        setIsAtTop(entry.isIntersecting)
+      },
+      { threshold: 1 }
+    )
+
+    const bottomObserver = new IntersectionObserver(
+      ([entry]) => {
+        setIsAtBottom(entry.isIntersecting)
+        if (entry.isIntersecting) {
+          setUserScrolled(false)
+        } else if (!isAutoScrolling.current) {
+          setUserScrolled(true)
+        }
+      },
+      { threshold: 1 }
+    )
+
+    if (messagesStartRef.current) {
+      topObserver.observe(messagesStartRef.current)
+    }
+
+    if (messagesEndRef.current) {
+      bottomObserver.observe(messagesEndRef.current)
+    }
+
+    const resizeObserver = new ResizeObserver(() => {
+      setIsOverflowing(container.scrollHeight > container.clientHeight)
+    })
+
+    resizeObserver.observe(container)
+
+    return () => {
+      topObserver.disconnect()
+      bottomObserver.disconnect()
+      resizeObserver.disconnect()
+    }
+  }, [])
+
+  const scrollToTop = useCallback(() => {
+    if (messagesStartRef.current) {
+      messagesStartRef.current.scrollIntoView({ behavior: "smooth" })
+    }
+  }, [])
 
   const scrollToBottom = useCallback(() => {
-    if (messagesRef.current) {
-      messagesRef.current.scrollIntoView({
-        block: "end",
-        behavior: "smooth"
-      })
-    }
+    isAutoScrolling.current = true
+
+    setTimeout(() => {
+      if (messagesEndRef.current) {
+        messagesEndRef.current.scrollIntoView({ behavior: "smooth" })
+      }
+
+      isAutoScrolling.current = false
+    }, 100)
   }, [])
-
-  useEffect(() => {
-    if (messagesRef.current) {
-      if (isAtBottom && !isVisible) {
-        messagesRef.current.scrollIntoView({
-          block: "end"
-        })
-      }
-    }
-  }, [isAtBottom, isVisible])
-
-  useEffect(() => {
-    const { current } = scrollRef
-
-    if (current) {
-      const handleScroll = (event: Event) => {
-        const target = event.target as HTMLDivElement
-        const offset = 25
-        const isAtBottom =
-          target.scrollTop + target.clientHeight >= target.scrollHeight - offset
-        console.log(target.scrollTop, target.clientHeight, target.scrollHeight)
-        setIsAtBottom(isAtBottom)
-      }
-
-      current.addEventListener("scroll", handleScroll, {
-        passive: true
-      })
-
-      return () => {
-        current.removeEventListener("scroll", handleScroll)
-      }
-    }
-  }, [])
-
-  useEffect(() => {
-    if (visibilityRef.current) {
-      let observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            console.log(entry.isIntersecting)
-            if (entry.isIntersecting) {
-              setIsVisible(true)
-            } else {
-              setIsVisible(false)
-            }
-          })
-        },
-        {
-          rootMargin: "0px 0px -100px 0px"
-        }
-      )
-
-      observer.observe(visibilityRef.current)
-
-      return () => {
-        observer.disconnect()
-      }
-    }
-  })
 
   return {
-    messagesRef,
-    scrollRef,
-    visibilityRef,
-    scrollToBottom,
+    messagesStartRef,
+    messagesEndRef,
+    containerRef,
+    isAtTop,
     isAtBottom,
-    isVisible
+    userScrolled,
+    isOverflowing,
+    scrollToTop,
+    scrollToBottom,
+    setIsAtBottom
   }
 }

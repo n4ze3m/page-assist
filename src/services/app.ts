@@ -39,3 +39,17 @@ export const getAdvancedOllamaSettings = async () => {
 export const copilotResumeLastChat = async () => {
   return await storage.get<boolean>("copilotResumeLastChat")
 }
+
+
+export const defaultSidebarOpen = async () => {
+  const sidebarOpen = await storage.get("sidebarOpen")
+  if (!sidebarOpen || sidebarOpen === "") {
+    return "right_clk"
+  }
+  return sidebarOpen
+}
+
+
+export const setSidebarOpen = async (sidebarOpen: string) => {
+  await storage.set("sidebarOpen", sidebarOpen)
+}
