@@ -33,7 +33,7 @@ export const processSingleWebsite = async (url: string, query: string) => {
 
     await store.addDocuments(chunks)
 
-    const resultsWithEmbeddings = await store.similaritySearch(query, 3)
+    const resultsWithEmbeddings = await store.similaritySearch(query, 4)
 
     const searchResult = resultsWithEmbeddings.map((result) => {
         return {
