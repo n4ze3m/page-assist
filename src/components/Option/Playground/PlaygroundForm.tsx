@@ -14,6 +14,7 @@ import { useTranslation } from "react-i18next"
 import { KnowledgeSelect } from "../Knowledge/KnowledgeSelect"
 import { useSpeechRecognition } from "@/hooks/useSpeechRecognition"
 import { PiGlobe } from "react-icons/pi"
+import { extractReadabilityContent } from "@/parser/reader"
 
 type Props = {
   dropedFile: File | undefined

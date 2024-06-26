@@ -13,7 +13,8 @@ export const SearchModeSettings = () => {
     initialValues: {
       isSimpleInternetSearch: false,
       searchProvider: "",
-      totalSearchResults: 0
+      totalSearchResults: 0,
+      visitSpecificWebsite: false
     }
   })
 
@@ -67,7 +68,7 @@ export const SearchModeSettings = () => {
           </span>
           <div>
             <Switch
-            className="mt-4 sm:mt-0"
+              className="mt-4 sm:mt-0"
               {...form.getInputProps("isSimpleInternetSearch", {
                 type: "checkbox"
               })}
@@ -85,6 +86,20 @@ export const SearchModeSettings = () => {
               )}
               {...form.getInputProps("totalSearchResults")}
               className="!w-full mt-4 sm:mt-0 sm:w-[200px]"
+            />
+          </div>
+        </div>
+
+        <div className="flex sm:flex-row flex-col space-y-4 sm:space-y-0 sm:justify-between">
+          <span className="text-gray-700 dark:text-neutral-50 ">
+            {t("generalSettings.webSearch.visitSpecificWebsite.label")}
+          </span>
+          <div>
+            <Switch
+              className="mt-4 sm:mt-0"
+              {...form.getInputProps("visitSpecificWebsite", {
+                type: "checkbox"
+              })}
             />
           </div>
         </div>

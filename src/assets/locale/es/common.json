@@ -1,0 +1,88 @@
+{
+    "pageAssist": "Page Assist",
+    "selectAModel": "Selecione un Modelo",
+    "save": "Guardar",
+    "saved": "Guardado",
+    "cancel": "Cancelar",
+    "retry": "Reintentar",
+    "share": {
+        "tooltip": {
+            "share": "Compartir"
+        },
+        "modal": {
+            "title": "Compartir enlace para chat"
+        },
+        "form": {
+            "defaultValue": {
+                "name": "Anónimo",
+                "title": "Chat sin título"
+            },
+            "title": {
+                "label": "Título del Chat",
+                "placeholder": "Ingresar el título del Chat",
+                "required": "El título del Chat es obligatorio"
+            },
+            "name": {
+                "label": "Tu nombre",
+                "placeholder": "Ingresar tu nombre",
+                "required": "Tu nombre es obligatorio"
+            },
+            "btn": {
+                "save": "Generar enlace",
+                "saving": "Generando enlace..."
+            }
+        },
+        "notification": {
+            "successGenerate": "Enlace copiado al Clipboard",
+            "failGenerate": "Fallo al generar el enlace"
+        }
+    },
+    "copyToClipboard": "Copiar al clipboard",
+    "webSearch": "Buscando en la web",
+    "regenerate": "Regenerar",
+    "edit": "Editar",
+    "saveAndSubmit": "Guardar y Enviar",
+    "editMessage": {
+        "placeholder": "Ingresar un mensaje..."
+    },
+    "submit": "Enviar",
+    "noData": "Sin datos",
+    "noHistory": "Chat sin histórico",
+    "chatWithCurrentPage": "Conversar con la página actual",
+    "beta": "Beta",
+    "tts": "Leer en voz alta",
+    "currentChatModelSettings": "Configuraciones del Modelo de Chat Actual",
+    "modelSettings": {
+        "label": "Configuraciones del Modelo",
+        "description": "Definir las opciones del modelo globalmente para todos los chats",
+        "form": {
+            "keepAlive": {
+                "label": "Mantener vivo",
+                "help": "controlar cuanto tiempo el modelo permanecera cargado en la memoria luego de su utilización (por defecto: 5m)",
+                "placeholder": "Ingresar duración para mantenerlo vivo (ej: 5m, 10m, 1h)"
+            },
+            "temperature": {
+                "label": "Temperatura",
+                "placeholder": "Ingresar valor de la Temperatura (ej: 0.7, 1.0)"
+            },
+            "numCtx": {
+                "label": "Cantidad de contextos",
+                "placeholder": "Ingresar el valor de tamaño de la ventana de contexto (por defecto: 2048)"
+            },
+            "seed": {
+                "label": "Semilla",
+                "placeholder": "Ingresar el valor de la semilla (ej: 1234)",
+                "help": "Reproductibilidad de la salida del modelo"
+            },
+            "topK": {
+                "label": "Top K",
+                "placeholder": "Ingresar el valor de Top K (ej: 40, 100)"
+            },
+            "topP": {
+                "label": "Top P",
+                "placeholder": "Ingresar el valor de Top P (ej: 0.9, 0.95)"
+            }
+        },
+        "advanced": "Más Configuraciones del Modelo"
+    }
+}

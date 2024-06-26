@@ -40,6 +40,9 @@
             "totalSearchResults": {
                 "label": "ആകെ തിരച്ചിൽ ഫലങ്ങൾ",
                 "placeholder": "ആകെ തിരച്ചിൽ ഫലങ്ങളുടെ എണ്ണം നൽകുക"
+            },
+            "visitSpecificWebsite": {
+                "label": "സന്ദേശത്തിൽ പറയുന്ന വെബ്സൈറ്റ് സന്ദർശിക്കുക."
             }
         },
         "system": {

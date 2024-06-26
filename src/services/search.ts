@@ -15,6 +15,21 @@ export const getIsSimpleInternetSearch = async () => {
   return isSimpleInternetSearch === "true"
 }
 
+export const getIsVisitSpecificWebsite = async () => {
+  const isVisitSpecificWebsite = await storage.get("isVisitSpecificWebsite")
+  if (!isVisitSpecificWebsite || isVisitSpecificWebsite.length === 0) {
+    return true
+  }
+  return isVisitSpecificWebsite === "true"
+}
+
+
+export const setIsVisitSpecificWebsite = async (
+  isVisitSpecificWebsite: boolean
+) => {
+  await storage.set("isVisitSpecificWebsite", isVisitSpecificWebsite.toString())
+}
+
 export const setIsSimpleInternetSearch = async (
   isSimpleInternetSearch: boolean
 ) => {
@@ -48,32 +63,37 @@ export const setTotalSearchResults = async (totalSearchResults: number) => {
 }
 
 export const getSearchSettings = async () => {
-  const [isSimpleInternetSearch, searchProvider, totalSearchResult] =
+  const [isSimpleInternetSearch, searchProvider, totalSearchResult, visitSpecificWebsite] =
     await Promise.all([
       getIsSimpleInternetSearch(),
       getSearchProvider(),
-      totalSearchResults()
+      totalSearchResults(),
+      getIsVisitSpecificWebsite()
     ])
 
   return {
     isSimpleInternetSearch,
     searchProvider,
-    totalSearchResults: totalSearchResult
+    totalSearchResults: totalSearchResult,
+    visitSpecificWebsite
   }
 }
 
 export const setSearchSettings = async ({
   isSimpleInternetSearch,
   searchProvider,
-  totalSearchResults
+  totalSearchResults,
+  visitSpecificWebsite
 }: {
   isSimpleInternetSearch: boolean
   searchProvider: string
   totalSearchResults: number
+  visitSpecificWebsite: boolean
 }) => {
   await Promise.all([
     setIsSimpleInternetSearch(isSimpleInternetSearch),
     setSearchProvider(searchProvider),
-    setTotalSearchResults(totalSearchResults)
+    setTotalSearchResults(totalSearchResults),
+    setIsVisitSpecificWebsite(visitSpecificWebsite)
   ])
 }

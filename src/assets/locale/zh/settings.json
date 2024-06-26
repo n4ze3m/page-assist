@@ -40,7 +40,10 @@
             "totalSearchResults": {
                 "label": "总搜索结果",
                 "placeholder": "输入总搜索结果"
-            }
+            },
+            "visitSpecificWebsite": {
+        "label": "访问消息中提到的网站。"
+    }
         },
         "system": {
             "heading": "系统设置",

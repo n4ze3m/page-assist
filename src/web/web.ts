@@ -1,9 +1,10 @@
 import { getWebSearchPrompt } from "~/services/ollama"
 import { webGoogleSearch } from "./search-engines/google"
 import { webDuckDuckGoSearch } from "./search-engines/duckduckgo"
-import { getSearchProvider } from "@/services/search"
+import { getIsVisitSpecificWebsite, getSearchProvider } from "@/services/search"
 import { webSogouSearch } from "./search-engines/sogou"
 import { webBraveSearch } from "./search-engines/brave"
+import { getWebsiteFromQuery, processSingleWebsite } from "./website"
 
 const getHostName = (url: string) => {
   try {
@@ -29,8 +30,27 @@ const searchWeb = (provider: string, query: string) => {
 
 export const getSystemPromptForWeb = async (query: string) => {
   try {
-    const searchProvider = await getSearchProvider()
-    const search = await searchWeb(searchProvider, query)
+
+    const websiteVisit = getWebsiteFromQuery(query)
+    let search: {
+      url: any;
+      content: string;
+    }[] = []
+
+    const isVisitSpecificWebsite = await getIsVisitSpecificWebsite()
+
+    if (isVisitSpecificWebsite && websiteVisit.hasUrl) {
+
+      const url = websiteVisit.url
+      const queryWithoutUrl = websiteVisit.queryWithouUrls
+      search = await processSingleWebsite(url, queryWithoutUrl)
+
+    } else {
+      const searchProvider = await getSearchProvider()
+      search = await searchWeb(searchProvider, query)
+    }
+
+
 
     const search_results = search
       .map(
