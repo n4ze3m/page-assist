@@ -229,6 +229,18 @@
                     "label": "URL Personalizada",
                     "placeholder": "Ingresar URL Personalizada"
                 },
+                "headers": {
+                    "label": "Encabezados Personalizados",
+                    "add": "Agregar Encabezado",
+                    "key": {
+                        "label": "Clave del Encabezado",
+                        "placeholder": "Autorización"
+                    },
+                    "value": {
+                        "label": "Valor del Encabezado",
+                        "placeholder": "Token Bearer"
+                    }
+                },
                 "help": "Si tenes problemas de conexión con Ollama en Page Assist, podes configurar una URL de personalizada. Para saber más sobre la configuración, <anchor>click aqui</anchor>."
             }
         }

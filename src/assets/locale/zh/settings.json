@@ -1,297 +1,309 @@
 {
-    "generalSettings": {
-        "title": "一般设置",
-        "settings": {
-            "heading": "Web UI 设置",
-            "speechRecognitionLang": {
-                "label": "语音识别语言",
-                "placeholder": "选择一种语言"
-            },
-            "language": {
-                "label": "语言",
-                "placeholder": "选择一种语言"
-            },
-            "darkMode": {
-                "label": "更改主题",
-                "options": {
-                    "light": "亮色",
-                    "dark": "暗色"
-                }
-            },
-            "searchMode": {
-                "label": "使用简化的互联网搜索"
-            },
-            "copilotResumeLastChat": {
-                "label": "打开侧边栏时恢复上次聊天（Copilot）"
-            },
-            "hideCurrentChatModelSettings": {
-                "label": "隐藏当前聊天模型设置"
-            }
-        },
-        "webSearch": {
-            "heading": "管理网络搜索",
-            "searchMode": {
-                "label": "执行简单的网际网路搜索"
-            },
-            "provider": {
-                "label": "搜索引擎",
-                "placeholder": "选择一个搜索引擎"
-            },
-            "totalSearchResults": {
-                "label": "总搜索结果",
-                "placeholder": "输入总搜索结果"
-            },
-            "visitSpecificWebsite": {
+  "generalSettings": {
+    "title": "一般设置",
+    "settings": {
+      "heading": "Web UI 设置",
+      "speechRecognitionLang": {
+        "label": "语音识别语言",
+        "placeholder": "选择一种语言"
+      },
+      "language": {
+        "label": "语言",
+        "placeholder": "选择一种语言"
+      },
+      "darkMode": {
+        "label": "更改主题",
+        "options": {
+          "light": "亮色",
+          "dark": "暗色"
+        }
+      },
+      "searchMode": {
+        "label": "使用简化的互联网搜索"
+      },
+      "copilotResumeLastChat": {
+        "label": "打开侧边栏时恢复上次聊天（Copilot）"
+      },
+      "hideCurrentChatModelSettings": {
+        "label": "隐藏当前聊天模型设置"
+      }
+    },
+    "webSearch": {
+      "heading": "管理网络搜索",
+      "searchMode": {
+        "label": "执行简单的网际网路搜索"
+      },
+      "provider": {
+        "label": "搜索引擎",
+        "placeholder": "选择一个搜索引擎"
+      },
+      "totalSearchResults": {
+        "label": "总搜索结果",
+        "placeholder": "输入总搜索结果"
+      },
+      "visitSpecificWebsite": {
         "label": "访问消息中提到的网站。"
+      }
+    },
+    "system": {
+      "heading": "系统设置",
+      "deleteChatHistory": {
+        "label": "删除聊天记录",
+        "button": "删除",
+        "confirm": "您确定要删除聊天记录吗?此操作无法撤销。"
+      },
+      "export": {
+        "label": "导出聊天记录、知识库和提示",
+        "button": "导出数据",
+        "success": "导出成功"
+      },
+      "import": {
+        "label": "导入聊天记录、知识库和提示",
+        "button": "导入数据",
+        "success": "导入成功",
+        "error": "导入错误"
+      }
+    },
+    "tts": {
+      "heading": "文本转语音设置",
+      "ttsEnabled": {
+        "label": "启用文本转语音"
+      },
+      "ttsProvider": {
+        "label": "文本转语音提供商",
+        "placeholder": "选择一个提供商"
+      },
+      "ttsVoice": {
+        "label": "文本转语音语音",
+        "placeholder": "选择一种语音"
+      },
+      "ssmlEnabled": {
+        "label": "启用SSML(语音合成标记语言)"
+      }
     }
-        },
-        "system": {
-            "heading": "系统设置",
-            "deleteChatHistory": {
-                "label": "删除聊天记录",
-                "button": "删除",
-                "confirm": "您确定要删除聊天记录吗?此操作无法撤销。"
-            },
-            "export": {
-                "label": "导出聊天记录、知识库和提示",
-                "button": "导出数据",
-                "success": "导出成功"
-            },
-            "import": {
-                "label": "导入聊天记录、知识库和提示",
-                "button": "导入数据",
-                "success": "导入成功",
-                "error": "导入错误"
-            }
-        },
-        "tts": {
-            "heading": "文本转语音设置",
-            "ttsEnabled": {
-                "label": "启用文本转语音"
-            },
-            "ttsProvider": {
-                "label": "文本转语音提供商",
-                "placeholder": "选择一个提供商"
-            },
-            "ttsVoice": {
-                "label": "文本转语音语音",
-                "placeholder": "选择一种语音"
-            },
-            "ssmlEnabled": {
-                "label": "启用SSML(语音合成标记语言)"
-            }
-        }
+  },
+  "manageModels": {
+    "title": "管理模型",
+    "addBtn": "添加新模型",
+    "columns": {
+      "name": "名称",
+      "digest": "摘要",
+      "modifiedAt": "修改时间",
+      "size": "大小",
+      "actions": "操作"
     },
-    "manageModels": {
-        "title": "管理模型",
-        "addBtn": "添加新模型",
-        "columns": {
-            "name": "名称",
-            "digest": "摘要",
-            "modifiedAt": "修改时间",
-            "size": "大小",
-            "actions": "操作"
-        },
-        "expandedColumns": {
-            "parentModel": "父模型",
-            "format": "格式",
-            "family": "家族",
-            "parameterSize": "参数大小",
-            "quantizationLevel": "量化级别"
-        },
-        "tooltip": {
-            "delete": "删除模型",
-            "repull": "重新拉取模型"
-        },
-        "confirm": {
-            "delete": "您确定要删除此模型吗？",
-            "repull": "您确定要重新拉取此模型吗？"
-        },
-        "modal": {
-            "title": "添加新模型",
-            "placeholder": "输入模型名称",
-            "pull": "拉取模型"
-        },
-        "notification": {
-            "pullModel": "正在拉取模型",
-            "pullModelDescription": "正在拉取 {{modelName}} ，请查看扩展图标。",
-            "success": "成功",
-            "error": "错误",
-            "successDescription": "成功拉取了模型",
-            "successDeleteDescription": "成功删除了模型",
-            "someError": "出现了问题。请稍后再试。"
-        }
+    "expandedColumns": {
+      "parentModel": "父模型",
+      "format": "格式",
+      "family": "家族",
+      "parameterSize": "参数大小",
+      "quantizationLevel": "量化级别"
     },
-    "managePrompts": {
-        "title": "管理提示词",
-        "addBtn": "添加新提示词",
-        "option1": "普通",
-        "option2": "RAG",
-        "questionPrompt": "问题提示词",
-        "columns": {
-            "title": "标题",
-            "prompt": "提示词",
-            "type": "提示词类型",
-            "actions": "操作"
-        },
-        "systemPrompt": "系统提示词",
-        "quickPrompt": "快速提示词",
-        "tooltip": {
-            "delete": "删除提示词",
-            "edit": "编辑提示词"
-        },
-        "confirm": {
-            "delete": "您确定要删除此提示词吗？这个操作不能撤销。"
-        },
-        "modal": {
-            "addTitle": "添加新提示词",
-            "editTitle": "编辑提示词"
-        },
-        "form": {
-            "title": {
-                "label": "标题",
-                "placeholder": "我厉害的提示词",
-                "required": "请输入标题",
-                "help": "您可以在提示词中使用 {key} 作为变量。"
-            },
-            "prompt": {
-                "label": "提示词",
-                "placeholder": "输入提示词",
-                "required": "请输入提示词",
-                "help": "您可以在提示词中使用 {key} 作为变量。"
-            },
-            "isSystem": {
-                "label": "是否为系统提示词"
-            },
-            "btnSave": {
-                "saving": "添加提示词中...",
-                "save": "添加提示词"
-            },
-            "btnEdit": {
-                "saving": "更新提示词中...",
-                "save": "更新提示词"
-            }
-        },
-        "notification": {
-            "addSuccess": "提示词已添加",
-            "addSuccessDesc": "提示词已成功添加",
-            "error": "错误",
-            "someError": "出现了问题。请稍后再试。",
-            "updatedSuccess": "提示词已更新",
-            "updatedSuccessDesc": "提示词已成功更新",
-            "deletedSuccess": "提示词已删除",
-            "deletedSuccessDesc": "提示词已成功删除"
-        }
+    "tooltip": {
+      "delete": "删除模型",
+      "repull": "重新拉取模型"
     },
-    "manageShare": {
-        "title": "管理共享",
-        "heading": "配置对话共享服务 URL",
-        "form": {
-            "url": {
-                "label": "对话共享服务 URL",
-                "placeholder": "输入对话共享服务 URL",
-                "required": "请输入您的对话共享服务 URL！",
-                "help": "出于隐私原因，您可以自行托管对话共享服务并在此处提供 URL，<anchor>了解更多</anchor>。"
-            }
-        },
-        "webshare": {
-            "heading": "对话共享",
-            "columns": {
-                "title": "标题",
-                "url": "URL",
-                "actions": "操作"
-            },
-            "tooltip": {
-                "delete": "删除对话共享"
-            },
-            "confirm": {
-                "delete": "您确定要删除此对话共享吗？这个操作不能撤销。"
-            },
-            "label": "管理页面分享",
-            "description": "启用或禁用页面分享功能 "
-        },
-        "notification": {
-            "pageShareSuccess": "对话共享服务 URL 已成功更新",
-            "someError": "出现了问题。请稍后再试。",
-            "webShareDeleteSuccess": "对话共享已成功删除"
-        }
+    "confirm": {
+      "delete": "您确定要删除此模型吗？",
+      "repull": "您确定要重新拉取此模型吗？"
     },
-    "ollamaSettings": {
-        "title": "Ollama 设置",
-        "heading": "配置 Ollama",
-        "settings": {
-            "ollamaUrl": {
-                "label": "Ollama URL",
-                "placeholder": "输入 Ollama URL"
-            },
-            
-            "advanced": {
-                "label": "Ollama URL 高级配置",
-                "urlRewriteEnabled": {
-                    "label": "启用或禁用自定义来源 URL"
-                },
-                "rewriteUrl": {
-                    "label": "自定义来源 URL",
-                    "placeholder": "输入自定义来源 URL"
-                },
-                "help": "如果您在 Page Assist 上与 Ollama 有连接问题,您可以配置自定义来源 URL。要了解更多关于配置的信息,<anchor>点击此处</anchor>。"
-            }
-        }
+    "modal": {
+      "title": "添加新模型",
+      "placeholder": "输入模型名称",
+      "pull": "拉取模型"
     },
-    "manageSearch": {
-        "heading": "配置网络搜索",
-        "title": "管理网络搜索"
-    },
-    "about": {
-        "title": "关于",
-        "heading": "关于",
-        "chromeVersion": "Page Assist版本",
-        "ollamaVersion": "Ollama版本",
-        "support": "您可以通过以下平台捐赠或赞助Page Assist项目:",
-        "koFi": "在Ko-fi上支持",
-        "githubSponsor": "在GitHub上赞助",
-        "githubRepo": "GitHub仓库"
-    },
-    "manageKnowledge": {
-        "title": "管理知识",
-        "heading": "配置知识库"
-    },
-    "rag": {
-        "title": "RAG 设置",
-        "ragSettings": {
-            "label": "RAG 设置",
-            "model": {
-                "label": "文本嵌入模型",
-                "required": "请选择一个模型",
-                "help": "建议使用文本嵌入模型，如 `nomic-embed-text`。",
-                "placeholder": "选择一个模型"
-            },
-            "chunkSize": {
-                "label": "嵌入大小",
-                "placeholder": "1024-∞",
-                "required": "请输入块大小"
-            },
-            "chunkOverlap": {
-                "label": "嵌入重叠",
-                "placeholder": "256-∞",
-                "required": "请输入嵌入重叠"
-            }
-        },
-        "prompt": {
-            "label": "配置 RAG 提示词",
-            "option1": "普通",
-            "option2": "搜索",
-            "alert": "在此配置系统提示词已过时。请使用管理提示词部分添加或编辑提示词。此部分将在未来版本中删除",
-            "systemPrompt": "系统提示词",
-            "systemPromptPlaceholder": "输入系统提示词",
-            "webSearchPrompt": "网页搜索提示词",
-            "webSearchPromptHelp": "请勿从提示词中删除 `{search_results}`。",
-            "webSearchPromptError": "请输入一个网页搜索提示词",
-            "webSearchPromptPlaceholder": "输入网页搜索提示词",
-            "webSearchFollowUpPrompt": "网页搜索追问提示词",
-            "webSearchFollowUpPromptHelp": "请勿从提示词中删除 `{chat_history}` 和 `{question}`。",
-            "webSearchFollowUpPromptError": "请输入您的网页搜索追问提示词！",
-            "webSearchFollowUpPromptPlaceholder": "您的网页搜索追问提示词"
-        }
+    "notification": {
+      "pullModel": "正在拉取模型",
+      "pullModelDescription": "正在拉取 {{modelName}} ，请查看扩展图标。",
+      "success": "成功",
+      "error": "错误",
+      "successDescription": "成功拉取了模型",
+      "successDeleteDescription": "成功删除了模型",
+      "someError": "出现了问题。请稍后再试。"
     }
+  },
+  "managePrompts": {
+    "title": "管理提示词",
+    "addBtn": "添加新提示词",
+    "option1": "普通",
+    "option2": "RAG",
+    "questionPrompt": "问题提示词",
+    "columns": {
+      "title": "标题",
+      "prompt": "提示词",
+      "type": "提示词类型",
+      "actions": "操作"
+    },
+    "systemPrompt": "系统提示词",
+    "quickPrompt": "快速提示词",
+    "tooltip": {
+      "delete": "删除提示词",
+      "edit": "编辑提示词"
+    },
+    "confirm": {
+      "delete": "您确定要删除此提示词吗？这个操作不能撤销。"
+    },
+    "modal": {
+      "addTitle": "添加新提示词",
+      "editTitle": "编辑提示词"
+    },
+    "form": {
+      "title": {
+        "label": "标题",
+        "placeholder": "我厉害的提示词",
+        "required": "请输入标题",
+        "help": "您可以在提示词中使用 {key} 作为变量。"
+      },
+      "prompt": {
+        "label": "提示词",
+        "placeholder": "输入提示词",
+        "required": "请输入提示词",
+        "help": "您可以在提示词中使用 {key} 作为变量。"
+      },
+      "isSystem": {
+        "label": "是否为系统提示词"
+      },
+      "btnSave": {
+        "saving": "添加提示词中...",
+        "save": "添加提示词"
+      },
+      "btnEdit": {
+        "saving": "更新提示词中...",
+        "save": "更新提示词"
+      }
+    },
+    "notification": {
+      "addSuccess": "提示词已添加",
+      "addSuccessDesc": "提示词已成功添加",
+      "error": "错误",
+      "someError": "出现了问题。请稍后再试。",
+      "updatedSuccess": "提示词已更新",
+      "updatedSuccessDesc": "提示词已成功更新",
+      "deletedSuccess": "提示词已删除",
+      "deletedSuccessDesc": "提示词已成功删除"
+    }
+  },
+  "manageShare": {
+    "title": "管理共享",
+    "heading": "配置对话共享服务 URL",
+    "form": {
+      "url": {
+        "label": "对话共享服务 URL",
+        "placeholder": "输入对话共享服务 URL",
+        "required": "请输入您的对话共享服务 URL！",
+        "help": "出于隐私原因，您可以自行托管对话共享服务并在此处提供 URL，<anchor>了解更多</anchor>。"
+      }
+    },
+    "webshare": {
+      "heading": "对话共享",
+      "columns": {
+        "title": "标题",
+        "url": "URL",
+        "actions": "操作"
+      },
+      "tooltip": {
+        "delete": "删除对话共享"
+      },
+      "confirm": {
+        "delete": "您确定要删除此对话共享吗？这个操作不能撤销。"
+      },
+      "label": "管理页面分享",
+      "description": "启用或禁用页面分享功能 "
+    },
+    "notification": {
+      "pageShareSuccess": "对话共享服务 URL 已成功更新",
+      "someError": "出现了问题。请稍后再试。",
+      "webShareDeleteSuccess": "对话共享已成功删除"
+    }
+  },
+  "ollamaSettings": {
+    "title": "Ollama 设置",
+    "heading": "配置 Ollama",
+    "settings": {
+      "ollamaUrl": {
+        "label": "Ollama URL",
+        "placeholder": "输入 Ollama URL"
+      },
+
+      "advanced": {
+        "label": "Ollama URL 高级配置",
+        "urlRewriteEnabled": {
+          "label": "启用或禁用自定义来源 URL"
+        },
+        "rewriteUrl": {
+          "label": "自定义来源 URL",
+          "placeholder": "输入自定义来源 URL"
+        },
+        "headers": {
+          "label": "自定义头部",
+          "add": "添加头部",
+          "key": {
+            "label": "头部键",
+            "placeholder": "授权"
+          },
+          "value": {
+            "label": "头部值",
+            "placeholder": "承载令牌"
+          }
+        },
+        "help": "如果您在 Page Assist 上与 Ollama 有连接问题,您可以配置自定义来源 URL。要了解更多关于配置的信息,<anchor>点击此处</anchor>。"
+      }
+    }
+  },
+  "manageSearch": {
+    "heading": "配置网络搜索",
+    "title": "管理网络搜索"
+  },
+  "about": {
+    "title": "关于",
+    "heading": "关于",
+    "chromeVersion": "Page Assist版本",
+    "ollamaVersion": "Ollama版本",
+    "support": "您可以通过以下平台捐赠或赞助Page Assist项目:",
+    "koFi": "在Ko-fi上支持",
+    "githubSponsor": "在GitHub上赞助",
+    "githubRepo": "GitHub仓库"
+  },
+  "manageKnowledge": {
+    "title": "管理知识",
+    "heading": "配置知识库"
+  },
+  "rag": {
+    "title": "RAG 设置",
+    "ragSettings": {
+      "label": "RAG 设置",
+      "model": {
+        "label": "文本嵌入模型",
+        "required": "请选择一个模型",
+        "help": "建议使用文本嵌入模型，如 `nomic-embed-text`。",
+        "placeholder": "选择一个模型"
+      },
+      "chunkSize": {
+        "label": "嵌入大小",
+        "placeholder": "1024-∞",
+        "required": "请输入块大小"
+      },
+      "chunkOverlap": {
+        "label": "嵌入重叠",
+        "placeholder": "256-∞",
+        "required": "请输入嵌入重叠"
+      }
+    },
+    "prompt": {
+      "label": "配置 RAG 提示词",
+      "option1": "普通",
+      "option2": "搜索",
+      "alert": "在此配置系统提示词已过时。请使用管理提示词部分添加或编辑提示词。此部分将在未来版本中删除",
+      "systemPrompt": "系统提示词",
+      "systemPromptPlaceholder": "输入系统提示词",
+      "webSearchPrompt": "网页搜索提示词",
+      "webSearchPromptHelp": "请勿从提示词中删除 `{search_results}`。",
+      "webSearchPromptError": "请输入一个网页搜索提示词",
+      "webSearchPromptPlaceholder": "输入网页搜索提示词",
+      "webSearchFollowUpPrompt": "网页搜索追问提示词",
+      "webSearchFollowUpPromptHelp": "请勿从提示词中删除 `{chat_history}` 和 `{question}`。",
+      "webSearchFollowUpPromptError": "请输入您的网页搜索追问提示词！",
+      "webSearchFollowUpPromptPlaceholder": "您的网页搜索追问提示词"
+    }
+  }
 }

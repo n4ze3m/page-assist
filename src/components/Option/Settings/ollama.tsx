@@ -50,6 +50,14 @@ export const SettingsOllama = () => {
                 className="w-full p-2 border border-gray-300 rounded-md dark:bg-[#262626] dark:text-gray-100"
               />
             </div>
+            <div className="flex justify-end mb-3">
+              <SaveButton
+                onClick={() => {
+                  saveOllamaURL(ollamaURL)
+                }}
+                className="mt-2"
+              />
+            </div>
             <Collapse
               size="small"
               items={[
@@ -79,15 +87,6 @@ export const SettingsOllama = () => {
                 }
               ]}
             />
-
-            <div className="flex justify-end">
-              <SaveButton
-                onClick={() => {
-                  saveOllamaURL(ollamaURL)
-                }}
-                className="mt-2"
-              />
-            </div>
           </div>
 
           <ModelSettings />

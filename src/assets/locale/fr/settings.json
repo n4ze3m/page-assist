@@ -229,6 +229,18 @@
                     "label": "URL d'origine personnalisée",
                     "placeholder": "Entrez l'URL d'origine personnalisée"
                 },
+                "headers": {
+                    "label": "En-têtes Personnalisés",
+                    "add": "Ajouter En-tête",
+                    "key": {
+                        "label": "Clé de l'En-tête",
+                        "placeholder": "Autorisation"
+                    },
+                    "value": {
+                        "label": "Valeur de l'En-tête",
+                        "placeholder": "Jeton Bearer"
+                    }
+                },
                 "help": "Si vous avez des problèmes de connexion avec OLLAMA sur Page Assist, vous pouvez configurer une URL d'origine personnalisée. Pour en savoir plus sur la configuration, <anchor>cliquez ici</anchor>."
             }
         }
