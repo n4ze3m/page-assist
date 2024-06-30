@@ -300,5 +300,8 @@
             "webSearchFollowUpPromptError": "Please input your Web Search Follow Up Prompt!",
             "webSearchFollowUpPromptPlaceholder": "Your Web Search Follow Up Prompt"
         }
+    },
+    "chromeAiSettings": {
+        "title": "Chrome AI Settings"
     }
 }

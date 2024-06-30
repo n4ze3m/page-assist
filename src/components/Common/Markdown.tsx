@@ -6,11 +6,17 @@ import "property-information"
 import React from "react"
 import { CodeBlock } from "./CodeBlock"
 
-export default function Markdown({ message }: { message: string }) {
+export default function Markdown({
+  message,
+  className = "prose break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0 dark:prose-dark"
+}: {
+  message: string
+  className?: string
+}) {
   return (
     <React.Fragment>
       <ReactMarkdown
-        className="prose break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0 dark:prose-dark"
+        className={className}
         remarkPlugins={[remarkGfm, remarkMath]}
         components={{
           code({ node, inline, className, children, ...props }) {

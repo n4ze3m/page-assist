@@ -50,9 +50,16 @@ function formatPrompt(messages: BaseMessage[]): string {
   return messages
     .map((message) => {
       if (typeof message.content !== "string") {
-        throw new Error(
-          "ChatChromeAI does not support non-string message content."
-        )
+        // console.log(message.content)
+        // throw new Error(
+        //   "ChatChromeAI does not support non-string message content."
+        // )
+        if (message.content.length > 0) {
+          //@ts-ignore
+          return message.content[0]?.text || ""
+        }
+
+        return ""
       }
       return `${message._getType()}: ${message.content}`
     })
@@ -147,10 +154,9 @@ export class ChatChromeAI extends SimpleChatModel<ChromeAICallOptions> {
     runManager?: CallbackManagerForLLMRun
   ): AsyncGenerator<ChatGenerationChunk> {
     if (!this.session) {
-      throw new Error("Session not found. Please call `.initialize()` first.")
+      await this.initialize()
     }
     const textPrompt = this.promptFormatter(messages)
-
     const stream = this.session.promptStreaming(textPrompt)
     const iterableStream = IterableReadableStream.fromReadableStream(stream)
 

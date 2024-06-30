@@ -13,7 +13,6 @@ import {
   exportPageAssistData,
   importPageAssistData
 } from "@/libs/export-import"
-import { BetaTag } from "@/components/Common/Beta"
 import { useStorage } from "@plasmohq/storage/hook"
 
 export const GeneralSettings = () => {
@@ -87,7 +86,6 @@ export const GeneralSettings = () => {
       </div>
       <div className="flex flex-row justify-between">
         <div className="inline-flex items-center gap-2">
-          <BetaTag />
           <span className="text-gray-700   dark:text-neutral-50">
             {t("generalSettings.settings.copilotResumeLastChat.label")}
           </span>
@@ -99,7 +97,6 @@ export const GeneralSettings = () => {
       </div>
       <div className="flex flex-row justify-between">
         <div className="inline-flex items-center gap-2">
-          <BetaTag />
           <span className="text-gray-700   dark:text-neutral-50">
             {t("generalSettings.settings.hideCurrentChatModelSettings.label")}
           </span>

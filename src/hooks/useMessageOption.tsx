@@ -31,7 +31,7 @@ import { useWebUI } from "@/store/webui"
 import { useStorage } from "@plasmohq/storage/hook"
 import { useStoreChatModelSettings } from "@/store/model"
 import { getAllDefaultModelSettings } from "@/services/model-settings"
-import { ChatOllama } from "@/models/ChatOllama"
+import { pageAssistModel } from "@/models"
 
 export const useMessageOption = () => {
   const {
@@ -104,7 +104,7 @@ export const useMessageOption = () => {
       image = `data:image/jpeg;base64,${image.split(",")[1]}`
     }
 
-    const ollama = new ChatOllama({
+    const ollama = await pageAssistModel({
       model: selectedModel!,
       baseUrl: cleanUrl(url),
       keepAlive:
@@ -174,7 +174,7 @@ export const useMessageOption = () => {
         const promptForQuestion = questionPrompt
           .replaceAll("{chat_history}", chat_history)
           .replaceAll("{question}", message)
-        const questionOllama = new ChatOllama({
+        const questionOllama = await pageAssistModel({
           model: selectedModel!,
           baseUrl: cleanUrl(url),
           keepAlive:
@@ -347,7 +347,7 @@ export const useMessageOption = () => {
       image = `data:image/jpeg;base64,${image.split(",")[1]}`
     }
 
-    const ollama = new ChatOllama({
+    const ollama = await pageAssistModel({
       model: selectedModel!,
       baseUrl: cleanUrl(url),
       keepAlive:
@@ -463,6 +463,7 @@ export const useMessageOption = () => {
           signal: signal
         }
       )
+
       let count = 0
       for await (const chunk of chunks) {
         contentToSave += chunk.content
@@ -562,7 +563,7 @@ export const useMessageOption = () => {
     const url = await getOllamaURL()
     const userDefaultModelSettings = await getAllDefaultModelSettings()
 
-    const ollama = new ChatOllama({
+    const ollama = await pageAssistModel({
       model: selectedModel!,
       baseUrl: cleanUrl(url),
       keepAlive:
@@ -648,7 +649,7 @@ export const useMessageOption = () => {
         const promptForQuestion = questionPrompt
           .replaceAll("{chat_history}", chat_history)
           .replaceAll("{question}", message)
-        const questionOllama = new ChatOllama({
+        const questionOllama = await pageAssistModel({
           model: selectedModel!,
           baseUrl: cleanUrl(url),
           keepAlive:

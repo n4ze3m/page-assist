@@ -4,6 +4,7 @@ import common from "@/assets/locale/en/common.json";
 import sidepanel from "@/assets/locale/en/sidepanel.json";
 import settings from "@/assets/locale/en/settings.json";
 import knowledge from "@/assets/locale/en/knowledge.json";
+import chrome from "@/assets/locale/en/chrome.json";
 
 export const en = {
     option,
@@ -11,5 +12,6 @@ export const en = {
     common,
     sidepanel,
     settings,
-    knowledge
+    knowledge,
+    chrome
 }

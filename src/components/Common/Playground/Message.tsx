@@ -64,7 +64,11 @@ export const PlaygroundMessage = (props: Props) => {
           </div>
           <div className="flex w-[calc(100%-50px)] flex-col gap-3 lg:w-[calc(100%-115px)]">
             <span className="text-xs font-bold text-gray-800 dark:text-white">
-              {props.isBot ? props.name : "You"}
+              {props.isBot
+                ? props.name === "chrome::gemini-nano::page-assist"
+                  ? "Gemini Nano"
+                  : props.name
+                : "You"}
             </span>
 
             {props.isBot &&

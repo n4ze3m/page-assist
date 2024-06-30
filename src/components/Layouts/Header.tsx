@@ -21,6 +21,7 @@ import { useMessageOption } from "~/hooks/useMessageOption"
 import { Select, Tooltip } from "antd"
 import { getAllPrompts } from "@/db"
 import { ShareBtn } from "~/components/Common/ShareBtn"
+import { ProviderIcons } from "../Common/ProviderIcon"
 type Props = {
   setSidebarOpen: (open: boolean) => void
   setOpenModelSettings: (open: boolean) => void
@@ -132,7 +133,10 @@ export const Header: React.FC<Props> = ({
                 <span
                   key={model.model}
                   className="flex flex-row gap-3 items-center truncate">
-                  <OllamaIcon className="w-5 h-5" />
+                  <ProviderIcons
+                    provider={model?.provider}
+                    className="w-5 h-5"
+                  />
                   <span className="truncate">{model.name}</span>
                 </span>
               ),

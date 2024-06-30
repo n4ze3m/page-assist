@@ -4,6 +4,7 @@ import common from "@/assets/locale/zh/common.json";
 import sidepanel from "@/assets/locale/zh/sidepanel.json";
 import settings from "@/assets/locale/zh/settings.json";
 import knowledge from "@/assets/locale/zh/knowledge.json";
+import chrome from "@/assets/locale/zh/chrome.json";
 
 
 export const zh = {
@@ -12,5 +13,6 @@ export const zh = {
     common,
     sidepanel,
     settings,
-    knowledge
+    knowledge,
+    chrome
 }
