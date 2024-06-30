@@ -300,5 +300,8 @@
       "webSearchFollowUpPromptError": "Inserisci il Prompt di Follow Up della Ricerca Web!",
       "webSearchFollowUpPromptPlaceholder": "I tuoi Prompt di Follow Up delle Ricerche Web"
     }
+  },
+  "chromeAiSettings": {
+    "title": "Impostazioni IA di Chrome"
   }
 }

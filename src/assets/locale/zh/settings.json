@@ -305,5 +305,8 @@
       "webSearchFollowUpPromptError": "请输入您的网页搜索追问提示词！",
       "webSearchFollowUpPromptPlaceholder": "您的网页搜索追问提示词"
     }
+  },
+  "chromeAiSettings": {
+    "title": "Chrome AI 设置"
   }
 }

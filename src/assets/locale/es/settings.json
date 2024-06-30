@@ -300,5 +300,8 @@
             "webSearchFollowUpPromptError": "Por favor, ingrese el prompt de seguimiento de la busqueda web",
             "webSearchFollowUpPromptPlaceholder": "Su prompt de seguimiento de busqueda web"
         }
+    },
+    "chromeAiSettings": {
+        "title": "Configuración de IA de Chrome"
     }
 }

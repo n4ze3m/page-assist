@@ -303,5 +303,8 @@
       "webSearchFollowUpPromptError": "ദയവായി നിങ്ങളുടെ വെബ് തിരയല്‍ തുടര്‍പ്രോംപ്റ്റ് നല്കുക!",
       "webSearchFollowUpPromptPlaceholder": "നിങ്ങളുടെ വെബ് തിരയല്‍ തുടര്‍പ്രോംപ്റ്റ്"
     }
+  },
+  "chromeAiSettings": {
+    "title": "ക്രോം AI ക്രമീകരണങ്ങൾ"
   }
 }

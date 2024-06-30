@@ -301,5 +301,8 @@
       "webSearchFollowUpPromptError": "Введите подсказку для последующего веб-поиска!",
       "webSearchFollowUpPromptPlaceholder": "Ваша подсказка для последующего веб-поиска"
     }
-  }
+  },
+  "chromeAiSettings": {
+    "title": "Настройки ИИ Chrome"
+}
 }

@@ -303,5 +303,8 @@
       "webSearchFollowUpPromptError": "Web検索フォローアッププロンプトを入力してください！",
       "webSearchFollowUpPromptPlaceholder": "Web検索フォローアッププロンプト"
     }
-  }
+  },
+  "chromeAiSettings": {
+    "title": "Chrome AI設定"
+}
 }
