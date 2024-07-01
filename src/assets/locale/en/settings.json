@@ -229,6 +229,18 @@
                     "label": "Custom Origin URL",
                     "placeholder": "Enter Custom Origin URL"
                 },
+                "headers": {
+                    "label": "Custom Headers",
+                    "add": "Add Header",
+                    "key": {
+                        "label": "Header Key",
+                        "placeholder": "Authorization"
+                    },
+                    "value": {
+                        "label": "Header Value",
+                        "placeholder": "Bearer token"
+                    }
+                },
                 "help": "If you have connection issues with Ollama on Page Assist, you can configure a custom origin URL. To learn more about the configuration, <anchor>click here</anchor>."
             }
         }
@@ -288,5 +300,8 @@
             "webSearchFollowUpPromptError": "Please input your Web Search Follow Up Prompt!",
             "webSearchFollowUpPromptPlaceholder": "Your Web Search Follow Up Prompt"
         }
+    },
+    "chromeAiSettings": {
+        "title": "Chrome AI Settings"
     }
 }

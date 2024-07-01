@@ -10,6 +10,7 @@ import OptionAbout from "./option-settings-about"
 import SidepanelChat from "./sidepanel-chat"
 import SidepanelSettings from "./sidepanel-settings"
 import OptionRagSettings from "./option-rag"
+import OptionChrome from "./option-settings-chrome"
 
 export const OptionRoutingChrome = () => {
   return (
@@ -19,6 +20,7 @@ export const OptionRoutingChrome = () => {
       <Route path="/settings/model" element={<OptionModal />} />
       <Route path="/settings/prompt" element={<OptionPrompt />} />
       <Route path="/settings/ollama" element={<OptionOllamaSettings />} />
+      <Route path="/settings/chrome" element={<OptionChrome />} />
       <Route path="/settings/share" element={<OptionShare />} />
       <Route path="/settings/knowledge" element={<OptionKnowledgeBase />} />
       <Route path="/settings/rag" element={<OptionRagSettings />} />

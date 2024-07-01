@@ -1,6 +1,7 @@
 import { Embeddings, EmbeddingsParams } from "@langchain/core/embeddings"
 import type { StringWithAutocomplete } from "@langchain/core/utils/types"
 import { parseKeepAlive } from "./utils/ollama"
+import { getCustomOllamaHeaders } from "@/services/app"
 
 export interface OllamaInput {
   embeddingOnly?: boolean
@@ -213,12 +214,14 @@ export class OllamaEmbeddingsPageAssist extends Embeddings {
         "http://127.0.0.1:"
       )
     }
+    const customHeaders = await getCustomOllamaHeaders()
 
     const response = await fetch(`${formattedBaseUrl}/api/embeddings`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        ...this.headers
+        ...this.headers,
+        ...customHeaders
       },
       body: JSON.stringify({
         prompt,

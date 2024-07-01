@@ -28,9 +28,9 @@ import { formatDocs } from "@/chain/chat-with-x"
 import { OllamaEmbeddingsPageAssist } from "@/models/OllamaEmbedding"
 import { useStorage } from "@plasmohq/storage/hook"
 import { useStoreChatModelSettings } from "@/store/model"
-import { ChatOllama } from "@/models/ChatOllama"
 import { getAllDefaultModelSettings } from "@/services/model-settings"
 import { getSystemPromptForWeb } from "@/web/web"
+import { pageAssistModel } from "@/models"
 
 export const useMessage = () => {
   const {
@@ -98,7 +98,7 @@ export const useMessage = () => {
     const url = await getOllamaURL()
     const userDefaultModelSettings = await getAllDefaultModelSettings()
 
-    const ollama = new ChatOllama({
+    const ollama = await pageAssistModel({
       model: selectedModel!,
       baseUrl: cleanUrl(url),
       keepAlive:
@@ -225,7 +225,7 @@ export const useMessage = () => {
         const promptForQuestion = questionPrompt
           .replaceAll("{chat_history}", chat_history)
           .replaceAll("{question}", message)
-        const questionOllama = new ChatOllama({
+        const questionOllama = await pageAssistModel({
           model: selectedModel!,
           baseUrl: cleanUrl(url),
           keepAlive:
@@ -388,7 +388,7 @@ export const useMessage = () => {
       image = `data:image/jpeg;base64,${image.split(",")[1]}`
     }
 
-    const ollama = new ChatOllama({
+    const ollama = await pageAssistModel({
       model: selectedModel!,
       baseUrl: cleanUrl(url),
       keepAlive:
@@ -591,7 +591,7 @@ export const useMessage = () => {
       image = `data:image/jpeg;base64,${image.split(",")[1]}`
     }
 
-    const ollama = new ChatOllama({
+    const ollama = await pageAssistModel({
       model: selectedModel!,
       baseUrl: cleanUrl(url),
       keepAlive:
@@ -661,7 +661,7 @@ export const useMessage = () => {
         const promptForQuestion = questionPrompt
           .replaceAll("{chat_history}", chat_history)
           .replaceAll("{question}", message)
-        const questionOllama = new ChatOllama({
+        const questionOllama = await pageAssistModel({
           model: selectedModel!,
           baseUrl: cleanUrl(url),
           keepAlive:

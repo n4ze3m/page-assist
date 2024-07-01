@@ -122,7 +122,11 @@ This will start a development server and watch for changes in the source files. 
 
 ## Local AI Provider
 
-- [Ollama](https://github.com/ollama/ollama) (Currently the only supported provider. More providers will be added in the future.)
+- [Ollama](https://github.com/ollama/ollama)
+
+- Chrome AI (Gemini Nano) 
+
+More providers will be added in the future.
 
 ## Roadmap
 

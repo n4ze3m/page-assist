@@ -3,9 +3,9 @@ import { Dropdown, Tooltip } from "antd"
 import { LucideBrain } from "lucide-react"
 import React from "react"
 import { useTranslation } from "react-i18next"
-import { OllamaIcon } from "../Icons/Ollama"
 import { fetchChatModels } from "@/services/ollama"
 import { useMessage } from "@/hooks/useMessage"
+import { ProviderIcons } from "./ProviderIcon"
 
 export const ModelSelect: React.FC = () => {
   const { t } = useTranslation("common")
@@ -29,7 +29,10 @@ export const ModelSelect: React.FC = () => {
                 label: (
                   <div className="w-52 gap-2 text-lg truncate inline-flex line-clamp-3  items-center  dark:border-gray-700">
                     <div>
-                      <OllamaIcon className="h-6 w-6 text-gray-400" />
+                      <ProviderIcons
+                        provider={d?.provider}
+                        className="h-6 w-6 text-gray-400"
+                      />
                     </div>
                     {d.name}
                   </div>
@@ -53,7 +56,7 @@ export const ModelSelect: React.FC = () => {
           trigger={["click"]}>
           <Tooltip title={t("selectAModel")}>
             <button type="button" className="dark:text-gray-300">
-              <LucideBrain className="h-5 w-5"/>
+              <LucideBrain className="h-5 w-5" />
             </button>
           </Tooltip>
         </Dropdown>

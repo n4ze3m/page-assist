@@ -1,0 +1,13 @@
+{
+    "heading": "Configurar IA do Chrome",
+    "status": {
+        "label": "Ativar ou Desativar o Suporte de IA do Chrome no Assistente de Página"
+    },
+    "error": {
+        "browser_not_supported": "Esta versão do Chrome não é suportada pelo modelo Gemini Nano. Por favor, atualize para a versão 127 ou posterior",
+        "ai_not_supported": "A configuração chrome://flags/#prompt-api-for-gemini-nano não está ativada. Por favor, ative-a.",
+        "ai_not_ready": "O Gemini Nano ainda não está pronto; você precisa verificar novamente as configurações do Chrome.",
+        "internal_error": "Ocorreu um erro interno. Por favor, tente novamente mais tarde."
+    },
+    "errorDescription": "Para usar a IA do Chrome, você precisa de uma versão do navegador superior a 127, que atualmente está nos canais Dev e Canary. Após baixar a versão suportada, siga estes passos:\n\n1. Vá para `chrome://flags/#prompt-api-for-gemini-nano` e selecione \"Ativar\".\n2. Vá para `chrome://flags/#optimization-guide-on-device-model` e selecione \"EnabledBypassPrefRequirement\".\n3. Vá para `chrome://components`, procure por \"Optimization Guide On Device Model\" e clique em \"Verificar atualizações\". Isso baixará o modelo. Se você não vir as configurações, repita os passos 1 e 2 e reinicie seu navegador."
+}

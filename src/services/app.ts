@@ -5,10 +5,10 @@ const DEFAULT_URL_REWRITE_URL = "http://127.0.0.1:11434"
 
 export const isUrlRewriteEnabled = async () => {
   const enabled = await storage.get<boolean | undefined>("urlRewriteEnabled")
-  return enabled
+  return enabled ?? false
 }
 export const setUrlRewriteEnabled = async (enabled: boolean) => {
-  await storage.set("urlRewriteEnabled", enabled ? "true" : "false")
+  await storage.set("urlRewriteEnabled", enabled)
 }
 
 export const getRewriteUrl = async () => {
@@ -35,11 +35,9 @@ export const getAdvancedOllamaSettings = async () => {
   }
 }
 
-
 export const copilotResumeLastChat = async () => {
   return await storage.get<boolean>("copilotResumeLastChat")
 }
-
 
 export const defaultSidebarOpen = async () => {
   const sidebarOpen = await storage.get("sidebarOpen")
@@ -49,7 +47,36 @@ export const defaultSidebarOpen = async () => {
   return sidebarOpen
 }
 
-
 export const setSidebarOpen = async (sidebarOpen: string) => {
   await storage.set("sidebarOpen", sidebarOpen)
+}
+
+export const customOllamaHeaders = async (): Promise<
+  { key: string; value: string }[]
+> => {
+  const headers = await storage.get<
+    { key: string; value: string }[] | undefined
+  >("customOllamaHeaders")
+  if (!headers) {
+    return []
+  }
+  return headers
+}
+
+export const setCustomOllamaHeaders = async (headers: string[]) => {
+  await storage.set("customOllamaHeaders", headers)
+}
+
+export const getCustomOllamaHeaders = async (): Promise<
+  Record<string, string>
+> => {
+  const headers = await customOllamaHeaders()
+
+  const headerMap: Record<string, string> = {}
+
+  for (const header of headers) {
+    headerMap[header.key] = header.value
+  }
+
+  return headerMap
 }

@@ -1,6 +1,7 @@
 import { Storage } from "@plasmohq/storage"
 import { cleanUrl } from "../libs/clean-url"
 import { urlRewriteRuntime } from "../libs/runtime"
+import { getChromeAIModel } from "./chrome"
 
 const storage = new Storage()
 
@@ -144,6 +145,7 @@ export const deleteModel = async (model: string) => {
   return response.json()
 }
 
+
 export const fetchChatModels = async ({
   returnEmpty = false
 }: {
@@ -174,15 +176,39 @@ export const fetchChatModels = async ({
         quantization_level: string
       }
     }[]
-    return models?.filter((model) => {
-      return (
-        !model?.details?.families?.includes("bert") &&
-        !model?.details?.families?.includes("nomic-bert")
-      )
-    })
+    const chatModels = models
+      ?.filter((model) => {
+        return (
+          !model?.details?.families?.includes("bert") &&
+          !model?.details?.families?.includes("nomic-bert")
+        )
+      })
+      .map((model) => {
+        return {
+          ...model,
+          provider: "ollama"
+        }
+      })
+    const chromeModel = await getChromeAIModel()
+    return [
+      ...chatModels,
+      ...chromeModel
+    ]
   } catch (e) {
     console.error(e)
-    return await getAllModels({ returnEmpty })
+    const allModels = await getAllModels({ returnEmpty })
+    const models = allModels.map((model) => {
+      return {
+        ...model,
+        provider: "ollama"
+      }
+    })
+    const chromeModel = await getChromeAIModel()
+
+    return [
+      ...models,
+      ...chromeModel
+    ]
   }
 }
 
@@ -345,4 +371,3 @@ export const getPageShareUrl = async () => {
 export const setPageShareUrl = async (pageShareUrl: string) => {
   await storage.set("pageShareUrl", pageShareUrl)
 }
-

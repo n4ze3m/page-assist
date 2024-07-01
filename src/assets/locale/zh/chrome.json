@@ -1,0 +1,13 @@
+{
+  "heading": "配置Chrome人工智能",
+  "status": {
+      "label": "在页面辅助功能中启用或禁用Chrome人工智能支持"
+  },
+  "error": {
+      "browser_not_supported": "此版本的Chrome不受Gemini Nano模型支持。请更新到127版本或更高版本",
+      "ai_not_supported": "设置chrome://flags/#prompt-api-for-gemini-nano未启用。请启用它。",
+      "ai_not_ready": "Gemini Nano尚未准备就绪；您需要再次检查Chrome设置。",
+      "internal_error": "发生内部错误。请稍后重试。"
+  },
+  "errorDescription": "为了使用Chrome人工智能，您需要127版本以上的浏览器，目前该版本在Dev和Canary渠道中。下载支持的版本后，请按照以下步骤操作：\n\n1. 前往`chrome://flags/#prompt-api-for-gemini-nano`并选择\"启用\"，\n2. 前往`chrome://flags/#optimization-guide-on-device-model`并选择\"EnabledBypassPrefRequirement\"，\n3. 前往`chrome://components`，搜索\"Optimization Guide On Device Model\"，然后点击\"检查更新\"。这将下载模型。如果您没有看到这些设置，请重复步骤1和2，然后重新启动浏览器。"
+}

@@ -1,292 +1,308 @@
 {
-    "generalSettings": {
-        "title": "Configurações Gerais",
-        "settings": {
-            "heading": "Configurações da Interface Web",
-            "speechRecognitionLang": {
-                "label": "Linguagem de Reconhecimento de Fala",
-                "placeholder": "Selecione uma linguagem"
-            },
-            "language": {
-                "label": "Linguagem",
-                "placeholder": "Selecione uma linguagem"
-            },
-            "darkMode": {
-                "label": "Alterar Tema",
-                "options": {
-                    "light": "Claro",
-                    "dark": "Escuro"
-                }
-            },
-            "copilotResumeLastChat": {
-                "label": "Retomar o último chat ao abrir o Painel Lateral (Copilot)"
-            },
-            "hideCurrentChatModelSettings": {
-                "label": "Ocultar Configurações do Modelo de Chat Atual"
-            }
-        },
-        "webSearch": {
-            "heading": "Gerenciar Pesquisa na Web",
-            "searchMode": {
-                "label": "Realizar Pesquisa Simples na Internet"
-            },
-            "provider": {
-                "label": "Motor de Busca",
-                "placeholder": "Selecione um motor de busca"
-            },
-            "totalSearchResults": {
-                "label": "Resultados de Pesquisa Totais",
-                "placeholder": "Insira Resultados de Pesquisa Totais"
-            },
-            "visitSpecificWebsite": {
-                "label": "Visite o site mencionado na mensagem."
-            }
-        },
-        "system": {
-            "heading": "Configurações do Sistema",
-            "deleteChatHistory": {
-                "label": "Excluir Histórico de Chat",
-                "button": "Excluir",
-                "confirm": "Você tem certeza de que deseja excluir seu histórico de chat? Esta ação não pode ser desfeita."
-            },
-            "export": {
-                "label": "Exportar Histórico de Chat, Base de Conhecimento e Prompts",
-                "button": "Exportar Dados",
-                "success": "Exportação Bem-Sucedida"
-            },
-            "import": {
-                "label": "Importar Histórico de Chat, Base de Conhecimento e Prompts",
-                "button": "Importar Dados",
-                "success": "Importação Bem-Sucedida",
-                "error": "Erro de Importação"
-            }
-        },
-        "tts": {
-            "heading": "Configurações de Fala",
-            "ttsEnabled": {
-                "label": "Habilitar Fala"
-            },
-            "ttsProvider": {
-                "label": "Fornecedor de Fala",
-                "placeholder": "Selecione um fornecedor"
-            },
-            "ttsVoice": {
-                "label": "Voz de Fala",
-                "placeholder": "Selecione uma voz"
-            },
-            "ssmlEnabled": {
-                "label": "Habilitar SSML (Linguagem de Marcação de Sintese de Fala)"
-            }
+  "generalSettings": {
+    "title": "Configurações Gerais",
+    "settings": {
+      "heading": "Configurações da Interface Web",
+      "speechRecognitionLang": {
+        "label": "Linguagem de Reconhecimento de Fala",
+        "placeholder": "Selecione uma linguagem"
+      },
+      "language": {
+        "label": "Linguagem",
+        "placeholder": "Selecione uma linguagem"
+      },
+      "darkMode": {
+        "label": "Alterar Tema",
+        "options": {
+          "light": "Claro",
+          "dark": "Escuro"
         }
+      },
+      "copilotResumeLastChat": {
+        "label": "Retomar o último chat ao abrir o Painel Lateral (Copilot)"
+      },
+      "hideCurrentChatModelSettings": {
+        "label": "Ocultar Configurações do Modelo de Chat Atual"
+      }
     },
-    "manageModels": {
-        "title": "Gerenciar Modelos",
-        "addBtn": "Adicionar Novo Modelo",
-        "columns": {
-            "name": "Nome",
-            "digest": "Resumo",
-            "modifiedAt": "Modificado Em",
-            "size": "Tamanho",
-            "actions": "Ações"
-        },
-        "expandedColumns": {
-            "parentModel": "Modelo Pai",
-            "format": "Formato",
-            "family": "Família",
-            "parameterSize": "Tamanho de Parâmetro",
-            "quantizationLevel": "Nível de Quantização"
-        },
-        "tooltip": {
-            "delete": "Excluir Modelo",
-            "repull": "Re-Puxar Modelo"
-        },
-        "confirm": {
-            "delete": "Você tem certeza de que deseja excluir este modelo?",
-            "repull": "Você tem certeza de que deseja re-puxar este modelo?"
-        },
-        "modal": {
-            "title": "Adicionar Novo Modelo",
-            "placeholder": "Insira o nome do modelo",
-            "pull": "Puxar Modelo"
-        },
-        "notification": {
-            "pullModel": "Puxando Modelo",
-            "pullModelDescription": "Puxando modelo {{modelName}}. Para mais detalhes, verifique o ícone da extensão.",
-            "success": "Sucesso",
-            "error": "Erro",
-            "successDescription": "Modelo puxado com sucesso",
-            "successDeleteDescription": "Modelo excluído com sucesso",
-            "someError": "Algo deu errado. Tente novamente mais tarde"
-        }
+    "webSearch": {
+      "heading": "Gerenciar Pesquisa na Web",
+      "searchMode": {
+        "label": "Realizar Pesquisa Simples na Internet"
+      },
+      "provider": {
+        "label": "Motor de Busca",
+        "placeholder": "Selecione um motor de busca"
+      },
+      "totalSearchResults": {
+        "label": "Resultados de Pesquisa Totais",
+        "placeholder": "Insira Resultados de Pesquisa Totais"
+      },
+      "visitSpecificWebsite": {
+        "label": "Visite o site mencionado na mensagem."
+      }
     },
-    "managePrompts": {
-        "title": "Gerenciar Prompts",
-        "addBtn": "Adicionar Novo Prompt",
-        "option1": "Normal",
-        "option2": "RAG",
-        "questionPrompt": "Prompt de Pergunta",
-        "columns": {
-            "title": "Título",
-            "prompt": "Prompt",
-            "type": "Tipo de Prompt",
-            "actions": "Ações"
-        },
-        "systemPrompt": "Prompt do Sistema",
-        "quickPrompt": "Prompt Rápido",
-        "tooltip": {
-            "delete": "Excluir Prompt",
-            "edit": "Editar Prompt"
-        },
-        "confirm": {
-            "delete": "Você tem certeza de que deseja excluir este prompt? Esta ação não pode ser desfeita."
-        },
-        "modal": {
-            "addTitle": "Adicionar Novo Prompt",
-            "editTitle": "Editar Prompt"
-        },
-        "form": {
-            "title": {
-                "label": "Título",
-                "placeholder": "Meu Prompt Incrível",
-                "required": "Por favor, insira um título"
-            },
-            "prompt": {
-                "label": "Prompt",
-                "placeholder": "Insira o prompt",
-                "required": "Por favor, insira um prompt",
-                "help": "Você pode usar {key} como variável em seu prompt."
-            },
-            "isSystem": {
-                "label": "É um Prompt do Sistema"
-            },
-            "btnSave": {
-                "saving": "Adicionando Prompt...",
-                "save": "Adicionar Prompt"
-            },
-            "btnEdit": {
-                "saving": "Atualizando Prompt...",
-                "save": "Atualizar Prompt"
-            }
-        },
-        "notification": {
-            "addSuccess": "Prompt Adicionado",
-            "addSuccessDesc": "Prompt adicionado com sucesso",
-            "error": "Erro",
-            "someError": "Algo deu errado. Tente novamente mais tarde",
-            "updatedSuccess": "Prompt Atualizado",
-            "updatedSuccessDesc": "Prompt atualizado com sucesso",
-            "deletedSuccess": "Prompt Excluído",
-            "deletedSuccessDesc": "Prompt excluído com sucesso"
-        }
+    "system": {
+      "heading": "Configurações do Sistema",
+      "deleteChatHistory": {
+        "label": "Excluir Histórico de Chat",
+        "button": "Excluir",
+        "confirm": "Você tem certeza de que deseja excluir seu histórico de chat? Esta ação não pode ser desfeita."
+      },
+      "export": {
+        "label": "Exportar Histórico de Chat, Base de Conhecimento e Prompts",
+        "button": "Exportar Dados",
+        "success": "Exportação Bem-Sucedida"
+      },
+      "import": {
+        "label": "Importar Histórico de Chat, Base de Conhecimento e Prompts",
+        "button": "Importar Dados",
+        "success": "Importação Bem-Sucedida",
+        "error": "Erro de Importação"
+      }
     },
-    "manageShare": {
-        "title": "Gerenciar Compartilhamento",
-        "heading": "Configurar URL de Compartilhamento de Página",
-        "form": {
-            "url": {
-                "label": "URL de Compartilhamento de Página",
-                "placeholder": "Insira a URL de Compartilhamento de Página",
-                "required": "Por favor, insira a URL de Compartilhamento de Página!",
-                "help": "Por motivos de privacidade, você pode hospedar a página de compartilhamento e fornecer a URL aqui. <anchor>Saiba mais</anchor>."
-            }
-        },
-        "webshare": {
-            "heading": "Compartilhamento na Web",
-            "columns": {
-                "title": "Título",
-                "url": "URL",
-                "actions": "Ações"
-            },
-            "tooltip": {
-                "delete": "Excluir Compartilhamento"
-            },
-            "confirm": {
-                "delete": "Você tem certeza de que deseja excluir este compartilhamento? Esta ação não pode ser desfeita."
-            },
-            "label": "Gerenciar Compartilhamento de Página",
-            "description": "Habilitar ou desabilitar o recurso de compartilhamento de página"
-        },
-        "notification": {
-            "pageShareSuccess": "URL de Compartilhamento de Página atualizada com sucesso",
-            "someError": "Algo deu errado. Tente novamente mais tarde",
-            "webShareDeleteSuccess": "Compartilhamento na Web excluído com sucesso"
-        }
-    },
-    "ollamaSettings": {
-        "title": "Configurações do Ollama",
-        "heading": "Configurar Ollama",
-        "settings": {
-            "ollamaUrl": {
-                "label": "URL do Ollama",
-                "placeholder": "Insira a URL do Ollama"
-            },
-            "advanced": {
-                "label": "Configuração Avançada da URL do Ollama",
-                "urlRewriteEnabled": {
-                    "label": "Habilitar ou Desabilitar URL de Origem Personalizada"
-                },
-                "rewriteUrl": {
-                    "label": "URL de Origem Personalizada",
-                    "placeholder": "Insira a URL de Origem Personalizada"
-                },
-                "help": "Se você tiver problemas de conexão com o Ollama no Page Assist, você pode configurar uma URL de origem personalizada. Para saber mais sobre a configuração, <anchor>clique aqui</anchor>."
-            }
-        }
-    },
-    "manageSearch": {
-        "title": "Gerenciar Pesquisa na Web",
-        "heading": "Configurar Pesquisa na Web"
-    },
-    "about": {
-        "title": "Sobre",
-        "heading": "Sobre",
-        "chromeVersion": "Versão do Page Assist",
-        "ollamaVersion": "Versão do Ollama",
-        "support": "Você pode apoiar o projeto Page Assist fazendo doações ou patrocínios através das seguintes plataformas:",
-        "koFi": "Apoiador no Ko-fi",
-        "githubSponsor": "Patrocinador no GitHub",
-        "githubRepo": "Repositório do GitHub"
-    },
-    "manageKnowledge": {
-        "title": "Gerenciar Conhecimento",
-        "heading": "Configurar Base de Conhecimento"
-    },
-    "rag": {
-        "title": "Configurações do RAG",
-        "ragSettings": {
-            "label": "Configurações do RAG",
-            "model": {
-                "label": "Modelo de Incorporação",
-                "required": "Por favor, selecione um modelo",
-                "help": "É altamente recomendável usar modelos de incorporação como `nomic-embed-text`.",
-                "placeholder": "Selecione um modelo"
-            },
-            "chunkSize": {
-                "label": "Tamanho do Chunk",
-                "placeholder": "Insira o tamanho do chunk",
-                "required": "Por favor, insira o tamanho do chunk"
-            },
-            "chunkOverlap": {
-                "label": "Sobreposição do Chunk",
-                "placeholder": "Insira a sobreposição do chunk",
-                "required": "Por favor, insira a sobreposição do chunk"
-            }
-        },
-        "prompt": {
-            "label": "Configurar Prompt do RAG",
-            "option1": "Normal",
-            "option2": "Web",
-            "alert": "Configurar o prompt do sistema aqui está depreciado. Por favor, use a seção Gerenciar Prompts para adicionar ou editar prompts. Esta seção será removida em uma versão futura",
-            "systemPrompt": "Prompt do Sistema",
-            "systemPromptPlaceholder": "Insira o prompt do sistema",
-            "webSearchPrompt": "Prompt de Pesquisa na Web",
-            "webSearchPromptHelp": "Não remova `{search_results}` do prompt.",
-            "webSearchPromptError": "Por favor, insira um prompt de pesquisa na web",
-            "webSearchPromptPlaceholder": "Insira o prompt de pesquisa na web",
-            "webSearchFollowUpPrompt": "Prompt de Seguimento de Pesquisa na Web",
-            "webSearchFollowUpPromptHelp": "Não remova `{chat_history}` e `{question}` do prompt.",
-            "webSearchFollowUpPromptError": "Por favor, insira o prompt de seguimento de pesquisa na web",
-            "webSearchFollowUpPromptPlaceholder": "Seu prompt de seguimento de pesquisa na web"
-        }
+    "tts": {
+      "heading": "Configurações de Fala",
+      "ttsEnabled": {
+        "label": "Habilitar Fala"
+      },
+      "ttsProvider": {
+        "label": "Fornecedor de Fala",
+        "placeholder": "Selecione um fornecedor"
+      },
+      "ttsVoice": {
+        "label": "Voz de Fala",
+        "placeholder": "Selecione uma voz"
+      },
+      "ssmlEnabled": {
+        "label": "Habilitar SSML (Linguagem de Marcação de Sintese de Fala)"
+      }
     }
+  },
+  "manageModels": {
+    "title": "Gerenciar Modelos",
+    "addBtn": "Adicionar Novo Modelo",
+    "columns": {
+      "name": "Nome",
+      "digest": "Resumo",
+      "modifiedAt": "Modificado Em",
+      "size": "Tamanho",
+      "actions": "Ações"
+    },
+    "expandedColumns": {
+      "parentModel": "Modelo Pai",
+      "format": "Formato",
+      "family": "Família",
+      "parameterSize": "Tamanho de Parâmetro",
+      "quantizationLevel": "Nível de Quantização"
+    },
+    "tooltip": {
+      "delete": "Excluir Modelo",
+      "repull": "Re-Puxar Modelo"
+    },
+    "confirm": {
+      "delete": "Você tem certeza de que deseja excluir este modelo?",
+      "repull": "Você tem certeza de que deseja re-puxar este modelo?"
+    },
+    "modal": {
+      "title": "Adicionar Novo Modelo",
+      "placeholder": "Insira o nome do modelo",
+      "pull": "Puxar Modelo"
+    },
+    "notification": {
+      "pullModel": "Puxando Modelo",
+      "pullModelDescription": "Puxando modelo {{modelName}}. Para mais detalhes, verifique o ícone da extensão.",
+      "success": "Sucesso",
+      "error": "Erro",
+      "successDescription": "Modelo puxado com sucesso",
+      "successDeleteDescription": "Modelo excluído com sucesso",
+      "someError": "Algo deu errado. Tente novamente mais tarde"
+    }
+  },
+  "managePrompts": {
+    "title": "Gerenciar Prompts",
+    "addBtn": "Adicionar Novo Prompt",
+    "option1": "Normal",
+    "option2": "RAG",
+    "questionPrompt": "Prompt de Pergunta",
+    "columns": {
+      "title": "Título",
+      "prompt": "Prompt",
+      "type": "Tipo de Prompt",
+      "actions": "Ações"
+    },
+    "systemPrompt": "Prompt do Sistema",
+    "quickPrompt": "Prompt Rápido",
+    "tooltip": {
+      "delete": "Excluir Prompt",
+      "edit": "Editar Prompt"
+    },
+    "confirm": {
+      "delete": "Você tem certeza de que deseja excluir este prompt? Esta ação não pode ser desfeita."
+    },
+    "modal": {
+      "addTitle": "Adicionar Novo Prompt",
+      "editTitle": "Editar Prompt"
+    },
+    "form": {
+      "title": {
+        "label": "Título",
+        "placeholder": "Meu Prompt Incrível",
+        "required": "Por favor, insira um título"
+      },
+      "prompt": {
+        "label": "Prompt",
+        "placeholder": "Insira o prompt",
+        "required": "Por favor, insira um prompt",
+        "help": "Você pode usar {key} como variável em seu prompt."
+      },
+      "isSystem": {
+        "label": "É um Prompt do Sistema"
+      },
+      "btnSave": {
+        "saving": "Adicionando Prompt...",
+        "save": "Adicionar Prompt"
+      },
+      "btnEdit": {
+        "saving": "Atualizando Prompt...",
+        "save": "Atualizar Prompt"
+      }
+    },
+    "notification": {
+      "addSuccess": "Prompt Adicionado",
+      "addSuccessDesc": "Prompt adicionado com sucesso",
+      "error": "Erro",
+      "someError": "Algo deu errado. Tente novamente mais tarde",
+      "updatedSuccess": "Prompt Atualizado",
+      "updatedSuccessDesc": "Prompt atualizado com sucesso",
+      "deletedSuccess": "Prompt Excluído",
+      "deletedSuccessDesc": "Prompt excluído com sucesso"
+    }
+  },
+  "manageShare": {
+    "title": "Gerenciar Compartilhamento",
+    "heading": "Configurar URL de Compartilhamento de Página",
+    "form": {
+      "url": {
+        "label": "URL de Compartilhamento de Página",
+        "placeholder": "Insira a URL de Compartilhamento de Página",
+        "required": "Por favor, insira a URL de Compartilhamento de Página!",
+        "help": "Por motivos de privacidade, você pode hospedar a página de compartilhamento e fornecer a URL aqui. <anchor>Saiba mais</anchor>."
+      }
+    },
+    "webshare": {
+      "heading": "Compartilhamento na Web",
+      "columns": {
+        "title": "Título",
+        "url": "URL",
+        "actions": "Ações"
+      },
+      "tooltip": {
+        "delete": "Excluir Compartilhamento"
+      },
+      "confirm": {
+        "delete": "Você tem certeza de que deseja excluir este compartilhamento? Esta ação não pode ser desfeita."
+      },
+      "label": "Gerenciar Compartilhamento de Página",
+      "description": "Habilitar ou desabilitar o recurso de compartilhamento de página"
+    },
+    "notification": {
+      "pageShareSuccess": "URL de Compartilhamento de Página atualizada com sucesso",
+      "someError": "Algo deu errado. Tente novamente mais tarde",
+      "webShareDeleteSuccess": "Compartilhamento na Web excluído com sucesso"
+    }
+  },
+  "ollamaSettings": {
+    "title": "Configurações do Ollama",
+    "heading": "Configurar Ollama",
+    "settings": {
+      "ollamaUrl": {
+        "label": "URL do Ollama",
+        "placeholder": "Insira a URL do Ollama"
+      },
+      "advanced": {
+        "label": "Configuração Avançada da URL do Ollama",
+        "urlRewriteEnabled": {
+          "label": "Habilitar ou Desabilitar URL de Origem Personalizada"
+        },
+        "rewriteUrl": {
+          "label": "URL de Origem Personalizada",
+          "placeholder": "Insira a URL de Origem Personalizada"
+        },
+        "headers": {
+          "label": "Cabeçalhos Personalizados",
+          "add": "Adicionar Cabeçalho",
+          "key": {
+            "label": "Chave do Cabeçalho",
+            "placeholder": "Autorização"
+          },
+          "value": {
+            "label": "Valor do Cabeçalho",
+            "placeholder": "Token Bearer"
+          }
+        },
+        "help": "Se você tiver problemas de conexão com o Ollama no Page Assist, você pode configurar uma URL de origem personalizada. Para saber mais sobre a configuração, <anchor>clique aqui</anchor>."
+      }
+    }
+  },
+  "manageSearch": {
+    "title": "Gerenciar Pesquisa na Web",
+    "heading": "Configurar Pesquisa na Web"
+  },
+  "about": {
+    "title": "Sobre",
+    "heading": "Sobre",
+    "chromeVersion": "Versão do Page Assist",
+    "ollamaVersion": "Versão do Ollama",
+    "support": "Você pode apoiar o projeto Page Assist fazendo doações ou patrocínios através das seguintes plataformas:",
+    "koFi": "Apoiador no Ko-fi",
+    "githubSponsor": "Patrocinador no GitHub",
+    "githubRepo": "Repositório do GitHub"
+  },
+  "manageKnowledge": {
+    "title": "Gerenciar Conhecimento",
+    "heading": "Configurar Base de Conhecimento"
+  },
+  "rag": {
+    "title": "Configurações do RAG",
+    "ragSettings": {
+      "label": "Configurações do RAG",
+      "model": {
+        "label": "Modelo de Incorporação",
+        "required": "Por favor, selecione um modelo",
+        "help": "É altamente recomendável usar modelos de incorporação como `nomic-embed-text`.",
+        "placeholder": "Selecione um modelo"
+      },
+      "chunkSize": {
+        "label": "Tamanho do Chunk",
+        "placeholder": "Insira o tamanho do chunk",
+        "required": "Por favor, insira o tamanho do chunk"
+      },
+      "chunkOverlap": {
+        "label": "Sobreposição do Chunk",
+        "placeholder": "Insira a sobreposição do chunk",
+        "required": "Por favor, insira a sobreposição do chunk"
+      }
+    },
+    "prompt": {
+      "label": "Configurar Prompt do RAG",
+      "option1": "Normal",
+      "option2": "Web",
+      "alert": "Configurar o prompt do sistema aqui está depreciado. Por favor, use a seção Gerenciar Prompts para adicionar ou editar prompts. Esta seção será removida em uma versão futura",
+      "systemPrompt": "Prompt do Sistema",
+      "systemPromptPlaceholder": "Insira o prompt do sistema",
+      "webSearchPrompt": "Prompt de Pesquisa na Web",
+      "webSearchPromptHelp": "Não remova `{search_results}` do prompt.",
+      "webSearchPromptError": "Por favor, insira um prompt de pesquisa na web",
+      "webSearchPromptPlaceholder": "Insira o prompt de pesquisa na web",
+      "webSearchFollowUpPrompt": "Prompt de Seguimento de Pesquisa na Web",
+      "webSearchFollowUpPromptHelp": "Não remova `{chat_history}` e `{question}` do prompt.",
+      "webSearchFollowUpPromptError": "Por favor, insira o prompt de seguimento de pesquisa na web",
+      "webSearchFollowUpPromptPlaceholder": "Seu prompt de seguimento de pesquisa na web"
+    }
+  },
+
+  "chromeAiSettings": {
+    "title": "Configurações de IA do Chrome"
+}
 }
