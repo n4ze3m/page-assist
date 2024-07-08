@@ -23,6 +23,9 @@
       },
       "hideCurrentChatModelSettings": {
         "label": "Ocultar Configurações do Modelo de Chat Atual"
+      },
+      "restoreLastChatModel": {
+        "label": "Restaurar o último modelo usado para conversas anteriores"
       }
     },
     "webSearch": {
@@ -304,5 +307,5 @@
 
   "chromeAiSettings": {
     "title": "Configurações de IA do Chrome"
-}
+  }
 }

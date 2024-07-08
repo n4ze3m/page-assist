@@ -26,6 +26,9 @@
       },
       "hideCurrentChatModelSettings": {
         "label": "隐藏当前聊天模型设置"
+      },
+      "restoreLastChatModel": {
+        "label": "恢复上次用于之前聊天的模型"
       }
     },
     "webSearch": {

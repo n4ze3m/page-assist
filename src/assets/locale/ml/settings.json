@@ -26,6 +26,9 @@
       },
       "hideCurrentChatModelSettings": {
         "label": "നിലവിലുള്ള ചാറ്റ് മോഡൽ ക്രമീകരണങ്ങൾ മറയ്ക്കുക"
+      },
+      "restoreLastChatModel": {
+        "label": "മുൻപത്തെ ചാറ്റുകൾക്കായി അവസാനം ഉപയോഗിച്ച മോഡൽ പുനഃസ്ഥാപിക്കുക"
       }
     },
     "webSearch": {
