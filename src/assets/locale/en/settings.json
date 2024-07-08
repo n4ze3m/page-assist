@@ -23,6 +23,9 @@
             },
             "hideCurrentChatModelSettings": {
                 "label": "Hide the current Chat Model Settings"
+            },
+            "restoreLastChatModel": {
+                "label": "Restore last used model for previous chats"
             }
         },
         "webSearch": {

@@ -24,6 +24,11 @@ export const GeneralSettings = () => {
     false
   )
 
+  const [restoreLastChatModel, setRestoreLastChatModel] = useStorage(
+    "restoreLastChatModel",
+    false
+  )
+
   const [hideCurrentChatModelSettings, setHideCurrentChatModelSettings] =
     useStorage("hideCurrentChatModelSettings", false)
 
@@ -105,6 +110,18 @@ export const GeneralSettings = () => {
         <Switch
           checked={hideCurrentChatModelSettings}
           onChange={(checked) => setHideCurrentChatModelSettings(checked)}
+        />
+      </div>
+      <div className="flex flex-row justify-between">
+        <div className="inline-flex items-center gap-2">
+          <span className="text-gray-700   dark:text-neutral-50">
+            {t("generalSettings.settings.restoreLastChatModel.label")}
+          </span>
+        </div>
+
+        <Switch
+          checked={restoreLastChatModel}
+          onChange={(checked) => setRestoreLastChatModel(checked)}
         />
       </div>
       <div className="flex flex-row justify-between">

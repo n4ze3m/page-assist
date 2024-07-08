@@ -11,14 +11,24 @@ import { useMessageOption } from "~/hooks/useMessageOption"
 import { PencilIcon, Trash2 } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { useTranslation } from "react-i18next"
+import {
+  getLastUsedChatModel,
+  lastUsedChatModelEnabled
+} from "@/services/model-settings"
 
 type Props = {
   onClose: () => void
 }
 
 export const Sidebar = ({ onClose }: Props) => {
-  const { setMessages, setHistory, setHistoryId, historyId, clearChat } =
-    useMessageOption()
+  const {
+    setMessages,
+    setHistory,
+    setHistoryId,
+    historyId,
+    clearChat,
+    setSelectedModel
+  } = useMessageOption()
   const { t } = useTranslation(["option", "common"])
   const client = useQueryClient()
   const navigate = useNavigate()
@@ -88,6 +98,13 @@ export const Sidebar = ({ onClose }: Props) => {
                   setHistoryId(chat.id)
                   setHistory(formatToChatHistory(history))
                   setMessages(formatToMessage(history))
+                  const isLastUsedChatModel = await lastUsedChatModelEnabled()
+                  if (isLastUsedChatModel) {
+                    const currentChatModel = await getLastUsedChatModel(chat.id)
+                    if (currentChatModel) {
+                      setSelectedModel(currentChatModel)
+                    }
+                  }
                   navigate("/")
                   onClose()
                 }}>
