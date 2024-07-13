@@ -1,88 +1,88 @@
 {
-    "pageAssist": "Page Assist",
-    "selectAModel": "Selecione um Modelo",
-    "save": "Salvar",
-    "saved": "Salvo",
-    "cancel": "Cancelar",
-    "retry": "Tentar Novamente",
-    "share": {
-        "tooltip": {
-            "share": "Compartilhar"
-        },
-        "modal": {
-            "title": "Compartilhar link para o Chat"
-        },
-        "form": {
-            "defaultValue": {
-                "name": "Anônimo",
-                "title": "Chat sem título"
-            },
-            "title": {
-                "label": "Título do Chat",
-                "placeholder": "Digite o título do Chat",
-                "required": "O título do Chat é obrigatório"
-            },
-            "name": {
-                "label": "Seu nome",
-                "placeholder": "Digite seu nome",
-                "required": "Seu nome é obrigatório"
-            },
-            "btn": {
-                "save": "Gerar Link",
-                "saving": "Gerando Link..."
-            }
-        },
-        "notification": {
-            "successGenerate": "Link copiado para a área de transferência",
-            "failGenerate": "Falha ao gerar link"
-        }
+  "pageAssist": "Page Assist",
+  "selectAModel": "Selecionar um Modelo",
+  "save": "Salvar",
+  "saved": "Salvo",
+  "cancel": "Cancelar",
+  "retry": "Tentar Novamente",
+  "share": {
+    "tooltip": {
+      "share": "Compartilhar"
     },
-    "copyToClipboard": "Copiar para a área de transferência",
-    "webSearch": "Pesquisando na web",
-    "regenerate": "Regenerar",
-    "edit": "Editar",
-    "saveAndSubmit": "Salvar e Enviar",
-    "editMessage": {
-        "placeholder": "Digite uma mensagem..."
+    "modal": {
+      "title": "Compartilhar Link para o Chat"
     },
-    "submit": "Enviar",
-    "noData": "Sem dados",
-    "noHistory": "Sem histórico de chat",
-    "chatWithCurrentPage": "Conversar com a página atual",
-    "beta": "Beta",
-    "tts": "Ler em voz alta",
-    "currentChatModelSettings": "Configurações do Modelo de Chat Atual",
-    "modelSettings": {
-        "label": "Configurações do Modelo",
-        "description": "Defina as opções do modelo globalmente para todos os chats",
-        "form": {
-            "keepAlive": {
-                "label": "Manter Vivo",
-                "help": "controla quanto tempo o modelo permanecerá carregado na memória após a solicitação (padrão: 5m)",
-                "placeholder": "Digite a duração do Manter Vivo (ex: 5m, 10m, 1h)"
-            },
-            "temperature": {
-                "label": "Temperatura",
-                "placeholder": "Digite o valor da Temperatura (ex: 0.7, 1.0)"
-            },
-            "numCtx": {
-                "label": "Janela de contexto",
-                "placeholder": "Digite o valor do tamanho da janela de contexto (padrão: 2048)"
-            },
-            "seed": {
-                "label": "Semente",
-                "placeholder": "Digite o valor da Semente (ex: 1234)",
-                "help": "Reprodutibilidade da saída do modelo"
-            },
-            "topK": {
-                "label": "Top K",
-                "placeholder": "Digite o valor do Top K (ex: 40, 100)"
-            },
-            "topP": {
-                "label": "Top P",
-                "placeholder": "Digite o valor do Top P (ex: 0.9, 0.95)"
-            }
-        },
-        "advanced": "Mais Configurações do Modelo"
+    "form": {
+      "defaultValue": {
+        "name": "Anônimo",
+        "title": "Chat sem título"
+      },
+      "title": {
+        "label": "Título do Chat",
+        "placeholder": "Digite o Título do Chat",
+        "required": "O Título do Chat é obrigatório"
+      },
+      "name": {
+        "label": "Seu Nome",
+        "placeholder": "Digite seu Nome",
+        "required": "Seu Nome é obrigatório"
+      },
+      "btn": {
+        "save": "Gerar Link",
+        "saving": "Gerando Link..."
+      }
+    },
+    "notification": {
+      "successGenerate": "Link copiado para a área de transferência",
+      "failGenerate": "Falha ao gerar link"
     }
+  },
+  "copyToClipboard": "Copiar para a área de transferência",
+  "webSearch": "Pesquisando na web",
+  "regenerate": "Gerar Novamente",
+  "edit": "Editar",
+  "saveAndSubmit": "Salvar & Enviar",
+  "editMessage": {
+    "placeholder": "Digite uma mensagem..."
+  },
+  "submit": "Enviar",
+  "noData": "Sem dados",
+  "noHistory": "Sem histórico de chat",
+  "chatWithCurrentPage": "Conversar com a página atual",
+  "beta": "Beta",
+  "tts": "Ler em voz alta",
+  "currentChatModelSettings": "Configurações Atuais do Modelo de Chat",
+  "modelSettings": {
+    "label": "Configurações do Modelo",
+    "description": "Defina as opções do modelo globalmente para todos os chats",
+    "form": {
+      "keepAlive": {
+        "label": "Manter Ativo",
+        "help": "controla por quanto tempo o modelo permanecerá carregado na memória após a solicitação (padrão: 5m)",
+        "placeholder": "Digite a duração do Manter Ativo (ex: 5m, 10m, 1h)"
+      },
+      "temperature": {
+        "label": "Temperatura",
+        "placeholder": "Digite o valor da Temperatura (ex: 0.7, 1.0)"
+      },
+      "numCtx": {
+        "label": "Número de Contextos",
+        "placeholder": "Digite o valor do Número de Contextos (padrão: 2048)"
+      },
+      "seed": {
+        "label": "Semente",
+        "placeholder": "Digite o valor da Semente (ex: 1234)",
+        "help": "Reprodutibilidade da saída do modelo"
+      },
+      "topK": {
+        "label": "Top K",
+        "placeholder": "Digite o valor do Top K (ex: 40, 100)"
+      },
+      "topP": {
+        "label": "Top P",
+        "placeholder": "Digite o valor do Top P (ex: 0.9, 0.95)"
+      }
+    },
+    "advanced": "Mais Configurações do Modelo"
+  }
 }
