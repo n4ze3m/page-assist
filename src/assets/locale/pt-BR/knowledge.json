@@ -3,7 +3,7 @@
     "columns": {
         "title": "Título",
         "status": "Status",
-        "embeddings": "Modelo de Embedding",
+        "embeddings": "Modelo de Incorporação",
         "createdAt": "Criado Em",
         "action": "Ações"
     },
@@ -14,7 +14,7 @@
         "delete": "Excluir"
     },
     "confirm": {
-        "delete": "Você tem certeza que deseja excluir este conhecimento?"
+        "delete": "Tem certeza de que deseja excluir este conhecimento?"
     },
     "deleteSuccess": "Conhecimento excluído com sucesso",
     "status": {
@@ -26,17 +26,17 @@
     "form": {
         "title": {
             "label": "Título do Conhecimento",
-            "placeholder": "Insira o título do conhecimento",
-            "required": "Título do conhecimento é obrigatório"
+            "placeholder": "Digite o título do conhecimento",
+            "required": "O título do conhecimento é obrigatório"
         },
         "uploadFile": {
-            "label": "Upload de Arquivo",
-            "uploadText": "Arraste e solte um arquivo aqui ou clique para upload",
+            "label": "Carregar Arquivo",
+            "uploadText": "Arraste e solte um arquivo aqui ou clique para carregar",
             "uploadHint": "Tipos de arquivo suportados: .pdf, .csv, .txt, .md, .docx",
-            "required": "Arquivo é obrigatório"
+            "required": "O arquivo é obrigatório"
         },
         "submit": "Enviar",
         "success": "Conhecimento adicionado com sucesso"
     },
-    "noEmbeddingModel": "Por favor, adicione um modelo de embedding primeiro na página de configurações do RAG"
+    "noEmbeddingModel": "Por favor, adicione um modelo de incorporação na página de configurações RAG primeiro"
 }
