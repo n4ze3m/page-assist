@@ -1,7 +1,7 @@
 {
     "tooltip": {
-        "embed": "Pode demorar alguns minutos para embedear a página. Por favor, aguarde...",
-        "clear": "Excluir histórico de conversa",
-        "history": "Histórico de conversa"
+        "embed": "A incorporação da página pode levar alguns minutos. Por favor, aguarde...",
+        "clear": "Apagar histórico de chat",
+        "history": "Histórico de chat"
     }
 }
