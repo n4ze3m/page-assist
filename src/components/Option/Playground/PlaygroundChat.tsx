@@ -3,6 +3,8 @@ import { useMessageOption } from "~/hooks/useMessageOption"
 import { PlaygroundEmpty } from "./PlaygroundEmpty"
 import { PlaygroundMessage } from "~/components/Common/Playground/Message"
 import { MessageSourcePopup } from "@/components/Common/Playground/MessageSourcePopup"
+import { useSmartScroll } from "~/hooks/useSmartScroll"
+import { ChevronDown } from "lucide-react"
 
 export const PlaygroundChat = () => {
   const {
@@ -13,24 +15,24 @@ export const PlaygroundChat = () => {
     editMessage,
     ttsEnabled
   } = useMessageOption()
-  const divRef = React.useRef<HTMLDivElement>(null)
   const [isSourceOpen, setIsSourceOpen] = React.useState(false)
   const [source, setSource] = React.useState<any>(null)
-  React.useEffect(() => {
-    if (divRef.current) {
-      divRef.current.scrollIntoView({ behavior: "smooth" })
-    }
-  })
+
+  const { containerRef, isAtBottom, scrollToBottom } = useSmartScroll(
+    messages,
+    streaming
+  )
+
   return (
     <>
-      {" "}
-      <div className="grow flex flex-col md:translate-x-0 transition-transform duration-300 ease-in-out">
+      <div
+        ref={containerRef}
+        className="custom-scrollbar grow flex flex-col md:translate-x-0 transition-transform duration-300 ease-in-out overflow-y-auto h-[calc(100vh-200px)]">
         {messages.length === 0 && (
           <div className="mt-32">
             <PlaygroundEmpty />
           </div>
         )}
-        {/* {messages.length > 0 && <div className="w-full h-16 flex-shrink-0"></div>} */}
         {messages.map((message, index) => (
           <PlaygroundMessage
             key={index}
@@ -55,10 +57,18 @@ export const PlaygroundChat = () => {
           />
         ))}
         {messages.length > 0 && (
-          <div className="w-full h-32 md:h-48 flex-shrink-0"></div>
+          <div className="w-full h-16 flex-shrink-0"></div>
         )}
-        <div ref={divRef} />
       </div>
+      {!isAtBottom && (
+        <div className="fixed md:bottom-44 bottom-36 z-[9999999] left-0 right-0 flex justify-center">
+          <button
+            onClick={scrollToBottom}
+            className="bg-gray-100 dark:bg-gray-800 p-1 rounded-full shadow-md hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200">
+            <ChevronDown className="size-4 text-gray-600 dark:text-gray-300" />
+          </button>
+        </div>
+      )}
       <MessageSourcePopup
         open={isSourceOpen}
         setOpen={setIsSourceOpen}

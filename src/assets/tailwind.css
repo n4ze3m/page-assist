@@ -65,3 +65,63 @@
   animation: gradient-border 3s infinite;
   border-radius: 10px;
 }
+
+/* Hide scrollbar by default */
+.custom-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Show scrollbar on hover */
+.custom-scrollbar:hover {
+  scrollbar-width: thin;
+  -ms-overflow-style: auto;
+}
+
+.custom-scrollbar:hover::-webkit-scrollbar {
+  display: block;
+  width: 8px;
+}
+
+/* Custom scrollbar styles for light theme */
+.custom-scrollbar:hover::-webkit-scrollbar-track {
+  @apply bg-gray-50;
+  border-radius: 4px;
+}
+
+.custom-scrollbar:hover::-webkit-scrollbar-thumb {
+  @apply bg-gray-300;
+  border-radius: 4px;
+  transition: background 0.2s ease;
+}
+
+.custom-scrollbar:hover::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-400;
+}
+
+/* Custom scrollbar styles for dark theme */
+.dark .custom-scrollbar:hover::-webkit-scrollbar-track {
+  background-color: #262626;
+}
+
+.dark .custom-scrollbar:hover::-webkit-scrollbar-thumb {
+  background-color: #404040;
+}
+
+.dark .custom-scrollbar:hover::-webkit-scrollbar-thumb:hover {
+  background-color: #525252;
+}
+
+/* For Firefox */
+.custom-scrollbar {
+  scrollbar-color: theme('colors.gray.300') theme('colors.gray.50');
+  scrollbar-width: thin;
+}
+
+.dark .custom-scrollbar {
+  scrollbar-color: #404040 #262626;
+}

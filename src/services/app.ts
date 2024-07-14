@@ -80,3 +80,21 @@ export const getCustomOllamaHeaders = async (): Promise<
 
   return headerMap
 }
+
+export const getOpenOnIconClick = async (): Promise<string> => {
+  const openOnIconClick = await storage.get<string>("openOnIconClick");
+  return openOnIconClick || "webUI";
+};
+
+export const setOpenOnIconClick = async (option: "webUI" | "sidePanel"): Promise<void> => {
+  await storage.set("openOnIconClick", option);
+};
+
+export const getOpenOnRightClick = async (): Promise<string> => {
+  const openOnRightClick = await storage.get<string>("openOnRightClick");
+  return openOnRightClick || "sidePanel";
+};
+
+export const setOpenOnRightClick = async (option: "webUI" | "sidePanel"): Promise<void> => {
+  await storage.set("openOnRightClick", option);
+};

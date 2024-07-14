@@ -78,6 +78,7 @@ export const Playground = () => {
         dropState === "dragging" ? "bg-gray-100 dark:bg-gray-800 z-10" : ""
       } bg-white dark:bg-[#171717]`}>
       <PlaygroundChat />
+      
       <div className="flex flex-col items-center">
         <div className="flex-grow">
           <div className="w-full flex justify-center">
