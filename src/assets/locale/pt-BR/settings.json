@@ -22,10 +22,13 @@
         "label": "Retomar o último chat ao abrir o Painel Lateral (Copilot)"
       },
       "hideCurrentChatModelSettings": {
-           "label": "Ocultar as Configurações Atuais do Modelo de Chat"
+        "label": "Ocultar as Configurações Atuais do Modelo de Chat"
       },
       "restoreLastChatModel": {
         "label": "Restaurar o último modelo usado para conversas anteriores"
+      },
+      "sendNotificationAfterIndexing": {
+        "label": "Enviar notificação após concluir o processamento da base de conhecimento"
       }
     },
     "webSearch": {

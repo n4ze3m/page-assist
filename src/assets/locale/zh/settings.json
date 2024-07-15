@@ -29,6 +29,9 @@
       },
       "restoreLastChatModel": {
         "label": "恢复上次用于之前聊天的模型"
+      },
+      "sendNotificationAfterIndexing": {
+        "label": "完成知识库处理后发送通知"
       }
     },
     "webSearch": {

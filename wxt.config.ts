@@ -11,7 +11,8 @@ const chromeMV3Permissions = [
   "action",
   "unlimitedStorage",
   "contextMenus",
-  "tts"
+  "tts",
+  "notifications"
 ]
 
 const firefoxMV2Permissions = [
@@ -22,6 +23,7 @@ const firefoxMV2Permissions = [
   "contextMenus",
   "webRequest",
   "webRequestBlocking",
+  "notifications",
   "http://*/*",
   "https://*/*",
   "file://*/*"

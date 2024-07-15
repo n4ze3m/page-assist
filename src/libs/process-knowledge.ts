@@ -12,6 +12,7 @@ import { PageAssisCSVUrlLoader } from "@/loader/csv"
 import { PageAssisTXTUrlLoader } from "@/loader/txt"
 import { PageAssistDocxLoader } from "@/loader/docx"
 import { cleanUrl } from "./clean-url"
+import { sendEmbeddingCompleteNotification } from "./send-notification"
 
 
 export const processKnowledge = async (msg: any, id: string): Promise<void> => {
@@ -102,6 +103,8 @@ export const processKnowledge = async (msg: any, id: string): Promise<void> => {
     }
 
     await updateKnowledgeStatus(id, "finished")
+
+    await sendEmbeddingCompleteNotification()
   } catch (error) {
     console.error(`Error processing knowledge with id: ${id}`, error)
     await updateKnowledgeStatus(id, "failed")

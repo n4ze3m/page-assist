@@ -32,6 +32,9 @@ export const GeneralSettings = () => {
   const [hideCurrentChatModelSettings, setHideCurrentChatModelSettings] =
     useStorage("hideCurrentChatModelSettings", false)
 
+  const [sendNotificationAfterIndexing, setSendNotificationAfterIndexing] =
+    useStorage("sendNotificationAfterIndexing", false)
+
   const queryClient = useQueryClient()
 
   const { mode, toggleDarkMode } = useDarkMode()
@@ -124,6 +127,20 @@ export const GeneralSettings = () => {
           onChange={(checked) => setRestoreLastChatModel(checked)}
         />
       </div>
+
+      <div className="flex flex-row justify-between">
+        <div className="inline-flex items-center gap-2">
+          <span className="text-gray-700   dark:text-neutral-50">
+            {t("generalSettings.settings.sendNotificationAfterIndexing.label")}
+          </span>
+        </div>
+
+        <Switch
+          checked={sendNotificationAfterIndexing}
+          onChange={setSendNotificationAfterIndexing}
+        />
+      </div>
+
       <div className="flex flex-row justify-between">
         <span className="text-gray-700 dark:text-neutral-50 ">
           {t("generalSettings.settings.darkMode.label")}

@@ -26,6 +26,9 @@
       },
       "restoreLastChatModel": {
         "label": "Restaurer le dernier modèle utilisé pour les conversations précédentes"
+      },
+      "sendNotificationAfterIndexing": {
+        "label": "Envoyer une notification après avoir terminé le traitement de la base de connaissances"
       }
     },
     "webSearch": {
