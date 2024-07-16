@@ -20,7 +20,8 @@
     "status": {
         "pending": "保留中",
         "finished": "完了",
-        "processing": "処理中"
+        "processing": "処理中",
+        "failed": "失敗"
     },
     "addKnowledge": "知識を追加",
     "form": {

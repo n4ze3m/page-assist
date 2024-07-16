@@ -20,7 +20,8 @@
     "status": {
         "pending": "待定",
         "finished": "已完成",
-        "processing": "处理中"
+        "processing": "处理中",
+        "failed": "失败"
     },
     "addKnowledge": "添加知识",
     "form": {

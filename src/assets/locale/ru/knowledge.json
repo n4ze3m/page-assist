@@ -20,7 +20,8 @@
     "status": {
         "pending": "Ожидание",
         "finished": "Завершено",
-        "processing": "Обработка"
+        "processing": "Обработка",
+        "failed": "Не удалось"
     },
     "addKnowledge": "Добавить знание",
     "form": {

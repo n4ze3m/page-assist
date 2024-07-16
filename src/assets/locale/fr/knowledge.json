@@ -20,7 +20,8 @@
     "status": {
         "pending": "En attente",
         "finished": "Terminé",
-        "processing": "Traitement"
+        "processing": "Traitement",
+        "failed": "Échoué"
     },
     "addKnowledge": "Ajouter des connaissances",
     "form": {
