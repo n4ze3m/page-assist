@@ -1,4 +1,5 @@
 import { saveHistory, saveMessage } from "@/db"
+import { setLastUsedChatModel } from "@/services/model-settings"
 import { ChatHistory } from "@/store/option"
 
 export const saveMessageOnError = async ({
@@ -23,7 +24,7 @@ export const saveMessageOnError = async ({
   historyId: string | null
   selectedModel: string
   setHistoryId: (historyId: string) => void
-  isRegenerating: boolean,
+  isRegenerating: boolean
   message_source?: "copilot" | "web-ui"
 }) => {
   if (
@@ -66,6 +67,7 @@ export const saveMessageOnError = async ({
         [],
         2
       )
+      await setLastUsedChatModel(historyId, selectedModel)
     } else {
       const newHistoryId = await saveHistory(userMessage, false, message_source)
       if (!isRegenerating) {
@@ -89,6 +91,7 @@ export const saveMessageOnError = async ({
         2
       )
       setHistoryId(newHistoryId.id)
+      await setLastUsedChatModel(newHistoryId.id, selectedModel)
     }
 
     return true
@@ -115,7 +118,7 @@ export const saveMessageOnSuccess = async ({
   message: string
   image: string
   fullText: string
-  source: any[],
+  source: any[]
   message_source?: "copilot" | "web-ui"
 }) => {
   if (historyId) {
@@ -139,6 +142,7 @@ export const saveMessageOnSuccess = async ({
       source,
       2
     )
+    await setLastUsedChatModel(historyId, selectedModel!)
   } else {
     const newHistoryId = await saveHistory(message, false, message_source)
     await saveMessage(
@@ -160,5 +164,6 @@ export const saveMessageOnSuccess = async ({
       2
     )
     setHistoryId(newHistoryId.id)
+    await setLastUsedChatModel(newHistoryId.id, selectedModel!)
   }
 }

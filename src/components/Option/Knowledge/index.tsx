@@ -37,8 +37,9 @@ export const KnowledgeSettings = () => {
 
   const statusColor = {
     finished: "green",
-    processing: "blue",
-    pending: "gray"
+    processing: "yellow",
+    pending: "gray",
+    failed: "red"
   }
 
   return (

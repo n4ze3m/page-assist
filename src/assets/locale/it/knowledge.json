@@ -20,7 +20,8 @@
     "status": {
         "pending": "In attesa",
         "finished": "Completato",
-        "processing": "In corso"
+        "processing": "In corso",
+        "failed": "Fallito"
     },
     "addKnowledge": "Aggiungi Knowledge Base",
     "form": {

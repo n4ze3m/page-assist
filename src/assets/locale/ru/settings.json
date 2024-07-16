@@ -23,6 +23,12 @@
       },
       "hideCurrentChatModelSettings": {
         "label": "Скрыть текущие настройки модели чата"
+      },
+      "restoreLastChatModel": {
+        "label": "Восстановить последнюю использованную модель для предыдущих чатов"
+      },
+      "sendNotificationAfterIndexing": {
+        "label": "Отправить уведомление после завершения обработки базы знаний"
       }
     },
     "webSearch": {
@@ -304,5 +310,5 @@
   },
   "chromeAiSettings": {
     "title": "Настройки ИИ Chrome"
-}
+  }
 }

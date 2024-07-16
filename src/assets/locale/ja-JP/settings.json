@@ -26,6 +26,12 @@
       },
       "hideCurrentChatModelSettings": {
         "label": "現在のチャットモデル設定を非表示"
+      },
+      "restoreLastChatModel": {
+        "label": "以前のチャットで最後に使用したモデルを復元する"
+      },
+      "sendNotificationAfterIndexing": {
+        "label": "ナレッジベースの処理完了後に通知を送信"
       }
     },
     "webSearch": {
@@ -306,5 +312,5 @@
   },
   "chromeAiSettings": {
     "title": "Chrome AI設定"
-}
+  }
 }

@@ -1,6 +1,7 @@
 import { getOllamaURL, isOllamaRunning } from "../services/ollama"
 import { browser } from "wxt/browser"
 import { setBadgeBackgroundColor, setBadgeText, setTitle } from "@/utils/action"
+
 const progressHuman = (completed: number, total: number) => {
   return ((completed / total) * 100).toFixed(0) + "%"
 }
@@ -75,11 +76,12 @@ const streamDownload = async (url: string, model: string) => {
     clearBadge()
   }, 5000)
 }
+
 export default defineBackground({
   main() {
     browser.runtime.onMessage.addListener(async (message) => {
       if (message.type === "sidepanel") {
-        browser.sidebarAction.open()
+        await browser.sidebarAction.open()
       } else if (message.type === "pull_model") {
         const ollamaURL = await getOllamaURL()
 
@@ -100,7 +102,7 @@ export default defineBackground({
 
     if (import.meta.env.BROWSER === "chrome") {
       chrome.action.onClicked.addListener((tab) => {
-        browser.tabs.create({ url: browser.runtime.getURL("/options.html") })
+        chrome.tabs.create({ url: chrome.runtime.getURL("/options.html") })
       })
     } else {
       browser.browserAction.onClicked.addListener((tab) => {
@@ -109,23 +111,31 @@ export default defineBackground({
       })
     }
 
+    const contextMenuTitle = {
+      webUi: browser.i18n.getMessage("openOptionToChat"),
+      sidePanel: browser.i18n.getMessage("openSidePanelToChat")
+    }
+
+    const contextMenuId = {
+      webUi: "open-web-ui-pa",
+      sidePanel: "open-side-panel-pa"
+    }
+
     browser.contextMenus.create({
-      id: "open-side-panel-pa",
-      title: browser.i18n.getMessage("openSidePanelToChat"),
+      id: contextMenuId["sidePanel"],
+      title: contextMenuTitle["sidePanel"],
       contexts: ["all"]
     })
     if (import.meta.env.BROWSER === "chrome") {
       browser.contextMenus.onClicked.addListener((info, tab) => {
         if (info.menuItemId === "open-side-panel-pa") {
-          chrome.tabs.query(
-            { active: true, currentWindow: true },
-            async (tabs) => {
-              const tab = tabs[0]
-              chrome.sidePanel.open({
-                tabId: tab.id!
-              })
-            }
-          )
+          chrome.sidePanel.open({
+            tabId: tab.id!
+          })
+        } else if (info.menuItemId === "open-web-ui-pa") {
+          browser.tabs.create({
+            url: browser.runtime.getURL("/options.html")
+          })
         }
       })
 
@@ -152,6 +162,10 @@ export default defineBackground({
       browser.contextMenus.onClicked.addListener((info, tab) => {
         if (info.menuItemId === "open-side-panel-pa") {
           browser.sidebarAction.toggle()
+        } else if (info.menuItemId === "open-web-ui-pa") {
+          browser.tabs.create({
+            url: browser.runtime.getURL("/options.html")
+          })
         }
       })
 

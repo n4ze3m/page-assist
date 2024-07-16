@@ -20,7 +20,8 @@
     "status": {
         "pending": "Pending",
         "finished": "Finished",
-        "processing": "Processing"
+        "processing": "Processing",
+        "failed": "Failed"
     },
     "addKnowledge": "Add Knowledge",
     "form": {

@@ -11,7 +11,8 @@ const chromeMV3Permissions = [
   "action",
   "unlimitedStorage",
   "contextMenus",
-  "tts"
+  "tts",
+  "notifications"
 ]
 
 const firefoxMV2Permissions = [
@@ -22,6 +23,7 @@ const firefoxMV2Permissions = [
   "contextMenus",
   "webRequest",
   "webRequestBlocking",
+  "notifications",
   "http://*/*",
   "https://*/*",
   "file://*/*"
@@ -48,7 +50,7 @@ export default defineConfig({
   outDir: "build",
 
   manifest: {
-    version: "1.1.14",
+    version: "1.1.15",
     name:
       process.env.TARGET === "firefox"
         ? "Page Assist - A Web UI for Local AI Models"
