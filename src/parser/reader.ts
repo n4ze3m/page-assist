@@ -1,4 +1,4 @@
-import { Readability } from "@mozilla/readability"
+import { Readability, } from "@mozilla/readability"
 import { defaultExtractContent } from "./default"
 export const extractReadabilityContent = async (url: string) => {
     const response = await fetch(url)
