@@ -288,6 +288,11 @@
         "label": "Sobreposição do Pedaço",
         "placeholder": "Digite a Sobreposição do Pedaço",
         "required": "Por favor, insira uma sobreposição de pedaço"
+      },
+      "totalFilePerKB": {
+        "label": "Limite padrão de arquivos da base de conhecimento",
+        "placeholder": "Digite o limite padrão de arquivos (ex. 10)",
+        "required": "Por favor, digite o limite padrão de arquivos"
       }
     },
     "prompt": {

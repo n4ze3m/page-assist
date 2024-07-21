@@ -288,6 +288,11 @@
         "label": "Chevauchement",
         "placeholder": "Entrez le chevauchement des morceaux",
         "required": "Veuillez saisir un chevauchement"
+      },
+      "totalFilePerKB": {
+        "label": "Limite par défaut de fichiers de la base de connaissances",
+        "placeholder": "Entrez la limite par défaut de fichiers (ex. 10)",
+        "required": "Veuillez entrer la limite par défaut de fichiers"
       }
     },
     "prompt": {

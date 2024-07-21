@@ -291,6 +291,11 @@
         "label": "ചങ്ക് ഓവര്‍ലാപ്പ്",
         "placeholder": "ചങ്ക് ഓവര്‍ലാപ്പ് നല്കുക",
         "required": "ദയവായി ചങ്ക് ഓവര്‍ലാപ്പ് നല്കുക"
+      },
+      "totalFilePerKB": {
+        "label": "Limite padrão de arquivos da base de conhecimento",
+        "placeholder": "Digite o limite padrão de arquivos (ex. 10)",
+        "required": "Por favor, digite o limite padrão de arquivos"
       }
     },
     "prompt": {
