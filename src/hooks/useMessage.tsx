@@ -44,8 +44,16 @@ export const useMessage = () => {
   const { t } = useTranslation("option")
   const [selectedModel, setSelectedModel] = useStorage("selectedModel")
   const currentChatModelSettings = useStoreChatModelSettings()
-  const { setIsSearchingInternet, webSearch, setWebSearch, isSearchingInternet } =
-    useStoreMessageOption()
+  const {
+    setIsSearchingInternet,
+    webSearch,
+    setWebSearch,
+    isSearchingInternet
+  } = useStoreMessageOption()
+
+
+  const [chatWithWebsiteEmbedding] = useStorage("chatWithWebsiteEmbedding", true)
+  const [maxWebsiteContext] = useStorage("maxWebsiteContext", 4028)
 
   const {
     history,
@@ -150,35 +158,34 @@ export const useMessage = () => {
     setMessages(newMessage)
     let fullText = ""
     let contentToSave = ""
-    let isAlreadyExistEmbedding: MemoryVectorStore
     let embedURL: string, embedHTML: string, embedType: string
     let embedPDF: { content: string; page: number }[] = []
 
+    let isAlreadyExistEmbedding: MemoryVectorStore
+    const {
+      content: html,
+      url: websiteUrl,
+      type,
+      pdf
+    } = await getDataFromCurrentTab()
+
+    embedHTML = html
+    embedURL = websiteUrl
+    embedType = type
+    embedPDF = pdf
+
+    console.log(embedHTML)
     if (messages.length === 0) {
-      const { content: html, url, type, pdf } = await getDataFromCurrentTab()
-      embedHTML = html
-      embedURL = url
-      embedType = type
-      embedPDF = pdf
-      setCurrentURL(url)
+      setCurrentURL(websiteUrl)
       isAlreadyExistEmbedding = keepTrackOfEmbedding[currentURL]
     } else {
-      const { content: html, url, type, pdf } = await getDataFromCurrentTab()
-      if (currentURL !== url) {
-        embedHTML = html
-        embedURL = url
-        embedType = type
-        embedPDF = pdf
-        setCurrentURL(url)
+      if (currentURL !== websiteUrl) {
+        setCurrentURL(websiteUrl)
       } else {
-        embedHTML = html
         embedURL = currentURL
-        embedType = type
-        embedPDF = pdf
       }
-      isAlreadyExistEmbedding = keepTrackOfEmbedding[url]
+      isAlreadyExistEmbedding = keepTrackOfEmbedding[websiteUrl]
     }
-
     setMessages(newMessage)
     const ollamaUrl = await getOllamaURL()
     const embeddingModle = await defaultEmbeddingModelForRag()
@@ -198,17 +205,18 @@ export const useMessage = () => {
         vectorstore = isAlreadyExistEmbedding
         console.log("Embedding already exist")
       } else {
-        vectorstore = await memoryEmbedding({
-          html: embedHTML,
-          keepTrackOfEmbedding: keepTrackOfEmbedding,
-          ollamaEmbedding: ollamaEmbedding,
-          pdf: embedPDF,
-          setIsEmbedding: setIsEmbedding,
-          setKeepTrackOfEmbedding: setKeepTrackOfEmbedding,
-          type: embedType,
-          url: embedURL
-        })
-
+        if (chatWithWebsiteEmbedding) {
+          vectorstore = await memoryEmbedding({
+            html: embedHTML,
+            keepTrackOfEmbedding: keepTrackOfEmbedding,
+            ollamaEmbedding: ollamaEmbedding,
+            pdf: embedPDF,
+            setIsEmbedding: setIsEmbedding,
+            setKeepTrackOfEmbedding: setKeepTrackOfEmbedding,
+            type: embedType,
+            url: embedURL
+          })
+        }
         console.log("Embedding created")
       }
       let query = message
@@ -247,25 +255,59 @@ export const useMessage = () => {
         query = response.content.toString()
       }
 
-      const docs = await vectorstore.similaritySearch(query, 4)
-      const context = formatDocs(docs)
-      const source = docs.map((doc) => {
-        return {
-          ...doc,
-          name: doc?.metadata?.source || "untitled",
-          type: doc?.metadata?.type || "unknown",
-          mode: "chat",
-          url: ""
+      let context: string = ""
+      let source: {
+        name: any
+        type: any
+        mode: string
+        url: string
+        pageContent: string
+        metadata: Record<string, any>
+      }[] = []
+
+      if (chatWithWebsiteEmbedding) {
+        const docs = await vectorstore.similaritySearch(query, 4)
+        context = formatDocs(docs)
+        source = docs.map((doc) => {
+          return {
+            ...doc,
+            name: doc?.metadata?.source || "untitled",
+            type: doc?.metadata?.type || "unknown",
+            mode: "chat",
+            url: ""
+          }
+        })
+      } else {
+        if (type === "html") {
+          context = embedHTML.slice(0, maxWebsiteContext)
+        } else {
+          context = embedPDF
+            .map((pdf) => pdf.content)
+            .join(" ")
+            .slice(0, maxWebsiteContext)
         }
-      })
-      // message = message.trim().replaceAll("\n", " ")
+
+        source = [
+          {
+            name: embedURL,
+            type: type,
+            mode: "chat",
+            url: embedURL,
+            pageContent: context,
+            metadata: {
+              source: embedURL,
+              url: embedURL
+            }
+          }
+        ]
+      }
 
       let humanMessage = new HumanMessage({
         content: [
           {
             text: systemPrompt
               .replace("{context}", context)
-              .replace("{question}", message),
+              .replace("{question}", query),
             type: "text"
           }
         ]
@@ -299,7 +341,7 @@ export const useMessage = () => {
         })
         count++
       }
-      // update the message with the full text
+
       setMessages((prev) => {
         return prev.map((message) => {
           if (message.id === generateMessageId) {
@@ -976,6 +1018,6 @@ export const useMessage = () => {
     regenerateLastMessage,
     webSearch,
     setWebSearch,
-    isSearchingInternet,
+    isSearchingInternet
   }
 }
