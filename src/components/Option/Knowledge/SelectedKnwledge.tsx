@@ -17,9 +17,9 @@ export const SelectedKnowledge = () => {
         <Tooltip
         title={knowledge.title}
         >
-        <div className="inline-flex truncate items-center gap-2">
-          <Blocks className="h-5  w-5 text-gray-400" />
-          <span className="text-xs hidden lg:inline-block  font-semibold dark:text-gray-100">
+        <div className="inline-flex items-center gap-2 max-w-[150px]">
+          <Blocks className="h-5  w-5 text-gray-400 flex-shrink-0" />
+          <span className="text-xs hidden lg:inline-block font-semibold dark:text-gray-100 truncate">
             {knowledge.title}
           </span>
         </div>
