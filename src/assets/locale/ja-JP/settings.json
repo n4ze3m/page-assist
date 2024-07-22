@@ -34,6 +34,16 @@
         "label": "ナレッジベースの処理完了後に通知を送信"
       }
     },
+    "sidepanelRag": {
+      "heading": "ウェブサイトとのCopilotチャット設定",
+      "ragEnabled": {
+        "label": "ベクトル埋め込みを使用してウェブサイトとチャットする"
+      },
+      "maxWebsiteContext": {
+        "label": "通常モードのウェブサイトコンテンツサイズ",
+        "placeholder": "コンテンツサイズ（デフォルト4028）"
+      }
+    },
     "webSearch": {
       "heading": "ウェブ検索を管理する",
       "searchMode": {

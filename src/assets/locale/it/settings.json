@@ -31,6 +31,16 @@
         "label": "Inviare notifica dopo aver terminato l'elaborazione della base di conoscenza"
       }
     },
+    "sidepanelRag": {
+      "heading": "Impostazioni Chat Copilot con Sito Web",
+      "ragEnabled": {
+        "label": "Chatta con il sito web utilizzando embedding vettoriali"
+      },
+      "maxWebsiteContext": {
+        "label": "Dimensione del contenuto del sito web in modalità normale",
+        "placeholder": "Dimensione del contenuto (predefinito 4028)"
+      }
+    },
     "webSearch": {
       "heading": "Gestione ricerca Web",
       "searchMode": {

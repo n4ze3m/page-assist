@@ -11,6 +11,7 @@ import {
 import { SettingPrompt } from "./prompt"
 import { useTranslation } from "react-i18next"
 import { getTotalFilePerKB } from "@/services/app"
+import { SidepanelRag } from "./sidepanel-rag"
 
 export const RagSettings = () => {
   const { t } = useTranslation("settings")
@@ -162,6 +163,8 @@ export const RagSettings = () => {
               </div>
             </Form>
           </div>
+
+          <SidepanelRag  />
 
           <div>
             <div>

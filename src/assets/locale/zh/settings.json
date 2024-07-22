@@ -34,6 +34,16 @@
         "label": "完成知识库处理后发送通知"
       }
     },
+    "sidepanelRag": {
+      "heading": "与网站对话的Copilot聊天设置",
+      "ragEnabled": {
+        "label": "使用向量嵌入与网站聊天"
+      },
+      "maxWebsiteContext": {
+        "label": "普通模式下的网站内容大小",
+        "placeholder": "内容大小（默认4028）"
+      }
+    },
     "webSearch": {
       "heading": "管理网络搜索",
       "searchMode": {

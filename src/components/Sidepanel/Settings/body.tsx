@@ -33,6 +33,8 @@ import { useI18n } from "@/hooks/useI18n"
 import { TTSModeSettings } from "@/components/Option/Settings/tts-mode"
 import { AdvanceOllamaSettings } from "@/components/Common/Settings/AdvanceOllamaSettings"
 import { useStorage } from "@plasmohq/storage/hook"
+import { getTotalFilePerKB } from "@/services/app"
+import { SidepanelRag } from "@/components/Option/Settings/sidepanel-rag"
 
 export const SettingsBody = () => {
   const { t } = useTranslation("settings")
@@ -66,7 +68,8 @@ export const SettingsBody = () => {
         allModels,
         chunkOverlap,
         chunkSize,
-        defaultEM
+        defaultEM,
+        totalFilePerKB
       ] = await Promise.all([
         getOllamaURL(),
         systemPromptForNonRag(),
@@ -74,7 +77,8 @@ export const SettingsBody = () => {
         getAllModels({ returnEmpty: true }),
         defaultEmbeddingChunkOverlap(),
         defaultEmbeddingChunkSize(),
-        defaultEmbeddingModelForRag()
+        defaultEmbeddingModelForRag(),
+        getTotalFilePerKB()
       ])
 
       return {
@@ -85,18 +89,19 @@ export const SettingsBody = () => {
         models: allModels,
         chunkOverlap,
         chunkSize,
-        defaultEM
+        defaultEM,
+        totalFilePerKB
       }
     }
   })
 
   const { mutate: saveRAG, isPending: isSaveRAGPending } = useMutation({
-    mutationFn: async (data: {
+    mutationFn: async (f: {
       model: string
       chunkSize: number
       overlap: number
     }) => {
-      await saveForRag(data.model, data.chunkSize, data.overlap)
+      await saveForRag(f.model, f.chunkSize, f.overlap, data.totalFilePerKB)
     }
   })
 
@@ -196,7 +201,9 @@ export const SettingsBody = () => {
           </div>
         )}
       </div>
-
+      <div className="border border-gray-300 dark:border-gray-700 rounded p-4 bg-white dark:bg-[#171717]">
+        <SidepanelRag hideBorder />
+      </div>
       <div className="border flex flex-col gap-4 border-gray-300 dark:border-gray-700 rounded p-4 bg-white dark:bg-[#171717]">
         <h2 className="text-md font-semibold dark:text-white">
           {t("ollamaSettings.heading")}
@@ -247,7 +254,6 @@ export const SettingsBody = () => {
           />
         </div>
       </div>
-
       <div className="border border-gray-300 dark:border-gray-700 rounded p-4 bg-white dark:bg-[#171717]">
         <h2 className="text-md mb-4 font-semibold dark:text-white">
           {t("rag.ragSettings.label")}
@@ -298,16 +304,12 @@ export const SettingsBody = () => {
             rules={[
               {
                 required: true,
-                message: t(
-                  "rag.ragSettings.chunkSize.required"
-                )
+                message: t("rag.ragSettings.chunkSize.required")
               }
             ]}>
             <InputNumber
               style={{ width: "100%" }}
-              placeholder={t(
-                "rag.ragSettings.chunkSize.placeholder"
-              )}
+              placeholder={t("rag.ragSettings.chunkSize.placeholder")}
             />
           </Form.Item>
           <Form.Item
@@ -316,16 +318,12 @@ export const SettingsBody = () => {
             rules={[
               {
                 required: true,
-                message: t(
-                  "rag.ragSettings.chunkOverlap.required"
-                )
+                message: t("rag.ragSettings.chunkOverlap.required")
               }
             ]}>
             <InputNumber
               style={{ width: "100%" }}
-              placeholder={t(
-                "rag.ragSettings.chunkOverlap.placeholder"
-              )}
+              placeholder={t("rag.ragSettings.chunkOverlap.placeholder")}
             />
           </Form.Item>
 

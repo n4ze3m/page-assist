@@ -31,6 +31,16 @@
         "label": "Enviar notificação após concluir o processamento da base de conhecimento"
       }
     },
+    "sidepanelRag": {
+      "heading": "Configurações de Chat Copilot com o Site",
+      "ragEnabled": {
+        "label": "Conversar com o site usando embeddings vetoriais"
+      },
+      "maxWebsiteContext": {
+        "label": "Tamanho do conteúdo do site no modo normal",
+        "placeholder": "Tamanho do conteúdo (padrão 4028)"
+      }
+    },
     "webSearch": {
       "heading": "Gerenciar Pesquisa na Web",
       "searchMode": {
