@@ -173,8 +173,6 @@ export const useMessage = () => {
     embedURL = websiteUrl
     embedType = type
     embedPDF = pdf
-
-    console.log(embedHTML)
     if (messages.length === 0) {
       setCurrentURL(websiteUrl)
       isAlreadyExistEmbedding = keepTrackOfEmbedding[currentURL]
@@ -203,7 +201,6 @@ export const useMessage = () => {
     try {
       if (isAlreadyExistEmbedding) {
         vectorstore = isAlreadyExistEmbedding
-        console.log("Embedding already exist")
       } else {
         if (chatWithWebsiteEmbedding) {
           vectorstore = await memoryEmbedding({
@@ -217,7 +214,6 @@ export const useMessage = () => {
             url: embedURL
           })
         }
-        console.log("Embedding created")
       }
       let query = message
       const { ragPrompt: systemPrompt, ragQuestionPrompt: questionPrompt } =
