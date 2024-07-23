@@ -31,6 +31,16 @@
         "label": "Inviare notifica dopo aver terminato l'elaborazione della base di conoscenza"
       }
     },
+    "sidepanelRag": {
+      "heading": "Impostazioni Chat Copilot con Sito Web",
+      "ragEnabled": {
+        "label": "Chatta con il sito web utilizzando embedding vettoriali"
+      },
+      "maxWebsiteContext": {
+        "label": "Dimensione del contenuto del sito web in modalità normale",
+        "placeholder": "Dimensione del contenuto (predefinito 4028)"
+      }
+    },
     "webSearch": {
       "heading": "Gestione ricerca Web",
       "searchMode": {
@@ -288,6 +298,11 @@
         "label": "Sovrapposizione del Blocco (Chunk Overlap)",
         "placeholder": "Inserisci la Sovrapposizione del Blocco (Chunk Overlap)",
         "required": "Inserisci la Sovrapposizione del Blocco"
+      },
+      "totalFilePerKB": {
+        "label": "Limite predefinito di file della base di conoscenza",
+        "placeholder": "Inserisci il limite predefinito di file (es. 10)",
+        "required": "Inserisci il limite predefinito di file"
       }
     },
     "prompt": {

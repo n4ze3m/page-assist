@@ -2,6 +2,7 @@ import { Storage } from "@plasmohq/storage"
 import { cleanUrl } from "../libs/clean-url"
 import { urlRewriteRuntime } from "../libs/runtime"
 import { getChromeAIModel } from "./chrome"
+import { setTotalFilePerKB } from "./app"
 
 const storage = new Storage()
 
@@ -142,7 +143,7 @@ export const deleteModel = async (model: string) => {
   if (!response.ok) {
     throw new Error(response.statusText)
   }
-  return response.json()
+  return "ok"
 }
 
 
@@ -324,11 +325,13 @@ export const setDefaultEmbeddingChunkOverlap = async (overlap: number) => {
 export const saveForRag = async (
   model: string,
   chunkSize: number,
-  overlap: number
+  overlap: number,
+  totalFilePerKB: number
 ) => {
   await setDefaultEmbeddingModelForRag(model)
   await setDefaultEmbeddingChunkSize(chunkSize)
   await setDefaultEmbeddingChunkOverlap(overlap)
+  await setTotalFilePerKB(totalFilePerKB)
 }
 
 export const getWebSearchPrompt = async () => {

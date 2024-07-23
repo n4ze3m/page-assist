@@ -31,6 +31,16 @@
         "label": "Envoyer une notification après avoir terminé le traitement de la base de connaissances"
       }
     },
+    "sidepanelRag": {
+      "heading": "Paramètres du Chat Copilot avec le Site Web",
+      "ragEnabled": {
+        "label": "Discuter avec le site web en utilisant des embeddings vectoriels"
+      },
+      "maxWebsiteContext": {
+        "label": "Taille du contenu du site web en mode normal",
+        "placeholder": "Taille du contenu (par défaut 4028)"
+      }
+    },
     "webSearch": {
       "heading": "Gérer la recherche Web",
       "searchMode": {
@@ -288,6 +298,11 @@
         "label": "Chevauchement",
         "placeholder": "Entrez le chevauchement des morceaux",
         "required": "Veuillez saisir un chevauchement"
+      },
+      "totalFilePerKB": {
+        "label": "Limite par défaut de fichiers de la base de connaissances",
+        "placeholder": "Entrez la limite par défaut de fichiers (ex. 10)",
+        "required": "Veuillez entrer la limite par défaut de fichiers"
       }
     },
     "prompt": {

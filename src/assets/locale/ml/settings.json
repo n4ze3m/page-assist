@@ -34,6 +34,16 @@
         "label": "അറിവ് ശേഖരം പ്രോസസ്സ് ചെയ്ത് കഴിഞ്ഞതിന് ശേഷം അറിയിപ്പ് അയയ്ക്കുക"
       }
     },
+    "sidepanelRag": {
+      "heading": "വെബ്‌സൈറ്റുമായുള്ള കോപൈലറ്റ് ചാറ്റ് ക്രമീകരണങ്ങൾ",
+      "ragEnabled": {
+        "label": "വെക്ടർ എംബെഡിംഗുകൾ ഉപയോഗിച്ച് വെബ്‌സൈറ്റുമായി ചാറ്റ് ചെയ്യുക"
+      },
+      "maxWebsiteContext": {
+        "label": "സാധാരണ മോഡിലെ വെബ്‌സൈറ്റ് ഉള്ളടക്ക വലുപ്പം",
+        "placeholder": "ഉള്ളടക്ക വലുപ്പം (സ്ഥിരസ്ഥിതി 4028)"
+      }
+    },
     "webSearch": {
       "heading": "വെബ്ബ് തിരച്ചിൽ നിയന്ത്രിക്കുക",
       "searchMode": {
@@ -291,6 +301,11 @@
         "label": "ചങ്ക് ഓവര്‍ലാപ്പ്",
         "placeholder": "ചങ്ക് ഓവര്‍ലാപ്പ് നല്കുക",
         "required": "ദയവായി ചങ്ക് ഓവര്‍ലാപ്പ് നല്കുക"
+      },
+      "totalFilePerKB": {
+        "label": "Limite padrão de arquivos da base de conhecimento",
+        "placeholder": "Digite o limite padrão de arquivos (ex. 10)",
+        "required": "Por favor, digite o limite padrão de arquivos"
       }
     },
     "prompt": {

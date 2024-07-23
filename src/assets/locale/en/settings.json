@@ -31,6 +31,16 @@
         "label": "Send Notification After Finishing Processing the Knowledge Base"
       }
     },
+    "sidepanelRag": {
+      "heading": "Copilot Chat With Website Settings",
+      "ragEnabled": {
+        "label": "Chat with website using vector embeddings"
+      },
+      "maxWebsiteContext": {
+        "label": "Normal mode website content size",
+        "placeholder": "Content size (default 4028)"
+      }
+    },
     "webSearch": {
       "heading": "Manage Web Search",
       "searchMode": {
@@ -288,6 +298,11 @@
         "label": "Chunk Overlap",
         "placeholder": "Enter Chunk Overlap",
         "required": "Please enter a chunk overlap"
+      },
+      "totalFilePerKB": {
+        "label": "Knowledge Base Default File Limit",
+        "placeholder": "Enter default file limit (e.g., 10)",
+        "required": "Please enter the default file limit"
       }
     },
     "prompt": {

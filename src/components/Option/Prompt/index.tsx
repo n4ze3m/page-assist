@@ -126,30 +126,31 @@ export const PromptBody = () => {
               {
                 title: t("managePrompts.columns.title"),
                 dataIndex: "title",
-                key: "title"
+                key: "title",
+                render: (content) => (<span className="line-clamp-1">{content}</span>)
               },
               {
                 title: t("managePrompts.columns.prompt"),
                 dataIndex: "content",
-                key: "content"
+                key: "content",
+                render: (content) => (<span className="line-clamp-1">{content}</span>)
               },
               {
                 title: t("managePrompts.columns.type"),
                 dataIndex: "is_system",
                 key: "is_system",
                 render: (is_system) =>
-                  is_system ? (
-                    <span className="flex items-center gap-2">
-                      <Computer className="w-5 h-5 " />
-                      {t("managePrompts.systemPrompt")}
-                    </span>
-                  ) : (
-                    <span className="flex items-center gap-2">
-                      <Zap className="w-5 h-5" />
-                      {t("managePrompts.quickPrompt")}
-                    </span>
-                  )
-              },
+                  <span className="flex items-center gap-2 text-xs w-32">
+                    {is_system ? (
+                      <>
+                        <Computer className="size-4" /> {t("managePrompts.systemPrompt")}
+                      </>
+                    ) : (
+                      <>
+                        <Zap className="size-4" /> {t("managePrompts.quickPrompt")}
+                      </>
+                    )}
+                  </span>              },
               {
                 title: t("managePrompts.columns.actions"),
                 render: (_, record) => (
@@ -164,7 +165,7 @@ export const PromptBody = () => {
                           }
                         }}
                         className="text-red-500 dark:text-red-400">
-                        <Trash2 className="w-5 h-5" />
+                        <Trash2 className="size-4" />
                       </button>
                     </Tooltip>
                     <Tooltip title={t("managePrompts.tooltip.edit")}>
@@ -175,7 +176,7 @@ export const PromptBody = () => {
                           setOpenEdit(true)
                         }}
                         className="text-gray-500 dark:text-gray-400">
-                        <Pen className="w-5 h-5" />
+                        <Pen className="size-4" />
                       </button>
                     </Tooltip>
                   </div>

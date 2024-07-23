@@ -10,6 +10,8 @@ import {
 } from "~/services/ollama"
 import { SettingPrompt } from "./prompt"
 import { useTranslation } from "react-i18next"
+import { getTotalFilePerKB } from "@/services/app"
+import { SidepanelRag } from "./sidepanel-rag"
 
 export const RagSettings = () => {
   const { t } = useTranslation("settings")
@@ -19,19 +21,20 @@ export const RagSettings = () => {
   const { data: ollamaInfo, status } = useQuery({
     queryKey: ["fetchRAGSettings"],
     queryFn: async () => {
-      const [allModels, chunkOverlap, chunkSize, defaultEM] = await Promise.all(
-        [
+      const [allModels, chunkOverlap, chunkSize, defaultEM, totalFilePerKB] =
+        await Promise.all([
           getAllModels({ returnEmpty: true }),
           defaultEmbeddingChunkOverlap(),
           defaultEmbeddingChunkSize(),
-          defaultEmbeddingModelForRag()
-        ]
-      )
+          defaultEmbeddingModelForRag(),
+          getTotalFilePerKB()
+        ])
       return {
         models: allModels,
         chunkOverlap,
         chunkSize,
-        defaultEM
+        defaultEM,
+        totalFilePerKB
       }
     }
   })
@@ -41,8 +44,9 @@ export const RagSettings = () => {
       model: string
       chunkSize: number
       overlap: number
+      totalFilePerKB: number
     }) => {
-      await saveForRag(data.model, data.chunkSize, data.overlap)
+      await saveForRag(data.model, data.chunkSize, data.overlap,  data.totalFilePerKB)
       return true
     },
     onSuccess: () => {
@@ -70,13 +74,15 @@ export const RagSettings = () => {
                 saveRAG({
                   model: data.defaultEM,
                   chunkSize: data.chunkSize,
-                  overlap: data.chunkOverlap
+                  overlap: data.chunkOverlap,
+                  totalFilePerKB: data.totalFilePerKB
                 })
               }}
               initialValues={{
                 chunkSize: ollamaInfo?.chunkSize,
                 chunkOverlap: ollamaInfo?.chunkOverlap,
-                defaultEM: ollamaInfo?.defaultEM
+                defaultEM: ollamaInfo?.defaultEM,
+                totalFilePerKB: ollamaInfo?.totalFilePerKB
               }}>
               <Form.Item
                 name="defaultEM"
@@ -85,9 +91,7 @@ export const RagSettings = () => {
                 rules={[
                   {
                     required: true,
-                    message: t(
-                      "rag.ragSettings.model.required"
-                    )
+                    message: t("rag.ragSettings.model.required")
                   }
                 ]}>
                 <Select
@@ -99,9 +103,7 @@ export const RagSettings = () => {
                       0
                   }
                   showSearch
-                  placeholder={t(
-                    "rag.ragSettings.model.placeholder"
-                  )}
+                  placeholder={t("rag.ragSettings.model.placeholder")}
                   style={{ width: "100%" }}
                   className="mt-4"
                   options={ollamaInfo.models?.map((model) => ({
@@ -117,44 +119,52 @@ export const RagSettings = () => {
                 rules={[
                   {
                     required: true,
-                    message: t(
-                      "rag.ragSettings.chunkSize.required"
-                    )
+                    message: t("rag.ragSettings.chunkSize.required")
                   }
                 ]}>
                 <InputNumber
                   style={{ width: "100%" }}
-                  placeholder={t(
-                    "rag.ragSettings.chunkSize.placeholder"
-                  )}
+                  placeholder={t("rag.ragSettings.chunkSize.placeholder")}
                 />
               </Form.Item>
               <Form.Item
                 name="chunkOverlap"
-                label={t(
-                  "rag.ragSettings.chunkOverlap.label"
-                )}
+                label={t("rag.ragSettings.chunkOverlap.label")}
                 rules={[
                   {
                     required: true,
-                    message: t(
-                      "rag.ragSettings.chunkOverlap.required"
-                    )
+                    message: t("rag.ragSettings.chunkOverlap.required")
                   }
                 ]}>
                 <InputNumber
                   style={{ width: "100%" }}
-                  placeholder={t(
-                    "rag.ragSettings.chunkOverlap.placeholder"
-                  )}
+                  placeholder={t("rag.ragSettings.chunkOverlap.placeholder")}
                 />
               </Form.Item>
+
+              <Form.Item
+                name="totalFilePerKB"
+                label={t("rag.ragSettings.totalFilePerKB.label")}
+                rules={[
+                  {
+                    required: true,
+                    message: t("rag.ragSettings.totalFilePerKB.required")
+                  }
+                ]}>
+                <InputNumber
+                  style={{ width: "100%" }}
+                  placeholder={t("rag.ragSettings.totalFilePerKB.placeholder")}
+                />
+              </Form.Item>
+
 
               <div className="flex justify-end">
                 <SaveButton disabled={isSaveRAGPending} btnType="submit" />
               </div>
             </Form>
           </div>
+
+          <SidepanelRag  />
 
           <div>
             <div>

@@ -31,6 +31,16 @@
         "label": "Enviar notificación después de terminar el procesamiento de la base de conocimientos"
       }
     },
+    "sidepanelRag": {
+      "heading": "Configuración del Chat Copilot con Sitio Web",
+      "ragEnabled": {
+        "label": "Chatear con el sitio web usando incrustaciones vectoriales"
+      },
+      "maxWebsiteContext": {
+        "label": "Tamaño del contenido del sitio web en modo normal",
+        "placeholder": "Tamaño del contenido (predeterminado 4028)"
+      }
+    },
     "webSearch": {
       "heading": "Manejo de la busqueda Web",
       "searchMode": {
@@ -288,6 +298,11 @@
         "label": "Solapamiento del Chunk",
         "placeholder": "Ingrese el solapamiento del chunk",
         "required": "Por favor, ingresar el solapamiento del chunk"
+      },
+      "totalFilePerKB": {
+        "label": "Límite predeterminado de archivos de la base de conocimientos",
+        "placeholder": "Ingrese el límite predeterminado de archivos (ej. 10)",
+        "required": "Por favor, ingrese el límite predeterminado de archivos"
       }
     },
     "prompt": {

@@ -98,3 +98,14 @@ export const getOpenOnRightClick = async (): Promise<string> => {
 export const setOpenOnRightClick = async (option: "webUI" | "sidePanel"): Promise<void> => {
   await storage.set("openOnRightClick", option);
 };
+
+
+export const getTotalFilePerKB = async (): Promise<number> => {
+  const totalFilePerKB = await storage.get<number>("totalFilePerKB");
+  return totalFilePerKB || 10;
+}
+
+
+export const setTotalFilePerKB = async (totalFilePerKB: number): Promise<void> => {
+  await storage.set("totalFilePerKB", totalFilePerKB);
+};

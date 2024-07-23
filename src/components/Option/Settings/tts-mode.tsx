@@ -35,7 +35,10 @@ export const TTSModeSettings = ({ hideBorder }: { hideBorder?: boolean }) => {
   return (
     <div>
       <div className="mb-5">
-        <h2 className="text-base font-semibold leading-7 text-gray-900 dark:text-white">
+        <h2
+          className={`${
+            !hideBorder ? "text-base font-semibold leading-7" : "text-md"
+          } text-gray-900 dark:text-white`}>
           {t("generalSettings.tts.heading")}
         </h2>
         {!hideBorder && (

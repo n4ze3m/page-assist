@@ -7,6 +7,7 @@ import { InboxIcon } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import PubSub from "pubsub-js"
 import { KNOWLEDGE_QUEUE } from "@/queue"
+import { useStorage } from "@plasmohq/storage/hook"
 
 type Props = {
   open: boolean
@@ -16,6 +17,7 @@ type Props = {
 export const AddKnowledge = ({ open, setOpen }: Props) => {
   const { t } = useTranslation(["knowledge", "common"])
   const [form] = Form.useForm()
+  const [totalFilePerKB] = useStorage("totalFilePerKB", 10)
 
   const onUploadHandler = async (data: {
     title: string
@@ -92,7 +94,7 @@ export const AddKnowledge = ({ open, setOpen }: Props) => {
           <Upload.Dragger
             accept={".pdf, .csv, .txt, .md, .docx"}
             multiple={true}
-            maxCount={10}
+            maxCount={totalFilePerKB}
             beforeUpload={(file) => {
               const allowedTypes = [
                 "application/pdf",
