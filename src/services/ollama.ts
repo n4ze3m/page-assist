@@ -143,7 +143,7 @@ export const deleteModel = async (model: string) => {
   if (!response.ok) {
     throw new Error(response.statusText)
   }
-  return response.json()
+  return "ok"
 }
 
 
