@@ -1,84 +1,10 @@
 import { getOllamaURL, isOllamaRunning } from "../services/ollama"
 import { browser } from "wxt/browser"
-import { setBadgeBackgroundColor, setBadgeText, setTitle } from "@/utils/action"
-
-const progressHuman = (completed: number, total: number) => {
-  return ((completed / total) * 100).toFixed(0) + "%"
-}
-
-const clearBadge = () => {
-  setBadgeText({ text: "" })
-  setTitle({ title: "" })
-}
-const streamDownload = async (url: string, model: string) => {
-  url += "/api/pull"
-  const response = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ model, stream: true })
-  })
-
-  const reader = response.body?.getReader()
-
-  const decoder = new TextDecoder()
-
-  let isSuccess = true
-  while (true) {
-    if (!reader) {
-      break
-    }
-    const { done, value } = await reader.read()
-
-    if (done) {
-      break
-    }
-
-    const text = decoder.decode(value)
-    try {
-      const json = JSON.parse(text.trim()) as {
-        status: string
-        total?: number
-        completed?: number
-      }
-      if (json.total && json.completed) {
-        setBadgeText({
-          text: progressHuman(json.completed, json.total)
-        })
-        setBadgeBackgroundColor({ color: "#0000FF" })
-      } else {
-        setBadgeText({ text: "🏋️‍♂️" })
-        setBadgeBackgroundColor({ color: "#FFFFFF" })
-      }
-
-      setTitle({ title: json.status })
-
-      if (json.status === "success") {
-        isSuccess = true
-      }
-    } catch (e) {
-      console.error(e)
-    }
-  }
-
-  if (isSuccess) {
-    setBadgeText({ text: "✅" })
-    setBadgeBackgroundColor({ color: "#00FF00" })
-    setTitle({ title: "Model pulled successfully" })
-  } else {
-    setBadgeText({ text: "❌" })
-    setBadgeBackgroundColor({ color: "#FF0000" })
-    setTitle({ title: "Model pull failed" })
-  }
-
-  setTimeout(() => {
-    clearBadge()
-  }, 5000)
-}
+import { clearBadge, streamDownload } from "@/utils/pull-ollama"
 
 export default defineBackground({
   main() {
+    let isCopilotRunning: boolean = false
     browser.runtime.onMessage.addListener(async (message) => {
       if (message.type === "sidepanel") {
         await browser.sidebarAction.open()
@@ -97,6 +23,15 @@ export default defineBackground({
         }
 
         await streamDownload(ollamaURL, message.modelName)
+      }
+    })
+
+    browser.runtime.onConnect.addListener((port) => {
+      if (port.name === "pgCopilot") {
+        isCopilotRunning = true
+        port.onDisconnect.addListener(() => {
+          isCopilotRunning = false
+        })
       }
     })
 
@@ -124,10 +59,41 @@ export default defineBackground({
     browser.contextMenus.create({
       id: contextMenuId["sidePanel"],
       title: contextMenuTitle["sidePanel"],
-      contexts: ["all"]
+      contexts: ["page", "selection"]
     })
+
+    browser.contextMenus.create({
+      id: "summarize-pa",
+      title: "Summarize",
+      contexts: ["selection"]
+    })
+
+    browser.contextMenus.create({
+      id: "explain-pa",
+      title: "Explain",
+      contexts: ["selection"]
+    })
+
+    browser.contextMenus.create({
+      id: "rephrase-pa",
+      title: "Rephrase",
+      contexts: ["selection"]
+    })
+
+    browser.contextMenus.create({
+      id: "translate-pg",
+      title: "Translate",
+      contexts: ["selection"]
+    })
+
+    // browser.contextMenus.create({
+    //   id: "custom-pg",
+    //   title: "Custom",
+    //   contexts: ["selection"]
+    // })
+
     if (import.meta.env.BROWSER === "chrome") {
-      browser.contextMenus.onClicked.addListener((info, tab) => {
+      browser.contextMenus.onClicked.addListener(async (info, tab) => {
         if (info.menuItemId === "open-side-panel-pa") {
           chrome.sidePanel.open({
             tabId: tab.id!
@@ -136,6 +102,68 @@ export default defineBackground({
           browser.tabs.create({
             url: browser.runtime.getURL("/options.html")
           })
+        } else if (info.menuItemId === "summarize-pa") {
+          chrome.sidePanel.open({
+            tabId: tab.id!
+          })
+          // this is a bad method hope somone can fix it :)
+          setTimeout(async () => {
+            await browser.runtime.sendMessage({
+              from: "background",
+              type: "summary",
+              text: info.selectionText
+            })
+          }, isCopilotRunning ? 0 : 5000)
+
+        } else if (info.menuItemId === "rephrase-pa") {
+          chrome.sidePanel.open({
+            tabId: tab.id!
+          })
+          setTimeout(async () => {
+
+            await browser.runtime.sendMessage({
+              type: "rephrase",
+              from: "background",
+              text: info.selectionText
+            })
+          }, isCopilotRunning ? 0 : 5000)
+
+        } else if (info.menuItemId === "translate-pg") {
+          chrome.sidePanel.open({
+            tabId: tab.id!
+          })
+
+          setTimeout(async () => {
+            await browser.runtime.sendMessage({
+              type: "translate",
+              from: "background",
+              text: info.selectionText
+            })
+          }, isCopilotRunning ? 0 : 5000)
+        } else if (info.menuItemId === "explain-pa") {
+          chrome.sidePanel.open({
+            tabId: tab.id!
+          })
+
+          setTimeout(async () => {
+            await browser.runtime.sendMessage({
+              type: "explain",
+              from: "background",
+              text: info.selectionText
+            })
+          }, isCopilotRunning ? 0 : 5000)
+        } else if (info.menuItemId === "custom-pg") {
+          chrome.sidePanel.open({
+            tabId: tab.id!
+          })
+
+          setTimeout(async () => {
+            await browser.runtime.sendMessage({
+              type: "custom",
+              from: "background",
+              text: info.selectionText
+            })
+          }, isCopilotRunning ? 0 : 5000)
         }
       })
 

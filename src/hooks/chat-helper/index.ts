@@ -13,7 +13,8 @@ export const saveMessageOnError = async ({
   selectedModel,
   setHistoryId,
   isRegenerating,
-  message_source = "web-ui"
+  message_source = "web-ui",
+  message_type 
 }: {
   e: any
   setHistory: (history: ChatHistory) => void
@@ -26,6 +27,7 @@ export const saveMessageOnError = async ({
   setHistoryId: (historyId: string) => void
   isRegenerating: boolean
   message_source?: "copilot" | "web-ui"
+  message_type?: string
 }) => {
   if (
     e?.name === "AbortError" ||
@@ -55,7 +57,8 @@ export const saveMessageOnError = async ({
           userMessage,
           [image],
           [],
-          1
+          1,
+          message_type
         )
       }
       await saveMessage(
@@ -65,7 +68,8 @@ export const saveMessageOnError = async ({
         botMessage,
         [],
         [],
-        2
+        2,
+        message_type
       )
       await setLastUsedChatModel(historyId, selectedModel)
     } else {
@@ -78,7 +82,8 @@ export const saveMessageOnError = async ({
           userMessage,
           [image],
           [],
-          1
+          1,
+          message_type
         )
       }
       await saveMessage(
@@ -88,7 +93,8 @@ export const saveMessageOnError = async ({
         botMessage,
         [],
         [],
-        2
+        2,
+        message_type
       )
       setHistoryId(newHistoryId.id)
       await setLastUsedChatModel(newHistoryId.id, selectedModel)
@@ -109,7 +115,8 @@ export const saveMessageOnSuccess = async ({
   image,
   fullText,
   source,
-  message_source = "web-ui"
+  message_source = "web-ui",
+  message_type
 }: {
   historyId: string | null
   setHistoryId: (historyId: string) => void
@@ -119,7 +126,8 @@ export const saveMessageOnSuccess = async ({
   image: string
   fullText: string
   source: any[]
-  message_source?: "copilot" | "web-ui"
+  message_source?: "copilot" | "web-ui",
+  message_type?: string
 }) => {
   if (historyId) {
     if (!isRegenerate) {
@@ -130,7 +138,8 @@ export const saveMessageOnSuccess = async ({
         message,
         [image],
         [],
-        1
+        1,
+        message_type
       )
     }
     await saveMessage(
@@ -140,7 +149,8 @@ export const saveMessageOnSuccess = async ({
       fullText,
       [],
       source,
-      2
+      2,
+      message_type
     )
     await setLastUsedChatModel(historyId, selectedModel!)
   } else {
@@ -152,7 +162,8 @@ export const saveMessageOnSuccess = async ({
       message,
       [image],
       [],
-      1
+      1,
+      message_type
     )
     await saveMessage(
       newHistoryId.id,
@@ -161,7 +172,8 @@ export const saveMessageOnSuccess = async ({
       fullText,
       [],
       source,
-      2
+      2,
+      message_type
     )
     setHistoryId(newHistoryId.id)
     await setLastUsedChatModel(newHistoryId.id, selectedModel!)

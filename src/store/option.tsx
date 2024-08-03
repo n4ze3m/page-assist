@@ -18,12 +18,14 @@ export type Message = {
   images?: string[]
   search?: WebSearch
   id?: string
+  messageType?: string
 }
 
 export type ChatHistory = {
   role: "user" | "assistant" | "system"
   content: string
-  image?: string
+  image?: string,
+  messageType?: string
 }[]
 
 type State = {
