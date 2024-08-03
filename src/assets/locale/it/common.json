@@ -84,5 +84,11 @@
             }
         },
         "advanced": "Altre Impostazioni del Modello"
+    },
+    "copilot": {
+        "summary": "Riassumere",
+        "explain": "Spiegare",
+        "rephrase": "Riformulare",
+        "translate": "Tradurre"
     }
 }

@@ -86,11 +86,11 @@ export default defineBackground({
       contexts: ["selection"]
     })
 
-    // browser.contextMenus.create({
-    //   id: "custom-pg",
-    //   title: "Custom",
-    //   contexts: ["selection"]
-    // })
+    browser.contextMenus.create({
+      id: "custom-pg",
+      title: "Custom",
+      contexts: ["selection"]
+    })
 
     if (import.meta.env.BROWSER === "chrome") {
       browser.contextMenus.onClicked.addListener(async (info, tab) => {

@@ -1,88 +1,94 @@
 {
-    "pageAssist": "ページアシスト",
-    "selectAModel": "モデルを選択",
-    "save": "保存",
-    "saved": "保存済み",
-    "cancel": "キャンセル",
-    "retry": "再試行",
-    "share": {
-      "tooltip": {
-        "share": "共有"
+  "pageAssist": "ページアシスト",
+  "selectAModel": "モデルを選択",
+  "save": "保存",
+  "saved": "保存済み",
+  "cancel": "キャンセル",
+  "retry": "再試行",
+  "share": {
+    "tooltip": {
+      "share": "共有"
+    },
+    "modal": {
+      "title": "チャットリンクを共有"
+    },
+    "form": {
+      "defaultValue": {
+        "name": "匿名",
+        "title": "無題のチャット"
       },
-      "modal": {
-        "title": "チャットリンクを共有"
+      "title": {
+        "label": "チャットタイトル",
+        "placeholder": "チャットタイトルを入力",
+        "required": "チャットタイトルは必須です"
       },
-      "form": {
-        "defaultValue": {
-          "name": "匿名",
-          "title": "無題のチャット"
-        },
-        "title": {
-          "label": "チャットタイトル",
-          "placeholder": "チャットタイトルを入力",
-          "required": "チャットタイトルは必須です"
-        },
-        "name": {
-          "label": "あなたの名前",
-          "placeholder": "名前を入力",
-          "required": "名前は必須です"
-        },
-        "btn": {
-          "save": "リンクを生成",
-          "saving": "リンクを生成中..."
-        }
+      "name": {
+        "label": "あなたの名前",
+        "placeholder": "名前を入力",
+        "required": "名前は必須です"
       },
-      "notification": {
-        "successGenerate": "リンクがクリップボードにコピーされました",
-        "failGenerate": "リンクの生成に失敗しました"
+      "btn": {
+        "save": "リンクを生成",
+        "saving": "リンクを生成中..."
       }
     },
-    "copyToClipboard": "クリップボードにコピー",
-    "webSearch": "ウェブを検索中",
-    "regenerate": "再生成",
-    "edit": "編集",
-    "saveAndSubmit": "保存して送信",
-    "editMessage": {
-      "placeholder": "メッセージを入力..."
-    },
-    "submit": "送信",
-    "noData": "データがありません",
-    "noHistory": "チャット履歴がありません", 
-    "chatWithCurrentPage": "現在のページでチャット",
-    "beta": "ベータ",
-    "tts": "読み上げ",
-    "currentChatModelSettings": "現在のチャットモデル設定",
-    "modelSettings": {
-        "label": "モデル設定",
-        "description": "すべてのチャットに対してモデルオプションをグローバルに設定します",
-        "form": {
-            "keepAlive": {
-                "label": "キープアライブ",
-                "help": "リクエスト後にモデルがメモリに保持される時間をコントロールします（デフォルト: 5 分）",
-                "placeholder": "キープアライブの期間を入力してください（例：5分、10分、1時間）"
-            },
-            "temperature": {
-                "label": "温度",
-                "placeholder": "温度値を入力してください（例：0.7、1.0）"
-            },
-            "numCtx": {
-                "label": "コンテキストの数",
-                "placeholder": "コンテキスト数を入力してください（デフォルト：2048）"
-            },
-            "seed": {
-                "label": "シード",
-                "placeholder": "シード値を入力してください（例：1234）",
-                "help": "モデル出力の再現性"
-            },
-            "topK": {
-                "label": "Top K",
-                "placeholder": "Top K値を入力してください（例：40、100）"
-            },
-            "topP": {
-                "label": "Top P",
-                "placeholder": "Top P値を入力してください（例：0.9、0.95）"
-            }
-        },
-        "advanced": "その他のモデル設定"
+    "notification": {
+      "successGenerate": "リンクがクリップボードにコピーされました",
+      "failGenerate": "リンクの生成に失敗しました"
     }
+  },
+  "copyToClipboard": "クリップボードにコピー",
+  "webSearch": "ウェブを検索中",
+  "regenerate": "再生成",
+  "edit": "編集",
+  "saveAndSubmit": "保存して送信",
+  "editMessage": {
+    "placeholder": "メッセージを入力..."
+  },
+  "submit": "送信",
+  "noData": "データがありません",
+  "noHistory": "チャット履歴がありません",
+  "chatWithCurrentPage": "現在のページでチャット",
+  "beta": "ベータ",
+  "tts": "読み上げ",
+  "currentChatModelSettings": "現在のチャットモデル設定",
+  "modelSettings": {
+    "label": "モデル設定",
+    "description": "すべてのチャットに対してモデルオプションをグローバルに設定します",
+    "form": {
+      "keepAlive": {
+        "label": "キープアライブ",
+        "help": "リクエスト後にモデルがメモリに保持される時間をコントロールします（デフォルト: 5 分）",
+        "placeholder": "キープアライブの期間を入力してください（例：5分、10分、1時間）"
+      },
+      "temperature": {
+        "label": "温度",
+        "placeholder": "温度値を入力してください（例：0.7、1.0）"
+      },
+      "numCtx": {
+        "label": "コンテキストの数",
+        "placeholder": "コンテキスト数を入力してください（デフォルト：2048）"
+      },
+      "seed": {
+        "label": "シード",
+        "placeholder": "シード値を入力してください（例：1234）",
+        "help": "モデル出力の再現性"
+      },
+      "topK": {
+        "label": "Top K",
+        "placeholder": "Top K値を入力してください（例：40、100）"
+      },
+      "topP": {
+        "label": "Top P",
+        "placeholder": "Top P値を入力してください（例：0.9、0.95）"
+      }
+    },
+    "advanced": "その他のモデル設定"
+  },
+  "copilot": {
+    "summary": "要約",
+    "explain": "説明",
+    "rephrase": "言い換え",
+    "translate": "翻訳"
   }
+}

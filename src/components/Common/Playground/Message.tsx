@@ -37,6 +37,14 @@ type Props = {
   isTTSEnabled?: boolean
 }
 
+const tagColors = {
+  summary: "blue",
+  explain: "green",
+  translate: "purple",
+  custom: "orange",
+  rephrase: "yellow"
+}
+
 export const PlaygroundMessage = (props: Props) => {
   const [isBtnPressed, setIsBtnPressed] = React.useState(false)
   const [editMode, setEditMode] = React.useState(false)
@@ -79,7 +87,9 @@ export const PlaygroundMessage = (props: Props) => {
             ) : null}
             <div>
               {props?.message_type && (
-                <Tag color="blue">{props?.message_type}</Tag>
+                <Tag color={tagColors[props?.message_type] || "default"}>
+                  {t(`copilot.${props?.message_type}`)}
+                </Tag>
               )}
             </div>
             <div className="flex flex-grow flex-col">
@@ -90,7 +100,7 @@ export const PlaygroundMessage = (props: Props) => {
                   <p
                     className={`prose dark:prose-invert whitespace-pre-line	 prose-p:leading-relaxed prose-pre:p-0 dark:prose-dark ${
                       props.message_type &&
-                      "italic text-gray-500 dark:text-gray-400 text-xs"
+                      "italic text-gray-500 dark:text-gray-400 text-sm"
                     }`}>
                     {props.message}
                   </p>
