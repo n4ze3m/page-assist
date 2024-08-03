@@ -8,16 +8,12 @@ import {
   Input,
   Form,
   Switch,
+  Segmented
 } from "antd"
 import { Trash2, Pen, Computer, Zap } from "lucide-react"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
-import {
-  deletePromptById,
-  getAllPrompts,
-  savePrompt,
-  updatePrompt
-} from "@/db"
+import { deletePromptById, getAllPrompts, savePrompt, updatePrompt } from "@/db"
 
 export const PromptBody = () => {
   const queryClient = useQueryClient()
@@ -27,7 +23,9 @@ export const PromptBody = () => {
   const [createForm] = Form.useForm()
   const [editForm] = Form.useForm()
   const { t } = useTranslation("settings")
-
+  const [selectedSegment, setSelectedSegment] = useState<"custom" | "copilot">(
+    "custom"
+  )
   const { data, status } = useQuery({
     queryKey: ["fetchAllPrompts"],
     queryFn: getAllPrompts
@@ -103,8 +101,8 @@ export const PromptBody = () => {
       }
     })
 
-  return (
-    <div>
+  function customPrompts() {
+    return (
       <div>
         <div className="mb-6">
           <div className="-ml-4 -mt-2 flex flex-wrap items-center justify-end sm:flex-nowrap">
@@ -127,30 +125,38 @@ export const PromptBody = () => {
                 title: t("managePrompts.columns.title"),
                 dataIndex: "title",
                 key: "title",
-                render: (content) => (<span className="line-clamp-1">{content}</span>)
+                render: (content) => (
+                  <span className="line-clamp-1">{content}</span>
+                )
               },
               {
                 title: t("managePrompts.columns.prompt"),
                 dataIndex: "content",
                 key: "content",
-                render: (content) => (<span className="line-clamp-1">{content}</span>)
+                render: (content) => (
+                  <span className="line-clamp-1">{content}</span>
+                )
               },
               {
                 title: t("managePrompts.columns.type"),
                 dataIndex: "is_system",
                 key: "is_system",
-                render: (is_system) =>
+                render: (is_system) => (
                   <span className="flex items-center gap-2 text-xs w-32">
                     {is_system ? (
                       <>
-                        <Computer className="size-4" /> {t("managePrompts.systemPrompt")}
+                        <Computer className="size-4" />{" "}
+                        {t("managePrompts.systemPrompt")}
                       </>
                     ) : (
                       <>
-                        <Zap className="size-4" /> {t("managePrompts.quickPrompt")}
+                        <Zap className="size-4" />{" "}
+                        {t("managePrompts.quickPrompt")}
                       </>
                     )}
-                  </span>              },
+                  </span>
+                )
+              },
               {
                 title: t("managePrompts.columns.actions"),
                 render: (_, record) => (
@@ -189,6 +195,29 @@ export const PromptBody = () => {
           />
         )}
       </div>
+    )
+  }
+  return (
+    <div>
+      <div className="flex items-center justify-end mb-6">
+        <Segmented
+          size="large"
+          options={[
+            {
+              label: "Custom Prompts",
+              value: "custom"
+            },
+            {
+              label: "Copilot Prompts",
+              value: "copilot"
+            }
+          ]}
+          onChange={(value) => {
+            setSelectedSegment(value as "custom" | "copilot")
+          }}
+        />
+      </div>
+      {selectedSegment === "custom" && customPrompts()}
 
       <Modal
         title={t("managePrompts.modal.addTitle")}
