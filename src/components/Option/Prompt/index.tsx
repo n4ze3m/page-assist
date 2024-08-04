@@ -15,7 +15,10 @@ import { Trash2, Pen, Computer, Zap } from "lucide-react"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
 import { deletePromptById, getAllPrompts, savePrompt, updatePrompt } from "@/db"
-import { getAllCopilotPrompts } from "@/services/application"
+import {
+  getAllCopilotPrompts,
+  setAllCopilotPrompts
+} from "@/services/application"
 import { tagColors } from "@/utils/color"
 
 export const PromptBody = () => {
@@ -29,6 +32,11 @@ export const PromptBody = () => {
   const [selectedSegment, setSelectedSegment] = useState<"custom" | "copilot">(
     "custom"
   )
+
+  const [openCopilotEdit, setOpenCopilotEdit] = useState(false)
+  const [editCopilotId, setEditCopilotId] = useState("")
+  const [editCopilotForm] = Form.useForm()
+
   const { data, status } = useQuery({
     queryKey: ["fetchAllPrompts"],
     queryFn: getAllPrompts
@@ -95,6 +103,36 @@ export const PromptBody = () => {
         })
         setOpenEdit(false)
         editForm.resetFields()
+        notification.success({
+          message: t("managePrompts.notification.updatedSuccess"),
+          description: t("managePrompts.notification.updatedSuccessDesc")
+        })
+      },
+      onError: (error) => {
+        notification.error({
+          message: t("managePrompts.notification.error"),
+          description:
+            error?.message || t("managePrompts.notification.someError")
+        })
+      }
+    })
+
+  const { mutate: updateCopilotPrompt, isPending: isUpdatingCopilotPrompt } =
+    useMutation({
+      mutationFn: async (data: any) => {
+        return await setAllCopilotPrompts([
+          {
+            key: data.key,
+            prompt: data.prompt
+          }
+        ])
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: ["fetchCopilotPrompts"]
+        })
+        setOpenCopilotEdit(false)
+        editCopilotForm.resetFields()
         notification.success({
           message: t("managePrompts.notification.updatedSuccess"),
           description: t("managePrompts.notification.updatedSuccessDesc")
@@ -241,9 +279,9 @@ export const PromptBody = () => {
                     <Tooltip title={t("managePrompts.tooltip.edit")}>
                       <button
                         onClick={() => {
-                          // setEditId(record.id)
-                          // editForm.setFieldsValue(record)
-                          // setOpenEdit(true)
+                          setEditCopilotId(record.key)
+                          editCopilotForm.setFieldsValue(record)
+                          setOpenCopilotEdit(true)
                         }}
                         className="text-gray-500 dark:text-gray-400">
                         <Pen className="size-4" />
@@ -390,6 +428,59 @@ export const PromptBody = () => {
               disabled={isUpdatingPrompt}
               className="inline-flex justify-center w-full text-center mt-4 items-center rounded-md border border-transparent bg-black px-2 py-2 text-sm font-medium leading-4 text-white shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-white dark:text-gray-800 dark:hover:bg-gray-100 dark:focus:ring-gray-500 dark:focus:ring-offset-gray-100 disabled:opacity-50 ">
               {isUpdatingPrompt
+                ? t("managePrompts.form.btnEdit.saving")
+                : t("managePrompts.form.btnEdit.save")}
+            </button>
+          </Form.Item>
+        </Form>
+      </Modal>
+
+      <Modal
+        title={t("managePrompts.modal.editTitle")}
+        open={openCopilotEdit}
+        onCancel={() => setOpenCopilotEdit(false)}
+        footer={null}>
+        <Form
+          onFinish={(values) =>
+            updateCopilotPrompt({
+              key: editCopilotId,
+              prompt: values.prompt
+            })
+          }
+          layout="vertical"
+          form={editCopilotForm}>
+          <Form.Item
+            name="prompt"
+            label={t("managePrompts.form.prompt.label")}
+            rules={[
+              {
+                required: true,
+                message: t("managePrompts.form.prompt.required")
+              },
+              {
+                validator: (_, value) => {
+                  if (value && value.includes("{text}")) {
+                    return Promise.resolve()
+                  }
+                  return Promise.reject(
+                    new Error(
+                      t("managePrompts.form.prompt.missingTextPlaceholder")
+                    )
+                  )
+                }
+              }
+            ]}>
+            <Input.TextArea
+              placeholder={t("managePrompts.form.prompt.placeholder")}
+              autoSize={{ minRows: 3, maxRows: 10 }}
+            />
+          </Form.Item>
+
+          <Form.Item>
+            <button
+              disabled={isUpdatingCopilotPrompt}
+              className="inline-flex justify-center w-full text-center mt-4 items-center rounded-md border border-transparent bg-black px-2 py-2 text-sm font-medium leading-4 text-white shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-white dark:text-gray-800 dark:hover:bg-gray-100 dark:focus:ring-gray-500 dark:focus:ring-offset-gray-100 disabled:opacity-50 ">
+              {isUpdatingCopilotPrompt
                 ? t("managePrompts.form.btnEdit.saving")
                 : t("managePrompts.form.btnEdit.save")}
             </button>

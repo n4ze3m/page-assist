@@ -170,7 +170,8 @@
         "label": "Prompt",
         "placeholder": "Entrer Prompt",
         "required": "Veuillez entrer un prompt",
-        "help": "Vous pouvez utiliser {key} comme variable dans votre prompt."
+        "help": "Vous pouvez utiliser {key} comme variable dans votre prompt.",
+        "missingTextPlaceholder": "La variable {text} est manquante dans le message. Veuillez l'ajouter."
       },
       "isSystem": {
         "label": "Est un prompt système"

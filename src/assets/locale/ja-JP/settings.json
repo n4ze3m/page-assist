@@ -173,7 +173,8 @@
         "label": "プロンプト",
         "placeholder": "プロンプトを入力",
         "required": "プロンプトを入力してください",
-        "help": "プロンプト内で{key}を変数として使用できます。"
+        "help": "プロンプト内で{key}を変数として使用できます。",
+        "missingTextPlaceholder": "プロンプトに{text}変数がありません。追加してください。"
       },
       "isSystem": {
         "label": "システムプロンプト"
