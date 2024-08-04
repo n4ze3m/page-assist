@@ -273,7 +273,6 @@ export const PromptBody = () => {
                 )
               },
               {
-                title: t("managePrompts.columns.actions"),
                 render: (_, record) => (
                   <div className="flex gap-4">
                     <Tooltip title={t("managePrompts.tooltip.edit")}>
