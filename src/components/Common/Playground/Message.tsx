@@ -14,6 +14,7 @@ import { EditMessageForm } from "./EditMessageForm"
 import { useTranslation } from "react-i18next"
 import { MessageSource } from "./MessageSource"
 import { useTTS } from "@/hooks/useTTS"
+import { tagColors } from "@/utils/color"
 
 type Props = {
   message: string
@@ -35,14 +36,6 @@ type Props = {
   hideEditAndRegenerate?: boolean
   onSourceClick?: (source: any) => void
   isTTSEnabled?: boolean
-}
-
-const tagColors = {
-  summary: "blue",
-  explain: "green",
-  translate: "purple",
-  custom: "orange",
-  rephrase: "yellow"
 }
 
 export const PlaygroundMessage = (props: Props) => {

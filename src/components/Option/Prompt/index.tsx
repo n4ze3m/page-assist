@@ -8,12 +8,15 @@ import {
   Input,
   Form,
   Switch,
-  Segmented
+  Segmented,
+  Tag
 } from "antd"
 import { Trash2, Pen, Computer, Zap } from "lucide-react"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
 import { deletePromptById, getAllPrompts, savePrompt, updatePrompt } from "@/db"
+import { getAllCopilotPrompts } from "@/services/application"
+import { tagColors } from "@/utils/color"
 
 export const PromptBody = () => {
   const queryClient = useQueryClient()
@@ -22,13 +25,18 @@ export const PromptBody = () => {
   const [editId, setEditId] = useState("")
   const [createForm] = Form.useForm()
   const [editForm] = Form.useForm()
-  const { t } = useTranslation("settings")
+  const { t } = useTranslation(["settings", "common"])
   const [selectedSegment, setSelectedSegment] = useState<"custom" | "copilot">(
     "custom"
   )
   const { data, status } = useQuery({
     queryKey: ["fetchAllPrompts"],
     queryFn: getAllPrompts
+  })
+
+  const { data: copilotData, status: copilotStatus } = useQuery({
+    queryKey: ["fetchCopilotPrompts"],
+    queryFn: getAllCopilotPrompts
   })
 
   const { mutate: deletePrompt } = useMutation({
@@ -197,6 +205,63 @@ export const PromptBody = () => {
       </div>
     )
   }
+
+  function copilotPrompts() {
+    return (
+      <div>
+        {copilotStatus === "pending" && <Skeleton paragraph={{ rows: 8 }} />}
+
+        {copilotStatus === "success" && (
+          <Table
+            columns={[
+              {
+                title: t("managePrompts.columns.title"),
+                dataIndex: "key",
+                key: "key",
+                render: (content) => (
+                  <span className="line-clamp-1">
+                    <Tag color={tagColors[content || "default"]}>
+                      {t(`common:copilot.${content}`)}
+                    </Tag>
+                  </span>
+                )
+              },
+              {
+                title: t("managePrompts.columns.prompt"),
+                dataIndex: "prompt",
+                key: "prompt",
+                render: (content) => (
+                  <span className="line-clamp-1">{content}</span>
+                )
+              },
+              {
+                title: t("managePrompts.columns.actions"),
+                render: (_, record) => (
+                  <div className="flex gap-4">
+                    <Tooltip title={t("managePrompts.tooltip.edit")}>
+                      <button
+                        onClick={() => {
+                          // setEditId(record.id)
+                          // editForm.setFieldsValue(record)
+                          // setOpenEdit(true)
+                        }}
+                        className="text-gray-500 dark:text-gray-400">
+                        <Pen className="size-4" />
+                      </button>
+                    </Tooltip>
+                  </div>
+                )
+              }
+            ]}
+            bordered
+            dataSource={copilotData}
+            rowKey={(record) => record.key}
+          />
+        )}
+      </div>
+    )
+  }
+
   return (
     <div>
       <div className="flex items-center justify-end mb-6">
@@ -218,6 +283,7 @@ export const PromptBody = () => {
         />
       </div>
       {selectedSegment === "custom" && customPrompts()}
+      {selectedSegment === "copilot" && copilotPrompts()}
 
       <Modal
         title={t("managePrompts.modal.addTitle")}
