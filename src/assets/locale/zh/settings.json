@@ -163,6 +163,10 @@
       "addTitle": "添加新提示词",
       "editTitle": "编辑提示词"
     },
+    "segmented": {
+      "custom": "自定义提示",
+      "copilot": "Copilot 提示"
+    },
     "form": {
       "title": {
         "label": "标题",

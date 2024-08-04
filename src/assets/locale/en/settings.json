@@ -141,6 +141,10 @@
     "option1": "Normal",
     "option2": "RAG",
     "questionPrompt": "Question Prompt",
+    "segmented": {
+      "custom": "Custom Prompts",
+      "copilot": "Copilot Prompts"
+    },
     "columns": {
       "title": "Title",
       "prompt": "Prompt",

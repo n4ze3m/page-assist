@@ -160,6 +160,10 @@
       "addTitle": "Adicionar Novo Prompt",
       "editTitle": "Editar Prompt"
     },
+    "segmented": {
+      "custom": "Prompts personalizados",
+      "copilot": "Prompts do Copilot"
+    },
     "form": {
       "title": {
         "label": "Título",

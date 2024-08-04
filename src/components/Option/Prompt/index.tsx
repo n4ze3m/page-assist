@@ -306,11 +306,15 @@ export const PromptBody = () => {
           size="large"
           options={[
             {
-              label: "Custom Prompts",
+              label: t(
+                "managePrompts.segmented.custom"
+              ),
               value: "custom"
             },
             {
-              label: "Copilot Prompts",
+              label: t(
+                "managePrompts.segmented.copilot"
+              ),
               value: "copilot"
             }
           ]}

@@ -163,6 +163,10 @@
       "addTitle": "新しいプロンプトを追加",
       "editTitle": "プロンプトを編集"
     },
+    "segmented": {
+      "custom": "カスタムプロンプト",
+      "copilot": "Copilotプロンプト"
+    },
     "form": {
       "title": {
         "label": "タイトル",

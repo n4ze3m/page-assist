@@ -160,6 +160,10 @@
       "addTitle": "Ajouter un nouveau prompt",
       "editTitle": "Modifier le prompt"
     },
+    "segmented": {
+      "custom": "Invites personnalisées",
+      "copilot": "Invites Copilot"
+    },
     "form": {
       "title": {
         "label": "Titre",

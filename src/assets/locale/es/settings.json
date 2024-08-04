@@ -147,6 +147,10 @@
       "type": "Tipo de Prompt",
       "actions": "Acciones"
     },
+    "segmented": {
+      "custom": "Invites personnalisées",
+      "copilot": "Invites Copilot"
+    },
     "systemPrompt": "Prompt del Sistema",
     "quickPrompt": "Prompt Rápido",
     "tooltip": {
