@@ -1,5 +1,6 @@
 import { saveHistory, saveMessage } from "@/db"
 import { setLastUsedChatModel } from "@/services/model-settings"
+import { generateTitle } from "@/services/title"
 import { ChatHistory } from "@/store/option"
 
 export const saveMessageOnError = async ({
@@ -14,7 +15,7 @@ export const saveMessageOnError = async ({
   setHistoryId,
   isRegenerating,
   message_source = "web-ui",
-  message_type 
+  message_type
 }: {
   e: any
   setHistory: (history: ChatHistory) => void
@@ -73,7 +74,8 @@ export const saveMessageOnError = async ({
       )
       await setLastUsedChatModel(historyId, selectedModel)
     } else {
-      const newHistoryId = await saveHistory(userMessage, false, message_source)
+      const title = await generateTitle(selectedModel, userMessage, userMessage)
+      const newHistoryId = await saveHistory(title, false, message_source)
       if (!isRegenerating) {
         await saveMessage(
           newHistoryId.id,
@@ -154,7 +156,8 @@ export const saveMessageOnSuccess = async ({
     )
     await setLastUsedChatModel(historyId, selectedModel!)
   } else {
-    const newHistoryId = await saveHistory(message, false, message_source)
+    const title = await generateTitle(selectedModel, message, message)
+    const newHistoryId = await saveHistory(title, false, message_source)
     await saveMessage(
       newHistoryId.id,
       selectedModel,

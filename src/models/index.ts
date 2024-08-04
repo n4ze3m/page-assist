@@ -13,12 +13,12 @@ export const pageAssistModel = async ({
 }: {
   model: string
   baseUrl: string
-  keepAlive: string
-  temperature: number
-  topK: number
-  topP: number
-  numCtx: number
-  seed: number
+  keepAlive?: string
+  temperature?: number
+  topK?: number
+  topP?: number
+  numCtx?: number
+  seed?: number
 }) => {
   switch (model) {
     case "chrome::gemini-nano::page-assist":
