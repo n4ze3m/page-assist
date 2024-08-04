@@ -23,7 +23,7 @@ Ensure that your rephrased version conveys the same information and intent as th
 
 Response:`
 
-const DEFAULT_TRANSLATE_PROMPT = `Translate the following text from its original language into "english"0. Maintain the tone and style of the original text as much as possible:
+const DEFAULT_TRANSLATE_PROMPT = `Translate the following text from its original language into "english". Maintain the tone and style of the original text as much as possible:
 
 Text:
 ---------

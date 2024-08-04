@@ -194,6 +194,61 @@ export default defineBackground({
           browser.tabs.create({
             url: browser.runtime.getURL("/options.html")
           })
+        } else if (info.menuItemId === "summarize-pa") {
+          if (!isCopilotRunning) {
+            browser.sidebarAction.toggle()
+          }
+          setTimeout(async () => {
+            await browser.runtime.sendMessage({
+              from: "background",
+              type: "summary",
+              text: info.selectionText
+            })
+          }, isCopilotRunning ? 0 : 5000)
+        } else if (info.menuItemId === "rephrase-pa") {
+          if (!isCopilotRunning) {
+            browser.sidebarAction.toggle()
+          }
+          setTimeout(async () => {
+            await browser.runtime.sendMessage({
+              type: "rephrase",
+              from: "background",
+              text: info.selectionText
+            })
+          }, isCopilotRunning ? 0 : 5000)
+        } else if (info.menuItemId === "translate-pg") {
+          if (!isCopilotRunning) {
+            browser.sidebarAction.toggle()
+          }
+          setTimeout(async () => {
+            await browser.runtime.sendMessage({
+              type: "translate",
+              from: "background",
+              text: info.selectionText
+            })
+          }, isCopilotRunning ? 0 : 5000)
+        } else if (info.menuItemId === "explain-pa") {
+          if (!isCopilotRunning) {
+            browser.sidebarAction.toggle()
+          }
+          setTimeout(async () => {
+            await browser.runtime.sendMessage({
+              type: "explain",
+              from: "background",
+              text: info.selectionText
+            })
+          }, isCopilotRunning ? 0 : 5000)
+        } else if (info.menuItemId === "custom-pg") {
+          if (!isCopilotRunning) {
+            browser.sidebarAction.toggle()
+          }
+          setTimeout(async () => {
+            await browser.runtime.sendMessage({
+              type: "custom",
+              from: "background",
+              text: info.selectionText
+            })
+          }, isCopilotRunning ? 0 : 5000)
         }
       })
 
