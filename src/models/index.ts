@@ -1,9 +1,11 @@
 import { ChatChromeAI } from "./ChatChromeAi"
 import { ChatOllama } from "./ChatOllama"
+import { ChatOpenAI } from "./ChatOpenAI"
 
 export const pageAssistModel = async ({
   model,
   baseUrl,
+  apiKey,
   keepAlive,
   temperature,
   topK,
@@ -13,6 +15,7 @@ export const pageAssistModel = async ({
 }: {
   model: string
   baseUrl: string
+  apiKey: string
   keepAlive: string
   temperature: number
   topK: number
@@ -27,15 +30,22 @@ export const pageAssistModel = async ({
         topK
       })
     default:
-      return new ChatOllama({
+      return new ChatOpenAI({
         baseUrl,
-        keepAlive,
+        apiKey,
+        model,
         temperature,
-        topK,
-        topP,
-        numCtx,
-        seed,
-        model
+        topK
       })
+    // return new ChatOllama({
+    //   baseUrl,
+    //   keepAlive,
+    //   temperature,
+    //   topK,
+    //   topP,
+    //   numCtx,
+    //   seed,
+    //   model
+    // })
   }
 }

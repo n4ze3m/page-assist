@@ -4,6 +4,7 @@ import OptionSettings from "./option-settings"
 import OptionModal from "./option-settings-model"
 import OptionPrompt from "./option-settings-prompt"
 import OptionOllamaSettings from "./options-settings-ollama"
+import OptionOpenAiSettings from "./options-settings-openai"
 import OptionShare from "./option-settings-share"
 import OptionKnowledgeBase from "./option-settings-knowledge"
 import OptionAbout from "./option-settings-about"
@@ -20,6 +21,7 @@ export const OptionRoutingChrome = () => {
       <Route path="/settings/model" element={<OptionModal />} />
       <Route path="/settings/prompt" element={<OptionPrompt />} />
       <Route path="/settings/ollama" element={<OptionOllamaSettings />} />
+      <Route path="/settings/openai" element={<OptionOpenAiSettings />} />
       <Route path="/settings/chrome" element={<OptionChrome />} />
       <Route path="/settings/share" element={<OptionShare />} />
       <Route path="/settings/knowledge" element={<OptionKnowledgeBase />} />
