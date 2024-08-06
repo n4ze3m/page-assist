@@ -9,6 +9,7 @@ import { zh } from "./lang/zh";
 import { ja } from "./lang/ja";
 import { it } from "./lang/it";
 import { es } from "./lang/es";
+import { fa } from "./lang/fa";
 import LanguageDetector from 'i18next-browser-languagedetector';
 
 i18n
@@ -27,7 +28,9 @@ i18n
             "ru-RU": ru,
             zh: zh,
             ja: ja,
-            "ja-JP": ja
+            "ja-JP": ja,
+            fa: fa,
+            "fa-IR": fa
         },
         fallbackLng: "en",
         lng: localStorage.getItem("i18nextLng") || "en",

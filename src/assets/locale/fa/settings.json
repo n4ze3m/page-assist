@@ -1,0 +1,328 @@
+{
+  "generalSettings": {
+    "title": "تنظیمات عمومی",
+    "settings": {
+      "heading": "تنظیمات رابط کاربری وب",
+      "speechRecognitionLang": {
+        "label": "زبان تشخیص گفتار",
+        "placeholder": "یک زبان را انتخاب کنید"
+      },
+      "language": {
+        "label": "زبان",
+        "placeholder": "یک زبان را انتخاب کنید"
+      },
+      "darkMode": {
+        "label": "تغییر تم",
+        "options": {
+          "light": "روشن",
+          "dark": "تیره"
+        }
+      },
+      "copilotResumeLastChat": {
+        "label": "آخرین گفتگو را هنگام باز کردن SidePanel (Copilot) از سر بگیر"
+      },
+      "hideCurrentChatModelSettings": {
+        "label": "مخفی کردن تنظیمات مدل گپ فعلی را"
+      },
+      "restoreLastChatModel": {
+        "label": "بازیابی آخرین مدل استفاده شده برای گپ‌های قبلی"
+      },
+      "sendNotificationAfterIndexing": {
+        "label": "ارسال نوتیفیکیشن پس از اتمام پردازش پایگاه دانش"
+      }
+    },
+    "sidepanelRag": {
+      "heading": "تنظیمات گپ Copilot با وب سایت",
+      "ragEnabled": {
+        "label": "چت با وب سایت با استفاده از بردارهای جاسازی"
+      },
+      "maxWebsiteContext": {
+        "label": "اندازه محتوای وب سایت حالت عادی",
+        "placeholder": "اندازه محتوا (پیش فرض 4028)"
+      }
+    },
+    "webSearch": {
+      "heading": "مدیریت جستجوی وب",
+      "searchMode": {
+        "label": "انجام جستجوی ساده اینترنتی"
+      },
+      "provider": {
+        "label": "موتور جستجو",
+        "placeholder": "یک موتور جستجو را انتخاب کنید"
+      },
+      "totalSearchResults": {
+        "label": "مجموع نتایج جستجو",
+        "placeholder": "کل نتایج جستجو را وارد کنید"
+      },
+      "visitSpecificWebsite": {
+        "label": "مراجعه به وب سایت ذکر شده در پیام"
+      }
+    },
+    "system": {
+      "heading": "تنظیمات سیستم",
+      "deleteChatHistory": {
+        "label": "حذف تاریخچه گفتگو",
+        "button": "حذف",
+        "confirm": "آیا مطمئن هستید که می خواهید تاریخچه گفتگوهای خود را حذف کنید؟ این عمل قابل برگشت نیست."
+      },
+      "export": {
+        "label": "تاریخچه گپ، پایگاه دانش و پرامپت‌ها را اکسپورت کنید",
+        "button": "اکسپورت داده‌ها",
+        "success": "موفقیت در اکسپورت"
+      },
+      "import": {
+        "label": "تاریخچه گپ، پایگاه دانش و پرامپت‌ها را ایمپورت کنید",
+        "button": "ایمپورت داده‌ها",
+        "success": "موفقیت در ایمپورت",
+        "error": "خطا در ایمپورت"
+      }
+    },
+    "tts": {
+      "heading": "تنظیمات تبدیل متن به گفتار",
+      "ttsEnabled": {
+        "label": "فعال کردن تبدیل متن به گفتار"
+      },
+      "ttsProvider": {
+        "label": "ارائه دهنده تبدیل متن به گفتار",
+        "placeholder": "یک ارائه دهنده را انتخاب کنید"
+      },
+      "ttsVoice": {
+        "label": "صدای تبدیل متن به گفتار",
+        "placeholder": "صدا را انتخاب کنید"
+      },
+      "ssmlEnabled": {
+        "label": "فعال کردن SSML (Speech Synthesis Markup Language)"
+      }
+    }
+  },
+  "manageModels": {
+    "title": "مدیریت مدل‌ها",
+    "addBtn": "افزودن مدل جدید",
+    "columns": {
+      "name": "نام",
+      "digest": "هضم",
+      "modifiedAt": "اصلاح شده در",
+      "size": "اندازه",
+      "actions": "اقدامات"
+    },
+    "expandedColumns": {
+      "parentModel": "مدل والد",
+      "format": "فرمت",
+      "family": "خانواده",
+      "parameterSize": "اندازه پارامترها",
+      "quantizationLevel": "سطح کوانتیزاسیون"
+    },
+    "tooltip": {
+      "delete": "حذف مدل",
+      "repull": "دریافت دوباره مدل"
+    },
+    "confirm": {
+      "delete": "آیا مطمئن هستید که می خواهید این مدل را حذف کنید؟",
+      "repull": "آیا مطمئن هستید که می خواهید این مدل را دوباره دریافت کنید؟"
+    },
+    "modal": {
+      "title": "افزودن مدل جدید",
+      "placeholder": "نام مدل را وارد کنید",
+      "pull": "دریافت مدل"
+    },
+    "notification": {
+      "pullModel": "در حال دریافت مدل",
+      "pullModelDescription": "در حال دریافت مدل {{modelName}}. برای جزئیات بیشتر، آیکون افزونه را بررسی کنید.",
+      "success": "موفقیت",
+      "error": "خطا",
+      "successDescription": "مدل با موفقیت دریافت شد",
+      "successDeleteDescription": "مدل با موفقیت حذف شد",
+      "someError": "مشکلی پیش آمد. لطفا بعدا دوباره امتحان کنید"
+    }
+  },
+  "managePrompts": {
+    "title": "مدیریت پرامپت‌ها",
+    "addBtn": "اضافه کردن پرامپت جدید",
+    "option1": "عادی",
+    "option2": "RAG",
+    "questionPrompt": "سوال پرامپت",
+    "columns": {
+      "title": "عنولن",
+      "prompt": "پرامپت",
+      "type": "نوع پرامپت",
+      "actions": "اقدامات"
+    },
+    "systemPrompt": "پرامپت سیستم ",
+    "quickPrompt": "پرامپت سریع",
+    "tooltip": {
+      "delete": "پاک کردن پرامپت",
+      "edit": "ویرایش پرامپت"
+    },
+    "confirm": {
+      "delete": "آیا مطمئن هستید که می خواهید این پرامپت را حذف کنید؟ این عمل قابل برگشت نیست."
+    },
+    "modal": {
+      "addTitle": "اضافه کردن پرامپت جدید",
+      "editTitle": "ویرایش پرامپت"
+    },
+    "form": {
+      "title": {
+        "label": "عنوان",
+        "placeholder": "پرامپت عالی من",
+        "required": "لطفا یک عنوان وارد کنید"
+      },
+      "prompt": {
+        "label": "پرامپت",
+        "placeholder": "پرامپت وارد کنید",
+        "required": "لطفا یک پرامپت وارد کنید",
+        "help": "می توانید از {key} به عنوان متغیر در درخواست خود استفاده کنید."
+      },
+      "isSystem": {
+        "label": "یک پرامپت سیستمی باشد"
+      },
+      "btnSave": {
+        "saving": "در حال اضافه کردن پرامپت...",
+        "save": "اضافه کردن پرامپت"
+      },
+      "btnEdit": {
+        "saving": "در حال به روزرسانی پرامپت...",
+        "save": "به روزرسانی پرامپت"
+      }
+    },
+    "notification": {
+      "addSuccess": "پرامپت اضافه شد",
+      "addSuccessDesc": "پرامپت با موفقیت اضافه شد",
+      "error": "خطا",
+      "someError": "مشکلی پیش آمد. لطفا بعدا دوباره امتحان کنید",
+      "updatedSuccess": "پرامپت به روز شد",
+      "updatedSuccessDesc": "پرامپت با موفقیت به روز شد",
+      "deletedSuccess": "پرامپت حذف شد",
+      "deletedSuccessDesc": "پرامپت با موفقیت حذف شد"
+    }
+  },
+  "manageShare": {
+    "title": "مدیریت اشتراک گذاری",
+    "heading": "پیکربندی URL اشتراک گذاری صفحه",
+    "form": {
+      "url": {
+        "label": "آدرس اشتراک گذاری صفحه",
+        "placeholder": "URL اشتراک گذاری صفحه را وارد کنید",
+        "required": "لطفا URL اشتراک گذاری صفحه خود را وارد کنید!",
+        "help": "به دلایل حفظ حریم خصوصی، می توانید اشتراک گذاری صفحه را خودتان میزبانی کنید و URL را در اینجا ارائه دهید. <anchor>بیشتر بدانید</anchor>."
+      }
+    },
+    "webshare": {
+      "heading": "اشتراک گذاری وب",
+      "columns": {
+        "title": "عنوان",
+        "url": "URL",
+        "actions": "اقدامات"
+      },
+      "tooltip": {
+        "delete": "حذف اشتراک گذاری"
+      },
+      "confirm": {
+        "delete": "آیا مطمئن هستید که می خواهید این اشتراک گذاری را حذف کنید؟ این عمل قابل برگشت نیست."
+      },
+      "label": "مدیریت اشتراک گذاری صفحه",
+      "description": "ویژگی اشتراک گذاری صفحه را فعال یا غیرفعال کنید"
+    },
+    "notification": {
+      "pageShareSuccess": "URL اشتراک گذاری صفحه با موفقیت به روز شد",
+      "someError": "مشکلی پیش آمد. لطفا بعدا دوباره امتحان کنید",
+      "webShareDeleteSuccess": "اشتراک گذاری وب با موفقیت حذف شد"
+    }
+  },
+  "ollamaSettings": {
+    "title": "تنظیمات Ollama",
+    "heading": "پیکربندی Ollama",
+    "settings": {
+      "ollamaUrl": {
+        "label": "آدرس Ollama",
+        "placeholder": "URL Ollama را وارد کنید"
+      },
+      "advanced": {
+        "label": "پیکربندی پیشرفته URL Ollama",
+        "urlRewriteEnabled": {
+          "label": "URL مبدا سفارشی را فعال یا غیرفعال کنید"
+        },
+        "rewriteUrl": {
+          "label": "URL مبدا سفارشی",
+          "placeholder": "URL مبدا سفارشی را وارد کنید"
+        },
+        "headers": {
+          "label": "هدرهای سفارشی",
+          "add": "افزودن هدر",
+          "key": {
+            "label": "کلید هدر",
+            "placeholder": "Authorization"
+          },
+          "value": {
+            "label": "مقدار هدر",
+            "placeholder": "Bearer token"
+          }
+        },
+        "help": "اگر با Ollama در Page Assist مشکل اتصال دارید، می توانید یک URL اصلی سفارشی پیکربندی کنید. برای کسب اطلاعات بیشتر در مورد پیکربندی، <anchor>اینجا را کلیک</anchor> کنید."
+      }
+    }
+  },
+  "manageSearch": {
+    "title": "مدیریت جستجوی وب",
+    "heading": "پیکربندی جستجوی وب"
+  },
+  "about": {
+    "title": "درباره",
+    "heading": "درباره",
+    "chromeVersion": "نسخه دستیار صفحه",
+    "ollamaVersion": "نسخه Ollama",
+    "support": "شما می توانید با کمک مالی یا حمایت مالی از طریق پلتفرم های زیر از پروژه Page Assist حمایت کنید:",
+    "koFi": "پشتیبانی در Ko-fi",
+    "githubSponsor": "حمایت مالی در GitHub",
+    "githubRepo": "مخزن GitHub"
+  },
+  "manageKnowledge": {
+    "title": "مدیریت دانش",
+    "heading": "پیکربندی پایگاه دانش"
+  },
+  "rag": {
+    "title": "تنظیمات RAG",
+    "ragSettings": {
+      "label": "تنظیمات RAG",
+      "model": {
+        "label": "مدل جاسازی",
+        "required": "لطفا یک مدل را انتخاب کنید",
+        "help": "به شدت توصیه می شود از مدل های جاسازی مانند `nomic-embed-text` استفاده کنید.",
+        "placeholder": "یک مدل را انتخاب کنید"
+      },
+      "chunkSize": {
+        "label": "اندازه تکه",
+        "placeholder": "اندازه تکه را وارد کنید",
+        "required": "لطفا اندازه تکه را وارد کنید"
+      },
+      "chunkOverlap": {
+        "label": "همپوشانی تکه",
+        "placeholder": "داخل تکه همپوشانی شوید",
+        "required": "لطفا یک همپوشانی تکه ای وارد کنید"
+      },
+      "totalFilePerKB": {
+        "label": "محدودیت فایل پیش فرض پایگاه دانش",
+        "placeholder": "محدودیت فایل پیش فرض را وارد کنید (به عنوان مثال، 10)",
+        "required": "لطفا محدودیت پیش فرض فایل را وارد کنید"
+      }
+    },
+    "prompt": {
+      "label": "پیکربندی پرامپت RAG",
+      "option1": "عادی",
+      "option2": "وب",
+      "alert": "پیکربندی اعلان سیستم در اینجا منسوخ شده است. لطفا از بخش مدیریت پرامپت‌ها برای افزودن یا ویرایش درخواست‌ها استفاده کنید. این بخش در نسخه بعدی حذف خواهد شد",
+      "systemPrompt": "پرامپت سیستم",
+      "systemPromptPlaceholder": "پرامپت سیستم را وارد کنید",
+      "webSearchPrompt": "پرامپت جستجوی وب",
+      "webSearchPromptHelp": "«{search_results}» را از پرامپت حذف نکنید.",
+      "webSearchPromptError": "لطفا یک پرامپت جستجوی وب وارد کنید",
+      "webSearchPromptPlaceholder": "پرامپت جستجوی وب را وارد کنید",
+      "webSearchFollowUpPrompt": "پرامپت پیگیری جستجوی وب",
+      "webSearchFollowUpPromptHelp": "«{chat_history}» و «{question}» را از پرامپت حذف نکنید.",
+      "webSearchFollowUpPromptError": "لطفا پرامپت پیگیری جستجوی وب خود را وارد کنید!",
+      "webSearchFollowUpPromptPlaceholder": "پرامپت پیگیری جستجوی وب شما"
+    }
+  },
+  "chromeAiSettings": {
+    "title": "تنظیمات هوش مصنوعی کروم"
+  }
+}
