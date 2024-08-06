@@ -1,6 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { MemoryRouter } from "react-router-dom"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 const queryClient = new QueryClient()
 import { ConfigProvider, Empty, theme } from "antd"
 import { StyleProvider } from "@ant-design/cssinjs"
@@ -13,13 +13,15 @@ import { PageAssistProvider } from "@/components/Common/PageAssistProvider"
 function IndexOption() {
   const { mode } = useDarkMode()
   const { t, i18n } = useTranslation()
+  const [direction, setDirection] = useState<"ltr" | "rtl">("ltr")
 
   useEffect(() => {
     if (i18n.resolvedLanguage) {
-      document.documentElement.lang = i18n.resolvedLanguage;
-      document.documentElement.dir = i18n.dir(i18n.resolvedLanguage);
+      document.documentElement.lang = i18n.resolvedLanguage
+      document.documentElement.dir = i18n.dir(i18n.resolvedLanguage)
+      setDirection(i18n.dir(i18n.resolvedLanguage))
     }
-  }, [i18n, i18n.resolvedLanguage]);
+  }, [i18n, i18n.resolvedLanguage])
 
   return (
     <MemoryRouter>
@@ -38,7 +40,8 @@ function IndexOption() {
             }}
             description={t("common:noData")}
           />
-        )}>
+        )}
+        direction={direction}>
         <StyleProvider hashPriority="high">
           <QueryClientProvider client={queryClient}>
             <PageAssistProvider>

@@ -14,7 +14,7 @@ export const DEFAULT_TITLE_GEN_PROMPT = `Here is the query:
 
 --------------
 
-Create a concise, 3-5 word phrase as a title for the previous query. Suitable emojis for the summary can be used to enhance understanding. Avoid quotation marks or special formatting. RESPOND ONLY WITH THE TITLE TEXT. ANSWER USING THE SAME LANGUAGE AS THE QUERY.
+Create a concise, 3-5 word phrase as a title for the previous query. Avoid quotation marks or special formatting. RESPOND ONLY WITH THE TITLE TEXT. ANSWER USING THE SAME LANGUAGE AS THE QUERY.
 
 
 Examples of titles:

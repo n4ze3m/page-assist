@@ -147,6 +147,10 @@
       "type": "نوع پرامپت",
       "actions": "اقدامات"
     },
+    "segmented": {
+      "custom": "پرامپت‌های سفارشی",
+      "copilot": "پرامپت‌های کوپایلوت"
+    },
     "systemPrompt": "پرامپت سیستم ",
     "quickPrompt": "پرامپت سریع",
     "tooltip": {
