@@ -32,6 +32,9 @@
       },
       "sendNotificationAfterIndexing": {
         "label": "ナレッジベースの処理完了後に通知を送信"
+      },
+      "generateTitle": {
+        "label": "AIを使用してタイトルを生成"
       }
     },
     "sidepanelRag": {

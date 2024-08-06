@@ -29,6 +29,9 @@
       },
       "sendNotificationAfterIndexing": {
         "label": "Enviar notificación después de terminar el procesamiento de la base de conocimientos"
+      },
+      "generateTitle" :{
+        "label": "Generar título usando IA"
       }
     },
     "sidepanelRag": {

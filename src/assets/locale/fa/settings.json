@@ -29,6 +29,9 @@
       },
       "sendNotificationAfterIndexing": {
         "label": "ارسال نوتیفیکیشن پس از اتمام پردازش پایگاه دانش"
+      },
+      "generateTitle" :{
+        "label": "تولید عنوان با استفاده از هوش مصنوعی"
       }
     },
     "sidepanelRag": {

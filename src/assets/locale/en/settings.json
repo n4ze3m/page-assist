@@ -29,6 +29,9 @@
       },
       "sendNotificationAfterIndexing": {
         "label": "Send Notification After Finishing Processing the Knowledge Base"
+      },
+      "generateTitle" :{
+        "label": "Generate Title using AI"
       }
     },
     "sidepanelRag": {

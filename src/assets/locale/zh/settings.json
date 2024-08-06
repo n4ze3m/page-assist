@@ -32,6 +32,9 @@
       },
       "sendNotificationAfterIndexing": {
         "label": "完成知识库处理后发送通知"
+      },
+      "generateTitle": {
+        "label": "使用人工智能生成标题"
       }
     },
     "sidepanelRag": {

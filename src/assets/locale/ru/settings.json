@@ -29,6 +29,9 @@
       },
       "sendNotificationAfterIndexing": {
         "label": "Отправить уведомление после завершения обработки базы знаний"
+      },
+      "generateTitle": {
+        "label": "Сгенерировать заголовок с помощью ИИ"
       }
     },
     "sidepanelRag": {
