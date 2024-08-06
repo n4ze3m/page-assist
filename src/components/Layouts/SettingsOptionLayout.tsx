@@ -84,6 +84,12 @@ export const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
                 icon={OllamaIcon}
                 current={location.pathname}
               />
+              <LinkComponent
+                href="/settings/openai"
+                name={t("openAISettings.title")}
+                icon={OllamaIcon}
+                current={location.pathname}
+              />
               {import.meta.env.BROWSER === "chrome" && (
                 <LinkComponent
                   href="/settings/chrome"
