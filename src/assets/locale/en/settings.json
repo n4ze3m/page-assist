@@ -29,6 +29,9 @@
       },
       "sendNotificationAfterIndexing": {
         "label": "Send Notification After Finishing Processing the Knowledge Base"
+      },
+      "generateTitle" :{
+        "label": "Generate Title using AI"
       }
     },
     "sidepanelRag": {
@@ -141,6 +144,10 @@
     "option1": "Normal",
     "option2": "RAG",
     "questionPrompt": "Question Prompt",
+    "segmented": {
+      "custom": "Custom Prompts",
+      "copilot": "Copilot Prompts"
+    },
     "columns": {
       "title": "Title",
       "prompt": "Prompt",
@@ -170,7 +177,8 @@
         "label": "Prompt",
         "placeholder": "Enter Prompt",
         "required": "Please enter a prompt",
-        "help": "You can use {key} as variable in your prompt."
+        "help": "You can use {key} as variable in your prompt.",
+        "missingTextPlaceholder": "The {text} variable is missing in the prompt. Please add it."
       },
       "isSystem": {
         "label": "Is System Prompt"

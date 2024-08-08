@@ -51,7 +51,7 @@
     "chatWithCurrentPage": "Discuter avec la page actuelle",
     "beta": "Bêta",
     "tts": "Synthèse vocale",
-    "currentChatModelSettings":"Paramètres actuels du modèle de chat",
+    "currentChatModelSettings": "Paramètres actuels du modèle de chat",
     "modelSettings": {
         "label": "Paramètres du modèle",
         "description": "Définissez les options de modèle globale pour tous les chats",
@@ -84,5 +84,11 @@
             }
         },
         "advanced": "Plus de paramètres du modèle"
+    },
+    "copilot": {
+        "summary": "Résumer",
+        "explain": "Expliquer",
+        "rephrase": "Reformuler",
+        "translate": "Traduire"
     }
 }

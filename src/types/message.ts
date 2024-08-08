@@ -14,5 +14,6 @@ type WebSearch = {
     sources: any[]
     images?: string[]
     search?: WebSearch
+    messageType?: string
     id?: string
   }

@@ -1,6 +1,6 @@
 import Markdown from "../../Common/Markdown"
 import React from "react"
-import { Image, Tooltip } from "antd"
+import { Tag, Image, Tooltip } from "antd"
 import { WebSearch } from "./WebSearch"
 import {
   CheckIcon,
@@ -14,9 +14,11 @@ import { EditMessageForm } from "./EditMessageForm"
 import { useTranslation } from "react-i18next"
 import { MessageSource } from "./MessageSource"
 import { useTTS } from "@/hooks/useTTS"
+import { tagColors } from "@/utils/color"
 
 type Props = {
   message: string
+  message_type?: string
   hideCopy?: boolean
   botAvatar?: JSX.Element
   userAvatar?: JSX.Element
@@ -76,13 +78,23 @@ export const PlaygroundMessage = (props: Props) => {
             props.currentMessageIndex === props.totalMessages - 1 ? (
               <WebSearch />
             ) : null}
-
+            <div>
+              {props?.message_type && (
+                <Tag color={tagColors[props?.message_type] || "default"}>
+                  {t(`copilot.${props?.message_type}`)}
+                </Tag>
+              )}
+            </div>
             <div className="flex flex-grow flex-col">
               {!editMode ? (
                 props.isBot ? (
                   <Markdown message={props.message} />
                 ) : (
-                  <p className="prose dark:prose-invert whitespace-pre-line	 prose-p:leading-relaxed prose-pre:p-0 dark:prose-dark">
+                  <p
+                    className={`prose dark:prose-invert whitespace-pre-line	 prose-p:leading-relaxed prose-pre:p-0 dark:prose-dark ${
+                      props.message_type &&
+                      "italic text-gray-500 dark:text-gray-400 text-sm"
+                    }`}>
                     {props.message}
                   </p>
                 )

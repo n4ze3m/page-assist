@@ -12,6 +12,7 @@ export type ChatHistory = {
   role: "user" | "assistant" | "system"
   content: string
   image?: string
+  messageType?: string
 }[]
 
 type State = {

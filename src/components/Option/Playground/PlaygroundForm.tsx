@@ -14,7 +14,6 @@ import { useTranslation } from "react-i18next"
 import { KnowledgeSelect } from "../Knowledge/KnowledgeSelect"
 import { useSpeechRecognition } from "@/hooks/useSpeechRecognition"
 import { PiGlobe } from "react-icons/pi"
-import { extractReadabilityContent } from "@/parser/reader"
 
 type Props = {
   dropedFile: File | undefined
@@ -39,15 +38,26 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
     selectedKnowledge
   } = useMessageOption()
 
+  const isMobile = () => {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+      navigator.userAgent
+    )
+  }
+
   const textAreaFocus = () => {
     if (textareaRef.current) {
       if (
         textareaRef.current.selectionStart === textareaRef.current.selectionEnd
       ) {
-        textareaRef.current.focus()
+        if (!isMobile()) {
+          textareaRef.current.focus()
+        } else {
+          textareaRef.current.blur()
+        }
       }
     }
   }
+
   const form = useForm({
     initialValues: {
       message: "",

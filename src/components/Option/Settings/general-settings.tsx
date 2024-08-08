@@ -29,6 +29,8 @@ export const GeneralSettings = () => {
     false
   )
 
+  const [generateTitle, setGenerateTitle] = useStorage("titleGenEnabled", false)
+
   const [hideCurrentChatModelSettings, setHideCurrentChatModelSettings] =
     useStorage("hideCurrentChatModelSettings", false)
 
@@ -138,6 +140,19 @@ export const GeneralSettings = () => {
         <Switch
           checked={sendNotificationAfterIndexing}
           onChange={setSendNotificationAfterIndexing}
+        />
+      </div>
+
+      <div className="flex flex-row justify-between">
+        <div className="inline-flex items-center gap-2">
+          <span className="text-gray-700   dark:text-neutral-50">
+            {t("generalSettings.settings.generateTitle.label")}
+          </span>
+        </div>
+
+        <Switch
+          checked={generateTitle}
+          onChange={(checked) => setGenerateTitle(checked)}
         />
       </div>
 

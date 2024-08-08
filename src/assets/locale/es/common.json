@@ -84,5 +84,11 @@
             }
         },
         "advanced": "Más Configuraciones del Modelo"
+    },
+    "copilot": {
+        "summary": "Resumir",
+        "explain": "Explicar",
+        "rephrase": "Reformular",
+        "translate": "Traducir"
     }
 }

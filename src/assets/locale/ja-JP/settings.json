@@ -32,6 +32,9 @@
       },
       "sendNotificationAfterIndexing": {
         "label": "ナレッジベースの処理完了後に通知を送信"
+      },
+      "generateTitle": {
+        "label": "AIを使用してタイトルを生成"
       }
     },
     "sidepanelRag": {
@@ -163,6 +166,10 @@
       "addTitle": "新しいプロンプトを追加",
       "editTitle": "プロンプトを編集"
     },
+    "segmented": {
+      "custom": "カスタムプロンプト",
+      "copilot": "Copilotプロンプト"
+    },
     "form": {
       "title": {
         "label": "タイトル",
@@ -173,7 +180,8 @@
         "label": "プロンプト",
         "placeholder": "プロンプトを入力",
         "required": "プロンプトを入力してください",
-        "help": "プロンプト内で{key}を変数として使用できます。"
+        "help": "プロンプト内で{key}を変数として使用できます。",
+        "missingTextPlaceholder": "プロンプトに{text}変数がありません。追加してください。"
       },
       "isSystem": {
         "label": "システムプロンプト"

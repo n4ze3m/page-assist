@@ -35,6 +35,7 @@ export const SidePanelBody = () => {
           currentMessageIndex={index}
           totalMessages={messages.length}
           onRengerate={regenerateLastMessage}
+          message_type={message.messageType}
           isProcessing={streaming}
           isSearchingInternet={isSearchingInternet}
           sources={message.sources}

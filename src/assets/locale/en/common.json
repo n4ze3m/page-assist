@@ -84,5 +84,12 @@
             }
         },
         "advanced": "More Model Settings"
+    },
+    "copilot": {
+        "summary": "Summarize",
+        "explain": "Explain",
+        "rephrase": "Rephrase",
+        "translate": "Translate",
+        "custom": "Custom"
     }
 }

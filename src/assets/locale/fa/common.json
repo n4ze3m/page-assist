@@ -1,0 +1,88 @@
+{
+    "pageAssist": "دستیار صفحه",
+    "selectAModel": "یک مدل انتخاب کنید",
+    "save": "ذخیره",
+    "saved": "ذخیره شد",
+    "cancel": "لغو",
+    "retry": "تلاش مجدد",
+    "share": {
+        "tooltip": {
+            "share": "اشتراک گذاری"
+        },
+        "modal": {
+            "title": "اشتراک گذاری لینک به گپ"
+        },
+        "form": {
+            "defaultValue": {
+                "name": "ناشناس",
+                "title": "گپ بی نام"
+            },
+            "title": {
+                "label": "عنوان گپ",
+                "placeholder": "عنوان گپ را وارد کنید",
+                "required": "وارد کردن عنوان چت الزامی است"
+            },
+            "name": {
+                "label": "نام شما",
+                "placeholder": "نام خود را وارد کنید",
+                "required": "وارد کردن نام الزامی است"
+            },
+            "btn": {
+                "save": "ایجاد لینک",
+                "saving": "در حال ایجاد لینک..."
+            }
+        },
+        "notification": {
+            "successGenerate": "پیوند در کلیپ بورد کپی شد",
+            "failGenerate": "پیوند ایجاد نشد"
+        }
+    },
+    "copyToClipboard": "کپی به کلیپ بورد",
+    "webSearch": "جستجوی وب",
+    "regenerate": "ایجاد مجدد",
+    "edit": "ویرایش",
+    "saveAndSubmit": "ذخیره و ارسال",
+    "editMessage": {
+        "placeholder": "یک پیام وارد کنید..."
+    },
+    "submit": "ارسال",
+    "noData": "اطلاعاتی وجود ندارد",
+    "noHistory": "تاریخچه گپ وجود ندارد",
+    "chatWithCurrentPage": "گپ زدن با این صفحه",
+    "beta": "بتا",
+    "tts": "بلند بخوان",
+    "currentChatModelSettings": "تنظیمات مدل گپ فعلی",
+    "modelSettings": {
+        "label": "تنظیمات مدل",
+        "description": "گزینه های مدل را به صورت کلی برای همه گپ ها تنظیم کنید",
+        "form": {
+            "keepAlive": {
+                "label": "Keep Alive",
+                "help": "کنترل می کند که چه مدت مدل پس از درخواست در حافظه باقی می ماند (پیش فرض: 5 دقیقه)",
+                "placeholder": "مدت زمان Keep Alive را وارد کنید (مثلا 5m, 10m, 1h)"
+            },
+            "temperature": {
+                "label": "Temperature",
+                "placeholder": "مقدار Temperature را وارد کنید (مثلا 0.7, 1.0)"
+            },
+            "numCtx": {
+                "label": "Number of Contexts",
+                "placeholder": "مقدار Number of Contexts را وارد کنید (پیش فرض: 2048)"
+            },
+            "seed": {
+                "label": "Seed",
+                "placeholder": "مقدار Seed را وارد کنید (e.g. 1234)",
+                "help": "تکرارپذیری خروجی مدل"
+            },
+            "topK": {
+                "label": "Top K",
+                "placeholder": "مقدار Top K را وارد کنید (مثلا 40, 100)"
+            },
+            "topP": {
+                "label": "Top P",
+                "placeholder": "مقدار Top P را وارد کنید (مثلا 0.9, 0.95)"
+            }
+        },
+        "advanced": "تنظیمات بیشتر مدل"
+    }
+}

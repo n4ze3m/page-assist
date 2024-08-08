@@ -1,0 +1,12 @@
+{
+    "newChat": "گپ جدید",
+    "selectAPrompt": "یک پرامپت را انتخاب کنید",
+    "githubRepository": "مخزن GitHub",
+    "settings": "تنظیمات",
+    "sidebarTitle": "تاریخچه گپ",
+    "error": "خطا",
+    "somethingWentWrong": "مشکلی پیش آمد",
+    "validationSelectModel": "لطفا یک مدل را برای ادامه انتخاب کنید",
+    "deleteHistoryConfirmation": "آیا مطمئن هستید که می خواهید این تاریخچه را حذف کنید؟",
+    "editHistoryTitle": "یک عنوان جدید وارد کنید"
+}

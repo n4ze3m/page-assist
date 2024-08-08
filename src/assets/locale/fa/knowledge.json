@@ -1,0 +1,43 @@
+{
+    "addBtn": "افزودن دانش جدید",
+    "columns": {
+        "title": "عنوان",
+        "status": "وضعیت",
+        "embeddings": "مدل جاسازی",
+        "createdAt": "ایجاد شده در",
+        "action": "اقدامات"
+    },
+    "expandedColumns": {
+        "name": "نام"
+    },
+    "tooltip": {
+        "delete": "حذف"
+    },
+    "confirm": {
+        "delete": "آیا مطمئن هستید که می خواهید این دانش را حذف کنید؟"
+    },
+    "deleteSuccess": "دانش با موفقیت حذف شد",
+    "status": {
+        "pending": "انتظار",
+        "finished": "تمام",
+        "processing": "در حال پردازش",
+        "failed": "ناموفق"
+    },
+    "addKnowledge": "دانش را اضافه کنید",
+    "form": {
+        "title": {
+            "label": "عنوان دانش",
+            "placeholder": "عنوان دانش را وارد کنید",
+            "required": "وارد کردن عنوان دانش الزامی است"
+        },
+        "uploadFile": {
+            "label": "آپلود فایل",
+            "uploadText": "یک فایل را در اینجا بکشید و رها کنید یا برای آپلود کلیک کنید",
+            "uploadHint": "انواع فایل های پشتیبانی شده: .pdf, .csv, .txt, .md, .docx",
+            "required": "وارد کردن فایل مورد نیاز است"
+        },
+        "submit": "ارسال",
+        "success": "دانش با موفقیت اضافه شد"
+    },
+    "noEmbeddingModel": "لطفا ابتدا یک مدل جاسازی را از صفحه تنظیمات RAG اضافه کنید"
+}

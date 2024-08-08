@@ -1,0 +1,13 @@
+{
+    "heading": "تنظیمات AI کروم",
+    "status": {
+        "label": "فعال یا غیر فعال کردن پشتیبانی از AI کروم"
+    },
+    "error": {
+        "browser_not_supported": "این نسخه از کروم توسط مدل Gemini Nano پشتیبانی نمی شود. لطفا به نسخه ۱۲۷ یا بالاتر به روزرسانی کنید.",
+        "ai_not_supported": "تنظیم chrome://flags/#prompt-api-for-gemini-nano فعال نشده است. لطفا فعالش کنید..",
+        "ai_not_ready": "Gemini Nano هنوز آماده نیست; تنظیمات کروم را مجددا بررسی کنید.",
+        "internal_error": "یک خطای داخلی رخ داد. لطفا بعدا مجددا تلاش نمایید."
+    },
+    "errorDescription": "برای استفاده از AI کروم، به نسخه مرورگر بالاتر از ۱۲۷ احتیاج دارید که اکنون در کانال های Dev و Canary در دسترس است. بعد از دریافت نسخه پشتیبانی شده این گام ها را دنبال کنید: \n\n۱. به `chrome://flags/#prompt-api-for-gemini-nano` بروید و \"Enable\" را انتخاب کنید.\n۲. به `chrome://flags/#optimization-guide-on-device-model` بروید و \"EnabledBypassPrefRequirement\" را انتخاب کنید.\n۳. به `chrome://components` بروید و \"Optimization Guide On Device Model\" را جستجو کنید، بر روی \"Check for Update\" کلیک کنید. این کار مدل را دریافت خواهد کرد. اگر این تنظیمات را نمی بینید، گام های ۱ و ۲ را تکرار و مرورگر را مجددا اجرا کنید."
+}

@@ -32,6 +32,9 @@
       },
       "sendNotificationAfterIndexing": {
         "label": "完成知识库处理后发送通知"
+      },
+      "generateTitle": {
+        "label": "使用人工智能生成标题"
       }
     },
     "sidepanelRag": {
@@ -163,6 +166,10 @@
       "addTitle": "添加新提示词",
       "editTitle": "编辑提示词"
     },
+    "segmented": {
+      "custom": "自定义提示",
+      "copilot": "Copilot 提示"
+    },
     "form": {
       "title": {
         "label": "标题",
@@ -174,7 +181,8 @@
         "label": "提示词",
         "placeholder": "输入提示词",
         "required": "请输入提示词",
-        "help": "您可以在提示词中使用 {key} 作为变量。"
+        "help": "您可以在提示词中使用 {key} 作为变量。",
+        "missingTextPlaceholder": "提示中缺少{text}变量。请添加它。"
       },
       "isSystem": {
         "label": "是否为系统提示词"

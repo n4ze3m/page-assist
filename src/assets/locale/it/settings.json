@@ -29,6 +29,9 @@
       },
       "sendNotificationAfterIndexing": {
         "label": "Inviare notifica dopo aver terminato l'elaborazione della base di conoscenza"
+      }, 
+      "generateTitle" :{
+        "label": "Genera titolo utilizzando l'IA"
       }
     },
     "sidepanelRag": {
@@ -160,6 +163,10 @@
       "addTitle": "Aggiungi Nuovo Prompt",
       "editTitle": "Modifica Prompt"
     },
+    "segmented": {
+      "custom": "Prompt personalizzati",
+      "copilot": "Prompt Copilot"
+    },
     "form": {
       "title": {
         "label": "Titolo",
@@ -170,7 +177,8 @@
         "label": "Prompt",
         "placeholder": "Inserisci Prompt",
         "required": "Scrivi il prompt",
-        "help": "Puoi usare {key} come variabile nel tuo prompt."
+        "help": "Puoi usare {key} come variabile nel tuo prompt.",
+        "missingTextPlaceholder": "La variabile {text} manca nel prompt. Per favore, aggiungila."
       },
       "isSystem": {
         "label": "Prompt di Sistema"

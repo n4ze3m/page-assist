@@ -31,6 +31,7 @@ import { useStoreChatModelSettings } from "@/store/model"
 import { getAllDefaultModelSettings } from "@/services/model-settings"
 import { getSystemPromptForWeb } from "@/web/web"
 import { pageAssistModel } from "@/models"
+import { getPrompt } from "@/services/application"
 
 export const useMessage = () => {
   const {
@@ -51,8 +52,10 @@ export const useMessage = () => {
     isSearchingInternet
   } = useStoreMessageOption()
 
-
-  const [chatWithWebsiteEmbedding] = useStorage("chatWithWebsiteEmbedding", true)
+  const [chatWithWebsiteEmbedding] = useStorage(
+    "chatWithWebsiteEmbedding",
+    true
+  )
   const [maxWebsiteContext] = useStorage("maxWebsiteContext", 4028)
 
   const {
@@ -857,13 +860,206 @@ export const useMessage = () => {
     }
   }
 
+  const presetChatMode = async (
+    message: string,
+    image: string,
+    isRegenerate: boolean,
+    messages: Message[],
+    history: ChatHistory,
+    signal: AbortSignal,
+    messageType: string
+  ) => {
+    setStreaming(true)
+    const url = await getOllamaURL()
+    const userDefaultModelSettings = await getAllDefaultModelSettings()
+
+    if (image.length > 0) {
+      image = `data:image/jpeg;base64,${image.split(",")[1]}`
+    }
+
+    const ollama = await pageAssistModel({
+      model: selectedModel!,
+      baseUrl: cleanUrl(url),
+      keepAlive:
+        currentChatModelSettings?.keepAlive ??
+        userDefaultModelSettings?.keepAlive,
+      temperature:
+        currentChatModelSettings?.temperature ??
+        userDefaultModelSettings?.temperature,
+      topK: currentChatModelSettings?.topK ?? userDefaultModelSettings?.topK,
+      topP: currentChatModelSettings?.topP ?? userDefaultModelSettings?.topP,
+      numCtx:
+        currentChatModelSettings?.numCtx ?? userDefaultModelSettings?.numCtx,
+      seed: currentChatModelSettings?.seed
+    })
+
+    let newMessage: Message[] = []
+    let generateMessageId = generateID()
+
+    if (!isRegenerate) {
+      newMessage = [
+        ...messages,
+        {
+          isBot: false,
+          name: "You",
+          message,
+          sources: [],
+          images: [image],
+          messageType: messageType
+        },
+        {
+          isBot: true,
+          name: selectedModel,
+          message: "▋",
+          sources: [],
+          id: generateMessageId
+        }
+      ]
+    } else {
+      newMessage = [
+        ...messages,
+        {
+          isBot: true,
+          name: selectedModel,
+          message: "▋",
+          sources: [],
+          id: generateMessageId
+        }
+      ]
+    }
+    setMessages(newMessage)
+    let fullText = ""
+    let contentToSave = ""
+
+    try {
+
+      
+      const prompt = await getPrompt(messageType)
+      let humanMessage = new HumanMessage({
+        content: [
+          {
+            text: prompt.replace("{text}", message),
+            type: "text"
+          }
+        ]
+      })
+      if (image.length > 0) {
+        humanMessage = new HumanMessage({
+          content: [
+            {
+              text: prompt.replace("{text}", message),
+              type: "text"
+            },
+            {
+              image_url: image,
+              type: "image_url"
+            }
+          ]
+        })
+      }
+
+      const chunks = await ollama.stream([humanMessage], {
+        signal: signal
+      })
+      let count = 0
+      for await (const chunk of chunks) {
+        contentToSave += chunk.content
+        fullText += chunk.content
+        if (count === 0) {
+          setIsProcessing(true)
+        }
+        setMessages((prev) => {
+          return prev.map((message) => {
+            if (message.id === generateMessageId) {
+              return {
+                ...message,
+                message: fullText + "▋"
+              }
+            }
+            return message
+          })
+        })
+        count++
+      }
+
+      setMessages((prev) => {
+        return prev.map((message) => {
+          if (message.id === generateMessageId) {
+            return {
+              ...message,
+              message: fullText
+            }
+          }
+          return message
+        })
+      })
+
+      setHistory([
+        ...history,
+        {
+          role: "user",
+          content: message,
+          image,
+          messageType
+        },
+        {
+          role: "assistant",
+          content: fullText
+        }
+      ])
+
+      await saveMessageOnSuccess({
+        historyId,
+        setHistoryId,
+        isRegenerate,
+        selectedModel: selectedModel,
+        message,
+        image,
+        fullText,
+        source: [],
+        message_source: "copilot",
+        message_type: messageType
+      })
+
+      setIsProcessing(false)
+      setStreaming(false)
+    } catch (e) {
+      const errorSave = await saveMessageOnError({
+        e,
+        botMessage: fullText,
+        history,
+        historyId,
+        image,
+        selectedModel,
+        setHistory,
+        setHistoryId,
+        userMessage: message,
+        isRegenerating: isRegenerate,
+        message_source: "copilot",
+        message_type: messageType
+      })
+
+      if (!errorSave) {
+        notification.error({
+          message: t("error"),
+          description: e?.message || t("somethingWentWrong")
+        })
+      }
+      setIsProcessing(false)
+      setStreaming(false)
+    } finally {
+      setAbortController(null)
+    }
+  }
+
   const onSubmit = async ({
     message,
     image,
     isRegenerate,
     controller,
     memory,
-    messages: chatHistory
+    messages: chatHistory,
+    messageType
   }: {
     message: string
     image: string
@@ -871,6 +1067,7 @@ export const useMessage = () => {
     messages?: Message[]
     memory?: ChatHistory
     controller?: AbortController
+    messageType?: string
   }) => {
     let signal: AbortSignal
     if (!controller) {
@@ -882,39 +1079,52 @@ export const useMessage = () => {
       signal = controller.signal
     }
 
-    if (chatMode === "normal") {
-      if (webSearch) {
-        await searchChatMode(
-          message,
-          image,
-          isRegenerate || false,
-          messages,
-          memory || history,
-          signal
-        )
-      } else {
-        await normalChatMode(
-          message,
-          image,
-          isRegenerate,
-          chatHistory || messages,
-          memory || history,
-          signal
-        )
-      }
-    } else {
-      const newEmbeddingController = new AbortController()
-      let embeddingSignal = newEmbeddingController.signal
-      setEmbeddingController(newEmbeddingController)
-      await chatWithWebsiteMode(
+    // this means that the user is trying to send something from a selected text on the web
+    if (messageType) {
+      await presetChatMode(
         message,
         image,
         isRegenerate,
         chatHistory || messages,
         memory || history,
         signal,
-        embeddingSignal
+        messageType
       )
+    } else {
+      if (chatMode === "normal") {
+        if (webSearch) {
+          await searchChatMode(
+            message,
+            image,
+            isRegenerate || false,
+            messages,
+            memory || history,
+            signal
+          )
+        } else {
+          await normalChatMode(
+            message,
+            image,
+            isRegenerate,
+            chatHistory || messages,
+            memory || history,
+            signal
+          )
+        }
+      } else {
+        const newEmbeddingController = new AbortController()
+        let embeddingSignal = newEmbeddingController.signal
+        setEmbeddingController(newEmbeddingController)
+        await chatWithWebsiteMode(
+          message,
+          image,
+          isRegenerate,
+          chatHistory || messages,
+          memory || history,
+          signal,
+          embeddingSignal
+        )
+      }
     }
   }
 
@@ -982,7 +1192,8 @@ export const useMessage = () => {
           image: lastMessage.image || "",
           isRegenerate: true,
           memory: newHistory,
-          controller: newController
+          controller: newController,
+          messageType: lastMessage.messageType
         })
       }
     }

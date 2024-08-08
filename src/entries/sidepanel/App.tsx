@@ -1,5 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { MemoryRouter } from "react-router-dom"
+import { useEffect } from "react"
 import { SidepanelRouting } from "~/routes"
 const queryClient = new QueryClient()
 import { ConfigProvider, Empty, theme } from "antd"
@@ -12,6 +13,13 @@ import { PageAssistProvider } from "@/components/Common/PageAssistProvider"
 function IndexSidepanel() {
   const { mode } = useDarkMode()
   const { t, i18n } = useTranslation()
+
+  useEffect(() => {
+    if (i18n.resolvedLanguage) {
+      document.documentElement.lang = i18n.resolvedLanguage;
+      document.documentElement.dir = i18n.dir(i18n.resolvedLanguage);
+    }
+  }, [i18n, i18n.resolvedLanguage]);
 
   return (
     <MemoryRouter>

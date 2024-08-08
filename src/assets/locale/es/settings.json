@@ -29,6 +29,9 @@
       },
       "sendNotificationAfterIndexing": {
         "label": "Enviar notificación después de terminar el procesamiento de la base de conocimientos"
+      },
+      "generateTitle" :{
+        "label": "Generar título usando IA"
       }
     },
     "sidepanelRag": {
@@ -147,6 +150,10 @@
       "type": "Tipo de Prompt",
       "actions": "Acciones"
     },
+    "segmented": {
+      "custom": "Invites personnalisées",
+      "copilot": "Invites Copilot"
+    },
     "systemPrompt": "Prompt del Sistema",
     "quickPrompt": "Prompt Rápido",
     "tooltip": {
@@ -170,7 +177,8 @@
         "label": "Prompt",
         "placeholder": "Ingrese un prompt",
         "required": "Por favor, ingrese un prompt",
-        "help": "Puede usar {key} como variable en su prompt."
+        "help": "Puede usar {key} como variable en su prompt.",
+        "missingTextPlaceholder": "Falta la variable {text} en el mensaje. Por favor, añádela."
       },
       "isSystem": {
         "label": "Es un Prompt del Sistema"

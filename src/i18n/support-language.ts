@@ -35,5 +35,9 @@ export const supportLanguage = [
     {
         label: "日本語",
         value: "ja-JP"
+    },
+    {
+        label: "فارسی",
+        value: "fa"
     }
 ]

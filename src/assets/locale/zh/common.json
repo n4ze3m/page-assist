@@ -84,5 +84,11 @@
             }
         },
         "advanced": "更多模型设置"
+    },
+    "copilot": {
+        "summary": "总结",
+        "explain": "解释",
+        "rephrase": "重述",
+        "translate": "翻译"
     }
 }
