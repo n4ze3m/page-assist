@@ -269,6 +269,20 @@
       }
     }
   },
+  "openAISettings": {
+    "title": "OpenAI Settings",
+    "heading": "Configure OpenAI",
+    "settings": {
+      "openAIBaseURL": {
+        "label": "OpenAI Base URL",
+        "placeholder": "https://api.openai.com/v1"
+      },
+      "openAIApiKey": {
+        "label": "OpenAI Api key",
+        "placeholder": "OpenAI Api key"
+      }
+    }
+  },
   "manageSearch": {
     "title": "Manage Web Search",
     "heading": "Configure Web Search"

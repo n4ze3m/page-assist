@@ -1,0 +1,270 @@
+import { Storage } from "@plasmohq/storage"
+import { cleanUrl } from "../libs/clean-url"
+import { urlRewriteRuntime } from "../libs/runtime"
+import { getChromeAIModel } from "./chrome"
+import { setTotalFilePerKB } from "./app"
+
+const storage = new Storage()
+
+const DEFAULT_OPENAI_URL = "https://api.openai.com/v1"
+const DEFAULT_ASK_FOR_MODEL_SELECTION_EVERY_TIME = false
+const DEFAULT_PAGE_SHARE_URL = "https://pageassist.xyz"
+
+const DEFAULT_RAG_QUESTION_PROMPT =
+  "Given the following conversation and a follow up question, rephrase the follow up question to be a standalone question.   Chat History: {chat_history} Follow Up Input: {question} Standalone question:"
+
+const DEFAUTL_RAG_SYSTEM_PROMPT = `You are a helpful AI assistant. Use the following pieces of context to answer the question at the end. If you don't know the answer, just say you don't know. DO NOT try to make up an answer. If the question is not related to the context, politely respond that you are tuned to only answer questions that are related to the context.  {context}  Question: {question} Helpful answer:`
+
+const DEFAULT_WEBSEARCH_PROMP = `You are an AI model who is expert at searching the web and answering user's queries. 
+
+Generate a response that is informative and relevant to the user's query based on provided search results. the current date and time are {current_date_time}.  
+
+\`search-results\` block provides knowledge from the web search results. You can use this information to generate a meaningful response.
+
+<search-results>
+ {search_results}
+</search-results>
+`
+
+const DEFAULT_WEBSEARCH_FOLLOWUP_PROMPT = `You will give a follow-up question.  You need to rephrase the follow-up question if needed so it is a standalone question that can be used by the AI model to search the internet.
+
+Example:
+
+Follow-up question: What are the symptoms of a heart attack?
+
+Rephrased question: Symptoms of a heart attack.
+
+Follow-up question: Where is the upcoming Olympics being held?
+
+Rephrased question: Location of the upcoming Olympics.
+
+Follow-up question: Taylor Swift's latest album?
+
+Rephrased question: Name of Taylor Swift's latest album.
+
+
+Previous Conversation: 
+
+{chat_history}
+
+Follow-up question: {question}
+
+Rephrased question:
+`
+
+export const getOpenAIBaseURL = async () => {
+  const openAIBaseURL = await storage.get("openaiBaseURL")
+  if (!openAIBaseURL || openAIBaseURL.length === 0) {
+    await urlRewriteRuntime(DEFAULT_OPENAI_URL)
+    return DEFAULT_OPENAI_URL
+  }
+  await urlRewriteRuntime(cleanUrl(openAIBaseURL))
+  return openAIBaseURL
+}
+
+export const askForModelSelectionEveryTime = async () => {
+  const askForModelSelectionEveryTime = await storage.get(
+    "askForModelSelectionEveryTime"
+  )
+  if (
+    !askForModelSelectionEveryTime ||
+    askForModelSelectionEveryTime.length === 0
+  )
+    return DEFAULT_ASK_FOR_MODEL_SELECTION_EVERY_TIME
+  return askForModelSelectionEveryTime
+}
+
+export const defaultModel = async () => {
+  const defaultModel = await storage.get("defaultModel")
+  return defaultModel
+}
+
+export const getAllModels = async ({
+  returnEmpty = false
+}: {
+  returnEmpty?: boolean
+}) => {
+  try {
+    const baseUrl = await getOpenAIBaseURL()
+    const response = await fetch(`${cleanUrl(baseUrl)}/models`)
+    if (!response.ok) {
+      if (returnEmpty) {
+        return []
+      }
+      throw new Error(response.statusText)
+    }
+    const json = await response.json()
+
+    return json.data as {
+      id: string
+      object: string
+      created: number
+      owned_by: string
+      active: boolean
+      context_window: number
+    }[]
+  } catch (e) {
+    console.error(e)
+    return []
+  }
+}
+
+export const setOpenAIBaseURL = async (openAIBaseURL: string) => {
+  let formattedUrl = openAIBaseURL
+  await urlRewriteRuntime(cleanUrl(formattedUrl))
+  await storage.set("openAIBaseURL", cleanUrl(formattedUrl))
+}
+
+export const setOpenAIApiKey = async (openAIApiKey: string) => {
+  await storage.set("openAIApiKey", openAIApiKey)
+}
+
+export const systemPromptForNonRag = async () => {
+  const prompt = await storage.get("systemPromptForNonRag")
+  return prompt
+}
+
+export const promptForRag = async () => {
+  const prompt = await storage.get("systemPromptForRag")
+  const questionPrompt = await storage.get("questionPromptForRag")
+
+  let ragPrompt = prompt
+  let ragQuestionPrompt = questionPrompt
+
+  if (!ragPrompt || ragPrompt.length === 0) {
+    ragPrompt = DEFAUTL_RAG_SYSTEM_PROMPT
+  }
+
+  if (!ragQuestionPrompt || ragQuestionPrompt.length === 0) {
+    ragQuestionPrompt = DEFAULT_RAG_QUESTION_PROMPT
+  }
+
+  return {
+    ragPrompt,
+    ragQuestionPrompt
+  }
+}
+
+export const setSystemPromptForNonRag = async (prompt: string) => {
+  await storage.set("systemPromptForNonRag", prompt)
+}
+
+export const setPromptForRag = async (
+  prompt: string,
+  questionPrompt: string
+) => {
+  await storage.set("systemPromptForRag", prompt)
+  await storage.set("questionPromptForRag", questionPrompt)
+}
+
+export const systemPromptForNonRagOption = async () => {
+  const prompt = await storage.get("systemPromptForNonRagOption")
+  return prompt
+}
+
+export const setSystemPromptForNonRagOption = async (prompt: string) => {
+  await storage.set("systemPromptForNonRagOption", prompt)
+}
+
+export const sendWhenEnter = async () => {
+  const sendWhenEnter = await storage.get("sendWhenEnter")
+  if (!sendWhenEnter || sendWhenEnter.length === 0) {
+    return true
+  }
+  return sendWhenEnter === "true"
+}
+
+export const setSendWhenEnter = async (sendWhenEnter: boolean) => {
+  await storage.set("sendWhenEnter", sendWhenEnter.toString())
+}
+
+export const defaultEmbeddingModelForRag = async () => {
+  const embeddingMode = await storage.get("defaultEmbeddingModel")
+  if (!embeddingMode || embeddingMode.length === 0) {
+    return null
+  }
+  return embeddingMode
+}
+
+export const defaultEmbeddingChunkSize = async () => {
+  const embeddingChunkSize = await storage.get("defaultEmbeddingChunkSize")
+  if (!embeddingChunkSize || embeddingChunkSize.length === 0) {
+    return 1000
+  }
+  return parseInt(embeddingChunkSize)
+}
+
+export const defaultEmbeddingChunkOverlap = async () => {
+  const embeddingChunkOverlap = await storage.get(
+    "defaultEmbeddingChunkOverlap"
+  )
+  if (!embeddingChunkOverlap || embeddingChunkOverlap.length === 0) {
+    return 200
+  }
+  return parseInt(embeddingChunkOverlap)
+}
+
+export const setDefaultEmbeddingModelForRag = async (model: string) => {
+  await storage.set("defaultEmbeddingModel", model)
+}
+
+export const setDefaultEmbeddingChunkSize = async (size: number) => {
+  await storage.set("defaultEmbeddingChunkSize", size.toString())
+}
+
+export const setDefaultEmbeddingChunkOverlap = async (overlap: number) => {
+  await storage.set("defaultEmbeddingChunkOverlap", overlap.toString())
+}
+
+export const saveForRag = async (
+  model: string,
+  chunkSize: number,
+  overlap: number,
+  totalFilePerKB: number
+) => {
+  await setDefaultEmbeddingModelForRag(model)
+  await setDefaultEmbeddingChunkSize(chunkSize)
+  await setDefaultEmbeddingChunkOverlap(overlap)
+  await setTotalFilePerKB(totalFilePerKB)
+}
+
+export const getWebSearchPrompt = async () => {
+  const prompt = await storage.get("webSearchPrompt")
+  if (!prompt || prompt.length === 0) {
+    return DEFAULT_WEBSEARCH_PROMP
+  }
+  return prompt
+}
+
+export const setWebSearchPrompt = async (prompt: string) => {
+  await storage.set("webSearchPrompt", prompt)
+}
+
+export const geWebSearchFollowUpPrompt = async () => {
+  const prompt = await storage.get("webSearchFollowUpPrompt")
+  if (!prompt || prompt.length === 0) {
+    return DEFAULT_WEBSEARCH_FOLLOWUP_PROMPT
+  }
+  return prompt
+}
+
+export const setWebSearchFollowUpPrompt = async (prompt: string) => {
+  await storage.set("webSearchFollowUpPrompt", prompt)
+}
+
+export const setWebPrompts = async (prompt: string, followUpPrompt: string) => {
+  await setWebSearchPrompt(prompt)
+  await setWebSearchFollowUpPrompt(followUpPrompt)
+}
+
+export const getPageShareUrl = async () => {
+  const pageShareUrl = await storage.get("pageShareUrl")
+  if (!pageShareUrl || pageShareUrl.length === 0) {
+    return DEFAULT_PAGE_SHARE_URL
+  }
+  return pageShareUrl
+}
+
+export const setPageShareUrl = async (pageShareUrl: string) => {
+  await storage.set("pageShareUrl", pageShareUrl)
+}
