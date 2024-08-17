@@ -77,7 +77,7 @@
     "tailwindcss": "^3.4.1",
     "typescript": "5.3.3",
     "vite-plugin-top-level-await": "^1.4.1",
-    "wxt": "^0.17.7"
+    "wxt": "^0.19.6"
   },
   "resolutions": {
     "@langchain/core": "0.1.45"
