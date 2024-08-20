@@ -37,7 +37,7 @@ export default defineConfig({
       topLevelAwait({
         promiseExportName: "__tla",
         promiseImportName: (i) => `__tla_${i}`
-      })
+      }) as any
     ],
     build: {
       rollupOptions: {
@@ -90,4 +90,4 @@ export default defineConfig({
         ? firefoxMV2Permissions
         : chromeMV3Permissions
   }
-})
+}) as any

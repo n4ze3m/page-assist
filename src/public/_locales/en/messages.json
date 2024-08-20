@@ -10,5 +10,20 @@
     },
     "openOptionToChat": {
         "message": "Open Web UI to Chat"
+    },
+    "contextSummarize": {
+        "message": "Summarize"
+    },
+    "contextExplain": {
+        "message": "Explain"
+    },
+    "contextRephrase": {
+        "message": "Rephrase"
+    },
+    "contextTranslate" :{
+        "message": "Translate"
+    },
+    "contextCustom": {
+        "message": "Custom"
     }
 }

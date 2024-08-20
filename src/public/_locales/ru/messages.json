@@ -7,5 +7,20 @@
     },
     "openSidePanelToChat": {
         "message": "Открыть Copilot для чата"
+    },
+    "contextSummarize": {
+        "message": "Обобщить"
+    },
+    "contextExplain": {
+        "message": "Объяснить"
+    },
+    "contextRephrase": {
+        "message": "Перефразировать"
+    },
+    "contextTranslate" :{
+        "message": "Перевести"
+    },
+    "contextCustom": {
+        "message": "Пользовательский"
     }
 }

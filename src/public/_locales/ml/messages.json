@@ -7,5 +7,20 @@
     },
     "openSidePanelToChat": {
         "message": "ചാറ്റ് ചെയ്യാന്‍ സൈഡ് പാനല്‍ തുറക്കുക"
+    },
+    "contextSummarize": {
+        "message": "സംഗ്രഹിക്കുക"
+    },
+    "contextExplain": {
+        "message": "വിശദീകരിക്കുക"
+    },
+    "contextRephrase": {
+        "message": "പുനഃരൂപീകരിക്കുക"
+    },
+    "contextTranslate" :{
+        "message": "വിവർത്തനം ചെയ്യുക"
+    },
+    "contextCustom": {
+        "message": "ഇഷ്ടാനുസൃതം"
     }
 }

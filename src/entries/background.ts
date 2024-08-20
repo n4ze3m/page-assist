@@ -64,31 +64,31 @@ export default defineBackground({
 
     browser.contextMenus.create({
       id: "summarize-pa",
-      title: "Summarize",
+      title: browser.i18n.getMessage("contextSummarize"),
       contexts: ["selection"]
     })
 
     browser.contextMenus.create({
       id: "explain-pa",
-      title: "Explain",
+      title: browser.i18n.getMessage("contextExplain"),
       contexts: ["selection"]
     })
 
     browser.contextMenus.create({
       id: "rephrase-pa",
-      title: "Rephrase",
+      title: browser.i18n.getMessage("contextRephrase"),
       contexts: ["selection"]
     })
 
     browser.contextMenus.create({
       id: "translate-pg",
-      title: "Translate",
+      title: browser.i18n.getMessage("contextTranslate"),
       contexts: ["selection"]
     })
 
     browser.contextMenus.create({
       id: "custom-pg",
-      title: "Custom",
+      title: browser.i18n.getMessage("contextCustom"),
       contexts: ["selection"]
     })
 
