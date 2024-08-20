@@ -126,7 +126,7 @@ export class ChatOllama
         this.mirostatTau = fields.mirostatTau;
         this.numBatch = fields.numBatch;
         this.numCtx = fields.numCtx;
-        this.numGpu = fields.numGpu;
+        this.numGpu = fields.numGpu === null ? undefined : fields.numGpu;
         this.numGqa = fields.numGqa;
         this.numKeep = fields.numKeep;
         this.numPredict = fields.numPredict;

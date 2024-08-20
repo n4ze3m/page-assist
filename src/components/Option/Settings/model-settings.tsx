@@ -6,7 +6,6 @@ import { Form, Skeleton, Input, InputNumber, Collapse } from "antd"
 import React from "react"
 import { useTranslation } from "react-i18next"
 
-
 export const ModelSettings = () => {
   const { t } = useTranslation("common")
   const [form] = Form.useForm()
@@ -24,10 +23,10 @@ export const ModelSettings = () => {
     <div>
       <div>
         <div className="inline-flex items-center gap-2">
-        <BetaTag />
-        <h2 className="text-base font-semibold leading-7 text-gray-900 dark:text-white">
-          {t("modelSettings.label")} 
-        </h2>
+          <BetaTag />
+          <h2 className="text-base font-semibold leading-7 text-gray-900 dark:text-white">
+            {t("modelSettings.label")}
+          </h2>
         </div>
         <p className="text-sm text-gray-700 dark:text-neutral-400 mt-1">
           {t("modelSettings.description")}
@@ -41,6 +40,7 @@ export const ModelSettings = () => {
             temperature: number
             topK: number
             topP: number
+            numGpu: number
           }) => {
             Object.entries(values).forEach(([key, value]) => {
               setModelSetting(key, value)
@@ -104,6 +104,17 @@ export const ModelSettings = () => {
                         style={{ width: "100%" }}
                         size="large"
                         placeholder={t("modelSettings.form.topP.placeholder")}
+                      />
+                    </Form.Item>
+                    <Form.Item
+                      name="numGpu"
+                      label={t("modelSettings.form.numGpu.label")}>
+                      <InputNumber
+                        style={{ width: "100%" }}
+                        size="large"
+                        placeholder={t(
+                          "modelSettings.form.numGpu.placeholder"
+                        )}
                       />
                     </Form.Item>
                   </React.Fragment>

@@ -81,7 +81,10 @@
             "topP": {
                 "label": "Top P",
                 "placeholder": "Введите значение Top P (например, 0.9, 0.95)"
-            }
+            },
+            "numGpu": {
+                "label": "Num GPU",
+                "placeholder": "Введите количество слоев для отправки на GPU"            }
         },
         "advanced": "Больше настроек модели"
     },

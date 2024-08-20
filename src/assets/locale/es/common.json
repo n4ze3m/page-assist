@@ -81,6 +81,10 @@
             "topP": {
                 "label": "Top P",
                 "placeholder": "Ingresar el valor de Top P (ej: 0.9, 0.95)"
+            },
+            "numGpu": {
+                "label": "Num GPU",
+                "placeholder": "Ingrese el número de capas para enviar a la(s) GPU(s)"
             }
         },
         "advanced": "Más Configuraciones del Modelo"

@@ -24,7 +24,8 @@ export const CurrentChatModelSettings = ({ open, setOpen }: Props) => {
         topP: cUserSettings.topP ?? data.topP,
         keepAlive: cUserSettings.keepAlive ?? data.keepAlive,
         numCtx: cUserSettings.numCtx ?? data.numCtx,
-        seed: cUserSettings.seed
+        seed: cUserSettings.seed,
+        numGpu: cUserSettings.numGpu ?? data.numGpu,
       })
       return data
     },
@@ -116,6 +117,16 @@ export const CurrentChatModelSettings = ({ open, setOpen }: Props) => {
                         style={{ width: "100%" }}
                         size="large"
                         placeholder={t("modelSettings.form.topP.placeholder")}
+                      />
+                    </Form.Item>
+
+                    <Form.Item
+                      name="numGpu"
+                      label={t("modelSettings.form.numGpu.label")}>
+                      <InputNumber
+                        style={{ width: "100%" }}
+                        size="large"
+                        placeholder={t("modelSettings.form.numGpu.placeholder")}
                       />
                     </Form.Item>
                   </React.Fragment>

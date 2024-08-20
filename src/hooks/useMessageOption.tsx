@@ -117,7 +117,9 @@ export const useMessageOption = () => {
       topP: currentChatModelSettings?.topP ?? userDefaultModelSettings?.topP,
       numCtx:
         currentChatModelSettings?.numCtx ?? userDefaultModelSettings?.numCtx,
-      seed: currentChatModelSettings?.seed
+      seed: currentChatModelSettings?.seed,
+      numGpu:
+        currentChatModelSettings?.numGpu ?? userDefaultModelSettings?.numGpu
     })
 
     let newMessage: Message[] = []
@@ -190,7 +192,9 @@ export const useMessageOption = () => {
           numCtx:
             currentChatModelSettings?.numCtx ??
             userDefaultModelSettings?.numCtx,
-          seed: currentChatModelSettings?.seed
+          seed: currentChatModelSettings?.seed,
+          numGpu:
+            currentChatModelSettings?.numGpu ?? userDefaultModelSettings?.numGpu
         })
         const response = await questionOllama.invoke(promptForQuestion)
         query = response.content.toString()
@@ -360,7 +364,9 @@ export const useMessageOption = () => {
       topP: currentChatModelSettings?.topP ?? userDefaultModelSettings?.topP,
       numCtx:
         currentChatModelSettings?.numCtx ?? userDefaultModelSettings?.numCtx,
-      seed: currentChatModelSettings?.seed
+      seed: currentChatModelSettings?.seed,
+      numGpu:
+        currentChatModelSettings?.numGpu ?? userDefaultModelSettings?.numGpu
     })
 
     let newMessage: Message[] = []
@@ -576,7 +582,9 @@ export const useMessageOption = () => {
       topP: currentChatModelSettings?.topP ?? userDefaultModelSettings?.topP,
       numCtx:
         currentChatModelSettings?.numCtx ?? userDefaultModelSettings?.numCtx,
-      seed: currentChatModelSettings?.seed
+      seed: currentChatModelSettings?.seed,
+      numGpu:
+        currentChatModelSettings?.numGpu ?? userDefaultModelSettings?.numGpu
     })
 
     let newMessage: Message[] = []
@@ -665,7 +673,9 @@ export const useMessageOption = () => {
           numCtx:
             currentChatModelSettings?.numCtx ??
             userDefaultModelSettings?.numCtx,
-          seed: currentChatModelSettings?.seed
+          seed: currentChatModelSettings?.seed,
+          numGpu:
+            currentChatModelSettings?.numGpu ?? userDefaultModelSettings?.numGpu
         })
         const response = await questionOllama.invoke(promptForQuestion)
         query = response.content.toString()

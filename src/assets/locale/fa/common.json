@@ -81,6 +81,10 @@
             "topP": {
                 "label": "Top P",
                 "placeholder": "مقدار Top P را وارد کنید (مثلا 0.9, 0.95)"
+            },
+            "numGpu": {
+                "label": "Num GPU",
+                "placeholder": "تعداد لایه‌هایی که به GPU(ها) ارسال می‌شود را وارد کنید"
             }
         },
         "advanced": "تنظیمات بیشتر مدل"
