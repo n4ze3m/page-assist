@@ -311,9 +311,9 @@
         "required": "ദയവായി ചങ്ക് ഓവര്‍ലാപ്പ് നല്കുക"
       },
       "totalFilePerKB": {
-        "label": "Limite padrão de arquivos da base de conhecimento",
-        "placeholder": "Digite o limite padrão de arquivos (ex. 10)",
-        "required": "Por favor, digite o limite padrão de arquivos"
+        "label": "വിജ്ഞാനാധാരത്തിന്റെ സ്ഥിര ഫയൽ അപ്‌ലോഡ് പരിധി",
+        "placeholder": "സ്ഥിര ഫയൽ അപ്‌ലോഡ് പരിധി നൽകുക (ഉദാ: 10)",
+        "required": "ദയവായി സ്ഥിര ഫയൽ അപ്‌ലോഡ് പരിധി നൽകുക"
       }
     },
     "prompt": {

@@ -308,10 +308,9 @@
         "required": "Por favor, ingresar el solapamiento del chunk"
       },
       "totalFilePerKB": {
-        "label": "Límite predeterminado de archivos de la base de conocimientos",
-        "placeholder": "Ingrese el límite predeterminado de archivos (ej. 10)",
-        "required": "Por favor, ingrese el límite predeterminado de archivos"
-      }
+        "label": "Límite predeterminado de carga de archivos para la Base de Conocimientos",
+        "placeholder": "Ingrese el límite predeterminado de carga de archivos (ej., 10)",
+        "required": "Por favor, ingrese el límite predeterminado de carga de archivos"      }
     },
     "prompt": {
       "label": "Configurar el Prompt del RAG",

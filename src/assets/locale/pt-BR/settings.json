@@ -308,9 +308,9 @@
         "required": "Por favor, insira uma sobreposição de pedaço"
       },
       "totalFilePerKB": {
-        "label": "Limite padrão de arquivos da base de conhecimento",
-        "placeholder": "Digite o limite padrão de arquivos (ex. 10)",
-        "required": "Por favor, digite o limite padrão de arquivos"
+        "label": "Limite Padrão de Upload de Arquivos da Base de Conhecimento",
+        "placeholder": "Digite o limite padrão de upload de arquivos (ex: 10)",
+        "required": "Por favor, insira o limite padrão de upload de arquivos"
       }
     },
     "prompt": {

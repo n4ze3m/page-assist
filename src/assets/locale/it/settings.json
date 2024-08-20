@@ -308,10 +308,9 @@
         "required": "Inserisci la Sovrapposizione del Blocco"
       },
       "totalFilePerKB": {
-        "label": "Limite predefinito di file della base di conoscenza",
-        "placeholder": "Inserisci il limite predefinito di file (es. 10)",
-        "required": "Inserisci il limite predefinito di file"
-      }
+      "label": "Limite Predefinito di Caricamento File per la Base di Conoscenza",
+        "placeholder": "Inserisci il limite predefinito di caricamento file (es. 10)",
+        "required": "Inserisci il limite predefinito di caricamento file"      }
     },
     "prompt": {
       "label": "Configura il Prompt RAG",

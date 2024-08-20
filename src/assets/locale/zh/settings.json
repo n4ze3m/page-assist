@@ -313,9 +313,9 @@
         "required": "请输入嵌入重叠"
       },
       "totalFilePerKB": {
-        "label": "知识库默认文件限制",
-        "placeholder": "输入默认文件限制（例如：10）",
-        "required": "请输入默认文件限制"
+        "label": "知识库默认文件上传限制",
+        "placeholder": "输入默认文件上传限制（例如：10）",
+        "required": "请输入默认文件上传限制"
       }
     },
     "prompt": {
