@@ -30,7 +30,7 @@
       "sendNotificationAfterIndexing": {
         "label": "Enviar notificación después de terminar el procesamiento de la base de conocimientos"
       },
-      "generateTitle" :{
+      "generateTitle": {
         "label": "Generar título usando IA"
       }
     },
@@ -310,7 +310,13 @@
       "totalFilePerKB": {
         "label": "Límite predeterminado de carga de archivos para la Base de Conocimientos",
         "placeholder": "Ingrese el límite predeterminado de carga de archivos (ej., 10)",
-        "required": "Por favor, ingrese el límite predeterminado de carga de archivos"      }
+        "required": "Por favor, ingrese el límite predeterminado de carga de archivos"
+      },
+      "noOfRetrievedDocs": {
+        "label": "Número de Documentos Recuperados",
+        "placeholder": "Ingrese el Número de Documentos Recuperados",
+        "required": "Por favor, ingrese el número de documentos recuperados"
+      }
     },
     "prompt": {
       "label": "Configurar el Prompt del RAG",

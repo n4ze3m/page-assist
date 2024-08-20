@@ -29,8 +29,8 @@
       },
       "sendNotificationAfterIndexing": {
         "label": "Inviare notifica dopo aver terminato l'elaborazione della base di conoscenza"
-      }, 
-      "generateTitle" :{
+      },
+      "generateTitle": {
         "label": "Genera titolo utilizzando l'IA"
       }
     },
@@ -308,9 +308,15 @@
         "required": "Inserisci la Sovrapposizione del Blocco"
       },
       "totalFilePerKB": {
-      "label": "Limite Predefinito di Caricamento File per la Base di Conoscenza",
+        "label": "Limite Predefinito di Caricamento File per la Base di Conoscenza",
         "placeholder": "Inserisci il limite predefinito di caricamento file (es. 10)",
-        "required": "Inserisci il limite predefinito di caricamento file"      }
+        "required": "Inserisci il limite predefinito di caricamento file"
+      },
+      "noOfRetrievedDocs": {
+        "label": "Numero di Documenti Recuperati",
+        "placeholder": "Inserisci il Numero di Documenti Recuperati",
+        "required": "Inserisci il numero di documenti recuperati"
+      }
     },
     "prompt": {
       "label": "Configura il Prompt RAG",

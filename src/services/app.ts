@@ -109,3 +109,12 @@ export const getTotalFilePerKB = async (): Promise<number> => {
 export const setTotalFilePerKB = async (totalFilePerKB: number): Promise<void> => {
   await storage.set("totalFilePerKB", totalFilePerKB);
 };
+
+export const getNoOfRetrievedDocs = async (): Promise<number> => {
+  const noOfRetrievedDocs = await storage.get<number>("noOfRetrievedDocs");
+  return noOfRetrievedDocs || 4 
+}
+
+export const setNoOfRetrievedDocs = async (noOfRetrievedDocs: number): Promise<void> => {
+  await storage.set("noOfRetrievedDocs", noOfRetrievedDocs);
+}

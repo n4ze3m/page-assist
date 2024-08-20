@@ -316,6 +316,11 @@
         "label": "知识库默认文件上传限制",
         "placeholder": "输入默认文件上传限制（例如：10）",
         "required": "请输入默认文件上传限制"
+      },
+      "noOfRetrievedDocs": {
+        "label": "检索文档数量",
+        "placeholder": "输入检索文档数量",
+        "required": "请输入检索文档数量"
       }
     },
     "prompt": {

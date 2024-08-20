@@ -311,6 +311,11 @@
         "label": "Knowledge Base Default File Upload Limit",
         "placeholder": "Enter default file upload limit (e.g., 10)",
         "required": "Please enter the default file upload limit"
+      },
+      "noOfRetrievedDocs": {
+        "label": "Number of Retrieved Documents",
+        "placeholder": "Enter Number of Retrieved Documents",
+        "required": "Please enter the number of retrieved documents"
       }
     },
     "prompt": {

@@ -2,7 +2,7 @@ import { Storage } from "@plasmohq/storage"
 import { cleanUrl } from "../libs/clean-url"
 import { urlRewriteRuntime } from "../libs/runtime"
 import { getChromeAIModel } from "./chrome"
-import { setTotalFilePerKB } from "./app"
+import { setNoOfRetrievedDocs, setTotalFilePerKB } from "./app"
 
 const storage = new Storage()
 
@@ -326,12 +326,14 @@ export const saveForRag = async (
   model: string,
   chunkSize: number,
   overlap: number,
-  totalFilePerKB: number
+  totalFilePerKB: number,
+  noOfRetrievedDocs: number
 ) => {
   await setDefaultEmbeddingModelForRag(model)
   await setDefaultEmbeddingChunkSize(chunkSize)
   await setDefaultEmbeddingChunkOverlap(overlap)
   await setTotalFilePerKB(totalFilePerKB)
+  await setNoOfRetrievedDocs(noOfRetrievedDocs)
 }
 
 export const getWebSearchPrompt = async () => {

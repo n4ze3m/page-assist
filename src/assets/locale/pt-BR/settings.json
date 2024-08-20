@@ -311,6 +311,11 @@
         "label": "Limite Padrão de Upload de Arquivos da Base de Conhecimento",
         "placeholder": "Digite o limite padrão de upload de arquivos (ex: 10)",
         "required": "Por favor, insira o limite padrão de upload de arquivos"
+      },
+      "noOfRetrievedDocs": {
+        "label": "Número de Documentos Recuperados",
+        "placeholder": "Digite o Número de Documentos Recuperados",
+        "required": "Por favor, insira o número de documentos recuperados"
       }
     },
     "prompt": {

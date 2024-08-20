@@ -10,7 +10,7 @@ import {
 } from "~/services/ollama"
 import { SettingPrompt } from "./prompt"
 import { useTranslation } from "react-i18next"
-import { getTotalFilePerKB } from "@/services/app"
+import { getNoOfRetrievedDocs, getTotalFilePerKB } from "@/services/app"
 import { SidepanelRag } from "./sidepanel-rag"
 
 export const RagSettings = () => {
@@ -21,20 +21,28 @@ export const RagSettings = () => {
   const { data: ollamaInfo, status } = useQuery({
     queryKey: ["fetchRAGSettings"],
     queryFn: async () => {
-      const [allModels, chunkOverlap, chunkSize, defaultEM, totalFilePerKB] =
-        await Promise.all([
-          getAllModels({ returnEmpty: true }),
-          defaultEmbeddingChunkOverlap(),
-          defaultEmbeddingChunkSize(),
-          defaultEmbeddingModelForRag(),
-          getTotalFilePerKB()
-        ])
+      const [
+        allModels,
+        chunkOverlap,
+        chunkSize,
+        defaultEM,
+        totalFilePerKB,
+        noOfRetrievedDocs
+      ] = await Promise.all([
+        getAllModels({ returnEmpty: true }),
+        defaultEmbeddingChunkOverlap(),
+        defaultEmbeddingChunkSize(),
+        defaultEmbeddingModelForRag(),
+        getTotalFilePerKB(),
+        getNoOfRetrievedDocs()
+      ])
       return {
         models: allModels,
         chunkOverlap,
         chunkSize,
         defaultEM,
-        totalFilePerKB
+        totalFilePerKB,
+        noOfRetrievedDocs
       }
     }
   })
@@ -45,8 +53,15 @@ export const RagSettings = () => {
       chunkSize: number
       overlap: number
       totalFilePerKB: number
+      noOfRetrievedDocs: number
     }) => {
-      await saveForRag(data.model, data.chunkSize, data.overlap,  data.totalFilePerKB)
+      await saveForRag(
+        data.model,
+        data.chunkSize,
+        data.overlap,
+        data.totalFilePerKB,
+        data.noOfRetrievedDocs
+      )
       return true
     },
     onSuccess: () => {
@@ -75,14 +90,16 @@ export const RagSettings = () => {
                   model: data.defaultEM,
                   chunkSize: data.chunkSize,
                   overlap: data.chunkOverlap,
-                  totalFilePerKB: data.totalFilePerKB
+                  totalFilePerKB: data.totalFilePerKB,
+                  noOfRetrievedDocs: data.noOfRetrievedDocs
                 })
               }}
               initialValues={{
                 chunkSize: ollamaInfo?.chunkSize,
                 chunkOverlap: ollamaInfo?.chunkOverlap,
                 defaultEM: ollamaInfo?.defaultEM,
-                totalFilePerKB: ollamaInfo?.totalFilePerKB
+                totalFilePerKB: ollamaInfo?.totalFilePerKB,
+                noOfRetrievedDocs: ollamaInfo?.noOfRetrievedDocs
               }}>
               <Form.Item
                 name="defaultEM"
@@ -143,6 +160,23 @@ export const RagSettings = () => {
               </Form.Item>
 
               <Form.Item
+                name="noOfRetrievedDocs"
+                label={t("rag.ragSettings.noOfRetrievedDocs.label")}
+                rules={[
+                  {
+                    required: true,
+                    message: t("rag.ragSettings.noOfRetrievedDocs.required")
+                  }
+                ]}>
+                <InputNumber
+                  style={{ width: "100%" }}
+                  placeholder={t(
+                    "rag.ragSettings.noOfRetrievedDocs.placeholder"
+                  )}
+                />
+              </Form.Item>
+
+              <Form.Item
                 name="totalFilePerKB"
                 label={t("rag.ragSettings.totalFilePerKB.label")}
                 rules={[
@@ -153,10 +187,10 @@ export const RagSettings = () => {
                 ]}>
                 <InputNumber
                   style={{ width: "100%" }}
+                  min={1}
                   placeholder={t("rag.ragSettings.totalFilePerKB.placeholder")}
                 />
               </Form.Item>
-
 
               <div className="flex justify-end">
                 <SaveButton disabled={isSaveRAGPending} btnType="submit" />
@@ -164,7 +198,7 @@ export const RagSettings = () => {
             </Form>
           </div>
 
-          <SidepanelRag  />
+          <SidepanelRag />
 
           <div>
             <div>
