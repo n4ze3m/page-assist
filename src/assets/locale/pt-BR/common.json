@@ -81,6 +81,10 @@
       "topP": {
         "label": "Top P",
         "placeholder": "Digite o valor do Top P (ex: 0.9, 0.95)"
+      },
+      "numGpu": {
+          "label": "Num GPUs",
+          "placeholder": "Digite o número de camadas para enviar para a(s) GPU(s)"
       }
     },
     "advanced": "Mais Configurações do Modelo"

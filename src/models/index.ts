@@ -9,7 +9,8 @@ export const pageAssistModel = async ({
   topK,
   topP,
   numCtx,
-  seed
+  seed,
+  numGpu
 }: {
   model: string
   baseUrl: string
@@ -19,6 +20,7 @@ export const pageAssistModel = async ({
   topP?: number
   numCtx?: number
   seed?: number
+  numGpu?: number
 }) => {
   switch (model) {
     case "chrome::gemini-nano::page-assist":
@@ -35,7 +37,8 @@ export const pageAssistModel = async ({
         topP,
         numCtx,
         seed,
-        model
+        model,
+        numGpu
       })
   }
 }

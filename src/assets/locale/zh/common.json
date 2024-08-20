@@ -81,6 +81,10 @@
             "topP": {
                 "label": "Top P",
                 "placeholder": "输入Top P值（例如：0.9、0.95）"
+            },
+            "numGpu": {
+                "label": "Num GPU",
+                "placeholder": "输入要发送到 GPU 的层数"
             }
         },
         "advanced": "更多模型设置"

@@ -81,6 +81,10 @@
             "topP": {
                 "label": "Top P",
                 "placeholder": "Enter Top P value (e.g. 0.9, 0.95)"
+            },
+            "numGpu": {
+                "label": "Num GPU",
+                "placeholder": "Enter number of layers to send to GPU(s)"
             }
         },
         "advanced": "More Model Settings"

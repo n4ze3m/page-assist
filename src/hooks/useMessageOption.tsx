@@ -32,6 +32,7 @@ import { useStorage } from "@plasmohq/storage/hook"
 import { useStoreChatModelSettings } from "@/store/model"
 import { getAllDefaultModelSettings } from "@/services/model-settings"
 import { pageAssistModel } from "@/models"
+import { getNoOfRetrievedDocs } from "@/services/app"
 
 export const useMessageOption = () => {
   const {
@@ -117,7 +118,9 @@ export const useMessageOption = () => {
       topP: currentChatModelSettings?.topP ?? userDefaultModelSettings?.topP,
       numCtx:
         currentChatModelSettings?.numCtx ?? userDefaultModelSettings?.numCtx,
-      seed: currentChatModelSettings?.seed
+      seed: currentChatModelSettings?.seed,
+      numGpu:
+        currentChatModelSettings?.numGpu ?? userDefaultModelSettings?.numGpu
     })
 
     let newMessage: Message[] = []
@@ -190,7 +193,9 @@ export const useMessageOption = () => {
           numCtx:
             currentChatModelSettings?.numCtx ??
             userDefaultModelSettings?.numCtx,
-          seed: currentChatModelSettings?.seed
+          seed: currentChatModelSettings?.seed,
+          numGpu:
+            currentChatModelSettings?.numGpu ?? userDefaultModelSettings?.numGpu
         })
         const response = await questionOllama.invoke(promptForQuestion)
         query = response.content.toString()
@@ -360,7 +365,9 @@ export const useMessageOption = () => {
       topP: currentChatModelSettings?.topP ?? userDefaultModelSettings?.topP,
       numCtx:
         currentChatModelSettings?.numCtx ?? userDefaultModelSettings?.numCtx,
-      seed: currentChatModelSettings?.seed
+      seed: currentChatModelSettings?.seed,
+      numGpu:
+        currentChatModelSettings?.numGpu ?? userDefaultModelSettings?.numGpu
     })
 
     let newMessage: Message[] = []
@@ -576,7 +583,9 @@ export const useMessageOption = () => {
       topP: currentChatModelSettings?.topP ?? userDefaultModelSettings?.topP,
       numCtx:
         currentChatModelSettings?.numCtx ?? userDefaultModelSettings?.numCtx,
-      seed: currentChatModelSettings?.seed
+      seed: currentChatModelSettings?.seed,
+      numGpu:
+        currentChatModelSettings?.numGpu ?? userDefaultModelSettings?.numGpu
     })
 
     let newMessage: Message[] = []
@@ -665,13 +674,16 @@ export const useMessageOption = () => {
           numCtx:
             currentChatModelSettings?.numCtx ??
             userDefaultModelSettings?.numCtx,
-          seed: currentChatModelSettings?.seed
+          seed: currentChatModelSettings?.seed,
+          numGpu:
+            currentChatModelSettings?.numGpu ?? userDefaultModelSettings?.numGpu
         })
         const response = await questionOllama.invoke(promptForQuestion)
         query = response.content.toString()
       }
+      const docSize = await getNoOfRetrievedDocs()
 
-      const docs = await vectorstore.similaritySearch(query, 4)
+      const docs = await vectorstore.similaritySearch(query, docSize)
       const context = formatDocs(docs)
       const source = docs.map((doc) => {
         return {

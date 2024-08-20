@@ -81,6 +81,10 @@
       "topP": {
         "label": "Top P",
         "placeholder": "Top P値を入力してください（例：0.9、0.95）"
+      },
+      "numGpu": {
+        "label": "Num GPU",
+        "placeholder": "GPU(s)に送信するレイヤー数を入力してください"
       }
     },
     "advanced": "その他のモデル設定"

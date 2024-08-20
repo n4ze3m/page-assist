@@ -7,5 +7,20 @@
     },
     "openSidePanelToChat": {
         "message": "Ouvrir Copilot pour discuter"
+    },
+    "contextSummarize": {
+        "message": "Résumer"
+    },
+    "contextExplain": {
+        "message": "Expliquer"
+    },
+    "contextRephrase": {
+        "message": "Reformuler"
+    },
+    "contextTranslate" :{
+        "message": "Traduire"
+    },
+    "contextCustom": {
+        "message": "Personnalisé"
     }
 }

@@ -7,5 +7,20 @@
     },
     "openSidePanelToChat": {
         "message": "打开Copilot进行聊天"
+    },
+    "contextSummarize": {
+        "message": "总结"
+    },
+    "contextExplain": {
+        "message": "解释"
+    },
+    "contextRephrase": {
+        "message": "改述"
+    },
+    "contextTranslate" :{
+        "message": "翻译"
+    },
+    "contextCustom": {
+        "message": "自定义"
     }
 }

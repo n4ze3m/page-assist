@@ -37,7 +37,7 @@ export default defineConfig({
       topLevelAwait({
         promiseExportName: "__tla",
         promiseImportName: (i) => `__tla_${i}`
-      })
+      }) as any
     ],
     build: {
       rollupOptions: {
@@ -50,7 +50,7 @@ export default defineConfig({
   outDir: "build",
 
   manifest: {
-    version: "1.2.0",
+    version: "1.2.1",
     name:
       process.env.TARGET === "firefox"
         ? "Page Assist - A Web UI for Local AI Models"
@@ -90,4 +90,4 @@ export default defineConfig({
         ? firefoxMV2Permissions
         : chromeMV3Permissions
   }
-})
+}) as any

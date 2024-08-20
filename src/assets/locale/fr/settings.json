@@ -29,8 +29,8 @@
       },
       "sendNotificationAfterIndexing": {
         "label": "Envoyer une notification après avoir terminé le traitement de la base de connaissances"
-      }, 
-      "generateTitle" :{
+      },
+      "generateTitle": {
         "label": "Générer le titre en utilisant l'IA"
       }
     },
@@ -308,9 +308,14 @@
         "required": "Veuillez saisir un chevauchement"
       },
       "totalFilePerKB": {
-        "label": "Limite par défaut de fichiers de la base de connaissances",
-        "placeholder": "Entrez la limite par défaut de fichiers (ex. 10)",
-        "required": "Veuillez entrer la limite par défaut de fichiers"
+        "label": "Limite par défaut de téléchargement de fichiers pour la base de connaissances",
+        "placeholder": "Entrez la limite par défaut de téléchargement de fichiers (par exemple, 10)",
+        "required": "Veuillez saisir la limite par défaut de téléchargement de fichiers"
+      },
+      "noOfRetrievedDocs": {
+        "label": "Nombre de documents récupérés",
+        "placeholder": "Entrez le nombre de documents récupérés",
+        "required": "Veuillez saisir le nombre de documents récupérés"
       }
     },
     "prompt": {

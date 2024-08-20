@@ -81,6 +81,10 @@
             "topP": {
                 "label": "Top P",
                 "placeholder": "Entrez la valeur Top P (par exemple 0,9, 0,95)"
+            },
+            "numGpu": {
+                "label": "Num GPU",
+                "placeholder": "Entrez le nombre de couches à envoyer au(x) GPU(s)"
             }
         },
         "advanced": "Plus de paramètres du modèle"

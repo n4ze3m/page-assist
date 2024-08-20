@@ -10,5 +10,20 @@
     },
     "openOptionToChat": {
         "message": "باز کردن رابط کاربری وب برای گفتگو"
+    },
+    "contextSummarize": {
+        "message": "خلاصه کردن"
+    },
+    "contextExplain": {
+        "message": "توضیح دادن"
+    },
+    "contextRephrase": {
+        "message": "بازنویسی"
+    },
+    "contextTranslate" :{
+        "message": "ترجمه کردن"
+    },
+    "contextCustom": {
+        "message": "سفارشی"
     }
 }
