@@ -75,11 +75,11 @@ export const AboutApp = () => {
                 label: "X (formerly Twitter)",
                 children: (
                   <a
-                    href="https://twitter.com/n4ze3m"
+                    href="https://twitter.com/page_assist"
                     target="_blank"
                     rel="noreferrer"
                     className="text-blue-500 dark:text-blue-400">
-                    @n4ze3m
+                    @page_assist
                   </a>
                 )
               }
