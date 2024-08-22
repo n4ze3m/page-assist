@@ -3,6 +3,8 @@ import { cleanUrl } from "../libs/clean-url"
 import { urlRewriteRuntime } from "../libs/runtime"
 import { getChromeAIModel } from "./chrome"
 import { setNoOfRetrievedDocs, setTotalFilePerKB } from "./app"
+import fetcher from "@/libs/fetcher"
+
 
 const storage = new Storage()
 
@@ -15,9 +17,9 @@ const DEFAULT_RAG_QUESTION_PROMPT =
 
 const DEFAUTL_RAG_SYSTEM_PROMPT = `You are a helpful AI assistant. Use the following pieces of context to answer the question at the end. If you don't know the answer, just say you don't know. DO NOT try to make up an answer. If the question is not related to the context, politely respond that you are tuned to only answer questions that are related to the context.  {context}  Question: {question} Helpful answer:`
 
-const DEFAULT_WEBSEARCH_PROMP = `You are an AI model who is expert at searching the web and answering user's queries. 
+const DEFAULT_WEBSEARCH_PROMP = `You are an AI model who is expert at searching the web and answering user's queries.
 
-Generate a response that is informative and relevant to the user's query based on provided search results. the current date and time are {current_date_time}.  
+Generate a response that is informative and relevant to the user's query based on provided search results. the current date and time are {current_date_time}.
 
 \`search-results\` block provides knowledge from the web search results. You can use this information to generate a meaningful response.
 
@@ -43,7 +45,7 @@ Follow-up question: Taylor Swift's latest album?
 Rephrased question: Name of Taylor Swift's latest album.
 
 
-Previous Conversation: 
+Previous Conversation:
 
 {chat_history}
 
@@ -82,7 +84,7 @@ export const defaultModel = async () => {
 export const isOllamaRunning = async () => {
   try {
     const baseUrl = await getOllamaURL()
-    const response = await fetch(`${cleanUrl(baseUrl)}`)
+    const response = await fetcher(`${cleanUrl(baseUrl)}`)
     if (!response.ok) {
       throw new Error(response.statusText)
     }
@@ -100,7 +102,7 @@ export const getAllModels = async ({
 }) => {
   try {
     const baseUrl = await getOllamaURL()
-    const response = await fetch(`${cleanUrl(baseUrl)}/api/tags`)
+    const response = await fetcher(`${cleanUrl(baseUrl)}/api/tags`)
     if (!response.ok) {
       if (returnEmpty) {
         return []
@@ -132,7 +134,7 @@ export const getAllModels = async ({
 
 export const deleteModel = async (model: string) => {
   const baseUrl = await getOllamaURL()
-  const response = await fetch(`${cleanUrl(baseUrl)}/api/delete`, {
+  const response = await fetcher(`${cleanUrl(baseUrl)}/api/delete`, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json"
@@ -154,7 +156,7 @@ export const fetchChatModels = async ({
 }) => {
   try {
     const baseUrl = await getOllamaURL()
-    const response = await fetch(`${cleanUrl(baseUrl)}/api/tags`)
+    const response = await fetcher(`${cleanUrl(baseUrl)}/api/tags`)
     if (!response.ok) {
       if (returnEmpty) {
         return []

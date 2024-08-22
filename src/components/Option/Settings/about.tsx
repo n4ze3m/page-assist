@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query"
 import { Skeleton } from "antd"
 import { cleanUrl } from "@/libs/clean-url"
 import { Descriptions } from "antd"
+import fetcher from "@/libs/fetcher"
 
 export const AboutApp = () => {
   const { t } = useTranslation("settings")
@@ -14,7 +15,7 @@ export const AboutApp = () => {
       const chromeVersion = browser.runtime.getManifest().version
       try {
         const url = await getOllamaURL()
-        const req = await fetch(`${cleanUrl(url)}/api/version`)
+        const req = await fetcher(`${cleanUrl(url)}/api/version`)
 
         if (!req.ok) {
           return {
