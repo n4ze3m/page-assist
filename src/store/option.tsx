@@ -49,8 +49,6 @@ type State = {
   setChatMode: (chatMode: "normal" | "rag") => void
   isEmbedding: boolean
   setIsEmbedding: (isEmbedding: boolean) => void
-  speechToTextLanguage: string
-  setSpeechToTextLanguage: (language: string) => void
   webSearch: boolean
   setWebSearch: (webSearch: boolean) => void
   isSearchingInternet: boolean
