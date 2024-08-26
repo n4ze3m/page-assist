@@ -7,6 +7,7 @@ import { deleteWebshare, getAllWebshares, getUserId } from "@/db"
 import { getPageShareUrl, setPageShareUrl } from "~/services/ollama"
 import { verifyPageShareURL } from "~/utils/verify-page-share"
 import { useStorage } from "@plasmohq/storage/hook"
+import fetcher from "@/libs/fetcher"
 
 export const OptionShareBody = () => {
   const queryClient = useQueryClient()
@@ -48,7 +49,7 @@ export const OptionShareBody = () => {
     api_url: string
   }) => {
     const owner_id = await getUserId()
-    const res = await fetch(`${api_url}/api/v1/share/delete`, {
+    const res = await fetcher(`${api_url}/api/v1/share/delete`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"

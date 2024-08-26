@@ -1,5 +1,5 @@
 import { setBadgeBackgroundColor, setBadgeText, setTitle } from "@/utils/action"
-
+import fetcher from "@/libs/fetcher"
 
 export const progressHuman = (completed: number, total: number) => {
     return ((completed / total) * 100).toFixed(0) + "%"
@@ -11,7 +11,7 @@ export const clearBadge = () => {
 }
 export const streamDownload = async (url: string, model: string) => {
     url += "/api/pull"
-    const response = await fetch(url, {
+    const response = await fetcher(url, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"

@@ -9,6 +9,7 @@ import { getPageShareUrl } from "~/services/ollama"
 import { cleanUrl } from "~/libs/clean-url"
 import { getUserId, saveWebshare } from "@/db"
 import { useTranslation } from "react-i18next"
+import fetcher from "@/libs/fetcher"
 
 type Props = {
   messages: Message[]
@@ -94,7 +95,7 @@ export const ShareBtn: React.FC<Props> = ({ messages }) => {
     const chat = reformatMessages(messages, values.name)
     const title = values.title
     const url = await getPageShareUrl()
-    const res = await fetch(`${cleanUrl(url)}/api/v1/share/create`, {
+    const res = await fetcher(`${cleanUrl(url)}/api/v1/share/create`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
