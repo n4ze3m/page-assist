@@ -10,14 +10,8 @@ import {
 import { BaseMessage, AIMessageChunk } from "@langchain/core/messages"
 import { ChatGenerationChunk } from "@langchain/core/outputs"
 import { IterableReadableStream } from "@langchain/core/utils/stream"
+import { AITextSession, checkChromeAIAvailability, createAITextSession } from "./utils/chrome"
 
-
-export interface AITextSession {
-  prompt(input: string): Promise<string>
-  promptStreaming(input: string): ReadableStream
-  destroy(): void
-  clone(): AITextSession
-}
 
 export interface AITextSessionOptions {
   topK: number
@@ -45,10 +39,6 @@ function formatPrompt(messages: BaseMessage[]): string {
   return messages
     .map((message) => {
       if (typeof message.content !== "string") {
-        // console.log(message.content)
-        // throw new Error(
-        //   "ChatChromeAI does not support non-string message content."
-        // )
         if (message.content.length > 0) {
           //@ts-ignore
           return message.content[0]?.text || ""
@@ -61,25 +51,6 @@ function formatPrompt(messages: BaseMessage[]): string {
     .join("\n")
 }
 
-/**
- * To use this model you need to have the `Built-in AI Early Preview Program`
- * for Chrome. You can find more information about the program here:
- * @link https://developer.chrome.com/docs/ai/built-in
- *
- * @example
- * ```typescript
- * // Initialize the ChatChromeAI model.
- * const model = new ChatChromeAI({
- *   temperature: 0.5, // Optional. Default is 0.5.
- *   topK: 40, // Optional. Default is 40.
- * });
- *
- * // Call the model with a message and await the response.
- * const response = await model.invoke([
- *   new HumanMessage({ content: "My name is John." }),
- * ]);
- * ```
- */
 export class ChatChromeAI extends SimpleChatModel<ChromeAICallOptions> {
   session?: AITextSession
 
@@ -115,18 +86,16 @@ export class ChatChromeAI extends SimpleChatModel<ChromeAICallOptions> {
       throw new Error("ChatChromeAI can only be used in the browser.")
     }
 
-    const { ai } = window as any
-    const capabilities = await ai?.assistant?.capabilities()
-    const canCreateTextSession = capabilities?.available
+    const canCreateTextSession = await checkChromeAIAvailability()
     if (canCreateTextSession === AIModelAvailability.No) {
       throw new Error("The AI model is not available.")
     } else if (canCreateTextSession === AIModelAvailability.AfterDownload) {
       throw new Error("The AI model is not yet downloaded.")
     }
 
-    this.session = await ai?.assistant?.create({
-      temperature: this.temperature,
-      topK: this.topK
+    this.session = await createAITextSession({
+      topK: this.topK,
+      temperature: this.temperature
     })
   }
 

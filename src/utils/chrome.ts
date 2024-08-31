@@ -1,3 +1,5 @@
+import { checkChromeAIAvailability } from "@/models/utils/chrome"
+
 export const getChromeAISupported = async () => {
   try {
     let browserInfo = navigator.userAgent.match(/Chrom(e|ium)\/([0-9]+)\./)
@@ -11,9 +13,8 @@ export const getChromeAISupported = async () => {
       return "ai_not_supported"
     }
 
-    //@ts-ignore
-    const capabilities = await ai?.assistant?.capabilities()
-    if (capabilities?.available !== "readily") {
+    const capabilities = await checkChromeAIAvailability()
+    if (capabilities !== "readily") {
       return "ai_not_ready"
     }
 
