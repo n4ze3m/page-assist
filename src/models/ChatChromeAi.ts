@@ -11,11 +11,6 @@ import { BaseMessage, AIMessageChunk } from "@langchain/core/messages"
 import { ChatGenerationChunk } from "@langchain/core/outputs"
 import { IterableReadableStream } from "@langchain/core/utils/stream"
 
-export interface AI {
-  canCreateTextSession(): Promise<AIModelAvailability>
-  createTextSession(options?: AITextSessionOptions): Promise<AITextSession>
-  defaultTextSessionOptions(): Promise<AITextSessionOptions>
-}
 
 export interface AITextSession {
   prompt(input: string): Promise<string>
@@ -44,7 +39,7 @@ export interface ChromeAIInputs extends BaseChatModelParams {
   promptFormatter?: (messages: BaseMessage[]) => string
 }
 
-export interface ChromeAICallOptions extends BaseLanguageModelCallOptions {}
+export interface ChromeAICallOptions extends BaseLanguageModelCallOptions { }
 
 function formatPrompt(messages: BaseMessage[]): string {
   return messages
@@ -88,9 +83,9 @@ function formatPrompt(messages: BaseMessage[]): string {
 export class ChatChromeAI extends SimpleChatModel<ChromeAICallOptions> {
   session?: AITextSession
 
-  temperature = 0.5
+  temperature = 0.8
 
-  topK = 40
+  topK = 120
 
   promptFormatter: (messages: BaseMessage[]) => string
 
@@ -121,16 +116,17 @@ export class ChatChromeAI extends SimpleChatModel<ChromeAICallOptions> {
     }
 
     const { ai } = window as any
-    const canCreateTextSession = await ai.canCreateTextSession()
+    const capabilities = await ai?.assistant?.capabilities()
+    const canCreateTextSession = capabilities?.available
     if (canCreateTextSession === AIModelAvailability.No) {
       throw new Error("The AI model is not available.")
     } else if (canCreateTextSession === AIModelAvailability.AfterDownload) {
       throw new Error("The AI model is not yet downloaded.")
     }
 
-    this.session = await ai.createTextSession({
-      topK: this.topK,
-      temperature: this.temperature
+    this.session = await ai?.assistant?.create({
+      temperature: this.temperature,
+      topK: this.topK
     })
   }
 

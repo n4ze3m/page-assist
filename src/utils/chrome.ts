@@ -12,8 +12,8 @@ export const getChromeAISupported = async () => {
     }
 
     //@ts-ignore
-    const createSession = await ai?.canCreateGenericSession()
-    if (createSession !== "readily") {
+    const capabilities = await ai?.assistant?.capabilities()
+    if (capabilities?.available !== "readily") {
       return "ai_not_ready"
     }
 
