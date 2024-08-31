@@ -95,5 +95,6 @@
         "rephrase": "Rephrase",
         "translate": "Translate",
         "custom": "Custom"
-    }
+    },
+    "citations": "Citations"
 }

@@ -1,6 +1,6 @@
 import Markdown from "../../Common/Markdown"
 import React from "react"
-import { Tag, Image, Tooltip } from "antd"
+import { Tag, Image, Tooltip, Collapse } from "antd"
 import { WebSearch } from "./WebSearch"
 import {
   CheckIcon,
@@ -127,15 +127,31 @@ export const PlaygroundMessage = (props: Props) => {
               )}
 
             {props.isBot && props?.sources && props?.sources.length > 0 && (
-              <div className="mb-3 flex flex-wrap gap-2">
-                {props?.sources?.map((source, index) => (
-                  <MessageSource
-                    onSourceClick={props.onSourceClick}
-                    key={index}
-                    source={source}
-                  />
-                ))}
-              </div>
+              <Collapse
+                className="mt-6"
+                ghost
+                items={[
+                  {
+                    key: "1",
+                    label: (
+                      <div className="italic text-gray-500 dark:text-gray-400">
+                        {t('citations')}
+                      </div>
+                    ),
+                    children: (
+                      <div className="mb-3 flex flex-wrap gap-2">
+                        {props?.sources?.map((source, index) => (
+                          <MessageSource
+                            onSourceClick={props.onSourceClick}
+                            key={index}
+                            source={source}
+                          />
+                        ))}
+                      </div>
+                    )
+                  }
+                ]}
+              />
             )}
             {!props.isProcessing && !editMode && (
               <div
