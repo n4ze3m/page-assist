@@ -1,0 +1,100 @@
+{
+    "pageAssist": "Page Assist",
+    "selectAModel": "Modell auswählen",
+    "save": "Speichern",
+    "saved": "Gespeichert",
+    "cancel": "Abbrechen",
+    "retry": "Erneut versuchen",
+    "share": {
+        "tooltip": {
+            "share": "Teilen"
+        },
+        "modal": {
+            "title": "Link zum Chat teilen"
+        },
+        "form": {
+            "defaultValue": {
+                "name": "Anonym",
+                "title": "Unbenannter Chat"
+            },
+            "title": {
+                "label": "Chat-Titel",
+                "placeholder": "Chat-Titel eingeben",
+                "required": "Chat-Titel ist erforderlich"
+            },
+            "name": {
+                "label": "Ihr Name",
+                "placeholder": "Geben Sie Ihren Namen ein",
+                "required": "Ihr Name ist erforderlich"
+            },
+            "btn": {
+                "save": "Link generieren",
+                "saving": "Link wird generiert..."
+            }
+        },
+        "notification": {
+            "successGenerate": "Link in die Zwischenablage kopiert",
+            "failGenerate": "Link konnte nicht generiert werden"
+        }
+    },
+    "copyToClipboard": "In die Zwischenablage kopieren",
+    "webSearch": "Web durchsuchen",
+    "regenerate": "Neu generieren",
+    "edit": "Bearbeiten",
+    "saveAndSubmit": "Speichern & Absenden",
+    "editMessage": {
+        "placeholder": "Nachricht eingeben..."
+    },
+    "submit": "Absenden",
+    "noData": "Keine Daten",
+    "noHistory": "Kein Chat-Verlauf",
+    "chatWithCurrentPage": "Mit aktueller Seite chatten",
+    "beta": "Beta",
+    "tts": "Vorlesen",
+    "currentChatModelSettings": "Aktuelle Chat-Modell-Einstellungen",
+    "modelSettings": {
+        "label": "Modell-Einstellungen",
+        "description": "Legen Sie die Modelloptionen global für alle Chats fest",
+        "form": {
+            "keepAlive": {
+                "label": "Aktiv halten",
+                "help": "Steuert, wie lange das Modell nach der Anfrage im Speicher geladen bleibt (Standard: 5m)",
+                "placeholder": "Geben Sie die Dauer für Aktiv halten ein (z.B. 5m, 10m, 1h)"
+            },
+            "temperature": {
+                "label": "Temperatur",
+                "placeholder": "Geben Sie den Temperaturwert ein (z.B. 0.7, 1.0)"
+            },
+            "numCtx": {
+                "label": "Anzahl der Kontexte",
+                "placeholder": "Geben Sie die Anzahl der Kontexte ein (Standard: 2048)"
+            },
+            "seed": {
+                "label": "Seed",
+                "placeholder": "Geben Sie den Seed-Wert ein (z.B. 1234)",
+                "help": "Reproduzierbarkeit der Modellausgabe"
+            },
+            "topK": {
+                "label": "Top K",
+                "placeholder": "Geben Sie den Top-K-Wert ein (z.B. 40, 100)"
+            },
+            "topP": {
+                "label": "Top P",
+                "placeholder": "Geben Sie den Top-P-Wert ein (z.B. 0.9, 0.95)"
+            },
+            "numGpu": {
+                "label": "Anzahl GPUs",
+                "placeholder": "Geben Sie die Anzahl der Ebenen ein, die an GPU(s) gesendet werden sollen"
+            }
+        },
+        "advanced": "Weitere Modell-Einstellungen"
+    },
+    "copilot": {
+        "summary": "Zusammenfassen",
+        "explain": "Erklären",
+        "rephrase": "Umformulieren",
+        "translate": "Übersetzen",
+        "custom": "Benutzerdefiniert"
+    },
+    "citations": "Zitate"
+}

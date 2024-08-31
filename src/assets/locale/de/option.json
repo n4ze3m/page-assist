@@ -1,0 +1,12 @@
+{
+    "newChat": "Neuer Chat",
+    "selectAPrompt": "Wähle eine Eingabeaufforderung",
+    "githubRepository": "GitHub-Repository",
+    "settings": "Einstellungen",
+    "sidebarTitle": "Chat-Verlauf",
+    "error": "Fehler",
+    "somethingWentWrong": "Etwas ist schiefgelaufen",
+    "validationSelectModel": "Bitte wähle ein Modell aus, um fortzufahren",
+    "deleteHistoryConfirmation": "Bist du sicher, dass du diesen Verlauf löschen möchtest?",
+    "editHistoryTitle": "Gib einen neuen Titel ein"
+}

@@ -39,5 +39,9 @@ export const supportLanguage = [
     {
         label: "فارسی",
         value: "fa"
+    },
+    {
+        label: "Deutsch",
+        value: "de"
     }
 ]

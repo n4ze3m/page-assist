@@ -16,9 +16,13 @@ import {
 import { useStorage } from "@plasmohq/storage/hook"
 
 export const GeneralSettings = () => {
-  const { clearChat, speechToTextLanguage, setSpeechToTextLanguage } =
+  const { clearChat } =
     useMessageOption()
 
+  const [ speechToTextLanguage, setSpeechToTextLanguage ] = useStorage(
+      "speechToTextLanguage",
+      "en-US"
+    )
   const [copilotResumeLastChat, setCopilotResumeLastChat] = useStorage(
     "copilotResumeLastChat",
     false

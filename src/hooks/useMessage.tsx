@@ -74,8 +74,6 @@ export const useMessage = () => {
     setChatMode,
     setIsEmbedding,
     isEmbedding,
-    speechToTextLanguage,
-    setSpeechToTextLanguage,
     currentURL,
     setCurrentURL
   } = useStoreMessage()
@@ -1230,8 +1228,6 @@ export const useMessage = () => {
     chatMode,
     setChatMode,
     isEmbedding,
-    speechToTextLanguage,
-    setSpeechToTextLanguage,
     regenerateLastMessage,
     webSearch,
     setWebSearch,

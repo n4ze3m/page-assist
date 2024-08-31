@@ -12,6 +12,7 @@ import { useTranslation } from "react-i18next"
 import { ModelSelect } from "@/components/Common/ModelSelect"
 import { useSpeechRecognition } from "@/hooks/useSpeechRecognition"
 import { PiGlobeX, PiGlobe } from "react-icons/pi"
+import { handleChatInputKeyDown } from "@/utils/key-down"
 
 type Props = {
   dropedFile: File | undefined
@@ -66,11 +67,12 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Process" || e.key === "229") return
     if (
-      e.key === "Enter" &&
-      !e.shiftKey &&
-      !isSending &&
-      sendWhenEnter &&
-      !typing
+      handleChatInputKeyDown({
+        e,
+        sendWhenEnter,
+        typing,
+        isSending
+      })
     ) {
       e.preventDefault()
       form.onSubmit(async (value) => {
@@ -245,8 +247,16 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                 rows={1}
                 style={{ minHeight: "60px" }}
                 tabIndex={0}
-                onCompositionStart={() => setTyping(true)}
-                onCompositionEnd={() => setTyping(false)}
+                onCompositionStart={() => {
+                  if (import.meta.env.BROWSER !== "firefox") {
+                    setTyping(true)
+                  }
+                }}
+                onCompositionEnd={() => {
+                  if (import.meta.env.BROWSER !== "firefox") {
+                    setTyping(false)
+                  }
+                }}
                 placeholder={t("form.textarea.placeholder")}
                 {...form.getInputProps("message")}
               />

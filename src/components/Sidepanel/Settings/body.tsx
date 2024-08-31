@@ -53,7 +53,10 @@ export const SettingsBody = () => {
   const [hideCurrentChatModelSettings, setHideCurrentChatModelSettings] =
     useStorage("hideCurrentChatModelSettings", false)
 
-  const { speechToTextLanguage, setSpeechToTextLanguage } = useMessage()
+  const [ speechToTextLanguage, setSpeechToTextLanguage ] = useStorage(
+    "speechToTextLanguage",
+    "en-US"
+  )
   const { mode, toggleDarkMode } = useDarkMode()
 
   const { changeLocale, locale, supportLanguage } = useI18n()
