@@ -1,0 +1,341 @@
+{
+  "generalSettings": {
+    "title": "Allgemeine Einstellungen",
+    "settings": {
+      "heading": "Web-UI-Einstellungen",
+      "speechRecognitionLang": {
+        "label": "Spracherkennungssprache",
+        "placeholder": "Sprache auswählen"
+      },
+      "language": {
+        "label": "Sprache",
+        "placeholder": "Sprache auswählen"
+      },
+      "darkMode": {
+        "label": "Design ändern",
+        "options": {
+          "light": "Hell",
+          "dark": "Dunkel"
+        }
+      },
+      "copilotResumeLastChat": {
+        "label": "Letzten Chat beim Öffnen des Seitenpanels fortsetzen (Copilot)"
+      },
+      "hideCurrentChatModelSettings": {
+        "label": "Aktuelle Chat-Modell-Einstellungen ausblenden"
+      },
+      "restoreLastChatModel": {
+        "label": "Zuletzt verwendetes Modell für vorherige Chats wiederherstellen"
+      },
+      "sendNotificationAfterIndexing": {
+        "label": "Benachrichtigung nach Abschluss der Wissensbasis-Verarbeitung senden"
+      },
+      "generateTitle" :{
+        "label": "Titel mit KI generieren"
+      }
+    },
+    "sidepanelRag": {
+      "heading": "Copilot Chat mit Website-Einstellungen",
+      "ragEnabled": {
+        "label": "Chat mit Website unter Verwendung von Vektor-Embeddings"
+      },
+      "maxWebsiteContext": {
+        "label": "Normaler Modus Website-Inhaltsgröße",
+        "placeholder": "Inhaltsgröße (Standard 4028)"
+      }
+    },
+    "webSearch": {
+      "heading": "Websuche verwalten",
+      "searchMode": {
+        "label": "Einfache Internetsuche durchführen"
+      },
+      "provider": {
+        "label": "Suchmaschine",
+        "placeholder": "Suchmaschine auswählen"
+      },
+      "totalSearchResults": {
+        "label": "Gesamtanzahl der Suchergebnisse",
+        "placeholder": "Gesamtanzahl der Suchergebnisse eingeben"
+      },
+      "visitSpecificWebsite": {
+        "label": "Die in der Nachricht erwähnte Website besuchen"
+      }
+    },
+    "system": {
+      "heading": "Systemeinstellungen",
+      "deleteChatHistory": {
+        "label": "Chatverlauf löschen",
+        "button": "Löschen",
+        "confirm": "Sind Sie sicher, dass Sie Ihren Chatverlauf löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden."
+      },
+      "export": {
+        "label": "Chatverlauf, Wissensbasis und Prompts exportieren",
+        "button": "Daten exportieren",
+        "success": "Export erfolgreich"
+      },
+      "import": {
+        "label": "Chatverlauf, Wissensbasis und Prompts importieren",
+        "button": "Daten importieren",
+        "success": "Import erfolgreich",
+        "error": "Importfehler"
+      }
+    },
+    "tts": {
+      "heading": "Text-zu-Sprache-Einstellungen",
+      "ttsEnabled": {
+        "label": "Text-zu-Sprache aktivieren"
+      },
+      "ttsProvider": {
+        "label": "Text-zu-Sprache-Anbieter",
+        "placeholder": "Anbieter auswählen"
+      },
+      "ttsVoice": {
+        "label": "Text-zu-Sprache-Stimme",
+        "placeholder": "Stimme auswählen"
+      },
+      "ssmlEnabled": {
+        "label": "SSML (Speech Synthesis Markup Language) aktivieren"
+      }
+    }
+  },
+  "manageModels": {
+    "title": "Modelle verwalten",
+    "addBtn": "Neues Modell hinzufügen",
+    "columns": {
+      "name": "Name",
+      "digest": "Digest",
+      "modifiedAt": "Zuletzt geändert",
+      "size": "Größe",
+      "actions": "Aktionen"
+    },
+    "expandedColumns": {
+      "parentModel": "Übergeordnetes Modell",
+      "format": "Format",
+      "family": "Familie",
+      "parameterSize": "Parametergröße",
+      "quantizationLevel": "Quantisierungsstufe"
+    },
+    "tooltip": {
+      "delete": "Modell löschen",
+      "repull": "Modell erneut herunterladen"
+    },
+    "confirm": {
+      "delete": "Sind Sie sicher, dass Sie dieses Modell löschen möchten?",
+      "repull": "Sind Sie sicher, dass Sie dieses Modell erneut herunterladen möchten?"
+    },
+    "modal": {
+      "title": "Neues Modell hinzufügen",
+      "placeholder": "Modellnamen eingeben",
+      "pull": "Modell herunterladen"
+    },
+    "notification": {
+      "pullModel": "Modell wird heruntergeladen",
+      "pullModelDescription": "Das Modell {{modelName}} wird heruntergeladen. Weitere Details finden Sie im Erweiterungssymbol.",
+      "success": "Erfolgreich",
+      "error": "Fehler",
+      "successDescription": "Das Modell wurde erfolgreich heruntergeladen",
+      "successDeleteDescription": "Das Modell wurde erfolgreich gelöscht",
+      "someError": "Etwas ist schiefgelaufen. Bitte versuchen Sie es später erneut"
+    }
+  },
+  "managePrompts": {
+    "title": "Prompts verwalten",
+    "addBtn": "Neuen Prompt hinzufügen",
+    "option1": "Normal",
+    "option2": "RAG",
+    "questionPrompt": "Frage-Prompt",
+    "segmented": {
+      "custom": "Benutzerdefinierte Prompts",
+      "copilot": "Copilot-Prompts"
+    },
+    "columns": {
+      "title": "Titel",
+      "prompt": "Prompt",
+      "type": "Prompt-Typ",
+      "actions": "Aktionen"
+    },
+    "systemPrompt": "System-Prompt",
+    "quickPrompt": "Schnell-Prompt",
+    "tooltip": {
+      "delete": "Prompt löschen",
+      "edit": "Prompt bearbeiten"
+    },
+    "confirm": {
+      "delete": "Sind Sie sicher, dass Sie diesen Prompt löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden."
+    },
+    "modal": {
+      "addTitle": "Neuen Prompt hinzufügen",
+      "editTitle": "Prompt bearbeiten"
+    },
+    "form": {
+      "title": {
+        "label": "Titel",
+        "placeholder": "Mein toller Prompt",
+        "required": "Bitte geben Sie einen Titel ein"
+      },
+      "prompt": {
+        "label": "Prompt",
+        "placeholder": "Prompt eingeben",
+        "required": "Bitte geben Sie einen Prompt ein",
+        "help": "Sie können {key} als Variable in Ihrem Prompt verwenden.",
+        "missingTextPlaceholder": "Die Variable {text} fehlt im Prompt. Bitte fügen Sie sie hinzu."
+      },
+      "isSystem": {
+        "label": "Ist System-Prompt"
+      },
+      "btnSave": {
+        "saving": "Prompt wird hinzugefügt...",
+        "save": "Prompt hinzufügen"
+      },
+      "btnEdit": {
+        "saving": "Prompt wird aktualisiert...",
+        "save": "Prompt aktualisieren"
+      }
+    },
+    "notification": {
+      "addSuccess": "Prompt hinzugefügt",
+      "addSuccessDesc": "Prompt wurde erfolgreich hinzugefügt",
+      "error": "Fehler",
+      "someError": "Etwas ist schiefgelaufen. Bitte versuchen Sie es später erneut",
+      "updatedSuccess": "Prompt aktualisiert",
+      "updatedSuccessDesc": "Prompt wurde erfolgreich aktualisiert",
+      "deletedSuccess": "Prompt gelöscht",
+      "deletedSuccessDesc": "Prompt wurde erfolgreich gelöscht"
+    }
+  },
+  "manageShare": {
+    "title": "Freigabe verwalten",
+    "heading": "Seiten-Freigabe-URL konfigurieren",
+    "form": {
+      "url": {
+        "label": "Seiten-Freigabe-URL",
+        "placeholder": "Seiten-Freigabe-URL eingeben",
+        "required": "Bitte geben Sie Ihre Seiten-Freigabe-URL ein!",
+        "help": "Aus Datenschutzgründen können Sie die Seitenfreigabe selbst hosten und die URL hier angeben. <anchor>Mehr erfahren</anchor>."
+      }
+    },
+    "webshare": {
+      "heading": "Web-Freigabe",
+      "columns": {
+        "title": "Titel",
+        "url": "URL",
+        "actions": "Aktionen"
+      },
+      "tooltip": {
+        "delete": "Freigabe löschen"
+      },
+      "confirm": {
+        "delete": "Sind Sie sicher, dass Sie diese Freigabe löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden."
+      },
+      "label": "Seitenfreigabe verwalten",
+      "description": "Seitenfreigabe-Funktion aktivieren oder deaktivieren"
+    },
+    "notification": {
+      "pageShareSuccess": "Seiten-Freigabe-URL erfolgreich aktualisiert",
+      "someError": "Etwas ist schiefgelaufen. Bitte versuchen Sie es später erneut",
+      "webShareDeleteSuccess": "Web-Freigabe erfolgreich gelöscht"
+    }
+  },
+  "ollamaSettings": {
+    "title": "Ollama-Einstellungen",
+    "heading": "Ollama konfigurieren",
+    "settings": {
+      "ollamaUrl": {
+        "label": "Ollama-URL",
+        "placeholder": "Ollama-URL eingeben"
+      },
+      "advanced": {
+        "label": "Erweiterte Ollama-URL-Konfiguration",
+        "urlRewriteEnabled": {
+          "label": "Benutzerdefinierte Ursprungs-URL aktivieren oder deaktivieren"
+        },
+        "rewriteUrl": {
+          "label": "Benutzerdefinierte Ursprungs-URL",
+          "placeholder": "Benutzerdefinierte Ursprungs-URL eingeben"
+        },
+        "headers": {
+          "label": "Benutzerdefinierte Header",
+          "add": "Header hinzufügen",
+          "key": {
+            "label": "Header-Schlüssel",
+            "placeholder": "Autorisierung"
+          },
+          "value": {
+            "label": "Header-Wert",
+            "placeholder": "Bearer-Token"
+          }
+        },
+        "help": "Wenn Sie Verbindungsprobleme mit Ollama auf Page Assist haben, können Sie eine benutzerdefinierte Ursprungs-URL konfigurieren. Um mehr über die Konfiguration zu erfahren, <anchor>klicken Sie hier</anchor>."
+      }
+    }
+  },
+  "manageSearch": {
+    "title": "Web-Suche verwalten",
+    "heading": "Web-Suche konfigurieren"
+  },
+  "about": {
+    "title": "Über",
+    "heading": "Über",
+    "chromeVersion": "Page Assist Version",
+    "ollamaVersion": "Ollama Version",
+    "support": "Sie können das Page Assist-Projekt durch Spenden oder Sponsoring über die folgenden Plattformen unterstützen:",
+    "koFi": "Unterstützen Sie uns auf Ko-fi",
+    "githubSponsor": "Sponsern Sie uns auf GitHub",
+    "githubRepo": "GitHub-Repository"
+  },
+  "manageKnowledge": {
+    "title": "Wissen verwalten",
+    "heading": "Wissensbasis konfigurieren"
+  },
+  "rag": {
+    "title": "RAG-Einstellungen",
+    "ragSettings": {
+      "label": "RAG-Einstellungen",
+      "model": {
+        "label": "Embedding-Modell",
+        "required": "Bitte wählen Sie ein Modell aus",
+        "help": "Es wird dringend empfohlen, Embedding-Modelle wie `nomic-embed-text` zu verwenden.",
+        "placeholder": "Wählen Sie ein Modell aus"
+      },
+      "chunkSize": {
+        "label": "Chunk-Größe",
+        "placeholder": "Chunk-Größe eingeben",
+        "required": "Bitte geben Sie eine Chunk-Größe ein"
+      },
+      "chunkOverlap": {
+        "label": "Chunk-Überlappung",
+        "placeholder": "Chunk-Überlappung eingeben",
+        "required": "Bitte geben Sie eine Chunk-Überlappung ein"
+      },
+      "totalFilePerKB": {
+        "label": "Standard-Datei-Upload-Limit für die Wissensbasis",
+        "placeholder": "Geben Sie das Standard-Datei-Upload-Limit ein (z.B. 10)",
+        "required": "Bitte geben Sie das Standard-Datei-Upload-Limit ein"
+      },
+      "noOfRetrievedDocs": {
+        "label": "Anzahl der abgerufenen Dokumente",
+        "placeholder": "Anzahl der abgerufenen Dokumente eingeben",
+        "required": "Bitte geben Sie die Anzahl der abgerufenen Dokumente ein"
+      }
+    },
+    "prompt": {
+      "label": "RAG-Prompt konfigurieren",
+      "option1": "Normal",
+      "option2": "Web",
+      "alert": "Die Konfiguration des System-Prompts hier ist veraltet. Bitte verwenden Sie den Abschnitt 'Prompts verwalten', um Prompts hinzuzufügen oder zu bearbeiten. Dieser Abschnitt wird in einer zukünftigen Version entfernt",
+      "systemPrompt": "System-Prompt",
+      "systemPromptPlaceholder": "System-Prompt eingeben",
+      "webSearchPrompt": "Web-Suche-Prompt",
+      "webSearchPromptHelp": "Entfernen Sie `{search_results}` nicht aus dem Prompt.",
+      "webSearchPromptError": "Bitte geben Sie einen Web-Suche-Prompt ein",
+      "webSearchPromptPlaceholder": "Web-Suche-Prompt eingeben",
+      "webSearchFollowUpPrompt": "Web-Suche-Folgeprompt",
+      "webSearchFollowUpPromptHelp": "Entfernen Sie `{chat_history}` und `{question}` nicht aus dem Prompt.",
+      "webSearchFollowUpPromptError": "Bitte geben Sie Ihren Web-Suche-Folgeprompt ein!",
+      "webSearchFollowUpPromptPlaceholder": "Ihr Web-Suche-Folgeprompt"
+    }
+  },
+  "chromeAiSettings": {
+    "title": "Chrome AI-Einstellungen"
+  }
+}
