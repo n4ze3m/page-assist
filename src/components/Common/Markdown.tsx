@@ -71,4 +71,4 @@ function Markdown({
   )
 }
 
-export default React.memo(Markdown)
+export default Markdown
