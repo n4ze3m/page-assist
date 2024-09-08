@@ -1,23 +1,41 @@
+import "katex/dist/katex.min.css"
+
 import remarkGfm from "remark-gfm"
 import remarkMath from "remark-math"
 import ReactMarkdown from "react-markdown"
+import rehypeKatex from "rehype-katex"
 
 import "property-information"
 import React from "react"
 import { CodeBlock } from "./CodeBlock"
+export const preprocessLaTeX = (content: string) => {
+  // Replace block-level LaTeX delimiters \[ \] with $$ $$
 
-export default function Markdown({
+  const blockProcessedContent = content.replace(
+    /\\\[(.*?)\\\]/gs,
+    (_, equation) => `$$${equation}$$`
+  )
+  // Replace inline LaTeX delimiters \( \) with $ $
+  const inlineProcessedContent = blockProcessedContent.replace(
+    /\\\((.*?)\\\)/gs,
+    (_, equation) => `$${equation}$`
+  )
+  return inlineProcessedContent
+}
+function Markdown({
   message,
   className = "prose break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0 dark:prose-dark"
 }: {
   message: string
   className?: string
 }) {
+  message = preprocessLaTeX(message)
   return (
     <React.Fragment>
       <ReactMarkdown
         className={className}
         remarkPlugins={[remarkGfm, remarkMath]}
+        rehypePlugins={[rehypeKatex]}
         components={{
           code({ node, inline, className, children, ...props }) {
             const match = /language-(\w+)/.exec(className || "")
@@ -52,3 +70,5 @@ export default function Markdown({
     </React.Fragment>
   )
 }
+
+export default React.memo(Markdown)
