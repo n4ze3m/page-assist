@@ -4,20 +4,27 @@ import { BookIcon, ComputerIcon, ZapIcon } from "lucide-react"
 import React from "react"
 import { useTranslation } from "react-i18next"
 import { getAllPrompts } from "@/db"
-import { useMessageOption } from "@/hooks/useMessageOption"
 
-export const PromptSelect: React.FC = () => {
+type Props = {
+  setSelectedSystemPrompt: (promptId: string | undefined) => void
+  setSelectedQuickPrompt: (prompt: string | undefined) => void
+  selectedSystemPrompt: string | undefined
+  className?: string
+}
+
+export const PromptSelect: React.FC<Props> = ({
+  setSelectedQuickPrompt,
+  setSelectedSystemPrompt,
+  selectedSystemPrompt,
+  className = "dark:text-gray-300"
+}) => {
   const { t } = useTranslation("option")
-  const {
-    selectedSystemPrompt,
-    setSelectedQuickPrompt,
-    setSelectedSystemPrompt
-  } = useMessageOption()
 
   const { data } = useQuery({
     queryKey: ["getAllPromptsForSelect"],
     queryFn: getAllPrompts
   })
+
   const handlePromptChange = (value?: string) => {
     if (!value) {
       setSelectedSystemPrompt(undefined)
@@ -79,7 +86,7 @@ export const PromptSelect: React.FC = () => {
           placement={"topLeft"}
           trigger={["click"]}>
           <Tooltip title={t("selectAPrompt")}>
-            <button type="button" className="dark:text-gray-300">
+            <button type="button" className={className}>
               <BookIcon className="h-5 w-5" />
             </button>
           </Tooltip>

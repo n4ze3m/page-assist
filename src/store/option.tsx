@@ -62,6 +62,9 @@ type State = {
 
   selectedKnowledge: Knowledge | null
   setSelectedKnowledge: (selectedKnowledge: Knowledge) => void
+
+  setSpeechToTextLanguage: (language: string) => void
+  speechToTextLanguage: string
 }
 
 export const useStoreMessageOption = create<State>((set) => ({

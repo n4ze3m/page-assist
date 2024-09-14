@@ -45,7 +45,7 @@ export const Header: React.FC<Props> = ({
     setSelectedQuickPrompt,
     setSelectedSystemPrompt,
     messages,
-    streaming
+    streaming,
   } = useMessageOption()
   const {
     data: models,
@@ -182,7 +182,11 @@ export const Header: React.FC<Props> = ({
           />
         </div>
         <div className="lg:hidden">
-          <PromptSelect />
+          <PromptSelect
+            selectedSystemPrompt={selectedSystemPrompt}
+            setSelectedSystemPrompt={setSelectedSystemPrompt}
+            setSelectedQuickPrompt={setSelectedQuickPrompt}
+          />
         </div>
         <SelectedKnowledge />
       </div>

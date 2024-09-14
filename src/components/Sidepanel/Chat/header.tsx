@@ -7,13 +7,22 @@ import { useTranslation } from "react-i18next"
 import { CurrentChatModelSettings } from "@/components/Common/Settings/CurrentChatModelSettings"
 import React from "react"
 import { useStorage } from "@plasmohq/storage/hook"
+import { PromptSelect } from "@/components/Common/PromptSelect"
 export const SidepanelHeader = () => {
   const [hideCurrentChatModelSettings] = useStorage(
     "hideCurrentChatModelSettings",
     false
   )
 
-  const { clearChat, isEmbedding, messages, streaming } = useMessage()
+  const {
+    clearChat,
+    isEmbedding,
+    messages,
+    streaming,
+    selectedSystemPrompt,
+    setSelectedSystemPrompt,
+    setSelectedQuickPrompt
+  } = useMessage()
   const { t } = useTranslation(["sidepanel", "common"])
   const [openModelSettings, setOpenModelSettings] = React.useState(false)
 
@@ -44,11 +53,13 @@ export const SidepanelHeader = () => {
             <EraserIcon className="h-5 w-5 text-gray-500 dark:text-gray-400" />
           </button>
         )}
-        {/* <Tooltip title={t("tooltip.history")}>
-          <Link to="/history">
-            <HistoryIcon className="h-5 w-5 text-gray-500 dark:text-gray-400" />
-          </Link>
-        </Tooltip> */}
+        <PromptSelect
+          selectedSystemPrompt={selectedSystemPrompt}
+          setSelectedSystemPrompt={setSelectedSystemPrompt}
+          setSelectedQuickPrompt={setSelectedQuickPrompt}
+          className="text-gray-500 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+        />
+
         {!hideCurrentChatModelSettings && (
           <Tooltip title={t("common:currentChatModelSettings")}>
             <button
