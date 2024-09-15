@@ -55,8 +55,6 @@ export const useMessageOption = () => {
     setIsProcessing,
     chatMode,
     setChatMode,
-    speechToTextLanguage,
-    setSpeechToTextLanguage,
     webSearch,
     setWebSearch,
     isSearchingInternet,
@@ -70,7 +68,10 @@ export const useMessageOption = () => {
   } = useStoreMessageOption()
   const currentChatModelSettings = useStoreChatModelSettings()
   const [selectedModel, setSelectedModel] = useStorage("selectedModel")
-
+  const [ speechToTextLanguage, setSpeechToTextLanguage ] = useStorage(
+    "speechToTextLanguage",
+    "en-US"
+  )
   const { ttsEnabled } = useWebUI()
 
   const { t } = useTranslation("option")
@@ -410,8 +411,6 @@ export const useMessageOption = () => {
     try {
       const prompt = await systemPromptForNonRagOption()
       const selectedPrompt = await getPromptById(selectedSystemPrompt)
-
-      // message = message.trim().replaceAll("\n", " ")
 
       let humanMessage = new HumanMessage({
         content: [

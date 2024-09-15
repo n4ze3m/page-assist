@@ -24,7 +24,6 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
   const { sendWhenEnter, setSendWhenEnter } = useWebUI()
   const [typing, setTyping] = React.useState<boolean>(false)
   const { t } = useTranslation(["playground", "common"])
-
   const form = useForm({
     initialValues: {
       message: "",
@@ -37,7 +36,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
     resetTranscript,
     start: startListening,
     stop: stopSpeechRecognition,
-    supported: browserSupportsSpeechRecognition
+    supported: browserSupportsSpeechRecognition, 
   } = useSpeechRecognition()
 
   const stopListening = async () => {
@@ -118,12 +117,14 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
     onSubmit,
     selectedModel,
     chatMode,
-    speechToTextLanguage,
     stopStreamingRequest,
     streaming,
     setChatMode,
     webSearch,
-    setWebSearch
+    setWebSearch,
+    selectedQuickPrompt,
+    setSelectedQuickPrompt,
+    speechToTextLanguage
   } = useMessage()
 
   React.useEffect(() => {
@@ -139,6 +140,23 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
       form.setFieldValue("message", transcript)
     }
   }, [transcript])
+
+  React.useEffect(() => {
+    if (selectedQuickPrompt) {
+      const word = getVariable(selectedQuickPrompt)
+      form.setFieldValue("message", selectedQuickPrompt)
+      if (word) {
+        textareaRef.current?.focus()
+        const interval = setTimeout(() => {
+          textareaRef.current?.setSelectionRange(word.start, word.end)
+          setSelectedQuickPrompt(null)
+        }, 100)
+        return () => {
+          clearInterval(interval)
+        }
+      }
+    }
+  }, [selectedQuickPrompt])
   const { mutateAsync: sendMessage, isPending: isSending } = useMutation({
     mutationFn: onSubmit,
     onSuccess: () => {

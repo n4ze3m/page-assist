@@ -17,6 +17,7 @@ import { ChatHistory } from "@/store/option"
 import {
   deleteChatForEdit,
   generateID,
+  getPromptById,
   removeMessageUsingHistoryId,
   updateMessageByIndex
 } from "@/db"
@@ -75,8 +76,17 @@ export const useMessage = () => {
     setIsEmbedding,
     isEmbedding,
     currentURL,
-    setCurrentURL
+    setCurrentURL,
+    selectedQuickPrompt,
+    setSelectedQuickPrompt,
+    selectedSystemPrompt,
+    setSelectedSystemPrompt
   } = useStoreMessage()
+
+  const [speechToTextLanguage, setSpeechToTextLanguage] = useStorage(
+    "speechToTextLanguage",
+    "en-US"
+  )
 
   const [keepTrackOfEmbedding, setKeepTrackOfEmbedding] = React.useState<{
     [key: string]: MemoryVectorStore
@@ -488,6 +498,7 @@ export const useMessage = () => {
 
     try {
       const prompt = await systemPromptForNonRag()
+      const selectedPrompt = await getPromptById(selectedSystemPrompt)
 
       let humanMessage = new HumanMessage({
         content: [
@@ -514,12 +525,24 @@ export const useMessage = () => {
 
       const applicationChatHistory = generateHistory(history)
 
-      if (prompt) {
+      if (prompt && !selectedPrompt) {
         applicationChatHistory.unshift(
           new SystemMessage({
             content: [
               {
                 text: prompt,
+                type: "text"
+              }
+            ]
+          })
+        )
+      }
+      if (selectedPrompt) {
+        applicationChatHistory.unshift(
+          new SystemMessage({
+            content: [
+              {
+                text: selectedPrompt.content,
                 type: "text"
               }
             ]
@@ -1231,6 +1254,12 @@ export const useMessage = () => {
     regenerateLastMessage,
     webSearch,
     setWebSearch,
-    isSearchingInternet
+    isSearchingInternet,
+    selectedQuickPrompt,
+    setSelectedQuickPrompt,
+    selectedSystemPrompt,
+    setSelectedSystemPrompt,
+    speechToTextLanguage,
+    setSpeechToTextLanguage
   }
 }

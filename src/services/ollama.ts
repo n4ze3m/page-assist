@@ -329,13 +329,15 @@ export const saveForRag = async (
   chunkSize: number,
   overlap: number,
   totalFilePerKB: number,
-  noOfRetrievedDocs: number
+  noOfRetrievedDocs?: number
 ) => {
   await setDefaultEmbeddingModelForRag(model)
   await setDefaultEmbeddingChunkSize(chunkSize)
   await setDefaultEmbeddingChunkOverlap(overlap)
   await setTotalFilePerKB(totalFilePerKB)
-  await setNoOfRetrievedDocs(noOfRetrievedDocs)
+  if(noOfRetrievedDocs) {
+    await setNoOfRetrievedDocs(noOfRetrievedDocs)
+  }
 }
 
 export const getWebSearchPrompt = async () => {

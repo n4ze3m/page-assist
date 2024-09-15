@@ -52,5 +52,6 @@ export default defineContentScript({
     }
   },
   allFrames: true,
-  matches: ["*://ollama.com/library/*"]
+  matches: ["*://ollama.com/*"],
+
 })

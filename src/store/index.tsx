@@ -40,6 +40,11 @@ type State = {
   setSpeechToTextLanguage: (speechToTextLanguage: string) => void
   currentURL: string
   setCurrentURL: (currentURL: string) => void
+  selectedSystemPrompt: string | null
+  setSelectedSystemPrompt: (selectedSystemPrompt: string) => void
+
+  selectedQuickPrompt: string | null
+  setSelectedQuickPrompt: (selectedQuickPrompt: string) => void
 }
 
 export const useStoreMessage = create<State>((set) => ({
@@ -68,5 +73,11 @@ export const useStoreMessage = create<State>((set) => ({
   setSpeechToTextLanguage: (speechToTextLanguage) =>
     set({ speechToTextLanguage }),
   currentURL: "",
-  setCurrentURL: (currentURL) => set({ currentURL })
+  setCurrentURL: (currentURL) => set({ currentURL }),
+
+  selectedSystemPrompt: null,
+  setSelectedSystemPrompt: (selectedSystemPrompt) =>
+    set({ selectedSystemPrompt }),
+  selectedQuickPrompt: null,
+  setSelectedQuickPrompt: (selectedQuickPrompt) => set({ selectedQuickPrompt })
 }))
