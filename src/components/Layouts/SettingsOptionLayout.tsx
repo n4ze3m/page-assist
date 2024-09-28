@@ -6,12 +6,12 @@ import {
   BlocksIcon,
   InfoIcon,
   CombineIcon,
-  ChromeIcon
+  ChromeIcon,
+  CloudCogIcon
 } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { Link, useLocation } from "react-router-dom"
 import { OllamaIcon } from "../Icons/Ollama"
-import { Tag } from "antd"
 import { BetaTag } from "../Common/Beta"
 
 function classNames(...classes: string[]) {
@@ -22,12 +22,11 @@ const LinkComponent = (item: {
   href: string
   name: string | JSX.Element
   icon: any
-  current: string,
+  current: string
   beta?: boolean
 }) => {
   return (
     <li className="inline-flex items-center">
-
       <Link
         to={item.href}
         className={classNames(
@@ -47,16 +46,14 @@ const LinkComponent = (item: {
         />
         {item.name}
       </Link>
-      {
-        item.beta && <BetaTag />
-        }
+      {item.beta && <BetaTag />}
     </li>
   )
 }
 
 export const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
   const location = useLocation()
-  const { t } = useTranslation(["settings", "common"])
+  const { t } = useTranslation(["settings", "common", "openai"])
 
   return (
     <>
@@ -93,6 +90,13 @@ export const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
                   beta
                 />
               )}
+              <LinkComponent
+                href="/settings/openai"
+                name={t("openai:settings")}
+                icon={CloudCogIcon}
+                current={location.pathname}
+                beta
+              />
               <LinkComponent
                 href="/settings/model"
                 name={t("manageModels.title")}

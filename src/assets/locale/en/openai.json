@@ -1,0 +1,38 @@
+{
+    "settings": "OpenAI API Settings",
+    "heading": "OpenAI API Settings",
+    "subheading": "Manage and configure your OpenAI API Compatible providers here.",
+    "addBtn": "Add Provider",
+    "table": {
+        "name": "Provider Name",
+        "baseUrl": "Base URL",
+        "actions": "Action"
+    },
+    "modal": {
+        "titleAdd": "Add New Provider",
+        "name": {
+            "label": "Provider Name",
+            "required": "Provider name is required.",
+            "placeholder": "Enter provider name"
+        },
+        "baseUrl": {
+            "label": "Base URL",
+            "help": "The base URL of the OpenAI API provider. eg (http://loocalhost:8080/v1)",
+            "required": "Base URL is required.",
+            "placeholder": "Enter base URL"
+        },
+        "apiKey": {
+            "label": "API Key",
+            "required": "API Key is required.",
+            "placeholder": "Enter API Key"
+        },
+        "submit": "Submit",
+        "update": "Update",
+        "deleteConfirm": "Are you sure you want to delete this provider?"
+    },
+    "addSuccess":  "Provider added successfully.",
+    "deleteSuccess": "Provider deleted successfully.",
+    "updateSuccess": "Provider updated successfully.",
+    "delete": "Delete",
+    "edit": "Edit"
+}
