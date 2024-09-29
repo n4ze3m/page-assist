@@ -33,6 +33,7 @@ import { useStoreChatModelSettings } from "@/store/model"
 import { getAllDefaultModelSettings } from "@/services/model-settings"
 import { pageAssistModel } from "@/models"
 import { getNoOfRetrievedDocs } from "@/services/app"
+import { humanMessageFormatter } from "@/utils/human-message"
 
 export const useMessageOption = () => {
   const {
@@ -68,7 +69,7 @@ export const useMessageOption = () => {
   } = useStoreMessageOption()
   const currentChatModelSettings = useStoreChatModelSettings()
   const [selectedModel, setSelectedModel] = useStorage("selectedModel")
-  const [ speechToTextLanguage, setSpeechToTextLanguage ] = useStorage(
+  const [speechToTextLanguage, setSpeechToTextLanguage] = useStorage(
     "speechToTextLanguage",
     "en-US"
   )
@@ -207,16 +208,17 @@ export const useMessageOption = () => {
 
       //  message = message.trim().replaceAll("\n", " ")
 
-      let humanMessage = new HumanMessage({
+      let humanMessage = humanMessageFormatter({
         content: [
           {
             text: message,
             type: "text"
           }
-        ]
+        ],
+        model: selectedModel
       })
       if (image.length > 0) {
-        humanMessage = new HumanMessage({
+        humanMessage = humanMessageFormatter({
           content: [
             {
               text: message,
@@ -226,11 +228,12 @@ export const useMessageOption = () => {
               image_url: image,
               type: "image_url"
             }
-          ]
+          ],
+          model: selectedModel
         })
       }
 
-      const applicationChatHistory = generateHistory(history)
+      const applicationChatHistory = generateHistory(history, selectedModel)
 
       if (prompt) {
         applicationChatHistory.unshift(
@@ -412,16 +415,17 @@ export const useMessageOption = () => {
       const prompt = await systemPromptForNonRagOption()
       const selectedPrompt = await getPromptById(selectedSystemPrompt)
 
-      let humanMessage = new HumanMessage({
+      let humanMessage = humanMessageFormatter({
         content: [
           {
             text: message,
             type: "text"
           }
-        ]
+        ],
+        model: selectedModel
       })
       if (image.length > 0) {
-        humanMessage = new HumanMessage({
+        humanMessage = humanMessageFormatter({
           content: [
             {
               text: message,
@@ -431,11 +435,12 @@ export const useMessageOption = () => {
               image_url: image,
               type: "image_url"
             }
-          ]
+          ],
+          model: selectedModel
         })
       }
 
-      const applicationChatHistory = generateHistory(history)
+      const applicationChatHistory = generateHistory(history, selectedModel)
 
       if (prompt && !selectedPrompt) {
         applicationChatHistory.unshift(
@@ -695,7 +700,7 @@ export const useMessageOption = () => {
       })
       //  message = message.trim().replaceAll("\n", " ")
 
-      let humanMessage = new HumanMessage({
+      let humanMessage = humanMessageFormatter({
         content: [
           {
             text: systemPrompt
@@ -703,10 +708,11 @@ export const useMessageOption = () => {
               .replace("{question}", message),
             type: "text"
           }
-        ]
+        ],
+        model: selectedModel
       })
 
-      const applicationChatHistory = generateHistory(history)
+      const applicationChatHistory = generateHistory(history, selectedModel)
 
       const chunks = await ollama.stream(
         [...applicationChatHistory, humanMessage],
