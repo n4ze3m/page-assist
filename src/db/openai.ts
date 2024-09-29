@@ -1,9 +1,12 @@
+import { cleanUrl } from "@/libs/clean-url"
+
 type OpenAIModelConfig = {
     id: string
     name: string
     baseUrl: string
     apiKey?: string
     createdAt: number
+    db_type: string
 }
 export const generateID = () => {
     return "openai-xxxx-xxx-xxxx".replace(/[x]/g, () => {
@@ -95,9 +98,10 @@ export const addOpenAICofig = async ({ name, baseUrl, apiKey }: { name: string, 
     const config: OpenAIModelConfig = {
         id,
         name,
-        baseUrl,
+        baseUrl: cleanUrl(baseUrl),
         apiKey,
-        createdAt: Date.now()
+        createdAt: Date.now(),
+        db_type: "openai"
     }
     await openaiDb.create(config)
     return id
@@ -107,7 +111,7 @@ export const addOpenAICofig = async ({ name, baseUrl, apiKey }: { name: string, 
 export const getAllOpenAIConfig = async () => {
     const openaiDb = new OpenAIModelDb()
     const configs = await openaiDb.getAll()
-    return configs
+    return configs.filter(config => config.db_type === "openai")
 }
 
 export const updateOpenAIConfig = async ({ id, name, baseUrl, apiKey }: { id: string, name: string, baseUrl: string, apiKey: string }) => {
@@ -115,9 +119,10 @@ export const updateOpenAIConfig = async ({ id, name, baseUrl, apiKey }: { id: st
     const config: OpenAIModelConfig = {
         id,
         name,
-        baseUrl,
+        baseUrl: cleanUrl(baseUrl),
         apiKey,
-        createdAt: Date.now()
+        createdAt: Date.now(),
+        db_type: "openai"
     }
 
     await openaiDb.update(config)
@@ -137,10 +142,18 @@ export const updateOpenAIConfigApiKey = async (id: string, { name, baseUrl, apiK
     const config: OpenAIModelConfig = {
         id,
         name,
-        baseUrl,
+        baseUrl: cleanUrl(baseUrl),
         apiKey,
-        createdAt: Date.now()
+        createdAt: Date.now(),
+        db_type: "openai"
     }
 
     await openaiDb.update(config)
+}
+
+
+export const getOpenAIConfigById = async (id: string) => {
+    const openaiDb = new OpenAIModelDb()
+    const config = await openaiDb.getById(id)
+    return config
 }

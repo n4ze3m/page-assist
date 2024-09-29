@@ -26,13 +26,37 @@
             "required": "API Key is required.",
             "placeholder": "Enter API Key"
         },
-        "submit": "Submit",
+        "submit": "Save",
         "update": "Update",
-        "deleteConfirm": "Are you sure you want to delete this provider?"
+        "deleteConfirm": "Are you sure you want to delete this provider?",
+        "model": {
+            "title": "Model List",
+            "subheading": "Please select the models you want to use with this provider.",
+            "success": "Successfully added new models."
+        }
     },
     "addSuccess":  "Provider added successfully.",
     "deleteSuccess": "Provider deleted successfully.",
     "updateSuccess": "Provider updated successfully.",
     "delete": "Delete",
-    "edit": "Edit"
+    "edit": "Edit",
+    "refetch": "Refech Model List",
+    "searchModel": "Search Model",
+    "selectAll": "Select All",
+    "save": "Save",
+    "saving": "Saving...",
+    "manageModels": {
+        "columns": {
+            "name": "Model Name",
+            "model_id": "Model ID",
+            "provider": "Provider Name",
+            "actions": "Action"
+        },
+        "tooltip": {
+            "delete": "Delete"
+        },
+        "confirm": {
+            "delete": "Are you sure you want to delete this model?"
+        }
+    }
 }

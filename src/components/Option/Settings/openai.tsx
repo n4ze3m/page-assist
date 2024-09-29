@@ -8,7 +8,8 @@ import {
   updateOpenAIConfig
 } from "@/db/openai"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { Pencil, Trash2, Plus } from "lucide-react"
+import { Pencil, Trash2, RotateCwIcon } from "lucide-react"
+import { OpenAIFetchModel } from "./openai-fetch-model"
 
 export const OpenAIApp = () => {
   const { t } = useTranslation("openai")
@@ -16,6 +17,8 @@ export const OpenAIApp = () => {
   const [editingConfig, setEditingConfig] = useState(null)
   const queryClient = useQueryClient()
   const [form] = Form.useForm()
+  const [openaiId, setOpenaiId] = useState<string | null>(null)
+  const [openModelModal, setOpenModelModal] = useState(false)
 
   const { data: configs, isLoading } = useQuery({
     queryKey: ["openAIConfigs"],
@@ -24,12 +27,14 @@ export const OpenAIApp = () => {
 
   const addMutation = useMutation({
     mutationFn: addOpenAICofig,
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({
         queryKey: ["openAIConfigs"]
       })
       setOpen(false)
       message.success(t("addSuccess"))
+      setOpenaiId(data)
+      setOpenModelModal(true)
     }
   })
 
@@ -129,6 +134,18 @@ export const OpenAIApp = () => {
                       <Pencil className="size-4" />
                     </button>
                   </Tooltip>
+
+                  <Tooltip title={t("refetch")}>
+                    <button
+                      className="text-gray-700 dark:text-gray-400"
+                      onClick={() => {
+                        setOpenModelModal(true)
+                        setOpenaiId(record.id)
+                      }}
+                      disabled={!record.id}>
+                      <RotateCwIcon className="size-4" />
+                    </button>
+                  </Tooltip>
                   <Tooltip title={t("delete")}>
                     <button
                       className="text-red-500 dark:text-red-400"
@@ -211,6 +228,19 @@ export const OpenAIApp = () => {
               {editingConfig ? t("modal.update") : t("modal.submit")}
             </button>
           </Form>
+        </Modal>
+
+        <Modal
+          open={openModelModal}
+          title={t("modal.model.title")}
+          footer={null}
+          onCancel={() => setOpenModelModal(false)}>
+          {openaiId ? (
+            <OpenAIFetchModel
+              openaiId={openaiId}
+              setOpenModelModal={setOpenModelModal}
+            />
+          ) : null}
         </Modal>
       </div>
     </div>
