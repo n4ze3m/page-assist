@@ -4,6 +4,7 @@ import { urlRewriteRuntime } from "../libs/runtime"
 import { getChromeAIModel } from "./chrome"
 import { setNoOfRetrievedDocs, setTotalFilePerKB } from "./app"
 import fetcher from "@/libs/fetcher"
+import { ollamaFormatAllCustomModels } from "@/db/models"
 
 
 const storage = new Storage()
@@ -193,9 +194,13 @@ export const fetchChatModels = async ({
         }
       })
     const chromeModel = await getChromeAIModel()
+
+    const customModels = await ollamaFormatAllCustomModels()
+
     return [
       ...chatModels,
-      ...chromeModel
+      ...chromeModel,
+      ...customModels
     ]
   } catch (e) {
     console.error(e)
@@ -207,10 +212,11 @@ export const fetchChatModels = async ({
       }
     })
     const chromeModel = await getChromeAIModel()
-
+    const customModels = await ollamaFormatAllCustomModels()
     return [
       ...models,
-      ...chromeModel
+      ...chromeModel,
+      ...customModels
     ]
   }
 }

@@ -11,7 +11,6 @@ import {
 } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useLocation, NavLink } from "react-router-dom"
-import { OllamaIcon } from "../Icons/Ollama"
 import { SelectedKnowledge } from "../Option/Knowledge/SelectedKnwledge"
 import { ModelSelect } from "../Common/ModelSelect"
 import { PromptSelect } from "../Common/PromptSelect"

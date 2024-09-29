@@ -1,9 +1,5 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { useMutation, } from "@tanstack/react-query"
 import {
-  Skeleton,
-  Table,
-  Tag,
-  Tooltip,
   notification,
   Modal,
   Input,
@@ -23,7 +19,7 @@ dayjs.extend(relativeTime)
 export const ModelsBody = () => {
   const [open, setOpen] = useState(false)
   const [segmented, setSegmented] = useState<string>("ollama")
-  
+
   const { t } = useTranslation(["settings", "common", "openai"])
 
   const form = useForm({

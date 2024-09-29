@@ -18,6 +18,11 @@ export const generateID = () => {
 export const removeModelPrefix = (id: string) => {
   return id.replace(/^model-/, "")
 }
+
+export const isCustomModel = (model: string) => {
+  const customModelRegex = /_model-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{3,4}-[a-f0-9]{4}/
+  return customModelRegex.test(model)
+}
 export class ModelDb {
   db: chrome.storage.StorageArea
 
@@ -173,4 +178,31 @@ export const isLookupExist = async (lookup: string) => {
   const models = await db.getAll()
   const model = models.find((model) => model.lookup === lookup)
   return model ? true : false
+}
+
+
+export const ollamaFormatAllCustomModels = async () => {
+
+  const allModles = await getAllCustomModels()
+
+  const ollamaModels = allModles.map((model) => {
+    return {
+      name: model.name,
+      model: model.id,
+      modified_at: "",
+      provider: "custom",
+      size: 0,
+      digest: "",
+      details: {
+        parent_model: "",
+        format: "",
+        family: "",
+        families: [],
+        parameter_size: "",
+        quantization_level: ""
+      }
+    }
+  })
+
+  return ollamaModels
 }
