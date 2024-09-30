@@ -36,7 +36,6 @@ export const pageAssistModel = async ({
 
   const isCustom = isCustomModel(model)
 
-  console.log("isCustom", isCustom, model)
 
   if (isCustom) {
     const modelInfo = await getModelInfo(model)
