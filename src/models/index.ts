@@ -44,11 +44,11 @@ export const pageAssistModel = async ({
 
     return new ChatOpenAI({
       modelName: modelInfo.model_id,
-      openAIApiKey: providerInfo.apiKey || "",
+      openAIApiKey: providerInfo.apiKey || "temp",
       temperature,
       topP,
       configuration: {
-        apiKey: providerInfo.apiKey || "",
+        apiKey: providerInfo.apiKey || "temp",
         baseURL: providerInfo.baseUrl || "",
       }
     }) as any
