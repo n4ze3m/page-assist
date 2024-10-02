@@ -9,7 +9,7 @@ import {
 } from "~/services/ollama"
 import { useStoreMessageOption, type Message } from "~/store/option"
 import { useStoreMessage } from "~/store"
-import { HumanMessage, SystemMessage } from "@langchain/core/messages"
+import { SystemMessage } from "@langchain/core/messages"
 import { getDataFromCurrentTab } from "~/libs/get-html"
 import { MemoryVectorStore } from "langchain/vectorstores/memory"
 import { memoryEmbedding } from "@/utils/memory-embeddings"
@@ -33,6 +33,7 @@ import { getAllDefaultModelSettings } from "@/services/model-settings"
 import { getSystemPromptForWeb } from "@/web/web"
 import { pageAssistModel } from "@/models"
 import { getPrompt } from "@/services/application"
+import { humanMessageFormatter } from "@/utils/human-message"
 
 export const useMessage = () => {
   const {
@@ -313,7 +314,7 @@ export const useMessage = () => {
         ]
       }
 
-      let humanMessage = new HumanMessage({
+      let humanMessage = humanMessageFormatter({
         content: [
           {
             text: systemPrompt
@@ -321,10 +322,11 @@ export const useMessage = () => {
               .replace("{question}", query),
             type: "text"
           }
-        ]
+        ],
+        model: selectedModel
       })
 
-      const applicationChatHistory = generateHistory(history)
+      const applicationChatHistory = generateHistory(history, selectedModel)
 
       const chunks = await ollama.stream(
         [...applicationChatHistory, humanMessage],
@@ -500,16 +502,17 @@ export const useMessage = () => {
       const prompt = await systemPromptForNonRag()
       const selectedPrompt = await getPromptById(selectedSystemPrompt)
 
-      let humanMessage = new HumanMessage({
+      let humanMessage = humanMessageFormatter({
         content: [
           {
             text: message,
             type: "text"
           }
-        ]
+        ],
+        model: selectedModel
       })
       if (image.length > 0) {
-        humanMessage = new HumanMessage({
+        humanMessage = humanMessageFormatter({
           content: [
             {
               text: message,
@@ -519,11 +522,12 @@ export const useMessage = () => {
               image_url: image,
               type: "image_url"
             }
-          ]
+          ],
+          model: selectedModel
         })
       }
 
-      const applicationChatHistory = generateHistory(history)
+      const applicationChatHistory = generateHistory(history, selectedModel)
 
       if (prompt && !selectedPrompt) {
         applicationChatHistory.unshift(
@@ -760,16 +764,17 @@ export const useMessage = () => {
 
       //  message = message.trim().replaceAll("\n", " ")
 
-      let humanMessage = new HumanMessage({
+      let humanMessage = humanMessageFormatter({
         content: [
           {
             text: message,
             type: "text"
           }
-        ]
+        ],
+        model: selectedModel
       })
       if (image.length > 0) {
-        humanMessage = new HumanMessage({
+        humanMessage = humanMessageFormatter({
           content: [
             {
               text: message,
@@ -779,11 +784,12 @@ export const useMessage = () => {
               image_url: image,
               type: "image_url"
             }
-          ]
+          ],
+          model: selectedModel
         })
       }
 
-      const applicationChatHistory = generateHistory(history)
+      const applicationChatHistory = generateHistory(history, selectedModel)
 
       if (prompt) {
         applicationChatHistory.unshift(
@@ -966,16 +972,17 @@ export const useMessage = () => {
 
     try {
       const prompt = await getPrompt(messageType)
-      let humanMessage = new HumanMessage({
+      let humanMessage = humanMessageFormatter({
         content: [
           {
             text: prompt.replace("{text}", message),
             type: "text"
           }
-        ]
+        ],
+        model: selectedModel
       })
       if (image.length > 0) {
-        humanMessage = new HumanMessage({
+        humanMessage = humanMessageFormatter({
           content: [
             {
               text: prompt.replace("{text}", message),
@@ -985,7 +992,8 @@ export const useMessage = () => {
               image_url: image,
               type: "image_url"
             }
-          ]
+          ],
+          model: selectedModel
         })
       }
 
