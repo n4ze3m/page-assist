@@ -85,6 +85,11 @@
             "numGpu": {
                 "label": "Num GPU",
                 "placeholder": "Ingrese el número de capas para enviar a la(s) GPU(s)"
+            },
+            "systemPrompt": {
+                "label": "Prompt de Sistema Temporal",
+                "placeholder": "Ingrese el Prompt de Sistema",
+                "help": "Esta es una forma rápida de establecer el prompt de sistema en el chat actual, que anulará el prompt de sistema seleccionado si existe."
             }
         },
         "advanced": "Más Configuraciones del Modelo"
