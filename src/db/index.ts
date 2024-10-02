@@ -81,6 +81,12 @@ export class PageAssitDatabase {
     })
   }
 
+  async getChatHistoryTitleById(id: string): Promise<string> {
+    const chatHistories = await this.getChatHistories()
+    const chatHistory = chatHistories.find((history) => history.id === id)
+    return chatHistory?.title || ""
+  }
+
   async addChatHistory(history: HistoryInfo) {
     const chatHistories = await this.getChatHistories()
     const newChatHistories = [history, ...chatHistories]
@@ -482,4 +488,11 @@ export const getRecentChatFromCopilot = async () => {
   const messages = await db.getChatHistory(history.id)
 
   return { history, messages }
+}
+
+
+export const getTitleById = async (id: string) => {
+  const db = new PageAssitDatabase()
+  const title = await db.getChatHistoryTitleById(id)
+  return title
 }

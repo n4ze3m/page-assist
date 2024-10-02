@@ -45,6 +45,7 @@ export const Header: React.FC<Props> = ({
     setSelectedSystemPrompt,
     messages,
     streaming,
+    historyId
   } = useMessageOption()
   const {
     data: models,
@@ -204,7 +205,9 @@ export const Header: React.FC<Props> = ({
             {pathname === "/" &&
               messages.length > 0 &&
               !streaming &&
-              shareModeEnabled && <ShareBtn messages={messages} />}
+              shareModeEnabled && <ShareBtn
+              historyId={historyId}
+              messages={messages} />}
             <Tooltip title={t("githubRepository")}>
               <a
                 href="https://github.com/n4ze3m/page-assist"

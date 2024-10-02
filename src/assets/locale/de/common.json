@@ -85,6 +85,11 @@
             "numGpu": {
                 "label": "Anzahl GPUs",
                 "placeholder": "Geben Sie die Anzahl der Ebenen ein, die an GPU(s) gesendet werden sollen"
+            },
+            "systemPrompt": {
+                "label": "Temporärer System-Prompt",
+                "placeholder": "System-Prompt eingeben",
+                "help": "Dies ist eine schnelle Möglichkeit, den System-Prompt im aktuellen Chat festzulegen, der den ausgewählten System-Prompt überschreibt, falls vorhanden."
             }
         },
         "advanced": "Weitere Modell-Einstellungen"

@@ -84,7 +84,13 @@
             },
             "numGpu": {
                 "label": "Num GPU",
-                "placeholder": "Inserisci il numero di layer da inviare alla/e GPU"            }
+                "placeholder": "Inserisci il numero di layer da inviare alla/e GPU"
+            },
+            "systemPrompt": {
+                "label": "Prompt di Sistema Temporaneo",
+                "placeholder": "Inserisci il Prompt di Sistema",
+                "help": "Questo è un modo rapido per impostare il prompt di sistema nella chat corrente, che sovrascriverà il prompt di sistema selezionato se esiste."
+            }
         },
         "advanced": "Altre Impostazioni del Modello"
     },

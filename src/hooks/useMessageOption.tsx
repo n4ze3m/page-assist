@@ -455,12 +455,29 @@ export const useMessageOption = () => {
         )
       }
 
-      if (selectedPrompt) {
+      const isTempSystemprompt =
+        currentChatModelSettings.systemPrompt &&
+        currentChatModelSettings.systemPrompt?.trim().length > 0
+
+      if (!isTempSystemprompt && selectedPrompt) {
         applicationChatHistory.unshift(
           new SystemMessage({
             content: [
               {
                 text: selectedPrompt.content,
+                type: "text"
+              }
+            ]
+          })
+        )
+      }
+
+      if (isTempSystemprompt) {
+        applicationChatHistory.unshift(
+          new SystemMessage({
+            content: [
+              {
+                text: currentChatModelSettings.systemPrompt,
                 type: "text"
               }
             ]

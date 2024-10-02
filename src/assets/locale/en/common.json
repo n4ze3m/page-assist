@@ -85,6 +85,11 @@
             "numGpu": {
                 "label": "Num GPU",
                 "placeholder": "Enter number of layers to send to GPU(s)"
+            },
+            "systemPrompt": {
+                "label": "Temporary System Prompt",
+                "placeholder": "Enter System Prompt",
+                "help": "This is a quick way to set the system prompt in the current chat, which will override the selected system prompt if it exists."
             }
         },
         "advanced": "More Model Settings"

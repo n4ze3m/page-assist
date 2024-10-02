@@ -76,6 +76,7 @@ export default function OptionLayout({
       <CurrentChatModelSettings
         open={openModelSettings}
         setOpen={setOpenModelSettings}
+        useDrawer
       />
     </>
   )

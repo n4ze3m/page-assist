@@ -63,6 +63,8 @@ type CurrentChatModelSettings = {
 
   setX: (key: string, value: any) => void
   reset: () => void
+  systemPrompt?: string
+  setSystemPrompt: (systemPrompt: string) => void
 }
 
 export const useStoreChatModelSettings = create<CurrentChatModelSettings>(
@@ -100,6 +102,8 @@ export const useStoreChatModelSettings = create<CurrentChatModelSettings>(
     setVocabOnly: (vocabOnly: boolean) => set({ vocabOnly }),
     seetSeed: (seed: number) => set({ seed }),
     setX: (key: string, value: any) => set({ [key]: value }),
+    systemPrompt: undefined,
+    setSystemPrompt: (systemPrompt: string) => set({ systemPrompt }),
     reset: () =>
       set({
         f16KV: undefined,
@@ -130,7 +134,8 @@ export const useStoreChatModelSettings = create<CurrentChatModelSettings>(
         useMLock: undefined,
         useMMap: undefined,
         vocabOnly: undefined,
-        seed: undefined
+        seed: undefined,
+        systemPrompt: undefined
       })
   })
 )
