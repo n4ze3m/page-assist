@@ -85,6 +85,11 @@
             "numGpu": {
                 "label": "Num GPU",
                 "placeholder": "输入要发送到 GPU 的层数"
+            },
+            "systemPrompt": {
+                "label": "临时系统提示",
+                "placeholder": "输入系统提示",
+                "help": "这是一种在当前聊天中快速设置系统提示的方法，如果存在已选择的系统提示，它将覆盖该提示。"
             }
         },
         "advanced": "更多模型设置"

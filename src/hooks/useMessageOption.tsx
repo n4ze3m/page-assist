@@ -68,7 +68,7 @@ export const useMessageOption = () => {
   } = useStoreMessageOption()
   const currentChatModelSettings = useStoreChatModelSettings()
   const [selectedModel, setSelectedModel] = useStorage("selectedModel")
-  const [ speechToTextLanguage, setSpeechToTextLanguage ] = useStorage(
+  const [speechToTextLanguage, setSpeechToTextLanguage] = useStorage(
     "speechToTextLanguage",
     "en-US"
   )
@@ -450,12 +450,29 @@ export const useMessageOption = () => {
         )
       }
 
-      if (selectedPrompt) {
+      const isTempSystemprompt =
+        currentChatModelSettings.systemPrompt &&
+        currentChatModelSettings.systemPrompt?.trim().length > 0
+
+      if (!isTempSystemprompt && selectedPrompt) {
         applicationChatHistory.unshift(
           new SystemMessage({
             content: [
               {
                 text: selectedPrompt.content,
+                type: "text"
+              }
+            ]
+          })
+        )
+      }
+
+      if (isTempSystemprompt) {
+        applicationChatHistory.unshift(
+          new SystemMessage({
+            content: [
+              {
+                text: currentChatModelSettings.systemPrompt,
                 type: "text"
               }
             ]

@@ -85,6 +85,11 @@
             "numGpu": {
                 "label": "Num GPU",
                 "placeholder": "Entrez le nombre de couches à envoyer au(x) GPU(s)"
+            },
+            "systemPrompt": {
+                "label": "Invite système temporaire",
+                "placeholder": "Entrez l'invite système",
+                "help": "C'est un moyen rapide de définir l'invite système dans le chat actuel, qui remplacera l'invite système sélectionnée si elle existe."
             }
         },
         "advanced": "Plus de paramètres du modèle"

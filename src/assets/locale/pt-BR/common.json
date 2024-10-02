@@ -85,6 +85,11 @@
       "numGpu": {
           "label": "Num GPUs",
           "placeholder": "Digite o número de camadas para enviar para a(s) GPU(s)"
+      },
+      "systemPrompt": {
+          "label": "Prompt do Sistema Temporário",
+          "placeholder": "Digite o Prompt do Sistema",
+          "help": "Esta é uma maneira rápida de definir o prompt do sistema no chat atual, que substituirá o prompt do sistema selecionado, se existir."
       }
     },
     "advanced": "Mais Configurações do Modelo"
