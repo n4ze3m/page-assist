@@ -1,0 +1,105 @@
+{
+    "pageAssist": "Page Assist",
+    "selectAModel": "Vælg en Model",
+    "save": "Gem",
+    "saved": "Gemt",
+    "cancel": "Fortryd",
+    "retry": "Prøv igen",
+    "share": {
+        "tooltip": {
+            "share": "Del"
+        },
+        "modal": {
+            "title": "Del link til Chatten"
+        },
+        "form": {
+            "defaultValue": {
+                "name": "Anonym",
+                "title": "Unavngivet chat"
+            },
+            "title": {
+                "label": "Chattitel",
+                "placeholder": "Indtast chattitel",
+                "required": "Chattitel er nødvendig"
+            },
+            "name": {
+                "label": "Dit navn",
+                "placeholder": "Indtast dit navn",
+                "required": "Dit navn er nødvendig"
+            },
+            "btn": {
+                "save": "Generer et Link",
+                "saving": "Generering af link..."
+            }
+        },
+        "notification": {
+            "successGenerate": "Link kopied til udklipsholder",
+            "failGenerate": "Kunne ikke generere link"
+        }
+    },
+    "copyToClipboard": "Kopier til udklipsholder",
+    "webSearch": "Søger på internettet",
+    "regenerate": "Regenerer",
+    "edit": "Ændre",
+    "saveAndSubmit": "Gem & Indsend",
+    "editMessage": {
+        "placeholder": "Skriv en besked..."
+    },
+    "submit": "Indsend",
+    "noData": "Igen data",
+    "noHistory": "Igen chat history",
+    "chatWithCurrentPage": "Chat med nuværende side",
+    "beta": "Beta",
+    "tts": "Læs op",
+    "currentChatModelSettings": "Nuværende chat model indstillinger",
+    "modelSettings": {
+        "label": "Model Indstillinger",
+        "description": "Konfigurer model indstillingerne alle chats",
+        "form": {
+            "keepAlive": {
+                "label": "Hold i live",
+                "help": "controls how long the model will stay loaded into memory following the request (standard: 5m)",
+                "placeholder": "Indtast længden af sessionen (fx. 5m, 10m, 1t)"
+            },
+            "temperature": {
+                "label": "Temperatur",
+                "placeholder": "Indtast Temperatur værdi (fx. 0.7, 1.0)"
+            },
+            "numCtx": {
+                "label": "Længden af Kontekst",
+                "placeholder": "Instast Længden af Kontekst værdien (standard: 2048)"
+            },
+            "seed": {
+                "label": "Seed",
+                "placeholder": "Indtast Seed værdi (fx. 1234)",
+                "help": "Reproducerbarhed af modeloutput"
+            },
+            "topK": {
+                "label": "Top K",
+                "placeholder": "Indtast Top K værdi (fx. 40, 100)"
+            },
+            "topP": {
+                "label": "Top P",
+                "placeholder": "Indtast Top P value (fx. 0.9, 0.95)"
+            },
+            "numGpu": {
+                "label": "Antal GPU'er",
+                "placeholder": "Indtast antallet af lag, som sendes til GPU('er)"
+            },
+            "systemPrompt": {
+                "label": "Midlertidige System Prompt",
+                "placeholder": "Indtast System Prompt",
+                "help": "Dette er en hurtig måde at indstille systemprompten i den aktuelle chat, som vil tilsidesætte den valgte systemprompt, hvis den findes."
+            }
+        },
+        "advanced": "Flere Model Indstillinger"
+    },
+    "copilot": {
+        "summary": "Opsummer",
+        "explain": "Forklar",
+        "rephrase": "Omskriv",
+        "translate": "Oversæt",
+        "custom": "Brugerdefineret"
+    },
+    "citations": "Citater"
+}

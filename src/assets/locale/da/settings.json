@@ -1,0 +1,339 @@
+{
+  "generalSettings": {
+    "title": "Generelle Indstillinger",
+    "settings": {
+      "heading": "Web UI Indstillinger",
+      "speechRecognitionLang": {
+        "label": "Talegenkendelse Sprog",
+        "placeholder": "Vælg et sprog"
+      },
+      "language": {
+        "label": "Sprog",
+        "placeholder": "Vælg et sprog"
+      },
+      "darkMode": {
+        "label": "Ændre Tema",
+        "options": {
+          "light": "Lyst",
+          "dark": "Mørkt"
+        }
+      },
+      "copilotResumeLastChat": {
+        "label": "Genoptag den sidste chat, når du åbner SidePanel (copilot)"
+      },
+      "hideCurrentChatModelSettings": {
+        "label": "Skjul nuværende chatmodelindstillinger"
+      },
+      "restoreLastChatModel": {
+        "label": "Gendan sidste brugte chatmodel fremtidigt"
+      },
+      "sendNotificationAfterIndexing": {
+        "label": "Send besked efter færdigbehandling af vidensbasen"
+      },
+      "generateTitle" :{
+        "label": "Generer titel med AI"
+      }
+    },
+    "sidepanelRag": {
+      "heading": "Copilot Chat med Website Indstillinger",
+      "ragEnabled": {
+        "label": "Chat med websitet ved brug af vektorindlejringer (vector embeddings)"
+      },
+      "maxWebsiteContext": {
+        "label": "Normal webstedsindhold størrelse",
+        "placeholder": "Indholdsstørrelse (standard 4028)"
+      }
+    },
+    "webSearch": {
+      "heading": "Administrer Web Søgning",
+      "searchMode": {
+        "label": "Søge Tilstand"
+      },
+      "provider": {
+        "label": "Søgemaskine",
+        "placeholder": "Vælg en søgemaskine"
+      },
+      "totalSearchResults": {
+        "label": "Antal søgeresultater",
+        "placeholder": "Indtast antal Søgeresultater"
+      },
+      "visitSpecificWebsite": {
+        "label": "Besøg websitet nævnt i samtalen"
+      }
+    },
+    "system": {
+      "heading": "Systemindstillinger",
+      "deleteChatHistory": {
+        "label": "Slet Chathistorik",
+        "button": "Slet",
+        "confirm": "Er du sikker på, at du vil slette din chathistorik? Denne handling kan ikke fortrydes."
+
+      },
+      "export": {
+        "label": "Eksporter chathistorik, vidensbase og prompts",
+        "button": "Eksporter Data",
+        "success": "Export lykkedes"
+      },
+      "import": {
+        "label": "Importer chathistorik, vidensbase og prompts",
+        "button": "Importer Data",
+        "success": "Import lykkedes",
+        "error": "Importfejl"
+      }
+    },
+    "tts": {
+      "heading": "Tekst-til-tale Indstillinger",
+      "ttsEnabled": {
+        "label": "Tilføj Teskt-til-Tale"
+      },
+      "ttsProvider": {
+        "label": "Tekst-til-Tale Udbyder",
+        "placeholder": "Vælg en udbyder"
+      },
+      "ttsVoice": {
+        "label": "Tekst-til-Tale Stemme",
+        "placeholder": "Vælg en stemme"
+      },
+      "ssmlEnabled": {
+        "label": "Aktiver SSML (Speech Synthesis Markup Language)"
+      }
+    }
+  },
+  "manageModels": {
+    "title": "Administer Modeller",
+    "addBtn": "Tilføj ny Model",
+    "columns": {
+      "name": "Navn",
+      "digest": "Digest",
+      "modifiedAt": "Ændret den",
+      "size": "Størrelse",
+      "actions": "Handlinger"
+    },
+    "expandedColumns": {
+      "parentModel": "Forælder model",
+      "format": "Format",
+      "family": "Familie",
+      "parameterSize": "Parameterstørrelse",
+      "quantizationLevel": "kvantificeringsniveau"
+    },
+    "tooltip": {
+      "delete": "Slet Model",
+      "repull": "Hent Model Igen"
+    },
+    "confirm": {
+      "delete": "Er du sikker på, at du vil slette denne model?",
+      "repull": "Er du sikker på, at du vil hente denne model igen?"
+    },
+    "modal": {
+      "title": "Tilføj Ny Model",
+      "placeholder": "Indtast Modelnavn",
+      "pull": "Hent Model"
+    },
+    "notification": {
+      "pullModel": "Henter Model",
+      "pullModelDescription": "Henter {{modelName}} model. For flere detaljer, tjek udvidelsesikonet.",
+      "success": "Det virkede",
+      "error": "Fejl",
+      "successDescription": "Det lykkedes at hente modellen",
+      "successDeleteDescription": "Det lykkedes at slette modellen",
+      "someError": "Noget gik galt. Venligst prøv igen senere"
+    }
+  },
+  "managePrompts": {
+    "title": "Administrer Prompts",
+    "addBtn": "Tilføj Ny Prompt",
+    "option1": "Normal",
+    "option2": "RAG",
+    "questionPrompt": "Spørgsmålsprompt",
+    "segmented": {
+      "custom": "Brugerdefinerede Prompts",
+      "copilot": "Copilot Prompts"
+    },
+    "columns": {
+      "title": "Titel",
+      "prompt": "Prompt",
+      "type": "Prompttype",
+      "actions": "Handlinger"
+    },
+    "systemPrompt": "Systemprompt",
+    "quickPrompt": "Hurtig Prompt",
+    "tooltip": {
+      "delete": "Slet Prompt",
+      "edit": "Ændre Prompt"
+    },
+    "confirm": {
+      "delete": "Er du sikker på, at du vil slette denne prompt? Denne handling kan ikke fortrydes."    },
+    "modal": {
+      "addTitle": "Tilføj ny Prompt",
+      "editTitle": "Ændre Prompt"
+    },
+    "form": {
+      "title": {
+        "label": "Titel",
+        "placeholder": "Min Seje Prompt",
+        "required": "Indtast venligst en titel"
+      },
+      "prompt": {
+        "label": "Prompt",
+        "placeholder": "Indtast Prompt",
+        "required": "Venligst indtast en prompt",
+        "help": "Du kan bruge {key} som variabel i din prompt.",
+        "missingTextPlaceholder": "Variablen {text} mangler i prompten. Tilføj venligst dette."
+      },
+      "isSystem": {
+        "label": "Er Systemprompt"
+      },
+      "btnSave": {
+        "saving": "Tilføjer Prompt...",
+        "save": "Tilføj Prompt"
+      },
+      "btnEdit": {
+        "saving": "Opdaterer Prompt...",
+        "save": "Opdater Prompt"
+      }
+    },
+    "notification": {
+      "addSuccess": "Prompt Tilføjet",
+      "addSuccessDesc": "Prompt blev tilføjet med succes",
+      "error": "Fejl",
+      "someError": "Noget gik galt. Prøv venligst igen senere",
+      "updatedSuccess": "Prompt Opdateret",
+      "updatedSuccessDesc": "Prompt blev opdateret med succes",
+      "deletedSuccess": "Prompt Slettet",
+      "deletedSuccessDesc": "Prompt blev slettet med succes"
+    }
+  },
+  "manageShare": {
+    "title": "Administrer Deling",
+    "heading": "Konfigurerer Page deling URL",
+    "form": {
+      "url": {
+        "label": "Page Deling URL",
+        "placeholder": "Indtast websted deling URL",
+        "required": "Venligst indstast din Page deling URL!",
+        "help": "Af hensyn til privatliv kan du selv hoste side delingen og angive URL'en her. <anchor>Lær Mere</anchor>."      }
+    },
+    "webshare": {
+      "heading": "Web Deling",
+      "columns": {
+        "title": "Titel",
+        "url": "URL",
+        "actions": "Handlinger"
+      },
+      "tooltip": {
+        "delete": "Slet Deling"
+      },
+      "confirm": {
+        "delete": "Er du sikker på du vil slette denne deling? Dette kan ikke fortrydes."
+      },
+      "label": "Administrer Page Deling",
+      "description": "Tilføj eller disable the page share feature"
+    },
+    "notification": {
+      "pageShareSuccess": "Page Deling URL Updateret korrekt",
+      "someError": "Noget gik galt. Prøv venligst igen senere",
+      "webShareDeleteSuccess": "Webdeling er slettet korrekt"
+    }
+  },
+  "ollamaSettings": {
+    "title": "Ollama Indstillinger",
+    "heading": "Konfigurerer Ollama",
+    "settings": {
+      "ollamaUrl": {
+        "label": "Ollama URL",
+        "placeholder": "Indtast Ollama URL"
+      },
+      "advanced": {
+        "label": "Avanceret Ollama URL Konfiguration",
+        "urlRewriteEnabled": {
+          "label": "Aktiver eller Deaktiver Tilpasset Oprindelses-URL"
+        },
+        "rewriteUrl": {
+          "label": "Tilpasset Oprindelses URL",
+          "placeholder": "Indtast tilpasset oprindelses URL"
+        },
+        "headers": {
+          "label": "Tilpas Headers",
+          "Tilføj": "Tilføj Header",
+          "key": {
+            "label": "Header Værdi",
+            "placeholder": "Autorisation"
+          },
+          "value": {
+            "label": "Header Value",
+            "placeholder": "Bearer token"
+          }
+        },
+        "help": "Hvis du har forbindelsesproblemer med Ollama på Page Assist, kan du konfigurere en brugerdefineret oprindelses-URL. For mere information om konfigurationen, <anchor>klik her</anchor>."      }
+    }
+  },
+  "manageSearch": {
+    "title": "Administrer Web Search",
+    "heading": "Konfigurerer Web Search"
+  },
+  "about": {
+    "title": "Om",
+    "heading": "Om",
+    "chromeVersion": "Page Assist Version",
+    "ollamaVersion": "Ollama Version",
+    "support": "Du kan støtte Page Assist-projektet ved at donere eller sponsorere via følgende platforme:",
+    "koFi": "Støt på Ko-fi",
+    "githubSponsor": "Sponsor på GitHub",
+    "githubRepo": "GitHub Repository"
+  },
+  "manageKnowledge": {
+    "title": "Administrer Viden",
+    "heading": "konfigurer Videnbase"
+  },
+  "rag": {
+    "title": "RAG Indstillinger",
+    "ragSettings": {
+      "label": "RAG Indstillinger",
+      "model": {
+        "label": "Embedding Model",
+        "required": "Vælg venligst en model",
+        "help": "Det anbefales stærkt at bruge indlejringsmodeller som `nomic-embed-text`.",
+        "placeholder": "Vælg a model"
+      },
+      "chunkSize": {
+        "label": "Chunk Størrelse",
+        "placeholder": "Indtast Chunk Størrelse",
+        "required": "Venligst indtast en chunk størrelse"
+      },
+      "chunkOverlap": {
+        "label": "Chunk Overlap",
+        "placeholder": "Indtast Chunk Overlap",
+        "required": "Indtast venligst chunk overlap"
+      },
+      "totalFilePerKB": {
+        "label": "Videnbase Standard Fil Upload Grænse",
+        "placeholder": "Indtast standard fil upload grænse (f.eks. 10)",
+        "required": "Indtast venligst standard fil upload grænsen"
+      },
+      "noOfRetrievedDocs": {
+        "label": "Antal Hentede Dokumenter",
+        "placeholder": "Indtast Number of Retrieved Documents",
+        "required": "Venligst indtast the number of retrieved documents"
+      }
+    },
+    "prompt": {
+      "label": "Konfigurer RAG Prompt",
+      "option1": "Normal",
+      "option2": "Web",
+      "alert": "Konfigurering af systemprompt her er forældet. Venligst brug Administrer Prompts sektionen til, at tilføje eller ændre prompts. Denne sektion vil blive fjernet i fremtidige versioner.",
+      "systemPrompt": "System Prompt",
+      "systemPromptPlaceholder": "Indtast System Prompt",
+      "webSearchPrompt": "Websøgningsprompt",
+      "webSearchPromptHelp": "Fjern ikke `{search_results}` fra prompten.",
+      "webSearchPromptError": "Venligst indtast a web search prompt",
+      "webSearchPromptPlaceholder": "Indtast Websøgningsprompt",
+      "webSearchFollowUpPrompt": "Web Search Follow Up Prompt",
+      "webSearchFollowUpPromptHelp": "Do not remove `{chat_history}` og `{question}` from the prompt.",
+      "webSearchFollowUpPromptError": "Indtast venligst din websøgning opfølgende prompt!",
+      "webSearchFollowUpPromptPlaceholder": "Din Websøgnings opfølgende Prompt"
+    }
+  },
+  "chromeAiSettings": {
+    "title": "Chrome AI Indstillinger"
+  }
+}

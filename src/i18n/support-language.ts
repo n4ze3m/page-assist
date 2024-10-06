@@ -43,5 +43,13 @@ export const supportLanguage = [
     {
         label: "Deutsch",
         value: "de"
+    },
+    {
+        label: "Dansk",
+        value: "da"
+    },
+    {
+        label: "Norsk",
+        value: "no"
     }
 ]
