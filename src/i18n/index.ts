@@ -10,6 +10,7 @@ import { ja } from "./lang/ja";
 import { it } from "./lang/it";
 import { es } from "./lang/es";
 import { fa } from "./lang/fa";
+import { da } from "./lang/da";
 import { de } from "./lang/de";
 import LanguageDetector from 'i18next-browser-languagedetector';
 
@@ -32,7 +33,8 @@ i18n
             "ja-JP": ja,
             fa: fa,
             "fa-IR": fa,
-            de: de
+            de: de,
+            da: da
         },
         fallbackLng: "en",
         lng: localStorage.getItem("i18nextLng") || "en",
