@@ -12,6 +12,7 @@ import { es } from "./lang/es";
 import { fa } from "./lang/fa";
 import { de } from "./lang/de";
 import { da } from "./lang/da";
+import { no } from "./lang/no";
 import LanguageDetector from 'i18next-browser-languagedetector';
 
 i18n

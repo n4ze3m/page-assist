@@ -1,0 +1,262 @@
+{
+  "generalSettings": {
+    "title": "Generelle Innstillinger",
+    "settings": {
+      "heading": "Web UI Innstillinger",
+      "speechRecognitionLang": {
+        "label": "Talegjenkjenning Språk",
+        "placeholder": "Velg et språk"
+      },
+      "language": {
+        "label": "Språk",
+        "placeholder": "Velg et språk"
+      },
+      "darkMode": {
+        "label": "Endre Tema",
+        "options": {
+          "light": "Lyst",
+          "dark": "Mørkt"
+        }
+      },
+      "copilotResumeLastChat": {
+        "label": "Gjenoppta siste chat ved åpning av SidePanel (copilot)"
+      },
+      "hideCurrentChatModelSettings": {
+        "label": "Skjul gjeldende chatmodellinnstillinger"
+      },
+      "restoreLastChatModel": {
+        "label": "Gjenopprett sist brukte chatmodell for fremtidig bruk"
+      },
+      "sendNotificationAfterIndexing": {
+        "label": "Send varsel etter ferdigbehandling av kunnskapsbasen"
+      },
+      "generateTitle" :{
+        "label": "Generer tittel med AI"
+      }
+    },
+    "sidepanelRag": {
+      "heading": "Copilot Chat med Nettsted Innstillinger",
+      "ragEnabled": {
+        "label": "Chat med nettstedet ved bruk av vektorinnleggelser (vector embeddings)"
+      },
+      "maxWebsiteContext": {
+        "label": "Normal nettstedinnholds størrelse",
+        "placeholder": "Innholdsstørrelse (standard 4028)"
+      }
+    },
+    "webSearch": {
+      "heading": "Administrer Web Søk",
+      "searchMode": {
+        "label": "Søkemodus"
+      },
+      "provider": {
+        "label": "Søkemotor",
+        "placeholder": "Velg en søkemotor"
+      },
+      "totalSearchResults": {
+        "label": "Antall søkeresultater",
+        "placeholder": "Skriv inn antall søkeresultater"
+      },
+      "visitSpecificWebsite": {
+        "label": "Besøk nettstedet nevnt i samtalen"
+      }
+    },
+    "system": {
+      "heading": "Systeminnstillinger",
+      "deleteChatHistory": {
+        "label": "Slett Chathistorikk",
+        "button": "Slett",
+        "confirm": "Er du sikker på at du vil slette chathistorikken din? Denne handlingen kan ikke angres."
+      },
+      "export": {
+        "label": "Eksporter chathistorikk, kunnskapsbase og prompts",
+        "button": "Eksporter Data",
+        "success": "Eksport vellykket"
+      },
+      "import": {
+        "label": "Importer chathistorikk, kunnskapsbase og prompts",
+        "button": "Importer Data",
+        "success": "Import vellykket",
+        "error": "Importfeil"
+      }
+    },
+    "tts": {
+      "heading": "Tekst-til-tale Innstillinger",
+      "ttsEnabled": {
+        "label": "Legg til Tekst-til-Tale"
+      },
+      "ttsProvider": {
+        "label": "Tekst-til-Tale Tilbyder",
+        "placeholder": "Velg en tilbyder"
+      },
+      "ttsVoice": {
+        "label": "Tekst-til-Tale Stemme",
+        "placeholder": "Velg en stemme"
+      },
+      "ssmlEnabled": {
+        "label": "Aktiver SSML (Speech Synthesis Markup Language)"
+      }
+    }
+  },
+  "manageModels": {
+    "title": "Administrer Modeller",
+    "addBtn": "Legg til ny Modell",
+    "columns": {
+      "name": "Navn",
+      "digest": "Digest",
+      "modifiedAt": "Endret den",
+      "size": "Størrelse",
+      "actions": "Handlinger"
+    },
+    "expandedColumns": {
+      "parentModel": "Overordnet modell",
+      "format": "Format",
+      "family": "Familie",
+      "parameterSize": "Parameterstørrelse",
+      "quantizationLevel": "Kvantifiseringsnivå"
+    },
+    "tooltip": {
+      "delete": "Slett Modell",
+      "repull": "Hent Modell På Nytt"
+    },
+    "confirm": {
+      "delete": "Er du sikker på at du vil slette denne modellen?",
+      "repull": "Er du sikker på at du vil hente denne modellen på nytt?"
+    },
+    "modal": {
+      "title": "Legg til Ny Modell",
+      "placeholder": "Skriv inn Modellnavn",
+      "pull": "Hent Modell"
+    },
+    "notification": {
+      "pullModel": "Henter Modell",
+      "pullModelDescription": "Henter {{modelName}} modell. For flere detaljer, sjekk utvidelsesikonet.",
+      "success": "Suksess",
+      "error": "Feil",
+      "successDescription": "Modellen ble hentet vellykket",
+      "successDeleteDescription": "Modellen ble slettet vellykket",
+      "someError": "Noe gikk galt. Vennligst prøv igjen senere"
+    }
+  },
+  "managePrompts": {
+    "title": "Administrer Prompts",
+    "addBtn": "Legg til Ny Prompt",
+    "option1": "Normal",
+    "option2": "RAG",
+    "questionPrompt": "Spørsmålsprompt",
+    "segmented": {
+      "custom": "Tilpassede Prompts",
+      "copilot": "Copilot Prompts"
+    },
+    "columns": {
+      "title": "Tittel",
+      "prompt": "Prompt",
+      "type": "Prompttype",
+      "actions": "Handlinger"
+    },
+    "systemPrompt": "Systemprompt",
+    "quickPrompt": "Hurtigprompt",
+    "tooltip": {
+      "delete": "Slett Prompt",
+      "edit": "Endre Prompt"
+    },
+    "confirm": {
+      "delete": "Er du sikker på at du vil slette denne prompten? Denne handlingen kan ikke angres."
+    },
+    "modal": {
+      "addTitle": "Legg til ny Prompt",
+      "editTitle": "Endre Prompt"
+    },
+    "form": {
+      "title": {
+        "label": "Tittel",
+        "placeholder": "Min Kule Prompt",
+        "required": "Vennligst skriv inn en tittel"
+      },
+      "prompt": {
+        "label": "Prompt",
+        "placeholder": "Skriv inn Prompt",
+        "required": "Vennligst skriv inn en prompt",
+        "help": "Du kan bruke {key} som variabel i din prompt.",
+        "missingTextPlaceholder": "Variabelen {text} mangler i prompten. Vennligst legg til dette."
+      },
+      "isSystem": {
+        "label": "Er Systemprompt"
+      },
+      "btnSave": {
+        "saving": "Legger til Prompt...",
+        "save": "Legg til Prompt"
+      },
+      "btnEdit": {
+        "saving": "Oppdaterer Prompt...",
+        "save": "Oppdater Prompt"
+      }
+    },
+    "notification": {
+      "addSuccess": "Prompt Lagt Til",
+      "addSuccessDesc": "Prompt ble lagt til vellykket",
+      "error": "Feil",
+      "someError": "Noe gikk galt. Vennligst prøv igjen senere",
+      "updatedSuccess": "Prompt Oppdatert",
+      "updatedSuccessDesc": "Prompt ble oppdatert vellykket",
+      "deletedSuccess": "Prompt Slettet",
+      "deletedSuccessDesc": "Prompt ble slettet vellykket"
+    }
+  },
+  "manageShare": {
+    "title": "Administrer Deling",
+    "heading": "Konfigurer Side deling URL",
+    "form": {
+      "url": {
+        "label": "Side Deling URL",
+        "placeholder": "Skriv inn side deling URL",
+        "required": "Vennligst skriv inn din Side deling URL!",
+        "help": "For personvern kan du selv hoste side delingen og angi URL-en her. <anchor>Lær Mer</anchor>."
+      }
+    },
+    "webshare": {
+      "heading": "Web Deling",
+      "columns": {
+        "title": "Tittel",
+        "url": "URL",
+        "actions": "Handlinger"
+      },
+      "tooltip": {
+        "delete": "Slett Deling"
+      },
+      "confirm": {
+        "delete": "Er du sikker på at du vil slette denne delingen? Dette kan ikke angres."
+      },
+      "label": "Administrer Side Deling",
+      "description": "Legg til eller deaktiver side delingsfunksjonen"
+    },
+    "notification": {
+      "pageShareSuccess": "Side Deling URL oppdatert vellykket",
+      "someError": "Noe gikk galt. Vennligst prøv igjen senere",
+      "webShareDeleteSuccess": "Webdeling ble slettet vellykket"
+    }
+  },
+  "ollamaSettings": {
+    "title": "Ollama Innstillinger",
+    "heading": "Konfigurer Ollama Plugin",
+    "enabled": {
+      "label": "Aktiver Ollama Plugin"
+    },
+    "provider": {
+      "label": "Ollama Tilbyder",
+      "placeholder": "Velg en Ollama tilbyder"
+    },
+    "apiKey": {
+      "label": "Ollama API Nøkkel",
+      "placeholder": "Skriv inn Ollama API Nøkkel",
+      "required": "API Nøkkel er påkrevd"
+    },
+    "saveBtn": {
+      "save": "Lagre"
+    },
+    "notification": {
+      "saveSuccess": "Ollama Plugin lagret vellykket",
+      "someError": "Noe gikk galt. Vennligst prøv igjen senere"
+    }
+  }
+}

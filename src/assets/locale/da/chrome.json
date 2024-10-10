@@ -4,7 +4,7 @@
         "label": "Tænd eller sluk Chrome AI Support på Page Assist"
     },
     "error": {
-        "browser_not_supported": "Denne version af Chrome er ikke undersøttet af Gemini Nano modelen. Opdater venligst til version 127 eller nyere",
+        "browser_not_supported": "Denne version af Chrome er ikke understøttet af Gemini Nano modelen. Opdater venligst til version 127 eller nyere",
         "ai_not_supported": "Indstillingen chrome://flags/#prompt-api-for-gemini-nano er ikke tændt. Venligst tænd for indstillingen.",
         "ai_not_ready": "Gemini Nano er ikke tilgængelig; du er nødt til at double-cheke Chrome indstillingerne.",
         "internal_error": "Der opstod en intern fejl. Prøv venligst igen senere."
