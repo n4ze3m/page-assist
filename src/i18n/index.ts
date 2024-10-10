@@ -15,6 +15,8 @@ import { da } from "./lang/da";
 import { no } from "./lang/no";
 import LanguageDetector from 'i18next-browser-languagedetector';
 
+const supportedLanguages = ['en', 'zh', 'ja', 'fa', 'de', 'da', 'no'];
+
 i18n
     .use(LanguageDetector)
     .use(initReactI18next)
@@ -35,10 +37,16 @@ i18n
             fa: fa,
             "fa-IR": fa,
             de: de,
-            da: da
+            da: da,
+            no: no
         },
         fallbackLng: "en",
+        detection: {
+            order: ['localStorage', 'navigator'],
+            caches: ['localStorage']
+        },
+        supportedLngs: supportedLanguages,
         lng: localStorage.getItem("i18nextLng") || "en",
-    })
+    });
 
 export default i18n;
