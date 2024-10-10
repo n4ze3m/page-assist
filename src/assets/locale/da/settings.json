@@ -22,7 +22,7 @@
         "label": "Genoptag den sidste chat, når du åbner SidePanel (copilot)"
       },
       "hideCurrentChatModelSettings": {
-        "label": "Skjul nuværende chatmodelindstillinger"
+        "label": "Skjul nuværende chat model indstillinger"
       },
       "restoreLastChatModel": {
         "label": "Gendan sidste brugte chatmodel fremtidigt"
