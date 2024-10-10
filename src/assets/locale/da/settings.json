@@ -37,7 +37,7 @@
     "sidepanelRag": {
       "heading": "Copilot Chat med Website Indstillinger",
       "ragEnabled": {
-        "label": "Chat med websitet ved brug af vektorindlejringer (vector embeddings)"
+        "label": "Chat med websitet ved brug af vector embeddings"
       },
       "maxWebsiteContext": {
         "label": "Normal webstedsindhold størrelse",
