@@ -36,9 +36,9 @@ i18n
             "ja-JP": ja,
             fa: fa,
             "fa-IR": fa,
-            de: de,
             da: da,
-            no: no
+            no: no,
+            de: de
         },
         fallbackLng: "en",
         detection: {
