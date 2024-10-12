@@ -133,6 +133,28 @@ export const getAllModels = async ({
   }
 }
 
+export const getEmbeddingModels = async ({ returnEmpty }: {
+  returnEmpty?: boolean
+}) => {
+  try {
+    const ollamaModels = await getAllModels({ returnEmpty })
+    const customModels = await ollamaFormatAllCustomModels()
+
+    return [
+      ...ollamaModels.map((model) => {
+        return {
+          ...model,
+          provider: "ollama"
+        }
+      }),
+      ...customModels
+    ]
+  } catch (e) {
+    console.error(e)
+    return []
+  }
+}
+
 export const deleteModel = async (model: string) => {
   const baseUrl = await getOllamaURL()
   const response = await fetcher(`${cleanUrl(baseUrl)}/api/delete`, {
@@ -341,7 +363,7 @@ export const saveForRag = async (
   await setDefaultEmbeddingChunkSize(chunkSize)
   await setDefaultEmbeddingChunkOverlap(overlap)
   await setTotalFilePerKB(totalFilePerKB)
-  if(noOfRetrievedDocs) {
+  if (noOfRetrievedDocs) {
     await setNoOfRetrievedDocs(noOfRetrievedDocs)
   }
 }

@@ -26,7 +26,6 @@ import { notification } from "antd"
 import { useTranslation } from "react-i18next"
 import { usePageAssist } from "@/context"
 import { formatDocs } from "@/chain/chat-with-x"
-import { OllamaEmbeddingsPageAssist } from "@/models/OllamaEmbedding"
 import { useStorage } from "@plasmohq/storage/hook"
 import { useStoreChatModelSettings } from "@/store/model"
 import { getAllDefaultModelSettings } from "@/services/model-settings"
@@ -34,6 +33,7 @@ import { getSystemPromptForWeb } from "@/web/web"
 import { pageAssistModel } from "@/models"
 import { getPrompt } from "@/services/application"
 import { humanMessageFormatter } from "@/utils/human-message"
+import { pageAssistEmbeddingModel } from "@/models/embedding"
 
 export const useMessage = () => {
   const {
@@ -202,7 +202,7 @@ export const useMessage = () => {
     const ollamaUrl = await getOllamaURL()
     const embeddingModle = await defaultEmbeddingModelForRag()
 
-    const ollamaEmbedding = new OllamaEmbeddingsPageAssist({
+    const ollamaEmbedding = await pageAssistEmbeddingModel({
       model: embeddingModle || selectedModel,
       baseUrl: cleanUrl(ollamaUrl),
       signal: embeddingSignal,

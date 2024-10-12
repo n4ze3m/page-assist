@@ -24,7 +24,6 @@ import { generateHistory } from "@/utils/generate-history"
 import { useTranslation } from "react-i18next"
 import { saveMessageOnError, saveMessageOnSuccess } from "./chat-helper"
 import { usePageAssist } from "@/context"
-import { OllamaEmbeddings } from "@langchain/community/embeddings/ollama"
 import { PageAssistVectorStore } from "@/libs/PageAssistVectorStore"
 import { formatDocs } from "@/chain/chat-with-x"
 import { useWebUI } from "@/store/webui"
@@ -34,6 +33,7 @@ import { getAllDefaultModelSettings } from "@/services/model-settings"
 import { pageAssistModel } from "@/models"
 import { getNoOfRetrievedDocs } from "@/services/app"
 import { humanMessageFormatter } from "@/utils/human-message"
+import { pageAssistEmbeddingModel } from "@/models/embedding"
 
 export const useMessageOption = () => {
   const {
@@ -628,7 +628,7 @@ export const useMessageOption = () => {
 
     const embeddingModle = await defaultEmbeddingModelForRag()
     const ollamaUrl = await getOllamaURL()
-    const ollamaEmbedding = new OllamaEmbeddings({
+    const ollamaEmbedding = await pageAssistEmbeddingModel({
       model: embeddingModle || selectedModel,
       baseUrl: cleanUrl(ollamaUrl),
       keepAlive:

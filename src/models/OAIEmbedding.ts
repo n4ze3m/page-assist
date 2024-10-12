@@ -44,21 +44,6 @@ export interface OpenAIEmbeddingsParams extends EmbeddingsParams {
     signal?: AbortSignal
 }
 
-/**
- * Class for generating embeddings using the OpenAI API. Extends the
- * Embeddings class and implements OpenAIEmbeddingsParams and
- * AzureOpenAIInput.
- * @example
- * ```typescript
- * // Embed a query using OpenAIEmbeddings to generate embeddings for a given text
- * const model = new OpenAIEmbeddings();
- * const res = await model.embedQuery(
- *   "What would be a good company name for a company that makes colorful socks?",
- * );
- * console.log({ res });
- *
- * ```
- */
 export class OAIEmbedding
     extends Embeddings
     implements OpenAIEmbeddingsParams {
@@ -96,6 +81,7 @@ export class OAIEmbedding
     protected client: OpenAIClient
 
     protected clientConfig: ClientOptions
+    
     signal?: AbortSignal
 
     constructor(

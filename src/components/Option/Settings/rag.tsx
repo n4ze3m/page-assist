@@ -5,13 +5,14 @@ import {
   defaultEmbeddingChunkOverlap,
   defaultEmbeddingChunkSize,
   defaultEmbeddingModelForRag,
-  getAllModels,
+  getEmbeddingModels,
   saveForRag
 } from "~/services/ollama"
 import { SettingPrompt } from "./prompt"
 import { useTranslation } from "react-i18next"
 import { getNoOfRetrievedDocs, getTotalFilePerKB } from "@/services/app"
 import { SidepanelRag } from "./sidepanel-rag"
+import { ProviderIcons } from "@/components/Common/ProviderIcon"
 
 export const RagSettings = () => {
   const { t } = useTranslation("settings")
@@ -29,7 +30,7 @@ export const RagSettings = () => {
         totalFilePerKB,
         noOfRetrievedDocs
       ] = await Promise.all([
-        getAllModels({ returnEmpty: true }),
+        getEmbeddingModels({ returnEmpty: true }),
         defaultEmbeddingChunkOverlap(),
         defaultEmbeddingChunkSize(),
         defaultEmbeddingModelForRag(),
@@ -113,18 +114,27 @@ export const RagSettings = () => {
                 ]}>
                 <Select
                   size="large"
-                  filterOption={(input, option) =>
-                    option!.label.toLowerCase().indexOf(input.toLowerCase()) >=
-                      0 ||
-                    option!.value.toLowerCase().indexOf(input.toLowerCase()) >=
-                      0
-                  }
                   showSearch
                   placeholder={t("rag.ragSettings.model.placeholder")}
                   style={{ width: "100%" }}
                   className="mt-4"
+                  filterOption={(input, option) =>
+                    option.label.key
+                      .toLowerCase()
+                      .indexOf(input.toLowerCase()) >= 0
+                  }
                   options={ollamaInfo.models?.map((model) => ({
-                    label: model.name,
+                    label: (
+                      <span
+                        key={model.model}
+                        className="flex flex-row gap-3 items-center truncate">
+                        <ProviderIcons
+                          provider={model?.provider}
+                          className="w-5 h-5"
+                        />
+                        <span className="truncate">{model.name}</span>
+                      </span>
+                    ),
                     value: model.model
                   }))}
                 />

@@ -1,6 +1,7 @@
 import { cleanUrl } from "@/libs/clean-url"
 import { urlRewriteRuntime } from "@/libs/runtime"
 import { PageAssistHtmlLoader } from "@/loader/html"
+import { pageAssistEmbeddingModel } from "@/models/embedding"
 import {
   defaultEmbeddingChunkOverlap,
   defaultEmbeddingChunkSize,
@@ -11,7 +12,6 @@ import {
   getIsSimpleInternetSearch,
   totalSearchResults
 } from "@/services/search"
-import { OllamaEmbeddings } from "@langchain/community/embeddings/ollama"
 import type { Document } from "@langchain/core/documents"
 import * as cheerio from "cheerio"
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter"
@@ -99,7 +99,7 @@ export const webSogouSearch = async (query: string) => {
   const ollamaUrl = await getOllamaURL()
 
   const embeddingModle = await defaultEmbeddingModelForRag()
-  const ollamaEmbedding = new OllamaEmbeddings({
+  const ollamaEmbedding = await pageAssistEmbeddingModel({
     model: embeddingModle || "",
     baseUrl: cleanUrl(ollamaUrl)
   })

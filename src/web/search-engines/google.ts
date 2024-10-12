@@ -1,8 +1,8 @@
+import { pageAssistEmbeddingModel } from "@/models/embedding"
 import {
   getIsSimpleInternetSearch,
   totalSearchResults
 } from "@/services/search"
-import { OllamaEmbeddings } from "@langchain/community/embeddings/ollama"
 import type { Document } from "@langchain/core/documents"
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter"
 import { MemoryVectorStore } from "langchain/vectorstores/memory"
@@ -84,7 +84,7 @@ export const webGoogleSearch = async (query: string) => {
   const ollamaUrl = await getOllamaURL()
 
   const embeddingModle = await defaultEmbeddingModelForRag()
-  const ollamaEmbedding = new OllamaEmbeddings({
+  const ollamaEmbedding = await pageAssistEmbeddingModel({
     model: embeddingModle || "",
     baseUrl: cleanUrl(ollamaUrl)
   })

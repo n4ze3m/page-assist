@@ -1,7 +1,7 @@
 import { PageAssistHtmlLoader } from "~/loader/html"
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter"
 import { MemoryVectorStore } from "langchain/vectorstores/memory"
-import { OllamaEmbeddings } from "@langchain/community/embeddings/ollama"
+
 import {
   defaultEmbeddingChunkOverlap,
   defaultEmbeddingChunkSize
