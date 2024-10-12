@@ -58,7 +58,7 @@ export const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <>
       <div className="mx-auto max-w-7xl lg:flex lg:gap-x-16 lg:px-8">
-        <aside className="flex lg:rounded-md bg-white lg:p-4 lg:mt-20 overflow-x-auto lg:border-0 border-b  py-4 lg:block lg:w-72 lg:flex-none  dark:bg-[#171717] dark:border-gray-600">
+        <aside className="flex lg:rounded-md bg-white lg:p-4 lg:mt-20 overflow-x-auto lg:border-0 border-b  py-4 lg:block lg:w-80 lg:flex-none  dark:bg-[#171717] dark:border-gray-600">
           <nav className="flex-none  px-4 sm:px-6 lg:px-0">
             <ul
               role="list"
