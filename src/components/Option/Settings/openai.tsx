@@ -35,8 +35,11 @@ export const OpenAIApp = () => {
       })
       setOpen(false)
       message.success(t("addSuccess"))
-      setOpenaiId(data)
-      setOpenModelModal(true)
+      if (provider !== "lmstudio") {
+        setOpenaiId(data)
+        setOpenModelModal(true)
+      }
+      setProvider("custom")
     }
   })
 
@@ -75,8 +78,6 @@ export const OpenAIApp = () => {
         provider
       })
     }
-
-    setProvider("custom")
   }
 
   const handleEdit = (record: any) => {
