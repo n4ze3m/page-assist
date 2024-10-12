@@ -6,6 +6,7 @@ type OpenAIModelConfig = {
     baseUrl: string
     apiKey?: string
     createdAt: number
+    provider?: string
     db_type: string
 }
 export const generateID = () => {

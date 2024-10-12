@@ -532,24 +532,14 @@ export const useMessage = () => {
       if (prompt && !selectedPrompt) {
         applicationChatHistory.unshift(
           new SystemMessage({
-            content: [
-              {
-                text: prompt,
-                type: "text"
-              }
-            ]
+            content: prompt
           })
         )
       }
       if (selectedPrompt) {
         applicationChatHistory.unshift(
           new SystemMessage({
-            content: [
-              {
-                text: selectedPrompt.content,
-                type: "text"
-              }
-            ]
+            content:  selectedPrompt.content
           })
         )
       }
@@ -794,12 +784,7 @@ export const useMessage = () => {
       if (prompt) {
         applicationChatHistory.unshift(
           new SystemMessage({
-            content: [
-              {
-                text: prompt,
-                type: "text"
-              }
-            ]
+            content: prompt
           })
         )
       }

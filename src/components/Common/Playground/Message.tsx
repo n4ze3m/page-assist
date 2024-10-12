@@ -15,6 +15,7 @@ import { useTranslation } from "react-i18next"
 import { MessageSource } from "./MessageSource"
 import { useTTS } from "@/hooks/useTTS"
 import { tagColors } from "@/utils/color"
+import { removeModelSuffix } from "@/db/models"
 
 type Props = {
   message: string
@@ -69,7 +70,9 @@ export const PlaygroundMessage = (props: Props) => {
               {props.isBot
                 ? props.name === "chrome::gemini-nano::page-assist"
                   ? "Gemini Nano"
-                  : props.name
+                  : removeModelSuffix(
+                      props.name?.replaceAll(/accounts\/[^\/]+\/models\//g, "")
+                    )
                 : "You"}
             </span>
 
@@ -135,7 +138,7 @@ export const PlaygroundMessage = (props: Props) => {
                     key: "1",
                     label: (
                       <div className="italic text-gray-500 dark:text-gray-400">
-                        {t('citations')}
+                        {t("citations")}
                       </div>
                     ),
                     children: (

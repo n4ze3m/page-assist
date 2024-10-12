@@ -1,4 +1,4 @@
-import { Form, Input, Modal, Table, message, Tooltip } from "antd"
+import { Form, Input, Modal, Table, message, Tooltip, Select } from "antd"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
 import {
@@ -10,6 +10,7 @@ import {
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Pencil, Trash2, RotateCwIcon } from "lucide-react"
 import { OpenAIFetchModel } from "./openai-fetch-model"
+import { OAI_API_PROVIDERS } from "@/utils/oai-api-providers"
 
 export const OpenAIApp = () => {
   const { t } = useTranslation("openai")
@@ -182,11 +183,25 @@ export const OpenAIApp = () => {
             form.resetFields()
           }}
           footer={null}>
+          {!editingConfig && (
+            <Select
+              defaultValue="custom"
+              onSelect={(e) => {
+                const value = OAI_API_PROVIDERS.find((item) => item.value === e)
+                form.setFieldsValue({
+                  baseUrl: value?.baseUrl,
+                  name: value?.label
+                })
+              }}
+              className="w-full !mb-4"
+              options={OAI_API_PROVIDERS}
+            />
+          )}
           <Form
             form={form}
             layout="vertical"
             onFinish={handleSubmit}
-            initialValues={editingConfig}>
+            initialValues={{ ...editingConfig }}>
             <Form.Item
               name="name"
               label={t("modal.name.label")}

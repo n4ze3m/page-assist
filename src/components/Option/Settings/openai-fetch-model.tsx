@@ -79,11 +79,15 @@ export const OpenAIFetchModel = ({ openaiId, setOpenModelModal }: Props) => {
   if (status === "pending") {
     return <Spin />
   }
-
   if (status === "error" || !data || data.length === 0) {
-    return <div>{t("noModelFound")}</div>
+    return (
+      <div className="flex items-center justify-center h-40">
+        <p className="text-md text-center text-gray-600 dark:text-gray-300">
+          {t("noModelFound")}
+        </p>
+      </div>
+    )
   }
-
   return (
     <div className="space-y-4">
       <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -116,7 +120,12 @@ export const OpenAIFetchModel = ({ openaiId, setOpenModelModal }: Props) => {
               key={model.id}
               checked={selectedModels.includes(model.id)}
               onChange={(e) => handleModelSelect(model.id, e.target.checked)}>
-              {model?.name || model.id}
+              <div className="max-w-[200px] truncate">
+                {`${model?.name || model.id}`.replaceAll(
+                  /accounts\/[^\/]+\/models\//g,
+                  ""
+                )}
+              </div>
             </Checkbox>
           ))}
         </div>

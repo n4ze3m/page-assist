@@ -1,4 +1,4 @@
-import { ChromeIcon, CloudCog } from "lucide-react"
+import { ChromeIcon, CpuIcon } from "lucide-react"
 import { OllamaIcon } from "../Icons/Ollama"
 
 export const ProviderIcons = ({
@@ -12,7 +12,7 @@ export const ProviderIcons = ({
     case "chrome":
       return <ChromeIcon className={className} />
     case "custom":
-      return <CloudCog className={className} />
+      return <CpuIcon className={className} />
     default:
       return <OllamaIcon className={className} />
   }

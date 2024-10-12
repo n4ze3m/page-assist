@@ -15,8 +15,8 @@ export const generateID = () => {
   })
 }
 
-export const removeModelPrefix = (id: string) => {
-  return id.replace(/^model-/, "")
+export const removeModelSuffix = (id: string) => {
+  return id.replace(/_model-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{3,4}-[a-f0-9]{4}/, "")
 }
 
 export const isCustomModel = (model: string) => {
@@ -114,7 +114,8 @@ export const createManyModels = async (
       ...item,
       lookup: `${item.model_id}_${item.provider_id}`,
       id: `${item.model_id}_${generateID()}`,
-      db_type: "openai_model"
+      db_type: "openai_model",
+      name: item.name.replaceAll(/accounts\/[^\/]+\/models\//g, "")
     }
   })
 

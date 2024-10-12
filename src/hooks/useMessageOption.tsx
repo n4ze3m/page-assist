@@ -238,12 +238,7 @@ export const useMessageOption = () => {
       if (prompt) {
         applicationChatHistory.unshift(
           new SystemMessage({
-            content: [
-              {
-                text: prompt,
-                type: "text"
-              }
-            ]
+            content: prompt
           })
         )
       }
@@ -445,12 +440,7 @@ export const useMessageOption = () => {
       if (prompt && !selectedPrompt) {
         applicationChatHistory.unshift(
           new SystemMessage({
-            content: [
-              {
-                text: prompt,
-                type: "text"
-              }
-            ]
+            content: prompt
           })
         )
       }
@@ -462,12 +452,7 @@ export const useMessageOption = () => {
       if (!isTempSystemprompt && selectedPrompt) {
         applicationChatHistory.unshift(
           new SystemMessage({
-            content: [
-              {
-                text: selectedPrompt.content,
-                type: "text"
-              }
-            ]
+            content: selectedPrompt.content
           })
         )
       }
@@ -475,12 +460,7 @@ export const useMessageOption = () => {
       if (isTempSystemprompt) {
         applicationChatHistory.unshift(
           new SystemMessage({
-            content: [
-              {
-                text: currentChatModelSettings.systemPrompt,
-                type: "text"
-              }
-            ]
+            content: currentChatModelSettings.systemPrompt
           })
         )
       }

@@ -7,7 +7,7 @@ import {
   InfoIcon,
   CombineIcon,
   ChromeIcon,
-  CloudCogIcon
+  CpuIcon
 } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { Link, useLocation } from "react-router-dom"
@@ -93,7 +93,7 @@ export const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
               <LinkComponent
                 href="/settings/openai"
                 name={t("openai:settings")}
-                icon={CloudCogIcon}
+                icon={CpuIcon}
                 current={location.pathname}
                 beta
               />
