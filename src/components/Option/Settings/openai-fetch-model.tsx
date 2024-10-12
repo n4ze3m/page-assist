@@ -77,7 +77,11 @@ export const OpenAIFetchModel = ({ openaiId, setOpenModelModal }: Props) => {
   }
 
   if (status === "pending") {
-    return <Spin />
+    return (
+      <div className="flex items-center justify-center h-40">
+        <Spin size="large" />
+      </div>
+    )
   }
   if (status === "error" || !data || data.length === 0) {
     return (
