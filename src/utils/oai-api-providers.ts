@@ -25,6 +25,11 @@ export const OAI_API_PROVIDERS = [
         baseUrl: "https://api.together.xyz/v1"
     },
     {
+        label: "OpenRouter",
+        value: "openrouter",
+        baseUrl: "https://openrouter.ai/api/v1"
+    },
+    {
         label: "Custsom",
         value: "custom",
         baseUrl: ""

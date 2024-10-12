@@ -1,4 +1,5 @@
 import { cleanUrl } from "@/libs/clean-url"
+import { deleteAllModelsByProviderId } from "./models"
 
 type OpenAIModelConfig = {
     id: string
@@ -93,7 +94,7 @@ export class OpenAIModelDb {
 }
 
 
-export const addOpenAICofig = async ({ name, baseUrl, apiKey }: { name: string, baseUrl: string, apiKey: string }) => {
+export const addOpenAICofig = async ({ name, baseUrl, apiKey, provider }: { name: string, baseUrl: string, apiKey: string, provider?: string }) => {
     const openaiDb = new OpenAIModelDb()
     const id = generateID()
     const config: OpenAIModelConfig = {
@@ -102,7 +103,8 @@ export const addOpenAICofig = async ({ name, baseUrl, apiKey }: { name: string, 
         baseUrl: cleanUrl(baseUrl),
         apiKey,
         createdAt: Date.now(),
-        db_type: "openai"
+        db_type: "openai",
+        provider
     }
     await openaiDb.create(config)
     return id
@@ -117,13 +119,15 @@ export const getAllOpenAIConfig = async () => {
 
 export const updateOpenAIConfig = async ({ id, name, baseUrl, apiKey }: { id: string, name: string, baseUrl: string, apiKey: string }) => {
     const openaiDb = new OpenAIModelDb()
+    const oldData = await openaiDb.getById(id)
     const config: OpenAIModelConfig = {
+        ...oldData,
         id,
         name,
         baseUrl: cleanUrl(baseUrl),
         apiKey,
         createdAt: Date.now(),
-        db_type: "openai"
+        db_type: "openai",
     }
 
     await openaiDb.update(config)
@@ -135,6 +139,7 @@ export const updateOpenAIConfig = async ({ id, name, baseUrl, apiKey }: { id: st
 export const deleteOpenAIConfig = async (id: string) => {
     const openaiDb = new OpenAIModelDb()
     await openaiDb.delete(id)
+    await deleteAllModelsByProviderId(id)
 }
 
 

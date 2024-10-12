@@ -8,7 +8,7 @@ import {
   updateOpenAIConfig
 } from "@/db/openai"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { Pencil, Trash2, RotateCwIcon } from "lucide-react"
+import { Pencil, Trash2, RotateCwIcon, DownloadIcon } from "lucide-react"
 import { OpenAIFetchModel } from "./openai-fetch-model"
 import { OAI_API_PROVIDERS } from "@/utils/oai-api-providers"
 
@@ -20,6 +20,7 @@ export const OpenAIApp = () => {
   const [form] = Form.useForm()
   const [openaiId, setOpenaiId] = useState<string | null>(null)
   const [openModelModal, setOpenModelModal] = useState(false)
+  const [provider, setProvider] = useState("custom")
 
   const { data: configs, isLoading } = useQuery({
     queryKey: ["openAIConfigs"],
@@ -69,8 +70,13 @@ export const OpenAIApp = () => {
     if (editingConfig) {
       updateMutation.mutate({ id: editingConfig.id, ...values })
     } else {
-      addMutation.mutate(values)
+      addMutation.mutate({
+        ...values,
+        provider
+      })
     }
+
+    setProvider("custom")
   }
 
   const handleEdit = (record: any) => {
@@ -144,7 +150,7 @@ export const OpenAIApp = () => {
                         setOpenaiId(record.id)
                       }}
                       disabled={!record.id}>
-                      <RotateCwIcon className="size-4" />
+                      <DownloadIcon className="size-4" />
                     </button>
                   </Tooltip>
                   <Tooltip title={t("delete")}>
@@ -180,18 +186,20 @@ export const OpenAIApp = () => {
           onCancel={() => {
             setOpen(false)
             setEditingConfig(null)
+            setProvider("custom")
             form.resetFields()
           }}
           footer={null}>
           {!editingConfig && (
             <Select
-              defaultValue="custom"
+              value={provider}
               onSelect={(e) => {
                 const value = OAI_API_PROVIDERS.find((item) => item.value === e)
                 form.setFieldsValue({
                   baseUrl: value?.baseUrl,
                   name: value?.label
                 })
+                setProvider(e)
               }}
               className="w-full !mb-4"
               options={OAI_API_PROVIDERS}

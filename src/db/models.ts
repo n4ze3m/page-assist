@@ -1,4 +1,7 @@
-import { getOpenAIConfigById as providerInfo } from "./openai"
+import {
+  getAllOpenAIConfig,
+  getOpenAIConfigById as providerInfo
+} from "./openai"
 
 type Model = {
   id: string
@@ -16,11 +19,15 @@ export const generateID = () => {
 }
 
 export const removeModelSuffix = (id: string) => {
-  return id.replace(/_model-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{3,4}-[a-f0-9]{4}/, "")
+  return id.replace(
+    /_model-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{3,4}-[a-f0-9]{4}/,
+    ""
+  )
 }
 
 export const isCustomModel = (model: string) => {
-  const customModelRegex = /_model-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{3,4}-[a-f0-9]{4}/
+  const customModelRegex =
+    /_model-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{3,4}-[a-f0-9]{4}/
   return customModelRegex.test(model)
 }
 export class ModelDb {
@@ -174,6 +181,17 @@ export const deleteModel = async (id: string) => {
   await db.delete(id)
 }
 
+export const deleteAllModelsByProviderId = async (provider_id: string) => {
+  const db = new ModelDb()
+  const models = await db.getAll()
+  const modelsToDelete = models.filter(
+    (model) => model.provider_id === provider_id
+  )
+  for (const model of modelsToDelete) {
+    await db.delete(model.id)
+  }
+}
+
 export const isLookupExist = async (lookup: string) => {
   const db = new ModelDb()
   const models = await db.getAll()
@@ -181,17 +199,19 @@ export const isLookupExist = async (lookup: string) => {
   return model ? true : false
 }
 
-
 export const ollamaFormatAllCustomModels = async () => {
-
   const allModles = await getAllCustomModels()
+
+  const allProviders = await getAllOpenAIConfig()
 
   const ollamaModels = allModles.map((model) => {
     return {
       name: model.name,
       model: model.id,
       modified_at: "",
-      provider: "custom",
+      provider:
+        allProviders.find((provider) => provider.id === model.provider_id)
+          ?.provider || "custom",
       size: 0,
       digest: "",
       details: {
