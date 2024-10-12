@@ -14,9 +14,15 @@ export const getAllOpenAIModels = async (baseUrl: string, apiKey?: string) => {
       }
       : {}
 
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), 10000)
+
     const res = await fetch(url, {
-      headers
+      headers,
+      signal: controller.signal
     })
+
+    clearTimeout(timeoutId)
 
     if (!res.ok) {
       return []
@@ -27,14 +33,18 @@ export const getAllOpenAIModels = async (baseUrl: string, apiKey?: string) => {
       return data.map(model => ({
         id: model.id,
         name: model.display_name,
-      }))
+      })) as Model[]
     }
 
     const data = (await res.json()) as { data: Model[] }
 
     return data.data
   } catch (e) {
-    console.log(e)
+    if (e instanceof DOMException && e.name === 'AbortError') {
+      console.log('Request timed out')
+    } else {
+      console.log(e)
+    }
     return []
   }
 }

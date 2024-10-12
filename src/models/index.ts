@@ -40,7 +40,7 @@ export const pageAssistModel = async ({
   if (isCustom) {
     const modelInfo = await getModelInfo(model)
     const providerInfo = await getOpenAIConfigById(modelInfo.provider_id)
-
+    console.log(modelInfo, providerInfo)
     return new ChatOpenAI({
       modelName: modelInfo.model_id,
       openAIApiKey: providerInfo.apiKey || "temp",
