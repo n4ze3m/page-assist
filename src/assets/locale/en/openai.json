@@ -1,6 +1,6 @@
 {
-    "settings": "OpenAI API Settings",
-    "heading": "OpenAI API Settings",
+    "settings": "OpenAI Compatible API",
+    "heading": "OpenAI compatible API",
     "subheading": "Manage and configure your OpenAI API Compatible providers here.",
     "addBtn": "Add Provider",
     "table": {
@@ -33,9 +33,10 @@
             "title": "Model List",
             "subheading": "Please select the models you want to use with this provider.",
             "success": "Successfully added new models."
-        }
+        },
+        "tipLMStudio": "Page Assist will automatically fetch the models you loaded on LM Studio. You don't need to add them manually."
     },
-    "addSuccess":  "Provider added successfully.",
+    "addSuccess": "Provider added successfully.",
     "deleteSuccess": "Provider deleted successfully.",
     "updateSuccess": "Provider updated successfully.",
     "delete": "Delete",

@@ -1,3 +1,9 @@
+/**
+ * The `OpenAIApp` component is the main entry point for the OpenAI configuration management functionality in the application.
+ * It provides a user interface for adding, editing, deleting, and refetching OpenAI configurations.
+ * The component uses React Query to manage the state and perform CRUD operations on the OpenAI configurations.
+ * It also includes a modal for fetching the available models from the selected OpenAI configuration.
+ */
 import { Form, Input, Modal, Table, message, Tooltip, Select } from "antd"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
@@ -8,7 +14,7 @@ import {
   updateOpenAIConfig
 } from "@/db/openai"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { Pencil, Trash2, RotateCwIcon, DownloadIcon } from "lucide-react"
+import { Pencil, Trash2, RotateCwIcon, DownloadIcon, AlertTriangle } from "lucide-react"
 import { OpenAIFetchModel } from "./openai-fetch-model"
 import { OAI_API_PROVIDERS } from "@/utils/oai-api-providers"
 
@@ -245,7 +251,11 @@ export const OpenAIApp = () => {
                 placeholder={t("modal.apiKey.placeholder")}
               />
             </Form.Item>
-
+              {
+                provider === "lmstudio" && <div className="text-xs text-gray-600 dark:text-gray-400 mb-4">
+                  {t("modal.tipLMStudio")}
+                </div>
+              }
             <button
               type="submit"
               className="inline-flex justify-center w-full text-center mt-4 items-center rounded-md border border-transparent bg-black px-2 py-2 text-sm font-medium leading-4 text-white shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-white dark:text-gray-800 dark:hover:bg-gray-100 dark:focus:ring-gray-500 dark:focus:ring-offset-gray-100 disabled:opacity-50">
