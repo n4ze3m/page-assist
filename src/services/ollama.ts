@@ -4,6 +4,7 @@ import { urlRewriteRuntime } from "../libs/runtime"
 import { getChromeAIModel } from "./chrome"
 import { setNoOfRetrievedDocs, setTotalFilePerKB } from "./app"
 import fetcher from "@/libs/fetcher"
+import { ollamaFormatAllCustomModels } from "@/db/models"
 
 
 const storage = new Storage()
@@ -132,6 +133,28 @@ export const getAllModels = async ({
   }
 }
 
+export const getEmbeddingModels = async ({ returnEmpty }: {
+  returnEmpty?: boolean
+}) => {
+  try {
+    const ollamaModels = await getAllModels({ returnEmpty })
+    const customModels = await ollamaFormatAllCustomModels("embedding")
+
+    return [
+      ...ollamaModels.map((model) => {
+        return {
+          ...model,
+          provider: "ollama"
+        }
+      }),
+      ...customModels
+    ]
+  } catch (e) {
+    console.error(e)
+    return []
+  }
+}
+
 export const deleteModel = async (model: string) => {
   const baseUrl = await getOllamaURL()
   const response = await fetcher(`${cleanUrl(baseUrl)}/api/delete`, {
@@ -193,9 +216,13 @@ export const fetchChatModels = async ({
         }
       })
     const chromeModel = await getChromeAIModel()
+
+    const customModels = await ollamaFormatAllCustomModels("chat")
+
     return [
       ...chatModels,
-      ...chromeModel
+      ...chromeModel,
+      ...customModels
     ]
   } catch (e) {
     console.error(e)
@@ -207,10 +234,11 @@ export const fetchChatModels = async ({
       }
     })
     const chromeModel = await getChromeAIModel()
-
+    const customModels = await ollamaFormatAllCustomModels("chat")
     return [
       ...models,
-      ...chromeModel
+      ...chromeModel,
+      ...customModels
     ]
   }
 }
@@ -335,7 +363,7 @@ export const saveForRag = async (
   await setDefaultEmbeddingChunkSize(chunkSize)
   await setDefaultEmbeddingChunkOverlap(overlap)
   await setTotalFilePerKB(totalFilePerKB)
-  if(noOfRetrievedDocs) {
+  if (noOfRetrievedDocs) {
     await setNoOfRetrievedDocs(noOfRetrievedDocs)
   }
 }

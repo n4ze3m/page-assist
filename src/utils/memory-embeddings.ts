@@ -1,7 +1,7 @@
 import { PageAssistHtmlLoader } from "~/loader/html"
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter"
 import { MemoryVectorStore } from "langchain/vectorstores/memory"
-import { OllamaEmbeddings } from "@langchain/community/embeddings/ollama"
+
 import {
   defaultEmbeddingChunkOverlap,
   defaultEmbeddingChunkSize
@@ -47,12 +47,11 @@ export const memoryEmbedding = async ({
   type: string
   pdf: { content: string; page: number }[]
   keepTrackOfEmbedding: Record<string, MemoryVectorStore>
-  ollamaEmbedding: OllamaEmbeddings
+  ollamaEmbedding: any
   setIsEmbedding: (value: boolean) => void
   setKeepTrackOfEmbedding: (value: Record<string, MemoryVectorStore>) => void
 }) => {
   setIsEmbedding(true)
-
   const loader = getLoader({ html, pdf, type, url })
   const docs = await loader.load()
   const chunkSize = await defaultEmbeddingChunkSize()

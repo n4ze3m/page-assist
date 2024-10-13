@@ -49,13 +49,13 @@ export const EditMessageForm = (props: Props) => {
       <div className="flex justify-center space-x-2 mt-2">
         <button
           aria-label={t("save")}
-          className="bg-black px-2.5 py-2 rounded-md text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-gray-500 hover:bg-gray-900">
+          className="bg-black px-2.5 py-2 rounded-lg text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-gray-500 hover:bg-gray-900">
           {props.isBot ? t("save") : t("saveAndSubmit")}
         </button>
         <button
           onClick={props.onClose}
           aria-label={t("cancel")}
-          className="border dark:border-gray-600 px-2.5 py-2 rounded-md text-gray-700 dark:text-gray-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-gray-500 hover:bg-gray-100 dark:hover:bg-gray-900">
+          className="border dark:border-gray-600 px-2.5 py-2 rounded-lg text-gray-700 dark:text-gray-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-gray-500 hover:bg-gray-100 dark:hover:bg-gray-900">
           {t("cancel")}
         </button>
       </div>

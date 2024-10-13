@@ -9,7 +9,7 @@ import {
 } from "~/services/ollama"
 import { useStoreMessageOption, type Message } from "~/store/option"
 import { useStoreMessage } from "~/store"
-import { HumanMessage, SystemMessage } from "@langchain/core/messages"
+import { SystemMessage } from "@langchain/core/messages"
 import { getDataFromCurrentTab } from "~/libs/get-html"
 import { MemoryVectorStore } from "langchain/vectorstores/memory"
 import { memoryEmbedding } from "@/utils/memory-embeddings"
@@ -26,13 +26,14 @@ import { notification } from "antd"
 import { useTranslation } from "react-i18next"
 import { usePageAssist } from "@/context"
 import { formatDocs } from "@/chain/chat-with-x"
-import { OllamaEmbeddingsPageAssist } from "@/models/OllamaEmbedding"
 import { useStorage } from "@plasmohq/storage/hook"
 import { useStoreChatModelSettings } from "@/store/model"
 import { getAllDefaultModelSettings } from "@/services/model-settings"
 import { getSystemPromptForWeb } from "@/web/web"
 import { pageAssistModel } from "@/models"
 import { getPrompt } from "@/services/application"
+import { humanMessageFormatter } from "@/utils/human-message"
+import { pageAssistEmbeddingModel } from "@/models/embedding"
 
 export const useMessage = () => {
   const {
@@ -201,7 +202,7 @@ export const useMessage = () => {
     const ollamaUrl = await getOllamaURL()
     const embeddingModle = await defaultEmbeddingModelForRag()
 
-    const ollamaEmbedding = new OllamaEmbeddingsPageAssist({
+    const ollamaEmbedding = await pageAssistEmbeddingModel({
       model: embeddingModle || selectedModel,
       baseUrl: cleanUrl(ollamaUrl),
       signal: embeddingSignal,
@@ -313,7 +314,7 @@ export const useMessage = () => {
         ]
       }
 
-      let humanMessage = new HumanMessage({
+      let humanMessage = humanMessageFormatter({
         content: [
           {
             text: systemPrompt
@@ -321,10 +322,11 @@ export const useMessage = () => {
               .replace("{question}", query),
             type: "text"
           }
-        ]
+        ],
+        model: selectedModel
       })
 
-      const applicationChatHistory = generateHistory(history)
+      const applicationChatHistory = generateHistory(history, selectedModel)
 
       const chunks = await ollama.stream(
         [...applicationChatHistory, humanMessage],
@@ -500,16 +502,17 @@ export const useMessage = () => {
       const prompt = await systemPromptForNonRag()
       const selectedPrompt = await getPromptById(selectedSystemPrompt)
 
-      let humanMessage = new HumanMessage({
+      let humanMessage = humanMessageFormatter({
         content: [
           {
             text: message,
             type: "text"
           }
-        ]
+        ],
+        model: selectedModel
       })
       if (image.length > 0) {
-        humanMessage = new HumanMessage({
+        humanMessage = humanMessageFormatter({
           content: [
             {
               text: message,
@@ -519,33 +522,24 @@ export const useMessage = () => {
               image_url: image,
               type: "image_url"
             }
-          ]
+          ],
+          model: selectedModel
         })
       }
 
-      const applicationChatHistory = generateHistory(history)
+      const applicationChatHistory = generateHistory(history, selectedModel)
 
       if (prompt && !selectedPrompt) {
         applicationChatHistory.unshift(
           new SystemMessage({
-            content: [
-              {
-                text: prompt,
-                type: "text"
-              }
-            ]
+            content: prompt
           })
         )
       }
       if (selectedPrompt) {
         applicationChatHistory.unshift(
           new SystemMessage({
-            content: [
-              {
-                text: selectedPrompt.content,
-                type: "text"
-              }
-            ]
+            content: selectedPrompt.content
           })
         )
       }
@@ -760,16 +754,17 @@ export const useMessage = () => {
 
       //  message = message.trim().replaceAll("\n", " ")
 
-      let humanMessage = new HumanMessage({
+      let humanMessage = humanMessageFormatter({
         content: [
           {
             text: message,
             type: "text"
           }
-        ]
+        ],
+        model: selectedModel
       })
       if (image.length > 0) {
-        humanMessage = new HumanMessage({
+        humanMessage = humanMessageFormatter({
           content: [
             {
               text: message,
@@ -779,21 +774,17 @@ export const useMessage = () => {
               image_url: image,
               type: "image_url"
             }
-          ]
+          ],
+          model: selectedModel
         })
       }
 
-      const applicationChatHistory = generateHistory(history)
+      const applicationChatHistory = generateHistory(history, selectedModel)
 
       if (prompt) {
         applicationChatHistory.unshift(
           new SystemMessage({
-            content: [
-              {
-                text: prompt,
-                type: "text"
-              }
-            ]
+            content: prompt
           })
         )
       }
@@ -966,16 +957,17 @@ export const useMessage = () => {
 
     try {
       const prompt = await getPrompt(messageType)
-      let humanMessage = new HumanMessage({
+      let humanMessage = humanMessageFormatter({
         content: [
           {
             text: prompt.replace("{text}", message),
             type: "text"
           }
-        ]
+        ],
+        model: selectedModel
       })
       if (image.length > 0) {
-        humanMessage = new HumanMessage({
+        humanMessage = humanMessageFormatter({
           content: [
             {
               text: prompt.replace("{text}", message),
@@ -985,7 +977,8 @@ export const useMessage = () => {
               image_url: image,
               type: "image_url"
             }
-          ]
+          ],
+          model: selectedModel
         })
       }
 

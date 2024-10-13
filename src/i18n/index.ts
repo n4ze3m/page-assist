@@ -41,11 +41,6 @@ i18n
             de: de
         },
         fallbackLng: "en",
-        detection: {
-            order: ['localStorage', 'navigator'],
-            caches: ['localStorage']
-        },
-        supportedLngs: supportedLanguages,
         lng: localStorage.getItem("i18nextLng") || "en",
     });
 

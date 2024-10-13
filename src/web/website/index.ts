@@ -1,7 +1,7 @@
 import { cleanUrl } from "@/libs/clean-url"
 import { PageAssistHtmlLoader } from "@/loader/html"
+import { pageAssistEmbeddingModel } from "@/models/embedding"
 import { defaultEmbeddingChunkOverlap, defaultEmbeddingChunkSize, defaultEmbeddingModelForRag, getOllamaURL } from "@/services/ollama"
-import { OllamaEmbeddings } from "@langchain/community/embeddings/ollama"
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter"
 import { MemoryVectorStore } from "langchain/vectorstores/memory"
 
@@ -15,7 +15,7 @@ export const processSingleWebsite = async (url: string, query: string) => {
     const ollamaUrl = await getOllamaURL()
 
     const embeddingModle = await defaultEmbeddingModelForRag()
-    const ollamaEmbedding = new OllamaEmbeddings({
+    const ollamaEmbedding = await pageAssistEmbeddingModel({
         model: embeddingModle || "",
         baseUrl: cleanUrl(ollamaUrl)
     })
