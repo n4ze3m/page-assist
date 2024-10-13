@@ -1,4 +1,3 @@
-
 # Contributing to Page Assist
 
 Thank you for your interest in contributing to Page Assist! We welcome contributions from anyone, whether it's reporting bugs, suggesting improvements, or submitting code changes.
