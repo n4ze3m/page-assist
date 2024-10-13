@@ -539,7 +539,7 @@ export const useMessage = () => {
       if (selectedPrompt) {
         applicationChatHistory.unshift(
           new SystemMessage({
-            content:  selectedPrompt.content
+            content: selectedPrompt.content
           })
         )
       }
