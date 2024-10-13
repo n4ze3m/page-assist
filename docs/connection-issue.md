@@ -28,6 +28,8 @@ Since Ollama has connection issues when directly accessed from the browser exten
 
 5. (Optional) If Ollama is running on a different port or host, then change the URL in the `Custom Origin URL` field; otherwise, leave it as it is.
 
+6. Make sure click on the `Save` button to save the changes.
+
 This will resolve the connection issue, and you will be able to use Ollama without any issues on Page Assist ❤
 
 If you still face any issues, feel free to contact us [here](https://github.com/n4ze3m/page-assist/issues/new), and we will be happy to help you out.

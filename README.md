@@ -11,7 +11,6 @@ Page Assist supports Chromium-based browsers like Chrome, Brave, Edge, and Firef
 [![Chrome Web Store](https://pub-35424b4473484be483c0afa08c69e7da.r2.dev/UV4C4ybeBTsZt43U4xis.png)](https://chrome.google.com/webstore/detail/page-assist/jfgfiigpkhlkbnfnbobbkinehhfdhndo)
 [![Firefox Add-on](https://pub-35424b4473484be483c0afa08c69e7da.r2.dev/get-the-addon.png)](https://addons.mozilla.org/en-US/firefox/addon/page-assist/)
 
-
 Checkout the Demo (v1.0.0):
 
 <div align="center">
@@ -30,15 +29,13 @@ Checkout the Demo (v1.0.0):
 
 want more features? Create an issue and let me know.
 
-
 ### Manual Installation
 
 #### Pre-requisites
 
-- Node.js (v18 or higher) - [Installation Guide](https://nodejs.org)
-- npm
+- Bun - [Installation Guide](https://bun.sh/)
 - Ollama (Local AI Provider) - [Installation Guide](https://ollama.com)
-
+- Any OpenAI API Compatible Endpoint (like LM Studio, llamafile etc.)
 
 1. Clone the repository
 
@@ -50,19 +47,19 @@ cd page-assist
 2. Install the dependencies
 
 ```bash
-npm install
+bun install
 ```
 
 3. Build the extension (by default it will build for Chrome)
 
 ```bash
-npm run build
+bun run build
 ```
 
 or you can build for Firefox
 
 ```bash
-npm run build:firefox
+bun build:firefox
 ```
 
 4. Load the extension (chrome)
@@ -101,45 +98,43 @@ Note: You can change the keyboard shortcuts from the extension settings on the C
 You can run the extension in development mode to make changes and test them.
 
 ```bash
-npm run dev
+bun dev
 ```
 
 This will start a development server and watch for changes in the source files. You can load the extension in your browser and test the changes.
 
 ## Browser Support
 
-| Browser  | Sidebar | Chat With Webpage | Web UI |
-| -------- | ------- | ----------------- | ------ |
-| Chrome   | ✅      | ✅                | ✅     |
-| Brave    | ✅      | ✅                | ✅     |
-| Firefox  | ✅      | ✅                | ✅     |
-| Vivaldi  | ✅      | ✅                | ✅     |
-| Edge     | ✅      | ❌                | ✅     |
-| Opera    | ❌      | ❌                | ✅     |
-| Arc      | ❌      | ❌                | ✅     |
-
-
+| Browser     | Sidebar | Chat With Webpage | Web UI |
+| ----------- | ------- | ----------------- | ------ |
+| Chrome      | ✅      | ✅                | ✅     |
+| Brave       | ✅      | ✅                | ✅     |
+| Firefox     | ✅      | ✅                | ✅     |
+| Vivaldi     | ✅      | ✅                | ✅     |
+| Edge        | ✅      | ❌                | ✅     |
+| LibreWolf   | ✅      | ✅                | ✅     |
+| Zen Browser | ✅      | ✅                | ✅     |
+| Opera       | ❌      | ❌                | ✅     |
+| Arc         | ❌      | ❌                | ✅     |
 
 ## Local AI Provider
 
 - [Ollama](https://github.com/ollama/ollama)
 
-- Chrome AI (Gemini Nano) 
+- Chrome AI (Gemini Nano)
 
-More providers will be added in the future.
+- OpenAI API Compatible endpoints (like LM Studio, llamafile etc.)
 
 ## Roadmap
 
-- [X] Firefox Support
-- [ ] Code Completion support for Web based IDEs (like Colab, Jupyter, etc.)
-- [ ] More Local AI Providers
+- [x] Firefox Support
+- [x] More Local AI Providers
 - [ ] More Customization Options
 - [ ] Better UI/UX
 
-
 ## Privacy
 
-Page Assist does not collect any personal data. The only time the extension communicates with the server is when you are using the share feature, which can be disabled from the settings. 
+Page Assist does not collect any personal data. The only time the extension communicates with the server is when you are using the share feature, which can be disabled from the settings.
 
 All the data is stored locally in the browser storage. You can view the source code and verify it yourself.
 
@@ -154,7 +149,6 @@ If you like the project and want to support it, you can buy me a coffee. It will
 <a href='https://ko-fi.com/M4M3EMCLL' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi2.png?v=3' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
 
 or you can sponsor me on GitHub.
-
 
 ## Blogs and Videos About Page Assist
 

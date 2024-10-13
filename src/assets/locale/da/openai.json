@@ -1,0 +1,90 @@
+{
+    "settings": "OpenAI Kompatibel API",
+    "heading": "OpenAI kompatibel API",
+    "subheading": "Administrer og konfigurer dine OpenAI API-kompatible udbydere her.",
+    "addBtn": "Tilføj Udbyder",
+    "table": {
+        "name": "Udbyders Navn",
+        "baseUrl": "Basis URL",
+        "actions": "Handling"
+    },
+    "modal": {
+        "titleAdd": "Tilføj Ny Udbyder",
+        "name": {
+            "label": "Udbyders Navn",
+            "required": "Udbyders navn er påkrævet.",
+            "placeholder": "Indtast udbyders navn"
+        },
+        "baseUrl": {
+            "label": "Basis URL",
+            "help": "Basis URL'en for OpenAI API-udbyderen. f.eks. (http://localhost:1234/v1)",
+            "required": "Basis URL er påkrævet.",
+            "placeholder": "Indtast basis URL"
+        },
+        "apiKey": {
+            "label": "API Nøgle",
+            "required": "API Nøgle er påkrævet.",
+            "placeholder": "Indtast API Nøgle"
+        },
+        "submit": "Gem",
+        "update": "Opdater",
+        "deleteConfirm": "Er du sikker på, at du vil slette denne udbyder?",
+        "model": {
+            "title": "Modelliste",
+            "subheading": "Vælg venligst de chatmodeller, du ønsker at bruge med denne udbyder.",
+            "success": "Nye modeller tilføjet med succes."
+        },
+        "tipLMStudio": "Page Assist vil automatisk hente de modeller, du har indlæst på LM Studio. Du behøver ikke at tilføje dem manuelt."
+    },
+    "addSuccess": "Udbyder tilføjet med succes.",
+    "deleteSuccess": "Udbyder slettet med succes.",
+    "updateSuccess": "Udbyder opdateret med succes.",
+    "delete": "Slet",
+    "edit": "Rediger",
+    "newModel": "Tilføj Modeller til Udbyder",
+    "noNewModel": "For LMStudio henter vi dynamisk. Ingen manuel tilføjelse nødvendig.",
+    "searchModel": "Søg Model",
+    "selectAll": "Vælg Alle",
+    "save": "Gem",
+    "saving": "Gemmer...",
+    "manageModels": {
+        "columns": {
+            "name": "Modelnavn",
+            "model_type": "Modeltype",
+            "model_id": "Model-ID",
+            "provider": "Udbyders Navn",
+            "actions": "Handling"
+        },
+        "tooltip": {
+            "delete": "Slet"
+        },
+        "confirm": {
+            "delete": "Er du sikker på, at du vil slette denne model?"
+        },
+        "modal": {
+            "title": "Tilføj Brugerdefineret Model",
+            "form": {
+                "name": {
+                    "label": "Model-ID",
+                    "placeholder": "llama3.2",
+                    "required": "Model-ID er påkrævet."
+                },
+                "provider": {
+                    "label": "Udbyder",
+                    "placeholder": "Vælg udbyder",
+                    "required": "Udbyder er påkrævet."
+                },
+                "type": {
+                    "label": "Modeltype"
+                }
+            }
+        }
+    },
+    "noModelFound": "Ingen model fundet. Sørg for, at du har tilføjet korrekt udbyder med basis URL og API-nøgle.",
+    "radio": {
+        "chat": "Chatmodel",
+        "embedding": "Indlejringsmodel",
+        "chatInfo": "bruges til chatfuldførelse og samtalegeneration",
+        "embeddingInfo": "bruges til RAG og andre semantiske søgerelaterede opgaver."
+    }
+}

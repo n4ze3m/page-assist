@@ -11,7 +11,6 @@ import {
 } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useLocation, NavLink } from "react-router-dom"
-import { OllamaIcon } from "../Icons/Ollama"
 import { SelectedKnowledge } from "../Option/Knowledge/SelectedKnwledge"
 import { ModelSelect } from "../Common/ModelSelect"
 import { PromptSelect } from "../Common/PromptSelect"
@@ -55,7 +54,9 @@ export const Header: React.FC<Props> = ({
   } = useQuery({
     queryKey: ["fetchModel"],
     queryFn: () => fetchChatModels({ returnEmpty: true }),
-    refetchInterval: 15000
+    refetchInterval: 15_000,
+    refetchIntervalInBackground: true,
+    placeholderData: (prev) => prev
   })
 
   const { data: prompts, isLoading: isPromptLoading } = useQuery({
@@ -122,7 +123,7 @@ export const Header: React.FC<Props> = ({
               localStorage.setItem("selectedModel", e)
             }}
             size="large"
-            loading={isModelsLoading || isModelsFetching}
+            loading={isModelsLoading}
             filterOption={(input, option) =>
               option.label.key.toLowerCase().indexOf(input.toLowerCase()) >= 0
             }
@@ -206,9 +207,9 @@ export const Header: React.FC<Props> = ({
             {pathname === "/" &&
               messages.length > 0 &&
               !streaming &&
-              shareModeEnabled && <ShareBtn
-              historyId={historyId}
-              messages={messages} />}
+              shareModeEnabled && (
+                <ShareBtn historyId={historyId} messages={messages} />
+              )}
             <Tooltip title={t("githubRepository")}>
               <a
                 href="https://github.com/n4ze3m/page-assist"

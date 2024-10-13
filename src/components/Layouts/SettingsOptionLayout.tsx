@@ -6,12 +6,12 @@ import {
   BlocksIcon,
   InfoIcon,
   CombineIcon,
-  ChromeIcon
+  ChromeIcon,
+  CpuIcon
 } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { Link, useLocation } from "react-router-dom"
 import { OllamaIcon } from "../Icons/Ollama"
-import { Tag } from "antd"
 import { BetaTag } from "../Common/Beta"
 
 function classNames(...classes: string[]) {
@@ -22,12 +22,11 @@ const LinkComponent = (item: {
   href: string
   name: string | JSX.Element
   icon: any
-  current: string,
+  current: string
   beta?: boolean
 }) => {
   return (
     <li className="inline-flex items-center">
-
       <Link
         to={item.href}
         className={classNames(
@@ -47,21 +46,19 @@ const LinkComponent = (item: {
         />
         {item.name}
       </Link>
-      {
-        item.beta && <BetaTag />
-        }
+      {item.beta && <BetaTag />}
     </li>
   )
 }
 
 export const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
   const location = useLocation()
-  const { t } = useTranslation(["settings", "common"])
+  const { t } = useTranslation(["settings", "common", "openai"])
 
   return (
     <>
       <div className="mx-auto max-w-7xl lg:flex lg:gap-x-16 lg:px-8">
-        <aside className="flex lg:rounded-md bg-white lg:p-4 lg:mt-20 overflow-x-auto lg:border-0 border-b  py-4 lg:block lg:w-72 lg:flex-none  dark:bg-[#171717] dark:border-gray-600">
+        <aside className="flex lg:rounded-md bg-white lg:p-4 lg:mt-20 overflow-x-auto lg:border-0 border-b  py-4 lg:block lg:w-80 lg:flex-none  dark:bg-[#171717] dark:border-gray-600">
           <nav className="flex-none  px-4 sm:px-6 lg:px-0">
             <ul
               role="list"
@@ -93,6 +90,13 @@ export const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
                   beta
                 />
               )}
+              <LinkComponent
+                href="/settings/openai"
+                name={t("openai:settings")}
+                icon={CpuIcon}
+                current={location.pathname}
+                beta
+              />
               <LinkComponent
                 href="/settings/model"
                 name={t("manageModels.title")}

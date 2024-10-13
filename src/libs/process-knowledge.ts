@@ -5,7 +5,6 @@ import {
   defaultEmbeddingChunkSize,
   getOllamaURL
 } from "@/services/ollama"
-import { OllamaEmbeddings } from "@langchain/community/embeddings/ollama"
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter"
 import { PageAssistVectorStore } from "./PageAssistVectorStore"
 import { PageAssisCSVUrlLoader } from "@/loader/csv"
@@ -13,6 +12,7 @@ import { PageAssisTXTUrlLoader } from "@/loader/txt"
 import { PageAssistDocxLoader } from "@/loader/docx"
 import { cleanUrl } from "./clean-url"
 import { sendEmbeddingCompleteNotification } from "./send-notification"
+import { pageAssistEmbeddingModel } from "@/models/embedding"
 
 
 export const processKnowledge = async (msg: any, id: string): Promise<void> => {
@@ -28,7 +28,7 @@ export const processKnowledge = async (msg: any, id: string): Promise<void> => {
 
     await updateKnowledgeStatus(id, "processing")
 
-    const ollamaEmbedding = new OllamaEmbeddings({
+    const ollamaEmbedding = await pageAssistEmbeddingModel({
       baseUrl: cleanUrl(ollamaUrl),
       model: knowledge.embedding_model
     })

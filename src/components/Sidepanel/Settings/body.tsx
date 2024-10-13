@@ -11,7 +11,8 @@ import {
   defaultEmbeddingChunkOverlap,
   defaultEmbeddingChunkSize,
   defaultEmbeddingModelForRag,
-  saveForRag
+  saveForRag,
+  getEmbeddingModels
 } from "~/services/ollama"
 
 import {
@@ -77,7 +78,7 @@ export const SettingsBody = () => {
         getOllamaURL(),
         systemPromptForNonRag(),
         promptForRag(),
-        getAllModels({ returnEmpty: true }),
+        getEmbeddingModels({ returnEmpty: true }),
         defaultEmbeddingChunkOverlap(),
         defaultEmbeddingChunkSize(),
         defaultEmbeddingModelForRag(),

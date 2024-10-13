@@ -1,0 +1,12 @@
+{
+    "newChat": "Ny Chat",
+    "selectAPrompt": "Vælg en Prompt",
+    "githubRepository": "GitHub Repository",
+    "settings": "Indstillinger",
+    "sidebarTitle": "Chathistorik",
+    "error": "Fejl",
+    "somethingWentWrong": "Noget gik galt",
+    "validationSelectModel": "Venligst vælg en model for at forsæætte",
+    "deleteHistoryConfirmation": "Er du sikker på at du vil slette denne historik?",
+    "editHistoryTitle": "Indtast en ny titel"
+}

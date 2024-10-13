@@ -1,0 +1,90 @@
+{
+    "settings": "API compatible OpenAI",
+    "heading": "API compatible OpenAI",
+    "subheading": "Gérez et configurez ici vos fournisseurs d'API compatibles OpenAI.",
+    "addBtn": "Ajouter un fournisseur",
+    "table": {
+        "name": "Nom du fournisseur",
+        "baseUrl": "URL de base",
+        "actions": "Action"
+    },
+    "modal": {
+        "titleAdd": "Ajouter un nouveau fournisseur",
+        "name": {
+            "label": "Nom du fournisseur",
+            "required": "Le nom du fournisseur est requis.",
+            "placeholder": "Entrez le nom du fournisseur"
+        },
+        "baseUrl": {
+            "label": "URL de base",
+            "help": "L'URL de base du fournisseur d'API OpenAI. ex (http://localhost:1234/v1)",
+            "required": "L'URL de base est requise.",
+            "placeholder": "Entrez l'URL de base"
+        },
+        "apiKey": {
+            "label": "Clé API",
+            "required": "La clé API est requise.",
+            "placeholder": "Entrez la clé API"
+        },
+        "submit": "Enregistrer",
+        "update": "Mettre à jour",
+        "deleteConfirm": "Êtes-vous sûr de vouloir supprimer ce fournisseur ?",
+        "model": {
+            "title": "Liste des modèles",
+            "subheading": "Veuillez sélectionner les modèles de chat que vous souhaitez utiliser avec ce fournisseur.",
+            "success": "Nouveaux modèles ajoutés avec succès."
+        },
+        "tipLMStudio": "Page Assist récupérera automatiquement les modèles que vous avez chargés sur LM Studio. Vous n'avez pas besoin de les ajouter manuellement."
+    },
+    "addSuccess": "Fournisseur ajouté avec succès.",
+    "deleteSuccess": "Fournisseur supprimé avec succès.",
+    "updateSuccess": "Fournisseur mis à jour avec succès.",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "newModel": "Ajouter des modèles au fournisseur",
+    "noNewModel": "Pour LMStudio, nous récupérons dynamiquement. Pas besoin d'ajout manuel.",
+    "searchModel": "Rechercher un modèle",
+    "selectAll": "Tout sélectionner",
+    "save": "Enregistrer",
+    "saving": "Enregistrement...",
+    "manageModels": {
+        "columns": {
+            "name": "Nom du modèle",
+            "model_type": "Type de modèle",
+            "model_id": "ID du modèle",
+            "provider": "Nom du fournisseur",
+            "actions": "Action"
+        },
+        "tooltip": {
+            "delete": "Supprimer"
+        },
+        "confirm": {
+            "delete": "Êtes-vous sûr de vouloir supprimer ce modèle ?"
+        },
+        "modal": {
+            "title": "Ajouter un modèle personnalisé",
+            "form": {
+                "name": {
+                    "label": "ID du modèle",
+                    "placeholder": "llama3.2",
+                    "required": "L'ID du modèle est requis."
+                },
+                "provider": {
+                    "label": "Fournisseur",
+                    "placeholder": "Sélectionner un fournisseur",
+                    "required": "Le fournisseur est requis."
+                },
+                "type": {
+                    "label": "Type de modèle"
+                }
+            }
+        }
+    },
+    "noModelFound": "Aucun modèle trouvé. Assurez-vous d'avoir ajouté le bon fournisseur avec l'URL de base et la clé API.",
+    "radio": {
+        "chat": "Modèle de chat",
+        "embedding": "Modèle d'embedding",
+        "chatInfo": "est utilisé pour la complétion de chat et la génération de conversation",
+        "embeddingInfo": "est utilisé pour RAG et d'autres tâches liées à la recherche sémantique."
+    }
+}

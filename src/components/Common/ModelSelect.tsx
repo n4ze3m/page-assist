@@ -38,10 +38,10 @@ export const ModelSelect: React.FC = () => {
                   </div>
                 ),
                 onClick: () => {
-                  if (selectedModel === d.name) {
+                  if (selectedModel === d.model) {
                     setSelectedModel(null)
                   } else {
-                    setSelectedModel(d.name)
+                    setSelectedModel(d.model)
                   }
                 }
               })) || [],

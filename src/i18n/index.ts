@@ -11,7 +11,11 @@ import { it } from "./lang/it";
 import { es } from "./lang/es";
 import { fa } from "./lang/fa";
 import { de } from "./lang/de";
+import { da } from "./lang/da";
+import { no } from "./lang/no";
 import LanguageDetector from 'i18next-browser-languagedetector';
+
+const supportedLanguages = ['en', 'zh', 'ja', 'fa', 'de', 'da', 'no', 'es', 'fr', 'it', 'ml', 'pt-BR', 'ru', 'zh-CN', 'ru-RU', 'ja-JP'];
 
 i18n
     .use(LanguageDetector)
@@ -32,10 +36,12 @@ i18n
             "ja-JP": ja,
             fa: fa,
             "fa-IR": fa,
+            da: da,
+            no: no,
             de: de
         },
         fallbackLng: "en",
         lng: localStorage.getItem("i18nextLng") || "en",
-    })
+    });
 
 export default i18n;

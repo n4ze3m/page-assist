@@ -1,0 +1,90 @@
+{
+    "settings": "API Compatível com OpenAI",
+    "heading": "API compatível com OpenAI",
+    "subheading": "Gerencie e configure seus provedores compatíveis com a API OpenAI aqui.",
+    "addBtn": "Adicionar Provedor",
+    "table": {
+        "name": "Nome do Provedor",
+        "baseUrl": "URL Base",
+        "actions": "Ação"
+    },
+    "modal": {
+        "titleAdd": "Adicionar Novo Provedor",
+        "name": {
+            "label": "Nome do Provedor",
+            "required": "O nome do provedor é obrigatório.",
+            "placeholder": "Digite o nome do provedor"
+        },
+        "baseUrl": {
+            "label": "URL Base",
+            "help": "A URL base do provedor da API OpenAI. ex. (http://localhost:1234/v1)",
+            "required": "A URL base é obrigatória.",
+            "placeholder": "Digite a URL base"
+        },
+        "apiKey": {
+            "label": "Chave da API",
+            "required": "A chave da API é obrigatória.",
+            "placeholder": "Digite a chave da API"
+        },
+        "submit": "Salvar",
+        "update": "Atualizar",
+        "deleteConfirm": "Tem certeza de que deseja excluir este provedor?",
+        "model": {
+            "title": "Lista de Modelos",
+            "subheading": "Por favor, selecione os modelos de chat que você deseja usar com este provedor.",
+            "success": "Novos modelos adicionados com sucesso."
+        },
+        "tipLMStudio": "O Page Assist buscará automaticamente os modelos que você carregou no LM Studio. Você não precisa adicioná-los manualmente."
+    },
+    "addSuccess": "Provedor adicionado com sucesso.",
+    "deleteSuccess": "Provedor excluído com sucesso.",
+    "updateSuccess": "Provedor atualizado com sucesso.",
+    "delete": "Excluir",
+    "edit": "Editar",
+    "newModel": "Adicionar Modelos ao Provedor",
+    "noNewModel": "Para o LMStudio, buscamos dinamicamente. Não é necessária adição manual.",
+    "searchModel": "Pesquisar Modelo",
+    "selectAll": "Selecionar Tudo",
+    "save": "Salvar",
+    "saving": "Salvando...",
+    "manageModels": {
+        "columns": {
+            "name": "Nome do Modelo",
+            "model_type": "Tipo de Modelo",
+            "model_id": "ID do Modelo",
+            "provider": "Nome do Provedor",
+            "actions": "Ação"
+        },
+        "tooltip": {
+            "delete": "Excluir"
+        },
+        "confirm": {
+            "delete": "Tem certeza de que deseja excluir este modelo?"
+        },
+        "modal": {
+            "title": "Adicionar Modelo Personalizado",
+            "form": {
+                "name": {
+                    "label": "ID do Modelo",
+                    "placeholder": "llama3.2",
+                    "required": "O ID do modelo é obrigatório."
+                },
+                "provider": {
+                    "label": "Provedor",
+                    "placeholder": "Selecione o provedor",
+                    "required": "O provedor é obrigatório."
+                },
+                "type": {
+                    "label": "Tipo de Modelo"
+                }
+            }
+        }
+    },
+    "noModelFound": "Nenhum modelo encontrado. Certifique-se de ter adicionado o provedor correto com URL base e chave da API.",
+    "radio": {
+        "chat": "Modelo de Chat",
+        "embedding": "Modelo de Incorporação",
+        "chatInfo": "é usado para conclusão de chat e geração de conversas",
+        "embeddingInfo": "é usado para RAG e outras tarefas relacionadas à busca semântica."
+    }
+}

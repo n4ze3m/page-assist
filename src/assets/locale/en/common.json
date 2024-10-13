@@ -101,5 +101,9 @@
         "translate": "Translate",
         "custom": "Custom"
     },
-    "citations": "Citations"
+    "citations": "Citations",
+    "segmented": {
+        "ollama": "Ollama Models",
+        "custom": "Custom Models"
+    }
 }
