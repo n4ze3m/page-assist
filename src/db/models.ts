@@ -10,6 +10,7 @@ type Model = {
   name: string
   provider_id: string
   lookup: string
+  model_type: string
   db_type: string
 }
 export const generateID = () => {
@@ -140,7 +141,8 @@ export const createManyModels = async (
       lookup: `${item.model_id}_${item.provider_id}`,
       id: `${item.model_id}_${generateID()}`,
       db_type: "openai_model",
-      name: item.name.replaceAll(/accounts\/[^\/]+\/models\//g, "")
+      name: item.name.replaceAll(/accounts\/[^\/]+\/models\//g, ""),
+      model_type: "chat"
     }
   })
 
@@ -168,7 +170,8 @@ export const createModel = async (
     name,
     provider_id,
     lookup: `${model_id}_${provider_id}`,
-    db_type: "openai_model"
+    db_type: "openai_model",
+    model_type: "chat"
   }
   await db.create(model)
   return model
