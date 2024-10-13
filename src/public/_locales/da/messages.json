@@ -1,0 +1,29 @@
+{
+    "extName": {
+        "message": "Page Assist - En Web UI for at køre AI modeller lokalt"
+    },
+    "extDescription": {
+        "message": "Brug dine lokalt kørende AI-modeller til at hjælpe dig med at surfe på nettet."
+    },
+    "openSidePanelToChat": {
+        "message": "Åben Copilot for at Chatte"
+    },
+    "openOptionToChat": {
+        "message": "Åben Web UI for at Chatte"
+    },
+    "contextSummarize": {
+        "message": "Opsummer"
+    },
+    "contextExplain": {
+        "message": "Forklar"
+    },
+    "contextRephrase": {
+        "message": "Omskriv"
+    },
+    "contextTranslate" :{
+        "message": "Oversæt"
+    },
+    "contextCustom": {
+        "message": "Tilpasset"
+    }
+}

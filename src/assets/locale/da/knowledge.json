@@ -1,0 +1,43 @@
+{
+    "addBtn": "Tilføj Ny Viden",
+    "columns": {
+        "title": "Titel",
+        "status": "Status",
+        "embeddings": "Embedding Model",
+        "createdAt": "Oprettet At",
+        "action": "Handlinger"
+    },
+    "expandedColumns": {
+        "name": "Navn"
+    },
+    "tooltip": {
+        "delete": "Slet"
+    },
+    "confirm": {
+        "delete": "Er du sikker på du vil slette denne viden?"
+    },
+    "deleteSuccess": "Viden slettet med success",
+    "status": {
+        "pending": "Venter",
+        "finished": "Færdig",
+        "processing": "Processerer",
+        "failed": "Fejlet"
+    },
+    "addKnowledge": "Tilføj Viden",
+    "form": {
+        "title": {
+            "label": "Viden Titel",
+            "placeholder": "Indtast viden titel",
+            "required": "Viden titel er nødvendig"
+        },
+        "uploadFile": {
+            "label": "Upload Filer",
+            "uploadText": "Træk og slip denne fil here og klik upload",
+            "uploadHint": "Understøttet filtyper: .pdf, .csv, .txt, .md, .docx",
+            "required": "En fil er nødvendig"
+        },
+        "submit": "Indsend",
+        "success": "Viden tilføjet med success"
+    },
+    "noEmbeddingModel": "Tilføj venligst en embedding model fra RAG indstillingerne først"
+}

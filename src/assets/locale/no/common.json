@@ -1,0 +1,105 @@
+{
+    "pageAssist": "Sideassistent",
+    "selectAModel": "Velg en modell",
+    "save": "Lagre",
+    "saved": "Lagret",
+    "cancel": "Avbryt",
+    "retry": "Prøv igjen",
+    "share": {
+        "tooltip": {
+            "share": "Del"
+        },
+        "modal": {
+            "title": "Del lenke til chatten"
+        },
+        "form": {
+            "defaultValue": {
+                "name": "Anonym",
+                "title": "Navnløs chat"
+            },
+            "title": {
+                "label": "Chattittel",
+                "placeholder": "Skriv inn chattittel",
+                "required": "Chattittel er nødvendig"
+            },
+            "name": {
+                "label": "Ditt navn",
+                "placeholder": "Skriv inn ditt navn",
+                "required": "Ditt navn er nødvendig"
+            },
+            "btn": {
+                "save": "Generer en lenke",
+                "saving": "Genererer lenke..."
+            }
+        },
+        "notification": {
+            "successGenerate": "Lenke kopiert til utklippstavle",
+            "failGenerate": "Kunne ikke generere lenke"
+        }
+    },
+    "copyToClipboard": "Kopier til utklippstavle",
+    "webSearch": "Søker på internett",
+    "regenerate": "Regenerer",
+    "edit": "Endre",
+    "saveAndSubmit": "Lagre & Send inn",
+    "editMessage": {
+        "placeholder": "Skriv en melding..."
+    },
+    "submit": "Send inn",
+    "noData": "Ingen data",
+    "noHistory": "Ingen chathistorikk",
+    "chatWithCurrentPage": "Chat med nåværende side",
+    "beta": "Beta",
+    "tts": "Les opp",
+    "currentChatModelSettings": "Nåværende chatmodellinnstillinger",
+    "modelSettings": {
+        "label": "Modellinnstillinger",
+        "description": "Konfigurer modellinnstillingene for alle chatter",
+        "form": {
+            "keepAlive": {
+                "label": "Hold i live",
+                "help": "kontrollerer hvor lenge modellen vil forbli lastet i minnet etter forespørselen (standard: 5m)",
+                "placeholder": "Skriv inn lengden på økten (f.eks. 5m, 10m, 1t)"
+            },
+            "temperature": {
+                "label": "Temperatur",
+                "placeholder": "Skriv inn temperaturverdi (f.eks. 0.7, 1.0)"
+            },
+            "numCtx": {
+                "label": "Kontekstlengde",
+                "placeholder": "Skriv inn kontekstlengdeverdi (standard: 2048)"
+            },
+            "seed": {
+                "label": "Seed",
+                "placeholder": "Skriv inn seedverdi (f.eks. 1234)",
+                "help": "Reproduserbarhet av modellutdata"
+            },
+            "topK": {
+                "label": "Topp K",
+                "placeholder": "Skriv inn Topp K-verdi (f.eks. 40, 100)"
+            },
+            "topP": {
+                "label": "Topp P",
+                "placeholder": "Skriv inn Topp P-verdi (f.eks. 0.9, 0.95)"
+            },
+            "numGpu": {
+                "label": "Antall GPUer",
+                "placeholder": "Skriv inn antall lag som sendes til GPU(er)"
+            },
+            "systemPrompt": {
+                "label": "Midlertidig systemprompt",
+                "placeholder": "Skriv inn systemprompt",
+                "help": "Dette er en rask måte å sette systemprompt i den nåværende chatten, som vil overstyre den valgte systemprompt hvis den finnes."
+            }
+        },
+        "advanced": "Flere modellinnstillinger"
+    },
+    "copilot": {
+        "summary": "Oppsummer",
+        "explain": "Forklar",
+        "rephrase": "Omformulér",
+        "translate": "Oversett",
+        "custom": "Egendefinert"
+    },
+    "citations": "Sitater"
+}
