@@ -138,7 +138,7 @@ export const getEmbeddingModels = async ({ returnEmpty }: {
 }) => {
   try {
     const ollamaModels = await getAllModels({ returnEmpty })
-    const customModels = await ollamaFormatAllCustomModels()
+    const customModels = await ollamaFormatAllCustomModels("embedding")
 
     return [
       ...ollamaModels.map((model) => {
@@ -217,7 +217,7 @@ export const fetchChatModels = async ({
       })
     const chromeModel = await getChromeAIModel()
 
-    const customModels = await ollamaFormatAllCustomModels()
+    const customModels = await ollamaFormatAllCustomModels("chat")
 
     return [
       ...chatModels,
@@ -234,7 +234,7 @@ export const fetchChatModels = async ({
       }
     })
     const chromeModel = await getChromeAIModel()
-    const customModels = await ollamaFormatAllCustomModels()
+    const customModels = await ollamaFormatAllCustomModels("chat")
     return [
       ...models,
       ...chromeModel,

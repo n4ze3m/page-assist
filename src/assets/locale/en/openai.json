@@ -31,7 +31,7 @@
         "deleteConfirm": "Are you sure you want to delete this provider?",
         "model": {
             "title": "Model List",
-            "subheading": "Please select the models you want to use with this provider.",
+            "subheading": "Please select the chat models you want to use with this provider.",
             "success": "Successfully added new models."
         },
         "tipLMStudio": "Page Assist will automatically fetch the models you loaded on LM Studio. You don't need to add them manually."
@@ -41,7 +41,8 @@
     "updateSuccess": "Provider updated successfully.",
     "delete": "Delete",
     "edit": "Edit",
-    "refetch": "Refech Model List",
+    "newModel": "Add Models to Provider",
+    "noNewModel": "For LMStudio, we fetch dynamically. No manual addition needed.",
     "searchModel": "Search Model",
     "selectAll": "Select All",
     "save": "Save",
@@ -49,6 +50,7 @@
     "manageModels": {
         "columns": {
             "name": "Model Name",
+            "model_type": "Model Type",
             "model_id": "Model ID",
             "provider": "Provider Name",
             "actions": "Action"
@@ -58,7 +60,31 @@
         },
         "confirm": {
             "delete": "Are you sure you want to delete this model?"
+        },
+        "modal": {
+            "title": "Add Custom Model",
+            "form": {
+                "name": {
+                    "label": "Model ID",
+                    "placeholder": "llama3.2",
+                    "required": "Model ID is required."
+                },
+                "provider": {
+                    "label": "Provider",
+                    "placeholder": "Select provider",
+                    "required": "Provider is required."
+                },
+                "type": {
+                    "label": "Model Type"
+                }
+            }
         }
     },
-    "noModelFound": "No model found. Make sure you have added correct provider with base URL and API key."
+    "noModelFound": "No model found. Make sure you have added correct provider with base URL and API key.",
+    "radio": {
+        "chat": "Chat Model",
+        "embedding": "Embedding Model",
+        "chatInfo": "is used for chat completion and conversation generation",
+        "embeddingInfo": "is used for RAG and other semantic search related tasks."
+    }
 }

@@ -1,10 +1,12 @@
 import { getOpenAIConfigById } from "@/db/openai"
 import { getAllOpenAIModels } from "@/libs/openai"
-import { useMutation, useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useTranslation } from "react-i18next"
-import { Checkbox, Input, Spin, message } from "antd"
+import { Checkbox, Input, Spin, message, Radio } from "antd"
 import { useState, useMemo } from "react"
 import { createManyModels } from "@/db/models"
+import { Popover } from "antd"
+import { InfoIcon } from "lucide-react"
 
 type Props = {
   openaiId: string
@@ -15,6 +17,8 @@ export const OpenAIFetchModel = ({ openaiId, setOpenModelModal }: Props) => {
   const { t } = useTranslation(["openai"])
   const [selectedModels, setSelectedModels] = useState<string[]>([])
   const [searchTerm, setSearchTerm] = useState("")
+  const [modelType, setModelType] = useState("chat")
+  const queryClient = useQueryClient()
 
   const { data, status } = useQuery({
     queryKey: ["openAIConfigs", openaiId],
@@ -56,7 +60,8 @@ export const OpenAIFetchModel = ({ openaiId, setOpenModelModal }: Props) => {
     const payload = models.map((id) => ({
       model_id: id,
       name: filteredModels.find((model) => model.id === id)?.name ?? id,
-      provider_id: openaiId
+      provider_id: openaiId,
+      model_type: modelType
     }))
 
     await createManyModels(payload)
@@ -68,6 +73,9 @@ export const OpenAIFetchModel = ({ openaiId, setOpenModelModal }: Props) => {
     mutationFn: onSave,
     onSuccess: () => {
       setOpenModelModal(false)
+      queryClient.invalidateQueries({
+        queryKey: ["fetchModel"]
+      })
       message.success(t("modal.model.success"))
     }
   })
@@ -97,6 +105,7 @@ export const OpenAIFetchModel = ({ openaiId, setOpenModelModal }: Props) => {
       <p className="text-sm text-gray-500 dark:text-gray-400">
         {t("modal.model.subheading")}
       </p>
+
       <Input
         placeholder={t("searchModel")}
         value={searchTerm}
@@ -134,6 +143,35 @@ export const OpenAIFetchModel = ({ openaiId, setOpenModelModal }: Props) => {
           ))}
         </div>
       </div>
+
+      <div className="flex items-center">
+        <Radio.Group
+          onChange={(e) => setModelType(e.target.value)}
+          value={modelType}>
+          <Radio value="chat">{t("radio.chat")}</Radio>
+          <Radio value="embedding">{t("radio.embedding")}</Radio>
+        </Radio.Group>
+        <Popover
+          content={
+            <div>
+              <p>
+                <b className="text-gray-800 dark:text-gray-100">
+                  {t("radio.chat")}
+                </b>{" "}
+                {t("radio.chatInfo")}
+              </p>
+              <p>
+                <b className="text-gray-800 dark:text-gray-100">
+                  {t("radio.embedding")}
+                </b>{" "}
+                {t("radio.embeddingInfo")}
+              </p>
+            </div>
+          }>
+          <InfoIcon className="ml-2 h-4 w-4 text-gray-500 cursor-pointer" />
+        </Popover>
+      </div>
+
       <button
         onClick={handleSave}
         disabled={isSaving}

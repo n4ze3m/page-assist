@@ -1,7 +1,7 @@
 import { getAllCustomModels, deleteModel } from "@/db/models"
 import { useStorage } from "@plasmohq/storage/hook"
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query"
-import { Skeleton, Table, Tooltip } from "antd"
+import { Skeleton, Table, Tag, Tooltip } from "antd"
 import { Trash2 } from "lucide-react"
 import { useTranslation } from "react-i18next"
 
@@ -9,7 +9,6 @@ export const CustomModelsTable = () => {
   const [selectedModel, setSelectedModel] = useStorage("selectedModel")
 
   const { t } = useTranslation(["openai", "common"])
-
 
   const queryClient = useQueryClient()
 
@@ -27,7 +26,6 @@ export const CustomModelsTable = () => {
     }
   })
 
-
   return (
     <div>
       <div>
@@ -38,14 +36,18 @@ export const CustomModelsTable = () => {
             <Table
               columns={[
                 {
-                  title: t("manageModels.columns.name"),
-                  dataIndex: "name",
-                  key: "name"
-                },
-                {
                   title: t("manageModels.columns.model_id"),
                   dataIndex: "model_id",
                   key: "model_id"
+                },
+                {
+                  title: t("manageModels.columns.model_type"),
+                  dataIndex: "model_type",
+                  render: (txt) => (
+                    <Tag color={txt === "chat" ? "green" : "blue"}>
+                      {t(`radio.${txt}`)}
+                    </Tag>
+                  )
                 },
                 {
                   title: t("manageModels.columns.provider"),

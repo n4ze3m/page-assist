@@ -14,7 +14,13 @@ import {
   updateOpenAIConfig
 } from "@/db/openai"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { Pencil, Trash2, RotateCwIcon, DownloadIcon, AlertTriangle } from "lucide-react"
+import {
+  Pencil,
+  Trash2,
+  RotateCwIcon,
+  DownloadIcon,
+  AlertTriangle
+} from "lucide-react"
 import { OpenAIFetchModel } from "./openai-fetch-model"
 import { OAI_API_PROVIDERS } from "@/utils/oai-api-providers"
 
@@ -149,17 +155,23 @@ export const OpenAIApp = () => {
                     </button>
                   </Tooltip>
 
-                  <Tooltip title={t("refetch")}>
+                  <Tooltip
+                    title={
+                      record.provider !== "lmstudio"
+                        ? t("newModel")
+                        : t("noNewModel")
+                    }>
                     <button
-                      className="text-gray-700 dark:text-gray-400"
+                      className="text-gray-700 dark:text-gray-400 disabled:opacity-50"
                       onClick={() => {
                         setOpenModelModal(true)
                         setOpenaiId(record.id)
                       }}
-                      disabled={!record.id}>
+                      disabled={!record.id || record.provider === "lmstudio"}>
                       <DownloadIcon className="size-4" />
                     </button>
                   </Tooltip>
+
                   <Tooltip title={t("delete")}>
                     <button
                       className="text-red-500 dark:text-red-400"
@@ -251,11 +263,11 @@ export const OpenAIApp = () => {
                 placeholder={t("modal.apiKey.placeholder")}
               />
             </Form.Item>
-              {
-                provider === "lmstudio" && <div className="text-xs text-gray-600 dark:text-gray-400 mb-4">
-                  {t("modal.tipLMStudio")}
-                </div>
-              }
+            {provider === "lmstudio" && (
+              <div className="text-xs text-gray-600 dark:text-gray-400 mb-4">
+                {t("modal.tipLMStudio")}
+              </div>
+            )}
             <button
               type="submit"
               className="inline-flex justify-center w-full text-center mt-4 items-center rounded-md border border-transparent bg-black px-2 py-2 text-sm font-medium leading-4 text-white shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-white dark:text-gray-800 dark:hover:bg-gray-100 dark:focus:ring-gray-500 dark:focus:ring-offset-gray-100 disabled:opacity-50">

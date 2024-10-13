@@ -1,5 +1,5 @@
 import { useForm } from "@mantine/form"
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { Input, Modal, notification } from "antd"
 import { Download } from "lucide-react"
 import { useTranslation } from "react-i18next"
@@ -11,6 +11,7 @@ type Props = {
 
 export const AddOllamaModelModal: React.FC<Props> = ({ open, setOpen }) => {
   const { t } = useTranslation(["settings", "common", "openai"])
+  const queryClient = useQueryClient()
 
   const form = useForm({
     initialValues: {

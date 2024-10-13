@@ -21,18 +21,21 @@ export const generateID = () => {
 }
 
 export const removeModelSuffix = (id: string) => {
-  return id.replace(
-    /_model-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{3,4}-[a-f0-9]{4}/,
-    ""
-  ).replace(/_lmstudio_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/, "")
+  return id
+    .replace(/_model-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{3,4}-[a-f0-9]{4}/, "")
+    .replace(/_lmstudio_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/, "")
 }
 export const isLMStudioModel = (model: string) => {
-  const lmstudioModelRegex = /_lmstudio_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/
+  const lmstudioModelRegex =
+    /_lmstudio_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/
   return lmstudioModelRegex.test(model)
 }
 
-export const getLMStudioModelId = (model: string): { model_id: string, provider_id: string } => {
-  const lmstudioModelRegex = /_lmstudio_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/
+export const getLMStudioModelId = (
+  model: string
+): { model_id: string; provider_id: string } => {
+  const lmstudioModelRegex =
+    /_lmstudio_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/
   const match = model.match(lmstudioModelRegex)
   if (match) {
     const modelId = match[0]
@@ -131,7 +134,7 @@ export class ModelDb {
 }
 
 export const createManyModels = async (
-  data: { model_id: string; name: string; provider_id: string }[]
+  data: { model_id: string; name: string; provider_id: string, model_type: string }[]
 ) => {
   const db = new ModelDb()
 
@@ -142,7 +145,6 @@ export const createManyModels = async (
       id: `${item.model_id}_${generateID()}`,
       db_type: "openai_model",
       name: item.name.replaceAll(/accounts\/[^\/]+\/models\//g, ""),
-      model_type: "chat"
     }
   })
 
@@ -160,7 +162,8 @@ export const createManyModels = async (
 export const createModel = async (
   model_id: string,
   name: string,
-  provider_id: string
+  provider_id: string,
+  model_type: string
 ) => {
   const db = new ModelDb()
   const id = generateID()
@@ -171,7 +174,7 @@ export const createModel = async (
     provider_id,
     lookup: `${model_id}_${provider_id}`,
     db_type: "openai_model",
-    model_type: "chat"
+    model_type: model_type
   }
   await db.create(model)
   return model
@@ -186,9 +189,15 @@ export const getModelInfo = async (id: string) => {
       throw new Error("Invalid LMStudio model ID")
     }
     return {
-      model_id: id.replace(/_lmstudio_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/, ""),
+      model_id: id.replace(
+        /_lmstudio_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/,
+        ""
+      ),
       provider_id: `openai-${lmstudioId.provider_id}`,
-      name: id.replace(/_lmstudio_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/, "")
+      name: id.replace(
+        /_lmstudio_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/,
+        ""
+      )
     }
   }
 
@@ -207,6 +216,7 @@ export const getAllCustomModels = async () => {
       return { ...model, provider }
     })
   )
+
   return modelsWithProvider
 }
 
@@ -247,14 +257,16 @@ export const dynamicFetchLMStudio = async ({
       id: `${e?.id}_lmstudio_${providerId}`,
       provider: providerId,
       lookup: `${e?.id}_${providerId}`,
-      provider_id: providerId,
+      provider_id: providerId
     }
   })
 
   return lmstudioModels
 }
 
-export const ollamaFormatAllCustomModels = async () => {
+export const ollamaFormatAllCustomModels = async (
+  modelType: "all" | "chat" | "embedding" = "all"
+) => {
   const [allModles, allProviders] = await Promise.all([
     getAllCustomModels(),
     getAllOpenAIConfig()
@@ -276,7 +288,12 @@ export const ollamaFormatAllCustomModels = async () => {
   const lmModels = lmModelsFetch.flat()
 
   // merge allModels and lmModels
-  const allModlesWithLMStudio = [...allModles, ...lmModels]
+  const allModlesWithLMStudio = [
+    ...(modelType !== "all"
+      ? allModles.filter((model) => model.model_type === modelType)
+      : allModles),
+    ...lmModels
+  ]
 
   const ollamaModels = allModlesWithLMStudio.map((model) => {
     return {
