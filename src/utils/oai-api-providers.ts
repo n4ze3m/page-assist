@@ -30,7 +30,7 @@ export const OAI_API_PROVIDERS = [
         baseUrl: "https://openrouter.ai/api/v1"
     },
     {
-        label: "Custsom",
+        label: "Custom",
         value: "custom",
         baseUrl: ""
     }

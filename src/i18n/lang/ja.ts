@@ -5,6 +5,7 @@ import sidepanel from "@/assets/locale/ja-JP/sidepanel.json";
 import settings from "@/assets/locale/ja-JP/settings.json";
 import knowledge from "@/assets/locale/ja-JP/knowledge.json";
 import chrome from "@/assets/locale/ja-JP/chrome.json";
+import openai from "@/assets/locale/ja-JP/openai.json";
 
 
 export const ja = {
@@ -14,5 +15,6 @@ export const ja = {
     sidepanel,
     settings,
     knowledge,
-    chrome
+    chrome,
+    openai
 }

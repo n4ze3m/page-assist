@@ -1,0 +1,90 @@
+{
+    "settings": "OpenAI-kompatibel API",
+    "heading": "OpenAI-kompatibel API",
+    "subheading": "Administrer og konfigurer dine OpenAI API-kompatible leverandører her.",
+    "addBtn": "Legg til leverandør",
+    "table": {
+        "name": "Leverandørnavn",
+        "baseUrl": "Base-URL",
+        "actions": "Handling"
+    },
+    "modal": {
+        "titleAdd": "Legg til ny leverandør",
+        "name": {
+            "label": "Leverandørnavn",
+            "required": "Leverandørnavn er påkrevd.",
+            "placeholder": "Skriv inn leverandørnavn"
+        },
+        "baseUrl": {
+            "label": "Base-URL",
+            "help": "Base-URL-en til OpenAI API-leverandøren. f.eks. (http://localhost:1234/v1)",
+            "required": "Base-URL er påkrevd.",
+            "placeholder": "Skriv inn base-URL"
+        },
+        "apiKey": {
+            "label": "API-nøkkel",
+            "required": "API-nøkkel er påkrevd.",
+            "placeholder": "Skriv inn API-nøkkel"
+        },
+        "submit": "Lagre",
+        "update": "Oppdater",
+        "deleteConfirm": "Er du sikker på at du vil slette denne leverandøren?",
+        "model": {
+            "title": "Modelliste",
+            "subheading": "Vennligst velg chatmodellene du ønsker å bruke med denne leverandøren.",
+            "success": "Nye modeller ble lagt til."
+        },
+        "tipLMStudio": "Page Assist vil automatisk hente modellene du lastet inn i LM Studio. Du trenger ikke å legge dem til manuelt."
+    },
+    "addSuccess": "Leverandør ble lagt til.",
+    "deleteSuccess": "Leverandør ble slettet.",
+    "updateSuccess": "Leverandør ble oppdatert.",
+    "delete": "Slett",
+    "edit": "Rediger",
+    "newModel": "Legg til modeller for leverandør",
+    "noNewModel": "For LMStudio henter vi dynamisk. Ingen manuell tillegging nødvendig.",
+    "searchModel": "Søk etter modell",
+    "selectAll": "Velg alle",
+    "save": "Lagre",
+    "saving": "Lagrer...",
+    "manageModels": {
+        "columns": {
+            "name": "Modellnavn",
+            "model_type": "Modelltype",
+            "model_id": "Modell-ID",
+            "provider": "Leverandørnavn",
+            "actions": "Handling"
+        },
+        "tooltip": {
+            "delete": "Slett"
+        },
+        "confirm": {
+            "delete": "Er du sikker på at du vil slette denne modellen?"
+        },
+        "modal": {
+            "title": "Legg til tilpasset modell",
+            "form": {
+                "name": {
+                    "label": "Modell-ID",
+                    "placeholder": "llama3.2",
+                    "required": "Modell-ID er påkrevd."
+                },
+                "provider": {
+                    "label": "Leverandør",
+                    "placeholder": "Velg leverandør",
+                    "required": "Leverandør er påkrevd."
+                },
+                "type": {
+                    "label": "Modelltype"
+                }
+            }
+        }
+    },
+    "noModelFound": "Ingen modell funnet. Sørg for at du har lagt til riktig leverandør med base-URL og API-nøkkel.",
+    "radio": {
+        "chat": "Chatmodell",
+        "embedding": "Innbyggingsmodell",
+        "chatInfo": "brukes for chatfullføring og samtalegenering",
+        "embeddingInfo": "brukes for RAG og andre semantiske søkerelaterte oppgaver."
+    }
+}
