@@ -7,6 +7,7 @@ import { Skeleton, Table, Tag, Tooltip, message } from "antd"
 import { Trash2 } from "lucide-react"
 import { KnowledgeIcon } from "./KnowledgeIcon"
 import { useMessageOption } from "@/hooks/useMessageOption"
+import { removeModelSuffix } from "@/db/models"
 
 export const KnowledgeSettings = () => {
   const { t } = useTranslation(["knowledge", "common"])
@@ -78,7 +79,8 @@ export const KnowledgeSettings = () => {
               {
                 title: t("columns.embeddings"),
                 dataIndex: "embedding_model",
-                key: "embedding_model"
+                key: "embedding_model",
+                render: (text) => removeModelSuffix(text)
               },
               {
                 title: t("columns.createdAt"),
