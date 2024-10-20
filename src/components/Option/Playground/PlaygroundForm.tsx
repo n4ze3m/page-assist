@@ -190,7 +190,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
   }
 
   return (
-    <div className="px-3 pt-3 md:px-6 md:pt-6 bg-gray-50 dark:bg-[#262626] border rounded-t-xl  dark:border-gray-600">
+    <div className="px-3 pt-3 md:px-4 md:pt-4 bg-gray-100 dark:bg-[#262626] border rounded-t-xl  dark:border-gray-600">
       <div
         className={`h-full rounded-md shadow relative ${
           form.values.image.length === 0 ? "hidden" : "block"
@@ -213,7 +213,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
         </div>
       </div>
       <div>
-        <div className="flex bg-white dark:bg-transparent">
+        <div className="flex rounded-t-xl bg-white dark:bg-transparent">
           <form
             onSubmit={form.onSubmit(async (value) => {
               stopListening()
@@ -264,7 +264,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                 required
                 onPaste={handlePaste}
                 rows={1}
-                style={{ minHeight: "60px" }}
+                style={{ minHeight: "40px" }}
                 tabIndex={0}
                 placeholder={t("form.textarea.placeholder")}
                 {...form.getInputProps("message")}
@@ -286,7 +286,23 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                   )}
                 </div>
                 <div className="flex !justify-end gap-3">
-                  <KnowledgeSelect />
+                  
+
+                  {!selectedKnowledge && (
+                    <Tooltip title={t("tooltip.uploadImage")}>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          inputRef.current?.click()
+                        }}
+                        className={`flex items-center justify-center dark:text-gray-300 ${
+                          chatMode === "rag" ? "hidden" : "block"
+                        }`}>
+                        <ImageIcon className="h-5 w-5" />
+                      </button>
+                    </Tooltip>
+                  )}
+
                   {browserSupportsSpeechRecognition && (
                     <Tooltip title={t("tooltip.speechToText")}>
                       <button
@@ -314,21 +330,8 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                       </button>
                     </Tooltip>
                   )}
+                  <KnowledgeSelect />
 
-                  {!selectedKnowledge && (
-                    <Tooltip title={t("tooltip.uploadImage")}>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          inputRef.current?.click()
-                        }}
-                        className={`flex items-center justify-center dark:text-gray-300 ${
-                          chatMode === "rag" ? "hidden" : "block"
-                        }`}>
-                        <ImageIcon className="h-5 w-5" />
-                      </button>
-                    </Tooltip>
-                  )}
                   {!isSending ? (
                     <Dropdown.Button
                       htmlType="submit"
