@@ -90,7 +90,11 @@ export const CodeBlock: FC<Props> = ({ language, value }) => {
           width="80%"
           zIndex={999999}
           centered
-          bodyStyle={{ padding: 0 }}>
+          styles={{
+            body: {
+              padding: 0
+            }
+          }}>
           <div className="relative  w-full h-[80vh]">
             <iframe
               srcDoc={value}
