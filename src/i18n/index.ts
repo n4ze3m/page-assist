@@ -13,12 +13,9 @@ import { fa } from "./lang/fa";
 import { de } from "./lang/de";
 import { da } from "./lang/da";
 import { no } from "./lang/no";
-import LanguageDetector from 'i18next-browser-languagedetector';
 
-const supportedLanguages = ['en', 'zh', 'ja', 'fa', 'de', 'da', 'no', 'es', 'fr', 'it', 'ml', 'pt-BR', 'ru', 'zh-CN', 'ru-RU', 'ja-JP'];
 
 i18n
-    .use(LanguageDetector)
     .use(initReactI18next)
     .init({
         resources: {
