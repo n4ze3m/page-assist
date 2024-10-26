@@ -41,6 +41,7 @@
     "webSearch": "搜索网络",
     "regenerate": "重新生成",
     "edit": "编辑",
+    "delete": "删除",
     "saveAndSubmit": "保存 & 提交",
     "editMessage": {
         "placeholder": "输入一条消息..."
@@ -101,5 +102,14 @@
         "translate": "翻译"
     },
     "citations": "引用",
-    "downloadCode": "下载代码"
+    "downloadCode": "下载代码",
+    "date": {
+        "pinned": "已置顶",
+        "today": "今天",
+        "yesterday": "昨天",
+        "last7Days": "最近7天",
+        "older": "更早"
+    },
+    "pin": "置顶",
+    "unpin": "取消置顶"
 }

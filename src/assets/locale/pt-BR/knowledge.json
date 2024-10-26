@@ -10,9 +10,6 @@
     "expandedColumns": {
         "name": "Nome"
     },
-    "tooltip": {
-        "delete": "Excluir"
-    },
     "confirm": {
         "delete": "Tem certeza de que deseja excluir este conhecimento?"
     },

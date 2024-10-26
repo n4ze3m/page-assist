@@ -41,6 +41,7 @@
     "webSearch": "جستجوی وب",
     "regenerate": "ایجاد مجدد",
     "edit": "ویرایش",
+    "delete": "حذف",
     "saveAndSubmit": "ذخیره و ارسال",
     "editMessage": {
         "placeholder": "یک پیام وارد کنید..."
@@ -95,5 +96,14 @@
         "advanced": "تنظیمات بیشتر مدل"
     },
     "citations": "منابع",
-    "downloadCode": "دانلود کد"
+    "downloadCode": "دانلود کد",
+    "date": {
+        "pinned": "پین شده",
+        "today": "امروز",
+        "yesterday": "دیروز",
+        "last7Days": "۷ روز گذشته",
+        "older": "قدیمی‌تر"
+    },
+    "pin": "پین کردن",
+    "unpin": "حذف پین"
 }

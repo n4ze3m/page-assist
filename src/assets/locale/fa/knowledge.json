@@ -10,9 +10,6 @@
     "expandedColumns": {
         "name": "نام"
     },
-    "tooltip": {
-        "delete": "حذف"
-    },
     "confirm": {
         "delete": "آیا مطمئن هستید که می خواهید این دانش را حذف کنید؟"
     },

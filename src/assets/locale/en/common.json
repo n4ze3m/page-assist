@@ -41,6 +41,7 @@
     "webSearch": "Searching the web",
     "regenerate": "Regenerate",
     "edit": "Edit",
+    "delete": "Delete",
     "saveAndSubmit": "Save & Submit",
     "editMessage": {
         "placeholder": "Type a message..."
@@ -106,5 +107,14 @@
         "ollama": "Ollama Models",
         "custom": "Custom Models"
     },
-    "downloadCode": "Download Code"
+    "downloadCode": "Download Code",
+    "date": {
+        "pinned": "Pinned",
+        "today": "Today",
+        "yesterday": "Yesterday",
+        "last7Days": "Last 7 Days",
+        "older": "Older"
+    },
+    "pin": "Pin",
+    "unpin": "Unpin"
 }

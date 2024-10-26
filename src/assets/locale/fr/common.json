@@ -41,6 +41,7 @@
     "webSearch": "Recherche sur le Web",
     "regenerate": "Régénérer",
     "edit": "Modifier",
+    "delete": "Supprimer",
     "saveAndSubmit": "Enregistrer et soumettre",
     "editMessage": {
         "placeholder": "Tapez un message..."
@@ -101,5 +102,14 @@
         "translate": "Traduire"
     },
     "citations": "Citations",
-    "downloadCode": "Télécharger le code"
+    "downloadCode": "Télécharger le code",
+    "date": {
+        "pinned": "Épinglé",
+        "today": "Aujourd'hui",
+        "yesterday": "Hier",
+        "last7Days": "7 derniers jours",
+        "older": "Plus ancien"
+    },
+    "pin": "Épingler",
+    "unpin": "Désépingler"
 }

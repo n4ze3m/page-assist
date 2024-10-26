@@ -93,7 +93,7 @@ export const KnowledgeSettings = () => {
                 key: "action",
                 render: (text: string, record: any) => (
                   <div className="flex gap-4">
-                    <Tooltip title={t("tooltip.delete")}>
+                    <Tooltip title={t("common:delete")}>
                       <button
                         disabled={isDeleting}
                         onClick={() => {

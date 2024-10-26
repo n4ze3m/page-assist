@@ -41,6 +41,7 @@
     "webSearch": "Поиск в интернете",
     "regenerate": "Пересоздать",
     "edit": "Редактировать",
+    "delete": "Удалить",
     "saveAndSubmit": "Сохранить и отправить",
     "editMessage": {
         "placeholder": "Введите сообщение..."
@@ -101,5 +102,14 @@
         "translate": "Перевести"
     },
     "citations": "Цитаты",
-    "downloadCode": "Скачать код"
+    "downloadCode": "Скачать код",
+    "date": {
+        "pinned": "Закреплено",
+        "today": "Сегодня",
+        "yesterday": "Вчера",
+        "last7Days": "Последние 7 дней",
+        "older": "Ранее"
+    },
+    "pin": "Закрепить",
+    "unpin": "Открепить"
 }

@@ -8,6 +8,7 @@ type HistoryInfo = {
   title: string
   is_rag: boolean
   message_source?: "copilot" | "web-ui"
+  is_pinned?: boolean
   createdAt: number
 }
 
@@ -232,7 +233,11 @@ export const generateID = () => {
   })
 }
 
-export const saveHistory = async (title: string, is_rag?: boolean, message_source?: "copilot" | "web-ui") => {
+export const saveHistory = async (
+  title: string,
+  is_rag?: boolean,
+  message_source?: "copilot" | "web-ui"
+) => {
   const id = generateID()
   const createdAt = Date.now()
   const history = { id, title, createdAt, is_rag, message_source }
@@ -311,6 +316,18 @@ export const updateHistory = async (id: string, title: string) => {
   const newChatHistories = chatHistories.map((history) => {
     if (history.id === id) {
       history.title = title
+    }
+    return history
+  })
+  db.db.set({ chatHistories: newChatHistories })
+}
+
+export const pinHistory = async (id: string, is_pinned: boolean) => {
+  const db = new PageAssitDatabase()
+  const chatHistories = await db.getChatHistories()
+  const newChatHistories = chatHistories.map((history) => {
+    if (history.id === id) {
+      history.is_pinned = is_pinned
     }
     return history
   })
@@ -489,7 +506,6 @@ export const getRecentChatFromCopilot = async () => {
 
   return { history, messages }
 }
-
 
 export const getTitleById = async (id: string) => {
   const db = new PageAssitDatabase()

@@ -41,6 +41,7 @@
     "webSearch": "Søger på internettet",
     "regenerate": "Regenerer",
     "edit": "Ændre",
+    "delete": "Slet",
     "saveAndSubmit": "Gem & Indsend",
     "editMessage": {
         "placeholder": "Skriv en besked..."
@@ -102,5 +103,14 @@
         "custom": "Brugerdefineret"
     },
     "citations": "Citater",
-    "downloadCode": "Download Kode"
+    "downloadCode": "Download Kode",
+    "date": {
+        "pinned": "Fastgjort",
+        "today": "I dag",
+        "yesterday": "I går",
+        "last7Days": "Sidste 7 dage",
+        "older": "Ældre"
+    },
+    "pin": "Fastgør",
+    "unpin": "Frigør"
 }

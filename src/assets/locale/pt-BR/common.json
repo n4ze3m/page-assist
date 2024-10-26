@@ -41,6 +41,7 @@
   "webSearch": "Pesquisando na web",
   "regenerate": "Gerar Novamente",
   "edit": "Editar",
+  "delete": "Excluir",
   "saveAndSubmit": "Salvar & Enviar",
   "editMessage": {
     "placeholder": "Digite uma mensagem..."
@@ -83,13 +84,13 @@
         "placeholder": "Digite o valor do Top P (ex: 0.9, 0.95)"
       },
       "numGpu": {
-          "label": "Num GPUs",
-          "placeholder": "Digite o número de camadas para enviar para a(s) GPU(s)"
+        "label": "Num GPUs",
+        "placeholder": "Digite o número de camadas para enviar para a(s) GPU(s)"
       },
       "systemPrompt": {
-          "label": "Prompt do Sistema Temporário",
-          "placeholder": "Digite o Prompt do Sistema",
-          "help": "Esta é uma maneira rápida de definir o prompt do sistema no chat atual, que substituirá o prompt do sistema selecionado, se existir."
+        "label": "Prompt do Sistema Temporário",
+        "placeholder": "Digite o Prompt do Sistema",
+        "help": "Esta é uma maneira rápida de definir o prompt do sistema no chat atual, que substituirá o prompt do sistema selecionado, se existir."
       }
     },
     "advanced": "Mais Configurações do Modelo"
@@ -101,5 +102,14 @@
     "translate": "Traduzir"
   },
   "citations": "Citações",
-  "downloadCode": "Baixar Código"
+  "downloadCode": "Baixar Código",
+  "date": {
+    "pinned": "Fixado",
+    "today": "Hoje",
+    "yesterday": "Ontem",
+    "last7Days": "Últimos 7 Dias",
+    "older": "Mais Antigos"
+  },
+  "pin": "Fixar",
+  "unpin": "Desafixar"
 }

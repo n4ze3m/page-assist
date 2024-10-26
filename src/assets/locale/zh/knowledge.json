@@ -10,9 +10,6 @@
     "expandedColumns": {
         "name": "名称"
     },
-    "tooltip": {
-        "delete": "删除"
-    },
     "confirm": {
         "delete": "您确定要删除此知识吗?"
     },
