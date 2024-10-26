@@ -1,5 +1,6 @@
+import { programmingLanguages } from "@/utils/langauge-extension"
 import { Tooltip, Modal } from "antd"
-import { CheckIcon, ClipboardIcon, EyeIcon, Maximize2Icon } from "lucide-react"
+import { CheckIcon, ClipboardIcon, DownloadIcon } from "lucide-react"
 import { FC, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter"
@@ -23,12 +24,20 @@ export const CodeBlock: FC<Props> = ({ language, value }) => {
     }, 4000)
   }
 
-  const handlePreview = () => {
-    setPreviewVisible(true)
-  }
-
   const handlePreviewClose = () => {
     setPreviewVisible(false)
+  }
+
+  const handleDownload = () => {
+    const blob = new Blob([value], { type: "text/plain" })
+    const url = window.URL.createObjectURL(blob)
+    const a = document.createElement("a")
+    a.href = url
+    a.download = `code_${new Date().toISOString().replace(/[:.]/g, "-")}.${programmingLanguages[language] || language}`
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    window.URL.revokeObjectURL(url)
   }
 
   return (
@@ -37,16 +46,14 @@ export const CodeBlock: FC<Props> = ({ language, value }) => {
         <div className="flex bg-gray-800 items-center justify-between py-1.5 px-4">
           <span className="text-xs lowercase text-gray-200">{language}</span>
 
-          <div className="flex items-center">
-            {language.toLowerCase() === "html" && (
-              <Tooltip title={t("preview")}>
-                <button
-                  onClick={handlePreview}
-                  className="flex gap-1.5 items-center rounded bg-none p-1 text-xs text-gray-200 hover:bg-gray-700 hover:text-gray-100 focus:outline-none">
-                  <EyeIcon className="h-4 w-4" />
-                </button>
-              </Tooltip>
-            )}
+          <div className="flex items-center gap-2">
+            <Tooltip title={t("downloadCode")}>
+              <button
+                onClick={handleDownload}
+                className="flex gap-1.5 items-center rounded bg-none p-1 text-xs text-gray-200 hover:bg-gray-700 hover:text-gray-100 focus:outline-none">
+                <DownloadIcon className="h-4 w-4" />
+              </button>
+            </Tooltip>
             <Tooltip title={t("copyToClipboard")}>
               <button
                 onClick={handleCopy}

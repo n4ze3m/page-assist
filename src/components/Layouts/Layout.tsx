@@ -54,14 +54,14 @@ export default function OptionLayout({
                   if (confirm) {
                     const db = new PageAssitDatabase()
                     await db.deleteAllChatHistory()
-                    queryClient.invalidateQueries({
+                    await queryClient.invalidateQueries({
                       queryKey: ["fetchChatHistory"]
                     })
                     clearChat()
                   }
                 }}
                 className="text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100">
-                <EraserIcon className="size-5"   />
+                <EraserIcon className="size-5" />
               </button>
             </Tooltip>
           </div>

@@ -100,5 +100,6 @@
         "rephrase": "重述",
         "translate": "翻译"
     },
-    "citations": "引用"
+    "citations": "引用",
+    "downloadCode": "下载代码"
 }

@@ -105,5 +105,6 @@
     "segmented": {
         "ollama": "Ollama Models",
         "custom": "Custom Models"
-    }
+    },
+    "downloadCode": "Download Code"
 }
