@@ -81,7 +81,7 @@ export const Sidebar = ({ onClose }: Props) => {
       if (yesterdayItems.length)
         groups.push({ label: "yesterday", items: yesterdayItems })
       if (lastWeekItems.length)
-        groups.push({ label: "last7days", items: lastWeekItems })
+        groups.push({ label: "last7Days", items: lastWeekItems })
       if (olderItems.length) groups.push({ label: "older", items: olderItems })
 
       return groups
