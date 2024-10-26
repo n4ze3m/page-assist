@@ -41,6 +41,7 @@
   "webSearch": "ウェブを検索中",
   "regenerate": "再生成",
   "edit": "編集",
+  "delete": "削除",
   "saveAndSubmit": "保存して送信",
   "editMessage": {
     "placeholder": "メッセージを入力..."
@@ -87,9 +88,9 @@
         "placeholder": "GPU(s)に送信するレイヤー数を入力してください"
       },
       "systemPrompt": {
-          "label": "一時的なシステムプロンプト",
-          "placeholder": "システムプロンプトを入力",
-          "help": "これは現在のチャットでシステムプロンプトを素早く設定する方法で、選択されたシステムプロンプトが存在する場合はそれを上書きします。"
+        "label": "一時的なシステムプロンプト",
+        "placeholder": "システムプロンプトを入力",
+        "help": "これは現在のチャットでシステムプロンプトを素早く設定する方法で、選択されたシステムプロンプトが存在する場合はそれを上書きします。"
       }
     },
     "advanced": "その他のモデル設定"
@@ -100,5 +101,15 @@
     "rephrase": "言い換え",
     "translate": "翻訳"
   },
-  "citations": "引用"
+  "citations": "引用",
+  "downloadCode": "コードをダウンロード",
+  "date": {
+    "pinned": "固定",
+    "today": "今日",
+    "yesterday": "昨日",
+    "last7Days": "過去7日間",
+    "older": "それ以前"
+  },
+  "pin": "固定",
+  "unpin": "固定解除"
 }

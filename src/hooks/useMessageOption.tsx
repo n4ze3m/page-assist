@@ -8,7 +8,7 @@ import {
   systemPromptForNonRagOption
 } from "~/services/ollama"
 import { type ChatHistory, type Message } from "~/store/option"
-import { HumanMessage, SystemMessage } from "@langchain/core/messages"
+import { SystemMessage } from "@langchain/core/messages"
 import { useStoreMessageOption } from "~/store/option"
 import {
   deleteChatForEdit,

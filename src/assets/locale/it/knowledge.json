@@ -10,9 +10,6 @@
     "expandedColumns": {
         "name": "Nome"
     },
-    "tooltip": {
-        "delete": "Elimina"
-    },
     "confirm": {
         "delete": "Sei sicuro di voler eliminare questa Knowledge Base?"
     },

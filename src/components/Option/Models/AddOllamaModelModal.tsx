@@ -20,6 +20,7 @@ export const AddOllamaModelModal: React.FC<Props> = ({ open, setOpen }) => {
   })
 
   const pullModel = async (modelName: string) => {
+    modelName.replaceAll("ollama pull", "").replaceAll("ollama run", "").trim()
     notification.info({
       message: t("manageModels.notification.pullModel"),
       description: t("manageModels.notification.pullModelDescription", {
@@ -52,7 +53,7 @@ export const AddOllamaModelModal: React.FC<Props> = ({ open, setOpen }) => {
         <Input
           {...form.getInputProps("model")}
           required
-          placeholder={t("manageModels.modal.placeholder")}
+          placeholder={"qwen2.5:3b"}
           size="large"
         />
 

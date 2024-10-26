@@ -41,6 +41,7 @@
     "webSearch": "Web durchsuchen",
     "regenerate": "Neu generieren",
     "edit": "Bearbeiten",
+    "delete": "Löschen",
     "saveAndSubmit": "Speichern & Absenden",
     "editMessage": {
         "placeholder": "Nachricht eingeben..."
@@ -101,5 +102,15 @@
         "translate": "Übersetzen",
         "custom": "Benutzerdefiniert"
     },
-    "citations": "Zitate"
+    "citations": "Zitate",
+    "downloadCode": "Code herunterladen",
+    "date": {
+        "pinned": "Angepinnt",
+        "today": "Heute",
+        "yesterday": "Gestern",
+        "last7Days": "Letzte 7 Tage",
+        "older": "Älter"
+    },
+    "pin": "Anheften",
+    "unpin": "Losheften"
 }

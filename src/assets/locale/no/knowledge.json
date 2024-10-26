@@ -10,9 +10,6 @@
     "expandedColumns": {
         "name": "Navn"
     },
-    "tooltip": {
-        "delete": "Slett"
-    },
     "confirm": {
         "delete": "Er du sikker på at du vil slette denne kunnskapen?"
     },

@@ -10,9 +10,6 @@
     "expandedColumns": {
         "name": "名前"
     },
-    "tooltip": {
-        "delete": "削除"
-    },
     "confirm": {
         "delete": "この知識を削除してもよろしいですか?"
     },

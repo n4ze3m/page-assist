@@ -41,6 +41,7 @@
     "webSearch": "Ricerca nel Web",
     "regenerate": "Rigenera",
     "edit": "Modifica",
+    "delete": "Elimina",
     "saveAndSubmit": "Salva e Invia",
     "editMessage": {
         "placeholder": "Scrivi un messaggio..."
@@ -100,5 +101,15 @@
         "rephrase": "Riformulare",
         "translate": "Tradurre"
     },
-    "citations": "Citazioni"
+    "citations": "Citazioni",
+    "downloadCode": "Scarica Codice",
+    "date": {
+        "pinned": "Fissato",
+        "today": "Oggi",
+        "yesterday": "Ieri",
+        "last7Days": "Ultimi 7 Giorni",
+        "older": "Più Vecchi"
+    },
+    "pin": "Fissa",
+    "unpin": "Rimuovi"
 }

@@ -41,6 +41,7 @@
     "webSearch": "Søker på internett",
     "regenerate": "Regenerer",
     "edit": "Endre",
+    "delete": "Slett",
     "saveAndSubmit": "Lagre & Send inn",
     "editMessage": {
         "placeholder": "Skriv en melding..."
@@ -101,5 +102,15 @@
         "translate": "Oversett",
         "custom": "Egendefinert"
     },
-    "citations": "Sitater"
+    "citations": "Sitater",
+    "downloadCode": "Last ned kode",
+    "date": {
+        "pinned": "Festet",
+        "today": "I dag",
+        "yesterday": "I går",
+        "last7Days": "Siste 7 dager",
+        "older": "Eldre"
+    },
+    "pin": "Fest",
+    "unpin": "Løsne"
 }
