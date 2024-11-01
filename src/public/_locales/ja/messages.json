@@ -9,18 +9,18 @@
     "message": "チャットするためにCopilotを開く"
   },
   "contextSummarize": {
-        "message": "要約"
-    },
-    "contextExplain": {
-        "message": "説明"
-    },
-    "contextRephrase": {
-        "message": "言い換え"
-    },
-    "contextTranslate" :{
-        "message": "翻訳"
-    },
-    "contextCustom": {
-        "message": "カスタム"
-    }
+    "message": "要約"
+  },
+  "contextExplain": {
+    "message": "説明"
+  },
+  "contextRephrase": {
+    "message": "言い換え"
+  },
+  "contextTranslate": {
+    "message": "翻訳"
+  },
+  "contextCustom": {
+    "message": "カスタム"
+  }
 }

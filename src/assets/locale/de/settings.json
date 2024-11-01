@@ -30,7 +30,7 @@
       "sendNotificationAfterIndexing": {
         "label": "Benachrichtigung nach Abschluss der Wissensbasis-Verarbeitung senden"
       },
-      "generateTitle" :{
+      "generateTitle": {
         "label": "Titel mit KI generieren"
       }
     },

@@ -20,7 +20,7 @@
     "contextRephrase": {
         "message": "Rephrase"
     },
-    "contextTranslate" :{
+    "contextTranslate": {
         "message": "Translate"
     },
     "contextCustom": {
