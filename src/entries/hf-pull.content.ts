@@ -66,10 +66,12 @@ export default defineContentScript({
             )
           }
         })
-        copyButton.parentElement!.insertBefore(
-          downloadButton,
-          copyButton.nextSibling
-        )
+        const buttonContainer = document.createElement('div')
+        buttonContainer.classList.add("mb-3")
+        buttonContainer.style.display = 'flex'
+        buttonContainer.style.justifyContent = 'flex-end'
+        buttonContainer.appendChild(downloadButton)
+        modal.querySelector("pre")!.insertAdjacentElement("afterend", buttonContainer)
       }
     }
 
