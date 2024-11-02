@@ -42,14 +42,30 @@ export const getDataFromCurrentTab = async () => {
         .query({ active: true, currentWindow: true })
         .then(async (tabs) => {
           const tab = tabs[0]
+          try {
+            const data = await browser.scripting.executeScript({
+              target: { tabId: tab.id },
+              func: _getHtml
+            })
 
-          const data = await browser.scripting.executeScript({
-            target: { tabId: tab.id },
-            func: _getHtml
-          })
-
-          if (data.length > 0) {
-            resolve(data[0].result)
+            if (data.length > 0) {
+              resolve(data[0].result)
+            }
+          } catch (e) {
+            console.log("error", e)
+            // this is a weird method but it works
+            if (import.meta.env.BROWSER === "firefox") {
+              // all I need is to get the pdf url but somehow 
+              // firefox won't allow extensions to run content scripts on pdf https://bugzilla.mozilla.org/show_bug.cgi?id=1454760
+              // so I set up a weird method to fix this issue by asking tab to give the url 
+              // and then I can get the pdf url
+              const result = {
+                url: tab.url,
+                content: "",
+                type: "pdf"
+              }
+              resolve(result)
+            }
           }
         })
     }
