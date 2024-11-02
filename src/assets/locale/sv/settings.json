@@ -1,0 +1,341 @@
+{
+  "generalSettings": {
+    "title": "Allmänna Inställningar",
+    "settings": {
+      "heading": "Webbgränssnitt Inställningar",
+      "speechRecognitionLang": {
+        "label": "Taligenkänningsspråk",
+        "placeholder": "Välj ett språk"
+      },
+      "language": {
+        "label": "Språk",
+        "placeholder": "Välj ett språk"
+      },
+      "darkMode": {
+        "label": "Byt Tema",
+        "options": {
+          "light": "Ljust",
+          "dark": "Mörkt"
+        }
+      },
+      "copilotResumeLastChat": {
+        "label": "Återuppta den senaste chatten när du öppnar sidopanelen (Copilot)"
+      },
+      "hideCurrentChatModelSettings": {
+        "label": "Göm de nuvarande chattmodellinställningarna"
+      },
+      "restoreLastChatModel": {
+        "label": "Återställ den senast använda modellen för tidigare chatter"
+      },
+      "sendNotificationAfterIndexing": {
+        "label": "Skicka meddelande efter att ha avslutat bearbetning av kunskapsbasen"
+      },
+      "generateTitle": {
+        "label": "Generera titel med AI"
+      }
+    },
+    "sidepanelRag": {
+      "heading": "Copilot Chatt med Webbplats Inställningar",
+      "ragEnabled": {
+        "label": "Chatta med webbplatsen med vektorinbäddningar"
+      },
+      "maxWebsiteContext": {
+        "label": "Vanligt läge webbplatsinnehållsstorlek",
+        "placeholder": "Innehållsstorlek (standard 4028)"
+      }
+    },
+    "webSearch": {
+      "heading": "Hantera Webb Sök",
+      "searchMode": {
+        "label": "Utför Enkel InternetSökning"
+      },
+      "provider": {
+        "label": "Sökmotor",
+        "placeholder": "Välj en sökmotor"
+      },
+      "totalSearchResults": {
+        "label": "Totalt Sökresultat",
+        "placeholder": "Ange Totalt Sökresultat"
+      },
+      "visitSpecificWebsite": {
+        "label": "Besök webbplatsen som nämns i meddelandet"
+      }
+    },
+    "system": {
+      "heading": "Systeminställningar",
+      "deleteChatHistory": {
+        "label": "Radera Chatt Historik",
+        "button": "Radera",
+        "confirm": "Är du säker på att du vill radera din chatthistorik? Denna åtgärd kan inte ångras."
+      },
+      "export": {
+        "label": "Exportera chatthistorik, kunskapsbas och instruktioner",
+        "button": "Exportera Data",
+        "success": "Exportering Lyckades"
+      },
+      "import": {
+        "label": "Importera chatthistorik, kunskapsbas och instruktioner",
+        "button": "Importera Data",
+        "success": "Importering Lyckades",
+        "error": "Importeringsfel"
+      }
+    },
+    "tts": {
+      "heading": "Text till Tal Inställningar",
+      "ttsEnabled": {
+        "label": "Aktivera Text till Tal"
+      },
+      "ttsProvider": {
+        "label": "Text till Tal Leverantör",
+        "placeholder": "Välj en leverantör"
+      },
+      "ttsVoice": {
+        "label": "Text till Tal Röst",
+        "placeholder": "Välj en röst"
+      },
+      "ssmlEnabled": {
+        "label": "Aktivera SSML (Speech Synthesis Markup Language)"
+      }
+    }
+  },
+  "manageModels": {
+    "title": "Hantera Modeller",
+    "addBtn": "Lägg till Ny Modell",
+    "columns": {
+      "name": "Namn",
+      "digest": "Sammanfattning",
+      "modifiedAt": "Modifierad Den",
+      "size": "Storlek",
+      "actions": "Åtgärder"
+    },
+    "expandedColumns": {
+      "parentModel": "Föräldramodell",
+      "format": "Format",
+      "family": "Familj",
+      "parameterSize": "Parameterstorlek",
+      "quantizationLevel": "Kvantifieringsnivå"
+    },
+    "tooltip": {
+      "delete": "Radera Modell",
+      "repull": "Hämta Modell Igen"
+    },
+    "confirm": {
+      "delete": "Är du säker på att du vill radera denna modell?",
+      "repull": "Är du säker på att du vill hämta modellen igen?"
+    },
+    "modal": {
+      "title": "Lägg till Ny Modell",
+      "placeholder": "Ange Modellnamn",
+      "pull": "Hämta Modell"
+    },
+    "notification": {
+      "pullModel": "Hämtar Modell",
+      "pullModelDescription": "Hämtar {{modelName}} modell. För mer information, kontrollera ikonen för tillägget.",
+      "success": "Lyckades",
+      "error": "Fel",
+      "successDescription": "Modellen hämtades framgångsrikt",
+      "successDeleteDescription": "Modellen raderades framgångsrikt",
+      "someError": "Något gick fel. Försök igen senare"
+    }
+  },
+  "managePrompts": {
+    "title": "Hantera instruktioner",
+    "addBtn": "Lägg till ny instruktion",
+    "option1": "Normal",
+    "option2": "RAG",
+    "questionPrompt": "Frågeinstruktion",
+    "segmented": {
+      "custom": "Custom instruktion",
+      "copilot": "Copilot instruktion"
+    },
+    "columns": {
+      "title": "Titel",
+      "prompt": "instruktion",
+      "type": "Instruktionstyp",
+      "actions": "Åtgärder"
+    },
+    "systemPrompt": "Systeminstruktion",
+    "quickPrompt": "Snabb instruktion",
+    "tooltip": {
+      "delete": "Radera instruktion",
+      "edit": "Redigera instruktion"
+    },
+    "confirm": {
+      "delete": "Är du säker på att du vill radera denna instruktion? Denna åtgärd kan inte ångras."
+    },
+    "modal": {
+      "addTitle": "Lägg till ny instruktion",
+      "editTitle": "Redigera instruktion"
+    },
+    "form": {
+      "title": {
+        "label": "Titel",
+        "placeholder": "Min fantastiska instruktion",
+        "required": "Vänligen ange en titel"
+      },
+      "prompt": {
+        "label": "Instruktion",
+        "placeholder": "Ange instruktion",
+        "required": "Vänligen ange en instruktion",
+        "help": "Du kan använda {key} som variabel i din instruktion.",
+        "missingTextPlaceholder": "Variabeln {text} saknas i instruktionen. Lägg till den."
+      },
+      "isSystem": {
+        "label": "Är Systeminstruktion"
+      },
+      "btnSave": {
+        "saving": "Lägger till instruktion...",
+        "save": "Lägg till instruktion"
+      },
+      "btnEdit": {
+        "saving": "Uppdaterar instruktion...",
+        "save": "Uppdatera instruktion"
+      }
+    },
+    "notification": {
+      "addSuccess": "Instruktion Tillagd",
+      "addSuccessDesc": "Instruktionen har lagts till framgångsrikt",
+      "error": "Fel",
+      "someError": "Något gick fel. Försök igen senare",
+      "updatedSuccess": "Instruktion Uppdaterad",
+      "updatedSuccessDesc": "Instruktionen har uppdaterats framgångsrikt",
+      "deletedSuccess": "Instruktion Raderad",
+      "deletedSuccessDesc": "Instruktionen har raderats framgångsrikt"
+    }
+  },
+  "manageShare": {
+    "title": "Hantera Delningar",
+    "heading": "Konfigurera Sidans Delnings-URL",
+    "form": {
+      "url": {
+        "label": "Sidans Delnings-URL",
+        "placeholder": "Ange Sidans Delnings-URL",
+        "required": "Vänligen ange din Sidans Delnings-URL!",
+        "help": "För integritetsskäl, kan du använda egen värd för sidans delning och ange URL här. <anchor>Läs Mer</anchor>."
+      }
+    },
+    "webshare": {
+      "heading": "Webbdelning",
+      "columns": {
+        "title": "Titel",
+        "url": "URL",
+        "actions": "Åtgärder"
+      },
+      "tooltip": {
+        "delete": "Radera Delning"
+      },
+      "confirm": {
+        "delete": "Är du säker på att du vill radera denna delning? Denna åtgärd kan inte ångras."
+      },
+      "label": "Hantera Sidans Delning",
+      "description": "Aktivera eller inaktivera funktionen för sidans delning"
+    },
+    "notification": {
+      "pageShareSuccess": "Sidans Delnings-URL uppdaterad framgångsrikt",
+      "someError": "Något gick fel. Försök igen senare",
+      "webShareDeleteSuccess": "Webbdelning raderades framgångsrikt"
+    }
+  },
+  "ollamaSettings": {
+    "title": "Ollamainställningar",
+    "heading": "Konfigurera Ollama",
+    "settings": {
+      "ollamaUrl": {
+        "label": "Ollama URL",
+        "placeholder": "Ange Ollama URL"
+      },
+      "advanced": {
+        "label": "Avancerad Ollama URL-konfiguration",
+        "urlRewriteEnabled": {
+          "label": "Aktivera eller inaktivera custom ursprungs-URL"
+        },
+        "rewriteUrl": {
+          "label": "Custom ursprungs-URL",
+          "placeholder": "Ange Custom ursprungs-URL"
+        },
+        "headers": {
+          "label": "Custom Headers",
+          "add": "Lägg till Header",
+          "key": {
+            "label": "Headernyckel",
+            "placeholder": "Auktorisering"
+          },
+          "value": {
+            "label": "Headervärde",
+            "placeholder": "Bärare token"
+          }
+        },
+        "help": "Om du har anslutningsproblem med Ollama på Page Assist, kan du konfigurera en custom ursprungs-URL. För att veta mer om konfigurationen, <anchor>klicka här</anchor>."
+      }
+    }
+  },
+  "manageSearch": {
+    "title": "Hantera Webbsök",
+    "heading": "Konfigurera Webbsök"
+  },
+  "about": {
+    "title": "Om",
+    "heading": "Om",
+    "chromeVersion": "Page Assist Version",
+    "ollamaVersion": "Ollamaversion",
+    "support": "Du kan stödja Page Assist-projektet genom att donera eller sponsra genom följande plattformar:",
+    "koFi": "Stöd på Ko-fi",
+    "githubSponsor": "Sponsra på GitHub",
+    "githubRepo": "GitHub repository"
+  },
+  "manageKnowledge": {
+    "title": "Hantera kunskap",
+    "heading": "Konfigurera kunskapsbas"
+  },
+  "rag": {
+    "title": "RAG-inställningar",
+    "ragSettings": {
+      "label": "RAG-inställningar",
+      "model": {
+        "label": "Inbäddningsmodell",
+        "required": "Vänligen välj en modell",
+        "help": "Det rekommenderas starkt att använda inbäddningsmodeller som 'nomic-embed-text'.",
+        "placeholder": "Välj en modell"
+      },
+      "chunkSize": {
+        "label": "Chunkstorlek",
+        "placeholder": "Ange chunkstorlek",
+        "required": "Vänligen ange en chunkstorlek"
+      },
+      "chunkOverlap": {
+        "label": "Chunköverlapp",
+        "placeholder": "Ange chunköverlapp",
+        "required": "Vänligen ange en chunköverlapp"
+      },
+      "totalFilePerKB": {
+        "label": "Standardgräns för kunskapsbas filuppladdning",
+        "placeholder": "Ange standardgräns för filuppladdning (t.ex. 10)",
+        "required": "Vänligen ange standardgräns för filuppladdning"
+      },
+      "noOfRetrievedDocs": {
+        "label": "Antal hämtade dokument",
+        "placeholder": "Ange antal hämtade dokument",
+        "required": "Vänligen ange antal hämtade dokument"
+      }
+    },
+    "prompt": {
+      "label": "Konfigurera RAG-instruktion",
+      "option1": "Normal",
+      "option2": "Webb",
+      "alert": "Att konfigurera systeminstruktionen här är föråldrat. Använd Hantera instruktioner-sektionen för att lägga till eller redigera instruktionar. Denna sektion kommer att tas bort i en framtida version",
+      "systemPrompt": "Systeminstruktion",
+      "systemPromptPlaceholder": "Ange systeminstruktion",
+      "webSearchPrompt": "Webbsökinstruktion",
+      "webSearchPromptHelp": "Ta inte bort '{search_results}' från instruktionen.",
+      "webSearchPromptError": "Vänligen ange en instruktion för webbsökning",
+      "webSearchPromptPlaceholder": "Ange instruktion för webbsök",
+      "webSearchFollowUpPrompt": "Uppföljningsinstruktion för webbsök",
+      "webSearchFollowUpPromptHelp": "Ta inte bort '{chat_history}' och '{question}' från instruktionen.",
+      "webSearchFollowUpPromptError": "Vänligen ange din uppföljningsinstruktion för webbsök!",
+      "webSearchFollowUpPromptPlaceholder": "Din uppföljningsinstruktion för webbsök"
+    }
+  },
+  "chromeAiSettings": {
+    "title": "Chrome AI-inställningar"
+  }
+}

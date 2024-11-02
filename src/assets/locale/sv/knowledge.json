@@ -1,0 +1,40 @@
+{
+    "addBtn": "Lägg till ny kunskap",
+    "columns": {
+        "title": "Titel",
+        "status": "Status",
+        "embeddings": "Inbäddningsmodell",
+        "createdAt": "Skapad den",
+        "action": "Åtgärder"
+    },
+    "expandedColumns": {
+        "name": "Namn"
+    },
+    "confirm": {
+        "delete": "Är du säker på att du vill ta bort denna kunskap?"
+    },
+    "deleteSuccess": "Kunskap raderades framgångsrikt",
+    "status": {
+        "pending": "Väntar",
+        "finished": "Klar",
+        "processing": "Bearbetar",
+        "failed": "Misslyckades"
+    },
+    "addKnowledge": "Lägg till kunskap",
+    "form": {
+        "title": {
+            "label": "Kunskapstitel",
+            "placeholder": "Ange kunskapstitel",
+            "required": "Kunskapstitel är obligatorisk"
+        },
+        "uploadFile": {
+            "label": "Ladda upp fil",
+            "uploadText": "Dra och släpp en fil här eller klicka för att ladda upp",
+            "uploadHint": "Stödda filtyper: .pdf, .csv, .txt, .md, .docx",
+            "required": "Fil är obligatorisk"
+        },
+        "submit": "Skicka in",
+        "success": "Kunskap tillagd framgångsrikt"
+    },
+    "noEmbeddingModel": "Vänligen lägg till en inbäddningsmodell från sidan för RAG-inställningar först"
+}

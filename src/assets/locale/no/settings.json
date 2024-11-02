@@ -30,7 +30,7 @@
       "sendNotificationAfterIndexing": {
         "label": "Send varsel etter ferdigbehandling av kunnskapsbasen"
       },
-      "generateTitle" :{
+      "generateTitle": {
         "label": "Generer tittel med AI"
       }
     },

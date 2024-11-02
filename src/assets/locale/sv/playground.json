@@ -1,0 +1,29 @@
+{
+    "ollamaState": {
+        "searching": "Söker efter din Ollama 🦙",
+        "running": "Ollama körs 🦙",
+        "notRunning": "Kan inte ansluta till Ollama 🦙",
+        "connectionError": "Det verkar som att du har ett anslutningsfel. Vänligen se denna <anchor>dokumentation</anchor> för felsökning."
+    },
+    "formError": {
+        "noModel": "Vänligen välj en modell",
+        "noEmbeddingModel": "Vänligen ställ in en inbäddningsmodell på sidan Inställningar > RAG"
+    },
+    "form": {
+        "textarea": {
+            "placeholder": "Skriv ett meddelande..."
+        },
+        "webSearch": {
+            "on": "På",
+            "off": "Av"
+        }
+    },
+    "tooltip": {
+        "searchInternet": "Sök på Internet",
+        "speechToText": "Tal till text",
+        "uploadImage": "Ladda upp bild",
+        "stopStreaming": "Stoppa strömning",
+        "knowledge": "Kunskap"
+    },
+    "sendWhenEnter": "Skicka när Enter trycks"
+}
