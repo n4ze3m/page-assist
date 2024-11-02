@@ -51,5 +51,9 @@ export const supportLanguage = [
     {
         label: "Norsk",
         value: "no"
+    },
+    {
+        value: "sv",
+        label: "Svenska"
     }
 ]

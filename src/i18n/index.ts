@@ -13,6 +13,7 @@ import { fa } from "./lang/fa";
 import { de } from "./lang/de";
 import { da } from "./lang/da";
 import { no } from "./lang/no";
+import { sv } from "./lang/sv";
 
 
 i18n
@@ -35,7 +36,8 @@ i18n
             "fa-IR": fa,
             da: da,
             no: no,
-            de: de
+            de: de,
+            sv: sv
         },
         fallbackLng: "en",
         lng: localStorage.getItem("i18nextLng") || "en",
