@@ -1,19 +1,14 @@
 export const preprocessLaTeX = (content: string) => {
+  // Replace block-level LaTeX delimiters \[ \] with $$ $$
 
-    let processedContent = content.replace(
-        /\\\[(.*?)\\\]/gs,
-        (_, equation) => `$$${equation}$$`
-    )
-
-    processedContent = processedContent.replace(
-        /\\\((.*?)\\\)/gs,
-        (_, equation) => `$${equation}$`
-    )
-
-    processedContent = processedContent.replace(
-        /\$(\d)/g,
-        '\\$$1'
-    )
-
-    return processedContent
+  const blockProcessedContent = content.replace(
+    /\\\[(.*?)\\\]/gs,
+    (_, equation) => `$$${equation}$$`
+  )
+  // Replace inline LaTeX delimiters \( \) with $ $
+  const inlineProcessedContent = blockProcessedContent.replace(
+    /\\\((.*?)\\\)/gs,
+    (_, equation) => `$${equation}$`
+  )
+  return inlineProcessedContent
 }
