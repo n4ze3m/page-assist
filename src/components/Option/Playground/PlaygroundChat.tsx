@@ -46,8 +46,8 @@ export const PlaygroundChat = () => {
             isProcessing={streaming}
             isSearchingInternet={isSearchingInternet}
             sources={message.sources}
-            onEditFormSubmit={(value) => {
-              editMessage(index, value, !message.isBot)
+            onEditFormSubmit={(value, isSend) => {
+              editMessage(index, value, !message.isBot, isSend)
             }}
             onSourceClick={(data) => {
               setSource(data)

@@ -29,7 +29,7 @@ type Props = {
   currentMessageIndex: number
   totalMessages: number
   onRengerate: () => void
-  onEditFormSubmit: (value: string) => void
+  onEditFormSubmit: (value: string, isSend: boolean) => void
   isProcessing: boolean
   webSearch?: {}
   isSearchingInternet?: boolean
