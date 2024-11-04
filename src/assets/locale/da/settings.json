@@ -30,7 +30,7 @@
       "sendNotificationAfterIndexing": {
         "label": "Send besked efter færdigbehandling af vidensbasen"
       },
-      "generateTitle" :{
+      "generateTitle": {
         "label": "Generer titel med AI"
       }
     },
@@ -67,7 +67,6 @@
         "label": "Slet Chathistorik",
         "button": "Slet",
         "confirm": "Er du sikker på, at du vil slette din chathistorik? Denne handling kan ikke fortrydes."
-
       },
       "export": {
         "label": "Eksporter chathistorik, vidensbase og prompts",
@@ -162,7 +161,8 @@
       "edit": "Ændre Prompt"
     },
     "confirm": {
-      "delete": "Er du sikker på, at du vil slette denne prompt? Denne handling kan ikke fortrydes."    },
+      "delete": "Er du sikker på, at du vil slette denne prompt? Denne handling kan ikke fortrydes."
+    },
     "modal": {
       "addTitle": "Tilføj ny Prompt",
       "editTitle": "Ændre Prompt"
@@ -211,7 +211,8 @@
         "label": "Page Deling URL",
         "placeholder": "Indtast websted deling URL",
         "required": "Venligst indstast din Page deling URL!",
-        "help": "Af hensyn til privatliv kan du selv hoste side delingen og angive URL'en her. <anchor>Lær Mere</anchor>."      }
+        "help": "Af hensyn til privatliv kan du selv hoste side delingen og angive URL'en her. <anchor>Lær Mere</anchor>."
+      }
     },
     "webshare": {
       "heading": "Web Deling",
@@ -264,7 +265,8 @@
             "placeholder": "Bearer token"
           }
         },
-        "help": "Hvis du har forbindelsesproblemer med Ollama på Page Assist, kan du konfigurere en brugerdefineret oprindelses-URL. For mere information om konfigurationen, <anchor>klik her</anchor>."      }
+        "help": "Hvis du har forbindelsesproblemer med Ollama på Page Assist, kan du konfigurere en brugerdefineret oprindelses-URL. For mere information om konfigurationen, <anchor>klik her</anchor>."
+      }
     }
   },
   "manageSearch": {

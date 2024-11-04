@@ -86,11 +86,10 @@ export const TTSModeSettings = ({ hideBorder }: { hideBorder?: boolean }) => {
               placeholder={t("generalSettings.tts.ttsVoice.placeholder")}
               className="w-full mt-4 sm:mt-0 sm:w-[200px]"
               options={data?.browserTTSVoices?.map(
-                (voice) =>
-                  ({
-                    label: `${voice.voiceName} - ${voice.lang}`.trim(),
-                    value: voice.voiceName
-                  }) || []
+                (voice) => ({
+                  label: `${voice.voiceName} - ${voice.lang}`.trim(),
+                  value: voice.voiceName
+                })
               )}
               {...form.getInputProps("voice")}
             />

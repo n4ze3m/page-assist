@@ -910,12 +910,14 @@ export const useMessageOption = () => {
   const editMessage = async (
     index: number,
     message: string,
-    isHuman: boolean
+    isHuman: boolean,
+    isSend: boolean
   ) => {
     let newMessages = messages
     let newHistory = history
 
-    if (isHuman) {
+    // if human message and send then only trigger the submit
+    if (isHuman && isSend) {
       const isOk = validateBeforeSubmit()
 
       if (!isOk) {
@@ -939,13 +941,13 @@ export const useMessageOption = () => {
         memory: previousHistory,
         controller: abortController
       })
-    } else {
-      newMessages[index].message = message
-      setMessages(newMessages)
-      newHistory[index].content = message
-      setHistory(newHistory)
-      await updateMessageByIndex(historyId, index, message)
+      return
     }
+    newMessages[index].message = message
+    setMessages(newMessages)
+    newHistory[index].content = message
+    setHistory(newHistory)
+    await updateMessageByIndex(historyId, index, message)
   }
 
   return {

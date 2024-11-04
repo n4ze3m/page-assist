@@ -8,20 +8,8 @@ import rehypeKatex from "rehype-katex"
 import "property-information"
 import React from "react"
 import { CodeBlock } from "./CodeBlock"
-export const preprocessLaTeX = (content: string) => {
-  // Replace block-level LaTeX delimiters \[ \] with $$ $$
+import { preprocessLaTeX } from "@/utils/latex"
 
-  const blockProcessedContent = content.replace(
-    /\\\[(.*?)\\\]/gs,
-    (_, equation) => `$$${equation}$$`
-  )
-  // Replace inline LaTeX delimiters \( \) with $ $
-  const inlineProcessedContent = blockProcessedContent.replace(
-    /\\\((.*?)\\\)/gs,
-    (_, equation) => `$${equation}$`
-  )
-  return inlineProcessedContent
-}
 function Markdown({
   message,
   className = "prose break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0 dark:prose-dark"

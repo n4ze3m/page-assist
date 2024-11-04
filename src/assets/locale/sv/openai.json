@@ -1,0 +1,90 @@
+{
+    "settings": "OpenAI-kompatibel API",
+    "heading": "OpenAI-kompatibel API",
+    "subheading": "Hantera och konfigurera dina OpenAI API-kompatibla leverantörer här.",
+    "addBtn": "Lägg till leverantör",
+    "table": {
+        "name": "Leverantörsnamn",
+        "baseUrl": "Bas-URL",
+        "actions": "Åtgärd"
+    },
+    "modal": {
+        "titleAdd": "Lägg till ny leverantör",
+        "name": {
+            "label": "Leverantörsnamn",
+            "required": "Leverantörsnamn krävs.",
+            "placeholder": "Ange leverantörsnamn"
+        },
+        "baseUrl": {
+            "label": "Bas-URL",
+            "help": "Bas-URL för OpenAI API-leverantören. t.ex. (http://localhost:1234/v1)",
+            "required": "Bas-URL krävs.",
+            "placeholder": "Ange bas-URL"
+        },
+        "apiKey": {
+            "label": "API-nyckel",
+            "required": "API-nyckel krävs.",
+            "placeholder": "Ange API-nyckel"
+        },
+        "submit": "Spara",
+        "update": "Uppdatera",
+        "deleteConfirm": "Är du säker på att du vill radera denna leverantör?",
+        "model": {
+            "title": "Modellista",
+            "subheading": "Vänligen välj chattmodellerna du vill använda med denna leverantör.",
+            "success": "Nya modeller har lagts till framgångsrikt."
+        },
+        "tipLMStudio": "Page Assist hämtar automatiskt modellerna du laddat i LM Studio. Ingen manuell tilläggning behövs."
+    },
+    "addSuccess": "Leverantör tillagd framgångsrikt.",
+    "deleteSuccess": "Leverantör raderad framgångsrikt.",
+    "updateSuccess": "Leverantör uppdaterad framgångsrikt.",
+    "delete": "Radera",
+    "edit": "Redigera",
+    "newModel": "Lägg till modeller till leverantör",
+    "noNewModel": "För LMStudio hämtar vi dynamiskt. Ingen manuell tilläggning behövs.",
+    "searchModel": "Sök modell",
+    "selectAll": "Välj alla",
+    "save": "Spara",
+    "saving": "Sparar...",
+    "manageModels": {
+        "columns": {
+            "name": "Modellnamn",
+            "model_type": "Modelltyp",
+            "model_id": "Modell-ID",
+            "provider": "Leverantörsnamn",
+            "actions": "Åtgärd"
+        },
+        "tooltip": {
+            "delete": "Radera"
+        },
+        "confirm": {
+            "delete": "Är du säker på att du vill radera denna modell?"
+        },
+        "modal": {
+            "title": "Lägg till Custom-modell",
+            "form": {
+                "name": {
+                    "label": "Modell-ID",
+                    "placeholder": "llama3.2",
+                    "required": "Modell-ID krävs."
+                },
+                "provider": {
+                    "label": "Leverantör",
+                    "placeholder": "Välj leverantör",
+                    "required": "Leverantör krävs."
+                },
+                "type": {
+                    "label": "Modelltyp"
+                }
+            }
+        }
+    },
+    "noModelFound": "Ingen modell hittades. Se till att du har lagt till korrekt leverantör med bas-URL och API-nyckel.",
+    "radio": {
+        "chat": "Chattmodell",
+        "embedding": "Inbäddningsmodell",
+        "chatInfo": "används för chattkompletion och konversationsgenerering",
+        "embeddingInfo": "används för RAG och andra semantiska sökrelaterade uppgifter."
+    }
+}
