@@ -1,0 +1,40 @@
+{
+    "addBtn": "새 지식 추가",
+    "columns": {
+        "title": "제목",
+        "status": "상태",
+        "embeddings": "임베딩 모델",
+        "createdAt": "생성일",
+        "action": "작업"
+    },
+    "expandedColumns": {
+        "name": "이름"
+    },
+    "confirm": {
+        "delete": "이 지식을 삭제하시겠습니까?"
+    },
+    "deleteSuccess": "지식이 정상적으로 삭제되었습니다",
+    "status": {
+        "pending": "대기 중",
+        "finished": "완료",
+        "processing": "처리 중",
+        "failed": "실패"
+    },
+    "addKnowledge": "지식 추가",
+    "form": {
+        "title": {
+            "label": "지식 제목",
+            "placeholder": "지식 제목을 입력하세요",
+            "required": "지식 제목은 필수 항목입니다"
+        },
+        "uploadFile": {
+            "label": "파일 업로드",
+            "uploadText": "파일을 여기에 드래그 앤 드롭하거나 클릭하여 업로드하세요",
+            "uploadHint": "지원되는 파일 형식: .pdf, .csv, .txt",
+            "required": "파일은 필수 항목입니다"
+        },
+        "submit": "제출",
+        "success": "지식이 정상적으로 추가되었습니다"
+    },
+    "noEmbeddingModel": "먼저 RAG 설정 페이지에서 임베딩 모델을 추가해 주세요"
+}
