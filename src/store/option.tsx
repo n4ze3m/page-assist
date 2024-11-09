@@ -65,6 +65,9 @@ type State = {
 
   setSpeechToTextLanguage: (language: string) => void
   speechToTextLanguage: string
+
+  temporaryChat: boolean
+  setTemporaryChat: (temporaryChat: boolean) => void
 }
 
 export const useStoreMessageOption = create<State>((set) => ({
@@ -102,5 +105,8 @@ export const useStoreMessageOption = create<State>((set) => ({
   setSelectedQuickPrompt: (selectedQuickPrompt) => set({ selectedQuickPrompt }),
 
   selectedKnowledge: null,
-  setSelectedKnowledge: (selectedKnowledge) => set({ selectedKnowledge })
+  setSelectedKnowledge: (selectedKnowledge) => set({ selectedKnowledge }),
+
+  temporaryChat: false,
+  setTemporaryChat: (temporaryChat) => set({ temporaryChat }),
 }))

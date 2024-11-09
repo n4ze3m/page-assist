@@ -22,7 +22,10 @@ import { notification } from "antd"
 import { getSystemPromptForWeb } from "~/web/web"
 import { generateHistory } from "@/utils/generate-history"
 import { useTranslation } from "react-i18next"
-import { saveMessageOnError, saveMessageOnSuccess } from "./chat-helper"
+import {
+  saveMessageOnError as saveError,
+  saveMessageOnSuccess as saveSuccess
+} from "./chat-helper"
 import { usePageAssist } from "@/context"
 import { PageAssistVectorStore } from "@/libs/PageAssistVectorStore"
 import { formatDocs } from "@/chain/chat-with-x"
@@ -65,7 +68,9 @@ export const useMessageOption = () => {
     selectedSystemPrompt,
     setSelectedSystemPrompt,
     selectedKnowledge,
-    setSelectedKnowledge
+    setSelectedKnowledge,
+    temporaryChat,
+    setTemporaryChat
   } = useStoreMessageOption()
   const currentChatModelSettings = useStoreChatModelSettings()
   const [selectedModel, setSelectedModel] = useStorage("selectedModel")
@@ -123,8 +128,9 @@ export const useMessageOption = () => {
       seed: currentChatModelSettings?.seed,
       numGpu:
         currentChatModelSettings?.numGpu ?? userDefaultModelSettings?.numGpu,
-       numPredict: currentChatModelSettings?.numPredict ?? userDefaultModelSettings?.numPredict,
-
+      numPredict:
+        currentChatModelSettings?.numPredict ??
+        userDefaultModelSettings?.numPredict
     })
 
     let newMessage: Message[] = []
@@ -199,9 +205,11 @@ export const useMessageOption = () => {
             userDefaultModelSettings?.numCtx,
           seed: currentChatModelSettings?.seed,
           numGpu:
-            currentChatModelSettings?.numGpu ?? userDefaultModelSettings?.numGpu,
-       numPredict: currentChatModelSettings?.numPredict ?? userDefaultModelSettings?.numPredict,
-
+            currentChatModelSettings?.numGpu ??
+            userDefaultModelSettings?.numGpu,
+          numPredict:
+            currentChatModelSettings?.numPredict ??
+            userDefaultModelSettings?.numPredict
         })
         const response = await questionOllama.invoke(promptForQuestion)
         query = response.content.toString()
@@ -355,6 +363,22 @@ export const useMessageOption = () => {
     }
   }
 
+  const saveMessageOnSuccess = async (e: any) => {
+    if (!temporaryChat) {
+      return await saveSuccess(e)
+    }
+
+    return true
+  }
+
+  const saveMessageOnError = async (e: any) => {
+    if (!temporaryChat) {
+      return await saveError(e)
+    }
+
+    return true
+  }
+
   const normalChatMode = async (
     message: string,
     image: string,
@@ -386,7 +410,9 @@ export const useMessageOption = () => {
       seed: currentChatModelSettings?.seed,
       numGpu:
         currentChatModelSettings?.numGpu ?? userDefaultModelSettings?.numGpu,
-       numPredict: currentChatModelSettings?.numPredict ?? userDefaultModelSettings?.numPredict,
+      numPredict:
+        currentChatModelSettings?.numPredict ??
+        userDefaultModelSettings?.numPredict
     })
 
     let newMessage: Message[] = []
@@ -501,7 +527,7 @@ export const useMessageOption = () => {
                 }
               }
             }
-          ],
+          ]
         }
       )
 
@@ -622,8 +648,9 @@ export const useMessageOption = () => {
       seed: currentChatModelSettings?.seed,
       numGpu:
         currentChatModelSettings?.numGpu ?? userDefaultModelSettings?.numGpu,
-       numPredict: currentChatModelSettings?.numPredict ?? userDefaultModelSettings?.numPredict,
-
+      numPredict:
+        currentChatModelSettings?.numPredict ??
+        userDefaultModelSettings?.numPredict
     })
 
     let newMessage: Message[] = []
@@ -714,9 +741,11 @@ export const useMessageOption = () => {
             userDefaultModelSettings?.numCtx,
           seed: currentChatModelSettings?.seed,
           numGpu:
-            currentChatModelSettings?.numGpu ?? userDefaultModelSettings?.numGpu,
-       numPredict: currentChatModelSettings?.numPredict ?? userDefaultModelSettings?.numPredict,
-
+            currentChatModelSettings?.numGpu ??
+            userDefaultModelSettings?.numGpu,
+          numPredict:
+            currentChatModelSettings?.numPredict ??
+            userDefaultModelSettings?.numPredict
         })
         const response = await questionOllama.invoke(promptForQuestion)
         query = response.content.toString()
@@ -1038,6 +1067,8 @@ export const useMessageOption = () => {
     textareaRef,
     selectedKnowledge,
     setSelectedKnowledge,
-    ttsEnabled
+    ttsEnabled,
+    temporaryChat,
+    setTemporaryChat,
   }
 }

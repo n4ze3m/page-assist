@@ -8,5 +8,6 @@
     "somethingWentWrong": "مشکلی پیش آمد",
     "validationSelectModel": "لطفا یک مدل را برای ادامه انتخاب کنید",
     "deleteHistoryConfirmation": "آیا مطمئن هستید که می خواهید این تاریخچه را حذف کنید؟",
-    "editHistoryTitle": "یک عنوان جدید وارد کنید"
+    "editHistoryTitle": "یک عنوان جدید وارد کنید",
+    "temporaryChat": "گپ موقت"
 }

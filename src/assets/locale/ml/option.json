@@ -8,5 +8,6 @@
     "somethingWentWrong": "എന്തോ തെറ്റായി",
     "deleteHistoryConfirmation": "നിങ്ങളുടെ ചാറ്റ് ചരിത്രം ഇല്ലാതാക്കണമെന്ന് തീർച്ചയാണോ?",
     "editHistoryTitle": "ചാറ്റ് title എഡിറ്റുചെയ്യുക",
-    "validationSelectModel": "തുടരുന്നതിന് ഒരു മോഡല്‍ തിരഞ്ഞെടുക്കുക"
+    "validationSelectModel": "തുടരുന്നതിന് ഒരു മോഡല്‍ തിരഞ്ഞെടുക്കുക",
+    "temporaryChat": "താൽക്കാലിക ചാറ്റ്"
 }

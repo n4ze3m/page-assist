@@ -36,7 +36,8 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
     selectedQuickPrompt,
     textareaRef,
     setSelectedQuickPrompt,
-    selectedKnowledge
+    selectedKnowledge,
+    temporaryChat
   } = useMessageOption()
 
   const isMobile = () => {
@@ -190,7 +191,10 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
   }
 
   return (
-    <div className="px-3 pt-3 md:px-4 md:pt-4 bg-gray-100 dark:bg-[#262626] border rounded-t-xl  dark:border-gray-600">
+    <div
+      className={`px-3 pt-3 md:px-4 md:pt-4 bg-gray-100 dark:bg-[#262626] border rounded-t-xl  dark:border-gray-600
+    ${temporaryChat && "!bg-gray-300 dark:!bg-black "}
+    `}>
       <div
         className={`h-full rounded-md shadow relative ${
           form.values.image.length === 0 ? "hidden" : "block"
@@ -213,7 +217,9 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
         </div>
       </div>
       <div>
-        <div className="flex rounded-t-xl bg-white dark:bg-transparent">
+        <div className={`flex rounded-t-xl bg-white dark:bg-transparent ${
+          temporaryChat && "!bg-gray-300 dark:!bg-black"
+        }`}>
           <form
             onSubmit={form.onSubmit(async (value) => {
               stopListening()
@@ -228,7 +234,10 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                   return
                 }
               }
-              if (value.message.trim().length === 0 && value.image.length === 0) {
+              if (
+                value.message.trim().length === 0 &&
+                value.image.length === 0
+              ) {
                 return
               }
               form.reset()
@@ -288,8 +297,6 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                   )}
                 </div>
                 <div className="flex !justify-end gap-3">
-                  
-
                   {!selectedKnowledge && (
                     <Tooltip title={t("tooltip.uploadImage")}>
                       <button

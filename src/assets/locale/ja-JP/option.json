@@ -8,5 +8,6 @@
     "somethingWentWrong": "何かが間違っています",
     "validationSelectModel": "続行するにはモデルを選択してください",
     "deleteHistoryConfirmation": "この履歴を削除しますか?",
-    "editHistoryTitle": "新しいタイトルを入力"
+    "editHistoryTitle": "新しいタイトルを入力",
+    "temporaryChat": "一時的なチャット"
   }
