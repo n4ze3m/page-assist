@@ -1,3 +1,5 @@
+import { getPromptById } from "@/db"
+import { useMessageOption } from "@/hooks/useMessageOption"
 import { getAllModelSettings } from "@/services/model-settings"
 import { useStoreChatModelSettings } from "@/store/model"
 import { useQuery } from "@tanstack/react-query"
@@ -27,10 +29,20 @@ export const CurrentChatModelSettings = ({
   const { t } = useTranslation("common")
   const [form] = Form.useForm()
   const cUserSettings = useStoreChatModelSettings()
+  const { selectedSystemPrompt } = useMessageOption()
   const { isPending: isLoading } = useQuery({
     queryKey: ["fetchModelConfig2", open],
     queryFn: async () => {
       const data = await getAllModelSettings()
+
+      let tempSystemPrompt = "";
+
+      // i hate this method but i need this feature so badly that i need to do this
+      if (selectedSystemPrompt) {
+        const prompt = await getPromptById(selectedSystemPrompt)
+        tempSystemPrompt = prompt?.content ?? ""
+      }
+
       form.setFieldsValue({
         temperature: cUserSettings.temperature ?? data.temperature,
         topK: cUserSettings.topK ?? data.topK,
@@ -40,7 +52,7 @@ export const CurrentChatModelSettings = ({
         seed: cUserSettings.seed,
         numGpu: cUserSettings.numGpu ?? data.numGpu,
         numPredict: cUserSettings.numPredict ?? data.numPredict,
-        systemPrompt: cUserSettings.systemPrompt ?? ""
+        systemPrompt: cUserSettings.systemPrompt ?? tempSystemPrompt
       })
       return data
     },
@@ -48,6 +60,7 @@ export const CurrentChatModelSettings = ({
     refetchOnMount: false,
     refetchOnWindowFocus: false
   })
+
 
   const renderBody = () => {
     return (
