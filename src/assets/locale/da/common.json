@@ -70,6 +70,10 @@
                 "label": "Længden af Kontekst",
                 "placeholder": "Instast Længden af Kontekst værdien (standard: 2048)"
             },
+            "numPredict": {
+                "label": "Maks Tokens (num_predict)",
+                "placeholder": "Indtast Maks Tokens værdi (fx. 2048, 4096)"
+            },
             "seed": {
                 "label": "Seed",
                 "placeholder": "Indtast Seed værdi (fx. 1234)",

@@ -70,6 +70,10 @@
         "label": "Número de Contextos",
         "placeholder": "Digite o valor do Número de Contextos (padrão: 2048)"
       },
+      "numPredict": {
+        "label": "Máximo de Tokens (num_predict)",
+        "placeholder": "Digite o valor do Máximo de Tokens (ex: 2048, 4096)"
+      },
       "seed": {
         "label": "Semente",
         "placeholder": "Digite o valor da Semente (ex: 1234)",

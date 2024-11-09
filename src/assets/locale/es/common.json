@@ -70,6 +70,10 @@
                 "label": "Cantidad de contextos",
                 "placeholder": "Ingresar el valor de tamaño de la ventana de contexto (por defecto: 2048)"
             },
+            "numPredict": {
+                "label": "Máximo de Tokens (num_predict)",
+                "placeholder": "Ingrese el valor máximo de Tokens (ej: 2048, 4096)"
+            },
             "seed": {
                 "label": "Semilla",
                 "placeholder": "Ingresar el valor de la semilla (ej: 1234)",

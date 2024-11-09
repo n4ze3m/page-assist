@@ -70,6 +70,10 @@
                 "label": "Number of Contexts",
                 "placeholder": "Enter Number of Contexts value (default: 2048)"
             },
+            "numPredict": {
+                "label": "Max Tokens (num_predict)",
+                "placeholder": "Enter Max Tokens value (e.g. 2048, 4096)"
+            },
             "seed": {
                 "label": "Seed",
                 "placeholder": "Enter Seed value (e.g. 1234)",

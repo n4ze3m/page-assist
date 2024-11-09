@@ -70,7 +70,10 @@
         "label": "컨텍스트 수",
         "placeholder": "컨텍스트 수를 입력하세요 (기본값: 2048)"
       },
-      "seed": {
+      "numPredict": {
+        "label": "최대 토큰 수 (num_predict)",
+        "placeholder": "최대 토큰 수를 입력하세요 (예: 2048, 4096)"
+      },      "seed": {
         "label": "시드",
         "placeholder": "시드 값을 입력하세요 (예: 1234)",
         "help": "모델 출력의 재현성"

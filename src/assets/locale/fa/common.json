@@ -70,6 +70,10 @@
                 "label": "Number of Contexts",
                 "placeholder": "مقدار Number of Contexts را وارد کنید (پیش فرض: 2048)"
             },
+            "numPredict": {
+                "label": "حداکثر توکن‌ها (num_predict)",
+                "placeholder": "مقدار حداکثر توکن‌ها را وارد کنید (مثلا 2048، 4096)"
+            },
             "seed": {
                 "label": "Seed",
                 "placeholder": "مقدار Seed را وارد کنید (e.g. 1234)",

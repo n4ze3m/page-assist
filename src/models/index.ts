@@ -13,7 +13,8 @@ export const pageAssistModel = async ({
   topP,
   numCtx,
   seed,
-  numGpu
+  numGpu,
+  numPredict,
 }: {
   model: string
   baseUrl: string
@@ -24,12 +25,13 @@ export const pageAssistModel = async ({
   numCtx?: number
   seed?: number
   numGpu?: number
+  numPredict?: number
 }) => {
 
   if (model === "chrome::gemini-nano::page-assist") {
     return new ChatChromeAI({
       temperature,
-      topK
+      topK,
     })
   }
 
@@ -46,6 +48,7 @@ export const pageAssistModel = async ({
       openAIApiKey: providerInfo.apiKey || "temp",
       temperature,
       topP,
+      maxTokens: numPredict,
       configuration: {
         apiKey: providerInfo.apiKey || "temp",
         baseURL: providerInfo.baseUrl || "",
@@ -64,7 +67,8 @@ export const pageAssistModel = async ({
     numCtx,
     seed,
     model,
-    numGpu
+    numGpu,
+    numPredict
   })
 
 

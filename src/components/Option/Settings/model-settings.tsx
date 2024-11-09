@@ -77,7 +77,14 @@ export const ModelSettings = () => {
               size="large"
             />
           </Form.Item>
-
+          <Form.Item
+              name="numPredict"
+              label={t("modelSettings.form.numPredict.label")}>
+              <InputNumber
+                style={{ width: "100%" }}
+                placeholder={t("modelSettings.form.numPredict.placeholder")}
+              />
+            </Form.Item>
           <Collapse
             ghost
             className="border-none bg-transparent"

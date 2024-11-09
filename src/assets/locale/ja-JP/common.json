@@ -70,6 +70,10 @@
         "label": "コンテキストの数",
         "placeholder": "コンテキスト数を入力してください（デフォルト：2048）"
       },
+      "numPredict": {
+        "label": "最大トークン数 (num_predict)",
+        "placeholder": "最大トークン数を入力してください（例：2048、4096）"
+      },
       "seed": {
         "label": "シード",
         "placeholder": "シード値を入力してください（例：1234）",

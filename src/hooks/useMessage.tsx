@@ -133,7 +133,9 @@ export const useMessage = () => {
         currentChatModelSettings?.numCtx ?? userDefaultModelSettings?.numCtx,
       seed: currentChatModelSettings?.seed,
       numGpu:
-        currentChatModelSettings?.numGpu ?? userDefaultModelSettings?.numGpu
+        currentChatModelSettings?.numGpu ?? userDefaultModelSettings?.numGpu,
+       numPredict: currentChatModelSettings?.numPredict ?? userDefaultModelSettings?.numPredict,
+
     })
 
     let newMessage: Message[] = []
@@ -261,7 +263,9 @@ export const useMessage = () => {
             userDefaultModelSettings?.numCtx,
           seed: currentChatModelSettings?.seed,
           numGpu:
-            currentChatModelSettings?.numGpu ?? userDefaultModelSettings?.numGpu
+            currentChatModelSettings?.numGpu ?? userDefaultModelSettings?.numGpu,
+       numPredict: currentChatModelSettings?.numPredict ?? userDefaultModelSettings?.numPredict,
+
         })
         const response = await questionOllama.invoke(promptForQuestion)
         query = response.content.toString()
@@ -475,7 +479,9 @@ export const useMessage = () => {
         currentChatModelSettings?.numCtx ?? userDefaultModelSettings?.numCtx,
       seed: currentChatModelSettings?.seed,
       numGpu:
-        currentChatModelSettings?.numGpu ?? userDefaultModelSettings?.numGpu
+        currentChatModelSettings?.numGpu ?? userDefaultModelSettings?.numGpu,
+       numPredict: currentChatModelSettings?.numPredict ?? userDefaultModelSettings?.numPredict,
+
     })
 
     let newMessage: Message[] = []
@@ -702,7 +708,9 @@ export const useMessage = () => {
         currentChatModelSettings?.numCtx ?? userDefaultModelSettings?.numCtx,
       seed: currentChatModelSettings?.seed,
       numGpu:
-        currentChatModelSettings?.numGpu ?? userDefaultModelSettings?.numGpu
+        currentChatModelSettings?.numGpu ?? userDefaultModelSettings?.numGpu,
+       numPredict: currentChatModelSettings?.numPredict ?? userDefaultModelSettings?.numPredict,
+
     })
 
     let newMessage: Message[] = []
@@ -777,7 +785,9 @@ export const useMessage = () => {
             userDefaultModelSettings?.numCtx,
           seed: currentChatModelSettings?.seed,
           numGpu:
-            currentChatModelSettings?.numGpu ?? userDefaultModelSettings?.numGpu
+            currentChatModelSettings?.numGpu ?? userDefaultModelSettings?.numGpu,
+       numPredict: currentChatModelSettings?.numPredict ?? userDefaultModelSettings?.numPredict,
+
         })
         const response = await questionOllama.invoke(promptForQuestion)
         query = response.content.toString()
@@ -964,7 +974,9 @@ export const useMessage = () => {
         currentChatModelSettings?.numCtx ?? userDefaultModelSettings?.numCtx,
       seed: currentChatModelSettings?.seed,
       numGpu:
-        currentChatModelSettings?.numGpu ?? userDefaultModelSettings?.numGpu
+        currentChatModelSettings?.numGpu ?? userDefaultModelSettings?.numGpu,
+       numPredict: currentChatModelSettings?.numPredict ?? userDefaultModelSettings?.numPredict,
+
     })
 
     let newMessage: Message[] = []

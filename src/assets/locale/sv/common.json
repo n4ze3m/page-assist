@@ -70,6 +70,10 @@
                 "label": "Antal kontexter",
                 "placeholder": "Ange antal kontextvärden (standard: 2048)"
             },
+            "numPredict": {
+                "label": "Max antal tokens (num_predict)",
+                "placeholder": "Ange Max antal tokens värde (t.ex. 2048, 4096)"
+            },
             "seed": {
                 "label": "Frö",
                 "placeholder": "Ange frövärde (t.ex. 1234)",

@@ -39,12 +39,14 @@ export const CurrentChatModelSettings = ({
         numCtx: cUserSettings.numCtx ?? data.numCtx,
         seed: cUserSettings.seed,
         numGpu: cUserSettings.numGpu ?? data.numGpu,
+        numPredict: cUserSettings.numPredict ?? data.numPredict,
         systemPrompt: cUserSettings.systemPrompt ?? ""
       })
       return data
     },
     enabled: open,
-    refetchOnMount: true
+    refetchOnMount: false,
+    refetchOnWindowFocus: false
   })
 
   const renderBody = () => {
@@ -112,6 +114,15 @@ export const CurrentChatModelSettings = ({
               <InputNumber
                 style={{ width: "100%" }}
                 placeholder={t("modelSettings.form.numCtx.placeholder")}
+              />
+            </Form.Item>
+
+            <Form.Item
+              name="numPredict"
+              label={t("modelSettings.form.numPredict.label")}>
+              <InputNumber
+                style={{ width: "100%" }}
+                placeholder={t("modelSettings.form.numPredict.placeholder")}
               />
             </Form.Item>
 
