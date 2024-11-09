@@ -301,7 +301,8 @@ export const formatToMessage = (messages: MessageHistory): MessageType[] => {
       message: message.content,
       name: message.name,
       sources: message?.sources || [],
-      images: message.images || []
+      images: message.images || [],
+      generationInfo: message?.generationInfo,
     }
   })
 }
