@@ -3,13 +3,19 @@ export const checkChromeAIAvailability = async (): Promise<"readily" | "no" | "a
     try {
         const ai = (window as any).ai;
 
-        // upcoming version change 
+        // latest i guess
+        if (ai?.languageModel?.capabilities) {
+            const capabilities = await ai.languageModel.capabilities();
+            return capabilities?.available ?? "no";
+        }
+
+        // old version change 
         if (ai?.assistant?.capabilities) {
             const capabilities = await ai.assistant.capabilities();
             return capabilities?.available ?? "no";
         }
 
-        // old version 
+        // too old version 
         if (ai?.canCreateTextSession) {
             const available = await ai.canCreateTextSession();
             return available ?? "no";
@@ -33,7 +39,15 @@ export interface AITextSession {
 export const createAITextSession = async (data: any): Promise<AITextSession> => {
     const ai = (window as any).ai;
 
-    // upcoming version change 
+    // new version i guess
+    if (ai?.languageModel?.create) {
+        const session = await ai.languageModel.create({
+            ...data
+        })
+        return session
+    }
+
+    // old version change 
     if (ai?.assistant?.create) {
         const session = await ai.assistant.create({
             ...data
@@ -41,7 +55,7 @@ export const createAITextSession = async (data: any): Promise<AITextSession> => 
         return session
     }
 
-    // old version
+    // too old version
     if (ai.createTextSession) {
         const session = await ai.createTextSession({
             ...data
