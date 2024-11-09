@@ -116,5 +116,6 @@
         "older": "Older"
     },
     "pin": "Pin",
-    "unpin": "Unpin"
+    "unpin": "Unpin",
+    "generationInfo": "Generation Info"
 }

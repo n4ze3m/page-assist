@@ -112,5 +112,6 @@
         "older": "Eldre"
     },
     "pin": "Fest",
-    "unpin": "Løsne"
+    "unpin": "Løsne",
+    "generationInfo": "Generasjonsinformasjon"
 }

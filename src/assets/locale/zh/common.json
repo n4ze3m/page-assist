@@ -111,5 +111,6 @@
         "older": "更早"
     },
     "pin": "置顶",
-    "unpin": "取消置顶"
+    "unpin": "取消置顶",
+    "generationInfo": "生成信息"
 }

@@ -111,5 +111,6 @@
     "older": "그 이전"
   },
   "pin": "고정",
-  "unpin": "고정 해제"
+  "unpin": "고정 해제",
+  "generationInfo": "생성 정보"
 }

@@ -111,5 +111,6 @@
     "older": "Mais Antigos"
   },
   "pin": "Fixar",
-  "unpin": "Desafixar"
+  "unpin": "Desafixar",
+  "generationInfo": "Informações de Geração"
 }

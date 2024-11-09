@@ -328,10 +328,25 @@ export const useMessage = () => {
 
       const applicationChatHistory = generateHistory(history, selectedModel)
 
+      let generationInfo: any | undefined = undefined
+
       const chunks = await ollama.stream(
         [...applicationChatHistory, humanMessage],
         {
-          signal: signal
+          signal: signal,
+          callbacks: [
+            {
+              handleLLMEnd(
+                output: any,
+              ): any {
+                try {
+                  generationInfo = output?.generations?.[0][0]?.generationInfo
+                } catch (e) {
+                  console.log("handleLLMEnd error", e)
+                }
+              }
+            }
+          ]
         }
       )
       let count = 0
@@ -361,7 +376,8 @@ export const useMessage = () => {
             return {
               ...message,
               message: fullText,
-              sources: source
+              sources: source,
+              generationInfo
             }
           }
           return message
@@ -390,7 +406,8 @@ export const useMessage = () => {
         image,
         fullText,
         source,
-        message_source: "copilot"
+        message_source: "copilot",
+        generationInfo
       })
 
       setIsProcessing(false)
@@ -544,10 +561,25 @@ export const useMessage = () => {
         )
       }
 
+      let generationInfo: any | undefined = undefined
+
       const chunks = await ollama.stream(
         [...applicationChatHistory, humanMessage],
         {
-          signal: signal
+          signal: signal,
+          callbacks: [
+            {
+              handleLLMEnd(
+                output: any,
+              ): any {
+                try {
+                  generationInfo = output?.generations?.[0][0]?.generationInfo
+                } catch (e) {
+                  console.log("handleLLMEnd error", e)
+                }
+              }
+            }
+          ]
         }
       )
       let count = 0
@@ -576,7 +608,8 @@ export const useMessage = () => {
           if (message.id === generateMessageId) {
             return {
               ...message,
-              message: fullText
+              message: fullText,
+              generationInfo
             }
           }
           return message
@@ -605,7 +638,8 @@ export const useMessage = () => {
         image,
         fullText,
         source: [],
-        message_source: "copilot"
+        message_source: "copilot",
+        generationInfo
       })
 
       setIsProcessing(false)
@@ -789,10 +823,24 @@ export const useMessage = () => {
         )
       }
 
+      let generationInfo: any | undefined = undefined
       const chunks = await ollama.stream(
         [...applicationChatHistory, humanMessage],
         {
-          signal: signal
+          signal: signal,
+          callbacks: [
+            {
+              handleLLMEnd(
+                output: any,
+              ): any {
+                try {
+                  generationInfo = output?.generations?.[0][0]?.generationInfo
+                } catch (e) {
+                  console.log("handleLLMEnd error", e)
+                }
+              }
+            }
+          ]
         }
       )
       let count = 0
@@ -822,7 +870,8 @@ export const useMessage = () => {
             return {
               ...message,
               message: fullText,
-              sources: source
+              sources: source,
+              generationInfo
             }
           }
           return message
@@ -850,7 +899,8 @@ export const useMessage = () => {
         message,
         image,
         fullText,
-        source
+        source,
+        generationInfo
       })
 
       setIsProcessing(false)
@@ -982,8 +1032,23 @@ export const useMessage = () => {
         })
       }
 
+      let generationInfo: any | undefined = undefined
+
       const chunks = await ollama.stream([humanMessage], {
-        signal: signal
+        signal: signal,
+        callbacks: [
+          {
+            handleLLMEnd(
+              output: any,
+            ): any {
+              try {
+                generationInfo = output?.generations?.[0][0]?.generationInfo
+              } catch (e) {
+                console.log("handleLLMEnd error", e)
+              }
+            }
+          }
+        ]
       })
       let count = 0
       for await (const chunk of chunks) {
@@ -1011,7 +1076,8 @@ export const useMessage = () => {
           if (message.id === generateMessageId) {
             return {
               ...message,
-              message: fullText
+              message: fullText,
+              generationInfo
             }
           }
           return message
@@ -1042,7 +1108,8 @@ export const useMessage = () => {
         fullText,
         source: [],
         message_source: "copilot",
-        message_type: messageType
+        message_type: messageType,
+        generationInfo
       })
 
       setIsProcessing(false)

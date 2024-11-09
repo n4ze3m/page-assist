@@ -111,5 +111,6 @@
         "older": "Más antiguo"
     },
     "pin": "Fijar",
-    "unpin": "Desfijar"
+    "unpin": "Desfijar",
+    "generationInfo": "Información de Generación"
 }

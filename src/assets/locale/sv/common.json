@@ -116,5 +116,6 @@
         "older": "Äldre"
     },
     "pin": "Fäst",
-    "unpin": "Ta bort fäst"
+    "unpin": "Ta bort fäst",
+    "generationInfo": "Generationsinformation"
 }

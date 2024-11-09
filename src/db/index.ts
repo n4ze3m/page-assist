@@ -33,6 +33,7 @@ type Message = {
   search?: WebSearch
   createdAt: number
   messageType?: string
+  generationInfo?: any
 }
 
 type Webshare = {
@@ -254,7 +255,8 @@ export const saveMessage = async (
   images: string[],
   source?: any[],
   time?: number,
-  message_type?: string
+  message_type?: string,
+  generationInfo?: any
 ) => {
   const id = generateID()
   let createdAt = Date.now()
@@ -270,7 +272,8 @@ export const saveMessage = async (
     images,
     createdAt,
     sources: source,
-    messageType: message_type
+    messageType: message_type,
+    generationInfo: generationInfo
   }
   const db = new PageAssitDatabase()
   await db.addMessage(message)

@@ -111,5 +111,6 @@
     "older": "それ以前"
   },
   "pin": "固定",
-  "unpin": "固定解除"
+  "unpin": "固定解除",
+  "generationInfo": "生成情報"
 }

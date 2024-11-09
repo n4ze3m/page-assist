@@ -112,5 +112,6 @@
         "older": "Älter"
     },
     "pin": "Anheften",
-    "unpin": "Losheften"
+    "unpin": "Losheften",
+    "generationInfo": "Generierungsinformationen"
 }

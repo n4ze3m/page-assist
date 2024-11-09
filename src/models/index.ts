@@ -49,7 +49,7 @@ export const pageAssistModel = async ({
       configuration: {
         apiKey: providerInfo.apiKey || "temp",
         baseURL: providerInfo.baseUrl || "",
-      }
+      },
     }) as any
   }
 

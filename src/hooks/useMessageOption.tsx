@@ -243,10 +243,23 @@ export const useMessageOption = () => {
         )
       }
 
+      let generationInfo: any | undefined = undefined
+
       const chunks = await ollama.stream(
         [...applicationChatHistory, humanMessage],
         {
-          signal: signal
+          signal: signal,
+          callbacks: [
+            {
+              handleLLMEnd(output: any): any {
+                try {
+                  generationInfo = output?.generations?.[0][0]?.generationInfo
+                } catch (e) {
+                  console.log("handleLLMEnd error", e)
+                }
+              }
+            }
+          ]
         }
       )
       let count = 0
@@ -276,7 +289,8 @@ export const useMessageOption = () => {
             return {
               ...message,
               message: fullText,
-              sources: source
+              sources: source,
+              generationInfo
             }
           }
           return message
@@ -304,7 +318,8 @@ export const useMessageOption = () => {
         message,
         image,
         fullText,
-        source
+        source,
+        generationInfo
       })
 
       setIsProcessing(false)
@@ -465,10 +480,23 @@ export const useMessageOption = () => {
         )
       }
 
+      let generationInfo: any | undefined = undefined
+
       const chunks = await ollama.stream(
         [...applicationChatHistory, humanMessage],
         {
-          signal: signal
+          signal: signal,
+          callbacks: [
+            {
+              handleLLMEnd(output: any): any {
+                try {
+                  generationInfo = output?.generations?.[0][0]?.generationInfo
+                } catch (e) {
+                  console.log("handleLLMEnd error", e)
+                }
+              }
+            }
+          ],
         }
       )
 
@@ -498,7 +526,8 @@ export const useMessageOption = () => {
           if (message.id === generateMessageId) {
             return {
               ...message,
-              message: fullText
+              message: fullText,
+              generationInfo
             }
           }
           return message
@@ -526,7 +555,8 @@ export const useMessageOption = () => {
         message,
         image,
         fullText,
-        source: []
+        source: [],
+        generationInfo
       })
 
       setIsProcessing(false)
@@ -711,10 +741,23 @@ export const useMessageOption = () => {
 
       const applicationChatHistory = generateHistory(history, selectedModel)
 
+      let generationInfo: any | undefined = undefined
+
       const chunks = await ollama.stream(
         [...applicationChatHistory, humanMessage],
         {
-          signal: signal
+          signal: signal,
+          callbacks: [
+            {
+              handleLLMEnd(output: any): any {
+                try {
+                  generationInfo = output?.generations?.[0][0]?.generationInfo
+                } catch (e) {
+                  console.log("handleLLMEnd error", e)
+                }
+              }
+            }
+          ]
         }
       )
       let count = 0
@@ -744,7 +787,8 @@ export const useMessageOption = () => {
             return {
               ...message,
               message: fullText,
-              sources: source
+              sources: source,
+              generationInfo
             }
           }
           return message
@@ -772,7 +816,8 @@ export const useMessageOption = () => {
         message,
         image,
         fullText,
-        source
+        source,
+        generationInfo
       })
 
       setIsProcessing(false)
