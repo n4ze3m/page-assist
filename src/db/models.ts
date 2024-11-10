@@ -407,6 +407,10 @@ export const ollamaFormatAllCustomModels = async (
     (provider) => provider.provider === "llamafile"
   )
 
+  const ollamaProviders = allProviders.filter(
+    (provider) => provider.provider === "ollama2"
+  )
+
   const lmModelsPromises = lmstudioProviders.map((provider) =>
     dynamicFetchLMStudio({
       baseUrl: provider.baseUrl,
@@ -421,12 +425,11 @@ export const ollamaFormatAllCustomModels = async (
     })
   )
 
-  const ollamaModelsPromises = allProviders.map((provider) => (
+  const ollamaModelsPromises = ollamaProviders.map((provider) =>
     dynamicFetchOllama2({
       baseUrl: provider.baseUrl,
       providerId: provider.id
-    })
-  ))
+    }))
 
   const lmModelsFetch = await Promise.all(lmModelsPromises)
 
