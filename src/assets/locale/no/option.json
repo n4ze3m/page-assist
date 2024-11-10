@@ -8,5 +8,6 @@
     "somethingWentWrong": "Noe gikk galt",
     "validationSelectModel": "Vennligst velg en modell for å fortsette",
     "deleteHistoryConfirmation": "Er du sikker på at du vil slette denne historikken?",
-    "editHistoryTitle": "Skriv inn en ny tittel"
+    "editHistoryTitle": "Skriv inn en ny tittel",
+    "temporaryChat": "Midlertidig Chat"
 }

@@ -8,5 +8,6 @@
     "somethingWentWrong": "Что-то пошло не так",
     "validationSelectModel": "Пожалуйста, выберите модель, чтобы продолжить",
     "deleteHistoryConfirmation": "Вы уверены, что хотите удалить эту историю?",
-    "editHistoryTitle": "Введите новое название"
+    "editHistoryTitle": "Введите новое название",
+    "temporaryChat": "Временный чат"
 }

@@ -1,8 +1,23 @@
 export const OAI_API_PROVIDERS = [
     {
+        label: "Custom",
+        value: "custom",
+        baseUrl: ""
+    },
+    {
         label: "LM Studio",
         value: "lmstudio",
         baseUrl: "http://localhost:1234/v1"
+    },
+    {
+        label: "Llamafile",
+        value: "llamafile",
+        baseUrl: "http://127.0.0.1:8080/v1"
+    },
+    {
+        label: "Ollama",
+        value: "ollama2",
+        baseUrl: "http://localhost:11434/v1"
     },
     {
         label: "OpenAI",
@@ -29,9 +44,5 @@ export const OAI_API_PROVIDERS = [
         value: "openrouter",
         baseUrl: "https://openrouter.ai/api/v1"
     },
-    {
-        label: "Custom",
-        value: "custom",
-        baseUrl: ""
-    }
+   
 ]

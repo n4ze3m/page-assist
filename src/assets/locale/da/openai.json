@@ -42,7 +42,7 @@
     "delete": "Slet",
     "edit": "Rediger",
     "newModel": "Tilføj Modeller til Udbyder",
-    "noNewModel": "For LMStudio henter vi dynamisk. Ingen manuel tilføjelse nødvendig.",
+    "noNewModel": "For LMStudio, Ollama, Llamafile, henter vi dynamisk. Ingen manuel tilføjelse nødvendig.",
     "searchModel": "Søg Model",
     "selectAll": "Vælg Alle",
     "save": "Gem",

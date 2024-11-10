@@ -47,6 +47,7 @@ export const SidePanelBody = () => {
             setIsSourceOpen(true)
           }}
           isTTSEnabled={ttsEnabled}
+          generationInfo={message?.generationInfo}
         />
       ))}
       <div className="w-full h-48 flex-shrink-0"></div>

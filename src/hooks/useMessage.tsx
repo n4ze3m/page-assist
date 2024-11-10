@@ -133,7 +133,9 @@ export const useMessage = () => {
         currentChatModelSettings?.numCtx ?? userDefaultModelSettings?.numCtx,
       seed: currentChatModelSettings?.seed,
       numGpu:
-        currentChatModelSettings?.numGpu ?? userDefaultModelSettings?.numGpu
+        currentChatModelSettings?.numGpu ?? userDefaultModelSettings?.numGpu,
+       numPredict: currentChatModelSettings?.numPredict ?? userDefaultModelSettings?.numPredict,
+
     })
 
     let newMessage: Message[] = []
@@ -261,7 +263,9 @@ export const useMessage = () => {
             userDefaultModelSettings?.numCtx,
           seed: currentChatModelSettings?.seed,
           numGpu:
-            currentChatModelSettings?.numGpu ?? userDefaultModelSettings?.numGpu
+            currentChatModelSettings?.numGpu ?? userDefaultModelSettings?.numGpu,
+       numPredict: currentChatModelSettings?.numPredict ?? userDefaultModelSettings?.numPredict,
+
         })
         const response = await questionOllama.invoke(promptForQuestion)
         query = response.content.toString()
@@ -328,16 +332,31 @@ export const useMessage = () => {
 
       const applicationChatHistory = generateHistory(history, selectedModel)
 
+      let generationInfo: any | undefined = undefined
+
       const chunks = await ollama.stream(
         [...applicationChatHistory, humanMessage],
         {
-          signal: signal
+          signal: signal,
+          callbacks: [
+            {
+              handleLLMEnd(
+                output: any,
+              ): any {
+                try {
+                  generationInfo = output?.generations?.[0][0]?.generationInfo
+                } catch (e) {
+                  console.log("handleLLMEnd error", e)
+                }
+              }
+            }
+          ]
         }
       )
       let count = 0
       for await (const chunk of chunks) {
-        contentToSave += chunk.content
-        fullText += chunk.content
+        contentToSave += chunk?.content
+        fullText += chunk?.content
         if (count === 0) {
           setIsProcessing(true)
         }
@@ -361,7 +380,8 @@ export const useMessage = () => {
             return {
               ...message,
               message: fullText,
-              sources: source
+              sources: source,
+              generationInfo
             }
           }
           return message
@@ -390,7 +410,8 @@ export const useMessage = () => {
         image,
         fullText,
         source,
-        message_source: "copilot"
+        message_source: "copilot",
+        generationInfo
       })
 
       setIsProcessing(false)
@@ -458,7 +479,9 @@ export const useMessage = () => {
         currentChatModelSettings?.numCtx ?? userDefaultModelSettings?.numCtx,
       seed: currentChatModelSettings?.seed,
       numGpu:
-        currentChatModelSettings?.numGpu ?? userDefaultModelSettings?.numGpu
+        currentChatModelSettings?.numGpu ?? userDefaultModelSettings?.numGpu,
+       numPredict: currentChatModelSettings?.numPredict ?? userDefaultModelSettings?.numPredict,
+
     })
 
     let newMessage: Message[] = []
@@ -544,16 +567,31 @@ export const useMessage = () => {
         )
       }
 
+      let generationInfo: any | undefined = undefined
+
       const chunks = await ollama.stream(
         [...applicationChatHistory, humanMessage],
         {
-          signal: signal
+          signal: signal,
+          callbacks: [
+            {
+              handleLLMEnd(
+                output: any,
+              ): any {
+                try {
+                  generationInfo = output?.generations?.[0][0]?.generationInfo
+                } catch (e) {
+                  console.log("handleLLMEnd error", e)
+                }
+              }
+            }
+          ]
         }
       )
       let count = 0
       for await (const chunk of chunks) {
-        contentToSave += chunk.content
-        fullText += chunk.content
+        contentToSave += chunk?.content
+        fullText += chunk?.content
         if (count === 0) {
           setIsProcessing(true)
         }
@@ -576,7 +614,8 @@ export const useMessage = () => {
           if (message.id === generateMessageId) {
             return {
               ...message,
-              message: fullText
+              message: fullText,
+              generationInfo
             }
           }
           return message
@@ -605,7 +644,8 @@ export const useMessage = () => {
         image,
         fullText,
         source: [],
-        message_source: "copilot"
+        message_source: "copilot",
+        generationInfo
       })
 
       setIsProcessing(false)
@@ -668,7 +708,9 @@ export const useMessage = () => {
         currentChatModelSettings?.numCtx ?? userDefaultModelSettings?.numCtx,
       seed: currentChatModelSettings?.seed,
       numGpu:
-        currentChatModelSettings?.numGpu ?? userDefaultModelSettings?.numGpu
+        currentChatModelSettings?.numGpu ?? userDefaultModelSettings?.numGpu,
+       numPredict: currentChatModelSettings?.numPredict ?? userDefaultModelSettings?.numPredict,
+
     })
 
     let newMessage: Message[] = []
@@ -743,7 +785,9 @@ export const useMessage = () => {
             userDefaultModelSettings?.numCtx,
           seed: currentChatModelSettings?.seed,
           numGpu:
-            currentChatModelSettings?.numGpu ?? userDefaultModelSettings?.numGpu
+            currentChatModelSettings?.numGpu ?? userDefaultModelSettings?.numGpu,
+       numPredict: currentChatModelSettings?.numPredict ?? userDefaultModelSettings?.numPredict,
+
         })
         const response = await questionOllama.invoke(promptForQuestion)
         query = response.content.toString()
@@ -789,16 +833,30 @@ export const useMessage = () => {
         )
       }
 
+      let generationInfo: any | undefined = undefined
       const chunks = await ollama.stream(
         [...applicationChatHistory, humanMessage],
         {
-          signal: signal
+          signal: signal,
+          callbacks: [
+            {
+              handleLLMEnd(
+                output: any,
+              ): any {
+                try {
+                  generationInfo = output?.generations?.[0][0]?.generationInfo
+                } catch (e) {
+                  console.log("handleLLMEnd error", e)
+                }
+              }
+            }
+          ]
         }
       )
       let count = 0
       for await (const chunk of chunks) {
-        contentToSave += chunk.content
-        fullText += chunk.content
+        contentToSave += chunk?.content
+        fullText += chunk?.content
         if (count === 0) {
           setIsProcessing(true)
         }
@@ -822,7 +880,8 @@ export const useMessage = () => {
             return {
               ...message,
               message: fullText,
-              sources: source
+              sources: source,
+              generationInfo
             }
           }
           return message
@@ -850,7 +909,8 @@ export const useMessage = () => {
         message,
         image,
         fullText,
-        source
+        source,
+        generationInfo
       })
 
       setIsProcessing(false)
@@ -914,7 +974,9 @@ export const useMessage = () => {
         currentChatModelSettings?.numCtx ?? userDefaultModelSettings?.numCtx,
       seed: currentChatModelSettings?.seed,
       numGpu:
-        currentChatModelSettings?.numGpu ?? userDefaultModelSettings?.numGpu
+        currentChatModelSettings?.numGpu ?? userDefaultModelSettings?.numGpu,
+       numPredict: currentChatModelSettings?.numPredict ?? userDefaultModelSettings?.numPredict,
+
     })
 
     let newMessage: Message[] = []
@@ -982,13 +1044,28 @@ export const useMessage = () => {
         })
       }
 
+      let generationInfo: any | undefined = undefined
+
       const chunks = await ollama.stream([humanMessage], {
-        signal: signal
+        signal: signal,
+        callbacks: [
+          {
+            handleLLMEnd(
+              output: any,
+            ): any {
+              try {
+                generationInfo = output?.generations?.[0][0]?.generationInfo
+              } catch (e) {
+                console.log("handleLLMEnd error", e)
+              }
+            }
+          }
+        ]
       })
       let count = 0
       for await (const chunk of chunks) {
-        contentToSave += chunk.content
-        fullText += chunk.content
+        contentToSave += chunk?.content
+        fullText += chunk?.content
         if (count === 0) {
           setIsProcessing(true)
         }
@@ -1011,7 +1088,8 @@ export const useMessage = () => {
           if (message.id === generateMessageId) {
             return {
               ...message,
-              message: fullText
+              message: fullText,
+              generationInfo
             }
           }
           return message
@@ -1042,7 +1120,8 @@ export const useMessage = () => {
         fullText,
         source: [],
         message_source: "copilot",
-        message_type: messageType
+        message_type: messageType,
+        generationInfo
       })
 
       setIsProcessing(false)

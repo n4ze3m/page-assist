@@ -70,6 +70,10 @@
                 "label": "Nombre de contextes",
                 "placeholder": "Entrez la valeur du nombre de contextes (par défaut: 2048)"
             },
+            "numPredict": {
+                "label": "Tokens maximum (num_predict)",
+                "placeholder": "Entrez la valeur des tokens maximum (par exemple 2048, 4096)"
+            },
             "seed": {
                 "label": "Graine",
                 "placeholder": "Entrez la valeur des semences (par exemple 1234)",
@@ -111,5 +115,6 @@
         "older": "Plus ancien"
     },
     "pin": "Épingler",
-    "unpin": "Désépingler"
+    "unpin": "Désépingler",
+    "generationInfo": "Informations de génération"
 }

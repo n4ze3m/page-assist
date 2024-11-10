@@ -33,6 +33,7 @@ type Message = {
   search?: WebSearch
   createdAt: number
   messageType?: string
+  generationInfo?: any
 }
 
 type Webshare = {
@@ -254,7 +255,8 @@ export const saveMessage = async (
   images: string[],
   source?: any[],
   time?: number,
-  message_type?: string
+  message_type?: string,
+  generationInfo?: any
 ) => {
   const id = generateID()
   let createdAt = Date.now()
@@ -270,7 +272,8 @@ export const saveMessage = async (
     images,
     createdAt,
     sources: source,
-    messageType: message_type
+    messageType: message_type,
+    generationInfo: generationInfo
   }
   const db = new PageAssitDatabase()
   await db.addMessage(message)
@@ -298,7 +301,8 @@ export const formatToMessage = (messages: MessageHistory): MessageType[] => {
       message: message.content,
       name: message.name,
       sources: message?.sources || [],
-      images: message.images || []
+      images: message.images || [],
+      generationInfo: message?.generationInfo,
     }
   })
 }
@@ -351,10 +355,14 @@ export const updateMessageByIndex = async (
   index: number,
   message: string
 ) => {
+  try {
   const db = new PageAssitDatabase()
   const chatHistory = (await db.getChatHistory(history_id)).reverse()
   chatHistory[index].content = message
   await db.db.set({ [history_id]: chatHistory.reverse() })
+  } catch(e) {
+    // temp chat will break
+  }
 }
 
 export const deleteChatForEdit = async (history_id: string, index: number) => {

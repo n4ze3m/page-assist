@@ -8,5 +8,6 @@
     "somethingWentWrong": "Algo deu errado",
     "validationSelectModel": "Por favor, selecione um modelo para continuar",
     "deleteHistoryConfirmation": "Tem certeza de que deseja excluir este histórico?",
-    "editHistoryTitle": "Digite um novo título"
+    "editHistoryTitle": "Digite um novo título",
+    "temporaryChat": "Chat Temporário"
 }

@@ -75,10 +75,10 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
     ) {
       e.preventDefault()
       form.onSubmit(async (value) => {
-        await stopListening()
-        if (value.message.trim().length === 0) {
+        if (value.message.trim().length === 0 && value.image.length === 0) {
           return
         }
+        await stopListening()
         if (!selectedModel || selectedModel.length === 0) {
           form.setFieldError("message", t("formError.noModel"))
           return
@@ -237,6 +237,9 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                 }
               }
               await stopListening()
+              if (value.message.trim().length === 0 && value.image.length === 0) {
+                return
+              }
               form.reset()
               textAreaFocus()
               await sendMessage({
@@ -260,7 +263,6 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                 onKeyDown={(e) => handleKeyDown(e)}
                 ref={textareaRef}
                 className="px-2 py-2 w-full resize-none bg-transparent focus-within:outline-none focus:ring-0 focus-visible:ring-0 ring-0 dark:ring-0 border-0 dark:text-gray-100"
-                required
                 onPaste={handlePaste}
                 rows={1}
                 style={{ minHeight: "60px" }}

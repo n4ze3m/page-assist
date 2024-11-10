@@ -42,7 +42,7 @@
     "delete": "削除",
     "edit": "編集",
     "newModel": "プロバイダーにモデルを追加",
-    "noNewModel": "LMStudioの場合、動的に取得します。手動での追加は不要です。",
+    "noNewModel": "LMStudio, Ollama, Llamafile,の場合、動的に取得します。手動での追加は不要です。",
     "searchModel": "モデルを検索",
     "selectAll": "すべて選択",
     "save": "保存",

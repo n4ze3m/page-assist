@@ -34,7 +34,8 @@ export const Sidebar = ({ onClose }: Props) => {
     setHistoryId,
     historyId,
     clearChat,
-    setSelectedModel
+    setSelectedModel,
+    temporaryChat
   } = useMessageOption()
   const { t } = useTranslation(["option", "common"])
   const client = useQueryClient()
@@ -126,7 +127,7 @@ export const Sidebar = ({ onClose }: Props) => {
   })
 
   return (
-    <div className="overflow-y-auto z-99">
+    <div className={`overflow-y-auto z-99 ${temporaryChat ? 'pointer-events-none opacity-50' : ''}`}>
       {status === "success" && chatHistories.length === 0 && (
         <div className="flex justify-center items-center mt-20 overflow-hidden">
           <Empty description={t("common:noHistory")} />

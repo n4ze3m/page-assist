@@ -70,6 +70,10 @@
                 "label": "Anzahl der Kontexte",
                 "placeholder": "Geben Sie die Anzahl der Kontexte ein (Standard: 2048)"
             },
+            "numPredict": {
+                "label": "Max Tokens (num_predict)",
+                "placeholder": "Geben Sie den Max-Tokens-Wert ein (z.B. 2048, 4096)"
+            },
             "seed": {
                 "label": "Seed",
                 "placeholder": "Geben Sie den Seed-Wert ein (z.B. 1234)",
@@ -112,5 +116,6 @@
         "older": "Älter"
     },
     "pin": "Anheften",
-    "unpin": "Losheften"
+    "unpin": "Losheften",
+    "generationInfo": "Generierungsinformationen"
 }

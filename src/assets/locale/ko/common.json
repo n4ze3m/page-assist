@@ -1,0 +1,119 @@
+{
+  "pageAssist": "페이지 어시스트",
+  "selectAModel": "모델 선택",
+  "save": "저장",
+  "saved": "저장됨",
+  "cancel": "취소",
+  "retry": "재시도",
+  "share": {
+    "tooltip": {
+      "share": "공유"
+    },
+    "modal": {
+      "title": "채팅 링크 공유"
+    },
+    "form": {
+      "defaultValue": {
+        "name": "익명",
+        "title": "제목 없는 채팅"
+      },
+      "title": {
+        "label": "채팅 제목",
+        "placeholder": "채팅 제목을 입력하세요",
+        "required": "채팅 제목은 필수 항목입니다"
+      },
+      "name": {
+        "label": "이름",
+        "placeholder": "이름을 입력하세요",
+        "required": "이름은 필수 항목입니다"
+      },
+      "btn": {
+        "save": "링크 생성",
+        "saving": "링크 생성 중..."
+      }
+    },
+    "notification": {
+      "successGenerate": "링크가 클립보드에 복사되었습니다",
+      "failGenerate": "링크 생성에 실패했습니다"
+    }
+  },
+  "copyToClipboard": "클립보드에 복사",
+  "webSearch": "웹 검색 중",
+  "regenerate": "재생성",
+  "edit": "편집",
+  "delete": "삭제",
+  "saveAndSubmit": "저장하고 제출",
+  "editMessage": {
+    "placeholder": "메시지를 입력하세요..."
+  },
+  "submit": "제출",
+  "noData": "데이터가 없습니다",
+  "noHistory": "채팅 기록이 없습니다",
+  "chatWithCurrentPage": "현재 페이지에서 채팅",
+  "beta": "베타",
+  "tts": "TTS",
+  "currentChatModelSettings": "현재 채팅 모델 설정",
+  "modelSettings": {
+    "label": "모델 설정",
+    "description": "모든 채팅에 대해 글로벌 모델 옵션을 설정합니다",
+    "form": {
+      "keepAlive": {
+        "label": "Keep Alive",
+        "help": "요청 후 모델이 메모리에 유지되는 시간을 설정합니다 (기본값: 5분)",
+        "placeholder": "Keep Alive 기간을 입력하세요 (예: 5분, 10분, 1시간)"
+      },
+      "temperature": {
+        "label": "온도",
+        "placeholder": "온도 값을 입력하세요 (예: 0.7, 1.0)"
+      },
+      "numCtx": {
+        "label": "컨텍스트 수",
+        "placeholder": "컨텍스트 수를 입력하세요 (기본값: 2048)"
+      },
+      "numPredict": {
+        "label": "최대 토큰 수 (num_predict)",
+        "placeholder": "최대 토큰 수를 입력하세요 (예: 2048, 4096)"
+      },      "seed": {
+        "label": "시드",
+        "placeholder": "시드 값을 입력하세요 (예: 1234)",
+        "help": "모델 출력의 재현성"
+      },
+      "topK": {
+        "label": "Top K",
+        "placeholder": "Top K 값을 입력하세요 (예: 40, 100)"
+      },
+      "topP": {
+        "label": "Top P",
+        "placeholder": "Top P 값을 입력하세요 (예: 0.9, 0.95)"
+      },
+      "numGpu": {
+        "label": "GPU 수",
+        "placeholder": "GPU에 할당할 레이어 수를 입력하세요"
+      },
+      "systemPrompt": {
+        "label": "임시 시스템 프롬프트",
+        "placeholder": "시스템 프롬프트를 입력하세요",
+        "help": "현재 채팅에서 시스템 프롬프트를 빠르게 설정하는 방법이며, 선택된 시스템 프롬프트가 있을 경우 이를 덮어씁니다."
+      }
+    },
+    "advanced": "기타 모델 설정"
+  },
+  "copilot": {
+    "summary": "요약",
+    "explain": "설명",
+    "rephrase": "다르게 표현",
+    "translate": "번역"
+  },
+  "citations": "인용",
+  "downloadCode": "코드 다운로드",
+  "date": {
+    "pinned": "고정됨",
+    "today": "오늘",
+    "yesterday": "어제",
+    "last7Days": "지난 7일",
+    "older": "그 이전"
+  },
+  "pin": "고정",
+  "unpin": "고정 해제",
+  "generationInfo": "생성 정보"
+}

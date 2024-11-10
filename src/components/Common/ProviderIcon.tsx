@@ -6,6 +6,7 @@ import { LMStudioIcon } from "../Icons/LMStudio"
 import { OpenAiIcon } from "../Icons/OpenAI"
 import { TogtherMonoIcon } from "../Icons/Togther"
 import { OpenRouterIcon } from "../Icons/OpenRouter"
+import { LLamaFile } from "../Icons/Llamafile"
 
 export const ProviderIcons = ({
   provider,
@@ -31,6 +32,8 @@ export const ProviderIcons = ({
       return <TogtherMonoIcon className={className} />
     case "openrouter":
       return <OpenRouterIcon className={className} />
+    case "llamafile":
+      return <LLamaFile className={className} />
     default:
       return <OllamaIcon className={className} />
   }

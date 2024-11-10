@@ -1,0 +1,90 @@
+{
+    "settings": "OpenAI 호환 API",
+    "heading": "OpenAI 호환 API",
+    "subheading": "여기에서 OpenAI API 호환 공급자를 관리하고 설정할 수 있습니다.",
+    "addBtn": "공급자 추가",
+    "table": {
+        "name": "공급자 이름",
+        "baseUrl": "기본 URL",
+        "actions": "작업"
+    },
+    "modal": {
+        "titleAdd": "새 공급자 추가",
+        "name": {
+            "label": "공급자 이름",
+            "required": "공급자 이름은 필수 항목입니다.",
+            "placeholder": "공급자 이름 입력"
+        },
+        "baseUrl": {
+            "label": "기본 URL",
+            "help": "OpenAI API 공급자의 기본 URL 예시: (http://localhost:1234/v1)",
+            "required": "기본 URL은 필수 항목입니다.",
+            "placeholder": "기본 URL 입력"
+        },
+        "apiKey": {
+            "label": "API 키",
+            "required": "API 키는 필수 항목입니다.",
+            "placeholder": "API 키 입력"
+        },
+        "submit": "저장",
+        "update": "업데이트",
+        "deleteConfirm": "이 공급자를 삭제하시겠습니까?",
+        "model": {
+            "title": "모델 목록",
+            "subheading": "이 공급자에서 사용하고자 하는 챗 모델을 선택하세요.",
+            "success": "새로운 모델이 정상적으로 추가되었습니다."
+        },
+        "tipLMStudio": "Page Assist는 LM Studio에 로드된 모델을 자동으로 가져옵니다. 수동 추가가 필요하지 않습니다."
+    },
+    "addSuccess": "공급자가 정상적으로 추가되었습니다.",
+    "deleteSuccess": "공급자가 정상적으로 삭제되었습니다.",
+    "updateSuccess": "공급자가 정상적으로 업데이트되었습니다.",
+    "delete": "삭제",
+    "edit": "편집",
+    "newModel": "공급자에 모델 추가",
+    "noNewModel": "LMStudio, Ollama, Llamafile,의 경우 동적으로 가져옵니다. 수동 추가는 필요하지 않습니다.",
+    "searchModel": "모델 검색",
+    "selectAll": "모두 선택",
+    "save": "저장",
+    "saving": "저장 중...",
+    "manageModels": {
+        "columns": {
+            "name": "모델 이름",
+            "model_type": "모델 타입",
+            "model_id": "모델 ID",
+            "provider": "공급자 이름",
+            "actions": "작업"
+        },
+        "tooltip": {
+            "delete": "삭제"
+        },
+        "confirm": {
+            "delete": "이 모델을 삭제하시겠습니까?"
+        },
+        "modal": {
+            "title": "사용자 정의 모델 추가",
+            "form": {
+                "name": {
+                    "label": "모델 ID",
+                    "placeholder": "llama3.2",
+                    "required": "모델 ID는 필수 항목입니다."
+                },
+                "provider": {
+                    "label": "공급자",
+                    "placeholder": "공급자 선택",
+                    "required": "공급자는 필수 항목입니다."
+                },
+                "type": {
+                    "label": "모델 타입"
+                }
+            }
+        }
+    },
+    "noModelFound": "모델을 찾을 수 없습니다. 올바른 기본 URL과 API 키를 가진 공급자가 추가되었는지 확인하세요.",
+    "radio": {
+        "chat": "챗 모델",
+        "embedding": "임베딩 모델",
+        "chatInfo": "는 챗 완료 및 대화 생성에 사용됩니다",
+        "embeddingInfo": "는 RAG 및 기타 의미 검색 관련 작업에 사용됩니다."
+    }
+}
