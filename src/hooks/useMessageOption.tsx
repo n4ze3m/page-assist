@@ -366,6 +366,8 @@ export const useMessageOption = () => {
   const saveMessageOnSuccess = async (e: any) => {
     if (!temporaryChat) {
       return await saveSuccess(e)
+    } else {
+      setHistoryId("temp")
     }
 
     return true
@@ -374,6 +376,21 @@ export const useMessageOption = () => {
   const saveMessageOnError = async (e: any) => {
     if (!temporaryChat) {
       return await saveError(e)
+    } else {
+      setHistory([
+        ...history,
+        {
+          role: "user",
+          content: e.userMessage,
+          image: e.image
+        },
+        {
+          role: "assistant",
+          content: e.botMessage
+        }
+      ])
+
+      setHistoryId("temp")
     }
 
     return true
@@ -1069,6 +1086,6 @@ export const useMessageOption = () => {
     setSelectedKnowledge,
     ttsEnabled,
     temporaryChat,
-    setTemporaryChat,
+    setTemporaryChat
   }
 }
