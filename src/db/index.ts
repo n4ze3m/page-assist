@@ -355,10 +355,14 @@ export const updateMessageByIndex = async (
   index: number,
   message: string
 ) => {
+  try {
   const db = new PageAssitDatabase()
   const chatHistory = (await db.getChatHistory(history_id)).reverse()
   chatHistory[index].content = message
   await db.db.set({ [history_id]: chatHistory.reverse() })
+  } catch(e) {
+    // temp chat will break
+  }
 }
 
 export const deleteChatForEdit = async (history_id: string, index: number) => {
