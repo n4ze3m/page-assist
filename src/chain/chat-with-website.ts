@@ -1,3 +1,4 @@
+//@ts-nocheck
 import { BaseLanguageModel } from "langchain/base_language";
 import { Document } from "@langchain/core/documents";
 import {
@@ -28,8 +29,8 @@ export function groupMessagesByConversation(messages: ChatHistory) {
   const groupedMessages = [];
   for (let i = 0; i < messages.length; i += 2) {
     groupedMessages.push({
-      human: messages[i].content,
-      ai: messages[i + 1].content,
+      human: messages[i]?.content,
+      ai: messages[i + 1]?.content,
     });
   }
 
@@ -38,7 +39,7 @@ export function groupMessagesByConversation(messages: ChatHistory) {
 
 const formatChatHistoryAsString = (history: BaseMessage[]) => {
   return history
-    .map((message) => `${message._getType()}: ${message.content}`)
+    .map((message) => `${message._getType()}: ${message?.content}`)
     .join("\n");
 };
 

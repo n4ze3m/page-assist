@@ -276,8 +276,8 @@ export const useMessageOption = () => {
       )
       let count = 0
       for await (const chunk of chunks) {
-        contentToSave += chunk.content
-        fullText += chunk.content
+        contentToSave += chunk?.content
+        fullText += chunk?.content
         if (count === 0) {
           setIsProcessing(true)
         }
@@ -533,8 +533,8 @@ export const useMessageOption = () => {
 
       let count = 0
       for await (const chunk of chunks) {
-        contentToSave += chunk.content
-        fullText += chunk.content
+        contentToSave += chunk?.content
+        fullText += chunk?.content
         if (count === 0) {
           setIsProcessing(true)
         }
@@ -800,8 +800,8 @@ export const useMessageOption = () => {
       )
       let count = 0
       for await (const chunk of chunks) {
-        contentToSave += chunk.content
-        fullText += chunk.content
+        contentToSave += chunk?.content
+        fullText += chunk?.content
         if (count === 0) {
           setIsProcessing(true)
         }
