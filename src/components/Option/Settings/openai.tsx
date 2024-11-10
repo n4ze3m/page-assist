@@ -47,7 +47,7 @@ export const OpenAIApp = () => {
       })
       setOpen(false)
       message.success(t("addSuccess"))
-      const noPopupProvider = ["lmstudio", "llamafile"]
+      const noPopupProvider = ["lmstudio", "llamafile", "ollama2"]
       if (!noPopupProvider.includes(provider)) {
         setOpenaiId(data)
         setOpenModelModal(true)

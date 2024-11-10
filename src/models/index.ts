@@ -1,8 +1,9 @@
-import { getModelInfo, isCustomModel } from "@/db/models"
+import { getModelInfo, isCustomModel, isOllamaModel } from "@/db/models"
 import { ChatChromeAI } from "./ChatChromeAi"
 import { ChatOllama } from "./ChatOllama"
 import { getOpenAIConfigById } from "@/db/openai"
 import { ChatOpenAI } from "@langchain/openai"
+import { urlRewriteRuntime } from "@/libs/runtime"
 
 export const pageAssistModel = async ({
   model,
@@ -42,6 +43,10 @@ export const pageAssistModel = async ({
   if (isCustom) {
     const modelInfo = await getModelInfo(model)
     const providerInfo = await getOpenAIConfigById(modelInfo.provider_id)
+
+    if (isOllamaModel(model)) {
+      await urlRewriteRuntime(providerInfo.baseUrl || "")
+    }
 
     return new ChatOpenAI({
       modelName: modelInfo.model_id,
