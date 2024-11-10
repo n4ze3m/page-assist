@@ -42,7 +42,7 @@
     "delete": "Löschen",
     "edit": "Bearbeiten",
     "newModel": "Modelle zum Anbieter hinzufügen",
-    "noNewModel": "Für LMStudio holen wir die Daten dynamisch. Keine manuelle Hinzufügung erforderlich.",
+    "noNewModel": "Für LMStudio, Ollama, Llamafile, holen wir die Daten dynamisch. Keine manuelle Hinzufügung erforderlich.",
     "searchModel": "Modell suchen",
     "selectAll": "Alle auswählen",
     "save": "Speichern",

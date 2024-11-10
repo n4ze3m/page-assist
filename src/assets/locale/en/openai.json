@@ -42,7 +42,7 @@
     "delete": "Delete",
     "edit": "Edit",
     "newModel": "Add Models to Provider",
-    "noNewModel": "For LMStudio, we fetch dynamically. No manual addition needed.",
+    "noNewModel": "For LMStudio, Ollama, Llamafile, we fetch dynamically. No manual addition needed.",
     "searchModel": "Search Model",
     "selectAll": "Select All",
     "save": "Save",

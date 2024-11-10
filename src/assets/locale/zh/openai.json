@@ -42,7 +42,7 @@
     "delete": "删除",
     "edit": "编辑",
     "newModel": "向提供商添加模型",
-    "noNewModel": "对于 LMStudio，我们动态获取。无需手动添加。",
+    "noNewModel": "对于 LMStudio, Ollama, Llamafile，我们动态获取。无需手动添加。",
     "searchModel": "搜索模型",
     "selectAll": "全选",
     "save": "保存",

@@ -42,7 +42,7 @@
     "delete": "삭제",
     "edit": "편집",
     "newModel": "공급자에 모델 추가",
-    "noNewModel": "LMStudio의 경우 동적으로 가져옵니다. 수동 추가는 필요하지 않습니다.",
+    "noNewModel": "LMStudio, Ollama, Llamafile,의 경우 동적으로 가져옵니다. 수동 추가는 필요하지 않습니다.",
     "searchModel": "모델 검색",
     "selectAll": "모두 선택",
     "save": "저장",

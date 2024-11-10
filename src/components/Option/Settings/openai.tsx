@@ -23,6 +23,7 @@ import {
 } from "lucide-react"
 import { OpenAIFetchModel } from "./openai-fetch-model"
 import { OAI_API_PROVIDERS } from "@/utils/oai-api-providers"
+const noPopupProvider = ["lmstudio", "llamafile", "ollama2"]
 
 export const OpenAIApp = () => {
   const { t } = useTranslation("openai")
@@ -47,7 +48,6 @@ export const OpenAIApp = () => {
       })
       setOpen(false)
       message.success(t("addSuccess"))
-      const noPopupProvider = ["lmstudio", "llamafile", "ollama2"]
       if (!noPopupProvider.includes(provider)) {
         setOpenaiId(data)
         setOpenModelModal(true)
@@ -158,7 +158,7 @@ export const OpenAIApp = () => {
 
                   <Tooltip
                     title={
-                      record.provider !== "lmstudio"
+                      !noPopupProvider.includes(record.provider)
                         ? t("newModel")
                         : t("noNewModel")
                     }>
@@ -168,7 +168,9 @@ export const OpenAIApp = () => {
                         setOpenModelModal(true)
                         setOpenaiId(record.id)
                       }}
-                      disabled={!record.id || record.provider === "lmstudio"}>
+                      disabled={
+                        !record.id || noPopupProvider.includes(record.provider)
+                      }>
                       <DownloadIcon className="size-4" />
                     </button>
                   </Tooltip>
