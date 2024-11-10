@@ -5,6 +5,11 @@ export const OAI_API_PROVIDERS = [
         baseUrl: "http://localhost:1234/v1"
     },
     {
+        label: "LlamaFile",
+        value: "llamafile",
+        baseUrl: "http://127.0.0.1:8080/v1"
+    },
+    {
         label: "OpenAI",
         value: "openai",
         baseUrl: "https://api.openai.com/v1"
