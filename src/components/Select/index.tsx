@@ -43,6 +43,7 @@ export const PageAssistSelect: React.FC<SelectProps> = ({
   const [searchTerm, setSearchTerm] = useState("")
   const [filteredOptions, setFilteredOptions] = useState<SelectOption[]>([])
   const containerRef = useRef<HTMLDivElement>(null)
+  const optionsContainerRef = useRef<HTMLDivElement>(null)
   const [activeIndex, setActiveIndex] = useState(-1)
 
   useEffect(() => {
@@ -58,6 +59,21 @@ export const PageAssistSelect: React.FC<SelectProps> = ({
     document.addEventListener("mousedown", handleClickOutside)
     return () => document.removeEventListener("mousedown", handleClickOutside)
   }, [])
+
+  useEffect(() => {
+    try {
+      if (isOpen && optionsContainerRef.current && value) {
+        const selectedOptionElement = optionsContainerRef.current.querySelector(
+          `[data-value="${value}"]`
+        )
+        if (selectedOptionElement) {
+          selectedOptionElement.scrollIntoView({ block: "nearest" })
+        }
+      }
+    } catch (error) {
+      console.error("Error scrolling to selected option:", error)
+    }
+  }, [isOpen, value])
 
   useEffect(() => {
     if (!options) return
@@ -193,7 +209,7 @@ export const PageAssistSelect: React.FC<SelectProps> = ({
 
   const selectedOption = useMemo(() => {
     if (!value || !options) return null
-    return options?.find(opt => opt.value === value)
+    return options?.find((opt) => opt.value === value)
   }, [value, options])
 
   if (!options) {
@@ -221,7 +237,13 @@ export const PageAssistSelect: React.FC<SelectProps> = ({
         className={`${defaultSelectClass} ${className}`}>
         <span className="!truncate flex items-center gap-2 ">
           {isLoading && <LoadingIndicator />}
-          {isLoading ? loadingText : selectedOption ? selectedOption.label : <span className="dark:text-gray-400 text-sm">{placeholder}</span>}
+          {isLoading ? (
+            loadingText
+          ) : selectedOption ? (
+            selectedOption.label
+          ) : (
+            <span className="dark:text-gray-400 text-sm">{placeholder}</span>
+          )}
         </span>
         <ChevronDown
           aria-hidden="true"
@@ -232,7 +254,7 @@ export const PageAssistSelect: React.FC<SelectProps> = ({
       </div>
 
       {isOpen && (
-        <div 
+        <div
           id="select-dropdown"
           role="listbox"
           className={`${defaultDropdownClass} ${dropdownClassName}`}>
@@ -247,7 +269,10 @@ export const PageAssistSelect: React.FC<SelectProps> = ({
                 disabled={isLoading}
                 aria-label="Search options"
               />
-              <Search aria-hidden="true" className="absolute left-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <Search
+                aria-hidden="true"
+                className="absolute left-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400"
+              />
               {onRefresh && (
                 <button
                   onClick={handleRefresh}
@@ -265,7 +290,9 @@ export const PageAssistSelect: React.FC<SelectProps> = ({
             </div>
           </div>
 
-          <div className="max-h-60 overflow-y-auto custom-scrollbar">
+          <div
+            ref={optionsContainerRef}
+            className="max-h-60 overflow-y-auto custom-scrollbar">
             {isLoading ? (
               <div className="p-4 text-center text-gray-500 flex items-center justify-center gap-2">
                 <LoadingIndicator />
@@ -281,6 +308,7 @@ export const PageAssistSelect: React.FC<SelectProps> = ({
                   key={option.value}
                   role="option"
                   aria-selected={value === option.value}
+                  data-value={option.value}
                   onClick={() => {
                     onChange(option)
                     setIsOpen(false)
