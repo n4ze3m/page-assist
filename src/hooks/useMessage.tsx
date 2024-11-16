@@ -34,6 +34,8 @@ import { pageAssistModel } from "@/models"
 import { getPrompt } from "@/services/application"
 import { humanMessageFormatter } from "@/utils/human-message"
 import { pageAssistEmbeddingModel } from "@/models/embedding"
+import { PageAssistVectorStore } from "@/libs/PageAssistVectorStore"
+import { PAMemoryVectorStore } from "@/libs/PAMemoryVectorStore"
 
 export const useMessage = () => {
   const {
@@ -90,7 +92,7 @@ export const useMessage = () => {
   )
 
   const [keepTrackOfEmbedding, setKeepTrackOfEmbedding] = React.useState<{
-    [key: string]: MemoryVectorStore
+    [key: string]: PAMemoryVectorStore
   }>({})
 
   const clearChat = () => {
@@ -177,7 +179,7 @@ export const useMessage = () => {
     let embedURL: string, embedHTML: string, embedType: string
     let embedPDF: { content: string; page: number }[] = []
 
-    let isAlreadyExistEmbedding: MemoryVectorStore
+    let isAlreadyExistEmbedding: PAMemoryVectorStore
     const {
       content: html,
       url: websiteUrl,
@@ -212,7 +214,7 @@ export const useMessage = () => {
         currentChatModelSettings?.keepAlive ??
         userDefaultModelSettings?.keepAlive
     })
-    let vectorstore: MemoryVectorStore
+    let vectorstore: PAMemoryVectorStore
 
     try {
       if (isAlreadyExistEmbedding) {
