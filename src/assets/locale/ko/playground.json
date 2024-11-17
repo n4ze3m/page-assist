@@ -25,5 +25,6 @@
         "stopStreaming": "스트리밍 중지",
         "knowledge": "지식"
     },
-    "sendWhenEnter": "Enter 키를 누르면 전송"
+    "sendWhenEnter": "Enter 키를 누르면 전송",
+    "welcome": "안녕하세요! 오늘 어떻게 도와드릴까요?"
 }

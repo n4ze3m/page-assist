@@ -113,6 +113,7 @@ export const Header: React.FC<Props> = ({
           <PageAssistSelect
             className="w-80"
             placeholder={t("common:selectAModel")}
+            loadingText={t("common:selectAModel")}
             value={selectedModel}
             onChange={(e) => {
               setSelectedModel(e.value)

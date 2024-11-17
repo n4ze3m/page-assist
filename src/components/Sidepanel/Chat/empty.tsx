@@ -1,4 +1,5 @@
 import { cleanUrl } from "@/libs/clean-url"
+import { useStorage } from "@plasmohq/storage/hook"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { Select } from "antd"
 import { RotateCcw } from "lucide-react"
@@ -17,13 +18,15 @@ export const EmptySidePanel = () => {
   const [ollamaURL, setOllamaURL] = useState<string>("")
   const { t } = useTranslation(["playground", "common"])
   const queryClient = useQueryClient()
+  const [checkOllamaStatus] = useStorage("checkOllamaStatus", true)
+
   const {
     data: ollamaInfo,
     status: ollamaStatus,
     refetch,
     isRefetching
   } = useQuery({
-    queryKey: ["ollamaStatus"],
+    queryKey: ["ollamaStatus", checkOllamaStatus],
     queryFn: async () => {
       const ollamaURL = await getOllamaURL()
       const isOk = await isOllamaRunning()
@@ -32,7 +35,7 @@ export const EmptySidePanel = () => {
         queryKey: ["getAllModelsForSelect"]
       })
       return {
-        isOk,
+        isOk: checkOllamaStatus ? isOk : true,
         models,
         ollamaURL
       }
@@ -59,7 +62,7 @@ export const EmptySidePanel = () => {
             </p>
           </div>
         )}
-        {!isRefetching && ollamaStatus === "success" ? (
+        {!isRefetching && ollamaStatus === "success" && checkOllamaStatus ? (
           ollamaInfo.isOk ? (
             <div className="inline-flex  items-center space-x-2">
               <div className="w-3 h-3 bg-green-500 rounded-full"></div>

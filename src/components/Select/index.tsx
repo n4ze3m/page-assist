@@ -235,14 +235,16 @@ export const PageAssistSelect: React.FC<SelectProps> = ({
         onClick={() => !disabled && !isLoading && setIsOpen(!isOpen)}
         onKeyDown={handleKeyDown}
         className={`${defaultSelectClass} ${className}`}>
-        <span className="!truncate flex items-center gap-2 ">
-          {isLoading && <LoadingIndicator />}
+        <span className="!truncate flex items-center gap-2 select-none">
+          {isLoading && <LoadingIndicator  />}
           {isLoading ? (
             loadingText
           ) : selectedOption ? (
             selectedOption.label
           ) : (
-            <span className="dark:text-gray-400 text-sm">{placeholder}</span>
+            <span className="dark:text-gray-500 font-semibold text-[14px]">
+              {placeholder}
+            </span>
           )}
         </span>
         <ChevronDown

@@ -25,5 +25,6 @@
         "stopStreaming": "Stopp Streaming",
         "knowledge": "Kunnskap"
     },
-    "sendWhenEnter": "Søk når Enter trykkes"
+    "sendWhenEnter": "Søk når Enter trykkes",
+    "welcome": "Hei! Hvordan kan jeg hjelpe deg i dag?"
 }

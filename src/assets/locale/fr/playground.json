@@ -25,5 +25,6 @@
         "stopStreaming": "Arrêtez la diffusion",
         "knowledge": "Connaissance"
     },
-    "sendWhenEnter": "Envoyer en appuyant sur Entrée"
+    "sendWhenEnter": "Envoyer en appuyant sur Entrée",
+    "welcome": "Bonjour ! Comment puis-je vous aider aujourd'hui ?"
 }

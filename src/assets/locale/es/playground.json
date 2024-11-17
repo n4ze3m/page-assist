@@ -25,5 +25,6 @@
         "stopStreaming": "Parar Transmisión",
         "knowledge": "Conocimiento"
     },
-    "sendWhenEnter": "Enviar cuando presione Enter"
+    "sendWhenEnter": "Enviar cuando presione Enter",
+    "welcome": "¡Hola! ¿Cómo puedo ayudarte hoy?"
 }

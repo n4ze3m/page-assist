@@ -25,5 +25,6 @@
         "stopStreaming": "Ferma lo Streaming",
         "knowledge": "Conoscenza"
     },
-    "sendWhenEnter": "Invia subito dopo Enter"
+    "sendWhenEnter": "Invia subito dopo Enter",
+    "welcome": "Ciao! Come posso aiutarti oggi?"
 }
