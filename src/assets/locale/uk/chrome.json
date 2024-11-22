@@ -1,0 +1,13 @@
+{
+    "heading": "Налаштування Chrome AI",
+    "status": {
+        "label": "Ввімкнути або вимкнути підтримку Chrome AI на Page Assist"
+    },
+    "error": {
+        "browser_not_supported": "Ця версія Chrome не підтримується моделлю Gemini Nano. Будь ласка, оновіть до версії 127 або новішої",
+        "ai_not_supported": "Налаштування chrome://flags/#prompt-api-for-gemini-nano не увімкнено. Будь ласка, увімкніть його.",
+        "ai_not_ready": "Модель Gemini Nano ще не готова; вам потрібно перевірити налаштування Chrome знову",
+        "internal_error": "Стався внутрішній збій. Будь ласка, спробуйте пізніше."
+    },
+    "errorDescription": "Щоб використовувати Chrome AI, вам потрібна версія переглядача новіша за 127-му, яка наразі доступна в каналах Dev і Canary. Після завантаження підтримуваної версії виконайте наступні кроки:\n\n1. Перейдіть до `chrome://flags/#prompt-api-for-gemini-nano` та виберіть \"Ввімкнути\".\n2. Перейдіть до `chrome://flags/#optimization-guide-on-device-model` та виберіть \"EnabledBypassPrefRequirement\".\n3. Перейдіть до `chrome://components`, знайдіть \"Optimization Guide On Device Model\" і натисніть \"Перевірити оновлення\". Це завантажить модель. Якщо ви не бачите налаштувань, повторіть кроки 1 і 2 та перезапустіть переглядач."
+}
