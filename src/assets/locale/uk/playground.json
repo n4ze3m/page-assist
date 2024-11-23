@@ -25,5 +25,6 @@
         "stopStreaming": "Зупинити трансляцію",
         "knowledge": "Знання"
     },
-    "sendWhenEnter": "Надсилати при натисканні Enter"
+    "sendWhenEnter": "Надсилати при натисканні Enter",
+    "welcome": "Вітаю! Як я можу допомогти вам сьогодні?"
 }

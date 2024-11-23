@@ -32,6 +32,9 @@
       },
       "generateTitle": {
         "label": "Створювати заголовок за допомогою AI"
+      },
+      "ollamaStatus": {
+        "label": "Увімкнути або вимкнути перевірку стану з'єднання Ollama"
       }
     },
     "sidepanelRag": {
