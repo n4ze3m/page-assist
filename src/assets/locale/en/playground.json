@@ -23,7 +23,8 @@
         "speechToText": "Speech to Text",
         "uploadImage": "Upload Image",
         "stopStreaming": "Stop Streaming",
-        "knowledge": "Knowledge"
+        "knowledge": "Knowledge",
+        "vision": "[Experimental] Vision Chat"
     },
     "sendWhenEnter": "Send when Enter pressed",
     "welcome": "Hello! How can I help you today?"
