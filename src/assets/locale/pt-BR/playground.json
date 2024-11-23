@@ -25,5 +25,6 @@
         "stopStreaming": "Parar Streaming",
         "knowledge": "Conhecimento"
     },
-    "sendWhenEnter": "Enviar ao pressionar Enter"
+    "sendWhenEnter": "Enviar ao pressionar Enter",
+    "welcome": "Olá! Como posso ajudar você hoje?"
 }

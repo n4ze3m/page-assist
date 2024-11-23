@@ -34,6 +34,9 @@ import { pageAssistModel } from "@/models"
 import { getPrompt } from "@/services/application"
 import { humanMessageFormatter } from "@/utils/human-message"
 import { pageAssistEmbeddingModel } from "@/models/embedding"
+import { PageAssistVectorStore } from "@/libs/PageAssistVectorStore"
+import { PAMemoryVectorStore } from "@/libs/PAMemoryVectorStore"
+import { getScreenshotFromCurrentTab } from "@/libs/get-screenshot"
 
 export const useMessage = () => {
   const {
@@ -90,7 +93,7 @@ export const useMessage = () => {
   )
 
   const [keepTrackOfEmbedding, setKeepTrackOfEmbedding] = React.useState<{
-    [key: string]: MemoryVectorStore
+    [key: string]: PAMemoryVectorStore
   }>({})
 
   const clearChat = () => {
@@ -134,8 +137,9 @@ export const useMessage = () => {
       seed: currentChatModelSettings?.seed,
       numGpu:
         currentChatModelSettings?.numGpu ?? userDefaultModelSettings?.numGpu,
-       numPredict: currentChatModelSettings?.numPredict ?? userDefaultModelSettings?.numPredict,
-
+      numPredict:
+        currentChatModelSettings?.numPredict ??
+        userDefaultModelSettings?.numPredict
     })
 
     let newMessage: Message[] = []
@@ -177,7 +181,7 @@ export const useMessage = () => {
     let embedURL: string, embedHTML: string, embedType: string
     let embedPDF: { content: string; page: number }[] = []
 
-    let isAlreadyExistEmbedding: MemoryVectorStore
+    let isAlreadyExistEmbedding: PAMemoryVectorStore
     const {
       content: html,
       url: websiteUrl,
@@ -212,7 +216,7 @@ export const useMessage = () => {
         currentChatModelSettings?.keepAlive ??
         userDefaultModelSettings?.keepAlive
     })
-    let vectorstore: MemoryVectorStore
+    let vectorstore: PAMemoryVectorStore
 
     try {
       if (isAlreadyExistEmbedding) {
@@ -263,9 +267,11 @@ export const useMessage = () => {
             userDefaultModelSettings?.numCtx,
           seed: currentChatModelSettings?.seed,
           numGpu:
-            currentChatModelSettings?.numGpu ?? userDefaultModelSettings?.numGpu,
-       numPredict: currentChatModelSettings?.numPredict ?? userDefaultModelSettings?.numPredict,
-
+            currentChatModelSettings?.numGpu ??
+            userDefaultModelSettings?.numGpu,
+          numPredict:
+            currentChatModelSettings?.numPredict ??
+            userDefaultModelSettings?.numPredict
         })
         const response = await questionOllama.invoke(promptForQuestion)
         query = response.content.toString()
@@ -340,9 +346,7 @@ export const useMessage = () => {
           signal: signal,
           callbacks: [
             {
-              handleLLMEnd(
-                output: any,
-              ): any {
+              handleLLMEnd(output: any): any {
                 try {
                   generationInfo = output?.generations?.[0][0]?.generationInfo
                 } catch (e) {
@@ -448,6 +452,236 @@ export const useMessage = () => {
     }
   }
 
+  const visionChatMode = async (
+    message: string,
+    image: string,
+    isRegenerate: boolean,
+    messages: Message[],
+    history: ChatHistory,
+    signal: AbortSignal
+  ) => {
+    setStreaming(true)
+    const url = await getOllamaURL()
+    const userDefaultModelSettings = await getAllDefaultModelSettings()
+
+    const ollama = await pageAssistModel({
+      model: selectedModel!,
+      baseUrl: cleanUrl(url),
+      keepAlive:
+        currentChatModelSettings?.keepAlive ??
+        userDefaultModelSettings?.keepAlive,
+      temperature:
+        currentChatModelSettings?.temperature ??
+        userDefaultModelSettings?.temperature,
+      topK: currentChatModelSettings?.topK ?? userDefaultModelSettings?.topK,
+      topP: currentChatModelSettings?.topP ?? userDefaultModelSettings?.topP,
+      numCtx:
+        currentChatModelSettings?.numCtx ?? userDefaultModelSettings?.numCtx,
+      seed: currentChatModelSettings?.seed,
+      numGpu:
+        currentChatModelSettings?.numGpu ?? userDefaultModelSettings?.numGpu,
+      numPredict:
+        currentChatModelSettings?.numPredict ??
+        userDefaultModelSettings?.numPredict
+    })
+
+    let newMessage: Message[] = []
+    let generateMessageId = generateID()
+
+    if (!isRegenerate) {
+      newMessage = [
+        ...messages,
+        {
+          isBot: false,
+          name: "You",
+          message,
+          sources: [],
+          images: []
+        },
+        {
+          isBot: true,
+          name: selectedModel,
+          message: "▋",
+          sources: [],
+          id: generateMessageId
+        }
+      ]
+    } else {
+      newMessage = [
+        ...messages,
+        {
+          isBot: true,
+          name: selectedModel,
+          message: "▋",
+          sources: [],
+          id: generateMessageId
+        }
+      ]
+    }
+    setMessages(newMessage)
+    let fullText = ""
+    let contentToSave = ""
+
+    try {
+      const prompt = await systemPromptForNonRag()
+      const selectedPrompt = await getPromptById(selectedSystemPrompt)
+
+      const applicationChatHistory = generateHistory(history, selectedModel)
+
+      const data = await getScreenshotFromCurrentTab()
+      console.log(
+        data?.success
+          ? `[PageAssist] Screenshot is taken`
+          : `[PageAssist] Screenshot is not taken`
+      )
+      const visionImage = data?.screenshot || ""
+
+      if (visionImage === "") {
+        throw new Error(
+          "Please close and reopen the side panel. This is a bug that will be fixed soon."
+        )
+      }
+
+      if (prompt && !selectedPrompt) {
+        applicationChatHistory.unshift(
+          new SystemMessage({
+            content: prompt
+          })
+        )
+      }
+      if (selectedPrompt) {
+        applicationChatHistory.unshift(
+          new SystemMessage({
+            content: selectedPrompt.content
+          })
+        )
+      }
+
+      let humanMessage = humanMessageFormatter({
+        content: [
+          {
+            text: message,
+            type: "text"
+          },
+          {
+            image_url: visionImage,
+            type: "image_url"
+          }
+        ],
+        model: selectedModel
+      })
+
+      let generationInfo: any | undefined = undefined
+
+      const chunks = await ollama.stream(
+        [...applicationChatHistory, humanMessage],
+        {
+          signal: signal,
+          callbacks: [
+            {
+              handleLLMEnd(output: any): any {
+                try {
+                  generationInfo = output?.generations?.[0][0]?.generationInfo
+                } catch (e) {
+                  console.log("handleLLMEnd error", e)
+                }
+              }
+            }
+          ]
+        }
+      )
+      let count = 0
+      for await (const chunk of chunks) {
+        contentToSave += chunk?.content
+        fullText += chunk?.content
+        if (count === 0) {
+          setIsProcessing(true)
+        }
+        setMessages((prev) => {
+          return prev.map((message) => {
+            if (message.id === generateMessageId) {
+              return {
+                ...message,
+                message: fullText + "▋"
+              }
+            }
+            return message
+          })
+        })
+        count++
+      }
+      setMessages((prev) => {
+        return prev.map((message) => {
+          if (message.id === generateMessageId) {
+            return {
+              ...message,
+              message: fullText,
+              generationInfo
+            }
+          }
+          return message
+        })
+      })
+
+      setHistory([
+        ...history,
+        {
+          role: "user",
+          content: message
+        },
+        {
+          role: "assistant",
+          content: fullText
+        }
+      ])
+
+      await saveMessageOnSuccess({
+        historyId,
+        setHistoryId,
+        isRegenerate,
+        selectedModel: selectedModel,
+        message,
+        image,
+        fullText,
+        source: [],
+        message_source: "copilot",
+        generationInfo
+      })
+
+      setIsProcessing(false)
+      setStreaming(false)
+    } catch (e) {
+      const errorSave = await saveMessageOnError({
+        e,
+        botMessage: fullText,
+        history,
+        historyId,
+        image,
+        selectedModel,
+        setHistory,
+        setHistoryId,
+        userMessage: message,
+        isRegenerating: isRegenerate,
+        message_source: "copilot"
+      })
+
+      if (!errorSave) {
+        notification.error({
+          message: t("error"),
+          description: e?.message || t("somethingWentWrong")
+        })
+      }
+      setIsProcessing(false)
+      setStreaming(false)
+      setIsProcessing(false)
+      setStreaming(false)
+      setIsEmbedding(false)
+    } finally {
+      setAbortController(null)
+      setEmbeddingController(null)
+    }
+  }
+
   const normalChatMode = async (
     message: string,
     image: string,
@@ -480,8 +714,9 @@ export const useMessage = () => {
       seed: currentChatModelSettings?.seed,
       numGpu:
         currentChatModelSettings?.numGpu ?? userDefaultModelSettings?.numGpu,
-       numPredict: currentChatModelSettings?.numPredict ?? userDefaultModelSettings?.numPredict,
-
+      numPredict:
+        currentChatModelSettings?.numPredict ??
+        userDefaultModelSettings?.numPredict
     })
 
     let newMessage: Message[] = []
@@ -575,9 +810,7 @@ export const useMessage = () => {
           signal: signal,
           callbacks: [
             {
-              handleLLMEnd(
-                output: any,
-              ): any {
+              handleLLMEnd(output: any): any {
                 try {
                   generationInfo = output?.generations?.[0][0]?.generationInfo
                 } catch (e) {
@@ -709,8 +942,9 @@ export const useMessage = () => {
       seed: currentChatModelSettings?.seed,
       numGpu:
         currentChatModelSettings?.numGpu ?? userDefaultModelSettings?.numGpu,
-       numPredict: currentChatModelSettings?.numPredict ?? userDefaultModelSettings?.numPredict,
-
+      numPredict:
+        currentChatModelSettings?.numPredict ??
+        userDefaultModelSettings?.numPredict
     })
 
     let newMessage: Message[] = []
@@ -785,9 +1019,11 @@ export const useMessage = () => {
             userDefaultModelSettings?.numCtx,
           seed: currentChatModelSettings?.seed,
           numGpu:
-            currentChatModelSettings?.numGpu ?? userDefaultModelSettings?.numGpu,
-       numPredict: currentChatModelSettings?.numPredict ?? userDefaultModelSettings?.numPredict,
-
+            currentChatModelSettings?.numGpu ??
+            userDefaultModelSettings?.numGpu,
+          numPredict:
+            currentChatModelSettings?.numPredict ??
+            userDefaultModelSettings?.numPredict
         })
         const response = await questionOllama.invoke(promptForQuestion)
         query = response.content.toString()
@@ -840,9 +1076,7 @@ export const useMessage = () => {
           signal: signal,
           callbacks: [
             {
-              handleLLMEnd(
-                output: any,
-              ): any {
+              handleLLMEnd(output: any): any {
                 try {
                   generationInfo = output?.generations?.[0][0]?.generationInfo
                 } catch (e) {
@@ -975,8 +1209,9 @@ export const useMessage = () => {
       seed: currentChatModelSettings?.seed,
       numGpu:
         currentChatModelSettings?.numGpu ?? userDefaultModelSettings?.numGpu,
-       numPredict: currentChatModelSettings?.numPredict ?? userDefaultModelSettings?.numPredict,
-
+      numPredict:
+        currentChatModelSettings?.numPredict ??
+        userDefaultModelSettings?.numPredict
     })
 
     let newMessage: Message[] = []
@@ -1050,9 +1285,7 @@ export const useMessage = () => {
         signal: signal,
         callbacks: [
           {
-            handleLLMEnd(
-              output: any,
-            ): any {
+            handleLLMEnd(output: any): any {
               try {
                 generationInfo = output?.generations?.[0][0]?.generationInfo
               } catch (e) {
@@ -1214,6 +1447,15 @@ export const useMessage = () => {
             signal
           )
         }
+      } else if (chatMode === "vision") {
+        await visionChatMode(
+          message,
+          image,
+          isRegenerate,
+          chatHistory || messages,
+          memory || history,
+          signal
+        )
       } else {
         const newEmbeddingController = new AbortController()
         let embeddingSignal = newEmbeddingController.signal

@@ -25,5 +25,6 @@
         "stopStreaming": "停止流媒体",
         "knowledge": "知识"
     },
-    "sendWhenEnter": "按Enter发送"
+    "sendWhenEnter": "按Enter发送",
+    "welcome": "你好！今天我能帮你什么？"
 }

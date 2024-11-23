@@ -1,4 +1,5 @@
 import { cleanUrl } from "@/libs/clean-url"
+import { useStorage } from "@plasmohq/storage/hook"
 import { useQuery } from "@tanstack/react-query"
 import { RotateCcw } from "lucide-react"
 import { useEffect, useState } from "react"
@@ -12,6 +13,9 @@ import {
 export const PlaygroundEmpty = () => {
   const [ollamaURL, setOllamaURL] = useState<string>("")
   const { t } = useTranslation(["playground", "common"])
+
+  const [checkOllamaStatus] = useStorage("checkOllamaStatus", true)
+
   const {
     data: ollamaInfo,
     status: ollamaStatus,
@@ -23,19 +27,32 @@ export const PlaygroundEmpty = () => {
       const ollamaURL = await getOllamaURL()
       const isOk = await isOllamaRunning()
 
+      if (ollamaURL) {
+        saveOllamaURL(ollamaURL)
+      }
+
       return {
         isOk,
         ollamaURL
       }
-    }
+    },
+    enabled: checkOllamaStatus
   })
 
-  useEffect(() => {
-    if (ollamaInfo?.ollamaURL) {
-      setOllamaURL(ollamaInfo.ollamaURL)
-    }
-  }, [ollamaInfo])
-
+  if (!checkOllamaStatus) {
+    return (
+      <div className="mx-auto sm:max-w-xl px-4 mt-10">
+        <div className="rounded-lg justify-center items-center flex flex-col border p-8 bg-gray-50 dark:bg-[#262626] dark:border-gray-600">
+          <h1 className="text-sm  font-medium text-center text-gray-500 dark:text-gray-400 flex gap-3 items-center justify-center">
+            <span >👋</span>
+            <span className="text-gray-700 dark:text-gray-300">
+              {t("welcome")}
+            </span>
+          </h1>
+        </div>
+      </div>
+    )
+  }
   return (
     <div className="mx-auto sm:max-w-xl px-4 mt-10">
       <div className="rounded-lg justify-center items-center flex flex-col border p-8 bg-gray-50 dark:bg-[#262626]  dark:border-gray-600">

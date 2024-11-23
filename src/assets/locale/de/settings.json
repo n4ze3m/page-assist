@@ -32,6 +32,9 @@
       },
       "generateTitle": {
         "label": "Titel mit KI generieren"
+      },
+      "ollamaStatus": {
+        "label": "Ollama-Verbindungsstatus-Überprüfung aktivieren oder deaktivieren"
       }
     },
     "sidepanelRag": {

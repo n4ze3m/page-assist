@@ -32,6 +32,9 @@
       },
       "generateTitle": {
         "label": "Genera titolo utilizzando l'IA"
+      },
+      "ollamaStatus": {
+        "label": "Abilita o disabilita il controllo dello stato della connessione Ollama"
       }
     },
     "sidepanelRag": {

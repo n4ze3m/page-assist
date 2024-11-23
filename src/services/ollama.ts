@@ -102,6 +102,7 @@ export const getAllModels = async ({
   returnEmpty?: boolean
 }) => {
   try {
+
     const baseUrl = await getOllamaURL()
     const response = await fetcher(`${cleanUrl(baseUrl)}/api/tags`)
     if (!response.ok) {
@@ -178,30 +179,9 @@ export const fetchChatModels = async ({
   returnEmpty?: boolean
 }) => {
   try {
-    const baseUrl = await getOllamaURL()
-    const response = await fetcher(`${cleanUrl(baseUrl)}/api/tags`)
-    if (!response.ok) {
-      if (returnEmpty) {
-        return []
-      }
-      throw new Error(response.statusText)
-    }
-    const json = await response.json()
-    const models = json.models as {
-      name: string
-      model: string
-      modified_at: string
-      size: number
-      digest: string
-      details?: {
-        parent_model?: string
-        format: string
-        family: string
-        families: string[]
-        parameter_size: string
-        quantization_level: string
-      }
-    }[]
+
+    const models = await getAllModels({ returnEmpty })
+
     const chatModels = models
       ?.filter((model) => {
         return (
@@ -407,4 +387,14 @@ export const getPageShareUrl = async () => {
 
 export const setPageShareUrl = async (pageShareUrl: string) => {
   await storage.set("pageShareUrl", pageShareUrl)
+}
+
+
+export const isOllamaEnabled = async () => {
+  const ollamaStatus = await storage.get<boolean>("checkOllamaStatus")
+  // if data is empty or null then return true 
+  if (typeof ollamaStatus === "undefined" || ollamaStatus === null) {
+    return true
+  }
+  return ollamaStatus
 }

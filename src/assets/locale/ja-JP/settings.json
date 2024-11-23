@@ -35,6 +35,9 @@
       },
       "generateTitle": {
         "label": "AIを使用してタイトルを生成"
+      },
+      "ollamaStatus": {
+        "label": "Ollamaの接続状態チェックを有効または無効にする"
       }
     },
     "sidepanelRag": {

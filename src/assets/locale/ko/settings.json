@@ -35,6 +35,9 @@
       },
       "generateTitle": {
         "label": "AI로 제목 생성"
+      },
+      "ollamaStatus": {
+        "label": "Ollama 연결 상태 확인 활성화 또는 비활성화"
       }
     },
     "sidepanelRag": {
@@ -342,4 +345,3 @@
     "title": "Chrome AI 설정"
   }
 }
-
