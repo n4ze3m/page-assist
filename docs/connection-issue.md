@@ -32,4 +32,11 @@ Since Ollama has connection issues when directly accessed from the browser exten
 
 This will resolve the connection issue, and you will be able to use Ollama without any issues on Page Assist ❤
 
+7. If you are still facing issues, you can try the following steps:
+
+- Add `OLLAMA_HOST=0.0.0.0` to the environment variables of Ollama.
+- Restart Ollama.
+- Try again.
+
+
 If you still face any issues, feel free to contact us [here](https://github.com/n4ze3m/page-assist/issues/new), and we will be happy to help you out.

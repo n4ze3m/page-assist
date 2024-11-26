@@ -6,7 +6,7 @@ Page Assist is an open-source Chrome Extension that provides a Sidebar and Web U
 
 ## Installation
 
-Page Assist supports Chromium-based browsers like Chrome, Brave, Edge, and Firefox.
+Page Assist supports Chromium-based browsers like Chrome, Brave, and Edge, as well as Firefox.
 
 [![Chrome Web Store](https://pub-35424b4473484be483c0afa08c69e7da.r2.dev/UV4C4ybeBTsZt43U4xis.png)](https://chrome.google.com/webstore/detail/page-assist/jfgfiigpkhlkbnfnbobbkinehhfdhndo)
 [![Firefox Add-on](https://pub-35424b4473484be483c0afa08c69e7da.r2.dev/get-the-addon.png)](https://addons.mozilla.org/en-US/firefox/addon/page-assist/)
@@ -137,6 +137,8 @@ This will start a development server and watch for changes in the source files. 
 Page Assist does not collect any personal data. The only time the extension communicates with the server is when you are using the share feature, which can be disabled from the settings.
 
 All the data is stored locally in the browser storage. You can view the source code and verify it yourself.
+
+You learn more about the privacy policy [here](PRIVACY.md).
 
 ## Contributing
 
