@@ -21,6 +21,8 @@ import { Select, Tooltip } from "antd"
 import { getAllPrompts } from "@/db"
 import { ShareBtn } from "~/components/Common/ShareBtn"
 import { ProviderIcons } from "../Common/ProviderIcon"
+import { NewChat } from "./NewChat"
+import { PageAssistSelect } from "../Select"
 type Props = {
   setSidebarOpen: (open: boolean) => void
   setOpenModelSettings: (open: boolean) => void
@@ -45,17 +47,13 @@ export const Header: React.FC<Props> = ({
     setSelectedSystemPrompt,
     messages,
     streaming,
-    historyId
+    historyId,
+    temporaryChat
   } = useMessageOption()
-  const {
-    data: models,
-    isLoading: isModelsLoading,
-    isFetching: isModelsFetching
-  } = useQuery({
+  const { data: models, isLoading: isModelsLoading, refetch } = useQuery({
     queryKey: ["fetchModel"],
     queryFn: () => fetchChatModels({ returnEmpty: true }),
-    refetchInterval: 15_000,
-    refetchIntervalInBackground: true,
+    refetchIntervalInBackground: false,
     placeholderData: (prev) => prev
   })
 
@@ -86,7 +84,10 @@ export const Header: React.FC<Props> = ({
   }
 
   return (
-    <div className="sticky top-0 z-[999] flex h-16 p-3  bg-gray-50 border-b  dark:bg-[#171717] dark:border-gray-600">
+    <div
+      className={`sticky top-0 z-[999] flex h-16 p-3  bg-gray-50 border-b  dark:bg-[#171717] dark:border-gray-600 ${
+        temporaryChat && "!bg-gray-200 dark:!bg-black"
+      }`}>
       <div className="flex gap-2 items-center">
         {pathname !== "/" && (
           <div>
@@ -104,46 +105,39 @@ export const Header: React.FC<Props> = ({
             <PanelLeftIcon className="w-6 h-6" />
           </button>
         </div>
-        <div>
-          <button
-            onClick={clearChat}
-            className="inline-flex  dark:bg-transparent bg-white items-center rounded-lg border  dark:border-gray-700 bg-transparent px-3 py-2.5 text-xs lg:text-sm font-medium leading-4 text-gray-800  dark:text-white disabled:opacity-50 ease-in-out transition-colors duration-200 hover:bg-gray-100 dark:hover:bg-gray-800 dark:hover:text-white">
-            <SquarePen className="h-5 w-5 " />
-            <span className=" truncate ml-3">{t("newChat")}</span>
-          </button>
-        </div>
+        <NewChat clearChat={clearChat} />
         <span className="text-lg font-thin text-zinc-300 dark:text-zinc-600">
           {"/"}
         </span>
         <div className="hidden lg:block">
-          <Select
+          <PageAssistSelect
+            className="w-80"
+            placeholder={t("common:selectAModel")}
+            loadingText={t("common:selectAModel")}
             value={selectedModel}
             onChange={(e) => {
-              setSelectedModel(e)
-              localStorage.setItem("selectedModel", e)
+              setSelectedModel(e.value)
+              localStorage.setItem("selectedModel", e.value)
             }}
-            size="large"
-            loading={isModelsLoading}
-            filterOption={(input, option) =>
-              option.label.key.toLowerCase().indexOf(input.toLowerCase()) >= 0
-            }
-            showSearch
-            placeholder={t("common:selectAModel")}
-            className="w-72"
+            isLoading={isModelsLoading}
             options={models?.map((model) => ({
               label: (
                 <span
                   key={model.model}
-                  className="flex flex-row gap-3 items-center truncate">
+                  className="flex flex-row gap-3 items-center ">
                   <ProviderIcons
                     provider={model?.provider}
                     className="w-5 h-5"
                   />
-                  <span className="truncate">{model.name}</span>
+                  <span className="line-clamp-2">{model.name}</span>
                 </span>
               ),
               value: model.model
             }))}
+
+            onRefresh={() => {
+              refetch()
+            }}
           />
         </div>
         <div className="lg:hidden">

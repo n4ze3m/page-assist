@@ -118,7 +118,7 @@ export const saveMessageOnSuccess = async ({
   fullText,
   source,
   message_source = "web-ui",
-  message_type
+  message_type, generationInfo
 }: {
   historyId: string | null
   setHistoryId: (historyId: string) => void
@@ -130,6 +130,7 @@ export const saveMessageOnSuccess = async ({
   source: any[]
   message_source?: "copilot" | "web-ui",
   message_type?: string
+  generationInfo?: any
 }) => {
   if (historyId) {
     if (!isRegenerate) {
@@ -141,7 +142,8 @@ export const saveMessageOnSuccess = async ({
         [image],
         [],
         1,
-        message_type
+        message_type,
+        generationInfo
       )
     }
     await saveMessage(
@@ -152,7 +154,8 @@ export const saveMessageOnSuccess = async ({
       [],
       source,
       2,
-      message_type
+      message_type,
+      generationInfo
     )
     await setLastUsedChatModel(historyId, selectedModel!)
   } else {
@@ -166,7 +169,8 @@ export const saveMessageOnSuccess = async ({
       [image],
       [],
       1,
-      message_type
+      message_type,
+      generationInfo
     )
     await saveMessage(
       newHistoryId.id,
@@ -176,7 +180,8 @@ export const saveMessageOnSuccess = async ({
       [],
       source,
       2,
-      message_type
+      message_type,
+      generationInfo
     )
     setHistoryId(newHistoryId.id)
     await setLastUsedChatModel(newHistoryId.id, selectedModel!)

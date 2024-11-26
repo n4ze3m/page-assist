@@ -32,6 +32,9 @@
       },
       "generateTitle": {
         "label": "تولید عنوان با استفاده از هوش مصنوعی"
+      },
+      "ollamaStatus": {
+        "label": "فعال یا غیرفعال کردن بررسی وضعیت اتصال Ollama"
       }
     },
     "sidepanelRag": {

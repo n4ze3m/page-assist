@@ -32,6 +32,9 @@
       },
       "generateTitle": {
         "label": "Generer tittel med AI"
+      },
+      "ollamaStatus": {
+        "label": "Aktiver eller deaktiver Ollama tilkoblingsstatussjekk"
       }
     },
     "sidepanelRag": {

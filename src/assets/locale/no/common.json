@@ -70,6 +70,10 @@
                 "label": "Kontekstlengde",
                 "placeholder": "Skriv inn kontekstlengdeverdi (standard: 2048)"
             },
+            "numPredict": {
+                "label": "Maks Tokens (num_predict)",
+                "placeholder": "Skriv inn Maks Tokens-verdi (f.eks. 2048, 4096)"
+            },
             "seed": {
                 "label": "Seed",
                 "placeholder": "Skriv inn seedverdi (f.eks. 1234)",
@@ -112,5 +116,6 @@
         "older": "Eldre"
     },
     "pin": "Fest",
-    "unpin": "Løsne"
+    "unpin": "Løsne",
+    "generationInfo": "Generasjonsinformasjon"
 }

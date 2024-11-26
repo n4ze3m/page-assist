@@ -13,7 +13,7 @@ type Props = {
 }
 
 export const MessageSource: React.FC<Props> = ({ source, onSourceClick }) => {
-  if (source?.mode === "rag") {
+  if (source?.mode === "rag" || source?.mode === "chat") {
     return (
       <button
         onClick={() => {

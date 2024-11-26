@@ -1,4 +1,4 @@
-import type { Embeddings } from "@langchain/core/embeddings"
+import type { EmbeddingsInterface } from "@langchain/core/embeddings"
 import type { Document } from "@langchain/core/documents"
 import * as ml_distance from "ml-distance"
 
@@ -9,7 +9,7 @@ export const rerankDocs = async ({
 }: {
   query: string
   docs: Document[]
-  embedding: Embeddings
+  embedding: EmbeddingsInterface
 }) => {
   if (docs.length === 0) {
     return docs
@@ -34,6 +34,7 @@ export const rerankDocs = async ({
     }
   })
 
+  console.log("similarity", similarity)
   const sortedDocs = similarity
     .sort((a, b) => b.similarity - a.similarity)
     .filter((sim) => sim.similarity > 0.5)

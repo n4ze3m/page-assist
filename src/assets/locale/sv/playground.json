@@ -25,5 +25,6 @@
         "stopStreaming": "Stoppa strömning",
         "knowledge": "Kunskap"
     },
-    "sendWhenEnter": "Skicka när Enter trycks"
+    "sendWhenEnter": "Skicka när Enter trycks",
+    "welcome": "Hej! Hur kan jag hjälpa dig idag?"
 }

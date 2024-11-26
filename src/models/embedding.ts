@@ -1,4 +1,4 @@
-import { getModelInfo, isCustomModel } from "@/db/models"
+import { getModelInfo, isCustomModel, isOllamaModel } from "@/db/models"
 import { OllamaEmbeddingsPageAssist } from "./OllamaEmbedding"
 import { OAIEmbedding } from "./OAIEmbedding"
 import { getOpenAIConfigById } from "@/db/openai"

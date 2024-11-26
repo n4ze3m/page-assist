@@ -42,7 +42,7 @@
     "delete": "Elimina",
     "edit": "Modifica",
     "newModel": "Aggiungi Modelli al Provider",
-    "noNewModel": "Per LMStudio, recuperiamo dinamicamente. Non è necessaria l'aggiunta manuale.",
+    "noNewModel": "Per LMStudio, Ollama, Llamafile, recuperiamo dinamicamente. Non è necessaria l'aggiunta manuale.",
     "searchModel": "Cerca Modello",
     "selectAll": "Seleziona Tutto",
     "save": "Salva",

@@ -1,10 +1,11 @@
 import Markdown from "../../Common/Markdown"
 import React from "react"
-import { Tag, Image, Tooltip, Collapse } from "antd"
+import { Tag, Image, Tooltip, Collapse, Popover } from "antd"
 import { WebSearch } from "./WebSearch"
 import {
   CheckIcon,
   ClipboardIcon,
+  InfoIcon,
   Pen,
   PlayIcon,
   RotateCcw,
@@ -16,6 +17,7 @@ import { MessageSource } from "./MessageSource"
 import { useTTS } from "@/hooks/useTTS"
 import { tagColors } from "@/utils/color"
 import { removeModelSuffix } from "@/db/models"
+import { GenerationInfo } from "./GenerationInfo"
 
 type Props = {
   message: string
@@ -37,6 +39,7 @@ type Props = {
   hideEditAndRegenerate?: boolean
   onSourceClick?: (source: any) => void
   isTTSEnabled?: boolean
+  generationInfo?: any
 }
 
 export const PlaygroundMessage = (props: Props) => {
@@ -204,6 +207,18 @@ export const PlaygroundMessage = (props: Props) => {
                           )}
                         </button>
                       </Tooltip>
+                    )}
+
+                    {props.generationInfo && (
+                      <Popover
+                        content={
+                         <GenerationInfo generationInfo={props.generationInfo} />
+                        }
+                        title={t("generationInfo")}>
+                        <button className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                          <InfoIcon className="w-3 h-3 text-gray-400 group-hover:text-gray-500" />
+                        </button>
+                      </Popover>
                     )}
 
                     {!props.hideEditAndRegenerate &&

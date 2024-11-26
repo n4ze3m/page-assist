@@ -70,6 +70,10 @@
                 "label": "Dimensione del Contesto",
                 "placeholder": "Inserisci la Dimensione del Contesto (default: 2048)"
             },
+            "numPredict": {
+                "label": "Token Massimi (num_predict)",
+                "placeholder": "Inserisci il valore dei Token Massimi (es. 2048, 4096)"
+            },
             "seed": {
                 "label": "Seed",
                 "placeholder": "Inserisci il Valore Seed (e.g. 1234)",
@@ -111,5 +115,6 @@
         "older": "Più Vecchi"
     },
     "pin": "Fissa",
-    "unpin": "Rimuovi"
+    "unpin": "Rimuovi",
+    "generationInfo": "Informazioni sulla Generazione"
 }

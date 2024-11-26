@@ -54,6 +54,7 @@ export const PlaygroundChat = () => {
               setIsSourceOpen(true)
             }}
             isTTSEnabled={ttsEnabled}
+            generationInfo={message?.generationInfo}
           />
         ))}
         {messages.length > 0 && (

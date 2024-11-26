@@ -1,0 +1,30 @@
+{
+    "ollamaState": {
+        "searching": "Ollama 검색 중 🦙",
+        "running": "Ollama 실행 중 🦙",
+        "notRunning": "Ollama에 연결할 수 없습니다 🦙",
+        "connectionError": "연결 오류가 발생한 것 같습니다. 문제 해결에 대한 자세한 내용은 <anchor>문서</anchor>를 참조하세요."
+    },
+    "formError": {
+        "noModel": "모델을 선택하세요",
+        "noEmbeddingModel": "설정 > RAG 페이지에서 임베딩 모델을 설정하세요"
+    },
+    "form": {
+        "textarea": {
+            "placeholder": "메시지를 입력하세요..."
+        },
+        "webSearch": {
+            "on": "켜짐",
+            "off": "꺼짐"
+        }
+    },
+    "tooltip": {
+        "searchInternet": "인터넷 검색",
+        "speechToText": "음성 입력",
+        "uploadImage": "이미지 업로드",
+        "stopStreaming": "스트리밍 중지",
+        "knowledge": "지식"
+    },
+    "sendWhenEnter": "Enter 키를 누르면 전송",
+    "welcome": "안녕하세요! 오늘 어떻게 도와드릴까요?"
+}

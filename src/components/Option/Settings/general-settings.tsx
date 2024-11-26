@@ -16,13 +16,12 @@ import {
 import { useStorage } from "@plasmohq/storage/hook"
 
 export const GeneralSettings = () => {
-  const { clearChat } =
-    useMessageOption()
+  const { clearChat } = useMessageOption()
 
-  const [ speechToTextLanguage, setSpeechToTextLanguage ] = useStorage(
-      "speechToTextLanguage",
-      "en-US"
-    )
+  const [speechToTextLanguage, setSpeechToTextLanguage] = useStorage(
+    "speechToTextLanguage",
+    "en-US"
+  )
   const [copilotResumeLastChat, setCopilotResumeLastChat] = useStorage(
     "copilotResumeLastChat",
     false
@@ -40,6 +39,11 @@ export const GeneralSettings = () => {
 
   const [sendNotificationAfterIndexing, setSendNotificationAfterIndexing] =
     useStorage("sendNotificationAfterIndexing", false)
+
+  const [checkOllamaStatus, setCheckOllamaStatus] = useStorage(
+    "checkOllamaStatus",
+    true
+  )
 
   const queryClient = useQueryClient()
 
@@ -157,6 +161,19 @@ export const GeneralSettings = () => {
         <Switch
           checked={generateTitle}
           onChange={(checked) => setGenerateTitle(checked)}
+        />
+      </div>
+
+      <div className="flex flex-row justify-between">
+        <div className="inline-flex items-center gap-2">
+          <span className="text-gray-700   dark:text-neutral-50">
+            {t("generalSettings.settings.ollamaStatus.label")}
+          </span>
+        </div>
+
+        <Switch
+          checked={checkOllamaStatus}
+          onChange={(checked) => setCheckOllamaStatus(checked)}
         />
       </div>
 

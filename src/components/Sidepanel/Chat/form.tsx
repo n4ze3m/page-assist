@@ -7,7 +7,14 @@ import { toBase64 } from "~/libs/to-base64"
 import { Checkbox, Dropdown, Image, Switch, Tooltip } from "antd"
 import { useWebUI } from "~/store/webui"
 import { defaultEmbeddingModelForRag } from "~/services/ollama"
-import { ImageIcon, MicIcon, StopCircleIcon, X } from "lucide-react"
+import {
+  ImageIcon,
+  MicIcon,
+  StopCircleIcon,
+  X,
+  EyeIcon,
+  EyeOffIcon
+} from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { ModelSelect } from "@/components/Common/ModelSelect"
 import { useSpeechRecognition } from "@/hooks/useSpeechRecognition"
@@ -36,7 +43,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
     resetTranscript,
     start: startListening,
     stop: stopSpeechRecognition,
-    supported: browserSupportsSpeechRecognition, 
+    supported: browserSupportsSpeechRecognition
   } = useSpeechRecognition()
 
   const stopListening = async () => {
@@ -75,10 +82,10 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
     ) {
       e.preventDefault()
       form.onSubmit(async (value) => {
-        await stopListening()
-        if (value.message.trim().length === 0) {
+        if (value.message.trim().length === 0 && value.image.length === 0) {
           return
         }
+        await stopListening()
         if (!selectedModel || selectedModel.length === 0) {
           form.setFieldError("message", t("formError.noModel"))
           return
@@ -237,6 +244,12 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                 }
               }
               await stopListening()
+              if (
+                value.message.trim().length === 0 &&
+                value.image.length === 0
+              ) {
+                return
+              }
               form.reset()
               textAreaFocus()
               await sendMessage({
@@ -260,7 +273,6 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                 onKeyDown={(e) => handleKeyDown(e)}
                 ref={textareaRef}
                 className="px-2 py-2 w-full resize-none bg-transparent focus-within:outline-none focus:ring-0 focus-visible:ring-0 ring-0 dark:ring-0 border-0 dark:text-gray-100"
-                required
                 onPaste={handlePaste}
                 rows={1}
                 style={{ minHeight: "60px" }}
@@ -279,20 +291,22 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                 {...form.getInputProps("message")}
               />
               <div className="flex mt-4 justify-end gap-3">
-                <Tooltip title={t("tooltip.searchInternet")}>
-                  <button
-                    type="button"
-                    onClick={() => setWebSearch(!webSearch)}
-                    className={`inline-flex items-center gap-2   ${
-                      chatMode === "rag" ? "hidden" : "block"
-                    }`}>
-                    {webSearch ? (
-                      <PiGlobe className="h-5 w-5  dark:text-gray-300" />
-                    ) : (
-                      <PiGlobeX className="h-5 w-5 text-gray-600 dark:text-gray-400" />
-                    )}
-                  </button>
-                </Tooltip>
+                {chatMode !== "vision" && (
+                  <Tooltip title={t("tooltip.searchInternet")}>
+                    <button
+                      type="button"
+                      onClick={() => setWebSearch(!webSearch)}
+                      className={`inline-flex items-center gap-2   ${
+                        chatMode === "rag" ? "hidden" : "block"
+                      }`}>
+                      {webSearch ? (
+                        <PiGlobe className="h-5 w-5  dark:text-gray-300" />
+                      ) : (
+                        <PiGlobeX className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+                      )}
+                    </button>
+                  </Tooltip>
+                )}
                 <ModelSelect />
                 {browserSupportsSpeechRecognition && (
                   <Tooltip title={t("tooltip.speechToText")}>
@@ -321,13 +335,35 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                     </button>
                   </Tooltip>
                 )}
+                <Tooltip title={t("tooltip.vision")}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (chatMode === "vision") {
+                        setChatMode("normal")
+                      } else {
+                        setChatMode("vision")
+                      }
+                    }}
+                    disabled={chatMode === "rag"}
+                    className={`flex items-center justify-center dark:text-gray-300 ${
+                      chatMode === "rag" ? "hidden" : "block"
+                    } disabled:opacity-50`}>
+                    {chatMode === "vision" ? (
+                      <EyeIcon className="h-5 w-5" />
+                    ) : (
+                      <EyeOffIcon className="h-5 w-5" />
+                    )}
+                  </button>
+                </Tooltip>
                 <Tooltip title={t("tooltip.uploadImage")}>
                   <button
                     type="button"
                     onClick={() => {
                       inputRef.current?.click()
                     }}
-                    className={`flex items-center justify-center dark:text-gray-300 ${
+                    disabled={chatMode === "vision"}
+                    className={`flex items-center justify-center disabled:opacity-50 dark:text-gray-300 ${
                       chatMode === "rag" ? "hidden" : "block"
                     }`}>
                     <ImageIcon className="h-5 w-5" />

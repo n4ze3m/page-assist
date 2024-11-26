@@ -17,6 +17,10 @@ export const supportLanguage = [
         value: "it"
     },
     {
+        label: "Ukrainian",
+        value: "uk"
+    },
+    {
         label: "Russian",
         value: "ru"
     },
@@ -55,5 +59,9 @@ export const supportLanguage = [
     {
         value: "sv",
         label: "Svenska"
+    },
+    {
+        value: "ko",
+        label: "한국어"
     }
 ]

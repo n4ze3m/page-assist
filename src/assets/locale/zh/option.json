@@ -8,5 +8,6 @@
     "somethingWentWrong": "出现了错误",
     "validationSelectModel": "请选择一个模型以继续",
     "deleteHistoryConfirmation": "你确定要删除这个历史记录吗？",
-    "editHistoryTitle": "输入一个新的标题"
+    "editHistoryTitle": "输入一个新的标题",
+    "temporaryChat": "临时聊天"
 }

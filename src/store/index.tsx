@@ -32,8 +32,8 @@ type State = {
   setIsProcessing: (isProcessing: boolean) => void
   selectedModel: string | null
   setSelectedModel: (selectedModel: string) => void
-  chatMode: "normal" | "rag"
-  setChatMode: (chatMode: "normal" | "rag") => void
+  chatMode: "normal" | "rag" | "vision"
+  setChatMode: (chatMode: "normal" | "rag" | "vision") => void
   isEmbedding: boolean
   setIsEmbedding: (isEmbedding: boolean) => void
   speechToTextLanguage: string

@@ -25,5 +25,6 @@
         "stopStreaming": "Streaming stoppen",
         "knowledge": "Wissen"
     },
-    "sendWhenEnter": "Senden bei Drücken der Eingabetaste"
+    "sendWhenEnter": "Senden bei Drücken der Eingabetaste",
+    "welcome": "Hallo! Wie kann ich Ihnen heute helfen?"
 }

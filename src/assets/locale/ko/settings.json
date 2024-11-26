@@ -1,0 +1,347 @@
+{
+  "generalSettings": {
+    "title": "일반 설정",
+    "settings": {
+      "heading": "웹 UI 설정",
+      "speechRecognitionLang": {
+        "label": "음성 인식 언어",
+        "placeholder": "언어 선택"
+      },
+      "language": {
+        "label": "언어",
+        "placeholder": "언어 선택"
+      },
+      "darkMode": {
+        "label": "테마 변경",
+        "options": {
+          "light": "라이트",
+          "dark": "다크"
+        }
+      },
+      "searchMode": {
+        "label": "간편 인터넷 검색 실행"
+      },
+      "copilotResumeLastChat": {
+        "label": "사이드 패널을 열 때 마지막 채팅 재개 (Copilot)"
+      },
+      "hideCurrentChatModelSettings": {
+        "label": "현재 채팅 모델 설정 숨기기"
+      },
+      "restoreLastChatModel": {
+        "label": "이전 채팅에서 마지막 사용한 모델 복원"
+      },
+      "sendNotificationAfterIndexing": {
+        "label": "지식 베이스 처리 완료 후 알림 전송"
+      },
+      "generateTitle": {
+        "label": "AI로 제목 생성"
+      },
+      "ollamaStatus": {
+        "label": "Ollama 연결 상태 확인 활성화 또는 비활성화"
+      }
+    },
+    "sidepanelRag": {
+      "heading": "웹사이트와의 Copilot 채팅 설정",
+      "ragEnabled": {
+        "label": "벡터 임베딩을 사용하여 웹사이트와 채팅"
+      },
+      "maxWebsiteContext": {
+        "label": "일반 모드 웹사이트 콘텐츠 크기",
+        "placeholder": "콘텐츠 크기 (기본값 4028)"
+      }
+    },
+    "webSearch": {
+      "heading": "웹 검색 관리",
+      "searchMode": {
+        "label": "간편한 인터넷 검색 실행"
+      },
+      "provider": {
+        "label": "검색 엔진",
+        "placeholder": "검색 엔진 선택"
+      },
+      "totalSearchResults": {
+        "label": "총 검색 결과",
+        "placeholder": "총 검색 결과 입력"
+      },
+      "visitSpecificWebsite": {
+        "label": "메시지에 언급된 웹사이트 방문"
+      }
+    },
+    "system": {
+      "heading": "시스템 설정",
+      "deleteChatHistory": {
+        "label": "채팅 기록 삭제",
+        "button": "삭제",
+        "confirm": "채팅 기록을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다."
+      },
+      "export": {
+        "label": "채팅 기록, 지식 베이스, 프롬프트 내보내기",
+        "button": "데이터 내보내기",
+        "success": "내보내기 성공"
+      },
+      "import": {
+        "label": "채팅 기록, 지식 베이스, 프롬프트 가져오기",
+        "button": "데이터 가져오기",
+        "success": "가져오기 성공",
+        "error": "가져오기 오류"
+      }
+    },
+    "tts": {
+      "heading": "텍스트 음성 변환 설정",
+      "ttsEnabled": {
+        "label": "텍스트 음성 변환 활성화"
+      },
+      "ttsProvider": {
+        "label": "텍스트 음성 변환 제공자",
+        "placeholder": "제공자 선택"
+      },
+      "ttsVoice": {
+        "label": "텍스트 음성 변환 음성",
+        "placeholder": "음성 선택"
+      },
+      "ssmlEnabled": {
+        "label": "SSML (Speech Synthesis Markup Language) 활성화"
+      }
+    }
+  },
+  "manageModels": {
+    "title": "모델 관리",
+    "addBtn": "새 모델 추가",
+    "columns": {
+      "name": "이름",
+      "digest": "다이제스트",
+      "modifiedAt": "수정 일시",
+      "size": "크기",
+      "actions": "동작"
+    },
+    "expandedColumns": {
+      "parentModel": "상위 모델",
+      "format": "형식",
+      "family": "패밀리",
+      "parameterSize": "파라미터 크기",
+      "quantizationLevel": "양자화 수준"
+    },
+    "tooltip": {
+      "delete": "모델 삭제",
+      "repull": "모델 다시 가져오기"
+    },
+    "confirm": {
+      "delete": "이 모델을 정말 삭제하시겠습니까?",
+      "repull": "이 모델을 정말 다시 가져오시겠습니까?"
+    },
+    "modal": {
+      "title": "새 모델 추가",
+      "placeholder": "모델 이름 입력",
+      "pull": "모델 가져오기"
+    },
+    "notification": {
+      "pullModel": "모델 가져오는 중",
+      "pullModelDescription": "{{modelName}} 모델을 가져오는 중입니다. 자세한 내용은 확장 기능 아이콘을 확인하세요.",
+      "success": "성공",
+      "error": "오류",
+      "successDescription": "모델 가져오기가 완료되었습니다",
+      "successDeleteDescription": "모델 삭제가 완료되었습니다",
+      "someError": "문제가 발생했습니다. 나중에 다시 시도해 주세요."
+    }
+  },
+  "managePrompts": {
+    "title": "프롬프트 관리",
+    "addBtn": "새 프롬프트 추가",
+    "option1": "일반",
+    "option2": "RAG",
+    "questionPrompt": "질문 프롬프트",
+    "columns": {
+      "title": "제목",
+      "prompt": "프롬프트",
+      "type": "프롬프트 유형",
+      "actions": "동작"
+    },
+    "systemPrompt": "시스템 프롬프트",
+    "quickPrompt": "퀵 프롬프트",
+    "tooltip": {
+      "delete": "프롬프트 삭제",
+      "edit": "프롬프트 수정"
+    },
+    "confirm": {
+      "delete": "이 프롬프트를 정말 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다."
+    },
+    "modal": {
+      "addTitle": "새 프롬프트 추가",
+      "editTitle": "프롬프트 수정"
+    },
+    "segmented": {
+      "custom": "커스텀 프롬프트",
+      "copilot": "Copilot 프롬프트"
+    },
+    "form": {
+      "title": {
+        "label": "제목",
+        "placeholder": "훌륭한 프롬프트",
+        "required": "제목을 입력하세요"
+      },
+      "prompt": {
+        "label": "프롬프트",
+        "placeholder": "프롬프트 입력",
+        "required": "프롬프트를 입력하세요",
+        "help": "프롬프트 내에서 {key}를 변수로 사용할 수 있습니다.",
+        "missingTextPlaceholder": "프롬프트에 {text} 변수가 없습니다. 추가해 주세요."
+      },
+      "isSystem": {
+        "label": "시스템 프롬프트"
+      },
+      "btnSave": {
+        "saving": "프롬프트 추가 중...",
+        "save": "프롬프트 추가"
+      },
+      "btnEdit": {
+        "saving": "프롬프트 업데이트 중...",
+        "save": "프롬프트 업데이트"
+      }
+    },
+    "notification": {
+      "addSuccess": "프롬프트가 추가되었습니다",
+      "addSuccessDesc": "프롬프트가 정상적으로 추가되었습니다",
+      "error": "오류",
+      "someError": "문제가 발생했습니다. 나중에 다시 시도해 주세요.",
+      "updatedSuccess": "프롬프트가 업데이트되었습니다",
+      "updatedSuccessDesc": "프롬프트가 정상적으로 업데이트되었습니다",
+      "deletedSuccess": "프롬프트가 삭제되었습니다",
+      "deletedSuccessDesc": "프롬프트가 정상적으로 삭제되었습니다"
+    }
+  },
+  "manageShare": {
+    "title": "공유 관리",
+    "heading": "페이지 공유 URL 설정",
+    "form": {
+      "url": {
+        "label": "페이지 공유 URL",
+        "placeholder": "페이지 공유 URL 입력",
+        "required": "페이지 공유 URL을 입력해 주세요!",
+        "help": "개인정보 보호를 위해 페이지 공유를 자체 호스팅하고, 해당 URL을 여기에 입력할 수 있습니다. <anchor>자세히 보기</anchor>"
+      }
+    },
+    "webshare": {
+      "heading": "웹 공유",
+      "columns": {
+        "title": "제목",
+        "url": "URL",
+        "actions": "동작"
+      },
+      "tooltip": {
+        "delete": "공유 삭제"
+      },
+      "confirm": {
+        "delete": "이 공유를 정말 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다."
+      },
+      "label": "페이지 공유 관리",
+      "description": "페이지 공유 기능을 활성화 또는 비활성화"
+    },
+    "notification": {
+      "pageShareSuccess": "페이지 공유 URL이 정상적으로 업데이트되었습니다",
+      "someError": "문제가 발생했습니다. 나중에 다시 시도해 주세요.",
+      "webShareDeleteSuccess": "웹 공유가 정상적으로 삭제되었습니다"
+    }
+  },
+  "ollamaSettings": {
+    "title": "Ollama 설정",
+    "heading": "Ollama 설정하기",
+    "settings": {
+      "ollamaUrl": {
+        "label": "Ollama URL",
+        "placeholder": "Ollama URL 입력"
+      },
+      "advanced": {
+        "label": "Ollama URL 고급 설정",
+        "urlRewriteEnabled": {
+          "label": "사용자 지정 Origin URL 활성화 또는 비활성화"
+        },
+        "rewriteUrl": {
+          "label": "사용자 지정 Origin URL",
+          "placeholder": "사용자 지정 Origin URL 입력"
+        },
+        "headers": {
+          "label": "사용자 지정 헤더",
+          "add": "헤더 추가",
+          "key": {
+            "label": "헤더 키",
+            "placeholder": "인증"
+          },
+          "value": {
+            "label": "헤더 값",
+            "placeholder": "베어러 토큰"
+          }
+        },
+        "help": "Page Assist에서 Ollama 연결에 문제가 있는 경우 사용자 지정 Origin URL을 설정할 수 있습니다. 설정에 대한 자세한 내용은 <anchor>여기를 클릭</anchor>하세요."
+      }
+    }
+  },
+  "manageSearch": {
+    "title": "웹 검색 관리",
+    "heading": "웹 검색 설정하기"
+  },
+  "about": {
+    "title": "소개",
+    "heading": "소개",
+    "chromeVersion": "Page Assist 버전",
+    "ollamaVersion": "Ollama 버전",
+    "support": "Page Assist 프로젝트는 다음 플랫폼에서 기부나 후원을 통해 지원할 수 있습니다:",
+    "koFi": "Ko-fi로 후원하기",
+    "githubSponsor": "GitHub에서 후원하기",
+    "githubRepo": "GitHub 저장소"
+  },
+  "manageKnowledge": {
+    "title": "지식 관리",
+    "heading": "지식 베이스 구성하기"
+  },
+  "rag": {
+    "title": "RAG 설정",
+    "ragSettings": {
+      "label": "RAG 설정",
+      "model": {
+        "label": "임베딩 모델",
+        "required": "모델을 선택해주세요",
+        "help": "`nomic-embed-text`와 같은 임베딩 모델 사용을 강력히 권장합니다.",
+        "placeholder": "모델 선택"
+      },
+      "chunkSize": {
+        "label": "청크 크기",
+        "placeholder": "청크 크기 입력",
+        "required": "청크 크기를 입력해주세요"
+      },
+      "chunkOverlap": {
+        "label": "청크 오버랩",
+        "placeholder": "청크 오버랩 입력",
+        "required": "청크 오버랩을 입력해주세요"
+      },
+      "totalFilePerKB": {
+        "label": "지식 베이스 기본 파일 업로드 제한",
+        "placeholder": "기본 파일 업로드 제한 입력 (예: 10)",
+        "required": "기본 파일 업로드 제한을 입력해주세요"
+      },
+      "noOfRetrievedDocs": {
+        "label": "검색 문서 수",
+        "placeholder": "검색 문서 수 입력",
+        "required": "검색 문서 수를 입력해주세요"
+      }
+    },
+    "prompt": {
+      "label": "RAG 프롬프트 설정",
+      "option1": "일반",
+      "option2": "웹",
+      "alert": "여기서 시스템 프롬프트를 설정하는 것은 더 이상 권장되지 않습니다. 프롬프트 추가 및 편집은 '프롬프트 관리' 섹션을 이용해주세요. 이 섹션은 향후 릴리스에서 제거될 예정입니다.",
+      "systemPrompt": "시스템 프롬프트",
+      "systemPromptPlaceholder": "시스템 프롬프트 입력",
+      "webSearchPrompt": "웹 검색 프롬프트",
+      "webSearchPromptHelp": "프롬프트에서 `{search_results}`를 제거하지 마세요.",
+      "webSearchPromptError": "웹 검색 프롬프트를 입력해주세요",
+      "webSearchPromptPlaceholder": "웹 검색 프롬프트 입력",
+      "webSearchFollowUpPrompt": "웹 검색 후속 프롬프트",
+      "webSearchFollowUpPromptHelp": "프롬프트에서 `{chat_history}`와 `{question}`를 제거하지 마세요.",
+      "webSearchFollowUpPromptError": "웹 검색 후속 프롬프트를 입력해주세요!",
+      "webSearchFollowUpPromptPlaceholder": "웹 검색 후속 프롬프트"
+    }
+  },
+  "chromeAiSettings": {
+    "title": "Chrome AI 설정"
+  }
+}

@@ -3,6 +3,7 @@ import { initReactI18next } from "react-i18next";
 import { en } from "./lang/en";
 import { pt } from "./lang/pt";
 import { fr } from "./lang/fr";
+import { uk } from "./lang/uk";
 import { ru } from "./lang/ru";
 import { ml } from "./lang/ml";
 import { zh } from "./lang/zh";
@@ -14,6 +15,7 @@ import { de } from "./lang/de";
 import { da } from "./lang/da";
 import { no } from "./lang/no";
 import { sv } from "./lang/sv";
+import { ko } from "./lang/ko";
 
 
 i18n
@@ -27,6 +29,8 @@ i18n
             ml: ml,
             "pt-BR": pt,
             "zh-CN": zh,
+            uk: uk,
+            "uk-UA": uk,
             ru: ru,
             "ru-RU": ru,
             zh: zh,
@@ -37,7 +41,8 @@ i18n
             da: da,
             no: no,
             de: de,
-            sv: sv
+            sv: sv,
+            ko: ko,
         },
         fallbackLng: "en",
         lng: localStorage.getItem("i18nextLng") || "en",

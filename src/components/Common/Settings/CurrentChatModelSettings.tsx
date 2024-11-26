@@ -1,3 +1,5 @@
+import { getPromptById } from "@/db"
+import { useMessageOption } from "@/hooks/useMessageOption"
 import { getAllModelSettings } from "@/services/model-settings"
 import { useStoreChatModelSettings } from "@/store/model"
 import { useQuery } from "@tanstack/react-query"
@@ -27,10 +29,20 @@ export const CurrentChatModelSettings = ({
   const { t } = useTranslation("common")
   const [form] = Form.useForm()
   const cUserSettings = useStoreChatModelSettings()
+  const { selectedSystemPrompt } = useMessageOption()
   const { isPending: isLoading } = useQuery({
     queryKey: ["fetchModelConfig2", open],
     queryFn: async () => {
       const data = await getAllModelSettings()
+
+      let tempSystemPrompt = "";
+
+      // i hate this method but i need this feature so badly that i need to do this
+      if (selectedSystemPrompt) {
+        const prompt = await getPromptById(selectedSystemPrompt)
+        tempSystemPrompt = prompt?.content ?? ""
+      }
+
       form.setFieldsValue({
         temperature: cUserSettings.temperature ?? data.temperature,
         topK: cUserSettings.topK ?? data.topK,
@@ -39,13 +51,16 @@ export const CurrentChatModelSettings = ({
         numCtx: cUserSettings.numCtx ?? data.numCtx,
         seed: cUserSettings.seed,
         numGpu: cUserSettings.numGpu ?? data.numGpu,
-        systemPrompt: cUserSettings.systemPrompt ?? ""
+        numPredict: cUserSettings.numPredict ?? data.numPredict,
+        systemPrompt: cUserSettings.systemPrompt ?? tempSystemPrompt
       })
       return data
     },
     enabled: open,
-    refetchOnMount: true
+    refetchOnMount: false,
+    refetchOnWindowFocus: false
   })
+
 
   const renderBody = () => {
     return (
@@ -112,6 +127,15 @@ export const CurrentChatModelSettings = ({
               <InputNumber
                 style={{ width: "100%" }}
                 placeholder={t("modelSettings.form.numCtx.placeholder")}
+              />
+            </Form.Item>
+
+            <Form.Item
+              name="numPredict"
+              label={t("modelSettings.form.numPredict.label")}>
+              <InputNumber
+                style={{ width: "100%" }}
+                placeholder={t("modelSettings.form.numPredict.placeholder")}
               />
             </Form.Item>
 

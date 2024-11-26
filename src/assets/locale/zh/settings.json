@@ -35,6 +35,9 @@
       },
       "generateTitle": {
         "label": "使用人工智能生成标题"
+      },
+      "ollamaStatus": {
+        "label": "启用或禁用Ollama连接状态检查"
       }
     },
     "sidepanelRag": {
