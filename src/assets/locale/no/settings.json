@@ -241,25 +241,104 @@
   },
   "ollamaSettings": {
     "title": "Ollama Innstillinger",
-    "heading": "Konfigurer Ollama Plugin",
-    "enabled": {
-      "label": "Aktiver Ollama Plugin"
-    },
-    "provider": {
-      "label": "Ollama Tilbyder",
-      "placeholder": "Velg en Ollama tilbyder"
-    },
-    "apiKey": {
-      "label": "Ollama API Nøkkel",
-      "placeholder": "Skriv inn Ollama API Nøkkel",
-      "required": "API Nøkkel er påkrevd"
-    },
-    "saveBtn": {
-      "save": "Lagre"
-    },
-    "notification": {
-      "saveSuccess": "Ollama Plugin lagret vellykket",
-      "someError": "Noe gikk galt. Vennligst prøv igjen senere"
+    "heading": "Konfigurer Ollama",
+    "settings": {
+      "ollamaUrl": {
+        "label": "Ollama URL",
+        "placeholder": "Skriv inn Ollama URL"
+      },
+      "advanced": {
+        "label": "Avansert Ollama URL-konfigurasjon",
+        "urlRewriteEnabled": {
+          "label": "Aktiver eller deaktiver tilpasset opprinnelses-URL"
+        },
+        "rewriteUrl": {
+          "label": "Tilpasset opprinnelses-URL",
+          "placeholder": "Skriv inn tilpasset opprinnelses-URL"
+        },
+        "headers": {
+          "label": "Tilpass Headers",
+          "LeggTil": "Legg til Header",
+          "key": {
+            "label": "Header Nøkkel",
+            "placeholder": "Autorisasjon"
+          },
+          "value": {
+            "label": "Header Verdi",
+            "placeholder": "Bearer token"
+          }
+        },
+        "help": "Hvis du har forbindelsesproblemer med Ollama på Page Assist, kan du konfigurere en brukerdefinert opprinnelses-URL. For mer informasjon om konfigurasjonen, <anchor>klikk her</anchor>."
+      }
     }
+  },
+  "manageSearch": {
+    "title": "Administrer Web Søk",
+    "heading": "Konfigurer Web Søk"
+  },
+  "about": {
+    "title": "Om",
+    "heading": "Om",
+    "chromeVersion": "Page Assist Versjon",
+    "ollamaVersion": "Ollama Versjon",
+    "support": "Du kan støtte Page Assist-prosjektet ved å donere eller sponse via følgende plattformer:",
+    "koFi": "Støtt på Ko-fi",
+    "githubSponsor": "Spons på GitHub",
+    "githubRepo": "GitHub Repository"
+  },
+  "manageKnowledge": {
+    "title": "Administrer Kunnskap",
+    "heading": "Konfigurer Kunnskapsbase"
+  },
+  "rag": {
+    "title": "RAG Innstillinger",
+    "ragSettings": {
+      "label": "RAG Innstillinger",
+      "model": {
+        "label": "Embedding Modell",
+        "required": "Vennligst velg en modell",
+        "help": "Det anbefales sterkt å bruke embeddingsmodeller som `nomic-embed-text`.",
+        "placeholder": "Velg en modell"
+      },
+      "chunkSize": {
+        "label": "Delstørrelse",
+        "placeholder": "Skriv inn delstørrelse",
+        "required": "Vennligst skriv inn en delstørrelse"
+      },
+      "chunkOverlap": {
+        "label": "Deloverlapp",
+        "placeholder": "Skriv inn deloverlapp",
+        "required": "Vennligst skriv inn deloverlapp"
+      },
+      "totalFilePerKB": {
+        "label": "Kunnskapsbase standard filopplastingsgrense",
+        "placeholder": "Skriv inn standard filopplastingsgrense (f.eks. 10)",
+        "required": "Vennligst skriv inn standard filopplastingsgrense"
+      },
+      "noOfRetrievedDocs": {
+        "label": "Antall hentede dokumenter",
+        "placeholder": "Skriv inn antall hentede dokumenter",
+        "required": "Vennligst skriv inn antall hentede dokumenter"
+      }
+    },
+    "prompt": {
+      "label": "Konfigurer RAG Prompt",
+      "option1": "Normal",
+      "option2": "Web",
+      "alert": "Konfigurering av systemprompt her er foreldet. Vennligst bruk Administrer Prompts-seksjonen for å legge til eller endre prompts. Denne seksjonen vil bli fjernet i fremtidige versjoner.",
+      "systemPrompt": "Systemprompt",
+      "systemPromptPlaceholder": "Skriv inn systemprompt",
+      "webSearchPrompt": "Websøke-prompt",
+      "webSearchPromptHelp": "Ikke fjern `{search_results}` fra prompten.",
+      "webSearchPromptError": "Vennligst skriv inn en websøke-prompt",
+      "webSearchPromptPlaceholder": "Skriv inn websøke-prompt",
+      "webSearchFollowUpPrompt": "Oppfølgingsprompt for websøking",
+      "webSearchFollowUpPromptHelp": "Ikke fjern `{chat_history}` og `{question}` fra prompten.",
+      "webSearchFollowUpPromptError": "Vennligst skriv inn din oppfølgingsprompt for websøking!",
+      "webSearchFollowUpPromptPlaceholder": "Din oppfølgingsprompt for websøking"
+    }
+  },
+  "chromeAiSettings": {
+    "title": "Chrome AI Innstillinger"
   }
 }
