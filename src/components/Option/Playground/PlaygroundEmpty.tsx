@@ -39,6 +39,13 @@ export const PlaygroundEmpty = () => {
     enabled: checkOllamaStatus
   })
 
+  useEffect(() => {
+    if (ollamaInfo?.ollamaURL) {
+      setOllamaURL(ollamaInfo.ollamaURL)
+    }
+  }, [ollamaInfo])
+
+
   if (!checkOllamaStatus) {
     return (
       <div className="mx-auto sm:max-w-xl px-4 mt-10">
