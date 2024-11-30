@@ -21,6 +21,9 @@
       "copilotResumeLastChat": {
         "label": "Letzten Chat beim Öffnen des Seitenpanels fortsetzen (Copilot)"
       },
+      "webUIResumeLastChat": {
+        "label": "Letzten Chat beim Öffnen der Web-UI fortsetzen"
+      },
       "hideCurrentChatModelSettings": {
         "label": "Aktuelle Chat-Modell-Einstellungen ausblenden"
       },

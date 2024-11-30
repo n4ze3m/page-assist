@@ -21,6 +21,9 @@
       "copilotResumeLastChat": {
         "label": "Återuppta den senaste chatten när du öppnar sidopanelen (Copilot)"
       },
+      "webUIResumeLastChat": {
+        "label": "Återuppta den senaste chatten när du öppnar webbgränssnittet"
+      },
       "hideCurrentChatModelSettings": {
         "label": "Göm de nuvarande chattmodellinställningarna"
       },

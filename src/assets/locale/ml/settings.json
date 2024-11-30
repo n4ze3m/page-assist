@@ -24,6 +24,9 @@
       "copilotResumeLastChat": {
         "label": "സൈഡ്പാനൽ തുറക്കുമ്പോൾ അവസാനത്തെ ചാറ്റ് പുനരാരംഭിക്കുക (Copilot)"
       },
+      "webUIResumeLastChat": {
+        "label": "വെബ് UI തുറക്കുമ്പോൾ അവസാനത്തെ ചാറ്റ് പുനരാരംഭിക്കുക"
+      },
       "hideCurrentChatModelSettings": {
         "label": "നിലവിലുള്ള ചാറ്റ് മോഡൽ ക്രമീകരണങ്ങൾ മറയ്ക്കുക"
       },

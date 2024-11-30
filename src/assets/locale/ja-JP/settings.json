@@ -24,6 +24,9 @@
       "copilotResumeLastChat": {
         "label": "サイドパネルを開いたときに最後のチャットを再開 (Copilot)"
       },
+      "webUIResumeLastChat": {
+        "label": "Web UIを開いたときに最後のチャットを再開"
+      },
       "hideCurrentChatModelSettings": {
         "label": "現在のチャットモデル設定を非表示"
       },

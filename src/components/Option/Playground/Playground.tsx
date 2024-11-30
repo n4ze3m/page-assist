@@ -2,11 +2,18 @@ import React from "react"
 import { PlaygroundForm } from "./PlaygroundForm"
 import { PlaygroundChat } from "./PlaygroundChat"
 import { useMessageOption } from "@/hooks/useMessageOption"
+import { webUIResumeLastChat } from "@/services/app"
+import {
+  formatToChatHistory,
+  formatToMessage,
+  getRecentChatFromWebUI
+} from "@/db"
 
 export const Playground = () => {
   const drop = React.useRef<HTMLDivElement>(null)
   const [dropedFile, setDropedFile] = React.useState<File | undefined>()
-  const { selectedKnowledge } = useMessageOption()
+  const { selectedKnowledge, messages, setHistoryId, setHistory, setMessages } =
+    useMessageOption()
 
   const [dropState, setDropState] = React.useState<
     "idle" | "dragging" | "error"
@@ -71,6 +78,26 @@ export const Playground = () => {
       }
     }
   }, [selectedKnowledge])
+
+  const setRecentMessagesOnLoad = async () => {
+    const isEnabled = await webUIResumeLastChat()
+    if (!isEnabled) {
+      return
+    }
+    if (messages.length === 0) {
+      const recentChat = await getRecentChatFromWebUI()
+      if (recentChat) {
+        setHistoryId(recentChat.history.id)
+        setHistory(formatToChatHistory(recentChat.messages))
+        setMessages(formatToMessage(recentChat.messages))
+      }
+    }
+  }
+
+  React.useEffect(() => {
+    setRecentMessagesOnLoad()
+  }, [])
+
   return (
     <div
       ref={drop}
@@ -78,7 +105,7 @@ export const Playground = () => {
         dropState === "dragging" ? "bg-gray-100 dark:bg-gray-800 z-10" : ""
       } bg-white dark:bg-[#171717]`}>
       <PlaygroundChat />
-      
+
       <div className="flex flex-col items-center">
         <div className="flex-grow">
           <div className="w-full flex justify-center">

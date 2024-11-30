@@ -21,6 +21,9 @@
       "copilotResumeLastChat": {
         "label": "Retomar o último chat ao abrir o Painel Lateral (Copilot)"
       },
+      "webUIResumeLastChat": {
+        "label": "Retomar o último chat ao abrir a Interface Web"
+      },
       "hideCurrentChatModelSettings": {
         "label": "Ocultar as Configurações Atuais do Modelo de Chat"
       },

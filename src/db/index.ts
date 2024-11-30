@@ -356,11 +356,11 @@ export const updateMessageByIndex = async (
   message: string
 ) => {
   try {
-  const db = new PageAssitDatabase()
-  const chatHistory = (await db.getChatHistory(history_id)).reverse()
-  chatHistory[index].content = message
-  await db.db.set({ [history_id]: chatHistory.reverse() })
-  } catch(e) {
+    const db = new PageAssitDatabase()
+    const chatHistory = (await db.getChatHistory(history_id)).reverse()
+    chatHistory[index].content = message
+    await db.db.set({ [history_id]: chatHistory.reverse() })
+  } catch (e) {
     // temp chat will break
   }
 }
@@ -507,6 +507,20 @@ export const getRecentChatFromCopilot = async () => {
   if (chatHistories.length === 0) return null
   const history = chatHistories.find(
     (history) => history.message_source === "copilot"
+  )
+  if (!history) return null
+
+  const messages = await db.getChatHistory(history.id)
+
+  return { history, messages }
+}
+
+export const getRecentChatFromWebUI = async () => {
+  const db = new PageAssitDatabase()
+  const chatHistories = await db.getChatHistories()
+  if (chatHistories.length === 0) return null
+  const history = chatHistories.find(
+    (history) => history.message_source === "web-ui"
   )
   if (!history) return null
 

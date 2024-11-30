@@ -21,6 +21,9 @@
       "copilotResumeLastChat": {
         "label": "Возобновить последний чат при открытии боковой панели (Copilot)"
       },
+      "webUIResumeLastChat": {
+        "label": "Возобновить последний чат при открытии веб-интерфейса"
+      },
       "hideCurrentChatModelSettings": {
         "label": "Скрыть текущие настройки модели чата"
       },
