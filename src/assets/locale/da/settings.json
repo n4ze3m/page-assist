@@ -65,6 +65,11 @@
       },
       "visitSpecificWebsite": {
         "label": "Besøg websitet nævnt i samtalen"
+      },
+      "searxng": {
+        "url": {
+          "label": "SearXNG URL"
+        }
       }
     },
     "system": {

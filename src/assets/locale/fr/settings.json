@@ -65,6 +65,11 @@
       },
       "visitSpecificWebsite": {
         "label": "Visitez le site web mentionné dans le message"
+      },
+      "searxng": {
+        "url": {
+          "label": "URL SearXNG"
+        }
       }
     },
     "system": {

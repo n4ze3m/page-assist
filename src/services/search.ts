@@ -62,20 +62,45 @@ export const setTotalSearchResults = async (totalSearchResults: number) => {
   await storage.set("totalSearchResults", totalSearchResults.toString())
 }
 
+export const getSearxngURL = async () => {
+  const searxngURL = await storage.get("searxngURL")
+  return searxngURL || ""
+}
+
+export const isSearxngJSONMode = async () => {
+  const searxngJSONMode = await storage.get<boolean>("searxngJSONMode")
+  return searxngJSONMode ?? false
+}
+
+export const setSearxngJSONMode = async (searxngJSONMode: boolean) => {
+  await storage.set("searxngJSONMode", searxngJSONMode)
+}
+
+export const setSearxngURL = async (searxngURL: string) => {
+  await storage.set("searxngURL", searxngURL)
+}
+
 export const getSearchSettings = async () => {
-  const [isSimpleInternetSearch, searchProvider, totalSearchResult, visitSpecificWebsite] =
+  const [isSimpleInternetSearch, searchProvider, totalSearchResult, visitSpecificWebsite,
+    searxngURL,
+    searxngJSONMode
+  ] =
     await Promise.all([
       getIsSimpleInternetSearch(),
       getSearchProvider(),
       totalSearchResults(),
-      getIsVisitSpecificWebsite()
+      getIsVisitSpecificWebsite(),
+      getSearxngURL(),
+      isSearxngJSONMode()
     ])
 
   return {
     isSimpleInternetSearch,
     searchProvider,
     totalSearchResults: totalSearchResult,
-    visitSpecificWebsite
+    visitSpecificWebsite,
+    searxngURL,
+    searxngJSONMode
   }
 }
 
@@ -83,17 +108,23 @@ export const setSearchSettings = async ({
   isSimpleInternetSearch,
   searchProvider,
   totalSearchResults,
-  visitSpecificWebsite
+  visitSpecificWebsite,
+  searxngJSONMode,
+  searxngURL
 }: {
   isSimpleInternetSearch: boolean
   searchProvider: string
   totalSearchResults: number
   visitSpecificWebsite: boolean
+  searxngURL: string
+  searxngJSONMode: boolean
 }) => {
   await Promise.all([
     setIsSimpleInternetSearch(isSimpleInternetSearch),
     setSearchProvider(searchProvider),
     setTotalSearchResults(totalSearchResults),
-    setIsVisitSpecificWebsite(visitSpecificWebsite)
+    setIsVisitSpecificWebsite(visitSpecificWebsite),
+    setSearxngJSONMode(searxngJSONMode),
+    setSearxngURL(searxngURL)
   ])
 }

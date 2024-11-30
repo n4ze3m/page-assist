@@ -68,6 +68,11 @@
       },
       "visitSpecificWebsite": {
         "label": "メッセージに記載されたウェブサイトを訪問してください"
+      },
+      "searxng": {
+        "url": {
+          "label": "SearXNG URL"
+        }
       }
     },
     "system": {

@@ -68,6 +68,11 @@
       },
       "visitSpecificWebsite": {
         "label": "访问消息中提到的网站。"
+      },
+      "searxng": {
+        "url": {
+          "label": "SearXNG 网址"
+        }
       }
     },
     "system": {

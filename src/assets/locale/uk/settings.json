@@ -65,6 +65,11 @@
       },
       "visitSpecificWebsite": {
         "label": "Відвідати веб-сайт, згаданий у повідомленні"
+      },
+      "searxng": {
+        "url": {
+          "label": "SearXNG URL-адреса"
+        }
       }
     },
     "system": {

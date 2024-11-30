@@ -68,6 +68,11 @@
       },
       "visitSpecificWebsite": {
         "label": "സന്ദേശത്തിൽ പറയുന്ന വെബ്സൈറ്റ് സന്ദർശിക്കുക."
+      },
+      "searxng": {
+        "url": {
+          "label": "SearXNG URL"
+        }
       }
     },
     "system": {

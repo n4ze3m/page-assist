@@ -68,6 +68,11 @@
       },
       "visitSpecificWebsite": {
         "label": "메시지에 언급된 웹사이트 방문"
+      },
+      "searxng": {
+        "url": {
+          "label": "SearXNG URL"
+        }
       }
     },
     "system": {

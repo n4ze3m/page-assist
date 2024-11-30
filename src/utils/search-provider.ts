@@ -14,5 +14,9 @@ export const SUPPORTED_SERACH_PROVIDERS = [
     {
         label: "Brave",
         value: "brave"
+    },
+    {
+        label: "Searxng",
+        value: "searxng"
     }
 ]
