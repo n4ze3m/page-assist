@@ -87,6 +87,9 @@
                 "label": "Top P",
                 "placeholder": "Enter Top P value (e.g. 0.9, 0.95)"
             },
+            "useMMap": {
+                "label": "useMmap"
+            },
             "numGpu": {
                 "label": "Num GPU",
                 "placeholder": "Enter number of layers to send to GPU(s)"

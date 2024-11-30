@@ -2,7 +2,7 @@ import { BetaTag } from "@/components/Common/Beta"
 import { SaveButton } from "@/components/Common/SaveButton"
 import { getAllModelSettings, setModelSetting } from "@/services/model-settings"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
-import { Form, Skeleton, Input, InputNumber, Collapse } from "antd"
+import { Form, Skeleton, Input, InputNumber, Collapse, Switch } from "antd"
 import React from "react"
 import { useTranslation } from "react-i18next"
 
@@ -78,13 +78,13 @@ export const ModelSettings = () => {
             />
           </Form.Item>
           <Form.Item
-              name="numPredict"
-              label={t("modelSettings.form.numPredict.label")}>
-              <InputNumber
-                style={{ width: "100%" }}
-                placeholder={t("modelSettings.form.numPredict.placeholder")}
-              />
-            </Form.Item>
+            name="numPredict"
+            label={t("modelSettings.form.numPredict.label")}>
+            <InputNumber
+              style={{ width: "100%" }}
+              placeholder={t("modelSettings.form.numPredict.placeholder")}
+            />
+          </Form.Item>
           <Collapse
             ghost
             className="border-none bg-transparent"
@@ -119,10 +119,13 @@ export const ModelSettings = () => {
                       <InputNumber
                         style={{ width: "100%" }}
                         size="large"
-                        placeholder={t(
-                          "modelSettings.form.numGpu.placeholder"
-                        )}
+                        placeholder={t("modelSettings.form.numGpu.placeholder")}
                       />
+                    </Form.Item>
+                    <Form.Item
+                      name="useMMap"
+                      label={t("modelSettings.form.useMMap.label")}>
+                      <Switch />
                     </Form.Item>
                   </React.Fragment>
                 )

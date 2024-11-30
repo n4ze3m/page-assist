@@ -10,7 +10,8 @@ import {
   Input,
   InputNumber,
   Modal,
-  Skeleton
+  Skeleton,
+  Switch
 } from "antd"
 import React from "react"
 import { useTranslation } from "react-i18next"
@@ -35,7 +36,7 @@ export const CurrentChatModelSettings = ({
     queryFn: async () => {
       const data = await getAllModelSettings()
 
-      let tempSystemPrompt = "";
+      let tempSystemPrompt = ""
 
       // i hate this method but i need this feature so badly that i need to do this
       if (selectedSystemPrompt) {
@@ -52,7 +53,8 @@ export const CurrentChatModelSettings = ({
         seed: cUserSettings.seed,
         numGpu: cUserSettings.numGpu ?? data.numGpu,
         numPredict: cUserSettings.numPredict ?? data.numPredict,
-        systemPrompt: cUserSettings.systemPrompt ?? tempSystemPrompt
+        systemPrompt: cUserSettings.systemPrompt ?? tempSystemPrompt,
+        useMMap: cUserSettings.useMMap ?? data.useMMap
       })
       return data
     },
@@ -60,7 +62,6 @@ export const CurrentChatModelSettings = ({
     refetchOnMount: false,
     refetchOnWindowFocus: false
   })
-
 
   const renderBody = () => {
     return (
@@ -175,6 +176,12 @@ export const CurrentChatModelSettings = ({
                             "modelSettings.form.numGpu.placeholder"
                           )}
                         />
+                      </Form.Item>
+
+                      <Form.Item
+                        name="useMMap"
+                        label={t("modelSettings.form.useMMap.label")}>
+                        <Switch />
                       </Form.Item>
                     </React.Fragment>
                   )

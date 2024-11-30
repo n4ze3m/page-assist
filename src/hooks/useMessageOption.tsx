@@ -130,7 +130,9 @@ export const useMessageOption = () => {
         currentChatModelSettings?.numGpu ?? userDefaultModelSettings?.numGpu,
       numPredict:
         currentChatModelSettings?.numPredict ??
-        userDefaultModelSettings?.numPredict
+        userDefaultModelSettings?.numPredict,
+      useMMap:
+        currentChatModelSettings?.useMMap ?? userDefaultModelSettings?.useMMap
     })
 
     let newMessage: Message[] = []
@@ -209,7 +211,10 @@ export const useMessageOption = () => {
             userDefaultModelSettings?.numGpu,
           numPredict:
             currentChatModelSettings?.numPredict ??
-            userDefaultModelSettings?.numPredict
+            userDefaultModelSettings?.numPredict,
+          useMMap:
+            currentChatModelSettings?.useMMap ??
+            userDefaultModelSettings?.useMMap
         })
         const response = await questionOllama.invoke(promptForQuestion)
         query = response.content.toString()
@@ -429,7 +434,9 @@ export const useMessageOption = () => {
         currentChatModelSettings?.numGpu ?? userDefaultModelSettings?.numGpu,
       numPredict:
         currentChatModelSettings?.numPredict ??
-        userDefaultModelSettings?.numPredict
+        userDefaultModelSettings?.numPredict,
+      useMMap:
+        currentChatModelSettings?.useMMap ?? userDefaultModelSettings?.useMMap
     })
 
     let newMessage: Message[] = []
@@ -667,7 +674,9 @@ export const useMessageOption = () => {
         currentChatModelSettings?.numGpu ?? userDefaultModelSettings?.numGpu,
       numPredict:
         currentChatModelSettings?.numPredict ??
-        userDefaultModelSettings?.numPredict
+        userDefaultModelSettings?.numPredict,
+      useMMap:
+        currentChatModelSettings?.useMMap ?? userDefaultModelSettings?.useMMap
     })
 
     let newMessage: Message[] = []
@@ -762,7 +771,10 @@ export const useMessageOption = () => {
             userDefaultModelSettings?.numGpu,
           numPredict:
             currentChatModelSettings?.numPredict ??
-            userDefaultModelSettings?.numPredict
+            userDefaultModelSettings?.numPredict,
+          useMMap:
+            currentChatModelSettings?.useMMap ??
+            userDefaultModelSettings?.useMMap
         })
         const response = await questionOllama.invoke(promptForQuestion)
         query = response.content.toString()
