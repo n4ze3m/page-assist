@@ -50,16 +50,20 @@ export const searxngSearch = async (query: string) => {
   }
 
   const docs: Document<Record<string, any>>[] = []
-  for (const result of searchResults) {
-    const loader = new PageAssistHtmlLoader({
-      html: "",
-      url: result.link
-    })
-
-    const documents = await loader.loadByURL()
-    documents.forEach((doc) => {
-      docs.push(doc)
-    })
+  try {
+    for (const result of searchResults) {
+      const loader = new PageAssistHtmlLoader({
+        html: "",
+        url: result.link
+      })
+  
+      const documents = await loader.loadByURL()
+      documents.forEach((doc) => {
+        docs.push(doc)
+      })
+    }
+  } catch (error) {
+    console.error(error)
   }
 
   const ollamaUrl = await getOllamaURL()
@@ -79,7 +83,7 @@ export const searxngSearch = async (query: string) => {
   const chunks = await textSplitter.splitDocuments(docs)
   const store = new MemoryVectorStore(ollamaEmbedding)
   await store.addDocuments(chunks)
-  
+
   const resultsWithEmbeddings = await store.similaritySearch(query, 3)
 
   const searchResult = resultsWithEmbeddings.map((result) => {
