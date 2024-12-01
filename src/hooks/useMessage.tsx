@@ -533,7 +533,7 @@ export const useMessage = () => {
       const prompt = await systemPromptForNonRag()
       const selectedPrompt = await getPromptById(selectedSystemPrompt)
 
-      const applicationChatHistory = generateHistory(history, selectedModel)
+      const applicationChatHistory = []
 
       const data = await getScreenshotFromCurrentTab()
       console.log(
