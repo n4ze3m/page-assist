@@ -50,7 +50,6 @@ export const getSystemPromptForWeb = async (query: string) => {
 
     } else {
       const searchProvider = await getSearchProvider()
-      //@ts-ignore
       search = await searchWeb(searchProvider, query)
     }
 

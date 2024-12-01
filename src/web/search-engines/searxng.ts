@@ -30,7 +30,7 @@ export const searxngSearch = async (query: string) => {
   }
 
   const isJSONMode = await isSearxngJSONMode()
-  const results = isJSONMode 
+  const results = isJSONMode
     ? await searxngJSONSearch(searxngURL, query)
     : await searxngWebSearch(searxngURL, query)
 
@@ -79,8 +79,17 @@ export const searxngSearch = async (query: string) => {
   const chunks = await textSplitter.splitDocuments(docs)
   const store = new MemoryVectorStore(ollamaEmbedding)
   await store.addDocuments(chunks)
+  
+  const resultsWithEmbeddings = await store.similaritySearch(query, 3)
 
-  return store
+  const searchResult = resultsWithEmbeddings.map((result) => {
+    return {
+      url: result.metadata.url,
+      content: result.pageContent
+    }
+  })
+
+  return searchResult
 }
 
 const searxngJSONSearch = async (baseURL: string, query: string) => {
