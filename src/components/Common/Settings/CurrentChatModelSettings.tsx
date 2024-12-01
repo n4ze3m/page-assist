@@ -5,15 +5,17 @@ import { useStoreChatModelSettings } from "@/store/model"
 import { useQuery } from "@tanstack/react-query"
 import {
   Collapse,
+  Divider,
   Drawer,
   Form,
   Input,
   InputNumber,
   Modal,
   Skeleton,
-  Switch
+  Switch,
+  Button
 } from "antd"
-import React from "react"
+import React, { useState, useCallback } from "react"
 import { useTranslation } from "react-i18next"
 
 type Props = {
@@ -31,6 +33,19 @@ export const CurrentChatModelSettings = ({
   const [form] = Form.useForm()
   const cUserSettings = useStoreChatModelSettings()
   const { selectedSystemPrompt } = useMessageOption()
+
+  const savePrompt = useCallback((value: string) => {
+    cUserSettings.setX('systemPrompt', value)
+  }, [cUserSettings])
+
+  const saveSettings = useCallback((values: any) => {
+    Object.entries(values).forEach(([key, value]) => {
+      if (key !== 'systemPrompt') {
+        cUserSettings.setX(key, value)
+      }
+    })
+  }, [cUserSettings])
+
   const { isPending: isLoading } = useQuery({
     queryKey: ["fetchModelConfig2", open],
     queryFn: async () => {
@@ -68,19 +83,12 @@ export const CurrentChatModelSettings = ({
       <>
         {!isLoading ? (
           <Form
-            onFinish={(values: {
-              keepAlive: string
-              temperature: number
-              topK: number
-              topP: number
-            }) => {
-              Object.entries(values).forEach(([key, value]) => {
-                cUserSettings.setX(key, value)
-                setOpen(false)
-              })
-            }}
             form={form}
-            layout="vertical">
+            layout="vertical"
+            onFinish={(values) => {
+              saveSettings(values)
+              setOpen(false)
+            }}>
             {useDrawer && (
               <>
                 <Form.Item
@@ -92,8 +100,10 @@ export const CurrentChatModelSettings = ({
                     placeholder={t(
                       "modelSettings.form.systemPrompt.placeholder"
                     )}
+                    onChange={(e) => savePrompt(e.target.value)}
                   />
                 </Form.Item>
+                <Divider />
               </>
             )}
             <Form.Item
@@ -113,6 +123,7 @@ export const CurrentChatModelSettings = ({
                 placeholder={t("modelSettings.form.temperature.placeholder")}
               />
             </Form.Item>
+
             <Form.Item
               name="seed"
               help={t("modelSettings.form.seed.help")}
@@ -122,6 +133,7 @@ export const CurrentChatModelSettings = ({
                 placeholder={t("modelSettings.form.seed.placeholder")}
               />
             </Form.Item>
+
             <Form.Item
               name="numCtx"
               label={t("modelSettings.form.numCtx.label")}>
@@ -139,6 +151,8 @@ export const CurrentChatModelSettings = ({
                 placeholder={t("modelSettings.form.numPredict.placeholder")}
               />
             </Form.Item>
+
+            <Divider />
 
             <Collapse
               ghost
@@ -188,12 +202,12 @@ export const CurrentChatModelSettings = ({
                 }
               ]}
             />
-
-            <button
-              type="submit"
+            <Button
+              type="primary"
+              htmlType="submit"
               className="inline-flex justify-center w-full text-center mt-3 items-center rounded-md border border-transparent bg-black px-2 py-2 text-sm font-medium leading-4 text-white shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-white dark:text-gray-800 dark:hover:bg-gray-100 dark:focus:ring-gray-500 dark:focus:ring-offset-gray-100 disabled:opacity-50 ">
               {t("save")}
-            </button>
+            </Button>
           </Form>
         ) : (
           <Skeleton active />
@@ -209,7 +223,8 @@ export const CurrentChatModelSettings = ({
         open={open}
         onClose={() => setOpen(false)}
         width={500}
-        title={t("currentChatModelSettings")}>
+        title={t("currentChatModelSettings")}
+      >
         {renderBody()}
       </Drawer>
     )
@@ -221,7 +236,8 @@ export const CurrentChatModelSettings = ({
       open={open}
       onOk={() => setOpen(false)}
       onCancel={() => setOpen(false)}
-      footer={null}>
+      footer={null}
+    >
       {renderBody()}
     </Modal>
   )
