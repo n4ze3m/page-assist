@@ -17,6 +17,7 @@ import {
 } from "antd"
 import React, { useState, useCallback } from "react"
 import { useTranslation } from "react-i18next"
+import { SaveButton } from "../SaveButton"
 
 type Props = {
   open: boolean
@@ -34,17 +35,23 @@ export const CurrentChatModelSettings = ({
   const cUserSettings = useStoreChatModelSettings()
   const { selectedSystemPrompt } = useMessageOption()
 
-  const savePrompt = useCallback((value: string) => {
-    cUserSettings.setX('systemPrompt', value)
-  }, [cUserSettings])
+  const savePrompt = useCallback(
+    (value: string) => {
+      cUserSettings.setX("systemPrompt", value)
+    },
+    [cUserSettings]
+  )
 
-  const saveSettings = useCallback((values: any) => {
-    Object.entries(values).forEach(([key, value]) => {
-      if (key !== 'systemPrompt') {
-        cUserSettings.setX(key, value)
-      }
-    })
-  }, [cUserSettings])
+  const saveSettings = useCallback(
+    (values: any) => {
+      Object.entries(values).forEach(([key, value]) => {
+        if (key !== "systemPrompt") {
+          cUserSettings.setX(key, value)
+        }
+      })
+    },
+    [cUserSettings]
+  )
 
   const { isPending: isLoading } = useQuery({
     queryKey: ["fetchModelConfig2", open],
@@ -202,12 +209,7 @@ export const CurrentChatModelSettings = ({
                 }
               ]}
             />
-            <Button
-              type="primary"
-              htmlType="submit"
-              className="inline-flex justify-center w-full text-center mt-3 items-center rounded-md border border-transparent bg-black px-2 py-2 text-sm font-medium leading-4 text-white shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-white dark:text-gray-800 dark:hover:bg-gray-100 dark:focus:ring-gray-500 dark:focus:ring-offset-gray-100 disabled:opacity-50 ">
-              {t("save")}
-            </Button>
+            <SaveButton className="w-full text-center inline-flex items-center justify-center" btnType="submit" />
           </Form>
         ) : (
           <Skeleton active />
@@ -223,8 +225,7 @@ export const CurrentChatModelSettings = ({
         open={open}
         onClose={() => setOpen(false)}
         width={500}
-        title={t("currentChatModelSettings")}
-      >
+        title={t("currentChatModelSettings")}>
         {renderBody()}
       </Drawer>
     )
@@ -236,8 +237,7 @@ export const CurrentChatModelSettings = ({
       open={open}
       onOk={() => setOpen(false)}
       onCancel={() => setOpen(false)}
-      footer={null}
-    >
+      footer={null}>
       {renderBody()}
     </Modal>
   )
