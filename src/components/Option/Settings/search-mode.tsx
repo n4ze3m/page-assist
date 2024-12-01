@@ -3,7 +3,7 @@ import { getSearchSettings, setSearchSettings } from "@/services/search"
 import { SUPPORTED_SERACH_PROVIDERS } from "@/utils/search-provider"
 import { useForm } from "@mantine/form"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
-import { Select, Skeleton, Switch, InputNumber } from "antd"
+import { Select, Skeleton, Switch, InputNumber, Input } from "antd"
 import { useTranslation } from "react-i18next"
 
 export const SearchModeSettings = () => {
@@ -14,7 +14,9 @@ export const SearchModeSettings = () => {
       isSimpleInternetSearch: false,
       searchProvider: "",
       totalSearchResults: 0,
-      visitSpecificWebsite: false
+      visitSpecificWebsite: false,
+      searxngURL: "",
+      searxngJSONMode: false
     }
   })
 
@@ -62,6 +64,23 @@ export const SearchModeSettings = () => {
             />
           </div>
         </div>
+        {form.values.searchProvider === "searxng" && (
+          <>
+            <div className="flex sm:flex-row flex-col space-y-4 sm:space-y-0 sm:justify-between">
+              <span className="text-gray-700 dark:text-neutral-50">
+                {t("generalSettings.webSearch.searxng.url.label")}
+              </span>
+              <div>
+                <Input
+                  placeholder="https://searxng.example.com"
+                  className="w-full mt-4 sm:mt-0 sm:w-[200px]"
+                  required
+                  {...form.getInputProps("searxngURL")}
+                />
+              </div>
+            </div>
+          </>
+        )}
         <div className="flex sm:flex-row flex-col space-y-4 sm:space-y-0 sm:justify-between">
           <span className="text-gray-700 dark:text-neutral-50 ">
             {t("generalSettings.webSearch.searchMode.label")}

@@ -39,6 +39,10 @@ export const copilotResumeLastChat = async () => {
   return await storage.get<boolean>("copilotResumeLastChat")
 }
 
+export const webUIResumeLastChat = async () => {
+  return await storage.get<boolean>("webUIResumeLastChat")
+}
+
 export const defaultSidebarOpen = async () => {
   const sidebarOpen = await storage.get("sidebarOpen")
   if (!sidebarOpen || sidebarOpen === "") {

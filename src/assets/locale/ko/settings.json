@@ -24,6 +24,9 @@
       "copilotResumeLastChat": {
         "label": "사이드 패널을 열 때 마지막 채팅 재개 (Copilot)"
       },
+      "webUIResumeLastChat": {
+        "label": "웹 UI를 열 때 마지막 채팅 재개"
+      },
       "hideCurrentChatModelSettings": {
         "label": "현재 채팅 모델 설정 숨기기"
       },
@@ -65,6 +68,11 @@
       },
       "visitSpecificWebsite": {
         "label": "메시지에 언급된 웹사이트 방문"
+      },
+      "searxng": {
+        "url": {
+          "label": "SearXNG URL"
+        }
       }
     },
     "system": {

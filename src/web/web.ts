@@ -5,6 +5,7 @@ import { getIsVisitSpecificWebsite, getSearchProvider } from "@/services/search"
 import { webSogouSearch } from "./search-engines/sogou"
 import { webBraveSearch } from "./search-engines/brave"
 import { getWebsiteFromQuery, processSingleWebsite } from "./website"
+import { searxngSearch } from "./search-engines/searxng"
 
 const getHostName = (url: string) => {
   try {
@@ -23,6 +24,8 @@ const searchWeb = (provider: string, query: string) => {
       return webSogouSearch(query)
     case "brave":
       return webBraveSearch(query)
+    case "searxng":
+      return searxngSearch(query)
     default:
       return webGoogleSearch(query)
   }
@@ -49,7 +52,6 @@ export const getSystemPromptForWeb = async (query: string) => {
       const searchProvider = await getSearchProvider()
       search = await searchWeb(searchProvider, query)
     }
-
 
 
     const search_results = search

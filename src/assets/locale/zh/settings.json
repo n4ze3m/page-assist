@@ -24,6 +24,9 @@
       "copilotResumeLastChat": {
         "label": "打开侧边栏时恢复上次聊天（Copilot）"
       },
+      "webUIResumeLastChat": {
+        "label": "打开Web UI时恢复上次聊天"
+      },
       "hideCurrentChatModelSettings": {
         "label": "隐藏当前聊天模型设置"
       },
@@ -65,6 +68,11 @@
       },
       "visitSpecificWebsite": {
         "label": "访问消息中提到的网站。"
+      },
+      "searxng": {
+        "url": {
+          "label": "SearXNG 网址"
+        }
       }
     },
     "system": {

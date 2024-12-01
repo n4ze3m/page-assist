@@ -62,6 +62,11 @@
       },
       "visitSpecificWebsite": {
         "label": "مراجعه به وب سایت ذکر شده در پیام"
+      },
+      "searxng": {
+        "url": {
+          "label": "آدرس SearXNG"
+        }
       }
     },
     "system": {

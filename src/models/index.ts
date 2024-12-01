@@ -16,6 +16,7 @@ export const pageAssistModel = async ({
   seed,
   numGpu,
   numPredict,
+  useMMap
 }: {
   model: string
   baseUrl: string
@@ -27,6 +28,7 @@ export const pageAssistModel = async ({
   seed?: number
   numGpu?: number
   numPredict?: number
+  useMMap?: boolean
 }) => {
 
   if (model === "chrome::gemini-nano::page-assist") {
@@ -73,7 +75,8 @@ export const pageAssistModel = async ({
     seed,
     model,
     numGpu,
-    numPredict
+    numPredict,
+    useMMap,
   })
 
 

@@ -27,6 +27,11 @@ export const GeneralSettings = () => {
     false
   )
 
+  const [webUIResumeLastChat, setWebUIResumeLastChat] = useStorage(
+    "webUIResumeLastChat",
+    false
+  )
+
   const [restoreLastChatModel, setRestoreLastChatModel] = useStorage(
     "restoreLastChatModel",
     false
@@ -111,6 +116,17 @@ export const GeneralSettings = () => {
         <Switch
           checked={copilotResumeLastChat}
           onChange={(checked) => setCopilotResumeLastChat(checked)}
+        />
+      </div>
+      <div className="flex flex-row justify-between">
+        <div className="inline-flex items-center gap-2">
+          <span className="text-gray-700   dark:text-neutral-50">
+            {t("generalSettings.settings.webUIResumeLastChat.label")}
+          </span>
+        </div>
+        <Switch
+          checked={webUIResumeLastChat}
+          onChange={(checked) => setWebUIResumeLastChat(checked)}
         />
       </div>
       <div className="flex flex-row justify-between">

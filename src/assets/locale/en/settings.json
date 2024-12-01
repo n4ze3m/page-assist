@@ -21,6 +21,9 @@
       "copilotResumeLastChat": {
         "label": "Resume the last chat when opening the SidePanel (Copilot)"
       },
+      "webUIResumeLastChat": {
+        "label": "Resume the last chat when opening the Web UI"
+      },
       "hideCurrentChatModelSettings": {
         "label": "Hide the current Chat Model Settings"
       },
@@ -33,8 +36,8 @@
       "generateTitle": {
         "label": "Generate Title using AI"
       },
-      "ollamaStatus" :{
-        "label":"Enable or disable Ollama connection status check"
+      "ollamaStatus": {
+        "label": "Enable or disable Ollama connection status check"
       }
     },
     "sidepanelRag": {
@@ -62,6 +65,11 @@
       },
       "visitSpecificWebsite": {
         "label": "Visit the website mentioned in the message"
+      },
+      "searxng": {
+        "url": {
+          "label": "SearXNG URL"
+        }
       }
     },
     "system": {

@@ -21,6 +21,9 @@
       "copilotResumeLastChat": {
         "label": "Genoptag den sidste chat, når du åbner SidePanel (copilot)"
       },
+      "webUIResumeLastChat": {
+        "label": "Genoptag den sidste chat, når du åbner Web UI'en"
+      },
       "hideCurrentChatModelSettings": {
         "label": "Skjul nuværende chat model indstillinger"
       },
@@ -62,6 +65,11 @@
       },
       "visitSpecificWebsite": {
         "label": "Besøg websitet nævnt i samtalen"
+      },
+      "searxng": {
+        "url": {
+          "label": "SearXNG URL"
+        }
       }
     },
     "system": {
