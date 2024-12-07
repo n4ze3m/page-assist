@@ -411,6 +411,8 @@ export const useMessageOption = () => {
   ) => {
     const url = await getOllamaURL()
     const userDefaultModelSettings = await getAllDefaultModelSettings()
+    let promptId: string | undefined = selectedSystemPrompt
+    let promptContent: string | undefined = undefined
 
     if (image.length > 0) {
       image = `data:image/jpeg;base64,${image.split(",")[1]}`
@@ -525,6 +527,7 @@ export const useMessageOption = () => {
             content: selectedPrompt.content
           })
         )
+        promptContent = selectedPrompt.content
       }
 
       if (isTempSystemprompt) {
@@ -533,6 +536,7 @@ export const useMessageOption = () => {
             content: currentChatModelSettings.systemPrompt
           })
         )
+        promptContent = currentChatModelSettings.systemPrompt
       }
 
       let generationInfo: any | undefined = undefined
@@ -611,7 +615,9 @@ export const useMessageOption = () => {
         image,
         fullText,
         source: [],
-        generationInfo
+        generationInfo,
+        prompt_content: promptContent,
+        prompt_id: promptId
       })
 
       setIsProcessing(false)
@@ -629,7 +635,9 @@ export const useMessageOption = () => {
         setHistory,
         setHistoryId,
         userMessage: message,
-        isRegenerating: isRegenerate
+        isRegenerating: isRegenerate,
+        prompt_content: promptContent,
+        prompt_id: promptId
       })
 
       if (!errorSave) {

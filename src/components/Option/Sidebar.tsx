@@ -5,7 +5,8 @@ import {
   formatToMessage,
   deleteByHistoryId,
   updateHistory,
-  pinHistory
+  pinHistory,
+  getPromptById
 } from "@/db"
 import { Empty, Skeleton, Dropdown, Menu } from "antd"
 import { useMessageOption } from "~/hooks/useMessageOption"
@@ -20,8 +21,10 @@ import { useNavigate } from "react-router-dom"
 import { useTranslation } from "react-i18next"
 import {
   getLastUsedChatModel,
+  getLastUsedChatSystemPrompt,
   lastUsedChatModelEnabled
 } from "@/services/model-settings"
+import { useStoreChatModelSettings } from "@/store/model"
 
 type Props = {
   onClose: () => void
@@ -35,8 +38,12 @@ export const Sidebar = ({ onClose }: Props) => {
     historyId,
     clearChat,
     setSelectedModel,
-    temporaryChat
+    temporaryChat,
+    setSelectedSystemPrompt
   } = useMessageOption()
+
+  const { setSystemPrompt } = useStoreChatModelSettings()
+
   const { t } = useTranslation(["option", "common"])
   const client = useQueryClient()
   const navigate = useNavigate()
@@ -127,7 +134,8 @@ export const Sidebar = ({ onClose }: Props) => {
   })
 
   return (
-    <div className={`overflow-y-auto z-99 ${temporaryChat ? 'pointer-events-none opacity-50' : ''}`}>
+    <div
+      className={`overflow-y-auto z-99 ${temporaryChat ? "pointer-events-none opacity-50" : ""}`}>
       {status === "success" && chatHistories.length === 0 && (
         <div className="flex justify-center items-center mt-20 overflow-hidden">
           <Empty description={t("common:noHistory")} />
@@ -172,6 +180,19 @@ export const Sidebar = ({ onClose }: Props) => {
                           if (currentChatModel) {
                             setSelectedModel(currentChatModel)
                           }
+                        }
+                        const lastUsedPrompt =
+                          await getLastUsedChatSystemPrompt(chat.id)
+                        if (lastUsedPrompt) {
+                          if (lastUsedPrompt.prompt_id) {
+                            const prompt = await getPromptById(
+                              lastUsedPrompt.prompt_id
+                            )
+                            if (prompt) {
+                              setSelectedSystemPrompt(lastUsedPrompt.prompt_id)
+                            }
+                          }
+                          setSystemPrompt(lastUsedPrompt.prompt_content)
                         }
                         navigate("/")
                         onClose()

@@ -125,4 +125,23 @@ export const setLastUsedChatModel = async (
   await storage.set(`lastUsedChatModel-${historyId}`, model)
 }
 
+
+export const getLastUsedChatSystemPrompt = async (
+  historyId: string
+): Promise<{ prompt_id?: string; prompt_content?: string } | undefined> => {
+  return await storage.get<{ prompt_id?: string; prompt_content?: string } | undefined>(
+    `lastUsedChatSystemPrompt-${historyId}`
+  )
+}
+
+export const setLastUsedChatSystemPrompt = async (
+  historyId: string,
+  prompt: {
+    prompt_id?: string
+    prompt_content?: string
+  }
+): Promise<void> => {
+  await storage.set(`lastUsedChatSystemPrompt-${historyId}`, prompt)
+}
+
 export { getAllModelSettings, setModelSetting }

@@ -6,14 +6,24 @@ import { webUIResumeLastChat } from "@/services/app"
 import {
   formatToChatHistory,
   formatToMessage,
+  getPromptById,
   getRecentChatFromWebUI
 } from "@/db"
+import { getLastUsedChatSystemPrompt } from "@/services/model-settings"
+import { useStoreChatModelSettings } from "@/store/model"
 
 export const Playground = () => {
   const drop = React.useRef<HTMLDivElement>(null)
   const [dropedFile, setDropedFile] = React.useState<File | undefined>()
-  const { selectedKnowledge, messages, setHistoryId, setHistory, setMessages } =
-    useMessageOption()
+  const {
+    selectedKnowledge,
+    messages,
+    setHistoryId,
+    setHistory,
+    setMessages,
+    setSelectedSystemPrompt
+  } = useMessageOption()
+  const { setSystemPrompt } = useStoreChatModelSettings()
 
   const [dropState, setDropState] = React.useState<
     "idle" | "dragging" | "error"
@@ -90,6 +100,19 @@ export const Playground = () => {
         setHistoryId(recentChat.history.id)
         setHistory(formatToChatHistory(recentChat.messages))
         setMessages(formatToMessage(recentChat.messages))
+
+        const lastUsedPrompt = await getLastUsedChatSystemPrompt(
+          recentChat.history.id
+        )
+        if (lastUsedPrompt) {
+          if (lastUsedPrompt.prompt_id) {
+            const prompt = await getPromptById(lastUsedPrompt.prompt_id)
+            if (prompt) {
+              setSelectedSystemPrompt(lastUsedPrompt.prompt_id)
+            }
+          }
+          setSystemPrompt(lastUsedPrompt.prompt_content)
+        }
       }
     }
   }
