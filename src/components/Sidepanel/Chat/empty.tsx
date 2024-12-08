@@ -2,7 +2,7 @@ import { cleanUrl } from "@/libs/clean-url"
 import { useStorage } from "@plasmohq/storage/hook"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { Select } from "antd"
-import { RotateCcw } from "lucide-react"
+import { Loader2, RotateCcw } from "lucide-react"
 import { useEffect, useState } from "react"
 import { Trans, useTranslation } from "react-i18next"
 import { useMessage } from "~/hooks/useMessage"
@@ -50,6 +50,88 @@ export const EmptySidePanel = () => {
 
   const { setSelectedModel, selectedModel, chatMode, setChatMode } =
     useMessage()
+  const renderSection = () => {
+    return (
+      <div className="mt-4">
+        <Select
+          onChange={(e) => {
+            setSelectedModel(e)
+            localStorage.setItem("selectedModel", e)
+          }}
+          value={selectedModel}
+          size="large"
+          filterOption={(input, option) =>
+            option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0 ||
+            option.value.toLowerCase().indexOf(input.toLowerCase()) >= 0
+          }
+          showSearch
+          placeholder={t("common:selectAModel")}
+          style={{ width: "100%" }}
+          className="mt-4"
+          options={ollamaInfo.models?.map((model) => ({
+            label: model.name,
+            value: model.model
+          }))}
+        />
+
+        <div className="mt-4">
+          <div className="inline-flex items-center">
+            <label
+              className="relative flex items-center p-3 rounded-full cursor-pointer"
+              htmlFor="check">
+              <input
+                type="checkbox"
+                checked={chatMode === "rag"}
+                onChange={(e) => {
+                  setChatMode(e.target.checked ? "rag" : "normal")
+                }}
+                className="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity"
+                id="check"
+              />
+              <span className="absolute text-white transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100 ">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-3.5 w-3.5"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  stroke="currentColor"
+                  strokeWidth="1">
+                  <path
+                    fillRule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clipRule="evenodd"></path>
+                </svg>
+              </span>
+            </label>
+            <label
+              className="mt-px font-light  cursor-pointer select-none text-gray-900 dark:text-gray-400"
+              htmlFor="check">
+              {t("common:chatWithCurrentPage")}
+            </label>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  if (!checkOllamaStatus) {
+    return (
+      <div className="mx-auto sm:max-w-md px-4 mt-10">
+        <div className="rounded-lg justify-center items-center flex flex-col border dark:border-gray-700 p-8 bg-white dark:bg-[#262626] shadow-sm">
+          <div className="inline-flex items-center space-x-2">
+            <p className="dark:text-gray-400 text-gray-900">
+              <span>👋</span>
+              {t("welcome")}
+            </p>
+          </div>
+          {ollamaStatus === "pending" && (
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          )}
+          {ollamaStatus === "success" && ollamaInfo.isOk && renderSection()}
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="mx-auto sm:max-w-md px-4 mt-10">
@@ -62,7 +144,7 @@ export const EmptySidePanel = () => {
             </p>
           </div>
         )}
-        {!isRefetching && ollamaStatus === "success" && checkOllamaStatus ? (
+        {!isRefetching && ollamaStatus === "success" ? (
           ollamaInfo.isOk ? (
             <div className="inline-flex  items-center space-x-2">
               <div className="w-3 h-3 bg-green-500 rounded-full"></div>
@@ -115,67 +197,7 @@ export const EmptySidePanel = () => {
           )
         ) : null}
 
-        {ollamaStatus === "success" && ollamaInfo.isOk && (
-          <div className="mt-4">
-            <Select
-              onChange={(e) => {
-                setSelectedModel(e)
-                localStorage.setItem("selectedModel", e)
-              }}
-              value={selectedModel}
-              size="large"
-              filterOption={(input, option) =>
-                option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0 ||
-                option.value.toLowerCase().indexOf(input.toLowerCase()) >= 0
-              }
-              showSearch
-              placeholder={t("common:selectAModel")}
-              style={{ width: "100%" }}
-              className="mt-4"
-              options={ollamaInfo.models?.map((model) => ({
-                label: model.name,
-                value: model.model
-              }))}
-            />
-
-            <div className="mt-4">
-              <div className="inline-flex items-center">
-                <label
-                  className="relative flex items-center p-3 rounded-full cursor-pointer"
-                  htmlFor="check">
-                  <input
-                    type="checkbox"
-                    checked={chatMode === "rag"}
-                    onChange={(e) => {
-                      setChatMode(e.target.checked ? "rag" : "normal")
-                    }}
-                    className="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity"
-                    id="check"
-                  />
-                  <span className="absolute text-white transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100 ">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-3.5 w-3.5"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                      stroke="currentColor"
-                      strokeWidth="1">
-                      <path
-                        fillRule="evenodd"
-                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                        clipRule="evenodd"></path>
-                    </svg>
-                  </span>
-                </label>
-                <label
-                  className="mt-px font-light  cursor-pointer select-none text-gray-900 dark:text-gray-400"
-                  htmlFor="check">
-                  {t("common:chatWithCurrentPage")}
-                </label>
-              </div>
-            </div>
-          </div>
-        )}
+        {ollamaStatus === "success" && ollamaInfo.isOk && renderSection()}
       </div>
     </div>
   )
