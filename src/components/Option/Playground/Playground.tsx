@@ -104,11 +104,13 @@ export const Playground = () => {
         const lastUsedPrompt = await getLastUsedChatSystemPrompt(
           recentChat.history.id
         )
+        console.log("lastUsedPrompt", lastUsedPrompt)
         if (lastUsedPrompt) {
           if (lastUsedPrompt.prompt_id) {
             const prompt = await getPromptById(lastUsedPrompt.prompt_id)
             if (prompt) {
               setSelectedSystemPrompt(lastUsedPrompt.prompt_id)
+              setSystemPrompt(lastUsedPrompt.prompt_content)
             }
           }
           setSystemPrompt(lastUsedPrompt.prompt_content)
