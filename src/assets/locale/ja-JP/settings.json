@@ -73,6 +73,10 @@
         "url": {
           "label": "SearXNG URL"
         }
+      },
+      "braveApi": {
+        "label": "Brave APIキー",
+        "placeholder": "Brave APIキーを入力してください"
       }
     },
     "system": {

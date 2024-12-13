@@ -67,6 +67,10 @@
         "url": {
           "label": "آدرس SearXNG"
         }
+      },
+      "braveApi": {
+        "label": "کلید API بریو",
+        "placeholder": "کلید API بریو خود را وارد کنید"
       }
     },
     "system": {

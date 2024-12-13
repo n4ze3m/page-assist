@@ -27,7 +27,7 @@ export const PlaygroundChat = () => {
     <>
       <div
         ref={containerRef}
-        className="custom-scrollbar grow flex flex-col md:translate-x-0 transition-transform duration-300 ease-in-out overflow-y-auto h-[calc(100vh-160px)]">
+        className="custom-scrollbar  grow flex flex-col md:translate-x-0 transition-transform duration-300 ease-in-out overflow-y-auto h-[calc(100vh-160px)]">
         {messages.length === 0 && (
           <div className="mt-32">
             <PlaygroundEmpty />

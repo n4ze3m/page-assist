@@ -70,6 +70,10 @@
         "url": {
           "label": "SearXNG-URL"
         }
+      },
+      "braveApi": {
+        "label": "Brave API-Schlüssel",
+        "placeholder": "Geben Sie Ihren Brave API-Schlüssel ein"
       }
     },
     "system": {
@@ -78,7 +82,8 @@
         "label": "System zurücksetzen",
         "button": "Alles zurücksetzen",
         "confirm": "Sind Sie sicher, dass Sie einen Systemreset durchführen möchten? Dies löscht alle Daten und kann nicht rückgängig gemacht werden."
-      },      "export": {
+      },
+      "export": {
         "label": "Chatverlauf, Wissensbasis und Prompts exportieren",
         "button": "Daten exportieren",
         "success": "Export erfolgreich"

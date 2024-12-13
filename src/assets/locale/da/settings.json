@@ -70,6 +70,10 @@
         "url": {
           "label": "SearXNG URL"
         }
+      },
+      "braveApi": {
+        "label": "Brave API Nøgle",
+        "placeholder": "Indtast din Brave API nøgle"
       }
     },
     "system": {

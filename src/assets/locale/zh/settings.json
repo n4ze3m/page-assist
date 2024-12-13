@@ -73,6 +73,10 @@
         "url": {
           "label": "SearXNG 网址"
         }
+      },
+      "braveApi": {
+        "label": "Brave API 密钥",
+        "placeholder": "输入您的 Brave API 密钥"
       }
     },
     "system": {

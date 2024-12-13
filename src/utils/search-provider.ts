@@ -18,5 +18,9 @@ export const SUPPORTED_SERACH_PROVIDERS = [
     {
         label: "Searxng",
         value: "searxng"
+    },
+    {
+        label: "Brave Search API",
+        value: "brave-api"
     }
 ]

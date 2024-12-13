@@ -73,6 +73,10 @@
         "url": {
           "label": "SearXNG URL"
         }
+      },
+      "braveApi": {
+        "label": "ബ്രേവ് API കീ",
+        "placeholder": "നിങ്ങളുടെ ബ്രേവ് API കീ നൽകുക"
       }
     },
     "system": {

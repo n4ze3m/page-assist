@@ -1,6 +1,9 @@
 import { Storage } from "@plasmohq/storage"
 
 const storage = new Storage()
+const storage2 = new Storage({
+  area: "local"
+})
 
 const TOTAL_SEARCH_RESULTS = 2
 const DEFAULT_PROVIDER = "google"
@@ -80,10 +83,20 @@ export const setSearxngURL = async (searxngURL: string) => {
   await storage.set("searxngURL", searxngURL)
 }
 
+export const getBraveApiKey = async () => {
+  const braveApiKey = await storage2.get("braveApiKey")
+  return braveApiKey || ""
+}
+
+export const setBraveApiKey = async (braveApiKey: string) => {
+  await storage2.set("braveApiKey", braveApiKey)
+}
+
 export const getSearchSettings = async () => {
   const [isSimpleInternetSearch, searchProvider, totalSearchResult, visitSpecificWebsite,
     searxngURL,
-    searxngJSONMode
+    searxngJSONMode,
+    braveApiKey
   ] =
     await Promise.all([
       getIsSimpleInternetSearch(),
@@ -91,7 +104,8 @@ export const getSearchSettings = async () => {
       totalSearchResults(),
       getIsVisitSpecificWebsite(),
       getSearxngURL(),
-      isSearxngJSONMode()
+      isSearxngJSONMode(),
+      getBraveApiKey()
     ])
 
   return {
@@ -100,7 +114,8 @@ export const getSearchSettings = async () => {
     totalSearchResults: totalSearchResult,
     visitSpecificWebsite,
     searxngURL,
-    searxngJSONMode
+    searxngJSONMode,
+    braveApiKey
   }
 }
 
@@ -110,14 +125,16 @@ export const setSearchSettings = async ({
   totalSearchResults,
   visitSpecificWebsite,
   searxngJSONMode,
-  searxngURL
+  searxngURL,
+  braveApiKey
 }: {
   isSimpleInternetSearch: boolean
   searchProvider: string
   totalSearchResults: number
   visitSpecificWebsite: boolean
   searxngURL: string
-  searxngJSONMode: boolean
+  searxngJSONMode: boolean,
+  braveApiKey: string
 }) => {
   await Promise.all([
     setIsSimpleInternetSearch(isSimpleInternetSearch),
@@ -125,6 +142,7 @@ export const setSearchSettings = async ({
     setTotalSearchResults(totalSearchResults),
     setIsVisitSpecificWebsite(visitSpecificWebsite),
     setSearxngJSONMode(searxngJSONMode),
-    setSearxngURL(searxngURL)
+    setSearxngURL(searxngURL),
+    setBraveApiKey(braveApiKey)
   ])
 }

@@ -70,6 +70,10 @@
         "url": {
           "label": "URL SearXNG"
         }
+      },
+      "braveApi": {
+        "label": "Chiave API Brave",
+        "placeholder": "Inserisci la tua chiave API Brave"
       }
     },
     "system": {
