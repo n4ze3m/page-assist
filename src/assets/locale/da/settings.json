@@ -75,9 +75,9 @@
     "system": {
       "heading": "Systemindstillinger",
       "deleteChatHistory": {
-        "label": "Slet Chathistorik",
-        "button": "Slet",
-        "confirm": "Er du sikker på, at du vil slette din chathistorik? Denne handling kan ikke fortrydes."
+        "label": "System Nulstilling",
+        "button": "Nulstil Alt",
+        "confirm": "Er du sikker på, at du vil udføre en systemnulstilling? Dette vil slette alle data og kan ikke fortrydes."
       },
       "export": {
         "label": "Eksporter chathistorik, vidensbase og prompts",

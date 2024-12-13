@@ -75,11 +75,10 @@
     "system": {
       "heading": "Systemeinstellungen",
       "deleteChatHistory": {
-        "label": "Chatverlauf löschen",
-        "button": "Löschen",
-        "confirm": "Sind Sie sicher, dass Sie Ihren Chatverlauf löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden."
-      },
-      "export": {
+        "label": "System zurücksetzen",
+        "button": "Alles zurücksetzen",
+        "confirm": "Sind Sie sicher, dass Sie einen Systemreset durchführen möchten? Dies löscht alle Daten und kann nicht rückgängig gemacht werden."
+      },      "export": {
         "label": "Chatverlauf, Wissensbasis und Prompts exportieren",
         "button": "Daten exportieren",
         "success": "Export erfolgreich"

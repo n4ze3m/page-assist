@@ -75,9 +75,9 @@
     "system": {
       "heading": "Les paramètres du système",
       "deleteChatHistory": {
-        "label": "Supprimer l'historique du chat",
-        "button": "Supprimer",
-        "confirm": "Êtes-vous sûr de vouloir supprimer l'historique de votre chat? Cette action ne peut pas être annulée."
+        "label": "Réinitialisation du système",
+        "button": "Tout réinitialiser",
+        "confirm": "Êtes-vous sûr de vouloir effectuer une réinitialisation du système ? Cela effacera toutes les données et ne pourra pas être annulé."
       },
       "export": {
         "label": "Exporter l'historique du chat, la base de connaissances et les invites",

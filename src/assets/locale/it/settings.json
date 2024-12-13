@@ -75,9 +75,9 @@
     "system": {
       "heading": "Impostazioni di Sistema",
       "deleteChatHistory": {
-        "label": "Elimina cronologia Chat",
-        "button": "Elimina",
-        "confirm": "Sei sicuro che vuoi eliminare la tua cronologia delle chat? Questa azione non può essere annullata."
+        "label": "Reset del Sistema",
+        "button": "Reset Totale",
+        "confirm": "Sei sicuro di voler eseguire un reset del sistema? Questa operazione cancellerà tutti i dati e non può essere annullata."
       },
       "export": {
         "label": "Esporta la cronologia Chat, Base di Conoscenza, e Prompts",
