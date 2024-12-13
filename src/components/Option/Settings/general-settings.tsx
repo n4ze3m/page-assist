@@ -239,6 +239,13 @@ export const GeneralSettings = () => {
                 })
                 clearChat()
               }
+              try {
+                await browser.storage.sync.clear()
+                await browser.storage.local.clear()
+                await browser.storage.session.clear()
+              } catch (e) {
+                console.log("Error clearing storage:", e)
+              }
             }}
             className="bg-red-500 dark:bg-red-600 text-white dark:text-gray-200 px-4 py-2 rounded-md">
             {t("generalSettings.system.deleteChatHistory.button")}
