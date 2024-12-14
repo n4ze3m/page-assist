@@ -145,6 +145,12 @@ export const getKnowledgeById = async (id: string) => {
 export const updateKnowledgeStatus = async (id: string, status: string) => {
   const db = new PageAssistKnowledge()
   const knowledge = await db.getById(id)
+  if(status === "finished") {
+    knowledge.source = knowledge.source.map(e => ({
+      ...e,
+      content: undefined,
+    }))
+  }
   await db.update({
     ...knowledge,
     status
