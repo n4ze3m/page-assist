@@ -9,5 +9,20 @@
     "validationSelectModel": "Vänligen välj en modell för att fortsätta",
     "deleteHistoryConfirmation": "Är du säker på att du vill radera denna historik?",
     "editHistoryTitle": "Ange en ny titel",
-    "temporaryChat": "Tillfällig chatt"
+    "temporaryChat": "Tillfällig chatt", 
+    "more": {
+        "copy": {
+            "group": "Kopiera",
+            "asText": "Kopiera som text",
+            "asMarkdown": "Kopiera som Markdown",
+            "success": "Kopierat till urklipp!"
+        },
+        "download": {
+            "group": "Ladda ner",
+            "text": "Textfil (.txt)",
+            "markdown": "Markdown (.md)",
+            "json": "JSON-fil (.json)"
+        },
+        "share": "Dela"
+    }
 }

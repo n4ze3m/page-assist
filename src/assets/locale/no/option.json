@@ -9,5 +9,20 @@
     "validationSelectModel": "Vennligst velg en modell for å fortsette",
     "deleteHistoryConfirmation": "Er du sikker på at du vil slette denne historikken?",
     "editHistoryTitle": "Skriv inn en ny tittel",
-    "temporaryChat": "Midlertidig Chat"
+    "temporaryChat": "Midlertidig Chat",
+    "more": {
+        "copy": {
+            "group": "Kopier",
+            "asText": "Kopier som tekst",
+            "asMarkdown": "Kopier som Markdown",
+            "success": "Kopiert til utklippstavlen!"
+        },
+        "download": {
+            "group": "Last ned",
+            "text": "Tekstfil (.txt)",
+            "markdown": "Markdown (.md)",
+            "json": "JSON-fil (.json)"
+        },
+        "share": "Del"
+    }
 }

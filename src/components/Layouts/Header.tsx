@@ -19,10 +19,10 @@ import { fetchChatModels } from "~/services/ollama"
 import { useMessageOption } from "~/hooks/useMessageOption"
 import { Select, Tooltip } from "antd"
 import { getAllPrompts } from "@/db"
-import { ShareBtn } from "~/components/Common/ShareBtn"
 import { ProviderIcons } from "../Common/ProviderIcon"
 import { NewChat } from "./NewChat"
 import { PageAssistSelect } from "../Select"
+import { MoreOptions } from "./MoreOptions"
 type Props = {
   setSidebarOpen: (open: boolean) => void
   setOpenModelSettings: (open: boolean) => void
@@ -50,7 +50,11 @@ export const Header: React.FC<Props> = ({
     historyId,
     temporaryChat
   } = useMessageOption()
-  const { data: models, isLoading: isModelsLoading, refetch } = useQuery({
+  const {
+    data: models,
+    isLoading: isModelsLoading,
+    refetch
+  } = useQuery({
     queryKey: ["fetchModel"],
     queryFn: () => fetchChatModels({ returnEmpty: true }),
     refetchIntervalInBackground: false,
@@ -134,7 +138,6 @@ export const Header: React.FC<Props> = ({
               ),
               value: model.model
             }))}
-
             onRefresh={() => {
               refetch()
             }}
@@ -189,6 +192,19 @@ export const Header: React.FC<Props> = ({
       <div className="flex flex-1 justify-end px-4">
         <div className="ml-4 flex items-center md:ml-6">
           <div className="flex gap-4 items-center">
+            {/* {pathname === "/" &&
+              messages.length > 0 &&
+              !streaming &&
+              shareModeEnabled && (
+                <ShareBtn historyId={historyId} messages={messages} />
+              )} */}
+            {messages.length > 0 && !streaming && (
+              <MoreOptions
+                shareModeEnabled={shareModeEnabled}
+                historyId={historyId}
+                messages={messages}
+              />
+            )}
             {!hideCurrentChatModelSettings && (
               <Tooltip title={t("common:currentChatModelSettings")}>
                 <button
@@ -198,12 +214,6 @@ export const Header: React.FC<Props> = ({
                 </button>
               </Tooltip>
             )}
-            {pathname === "/" &&
-              messages.length > 0 &&
-              !streaming &&
-              shareModeEnabled && (
-                <ShareBtn historyId={historyId} messages={messages} />
-              )}
             <Tooltip title={t("githubRepository")}>
               <a
                 href="https://github.com/n4ze3m/page-assist"

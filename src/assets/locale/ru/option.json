@@ -9,5 +9,19 @@
     "validationSelectModel": "Пожалуйста, выберите модель, чтобы продолжить",
     "deleteHistoryConfirmation": "Вы уверены, что хотите удалить эту историю?",
     "editHistoryTitle": "Введите новое название",
-    "temporaryChat": "Временный чат"
-}
+    "temporaryChat": "Временный чат", 
+    "more": {
+        "copy": {
+            "group": "Копировать",
+            "asText": "Копировать как текст",
+            "asMarkdown": "Копировать как Markdown",
+            "success": "Скопировано в буфер обмена!"
+        },
+        "download": {
+            "group": "Скачать",
+            "text": "Текстовый файл (.txt)",
+            "markdown": "Markdown (.md)",
+            "json": "JSON файл (.json)"
+        },
+        "share": "Поделиться"
+    }}

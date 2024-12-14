@@ -9,5 +9,20 @@
     "validationSelectModel": "Please select a model to continue",
     "deleteHistoryConfirmation": "Are you sure you want to delete this history?",
     "editHistoryTitle": "Enter a new title",
-    "temporaryChat": "Temporary Chat"
+    "temporaryChat": "Temporary Chat",
+    "more": {
+        "copy": {
+            "group": "Copy",
+            "asText": "Copy as Text",
+            "asMarkdown": "Copy as Markdown",
+            "success": "Copied to clipboard!"
+        },
+        "download": {
+            "group": "Download",
+            "text": "Text File (.txt)",
+            "markdown": "Markdown (.md)",
+            "json": "JSON File (.json)"
+        },
+        "share": "Share"
+    }
 }

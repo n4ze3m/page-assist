@@ -9,5 +9,20 @@
     "validationSelectModel": "Veuillez sélectionner un modèle pour continuer",
     "deleteHistoryConfirmation": "Êtes-vous sûr de vouloir supprimer cette historique ?",
     "editHistoryTitle": "Entrez un nouveau titre",
-    "temporaryChat": "Chat temporaire"
+    "temporaryChat": "Chat temporaire",
+    "more": {
+        "copy": {
+            "group": "Copier",
+            "asText": "Copier en texte",
+            "asMarkdown": "Copier en Markdown",
+            "success": "Copié dans le presse-papiers !"
+        },
+        "download": {
+            "group": "Télécharger",
+            "text": "Fichier texte (.txt)",
+            "markdown": "Markdown (.md)",
+            "json": "Fichier JSON (.json)"
+        },
+        "share": "Partager"
+    }
 }

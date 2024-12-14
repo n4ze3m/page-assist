@@ -9,5 +9,20 @@
     "deleteHistoryConfirmation": "നിങ്ങളുടെ ചാറ്റ് ചരിത്രം ഇല്ലാതാക്കണമെന്ന് തീർച്ചയാണോ?",
     "editHistoryTitle": "ചാറ്റ് title എഡിറ്റുചെയ്യുക",
     "validationSelectModel": "തുടരുന്നതിന് ഒരു മോഡല്‍ തിരഞ്ഞെടുക്കുക",
-    "temporaryChat": "താൽക്കാലിക ചാറ്റ്"
+    "temporaryChat": "താൽക്കാലിക ചാറ്റ്",
+    "more": {
+        "copy": {
+            "group": "പകർത്തുക",
+            "asText": "ടെക്സ്റ്റായി പകർത്തുക",
+            "asMarkdown": "മാർക്ക്ഡൗൺ ആയി പകർത്തുക",
+            "success": "ക്ലിപ്പ്ബോർഡിലേക്ക് പകർത്തി!"
+        },
+        "download": {
+            "group": "ഡൗൺലോഡ്",
+            "text": "ടെക്സ്റ്റ് ഫയൽ (.txt)",
+            "markdown": "മാർക്ക്ഡൗൺ (.md)",
+            "json": "JSON ഫയൽ (.json)"
+        },
+        "share": "പങ്കുവയ്ക്കുക"
+    }
 }
