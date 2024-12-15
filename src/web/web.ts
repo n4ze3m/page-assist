@@ -6,6 +6,7 @@ import { webSogouSearch } from "./search-engines/sogou"
 import { webBraveSearch } from "./search-engines/brave"
 import { getWebsiteFromQuery, processSingleWebsite } from "./website"
 import { searxngSearch } from "./search-engines/searxng"
+import { braveAPISearch } from "./search-engines/brave-api"
 
 const getHostName = (url: string) => {
   try {
@@ -26,6 +27,8 @@ const searchWeb = (provider: string, query: string) => {
       return webBraveSearch(query)
     case "searxng":
       return searxngSearch(query)
+    case "brave-api":
+      return braveAPISearch(query)
     default:
       return webGoogleSearch(query)
   }

@@ -9,5 +9,20 @@
     "validationSelectModel": "계속하려면 모델을 선택하세요",
     "deleteHistoryConfirmation": "이 기록을 삭제하시겠습니까?",
     "editHistoryTitle": "새 제목 입력",
-    "temporaryChat": "임시 채팅"
+    "temporaryChat": "임시 채팅",
+    "more": {
+        "copy": {
+            "group": "복사",
+            "asText": "텍스트로 복사",
+            "asMarkdown": "마크다운으로 복사",
+            "success": "클립보드에 복사되었습니다!"
+        },
+        "download": {
+            "group": "다운로드",
+            "text": "텍스트 파일 (.txt)",
+            "markdown": "마크다운 (.md)",
+            "json": "JSON 파일 (.json)"
+        },
+        "share": "공유"
+    }
 }

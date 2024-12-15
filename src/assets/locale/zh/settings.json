@@ -73,14 +73,18 @@
         "url": {
           "label": "SearXNG 网址"
         }
+      },
+      "braveApi": {
+        "label": "Brave API 密钥",
+        "placeholder": "输入您的 Brave API 密钥"
       }
     },
     "system": {
       "heading": "系统设置",
       "deleteChatHistory": {
-        "label": "删除聊天记录",
-        "button": "删除",
-        "confirm": "您确定要删除聊天记录吗?此操作无法撤销。"
+        "label": "系统重置",
+        "button": "全部重置",
+        "confirm": "您确定要执行系统重置吗？这将清除所有数据且无法撤消。"
       },
       "export": {
         "label": "导出聊天记录、知识库和提示",

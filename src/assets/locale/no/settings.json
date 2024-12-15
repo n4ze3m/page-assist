@@ -70,14 +70,18 @@
         "url": {
           "label": "SearXNG URL"
         }
+      },
+      "braveApi": {
+        "label": "Brave API Nøkkel",
+        "placeholder": "Skriv inn din Brave API nøkkel"
       }
     },
     "system": {
       "heading": "Systeminnstillinger",
       "deleteChatHistory": {
-        "label": "Slett Chathistorikk",
-        "button": "Slett",
-        "confirm": "Er du sikker på at du vil slette chathistorikken din? Denne handlingen kan ikke angres."
+        "label": "System Tilbakestilling",
+        "button": "Tilbakestill Alt",
+        "confirm": "Er du sikker på at du vil utføre en system tilbakestilling? Dette vil slette alle data og kan ikke angres."
       },
       "export": {
         "label": "Eksporter chathistorikk, kunnskapsbase og prompts",

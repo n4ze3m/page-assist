@@ -108,7 +108,7 @@ export const saveMessageOnError = async ({
       setHistoryId(newHistoryId.id)
       await setLastUsedChatModel(newHistoryId.id, selectedModel)
       if (prompt_id || prompt_content) {
-        await setLastUsedChatSystemPrompt(historyId, { prompt_content, prompt_id })
+        await setLastUsedChatSystemPrompt(newHistoryId.id, { prompt_content, prompt_id })
       }
     }
 
@@ -203,7 +203,7 @@ export const saveMessageOnSuccess = async ({
     setHistoryId(newHistoryId.id)
     await setLastUsedChatModel(newHistoryId.id, selectedModel!)
     if (prompt_id || prompt_content) {
-      await setLastUsedChatSystemPrompt(historyId, { prompt_content, prompt_id })
+      await setLastUsedChatSystemPrompt(newHistoryId.id, { prompt_content, prompt_id })
     }
   }
 }

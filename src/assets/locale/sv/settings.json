@@ -70,14 +70,18 @@
         "url": {
           "label": "SearXNG URL"
         }
+      },
+      "braveApi": {
+        "label": "Brave API-nyckel",
+        "placeholder": "Ange din Brave API-nyckel"
       }
     },
     "system": {
       "heading": "Systeminställningar",
       "deleteChatHistory": {
-        "label": "Radera Chatt Historik",
-        "button": "Radera",
-        "confirm": "Är du säker på att du vill radera din chatthistorik? Denna åtgärd kan inte ångras."
+        "label": "Systemåterställning",
+        "button": "Återställ Allt",
+        "confirm": "Är du säker på att du vill utföra en systemåterställning? Detta kommer att radera all data och kan inte ångras."
       },
       "export": {
         "label": "Exportera chatthistorik, kunskapsbas och instruktioner",

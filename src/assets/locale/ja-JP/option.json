@@ -1,13 +1,28 @@
 {
-    "newChat": "新しいチャット",
-    "selectAPrompt": "プロンプトを選択",
-    "githubRepository": "GitHubリポジトリ",
-    "settings": "設定",
-    "sidebarTitle": "チャット履歴",
-    "error": "エラー",
-    "somethingWentWrong": "何かが間違っています",
-    "validationSelectModel": "続行するにはモデルを選択してください",
-    "deleteHistoryConfirmation": "この履歴を削除しますか?",
-    "editHistoryTitle": "新しいタイトルを入力",
-    "temporaryChat": "一時的なチャット"
+  "newChat": "新しいチャット",
+  "selectAPrompt": "プロンプトを選択",
+  "githubRepository": "GitHubリポジトリ",
+  "settings": "設定",
+  "sidebarTitle": "チャット履歴",
+  "error": "エラー",
+  "somethingWentWrong": "何かが間違っています",
+  "validationSelectModel": "続行するにはモデルを選択してください",
+  "deleteHistoryConfirmation": "この履歴を削除しますか?",
+  "editHistoryTitle": "新しいタイトルを入力",
+  "temporaryChat": "一時的なチャット",
+  "more": {
+    "copy": {
+      "group": "コピー",
+      "asText": "テキストとしてコピー",
+      "asMarkdown": "Markdownとしてコピー",
+      "success": "クリップボードにコピーしました！"
+    },
+    "download": {
+      "group": "ダウンロード",
+      "text": "テキストファイル (.txt)",
+      "markdown": "Markdownファイル (.md)",
+      "json": "JSONファイル (.json)"
+    },
+    "share": "共有"
   }
+}

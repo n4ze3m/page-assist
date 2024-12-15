@@ -14,6 +14,8 @@ import fetcher from "@/libs/fetcher"
 type Props = {
   messages: Message[]
   historyId: string
+  open: boolean
+  setOpen: (state: boolean) => void
 }
 
 const reformatMessages = (messages: Message[], username: string) => {
@@ -77,9 +79,13 @@ export const PlaygroundMessage = (
   )
 }
 
-export const ShareBtn: React.FC<Props> = ({ messages, historyId }) => {
+export const ShareModal: React.FC<Props> = ({
+  messages,
+  historyId,
+  open,
+  setOpen
+}) => {
   const { t } = useTranslation("common")
-  const [open, setOpen] = useState(false)
   const [form] = Form.useForm()
   const name = Form.useWatch("name", form)
 
@@ -142,75 +148,55 @@ export const ShareBtn: React.FC<Props> = ({ messages, historyId }) => {
   })
 
   return (
-    <>
-      <Tooltip title={t("share.tooltip.share")}>
-        <button
-          onClick={() => setOpen(true)}
-          className="!text-gray-500 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
-          <Share className="w-6 h-6" />
-        </button>
-      </Tooltip>
+    <Modal
+      title={t("share.modal.title")}
+      open={open}
+      footer={null}
+      width={600}
+      onCancel={() => setOpen(false)}>
+      <Form
+        form={form}
+        layout="vertical"
+        onFinish={createShareLink}
+        initialValues={{
+          title: t("share.form.defaultValue.title"),
+          name: t("share.form.defaultValue.name")
+        }}>
+        <Form.Item
+          name="title"
+          label={t("share.form.title.label")}
+          rules={[{ required: true, message: t("share.form.title.required") }]}>
+          <Input size="large" placeholder={t("share.form.title.placeholder")} />
+        </Form.Item>
+        <Form.Item
+          name="name"
+          label={t("share.form.name.label")}
+          rules={[{ required: true, message: t("share.form.name.required") }]}>
+          <Input size="large" placeholder={t("share.form.name.placeholder")} />
+        </Form.Item>
 
-      <Modal
-        title={t("share.modal.title")}
-        open={open}
-        footer={null}
-        width={600}
-        onCancel={() => setOpen(false)}>
-        <Form
-          form={form}
-          layout="vertical"
-          onFinish={createShareLink}
-          initialValues={{
-            title: t("share.form.defaultValue.title"),
-            name: t("share.form.defaultValue.name")
-          }}>
-          <Form.Item
-            name="title"
-            label={t("share.form.title.label")}
-            rules={[
-              { required: true, message: t("share.form.title.required") }
-            ]}>
-            <Input
-              size="large"
-              placeholder={t("share.form.title.placeholder")}
-            />
-          </Form.Item>
-          <Form.Item
-            name="name"
-            label={t("share.form.name.label")}
-            rules={[
-              { required: true, message: t("share.form.name.required") }
-            ]}>
-            <Input
-              size="large"
-              placeholder={t("share.form.name.placeholder")}
-            />
-          </Form.Item>
-
-          <Form.Item>
-            <div className="max-h-[180px] overflow-x-auto border dark:border-gray-700 rounded-md p-2">
-              <div className="flex flex-col p-3">
-                {messages.map((message, index) => (
-                  <PlaygroundMessage key={index} {...message} username={name} />
-                ))}
-              </div>
+        <Form.Item>
+          <div className="max-h-[180px] overflow-x-auto border dark:border-gray-700 rounded-md p-2">
+            <div className="flex flex-col p-3">
+              {messages.map((message, index) => (
+                <PlaygroundMessage key={index} {...message} username={name} />
+              ))}
             </div>
-          </Form.Item>
+          </div>
+        </Form.Item>
 
-          <Form.Item>
-            <div className="flex justify-end">
-              <button
-                type="submit"
-                className="inline-flex items-center rounded-md border border-transparent bg-black px-2 py-2.5 text-md font-medium leading-4 text-white shadow-sm dark:bg-white dark:text-gray-800 disabled:opacity-50 ">
-                {isPending
-                  ? t("share.form.btn.saving")
-                  : t("share.form.btn.save")}
-              </button>
-            </div>
-          </Form.Item>
-        </Form>
-      </Modal>
-    </>
+        <Form.Item>
+          <div className="flex justify-end">
+            <button
+              type="submit"
+              className="inline-flex items-center rounded-md border border-transparent bg-black px-2 py-2.5 text-md font-medium leading-4 text-white shadow-sm dark:bg-white dark:text-gray-800 disabled:opacity-50 ">
+              {isPending
+                ? t("share.form.btn.saving")
+                : t("share.form.btn.save")}
+            </button>
+          </div>
+        </Form.Item>
+      </Form>
+    </Modal>
   )
 }

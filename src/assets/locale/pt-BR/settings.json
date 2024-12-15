@@ -70,14 +70,18 @@
         "url": {
           "label": "URL do SearXNG"
         }
+      },
+      "braveApi": {
+        "label": "Chave da API do Brave",
+        "placeholder": "Digite sua chave da API do Brave"
       }
     },
     "system": {
       "heading": "Configurações do Sistema",
       "deleteChatHistory": {
-        "label": "Excluir Histórico de Chat",
-        "button": "Excluir",
-        "confirm": "Tem certeza de que deseja excluir seu histórico de chat? Esta ação não pode ser desfeita."
+        "label": "Reiniciar Sistema",
+        "button": "Reiniciar Tudo",
+        "confirm": "Tem certeza que deseja realizar um reinício do sistema? Isso irá apagar todos os dados e não poderá ser desfeito."
       },
       "export": {
         "label": "Exportar Histórico de Chat, Base de Conhecimento e Prompts",

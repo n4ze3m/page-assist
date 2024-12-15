@@ -9,5 +9,20 @@
     "validationSelectModel": "لطفا یک مدل را برای ادامه انتخاب کنید",
     "deleteHistoryConfirmation": "آیا مطمئن هستید که می خواهید این تاریخچه را حذف کنید؟",
     "editHistoryTitle": "یک عنوان جدید وارد کنید",
-    "temporaryChat": "گپ موقت"
+    "temporaryChat": "گپ موقت",
+    "more": {
+        "copy": {
+            "group": "کپی",
+            "asText": "کپی به صورت متن",
+            "asMarkdown": "کپی به صورت مارک‌داون",
+            "success": "در کلیپ‌بورد کپی شد!"
+        },
+        "download": {
+            "group": "دانلود",
+            "text": "فایل متنی (.txt)",
+            "markdown": "مارک‌داون (.md)",
+            "json": "فایل JSON (.json)"
+        },
+        "share": "اشتراک‌گذاری"
+    }
 }

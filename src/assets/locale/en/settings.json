@@ -70,14 +70,18 @@
         "url": {
           "label": "SearXNG URL"
         }
+      },
+      "braveApi": {
+        "label":  "Brave API Key",
+        "placeholder": "Enter your Brave API key"
       }
     },
     "system": {
       "heading": "System Settings",
       "deleteChatHistory": {
-        "label": "Delete Chat History",
-        "button": "Delete",
-        "confirm": "Are you sure you want to delete your chat history? This action cannot be undone."
+        "label": "System Reset",
+        "button": "Reset All",
+        "confirm": "Are you sure you want to perform a system reset? This will clear all data and cannot be undone."
       },
       "export": {
         "label": "Export Chat History, Knowledge Base, and Prompts",
