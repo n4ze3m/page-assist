@@ -1,5 +1,6 @@
 import { pageAssistEmbeddingModel } from "@/models/embedding"
 import {
+  getGoogleDomain,
   getIsSimpleInternetSearch,
   totalSearchResults
 } from "@/services/search"
@@ -18,15 +19,16 @@ import {
 
 
 export const localGoogleSearch = async (query: string) => {
+  const baseGoogleDomain = await getGoogleDomain()
   await urlRewriteRuntime(
-    cleanUrl("https://www.google.com/search?hl=en&q=" + query),
+    cleanUrl(`https://www.${baseGoogleDomain}/search?hl=en&q=` + query),
     "google"
   )
   const abortController = new AbortController()
   setTimeout(() => abortController.abort(), 10000)
 
   const htmlString = await fetch(
-    "https://www.google.com/search?hl=en&q=" + query,
+    `https://www.${baseGoogleDomain}/search?hl=en&q=` + query,
     {
       signal: abortController.signal
     }

@@ -1,5 +1,6 @@
 import { SaveButton } from "@/components/Common/SaveButton"
 import { getSearchSettings, setSearchSettings } from "@/services/search"
+import { ALL_GOOGLE_DOMAINS } from "@/utils/google-domains"
 import { SUPPORTED_SERACH_PROVIDERS } from "@/utils/search-provider"
 import { useForm } from "@mantine/form"
 import { useQuery } from "@tanstack/react-query"
@@ -18,6 +19,7 @@ export const SearchModeSettings = () => {
       searxngURL: "",
       searxngJSONMode: false,
       braveApiKey: "",
+      googleDomain: ""
     }
   })
 
@@ -77,6 +79,32 @@ export const SearchModeSettings = () => {
                   className="w-full mt-4 sm:mt-0 sm:w-[200px]"
                   required
                   {...form.getInputProps("searxngURL")}
+                />
+              </div>
+            </div>
+          </>
+        )}
+        {form.values.searchProvider === "google" && (
+          <>
+            <div className="flex sm:flex-row flex-col space-y-4 sm:space-y-0 sm:justify-between">
+              <span className="text-gray-700 dark:text-neutral-50">
+                {t("generalSettings.webSearch.googleDomain.label")}
+              </span>
+              <div>
+                <Select
+                  showSearch
+                  className="w-full mt-4 sm:mt-0 sm:w-[200px]"
+                  options={ALL_GOOGLE_DOMAINS.map((e) => ({
+                    label: e,
+                    value: e
+                  }))}
+                  filterOption={(input, option) =>
+                    option!.label.toLowerCase().indexOf(input.toLowerCase()) >=
+                      0 ||
+                    option!.value.toLowerCase().indexOf(input.toLowerCase()) >=
+                      0
+                  }
+                  {...form.getInputProps("googleDomain")}
                 />
               </div>
             </div>

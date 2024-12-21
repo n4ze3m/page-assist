@@ -74,6 +74,9 @@
       "braveApi": {
         "label":  "Brave API Key",
         "placeholder": "Enter your Brave API key"
+      },
+      "googleDomain": {
+        "label": "Google Domain"
       }
     },
     "system": {
