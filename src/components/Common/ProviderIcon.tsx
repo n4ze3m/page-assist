@@ -7,6 +7,7 @@ import { OpenAiIcon } from "../Icons/OpenAI"
 import { TogtherMonoIcon } from "../Icons/Togther"
 import { OpenRouterIcon } from "../Icons/OpenRouter"
 import { LLamaFile } from "../Icons/Llamafile"
+import { GeminiIcon } from "../Icons/GeminiIcon"
 
 export const ProviderIcons = ({
   provider,
@@ -34,6 +35,8 @@ export const ProviderIcons = ({
       return <OpenRouterIcon className={className} />
     case "llamafile":
       return <LLamaFile className={className} />
+    case "gemini":
+      return <GeminiIcon className={className} />
     default:
       return <OllamaIcon className={className} />
   }
