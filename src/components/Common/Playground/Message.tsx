@@ -68,7 +68,7 @@ export const PlaygroundMessage = (props: Props) => {
               )}
             </div>
           </div>
-          <div className="flex w-[calc(100%-50px)] flex-col gap-3 lg:w-[calc(100%-115px)]">
+          <div className="flex w-[calc(100%-50px)] flex-col gap-2 lg:w-[calc(100%-115px)]">
             <span className="text-xs font-bold text-gray-800 dark:text-white">
               {props.isBot
                 ? props.name === "chrome::gemini-nano::page-assist"
@@ -212,7 +212,9 @@ export const PlaygroundMessage = (props: Props) => {
                     {props.generationInfo && (
                       <Popover
                         content={
-                         <GenerationInfo generationInfo={props.generationInfo} />
+                          <GenerationInfo
+                            generationInfo={props.generationInfo}
+                          />
                         }
                         title={t("generationInfo")}>
                         <button className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
