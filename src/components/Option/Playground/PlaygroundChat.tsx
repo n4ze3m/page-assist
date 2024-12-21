@@ -58,7 +58,7 @@ export const PlaygroundChat = () => {
           />
         ))}
         {messages.length > 0 && (
-          <div className="w-full h-16 flex-shrink-0"></div>
+          <div className="w-full h-10 flex-shrink-0"></div>
         )}
       </div>
       {!isAtBottom && (
