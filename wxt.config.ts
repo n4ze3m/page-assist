@@ -81,7 +81,7 @@ export default defineConfig({
       execute_side_panel: {
         description: "Open the side panel",
         suggested_key: {
-          default: "Ctrl+Shift+Q"
+          default: "Ctrl+Shift+Y"
         }
       }
     },
