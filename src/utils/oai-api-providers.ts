@@ -44,5 +44,9 @@ export const OAI_API_PROVIDERS = [
         value: "openrouter",
         baseUrl: "https://openrouter.ai/api/v1"
     },
-   
+    {
+        label: "Google AI",
+        value: "gemini",
+        baseUrl: "https://generativelanguage.googleapis.com/v1beta/openai"
+    }
 ]

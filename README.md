@@ -82,7 +82,7 @@ bun build:firefox
 
 Once the extension is installed, you can open the sidebar via context menu or keyboard shortcut.
 
-Default Keyboard Shortcut: `Ctrl+Shift+P`
+Default Keyboard Shortcut: `Ctrl+Shift+Y`
 
 ### Web UI
 

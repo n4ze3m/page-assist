@@ -92,11 +92,21 @@ export const setBraveApiKey = async (braveApiKey: string) => {
   await storage2.set("braveApiKey", braveApiKey)
 }
 
+export const getGoogleDomain = async () => {
+  const domain = await storage2.get("searchGoogleDomain")
+  return domain || "google.com"
+}
+
+export const setGoogleDomain = async (domain: string) => {
+  await storage2.set("searchGoogleDomain", domain)
+}
+
 export const getSearchSettings = async () => {
   const [isSimpleInternetSearch, searchProvider, totalSearchResult, visitSpecificWebsite,
     searxngURL,
     searxngJSONMode,
-    braveApiKey
+    braveApiKey,
+    googleDomain
   ] =
     await Promise.all([
       getIsSimpleInternetSearch(),
@@ -105,7 +115,8 @@ export const getSearchSettings = async () => {
       getIsVisitSpecificWebsite(),
       getSearxngURL(),
       isSearxngJSONMode(),
-      getBraveApiKey()
+      getBraveApiKey(),
+      getGoogleDomain()
     ])
 
   return {
@@ -115,7 +126,8 @@ export const getSearchSettings = async () => {
     visitSpecificWebsite,
     searxngURL,
     searxngJSONMode,
-    braveApiKey
+    braveApiKey,
+    googleDomain
   }
 }
 
@@ -126,7 +138,8 @@ export const setSearchSettings = async ({
   visitSpecificWebsite,
   searxngJSONMode,
   searxngURL,
-  braveApiKey
+  braveApiKey,
+  googleDomain
 }: {
   isSimpleInternetSearch: boolean
   searchProvider: string
@@ -134,7 +147,8 @@ export const setSearchSettings = async ({
   visitSpecificWebsite: boolean
   searxngURL: string
   searxngJSONMode: boolean,
-  braveApiKey: string
+  braveApiKey: string,
+  googleDomain: string
 }) => {
   await Promise.all([
     setIsSimpleInternetSearch(isSimpleInternetSearch),
@@ -143,6 +157,7 @@ export const setSearchSettings = async ({
     setIsVisitSpecificWebsite(visitSpecificWebsite),
     setSearxngJSONMode(searxngJSONMode),
     setSearxngURL(searxngURL),
-    setBraveApiKey(braveApiKey)
+    setBraveApiKey(braveApiKey),
+    setGoogleDomain(googleDomain)
   ])
 }
