@@ -6,7 +6,6 @@ import {
   ComputerIcon,
   GithubIcon,
   PanelLeftIcon,
-  SquarePen,
   ZapIcon
 } from "lucide-react"
 import { useTranslation } from "react-i18next"
