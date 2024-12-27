@@ -1,0 +1,40 @@
+{ 
+    "addBtn": "إضافة معرفة جديدة",
+    "columns": {
+        "title": "العنوان",
+        "status": "الحالة",
+        "embeddings": "نموذج التضمين",
+        "createdAt": "تاريخ الإنشاء",
+        "action": "الإجراءات"
+    },
+    "expandedColumns": {
+        "name": "الاسم"
+    },
+    "confirm": {
+        "delete": "هل أنت متأكد أنك تريد حذف هذه المعرفة؟"
+    },
+    "deleteSuccess": "تم حذف المعرفة بنجاح",
+    "status": {
+        "pending": "قيد الانتظار",
+        "finished": "مكتمل",
+        "processing": "قيد المعالجة",
+        "failed": "فشل"
+    },
+    "addKnowledge": "إضافة معرفة",
+    "form": {
+        "title": {
+            "label": "عنوان المعرفة",
+            "placeholder": "أدخل عنوان المعرفة",
+            "required": "عنوان المعرفة مطلوب"
+        },
+        "uploadFile": {
+            "label": "رفع ملف",
+            "uploadText": "اسحب وأفلت ملفًا هنا أو انقر للرفع",
+            "uploadHint": "أنواع الملفات المدعومة: .pdf, .csv, .txt, .md, .docx",
+            "required": "الملف مطلوب"
+        },
+        "submit": "إرسال",
+        "success": "تمت إضافة المعرفة بنجاح"
+    },
+    "noEmbeddingModel": "يرجى إضافة نموذج تضمين من صفحة إعدادات RAG أولاً"
+}

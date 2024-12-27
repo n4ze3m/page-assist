@@ -1,0 +1,13 @@
+{
+    "heading": "إعداد Chrome AI",
+    "status": {
+        "label": "تمكين أو تعطيل دعم Chrome AI في مساعد الصفحة"
+    },
+    "error": {
+        "browser_not_supported": "هذا الإصدار من Chrome غير مدعوم من نموذج Gemini Nano. يرجى التحديث إلى الإصدار 127 أو أحدث",
+        "ai_not_supported": "الإعداد chrome://flags/#prompt-api-for-gemini-nano غير مفعل. يرجى تفعيله.",
+        "ai_not_ready": "Gemini Nano غير جاهز بعد؛ تحتاج إلى التحقق مرة أخرى من إعدادات Chrome.",
+        "internal_error": "حدث خطأ داخلي. يرجى المحاولة مرة أخرى لاحقاً."
+    },
+    "errorDescription": "لاستخدام Chrome AI، تحتاج إلى إصدار متصفح أعلى من 127، وهو متوفر حالياً في قنوات Dev و Canary. بعد تنزيل الإصدار المدعوم، اتبع هذه الخطوات:\n\n1. انتقل إلى `chrome://flags/#prompt-api-for-gemini-nano` واختر \"تمكين\".\n2. انتقل إلى `chrome://flags/#optimization-guide-on-device-model` واختر \"EnabledBypassPrefRequirement\".\n3. انتقل إلى `chrome://components`، ابحث عن \"Optimization Guide On Device Model\"، وانقر على \"التحقق من التحديثات\". سيؤدي هذا إلى تنزيل النموذج. إذا لم تر الإعدادات، كرر الخطوتين 1 و 2 وأعد تشغيل المتصفح."
+}

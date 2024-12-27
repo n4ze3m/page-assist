@@ -16,6 +16,7 @@ import { da } from "./lang/da";
 import { no } from "./lang/no";
 import { sv } from "./lang/sv";
 import { ko } from "./lang/ko";
+import { ar } from "./lang/ar"
 
 
 i18n
@@ -43,6 +44,7 @@ i18n
             de: de,
             sv: sv,
             ko: ko,
+            ar: ar
         },
         fallbackLng: "en",
         lng: localStorage.getItem("i18nextLng") || "en",

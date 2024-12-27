@@ -1,0 +1,358 @@
+{
+  "generalSettings": {
+    "title": "الإعدادات العامة",
+    "settings": {
+      "heading": "إعدادات واجهة المستخدم",
+      "speechRecognitionLang": {
+        "label": "لغة التعرف على الكلام",
+        "placeholder": "اختر لغة"
+      },
+      "language": {
+        "label": "اللغة",
+        "placeholder": "اختر لغة"
+      },
+      "darkMode": {
+        "label": "تغيير المظهر",
+        "options": {
+          "light": "فاتح",
+          "dark": "داكن"
+        }
+      },
+      "copilotResumeLastChat": {
+        "label": "استئناف آخر محادثة عند فتح اللوحة الجانبية (كوبيلوت)"
+      },
+      "webUIResumeLastChat": {
+        "label": "استئناف آخر محادثة عند فتح واجهة المستخدم"
+      },
+      "hideCurrentChatModelSettings": {
+        "label": "إخفاء إعدادات نموذج المحادثة الحالي"
+      },
+      "restoreLastChatModel": {
+        "label": "استعادة آخر نموذج مستخدم للمحادثات السابقة"
+      },
+      "sendNotificationAfterIndexing": {
+        "label": "إرسال إشعار بعد الانتهاء من معالجة قاعدة المعرفة"
+      },
+      "generateTitle": {
+        "label": "توليد العنوان باستخدام الذكاء الاصطناعي"
+      },
+      "ollamaStatus": {
+        "label": "تمكين أو تعطيل فحص حالة اتصال أولاما"
+      }
+    },
+    "sidepanelRag": {
+      "heading": "إعدادات الدردشة مع الموقع",
+      "ragEnabled": {
+        "label": "الدردشة مع الموقع باستخدام التضمينات المتجهة"
+      },
+      "maxWebsiteContext": {
+        "label": "حجم محتوى الموقع في الوضع العادي",
+        "placeholder": "حجم المحتوى (الافتراضي 4028)"
+      }
+    },
+    "webSearch": {
+      "heading": "إدارة البحث على الإنترنت",
+      "searchMode": {
+        "label": "إجراء بحث بسيط على الإنترنت"
+      },
+      "provider": {
+        "label": "محرك البحث",
+        "placeholder": "اختر محرك بحث"
+      },
+      "totalSearchResults": {
+        "label": "إجمالي نتائج البحث",
+        "placeholder": "أدخل إجمالي نتائج البحث"
+      },
+      "visitSpecificWebsite": {
+        "label": "زيارة الموقع المذكور في الرسالة"
+      },
+      "searxng": {
+        "url": {
+          "label": "رابط SearXNG"
+        }
+      },
+      "braveApi": {
+        "label": "مفتاح واجهة برنامج Brave",
+        "placeholder": "أدخل مفتاح واجهة برنامج Brave"
+      },
+      "googleDomain": {
+        "label": "نطاق جوجل"
+      }
+    },
+    "system": {
+      "heading": "إعدادات النظام",
+      "deleteChatHistory": {
+        "label": "إعادة تعيين النظام",
+        "button": "إعادة تعيين الكل",
+        "confirm": "هل أنت متأكد أنك تريد إجراء إعادة تعيين النظام؟ سيؤدي هذا إلى مسح جميع البيانات ولا يمكن التراجع عنه."
+      },
+      "export": {
+        "label": "تصدير سجل المحادثات وقاعدة المعرفة والإرشادات",
+        "button": "تصدير البيانات",
+        "success": "تم التصدير بنجاح"
+      },
+      "import": {
+        "label": "استيراد سجل المحادثات وقاعدة المعرفة والإرشادات",
+        "button": "استيراد البيانات",
+        "success": "تم الاستيراد بنجاح",
+        "error": "خطأ في الاستيراد"
+      }
+    },
+    "tts": {
+      "heading": "إعدادات تحويل النص إلى كلام",
+      "ttsEnabled": {
+        "label": "تمكين تحويل النص إلى كلام"
+      },
+      "ttsProvider": {
+        "label": "مزود خدمة تحويل النص إلى كلام",
+        "placeholder": "اختر مزود خدمة"
+      },
+      "ttsVoice": {
+        "label": "صوت تحويل النص إلى كلام",
+        "placeholder": "اختر صوتاً"
+      },
+      "ssmlEnabled": {
+        "label": "تمكين SSML (لغة ترميز توليف الكلام)"
+      }
+    }
+  },
+  "manageModels": {
+    "title": "إدارة النماذج",
+    "addBtn": "إضافة نموذج جديد",
+    "columns": {
+      "name": "الاسم",
+      "digest": "الملخص",
+      "modifiedAt": "تم التعديل في",
+      "size": "الحجم",
+      "actions": "الإجراءات"
+    },
+    "expandedColumns": {
+      "parentModel": "النموذج الأصلي",
+      "format": "التنسيق",
+      "family": "العائلة",
+      "parameterSize": "حجم المعلمة",
+      "quantizationLevel": "مستوى التكميم"
+    },
+    "tooltip": {
+      "delete": "حذف النموذج",
+      "repull": "إعادة سحب النموذج"
+    },
+    "confirm": {
+      "delete": "هل أنت متأكد أنك تريد حذف هذا النموذج؟",
+      "repull": "هل أنت متأكد أنك تريد إعادة سحب هذا النموذج؟"
+    },
+    "modal": {
+      "title": "إضافة نموذج جديد",
+      "placeholder": "أدخل اسم النموذج",
+      "pull": "سحب النموذج"
+    },
+    "notification": {
+      "pullModel": "جاري سحب النموذج",
+      "pullModelDescription": "جاري سحب نموذج {{modelName}}. لمزيد من التفاصيل، تحقق من أيقونة الإضافة.",
+      "success": "نجاح",
+      "error": "خطأ",
+      "successDescription": "تم سحب النموذج بنجاح",
+      "successDeleteDescription": "تم حذف النموذج بنجاح",
+      "someError": "حدث خطأ ما. يرجى المحاولة مرة أخرى لاحقاً"
+    }
+  },
+  "managePrompts": {
+    "title": "إدارة الإرشادات",
+    "addBtn": "إضافة إرشاد جديد",
+    "option1": "عادي",
+    "option2": "RAG",
+    "questionPrompt": "إرشاد السؤال",
+    "segmented": {
+      "custom": "إرشادات مخصصة",
+      "copilot": "إرشادات كوبيلوت"
+    },
+    "columns": {
+      "title": "العنوان",
+      "prompt": "الإرشاد",
+      "type": "نوع الإرشاد",
+      "actions": "الإجراءات"
+    },
+    "systemPrompt": "إرشاد النظام",
+    "quickPrompt": "إرشاد سريع",
+    "tooltip": {
+      "delete": "حذف الإرشاد",
+      "edit": "تعديل الإرشاد"
+    },
+    "confirm": {
+      "delete": "هل أنت متأكد أنك تريد حذف هذا الإرشاد؟ لا يمكن التراجع عن هذا الإجراء."
+    },
+    "modal": {
+      "addTitle": "إضافة إرشاد جديد",
+      "editTitle": "تعديل الإرشاد"
+    },
+    "form": {
+      "title": {
+        "label": "العنوان",
+        "placeholder": "إرشادي الرائع",
+        "required": "الرجاء إدخال عنوان"
+      },
+      "prompt": {
+        "label": "الإرشاد",
+        "placeholder": "أدخل الإرشاد",
+        "required": "الرجاء إدخال إرشاد",
+        "help": "يمكنك استخدام {key} كمتغير في إرشادك.",
+        "missingTextPlaceholder": "المتغير {text} مفقود في الإرشاد. الرجاء إضافته."
+      },
+      "isSystem": {
+        "label": "إرشاد نظام"
+      },
+      "btnSave": {
+        "saving": "جاري إضافة الإرشاد...",
+        "save": "إضافة الإرشاد"
+      },
+      "btnEdit": {
+        "saving": "جاري تحديث الإرشاد...",
+        "save": "تحديث الإرشاد"
+      }
+    },
+    "notification": {
+      "addSuccess": "تمت إضافة الإرشاد",
+      "addSuccessDesc": "تمت إضافة الإرشاد بنجاح",
+      "error": "خطأ",
+      "someError": "حدث خطأ ما. يرجى المحاولة مرة أخرى لاحقاً",
+      "updatedSuccess": "تم تحديث الإرشاد",
+      "updatedSuccessDesc": "تم تحديث الإرشاد بنجاح",
+      "deletedSuccess": "تم حذف الإرشاد",
+      "deletedSuccessDesc": "تم حذف الإرشاد بنجاح"
+    }
+  },
+  "manageShare": {
+    "title": "إدارة المشاركة",
+    "heading": "تكوين رابط مشاركة الصفحة",
+    "form": {
+      "url": {
+        "label": "رابط مشاركة الصفحة",
+        "placeholder": "أدخل رابط مشاركة الصفحة",
+        "required": "الرجاء إدخال رابط مشاركة الصفحة!",
+        "help": "لأسباب تتعلق بالخصوصية، يمكنك استضافة مشاركة الصفحة ذاتياً وتوفير الرابط هنا. <anchor>تعلم المزيد</anchor>."
+      }
+    },
+    "webshare": {
+      "heading": "مشاركة الويب",
+      "columns": {
+        "title": "العنوان",
+        "url": "الرابط",
+        "actions": "الإجراءات"
+      },
+      "tooltip": {
+        "delete": "حذف المشاركة"
+      },
+      "confirm": {
+        "delete": "هل أنت متأكد أنك تريد حذف هذه المشاركة؟ لا يمكن التراجع عن هذا الإجراء."
+      },
+      "label": "إدارة مشاركة الصفحة",
+      "description": "تمكين أو تعطيل ميزة مشاركة الصفحة"
+    },
+    "notification": {
+      "pageShareSuccess": "تم تحديث رابط مشاركة الصفحة بنجاح",
+      "someError": "حدث خطأ ما. يرجى المحاولة مرة أخرى لاحقاً",
+      "webShareDeleteSuccess": "تم حذف مشاركة الويب بنجاح"
+    }
+  },
+  "ollamaSettings": {
+    "title": "إعدادات Ollama",
+    "heading": "تكوين Ollama",
+    "settings": {
+      "ollamaUrl": {
+        "label": "رابط Ollama",
+        "placeholder": "أدخل رابط Ollama"
+      },
+      "advanced": {
+        "label": "تكوين رابط Ollama المتقدم",
+        "urlRewriteEnabled": {
+          "label": "تمكين أو تعطيل رابط المصدر المخصص"
+        },
+        "rewriteUrl": {
+          "label": "رابط المصدر المخصص",
+          "placeholder": "أدخل رابط المصدر المخصص"
+        },
+        "headers": {
+          "label": "الترويسات المخصصة",
+          "add": "إضافة ترويسة",
+          "key": {
+            "label": "مفتاح الترويسة",
+            "placeholder": "التفويض"
+          },
+          "value": {
+            "label": "قيمة الترويسة",
+            "placeholder": "رمز Bearer"
+          }
+        },
+        "help": "إذا كنت تواجه مشاكل في الاتصال مع Ollama في مساعد الصفحة، يمكنك تكوين رابط مصدر مخصص. لمعرفة المزيد حول التكوين، <anchor>انقر هنا</anchor>."
+      }
+    }
+  },
+  "manageSearch": {
+    "title": "إدارة البحث في الويب",
+    "heading": "تكوين البحث في الويب"
+  },
+  "about": {
+    "title": "حول",
+    "heading": "حول",
+    "chromeVersion": "إصدار مساعد الصفحة",
+    "ollamaVersion": "إصدار Ollama",
+    "support": "يمكنك دعم مشروع مساعد الصفحة من خلال التبرع أو الرعاية عبر المنصات التالية:",
+    "koFi": "ادعم على Ko-fi",
+    "githubSponsor": "كن راعياً على GitHub",
+    "githubRepo": "مستودع GitHub"
+  },
+  "manageKnowledge": {
+    "title": "إدارة المعرفة",
+    "heading": "تكوين قاعدة المعرفة"
+  },
+  "rag": {
+    "title": "إعدادات RAG",
+    "ragSettings": {
+      "label": "إعدادات RAG",
+      "model": {
+        "label": "نموذج التضمين",
+        "required": "الرجاء اختيار نموذج",
+        "help": "يوصى بشدة باستخدام نماذج التضمين مثل `nomic-embed-text`.",
+        "placeholder": "اختر نموذجاً"
+      },
+      "chunkSize": {
+        "label": "حجم القطعة",
+        "placeholder": "أدخل حجم القطعة",
+        "required": "الرجاء إدخال حجم القطعة"
+      },
+      "chunkOverlap": {
+        "label": "تداخل القطع",
+        "placeholder": "أدخل تداخل القطع",
+        "required": "الرجاء إدخال تداخل القطع"
+      },
+      "totalFilePerKB": {
+        "label": "حد رفع الملفات الافتراضي لقاعدة المعرفة",
+        "placeholder": "أدخل حد رفع الملفات الافتراضي (مثال: 10)",
+        "required": "الرجاء إدخال حد رفع الملفات الافتراضي"
+      },
+      "noOfRetrievedDocs": {
+        "label": "عدد المستندات المسترجعة",
+        "placeholder": "أدخل عدد المستندات المسترجعة",
+        "required": "الرجاء إدخال عدد المستندات المسترجعة"
+      }
+    },
+    "prompt": {
+      "label": "تكوين إرشاد RAG",
+      "option1": "عادي",
+      "option2": "ويب",
+      "alert": "تكوين إرشاد النظام هنا مهمل. يرجى استخدام قسم إدارة الإرشادات لإضافة أو تعديل الإرشادات. سيتم إزالة هذا القسم في إصدار مستقبلي",
+      "systemPrompt": "إرشاد النظام",
+      "systemPromptPlaceholder": "أدخل إرشاد النظام",
+      "webSearchPrompt": "إرشاد بحث الويب",
+      "webSearchPromptHelp": "لا تقم بإزالة `{search_results}` من الإرشاد.",
+      "webSearchPromptError": "الرجاء إدخال إرشاد بحث الويب",
+      "webSearchPromptPlaceholder": "أدخل إرشاد بحث الويب",
+      "webSearchFollowUpPrompt": "إرشاد متابعة بحث الويب",
+      "webSearchFollowUpPromptHelp": "لا تقم بإزالة `{chat_history}` و `{question}` من الإرشاد.",
+      "webSearchFollowUpPromptError": "الرجاء إدخال إرشاد متابعة بحث الويب!",
+      "webSearchFollowUpPromptPlaceholder": "إرشاد متابعة بحث الويب الخاص بك"
+    }
+  },
+  "chromeAiSettings": {
+    "title": "إعدادات Chrome AI"
+  }}

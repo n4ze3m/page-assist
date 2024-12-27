@@ -1,0 +1,28 @@
+{ 
+    "newChat": "محادثة جديدة",
+    "selectAPrompt": "اختر موجهاً",
+    "githubRepository": "مستودع GitHub",
+    "settings": "الإعدادات",
+    "sidebarTitle": "سجل المحادثات",
+    "error": "خطأ",
+    "somethingWentWrong": "حدث خطأ ما",
+    "validationSelectModel": "الرجاء اختيار نموذج للمتابعة",
+    "deleteHistoryConfirmation": "هل أنت متأكد أنك تريد حذف هذا السجل؟",
+    "editHistoryTitle": "أدخل عنواناً جديداً",
+    "temporaryChat": "محادثة مؤقتة",
+    "more": {
+        "copy": {
+            "group": "نسخ",
+            "asText": "نسخ كنص",
+            "asMarkdown": "نسخ كماركداون",
+            "success": "تم النسخ إلى الحافظة!"
+        },
+        "download": {
+            "group": "تنزيل",
+            "text": "ملف نصي (.txt)",
+            "markdown": "ماركداون (.md)",
+            "json": "ملف JSON (.json)"
+        },
+        "share": "مشاركة"
+    }
+}
