@@ -17,7 +17,10 @@ export const pageAssistModel = async ({
   seed,
   numGpu,
   numPredict,
-  useMMap
+  useMMap,
+  minP,
+  repeatLastN,
+  repeatPenalty
 }: {
   model: string
   baseUrl: string
@@ -30,6 +33,9 @@ export const pageAssistModel = async ({
   numGpu?: number
   numPredict?: number
   useMMap?: boolean
+  minP?: number
+  repeatPenalty?: number
+  repeatLastN?: number
 }) => {
   if (model === "chrome::gemini-nano::page-assist") {
     return new ChatChromeAI({
@@ -86,6 +92,9 @@ export const pageAssistModel = async ({
     model,
     numGpu,
     numPredict,
-    useMMap
+    useMMap,
+    minP: minP,
+    repeatPenalty: repeatPenalty,
+    repeatLastN: repeatLastN,
   })
 }

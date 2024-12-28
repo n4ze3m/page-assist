@@ -143,7 +143,14 @@ export const useMessage = () => {
         currentChatModelSettings?.numPredict ??
         userDefaultModelSettings?.numPredict,
       useMMap:
-        currentChatModelSettings?.useMMap ?? userDefaultModelSettings?.useMMap
+        currentChatModelSettings?.useMMap ?? userDefaultModelSettings?.useMMap,
+      minP: currentChatModelSettings?.minP ?? userDefaultModelSettings?.minP,
+      repeatLastN:
+        currentChatModelSettings?.repeatLastN ??
+        userDefaultModelSettings?.repeatLastN,
+      repeatPenalty:
+        currentChatModelSettings?.repeatPenalty ??
+        userDefaultModelSettings?.repeatPenalty
     })
 
     let newMessage: Message[] = []
@@ -278,7 +285,15 @@ export const useMessage = () => {
             userDefaultModelSettings?.numPredict,
           useMMap:
             currentChatModelSettings?.useMMap ??
-            userDefaultModelSettings?.useMMap
+            userDefaultModelSettings?.useMMap,
+          minP:
+            currentChatModelSettings?.minP ?? userDefaultModelSettings?.minP,
+          repeatLastN:
+            currentChatModelSettings?.repeatLastN ??
+            userDefaultModelSettings?.repeatLastN,
+          repeatPenalty:
+            currentChatModelSettings?.repeatPenalty ??
+            userDefaultModelSettings?.repeatPenalty
         })
         const response = await questionOllama.invoke(promptForQuestion)
         query = response.content.toString()
@@ -492,7 +507,14 @@ export const useMessage = () => {
         currentChatModelSettings?.numPredict ??
         userDefaultModelSettings?.numPredict,
       useMMap:
-        currentChatModelSettings?.useMMap ?? userDefaultModelSettings?.useMMap
+        currentChatModelSettings?.useMMap ?? userDefaultModelSettings?.useMMap,
+      minP: currentChatModelSettings?.minP ?? userDefaultModelSettings?.minP,
+      repeatLastN:
+        currentChatModelSettings?.repeatLastN ??
+        userDefaultModelSettings?.repeatLastN,
+      repeatPenalty:
+        currentChatModelSettings?.repeatPenalty ??
+        userDefaultModelSettings?.repeatPenalty
     })
 
     let newMessage: Message[] = []
@@ -729,7 +751,14 @@ export const useMessage = () => {
         currentChatModelSettings?.numPredict ??
         userDefaultModelSettings?.numPredict,
       useMMap:
-        currentChatModelSettings?.useMMap ?? userDefaultModelSettings?.useMMap
+        currentChatModelSettings?.useMMap ?? userDefaultModelSettings?.useMMap,
+      minP: currentChatModelSettings?.minP ?? userDefaultModelSettings?.minP,
+      repeatLastN:
+        currentChatModelSettings?.repeatLastN ??
+        userDefaultModelSettings?.repeatLastN,
+      repeatPenalty:
+        currentChatModelSettings?.repeatPenalty ??
+        userDefaultModelSettings?.repeatPenalty
     })
 
     let newMessage: Message[] = []
@@ -780,7 +809,7 @@ export const useMessage = () => {
             type: "text"
           }
         ],
-        model: selectedModel, 
+        model: selectedModel,
         useOCR
       })
       if (image.length > 0) {
@@ -961,7 +990,14 @@ export const useMessage = () => {
         currentChatModelSettings?.numPredict ??
         userDefaultModelSettings?.numPredict,
       useMMap:
-        currentChatModelSettings?.useMMap ?? userDefaultModelSettings?.useMMap
+        currentChatModelSettings?.useMMap ?? userDefaultModelSettings?.useMMap,
+      minP: currentChatModelSettings?.minP ?? userDefaultModelSettings?.minP,
+      repeatLastN:
+        currentChatModelSettings?.repeatLastN ??
+        userDefaultModelSettings?.repeatLastN,
+      repeatPenalty:
+        currentChatModelSettings?.repeatPenalty ??
+        userDefaultModelSettings?.repeatPenalty
     })
 
     let newMessage: Message[] = []
@@ -1043,7 +1079,15 @@ export const useMessage = () => {
             userDefaultModelSettings?.numPredict,
           useMMap:
             currentChatModelSettings?.useMMap ??
-            userDefaultModelSettings?.useMMap
+            userDefaultModelSettings?.useMMap,
+          minP:
+            currentChatModelSettings?.minP ?? userDefaultModelSettings?.minP,
+          repeatLastN:
+            currentChatModelSettings?.repeatLastN ??
+            userDefaultModelSettings?.repeatLastN,
+          repeatPenalty:
+            currentChatModelSettings?.repeatPenalty ??
+            userDefaultModelSettings?.repeatPenalty
         })
         const response = await questionOllama.invoke(promptForQuestion)
         query = response.content.toString()
@@ -1235,7 +1279,14 @@ export const useMessage = () => {
         currentChatModelSettings?.numPredict ??
         userDefaultModelSettings?.numPredict,
       useMMap:
-        currentChatModelSettings?.useMMap ?? userDefaultModelSettings?.useMMap
+        currentChatModelSettings?.useMMap ?? userDefaultModelSettings?.useMMap,
+      minP: currentChatModelSettings?.minP ?? userDefaultModelSettings?.minP,
+      repeatLastN:
+        currentChatModelSettings?.repeatLastN ??
+        userDefaultModelSettings?.repeatLastN,
+      repeatPenalty:
+        currentChatModelSettings?.repeatPenalty ??
+        userDefaultModelSettings?.repeatPenalty
     })
 
     let newMessage: Message[] = []
