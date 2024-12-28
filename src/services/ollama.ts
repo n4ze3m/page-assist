@@ -231,8 +231,8 @@ export const setOllamaURL = async (ollamaURL: string) => {
       "http://127.0.0.1:"
     )
   }
-  await urlRewriteRuntime(cleanUrl(formattedUrl))
   await storage.set("ollamaURL", cleanUrl(formattedUrl))
+  await urlRewriteRuntime(cleanUrl(formattedUrl))
 }
 
 export const systemPromptForNonRag = async () => {
