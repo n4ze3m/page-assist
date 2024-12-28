@@ -26,5 +26,6 @@
         "knowledge": "Kunnskap"
     },
     "sendWhenEnter": "Søk når Enter trykkes",
-    "welcome": "Hei! Hvordan kan jeg hjelpe deg i dag?"
+    "welcome": "Hei! Hvordan kan jeg hjelpe deg i dag?",
+    "useOCR": "Trekk ut tekst fra bilde (OCR)"
 }

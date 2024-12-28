@@ -27,5 +27,6 @@
         "vision": "[Experimental] Vision Chat"
     },
     "sendWhenEnter": "Send when Enter pressed",
-    "welcome": "Hello! How can I help you today?"
+    "welcome": "Hello! How can I help you today?",
+    "useOCR": "Extract text from image (OCR)"
 }

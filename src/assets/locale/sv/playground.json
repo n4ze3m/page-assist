@@ -26,5 +26,6 @@
         "knowledge": "Kunskap"
     },
     "sendWhenEnter": "Skicka när Enter trycks",
-    "welcome": "Hej! Hur kan jag hjälpa dig idag?"
+    "welcome": "Hej! Hur kan jag hjälpa dig idag?",
+    "useOCR": "Extrahera text från bild (OCR)"
 }
