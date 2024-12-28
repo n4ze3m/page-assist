@@ -46,9 +46,7 @@ export default defineConfig({
     }
   }),
   entrypointsDir:
-    process.env.TARGET === "firefox" ?
-      "entries-firefox" :
-      "entries",
+    process.env.TARGET === "firefox" ? "entries-firefox" : "entries",
   srcDir: "src",
   outDir: "build",
 
@@ -88,9 +86,12 @@ export default defineConfig({
         }
       }
     },
-    // "content_security_policy": {
-    //   "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self';"
-    // },
+    content_security_policy:
+      process.env.TARGET !== "firefox" ?
+        {
+          extension_pages:
+            "script-src 'self' 'wasm-unsafe-eval'; object-src 'self';"
+        } : undefined,
     permissions:
       process.env.TARGET === "firefox"
         ? firefoxMV2Permissions
