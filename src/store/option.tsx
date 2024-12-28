@@ -68,6 +68,9 @@ type State = {
 
   temporaryChat: boolean
   setTemporaryChat: (temporaryChat: boolean) => void
+
+  useOCR: boolean
+  setUseOCR: (useOCR: boolean) => void
 }
 
 export const useStoreMessageOption = create<State>((set) => ({
@@ -109,4 +112,7 @@ export const useStoreMessageOption = create<State>((set) => ({
 
   temporaryChat: false,
   setTemporaryChat: (temporaryChat) => set({ temporaryChat }),
+
+  useOCR: false,
+  setUseOCR: (useOCR) => set({ useOCR }),
 }))

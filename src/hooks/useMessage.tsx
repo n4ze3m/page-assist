@@ -84,7 +84,9 @@ export const useMessage = () => {
     selectedQuickPrompt,
     setSelectedQuickPrompt,
     selectedSystemPrompt,
-    setSelectedSystemPrompt
+    setSelectedSystemPrompt,
+    useOCR,
+    setUseOCR
   } = useStoreMessage()
 
   const [speechToTextLanguage, setSpeechToTextLanguage] = useStorage(
@@ -329,7 +331,7 @@ export const useMessage = () => {
         ]
       }
 
-      let humanMessage = humanMessageFormatter({
+      let humanMessage = await humanMessageFormatter({
         content: [
           {
             text: systemPrompt
@@ -338,7 +340,8 @@ export const useMessage = () => {
             type: "text"
           }
         ],
-        model: selectedModel
+        model: selectedModel,
+        useOCR
       })
 
       const applicationChatHistory = generateHistory(history, selectedModel)
@@ -564,7 +567,7 @@ export const useMessage = () => {
         )
       }
 
-      let humanMessage = humanMessageFormatter({
+      let humanMessage = await humanMessageFormatter({
         content: [
           {
             text: message,
@@ -575,7 +578,8 @@ export const useMessage = () => {
             type: "image_url"
           }
         ],
-        model: selectedModel
+        model: selectedModel,
+        useOCR
       })
 
       let generationInfo: any | undefined = undefined
@@ -769,17 +773,18 @@ export const useMessage = () => {
       const prompt = await systemPromptForNonRag()
       const selectedPrompt = await getPromptById(selectedSystemPrompt)
 
-      let humanMessage = humanMessageFormatter({
+      let humanMessage = await humanMessageFormatter({
         content: [
           {
             text: message,
             type: "text"
           }
         ],
-        model: selectedModel
+        model: selectedModel, 
+        useOCR
       })
       if (image.length > 0) {
-        humanMessage = humanMessageFormatter({
+        humanMessage = await humanMessageFormatter({
           content: [
             {
               text: message,
@@ -790,7 +795,8 @@ export const useMessage = () => {
               type: "image_url"
             }
           ],
-          model: selectedModel
+          model: selectedModel,
+          useOCR
         })
       }
 
@@ -1048,17 +1054,18 @@ export const useMessage = () => {
 
       //  message = message.trim().replaceAll("\n", " ")
 
-      let humanMessage = humanMessageFormatter({
+      let humanMessage = await humanMessageFormatter({
         content: [
           {
             text: message,
             type: "text"
           }
         ],
-        model: selectedModel
+        model: selectedModel,
+        useOCR
       })
       if (image.length > 0) {
-        humanMessage = humanMessageFormatter({
+        humanMessage = await humanMessageFormatter({
           content: [
             {
               text: message,
@@ -1069,7 +1076,8 @@ export const useMessage = () => {
               type: "image_url"
             }
           ],
-          model: selectedModel
+          model: selectedModel,
+          useOCR
         })
       }
 
@@ -1270,17 +1278,18 @@ export const useMessage = () => {
 
     try {
       const prompt = await getPrompt(messageType)
-      let humanMessage = humanMessageFormatter({
+      let humanMessage = await humanMessageFormatter({
         content: [
           {
             text: prompt.replace("{text}", message),
             type: "text"
           }
         ],
-        model: selectedModel
+        model: selectedModel,
+        useOCR
       })
       if (image.length > 0) {
-        humanMessage = humanMessageFormatter({
+        humanMessage = await humanMessageFormatter({
           content: [
             {
               text: prompt.replace("{text}", message),
@@ -1291,7 +1300,8 @@ export const useMessage = () => {
               type: "image_url"
             }
           ],
-          model: selectedModel
+          model: selectedModel,
+          useOCR
         })
       }
 
@@ -1590,6 +1600,8 @@ export const useMessage = () => {
     selectedSystemPrompt,
     setSelectedSystemPrompt,
     speechToTextLanguage,
-    setSpeechToTextLanguage
+    setSpeechToTextLanguage,
+    useOCR,
+    setUseOCR
   }
 }

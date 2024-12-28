@@ -37,7 +37,9 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
     textareaRef,
     setSelectedQuickPrompt,
     selectedKnowledge,
-    temporaryChat
+    temporaryChat,
+    useOCR,
+    setUseOCR
   } = useMessageOption()
 
   const isMobile = () => {
@@ -373,6 +375,16 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                                   setSendWhenEnter(e.target.checked)
                                 }>
                                 {t("sendWhenEnter")}
+                              </Checkbox>
+                            )
+                          },
+                          {
+                            key: 2,
+                            label: (
+                              <Checkbox
+                                checked={useOCR}
+                                onChange={(e) => setUseOCR(e.target.checked)}>
+                                {t("useOCR")}
                               </Checkbox>
                             )
                           }

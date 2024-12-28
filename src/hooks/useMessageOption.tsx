@@ -70,7 +70,9 @@ export const useMessageOption = () => {
     selectedKnowledge,
     setSelectedKnowledge,
     temporaryChat,
-    setTemporaryChat
+    setTemporaryChat,
+    useOCR,
+    setUseOCR
   } = useStoreMessageOption()
   const currentChatModelSettings = useStoreChatModelSettings()
   const [selectedModel, setSelectedModel] = useStorage("selectedModel")
@@ -225,17 +227,18 @@ export const useMessageOption = () => {
 
       //  message = message.trim().replaceAll("\n", " ")
 
-      let humanMessage = humanMessageFormatter({
+      let humanMessage = await humanMessageFormatter({
         content: [
           {
             text: message,
             type: "text"
           }
         ],
-        model: selectedModel
+        model: selectedModel,
+        useOCR: useOCR
       })
       if (image.length > 0) {
-        humanMessage = humanMessageFormatter({
+        humanMessage = await humanMessageFormatter({
           content: [
             {
               text: message,
@@ -246,7 +249,8 @@ export const useMessageOption = () => {
               type: "image_url"
             }
           ],
-          model: selectedModel
+          model: selectedModel,
+          useOCR: useOCR
         })
       }
 
@@ -482,17 +486,18 @@ export const useMessageOption = () => {
       const prompt = await systemPromptForNonRagOption()
       const selectedPrompt = await getPromptById(selectedSystemPrompt)
 
-      let humanMessage = humanMessageFormatter({
+      let humanMessage = await humanMessageFormatter({
         content: [
           {
             text: message,
             type: "text"
           }
         ],
-        model: selectedModel
+        model: selectedModel,
+        useOCR: useOCR
       })
       if (image.length > 0) {
-        humanMessage = humanMessageFormatter({
+        humanMessage = await humanMessageFormatter({
           content: [
             {
               text: message,
@@ -503,7 +508,8 @@ export const useMessageOption = () => {
               type: "image_url"
             }
           ],
-          model: selectedModel
+          model: selectedModel,
+          useOCR: useOCR
         })
       }
 
@@ -802,7 +808,7 @@ export const useMessageOption = () => {
       })
       //  message = message.trim().replaceAll("\n", " ")
 
-      let humanMessage = humanMessageFormatter({
+      let humanMessage = await humanMessageFormatter({
         content: [
           {
             text: systemPrompt
@@ -811,7 +817,8 @@ export const useMessageOption = () => {
             type: "text"
           }
         ],
-        model: selectedModel
+        model: selectedModel,
+        useOCR: useOCR
       })
 
       const applicationChatHistory = generateHistory(history, selectedModel)
@@ -1106,6 +1113,8 @@ export const useMessageOption = () => {
     setSelectedKnowledge,
     ttsEnabled,
     temporaryChat,
-    setTemporaryChat
+    setTemporaryChat,
+    useOCR,
+    setUseOCR
   }
 }
