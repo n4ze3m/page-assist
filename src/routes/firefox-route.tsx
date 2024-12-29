@@ -9,8 +9,7 @@ export const OptionRouting = () => {
   return (
     <div className={`${mode === "dark" ? "dark" : "light"} arimo`}>
       <Suspense fallback={<PageAssistLoader />}>
-  
-          <OptionRoutingFirefox />
+        <OptionRoutingFirefox />
       </Suspense>
     </div>
   )
@@ -22,8 +21,7 @@ export const SidepanelRouting = () => {
   return (
     <div className={`${mode === "dark" ? "dark" : "light"} arimo`}>
       <Suspense fallback={<PageAssistLoader />}>
-   
-          <SidepanelRoutingFirefox />
+        <SidepanelRoutingFirefox />
       </Suspense>
     </div>
   )
