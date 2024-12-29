@@ -45,12 +45,13 @@ export default defineConfig({
       }
     }
   }),
-  entrypointsDir: "entries",
+  entrypointsDir:
+    process.env.TARGET === "firefox" ? "entries-firefox" : "entries",
   srcDir: "src",
   outDir: "build",
 
   manifest: {
-    version: "1.3.9",
+    version: "1.4.0",
     name:
       process.env.TARGET === "firefox"
         ? "Page Assist - A Web UI for Local AI Models"
@@ -85,6 +86,12 @@ export default defineConfig({
         }
       }
     },
+    content_security_policy:
+      process.env.TARGET !== "firefox" ?
+        {
+          extension_pages:
+            "script-src 'self' 'wasm-unsafe-eval'; object-src 'self';"
+        } : undefined,
     permissions:
       process.env.TARGET === "firefox"
         ? firefoxMV2Permissions

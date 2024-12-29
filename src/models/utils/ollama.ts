@@ -35,6 +35,7 @@ export interface OllamaInput {
   tfsZ?: number
   topK?: number
   topP?: number
+  minP?: number
   typicalP?: number
   useMLock?: boolean
   useMMap?: boolean

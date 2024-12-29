@@ -60,11 +60,11 @@
             "keepAlive": {
                 "label": "Keep Alive",
                 "help": "controls how long the model will stay loaded into memory following the request (default: 5m)",
-                "placeholder": "Enter Keep Alive duration (e.g. 5m, 10m, 1h)"
+                "placeholder": "e.g. 5m, 10m, 1h"
             },
             "temperature": {
                 "label": "Temperature",
-                "placeholder": "Enter Temperature value (e.g. 0.7, 1.0)"
+                "placeholder": "e.g. 0.7, 1.0"
             },
             "numCtx": {
                 "label": "Number of Contexts",
@@ -72,23 +72,35 @@
             },
             "numPredict": {
                 "label": "Max Tokens (num_predict)",
-                "placeholder": "Enter Max Tokens value (e.g. 2048, 4096)"
+                "placeholder": "e.g. 2048, 4096"
             },
             "seed": {
                 "label": "Seed",
-                "placeholder": "Enter Seed value (e.g. 1234)",
+                "placeholder": "e.g. 1234",
                 "help": "Reproducibility of the model output"
             },
             "topK": {
                 "label": "Top K",
-                "placeholder": "Enter Top K value (e.g. 40, 100)"
+                "placeholder": "e.g. 40, 100"
             },
             "topP": {
                 "label": "Top P",
-                "placeholder": "Enter Top P value (e.g. 0.9, 0.95)"
+                "placeholder": "e.g. 0.9, 0.95"
             },
             "useMMap": {
                 "label": "useMmap"
+            },
+            "minP": {
+                "label": "Min P",
+                "placeholder": "e.g. 0.05"
+            },
+            "repeatPenalty": {
+                "label": "Repeat Penalty",
+                "placeholder": "e.g. 1.1, 1.2"
+            },
+            "repeatLastN": {
+                "label": "Repeat Last N",
+                "placeholder": "e.g. 64, 128"
             },
             "numGpu": {
                 "label": "Num GPU",

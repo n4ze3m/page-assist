@@ -26,5 +26,6 @@
         "knowledge": "Viden"
     },
     "sendWhenEnter": "Søg, når Indtast trykkes",
-    "welcome": "Hej! Hvordan kan jeg hjælpe dig i dag?"
+    "welcome": "Hej! Hvordan kan jeg hjælpe dig i dag?",
+    "useOCR": "Udtræk tekst fra billede (OCR)"
 }

@@ -32,6 +32,7 @@ type ModelSettings = {
   useMLock?: boolean
   useMMap?: boolean
   vocabOnly?: boolean
+  minP?: number
 }
 
 const keys = [
@@ -62,7 +63,8 @@ const keys = [
   "typicalP",
   "useMLock",
   "useMMap",
-  "vocabOnly"
+  "vocabOnly",
+  "minP",
 ]
 
 export const getAllModelSettings = async () => {

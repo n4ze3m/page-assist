@@ -95,6 +95,8 @@ export class ChatOllama
 
     topP?: number;
 
+    minP?: number;
+
     typicalP?: number;
 
     useMLock?: boolean;
@@ -142,6 +144,7 @@ export class ChatOllama
         this.tfsZ = fields.tfsZ;
         this.topK = fields.topK;
         this.topP = fields.topP;
+        this.minP = fields.minP;
         this.typicalP = fields.typicalP;
         this.useMLock = fields.useMLock;
         this.useMMap = fields.useMMap;
@@ -205,6 +208,7 @@ export class ChatOllama
                 tfs_z: this.tfsZ,
                 top_k: this.topK,
                 top_p: this.topP,
+                min_p: this.minP,
                 typical_p: this.typicalP,
                 use_mlock: this.useMLock,
                 use_mmap: this.useMMap,

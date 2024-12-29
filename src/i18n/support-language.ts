@@ -63,5 +63,9 @@ export const supportLanguage = [
     {
         value: "ko",
         label: "한국어"
+    },
+    {
+        value: "ar",
+        label: "العربية"
     }
 ]

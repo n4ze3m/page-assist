@@ -113,6 +113,9 @@
       },
       "ssmlEnabled": {
         "label": "Enable SSML (Speech Synthesis Markup Language)"
+      },
+      "responseSplitting": {
+        "label": "Response Splitting"
       }
     }
   },

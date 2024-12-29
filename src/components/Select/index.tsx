@@ -73,6 +73,7 @@ export const PageAssistSelect: React.FC<SelectProps> = ({
     } catch (error) {
       console.error("Error scrolling to selected option:", error)
     }
+    
   }, [isOpen, value])
 
   useEffect(() => {

@@ -76,7 +76,10 @@ export const CurrentChatModelSettings = ({
         numGpu: cUserSettings.numGpu ?? data.numGpu,
         numPredict: cUserSettings.numPredict ?? data.numPredict,
         systemPrompt: cUserSettings.systemPrompt ?? tempSystemPrompt,
-        useMMap: cUserSettings.useMMap ?? data.useMMap
+        useMMap: cUserSettings.useMMap ?? data.useMMap,
+        minP: cUserSettings.minP ?? data.minP,
+        repeatLastN: cUserSettings.repeatLastN ?? data.repeatLastN,
+        repeatPenalty: cUserSettings.repeatPenalty ?? data.repeatPenalty
       })
       return data
     },
@@ -200,6 +203,34 @@ export const CurrentChatModelSettings = ({
                       </Form.Item>
 
                       <Form.Item
+                        name="minP"
+                        label={t("modelSettings.form.minP.label")}>
+                        <InputNumber
+                          style={{ width: "100%" }}
+                          placeholder={t("modelSettings.form.minP.placeholder")}
+                        />
+                      </Form.Item>
+                      <Form.Item
+                        name="repeatPenalty"
+                        label={t("modelSettings.form.repeatPenalty.label")}>
+                        <InputNumber
+                          style={{ width: "100%" }}
+                          placeholder={t(
+                            "modelSettings.form.repeatPenalty.placeholder"
+                          )}
+                        />
+                      </Form.Item>
+                      <Form.Item
+                        name="repeatLastN"
+                        label={t("modelSettings.form.repeatLastN.label")}>
+                        <InputNumber
+                          style={{ width: "100%" }}
+                          placeholder={t(
+                            "modelSettings.form.repeatLastN.placeholder"
+                          )}
+                        />
+                      </Form.Item>
+                      <Form.Item
                         name="useMMap"
                         label={t("modelSettings.form.useMMap.label")}>
                         <Switch />
@@ -209,7 +240,10 @@ export const CurrentChatModelSettings = ({
                 }
               ]}
             />
-            <SaveButton className="w-full text-center inline-flex items-center justify-center" btnType="submit" />
+            <SaveButton
+              className="w-full text-center inline-flex items-center justify-center"
+              btnType="submit"
+            />
           </Form>
         ) : (
           <Skeleton active />

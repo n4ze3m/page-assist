@@ -131,7 +131,9 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
     setWebSearch,
     selectedQuickPrompt,
     setSelectedQuickPrompt,
-    speechToTextLanguage
+    speechToTextLanguage,
+    useOCR,
+    setUseOCR
   } = useMessage()
 
   React.useEffect(() => {
@@ -412,6 +414,16 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                                 setChatMode(e.target.checked ? "rag" : "normal")
                               }}>
                               {t("common:chatWithCurrentPage")}
+                            </Checkbox>
+                          )
+                        },
+                        {
+                          key: 3,
+                          label: (
+                            <Checkbox
+                              checked={useOCR}
+                              onChange={(e) => setUseOCR(e.target.checked)}>
+                              {t("useOCR")}
                             </Checkbox>
                           )
                         }

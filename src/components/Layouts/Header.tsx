@@ -2,11 +2,11 @@ import { useStorage } from "@plasmohq/storage/hook"
 import {
   BrainCog,
   ChevronLeft,
+  ChevronRight,
   CogIcon,
   ComputerIcon,
   GithubIcon,
   PanelLeftIcon,
-  SquarePen,
   ZapIcon
 } from "lucide-react"
 import { useTranslation } from "react-i18next"
@@ -32,7 +32,9 @@ export const Header: React.FC<Props> = ({
   setOpenModelSettings,
   setSidebarOpen
 }) => {
-  const { t } = useTranslation(["option", "common"])
+  const { t, i18n } = useTranslation(["option", "common"])
+  const isRTL = i18n?.dir() === "rtl"
+
   const [shareModeEnabled] = useStorage("shareMode", false)
   const [hideCurrentChatModelSettings] = useStorage(
     "hideCurrentChatModelSettings",
@@ -98,7 +100,11 @@ export const Header: React.FC<Props> = ({
             <NavLink
               to="/"
               className="text-gray-500 items-center dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
-              <ChevronLeft className="w-8 h-8" />
+              {isRTL ? (
+                <ChevronRight className={`w-8 h-8`} />
+              ) : (
+                <ChevronLeft className={`w-8 h-8`} />
+              )}
             </NavLink>
           </div>
         )}

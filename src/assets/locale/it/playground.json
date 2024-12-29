@@ -26,5 +26,6 @@
         "knowledge": "Conoscenza"
     },
     "sendWhenEnter": "Invia subito dopo Enter",
-    "welcome": "Ciao! Come posso aiutarti oggi?"
+    "welcome": "Ciao! Come posso aiutarti oggi?",
+    "useOCR": "Estrai testo dall'immagine (OCR)"
 }

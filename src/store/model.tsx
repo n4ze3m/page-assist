@@ -30,6 +30,7 @@ type CurrentChatModelSettings = {
   useMMap?: boolean
   vocabOnly?: boolean
   seed?: number
+  minP?: number
 
   setF16KV?: (f16KV: boolean) => void
   setFrequencyPenalty?: (frequencyPenalty: number) => void
@@ -65,6 +66,8 @@ type CurrentChatModelSettings = {
   reset: () => void
   systemPrompt?: string
   setSystemPrompt: (systemPrompt: string) => void
+
+  setMinP: (minP: number) => void
 }
 
 export const useStoreChatModelSettings = create<CurrentChatModelSettings>(
@@ -103,6 +106,7 @@ export const useStoreChatModelSettings = create<CurrentChatModelSettings>(
     seetSeed: (seed: number) => set({ seed }),
     setX: (key: string, value: any) => set({ [key]: value }),
     systemPrompt: undefined,
+    setMinP: (minP: number) => set({ minP }),
     setSystemPrompt: (systemPrompt: string) => set({ systemPrompt }),
     reset: () =>
       set({
@@ -135,7 +139,8 @@ export const useStoreChatModelSettings = create<CurrentChatModelSettings>(
         useMMap: undefined,
         vocabOnly: undefined,
         seed: undefined,
-        systemPrompt: undefined
+        systemPrompt: undefined,
+        minP: undefined,
       })
   })
 )

@@ -26,5 +26,6 @@
         "knowledge": "知识"
     },
     "sendWhenEnter": "按Enter发送",
-    "welcome": "你好！今天我能帮你什么？"
+    "welcome": "你好！今天我能帮你什么？",
+    "useOCR": "从图片中提取文字（OCR）"
 }
