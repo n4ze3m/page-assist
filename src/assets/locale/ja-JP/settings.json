@@ -334,6 +334,14 @@
         "label": "取得ドキュメント数",
         "placeholder": "取得ドキュメント数を入力",
         "required": "取得ドキュメント数を入力してください"
+      },
+      "splittingSeparator": {
+        "label": "セパレーター",
+        "placeholder": "セパレーターを入力（例：\\n\\n）",
+        "required": "セパレーターを入力してください"
+      },
+      "splittingStrategy": {
+        "label": "テキスト分割方式"
       }
     },
     "prompt": {

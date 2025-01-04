@@ -331,6 +331,14 @@
         "label": "Número de Documentos Recuperados",
         "placeholder": "Digite o Número de Documentos Recuperados",
         "required": "Por favor, insira o número de documentos recuperados"
+      },
+      "splittingSeparator": {
+        "label": "Separador",
+        "placeholder": "Digite o Separador (ex: \\n\\n)",
+        "required": "Por favor, insira um separador"
+      },
+      "splittingStrategy": {
+        "label": "Divisor de Texto"
       }
     },
     "prompt": {

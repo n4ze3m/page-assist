@@ -334,6 +334,14 @@
         "label": "عدد المستندات المسترجعة",
         "placeholder": "أدخل عدد المستندات المسترجعة",
         "required": "الرجاء إدخال عدد المستندات المسترجعة"
+      },
+      "splittingSeparator": {
+        "label": "الفاصل",
+        "placeholder": "أدخل الفاصل (مثال: \\n\\n)",
+        "required": "الرجاء إدخال الفاصل"
+      },
+      "splittingStrategy": {
+        "label": "مقسم النص"
       }
     },
     "prompt": {
@@ -355,4 +363,5 @@
   },
   "chromeAiSettings": {
     "title": "إعدادات Chrome AI"
-  }}
+  }
+}

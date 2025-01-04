@@ -331,6 +331,14 @@
         "label": "Antal Hentede Dokumenter",
         "placeholder": "Indtast Number of Retrieved Documents",
         "required": "Venligst indtast the number of retrieved documents"
+      },
+      "splittingSeparator": {
+        "label": "Separator",
+        "placeholder": "Indtast Separator (f.eks. \\n\\n)",
+        "required": "Indtast venligst en separator"
+      },
+      "splittingStrategy": {
+        "label": "Tekst Splitter"
       }
     },
     "prompt": {

@@ -1,8 +1,9 @@
 import { cleanUrl } from "@/libs/clean-url"
 import { PageAssistHtmlLoader } from "@/loader/html"
 import { pageAssistEmbeddingModel } from "@/models/embedding"
-import { defaultEmbeddingChunkOverlap, defaultEmbeddingChunkSize, defaultEmbeddingModelForRag, getOllamaURL } from "@/services/ollama"
-import { RecursiveCharacterTextSplitter } from "langchain/text_splitter"
+import { defaultEmbeddingModelForRag, getOllamaURL } from "@/services/ollama"
+import { getPageAssistTextSplitter } from "@/utils/text-splitter"
+
 import { MemoryVectorStore } from "langchain/vectorstores/memory"
 
 export const processSingleWebsite = async (url: string, query: string) => {
@@ -20,12 +21,8 @@ export const processSingleWebsite = async (url: string, query: string) => {
         baseUrl: cleanUrl(ollamaUrl)
     })
 
-    const chunkSize = await defaultEmbeddingChunkSize()
-    const chunkOverlap = await defaultEmbeddingChunkOverlap()
-    const textSplitter = new RecursiveCharacterTextSplitter({
-        chunkSize,
-        chunkOverlap
-    })
+
+    const textSplitter = await getPageAssistTextSplitter()
 
     const chunks = await textSplitter.splitDocuments(docs)
 

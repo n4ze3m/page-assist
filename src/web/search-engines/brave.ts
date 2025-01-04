@@ -3,8 +3,6 @@ import { urlRewriteRuntime } from "@/libs/runtime"
 import { PageAssistHtmlLoader } from "@/loader/html"
 import { pageAssistEmbeddingModel } from "@/models/embedding"
 import {
-    defaultEmbeddingChunkOverlap,
-    defaultEmbeddingChunkSize,
     defaultEmbeddingModelForRag,
     getOllamaURL
 } from "@/services/ollama"
@@ -12,10 +10,10 @@ import {
     getIsSimpleInternetSearch,
     totalSearchResults
 } from "@/services/search"
+import { getPageAssistTextSplitter } from "@/utils/text-splitter"
 
 import type { Document } from "@langchain/core/documents"
 import * as cheerio from "cheerio"
-import { RecursiveCharacterTextSplitter } from "langchain/text_splitter"
 import { MemoryVectorStore } from "langchain/vectorstores/memory"
 
 export const localBraveSearch = async (query: string) => {
@@ -87,12 +85,8 @@ export const webBraveSearch = async (query: string) => {
         baseUrl: cleanUrl(ollamaUrl)
     })
 
-    const chunkSize = await defaultEmbeddingChunkSize()
-    const chunkOverlap = await defaultEmbeddingChunkOverlap()
-    const textSplitter = new RecursiveCharacterTextSplitter({
-        chunkSize,
-        chunkOverlap
-    })
+ 
+    const textSplitter = await getPageAssistTextSplitter();
 
     const chunks = await textSplitter.splitDocuments(docs)
 

@@ -1,12 +1,8 @@
 import { PageAssistHtmlLoader } from "~/loader/html"
-import { RecursiveCharacterTextSplitter } from "langchain/text_splitter"
 
-import {
-  defaultEmbeddingChunkOverlap,
-  defaultEmbeddingChunkSize
-} from "@/services/ollama"
 import { PageAssistPDFLoader } from "@/loader/pdf"
 import { PAMemoryVectorStore } from "@/libs/PAMemoryVectorStore"
+import { getPageAssistTextSplitter } from "./text-splitter"
 
 export const getLoader = ({
   html,
@@ -54,12 +50,7 @@ export const memoryEmbedding = async ({
   setIsEmbedding(true)
   const loader = getLoader({ html, pdf, type, url })
   const docs = await loader.load()
-  const chunkSize = await defaultEmbeddingChunkSize()
-  const chunkOverlap = await defaultEmbeddingChunkOverlap()
-  const textSplitter = new RecursiveCharacterTextSplitter({
-    chunkSize,
-    chunkOverlap
-  })
+  const textSplitter = await getPageAssistTextSplitter()
 
   const chunks = await textSplitter.splitDocuments(docs)
 

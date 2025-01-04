@@ -2,15 +2,13 @@ import { cleanUrl } from "~/libs/clean-url"
 import { getIsSimpleInternetSearch, totalSearchResults, getBraveApiKey } from "@/services/search"
 import { pageAssistEmbeddingModel } from "@/models/embedding"
 import type { Document } from "@langchain/core/documents"
-import { RecursiveCharacterTextSplitter } from "langchain/text_splitter"
 import { MemoryVectorStore } from "langchain/vectorstores/memory"
 import { PageAssistHtmlLoader } from "~/loader/html"
 import {
-    defaultEmbeddingChunkOverlap,
-    defaultEmbeddingChunkSize,
     defaultEmbeddingModelForRag,
     getOllamaURL
 } from "~/services/ollama"
+import { getPageAssistTextSplitter } from "@/utils/text-splitter"
 
 interface BraveAPIResult {
     title: string
@@ -70,12 +68,7 @@ export const braveAPISearch = async (query: string) => {
         baseUrl: cleanUrl(ollamaUrl)
     })
 
-    const chunkSize = await defaultEmbeddingChunkSize()
-    const chunkOverlap = await defaultEmbeddingChunkOverlap()
-    const textSplitter = new RecursiveCharacterTextSplitter({
-        chunkSize,
-        chunkOverlap
-    })
+    const textSplitter = await getPageAssistTextSplitter()
 
     const chunks = await textSplitter.splitDocuments(docs)
     const store = new MemoryVectorStore(ollamaEmbedding)
