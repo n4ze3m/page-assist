@@ -90,6 +90,21 @@
             "useMMap": {
                 "label": "useMmap"
             },
+            "tfsZ": {
+                "label": "TFS-Z",
+                "placeholder": "e.g. 1.0, 1.1"
+            },
+            "numKeep": {
+                "label": "Num Keep",
+                "placeholder": "e.g. 256, 512"
+            },
+            "numThread": {
+                "label": "Num Thread",
+                "placeholder": "e.g. 8, 16"
+            },
+            "useMlock": {
+                "label": "useMlock"
+            },
             "minP": {
                 "label": "Min P",
                 "placeholder": "e.g. 0.05"

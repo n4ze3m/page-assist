@@ -1,11 +1,6 @@
 import { getKnowledgeById, updateKnowledgeStatus } from "@/db/knowledge"
 import { PageAssistPDFUrlLoader } from "@/loader/pdf-url"
-import {
-  defaultEmbeddingChunkOverlap,
-  defaultEmbeddingChunkSize,
-  getOllamaURL
-} from "@/services/ollama"
-import { RecursiveCharacterTextSplitter } from "langchain/text_splitter"
+import { getOllamaURL } from "@/services/ollama"
 import { PageAssistVectorStore } from "./PageAssistVectorStore"
 import { PageAssisCSVUrlLoader } from "@/loader/csv"
 import { PageAssisTXTUrlLoader } from "@/loader/txt"
@@ -13,7 +8,7 @@ import { PageAssistDocxLoader } from "@/loader/docx"
 import { cleanUrl } from "./clean-url"
 import { sendEmbeddingCompleteNotification } from "./send-notification"
 import { pageAssistEmbeddingModel } from "@/models/embedding"
-
+import { getPageAssistTextSplitter } from "@/utils/text-splitter"
 
 export const processKnowledge = async (msg: any, id: string): Promise<void> => {
   console.log(`Processing knowledge with id: ${id}`)
@@ -32,12 +27,8 @@ export const processKnowledge = async (msg: any, id: string): Promise<void> => {
       baseUrl: cleanUrl(ollamaUrl),
       model: knowledge.embedding_model
     })
-    const chunkSize = await defaultEmbeddingChunkSize()
-    const chunkOverlap = await defaultEmbeddingChunkOverlap()
-    const textSplitter = new RecursiveCharacterTextSplitter({
-      chunkSize,
-      chunkOverlap
-    })
+
+    const textSplitter = await getPageAssistTextSplitter()
 
     for (const doc of knowledge.source) {
       if (doc.type === "pdf" || doc.type === "application/pdf") {
@@ -65,13 +56,15 @@ export const processKnowledge = async (msg: any, id: string): Promise<void> => {
           knownledge_id: knowledge.id,
           file_id: doc.source_id
         })
-      } else if (doc.type === "docx" || doc.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
+      } else if (
+        doc.type === "docx" ||
+        doc.type ===
+          "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+      ) {
         try {
           const loader = new PageAssistDocxLoader({
             fileName: doc.filename,
-            buffer: await toArrayBufferFromBase64(
-              doc.content
-            )
+            buffer: await toArrayBufferFromBase64(doc.content)
           })
 
           let docs = await loader.load()

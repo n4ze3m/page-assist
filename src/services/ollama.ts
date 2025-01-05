@@ -8,6 +8,9 @@ import { ollamaFormatAllCustomModels } from "@/db/models"
 
 
 const storage = new Storage()
+const storage2 = new Storage({
+  area: "local"
+})
 
 const DEFAULT_OLLAMA_URL = "http://127.0.0.1:11434"
 const DEFAULT_ASK_FOR_MODEL_SELECTION_EVERY_TIME = true
@@ -310,6 +313,22 @@ export const defaultEmbeddingChunkSize = async () => {
   return parseInt(embeddingChunkSize)
 }
 
+export const defaultSplittingStrategy = async () => {
+  const splittingStrategy = await storage.get("defaultSplittingStrategy")
+  if (!splittingStrategy || splittingStrategy.length === 0) {
+    return "RecursiveCharacterTextSplitter"
+  }
+  return splittingStrategy
+}
+
+export const defaultSsplttingSeparator = async () => {
+  const splittingSeparator = await storage.get("defaultSplittingSeparator")
+  if (!splittingSeparator || splittingSeparator.length === 0) {
+    return "\\n\\n"
+  }
+  return splittingSeparator
+}
+
 export const defaultEmbeddingChunkOverlap = async () => {
   const embeddingChunkOverlap = await storage.get(
     "defaultEmbeddingChunkOverlap"
@@ -318,6 +337,14 @@ export const defaultEmbeddingChunkOverlap = async () => {
     return 200
   }
   return parseInt(embeddingChunkOverlap)
+}
+
+export const setDefaultSplittingStrategy = async (strategy: string) => {
+  await storage.set("defaultSplittingStrategy", strategy)
+}
+
+export const setDefaultSplittingSeparator = async (separator: string) => {
+  await storage.set("defaultSplittingSeparator", separator)
 }
 
 export const setDefaultEmbeddingModelForRag = async (model: string) => {
@@ -337,7 +364,9 @@ export const saveForRag = async (
   chunkSize: number,
   overlap: number,
   totalFilePerKB: number,
-  noOfRetrievedDocs?: number
+  noOfRetrievedDocs?: number,
+  strategy?: string,
+  separator?: string
 ) => {
   await setDefaultEmbeddingModelForRag(model)
   await setDefaultEmbeddingChunkSize(chunkSize)
@@ -345,6 +374,12 @@ export const saveForRag = async (
   await setTotalFilePerKB(totalFilePerKB)
   if (noOfRetrievedDocs) {
     await setNoOfRetrievedDocs(noOfRetrievedDocs)
+  }
+  if (strategy) {
+    await setDefaultSplittingStrategy(strategy)
+  }
+  if (separator) {
+    await setDefaultSplittingSeparator(separator)
   }
 }
 

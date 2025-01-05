@@ -331,6 +331,14 @@
         "label": "Antall hentede dokumenter",
         "placeholder": "Skriv inn antall hentede dokumenter",
         "required": "Vennligst skriv inn antall hentede dokumenter"
+      },
+      "splittingSeparator": {
+        "label": "Separator",
+        "placeholder": "Skriv inn separator (f.eks. \\n\\n)",
+        "required": "Vennligst skriv inn en separator"
+      },
+      "splittingStrategy": {
+        "label": "Tekstdeler"
       }
     },
     "prompt": {

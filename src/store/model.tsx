@@ -66,6 +66,8 @@ type CurrentChatModelSettings = {
   reset: () => void
   systemPrompt?: string
   setSystemPrompt: (systemPrompt: string) => void
+  useMlock?: boolean
+  setUseMlock: (useMlock: boolean) => void
 
   setMinP: (minP: number) => void
 }
@@ -108,6 +110,7 @@ export const useStoreChatModelSettings = create<CurrentChatModelSettings>(
     systemPrompt: undefined,
     setMinP: (minP: number) => set({ minP }),
     setSystemPrompt: (systemPrompt: string) => set({ systemPrompt }),
+    setUseMlock: (useMlock: boolean) => set({ useMlock }),
     reset: () =>
       set({
         f16KV: undefined,
@@ -141,6 +144,7 @@ export const useStoreChatModelSettings = create<CurrentChatModelSettings>(
         seed: undefined,
         systemPrompt: undefined,
         minP: undefined,
+        useMlock: undefined,
       })
   })
 )

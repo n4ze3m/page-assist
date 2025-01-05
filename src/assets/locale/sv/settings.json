@@ -331,6 +331,14 @@
         "label": "Antal hämtade dokument",
         "placeholder": "Ange antal hämtade dokument",
         "required": "Vänligen ange antal hämtade dokument"
+      },
+      "splittingSeparator": {
+        "label": "Separator",
+        "placeholder": "Ange separator (t.ex. \\n\\n)",
+        "required": "Vänligen ange en separator"
+      },
+      "splittingStrategy": {
+        "label": "Textdelare"
       }
     },
     "prompt": {

@@ -1,10 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { Form, InputNumber, Select, Skeleton } from "antd"
+import { Form, Input, InputNumber, Select, Skeleton } from "antd"
 import { SaveButton } from "~/components/Common/SaveButton"
 import {
   defaultEmbeddingChunkOverlap,
   defaultEmbeddingChunkSize,
   defaultEmbeddingModelForRag,
+  defaultSplittingStrategy,
+  defaultSsplttingSeparator,
   getEmbeddingModels,
   saveForRag
 } from "~/services/ollama"
@@ -16,7 +18,8 @@ import { ProviderIcons } from "@/components/Common/ProviderIcon"
 
 export const RagSettings = () => {
   const { t } = useTranslation("settings")
-
+  const [form] = Form.useForm()
+  const splittingStrategy = Form.useWatch("splittingStrategy", form)
   const queryClient = useQueryClient()
 
   const { data: ollamaInfo, status } = useQuery({
@@ -28,14 +31,18 @@ export const RagSettings = () => {
         chunkSize,
         defaultEM,
         totalFilePerKB,
-        noOfRetrievedDocs
+        noOfRetrievedDocs,
+        splittingStrategy,
+        splittingSeparator
       ] = await Promise.all([
         getEmbeddingModels({ returnEmpty: true }),
         defaultEmbeddingChunkOverlap(),
         defaultEmbeddingChunkSize(),
         defaultEmbeddingModelForRag(),
         getTotalFilePerKB(),
-        getNoOfRetrievedDocs()
+        getNoOfRetrievedDocs(),
+        defaultSplittingStrategy(),
+        defaultSsplttingSeparator()
       ])
       return {
         models: allModels,
@@ -43,7 +50,9 @@ export const RagSettings = () => {
         chunkSize,
         defaultEM,
         totalFilePerKB,
-        noOfRetrievedDocs
+        noOfRetrievedDocs,
+        splittingStrategy,
+        splittingSeparator
       }
     }
   })
@@ -55,13 +64,17 @@ export const RagSettings = () => {
       overlap: number
       totalFilePerKB: number
       noOfRetrievedDocs: number
+      strategy: string
+      separator: string
     }) => {
       await saveForRag(
         data.model,
         data.chunkSize,
         data.overlap,
         data.totalFilePerKB,
-        data.noOfRetrievedDocs
+        data.noOfRetrievedDocs,
+        data.strategy,
+        data.separator
       )
       return true
     },
@@ -85,6 +98,7 @@ export const RagSettings = () => {
               <div className="border border-b border-gray-200 dark:border-gray-600 mt-3 mb-6"></div>
             </div>
             <Form
+              form={form}
               layout="vertical"
               onFinish={(data) => {
                 saveRAG({
@@ -92,7 +106,9 @@ export const RagSettings = () => {
                   chunkSize: data.chunkSize,
                   overlap: data.chunkOverlap,
                   totalFilePerKB: data.totalFilePerKB,
-                  noOfRetrievedDocs: data.noOfRetrievedDocs
+                  noOfRetrievedDocs: data.noOfRetrievedDocs,
+                  separator: data.splittingSeparator,
+                  strategy: data.splittingStrategy
                 })
               }}
               initialValues={{
@@ -100,7 +116,9 @@ export const RagSettings = () => {
                 chunkOverlap: ollamaInfo?.chunkOverlap,
                 defaultEM: ollamaInfo?.defaultEM,
                 totalFilePerKB: ollamaInfo?.totalFilePerKB,
-                noOfRetrievedDocs: ollamaInfo?.noOfRetrievedDocs
+                noOfRetrievedDocs: ollamaInfo?.noOfRetrievedDocs,
+                splittingStrategy: ollamaInfo?.splittingStrategy,
+                splittingSeparator: ollamaInfo?.splittingSeparator
               }}>
               <Form.Item
                 name="defaultEM"
@@ -139,6 +157,50 @@ export const RagSettings = () => {
                   }))}
                 />
               </Form.Item>
+
+              <Form.Item
+                name="splittingStrategy"
+                label={t("rag.ragSettings.splittingStrategy.label")}
+                rules={[
+                  {
+                    required: true,
+                    message: t("rag.ragSettings.model.required")
+                  }
+                ]}>
+                <Select
+                  size="large"
+                  showSearch
+                  style={{ width: "100%" }}
+                  className="mt-4"
+                  options={[
+                    "RecursiveCharacterTextSplitter",
+                    "CharacterTextSplitter"
+                  ].map((e) => ({
+                    label: e,
+                    value: e
+                  }))}
+                />
+              </Form.Item>
+
+              {splittingStrategy !== "RecursiveCharacterTextSplitter" && (
+                <Form.Item
+                  name="splittingSeparator"
+                  label={t("rag.ragSettings.splittingSeparator.label")}
+                  rules={[
+                    {
+                      required: true,
+                      message: t("rag.ragSettings.splittingSeparator.required")
+                    }
+                  ]}>
+                  <Input
+                    size="large"
+                    style={{ width: "100%" }}
+                    placeholder={t(
+                      "rag.ragSettings.splittingSeparator.placeholder"
+                    )}
+                  />
+                </Form.Item>
+              )}
 
               <Form.Item
                 name="chunkSize"

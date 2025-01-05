@@ -48,5 +48,10 @@ export const OAI_API_PROVIDERS = [
         label: "Google AI",
         value: "gemini",
         baseUrl: "https://generativelanguage.googleapis.com/v1beta/openai"
+    },
+    {
+        label: "Mistral",
+        value: "mistral",
+        baseUrl: "https://api.mistral.ai/v1"
     }
 ]
