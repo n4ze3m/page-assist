@@ -141,7 +141,15 @@ export const useMessageOption = () => {
         userDefaultModelSettings?.repeatLastN,
       repeatPenalty:
         currentChatModelSettings?.repeatPenalty ??
-        userDefaultModelSettings?.repeatPenalty
+        userDefaultModelSettings?.repeatPenalty,
+      tfsZ: currentChatModelSettings?.tfsZ ?? userDefaultModelSettings?.tfsZ,
+      numKeep:
+        currentChatModelSettings?.numKeep ?? userDefaultModelSettings?.numKeep,
+      numThread:
+        currentChatModelSettings?.numThread ??
+        userDefaultModelSettings?.numThread,
+      useMlock:
+        currentChatModelSettings?.useMlock ?? userDefaultModelSettings?.useMlock
     })
 
     let newMessage: Message[] = []
@@ -231,7 +239,18 @@ export const useMessageOption = () => {
             userDefaultModelSettings?.repeatLastN,
           repeatPenalty:
             currentChatModelSettings?.repeatPenalty ??
-            userDefaultModelSettings?.repeatPenalty
+            userDefaultModelSettings?.repeatPenalty,
+          tfsZ:
+            currentChatModelSettings?.tfsZ ?? userDefaultModelSettings?.tfsZ,
+          numKeep:
+            currentChatModelSettings?.numKeep ??
+            userDefaultModelSettings?.numKeep,
+          numThread:
+            currentChatModelSettings?.numThread ??
+            userDefaultModelSettings?.numThread,
+          useMlock:
+            currentChatModelSettings?.useMlock ??
+            userDefaultModelSettings?.useMlock
         })
         const response = await questionOllama.invoke(promptForQuestion)
         query = response.content.toString()
@@ -464,7 +483,15 @@ export const useMessageOption = () => {
         userDefaultModelSettings?.repeatLastN,
       repeatPenalty:
         currentChatModelSettings?.repeatPenalty ??
-        userDefaultModelSettings?.repeatPenalty
+        userDefaultModelSettings?.repeatPenalty,
+      tfsZ: currentChatModelSettings?.tfsZ ?? userDefaultModelSettings?.tfsZ,
+      numKeep:
+        currentChatModelSettings?.numKeep ?? userDefaultModelSettings?.numKeep,
+      numThread:
+        currentChatModelSettings?.numThread ??
+        userDefaultModelSettings?.numThread,
+      useMlock:
+        currentChatModelSettings?.useMlock ?? userDefaultModelSettings?.useMlock
     })
 
     let newMessage: Message[] = []
@@ -719,7 +746,15 @@ export const useMessageOption = () => {
         userDefaultModelSettings?.repeatLastN,
       repeatPenalty:
         currentChatModelSettings?.repeatPenalty ??
-        userDefaultModelSettings?.repeatPenalty
+        userDefaultModelSettings?.repeatPenalty,
+      tfsZ: currentChatModelSettings?.tfsZ ?? userDefaultModelSettings?.tfsZ,
+      numKeep:
+        currentChatModelSettings?.numKeep ?? userDefaultModelSettings?.numKeep,
+      numThread:
+        currentChatModelSettings?.numThread ??
+        userDefaultModelSettings?.numThread,
+      useMlock:
+        currentChatModelSettings?.useMlock ?? userDefaultModelSettings?.useMlock
     })
 
     let newMessage: Message[] = []
@@ -825,7 +860,18 @@ export const useMessageOption = () => {
             userDefaultModelSettings?.repeatLastN,
           repeatPenalty:
             currentChatModelSettings?.repeatPenalty ??
-            userDefaultModelSettings?.repeatPenalty
+            userDefaultModelSettings?.repeatPenalty,
+          tfsZ:
+            currentChatModelSettings?.tfsZ ?? userDefaultModelSettings?.tfsZ,
+          numKeep:
+            currentChatModelSettings?.numKeep ??
+            userDefaultModelSettings?.numKeep,
+          numThread:
+            currentChatModelSettings?.numThread ??
+            userDefaultModelSettings?.numThread,
+          useMlock:
+            currentChatModelSettings?.useMlock ??
+            userDefaultModelSettings?.useMlock
         })
         const response = await questionOllama.invoke(promptForQuestion)
         query = response.content.toString()

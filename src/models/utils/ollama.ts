@@ -40,6 +40,7 @@ export interface OllamaInput {
   useMLock?: boolean
   useMMap?: boolean
   vocabOnly?: boolean
+  useMlock?: boolean
   seed?: number
   format?: StringWithAutocomplete<"json">
 }

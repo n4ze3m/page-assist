@@ -20,7 +20,11 @@ export const pageAssistModel = async ({
   useMMap,
   minP,
   repeatLastN,
-  repeatPenalty
+  repeatPenalty,
+  tfsZ,
+  numKeep,
+  numThread,
+  useMlock,
 }: {
   model: string
   baseUrl: string
@@ -36,6 +40,10 @@ export const pageAssistModel = async ({
   minP?: number
   repeatPenalty?: number
   repeatLastN?: number
+  tfsZ?: number,
+  numKeep?: number,
+  numThread?: number,
+  useMlock?: boolean,
 }) => {
   if (model === "chrome::gemini-nano::page-assist") {
     return new ChatChromeAI({
@@ -80,7 +88,7 @@ export const pageAssistModel = async ({
       }
     }) as any
   }
-
+  console.log('useMlock', useMlock)
   return new ChatOllama({
     baseUrl,
     keepAlive,
@@ -96,5 +104,9 @@ export const pageAssistModel = async ({
     minP: minP,
     repeatPenalty: repeatPenalty,
     repeatLastN: repeatLastN,
+    tfsZ,
+    numKeep,
+    numThread,
+    useMlock
   })
 }

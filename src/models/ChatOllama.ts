@@ -103,6 +103,8 @@ export class ChatOllama
 
     useMMap?: boolean;
 
+    useMlock?: boolean;
+
     vocabOnly?: boolean;
 
     seed?: number;
@@ -148,6 +150,7 @@ export class ChatOllama
         this.typicalP = fields.typicalP;
         this.useMLock = fields.useMLock;
         this.useMMap = fields.useMMap;
+        this.useMlock = fields.useMlock;
         this.vocabOnly = fields.vocabOnly;
         this.format = fields.format;
         this.seed = fields.seed;
@@ -210,7 +213,7 @@ export class ChatOllama
                 top_p: this.topP,
                 min_p: this.minP,
                 typical_p: this.typicalP,
-                use_mlock: this.useMLock,
+                use_mlock: this.useMlock,
                 use_mmap: this.useMMap,
                 vocab_only: this.vocabOnly,
                 seed: this.seed,

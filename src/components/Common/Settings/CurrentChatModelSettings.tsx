@@ -13,9 +13,8 @@ import {
   Modal,
   Skeleton,
   Switch,
-  Button
 } from "antd"
-import React, { useState, useCallback } from "react"
+import React, { useCallback } from "react"
 import { useTranslation } from "react-i18next"
 import { SaveButton } from "../SaveButton"
 
@@ -79,7 +78,11 @@ export const CurrentChatModelSettings = ({
         useMMap: cUserSettings.useMMap ?? data.useMMap,
         minP: cUserSettings.minP ?? data.minP,
         repeatLastN: cUserSettings.repeatLastN ?? data.repeatLastN,
-        repeatPenalty: cUserSettings.repeatPenalty ?? data.repeatPenalty
+        repeatPenalty: cUserSettings.repeatPenalty ?? data.repeatPenalty,
+        useMlock: cUserSettings.useMlock ?? data.useMlock,
+        tfsZ: cUserSettings.tfsZ ?? data.tfsZ,
+        numKeep: cUserSettings.numKeep ?? data.numKeep,
+        numThread: cUserSettings.numThread ?? data.numThread
       })
       return data
     },
@@ -231,8 +234,41 @@ export const CurrentChatModelSettings = ({
                         />
                       </Form.Item>
                       <Form.Item
+                        name="tfsZ"
+                        label={t("modelSettings.form.tfsZ.label")}>
+                        <InputNumber
+                          style={{ width: "100%" }}
+                          placeholder={t("modelSettings.form.tfsZ.placeholder")}
+                        />
+                      </Form.Item>
+                      <Form.Item
+                        name="numKeep"
+                        label={t("modelSettings.form.numKeep.label")}>
+                        <InputNumber
+                          style={{ width: "100%" }}
+                          placeholder={t(
+                            "modelSettings.form.numKeep.placeholder"
+                          )}
+                        />
+                      </Form.Item>
+                      <Form.Item
+                        name="numThread"
+                        label={t("modelSettings.form.numThread.label")}>
+                        <InputNumber
+                          style={{ width: "100%" }}
+                          placeholder={t(
+                            "modelSettings.form.numThread.placeholder"
+                          )}
+                        />
+                      </Form.Item>
+                      <Form.Item
                         name="useMMap"
                         label={t("modelSettings.form.useMMap.label")}>
+                        <Switch />
+                      </Form.Item>
+                      <Form.Item
+                        name="useMlock"
+                        label={t("modelSettings.form.useMlock.label")}>
                         <Switch />
                       </Form.Item>
                     </React.Fragment>
