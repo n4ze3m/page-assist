@@ -169,6 +169,7 @@ export const PlaygroundMessage = (props: Props) => {
                 {props.isTTSEnabled && (
                   <Tooltip title={t("tts")}>
                     <button
+                      aria-label={t("tts")}
                       onClick={() => {
                         if (isSpeaking) {
                           cancel()
@@ -192,6 +193,7 @@ export const PlaygroundMessage = (props: Props) => {
                     {!props.hideCopy && (
                       <Tooltip title={t("copyToClipboard")}>
                         <button
+                          aria-label={t("copyToClipboard")}
                           onClick={() => {
                             navigator.clipboard.writeText(props.message)
                             setIsBtnPressed(true)
@@ -217,7 +219,9 @@ export const PlaygroundMessage = (props: Props) => {
                           />
                         }
                         title={t("generationInfo")}>
-                        <button className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                        <button
+                        aria-label={t("generationInfo")}
+                        className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
                           <InfoIcon className="w-3 h-3 text-gray-400 group-hover:text-gray-500" />
                         </button>
                       </Popover>
@@ -227,6 +231,7 @@ export const PlaygroundMessage = (props: Props) => {
                       props.currentMessageIndex === props.totalMessages - 1 && (
                         <Tooltip title={t("regenerate")}>
                           <button
+                            aria-label={t("regenerate")}  
                             onClick={props.onRengerate}
                             className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
                             <RotateCcw className="w-3 h-3 text-gray-400 group-hover:text-gray-500" />
@@ -239,6 +244,7 @@ export const PlaygroundMessage = (props: Props) => {
                   <Tooltip title={t("edit")}>
                     <button
                       onClick={() => setEditMode(true)}
+                      aria-label={t("edit")}
                       className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
                       <Pen className="w-3 h-3 text-gray-400 group-hover:text-gray-500" />
                     </button>
