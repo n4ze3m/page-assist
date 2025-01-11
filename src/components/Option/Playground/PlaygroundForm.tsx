@@ -39,7 +39,8 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
     selectedKnowledge,
     temporaryChat,
     useOCR,
-    setUseOCR
+    setUseOCR,
+    defaultInternetSearchOn
   } = useMessageOption()
 
   const isMobile = () => {
@@ -71,7 +72,16 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
 
   React.useEffect(() => {
     textAreaFocus()
+    if (defaultInternetSearchOn) {
+      setWebSearch(true)
+    }
   }, [])
+
+  React.useEffect(() => {
+    if (defaultInternetSearchOn) {
+      setWebSearch(true)
+    }
+  }, [defaultInternetSearchOn])
 
   const onInputChange = async (
     e: React.ChangeEvent<HTMLInputElement> | File

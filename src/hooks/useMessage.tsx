@@ -55,7 +55,10 @@ export const useMessage = () => {
     setWebSearch,
     isSearchingInternet
   } = useStoreMessageOption()
-
+  const [defaultInternetSearchOn, ] = useStorage(
+    "defaultInternetSearchOn",
+    false
+  )
   const [chatWithWebsiteEmbedding] = useStorage(
     "chatWithWebsiteEmbedding",
     true
@@ -107,6 +110,9 @@ export const useMessage = () => {
     setIsProcessing(false)
     setStreaming(false)
     currentChatModelSettings.reset()
+    if(defaultInternetSearchOn) {
+      setWebSearch(true)
+    }
   }
 
   const chatWithWebsiteMode = async (
@@ -1714,6 +1720,7 @@ export const useMessage = () => {
     speechToTextLanguage,
     setSpeechToTextLanguage,
     useOCR,
-    setUseOCR
+    setUseOCR,
+    defaultInternetSearchOn
   }
 }

@@ -19,7 +19,8 @@ export const SearchModeSettings = () => {
       searxngURL: "",
       searxngJSONMode: false,
       braveApiKey: "",
-      googleDomain: ""
+      googleDomain: "",
+      defaultInternetSearchOn: false
     }
   })
 
@@ -171,6 +172,19 @@ export const SearchModeSettings = () => {
           </div>
         </div>
 
+        <div className="flex sm:flex-row flex-col space-y-4 sm:space-y-0 sm:justify-between">
+          <span className="text-gray-700 dark:text-neutral-50 ">
+            {t("generalSettings.webSearch.searchOnByDefault.label")}
+          </span>
+          <div>
+            <Switch
+              className="mt-4 sm:mt-0"
+              {...form.getInputProps("defaultInternetSearchOn", {
+                type: "checkbox"
+              })}
+            />
+          </div>
+        </div>
         <div className="flex justify-end">
           <SaveButton btnType="submit" />
         </div>

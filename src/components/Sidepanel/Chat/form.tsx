@@ -133,7 +133,8 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
     setSelectedQuickPrompt,
     speechToTextLanguage,
     useOCR,
-    setUseOCR
+    setUseOCR,
+    defaultInternetSearchOn
   } = useMessage()
 
   React.useEffect(() => {
@@ -194,11 +195,22 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
     }
     textareaRef.current?.addEventListener("drop", handleDrop)
     textareaRef.current?.addEventListener("dragover", handleDragOver)
+
+    if (defaultInternetSearchOn) {
+      setWebSearch(true)
+    }
+
     return () => {
       textareaRef.current?.removeEventListener("drop", handleDrop)
       textareaRef.current?.removeEventListener("dragover", handleDragOver)
     }
   }, [])
+
+  React.useEffect(() => {
+    if (defaultInternetSearchOn) {
+      setWebSearch(true)
+    }
+  }, [defaultInternetSearchOn])
 
   return (
     <div className="px-3 pt-3 md:px-6 md:pt-6 bg-gray-50 dark:bg-[#262626] border rounded-t-xl border-black/10 dark:border-gray-600">
@@ -302,7 +314,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                         chatMode === "rag" ? "hidden" : "block"
                       }`}>
                       {webSearch ? (
-                        <PiGlobe className="h-5 w-5  dark:text-gray-300" />
+                        <PiGlobe className="h-5 w-5 text-blue-600 dark:text-blue-400" />
                       ) : (
                         <PiGlobeX className="h-5 w-5 text-gray-600 dark:text-gray-400" />
                       )}

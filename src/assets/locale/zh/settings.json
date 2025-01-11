@@ -77,6 +77,9 @@
       "braveApi": {
         "label": "Brave API 密钥",
         "placeholder": "输入您的 Brave API 密钥"
+      },
+      "searchOnByDefault": {
+        "label": "默认开启网络搜索"
       }
     },
     "system": {
