@@ -213,7 +213,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
   }, [defaultInternetSearchOn])
 
   return (
-    <div className="px-3 pt-3 md:px-6 md:pt-6 bg-gray-50 dark:bg-[#262626] border rounded-t-xl border-black/10 dark:border-gray-600">
+    <div className="px-3 pt-3 md:px-6 md:pt-6 bg-white dark:bg-[#262626] border rounded-t-xl border-gray-300 dark:border-gray-600">
       <div
         className={`h-full rounded-md shadow relative ${
           form.values.image.length === 0 ? "hidden" : "block"
@@ -282,7 +282,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
               multiple={false}
               onChange={onInputChange}
             />
-            <div className="w-full border-x border-t flex flex-col dark:border-gray-600 rounded-t-xl p-2">
+            <div className="w-full border-x border-t border-gray-300 flex flex-col dark:border-gray-600 rounded-t-xl p-2">
               <textarea
                 onKeyDown={(e) => handleKeyDown(e)}
                 ref={textareaRef}
