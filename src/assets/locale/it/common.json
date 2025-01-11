@@ -116,5 +116,6 @@
     },
     "pin": "Fissa",
     "unpin": "Rimuovi",
-    "generationInfo": "Informazioni sulla Generazione"
+    "generationInfo": "Informazioni sulla Generazione",
+    "sidebarChat": "Chat Laterale"
 }

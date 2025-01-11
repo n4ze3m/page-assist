@@ -34,7 +34,6 @@ import { pageAssistModel } from "@/models"
 import { getPrompt } from "@/services/application"
 import { humanMessageFormatter } from "@/utils/human-message"
 import { pageAssistEmbeddingModel } from "@/models/embedding"
-import { PageAssistVectorStore } from "@/libs/PageAssistVectorStore"
 import { PAMemoryVectorStore } from "@/libs/PAMemoryVectorStore"
 import { getScreenshotFromCurrentTab } from "@/libs/get-screenshot"
 

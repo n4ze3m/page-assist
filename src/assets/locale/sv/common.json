@@ -121,5 +121,6 @@
     },
     "pin": "Fäst",
     "unpin": "Ta bort fäst",
-    "generationInfo": "Generationsinformation"
+    "generationInfo": "Generationsinformation",
+    "sidebarChat": "Sidofältschatt"
 }

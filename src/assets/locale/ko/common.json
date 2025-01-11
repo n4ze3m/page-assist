@@ -73,7 +73,8 @@
       "numPredict": {
         "label": "최대 토큰 수 (num_predict)",
         "placeholder": "최대 토큰 수를 입력하세요 (예: 2048, 4096)"
-      },      "seed": {
+      },
+      "seed": {
         "label": "시드",
         "placeholder": "시드 값을 입력하세요 (예: 1234)",
         "help": "모델 출력의 재현성"
@@ -115,5 +116,6 @@
   },
   "pin": "고정",
   "unpin": "고정 해제",
-  "generationInfo": "생성 정보"
+  "generationInfo": "생성 정보",
+  "sidebarChat": "사이드바 채팅"
 }

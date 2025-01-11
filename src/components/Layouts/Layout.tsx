@@ -11,6 +11,7 @@ import { EraserIcon } from "lucide-react"
 import { PageAssitDatabase } from "@/db"
 import { useMessageOption } from "@/hooks/useMessageOption"
 import { useQueryClient } from "@tanstack/react-query"
+import { useStoreChatModelSettings } from "@/store/model"
 
 export default function OptionLayout({
   children
@@ -20,8 +21,19 @@ export default function OptionLayout({
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const { t } = useTranslation(["option", "common", "settings"])
   const [openModelSettings, setOpenModelSettings] = useState(false)
-  const { clearChat } = useMessageOption()
+  const {
+    setMessages,
+    setHistory,
+    setHistoryId,
+    historyId,
+    clearChat,
+    setSelectedModel,
+    temporaryChat,
+    setSelectedSystemPrompt
+  } = useMessageOption()
+
   const queryClient = useQueryClient()
+  const { setSystemPrompt } = useStoreChatModelSettings()
 
   return (
     <>
@@ -70,7 +82,19 @@ export default function OptionLayout({
         closeIcon={null}
         onClose={() => setSidebarOpen(false)}
         open={sidebarOpen}>
-        <Sidebar onClose={() => setSidebarOpen(false)} />
+        <Sidebar
+          onClose={() => setSidebarOpen(false)}
+          setMessages={setMessages}
+          setHistory={setHistory}
+          setHistoryId={setHistoryId}
+          setSelectedModel={setSelectedModel}
+          setSelectedSystemPrompt={setSelectedSystemPrompt}
+          clearChat={clearChat}
+          historyId={historyId}
+          setSystemPrompt={setSystemPrompt}
+          temporaryChat={temporaryChat}
+          history={history}
+        />
       </Drawer>
 
       <CurrentChatModelSettings

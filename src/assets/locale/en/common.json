@@ -151,5 +151,6 @@
     },
     "pin": "Pin",
     "unpin": "Unpin",
-    "generationInfo": "Generation Info"
+    "generationInfo": "Generation Info",
+    "sidebarChat": "Sidebar Chat"
 }

@@ -116,5 +116,6 @@
     },
     "pin": "置顶",
     "unpin": "取消置顶",
-    "generationInfo": "生成信息"
+    "generationInfo": "生成信息",
+    "sidebarChat": "侧边栏聊天"
 }

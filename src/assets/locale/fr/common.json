@@ -116,5 +116,6 @@
     },
     "pin": "Épingler",
     "unpin": "Désépingler",
-    "generationInfo": "Informations de génération"
+    "generationInfo": "Informations de génération",
+    "sidebarChat": "Chat latéral"
 }
