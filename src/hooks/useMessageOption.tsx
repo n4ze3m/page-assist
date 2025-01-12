@@ -76,6 +76,10 @@ export const useMessageOption = () => {
   } = useStoreMessageOption()
   const currentChatModelSettings = useStoreChatModelSettings()
   const [selectedModel, setSelectedModel] = useStorage("selectedModel")
+  const [defaultInternetSearchOn, ] = useStorage(
+    "defaultInternetSearchOn",
+    false
+  )
   const [speechToTextLanguage, setSpeechToTextLanguage] = useStorage(
     "speechToTextLanguage",
     "en-US"
@@ -98,6 +102,9 @@ export const useMessageOption = () => {
     setStreaming(false)
     currentChatModelSettings.reset()
     textareaRef?.current?.focus()
+    if(defaultInternetSearchOn) {
+      setWebSearch(true)
+    }
   }
 
   const searchChatMode = async (
@@ -1198,6 +1205,7 @@ export const useMessageOption = () => {
     temporaryChat,
     setTemporaryChat,
     useOCR,
-    setUseOCR
+    setUseOCR,
+    defaultInternetSearchOn,
   }
 }

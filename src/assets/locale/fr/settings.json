@@ -74,6 +74,9 @@
       "braveApi": {
         "label": "Clé API Brave",
         "placeholder": "Entrez votre clé API Brave"
+      },
+      "searchOnByDefault": {
+        "label": "Recherche Internet activée par défaut"
       }
     },
     "system": {

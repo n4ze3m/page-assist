@@ -74,6 +74,9 @@
       "braveApi": {
         "label": "Brave API Nøkkel",
         "placeholder": "Skriv inn din Brave API nøkkel"
+      },
+      "searchOnByDefault": {
+        "label": "Internett-søk PÅ som standard"
       }
     },
     "system": {

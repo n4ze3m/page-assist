@@ -175,10 +175,11 @@ export const PageAssistSelect: React.FC<SelectProps> = ({
     flex items-center justify-between p-2.5 rounded-lg border
     ${disabled || isLoading ? "cursor-not-allowed opacity-50" : "cursor-pointer"}
     ${isOpen ? "ring-2 ring-blue-500" : ""}
-    bg-transparent border-gray-200 text-gray-900
+    bg-transparent border-gray-300 text-gray-900
     transition-all duration-200
     dark:text-white
     dark:border-[#353534]
+    bg-white dark:bg-[#171717]
   `
 
   const defaultDropdownClass = `

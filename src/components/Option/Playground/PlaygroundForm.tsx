@@ -39,7 +39,8 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
     selectedKnowledge,
     temporaryChat,
     useOCR,
-    setUseOCR
+    setUseOCR,
+    defaultInternetSearchOn
   } = useMessageOption()
 
   const isMobile = () => {
@@ -71,7 +72,16 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
 
   React.useEffect(() => {
     textAreaFocus()
+    if (defaultInternetSearchOn) {
+      setWebSearch(true)
+    }
   }, [])
+
+  React.useEffect(() => {
+    if (defaultInternetSearchOn) {
+      setWebSearch(true)
+    }
+  }, [defaultInternetSearchOn])
 
   const onInputChange = async (
     e: React.ChangeEvent<HTMLInputElement> | File
@@ -195,7 +205,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
   return (
     <div
       className={`px-3 pt-3 bg-gray-100 dark:bg-[#262626] border rounded-t-xl  dark:border-gray-600
-    ${temporaryChat && "!bg-gray-300 dark:!bg-black "}
+    ${temporaryChat && "!bg-gray-200 dark:!bg-black "}
     `}>
       <div
         className={`h-full rounded-md shadow relative ${
@@ -221,7 +231,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
       <div>
         <div
           className={`flex rounded-t-xl bg-white dark:bg-transparent ${
-            temporaryChat && "!bg-gray-300 dark:!bg-black"
+            temporaryChat && "!bg-gray-100 dark:!bg-black"
           }`}>
           <form
             onSubmit={form.onSubmit(async (value) => {

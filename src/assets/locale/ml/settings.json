@@ -77,6 +77,9 @@
       "braveApi": {
         "label": "ബ്രേവ് API കീ",
         "placeholder": "നിങ്ങളുടെ ബ്രേവ് API കീ നൽകുക"
+      },
+      "searchOnByDefault": {
+        "label": "സ്ഥിരസ്ഥിതിയായി ഇന്റർനെറ്റ് തിരച്ചിൽ പ്രവർത്തനക്ഷമമാക്കുക"
       }
     },
     "system": {

@@ -77,6 +77,9 @@
       "braveApi": {
         "label": "Brave APIキー",
         "placeholder": "Brave APIキーを入力してください"
+      },
+      "searchOnByDefault": {
+        "label": "デフォルトでインターネット検索をオンにする"
       }
     },
     "system": {

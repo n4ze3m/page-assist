@@ -34,7 +34,6 @@ import { pageAssistModel } from "@/models"
 import { getPrompt } from "@/services/application"
 import { humanMessageFormatter } from "@/utils/human-message"
 import { pageAssistEmbeddingModel } from "@/models/embedding"
-import { PageAssistVectorStore } from "@/libs/PageAssistVectorStore"
 import { PAMemoryVectorStore } from "@/libs/PAMemoryVectorStore"
 import { getScreenshotFromCurrentTab } from "@/libs/get-screenshot"
 
@@ -56,7 +55,10 @@ export const useMessage = () => {
     setWebSearch,
     isSearchingInternet
   } = useStoreMessageOption()
-
+  const [defaultInternetSearchOn, ] = useStorage(
+    "defaultInternetSearchOn",
+    false
+  )
   const [chatWithWebsiteEmbedding] = useStorage(
     "chatWithWebsiteEmbedding",
     true
@@ -108,6 +110,9 @@ export const useMessage = () => {
     setIsProcessing(false)
     setStreaming(false)
     currentChatModelSettings.reset()
+    if(defaultInternetSearchOn) {
+      setWebSearch(true)
+    }
   }
 
   const chatWithWebsiteMode = async (
@@ -1715,6 +1720,7 @@ export const useMessage = () => {
     speechToTextLanguage,
     setSpeechToTextLanguage,
     useOCR,
-    setUseOCR
+    setUseOCR,
+    defaultInternetSearchOn
   }
 }

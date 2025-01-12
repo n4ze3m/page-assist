@@ -117,5 +117,6 @@
     },
     "pin": "Anheften",
     "unpin": "Losheften",
-    "generationInfo": "Generierungsinformationen"
+    "generationInfo": "Generierungsinformationen",
+    "sidebarChat": "Seitenleisten-Chat"
 }

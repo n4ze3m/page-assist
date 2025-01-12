@@ -71,6 +71,9 @@
       "braveApi": {
         "label": "کلید API بریو",
         "placeholder": "کلید API بریو خود را وارد کنید"
+      },
+      "searchOnByDefault": {
+        "label": "جستجوی اینترنتی به صورت پیش‌فرض فعال باشد"
       }
     },
     "system": {

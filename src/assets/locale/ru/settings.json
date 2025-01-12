@@ -75,6 +75,9 @@
       "braveApi": {
         "label": "API-ключ Brave",
         "placeholder": "Введите ваш API-ключ Brave"
+      },
+      "searchOnByDefault": {
+        "label": "Поиск в интернете включен по умолчанию"
       }
     },
     "system": {

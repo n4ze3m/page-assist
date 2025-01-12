@@ -117,5 +117,6 @@
     },
     "pin": "Fest",
     "unpin": "Løsne",
-    "generationInfo": "Generasjonsinformasjon"
+    "generationInfo": "Generasjonsinformasjon",
+    "sidebarChat": "Sidepanel-chat"
 }

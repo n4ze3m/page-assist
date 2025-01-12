@@ -8,14 +8,14 @@ import {
   pinHistory,
   getPromptById
 } from "@/db"
-import { Empty, Skeleton, Dropdown, Menu } from "antd"
-import { useMessageOption } from "~/hooks/useMessageOption"
+import { Empty, Skeleton, Dropdown, Menu, Tooltip } from "antd"
 import {
   PencilIcon,
   Trash2,
   MoreVertical,
   PinIcon,
-  PinOffIcon
+  PinOffIcon,
+  BotIcon
 } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { useTranslation } from "react-i18next"
@@ -24,26 +24,33 @@ import {
   getLastUsedChatSystemPrompt,
   lastUsedChatModelEnabled
 } from "@/services/model-settings"
-import { useStoreChatModelSettings } from "@/store/model"
 
 type Props = {
   onClose: () => void
+  setMessages: (messages: any) => void
+  setHistory: (history: any) => void
+  setHistoryId: (historyId: string) => void
+  setSelectedModel: (model: string) => void
+  setSelectedSystemPrompt: (prompt: string) => void
+  setSystemPrompt: (prompt: string) => void
+  clearChat: () => void
+  temporaryChat: boolean
+  historyId: string
+  history: any
 }
 
-export const Sidebar = ({ onClose }: Props) => {
-  const {
-    setMessages,
-    setHistory,
-    setHistoryId,
-    historyId,
-    clearChat,
-    setSelectedModel,
-    temporaryChat,
-    setSelectedSystemPrompt
-  } = useMessageOption()
-
-  const { setSystemPrompt } = useStoreChatModelSettings()
-
+export const Sidebar = ({
+  onClose,
+  setMessages,
+  setHistory,
+  setHistoryId,
+  setSelectedModel,
+  setSelectedSystemPrompt,
+  clearChat,
+  historyId,
+  setSystemPrompt,
+  temporaryChat
+}: Props) => {
   const { t } = useTranslation(["option", "common"])
   const client = useQueryClient()
   const navigate = useNavigate()
@@ -162,7 +169,12 @@ export const Sidebar = ({ onClose }: Props) => {
                 {group.items.map((chat, index) => (
                   <div
                     key={index}
-                    className="flex py-2 px-2 items-start gap-3 relative rounded-md truncate hover:pr-4 group transition-opacity duration-300 ease-in-out bg-gray-100 dark:bg-[#232222] dark:text-gray-100 text-gray-800 border hover:bg-gray-200 dark:hover:bg-[#2d2d2d] dark:border-gray-800">
+                    className="flex py-2 px-2 items-center gap-3 relative rounded-md truncate hover:pr-4 group transition-opacity duration-300 ease-in-out bg-gray-100 dark:bg-[#232222] dark:text-gray-100 text-gray-800 border hover:bg-gray-200 dark:hover:bg-[#2d2d2d] dark:border-gray-800">
+                    {chat?.message_source === "copilot" && (
+                      <Tooltip title={t("common:sidebarChat")} placement="top">
+                        <BotIcon className="size-3 text-green-500" />
+                      </Tooltip>
+                    )}
                     <button
                       className="flex-1 overflow-hidden break-all text-start truncate w-full"
                       onClick={async () => {
