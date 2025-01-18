@@ -21,6 +21,9 @@
       "copilotResumeLastChat": {
         "label": "آخرین گفتگو را هنگام باز کردن SidePanel (Copilot) از سر بگیر"
       },
+      "turnOnChatWithWebsite": {
+        "label": "فعال کردن گپ با وب سایت به صورت پیش‌فرض (کوپایلوت)"
+      },
       "hideCurrentChatModelSettings": {
         "label": "مخفی کردن تنظیمات مدل گپ فعلی را"
       },

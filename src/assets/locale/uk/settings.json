@@ -21,6 +21,9 @@
       "copilotResumeLastChat": {
         "label": "Поновити останню розмову при відкритті бічної панелі (Copilot)"
       },
+      "turnOnChatWithWebsite": {
+        "label": "Увімкнути чат з веб-сайтом за замовчуванням (Copilot)"
+      },
       "webUIResumeLastChat": {
         "label": "Поновити останню розмову при відкритті веб-інтерфейсу"
       },

@@ -21,6 +21,9 @@
       "copilotResumeLastChat": {
         "label": "Återuppta den senaste chatten när du öppnar sidopanelen (Copilot)"
       },
+      "turnOnChatWithWebsite": {
+        "label": "Aktivera Chatta med Webbplats som standard (Copilot)"
+      },
       "webUIResumeLastChat": {
         "label": "Återuppta den senaste chatten när du öppnar webbgränssnittet"
       },

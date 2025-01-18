@@ -21,6 +21,9 @@
       "copilotResumeLastChat": {
         "label": "استئناف آخر محادثة عند فتح اللوحة الجانبية (كوبيلوت)"
       },
+      "turnOnChatWithWebsite": {
+        "label": "تمكين الدردشة مع الموقع بشكل افتراضي (كوبيلوت)"
+      },
       "webUIResumeLastChat": {
         "label": "استئناف آخر محادثة عند فتح واجهة المستخدم"
       },

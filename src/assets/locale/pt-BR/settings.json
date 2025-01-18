@@ -21,6 +21,9 @@
       "copilotResumeLastChat": {
         "label": "Retomar o último chat ao abrir o Painel Lateral (Copilot)"
       },
+      "turnOnChatWithWebsite": {
+        "label": "Ativar Chat com o Site por padrão (Copilot)"
+      },
       "webUIResumeLastChat": {
         "label": "Retomar o último chat ao abrir a Interface Web"
       },

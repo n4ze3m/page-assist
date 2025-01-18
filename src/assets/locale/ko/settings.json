@@ -24,6 +24,9 @@
       "copilotResumeLastChat": {
         "label": "사이드 패널을 열 때 마지막 채팅 재개 (Copilot)"
       },
+      "turnOnChatWithWebsite": {
+        "label": "웹사이트와의 채팅 기본 활성화 (Copilot)"
+      },
       "webUIResumeLastChat": {
         "label": "웹 UI를 열 때 마지막 채팅 재개"
       },

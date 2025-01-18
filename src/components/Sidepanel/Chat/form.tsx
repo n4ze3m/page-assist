@@ -134,7 +134,8 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
     speechToTextLanguage,
     useOCR,
     setUseOCR,
-    defaultInternetSearchOn
+    defaultInternetSearchOn,
+    defaultChatWithWebsite
   } = useMessage()
 
   React.useEffect(() => {
@@ -200,6 +201,10 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
       setWebSearch(true)
     }
 
+    if (defaultChatWithWebsite) {
+      setChatMode("rag")
+    }
+
     return () => {
       textareaRef.current?.removeEventListener("drop", handleDrop)
       textareaRef.current?.removeEventListener("dragover", handleDragOver)
@@ -211,6 +216,12 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
       setWebSearch(true)
     }
   }, [defaultInternetSearchOn])
+
+  React.useEffect(() => {
+    if (defaultChatWithWebsite) {
+      setChatMode("rag")
+    }
+  }, [defaultChatWithWebsite])
 
   return (
     <div className="px-3 pt-3 md:px-6 md:pt-6 bg-white dark:bg-[#262626] border rounded-t-xl border-gray-300 dark:border-gray-600">

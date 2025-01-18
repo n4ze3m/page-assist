@@ -24,6 +24,9 @@
       "copilotResumeLastChat": {
         "label": "サイドパネルを開いたときに最後のチャットを再開 (Copilot)"
       },
+      "turnOnChatWithWebsite": {
+        "label": "デフォルトでウェブサイトとのチャットを有効にする (Copilot)"
+      },
       "webUIResumeLastChat": {
         "label": "Web UIを開いたときに最後のチャットを再開"
       },

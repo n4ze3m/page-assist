@@ -21,6 +21,9 @@
       "copilotResumeLastChat": {
         "label": "Letzten Chat beim Öffnen des Seitenpanels fortsetzen (Copilot)"
       },
+      "turnOnChatWithWebsite": {
+        "label": "Chat mit Website standardmäßig aktivieren (Copilot)"
+      },
       "webUIResumeLastChat": {
         "label": "Letzten Chat beim Öffnen der Web-UI fortsetzen"
       },
