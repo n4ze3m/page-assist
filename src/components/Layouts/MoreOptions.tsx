@@ -11,6 +11,7 @@ import { Message } from "@/types/message"
 import { useState } from "react"
 import { ShareModal } from "../Common/ShareModal"
 import { useTranslation } from "react-i18next"
+import { removeModelSuffix } from "@/db/models"
 
 interface MoreOptionsProps {
   messages: Message[]
@@ -25,11 +26,10 @@ const formatAsText = (messages: Message[]) => {
     })
     .join("\n\n")
 }
-
 const formatAsMarkdown = (messages: Message[]) => {
   return messages
     .map((msg) => {
-      let content = `**${msg.isBot ? msg.name : "You"}**:\n${msg.message}`
+      let content = `**${msg.isBot ? removeModelSuffix(msg.name?.replaceAll(/accounts\/[^\/]+\/models\//g, "")) : "You"}**:\n${msg.message}`
 
       if (msg.images && msg.images.length > 0) {
         const imageMarkdown = msg.images
@@ -119,7 +119,6 @@ const generateChatImage = async (messages: Message[]) => {
     }
 
     totalHeight += 30
-
   })
 
   canvas.height = totalHeight
@@ -132,7 +131,7 @@ const generateChatImage = async (messages: Message[]) => {
     for (const msg of messages) {
       ctx.font = "bold 18px Inter, Arial"
       ctx.fillStyle = msg.isBot ? "#1A202C" : "#1E4E8C"
-      ctx.fillText(`${msg.isBot ? msg.name : "You"}:`, padding, yPosition)
+      ctx.fillText(`${msg.isBot ? removeModelSuffix(msg.name?.replaceAll(/accounts\/[^\/]+\/models\//g, ""))  : "You"}:`, padding, yPosition)
       yPosition += 35
 
       if (msg.message.includes("```")) {
