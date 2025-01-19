@@ -53,5 +53,10 @@ export const OAI_API_PROVIDERS = [
         label: "Mistral",
         value: "mistral",
         baseUrl: "https://api.mistral.ai/v1"
+    },
+    {
+        label: "DeepSeek",
+        value: "deepseek",
+        baseUrl: "https://api.deepseek.com"
     }
 ]

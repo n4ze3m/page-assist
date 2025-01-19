@@ -9,6 +9,7 @@ import { OpenRouterIcon } from "../Icons/OpenRouter"
 import { LLamaFile } from "../Icons/Llamafile"
 import { GeminiIcon } from "../Icons/GeminiIcon"
 import { MistarlIcon } from "../Icons/Mistral"
+import { DeepSeekIcon } from "../Icons/DeepSeek"
 
 export const ProviderIcons = ({
   provider,
@@ -40,6 +41,8 @@ export const ProviderIcons = ({
       return <GeminiIcon className={className} />
     case "mistral":
       return <MistarlIcon className={className} />
+    case "deepseek":
+      return <DeepSeekIcon  className={className} />
     default:
       return <OllamaIcon className={className} />
   }
