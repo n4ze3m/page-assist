@@ -21,6 +21,9 @@
       "copilotResumeLastChat": {
         "label": "Resume the last chat when opening the SidePanel (Copilot)"
       },
+      "turnOnChatWithWebsite": {
+        "label": "Enable Chat with Website by default (Copilot)"
+      },
       "webUIResumeLastChat": {
         "label": "Resume the last chat when opening the Web UI"
       },

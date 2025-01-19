@@ -21,7 +21,8 @@
             "group": "Download",
             "text": "Text File (.txt)",
             "markdown": "Markdown (.md)",
-            "json": "JSON File (.json)"
+            "json": "JSON File (.json)",
+            "image": "Image (.png)"
         },
         "share": "Share"
     }

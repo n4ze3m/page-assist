@@ -31,6 +31,10 @@ export const GeneralSettings = () => {
     "webUIResumeLastChat",
     false
   )
+  const [defaultChatWithWebsite, setDefaultChatWithWebsite] = useStorage(
+    "defaultChatWithWebsite",
+    false
+  )
 
   const [restoreLastChatModel, setRestoreLastChatModel] = useStorage(
     "restoreLastChatModel",
@@ -116,6 +120,17 @@ export const GeneralSettings = () => {
         <Switch
           checked={copilotResumeLastChat}
           onChange={(checked) => setCopilotResumeLastChat(checked)}
+        />
+      </div>
+      <div className="flex flex-row justify-between">
+        <div className="inline-flex items-center gap-2">
+          <span className="text-gray-700   dark:text-neutral-50">
+            {t("generalSettings.settings.turnOnChatWithWebsite.label")}
+          </span>
+        </div>
+        <Switch
+          checked={defaultChatWithWebsite}
+          onChange={(checked) => setDefaultChatWithWebsite(checked)}
         />
       </div>
       <div className="flex flex-row justify-between">
@@ -220,7 +235,7 @@ export const GeneralSettings = () => {
           </h2>
           <div className="border border-b border-gray-200 dark:border-gray-600 mt-3"></div>
         </div>
-       
+
         <div className="flex flex-row mb-3 justify-between">
           <span className="text-gray-700 dark:text-neutral-50 ">
             {t("generalSettings.system.export.label")}

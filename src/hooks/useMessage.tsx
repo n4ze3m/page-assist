@@ -59,6 +59,11 @@ export const useMessage = () => {
     "defaultInternetSearchOn",
     false
   )
+
+  const [
+    defaultChatWithWebsite,
+  ] = useStorage("defaultChatWithWebsite", false)
+
   const [chatWithWebsiteEmbedding] = useStorage(
     "chatWithWebsiteEmbedding",
     true
@@ -112,6 +117,9 @@ export const useMessage = () => {
     currentChatModelSettings.reset()
     if(defaultInternetSearchOn) {
       setWebSearch(true)
+    }
+    if(defaultChatWithWebsite) {
+      setChatMode("rag")
     }
   }
 
@@ -1721,6 +1729,7 @@ export const useMessage = () => {
     setSpeechToTextLanguage,
     useOCR,
     setUseOCR,
-    defaultInternetSearchOn
+    defaultInternetSearchOn,
+    defaultChatWithWebsite
   }
 }
