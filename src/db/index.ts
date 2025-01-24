@@ -32,6 +32,7 @@ type Message = {
   sources?: string[]
   search?: WebSearch
   createdAt: number
+  reasoning_time_taken?: number
   messageType?: string
   generationInfo?: any
 }
@@ -256,7 +257,8 @@ export const saveMessage = async (
   source?: any[],
   time?: number,
   message_type?: string,
-  generationInfo?: any
+  generationInfo?: any,
+  reasoning_time_taken?: number
 ) => {
   const id = generateID()
   let createdAt = Date.now()
@@ -273,7 +275,8 @@ export const saveMessage = async (
     createdAt,
     sources: source,
     messageType: message_type,
-    generationInfo: generationInfo
+    generationInfo: generationInfo,
+    reasoning_time_taken
   }
   const db = new PageAssitDatabase()
   await db.addMessage(message)
@@ -303,6 +306,7 @@ export const formatToMessage = (messages: MessageHistory): MessageType[] => {
       sources: message?.sources || [],
       images: message.images || [],
       generationInfo: message?.generationInfo,
+      reasoning_time_taken: message?.reasoning_time_taken
     }
   })
 }

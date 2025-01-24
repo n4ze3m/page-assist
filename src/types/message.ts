@@ -17,4 +17,5 @@ export type Message = {
   messageType?: string
   id?: string
   generationInfo?: any
+  reasoning_time_taken?: number
 }

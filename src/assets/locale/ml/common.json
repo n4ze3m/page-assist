@@ -116,6 +116,9 @@
     "pin": "പിൻ ചെയ്യുക",
     "unpin": "അൺപിൻ ചെയ്യുക",
     "generationInfo": "ജനറേഷൻ വിവരങ്ങൾ",
-    "sidebarChat": "സൈഡ്ബാർ ചാറ്റ്"
-
+    "sidebarChat": "സൈഡ്ബാർ ചാറ്റ്",
+    "reasoning": {
+        "thinking": "ചിന്തിക്കുന്നു....",
+        "thought": "{{time}} നേരത്തെ ചിന്ത"
+    }
 }

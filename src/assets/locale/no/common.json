@@ -118,5 +118,9 @@
     "pin": "Fest",
     "unpin": "Løsne",
     "generationInfo": "Generasjonsinformasjon",
-    "sidebarChat": "Sidepanel-chat"
+    "sidebarChat": "Sidepanel-chat",
+    "reasoning": {
+        "thinking": "Tenker....",
+        "thought": "Tenkte i {{time}}"
+    }
 }

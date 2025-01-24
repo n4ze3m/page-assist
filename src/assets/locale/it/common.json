@@ -117,5 +117,9 @@
     "pin": "Fissa",
     "unpin": "Rimuovi",
     "generationInfo": "Informazioni sulla Generazione",
-    "sidebarChat": "Chat Laterale"
+    "sidebarChat": "Chat Laterale",
+    "reasoning": {
+        "thinking": "Pensando....",
+        "thought": "Pensato per {{time}}"
+    }
 }

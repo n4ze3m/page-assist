@@ -122,5 +122,9 @@
     "pin": "Fäst",
     "unpin": "Ta bort fäst",
     "generationInfo": "Generationsinformation",
-    "sidebarChat": "Sidofältschatt"
+    "sidebarChat": "Sidofältschatt",
+    "reasoning": {
+        "thinking": "Tänker....",
+        "thought": "Tänkte i {{time}}"
+    }
 }

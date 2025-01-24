@@ -152,5 +152,9 @@
     "pin": "Pin",
     "unpin": "Unpin",
     "generationInfo": "Generation Info",
-    "sidebarChat": "Sidebar Chat"
+    "sidebarChat": "Sidebar Chat",
+    "reasoning": {
+        "thinking": "Thinking....",
+        "thought": "Thought for {{time}}"
+    }
 }

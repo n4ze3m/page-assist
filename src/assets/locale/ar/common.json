@@ -125,5 +125,9 @@
     "pin": "تثبيت",
     "unpin": "إلغاء التثبيت",
     "generationInfo": "معلومات التوليد",
-    "sidebarChat": "دردشة الشريط الجانبي"
+    "sidebarChat": "دردشة الشريط الجانبي",
+    "reasoning": {
+        "thinking": "جاري التفكير....",
+        "thought": "فكر لمدة {{time}}"
+    }
 }

@@ -55,6 +55,8 @@ export const PlaygroundChat = () => {
             }}
             isTTSEnabled={ttsEnabled}
             generationInfo={message?.generationInfo}
+            isStreaming={streaming}
+            reasoningTimeTaken={message?.reasoning_time_taken}
           />
         ))}
         {messages.length > 0 && (

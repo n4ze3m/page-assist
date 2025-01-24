@@ -48,6 +48,8 @@ export const SidePanelBody = () => {
           }}
           isTTSEnabled={ttsEnabled}
           generationInfo={message?.generationInfo}
+          isStreaming={streaming}
+          reasoningTimeTaken={message?.reasoning_time_taken}
         />
       ))}
       <div className="w-full h-48 flex-shrink-0"></div>

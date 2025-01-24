@@ -117,5 +117,9 @@
     "pin": "Fijar",
     "unpin": "Desfijar",
     "generationInfo": "Información de Generación",
-    "sidebarChat": "Chat lateral"
+    "sidebarChat": "Chat lateral",
+    "reasoning": {
+        "thinking": "Pensando....",
+        "thought": "Pensamiento por {{time}}"
+    }
 }

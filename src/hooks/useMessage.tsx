@@ -36,6 +36,7 @@ import { humanMessageFormatter } from "@/utils/human-message"
 import { pageAssistEmbeddingModel } from "@/models/embedding"
 import { PAMemoryVectorStore } from "@/libs/PAMemoryVectorStore"
 import { getScreenshotFromCurrentTab } from "@/libs/get-screenshot"
+import { isReasoningEnded, isReasoningStarted, removeReasoning } from "@/libs/reasoning"
 
 export const useMessage = () => {
   const {
@@ -55,14 +56,9 @@ export const useMessage = () => {
     setWebSearch,
     isSearchingInternet
   } = useStoreMessageOption()
-  const [defaultInternetSearchOn, ] = useStorage(
-    "defaultInternetSearchOn",
-    false
-  )
+  const [defaultInternetSearchOn] = useStorage("defaultInternetSearchOn", false)
 
-  const [
-    defaultChatWithWebsite,
-  ] = useStorage("defaultChatWithWebsite", false)
+  const [defaultChatWithWebsite] = useStorage("defaultChatWithWebsite", false)
 
   const [chatWithWebsiteEmbedding] = useStorage(
     "chatWithWebsiteEmbedding",
@@ -115,10 +111,10 @@ export const useMessage = () => {
     setIsProcessing(false)
     setStreaming(false)
     currentChatModelSettings.reset()
-    if(defaultInternetSearchOn) {
+    if (defaultInternetSearchOn) {
       setWebSearch(true)
     }
-    if(defaultChatWithWebsite) {
+    if (defaultChatWithWebsite) {
       setChatMode("rag")
     }
   }
@@ -329,6 +325,7 @@ export const useMessage = () => {
         })
         const response = await questionOllama.invoke(promptForQuestion)
         query = response.content.toString()
+        query = removeReasoning(query)
       }
 
       let context: string = ""
@@ -413,18 +410,36 @@ export const useMessage = () => {
         }
       )
       let count = 0
+      let reasoningStartTime: Date | null = null
+      let reasoningEndTime: Date | null = null
+      let timetaken = 0
       for await (const chunk of chunks) {
         contentToSave += chunk?.content
         fullText += chunk?.content
         if (count === 0) {
           setIsProcessing(true)
         }
+        if (isReasoningStarted(fullText) && !reasoningStartTime) {
+          reasoningStartTime = new Date()
+        }
+
+        if (
+          reasoningStartTime &&
+          !reasoningEndTime &&
+          isReasoningEnded(fullText)
+        ) {
+          reasoningEndTime = new Date()
+          const reasoningTime =
+            reasoningEndTime.getTime() - reasoningStartTime.getTime()
+          timetaken = reasoningTime
+        }
         setMessages((prev) => {
           return prev.map((message) => {
             if (message.id === generateMessageId) {
               return {
                 ...message,
-                message: fullText + "▋"
+                message: fullText + "▋",
+                reasoning_time_taken: timetaken
               }
             }
             return message
@@ -440,7 +455,8 @@ export const useMessage = () => {
               ...message,
               message: fullText,
               sources: source,
-              generationInfo
+              generationInfo,
+              reasoning_time_taken: timetaken
             }
           }
           return message
@@ -470,7 +486,8 @@ export const useMessage = () => {
         fullText,
         source,
         message_source: "copilot",
-        generationInfo
+        generationInfo,
+        reasoning_time_taken: timetaken
       })
 
       setIsProcessing(false)
@@ -664,18 +681,36 @@ export const useMessage = () => {
         }
       )
       let count = 0
+      let reasoningStartTime: Date | undefined = undefined
+      let reasoningEndTime: Date | undefined = undefined
+      let timetaken = 0
       for await (const chunk of chunks) {
         contentToSave += chunk?.content
         fullText += chunk?.content
         if (count === 0) {
           setIsProcessing(true)
         }
+        if (isReasoningStarted(fullText) && !reasoningStartTime) {
+          reasoningStartTime = new Date()
+        }
+
+        if (
+          reasoningStartTime &&
+          !reasoningEndTime &&
+          isReasoningEnded(fullText)
+        ) {
+          reasoningEndTime = new Date()
+          const reasoningTime =
+            reasoningEndTime.getTime() - reasoningStartTime.getTime()
+          timetaken = reasoningTime
+        }
         setMessages((prev) => {
           return prev.map((message) => {
             if (message.id === generateMessageId) {
               return {
                 ...message,
-                message: fullText + "▋"
+                message: fullText + "▋",
+                reasoning_time_taken: timetaken
               }
             }
             return message
@@ -689,7 +724,8 @@ export const useMessage = () => {
             return {
               ...message,
               message: fullText,
-              generationInfo
+              generationInfo,
+              reasoning_time_taken: timetaken
             }
           }
           return message
@@ -718,7 +754,8 @@ export const useMessage = () => {
         fullText,
         source: [],
         message_source: "copilot",
-        generationInfo
+        generationInfo,
+        reasoning_time_taken: timetaken
       })
 
       setIsProcessing(false)
@@ -914,18 +951,37 @@ export const useMessage = () => {
         }
       )
       let count = 0
+      let reasoningStartTime: Date | null = null
+      let reasoningEndTime: Date | null = null
+      let timetaken = 0
+
       for await (const chunk of chunks) {
         contentToSave += chunk?.content
         fullText += chunk?.content
         if (count === 0) {
           setIsProcessing(true)
         }
+        if (isReasoningStarted(fullText) && !reasoningStartTime) {
+          reasoningStartTime = new Date()
+        }
+
+        if (
+          reasoningStartTime &&
+          !reasoningEndTime &&
+          isReasoningEnded(fullText)
+        ) {
+          reasoningEndTime = new Date()
+          const reasoningTime =
+            reasoningEndTime.getTime() - reasoningStartTime.getTime()
+          timetaken = reasoningTime
+        }
         setMessages((prev) => {
           return prev.map((message) => {
             if (message.id === generateMessageId) {
               return {
                 ...message,
-                message: fullText + "▋"
+                message: fullText + "▋",
+                reasoning_time_taken: timetaken
               }
             }
             return message
@@ -940,7 +996,8 @@ export const useMessage = () => {
             return {
               ...message,
               message: fullText,
-              generationInfo
+              generationInfo,
+              reasoning_time_taken: timetaken
             }
           }
           return message
@@ -970,7 +1027,8 @@ export const useMessage = () => {
         fullText,
         source: [],
         message_source: "copilot",
-        generationInfo
+        generationInfo,
+        reasoning_time_taken: timetaken
       })
 
       setIsProcessing(false)
@@ -1158,6 +1216,7 @@ export const useMessage = () => {
         })
         const response = await questionOllama.invoke(promptForQuestion)
         query = response.content.toString()
+        query = removeReasoning(query)
       }
 
       const { prompt, source } = await getSystemPromptForWeb(query)
@@ -1221,18 +1280,37 @@ export const useMessage = () => {
         }
       )
       let count = 0
+      let timetaken = 0
+      let reasoningStartTime: Date | undefined = undefined
+      let reasoningEndTime: Date | undefined = undefined
       for await (const chunk of chunks) {
         contentToSave += chunk?.content
         fullText += chunk?.content
         if (count === 0) {
           setIsProcessing(true)
         }
+
+        if (isReasoningStarted(fullText) && !reasoningStartTime) {
+          reasoningStartTime = new Date()
+        }
+
+        if (
+          reasoningStartTime &&
+          !reasoningEndTime &&
+          isReasoningEnded(fullText)
+        ) {
+          reasoningEndTime = new Date()
+          const reasoningTime =
+            reasoningEndTime.getTime() - reasoningStartTime.getTime()
+          timetaken = reasoningTime
+        }
         setMessages((prev) => {
           return prev.map((message) => {
             if (message.id === generateMessageId) {
               return {
                 ...message,
-                message: fullText + "▋"
+                message: fullText + "▋",
+                reasoning_time_taken: timetaken
               }
             }
             return message
@@ -1248,7 +1326,8 @@ export const useMessage = () => {
               ...message,
               message: fullText,
               sources: source,
-              generationInfo
+              generationInfo,
+              reasoning_time_taken: timetaken
             }
           }
           return message
@@ -1277,7 +1356,8 @@ export const useMessage = () => {
         image,
         fullText,
         source,
-        generationInfo
+        generationInfo,
+        reasoning_time_taken: timetaken
       })
 
       setIsProcessing(false)
@@ -1448,18 +1528,36 @@ export const useMessage = () => {
         ]
       })
       let count = 0
+      let reasoningStartTime: Date | null = null
+      let reasoningEndTime: Date | null = null
+      let timetaken = 0
       for await (const chunk of chunks) {
         contentToSave += chunk?.content
         fullText += chunk?.content
         if (count === 0) {
           setIsProcessing(true)
         }
+        if (isReasoningStarted(fullText) && !reasoningStartTime) {
+          reasoningStartTime = new Date()
+        }
+
+        if (
+          reasoningStartTime &&
+          !reasoningEndTime &&
+          isReasoningEnded(fullText)
+        ) {
+          reasoningEndTime = new Date()
+          const reasoningTime =
+            reasoningEndTime.getTime() - reasoningStartTime.getTime()
+          timetaken = reasoningTime
+        }
         setMessages((prev) => {
           return prev.map((message) => {
             if (message.id === generateMessageId) {
               return {
                 ...message,
-                message: fullText + "▋"
+                message: fullText + "▋",
+                reasoning_time_taken: timetaken
               }
             }
             return message
@@ -1474,7 +1572,8 @@ export const useMessage = () => {
             return {
               ...message,
               message: fullText,
-              generationInfo
+              generationInfo,
+              reasoning_time_taken: timetaken
             }
           }
           return message
@@ -1506,7 +1605,8 @@ export const useMessage = () => {
         source: [],
         message_source: "copilot",
         message_type: messageType,
-        generationInfo
+        generationInfo,
+        reasoning_time_taken: timetaken
       })
 
       setIsProcessing(false)
