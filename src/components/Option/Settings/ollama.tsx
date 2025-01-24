@@ -15,9 +15,14 @@ export const SettingsOllama = () => {
   const { status } = useQuery({
     queryKey: ["fetchOllamURL"],
     queryFn: async () => {
-      const [ollamaURL] = await Promise.all([getOllamaURL()])
-      setOllamaURL(ollamaURL)
-      return {}
+      try {
+        const [ollamaURL] = await Promise.all([getOllamaURL()])
+        setOllamaURL(ollamaURL)
+        return {}
+      } catch (e) {
+        console.error(e)
+        return {}
+      }
     }
   })
 
