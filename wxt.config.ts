@@ -91,7 +91,7 @@ export default defineConfig({
         {
           extension_pages:
             "script-src 'self' 'wasm-unsafe-eval'; object-src 'self';"
-        } : undefined,
+        } :  "script-src 'self' 'wasm-unsafe-eval' blob:; object-src 'self'; worker-src 'self' blob:;",
     permissions:
       process.env.TARGET === "firefox"
         ? firefoxMV2Permissions

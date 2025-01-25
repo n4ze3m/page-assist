@@ -122,7 +122,6 @@ const generateChatImage = async (messages: Message[]) => {
   })
 
   canvas.height = totalHeight
-  console.log(totalHeight)
 
   ctx.fillStyle = "#ffffff"
   ctx.fillRect(0, 0, canvas.width, canvas.height)

@@ -3,6 +3,7 @@ import { Storage } from "@plasmohq/storage"
 import { getOllamaURL } from "./ollama"
 import { cleanUrl } from "@/libs/clean-url"
 import { HumanMessage } from "langchain/schema"
+import { removeReasoning } from "@/libs/reasoning"
 const storage = new Storage()
 
 // this prompt is copied from the OpenWebUI codebase
@@ -64,9 +65,9 @@ export const generateTitle = async (model: string, query: string, fallBackTitle:
             })
         ])
 
-        return title.content.toString()
+        return removeReasoning(title.content.toString())
     } catch (error) {
-        console.log(`Error generating title: ${error}`)
+        console.error(`Error generating title: ${error}`)
         return fallBackTitle
     }
 }

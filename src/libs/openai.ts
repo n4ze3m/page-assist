@@ -41,9 +41,9 @@ export const getAllOpenAIModels = async (baseUrl: string, apiKey?: string) => {
     return data.data
   } catch (e) {
     if (e instanceof DOMException && e.name === 'AbortError') {
-      console.log('Request timed out')
+      console.error('Request timed out')
     } else {
-      console.log(e)
+      console.error(e)
     }
     return []
   }

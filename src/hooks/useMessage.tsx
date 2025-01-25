@@ -402,7 +402,7 @@ export const useMessage = () => {
                 try {
                   generationInfo = output?.generations?.[0][0]?.generationInfo
                 } catch (e) {
-                  console.log("handleLLMEnd error", e)
+                  console.error("handleLLMEnd error", e)
                 }
               }
             }
@@ -618,11 +618,7 @@ export const useMessage = () => {
       const applicationChatHistory = []
 
       const data = await getScreenshotFromCurrentTab()
-      console.log(
-        data?.success
-          ? `[PageAssist] Screenshot is taken`
-          : `[PageAssist] Screenshot is not taken`
-      )
+     
       const visionImage = data?.screenshot || ""
 
       if (visionImage === "") {
@@ -673,7 +669,7 @@ export const useMessage = () => {
                 try {
                   generationInfo = output?.generations?.[0][0]?.generationInfo
                 } catch (e) {
-                  console.log("handleLLMEnd error", e)
+                  console.error("handleLLMEnd error", e)
                 }
               }
             }
@@ -943,7 +939,7 @@ export const useMessage = () => {
                 try {
                   generationInfo = output?.generations?.[0][0]?.generationInfo
                 } catch (e) {
-                  console.log("handleLLMEnd error", e)
+                  console.error("handleLLMEnd error", e)
                 }
               }
             }
@@ -1272,7 +1268,7 @@ export const useMessage = () => {
                 try {
                   generationInfo = output?.generations?.[0][0]?.generationInfo
                 } catch (e) {
-                  console.log("handleLLMEnd error", e)
+                  console.error("handleLLMEnd error", e)
                 }
               }
             }
@@ -1521,7 +1517,7 @@ export const useMessage = () => {
               try {
                 generationInfo = output?.generations?.[0][0]?.generationInfo
               } catch (e) {
-                console.log("handleLLMEnd error", e)
+                console.error("handleLLMEnd error", e)
               }
             }
           }

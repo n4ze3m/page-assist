@@ -373,7 +373,6 @@ export const deleteChatForEdit = async (history_id: string, index: number) => {
   const db = new PageAssitDatabase()
   const chatHistory = (await db.getChatHistory(history_id)).reverse()
   const previousHistory = chatHistory.slice(0, index + 1)
-  // console.log(previousHistory)
   await db.db.set({ [history_id]: previousHistory.reverse() })
 }
 

@@ -184,7 +184,6 @@ export const fetchChatModels = async ({
   try {
 
     const models = await getAllModels({ returnEmpty })
-
     const chatModels = models
       ?.filter((model) => {
         return (

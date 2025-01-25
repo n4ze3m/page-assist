@@ -85,7 +85,6 @@ export class PageAssistVectorStore extends VectorStore {
       metadata: documents[idx].metadata,
       file_id: this.file_id
     }))
-    console.log(`vector:${this.knownledge_id}`)
     await insertVector(`vector:${this.knownledge_id}`, memoryVectors)
   }
 
@@ -118,7 +117,6 @@ export class PageAssistVectorStore extends VectorStore {
     const data = await getVector(`vector:${this.knownledge_id}`)
     const pgVector = [...data.vectors]
     const filteredMemoryVectors = pgVector.filter(filterFunction)
-    console.log(filteredMemoryVectors)
     const searches = filteredMemoryVectors
       .map((vector, index) => ({
         similarity: this.similarity(query, vector.embedding),
@@ -126,7 +124,6 @@ export class PageAssistVectorStore extends VectorStore {
       }))
       .sort((a, b) => (a.similarity > b.similarity ? -1 : 0))
       .slice(0, k)
-    console.log(searches)
     const result: [Document, number][] = searches.map((search) => [
       new Document({
         metadata: filteredMemoryVectors[search.index].metadata,

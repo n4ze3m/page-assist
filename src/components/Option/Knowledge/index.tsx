@@ -18,7 +18,7 @@ export const KnowledgeSettings = () => {
   const { data, status } = useQuery({
     queryKey: ["fetchAllKnowledge"],
     queryFn: () => getAllKnowledge(),
-    refetchInterval: 1000
+    refetchInterval: 1000,
   })
 
   const { mutate: deleteKnowledgeMutation, isPending: isDeleting } =

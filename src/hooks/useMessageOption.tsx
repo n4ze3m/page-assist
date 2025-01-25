@@ -321,7 +321,7 @@ export const useMessageOption = () => {
                 try {
                   generationInfo = output?.generations?.[0][0]?.generationInfo
                 } catch (e) {
-                  console.log("handleLLMEnd error", e)
+                  console.error("handleLLMEnd error", e)
                 }
               }
             }
@@ -637,7 +637,7 @@ export const useMessageOption = () => {
                 try {
                   generationInfo = output?.generations?.[0][0]?.generationInfo
                 } catch (e) {
-                  console.log("handleLLMEnd error", e)
+                  console.error("handleLLMEnd error", e)
                 }
               }
             }
@@ -972,7 +972,7 @@ export const useMessageOption = () => {
                 try {
                   generationInfo = output?.generations?.[0][0]?.generationInfo
                 } catch (e) {
-                  console.log("handleLLMEnd error", e)
+                  console.error("handleLLMEnd error", e)
                 }
               }
             }

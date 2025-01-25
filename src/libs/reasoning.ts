@@ -47,7 +47,7 @@ export function parseReasoning(text: string): { type: 'reasoning' | 'text', cont
 
         return result
     } catch (e) {
-        console.log(`Error parsing reasoning: ${e}`)
+        console.error(`Error parsing reasoning: ${e}`)
         return [
             {
                 type: 'text',
