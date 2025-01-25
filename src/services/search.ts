@@ -6,7 +6,7 @@ const storage2 = new Storage({
 })
 
 const TOTAL_SEARCH_RESULTS = 2
-const DEFAULT_PROVIDER = "google"
+const DEFAULT_PROVIDER = "duckduckgo"
 
 const AVAILABLE_PROVIDERS = ["google", "duckduckgo"] as const
 
