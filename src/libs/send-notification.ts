@@ -7,14 +7,12 @@ export const sendNotification = async (title: string, message: string) => {
       "sendNotificationAfterIndexing"
     )
     if (sendNotificationAfterIndexing) {
-      console.log("Sending notification")
       browser.notifications.create({
         type: "basic",
         iconUrl: browser.runtime.getURL("/icon/128.png"),
         title,
         message
       })
-      console.log("Notification sent")
     }
   } catch (error) {
     console.error(error)

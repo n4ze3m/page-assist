@@ -130,7 +130,8 @@ export const saveMessageOnSuccess = async ({
   message_source = "web-ui",
   message_type, generationInfo,
   prompt_id,
-  prompt_content
+  prompt_content,
+  reasoning_time_taken = 0
 }: {
   historyId: string | null
   setHistoryId: (historyId: string) => void
@@ -145,6 +146,7 @@ export const saveMessageOnSuccess = async ({
   generationInfo?: any
   prompt_id?: string
   prompt_content?: string
+  reasoning_time_taken?: number
 }) => {
   if (historyId) {
     if (!isRegenerate) {
@@ -157,7 +159,8 @@ export const saveMessageOnSuccess = async ({
         [],
         1,
         message_type,
-        generationInfo
+        generationInfo,
+        reasoning_time_taken
       )
     }
     await saveMessage(
@@ -169,7 +172,8 @@ export const saveMessageOnSuccess = async ({
       source,
       2,
       message_type,
-      generationInfo
+      generationInfo,
+      reasoning_time_taken
     )
     await setLastUsedChatModel(historyId, selectedModel!)
     if (prompt_id || prompt_content) {
@@ -187,7 +191,8 @@ export const saveMessageOnSuccess = async ({
       [],
       1,
       message_type,
-      generationInfo
+      generationInfo,
+      reasoning_time_taken
     )
     await saveMessage(
       newHistoryId.id,
@@ -198,7 +203,8 @@ export const saveMessageOnSuccess = async ({
       source,
       2,
       message_type,
-      generationInfo
+      generationInfo,
+      reasoning_time_taken
     )
     setHistoryId(newHistoryId.id)
     await setLastUsedChatModel(newHistoryId.id, selectedModel!)

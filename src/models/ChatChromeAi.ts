@@ -108,7 +108,7 @@ export class ChatChromeAI extends SimpleChatModel<ChromeAICallOptions> {
    */
   destroy() {
     if (!this.session) {
-      return console.log("No session found. Returning.")
+      return console.error("No session found. Returning.")
     }
     this.session.destroy()
   }

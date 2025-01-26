@@ -42,7 +42,6 @@ export const localBraveSearch = async (query: string) => {
         return { title, link, content }
     }).filter((result) => result.link && result.title && result.content)
 
-    console.log(searchResults)
 
     return searchResults
 }

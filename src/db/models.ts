@@ -293,7 +293,7 @@ export const getModelInfo = async (id: string) => {
 export const getAllCustomModels = async () => {
   const db = new ModelDb()
   const models = (await db.getAll()).filter(
-    (model) => model.db_type === "openai_model"
+    (model) => model?.db_type === "openai_model"
   )
   const modelsWithProvider = await Promise.all(
     models.map(async (model) => {
@@ -324,7 +324,7 @@ export const deleteAllModelsByProviderId = async (provider_id: string) => {
 export const isLookupExist = async (lookup: string) => {
   const db = new ModelDb()
   const models = await db.getAll()
-  const model = models.find((model) => model.lookup === lookup)
+  const model = models.find((model) => model?.lookup === lookup)
   return model ? true : false
 }
 
@@ -394,85 +394,90 @@ export const dynamicFetchLlamafile = async ({
 export const ollamaFormatAllCustomModels = async (
   modelType: "all" | "chat" | "embedding" = "all"
 ) => {
-  const [allModles, allProviders] = await Promise.all([
-    getAllCustomModels(),
-    getAllOpenAIConfig()
-  ])
-
-  const lmstudioProviders = allProviders.filter(
-    (provider) => provider.provider === "lmstudio"
-  )
-
-  const llamafileProviders = allProviders.filter(
-    (provider) => provider.provider === "llamafile"
-  )
-
-  const ollamaProviders = allProviders.filter(
-    (provider) => provider.provider === "ollama2"
-  )
-
-  const lmModelsPromises = lmstudioProviders.map((provider) =>
-    dynamicFetchLMStudio({
-      baseUrl: provider.baseUrl,
-      providerId: provider.id
-    })
-  )
-
-  const llamafileModelsPromises = llamafileProviders.map((provider) =>
-    dynamicFetchLlamafile({
-      baseUrl: provider.baseUrl,
-      providerId: provider.id
-    })
-  )
-
-  const ollamaModelsPromises = ollamaProviders.map((provider) =>
-    dynamicFetchOllama2({
-      baseUrl: provider.baseUrl,
-      providerId: provider.id
-    }))
-
-  const lmModelsFetch = await Promise.all(lmModelsPromises)
-
-  const llamafileModelsFetch = await Promise.all(llamafileModelsPromises)
-
-  const ollamaModelsFetch = await Promise.all(ollamaModelsPromises)
-
-  const lmModels = lmModelsFetch.flat()
-
-  const llamafileModels = llamafileModelsFetch.flat()
-
-  const ollama2Models = ollamaModelsFetch.flat()
-
-  // merge allModels and lmModels
-  const allModlesWithLMStudio = [
-    ...(modelType !== "all"
-      ? allModles.filter((model) => model.model_type === modelType)
-      : allModles),
-    ...lmModels,
-    ...llamafileModels,
-    ...ollama2Models
-  ]
-
-  const ollamaModels = allModlesWithLMStudio.map((model) => {
-    return {
-      name: model.name,
-      model: model.id,
-      modified_at: "",
-      provider:
-        allProviders.find((provider) => provider.id === model.provider_id)
-          ?.provider || "custom",
-      size: 0,
-      digest: "",
-      details: {
-        parent_model: "",
-        format: "",
-        family: "",
-        families: [],
-        parameter_size: "",
-        quantization_level: ""
+  try {
+    const [allModles, allProviders] = await Promise.all([
+      getAllCustomModels(),
+      getAllOpenAIConfig()
+    ])
+  
+    const lmstudioProviders = allProviders.filter(
+      (provider) => provider.provider === "lmstudio"
+    )
+  
+    const llamafileProviders = allProviders.filter(
+      (provider) => provider.provider === "llamafile"
+    )
+  
+    const ollamaProviders = allProviders.filter(
+      (provider) => provider.provider === "ollama2"
+    )
+  
+    const lmModelsPromises = lmstudioProviders.map((provider) =>
+      dynamicFetchLMStudio({
+        baseUrl: provider.baseUrl,
+        providerId: provider.id
+      })
+    )
+  
+    const llamafileModelsPromises = llamafileProviders.map((provider) =>
+      dynamicFetchLlamafile({
+        baseUrl: provider.baseUrl,
+        providerId: provider.id
+      })
+    )
+  
+    const ollamaModelsPromises = ollamaProviders.map((provider) =>
+      dynamicFetchOllama2({
+        baseUrl: provider.baseUrl,
+        providerId: provider.id
+      }))
+  
+    const lmModelsFetch = await Promise.all(lmModelsPromises)
+  
+    const llamafileModelsFetch = await Promise.all(llamafileModelsPromises)
+  
+    const ollamaModelsFetch = await Promise.all(ollamaModelsPromises)
+  
+    const lmModels = lmModelsFetch.flat()
+  
+    const llamafileModels = llamafileModelsFetch.flat()
+  
+    const ollama2Models = ollamaModelsFetch.flat()
+  
+    // merge allModels and lmModels
+    const allModlesWithLMStudio = [
+      ...(modelType !== "all"
+        ? allModles.filter((model) => model.model_type === modelType)
+        : allModles),
+      ...lmModels,
+      ...llamafileModels,
+      ...ollama2Models
+    ]
+  
+    const ollamaModels = allModlesWithLMStudio.map((model) => {
+      return {
+        name: model.name,
+        model: model.id,
+        modified_at: "",
+        provider:
+          allProviders.find((provider) => provider.id === model.provider_id)
+            ?.provider || "custom",
+        size: 0,
+        digest: "",
+        details: {
+          parent_model: "",
+          format: "",
+          family: "",
+          families: [],
+          parameter_size: "",
+          quantization_level: ""
+        }
       }
-    }
-  })
-
-  return ollamaModels
+    })
+  
+    return ollamaModels
+  } catch(e) {
+    console.error(e)
+    return []
+  }
 }

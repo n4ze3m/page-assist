@@ -291,7 +291,7 @@ export const GeneralSettings = () => {
                   await browser.storage.local.clear()
                   await browser.storage.session.clear()
                 } catch (e) {
-                  console.log("Error clearing storage:", e)
+                  console.error("Error clearing storage:", e)
                 }
               }
             }}

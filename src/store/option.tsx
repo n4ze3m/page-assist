@@ -17,6 +17,7 @@ export type Message = {
   sources: any[]
   images?: string[]
   search?: WebSearch
+  reasoning_time_taken?: number
   id?: string
   messageType?: string
 }

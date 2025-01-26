@@ -37,6 +37,11 @@ import { pageAssistModel } from "@/models"
 import { getNoOfRetrievedDocs } from "@/services/app"
 import { humanMessageFormatter } from "@/utils/human-message"
 import { pageAssistEmbeddingModel } from "@/models/embedding"
+import {
+  isReasoningEnded,
+  isReasoningStarted,
+  removeReasoning
+} from "@/libs/reasoning"
 
 export const useMessageOption = () => {
   const {
@@ -76,10 +81,7 @@ export const useMessageOption = () => {
   } = useStoreMessageOption()
   const currentChatModelSettings = useStoreChatModelSettings()
   const [selectedModel, setSelectedModel] = useStorage("selectedModel")
-  const [defaultInternetSearchOn, ] = useStorage(
-    "defaultInternetSearchOn",
-    false
-  )
+  const [defaultInternetSearchOn] = useStorage("defaultInternetSearchOn", false)
   const [speechToTextLanguage, setSpeechToTextLanguage] = useStorage(
     "speechToTextLanguage",
     "en-US"
@@ -102,7 +104,7 @@ export const useMessageOption = () => {
     setStreaming(false)
     currentChatModelSettings.reset()
     textareaRef?.current?.focus()
-    if(defaultInternetSearchOn) {
+    if (defaultInternetSearchOn) {
       setWebSearch(true)
     }
   }
@@ -195,6 +197,7 @@ export const useMessageOption = () => {
     setMessages(newMessage)
     let fullText = ""
     let contentToSave = ""
+    let timetaken = 0
 
     try {
       setIsSearchingInternet(true)
@@ -261,6 +264,7 @@ export const useMessageOption = () => {
         })
         const response = await questionOllama.invoke(promptForQuestion)
         query = response.content.toString()
+        query = removeReasoning(query)
       }
 
       const { prompt, source } = await getSystemPromptForWeb(query)
@@ -317,7 +321,7 @@ export const useMessageOption = () => {
                 try {
                   generationInfo = output?.generations?.[0][0]?.generationInfo
                 } catch (e) {
-                  console.log("handleLLMEnd error", e)
+                  console.error("handleLLMEnd error", e)
                 }
               }
             }
@@ -325,18 +329,35 @@ export const useMessageOption = () => {
         }
       )
       let count = 0
+      let reasoningStartTime: Date | undefined = undefined
+      let reasoningEndTime: Date | undefined = undefined
       for await (const chunk of chunks) {
         contentToSave += chunk?.content
         fullText += chunk?.content
         if (count === 0) {
           setIsProcessing(true)
         }
+        if (isReasoningStarted(fullText) && !reasoningStartTime) {
+          reasoningStartTime = new Date()
+        }
+
+        if (
+          reasoningStartTime &&
+          !reasoningEndTime &&
+          isReasoningEnded(fullText)
+        ) {
+          reasoningEndTime = new Date()
+          const reasoningTime =
+            reasoningEndTime.getTime() - reasoningStartTime.getTime()
+          timetaken = reasoningTime
+        }
         setMessages((prev) => {
           return prev.map((message) => {
             if (message.id === generateMessageId) {
               return {
                 ...message,
-                message: fullText + "▋"
+                message: fullText + "▋",
+                reasoning_time_taken: timetaken
               }
             }
             return message
@@ -352,7 +373,8 @@ export const useMessageOption = () => {
               ...message,
               message: fullText,
               sources: source,
-              generationInfo
+              generationInfo,
+              reasoning_time_taken: timetaken
             }
           }
           return message
@@ -381,7 +403,8 @@ export const useMessageOption = () => {
         image,
         fullText,
         source,
-        generationInfo
+        generationInfo,
+        reasoning_time_taken: timetaken
       })
 
       setIsProcessing(false)
@@ -537,6 +560,7 @@ export const useMessageOption = () => {
     setMessages(newMessage)
     let fullText = ""
     let contentToSave = ""
+    let timetaken = 0
 
     try {
       const prompt = await systemPromptForNonRagOption()
@@ -613,7 +637,7 @@ export const useMessageOption = () => {
                 try {
                   generationInfo = output?.generations?.[0][0]?.generationInfo
                 } catch (e) {
-                  console.log("handleLLMEnd error", e)
+                  console.error("handleLLMEnd error", e)
                 }
               }
             }
@@ -622,9 +646,28 @@ export const useMessageOption = () => {
       )
 
       let count = 0
+      let reasoningStartTime: Date | null = null
+      let reasoningEndTime: Date | null = null
+
       for await (const chunk of chunks) {
         contentToSave += chunk?.content
         fullText += chunk?.content
+
+        if (isReasoningStarted(fullText) && !reasoningStartTime) {
+          reasoningStartTime = new Date()
+        }
+
+        if (
+          reasoningStartTime &&
+          !reasoningEndTime &&
+          isReasoningEnded(fullText)
+        ) {
+          reasoningEndTime = new Date()
+          const reasoningTime =
+            reasoningEndTime.getTime() - reasoningStartTime.getTime()
+          timetaken = reasoningTime
+        }
+
         if (count === 0) {
           setIsProcessing(true)
         }
@@ -633,7 +676,8 @@ export const useMessageOption = () => {
             if (message.id === generateMessageId) {
               return {
                 ...message,
-                message: fullText + "▋"
+                message: fullText + "▋",
+                reasoning_time_taken: timetaken
               }
             }
             return message
@@ -648,7 +692,8 @@ export const useMessageOption = () => {
             return {
               ...message,
               message: fullText,
-              generationInfo
+              generationInfo,
+              reasoning_time_taken: timetaken
             }
           }
           return message
@@ -679,7 +724,8 @@ export const useMessageOption = () => {
         source: [],
         generationInfo,
         prompt_content: promptContent,
-        prompt_id: promptId
+        prompt_id: promptId,
+        reasoning_time_taken: timetaken
       })
 
       setIsProcessing(false)
@@ -818,7 +864,7 @@ export const useMessageOption = () => {
         knownledge_id: selectedKnowledge.id
       }
     )
-
+    let timetaken = 0
     try {
       let query = message
       const { ragPrompt: systemPrompt, ragQuestionPrompt: questionPrompt } =
@@ -882,6 +928,7 @@ export const useMessageOption = () => {
         })
         const response = await questionOllama.invoke(promptForQuestion)
         query = response.content.toString()
+        query = removeReasoning(query)
       }
       const docSize = await getNoOfRetrievedDocs()
 
@@ -925,7 +972,7 @@ export const useMessageOption = () => {
                 try {
                   generationInfo = output?.generations?.[0][0]?.generationInfo
                 } catch (e) {
-                  console.log("handleLLMEnd error", e)
+                  console.error("handleLLMEnd error", e)
                 }
               }
             }
@@ -933,18 +980,36 @@ export const useMessageOption = () => {
         }
       )
       let count = 0
+      let reasoningStartTime: Date | undefined = undefined
+      let reasoningEndTime: Date | undefined = undefined
+
       for await (const chunk of chunks) {
         contentToSave += chunk?.content
         fullText += chunk?.content
         if (count === 0) {
           setIsProcessing(true)
         }
+        if (isReasoningStarted(fullText) && !reasoningStartTime) {
+          reasoningStartTime = new Date()
+        }
+
+        if (
+          reasoningStartTime &&
+          !reasoningEndTime &&
+          isReasoningEnded(fullText)
+        ) {
+          reasoningEndTime = new Date()
+          const reasoningTime =
+            reasoningEndTime.getTime() - reasoningStartTime.getTime()
+          timetaken = reasoningTime
+        }
         setMessages((prev) => {
           return prev.map((message) => {
             if (message.id === generateMessageId) {
               return {
                 ...message,
-                message: fullText + "▋"
+                message: fullText + "▋",
+                reasoning_time_taken: timetaken
               }
             }
             return message
@@ -960,7 +1025,8 @@ export const useMessageOption = () => {
               ...message,
               message: fullText,
               sources: source,
-              generationInfo
+              generationInfo,
+              reasoning_time_taken: timetaken
             }
           }
           return message
@@ -989,7 +1055,8 @@ export const useMessageOption = () => {
         image,
         fullText,
         source,
-        generationInfo
+        generationInfo,
+        reasoning_time_taken: timetaken
       })
 
       setIsProcessing(false)
@@ -1206,6 +1273,6 @@ export const useMessageOption = () => {
     setTemporaryChat,
     useOCR,
     setUseOCR,
-    defaultInternetSearchOn,
+    defaultInternetSearchOn
   }
 }

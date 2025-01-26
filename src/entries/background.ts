@@ -41,7 +41,6 @@ export default defineBackground({
       })
     } else {
       browser.browserAction.onClicked.addListener((tab) => {
-        console.log("browser.browserAction.onClicked.addListener")
         browser.tabs.create({ url: browser.runtime.getURL("/options.html") })
       })
     }

@@ -111,5 +111,9 @@
     "pin": "پین کردن",
     "unpin": "حذف پین",
     "generationInfo": "اطلاعات تولید",
-    "sidebarChat": "چت کناری"
+    "sidebarChat": "چت کناری",
+    "reasoning": {
+        "thinking": "در حال فکر کردن....",
+        "thought": "فکر کردن برای {{time}}"
+    }
 }

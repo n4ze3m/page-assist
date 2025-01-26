@@ -16,21 +16,25 @@ import { SaveButton } from "../SaveButton"
 export const AdvanceOllamaSettings = () => {
   const [form] = Form.useForm()
   const watchUrlRewriteEnabled = Form.useWatch("urlRewriteEnabled", form)
+  const { t } = useTranslation("settings")
 
   const fetchAdvancedData = async () => {
+   try {
     const [urlRewriteEnabled, rewriteUrl, headers] = await Promise.all([
       isUrlRewriteEnabled(),
       getRewriteUrl(),
       customOllamaHeaders()
     ])
     form.setFieldsValue({ urlRewriteEnabled, rewriteUrl, headers })
+   } catch (e) {
+    console.error(e)
+   }
   }
 
   React.useEffect(() => {
     fetchAdvancedData()
   }, [])
 
-  const { t } = useTranslation("settings")
 
   return (
     <Form

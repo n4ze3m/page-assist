@@ -117,5 +117,9 @@
     "pin": "Закрепить",
     "unpin": "Открепить",
     "generationInfo": "Информация о генерации",
-    "sidebarChat": "Боковой чат"
+    "sidebarChat": "Боковой чат",
+    "reasoning": {
+        "thinking": "Размышляю...",
+        "thought": "Размышлял {{time}}"
+    }
 }

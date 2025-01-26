@@ -28,12 +28,23 @@ export const localGoogleSearch = async (query: string) => {
   const htmlString = await fetch(
     `https://www.${baseGoogleDomain}/search?hl=en&q=` + query,
     {
-      signal: abortController.signal
+      signal: abortController.signal,
+      headers: {
+        "User-Agent": navigator.userAgent,
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+        "Accept-Language": "en-US,en;q=0.5",
+        "Accept-Encoding": "gzip, deflate, br",
+        "DNT": "1",
+        "Connection": "keep-alive",
+        "Upgrade-Insecure-Requests": "1",
+        "Sec-Fetch-Dest": "document",
+        "Sec-Fetch-Mode": "navigate",
+        "Sec-Fetch-Site": "none",
+        "Sec-Fetch-User": "?1"
+      }
     }
-  )
-    .then((response) => response.text())
+  ).then((response) => response.text())
     .catch()
-
   const parser = new DOMParser()
 
   const doc = parser.parseFromString(htmlString, "text/html")
@@ -89,9 +100,9 @@ export const webGoogleSearch = async (query: string) => {
     baseUrl: cleanUrl(ollamaUrl)
   })
 
-  
+
   const textSplitter = await getPageAssistTextSplitter()
-  
+
   const chunks = await textSplitter.splitDocuments(docs)
 
   const store = new MemoryVectorStore(ollamaEmbedding)

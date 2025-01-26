@@ -52,7 +52,7 @@ export const getDataFromCurrentTab = async () => {
               resolve(data[0].result)
             }
           } catch (e) {
-            console.log("error", e)
+            console.error("error", e)
             // this is a weird method but it works
             if (import.meta.env.BROWSER === "firefox") {
               // all I need is to get the pdf url but somehow 

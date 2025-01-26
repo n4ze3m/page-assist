@@ -117,5 +117,9 @@
   "pin": "固定",
   "unpin": "固定解除",
   "generationInfo": "生成情報",
-  "sidebarChat": "サイドバーチャット"
+  "sidebarChat": "サイドバーチャット",
+  "reasoning": {
+      "thinking": "考え中....",
+      "thought": "{{time}}の思考"
+  }
 }

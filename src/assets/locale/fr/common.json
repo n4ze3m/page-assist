@@ -117,5 +117,9 @@
     "pin": "Épingler",
     "unpin": "Désépingler",
     "generationInfo": "Informations de génération",
-    "sidebarChat": "Chat latéral"
+    "sidebarChat": "Chat latéral",
+    "reasoning": {
+        "thinking": "Réflexion....",
+        "thought": "Réflexion pendant {{time}}"
+    }
 }

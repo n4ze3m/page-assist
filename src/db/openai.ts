@@ -114,7 +114,7 @@ export const addOpenAICofig = async ({ name, baseUrl, apiKey, provider }: { name
 export const getAllOpenAIConfig = async () => {
     const openaiDb = new OpenAIModelDb()
     const configs = await openaiDb.getAll()
-    return configs.filter(config => config.db_type === "openai")
+    return configs.filter(config => config?.db_type === "openai")
 }
 
 export const updateOpenAIConfig = async ({ id, name, baseUrl, apiKey }: { id: string, name: string, baseUrl: string, apiKey: string }) => {

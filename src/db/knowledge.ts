@@ -163,8 +163,8 @@ export const getAllKnowledge = async (status?: string) => {
 
   if (status) {
     return data
-      .filter((d) => d.db_type === "knowledge")
-      .filter((d) => d.status === status)
+      .filter((d) => d?.db_type === "knowledge")
+      .filter((d) => d?.status === status)
       .map((d) => {
         d.source.forEach((s) => {
           delete s.content
@@ -175,9 +175,9 @@ export const getAllKnowledge = async (status?: string) => {
   }
 
   return data
-    .filter((d) => d.db_type === "knowledge")
+    .filter((d) => d?.db_type === "knowledge")
     .map((d) => {
-      d.source.forEach((s) => {
+      d?.source.forEach((s) => {
         delete s.content
       })
       return d

@@ -118,5 +118,9 @@
     "pin": "Anheften",
     "unpin": "Losheften",
     "generationInfo": "Generierungsinformationen",
-    "sidebarChat": "Seitenleisten-Chat"
+    "sidebarChat": "Seitenleisten-Chat",
+    "reasoning": {
+        "thinking": "Denke nach....",
+        "thought": "Gedanke für {{time}}"
+    }
 }

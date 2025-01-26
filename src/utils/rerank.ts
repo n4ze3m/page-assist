@@ -34,7 +34,6 @@ export const rerankDocs = async ({
     }
   })
 
-  console.log("similarity", similarity)
   const sortedDocs = similarity
     .sort((a, b) => b.similarity - a.similarity)
     .filter((sim) => sim.similarity > 0.5)

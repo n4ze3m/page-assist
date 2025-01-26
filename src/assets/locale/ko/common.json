@@ -117,5 +117,9 @@
   "pin": "고정",
   "unpin": "고정 해제",
   "generationInfo": "생성 정보",
-  "sidebarChat": "사이드바 채팅"
+  "sidebarChat": "사이드바 채팅",
+  "reasoning": {
+      "thinking": "생각 중....",
+      "thought": "{{time}} 동안 생각함"
+  }
 }

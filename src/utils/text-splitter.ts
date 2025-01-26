@@ -17,7 +17,6 @@ export const getPageAssistTextSplitter = async () => {
 
   switch (splittingStrategy) {
     case "CharacterTextSplitter":
-      console.log("Using CharacterTextSplitter")
       const splittingSeparator = await defaultSsplttingSeparator()
       const processedSeparator = splittingSeparator
         .replace(/\\n/g, "\n")

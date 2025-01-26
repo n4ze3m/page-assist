@@ -46,7 +46,7 @@ export const TTSModeSettings = ({ hideBorder }: { hideBorder?: boolean }) => {
           return { voices, models }
         }
       } catch (e) {
-        console.log(e)
+        console.error(e)
         message.error("Error fetching ElevenLabs data")
       }
       return null

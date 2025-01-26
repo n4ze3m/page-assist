@@ -120,20 +120,30 @@ export const Header: React.FC<Props> = ({
           {"/"}
         </span>
         <div className="hidden lg:block">
-          <PageAssistSelect
+          <Select
             className="w-80"
             placeholder={t("common:selectAModel")}
-            loadingText={t("common:selectAModel")}
+            // loadingText={t("common:selectAModel")}
             value={selectedModel}
             onChange={(e) => {
-              setSelectedModel(e.value)
-              localStorage.setItem("selectedModel", e.value)
+              setSelectedModel(e)
+              localStorage.setItem("selectedModel", e)
             }}
-            isLoading={isModelsLoading}
+            filterOption={(input, option) => {
+              //@ts-ignore
+              return (
+                option?.label?.props["data-title"]
+                  ?.toLowerCase()
+                  ?.indexOf(input.toLowerCase()) >= 0
+              )
+            }}
+            showSearch
+            loading={isModelsLoading}
             options={models?.map((model) => ({
               label: (
                 <span
                   key={model.model}
+                  data-title={model.name}
                   className="flex flex-row gap-3 items-center ">
                   <ProviderIcons
                     provider={model?.provider}
@@ -144,9 +154,10 @@ export const Header: React.FC<Props> = ({
               ),
               value: model.model
             }))}
-            onRefresh={() => {
-              refetch()
-            }}
+            size="large"
+            // onRefresh={() => {
+            //   refetch()
+            // }}
           />
         </div>
         <div className="lg:hidden">

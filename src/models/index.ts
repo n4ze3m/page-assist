@@ -88,7 +88,6 @@ export const pageAssistModel = async ({
       }
     }) as any
   }
-  console.log('useMlock', useMlock)
   return new ChatOllama({
     baseUrl,
     keepAlive,

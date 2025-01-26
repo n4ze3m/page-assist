@@ -122,5 +122,9 @@
     "pin": "Прикріпити",
     "unpin": "Відкріпити",
     "generationInfo": "Інформація про генерацію",
-    "sidebarChat": "Бічний чат"
+    "sidebarChat": "Бічний чат",
+    "reasoning": {
+        "thinking": "Думаю....",
+        "thought": "Думав протягом {{time}}"
+    }
 }

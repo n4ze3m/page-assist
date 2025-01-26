@@ -18,7 +18,8 @@ import { useTTS } from "@/hooks/useTTS"
 import { tagColors } from "@/utils/color"
 import { removeModelSuffix } from "@/db/models"
 import { GenerationInfo } from "./GenerationInfo"
-
+import { parseReasoning } from "@/libs/reasoning"
+import { humanizeMilliseconds } from "@/utils/humanize-miliseconds"
 type Props = {
   message: string
   message_type?: string
@@ -40,6 +41,8 @@ type Props = {
   onSourceClick?: (source: any) => void
   isTTSEnabled?: boolean
   generationInfo?: any
+  isStreaming: boolean
+  reasoningTimeTaken?: number
 }
 
 export const PlaygroundMessage = (props: Props) => {
@@ -48,7 +51,6 @@ export const PlaygroundMessage = (props: Props) => {
 
   const { t } = useTranslation("common")
   const { cancel, isSpeaking, speak } = useTTS()
-
   return (
     <div className="group w-full text-gray-800 dark:text-gray-100">
       <div className="text-base md:max-w-2xl lg:max-w-xl xl:max-w-3xl  flex lg:px-0 m-auto w-full">
@@ -94,7 +96,40 @@ export const PlaygroundMessage = (props: Props) => {
             <div className="flex flex-grow flex-col">
               {!editMode ? (
                 props.isBot ? (
-                  <Markdown message={props.message} />
+                  <>
+                    {parseReasoning(props.message).map((e, i) => {
+                      if (e.type === "reasoning") {
+                        return (
+                          <Collapse
+                            key={i}
+                            className="border-none !mb-3"
+                            items={[
+                              {
+                                key: "reasoning",
+                                label:
+                                  props.isStreaming && e?.reasoning_running ? (
+                                    <div className="flex items-center gap-2">
+                                      <span className="italic">
+                                        {t("reasoning.thinking")}
+                                      </span>
+                                    </div>
+                                  ) : (
+                                    t("reasoning.thought", {
+                                      time: humanizeMilliseconds(
+                                        props.reasoningTimeTaken
+                                      )
+                                    })
+                                  ),
+                                children: <Markdown message={e.content} />
+                              }
+                            ]}
+                          />
+                        )
+                      }
+
+                      return <Markdown key={i} message={e.content} />
+                    })}
+                  </>
                 ) : (
                   <p
                     className={`prose dark:prose-invert whitespace-pre-line	 prose-p:leading-relaxed prose-pre:p-0 dark:prose-dark ${
@@ -220,8 +255,8 @@ export const PlaygroundMessage = (props: Props) => {
                         }
                         title={t("generationInfo")}>
                         <button
-                        aria-label={t("generationInfo")}
-                        className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                          aria-label={t("generationInfo")}
+                          className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
                           <InfoIcon className="w-3 h-3 text-gray-400 group-hover:text-gray-500" />
                         </button>
                       </Popover>
@@ -231,7 +266,7 @@ export const PlaygroundMessage = (props: Props) => {
                       props.currentMessageIndex === props.totalMessages - 1 && (
                         <Tooltip title={t("regenerate")}>
                           <button
-                            aria-label={t("regenerate")}  
+                            aria-label={t("regenerate")}
                             onClick={props.onRengerate}
                             className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
                             <RotateCcw className="w-3 h-3 text-gray-400 group-hover:text-gray-500" />

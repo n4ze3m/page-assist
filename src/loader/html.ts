@@ -89,7 +89,6 @@ export class PageAssistHtmlLoader
     await urlRewriteRuntime(this.url, "web")
     let text = "";
     if (isWikipedia(this.url)) {
-      console.log("Wikipedia URL detected")
       const fetchHTML = await fetch(this.url)
       text = parseWikipedia(await fetchHTML.text())
     } else {
