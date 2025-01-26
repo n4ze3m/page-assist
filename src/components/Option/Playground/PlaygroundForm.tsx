@@ -15,6 +15,7 @@ import { KnowledgeSelect } from "../Knowledge/KnowledgeSelect"
 import { useSpeechRecognition } from "@/hooks/useSpeechRecognition"
 import { PiGlobe } from "react-icons/pi"
 import { handleChatInputKeyDown } from "@/utils/key-down"
+import { getIsSimpleInternetSearch } from "@/services/search"
 
 type Props = {
   dropedFile: File | undefined
@@ -181,7 +182,8 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
         }
         if (webSearch) {
           const defaultEM = await defaultEmbeddingModelForRag()
-          if (!defaultEM) {
+          const simpleSearch = await getIsSimpleInternetSearch()
+          if (!defaultEM && !simpleSearch) {
             form.setFieldError("message", t("formError.noEmbeddingModel"))
             return
           }
