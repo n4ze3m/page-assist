@@ -4,6 +4,7 @@ import { clearBadge, streamDownload } from "@/utils/pull-ollama"
 
 export default defineBackground({
   main() {
+    let isSidePanelOpen: boolean = false
     let isCopilotRunning: boolean = false
     browser.runtime.onMessage.addListener(async (message) => {
       if (message.type === "sidepanel") {
@@ -173,9 +174,20 @@ export default defineBackground({
               { active: true, currentWindow: true },
               async (tabs) => {
                 const tab = tabs[0]
-                chrome.sidePanel.open({
-                  tabId: tab.id!
-                })
+                if (!isSidePanelOpen) {
+                  isSidePanelOpen = true
+                  chrome.sidePanel.setOptions({
+                    enabled: true
+                  })
+                  chrome.sidePanel.open({
+                    tabId: tab.id!
+                  })
+                } else {
+                  isSidePanelOpen  = false
+                  chrome.sidePanel.setOptions({
+                    enabled: false
+                  })
+                }
               }
             )
             break
