@@ -2,7 +2,6 @@ type Model = {
   id: string
   name?: string
   display_name?: string
-  displayName?: string
   type: string
 }
 
@@ -25,7 +24,7 @@ export const getAllOpenAIModels = async (baseUrl: string, apiKey?: string) => {
 
     clearTimeout(timeoutId)
 
-    // if Gemini fails to return models, try another approach
+    // if Google API fails to return models, try another approach
     if (res.status === 401 && res.url == 'https://generativelanguage.googleapis.com/v1beta/openai/models') {
       const urlGoogle = `https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`
       const resGoogle = await fetch(urlGoogle, {
@@ -35,7 +34,7 @@ export const getAllOpenAIModels = async (baseUrl: string, apiKey?: string) => {
       const data = await resGoogle.json()
       return data.models.map(model => ({
         id: model.name.replace(/^models\//, ""),
-        name: model.displayName,
+        name: model.name.replace(/^models\//, ""),
       })) as Model[]
     }
 
