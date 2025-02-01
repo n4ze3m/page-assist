@@ -41,6 +41,9 @@
       },
       "ollamaStatus": {
         "label": "Enable or disable Ollama connection status check"
+      },
+      "wideMode": {
+        "label": "Enable wide screen mode"
       }
     },
     "sidepanelRag": {

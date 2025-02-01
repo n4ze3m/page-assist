@@ -11,7 +11,7 @@ import {
 } from "@/db"
 import { getLastUsedChatSystemPrompt } from "@/services/model-settings"
 import { useStoreChatModelSettings } from "@/store/model"
-
+import { useStorage } from "@plasmohq/storage/hook"
 export const Playground = () => {
   const drop = React.useRef<HTMLDivElement>(null)
   const [dropedFile, setDropedFile] = React.useState<File | undefined>()
@@ -24,6 +24,7 @@ export const Playground = () => {
     setSelectedSystemPrompt
   } = useMessageOption()
   const { setSystemPrompt } = useStoreChatModelSettings()
+  const [checkWideMode] = useStorage("checkWideMode", false)
 
   const [dropState, setDropState] = React.useState<
     "idle" | "dragging" | "error"
@@ -134,7 +135,7 @@ export const Playground = () => {
         <div className="flex-grow">
           <div className="w-full flex justify-center">
             <div className="bottom-0 w-full bg-transparent border-0 fixed pt-2">
-              <div className="stretch mx-2 flex flex-row gap-3 md:mx-4 lg:mx-auto lg:max-w-2xl xl:max-w-3xl justify-center items-center">
+              <div className={`stretch mx-2 flex flex-row gap-3 md:mx-4 lg:mx-auto ${checkWideMode ? 'lg:max-w-full lg:px-16 xl:max-w-full xl:px-32' : 'lg:max-w-2xl max-w-3xl'} justify-center items-center`}>
                 <div className="relative h-full flex-1 items-center justify-center md:flex-col">
                   <PlaygroundForm dropedFile={dropedFile} />
                 </div>
