@@ -132,7 +132,7 @@ export const PlaygroundMessage = (props: Props) => {
                   </>
                 ) : (
                   <p
-                    className={`prose dark:prose-invert whitespace-pre-line	prose-p:leading-relaxed prose-pre:p-0 dark:prose-dark ${
+                    className={`prose dark:prose-invert whitespace-pre-line prose-p:leading-relaxed prose-pre:p-0 dark:prose-dark ${
                       props.message_type &&
                       "italic text-gray-500 dark:text-gray-400 text-sm"
                     }`}>
