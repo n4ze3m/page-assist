@@ -197,8 +197,12 @@ export const PlaygroundMessage = (props: Props) => {
               <div
                 className={`space-x-2 gap-2 mt-3 flex ${
                   props.currentMessageIndex !== props.totalMessages - 1
-                    ? "invisible group-hover:visible"
-                    : ""
+                  //  there is few style issue so i am commenting this out for v1.4.5 release
+                  // next release we will fix this
+                    // ? "invisible group-hover:visible"
+                    ? "hidden group-hover:flex"
+                    // ""
+                    : "flex"
                 }`}>
                 {props.isTTSEnabled && (
                   <Tooltip title={t("tts")}>
