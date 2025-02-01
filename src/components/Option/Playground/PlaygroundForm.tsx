@@ -262,7 +262,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                 message: value.message.trim()
               })
             })}
-            className="shrink-0 flex-grow  flex flex-col items-center ">
+            className="shrink-0 flex-grow flex flex-col items-center ">
             <input
               id="file-upload"
               name="file-upload"

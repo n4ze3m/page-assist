@@ -55,10 +55,10 @@ export const PlaygroundMessage = (props: Props) => {
   const { cancel, isSpeaking, speak } = useTTS()
   return (
     <div className="group w-full text-gray-800 dark:text-gray-100">
-      <div className={`text-base md:max-w-2xl ${checkWideMode ? 'lg:max-w-full lg:px-16 xl:max-w-full xl:px-32' : 'lg:max-w-xl max-w-3xl'} flex lg:px-0 m-auto w-full`}>
+      <div className={`text-base md:max-w-2xl ${checkWideMode ? 'lg:max-w-full lg:px-16 xl:max-w-full xl:px-32' : 'lg:max-w-xl xl:max-w-3xl'} flex lg:px-0 m-auto w-full`}>
         <div className="flex flex-row gap-4 md:gap-6 p-4 md:py-6 lg:px-0 m-auto w-full">
           <div className="w-8 flex flex-col relative items-end">
-            <div className="relative h-7 w-7 p-1 rounded-sm text-white flex items-center justify-center  text-opacity-100r">
+            <div className="relative h-7 w-7 p-1 rounded-sm text-white flex items-center justify-center text-opacity-100r">
               {props.isBot ? (
                 !props.botAvatar ? (
                   <div className="absolute h-8 w-8 rounded-full bg-gradient-to-r from-green-300 to-purple-400"></div>
@@ -137,7 +137,8 @@ export const PlaygroundMessage = (props: Props) => {
                     className={`prose dark:prose-invert whitespace-pre-line prose-p:leading-relaxed prose-pre:p-0 dark:prose-dark ${
                       props.message_type &&
                       "italic text-gray-500 dark:text-gray-400 text-sm"
-                    }`}>
+                    }
+                    ${checkWideMode && "max-w-none"}`}>
                     {props.message}
                   </p>
                 )
@@ -154,7 +155,7 @@ export const PlaygroundMessage = (props: Props) => {
             {props.images &&
               props.images &&
               props.images.filter((img) => img.length > 0).length > 0 && (
-                <div className="flex md:max-w-2xl lg:max-w-xl xl:max-w-3xl mt-4 m-auto w-full">
+                <div className={`flex md:max-w-2xl ${checkWideMode ? 'lg:max-w-full lg:px-16 xl:max-w-full xl:px-32' : 'lg:max-w-xl xl:max-w-3xl'} mt-4 m-auto w-full`}>
                   {props.images
                     .filter((image) => image.length > 0)
                     .map((image, index) => (
