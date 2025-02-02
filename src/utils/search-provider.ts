@@ -12,6 +12,10 @@ export const SUPPORTED_SERACH_PROVIDERS = [
         value: "sogou"
     },
     {
+        label: "Baidu",
+        value: "baidu"
+    },
+    {
         label: "Brave",
         value: "brave"
     },

@@ -1,5 +1,4 @@
 import { cleanUrl } from "@/libs/clean-url"
-import { urlRewriteRuntime } from "@/libs/runtime"
 import { PageAssistHtmlLoader } from "@/loader/html"
 import { pageAssistEmbeddingModel } from "@/models/embedding"
 import {
@@ -16,7 +15,6 @@ import * as cheerio from "cheerio"
 import { MemoryVectorStore } from "langchain/vectorstores/memory"
 
 export const localDuckDuckGoSearch = async (query: string) => {
-  await urlRewriteRuntime(cleanUrl("https://html.duckduckgo.com/html/?q=" + query), "duckduckgo")
 
   const abortController = new AbortController()
   setTimeout(() => abortController.abort(), 10000)

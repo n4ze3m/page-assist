@@ -8,7 +8,6 @@ import { getPageAssistTextSplitter } from "@/utils/text-splitter"
 import type { Document } from "@langchain/core/documents"
 import { MemoryVectorStore } from "langchain/vectorstores/memory"
 import { cleanUrl } from "~/libs/clean-url"
-import { urlRewriteRuntime } from "~/libs/runtime"
 import { PageAssistHtmlLoader } from "~/loader/html"
 import {
   defaultEmbeddingModelForRag,
@@ -18,10 +17,6 @@ import {
 
 export const localGoogleSearch = async (query: string) => {
   const baseGoogleDomain = await getGoogleDomain()
-  await urlRewriteRuntime(
-    cleanUrl(`https://www.${baseGoogleDomain}/search?hl=en&q=` + query),
-    "google"
-  )
   const abortController = new AbortController()
   setTimeout(() => abortController.abort(), 10000)
 
