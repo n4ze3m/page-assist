@@ -18,7 +18,7 @@ import { useTTS } from "@/hooks/useTTS"
 import { tagColors } from "@/utils/color"
 import { removeModelSuffix } from "@/db/models"
 import { GenerationInfo } from "./GenerationInfo"
-import { parseReasoning } from "@/libs/reasoning"
+import { parseReasoning, removeReasoning } from "@/libs/reasoning"
 import { humanizeMilliseconds } from "@/utils/humanize-miliseconds"
 import { useStorage } from "@plasmohq/storage/hook"
 type Props = {
@@ -56,7 +56,7 @@ export const PlaygroundMessage = (props: Props) => {
   return (
     <div className="group w-full text-gray-800 dark:text-gray-100">
       <div className={`text-base md:max-w-2xl ${checkWideMode ? 'lg:max-w-full lg:px-16 xl:max-w-full xl:px-32' : 'lg:max-w-xl xl:max-w-3xl'} flex lg:px-0 m-auto w-full`}>
-        <div className="flex flex-row gap-4 md:gap-6 p-4 md:py-6 lg:px-0 m-auto w-full">
+        <div className="flex flex-row gap-4 md:gap-6 p-4 m-auto w-full">
           <div className="w-8 flex flex-col relative items-end">
             <div className="relative h-7 w-7 p-1 rounded-sm text-white flex items-center justify-center text-opacity-100r">
               {props.isBot ? (
@@ -153,7 +153,6 @@ export const PlaygroundMessage = (props: Props) => {
             </div>
             {/* source if available */}
             {props.images &&
-              props.images &&
               props.images.filter((img) => img.length > 0).length > 0 && (
                 <div className={`flex md:max-w-2xl ${checkWideMode ? 'lg:max-w-full lg:px-16 xl:max-w-full xl:px-32' : 'lg:max-w-xl xl:max-w-3xl'} mt-4 m-auto w-full`}>
                   {props.images
@@ -201,8 +200,12 @@ export const PlaygroundMessage = (props: Props) => {
               <div
                 className={`space-x-2 gap-2 mt-3 flex ${
                   props.currentMessageIndex !== props.totalMessages - 1
-                    ? "invisible group-hover:visible"
-                    : ""
+                  //  there is few style issue so i am commenting this out for v1.4.5 release
+                  // next release we will fix this
+                    // ? "invisible group-hover:visible"
+                    ? "hidden group-hover:flex"
+                    // ""
+                    : "flex"
                 }`}>
                 {props.isTTSEnabled && (
                   <Tooltip title={t("tts")}>
@@ -213,7 +216,7 @@ export const PlaygroundMessage = (props: Props) => {
                           cancel()
                         } else {
                           speak({
-                            utterance: props.message
+                            utterance: removeReasoning(props.message),
                           })
                         }
                       }}
