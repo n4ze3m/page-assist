@@ -11,7 +11,7 @@ import {
 } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useLocation, NavLink } from "react-router-dom"
-import { SelectedKnowledge } from "../Option/Knowledge/SelectedKnwledge"
+import { SelectedKnowledge } from "../Option/Knowledge/SelectedKnowledge"
 import { ModelSelect } from "../Common/ModelSelect"
 import { PromptSelect } from "../Common/PromptSelect"
 import { useQuery } from "@tanstack/react-query"
