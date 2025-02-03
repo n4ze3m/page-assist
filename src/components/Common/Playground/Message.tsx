@@ -19,7 +19,7 @@ import { tagColors } from "@/utils/color"
 import { removeModelSuffix } from "@/db/models"
 import { GenerationInfo } from "./GenerationInfo"
 import { parseReasoning, removeReasoning } from "@/libs/reasoning"
-import { humanizeMilliseconds } from "@/utils/humanize-miliseconds"
+import { humanizeMilliseconds } from "@/utils/humanize-milliseconds"
 type Props = {
   message: string
   message_type?: string
