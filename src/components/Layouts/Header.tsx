@@ -89,9 +89,10 @@ export const Header: React.FC<Props> = ({
     }
   }
 
+
   return (
     <div
-      className={`sticky top-0 z-[999] flex h-16 p-3  bg-gray-50 border-b  dark:bg-[#171717] dark:border-gray-600 ${
+      className={`absolute top-0 z-10 w-full flex h-14 p-3  bg-gray-50 border-b  dark:bg-[#171717] dark:border-gray-600 ${
         temporaryChat && "!bg-gray-200 dark:!bg-black"
       }`}>
       <div className="flex gap-2 items-center">
