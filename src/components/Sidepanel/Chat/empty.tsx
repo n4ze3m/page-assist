@@ -134,8 +134,8 @@ export const EmptySidePanel = () => {
   }
 
   return (
-    <div className="mx-auto sm:max-w-md px-4 mt-10">
-      <div className="rounded-lg justify-center items-center flex flex-col border dark:border-gray-700 p-8 bg-white dark:bg-[#262626] shadow-sm">
+    <div className="mx-auto sm:max-w-lg px-4 mt-10">
+      <div className="rounded-lg  justify-center items-center flex flex-col border border-gray-300 dark:border-gray-700 p-8 bg-white dark:bg-[#262626] shadow-sm">
         {(ollamaStatus === "pending" || isRefetching) && (
           <div className="inline-flex items-center space-x-2">
             <div className="w-3 h-3 bg-blue-500 rounded-full animate-bounce"></div>
