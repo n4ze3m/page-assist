@@ -2,9 +2,9 @@ import { getModelInfo, isCustomModel, isOllamaModel } from "@/db/models"
 import { ChatChromeAI } from "./ChatChromeAi"
 import { ChatOllama } from "./ChatOllama"
 import { getOpenAIConfigById } from "@/db/openai"
-import { ChatOpenAI } from "@langchain/openai"
 import { urlRewriteRuntime } from "@/libs/runtime"
 import { ChatGoogleAI } from "./ChatGoogleAI"
+import { CustomChatOpenAI } from "./CustomChatOpenAI"
 
 export const pageAssistModel = async ({
   model,
@@ -76,7 +76,7 @@ export const pageAssistModel = async ({
       }) as any
     }
 
-    return new ChatOpenAI({
+    return new CustomChatOpenAI({
       modelName: modelInfo.model_id,
       openAIApiKey: providerInfo.apiKey || "temp",
       temperature,
