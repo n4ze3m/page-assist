@@ -37,7 +37,9 @@ export class ChatOllama
 
     baseUrl = "http://localhost:11434";
 
-    keepAlive = "5m";
+    // keepAlive = "5m";
+
+    keepAlive?: string;
 
     embeddingOnly?: boolean;
 
@@ -117,7 +119,7 @@ export class ChatOllama
         this.baseUrl = fields.baseUrl?.endsWith("/")
             ? fields.baseUrl.slice(0, -1)
             : fields.baseUrl ?? this.baseUrl;
-        this.keepAlive = parseKeepAlive(fields.keepAlive) ?? this.keepAlive;
+        this.keepAlive = parseKeepAlive(fields.keepAlive);
         this.embeddingOnly = fields.embeddingOnly;
         this.f16KV = fields.f16KV;
         this.frequencyPenalty = fields.frequencyPenalty;

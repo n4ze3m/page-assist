@@ -75,9 +75,9 @@ export const getAllModelSettings = async () => {
     for (const key of keys) {
       const value = await storage.get(key)
       settings[key] = value
-      if (!value && key === "keepAlive") {
-        settings[key] = "5m"
-      }
+      // if (!value && key === "keepAlive") {
+      //   settings[key] = "5m"
+      // }
     }
     return settings
   } catch (error) {
@@ -98,9 +98,9 @@ export const getAllDefaultModelSettings = async (): Promise<ModelSettings> => {
   for (const key of keys) {
     const value = await storage.get(key)
     settings[key] = value
-    if (!value && key === "keepAlive") {
-      settings[key] = "5m"
-    }
+    // if (!value && key === "keepAlive") {
+    //   settings[key] = "5m"
+    // }
   }
   return settings
 }

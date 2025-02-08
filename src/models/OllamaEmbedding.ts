@@ -118,7 +118,7 @@ export class OllamaEmbeddingsPageAssist extends Embeddings {
 
   headers?: Record<string, string>
 
-  keepAlive = "5m"
+  keepAlive?: string
 
   requestOptions?: OllamaRequestParams["options"]
 
