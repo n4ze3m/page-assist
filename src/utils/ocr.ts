@@ -1,17 +1,18 @@
-import { createWorker } from 'tesseract.js';
+import { createWorker } from "tesseract.js"
 
 export async function processImageForOCR(imageData: string): Promise<string> {
-    const worker = await createWorker('eng-fast', undefined, {
-        workerPath: "/ocr/worker.min.js",
-        workerBlobURL: false,
-        corePath: "/ocr/tesseract-core-simd.js",
-        errorHandler: e => console.error(e),
-        langPath: "/ocr/lang"
-    });
+  const isOCROffline = import.meta.env.BROWSER === "edge"
+  const worker = await createWorker(!isOCROffline ? "eng-fast" : "eng", undefined, {
+    workerPath: "/ocr/worker.min.js",
+    workerBlobURL: false,
+    corePath: "/ocr/tesseract-core-simd.js",
+    errorHandler: (e) => console.error(e),
+    langPath: !isOCROffline ? "/ocr/lang" : undefined
+  })
 
-    const result = await worker.recognize(imageData);
+  const result = await worker.recognize(imageData)
 
-    await worker.terminate();
+  await worker.terminate()
 
-    return result.data.text;
+  return result.data.text
 }
