@@ -273,7 +273,8 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                     }
                     if (webSearch) {
                       const defaultEM = await defaultEmbeddingModelForRag()
-                      if (!defaultEM) {
+                      const simpleSearch = await getIsSimpleInternetSearch()
+                      if (!defaultEM && !simpleSearch) {
                         form.setFieldError(
                           "message",
                           t("formError.noEmbeddingModel")
