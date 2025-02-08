@@ -39,13 +39,16 @@ export default function OptionLayout({
     <div className="flex h-full w-full">
       <main className="relative h-dvh w-full">
         <div className="relative z-10 w-full">
+          <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-24 overflow-hidden sm:h-20">
+            <div className="bgGradientMask bg-background h-dvh w-screen"></div>
+          </div>
           <Header
             setSidebarOpen={setSidebarOpen}
             setOpenModelSettings={setOpenModelSettings}
           />
         </div>
         {/* <div className="relative flex h-full flex-col items-center"> */}
-          {children}
+        {children}
         {/* </div> */}
         <Drawer
           title={
