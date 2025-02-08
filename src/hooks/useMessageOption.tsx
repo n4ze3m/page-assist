@@ -40,6 +40,7 @@ import { pageAssistEmbeddingModel } from "@/models/embedding"
 import {
   isReasoningEnded,
   isReasoningStarted,
+  mergeReasoningContent,
   removeReasoning
 } from "@/libs/reasoning"
 
@@ -652,6 +653,15 @@ export const useMessageOption = () => {
       for await (const chunk of chunks) {
         contentToSave += chunk?.content
         fullText += chunk?.content
+        // console.log(chunk)
+        // if (chunk?.reasoning_content) {
+        //   const reasoningContent = mergeReasoningContent(
+        //     fullText,
+        //     chunk?.reasoning_content || ""
+        //   )
+        //   contentToSave += reasoningContent
+        //   fullText += reasoningContent
+        // }
 
         if (isReasoningStarted(fullText) && !reasoningStartTime) {
           reasoningStartTime = new Date()
