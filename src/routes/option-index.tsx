@@ -1,10 +1,10 @@
 import OptionLayout from "~/components/Layouts/Layout"
 import { Playground } from "~/components/Option/Playground/Playground"
 
- const OptionIndex = () => {
+const OptionIndex = () => {
   return (
     <OptionLayout>
-      <Playground />
+        <Playground />
     </OptionLayout>
   )
 }

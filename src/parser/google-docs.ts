@@ -95,7 +95,7 @@ const getGoogleDocs = () => {
 
 export const parseGoogleDocs = async () => {
   const result = new Promise((resolve) => {
-    if (import.meta.env.BROWSER === "chrome") {
+    if (import.meta.env.BROWSER === "chrome" || import.meta.env.BROWSER === "edge") {
       chrome.tabs.query({ active: true, currentWindow: true }, async (tabs) => {
         const tab = tabs[0]
 

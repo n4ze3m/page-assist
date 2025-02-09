@@ -6,7 +6,7 @@ export const urlRewriteRuntime = async function (
 ) {
   if (browser.runtime && browser.runtime.id) {
     const { isEnableRewriteUrl, rewriteUrl } = await getAdvancedOllamaSettings()
-    if (import.meta.env.BROWSER === "chrome") {
+    if (import.meta.env.BROWSER === "chrome" || import.meta.env.BROWSER === "edge") {
       const url = new URL(domain)
       const domains = [url.hostname]
       let origin = `${url.protocol}//${url.hostname}`

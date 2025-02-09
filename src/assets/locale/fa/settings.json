@@ -113,6 +113,9 @@
       },
       "ssmlEnabled": {
         "label": "فعال کردن SSML (Speech Synthesis Markup Language)"
+      },
+      "removeReasoningTagTTS": {
+        "label": "حذف برچسب استدلال از تبدیل متن به گفتار"
       }
     }
   },

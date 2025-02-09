@@ -11,7 +11,7 @@ export const isTwitterTimeline = (url: string) => {
 }
 
 export const isTwitterProfile = (url: string) => {
-  const PROFILE_REGEX = /twitter\.com\/[a-zA-Z0-9_]+/g
+  const PROFILE_REGEX = /x\.com\/[a-zA-Z0-9_]+/g
   const X_REGEX = /x\.com\/[a-zA-Z0-9_]+/g
   return PROFILE_REGEX.test(url) || X_REGEX.test(url)
 }

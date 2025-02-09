@@ -25,7 +25,7 @@ import {
 } from "antd"
 import { useDarkMode } from "~/hooks/useDarkmode"
 import { SaveButton } from "~/components/Common/SaveButton"
-import { SUPPORTED_LANGUAGES } from "~/utils/supporetd-languages"
+import { SUPPORTED_LANGUAGES } from "~/utils/supported-languages"
 import { useMessage } from "~/hooks/useMessage"
 import { MoonIcon, SunIcon } from "lucide-react"
 import { Trans, useTranslation } from "react-i18next"

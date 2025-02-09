@@ -116,6 +116,9 @@
       },
       "ssmlEnabled": {
         "label": "Aktiver SSML (Speech Synthesis Markup Language)"
+      },
+      "removeReasoningTagTTS": {
+        "label": "Fjern Resonneringsmerke fra TTS"
       }
     }
   },

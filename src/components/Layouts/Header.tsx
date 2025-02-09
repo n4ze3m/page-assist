@@ -11,7 +11,7 @@ import {
 } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useLocation, NavLink } from "react-router-dom"
-import { SelectedKnowledge } from "../Option/Knowledge/SelectedKnwledge"
+import { SelectedKnowledge } from "../Option/Knowledge/SelectedKnowledge"
 import { ModelSelect } from "../Common/ModelSelect"
 import { PromptSelect } from "../Common/PromptSelect"
 import { useQuery } from "@tanstack/react-query"
@@ -91,7 +91,7 @@ export const Header: React.FC<Props> = ({
 
   return (
     <div
-      className={`sticky top-0 z-[999] flex h-16 p-3  bg-gray-50 border-b  dark:bg-[#171717] dark:border-gray-600 ${
+      className={`absolute top-0 z-10 flex h-14 w-full flex-row items-center justify-center p-3 overflow-x-auto lg:overflow-x-visible bg-gray-50 border-b  dark:bg-[#171717] dark:border-gray-600 ${
         temporaryChat && "!bg-gray-200 dark:!bg-black"
       }`}>
       <div className="flex gap-2 items-center">
@@ -209,12 +209,6 @@ export const Header: React.FC<Props> = ({
       <div className="flex flex-1 justify-end px-4">
         <div className="ml-4 flex items-center md:ml-6">
           <div className="flex gap-4 items-center">
-            {/* {pathname === "/" &&
-              messages.length > 0 &&
-              !streaming &&
-              shareModeEnabled && (
-                <ShareBtn historyId={historyId} messages={messages} />
-              )} */}
             {messages.length > 0 && !streaming && (
               <MoreOptions
                 shareModeEnabled={shareModeEnabled}
@@ -246,7 +240,7 @@ export const Header: React.FC<Props> = ({
                 <CogIcon className="w-6 h-6" />
               </NavLink>
             </Tooltip>
-          </div>
+        </div>
         </div>
       </div>
     </div>

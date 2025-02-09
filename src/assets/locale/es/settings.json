@@ -116,8 +116,10 @@
       },
       "ssmlEnabled": {
         "label": "Habilitar SSML (Speech Synthesis Markup Language)"
-      }
-    }
+      },
+      "removeReasoningTagTTS": {
+        "label": "Eliminar Etiqueta de Razonamiento del TTS"
+      }    }
   },
   "manageModels": {
     "title": "Administar de Modelos",
