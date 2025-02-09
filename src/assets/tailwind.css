@@ -13,6 +13,12 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@layer utilities {
+  .mask-bottom-fade {
+    mask-image: linear-gradient(0deg, transparent 0, #000 160px);
+    -webkit-mask-image: linear-gradient(0deg, transparent 0, #000 160px);
+  }
+}
 
 
 

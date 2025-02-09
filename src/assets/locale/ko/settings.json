@@ -119,6 +119,9 @@
       },
       "ssmlEnabled": {
         "label": "SSML (Speech Synthesis Markup Language) 활성화"
+      },
+      "removeReasoningTagTTS": {
+        "label": "TTS에서 추론 태그 제거"
       }
     }
   },

@@ -4,6 +4,7 @@ import {
   getElevenLabsApiKey,
   getElevenLabsModel,
   getElevenLabsVoiceId,
+  getRemoveReasoningTagTTS,
   getTTSProvider,
   getVoice,
   isSSMLEnabled
@@ -11,6 +12,7 @@ import {
 import { markdownToSSML } from "@/utils/markdown-to-ssml"
 import { generateSpeech } from "@/services/elevenlabs"
 import { splitMessageContent } from "@/utils/tts"
+import { removeReasoning } from "@/libs/reasoning"
 
 export interface VoiceOptions {
   utterance: string
@@ -26,13 +28,21 @@ export const useTTS = () => {
     try {
       const voice = await getVoice()
       const provider = await getTTSProvider()
+      const isRemoveReasoning = await getRemoveReasoningTagTTS()
+
+      if (isRemoveReasoning) {
+        utterance = removeReasoning(utterance)
+      }
 
       if (provider === "browser") {
         const isSSML = await isSSMLEnabled()
         if (isSSML) {
           utterance = markdownToSSML(utterance)
         }
-        if (import.meta.env.BROWSER === "chrome") {
+        if (
+          import.meta.env.BROWSER === "chrome" ||
+          import.meta.env.BROWSER === "edge"
+        ) {
           chrome.tts.speak(utterance, {
             voiceName: voice,
             onEvent(event) {
@@ -68,7 +78,7 @@ export const useTTS = () => {
           let currentAudioData =
             nextAudioData ||
             (await generateSpeech(apiKey, sentences[i], voiceId, modelId))
-            
+
           if (i < sentences.length - 1) {
             generateSpeech(apiKey, sentences[i + 1], voiceId, modelId)
               .then((nextAudioData) => {
@@ -112,7 +122,10 @@ export const useTTS = () => {
       return
     }
 
-    if (import.meta.env.BROWSER === "chrome") {
+    if (
+      import.meta.env.BROWSER === "chrome" ||
+      import.meta.env.BROWSER === "edge"
+    ) {
       chrome.tts.stop()
     } else {
       window.speechSynthesis.cancel()

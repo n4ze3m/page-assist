@@ -116,6 +116,9 @@
       },
       "ssmlEnabled": {
         "label": "Aktivera SSML (Speech Synthesis Markup Language)"
+      },
+      "removeReasoningTagTTS": {
+        "label": "Ta bort resonemangstagg från Text till Tal"
       }
     }
   },
