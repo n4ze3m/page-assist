@@ -17,6 +17,7 @@ export const TTSModeSettings = ({ hideBorder }: { hideBorder?: boolean }) => {
       ttsProvider: "",
       voice: "",
       ssmlEnabled: false,
+      removeReasoningTagTTS: true,
       elevenLabsApiKey: "",
       elevenLabsVoiceId: "",
       elevenLabsModel: "",
@@ -203,6 +204,20 @@ export const TTSModeSettings = ({ hideBorder }: { hideBorder?: boolean }) => {
             <Switch
               className="mt-4 sm:mt-0"
               {...form.getInputProps("ssmlEnabled", {
+                type: "checkbox"
+              })}
+            />
+          </div>
+        </div>
+
+        <div className="flex sm:flex-row flex-col space-y-4 sm:space-y-0 sm:justify-between">
+          <span className="text-gray-700 dark:text-neutral-50 ">
+            {t("generalSettings.tts.removeReasoningTagTTS.label")}
+          </span>
+          <div>
+            <Switch
+              className="mt-4 sm:mt-0"
+              {...form.getInputProps("removeReasoningTagTTS", {
                 type: "checkbox"
               })}
             />

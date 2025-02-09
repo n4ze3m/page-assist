@@ -119,6 +119,9 @@
       },
       "ssmlEnabled": {
         "label": "تمكين SSML (لغة ترميز توليف الكلام)"
+      },
+      "removeReasoningTagTTS": {
+        "label": "إزالة علامة التفكير من تحويل النص إلى كلام"
       }
     }
   },

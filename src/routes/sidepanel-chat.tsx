@@ -126,25 +126,25 @@ const SidepanelChat = () => {
   }, [bgMsg])
 
   return (
-    <div
-      ref={drop}
-      className={`flex ${
-        dropState === "dragging" && chatMode === "normal"
-          ? "bg-neutral-200 dark:bg-gray-800 z-10"
-          : "bg-neutral-50 dark:bg-[#171717]"
-      } flex-col min-h-screen mx-auto max-w-7xl`}>
-      <div className="sticky top-0 z-10">
-        <SidepanelHeader />
-      </div>
-      <SidePanelBody />
+    <div className="flex h-full w-full">
+      <main className="relative h-dvh w-full">
+        <div className="relative z-10 w-full">
+          <SidepanelHeader />
+        </div>
+        <div
+          ref={drop}
+          className={`relative flex h-full flex-col items-center ${
+            dropState === "dragging" ? "bg-gray-100 dark:bg-gray-800" : ""
+          } bg-white dark:bg-[#171717]`}>
+          <div className="custom-scrollbar bg-bottom-mask-light dark:bg-bottom-mask-dark mask-bottom-fade will-change-mask flex h-full w-full flex-col items-center overflow-x-hidden overflow-y-auto px-5">
+            <SidePanelBody />
+          </div>
 
-      <div className="bottom-0 w-full bg-transparent border-0 fixed pt-2">
-        <div className="stretch mx-2 flex flex-row gap-3 md:mx-4 lg:mx-auto lg:max-w-2xl xl:max-w-3xl">
-          <div className="relative flex flex-col h-full flex-1 items-stretch md:flex-col">
+          <div className="absolute bottom-0 w-full">
             <SidepanelForm dropedFile={dropedFile} />
           </div>
         </div>
-      </div>
+      </main>
     </div>
   )
 }

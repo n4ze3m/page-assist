@@ -36,7 +36,12 @@ import { humanMessageFormatter } from "@/utils/human-message"
 import { pageAssistEmbeddingModel } from "@/models/embedding"
 import { PAMemoryVectorStore } from "@/libs/PAMemoryVectorStore"
 import { getScreenshotFromCurrentTab } from "@/libs/get-screenshot"
-import { isReasoningEnded, isReasoningStarted, removeReasoning } from "@/libs/reasoning"
+import {
+  isReasoningEnded,
+  isReasoningStarted,
+  mergeReasoningContent,
+  removeReasoning
+} from "@/libs/reasoning"
 
 export const useMessage = () => {
   const {
@@ -413,7 +418,24 @@ export const useMessage = () => {
       let reasoningStartTime: Date | null = null
       let reasoningEndTime: Date | null = null
       let timetaken = 0
+      let apiReasoning = false
       for await (const chunk of chunks) {
+        if (chunk?.additional_kwargs?.reasoning_content) {
+          const reasoningContent = mergeReasoningContent(
+            fullText,
+            chunk?.additional_kwargs?.reasoning_content || ""
+          )
+          contentToSave = reasoningContent
+          fullText = reasoningContent
+          apiReasoning = true
+        } else {
+          if (apiReasoning) {
+            fullText += "</think>"
+            contentToSave += "</think>"
+            apiReasoning = false
+          }
+        }
+
         contentToSave += chunk?.content
         fullText += chunk?.content
         if (count === 0) {
@@ -618,7 +640,7 @@ export const useMessage = () => {
       const applicationChatHistory = []
 
       const data = await getScreenshotFromCurrentTab()
-     
+
       const visionImage = data?.screenshot || ""
 
       if (visionImage === "") {
@@ -680,7 +702,24 @@ export const useMessage = () => {
       let reasoningStartTime: Date | undefined = undefined
       let reasoningEndTime: Date | undefined = undefined
       let timetaken = 0
+      let apiReasoning = false
       for await (const chunk of chunks) {
+        if (chunk?.additional_kwargs?.reasoning_content) {
+          const reasoningContent = mergeReasoningContent(
+            fullText,
+            chunk?.additional_kwargs?.reasoning_content || ""
+          )
+          contentToSave = reasoningContent
+          fullText = reasoningContent
+          apiReasoning = true
+        } else {
+          if (apiReasoning) {
+            fullText += "</think>"
+            contentToSave += "</think>"
+            apiReasoning = false
+          }
+        }
+
         contentToSave += chunk?.content
         fullText += chunk?.content
         if (count === 0) {
@@ -950,8 +989,25 @@ export const useMessage = () => {
       let reasoningStartTime: Date | null = null
       let reasoningEndTime: Date | null = null
       let timetaken = 0
+      let apiReasoning = false
 
       for await (const chunk of chunks) {
+        if (chunk?.additional_kwargs?.reasoning_content) {
+          const reasoningContent = mergeReasoningContent(
+            fullText,
+            chunk?.additional_kwargs?.reasoning_content || ""
+          )
+          contentToSave = reasoningContent
+          fullText = reasoningContent
+          apiReasoning = true
+        } else {
+          if (apiReasoning) {
+            fullText += "</think>"
+            contentToSave += "</think>"
+            apiReasoning = false
+          }
+        }
+
         contentToSave += chunk?.content
         fullText += chunk?.content
         if (count === 0) {
@@ -1279,7 +1335,24 @@ export const useMessage = () => {
       let timetaken = 0
       let reasoningStartTime: Date | undefined = undefined
       let reasoningEndTime: Date | undefined = undefined
+      let apiReasoning = false
       for await (const chunk of chunks) {
+        if (chunk?.additional_kwargs?.reasoning_content) {
+          const reasoningContent = mergeReasoningContent(
+            fullText,
+            chunk?.additional_kwargs?.reasoning_content || ""
+          )
+          contentToSave = reasoningContent
+          fullText = reasoningContent
+          apiReasoning = true
+        } else {
+          if (apiReasoning) {
+            fullText += "</think>"
+            contentToSave += "</think>"
+            apiReasoning = false
+          }
+        }
+
         contentToSave += chunk?.content
         fullText += chunk?.content
         if (count === 0) {
@@ -1527,7 +1600,24 @@ export const useMessage = () => {
       let reasoningStartTime: Date | null = null
       let reasoningEndTime: Date | null = null
       let timetaken = 0
+      let apiReasoning = false
       for await (const chunk of chunks) {
+        if (chunk?.additional_kwargs?.reasoning_content) {
+          const reasoningContent = mergeReasoningContent(
+            fullText,
+            chunk?.additional_kwargs?.reasoning_content || ""
+          )
+          contentToSave = reasoningContent
+          fullText = reasoningContent
+          apiReasoning = true
+        } else {
+          if (apiReasoning) {
+            fullText += "</think>"
+            contentToSave += "</think>"
+            apiReasoning = false
+          }
+        }
+
         contentToSave += chunk?.content
         fullText += chunk?.content
         if (count === 0) {

@@ -1,4 +1,5 @@
 import { isCustomModel } from "@/db/models"
+import { removeReasoning } from "@/libs/reasoning"
 import {
   HumanMessage,
   AIMessage,
@@ -51,11 +52,11 @@ export const generateHistory = (
       history.push(
         new AIMessage({
           content: isCustom
-            ? message.content
+            ? removeReasoning(message.content)
             : [
                 {
                   type: "text",
-                  text: message.content
+                  text: removeReasoning(message.content)
                 }
               ]
         })

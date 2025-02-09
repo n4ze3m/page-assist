@@ -7,8 +7,10 @@
   "scripts": {
     "dev": "cross-env TARGET=chrome wxt",
     "dev:firefox": "cross-env TARGET=firefox wxt -b firefox",
+    "dev:edge": "cross-env TARGET=chrome wxt -b edge",
     "build": "cross-env TARGET=chrome wxt build",
     "build:firefox": "cross-env TARGET=firefox wxt build -b firefox",
+    "build:edge": "cross-env TARGET=chrome wxt build -b edge",
     "zip": "cross-env TARGET=chrome wxt zip",
     "zip:firefox": "cross-env TARGET=firefox wxt zip -b firefox",
     "compile": "tsc --noEmit",

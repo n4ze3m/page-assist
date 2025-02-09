@@ -35,15 +35,9 @@ export default defineBackground({
       }
     })
 
-    if (import.meta.env.BROWSER === "chrome") {
-      chrome.action.onClicked.addListener((tab) => {
-        chrome.tabs.create({ url: chrome.runtime.getURL("/options.html") })
-      })
-    } else {
-      browser.browserAction.onClicked.addListener((tab) => {
-        browser.tabs.create({ url: browser.runtime.getURL("/options.html") })
-      })
-    }
+    chrome.action.onClicked.addListener((tab) => {
+      chrome.tabs.create({ url: chrome.runtime.getURL("/options.html") })
+    })
 
     const contextMenuTitle = {
       webUi: browser.i18n.getMessage("openOptionToChat"),
@@ -91,176 +85,98 @@ export default defineBackground({
       contexts: ["selection"]
     })
 
-    if (import.meta.env.BROWSER === "chrome") {
-      browser.contextMenus.onClicked.addListener(async (info, tab) => {
-        if (info.menuItemId === "open-side-panel-pa") {
-          chrome.sidePanel.open({
-            tabId: tab.id!
+    browser.contextMenus.onClicked.addListener(async (info, tab) => {
+      if (info.menuItemId === "open-side-panel-pa") {
+        chrome.sidePanel.open({
+          tabId: tab.id!
+        })
+      } else if (info.menuItemId === "open-web-ui-pa") {
+        browser.tabs.create({
+          url: browser.runtime.getURL("/options.html")
+        })
+      } else if (info.menuItemId === "summarize-pa") {
+        chrome.sidePanel.open({
+          tabId: tab.id!
+        })
+        // this is a bad method hope somone can fix it :)
+        setTimeout(async () => {
+          await browser.runtime.sendMessage({
+            from: "background",
+            type: "summary",
+            text: info.selectionText
           })
-        } else if (info.menuItemId === "open-web-ui-pa") {
-          browser.tabs.create({
-            url: browser.runtime.getURL("/options.html")
+        }, isCopilotRunning ? 0 : 5000)
+
+      } else if (info.menuItemId === "rephrase-pa") {
+        chrome.sidePanel.open({
+          tabId: tab.id!
+        })
+        setTimeout(async () => {
+
+          await browser.runtime.sendMessage({
+            type: "rephrase",
+            from: "background",
+            text: info.selectionText
           })
-        } else if (info.menuItemId === "summarize-pa") {
-          chrome.sidePanel.open({
-            tabId: tab.id!
+        }, isCopilotRunning ? 0 : 5000)
+
+      } else if (info.menuItemId === "translate-pg") {
+        chrome.sidePanel.open({
+          tabId: tab.id!
+        })
+
+        setTimeout(async () => {
+          await browser.runtime.sendMessage({
+            type: "translate",
+            from: "background",
+            text: info.selectionText
           })
-          // this is a bad method hope somone can fix it :)
-          setTimeout(async () => {
-            await browser.runtime.sendMessage({
-              from: "background",
-              type: "summary",
-              text: info.selectionText
-            })
-          }, isCopilotRunning ? 0 : 5000)
+        }, isCopilotRunning ? 0 : 5000)
+      } else if (info.menuItemId === "explain-pa") {
+        chrome.sidePanel.open({
+          tabId: tab.id!
+        })
 
-        } else if (info.menuItemId === "rephrase-pa") {
-          chrome.sidePanel.open({
-            tabId: tab.id!
+        setTimeout(async () => {
+          await browser.runtime.sendMessage({
+            type: "explain",
+            from: "background",
+            text: info.selectionText
           })
-          setTimeout(async () => {
+        }, isCopilotRunning ? 0 : 5000)
+      } else if (info.menuItemId === "custom-pg") {
+        chrome.sidePanel.open({
+          tabId: tab.id!
+        })
 
-            await browser.runtime.sendMessage({
-              type: "rephrase",
-              from: "background",
-              text: info.selectionText
-            })
-          }, isCopilotRunning ? 0 : 5000)
-
-        } else if (info.menuItemId === "translate-pg") {
-          chrome.sidePanel.open({
-            tabId: tab.id!
+        setTimeout(async () => {
+          await browser.runtime.sendMessage({
+            type: "custom",
+            from: "background",
+            text: info.selectionText
           })
+        }, isCopilotRunning ? 0 : 5000)
+      }
+    })
 
-          setTimeout(async () => {
-            await browser.runtime.sendMessage({
-              type: "translate",
-              from: "background",
-              text: info.selectionText
-            })
-          }, isCopilotRunning ? 0 : 5000)
-        } else if (info.menuItemId === "explain-pa") {
-          chrome.sidePanel.open({
-            tabId: tab.id!
-          })
+    browser.commands.onCommand.addListener((command) => {
+      switch (command) {
+        case "execute_side_panel":
+          chrome.tabs.query(
+            { active: true, currentWindow: true },
+            async (tabs) => {
+              const tab = tabs[0]
+              chrome.sidePanel.open({
+                tabId: tab.id!
+              })
+            }
+          )
+          break
+        default:
+          break
+      }
+    })
 
-          setTimeout(async () => {
-            await browser.runtime.sendMessage({
-              type: "explain",
-              from: "background",
-              text: info.selectionText
-            })
-          }, isCopilotRunning ? 0 : 5000)
-        } else if (info.menuItemId === "custom-pg") {
-          chrome.sidePanel.open({
-            tabId: tab.id!
-          })
-
-          setTimeout(async () => {
-            await browser.runtime.sendMessage({
-              type: "custom",
-              from: "background",
-              text: info.selectionText
-            })
-          }, isCopilotRunning ? 0 : 5000)
-        }
-      })
-
-      browser.commands.onCommand.addListener((command) => {
-        switch (command) {
-          case "execute_side_panel":
-            chrome.tabs.query(
-              { active: true, currentWindow: true },
-              async (tabs) => {
-                const tab = tabs[0]
-                chrome.sidePanel.open({
-                  tabId: tab.id!
-                })
-              }
-            )
-            break
-          default:
-            break
-        }
-      })
-    }
-
-    if (import.meta.env.BROWSER === "firefox") {
-      browser.contextMenus.onClicked.addListener((info, tab) => {
-        if (info.menuItemId === "open-side-panel-pa") {
-          browser.sidebarAction.toggle()
-        } else if (info.menuItemId === "open-web-ui-pa") {
-          browser.tabs.create({
-            url: browser.runtime.getURL("/options.html")
-          })
-        } else if (info.menuItemId === "summarize-pa") {
-          if (!isCopilotRunning) {
-            browser.sidebarAction.toggle()
-          }
-          setTimeout(async () => {
-            await browser.runtime.sendMessage({
-              from: "background",
-              type: "summary",
-              text: info.selectionText
-            })
-          }, isCopilotRunning ? 0 : 5000)
-        } else if (info.menuItemId === "rephrase-pa") {
-          if (!isCopilotRunning) {
-            browser.sidebarAction.toggle()
-          }
-          setTimeout(async () => {
-            await browser.runtime.sendMessage({
-              type: "rephrase",
-              from: "background",
-              text: info.selectionText
-            })
-          }, isCopilotRunning ? 0 : 5000)
-        } else if (info.menuItemId === "translate-pg") {
-          if (!isCopilotRunning) {
-            browser.sidebarAction.toggle()
-          }
-          setTimeout(async () => {
-            await browser.runtime.sendMessage({
-              type: "translate",
-              from: "background",
-              text: info.selectionText
-            })
-          }, isCopilotRunning ? 0 : 5000)
-        } else if (info.menuItemId === "explain-pa") {
-          if (!isCopilotRunning) {
-            browser.sidebarAction.toggle()
-          }
-          setTimeout(async () => {
-            await browser.runtime.sendMessage({
-              type: "explain",
-              from: "background",
-              text: info.selectionText
-            })
-          }, isCopilotRunning ? 0 : 5000)
-        } else if (info.menuItemId === "custom-pg") {
-          if (!isCopilotRunning) {
-            browser.sidebarAction.toggle()
-          }
-          setTimeout(async () => {
-            await browser.runtime.sendMessage({
-              type: "custom",
-              from: "background",
-              text: info.selectionText
-            })
-          }, isCopilotRunning ? 0 : 5000)
-        }
-      })
-
-      browser.commands.onCommand.addListener((command) => {
-        switch (command) {
-          case "execute_side_panel":
-            browser.sidebarAction.toggle()
-            break
-          default:
-            break
-        }
-      })
-    }
   },
   persistent: true
 })

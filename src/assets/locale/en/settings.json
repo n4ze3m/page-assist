@@ -122,6 +122,9 @@
       },
       "responseSplitting": {
         "label": "Response Splitting"
+      },
+      "removeReasoningTagTTS": {
+        "label": "Remove Reasoning Tag from TTS"
       }
     }
   },

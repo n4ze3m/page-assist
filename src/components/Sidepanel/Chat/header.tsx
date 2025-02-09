@@ -40,7 +40,7 @@ export const SidepanelHeader = () => {
   const [sidebarOpen, setSidebarOpen] = React.useState(false)
 
   return (
-    <div className="flex px-3 justify-between bg-white dark:bg-[#171717] border-b border-gray-300 dark:border-gray-700 py-4 items-center">
+    <div className=" px-3 justify-between bg-white dark:bg-[#171717] border-b border-gray-300 dark:border-gray-700 py-4 items-center absolute top-0 z-10 flex h-14 w-full">
       <div className="focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-700 flex items-center dark:text-white">
         <img
           className="h-6 w-auto"

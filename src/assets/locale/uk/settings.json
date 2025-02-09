@@ -116,6 +116,9 @@
       },
       "ssmlEnabled": {
         "label": "Ввімкнути SSML (Мова Розмітки для Синтезу Голосу)"
+      },
+      "removeReasoningTagTTS": {
+        "label": "Видалити тег міркування з TTS"
       }
     }
   },

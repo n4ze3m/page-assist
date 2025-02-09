@@ -119,6 +119,9 @@
       },
       "ssmlEnabled": {
         "label": "SSML (Speech Synthesis Markup Language) を有効にする"
+      },
+      "removeReasoningTagTTS": {
+        "label": "テキスト読み上げから推論タグを削除"
       }
     }
   },

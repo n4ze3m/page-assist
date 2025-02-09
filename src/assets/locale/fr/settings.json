@@ -116,6 +116,9 @@
       },
       "ssmlEnabled": {
         "label": "Activer SSML (langage de balisage de synthèse vocale)"
+      },
+      "removeReasoningTagTTS": {
+        "label": "Supprimer la balise de raisonnement de la synthèse vocale"
       }
     }
   },

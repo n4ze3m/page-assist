@@ -116,6 +116,9 @@
       },
       "ssmlEnabled": {
         "label": "Ativar SSML (Linguagem de Marcação de Síntese de Fala)"
+      },
+      "removeReasoningTagTTS": {
+        "label": "Remover Tag de Raciocínio do TTS"
       }
     }
   },
