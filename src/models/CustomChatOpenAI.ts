@@ -8,11 +8,14 @@ import {
     FunctionMessageChunk,
     HumanMessageChunk,
     SystemMessageChunk,
-    ToolMessageChunk,
+    ToolMessageChunk
 } from "@langchain/core/messages"
 import { ChatGenerationChunk, ChatResult } from "@langchain/core/outputs"
 import { getEnvironmentVariable } from "@langchain/core/utils/env"
-import { BaseChatModel, BaseChatModelParams } from "@langchain/core/language_models/chat_models"
+import {
+    BaseChatModel,
+    BaseChatModelParams
+} from "@langchain/core/language_models/chat_models"
 import { convertToOpenAITool } from "@langchain/core/utils/function_calling"
 import {
     RunnablePassthrough,
@@ -92,7 +95,8 @@ function _convertDeltaToMessageChunk(
 ) {
     const role = delta.role ?? defaultRole
     const content = delta.content ?? ""
-    const reasoning_content: string | null = delta.reasoning_content ?? null
+    const reasoning_content: string | undefined | null =
+        delta?.reasoning_content ?? undefined
     let additional_kwargs
     if (delta.function_call) {
         additional_kwargs = {
@@ -246,7 +250,7 @@ export class CustomChatOpenAI<
     constructor(
         fields?: Partial<OpenAIChatInput> &
             BaseChatModelParams & {
-                configuration?: ClientOptions & LegacyOpenAIInput;
+                configuration?: ClientOptions & LegacyOpenAIInput
             },
         /** @deprecated */
         configuration?: ClientOptions & LegacyOpenAIInput
@@ -840,8 +844,7 @@ export class CustomChatOpenAI<
         let llm
         let outputParser
         if (method === "jsonMode") {
-            llm = this.bind({
-            })
+            llm = this.bind({})
             if (isZodSchema(schema)) {
                 outputParser = StructuredOutputParser.fromZodSchema(schema)
             } else {
@@ -866,9 +869,7 @@ export class CustomChatOpenAI<
                     parameters: schema
                 }
             }
-            llm = this.bind({
-
-            })
+            llm = this.bind({})
             outputParser = new JsonOutputKeyToolsParser({
                 returnSingle: true,
                 keyName: functionName
