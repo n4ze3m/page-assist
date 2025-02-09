@@ -96,5 +96,5 @@ export function mergeReasoningContent(
 
   originalText = originalText.replace(reasoningTag, "")
 
-  return `${reasoningTag}${originalText + reasoning}`.trim()
+  return `${reasoningTag}${originalText + reasoning}`
 }
