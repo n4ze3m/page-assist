@@ -18,7 +18,7 @@ import { useTTS } from "@/hooks/useTTS"
 import { tagColors } from "@/utils/color"
 import { removeModelSuffix } from "@/db/models"
 import { GenerationInfo } from "./GenerationInfo"
-import { parseReasoning, removeReasoning } from "@/libs/reasoning"
+import { parseReasoning,  } from "@/libs/reasoning"
 import { humanizeMilliseconds } from "@/utils/humanize-milliseconds"
 type Props = {
   message: string
@@ -213,7 +213,7 @@ export const PlaygroundMessage = (props: Props) => {
                         cancel()
                       } else {
                         speak({
-                          utterance: removeReasoning(props.message)
+                          utterance: props.message
                         })
                       }
                     }}

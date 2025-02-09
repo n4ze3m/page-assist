@@ -119,6 +119,9 @@
       },
       "ssmlEnabled": {
         "label": "启用SSML(语音合成标记语言)"
+      },
+      "removeReasoningTagTTS": {
+        "label": "从语音合成中移除推理标签"
       }
     }
   },

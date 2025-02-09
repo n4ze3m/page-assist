@@ -1,6 +1,9 @@
 import { Storage } from "@plasmohq/storage"
 
 const storage = new Storage()
+const storage2 = new Storage({
+  area: "local"
+})
 
 const DEFAULT_TTS_PROVIDER = "browser"
 
@@ -98,8 +101,20 @@ export const getResponseSplitting = async () => {
   return data
 }
 
+export const getRemoveReasoningTagTTS = async () => {
+  const data = await storage2.get("removeReasoningTagTTS")
+  if (!data || data.length === 0 || data === "") {
+    return true
+  }
+  return data === "true"
+}
+
 export const setResponseSplitting = async (responseSplitting: string) => {
   await storage.set("ttsResponseSplitting", responseSplitting)
+}
+
+export const setRemoveReasoningTagTTS = async (removeReasoningTagTTS: boolean) => {
+  await storage2.set("removeReasoningTagTTS", removeReasoningTagTTS.toString())
 }
 
 export const getTTSSettings = async () => {
@@ -112,7 +127,8 @@ export const getTTSSettings = async () => {
     elevenLabsApiKey,
     elevenLabsVoiceId,
     elevenLabsModel,
-    responseSplitting
+    responseSplitting,
+    removeReasoningTagTTS
   ] = await Promise.all([
     isTTSEnabled(),
     getTTSProvider(),
@@ -122,7 +138,8 @@ export const getTTSSettings = async () => {
     getElevenLabsApiKey(),
     getElevenLabsVoiceId(),
     getElevenLabsModel(),
-    getResponseSplitting()
+    getResponseSplitting(),
+    getRemoveReasoningTagTTS()
   ])
 
   return {
@@ -134,7 +151,8 @@ export const getTTSSettings = async () => {
     elevenLabsApiKey,
     elevenLabsVoiceId,
     elevenLabsModel,
-    responseSplitting
+    responseSplitting,
+    removeReasoningTagTTS
   }
 }
 
@@ -146,7 +164,8 @@ export const setTTSSettings = async ({
   elevenLabsApiKey,
   elevenLabsVoiceId,
   elevenLabsModel,
-  responseSplitting
+  responseSplitting,
+  removeReasoningTagTTS
 }: {
   ttsEnabled: boolean
   ttsProvider: string
@@ -156,6 +175,7 @@ export const setTTSSettings = async ({
   elevenLabsVoiceId: string
   elevenLabsModel: string
   responseSplitting: string
+  removeReasoningTagTTS: boolean
 }) => {
   await Promise.all([
     setTTSEnabled(ttsEnabled),
@@ -165,6 +185,7 @@ export const setTTSSettings = async ({
     setElevenLabsApiKey(elevenLabsApiKey),
     setElevenLabsVoiceId(elevenLabsVoiceId),
     setElevenLabsModel(elevenLabsModel),
-    setResponseSplitting(responseSplitting)
+    setResponseSplitting(responseSplitting),
+    setRemoveReasoningTagTTS(removeReasoningTagTTS)
   ])
 }

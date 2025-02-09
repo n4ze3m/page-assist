@@ -117,6 +117,9 @@
       },
       "ssmlEnabled": {
         "label": "Включить SSML (язык разметки синтеза речи)"
+      },
+      "removeReasoningTagTTS": {
+        "label": "Удалить тег рассуждения из TTS"
       }
     }
   },
