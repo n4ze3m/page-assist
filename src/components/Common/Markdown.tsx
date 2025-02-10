@@ -9,6 +9,7 @@ import "property-information"
 import React from "react"
 import { CodeBlock } from "./CodeBlock"
 import { preprocessLaTeX } from "@/utils/latex"
+import { useStorage } from "@plasmohq/storage/hook"
 
 function Markdown({
   message,
@@ -17,6 +18,10 @@ function Markdown({
   message: string
   className?: string
 }) {
+  const [checkWideMode] = useStorage("checkWideMode", false)
+  if (checkWideMode) {
+    className += " max-w-none"
+  }
   message = preprocessLaTeX(message)
   return (
     <React.Fragment>
