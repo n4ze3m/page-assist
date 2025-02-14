@@ -16,6 +16,7 @@ import { useSpeechRecognition } from "@/hooks/useSpeechRecognition"
 import { PiGlobe } from "react-icons/pi"
 import { handleChatInputKeyDown } from "@/utils/key-down"
 import { getIsSimpleInternetSearch } from "@/services/search"
+import { useStorage } from "@plasmohq/storage/hook"
 
 type Props = {
   dropedFile: File | undefined
@@ -25,6 +26,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
   const { t } = useTranslation(["playground", "common"])
   const inputRef = React.useRef<HTMLInputElement>(null)
   const [typing, setTyping] = React.useState<boolean>(false)
+  const [checkWideMode] = useStorage("checkWideMode", false)
   const {
     onSubmit,
     selectedModel,
@@ -211,6 +213,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
           <div
             className={` bg-neutral-50  dark:bg-[#262626] relative w-full max-w-[48rem] p-1 backdrop-blur-lg duration-100 border border-gray-300 rounded-xl  dark:border-gray-600
             ${temporaryChat ? "!bg-gray-200 dark:!bg-black " : ""}
+            ${checkWideMode ? "max-w-none " : ""}
             `}>
             <div
               className={`border-b border-gray-200 dark:border-gray-600 relative ${

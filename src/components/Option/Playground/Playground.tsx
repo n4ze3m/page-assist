@@ -13,7 +13,7 @@ import { getLastUsedChatSystemPrompt } from "@/services/model-settings"
 import { useStoreChatModelSettings } from "@/store/model"
 import { useSmartScroll } from "@/hooks/useSmartScroll"
 import { ChevronDown } from "lucide-react"
-
+import { useStorage } from "@plasmohq/storage/hook"
 export const Playground = () => {
   const drop = React.useRef<HTMLDivElement>(null)
   const [dropedFile, setDropedFile] = React.useState<File | undefined>()

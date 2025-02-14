@@ -10,6 +10,10 @@ import { LLamaFile } from "../Icons/Llamafile"
 import { GeminiIcon } from "../Icons/GeminiIcon"
 import { MistarlIcon } from "../Icons/Mistral"
 import { DeepSeekIcon } from "../Icons/DeepSeek"
+import { SiliconFlowIcon } from "../Icons/SiliconFlow"
+import { VolcEngineIcon } from "../Icons/VolcEngine"
+import { TencentCloudIcon } from "../Icons/TencentCloud"
+import { AliBaBaCloudIcon } from "../Icons/AliBaBaCloud"
 
 export const ProviderIcons = ({
   provider,
@@ -43,6 +47,14 @@ export const ProviderIcons = ({
       return <MistarlIcon className={className} />
     case "deepseek":
       return <DeepSeekIcon  className={className} />
+    case "siliconflow":
+      return <SiliconFlowIcon  className={className} />
+    case "volcengine":
+      return <VolcEngineIcon  className={className} />
+    case "tencentcloud":
+      return <TencentCloudIcon  className={className} />
+    case "alibabacloud":
+      return <AliBaBaCloudIcon  className={className} />
     default:
       return <OllamaIcon className={className} />
   }

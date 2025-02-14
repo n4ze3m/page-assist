@@ -58,5 +58,25 @@ export const OAI_API_PROVIDERS = [
         label: "DeepSeek",
         value: "deepseek",
         baseUrl: "https://api.deepseek.com"
+    },
+    {
+        label: "SiliconFlow",
+        value: "siliconflow",
+        baseUrl: "https://api.siliconflow.cn/v1"
+    },
+    {
+        label: "VolcEngine",
+        value: "volcengine",
+        baseUrl: "https://ark.cn-beijing.volces.com/api/v3"
+    },
+    {
+        label: "TencentCloud",
+        value: "tencentcloud",
+        baseUrl: "https://api.lkeap.cloud.tencent.com/v1"
+    },
+    {
+        label: "AliBaBaCloud",
+        value: "alibabacloud",
+        baseUrl: "https://dashscope.aliyuncs.com/compatible-mode/v1"
     }
 ]
