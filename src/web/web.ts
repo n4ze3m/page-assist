@@ -74,7 +74,8 @@ export const getSystemPromptForWeb = async (query: string) => {
     const prompt = system
       .replace("{current_date_time}", current_date_time)
       .replace("{search_results}", search_results)
-
+      .replace("{query}", query)
+      
     return {
       prompt,
       source: search.map((result) => {
