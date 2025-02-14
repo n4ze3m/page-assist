@@ -38,6 +38,9 @@
       },
       "ollamaStatus": {
         "label": "فعال یا غیرفعال کردن بررسی وضعیت اتصال Ollama"
+      },
+      "wideMode": {
+        "label": "فعال کردن حالت صفحه عریض"
       }
     },
     "sidepanelRag": {

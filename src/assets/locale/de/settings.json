@@ -41,6 +41,9 @@
       },
       "ollamaStatus": {
         "label": "Ollama-Verbindungsstatus-Überprüfung aktivieren oder deaktivieren"
+      },
+      "wideMode": {
+        "label": "Breitbildmodus aktivieren"
       }
     },
     "sidepanelRag": {

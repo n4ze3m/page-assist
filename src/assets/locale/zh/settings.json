@@ -44,6 +44,9 @@
       },
       "ollamaStatus": {
         "label": "启用或禁用Ollama连接状态检查"
+      },
+      "wideMode": {
+        "label": "启用宽屏模式"
       }
     },
     "sidepanelRag": {

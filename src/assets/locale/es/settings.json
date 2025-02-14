@@ -41,6 +41,9 @@
       },
       "ollamaStatus": {
         "label": "Habilitar o deshabilitar la verificación del estado de conexión de Ollama"
+      },
+      "wideMode": {
+        "label": "Habilitar modo pantalla ancha"
       }
     },
     "sidepanelRag": {
@@ -119,7 +122,8 @@
       },
       "removeReasoningTagTTS": {
         "label": "Eliminar Etiqueta de Razonamiento del TTS"
-      }    }
+      }
+    }
   },
   "manageModels": {
     "title": "Administar de Modelos",

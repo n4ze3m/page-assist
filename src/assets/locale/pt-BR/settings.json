@@ -41,6 +41,9 @@
       },
       "ollamaStatus": {
         "label": "Ativar ou desativar verificação de status da conexão Ollama"
+      },
+      "wideMode": {
+        "label": "Ativar modo tela larga"
       }
     },
     "sidepanelRag": {

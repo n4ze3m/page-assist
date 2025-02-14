@@ -41,6 +41,9 @@
       },
       "ollamaStatus": {
         "label": "Abilita o disabilita il controllo dello stato della connessione Ollama"
+      },
+      "wideMode": {
+        "label": "Abilita modalità schermo largo"
       }
     },
     "sidepanelRag": {

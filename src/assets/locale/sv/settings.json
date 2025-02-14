@@ -41,6 +41,9 @@
       },
       "ollamaStatus": {
         "label": "Aktivera eller inaktivera Ollama anslutningsstatuskontroll"
+      },
+      "wideMode": {
+        "label": "Aktivera bredskärmsläge"
       }
     },
     "sidepanelRag": {

@@ -44,6 +44,9 @@
       },
       "ollamaStatus": {
         "label": "Ollamaの接続状態チェックを有効または無効にする"
+      },
+      "wideMode": {
+        "label": "ワイドスクリーンモードを有効にする"
       }
     },
     "sidepanelRag": {
