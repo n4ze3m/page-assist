@@ -17,7 +17,7 @@ type Props = {
 export const AddKnowledge = ({ open, setOpen }: Props) => {
   const { t } = useTranslation(["knowledge", "common"])
   const [form] = Form.useForm()
-  const [totalFilePerKB] = useStorage("totalFilePerKB", 10)
+  const [totalFilePerKB] = useStorage("totalFilePerKB", 5)
 
   const onUploadHandler = async (data: {
     title: string

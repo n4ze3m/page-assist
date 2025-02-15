@@ -106,7 +106,7 @@ export const setOpenOnRightClick = async (option: "webUI" | "sidePanel"): Promis
 
 export const getTotalFilePerKB = async (): Promise<number> => {
   const totalFilePerKB = await storage.get<number>("totalFilePerKB");
-  return totalFilePerKB || 10;
+  return totalFilePerKB || 5;
 }
 
 
