@@ -280,6 +280,9 @@
           "label": "Custom ursprungs-URL",
           "placeholder": "Ange Custom ursprungs-URL"
         },
+        "autoCORSFix": {
+          "label": "Aktivera eller inaktivera automatisk Ollama CORS-korrigering"
+        },
         "headers": {
           "label": "Custom Headers",
           "add": "Lägg till Header",

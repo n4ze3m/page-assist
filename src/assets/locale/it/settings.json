@@ -280,6 +280,9 @@
           "label": "URL di Origine Personalizzato",
           "placeholder": "Inserisci URL di Origine Personalizzato"
         },
+        "autoCORSFix": {
+          "label": "Abilita o Disabilita la Correzione Automatica CORS di Ollama"
+        },
         "headers": {
           "label": "Intestazioni Personalizzate",
           "add": "Aggiungi Intestazione",

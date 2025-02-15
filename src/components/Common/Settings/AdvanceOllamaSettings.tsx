@@ -4,8 +4,10 @@ import { Form } from "antd"
 import React from "react"
 import {
   customOllamaHeaders,
+  getIsAutoCORSFix,
   getRewriteUrl,
   isUrlRewriteEnabled,
+  setAutoCORSFix,
   setCustomOllamaHeaders,
   setRewriteUrl,
   setUrlRewriteEnabled
@@ -19,22 +21,28 @@ export const AdvanceOllamaSettings = () => {
   const { t } = useTranslation("settings")
 
   const fetchAdvancedData = async () => {
-   try {
-    const [urlRewriteEnabled, rewriteUrl, headers] = await Promise.all([
-      isUrlRewriteEnabled(),
-      getRewriteUrl(),
-      customOllamaHeaders()
-    ])
-    form.setFieldsValue({ urlRewriteEnabled, rewriteUrl, headers })
-   } catch (e) {
-    console.error(e)
-   }
+    try {
+      const [urlRewriteEnabled, rewriteUrl, headers, autoCORSFix] =
+        await Promise.all([
+          isUrlRewriteEnabled(),
+          getRewriteUrl(),
+          customOllamaHeaders(),
+          getIsAutoCORSFix()
+        ])
+      form.setFieldsValue({
+        urlRewriteEnabled,
+        rewriteUrl,
+        headers,
+        autoCORSFix
+      })
+    } catch (e) {
+      console.error(e)
+    }
   }
 
   React.useEffect(() => {
     fetchAdvancedData()
   }, [])
-
 
   return (
     <Form
@@ -45,6 +53,7 @@ export const AdvanceOllamaSettings = () => {
         setUrlRewriteEnabled(e.urlRewriteEnabled)
         setRewriteUrl(e.rewriteUrl)
         setCustomOllamaHeaders(headers)
+        setAutoCORSFix(e.autoCORSFix)
       }}
       form={form}
       layout="vertical"
@@ -65,6 +74,12 @@ export const AdvanceOllamaSettings = () => {
             "ollamaSettings.settings.advanced.rewriteUrl.placeholder"
           )}
         />
+      </Form.Item>
+
+      <Form.Item
+        name="autoCORSFix"
+        label={t("ollamaSettings.settings.advanced.autoCORSFix.label")}>
+        <Switch />
       </Form.Item>
 
       <Form.List name="headers">

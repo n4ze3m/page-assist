@@ -283,6 +283,9 @@
           "label": "사용자 지정 Origin URL",
           "placeholder": "사용자 지정 Origin URL 입력"
         },
+        "autoCORSFix": {
+          "label": "자동 Ollama CORS 수정 활성화 또는 비활성화"
+        },
         "headers": {
           "label": "사용자 지정 헤더",
           "add": "헤더 추가",

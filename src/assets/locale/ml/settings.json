@@ -283,6 +283,9 @@
           "label": "Custom Origin URL",
           "placeholder": "Enter Custom Origin URL"
         },
+        "autoCORSFix": {
+          "label": "സ്വയമേവ Ollama CORS പരിഹാരം പ്രവർത്തനക്ഷമമാക്കുക അല്ലെങ്കിൽ നിർജ്ജീവമാക്കുക"
+        },
         "headers": {
           "label": "കസ്റ്റം തലക്കെട്ടുകൾ",
           "add": "തലക്കെട്ട് ചേർക്കുക",

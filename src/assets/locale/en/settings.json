@@ -286,6 +286,9 @@
           "label": "Custom Origin URL",
           "placeholder": "Enter Custom Origin URL"
         },
+        "autoCORSFix": {
+          "label": "Enable or Disable Automatic Ollama CORS Fix"
+        },
         "headers": {
           "label": "Custom Headers",
           "add": "Add Header",

@@ -277,6 +277,9 @@
           "label": "Tilpasset Oprindelses URL",
           "placeholder": "Indtast tilpasset oprindelses URL"
         },
+        "autoCORSFix": {
+          "label": "Aktiver eller Deaktiver Automatisk Ollama CORS Fix"
+        },
         "headers": {
           "label": "Tilpas Headers",
           "Tilføj": "Tilføj Header",

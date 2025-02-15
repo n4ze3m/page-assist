@@ -280,6 +280,9 @@
           "label": "URL Personalizada",
           "placeholder": "Ingresar URL Personalizada"
         },
+        "autoCORSFix": {
+          "label": "Habilitar o Deshabilitar Corrección Automática de CORS de Ollama"
+        },
         "headers": {
           "label": "Encabezados Personalizados",
           "add": "Agregar Encabezado",

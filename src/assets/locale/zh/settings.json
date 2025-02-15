@@ -285,6 +285,9 @@
           "label": "自定义来源 URL",
           "placeholder": "输入自定义来源 URL"
         },
+        "autoCORSFix": {
+          "label": "启用或禁用自动 Ollama CORS 修复"
+        },
         "headers": {
           "label": "自定义头部",
           "add": "添加头部",

@@ -276,6 +276,9 @@
           "label": "URL مبدا سفارشی",
           "placeholder": "URL مبدا سفارشی را وارد کنید"
         },
+        "autoCORSFix": {
+          "label": "فعال یا غیرفعال کردن رفع خودکار CORS در Ollama"
+        },
         "headers": {
           "label": "هدرهای سفارشی",
           "add": "افزودن هدر",

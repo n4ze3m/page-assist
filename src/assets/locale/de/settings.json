@@ -280,6 +280,9 @@
           "label": "Benutzerdefinierte Ursprungs-URL",
           "placeholder": "Benutzerdefinierte Ursprungs-URL eingeben"
         },
+        "autoCORSFix": {
+          "label": "Automatische Ollama-CORS-Korrektur aktivieren oder deaktivieren"
+        },
         "headers": {
           "label": "Benutzerdefinierte Header",
           "add": "Header hinzufügen",

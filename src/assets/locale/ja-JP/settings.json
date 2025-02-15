@@ -283,6 +283,9 @@
           "label": "カスタムOriginのURL",
           "placeholder": "カスタムOriginのURLを入力"
         },
+        "autoCORSFix": {
+          "label": "自動Ollama CORSフィックスを有効または無効にする"
+        },
         "headers": {
           "label": "カスタムヘッダー",
           "add": "ヘッダーを追加",

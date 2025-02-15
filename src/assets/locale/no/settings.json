@@ -280,6 +280,9 @@
           "label": "Tilpasset opprinnelses-URL",
           "placeholder": "Skriv inn tilpasset opprinnelses-URL"
         },
+        "autoCORSFix": {
+          "label": "Aktiver eller deaktiver automatisk Ollama CORS-fiks"
+        },
         "headers": {
           "label": "Tilpass Headers",
           "LeggTil": "Legg til Header",
