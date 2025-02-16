@@ -271,6 +271,10 @@
         "label": "Ollama URL",
         "placeholder": "Skriv inn Ollama URL"
       },
+      "globalEnable": {
+        "label": "Aktiver eller Deaktiver Ollama-integrasjon Globalt",
+        "warning": "Ved å deaktivere Ollama-integrasjon globalt, vil ikke Page Assist hente modeller fra Ollama. Du kan fortsatt legge til Ollama-instans fra <anchor>OpenAI-kompatibel API</anchor>-seksjonen som vil fungere fint."
+      },
       "advanced": {
         "label": "Avansert Ollama URL-konfigurasjon",
         "urlRewriteEnabled": {

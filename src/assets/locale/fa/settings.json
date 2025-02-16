@@ -267,6 +267,10 @@
         "label": "آدرس Ollama",
         "placeholder": "URL Ollama را وارد کنید"
       },
+      "globalEnable": {
+        "label": "فعال یا غیرفعال کردن یکپارچه سازی Ollama به صورت سراسری",
+        "warning": "با غیرفعال کردن یکپارچه سازی Ollama به صورت سراسری، Page Assist مدل ها را از Ollama دریافت نخواهد کرد. شما همچنان می توانید نمونه Ollama را از بخش <anchor>API سازگار با OpenAI</anchor> اضافه کنید که به درستی کار خواهد کرد."
+      },
       "advanced": {
         "label": "پیکربندی پیشرفته URL Ollama",
         "urlRewriteEnabled": {

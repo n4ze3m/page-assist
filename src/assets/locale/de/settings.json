@@ -271,6 +271,10 @@
         "label": "Ollama-URL",
         "placeholder": "Ollama-URL eingeben"
       },
+      "globalEnable": {
+        "label": "Ollama-Integration global aktivieren oder deaktivieren",
+        "warning": "Wenn Sie die Ollama-Integration global deaktivieren, wird Page Assist keine Modelle von Ollama abrufen. Sie können Ollama-Instanzen weiterhin über den Bereich <anchor>OpenAI-kompatible API</anchor> hinzufügen, was einwandfrei funktioniert."
+      },
       "advanced": {
         "label": "Erweiterte Ollama-URL-Konfiguration",
         "urlRewriteEnabled": {

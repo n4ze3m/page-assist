@@ -100,7 +100,7 @@ export const AdvanceOllamaSettings = () => {
             </div>
             {fields.map((field, index) => (
               <div key={field.key} className="flex items-center   w-full">
-                <div className="flex-grow flex space-x-4">
+                <div className="flex-grow flex mt-3 space-x-4">
                   <Form.Item
                     label={t(
                       "ollamaSettings.settings.advanced.headers.key.label"

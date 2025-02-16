@@ -274,6 +274,10 @@
         "label": "OllamaのURL",
         "placeholder": "OllamaのURLを入力"
       },
+      "globalEnable": {
+        "label": "Ollamaの統合を全体的に有効または無効にする",
+        "warning": "Ollamaの統合を全体的に無効にすると、Page AssistはOllamaからモデルを取得しなくなります。<anchor>OpenAI互換API</anchor>セクションからOllamaインスタンスを追加することは可能で、正常に動作します。"
+      },
       "advanced": {
         "label": "Ollama URL の高度な設定",
         "urlRewriteEnabled": {

@@ -271,6 +271,10 @@
         "label": "URL до Ollama",
         "placeholder": "Введіть URL до Ollama"
       },
+      "globalEnable": {
+        "label": "Увімкнути або вимкнути інтеграцію Ollama глобально",
+        "warning": "При вимкненні глобальної інтеграції Ollama, Page Assist не буде отримувати моделі з Ollama. Ви все ще можете додати екземпляр Ollama з розділу <anchor>API, сумісного з OpenAI</anchor>, який працюватиме нормально."
+      },
       "advanced": {
         "label": "Розширене налаштування URL Ollama",
         "urlRewriteEnabled": {

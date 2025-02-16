@@ -275,7 +275,10 @@
         "label": "Ollama URL",
         "placeholder": "输入 Ollama URL"
       },
-
+      "globalEnable": {
+        "label": "启用或禁用全局 Ollama 集成",
+        "warning": "通过全局禁用 Ollama 集成，Page Assist 将不会从 Ollama 获取模型。您仍然可以从<anchor>OpenAI 兼容 API</anchor>部分添加 Ollama 实例，这将正常工作。"
+      },
       "advanced": {
         "label": "Ollama URL 高级配置",
         "urlRewriteEnabled": {
