@@ -39,6 +39,7 @@
     "d3-dsv": "2",
     "dayjs": "^1.11.10",
     "html-to-text": "^9.0.5",
+    "html2canvas": "^1.4.1",
     "i18next": "^23.10.1",
     "i18next-browser-languagedetector": "^7.2.0",
     "langchain": "^0.1.28",
