@@ -67,8 +67,8 @@
                 "placeholder": "Entrez la valeur de la température (par exemple 0,7, 1,0)"
             },
             "numCtx": {
-                "label": "Nombre de contextes",
-                "placeholder": "Entrez la valeur du nombre de contextes (par défaut: 2048)"
+                "label": "Taille de la fenêtre de contexte (num_ctx)",
+                "placeholder": "Entrez la valeur de la fenêtre de contexte (par défaut : 2048)"
             },
             "numPredict": {
                 "label": "Tokens maximum (num_predict)",

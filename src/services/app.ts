@@ -27,6 +27,19 @@ export const setAutoCORSFix = async (enabled: boolean) => {
   await storage2.set("autoCORSFix", enabled)
 }
 
+export const getOllamaEnabled = async () => {
+  try {
+    const enabled = await storage2.get<boolean | undefined>("ollamaEnabledStatus")
+    return enabled ?? true
+  } catch (e) {
+    return true
+  }
+}
+
+export const setOllamaEnabled = async (enabled: boolean) => {
+  await storage2.set("ollamaEnabledStatus", enabled)
+}
+
 export const getRewriteUrl = async () => {
   const rewriteUrl = await storage.get("rewriteUrl")
   if (!rewriteUrl || rewriteUrl.trim() === "") {

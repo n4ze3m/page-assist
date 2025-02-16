@@ -67,8 +67,8 @@
                 "placeholder": "输入温度值（例如：0.7、1.0）"
             },
             "numCtx": {
-                "label": "上下文数量",
-                "placeholder": "输入上下文数量（默认：2048）"
+                "label": "上下文窗口大小 (num_ctx)",
+                "placeholder": "输入上下文窗口大小（默认：2048）"
             },
             "numPredict": {
                 "label": "最大令牌数 (num_predict)",
