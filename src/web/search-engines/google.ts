@@ -22,24 +22,24 @@ export const localGoogleSearch = async (query: string, start: number = 0) => {
 
   const htmlString = await fetch(
     `https://www.${baseGoogleDomain}/search?hl=en&q=${encodeURIComponent(query)}&start=${start}`,
-                                 {
-                                   signal: abortController.signal,
-                                   headers: {
-                                     "User-Agent": navigator.userAgent,
-                                     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-                                     "Accept-Language": "en-US,en;q=0.5",
-                                     "Accept-Encoding": "gzip, deflate, br",
-                                     "DNT": "1",
-                                     "Connection": "keep-alive",
-                                     "Upgrade-Insecure-Requests": "1",
-                                     "Sec-Fetch-Dest": "document",
-                                     "Sec-Fetch-Mode": "navigate",
-                                     "Sec-Fetch-Site": "none",
-                                     "Sec-Fetch-User": "?1"
-                                   }
-                                 }
+    {
+      signal: abortController.signal,
+      headers: {
+        "User-Agent": navigator.userAgent,
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+        "Accept-Language": "en-US,en;q=0.5",
+        "Accept-Encoding": "gzip, deflate, br",
+        "DNT": "1",
+        "Connection": "keep-alive",
+        "Upgrade-Insecure-Requests": "1",
+        "Sec-Fetch-Dest": "document",
+        "Sec-Fetch-Mode": "navigate",
+        "Sec-Fetch-Site": "none",
+        "Sec-Fetch-User": "?1"
+      }
+    }
   ).then((response) => response.text())
-  .catch()
+    .catch()
   const parser = new DOMParser()
 
   const doc = parser.parseFromString(htmlString, "text/html")
@@ -49,8 +49,8 @@ export const localGoogleSearch = async (query: string, start: number = 0) => {
       const title = result.querySelector("h3")?.textContent
       const link = result.querySelector("a")?.getAttribute("href")
       const content = Array.from(result.querySelectorAll("span"))
-      .map((span) => span.textContent)
-      .join(" ")
+        .map((span) => span.textContent)
+        .join(" ")
       return { title, link, content }
     }
   )
@@ -78,7 +78,7 @@ export const webGoogleSearch = async (query: string) => {
 
     // Add random delay between requests (1-3 seconds)
     await new Promise(resolve =>
-    setTimeout(resolve, 1000 + Math.random() * 2000));
+      setTimeout(resolve, 1000 + Math.random() * 2000));
 
     if (pageResults.length === 0) break;
     currentPage++;
@@ -89,7 +89,7 @@ export const webGoogleSearch = async (query: string) => {
 
   // Final deduplication and slicing
   const uniqueResults = results.filter((result, index, self) =>
-  index === self.findIndex(r => r.link === result.link)
+    index === self.findIndex(r => r.link === result.link)
   );
   const searchResults = uniqueResults.slice(0, TOTAL_SEARCH_RESULTS);
 

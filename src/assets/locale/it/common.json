@@ -67,8 +67,8 @@
                 "placeholder": "Inserisci la Temperatura (e.g. 0.7, 1.0)"
             },
             "numCtx": {
-                "label": "Dimensione del Contesto",
-                "placeholder": "Inserisci la Dimensione del Contesto (default: 2048)"
+                "label": "Dimensione della Finestra di Contesto (num_ctx)",
+                "placeholder": "Inserisci il valore della Finestra di Contesto (default: 2048)"
             },
             "numPredict": {
                 "label": "Token Massimi (num_predict)",

@@ -113,7 +113,7 @@ This will start a development server and watch for changes in the source files. 
 | Brave       | ✅      | ✅                | ✅     |
 | Firefox     | ✅      | ✅                | ✅     |
 | Vivaldi     | ✅      | ✅                | ✅     |
-| Edge        | ✅      | ❌                | ✅     |
+| Edge        | ✅      | ✅                | ✅     |
 | LibreWolf   | ✅      | ✅                | ✅     |
 | Zen Browser | ✅      | ✅                | ✅     |
 | Opera       | ❌      | ❌                | ✅     |

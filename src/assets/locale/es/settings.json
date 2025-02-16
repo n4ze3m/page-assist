@@ -41,6 +41,9 @@
       },
       "ollamaStatus": {
         "label": "Habilitar o deshabilitar la verificación del estado de conexión de Ollama"
+      },
+      "wideMode": {
+        "label": "Habilitar modo pantalla ancha"
       }
     },
     "sidepanelRag": {
@@ -119,7 +122,8 @@
       },
       "removeReasoningTagTTS": {
         "label": "Eliminar Etiqueta de Razonamiento del TTS"
-      }    }
+      }
+    }
   },
   "manageModels": {
     "title": "Administar de Modelos",
@@ -267,6 +271,10 @@
         "label": "URL de Ollama",
         "placeholder": "Ingrese la URL de Ollama"
       },
+      "globalEnable": {
+        "label": "Habilitar o Deshabilitar la Integración de Ollama Globalmente",
+        "warning": "Al deshabilitar la integración de Ollama globalmente, Page Assist no obtendrá modelos de Ollama. Aún puedes agregar una instancia de Ollama desde la sección de <anchor>API compatible con OpenAI</anchor> que funcionará correctamente."
+      },
       "advanced": {
         "label": "Configuración avanzada de URL de Ollama",
         "urlRewriteEnabled": {
@@ -275,6 +283,9 @@
         "rewriteUrl": {
           "label": "URL Personalizada",
           "placeholder": "Ingresar URL Personalizada"
+        },
+        "autoCORSFix": {
+          "label": "Habilitar o Deshabilitar Corrección Automática de CORS de Ollama"
         },
         "headers": {
           "label": "Encabezados Personalizados",

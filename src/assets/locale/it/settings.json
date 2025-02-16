@@ -41,6 +41,9 @@
       },
       "ollamaStatus": {
         "label": "Abilita o disabilita il controllo dello stato della connessione Ollama"
+      },
+      "wideMode": {
+        "label": "Abilita modalità schermo largo"
       }
     },
     "sidepanelRag": {
@@ -268,6 +271,10 @@
         "label": "Ollama URL",
         "placeholder": "Inserici l'URL di Ollama"
       },
+      "globalEnable": {
+        "label": "Abilita o Disabilita l'Integrazione di Ollama Globalmente",
+        "warning": "Disabilitando l'integrazione globale di Ollama, Page Assist non recupererà i modelli da Ollama. Puoi comunque aggiungere un'istanza di Ollama dalla sezione <anchor>API compatibile con OpenAI</anchor> che funzionerà correttamente."
+      },
       "advanced": {
         "label": "Configurazione Avanzata Ollama URL",
         "urlRewriteEnabled": {
@@ -276,6 +283,9 @@
         "rewriteUrl": {
           "label": "URL di Origine Personalizzato",
           "placeholder": "Inserisci URL di Origine Personalizzato"
+        },
+        "autoCORSFix": {
+          "label": "Abilita o Disabilita la Correzione Automatica CORS di Ollama"
         },
         "headers": {
           "label": "Intestazioni Personalizzate",

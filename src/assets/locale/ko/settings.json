@@ -44,6 +44,9 @@
       },
       "ollamaStatus": {
         "label": "Ollama 연결 상태 확인 활성화 또는 비활성화"
+      },
+      "wideMode": {
+        "label": "와이드 스크린 모드 활성화"
       }
     },
     "sidepanelRag": {
@@ -271,6 +274,10 @@
         "label": "Ollama URL",
         "placeholder": "Ollama URL 입력"
       },
+      "globalEnable": {
+        "label": "Ollama 통합 기능 전역 활성화 또는 비활성화",
+        "warning": "Ollama 통합을 전역적으로 비활성화하면 Page Assist가 Ollama에서 모델을 가져오지 않습니다. <anchor>OpenAI 호환 API</anchor> 섹션에서 Ollama 인스턴스를 추가할 수 있으며 정상적으로 작동합니다."
+      },
       "advanced": {
         "label": "Ollama URL 고급 설정",
         "urlRewriteEnabled": {
@@ -279,6 +286,9 @@
         "rewriteUrl": {
           "label": "사용자 지정 Origin URL",
           "placeholder": "사용자 지정 Origin URL 입력"
+        },
+        "autoCORSFix": {
+          "label": "자동 Ollama CORS 수정 활성화 또는 비활성화"
         },
         "headers": {
           "label": "사용자 지정 헤더",

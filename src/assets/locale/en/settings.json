@@ -277,6 +277,10 @@
         "label": "Ollama URL",
         "placeholder": "Enter Ollama URL"
       },
+      "globalEnable": {
+        "label": "Enable or Disable Ollama Integration Globally",
+        "warning": "By disabling Ollama integration globally, Page Assist won't fetch models from Ollama. You can still add Ollama instance from the <anchor>OpenAI compatible API</anchor> section which will work fine."
+      },
       "advanced": {
         "label": "Advance Ollama URL Configuration",
         "urlRewriteEnabled": {
@@ -285,6 +289,9 @@
         "rewriteUrl": {
           "label": "Custom Origin URL",
           "placeholder": "Enter Custom Origin URL"
+        },
+        "autoCORSFix": {
+          "label": "Enable or Disable Automatic Ollama CORS Fix"
         },
         "headers": {
           "label": "Custom Headers",

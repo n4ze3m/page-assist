@@ -41,6 +41,9 @@
       },
       "ollamaStatus": {
         "label": "Aktiver eller deaktiver Ollama tilkoblingsstatussjekk"
+      },
+      "wideMode": {
+        "label": "Aktiver bredskjerm-modus"
       }
     },
     "sidepanelRag": {
@@ -268,6 +271,10 @@
         "label": "Ollama URL",
         "placeholder": "Skriv inn Ollama URL"
       },
+      "globalEnable": {
+        "label": "Aktiver eller Deaktiver Ollama-integrasjon Globalt",
+        "warning": "Ved å deaktivere Ollama-integrasjon globalt, vil ikke Page Assist hente modeller fra Ollama. Du kan fortsatt legge til Ollama-instans fra <anchor>OpenAI-kompatibel API</anchor>-seksjonen som vil fungere fint."
+      },
       "advanced": {
         "label": "Avansert Ollama URL-konfigurasjon",
         "urlRewriteEnabled": {
@@ -276,6 +283,9 @@
         "rewriteUrl": {
           "label": "Tilpasset opprinnelses-URL",
           "placeholder": "Skriv inn tilpasset opprinnelses-URL"
+        },
+        "autoCORSFix": {
+          "label": "Aktiver eller deaktiver automatisk Ollama CORS-fiks"
         },
         "headers": {
           "label": "Tilpass Headers",

@@ -21,6 +21,7 @@ import { useSpeechRecognition } from "@/hooks/useSpeechRecognition"
 import { PiGlobeX, PiGlobe } from "react-icons/pi"
 import { handleChatInputKeyDown } from "@/utils/key-down"
 import { getIsSimpleInternetSearch } from "@/services/search"
+import { useStorage } from "@plasmohq/storage/hook"
 
 type Props = {
   dropedFile: File | undefined
@@ -32,6 +33,10 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
   const { sendWhenEnter, setSendWhenEnter } = useWebUI()
   const [typing, setTyping] = React.useState<boolean>(false)
   const { t } = useTranslation(["playground", "common"])
+  const [chatWithWebsiteEmbedding,] = useStorage(
+    "chatWithWebsiteEmbedding",
+    true
+  )
   const form = useForm({
     initialValues: {
       message: "",
@@ -93,7 +98,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
         }
         if (chatMode === "rag") {
           const defaultEM = await defaultEmbeddingModelForRag()
-          if (!defaultEM) {
+          if (!defaultEM && chatWithWebsiteEmbedding) {
             form.setFieldError("message", t("formError.noEmbeddingModel"))
             return
           }
@@ -263,7 +268,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                     }
                     if (chatMode === "rag") {
                       const defaultEM = await defaultEmbeddingModelForRag()
-                      if (!defaultEM) {
+                      if (!defaultEM && chatWithWebsiteEmbedding) {
                         form.setFieldError(
                           "message",
                           t("formError.noEmbeddingModel")

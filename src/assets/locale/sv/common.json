@@ -67,8 +67,8 @@
                 "placeholder": "Ange temperaturvärde (t.ex. 0.7, 1.0)"
             },
             "numCtx": {
-                "label": "Antal kontexter",
-                "placeholder": "Ange antal kontextvärden (standard: 2048)"
+                "label": "Kontextfönsterstorlek (num_ctx)",
+                "placeholder": "Ange kontextfönsterstorlek (standard: 2048)"
             },
             "numPredict": {
                 "label": "Max antal tokens (num_predict)",
