@@ -1,15 +1,21 @@
 import { useQuery } from "@tanstack/react-query"
-import { Collapse, Skeleton } from "antd"
+import { Collapse, Skeleton, Switch } from "antd"
 import { useState } from "react"
 import { SaveButton } from "~/components/Common/SaveButton"
 import { getOllamaURL, setOllamaURL as saveOllamaURL } from "~/services/ollama"
 import { Trans, useTranslation } from "react-i18next"
 import { AdvanceOllamaSettings } from "@/components/Common/Settings/AdvanceOllamaSettings"
 import { ModelSettings } from "./model-settings"
-
+import { useStorage } from "@plasmohq/storage/hook"
+import { AlertCircleIcon } from "lucide-react"
+import { Link } from "react-router-dom"
 export const SettingsOllama = () => {
   const [ollamaURL, setOllamaURL] = useState<string>("")
-
+  const [ollamaEnabled, setOllamaEnabled] = useStorage(
+    "ollamaEnabledStatus",
+    true
+  )
+  const [_, setCheckOllamaStatus] = useStorage("checkOllamaStatus", true)
   const { t } = useTranslation("settings")
 
   const { status } = useQuery({
@@ -92,6 +98,45 @@ export const SettingsOllama = () => {
                 }
               ]}
             />
+            <div className="mt-8 mb-4">
+              <div className="flex items-center justify-between">
+                <label className="text-sm font-medium dark:text-gray-200">
+                  {t("ollamaSettings.settings.globalEnable.label")}
+                </label>
+                <Switch
+                  checked={ollamaEnabled}
+                  onChange={(checked) => {
+                    setOllamaEnabled(checked)
+                    setCheckOllamaStatus(checked)
+                  }}
+                />
+              </div>
+              {!ollamaEnabled && (
+                <div className="mt-2 p-3 bg-yellow-50 dark:bg-yellow-900/30 rounded-md">
+                  <div className="flex">
+                    <div className="flex-shrink-0">
+                      <AlertCircleIcon className="h-5 w-5 text-yellow-400 dark:text-yellow-500" />
+                    </div>
+                    <div className="ml-3">
+                      <p className="text-sm text-yellow-800 dark:text-yellow-200">
+                        <Trans
+                          i18nKey="settings:ollamaSettings.settings.globalEnable.warning"
+                          components={{
+                            anchor: (
+                              <Link
+                                to="/settings/openai"
+                                className="text-blue-600 dark:text-blue-400"></Link>
+                            )
+                          }}
+                        />
+
+                        {/* {t("ollamaSettings.settings.globalEnable.warning")} */}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}{" "}
+            </div>
           </div>
 
           <ModelSettings />

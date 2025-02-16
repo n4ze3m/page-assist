@@ -44,6 +44,9 @@
       },
       "ollamaStatus": {
         "label": "ഒല്ലാമ കണക്ഷൻ സ്റ്റാറ്റസ് പരിശോധന പ്രവർത്തനക്ഷമമാക്കുകയോ പ്രവർത്തനരഹിതമാക്കുകയോ ചെയ്യുക"
+      },
+      "wideMode": {
+        "label": "വിശാലമായ സ്ക്രീൻ മോഡ് പ്രവർത്തനക്ഷമമാക്കുക"
       }
     },
     "sidepanelRag": {
@@ -271,6 +274,10 @@
         "label": "Ollama URL",
         "placeholder": "Ollama URL നല്കുക"
       },
+      "globalEnable": {
+        "label": "ഓളാമ ഇന്റഗ്രേഷൻ ആഗോളമായി പ്രവർത്തനക്ഷമമാക്കുക അല്ലെങ്കിൽ നിർജ്ജീവമാക്കുക",
+        "warning": "ഓളാമ ഇന്റഗ്രേഷൻ ആഗോളമായി നിർജ്ജീവമാക്കുന്നതിലൂടെ, പേജ് അസിസ്റ്റ് ഓളാമയിൽ നിന്ന് മോഡലുകൾ ലഭ്യമാക്കില്ല. നിങ്ങൾക്ക് <anchor>OpenAI അനുയോജ്യമായ API</anchor> വിഭാഗത്തിൽ നിന്ന് ഓളാമ ഇൻസ്റ്റൻസ് ചേർക്കാൻ കഴിയും, അത് നന്നായി പ്രവർത്തിക്കും."
+      },
       "advanced": {
         "label": "Advance Ollama URL Configuration",
         "urlRewriteEnabled": {
@@ -279,6 +286,9 @@
         "rewriteUrl": {
           "label": "Custom Origin URL",
           "placeholder": "Enter Custom Origin URL"
+        },
+        "autoCORSFix": {
+          "label": "സ്വയമേവ Ollama CORS പരിഹാരം പ്രവർത്തനക്ഷമമാക്കുക അല്ലെങ്കിൽ നിർജ്ജീവമാക്കുക"
         },
         "headers": {
           "label": "കസ്റ്റം തലക്കെട്ടുകൾ",

@@ -15,13 +15,13 @@ import {
 } from "~/services/ollama"
 
 
-export const localGoogleSearch = async (query: string) => {
+export const localGoogleSearch = async (query: string, start: number = 0) => {
   const baseGoogleDomain = await getGoogleDomain()
   const abortController = new AbortController()
   setTimeout(() => abortController.abort(), 10000)
 
   const htmlString = await fetch(
-    `https://www.${baseGoogleDomain}/search?hl=en&q=` + query,
+    `https://www.${baseGoogleDomain}/search?hl=en&q=${encodeURIComponent(query)}&start=${start}`,
     {
       signal: abortController.signal,
       headers: {
@@ -58,9 +58,40 @@ export const localGoogleSearch = async (query: string) => {
 }
 
 export const webGoogleSearch = async (query: string) => {
-  const results = await localGoogleSearch(query)
-  const TOTAL_SEARCH_RESULTS = await totalSearchResults()
-  const searchResults = results.slice(0, TOTAL_SEARCH_RESULTS)
+  const TOTAL_SEARCH_RESULTS = await totalSearchResults();
+  let results = [];
+  let currentPage = 0;
+  const seenLinks = new Set();
+
+  while (results.length < TOTAL_SEARCH_RESULTS) {
+    const start = currentPage * 10;
+    const pageResults = await localGoogleSearch(query, start);
+
+    // Filter duplicates within current page
+    const uniquePageResults = pageResults.filter(result => {
+      if (!result.link || seenLinks.has(result.link)) return false;
+      seenLinks.add(result.link);
+      return true;
+    });
+
+    results = [...results, ...uniquePageResults];
+
+    // Add random delay between requests (1-3 seconds)
+    await new Promise(resolve =>
+      setTimeout(resolve, 1000 + Math.random() * 2000));
+
+    if (pageResults.length === 0) break;
+    currentPage++;
+
+    // Safety limit to prevent infinite loops
+    if (currentPage > 100) break;
+  }
+
+  // Final deduplication and slicing
+  const uniqueResults = results.filter((result, index, self) =>
+    index === self.findIndex(r => r.link === result.link)
+  );
+  const searchResults = uniqueResults.slice(0, TOTAL_SEARCH_RESULTS);
 
   const isSimpleMode = await getIsSimpleInternetSearch()
 

@@ -67,8 +67,8 @@
                 "placeholder": "e.g. 0.7, 1.0"
             },
             "numCtx": {
-                "label": "Number of Contexts",
-                "placeholder": "Enter Number of Contexts value (default: 2048)"
+                "label": "Context Window Size (num_ctx)",
+                "placeholder": "Enter Context Window Size value (default: 2048)"
             },
             "numPredict": {
                 "label": "Max Tokens (num_predict)",

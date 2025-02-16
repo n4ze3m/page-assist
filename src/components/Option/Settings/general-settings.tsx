@@ -54,6 +54,11 @@ export const GeneralSettings = () => {
     true
   )
 
+  const [checkWideMode, setCheckWideMode] = useStorage(
+    "checkWideMode",
+    false
+  )
+
   const queryClient = useQueryClient()
 
   const { mode, toggleDarkMode } = useDarkMode()
@@ -205,6 +210,19 @@ export const GeneralSettings = () => {
         <Switch
           checked={checkOllamaStatus}
           onChange={(checked) => setCheckOllamaStatus(checked)}
+        />
+      </div>
+
+      <div className="flex flex-row justify-between">
+        <div className="inline-flex items-center gap-2">
+          <span className="text-gray-700   dark:text-neutral-50">
+            {t("generalSettings.settings.wideMode.label")}
+          </span>
+        </div>
+
+        <Switch
+          checked={checkWideMode}
+          onChange={(checked) => setCheckWideMode(checked)}
         />
       </div>
 

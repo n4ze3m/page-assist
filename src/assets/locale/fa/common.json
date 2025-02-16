@@ -67,8 +67,8 @@
                 "placeholder": "مقدار Temperature را وارد کنید (مثلا 0.7, 1.0)"
             },
             "numCtx": {
-                "label": "Number of Contexts",
-                "placeholder": "مقدار Number of Contexts را وارد کنید (پیش فرض: 2048)"
+                "label": "اندازه پنجره متن (num_ctx)",
+                "placeholder": "مقدار اندازه پنجره متن را وارد کنید (پیش فرض: 2048)"
             },
             "numPredict": {
                 "label": "حداکثر توکن‌ها (num_predict)",

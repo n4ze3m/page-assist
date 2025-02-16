@@ -1,5 +1,8 @@
 import { Storage } from "@plasmohq/storage"
 const storage = new Storage()
+const storage2 = new Storage({
+  area: "local"
+})
 
 const DEFAULT_URL_REWRITE_URL = "http://127.0.0.1:11434"
 
@@ -9,6 +12,32 @@ export const isUrlRewriteEnabled = async () => {
 }
 export const setUrlRewriteEnabled = async (enabled: boolean) => {
   await storage.set("urlRewriteEnabled", enabled)
+}
+
+export const getIsAutoCORSFix = async () => {
+  try {
+    const enabled = await storage2.get<boolean | undefined>("autoCORSFix")
+    return enabled ?? true
+  } catch (e) {
+    return true
+  }
+}
+
+export const setAutoCORSFix = async (enabled: boolean) => {
+  await storage2.set("autoCORSFix", enabled)
+}
+
+export const getOllamaEnabled = async () => {
+  try {
+    const enabled = await storage.get<boolean | undefined>("ollamaEnabledStatus")
+    return enabled ?? true
+  } catch (e) {
+    return true
+  }
+}
+
+export const setOllamaEnabled = async (enabled: boolean) => {
+  await storage.set("ollamaEnabledStatus", enabled)
 }
 
 export const getRewriteUrl = async () => {
@@ -24,14 +53,18 @@ export const setRewriteUrl = async (url: string) => {
 }
 
 export const getAdvancedOllamaSettings = async () => {
-  const [isEnableRewriteUrl, rewriteUrl] = await Promise.all([
+  const [isEnableRewriteUrl, rewriteUrl,
+    autoCORSFix
+  ] = await Promise.all([
     isUrlRewriteEnabled(),
-    getRewriteUrl()
+    getRewriteUrl(),
+    getIsAutoCORSFix()
   ])
 
   return {
     isEnableRewriteUrl,
-    rewriteUrl
+    rewriteUrl,
+    autoCORSFix
   }
 }
 
@@ -66,6 +99,7 @@ export const customOllamaHeaders = async (): Promise<
   }
   return headers
 }
+
 
 export const setCustomOllamaHeaders = async (headers: string[]) => {
   await storage.set("customOllamaHeaders", headers)
@@ -106,7 +140,7 @@ export const setOpenOnRightClick = async (option: "webUI" | "sidePanel"): Promis
 
 export const getTotalFilePerKB = async (): Promise<number> => {
   const totalFilePerKB = await storage.get<number>("totalFilePerKB");
-  return totalFilePerKB || 10;
+  return totalFilePerKB || 5;
 }
 
 
@@ -116,7 +150,7 @@ export const setTotalFilePerKB = async (totalFilePerKB: number): Promise<void> =
 
 export const getNoOfRetrievedDocs = async (): Promise<number> => {
   const noOfRetrievedDocs = await storage.get<number>("noOfRetrievedDocs");
-  return noOfRetrievedDocs || 4 
+  return noOfRetrievedDocs || 4
 }
 
 export const setNoOfRetrievedDocs = async (noOfRetrievedDocs: number): Promise<void> => {

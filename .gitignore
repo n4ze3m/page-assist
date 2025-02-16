@@ -46,3 +46,5 @@ keys.json
 .wxt
 # WebStorm
 .idea 
+
+/docs/.vitepress/cache/

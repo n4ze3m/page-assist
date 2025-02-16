@@ -41,6 +41,9 @@
       },
       "ollamaStatus": {
         "label": "Включить или отключить проверку состояния подключения Ollama"
+      },
+      "wideMode": {
+        "label": "Включить широкоэкранный режим"
       }
     },
     "sidepanelRag": {
@@ -269,7 +272,10 @@
         "label": "URL Ollama",
         "placeholder": "Введите URL Ollama"
       },
-
+      "globalEnable": {
+        "label": "Включить или отключить интеграцию Ollama глобально",
+        "warning": "При отключении глобальной интеграции Ollama, Page Assist не будет получать модели из Ollama. Вы все еще можете добавить экземпляр Ollama из раздела <anchor>API, совместимого с OpenAI</anchor>, который будет работать нормально."
+      },
       "advanced": {
         "label": "Расширенная конфигурация URL Ollama",
         "urlRewriteEnabled": {
@@ -278,6 +284,9 @@
         "rewriteUrl": {
           "label": "Пользовательский исходный URL",
           "placeholder": "Введите пользовательский исходный URL"
+        },
+        "autoCORSFix": {
+          "label": "Включить или отключить автоматическое исправление CORS для Ollama"
         },
         "headers": {
           "label": "Пользовательские Заголовки",

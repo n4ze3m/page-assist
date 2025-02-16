@@ -2,7 +2,7 @@ import { Storage } from "@plasmohq/storage"
 import { cleanUrl } from "../libs/clean-url"
 import { urlRewriteRuntime } from "../libs/runtime"
 import { getChromeAIModel } from "./chrome"
-import { setNoOfRetrievedDocs, setTotalFilePerKB } from "./app"
+import { getOllamaEnabled, setNoOfRetrievedDocs, setTotalFilePerKB } from "./app"
 import fetcher from "@/libs/fetcher"
 import { ollamaFormatAllCustomModels } from "@/db/models"
 
@@ -105,6 +105,12 @@ export const getAllModels = async ({
   returnEmpty?: boolean
 }) => {
   try {
+
+    const isEnabled = await getOllamaEnabled()
+
+    if (!isEnabled) {
+      return []
+    }
 
     const baseUrl = await getOllamaURL()
     const response = await fetcher(`${cleanUrl(baseUrl)}/api/tags`)
