@@ -6,7 +6,7 @@ export const ImageExportWrapper = ({ messages }: { messages: Message[] }) => {
   return (
     <div
       id="export-container"
-      className="bg-white dark:bg-[#121212] p-8 max-w-4xl mx-auto">
+      className="bg-white dark:bg-[#121212] p-8 max-w-3xl mx-auto">
       <div className="flex flex-col gap-4">
         {messages.map((msg, index) => (
           <div key={index} className="flex flex-row gap-4 md:gap-6 my-4">
