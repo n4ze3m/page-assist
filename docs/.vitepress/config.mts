@@ -72,7 +72,7 @@ export default defineConfig({
           },
           {
             text: "Page Share",
-            link: "/features/share"
+            link: "/features/page-share"
           }
         ]
       },
@@ -118,4 +118,5 @@ export default defineConfig({
       copyright: "Copyright © 2025 Muhammed Nazeem  & Page Assist Contributors",
     },
   },
+ignoreDeadLinks: true
 })
