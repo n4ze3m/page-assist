@@ -43,11 +43,42 @@ export default defineConfig({
           {
             text: "Sidebar Copilot",
             link: "/sidebar/copilot"
+          },
+          {
+            text: "Chat With Website",
+            link: "/sidebar/chat-with-website"
+          },
+          {
+            text: "Sidebar Vision (🧪)",
+            link: "/sidebar/vision"
           }
         ],
       },
       {
+        text: "Features",
+        collapsed: true,
+        items: [
+          {
+            text: "Internet Search",
+            link: "/features/internet-search"
+          },
+          {
+            text: "Prompts",
+            link: "/features/prompts"
+          },
+          {
+            text: "Knowledge Base",
+            link: "/features/knowledge-base"
+          },
+          {
+            text: "Page Share",
+            link: "/features/share"
+          }
+        ]
+      },
+      {
         text: "Providers",
+        collapsed: true,
         items: [
           {
             text: "Ollama",
@@ -69,6 +100,10 @@ export default defineConfig({
           {
             text: "Ollama Connection Issue",
             link: "/connection-issue"
+          },
+          {
+            text: "Extensions Causing Issue with Other Websites",
+            link: "/extensions-causing-issue-other-websites"
           }
         ]
       }],

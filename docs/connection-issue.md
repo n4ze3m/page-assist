@@ -27,7 +27,7 @@ Since Ollama has connection issues when directly accessed from the browser exten
 ![Enable or Disable Custom Origin URL](https://image.pageassist.xyz/Screenshot%202024-05-13%20003225.png)
 
 :::tip
-If Ollama is running on a different port or host, then change the URL in the `Custom Origin URL` field; otherwise, leave it as it is. But you need to enable it - do not change the URL
+If Ollama is running on a different port, then change the URL in the `Custom Origin URL` field; otherwise, leave it as it is. Do not change the URL to the Ollama server URL like
 :::
 
 5. Make sure click on the `Save` button to save the changes.
