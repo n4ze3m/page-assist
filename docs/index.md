@@ -20,6 +20,10 @@ Download for your preferred browser:
 
 [![Edge Add-on](https://pub-35424b4473484be483c0afa08c69e7da.r2.dev/edge-addon.png)](https://microsoftedge.microsoft.com/addons/detail/page-assist-a-web-ui-fo/ogkogooadflifpmmidmhjedogicnhooa)
 
+## Privacy
+
+Cheeck out our [Privacy Policy](/privacy) to understand how we handle your data.
+
 ## Sponsors
 
 Page Assist is an open-source project. If you enjoy our work, please consider supporting us by becoming a sponsor. Your contribution will help us maintain and enhance Page Assist for everyone.
@@ -27,3 +31,9 @@ Page Assist is an open-source project. If you enjoy our work, please consider su
 You can sponsor us on GitHub: [https://github.com/sponsors/n4ze3m](https://github.com/sponsors/n4ze3m)
 
 Support us on Ko-fi: [https://ko-fi.com/n4ze3m](https://ko-fi.com/n4ze3m)
+
+## Team
+
+Page Assist is maintained by [@n4ze3m](https://x.com/n4ze3m) and our wonderful community of contributors.
+
+![Contributors](https://contrib.rocks/image?repo=n4ze3m/page-assist)

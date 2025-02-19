@@ -45,3 +45,14 @@ Deep Search Mode will visit the website and extract the text from it. Then it wi
 ::: warning
 The current Deep Search is not similar to ChatGPT's DeepSearch. It is a very basic implementation.
 :::
+
+
+## Enable Internet Search by Default
+
+You can enable Internet Search by default by following these steps:
+
+1. Go to Settings
+2. Under the `General Settings` section
+3. Scroll down to `Manage Web Search`
+4. Enable `Internet Search ON by default`
+5. Click on `Save Settings`
