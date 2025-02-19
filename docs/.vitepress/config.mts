@@ -56,7 +56,6 @@ export default defineConfig({
       },
       {
         text: "Features",
-        collapsed: true,
         items: [
           {
             text: "Internet Search",
@@ -72,7 +71,15 @@ export default defineConfig({
           },
           {
             text: "Page Share",
-            link: "/features/share"
+            link: "/features/page-share"
+          },
+          {
+            text: "Ollama",
+            link: "/features/ollama"
+          },
+          {
+            text: "Other",
+            link: "/features/other"
           }
         ]
       },
@@ -118,4 +125,5 @@ export default defineConfig({
       copyright: "Copyright © 2025 Muhammed Nazeem  & Page Assist Contributors",
     },
   },
+  ignoreDeadLinks: true
 })
