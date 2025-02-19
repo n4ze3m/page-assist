@@ -5,7 +5,7 @@ Since Page Assist rewrites the Origin header to avoid CORS issues on the Ollama 
 Current known issues:
 
 - Breaks Intel® Driver & Support Assistant
-- Breaks Box Tools
+- Box Tools Website
 
 For this reason, we have added a setting to disable the feature.
 
