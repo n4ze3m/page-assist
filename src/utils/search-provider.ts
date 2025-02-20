@@ -26,5 +26,9 @@ export const SUPPORTED_SERACH_PROVIDERS = [
     {
         label: "Brave Search API",
         value: "brave-api"
+    },
+    {
+        label: "Bing",
+        value: "bing"
     }
 ]

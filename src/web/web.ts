@@ -8,6 +8,7 @@ import { getWebsiteFromQuery, processSingleWebsite } from "./website"
 import { searxngSearch } from "./search-engines/searxng"
 import { braveAPISearch } from "./search-engines/brave-api"
 import { webBaiduSearch } from "./search-engines/baidu"
+import { webBingSearch } from "./search-engines/bing"
 
 const getHostName = (url: string) => {
   try {
@@ -32,6 +33,8 @@ const searchWeb = (provider: string, query: string) => {
       return braveAPISearch(query)
     case "baidu":
       return webBaiduSearch(query)
+    case "bing":
+      return webBingSearch(query)
     default:
       return webGoogleSearch(query)
   }
