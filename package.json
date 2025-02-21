@@ -45,6 +45,7 @@
     "langchain": "^0.1.28",
     "lucide-react": "^0.350.0",
     "mammoth": "^1.7.2",
+    "mermaid": "^11.4.1",
     "ml-distance": "^4.0.1",
     "openai": "^4.65.0",
     "pdfjs-dist": "4.0.379",
