@@ -1,6 +1,12 @@
 import { programmingLanguages } from "@/utils/langauge-extension"
 import { Tooltip, Modal, ConfigProvider } from "antd"
-import { CheckIcon, ClipboardIcon, DownloadIcon, TargetIcon } from "lucide-react"
+import {
+  CheckIcon,
+  ClipboardIcon,
+  DownloadIcon,
+  GanttChartIcon,
+  TargetIcon
+} from "lucide-react"
 import { FC, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter"
@@ -59,16 +65,15 @@ export const CodeBlock: FC<Props> = ({ language, value }) => {
           </div>
           <div className="sticky top-9 md:top-[5.75rem]">
             <div className="absolute bottom-0 right-2 flex h-9 items-center">
-              {
-                language === 'mermaid' && 
-                <Tooltip title={t("preview")}>
+              {language === "mermaid" && (
+                <Tooltip title={t("mermaid")}>
                   <button
                     onClick={handlePreviewMermaid}
                     className="flex gap-1.5 items-center rounded bg-none p-1 text-xs text-gray-200 hover:bg-gray-700 hover:text-gray-100 focus:outline-none">
-                    <TargetIcon className="size-4" />
+                    <GanttChartIcon className="size-4" />
                   </button>
                 </Tooltip>
-              }
+              )}
               <Tooltip title={t("downloadCode")}>
                 <button
                   onClick={handleDownload}
