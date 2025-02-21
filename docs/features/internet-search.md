@@ -11,6 +11,7 @@ Page Assist supports internet search which can be used with your LLM. It works s
 - Searxng
 - Brave
 - Brave Search API
+- Bing
 
 ## How to use Internet Search
 
