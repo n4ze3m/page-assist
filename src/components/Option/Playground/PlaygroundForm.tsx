@@ -209,7 +209,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
   return (
     <div className="flex w-full flex-col items-center p-2 pt-1  pb-4">
       <div className="relative z-10 flex w-full flex-col items-center justify-center gap-2 text-base">
-        <div className="relative flex w-full flex-row justify-center gap-2 lg:w-4/5">
+        <div className="relative flex w-full flex-row justify-center gap-2 lg:w-3/5">
           <div
             className={` bg-neutral-50  dark:bg-[#262626] relative w-full max-w-[48rem] p-1 backdrop-blur-lg duration-100 border border-gray-300 rounded-xl  dark:border-gray-600
             ${temporaryChat ? "!bg-gray-200 dark:!bg-black " : ""}
