@@ -11,7 +11,6 @@ import { useStoreMessageOption, type Message } from "~/store/option"
 import { useStoreMessage } from "~/store"
 import { SystemMessage } from "@langchain/core/messages"
 import { getDataFromCurrentTab } from "~/libs/get-html"
-import { MemoryVectorStore } from "langchain/vectorstores/memory"
 import { memoryEmbedding } from "@/utils/memory-embeddings"
 import { ChatHistory } from "@/store/option"
 import {
