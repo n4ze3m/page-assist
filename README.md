@@ -1,9 +1,22 @@
-# Page Assist
+<p align="center">
+    <h1 align="center">Page Assist</h1>
+</p>
 
-[![Join dialoqbase #welcome](https://img.shields.io/badge/discord-join%20chat-blue.svg)](https://discord.gg/bu54382uBd)
-[![Twitter Follow](https://img.shields.io/twitter/follow/page_assist?style=social)](https://twitter.com/page_assist)
+
+<p align="center">
+<a href="https://discord.gg/bu54382uBd" aria-label="Join dialoqbase #welcome"><img src="https://img.shields.io/badge/discord-join%20chat-blue.svg" alt="Join dialoqbase #welcome"></a>  <a href="https://twitter.com/page_assist" aria-label="Follow @page_assist on Twitter"><img src="https://img.shields.io/twitter/follow/page_assist?style=social" alt="Follow @page_assist on Twitter"></a> 
+</p>
+
+<p align="center">
+    <a href="https://docs.pageassist.xyz">
+        Documentation
+    </a>
+
+</p>
+
 
 Page Assist is an open-source browser extension that provides a sidebar and web UI for your local AI model. It allows you to interact with your model from any webpage.
+
 ## Installation
 
 Page Assist supports Chromium-based browsers like Chrome, Brave, and Edge, as well as Firefox.
@@ -11,7 +24,6 @@ Page Assist supports Chromium-based browsers like Chrome, Brave, and Edge, as we
 [![Chrome Web Store](https://pub-35424b4473484be483c0afa08c69e7da.r2.dev/UV4C4ybeBTsZt43U4xis.png)](https://chrome.google.com/webstore/detail/page-assist/jfgfiigpkhlkbnfnbobbkinehhfdhndo)
 [![Firefox Add-on](https://pub-35424b4473484be483c0afa08c69e7da.r2.dev/get-the-addon.png)](https://addons.mozilla.org/en-US/firefox/addon/page-assist/)
 [![Edge Add-on](https://pub-35424b4473484be483c0afa08c69e7da.r2.dev/edge-addon.png)](https://microsoftedge.microsoft.com/addons/detail/page-assist-a-web-ui-fo/ogkogooadflifpmmidmhjedogicnhooa)
-
 
 Checkout the Demo (v1.0.0):
 
