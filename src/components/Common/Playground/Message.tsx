@@ -5,6 +5,7 @@ import { WebSearch } from "./WebSearch"
 import {
   CheckIcon,
   ClipboardIcon,
+  CopyIcon,
   InfoIcon,
   Pen,
   PlayIcon,
@@ -250,7 +251,7 @@ export const PlaygroundMessage = (props: Props) => {
                         }}
                         className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
                         {!isBtnPressed ? (
-                          <ClipboardIcon className="w-3 h-3 text-gray-400 group-hover:text-gray-500" />
+                          <CopyIcon className="w-3 h-3 text-gray-400 group-hover:text-gray-500" />
                         ) : (
                           <CheckIcon className="w-3 h-3 text-green-400 group-hover:text-green-500" />
                         )}
