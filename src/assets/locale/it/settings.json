@@ -44,6 +44,9 @@
       },
       "wideMode": {
         "label": "Abilita modalità schermo largo"
+      },
+      "openReasoning": {
+        "label": "Ragionamento aperto compresso per impostazione predefinita"
       }
     },
     "sidepanelRag": {

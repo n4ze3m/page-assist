@@ -18,7 +18,7 @@ import { useTTS } from "@/hooks/useTTS"
 import { tagColors } from "@/utils/color"
 import { removeModelSuffix } from "@/db/models"
 import { GenerationInfo } from "./GenerationInfo"
-import { parseReasoning,  } from "@/libs/reasoning"
+import { parseReasoning } from "@/libs/reasoning"
 import { humanizeMilliseconds } from "@/utils/humanize-milliseconds"
 import { useStorage } from "@plasmohq/storage/hook"
 type Props = {
@@ -44,6 +44,7 @@ type Props = {
   generationInfo?: any
   isStreaming: boolean
   reasoningTimeTaken?: number
+  openReasoning?: boolean
 }
 
 export const PlaygroundMessage = (props: Props) => {
@@ -54,7 +55,8 @@ export const PlaygroundMessage = (props: Props) => {
   const { t } = useTranslation("common")
   const { cancel, isSpeaking, speak } = useTTS()
   return (
-    <div className={`group relative flex w-full max-w-3xl flex-col items-end justify-center pb-2 md:px-4 lg:w-4/5 text-gray-800 dark:text-gray-100 ${checkWideMode ? "max-w-none":""}`}>
+    <div
+      className={`group relative flex w-full max-w-3xl flex-col items-end justify-center pb-2 md:px-4 lg:w-4/5 text-gray-800 dark:text-gray-100 ${checkWideMode ? "max-w-none" : ""}`}>
       {/* <div className="text-base md:max-w-2xl lg:max-w-xl xl:max-w-3xl flex lg:px-0 m-auto w-full"> */}
       <div className="flex flex-row gap-4 md:gap-6 my-2 m-auto w-full">
         <div className="w-8 flex flex-col relative items-end">
@@ -105,6 +107,9 @@ export const PlaygroundMessage = (props: Props) => {
                         <Collapse
                           key={i}
                           className="border-none !mb-3"
+                          defaultActiveKey={
+                            props?.openReasoning ? "reasoning" : undefined
+                          }
                           items={[
                             {
                               key: "reasoning",

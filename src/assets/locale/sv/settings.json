@@ -44,6 +44,9 @@
       },
       "wideMode": {
         "label": "Aktivera bredskärmsläge"
+      },
+      "openReasoning": {
+        "label": "Öppet resonemang minimerat som standard"
       }
     },
     "sidepanelRag": {

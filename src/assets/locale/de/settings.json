@@ -44,6 +44,9 @@
       },
       "wideMode": {
         "label": "Breitbildmodus aktivieren"
+      },
+      "openReasoning": {
+        "label": "Offene Argumentation standardmäßig eingeklappt"
       }
     },
     "sidepanelRag": {

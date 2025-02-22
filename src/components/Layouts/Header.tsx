@@ -21,7 +21,6 @@ import { Select, Tooltip } from "antd"
 import { getAllPrompts } from "@/db"
 import { ProviderIcons } from "../Common/ProviderIcon"
 import { NewChat } from "./NewChat"
-import { PageAssistSelect } from "../Select"
 import { MoreOptions } from "./MoreOptions"
 type Props = {
   setSidebarOpen: (open: boolean) => void

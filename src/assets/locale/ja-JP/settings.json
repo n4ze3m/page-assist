@@ -47,6 +47,9 @@
       },
       "wideMode": {
         "label": "ワイドスクリーンモードを有効にする"
+      },
+      "openReasoning": {
+        "label": "デフォルトで推論を折りたたむ"
       }
     },
     "sidepanelRag": {

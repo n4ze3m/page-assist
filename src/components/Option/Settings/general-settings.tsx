@@ -54,10 +54,9 @@ export const GeneralSettings = () => {
     true
   )
 
-  const [checkWideMode, setCheckWideMode] = useStorage(
-    "checkWideMode",
-    false
-  )
+  const [checkWideMode, setCheckWideMode] = useStorage("checkWideMode", false)
+
+  const [openReasoning, setOpenReasoning] = useStorage("openReasoning", false)
 
   const queryClient = useQueryClient()
 
@@ -223,6 +222,19 @@ export const GeneralSettings = () => {
         <Switch
           checked={checkWideMode}
           onChange={(checked) => setCheckWideMode(checked)}
+        />
+      </div>
+
+      <div className="flex flex-row justify-between">
+        <div className="inline-flex items-center gap-2">
+          <span className="text-gray-700   dark:text-neutral-50">
+            {t("generalSettings.settings.openReasoning.label")}
+          </span>
+        </div>
+
+        <Switch
+          checked={openReasoning}
+          onChange={(checked) => setOpenReasoning(checked)}
         />
       </div>
 

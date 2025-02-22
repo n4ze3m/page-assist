@@ -44,6 +44,9 @@
       },
       "wideMode": {
         "label": "Activer le mode écran large"
+      },
+      "openReasoning": {
+        "label": "Raisonnement ouvert replié par défaut"
       }
     },
     "sidepanelRag": {
