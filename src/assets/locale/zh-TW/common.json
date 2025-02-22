@@ -1,0 +1,160 @@
+{
+    "pageAssist": "Page Assist",
+    "selectAModel": "選擇一個模型",
+    "save": "儲存",
+    "saved": "已儲存",
+    "cancel": "取消",
+    "retry": "重試",
+    "share": {
+        "tooltip": {
+            "share": "分享"
+        },
+        "modal": {
+            "title": "為聊天建立分享連結"
+        },
+        "form": {
+            "defaultValue": {
+                "name": "匿名",
+                "title": "未命名聊天"
+            },
+            "title": {
+                "label": "聊天標題",
+                "placeholder": "輸入聊天標題",
+                "required": "聊天標題是必填的"
+            },
+            "name": {
+                "label": "您的名字",
+                "placeholder": "輸入您的名字",
+                "required": "您的名字是必填的"
+            },
+            "btn": {
+                "save": "生成連結",
+                "saving": "正在產生連結..."
+            }
+        },
+        "notification": {
+            "successGenerate": "連結已複製到剪貼簿",
+            "failGenerate": "產生連結失敗"
+        }
+    },
+    "copyToClipboard": "複製到剪貼簿",
+    "webSearch": "搜尋網絡",
+    "regenerate": "重新生成",
+    "edit": "編輯",
+    "delete": "刪除",
+    "saveAndSubmit": "儲存並送出",
+    "editMessage": {
+        "placeholder": "輸入一則訊息..."
+    },
+    "submit": "送出",
+    "noData": "沒有資料",
+    "noHistory": "無聊天記錄",
+    "chatWithCurrentPage": "與目前頁面聊天",
+    "beta": "Beta",
+    "tts": "朗讀",
+    "currentChatModelSettings": "目前聊天模型設定",
+    "modelSettings": {
+        "label": "模型設定",
+        "description": "全域設定所有聊天的模型選項",
+        "form": {
+            "keepAlive": {
+                "label": "保留時間",
+                "help": "控制請求後模型在記憶體中保持的時間（預設：5分鐘）",
+                "placeholder": "例如：5m、10m、1h"
+            },
+            "temperature": {
+                "label": "溫度",
+                "placeholder": "例如：0.7、1.0"
+            },
+            "numCtx": {
+                "label": "上下文窗口大小 (num_ctx)",
+                "placeholder": "預設：2048"
+            },
+            "numPredict": {
+                "label": "最大 Token 數 (num_predict)",
+                "placeholder": "例如：2048、4096"
+            },
+            "seed": {
+                "label": "隨機種子",
+                "placeholder": "例如：1234",
+                "help": "模型輸出的可重複性"
+            },
+            "topK": {
+                "label": "Top K",
+                "placeholder": "例如：40、100"
+            },
+            "topP": {
+                "label": "Top P",
+                "placeholder": "例如：0.9、0.95"
+            },
+            "useMMap": {
+                "label": "useMmap"
+            },
+            "tfsZ": {
+                "label": "TFS-Z",
+                "placeholder": "例如：1.0、1.1"
+            },
+            "numKeep": {
+                "label": "Num Keep",
+                "placeholder": "例如：256、512"
+            },
+            "numThread": {
+                "label": "Num Thread",
+                "placeholder": "例如：8、16"
+            },
+            "useMlock": {
+                "label": "useMlock"
+            },
+            "minP": {
+                "label": "Min P",
+                "placeholder": "例如：0.05"
+            },
+            "repeatPenalty": {
+                "label": "Repeat Penalty",
+                "placeholder": "例如：1.1、1.2"
+            },
+            "repeatLastN": {
+                "label": "Repeat Last N",
+                "placeholder": "例如：64、128"
+            },
+            "numGpu": {
+                "label": "Num GPU",
+                "placeholder": "輸入要傳送到 GPU 的層數"
+            },
+            "systemPrompt": {
+                "label": "臨時系統提示詞",
+                "placeholder": "輸入系統提示詞",
+                "help": "這是一種在當前聊天中設置系統提示詞的快捷方法，如果已存在選定的系統提示詞將會覆蓋它。"
+            }
+        },
+        "advanced": "更多模型設定"
+    },
+    "copilot": {
+        "summary": "總結",
+        "explain": "解釋",
+        "rephrase": "重述",
+        "translate": "翻譯",
+        "custom": "自訂"
+    },
+    "citations": "引用",
+    "segmented": {
+        "ollama": "Ollama 模型",
+        "custom": "自訂模型"
+    },
+    "downloadCode": "下載程式碼",
+    "date": {
+        "pinned": "已置頂",
+        "today": "今天",
+        "yesterday": "昨天",
+        "last7Days": "最近7天",
+        "older": "更早以前"
+    },
+    "pin": "置頂",
+    "unpin": "取消置頂",
+    "generationInfo": "生成資訊",
+    "sidebarChat": "側邊欄聊天",
+    "reasoning": {
+        "thinking": "思考中....",
+        "thought": "思考了 {{time}}"
+    }
+}
