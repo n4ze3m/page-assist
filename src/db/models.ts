@@ -8,6 +8,8 @@ type Model = {
   id: string
   model_id: string
   name: string
+  model_name?: string,
+  model_image?: string,
   provider_id: string
   lookup: string
   model_type: string

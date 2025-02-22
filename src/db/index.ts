@@ -35,6 +35,8 @@ type Message = {
   reasoning_time_taken?: number
   messageType?: string
   generationInfo?: any
+  modelName?: string
+  modelImage?: string
 }
 
 type Webshare = {
@@ -249,16 +251,33 @@ export const saveHistory = async (
 }
 
 export const saveMessage = async (
-  history_id: string,
-  name: string,
-  role: string,
-  content: string,
-  images: string[],
-  source?: any[],
-  time?: number,
-  message_type?: string,
-  generationInfo?: any,
-  reasoning_time_taken?: number
+  {
+    content,
+    history_id,
+    name,
+    role,
+    images,
+    source,
+    generationInfo,
+    message_type,
+    modelImage,
+    modelName,
+    reasoning_time_taken,
+    time
+  }: {
+    history_id: string,
+    name: string,
+    role: string,
+    content: string,
+    images: string[],
+    source?: any[],
+    time?: number,
+    message_type?: string,
+    generationInfo?: any,
+    reasoning_time_taken?: number,
+    modelName?: string,
+    modelImage?: string
+  }
 ) => {
   const id = generateID()
   let createdAt = Date.now()
@@ -276,7 +295,9 @@ export const saveMessage = async (
     sources: source,
     messageType: message_type,
     generationInfo: generationInfo,
-    reasoning_time_taken
+    reasoning_time_taken,
+    modelName,
+    modelImage
   }
   const db = new PageAssitDatabase()
   await db.addMessage(message)
@@ -306,7 +327,9 @@ export const formatToMessage = (messages: MessageHistory): MessageType[] => {
       sources: message?.sources || [],
       images: message.images || [],
       generationInfo: message?.generationInfo,
-      reasoning_time_taken: message?.reasoning_time_taken
+      reasoning_time_taken: message?.reasoning_time_taken,
+      modelName: message?.modelName,
+      modelImage: message?.modelImage
     }
   })
 }
