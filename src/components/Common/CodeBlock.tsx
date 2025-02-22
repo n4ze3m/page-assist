@@ -1,11 +1,10 @@
 import { programmingLanguages } from "@/utils/langauge-extension"
 import { Tooltip, Modal, ConfigProvider } from "antd"
 import {
-  CheckIcon,
-  ClipboardIcon,
+  CopyCheckIcon,
+  CopyIcon,
   DownloadIcon,
-  GanttChartIcon,
-  TargetIcon
+  GanttChartIcon
 } from "lucide-react"
 import { FC, useState } from "react"
 import { useTranslation } from "react-i18next"
@@ -86,9 +85,9 @@ export const CodeBlock: FC<Props> = ({ language, value }) => {
                   onClick={handleCopy}
                   className="flex gap-1.5 items-center rounded bg-none p-1 text-xs text-gray-200 hover:bg-gray-700 hover:text-gray-100 focus:outline-none">
                   {!isBtnPressed ? (
-                    <ClipboardIcon className="size-4" />
+                    <CopyIcon className="size-4" />
                   ) : (
-                    <CheckIcon className="size-4 text-green-400" />
+                    <CopyCheckIcon className="size-4 text-green-400" />
                   )}
                 </button>
               </Tooltip>
