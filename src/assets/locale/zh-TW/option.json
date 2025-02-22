@@ -1,0 +1,29 @@
+{
+    "newChat": "新聊天",
+    "selectAPrompt": "選擇一個提示詞",
+    "githubRepository": "GitHub Repo",
+    "settings": "設定",
+    "sidebarTitle": "聊天紀錄",
+    "error": "錯誤",
+    "somethingWentWrong": "出現了錯誤",
+    "validationSelectModel": "請選擇模型以繼續",
+    "deleteHistoryConfirmation": "您確定要刪除這個歷史記錄嗎？",
+    "editHistoryTitle": "輸入一個新的標題",
+    "temporaryChat": "臨時聊天",
+    "more": {
+        "copy": {
+            "group": "複製",
+            "asText": "複製為文字",
+            "asMarkdown": "複製為Markdown",
+            "success": "已複製到剪貼簿！"
+        },
+        "download": {
+            "group": "下載",
+            "text": "文字檔 (.txt)",
+            "markdown": "Markdown 文件 (.md)",
+            "json": "JSON 文件 (.json)",
+            "image": "圖片 (.png)"
+        },
+        "share": "分享"
+    }
+}

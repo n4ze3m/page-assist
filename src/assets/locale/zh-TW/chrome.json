@@ -1,0 +1,13 @@
+{
+  "heading": "設置 Chrome AI",
+  "status": {
+      "label": "在頁面輔助功能中啟用或停用 Chrome AI 支援"
+  },
+  "error": {
+      "browser_not_supported": "此版本的 Chrome 不支援 Gemini Nano 模型，請更新至版本127或更高",
+      "ai_not_supported": "設定 chrome://flags/#prompt-api-for-gemini-nano 未啟用，請先啟用它。",
+      "ai_not_ready": "Gemini Nano 尚未準備好，您需要再次檢查 Chrome 設定。",
+      "internal_error": "發生內部錯誤，請稍後重試。"
+  },
+  "errorDescription": "為了使用 Chrome AI，您需要版本127以上的瀏覽器，目前版本在 Dev 和 Canary 頻道中。下載支援的版本後，請按照以下步驟操作：\n\n1. 前往 `chrome://flags/#prompt-api-for-gemini-nano` 並選擇「啟用」\n2. 前往 `chrome://flags/#optimization-guide-on-device-model` 並選擇「EnabledBypassPrefRequirement」\n3. 前往 `chrome://components` 搜尋「Optimization Guide On Device Model」，然後點擊「檢查更新」。這將下載模型。如果您沒有看到這些設置，請重複步驟1和2，然後重新啟動瀏覽器。"
+}

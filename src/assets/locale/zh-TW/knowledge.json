@@ -1,0 +1,40 @@
+{
+    "addBtn": "新增知識",
+    "columns": {
+        "title": "標題",
+        "status": "狀態",
+        "embeddings": "嵌入模型",
+        "createdAt": "創建於",
+        "action": "操作"
+    },
+    "expandedColumns": {
+        "name": "名稱"
+    },
+    "confirm": {
+        "delete": "您確定要刪除此知識嗎？"
+    },
+    "deleteSuccess": "知識刪除成功",
+    "status": {
+        "pending": "待處理",
+        "finished": "已完成",
+        "processing": "處理中",
+        "failed": "失敗"
+    },
+    "addKnowledge": "新增知識",
+    "form": {
+        "title": {
+            "label": "知識標題",
+            "placeholder": "輸入知識標題",
+            "required": "輸入知識標題是必需的"
+        },
+        "uploadFile": {
+            "label": "上傳文件",
+            "uploadText": "將文件拖放到此處或點擊上傳",
+            "uploadHint": "支援的檔案類型: .pdf, .csv, .txt, .md, .docx",
+            "required": "文件是必需的"
+        },
+        "submit": "新增",
+        "success": "知識新增成功"
+    },
+    "noEmbeddingModel": "請先從 RAG 設定頁面新增一個嵌入模型"
+}
