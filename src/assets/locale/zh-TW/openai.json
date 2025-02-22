@@ -1,0 +1,90 @@
+{
+    "settings": "OpenAI 相容 API",
+    "heading": "OpenAI 相容 API",
+    "subheading": "在此管理和配置您與 OpenAI 相容的 API 提供商。",
+    "addBtn": "新增提供商",
+    "table": {
+        "name": "提供商名稱",
+        "baseUrl": "Base URL",
+        "actions": "操作"
+    },
+    "modal": {
+        "titleAdd": "新增提供商",
+        "name": {
+            "label": "提供商名稱",
+            "required": "提供商名稱為必填項。",
+            "placeholder": "輸入提供商名稱"
+        },
+        "baseUrl": {
+            "label": "Base URL",
+            "help": "OpenAI API 提供商的 Base URL。例如：http://localhost:1234/v1",
+            "required": "Base URL 為必填項。",
+            "placeholder": "輸入 Base URL"
+        },
+        "apiKey": {
+            "label": "API 金鑰",
+            "required": "API 金鑰為必填項。",
+            "placeholder": "輸入 API 金鑰"
+        },
+        "submit": "新增",
+        "update": "更新",
+        "deleteConfirm": "您確定要刪除此提供商嗎？",
+        "model": {
+            "title": "模型列表",
+            "subheading": "請選擇您想要從此提供商使用的聊天模型。",
+            "success": "成功新增模型。"
+        },
+        "tipLMStudio": "Page Assist 將自動取得您在 LM Studio 中載入的模型，您無需手動新增它們。"
+    },
+    "addSuccess": "提供商新增成功。",
+    "deleteSuccess": "提供商刪除成功。",
+    "updateSuccess": "提供商更新成功。",
+    "delete": "刪除",
+    "edit": "編輯",
+    "newModel": "從提供商新增模型",
+    "noNewModel": "對於 LMStudio、Ollama、Llamafile，模型採動態取得，無需手動新增。",
+    "searchModel": "搜尋模型",
+    "selectAll": "全選",
+    "save": "儲存",
+    "saving": "儲存中...",
+    "manageModels": {
+        "columns": {
+            "name": "模型名稱",
+            "model_type": "模型類型",
+            "model_id": "模型 ID",
+            "provider": "提供商名稱",
+            "actions": "操作"
+        },
+        "tooltip": {
+            "delete": "刪除"
+        },
+        "confirm": {
+            "delete": "您確定要刪除此模型嗎？"
+        },
+        "modal": {
+            "title": "新增自訂模型",
+            "form": {
+                "name": {
+                    "label": "模型 ID",
+                    "placeholder": "llama3.2",
+                    "required": "模型 ID 為必填項。"
+                },
+                "provider": {
+                    "label": "提供商",
+                    "placeholder": "選擇提供商",
+                    "required": "提供商為必填項。"
+                },
+                "type": {
+                    "label": "模型類型"
+                }
+            }
+        }
+    },
+    "noModelFound": "未找到模型，請確保您已新增正確的供應商資料，包括 Base URL 和 API 金鑰。",
+    "radio": {
+        "chat": "聊天模型",
+        "embedding": "嵌入模型",
+        "chatInfo": "用於聊天補全和對話生成",
+        "embeddingInfo": "用於 RAG 和其他語義搜尋相關任務。"
+    }
+}

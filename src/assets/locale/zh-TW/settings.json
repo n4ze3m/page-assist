@@ -1,0 +1,389 @@
+{
+  "generalSettings": {
+    "title": "一般設定",
+    "settings": {
+      "heading": "Web UI 設定",
+      "speechRecognitionLang": {
+        "label": "語音辨識語言",
+        "placeholder": "選擇語言"
+      },
+      "language": {
+        "label": "語言",
+        "placeholder": "選擇語言"
+      },
+      "darkMode": {
+        "label": "更改主題",
+        "options": {
+          "light": "亮色",
+          "dark": "暗色"
+        }
+      },
+      "copilotResumeLastChat": {
+        "label": "打開側面板 (Copilot) 時恢復上次聊天"
+      },
+      "turnOnChatWithWebsite": {
+        "label": "預設啟用與網站聊天 (Copilot)"
+      },
+      "webUIResumeLastChat": {
+        "label": "開啟 Web UI 時恢復上次聊天"
+      },
+      "hideCurrentChatModelSettings": {
+        "label": "隱藏目前聊天模型設定"
+      },
+      "restoreLastChatModel": {
+        "label": "恢復之前聊天中最後使用的模型"
+      },
+      "sendNotificationAfterIndexing": {
+        "label": "完成知識庫處理後發送通知"
+      },
+      "generateTitle": {
+        "label": "使用 AI 生成標題"
+      },
+      "ollamaStatus": {
+        "label": "啟用或停用 Ollama 連線狀態檢查"
+      },
+      "wideMode": {
+        "label": "啟用寬螢幕模式"
+      }
+    },
+    "sidepanelRag": {
+      "heading": "Copilot 聊天與網站設定",
+      "ragEnabled": {
+        "label": "使用嵌入模型與網站聊天"
+      },
+      "maxWebsiteContext": {
+        "label": "普通模式網站內容大小",
+        "placeholder": "內容大小（預設 4028）"
+      }
+    },
+    "webSearch": {
+      "heading": "網頁搜尋設定",
+      "searchMode": {
+        "label": "執行簡單的網路搜尋"
+      },
+      "provider": {
+        "label": "搜尋引擎",
+        "placeholder": "選擇搜尋引擎"
+      },
+      "totalSearchResults": {
+        "label": "總搜尋結果數",
+        "placeholder": "輸入總搜尋結果數"
+      },
+      "visitSpecificWebsite": {
+        "label": "訪問訊息中提到的網站"
+      },
+      "searxng": {
+        "url": {
+          "label": "SearXNG URL"
+        }
+      },
+      "braveApi": {
+        "label": "Brave API 金鑰",
+        "placeholder": "輸入您的 Brave API 金鑰"
+      },
+      "googleDomain": {
+        "label": "Google 網域"
+      },
+      "searchOnByDefault": {
+        "label": "預設開啟網路搜尋"
+      }
+    },
+    "system": {
+      "heading": "系統設定",
+      "deleteChatHistory": {
+        "label": "系統重置",
+        "button": "全部重置",
+        "confirm": "您確定要執行系統重置嗎？這將清除所有資料並且無法撤銷。"
+      },
+      "export": {
+        "label": "匯出聊天記錄、知識庫和提示詞",
+        "button": "匯出資料",
+        "success": "匯出成功"
+      },
+      "import": {
+        "label": "匯入聊天記錄、知識庫和提示詞",
+        "button": "匯入資料",
+        "success": "匯入成功",
+        "error": "匯入錯誤"
+      }
+    },
+    "tts": {
+      "heading": "文字轉語音設定",
+      "ttsEnabled": {
+        "label": "啟用文字轉語音"
+      },
+      "ttsProvider": {
+        "label": "文字轉語音提供商",
+        "placeholder": "選擇提供商"
+      },
+      "ttsVoice": {
+        "label": "文字轉語音的聲音",
+        "placeholder": "選擇聲音"
+      },
+      "ssmlEnabled": {
+        "label": "啟用 SSML（Speech Synthesis Markup Language）"
+      },
+      "responseSplitting": {
+        "label": "回應拆分"
+      },
+      "removeReasoningTagTTS": {
+        "label": "從 TTS 中刪除推理標籤"
+      }
+    }
+  },
+  "manageModels": {
+    "title": "模型管理",
+    "addBtn": "新增模型",
+    "columns": {
+      "name": "名稱",
+      "digest": "雜湊值",
+      "modifiedAt": "修改時間",
+      "size": "大小",
+      "actions": "操作"
+    },
+    "expandedColumns": {
+      "parentModel": "父模型",
+      "format": "格式",
+      "family": "家族",
+      "parameterSize": "參數大小",
+      "quantizationLevel": "量化級別"
+    },
+    "tooltip": {
+      "delete": "刪除模型",
+      "repull": "重新下載模型"
+    },
+    "confirm": {
+      "delete": "您確定要刪除該模型嗎？",
+      "repull": "您確定要重新下載該模型嗎？"
+    },
+    "modal": {
+      "title": "新增模型",
+      "placeholder": "輸入模型名稱",
+      "pull": "下載模型"
+    },
+    "notification": {
+      "pullModel": "正在下載模型",
+      "pullModelDescription": "模型 {{modelName}} 下載中，欲了解更多詳細資訊，請查看擴充圖標。",
+      "success": "成功",
+      "error": "錯誤",
+      "successDescription": "成功下載模型",
+      "successDeleteDescription": "成功刪除模型",
+      "someError": "出了點問題，請稍後重試"
+    }
+  },
+  "managePrompts": {
+    "title": "提示詞管理",
+    "addBtn": "新增提示詞",
+    "option1": "一般",
+    "option2": "RAG",
+    "questionPrompt": "問題提示詞",
+    "segmented": {
+      "custom": "自訂提示詞",
+      "copilot": "Copilot 提示詞"
+    },
+    "columns": {
+      "title": "標題",
+      "prompt": "提示詞",
+      "type": "提示詞類型",
+      "actions": "操作"
+    },
+    "systemPrompt": "系統提示詞",
+    "quickPrompt": "快速提示詞",
+    "tooltip": {
+      "delete": "刪除提示詞",
+      "edit": "編輯提示詞"
+    },
+    "confirm": {
+      "delete": "您確實要刪除這個提示詞嗎？此操作無法撤銷。"
+    },
+    "modal": {
+      "addTitle": "新增提示詞",
+      "editTitle": "編輯提示詞"
+    },
+    "form": {
+      "title": {
+        "label": "標題",
+        "placeholder": "My Awesome Prompt",
+        "required": "請輸入標題"
+      },
+      "prompt": {
+        "label": "提示詞",
+        "placeholder": "輸入提示詞",
+        "required": "請輸入提示詞",
+        "help": "您可以在提示詞中使用 {key} 作為變數。",
+        "missingTextPlaceholder": "提示詞中缺少 {text} 變數，請新增。"
+      },
+      "isSystem": {
+        "label": "是系統提示詞"
+      },
+      "btnSave": {
+        "saving": "正在新增提示詞...",
+        "save": "新增提示詞"
+      },
+      "btnEdit": {
+        "saving": "正在更新提示詞...",
+        "save": "更新提示詞"
+      }
+    },
+    "notification": {
+      "addSuccess": "提示詞已新增",
+      "addSuccessDesc": "提示詞已新增成功",
+      "error": "錯誤",
+      "someError": "出了點問題，請稍後重試",
+      "updatedSuccess": "提示詞已更新",
+      "updatedSuccessDesc": "提示詞已更新成功",
+      "deletedSuccess": "提示詞已刪除",
+      "deletedSuccessDesc": "提示詞已刪除成功"
+    }
+  },
+  "manageShare": {
+    "title": "分享管理",
+    "heading": "設定頁面分享 URL",
+    "form": {
+      "url": {
+        "label": "頁面分享 URL",
+        "placeholder": "輸入頁面分享 URL",
+        "required": "請輸入頁面分享 URL！",
+        "help": "出於隱私的考量，您可以自行託管頁面分享服務並在此處提供 URL。<anchor>了解更多</anchor>。"
+      }
+    },
+    "webshare": {
+      "heading": "網頁分享",
+      "columns": {
+        "title": "標題",
+        "url": "URL",
+        "actions": "操作"
+      },
+      "tooltip": {
+        "delete": "刪除分享"
+      },
+      "confirm": {
+        "delete": "您確實要刪除分享嗎？此操作無法撤銷。"
+      },
+      "label": "頁面分享管理",
+      "description": "啟用或停用頁面分享功能"
+    },
+    "notification": {
+      "pageShareSuccess": "頁面分享網址更新成功",
+      "someError": "出現錯誤，請稍後重試",
+      "webShareDeleteSuccess": "網頁分享已成功刪除"
+    }
+  },
+  "ollamaSettings": {
+    "title": "Ollama 設定",
+    "heading": "Ollama 設定",
+    "settings": {
+      "ollamaUrl": {
+        "label": "Ollama URL",
+        "placeholder": "輸入 Ollama URL"
+      },
+      "globalEnable": {
+        "label": "全域啟用或停用 Ollama 整合功能",
+        "warning": "透過全域停用 Ollama 整合功能後，Page Assist 將不會從 Ollama 取得模型，您仍然可以從 <anchor>OpenAI 相容 API</anchor> 的部分新增 Ollama 實例，一樣可以正常運作。"
+      },
+      "advanced": {
+        "label": "進階 Ollama URL 配置",
+        "urlRewriteEnabled": {
+          "label": "啟用或停用自訂來源 URL"
+        },
+        "rewriteUrl": {
+          "label": "自訂來源 URL",
+          "placeholder": "輸入自訂來源 URL"
+        },
+        "autoCORSFix": {
+          "label": "啟用或停用自動 Ollama CORS 修復"
+        },
+        "headers": {
+          "label": "自訂標頭",
+          "add": "新增標頭",
+          "key": {
+            "label": "Header Key",
+            "placeholder": "Authorization"
+          },
+          "value": {
+            "label": "Header Value",
+            "placeholder": "Bearer token"
+          }
+        },
+        "help": "如果您在 Page Assist 上遇到與 Ollama 的連線問題，您可以設定自訂來源 URL，要了解有關配置的更多資訊，請<anchor>點擊此處</anchor>。"
+      }
+    }
+  },
+  "manageSearch": {
+    "title": "網路搜尋管理",
+    "heading": "網路搜尋設定"
+  },
+  "about": {
+    "title": "關於",
+    "heading": "關於",
+    "chromeVersion": "Page Assist 版本",
+    "ollamaVersion": "Ollama 版本",
+    "support": "您可以透過以下平台捐款或贊助來支持 Page Assist 計畫：",
+    "koFi": "在 Ko-fi 上支持",
+    "githubSponsor": "在 GitHub 上支持",
+    "githubRepo": "GitHub Repository"
+  },
+  "manageKnowledge": {
+    "title": "知識管理",
+    "heading": "知識庫設定"
+  },
+  "rag": {
+    "title": "RAG 設定",
+    "ragSettings": {
+      "label": "RAG 設定",
+      "model": {
+        "label": "嵌入模型",
+        "required": "請選擇模型",
+        "help": "強烈建議使用像`nomic-embed-text`這樣的嵌入模型。",
+        "placeholder": "選擇模型"
+      },
+      "chunkSize": {
+        "label": "區塊大小",
+        "placeholder": "輸入區塊大小",
+        "required": "請輸入區塊大小"
+      },
+      "chunkOverlap": {
+        "label": "區塊重疊",
+        "placeholder": "輸入區塊重疊",
+        "required": "請輸入區塊重疊"
+      },
+      "totalFilePerKB": {
+        "label": "知識庫預設的檔案上傳限制",
+        "placeholder": "輸入預設的檔案上傳限制（例如：10）",
+        "required": "請輸入預設檔案上傳限制"
+      },
+      "noOfRetrievedDocs": {
+        "label": "檢索到的文件數",
+        "placeholder": "輸入檢索到的文件數",
+        "required": "請輸入檢索到的文件數"
+      },
+      "splittingSeparator": {
+        "label": "分隔符",
+        "placeholder": "輸入分隔符號（例如：\\n\\n）",
+        "required": "請輸入分隔符"
+      },
+      "splittingStrategy": {
+        "label": "文字分割器"
+      }
+    },
+    "prompt": {
+      "label": "配置 RAG 提示詞",
+      "option1": "正常",
+      "option2": "網頁",
+      "alert": "在此配置系統提示詞已被棄用，請使用「提示詞管理」的部分來新增或編輯提示詞，此部分將在未來的版本中移除。",
+      "systemPrompt": "系統提示詞",
+      "systemPromptPlaceholder": "輸入系統提示詞",
+      "webSearchPrompt": "網路搜尋提示詞",
+      "webSearchPromptHelp": "請勿從提示詞中刪除 `{search_results}`。",
+      "webSearchPromptError": "請輸入網路搜尋提示詞",
+      "webSearchPromptPlaceholder": "請輸入網路搜尋提示詞",
+      "webSearchFollowUpPrompt": "網路搜尋後續提示詞",
+      "webSearchFollowUpPromptHelp": "請勿從提示詞中移除`{chat_history}`和{question}`。",
+      "webSearchFollowUpPromptError": "請輸入網路搜尋後續提示詞",
+      "webSearchFollowUpPromptPlaceholder": "請輸入網路搜尋後續提示詞"
+    }
+  },
+  "chromeAiSettings": {
+    "title": "Chrome AI 設定"
+  }
+}

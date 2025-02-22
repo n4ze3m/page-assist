@@ -7,6 +7,7 @@ import { uk } from "./lang/uk";
 import { ru } from "./lang/ru";
 import { ml } from "./lang/ml";
 import { zh } from "./lang/zh";
+import { zhTW } from "./lang/zh-TW";
 import { ja } from "./lang/ja";
 import { it } from "./lang/it";
 import { es } from "./lang/es";
@@ -35,6 +36,7 @@ i18n
             ru: ru,
             "ru-RU": ru,
             zh: zh,
+            "zh-TW": zhTW,
             ja: ja,
             "ja-JP": ja,
             fa: fa,
