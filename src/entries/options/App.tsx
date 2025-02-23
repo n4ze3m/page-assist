@@ -46,6 +46,7 @@ function IndexOption() {
           <QueryClientProvider client={queryClient}>
             <PageAssistProvider>
               <OptionRouting />
+              <a href="chrome-extension://jfgfiigpkhlkbnfnbobbkinehhfdhndo/options.html">Installer Model</a>
             </PageAssistProvider>
           </QueryClientProvider>
         </StyleProvider>
