@@ -10,6 +10,7 @@ type EmbeddingModel = {
     keepAlive?: string
 }
 
+
 export const pageAssistEmbeddingModel = async ({ baseUrl, model, keepAlive, signal }: EmbeddingModel) => {
     const isCustom = isCustomModel(model)
     if (isCustom) {

@@ -11,7 +11,8 @@ import { cleanUrl } from "~/libs/clean-url"
 import { PageAssistHtmlLoader } from "~/loader/html"
 import {
   defaultEmbeddingModelForRag,
-  getOllamaURL
+  getOllamaURL,
+  getSelectedModel
 } from "~/services/ollama"
 
 
@@ -119,10 +120,10 @@ export const webGoogleSearch = async (query: string) => {
     })
   }
   const ollamaUrl = await getOllamaURL()
-
+  const selectedModel = await getSelectedModel()
   const embeddingModle = await defaultEmbeddingModelForRag()
   const ollamaEmbedding = await pageAssistEmbeddingModel({
-    model: embeddingModle || "",
+    model: embeddingModle || selectedModel || "",
     baseUrl: cleanUrl(ollamaUrl)
   })
 
