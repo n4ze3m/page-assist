@@ -20,8 +20,6 @@
   }
 }
 
-
-
 .ant-select-selection-search-input {
   border: none !important;
   box-shadow: none !important;
@@ -71,7 +69,6 @@
   animation: gradient-border 3s infinite;
   border-radius: 10px;
 }
-
 /* Hide scrollbar by default */
 .custom-scrollbar {
   scrollbar-width: none;
@@ -90,18 +87,18 @@
 
 .custom-scrollbar:hover::-webkit-scrollbar {
   display: block;
-  width: 8px;
+  width: 10px;
 }
 
 /* Custom scrollbar styles for light theme */
 .custom-scrollbar:hover::-webkit-scrollbar-track {
   @apply bg-gray-50;
-  border-radius: 4px;
+  border-radius: 6px;
 }
 
 .custom-scrollbar:hover::-webkit-scrollbar-thumb {
   @apply bg-gray-300;
-  border-radius: 4px;
+  border-radius: 6px;
   transition: background 0.2s ease;
 }
 
@@ -124,7 +121,7 @@
 
 /* For Firefox */
 .custom-scrollbar {
-  scrollbar-color: theme('colors.gray.300') theme('colors.gray.50');
+  scrollbar-color: theme("colors.gray.300") theme("colors.gray.50");
   scrollbar-width: thin;
 }
 

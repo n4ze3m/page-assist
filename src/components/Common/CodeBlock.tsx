@@ -10,7 +10,7 @@ import { FC, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter"
 import { coldarkDark } from "react-syntax-highlighter/dist/cjs/styles/prism"
-import Mermaid from "./Mermaid"
+// import Mermaid from "./Mermaid"
 
 interface Props {
   language: string
@@ -47,13 +47,13 @@ export const CodeBlock: FC<Props> = ({ language, value }) => {
     window.URL.revokeObjectURL(url)
   }
 
-  const handlePreviewMermaid = () => {
-    setPreviewMermaidVisible(true)
-  }
+  // const handlePreviewMermaid = () => {
+  //   setPreviewMermaidVisible(true)
+  // }
 
-  const handlePreviewMermaidClose = () => {
-    setPreviewMermaidVisible(false)
-  }
+  // const handlePreviewMermaidClose = () => {
+  //   setPreviewMermaidVisible(false)
+  // }
 
   return (
     <>
@@ -64,7 +64,7 @@ export const CodeBlock: FC<Props> = ({ language, value }) => {
           </div>
           <div className="sticky top-9 md:top-[5.75rem]">
             <div className="absolute bottom-0 right-2 flex h-9 items-center">
-              {language === "mermaid" && (
+              {/* {language === "mermaid" && (
                 <Tooltip title={t("mermaid")}>
                   <button
                     onClick={handlePreviewMermaid}
@@ -72,7 +72,7 @@ export const CodeBlock: FC<Props> = ({ language, value }) => {
                     <GanttChartIcon className="size-4" />
                   </button>
                 </Tooltip>
-              )}
+              )} */}
               <Tooltip title={t("downloadCode")}>
                 <button
                   onClick={handleDownload}
@@ -164,7 +164,8 @@ export const CodeBlock: FC<Props> = ({ language, value }) => {
       )}
 
       {/* motion: false ? because animation may cause rendering errors */}
-      {previewMermaidVisible && (
+      {/* There is few pref problem currently will be enable later */}
+      {/* {previewMermaidVisible && (
         <ConfigProvider theme={{ token: { motion: false } }}>
           <Modal
             title="Mermaid Preview"
@@ -182,7 +183,7 @@ export const CodeBlock: FC<Props> = ({ language, value }) => {
             <Mermaid code={value} />
           </Modal>
         </ConfigProvider>
-      )}
+      )} */}
     </>
   )
 }
