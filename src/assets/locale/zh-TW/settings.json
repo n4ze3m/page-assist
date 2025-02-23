@@ -46,7 +46,7 @@
         "label": "啟用寬螢幕模式"
       },
       "openReasoning": {
-        "label": "預設摺疊推理過程"
+        "label": "預設展開推理過程"
       }
     },
     "sidepanelRag": {

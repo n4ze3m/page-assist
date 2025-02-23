@@ -49,7 +49,7 @@
         "label": "와이드 스크린 모드 활성화"
       },
       "openReasoning": {
-        "label": "기본적으로 추론 과정 접기"
+        "label": "추론 섹션을 기본적으로 열기"
       }
     },
     "sidepanelRag": {

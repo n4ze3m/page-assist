@@ -49,7 +49,7 @@
         "label": "ワイドスクリーンモードを有効にする"
       },
       "openReasoning": {
-        "label": "デフォルトで推論を折りたたむ"
+        "label": "デフォルトで推論を展開する"
       }
     },
     "sidepanelRag": {
