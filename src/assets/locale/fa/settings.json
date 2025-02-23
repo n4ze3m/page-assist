@@ -41,6 +41,9 @@
       },
       "wideMode": {
         "label": "فعال کردن حالت صفحه عریض"
+      },
+      "openReasoning": {
+        "label": "باز کردن استدلال به صورت پیش فرض"
       }
     },
     "sidepanelRag": {

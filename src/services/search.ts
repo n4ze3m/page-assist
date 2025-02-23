@@ -11,11 +11,15 @@ const DEFAULT_PROVIDER = "duckduckgo"
 const AVAILABLE_PROVIDERS = ["google", "duckduckgo"] as const
 
 export const getIsSimpleInternetSearch = async () => {
+ try {
   const isSimpleInternetSearch = await storage.get("isSimpleInternetSearch")
   if (!isSimpleInternetSearch || isSimpleInternetSearch.length === 0) {
     return true
   }
   return isSimpleInternetSearch === "true"
+ } catch(e) {
+  return true
+ }
 }
 
 export const getIsVisitSpecificWebsite = async () => {

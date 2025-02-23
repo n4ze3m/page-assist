@@ -44,6 +44,9 @@
       },
       "wideMode": {
         "label": "Enable wide screen mode"
+      },
+      "openReasoning": {
+        "label": "Open Reasoning Collapse by default"
       }
     },
     "sidepanelRag": {
@@ -385,5 +388,6 @@
   },
   "chromeAiSettings": {
     "title": "Chrome AI Settings"
-  }
+  },
+  "mermaid": "Mermaid"
 }

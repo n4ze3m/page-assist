@@ -44,6 +44,9 @@
       },
       "wideMode": {
         "label": "تمكين وضع الشاشة العريضة"
+      },
+      "openReasoning": {
+        "label": "فتح التفكير المنطقي بشكل افتراضي"
       }
     },
     "sidepanelRag": {

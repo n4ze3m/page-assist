@@ -56,25 +56,46 @@ export const saveMessageOnError = async ({
     if (historyId) {
       if (!isRegenerating) {
         await saveMessage(
-          historyId,
-          selectedModel,
-          "user",
-          userMessage,
-          [image],
-          [],
-          1,
-          message_type
+          {
+            history_id: historyId,
+            name: selectedModel,
+            role: "user",
+            content: userMessage,
+            images: [image],
+            time: 1,
+            message_type,
+          }
+          // historyId,
+          // selectedModel,
+          // "user",
+          // userMessage,
+          // [image],
+          // [],
+          // 1,
+          // message_type
         )
       }
+
+
       await saveMessage(
-        historyId,
-        selectedModel,
-        "assistant",
-        botMessage,
-        [],
-        [],
-        2,
-        message_type
+        {
+          history_id: historyId,
+          name: selectedModel,
+          role: "assistant",
+          content: botMessage,
+          images: [],
+          source: [],
+          time: 2,
+          message_type,
+        }
+        // historyId,
+        // selectedModel,
+        // "assistant",
+        // botMessage,
+        // [],
+        // [],
+        // 2,
+        // message_type
       )
       await setLastUsedChatModel(historyId, selectedModel)
       if (prompt_id || prompt_content) {
@@ -84,26 +105,49 @@ export const saveMessageOnError = async ({
       const title = await generateTitle(selectedModel, userMessage, userMessage)
       const newHistoryId = await saveHistory(title, false, message_source)
       if (!isRegenerating) {
+
         await saveMessage(
-          newHistoryId.id,
-          selectedModel,
-          "user",
-          userMessage,
-          [image],
-          [],
-          1,
-          message_type
+          {
+            history_id: newHistoryId.id,
+            name: selectedModel,
+            role: "user",
+            content: userMessage,
+            images: [image],
+            time: 1,
+            message_type,
+          }
+          // newHistoryId.id,
+          // selectedModel,
+          // "user",
+          // userMessage,
+          // [image],
+          // [],
+          // 1,
+          // message_type
         )
       }
+
+
+
       await saveMessage(
-        newHistoryId.id,
-        selectedModel,
-        "assistant",
-        botMessage,
-        [],
-        [],
-        2,
-        message_type
+        {
+          history_id: newHistoryId.id,
+          name: selectedModel,
+          role: "assistant",
+          content: botMessage,
+          images: [],
+          source: [],
+          time: 2,
+          message_type,
+        }
+        // newHistoryId.id,
+        // selectedModel,
+        // "assistant",
+        // botMessage,
+        // [],
+        // [],
+        // 2,
+        // message_type
       )
       setHistoryId(newHistoryId.id)
       await setLastUsedChatModel(newHistoryId.id, selectedModel)
@@ -150,30 +194,56 @@ export const saveMessageOnSuccess = async ({
 }) => {
   if (historyId) {
     if (!isRegenerate) {
+
       await saveMessage(
-        historyId,
-        selectedModel,
-        "user",
-        message,
-        [image],
-        [],
-        1,
+        {
+          history_id: historyId,
+          name: selectedModel,
+          role: "user",
+          content: message,
+          images: [image],
+          time: 1,
+          message_type,
+          generationInfo,
+          reasoning_time_taken
+        }
+        // historyId,
+        // selectedModel,
+        // "user",
+        // message,
+        // [image],
+        // [],
+        // 1,
+        // message_type,
+        // generationInfo,
+        // reasoning_time_taken
+      )
+    }
+
+
+    await saveMessage(
+      {
+        history_id: historyId,
+        name: selectedModel,
+        role: "assistant",
+        content: fullText,
+        images: [],
+        source,
+        time: 2,
         message_type,
         generationInfo,
         reasoning_time_taken
-      )
-    }
-    await saveMessage(
-      historyId,
-      selectedModel!,
-      "assistant",
-      fullText,
-      [],
-      source,
-      2,
-      message_type,
-      generationInfo,
-      reasoning_time_taken
+      }
+      // historyId,
+      // selectedModel!,
+      // "assistant",
+      // fullText,
+      // [],
+      // source,
+      // 2,
+      // message_type,
+      // generationInfo,
+      // reasoning_time_taken
     )
     await setLastUsedChatModel(historyId, selectedModel!)
     if (prompt_id || prompt_content) {
@@ -182,29 +252,56 @@ export const saveMessageOnSuccess = async ({
   } else {
     const title = await generateTitle(selectedModel, message, message)
     const newHistoryId = await saveHistory(title, false, message_source)
+
+
     await saveMessage(
-      newHistoryId.id,
-      selectedModel,
-      "user",
-      message,
-      [image],
-      [],
-      1,
-      message_type,
-      generationInfo,
-      reasoning_time_taken
+      {
+        history_id: newHistoryId.id,
+        name: selectedModel,
+        role: "user",
+        content: message,
+        images: [image],
+        time: 1,
+        message_type,
+        generationInfo,
+        reasoning_time_taken
+      }
+      // newHistoryId.id,
+      // selectedModel,
+      // "user",
+      // message,
+      // [image],
+      // [],
+      // 1,
+      // message_type,
+      // generationInfo,
+      // reasoning_time_taken
     )
+
+
     await saveMessage(
-      newHistoryId.id,
-      selectedModel!,
-      "assistant",
-      fullText,
-      [],
-      source,
-      2,
-      message_type,
-      generationInfo,
-      reasoning_time_taken
+      {
+        history_id: newHistoryId.id,
+        name: selectedModel,
+        role: "assistant",
+        content: fullText,
+        images: [],
+        source,
+        time: 2,
+        message_type,
+        generationInfo,
+        reasoning_time_taken
+      }
+      // newHistoryId.id,
+      // selectedModel!,
+      // "assistant",
+      // fullText,
+      // [],
+      // source,
+      // 2,
+      // message_type,
+      // generationInfo,
+      // reasoning_time_taken
     )
     setHistoryId(newHistoryId.id)
     await setLastUsedChatModel(newHistoryId.id, selectedModel!)

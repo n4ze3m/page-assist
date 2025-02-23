@@ -33,7 +33,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
   const { sendWhenEnter, setSendWhenEnter } = useWebUI()
   const [typing, setTyping] = React.useState<boolean>(false)
   const { t } = useTranslation(["playground", "common"])
-  const [chatWithWebsiteEmbedding,] = useStorage(
+  const [chatWithWebsiteEmbedding] = useStorage(
     "chatWithWebsiteEmbedding",
     true
   )
@@ -231,32 +231,30 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
   }, [defaultChatWithWebsite])
 
   return (
-    <div className="flex w-full flex-col items-center p-2 pt-1  pb-4">
+    <div className="flex w-full flex-col items-center px-2">
       <div className="relative z-10 flex w-full flex-col items-center justify-center gap-2 text-base">
         <div className="relative flex w-full flex-row justify-center gap-2 lg:w-4/5">
           <div
-            className={` bg-neutral-50  dark:bg-[#262626] relative w-full max-w-[48rem] p-1 backdrop-blur-lg duration-100 border border-gray-300 rounded-xl  dark:border-gray-600
+            className={` bg-neutral-50  dark:bg-[#262626] relative w-full max-w-[48rem] p-1 backdrop-blur-lg duration-100 border border-gray-300 rounded-t-xl  dark:border-gray-600
           `}>
             <div
-              className={`h-full shadow relative ${
+              className={`border-b border-gray-200 dark:border-gray-600 relative ${
                 form.values.image.length === 0 ? "hidden" : "block"
               }`}>
-              <div className="relative">
-                <Image
-                  src={form.values.image}
-                  alt="Uploaded Image"
-                  width={180}
-                  preview={false}
-                  className="rounded-md"
-                />
-                <button
-                  onClick={() => {
-                    form.setFieldValue("image", "")
-                  }}
-                  className="flex items-center justify-center absolute top-0 m-2 bg-white  dark:bg-[#262626] p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-600 text-black dark:text-gray-100">
-                  <X className="h-5 w-5" />
-                </button>
-              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  form.setFieldValue("image", "")
+                }}
+                className="absolute top-1 left-1 flex items-center justify-center z-10 bg-white dark:bg-[#262626] p-0.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-600 text-black dark:text-gray-100">
+                <X className="h-4 w-4" />
+              </button>{" "}
+              <Image
+                src={form.values.image}
+                alt="Uploaded Image"
+                preview={false}
+                className="rounded-md max-h-32"
+              />
             </div>
             <div>
               <div className="flex">
@@ -312,7 +310,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                     multiple={false}
                     onChange={onInputChange}
                   />
-                  <div className="w-full  flex flex-col p-1">
+                  <div className="w-full  flex flex-col px-1">
                     <textarea
                       onKeyDown={(e) => handleKeyDown(e)}
                       ref={textareaRef}

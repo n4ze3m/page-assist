@@ -5,6 +5,11 @@ export const OAI_API_PROVIDERS = [
         baseUrl: ""
     },
     {
+        label: "LLaMa.cpp",
+        value: "llamacpp",
+        baseUrl: "http://localhost:8080/v1"
+    },
+    {
         label: "LM Studio",
         value: "lmstudio",
         baseUrl: "http://localhost:1234/v1"
@@ -23,6 +28,11 @@ export const OAI_API_PROVIDERS = [
         label: "OpenAI",
         value: "openai",
         baseUrl: "https://api.openai.com/v1"
+    },
+    {
+        label: "DeepSeek",
+        value: "deepseek",
+        baseUrl: "https://api.deepseek.com"
     },
     {
         label: "Fireworks",
@@ -55,11 +65,6 @@ export const OAI_API_PROVIDERS = [
         baseUrl: "https://api.mistral.ai/v1"
     },
     {
-        label: "DeepSeek",
-        value: "deepseek",
-        baseUrl: "https://api.deepseek.com"
-    },
-    {
         label: "SiliconFlow",
         value: "siliconflow",
         baseUrl: "https://api.siliconflow.cn/v1"
@@ -78,5 +83,5 @@ export const OAI_API_PROVIDERS = [
         label: "AliBaBaCloud",
         value: "alibabacloud",
         baseUrl: "https://dashscope.aliyuncs.com/compatible-mode/v1"
-    }
+    },
 ]

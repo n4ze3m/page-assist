@@ -44,6 +44,9 @@
       },
       "wideMode": {
         "label": "Habilitar modo pantalla ancha"
+      },
+      "openReasoning": {
+        "label": "Abrir el Razonamiento Colapsado por defecto"
       }
     },
     "sidepanelRag": {

@@ -55,7 +55,7 @@ export const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
   const location = useLocation()
   const { t } = useTranslation(["settings", "common", "openai"])
   return (
-    <div className="flex min-h-screen -z-10 w-full flex-col">
+    <div className="flex min-h-screen  w-full flex-col">
       <main className="relative w-full flex-1">
         <div className="mx-auto w-full h-full custom-scrollbar overflow-y-auto">
           <div className="flex flex-col lg:flex-row lg:gap-x-16 lg:px-24">

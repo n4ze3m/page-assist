@@ -14,6 +14,7 @@ import { SiliconFlowIcon } from "../Icons/SiliconFlow"
 import { VolcEngineIcon } from "../Icons/VolcEngine"
 import { TencentCloudIcon } from "../Icons/TencentCloud"
 import { AliBaBaCloudIcon } from "../Icons/AliBaBaCloud"
+import { LlamaCppLogo } from "../Icons/LlamacppLogo"
 
 export const ProviderIcons = ({
   provider,
@@ -46,15 +47,17 @@ export const ProviderIcons = ({
     case "mistral":
       return <MistarlIcon className={className} />
     case "deepseek":
-      return <DeepSeekIcon  className={className} />
+      return <DeepSeekIcon className={className} />
     case "siliconflow":
-      return <SiliconFlowIcon  className={className} />
+      return <SiliconFlowIcon className={className} />
     case "volcengine":
-      return <VolcEngineIcon  className={className} />
+      return <VolcEngineIcon className={className} />
     case "tencentcloud":
-      return <TencentCloudIcon  className={className} />
+      return <TencentCloudIcon className={className} />
     case "alibabacloud":
-      return <AliBaBaCloudIcon  className={className} />
+      return <AliBaBaCloudIcon className={className} />
+    case "llamacpp":
+      return <LlamaCppLogo className={className} />
     default:
       return <OllamaIcon className={className} />
   }

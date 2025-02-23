@@ -47,6 +47,9 @@
       },
       "wideMode": {
         "label": "启用宽屏模式"
+      },
+      "openReasoning": {
+        "label": "默认展开推理过程"
       }
     },
     "sidepanelRag": {

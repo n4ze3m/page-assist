@@ -36,8 +36,16 @@ export const EditMessageForm = (props: Props) => {
       className="flex flex-col gap-2">
       <textarea
         {...form.getInputProps("message")}
-        onCompositionStart={() => setIsComposing(true)}
-        onCompositionEnd={() => setIsComposing(false)}
+        onCompositionStart={() => {
+          if (import.meta.env.BROWSER !== "firefox") {
+            setIsComposing(true)
+          }
+        }}
+        onCompositionEnd={() => {
+          if (import.meta.env.BROWSER !== "firefox") {
+            setIsComposing(false)
+          }
+        }}
         required
         rows={1}
         style={{ minHeight: "60px" }}

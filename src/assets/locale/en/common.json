@@ -156,5 +156,6 @@
     "reasoning": {
         "thinking": "Thinking....",
         "thought": "Thought for {{time}}"
-    }
+    },
+    "mermaid": "Mermaid"
 }

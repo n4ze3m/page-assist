@@ -44,6 +44,9 @@
       },
       "wideMode": {
         "label": "Aktiver bredskjerm-modus"
+      },
+      "openReasoning": {
+        "label": "Åpne Resonnement Sammenfoldet som standard"
       }
     },
     "sidepanelRag": {

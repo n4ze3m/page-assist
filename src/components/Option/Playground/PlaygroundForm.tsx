@@ -207,11 +207,11 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
   }
 
   return (
-    <div className="flex w-full flex-col items-center p-2 pt-1  pb-4">
+    <div className="flex w-full flex-col items-center px-2">
       <div className="relative z-10 flex w-full flex-col items-center justify-center gap-2 text-base">
-        <div className="relative flex w-full flex-row justify-center gap-2 lg:w-4/5">
+        <div className="relative flex w-full flex-row justify-center gap-2 lg:w-3/5">
           <div
-            className={` bg-neutral-50  dark:bg-[#262626] relative w-full max-w-[48rem] p-1 backdrop-blur-lg duration-100 border border-gray-300 rounded-xl  dark:border-gray-600
+            className={` bg-neutral-50  dark:bg-[#262626] relative w-full max-w-[48rem] p-1 backdrop-blur-lg duration-100 border border-gray-300 rounded-t-xl  dark:border-gray-600
             ${temporaryChat ? "!bg-gray-200 dark:!bg-black " : ""}
             ${checkWideMode ? "max-w-none " : ""}
             `}>
@@ -279,7 +279,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                     multiple={false}
                     onChange={onInputChange}
                   />
-                  <div className="w-full  flex flex-col dark:border-gray-600  p-2">
+                  <div className="w-full  flex flex-col dark:border-gray-600  px-2 pt-2">
                     <textarea
                       onCompositionStart={() => {
                         if (import.meta.env.BROWSER !== "firefox") {

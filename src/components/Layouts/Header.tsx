@@ -21,7 +21,6 @@ import { Select, Tooltip } from "antd"
 import { getAllPrompts } from "@/db"
 import { ProviderIcons } from "../Common/ProviderIcon"
 import { NewChat } from "./NewChat"
-import { PageAssistSelect } from "../Select"
 import { MoreOptions } from "./MoreOptions"
 type Props = {
   setSidebarOpen: (open: boolean) => void
@@ -121,7 +120,7 @@ export const Header: React.FC<Props> = ({
         </span>
         <div className="hidden lg:block">
           <Select
-            className="w-80"
+            className="min-w-80"
             placeholder={t("common:selectAModel")}
             // loadingText={t("common:selectAModel")}
             value={selectedModel}

@@ -143,6 +143,11 @@ export const getAllModels = async ({
   }
 }
 
+export const getSelectedModel = async () => {
+  const selectedModel = await storage.get("selectedModel")
+  return selectedModel
+}
+
 export const getEmbeddingModels = async ({ returnEmpty }: {
   returnEmpty?: boolean
 }) => {

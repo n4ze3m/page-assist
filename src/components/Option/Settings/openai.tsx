@@ -23,7 +23,7 @@ import {
 } from "lucide-react"
 import { OpenAIFetchModel } from "./openai-fetch-model"
 import { OAI_API_PROVIDERS } from "@/utils/oai-api-providers"
-const noPopupProvider = ["lmstudio", "llamafile", "ollama2"]
+const noPopupProvider = ["lmstudio", "llamafile", "ollama2", "llamacpp"]
 
 export const OpenAIApp = () => {
   const { t } = useTranslation("openai")

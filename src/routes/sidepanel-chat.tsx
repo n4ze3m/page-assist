@@ -136,7 +136,7 @@ const SidepanelChat = () => {
           className={`relative flex h-full flex-col items-center ${
             dropState === "dragging" ? "bg-gray-100 dark:bg-gray-800" : ""
           } bg-white dark:bg-[#171717]`}>
-          <div className="custom-scrollbar bg-bottom-mask-light dark:bg-bottom-mask-dark mask-bottom-fade will-change-mask flex h-full w-full flex-col items-center overflow-x-hidden overflow-y-auto px-5">
+          <div className="custom-scrollbar  flex h-full w-full flex-col items-center overflow-x-hidden overflow-y-auto px-5">
             <SidePanelBody />
           </div>
 
