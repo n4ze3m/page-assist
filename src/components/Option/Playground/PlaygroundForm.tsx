@@ -207,7 +207,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
   }
 
   return (
-    <div className="flex w-full flex-col items-center ">
+    <div className="flex w-full flex-col items-center px-2">
       <div className="relative z-10 flex w-full flex-col items-center justify-center gap-2 text-base">
         <div className="relative flex w-full flex-row justify-center gap-2 lg:w-3/5">
           <div
