@@ -176,6 +176,8 @@ This are some of the blogs and videos about Page Assist. If you have written a b
 
 - [Ollama With 1 Click](https://www.youtube.com/watch?v=61uN5jtj2wo) by [Yaron Been From EcomXFactor](https://www.youtube.com/@ecomxfactor-YaronBeen)
 
+- [Page Assist 介绍合集](https://mp.weixin.qq.com/mp/appmsgalbum?__biz=Mzk2NDUxNDQ3Nw==&action=getalbum&album_id=3845692786608553984#wechat_redirect) by 百工智用公众号
+
 ## License
 
 MIT
