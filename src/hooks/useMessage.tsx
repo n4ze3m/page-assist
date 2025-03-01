@@ -207,6 +207,7 @@ export const useMessage = () => {
         }
       ]
     }
+    
     setMessages(newMessage)
     let fullText = ""
     let contentToSave = ""

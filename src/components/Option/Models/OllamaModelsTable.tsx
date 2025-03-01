@@ -1,13 +1,25 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { Skeleton, Table, Tag, Tooltip, notification, Modal, Input } from "antd"
+import {
+  Skeleton,
+  Table,
+  Tag,
+  Tooltip,
+  notification,
+  Modal,
+  Input,
+  Avatar
+} from "antd"
 import { bytePerSecondFormatter } from "~/libs/byte-formater"
 import { deleteModel, getAllModels } from "~/services/ollama"
 import dayjs from "dayjs"
 import relativeTime from "dayjs/plugin/relativeTime"
 import { useForm } from "@mantine/form"
-import {  RotateCcw, Trash2 } from "lucide-react"
+import { Pencil, RotateCcw, Trash2 } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useStorage } from "@plasmohq/storage/hook"
+import { getAllModelNicknames } from "@/db/nickname"
+import { ModelNickModelNicknameModal } from "./ModelNicknameModal"
+import { useState } from "react"
 
 dayjs.extend(relativeTime)
 
@@ -15,6 +27,16 @@ export const OllamaModelsTable = () => {
   const queryClient = useQueryClient()
   const { t } = useTranslation(["settings", "common"])
   const [selectedModel, setSelectedModel] = useStorage("selectedModel")
+  const [openNicknameModal, setOpenNicknameModal] = useState(false)
+  const [model, setModel] = useState<{
+    model_id: string
+    model_name?: string
+    model_avatar?: string
+  }>({
+    model_id: "",
+    model_name: "",
+    model_avatar: ""
+  })
 
   const form = useForm({
     initialValues: {
@@ -24,7 +46,15 @@ export const OllamaModelsTable = () => {
 
   const { data, status } = useQuery({
     queryKey: ["fetchAllModels"],
-    queryFn: () => getAllModels({ returnEmpty: true })
+    queryFn: async () => {
+      const modelNicknames = await getAllModelNicknames()
+      const data = await getAllModels({ returnEmpty: true })
+      return data.map((e) => ({
+        ...e,
+        nickname: modelNicknames[e.model]?.model_name || e.model,
+        avatar: modelNicknames[e.model]?.model_avatar || undefined
+      }))
+    }
   })
 
   const { mutate: deleteOllamaModel } = useMutation({
@@ -78,7 +108,33 @@ export const OllamaModelsTable = () => {
             <Table
               columns={[
                 {
-                  title: t("manageModels.columns.name"),
+                  title: t("manageModels.columns.nickname"),
+                  dataIndex: "nickname",
+                  key: "nickname",
+                  render: (text: string, record: any) => (
+                    <div className="flex items-center gap-2">
+                      {record.avatar && (
+                        <Avatar
+                        size="small"
+                        src={record.avatar} alt={record.nickname} />
+                      )}
+                      <span>{text}</span>
+                      <button
+                        onClick={() => {
+                          setModel({
+                            model_id: record.model,
+                            model_name: record.nickname,
+                            model_avatar: record.avatar
+                          })
+                          setOpenNicknameModal(true)
+                        }}>
+                        <Pencil className="size-3" />
+                      </button>
+                    </div>
+                  )
+                },
+                {
+                  title: "Model ID",
                   dataIndex: "name",
                   key: "name"
                 },
@@ -194,6 +250,13 @@ export const OllamaModelsTable = () => {
           </div>
         )}
       </div>
+      <ModelNickModelNicknameModal
+        model_id={model.model_id}
+        open={openNicknameModal}
+        setOpen={setOpenNicknameModal}
+        model_name={model.model_name}
+        model_avatar={model.model_avatar}
+      />
     </div>
   )
 }
