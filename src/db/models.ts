@@ -3,6 +3,7 @@ import {
   getAllOpenAIConfig,
   getOpenAIConfigById as providerInfo
 } from "./openai"
+import { getAllModelNicknames } from "./nickname"
 
 type Model = {
   id: string
@@ -339,6 +340,7 @@ export const getModelInfo = async (id: string) => {
 
 export const getAllCustomModels = async () => {
   const db = new ModelDb()
+  const modelNicknames = await getAllModelNicknames()
   const models = (await db.getAll()).filter(
     (model) => model?.db_type === "openai_model"
   )
@@ -349,7 +351,13 @@ export const getAllCustomModels = async () => {
     })
   )
 
-  return modelsWithProvider
+  return modelsWithProvider.map((model) => {
+    return {
+      ...model,
+      nickname: modelNicknames[model.name]?.model_name || model.model_id,
+      avatar: modelNicknames[model.name]?.model_avatar || undefined
+    }
+  })
 }
 
 export const deleteModel = async (id: string) => {
@@ -467,7 +475,7 @@ export const ollamaFormatAllCustomModels = async (
       getAllCustomModels(),
       getAllOpenAIConfig()
     ])
-
+    const modelNicknames = await getAllModelNicknames()
     const lmstudioProviders = allProviders.filter(
       (provider) => provider.provider === "lmstudio"
     )
@@ -558,7 +566,13 @@ export const ollamaFormatAllCustomModels = async (
       }
     })
 
-    return ollamaModels
+    return ollamaModels.map((model) => {
+      return {
+        ...model,
+        nickname: modelNicknames[model.name]?.model_name || model.name,
+        avatar: modelNicknames[model.name]?.model_avatar || undefined
+      }
+    })
   } catch (e) {
     console.error(e)
     return []

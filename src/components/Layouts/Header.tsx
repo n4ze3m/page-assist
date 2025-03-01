@@ -17,7 +17,7 @@ import { PromptSelect } from "../Common/PromptSelect"
 import { useQuery } from "@tanstack/react-query"
 import { fetchChatModels } from "~/services/ollama"
 import { useMessageOption } from "~/hooks/useMessageOption"
-import { Select, Tooltip } from "antd"
+import { Avatar, Select, Tooltip } from "antd"
 import { getAllPrompts } from "@/db"
 import { ProviderIcons } from "../Common/ProviderIcon"
 import { NewChat } from "./NewChat"
@@ -144,11 +144,17 @@ export const Header: React.FC<Props> = ({
                   key={model.model}
                   data-title={model.name}
                   className="flex flex-row gap-3 items-center ">
-                  <ProviderIcons
-                    provider={model?.provider}
-                    className="w-5 h-5"
-                  />
-                  <span className="line-clamp-2">{model.name}</span>
+                  {model?.avatar ? (
+                    <Avatar src={model.avatar} alt={model.name} size="small" />
+                  ) : (
+                    <ProviderIcons
+                      provider={model?.provider}
+                      className="w-5 h-5"
+                    />
+                  )}
+                  <span className="line-clamp-2">
+                    {model?.nickname || model.model}
+                  </span>
                 </span>
               ),
               value: model.model
@@ -239,7 +245,7 @@ export const Header: React.FC<Props> = ({
                 <CogIcon className="w-6 h-6" />
               </NavLink>
             </Tooltip>
-        </div>
+          </div>
         </div>
       </div>
     </div>

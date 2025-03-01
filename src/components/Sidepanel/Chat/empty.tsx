@@ -69,7 +69,7 @@ export const EmptySidePanel = () => {
           style={{ width: "100%" }}
           className="mt-4"
           options={ollamaInfo.models?.map((model) => ({
-            label: model.name,
+            label: model?.nickname || model.name,
             value: model.model
           }))}
         />

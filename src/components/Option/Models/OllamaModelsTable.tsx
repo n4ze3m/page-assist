@@ -46,15 +46,7 @@ export const OllamaModelsTable = () => {
 
   const { data, status } = useQuery({
     queryKey: ["fetchAllModels"],
-    queryFn: async () => {
-      const modelNicknames = await getAllModelNicknames()
-      const data = await getAllModels({ returnEmpty: true })
-      return data.map((e) => ({
-        ...e,
-        nickname: modelNicknames[e.model]?.model_name || e.model,
-        avatar: modelNicknames[e.model]?.model_avatar || undefined
-      }))
-    }
+    queryFn: async () => await getAllModels({ returnEmpty: true })
   })
 
   const { mutate: deleteOllamaModel } = useMutation({
@@ -115,8 +107,10 @@ export const OllamaModelsTable = () => {
                     <div className="flex items-center gap-2">
                       {record.avatar && (
                         <Avatar
-                        size="small"
-                        src={record.avatar} alt={record.nickname} />
+                          size="small"
+                          src={record.avatar}
+                          alt={record.nickname}
+                        />
                       )}
                       <span>{text}</span>
                       <button
