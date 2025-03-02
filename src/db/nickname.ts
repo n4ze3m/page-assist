@@ -62,7 +62,6 @@ export const saveModelNickname = async (
         model_avatar?: string
     }
 ) => {
-    console.log("saveModelNickname", model_id, model_name, model_avatar)
     const modelNickname = new ModelNickname()
     return await modelNickname.saveModelNickname(model_id, model_name, model_avatar)
 }
