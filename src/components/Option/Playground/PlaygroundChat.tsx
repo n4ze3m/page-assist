@@ -51,6 +51,8 @@ export const PlaygroundChat = () => {
             isStreaming={streaming}
             reasoningTimeTaken={message?.reasoning_time_taken}
             openReasoning={openReasoning}
+            modelImage={message?.modelImage}
+            modelName={message?.modelName}
           />
         ))}
       </div>

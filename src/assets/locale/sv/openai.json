@@ -53,7 +53,8 @@
             "model_type": "Modelltyp",
             "model_id": "Modell-ID",
             "provider": "Leverantörsnamn",
-            "actions": "Åtgärd"
+            "actions": "Åtgärd",
+            "nickname": "Modellnamn"
         },
         "tooltip": {
             "delete": "Radera"
@@ -86,5 +87,20 @@
         "embedding": "Inbäddningsmodell",
         "chatInfo": "används för chattkompletion och konversationsgenerering",
         "embeddingInfo": "används för RAG och andra semantiska sökrelaterade uppgifter."
+    },
+    "nicknameModal": {
+        "title": "Lägg till / Redigera modellnamn",
+        "form": {
+            "modelName": {
+                "label": "Modellnamn",
+                "placeholder": "Ange modellnamn",
+                "required": "Modellnamn krävs."
+            },
+            "modelAvatar": {
+                "label": "Modellavatar",
+                "placeholder": "Ange modellavatar",
+                "help": "Ange URL:en för modellavataren. Denna bild kommer att visas i chattfönstret."
+            }
+        }
     }
 }

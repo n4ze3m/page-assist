@@ -1,6 +1,6 @@
 import Markdown from "../../Common/Markdown"
 import React from "react"
-import { Tag, Image, Tooltip, Collapse, Popover } from "antd"
+import { Tag, Image, Tooltip, Collapse, Popover, Avatar } from "antd"
 import { WebSearch } from "./WebSearch"
 import {
   CheckIcon,
@@ -46,6 +46,8 @@ type Props = {
   isStreaming: boolean
   reasoningTimeTaken?: number
   openReasoning?: boolean
+  modelImage?: string
+  modelName?: string
 }
 
 export const PlaygroundMessage = (props: Props) => {
@@ -61,19 +63,25 @@ export const PlaygroundMessage = (props: Props) => {
       {/* <div className="text-base md:max-w-2xl lg:max-w-xl xl:max-w-3xl flex lg:px-0 m-auto w-full"> */}
       <div className="flex flex-row gap-4 md:gap-6 my-2 m-auto w-full">
         <div className="w-8 flex flex-col relative items-end">
-          <div className="relative h-7 w-7 p-1 rounded-sm text-white flex items-center justify-center  text-opacity-100r">
-            {props.isBot ? (
-              !props.botAvatar ? (
+          {props.isBot ? (
+            !props.modelImage ? (
+              <div className="relative h-7 w-7 p-1 rounded-sm text-white flex items-center justify-center  text-opacity-100">
                 <div className="absolute h-8 w-8 rounded-full bg-gradient-to-r from-green-300 to-purple-400"></div>
-              ) : (
-                props.botAvatar
-              )
-            ) : !props.userAvatar ? (
-              <div className="absolute h-8 w-8 rounded-full from-blue-400 to-blue-600 bg-gradient-to-r"></div>
+              </div>
             ) : (
-              props.userAvatar
-            )}
-          </div>
+              <Avatar
+                src={props.modelImage}
+                alt={props.name}
+                className="size-8"
+              />
+            )
+          ) : !props.userAvatar ? (
+            <div className="relative h-7 w-7 p-1 rounded-sm text-white flex items-center justify-center  text-opacity-100">
+              <div className="absolute h-8 w-8 rounded-full from-blue-400 to-blue-600 bg-gradient-to-r"></div>
+            </div>
+          ) : (
+            props.userAvatar
+          )}
         </div>
         <div className="flex w-[calc(100%-50px)] flex-col gap-2 lg:w-[calc(100%-115px)]">
           <span className="text-xs font-bold text-gray-800 dark:text-white">
@@ -81,7 +89,10 @@ export const PlaygroundMessage = (props: Props) => {
               ? props.name === "chrome::gemini-nano::page-assist"
                 ? "Gemini Nano"
                 : removeModelSuffix(
-                    props.name?.replaceAll(/accounts\/[^\/]+\/models\//g, "")
+                    `${props?.modelName || props?.name}`?.replaceAll(
+                      /accounts\/[^\/]+\/models\//g,
+                      ""
+                    )
                   )
               : "You"}
           </span>

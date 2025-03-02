@@ -53,7 +53,8 @@
             "model_type": "Modelltype",
             "model_id": "Modell-ID",
             "provider": "Leverandørnavn",
-            "actions": "Handling"
+            "actions": "Handling",
+            "nickname": "Modellkallenavn"
         },
         "tooltip": {
             "delete": "Slett"
@@ -86,5 +87,20 @@
         "embedding": "Innbyggingsmodell",
         "chatInfo": "brukes for chatfullføring og samtalegenering",
         "embeddingInfo": "brukes for RAG og andre semantiske søkerelaterte oppgaver."
+    },
+    "nicknameModal": {
+        "title": "Legg til / Rediger modellkallenavn",
+        "form": {
+            "modelName": {
+                "label": "Modellnavn",
+                "placeholder": "Skriv inn modellnavn",
+                "required": "Modellnavn er påkrevd."
+            },
+            "modelAvatar": {
+                "label": "Modellavatar",
+                "placeholder": "Skriv inn modellavatar",
+                "help": "Vennligst skriv inn URL-en til modellavataren. Dette bildet vil vises i chatvinduet."
+            }
+        }
     }
 }

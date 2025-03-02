@@ -1,6 +1,7 @@
 import { Message } from "@/types/message"
 import { removeModelSuffix } from "@/db/models"
 import Markdown from "./Markdown"
+import { Avatar } from "antd"
 
 export const ImageExportWrapper = ({ messages }: { messages: Message[] }) => {
   return (
@@ -12,13 +13,23 @@ export const ImageExportWrapper = ({ messages }: { messages: Message[] }) => {
           <div key={index} className="flex flex-row gap-4 md:gap-6 my-4">
             {/* Avatar Section */}
             <div className="w-8 flex flex-col relative items-end">
-              <div className="relative h-7 w-7 p-1 rounded-sm text-white flex items-center justify-center">
-                {msg.isBot ? (
-                  <div className="absolute h-8 w-8 rounded-full bg-gradient-to-r from-green-300 to-purple-400 dark:from-green-400 dark:to-purple-500" />
+              {msg.isBot ? (
+                !msg.modelImage ? (
+                  <div className="relative h-7 w-7 p-1 rounded-sm text-white flex items-center justify-center">
+                    <div className="absolute size-6  rounded-full bg-gradient-to-r from-green-300 to-purple-400"></div>
+                  </div>
                 ) : (
-                  <div className="absolute h-8 w-8 rounded-full from-blue-400 to-blue-600 dark:from-blue-500 dark:to-blue-700 bg-gradient-to-r" />
-                )}
-              </div>
+                  <Avatar
+                    src={msg.modelImage}
+                    alt={msg.name}
+                    className="size-6"
+                  />
+                )
+              ) : (
+                <div className="relative size-6 p-1 rounded-sm text-white flex items-center justify-center">
+                  <div className="absolute size-6  rounded-full from-blue-400 to-blue-600 bg-gradient-to-r"></div>
+                </div>
+              )}
             </div>
 
             {/* Message Content */}
@@ -26,7 +37,10 @@ export const ImageExportWrapper = ({ messages }: { messages: Message[] }) => {
               <span className="text-xs font-bold text-gray-800 dark:text-gray-200">
                 {msg.isBot
                   ? removeModelSuffix(
-                      msg.name?.replaceAll(/accounts\/[^\/]+\/models\//g, "")
+                      `${msg.modelName || msg.name}`.replaceAll(
+                        /accounts\/[^\/]+\/models\//g,
+                        ""
+                      )
                     )
                   : "You"}
               </span>

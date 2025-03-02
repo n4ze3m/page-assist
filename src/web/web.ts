@@ -9,6 +9,8 @@ import { searxngSearch } from "./search-engines/searxng"
 import { braveAPISearch } from "./search-engines/brave-api"
 import { webBaiduSearch } from "./search-engines/baidu"
 import { webBingSearch } from "./search-engines/bing"
+import { stractSearch } from "./search-engines/stract"
+import { startpageSearch } from "./search-engines/startpage"
 
 const getHostName = (url: string) => {
   try {
@@ -35,6 +37,10 @@ const searchWeb = (provider: string, query: string) => {
       return webBaiduSearch(query)
     case "bing":
       return webBingSearch(query)
+    case "stract":
+      return stractSearch(query)
+    case "startpage":
+      return startpageSearch(query)
     default:
       return webGoogleSearch(query)
   }
@@ -78,7 +84,7 @@ export const getSystemPromptForWeb = async (query: string) => {
       .replace("{current_date_time}", current_date_time)
       .replace("{search_results}", search_results)
       .replace("{query}", query)
-      
+
     return {
       prompt,
       source: search.map((result) => {

@@ -2,6 +2,7 @@ import {
   type ChatHistory as ChatHistoryType,
   type Message as MessageType
 } from "~/store/option"
+import { getAllModelNicknames } from "./nickname"
 
 type HistoryInfo = {
   id: string
@@ -71,9 +72,19 @@ export class PageAssitDatabase {
   }
 
   async getChatHistory(id: string): Promise<MessageHistory> {
+    const modelNicknames = await getAllModelNicknames()
     return new Promise((resolve, reject) => {
       this.db.get(id, (result) => {
-        resolve(result[id] || [])
+        resolve(
+          (result[id] || []).map((message: any) => {
+            return {
+              ...message,
+              modelName:
+                modelNicknames[message.name]?.model_name || message.name,
+              modelImage: modelNicknames[message.name]?.model_avatar || undefined
+            }
+          })
+        )
       })
     })
   }
@@ -250,35 +261,33 @@ export const saveHistory = async (
   return history
 }
 
-export const saveMessage = async (
-  {
-    content,
-    history_id,
-    name,
-    role,
-    images,
-    source,
-    generationInfo,
-    message_type,
-    modelImage,
-    modelName,
-    reasoning_time_taken,
-    time
-  }: {
-    history_id: string,
-    name: string,
-    role: string,
-    content: string,
-    images: string[],
-    source?: any[],
-    time?: number,
-    message_type?: string,
-    generationInfo?: any,
-    reasoning_time_taken?: number,
-    modelName?: string,
-    modelImage?: string
-  }
-) => {
+export const saveMessage = async ({
+  content,
+  history_id,
+  name,
+  role,
+  images,
+  source,
+  generationInfo,
+  message_type,
+  modelImage,
+  modelName,
+  reasoning_time_taken,
+  time
+}: {
+  history_id: string
+  name: string
+  role: string
+  content: string
+  images: string[]
+  source?: any[]
+  time?: number
+  message_type?: string
+  generationInfo?: any
+  reasoning_time_taken?: number
+  modelName?: string
+  modelImage?: string
+}) => {
   const id = generateID()
   let createdAt = Date.now()
   if (time) {

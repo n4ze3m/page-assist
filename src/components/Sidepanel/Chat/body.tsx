@@ -51,6 +51,8 @@ export const SidePanelBody = () => {
             generationInfo={message?.generationInfo}
             isStreaming={streaming}
             reasoningTimeTaken={message?.reasoning_time_taken}
+            modelImage={message?.modelImage}
+            modelName={message?.modelName}
           />
         ))}
         <div ref={divRef} />

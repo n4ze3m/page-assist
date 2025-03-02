@@ -53,7 +53,8 @@
             "model_type": "Modeltype",
             "model_id": "Model-ID",
             "provider": "Udbyders Navn",
-            "actions": "Handling"
+            "actions": "Handling",
+            "nickname": "Model Kaldenavn"
         },
         "tooltip": {
             "delete": "Slet"
@@ -86,5 +87,20 @@
         "embedding": "Indlejringsmodel",
         "chatInfo": "bruges til chatfuldførelse og samtalegeneration",
         "embeddingInfo": "bruges til RAG og andre semantiske søgerelaterede opgaver."
+    },
+    "nicknameModal": {
+        "title": "Tilføj / Rediger Model Kaldenavn",
+        "form": {
+            "modelName": {
+                "label": "Modelnavn",
+                "placeholder": "Indtast modelnavn",
+                "required": "Modelnavn er påkrævet."
+            },
+            "modelAvatar": {
+                "label": "Model Avatar",
+                "placeholder": "Indtast model avatar",
+                "help": "Indtast venligst URL'en til model avataren. Dette billede vil blive vist i chatvinduet."
+            }
+        }
     }
 }

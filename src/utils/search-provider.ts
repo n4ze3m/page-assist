@@ -30,5 +30,13 @@ export const SUPPORTED_SERACH_PROVIDERS = [
     {
         label: "Bing",
         value: "bing"
+    },
+    {
+        label: "Stract",
+        value: "stract"
+    },
+    {
+        label: "Startpage",
+        value: "startpage"
     }
 ]
