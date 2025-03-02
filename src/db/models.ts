@@ -354,8 +354,8 @@ export const getAllCustomModels = async () => {
   return modelsWithProvider.map((model) => {
     return {
       ...model,
-      nickname: modelNicknames[model.name]?.model_name || model.model_id,
-      avatar: modelNicknames[model.name]?.model_avatar || undefined
+      nickname: modelNicknames[model.id]?.model_name || model.model_id,
+      avatar: modelNicknames[model.id]?.model_avatar || undefined
     }
   })
 }
@@ -569,8 +569,8 @@ export const ollamaFormatAllCustomModels = async (
     return ollamaModels.map((model) => {
       return {
         ...model,
-        nickname: modelNicknames[model.name]?.model_name || model.name,
-        avatar: modelNicknames[model.name]?.model_avatar || undefined
+        nickname: modelNicknames[model.model]?.model_name || model.name,
+        avatar: modelNicknames[model.model]?.model_avatar || undefined
       }
     })
   } catch (e) {
