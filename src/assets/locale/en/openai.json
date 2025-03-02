@@ -54,7 +54,7 @@
             "model_id": "Model ID",
             "provider": "Provider Name",
             "actions": "Action",
-            "nickname" :"Model Nickname"
+            "nickname": "Model Nickname"
         },
         "tooltip": {
             "delete": "Delete"
@@ -87,5 +87,20 @@
         "embedding": "Embedding Model",
         "chatInfo": "is used for chat completion and conversation generation",
         "embeddingInfo": "is used for RAG and other semantic search related tasks."
+    },
+    "nicknameModal": {
+        "title": "Add / Edit Model Nickname",
+        "form": {
+            "modelName": {
+                "label": "Model Name",
+                "placeholder": "Enter model name",
+                "required": "Model name is required."
+            },
+            "modelAvatar": {
+                "label": "Model Avatar",
+                "placeholder": "Enter model avatar",
+                "help": "Please enter the URL of the model avatar. This image will be displayed in the chat window."
+            }
+        }
     }
 }

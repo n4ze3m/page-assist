@@ -21,7 +21,7 @@ export const ModelNickModelNicknameModal: React.FC<Props> = ({
   model_name
 }) => {
   const [form] = Form.useForm()
-  const { t } = useTranslation("common")
+  const { t } = useTranslation("openai")
   const queryClient = useQueryClient()
 
   React.useEffect(() => {
@@ -35,11 +35,15 @@ export const ModelNickModelNicknameModal: React.FC<Props> = ({
     mutationFn: saveModelNickname,
     onSuccess: async () => {
       await queryClient.invalidateQueries({
+        queryKey: ["fetchModel"]
+      })
+      await queryClient.invalidateQueries({
         queryKey: ["fetchAllModels"]
       })
       await queryClient.invalidateQueries({
         queryKey: ["fetchCustomModels"]
       })
+
       setOpen(false)
     }
   })
@@ -72,7 +76,7 @@ export const ModelNickModelNicknameModal: React.FC<Props> = ({
               message: t("nicknameModal.form.modelName.required")
             }
           ]}>
-          <Input />
+          <Input placeholder="DeepSeek R1" />
         </Form.Item>
         <Form.Item
           name="model_avatar"

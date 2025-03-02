@@ -25,7 +25,7 @@ dayjs.extend(relativeTime)
 
 export const OllamaModelsTable = () => {
   const queryClient = useQueryClient()
-  const { t } = useTranslation(["settings", "common"])
+  const { t } = useTranslation(["settings", "common", "openai"])
   const [selectedModel, setSelectedModel] = useStorage("selectedModel")
   const [openNicknameModal, setOpenNicknameModal] = useState(false)
   const [model, setModel] = useState<{
@@ -100,7 +100,7 @@ export const OllamaModelsTable = () => {
             <Table
               columns={[
                 {
-                  title: t("manageModels.columns.nickname"),
+                  title: t("openai:manageModels.columns.nickname"),
                   dataIndex: "nickname",
                   key: "nickname",
                   render: (text: string, record: any) => (
