@@ -10,6 +10,7 @@
     },
     "modal": {
         "titleAdd": "Add New Provider",
+        "titleEdit": "Edit Provider",
         "name": {
             "label": "Provider Name",
             "required": "Provider name is required.",
@@ -64,6 +65,7 @@
         },
         "modal": {
             "title": "Add Custom Model",
+            "titleEdit": "Edit Custom Model",
             "form": {
                 "name": {
                     "label": "Model ID",
