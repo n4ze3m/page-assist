@@ -24,7 +24,7 @@ interface MoreOptionsProps {
 const formatAsText = (messages: Message[]) => {
   return messages
     .map((msg) => {
-      const text = `${msg.isBot ? msg.name : "You"}: ${msg.message}`
+      const text = `${msg.isBot ? removeModelSuffix(`${msg.modelName || msg.name}`?.replaceAll(/accounts\/[^\/]+\/models\//g, "")) : "You"}: ${msg.message}`
       return text
     })
     .join("\n\n")
@@ -32,7 +32,7 @@ const formatAsText = (messages: Message[]) => {
 const formatAsMarkdown = (messages: Message[]) => {
   return messages
     .map((msg) => {
-      let content = `**${msg.isBot ? removeModelSuffix(msg.name?.replaceAll(/accounts\/[^\/]+\/models\//g, "")) : "You"}**:\n${msg.message}`
+      let content = `**${msg.isBot ? removeModelSuffix(`${msg.modelName || msg.name}`?.replaceAll(/accounts\/[^\/]+\/models\//g, "")) : "You"}**:\n${msg.message}`
 
       if (msg.images && msg.images.length > 0) {
         const imageMarkdown = msg.images
