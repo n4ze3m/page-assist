@@ -87,5 +87,19 @@
         "embedding": "嵌入模型",
         "chatInfo": "用於聊天補全和對話生成",
         "embeddingInfo": "用於 RAG 和其他語義搜尋相關任務。"
-    }
-}
+    },
+    "nicknameModal": {
+        "title": "新增 / 編輯模型暱稱",
+        "form": {
+            "modelName": {
+                "label": "模型名稱",
+                "placeholder": "請輸入模型名稱",
+                "required": "模型名稱為必填項。"
+            },
+            "modelAvatar": {
+                "label": "模型頭像",
+                "placeholder": "請輸入模型頭像",
+                "help": "請輸入模型頭像的網址。此圖像將顯示在聊天視窗中。"
+            }
+        }
+    }}

@@ -87,5 +87,19 @@
         "embedding": "Modèle d'embedding",
         "chatInfo": "est utilisé pour la complétion de chat et la génération de conversation",
         "embeddingInfo": "est utilisé pour RAG et d'autres tâches liées à la recherche sémantique."
-    }
-}
+    },
+    "nicknameModal": {
+        "title": "Ajouter / Modifier le surnom du modèle",
+        "form": {
+            "modelName": {
+                "label": "Nom du modèle",
+                "placeholder": "Entrez le nom du modèle",
+                "required": "Le nom du modèle est requis."
+            },
+            "modelAvatar": {
+                "label": "Avatar du modèle",
+                "placeholder": "Entrez l'avatar du modèle",
+                "help": "Veuillez entrer l'URL de l'avatar du modèle. Cette image sera affichée dans la fenêtre de chat."
+            }
+        }
+    }}

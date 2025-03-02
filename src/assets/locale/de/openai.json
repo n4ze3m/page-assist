@@ -87,5 +87,20 @@
         "embedding": "Embedding-Modell",
         "chatInfo": "wird für Chat-Vervollständigung und Gesprächsgenerierung verwendet",
         "embeddingInfo": "wird für RAG und andere semantische suchbezogene Aufgaben verwendet."
+    },
+    "nicknameModal": {
+        "title": "Modell-Spitznamen hinzufügen / bearbeiten",
+        "form": {
+            "modelName": {
+                "label": "Modellname",
+                "placeholder": "Modellname eingeben",
+                "required": "Modellname ist erforderlich."
+            },
+            "modelAvatar": {
+                "label": "Modell-Avatar",
+                "placeholder": "Modell-Avatar eingeben",
+                "help": "Bitte geben Sie die URL des Modell-Avatars ein. Dieses Bild wird im Chat-Fenster angezeigt."
+            }
+        }
     }
 }
