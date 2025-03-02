@@ -78,7 +78,7 @@ export const ModelNickModelNicknameModal: React.FC<Props> = ({
           name="model_avatar"
           label={t("nicknameModal.form.modelAvatar.label")}
           help={t("nicknameModal.form.modelAvatar.help")}>
-          <Input />
+          <Input placeholder={"https://example.com/model.png"} />
         </Form.Item>
         <SaveButton btnType="submit" className="w-full flex justify-center" />
       </Form>

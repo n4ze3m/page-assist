@@ -43,6 +43,7 @@ import {
   mergeReasoningContent,
   removeReasoning
 } from "@/libs/reasoning"
+import { getModelNicknameByID } from "@/db/nickname"
 
 export const useMessageOption = () => {
   const {
@@ -165,6 +166,7 @@ export const useMessageOption = () => {
     let newMessage: Message[] = []
     let generateMessageId = generateID()
 
+    const modelInfo = await getModelNicknameByID(selectedModel)
     if (!isRegenerate) {
       newMessage = [
         ...messages,
@@ -180,7 +182,9 @@ export const useMessageOption = () => {
           name: selectedModel,
           message: "▋",
           sources: [],
-          id: generateMessageId
+          id: generateMessageId,
+          modelImage: modelInfo?.model_avatar,
+          modelName: modelInfo?.model_name || selectedModel
         }
       ]
     } else {
@@ -191,7 +195,9 @@ export const useMessageOption = () => {
           name: selectedModel,
           message: "▋",
           sources: [],
-          id: generateMessageId
+          id: generateMessageId,
+          modelImage: modelInfo?.model_avatar,
+          modelName: modelInfo?.model_name || selectedModel
         }
       ]
     }
@@ -544,6 +550,7 @@ export const useMessageOption = () => {
 
     let newMessage: Message[] = []
     let generateMessageId = generateID()
+    const modelInfo = await getModelNicknameByID(selectedModel)
 
     if (!isRegenerate) {
       newMessage = [
@@ -553,14 +560,18 @@ export const useMessageOption = () => {
           name: "You",
           message,
           sources: [],
-          images: [image]
+          images: [image],
+          modelImage: modelInfo?.model_avatar,
+          modelName: modelInfo?.model_name || selectedModel
         },
         {
           isBot: true,
           name: selectedModel,
           message: "▋",
           sources: [],
-          id: generateMessageId
+          id: generateMessageId,
+          modelImage: modelInfo?.model_avatar,
+          modelName: modelInfo?.model_name || selectedModel
         }
       ]
     } else {
@@ -571,7 +582,9 @@ export const useMessageOption = () => {
           name: selectedModel,
           message: "▋",
           sources: [],
-          id: generateMessageId
+          id: generateMessageId,
+          modelImage: modelInfo?.model_avatar,
+          modelName: modelInfo?.model_name || selectedModel
         }
       ]
     }
@@ -847,6 +860,7 @@ export const useMessageOption = () => {
 
     let newMessage: Message[] = []
     let generateMessageId = generateID()
+    const modelInfo = await getModelNicknameByID(selectedModel)
 
     if (!isRegenerate) {
       newMessage = [
@@ -863,7 +877,9 @@ export const useMessageOption = () => {
           name: selectedModel,
           message: "▋",
           sources: [],
-          id: generateMessageId
+          id: generateMessageId,
+          modelImage: modelInfo?.model_avatar,
+          modelName: modelInfo?.model_name || selectedModel
         }
       ]
     } else {
@@ -874,7 +890,9 @@ export const useMessageOption = () => {
           name: selectedModel,
           message: "▋",
           sources: [],
-          id: generateMessageId
+          id: generateMessageId,
+          modelImage: modelInfo?.model_avatar,
+          modelName: modelInfo?.model_name || selectedModel
         }
       ]
     }
