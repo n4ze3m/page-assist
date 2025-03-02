@@ -34,5 +34,9 @@ export const SUPPORTED_SERACH_PROVIDERS = [
     {
         label: "Stract",
         value: "stract"
+    },
+    {
+        label: "Startpage",
+        value: "startpage"
     }
 ]
