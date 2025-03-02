@@ -53,7 +53,8 @@
             "model_type": "模型类型",
             "model_id": "模型 ID",
             "provider": "提供商名称",
-            "actions": "操作"
+            "actions": "操作",
+            "nickname": "模型昵称"
         },
         "tooltip": {
             "delete": "删除"

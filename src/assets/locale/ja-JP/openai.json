@@ -53,7 +53,8 @@
             "model_type": "モデルタイプ",
             "model_id": "モデルID",
             "provider": "プロバイダー名",
-            "actions": "アクション"
+            "actions": "アクション",
+            "nickname": "モデルのニックネーム"
         },
         "tooltip": {
             "delete": "削除"

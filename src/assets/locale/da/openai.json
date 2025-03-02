@@ -53,7 +53,8 @@
             "model_type": "Modeltype",
             "model_id": "Model-ID",
             "provider": "Udbyders Navn",
-            "actions": "Handling"
+            "actions": "Handling",
+            "nickname": "Model Kaldenavn"
         },
         "tooltip": {
             "delete": "Slet"

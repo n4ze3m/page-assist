@@ -53,7 +53,8 @@
             "model_type": "മോഡൽ തരം",
             "model_id": "മോഡൽ ID",
             "provider": "ദാതാവിന്റെ പേര്",
-            "actions": "പ്രവർത്തനം"
+            "actions": "പ്രവർത്തനം",
+            "nickname": "മോഡൽ വിളിപ്പേര്"
         },
         "tooltip": {
             "delete": "ഇല്ലാതാക്കുക"

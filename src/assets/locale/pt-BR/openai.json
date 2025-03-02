@@ -53,7 +53,8 @@
             "model_type": "Tipo de Modelo",
             "model_id": "ID do Modelo",
             "provider": "Nome do Provedor",
-            "actions": "Ação"
+            "actions": "Ação",
+            "nickname": "Apelido do Modelo"
         },
         "tooltip": {
             "delete": "Excluir"

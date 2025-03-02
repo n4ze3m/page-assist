@@ -53,7 +53,8 @@
             "model_type": "모델 타입",
             "model_id": "모델 ID",
             "provider": "공급자 이름",
-            "actions": "작업"
+            "actions": "작업",
+            "nickname": "모델 별칭"
         },
         "tooltip": {
             "delete": "삭제"

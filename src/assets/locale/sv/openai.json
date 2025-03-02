@@ -53,7 +53,8 @@
             "model_type": "Modelltyp",
             "model_id": "Modell-ID",
             "provider": "Leverantörsnamn",
-            "actions": "Åtgärd"
+            "actions": "Åtgärd",
+            "nickname": "Modellnamn"
         },
         "tooltip": {
             "delete": "Radera"

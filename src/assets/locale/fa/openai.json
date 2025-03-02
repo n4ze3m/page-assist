@@ -53,7 +53,8 @@
             "model_type": "نوع مدل",
             "model_id": "شناسه مدل",
             "provider": "نام ارائه‌دهنده",
-            "actions": "عملیات"
+            "actions": "عملیات",
+            "nickname": "نام مستعار مدل"
         },
         "tooltip": {
             "delete": "حذف"
