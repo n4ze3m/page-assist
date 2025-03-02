@@ -1,9 +1,14 @@
+import { Storage } from "@plasmohq/storage"
+
+// const storage = 
 export class ModelNickname {
-    db: chrome.storage.StorageArea
+    db: Storage
     private KEY = "modelNickname"
 
     constructor() {
-        this.db = chrome.storage.local
+        this.db = new Storage({
+            area: "local"
+        })
     }
 
     async saveModelNickname(
@@ -19,19 +24,17 @@ export class ModelNickname {
             ...(model_avatar && { model_avatar })
         }
 
-        await this.db.set({ [this.KEY]: modelNames })
+        await this.db.set(this.KEY, modelNames)
     }
 
     async getModelNicknameByID(model_id: string) {
         const data = (await this.db.get(this.KEY)) || {}
-        const modelNames = data[this.KEY] || {}
-        return modelNames[model_id]
+        return  data[model_id]
     }
 
     async getAllModelNicknames() {
         const data = (await this.db.get(this.KEY)) || {}
-        const modelNames = data[this.KEY] || {}
-        return modelNames
+        return data
     }
 }
 
@@ -59,6 +62,7 @@ export const saveModelNickname = async (
         model_avatar?: string
     }
 ) => {
+    console.log("saveModelNickname", model_id, model_name, model_avatar)
     const modelNickname = new ModelNickname()
     return await modelNickname.saveModelNickname(model_id, model_name, model_avatar)
 }
