@@ -1,10 +1,10 @@
 {
     "pageAssist": "Page Assist",
-    "selectAModel": "Sélectionnez un modèle",
-    "save": "Sauvegarder",
-    "saved": "Enregistrée",
+    "selectAModel": "Sélectionner un modèle",
+    "save": "Enregistrer",
+    "saved": "Enregistré",
     "cancel": "Annuler",
-    "retry": "Recommencez",
+    "retry": "Réessayer",
     "share": {
         "tooltip": {
             "share": "Partager"
@@ -18,23 +18,23 @@
                 "title": "Chat sans titre"
             },
             "title": {
-                "label": "Titre de chat",
-                "placeholder": "Entrez le titre du chat",
-                "required": "Le titre de chat est requis"
+                "label": "Titre du chat",
+                "placeholder": "Entrer le titre du chat",
+                "required": "Le titre du chat est nécessaire"
             },
             "name": {
                 "label": "Votre nom",
-                "placeholder": "Entrez votre nome",
-                "required": "Votre nom est requis"
+                "placeholder": "Entrer votre nom",
+                "required": "Votre nom est nécessaire"
             },
             "btn": {
-                "save": "Générer un lien",
-                "saving": "Génération de lien..."
+                "save": "Générer le lien",
+                "saving": "Génération du lien..."
             }
         },
         "notification": {
             "successGenerate": "Lien copié dans le presse-papiers",
-            "failGenerate": "Échec de la génération de lien"
+            "failGenerate": "Échec de la génération du lien"
         }
     },
     "copyToClipboard": "Copier dans le presse-papier",
@@ -47,7 +47,7 @@
         "placeholder": "Tapez un message..."
     },
     "submit": "Soumettre",
-    "noData": "Pas de données",
+    "noData": "Aucune donnée",
     "noHistory": "Pas d'historique de chat",
     "chatWithCurrentPage": "Discuter avec la page actuelle",
     "beta": "Bêta",
@@ -55,46 +55,76 @@
     "currentChatModelSettings": "Paramètres actuels du modèle de chat",
     "modelSettings": {
         "label": "Paramètres du modèle",
-        "description": "Définissez les options de modèle globale pour tous les chats",
+        "description": "Définissez les options globales du modèle pour tous les chats",
         "form": {
             "keepAlive": {
                 "label": "Maintenir en mémoire",
-                "help": "contrôle combien de temps le modèle restera chargé en mémoire après la demande (par défaut: 5m)",
-                "placeholder": "Entrer la durée du maintien en mémoire (p. ex., 5 m, 10 m, 1 h)"
+                "help": "contrôle la durée pendant laquelle le modèle reste chargé en mémoire après la demande (par défaut : 5m)",
+                "placeholder": "Par exemple : 5m, 10m, 1h"
             },
             "temperature": {
                 "label": "Température",
-                "placeholder": "Entrez la valeur de la température (par exemple 0,7, 1,0)"
+                "placeholder": "Par exemple : 0.7, 1.0"
             },
             "numCtx": {
                 "label": "Taille de la fenêtre de contexte (num_ctx)",
-                "placeholder": "Entrez la valeur de la fenêtre de contexte (par défaut : 2048)"
+                "placeholder": "Entrer la taille de la fenêtre de contexte (par défaut : 2048)"
             },
             "numPredict": {
-                "label": "Tokens maximum (num_predict)",
-                "placeholder": "Entrez la valeur des tokens maximum (par exemple 2048, 4096)"
+                "label": "Nombre maximum de jetons (num_predict)",
+                "placeholder": "Par exemple : 2048, 4096"
             },
             "seed": {
                 "label": "Graine",
-                "placeholder": "Entrez la valeur des semences (par exemple 1234)",
+                "placeholder": "Par exemple : 1234",
                 "help": "Reproductibilité de la sortie du modèle"
             },
             "topK": {
                 "label": "Top K",
-                "placeholder": "Entrez la valeur Top K (par exemple 40, 100)"
+                "placeholder": "Par exemple : 40, 100"
             },
             "topP": {
                 "label": "Top P",
-                "placeholder": "Entrez la valeur Top P (par exemple 0,9, 0,95)"
+                "placeholder": "Par exemple : 0.9, 0.95"
+            },
+            "useMMap": {
+                "label": "Utiliser MMap"
+            },
+            "tfsZ": {
+                "label": "TFS-Z",
+                "placeholder": "Par exemple : 1.0, 1.1"
+            },
+            "numKeep": {
+                "label": "Nombre de conservation",
+                "placeholder": "Par exemple : 256, 512"
+            },
+            "numThread": {
+                "label": "Nombre de threads",
+                "placeholder": "Par exemple : 8, 16"
+            },
+            "useMlock": {
+                "label": "Utiliser Mlock"
+            },
+            "minP": {
+                "label": "Min P",
+                "placeholder": "Par exemple : 0.05"
+            },
+            "repeatPenalty": {
+                "label": "Pénalité de répétition",
+                "placeholder": "Par exemple : 1.1, 1.2"
+            },
+            "repeatLastN": {
+                "label": "Répéter les N derniers éléments",
+                "placeholder": "Par exemple : 64, 128"
             },
             "numGpu": {
-                "label": "Num GPU",
-                "placeholder": "Entrez le nombre de couches à envoyer au(x) GPU(s)"
+                "label": "Nombre de GPU",
+                "placeholder": "Entrer le nombre de couches à envoyer aux GPU"
             },
             "systemPrompt": {
-                "label": "Invite système temporaire",
-                "placeholder": "Entrez l'invite système",
-                "help": "C'est un moyen rapide de définir l'invite système dans le chat actuel, qui remplacera l'invite système sélectionnée si elle existe."
+                "label": "Prompt système temporaire",
+                "placeholder": "Entrer le prompt système",
+                "help": "C'est un moyen rapide de définir le prompt système dans le chat actuel, qui remplacera le prompt système sélectionné si il existe."
             }
         },
         "advanced": "Plus de paramètres du modèle"
@@ -103,9 +133,14 @@
         "summary": "Résumer",
         "explain": "Expliquer",
         "rephrase": "Reformuler",
-        "translate": "Traduire"
+        "translate": "Traduire",
+        "custom": "Personnalisé"
     },
     "citations": "Citations",
+    "segmented": {
+        "ollama": "Modèles Ollama",
+        "custom": "Modèles personnalisés"
+    },
     "downloadCode": "Télécharger le code",
     "date": {
         "pinned": "Épinglé",
@@ -117,9 +152,10 @@
     "pin": "Épingler",
     "unpin": "Désépingler",
     "generationInfo": "Informations de génération",
-    "sidebarChat": "Chat latéral",
+    "sidebarChat": "Chat dans le panneau latérale",
     "reasoning": {
         "thinking": "Réflexion....",
         "thought": "Réflexion pendant {{time}}"
-    }
+    },
+    "mermaid": "Mermaid"
 }

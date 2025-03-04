@@ -1,29 +1,30 @@
 {
     "ollamaState": {
-        "searching": "Searching for Your Ollama 🦙",
-        "running": "Ollama is running 🦙",
-        "notRunning": "Unable to connect to Ollama 🦙",
-        "connectionError": "It seems like you are having a connection error. Please refer to this <anchor>documentation</anchor> for troubleshooting."
+        "searching": "Recherche de votre Ollama 🦙",
+        "running": "Ollama est en cours d'exécution 🦙",
+        "notRunning": "Impossible de se connecter à Ollama 🦙",
+        "connectionError": "Il semble que vous rencontriez une erreur de connexion. Veuillez consulter cette <anchor>documentation</anchor> pour résoudre le problème."
     },
     "formError": {
-        "noModel": "Please select a model",
-        "noEmbeddingModel": "Please set an embedding model on the Settings > RAG page"
+        "noModel": "Veuillez sélectionner un modèle",
+        "noEmbeddingModel": "Veuillez définir un modèle d'intégration sur la page Paramètres > RAG"
     },
     "form": {
         "textarea": {
-            "placeholder": "Type a message..."
+            "placeholder": "Saisir un message..."
         },
         "webSearch": {
-            "on": "On",
-            "off": "Off"
+            "on": "Activé",
+            "off": "Désactivé"
         }
     },
     "tooltip": {
-        "searchInternet": "Rechercher Internet",
-        "speechToText": "Parole en texte",
-        "uploadImage": "Téléverser une image",
-        "stopStreaming": "Arrêtez la diffusion",
-        "knowledge": "Connaissance"
+        "searchInternet": "Rechercher sur Internet",
+        "speechToText": "Reconnaissance vocale",
+        "uploadImage": "Uploader une image",
+        "stopStreaming": "Arrêter la diffusion",
+        "knowledge": "Connaissances",
+        "vision": "Discussion visuelle [Expérimental]"
     },
     "sendWhenEnter": "Envoyer en appuyant sur Entrée",
     "welcome": "Bonjour ! Comment puis-je vous aider aujourd'hui ?",

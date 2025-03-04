@@ -1,25 +1,25 @@
 {
   "generalSettings": {
-    "title": "Réglages généraux",
+    "title": "Paramètres généraux",
     "settings": {
-      "heading": "Paramètres d'interface utilisateur Web",
+      "heading": "Paramètres de l'interface Web",
       "speechRecognitionLang": {
-        "label": "Langue de reconnaissance vocale",
-        "placeholder": "Sélectionnez une langue"
+        "label": "Langue de la reconnaissance vocale",
+        "placeholder": "Sélectionner une langue"
       },
       "language": {
         "label": "Langue",
-        "placeholder": "Sélectionnez une langue"
+        "placeholder": "Sélectionner une langue"
       },
       "darkMode": {
-        "label": "Change le thème",
+        "label": "Changer de thème",
         "options": {
           "light": "Clair",
           "dark": "Sombre"
         }
       },
       "copilotResumeLastChat": {
-        "label": "Reprendre la dernière conversation lors de l'ouverture du sidepanel (Copilot)"
+        "label": "Reprendre la dernière conversation lors de l'ouverture du panneau latéral (Copilot)"
       },
       "turnOnChatWithWebsite": {
         "label": "Activer le chat avec le site Web par défaut (Copilot)"
@@ -46,16 +46,16 @@
         "label": "Activer le mode écran large"
       },
       "openReasoning": {
-        "label": "Ouvrir le raisonnement replié par défaut"
+        "label": "Déplier par défaut le raisonnement"
       }
     },
     "sidepanelRag": {
-      "heading": "Paramètres du Chat Copilot avec le Site Web",
+      "heading": "Paramètres du chat avec le site Web (Copilot)",
       "ragEnabled": {
-        "label": "Discuter avec le site web en utilisant des embeddings vectoriels"
+        "label": "Discuter avec le site Web en utilisant des embeddings vectoriels"
       },
       "maxWebsiteContext": {
-        "label": "Taille du contenu du site web en mode normal",
+        "label": "Taille du contenu du site Web en mode normal",
         "placeholder": "Taille du contenu (par défaut 4028)"
       }
     },
@@ -66,14 +66,14 @@
       },
       "provider": {
         "label": "Moteur de recherche",
-        "placeholder": "Sélectionnez un moteur de recherche"
+        "placeholder": "Sélectionner un moteur de recherche"
       },
       "totalSearchResults": {
-        "label": "Résultats de la recherche totaux",
-        "placeholder": "Entrez les résultats de la recherche totaux"
+        "label": "Nombre total de résultats de recherche",
+        "placeholder": "Entrer le nombre total de résultats de recherche"
       },
       "visitSpecificWebsite": {
-        "label": "Visitez le site web mentionné dans le message"
+        "label": "Visiter le site Web mentionné dans le message"
       },
       "searxng": {
         "url": {
@@ -82,28 +82,31 @@
       },
       "braveApi": {
         "label": "Clé API Brave",
-        "placeholder": "Entrez votre clé API Brave"
+        "placeholder": "Entrer votre clé API Brave"
+      },
+      "googleDomain": {
+        "label": "Domaine Google"
       },
       "searchOnByDefault": {
         "label": "Recherche Internet activée par défaut"
       }
     },
     "system": {
-      "heading": "Les paramètres du système",
+      "heading": "Paramètres système",
       "deleteChatHistory": {
         "label": "Réinitialisation du système",
         "button": "Tout réinitialiser",
         "confirm": "Êtes-vous sûr de vouloir effectuer une réinitialisation du système ? Cela effacera toutes les données et ne pourra pas être annulé."
       },
       "export": {
-        "label": "Exporter l'historique du chat, la base de connaissances et les invites",
-        "button": "Exporter des données",
-        "success": "Succès de l'exportation"
+        "label": "Exporter l'historique de chat, la base de connaissances et les prompts",
+        "button": "Exporter les données",
+        "success": "Exportation réussie"
       },
       "import": {
-        "label": "Importer l'historique du chat, la base de connaissances et les invites",
-        "button": "Importer des données",
-        "success": "Succès d'importation",
+        "label": "Importer l'historique de chat, la base de connaissances et les prompts",
+        "button": "Importer les données",
+        "success": "Importation réussie",
         "error": "Erreur d'importation"
       }
     },
@@ -118,10 +121,13 @@
       },
       "ttsVoice": {
         "label": "Voix de synthèse vocale",
-        "placeholder": "Sélectionnez une voix"
+        "placeholder": "Sélectionner une voix"
       },
       "ssmlEnabled": {
         "label": "Activer SSML (langage de balisage de synthèse vocale)"
+      },
+      "responseSplitting": {
+        "label": "Fractionnement de la réponse"
       },
       "removeReasoningTagTTS": {
         "label": "Supprimer la balise de raisonnement de la synthèse vocale"
@@ -133,8 +139,9 @@
     "addBtn": "Ajouter un nouveau modèle",
     "columns": {
       "name": "Nom",
-      "digest": "Digérer",
-      "modifiedAt": "Modifié à",
+      "digest": "Empreinte",
+      "nickname": "Alias",
+      "modifiedAt": "Modifié",
       "size": "Taille",
       "actions": "Actions"
     },
@@ -142,30 +149,31 @@
       "parentModel": "Modèle parent",
       "format": "Format",
       "family": "Famille",
-      "parameterSize": "Taille du paramètre",
+      "parameterSize": "Taille des paramètres",
       "quantizationLevel": "Niveau de quantification"
     },
     "tooltip": {
       "delete": "Supprimer le modèle",
-      "repull": "Modèle de ré-échoue"
+      "repull": "Recharger le modèle",
+      "editNickname": "Renommer"
     },
     "confirm": {
-      "delete": "Êtes-vous sûr de vouloir supprimer ce modèle?",
-      "repull": "Êtes-vous sûr de vouloir rétracter ce modèle?"
+      "delete": "Êtes-vous sûr de vouloir supprimer ce modèle ?",
+      "repull": "Êtes-vous sûr de vouloir recharger ce modèle ?"
     },
     "modal": {
       "title": "Ajouter un nouveau modèle",
-      "placeholder": "Entrez le nom du modèle",
-      "pull": "Modèle de traction"
+      "placeholder": "Entrer le nom du modèle",
+      "pull": "Récupérer le Modèle"
     },
     "notification": {
-      "pullModel": "Modèle de traction",
-      "pullModelDescription": "Tirling {{ModelName}} modèle. Pour plus de détails, vérifiez l'icône d'extension.",
+      "pullModel": "Récupération du modèle",
+      "pullModelDescription": "Récupération du modèle {{modelName}}. Pour plus de détails, vérifiez l'icône de l'extension.",
       "success": "Succès",
       "error": "Erreur",
-      "successDescription": "A réussi à tirer le modèle",
-      "successDeleteDescription": "Supprimé avec succès le modèle",
-      "someError": "Quelque chose s'est mal passé.Veuillez réessayer plus tard"
+      "successDescription": "Modèle récupéré avec succès",
+      "successDeleteDescription": "Modèle supprimé avec succès",
+      "someError": "Une erreur s'est produite. Veuillez réessayer plus tard"
     }
   },
   "managePrompts": {
@@ -174,6 +182,10 @@
     "option1": "Normale",
     "option2": "RAG",
     "questionPrompt": "Prompt de question",
+    "segmented": {
+      "custom": "Prompts personnalisées",
+      "copilot": "Prompts Copilot"
+    },
     "columns": {
       "title": "Titre",
       "prompt": "Prompt",
@@ -187,25 +199,21 @@
       "edit": "Modifier le prompt"
     },
     "confirm": {
-      "delete": "Êtes-vous sûr de vouloir supprimer cette invite ? Cette action ne peut pas être annulée."
+      "delete": "Êtes-vous sûr de vouloir supprimer ce prompt ? Cette action ne peut pas être annulée."
     },
     "modal": {
       "addTitle": "Ajouter un nouveau prompt",
       "editTitle": "Modifier le prompt"
     },
-    "segmented": {
-      "custom": "Invites personnalisées",
-      "copilot": "Invites Copilot"
-    },
     "form": {
       "title": {
         "label": "Titre",
         "placeholder": "Mon super prompt",
-        "required": "Veuillez saisir un titre"
+        "required": "Veuillez entrer un titre"
       },
       "prompt": {
         "label": "Prompt",
-        "placeholder": "Entrer Prompt",
+        "placeholder": "Entrer le prompt",
         "required": "Veuillez entrer un prompt",
         "help": "Vous pouvez utiliser {key} comme variable dans votre prompt.",
         "missingTextPlaceholder": "La variable {text} est manquante dans le message. Veuillez l'ajouter."
@@ -214,20 +222,20 @@
         "label": "Est un prompt système"
       },
       "btnSave": {
-        "saving": "Ajout de Prompt...",
+        "saving": "Ajout du prompt...",
         "save": "Ajouter un prompt"
       },
       "btnEdit": {
-        "saving": "Mise à jour du Prompt...",
+        "saving": "Mise à jour du prompt...",
         "save": "Modifier le prompt"
       }
     },
     "notification": {
       "addSuccess": "Prompt ajouté",
-      "addSuccessDesc": "Le prompt a été ajoutée avec succès",
+      "addSuccessDesc": "Le prompt a été ajouté avec succès",
       "error": "Erreur",
-      "someError": "Quelque chose s'est mal passé. Veuillez réessayer plus tard",
-      "updatedSuccess": "Prompt mise à jour",
+      "someError": "Une erreur s'est produite. Veuillez réessayer plus tard",
+      "updatedSuccess": "Prompt mis à jour",
       "updatedSuccessDesc": "Le prompt a été mis à jour avec succès",
       "deletedSuccess": "Prompt supprimé",
       "deletedSuccessDesc": "Le prompt a été supprimé avec succès"
@@ -239,7 +247,7 @@
     "form": {
       "url": {
         "label": "URL de partage de page",
-        "placeholder": "Entrez l'URL de partage de la page",
+        "placeholder": "Entrer l'URL de partage de la page",
         "required": "Veuillez saisir URL de partage de votre page!",
         "help": "Pour des raisons de confidentialité, vous pouvez auto-héberger le partage de la page et fournir l'URL ici.<anchor>En savoir plus</anchor>."
       }
@@ -262,47 +270,47 @@
     },
     "notification": {
       "pageShareSuccess": "URL de partage de page mise à jour avec succès",
-      "someError": "Quelque chose a mal tourné. Veuillez réessayer plus tard",
+      "someError": "Une erreur s'est produite. Veuillez réessayer plus tard",
       "webShareDeleteSuccess": "Partage Web supprimé avec succès"
     }
   },
   "ollamaSettings": {
-    "title": "Réglages de Ollama",
+    "title": "Paramètres d'Ollama",
     "heading": "Configurer Ollama",
     "settings": {
       "ollamaUrl": {
-        "label": "Url de Ollama",
-        "placeholder": "Entrer l'url de Ollama"
+        "label": "URL d'Ollama",
+        "placeholder": "Entrer l'URL d'Ollama"
       },
       "globalEnable": {
         "label": "Activer ou désactiver l'intégration Ollama globalement",
-        "warning": "En désactivant l'intégration Ollama globalement, Page Assist ne récupérera pas les modèles depuis Ollama. Vous pouvez toujours ajouter une instance Ollama depuis la section <anchor>API compatible OpenAI</anchor> qui fonctionnera correctement."
+        "warning": "En désactivant l'intégration Ollama globalement, Page Assist ne récupérera pas les modèles d'Ollama. Vous pouvez toujours ajouter une instance Ollama depuis la section <anchor>API compatible OpenAI</anchor> qui fonctionnera correctement."
       },
       "advanced": {
-        "label": "Configuration avancée de l'URL de Ollama",
+        "label": "Configuration avancée de l'URL d'Ollama",
         "urlRewriteEnabled": {
           "label": "Activer ou désactiver l'URL d'origine personnalisée"
         },
         "rewriteUrl": {
           "label": "URL d'origine personnalisée",
-          "placeholder": "Entrez l'URL d'origine personnalisée"
+          "placeholder": "Entrer l'URL d'origine personnalisée"
         },
         "autoCORSFix": {
-          "label": "Activer ou désactiver la correction automatique CORS de Ollama"
+          "label": "Activer ou désactiver la correction automatique CORS d'Ollama"
         },
         "headers": {
-          "label": "En-têtes Personnalisés",
-          "add": "Ajouter En-tête",
+          "label": "En-têtes personnalisés",
+          "add": "Ajouter un en-tête",
           "key": {
-            "label": "Clé de l'En-tête",
+            "label": "Clé de l'en-tête",
             "placeholder": "Autorisation"
           },
           "value": {
-            "label": "Valeur de l'En-tête",
+            "label": "Valeur de l'en-tête",
             "placeholder": "Jeton Bearer"
           }
         },
-        "help": "Si vous avez des problèmes de connexion avec OLLAMA sur Page Assist, vous pouvez configurer une URL d'origine personnalisée. Pour en savoir plus sur la configuration, <anchor>cliquez ici</anchor>."
+        "help": "Si vous rencontrez des problèmes de connexion avec Ollama sur Page Assist, vous pouvez configurer une URL d'origine personnalisée. Pour en savoir plus sur la configuration, <anchor>cliquez ici</anchor>."
       }
     }
   },
@@ -314,73 +322,74 @@
     "title": "À propos",
     "heading": "À propos",
     "chromeVersion": "Version de Page Assist",
-    "ollamaVersion": "Version de Ollama",
-    "support": "Vous pouvez supporter le projet Page Assist en donnant ou parrainant via les plateformes suivantes:",
-    "koFi": "Supporter sur ko-fi",
-    "githubSponsor": "Sponsoriser sur github",
-    "githubRepo": "Référentiel GitHub"
+    "ollamaVersion": "Version d'Ollama",
+    "support": "Vous pouvez soutenir le projet Page Assist en faisant un don ou en parrainant via les plateformes suivantes :",
+    "koFi": "Soutenir sur Ko-fi",
+    "githubSponsor": "Parrainer sur GitHub",
+    "githubRepo": "Dépôt GitHub"
   },
   "manageKnowledge": {
     "title": "Gérer les connaissances",
     "heading": "Configurer la base de connaissances"
   },
   "rag": {
-    "title": "Paramètres de RAG",
+    "title": "Paramètres RAG",
     "ragSettings": {
-      "label": "Paramètres de RAG",
+      "label": "Paramètres RAG",
       "model": {
         "label": "Modèle d'embedding",
         "required": "Veuillez sélectionner un modèle",
         "help": "Fortement recommandé d'utiliser des modèles d'embedding comme «momic-embed-text».",
-        "placeholder": "Sélectionnez un modèle"
+        "placeholder": "Sélectionner un modèle"
       },
       "chunkSize": {
-        "label": "Taille",
-        "placeholder": "Entrez la taille du morceau",
-        "required": "Veuillez saisir une taille"
+        "label": "Taille des Segments",
+        "placeholder": "Entrer la taille des segments",
+        "required": "Veuillez entrer une taille de segment"
       },
       "chunkOverlap": {
-        "label": "Chevauchement",
-        "placeholder": "Entrez le chevauchement des morceaux",
-        "required": "Veuillez saisir un chevauchement"
+        "label": "Chevauchement des segments",
+        "placeholder": "Entrer le chevauchement des segments",
+        "required": "Veuillez entrer un chevauchement de segment"
       },
       "totalFilePerKB": {
-        "label": "Limite par défaut de téléchargement de fichiers pour la base de connaissances",
-        "placeholder": "Entrez la limite par défaut de téléchargement de fichiers (par exemple, 10)",
-        "required": "Veuillez saisir la limite par défaut de téléchargement de fichiers"
+        "label": "Limite de téléchargement de fichiers par défaut de la base de connaissances",
+        "placeholder": "Entrer la limite de téléchargement de fichiers par défaut (par exemple, 10)",
+        "required": "Veuillez entrer la limite de téléchargement de fichiers par défaut"
       },
       "noOfRetrievedDocs": {
         "label": "Nombre de documents récupérés",
-        "placeholder": "Entrez le nombre de documents récupérés",
-        "required": "Veuillez saisir le nombre de documents récupérés"
+        "placeholder": "Entrer le nombre de documents récupérés",
+        "required": "Veuillez entrer le nombre de documents récupérés"
       },
       "splittingSeparator": {
         "label": "Séparateur",
-        "placeholder": "Entrez le séparateur (par exemple, \\n\\n)",
-        "required": "Veuillez saisir un séparateur"
+        "placeholder": "Entrer le séparateur (par exemple, \\n\\n)",
+        "required": "Veuillez entrer un séparateur"
       },
       "splittingStrategy": {
         "label": "Diviseur de texte"
       }
     },
     "prompt": {
-      "label": "Configure RAG Prompt",
+      "label": "Configurer le prompt RAG",
       "option1": "Normal",
       "option2": "Web",
-      "alert": "La configuration du prompt système ici est déconseillée. Veuillez utiliser la section Gérer les prompts pour ajouter...",
+      "alert": "La configuration du prompt système ici est obsolète. Veuillez utiliser la section Gérer les prompts pour ajouter ou modifier des prompts. Cette section sera supprimée dans une prochaine version",
       "systemPrompt": "Prompt système",
-      "systemPromptPlaceholder": "Entrez le prompt système",
+      "systemPromptPlaceholder": "Entrer le prompt système",
       "webSearchPrompt": "Prompt de recherche Web",
       "webSearchPromptHelp": "Ne supprimez pas `{search_results}` du prompt.",
-      "webSearchPromptError": "Veuillez saisir un prompt de recherche Web",
-      "webSearchPromptPlaceholder": "Entrez le prompt de recherche Web",
+      "webSearchPromptError": "Veuillez entrer un prompt de recherche Web",
+      "webSearchPromptPlaceholder": "Entrer le prompt de recherche Web",
       "webSearchFollowUpPrompt": "Prompt de suivi de recherche Web",
       "webSearchFollowUpPromptHelp": "Ne supprimez pas `{chat_history}` et `{question}` du prompt.",
-      "webSearchFollowUpPromptError": "Veuillez saisir votre prompt de suivi de recherche Web!",
+      "webSearchFollowUpPromptError": "Veuillez saisir votre prompt de suivi de recherche Web !",
       "webSearchFollowUpPromptPlaceholder": "Votre prompt de suivi de recherche Web"
     }
   },
   "chromeAiSettings": {
-    "title": "Paramètres IA de Chrome"
-  }
+    "title": "Paramètres Chrome AI"
+  },
+  "mermaid": "Mermaid"
 }
