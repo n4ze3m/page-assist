@@ -21,7 +21,8 @@
             "group": "下载",
             "text": "文本文件 (.txt)",
             "markdown": "Markdown 文件 (.md)",
-            "json": "JSON 文件 (.json)"
+            "json": "JSON 文件 (.json)",
+            "image": "图片 (.png)"
         },
         "share": "分享"
     }

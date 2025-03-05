@@ -22,8 +22,9 @@
         "searchInternet": "搜索互联网",
         "speechToText": "语音到文本",
         "uploadImage": "上传图片",
-        "knowledge": "知识"
         "stopStreaming": "停止流式传输",
+        "knowledge": "知识",
+        "vision": "[实验性] 视觉聊天"
     },
     "sendWhenEnter": "按Enter发送",
     "welcome": "你好！今天我能帮你什么？",
