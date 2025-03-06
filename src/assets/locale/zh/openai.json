@@ -10,6 +10,7 @@
     },
     "modal": {
         "titleAdd": "添加新提供商",
+        "titleEdit": "编辑提供商",
         "name": {
             "label": "提供商名称",
             "required": "提供商名称为必填项。",
@@ -64,6 +65,7 @@
         },
         "modal": {
             "title": "添加自定义模型",
+            "titleEdit": "编辑自定义模型",
             "form": {
                 "name": {
                     "label": "模型 ID",
