@@ -14,9 +14,9 @@ import { startpageSearch } from "./search-engines/startpage"
 
 const getHostName = (url: string) => {
   try {
-    const hostname = new URL(url).hostname
-    return hostname
+    return new URL(url).hostname
   } catch (e) {
+    console.error("Failed to get hostname:", e)
     return ""
   }
 }
@@ -48,26 +48,22 @@ const searchWeb = (provider: string, query: string) => {
 
 export const getSystemPromptForWeb = async (query: string) => {
   try {
-
     const websiteVisit = getWebsiteFromQuery(query)
     let search: {
-      url: any;
-      content: string;
+      url: any
+      content: string
     }[] = []
 
     const isVisitSpecificWebsite = await getIsVisitSpecificWebsite()
 
     if (isVisitSpecificWebsite && websiteVisit.hasUrl) {
-
       const url = websiteVisit.url
       const queryWithoutUrl = websiteVisit.queryWithouUrls
       search = await processSingleWebsite(url, queryWithoutUrl)
-
     } else {
       const searchProvider = await getSearchProvider()
       search = await searchWeb(searchProvider, query)
     }
-
 
     const search_results = search
       .map(
