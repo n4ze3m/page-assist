@@ -29,7 +29,7 @@ export const ModelNickModelNicknameModal: React.FC<Props> = ({
       model_name,
       model_avatar
     })
-  }, [model_name, model_avatar])
+  }, [model_id, model_avatar, model_name])
 
   const { mutate } = useMutation({
     mutationFn: saveModelNickname,
