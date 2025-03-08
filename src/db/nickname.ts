@@ -1,6 +1,5 @@
 import { Storage } from "@plasmohq/storage"
 
-// const storage = 
 export class ModelNickname {
     db: Storage
     private KEY = "modelNickname"

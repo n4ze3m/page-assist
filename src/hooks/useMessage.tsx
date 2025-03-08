@@ -42,6 +42,7 @@ import {
   removeReasoning
 } from "@/libs/reasoning"
 import { getModelNicknameByID } from "@/db/nickname"
+import { systemPromptFormatter } from "@/utils/system-message"
 
 export const useMessage = () => {
   const {
@@ -662,14 +663,14 @@ export const useMessage = () => {
 
       if (prompt && !selectedPrompt) {
         applicationChatHistory.unshift(
-          new SystemMessage({
+          await systemPromptFormatter({
             content: prompt
           })
         )
       }
       if (selectedPrompt) {
         applicationChatHistory.unshift(
-          new SystemMessage({
+          await systemPromptFormatter({
             content: selectedPrompt.content
           })
         )
@@ -969,14 +970,14 @@ export const useMessage = () => {
 
       if (prompt && !selectedPrompt) {
         applicationChatHistory.unshift(
-          new SystemMessage({
+          await systemPromptFormatter({
             content: prompt
           })
         )
       }
       if (selectedPrompt) {
         applicationChatHistory.unshift(
-          new SystemMessage({
+          await systemPromptFormatter({
             content: selectedPrompt.content
           })
         )
@@ -1328,7 +1329,7 @@ export const useMessage = () => {
 
       if (prompt) {
         applicationChatHistory.unshift(
-          new SystemMessage({
+          await systemPromptFormatter({
             content: prompt
           })
         )
