@@ -24,7 +24,7 @@ export const pageAssistModel = async ({
   tfsZ,
   numKeep,
   numThread,
-  useMlock,
+  useMlock
 }: {
   model: string
   baseUrl: string
@@ -40,10 +40,10 @@ export const pageAssistModel = async ({
   minP?: number
   repeatPenalty?: number
   repeatLastN?: number
-  tfsZ?: number,
-  numKeep?: number,
-  numThread?: number,
-  useMlock?: boolean,
+  tfsZ?: number
+  numKeep?: number
+  numThread?: number
+  useMlock?: boolean
 }) => {
   if (model === "chrome::gemini-nano::page-assist") {
     return new ChatChromeAI({
