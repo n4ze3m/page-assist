@@ -6,7 +6,7 @@
     "message": "ローカルで実行中のAIモデルを使って、Webブラウジングをアシストします。"
   },
   "openSidePanelToChat": {
-    "message": "チャットするためにCopilotを開く"
+    "message": "サイドパネルを開いてチャットする"
   },
   "contextSummarize": {
     "message": "要約"
