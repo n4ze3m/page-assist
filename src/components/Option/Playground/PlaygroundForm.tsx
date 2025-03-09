@@ -211,7 +211,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
       <div className="relative z-10 flex w-full flex-col items-center justify-center gap-2 text-base">
         <div className="relative flex w-full flex-row justify-center gap-2 lg:w-3/5">
           <div
-            className={` bg-neutral-50  dark:bg-[#262626] relative w-full max-w-[48rem] p-1 backdrop-blur-lg duration-100 border border-gray-300 rounded-t-xl  dark:border-gray-600
+            className={` bg-neutral-50  dark:bg-[#2D2D2D] relative w-full max-w-[48rem] p-1 backdrop-blur-lg duration-100 border border-gray-300 rounded-t-xl  dark:border-gray-600
             ${temporaryChat ? "!bg-gray-200 dark:!bg-black " : ""}
             ${checkWideMode ? "max-w-none " : ""}
             `}>
@@ -224,7 +224,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                 onClick={() => {
                   form.setFieldValue("image", "")
                 }}
-                className="absolute top-1 left-1 flex items-center justify-center z-10 bg-white dark:bg-[#262626] p-0.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-600 text-black dark:text-gray-100">
+                className="absolute top-1 left-1 flex items-center justify-center z-10 bg-white dark:bg-[#2D2D2D] p-0.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-600 text-black dark:text-gray-100">
                 <X className="h-4 w-4" />
               </button>{" "}
               <Image

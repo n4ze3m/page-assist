@@ -47,6 +47,9 @@
       },
       "openReasoning": {
         "label": "Offene Argumentation standardmäßig eingeklappt"
+      },
+      "userChatBubble": {
+        "label": "Chat-Blase für Benutzernachrichten verwenden"
       }
     },
     "sidepanelRag": {

@@ -1,6 +1,5 @@
 import { Storage } from "@plasmohq/storage"
 
-// const storage = 
 export class ModelNickname {
     db: Storage
     private KEY = "modelNickname"
@@ -16,8 +15,7 @@ export class ModelNickname {
         model_name: string,
         model_avatar?: string
     ): Promise<void> {
-        const data = (await this.db.get(this.KEY)) || {}
-        const modelNames = data[this.KEY] || {}
+        const modelNames = (await this.db.get(this.KEY)) || {}
 
         modelNames[model_id] = {
             model_name,
@@ -29,7 +27,7 @@ export class ModelNickname {
 
     async getModelNicknameByID(model_id: string) {
         const data = (await this.db.get(this.KEY)) || {}
-        return  data[model_id]
+        return data[model_id]
     }
 
     async getAllModelNicknames() {
@@ -62,6 +60,7 @@ export const saveModelNickname = async (
         model_avatar?: string
     }
 ) => {
+
     const modelNickname = new ModelNickname()
     return await modelNickname.saveModelNickname(model_id, model_name, model_avatar)
 }

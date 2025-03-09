@@ -4,7 +4,6 @@ import { Tag, Image, Tooltip, Collapse, Popover, Avatar } from "antd"
 import { WebSearch } from "./WebSearch"
 import {
   CheckIcon,
-  ClipboardIcon,
   CopyIcon,
   InfoIcon,
   Pen,
@@ -22,6 +21,7 @@ import { GenerationInfo } from "./GenerationInfo"
 import { parseReasoning } from "@/libs/reasoning"
 import { humanizeMilliseconds } from "@/utils/humanize-milliseconds"
 import { useStorage } from "@plasmohq/storage/hook"
+import { PlaygroundUserMessageBubble } from "./PlaygroundUserMessage"
 type Props = {
   message: string
   message_type?: string
@@ -54,9 +54,15 @@ export const PlaygroundMessage = (props: Props) => {
   const [isBtnPressed, setIsBtnPressed] = React.useState(false)
   const [editMode, setEditMode] = React.useState(false)
   const [checkWideMode] = useStorage("checkWideMode", false)
+  const [isUserChatBubble] = useStorage("userChatBubble", true)
 
   const { t } = useTranslation("common")
   const { cancel, isSpeaking, speak } = useTTS()
+
+  if (isUserChatBubble && !props.isBot) {
+    return <PlaygroundUserMessageBubble {...props} />
+  }
+
   return (
     <div
       className={`group relative flex w-full max-w-3xl flex-col items-end justify-center pb-2 md:px-4 lg:w-4/5 text-gray-800 dark:text-gray-100 ${checkWideMode ? "max-w-none" : ""}`}>
@@ -247,29 +253,28 @@ export const PlaygroundMessage = (props: Props) => {
                   </button>
                 </Tooltip>
               )}
+              {!props.hideCopy && (
+                <Tooltip title={t("copyToClipboard")}>
+                  <button
+                    aria-label={t("copyToClipboard")}
+                    onClick={() => {
+                      navigator.clipboard.writeText(props.message)
+                      setIsBtnPressed(true)
+                      setTimeout(() => {
+                        setIsBtnPressed(false)
+                      }, 2000)
+                    }}
+                    className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                    {!isBtnPressed ? (
+                      <CopyIcon className="w-3 h-3 text-gray-400 group-hover:text-gray-500" />
+                    ) : (
+                      <CheckIcon className="w-3 h-3 text-green-400 group-hover:text-green-500" />
+                    )}
+                  </button>
+                </Tooltip>
+              )}
               {props.isBot && (
                 <>
-                  {!props.hideCopy && (
-                    <Tooltip title={t("copyToClipboard")}>
-                      <button
-                        aria-label={t("copyToClipboard")}
-                        onClick={() => {
-                          navigator.clipboard.writeText(props.message)
-                          setIsBtnPressed(true)
-                          setTimeout(() => {
-                            setIsBtnPressed(false)
-                          }, 2000)
-                        }}
-                        className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
-                        {!isBtnPressed ? (
-                          <CopyIcon className="w-3 h-3 text-gray-400 group-hover:text-gray-500" />
-                        ) : (
-                          <CheckIcon className="w-3 h-3 text-green-400 group-hover:text-green-500" />
-                        )}
-                      </button>
-                    </Tooltip>
-                  )}
-
                   {props.generationInfo && (
                     <Popover
                       content={

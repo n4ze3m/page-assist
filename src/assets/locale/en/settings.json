@@ -47,6 +47,9 @@
       },
       "openReasoning": {
         "label": "Open Reasoning Collapse by default"
+      },
+      "userChatBubble": {
+        "label": "Use Chat Bubble for User Messages"
       }
     },
     "sidepanelRag": {

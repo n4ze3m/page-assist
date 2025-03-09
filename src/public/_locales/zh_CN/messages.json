@@ -6,7 +6,7 @@
         "message": "使用本地运行的 AI 模型来辅助您的网络浏览。"
     },
     "openSidePanelToChat": {
-        "message": "打开Copilot进行聊天"
+        "message": "打开侧边栏进行对话"
     },
     "contextSummarize": {
         "message": "总结"

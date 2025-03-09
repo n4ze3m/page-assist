@@ -47,6 +47,9 @@
       },
       "openReasoning": {
         "label": "Déplier par défaut le raisonnement"
+      },
+      "userChatBubble": {
+        "label": "Utiliser une bulle de discussion pour les messages de l'utilisateur"
       }
     },
     "sidepanelRag": {

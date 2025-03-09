@@ -8,7 +8,6 @@ import {
   systemPromptForNonRagOption
 } from "~/services/ollama"
 import { type ChatHistory, type Message } from "~/store/option"
-import { SystemMessage } from "@langchain/core/messages"
 import { useStoreMessageOption } from "~/store/option"
 import {
   deleteChatForEdit,
@@ -44,6 +43,7 @@ import {
   removeReasoning
 } from "@/libs/reasoning"
 import { getModelNicknameByID } from "@/db/nickname"
+import { systemPromptFormatter } from "@/utils/system-message"
 
 export const useMessageOption = () => {
   const {
@@ -310,7 +310,7 @@ export const useMessageOption = () => {
 
       if (prompt) {
         applicationChatHistory.unshift(
-          new SystemMessage({
+          await systemPromptFormatter({
             content: prompt
           })
         )
@@ -628,7 +628,7 @@ export const useMessageOption = () => {
 
       if (prompt && !selectedPrompt) {
         applicationChatHistory.unshift(
-          new SystemMessage({
+          await systemPromptFormatter({
             content: prompt
           })
         )
@@ -640,7 +640,7 @@ export const useMessageOption = () => {
 
       if (!isTempSystemprompt && selectedPrompt) {
         applicationChatHistory.unshift(
-          new SystemMessage({
+          await systemPromptFormatter({
             content: selectedPrompt.content
           })
         )
@@ -649,7 +649,7 @@ export const useMessageOption = () => {
 
       if (isTempSystemprompt) {
         applicationChatHistory.unshift(
-          new SystemMessage({
+          await systemPromptFormatter({
             content: currentChatModelSettings.systemPrompt
           })
         )

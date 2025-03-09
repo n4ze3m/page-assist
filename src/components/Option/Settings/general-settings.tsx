@@ -17,6 +17,7 @@ import { useStorage } from "@plasmohq/storage/hook"
 
 export const GeneralSettings = () => {
   const { clearChat } = useMessageOption()
+  const [userChatBubble, setUserChatBubble] = useStorage("userChatBubble", true)
 
   const [speechToTextLanguage, setSpeechToTextLanguage] = useStorage(
     "speechToTextLanguage",
@@ -235,6 +236,19 @@ export const GeneralSettings = () => {
         <Switch
           checked={openReasoning}
           onChange={(checked) => setOpenReasoning(checked)}
+        />
+      </div>
+
+      <div className="flex flex-row justify-between">
+        <div className="inline-flex items-center gap-2">
+          <span className="text-gray-700   dark:text-neutral-50">
+            {t("generalSettings.settings.userChatBubble.label")}
+          </span>
+        </div>
+
+        <Switch
+          checked={userChatBubble}
+          onChange={(checked) => setUserChatBubble(checked)}
         />
       </div>
 
