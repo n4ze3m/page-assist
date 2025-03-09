@@ -4,7 +4,6 @@ import { Tag, Image, Tooltip, Collapse, Popover, Avatar } from "antd"
 import { WebSearch } from "./WebSearch"
 import {
   CheckIcon,
-  ClipboardIcon,
   CopyIcon,
   InfoIcon,
   Pen,
