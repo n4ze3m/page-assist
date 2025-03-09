@@ -247,29 +247,28 @@ export const PlaygroundMessage = (props: Props) => {
                   </button>
                 </Tooltip>
               )}
+              {!props.hideCopy && (
+                <Tooltip title={t("copyToClipboard")}>
+                  <button
+                    aria-label={t("copyToClipboard")}
+                    onClick={() => {
+                      navigator.clipboard.writeText(props.message)
+                      setIsBtnPressed(true)
+                      setTimeout(() => {
+                        setIsBtnPressed(false)
+                      }, 2000)
+                    }}
+                    className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                    {!isBtnPressed ? (
+                      <CopyIcon className="w-3 h-3 text-gray-400 group-hover:text-gray-500" />
+                    ) : (
+                      <CheckIcon className="w-3 h-3 text-green-400 group-hover:text-green-500" />
+                    )}
+                  </button>
+                </Tooltip>
+              )}
               {props.isBot && (
                 <>
-                  {!props.hideCopy && (
-                    <Tooltip title={t("copyToClipboard")}>
-                      <button
-                        aria-label={t("copyToClipboard")}
-                        onClick={() => {
-                          navigator.clipboard.writeText(props.message)
-                          setIsBtnPressed(true)
-                          setTimeout(() => {
-                            setIsBtnPressed(false)
-                          }, 2000)
-                        }}
-                        className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
-                        {!isBtnPressed ? (
-                          <CopyIcon className="w-3 h-3 text-gray-400 group-hover:text-gray-500" />
-                        ) : (
-                          <CheckIcon className="w-3 h-3 text-green-400 group-hover:text-green-500" />
-                        )}
-                      </button>
-                    </Tooltip>
-                  )}
-
                   {props.generationInfo && (
                     <Popover
                       content={
