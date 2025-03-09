@@ -50,6 +50,9 @@
       },
       "openReasoning": {
         "label": "デフォルトで推論を展開する"
+      },
+      "userChatBubble": {
+        "label": "ユーザーメッセージにチャットバブルを使用"
       }
     },
     "sidepanelRag": {

@@ -21,6 +21,7 @@ import { GenerationInfo } from "./GenerationInfo"
 import { parseReasoning } from "@/libs/reasoning"
 import { humanizeMilliseconds } from "@/utils/humanize-milliseconds"
 import { useStorage } from "@plasmohq/storage/hook"
+import { PlaygroundUserMessageBubble } from "./PlaygroundUserMessage"
 type Props = {
   message: string
   message_type?: string
@@ -53,9 +54,15 @@ export const PlaygroundMessage = (props: Props) => {
   const [isBtnPressed, setIsBtnPressed] = React.useState(false)
   const [editMode, setEditMode] = React.useState(false)
   const [checkWideMode] = useStorage("checkWideMode", false)
+  const [isUserChatBubble] = useStorage("userChatBubble", true)
 
   const { t } = useTranslation("common")
   const { cancel, isSpeaking, speak } = useTTS()
+
+  if (isUserChatBubble && !props.isBot) {
+    return <PlaygroundUserMessageBubble {...props} />
+  }
+
   return (
     <div
       className={`group relative flex w-full max-w-3xl flex-col items-end justify-center pb-2 md:px-4 lg:w-4/5 text-gray-800 dark:text-gray-100 ${checkWideMode ? "max-w-none" : ""}`}>

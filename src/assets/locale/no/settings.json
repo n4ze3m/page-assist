@@ -47,6 +47,9 @@
       },
       "openReasoning": {
         "label": "Åpne Resonnement Sammenfoldet som standard"
+      },
+      "userChatBubble": {
+        "label": "Bruk chatboble for bruker meldinger"
       }
     },
     "sidepanelRag": {

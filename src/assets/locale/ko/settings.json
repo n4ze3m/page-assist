@@ -50,6 +50,9 @@
       },
       "openReasoning": {
         "label": "추론 섹션을 기본적으로 열기"
+      },
+      "userChatBubble": {
+        "label": "사용자 메시지에 채팅 버블 사용"
       }
     },
     "sidepanelRag": {

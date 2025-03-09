@@ -47,6 +47,9 @@
       },
       "openReasoning": {
         "label": "Abrir el Razonamiento Colapsado por defecto"
+      },
+      "userChatBubble": {
+        "label": "Usar Burbuja de Chat para Mensajes del Usuario"
       }
     },
     "sidepanelRag": {

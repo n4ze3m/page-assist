@@ -47,6 +47,9 @@
       },
       "openReasoning": {
         "label": "Abrir Raciocínio Recolhido por padrão"
+      },
+      "userChatBubble": {
+        "label": "Usar Balão de Chat para Mensagens do Usuário"
       }
     },
     "sidepanelRag": {

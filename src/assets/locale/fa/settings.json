@@ -44,6 +44,9 @@
       },
       "openReasoning": {
         "label": "باز کردن استدلال به صورت پیش فرض"
+      },
+      "userChatBubble": {
+        "label": "استفاده از حباب گفتگو برای پیام‌های کاربر"
       }
     },
     "sidepanelRag": {

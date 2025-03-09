@@ -47,6 +47,9 @@
       },
       "openReasoning": {
         "label": "Öppna resonemang kollapsat som standard"
+      },
+      "userChatBubble": {
+        "label": "Använd chattbubbla för användarmeddelanden"
       }
     },
     "sidepanelRag": {

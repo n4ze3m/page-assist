@@ -50,6 +50,9 @@
       },
       "openReasoning": {
         "label": "默认展开推理过程"
+      },
+      "userChatBubble": {
+        "label": "使用聊天气泡显示用户消息"
       }
     },
     "sidepanelRag": {
