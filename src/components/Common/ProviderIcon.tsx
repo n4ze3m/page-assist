@@ -15,6 +15,7 @@ import { VolcEngineIcon } from "../Icons/VolcEngine"
 import { TencentCloudIcon } from "../Icons/TencentCloud"
 import { AliBaBaCloudIcon } from "../Icons/AliBaBaCloud"
 import { LlamaCppLogo } from "../Icons/LlamacppLogo"
+import { InfinigenceAI } from "../Icons/InfinigenceAI"
 
 export const ProviderIcons = ({
   provider,
@@ -58,6 +59,8 @@ export const ProviderIcons = ({
       return <AliBaBaCloudIcon className={className} />
     case "llamacpp":
       return <LlamaCppLogo className={className} />
+    case "infinitenceai":
+        return <InfinigenceAI className={className} />
     default:
       return <OllamaIcon className={className} />
   }

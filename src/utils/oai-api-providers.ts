@@ -65,6 +65,11 @@ export const OAI_API_PROVIDERS = [
         baseUrl: "https://api.mistral.ai/v1"
     },
     {
+        label: "Infinigence AI",
+        value: "infinitenceai",
+        baseUrl: "https://cloud.infini-ai.com/maas/v1"
+    },
+    {
         label: "SiliconFlow",
         value: "siliconflow",
         baseUrl: "https://api.siliconflow.cn/v1"
