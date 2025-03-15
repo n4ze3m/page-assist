@@ -1,6 +1,6 @@
 import React from "react"
 
-export const CustomIcon = React.forwardRef<
+export const InfinigenceAI = React.forwardRef<
   SVGSVGElement,
   React.SVGProps<SVGSVGElement>
 >((props, ref) => {
