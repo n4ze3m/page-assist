@@ -23,6 +23,7 @@ import {
 } from "lucide-react"
 import { OpenAIFetchModel } from "./openai-fetch-model"
 import { OAI_API_PROVIDERS } from "@/utils/oai-api-providers"
+import { ProviderIcons } from "@/components/Common/ProviderIcon"
 const noPopupProvider = ["lmstudio", "llamafile", "ollama2", "llamacpp"]
 
 export const OpenAIApp = () => {
@@ -223,8 +224,28 @@ export const OpenAIApp = () => {
                 })
                 setProvider(e)
               }}
+              filterOption={(input, option) => {
+                //@ts-ignore
+                return (
+                  option?.label?.props["data-title"]
+                    ?.toLowerCase()
+                    ?.indexOf(input.toLowerCase()) >= 0
+                )
+              }}
+              showSearch
               className="w-full !mb-4"
-              options={OAI_API_PROVIDERS}
+              options={OAI_API_PROVIDERS.map((e) => ({
+                value: e.value,
+                label: (
+                  <span
+                    key={e.value}
+                    data-title={e.label}
+                    className="flex flex-row gap-3 items-center ">
+                    <ProviderIcons provider={e.value} className="size-5" />
+                    <span className="line-clamp-2">{e.label}</span>
+                  </span>
+                )
+              }))}
             />
           )}
           <Form

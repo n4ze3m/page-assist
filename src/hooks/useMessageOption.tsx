@@ -211,68 +211,94 @@ export const useMessageOption = () => {
 
       let query = message
 
-      if (newMessage.length > 2) {
-        let questionPrompt = await geWebSearchFollowUpPrompt()
-        const lastTenMessages = newMessage.slice(-10)
-        lastTenMessages.pop()
-        const chat_history = lastTenMessages
-          .map((message) => {
-            return `${message.isBot ? "Assistant: " : "Human: "}${message.message}`
-          })
-          .join("\n")
-        const promptForQuestion = questionPrompt
-          .replaceAll("{chat_history}", chat_history)
-          .replaceAll("{question}", message)
-        const questionOllama = await pageAssistModel({
-          model: selectedModel!,
-          baseUrl: cleanUrl(url),
-          keepAlive:
-            currentChatModelSettings?.keepAlive ??
-            userDefaultModelSettings?.keepAlive,
-          temperature:
-            currentChatModelSettings?.temperature ??
-            userDefaultModelSettings?.temperature,
-          topK:
-            currentChatModelSettings?.topK ?? userDefaultModelSettings?.topK,
-          topP:
-            currentChatModelSettings?.topP ?? userDefaultModelSettings?.topP,
-          numCtx:
-            currentChatModelSettings?.numCtx ??
-            userDefaultModelSettings?.numCtx,
-          seed: currentChatModelSettings?.seed,
-          numGpu:
-            currentChatModelSettings?.numGpu ??
-            userDefaultModelSettings?.numGpu,
-          numPredict:
-            currentChatModelSettings?.numPredict ??
-            userDefaultModelSettings?.numPredict,
-          useMMap:
-            currentChatModelSettings?.useMMap ??
-            userDefaultModelSettings?.useMMap,
-          minP:
-            currentChatModelSettings?.minP ?? userDefaultModelSettings?.minP,
-          repeatLastN:
-            currentChatModelSettings?.repeatLastN ??
-            userDefaultModelSettings?.repeatLastN,
-          repeatPenalty:
-            currentChatModelSettings?.repeatPenalty ??
-            userDefaultModelSettings?.repeatPenalty,
-          tfsZ:
-            currentChatModelSettings?.tfsZ ?? userDefaultModelSettings?.tfsZ,
-          numKeep:
-            currentChatModelSettings?.numKeep ??
-            userDefaultModelSettings?.numKeep,
-          numThread:
-            currentChatModelSettings?.numThread ??
-            userDefaultModelSettings?.numThread,
-          useMlock:
-            currentChatModelSettings?.useMlock ??
-            userDefaultModelSettings?.useMlock
+      // if (newMessage.length > 2) {
+      let questionPrompt = await geWebSearchFollowUpPrompt()
+      const lastTenMessages = newMessage.slice(-10)
+      lastTenMessages.pop()
+      const chat_history = lastTenMessages
+        .map((message) => {
+          return `${message.isBot ? "Assistant: " : "Human: "}${message.message}`
         })
-        const response = await questionOllama.invoke(promptForQuestion)
-        query = response.content.toString()
-        query = removeReasoning(query)
+        .join("\n")
+      const promptForQuestion = questionPrompt
+        .replaceAll("{chat_history}", chat_history)
+        .replaceAll("{question}", message)
+      const questionModel = await pageAssistModel({
+        model: selectedModel!,
+        baseUrl: cleanUrl(url),
+        keepAlive:
+          currentChatModelSettings?.keepAlive ??
+          userDefaultModelSettings?.keepAlive,
+        temperature:
+          currentChatModelSettings?.temperature ??
+          userDefaultModelSettings?.temperature,
+        topK: currentChatModelSettings?.topK ?? userDefaultModelSettings?.topK,
+        topP: currentChatModelSettings?.topP ?? userDefaultModelSettings?.topP,
+        numCtx:
+          currentChatModelSettings?.numCtx ?? userDefaultModelSettings?.numCtx,
+        seed: currentChatModelSettings?.seed,
+        numGpu:
+          currentChatModelSettings?.numGpu ?? userDefaultModelSettings?.numGpu,
+        numPredict:
+          currentChatModelSettings?.numPredict ??
+          userDefaultModelSettings?.numPredict,
+        useMMap:
+          currentChatModelSettings?.useMMap ??
+          userDefaultModelSettings?.useMMap,
+        minP: currentChatModelSettings?.minP ?? userDefaultModelSettings?.minP,
+        repeatLastN:
+          currentChatModelSettings?.repeatLastN ??
+          userDefaultModelSettings?.repeatLastN,
+        repeatPenalty:
+          currentChatModelSettings?.repeatPenalty ??
+          userDefaultModelSettings?.repeatPenalty,
+        tfsZ: currentChatModelSettings?.tfsZ ?? userDefaultModelSettings?.tfsZ,
+        numKeep:
+          currentChatModelSettings?.numKeep ??
+          userDefaultModelSettings?.numKeep,
+        numThread:
+          currentChatModelSettings?.numThread ??
+          userDefaultModelSettings?.numThread,
+        useMlock:
+          currentChatModelSettings?.useMlock ??
+          userDefaultModelSettings?.useMlock
+      })
+
+      let questionMessage = await humanMessageFormatter({
+        content: [
+          {
+            text: promptForQuestion,
+            type: "text"
+          }
+        ],
+        model: selectedModel,
+        useOCR: useOCR
+      })
+
+      if (image.length > 0) {
+        questionMessage = await humanMessageFormatter({
+          content: [
+            {
+              text: promptForQuestion,
+              type: "text"
+            },
+            {
+              image_url: image,
+              type: "image_url"
+            }
+          ],
+          model: selectedModel,
+          useOCR: useOCR
+        })
       }
+      try {
+        const response = await questionModel.invoke([questionMessage])
+        query = response?.content?.toString() || message
+        query = removeReasoning(query)
+      } catch (error) {
+        console.error("Error in questionModel.invoke:", error)
+      }
+      // }
 
       const { prompt, source } = await getSystemPromptForWeb(query)
       setIsSearchingInternet(false)

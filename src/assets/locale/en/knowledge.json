@@ -11,7 +11,8 @@
         "name": "Name"
     },
     "confirm": {
-        "delete": "Are you sure you want to delete this knowledge?"
+        "delete": "Are you sure you want to delete this knowledge?",
+        "deleteSource": "Are you sure you want to delete this source?"
     },
     "deleteSuccess": "Knowledge deleted successfully",
     "status": {
@@ -21,6 +22,7 @@
         "failed": "Failed"
     },
     "addKnowledge": "Add Knowledge",
+    "updateKnowledge": "Add Source",
     "form": {
         "title": {
             "label": "Knowledge Title",
@@ -31,10 +33,12 @@
             "label": "Upload File",
             "uploadText": "Drag and drop a file here or click to upload",
             "uploadHint": "Supported file types: .pdf, .csv, .txt, .md, .docx",
-            "required": "File is required"
+            "required": "File is required",
+            "uploadError": "Unsupported file type"
         },
         "submit": "Submit",
         "success": "Knowledge added successfully"
     },
-    "noEmbeddingModel": "Please add an embedding model from the RAG settings page first"
+    "noEmbeddingModel": "Please add an embedding model from the RAG settings page first",
+    "newSource": "New Source"
 }

@@ -40,6 +40,11 @@ export const OAI_API_PROVIDERS = [
         baseUrl: "https://api.fireworks.ai/inference/v1"
     },
     {
+        label: "Novita AI",
+        value: "novita",
+        baseUrl: "https://api.novita.ai/v3/openai"
+    },
+    {
         label: "Groq",
         value: "groq",
         baseUrl: "https://api.groq.com/openai/v1"

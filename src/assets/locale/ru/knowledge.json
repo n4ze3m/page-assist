@@ -21,6 +21,7 @@
         "failed": "Не удалось"
     },
     "addKnowledge": "Добавить знание",
+    "updateKnowledge": "Добавить источник",
     "form": {
         "title": {
             "label": "Название знания",

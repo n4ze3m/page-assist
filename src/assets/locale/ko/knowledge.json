@@ -21,6 +21,7 @@
         "failed": "실패"
     },
     "addKnowledge": "지식 추가",
+    "updateKnowledge": "소스 추가",
     "form": {
         "title": {
             "label": "지식 제목",

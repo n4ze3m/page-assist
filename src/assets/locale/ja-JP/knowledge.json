@@ -21,6 +21,7 @@
         "failed": "失敗"
     },
     "addKnowledge": "知識を追加",
+    "updateKnowledge": "ソースを追加",
     "form": {
         "title": {
             "label": "知識タイトル",
