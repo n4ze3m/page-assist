@@ -21,6 +21,7 @@
         "failed": "Fejlet"
     },
     "addKnowledge": "Tilføj Viden",
+    "updateKnowledge": "Tilføj Kilde",
     "form": {
         "title": {
             "label": "Viden Titel",

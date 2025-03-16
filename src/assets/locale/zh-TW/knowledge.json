@@ -21,6 +21,7 @@
         "failed": "失敗"
     },
     "addKnowledge": "新增知識",
+    "updateKnowledge": "新增來源",
     "form": {
         "title": {
             "label": "知識標題",

@@ -21,6 +21,7 @@
         "failed": "ناموفق"
     },
     "addKnowledge": "دانش را اضافه کنید",
+    "updateKnowledge": "به روز رسانی دانش",
     "form": {
         "title": {
             "label": "عنوان دانش",

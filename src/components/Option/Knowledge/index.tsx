@@ -95,14 +95,14 @@ export const KnowledgeSettings = () => {
                 key: "action",
                 render: (text: string, record: any) => (
                   <div className="flex gap-4">
-                    <Tooltip title={t("newSource")}>
+                    <Tooltip title={t("updateKnowledge")}>
                       <button
-                        disabled={isDeleting}
+                        disabled={isDeleting || record.status === "processing"} 
                         onClick={() => {
                           setUpdateKnowledgeId(record.id)
                           setOpenUpdate(true)
                         }}
-                        className="text-blue-500 dark:text-blue-400">
+                        className="text-gray-700 dark:text-gray-400 disabled:opacity-50">
                         <FileUpIcon className="w-5 h-5" />
                       </button>
                     </Tooltip>

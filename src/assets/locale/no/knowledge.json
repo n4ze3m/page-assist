@@ -21,6 +21,7 @@
         "failed": "Mislyktes"
     },
     "addKnowledge": "Legg Til Kunnskap",
+    "updateKnowledge": "Legg Til Kilde",
     "form": {
         "title": {
             "label": "Kunnskapstittel",

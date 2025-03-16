@@ -21,6 +21,7 @@
         "failed": "Échoué"
     },
     "addKnowledge": "Ajouter une connaissance",
+    "updateKnowledge": "Ajouter une source",
     "form": {
         "title": {
             "label": "Titre de la connaissance",

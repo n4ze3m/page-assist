@@ -21,6 +21,7 @@
         "failed": "فشل"
     },
     "addKnowledge": "إضافة معرفة",
+    "updateKnowledge": "تحديث المعرفة",
     "form": {
         "title": {
             "label": "عنوان المعرفة",

@@ -22,6 +22,7 @@
         "failed": "Failed"
     },
     "addKnowledge": "Add Knowledge",
+    "updateKnowledge": "Add Source",
     "form": {
         "title": {
             "label": "Knowledge Title",
