@@ -32,8 +32,13 @@ export const generateSourceId = () => {
   })
 }
 
-export const convertToSource = async (file: UploadFile): Promise<Source> => {
-  let type = file.type
+export const convertToSource = async ({
+  file,
+  mime
+}: {
+  file: UploadFile, mime?: string
+}): Promise<Source> => {
+  let type = mime || file.type
   let filename = file.name
   const content = await toBase64(file.originFileObj)
   return { content, type, filename, source_id: generateSourceId() }

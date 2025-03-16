@@ -31,7 +31,8 @@
             "label": "Upload File",
             "uploadText": "Drag and drop a file here or click to upload",
             "uploadHint": "Supported file types: .pdf, .csv, .txt, .md, .docx",
-            "required": "File is required"
+            "required": "File is required",
+            "uploadError": "Unsupported file type"
         },
         "submit": "Submit",
         "success": "Knowledge added successfully"
