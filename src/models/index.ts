@@ -76,6 +76,25 @@ export const pageAssistModel = async ({
       }) as any
     }
 
+    if (providerInfo.provider === "openrouter") {
+      return new CustomChatOpenAI({
+        modelName: modelInfo.model_id,
+        openAIApiKey: providerInfo.apiKey || "temp",
+        temperature,
+        topP,
+        maxTokens: numPredict,
+        configuration: {
+          apiKey: providerInfo.apiKey || "temp",
+          baseURL: providerInfo.baseUrl || "",
+          defaultHeaders: {
+            'HTTP-Referer': 'https://pageassist.xyz/',
+            'X-Title': 'Page Assist'
+          }
+        },
+
+      }) as any
+    }
+
     return new CustomChatOpenAI({
       modelName: modelInfo.model_id,
       openAIApiKey: providerInfo.apiKey || "temp",
