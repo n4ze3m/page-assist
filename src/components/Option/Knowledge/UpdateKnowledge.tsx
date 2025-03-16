@@ -1,4 +1,4 @@
-import { Source, createKnowledge } from "@/db/knowledge"
+import { Source, addNewSources, createKnowledge } from "@/db/knowledge"
 import { defaultEmbeddingModelForRag } from "@/services/ollama"
 import { convertToSource } from "@/utils/to-source"
 import { useMutation } from "@tanstack/react-query"
@@ -11,11 +11,12 @@ import { useStorage } from "@plasmohq/storage/hook"
 import { unsupportedTypes } from "./utils/unsupported-types"
 
 type Props = {
+  id: string
   open: boolean
   setOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-export const AddKnowledge = ({ open, setOpen }: Props) => {
+export const UpdateKnowledge = ({ id, open, setOpen }: Props) => {
   const { t } = useTranslation(["knowledge", "common"])
   const [form] = Form.useForm()
   const [totalFilePerKB] = useStorage("totalFilePerKB", 5)
@@ -49,13 +50,8 @@ export const AddKnowledge = ({ open, setOpen }: Props) => {
       source.push(data)
     }
 
-    const knowledge = await createKnowledge({
-      embedding_model: defaultEM,
-      source,
-      title: data.title
-    })
-
-    return knowledge.id
+    await addNewSources(id, source)
+    return id
   }
 
   const { mutate: saveKnowledge, isPending: isSaving } = useMutation({
@@ -73,22 +69,11 @@ export const AddKnowledge = ({ open, setOpen }: Props) => {
 
   return (
     <Modal
-      title={t("addKnowledge")}
+      title={t("updateKnowledge")}
       open={open}
       footer={null}
       onCancel={() => setOpen(false)}>
       <Form onFinish={saveKnowledge} form={form} layout="vertical">
-        <Form.Item
-          rules={[
-            {
-              required: true,
-              message: t("form.title.required")
-            }
-          ]}
-          name="title"
-          label={t("form.title.label")}>
-          <Input size="large" placeholder={t("form.title.placeholder")} />
-        </Form.Item>
         <Form.Item
           name="file"
           label={t("form.uploadFile.label")}
@@ -134,9 +119,6 @@ export const AddKnowledge = ({ open, setOpen }: Props) => {
               <p className="ant-upload-text">
                 {t("form.uploadFile.uploadText")}
               </p>
-              {/* <p className="ant-upload-hint">
-                {t("form.uploadFile.uploadHint")}
-              </p> */}
             </div>
           </Upload.Dragger>
         </Form.Item>

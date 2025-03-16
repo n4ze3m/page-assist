@@ -4,16 +4,18 @@ import { AddKnowledge } from "./AddKnowledge"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { deleteKnowledge, deleteSource, getAllKnowledge } from "@/db/knowledge"
 import { Skeleton, Table, Tag, Tooltip, message } from "antd"
-import { Trash2 } from "lucide-react"
-import { KnowledgeIcon } from "./KnowledgeIcon"
+import { FileUpIcon, Trash2 } from "lucide-react"
 import { useMessageOption } from "@/hooks/useMessageOption"
 import { removeModelSuffix } from "@/db/models"
+import { UpdateKnowledge } from "./UpdateKnowledge"
 
 export const KnowledgeSettings = () => {
   const { t } = useTranslation(["knowledge", "common"])
   const [open, setOpen] = useState(false)
   const queryClient = useQueryClient()
   const { selectedKnowledge, setSelectedKnowledge } = useMessageOption()
+  const [openUpdate, setOpenUpdate] = useState(false)
+  const [updateKnowledgeId, setUpdateKnowledgeId] = useState("")
 
   const { data, status } = useQuery({
     queryKey: ["fetchAllKnowledge"],
@@ -93,6 +95,17 @@ export const KnowledgeSettings = () => {
                 key: "action",
                 render: (text: string, record: any) => (
                   <div className="flex gap-4">
+                    <Tooltip title={t("newSource")}>
+                      <button
+                        disabled={isDeleting}
+                        onClick={() => {
+                          setUpdateKnowledgeId(record.id)
+                          setOpenUpdate(true)
+                        }}
+                        className="text-blue-500 dark:text-blue-400">
+                        <FileUpIcon className="w-5 h-5" />
+                      </button>
+                    </Tooltip>
                     <Tooltip title={t("common:delete")}>
                       <button
                         disabled={isDeleting}
@@ -161,6 +174,11 @@ export const KnowledgeSettings = () => {
       </div>
 
       <AddKnowledge open={open} setOpen={setOpen} />
+      <UpdateKnowledge
+        id={updateKnowledgeId}
+        open={openUpdate}
+        setOpen={setOpenUpdate}
+      />
     </div>
   )
 }

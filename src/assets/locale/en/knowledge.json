@@ -38,5 +38,6 @@
         "submit": "Submit",
         "success": "Knowledge added successfully"
     },
-    "noEmbeddingModel": "Please add an embedding model from the RAG settings page first"
+    "noEmbeddingModel": "Please add an embedding model from the RAG settings page first",
+    "newSource": "New Source"
 }
