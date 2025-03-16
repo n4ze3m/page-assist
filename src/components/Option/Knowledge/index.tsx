@@ -2,7 +2,7 @@ import { useState } from "react"
 import { useTranslation } from "react-i18next"
 import { AddKnowledge } from "./AddKnowledge"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { deleteKnowledge, getAllKnowledge } from "@/db/knowledge"
+import { deleteKnowledge, deleteSource, getAllKnowledge } from "@/db/knowledge"
 import { Skeleton, Table, Tag, Tooltip, message } from "antd"
 import { Trash2 } from "lucide-react"
 import { KnowledgeIcon } from "./KnowledgeIcon"
@@ -18,7 +18,7 @@ export const KnowledgeSettings = () => {
   const { data, status } = useQuery({
     queryKey: ["fetchAllKnowledge"],
     queryFn: () => getAllKnowledge(),
-    refetchInterval: 1000,
+    refetchInterval: 1000
   })
 
   const { mutate: deleteKnowledgeMutation, isPending: isDeleting } =
@@ -121,6 +121,28 @@ export const KnowledgeSettings = () => {
                       title: t("expandedColumns.name"),
                       key: "filename",
                       dataIndex: "filename"
+                    },
+                    {
+                      title: t("columns.action"),
+                      key: "action",
+                      render: (text: string, r: any) => (
+                        <div className="flex gap-4">
+                          <Tooltip title={t("common:delete")}>
+                            <button
+                              disabled={
+                                isDeleting || record.status === "processing"
+                              }
+                              onClick={async () => {
+                                if (window.confirm(t("confirm.deleteSource"))) {
+                                  await deleteSource(record.id, r.source_id)
+                                }
+                              }}
+                              className="text-red-500 dark:text-red-400 disabled:opacity-50">
+                              <Trash2 className="w-5 h-5" />
+                            </button>
+                          </Tooltip>
+                        </div>
+                      )
                     }
                   ]}
                   dataSource={record.source}
