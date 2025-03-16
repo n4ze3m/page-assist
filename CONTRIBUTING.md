@@ -24,6 +24,8 @@ Thank you for your interest in contributing to Page Assist! We welcome contribut
    bun install
    ```
 
+   If you face any issues with Bun, you can use `npm` instead.
+
 4. **Start the development server**
 
    To run the extension in development mode, use the following command:

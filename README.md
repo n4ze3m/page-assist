@@ -76,6 +76,8 @@ or you can build for Firefox
 bun build:firefox
 ```
 
+_Note: If you face any issues with Bun, use `npm` instead of `bun`._
+
 4. Load the extension (chrome)
 
 - Open the Extension Management page by navigating to `chrome://extensions`.
