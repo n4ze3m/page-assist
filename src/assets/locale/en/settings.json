@@ -115,7 +115,7 @@
       "actionIcon": {
         "label": "Set Default Action for Extension Icon Clicks"
       },
-      "contextAction": {
+      "contextMenu": {
         "label": "Set Default action for Context Menu"
       }
     },
