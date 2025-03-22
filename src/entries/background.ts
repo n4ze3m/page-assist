@@ -2,6 +2,7 @@ import { getOllamaURL, isOllamaRunning } from "../services/ollama"
 import { browser } from "wxt/browser"
 import { clearBadge, streamDownload } from "@/utils/pull-ollama"
 import { Storage } from "@plasmohq/storage"
+import { getActionIconClick, getInitialConfig } from "@/services/action"
 
 export default defineBackground({
   main() {
@@ -12,32 +13,46 @@ export default defineBackground({
     let actionIconClick: string = "webui"
     let contextMenuClick: string = "sidePanel"
 
-    try {
-      storage.watch({
-        "actionIconClick": (value) => {
-          const oldValue = value?.oldValue || "webui"
-          const newValue = value?.newValue || "webui"
-          if (oldValue !== newValue) {
-            actionIconClick = newValue
+    const initialize = async () => {
+      try {
+        storage.watch({
+          "actionIconClick": (value) => {
+            const oldValue = value?.oldValue || "webui"
+            const newValue = value?.newValue || "webui"
+            if (oldValue !== newValue) {
+              actionIconClick = newValue
+            }
+          },
+          "contextMenuClick": (value) => {
+            const oldValue = value?.oldValue || "sidePanel"
+            const newValue = value?.newValue || "sidePanel"
+            if (oldValue !== newValue) {
+              contextMenuClick = newValue
+              browser.contextMenus.removeAll()
+              browser.contextMenus.create({
+                id: contextMenuId[newValue],
+                title: contextMenuTitle[newValue],
+                contexts: ["page", "selection"]
+              })
+            }
           }
-        },
-        "contextMenuClick": (value) => {
-          const oldValue = value?.oldValue || "sidePanel"
-          const newValue = value?.newValue || "sidePanel"
-          if (oldValue !== newValue) {
-            contextMenuClick = newValue
-            browser.contextMenus.removeAll()
-            browser.contextMenus.create({
-              id: contextMenuId[newValue],
-              title: contextMenuTitle[newValue],
-              contexts: ["page", "selection"]
-            })
-          }
-        }
-      })
-    } catch (e) {
-      console.error("Error watching actionIconClick:", e)
+        })
+        const data = await getInitialConfig()
+        contextMenuClick = data.contextMenuClick
+        actionIconClick = data.actionIconClick
+        browser.contextMenus.removeAll()
+        browser.contextMenus.create({
+          id: contextMenuId[contextMenuClick],
+          title: contextMenuTitle[contextMenuClick],
+          contexts: ["page", "selection"]
+        })
+
+      } catch (error) {
+        console.error("Error in initLogic:", error)
+      }
     }
+
+    initialize()
 
     browser.runtime.onMessage.addListener(async (message) => {
       if (message.type === "sidepanel") {
