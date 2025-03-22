@@ -1,10 +1,44 @@
 import { getOllamaURL, isOllamaRunning } from "../services/ollama"
 import { browser } from "wxt/browser"
 import { clearBadge, streamDownload } from "@/utils/pull-ollama"
+import { Storage } from "@plasmohq/storage"
 
 export default defineBackground({
   main() {
+    const storage = new Storage({
+      area: "local"
+    })
     let isCopilotRunning: boolean = false
+    let actionIconClick: string = "webui"
+    let contextMenuClick: string = "sidePanel"
+
+    try {
+      storage.watch({
+        "actionIconClick": (value) => {
+          const oldValue = value?.oldValue || "webui"
+          const newValue = value?.newValue || "webui"
+          if (oldValue !== newValue) {
+            actionIconClick = newValue
+          }
+        },
+        "contextMenuClick": (value) => {
+          const oldValue = value?.oldValue || "sidePanel"
+          const newValue = value?.newValue || "sidePanel"
+          if (oldValue !== newValue) {
+            contextMenuClick = newValue
+            browser.contextMenus.removeAll()
+            browser.contextMenus.create({
+              id: contextMenuId[newValue],
+              title: contextMenuTitle[newValue],
+              contexts: ["page", "selection"]
+            })
+          }
+        }
+      })
+    } catch (e) {
+      console.error("Error watching actionIconClick:", e)
+    }
+
     browser.runtime.onMessage.addListener(async (message) => {
       if (message.type === "sidepanel") {
         await browser.sidebarAction.open()
@@ -35,23 +69,21 @@ export default defineBackground({
       }
     })
 
-    if (import.meta.env.BROWSER === "chrome") {
-      chrome.action.onClicked.addListener((tab) => {
-        chrome.tabs.create({ url: chrome.runtime.getURL("/options.html") })
-      })
-    } else {
-      browser.browserAction.onClicked.addListener((tab) => {
+    browser.browserAction.onClicked.addListener((tab) => {
+      if (actionIconClick === "webui") {
         browser.tabs.create({ url: browser.runtime.getURL("/options.html") })
-      })
-    }
-
+      } else {
+        browser.sidebarAction.toggle()
+      }
+    })
+    
     const contextMenuTitle = {
-      webUi: browser.i18n.getMessage("openOptionToChat"),
+      webui: browser.i18n.getMessage("openOptionToChat"),
       sidePanel: browser.i18n.getMessage("openSidePanelToChat")
     }
 
     const contextMenuId = {
-      webUi: "open-web-ui-pa",
+      webui: "open-web-ui-pa",
       sidePanel: "open-side-panel-pa"
     }
 
@@ -91,176 +123,81 @@ export default defineBackground({
       contexts: ["selection"]
     })
 
-    if (import.meta.env.BROWSER === "chrome") {
-      browser.contextMenus.onClicked.addListener(async (info, tab) => {
-        if (info.menuItemId === "open-side-panel-pa") {
-          chrome.sidePanel.open({
-            tabId: tab.id!
-          })
-        } else if (info.menuItemId === "open-web-ui-pa") {
-          browser.tabs.create({
-            url: browser.runtime.getURL("/options.html")
-          })
-        } else if (info.menuItemId === "summarize-pa") {
-          chrome.sidePanel.open({
-            tabId: tab.id!
-          })
-          // this is a bad method hope somone can fix it :)
-          setTimeout(async () => {
-            await browser.runtime.sendMessage({
-              from: "background",
-              type: "summary",
-              text: info.selectionText
-            })
-          }, isCopilotRunning ? 0 : 5000)
 
-        } else if (info.menuItemId === "rephrase-pa") {
-          chrome.sidePanel.open({
-            tabId: tab.id!
-          })
-          setTimeout(async () => {
-
-            await browser.runtime.sendMessage({
-              type: "rephrase",
-              from: "background",
-              text: info.selectionText
-            })
-          }, isCopilotRunning ? 0 : 5000)
-
-        } else if (info.menuItemId === "translate-pg") {
-          chrome.sidePanel.open({
-            tabId: tab.id!
-          })
-
-          setTimeout(async () => {
-            await browser.runtime.sendMessage({
-              type: "translate",
-              from: "background",
-              text: info.selectionText
-            })
-          }, isCopilotRunning ? 0 : 5000)
-        } else if (info.menuItemId === "explain-pa") {
-          chrome.sidePanel.open({
-            tabId: tab.id!
-          })
-
-          setTimeout(async () => {
-            await browser.runtime.sendMessage({
-              type: "explain",
-              from: "background",
-              text: info.selectionText
-            })
-          }, isCopilotRunning ? 0 : 5000)
-        } else if (info.menuItemId === "custom-pg") {
-          chrome.sidePanel.open({
-            tabId: tab.id!
-          })
-
-          setTimeout(async () => {
-            await browser.runtime.sendMessage({
-              type: "custom",
-              from: "background",
-              text: info.selectionText
-            })
-          }, isCopilotRunning ? 0 : 5000)
-        }
-      })
-
-      browser.commands.onCommand.addListener((command) => {
-        switch (command) {
-          case "execute_side_panel":
-            chrome.tabs.query(
-              { active: true, currentWindow: true },
-              async (tabs) => {
-                const tab = tabs[0]
-                chrome.sidePanel.open({
-                  tabId: tab.id!
-                })
-              }
-            )
-            break
-          default:
-            break
-        }
-      })
-    }
-
-    if (import.meta.env.BROWSER === "firefox") {
-      browser.contextMenus.onClicked.addListener((info, tab) => {
-        if (info.menuItemId === "open-side-panel-pa") {
+    browser.contextMenus.onClicked.addListener((info, tab) => {
+      if (info.menuItemId === "open-side-panel-pa") {
+        browser.sidebarAction.toggle()
+      } else if (info.menuItemId === "open-web-ui-pa") {
+        browser.tabs.create({
+          url: browser.runtime.getURL("/options.html")
+        })
+      } else if (info.menuItemId === "summarize-pa") {
+        if (!isCopilotRunning) {
           browser.sidebarAction.toggle()
-        } else if (info.menuItemId === "open-web-ui-pa") {
-          browser.tabs.create({
-            url: browser.runtime.getURL("/options.html")
+        }
+        setTimeout(async () => {
+          await browser.runtime.sendMessage({
+            from: "background",
+            type: "summary",
+            text: info.selectionText
           })
-        } else if (info.menuItemId === "summarize-pa") {
-          if (!isCopilotRunning) {
-            browser.sidebarAction.toggle()
-          }
-          setTimeout(async () => {
-            await browser.runtime.sendMessage({
-              from: "background",
-              type: "summary",
-              text: info.selectionText
-            })
-          }, isCopilotRunning ? 0 : 5000)
-        } else if (info.menuItemId === "rephrase-pa") {
-          if (!isCopilotRunning) {
-            browser.sidebarAction.toggle()
-          }
-          setTimeout(async () => {
-            await browser.runtime.sendMessage({
-              type: "rephrase",
-              from: "background",
-              text: info.selectionText
-            })
-          }, isCopilotRunning ? 0 : 5000)
-        } else if (info.menuItemId === "translate-pg") {
-          if (!isCopilotRunning) {
-            browser.sidebarAction.toggle()
-          }
-          setTimeout(async () => {
-            await browser.runtime.sendMessage({
-              type: "translate",
-              from: "background",
-              text: info.selectionText
-            })
-          }, isCopilotRunning ? 0 : 5000)
-        } else if (info.menuItemId === "explain-pa") {
-          if (!isCopilotRunning) {
-            browser.sidebarAction.toggle()
-          }
-          setTimeout(async () => {
-            await browser.runtime.sendMessage({
-              type: "explain",
-              from: "background",
-              text: info.selectionText
-            })
-          }, isCopilotRunning ? 0 : 5000)
-        } else if (info.menuItemId === "custom-pg") {
-          if (!isCopilotRunning) {
-            browser.sidebarAction.toggle()
-          }
-          setTimeout(async () => {
-            await browser.runtime.sendMessage({
-              type: "custom",
-              from: "background",
-              text: info.selectionText
-            })
-          }, isCopilotRunning ? 0 : 5000)
+        }, isCopilotRunning ? 0 : 5000)
+      } else if (info.menuItemId === "rephrase-pa") {
+        if (!isCopilotRunning) {
+          browser.sidebarAction.toggle()
         }
-      })
+        setTimeout(async () => {
+          await browser.runtime.sendMessage({
+            type: "rephrase",
+            from: "background",
+            text: info.selectionText
+          })
+        }, isCopilotRunning ? 0 : 5000)
+      } else if (info.menuItemId === "translate-pg") {
+        if (!isCopilotRunning) {
+          browser.sidebarAction.toggle()
+        }
+        setTimeout(async () => {
+          await browser.runtime.sendMessage({
+            type: "translate",
+            from: "background",
+            text: info.selectionText
+          })
+        }, isCopilotRunning ? 0 : 5000)
+      } else if (info.menuItemId === "explain-pa") {
+        if (!isCopilotRunning) {
+          browser.sidebarAction.toggle()
+        }
+        setTimeout(async () => {
+          await browser.runtime.sendMessage({
+            type: "explain",
+            from: "background",
+            text: info.selectionText
+          })
+        }, isCopilotRunning ? 0 : 5000)
+      } else if (info.menuItemId === "custom-pg") {
+        if (!isCopilotRunning) {
+          browser.sidebarAction.toggle()
+        }
+        setTimeout(async () => {
+          await browser.runtime.sendMessage({
+            type: "custom",
+            from: "background",
+            text: info.selectionText
+          })
+        }, isCopilotRunning ? 0 : 5000)
+      }
+    })
 
-      browser.commands.onCommand.addListener((command) => {
-        switch (command) {
-          case "execute_side_panel":
-            browser.sidebarAction.toggle()
-            break
-          default:
-            break
-        }
-      })
-    }
+    browser.commands.onCommand.addListener((command) => {
+      switch (command) {
+        case "execute_side_panel":
+          browser.sidebarAction.toggle()
+          break
+        default:
+          break
+      }
+    })
   },
   persistent: true
 })

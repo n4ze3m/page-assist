@@ -180,6 +180,9 @@ This are some of the blogs and videos about Page Assist. If you have written a b
 
 - [Page Assist 介绍合集](https://mp.weixin.qq.com/mp/appmsgalbum?__biz=Mzk2NDUxNDQ3Nw==&action=getalbum&album_id=3845692786608553984#wechat_redirect) by 百工智用公众号
 
+
+- [Eine KI auf dem eigenen Rechner laufen lassen, 10 Minuten Installation](https://www.johannesholstein.de/gsCMS/index.php?id=sonstige-video-tutorials) by [Johannes Holstein](https://www.johannesholstein.de)
+
 ## License
 
 MIT
