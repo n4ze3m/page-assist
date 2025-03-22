@@ -12,23 +12,26 @@ export default defineBackground({
     let isCopilotRunning: boolean = false
     let actionIconClick: string = "webui"
     let contextMenuClick: string = "sidePanel"
-
+    const contextMenuId = {
+      webui: "open-web-ui-pa",
+      sidePanel: "open-side-panel-pa"
+    }
     const initialize = async () => {
       try {
         storage.watch({
-          "actionIconClick": (value) => {
+          actionIconClick: (value) => {
             const oldValue = value?.oldValue || "webui"
             const newValue = value?.newValue || "webui"
             if (oldValue !== newValue) {
               actionIconClick = newValue
             }
           },
-          "contextMenuClick": (value) => {
+          contextMenuClick: (value) => {
             const oldValue = value?.oldValue || "sidePanel"
             const newValue = value?.newValue || "sidePanel"
             if (oldValue !== newValue) {
               contextMenuClick = newValue
-              browser.contextMenus.removeAll()
+              browser.contextMenus.remove(contextMenuId[oldValue])
               browser.contextMenus.create({
                 id: contextMenuId[newValue],
                 title: contextMenuTitle[newValue],
@@ -40,13 +43,17 @@ export default defineBackground({
         const data = await getInitialConfig()
         contextMenuClick = data.contextMenuClick
         actionIconClick = data.actionIconClick
-        browser.contextMenus.removeAll()
+        browser.contextMenus.remove(
+          data.contextMenuClick === "sidePanel"
+            ? contextMenuId["webui"]
+            : contextMenuId["sidePanel"]
+        )
         browser.contextMenus.create({
           id: contextMenuId[contextMenuClick],
           title: contextMenuTitle[contextMenuClick],
           contexts: ["page", "selection"]
         })
-
+        
       } catch (error) {
         console.error("Error in initLogic:", error)
       }
@@ -84,7 +91,6 @@ export default defineBackground({
       }
     })
 
-
     chrome.action.onClicked.addListener((tab) => {
       if (actionIconClick === "webui") {
         chrome.tabs.create({ url: chrome.runtime.getURL("/options.html") })
@@ -98,11 +104,6 @@ export default defineBackground({
     const contextMenuTitle = {
       webui: browser.i18n.getMessage("openOptionToChat"),
       sidePanel: browser.i18n.getMessage("openSidePanelToChat")
-    }
-
-    const contextMenuId = {
-      webui: "open-web-ui-pa",
-      sidePanel: "open-side-panel-pa"
     }
 
     browser.contextMenus.create({
@@ -155,63 +156,75 @@ export default defineBackground({
           tabId: tab.id!
         })
         // this is a bad method hope somone can fix it :)
-        setTimeout(async () => {
-          await browser.runtime.sendMessage({
-            from: "background",
-            type: "summary",
-            text: info.selectionText
-          })
-        }, isCopilotRunning ? 0 : 5000)
-
+        setTimeout(
+          async () => {
+            await browser.runtime.sendMessage({
+              from: "background",
+              type: "summary",
+              text: info.selectionText
+            })
+          },
+          isCopilotRunning ? 0 : 5000
+        )
       } else if (info.menuItemId === "rephrase-pa") {
         chrome.sidePanel.open({
           tabId: tab.id!
         })
-        setTimeout(async () => {
-
-          await browser.runtime.sendMessage({
-            type: "rephrase",
-            from: "background",
-            text: info.selectionText
-          })
-        }, isCopilotRunning ? 0 : 5000)
-
+        setTimeout(
+          async () => {
+            await browser.runtime.sendMessage({
+              type: "rephrase",
+              from: "background",
+              text: info.selectionText
+            })
+          },
+          isCopilotRunning ? 0 : 5000
+        )
       } else if (info.menuItemId === "translate-pg") {
         chrome.sidePanel.open({
           tabId: tab.id!
         })
 
-        setTimeout(async () => {
-          await browser.runtime.sendMessage({
-            type: "translate",
-            from: "background",
-            text: info.selectionText
-          })
-        }, isCopilotRunning ? 0 : 5000)
+        setTimeout(
+          async () => {
+            await browser.runtime.sendMessage({
+              type: "translate",
+              from: "background",
+              text: info.selectionText
+            })
+          },
+          isCopilotRunning ? 0 : 5000
+        )
       } else if (info.menuItemId === "explain-pa") {
         chrome.sidePanel.open({
           tabId: tab.id!
         })
 
-        setTimeout(async () => {
-          await browser.runtime.sendMessage({
-            type: "explain",
-            from: "background",
-            text: info.selectionText
-          })
-        }, isCopilotRunning ? 0 : 5000)
+        setTimeout(
+          async () => {
+            await browser.runtime.sendMessage({
+              type: "explain",
+              from: "background",
+              text: info.selectionText
+            })
+          },
+          isCopilotRunning ? 0 : 5000
+        )
       } else if (info.menuItemId === "custom-pg") {
         chrome.sidePanel.open({
           tabId: tab.id!
         })
 
-        setTimeout(async () => {
-          await browser.runtime.sendMessage({
-            type: "custom",
-            from: "background",
-            text: info.selectionText
-          })
-        }, isCopilotRunning ? 0 : 5000)
+        setTimeout(
+          async () => {
+            await browser.runtime.sendMessage({
+              type: "custom",
+              from: "background",
+              text: info.selectionText
+            })
+          },
+          isCopilotRunning ? 0 : 5000
+        )
       }
     })
 
@@ -232,7 +245,6 @@ export default defineBackground({
           break
       }
     })
-
   },
   persistent: true
 })

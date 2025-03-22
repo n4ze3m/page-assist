@@ -28,7 +28,7 @@ export default defineBackground({
             const newValue = value?.newValue || "sidePanel"
             if (oldValue !== newValue) {
               contextMenuClick = newValue
-              browser.contextMenus.removeAll()
+              browser.contextMenus.remove(contextMenuId[oldValue])
               browser.contextMenus.create({
                 id: contextMenuId[newValue],
                 title: contextMenuTitle[newValue],
@@ -40,7 +40,11 @@ export default defineBackground({
         const data = await getInitialConfig()
         contextMenuClick = data.contextMenuClick
         actionIconClick = data.actionIconClick
-        browser.contextMenus.removeAll()
+        browser.contextMenus.remove(
+          data.contextMenuClick === "sidePanel"
+            ? contextMenuId["webui"]
+            : contextMenuId["sidePanel"]
+        )
         browser.contextMenus.create({
           id: contextMenuId[contextMenuClick],
           title: contextMenuTitle[contextMenuClick],
