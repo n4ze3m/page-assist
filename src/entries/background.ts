@@ -1,10 +1,44 @@
 import { getOllamaURL, isOllamaRunning } from "../services/ollama"
 import { browser } from "wxt/browser"
 import { clearBadge, streamDownload } from "@/utils/pull-ollama"
+import { Storage } from "@plasmohq/storage"
 
 export default defineBackground({
   main() {
+    const storage = new Storage({
+      area: "local"
+    })
     let isCopilotRunning: boolean = false
+    let actionIconClick: string = "webui"
+    let contextMenuClick: string = "sidePanel"
+
+    try {
+      storage.watch({
+        "actionIconClick": (value) => {
+          const oldValue = value?.oldValue || "webui"
+          const newValue = value?.newValue || "webui"
+          if (oldValue !== newValue) {
+            actionIconClick = newValue
+          }
+        },
+        "contextMenuClick": (value) => {
+          const oldValue = value?.oldValue || "sidePanel"
+          const newValue = value?.newValue || "sidePanel"
+          if (oldValue !== newValue) {
+            contextMenuClick = newValue
+            browser.contextMenus.removeAll()
+            browser.contextMenus.create({
+              id: contextMenuId[newValue],
+              title: contextMenuTitle[newValue],
+              contexts: ["page", "selection"]
+            })
+          }
+        }
+      })
+    } catch (e) {
+      console.error("Error watching actionIconClick:", e)
+    }
+
     browser.runtime.onMessage.addListener(async (message) => {
       if (message.type === "sidepanel") {
         await browser.sidebarAction.open()
@@ -35,17 +69,24 @@ export default defineBackground({
       }
     })
 
+
     chrome.action.onClicked.addListener((tab) => {
-      chrome.tabs.create({ url: chrome.runtime.getURL("/options.html") })
+      if (actionIconClick === "webui") {
+        chrome.tabs.create({ url: chrome.runtime.getURL("/options.html") })
+      } else {
+        chrome.sidePanel.open({
+          tabId: tab.id!
+        })
+      }
     })
 
     const contextMenuTitle = {
-      webUi: browser.i18n.getMessage("openOptionToChat"),
+      webui: browser.i18n.getMessage("openOptionToChat"),
       sidePanel: browser.i18n.getMessage("openSidePanelToChat")
     }
 
     const contextMenuId = {
-      webUi: "open-web-ui-pa",
+      webui: "open-web-ui-pa",
       sidePanel: "open-side-panel-pa"
     }
 
