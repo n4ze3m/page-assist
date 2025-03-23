@@ -42,7 +42,7 @@ export const SystemSettings = () => {
         </h2>
         <div className="border border-b border-gray-200 dark:border-gray-600 mt-3"></div>
       </div>
-      <div className="flex flex-row mb-3 justify-between">
+      {/* <div className="flex flex-row mb-3 justify-between">
         <span className="text-gray-700 dark:text-neutral-50 ">
           {t("generalSettings.system.actionIcon.label")}
         </span>
@@ -85,7 +85,7 @@ export const SystemSettings = () => {
             setContextMenuClick(value)
           }}
         />
-      </div>
+      </div> */}
       <div className="flex flex-row mb-3 justify-between">
         <span className="text-gray-700 dark:text-neutral-50 ">
           {t("generalSettings.system.export.label")}

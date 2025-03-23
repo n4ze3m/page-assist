@@ -2,7 +2,7 @@ import { getOllamaURL, isOllamaRunning } from "../services/ollama"
 import { browser } from "wxt/browser"
 import { clearBadge, streamDownload } from "@/utils/pull-ollama"
 import { Storage } from "@plasmohq/storage"
-import { getActionIconClick, getInitialConfig } from "@/services/action"
+import { getInitialConfig } from "@/services/action"
 
 export default defineBackground({
   main() {
