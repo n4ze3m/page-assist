@@ -43,23 +43,46 @@ export default defineBackground({
         const data = await getInitialConfig()
         contextMenuClick = data.contextMenuClick
         actionIconClick = data.actionIconClick
-        browser.contextMenus.remove(
-          data.contextMenuClick === "sidePanel"
-            ? contextMenuId["webui"]
-            : contextMenuId["sidePanel"]
-        )
+
         browser.contextMenus.create({
           id: contextMenuId[contextMenuClick],
           title: contextMenuTitle[contextMenuClick],
           contexts: ["page", "selection"]
         })
-        
+        browser.contextMenus.create({
+          id: "summarize-pa",
+          title: browser.i18n.getMessage("contextSummarize"),
+          contexts: ["selection"]
+        })
+
+        browser.contextMenus.create({
+          id: "explain-pa",
+          title: browser.i18n.getMessage("contextExplain"),
+          contexts: ["selection"]
+        })
+
+        browser.contextMenus.create({
+          id: "rephrase-pa",
+          title: browser.i18n.getMessage("contextRephrase"),
+          contexts: ["selection"]
+        })
+
+        browser.contextMenus.create({
+          id: "translate-pg",
+          title: browser.i18n.getMessage("contextTranslate"),
+          contexts: ["selection"]
+        })
+
+        browser.contextMenus.create({
+          id: "custom-pg",
+          title: browser.i18n.getMessage("contextCustom"),
+          contexts: ["selection"]
+        })
       } catch (error) {
         console.error("Error in initLogic:", error)
       }
     }
 
-    initialize()
 
     browser.runtime.onMessage.addListener(async (message) => {
       if (message.type === "sidepanel") {
@@ -105,42 +128,6 @@ export default defineBackground({
       webui: browser.i18n.getMessage("openOptionToChat"),
       sidePanel: browser.i18n.getMessage("openSidePanelToChat")
     }
-
-    browser.contextMenus.create({
-      id: contextMenuId["sidePanel"],
-      title: contextMenuTitle["sidePanel"],
-      contexts: ["page", "selection"]
-    })
-
-    browser.contextMenus.create({
-      id: "summarize-pa",
-      title: browser.i18n.getMessage("contextSummarize"),
-      contexts: ["selection"]
-    })
-
-    browser.contextMenus.create({
-      id: "explain-pa",
-      title: browser.i18n.getMessage("contextExplain"),
-      contexts: ["selection"]
-    })
-
-    browser.contextMenus.create({
-      id: "rephrase-pa",
-      title: browser.i18n.getMessage("contextRephrase"),
-      contexts: ["selection"]
-    })
-
-    browser.contextMenus.create({
-      id: "translate-pg",
-      title: browser.i18n.getMessage("contextTranslate"),
-      contexts: ["selection"]
-    })
-
-    browser.contextMenus.create({
-      id: "custom-pg",
-      title: browser.i18n.getMessage("contextCustom"),
-      contexts: ["selection"]
-    })
 
     browser.contextMenus.onClicked.addListener(async (info, tab) => {
       if (info.menuItemId === "open-side-panel-pa") {
@@ -245,6 +232,8 @@ export default defineBackground({
           break
       }
     })
+
+    initialize()
   },
   persistent: true
 })
