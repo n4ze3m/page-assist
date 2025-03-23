@@ -1372,6 +1372,7 @@ export const useMessageOption = () => {
     setTemporaryChat,
     useOCR,
     setUseOCR,
-    defaultInternetSearchOn
+    defaultInternetSearchOn,
+    history
   }
 }

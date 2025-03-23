@@ -23,7 +23,8 @@
         "speechToText": "Tal till text",
         "uploadImage": "Ladda upp bild",
         "stopStreaming": "Stoppa strömning",
-        "knowledge": "Kunskap"
+        "knowledge": "Kunskap",
+        "clearContext": "Rensa kontext"
     },
     "sendWhenEnter": "Skicka när Enter trycks",
     "welcome": "Hej! Hur kan jag hjälpa dig idag?",

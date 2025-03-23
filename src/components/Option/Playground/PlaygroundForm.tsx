@@ -8,7 +8,7 @@ import { Checkbox, Dropdown, Switch, Tooltip } from "antd"
 import { Image } from "antd"
 import { useWebUI } from "~/store/webui"
 import { defaultEmbeddingModelForRag } from "~/services/ollama"
-import { ImageIcon, MicIcon, StopCircleIcon, X } from "lucide-react"
+import { EraserIcon, ImageIcon, MicIcon, StopCircleIcon, X } from "lucide-react"
 import { getVariable } from "@/utils/select-variable"
 import { useTranslation } from "react-i18next"
 import { KnowledgeSelect } from "../Knowledge/KnowledgeSelect"
@@ -43,7 +43,9 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
     temporaryChat,
     useOCR,
     setUseOCR,
-    defaultInternetSearchOn
+    defaultInternetSearchOn,
+    setHistory,
+    history
   } = useMessageOption()
 
   const isMobile = () => {
@@ -235,8 +237,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
               />
             </div>
             <div>
-              <div
-                className={`flex  bg-transparent `}>
+              <div className={`flex  bg-transparent `}>
                 <form
                   onSubmit={form.onSubmit(async (value) => {
                     stopListening()
@@ -320,6 +321,20 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                         )}
                       </div>
                       <div className="flex !justify-end gap-3">
+                        {history.length > 0 && (
+                          <Tooltip title={t("tooltip.clearContext")}>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setHistory([])
+                              }}
+                              className={`flex items-center justify-center dark:text-gray-300 ${
+                                chatMode === "rag" ? "hidden" : "block"
+                              }`}>
+                              <EraserIcon className="h-5 w-5" />
+                            </button>
+                          </Tooltip>
+                        )}
                         {!selectedKnowledge && (
                           <Tooltip title={t("tooltip.uploadImage")}>
                             <button

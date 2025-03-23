@@ -7,7 +7,9 @@ import {
   BrainCog,
   CogIcon,
   EraserIcon,
-  HistoryIcon
+  // EraserIcon,
+  HistoryIcon,
+  PlusSquare
 } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { CurrentChatModelSettings } from "@/components/Common/Settings/CurrentChatModelSettings"
@@ -33,9 +35,10 @@ export const SidepanelHeader = () => {
     setHistory,
     setHistoryId,
     setSelectedModel,
-    historyId
+    historyId,
+    history
   } = useMessage()
-  const { t } = useTranslation(["sidepanel", "common"])
+  const { t } = useTranslation(["sidepanel", "common", "option"])
   const [openModelSettings, setOpenModelSettings] = React.useState(false)
   const [sidebarOpen, setSidebarOpen] = React.useState(false)
 
@@ -58,9 +61,19 @@ export const SidepanelHeader = () => {
         ) : null}
         {messages.length > 0 && !streaming && (
           <button
-            title={t("tooltip.clear")}
+            title={t("option:newChat")}
             onClick={() => {
               clearChat()
+            }}
+            className="flex items-center space-x-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-700">
+            <PlusSquare className="h-5 w-5 text-gray-500 dark:text-gray-400" />
+          </button>
+        )}
+        {history.length > 0 && (
+          <button
+            title={t("tooltip.clearContext")}
+            onClick={() => {
+              setHistory([])
             }}
             className="flex items-center space-x-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-700">
             <EraserIcon className="h-5 w-5 text-gray-500 dark:text-gray-400" />

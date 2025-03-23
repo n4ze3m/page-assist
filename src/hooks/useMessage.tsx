@@ -1971,6 +1971,7 @@ export const useMessage = () => {
     useOCR,
     setUseOCR,
     defaultInternetSearchOn,
-    defaultChatWithWebsite
+    defaultChatWithWebsite,
+    history
   }
 }
