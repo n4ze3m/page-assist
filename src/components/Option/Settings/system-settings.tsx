@@ -7,7 +7,6 @@ import {
 import { Storage } from "@plasmohq/storage"
 import { useStorage } from "@plasmohq/storage/hook"
 import { useQueryClient } from "@tanstack/react-query"
-import { Select } from "antd"
 import { useTranslation } from "react-i18next"
 
 export const SystemSettings = () => {

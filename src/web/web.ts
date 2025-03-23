@@ -46,6 +46,14 @@ const searchWeb = (provider: string, query: string) => {
   }
 }
 
+export const isQueryHaveWebsite = async (query: string) => {
+  const websiteVisit = getWebsiteFromQuery(query)
+  
+  const isVisitSpecificWebsite = await getIsVisitSpecificWebsite()
+
+  return isVisitSpecificWebsite && websiteVisit.hasUrl
+}
+
 export const getSystemPromptForWeb = async (query: string) => {
   try {
     const websiteVisit = getWebsiteFromQuery(query)

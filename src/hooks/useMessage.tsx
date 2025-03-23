@@ -28,7 +28,7 @@ import { formatDocs } from "@/chain/chat-with-x"
 import { useStorage } from "@plasmohq/storage/hook"
 import { useStoreChatModelSettings } from "@/store/model"
 import { getAllDefaultModelSettings } from "@/services/model-settings"
-import { getSystemPromptForWeb } from "@/web/web"
+import { getSystemPromptForWeb, isQueryHaveWebsite } from "@/web/web"
 import { pageAssistModel } from "@/models"
 import { getPrompt } from "@/services/application"
 import { humanMessageFormatter } from "@/utils/human-message"
@@ -1311,9 +1311,12 @@ export const useMessage = () => {
         })
       }
       try {
-        const response = await questionModel.invoke([questionMessage])
-        query = response?.content?.toString() || message
-        query = removeReasoning(query)
+        const isWebQuery = await isQueryHaveWebsite(query)
+        if (!isWebQuery) {
+          const response = await questionModel.invoke([questionMessage])
+          query = response?.content?.toString() || message
+          query = removeReasoning(query)
+        }
       } catch (error) {
         console.error("Error in questionModel.invoke:", error)
       }
