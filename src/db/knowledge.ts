@@ -16,6 +16,8 @@ export type Knowledge = {
   source: Source[]
   knownledge: any
   createdAt: number
+  systemPrompt?: string,
+  followupPrompt?: string
 }
 export const generateID = () => {
   return "pa_knowledge_xxxx-xxxx-xxx-xxxx".replace(/[x]/g, () => {

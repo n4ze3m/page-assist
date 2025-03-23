@@ -23,7 +23,8 @@
         "speechToText": "Sprache zu Text",
         "uploadImage": "Bild hochladen",
         "stopStreaming": "Streaming stoppen",
-        "knowledge": "Wissen"
+        "knowledge": "Wissen",
+        "clearContext": "Kontext löschen"
     },
     "sendWhenEnter": "Senden bei Drücken der Eingabetaste",
     "welcome": "Hallo! Wie kann ich Ihnen heute helfen?",

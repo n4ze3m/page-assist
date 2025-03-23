@@ -111,6 +111,12 @@
         "button": "Import Data",
         "success": "Import Success",
         "error": "Import Error"
+      },
+      "actionIcon": {
+        "label": "Set Default Action for Extension Icon Clicks"
+      },
+      "contextMenu": {
+        "label": "Set Default action for Context Menu"
       }
     },
     "tts": {

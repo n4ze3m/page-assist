@@ -24,7 +24,8 @@
         "uploadImage": "Upload Image",
         "stopStreaming": "Stop Streaming",
         "knowledge": "Knowledge",
-        "vision": "[Experimental] Vision Chat"
+        "vision": "[Experimental] Vision Chat",
+        "clearContext": "Clear Context"
     },
     "sendWhenEnter": "Send when Enter pressed",
     "welcome": "Hello! How can I help you today?",

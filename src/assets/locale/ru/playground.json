@@ -23,7 +23,8 @@
         "speechToText": "Речь в текст",
         "uploadImage": "Загрузить изображение",
         "stopStreaming": "Остановить поток",
-        "knowledge": "Знание"
+        "knowledge": "Знание",
+        "clearContext": "Очистить контекст"
     },
     "sendWhenEnter": "Отправить при нажатии клавиши Enter",
     "welcome": "Здравствуйте! Как я могу помочь вам сегодня?",

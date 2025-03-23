@@ -24,7 +24,8 @@
         "uploadImage": "上傳圖片",
         "stopStreaming": "停止串流",
         "knowledge": "知識",
-        "vision": "[實驗]視覺聊天"
+        "vision": "[實驗]視覺聊天",
+        "clearContext": "清除對話"
     },
     "sendWhenEnter": "按 Enter 送出",
     "welcome": "你好！今天我能幫你什麼？",

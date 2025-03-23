@@ -18,7 +18,7 @@ import {
 } from "@/db"
 import { useNavigate } from "react-router-dom"
 import { notification } from "antd"
-import { getSystemPromptForWeb } from "~/web/web"
+import { getSystemPromptForWeb, isQueryHaveWebsite } from "~/web/web"
 import { generateHistory } from "@/utils/generate-history"
 import { useTranslation } from "react-i18next"
 import {
@@ -292,9 +292,12 @@ export const useMessageOption = () => {
         })
       }
       try {
-        const response = await questionModel.invoke([questionMessage])
-        query = response?.content?.toString() || message
-        query = removeReasoning(query)
+        const isWebQuery = await isQueryHaveWebsite(query)
+        if (!isWebQuery) {
+          const response = await questionModel.invoke([questionMessage])
+          query = response?.content?.toString() || message
+          query = removeReasoning(query)
+        }
       } catch (error) {
         console.error("Error in questionModel.invoke:", error)
       }
@@ -1369,6 +1372,7 @@ export const useMessageOption = () => {
     setTemporaryChat,
     useOCR,
     setUseOCR,
-    defaultInternetSearchOn
+    defaultInternetSearchOn,
+    history
   }
 }

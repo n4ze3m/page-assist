@@ -24,7 +24,8 @@
         "uploadImage": "Uploader une image",
         "stopStreaming": "Arrêter la diffusion",
         "knowledge": "Connaissances",
-        "vision": "Discussion visuelle [Expérimental]"
+        "vision": "Discussion visuelle [Expérimental]",
+        "clearContext": "Effacer le contexte"
     },
     "sendWhenEnter": "Envoyer en appuyant sur Entrée",
     "welcome": "Bonjour ! Comment puis-je vous aider aujourd'hui ?",

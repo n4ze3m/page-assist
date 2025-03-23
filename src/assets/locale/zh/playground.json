@@ -24,7 +24,8 @@
         "uploadImage": "上传图片",
         "stopStreaming": "停止流式传输",
         "knowledge": "知识",
-        "vision": "[实验性] 视觉聊天"
+        "vision": "[实验性] 视觉聊天",
+        "clearContext": "清除上下文"
     },
     "sendWhenEnter": "按Enter发送",
     "welcome": "你好！今天我能帮你什么？",

@@ -23,7 +23,8 @@
         "speechToText": "音声入力",
         "uploadImage": "画像をアップロード",
         "stopStreaming": "ストリーミングを停止",
-        "knowledge": "知識"
+        "knowledge": "知識",
+        "clearContext": "コンテキストをクリア"
     },
     "sendWhenEnter": "Enterキーを押すと送信",
     "welcome": "こんにちは！本日はどのようなお手伝いができますか？",
