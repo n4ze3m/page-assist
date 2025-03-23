@@ -1,3 +1,4 @@
+import { BetaTag } from "@/components/Common/Beta"
 import { PageAssitDatabase } from "@/db"
 import { useMessageOption } from "@/hooks/useMessageOption"
 import {
@@ -7,6 +8,7 @@ import {
 import { Storage } from "@plasmohq/storage"
 import { useStorage } from "@plasmohq/storage/hook"
 import { useQueryClient } from "@tanstack/react-query"
+import { Select } from "antd"
 import { useTranslation } from "react-i18next"
 
 export const SystemSettings = () => {
@@ -41,8 +43,9 @@ export const SystemSettings = () => {
         </h2>
         <div className="border border-b border-gray-200 dark:border-gray-600 mt-3"></div>
       </div>
-      {/* <div className="flex flex-row mb-3 justify-between">
+      <div className="flex flex-row mb-3 justify-between">
         <span className="text-gray-700 dark:text-neutral-50 ">
+          <BetaTag />
           {t("generalSettings.system.actionIcon.label")}
         </span>
         <Select
@@ -65,6 +68,7 @@ export const SystemSettings = () => {
       </div>
       <div className="flex flex-row mb-3 justify-between">
         <span className="text-gray-700 dark:text-neutral-50 ">
+          <BetaTag />
           {t("generalSettings.system.contextMenu.label")}
         </span>
         <Select
@@ -84,7 +88,7 @@ export const SystemSettings = () => {
             setContextMenuClick(value)
           }}
         />
-      </div> */}
+      </div>
       <div className="flex flex-row mb-3 justify-between">
         <span className="text-gray-700 dark:text-neutral-50 ">
           {t("generalSettings.system.export.label")}
