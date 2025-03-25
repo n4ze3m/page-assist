@@ -64,16 +64,10 @@ cd page-assist
 bun install
 ```
 
-3. Build the extension (by default it will build for Chrome)
+3. Build the extension (by default it will build for Chrome, Edge and Firefox)
 
 ```bash
 bun run build
-```
-
-or you can build for Firefox
-
-```bash
-bun build:firefox
 ```
 
 _Note: If you face any issues with Bun, use `npm` instead of `bun`._
