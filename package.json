@@ -1,7 +1,7 @@
 {
   "name": "pageassist",
   "displayName": "Page Assist - A Web UI for Local AI Models",
-  "version": "1.0.9",
+  "version": "1.5.6.1",
   "description": "Use your locally running AI models to assist you in your web browsing.",
   "author": "n4ze3m",
   "scripts": {
@@ -12,8 +12,10 @@
     "build:chrome": "cross-env TARGET=chrome wxt build",
     "build:firefox": "cross-env TARGET=firefox wxt build -b firefox",
     "build:edge": "cross-env TARGET=chrome wxt build -b edge",
-    "zip": "cross-env TARGET=chrome wxt zip",
+    "zip": "bun zip:chrome; bun zip:firefox; bun zip:edge",
+    "zip:chrome": "cross-env TARGET=chrome wxt zip",
     "zip:firefox": "cross-env TARGET=firefox wxt zip -b firefox",
+    "zip:edge": "cross-env TARGET=chrome wxt zip -b edge",
     "compile": "tsc --noEmit",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
