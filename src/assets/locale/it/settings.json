@@ -129,6 +129,16 @@
       "removeReasoningTagTTS": {
         "label": "Rimuovi Tag di Ragionamento dal TTS"
       }
+    },
+    "stt": {
+      "heading": "Impostazioni Speech-to-Text",
+      "autoStopTimeout": {
+        "label": "Timeout Arresto Automatico (ms)",
+        "placeholder": "Inserisci il timeout di arresto automatico in millisecondi"
+      },
+      "autoSubmitVoiceMessage": {
+        "label": "Invio Automatico Messaggio Vocale"
+      }
     }
   },
   "manageModels": {

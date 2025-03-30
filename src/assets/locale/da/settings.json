@@ -126,6 +126,16 @@
       "removeReasoningTagTTS": {
         "label": "Fjern Ræsonnement Tag fra TTS"
       }
+    },
+    "stt": {
+      "heading": "Tale-til-Tekst Indstillinger",
+      "autoStopTimeout": {
+        "label": "Auto Stop Timeout (ms)",
+        "placeholder": "Indtast auto-stop timeout i millisekunder"
+      },
+      "autoSubmitVoiceMessage": {
+        "label": "Auto Send Stemmebesked"
+      }
     }
   },
   "manageModels": {

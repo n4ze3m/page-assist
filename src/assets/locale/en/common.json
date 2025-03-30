@@ -157,5 +157,6 @@
         "thinking": "Thinking....",
         "thought": "Thought for {{time}}"
     },
-    "mermaid": "Mermaid"
+    "mermaid": "Mermaid",
+    "search": "Search"
 }

@@ -48,6 +48,9 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
     history
   } = useMessageOption()
 
+  const [autoSubmitVoiceMessage] = useStorage("autoSubmitVoiceMessage", false)
+
+  const [autoStopTimeout] = useStorage("autoStopTimeout", 2000)
   const isMobile = () => {
     return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
       navigator.userAgent
@@ -121,7 +124,15 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
     start: startListening,
     stop: stopSpeechRecognition,
     supported: browserSupportsSpeechRecognition
-  } = useSpeechRecognition()
+  } = useSpeechRecognition({
+    autoStop: autoSubmitVoiceMessage,
+    autoStopTimeout,
+    onEnd: async () => {
+      if (autoSubmitVoiceMessage) {
+        submitForm()
+      }
+    }
+  })
   const { sendWhenEnter, setSendWhenEnter } = useWebUI()
 
   React.useEffect(() => {
@@ -162,6 +173,32 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
     }
   })
 
+  const submitForm = () => {
+    form.onSubmit(async (value) => {
+      if (value.message.trim().length === 0 && value.image.length === 0) {
+        return
+      }
+      if (!selectedModel || selectedModel.length === 0) {
+        form.setFieldError("message", t("formError.noModel"))
+        return
+      }
+      if (webSearch) {
+        const defaultEM = await defaultEmbeddingModelForRag()
+        const simpleSearch = await getIsSimpleInternetSearch()
+        if (!defaultEM && !simpleSearch) {
+          form.setFieldError("message", t("formError.noEmbeddingModel"))
+          return
+        }
+      }
+      form.reset()
+      textAreaFocus()
+      await sendMessage({
+        image: value.image,
+        message: value.message.trim()
+      })
+    })()
+  }
+
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (import.meta.env.BROWSER !== "firefox") {
       if (e.key === "Process" || e.key === "229") return
@@ -176,29 +213,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
     ) {
       e.preventDefault()
       stopListening()
-      form.onSubmit(async (value) => {
-        if (value.message.trim().length === 0 && value.image.length === 0) {
-          return
-        }
-        if (!selectedModel || selectedModel.length === 0) {
-          form.setFieldError("message", t("formError.noModel"))
-          return
-        }
-        if (webSearch) {
-          const defaultEM = await defaultEmbeddingModelForRag()
-          const simpleSearch = await getIsSimpleInternetSearch()
-          if (!defaultEM && !simpleSearch) {
-            form.setFieldError("message", t("formError.noEmbeddingModel"))
-            return
-          }
-        }
-        form.reset()
-        textAreaFocus()
-        await sendMessage({
-          image: value.image,
-          message: value.message.trim()
-        })
-      })()
+      submitForm()
     }
   }
 

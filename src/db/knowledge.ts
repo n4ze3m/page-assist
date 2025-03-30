@@ -223,3 +223,17 @@ export const importKnowledge = async (data: Knowledge[]) => {
     await db.create(d)
   }
 }
+
+export const updateKnowledgebase = async ({ id, systemPrompt, title }: {
+  id: string,
+  title: string,
+  systemPrompt: string
+}) => {
+  const kb = new PageAssistKnowledge()
+  const knowledgeBase = await kb.getById(id)
+  await kb.update({
+    ...knowledgeBase,
+    title,
+    systemPrompt
+  })
+}

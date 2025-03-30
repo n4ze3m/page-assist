@@ -5,6 +5,7 @@ import { getOpenAIConfigById } from "@/db/openai"
 import { urlRewriteRuntime } from "@/libs/runtime"
 import { ChatGoogleAI } from "./ChatGoogleAI"
 import { CustomChatOpenAI } from "./CustomChatOpenAI"
+import { getCustomHeaders } from "@/utils/clean-headers"
 
 export const pageAssistModel = async ({
   model,
@@ -57,7 +58,6 @@ export const pageAssistModel = async ({
   if (isCustom) {
     const modelInfo = await getModelInfo(model)
     const providerInfo = await getOpenAIConfigById(modelInfo.provider_id)
-
     if (isOllamaModel(model)) {
       await urlRewriteRuntime(providerInfo.baseUrl || "")
     }
@@ -71,7 +71,10 @@ export const pageAssistModel = async ({
         maxTokens: numPredict,
         configuration: {
           apiKey: providerInfo.apiKey || "temp",
-          baseURL: providerInfo.baseUrl || ""
+          baseURL: providerInfo.baseUrl || "",
+          defaultHeaders: getCustomHeaders({
+            headers: providerInfo?.headers || []
+          })
         }
       }) as any
     }
@@ -88,7 +91,10 @@ export const pageAssistModel = async ({
           baseURL: providerInfo.baseUrl || "",
           defaultHeaders: {
             'HTTP-Referer': 'https://pageassist.xyz/',
-            'X-Title': 'Page Assist'
+            'X-Title': 'Page Assist',
+            ...getCustomHeaders({
+              headers: providerInfo?.headers || []
+            })
           }
         },
 
@@ -103,7 +109,10 @@ export const pageAssistModel = async ({
       maxTokens: numPredict,
       configuration: {
         apiKey: providerInfo.apiKey || "temp",
-        baseURL: providerInfo.baseUrl || ""
+        baseURL: providerInfo.baseUrl || "",
+        defaultHeaders: getCustomHeaders({
+          headers: providerInfo?.headers || []
+        })
       }
     }) as any
   }

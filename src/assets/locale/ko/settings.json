@@ -132,6 +132,16 @@
       "removeReasoningTagTTS": {
         "label": "TTS에서 추론 태그 제거"
       }
+    },
+    "stt": {
+      "heading": "음성 인식 설정",
+      "autoStopTimeout": {
+        "label": "자동 중지 시간 (ms)",
+        "placeholder": "자동 중지 시간을 밀리초 단위로 입력하세요"
+      },
+      "autoSubmitVoiceMessage": {
+        "label": "음성 메시지 자동 전송"
+      }
     }
   },
   "manageModels": {

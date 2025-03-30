@@ -1,6 +1,5 @@
 import { useDarkMode } from "~/hooks/useDarkmode"
 import { Select, Switch } from "antd"
-import { SUPPORTED_LANGUAGES } from "~/utils/supported-languages"
 import { MoonIcon, SunIcon } from "lucide-react"
 import { SearchModeSettings } from "./search-mode"
 import { useTranslation } from "react-i18next"
@@ -8,14 +7,12 @@ import { useI18n } from "@/hooks/useI18n"
 import { TTSModeSettings } from "./tts-mode"
 import { useStorage } from "@plasmohq/storage/hook"
 import { SystemSettings } from "./system-settings"
+import { SSTSettings } from "./sst-settings"
 
 export const GeneralSettings = () => {
   const [userChatBubble, setUserChatBubble] = useStorage("userChatBubble", true)
 
-  const [speechToTextLanguage, setSpeechToTextLanguage] = useStorage(
-    "speechToTextLanguage",
-    "en-US"
-  )
+ 
   const [copilotResumeLastChat, setCopilotResumeLastChat] = useStorage(
     "copilotResumeLastChat",
     false
@@ -65,28 +62,7 @@ export const GeneralSettings = () => {
         </h2>
         <div className="border border-b border-gray-200 dark:border-gray-600 mt-3"></div>
       </div>
-      <div className="flex flex-row justify-between">
-        <span className="text-gray-700 dark:text-neutral-50">
-          {t("generalSettings.settings.speechRecognitionLang.label")}
-        </span>
-
-        <Select
-          placeholder={t(
-            "generalSettings.settings.speechRecognitionLang.placeholder"
-          )}
-          allowClear
-          showSearch
-          options={SUPPORTED_LANGUAGES}
-          value={speechToTextLanguage}
-          filterOption={(input, option) =>
-            option!.label.toLowerCase().indexOf(input.toLowerCase()) >= 0 ||
-            option!.value.toLowerCase().indexOf(input.toLowerCase()) >= 0
-          }
-          onChange={(value) => {
-            setSpeechToTextLanguage(value)
-          }}
-        />
-      </div>
+ 
       <div className="flex flex-row justify-between">
         <span className="text-gray-700   dark:text-neutral-50">
           {t("generalSettings.settings.language.label")}
@@ -263,6 +239,7 @@ export const GeneralSettings = () => {
         </button>
       </div>
       <SearchModeSettings />
+      <SSTSettings />
       <TTSModeSettings />
       <SystemSettings />
     </dl>
