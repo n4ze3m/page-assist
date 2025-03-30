@@ -35,7 +35,6 @@ export const OpenAIApp = () => {
     queryFn: getAllOpenAIConfig
   })
 
-  console.log(configs)
 
   const addMutation = useMutation({
     mutationFn: addOpenAICofig,
@@ -98,11 +97,15 @@ export const OpenAIApp = () => {
   }
 
   const handleEdit = (record: any) => {
-    setEditingConfig(record)
-    setOpen(true)
-    form.setFieldsValue({
-      ...record
+    setEditingConfig({
+      ...record,
+      headers: record?.headers || []
     })
+    form.setFieldsValue({
+      ...record,
+      headers: record?.headers || []
+    })
+    setOpen(true)
   }
 
   const handleDelete = (id: string) => {
