@@ -126,6 +126,16 @@
       "removeReasoningTagTTS": {
         "label": "حذف برچسب استدلال از تبدیل متن به گفتار"
       }
+    },
+    "stt": {
+      "heading": "تنظیمات تبدیل گفتار به متن",
+      "autoStopTimeout": {
+        "label": "زمان توقف خودکار (میلی‌ثانیه)",
+        "placeholder": "زمان توقف خودکار را به میلی‌ثانیه وارد کنید"
+      },
+      "autoSubmitVoiceMessage": {
+        "label": "ارسال خودکار پیام صوتی"
+      }
     }
   },
   "manageModels": {

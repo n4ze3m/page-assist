@@ -129,6 +129,16 @@
       "removeReasoningTagTTS": {
         "label": "Fjern Resonneringsmerke fra TTS"
       }
+    },
+    "stt": {
+      "heading": "Tale-til-tekst Innstillinger",
+      "autoStopTimeout": {
+        "label": "Auto-stopp Tidsavbrudd (ms)",
+        "placeholder": "Skriv inn auto-stopp tidsavbrudd i millisekunder"
+      },
+      "autoSubmitVoiceMessage": {
+        "label": "Auto-send Talemelding"
+      }
     }
   },
   "manageModels": {

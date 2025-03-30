@@ -132,6 +132,16 @@
       "removeReasoningTagTTS": {
         "label": "从语音合成中移除推理标签"
       }
+    },
+    "stt": {
+      "heading": "语音转文本设置",
+      "autoStopTimeout": {
+        "label": "自动停止超时（毫秒）",
+        "placeholder": "输入自动停止超时时间（毫秒）"
+      },
+      "autoSubmitVoiceMessage": {
+        "label": "自动提交语音消息"
+      }
     }
   },
   "manageModels": {

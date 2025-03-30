@@ -130,6 +130,16 @@
       "removeReasoningTagTTS": {
         "label": "Удалить тег рассуждения из TTS"
       }
+    },
+    "stt": {
+      "heading": "Настройки речь в текст",
+      "autoStopTimeout": {
+        "label": "Тайм-аут автоостановки (мс)",
+        "placeholder": "Введите тайм-аут автоостановки в миллисекундах"
+      },
+      "autoSubmitVoiceMessage": {
+        "label": "Автоматическая отправка голосового сообщения"
+      }
     }
   },
   "manageModels": {

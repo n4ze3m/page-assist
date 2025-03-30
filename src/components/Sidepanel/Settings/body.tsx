@@ -35,6 +35,7 @@ import { AdvanceOllamaSettings } from "@/components/Common/Settings/AdvanceOllam
 import { useStorage } from "@plasmohq/storage/hook"
 import { getTotalFilePerKB } from "@/services/app"
 import { SidepanelRag } from "@/components/Option/Settings/sidepanel-rag"
+import { SSTSettings } from "@/components/Option/Settings/sst-settings"
 
 export const SettingsBody = () => {
   const { t } = useTranslation("settings")
@@ -413,7 +414,9 @@ export const SettingsBody = () => {
           />
         </div>
       </div>
-
+      <div className="border border-gray-300 dark:border-gray-700 rounded p-4 bg-white dark:bg-[#171717]">
+        <SSTSettings hideBorder />
+      </div>
       <div className="border border-gray-300 dark:border-gray-700 rounded p-4 bg-white dark:bg-[#171717]">
         <TTSModeSettings hideBorder />
       </div>
