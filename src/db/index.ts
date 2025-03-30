@@ -3,7 +3,7 @@ import {
   type Message as MessageType
 } from "~/store/option"
 import { getAllModelNicknames } from "./nickname"
-
+import * as ml_distance_similarity from "ml-distance";
 type HistoryInfo = {
   id: string
   title: string
@@ -38,6 +38,50 @@ type Message = {
   generationInfo?: any
   modelName?: string
   modelImage?: string
+}
+function simpleFuzzyMatch(text: string, query: string): boolean {
+  if (!text || !query) {
+    return false;
+  }
+  
+  const lowerText = text.toLowerCase();
+  const lowerQuery = query.toLowerCase().trim();
+
+  if (lowerQuery === '') {
+    return true;
+  }
+  
+  if (lowerText.includes(lowerQuery)) {
+    return true;
+  }
+  
+  const queryWords = lowerQuery.split(/\s+/).filter(word => word.length > 2);
+  
+  if (queryWords.length > 1) {
+    const matchedWords = queryWords.filter(word => lowerText.includes(word));
+    return matchedWords.length >= Math.ceil(queryWords.length * 0.7);
+  }
+  
+  if (lowerQuery.length > 3) {
+    const maxDistance = Math.floor(lowerQuery.length * 0.3); 
+    
+    const textWords = lowerText.split(/\s+/);
+    return textWords.some(word => {
+      if (Math.abs(word.length - lowerQuery.length) > maxDistance) {
+        return false; 
+      }
+      let matches = 0;
+      for (let i = 0; i < lowerQuery.length; i++) {
+        if (word.includes(lowerQuery[i])) {
+          matches++;
+        }
+      }
+      
+      return matches >= lowerQuery.length - maxDistance;
+    });
+  }
+  
+  return false;
 }
 
 type Webshare = {
@@ -238,6 +282,44 @@ export class PageAssitDatabase {
 
   async setUserID(id: string) {
     this.db.set({ user_id: id })
+  }
+
+  async searchChatHistories(query: string): Promise<ChatHistory> {
+    const normalizedQuery = query.toLowerCase().trim();
+    if (!normalizedQuery) {
+        return this.getChatHistories();
+    }
+
+    const allHistories = await this.getChatHistories();
+    const matchedHistories: ChatHistory = [];
+    const matchedHistoryIds = new Set<string>(); 
+
+    for (const history of allHistories) {
+        if (simpleFuzzyMatch(history.title, normalizedQuery)) {
+            if (!matchedHistoryIds.has(history.id)) {
+                 matchedHistories.push(history);
+                 matchedHistoryIds.add(history.id);
+            }
+           continue; 
+        }
+
+        try {
+            const messages = await this.getChatHistory(history.id);
+            for (const message of messages) {
+                if (message.content && simpleFuzzyMatch(message.content, normalizedQuery)) {
+                     if (!matchedHistoryIds.has(history.id)) {
+                        matchedHistories.push(history);
+                        matchedHistoryIds.add(history.id);
+                     }
+                    break;
+                }
+            }
+        } catch (error) {
+            console.error(`Error fetching messages for history ${history.id}:`, error);
+        }
+    }
+
+    return matchedHistories;
   }
 }
 
