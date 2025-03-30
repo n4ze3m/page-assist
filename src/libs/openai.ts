@@ -1,3 +1,6 @@
+
+import { getCustomHeaders } from "@/utils/clean-headers"
+
 type Model = {
   id: string
   name?: string
@@ -5,14 +8,25 @@ type Model = {
   type: string
 }
 
-export const getAllOpenAIModels = async (baseUrl: string, apiKey?: string) => {
+export const getAllOpenAIModels = async ({
+  baseUrl,
+  apiKey,
+  customHeaders = []
+}: {
+  baseUrl: string
+  apiKey?: string
+  customHeaders?: { key: string; value: string }[]
+}) => {
   try {
     const url = `${baseUrl}/models`
     const headers = apiKey
       ? {
-        Authorization: `Bearer ${apiKey}`
+        Authorization: `Bearer ${apiKey}`,
+        ...getCustomHeaders({ headers: customHeaders })
       }
-      : {}
+      : {
+        ...getCustomHeaders({ headers: customHeaders })
+      }
 
     const controller = new AbortController()
     const timeoutId = setTimeout(() => controller.abort(), 10000)
