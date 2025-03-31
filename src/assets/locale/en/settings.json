@@ -87,6 +87,10 @@
         "label": "Brave API Key",
         "placeholder": "Enter your Brave API key"
       },
+      "tavilyApi": {
+        "label": "Tavily API Key ",
+        "placeholder": "Enter your Tavily API key"
+      },
       "googleDomain": {
         "label": "Google Domain"
       },
