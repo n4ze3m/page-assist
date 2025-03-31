@@ -157,6 +157,7 @@ export const getSearchSettings = async () => {
     searxngURL,
     searxngJSONMode,
     braveApiKey,
+    tavilyApiKey,
     googleDomain,
     defaultInternetSearchOn
   }
