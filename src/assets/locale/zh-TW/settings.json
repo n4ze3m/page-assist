@@ -135,6 +135,16 @@
       "removeReasoningTagTTS": {
         "label": "從 TTS 中刪除推理標籤"
       }
+    },
+    "stt": {
+      "heading": "語音轉文字設定",
+      "autoStopTimeout": {
+        "label": "自動停止逾時（毫秒）",
+        "placeholder": "輸入自動停止逾時的毫秒數"
+      },
+      "autoSubmitVoiceMessage": {
+        "label": "自動提交語音訊息"
+      }
     }
   },
   "manageModels": {

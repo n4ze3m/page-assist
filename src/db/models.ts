@@ -385,12 +385,14 @@ export const isLookupExist = async (lookup: string) => {
 
 export const dynamicFetchLMStudio = async ({
   baseUrl,
-  providerId
+  providerId,
+  customHeaders = []
 }: {
   baseUrl: string
   providerId: string
+  customHeaders?: { key: string; value: string }[]
 }) => {
-  const models = await getAllOpenAIModels(baseUrl)
+  const models = await getAllOpenAIModels({ baseUrl, customHeaders })
   const lmstudioModels = models.map((e) => {
     return {
       name: e?.name || e?.id,
@@ -406,12 +408,14 @@ export const dynamicFetchLMStudio = async ({
 
 export const dynamicFetchLLamaCpp = async ({
   baseUrl,
-  providerId
+  providerId,
+  customHeaders = []
 }: {
   baseUrl: string
   providerId: string
+  customHeaders?: { key: string; value: string }[]
 }) => {
-  const models = await getAllOpenAIModels(baseUrl)
+  const models = await getAllOpenAIModels({ baseUrl, customHeaders })
   const llamaCppModels = models.map((e) => {
     return {
       name: e?.name || e?.id,
@@ -427,12 +431,14 @@ export const dynamicFetchLLamaCpp = async ({
 
 export const dynamicFetchOllama2 = async ({
   baseUrl,
-  providerId
+  providerId,
+  customHeaders = []
 }: {
   baseUrl: string
-  providerId: string
+  providerId: string,
+  customHeaders?: { key: string; value: string }[]
 }) => {
-  const models = await getAllOpenAIModels(baseUrl)
+  const models = await getAllOpenAIModels({ baseUrl, customHeaders })
   const ollama2Models = models.map((e) => {
     return {
       name: e?.name || e?.id,
@@ -448,12 +454,14 @@ export const dynamicFetchOllama2 = async ({
 
 export const dynamicFetchLlamafile = async ({
   baseUrl,
-  providerId
+  providerId,
+  customHeaders = []
 }: {
   baseUrl: string
-  providerId: string
+  providerId: string,
+  customHeaders?: { key: string; value: string }[]
 }) => {
-  const models = await getAllOpenAIModels(baseUrl)
+  const models = await getAllOpenAIModels({ baseUrl, customHeaders })
   const llamafileModels = models.map((e) => {
     return {
       name: e?.name || e?.id,
@@ -495,27 +503,31 @@ export const ollamaFormatAllCustomModels = async (
     const lmModelsPromises = lmstudioProviders.map((provider) =>
       dynamicFetchLMStudio({
         baseUrl: provider.baseUrl,
-        providerId: provider.id
+        providerId: provider.id,
+        customHeaders: provider.headers
       })
     )
 
     const llamafileModelsPromises = llamafileProviders.map((provider) =>
       dynamicFetchLlamafile({
         baseUrl: provider.baseUrl,
-        providerId: provider.id
+        providerId: provider.id,
+        customHeaders: provider.headers
       })
     )
 
     const ollamaModelsPromises = ollamaProviders.map((provider) =>
       dynamicFetchOllama2({
         baseUrl: provider.baseUrl,
-        providerId: provider.id
+        providerId: provider.id,
+        customHeaders: provider.headers
       }))
 
     const llamacppModelsPromises = llamacppProvider.map((provider) =>
       dynamicFetchLLamaCpp({
         baseUrl: provider.baseUrl,
-        providerId: provider.id
+        providerId: provider.id,
+        customHeaders: provider.headers
       }))
 
     const lmModelsFetch = await Promise.all(lmModelsPromises)

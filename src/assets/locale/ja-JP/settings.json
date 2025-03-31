@@ -132,6 +132,16 @@
       "removeReasoningTagTTS": {
         "label": "テキスト読み上げから推論タグを削除"
       }
+    },
+    "stt": {
+      "heading": "音声認識設定",
+      "autoStopTimeout": {
+        "label": "自動停止タイムアウト (ミリ秒)",
+        "placeholder": "自動停止タイムアウトをミリ秒単位で入力"
+      },
+      "autoSubmitVoiceMessage": {
+        "label": "音声メッセージを自動送信"
+      }
     }
   },
   "manageModels": {

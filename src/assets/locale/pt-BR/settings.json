@@ -133,6 +133,16 @@
       "removeReasoningTagTTS": {
         "label": "Remover Tag de Raciocínio do TTS"
       }
+    },
+    "stt": {
+      "heading": "Configurações de Fala para Texto",
+      "autoStopTimeout": {
+        "label": "Tempo Limite de Parada Automática (ms)",
+        "placeholder": "Digite o tempo limite de parada automática em milissegundos"
+      },
+      "autoSubmitVoiceMessage": {
+        "label": "Envio Automático de Mensagem de Voz"
+      }
     }
   },
   "manageModels": {

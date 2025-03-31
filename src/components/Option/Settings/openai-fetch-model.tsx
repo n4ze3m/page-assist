@@ -24,12 +24,15 @@ export const OpenAIFetchModel = ({ openaiId, setOpenModelModal }: Props) => {
     queryKey: ["openAIConfigs", openaiId],
     queryFn: async () => {
       const config = await getOpenAIConfigById(openaiId)
-      const models = await getAllOpenAIModels(config.baseUrl, config.apiKey)
+      const models = await getAllOpenAIModels({
+        baseUrl: config.baseUrl,
+        apiKey: config.apiKey,
+        customHeaders: config.headers
+      })
       return models
     },
     enabled: !!openaiId
   })
-
   const filteredModels = useMemo(() => {
     return (
       data?.filter((model) =>

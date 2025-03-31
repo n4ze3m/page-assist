@@ -129,6 +129,16 @@
       "removeReasoningTagTTS": {
         "label": "Ta bort resonemangstagg från Text till Tal"
       }
+    },
+    "stt": {
+      "heading": "Tal till Text Inställningar",
+      "autoStopTimeout": {
+        "label": "Automatiskt Stopptidsgräns (ms)",
+        "placeholder": "Ange automatisk stopptidsgräns i millisekunder"
+      },
+      "autoSubmitVoiceMessage": {
+        "label": "Skicka Röstmeddelande Automatiskt"
+      }
     }
   },
   "manageModels": {

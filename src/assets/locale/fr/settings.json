@@ -135,6 +135,16 @@
       "removeReasoningTagTTS": {
         "label": "Supprimer la balise de raisonnement de la synthèse vocale"
       }
+    },
+    "stt": {
+      "heading": "Paramètres de reconnaissance vocale",
+      "autoStopTimeout": {
+        "label": "Délai d'arrêt automatique (ms)",
+        "placeholder": "Entrez le délai d'arrêt automatique en millisecondes"
+      },
+      "autoSubmitVoiceMessage": {
+        "label": "Envoi automatique du message vocal"
+      }
     }
   },
   "manageModels": {

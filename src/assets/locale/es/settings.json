@@ -129,6 +129,16 @@
       "removeReasoningTagTTS": {
         "label": "Eliminar Etiqueta de Razonamiento del TTS"
       }
+    },
+    "stt": {
+      "heading": "Configuraciones de Voz-a-Texto",
+      "autoStopTimeout": {
+        "label": "Tiempo de Auto-Detención (ms)",
+        "placeholder": "Ingrese el tiempo de auto-detención en milisegundos"
+      },
+      "autoSubmitVoiceMessage": {
+        "label": "Auto-Enviar Mensaje de Voz"
+      }
     }
   },
   "manageModels": {
