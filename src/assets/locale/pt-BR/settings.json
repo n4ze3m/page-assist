@@ -87,6 +87,10 @@
         "label": "Chave da API do Brave",
         "placeholder": "Digite sua chave da API do Brave"
       },
+      "tavilyApi": {
+        "label": "Chave da API do Tavily",
+        "placeholder": "Digite sua chave da API do Tavily"
+      },
       "searchOnByDefault": {
         "label": "Pesquisa na Internet ativada por padrão"
       }
