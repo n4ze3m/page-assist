@@ -1,5 +1,5 @@
 import { cleanUrl } from "~/libs/clean-url"
-import { getIsSimpleInternetSearch, totalSearchResults, getBraveApiKey } from "@/services/search"
+import { getIsSimpleInternetSearch, totalSearchResults } from "@/services/search"
 import { pageAssistEmbeddingModel } from "@/models/embedding"
 import type { Document } from "@langchain/core/documents"
 import { MemoryVectorStore } from "langchain/vectorstores/memory"
