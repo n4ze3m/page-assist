@@ -496,7 +496,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                           <button
                             type="button"
                             onClick={stopStreamingRequest}
-                            className="text-gray-800 dark:text-gray-300">
+                            className="text-gray-800 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded-md p-1">
                             <StopCircleIcon className="h-6 w-6" />
                           </button>
                         </Tooltip>

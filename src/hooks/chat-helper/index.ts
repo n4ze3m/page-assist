@@ -65,14 +65,6 @@ export const saveMessageOnError = async ({
             time: 1,
             message_type,
           }
-          // historyId,
-          // selectedModel,
-          // "user",
-          // userMessage,
-          // [image],
-          // [],
-          // 1,
-          // message_type
         )
       }
 
@@ -88,14 +80,6 @@ export const saveMessageOnError = async ({
           time: 2,
           message_type,
         }
-        // historyId,
-        // selectedModel,
-        // "assistant",
-        // botMessage,
-        // [],
-        // [],
-        // 2,
-        // message_type
       )
       await setLastUsedChatModel(historyId, selectedModel)
       if (prompt_id || prompt_content) {
@@ -116,14 +100,6 @@ export const saveMessageOnError = async ({
             time: 1,
             message_type,
           }
-          // newHistoryId.id,
-          // selectedModel,
-          // "user",
-          // userMessage,
-          // [image],
-          // [],
-          // 1,
-          // message_type
         )
       }
 
@@ -140,14 +116,6 @@ export const saveMessageOnError = async ({
           time: 2,
           message_type,
         }
-        // newHistoryId.id,
-        // selectedModel,
-        // "assistant",
-        // botMessage,
-        // [],
-        // [],
-        // 2,
-        // message_type
       )
       setHistoryId(newHistoryId.id)
       await setLastUsedChatModel(newHistoryId.id, selectedModel)
