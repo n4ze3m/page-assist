@@ -12,7 +12,6 @@ import { SSTSettings } from "./sst-settings"
 export const GeneralSettings = () => {
   const [userChatBubble, setUserChatBubble] = useStorage("userChatBubble", true)
 
- 
   const [copilotResumeLastChat, setCopilotResumeLastChat] = useStorage(
     "copilotResumeLastChat",
     false
@@ -49,7 +48,6 @@ export const GeneralSettings = () => {
 
   const [openReasoning, setOpenReasoning] = useStorage("openReasoning", false)
 
-
   const { mode, toggleDarkMode } = useDarkMode()
   const { t } = useTranslation("settings")
   const { changeLocale, locale, supportLanguage } = useI18n()
@@ -62,7 +60,7 @@ export const GeneralSettings = () => {
         </h2>
         <div className="border border-b border-gray-200 dark:border-gray-600 mt-3"></div>
       </div>
- 
+
       <div className="flex flex-row justify-between">
         <span className="text-gray-700   dark:text-neutral-50">
           {t("generalSettings.settings.language.label")}

@@ -121,6 +121,9 @@
       },
       "contextMenu": {
         "label": "Set Default action for Context Menu"
+      },
+      "fontSize": {
+        "label": "Font Size"
       }
     },
     "tts": {
