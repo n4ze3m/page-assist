@@ -5,8 +5,7 @@ import {
   CopyIcon,
   DownloadIcon,
   InfoIcon,
-  ExternalLinkIcon,
-
+  ExternalLinkIcon
 } from "lucide-react"
 import { FC, useState, useRef } from "react"
 import { useTranslation } from "react-i18next"
@@ -22,7 +21,6 @@ interface Props {
 export const CodeBlock: FC<Props> = ({ language, value }) => {
   const [isBtnPressed, setIsBtnPressed] = useState(false)
   const [previewVisible, setPreviewVisible] = useState(false)
-  const [isFullscreen, setIsFullscreen] = useState(false)
   const { t } = useTranslation("common")
   const iframeRef = useRef<HTMLIFrameElement>(null)
 
@@ -36,7 +34,6 @@ export const CodeBlock: FC<Props> = ({ language, value }) => {
 
   const handlePreviewClose = () => {
     setPreviewVisible(false)
-    setIsFullscreen(false)
   }
 
   const handleDownload = () => {
@@ -154,7 +151,7 @@ export const CodeBlock: FC<Props> = ({ language, value }) => {
                 </Button>
               </div>
             }
-            width={isFullscreen ? "100%" : "80%"}
+            width={"80%"}
             zIndex={999999}
             centered
             styles={{
@@ -175,8 +172,7 @@ export const CodeBlock: FC<Props> = ({ language, value }) => {
                 boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)"
               }
             }}>
-            <div
-              className={`relative w-full ${isFullscreen ? "h-[calc(100vh-120px)]" : "h-[70vh]"} bg-white`}>
+            <div className={`relative w-full h-[70vh] bg-white`}>
               <iframe
                 ref={iframeRef}
                 srcDoc={value}
