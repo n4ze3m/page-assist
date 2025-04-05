@@ -297,6 +297,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                   />
                   <div className="w-full  flex flex-col dark:border-gray-600  px-2 pt-2">
                     <textarea
+                      id="textarea-message"
                       onCompositionStart={() => {
                         if (import.meta.env.BROWSER !== "firefox") {
                           setTyping(true)

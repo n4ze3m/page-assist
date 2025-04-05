@@ -1,5 +1,5 @@
 import Markdown from "../../Common/Markdown"
-import React from "react"
+import React, { useEffect } from "react"
 import { Tag, Image, Tooltip, Collapse, Popover, Avatar } from "antd"
 import { WebSearch } from "./WebSearch"
 import {
@@ -55,9 +55,35 @@ export const PlaygroundMessage = (props: Props) => {
   const [editMode, setEditMode] = React.useState(false)
   const [checkWideMode] = useStorage("checkWideMode", false)
   const [isUserChatBubble] = useStorage("userChatBubble", true)
-
+  const [autoCopyResponseToClipboard, setAutoCopyResponseToClipboard] =
+    useStorage("autoCopyResponseToClipboard", false)
   const { t } = useTranslation("common")
   const { cancel, isSpeaking, speak } = useTTS()
+  
+  useEffect(() => {
+    if (
+      autoCopyResponseToClipboard &&
+      props.isBot &&
+      props.currentMessageIndex === props.totalMessages - 1 &&
+      !props.isStreaming &&
+      !props.isProcessing &&
+      props.message.trim().length > 0
+    ) {
+      navigator.clipboard.writeText(props.message)
+      setIsBtnPressed(true)
+      setTimeout(() => {
+        setIsBtnPressed(false)
+      }, 2000)
+    }
+  }, [
+    autoCopyResponseToClipboard,
+    props.isBot,
+    props.currentMessageIndex,
+    props.totalMessages,
+    props.isStreaming,
+    props.isProcessing,
+    props.message
+  ])
 
   if (isUserChatBubble && !props.isBot) {
     return <PlaygroundUserMessageBubble {...props} />
