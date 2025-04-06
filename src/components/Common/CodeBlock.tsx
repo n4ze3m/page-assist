@@ -1,12 +1,13 @@
 import { programmingLanguages } from "@/utils/langauge-extension"
-import { Tooltip, Modal, ConfigProvider } from "antd"
+import { Tooltip, Modal, ConfigProvider, Button } from "antd"
 import {
   CopyCheckIcon,
   CopyIcon,
   DownloadIcon,
-  GanttChartIcon
+  InfoIcon,
+  ExternalLinkIcon
 } from "lucide-react"
-import { FC, useState } from "react"
+import { FC, useState, useRef } from "react"
 import { useTranslation } from "react-i18next"
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter"
 import { coldarkDark } from "react-syntax-highlighter/dist/cjs/styles/prism"
@@ -20,8 +21,8 @@ interface Props {
 export const CodeBlock: FC<Props> = ({ language, value }) => {
   const [isBtnPressed, setIsBtnPressed] = useState(false)
   const [previewVisible, setPreviewVisible] = useState(false)
-  const [previewMermaidVisible, setPreviewMermaidVisible] = useState(false)
   const { t } = useTranslation("common")
+  const iframeRef = useRef<HTMLIFrameElement>(null)
 
   const handleCopy = () => {
     navigator.clipboard.writeText(value)
@@ -47,13 +48,11 @@ export const CodeBlock: FC<Props> = ({ language, value }) => {
     window.URL.revokeObjectURL(url)
   }
 
-  // const handlePreviewMermaid = () => {
-  //   setPreviewMermaidVisible(true)
-  // }
-
-  // const handlePreviewMermaidClose = () => {
-  //   setPreviewMermaidVisible(false)
-  // }
+  const handleOpenInNewTab = () => {
+    const blob = new Blob([value], { type: "text/html" })
+    const url = URL.createObjectURL(blob)
+    window.open(url, "_blank")
+  }
 
   return (
     <>
@@ -64,12 +63,12 @@ export const CodeBlock: FC<Props> = ({ language, value }) => {
           </div>
           <div className="sticky top-9 md:top-[5.75rem]">
             <div className="absolute bottom-0 right-2 flex h-9 items-center">
-              {/* {language === "mermaid" && (
-                <Tooltip title={t("mermaid")}>
+              {/* {language === "html" && (
+                <Tooltip title={t("preview")}>
                   <button
-                    onClick={handlePreviewMermaid}
+                    onClick={() => setPreviewVisible(true)}
                     className="flex gap-1.5 items-center rounded bg-none p-1 text-xs text-gray-200 hover:bg-gray-700 hover:text-gray-100 focus:outline-none">
-                    <GanttChartIcon className="size-4" />
+                    <InfoIcon className="size-4" />
                   </button>
                 </Tooltip>
               )} */}
@@ -94,29 +93,6 @@ export const CodeBlock: FC<Props> = ({ language, value }) => {
             </div>
           </div>
 
-          {/* <div className="flex sticky bg-gray-800 items-center justify-between py-1.5 px-4">
-          <span className="text-xs lowercase text-gray-200">{language}</span>
-          <div className="flex items-center gap-2">
-            <Tooltip title={t("downloadCode")}>
-              <button
-                onClick={handleDownload}
-                className="flex gap-1.5 items-center rounded bg-none p-1 text-xs text-gray-200 hover:bg-gray-700 hover:text-gray-100 focus:outline-none">
-                <DownloadIcon className="h-4 w-4" />
-              </button>
-            </Tooltip>
-            <Tooltip title={t("copyToClipboard")}>
-              <button
-                onClick={handleCopy}
-                className="flex gap-1.5 items-center rounded bg-none p-1 text-xs text-gray-200 hover:bg-gray-700 hover:text-gray-100 focus:outline-none">
-                {!isBtnPressed ? (
-                  <ClipboardIcon className="h-4 w-4" />
-                ) : (
-                  <CheckIcon className="h-4 w-4 text-green-400" />
-                )}
-              </button>
-            </Tooltip>
-          </div>
-        </div> */}
           <SyntaxHighlighter
             language={language}
             style={coldarkDark}
@@ -141,49 +117,73 @@ export const CodeBlock: FC<Props> = ({ language, value }) => {
         </div>
       </div>
       {previewVisible && (
-        <Modal
-          open={previewVisible}
-          onCancel={handlePreviewClose}
-          footer={null}
-          width="80%"
-          zIndex={999999}
-          centered
-          styles={{
-            body: {
-              padding: 0
+        <ConfigProvider
+          theme={{
+            components: {
+              Modal: {
+                contentBg: "#1e1e1e",
+                headerBg: "#1e1e1e",
+                titleColor: "#ffffff"
+              }
             }
           }}>
-          <div className="relative  w-full h-[80vh]">
-            <iframe
-              srcDoc={value}
-              title="HTML Preview"
-              className="w-full h-full"
-            />
-          </div>
-        </Modal>
-      )}
-
-      {/* motion: false ? because animation may cause rendering errors */}
-      {/* There is few pref problem currently will be enable later */}
-      {/* {previewMermaidVisible && (
-        <ConfigProvider theme={{ token: { motion: false } }}>
           <Modal
-            title="Mermaid Preview"
-            open={previewMermaidVisible}
-            onCancel={handlePreviewMermaidClose}
-            footer={null}
-            width="80%"
+            title={
+              <div className="flex items-center text-white">
+                <InfoIcon className="mr-2 size-5" />
+                <span>HTML Preview</span>
+              </div>
+            }
+            open={previewVisible}
+            onCancel={handlePreviewClose}
+            footer={
+              <div className="flex justify-end gap-2">
+                <Button
+                  icon={<ExternalLinkIcon className="size-4" />}
+                  onClick={handleOpenInNewTab}>
+                  Open in new tab
+                </Button>
+
+                <Button
+                  icon={<DownloadIcon className="size-4" />}
+                  onClick={handleDownload}>
+                  {t("downloadCode")}
+                </Button>
+              </div>
+            }
+            width={"80%"}
             zIndex={999999}
             centered
             styles={{
               body: {
-                padding: 0
+                padding: 0,
+                backgroundColor: "#f5f5f5",
+                borderRadius: "0 0 8px 8px"
+              },
+              header: {
+                borderBottom: "1px solid #333",
+                padding: "12px 24px"
+              },
+              mask: {
+                backdropFilter: "blur(4px)",
+                backgroundColor: "rgba(0, 0, 0, 0.6)"
+              },
+              content: {
+                boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)"
               }
             }}>
-            <Mermaid code={value} />
+            <div className={`relative w-full h-[70vh] bg-white`}>
+              <iframe
+                ref={iframeRef}
+                srcDoc={value}
+                title="HTML Preview"
+                className="w-full h-full border-0"
+                sandbox="allow-scripts allow-same-origin"
+              />
+            </div>
           </Modal>
         </ConfigProvider>
-      )} */}
+      )}
     </>
   )
 }

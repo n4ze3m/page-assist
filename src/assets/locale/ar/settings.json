@@ -50,6 +50,9 @@
       },
       "userChatBubble": {
         "label": "استخدام فقاعة الدردشة لرسائل المستخدم"
+      },
+      "autoCopyResponseToClipboard": {
+        "label": "نسخ الرد تلقائياً إلى الحافظة"
       }
     },
     "sidepanelRag": {

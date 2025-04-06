@@ -95,6 +95,21 @@ export const useMessageOption = () => {
   const navigate = useNavigate()
   const textareaRef = React.useRef<HTMLTextAreaElement>(null)
 
+  const focusTextArea = () => {
+    try {
+      if (textareaRef.current) {
+        textareaRef.current.focus()
+      } else {
+        const textareaElement = document.getElementById(
+          "textarea-message"
+        ) as HTMLTextAreaElement
+        if (textareaElement) {
+          textareaElement.focus()
+        }
+      }
+    } catch (e) {}
+  }
+
   const clearChat = () => {
     navigate("/")
     setMessages([])
@@ -105,10 +120,11 @@ export const useMessageOption = () => {
     setIsProcessing(false)
     setStreaming(false)
     currentChatModelSettings.reset()
-    textareaRef?.current?.focus()
+    // textareaRef?.current?.focus()
     if (defaultInternetSearchOn) {
       setWebSearch(true)
     }
+    focusTextArea()
   }
 
   const searchChatMode = async (

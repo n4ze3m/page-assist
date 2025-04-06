@@ -50,6 +50,9 @@
       },
       "userChatBubble": {
         "label": "Использовать пузырь чата для сообщений пользователя"
+      },
+      "autoCopyResponseToClipboard": {
+        "label": "Автоматически копировать ответ в буфер обмена"
       }
     },
     "sidepanelRag": {

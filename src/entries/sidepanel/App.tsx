@@ -9,6 +9,7 @@ import { useDarkMode } from "~/hooks/useDarkmode"
 import "~/i18n"
 import { useTranslation } from "react-i18next"
 import { PageAssistProvider } from "@/components/Common/PageAssistProvider"
+import { FontSizeProvider } from "@/context/FontSizeProvider"
 
 function IndexSidepanel() {
   const { mode } = useDarkMode()
@@ -16,10 +17,10 @@ function IndexSidepanel() {
 
   useEffect(() => {
     if (i18n.resolvedLanguage) {
-      document.documentElement.lang = i18n.resolvedLanguage;
-      document.documentElement.dir = i18n.dir(i18n.resolvedLanguage);
+      document.documentElement.lang = i18n.resolvedLanguage
+      document.documentElement.dir = i18n.dir(i18n.resolvedLanguage)
     }
-  }, [i18n, i18n.resolvedLanguage]);
+  }, [i18n, i18n.resolvedLanguage])
 
   return (
     <MemoryRouter>
@@ -42,7 +43,9 @@ function IndexSidepanel() {
         <StyleProvider hashPriority="high">
           <QueryClientProvider client={queryClient}>
             <PageAssistProvider>
-              <SidepanelRouting />
+              <FontSizeProvider>
+                <SidepanelRouting />
+              </FontSizeProvider>
             </PageAssistProvider>
           </QueryClientProvider>
         </StyleProvider>

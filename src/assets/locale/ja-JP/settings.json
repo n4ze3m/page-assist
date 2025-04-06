@@ -53,6 +53,9 @@
       },
       "userChatBubble": {
         "label": "ユーザーメッセージにチャットバブルを使用"
+      },
+      "autoCopyResponseToClipboard": {
+        "label": "応答を自動的にクリップボードにコピー"
       }
     },
     "sidepanelRag": {

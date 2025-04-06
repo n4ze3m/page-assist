@@ -297,6 +297,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                   />
                   <div className="w-full  flex flex-col dark:border-gray-600  px-2 pt-2">
                     <textarea
+                      id="textarea-message"
                       onCompositionStart={() => {
                         if (import.meta.env.BROWSER !== "firefox") {
                           setTyping(true)
@@ -465,9 +466,9 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                             <button
                               type="button"
                               onClick={stopStreamingRequest}
-                              className="text-gray-800 dark:text-gray-300">
-                              <StopCircleIcon className="h-6 w-6" />
-                            </button>
+                              className="text-gray-800 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded-md p-1">
+                              <StopCircleIcon className="size-5" />
+                            </button>{" "}
                           </Tooltip>
                         )}
                       </div>

@@ -12,7 +12,6 @@ import { SSTSettings } from "./sst-settings"
 export const GeneralSettings = () => {
   const [userChatBubble, setUserChatBubble] = useStorage("userChatBubble", true)
 
- 
   const [copilotResumeLastChat, setCopilotResumeLastChat] = useStorage(
     "copilotResumeLastChat",
     false
@@ -32,6 +31,9 @@ export const GeneralSettings = () => {
     false
   )
 
+  const [autoCopyResponseToClipboard, setAutoCopyResponseToClipboard] =
+    useStorage("autoCopyResponseToClipboard", false)
+
   const [generateTitle, setGenerateTitle] = useStorage("titleGenEnabled", false)
 
   const [hideCurrentChatModelSettings, setHideCurrentChatModelSettings] =
@@ -49,7 +51,6 @@ export const GeneralSettings = () => {
 
   const [openReasoning, setOpenReasoning] = useStorage("openReasoning", false)
 
-
   const { mode, toggleDarkMode } = useDarkMode()
   const { t } = useTranslation("settings")
   const { changeLocale, locale, supportLanguage } = useI18n()
@@ -62,7 +63,7 @@ export const GeneralSettings = () => {
         </h2>
         <div className="border border-b border-gray-200 dark:border-gray-600 mt-3"></div>
       </div>
- 
+
       <div className="flex flex-row justify-between">
         <span className="text-gray-700   dark:text-neutral-50">
           {t("generalSettings.settings.language.label")}
@@ -217,6 +218,19 @@ export const GeneralSettings = () => {
         <Switch
           checked={userChatBubble}
           onChange={(checked) => setUserChatBubble(checked)}
+        />
+      </div>
+
+      <div className="flex flex-row justify-between">
+        <div className="inline-flex items-center gap-2">
+          <span className="text-gray-700   dark:text-neutral-50">
+            {t("generalSettings.settings.autoCopyResponseToClipboard.label")}
+          </span>
+        </div>
+
+        <Switch
+          checked={autoCopyResponseToClipboard}
+          onChange={(checked) => setAutoCopyResponseToClipboard(checked)}
         />
       </div>
 

@@ -53,6 +53,9 @@
       },
       "userChatBubble": {
         "label": "사용자 메시지에 채팅 버블 사용"
+      },
+      "autoCopyResponseToClipboard": {
+        "label": "응답 자동 클립보드 복사"
       }
     },
     "sidepanelRag": {

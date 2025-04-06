@@ -50,6 +50,9 @@
       },
       "userChatBubble": {
         "label": "使用對話泡泡顯示使用者訊息"
+      },
+      "autoCopyResponseToClipboard": {
+        "label": "自動複製回應至剪貼簿"
       }
     },
     "sidepanelRag": {
