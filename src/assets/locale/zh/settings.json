@@ -53,6 +53,9 @@
       },
       "userChatBubble": {
         "label": "使用聊天气泡显示用户消息"
+      },
+      "autoCopyResponseToClipboard": {
+        "label": "自动复制回复到剪贴板"
       }
     },
     "sidepanelRag": {

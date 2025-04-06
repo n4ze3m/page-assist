@@ -50,6 +50,9 @@
       },
       "userChatBubble": {
         "label": "Bruk chatboble for bruker meldinger"
+      },
+      "autoCopyResponseToClipboard": {
+        "label": "Automatisk kopier svar til utklippstavle"
       }
     },
     "sidepanelRag": {

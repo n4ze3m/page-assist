@@ -50,6 +50,9 @@
       },
       "userChatBubble": {
         "label": "Використовувати бульбашку чату для повідомлень користувача"
+      },
+      "autoCopyResponseToClipboard": {
+        "label": "Автоматично копіювати відповідь до буфера обміну"
       }
     },
     "sidepanelRag": {

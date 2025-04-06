@@ -50,6 +50,9 @@
       },
       "userChatBubble": {
         "label": "Usa fumetto chat per i messaggi utente"
+      },
+      "autoCopyResponseToClipboard": {
+        "label": "Copia automaticamente la risposta negli appunti"
       }
     },
     "sidepanelRag": {

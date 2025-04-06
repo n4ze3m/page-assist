@@ -47,6 +47,9 @@
       },
       "userChatBubble": {
         "label": "استفاده از حباب گفتگو برای پیام‌های کاربر"
+      },
+      "autoCopyResponseToClipboard": {
+        "label": "کپی خودکار پاسخ در کلیپ بورد"
       }
     },
     "sidepanelRag": {

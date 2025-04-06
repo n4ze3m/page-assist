@@ -50,6 +50,9 @@
       },
       "userChatBubble": {
         "label": "Usar Burbuja de Chat para Mensajes del Usuario"
+      },
+      "autoCopyResponseToClipboard": {
+        "label": "Copiar automáticamente la respuesta al portapapeles"
       }
     },
     "sidepanelRag": {

@@ -50,6 +50,9 @@
       },
       "userChatBubble": {
         "label": "Använd chattbubbla för användarmeddelanden"
+      },
+      "autoCopyResponseToClipboard": {
+        "label": "Kopiera svar automatiskt till urklipp"
       }
     },
     "sidepanelRag": {

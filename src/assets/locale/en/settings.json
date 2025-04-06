@@ -50,6 +50,9 @@
       },
       "userChatBubble": {
         "label": "Use Chat Bubble for User Messages"
+      },
+      "autoCopyResponseToClipboard": {
+        "label": "Automatically Copy Response to Clipboard"
       }
     },
     "sidepanelRag": {

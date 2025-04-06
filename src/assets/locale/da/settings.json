@@ -47,6 +47,9 @@
       },
       "userChatBubble": {
         "label": "Brug chatboble til brugermeddelelser"
+      },
+      "autoCopyResponseToClipboard": {
+        "label": "Kopiér automatisk svar til udklipsholder"
       }
     },
     "sidepanelRag": {
