@@ -48,6 +48,7 @@ type Props = {
   openReasoning?: boolean
   modelImage?: string
   modelName?: string
+  onContinue?: () => void
 }
 
 export const PlaygroundMessage = (props: Props) => {
@@ -59,7 +60,7 @@ export const PlaygroundMessage = (props: Props) => {
     useStorage("autoCopyResponseToClipboard", false)
   const { t } = useTranslation("common")
   const { cancel, isSpeaking, speak } = useTTS()
-  
+
   useEffect(() => {
     if (
       autoCopyResponseToClipboard &&
@@ -338,6 +339,14 @@ export const PlaygroundMessage = (props: Props) => {
                   </button>
                 </Tooltip>
               )}
+
+              <button
+                onClick={() => {
+                  // Handle continue button click
+                  props?.onContinue()
+                }}>
+                continue
+              </button>
             </div>
           ) : (
             // add invisible div to prevent layout shift
