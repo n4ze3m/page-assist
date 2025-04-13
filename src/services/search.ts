@@ -100,6 +100,15 @@ export const setBraveApiKey = async (braveApiKey: string) => {
   await storage2.set("braveApiKey", braveApiKey)
 }
 
+export const getExaAPIKey = async () => {
+  const exaAPIKey = await storage2.get("exaAPIKey")
+  return exaAPIKey || ""
+}
+
+export const setExaAPIKey = async (exaAPIKey: string) => {
+  await storage2.set("exaAPIKey", exaAPIKey)
+}
+
 export const setTavilyApiKey = async (tavilyApiKey: string) => {
   await storage2.set("tavilyApiKey", tavilyApiKey)
 }
@@ -135,7 +144,8 @@ export const getSearchSettings = async () => {
     braveApiKey,
     tavilyApiKey,
     googleDomain,
-    defaultInternetSearchOn
+    defaultInternetSearchOn,
+    exaAPIKey
   ] = await Promise.all([
     getIsSimpleInternetSearch(),
     getSearchProvider(),
@@ -146,7 +156,8 @@ export const getSearchSettings = async () => {
     getBraveApiKey(),
     getTavilyApiKey(),
     getGoogleDomain(),
-    getInternetSearchOn()
+    getInternetSearchOn(),
+    getExaAPIKey()
   ])
 
   return {
@@ -159,7 +170,8 @@ export const getSearchSettings = async () => {
     braveApiKey,
     tavilyApiKey,
     googleDomain,
-    defaultInternetSearchOn
+    defaultInternetSearchOn,
+    exaAPIKey
   }
 }
 
@@ -173,7 +185,8 @@ export const setSearchSettings = async ({
   braveApiKey,
   tavilyApiKey,
   googleDomain,
-  defaultInternetSearchOn
+  defaultInternetSearchOn,
+  exaAPIKey
 }: {
   isSimpleInternetSearch: boolean
   searchProvider: string
@@ -185,6 +198,7 @@ export const setSearchSettings = async ({
   tavilyApiKey: string
   googleDomain: string,
   defaultInternetSearchOn: boolean
+  exaAPIKey: string
 }) => {
   await Promise.all([
     setIsSimpleInternetSearch(isSimpleInternetSearch),
@@ -196,6 +210,7 @@ export const setSearchSettings = async ({
     setBraveApiKey(braveApiKey),
     setTavilyApiKey(tavilyApiKey),
     setGoogleDomain(googleDomain),
-    setInternetSearchOn(defaultInternetSearchOn)
+    setInternetSearchOn(defaultInternetSearchOn),
+    setExaAPIKey(exaAPIKey)
   ])
 }

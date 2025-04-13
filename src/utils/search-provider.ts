@@ -42,5 +42,9 @@ export const SUPPORTED_SERACH_PROVIDERS = [
     {
         label: "Startpage",
         value: "startpage"
+    },
+    {
+        label: "Exa",
+        value: "exa"
     }
 ]
