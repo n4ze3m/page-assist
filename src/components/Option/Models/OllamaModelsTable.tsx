@@ -5,8 +5,6 @@ import {
   Tag,
   Tooltip,
   notification,
-  Modal,
-  Input,
   Avatar
 } from "antd"
 import { bytePerSecondFormatter } from "~/libs/byte-formater"
@@ -14,12 +12,12 @@ import { deleteModel, getAllModels } from "~/services/ollama"
 import dayjs from "dayjs"
 import relativeTime from "dayjs/plugin/relativeTime"
 import { useForm } from "@mantine/form"
-import { Pencil, RotateCcw, Trash2 } from "lucide-react"
+import { Pencil, RotateCcw, Settings, Trash2 } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useStorage } from "@plasmohq/storage/hook"
-import { getAllModelNicknames } from "@/db/nickname"
 import { ModelNickModelNicknameModal } from "./ModelNicknameModal"
 import { useState } from "react"
+import { AddUpdateModelSettings } from "./AddUpdateModelSettings"
 
 dayjs.extend(relativeTime)
 
@@ -28,6 +26,7 @@ export const OllamaModelsTable = () => {
   const { t } = useTranslation(["settings", "common", "openai"])
   const [selectedModel, setSelectedModel] = useStorage("selectedModel")
   const [openNicknameModal, setOpenNicknameModal] = useState(false)
+  const [openSettingsModal, setOpenSettingsModal] = useState(false)
   const [model, setModel] = useState<{
     model_id: string
     model_name?: string
@@ -159,7 +158,19 @@ export const OllamaModelsTable = () => {
                 {
                   title: t("manageModels.columns.actions"),
                   render: (_, record) => (
-                    <div className="flex gap-4">
+                    <div className="flex gap-2">
+                     <Tooltip title={t("common:modelSettings.label")}>
+                        <button
+                          onClick={() => {
+                            setModel({
+                              model_id: record.model
+                            })
+                            setOpenSettingsModal(true)
+                          }}
+                          className="text-gray-700 dark:text-gray-400">
+                          <Settings className="size-4" />
+                        </button>
+                      </Tooltip>
                       <Tooltip title={t("manageModels.tooltip.delete")}>
                         <button
                           onClick={() => {
@@ -176,9 +187,10 @@ export const OllamaModelsTable = () => {
                             }
                           }}
                           className="text-red-500 dark:text-red-400">
-                          <Trash2 className="w-5 h-5" />
+                          <Trash2 className="size-4" />
                         </button>
                       </Tooltip>
+                   
                       <Tooltip title={t("manageModels.tooltip.repull")}>
                         <button
                           onClick={() => {
@@ -189,7 +201,7 @@ export const OllamaModelsTable = () => {
                             }
                           }}
                           className="text-gray-700 dark:text-gray-400">
-                          <RotateCcw className="w-5 h-5" />
+                          <RotateCcw className="size-4" />
                         </button>
                       </Tooltip>
                     </div>
@@ -250,6 +262,12 @@ export const OllamaModelsTable = () => {
         setOpen={setOpenNicknameModal}
         model_name={model.model_name}
         model_avatar={model.model_avatar}
+      />
+
+      <AddUpdateModelSettings
+        model_id={model.model_id}
+        open={openSettingsModal}
+        setOpen={setOpenSettingsModal}
       />
     </div>
   )
