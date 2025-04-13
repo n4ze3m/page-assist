@@ -7,9 +7,12 @@ import {
   CopyIcon,
   InfoIcon,
   Pen,
+  PlayCircle,
   PlayIcon,
   RotateCcw,
-  Square
+  SpeakerIcon,
+  Square,
+  Volume2Icon
 } from "lucide-react"
 import { EditMessageForm } from "./EditMessageForm"
 import { useTranslation } from "react-i18next"
@@ -40,6 +43,7 @@ type Props = {
   isSearchingInternet?: boolean
   sources?: any[]
   hideEditAndRegenerate?: boolean
+  hideContinue?: boolean
   onSourceClick?: (source: any) => void
   isTTSEnabled?: boolean
   generationInfo?: any
@@ -56,16 +60,20 @@ export const PlaygroundMessage = (props: Props) => {
   const [editMode, setEditMode] = React.useState(false)
   const [checkWideMode] = useStorage("checkWideMode", false)
   const [isUserChatBubble] = useStorage("userChatBubble", true)
-  const [autoCopyResponseToClipboard, setAutoCopyResponseToClipboard] =
-    useStorage("autoCopyResponseToClipboard", false)
+  const [autoCopyResponseToClipboard] = useStorage(
+    "autoCopyResponseToClipboard",
+    false
+  )
   const { t } = useTranslation("common")
   const { cancel, isSpeaking, speak } = useTTS()
+  const isLastMessage: boolean =
+    props.currentMessageIndex === props.totalMessages - 1
 
   useEffect(() => {
     if (
       autoCopyResponseToClipboard &&
       props.isBot &&
-      props.currentMessageIndex === props.totalMessages - 1 &&
+      isLastMessage &&
       !props.isStreaming &&
       !props.isProcessing &&
       props.message.trim().length > 0
@@ -130,9 +138,7 @@ export const PlaygroundMessage = (props: Props) => {
               : "You"}
           </span>
 
-          {props.isBot &&
-          props.isSearchingInternet &&
-          props.currentMessageIndex === props.totalMessages - 1 ? (
+          {props.isBot && props.isSearchingInternet && isLastMessage ? (
             <WebSearch />
           ) : null}
           <div>
@@ -273,7 +279,7 @@ export const PlaygroundMessage = (props: Props) => {
                     }}
                     className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
                     {!isSpeaking ? (
-                      <PlayIcon className="w-3 h-3 text-gray-400 group-hover:text-gray-500" />
+                      <Volume2Icon className="w-3 h-3 text-gray-400 group-hover:text-gray-500" />
                     ) : (
                       <Square className="w-3 h-3 text-red-400 group-hover:text-red-500" />
                     )}
@@ -316,17 +322,27 @@ export const PlaygroundMessage = (props: Props) => {
                     </Popover>
                   )}
 
-                  {!props.hideEditAndRegenerate &&
-                    props.currentMessageIndex === props.totalMessages - 1 && (
-                      <Tooltip title={t("regenerate")}>
-                        <button
-                          aria-label={t("regenerate")}
-                          onClick={props.onRengerate}
-                          className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
-                          <RotateCcw className="w-3 h-3 text-gray-400 group-hover:text-gray-500" />
-                        </button>
-                      </Tooltip>
-                    )}
+                  {!props.hideEditAndRegenerate && isLastMessage && (
+                    <Tooltip title={t("regenerate")}>
+                      <button
+                        aria-label={t("regenerate")}
+                        onClick={props.onRengerate}
+                        className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                        <RotateCcw className="w-3 h-3 text-gray-400 group-hover:text-gray-500" />
+                      </button>
+                    </Tooltip>
+                  )}
+
+                  {!props.hideContinue && isLastMessage && (
+                    <Tooltip title={t("continue")}>
+                      <button
+                        aria-label={t("continue")}
+                        onClick={props?.onContinue}
+                        className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                        <PlayCircle className="w-3 h-3 text-gray-400 group-hover:text-gray-500" />
+                      </button>
+                    </Tooltip>
+                  )}
                 </>
               )}
               {!props.hideEditAndRegenerate && (
@@ -339,14 +355,6 @@ export const PlaygroundMessage = (props: Props) => {
                   </button>
                 </Tooltip>
               )}
-
-              <button
-                onClick={() => {
-                  // Handle continue button click
-                  props?.onContinue()
-                }}>
-                continue
-              </button>
             </div>
           ) : (
             // add invisible div to prevent layout shift

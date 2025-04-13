@@ -42,6 +42,7 @@
     "regenerate": "Regenerate",
     "edit": "Edit",
     "delete": "Delete",
+    "continue": "Continue Response",
     "saveAndSubmit": "Save & Submit",
     "editMessage": {
         "placeholder": "Type a message..."

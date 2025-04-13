@@ -42,6 +42,7 @@
     "regenerate": "Neu generieren",
     "edit": "Bearbeiten",
     "delete": "Löschen",
+    "continue": "Antwort fortsetzen",
     "saveAndSubmit": "Speichern & Absenden",
     "editMessage": {
         "placeholder": "Nachricht eingeben..."
