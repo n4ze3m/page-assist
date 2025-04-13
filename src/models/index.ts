@@ -6,6 +6,7 @@ import { urlRewriteRuntime } from "@/libs/runtime"
 import { ChatGoogleAI } from "./ChatGoogleAI"
 import { CustomChatOpenAI } from "./CustomChatOpenAI"
 import { getCustomHeaders } from "@/utils/clean-headers"
+import { getModelSettings } from "@/services/model-settings"
 
 export const pageAssistModel = async ({
   model,
@@ -58,6 +59,7 @@ export const pageAssistModel = async ({
   if (isCustom) {
     const modelInfo = await getModelInfo(model)
     const providerInfo = await getOpenAIConfigById(modelInfo.provider_id)
+
     if (isOllamaModel(model)) {
       await urlRewriteRuntime(providerInfo.baseUrl || "")
     }
@@ -116,24 +118,34 @@ export const pageAssistModel = async ({
       }
     }) as any
   }
+
+
+
+  const modelSettings = await getModelSettings(model)
+
+  const payload = {
+    keepAlive: modelSettings?.keepAlive || keepAlive,
+    temperature: modelSettings?.temperature || temperature,
+    topK: modelSettings?.topK || topK,
+    topP: modelSettings?.topP || topP,
+    numCtx: modelSettings?.numCtx || numCtx,
+    numGpu: modelSettings?.numGpu || numGpu,
+    numPredict: modelSettings?.numPredict || numPredict,
+    useMMap: modelSettings?.useMMap || useMMap,
+    minP: modelSettings?.minP || minP,
+    repeatPenalty: modelSettings?.repeatPenalty || repeatPenalty,
+    repeatLastN: modelSettings?.repeatLastN || repeatLastN,
+    tfsZ: modelSettings?.tfsZ || tfsZ,
+    numKeep: modelSettings?.numKeep || numKeep,
+    numThread: modelSettings?.numThread || numThread,
+    useMlock: modelSettings?.useMLock || useMlock
+  }
+
+
   return new ChatOllama({
     baseUrl,
-    keepAlive,
-    temperature,
-    topK,
-    topP,
-    numCtx,
-    seed,
     model,
-    numGpu,
-    numPredict,
-    useMMap,
-    minP: minP,
-    repeatPenalty: repeatPenalty,
-    repeatLastN: repeatLastN,
-    tfsZ,
-    numKeep,
-    numThread,
-    useMlock
+    seed,
+    ...payload,
   })
 }

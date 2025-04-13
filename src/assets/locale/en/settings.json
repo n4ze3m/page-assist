@@ -94,6 +94,10 @@
         "label": "Tavily API Key ",
         "placeholder": "Enter your Tavily API key"
       },
+      "exa": {
+        "label": "Exa API Key",
+        "placeholder": "Enter your Exa API key"
+      },
       "googleDomain": {
         "label": "Google Domain"
       },

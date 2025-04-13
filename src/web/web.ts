@@ -12,6 +12,7 @@ import { webBaiduSearch } from "./search-engines/baidu"
 import { webBingSearch } from "./search-engines/bing"
 import { stractSearch } from "./search-engines/stract"
 import { startpageSearch } from "./search-engines/startpage"
+import { exaAPISearch } from "./search-engines/exa"
 
 interface ProviderResults {
   url: any
@@ -56,6 +57,8 @@ const searchWeb = (provider: string, query: string) => {
       return stractSearch(query)
     case "startpage":
       return startpageSearch(query)
+    case "exa":
+      return exaAPISearch(query)
     default:
       return webGoogleSearch(query)
   }

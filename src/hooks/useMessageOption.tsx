@@ -854,6 +854,250 @@ export const useMessageOption = () => {
     }
   }
 
+  const continueChatMode = async (
+    messages: Message[],
+    history: ChatHistory,
+    signal: AbortSignal
+  ) => {
+    const url = await getOllamaURL()
+    const userDefaultModelSettings = await getAllDefaultModelSettings()
+    let promptId: string | undefined = selectedSystemPrompt
+    let promptContent: string | undefined = undefined
+
+    const ollama = await pageAssistModel({
+      model: selectedModel!,
+      baseUrl: cleanUrl(url),
+      keepAlive:
+        currentChatModelSettings?.keepAlive ??
+        userDefaultModelSettings?.keepAlive,
+      temperature:
+        currentChatModelSettings?.temperature ??
+        userDefaultModelSettings?.temperature,
+      topK: currentChatModelSettings?.topK ?? userDefaultModelSettings?.topK,
+      topP: currentChatModelSettings?.topP ?? userDefaultModelSettings?.topP,
+      numCtx:
+        currentChatModelSettings?.numCtx ?? userDefaultModelSettings?.numCtx,
+      seed: currentChatModelSettings?.seed,
+      numGpu:
+        currentChatModelSettings?.numGpu ?? userDefaultModelSettings?.numGpu,
+      numPredict:
+        currentChatModelSettings?.numPredict ??
+        userDefaultModelSettings?.numPredict,
+      useMMap:
+        currentChatModelSettings?.useMMap ?? userDefaultModelSettings?.useMMap,
+      minP: currentChatModelSettings?.minP ?? userDefaultModelSettings?.minP,
+      repeatLastN:
+        currentChatModelSettings?.repeatLastN ??
+        userDefaultModelSettings?.repeatLastN,
+      repeatPenalty:
+        currentChatModelSettings?.repeatPenalty ??
+        userDefaultModelSettings?.repeatPenalty,
+      tfsZ: currentChatModelSettings?.tfsZ ?? userDefaultModelSettings?.tfsZ,
+      numKeep:
+        currentChatModelSettings?.numKeep ?? userDefaultModelSettings?.numKeep,
+      numThread:
+        currentChatModelSettings?.numThread ??
+        userDefaultModelSettings?.numThread,
+      useMlock:
+        currentChatModelSettings?.useMlock ?? userDefaultModelSettings?.useMlock
+    })
+
+    let newMessage: Message[] = []
+  
+    const lastMessage = messages[messages.length - 1]
+    let generateMessageId = lastMessage.id
+    newMessage = [...messages]
+    newMessage[newMessage.length - 1] = {
+      ...lastMessage,
+      message: lastMessage.message + "▋"
+    }
+    setMessages(newMessage)
+    let fullText = lastMessage.message
+    let contentToSave = ""
+    let timetaken = 0
+
+    try {
+      const prompt = await systemPromptForNonRagOption()
+      const selectedPrompt = await getPromptById(selectedSystemPrompt)
+
+      const applicationChatHistory = generateHistory(history, selectedModel)
+
+      if (prompt && !selectedPrompt) {
+        applicationChatHistory.unshift(
+          await systemPromptFormatter({
+            content: prompt
+          })
+        )
+      }
+
+      const isTempSystemprompt =
+        currentChatModelSettings.systemPrompt &&
+        currentChatModelSettings.systemPrompt?.trim().length > 0
+
+      if (!isTempSystemprompt && selectedPrompt) {
+        applicationChatHistory.unshift(
+          await systemPromptFormatter({
+            content: selectedPrompt.content
+          })
+        )
+        promptContent = selectedPrompt.content
+      }
+
+      if (isTempSystemprompt) {
+        applicationChatHistory.unshift(
+          await systemPromptFormatter({
+            content: currentChatModelSettings.systemPrompt
+          })
+        )
+        promptContent = currentChatModelSettings.systemPrompt
+      }
+
+      let generationInfo: any | undefined = undefined
+
+      const chunks = await ollama.stream([...applicationChatHistory], {
+        signal: signal,
+        callbacks: [
+          {
+            handleLLMEnd(output: any): any {
+              try {
+                generationInfo = output?.generations?.[0][0]?.generationInfo
+              } catch (e) {
+                console.error("handleLLMEnd error", e)
+              }
+            }
+          }
+        ]
+      })
+
+      let count = 0
+      let reasoningStartTime: Date | null = null
+      let reasoningEndTime: Date | null = null
+      let apiReasoning: boolean = false
+      for await (const chunk of chunks) {
+        if (chunk?.additional_kwargs?.reasoning_content) {
+          const reasoningContent = mergeReasoningContent(
+            fullText,
+            chunk?.additional_kwargs?.reasoning_content || ""
+          )
+          contentToSave = reasoningContent
+          fullText = reasoningContent
+          apiReasoning = true
+        } else {
+          if (apiReasoning) {
+            fullText += "</think>"
+            contentToSave += "</think>"
+            apiReasoning = false
+          }
+        }
+
+        contentToSave += chunk?.content
+        fullText += chunk?.content
+
+        if (isReasoningStarted(fullText) && !reasoningStartTime) {
+          reasoningStartTime = new Date()
+        }
+
+        if (
+          reasoningStartTime &&
+          !reasoningEndTime &&
+          isReasoningEnded(fullText)
+        ) {
+          reasoningEndTime = new Date()
+          const reasoningTime =
+            reasoningEndTime.getTime() - reasoningStartTime.getTime()
+          timetaken = reasoningTime
+        }
+
+        if (count === 0) {
+          setIsProcessing(true)
+        }
+
+        setMessages((prev) => {
+          return prev.map((message) => {
+            if (message.id === generateMessageId) {
+              return {
+                ...message,
+                message: fullText + "▋",
+                reasoning_time_taken: timetaken
+              }
+            }
+            return message
+          })
+        })
+        count++
+      }
+
+      setMessages((prev) => {
+        return prev.map((message) => {
+          if (message.id === generateMessageId) {
+            return {
+              ...message,
+              message: fullText,
+              generationInfo,
+              reasoning_time_taken: timetaken
+            }
+          }
+          return message
+        })
+      })
+
+      let newHistory = [...history]
+
+      newHistory[newHistory.length - 1] = {
+        ...newHistory[newHistory.length - 1],
+        content: fullText
+      }
+      setHistory(newHistory)
+      await saveMessageOnSuccess({
+        historyId,
+        setHistoryId,
+        isRegenerate: false,
+        selectedModel: selectedModel,
+        message: "",
+        image: "",
+        fullText,
+        source: [],
+        generationInfo,
+        prompt_content: promptContent,
+        prompt_id: promptId,
+        reasoning_time_taken: timetaken,
+        isContinue: true,
+      })
+
+      setIsProcessing(false)
+      setStreaming(false)
+      setIsProcessing(false)
+      setStreaming(false)
+    } catch (e) {
+      const errorSave = await saveMessageOnError({
+        e,
+        botMessage: fullText,
+        history,
+        historyId,
+        image: "",
+        selectedModel,
+        setHistory,
+        setHistoryId,
+        userMessage: "",
+        isRegenerating: false,
+        isContinue: true,
+        prompt_content: promptContent,
+        prompt_id: promptId
+      })
+
+      if (!errorSave) {
+        notification.error({
+          message: t("error"),
+          description: e?.message || t("somethingWentWrong")
+        })
+      }
+      setIsProcessing(false)
+      setStreaming(false)
+    } finally {
+      setAbortController(null)
+    }
+  }
+
   const ragMode = async (
     message: string,
     image: string,
@@ -1209,11 +1453,13 @@ export const useMessageOption = () => {
     isRegenerate = false,
     messages: chatHistory,
     memory,
-    controller
+    controller,
+    isContinue
   }: {
     message: string
     image: string
     isRegenerate?: boolean
+    isContinue?: boolean
     messages?: Message[]
     memory?: ChatHistory
     controller?: AbortController
@@ -1228,6 +1474,12 @@ export const useMessageOption = () => {
       setAbortController(controller)
       signal = controller.signal
     }
+
+    if (isContinue) {
+      await continueChatMode(chatHistory || messages, memory || history, signal)
+      return
+    }
+
     if (selectedKnowledge) {
       await ragMode(
         message,

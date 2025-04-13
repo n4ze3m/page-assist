@@ -12,7 +12,8 @@ export const PlaygroundChat = () => {
     regenerateLastMessage,
     isSearchingInternet,
     editMessage,
-    ttsEnabled
+    ttsEnabled,
+    onSubmit
   } = useMessageOption()
   const [isSourceOpen, setIsSourceOpen] = React.useState(false)
   const [source, setSource] = React.useState<any>(null)
@@ -53,6 +54,13 @@ export const PlaygroundChat = () => {
             openReasoning={openReasoning}
             modelImage={message?.modelImage}
             modelName={message?.modelName}
+            onContinue={() => {
+              onSubmit({
+                image: "",
+                message: "",
+                isContinue: true
+              })
+            }}
           />
         ))}
       </div>

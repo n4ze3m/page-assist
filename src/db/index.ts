@@ -3,7 +3,7 @@ import {
   type Message as MessageType
 } from "~/store/option"
 import { getAllModelNicknames } from "./nickname"
-import * as ml_distance_similarity from "ml-distance";
+import * as ml_distance_similarity from "ml-distance"
 type HistoryInfo = {
   id: string
   title: string
@@ -41,47 +41,47 @@ type Message = {
 }
 function simpleFuzzyMatch(text: string, query: string): boolean {
   if (!text || !query) {
-    return false;
+    return false
   }
-  
-  const lowerText = text.toLowerCase();
-  const lowerQuery = query.toLowerCase().trim();
 
-  if (lowerQuery === '') {
-    return true;
+  const lowerText = text.toLowerCase()
+  const lowerQuery = query.toLowerCase().trim()
+
+  if (lowerQuery === "") {
+    return true
   }
-  
+
   if (lowerText.includes(lowerQuery)) {
-    return true;
+    return true
   }
-  
-  const queryWords = lowerQuery.split(/\s+/).filter(word => word.length > 2);
-  
+
+  const queryWords = lowerQuery.split(/\s+/).filter((word) => word.length > 2)
+
   if (queryWords.length > 1) {
-    const matchedWords = queryWords.filter(word => lowerText.includes(word));
-    return matchedWords.length >= Math.ceil(queryWords.length * 0.7);
+    const matchedWords = queryWords.filter((word) => lowerText.includes(word))
+    return matchedWords.length >= Math.ceil(queryWords.length * 0.7)
   }
-  
+
   if (lowerQuery.length > 3) {
-    const maxDistance = Math.floor(lowerQuery.length * 0.3); 
-    
-    const textWords = lowerText.split(/\s+/);
-    return textWords.some(word => {
+    const maxDistance = Math.floor(lowerQuery.length * 0.3)
+
+    const textWords = lowerText.split(/\s+/)
+    return textWords.some((word) => {
       if (Math.abs(word.length - lowerQuery.length) > maxDistance) {
-        return false; 
+        return false
       }
-      let matches = 0;
+      let matches = 0
       for (let i = 0; i < lowerQuery.length; i++) {
         if (word.includes(lowerQuery[i])) {
-          matches++;
+          matches++
         }
       }
-      
-      return matches >= lowerQuery.length - maxDistance;
-    });
+
+      return matches >= lowerQuery.length - maxDistance
+    })
   }
-  
-  return false;
+
+  return false
 }
 
 type Webshare = {
@@ -125,7 +125,8 @@ export class PageAssitDatabase {
               ...message,
               modelName:
                 modelNicknames[message.name]?.model_name || message.name,
-              modelImage: modelNicknames[message.name]?.model_avatar || undefined
+              modelImage:
+                modelNicknames[message.name]?.model_avatar || undefined
             }
           })
         )
@@ -158,6 +159,17 @@ export class PageAssitDatabase {
     const chatHistory = await this.getChatHistory(history_id)
     const newChatHistory = [message, ...chatHistory]
     await this.db.set({ [history_id]: newChatHistory })
+  }
+
+  async updateMessage(history_id: string, message_id: string, content: string) {
+    const chatHistory = await this.getChatHistory(history_id)
+    const newChatHistory = chatHistory.map((message) => {
+      if (message.id === message_id) {
+        message.content = content
+      }
+      return message
+    })
+    this.db.set({ [history_id]: newChatHistory })
   }
 
   async removeChatHistory(id: string) {
@@ -285,41 +297,47 @@ export class PageAssitDatabase {
   }
 
   async searchChatHistories(query: string): Promise<ChatHistory> {
-    const normalizedQuery = query.toLowerCase().trim();
+    const normalizedQuery = query.toLowerCase().trim()
     if (!normalizedQuery) {
-        return this.getChatHistories();
+      return this.getChatHistories()
     }
 
-    const allHistories = await this.getChatHistories();
-    const matchedHistories: ChatHistory = [];
-    const matchedHistoryIds = new Set<string>(); 
+    const allHistories = await this.getChatHistories()
+    const matchedHistories: ChatHistory = []
+    const matchedHistoryIds = new Set<string>()
 
     for (const history of allHistories) {
-        if (simpleFuzzyMatch(history.title, normalizedQuery)) {
-            if (!matchedHistoryIds.has(history.id)) {
-                 matchedHistories.push(history);
-                 matchedHistoryIds.add(history.id);
-            }
-           continue; 
+      if (simpleFuzzyMatch(history.title, normalizedQuery)) {
+        if (!matchedHistoryIds.has(history.id)) {
+          matchedHistories.push(history)
+          matchedHistoryIds.add(history.id)
         }
+        continue
+      }
 
-        try {
-            const messages = await this.getChatHistory(history.id);
-            for (const message of messages) {
-                if (message.content && simpleFuzzyMatch(message.content, normalizedQuery)) {
-                     if (!matchedHistoryIds.has(history.id)) {
-                        matchedHistories.push(history);
-                        matchedHistoryIds.add(history.id);
-                     }
-                    break;
-                }
+      try {
+        const messages = await this.getChatHistory(history.id)
+        for (const message of messages) {
+          if (
+            message.content &&
+            simpleFuzzyMatch(message.content, normalizedQuery)
+          ) {
+            if (!matchedHistoryIds.has(history.id)) {
+              matchedHistories.push(history)
+              matchedHistoryIds.add(history.id)
             }
-        } catch (error) {
-            console.error(`Error fetching messages for history ${history.id}:`, error);
+            break
+          }
         }
+      } catch (error) {
+        console.error(
+          `Error fetching messages for history ${history.id}:`,
+          error
+        )
+      }
     }
 
-    return matchedHistories;
+    return matchedHistories
   }
 }
 
@@ -341,6 +359,15 @@ export const saveHistory = async (
   const db = new PageAssitDatabase()
   await db.addChatHistory(history)
   return history
+}
+
+export const updateMessage = async (
+  history_id: string,
+  message_id: string,
+  content: string
+) => {
+  const db = new PageAssitDatabase()
+  await db.updateMessage(history_id, message_id, content)
 }
 
 export const saveMessage = async ({
@@ -420,7 +447,8 @@ export const formatToMessage = (messages: MessageHistory): MessageType[] => {
       generationInfo: message?.generationInfo,
       reasoning_time_taken: message?.reasoning_time_taken,
       modelName: message?.modelName,
-      modelImage: message?.modelImage
+      modelImage: message?.modelImage,
+      id: message.id
     }
   })
 }
@@ -650,4 +678,14 @@ export const getTitleById = async (id: string) => {
   const db = new PageAssitDatabase()
   const title = await db.getChatHistoryTitleById(id)
   return title
+}
+
+export const getLastChatHistory = async (history_id: string) => {
+  const db = new PageAssitDatabase()
+  const messages = await db.getChatHistory(history_id)
+  messages.sort((a, b) => a.createdAt - b.createdAt)
+  const lastMessage = messages[messages.length - 1]
+  return lastMessage?.role === "assistant"
+    ? lastMessage
+    : messages.findLast((m) => m.role === "assistant")
 }

@@ -1,4 +1,4 @@
-import { saveHistory, saveMessage } from "@/db"
+import { getLastChatHistory, saveHistory, saveMessage, updateHistory, updateMessage } from "@/db"
 import { setLastUsedChatModel, setLastUsedChatSystemPrompt } from "@/services/model-settings"
 import { generateTitle } from "@/services/title"
 import { ChatHistory } from "@/store/option"
@@ -17,7 +17,8 @@ export const saveMessageOnError = async ({
   message_source = "web-ui",
   message_type,
   prompt_content,
-  prompt_id
+  prompt_id,
+  isContinue,
 }: {
   e: any
   setHistory: (history: ChatHistory) => void
@@ -33,6 +34,7 @@ export const saveMessageOnError = async ({
   message_type?: string
   prompt_id?: string
   prompt_content?: string
+  isContinue?: boolean
 }) => {
   if (
     e?.name === "AbortError" ||
@@ -54,7 +56,7 @@ export const saveMessageOnError = async ({
     ])
 
     if (historyId) {
-      if (!isRegenerating) {
+      if (!isRegenerating && !isContinue) {
         await saveMessage(
           {
             history_id: historyId,
@@ -69,18 +71,29 @@ export const saveMessageOnError = async ({
       }
 
 
-      await saveMessage(
-        {
-          history_id: historyId,
-          name: selectedModel,
-          role: "assistant",
-          content: botMessage,
-          images: [],
-          source: [],
-          time: 2,
-          message_type,
-        }
-      )
+      if (isContinue) {
+        console.log("Saving Last Message")
+        const lastMessage = await getLastChatHistory(historyId)
+        await updateMessage(
+          historyId,
+          lastMessage.id,
+          botMessage
+        )
+      } else {
+
+        await saveMessage(
+          {
+            history_id: historyId,
+            name: selectedModel,
+            role: "assistant",
+            content: botMessage,
+            images: [],
+            source: [],
+            time: 2,
+            message_type,
+          }
+        )
+      }
       await setLastUsedChatModel(historyId, selectedModel)
       if (prompt_id || prompt_content) {
         await setLastUsedChatSystemPrompt(historyId, { prompt_content, prompt_id })
@@ -143,7 +156,8 @@ export const saveMessageOnSuccess = async ({
   message_type, generationInfo,
   prompt_id,
   prompt_content,
-  reasoning_time_taken = 0
+  reasoning_time_taken = 0,
+  isContinue,
 }: {
   historyId: string | null
   setHistoryId: (historyId: string) => void
@@ -159,9 +173,10 @@ export const saveMessageOnSuccess = async ({
   prompt_id?: string
   prompt_content?: string
   reasoning_time_taken?: number
+  isContinue?: boolean,
 }) => {
   if (historyId) {
-    if (!isRegenerate) {
+    if (!isRegenerate && !isContinue) {
 
       await saveMessage(
         {
@@ -175,44 +190,46 @@ export const saveMessageOnSuccess = async ({
           generationInfo,
           reasoning_time_taken
         }
+      )
+    }
+
+
+    if (isContinue) {
+      console.log("Saving Last Message")
+      const lastMessage = await getLastChatHistory(historyId)
+      console.log("lastMessage", lastMessage)
+      await updateMessage(
+        historyId,
+        lastMessage.id,
+        fullText
+      )
+    } else {
+      await saveMessage(
+        {
+          history_id: historyId,
+          name: selectedModel,
+          role: "assistant",
+          content: fullText,
+          images: [],
+          source,
+          time: 2,
+          message_type,
+          generationInfo,
+          reasoning_time_taken
+        }
         // historyId,
-        // selectedModel,
-        // "user",
-        // message,
-        // [image],
+        // selectedModel!,
+        // "assistant",
+        // fullText,
         // [],
-        // 1,
+        // source,
+        // 2,
         // message_type,
         // generationInfo,
         // reasoning_time_taken
       )
     }
 
-
-    await saveMessage(
-      {
-        history_id: historyId,
-        name: selectedModel,
-        role: "assistant",
-        content: fullText,
-        images: [],
-        source,
-        time: 2,
-        message_type,
-        generationInfo,
-        reasoning_time_taken
-      }
-      // historyId,
-      // selectedModel!,
-      // "assistant",
-      // fullText,
-      // [],
-      // source,
-      // 2,
-      // message_type,
-      // generationInfo,
-      // reasoning_time_taken
-    )
     await setLastUsedChatModel(historyId, selectedModel!)
     if (prompt_id || prompt_content) {
       await setLastUsedChatSystemPrompt(historyId, { prompt_content, prompt_id })
