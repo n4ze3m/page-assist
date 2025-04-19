@@ -50,6 +50,9 @@
       },
       "autoCopyResponseToClipboard": {
         "label": "Kopiér automatisk svar til udklipsholder"
+      },
+      "useMarkdownForUserMessage": {
+        "label": "Aktivér Markdown formatering for brugermeddelelser"
       }
     },
     "sidepanelRag": {

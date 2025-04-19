@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next"
 import { EditMessageForm } from "./EditMessageForm"
 import { Image, Tooltip } from "antd"
 import { CheckIcon, CopyIcon, Pen, PlayIcon, Square } from "lucide-react"
+import { HumanMessage } from "./HumanMessge"
 
 type Props = {
   message: string
@@ -48,7 +49,7 @@ export const PlaygroundUserMessageBubble: React.FC<Props> = (props) => {
         dir="auto"
         className="message-bubble bg-gray-50 dark:bg-[#242424] rounded-3xl prose dark:prose-invert break-words text-primary min-h-7 prose-p:opacity-95 prose-strong:opacity-100 bg-foreground border border-input-border max-w-[100%] sm:max-w-[90%] px-4 py-2.5 rounded-br-lg dark:border-[#2D2D2D]">
         {!editMode ? (
-          <span className="whitespace-pre-wrap">{props.message}</span>
+          <HumanMessage message={props.message} />
         ) : (
           <div className="w-screen max-w-[100%]">
             <EditMessageForm
