@@ -53,8 +53,10 @@
       },
       "autoCopyResponseToClipboard": {
         "label": "自動複製回應至剪貼簿"
-      }
-    },
+      },
+      "useMarkdownForUserMessage": {
+        "label": "啟用使用者訊息的 Markdown 格式"
+      }    },
     "sidepanelRag": {
       "heading": "Copilot 聊天與網站設定",
       "ragEnabled": {

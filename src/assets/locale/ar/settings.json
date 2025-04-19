@@ -53,6 +53,9 @@
       },
       "autoCopyResponseToClipboard": {
         "label": "نسخ الرد تلقائياً إلى الحافظة"
+      },
+      "useMarkdownForUserMessage": {
+        "label": "تمكين تنسيق ماركداون لرسائل المستخدم"
       }
     },
     "sidepanelRag": {

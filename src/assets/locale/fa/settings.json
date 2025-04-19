@@ -50,6 +50,9 @@
       },
       "autoCopyResponseToClipboard": {
         "label": "کپی خودکار پاسخ در کلیپ بورد"
+      },
+      "useMarkdownForUserMessage": {
+        "label": "فعال کردن قالب‌بندی مارک‌داون برای پیام‌های کاربر"
       }
     },
     "sidepanelRag": {

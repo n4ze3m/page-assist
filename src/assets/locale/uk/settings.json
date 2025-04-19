@@ -53,6 +53,9 @@
       },
       "autoCopyResponseToClipboard": {
         "label": "Автоматично копіювати відповідь до буфера обміну"
+      },
+      "useMarkdownForUserMessage": {
+        "label": "Увімкнути форматування Markdown для повідомлень користувача"
       }
     },
     "sidepanelRag": {

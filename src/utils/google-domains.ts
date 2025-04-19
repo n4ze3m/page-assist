@@ -100,7 +100,6 @@ export const ALL_GOOGLE_DOMAINS = [
     "google.com.sv",
     "google.com.tj",
     "google.com.tr",
-    "google.com.tr",
     "google.com.tw",
     "google.com.ua",
     "google.com.uy",

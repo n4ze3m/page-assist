@@ -53,6 +53,9 @@
       },
       "autoCopyResponseToClipboard": {
         "label": "Kopiera svar automatiskt till urklipp"
+      },
+      "useMarkdownForUserMessage": {
+        "label": "Aktivera Markdown-formatering för användarmeddelanden"
       }
     },
     "sidepanelRag": {

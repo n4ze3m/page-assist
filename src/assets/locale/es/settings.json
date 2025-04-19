@@ -53,6 +53,9 @@
       },
       "autoCopyResponseToClipboard": {
         "label": "Copiar automáticamente la respuesta al portapapeles"
+      },
+      "useMarkdownForUserMessage": {
+        "label": "Habilitar formato Markdown para mensajes del usuario"
       }
     },
     "sidepanelRag": {

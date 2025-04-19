@@ -53,6 +53,9 @@
       },
       "autoCopyResponseToClipboard": {
         "label": "Automatically Copy Response to Clipboard"
+      },
+      "useMarkdownForUserMessage": {
+        "label": "Enable Markdown formatting for User messages"
       }
     },
     "sidepanelRag": {
