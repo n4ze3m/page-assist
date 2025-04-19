@@ -123,8 +123,10 @@ export const pageAssistModel = async ({
 
   const modelSettings = await getModelSettings(model)
 
+  const _keepAlive = modelSettings?.keepAlive || keepAlive
+
   const payload = {
-    keepAlive: modelSettings?.keepAlive || keepAlive,
+    keepAlive: _keepAlive.length > 0 ? _keepAlive : undefined,
     temperature: modelSettings?.temperature || temperature,
     topK: modelSettings?.topK || topK,
     topP: modelSettings?.topP || topP,
