@@ -6,47 +6,77 @@ import { urlRewriteRuntime } from "@/libs/runtime"
 import { ChatGoogleAI } from "./ChatGoogleAI"
 import { CustomChatOpenAI } from "./CustomChatOpenAI"
 import { getCustomHeaders } from "@/utils/clean-headers"
-import { getModelSettings } from "@/services/model-settings"
+import {
+  getAllDefaultModelSettings,
+  getModelSettings
+} from "@/services/model-settings"
+import { useStoreChatModelSettings } from "@/store/model"
 
 export const pageAssistModel = async ({
   model,
-  baseUrl,
-  keepAlive,
-  temperature,
-  topK,
-  topP,
-  numCtx,
-  seed,
-  numGpu,
-  numPredict,
-  useMMap,
-  minP,
-  repeatLastN,
-  repeatPenalty,
-  tfsZ,
-  numKeep,
-  numThread,
-  useMlock
+  baseUrl
 }: {
   model: string
   baseUrl: string
-  keepAlive?: string
-  temperature?: number
-  topK?: number
-  topP?: number
-  numCtx?: number
-  seed?: number
-  numGpu?: number
-  numPredict?: number
-  useMMap?: boolean
-  minP?: number
-  repeatPenalty?: number
-  repeatLastN?: number
-  tfsZ?: number
-  numKeep?: number
-  numThread?: number
-  useMlock?: boolean
 }) => {
+  const currentChatModelSettings = useStoreChatModelSettings.getState()
+  const userDefaultModelSettings = await getAllDefaultModelSettings()
+
+  const {
+    keepAlive,
+    temperature,
+    topK,
+    topP,
+    numCtx,
+    seed,
+    numGpu,
+    numPredict,
+    useMMap,
+    minP,
+    repeatLastN,
+    repeatPenalty,
+    tfsZ,
+    numKeep,
+    numThread,
+    useMlock,
+    reasoningEffort
+  } = {
+    keepAlive:
+      currentChatModelSettings?.keepAlive ??
+      userDefaultModelSettings?.keepAlive,
+    temperature:
+      currentChatModelSettings?.temperature ??
+      userDefaultModelSettings?.temperature,
+    topK: currentChatModelSettings?.topK ?? userDefaultModelSettings?.topK,
+    topP: currentChatModelSettings?.topP ?? userDefaultModelSettings?.topP,
+    numCtx:
+      currentChatModelSettings?.numCtx ?? userDefaultModelSettings?.numCtx,
+    seed: currentChatModelSettings?.seed,
+    numGpu:
+      currentChatModelSettings?.numGpu ?? userDefaultModelSettings?.numGpu,
+    numPredict:
+      currentChatModelSettings?.numPredict ??
+      userDefaultModelSettings?.numPredict,
+    useMMap:
+      currentChatModelSettings?.useMMap ?? userDefaultModelSettings?.useMMap,
+    minP: currentChatModelSettings?.minP ?? userDefaultModelSettings?.minP,
+    repeatLastN:
+      currentChatModelSettings?.repeatLastN ??
+      userDefaultModelSettings?.repeatLastN,
+    repeatPenalty:
+      currentChatModelSettings?.repeatPenalty ??
+      userDefaultModelSettings?.repeatPenalty,
+    tfsZ: currentChatModelSettings?.tfsZ ?? userDefaultModelSettings?.tfsZ,
+    numKeep:
+      currentChatModelSettings?.numKeep ?? userDefaultModelSettings?.numKeep,
+    numThread:
+      currentChatModelSettings?.numThread ??
+      userDefaultModelSettings?.numThread,
+    useMlock:
+      currentChatModelSettings?.useMlock ?? userDefaultModelSettings?.useMlock,
+    reasoningEffort: currentChatModelSettings?.reasoningEffort
+  }
+
   if (model === "chrome::gemini-nano::page-assist") {
     return new ChatChromeAI({
       temperature,
@@ -92,14 +122,14 @@ export const pageAssistModel = async ({
           apiKey: providerInfo.apiKey || "temp",
           baseURL: providerInfo.baseUrl || "",
           defaultHeaders: {
-            'HTTP-Referer': 'https://pageassist.xyz/',
-            'X-Title': 'Page Assist',
+            "HTTP-Referer": "https://pageassist.xyz/",
+            "X-Title": "Page Assist",
             ...getCustomHeaders({
               headers: providerInfo?.headers || []
             })
           }
         },
-
+        reasoning_effort: reasoningEffort as any
       }) as any
     }
 
@@ -115,11 +145,10 @@ export const pageAssistModel = async ({
         defaultHeaders: getCustomHeaders({
           headers: providerInfo?.headers || []
         })
-      }
+      },
+       reasoning_effort: reasoningEffort as any
     }) as any
   }
-
-
 
   const modelSettings = await getModelSettings(model)
 
@@ -143,11 +172,10 @@ export const pageAssistModel = async ({
     useMlock: modelSettings?.useMLock || useMlock
   }
 
-
   return new ChatOllama({
     baseUrl,
     model,
     seed,
-    ...payload,
+    ...payload
   })
 }

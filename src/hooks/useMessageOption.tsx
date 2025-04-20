@@ -144,39 +144,6 @@ export const useMessageOption = () => {
     const ollama = await pageAssistModel({
       model: selectedModel!,
       baseUrl: cleanUrl(url),
-      keepAlive:
-        currentChatModelSettings?.keepAlive ??
-        userDefaultModelSettings?.keepAlive,
-      temperature:
-        currentChatModelSettings?.temperature ??
-        userDefaultModelSettings?.temperature,
-      topK: currentChatModelSettings?.topK ?? userDefaultModelSettings?.topK,
-      topP: currentChatModelSettings?.topP ?? userDefaultModelSettings?.topP,
-      numCtx:
-        currentChatModelSettings?.numCtx ?? userDefaultModelSettings?.numCtx,
-      seed: currentChatModelSettings?.seed,
-      numGpu:
-        currentChatModelSettings?.numGpu ?? userDefaultModelSettings?.numGpu,
-      numPredict:
-        currentChatModelSettings?.numPredict ??
-        userDefaultModelSettings?.numPredict,
-      useMMap:
-        currentChatModelSettings?.useMMap ?? userDefaultModelSettings?.useMMap,
-      minP: currentChatModelSettings?.minP ?? userDefaultModelSettings?.minP,
-      repeatLastN:
-        currentChatModelSettings?.repeatLastN ??
-        userDefaultModelSettings?.repeatLastN,
-      repeatPenalty:
-        currentChatModelSettings?.repeatPenalty ??
-        userDefaultModelSettings?.repeatPenalty,
-      tfsZ: currentChatModelSettings?.tfsZ ?? userDefaultModelSettings?.tfsZ,
-      numKeep:
-        currentChatModelSettings?.numKeep ?? userDefaultModelSettings?.numKeep,
-      numThread:
-        currentChatModelSettings?.numThread ??
-        userDefaultModelSettings?.numThread,
-      useMlock:
-        currentChatModelSettings?.useMlock ?? userDefaultModelSettings?.useMlock
     })
 
     let newMessage: Message[] = []
@@ -242,42 +209,6 @@ export const useMessageOption = () => {
       const questionModel = await pageAssistModel({
         model: selectedModel!,
         baseUrl: cleanUrl(url),
-        keepAlive:
-          currentChatModelSettings?.keepAlive ??
-          userDefaultModelSettings?.keepAlive,
-        temperature:
-          currentChatModelSettings?.temperature ??
-          userDefaultModelSettings?.temperature,
-        topK: currentChatModelSettings?.topK ?? userDefaultModelSettings?.topK,
-        topP: currentChatModelSettings?.topP ?? userDefaultModelSettings?.topP,
-        numCtx:
-          currentChatModelSettings?.numCtx ?? userDefaultModelSettings?.numCtx,
-        seed: currentChatModelSettings?.seed,
-        numGpu:
-          currentChatModelSettings?.numGpu ?? userDefaultModelSettings?.numGpu,
-        numPredict:
-          currentChatModelSettings?.numPredict ??
-          userDefaultModelSettings?.numPredict,
-        useMMap:
-          currentChatModelSettings?.useMMap ??
-          userDefaultModelSettings?.useMMap,
-        minP: currentChatModelSettings?.minP ?? userDefaultModelSettings?.minP,
-        repeatLastN:
-          currentChatModelSettings?.repeatLastN ??
-          userDefaultModelSettings?.repeatLastN,
-        repeatPenalty:
-          currentChatModelSettings?.repeatPenalty ??
-          userDefaultModelSettings?.repeatPenalty,
-        tfsZ: currentChatModelSettings?.tfsZ ?? userDefaultModelSettings?.tfsZ,
-        numKeep:
-          currentChatModelSettings?.numKeep ??
-          userDefaultModelSettings?.numKeep,
-        numThread:
-          currentChatModelSettings?.numThread ??
-          userDefaultModelSettings?.numThread,
-        useMlock:
-          currentChatModelSettings?.useMlock ??
-          userDefaultModelSettings?.useMlock
       })
 
       let questionMessage = await humanMessageFormatter({
@@ -558,39 +489,6 @@ export const useMessageOption = () => {
     const ollama = await pageAssistModel({
       model: selectedModel!,
       baseUrl: cleanUrl(url),
-      keepAlive:
-        currentChatModelSettings?.keepAlive ??
-        userDefaultModelSettings?.keepAlive,
-      temperature:
-        currentChatModelSettings?.temperature ??
-        userDefaultModelSettings?.temperature,
-      topK: currentChatModelSettings?.topK ?? userDefaultModelSettings?.topK,
-      topP: currentChatModelSettings?.topP ?? userDefaultModelSettings?.topP,
-      numCtx:
-        currentChatModelSettings?.numCtx ?? userDefaultModelSettings?.numCtx,
-      seed: currentChatModelSettings?.seed,
-      numGpu:
-        currentChatModelSettings?.numGpu ?? userDefaultModelSettings?.numGpu,
-      numPredict:
-        currentChatModelSettings?.numPredict ??
-        userDefaultModelSettings?.numPredict,
-      useMMap:
-        currentChatModelSettings?.useMMap ?? userDefaultModelSettings?.useMMap,
-      minP: currentChatModelSettings?.minP ?? userDefaultModelSettings?.minP,
-      repeatLastN:
-        currentChatModelSettings?.repeatLastN ??
-        userDefaultModelSettings?.repeatLastN,
-      repeatPenalty:
-        currentChatModelSettings?.repeatPenalty ??
-        userDefaultModelSettings?.repeatPenalty,
-      tfsZ: currentChatModelSettings?.tfsZ ?? userDefaultModelSettings?.tfsZ,
-      numKeep:
-        currentChatModelSettings?.numKeep ?? userDefaultModelSettings?.numKeep,
-      numThread:
-        currentChatModelSettings?.numThread ??
-        userDefaultModelSettings?.numThread,
-      useMlock:
-        currentChatModelSettings?.useMlock ?? userDefaultModelSettings?.useMlock
     })
 
     let newMessage: Message[] = []
@@ -867,39 +765,6 @@ export const useMessageOption = () => {
     const ollama = await pageAssistModel({
       model: selectedModel!,
       baseUrl: cleanUrl(url),
-      keepAlive:
-        currentChatModelSettings?.keepAlive ??
-        userDefaultModelSettings?.keepAlive,
-      temperature:
-        currentChatModelSettings?.temperature ??
-        userDefaultModelSettings?.temperature,
-      topK: currentChatModelSettings?.topK ?? userDefaultModelSettings?.topK,
-      topP: currentChatModelSettings?.topP ?? userDefaultModelSettings?.topP,
-      numCtx:
-        currentChatModelSettings?.numCtx ?? userDefaultModelSettings?.numCtx,
-      seed: currentChatModelSettings?.seed,
-      numGpu:
-        currentChatModelSettings?.numGpu ?? userDefaultModelSettings?.numGpu,
-      numPredict:
-        currentChatModelSettings?.numPredict ??
-        userDefaultModelSettings?.numPredict,
-      useMMap:
-        currentChatModelSettings?.useMMap ?? userDefaultModelSettings?.useMMap,
-      minP: currentChatModelSettings?.minP ?? userDefaultModelSettings?.minP,
-      repeatLastN:
-        currentChatModelSettings?.repeatLastN ??
-        userDefaultModelSettings?.repeatLastN,
-      repeatPenalty:
-        currentChatModelSettings?.repeatPenalty ??
-        userDefaultModelSettings?.repeatPenalty,
-      tfsZ: currentChatModelSettings?.tfsZ ?? userDefaultModelSettings?.tfsZ,
-      numKeep:
-        currentChatModelSettings?.numKeep ?? userDefaultModelSettings?.numKeep,
-      numThread:
-        currentChatModelSettings?.numThread ??
-        userDefaultModelSettings?.numThread,
-      useMlock:
-        currentChatModelSettings?.useMlock ?? userDefaultModelSettings?.useMlock
     })
 
     let newMessage: Message[] = []
@@ -1112,39 +977,6 @@ export const useMessageOption = () => {
     const ollama = await pageAssistModel({
       model: selectedModel!,
       baseUrl: cleanUrl(url),
-      keepAlive:
-        currentChatModelSettings?.keepAlive ??
-        userDefaultModelSettings?.keepAlive,
-      temperature:
-        currentChatModelSettings?.temperature ??
-        userDefaultModelSettings?.temperature,
-      topK: currentChatModelSettings?.topK ?? userDefaultModelSettings?.topK,
-      topP: currentChatModelSettings?.topP ?? userDefaultModelSettings?.topP,
-      numCtx:
-        currentChatModelSettings?.numCtx ?? userDefaultModelSettings?.numCtx,
-      seed: currentChatModelSettings?.seed,
-      numGpu:
-        currentChatModelSettings?.numGpu ?? userDefaultModelSettings?.numGpu,
-      numPredict:
-        currentChatModelSettings?.numPredict ??
-        userDefaultModelSettings?.numPredict,
-      useMMap:
-        currentChatModelSettings?.useMMap ?? userDefaultModelSettings?.useMMap,
-      minP: currentChatModelSettings?.minP ?? userDefaultModelSettings?.minP,
-      repeatLastN:
-        currentChatModelSettings?.repeatLastN ??
-        userDefaultModelSettings?.repeatLastN,
-      repeatPenalty:
-        currentChatModelSettings?.repeatPenalty ??
-        userDefaultModelSettings?.repeatPenalty,
-      tfsZ: currentChatModelSettings?.tfsZ ?? userDefaultModelSettings?.tfsZ,
-      numKeep:
-        currentChatModelSettings?.numKeep ?? userDefaultModelSettings?.numKeep,
-      numThread:
-        currentChatModelSettings?.numThread ??
-        userDefaultModelSettings?.numThread,
-      useMlock:
-        currentChatModelSettings?.useMlock ?? userDefaultModelSettings?.useMlock
     })
 
     let newMessage: Message[] = []
@@ -1225,48 +1057,6 @@ export const useMessageOption = () => {
         const questionOllama = await pageAssistModel({
           model: selectedModel!,
           baseUrl: cleanUrl(url),
-          keepAlive:
-            currentChatModelSettings?.keepAlive ??
-            userDefaultModelSettings?.keepAlive,
-          temperature:
-            currentChatModelSettings?.temperature ??
-            userDefaultModelSettings?.temperature,
-          topK:
-            currentChatModelSettings?.topK ?? userDefaultModelSettings?.topK,
-          topP:
-            currentChatModelSettings?.topP ?? userDefaultModelSettings?.topP,
-          numCtx:
-            currentChatModelSettings?.numCtx ??
-            userDefaultModelSettings?.numCtx,
-          seed: currentChatModelSettings?.seed,
-          numGpu:
-            currentChatModelSettings?.numGpu ??
-            userDefaultModelSettings?.numGpu,
-          numPredict:
-            currentChatModelSettings?.numPredict ??
-            userDefaultModelSettings?.numPredict,
-          useMMap:
-            currentChatModelSettings?.useMMap ??
-            userDefaultModelSettings?.useMMap,
-          minP:
-            currentChatModelSettings?.minP ?? userDefaultModelSettings?.minP,
-          repeatLastN:
-            currentChatModelSettings?.repeatLastN ??
-            userDefaultModelSettings?.repeatLastN,
-          repeatPenalty:
-            currentChatModelSettings?.repeatPenalty ??
-            userDefaultModelSettings?.repeatPenalty,
-          tfsZ:
-            currentChatModelSettings?.tfsZ ?? userDefaultModelSettings?.tfsZ,
-          numKeep:
-            currentChatModelSettings?.numKeep ??
-            userDefaultModelSettings?.numKeep,
-          numThread:
-            currentChatModelSettings?.numThread ??
-            userDefaultModelSettings?.numThread,
-          useMlock:
-            currentChatModelSettings?.useMlock ??
-            userDefaultModelSettings?.useMlock
         })
         const response = await questionOllama.invoke(promptForQuestion)
         query = response.content.toString()
