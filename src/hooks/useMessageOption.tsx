@@ -136,7 +136,6 @@ export const useMessageOption = () => {
     signal: AbortSignal
   ) => {
     const url = await getOllamaURL()
-    const userDefaultModelSettings = await getAllDefaultModelSettings()
     if (image.length > 0) {
       image = `data:image/jpeg;base64,${image.split(",")[1]}`
     }
@@ -478,7 +477,6 @@ export const useMessageOption = () => {
     signal: AbortSignal
   ) => {
     const url = await getOllamaURL()
-    const userDefaultModelSettings = await getAllDefaultModelSettings()
     let promptId: string | undefined = selectedSystemPrompt
     let promptContent: string | undefined = undefined
 
@@ -758,7 +756,6 @@ export const useMessageOption = () => {
     signal: AbortSignal
   ) => {
     const url = await getOllamaURL()
-    const userDefaultModelSettings = await getAllDefaultModelSettings()
     let promptId: string | undefined = selectedSystemPrompt
     let promptContent: string | undefined = undefined
 

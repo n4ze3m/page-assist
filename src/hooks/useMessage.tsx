@@ -488,7 +488,6 @@ export const useMessage = () => {
   ) => {
     setStreaming(true)
     const url = await getOllamaURL()
-    const userDefaultModelSettings = await getAllDefaultModelSettings()
 
     const ollama = await pageAssistModel({
       model: selectedModel!,
@@ -741,7 +740,6 @@ export const useMessage = () => {
   ) => {
     setStreaming(true)
     const url = await getOllamaURL()
-    const userDefaultModelSettings = await getAllDefaultModelSettings()
 
     if (image.length > 0) {
       image = `data:image/jpeg;base64,${image.split(",")[1]}`
@@ -999,7 +997,6 @@ export const useMessage = () => {
   ) => {
     const url = await getOllamaURL()
     setStreaming(true)
-    const userDefaultModelSettings = await getAllDefaultModelSettings()
     if (image.length > 0) {
       image = `data:image/jpeg;base64,${image.split(",")[1]}`
     }
@@ -1309,7 +1306,6 @@ export const useMessage = () => {
   ) => {
     setStreaming(true)
     const url = await getOllamaURL()
-    const userDefaultModelSettings = await getAllDefaultModelSettings()
 
     if (image.length > 0) {
       image = `data:image/jpeg;base64,${image.split(",")[1]}`
