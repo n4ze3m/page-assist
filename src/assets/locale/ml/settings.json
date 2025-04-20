@@ -56,6 +56,9 @@
       },
       "autoCopyResponseToClipboard": {
         "label": "പ്രതികരണം സ്വയമേവ ക്ലിപ്പ്ബോർഡിലേക്ക് പകർത്തുക"
+      },
+      "useMarkdownForUserMessage": {
+        "label": "ഉപയോക്തൃ സന്ദേശങ്ങൾക്കായി മാർക്ക്ഡൗൺ ഫോർമാറ്റിംഗ് പ്രവർത്തനക്ഷമമാക്കുക"
       }
     },
     "sidepanelRag": {

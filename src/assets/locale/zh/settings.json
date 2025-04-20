@@ -56,6 +56,9 @@
       },
       "autoCopyResponseToClipboard": {
         "label": "自动复制回复到剪贴板"
+      },
+      "useMarkdownForUserMessage": {
+        "label": "为用户消息启用Markdown格式"
       }
     },
     "sidepanelRag": {
