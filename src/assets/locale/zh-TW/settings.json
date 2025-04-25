@@ -92,6 +92,14 @@
         "label": "Brave API 金鑰",
         "placeholder": "輸入您的 Brave API 金鑰"
       },
+      "tavilyApi": {
+        "label": "Tavily API 金鑰",
+        "placeholder": "輸入您的 Tavily API 金鑰"
+      },
+      "exa": {
+        "label": "Exa API 金鑰",
+        "placeholder": "輸入您的 Exa API 金鑰"
+      },
       "googleDomain": {
         "label": "Google 網域"
       },
@@ -116,6 +124,15 @@
         "button": "匯入資料",
         "success": "匯入成功",
         "error": "匯入錯誤"
+      },
+      "actionIcon": {
+        "label": "設定擴充功能圖示點擊的預設動作"
+      },
+      "contextMenu": {
+        "label": "設定右鍵選單點擊的預設動作"
+      },
+      "fontSize": {
+        "label": "字型大小"
       }
     },
     "tts": {

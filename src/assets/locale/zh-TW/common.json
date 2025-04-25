@@ -106,6 +106,10 @@
             "useMlock": {
                 "label": "useMlock"
             },
+            "reasoningEffort": {
+                "label": "Reasoning Effort",
+                "placeholder": "low, medium, high"
+            },
             "minP": {
                 "label": "Min P",
                 "placeholder": "例如：0.05"
