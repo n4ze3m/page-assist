@@ -79,7 +79,6 @@ export default function OptionLayout({
                     <EraserIcon className="size-5" />
                   </button>
                 </Tooltip>
-
                 <button onClick={() => setSidebarOpen(false)} className="md:hidden">
                   <XIcon className="h-5 w-5 text-gray-500 dark:text-gray-400" />
                 </button>
