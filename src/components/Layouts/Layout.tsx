@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next"
 
 import { CurrentChatModelSettings } from "../Common/Settings/CurrentChatModelSettings"
 import { Header } from "./Header"
-import { EraserIcon } from "lucide-react"
+import { EraserIcon, XIcon } from "lucide-react"
 import { PageAssitDatabase } from "@/db"
 import { useMessageOption } from "@/hooks/useMessageOption"
 import { useQueryClient } from "@tanstack/react-query"
@@ -52,32 +52,38 @@ export default function OptionLayout({
             <div className="flex items-center justify-between">
               {t("sidebarTitle")}
 
-              <Tooltip
-                title={t(
-                  "settings:generalSettings.system.deleteChatHistory.label"
-                )}
-                placement="right">
-                <button
-                  onClick={async () => {
-                    const confirm = window.confirm(
-                      t(
-                        "settings:generalSettings.system.deleteChatHistory.confirm"
+              <div className="flex items-center space-x-3">
+                <Tooltip
+                  title={t(
+                    "settings:generalSettings.system.deleteChatHistory.label"
+                  )}
+                  placement="right">
+                  <button
+                    onClick={async () => {
+                      const confirm = window.confirm(
+                        t(
+                          "settings:generalSettings.system.deleteChatHistory.confirm"
+                        )
                       )
-                    )
 
-                    if (confirm) {
-                      const db = new PageAssitDatabase()
-                      await db.deleteAllChatHistory()
-                      await queryClient.invalidateQueries({
-                        queryKey: ["fetchChatHistory"]
-                      })
-                      clearChat()
-                    }
-                  }}
-                  className="text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100">
-                  <EraserIcon className="size-5" />
+                      if (confirm) {
+                        const db = new PageAssitDatabase()
+                        await db.deleteAllChatHistory()
+                        await queryClient.invalidateQueries({
+                          queryKey: ["fetchChatHistory"]
+                        })
+                        clearChat()
+                      }
+                    }}
+                    className="text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100">
+                    <EraserIcon className="size-5" />
+                  </button>
+                </Tooltip>
+
+                <button onClick={() => setSidebarOpen(false)} className="md:hidden">
+                  <XIcon className="h-5 w-5 text-gray-500 dark:text-gray-400" />
                 </button>
-              </Tooltip>
+              </div>
             </div>
           }
           placement="left"
