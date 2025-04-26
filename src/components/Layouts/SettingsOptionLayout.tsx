@@ -96,7 +96,6 @@ export const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
                     name={t("openai:settings")}
                     icon={CpuIcon}
                     current={location.pathname}
-                    beta
                   />
                   <LinkComponent
                     href="/settings/model"
