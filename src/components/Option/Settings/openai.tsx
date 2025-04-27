@@ -209,6 +209,7 @@ export const OpenAIApp = () => {
           dataSource={configs}
           loading={isLoading}
           rowKey="id"
+          bordered
         />
 
         <Modal
