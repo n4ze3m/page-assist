@@ -130,6 +130,7 @@ export const SidepanelHeader = () => {
         onClose={() => setSidebarOpen(false)}
         open={sidebarOpen}>
         <Sidebar
+          isOpen={sidebarOpen}
           onClose={() => setSidebarOpen(false)}
           setMessages={setMessages}
           setHistory={setHistory}
