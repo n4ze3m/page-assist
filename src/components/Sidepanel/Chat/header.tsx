@@ -9,7 +9,8 @@ import {
   EraserIcon,
   // EraserIcon,
   HistoryIcon,
-  PlusSquare
+  PlusSquare,
+  XIcon
 } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { CurrentChatModelSettings } from "@/components/Common/Settings/CurrentChatModelSettings"
@@ -115,7 +116,13 @@ export const SidepanelHeader = () => {
       <Drawer
         title={
           <div className="flex items-center justify-between">
-            {t("tooltip.history")}
+            <div className="flex items-center justify-between">
+              {t("tooltip.history")}
+            </div>
+
+            <button onClick={() => setSidebarOpen(false)}>
+              <XIcon className="h-5 w-5 text-gray-500 dark:text-gray-400" />
+            </button>
           </div>
         }
         placement="left"
@@ -123,6 +130,7 @@ export const SidepanelHeader = () => {
         onClose={() => setSidebarOpen(false)}
         open={sidebarOpen}>
         <Sidebar
+          isOpen={sidebarOpen}
           onClose={() => setSidebarOpen(false)}
           setMessages={setMessages}
           setHistory={setHistory}

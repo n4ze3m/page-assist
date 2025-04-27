@@ -3,7 +3,6 @@ import {
   type Message as MessageType
 } from "~/store/option"
 import { getAllModelNicknames } from "./nickname"
-import * as ml_distance_similarity from "ml-distance"
 type HistoryInfo = {
   id: string
   title: string

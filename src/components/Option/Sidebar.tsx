@@ -40,6 +40,7 @@ type Props = {
   temporaryChat: boolean
   historyId: string
   history: any
+  isOpen: boolean
 }
 
 export const Sidebar = ({
@@ -52,7 +53,8 @@ export const Sidebar = ({
   clearChat,
   historyId,
   setSystemPrompt,
-  temporaryChat
+  temporaryChat,
+  isOpen
 }: Props) => {
   const { t } = useTranslation(["option", "common"])
   const client = useQueryClient()
@@ -112,7 +114,8 @@ export const Sidebar = ({
 
       return groups
     },
-    placeholderData: (prev) => prev
+    placeholderData: (prev) => prev,
+    enabled: isOpen,
   })
 
   const { mutate: deleteHistory } = useMutation({

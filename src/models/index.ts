@@ -85,6 +85,7 @@ export const pageAssistModel = async ({
   }
 
   const isCustom = isCustomModel(model)
+  const modelSettings = await getModelSettings(model)
 
   if (isCustom) {
     const modelInfo = await getModelInfo(model)
@@ -94,13 +95,20 @@ export const pageAssistModel = async ({
       await urlRewriteRuntime(providerInfo.baseUrl || "")
     }
 
+    const modelConfig = {
+      maxTokens: modelSettings?.numPredict || numPredict,
+      temperature: modelSettings?.temperature || temperature,
+      topP: modelSettings?.topP || topP,
+      reasoningEffort: modelSettings?.reasoningEffort || reasoningEffort as any
+    }
+
     if (providerInfo.provider === "gemini") {
       return new ChatGoogleAI({
         modelName: modelInfo.model_id,
         openAIApiKey: providerInfo.apiKey || "temp",
-        temperature,
-        topP,
-        maxTokens: numPredict,
+        temperature: modelConfig?.temperature,
+        topP: modelConfig?.topP,
+        maxTokens: modelConfig?.maxTokens,
         configuration: {
           apiKey: providerInfo.apiKey || "temp",
           baseURL: providerInfo.baseUrl || "",
@@ -115,9 +123,9 @@ export const pageAssistModel = async ({
       return new CustomChatOpenAI({
         modelName: modelInfo.model_id,
         openAIApiKey: providerInfo.apiKey || "temp",
-        temperature,
-        topP,
-        maxTokens: numPredict,
+        temperature: modelConfig?.temperature,
+        topP: modelConfig?.topP,
+        maxTokens: modelConfig?.maxTokens,
         configuration: {
           apiKey: providerInfo.apiKey || "temp",
           baseURL: providerInfo.baseUrl || "",
@@ -129,16 +137,16 @@ export const pageAssistModel = async ({
             })
           }
         },
-        reasoning_effort: reasoningEffort as any
+        reasoning_effort: modelConfig?.reasoningEffort as any
       }) as any
     }
 
     return new CustomChatOpenAI({
       modelName: modelInfo.model_id,
       openAIApiKey: providerInfo.apiKey || "temp",
-      temperature,
-      topP,
-      maxTokens: numPredict,
+      temperature: modelConfig?.temperature,
+      topP: modelConfig?.topP,
+      maxTokens: modelConfig?.maxTokens,
       configuration: {
         apiKey: providerInfo.apiKey || "temp",
         baseURL: providerInfo.baseUrl || "",
@@ -146,11 +154,10 @@ export const pageAssistModel = async ({
           headers: providerInfo?.headers || []
         })
       },
-       reasoning_effort: reasoningEffort as any
+      reasoning_effort: modelConfig?.reasoningEffort as any
     }) as any
   }
 
-  const modelSettings = await getModelSettings(model)
 
   const _keepAlive = modelSettings?.keepAlive || keepAlive || ""
 
