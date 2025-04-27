@@ -2,10 +2,11 @@ import { getAllCustomModels, deleteModel } from "@/db/models"
 import { useStorage } from "@plasmohq/storage/hook"
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query"
 import { Avatar, Skeleton, Table, Tag, Tooltip } from "antd"
-import { Pencil, Trash2 } from "lucide-react"
+import { Pencil, Settings, Trash2 } from "lucide-react"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
 import { ModelNickModelNicknameModal } from "./ModelNicknameModal"
+import { AddUpdateOAIModelSettings } from "./AddUpdateOAIModelSettings"
 
 export const CustomModelsTable = () => {
   const [selectedModel, setSelectedModel] = useStorage("selectedModel")
@@ -20,7 +21,7 @@ export const CustomModelsTable = () => {
     model_avatar: ""
   })
   const { t } = useTranslation(["openai", "common"])
-
+  const [openSettingsModal, setOpenSettingsModal] = useState(false)
   const queryClient = useQueryClient()
 
   const { data, status } = useQuery({
@@ -96,22 +97,39 @@ export const CustomModelsTable = () => {
                 {
                   title: t("manageModels.columns.actions"),
                   render: (_, record) => (
-                    <Tooltip title={t("manageModels.tooltip.delete")}>
-                      <button
-                        onClick={() => {
-                          if (
-                            window.confirm(t("manageModels.confirm.delete"))
-                          ) {
-                            deleteCustomModel(record.id)
-                            if (selectedModel && selectedModel === record.id) {
-                              setSelectedModel(null)
+                    <div className="flex gap-2">
+                      <Tooltip title={t("common:modelSettings.label")}>
+                        <button
+                          onClick={() => {
+                            setModel({
+                              model_id: record.id
+                            })
+                            setOpenSettingsModal(true)
+                          }}
+                          className="text-gray-700 dark:text-gray-400">
+                          <Settings className="size-4" />
+                        </button>
+                      </Tooltip>
+                      <Tooltip title={t("manageModels.tooltip.delete")}>
+                        <button
+                          onClick={() => {
+                            if (
+                              window.confirm(t("manageModels.confirm.delete"))
+                            ) {
+                              deleteCustomModel(record.id)
+                              if (
+                                selectedModel &&
+                                selectedModel === record.id
+                              ) {
+                                setSelectedModel(null)
+                              }
                             }
-                          }
-                        }}
-                        className="text-red-500 dark:text-red-400">
-                        <Trash2 className="w-5 h-5" />
-                      </button>
-                    </Tooltip>
+                          }}
+                          className="text-red-500 dark:text-red-400">
+                          <Trash2 className="w-5 h-5" />
+                        </button>
+                      </Tooltip>
+                    </div>
                   )
                 }
               ]}
@@ -127,6 +145,12 @@ export const CustomModelsTable = () => {
         setOpen={setOpenNicknameModal}
         model_name={model.model_name}
         model_avatar={model.model_avatar}
+      />
+
+      <AddUpdateOAIModelSettings
+        model_id={model.model_id}
+        open={openSettingsModal}
+        setOpen={setOpenSettingsModal}
       />
     </div>
   )
