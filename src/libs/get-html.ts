@@ -164,7 +164,7 @@ export const getContentFromCurrentTab = async (isUsingVS: boolean) => {
     }
 
     const text = transcript
-      .map(item => `[${item.start}] ${item.text}`)
+      .map(item => `[${item?.start}] ${item?.text}`)
       .join(" ")
 
     return {

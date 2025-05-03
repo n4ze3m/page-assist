@@ -41,7 +41,7 @@ export class PageAssistHtmlLoader
       let text = ""
 
       transcript.forEach((item) => {
-        text += item.text + " "
+        text += `[${item?.start}] ${item?.text}\n`
       })
 
       return [
@@ -72,7 +72,7 @@ export class PageAssistHtmlLoader
         let text = ""
 
         transcript.forEach((item) => {
-          text += item.text + " "
+          text += `[${item?.start}] ${item?.text}\n`
         })
 
         return [
