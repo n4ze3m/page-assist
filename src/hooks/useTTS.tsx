@@ -13,6 +13,7 @@ import { markdownToSSML } from "@/utils/markdown-to-ssml"
 import { generateSpeech } from "@/services/elevenlabs"
 import { splitMessageContent } from "@/utils/tts"
 import { removeReasoning } from "@/libs/reasoning"
+import { markdownToText } from "@/utils/markdown-to-text"
 
 export interface VoiceOptions {
   utterance: string
@@ -33,12 +34,13 @@ export const useTTS = () => {
       if (isRemoveReasoning) {
         utterance = removeReasoning(utterance)
       }
-
+      const isSSML = await isSSMLEnabled()
+      if (isSSML) {
+        utterance = markdownToSSML(utterance)
+      } else {
+        utterance = markdownToText(utterance)
+      }
       if (provider === "browser") {
-        const isSSML = await isSSMLEnabled()
-        if (isSSML) {
-          utterance = markdownToSSML(utterance)
-        }
         if (
           import.meta.env.BROWSER === "chrome" ||
           import.meta.env.BROWSER === "edge"

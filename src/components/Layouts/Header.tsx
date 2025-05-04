@@ -119,7 +119,7 @@ export const Header: React.FC<Props> = ({
         </span>
         <div className="hidden lg:block">
           <Select
-            className="min-w-80"
+            className="min-w-80  max-w-[460px]"
             placeholder={t("common:selectAModel")}
             // loadingText={t("common:selectAModel")}
             value={selectedModel}

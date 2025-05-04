@@ -109,7 +109,6 @@
             "reasoningEffort": {
                 "label": "Reasoning Effort",
                 "placeholder": "low, medium, high"
-
             },
             "minP": {
                 "label": "Min P",
@@ -155,6 +154,24 @@
         "last7Days": "Last 7 Days",
         "older": "Older"
     },
+    "range": {
+        "deleteConfirm": {
+            "pinned": "Are you sure you want to delete all pinned messages?",
+            "today": "Are you sure you want to delete all messages from today?",
+            "yesterday": "Are you sure you want to delete all messages from yesterday?",
+            "last7Days": "Are you sure you want to delete all messages from the last 7 days?",
+            "older": "Are you sure you want to delete all older messages?"
+        },
+        "tooltip": {
+            "pinned": "Delete all pinned messages",
+            "today": "Delete all messages from today",
+            "yesterday": "Delete all messages from yesterday",
+            "last7Days": "Delete all messages from the last 7 days",
+            "older": "Delete all older messages"
+        }
+    },
+    "historiesDeleted": "{{count}} Histories Deleted",
+    "deleteHistoriesError": "Error deleting histories",
     "pin": "Pin",
     "unpin": "Unpin",
     "generationInfo": "Generation Info",

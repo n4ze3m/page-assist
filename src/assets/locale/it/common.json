@@ -115,6 +115,22 @@
         "last7Days": "Ultimi 7 Giorni",
         "older": "Più Vecchi"
     },
+    "range": {
+        "deleteConfirm": {
+            "pinned": "Sei sicuro di voler eliminare tutti i messaggi fissati?",
+            "today": "Sei sicuro di voler eliminare tutti i messaggi di oggi?",
+            "yesterday": "Sei sicuro di voler eliminare tutti i messaggi di ieri?",
+            "last7Days": "Sei sicuro di voler eliminare tutti i messaggi degli ultimi 7 giorni?",
+            "older": "Sei sicuro di voler eliminare tutti i messaggi più vecchi?"
+        },
+        "tooltip": {
+            "pinned": "Elimina tutti i messaggi fissati",
+            "today": "Elimina tutti i messaggi di oggi",
+            "yesterday": "Elimina tutti i messaggi di ieri",
+            "last7Days": "Elimina tutti i messaggi degli ultimi 7 giorni",
+            "older": "Elimina tutti i messaggi più vecchi"
+        }
+    },
     "pin": "Fissa",
     "unpin": "Rimuovi",
     "generationInfo": "Informazioni sulla Generazione",

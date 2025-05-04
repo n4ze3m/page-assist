@@ -116,6 +116,22 @@
         "last7Days": "Sidste 7 dage",
         "older": "Ældre"
     },
+    "range": {
+        "deleteConfirm": {
+            "pinned": "Er du sikker på, at du vil slette alle fastgjorte beskeder?",
+            "today": "Er du sikker på, at du vil slette alle beskeder fra i dag?",
+            "yesterday": "Er du sikker på, at du vil slette alle beskeder fra i går?",
+            "last7Days": "Er du sikker på, at du vil slette alle beskeder fra de sidste 7 dage?",
+            "older": "Er du sikker på, at du vil slette alle ældre beskeder?"
+        },
+        "tooltip": {
+            "pinned": "Slet alle fastgjorte beskeder",
+            "today": "Slet alle beskeder fra i dag",
+            "yesterday": "Slet alle beskeder fra i går",
+            "last7Days": "Slet alle beskeder fra de sidste 7 dage",
+            "older": "Slet alle ældre beskeder"
+        }
+    },
     "pin": "Fastgør",
     "unpin": "Frigør",
     "generationInfo": "Genererings Info",

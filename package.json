@@ -37,6 +37,7 @@
     "@vitejs/plugin-react": "^4.2.1",
     "antd": "^5.13.3",
     "axios": "^1.6.7",
+    "caniuse-lite": "^1.0.30001716",
     "cheerio": "^1.0.0-rc.12",
     "d3-dsv": "2",
     "dayjs": "^1.11.10",

@@ -120,6 +120,22 @@
         "last7Days": "Senaste 7 dagarna",
         "older": "Äldre"
     },
+    "range": {
+        "deleteConfirm": {
+            "pinned": "Är du säker på att du vill ta bort alla fästa meddelanden?",
+            "today": "Är du säker på att du vill ta bort alla meddelanden från idag?",
+            "yesterday": "Är du säker på att du vill ta bort alla meddelanden från igår?",
+            "last7Days": "Är du säker på att du vill ta bort alla meddelanden från de senaste 7 dagarna?",
+            "older": "Är du säker på att du vill ta bort alla äldre meddelanden?"
+        },
+        "tooltip": {
+            "pinned": "Ta bort alla fästa meddelanden",
+            "today": "Ta bort alla meddelanden från idag",
+            "yesterday": "Ta bort alla meddelanden från igår",
+            "last7Days": "Ta bort alla meddelanden från de senaste 7 dagarna",
+            "older": "Ta bort alla äldre meddelanden"
+        }
+    },
     "pin": "Fäst",
     "unpin": "Ta bort fäst",
     "generationInfo": "Generationsinformation",

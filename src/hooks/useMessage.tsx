@@ -10,7 +10,7 @@ import {
 import { useStoreMessageOption, type Message } from "~/store/option"
 import { useStoreMessage } from "~/store"
 import { SystemMessage } from "@langchain/core/messages"
-import { getDataFromCurrentTab } from "~/libs/get-html"
+import { getContentFromCurrentTab,  } from "~/libs/get-html"
 import { memoryEmbedding } from "@/utils/memory-embeddings"
 import { ChatHistory } from "@/store/option"
 import {
@@ -194,7 +194,7 @@ export const useMessage = () => {
       url: websiteUrl,
       type,
       pdf
-    } = await getDataFromCurrentTab()
+    } = await getContentFromCurrentTab(chatWithWebsiteEmbedding)
 
     embedHTML = html
     embedURL = websiteUrl

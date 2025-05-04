@@ -154,6 +154,22 @@
         "last7Days": "最近7天",
         "older": "更早以前"
     },
+    "range": {
+        "deleteConfirm": {
+            "pinned": "確定要刪除所有置頂的訊息嗎？",
+            "today": "確定要刪除今天的所有訊息嗎？",
+            "yesterday": "確定要刪除昨天的所有訊息嗎？",
+            "last7Days": "確定要刪除最近7天的所有訊息嗎？",
+            "older": "確定要刪除所有較舊的訊息嗎？"
+        },
+        "tooltip": {
+            "pinned": "刪除所有置頂的訊息",
+            "today": "刪除今天的所有訊息",
+            "yesterday": "刪除昨天的所有訊息",
+            "last7Days": "刪除最近7天的所有訊息",
+            "older": "刪除所有較舊的訊息"
+        }
+    },
     "pin": "置頂",
     "unpin": "取消置頂",
     "generationInfo": "生成資訊",

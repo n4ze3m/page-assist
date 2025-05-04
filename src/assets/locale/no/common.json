@@ -116,7 +116,22 @@
         "last7Days": "Siste 7 dager",
         "older": "Eldre"
     },
-    "pin": "Fest",
+    "range": {
+        "deleteConfirm": {
+            "pinned": "Er du sikker på at du vil slette alle festede meldinger?",
+            "today": "Er du sikker på at du vil slette alle meldinger fra i dag?",
+            "yesterday": "Er du sikker på at du vil slette alle meldinger fra i går?",
+            "last7Days": "Er du sikker på at du vil slette alle meldinger fra de siste 7 dagene?",
+            "older": "Er du sikker på at du vil slette alle eldre meldinger?"
+        },
+        "tooltip": {
+            "pinned": "Slett alle festede meldinger",
+            "today": "Slett alle meldinger fra i dag",
+            "yesterday": "Slett alle meldinger fra i går",
+            "last7Days": "Slett alle meldinger fra de siste 7 dagene",
+            "older": "Slett alle eldre meldinger"
+        }
+    },    "pin": "Fest",
     "unpin": "Løsne",
     "generationInfo": "Generasjonsinformasjon",
     "sidebarChat": "Sidepanel-chat",

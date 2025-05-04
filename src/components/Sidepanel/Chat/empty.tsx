@@ -67,7 +67,7 @@ export const EmptySidePanel = () => {
           showSearch
           placeholder={t("common:selectAModel")}
           style={{ width: "100%" }}
-          className="mt-4"
+          className="mt-4 min-w-60 max-w-64"
           options={ollamaInfo.models?.map((model) => ({
             label: model?.nickname || model.name,
             value: model.model

@@ -273,31 +273,31 @@ export class CustomChatOpenAI<
             enumerable: true,
             configurable: true,
             writable: true,
-            value: 1
+            value: void 0
         })
         Object.defineProperty(this, "topP", {
             enumerable: true,
             configurable: true,
             writable: true,
-            value: 1
+            value: void 0
         })
         Object.defineProperty(this, "frequencyPenalty", {
             enumerable: true,
             configurable: true,
             writable: true,
-            value: 0
+            value: void 0
         })
         Object.defineProperty(this, "presencePenalty", {
             enumerable: true,
             configurable: true,
             writable: true,
-            value: 0
+            value: void 0
         })
         Object.defineProperty(this, "n", {
             enumerable: true,
             configurable: true,
             writable: true,
-            value: 1
+            value: void 0
         })
         Object.defineProperty(this, "logitBias", {
             enumerable: true,

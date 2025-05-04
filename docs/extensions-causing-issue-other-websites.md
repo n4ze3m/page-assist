@@ -42,8 +42,9 @@ You can set OLLAMA_ORIGIN=* to allow connections from any origin. Here's how to 
 1. Open Terminal
 2. Run the following command:
 
-
+```bash
 launchctl setenv OLLAMA_ORIGIN "*"
+```
 
 3. Restart Ollama service
 
@@ -51,9 +52,37 @@ launchctl setenv OLLAMA_ORIGIN "*"
 1. Open Terminal
 2. Run the following command:
 
-
+```bash
 export OLLAMA_ORIGIN="*"
+```
 
 3. Restart Ollama service
+
+For Linux systems using systemd, you can also add the environment variable to your service file. Here's an example of a systemd unit file (credit: Axel Schwarzer):
+
+```bash
+[Unit]
+Description=Ollama Service
+After=network-online.target
+
+[Service]
+#  - see docker.serice for an example
+#
+# EnvironmentFile=/etc/sysconfig/ollama
+Environment="OLLAMA_HOST=192.168.4.67:11434"
+Environment="OLLAMA_MAX_LOADED_MODELS=4"
+# Environment="OLLAMA_ORIGINS=*"
+ExecStart=/usr/local/bin/ollama serve
+User=ollama
+Group=ollama
+Restart=always
+RestartSec=3
+Environment="PATH=/usr/local/sbin:/sbin:/usr/sbin:/root/bin:/usr/local/bin:/bin:/usr/bin:"
+
+[Install]
+WantedBy=default.target
+```
+
+To use this configuration, uncomment the `Environment="OLLAMA_ORIGINS=*"` line.
 
 _This will allow connections from any origin. Hopefully, this will resolve the connection issue._

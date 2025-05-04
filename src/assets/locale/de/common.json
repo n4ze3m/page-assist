@@ -116,6 +116,22 @@
         "last7Days": "Letzte 7 Tage",
         "older": "Älter"
     },
+    "range": {
+        "deleteConfirm": {
+            "pinned": "Sind Sie sicher, dass Sie alle angepinnten Nachrichten löschen möchten?",
+            "today": "Sind Sie sicher, dass Sie alle Nachrichten von heute löschen möchten?",
+            "yesterday": "Sind Sie sicher, dass Sie alle Nachrichten von gestern löschen möchten?",
+            "last7Days": "Sind Sie sicher, dass Sie alle Nachrichten der letzten 7 Tage löschen möchten?",
+            "older": "Sind Sie sicher, dass Sie alle älteren Nachrichten löschen möchten?"
+        },
+        "tooltip": {
+            "pinned": "Alle angepinnten Nachrichten löschen",
+            "today": "Alle Nachrichten von heute löschen",
+            "yesterday": "Alle Nachrichten von gestern löschen",
+            "last7Days": "Alle Nachrichten der letzten 7 Tage löschen",
+            "older": "Alle älteren Nachrichten löschen"
+        }
+    },
     "pin": "Anheften",
     "unpin": "Losheften",
     "generationInfo": "Generierungsinformationen",
