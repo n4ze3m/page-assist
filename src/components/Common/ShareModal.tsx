@@ -22,7 +22,7 @@ const reformatMessages = (messages: Message[], username: string) => {
   return messages.map((message, idx) => {
     return {
       id: idx,
-      name: message.isBot ? message.name : username,
+      name: message.isBot ? message.modelName : username,
       isBot: message.isBot,
       message: message.message,
       images: message.images
@@ -101,7 +101,7 @@ export const ShareModal: React.FC<Props> = ({
 
   const onSubmit = async (values: { title: string; name: string }) => {
     const owner_id = await getUserId()
-    const chat = reformatMessages(messages, values.name)
+    const chat =  reformatMessages(messages, values.name)
     const title = values.title
     const url = await getPageShareUrl()
     const res = await fetcher(`${cleanUrl(url)}/api/v1/share/create`, {
@@ -179,7 +179,7 @@ export const ShareModal: React.FC<Props> = ({
           <div className="max-h-[180px] overflow-x-auto border dark:border-gray-700 rounded-md p-2">
             <div className="flex flex-col p-3">
               {messages.map((message, index) => (
-                <PlaygroundMessage key={index} {...message} username={name} />
+                <PlaygroundMessage key={index} {...message} name={message?.modelName} username={name} />
               ))}
             </div>
           </div>
