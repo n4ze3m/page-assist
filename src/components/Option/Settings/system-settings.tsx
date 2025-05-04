@@ -8,9 +8,10 @@ import {
 } from "@/libs/export-import"
 import { Storage } from "@plasmohq/storage"
 import { useStorage } from "@plasmohq/storage/hook"
-import { useQueryClient } from "@tanstack/react-query"
-import { Select } from "antd"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { Select, notification } from "antd"
 import { useTranslation } from "react-i18next"
+import { Loader2 } from "lucide-react"
 
 export const SystemSettings = () => {
   const { t } = useTranslation("settings")
@@ -36,6 +37,27 @@ export const SystemSettings = () => {
     },
     "sidePanel"
   )
+
+  const importDataMutation = useMutation({
+    mutationFn: async (file: File) => {
+      await importPageAssistData(file)
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["fetchChatHistory"]
+      })
+     
+      notification.success({
+        message: "Imported data successfully"
+      })
+    },
+    onError: (error) => {
+      console.error("Import error:", error)
+      notification.error({
+        message: "Import error"
+      })
+    }
+  })
 
   return (
     <div>
@@ -129,17 +151,24 @@ export const SystemSettings = () => {
         </span>
         <label
           htmlFor="import"
-          className="bg-gray-800 dark:bg-white text-white dark:text-gray-900 px-4 py-2 rounded-md cursor-pointer">
-          {t("generalSettings.system.import.button")}
+          className="bg-gray-800 dark:bg-white text-white dark:text-gray-900 px-4 py-2 rounded-md cursor-pointer flex items-center">
+          {importDataMutation.isPending ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            </>
+          ) : (
+            t("generalSettings.system.import.button")
+          )}
         </label>
         <input
           type="file"
           accept=".json"
           id="import"
           className="hidden"
+          disabled={importDataMutation.isPending}
           onChange={(e) => {
-            if (e.target.files) {
-              importPageAssistData(e.target.files[0])
+            if (e.target.files && e.target.files[0]) {
+              importDataMutation.mutate(e.target.files[0])
             }
           }}
         />

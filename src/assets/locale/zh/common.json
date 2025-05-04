@@ -150,7 +150,22 @@
         "last7Days": "最近7天",
         "older": "更早"
     },
-    "pin": "置顶",
+    "range": {
+        "deleteConfirm": {
+            "pinned": "确定要删除所有置顶的消息吗？",
+            "today": "确定要删除今天的所有消息吗？",
+            "yesterday": "确定要删除昨天的所有消息吗？",
+            "last7Days": "确定要删除最近7天的所有消息吗？",
+            "older": "确定要删除所有更早的消息吗？"
+        },
+        "tooltip": {
+            "pinned": "删除所有置顶消息",
+            "today": "删除今天的所有消息",
+            "yesterday": "删除昨天的所有消息",
+            "last7Days": "删除最近7天的所有消息",
+            "older": "删除所有更早的消息"
+        }
+    },    "pin": "置顶",
     "unpin": "取消置顶",
     "generationInfo": "生成信息",
     "sidebarChat": "侧边栏聊天",

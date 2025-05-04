@@ -150,6 +150,22 @@
         "last7Days": "7 derniers jours",
         "older": "Plus ancien"
     },
+    "range": {
+        "deleteConfirm": {
+            "pinned": "Êtes-vous sûr de vouloir supprimer tous les messages épinglés ?",
+            "today": "Êtes-vous sûr de vouloir supprimer tous les messages d'aujourd'hui ?",
+            "yesterday": "Êtes-vous sûr de vouloir supprimer tous les messages d'hier ?",
+            "last7Days": "Êtes-vous sûr de vouloir supprimer tous les messages des 7 derniers jours ?",
+            "older": "Êtes-vous sûr de vouloir supprimer tous les messages plus anciens ?"
+        },
+        "tooltip": {
+            "pinned": "Supprimer tous les messages épinglés",
+            "today": "Supprimer tous les messages d'aujourd'hui",
+            "yesterday": "Supprimer tous les messages d'hier",
+            "last7Days": "Supprimer tous les messages des 7 derniers jours",
+            "older": "Supprimer tous les messages plus anciens"
+        }
+    },
     "pin": "Épingler",
     "unpin": "Désépingler",
     "generationInfo": "Informations de génération",
