@@ -29,28 +29,7 @@ export const ThemesSettings: React.FC = () => {
     setCustomCss(debouncedCustomCss)
   }, [debouncedCustomCss])
 
-  const applyCustomTheme = () => {
-    document.querySelectorAll('[data-custom-theme]').forEach(el => el.remove())
 
-    if (cssUrl) {
-      const link = document.createElement('link')
-      link.rel = 'stylesheet'
-      link.href = cssUrl
-      link.dataset.customTheme = 'url'
-      document.head.appendChild(link)
-    }
-
-    if (customCss) {
-      const style = document.createElement('style')
-      style.textContent = customCss
-      style.dataset.customTheme = 'inline'
-      document.head.appendChild(style)
-    }
-  }
-
-  React.useEffect(() => {
-    applyCustomTheme()
-  }, [cssUrl, customCss])
 
   return (
     <div className="flex flex-col space-y-3">
@@ -113,7 +92,7 @@ export const ThemesSettings: React.FC = () => {
           </div>
 
           <div className="flex justify-end">
-            <SaveButton text={t("themes.apply")} textOnSave={t("themes.applied")} btnType="button" onClick={applyCustomTheme} />
+            <SaveButton text={t("themes.apply")} textOnSave={t("themes.applied")} btnType="button" onClick={() => {}} />
           </div>
         </div>
       </div>
