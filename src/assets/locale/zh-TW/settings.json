@@ -12,7 +12,7 @@
         "placeholder": "選擇語言"
       },
       "darkMode": {
-        "label": "更改主題",
+        "label": "外觀",
         "options": {
           "light": "亮色",
           "dark": "暗色"

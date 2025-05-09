@@ -12,7 +12,7 @@
         "placeholder": "اختر لغة"
       },
       "darkMode": {
-        "label": "تغيير المظهر",
+        "label": "المظهر",
         "options": {
           "light": "فاتح",
           "dark": "داكن"
