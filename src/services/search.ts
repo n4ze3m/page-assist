@@ -11,11 +11,15 @@ const DEFAULT_PROVIDER = "duckduckgo"
 const AVAILABLE_PROVIDERS = ["google", "duckduckgo"] as const
 
 export const getIsSimpleInternetSearch = async () => {
+ try {
   const isSimpleInternetSearch = await storage.get("isSimpleInternetSearch")
   if (!isSimpleInternetSearch || isSimpleInternetSearch.length === 0) {
     return true
   }
   return isSimpleInternetSearch === "true"
+ } catch(e) {
+  return true
+ }
 }
 
 export const getIsVisitSpecificWebsite = async () => {
@@ -87,8 +91,26 @@ export const getBraveApiKey = async () => {
   return braveApiKey || ""
 }
 
+export const getTavilyApiKey = async () => {
+  const tavilyApiKey = await storage2.get("tavilyApiKey")
+  return tavilyApiKey || ""
+}
+
 export const setBraveApiKey = async (braveApiKey: string) => {
   await storage2.set("braveApiKey", braveApiKey)
+}
+
+export const getExaAPIKey = async () => {
+  const exaAPIKey = await storage2.get("exaAPIKey")
+  return exaAPIKey || ""
+}
+
+export const setExaAPIKey = async (exaAPIKey: string) => {
+  await storage2.set("exaAPIKey", exaAPIKey)
+}
+
+export const setTavilyApiKey = async (tavilyApiKey: string) => {
+  await storage2.set("tavilyApiKey", tavilyApiKey)
 }
 
 export const getGoogleDomain = async () => {
@@ -120,8 +142,10 @@ export const getSearchSettings = async () => {
     searxngURL,
     searxngJSONMode,
     braveApiKey,
+    tavilyApiKey,
     googleDomain,
-    defaultInternetSearchOn
+    defaultInternetSearchOn,
+    exaAPIKey
   ] = await Promise.all([
     getIsSimpleInternetSearch(),
     getSearchProvider(),
@@ -130,8 +154,10 @@ export const getSearchSettings = async () => {
     getSearxngURL(),
     isSearxngJSONMode(),
     getBraveApiKey(),
+    getTavilyApiKey(),
     getGoogleDomain(),
-    getInternetSearchOn()
+    getInternetSearchOn(),
+    getExaAPIKey()
   ])
 
   return {
@@ -142,8 +168,10 @@ export const getSearchSettings = async () => {
     searxngURL,
     searxngJSONMode,
     braveApiKey,
+    tavilyApiKey,
     googleDomain,
-    defaultInternetSearchOn
+    defaultInternetSearchOn,
+    exaAPIKey
   }
 }
 
@@ -155,8 +183,10 @@ export const setSearchSettings = async ({
   searxngJSONMode,
   searxngURL,
   braveApiKey,
+  tavilyApiKey,
   googleDomain,
-  defaultInternetSearchOn
+  defaultInternetSearchOn,
+  exaAPIKey
 }: {
   isSimpleInternetSearch: boolean
   searchProvider: string
@@ -165,8 +195,10 @@ export const setSearchSettings = async ({
   searxngURL: string
   searxngJSONMode: boolean
   braveApiKey: string
+  tavilyApiKey: string
   googleDomain: string,
   defaultInternetSearchOn: boolean
+  exaAPIKey: string
 }) => {
   await Promise.all([
     setIsSimpleInternetSearch(isSimpleInternetSearch),
@@ -176,7 +208,9 @@ export const setSearchSettings = async ({
     setSearxngJSONMode(searxngJSONMode),
     setSearxngURL(searxngURL),
     setBraveApiKey(braveApiKey),
+    setTavilyApiKey(tavilyApiKey),
     setGoogleDomain(googleDomain),
-    setInternetSearchOn(defaultInternetSearchOn)
+    setInternetSearchOn(defaultInternetSearchOn),
+    setExaAPIKey(exaAPIKey)
   ])
 }

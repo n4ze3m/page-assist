@@ -1,20 +1,41 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { Skeleton, Table, Tag, Tooltip, notification, Modal, Input } from "antd"
+import {
+  Skeleton,
+  Table,
+  Tag,
+  Tooltip,
+  notification,
+  Avatar
+} from "antd"
 import { bytePerSecondFormatter } from "~/libs/byte-formater"
 import { deleteModel, getAllModels } from "~/services/ollama"
 import dayjs from "dayjs"
 import relativeTime from "dayjs/plugin/relativeTime"
 import { useForm } from "@mantine/form"
-import {  RotateCcw, Trash2 } from "lucide-react"
+import { Pencil, RotateCcw, Settings, Trash2 } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useStorage } from "@plasmohq/storage/hook"
+import { ModelNickModelNicknameModal } from "./ModelNicknameModal"
+import { useState } from "react"
+import { AddUpdateModelSettings } from "./AddUpdateModelSettings"
 
 dayjs.extend(relativeTime)
 
 export const OllamaModelsTable = () => {
   const queryClient = useQueryClient()
-  const { t } = useTranslation(["settings", "common"])
+  const { t } = useTranslation(["settings", "common", "openai"])
   const [selectedModel, setSelectedModel] = useStorage("selectedModel")
+  const [openNicknameModal, setOpenNicknameModal] = useState(false)
+  const [openSettingsModal, setOpenSettingsModal] = useState(false)
+  const [model, setModel] = useState<{
+    model_id: string
+    model_name?: string
+    model_avatar?: string
+  }>({
+    model_id: "",
+    model_name: "",
+    model_avatar: ""
+  })
 
   const form = useForm({
     initialValues: {
@@ -24,7 +45,7 @@ export const OllamaModelsTable = () => {
 
   const { data, status } = useQuery({
     queryKey: ["fetchAllModels"],
-    queryFn: () => getAllModels({ returnEmpty: true })
+    queryFn: async () => await getAllModels({ returnEmpty: true })
   })
 
   const { mutate: deleteOllamaModel } = useMutation({
@@ -78,7 +99,35 @@ export const OllamaModelsTable = () => {
             <Table
               columns={[
                 {
-                  title: t("manageModels.columns.name"),
+                  title: t("openai:manageModels.columns.nickname"),
+                  dataIndex: "nickname",
+                  key: "nickname",
+                  render: (text: string, record: any) => (
+                    <div className="flex items-center gap-2">
+                      {record.avatar && (
+                        <Avatar
+                          size="small"
+                          src={record.avatar}
+                          alt={record.nickname}
+                        />
+                      )}
+                      <span>{text}</span>
+                      <button
+                        onClick={() => {
+                          setModel({
+                            model_id: record.model,
+                            model_name: record.nickname,
+                            model_avatar: record.avatar
+                          })
+                          setOpenNicknameModal(true)
+                        }}>
+                        <Pencil className="size-3" />
+                      </button>
+                    </div>
+                  )
+                },
+                {
+                  title: "Model ID",
                   dataIndex: "name",
                   key: "name"
                 },
@@ -109,7 +158,19 @@ export const OllamaModelsTable = () => {
                 {
                   title: t("manageModels.columns.actions"),
                   render: (_, record) => (
-                    <div className="flex gap-4">
+                    <div className="flex gap-2">
+                     <Tooltip title={t("common:modelSettings.label")}>
+                        <button
+                          onClick={() => {
+                            setModel({
+                              model_id: record.model
+                            })
+                            setOpenSettingsModal(true)
+                          }}
+                          className="text-gray-700 dark:text-gray-400">
+                          <Settings className="size-4" />
+                        </button>
+                      </Tooltip>
                       <Tooltip title={t("manageModels.tooltip.delete")}>
                         <button
                           onClick={() => {
@@ -126,9 +187,10 @@ export const OllamaModelsTable = () => {
                             }
                           }}
                           className="text-red-500 dark:text-red-400">
-                          <Trash2 className="w-5 h-5" />
+                          <Trash2 className="size-4" />
                         </button>
                       </Tooltip>
+                   
                       <Tooltip title={t("manageModels.tooltip.repull")}>
                         <button
                           onClick={() => {
@@ -139,7 +201,7 @@ export const OllamaModelsTable = () => {
                             }
                           }}
                           className="text-gray-700 dark:text-gray-400">
-                          <RotateCcw className="w-5 h-5" />
+                          <RotateCcw className="size-4" />
                         </button>
                       </Tooltip>
                     </div>
@@ -194,6 +256,19 @@ export const OllamaModelsTable = () => {
           </div>
         )}
       </div>
+      <ModelNickModelNicknameModal
+        model_id={model.model_id}
+        open={openNicknameModal}
+        setOpen={setOpenNicknameModal}
+        model_name={model.model_name}
+        model_avatar={model.model_avatar}
+      />
+
+      <AddUpdateModelSettings
+        model_id={model.model_id}
+        open={openSettingsModal}
+        setOpen={setOpenSettingsModal}
+      />
     </div>
   )
 }

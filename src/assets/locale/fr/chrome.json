@@ -4,7 +4,7 @@
         "label": "Activer ou désactiver la prise en charge de Chrome AI sur Page Assist"
     },
     "error": {
-        "browser_not_supported": "Cette version de Chrome n'est pas supportée par le modèle Gemini Nano. Veuillez mettre à jour vers la version 127 ou ultérieure.",
+        "browser_not_supported": "Cette version de Chrome n'est pas prise en charge par le modèle Gemini Nano. Veuillez mettre à jour vers la version 127 ou ultérieure.",
         "ai_not_supported": "Le paramètre chrome://flags/#prompt-api-for-gemini-nano n'est pas activé. Veuillez l'activer.",
         "ai_not_ready": "Gemini Nano n'est pas encore prêt; vous devez vérifier les paramètres de Chrome.",
         "internal_error": "Une erreur interne est survenue. Veuillez réessayer plus tard."

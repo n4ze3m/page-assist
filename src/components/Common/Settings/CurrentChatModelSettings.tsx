@@ -12,7 +12,7 @@ import {
   InputNumber,
   Modal,
   Skeleton,
-  Switch,
+  Switch
 } from "antd"
 import React, { useCallback } from "react"
 import { useTranslation } from "react-i18next"
@@ -82,7 +82,8 @@ export const CurrentChatModelSettings = ({
         useMlock: cUserSettings.useMlock ?? data.useMlock,
         tfsZ: cUserSettings.tfsZ ?? data.tfsZ,
         numKeep: cUserSettings.numKeep ?? data.numKeep,
-        numThread: cUserSettings.numThread ?? data.numThread
+        numThread: cUserSettings.numThread ?? data.numThread,
+        reasoningEffort: cUserSettings?.reasoningEffort
       })
       return data
     },
@@ -270,6 +271,16 @@ export const CurrentChatModelSettings = ({
                         name="useMlock"
                         label={t("modelSettings.form.useMlock.label")}>
                         <Switch />
+                      </Form.Item>
+                      <Form.Item
+                        name="reasoningEffort"
+                        label={t("modelSettings.form.reasoningEffort.label")}>
+                        <Input
+                          style={{ width: "100%" }}
+                          placeholder={t(
+                            "modelSettings.form.reasoningEffort.placeholder"
+                          )}
+                        />
                       </Form.Item>
                     </React.Fragment>
                   )

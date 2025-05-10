@@ -21,6 +21,7 @@
         "failed": "Не вдалося"
     },
     "addKnowledge": "Додати знання",
+    "updateKnowledge": "Оновити знання",
     "form": {
         "title": {
             "label": "Назва знань",

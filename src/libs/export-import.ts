@@ -6,7 +6,7 @@ import {
 } from "@/db"
 import { exportKnowledge, importKnowledge } from "@/db/knowledge"
 import { exportVectors, importVectors } from "@/db/vector"
-import { message } from "antd"
+import { notification } from "antd"
 
 export const exportPageAssistData = async () => {
   const knowledge = await exportKnowledge()
@@ -32,35 +32,37 @@ export const exportPageAssistData = async () => {
   a.click()
   URL.revokeObjectURL(url)
 }
-
 export const importPageAssistData = async (file: File) => {
-  const reader = new FileReader()
-  reader.onload = async () => {
-    try {
-      const data = JSON.parse(reader.result as string)
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = async () => {
+      try {
+        const data = JSON.parse(reader.result as string)
 
-      if (data?.knowledge) {
-        await importKnowledge(data.knowledge)
+        if (data?.knowledge) {
+          await importKnowledge(data.knowledge)
+        }
+
+        if (data?.chat) {
+          await importChatHistory(data.chat)
+        }
+
+        if (data?.vector) {
+          await importVectors(data.vector)
+        }
+
+        if (data?.prompts) {
+          await importPrompts(data.prompts)
+        }
+
+        resolve(true)
+      } catch (e) {
+        console.error(e)
+        reject(e)
       }
-
-      if (data?.chat) {
-        await importChatHistory(data.chat)
-      }
-
-      if (data?.vector) {
-        await importVectors(data.vector)
-      }
-
-      if (data?.prompts) {
-        await importPrompts(data.prompts)
-      }
-
-      message.success("Data imported successfully")
-    } catch (e) {
-      console.error(e)
-      message.error("Failed to import data")
     }
-  }
 
-  reader.readAsText(file)
+    reader.onerror = () => reject(reader.error)
+    reader.readAsText(file)
+  })
 }

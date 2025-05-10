@@ -23,7 +23,8 @@
         "speechToText": "Голос у текст",
         "uploadImage": "Завантажити зображення",
         "stopStreaming": "Зупинити трансляцію",
-        "knowledge": "Знання"
+        "knowledge": "Знання",
+        "clearContext": "Очистити контекст"
     },
     "sendWhenEnter": "Надсилати при натисканні Enter",
     "welcome": "Вітаю! Як я можу допомогти вам сьогодні?",

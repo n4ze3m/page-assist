@@ -8,6 +8,7 @@ import { useTranslation } from "react-i18next"
 import PubSub from "pubsub-js"
 import { KNOWLEDGE_QUEUE } from "@/queue"
 import { useStorage } from "@plasmohq/storage/hook"
+import { unsupportedTypes } from "./utils/unsupported-types"
 
 type Props = {
   open: boolean
@@ -31,8 +32,20 @@ export const AddKnowledge = ({ open, setOpen }: Props) => {
 
     const source: Source[] = []
 
+    const allowedTypes = [
+      "application/pdf",
+      "text/csv",
+      "text/plain",
+      "text/markdown",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    ]
+
     for (const file of data.file) {
-      const data = await convertToSource(file)
+      let mime = file.type
+      if (!allowedTypes.includes(mime)) {
+        mime = "text/plain"
+      }
+      const data = await convertToSource({ file, mime })
       source.push(data)
     }
 
@@ -92,7 +105,6 @@ export const AddKnowledge = ({ open, setOpen }: Props) => {
             return e?.fileList
           }}>
           <Upload.Dragger
-            accept={".pdf, .csv, .txt, .md, .docx"}
             multiple={true}
             maxCount={totalFilePerKB}
             beforeUpload={(file) => {
@@ -106,7 +118,7 @@ export const AddKnowledge = ({ open, setOpen }: Props) => {
                 .map((type) => type.toLowerCase())
                 .join(", ")
 
-              if (!allowedTypes.includes(file.type.toLowerCase())) {
+              if (unsupportedTypes.includes(file.type.toLowerCase())) {
                 message.error(
                   t("form.uploadFile.uploadError", { allowedTypes })
                 )
@@ -122,9 +134,9 @@ export const AddKnowledge = ({ open, setOpen }: Props) => {
               <p className="ant-upload-text">
                 {t("form.uploadFile.uploadText")}
               </p>
-              <p className="ant-upload-hint">
+              {/* <p className="ant-upload-hint">
                 {t("form.uploadFile.uploadHint")}
-              </p>
+              </p> */}
             </div>
           </Upload.Dragger>
         </Form.Item>

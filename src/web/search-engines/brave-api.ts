@@ -6,7 +6,8 @@ import { MemoryVectorStore } from "langchain/vectorstores/memory"
 import { PageAssistHtmlLoader } from "~/loader/html"
 import {
     defaultEmbeddingModelForRag,
-    getOllamaURL
+    getOllamaURL,
+    getSelectedModel
 } from "~/services/ollama"
 import { getPageAssistTextSplitter } from "@/utils/text-splitter"
 
@@ -63,8 +64,9 @@ export const braveAPISearch = async (query: string) => {
 
     const ollamaUrl = await getOllamaURL()
     const embeddingModel = await defaultEmbeddingModelForRag()
+    const selectedModel = await getSelectedModel()
     const ollamaEmbedding = await pageAssistEmbeddingModel({
-        model: embeddingModel || "",
+        model: embeddingModel || selectedModel || "",
         baseUrl: cleanUrl(ollamaUrl)
     })
 

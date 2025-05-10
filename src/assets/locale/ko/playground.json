@@ -23,7 +23,8 @@
         "speechToText": "음성 입력",
         "uploadImage": "이미지 업로드",
         "stopStreaming": "스트리밍 중지",
-        "knowledge": "지식"
+        "knowledge": "지식",
+        "clearContext": "컨텍스트 지우기"
     },
     "sendWhenEnter": "Enter 키를 누르면 전송",
     "welcome": "안녕하세요! 오늘 어떻게 도와드릴까요?",

@@ -2,23 +2,25 @@ import { useState } from "react"
 import { useTranslation } from "react-i18next"
 import { AddKnowledge } from "./AddKnowledge"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { deleteKnowledge, getAllKnowledge } from "@/db/knowledge"
+import { deleteKnowledge, deleteSource, getAllKnowledge } from "@/db/knowledge"
 import { Skeleton, Table, Tag, Tooltip, message } from "antd"
-import { Trash2 } from "lucide-react"
-import { KnowledgeIcon } from "./KnowledgeIcon"
+import { FileUpIcon, Trash2 } from "lucide-react"
 import { useMessageOption } from "@/hooks/useMessageOption"
 import { removeModelSuffix } from "@/db/models"
+import { UpdateKnowledge } from "./UpdateKnowledge"
 
 export const KnowledgeSettings = () => {
   const { t } = useTranslation(["knowledge", "common"])
   const [open, setOpen] = useState(false)
   const queryClient = useQueryClient()
   const { selectedKnowledge, setSelectedKnowledge } = useMessageOption()
+  const [openUpdate, setOpenUpdate] = useState(false)
+  const [updateKnowledgeId, setUpdateKnowledgeId] = useState("")
 
   const { data, status } = useQuery({
     queryKey: ["fetchAllKnowledge"],
     queryFn: () => getAllKnowledge(),
-    refetchInterval: 1000,
+    refetchInterval: 1000
   })
 
   const { mutate: deleteKnowledgeMutation, isPending: isDeleting } =
@@ -93,6 +95,17 @@ export const KnowledgeSettings = () => {
                 key: "action",
                 render: (text: string, record: any) => (
                   <div className="flex gap-4">
+                    <Tooltip title={t("updateKnowledge")}>
+                      <button
+                        disabled={isDeleting || record.status === "processing"} 
+                        onClick={() => {
+                          setUpdateKnowledgeId(record.id)
+                          setOpenUpdate(true)
+                        }}
+                        className="text-gray-700 dark:text-gray-400 disabled:opacity-50">
+                        <FileUpIcon className="w-5 h-5" />
+                      </button>
+                    </Tooltip>
                     <Tooltip title={t("common:delete")}>
                       <button
                         disabled={isDeleting}
@@ -121,6 +134,28 @@ export const KnowledgeSettings = () => {
                       title: t("expandedColumns.name"),
                       key: "filename",
                       dataIndex: "filename"
+                    },
+                    {
+                      title: t("columns.action"),
+                      key: "action",
+                      render: (text: string, r: any) => (
+                        <div className="flex gap-4">
+                          <Tooltip title={t("common:delete")}>
+                            <button
+                              disabled={
+                                isDeleting || record.status === "processing"
+                              }
+                              onClick={async () => {
+                                if (window.confirm(t("confirm.deleteSource"))) {
+                                  await deleteSource(record.id, r.source_id)
+                                }
+                              }}
+                              className="text-red-500 dark:text-red-400 disabled:opacity-50">
+                              <Trash2 className="w-5 h-5" />
+                            </button>
+                          </Tooltip>
+                        </div>
+                      )
                     }
                   ]}
                   dataSource={record.source}
@@ -139,6 +174,11 @@ export const KnowledgeSettings = () => {
       </div>
 
       <AddKnowledge open={open} setOpen={setOpen} />
+      <UpdateKnowledge
+        id={updateKnowledgeId}
+        open={openUpdate}
+        setOpen={setOpenUpdate}
+      />
     </div>
   )
 }

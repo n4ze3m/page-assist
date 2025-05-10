@@ -1,7 +1,6 @@
-import { type ClientOptions, OpenAI as OpenAIClient } from "openai"
+import { type ClientOptions, OpenAI as OpenAIClient, } from "openai"
 import {
     AIMessage,
-    AIMessageChunk,
     BaseMessage,
     ChatMessage,
     ChatMessageChunk,
@@ -30,7 +29,7 @@ import { wrapOpenAIClientError } from "./utils/openai.js"
 import {
     ChatOpenAICallOptions,
     getEndpoint,
-    OpenAIChatInput,
+    OpenAIChatInput as OldOpenAIChatInput,
     OpenAICoreRequestOptions
 } from "@langchain/openai"
 import { CallbackManagerForLLMRun } from "@langchain/core/callbacks/manager"
@@ -39,7 +38,13 @@ import { LegacyOpenAIInput } from "./types.js"
 import { CustomAIMessageChunk } from "./CustomAIMessageChunk.js"
 
 type OpenAIRoleEnum = "system" | "assistant" | "user" | "function" | "tool"
+type ReasoningEffort = 'low' | 'medium' | 'high' | null
 
+interface ReasoningEffortOptions {
+    reasoning_effort?: ReasoningEffort
+}
+
+type OpenAIChatInput = OldOpenAIChatInput & ReasoningEffortOptions
 function extractGenericMessageCustomRole(message: ChatMessage) {
     if (
         message.role !== "system" &&
@@ -211,6 +216,8 @@ export class CustomChatOpenAI<
 
     organization?: string
 
+    reasoning_effort?: ReasoningEffort | null
+
     protected client: OpenAIClient
 
     protected clientConfig: ClientOptions
@@ -250,10 +257,10 @@ export class CustomChatOpenAI<
     constructor(
         fields?: Partial<OpenAIChatInput> &
             BaseChatModelParams & {
-                configuration?: ClientOptions & LegacyOpenAIInput
+                configuration?: ClientOptions & LegacyOpenAIInput & ReasoningEffortOptions
             },
         /** @deprecated */
-        configuration?: ClientOptions & LegacyOpenAIInput
+        configuration?: ClientOptions & LegacyOpenAIInput & ReasoningEffortOptions
     ) {
         super(fields ?? {})
         Object.defineProperty(this, "lc_serializable", {
@@ -266,31 +273,31 @@ export class CustomChatOpenAI<
             enumerable: true,
             configurable: true,
             writable: true,
-            value: 1
+            value: void 0
         })
         Object.defineProperty(this, "topP", {
             enumerable: true,
             configurable: true,
             writable: true,
-            value: 1
+            value: void 0
         })
         Object.defineProperty(this, "frequencyPenalty", {
             enumerable: true,
             configurable: true,
             writable: true,
-            value: 0
+            value: void 0
         })
         Object.defineProperty(this, "presencePenalty", {
             enumerable: true,
             configurable: true,
             writable: true,
-            value: 0
+            value: void 0
         })
         Object.defineProperty(this, "n", {
             enumerable: true,
             configurable: true,
             writable: true,
-            value: 1
+            value: void 0
         })
         Object.defineProperty(this, "logitBias", {
             enumerable: true,
@@ -424,6 +431,7 @@ export class CustomChatOpenAI<
         this.stop = fields?.stop
         this.user = fields?.user
         this.streaming = fields?.streaming ?? false
+        this.reasoning_effort = fields?.reasoning_effort ?? null
         this.clientConfig = {
             apiKey: this.openAIApiKey,
             organization: this.organization,
@@ -471,6 +479,9 @@ export class CustomChatOpenAI<
             tool_choice: options?.tool_choice,
             response_format: options?.response_format,
             seed: options?.seed,
+            reasoning: this.reasoning_effort ? {
+                method: this.reasoning_effort,
+            } : undefined,
             ...this.modelKwargs
         }
         return params

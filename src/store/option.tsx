@@ -20,6 +20,8 @@ export type Message = {
   reasoning_time_taken?: number
   id?: string
   messageType?: string
+  modelName?: string
+  modelImage?: string
 }
 
 export type ChatHistory = {

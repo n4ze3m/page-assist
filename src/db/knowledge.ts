@@ -16,6 +16,8 @@ export type Knowledge = {
   source: Source[]
   knownledge: any
   createdAt: number
+  systemPrompt?: string,
+  followupPrompt?: string
 }
 export const generateID = () => {
   return "pa_knowledge_xxxx-xxxx-xxx-xxxx".replace(/[x]/g, () => {
@@ -146,7 +148,7 @@ export const updateKnowledgeStatus = async (id: string, status: string) => {
   const db = new PageAssistKnowledge()
   const knowledge = await db.getById(id)
   if (status === "finished") {
-    knowledge.source = knowledge.source.map(e => ({
+    knowledge.source = knowledge?.source?.map(e => ({
       ...e,
       content: undefined,
     }))
@@ -156,6 +158,18 @@ export const updateKnowledgeStatus = async (id: string, status: string) => {
     status
   })
 }
+
+
+export const addNewSources = async (id: string, source: Source[]) => {
+  await updateKnowledgeStatus(id, "processing")
+  const db = new PageAssistKnowledge()
+  const knowledge = await db.getById(id)
+  await db.update({
+    ...knowledge,
+    source: [...knowledge.source, ...source]
+  })
+}
+
 
 export const getAllKnowledge = async (status?: string) => {
   const db = new PageAssistKnowledge()
@@ -208,4 +222,18 @@ export const importKnowledge = async (data: Knowledge[]) => {
   for (const d of data) {
     await db.create(d)
   }
+}
+
+export const updateKnowledgebase = async ({ id, systemPrompt, title }: {
+  id: string,
+  title: string,
+  systemPrompt: string
+}) => {
+  const kb = new PageAssistKnowledge()
+  const knowledgeBase = await kb.getById(id)
+  await kb.update({
+    ...knowledgeBase,
+    title,
+    systemPrompt
+  })
 }

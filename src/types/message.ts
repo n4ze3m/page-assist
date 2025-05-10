@@ -18,4 +18,6 @@ export type Message = {
   id?: string
   generationInfo?: any
   reasoning_time_taken?: number
+  modelImage?: string
+  modelName?: string
 }

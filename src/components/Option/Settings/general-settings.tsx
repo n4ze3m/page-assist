@@ -1,27 +1,17 @@
-import { useQueryClient } from "@tanstack/react-query"
 import { useDarkMode } from "~/hooks/useDarkmode"
-import { useMessageOption } from "~/hooks/useMessageOption"
-import { PageAssitDatabase } from "@/db"
 import { Select, Switch } from "antd"
-import { SUPPORTED_LANGUAGES } from "~/utils/supported-languages"
 import { MoonIcon, SunIcon } from "lucide-react"
 import { SearchModeSettings } from "./search-mode"
 import { useTranslation } from "react-i18next"
 import { useI18n } from "@/hooks/useI18n"
 import { TTSModeSettings } from "./tts-mode"
-import {
-  exportPageAssistData,
-  importPageAssistData
-} from "@/libs/export-import"
 import { useStorage } from "@plasmohq/storage/hook"
+import { SystemSettings } from "./system-settings"
+import { SSTSettings } from "./sst-settings"
 
 export const GeneralSettings = () => {
-  const { clearChat } = useMessageOption()
+  const [userChatBubble, setUserChatBubble] = useStorage("userChatBubble", true)
 
-  const [speechToTextLanguage, setSpeechToTextLanguage] = useStorage(
-    "speechToTextLanguage",
-    "en-US"
-  )
   const [copilotResumeLastChat, setCopilotResumeLastChat] = useStorage(
     "copilotResumeLastChat",
     false
@@ -41,6 +31,9 @@ export const GeneralSettings = () => {
     false
   )
 
+  const [autoCopyResponseToClipboard, setAutoCopyResponseToClipboard] =
+    useStorage("autoCopyResponseToClipboard", false)
+
   const [generateTitle, setGenerateTitle] = useStorage("titleGenEnabled", false)
 
   const [hideCurrentChatModelSettings, setHideCurrentChatModelSettings] =
@@ -54,12 +47,14 @@ export const GeneralSettings = () => {
     true
   )
 
-  const [checkWideMode, setCheckWideMode] = useStorage(
-    "checkWideMode",
+  const [checkWideMode, setCheckWideMode] = useStorage("checkWideMode", false)
+
+  const [openReasoning, setOpenReasoning] = useStorage("openReasoning", false)
+
+  const [useMarkdownForUserMessage, setUseMarkdownForUserMessage] = useStorage(
+    "useMarkdownForUserMessage",
     false
   )
-
-  const queryClient = useQueryClient()
 
   const { mode, toggleDarkMode } = useDarkMode()
   const { t } = useTranslation("settings")
@@ -73,28 +68,7 @@ export const GeneralSettings = () => {
         </h2>
         <div className="border border-b border-gray-200 dark:border-gray-600 mt-3"></div>
       </div>
-      <div className="flex flex-row justify-between">
-        <span className="text-gray-700 dark:text-neutral-50">
-          {t("generalSettings.settings.speechRecognitionLang.label")}
-        </span>
 
-        <Select
-          placeholder={t(
-            "generalSettings.settings.speechRecognitionLang.placeholder"
-          )}
-          allowClear
-          showSearch
-          options={SUPPORTED_LANGUAGES}
-          value={speechToTextLanguage}
-          filterOption={(input, option) =>
-            option!.label.toLowerCase().indexOf(input.toLowerCase()) >= 0 ||
-            option!.value.toLowerCase().indexOf(input.toLowerCase()) >= 0
-          }
-          onChange={(value) => {
-            setSpeechToTextLanguage(value)
-          }}
-        />
-      </div>
       <div className="flex flex-row justify-between">
         <span className="text-gray-700   dark:text-neutral-50">
           {t("generalSettings.settings.language.label")}
@@ -227,6 +201,58 @@ export const GeneralSettings = () => {
       </div>
 
       <div className="flex flex-row justify-between">
+        <div className="inline-flex items-center gap-2">
+          <span className="text-gray-700   dark:text-neutral-50">
+            {t("generalSettings.settings.openReasoning.label")}
+          </span>
+        </div>
+
+        <Switch
+          checked={openReasoning}
+          onChange={(checked) => setOpenReasoning(checked)}
+        />
+      </div>
+
+      <div className="flex flex-row justify-between">
+        <div className="inline-flex items-center gap-2">
+          <span className="text-gray-700   dark:text-neutral-50">
+            {t("generalSettings.settings.userChatBubble.label")}
+          </span>
+        </div>
+
+        <Switch
+          checked={userChatBubble}
+          onChange={(checked) => setUserChatBubble(checked)}
+        />
+      </div>
+
+      <div className="flex flex-row justify-between">
+        <div className="inline-flex items-center gap-2">
+          <span className="text-gray-700   dark:text-neutral-50">
+            {t("generalSettings.settings.autoCopyResponseToClipboard.label")}
+          </span>
+        </div>
+
+        <Switch
+          checked={autoCopyResponseToClipboard}
+          onChange={(checked) => setAutoCopyResponseToClipboard(checked)}
+        />
+      </div>
+
+      <div className="flex flex-row justify-between">
+        <div className="inline-flex items-center gap-2">
+          <span className="text-gray-700   dark:text-neutral-50">
+            {t("generalSettings.settings.useMarkdownForUserMessage.label")}
+          </span>
+        </div>
+
+        <Switch
+          checked={useMarkdownForUserMessage}
+          onChange={(checked) => setUseMarkdownForUserMessage(checked)}
+        />
+      </div>
+
+      <div className="flex flex-row justify-between">
         <span className="text-gray-700 dark:text-neutral-50 ">
           {t("generalSettings.settings.darkMode.label")}
         </span>
@@ -245,79 +271,9 @@ export const GeneralSettings = () => {
         </button>
       </div>
       <SearchModeSettings />
+      <SSTSettings />
       <TTSModeSettings />
-      <div>
-        <div className="mb-5">
-          <h2 className="text-base font-semibold leading-7 text-gray-900 dark:text-white">
-            {t("generalSettings.system.heading")}
-          </h2>
-          <div className="border border-b border-gray-200 dark:border-gray-600 mt-3"></div>
-        </div>
-
-        <div className="flex flex-row mb-3 justify-between">
-          <span className="text-gray-700 dark:text-neutral-50 ">
-            {t("generalSettings.system.export.label")}
-          </span>
-          <button
-            onClick={exportPageAssistData}
-            className="bg-gray-800 dark:bg-white text-white dark:text-gray-900 px-4 py-2 rounded-md cursor-pointer">
-            {t("generalSettings.system.export.button")}
-          </button>
-        </div>
-        <div className="flex flex-row mb-3 justify-between">
-          <span className="text-gray-700 dark:text-neutral-50 ">
-            {t("generalSettings.system.import.label")}
-          </span>
-          <label
-            htmlFor="import"
-            className="bg-gray-800 dark:bg-white text-white dark:text-gray-900 px-4 py-2 rounded-md cursor-pointer">
-            {t("generalSettings.system.import.button")}
-          </label>
-          <input
-            type="file"
-            accept=".json"
-            id="import"
-            className="hidden"
-            onChange={(e) => {
-              if (e.target.files) {
-                importPageAssistData(e.target.files[0])
-              }
-            }}
-          />
-        </div>
-
-        <div className="flex flex-row mb-3 justify-between">
-          <span className="text-gray-700 dark:text-neutral-50 ">
-            {t("generalSettings.system.deleteChatHistory.label")}
-          </span>
-
-          <button
-            onClick={async () => {
-              const confirm = window.confirm(
-                t("generalSettings.system.deleteChatHistory.confirm")
-              )
-
-              if (confirm) {
-                const db = new PageAssitDatabase()
-                await db.deleteAllChatHistory()
-                queryClient.invalidateQueries({
-                  queryKey: ["fetchChatHistory"]
-                })
-                clearChat()
-                try {
-                  await browser.storage.sync.clear()
-                  await browser.storage.local.clear()
-                  await browser.storage.session.clear()
-                } catch (e) {
-                  console.error("Error clearing storage:", e)
-                }
-              }
-            }}
-            className="bg-red-500 dark:bg-red-600 text-white dark:text-gray-200 px-4 py-2 rounded-md">
-            {t("generalSettings.system.deleteChatHistory.button")}
-          </button>
-        </div>
-      </div>
+      <SystemSettings />
     </dl>
   )
 }

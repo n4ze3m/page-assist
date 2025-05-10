@@ -43,11 +43,49 @@ export default defineConfig({
           {
             text: "Sidebar Copilot",
             link: "/sidebar/copilot"
+          },
+          {
+            text: "Chat With Website",
+            link: "/sidebar/chat-with-website"
+          },
+          {
+            text: "Sidebar Vision (🧪)",
+            link: "/sidebar/vision"
           }
         ],
       },
       {
+        text: "Features",
+        items: [
+          {
+            text: "Internet Search",
+            link: "/features/internet-search"
+          },
+          {
+            text: "Prompts",
+            link: "/features/prompts"
+          },
+          {
+            text: "Knowledge Base",
+            link: "/features/knowledge-base"
+          },
+          {
+            text: "Page Share",
+            link: "/features/page-share"
+          },
+          {
+            text: "Ollama",
+            link: "/features/ollama"
+          },
+          {
+            text: "Other",
+            link: "/features/other"
+          }
+        ]
+      },
+      {
         text: "Providers",
+        collapsed: true,
         items: [
           {
             text: "Ollama",
@@ -69,6 +107,10 @@ export default defineConfig({
           {
             text: "Ollama Connection Issue",
             link: "/connection-issue"
+          },
+          {
+            text: "Extensions Causing Issue with Other Websites",
+            link: "/extensions-causing-issue-other-websites"
           }
         ]
       }],
@@ -83,4 +125,5 @@ export default defineConfig({
       copyright: "Copyright © 2025 Muhammed Nazeem  & Page Assist Contributors",
     },
   },
+  ignoreDeadLinks: true
 })

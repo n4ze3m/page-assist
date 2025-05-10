@@ -1,9 +1,22 @@
-# Page Assist
+<p align="center">
+    <h1 align="center">Page Assist</h1>
+</p>
 
-[![Join dialoqbase #welcome](https://img.shields.io/badge/discord-join%20chat-blue.svg)](https://discord.gg/bu54382uBd)
-[![Twitter Follow](https://img.shields.io/twitter/follow/page_assist?style=social)](https://twitter.com/page_assist)
+
+<p align="center">
+<a href="https://discord.gg/bu54382uBd" aria-label="Join dialoqbase #welcome"><img src="https://img.shields.io/badge/discord-join%20chat-blue.svg" alt="Join dialoqbase #welcome"></a>  <a href="https://twitter.com/page_assist" aria-label="Follow @page_assist on Twitter"><img src="https://img.shields.io/twitter/follow/page_assist?style=social" alt="Follow @page_assist on Twitter"></a> 
+</p>
+
+<p align="center">
+    <a href="https://docs.pageassist.xyz">
+        Documentation
+    </a>
+
+</p>
+
 
 Page Assist is an open-source browser extension that provides a sidebar and web UI for your local AI model. It allows you to interact with your model from any webpage.
+
 ## Installation
 
 Page Assist supports Chromium-based browsers like Chrome, Brave, and Edge, as well as Firefox.
@@ -11,7 +24,6 @@ Page Assist supports Chromium-based browsers like Chrome, Brave, and Edge, as we
 [![Chrome Web Store](https://pub-35424b4473484be483c0afa08c69e7da.r2.dev/UV4C4ybeBTsZt43U4xis.png)](https://chrome.google.com/webstore/detail/page-assist/jfgfiigpkhlkbnfnbobbkinehhfdhndo)
 [![Firefox Add-on](https://pub-35424b4473484be483c0afa08c69e7da.r2.dev/get-the-addon.png)](https://addons.mozilla.org/en-US/firefox/addon/page-assist/)
 [![Edge Add-on](https://pub-35424b4473484be483c0afa08c69e7da.r2.dev/edge-addon.png)](https://microsoftedge.microsoft.com/addons/detail/page-assist-a-web-ui-fo/ogkogooadflifpmmidmhjedogicnhooa)
-
 
 Checkout the Demo (v1.0.0):
 
@@ -52,17 +64,13 @@ cd page-assist
 bun install
 ```
 
-3. Build the extension (by default it will build for Chrome)
+3. Build the extension (by default it will build for Chrome, Edge and Firefox)
 
 ```bash
 bun run build
 ```
 
-or you can build for Firefox
-
-```bash
-bun build:firefox
-```
+_Note: If you face any issues with Bun, use `npm` instead of `bun`._
 
 4. Load the extension (chrome)
 
@@ -163,6 +171,11 @@ This are some of the blogs and videos about Page Assist. If you have written a b
 - [This Chrome Extension Surprised Me](https://www.youtube.com/watch?v=IvLTlDy9G8c) by [Matt Williams](https://www.youtube.com/@technovangelist)
 
 - [Ollama With 1 Click](https://www.youtube.com/watch?v=61uN5jtj2wo) by [Yaron Been From EcomXFactor](https://www.youtube.com/@ecomxfactor-YaronBeen)
+
+- [Page Assist 介绍合集](https://mp.weixin.qq.com/mp/appmsgalbum?__biz=Mzk2NDUxNDQ3Nw==&action=getalbum&album_id=3845692786608553984#wechat_redirect) by 百工智用公众号
+
+
+- [Eine KI auf dem eigenen Rechner laufen lassen, 10 Minuten Installation](https://www.johannesholstein.de/gsCMS/index.php?id=sonstige-video-tutorials) by [Johannes Holstein](https://www.johannesholstein.de)
 
 ## License
 

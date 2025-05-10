@@ -23,7 +23,8 @@
         "speechToText": "Tal til Tekst",
         "uploadImage": "Upload Billed",
         "stopStreaming": "Stop Streaming",
-        "knowledge": "Viden"
+        "knowledge": "Viden",
+        "clearContext": "Ryd Kontekst"
     },
     "sendWhenEnter": "Søg, når Indtast trykkes",
     "welcome": "Hej! Hvordan kan jeg hjælpe dig i dag?",

@@ -44,6 +44,12 @@
       },
       "wideMode": {
         "label": "Breitbildmodus aktivieren"
+      },
+      "openReasoning": {
+        "label": "Offene Argumentation standardmäßig eingeklappt"
+      },
+      "userChatBubble": {
+        "label": "Chat-Blase für Benutzernachrichten verwenden"
       }
     },
     "sidepanelRag": {
@@ -122,6 +128,16 @@
       },
       "removeReasoningTagTTS": {
         "label": "Reasoning-Tag aus Text-zu-Sprache entfernen"
+      }
+    },
+    "stt": {
+      "heading": "Sprache-zu-Text-Einstellungen",
+      "autoStopTimeout": {
+        "label": "Automatische Stopp-Zeitüberschreitung (ms)",
+        "placeholder": "Geben Sie die automatische Stopp-Zeitüberschreitung in Millisekunden ein"
+      },
+      "autoSubmitVoiceMessage": {
+        "label": "Sprachnachricht automatisch senden"
       }
     }
   },

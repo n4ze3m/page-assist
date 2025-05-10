@@ -21,6 +21,7 @@
         "failed": "Fallito"
     },
     "addKnowledge": "Aggiungi Knowledge Base",
+    "updateKnowledge": "Aggiungi Fonte",
     "form": {
         "title": {
             "label": "Titolo Knowledge Base",

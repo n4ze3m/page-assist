@@ -6,6 +6,8 @@ export type Message = {
   message: string
   sources: any[]
   images?: string[]
+  modelName?: string
+  modelImage?: string
 }
 
 export type ChatHistory = {

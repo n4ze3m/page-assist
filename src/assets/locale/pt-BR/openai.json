@@ -53,7 +53,8 @@
             "model_type": "Tipo de Modelo",
             "model_id": "ID do Modelo",
             "provider": "Nome do Provedor",
-            "actions": "Ação"
+            "actions": "Ação",
+            "nickname": "Apelido do Modelo"
         },
         "tooltip": {
             "delete": "Excluir"
@@ -86,5 +87,20 @@
         "embedding": "Modelo de Incorporação",
         "chatInfo": "é usado para conclusão de chat e geração de conversas",
         "embeddingInfo": "é usado para RAG e outras tarefas relacionadas à busca semântica."
+    },
+    "nicknameModal": {
+        "title": "Adicionar / Editar Apelido do Modelo",
+        "form": {
+            "modelName": {
+                "label": "Nome do Modelo",
+                "placeholder": "Digite o nome do modelo",
+                "required": "O nome do modelo é obrigatório."
+            },
+            "modelAvatar": {
+                "label": "Avatar do Modelo",
+                "placeholder": "Digite o avatar do modelo",
+                "help": "Por favor, insira a URL do avatar do modelo. Esta imagem será exibida na janela de chat."
+            }
+        }
     }
 }

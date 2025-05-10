@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query"
-import { Dropdown, Tooltip } from "antd"
+import { Avatar, Dropdown, Tooltip } from "antd"
 import { LucideBrain } from "lucide-react"
 import React from "react"
 import { useTranslation } from "react-i18next"
@@ -29,12 +29,16 @@ export const ModelSelect: React.FC = () => {
                 label: (
                   <div className="w-52 gap-2 text-lg truncate inline-flex line-clamp-3  items-center  dark:border-gray-700">
                     <div>
-                      <ProviderIcons
-                        provider={d?.provider}
-                        className="h-6 w-6 text-gray-400"
-                      />
+                      {d.avatar ? (
+                        <Avatar src={d.avatar} alt={d.name} size="small" />
+                      ) : (
+                        <ProviderIcons
+                          provider={d?.provider}
+                          className="h-6 w-6 text-gray-400"
+                        />
+                      )}
                     </div>
-                    {d.name}
+                    {d?.nickname || d.model}
                   </div>
                 ),
                 onClick: () => {

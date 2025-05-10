@@ -4,7 +4,8 @@ import { PageAssistHtmlLoader } from "@/loader/html"
 import { pageAssistEmbeddingModel } from "@/models/embedding"
 import {
   defaultEmbeddingModelForRag,
-  getOllamaURL
+  getOllamaURL,
+  getSelectedModel
 } from "@/services/ollama"
 import {
   getIsSimpleInternetSearch,
@@ -23,45 +24,61 @@ const getCorrectTargeUrl = async (url: string) => {
   return matches?.[1] || ""
 }
 export const localSogouSearch = async (query: string) => {
-  await urlRewriteRuntime(
-    cleanUrl("https://www.sogou.com/web?query=" + query),
-    "sogou"
-  )
+  try {
+    await urlRewriteRuntime(
+      cleanUrl("https://www.sogou.com/web?query=" + query),
+      "sogou"
+    )
 
-  const abortController = new AbortController()
+    const abortController = new AbortController()
+    setTimeout(() => abortController.abort(), 10000)
 
-  setTimeout(() => abortController.abort(), 10000)
-
-  const htmlString = await fetch("https://www.sogou.com/web?query=" + query, {
-    signal: abortController.signal
-  })
-    .then((response) => response.text())
-    .catch()
-
-  const $ = cheerio.load(htmlString)
-  const $result = $("#main .results")
-  const nodes = $result.children().map(async (i, el) => {
-    const $el = $(el)
-    const title = $el.find(".vr-title").text().replace(/\n/g, "").trim()
-    let link = $el.find(".vr-title > a").get(0)?.attribs.href
-    const content = [".star-wiki", ".fz-mid", ".attribute-centent"]
-      .map((selector) => {
-        ;[".text-lightgray", ".zan-box", ".tag-website"].forEach((cls) => {
-          $el.find(cls).remove()
-        })
-        return $el.find(selector).text().trim() ?? ""
+    const htmlString = await fetch("https://www.sogou.com/web?query=" + query, {
+      signal: abortController.signal
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`)
+        }
+        return response.text()
       })
-      .join(" ")
-    if (link?.startsWith("/")) {
-      link = await getCorrectTargeUrl(`https://www.sogou.com${link}`)
-    }
-    return { title, link, content }
-  })
+      .catch((error) => {
+        console.error("Sogou search request failed:", error)
+        return ""
+      })
 
-  const searchResults = await Promise.all(nodes)
-  return searchResults.filter(
-    (result) => result.link && result.title && result.content
-  )
+    if (!htmlString) {
+      return []
+    }
+
+    const $ = cheerio.load(htmlString)
+    const $result = $("#main .results")
+    const nodes = $result.children().map(async (i, el) => {
+      const $el = $(el)
+      const title = $el.find(".vr-title").text().replace(/\n/g, "").trim()
+      let link = $el.find(".vr-title > a").get(0)?.attribs.href
+      const content = [".star-wiki", ".fz-mid", ".attribute-centent"]
+        .map((selector) => {
+          ;[".text-lightgray", ".zan-box", ".tag-website"].forEach((cls) => {
+            $el.find(cls).remove()
+          })
+          return $el.find(selector).text().trim() ?? ""
+        })
+        .join(" ")
+      if (link?.startsWith("/")) {
+        link = await getCorrectTargeUrl(`https://www.sogou.com${link}`)
+      }
+      return { title, link, content }
+    })
+
+    const searchResults = await Promise.all(nodes)
+    return searchResults.filter(
+      (result) => result.link && result.title && result.content
+    )
+  } catch (error) {
+    console.error("Sogou search processing failed:", error)
+    return []
+  }
 }
 
 export const webSogouSearch = async (query: string) => {
@@ -97,8 +114,9 @@ export const webSogouSearch = async (query: string) => {
   const ollamaUrl = await getOllamaURL()
 
   const embeddingModle = await defaultEmbeddingModelForRag()
+  const selectedModel = await getSelectedModel()
   const ollamaEmbedding = await pageAssistEmbeddingModel({
-    model: embeddingModle || "",
+    model: embeddingModle || selectedModel || "",
     baseUrl: cleanUrl(ollamaUrl)
   })
 

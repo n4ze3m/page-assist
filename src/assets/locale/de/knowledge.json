@@ -21,6 +21,7 @@
         "failed": "Fehlgeschlagen"
     },
     "addKnowledge": "Wissen hinzufügen",
+    "updateKnowledge": "Quelle hinzufügen",
     "form": {
         "title": {
             "label": "Wissenstitel",

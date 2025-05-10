@@ -5,6 +5,7 @@ Page Assist supports OpenAI Compatible API endpoints. You can use any OpenAI Com
 By default, Page Assist supports the following OpenAI Compatible API endpoints:
 
 - OpenAI
+- LLaMA.cpp
 - LM Studio
 - Ollama
 - Llamafile
@@ -19,6 +20,8 @@ By default, Page Assist supports the following OpenAI Compatible API endpoints:
 - VolcEngine
 - TencentCloud
 - AlibabaCloud
+- Infinigence AI
+- Novita AI
 
 
 ## Adding OpenAI Compatible API

@@ -53,7 +53,8 @@
             "model_type": "モデルタイプ",
             "model_id": "モデルID",
             "provider": "プロバイダー名",
-            "actions": "アクション"
+            "actions": "アクション",
+            "nickname": "モデルのニックネーム"
         },
         "tooltip": {
             "delete": "削除"
@@ -86,5 +87,20 @@
         "embedding": "埋め込みモデル",
         "chatInfo": "はチャット完了と会話生成に使用されます",
         "embeddingInfo": "はRAGやその他の意味検索関連タスクに使用されます。"
+    },
+    "nicknameModal": {
+        "title": "モデルのニックネームを追加/編集",
+        "form": {
+            "modelName": {
+                "label": "モデル名",
+                "placeholder": "モデル名を入力",
+                "required": "モデル名は必須です。"
+            },
+            "modelAvatar": {
+                "label": "モデルのアバター",
+                "placeholder": "モデルのアバターを入力",
+                "help": "モデルのアバターのURLを入力してください。この画像はチャットウィンドウに表示されます。"
+            }
+        }
     }
 }

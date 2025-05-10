@@ -19,8 +19,10 @@ export const SearchModeSettings = () => {
       searxngURL: "",
       searxngJSONMode: false,
       braveApiKey: "",
+      tavilyApiKey: "",
       googleDomain: "",
-      defaultInternetSearchOn: false
+      defaultInternetSearchOn: false,
+      exaAPIKey: ""
     }
   })
 
@@ -125,6 +127,45 @@ export const SearchModeSettings = () => {
                   required
                   className="w-full mt-4 sm:mt-0 sm:w-[200px]"
                   {...form.getInputProps("braveApiKey")}
+                />
+              </div>
+            </div>
+          </>
+        )}
+        {form.values.searchProvider === "tavily-api" && (
+          <>
+            <div className="flex sm:flex-row flex-col space-y-4 sm:space-y-0 sm:justify-between">
+              <span className="text-gray-700 dark:text-neutral-50">
+                {t("generalSettings.webSearch.tavilyApi.label")}
+              </span>
+              <div>
+                <Input.Password
+                  placeholder={t(
+                    "generalSettings.webSearch.tavilyApi.placeholder"
+                  )}
+                  required
+                  className="w-full mt-4 sm:mt-0 sm:w-[200px]"
+                  {...form.getInputProps("tavilyApiKey")}
+                />
+              </div>
+            </div>
+          </>
+        )}
+
+        {form.values.searchProvider === "exa" && (
+          <>
+            <div className="flex sm:flex-row flex-col space-y-4 sm:space-y-0 sm:justify-between">
+              <span className="text-gray-700 dark:text-neutral-50">
+                {t("generalSettings.webSearch.exa.label")}
+              </span>
+              <div>
+                <Input.Password
+                  placeholder={t(
+                    "generalSettings.webSearch.exa.placeholder"
+                  )}
+                  required
+                  className="w-full mt-4 sm:mt-0 sm:w-[200px]"
+                  {...form.getInputProps("exaAPIKey")}
                 />
               </div>
             </div>

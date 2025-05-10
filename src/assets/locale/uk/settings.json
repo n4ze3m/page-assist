@@ -44,6 +44,18 @@
       },
       "wideMode": {
         "label": "Увімкнути широкоекранний режим"
+      },
+      "openReasoning": {
+        "label": "Розгорнути міркування за замовчуванням"
+      },
+      "userChatBubble": {
+        "label": "Використовувати бульбашку чату для повідомлень користувача"
+      },
+      "autoCopyResponseToClipboard": {
+        "label": "Автоматично копіювати відповідь до буфера обміну"
+      },
+      "useMarkdownForUserMessage": {
+        "label": "Увімкнути форматування Markdown для повідомлень користувача"
       }
     },
     "sidepanelRag": {
@@ -122,6 +134,16 @@
       },
       "removeReasoningTagTTS": {
         "label": "Видалити тег міркування з TTS"
+      }
+    },
+    "stt": {
+      "heading": "Налаштування Голос-у-Текст",
+      "autoStopTimeout": {
+        "label": "Час автоматичної зупинки (мс)",
+        "placeholder": "Введіть час автоматичної зупинки в мілісекундах"
+      },
+      "autoSubmitVoiceMessage": {
+        "label": "Автоматичне надсилання голосового повідомлення"
       }
     }
   },

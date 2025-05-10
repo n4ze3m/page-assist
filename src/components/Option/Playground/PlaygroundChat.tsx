@@ -3,6 +3,7 @@ import { useMessageOption } from "~/hooks/useMessageOption"
 import { PlaygroundEmpty } from "./PlaygroundEmpty"
 import { PlaygroundMessage } from "~/components/Common/Playground/Message"
 import { MessageSourcePopup } from "@/components/Common/Playground/MessageSourcePopup"
+import { useStorage } from "@plasmohq/storage/hook"
 
 export const PlaygroundChat = () => {
   const {
@@ -11,10 +12,12 @@ export const PlaygroundChat = () => {
     regenerateLastMessage,
     isSearchingInternet,
     editMessage,
-    ttsEnabled
+    ttsEnabled,
+    onSubmit
   } = useMessageOption()
   const [isSourceOpen, setIsSourceOpen] = React.useState(false)
   const [source, setSource] = React.useState<any>(null)
+  const [openReasoning] = useStorage("openReasoning", false)
 
   return (
     <>
@@ -48,6 +51,16 @@ export const PlaygroundChat = () => {
             generationInfo={message?.generationInfo}
             isStreaming={streaming}
             reasoningTimeTaken={message?.reasoning_time_taken}
+            openReasoning={openReasoning}
+            modelImage={message?.modelImage}
+            modelName={message?.modelName}
+            onContinue={() => {
+              onSubmit({
+                image: "",
+                message: "",
+                isContinue: true
+              })
+            }}
           />
         ))}
       </div>

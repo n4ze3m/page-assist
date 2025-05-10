@@ -3,13 +3,9 @@ import { Document } from "@langchain/core/documents"
 import { YtTranscript } from "yt-transcript"
 import { isWikipedia, parseWikipedia } from "@/parser/wiki"
 import { extractReadabilityContent } from "@/parser/reader"
+import { isYoutubeLink } from "@/utils/is-youtube"
 
-const YT_REGEX =
-  /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=)?([a-zA-Z0-9_-]+)/
 
-const isYoutubeLink = (url: string) => {
-  return YT_REGEX.test(url)
-}
 
 const getTranscript = async (url: string) => {
   const ytTranscript = new YtTranscript({ url })
@@ -34,7 +30,9 @@ export class PageAssistHtmlLoader
   }
 
   async load(): Promise<Document<Record<string, any>>[]> {
+    console.log("Loading HTML...", this.url)
     if (isYoutubeLink(this.url)) {
+      console.log("Youtube link detected")
       const transcript = await getTranscript(this.url)
       if (!transcript) {
         throw new Error("Transcript not found for this video.")
@@ -43,7 +41,7 @@ export class PageAssistHtmlLoader
       let text = ""
 
       transcript.forEach((item) => {
-        text += item.text + " "
+        text += `[${item?.start}] ${item?.text}\n`
       })
 
       return [
@@ -63,7 +61,9 @@ export class PageAssistHtmlLoader
 
   async loadByURL(): Promise<Document<Record<string, any>>[]> {
     try {
+      console.log("Loading HTML...", this.url)
       if (isYoutubeLink(this.url)) {
+        console.log("Youtube link detected")
         const transcript = await getTranscript(this.url)
         if (!transcript) {
           throw new Error("Transcript not found for this video.")
@@ -72,7 +72,7 @@ export class PageAssistHtmlLoader
         let text = ""
 
         transcript.forEach((item) => {
-          text += item.text + " "
+          text += `[${item?.start}] ${item?.text}\n`
         })
 
         return [

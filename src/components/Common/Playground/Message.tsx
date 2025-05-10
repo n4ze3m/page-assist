@@ -1,15 +1,18 @@
 import Markdown from "../../Common/Markdown"
-import React from "react"
-import { Tag, Image, Tooltip, Collapse, Popover } from "antd"
+import React, { useEffect } from "react"
+import { Tag, Image, Tooltip, Collapse, Popover, Avatar } from "antd"
 import { WebSearch } from "./WebSearch"
 import {
   CheckIcon,
-  ClipboardIcon,
+  CopyIcon,
   InfoIcon,
   Pen,
+  PlayCircle,
   PlayIcon,
   RotateCcw,
-  Square
+  SpeakerIcon,
+  Square,
+  Volume2Icon
 } from "lucide-react"
 import { EditMessageForm } from "./EditMessageForm"
 import { useTranslation } from "react-i18next"
@@ -18,9 +21,10 @@ import { useTTS } from "@/hooks/useTTS"
 import { tagColors } from "@/utils/color"
 import { removeModelSuffix } from "@/db/models"
 import { GenerationInfo } from "./GenerationInfo"
-import { parseReasoning,  } from "@/libs/reasoning"
+import { parseReasoning } from "@/libs/reasoning"
 import { humanizeMilliseconds } from "@/utils/humanize-milliseconds"
 import { useStorage } from "@plasmohq/storage/hook"
+import { PlaygroundUserMessageBubble } from "./PlaygroundUserMessage"
 type Props = {
   message: string
   message_type?: string
@@ -39,38 +43,86 @@ type Props = {
   isSearchingInternet?: boolean
   sources?: any[]
   hideEditAndRegenerate?: boolean
+  hideContinue?: boolean
   onSourceClick?: (source: any) => void
   isTTSEnabled?: boolean
   generationInfo?: any
   isStreaming: boolean
   reasoningTimeTaken?: number
+  openReasoning?: boolean
+  modelImage?: string
+  modelName?: string
+  onContinue?: () => void
 }
 
 export const PlaygroundMessage = (props: Props) => {
   const [isBtnPressed, setIsBtnPressed] = React.useState(false)
   const [editMode, setEditMode] = React.useState(false)
   const [checkWideMode] = useStorage("checkWideMode", false)
-
+  const [isUserChatBubble] = useStorage("userChatBubble", true)
+  const [autoCopyResponseToClipboard] = useStorage(
+    "autoCopyResponseToClipboard",
+    false
+  )
   const { t } = useTranslation("common")
   const { cancel, isSpeaking, speak } = useTTS()
+  const isLastMessage: boolean =
+    props.currentMessageIndex === props.totalMessages - 1
+
+  useEffect(() => {
+    if (
+      autoCopyResponseToClipboard &&
+      props.isBot &&
+      isLastMessage &&
+      !props.isStreaming &&
+      !props.isProcessing &&
+      props.message.trim().length > 0
+    ) {
+      navigator.clipboard.writeText(props.message)
+      setIsBtnPressed(true)
+      setTimeout(() => {
+        setIsBtnPressed(false)
+      }, 2000)
+    }
+  }, [
+    autoCopyResponseToClipboard,
+    props.isBot,
+    props.currentMessageIndex,
+    props.totalMessages,
+    props.isStreaming,
+    props.isProcessing,
+    props.message
+  ])
+
+  if (isUserChatBubble && !props.isBot) {
+    return <PlaygroundUserMessageBubble {...props} />
+  }
+
   return (
-    <div className={`group relative flex w-full max-w-3xl flex-col items-end justify-center pb-2 md:px-4 lg:w-4/5 text-gray-800 dark:text-gray-100 ${checkWideMode ? "max-w-none":""}`}>
+    <div
+      className={`group relative flex w-full max-w-3xl flex-col items-end justify-center pb-2 md:px-4 lg:w-4/5 text-gray-800 dark:text-gray-100 ${checkWideMode ? "max-w-none" : ""}`}>
       {/* <div className="text-base md:max-w-2xl lg:max-w-xl xl:max-w-3xl flex lg:px-0 m-auto w-full"> */}
       <div className="flex flex-row gap-4 md:gap-6 my-2 m-auto w-full">
         <div className="w-8 flex flex-col relative items-end">
-          <div className="relative h-7 w-7 p-1 rounded-sm text-white flex items-center justify-center  text-opacity-100r">
-            {props.isBot ? (
-              !props.botAvatar ? (
+          {props.isBot ? (
+            !props.modelImage ? (
+              <div className="relative h-7 w-7 p-1 rounded-sm text-white flex items-center justify-center  text-opacity-100">
                 <div className="absolute h-8 w-8 rounded-full bg-gradient-to-r from-green-300 to-purple-400"></div>
-              ) : (
-                props.botAvatar
-              )
-            ) : !props.userAvatar ? (
-              <div className="absolute h-8 w-8 rounded-full from-blue-400 to-blue-600 bg-gradient-to-r"></div>
+              </div>
             ) : (
-              props.userAvatar
-            )}
-          </div>
+              <Avatar
+                src={props.modelImage}
+                alt={props.name}
+                className="size-8"
+              />
+            )
+          ) : !props.userAvatar ? (
+            <div className="relative h-7 w-7 p-1 rounded-sm text-white flex items-center justify-center  text-opacity-100">
+              <div className="absolute h-8 w-8 rounded-full from-blue-400 to-blue-600 bg-gradient-to-r"></div>
+            </div>
+          ) : (
+            props.userAvatar
+          )}
         </div>
         <div className="flex w-[calc(100%-50px)] flex-col gap-2 lg:w-[calc(100%-115px)]">
           <span className="text-xs font-bold text-gray-800 dark:text-white">
@@ -78,14 +130,15 @@ export const PlaygroundMessage = (props: Props) => {
               ? props.name === "chrome::gemini-nano::page-assist"
                 ? "Gemini Nano"
                 : removeModelSuffix(
-                    props.name?.replaceAll(/accounts\/[^\/]+\/models\//g, "")
+                    `${props?.modelName || props?.name}`?.replaceAll(
+                      /accounts\/[^\/]+\/models\//g,
+                      ""
+                    )
                   )
               : "You"}
           </span>
 
-          {props.isBot &&
-          props.isSearchingInternet &&
-          props.currentMessageIndex === props.totalMessages - 1 ? (
+          {props.isBot && props.isSearchingInternet && isLastMessage ? (
             <WebSearch />
           ) : null}
           <div>
@@ -105,6 +158,9 @@ export const PlaygroundMessage = (props: Props) => {
                         <Collapse
                           key={i}
                           className="border-none !mb-3"
+                          defaultActiveKey={
+                            props?.openReasoning ? "reasoning" : undefined
+                          }
                           items={[
                             {
                               key: "reasoning",
@@ -223,36 +279,35 @@ export const PlaygroundMessage = (props: Props) => {
                     }}
                     className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
                     {!isSpeaking ? (
-                      <PlayIcon className="w-3 h-3 text-gray-400 group-hover:text-gray-500" />
+                      <Volume2Icon className="w-3 h-3 text-gray-400 group-hover:text-gray-500" />
                     ) : (
                       <Square className="w-3 h-3 text-red-400 group-hover:text-red-500" />
                     )}
                   </button>
                 </Tooltip>
               )}
+              {!props.hideCopy && (
+                <Tooltip title={t("copyToClipboard")}>
+                  <button
+                    aria-label={t("copyToClipboard")}
+                    onClick={() => {
+                      navigator.clipboard.writeText(props.message)
+                      setIsBtnPressed(true)
+                      setTimeout(() => {
+                        setIsBtnPressed(false)
+                      }, 2000)
+                    }}
+                    className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                    {!isBtnPressed ? (
+                      <CopyIcon className="w-3 h-3 text-gray-400 group-hover:text-gray-500" />
+                    ) : (
+                      <CheckIcon className="w-3 h-3 text-green-400 group-hover:text-green-500" />
+                    )}
+                  </button>
+                </Tooltip>
+              )}
               {props.isBot && (
                 <>
-                  {!props.hideCopy && (
-                    <Tooltip title={t("copyToClipboard")}>
-                      <button
-                        aria-label={t("copyToClipboard")}
-                        onClick={() => {
-                          navigator.clipboard.writeText(props.message)
-                          setIsBtnPressed(true)
-                          setTimeout(() => {
-                            setIsBtnPressed(false)
-                          }, 2000)
-                        }}
-                        className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
-                        {!isBtnPressed ? (
-                          <ClipboardIcon className="w-3 h-3 text-gray-400 group-hover:text-gray-500" />
-                        ) : (
-                          <CheckIcon className="w-3 h-3 text-green-400 group-hover:text-green-500" />
-                        )}
-                      </button>
-                    </Tooltip>
-                  )}
-
                   {props.generationInfo && (
                     <Popover
                       content={
@@ -267,17 +322,27 @@ export const PlaygroundMessage = (props: Props) => {
                     </Popover>
                   )}
 
-                  {!props.hideEditAndRegenerate &&
-                    props.currentMessageIndex === props.totalMessages - 1 && (
-                      <Tooltip title={t("regenerate")}>
-                        <button
-                          aria-label={t("regenerate")}
-                          onClick={props.onRengerate}
-                          className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
-                          <RotateCcw className="w-3 h-3 text-gray-400 group-hover:text-gray-500" />
-                        </button>
-                      </Tooltip>
-                    )}
+                  {!props.hideEditAndRegenerate && isLastMessage && (
+                    <Tooltip title={t("regenerate")}>
+                      <button
+                        aria-label={t("regenerate")}
+                        onClick={props.onRengerate}
+                        className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                        <RotateCcw className="w-3 h-3 text-gray-400 group-hover:text-gray-500" />
+                      </button>
+                    </Tooltip>
+                  )}
+
+                  {!props.hideContinue && isLastMessage && (
+                    <Tooltip title={t("continue")}>
+                      <button
+                        aria-label={t("continue")}
+                        onClick={props?.onContinue}
+                        className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                        <PlayCircle className="w-3 h-3 text-gray-400 group-hover:text-gray-500" />
+                      </button>
+                    </Tooltip>
+                  )}
                 </>
               )}
               {!props.hideEditAndRegenerate && (

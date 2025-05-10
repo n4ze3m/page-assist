@@ -4,7 +4,8 @@ import { PageAssistHtmlLoader } from "@/loader/html"
 import { pageAssistEmbeddingModel } from "@/models/embedding"
 import {
     defaultEmbeddingModelForRag,
-    getOllamaURL
+    getOllamaURL,
+    getSelectedModel
 } from "@/services/ollama"
 import {
     getIsSimpleInternetSearch,
@@ -77,14 +78,15 @@ export const webBraveSearch = async (query: string) => {
         })
     }
     const ollamaUrl = await getOllamaURL()
+    const selectedModel = await getSelectedModel()
 
     const embeddingModle = await defaultEmbeddingModelForRag()
     const ollamaEmbedding = await pageAssistEmbeddingModel({
-        model: embeddingModle || "",
+        model: embeddingModle || selectedModel || "",
         baseUrl: cleanUrl(ollamaUrl)
     })
 
- 
+
     const textSplitter = await getPageAssistTextSplitter();
 
     const chunks = await textSplitter.splitDocuments(docs)

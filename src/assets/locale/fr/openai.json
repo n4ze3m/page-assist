@@ -6,25 +6,26 @@
     "table": {
         "name": "Nom du fournisseur",
         "baseUrl": "URL de base",
-        "actions": "Action"
+        "actions": "Actions"
     },
     "modal": {
         "titleAdd": "Ajouter un nouveau fournisseur",
+        "titleEdit": "Modifier le fournisseur",
         "name": {
             "label": "Nom du fournisseur",
-            "required": "Le nom du fournisseur est requis.",
-            "placeholder": "Entrez le nom du fournisseur"
+            "required": "Le nom du fournisseur est nécessaire.",
+            "placeholder": "Entrer le nom du fournisseur"
         },
         "baseUrl": {
             "label": "URL de base",
-            "help": "L'URL de base du fournisseur d'API OpenAI. ex (http://localhost:1234/v1)",
-            "required": "L'URL de base est requise.",
-            "placeholder": "Entrez l'URL de base"
+            "help": "L'URL de base du fournisseur d'API OpenAI. ex: (http://localhost:1234/v1)",
+            "required": "L'URL de base est nécessaire.",
+            "placeholder": "Entrer l'URL de base"
         },
         "apiKey": {
             "label": "Clé API",
-            "required": "La clé API est requise.",
-            "placeholder": "Entrez la clé API"
+            "required": "La clé API est nécessaire.",
+            "placeholder": "Entrer la clé API"
         },
         "submit": "Enregistrer",
         "update": "Mettre à jour",
@@ -42,9 +43,9 @@
     "delete": "Supprimer",
     "edit": "Modifier",
     "newModel": "Ajouter des modèles au fournisseur",
-    "noNewModel": "Pour LMStudio, Ollama, Llamafile, nous récupérons dynamiquement. Pas besoin d'ajout manuel.",
+    "noNewModel": "Page Assist récupérera automatiquement les modèles que vous avez chargés sur LM Studio. Vous n'avez pas besoin de les ajouter manuellement.",
     "searchModel": "Rechercher un modèle",
-    "selectAll": "Tout sélectionner",
+    "selectAll": "Sélectionner tout",
     "save": "Enregistrer",
     "saving": "Enregistrement...",
     "manageModels": {
@@ -53,7 +54,8 @@
             "model_type": "Type de modèle",
             "model_id": "ID du modèle",
             "provider": "Nom du fournisseur",
-            "actions": "Action"
+            "actions": "Action",
+            "nickname": "Alias du modèle"
         },
         "tooltip": {
             "delete": "Supprimer"
@@ -63,16 +65,17 @@
         },
         "modal": {
             "title": "Ajouter un modèle personnalisé",
+            "titleEdit": "Modifier un modèle personnalisé",
             "form": {
                 "name": {
                     "label": "ID du modèle",
                     "placeholder": "llama3.2",
-                    "required": "L'ID du modèle est requis."
+                    "required": "L'ID du modèle est nécessaire."
                 },
                 "provider": {
                     "label": "Fournisseur",
                     "placeholder": "Sélectionner un fournisseur",
-                    "required": "Le fournisseur est requis."
+                    "required": "Le fournisseur est nécessaire."
                 },
                 "type": {
                     "label": "Type de modèle"
@@ -85,6 +88,21 @@
         "chat": "Modèle de chat",
         "embedding": "Modèle d'embedding",
         "chatInfo": "est utilisé pour la complétion de chat et la génération de conversation",
-        "embeddingInfo": "est utilisé pour RAG et d'autres tâches liées à la recherche sémantique."
+        "embeddingInfo": "est utilisé pour le RAG et d'autres tâches liées à la recherche sémantique."
+    },
+    "nicknameModal": {
+        "title": "Ajouter / Modifier l'alias du modèle",
+        "form": {
+            "modelName": {
+                "label": "Nom du modèle",
+                "placeholder": "Entrer le nom du modèle",
+                "required": "Le nom du modèle est nécessaire."
+            },
+            "modelAvatar": {
+                "label": "Avatar du modèle",
+                "placeholder": "Entrer l'avatar du modèle",
+                "help": "Veuillez entrer l'URL de l'avatar du modèle. Cette image sera affichée dans la fenêtre de chat."
+            }
+        }
     }
 }

@@ -32,6 +32,9 @@ type SpeechRecognitionProps = {
   onEnd?: () => void
   onResult?: (transcript: string) => void
   onError?: (event: Event) => void
+  autoStop?: boolean
+  autoStopTimeout?: number
+  autoSubmit?: boolean
 }
 
 type ListenArgs = {
@@ -40,6 +43,9 @@ type ListenArgs = {
   continuous?: boolean
   maxAlternatives?: number
   grammars?: any
+  autoStop?: boolean
+  autoStopTimeout?: number
+  autoSubmit?: boolean
 }
 
 type SpeechRecognitionHook = {
@@ -73,11 +79,21 @@ const useEventCallback = <T extends (...args: any[]) => any>(
 export const useSpeechRecognition = (
   props: SpeechRecognitionProps = {}
 ): SpeechRecognitionHook => {
-  const { onEnd = () => {}, onResult = () => {}, onError = () => {} } = props
+  const {
+    onEnd = () => {},
+    onResult = () => {},
+    onError = () => {},
+    autoStop = false,
+    autoStopTimeout = 5000,
+    autoSubmit = false
+  } = props
+
   const recognition = useRef<SpeechRecognition | null>(null)
   const [listening, setListening] = useState<boolean>(false)
   const [supported, setSupported] = useState<boolean>(false)
   const [liveTranscript, setLiveTranscript] = useState<string>("")
+  const silenceTimer = useRef<NodeJS.Timeout | null>(null)
+  const lastTranscriptRef = useRef<string>("")
 
   useEffect(() => {
     if (typeof window === "undefined") return
@@ -91,15 +107,37 @@ export const useSpeechRecognition = (
 
   const resetTranscript = () => {
     setLiveTranscript("")
+    lastTranscriptRef.current = ""
   }
 
-  const processResult = (event: SpeechRecognitionEvent) => {
+  const processResult = (
+    event: SpeechRecognitionEvent,
+    shouldAutoStop: boolean,
+    shouldAutoSubmit: boolean
+  ) => {
     const transcript = Array.from(event.results)
       .map((result) => result[0])
       .map((result) => result.transcript)
       .join("")
 
     onResult(transcript)
+
+    // Reset silence timer if transcript changed
+    if (shouldAutoStop && transcript !== lastTranscriptRef.current) {
+      lastTranscriptRef.current = transcript
+
+      if (silenceTimer.current) {
+        clearTimeout(silenceTimer.current)
+      }
+
+      silenceTimer.current = setTimeout(() => {
+        stop()
+        if (shouldAutoSubmit) {
+          // Submit the final transcript
+          onResult(transcript)
+        }
+      }, autoStopTimeout)
+    }
   }
 
   const handleError = (event: Event) => {
@@ -120,15 +158,21 @@ export const useSpeechRecognition = (
         interimResults = true,
         continuous = false,
         maxAlternatives = 1,
-        grammars
+        grammars,
+        autoStop: argAutoStop = autoStop,
+        autoStopTimeout: argAutoStopTimeout = autoStopTimeout,
+        autoSubmit: argAutoSubmit = autoSubmit
       } = args
+
       setListening(true)
       setLiveTranscript("")
+      lastTranscriptRef.current = ""
+
       if (recognition.current) {
         recognition.current.lang = lang
         recognition.current.interimResults = interimResults
         recognition.current.onresult = (event) => {
-          processResult(event)
+          processResult(event, argAutoStop, argAutoSubmit)
           const transcript = Array.from(event.results)
             .map((result) => result[0])
             .map((result) => result.transcript)
@@ -143,8 +187,10 @@ export const useSpeechRecognition = (
           recognition.current.grammars = grammars
         }
         recognition.current.onend = () => {
-          if (recognition.current) {
+          if (recognition.current && !argAutoStop) {
             recognition.current.start()
+          } else {
+            onEnd()
           }
         }
         if (recognition.current) {
@@ -152,11 +198,17 @@ export const useSpeechRecognition = (
         }
       }
     },
-    [listening, supported, recognition]
+    [listening, supported, recognition, autoStop, autoStopTimeout, autoSubmit]
   )
 
   const stop = useEventCallback(() => {
     if (!listening || !supported) return
+
+    if (silenceTimer.current) {
+      clearTimeout(silenceTimer.current)
+      silenceTimer.current = null
+    }
+
     if (recognition.current) {
       recognition.current.onresult = null
       recognition.current.onend = null
@@ -166,6 +218,15 @@ export const useSpeechRecognition = (
     }
     onEnd()
   }, [listening, supported, recognition, onEnd])
+
+  // Clean up timer on unmount
+  useEffect(() => {
+    return () => {
+      if (silenceTimer.current) {
+        clearTimeout(silenceTimer.current)
+      }
+    }
+  }, [])
 
   return {
     start: listen,

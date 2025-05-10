@@ -4,37 +4,38 @@
         "title": "Titre",
         "status": "Statut",
         "embeddings": "Modèle d'embedding",
-        "createdAt": "Créé à",
-        "action": "actions"
+        "createdAt": "Créé le",
+        "action": "Actions"
     },
     "expandedColumns": {
         "name": "Nom"
     },
     "confirm": {
-        "delete": "Êtes-vous sûr de vouloir supprimer ces connaissances ?"
+        "delete": "Êtes-vous sûr de vouloir supprimer cette connaissance ?"
     },
-    "deleteSuccess": "Connaissances supprimées avec succès",
+    "deleteSuccess": "Connaissance supprimée avec succès",
     "status": {
         "pending": "En attente",
         "finished": "Terminé",
-        "processing": "Traitement",
+        "processing": "En cours",
         "failed": "Échoué"
     },
-    "addKnowledge": "Ajouter des connaissances",
+    "addKnowledge": "Ajouter une connaissance",
+    "updateKnowledge": "Ajouter une source",
     "form": {
         "title": {
             "label": "Titre de la connaissance",
-            "placeholder": "Entrez le titre de la connaissances",
-            "required": "Le titre de la connaissance est requis"
+            "placeholder": "Entrer le titre de la connaissance",
+            "required": "Le titre de la connaissance est nécessaire"
         },
         "uploadFile": {
-            "label": "Téléverser un fichier",
-            "uploadText": "Faites glisser et déposez un fichier ici ou cliquez pour téléverser",
+            "label": "Charger un fichier",
+            "uploadText": "Faites glisser et déposez un fichier ici ou cliquez pour charger",
             "uploadHint": "Types de fichiers pris en charge: .pdf, .csv, .txt, .md, .docx",
-            "required": "Le fichier est requis"
+            "required": "Un fichier est nécessaire"
         },
         "submit": "Soumettre",
-        "success": "Les connaissances ont ajouté avec succès"
+        "success": "Connaissance ajoutée avec succès"
     },
-    "noEmbeddingModel": "Veuillez d'abord ajouter un modèle d'embedding depuis la page des paramètres de RAG"
+    "noEmbeddingModel": "Veuillez d'abord ajouter un modèle d'embedding depuis la page des paramètres RAG"
 }

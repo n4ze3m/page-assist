@@ -44,6 +44,18 @@
       },
       "wideMode": {
         "label": "Abilita modalità schermo largo"
+      },
+      "openReasoning": {
+        "label": "Apri il Ragionamento Compresso per impostazione predefinita"
+      },
+      "userChatBubble": {
+        "label": "Usa fumetto chat per i messaggi utente"
+      },
+      "autoCopyResponseToClipboard": {
+        "label": "Copia automaticamente la risposta negli appunti"
+      },
+      "useMarkdownForUserMessage": {
+        "label": "Abilita la formattazione Markdown per i messaggi dell'utente"
       }
     },
     "sidepanelRag": {
@@ -122,6 +134,16 @@
       },
       "removeReasoningTagTTS": {
         "label": "Rimuovi Tag di Ragionamento dal TTS"
+      }
+    },
+    "stt": {
+      "heading": "Impostazioni Speech-to-Text",
+      "autoStopTimeout": {
+        "label": "Timeout Arresto Automatico (ms)",
+        "placeholder": "Inserisci il timeout di arresto automatico in millisecondi"
+      },
+      "autoSubmitVoiceMessage": {
+        "label": "Invio Automatico Messaggio Vocale"
       }
     }
   },

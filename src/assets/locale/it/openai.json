@@ -53,7 +53,8 @@
             "model_type": "Tipo di Modello",
             "model_id": "ID Modello",
             "provider": "Nome Provider",
-            "actions": "Azione"
+            "actions": "Azione",
+            "nickname": "Soprannome Modello"
         },
         "tooltip": {
             "delete": "Elimina"
@@ -86,5 +87,20 @@
         "embedding": "Modello di Embedding",
         "chatInfo": "è utilizzato per il completamento della chat e la generazione di conversazioni",
         "embeddingInfo": "è utilizzato per RAG e altri compiti correlati alla ricerca semantica."
+    },
+    "nicknameModal": {
+        "title": "Aggiungi / Modifica Soprannome Modello",
+        "form": {
+            "modelName": {
+                "label": "Nome Modello",
+                "placeholder": "Inserisci nome modello",
+                "required": "Il nome del modello è obbligatorio."
+            },
+            "modelAvatar": {
+                "label": "Avatar Modello",
+                "placeholder": "Inserisci avatar modello",
+                "help": "Inserisci l'URL dell'avatar del modello. Questa immagine verrà visualizzata nella finestra di chat."
+            }
+        }
     }
 }

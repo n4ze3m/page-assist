@@ -8,7 +8,7 @@ import { Checkbox, Dropdown, Switch, Tooltip } from "antd"
 import { Image } from "antd"
 import { useWebUI } from "~/store/webui"
 import { defaultEmbeddingModelForRag } from "~/services/ollama"
-import { ImageIcon, MicIcon, StopCircleIcon, X } from "lucide-react"
+import { EraserIcon, ImageIcon, MicIcon, StopCircleIcon, X } from "lucide-react"
 import { getVariable } from "@/utils/select-variable"
 import { useTranslation } from "react-i18next"
 import { KnowledgeSelect } from "../Knowledge/KnowledgeSelect"
@@ -43,9 +43,14 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
     temporaryChat,
     useOCR,
     setUseOCR,
-    defaultInternetSearchOn
+    defaultInternetSearchOn,
+    setHistory,
+    history
   } = useMessageOption()
 
+  const [autoSubmitVoiceMessage] = useStorage("autoSubmitVoiceMessage", false)
+
+  const [autoStopTimeout] = useStorage("autoStopTimeout", 2000)
   const isMobile = () => {
     return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
       navigator.userAgent
@@ -119,7 +124,15 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
     start: startListening,
     stop: stopSpeechRecognition,
     supported: browserSupportsSpeechRecognition
-  } = useSpeechRecognition()
+  } = useSpeechRecognition({
+    autoStop: autoSubmitVoiceMessage,
+    autoStopTimeout,
+    onEnd: async () => {
+      if (autoSubmitVoiceMessage) {
+        submitForm()
+      }
+    }
+  })
   const { sendWhenEnter, setSendWhenEnter } = useWebUI()
 
   React.useEffect(() => {
@@ -160,6 +173,32 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
     }
   })
 
+  const submitForm = () => {
+    form.onSubmit(async (value) => {
+      if (value.message.trim().length === 0 && value.image.length === 0) {
+        return
+      }
+      if (!selectedModel || selectedModel.length === 0) {
+        form.setFieldError("message", t("formError.noModel"))
+        return
+      }
+      if (webSearch) {
+        const defaultEM = await defaultEmbeddingModelForRag()
+        const simpleSearch = await getIsSimpleInternetSearch()
+        if (!defaultEM && !simpleSearch) {
+          form.setFieldError("message", t("formError.noEmbeddingModel"))
+          return
+        }
+      }
+      form.reset()
+      textAreaFocus()
+      await sendMessage({
+        image: value.image,
+        message: value.message.trim()
+      })
+    })()
+  }
+
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (import.meta.env.BROWSER !== "firefox") {
       if (e.key === "Process" || e.key === "229") return
@@ -174,29 +213,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
     ) {
       e.preventDefault()
       stopListening()
-      form.onSubmit(async (value) => {
-        if (value.message.trim().length === 0 && value.image.length === 0) {
-          return
-        }
-        if (!selectedModel || selectedModel.length === 0) {
-          form.setFieldError("message", t("formError.noModel"))
-          return
-        }
-        if (webSearch) {
-          const defaultEM = await defaultEmbeddingModelForRag()
-          const simpleSearch = await getIsSimpleInternetSearch()
-          if (!defaultEM && !simpleSearch) {
-            form.setFieldError("message", t("formError.noEmbeddingModel"))
-            return
-          }
-        }
-        form.reset()
-        textAreaFocus()
-        await sendMessage({
-          image: value.image,
-          message: value.message.trim()
-        })
-      })()
+      submitForm()
     }
   }
 
@@ -207,11 +224,11 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
   }
 
   return (
-    <div className="flex w-full flex-col items-center p-2 pt-1  pb-4">
+    <div className="flex w-full flex-col items-center px-2">
       <div className="relative z-10 flex w-full flex-col items-center justify-center gap-2 text-base">
-        <div className="relative flex w-full flex-row justify-center gap-2 lg:w-4/5">
+        <div className="relative flex w-full flex-row justify-center gap-2 lg:w-3/5">
           <div
-            className={` bg-neutral-50  dark:bg-[#262626] relative w-full max-w-[48rem] p-1 backdrop-blur-lg duration-100 border border-gray-300 rounded-xl  dark:border-gray-600
+            className={` bg-neutral-50  dark:bg-[#2D2D2D] relative w-full max-w-[48rem] p-1 backdrop-blur-lg duration-100 border border-gray-300 rounded-t-xl  dark:border-gray-600
             ${temporaryChat ? "!bg-gray-200 dark:!bg-black " : ""}
             ${checkWideMode ? "max-w-none " : ""}
             `}>
@@ -224,7 +241,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                 onClick={() => {
                   form.setFieldValue("image", "")
                 }}
-                className="absolute top-1 left-1 flex items-center justify-center z-10 bg-white dark:bg-[#262626] p-0.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-600 text-black dark:text-gray-100">
+                className="absolute top-1 left-1 flex items-center justify-center z-10 bg-white dark:bg-[#2D2D2D] p-0.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-600 text-black dark:text-gray-100">
                 <X className="h-4 w-4" />
               </button>{" "}
               <Image
@@ -235,8 +252,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
               />
             </div>
             <div>
-              <div
-                className={`flex  bg-transparent `}>
+              <div className={`flex  bg-transparent `}>
                 <form
                   onSubmit={form.onSubmit(async (value) => {
                     stopListening()
@@ -279,8 +295,9 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                     multiple={false}
                     onChange={onInputChange}
                   />
-                  <div className="w-full  flex flex-col dark:border-gray-600  p-2">
+                  <div className="w-full  flex flex-col dark:border-gray-600  px-2 pt-2">
                     <textarea
+                      id="textarea-message"
                       onCompositionStart={() => {
                         if (import.meta.env.BROWSER !== "firefox") {
                           setTyping(true)
@@ -320,6 +337,20 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                         )}
                       </div>
                       <div className="flex !justify-end gap-3">
+                        {history.length > 0 && (
+                          <Tooltip title={t("tooltip.clearContext")}>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setHistory([])
+                              }}
+                              className={`flex items-center justify-center dark:text-gray-300 ${
+                                chatMode === "rag" ? "hidden" : "block"
+                              }`}>
+                              <EraserIcon className="h-5 w-5" />
+                            </button>
+                          </Tooltip>
+                        )}
                         {!selectedKnowledge && (
                           <Tooltip title={t("tooltip.uploadImage")}>
                             <button
@@ -435,9 +466,9 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                             <button
                               type="button"
                               onClick={stopStreamingRequest}
-                              className="text-gray-800 dark:text-gray-300">
-                              <StopCircleIcon className="h-6 w-6" />
-                            </button>
+                              className="text-gray-800 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded-md p-1">
+                              <StopCircleIcon className="size-5" />
+                            </button>{" "}
                           </Tooltip>
                         )}
                       </div>

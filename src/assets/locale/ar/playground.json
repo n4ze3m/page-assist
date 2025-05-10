@@ -24,7 +24,8 @@
         "uploadImage": "تحميل صورة",
         "stopStreaming": "إيقاف البث",
         "knowledge": "المعرفة",
-        "vision": "[تجريبي] محادثة الرؤية"
+        "vision": "[تجريبي] محادثة الرؤية",
+        "clearContext": "مسح السياق"
     },
     "sendWhenEnter": "إرسال عند الضغط على Enter",
     "welcome": "مرحباً! كيف يمكنني مساعدتك اليوم؟",

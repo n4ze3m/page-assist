@@ -26,5 +26,25 @@ export const SUPPORTED_SERACH_PROVIDERS = [
     {
         label: "Brave Search API",
         value: "brave-api"
+    },
+    {
+        label: "Tavily Search API",
+        value: "tavily-api"
+    },
+    {
+        label: "Bing",
+        value: "bing"
+    },
+    {
+        label: "Stract",
+        value: "stract"
+    },
+    {
+        label: "Startpage",
+        value: "startpage"
+    },
+    {
+        label: "Exa",
+        value: "exa"
     }
 ]

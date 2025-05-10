@@ -44,6 +44,18 @@
       },
       "wideMode": {
         "label": "Aktiver bredskjerm-modus"
+      },
+      "openReasoning": {
+        "label": "Åpne Resonnement Sammenfoldet som standard"
+      },
+      "userChatBubble": {
+        "label": "Bruk chatboble for bruker meldinger"
+      },
+      "autoCopyResponseToClipboard": {
+        "label": "Automatisk kopier svar til utklippstavle"
+      },
+      "useMarkdownForUserMessage": {
+        "label": "Aktiver Markdown-formatering for brukermeldinger"
       }
     },
     "sidepanelRag": {
@@ -122,6 +134,16 @@
       },
       "removeReasoningTagTTS": {
         "label": "Fjern Resonneringsmerke fra TTS"
+      }
+    },
+    "stt": {
+      "heading": "Tale-til-tekst Innstillinger",
+      "autoStopTimeout": {
+        "label": "Auto-stopp Tidsavbrudd (ms)",
+        "placeholder": "Skriv inn auto-stopp tidsavbrudd i millisekunder"
+      },
+      "autoSubmitVoiceMessage": {
+        "label": "Auto-send Talemelding"
       }
     }
   },

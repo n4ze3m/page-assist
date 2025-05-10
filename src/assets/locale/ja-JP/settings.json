@@ -47,6 +47,18 @@
       },
       "wideMode": {
         "label": "ワイドスクリーンモードを有効にする"
+      },
+      "openReasoning": {
+        "label": "デフォルトで推論を展開する"
+      },
+      "userChatBubble": {
+        "label": "ユーザーメッセージにチャットバブルを使用"
+      },
+      "autoCopyResponseToClipboard": {
+        "label": "応答を自動的にクリップボードにコピー"
+      },
+      "useMarkdownForUserMessage": {
+        "label": "ユーザーメッセージのMarkdown形式を有効にする"
       }
     },
     "sidepanelRag": {
@@ -125,6 +137,16 @@
       },
       "removeReasoningTagTTS": {
         "label": "テキスト読み上げから推論タグを削除"
+      }
+    },
+    "stt": {
+      "heading": "音声認識設定",
+      "autoStopTimeout": {
+        "label": "自動停止タイムアウト (ミリ秒)",
+        "placeholder": "自動停止タイムアウトをミリ秒単位で入力"
+      },
+      "autoSubmitVoiceMessage": {
+        "label": "音声メッセージを自動送信"
       }
     }
   },

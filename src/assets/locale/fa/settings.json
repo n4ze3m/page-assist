@@ -41,6 +41,18 @@
       },
       "wideMode": {
         "label": "فعال کردن حالت صفحه عریض"
+      },
+      "openReasoning": {
+        "label": "باز کردن استدلال به صورت پیش فرض"
+      },
+      "userChatBubble": {
+        "label": "استفاده از حباب گفتگو برای پیام‌های کاربر"
+      },
+      "autoCopyResponseToClipboard": {
+        "label": "کپی خودکار پاسخ در کلیپ بورد"
+      },
+      "useMarkdownForUserMessage": {
+        "label": "فعال کردن قالب‌بندی مارک‌داون برای پیام‌های کاربر"
       }
     },
     "sidepanelRag": {
@@ -119,6 +131,16 @@
       },
       "removeReasoningTagTTS": {
         "label": "حذف برچسب استدلال از تبدیل متن به گفتار"
+      }
+    },
+    "stt": {
+      "heading": "تنظیمات تبدیل گفتار به متن",
+      "autoStopTimeout": {
+        "label": "زمان توقف خودکار (میلی‌ثانیه)",
+        "placeholder": "زمان توقف خودکار را به میلی‌ثانیه وارد کنید"
+      },
+      "autoSubmitVoiceMessage": {
+        "label": "ارسال خودکار پیام صوتی"
       }
     }
   },

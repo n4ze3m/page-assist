@@ -10,8 +10,7 @@ import {
 import { useStoreMessageOption, type Message } from "~/store/option"
 import { useStoreMessage } from "~/store"
 import { SystemMessage } from "@langchain/core/messages"
-import { getDataFromCurrentTab } from "~/libs/get-html"
-import { MemoryVectorStore } from "langchain/vectorstores/memory"
+import { getContentFromCurrentTab,  } from "~/libs/get-html"
 import { memoryEmbedding } from "@/utils/memory-embeddings"
 import { ChatHistory } from "@/store/option"
 import {
@@ -29,7 +28,7 @@ import { formatDocs } from "@/chain/chat-with-x"
 import { useStorage } from "@plasmohq/storage/hook"
 import { useStoreChatModelSettings } from "@/store/model"
 import { getAllDefaultModelSettings } from "@/services/model-settings"
-import { getSystemPromptForWeb } from "@/web/web"
+import { getSystemPromptForWeb, isQueryHaveWebsite } from "@/web/web"
 import { pageAssistModel } from "@/models"
 import { getPrompt } from "@/services/application"
 import { humanMessageFormatter } from "@/utils/human-message"
@@ -42,6 +41,8 @@ import {
   mergeReasoningContent,
   removeReasoning
 } from "@/libs/reasoning"
+import { getModelNicknameByID } from "@/db/nickname"
+import { systemPromptFormatter } from "@/utils/system-message"
 
 export const useMessage = () => {
   const {
@@ -140,43 +141,11 @@ export const useMessage = () => {
     const ollama = await pageAssistModel({
       model: selectedModel!,
       baseUrl: cleanUrl(url),
-      keepAlive:
-        currentChatModelSettings?.keepAlive ??
-        userDefaultModelSettings?.keepAlive,
-      temperature:
-        currentChatModelSettings?.temperature ??
-        userDefaultModelSettings?.temperature,
-      topK: currentChatModelSettings?.topK ?? userDefaultModelSettings?.topK,
-      topP: currentChatModelSettings?.topP ?? userDefaultModelSettings?.topP,
-      numCtx:
-        currentChatModelSettings?.numCtx ?? userDefaultModelSettings?.numCtx,
-      seed: currentChatModelSettings?.seed,
-      numGpu:
-        currentChatModelSettings?.numGpu ?? userDefaultModelSettings?.numGpu,
-      numPredict:
-        currentChatModelSettings?.numPredict ??
-        userDefaultModelSettings?.numPredict,
-      useMMap:
-        currentChatModelSettings?.useMMap ?? userDefaultModelSettings?.useMMap,
-      minP: currentChatModelSettings?.minP ?? userDefaultModelSettings?.minP,
-      repeatLastN:
-        currentChatModelSettings?.repeatLastN ??
-        userDefaultModelSettings?.repeatLastN,
-      repeatPenalty:
-        currentChatModelSettings?.repeatPenalty ??
-        userDefaultModelSettings?.repeatPenalty,
-      tfsZ: currentChatModelSettings?.tfsZ ?? userDefaultModelSettings?.tfsZ,
-      numKeep:
-        currentChatModelSettings?.numKeep ?? userDefaultModelSettings?.numKeep,
-      numThread:
-        currentChatModelSettings?.numThread ??
-        userDefaultModelSettings?.numThread,
-      useMlock:
-        currentChatModelSettings?.useMlock ?? userDefaultModelSettings?.useMlock
     })
 
     let newMessage: Message[] = []
     let generateMessageId = generateID()
+    const modelInfo = await getModelNicknameByID(selectedModel)
 
     if (!isRegenerate) {
       newMessage = [
@@ -193,7 +162,9 @@ export const useMessage = () => {
           name: selectedModel,
           message: "▋",
           sources: [],
-          id: generateMessageId
+          id: generateMessageId,
+          modelImage: modelInfo?.model_avatar,
+          modelName: modelInfo?.model_name || selectedModel
         }
       ]
     } else {
@@ -204,10 +175,13 @@ export const useMessage = () => {
           name: selectedModel,
           message: "▋",
           sources: [],
-          id: generateMessageId
+          id: generateMessageId,
+          modelImage: modelInfo?.model_avatar,
+          modelName: modelInfo?.model_name || selectedModel
         }
       ]
     }
+
     setMessages(newMessage)
     let fullText = ""
     let contentToSave = ""
@@ -220,7 +194,7 @@ export const useMessage = () => {
       url: websiteUrl,
       type,
       pdf
-    } = await getDataFromCurrentTab()
+    } = await getContentFromCurrentTab(chatWithWebsiteEmbedding)
 
     embedHTML = html
     embedURL = websiteUrl
@@ -285,48 +259,6 @@ export const useMessage = () => {
         const questionOllama = await pageAssistModel({
           model: selectedModel!,
           baseUrl: cleanUrl(url),
-          keepAlive:
-            currentChatModelSettings?.keepAlive ??
-            userDefaultModelSettings?.keepAlive,
-          temperature:
-            currentChatModelSettings?.temperature ??
-            userDefaultModelSettings?.temperature,
-          topK:
-            currentChatModelSettings?.topK ?? userDefaultModelSettings?.topK,
-          topP:
-            currentChatModelSettings?.topP ?? userDefaultModelSettings?.topP,
-          numCtx:
-            currentChatModelSettings?.numCtx ??
-            userDefaultModelSettings?.numCtx,
-          seed: currentChatModelSettings?.seed,
-          numGpu:
-            currentChatModelSettings?.numGpu ??
-            userDefaultModelSettings?.numGpu,
-          numPredict:
-            currentChatModelSettings?.numPredict ??
-            userDefaultModelSettings?.numPredict,
-          useMMap:
-            currentChatModelSettings?.useMMap ??
-            userDefaultModelSettings?.useMMap,
-          minP:
-            currentChatModelSettings?.minP ?? userDefaultModelSettings?.minP,
-          repeatLastN:
-            currentChatModelSettings?.repeatLastN ??
-            userDefaultModelSettings?.repeatLastN,
-          repeatPenalty:
-            currentChatModelSettings?.repeatPenalty ??
-            userDefaultModelSettings?.repeatPenalty,
-          tfsZ:
-            currentChatModelSettings?.tfsZ ?? userDefaultModelSettings?.tfsZ,
-          numKeep:
-            currentChatModelSettings?.numKeep ??
-            userDefaultModelSettings?.numKeep,
-          numThread:
-            currentChatModelSettings?.numThread ??
-            userDefaultModelSettings?.numThread,
-          useMlock:
-            currentChatModelSettings?.useMlock ??
-            userDefaultModelSettings?.useMlock
         })
         const response = await questionOllama.invoke(promptForQuestion)
         query = response.content.toString()
@@ -556,48 +488,15 @@ export const useMessage = () => {
   ) => {
     setStreaming(true)
     const url = await getOllamaURL()
-    const userDefaultModelSettings = await getAllDefaultModelSettings()
 
     const ollama = await pageAssistModel({
       model: selectedModel!,
       baseUrl: cleanUrl(url),
-      keepAlive:
-        currentChatModelSettings?.keepAlive ??
-        userDefaultModelSettings?.keepAlive,
-      temperature:
-        currentChatModelSettings?.temperature ??
-        userDefaultModelSettings?.temperature,
-      topK: currentChatModelSettings?.topK ?? userDefaultModelSettings?.topK,
-      topP: currentChatModelSettings?.topP ?? userDefaultModelSettings?.topP,
-      numCtx:
-        currentChatModelSettings?.numCtx ?? userDefaultModelSettings?.numCtx,
-      seed: currentChatModelSettings?.seed,
-      numGpu:
-        currentChatModelSettings?.numGpu ?? userDefaultModelSettings?.numGpu,
-      numPredict:
-        currentChatModelSettings?.numPredict ??
-        userDefaultModelSettings?.numPredict,
-      useMMap:
-        currentChatModelSettings?.useMMap ?? userDefaultModelSettings?.useMMap,
-      minP: currentChatModelSettings?.minP ?? userDefaultModelSettings?.minP,
-      repeatLastN:
-        currentChatModelSettings?.repeatLastN ??
-        userDefaultModelSettings?.repeatLastN,
-      repeatPenalty:
-        currentChatModelSettings?.repeatPenalty ??
-        userDefaultModelSettings?.repeatPenalty,
-      tfsZ: currentChatModelSettings?.tfsZ ?? userDefaultModelSettings?.tfsZ,
-      numKeep:
-        currentChatModelSettings?.numKeep ?? userDefaultModelSettings?.numKeep,
-      numThread:
-        currentChatModelSettings?.numThread ??
-        userDefaultModelSettings?.numThread,
-      useMlock:
-        currentChatModelSettings?.useMlock ?? userDefaultModelSettings?.useMlock
     })
 
     let newMessage: Message[] = []
     let generateMessageId = generateID()
+    const modelInfo = await getModelNicknameByID(selectedModel)
 
     if (!isRegenerate) {
       newMessage = [
@@ -614,7 +513,9 @@ export const useMessage = () => {
           name: selectedModel,
           message: "▋",
           sources: [],
-          id: generateMessageId
+          id: generateMessageId,
+          modelImage: modelInfo?.model_avatar,
+          modelName: modelInfo?.model_name || selectedModel
         }
       ]
     } else {
@@ -625,7 +526,9 @@ export const useMessage = () => {
           name: selectedModel,
           message: "▋",
           sources: [],
-          id: generateMessageId
+          id: generateMessageId,
+          modelImage: modelInfo?.model_avatar,
+          modelName: modelInfo?.model_name || selectedModel
         }
       ]
     }
@@ -651,14 +554,14 @@ export const useMessage = () => {
 
       if (prompt && !selectedPrompt) {
         applicationChatHistory.unshift(
-          new SystemMessage({
+          await systemPromptFormatter({
             content: prompt
           })
         )
       }
       if (selectedPrompt) {
         applicationChatHistory.unshift(
-          new SystemMessage({
+          await systemPromptFormatter({
             content: selectedPrompt.content
           })
         )
@@ -837,7 +740,6 @@ export const useMessage = () => {
   ) => {
     setStreaming(true)
     const url = await getOllamaURL()
-    const userDefaultModelSettings = await getAllDefaultModelSettings()
 
     if (image.length > 0) {
       image = `data:image/jpeg;base64,${image.split(",")[1]}`
@@ -846,43 +748,11 @@ export const useMessage = () => {
     const ollama = await pageAssistModel({
       model: selectedModel!,
       baseUrl: cleanUrl(url),
-      keepAlive:
-        currentChatModelSettings?.keepAlive ??
-        userDefaultModelSettings?.keepAlive,
-      temperature:
-        currentChatModelSettings?.temperature ??
-        userDefaultModelSettings?.temperature,
-      topK: currentChatModelSettings?.topK ?? userDefaultModelSettings?.topK,
-      topP: currentChatModelSettings?.topP ?? userDefaultModelSettings?.topP,
-      numCtx:
-        currentChatModelSettings?.numCtx ?? userDefaultModelSettings?.numCtx,
-      seed: currentChatModelSettings?.seed,
-      numGpu:
-        currentChatModelSettings?.numGpu ?? userDefaultModelSettings?.numGpu,
-      numPredict:
-        currentChatModelSettings?.numPredict ??
-        userDefaultModelSettings?.numPredict,
-      useMMap:
-        currentChatModelSettings?.useMMap ?? userDefaultModelSettings?.useMMap,
-      minP: currentChatModelSettings?.minP ?? userDefaultModelSettings?.minP,
-      repeatLastN:
-        currentChatModelSettings?.repeatLastN ??
-        userDefaultModelSettings?.repeatLastN,
-      repeatPenalty:
-        currentChatModelSettings?.repeatPenalty ??
-        userDefaultModelSettings?.repeatPenalty,
-      tfsZ: currentChatModelSettings?.tfsZ ?? userDefaultModelSettings?.tfsZ,
-      numKeep:
-        currentChatModelSettings?.numKeep ?? userDefaultModelSettings?.numKeep,
-      numThread:
-        currentChatModelSettings?.numThread ??
-        userDefaultModelSettings?.numThread,
-      useMlock:
-        currentChatModelSettings?.useMlock ?? userDefaultModelSettings?.useMlock
     })
 
     let newMessage: Message[] = []
     let generateMessageId = generateID()
+    const modelInfo = await getModelNicknameByID(selectedModel)
 
     if (!isRegenerate) {
       newMessage = [
@@ -899,7 +769,9 @@ export const useMessage = () => {
           name: selectedModel,
           message: "▋",
           sources: [],
-          id: generateMessageId
+          id: generateMessageId,
+          modelImage: modelInfo?.model_avatar,
+          modelName: modelInfo?.model_name || selectedModel
         }
       ]
     } else {
@@ -910,7 +782,9 @@ export const useMessage = () => {
           name: selectedModel,
           message: "▋",
           sources: [],
-          id: generateMessageId
+          id: generateMessageId,
+          modelImage: modelInfo?.model_avatar,
+          modelName: modelInfo?.model_name || selectedModel
         }
       ]
     }
@@ -953,14 +827,14 @@ export const useMessage = () => {
 
       if (prompt && !selectedPrompt) {
         applicationChatHistory.unshift(
-          new SystemMessage({
+          await systemPromptFormatter({
             content: prompt
           })
         )
       }
       if (selectedPrompt) {
         applicationChatHistory.unshift(
-          new SystemMessage({
+          await systemPromptFormatter({
             content: selectedPrompt.content
           })
         )
@@ -1123,7 +997,6 @@ export const useMessage = () => {
   ) => {
     const url = await getOllamaURL()
     setStreaming(true)
-    const userDefaultModelSettings = await getAllDefaultModelSettings()
     if (image.length > 0) {
       image = `data:image/jpeg;base64,${image.split(",")[1]}`
     }
@@ -1131,43 +1004,11 @@ export const useMessage = () => {
     const ollama = await pageAssistModel({
       model: selectedModel!,
       baseUrl: cleanUrl(url),
-      keepAlive:
-        currentChatModelSettings?.keepAlive ??
-        userDefaultModelSettings?.keepAlive,
-      temperature:
-        currentChatModelSettings?.temperature ??
-        userDefaultModelSettings?.temperature,
-      topK: currentChatModelSettings?.topK ?? userDefaultModelSettings?.topK,
-      topP: currentChatModelSettings?.topP ?? userDefaultModelSettings?.topP,
-      numCtx:
-        currentChatModelSettings?.numCtx ?? userDefaultModelSettings?.numCtx,
-      seed: currentChatModelSettings?.seed,
-      numGpu:
-        currentChatModelSettings?.numGpu ?? userDefaultModelSettings?.numGpu,
-      numPredict:
-        currentChatModelSettings?.numPredict ??
-        userDefaultModelSettings?.numPredict,
-      useMMap:
-        currentChatModelSettings?.useMMap ?? userDefaultModelSettings?.useMMap,
-      minP: currentChatModelSettings?.minP ?? userDefaultModelSettings?.minP,
-      repeatLastN:
-        currentChatModelSettings?.repeatLastN ??
-        userDefaultModelSettings?.repeatLastN,
-      repeatPenalty:
-        currentChatModelSettings?.repeatPenalty ??
-        userDefaultModelSettings?.repeatPenalty,
-      tfsZ: currentChatModelSettings?.tfsZ ?? userDefaultModelSettings?.tfsZ,
-      numKeep:
-        currentChatModelSettings?.numKeep ?? userDefaultModelSettings?.numKeep,
-      numThread:
-        currentChatModelSettings?.numThread ??
-        userDefaultModelSettings?.numThread,
-      useMlock:
-        currentChatModelSettings?.useMlock ?? userDefaultModelSettings?.useMlock
     })
 
     let newMessage: Message[] = []
     let generateMessageId = generateID()
+    const modelInfo = await getModelNicknameByID(selectedModel)
 
     if (!isRegenerate) {
       newMessage = [
@@ -1184,7 +1025,9 @@ export const useMessage = () => {
           name: selectedModel,
           message: "▋",
           sources: [],
-          id: generateMessageId
+          id: generateMessageId,
+          modelImage: modelInfo?.model_avatar,
+          modelName: modelInfo?.model_name || selectedModel
         }
       ]
     } else {
@@ -1195,7 +1038,9 @@ export const useMessage = () => {
           name: selectedModel,
           message: "▋",
           sources: [],
-          id: generateMessageId
+          id: generateMessageId,
+          modelImage: modelInfo?.model_avatar,
+          modelName: modelInfo?.model_name || selectedModel
         }
       ]
     }
@@ -1208,67 +1053,59 @@ export const useMessage = () => {
 
       let query = message
 
-      if (newMessage.length > 2) {
-        let questionPrompt = await geWebSearchFollowUpPrompt()
-        const lastTenMessages = newMessage.slice(-10)
-        lastTenMessages.pop()
-        const chat_history = lastTenMessages
-          .map((message) => {
-            return `${message.isBot ? "Assistant: " : "Human: "}${message.message}`
-          })
-          .join("\n")
-        const promptForQuestion = questionPrompt
-          .replaceAll("{chat_history}", chat_history)
-          .replaceAll("{question}", message)
-        const questionOllama = await pageAssistModel({
-          model: selectedModel!,
-          baseUrl: cleanUrl(url),
-          keepAlive:
-            currentChatModelSettings?.keepAlive ??
-            userDefaultModelSettings?.keepAlive,
-          temperature:
-            currentChatModelSettings?.temperature ??
-            userDefaultModelSettings?.temperature,
-          topK:
-            currentChatModelSettings?.topK ?? userDefaultModelSettings?.topK,
-          topP:
-            currentChatModelSettings?.topP ?? userDefaultModelSettings?.topP,
-          numCtx:
-            currentChatModelSettings?.numCtx ??
-            userDefaultModelSettings?.numCtx,
-          seed: currentChatModelSettings?.seed,
-          numGpu:
-            currentChatModelSettings?.numGpu ??
-            userDefaultModelSettings?.numGpu,
-          numPredict:
-            currentChatModelSettings?.numPredict ??
-            userDefaultModelSettings?.numPredict,
-          useMMap:
-            currentChatModelSettings?.useMMap ??
-            userDefaultModelSettings?.useMMap,
-          minP:
-            currentChatModelSettings?.minP ?? userDefaultModelSettings?.minP,
-          repeatLastN:
-            currentChatModelSettings?.repeatLastN ??
-            userDefaultModelSettings?.repeatLastN,
-          repeatPenalty:
-            currentChatModelSettings?.repeatPenalty ??
-            userDefaultModelSettings?.repeatPenalty,
-          tfsZ:
-            currentChatModelSettings?.tfsZ ?? userDefaultModelSettings?.tfsZ,
-          numKeep:
-            currentChatModelSettings?.numKeep ??
-            userDefaultModelSettings?.numKeep,
-          numThread:
-            currentChatModelSettings?.numThread ??
-            userDefaultModelSettings?.numThread,
-          useMlock:
-            currentChatModelSettings?.useMlock ??
-            userDefaultModelSettings?.useMlock
+      // if (newMessage.length > 2) {
+      let questionPrompt = await geWebSearchFollowUpPrompt()
+      const lastTenMessages = newMessage.slice(-10)
+      lastTenMessages.pop()
+      const chat_history = lastTenMessages
+        .map((message) => {
+          return `${message.isBot ? "Assistant: " : "Human: "}${message.message}`
         })
-        const response = await questionOllama.invoke(promptForQuestion)
-        query = response.content.toString()
-        query = removeReasoning(query)
+        .join("\n")
+      const promptForQuestion = questionPrompt
+        .replaceAll("{chat_history}", chat_history)
+        .replaceAll("{question}", message)
+      const questionModel = await pageAssistModel({
+        model: selectedModel!,
+        baseUrl: cleanUrl(url),
+      })
+
+      let questionMessage = await humanMessageFormatter({
+        content: [
+          {
+            text: promptForQuestion,
+            type: "text"
+          }
+        ],
+        model: selectedModel,
+        useOCR: useOCR
+      })
+
+      if (image.length > 0) {
+        questionMessage = await humanMessageFormatter({
+          content: [
+            {
+              text: promptForQuestion,
+              type: "text"
+            },
+            {
+              image_url: image,
+              type: "image_url"
+            }
+          ],
+          model: selectedModel,
+          useOCR: useOCR
+        })
+      }
+      try {
+        const isWebQuery = await isQueryHaveWebsite(query)
+        if (!isWebQuery) {
+          const response = await questionModel.invoke([questionMessage])
+          query = response?.content?.toString() || message
+          query = removeReasoning(query)
+        }
+      } catch (error) {
+        console.error("Error in questionModel.invoke:", error)
       }
 
       const { prompt, source } = await getSystemPromptForWeb(query)
@@ -1307,7 +1144,7 @@ export const useMessage = () => {
 
       if (prompt) {
         applicationChatHistory.unshift(
-          new SystemMessage({
+          await systemPromptFormatter({
             content: prompt
           })
         )
@@ -1469,7 +1306,6 @@ export const useMessage = () => {
   ) => {
     setStreaming(true)
     const url = await getOllamaURL()
-    const userDefaultModelSettings = await getAllDefaultModelSettings()
 
     if (image.length > 0) {
       image = `data:image/jpeg;base64,${image.split(",")[1]}`
@@ -1478,43 +1314,11 @@ export const useMessage = () => {
     const ollama = await pageAssistModel({
       model: selectedModel!,
       baseUrl: cleanUrl(url),
-      keepAlive:
-        currentChatModelSettings?.keepAlive ??
-        userDefaultModelSettings?.keepAlive,
-      temperature:
-        currentChatModelSettings?.temperature ??
-        userDefaultModelSettings?.temperature,
-      topK: currentChatModelSettings?.topK ?? userDefaultModelSettings?.topK,
-      topP: currentChatModelSettings?.topP ?? userDefaultModelSettings?.topP,
-      numCtx:
-        currentChatModelSettings?.numCtx ?? userDefaultModelSettings?.numCtx,
-      seed: currentChatModelSettings?.seed,
-      numGpu:
-        currentChatModelSettings?.numGpu ?? userDefaultModelSettings?.numGpu,
-      numPredict:
-        currentChatModelSettings?.numPredict ??
-        userDefaultModelSettings?.numPredict,
-      useMMap:
-        currentChatModelSettings?.useMMap ?? userDefaultModelSettings?.useMMap,
-      minP: currentChatModelSettings?.minP ?? userDefaultModelSettings?.minP,
-      repeatLastN:
-        currentChatModelSettings?.repeatLastN ??
-        userDefaultModelSettings?.repeatLastN,
-      repeatPenalty:
-        currentChatModelSettings?.repeatPenalty ??
-        userDefaultModelSettings?.repeatPenalty,
-      tfsZ: currentChatModelSettings?.tfsZ ?? userDefaultModelSettings?.tfsZ,
-      numKeep:
-        currentChatModelSettings?.numKeep ?? userDefaultModelSettings?.numKeep,
-      numThread:
-        currentChatModelSettings?.numThread ??
-        userDefaultModelSettings?.numThread,
-      useMlock:
-        currentChatModelSettings?.useMlock ?? userDefaultModelSettings?.useMlock
     })
 
     let newMessage: Message[] = []
     let generateMessageId = generateID()
+    const modelInfo = await getModelNicknameByID(selectedModel)
 
     if (!isRegenerate) {
       newMessage = [
@@ -1532,7 +1336,9 @@ export const useMessage = () => {
           name: selectedModel,
           message: "▋",
           sources: [],
-          id: generateMessageId
+          id: generateMessageId,
+          modelImage: modelInfo?.model_avatar,
+          modelName: modelInfo?.model_name || selectedModel
         }
       ]
     } else {
@@ -1543,7 +1349,9 @@ export const useMessage = () => {
           name: selectedModel,
           message: "▋",
           sources: [],
-          id: generateMessageId
+          id: generateMessageId,
+          modelImage: modelInfo?.model_avatar,
+          modelName: modelInfo?.model_name || selectedModel
         }
       ]
     }
@@ -1916,6 +1724,7 @@ export const useMessage = () => {
     useOCR,
     setUseOCR,
     defaultInternetSearchOn,
-    defaultChatWithWebsite
+    defaultChatWithWebsite,
+    history
   }
 }

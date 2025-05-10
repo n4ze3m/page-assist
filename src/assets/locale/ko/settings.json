@@ -47,6 +47,18 @@
       },
       "wideMode": {
         "label": "와이드 스크린 모드 활성화"
+      },
+      "openReasoning": {
+        "label": "추론 섹션을 기본적으로 열기"
+      },
+      "userChatBubble": {
+        "label": "사용자 메시지에 채팅 버블 사용"
+      },
+      "autoCopyResponseToClipboard": {
+        "label": "응답 자동 클립보드 복사"
+      },
+      "useMarkdownForUserMessage": {
+        "label": "사용자 메시지에 마크다운 형식 사용"
       }
     },
     "sidepanelRag": {
@@ -125,6 +137,16 @@
       },
       "removeReasoningTagTTS": {
         "label": "TTS에서 추론 태그 제거"
+      }
+    },
+    "stt": {
+      "heading": "음성 인식 설정",
+      "autoStopTimeout": {
+        "label": "자동 중지 시간 (ms)",
+        "placeholder": "자동 중지 시간을 밀리초 단위로 입력하세요"
+      },
+      "autoSubmitVoiceMessage": {
+        "label": "음성 메시지 자동 전송"
       }
     }
   },

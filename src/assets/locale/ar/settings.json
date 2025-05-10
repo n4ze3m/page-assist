@@ -44,6 +44,18 @@
       },
       "wideMode": {
         "label": "تمكين وضع الشاشة العريضة"
+      },
+      "openReasoning": {
+        "label": "فتح التفكير المنطقي بشكل افتراضي"
+      },
+      "userChatBubble": {
+        "label": "استخدام فقاعة الدردشة لرسائل المستخدم"
+      },
+      "autoCopyResponseToClipboard": {
+        "label": "نسخ الرد تلقائياً إلى الحافظة"
+      },
+      "useMarkdownForUserMessage": {
+        "label": "تمكين تنسيق ماركداون لرسائل المستخدم"
       }
     },
     "sidepanelRag": {
@@ -125,6 +137,16 @@
       },
       "removeReasoningTagTTS": {
         "label": "إزالة علامة التفكير من تحويل النص إلى كلام"
+      }
+    },
+    "stt": {
+      "heading": "إعدادات تحويل الكلام إلى نص",
+      "autoStopTimeout": {
+        "label": "مهلة التوقف التلقائي (مللي ثانية)",
+        "placeholder": "أدخل مهلة التوقف التلقائي بالمللي ثانية"
+      },
+      "autoSubmitVoiceMessage": {
+        "label": "إرسال الرسالة الصوتية تلقائياً"
       }
     }
   },

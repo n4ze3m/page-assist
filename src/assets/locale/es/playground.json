@@ -23,7 +23,8 @@
         "speechToText": "Voz a Texto",
         "uploadImage": "Subir Imagén",
         "stopStreaming": "Parar Transmisión",
-        "knowledge": "Conocimiento"
+        "knowledge": "Conocimiento",
+        "clearContext": "Limpiar Contexto"
     },
     "sendWhenEnter": "Enviar cuando presione Enter",
     "welcome": "¡Hola! ¿Cómo puedo ayudarte hoy?",

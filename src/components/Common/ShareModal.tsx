@@ -10,6 +10,7 @@ import { cleanUrl } from "~/libs/clean-url"
 import { getTitleById, getUserId, saveWebshare } from "@/db"
 import { useTranslation } from "react-i18next"
 import fetcher from "@/libs/fetcher"
+import { removeModelSuffix } from "@/db/models"
 
 type Props = {
   messages: Message[]
@@ -22,7 +23,14 @@ const reformatMessages = (messages: Message[], username: string) => {
   return messages.map((message, idx) => {
     return {
       id: idx,
-      name: message.isBot ? message.name : username,
+      name: message.isBot
+        ? removeModelSuffix(
+            `${message?.modelName || message?.name}`?.replaceAll(
+              /accounts\/[^\/]+\/models\//g,
+              ""
+            )
+          )
+        : username,
       isBot: message.isBot,
       message: message.message,
       images: message.images
@@ -50,7 +58,14 @@ export const PlaygroundMessage = (
           </div>
           <div className="flex w-[calc(100%-50px)] flex-col gap-3 lg:w-[calc(100%-115px)]">
             <span className="text-xs font-bold text-gray-800 dark:text-white">
-              {props.isBot ? props.name : props.username}
+              {props.isBot
+                ? removeModelSuffix(
+                    `${props?.modelName || props?.name}`?.replaceAll(
+                      /accounts\/[^\/]+\/models\//g,
+                      ""
+                    )
+                  )
+                : props.username}
             </span>
 
             <div className="flex flex-grow flex-col">
@@ -179,7 +194,12 @@ export const ShareModal: React.FC<Props> = ({
           <div className="max-h-[180px] overflow-x-auto border dark:border-gray-700 rounded-md p-2">
             <div className="flex flex-col p-3">
               {messages.map((message, index) => (
-                <PlaygroundMessage key={index} {...message} username={name} />
+                <PlaygroundMessage
+                  key={index}
+                  {...message}
+                  name={message?.modelName}
+                  username={name}
+                />
               ))}
             </div>
           </div>

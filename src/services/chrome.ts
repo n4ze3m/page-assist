@@ -9,6 +9,8 @@ const DEFAULT_CHROME_AI_MODEL = {
   provider: "chrome",
   size: 0,
   digest: "",
+  nickname: "Gemini Nano",
+  avatar: undefined,
   details: {
     parent_model: "",
     format: "",

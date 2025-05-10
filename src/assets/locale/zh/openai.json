@@ -10,6 +10,7 @@
     },
     "modal": {
         "titleAdd": "添加新提供商",
+        "titleEdit": "编辑提供商",
         "name": {
             "label": "提供商名称",
             "required": "提供商名称为必填项。",
@@ -53,7 +54,8 @@
             "model_type": "模型类型",
             "model_id": "模型 ID",
             "provider": "提供商名称",
-            "actions": "操作"
+            "actions": "操作",
+            "nickname": "模型昵称"
         },
         "tooltip": {
             "delete": "删除"
@@ -63,6 +65,7 @@
         },
         "modal": {
             "title": "添加自定义模型",
+            "titleEdit": "编辑自定义模型",
             "form": {
                 "name": {
                     "label": "模型 ID",
@@ -86,5 +89,20 @@
         "embedding": "嵌入模型",
         "chatInfo": "用于聊天补全和对话生成",
         "embeddingInfo": "用于 RAG 和其他语义搜索相关任务。"
+    },
+    "nicknameModal": {
+        "title": "添加/编辑模型昵称",
+        "form": {
+            "modelName": {
+                "label": "模型名称",
+                "placeholder": "请输入模型名称",
+                "required": "模型名称为必填项。"
+            },
+            "modelAvatar": {
+                "label": "模型头像",
+                "placeholder": "请输入模型头像",
+                "help": "请输入模型头像的URL地址。此图像将显示在聊天窗口中。"
+            }
+        }
     }
 }

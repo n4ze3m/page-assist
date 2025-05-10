@@ -24,12 +24,15 @@ export const OpenAIFetchModel = ({ openaiId, setOpenModelModal }: Props) => {
     queryKey: ["openAIConfigs", openaiId],
     queryFn: async () => {
       const config = await getOpenAIConfigById(openaiId)
-      const models = await getAllOpenAIModels(config.baseUrl, config.apiKey)
+      const models = await getAllOpenAIModels({
+        baseUrl: config.baseUrl,
+        apiKey: config.apiKey,
+        customHeaders: config.headers
+      })
       return models
     },
     enabled: !!openaiId
   })
-
   const filteredModels = useMemo(() => {
     return (
       data?.filter((model) =>
@@ -127,19 +130,34 @@ export const OpenAIFetchModel = ({ openaiId, setOpenModelModal }: Props) => {
         </div>
       </div>
       <div className="space-y-2 custom-scrollbar max-h-[300px] border overflow-y-auto dark:border-gray-600 rounded-md p-3">
-        <div className="grid grid-cols-2 gap-4 items-center">
-          {filteredModels.map((model) => (
-            <Checkbox
-              key={model.id}
-              checked={selectedModels.includes(model.id)}
-              onChange={(e) => handleModelSelect(model.id, e.target.checked)}>
-              <div className="max-w-[200px] truncate">
-                {`${model?.name || model.id}`.replaceAll(
-                  /accounts\/[^\/]+\/models\//g,
-                  ""
-                )}
+        <div className="divide-y divide-gray-200 dark:divide-gray-700">
+          {filteredModels.map((model, idx) => (
+            <div
+              key={idx}
+              onClick={() => {
+                handleModelSelect(model.id, !selectedModels.includes(model.id))
+              }}
+              className="flex cursor-pointer items-center justify-between py-3 hover:bg-gray-50 dark:hover:bg-gray-800 px-2 ">
+              <div className="flex items-center space-x-3">
+                <Checkbox
+                  checked={selectedModels.includes(model.id)}
+                  onChange={(e) =>
+                    handleModelSelect(model.id, e.target.checked)
+                  }
+                />
+                <div className="flex flex-col">
+                  <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                    {`${model?.name || model.id}`.replaceAll(
+                      /accounts\/[^\/]+\/models\//g,
+                      ""
+                    )}
+                  </span>
+                  <span className="text-xs text-gray-500 dark:text-gray-400">
+                    {model.id}
+                  </span>
+                </div>
               </div>
-            </Checkbox>
+            </div>
           ))}
         </div>
       </div>

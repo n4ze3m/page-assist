@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { Form, Input, InputNumber, Select, Skeleton } from "antd"
+import { Avatar, Form, Input, InputNumber, Select, Skeleton } from "antd"
 import { SaveButton } from "~/components/Common/SaveButton"
 import {
   defaultEmbeddingChunkOverlap,
@@ -146,11 +146,21 @@ export const RagSettings = () => {
                       <span
                         key={model.model}
                         className="flex flex-row gap-3 items-center truncate">
-                        <ProviderIcons
-                          provider={model?.provider}
-                          className="w-5 h-5"
-                        />
-                        <span className="truncate">{model.name}</span>
+                        {model?.avatar ? (
+                          <Avatar
+                            src={model.avatar}
+                            alt={model.name}
+                            size="small"
+                          />
+                        ) : (
+                          <ProviderIcons
+                            provider={model?.provider}
+                            className="w-5 h-5"
+                          />
+                        )}
+                        <span className="truncate">
+                          {model?.nickname || model?.name}
+                        </span>
                       </span>
                     ),
                     value: model.model

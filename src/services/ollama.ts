@@ -2,10 +2,14 @@ import { Storage } from "@plasmohq/storage"
 import { cleanUrl } from "../libs/clean-url"
 import { urlRewriteRuntime } from "../libs/runtime"
 import { getChromeAIModel } from "./chrome"
-import { getOllamaEnabled, setNoOfRetrievedDocs, setTotalFilePerKB } from "./app"
+import {
+  getOllamaEnabled,
+  setNoOfRetrievedDocs,
+  setTotalFilePerKB
+} from "./app"
 import fetcher from "@/libs/fetcher"
 import { ollamaFormatAllCustomModels } from "@/db/models"
-
+import { getAllModelNicknames } from "@/db/nickname"
 
 const storage = new Storage()
 const storage2 = new Storage({
@@ -21,7 +25,7 @@ const DEFAULT_RAG_QUESTION_PROMPT =
 
 const DEFAUTL_RAG_SYSTEM_PROMPT = `You are a helpful AI assistant. Use the following pieces of context to answer the question at the end. If you don't know the answer, just say you don't know. DO NOT try to make up an answer. If the question is not related to the context, politely respond that you are tuned to only answer questions that are related to the context.  {context}  Question: {question} Helpful answer:`
 
-const DEFAULT_WEBSEARCH_PROMP = `You are an AI model who is expert at searching the web and answering user's queries.
+const DEFAULT_WEBSEARCH_PROMPT = `You are an AI model who is expert at searching the web and answering user's queries.
 
 Generate a response that is informative and relevant to the user's query based on provided search results. the current date and time are {current_date_time}.
 
@@ -105,7 +109,7 @@ export const getAllModels = async ({
   returnEmpty?: boolean
 }) => {
   try {
-
+    const modelNicknames = await getAllModelNicknames()
     const isEnabled = await getOllamaEnabled()
 
     if (!isEnabled) {
@@ -122,12 +126,20 @@ export const getAllModels = async ({
     }
     const json = await response.json()
 
-    return json.models as {
+    return json.models.map((model: any) => {
+      return {
+        ...model,
+        nickname: modelNicknames[model.name]?.model_name || model.name,
+        avatar: modelNicknames[model.name]?.model_avatar || undefined
+      }
+    }) as {
       name: string
       model: string
       modified_at: string
       size: number
       digest: string
+      nickname?: string
+      avatar?: string
       details: {
         parent_model: string
         format: string
@@ -143,7 +155,14 @@ export const getAllModels = async ({
   }
 }
 
-export const getEmbeddingModels = async ({ returnEmpty }: {
+export const getSelectedModel = async () => {
+  const selectedModel = await storage.get("selectedModel")
+  return selectedModel
+}
+
+export const getEmbeddingModels = async ({
+  returnEmpty
+}: {
   returnEmpty?: boolean
 }) => {
   try {
@@ -151,6 +170,7 @@ export const getEmbeddingModels = async ({ returnEmpty }: {
     const customModels = await ollamaFormatAllCustomModels("embedding")
 
     return [
+
       ...ollamaModels.map((model) => {
         return {
           ...model,
@@ -181,15 +201,14 @@ export const deleteModel = async (model: string) => {
   return "ok"
 }
 
-
 export const fetchChatModels = async ({
   returnEmpty = false
 }: {
   returnEmpty?: boolean
 }) => {
   try {
-
     const models = await getAllModels({ returnEmpty })
+
     const chatModels = models
       ?.filter((model) => {
         return (
@@ -207,11 +226,7 @@ export const fetchChatModels = async ({
 
     const customModels = await ollamaFormatAllCustomModels("chat")
 
-    return [
-      ...chatModels,
-      ...chromeModel,
-      ...customModels
-    ]
+    return [...chatModels, ...chromeModel, ...customModels]
   } catch (e) {
     console.error(e)
     const allModels = await getAllModels({ returnEmpty })
@@ -223,11 +238,7 @@ export const fetchChatModels = async ({
     })
     const chromeModel = await getChromeAIModel()
     const customModels = await ollamaFormatAllCustomModels("chat")
-    return [
-      ...models,
-      ...chromeModel,
-      ...customModels
-    ]
+    return [...models, ...chromeModel, ...customModels]
   }
 }
 
@@ -391,7 +402,7 @@ export const saveForRag = async (
 export const getWebSearchPrompt = async () => {
   const prompt = await storage.get("webSearchPrompt")
   if (!prompt || prompt.length === 0) {
-    return DEFAULT_WEBSEARCH_PROMP
+    return DEFAULT_WEBSEARCH_PROMPT
   }
   return prompt
 }
@@ -429,10 +440,9 @@ export const setPageShareUrl = async (pageShareUrl: string) => {
   await storage.set("pageShareUrl", pageShareUrl)
 }
 
-
 export const isOllamaEnabled = async () => {
   const ollamaStatus = await storage.get<boolean>("checkOllamaStatus")
-  // if data is empty or null then return true 
+  // if data is empty or null then return true
   if (typeof ollamaStatus === "undefined" || ollamaStatus === null) {
     return true
   }

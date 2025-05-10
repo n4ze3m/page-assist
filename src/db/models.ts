@@ -3,11 +3,14 @@ import {
   getAllOpenAIConfig,
   getOpenAIConfigById as providerInfo
 } from "./openai"
+import { getAllModelNicknames } from "./nickname"
 
 type Model = {
   id: string
   model_id: string
   name: string
+  model_name?: string,
+  model_image?: string,
   provider_id: string
   lookup: string
   model_type: string
@@ -26,6 +29,7 @@ export const removeModelSuffix = (id: string) => {
     .replace(/_lmstudio_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/, "")
     .replace(/_llamafile_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/, "")
     .replace(/_ollama2_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/, "")
+    .replace(/_llamacpp_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/, "")
 }
 export const isLMStudioModel = (model: string) => {
   const lmstudioModelRegex =
@@ -38,6 +42,12 @@ export const isLlamafileModel = (model: string) => {
     /_llamafile_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/
   return llamafileModelRegex.test(model)
 }
+
+export const isLLamaCppModel = (model: string) => {
+  const llamaCppModelRegex = /_llamacpp_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/
+  return llamaCppModelRegex.test(model)
+}
+
 export const isOllamaModel = (model: string) => {
   const ollamaModelRegex =
     /_ollama2_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/
@@ -82,6 +92,21 @@ export const getLlamafileModelId = (
   }
   return null
 }
+
+export const getLLamaCppModelId = (
+  model: string
+): { model_id: string; provider_id: string } => {
+  const llamaCppModelRegex =
+    /_llamacpp_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/
+  const match = model.match(llamaCppModelRegex)
+  if (match) {
+    const modelId = match[0]
+    const providerId = match[0].replace("_llamacpp_openai-", "")
+    return { model_id: modelId, provider_id: providerId }
+  }
+  return null
+}
+
 export const isCustomModel = (model: string) => {
   if (isLMStudioModel(model)) {
     return true
@@ -92,6 +117,10 @@ export const isCustomModel = (model: string) => {
   }
 
   if (isOllamaModel(model)) {
+    return true
+  }
+
+  if (isLLamaCppModel(model)) {
     return true
   }
 
@@ -267,6 +296,25 @@ export const getModelInfo = async (id: string) => {
     }
   }
 
+  if (isLLamaCppModel(id)) {
+    const llamaCppId = getLLamaCppModelId(id)
+    if (!llamaCppId) {
+      throw new Error("Invalid LMStudio model ID")
+    }
+
+    return {
+      model_id: id.replace(
+        /_llamacpp_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/,
+        ""
+      ),
+      provider_id: `openai-${llamaCppId.provider_id}`,
+      name: id.replace(
+        /_llamacpp_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/,
+        ""
+      )
+    }
+  }
+
 
   if (isOllamaModel(id)) {
     const ollamaId = getOllamaModelId(id)
@@ -292,6 +340,7 @@ export const getModelInfo = async (id: string) => {
 
 export const getAllCustomModels = async () => {
   const db = new ModelDb()
+  const modelNicknames = await getAllModelNicknames()
   const models = (await db.getAll()).filter(
     (model) => model?.db_type === "openai_model"
   )
@@ -302,7 +351,13 @@ export const getAllCustomModels = async () => {
     })
   )
 
-  return modelsWithProvider
+  return modelsWithProvider.map((model) => {
+    return {
+      ...model,
+      nickname: modelNicknames[model.id]?.model_name || model.model_id,
+      avatar: modelNicknames[model.id]?.model_avatar || undefined
+    }
+  })
 }
 
 export const deleteModel = async (id: string) => {
@@ -330,12 +385,14 @@ export const isLookupExist = async (lookup: string) => {
 
 export const dynamicFetchLMStudio = async ({
   baseUrl,
-  providerId
+  providerId,
+  customHeaders = []
 }: {
   baseUrl: string
   providerId: string
+  customHeaders?: { key: string; value: string }[]
 }) => {
-  const models = await getAllOpenAIModels(baseUrl)
+  const models = await getAllOpenAIModels({ baseUrl, customHeaders })
   const lmstudioModels = models.map((e) => {
     return {
       name: e?.name || e?.id,
@@ -349,14 +406,39 @@ export const dynamicFetchLMStudio = async ({
   return lmstudioModels
 }
 
-export const dynamicFetchOllama2 = async ({
+export const dynamicFetchLLamaCpp = async ({
   baseUrl,
-  providerId
+  providerId,
+  customHeaders = []
 }: {
   baseUrl: string
   providerId: string
+  customHeaders?: { key: string; value: string }[]
 }) => {
-  const models = await getAllOpenAIModels(baseUrl)
+  const models = await getAllOpenAIModels({ baseUrl, customHeaders })
+  const llamaCppModels = models.map((e) => {
+    return {
+      name: e?.name || e?.id,
+      id: `${e?.id}_llamacpp_${providerId}`,
+      provider: providerId,
+      lookup: `${e?.id}_${providerId}`,
+      provider_id: providerId
+    }
+  })
+
+  return llamaCppModels
+}
+
+export const dynamicFetchOllama2 = async ({
+  baseUrl,
+  providerId,
+  customHeaders = []
+}: {
+  baseUrl: string
+  providerId: string,
+  customHeaders?: { key: string; value: string }[]
+}) => {
+  const models = await getAllOpenAIModels({ baseUrl, customHeaders })
   const ollama2Models = models.map((e) => {
     return {
       name: e?.name || e?.id,
@@ -372,12 +454,14 @@ export const dynamicFetchOllama2 = async ({
 
 export const dynamicFetchLlamafile = async ({
   baseUrl,
-  providerId
+  providerId,
+  customHeaders = []
 }: {
   baseUrl: string
-  providerId: string
+  providerId: string,
+  customHeaders?: { key: string; value: string }[]
 }) => {
-  const models = await getAllOpenAIModels(baseUrl)
+  const models = await getAllOpenAIModels({ baseUrl, customHeaders })
   const llamafileModels = models.map((e) => {
     return {
       name: e?.name || e?.id,
@@ -399,51 +483,69 @@ export const ollamaFormatAllCustomModels = async (
       getAllCustomModels(),
       getAllOpenAIConfig()
     ])
-  
+    const modelNicknames = await getAllModelNicknames()
     const lmstudioProviders = allProviders.filter(
       (provider) => provider.provider === "lmstudio"
     )
-  
+
     const llamafileProviders = allProviders.filter(
       (provider) => provider.provider === "llamafile"
     )
-  
+
     const ollamaProviders = allProviders.filter(
       (provider) => provider.provider === "ollama2"
     )
-  
+
+    const llamacppProvider = allProviders.filter(
+      (model) => model.provider === "llamacpp"
+    )
+
     const lmModelsPromises = lmstudioProviders.map((provider) =>
       dynamicFetchLMStudio({
         baseUrl: provider.baseUrl,
-        providerId: provider.id
+        providerId: provider.id,
+        customHeaders: provider.headers
       })
     )
-  
+
     const llamafileModelsPromises = llamafileProviders.map((provider) =>
       dynamicFetchLlamafile({
         baseUrl: provider.baseUrl,
-        providerId: provider.id
+        providerId: provider.id,
+        customHeaders: provider.headers
       })
     )
-  
+
     const ollamaModelsPromises = ollamaProviders.map((provider) =>
       dynamicFetchOllama2({
         baseUrl: provider.baseUrl,
-        providerId: provider.id
+        providerId: provider.id,
+        customHeaders: provider.headers
       }))
-  
+
+    const llamacppModelsPromises = llamacppProvider.map((provider) =>
+      dynamicFetchLLamaCpp({
+        baseUrl: provider.baseUrl,
+        providerId: provider.id,
+        customHeaders: provider.headers
+      }))
+
     const lmModelsFetch = await Promise.all(lmModelsPromises)
-  
+
     const llamafileModelsFetch = await Promise.all(llamafileModelsPromises)
-  
+
     const ollamaModelsFetch = await Promise.all(ollamaModelsPromises)
-  
+
+    const llamacppModelsFetch = await Promise.all(llamacppModelsPromises)
+
     const lmModels = lmModelsFetch.flat()
-  
+
     const llamafileModels = llamafileModelsFetch.flat()
-  
+
     const ollama2Models = ollamaModelsFetch.flat()
-  
+
+    const llamacppModels = llamacppModelsFetch.flat()
+
     // merge allModels and lmModels
     const allModlesWithLMStudio = [
       ...(modelType !== "all"
@@ -451,9 +553,10 @@ export const ollamaFormatAllCustomModels = async (
         : allModles),
       ...lmModels,
       ...llamafileModels,
-      ...ollama2Models
+      ...ollama2Models,
+      ...llamacppModels
     ]
-  
+
     const ollamaModels = allModlesWithLMStudio.map((model) => {
       return {
         name: model.name,
@@ -474,9 +577,15 @@ export const ollamaFormatAllCustomModels = async (
         }
       }
     })
-  
-    return ollamaModels
-  } catch(e) {
+
+    return ollamaModels.map((model) => {
+      return {
+        ...model,
+        nickname: modelNicknames[model.model]?.model_name || model.name,
+        avatar: modelNicknames[model.model]?.model_avatar || undefined
+      }
+    })
+  } catch (e) {
     console.error(e)
     return []
   }

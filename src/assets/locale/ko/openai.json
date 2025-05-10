@@ -53,7 +53,8 @@
             "model_type": "모델 타입",
             "model_id": "모델 ID",
             "provider": "공급자 이름",
-            "actions": "작업"
+            "actions": "작업",
+            "nickname": "모델 별칭"
         },
         "tooltip": {
             "delete": "삭제"
@@ -86,5 +87,20 @@
         "embedding": "임베딩 모델",
         "chatInfo": "는 챗 완료 및 대화 생성에 사용됩니다",
         "embeddingInfo": "는 RAG 및 기타 의미 검색 관련 작업에 사용됩니다."
+    },
+    "nicknameModal": {
+        "title": "모델 별칭 추가 / 편집",
+        "form": {
+            "modelName": {
+                "label": "모델 이름",
+                "placeholder": "모델 이름 입력",
+                "required": "모델 이름은 필수 항목입니다."
+            },
+            "modelAvatar": {
+                "label": "모델 아바타",
+                "placeholder": "모델 아바타 입력",
+                "help": "모델 아바타의 URL을 입력해주세요. 이 이미지는 채팅 창에 표시됩니다."
+            }
+        }
     }
 }

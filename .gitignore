@@ -48,3 +48,4 @@ keys.json
 .idea 
 
 /docs/.vitepress/cache/
+package-lock.json

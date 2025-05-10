@@ -10,6 +10,7 @@
     },
     "modal": {
         "titleAdd": "Add New Provider",
+        "titleEdit": "Edit Provider",
         "name": {
             "label": "Provider Name",
             "required": "Provider name is required.",
@@ -53,7 +54,8 @@
             "model_type": "Model Type",
             "model_id": "Model ID",
             "provider": "Provider Name",
-            "actions": "Action"
+            "actions": "Action",
+            "nickname": "Model Nickname"
         },
         "tooltip": {
             "delete": "Delete"
@@ -63,6 +65,7 @@
         },
         "modal": {
             "title": "Add Custom Model",
+            "titleEdit": "Edit Custom Model",
             "form": {
                 "name": {
                     "label": "Model ID",
@@ -86,5 +89,20 @@
         "embedding": "Embedding Model",
         "chatInfo": "is used for chat completion and conversation generation",
         "embeddingInfo": "is used for RAG and other semantic search related tasks."
+    },
+    "nicknameModal": {
+        "title": "Add / Edit Model Nickname",
+        "form": {
+            "modelName": {
+                "label": "Model Name",
+                "placeholder": "Enter model name",
+                "required": "Model name is required."
+            },
+            "modelAvatar": {
+                "label": "Model Avatar",
+                "placeholder": "Enter model avatar",
+                "help": "Please enter the URL of the model avatar. This image will be displayed in the chat window."
+            }
+        }
     }
 }

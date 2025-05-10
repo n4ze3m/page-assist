@@ -44,6 +44,18 @@
       },
       "wideMode": {
         "label": "Aktivera bredskärmsläge"
+      },
+      "openReasoning": {
+        "label": "Öppna resonemang kollapsat som standard"
+      },
+      "userChatBubble": {
+        "label": "Använd chattbubbla för användarmeddelanden"
+      },
+      "autoCopyResponseToClipboard": {
+        "label": "Kopiera svar automatiskt till urklipp"
+      },
+      "useMarkdownForUserMessage": {
+        "label": "Aktivera Markdown-formatering för användarmeddelanden"
       }
     },
     "sidepanelRag": {
@@ -122,6 +134,16 @@
       },
       "removeReasoningTagTTS": {
         "label": "Ta bort resonemangstagg från Text till Tal"
+      }
+    },
+    "stt": {
+      "heading": "Tal till Text Inställningar",
+      "autoStopTimeout": {
+        "label": "Automatiskt Stopptidsgräns (ms)",
+        "placeholder": "Ange automatisk stopptidsgräns i millisekunder"
+      },
+      "autoSubmitVoiceMessage": {
+        "label": "Skicka Röstmeddelande Automatiskt"
       }
     }
   },

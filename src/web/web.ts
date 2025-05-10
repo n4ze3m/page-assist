@@ -7,13 +7,30 @@ import { webBraveSearch } from "./search-engines/brave"
 import { getWebsiteFromQuery, processSingleWebsite } from "./website"
 import { searxngSearch } from "./search-engines/searxng"
 import { braveAPISearch } from "./search-engines/brave-api"
+import { tavilyAPISearch } from "./search-engines/tavily-api"
 import { webBaiduSearch } from "./search-engines/baidu"
+import { webBingSearch } from "./search-engines/bing"
+import { stractSearch } from "./search-engines/stract"
+import { startpageSearch } from "./search-engines/startpage"
+import { exaAPISearch } from "./search-engines/exa"
+
+interface ProviderResults {
+  url: any
+  content: string | null
+}
+
+interface SearchProviderResult {
+  url: string
+  content: string | null
+  answer: string | null
+  results: ProviderResults[] | null
+}
 
 const getHostName = (url: string) => {
   try {
-    const hostname = new URL(url).hostname
-    return hostname
+    return new URL(url).hostname
   } catch (e) {
+    console.error("Failed to get hostname:", e)
     return ""
   }
 }
@@ -30,43 +47,75 @@ const searchWeb = (provider: string, query: string) => {
       return searxngSearch(query)
     case "brave-api":
       return braveAPISearch(query)
+    case "tavily-api":
+      return tavilyAPISearch(query)
     case "baidu":
       return webBaiduSearch(query)
+    case "bing":
+      return webBingSearch(query)
+    case "stract":
+      return stractSearch(query)
+    case "startpage":
+      return startpageSearch(query)
+    case "exa":
+      return exaAPISearch(query)
     default:
       return webGoogleSearch(query)
   }
 }
 
+const getProvidedURLs = (
+  searchOnProviders: SearchProviderResult | ProviderResults[], 
+  searchOnAWebSite: ProviderResults[]
+) => {
+  let urlList = []
+  if('results' in searchOnProviders) {
+    urlList = searchOnProviders.results
+  } else if (searchOnProviders.length >= 1) {
+    urlList = searchOnProviders
+  } else {
+    urlList = searchOnAWebSite
+  }
+  return urlList
+}
+
+export const isQueryHaveWebsite = async (query: string) => {
+  const websiteVisit = getWebsiteFromQuery(query)
+  
+  const isVisitSpecificWebsite = await getIsVisitSpecificWebsite()
+
+  return isVisitSpecificWebsite && websiteVisit.hasUrl
+}
+
 export const getSystemPromptForWeb = async (query: string) => {
   try {
-
     const websiteVisit = getWebsiteFromQuery(query)
-    let search: {
-      url: any;
-      content: string;
-    }[] = []
+    let searchOnAWebSite: ProviderResults[] = []
+    let searchOnProviders: SearchProviderResult | [] = []
 
     const isVisitSpecificWebsite = await getIsVisitSpecificWebsite()
 
     if (isVisitSpecificWebsite && websiteVisit.hasUrl) {
-
       const url = websiteVisit.url
       const queryWithoutUrl = websiteVisit.queryWithouUrls
-      search = await processSingleWebsite(url, queryWithoutUrl)
-
+      searchOnAWebSite = await processSingleWebsite(url, queryWithoutUrl)
     } else {
       const searchProvider = await getSearchProvider()
-      search = await searchWeb(searchProvider, query)
+      searchOnProviders = await searchWeb(searchProvider, query)
     }
 
-
-    const search_results = search
-      .map(
-        (result, idx) =>
-          `<result source="${result.url}" id="${idx}">${result.content}</result>`
+    let search_results: string = ""
+    
+    if ('answer' in searchOnProviders) {
+      search_results += `<result id="0">${searchOnProviders.answer}</result>`
+      search_results += (`\n`)
+    } else {
+      search_results = searchOnProviders.map((result: ProviderResults, idx) => 
+        `<result source="${result.url}" id="${idx}">${result?.content}</result>`
       )
       .join("\n")
-
+    }
+    
     const current_date_time = new Date().toLocaleString()
 
     const system = await getWebSearchPrompt()
@@ -75,10 +124,12 @@ export const getSystemPromptForWeb = async (query: string) => {
       .replace("{current_date_time}", current_date_time)
       .replace("{search_results}", search_results)
       .replace("{query}", query)
-      
+
+    const urlProvided = getProvidedURLs(searchOnProviders, searchOnAWebSite)
+
     return {
       prompt,
-      source: search.map((result) => {
+      source: urlProvided.map((result) => {
         return {
           url: result.url,
           name: getHostName(result.url),

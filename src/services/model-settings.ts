@@ -34,6 +34,7 @@ type ModelSettings = {
   vocabOnly?: boolean
   minP?: number
   useMlock?: boolean
+  reasoningEffort?: any
 }
 
 const keys = [
@@ -66,7 +67,8 @@ const keys = [
   "useMMap",
   "vocabOnly",
   "minP",
-  "useMlock"
+  "useMlock",
+  "reasoningEffort"
 ]
 
 export const getAllModelSettings = async () => {
@@ -150,3 +152,24 @@ export const setLastUsedChatSystemPrompt = async (
   await storage.set(`lastUsedChatSystemPrompt-${historyId}`, prompt)
 }
 
+
+export const getModelSettings = async (model_id: string) => {
+  try {
+    const settings = await storage.get<ModelSettings>(`modelSettings:${model_id}`)
+    if (!settings) {
+      return {}
+    }
+    return settings
+  } catch (error) {
+    console.error(error)
+    return {}
+  }
+}
+
+export const setModelSettings = async ({model_id,settings}: {model_id: string, settings: Partial<ModelSettings>}) => {
+  try {
+    await storage.set(`modelSettings:${model_id}`, settings)
+  } catch (error) {
+    console.error(error)
+  }
+}

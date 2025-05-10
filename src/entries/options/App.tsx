@@ -9,6 +9,7 @@ import { OptionRouting } from "@/routes/chrome-route"
 import "~/i18n"
 import { useTranslation } from "react-i18next"
 import { PageAssistProvider } from "@/components/Common/PageAssistProvider"
+import { FontSizeProvider } from "@/context/FontSizeProvider"
 
 function IndexOption() {
   const { mode } = useDarkMode()
@@ -45,7 +46,9 @@ function IndexOption() {
         <StyleProvider hashPriority="high">
           <QueryClientProvider client={queryClient}>
             <PageAssistProvider>
-              <OptionRouting />
+              <FontSizeProvider>
+                <OptionRouting />
+              </FontSizeProvider>
             </PageAssistProvider>
           </QueryClientProvider>
         </StyleProvider>

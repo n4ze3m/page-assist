@@ -3,7 +3,8 @@ import { PageAssistHtmlLoader } from "@/loader/html"
 import { pageAssistEmbeddingModel } from "@/models/embedding"
 import {
   defaultEmbeddingModelForRag,
-  getOllamaURL
+  getOllamaURL,
+  getSelectedModel
 } from "@/services/ollama"
 import {
   getIsSimpleInternetSearch,
@@ -80,9 +81,11 @@ export const webDuckDuckGoSearch = async (query: string) => {
   }
   const ollamaUrl = await getOllamaURL()
 
+
   const embeddingModle = await defaultEmbeddingModelForRag()
+  const selectedModel = await getSelectedModel()
   const ollamaEmbedding = await pageAssistEmbeddingModel({
-    model: embeddingModle || "",
+    model: embeddingModle || selectedModel || "",
     baseUrl: cleanUrl(ollamaUrl)
   })
 

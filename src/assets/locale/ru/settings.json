@@ -44,6 +44,18 @@
       },
       "wideMode": {
         "label": "Включить широкоэкранный режим"
+      },
+      "openReasoning": {
+        "label": "Открыть рассуждения свернутыми по умолчанию"
+      },
+      "userChatBubble": {
+        "label": "Использовать пузырь чата для сообщений пользователя"
+      },
+      "autoCopyResponseToClipboard": {
+        "label": "Автоматически копировать ответ в буфер обмена"
+      },
+      "useMarkdownForUserMessage": {
+        "label": "Включить форматирование Markdown для сообщений пользователя"
       }
     },
     "sidepanelRag": {
@@ -123,6 +135,16 @@
       },
       "removeReasoningTagTTS": {
         "label": "Удалить тег рассуждения из TTS"
+      }
+    },
+    "stt": {
+      "heading": "Настройки речь в текст",
+      "autoStopTimeout": {
+        "label": "Тайм-аут автоостановки (мс)",
+        "placeholder": "Введите тайм-аут автоостановки в миллисекундах"
+      },
+      "autoSubmitVoiceMessage": {
+        "label": "Автоматическая отправка голосового сообщения"
       }
     }
   },

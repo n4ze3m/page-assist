@@ -41,6 +41,18 @@
       },
       "wideMode": {
         "label": "Aktivér bredskærm tilstand"
+      },
+      "openReasoning": {
+        "label": "Åbn Ræsonnement Sammenfoldet som standard"
+      },
+      "userChatBubble": {
+        "label": "Brug chatboble til brugermeddelelser"
+      },
+      "autoCopyResponseToClipboard": {
+        "label": "Kopiér automatisk svar til udklipsholder"
+      },
+      "useMarkdownForUserMessage": {
+        "label": "Aktivér Markdown formatering for brugermeddelelser"
       }
     },
     "sidepanelRag": {
@@ -119,6 +131,16 @@
       },
       "removeReasoningTagTTS": {
         "label": "Fjern Ræsonnement Tag fra TTS"
+      }
+    },
+    "stt": {
+      "heading": "Tale-til-Tekst Indstillinger",
+      "autoStopTimeout": {
+        "label": "Auto Stop Timeout (ms)",
+        "placeholder": "Indtast auto-stop timeout i millisekunder"
+      },
+      "autoSubmitVoiceMessage": {
+        "label": "Auto Send Stemmebesked"
       }
     }
   },
