@@ -46,5 +46,9 @@ export const SUPPORTED_SERACH_PROVIDERS = [
     {
         label: "Exa",
         value: "exa"
+    },
+    {
+        label: "Firecrawl",
+        value: "firecrawl"
     }
 ]

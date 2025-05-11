@@ -13,6 +13,7 @@ import { webBingSearch } from "./search-engines/bing"
 import { stractSearch } from "./search-engines/stract"
 import { startpageSearch } from "./search-engines/startpage"
 import { exaAPISearch } from "./search-engines/exa"
+import { firecrawlAPISearch } from "./search-engines/firecrawl"
 
 interface ProviderResults {
   url: any
@@ -59,6 +60,8 @@ const searchWeb = (provider: string, query: string) => {
       return startpageSearch(query)
     case "exa":
       return exaAPISearch(query)
+    case "firecrawl":
+      return firecrawlAPISearch(query)
     default:
       return webGoogleSearch(query)
   }

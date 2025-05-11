@@ -22,7 +22,8 @@ export const SearchModeSettings = () => {
       tavilyApiKey: "",
       googleDomain: "",
       defaultInternetSearchOn: false,
-      exaAPIKey: ""
+      exaAPIKey: "",
+      firecrawlAPIKey: ""
     }
   })
 
@@ -160,9 +161,7 @@ export const SearchModeSettings = () => {
               </span>
               <div>
                 <Input.Password
-                  placeholder={t(
-                    "generalSettings.webSearch.exa.placeholder"
-                  )}
+                  placeholder={t("generalSettings.webSearch.exa.placeholder")}
                   required
                   className="w-full mt-4 sm:mt-0 sm:w-[200px]"
                   {...form.getInputProps("exaAPIKey")}
@@ -171,6 +170,27 @@ export const SearchModeSettings = () => {
             </div>
           </>
         )}
+
+        {form.values.searchProvider === "firecrawl" && (
+          <>
+            <div className="flex sm:flex-row flex-col space-y-4 sm:space-y-0 sm:justify-between">
+              <span className="text-gray-700 dark:text-neutral-50">
+                {t("generalSettings.webSearch.firecrawlAPIKey.label")}
+              </span>
+              <div>
+                <Input.Password
+                  placeholder={t(
+                    "generalSettings.webSearch.firecrawlAPIKey.placeholder"
+                  )}
+                  required
+                  className="w-full mt-4 sm:mt-0 sm:w-[200px]"
+                  {...form.getInputProps("firecrawlAPIKey")}
+                />
+              </div>
+            </div>
+          </>
+        )}
+
         <div className="flex sm:flex-row flex-col space-y-4 sm:space-y-0 sm:justify-between">
           <span className="text-gray-700 dark:text-neutral-50 ">
             {t("generalSettings.webSearch.searchMode.label")}

@@ -106,6 +106,10 @@
       },
       "searchOnByDefault": {
         "label": "Internet Search ON by default"
+      },
+      "firecrawlAPIKey": {
+        "label": "Firecrawl API Key",
+        "placeholder": "Enter your Firecrawl API key"
       }
     },
     "system": {
