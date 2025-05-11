@@ -58,13 +58,13 @@
         "label": "Ativar formatação Markdown para mensagens do Usuário"
       }
     },
-    "sidepanelRag": {
-      "heading": "Configurações de Chat Copilot com o Site",
+  "sidepanelRag": {
+      "heading": "Configurações de Recuperação",
       "ragEnabled": {
-        "label": "Conversar com o site usando embeddings vetoriais"
+        "label": "Ativar Incorporação e Recuperação"
       },
       "maxWebsiteContext": {
-        "label": "Tamanho do conteúdo do site no modo normal",
+        "label": "Tamanho Máximo de Conteúdo para Modo de Contexto Completo",
         "placeholder": "Tamanho do conteúdo (padrão 4028)"
       }
     },

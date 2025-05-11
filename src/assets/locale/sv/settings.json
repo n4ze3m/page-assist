@@ -59,12 +59,12 @@
       }
     },
     "sidepanelRag": {
-      "heading": "Copilot Chatt med Webbplats Inställningar",
+      "heading": "Hämtningsinställningar",
       "ragEnabled": {
-        "label": "Chatta med webbplatsen med vektorinbäddningar"
+        "label": "Aktivera Inbäddning och Hämtning"
       },
       "maxWebsiteContext": {
-        "label": "Vanligt läge webbplatsinnehållsstorlek",
+        "label": "Maximal Innehållsstorlek för Fullständigt Kontextläge",
         "placeholder": "Innehållsstorlek (standard 4028)"
       }
     },

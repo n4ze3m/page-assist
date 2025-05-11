@@ -62,12 +62,12 @@
       }
     },
     "sidepanelRag": {
-      "heading": "웹사이트와의 Copilot 채팅 설정",
+      "heading": "검색 설정",
       "ragEnabled": {
-        "label": "벡터 임베딩을 사용하여 웹사이트와 채팅"
+        "label": "임베딩 및 검색 활성화"
       },
       "maxWebsiteContext": {
-        "label": "일반 모드 웹사이트 콘텐츠 크기",
+        "label": "전체 컨텍스트 모드의 최대 콘텐츠 크기",
         "placeholder": "콘텐츠 크기 (기본값 4028)"
       }
     },

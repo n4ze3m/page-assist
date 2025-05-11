@@ -59,12 +59,12 @@
       }
     },
     "sidepanelRag": {
-      "heading": "Configuración del Chat Copilot con Sitio Web",
+      "heading": "Configuración de Recuperación",
       "ragEnabled": {
-        "label": "Chatear con el sitio web usando incrustaciones vectoriales"
+        "label": "Habilitar Incrustación y Recuperación"
       },
       "maxWebsiteContext": {
-        "label": "Tamaño del contenido del sitio web en modo normal",
+        "label": "Tamaño Máximo de Contenido para Modo de Contexto Completo",
         "placeholder": "Tamaño del contenido (predeterminado 4028)"
       }
     },

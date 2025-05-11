@@ -62,12 +62,12 @@
       }
     },
     "sidepanelRag": {
-      "heading": "ウェブサイトとのCopilotチャット設定",
+      "heading": "検索設定",
       "ragEnabled": {
-        "label": "ベクトル埋め込みを使用してウェブサイトとチャットする"
+        "label": "埋め込みと検索を有効にする"
       },
       "maxWebsiteContext": {
-        "label": "通常モードのウェブサイトコンテンツサイズ",
+        "label": "フルコンテキストモードの最大コンテンツサイズ",
         "placeholder": "コンテンツサイズ（デフォルト4028）"
       }
     },

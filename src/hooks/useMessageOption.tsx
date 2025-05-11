@@ -44,6 +44,7 @@ import {
 } from "@/libs/reasoning"
 import { getModelNicknameByID } from "@/db/nickname"
 import { systemPromptFormatter } from "@/utils/system-message"
+import { isChatWithWebsiteEnabled } from "@/services/kb"
 
 export const useMessageOption = () => {
   const {
@@ -142,7 +143,7 @@ export const useMessageOption = () => {
 
     const ollama = await pageAssistModel({
       model: selectedModel!,
-      baseUrl: cleanUrl(url),
+      baseUrl: cleanUrl(url)
     })
 
     let newMessage: Message[] = []
@@ -207,7 +208,7 @@ export const useMessageOption = () => {
         .replaceAll("{question}", message)
       const questionModel = await pageAssistModel({
         model: selectedModel!,
-        baseUrl: cleanUrl(url),
+        baseUrl: cleanUrl(url)
       })
 
       let questionMessage = await humanMessageFormatter({
@@ -486,7 +487,7 @@ export const useMessageOption = () => {
 
     const ollama = await pageAssistModel({
       model: selectedModel!,
-      baseUrl: cleanUrl(url),
+      baseUrl: cleanUrl(url)
     })
 
     let newMessage: Message[] = []
@@ -761,11 +762,11 @@ export const useMessageOption = () => {
 
     const ollama = await pageAssistModel({
       model: selectedModel!,
-      baseUrl: cleanUrl(url),
+      baseUrl: cleanUrl(url)
     })
 
     let newMessage: Message[] = []
-  
+
     const lastMessage = messages[messages.length - 1]
     let generateMessageId = lastMessage.id
     newMessage = [...messages]
@@ -923,7 +924,7 @@ export const useMessageOption = () => {
         prompt_content: promptContent,
         prompt_id: promptId,
         reasoning_time_taken: timetaken,
-        isContinue: true,
+        isContinue: true
       })
 
       setIsProcessing(false)
@@ -973,7 +974,7 @@ export const useMessageOption = () => {
 
     const ollama = await pageAssistModel({
       model: selectedModel!,
-      baseUrl: cleanUrl(url),
+      baseUrl: cleanUrl(url)
     })
 
     let newMessage: Message[] = []
@@ -1053,25 +1054,41 @@ export const useMessageOption = () => {
           .replaceAll("{question}", message)
         const questionOllama = await pageAssistModel({
           model: selectedModel!,
-          baseUrl: cleanUrl(url),
+          baseUrl: cleanUrl(url)
         })
         const response = await questionOllama.invoke(promptForQuestion)
         query = response.content.toString()
         query = removeReasoning(query)
       }
       const docSize = await getNoOfRetrievedDocs()
-
-      const docs = await vectorstore.similaritySearch(query, docSize)
-      const context = formatDocs(docs)
-      const source = docs.map((doc) => {
-        return {
-          ...doc,
-          name: doc?.metadata?.source || "untitled",
-          type: doc?.metadata?.type || "unknown",
-          mode: "rag",
-          url: ""
-        }
-      })
+      const useVS = await isChatWithWebsiteEnabled()
+      let context: string = ""
+      let source: any[] = []
+      if (useVS) {
+        const docs = await vectorstore.similaritySearch(query, docSize)
+        context = formatDocs(docs)
+        source = docs.map((doc) => {
+          return {
+            ...doc,
+            name: doc?.metadata?.source || "untitled",
+            type: doc?.metadata?.type || "unknown",
+            mode: "rag",
+            url: ""
+          }
+        })
+      } else {
+        const docs = await vectorstore.getAllPageContent()
+        context = docs.pageContent
+        source = docs.metadata.map((doc) => {
+          return {
+            ...doc,
+            name: doc?.source || "untitled",
+            type: doc?.type || "unknown",
+            mode: "rag",
+            url: ""
+          }
+        })
+      }
       //  message = message.trim().replaceAll("\n", " ")
 
       let humanMessage = await humanMessageFormatter({
@@ -1208,6 +1225,7 @@ export const useMessageOption = () => {
       setIsProcessing(false)
       setStreaming(false)
     } catch (e) {
+      console.log(e)
       const errorSave = await saveMessageOnError({
         e,
         botMessage: fullText,

@@ -216,7 +216,7 @@ export class OllamaEmbeddingsPageAssist extends Embeddings {
     }
     const customHeaders = await getCustomOllamaHeaders()
 
-    const response = await fetch(`${formattedBaseUrl}/api/embeddings`, {
+    const response = await fetch(`${formattedBaseUrl}/api/embed`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -224,7 +224,7 @@ export class OllamaEmbeddingsPageAssist extends Embeddings {
         ...customHeaders
       },
       body: JSON.stringify({
-        prompt,
+        input: prompt,
         model,
         keep_alive: keepAlive,
         options: requestOptions
@@ -238,14 +238,13 @@ export class OllamaEmbeddingsPageAssist extends Embeddings {
     }
 
     const json = await response.json()
-    return json.embedding
+    return json?.embeddings
   }
 
   async _embed(texts: string[]): Promise<number[][]> {
     const embeddings: number[][] = await Promise.all(
       texts.map((text) => this.caller.call(() => this._request(text)))
     )
-
     return embeddings
   }
 

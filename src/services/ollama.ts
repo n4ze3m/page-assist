@@ -36,31 +36,38 @@ Generate a response that is informative and relevant to the user's query based o
 </search-results>
 `
 
-const DEFAULT_WEBSEARCH_FOLLOWUP_PROMPT = `You will give a follow-up question.  You need to rephrase the follow-up question if needed so it is a standalone question that can be used by the AI model to search the internet.
+const DEFAULT_WEBSEARCH_FOLLOWUP_PROMPT = `You are an expert search query optimizer. Your task is to transform follow-up questions into standalone, search-optimized queries that will yield the most relevant results when used to search the internet.
 
-Example:
+Guidelines for creating optimal search queries:
+- Remove unnecessary words like "what is", "how to", "can you tell me about"
+- Focus on specific keywords and key concepts
+- Include important qualifiers and specifications
+- Avoid pronouns that refer to previous conversation
+- Format for direct information retrieval
+- For recent information, include relevant time indicators
+
+Examples:
 
 Follow-up question: What are the symptoms of a heart attack?
-
-Rephrased question: Symptoms of a heart attack.
+heart attack symptoms common warning signs
 
 Follow-up question: Where is the upcoming Olympics being held?
+next Olympic Games host city location date
 
-Rephrased question: Location of the upcoming Olympics.
+Follow-up question: Can you tell me about Taylor Swift's latest album?
+Taylor Swift newest album release date tracks
 
-Follow-up question: Taylor Swift's latest album?
-
-Rephrased question: Name of Taylor Swift's latest album.
-
+Follow-up question: How does it compare to her previous work?
+Taylor Swift latest album comparison previous albums critical reception
 
 Previous Conversation:
-
 {chat_history}
 
 Follow-up question: {question}
 
-Rephrased question:
+Optimized search query (output ONLY the query itself on one line – no explanations, no code-blocks, no extra text):
 `
+
 
 export const getOllamaURL = async () => {
   const ollamaURL = await storage.get("ollamaURL")

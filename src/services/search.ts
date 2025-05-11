@@ -96,8 +96,17 @@ export const getTavilyApiKey = async () => {
   return tavilyApiKey || ""
 }
 
+export const getFirecrawlAPIKey = async () => {
+  const firecrawlAPIKey = await storage2.get("firecrawlAPIKey")
+  return firecrawlAPIKey || ""
+}
+
 export const setBraveApiKey = async (braveApiKey: string) => {
   await storage2.set("braveApiKey", braveApiKey)
+}
+
+export const setFirecrawlAPIKey = async (firecrawlAPIKey: string) => {
+  await storage2.set("firecrawlAPIKey", firecrawlAPIKey)
 }
 
 export const getExaAPIKey = async () => {
@@ -145,7 +154,8 @@ export const getSearchSettings = async () => {
     tavilyApiKey,
     googleDomain,
     defaultInternetSearchOn,
-    exaAPIKey
+    exaAPIKey,
+    firecrawlAPIKey
   ] = await Promise.all([
     getIsSimpleInternetSearch(),
     getSearchProvider(),
@@ -157,7 +167,8 @@ export const getSearchSettings = async () => {
     getTavilyApiKey(),
     getGoogleDomain(),
     getInternetSearchOn(),
-    getExaAPIKey()
+    getExaAPIKey(),
+    getFirecrawlAPIKey()
   ])
 
   return {
@@ -171,7 +182,8 @@ export const getSearchSettings = async () => {
     tavilyApiKey,
     googleDomain,
     defaultInternetSearchOn,
-    exaAPIKey
+    exaAPIKey,
+    firecrawlAPIKey
   }
 }
 
@@ -186,7 +198,8 @@ export const setSearchSettings = async ({
   tavilyApiKey,
   googleDomain,
   defaultInternetSearchOn,
-  exaAPIKey
+  exaAPIKey,
+  firecrawlAPIKey
 }: {
   isSimpleInternetSearch: boolean
   searchProvider: string
@@ -198,7 +211,8 @@ export const setSearchSettings = async ({
   tavilyApiKey: string
   googleDomain: string,
   defaultInternetSearchOn: boolean
-  exaAPIKey: string
+  exaAPIKey: string,
+  firecrawlAPIKey: string
 }) => {
   await Promise.all([
     setIsSimpleInternetSearch(isSimpleInternetSearch),
@@ -211,6 +225,7 @@ export const setSearchSettings = async ({
     setTavilyApiKey(tavilyApiKey),
     setGoogleDomain(googleDomain),
     setInternetSearchOn(defaultInternetSearchOn),
-    setExaAPIKey(exaAPIKey)
+    setExaAPIKey(exaAPIKey),
+    setFirecrawlAPIKey(firecrawlAPIKey)
   ])
 }

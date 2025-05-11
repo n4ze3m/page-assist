@@ -10,6 +10,7 @@ type HistoryInfo = {
   message_source?: "copilot" | "web-ui"
   is_pinned?: boolean
   createdAt: number
+  doc_id?: string
 }
 
 type WebSearch = {
@@ -350,11 +351,12 @@ export const generateID = () => {
 export const saveHistory = async (
   title: string,
   is_rag?: boolean,
-  message_source?: "copilot" | "web-ui"
+  message_source?: "copilot" | "web-ui",
+  doc_id?: string
 ) => {
   const id = generateID()
   const createdAt = Date.now()
-  const history = { id, title, createdAt, is_rag, message_source }
+  const history = { id, title, createdAt, is_rag, message_source, doc_id }
   const db = new PageAssitDatabase()
   await db.addChatHistory(history)
   return history
@@ -707,7 +709,7 @@ export const deleteHistoriesByDateRange = async (rangeLabel: string): Promise<st
       break;
     case 'yesterday':
       historiesToDelete = allHistories.filter(
-        (item) => 
+        (item) =>
           !item.is_pinned &&
           new Date(item?.createdAt) >= yesterday &&
           new Date(item?.createdAt) < today
@@ -732,13 +734,13 @@ export const deleteHistoriesByDateRange = async (rangeLabel: string): Promise<st
     default:
       return [];
   }
-  
+
   const deletedIds: string[] = [];
   for (const history of historiesToDelete) {
     await db.deleteMessage(history.id);
     await db.removeChatHistory(history.id);
     deletedIds.push(history.id);
   }
-  
+
   return deletedIds;
 }
