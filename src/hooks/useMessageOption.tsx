@@ -1078,7 +1078,6 @@ export const useMessageOption = () => {
         })
       } else {
         const docs = await vectorstore.getAllPageContent()
-        console.log("docs", docs)
         context = docs.pageContent
         source = docs.metadata.map((doc) => {
           return {
