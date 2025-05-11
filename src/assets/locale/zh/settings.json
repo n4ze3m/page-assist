@@ -61,13 +61,13 @@
         "label": "为用户消息启用Markdown格式"
       }
     },
-    "sidepanelRag": {
-      "heading": "与网站对话的Copilot聊天设置",
+   "sidepanelRag": {
+      "heading": "检索设置",
       "ragEnabled": {
-        "label": "使用向量嵌入与网站聊天"
+        "label": "启用嵌入和检索"
       },
       "maxWebsiteContext": {
-        "label": "普通模式下的网站内容大小",
+        "label": "完整上下文模式的最大内容大小",
         "placeholder": "内容大小（默认4028）"
       }
     },

@@ -3,6 +3,7 @@ import { VectorStore } from "@langchain/core/vectorstores"
 import type { EmbeddingsInterface } from "@langchain/core/embeddings"
 import { Document } from "@langchain/core/documents"
 import { getVector, insertVector } from "@/db/vector"
+import { getMaxContextSize } from "@/services/kb"
 /**
  * Interface representing a vector in memory. It includes the content
  * (text), the corresponding embedding (vector), and any associated
@@ -132,6 +133,38 @@ export class PageAssistVectorStore extends VectorStore {
       search.similarity
     ])
     return result
+  }
+
+  async getAllPageContent() {
+    const data = await getVector(`vector:${this.knownledge_id}`)
+    const pgVector = [...data.vectors]
+
+    const maxContext = await getMaxContextSize()
+
+    let contextLength = 0
+    const pageContent: string[] = []
+    const metadata: Record<string, any>[] = []
+
+    // console.log(pgVector)
+
+    for (let i = 0; i < pgVector.length; i++) {
+      const memoryVector = pgVector[i]
+      contextLength += memoryVector.content.length
+      if (contextLength > maxContext) {
+        break
+      }
+      pageContent.push(memoryVector.content)
+      metadata.push({
+        ...memoryVector.metadata,
+        metadata: memoryVector?.metadata,
+        pageContent: memoryVector.content
+      })
+    }
+
+    return {
+      pageContent: pageContent.join("\n\n"),
+      metadata
+    }
   }
 
   /**

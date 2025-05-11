@@ -58,13 +58,13 @@
         "label": "Aktiver Markdown-formatering for brukermeldinger"
       }
     },
-    "sidepanelRag": {
-      "heading": "Copilot Chat med Nettsted Innstillinger",
+   "sidepanelRag": {
+      "heading": "Gjenfinningsinnstillinger",
       "ragEnabled": {
-        "label": "Chat med nettstedet ved bruk av vektorinnleggelser (vector embeddings)"
+        "label": "Aktiver Innbygging og Gjenfinning"
       },
       "maxWebsiteContext": {
-        "label": "Normal nettstedinnholds størrelse",
+        "label": "Maksimal Innholdsstørrelse for Full Kontekst Modus",
         "placeholder": "Innholdsstørrelse (standard 4028)"
       }
     },

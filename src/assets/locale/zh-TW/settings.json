@@ -58,13 +58,13 @@
         "label": "啟用使用者訊息的 Markdown 格式"
       }    },
     "sidepanelRag": {
-      "heading": "Copilot 聊天與網站設定",
+      "heading": "檢索設定",
       "ragEnabled": {
-        "label": "使用嵌入模型與網站聊天"
+        "label": "啟用嵌入和檢索"
       },
       "maxWebsiteContext": {
-        "label": "普通模式網站內容大小",
-        "placeholder": "內容大小（預設 4028）"
+        "label": "完整上下文模式的最大內容大小",
+        "placeholder": "內容大小 (預設 4028)"
       }
     },
     "webSearch": {

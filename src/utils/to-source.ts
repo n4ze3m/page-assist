@@ -1,4 +1,5 @@
 import { Source } from "@/db/knowledge"
+import { processSource } from "@/libs/process-source"
 import { UploadFile } from "antd"
 
 export const toBase64 = (file: File | Blob): Promise<string> => {
@@ -41,5 +42,23 @@ export const convertToSource = async ({
   let type = mime || file.type
   let filename = file.name
   const content = await toBase64(file.originFileObj)
+  return { content, type, filename, source_id: generateSourceId() }
+}
+
+
+export const convertFileToSource = async ({
+  file,
+  mime
+}: {
+  file: File, mime?: string
+}): Promise<Source> => {
+  let type = mime || file.type
+  let filename = file.name
+  const url = await toBase64(file)
+  const content = await processSource({
+    filename,
+    url,
+    type
+  })
   return { content, type, filename, source_id: generateSourceId() }
 }

@@ -52,13 +52,13 @@
         "label": "Chat-Blase für Benutzernachrichten verwenden"
       }
     },
-    "sidepanelRag": {
-      "heading": "Copilot Chat mit Website-Einstellungen",
+   "sidepanelRag": {
+      "heading": "Abruf-Einstellungen",
       "ragEnabled": {
-        "label": "Chat mit Website unter Verwendung von Vektor-Embeddings"
+        "label": "Einbettung und Abruf aktivieren"
       },
       "maxWebsiteContext": {
-        "label": "Normaler Modus Website-Inhaltsgröße",
+        "label": "Maximale Inhaltsgröße für Vollkontext-Modus",
         "placeholder": "Inhaltsgröße (Standard 4028)"
       }
     },

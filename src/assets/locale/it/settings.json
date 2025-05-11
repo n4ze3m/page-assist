@@ -59,13 +59,13 @@
       }
     },
     "sidepanelRag": {
-      "heading": "Impostazioni Chat Copilot con Sito Web",
+      "heading": "Impostazioni di Recupero",
       "ragEnabled": {
-        "label": "Chatta con il sito web utilizzando embedding vettoriali"
+        "label": "Abilita Embedding e Recupero"
       },
       "maxWebsiteContext": {
-        "label": "Dimensione del contenuto del sito web in modalità normale",
-        "placeholder": "Dimensione del contenuto (predefinito 4028)"
+        "label": "Dimensione Massima del Contenuto per la Modalità Contesto Completo",
+        "placeholder": "Dimensione contenuto (predefinito 4028)"
       }
     },
     "webSearch": {

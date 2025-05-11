@@ -59,12 +59,12 @@
       }
     },
     "sidepanelRag": {
-      "heading": "Copilot Chat With Website Settings",
+      "heading": "Retrieval Settings",
       "ragEnabled": {
-        "label": "Chat with website using vector embeddings"
+        "label": "Enable Embedding and Retrieval"
       },
       "maxWebsiteContext": {
-        "label": "Normal mode website content size",
+        "label": "Maximum Content Size for Full Context Mode",
         "placeholder": "Content size (default 4028)"
       }
     },

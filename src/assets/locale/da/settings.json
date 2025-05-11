@@ -56,12 +56,12 @@
       }
     },
     "sidepanelRag": {
-      "heading": "Copilot Chat med Website Indstillinger",
+      "heading": "Vidensbase Indstillinger",
       "ragEnabled": {
-        "label": "Chat med websitet ved brug af vector embeddings"
+        "label": "Aktivér Indeksering og Genfinding"
       },
       "maxWebsiteContext": {
-        "label": "Normal webstedsindhold størrelse",
+        "label": "Maksimal Indholdsstørrelse for Fuld Kontekst Tilstand",
         "placeholder": "Indholdsstørrelse (standard 4028)"
       }
     },

@@ -59,12 +59,12 @@
       }
     },
     "sidepanelRag": {
-      "heading": "Paramètres du chat avec le site Web (Copilot)",
+      "heading": "Paramètres de récupération",
       "ragEnabled": {
-        "label": "Discuter avec le site Web en utilisant des embeddings vectoriels"
+        "label": "Activer l'intégration et la récupération"
       },
       "maxWebsiteContext": {
-        "label": "Taille du contenu du site Web en mode normal",
+        "label": "Taille maximale du contenu pour le mode contexte complet",
         "placeholder": "Taille du contenu (par défaut 4028)"
       }
     },
