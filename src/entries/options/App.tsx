@@ -5,6 +5,7 @@ const queryClient = new QueryClient()
 import { ConfigProvider, Empty, theme } from "antd"
 import { StyleProvider } from "@ant-design/cssinjs"
 import { useDarkMode } from "~/hooks/useDarkmode"
+import { useCustomTheme } from "~/hooks/useCustomTheme"
 import { OptionRouting } from "@/routes/chrome-route"
 import "~/i18n"
 import { useTranslation } from "react-i18next"
@@ -12,6 +13,7 @@ import { PageAssistProvider } from "@/components/Common/PageAssistProvider"
 import { FontSizeProvider } from "@/context/FontSizeProvider"
 
 function IndexOption() {
+  useCustomTheme();
   const { mode } = useDarkMode()
   const { t, i18n } = useTranslation()
   const [direction, setDirection] = useState<"ltr" | "rtl">("ltr")

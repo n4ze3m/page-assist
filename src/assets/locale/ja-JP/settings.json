@@ -12,7 +12,7 @@
         "placeholder": "言語を選択"
       },
       "darkMode": {
-        "label": "テーマを変更",
+        "label": "外観",
         "options": {
           "light": "ライト",
           "dark": "ダーク"

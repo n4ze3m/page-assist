@@ -12,7 +12,7 @@
         "placeholder": "Sprache auswählen"
       },
       "darkMode": {
-        "label": "Design ändern",
+        "label": "Erscheinungsbild",
         "options": {
           "light": "Hell",
           "dark": "Dunkel"

@@ -12,7 +12,7 @@
         "placeholder": "언어 선택"
       },
       "darkMode": {
-        "label": "테마 변경",
+        "label": "외관",
         "options": {
           "light": "라이트",
           "dark": "다크"

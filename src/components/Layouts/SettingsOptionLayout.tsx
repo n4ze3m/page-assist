@@ -7,7 +7,8 @@ import {
   InfoIcon,
   CombineIcon,
   ChromeIcon,
-  CpuIcon
+  CpuIcon,
+  PaintbrushIcon
 } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { Link, useLocation } from "react-router-dom"
@@ -123,6 +124,12 @@ export const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
                     href="/settings/share"
                     name={t("manageShare.title")}
                     icon={ShareIcon}
+                    current={location.pathname}
+                  />
+                  <LinkComponent
+                    href="/settings/themes"
+                    name={t("themes.title")}
+                    icon={PaintbrushIcon}
                     current={location.pathname}
                   />
                   <LinkComponent
