@@ -8,13 +8,16 @@ const storage = new Storage({
 export const getInitialConfig = async () => {
     const actionIconClickValue = await storage.get("actionIconClick")
     const contextMenuClickValue = await storage.get("contextMenuClick")
+    const sidebarActionTypeValue = await storage.get("sidebarActionType")
 
     let actionIconClick = actionIconClickValue || "webui"
     let contextMenuClick = contextMenuClickValue || "sidePanel"
+    const  sidebarActionType = sidebarActionTypeValue || "native"
 
     return {
         actionIconClick,
-        contextMenuClick
+        contextMenuClick,
+        sidebarActionType
     }
 
 }
