@@ -3,6 +3,7 @@ import Markdown from "../Markdown"
 
 type Props = {
   message: string
+  isNormalMessage?: boolean
 }
 
 export const HumanMessage = ({ message }: Props) => {

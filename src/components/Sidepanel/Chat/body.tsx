@@ -13,15 +13,10 @@ export const SidePanelBody = () => {
     editMessage,
     isSearchingInternet
   } = useMessage()
-  const divRef = React.useRef<HTMLDivElement>(null)
   const [isSourceOpen, setIsSourceOpen] = React.useState(false)
   const [source, setSource] = React.useState<any>(null)
   const { ttsEnabled } = useWebUI()
-  React.useEffect(() => {
-    if (divRef.current) {
-      divRef.current.scrollIntoView({ behavior: "smooth" })
-    }
-  })
+
   return (
     <>
       <div className="relative flex w-full flex-col items-center pt-16 pb-4">
@@ -55,7 +50,6 @@ export const SidePanelBody = () => {
             modelName={message?.modelName}
           />
         ))}
-        <div ref={divRef} />
       </div>
       <div className="w-full pb-[157px]"></div>
 

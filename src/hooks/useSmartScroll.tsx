@@ -1,6 +1,6 @@
 import { useRef, useEffect, useState } from "react"
 
-export const useSmartScroll = (messages: any[], streaming: boolean) => {
+export const useSmartScroll = (messages: any[], streaming: boolean, clientMaxHeight: number = 50) => {
   const containerRef = useRef<HTMLDivElement>(null)
   const [isAtBottom, setIsAtBottom] = useState(true)
 
@@ -10,7 +10,7 @@ export const useSmartScroll = (messages: any[], streaming: boolean) => {
 
     const handleScroll = () => {
       const { scrollTop, scrollHeight, clientHeight } = container
-      setIsAtBottom(scrollHeight - scrollTop - clientHeight < 50)
+      setIsAtBottom(scrollHeight - scrollTop - clientHeight < clientMaxHeight)
     }
 
     container.addEventListener("scroll", handleScroll)
