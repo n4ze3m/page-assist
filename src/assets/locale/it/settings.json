@@ -121,6 +121,9 @@
       "ttsEnabled": {
         "label": "Abilita Text-to-Speech"
       },
+      "ttsAutoPlay": {
+        "label": "Riproduci automaticamente la risposta vocale dopo il completamento"
+      },
       "ttsProvider": {
         "label": "Text-to-Speech Provider",
         "placeholder": "Seleziona un provider"

@@ -58,7 +58,7 @@
         "label": "Ativar formatação Markdown para mensagens do Usuário"
       }
     },
-  "sidepanelRag": {
+    "sidepanelRag": {
       "heading": "Configurações de Recuperação",
       "ragEnabled": {
         "label": "Ativar Incorporação e Recuperação"
@@ -124,6 +124,9 @@
       "heading": "Configurações de Texto para Fala",
       "ttsEnabled": {
         "label": "Ativar Texto para Fala"
+      },
+      "ttsAutoPlay": {
+        "label": "Reproduzir resposta de voz automaticamente após conclusão"
       },
       "ttsProvider": {
         "label": "Provedor de Texto para Fala",

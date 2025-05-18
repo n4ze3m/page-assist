@@ -52,7 +52,7 @@
         "label": "Chat-Blase für Benutzernachrichten verwenden"
       }
     },
-   "sidepanelRag": {
+    "sidepanelRag": {
       "heading": "Abruf-Einstellungen",
       "ragEnabled": {
         "label": "Einbettung und Abruf aktivieren"
@@ -114,6 +114,9 @@
       "heading": "Text-zu-Sprache-Einstellungen",
       "ttsEnabled": {
         "label": "Text-zu-Sprache aktivieren"
+      },
+      "ttsAutoPlay": {
+        "label": "Sprachantwort nach Fertigstellung automatisch abspielen"
       },
       "ttsProvider": {
         "label": "Text-zu-Sprache-Anbieter",

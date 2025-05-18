@@ -61,7 +61,7 @@
         "label": "为用户消息启用Markdown格式"
       }
     },
-   "sidepanelRag": {
+    "sidepanelRag": {
       "heading": "检索设置",
       "ragEnabled": {
         "label": "启用嵌入和检索"
@@ -123,6 +123,9 @@
       "heading": "文本转语音设置",
       "ttsEnabled": {
         "label": "启用文本转语音"
+      },
+      "ttsAutoPlay": {
+        "label": "完成后自动播放语音回复"
       },
       "ttsProvider": {
         "label": "文本转语音提供商",

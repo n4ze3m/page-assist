@@ -14,6 +14,7 @@ import { generateSpeech } from "@/services/elevenlabs"
 import { splitMessageContent } from "@/utils/tts"
 import { removeReasoning } from "@/libs/reasoning"
 import { markdownToText } from "@/utils/markdown-to-text"
+import { generateOpenAITTS } from "@/services/openai-tts"
 
 export interface VoiceOptions {
   utterance: string
@@ -96,6 +97,44 @@ export const useTTS = () => {
 
           if (i < sentences.length - 1) {
             generateSpeech(apiKey, sentences[i + 1], voiceId, modelId)
+              .then((nextAudioData) => {
+                nextAudioData = nextAudioData
+              })
+              .catch(console.error)
+          }
+
+          const blob = new Blob([currentAudioData], { type: "audio/mpeg" })
+          const url = URL.createObjectURL(blob)
+          const audio = new Audio(url)
+          setAudioElement(audio)
+
+          await new Promise((resolve) => {
+            audio.onended = resolve
+            audio.play()
+          })
+
+          URL.revokeObjectURL(url)
+        }
+
+        setIsSpeaking(false)
+        setAudioElement(null)
+      } else if (provider === "openai") {
+        const sentences = splitMessageContent(utterance)
+        let nextAudioData: ArrayBuffer | null = null
+
+        for (let i = 0; i < sentences.length; i++) {
+          setIsSpeaking(true)
+
+          let currentAudioData =
+            nextAudioData ||
+            (await generateOpenAITTS({
+              text: sentences[i]
+            }))
+
+          if (i < sentences.length - 1) {
+            generateOpenAITTS({
+              text: sentences[i]
+            })
               .then((nextAudioData) => {
                 nextAudioData = nextAudioData
               })

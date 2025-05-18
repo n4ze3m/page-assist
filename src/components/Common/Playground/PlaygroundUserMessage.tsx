@@ -3,7 +3,7 @@ import { useStorage } from "@plasmohq/storage/hook"
 import React from "react"
 import { useTranslation } from "react-i18next"
 import { EditMessageForm } from "./EditMessageForm"
-import { Image, Tooltip } from "antd"
+import { Image, Tag, Tooltip } from "antd"
 import { CheckIcon, CopyIcon, Pen, PlayIcon, Square } from "lucide-react"
 import { HumanMessage } from "./HumanMessge"
 
@@ -45,9 +45,16 @@ export const PlaygroundUserMessageBubble: React.FC<Props> = (props) => {
   return (
     <div
       className={`group gap-2 relative flex w-full max-w-3xl flex-col items-end justify-center pb-2 md:px-4 lg:w-4/5 text-[#242424] dark:text-gray-100 ${checkWideMode ? "max-w-none" : ""}`}>
+      {!editMode && props?.message_type ? (
+        <Tag color={tagColors[props?.message_type] || "default"}>
+          {t(`copilot.${props?.message_type}`)}
+        </Tag>
+      ) : null}
       <div
         dir="auto"
-        className="message-bubble bg-gray-50 dark:bg-[#242424] rounded-3xl prose dark:prose-invert break-words text-primary min-h-7 prose-p:opacity-95 prose-strong:opacity-100 bg-foreground border border-input-border max-w-[100%] sm:max-w-[90%] px-4 py-2.5 rounded-br-lg dark:border-[#2D2D2D]">
+        className={`message-bubble bg-gray-50 dark:bg-[#242424] rounded-3xl prose dark:prose-invert break-words text-primary min-h-7 prose-p:opacity-95 prose-strong:opacity-100 bg-foreground border border-input-border max-w-[100%] sm:max-w-[90%] px-4 py-2.5 rounded-br-lg dark:border-[#2D2D2D] ${
+          props.message_type && !editMode ? "italic" : ""
+        }`}>
         {!editMode ? (
           <HumanMessage message={props.message} />
         ) : (

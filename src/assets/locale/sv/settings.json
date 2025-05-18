@@ -121,6 +121,9 @@
       "ttsEnabled": {
         "label": "Aktivera Text till Tal"
       },
+      "ttsAutoPlay": {
+        "label": "Spela upp röstsvaret automatiskt efter slutförande"
+      },
       "ttsProvider": {
         "label": "Text till Tal Leverantör",
         "placeholder": "Välj en leverantör"

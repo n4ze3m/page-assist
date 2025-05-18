@@ -21,7 +21,12 @@ export const TTSModeSettings = ({ hideBorder }: { hideBorder?: boolean }) => {
       elevenLabsApiKey: "",
       elevenLabsVoiceId: "",
       elevenLabsModel: "",
-      responseSplitting: ""
+      responseSplitting: "",
+      openAITTSBaseUrl: "",
+      openAITTSApiKey: "",
+      openAITTSModel: "",
+      openAITTSVoice: "",
+      ttsAutoPlay: false,
     }
   })
 
@@ -91,6 +96,19 @@ export const TTSModeSettings = ({ hideBorder }: { hideBorder?: boolean }) => {
             />
           </div>
         </div>
+         <div className="flex sm:flex-row flex-col space-y-4 sm:space-y-0 sm:justify-between">
+          <span className="text-gray-700 dark:text-neutral-50 ">
+            {t("generalSettings.tts.ttsAutoPlay.label")}
+          </span>
+          <div>
+            <Switch
+              className="mt-4 sm:mt-0"
+              {...form.getInputProps("ttsAutoPlay", {
+                type: "checkbox"
+              })}
+            />
+          </div>
+        </div>
         <div className="flex sm:flex-row flex-col space-y-4 sm:space-y-0 sm:justify-between">
           <span className="text-gray-700 dark:text-neutral-50 ">
             {t("generalSettings.tts.ttsProvider.label")}
@@ -104,6 +122,10 @@ export const TTSModeSettings = ({ hideBorder }: { hideBorder?: boolean }) => {
                 {
                   label: "ElevenLabs",
                   value: "elevenlabs"
+                },
+                {
+                  label: "OpenAI TTS",
+                  value: "openai"
                 }
               ]}
               {...form.getInputProps("ttsProvider")}
@@ -194,6 +216,56 @@ export const TTSModeSettings = ({ hideBorder }: { hideBorder?: boolean }) => {
                 </div>
               </>
             )}
+          </>
+        )}
+        {form.values.ttsProvider === "openai" && (
+          <>
+            <div className="flex sm:flex-row flex-col space-y-4 sm:space-y-0 sm:justify-between">
+              <span className="text-gray-700 dark:text-neutral-50">
+                Base URL
+              </span>
+              <Input
+                placeholder="http://localhost:5000/v1"
+                className=" mt-4 sm:mt-0 !w-[300px] sm:w-[200px]"
+                required
+                {...form.getInputProps("openAITTSBaseUrl")}
+              />
+            </div>
+
+            <div className="flex sm:flex-row flex-col space-y-4 sm:space-y-0 sm:justify-between">
+              <span className="text-gray-700 dark:text-neutral-50">
+                API Key
+              </span>
+              <Input.Password
+                placeholder="sk_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+                className=" mt-4 sm:mt-0 !w-[300px] sm:w-[200px]"
+                {...form.getInputProps("openAITTSApiKey")}
+              />
+            </div>
+
+            <div className="flex sm:flex-row flex-col space-y-4 sm:space-y-0 sm:justify-between">
+              <span className="text-gray-700 dark:text-neutral-50">
+                TTS Voice
+              </span>
+              <Input
+                placeholder="alloy"
+                className=" mt-4 sm:mt-0 !w-[300px] sm:w-[200px]"
+                required
+                {...form.getInputProps("openAITTSVoice")}
+              />
+            </div>
+
+            <div className="flex sm:flex-row flex-col space-y-4 sm:space-y-0 sm:justify-between">
+              <span className="text-gray-700 dark:text-neutral-50">
+                TTS Model
+              </span>
+              <Input
+                placeholder="tts-1"
+                className=" mt-4 sm:mt-0 !w-[300px] sm:w-[200px]"
+                required
+                {...form.getInputProps("openAITTSModel")}
+              />
+            </div>
           </>
         )}
         <div className="flex sm:flex-row flex-col space-y-4 sm:space-y-0 sm:justify-between">

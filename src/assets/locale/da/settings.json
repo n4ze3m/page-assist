@@ -118,6 +118,9 @@
       "ttsEnabled": {
         "label": "Tilføj Teskt-til-Tale"
       },
+         "ttsAutoPlay": {
+        "label": "Automatisk afspilning af stemmerespons efter færdiggørelse"
+      },
       "ttsProvider": {
         "label": "Tekst-til-Tale Udbyder",
         "placeholder": "Vælg en udbyder"

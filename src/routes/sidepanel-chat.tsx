@@ -4,8 +4,10 @@ import {
   getRecentChatFromCopilot
 } from "@/db"
 import useBackgroundMessage from "@/hooks/useBackgroundMessage"
+import { useSmartScroll } from "@/hooks/useSmartScroll"
 import { copilotResumeLastChat } from "@/services/app"
 import { notification } from "antd"
+import { ChevronDown } from "lucide-react"
 import React from "react"
 import { useTranslation } from "react-i18next"
 import { SidePanelBody } from "~/components/Sidepanel/Chat/body"
@@ -30,6 +32,11 @@ const SidepanelChat = () => {
     setMessages,
     selectedModel
   } = useMessage()
+  const { containerRef, isAtBottom, scrollToBottom } = useSmartScroll(
+    messages,
+    streaming,
+    60
+  )
 
   const bgMsg = useBackgroundMessage()
 
@@ -136,11 +143,22 @@ const SidepanelChat = () => {
           className={`relative flex h-full flex-col items-center ${
             dropState === "dragging" ? "bg-gray-100 dark:bg-gray-800" : ""
           } bg-white dark:bg-[#171717]`}>
-          <div className="custom-scrollbar  flex h-full w-full flex-col items-center overflow-x-hidden overflow-y-auto px-5">
+          <div
+            ref={containerRef}
+            className="custom-scrollbar  flex h-full w-full flex-col items-center overflow-x-hidden overflow-y-auto px-5">
             <SidePanelBody />
           </div>
 
           <div className="absolute bottom-0 w-full">
+            {!isAtBottom && (
+              <div className="fixed bottom-32 z-20 left-0 right-0 flex justify-center">
+                <button
+                  onClick={scrollToBottom}
+                  className="bg-gray-50 shadow border border-gray-200 dark:border-none dark:bg-white/20 p-1.5 rounded-full pointer-events-auto">
+                  <ChevronDown className="size-4 text-gray-600 dark:text-gray-300" />
+                </button>
+              </div>
+            )}
             <SidepanelForm dropedFile={dropedFile} />
           </div>
         </div>
