@@ -93,6 +93,53 @@ export const setElevenLabsModel = async (elevenLabsModel: string) => {
   await storage.set("elevenLabsModel", elevenLabsModel)
 }
 
+export const getOpenAITTSBaseUrl = async () => {
+  const data = await storage.get("openAITTSBaseUrl")
+  if (!data || data.length === 0) {
+    return "https://api.openai.com/v1"
+  }
+  return data
+}
+
+export const setOpenAITTSBaseUrl = async (openAITTSBaseUrl: string) => {
+  await storage.set("openAITTSBaseUrl", openAITTSBaseUrl)
+}
+
+export const getOpenAITTSApiKey = async () => {
+  const data = await storage.get("openAITTSApiKey")
+  return data || ''
+}
+
+export const getOpenAITTSModel = async () => {
+  const data = await storage.get("openAITTSModel")
+  if (!data || data.length === 0) {
+    return "tts-1"
+  }
+  return data
+}
+
+export const setOpenAITTSModel = async (openAITTSModel: string) => {
+  await storage.set("openAITTSModel", openAITTSModel)
+}
+
+
+export const setOpenAITTSApiKey = async (openAITTSApiKey: string) => {
+  await storage.set("openAITTSApiKey", openAITTSApiKey)
+}
+
+export const getOpenAITTSVoice = async () => {
+  const data = await storage.get("openAITTSVoice")
+  if (!data || data.length === 0) {
+    return "alloy"
+  }
+  return data
+}
+
+export const setOpenAITTSVoice = async (openAITTSVoice: string) => {
+  await storage.set("openAITTSVoice", openAITTSVoice)
+}
+
+
 export const getResponseSplitting = async () => {
   const data = await storage.get("ttsResponseSplitting")
   if (!data || data.length === 0 || data === "") {
@@ -128,7 +175,12 @@ export const getTTSSettings = async () => {
     elevenLabsVoiceId,
     elevenLabsModel,
     responseSplitting,
-    removeReasoningTagTTS
+    removeReasoningTagTTS,
+    // OPENAI
+    openAITTSBaseUrl,
+    openAITTSApiKey,
+    openAITTSModel,
+    openAITTSVoice,
   ] = await Promise.all([
     isTTSEnabled(),
     getTTSProvider(),
@@ -139,7 +191,12 @@ export const getTTSSettings = async () => {
     getElevenLabsVoiceId(),
     getElevenLabsModel(),
     getResponseSplitting(),
-    getRemoveReasoningTagTTS()
+    getRemoveReasoningTagTTS(),
+    // OPENAI 
+    getOpenAITTSBaseUrl(),
+    getOpenAITTSApiKey(),
+    getOpenAITTSModel(),
+    getOpenAITTSVoice(),
   ])
 
   return {
@@ -152,7 +209,12 @@ export const getTTSSettings = async () => {
     elevenLabsVoiceId,
     elevenLabsModel,
     responseSplitting,
-    removeReasoningTagTTS
+    removeReasoningTagTTS,
+    // OPENAI
+    openAITTSBaseUrl,
+    openAITTSApiKey,
+    openAITTSModel,
+    openAITTSVoice,
   }
 }
 
@@ -165,7 +227,11 @@ export const setTTSSettings = async ({
   elevenLabsVoiceId,
   elevenLabsModel,
   responseSplitting,
-  removeReasoningTagTTS
+  removeReasoningTagTTS,
+  openAITTSBaseUrl,
+  openAITTSApiKey,
+  openAITTSModel,
+  openAITTSVoice,
 }: {
   ttsEnabled: boolean
   ttsProvider: string
@@ -176,6 +242,10 @@ export const setTTSSettings = async ({
   elevenLabsModel: string
   responseSplitting: string
   removeReasoningTagTTS: boolean
+  openAITTSBaseUrl: string,
+  openAITTSApiKey: string,
+  openAITTSModel: string,
+  openAITTSVoice: string,
 }) => {
   await Promise.all([
     setTTSEnabled(ttsEnabled),
@@ -186,6 +256,10 @@ export const setTTSSettings = async ({
     setElevenLabsVoiceId(elevenLabsVoiceId),
     setElevenLabsModel(elevenLabsModel),
     setResponseSplitting(responseSplitting),
-    setRemoveReasoningTagTTS(removeReasoningTagTTS)
+    setRemoveReasoningTagTTS(removeReasoningTagTTS),
+    setOpenAITTSBaseUrl(openAITTSBaseUrl),
+    setOpenAITTSApiKey(openAITTSApiKey),
+    setOpenAITTSModel(openAITTSModel),
+    setOpenAITTSVoice(openAITTSVoice),
   ])
 }
