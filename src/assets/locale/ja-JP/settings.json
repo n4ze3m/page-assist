@@ -124,6 +124,9 @@
       "ttsEnabled": {
         "label": "テキスト読み上げを有効にする"
       },
+      "ttsAutoPlay": {
+        "label": "応答完了後に音声を自動再生"
+      },
       "ttsProvider": {
         "label": "テキスト読み上げプロバイダー",
         "placeholder": "プロバイダーを選択"

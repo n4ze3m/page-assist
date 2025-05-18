@@ -64,6 +64,7 @@ export const PlaygroundMessage = (props: Props) => {
     "autoCopyResponseToClipboard",
     false
   )
+  const [autoPlayTTS] = useStorage("isTTSAutoPlayEnabled", false)
   const { t } = useTranslation("common")
   const { cancel, isSpeaking, speak } = useTTS()
   const isLastMessage: boolean =
@@ -86,6 +87,32 @@ export const PlaygroundMessage = (props: Props) => {
     }
   }, [
     autoCopyResponseToClipboard,
+    props.isBot,
+    props.currentMessageIndex,
+    props.totalMessages,
+    props.isStreaming,
+    props.isProcessing,
+    props.message
+  ])
+  useEffect(() => {
+    if (
+      autoPlayTTS &&
+      props.isTTSEnabled &&
+      props.isBot &&
+      isLastMessage &&
+      !props.isStreaming &&
+      !props.isProcessing &&
+      props.message.trim().length > 0
+    ) {
+      let messageToSpeak = props.message
+
+      speak({
+        utterance: messageToSpeak
+      })
+    }
+  }, [
+    autoPlayTTS,
+    props.isTTSEnabled,
     props.isBot,
     props.currentMessageIndex,
     props.totalMessages,

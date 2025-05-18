@@ -58,7 +58,7 @@
         "label": "Aktiver Markdown-formatering for brukermeldinger"
       }
     },
-   "sidepanelRag": {
+    "sidepanelRag": {
       "heading": "Gjenfinningsinnstillinger",
       "ragEnabled": {
         "label": "Aktiver Innbygging og Gjenfinning"
@@ -120,6 +120,9 @@
       "heading": "Tekst-til-tale Innstillinger",
       "ttsEnabled": {
         "label": "Legg til Tekst-til-Tale"
+      },
+      "ttsAutoPlay": {
+        "label": "Automatisk avspilling av stemmerespons etter fullføring"
       },
       "ttsProvider": {
         "label": "Tekst-til-Tale Tilbyder",

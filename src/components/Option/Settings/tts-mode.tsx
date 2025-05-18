@@ -25,7 +25,8 @@ export const TTSModeSettings = ({ hideBorder }: { hideBorder?: boolean }) => {
       openAITTSBaseUrl: "",
       openAITTSApiKey: "",
       openAITTSModel: "",
-      openAITTSVoice: ""
+      openAITTSVoice: "",
+      ttsAutoPlay: false,
     }
   })
 
@@ -90,6 +91,19 @@ export const TTSModeSettings = ({ hideBorder }: { hideBorder?: boolean }) => {
             <Switch
               className="mt-4 sm:mt-0"
               {...form.getInputProps("ttsEnabled", {
+                type: "checkbox"
+              })}
+            />
+          </div>
+        </div>
+         <div className="flex sm:flex-row flex-col space-y-4 sm:space-y-0 sm:justify-between">
+          <span className="text-gray-700 dark:text-neutral-50 ">
+            {t("generalSettings.tts.ttsAutoPlay.label")}
+          </span>
+          <div>
+            <Switch
+              className="mt-4 sm:mt-0"
+              {...form.getInputProps("ttsAutoPlay", {
                 type: "checkbox"
               })}
             />

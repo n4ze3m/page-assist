@@ -124,6 +124,9 @@
       "ttsEnabled": {
         "label": "Activer la synthèse vocale"
       },
+      "ttsAutoPlay": {
+        "label": "Lecture automatique de la réponse vocale après la fin"
+      },
       "ttsProvider": {
         "label": "Fournisseur de synthèse vocale",
         "placeholder": "Sélectionnez un fournisseur"

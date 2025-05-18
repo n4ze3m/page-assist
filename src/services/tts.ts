@@ -164,6 +164,16 @@ export const setRemoveReasoningTagTTS = async (removeReasoningTagTTS: boolean) =
   await storage2.set("removeReasoningTagTTS", removeReasoningTagTTS.toString())
 }
 
+
+export const isTTSAutoPlayEnabled = async () => {
+  const data = await storage.get<boolean | undefined>("isTTSAutoPlayEnabled")
+  return data || false
+}
+
+export const setTTSAutoPlayEnabled = async (isTTSAutoPlayEnabled: boolean) => {
+  await storage.set("isTTSAutoPlayEnabled", isTTSAutoPlayEnabled)
+}
+
 export const getTTSSettings = async () => {
   const [
     ttsEnabled,
@@ -181,6 +191,8 @@ export const getTTSSettings = async () => {
     openAITTSApiKey,
     openAITTSModel,
     openAITTSVoice,
+    // UTILS
+    ttsAutoPlay
   ] = await Promise.all([
     isTTSEnabled(),
     getTTSProvider(),
@@ -197,6 +209,8 @@ export const getTTSSettings = async () => {
     getOpenAITTSApiKey(),
     getOpenAITTSModel(),
     getOpenAITTSVoice(),
+    // UTILS
+    isTTSAutoPlayEnabled()
   ])
 
   return {
@@ -215,6 +229,7 @@ export const getTTSSettings = async () => {
     openAITTSApiKey,
     openAITTSModel,
     openAITTSVoice,
+    ttsAutoPlay
   }
 }
 
@@ -232,6 +247,7 @@ export const setTTSSettings = async ({
   openAITTSApiKey,
   openAITTSModel,
   openAITTSVoice,
+  ttsAutoPlay
 }: {
   ttsEnabled: boolean
   ttsProvider: string
@@ -246,6 +262,7 @@ export const setTTSSettings = async ({
   openAITTSApiKey: string,
   openAITTSModel: string,
   openAITTSVoice: string,
+  ttsAutoPlay: boolean
 }) => {
   await Promise.all([
     setTTSEnabled(ttsEnabled),
@@ -261,5 +278,6 @@ export const setTTSSettings = async ({
     setOpenAITTSApiKey(openAITTSApiKey),
     setOpenAITTSModel(openAITTSModel),
     setOpenAITTSVoice(openAITTSVoice),
+    setTTSAutoPlayEnabled(ttsAutoPlay)
   ])
 }

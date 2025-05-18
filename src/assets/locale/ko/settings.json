@@ -124,6 +124,9 @@
       "ttsEnabled": {
         "label": "텍스트 음성 변환 활성화"
       },
+      "ttsAutoPlay": {
+        "label": "응답 완료 후 자동 음성 재생"
+      },
       "ttsProvider": {
         "label": "텍스트 음성 변환 제공자",
         "placeholder": "제공자 선택"

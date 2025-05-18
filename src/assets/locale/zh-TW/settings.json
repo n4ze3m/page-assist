@@ -56,7 +56,8 @@
       },
       "useMarkdownForUserMessage": {
         "label": "啟用使用者訊息的 Markdown 格式"
-      }    },
+      }
+    },
     "sidepanelRag": {
       "heading": "檢索設定",
       "ragEnabled": {
@@ -139,6 +140,9 @@
       "heading": "文字轉語音設定",
       "ttsEnabled": {
         "label": "啟用文字轉語音"
+      },
+      "ttsAutoPlay": {
+        "label": "完成後自動播放語音回應"
       },
       "ttsProvider": {
         "label": "文字轉語音提供商",
