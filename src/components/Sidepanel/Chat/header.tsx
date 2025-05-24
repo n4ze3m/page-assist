@@ -72,7 +72,7 @@ export const SidepanelHeader = () => {
         )}
         {history.length > 0 && (
           <button
-            title={t("tooltip.clearContext")}
+            title={t("tooltip.clear")}
             onClick={() => {
               setHistory([])
             }}
