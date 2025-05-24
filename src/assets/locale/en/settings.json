@@ -12,7 +12,7 @@
         "placeholder": "Select a language"
       },
       "darkMode": {
-        "label": "Change Theme",
+        "label": "Appearance",
         "options": {
           "light": "Light",
           "dark": "Dark"
@@ -434,5 +434,14 @@
   "chromeAiSettings": {
     "title": "Chrome AI Settings"
   },
-  "mermaid": "Mermaid"
+  "mermaid": "Mermaid",
+  "themes": {
+    "title": "Theme Settings",
+    "cssUrl": "Custom Theme URL",
+    "customCss": "Custom Theme CSS",
+    "apply": "Apply",
+    "applied": "Applied",
+    "placeholderUrl": "https://github.com/n4ze3m/page-assist/blob/main/themes/midnight.css",
+    "placeholderCss": "* { font-size: .9rem }"
+  }
 }

@@ -12,7 +12,7 @@
         "placeholder": "Scegli una lingua"
       },
       "darkMode": {
-        "label": "Cambia il Tema",
+        "label": "Aspetto",
         "options": {
           "light": "Chiaro",
           "dark": "Scuro"

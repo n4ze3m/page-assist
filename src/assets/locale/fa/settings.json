@@ -12,7 +12,7 @@
         "placeholder": "یک زبان را انتخاب کنید"
       },
       "darkMode": {
-        "label": "تغییر تم",
+        "label": "ظاهر",
         "options": {
           "light": "روشن",
           "dark": "تیره"

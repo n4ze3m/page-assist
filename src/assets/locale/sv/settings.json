@@ -12,7 +12,7 @@
         "placeholder": "Välj ett språk"
       },
       "darkMode": {
-        "label": "Byt Tema",
+        "label": "Utseende",
         "options": {
           "light": "Ljust",
           "dark": "Mörkt"

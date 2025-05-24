@@ -12,7 +12,7 @@
         "placeholder": "Виберіть мову"
       },
       "darkMode": {
-        "label": "Змінити тему",
+        "label": "Вигляд",
         "options": {
           "light": "Світла",
           "dark": "Темна"
