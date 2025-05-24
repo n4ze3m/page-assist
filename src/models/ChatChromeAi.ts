@@ -10,9 +10,7 @@ import {
 import { BaseMessage, AIMessageChunk } from "@langchain/core/messages"
 import { ChatGenerationChunk } from "@langchain/core/outputs"
 import { IterableReadableStream } from "@langchain/core/utils/stream"
-import { AITextSession, checkChromeAIAvailability, createAITextSession } from "./utils/chrome"
-
-
+-import { AITextSession, checkChromeAIAvailability, createAITextSession } from "./utils/chrome"
 export interface AITextSessionOptions {
   topK: number
   temperature: number
@@ -33,7 +31,7 @@ export interface ChromeAIInputs extends BaseChatModelParams {
   promptFormatter?: (messages: BaseMessage[]) => string
 }
 
-export interface ChromeAICallOptions extends BaseLanguageModelCallOptions { }
+export interface ChromeAICallOptions extends BaseLanguageModelCallOptions {}
 
 function formatPrompt(messages: BaseMessage[]): string {
   return messages
@@ -127,7 +125,10 @@ export class ChatChromeAI extends SimpleChatModel<ChromeAICallOptions> {
 
     let previousContent = ""
     for await (const chunk of iterableStream) {
-      const newContent = chunk.slice(previousContent.length)
+      const newContent =
+        typeof (globalThis as any).LanguageModel !== "undefined"
+          ? chunk
+          : chunk.slice(previousContent.length)
       previousContent += newContent
       yield new ChatGenerationChunk({
         text: newContent,
