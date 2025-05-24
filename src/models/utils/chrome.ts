@@ -1,6 +1,11 @@
 
 export const checkChromeAIAvailability = async (): Promise<"readily" | "no" | "after-download"> => {
     try {
+        // latest latest newer version
+        if (typeof (globalThis as any).LanguageModel !== "undefined") {
+          const availability = await (globalThis as any).LanguageModel.availability()
+          return availability == "available" ? "readily" : "no"
+        }
         const ai = (window as any).ai;
 
         // latest i guess
@@ -37,6 +42,14 @@ export interface AITextSession {
 
 
 export const createAITextSession = async (data: any): Promise<AITextSession> => {
+
+    // even newer version
+    if (typeof (globalThis as any).LanguageModel !== "undefined") {
+        const session = await (globalThis as any).LanguageModel.create({
+            ...data
+        })
+        return session
+    }
     const ai = (window as any).ai;
 
     // new version i guess
