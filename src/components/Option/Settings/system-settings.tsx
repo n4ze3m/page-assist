@@ -11,7 +11,7 @@ import { useStorage } from "@plasmohq/storage/hook"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { Select, notification, Switch } from "antd"
 import { useTranslation } from "react-i18next"
-import { Loader2, RotateCcw } from "lucide-react"
+import { Loader2, RotateCcw, Upload } from "lucide-react"
 import { toBase64 } from "@/libs/to-base64"
 
 export const SystemSettings = () => {
@@ -199,7 +199,9 @@ export const SystemSettings = () => {
           ) : null}
           <label
             htmlFor="background-image-upload"
-            className="bg-gray-800 dark:bg-white text-white dark:text-gray-900 px-4 py-2 rounded-md cursor-pointer">
+            className="bg-gray-800 inline-flex gap-2 dark:bg-white text-white dark:text-gray-900 px-4 py-2 rounded-md cursor-pointer">
+           
+           <Upload className="size-4" />
             {t("knowledge:form.uploadFile.label")}
           </label>
           <input
