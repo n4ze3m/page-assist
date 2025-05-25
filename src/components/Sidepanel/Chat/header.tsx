@@ -10,7 +10,8 @@ import {
   // EraserIcon,
   HistoryIcon,
   PlusSquare,
-  XIcon
+  XIcon,
+  MessageSquareShareIcon
 } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { CurrentChatModelSettings } from "@/components/Common/Settings/CurrentChatModelSettings"
@@ -42,6 +43,10 @@ export const SidepanelHeader = () => {
   const { t } = useTranslation(["sidepanel", "common", "option"])
   const [openModelSettings, setOpenModelSettings] = React.useState(false)
   const [sidebarOpen, setSidebarOpen] = React.useState(false)
+  const [webuiBtnSidePanel, setWebuiBtnSidePanel] = useStorage(
+    "webuiBtnSidePanel",
+    false
+  )
 
   return (
     <div className=" px-3 justify-between bg-white dark:bg-[#171717] border-b border-gray-300 dark:border-gray-700 py-4 items-center absolute top-0 z-10 flex h-14 w-full">
@@ -55,6 +60,19 @@ export const SidepanelHeader = () => {
       </div>
 
       <div className="flex items-center space-x-3">
+        {webuiBtnSidePanel ? (
+          <Tooltip title={t("tooltip.openwebui")}>
+
+          <button 
+            onClick={() => {
+              const url = browser.runtime.getURL("/options.html")
+              browser.tabs.create({ url })
+            }}
+            className="flex items-center space-x-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-700">
+            <MessageSquareShareIcon className="h-5 w-5 text-gray-500 dark:text-gray-400" />
+          </button>
+          </Tooltip>
+        ) : null}
         {isEmbedding ? (
           <Tooltip title={t("tooltip.embed")}>
             <BoxesIcon className="h-5 w-5 text-gray-500 dark:text-gray-400 animate-bounce animate-infinite" />

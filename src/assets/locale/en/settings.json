@@ -56,6 +56,9 @@
       },
       "useMarkdownForUserMessage": {
         "label": "Enable Markdown formatting for User messages"
+      },
+      "copyAsFormattedText": {
+        "label": "Copy as Formatted Text"
       }
     },
     "sidepanelRag": {
@@ -138,6 +141,12 @@
       },
       "fontSize": {
         "label": "Font Size"
+      },
+      "webuiBtnSidePanel": {
+        "label": "Show Web UI Button in Side Panel"
+      },
+      "chatBackgroundImage": {
+        "label": "Chat Background Image"
       }
     },
     "tts": {

@@ -56,6 +56,9 @@
       },
       "useMarkdownForUserMessage": {
         "label": "تمكين تنسيق ماركداون لرسائل المستخدم"
+      },
+      "copyAsFormattedText": {
+        "label": "نسخ كنص منسق"
       }
     },
     "sidepanelRag": {

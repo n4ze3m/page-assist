@@ -59,6 +59,9 @@
       },
       "useMarkdownForUserMessage": {
         "label": "ഉപയോക്തൃ സന്ദേശങ്ങൾക്കായി മാർക്ക്ഡൗൺ ഫോർമാറ്റിംഗ് പ്രവർത്തനക്ഷമമാക്കുക"
+      },
+      "copyAsFormattedText": {
+        "label": "ഫോർമാറ്റ് ചെയ്ത ടെക്സ്റ്റായി പകർത്തുക"
       }
     },
     "sidepanelRag": {

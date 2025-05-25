@@ -53,6 +53,9 @@
       },
       "useMarkdownForUserMessage": {
         "label": "فعال کردن قالب‌بندی مارک‌داون برای پیام‌های کاربر"
+      },
+      "copyAsFormattedText": {
+        "label": "کپی به عنوان متن قالب‌بندی شده"
       }
     },
     "sidepanelRag": {

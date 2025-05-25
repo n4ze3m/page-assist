@@ -56,6 +56,9 @@
       },
       "useMarkdownForUserMessage": {
         "label": "啟用使用者訊息的 Markdown 格式"
+      },
+      "copyAsFormattedText": {
+        "label": "複製為格式化文字"
       }
     },
     "sidepanelRag": {

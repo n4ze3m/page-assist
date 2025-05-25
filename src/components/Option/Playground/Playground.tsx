@@ -14,9 +14,18 @@ import { useStoreChatModelSettings } from "@/store/model"
 import { useSmartScroll } from "@/hooks/useSmartScroll"
 import { ChevronDown } from "lucide-react"
 import { useStorage } from "@plasmohq/storage/hook"
+import { Storage } from "@plasmohq/storage"
+
 export const Playground = () => {
   const drop = React.useRef<HTMLDivElement>(null)
   const [dropedFile, setDropedFile] = React.useState<File | undefined>()
+  const [chatBackgroundImage] = useStorage({
+    key: "chatBackgroundImage",
+    instance: new Storage({
+      area: "local"
+    })
+  })
+
   const {
     selectedKnowledge,
     messages,
@@ -35,6 +44,7 @@ export const Playground = () => {
   const [dropState, setDropState] = React.useState<
     "idle" | "dragging" | "error"
   >("idle")
+
   React.useEffect(() => {
     if (selectedKnowledge) {
       return
@@ -135,6 +145,17 @@ export const Playground = () => {
       className={`relative flex h-full flex-col items-center ${
         dropState === "dragging" ? "bg-gray-100 dark:bg-gray-800" : ""
       } bg-white dark:bg-[#171717]`}>
+      {/* Background Image Overlay */}
+      {chatBackgroundImage && (
+        <div
+          className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat"
+          style={{
+            backgroundImage: `url(${chatBackgroundImage})`,
+            opacity: 0.1
+          }}
+        />
+      )}
+
       <div
         ref={containerRef}
         className="custom-scrollbar flex h-full w-full flex-col items-center overflow-x-hidden overflow-y-auto px-5">

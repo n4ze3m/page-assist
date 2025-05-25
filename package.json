@@ -48,6 +48,7 @@
     "langchain": "^0.1.28",
     "lucide-react": "^0.350.0",
     "mammoth": "^1.7.2",
+    "marked": "^15.0.12",
     "mermaid": "^11.4.1",
     "ml-distance": "^4.0.1",
     "openai": "^4.95.1",

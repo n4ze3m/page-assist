@@ -53,6 +53,9 @@
       },
       "useMarkdownForUserMessage": {
         "label": "Aktivér Markdown formatering for brugermeddelelser"
+      },
+      "copyAsFormattedText": {
+        "label": "Kopiér som formateret tekst"
       }
     },
     "sidepanelRag": {
@@ -118,7 +121,7 @@
       "ttsEnabled": {
         "label": "Tilføj Teskt-til-Tale"
       },
-         "ttsAutoPlay": {
+      "ttsAutoPlay": {
         "label": "Automatisk afspilning af stemmerespons efter færdiggørelse"
       },
       "ttsProvider": {

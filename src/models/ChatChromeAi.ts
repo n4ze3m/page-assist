@@ -10,7 +10,8 @@ import {
 import { BaseMessage, AIMessageChunk } from "@langchain/core/messages"
 import { ChatGenerationChunk } from "@langchain/core/outputs"
 import { IterableReadableStream } from "@langchain/core/utils/stream"
--import { AITextSession, checkChromeAIAvailability, createAITextSession } from "./utils/chrome"
+import { AITextSession, checkChromeAIAvailability, createAITextSession } from "./utils/chrome"
+
 export interface AITextSessionOptions {
   topK: number
   temperature: number

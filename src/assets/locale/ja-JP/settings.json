@@ -59,6 +59,9 @@
       },
       "useMarkdownForUserMessage": {
         "label": "ユーザーメッセージのMarkdown形式を有効にする"
+      },
+      "copyAsFormattedText": {
+        "label": "書式付きテキストとしてコピー"
       }
     },
     "sidepanelRag": {

@@ -56,6 +56,9 @@
       },
       "useMarkdownForUserMessage": {
         "label": "Aktivera Markdown-formatering för användarmeddelanden"
+      },
+      "copyAsFormattedText": {
+        "label": "Kopiera som formaterad text"
       }
     },
     "sidepanelRag": {

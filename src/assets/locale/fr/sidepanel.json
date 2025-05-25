@@ -2,6 +2,7 @@
     "tooltip": {
         "embed": "L'intégration de la page peut prendre quelques minutes. Veuillez patienter...",
         "clear": "Effacer l'historique du chat",
-        "history": "Historique du chat"
+        "history": "Historique du chat",
+        "openwebui": "Ouvrir WebUI"
     }
 }
