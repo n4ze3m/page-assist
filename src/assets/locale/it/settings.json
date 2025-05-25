@@ -56,6 +56,9 @@
       },
       "useMarkdownForUserMessage": {
         "label": "Abilita la formattazione Markdown per i messaggi dell'utente"
+      },
+      "copyAsFormattedText": {
+        "label": "Copia come Testo Formattato"
       }
     },
     "sidepanelRag": {

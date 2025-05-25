@@ -59,6 +59,9 @@
       },
       "useMarkdownForUserMessage": {
         "label": "为用户消息启用Markdown格式"
+      },
+      "copyAsFormattedText": {
+        "label": "复制为格式化文本"
       }
     },
     "sidepanelRag": {

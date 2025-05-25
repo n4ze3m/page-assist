@@ -31,6 +31,11 @@ export const GeneralSettings = () => {
     false
   )
 
+  const [copyAsFormattedText, setCopyAsFormattedText] = useStorage(
+    "copyAsFormattedText",
+    false
+  )
+
   const [autoCopyResponseToClipboard, setAutoCopyResponseToClipboard] =
     useStorage("autoCopyResponseToClipboard", false)
 
@@ -249,6 +254,19 @@ export const GeneralSettings = () => {
         <Switch
           checked={useMarkdownForUserMessage}
           onChange={(checked) => setUseMarkdownForUserMessage(checked)}
+        />
+      </div>
+
+       <div className="flex flex-row justify-between">
+        <div className="inline-flex items-center gap-2">
+          <span className="text-gray-700   dark:text-neutral-50">
+            {t("generalSettings.settings.copyAsFormattedText.label")}
+          </span>
+        </div>
+
+        <Switch
+          checked={copyAsFormattedText}
+          onChange={(checked) => setCopyAsFormattedText(checked)}
         />
       </div>
 

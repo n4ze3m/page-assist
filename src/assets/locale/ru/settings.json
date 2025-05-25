@@ -56,6 +56,9 @@
       },
       "useMarkdownForUserMessage": {
         "label": "Включить форматирование Markdown для сообщений пользователя"
+      },
+      "copyAsFormattedText": {
+        "label": "Копировать как форматированный текст"
       }
     },
     "sidepanelRag": {

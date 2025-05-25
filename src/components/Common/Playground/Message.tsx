@@ -8,9 +8,7 @@ import {
   InfoIcon,
   Pen,
   PlayCircle,
-  PlayIcon,
   RotateCcw,
-  SpeakerIcon,
   Square,
   Volume2Icon
 } from "lucide-react"
@@ -65,12 +63,13 @@ export const PlaygroundMessage = (props: Props) => {
     false
   )
   const [autoPlayTTS] = useStorage("isTTSAutoPlayEnabled", false)
+  const [copyAsFormattedText] = useStorage("copyAsFormattedText", false)
   const { t } = useTranslation("common")
   const { cancel, isSpeaking, speak } = useTTS()
   const isLastMessage: boolean =
     props.currentMessageIndex === props.totalMessages - 1
 
-  useEffect(() => {
+  const autoCopyToClipboard = async () => {
     if (
       autoCopyResponseToClipboard &&
       props.isBot &&
@@ -79,12 +78,19 @@ export const PlaygroundMessage = (props: Props) => {
       !props.isProcessing &&
       props.message.trim().length > 0
     ) {
-      navigator.clipboard.writeText(props.message)
+      await copyToClipboard({
+        text: props.message,
+        formatted: copyAsFormattedText
+      })
       setIsBtnPressed(true)
       setTimeout(() => {
         setIsBtnPressed(false)
       }, 2000)
     }
+  }
+
+  useEffect(() => {
+    autoCopyToClipboard()
   }, [
     autoCopyResponseToClipboard,
     props.isBot,
@@ -118,7 +124,8 @@ export const PlaygroundMessage = (props: Props) => {
     props.totalMessages,
     props.isStreaming,
     props.isProcessing,
-    props.message
+    props.message,
+    copyAsFormattedText
   ])
 
   if (isUserChatBubble && !props.isBot) {
@@ -317,8 +324,13 @@ export const PlaygroundMessage = (props: Props) => {
                 <Tooltip title={t("copyToClipboard")}>
                   <button
                     aria-label={t("copyToClipboard")}
-                    onClick={() => {
-                      navigator.clipboard.writeText(props.message)
+                    onClick={async () => {
+                      await copyToClipboard({
+                        text: props.message,
+                        formatted: copyAsFormattedText
+                      })
+
+                      // navigator.clipboard.writeText(props.message)
                       setIsBtnPressed(true)
                       setTimeout(() => {
                         setIsBtnPressed(false)
