@@ -1,5 +1,6 @@
 import { marked } from 'marked';
 import markedKatexExtension from './marked/katex';
+import { replaceThinkTagToEM } from '@/libs/reasoning';
 
 export const copyToClipboard = async ({
     text,
@@ -17,14 +18,13 @@ export const copyToClipboard = async ({
 
             marked.use(markedKatexExtension(options))
 
-            const html = marked.parse(text)
-            
+            const html = marked.parse(replaceThinkTagToEM(text))
             const styledHtml = `
                 <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333;">
                     ${html}
                 </div>
             `
-            
+
             if (navigator.clipboard && navigator.clipboard.write) {
                 await navigator.clipboard.write([
                     new ClipboardItem({

@@ -23,6 +23,7 @@ import { parseReasoning } from "@/libs/reasoning"
 import { humanizeMilliseconds } from "@/utils/humanize-milliseconds"
 import { useStorage } from "@plasmohq/storage/hook"
 import { PlaygroundUserMessageBubble } from "./PlaygroundUserMessage"
+import { copyToClipboard } from "@/utils/clipboard"
 type Props = {
   message: string
   message_type?: string
