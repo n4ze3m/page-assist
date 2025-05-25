@@ -2,6 +2,7 @@
     "tooltip": {
         "embed": "L'inserimento della pagina potrebbe richiedere alcuni minuti. Attendere prego...",
         "clear": "Cancella la cronologia della chat",
-        "history": "Cronologia della chat"
+        "history": "Cronologia della chat",
+        "openwebui": "Apri WebUI"
     }
 }

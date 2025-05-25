@@ -9,7 +9,7 @@ import {
 import { Storage } from "@plasmohq/storage"
 import { useStorage } from "@plasmohq/storage/hook"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { Select, notification } from "antd"
+import { Select, notification, Switch } from "antd"
 import { useTranslation } from "react-i18next"
 import { Loader2 } from "lucide-react"
 
@@ -18,6 +18,12 @@ export const SystemSettings = () => {
   const queryClient = useQueryClient()
   const { clearChat } = useMessageOption()
   const { increase, decrease, scale } = useFontSize()
+
+  const [webuiBtnSidePanel, setWebuiBtnSidePanel] = useStorage(
+    "webuiBtnSidePanel",
+    false
+  )
+
   const [actionIconClick, setActionIconClick] = useStorage(
     {
       key: "actionIconClick",
@@ -46,7 +52,7 @@ export const SystemSettings = () => {
       queryClient.invalidateQueries({
         queryKey: ["fetchChatHistory"]
       })
-     
+
       notification.success({
         message: "Imported data successfully"
       })
@@ -69,7 +75,7 @@ export const SystemSettings = () => {
       </div>
       <div className="flex flex-row mb-3 justify-between items-center">
         <span className="text-black dark:text-white font-medium">
-      <BetaTag />
+          <BetaTag />
           {t("generalSettings.system.fontSize.label")}
         </span>
         <div className="flex flex-row items-center gap-3">
@@ -135,6 +141,18 @@ export const SystemSettings = () => {
           }}
         />
       </div>
+      <div className="flex flex-row mb-3 justify-between">
+        <span className="text-gray-700 dark:text-neutral-50 ">
+          {t("generalSettings.system.webuiBtnSidePanel.label")}
+        </span>
+        <Switch
+          checked={webuiBtnSidePanel}
+          onChange={(checked) => {
+            setWebuiBtnSidePanel(checked)
+          }}
+        />
+      </div>
+
       <div className="flex flex-row mb-3 justify-between">
         <span className="text-gray-700 dark:text-neutral-50 ">
           {t("generalSettings.system.export.label")}

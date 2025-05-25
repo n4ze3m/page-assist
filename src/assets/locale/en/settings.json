@@ -138,6 +138,9 @@
       },
       "fontSize": {
         "label": "Font Size"
+      },
+      "webuiBtnSidePanel": {
+        "label" : "Show Web UI Button in Side Panel"
       }
     },
     "tts": {

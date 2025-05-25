@@ -2,6 +2,7 @@
     "tooltip": {
         "embed": "Det kan ta noen minutter å bygge din siden. Vennligst vent...",
         "clear": "Slett chathistorikken",
-        "history": "Chathistorikk"
+        "history": "Chathistorikk",
+        "openwebui": "Åpne WebUI"
     }
 }
