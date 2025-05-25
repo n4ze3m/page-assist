@@ -141,6 +141,9 @@
       },
       "webuiBtnSidePanel": {
         "label" : "Show Web UI Button in Side Panel"
+      },
+      "chatBackgroundImage": {
+        "label": "Chat Background Image"
       }
     },
     "tts": {

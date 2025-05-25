@@ -11,10 +11,11 @@ import { useStorage } from "@plasmohq/storage/hook"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { Select, notification, Switch } from "antd"
 import { useTranslation } from "react-i18next"
-import { Loader2 } from "lucide-react"
+import { Loader2, RotateCcw } from "lucide-react"
+import { toBase64 } from "@/libs/to-base64"
 
 export const SystemSettings = () => {
-  const { t } = useTranslation("settings")
+  const { t } = useTranslation(["settings", "knowledge"])
   const queryClient = useQueryClient()
   const { clearChat } = useMessageOption()
   const { increase, decrease, scale } = useFontSize()
@@ -43,6 +44,12 @@ export const SystemSettings = () => {
     },
     "sidePanel"
   )
+  const [chatBackgroundImage, setChatBackgroundImage] = useStorage({
+    key: "chatBackgroundImage",
+    instance: new Storage({
+      area: "local"
+    })
+  })
 
   const importDataMutation = useMutation({
     mutationFn: async (file: File) => {
@@ -64,6 +71,28 @@ export const SystemSettings = () => {
       })
     }
   })
+
+  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (file) {
+      try {
+        if (!file.type.startsWith('image/')) {
+          notification.error({
+            message: "Please select a valid image file"
+          })
+          return
+        }
+
+        const base64String = await toBase64(file)
+        setChatBackgroundImage(base64String)
+      } catch (error) {
+        console.error("Error uploading image:", error)
+        notification.error({
+          message: "Failed to upload image"
+        })
+      }
+    }
+  }
 
   return (
     <div>
@@ -151,6 +180,36 @@ export const SystemSettings = () => {
             setWebuiBtnSidePanel(checked)
           }}
         />
+      </div>
+
+      <div className="flex flex-row mb-3 justify-between">
+        <span className="text-gray-700 dark:text-neutral-50 ">
+          <BetaTag />
+          {t("generalSettings.system.chatBackgroundImage.label")}
+        </span>
+        <div className="flex items-center gap-2">
+          {chatBackgroundImage ? (
+            <button
+              onClick={() => {
+                setChatBackgroundImage(null)
+              }}
+              className=" text-gray-800 dark:text-white">
+              <RotateCcw className="size-4" />
+            </button>
+          ) : null}
+          <label
+            htmlFor="background-image-upload"
+            className="bg-gray-800 dark:bg-white text-white dark:text-gray-900 px-4 py-2 rounded-md cursor-pointer">
+            {t("knowledge:form.uploadFile.label")}
+          </label>
+          <input
+            type="file"
+            accept="image/*"
+            id="background-image-upload"
+            className="hidden"
+            onChange={handleImageUpload}
+          />
+        </div>
       </div>
 
       <div className="flex flex-row mb-3 justify-between">

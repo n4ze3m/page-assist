@@ -6,6 +6,8 @@ import {
 import useBackgroundMessage from "@/hooks/useBackgroundMessage"
 import { useSmartScroll } from "@/hooks/useSmartScroll"
 import { copilotResumeLastChat } from "@/services/app"
+import { Storage } from "@plasmohq/storage"
+import { useStorage } from "@plasmohq/storage/hook"
 import { notification } from "antd"
 import { ChevronDown } from "lucide-react"
 import React from "react"
@@ -37,7 +39,12 @@ const SidepanelChat = () => {
     streaming,
     60
   )
-
+  const [chatBackgroundImage] = useStorage({
+    key: "chatBackgroundImage",
+    instance: new Storage({
+      area: "local"
+    })
+  })
   const bgMsg = useBackgroundMessage()
 
   const setRecentMessagesOnLoad = async () => {
@@ -143,6 +150,16 @@ const SidepanelChat = () => {
           className={`relative flex h-full flex-col items-center ${
             dropState === "dragging" ? "bg-gray-100 dark:bg-gray-800" : ""
           } bg-white dark:bg-[#171717]`}>
+          {chatBackgroundImage && (
+            <div
+              className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat"
+              style={{
+                backgroundImage: `url(${chatBackgroundImage})`,
+                opacity: 0.04
+              }}
+            />
+          )}
+
           <div
             ref={containerRef}
             className="custom-scrollbar  flex h-full w-full flex-col items-center overflow-x-hidden overflow-y-auto px-5">
