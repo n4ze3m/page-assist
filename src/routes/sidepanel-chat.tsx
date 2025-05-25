@@ -155,7 +155,7 @@ const SidepanelChat = () => {
               className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat"
               style={{
                 backgroundImage: `url(${chatBackgroundImage})`,
-                opacity: 0.04
+                opacity: 0.1
               }}
             />
           )}
