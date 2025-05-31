@@ -27,3 +27,31 @@ export const processPdf = async (base64: string) => {
   const pdf = await getPdf(data)
   return pdf
 }
+
+
+export const processPDFFromURL = async (url: string) => {
+  const res = await fetch(url)
+  const data = await res.arrayBuffer()
+  const pdf = await getPdf(data)
+  let pdfText = '';
+
+  for (let i = 1; i <= pdf.numPages; i += 1) {
+    const page = await pdf.getPage(i)
+    const content = await page.getTextContent()
+
+    if (content?.items.length === 0) {
+      continue
+    }
+
+    const text = content?.items
+      .map((item: any) => item.str)
+      .join("\n")
+      .replace(/\x00/g, "")
+      .trim()
+
+    pdfText += text;
+  }
+
+  return pdfText;
+
+}

@@ -76,6 +76,9 @@ type State = {
 
   useOCR: boolean
   setUseOCR: (useOCR: boolean) => void
+
+  documentContext: ChatDocuments | null,
+  setDocumentContext: (documentContext: ChatDocuments) => void,
 }
 
 export const useStoreMessageOption = create<State>((set) => ({
@@ -120,4 +123,7 @@ export const useStoreMessageOption = create<State>((set) => ({
 
   useOCR: false,
   setUseOCR: (useOCR) => set({ useOCR }),
+
+  documentContext: null,
+  setDocumentContext: (documentContext) => set({ documentContext }),
 }))

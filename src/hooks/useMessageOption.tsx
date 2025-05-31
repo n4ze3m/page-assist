@@ -61,7 +61,9 @@ export const useMessageOption = () => {
     temporaryChat,
     setTemporaryChat,
     useOCR,
-    setUseOCR
+    setUseOCR,
+    documentContext,
+    setDocumentContext
   } = useStoreMessageOption()
   const currentChatModelSettings = useStoreChatModelSettings()
   const [selectedModel, setSelectedModel] = useStorage("selectedModel")
@@ -79,7 +81,6 @@ export const useMessageOption = () => {
 
   const handleFocusTextArea = () => focusTextArea(textareaRef)
 
-
   const clearChat = () => {
     navigate("/")
     setMessages([])
@@ -95,6 +96,7 @@ export const useMessageOption = () => {
       setWebSearch(true)
     }
     handleFocusTextArea()
+    setDocumentContext(null)
   }
 
   const saveMessageOnSuccess = createSaveMessageOnSuccess(
@@ -169,11 +171,18 @@ export const useMessageOption = () => {
         return
       }
 
-      if (docs && docs.length > 0) {
+      if (docs?.length > 0 || documentContext?.length > 0) {
+        const processingTabs = docs || documentContext || []
+
+        if (docs?.length > 0) {
+          setDocumentContext(
+            Array.from(new Set([...(documentContext || []), ...docs]))
+          )
+        }
         await tabChatMode(
           message,
           image,
-          docs,
+          processingTabs,
           isRegenerate,
           chatHistory || messages,
           memory || history,

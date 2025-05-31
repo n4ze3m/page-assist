@@ -114,7 +114,7 @@ export const tabChatMode = async (
       const { ragPrompt: systemPrompt, ragQuestionPrompt: questionPrompt } =
         await promptForRag()
       let context = await getTabContents(documents)
-      console.log(context)
+      // console.log(context)
       if (newMessage.length > 2) {
         const lastTenMessages = newMessage.slice(-10)
         lastTenMessages.pop()
