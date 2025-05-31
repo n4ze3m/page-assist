@@ -3,6 +3,7 @@ export type ChatDocument  = {
     url?: string,
     type: "tab" | "file",
     tabId?: number,
+    favIconUrl?: string,
 }
 
 export type ChatDocuments = ChatDocument[]

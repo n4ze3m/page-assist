@@ -59,6 +59,9 @@
       },
       "copyAsFormattedText": {
         "label": "Kopier som formatert tekst"
+      },
+      "tabMentionsEnabled": {
+        "label": "Aktiver Fane Henvisninger (@tab)"
       }
     },
     "sidepanelRag": {

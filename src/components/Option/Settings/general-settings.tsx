@@ -8,6 +8,7 @@ import { TTSModeSettings } from "./tts-mode"
 import { useStorage } from "@plasmohq/storage/hook"
 import { SystemSettings } from "./system-settings"
 import { SSTSettings } from "./sst-settings"
+import { BetaTag } from "@/components/Common/Beta"
 
 export const GeneralSettings = () => {
   const [userChatBubble, setUserChatBubble] = useStorage("userChatBubble", true)
@@ -275,8 +276,9 @@ export const GeneralSettings = () => {
         />
       </div>
 
-      {/* <div className="flex flex-row justify-between">
+      <div className="flex flex-row justify-between">
         <div className="inline-flex items-center gap-2">
+          <BetaTag />
           <span className="text-gray-700   dark:text-neutral-50">
             {t("generalSettings.settings.tabMentionsEnabled.label")}
           </span>
@@ -286,7 +288,7 @@ export const GeneralSettings = () => {
           checked={tabMentionsEnabled}
           onChange={(checked) => setTabMentionsEnabled(checked)}
         />
-      </div> */}
+      </div>
 
       <div className="flex flex-row justify-between">
         <span className="text-gray-700 dark:text-neutral-50 ">

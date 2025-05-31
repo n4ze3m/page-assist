@@ -10,8 +10,6 @@ import { useWebUI } from "@/store/webui"
 import { useStorage } from "@plasmohq/storage/hook"
 import { useStoreChatModelSettings } from "@/store/model"
 import { ChatDocuments } from "@/models/ChatTypes"
-
-// Import extracted modules
 import { searchChatMode } from "./chat-modes/searchChatMode"
 import { normalChatMode } from "./chat-modes/normalChatMode"
 import { continueChatMode } from "./chat-modes/continueChatMode"
@@ -27,6 +25,7 @@ import {
   createEditMessage,
   createStopStreamingRequest
 } from "./handlers/messageHandlers"
+import { tabChatMode } from "./chat-modes/tabChatMode"
 
 export const useMessageOption = () => {
   const {
@@ -80,6 +79,7 @@ export const useMessageOption = () => {
 
   const handleFocusTextArea = () => focusTextArea(textareaRef)
 
+
   const clearChat = () => {
     navigate("/")
     setMessages([])
@@ -97,9 +97,16 @@ export const useMessageOption = () => {
     handleFocusTextArea()
   }
 
-  // Create helper functions
-  const saveMessageOnSuccess = createSaveMessageOnSuccess(temporaryChat, setHistoryId as (id: string) => void)
-  const saveMessageOnError = createSaveMessageOnError(temporaryChat, history, setHistory, setHistoryId as (id: string) => void)
+  const saveMessageOnSuccess = createSaveMessageOnSuccess(
+    temporaryChat,
+    setHistoryId as (id: string) => void
+  )
+  const saveMessageOnError = createSaveMessageOnError(
+    temporaryChat,
+    history,
+    setHistory,
+    setHistoryId as (id: string) => void
+  )
 
   const validateBeforeSubmitFn = () => validateBeforeSubmit(selectedModel, t)
 
@@ -153,12 +160,27 @@ export const useMessageOption = () => {
 
     try {
       if (isContinue) {
-        await continueChatMode(chatHistory || messages, memory || history, signal, chatModeParams)
+        await continueChatMode(
+          chatHistory || messages,
+          memory || history,
+          signal,
+          chatModeParams
+        )
         return
       }
 
       if (docs && docs.length > 0) {
-        // Handle documents - implementation would go here
+        await tabChatMode(
+          message,
+          image,
+          docs,
+          isRegenerate,
+          chatHistory || messages,
+          memory || history,
+          signal,
+          chatModeParams
+        )
+        return
       }
 
       if (selectedKnowledge) {

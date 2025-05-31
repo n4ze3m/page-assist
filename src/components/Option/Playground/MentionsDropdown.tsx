@@ -1,6 +1,6 @@
 import React from "react"
 import { TabInfo, MentionPosition } from "~/hooks/useTabMentions"
-import { Globe, X } from "lucide-react"
+import { Globe, X, RefreshCw } from "lucide-react"
 
 interface MentionsDropdownProps {
   show: boolean
@@ -9,6 +9,8 @@ interface MentionsDropdownProps {
   onSelectTab: (tab: TabInfo) => void
   onClose: () => void
   textareaRef: React.RefObject<HTMLTextAreaElement>
+  refetchTabs: () => Promise<void>
+  onMentionsOpen: () => Promise<void> // Add this prop
 }
 
 export const MentionsDropdown: React.FC<MentionsDropdownProps> = ({
@@ -17,14 +19,24 @@ export const MentionsDropdown: React.FC<MentionsDropdownProps> = ({
   mentionPosition,
   onSelectTab,
   onClose,
-  textareaRef
+  textareaRef,
+  refetchTabs,
+  onMentionsOpen
 }) => {
   const [selectedIndex, setSelectedIndex] = React.useState(0)
+  const [isRefreshing, setIsRefreshing] = React.useState(false)
   const dropdownRef = React.useRef<HTMLDivElement>(null)
 
   React.useEffect(() => {
     setSelectedIndex(0)
   }, [tabs])
+
+  // Fetch tabs when dropdown opens
+  React.useEffect(() => {
+    if (show) {
+      onMentionsOpen()
+    }
+  }, [show, onMentionsOpen])
 
   React.useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -58,6 +70,19 @@ export const MentionsDropdown: React.FC<MentionsDropdownProps> = ({
     }
   }, [show, tabs, selectedIndex, onSelectTab, onClose])
 
+  const handleRefreshTabs = async () => {
+    if (isRefreshing) return
+    
+    setIsRefreshing(true)
+    try {
+      await refetchTabs()
+    } catch (error) {
+      console.error("Failed to refresh tabs:", error)
+    } finally {
+      setIsRefreshing(false)
+    }
+  }
+
   const [position, setPosition] = React.useState({ top: 0, left: 0 })
 
   React.useEffect(() => {
@@ -82,7 +107,7 @@ export const MentionsDropdown: React.FC<MentionsDropdownProps> = ({
 
         setPosition({
           left: Math.min(textWidth + 8, rect.width - 200),
-          top: -(Math.max(tabs.length, 1) * 55)
+          top: -(Math.max(tabs.length, 1) * 48 + 5 )
         })
       }
     }
@@ -101,11 +126,21 @@ export const MentionsDropdown: React.FC<MentionsDropdownProps> = ({
         <span className="text-sm font-medium text-gray-700 dark:text-gray-100">
           Select Tab
         </span>
-        <button
-          onClick={onClose}
-          className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-100">
-          <X className="h-4 w-4" />
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={handleRefreshTabs}
+            disabled={isRefreshing}
+            type="button"
+            className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+            title="Refresh tabs (Ctrl+R)">
+            <RefreshCw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+          </button>
+          <button
+            onClick={onClose}
+            className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-100">
+            <X className="h-4 w-4" />
+          </button>
+        </div>
       </div>
 
       <div className="max-h-56 overflow-y-auto">
@@ -140,7 +175,6 @@ export const MentionsDropdown: React.FC<MentionsDropdownProps> = ({
               <div className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
                 {tab.title}
               </div>
-         
             </div>
           </button>
         ))}
@@ -148,7 +182,13 @@ export const MentionsDropdown: React.FC<MentionsDropdownProps> = ({
 
       {tabs.length === 0 && mentionPosition?.query && (
         <div className="p-4 text-center text-gray-500 dark:text-gray-400 text-sm">
-          No tabs found matching "{mentionPosition.query}"
+          <p>No tabs found matching "{mentionPosition.query}"</p>
+          <button
+            onClick={handleRefreshTabs}
+            disabled={isRefreshing}
+            className="mt-2 text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 disabled:opacity-50">
+            {isRefreshing ? "Refreshing..." : "Refresh tabs"}
+          </button>
         </div>
       )}
     </div>

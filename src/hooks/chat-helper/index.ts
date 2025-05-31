@@ -1,4 +1,5 @@
 import { getLastChatHistory, saveHistory, saveMessage, updateHistory, updateMessage } from "@/db"
+import { ChatDocuments } from "@/models/ChatTypes"
 import { setLastUsedChatModel, setLastUsedChatSystemPrompt } from "@/services/model-settings"
 import { generateTitle } from "@/services/title"
 import { ChatHistory } from "@/store/option"
@@ -19,6 +20,7 @@ export const saveMessageOnError = async ({
   prompt_content,
   prompt_id,
   isContinue,
+  documents = [],
 }: {
   e: any
   setHistory: (history: ChatHistory) => void
@@ -34,7 +36,8 @@ export const saveMessageOnError = async ({
   message_type?: string
   prompt_id?: string
   prompt_content?: string
-  isContinue?: boolean
+  isContinue?: boolean,
+  documents?: ChatDocuments
 }) => {
   if (
     e?.name === "AbortError" ||
@@ -66,6 +69,7 @@ export const saveMessageOnError = async ({
             images: [image],
             time: 1,
             message_type,
+            documents
           }
         )
       }
@@ -112,6 +116,7 @@ export const saveMessageOnError = async ({
             images: [image],
             time: 1,
             message_type,
+            documents
           }
         )
       }
@@ -158,6 +163,7 @@ export const saveMessageOnSuccess = async ({
   prompt_content,
   reasoning_time_taken = 0,
   isContinue,
+  documents = [],
 }: {
   historyId: string | null
   setHistoryId: (historyId: string) => void
@@ -174,6 +180,7 @@ export const saveMessageOnSuccess = async ({
   prompt_content?: string
   reasoning_time_taken?: number
   isContinue?: boolean,
+  documents?: ChatDocuments
 }) => {
   if (historyId) {
     if (!isRegenerate && !isContinue) {
@@ -188,7 +195,8 @@ export const saveMessageOnSuccess = async ({
           time: 1,
           message_type,
           generationInfo,
-          reasoning_time_taken
+          reasoning_time_taken,
+          documents
         }
       )
     }
@@ -215,7 +223,7 @@ export const saveMessageOnSuccess = async ({
           time: 2,
           message_type,
           generationInfo,
-          reasoning_time_taken
+          reasoning_time_taken,
         }
         // historyId,
         // selectedModel!,
@@ -249,7 +257,8 @@ export const saveMessageOnSuccess = async ({
         time: 1,
         message_type,
         generationInfo,
-        reasoning_time_taken
+        reasoning_time_taken,
+        documents
       }
       // newHistoryId.id,
       // selectedModel,

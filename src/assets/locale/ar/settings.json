@@ -59,8 +59,10 @@
       },
       "copyAsFormattedText": {
         "label": "نسخ كنص منسق"
-      }
-    },
+      },
+      "tabMentionsEnabled": {
+        "label": "تمكين إشارات التبويب (@tab)"
+      }    },
     "sidepanelRag": {
       "heading": "إعدادات الاسترجاع",
       "ragEnabled": {

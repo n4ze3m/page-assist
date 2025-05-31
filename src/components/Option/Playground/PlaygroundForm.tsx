@@ -80,7 +80,9 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
     insertMention,
     closeMentions,
     removeDocument,
-    clearSelectedDocuments
+    clearSelectedDocuments,
+    reloadTabs,
+    handleMentionsOpen
   } = useTabMentions(textareaRef)
 
   const isMobile = () => {
@@ -227,7 +229,14 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
       textAreaFocus()
       await sendMessage({
         image: value.image,
-        message: value.message.trim()
+        message: value.message.trim(),
+        docs: selectedDocuments.map((doc) => ({
+          type: "tab",
+          tabId: doc.id,
+          title: doc.title,
+          url: doc.url,
+          favIconUrl: doc.favIconUrl
+        }))
       })
     })()
   }
@@ -341,7 +350,13 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                     textAreaFocus()
                     await sendMessage({
                       image: value.image,
-                      message: value.message.trim()
+                      message: value.message.trim(),
+                      docs: selectedDocuments.map((doc) => ({
+                        type: "tab",
+                        tabId: doc.id,
+                        title: doc.title,
+                        url: doc.url
+                      }))
                     })
                   })}
                   className="shrink-0 flex-grow  flex flex-col items-center ">
@@ -409,6 +424,11 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                         }
                         onClose={closeMentions}
                         textareaRef={textareaRef}
+                        refetchTabs={async () => {
+                          await reloadTabs()
+                        }}
+                          onMentionsOpen={handleMentionsOpen}
+
                       />
                     </div>
                     <div className="mt-2 flex justify-between items-center">

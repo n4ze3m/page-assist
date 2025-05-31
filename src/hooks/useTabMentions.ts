@@ -35,8 +35,7 @@ export const useTabMentions = (textareaRef: React.RefObject<HTMLTextAreaElement>
             !url.startsWith('brave://') &&
             !url.startsWith('firefox://') &&
             !url.startsWith('chrome-extension://') &&
-            !url.startsWith('moz-extension://') &&
-            !url.startsWith('safari-extension://')
+            !url.startsWith('moz-extension://')
         })
         .map(tab => ({
           id: tab.id!,
@@ -51,7 +50,6 @@ export const useTabMentions = (textareaRef: React.RefObject<HTMLTextAreaElement>
       return []
     }
   }, [])
-
 
   const detectMention = React.useCallback((text: string, cursorPosition: number) => {
     if (!tabMentionsEnabled) return null
@@ -105,6 +103,14 @@ export const useTabMentions = (textareaRef: React.RefObject<HTMLTextAreaElement>
     }
   }, [tabMentionsEnabled, availableTabs, detectMention, fetchTabs])
 
+  // New function to handle when mentions dropdown opens
+  const handleMentionsOpen = React.useCallback(async () => {
+    if (tabMentionsEnabled && showMentions) {
+      // Always fetch fresh tabs when dropdown opens
+      await fetchTabs()
+    }
+  }, [tabMentionsEnabled, showMentions, fetchTabs])
+
   const insertMention = React.useCallback((tab: TabInfo, currentText: string, setValue: (value: string) => void) => {
     if (!mentionPosition || !textareaRef.current) return
 
@@ -155,6 +161,8 @@ export const useTabMentions = (textareaRef: React.RefObject<HTMLTextAreaElement>
     insertMention,
     closeMentions,
     removeDocument,
-    clearSelectedDocuments
+    clearSelectedDocuments,
+    reloadTabs: fetchTabs,
+    handleMentionsOpen  
   }
 }
