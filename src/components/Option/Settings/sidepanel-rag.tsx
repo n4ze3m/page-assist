@@ -10,7 +10,7 @@ export const SidepanelRag = ({ hideBorder }: { hideBorder?: boolean }) => {
   )
   const [maxWebsiteContext, setMaxWebsiteContext] = useStorage(
     "maxWebsiteContext",
-    4028
+    7028
   )
 
   return (
@@ -47,7 +47,6 @@ export const SidepanelRag = ({ hideBorder }: { hideBorder?: boolean }) => {
           </span>
           <div>
             <InputNumber
-              disabled={chatWithWebsiteEmbedding}
               className="mt-4 sm:mt-0"
               value={maxWebsiteContext}
               onChange={(value) => setMaxWebsiteContext(value)}

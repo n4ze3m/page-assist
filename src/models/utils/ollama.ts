@@ -42,6 +42,7 @@ export interface OllamaInput {
   vocabOnly?: boolean
   useMlock?: boolean
   seed?: number
+  thinking?: boolean
   format?: StringWithAutocomplete<"json">
 }
 
@@ -87,6 +88,7 @@ export interface OllamaRequestParams {
 export type OllamaMessage = {
   role: StringWithAutocomplete<"user" | "assistant" | "system">
   content: string
+  thinking?: string
   images?: string[]
 }
 

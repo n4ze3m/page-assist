@@ -59,6 +59,9 @@
       },
       "copyAsFormattedText": {
         "label": "Copiar como Texto Formateado"
+      },
+      "tabMentionsEnabled": {
+        "label": "Habilitar Menciones de Pestañas (@tab)"
       }
     },
     "sidepanelRag": {

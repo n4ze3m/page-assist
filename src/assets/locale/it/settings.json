@@ -59,6 +59,9 @@
       },
       "copyAsFormattedText": {
         "label": "Copia come Testo Formattato"
+      },
+      "tabMentionsEnabled": {
+        "label": "Abilita Menzioni Scheda (@tab)"
       }
     },
     "sidepanelRag": {

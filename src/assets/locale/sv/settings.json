@@ -59,6 +59,9 @@
       },
       "copyAsFormattedText": {
         "label": "Kopiera som formaterad text"
+      },
+      "tabMentionsEnabled": {
+        "label": "Aktivera Flikbenämningar (@tab)"
       }
     },
     "sidepanelRag": {

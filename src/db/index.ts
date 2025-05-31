@@ -3,6 +3,7 @@ import {
   type Message as MessageType
 } from "~/store/option"
 import { getAllModelNicknames } from "./nickname"
+import { ChatDocuments } from "@/models/ChatTypes"
 type HistoryInfo = {
   id: string
   title: string
@@ -38,6 +39,7 @@ type Message = {
   generationInfo?: any
   modelName?: string
   modelImage?: string
+  documents?: ChatDocuments
 }
 function simpleFuzzyMatch(text: string, query: string): boolean {
   if (!text || !query) {
@@ -383,7 +385,8 @@ export const saveMessage = async ({
   modelImage,
   modelName,
   reasoning_time_taken,
-  time
+  time, 
+  documents
 }: {
   history_id: string
   name: string
@@ -397,6 +400,7 @@ export const saveMessage = async ({
   reasoning_time_taken?: number
   modelName?: string
   modelImage?: string
+  documents?: ChatDocuments
 }) => {
   const id = generateID()
   let createdAt = Date.now()
@@ -416,7 +420,8 @@ export const saveMessage = async ({
     generationInfo: generationInfo,
     reasoning_time_taken,
     modelName,
-    modelImage
+    modelImage,
+    documents
   }
   const db = new PageAssitDatabase()
   await db.addMessage(message)
@@ -449,7 +454,8 @@ export const formatToMessage = (messages: MessageHistory): MessageType[] => {
       reasoning_time_taken: message?.reasoning_time_taken,
       modelName: message?.modelName,
       modelImage: message?.modelImage,
-      id: message.id
+      id: message.id,
+      documents: message?.documents,
     }
   })
 }

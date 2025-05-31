@@ -62,6 +62,9 @@
       },
       "copyAsFormattedText": {
         "label": "서식이 있는 텍스트로 복사"
+      },
+      "tabMentionsEnabled": {
+        "label": "탭 멘션 (@tab) 활성화"
       }
     },
     "sidepanelRag": {

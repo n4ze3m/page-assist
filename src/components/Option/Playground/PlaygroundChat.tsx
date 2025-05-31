@@ -61,6 +61,7 @@ export const PlaygroundChat = () => {
                 isContinue: true
               })
             }}
+            documents={message?.documents}
           />
         ))}
       </div>

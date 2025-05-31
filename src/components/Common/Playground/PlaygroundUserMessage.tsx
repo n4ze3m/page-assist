@@ -6,6 +6,8 @@ import { EditMessageForm } from "./EditMessageForm"
 import { Image, Tag, Tooltip } from "antd"
 import { CheckIcon, CopyIcon, Pen, PlayIcon, Square } from "lucide-react"
 import { HumanMessage } from "./HumanMessge"
+import { ChatDocuments } from "@/models/ChatTypes"
+import { DocumentChip } from "./DocumentChip"
 
 type Props = {
   message: string
@@ -33,6 +35,7 @@ type Props = {
   openReasoning?: boolean
   modelImage?: string
   modelName?: string
+  documents?: ChatDocuments
 }
 
 export const PlaygroundUserMessageBubble: React.FC<Props> = (props) => {
@@ -50,6 +53,21 @@ export const PlaygroundUserMessageBubble: React.FC<Props> = (props) => {
           {t(`copilot.${props?.message_type}`)}
         </Tag>
       ) : null}
+
+      {props?.documents && props?.documents.length > 0 && (
+        <div className="flex flex-wrap gap-2">
+          {props.documents.map((doc, index) => (
+            <DocumentChip
+              key={index}
+              document={{
+                title: doc.title,
+                url: doc.url,
+                favIconUrl: doc.favIconUrl
+              }}
+            />
+          ))}
+        </div>
+      )}
       <div
         dir="auto"
         className={`message-bubble bg-gray-50 dark:bg-[#242424] rounded-3xl prose dark:prose-invert break-words text-primary min-h-7 prose-p:opacity-95 prose-strong:opacity-100 bg-foreground border border-input-border max-w-[100%] sm:max-w-[90%] px-4 py-2.5 rounded-br-lg dark:border-[#2D2D2D] ${

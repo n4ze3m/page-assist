@@ -14,5 +14,5 @@ export const getMaxContextSize = async (): Promise<number> => {
     const maxWebsiteContext = await storage.get<number | undefined>(
         "maxWebsiteContext"
     )
-    return maxWebsiteContext ?? 4028
+    return maxWebsiteContext ?? 7028
 }

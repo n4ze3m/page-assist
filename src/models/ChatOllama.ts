@@ -41,6 +41,8 @@ export class ChatOllama
 
     keepAlive?: string;
 
+    thinking?: boolean;
+
     embeddingOnly?: boolean;
 
     f16KV?: boolean;
@@ -156,6 +158,7 @@ export class ChatOllama
         this.vocabOnly = fields.vocabOnly;
         this.format = fields.format;
         this.seed = fields.seed;
+        this.thinking = fields.thinking;
     }
 
     protected getLsParams(options: this["ParsedCallOptions"]) {
@@ -185,6 +188,7 @@ export class ChatOllama
             model: this.model,
             format: this.format,
             keep_alive: this.keepAlive,
+            think: this.thinking,
             options: {
                 embedding_only: this.embeddingOnly,
                 f16_kv: this.f16KV,
@@ -292,7 +296,12 @@ export class ChatOllama
                 if (!chunk.done) {
                     yield new ChatGenerationChunk({
                         text: chunk.message.content,
-                        message: new AIMessageChunk({ content: chunk.message.content }),
+                        message: new AIMessageChunk({
+                            content: chunk.message.content,
+                            additional_kwargs: chunk?.message?.thinking ? {
+                                reasoning_content: chunk?.message?.thinking
+                            } : undefined
+                        }),
                     });
                     await runManager?.handleLLMNewToken(chunk.message.content ?? "");
                 } else {

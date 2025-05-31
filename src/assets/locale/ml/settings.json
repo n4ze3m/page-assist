@@ -62,6 +62,9 @@
       },
       "copyAsFormattedText": {
         "label": "ഫോർമാറ്റ് ചെയ്ത ടെക്സ്റ്റായി പകർത്തുക"
+      },
+      "tabMentionsEnabled": {
+        "label": "ടാബ് മെൻഷനുകൾ (@tab) പ്രവർത്തനക്ഷമമാക്കുക"
       }
     },
     "sidepanelRag": {

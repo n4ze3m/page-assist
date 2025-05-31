@@ -59,6 +59,9 @@
       },
       "copyAsFormattedText": {
         "label": "Копировать как форматированный текст"
+      },
+      "tabMentionsEnabled": {
+        "label": "Включить упоминания вкладок (@tab)"
       }
     },
     "sidepanelRag": {

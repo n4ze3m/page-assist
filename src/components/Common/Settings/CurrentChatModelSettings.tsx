@@ -83,7 +83,8 @@ export const CurrentChatModelSettings = ({
         tfsZ: cUserSettings.tfsZ ?? data.tfsZ,
         numKeep: cUserSettings.numKeep ?? data.numKeep,
         numThread: cUserSettings.numThread ?? data.numThread,
-        reasoningEffort: cUserSettings?.reasoningEffort
+        reasoningEffort: cUserSettings?.reasoningEffort,
+        thinking: cUserSettings?.thinking
       })
       return data
     },
@@ -164,6 +165,12 @@ export const CurrentChatModelSettings = ({
                 style={{ width: "100%" }}
                 placeholder={t("modelSettings.form.numPredict.placeholder")}
               />
+            </Form.Item>
+
+            <Form.Item
+              name="thinking"
+              label={t("modelSettings.form.thinking.label")}>
+              <Switch />
             </Form.Item>
 
             <Divider />

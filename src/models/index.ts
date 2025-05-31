@@ -160,7 +160,6 @@ export const pageAssistModel = async ({
 
 
   const _keepAlive = modelSettings?.keepAlive || keepAlive || ""
-
   const payload = {
     keepAlive: _keepAlive.length > 0 ? _keepAlive : undefined,
     temperature: modelSettings?.temperature || temperature,
@@ -176,13 +175,14 @@ export const pageAssistModel = async ({
     tfsZ: modelSettings?.tfsZ || tfsZ,
     numKeep: modelSettings?.numKeep || numKeep,
     numThread: modelSettings?.numThread || numThread,
-    useMlock: modelSettings?.useMLock || useMlock
+    useMlock: modelSettings?.useMLock || useMlock,
+    thinking: currentChatModelSettings?.thinking || modelSettings?.thinking
   }
 
   return new ChatOllama({
     baseUrl,
     model,
     seed,
-    ...payload
+    ...payload,
   })
 }

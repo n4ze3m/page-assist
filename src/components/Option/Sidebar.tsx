@@ -29,7 +29,7 @@ import {
   lastUsedChatModelEnabled
 } from "@/services/model-settings"
 import { useDebounce } from "@/hooks/useDebounce"
-import { useCallback, useState } from "react"
+import { useState } from "react"
 
 type Props = {
   onClose: () => void

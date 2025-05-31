@@ -59,6 +59,9 @@
       },
       "copyAsFormattedText": {
         "label": "Copy as Formatted Text"
+      },
+      "tabMentionsEnabled": {
+        "label": "Enable Tab Mentions (@tab)"
       }
     },
     "sidepanelRag": {

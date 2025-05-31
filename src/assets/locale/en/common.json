@@ -75,6 +75,9 @@
                 "label": "Max Tokens (num_predict)",
                 "placeholder": "e.g. 2048, 4096"
             },
+            "thinking": {
+                "label": "Thinking Mode (Ollama)"
+            },
             "seed": {
                 "label": "Seed",
                 "placeholder": "e.g. 1234",

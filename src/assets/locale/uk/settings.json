@@ -59,6 +59,9 @@
       },
       "copyAsFormattedText": {
         "label": "Копіювати як форматований текст"
+      },
+      "tabMentionsEnabled": {
+        "label": "Увімкнути згадування вкладок (@tab)"
       }
     },
     "sidepanelRag": {
