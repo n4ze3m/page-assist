@@ -38,7 +38,7 @@ export default function OptionLayout({
   return (
     <div className="flex h-full w-full">
       <main className="relative h-dvh w-full">
-        <div className="relative z-10 w-full">
+        <div className="relative z-20 w-full">
           <Header
             setSidebarOpen={setSidebarOpen}
             setOpenModelSettings={setOpenModelSettings}
