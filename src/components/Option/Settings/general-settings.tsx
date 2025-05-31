@@ -61,6 +61,11 @@ export const GeneralSettings = () => {
     false
   )
 
+  const [tabMentionsEnabled, setTabMentionsEnabled] = useStorage(
+    "tabMentionsEnabled",
+    false
+  )
+
   const { mode, toggleDarkMode } = useDarkMode()
   const { t } = useTranslation("settings")
   const { changeLocale, locale, supportLanguage } = useI18n()
@@ -269,6 +274,19 @@ export const GeneralSettings = () => {
           onChange={(checked) => setCopyAsFormattedText(checked)}
         />
       </div>
+
+      {/* <div className="flex flex-row justify-between">
+        <div className="inline-flex items-center gap-2">
+          <span className="text-gray-700   dark:text-neutral-50">
+            {t("generalSettings.settings.tabMentionsEnabled.label")}
+          </span>
+        </div>
+
+        <Switch
+          checked={tabMentionsEnabled}
+          onChange={(checked) => setTabMentionsEnabled(checked)}
+        />
+      </div> */}
 
       <div className="flex flex-row justify-between">
         <span className="text-gray-700 dark:text-neutral-50 ">

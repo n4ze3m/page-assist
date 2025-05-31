@@ -73,6 +73,9 @@ type CurrentChatModelSettings = {
 
   reasoningEffort?: string
   setReasoningEffort?: (reasoningEffort: string) => void
+
+  thinking?: boolean
+  setThinking?: (thinking: boolean) => void
 }
 
 export const useStoreChatModelSettings = create<CurrentChatModelSettings>(
@@ -115,6 +118,7 @@ export const useStoreChatModelSettings = create<CurrentChatModelSettings>(
     setSystemPrompt: (systemPrompt: string) => set({ systemPrompt }),
     setUseMlock: (useMlock: boolean) => set({ useMlock }),
     setReasoningEffort: (reasoningEffort: string) => set({ reasoningEffort }),
+    setThinking: (thinking: boolean) => set({ thinking }),
     reset: () =>
       set({
         f16KV: undefined,
@@ -150,6 +154,7 @@ export const useStoreChatModelSettings = create<CurrentChatModelSettings>(
         minP: undefined,
         useMlock: undefined,
         reasoningEffort: undefined,
+        thinking: undefined,
       })
   })
 )

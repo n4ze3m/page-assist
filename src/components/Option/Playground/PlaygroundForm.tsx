@@ -17,6 +17,9 @@ import { PiGlobe } from "react-icons/pi"
 import { handleChatInputKeyDown } from "@/utils/key-down"
 import { getIsSimpleInternetSearch } from "@/services/search"
 import { useStorage } from "@plasmohq/storage/hook"
+import { useTabMentions, TabInfo } from "~/hooks/useTabMentions"
+import { MentionsDropdown } from "./MentionsDropdown"
+import { DocumentChip } from "./DocumentChip"
 
 type Props = {
   dropedFile: File | undefined
@@ -25,6 +28,21 @@ type Props = {
 export const PlaygroundForm = ({ dropedFile }: Props) => {
   const { t } = useTranslation(["playground", "common"])
   const inputRef = React.useRef<HTMLInputElement>(null)
+
+  const formatMessageWithDocuments = (
+    message: string,
+    documents: TabInfo[]
+  ) => {
+    if (documents.length === 0) return message
+
+    const documentContext = documents
+      .map((doc) => `Referenced Document: "${doc.title}" (${doc.url})`)
+      .join("\n")
+
+    return documents.length > 0
+      ? `${documentContext}\n\nUser Message: ${message}`
+      : message
+  }
   const [typing, setTyping] = React.useState<boolean>(false)
   const [checkWideMode] = useStorage("checkWideMode", false)
   const {
@@ -51,6 +69,20 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
   const [autoSubmitVoiceMessage] = useStorage("autoSubmitVoiceMessage", false)
 
   const [autoStopTimeout] = useStorage("autoStopTimeout", 2000)
+
+  const {
+    tabMentionsEnabled,
+    showMentions,
+    mentionPosition,
+    filteredTabs,
+    selectedDocuments,
+    handleTextChange,
+    insertMention,
+    closeMentions,
+    removeDocument,
+    clearSelectedDocuments
+  } = useTabMentions(textareaRef)
+
   const isMobile = () => {
     return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
       navigator.userAgent
@@ -191,6 +223,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
         }
       }
       form.reset()
+      clearSelectedDocuments()
       textAreaFocus()
       await sendMessage({
         image: value.image,
@@ -203,6 +236,17 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
     if (import.meta.env.BROWSER !== "firefox") {
       if (e.key === "Process" || e.key === "229") return
     }
+
+    if (
+      showMentions &&
+      (e.key === "ArrowDown" ||
+        e.key === "ArrowUp" ||
+        e.key === "Enter" ||
+        e.key === "Escape")
+    ) {
+      return
+    }
+
     if (
       handleChatInputKeyDown({
         e,
@@ -251,6 +295,21 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                 className="rounded-md max-h-32"
               />
             </div>
+            {selectedDocuments.length > 0 && (
+              <div className="p-3">
+                <div className="max-h-24 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-transparent">
+                  <div className="flex flex-wrap gap-1.5">
+                    {selectedDocuments.map((document) => (
+                      <DocumentChip
+                        key={document.id}
+                        document={document}
+                        onRemove={removeDocument}
+                      />
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
             <div>
               <div className={`flex  bg-transparent `}>
                 <form
@@ -278,6 +337,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                       return
                     }
                     form.reset()
+                    clearSelectedDocuments()
                     textAreaFocus()
                     await sendMessage({
                       image: value.image,
@@ -295,29 +355,62 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                     multiple={false}
                     onChange={onInputChange}
                   />
-                  <div className="w-full  flex flex-col dark:border-gray-600  px-2 pt-2">
-                    <textarea
-                      id="textarea-message"
-                      onCompositionStart={() => {
-                        if (import.meta.env.BROWSER !== "firefox") {
-                          setTyping(true)
+
+                  <div className="w-full  flex flex-col dark:border-gray-600  px-2 ">
+                    <div className="relative">
+                      <textarea
+                        id="textarea-message"
+                        onCompositionStart={() => {
+                          if (import.meta.env.BROWSER !== "firefox") {
+                            setTyping(true)
+                          }
+                        }}
+                        onCompositionEnd={() => {
+                          if (import.meta.env.BROWSER !== "firefox") {
+                            setTyping(false)
+                          }
+                        }}
+                        onKeyDown={(e) => handleKeyDown(e)}
+                        ref={textareaRef}
+                        className="px-2 py-2 w-full resize-none bg-transparent focus-within:outline-none focus:ring-0 focus-visible:ring-0 ring-0 dark:ring-0 border-0 dark:text-gray-100"
+                        onPaste={handlePaste}
+                        rows={1}
+                        style={{ minHeight: "35px" }}
+                        tabIndex={0}
+                        placeholder={t("form.textarea.placeholder")}
+                        {...form.getInputProps("message")}
+                        onChange={(e) => {
+                          form.getInputProps("message").onChange(e)
+                          if (tabMentionsEnabled && textareaRef.current) {
+                            handleTextChange(
+                              e.target.value,
+                              textareaRef.current.selectionStart || 0
+                            )
+                          }
+                        }}
+                        onSelect={(e) => {
+                          if (tabMentionsEnabled && textareaRef.current) {
+                            handleTextChange(
+                              textareaRef.current.value,
+                              textareaRef.current.selectionStart || 0
+                            )
+                          }
+                        }}
+                      />
+
+                      <MentionsDropdown
+                        show={showMentions}
+                        tabs={filteredTabs}
+                        mentionPosition={mentionPosition}
+                        onSelectTab={(tab) =>
+                          insertMention(tab, form.values.message, (value) =>
+                            form.setFieldValue("message", value)
+                          )
                         }
-                      }}
-                      onCompositionEnd={() => {
-                        if (import.meta.env.BROWSER !== "firefox") {
-                          setTyping(false)
-                        }
-                      }}
-                      onKeyDown={(e) => handleKeyDown(e)}
-                      ref={textareaRef}
-                      className="px-2 py-2 w-full resize-none bg-transparent focus-within:outline-none focus:ring-0 focus-visible:ring-0 ring-0 dark:ring-0 border-0 dark:text-gray-100"
-                      onPaste={handlePaste}
-                      rows={1}
-                      style={{ minHeight: "35px" }}
-                      tabIndex={0}
-                      placeholder={t("form.textarea.placeholder")}
-                      {...form.getInputProps("message")}
-                    />
+                        onClose={closeMentions}
+                        textareaRef={textareaRef}
+                      />
+                    </div>
                     <div className="mt-2 flex justify-between items-center">
                       <div className="flex">
                         {!selectedKnowledge && (

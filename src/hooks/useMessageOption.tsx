@@ -45,6 +45,7 @@ import {
 import { getModelNicknameByID } from "@/db/nickname"
 import { systemPromptFormatter } from "@/utils/system-message"
 import { isChatWithWebsiteEnabled } from "@/services/kb"
+import { ChatDocuments } from "@/models/ChatTypes"
 
 export const useMessageOption = () => {
   const {
@@ -623,7 +624,7 @@ export const useMessageOption = () => {
       let reasoningEndTime: Date | null = null
       let apiReasoning: boolean = false
 
-      for await (const chunk of chunks) {
+      for await (const chunk of chunks) { 
         if (chunk?.additional_kwargs?.reasoning_content) {
           const reasoningContent = mergeReasoningContent(
             fullText,
@@ -1259,7 +1260,8 @@ export const useMessageOption = () => {
     messages: chatHistory,
     memory,
     controller,
-    isContinue
+    isContinue,
+    docs
   }: {
     message: string
     image: string
@@ -1268,6 +1270,7 @@ export const useMessageOption = () => {
     messages?: Message[]
     memory?: ChatHistory
     controller?: AbortController
+    docs?: ChatDocuments
   }) => {
     setStreaming(true)
     let signal: AbortSignal
@@ -1283,6 +1286,10 @@ export const useMessageOption = () => {
     if (isContinue) {
       await continueChatMode(chatHistory || messages, memory || history, signal)
       return
+    }
+
+    if(docs && docs.length > 0) {
+      
     }
 
     if (selectedKnowledge) {

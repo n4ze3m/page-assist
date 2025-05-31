@@ -12,9 +12,7 @@ import { ollamaFormatAllCustomModels } from "@/db/models"
 import { getAllModelNicknames } from "@/db/nickname"
 
 const storage = new Storage()
-const storage2 = new Storage({
-  area: "local"
-})
+  
 
 const DEFAULT_OLLAMA_URL = "http://127.0.0.1:11434"
 const DEFAULT_ASK_FOR_MODEL_SELECTION_EVERY_TIME = true
@@ -36,36 +34,30 @@ Generate a response that is informative and relevant to the user's query based o
 </search-results>
 `
 
-const DEFAULT_WEBSEARCH_FOLLOWUP_PROMPT = `You are an expert search query optimizer. Your task is to transform follow-up questions into standalone, search-optimized queries that will yield the most relevant results when used to search the internet.
+const DEFAULT_WEBSEARCH_FOLLOWUP_PROMPT = `You will rephrase follow-up questions into concise, standalone search queries optimized for internet search engines. Transform conversational questions into keyword-focused search terms by removing unnecessary words, question formats, and context dependencies while preserving the core information need.
 
-Guidelines for creating optimal search queries:
-- Remove unnecessary words like "what is", "how to", "can you tell me about"
-- Focus on specific keywords and key concepts
-- Include important qualifiers and specifications
-- Avoid pronouns that refer to previous conversation
-- Format for direct information retrieval
-- For recent information, include relevant time indicators
+ONLY RETURN QUERY WITHOUT ANY TEXT
 
 Examples:
-
 Follow-up question: What are the symptoms of a heart attack?
-heart attack symptoms common warning signs
+heart attack symptoms
 
 Follow-up question: Where is the upcoming Olympics being held?
-next Olympic Games host city location date
+upcoming Olympics 
 
-Follow-up question: Can you tell me about Taylor Swift's latest album?
-Taylor Swift newest album release date tracks
+Follow-up question: Taylor Swift's latest album?
+Taylor Swift latest album ${new Date().getFullYear()}
 
-Follow-up question: How does it compare to her previous work?
-Taylor Swift latest album comparison previous albums critical reception
+Follow-up question: How does photosynthesis work in plants?
+photosynthesis process plants
+
+Follow-up question: What's the current stock price of Apple?
+Apple stock price today
 
 Previous Conversation:
 {chat_history}
 
 Follow-up question: {question}
-
-Optimized search query (output ONLY the query itself on one line – no explanations, no code-blocks, no extra text):
 `
 
 

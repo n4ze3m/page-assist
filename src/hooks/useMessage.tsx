@@ -9,7 +9,6 @@ import {
 } from "~/services/ollama"
 import { useStoreMessageOption, type Message } from "~/store/option"
 import { useStoreMessage } from "~/store"
-import { SystemMessage } from "@langchain/core/messages"
 import { getContentFromCurrentTab,  } from "~/libs/get-html"
 import { memoryEmbedding } from "@/utils/memory-embeddings"
 import { ChatHistory } from "@/store/option"
