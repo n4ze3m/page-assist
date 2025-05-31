@@ -174,6 +174,15 @@ export const setTTSAutoPlayEnabled = async (isTTSAutoPlayEnabled: boolean) => {
   await storage.set("isTTSAutoPlayEnabled", isTTSAutoPlayEnabled)
 }
 
+export const getSpeechPlaybackSpeed = async () => {
+  const data = await storage.get<number | undefined>("speechPlaybackSpeed")
+  return data || 1
+}
+
+export const setSpeechPlaybackSpeed = async (speechPlaybackSpeed: number) => {
+  await storage.set("speechPlaybackSpeed", speechPlaybackSpeed)
+}
+
 export const getTTSSettings = async () => {
   const [
     ttsEnabled,
@@ -192,7 +201,8 @@ export const getTTSSettings = async () => {
     openAITTSModel,
     openAITTSVoice,
     // UTILS
-    ttsAutoPlay
+    ttsAutoPlay,
+    playbackSpeed,
   ] = await Promise.all([
     isTTSEnabled(),
     getTTSProvider(),
@@ -210,7 +220,8 @@ export const getTTSSettings = async () => {
     getOpenAITTSModel(),
     getOpenAITTSVoice(),
     // UTILS
-    isTTSAutoPlayEnabled()
+    isTTSAutoPlayEnabled(),
+    getSpeechPlaybackSpeed(),
   ])
 
   return {
@@ -229,7 +240,8 @@ export const getTTSSettings = async () => {
     openAITTSApiKey,
     openAITTSModel,
     openAITTSVoice,
-    ttsAutoPlay
+    ttsAutoPlay,
+    playbackSpeed,
   }
 }
 
@@ -247,7 +259,8 @@ export const setTTSSettings = async ({
   openAITTSApiKey,
   openAITTSModel,
   openAITTSVoice,
-  ttsAutoPlay
+  ttsAutoPlay,
+  playbackSpeed,
 }: {
   ttsEnabled: boolean
   ttsProvider: string
@@ -262,7 +275,8 @@ export const setTTSSettings = async ({
   openAITTSApiKey: string,
   openAITTSModel: string,
   openAITTSVoice: string,
-  ttsAutoPlay: boolean
+  ttsAutoPlay: boolean,
+  playbackSpeed: number,
 }) => {
   await Promise.all([
     setTTSEnabled(ttsEnabled),
@@ -278,6 +292,7 @@ export const setTTSSettings = async ({
     setOpenAITTSApiKey(openAITTSApiKey),
     setOpenAITTSModel(openAITTSModel),
     setOpenAITTSVoice(openAITTSVoice),
-    setTTSAutoPlayEnabled(ttsAutoPlay)
+    setTTSAutoPlayEnabled(ttsAutoPlay),
+    setSpeechPlaybackSpeed(playbackSpeed),
   ])
 }

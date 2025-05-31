@@ -7,7 +7,8 @@ import {
   getRemoveReasoningTagTTS,
   getTTSProvider,
   getVoice,
-  isSSMLEnabled
+  isSSMLEnabled,
+  getSpeechPlaybackSpeed
 } from "@/services/tts"
 import { markdownToSSML } from "@/utils/markdown-to-ssml"
 import { generateSpeech } from "@/services/elevenlabs"
@@ -31,6 +32,7 @@ export const useTTS = () => {
       const voice = await getVoice()
       const provider = await getTTSProvider()
       const isRemoveReasoning = await getRemoveReasoningTagTTS()
+      const playbackSpeed = await getSpeechPlaybackSpeed()
 
       if (isRemoveReasoning) {
         utterance = removeReasoning(utterance)
@@ -48,6 +50,7 @@ export const useTTS = () => {
         ) {
           chrome.tts.speak(utterance, {
             voiceName: voice,
+            rate: playbackSpeed,
             onEvent(event) {
               if (event.type === "start") {
                 setIsSpeaking(true)
@@ -58,6 +61,7 @@ export const useTTS = () => {
           })
         } else {
           const synthesisUtterance = new SpeechSynthesisUtterance(utterance)
+          synthesisUtterance.rate = playbackSpeed
           synthesisUtterance.onstart = () => {
             setIsSpeaking(true)
           }
@@ -106,6 +110,7 @@ export const useTTS = () => {
           const blob = new Blob([currentAudioData], { type: "audio/mpeg" })
           const url = URL.createObjectURL(blob)
           const audio = new Audio(url)
+          audio.playbackRate = playbackSpeed
           setAudioElement(audio)
 
           await new Promise((resolve) => {
@@ -144,6 +149,7 @@ export const useTTS = () => {
           const blob = new Blob([currentAudioData], { type: "audio/mpeg" })
           const url = URL.createObjectURL(blob)
           const audio = new Audio(url)
+          audio.playbackRate = playbackSpeed
           setAudioElement(audio)
 
           await new Promise((resolve) => {
