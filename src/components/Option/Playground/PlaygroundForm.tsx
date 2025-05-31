@@ -29,20 +29,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
   const { t } = useTranslation(["playground", "common"])
   const inputRef = React.useRef<HTMLInputElement>(null)
 
-  const formatMessageWithDocuments = (
-    message: string,
-    documents: TabInfo[]
-  ) => {
-    if (documents.length === 0) return message
-
-    const documentContext = documents
-      .map((doc) => `Referenced Document: "${doc.title}" (${doc.url})`)
-      .join("\n")
-
-    return documents.length > 0
-      ? `${documentContext}\n\nUser Message: ${message}`
-      : message
-  }
+  
   const [typing, setTyping] = React.useState<boolean>(false)
   const [checkWideMode] = useStorage("checkWideMode", false)
   const {
