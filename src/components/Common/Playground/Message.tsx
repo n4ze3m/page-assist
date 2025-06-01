@@ -24,6 +24,7 @@ import { humanizeMilliseconds } from "@/utils/humanize-milliseconds"
 import { useStorage } from "@plasmohq/storage/hook"
 import { PlaygroundUserMessageBubble } from "./PlaygroundUserMessage"
 import { copyToClipboard } from "@/utils/clipboard"
+import { ChatDocuments } from "@/models/ChatTypes"
 type Props = {
   message: string
   message_type?: string
@@ -52,6 +53,7 @@ type Props = {
   modelImage?: string
   modelName?: string
   onContinue?: () => void
+  documents?: ChatDocuments
 }
 
 export const PlaygroundMessage = (props: Props) => {

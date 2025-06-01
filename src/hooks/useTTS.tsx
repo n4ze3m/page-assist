@@ -7,7 +7,8 @@ import {
   getRemoveReasoningTagTTS,
   getTTSProvider,
   getVoice,
-  isSSMLEnabled
+  isSSMLEnabled,
+  getSpeechPlaybackSpeed
 } from "@/services/tts"
 import { markdownToSSML } from "@/utils/markdown-to-ssml"
 import { generateSpeech } from "@/services/elevenlabs"
@@ -31,6 +32,7 @@ export const useTTS = () => {
       const voice = await getVoice()
       const provider = await getTTSProvider()
       const isRemoveReasoning = await getRemoveReasoningTagTTS()
+      const playbackSpeed = await getSpeechPlaybackSpeed()
 
       if (isRemoveReasoning) {
         utterance = removeReasoning(utterance)
@@ -48,6 +50,7 @@ export const useTTS = () => {
         ) {
           chrome.tts.speak(utterance, {
             voiceName: voice,
+            rate: playbackSpeed,
             onEvent(event) {
               if (event.type === "start") {
                 setIsSpeaking(true)
@@ -58,6 +61,7 @@ export const useTTS = () => {
           })
         } else {
           const synthesisUtterance = new SpeechSynthesisUtterance(utterance)
+          synthesisUtterance.rate = playbackSpeed
           synthesisUtterance.onstart = () => {
             setIsSpeaking(true)
           }
@@ -84,34 +88,44 @@ export const useTTS = () => {
         const modelId = await getElevenLabsModel()
         const voiceId = await getElevenLabsVoiceId()
         const sentences = splitMessageContent(utterance)
-        let nextAudioData: ArrayBuffer | null = null
+        
         if (!apiKey || !modelId || !voiceId) {
           throw new Error("Missing ElevenLabs configuration")
         }
+
+        let nextAudioData: ArrayBuffer | null = null
+        let nextAudioPromise: Promise<ArrayBuffer> | null = null
+
         for (let i = 0; i < sentences.length; i++) {
           setIsSpeaking(true)
 
-          let currentAudioData =
-            nextAudioData ||
-            (await generateSpeech(apiKey, sentences[i], voiceId, modelId))
+          let currentAudioData: ArrayBuffer
+          if (nextAudioData) {
+            currentAudioData = nextAudioData
+            nextAudioData = null
+          } else {
+            currentAudioData = await generateSpeech(apiKey, sentences[i], voiceId, modelId)
+          }
 
           if (i < sentences.length - 1) {
-            generateSpeech(apiKey, sentences[i + 1], voiceId, modelId)
-              .then((nextAudioData) => {
-                nextAudioData = nextAudioData
-              })
-              .catch(console.error)
+            nextAudioPromise = generateSpeech(apiKey, sentences[i + 1], voiceId, modelId)
           }
 
           const blob = new Blob([currentAudioData], { type: "audio/mpeg" })
           const url = URL.createObjectURL(blob)
           const audio = new Audio(url)
+          audio.playbackRate = playbackSpeed
           setAudioElement(audio)
 
-          await new Promise((resolve) => {
-            audio.onended = resolve
-            audio.play()
-          })
+          await Promise.all([
+            new Promise((resolve) => {
+              audio.onended = resolve
+              audio.play()
+            }),
+            nextAudioPromise?.then((data) => {
+              nextAudioData = data
+            }).catch(console.error) || Promise.resolve()
+          ])
 
           URL.revokeObjectURL(url)
         }
@@ -120,36 +134,46 @@ export const useTTS = () => {
         setAudioElement(null)
       } else if (provider === "openai") {
         const sentences = splitMessageContent(utterance)
+        
         let nextAudioData: ArrayBuffer | null = null
+        let nextAudioPromise: Promise<ArrayBuffer> | null = null
 
         for (let i = 0; i < sentences.length; i++) {
           setIsSpeaking(true)
 
-          let currentAudioData =
-            nextAudioData ||
-            (await generateOpenAITTS({
-              text: sentences[i]
-            }))
-
-          if (i < sentences.length - 1) {
-            generateOpenAITTS({
+          let currentAudioData: ArrayBuffer
+          if (nextAudioData) {
+            currentAudioData = nextAudioData
+            nextAudioData = null
+          } else {
+            currentAudioData = await generateOpenAITTS({
               text: sentences[i]
             })
-              .then((nextAudioData) => {
-                nextAudioData = nextAudioData
-              })
-              .catch(console.error)
           }
 
+          // Start fetching next audio in parallel (if there's a next sentence)
+          if (i < sentences.length - 1) {
+            nextAudioPromise = generateOpenAITTS({
+              text: sentences[i + 1]
+            })
+          }
+
+          // Play current audio
           const blob = new Blob([currentAudioData], { type: "audio/mpeg" })
           const url = URL.createObjectURL(blob)
           const audio = new Audio(url)
+          audio.playbackRate = playbackSpeed
           setAudioElement(audio)
 
-          await new Promise((resolve) => {
-            audio.onended = resolve
-            audio.play()
-          })
+          await Promise.all([
+            new Promise((resolve) => {
+              audio.onended = resolve
+              audio.play()
+            }),
+            nextAudioPromise?.then((data) => {
+              nextAudioData = data
+            }).catch(console.error) || Promise.resolve()
+          ])
 
           URL.revokeObjectURL(url)
         }

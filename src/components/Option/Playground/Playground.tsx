@@ -144,24 +144,28 @@ export const Playground = () => {
       ref={drop}
       className={`relative flex h-full flex-col items-center ${
         dropState === "dragging" ? "bg-gray-100 dark:bg-gray-800" : ""
-      } bg-white dark:bg-[#171717]`}>
-      {/* Background Image Overlay */}
+      } bg-white dark:bg-[#171717]`}
+      style={chatBackgroundImage ? {
+        backgroundImage: `url(${chatBackgroundImage})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat'
+      } : {}}>
+      
+      {/* Background overlay for opacity effect */}
       {chatBackgroundImage && (
         <div
-          className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat"
-          style={{
-            backgroundImage: `url(${chatBackgroundImage})`,
-            opacity: 0.1
-          }}
+          className="absolute inset-0 bg-white dark:bg-[#171717]"
+          style={{ opacity: 0.9, pointerEvents: 'none' }}
         />
       )}
 
       <div
         ref={containerRef}
-        className="custom-scrollbar flex h-full w-full flex-col items-center overflow-x-hidden overflow-y-auto px-5">
+        className="custom-scrollbar flex h-full w-full flex-col items-center overflow-x-hidden overflow-y-auto px-5 relative z-10">
         <PlaygroundChat />
       </div>
-      <div className="absolute bottom-0 w-full">
+      <div className="absolute bottom-0 w-full z-10">
         {!isAtBottom && (
           <div className="fixed bottom-28 z-20 left-0 right-0 flex justify-center">
             <button

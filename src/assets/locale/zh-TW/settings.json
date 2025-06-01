@@ -59,6 +59,9 @@
       },
       "copyAsFormattedText": {
         "label": "複製為格式化文字"
+      },
+      "tabMentionsEnabled": {
+        "label": "启用标签提及 (@tab)"
       }
     },
     "sidepanelRag": {

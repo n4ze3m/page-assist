@@ -4,7 +4,7 @@ import { getTTSSettings, setTTSSettings } from "@/services/tts"
 import { useWebUI } from "@/store/webui"
 import { useForm } from "@mantine/form"
 import { useQuery } from "@tanstack/react-query"
-import { Input, message, Select, Skeleton, Switch } from "antd"
+import { Input, InputNumber, message, Select, Skeleton, Switch } from "antd"
 import { useTranslation } from "react-i18next"
 
 export const TTSModeSettings = ({ hideBorder }: { hideBorder?: boolean }) => {
@@ -27,6 +27,7 @@ export const TTSModeSettings = ({ hideBorder }: { hideBorder?: boolean }) => {
       openAITTSModel: "",
       openAITTSVoice: "",
       ttsAutoPlay: false,
+      playbackSpeed: 1
     }
   })
 
@@ -96,7 +97,7 @@ export const TTSModeSettings = ({ hideBorder }: { hideBorder?: boolean }) => {
             />
           </div>
         </div>
-         <div className="flex sm:flex-row flex-col space-y-4 sm:space-y-0 sm:justify-between">
+        <div className="flex sm:flex-row flex-col space-y-4 sm:space-y-0 sm:justify-between">
           <span className="text-gray-700 dark:text-neutral-50 ">
             {t("generalSettings.tts.ttsAutoPlay.label")}
           </span>
@@ -294,6 +295,18 @@ export const TTSModeSettings = ({ hideBorder }: { hideBorder?: boolean }) => {
               })}
             />
           </div>
+        </div>
+
+        <div className="flex sm:flex-row flex-col space-y-4 sm:space-y-0 sm:justify-between">
+          <span className="text-gray-700 dark:text-neutral-50">
+            Playback Speed
+          </span>
+          <InputNumber
+            placeholder="1"
+            className=" mt-4 sm:mt-0 !w-[300px] sm:w-[200px]"
+            required
+            {...form.getInputProps("playbackSpeed")}
+          />
         </div>
 
         <div className="flex justify-end">

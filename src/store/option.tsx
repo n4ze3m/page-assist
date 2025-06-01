@@ -1,4 +1,5 @@
 import { Knowledge } from "@/db/knowledge"
+import { ChatDocuments } from "@/models/ChatTypes"
 import { create } from "zustand"
 
 type WebSearch = {
@@ -22,6 +23,7 @@ export type Message = {
   messageType?: string
   modelName?: string
   modelImage?: string
+  documents?: ChatDocuments
 }
 
 export type ChatHistory = {
@@ -74,6 +76,9 @@ type State = {
 
   useOCR: boolean
   setUseOCR: (useOCR: boolean) => void
+
+  documentContext: ChatDocuments | null,
+  setDocumentContext: (documentContext: ChatDocuments) => void,
 }
 
 export const useStoreMessageOption = create<State>((set) => ({
@@ -118,4 +123,7 @@ export const useStoreMessageOption = create<State>((set) => ({
 
   useOCR: false,
   setUseOCR: (useOCR) => set({ useOCR }),
+
+  documentContext: null,
+  setDocumentContext: (documentContext) => set({ documentContext }),
 }))

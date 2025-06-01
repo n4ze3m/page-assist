@@ -59,6 +59,9 @@
       },
       "copyAsFormattedText": {
         "label": "Copier en tant que texte formaté"
+      },
+      "tabMentionsEnabled": {
+        "label": "Activer les mentions d'onglets (@tab)"
       }
     },
     "sidepanelRag": {

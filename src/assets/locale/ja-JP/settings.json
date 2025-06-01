@@ -62,6 +62,9 @@
       },
       "copyAsFormattedText": {
         "label": "書式付きテキストとしてコピー"
+      },
+      "tabMentionsEnabled": {
+        "label": "Abilita menzioni scheda (@tab)"
       }
     },
     "sidepanelRag": {

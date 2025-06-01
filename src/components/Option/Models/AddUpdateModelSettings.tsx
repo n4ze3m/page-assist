@@ -1,4 +1,3 @@
-import { SaveButton } from "@/components/Common/SaveButton"
 import { getModelSettings, setModelSettings } from "@/services/model-settings"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import {
@@ -33,10 +32,13 @@ export const AddUpdateModelSettings: React.FC<Props> = ({
     queryKey: ["fetchModelSettings", model_id],
     queryFn: async () => {
       const data = await getModelSettings(model_id)
-      form.setFieldsValue(data)
+      form.setFieldsValue({
+        ...data,
+        thinking: data?.thinking || false
+      })
       return data
     },
-    staleTime: 0,
+    staleTime: 0
   })
 
   const { mutate, isPending } = useMutation({
@@ -109,6 +111,13 @@ export const AddUpdateModelSettings: React.FC<Props> = ({
               placeholder={t("modelSettings.form.numPredict.placeholder")}
             />
           </Form.Item>
+
+          <Form.Item
+            name="thinking"
+            label={t("modelSettings.form.thinking.label")}>
+            <Switch />
+          </Form.Item>
+
           <Collapse
             ghost
             className="border-none bg-transparent"
