@@ -32,7 +32,10 @@ export const AddUpdateModelSettings: React.FC<Props> = ({
     queryKey: ["fetchModelSettings", model_id],
     queryFn: async () => {
       const data = await getModelSettings(model_id)
-      form.setFieldsValue(data)
+      form.setFieldsValue({
+        ...data,
+        thinking: data?.thinking || false
+      })
       return data
     },
     staleTime: 0
