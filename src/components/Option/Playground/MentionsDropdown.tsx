@@ -10,7 +10,7 @@ interface MentionsDropdownProps {
   onClose: () => void
   textareaRef: React.RefObject<HTMLTextAreaElement>
   refetchTabs: () => Promise<void>
-  onMentionsOpen: () => Promise<void> // Add this prop
+  onMentionsOpen: () => Promise<void>
 }
 
 export const MentionsDropdown: React.FC<MentionsDropdownProps> = ({
@@ -26,12 +26,24 @@ export const MentionsDropdown: React.FC<MentionsDropdownProps> = ({
   const [selectedIndex, setSelectedIndex] = React.useState(0)
   const [isRefreshing, setIsRefreshing] = React.useState(false)
   const dropdownRef = React.useRef<HTMLDivElement>(null)
+  const [position, setPosition] = React.useState({ top: 0, left: 0 })
 
   React.useEffect(() => {
     setSelectedIndex(0)
   }, [tabs])
 
-  // Fetch tabs when dropdown opens
+  React.useEffect(() => {
+    if (show && textareaRef.current && dropdownRef.current) {
+      const textareaRect = textareaRef.current.getBoundingClientRect()
+      const dropdownHeight = dropdownRef.current.offsetHeight || 320 
+      
+      setPosition({
+        top: -dropdownHeight - 8, 
+        left: 0
+      })
+    }
+  }, [show, tabs])
+
   React.useEffect(() => {
     if (show) {
       onMentionsOpen()
@@ -83,36 +95,6 @@ export const MentionsDropdown: React.FC<MentionsDropdownProps> = ({
     }
   }
 
-  const [position, setPosition] = React.useState({ top: 0, left: 0 })
-
-  React.useEffect(() => {
-    if (show && mentionPosition && textareaRef.current) {
-      const textarea = textareaRef.current
-      const rect = textarea.getBoundingClientRect()
-
-      const canvas = document.createElement("canvas")
-      const context = canvas.getContext("2d")
-      if (context) {
-        const style = window.getComputedStyle(textarea)
-        context.font = `${style.fontSize} ${style.fontFamily}`
-
-        const textBeforeMention = textarea.value.substring(
-          0,
-          mentionPosition.start
-        )
-        const lines = textBeforeMention.split("\n")
-        const currentLine = lines[lines.length - 1]
-
-        const textWidth = context.measureText(currentLine).width
-
-        setPosition({
-          left: Math.min(textWidth + 8, rect.width - 200),
-          top: -(Math.max(tabs.length, 1) * 48 + 5 )
-        })
-      }
-    }
-  }, [show, mentionPosition, textareaRef])
-
   if (!show || tabs.length === 0) return null
 
   return (
@@ -120,8 +102,10 @@ export const MentionsDropdown: React.FC<MentionsDropdownProps> = ({
       ref={dropdownRef}
       className="absolute z-50 bg-neutral-50 dark:bg-[#2D2D2D] border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg max-h-80 overflow-y-auto w-80"
       style={{
-        top: position.top
-      }}>
+        top: position.top,
+        left: position.left,
+      }}
+    >
       <div className="p-2 border-b border-gray-200 dark:border-gray-600 flex items-center justify-between">
         <span className="text-sm font-medium text-gray-700 dark:text-gray-100">
           Select Tab
