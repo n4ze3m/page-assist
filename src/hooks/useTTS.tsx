@@ -93,14 +93,12 @@ export const useTTS = () => {
           throw new Error("Missing ElevenLabs configuration")
         }
 
-        // Pre-fetch first audio
         let nextAudioData: ArrayBuffer | null = null
         let nextAudioPromise: Promise<ArrayBuffer> | null = null
 
         for (let i = 0; i < sentences.length; i++) {
           setIsSpeaking(true)
 
-          // Get current audio data (either from cache or generate)
           let currentAudioData: ArrayBuffer
           if (nextAudioData) {
             currentAudioData = nextAudioData
@@ -109,19 +107,16 @@ export const useTTS = () => {
             currentAudioData = await generateSpeech(apiKey, sentences[i], voiceId, modelId)
           }
 
-          // Start fetching next audio in parallel (if there's a next sentence)
           if (i < sentences.length - 1) {
             nextAudioPromise = generateSpeech(apiKey, sentences[i + 1], voiceId, modelId)
           }
 
-          // Play current audio
           const blob = new Blob([currentAudioData], { type: "audio/mpeg" })
           const url = URL.createObjectURL(blob)
           const audio = new Audio(url)
           audio.playbackRate = playbackSpeed
           setAudioElement(audio)
 
-          // Wait for current audio to finish and next audio to be ready
           await Promise.all([
             new Promise((resolve) => {
               audio.onended = resolve
@@ -140,14 +135,12 @@ export const useTTS = () => {
       } else if (provider === "openai") {
         const sentences = splitMessageContent(utterance)
         
-        // Pre-fetch first audio
         let nextAudioData: ArrayBuffer | null = null
         let nextAudioPromise: Promise<ArrayBuffer> | null = null
 
         for (let i = 0; i < sentences.length; i++) {
           setIsSpeaking(true)
 
-          // Get current audio data (either from cache or generate)
           let currentAudioData: ArrayBuffer
           if (nextAudioData) {
             currentAudioData = nextAudioData
@@ -172,7 +165,6 @@ export const useTTS = () => {
           audio.playbackRate = playbackSpeed
           setAudioElement(audio)
 
-          // Wait for current audio to finish and next audio to be ready
           await Promise.all([
             new Promise((resolve) => {
               audio.onended = resolve
