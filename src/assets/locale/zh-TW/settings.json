@@ -61,7 +61,7 @@
         "label": "複製為格式化文字"
       },
       "tabMentionsEnabled": {
-        "label": "启用标签提及 (@tab)"
+        "label": "啟用分頁提及 (@tab)"
       }
     },
     "sidepanelRag": {
@@ -112,6 +112,10 @@
       },
       "searchOnByDefault": {
         "label": "預設開啟網路搜尋"
+      },
+      "firecrawlAPIKey": {
+        "label": "Firecrawl API 金鑰",
+        "placeholder": "輸入您的 Firecrawl API 金鑰"
       }
     },
     "system": {
@@ -140,6 +144,12 @@
       },
       "fontSize": {
         "label": "字型大小"
+      },
+      "webuiBtnSidePanel": {
+        "label": "在側邊面板顯示網頁介面按鈕"
+      },
+      "chatBackgroundImage": {
+        "label": "聊天背景圖片"
       }
     },
     "tts": {
