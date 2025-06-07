@@ -8,7 +8,16 @@ import { Checkbox, Dropdown, Switch, Tooltip } from "antd"
 import { Image } from "antd"
 import { useWebUI } from "~/store/webui"
 import { defaultEmbeddingModelForRag } from "~/services/ollama"
-import { EraserIcon, ImageIcon, MicIcon, StopCircleIcon, X } from "lucide-react"
+import {
+  EraserIcon,
+  ImageIcon,
+  MicIcon,
+  StopCircleIcon,
+  X,
+  FileIcon,
+  FileText,
+  PaperclipIcon
+} from "lucide-react"
 import { getVariable } from "@/utils/select-variable"
 import { useTranslation } from "react-i18next"
 import { KnowledgeSelect } from "../Knowledge/KnowledgeSelect"
@@ -28,8 +37,8 @@ type Props = {
 export const PlaygroundForm = ({ dropedFile }: Props) => {
   const { t } = useTranslation(["playground", "common"])
   const inputRef = React.useRef<HTMLInputElement>(null)
+  const fileInputRef = React.useRef<HTMLInputElement>(null)
 
-  
   const [typing, setTyping] = React.useState<boolean>(false)
   const [checkWideMode] = useStorage("checkWideMode", false)
   const {
@@ -50,7 +59,13 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
     setUseOCR,
     defaultInternetSearchOn,
     setHistory,
-    history
+    history,
+    uploadedFiles,
+    fileRetrievalEnabled,
+    setFileRetrievalEnabled,
+    handleFileUpload,
+    removeUploadedFile,
+    clearUploadedFiles
   } = useMessageOption()
 
   const [autoSubmitVoiceMessage] = useStorage("autoSubmitVoiceMessage", false)
@@ -122,6 +137,20 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
       if (e.target.files) {
         const base64 = await toBase64(e.target.files[0])
         form.setFieldValue("image", base64)
+      }
+    }
+  }
+
+  const onFileInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0]
+      const isImage = file.type.startsWith("image/")
+
+      if (isImage) {
+        const base64 = await toBase64(file)
+        form.setFieldValue("image", base64)
+      } else {
+        await handleFileUpload(file)
       }
     }
   }
@@ -213,6 +242,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
       }
       form.reset()
       clearSelectedDocuments()
+      clearUploadedFiles()
       textAreaFocus()
       await sendMessage({
         image: value.image,
@@ -306,6 +336,61 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                 </div>
               </div>
             )}
+            {uploadedFiles.length > 0 && (
+              <div className="p-3 border-b border-gray-200 dark:border-gray-600">
+                <div className="flex items-center justify-end mb-2">
+                  <div className="flex items-center gap-2">
+                    <Tooltip title="Enable file retrieval for document-based chat">
+                      <div className="inline-flex items-center gap-2">
+                        <FileText className="h-4 w-4 dark:text-gray-300" />
+                        <Switch
+                          size="small"
+                          checked={fileRetrievalEnabled}
+                          onChange={setFileRetrievalEnabled}
+                        />
+                      </div>
+                    </Tooltip>
+                  </div>
+                </div>
+                <div className="max-h-24 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-transparent">
+                  <div className="flex flex-wrap gap-1.5">
+                    {uploadedFiles.map((file) => (
+                      <button
+                        key={file.id}
+                        className="relative group p-1.5 w-60 flex items-center gap-1 bg-white dark:bg-[#1a1a1a] border border-gray-50 dark:border-white/5 rounded-2xl text-left"
+                        type="button">
+                        <div className="p-3 bg-black/20 dark:bg-white/10 text-white rounded-xl">
+                          <FileIcon className="size-5" />
+                        </div>
+                        <div className="flex flex-col justify-center -space-y-0.5 px-2.5 w-full">
+                          <div className="dark:text-gray-100 text-sm font-medium line-clamp-1 mb-1">
+                            {file.filename}
+                          </div>
+                          <div className="flex justify-between text-gray-500 text-xs line-clamp-1">
+                            File{" "}
+                            <span className="capitalize">
+                              {new Intl.NumberFormat(undefined, {
+                                style: "unit",
+                                unit: "megabyte",
+                                maximumFractionDigits: 2
+                              }).format(file.size / (1024 * 1024))}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="absolute -top-1 -right-1">
+                          <button
+                            onClick={() => removeUploadedFile(file.id)}
+                            className="bg-white dark:bg-gray-700 text-black dark:text-gray-100 border border-gray-50 dark:border-gray-600 rounded-full group-hover:visible invisible transition"
+                            type="button">
+                            <X className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
             <div>
               <div className={`flex  bg-transparent `}>
                 <form
@@ -334,6 +419,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                     }
                     form.reset()
                     clearSelectedDocuments()
+                    clearUploadedFiles()
                     textAreaFocus()
                     await sendMessage({
                       image: value.image,
@@ -356,6 +442,16 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                     accept="image/*"
                     multiple={false}
                     onChange={onInputChange}
+                  />
+                  <input
+                    id="document-upload"
+                    name="document-upload"
+                    type="file"
+                    className="sr-only"
+                    ref={fileInputRef}
+                    accept=".pdf,.doc,.docx,.txt,.csv"
+                    multiple={false}
+                    onChange={onFileInputChange}
                   />
 
                   <div className="w-full  flex flex-col dark:border-gray-600  px-2 ">
@@ -414,8 +510,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                         refetchTabs={async () => {
                           await reloadTabs()
                         }}
-                          onMentionsOpen={handleMentionsOpen}
-
+                        onMentionsOpen={handleMentionsOpen}
                       />
                     </div>
                     <div className="mt-2 flex justify-between items-center">
@@ -465,6 +560,17 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                             </button>
                           </Tooltip>
                         )}
+
+                        <Tooltip title="Upload documents (PDF, DOC, TXT, CSV)">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              fileInputRef.current?.click()
+                            }}
+                            className="flex items-center justify-center dark:text-gray-300">
+                            <PaperclipIcon className="h-5 w-5" />
+                          </button>
+                        </Tooltip>
 
                         {browserSupportsSpeechRecognition && (
                           <Tooltip title={t("tooltip.speechToText")}>

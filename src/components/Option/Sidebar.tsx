@@ -7,7 +7,9 @@ import {
   updateHistory,
   pinHistory,
   getPromptById,
-  deleteHistoriesByDateRange
+  deleteHistoriesByDateRange,
+  UploadedFile,
+  getSessionFiles
 } from "@/db"
 import { Empty, Skeleton, Dropdown, Menu, Tooltip, Input, message } from "antd"
 import {
@@ -39,6 +41,7 @@ type Props = {
   setSelectedModel: (model: string) => void
   setSelectedSystemPrompt: (prompt: string) => void
   setSystemPrompt: (prompt: string) => void
+  setContext?: (context: UploadedFile[]) => void
   clearChat: () => void
   temporaryChat: boolean
   historyId: string
@@ -57,7 +60,8 @@ export const Sidebar = ({
   historyId,
   setSystemPrompt,
   temporaryChat,
-  isOpen
+  isOpen,
+  setContext
 }: Props) => {
   const { t } = useTranslation(["option", "common"])
   const client = useQueryClient()
@@ -295,6 +299,11 @@ export const Sidebar = ({
                             }
                           }
                           setSystemPrompt(lastUsedPrompt.prompt_content)
+                        }
+
+                        if (setContext) {
+                          const session = await getSessionFiles(chat.id)
+                          setContext(session)
                         }
                         navigate("/")
                         onClose()

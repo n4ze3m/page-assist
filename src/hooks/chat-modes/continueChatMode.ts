@@ -36,8 +36,8 @@ export const continueChatMode = async (
     selectedSystemPrompt: string
     currentChatModelSettings: any
     setMessages: (messages: Message[] | ((prev: Message[]) => Message[])) => void
-    saveMessageOnSuccess: (data: any) => Promise<boolean>
-    saveMessageOnError: (data: any) => Promise<boolean>
+    saveMessageOnSuccess: (data: any) => Promise<string | null>
+    saveMessageOnError: (data: any) => Promise<string | null>
     setHistory: (history: ChatHistory) => void
     setIsProcessing: (value: boolean) => void
     setStreaming: (value: boolean) => void

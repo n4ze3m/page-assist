@@ -26,6 +26,9 @@ import {
   createStopStreamingRequest
 } from "./handlers/messageHandlers"
 import { tabChatMode } from "./chat-modes/tabChatMode"
+import { documentChatMode } from "./chat-modes/documentChatMode"
+import { generateID, type UploadedFile } from "@/db"
+import { convertFileToSource } from "~/utils/to-source"
 
 export const useMessageOption = () => {
   const {
@@ -63,7 +66,13 @@ export const useMessageOption = () => {
     useOCR,
     setUseOCR,
     documentContext,
-    setDocumentContext
+    setDocumentContext,
+    uploadedFiles,
+    setUploadedFiles,
+    contextFiles,
+    setContextFiles,
+    actionInfo,
+    setActionInfo
   } = useStoreMessageOption()
   const currentChatModelSettings = useStoreChatModelSettings()
   const [selectedModel, setSelectedModel] = useStorage("selectedModel")
@@ -79,7 +88,70 @@ export const useMessageOption = () => {
   const navigate = useNavigate()
   const textareaRef = React.useRef<HTMLTextAreaElement>(null)
 
+  const [fileRetrievalEnabled, setFileRetrievalEnabled] =
+    React.useState<boolean>(false)
+
   const handleFocusTextArea = () => focusTextArea(textareaRef)
+
+  const handleFileUpload = async (file: File) => {
+    try {
+      const isImage = file.type.startsWith("image/")
+
+      if (isImage) {
+        return file
+      }
+
+      const maxSize = 10 * 1024 * 1024
+      if (file.size > maxSize) {
+        notification.error({
+          message: "File Too Large",
+          description: "File size must be less than 10MB"
+        })
+        return
+      }
+
+      const fileId = generateID()
+
+      const source = await convertFileToSource({
+        file
+      })
+
+      const uploadedFile: UploadedFile = {
+        id: fileId,
+        filename: file.name,
+        type: file.type,
+        content: source.content,
+        size: file.size,
+        uploadedAt: Date.now(),
+        processed: false
+      }
+
+      setUploadedFiles([...uploadedFiles, uploadedFile])
+      setContextFiles([...contextFiles, uploadedFile])
+
+      return file
+    } catch (error) {
+      console.error("Error uploading file:", error)
+      notification.error({
+        message: "Upload Failed",
+        description: "Failed to upload file. Please try again."
+      })
+      throw error
+    }
+  }
+
+  const removeUploadedFile = async (fileId: string) => {
+    setUploadedFiles(uploadedFiles.filter((f) => f.id !== fileId))
+    setContextFiles(contextFiles.filter((f) => f.id !== fileId))
+  }
+
+  const clearUploadedFiles = () => {
+    setUploadedFiles([])
+  }
+
+  const handleSetFileRetrievalEnabled = async (enabled: boolean) => {
+    setFileRetrievalEnabled(enabled)
+  }
 
   const clearChat = () => {
     navigate("/")
@@ -90,6 +162,8 @@ export const useMessageOption = () => {
     setIsLoading(false)
     setIsProcessing(false)
     setStreaming(false)
+    setContextFiles([])
+    console.log("clearChat", contextFiles)
     currentChatModelSettings.reset()
     // textareaRef?.current?.focus()
     if (defaultInternetSearchOn) {
@@ -97,6 +171,10 @@ export const useMessageOption = () => {
     }
     handleFocusTextArea()
     setDocumentContext(null)
+    // Clear uploaded files
+    setUploadedFiles([])
+    setFileRetrievalEnabled(false)
+    setActionInfo(null)
   }
 
   const saveMessageOnSuccess = createSaveMessageOnSuccess(
@@ -157,7 +235,10 @@ export const useMessageOption = () => {
       setStreaming,
       setAbortController,
       historyId,
-      setHistoryId
+      setHistoryId,
+      fileRetrievalEnabled,
+      setActionInfo,
+      webSearch
     }
 
     try {
@@ -168,6 +249,21 @@ export const useMessageOption = () => {
           signal,
           chatModeParams
         )
+        return
+      }
+      console.log("contextFiles", contextFiles)
+      if (contextFiles.length > 0) {
+        await documentChatMode(
+          message,
+          image,
+          isRegenerate,
+          chatHistory || messages,
+          memory || history,
+          signal,
+          contextFiles,
+          chatModeParams
+        )
+        setFileRetrievalEnabled(false)
         return
       }
 
@@ -214,6 +310,12 @@ export const useMessageOption = () => {
             chatModeParams
           )
         } else {
+          // Include uploaded files info even in normal mode
+          const enhancedChatModeParams = {
+            ...chatModeParams,
+            uploadedFiles: uploadedFiles
+          }
+
           await normalChatMode(
             message,
             image,
@@ -221,7 +323,7 @@ export const useMessageOption = () => {
             chatHistory || messages,
             memory || history,
             signal,
-            chatModeParams
+            enhancedChatModeParams
           )
         }
       }
@@ -301,6 +403,15 @@ export const useMessageOption = () => {
     useOCR,
     setUseOCR,
     defaultInternetSearchOn,
-    history
+    history,
+    uploadedFiles,
+    fileRetrievalEnabled,
+    setFileRetrievalEnabled: handleSetFileRetrievalEnabled,
+    handleFileUpload,
+    removeUploadedFile,
+    clearUploadedFiles,
+    actionInfo,
+    setActionInfo,
+    setContextFiles
   }
 }

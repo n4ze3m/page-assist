@@ -68,11 +68,11 @@ const searchWeb = (provider: string, query: string) => {
 }
 
 const getProvidedURLs = (
-  searchOnProviders: SearchProviderResult | ProviderResults[], 
+  searchOnProviders: SearchProviderResult | ProviderResults[],
   searchOnAWebSite: ProviderResults[]
 ) => {
   let urlList = []
-  if('results' in searchOnProviders) {
+  if ('results' in searchOnProviders) {
     urlList = searchOnProviders.results
   } else if (searchOnProviders.length >= 1) {
     urlList = searchOnProviders
@@ -84,13 +84,13 @@ const getProvidedURLs = (
 
 export const isQueryHaveWebsite = async (query: string) => {
   const websiteVisit = getWebsiteFromQuery(query)
-  
+
   const isVisitSpecificWebsite = await getIsVisitSpecificWebsite()
 
   return isVisitSpecificWebsite && websiteVisit.hasUrl
 }
 
-export const getSystemPromptForWeb = async (query: string) => {
+export const getSystemPromptForWeb = async (query: string, returnSearchResults: boolean = false) => {
   try {
     const websiteVisit = getWebsiteFromQuery(query)
     let searchOnAWebSite: ProviderResults[] = []
@@ -108,17 +108,32 @@ export const getSystemPromptForWeb = async (query: string) => {
     }
 
     let search_results: string = ""
-    
+
     if ('answer' in searchOnProviders) {
       search_results += `<result id="0">${searchOnProviders.answer}</result>`
       search_results += (`\n`)
     } else {
-      search_results = searchOnProviders.map((result: ProviderResults, idx) => 
+      search_results = searchOnProviders.map((result: ProviderResults, idx) =>
         `<result source="${result.url}" id="${idx}">${result?.content}</result>`
       )
-      .join("\n")
+        .join("\n")
     }
+
+    const urlProvided = getProvidedURLs(searchOnProviders, searchOnAWebSite)
     
+    if (returnSearchResults) {
+      return {
+        prompt: search_results,
+        source: urlProvided.map((result) => {
+          return {
+            url: result.url,
+            name: getHostName(result.url),
+            type: "url"
+          }
+        })
+      }
+    }
+
     const current_date_time = new Date().toLocaleString()
 
     const system = await getWebSearchPrompt()
@@ -128,7 +143,6 @@ export const getSystemPromptForWeb = async (query: string) => {
       .replace("{search_results}", search_results)
       .replace("{query}", query)
 
-    const urlProvided = getProvidedURLs(searchOnProviders, searchOnAWebSite)
 
     return {
       prompt,

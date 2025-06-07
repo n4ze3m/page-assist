@@ -29,7 +29,8 @@ export default function OptionLayout({
     clearChat,
     setSelectedModel,
     temporaryChat,
-    setSelectedSystemPrompt
+    setSelectedSystemPrompt,
+    setContextFiles
   } = useMessageOption()
 
   const queryClient = useQueryClient()
@@ -104,6 +105,7 @@ export default function OptionLayout({
             setSystemPrompt={setSystemPrompt}
             temporaryChat={temporaryChat}
             history={history}
+            setContext={setContextFiles}
           />
         </Drawer>
 

@@ -17,7 +17,7 @@ export const focusTextArea = (textareaRef?: React.RefObject<HTMLTextAreaElement>
         textareaElement.focus()
       }
     }
-  } catch (e) {}
+  } catch (e) { }
 }
 
 export const validateBeforeSubmit = (selectedModel: string, t: any) => {
@@ -33,24 +33,23 @@ export const validateBeforeSubmit = (selectedModel: string, t: any) => {
 }
 
 export const createSaveMessageOnSuccess = (temporaryChat: boolean, setHistoryId: (id: string) => void) => {
-  return async (e: any): Promise<boolean> => {
+  return async (e: any): Promise<string | null> => {
     if (!temporaryChat) {
-      await saveSuccess(e)
-      return true
+      return await saveSuccess(e)
     } else {
       setHistoryId("temp")
-      return true
+      return null
     }
   }
 }
 
 export const createSaveMessageOnError = (
-  temporaryChat: boolean, 
-  history: any, 
-  setHistory: (history: any) => void, 
+  temporaryChat: boolean,
+  history: any,
+  setHistory: (history: any) => void,
   setHistoryId: (id: string) => void
 ) => {
-  return async (e: any): Promise<boolean> => {
+  return async (e: any): Promise<string | null> => {
     if (!temporaryChat) {
       return await saveError(e)
     } else {
@@ -68,7 +67,7 @@ export const createSaveMessageOnError = (
       ])
 
       setHistoryId("temp")
-      return true
+      return null
     }
   }
 }

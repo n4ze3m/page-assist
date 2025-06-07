@@ -4,6 +4,8 @@ export type ChatDocument  = {
     type: "tab" | "file",
     tabId?: number,
     favIconUrl?: string,
+    filename?: string,
+    fileSize?: number,
 }
 
 export type ChatDocuments = ChatDocument[]
