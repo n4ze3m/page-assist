@@ -138,5 +138,7 @@
   "reasoning": {
     "thinking": "Pensando....",
     "thought": "Pensou por {{time}}"
-  }
+  },
+  "embeddingGen": "Criando embeddings, isso pode levar algum tempo",
+  "semanticSearch": "Realizando busca semântica"
 }

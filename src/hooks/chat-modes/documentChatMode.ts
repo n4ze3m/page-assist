@@ -2,10 +2,11 @@ import { cleanUrl } from "~/libs/clean-url"
 import {
   defaultEmbeddingModelForRag,
   getOllamaURL,
+  geWebSearchFollowUpPrompt,
   promptForRag
 } from "~/services/ollama"
 import { type ChatHistory, type Message } from "~/store/option"
-import { generateID } from "@/db"
+import { addFileToSession, generateID, getSessionFiles } from "@/db"
 import { generateHistory } from "@/utils/generate-history"
 import { pageAssistModel } from "@/models"
 import { humanMessageFormatter } from "@/utils/human-message"
@@ -16,24 +17,26 @@ import {
   removeReasoning
 } from "@/libs/reasoning"
 import { getModelNicknameByID } from "@/db/nickname"
-import { PageAssistVectorStore } from "@/libs/PageAssistVectorStore"
 import { formatDocs } from "@/chain/chat-with-x"
 import { getAllDefaultModelSettings } from "@/services/model-settings"
 import { getNoOfRetrievedDocs } from "@/services/app"
 import { pageAssistEmbeddingModel } from "@/models/embedding"
-import { isChatWithWebsiteEnabled } from "@/services/kb"
+import type { UploadedFile } from "@/db"
+import { getSystemPromptForWeb, isQueryHaveWebsite } from "@/web/web"
+import { PAMemoryVectorStore } from "@/libs/PAMemoryVectorStore"
+import { getMaxContextSize } from "@/services/kb"
 
-export const ragMode = async (
+export const documentChatMode = async (
   message: string,
   image: string,
   isRegenerate: boolean,
   messages: Message[],
   history: ChatHistory,
   signal: AbortSignal,
+  uploadedFiles: UploadedFile[],
   {
     selectedModel,
     useOCR,
-    selectedKnowledge,
     currentChatModelSettings,
     setMessages,
     saveMessageOnSuccess,
@@ -43,13 +46,17 @@ export const ragMode = async (
     setStreaming,
     setAbortController,
     historyId,
-    setHistoryId
+    setHistoryId,
+    fileRetrievalEnabled,
+    setActionInfo,
+    webSearch
   }: {
     selectedModel: string
     useOCR: boolean
-    selectedKnowledge: any
     currentChatModelSettings: any
-    setMessages: (messages: Message[] | ((prev: Message[]) => Message[])) => void
+    setMessages: (
+      messages: Message[] | ((prev: Message[]) => Message[])
+    ) => void
     saveMessageOnSuccess: (data: any) => Promise<string | null>
     saveMessageOnError: (data: any) => Promise<string | null>
     setHistory: (history: ChatHistory) => void
@@ -58,12 +65,26 @@ export const ragMode = async (
     setAbortController: (controller: AbortController | null) => void
     historyId: string | null
     setHistoryId: (id: string) => void
+    fileRetrievalEnabled: boolean
+    setActionInfo: (actionInfo: string | null) => void
+    webSearch: boolean
   }
 ) => {
-  console.log("Using ragMode")
   const url = await getOllamaURL()
   const userDefaultModelSettings = await getAllDefaultModelSettings()
 
+  let sessionFiles: UploadedFile[] = []
+  const currentFiles: UploadedFile[] = uploadedFiles
+
+  if (historyId) {
+    sessionFiles = await getSessionFiles(historyId)
+  }
+
+  const newFiles = currentFiles.filter(
+    (f) => !sessionFiles.some((sf) => sf.id === f.id)
+  )
+
+  const allFiles = [...sessionFiles, ...newFiles]
   const ollama = await pageAssistModel({
     model: selectedModel!,
     baseUrl: cleanUrl(url)
@@ -81,7 +102,12 @@ export const ragMode = async (
         name: "You",
         message,
         sources: [],
-        images: []
+        images: image ? [image] : [],
+        documents: newFiles.map((f) => ({
+          type: "file",
+          filename: f.filename,
+          fileSize: f.size
+        }))
       },
       {
         isBot: true,
@@ -111,28 +137,104 @@ export const ragMode = async (
   let fullText = ""
   let contentToSave = ""
 
-  const embeddingModle = await defaultEmbeddingModelForRag()
+  const embeddingModel = await defaultEmbeddingModelForRag()
   const ollamaUrl = await getOllamaURL()
   const ollamaEmbedding = await pageAssistEmbeddingModel({
-    model: embeddingModle || selectedModel,
+    model: embeddingModel || selectedModel,
     baseUrl: cleanUrl(ollamaUrl),
     keepAlive:
-      currentChatModelSettings?.keepAlive ??
-      userDefaultModelSettings?.keepAlive
+      currentChatModelSettings?.keepAlive ?? userDefaultModelSettings?.keepAlive
   })
 
-  let vectorstore = await PageAssistVectorStore.fromExistingIndex(
-    ollamaEmbedding,
-    {
-      file_id: null,
-      knownledge_id: selectedKnowledge.id
-    }
-  )
   let timetaken = 0
   try {
     let query = message
     const { ragPrompt: systemPrompt, ragQuestionPrompt: questionPrompt } =
       await promptForRag()
+
+    let context: string = ""
+    let source: any[] = []
+    const docSize = await getNoOfRetrievedDocs()
+
+    if (webSearch) {
+      //  setIsSearchingInternet(true)
+      setActionInfo("webSearch")
+
+      let query = message
+
+      // if (newMessage.length > 2) {
+      let questionPrompt = await geWebSearchFollowUpPrompt()
+      const lastTenMessages = newMessage.slice(-10)
+      lastTenMessages.pop()
+      const chat_history = lastTenMessages
+        .map((message) => {
+          return `${message.isBot ? "Assistant: " : "Human: "}${message.message}`
+        })
+        .join("\n")
+      const promptForQuestion = questionPrompt
+        .replaceAll("{chat_history}", chat_history)
+        .replaceAll("{question}", message)
+      const questionModel = await pageAssistModel({
+        model: selectedModel!,
+        baseUrl: cleanUrl(url)
+      })
+
+      let questionMessage = await humanMessageFormatter({
+        content: [
+          {
+            text: promptForQuestion,
+            type: "text"
+          }
+        ],
+        model: selectedModel,
+        useOCR: useOCR
+      })
+
+      if (image.length > 0) {
+        questionMessage = await humanMessageFormatter({
+          content: [
+            {
+              text: promptForQuestion,
+              type: "text"
+            },
+            {
+              image_url: image,
+              type: "image_url"
+            }
+          ],
+          model: selectedModel,
+          useOCR: useOCR
+        })
+      }
+      try {
+        const isWebQuery = await isQueryHaveWebsite(query)
+        if (!isWebQuery) {
+          const response = await questionModel.invoke([questionMessage])
+          query = response?.content?.toString() || message
+          query = removeReasoning(query)
+        }
+      } catch (error) {
+        console.error("Error in questionModel.invoke:", error)
+      }
+
+      const { prompt, source: webSource } = await getSystemPromptForWeb(
+        query,
+        true
+      )
+
+      context += prompt + "\n"
+      source = [
+        ...source,
+        ...webSource.map((source) => {
+          return {
+            ...source,
+            type: "url"
+          }
+        })
+      ]
+
+      setActionInfo(null)
+    }
     if (newMessage.length > 2) {
       const lastTenMessages = newMessage.slice(-10)
       lastTenMessages.pop()
@@ -152,36 +254,72 @@ export const ragMode = async (
       query = response.content.toString()
       query = removeReasoning(query)
     }
-    const docSize = await getNoOfRetrievedDocs()
-    const useVS = await isChatWithWebsiteEnabled()
-    let context: string = ""
-    let source: any[] = []
-    if (useVS) {
-      const docs = await vectorstore.similaritySearch(query, docSize)
-      context = formatDocs(docs)
-      source = docs.map((doc) => {
-        return {
-          ...doc,
-          name: doc?.metadata?.source || "untitled",
-          type: doc?.metadata?.type || "unknown",
-          mode: "rag",
-          url: ""
+    if (uploadedFiles.length > 0) {
+      if (fileRetrievalEnabled) {
+        if (!embeddingModel?.length) {
+          throw new Error("No embedding model selected")
         }
-      })
+        setActionInfo("embeddingGen")
+        const documents = allFiles.map((file) => ({
+          pageContent: file.content,
+          metadata: {
+            source: file.filename,
+            type: file.type,
+            size: file.size,
+            uploadedAt: file.uploadedAt
+          }
+        }))
+
+        const textSplitter = await getPageAssistTextSplitter()
+        const chunks = await textSplitter.splitDocuments(documents)
+
+        const vectorstore = await PAMemoryVectorStore.fromDocuments(
+          chunks,
+          ollamaEmbedding
+        )
+        setActionInfo("semanticSearch")
+        const docs = await vectorstore.similaritySearch(query, docSize)
+        context += formatDocs(docs)
+        source = [
+          ...source,
+          ...docs.map((doc) => {
+            return {
+              ...doc,
+              name: doc?.metadata?.source || "untitled",
+              type: doc?.metadata?.type || "unknown",
+              mode: "rag",
+              url: ""
+            }
+          })
+        ]
+
+        setActionInfo(null)
+      } else {
+        const maxContextSize = await getMaxContextSize()
+
+        context += allFiles
+          .map((f) => `File: ${f.filename}\nContent: ${f.content}\n---\n`)
+          .join("")
+          .substring(0, maxContextSize)
+        source = [
+          ...source,
+          ...allFiles.map((file) => ({
+            pageContent: file.content.substring(0, 200) + "...",
+            metadata: {
+              source: file.filename,
+              type: file.type,
+              mode: "rag"
+            },
+            name: file.filename,
+            type: file.type,
+            mode: "rag",
+            url: ""
+          }))
+        ]
+      }
     } else {
-      const docs = await vectorstore.getAllPageContent()
-      context = docs.pageContent
-      source = docs.metadata.map((doc) => {
-        return {
-          ...doc,
-          name: doc?.source || "untitled",
-          type: doc?.type || "unknown",
-          mode: "rag",
-          url: ""
-        }
-      })
+      context += "No documents uploaded for this conversation."
     }
-    //  message = message.trim().replaceAll("\n", " ")
 
     let humanMessage = await humanMessageFormatter({
       content: [
@@ -301,7 +439,7 @@ export const ragMode = async (
       }
     ])
 
-    await saveMessageOnSuccess({
+    const chatHistoryId = await saveMessageOnSuccess({
       historyId,
       setHistoryId,
       isRegenerate,
@@ -311,8 +449,20 @@ export const ragMode = async (
       fullText,
       source,
       generationInfo,
-      reasoning_time_taken: timetaken
+      reasoning_time_taken: timetaken,
+      documents: uploadedFiles.map((f) => ({
+        type: "file",
+        filename: f.filename,
+        fileSize: f.size,
+        processed: f.processed
+      }))
     })
+
+    if (chatHistoryId) {
+      for (const file of newFiles) {
+        await addFileToSession(chatHistoryId, file)
+      }
+    }
 
     setIsProcessing(false)
     setStreaming(false)

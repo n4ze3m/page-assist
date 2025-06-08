@@ -165,7 +165,8 @@
             "last7Days": "删除最近7天的所有消息",
             "older": "删除所有更早的消息"
         }
-    },    "pin": "置顶",
+    },
+    "pin": "置顶",
     "unpin": "取消置顶",
     "generationInfo": "生成信息",
     "sidebarChat": "侧边栏聊天",
@@ -173,5 +174,7 @@
         "thinking": "思考中....",
         "thought": "思考了 {{time}}"
     },
-    "mermaid": "Mermaid"
+    "mermaid": "Mermaid",
+    "embeddingGen": "正在创建嵌入向量，这可能需要一些时间",
+    "semanticSearch": "正在执行语义搜索"
 }

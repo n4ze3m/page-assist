@@ -1,7 +1,7 @@
 import Markdown from "../../Common/Markdown"
 import React, { useEffect } from "react"
 import { Tag, Image, Tooltip, Collapse, Popover, Avatar } from "antd"
-import { WebSearch } from "./WebSearch"
+import { ActionInfo } from "./ActionInfo"
 import {
   CheckIcon,
   CopyIcon,
@@ -25,6 +25,7 @@ import { useStorage } from "@plasmohq/storage/hook"
 import { PlaygroundUserMessageBubble } from "./PlaygroundUserMessage"
 import { copyToClipboard } from "@/utils/clipboard"
 import { ChatDocuments } from "@/models/ChatTypes"
+
 type Props = {
   message: string
   message_type?: string
@@ -54,6 +55,7 @@ type Props = {
   modelName?: string
   onContinue?: () => void
   documents?: ChatDocuments
+  actionInfo?: string | null
 }
 
 export const PlaygroundMessage = (props: Props) => {
@@ -176,7 +178,10 @@ export const PlaygroundMessage = (props: Props) => {
           </span>
 
           {props.isBot && props.isSearchingInternet && isLastMessage ? (
-            <WebSearch />
+            <ActionInfo action={"webSearch"} />
+          ) : null}
+          {props.isBot && props.actionInfo && isLastMessage ? (
+            <ActionInfo action={props.actionInfo} />
           ) : null}
           <div>
             {props?.message_type && (
@@ -245,7 +250,7 @@ export const PlaygroundMessage = (props: Props) => {
               />
             )}
           </div>
-          {/* source if available */}
+          {/* images if available */}
           {props.images &&
             props.images.filter((img) => img.length > 0).length > 0 && (
               <div>
@@ -262,6 +267,34 @@ export const PlaygroundMessage = (props: Props) => {
                   ))}
               </div>
             )}
+
+          {/* uploaded documents if available */}
+          {/* {props.documents && props.documents.length > 0 && (
+            <div className="mt-3">
+              <div className="flex flex-wrap gap-2">
+                {props.documents.map((doc, index) => (
+                  <div
+                    key={index}
+                    className="inline-flex items-center gap-2 px-3 py-2 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 rounded-lg text-sm border border-blue-200 dark:border-blue-800">
+                    <FileIcon className="h-4 w-4" />
+                    <div className="flex flex-col">
+                      <span className="font-medium">{doc.filename || "Unknown file"}</span>
+                      {doc.fileSize && (
+                        <span className="text-xs opacity-70">
+                          {(doc.fileSize / 1024).toFixed(1)} KB
+                          {doc.processed !== undefined && (
+                            <span className="ml-2">
+                              {doc.processed ? "✓ Processed" : "⚠ Processing..."}
+                            </span>
+                          )}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )} */}
 
           {props.isBot && props?.sources && props?.sources.length > 0 && (
             <Collapse

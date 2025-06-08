@@ -1,5 +1,6 @@
 import { getPromptById } from "@/db"
 import { useMessageOption } from "@/hooks/useMessageOption"
+import { FileIcon, X } from "lucide-react"
 import { getAllModelSettings } from "@/services/model-settings"
 import { useStoreChatModelSettings } from "@/store/model"
 import { useQuery } from "@tanstack/react-query"
@@ -32,7 +33,13 @@ export const CurrentChatModelSettings = ({
   const { t } = useTranslation("common")
   const [form] = Form.useForm()
   const cUserSettings = useStoreChatModelSettings()
-  const { selectedSystemPrompt } = useMessageOption()
+  const { 
+    selectedSystemPrompt, 
+    uploadedFiles, 
+    removeUploadedFile, 
+    fileRetrievalEnabled,
+    setFileRetrievalEnabled 
+  } = useMessageOption()
 
   const savePrompt = useCallback(
     (value: string) => {
@@ -172,6 +179,61 @@ export const CurrentChatModelSettings = ({
               label={t("modelSettings.form.thinking.label")}>
               <Switch />
             </Form.Item>
+
+            {uploadedFiles.length > 0 && (
+              <>
+                <Divider />
+                <div className="mb-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <h4 className="font-medium text-gray-900 dark:text-gray-100">
+                      Uploaded Files ({uploadedFiles.length})
+                    </h4>
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm text-gray-600 dark:text-gray-300">
+                        File Retrieval
+                      </span>
+                      <Switch
+                        size="small"
+                        checked={fileRetrievalEnabled}
+                        onChange={setFileRetrievalEnabled}
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-2 max-h-32 overflow-y-auto">
+                    {uploadedFiles.map((file) => (
+                      <div
+                        key={file.id}
+                        className="flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-800 rounded-md">
+                        <div className="flex items-center gap-2 flex-1 min-w-0">
+                          <FileIcon className="h-4 w-4 text-gray-500 flex-shrink-0" />
+                          <div className="min-w-0 flex-1">
+                            <p className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
+                              {file.filename}
+                            </p>
+                            <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+                              <span>{(file.size / 1024).toFixed(1)} KB</span>
+                              {fileRetrievalEnabled && (
+                                <span className="flex items-center gap-1">
+                                  <span className={`inline-block w-2 h-2 rounded-full ${
+                                    file.processed ? 'bg-green-500' : 'bg-yellow-500'
+                                  }`} />
+                                  {file.processed ? 'Processed' : 'Processing...'}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => removeUploadedFile(file.id)}
+                          className="p-1 text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 rounded">
+                          <X className="h-4 w-4" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </>
+            )}
 
             <Divider />
 

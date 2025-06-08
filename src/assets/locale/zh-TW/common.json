@@ -177,5 +177,7 @@
     "reasoning": {
         "thinking": "思考中....",
         "thought": "思考了 {{time}}"
-    }
+    },
+    "embeddingGen": "正在建立嵌入向量，這可能需要一些時間",
+    "semanticSearch": "正在執行語意搜尋"
 }

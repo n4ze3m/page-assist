@@ -138,5 +138,8 @@
     "reasoning": {
         "thinking": "Pensando....",
         "thought": "Pensato per {{time}}"
-    }
+    },
+    "mermaid": "Mermaid",
+    "embeddingGen": "Creazione di embeddings, questo può richiedere un po' di tempo",
+    "semanticSearch": "Ricerca semantica in corso"
 }

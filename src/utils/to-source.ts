@@ -52,7 +52,17 @@ export const convertFileToSource = async ({
 }: {
   file: File, mime?: string
 }): Promise<Source> => {
+  const allowedTypes = [
+    "application/pdf",
+    "text/csv",
+    "text/plain",
+    "text/markdown",
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+  ]
   let type = mime || file.type
+  if (!allowedTypes.includes(type)) {
+    type = "text/plain"
+  }
   let filename = file.name
   const url = await toBase64(file)
   const content = await processSource({

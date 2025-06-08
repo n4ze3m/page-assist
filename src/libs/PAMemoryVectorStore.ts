@@ -3,7 +3,6 @@ import { similarity as ml_distance_similarity } from "ml-distance"
 import { VectorStore } from "@langchain/core/vectorstores"
 import type { EmbeddingsInterface } from "@langchain/core/embeddings"
 import { Document, DocumentInterface } from "@langchain/core/documents"
-import { rerankDocs } from "../utils/rerank"
 
 interface MemoryVector {
     content: string

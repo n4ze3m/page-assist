@@ -36,21 +36,23 @@ export const normalChatMode = async (
     setStreaming,
     setAbortController,
     historyId,
-    setHistoryId
+    setHistoryId,
+    uploadedFiles
   }: {
     selectedModel: string
     useOCR: boolean
     selectedSystemPrompt: string
     currentChatModelSettings: any
     setMessages: (messages: Message[] | ((prev: Message[]) => Message[])) => void
-    saveMessageOnSuccess: (data: any) => Promise<boolean>
-    saveMessageOnError: (data: any) => Promise<boolean>
+    saveMessageOnSuccess: (data: any) => Promise<string | null>
+    saveMessageOnError: (data: any) => Promise<string | null>
     setHistory: (history: ChatHistory) => void
     setIsProcessing: (value: boolean) => void
     setStreaming: (value: boolean) => void
     setAbortController: (controller: AbortController | null) => void
     historyId: string | null
     setHistoryId: (id: string) => void
+    uploadedFiles?: any[]
   }
 ) => {
   console.log("Using normalChatMode")
@@ -79,9 +81,15 @@ export const normalChatMode = async (
         name: "You",
         message,
         sources: [],
-        images: [image],
+        images: image ? [image] : [],
         modelImage: modelInfo?.model_avatar,
-        modelName: modelInfo?.model_name || selectedModel
+        modelName: modelInfo?.model_name || selectedModel,
+        documents: uploadedFiles?.map(f => ({
+          type: "file",
+          filename: f.filename,
+          fileSize: f.size,
+          processed: f.processed
+        })) || []
       },
       {
         isBot: true,

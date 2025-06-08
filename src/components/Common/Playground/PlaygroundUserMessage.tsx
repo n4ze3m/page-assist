@@ -8,6 +8,7 @@ import { CheckIcon, CopyIcon, Pen, PlayIcon, Square } from "lucide-react"
 import { HumanMessage } from "./HumanMessge"
 import { ChatDocuments } from "@/models/ChatTypes"
 import { DocumentChip } from "./DocumentChip"
+import { DocumentFile } from "./DocumentFile"
 
 type Props = {
   message: string
@@ -54,20 +55,42 @@ export const PlaygroundUserMessageBubble: React.FC<Props> = (props) => {
         </Tag>
       ) : null}
 
-      {props?.documents && props?.documents.length > 0 && (
-        <div className="flex flex-wrap gap-2">
-          {props.documents.map((doc, index) => (
-            <DocumentChip
-              key={index}
-              document={{
-                title: doc.title,
-                url: doc.url,
-                favIconUrl: doc.favIconUrl
-              }}
-            />
-          ))}
-        </div>
-      )}
+      {props?.documents &&
+        props?.documents.length > 0 &&
+        props.documents.filter((d) => d.type === "file").length > 0 && (
+          <div className="flex flex-wrap gap-2">
+            {props.documents
+              .filter((d) => d.type === "file")
+              .map((doc, index) => (
+                <DocumentFile
+                  key={index}
+                  document={{
+                    filename: doc.filename!,
+                    fileSize: doc.fileSize!
+                  }}
+                />
+              ))}
+          </div>
+        )}
+
+      {props?.documents &&
+        props?.documents.length > 0 &&
+        props.documents.filter((d) => d.type === "tab").length > 0 && (
+          <div className="flex flex-wrap gap-2">
+            {props.documents
+              .filter((d) => d.type === "tab")
+              .map((doc, index) => (
+                <DocumentChip
+                  key={index}
+                  document={{
+                    title: doc.title,
+                    url: doc.url,
+                    favIconUrl: doc.favIconUrl
+                  }}
+                />
+              ))}
+          </div>
+        )}
       <div
         dir="auto"
         className={`message-bubble bg-gray-50 dark:bg-[#242424] rounded-3xl prose dark:prose-invert break-words text-primary min-h-7 prose-p:opacity-95 prose-strong:opacity-100 bg-foreground border border-input-border max-w-[100%] sm:max-w-[90%] px-4 py-2.5 rounded-br-lg dark:border-[#2D2D2D] ${

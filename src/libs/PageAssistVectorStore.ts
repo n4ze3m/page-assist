@@ -38,7 +38,8 @@ export class PageAssistVectorStore extends VectorStore {
 
   file_id?: string
 
-  // memoryVectors: PageAssistVector[] = []
+  // In-memory storage for temp uploaded files
+  memoryVectors: PageAssistVector[] = []
 
   similarity: typeof ml_distance_similarity.cosine
 
@@ -86,7 +87,13 @@ export class PageAssistVectorStore extends VectorStore {
       metadata: documents[idx].metadata,
       file_id: this.file_id
     }))
-    await insertVector(`vector:${this.knownledge_id}`, memoryVectors)
+
+    // If file_id is "temp_uploaded_files", store in memory instead of database
+    if (this.file_id === "temp_uploaded_files") {
+      this.memoryVectors.push(...memoryVectors)
+    } else {
+      await insertVector(`vector:${this.knownledge_id}`, memoryVectors)
+    }
   }
 
   /**
@@ -115,8 +122,17 @@ export class PageAssistVectorStore extends VectorStore {
       })
       return filter(doc)
     }
-    const data = await getVector(`vector:${this.knownledge_id}`)
-    const pgVector = [...data.vectors]
+
+    let pgVector: PageAssistVector[]
+
+    // Use memory vectors for temp uploaded files, otherwise get from database
+    if (this.file_id === "temp_uploaded_files") {
+      pgVector = [...this.memoryVectors]
+    } else {
+      const data = await getVector(`vector:${this.knownledge_id}`)
+      pgVector = [...data.vectors]
+    }
+
     const filteredMemoryVectors = pgVector.filter(filterFunction)
     const searches = filteredMemoryVectors
       .map((vector, index) => ({
@@ -136,16 +152,21 @@ export class PageAssistVectorStore extends VectorStore {
   }
 
   async getAllPageContent() {
-    const data = await getVector(`vector:${this.knownledge_id}`)
-    const pgVector = [...data.vectors]
+    let pgVector: PageAssistVector[]
+
+    // Use memory vectors for temp uploaded files, otherwise get from database
+    if (this.file_id === "temp_uploaded_files") {
+      pgVector = [...this.memoryVectors]
+    } else {
+      const data = await getVector(`vector:${this.knownledge_id}`)
+      pgVector = [...data.vectors]
+    }
 
     const maxContext = await getMaxContextSize()
 
     let contextLength = 0
     const pageContent: string[] = []
     const metadata: Record<string, any>[] = []
-
-    // console.log(pgVector)
 
     for (let i = 0; i < pgVector.length; i++) {
       const memoryVector = pgVector[i]
@@ -228,4 +249,9 @@ export class PageAssistVectorStore extends VectorStore {
     const instance = new this(embeddings, dbConfig)
     return instance
   }
+
+  clearMemory() {
+    this.memoryVectors = []
+  }
 }
+

@@ -138,5 +138,7 @@
   "reasoning": {
     "thinking": "考え中....",
     "thought": "{{time}}の思考"
-  }
+  },
+  "embeddingGen": "埋め込みを作成中です。時間がかかる場合があります",
+  "semanticSearch": "意味検索を実行中"
 }

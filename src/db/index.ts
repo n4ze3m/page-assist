@@ -24,6 +24,24 @@ type WebSearch = {
   }[]
 }
 
+type UploadedFile = {
+  id: string
+  filename: string
+  type: string
+  content: string
+  size: number
+  uploadedAt: number
+  embedding?: number[]
+  processed: boolean
+}
+
+type SessionFiles = {
+  sessionId: string
+  files: UploadedFile[]
+  retrievalEnabled: boolean
+  createdAt: number
+}
+
 type Message = {
   id: string
   history_id: string
@@ -115,6 +133,76 @@ export class PageAssitDatabase {
 
   constructor() {
     this.db = chrome.storage.local
+  }
+
+  async getSessionFiles(sessionId: string): Promise<UploadedFile[]> {
+    return new Promise((resolve) => {
+      this.db.get(`session_files_${sessionId}`, (result) => {
+        const sessionFiles = result[`session_files_${sessionId}`] as SessionFiles
+        resolve(sessionFiles?.files || [])
+      })
+    })
+  }
+
+  async getSessionFilesInfo(sessionId: string): Promise<SessionFiles | null> {
+    return new Promise((resolve) => {
+      this.db.get(`session_files_${sessionId}`, (result) => {
+        resolve(result[`session_files_${sessionId}`] || null)
+      })
+    })
+  }
+
+  async addFileToSession(sessionId: string, file: UploadedFile) {
+    const sessionFiles = await this.getSessionFilesInfo(sessionId)
+    const updatedFiles = sessionFiles ? [...sessionFiles.files, file] : [file]
+    const sessionData: SessionFiles = {
+      sessionId,
+      files: updatedFiles,
+      retrievalEnabled: sessionFiles?.retrievalEnabled || false,
+      createdAt: sessionFiles?.createdAt || Date.now()
+    }
+    this.db.set({ [`session_files_${sessionId}`]: sessionData })
+  }
+
+  async removeFileFromSession(sessionId: string, fileId: string) {
+    const sessionFiles = await this.getSessionFilesInfo(sessionId)
+    if (sessionFiles) {
+      const updatedFiles = sessionFiles.files.filter(f => f.id !== fileId)
+      const sessionData: SessionFiles = {
+        ...sessionFiles,
+        files: updatedFiles
+      }
+      this.db.set({ [`session_files_${sessionId}`]: sessionData })
+    }
+  }
+
+  async updateFileInSession(sessionId: string, fileId: string, updates: Partial<UploadedFile>) {
+    const sessionFiles = await this.getSessionFilesInfo(sessionId)
+    if (sessionFiles) {
+      const updatedFiles = sessionFiles.files.map(f => 
+        f.id === fileId ? { ...f, ...updates } : f
+      )
+      const sessionData: SessionFiles = {
+        ...sessionFiles,
+        files: updatedFiles
+      }
+      this.db.set({ [`session_files_${sessionId}`]: sessionData })
+    }
+  }
+
+  async setRetrievalEnabled(sessionId: string, enabled: boolean) {
+    const sessionFiles = await this.getSessionFilesInfo(sessionId)
+    const sessionData: SessionFiles = {
+      sessionId,
+      files: sessionFiles?.files || [],
+      retrievalEnabled: enabled,
+      createdAt: sessionFiles?.createdAt || Date.now()
+    }
+    this.db.set({ [`session_files_${sessionId}`]: sessionData })
+  }
+
+  async clearSessionFiles(sessionId: string) {
+    this.db.remove(`session_files_${sessionId}`)
   }
 
   async getChatHistory(id: string): Promise<MessageHistory> {
@@ -750,3 +838,41 @@ export const deleteHistoriesByDateRange = async (rangeLabel: string): Promise<st
 
   return deletedIds;
 }
+
+// Session files helper functions
+export const getSessionFiles = async (sessionId: string): Promise<UploadedFile[]> => {
+  const db = new PageAssitDatabase()
+  return await db.getSessionFiles(sessionId)
+}
+
+export const addFileToSession = async (sessionId: string, file: UploadedFile) => {
+  const db = new PageAssitDatabase()
+  await db.addFileToSession(sessionId, file)
+}
+
+export const removeFileFromSession = async (sessionId: string, fileId: string) => {
+  const db = new PageAssitDatabase()
+  await db.removeFileFromSession(sessionId, fileId)
+}
+
+export const updateFileInSession = async (sessionId: string, fileId: string, updates: Partial<UploadedFile>) => {
+  const db = new PageAssitDatabase()
+  await db.updateFileInSession(sessionId, fileId, updates)
+}
+
+export const setRetrievalEnabled = async (sessionId: string, enabled: boolean) => {
+  const db = new PageAssitDatabase()
+  await db.setRetrievalEnabled(sessionId, enabled)
+}
+
+export const getSessionFilesInfo = async (sessionId: string): Promise<SessionFiles | null> => {
+  const db = new PageAssitDatabase()
+  return await db.getSessionFilesInfo(sessionId)
+}
+
+export const clearSessionFiles = async (sessionId: string) => {
+  const db = new PageAssitDatabase()
+  await db.clearSessionFiles(sessionId)
+}
+
+export type { UploadedFile, SessionFiles }

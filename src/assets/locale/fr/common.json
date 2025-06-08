@@ -174,5 +174,7 @@
         "thinking": "Réflexion....",
         "thought": "Réflexion pendant {{time}}"
     },
-    "mermaid": "Mermaid"
+    "mermaid": "Mermaid",
+    "embeddingGen": "Création d'embeddings, cela peut prendre un certain temps",
+    "semanticSearch": "Recherche sémantique en cours"
 }

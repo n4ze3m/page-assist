@@ -2,6 +2,7 @@ import { PageAssisCSVUrlLoader } from "@/loader/csv"
 import { PageAssistDocxLoader } from "@/loader/docx"
 import { PageAssistPDFUrlLoader } from "@/loader/pdf-url"
 import { PageAssisTXTUrlLoader } from "@/loader/txt"
+import { toArrayBufferFromBase64 } from "~/utils/to-source"
 
 export const processSource = async ({
   type,

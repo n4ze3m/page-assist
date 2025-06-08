@@ -13,7 +13,8 @@ export const PlaygroundChat = () => {
     isSearchingInternet,
     editMessage,
     ttsEnabled,
-    onSubmit
+    onSubmit,
+    actionInfo
   } = useMessageOption()
   const [isSourceOpen, setIsSourceOpen] = React.useState(false)
   const [source, setSource] = React.useState<any>(null)
@@ -62,6 +63,7 @@ export const PlaygroundChat = () => {
               })
             }}
             documents={message?.documents}
+            actionInfo={actionInfo}
           />
         ))}
       </div>

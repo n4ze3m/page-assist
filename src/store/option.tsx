@@ -1,6 +1,7 @@
 import { Knowledge } from "@/db/knowledge"
 import { ChatDocuments } from "@/models/ChatTypes"
 import { create } from "zustand"
+import { type UploadedFile } from "@/db"
 
 type WebSearch = {
   search_engine: string
@@ -29,7 +30,7 @@ export type Message = {
 export type ChatHistory = {
   role: "user" | "assistant" | "system"
   content: string
-  image?: string,
+  image?: string
   messageType?: string
 }[]
 
@@ -77,8 +78,20 @@ type State = {
   useOCR: boolean
   setUseOCR: (useOCR: boolean) => void
 
-  documentContext: ChatDocuments | null,
-  setDocumentContext: (documentContext: ChatDocuments) => void,
+  documentContext: ChatDocuments | null
+  setDocumentContext: (documentContext: ChatDocuments) => void
+
+  uploadedFiles: UploadedFile[]
+  setUploadedFiles: (uploadedFiles: UploadedFile[]) => void
+
+  contextFiles: UploadedFile[]
+  setContextFiles: (contextFiles: UploadedFile[]) => void
+
+  actionInfo: string | null
+  setActionInfo: (actionInfo: string) => void
+
+  fileRetrievalEnabled: boolean
+  setFileRetrievalEnabled: (fileRetrievalEnabled: boolean) => void
 }
 
 export const useStoreMessageOption = create<State>((set) => ({
@@ -126,4 +139,15 @@ export const useStoreMessageOption = create<State>((set) => ({
 
   documentContext: null,
   setDocumentContext: (documentContext) => set({ documentContext }),
+
+  uploadedFiles: [],
+  setUploadedFiles: (uploadedFiles) => set({ uploadedFiles }),
+  contextFiles: [],
+  setContextFiles: (contextFiles) => set({ contextFiles }),
+
+  actionInfo: null,
+  setActionInfo: (actionInfo) => set({ actionInfo }),
+  
+  fileRetrievalEnabled: false,
+  setFileRetrievalEnabled: (fileRetrievalEnabled) => set({ fileRetrievalEnabled }),
 }))
