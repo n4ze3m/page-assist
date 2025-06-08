@@ -26,7 +26,7 @@ import { PiGlobe } from "react-icons/pi"
 import { handleChatInputKeyDown } from "@/utils/key-down"
 import { getIsSimpleInternetSearch } from "@/services/search"
 import { useStorage } from "@plasmohq/storage/hook"
-import { useTabMentions, TabInfo } from "~/hooks/useTabMentions"
+import { useTabMentions } from "~/hooks/useTabMentions"
 import { MentionsDropdown } from "./MentionsDropdown"
 import { DocumentChip } from "./DocumentChip"
 
@@ -228,12 +228,13 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
       if (value.message.trim().length === 0 && value.image.length === 0) {
         return
       }
+      const defaultEM = await defaultEmbeddingModelForRag()
       if (!selectedModel || selectedModel.length === 0) {
         form.setFieldError("message", t("formError.noModel"))
         return
       }
+
       if (webSearch) {
-        const defaultEM = await defaultEmbeddingModelForRag()
         const simpleSearch = await getIsSimpleInternetSearch()
         if (!defaultEM && !simpleSearch) {
           form.setFieldError("message", t("formError.noEmbeddingModel"))
@@ -340,7 +341,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
               <div className="p-3 border-b border-gray-200 dark:border-gray-600">
                 <div className="flex items-center justify-end mb-2">
                   <div className="flex items-center gap-2">
-                    <Tooltip title="Enable file retrieval for document-based chat">
+                    <Tooltip title={t("fileRetrievalEnabled")}>
                       <div className="inline-flex items-center gap-2">
                         <FileText className="h-4 w-4 dark:text-gray-300" />
                         <Switch
@@ -400,8 +401,9 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                       form.setFieldError("message", t("formError.noModel"))
                       return
                     }
+                    const defaultEM = await defaultEmbeddingModelForRag()
+
                     if (webSearch) {
-                      const defaultEM = await defaultEmbeddingModelForRag()
                       const simpleSearch = await getIsSimpleInternetSearch()
                       if (!defaultEM && !simpleSearch) {
                         form.setFieldError(
@@ -561,7 +563,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                           </Tooltip>
                         )}
 
-                        <Tooltip title="Upload documents (PDF, DOC, TXT, CSV)">
+                        <Tooltip title={t("tooltip.uploadDocuments")}>
                           <button
                             type="button"
                             onClick={() => {

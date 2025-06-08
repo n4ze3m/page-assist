@@ -17,13 +17,14 @@ import {
   removeReasoning
 } from "@/libs/reasoning"
 import { getModelNicknameByID } from "@/db/nickname"
-import { PageAssistVectorStore } from "@/libs/PageAssistVectorStore"
 import { formatDocs } from "@/chain/chat-with-x"
 import { getAllDefaultModelSettings } from "@/services/model-settings"
 import { getNoOfRetrievedDocs } from "@/services/app"
 import { pageAssistEmbeddingModel } from "@/models/embedding"
 import type { UploadedFile } from "@/db"
 import { getSystemPromptForWeb, isQueryHaveWebsite } from "@/web/web"
+import { PAMemoryVectorStore } from "@/libs/PAMemoryVectorStore"
+import { getMaxContextSize } from "@/services/kb"
 
 export const documentChatMode = async (
   message: string,
@@ -53,7 +54,9 @@ export const documentChatMode = async (
     selectedModel: string
     useOCR: boolean
     currentChatModelSettings: any
-    setMessages: (messages: Message[] | ((prev: Message[]) => Message[])) => void
+    setMessages: (
+      messages: Message[] | ((prev: Message[]) => Message[])
+    ) => void
     saveMessageOnSuccess: (data: any) => Promise<string | null>
     saveMessageOnError: (data: any) => Promise<string | null>
     setHistory: (history: ChatHistory) => void
@@ -70,19 +73,18 @@ export const documentChatMode = async (
   const url = await getOllamaURL()
   const userDefaultModelSettings = await getAllDefaultModelSettings()
 
-
   let sessionFiles: UploadedFile[] = []
   const currentFiles: UploadedFile[] = uploadedFiles
-
 
   if (historyId) {
     sessionFiles = await getSessionFiles(historyId)
   }
 
-  const newFiles = currentFiles.filter(f => !sessionFiles.some(sf => sf.id === f.id))
+  const newFiles = currentFiles.filter(
+    (f) => !sessionFiles.some((sf) => sf.id === f.id)
+  )
 
   const allFiles = [...sessionFiles, ...newFiles]
-  console.log(allFiles)
   const ollama = await pageAssistModel({
     model: selectedModel!,
     baseUrl: cleanUrl(url)
@@ -101,10 +103,10 @@ export const documentChatMode = async (
         message,
         sources: [],
         images: image ? [image] : [],
-        documents: newFiles.map(f => ({
+        documents: newFiles.map((f) => ({
           type: "file",
           filename: f.filename,
-          fileSize: f.size,
+          fileSize: f.size
         }))
       },
       {
@@ -141,8 +143,7 @@ export const documentChatMode = async (
     model: embeddingModel || selectedModel,
     baseUrl: cleanUrl(ollamaUrl),
     keepAlive:
-      currentChatModelSettings?.keepAlive ??
-      userDefaultModelSettings?.keepAlive
+      currentChatModelSettings?.keepAlive ?? userDefaultModelSettings?.keepAlive
   })
 
   let timetaken = 0
@@ -150,26 +151,6 @@ export const documentChatMode = async (
     let query = message
     const { ragPrompt: systemPrompt, ragQuestionPrompt: questionPrompt } =
       await promptForRag()
-
-    if (newMessage.length > 2) {
-      const lastTenMessages = newMessage.slice(-10)
-      lastTenMessages.pop()
-      const chat_history = lastTenMessages
-        .map((message) => {
-          return `${message.isBot ? "Assistant: " : "Human: "}${message.message}`
-        })
-        .join("\n")
-      const promptForQuestion = questionPrompt
-        .replaceAll("{chat_history}", chat_history)
-        .replaceAll("{question}", message)
-      const questionOllama = await pageAssistModel({
-        model: selectedModel!,
-        baseUrl: cleanUrl(url)
-      })
-      const response = await questionOllama.invoke(promptForQuestion)
-      query = response.content.toString()
-      query = removeReasoning(query)
-    }
 
     let context: string = ""
     let source: any[] = []
@@ -236,7 +217,10 @@ export const documentChatMode = async (
         console.error("Error in questionModel.invoke:", error)
       }
 
-      const { prompt, source: webSource } = await getSystemPromptForWeb(query, true)
+      const { prompt, source: webSource } = await getSystemPromptForWeb(
+        query,
+        true
+      )
 
       context += prompt + "\n"
       source = [
@@ -251,89 +235,84 @@ export const documentChatMode = async (
 
       setActionInfo(null)
     }
-
+    if (newMessage.length > 2) {
+      const lastTenMessages = newMessage.slice(-10)
+      lastTenMessages.pop()
+      const chat_history = lastTenMessages
+        .map((message) => {
+          return `${message.isBot ? "Assistant: " : "Human: "}${message.message}`
+        })
+        .join("\n")
+      const promptForQuestion = questionPrompt
+        .replaceAll("{chat_history}", chat_history)
+        .replaceAll("{question}", message)
+      const questionOllama = await pageAssistModel({
+        model: selectedModel!,
+        baseUrl: cleanUrl(url)
+      })
+      const response = await questionOllama.invoke(promptForQuestion)
+      query = response.content.toString()
+      query = removeReasoning(query)
+    }
     if (uploadedFiles.length > 0) {
       if (fileRetrievalEnabled) {
-        try {
-          setActionInfo("embeddingGen")
-          const documents = allFiles.map(file => ({
-            pageContent: file.content,
-            metadata: {
-              source: file.filename,
-              type: file.type,
-              size: file.size,
-              uploadedAt: file.uploadedAt
-            }
-          }))
-
-          const textSplitter = await getPageAssistTextSplitter()
-          const chunks = await textSplitter.splitDocuments(documents)
-
-
-          const vectorstore = await PageAssistVectorStore.fromDocuments(
-            chunks,
-            ollamaEmbedding,
-            {
-              file_id: "temp_uploaded_files",
-              knownledge_id: "temp_session_files"
-            }
-          )
-
-          const docs = await vectorstore.similaritySearch(query, docSize)
-          context += formatDocs(docs)
-          source = [
-            ...source,
-            ...docs.map((doc) => {
-              return {
-                ...doc,
-                name: doc?.metadata?.source || "untitled",
-                type: doc?.metadata?.type || "unknown",
-                mode: "document",
-                url: ""
-              }
-            })
-          ]
-          vectorstore.clearMemory()
-        } catch (error) {
-          console.error("Error creating vector store from uploaded files:", error)
-          // Fallback: use raw content from files
-          context += allFiles.map(f =>
-            `File: ${f.filename}\nContent: ${f.content}\n---\n`
-          ).join("")
-          source = [
-            ...source,
-            ...allFiles.map(file => ({
-              pageContent: file.content.substring(0, 200) + "...",
-              metadata: {
-                source: file.filename,
-                type: file.type,
-                mode: "document"
-              },
-              name: file.filename,
-              type: file.type,
-              mode: "document",
-              url: ""
-            }))
-          ]
-        } finally {
-          setActionInfo(null)
+        if (!embeddingModel?.length) {
+          throw new Error("No embedding model selected")
         }
-      } else {
-        context += allFiles.map(f =>
-          `File: ${f.filename}\nContent: ${f.content}\n---\n`
-        ).join("")
+        setActionInfo("embeddingGen")
+        const documents = allFiles.map((file) => ({
+          pageContent: file.content,
+          metadata: {
+            source: file.filename,
+            type: file.type,
+            size: file.size,
+            uploadedAt: file.uploadedAt
+          }
+        }))
+
+        const textSplitter = await getPageAssistTextSplitter()
+        const chunks = await textSplitter.splitDocuments(documents)
+
+        const vectorstore = await PAMemoryVectorStore.fromDocuments(
+          chunks,
+          ollamaEmbedding
+        )
+        setActionInfo("semanticSearch")
+        const docs = await vectorstore.similaritySearch(query, docSize)
+        context += formatDocs(docs)
         source = [
           ...source,
-          ...allFiles.map(file => ({
+          ...docs.map((doc) => {
+            return {
+              ...doc,
+              name: doc?.metadata?.source || "untitled",
+              type: doc?.metadata?.type || "unknown",
+              mode: "rag",
+              url: ""
+            }
+          })
+        ]
+
+        setActionInfo(null)
+      } else {
+        const maxContextSize = await getMaxContextSize()
+
+        context += allFiles
+          .map((f) => `File: ${f.filename}\nContent: ${f.content}\n---\n`)
+          .join("")
+          .substring(0, maxContextSize)
+        source = [
+          ...source,
+          ...allFiles.map((file) => ({
             pageContent: file.content.substring(0, 200) + "...",
             metadata: {
               source: file.filename,
               type: file.type,
-              mode: "document"
+              mode: "rag"
             },
             name: file.filename,
             type: file.type,
-            mode: "document",
+            mode: "rag",
             url: ""
           }))
         ]
@@ -471,7 +450,7 @@ export const documentChatMode = async (
       source,
       generationInfo,
       reasoning_time_taken: timetaken,
-      documents: uploadedFiles.map(f => ({
+      documents: uploadedFiles.map((f) => ({
         type: "file",
         filename: f.filename,
         fileSize: f.size,

@@ -184,5 +184,7 @@
         "thought": "Thought for {{time}}"
     },
     "mermaid": "Mermaid",
-    "search": "Search"
+    "search": "Search",
+    "embeddingGen": "Creating embeddings, this may take a while",
+    "semanticSearch": "Performing semantic search"
 }

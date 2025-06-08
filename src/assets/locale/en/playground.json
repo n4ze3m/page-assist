@@ -25,9 +25,11 @@
         "stopStreaming": "Stop Streaming",
         "knowledge": "Knowledge",
         "vision": "[Experimental] Vision Chat",
-        "clearContext": "Clear Context"
+        "clearContext": "Clear Context",
+        "uploadDocuments": "Upload Documents (beta)"
     },
     "sendWhenEnter": "Send when Enter pressed",
     "welcome": "Hello! How can I help you today?",
-    "useOCR": "Extract text from image (OCR)"
+    "useOCR": "Extract text from image (OCR)",
+    "fileRetrievalEnabled": "Enable RAG for Documents"
 }

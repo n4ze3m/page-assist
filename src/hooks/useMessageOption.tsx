@@ -72,7 +72,9 @@ export const useMessageOption = () => {
     contextFiles,
     setContextFiles,
     actionInfo,
-    setActionInfo
+    setActionInfo,
+    setFileRetrievalEnabled,
+    fileRetrievalEnabled
   } = useStoreMessageOption()
   const currentChatModelSettings = useStoreChatModelSettings()
   const [selectedModel, setSelectedModel] = useStorage("selectedModel")
@@ -87,9 +89,6 @@ export const useMessageOption = () => {
 
   const navigate = useNavigate()
   const textareaRef = React.useRef<HTMLTextAreaElement>(null)
-
-  const [fileRetrievalEnabled, setFileRetrievalEnabled] =
-    React.useState<boolean>(false)
 
   const handleFocusTextArea = () => focusTextArea(textareaRef)
 
@@ -251,7 +250,7 @@ export const useMessageOption = () => {
         )
         return
       }
-      console.log("contextFiles", contextFiles)
+      // console.log("contextFiles", contextFiles)
       if (contextFiles.length > 0) {
         await documentChatMode(
           message,
@@ -263,7 +262,7 @@ export const useMessageOption = () => {
           contextFiles,
           chatModeParams
         )
-        setFileRetrievalEnabled(false)
+        // setFileRetrievalEnabled(false)
         return
       }
 

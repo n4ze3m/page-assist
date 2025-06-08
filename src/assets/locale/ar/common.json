@@ -146,5 +146,7 @@
     "reasoning": {
         "thinking": "جاري التفكير....",
         "thought": "فكر لمدة {{time}}"
-    }
+    },
+    "embeddingGen": "إنشاء تمثيلات، قد يستغرق هذا وقتًا",
+    "semanticSearch": "جاري البحث المعمق"
 }

@@ -89,6 +89,9 @@ type State = {
 
   actionInfo: string | null
   setActionInfo: (actionInfo: string) => void
+
+  fileRetrievalEnabled: boolean
+  setFileRetrievalEnabled: (fileRetrievalEnabled: boolean) => void
 }
 
 export const useStoreMessageOption = create<State>((set) => ({
@@ -143,5 +146,8 @@ export const useStoreMessageOption = create<State>((set) => ({
   setContextFiles: (contextFiles) => set({ contextFiles }),
 
   actionInfo: null,
-  setActionInfo: (actionInfo) => set({ actionInfo })
+  setActionInfo: (actionInfo) => set({ actionInfo }),
+  
+  fileRetrievalEnabled: false,
+  setFileRetrievalEnabled: (fileRetrievalEnabled) => set({ fileRetrievalEnabled }),
 }))
