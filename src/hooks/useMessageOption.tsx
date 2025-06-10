@@ -111,9 +111,8 @@ export const useMessageOption = () => {
 
       const fileId = generateID()
 
-      const source = await convertFileToSource({
-        file
-      })
+      const { processFileUpload } = await import("~/utils/file-processor")
+      const source = await processFileUpload(file)
 
       const uploadedFile: UploadedFile = {
         id: fileId,
