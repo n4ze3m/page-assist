@@ -8,7 +8,7 @@ import {
   formatToMessage,
   getPromptById,
   getRecentChatFromWebUI
-} from "@/db"
+} from "@/db/dexie/helpers"
 import { getLastUsedChatSystemPrompt } from "@/services/model-settings"
 import { useStoreChatModelSettings } from "@/store/model"
 import { useSmartScroll } from "@/hooks/useSmartScroll"

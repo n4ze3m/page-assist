@@ -2,7 +2,7 @@ import {
   formatToChatHistory,
   formatToMessage,
   getRecentChatFromCopilot
-} from "@/db"
+} from "@/db/dexie/helpers"
 import useBackgroundMessage from "@/hooks/useBackgroundMessage"
 import { useSmartScroll } from "@/hooks/useSmartScroll"
 import { copilotResumeLastChat } from "@/services/app"

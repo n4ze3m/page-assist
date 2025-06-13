@@ -1,4 +1,4 @@
-import { getLastChatHistory, saveHistory, saveMessage, updateHistory, updateMessage } from "@/db"
+import { getLastChatHistory, saveHistory, saveMessage, updateMessage } from "@/db/dexie/helpers"
 import { ChatDocuments } from "@/models/ChatTypes"
 import { setLastUsedChatModel, setLastUsedChatSystemPrompt } from "@/services/model-settings"
 import { generateTitle } from "@/services/title"

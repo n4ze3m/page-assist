@@ -1,9 +1,8 @@
 import { type ChatHistory, type Message } from "~/store/option"
 import {
-  deleteChatForEdit,
-  removeMessageUsingHistoryId,
+  deleteChatForEdit, 
   updateMessageByIndex
-} from "@/db"
+} from "@/db/dexie/helpers"
 import { validateBeforeSubmit } from "../utils/messageHelpers"
 
 export const createRegenerateLastMessage = ({

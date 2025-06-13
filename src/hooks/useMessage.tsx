@@ -18,7 +18,7 @@ import {
   getPromptById,
   removeMessageUsingHistoryId,
   updateMessageByIndex
-} from "@/db"
+} from "@/db/dexie/helpers"
 import { saveMessageOnError, saveMessageOnSuccess } from "./chat-helper"
 import { notification } from "antd"
 import { useTranslation } from "react-i18next"

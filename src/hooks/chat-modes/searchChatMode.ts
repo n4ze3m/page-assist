@@ -4,7 +4,7 @@ import {
   getOllamaURL
 } from "~/services/ollama"
 import { type ChatHistory, type Message } from "~/store/option"
-import { generateID } from "@/db"
+import { generateID } from "@/db/dexie/helpers"
 import { getSystemPromptForWeb, isQueryHaveWebsite } from "~/web/web"
 import { generateHistory } from "@/utils/generate-history"
 import { pageAssistModel } from "@/models"

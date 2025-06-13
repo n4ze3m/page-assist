@@ -2,7 +2,7 @@ import { similarity as ml_distance_similarity } from "ml-distance"
 import { VectorStore } from "@langchain/core/vectorstores"
 import type { EmbeddingsInterface } from "@langchain/core/embeddings"
 import { Document } from "@langchain/core/documents"
-import { getVector, insertVector } from "@/db/vector"
+import { getVector, insertVector } from "@/db/dexie/vector"
 import { getMaxContextSize } from "@/services/kb"
 /**
  * Interface representing a vector in memory. It includes the content

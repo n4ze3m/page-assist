@@ -1,3 +1,5 @@
+import { formatVector } from "@/libs/export-import"
+
 interface PageAssistVector {
   file_id: string
   content: string
@@ -136,6 +138,12 @@ export const insertVector = async (
 ): Promise<void> => {
   const db = new PageAssistVectorDb()
   return db.insertVector(id, vector)
+}
+
+export const getAllVector = async () => {
+  const db = new PageAssistVectorDb()
+  const data =  await db.getAll()
+  return formatVector(data)
 }
 
 export const getVector = async (id: string): Promise<VectorData> => {

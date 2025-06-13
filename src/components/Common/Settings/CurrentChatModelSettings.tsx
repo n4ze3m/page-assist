@@ -1,4 +1,4 @@
-import { getPromptById } from "@/db"
+import { getPromptById } from "@/db/dexie/helpers"
 import { useMessageOption } from "@/hooks/useMessageOption"
 import { FileIcon, X } from "lucide-react"
 import { getAllModelSettings } from "@/services/model-settings"

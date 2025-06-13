@@ -156,15 +156,11 @@ export class OAIEmbedding
         request: OpenAIClient.EmbeddingCreateParams
     ) {
 
-        const requestOptions: OpenAICoreRequestOptions = {}
+        const requestOptions: { headers?: Record<string, string> } = {}
         if (this.azureOpenAIApiKey) {
             requestOptions.headers = {
                 "api-key": this.azureOpenAIApiKey,
                 ...requestOptions.headers
-            }
-            requestOptions.query = {
-                "api-version": this.azureOpenAIApiVersion,
-                ...requestOptions.query
             }
         }
         return this.caller.call(async () => {
