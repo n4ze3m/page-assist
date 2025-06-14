@@ -151,8 +151,10 @@ export class DatabaseMigration {
       } catch (error) {
         errors.push(`Failed to migrate knowledge: ${error}`)
       }
+
      // Migrate nickname
       try {
+        console.log("Saving Nickname")
         const nicknames = await getAllModelNicknamesMig()
         await this.dexieNick.importDataV2(nicknames)
       } catch (error) {

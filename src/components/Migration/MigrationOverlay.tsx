@@ -29,8 +29,8 @@ export const useMigration = () => {
           return { success: false }
         }
         notification.info({
-          message: "One-time update",
-          description: "Optimizing performance..."
+          message: "One-time migration",
+          description: "Sorry for the interruption. A page refresh will happen shortly. This is a one-time update that won't occur again.",
         })
         console.log("Starting background migration...")
         await runAllMigrations()

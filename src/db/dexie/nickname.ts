@@ -13,6 +13,12 @@ export class ModelNickname {
             model_id: id,
             model_avatar
         })
+        console.log({
+            id,
+            model_name,
+            model_id: id,
+            model_avatar
+        })
     }
 
     async getModelNicknameByID(model_id: string) {
@@ -30,24 +36,15 @@ export class ModelNickname {
         const { replaceExisting = false, mergeData = true } = options;
 
         for (const oai of data) {
-            const existingKnowledge = await this.getModelNicknameByID(oai.id);
 
-            if (existingKnowledge && !replaceExisting) {
-                if (mergeData) {
-                    await this.saveModelNickname(
-                        oai.model_id,
-                        oai.model_name,
-                        oai.model_avatar
-                    );
-                }
-                continue;
-            }
+            console.log("Saving x")
 
-            await this.saveModelNickname(
-                oai.model_id,
-                oai.model_name,
-                oai.model_avatar
-            );
+            await db.modelNickname.put({
+                id: oai.model_id,
+                model_id: oai.model_id,
+                model_name: oai.model_name,
+                model_avatar: oai.model_avatar
+            })
         }
     }
 }
@@ -55,8 +52,8 @@ export class ModelNickname {
 export const getAllModelNicknames = async () => {
     const modelNickname = new ModelNickname()
     const data = await modelNickname.getAllModelNicknames()
-    const result:Record<string, MNick> = {}
-    for(const d of data) {
+    const result: Record<string, MNick> = {}
+    for (const d of data) {
         result[d.model_id] = d
     }
     return result
