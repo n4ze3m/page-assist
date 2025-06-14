@@ -2,7 +2,7 @@ import { useEffect } from "react"
 import { useMutation } from "@tanstack/react-query"
 import { runAllMigrations } from "~/db/dexie/migration"
 import { Storage } from "@plasmohq/storage"
-import { notification } from "antd"
+import { message, notification } from "antd"
 
 const storage = new Storage()
 
@@ -28,15 +28,12 @@ export const useMigration = () => {
         if (isMigrated) {
           return { success: false }
         }
-        notification.info({
-          message: "One-time migration",
-          description: "Sorry for the interruption. A page refresh will happen shortly. This is a one-time update that won't occur again.",
-        })
+        message.loading(
+          "Sorry for the interruption. This is a one-time update that won't occur again. This is for a better optimized chat. The page will refresh after the update.",
+          30_000
+        )
         console.log("Starting background migration...")
         await runAllMigrations()
-        notification.success({
-          message: "Migration completed successfully"
-        })
         console.log("Background migration completed successfully")
         return { success: true }
       } catch (error) {
@@ -46,7 +43,7 @@ export const useMigration = () => {
           error: error instanceof Error ? error.message : "Unknown error"
         }
       }
-    },
+  },
     onSuccess: async (result) => {
       if (result.success) {
         await setIsMigrated(true)
