@@ -9,7 +9,9 @@ import {
   Webshare,
   Knowledge,
   VectorData,
-  Document
+  Document,
+  OpenAIModelConfig,
+  Model
 } from "./types"
 
 export class PageAssistDexieDB extends Dexie {
@@ -25,6 +27,9 @@ export class PageAssistDexieDB extends Dexie {
   documents!: Table<Document>;
   vectors!: Table<VectorData>;
 
+  // Openai config
+  openaiConfigs!: Table<OpenAIModelConfig>;
+  customModels!: Table<Model>;
   constructor() {
     super('PageAssistDatabase');
 
@@ -40,7 +45,8 @@ export class PageAssistDexieDB extends Dexie {
       documents: 'id, db_type, title, status, embedding_model, createdAt',
       vectors: 'id, vectors',
       // OpenAI Configs
-      openaiConfigs: 'id, name, baseUrl, apiKey, createdAt, provider, db_type, headers'
+      openaiConfigs: 'id, name, baseUrl, apiKey, createdAt, provider, db_type, headers',
+      customModels: 'id, model_id, name, model_name, model_image, provider_id, lookup, model_type, db_type',
     });
   }
 }

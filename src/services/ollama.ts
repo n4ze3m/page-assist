@@ -8,7 +8,7 @@ import {
   setTotalFilePerKB
 } from "./app"
 import fetcher from "@/libs/fetcher"
-import { ollamaFormatAllCustomModels } from "@/db/models"
+import { ollamaFormatAllCustomModels } from "@/db/dexie/models"
 import { getAllModelNicknames } from "@/db/nickname"
 
 const storage = new Storage()

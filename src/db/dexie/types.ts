@@ -139,9 +139,32 @@ export type Document = {
   compressedContent?: string;
 };
 
+export type OpenAIModelConfig = {
+    id: string
+    name: string
+    baseUrl: string
+    apiKey?: string
+    createdAt: number
+    provider?: string
+    db_type: string
+    headers?: { key: string; value: string }[]
+}
 
+export type Model = {
+  id: string
+  model_id: string
+  name: string
+  model_name?: string,
+  model_image?: string,
+  provider_id: string
+  lookup: string
+  model_type: string
+  db_type: string
+}
 
 
 export type MessageHistory = Message[];
 export type ChatHistory = HistoryInfo[];
 export type Prompts = Prompt[];
+export type OpenAIModelConfigs = OpenAIModelConfig[]
+export type Models = Model[]

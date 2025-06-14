@@ -1,10 +1,14 @@
 import { getLastUsedChatModel, getLastUsedChatSystemPrompt } from "@/services/model-settings"
 import { PageAssitDatabase as ChromeDB } from "../index"
 import { getAllKnowledge } from "../knowledge"
-import { getAllVector, deleteVector } from "../vector"
+import { getAllVector,  } from "../vector"
 import { PageAssistDatabase as DexieDB, } from "./chat"
 import { PageAssistKnowledge as DexieDBK } from "./knowledge"
 import { PageAssistVectorDb as DexieDBV } from "./vector"
+import { OpenAIModelDb as DexieDBOAI } from "./openai"
+import { ModelDb as DexieDBM } from "./models"
+import { getAllOpenAIConfig } from "../openai"
+import { getAllModelsExT } from "../models"
 
 
 
@@ -14,12 +18,16 @@ export class DatabaseMigration {
   private dexieDB: DexieDB
   private dexieDBK: DexieDBK
   private dexieDBV: DexieDBV
+  private dexieDBOAI: DexieDBOAI
+  private dexieDBM: DexieDBM
 
   constructor() {
     this.chromeDB = new ChromeDB()
     this.dexieDB = new DexieDB()
     this.dexieDBK = new DexieDBK()
     this.dexieDBV = new DexieDBV()
+    this.dexieDBOAI = new DexieDBOAI()
+    this.dexieDBM = new DexieDBM()
   }
 
   async migrateAllData(): Promise<{
@@ -113,6 +121,23 @@ export class DatabaseMigration {
         await this.dexieDBK.importDataV2(knowledges)
       } catch (error) {
         errors.push(`Failed to migrate knowledge: ${error}`)
+      }
+
+      // Migrate OpenAI config
+      try {
+        const configs = await getAllOpenAIConfig()
+        await this.dexieDBOAI.importDataV2(configs)
+      } catch(error) {
+        errors.push(`Failed to migrate OAI: ${error}`)
+      }
+
+      // Migrate Custom models
+
+      try {
+        const models = await getAllModelsExT()
+        await this.dexieDBM.importDataV2(models)
+      } catch(error) {
+        errors.push(`Failed to migrate OAI: ${error}`)
       }
 
       // Migrate vector

@@ -6,7 +6,7 @@ import { deleteKnowledge, deleteSource, getAllKnowledge } from "@/db/dexie/knowl
 import { Skeleton, Table, Tag, Tooltip, message } from "antd"
 import { FileUpIcon, Trash2 } from "lucide-react"
 import { useMessageOption } from "@/hooks/useMessageOption"
-import { removeModelSuffix } from "@/db/models"
+import { removeModelSuffix } from "@/db/dexie/models"
 import { UpdateKnowledge } from "./UpdateKnowledge"
 
 export const KnowledgeSettings = () => {

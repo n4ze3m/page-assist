@@ -10,7 +10,7 @@ import { cleanUrl } from "~/libs/clean-url"
 import { getTitleById, getUserId, saveWebshare } from "@/db/dexie/helpers"
 import { useTranslation } from "react-i18next"
 import fetcher from "@/libs/fetcher"
-import { removeModelSuffix } from "@/db/models"
+import { removeModelSuffix } from "@/db/dexie/models"
 
 type Props = {
   messages: Message[]
