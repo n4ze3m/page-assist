@@ -13,7 +13,7 @@ import { useMessageOption } from "@/hooks/useMessageOption"
 import { useQueryClient } from "@tanstack/react-query"
 import { useStoreChatModelSettings } from "@/store/model"
 import { PageAssistDatabase } from "@/db/dexie/chat"
-import { useMigration } from "../Migration/MigrationOverlay"
+import { useMigration } from "../../hooks/useMigration"
 
 export default function OptionLayout({
   children
