@@ -2,6 +2,7 @@ import { getAllModelNicknames } from '../nickname';
 import {
   ChatHistory,
   HistoryInfo,
+  LastUsedModelType,
   Message,
   MessageHistory,
   Prompt,
@@ -146,6 +147,10 @@ export class PageAssistDatabase {
     return chatHistory?.title || '';
   }
 
+  async getHistoryInfo(id: string): Promise<HistoryInfo> {
+    return db.chatHistories.get(id);
+  }
+
   async addChatHistory(history: HistoryInfo) {
     await db.chatHistories.add(history);
   }
@@ -164,6 +169,14 @@ export class PageAssistDatabase {
 
   async removeMessage(history_id: string, message_id: string) {
     await db.messages.delete(message_id);
+  }
+
+  async updateLastUsedModel(history_id: string, model_id: string) {
+    await db.chatHistories.update(history_id, { model_id });
+  }
+
+  async updateLastUsedPrompt(history_id: string, usedPrompt: LastUsedModelType) {
+    await db.chatHistories.update(history_id, { last_used_prompt: usedPrompt });
   }
 
   async clear() {

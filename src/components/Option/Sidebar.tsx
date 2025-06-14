@@ -13,11 +13,7 @@ import {
 } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { useTranslation } from "react-i18next"
-import {
-  getLastUsedChatModel,
-  getLastUsedChatSystemPrompt,
-  lastUsedChatModelEnabled
-} from "@/services/model-settings" 
+import { lastUsedChatModelEnabled } from "@/services/model-settings"
 import { useDebounce } from "@/hooks/useDebounce"
 import { useState } from "react"
 import { PageAssistDatabase } from "@/db/dexie/chat"
@@ -274,21 +270,19 @@ export const Sidebar = ({
                       onClick={async () => {
                         const db = new PageAssistDatabase()
                         const history = await db.getChatHistory(chat.id)
+                        const historyDetails = await db.getHistoryInfo(chat.id)
                         setHistoryId(chat.id)
                         setHistory(formatToChatHistory(history))
                         setMessages(formatToMessage(history))
                         const isLastUsedChatModel =
                           await lastUsedChatModelEnabled()
                         if (isLastUsedChatModel) {
-                          const currentChatModel = await getLastUsedChatModel(
-                            chat.id
-                          )
+                          const currentChatModel = historyDetails?.model_id
                           if (currentChatModel) {
                             setSelectedModel(currentChatModel)
                           }
                         }
-                        const lastUsedPrompt =
-                          await getLastUsedChatSystemPrompt(chat.id)
+                        const lastUsedPrompt = historyDetails?.last_used_prompt
                         if (lastUsedPrompt) {
                           if (lastUsedPrompt.prompt_id) {
                             const prompt = await getPromptById(

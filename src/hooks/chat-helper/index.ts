@@ -1,6 +1,9 @@
-import { getLastChatHistory, saveHistory, saveMessage, updateMessage } from "@/db/dexie/helpers"
+import {
+  getLastChatHistory, saveHistory, saveMessage, updateMessage,
+  updateLastUsedModel as setLastUsedChatModel,
+  updateLastUsedPrompt as setLastUsedChatSystemPrompt
+} from "@/db/dexie/helpers"
 import { ChatDocuments } from "@/models/ChatTypes"
-import { setLastUsedChatModel, setLastUsedChatSystemPrompt } from "@/services/model-settings"
 import { generateTitle } from "@/services/title"
 import { ChatHistory } from "@/store/option"
 

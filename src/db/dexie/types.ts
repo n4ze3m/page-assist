@@ -1,6 +1,6 @@
 import { ChatDocuments } from '@/models/ChatTypes';
 
-
+export type LastUsedModelType =  { prompt_id?: string; prompt_content?: string}
 
 export type HistoryInfo = {
   id: string;
@@ -10,6 +10,8 @@ export type HistoryInfo = {
   is_pinned?: boolean;
   createdAt: number;
   doc_id?: string;
+  last_used_prompt?: LastUsedModelType;
+  model_id?: string;
 };
 
 export type WebSearch = {
@@ -136,6 +138,10 @@ export type Document = {
   followupPrompt?: string;
   compressedContent?: string;
 };
+
+
+
+
 export type MessageHistory = Message[];
 export type ChatHistory = HistoryInfo[];
 export type Prompts = Prompt[];

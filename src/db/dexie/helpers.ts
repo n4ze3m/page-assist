@@ -12,7 +12,8 @@ import {
   type UploadedFile,
   type SessionFiles,
   type Webshare,
-  Prompt
+  Prompt,
+  LastUsedModelType
 } from "./types";
 import { PageAssistDatabase } from "./chat";
 
@@ -493,4 +494,14 @@ export const importPromptsV2 = async (data: Prompt[], options: {
 } = {}) => {
   const chatDb = new PageAssistDatabase();
   return chatDb.importPromptsV2(data, options);
+}
+
+export const updateLastUsedModel = async (history_id: string, model_id: string) => {
+  const chatDb = new PageAssistDatabase();
+  return chatDb.updateLastUsedModel(history_id, model_id);
+}
+
+export const updateLastUsedPrompt = async (history_id: string, usedPrompt: LastUsedModelType) => {
+  const chatDb = new PageAssistDatabase();
+  return chatDb.updateLastUsedPrompt(history_id, usedPrompt);
 }

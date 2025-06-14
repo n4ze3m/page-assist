@@ -1,3 +1,4 @@
+import { getLastUsedChatModel, getLastUsedChatSystemPrompt } from "@/services/model-settings"
 import { PageAssitDatabase as ChromeDB } from "../index"
 import { getAllKnowledge } from "../knowledge"
 import { getAllVector, deleteVector } from "../vector"
@@ -64,7 +65,15 @@ export class DatabaseMigration {
         const chatHistories = await this.chromeDB.getChatHistories()
         for (const history of chatHistories) {
           try {
-            await this.dexieDB.addChatHistory(history)
+
+            const lastUsedModel = await getLastUsedChatModel(history.id)
+            const lastUsedPrompt = await getLastUsedChatSystemPrompt(history.id)
+
+            await this.dexieDB.addChatHistory({
+              ...history,
+              model_id: lastUsedModel,
+              last_used_prompt: lastUsedPrompt,
+            })
             migratedCounts.chatHistories++
 
             // Migrate messages for this history
