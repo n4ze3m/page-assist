@@ -1,5 +1,19 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { Empty, Skeleton, Dropdown, Menu, Tooltip, Input, message } from "antd"
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+  useInfiniteQuery
+} from "@tanstack/react-query"
+import {
+  Empty,
+  Skeleton,
+  Dropdown,
+  Menu,
+  Tooltip,
+  Input,
+  message,
+  Button
+} from "antd"
 import {
   PencilIcon,
   Trash2,
@@ -9,7 +23,8 @@ import {
   BotIcon,
   SearchIcon,
   Trash2Icon,
-  Loader2
+  Loader2,
+  ChevronDown
 } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { useTranslation } from "react-i18next"
@@ -66,18 +81,24 @@ export const Sidebar = ({
   const debouncedSearchQuery = useDebounce(searchQuery, 300)
   const [deleteGroup, setDeleteGroup] = useState<string | null>(null)
 
-  const { data: chatHistories, status } = useQuery({
+  // Using infinite query for pagination
+  const {
+    data: chatHistoriesData,
+    status,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading
+  } = useInfiniteQuery({
     queryKey: ["fetchChatHistory", debouncedSearchQuery],
-    queryFn: async () => {
+    queryFn: async ({ pageParam = 1 }) => {
       const db = new PageAssistDatabase()
-      let history
+      const result = await db.getChatHistoriesPaginated(
+        pageParam,
+        debouncedSearchQuery || undefined
+      )
 
-      if (debouncedSearchQuery) {
-        history = await db.searchChatHistories(debouncedSearchQuery)
-      } else {
-        history = await db.getChatHistories()
-      }
-
+      // Group the histories by date as before
       const now = new Date()
       const today = new Date(now.setHours(0, 0, 0, 0))
       const yesterday = new Date(today)
@@ -85,28 +106,27 @@ export const Sidebar = ({
       const lastWeek = new Date(today)
       lastWeek.setDate(lastWeek.getDate() - 7)
 
-      const pinnedItems = history.filter((item) => item.is_pinned)
-      const todayItems = history.filter(
+      const pinnedItems = result.histories.filter((item) => item.is_pinned)
+      const todayItems = result.histories.filter(
         (item) => !item.is_pinned && new Date(item?.createdAt) >= today
       )
-      const yesterdayItems = history.filter(
+      const yesterdayItems = result.histories.filter(
         (item) =>
           !item.is_pinned &&
           new Date(item?.createdAt) >= yesterday &&
           new Date(item?.createdAt) < today
       )
-      const lastWeekItems = history.filter(
+      const lastWeekItems = result.histories.filter(
         (item) =>
           !item.is_pinned &&
           new Date(item?.createdAt) >= lastWeek &&
           new Date(item?.createdAt) < yesterday
       )
-      const olderItems = history.filter(
+      const olderItems = result.histories.filter(
         (item) => !item.is_pinned && new Date(item?.createdAt) < lastWeek
       )
 
       const groups = []
-
       if (pinnedItems.length)
         groups.push({ label: "pinned", items: pinnedItems })
       if (todayItems.length) groups.push({ label: "today", items: todayItems })
@@ -116,11 +136,37 @@ export const Sidebar = ({
         groups.push({ label: "last7Days", items: lastWeekItems })
       if (olderItems.length) groups.push({ label: "older", items: olderItems })
 
-      return groups
+      return {
+        groups,
+        hasMore: result.hasMore,
+        totalCount: result.totalCount
+      }
+    },
+    getNextPageParam: (lastPage, allPages) => {
+      return lastPage.hasMore ? allPages.length + 1 : undefined
     },
     placeholderData: (prev) => prev,
-    enabled: isOpen
+    enabled: isOpen,
+    initialPageParam: 1
   })
+
+  // Flatten all groups from all pages
+  const chatHistories =
+    chatHistoriesData?.pages.reduce(
+      (acc, page) => {
+        // Merge groups with same labels
+        page.groups.forEach((group) => {
+          const existingGroup = acc.find((g) => g.label === group.label)
+          if (existingGroup) {
+            existingGroup.items.push(...group.items)
+          } else {
+            acc.push({ ...group })
+          }
+        })
+        return acc
+      },
+      [] as Array<{ label: string; items: any[] }>
+    ) || []
 
   const { mutate: deleteHistory } = useMutation({
     mutationKey: ["deleteHistory"],
@@ -146,6 +192,7 @@ export const Sidebar = ({
       })
     }
   })
+
   const { mutate: deleteHistoriesByRange, isPending: deleteRangeLoading } =
     useMutation({
       mutationKey: ["deleteHistoriesByRange"],
@@ -178,6 +225,7 @@ export const Sidebar = ({
     }
     deleteHistoriesByRange(rangeLabel)
   }
+
   const { mutate: pinChatHistory, isPending: pinLoading } = useMutation({
     mutationKey: ["pinHistory"],
     mutationFn: async (data: { id: string; is_pinned: boolean }) => {
@@ -189,6 +237,7 @@ export const Sidebar = ({
       })
     }
   })
+
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value)
   }
@@ -196,6 +245,13 @@ export const Sidebar = ({
   const clearSearch = () => {
     setSearchQuery("")
   }
+
+  const handleLoadMore = () => {
+    if (hasNextPage && !isFetchingNextPage) {
+      fetchNextPage()
+    }
+  }
+
   return (
     <div
       className={`overflow-y-auto z-99 ${temporaryChat ? "pointer-events-none opacity-50" : ""}`}>
@@ -219,21 +275,25 @@ export const Sidebar = ({
           />
         </div>
       </div>
+
       {status === "success" && chatHistories.length === 0 && (
         <div className="flex justify-center items-center mt-20 overflow-hidden">
           <Empty description={t("common:noHistory")} />
         </div>
       )}
-      {status === "pending" && (
+
+      {(status === "pending" || isLoading) && (
         <div className="flex justify-center items-center mt-5">
           <Skeleton active paragraph={{ rows: 8 }} />
         </div>
       )}
+
       {status === "error" && (
         <div className="flex justify-center items-center">
           <span className="text-red-500">Error loading history</span>
         </div>
       )}
+
       {status === "success" && chatHistories.length > 0 && (
         <div className="flex flex-col gap-2">
           {chatHistories.map((group, groupIndex) => (
@@ -367,6 +427,35 @@ export const Sidebar = ({
               </div>
             </div>
           ))}
+
+          {/* Load More Button */}
+          {hasNextPage && (
+            <div className="flex justify-center mt-4 mb-2">
+              <Button
+                type="default"
+                onClick={handleLoadMore}
+                loading={isFetchingNextPage}
+                icon={
+                  !isFetchingNextPage ? (
+                    <ChevronDown className="w-4 h-4" />
+                  ) : undefined
+                }
+                className="flex items-center gap-2 text-sm">
+                {isFetchingNextPage
+                  ? t("common:loading")
+                  : t("common:loadMore")}
+              </Button>
+            </div>
+          )}
+
+          {/* End of results indicator */}
+          {!hasNextPage && chatHistories.length > 0 && (
+            <div className="flex justify-center mt-4 mb-2">
+              <span className="text-xs text-gray-500 dark:text-gray-400">
+                {t("common:endOfResults")}
+              </span>
+            </div>
+          )}
         </div>
       )}
     </div>

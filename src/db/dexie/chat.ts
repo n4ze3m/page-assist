@@ -13,6 +13,18 @@ import {
 
 } from "./types"
 import { db } from './schema';
+const PAGE_SIZE = 30; 
+
+function fastForward(lastRow: any, idProp: string, otherCriterion?: (item: any) => boolean) {
+  let fastForwardComplete = false;
+  return (item: any) => {
+    if (fastForwardComplete) return otherCriterion ? otherCriterion(item) : true;
+    if (item[idProp] === lastRow[idProp]) {
+      fastForwardComplete = true;
+    }
+    return false;
+  };
+}
 
 function simpleFuzzyMatch(text: string, query: string): boolean {
   if (!text || !query) {
@@ -205,6 +217,94 @@ export class PageAssistDatabase {
 
   async deleteMessage(history_id: string) {
     await db.messages.where('history_id').equals(history_id).delete();
+  }
+  async getChatHistoriesPaginated(page: number = 1, searchQuery?: string): Promise<{
+    histories: ChatHistory;
+    hasMore: boolean;
+    totalCount: number;
+  }> {
+    const offset = (page - 1) * PAGE_SIZE;
+    
+    if (searchQuery) {
+      const allResults = await this.searchChatHistories(searchQuery);
+      const paginatedResults = allResults.slice(offset, offset + PAGE_SIZE);
+      
+      return {
+        histories: paginatedResults,
+        hasMore: offset + PAGE_SIZE < allResults.length,
+        totalCount: allResults.length
+      };
+    }
+
+    if (page === 1) {
+      const histories = await db.chatHistories
+        .orderBy('createdAt')
+        .reverse()
+        .limit(PAGE_SIZE)
+        .toArray();
+      
+      const totalCount = await db.chatHistories.count();
+      
+      return {
+        histories,
+        hasMore: histories.length === PAGE_SIZE,
+        totalCount
+      };
+    } else {
+      const skipCount = offset;
+      const histories = await db.chatHistories
+        .orderBy('createdAt')
+        .reverse()
+        .offset(skipCount)
+        .limit(PAGE_SIZE)
+        .toArray();
+      
+      const totalCount = await db.chatHistories.count();
+      
+      return {
+        histories,
+        hasMore: offset + PAGE_SIZE < totalCount,
+        totalCount
+      };
+    }
+  }
+  async getChatHistoriesPaginatedOptimized(lastEntry?: any, searchQuery?: string): Promise<{
+    histories: ChatHistory;
+    hasMore: boolean;
+  }> {
+    if (searchQuery) {
+      const allResults = await this.searchChatHistories(searchQuery);
+      return {
+        histories: allResults.slice(0, PAGE_SIZE),
+        hasMore: allResults.length > PAGE_SIZE
+      };
+    }
+
+    if (!lastEntry) {
+      const histories = await db.chatHistories
+        .orderBy('createdAt')
+        .reverse()
+        .limit(PAGE_SIZE)
+        .toArray();
+      
+      return {
+        histories,
+        hasMore: histories.length === PAGE_SIZE
+      };
+    } else {
+      const histories = await db.chatHistories
+        .where('createdAt')
+        .belowOrEqual(lastEntry.createdAt)
+        .filter(fastForward(lastEntry, "id"))
+        .limit(PAGE_SIZE)
+        .reverse()
+        .toArray();
+      
+      return {
+        histories,
+        hasMore: histories.length === PAGE_SIZE
+      };
+    }
   }
 
   // Prompts Methods
