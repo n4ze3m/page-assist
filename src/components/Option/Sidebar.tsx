@@ -447,15 +447,6 @@ export const Sidebar = ({
               </Button>
             </div>
           )}
-
-          {/* End of results indicator */}
-          {!hasNextPage && chatHistories.length > 0 && (
-            <div className="flex justify-center mt-4 mb-2">
-              <span className="text-xs text-gray-500 dark:text-gray-400">
-                {t("common:endOfResults")}
-              </span>
-            </div>
-          )}
         </div>
       )}
     </div>
