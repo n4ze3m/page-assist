@@ -1,16 +1,4 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-// import {
-//   PageAssitDatabase,
-//   formatToChatHistory,
-//   formatToMessage,
-//   deleteByHistoryId,
-//   updateHistory,
-//   pinHistory,
-//   getPromptById,
-//   deleteHistoriesByDateRange,
-//   UploadedFile,
-//   getSessionFiles
-// } from "@/db"
 import { Empty, Skeleton, Dropdown, Menu, Tooltip, Input, message } from "antd"
 import {
   PencilIcon,
@@ -29,11 +17,20 @@ import {
   getLastUsedChatModel,
   getLastUsedChatSystemPrompt,
   lastUsedChatModelEnabled
-} from "@/services/model-settings"
+} from "@/services/model-settings" 
 import { useDebounce } from "@/hooks/useDebounce"
 import { useState } from "react"
-import { PageAssistDatabase,  } from "@/db/dexie/chat"
-import { deleteByHistoryId, deleteHistoriesByDateRange, formatToChatHistory, updateHistory, pinHistory, formatToMessage, getSessionFiles, getPromptById } from "@/db/dexie/helpers"
+import { PageAssistDatabase } from "@/db/dexie/chat"
+import {
+  deleteByHistoryId,
+  deleteHistoriesByDateRange,
+  formatToChatHistory,
+  updateHistory,
+  pinHistory,
+  formatToMessage,
+  getSessionFiles,
+  getPromptById
+} from "@/db/dexie/helpers"
 import { UploadedFile } from "@/db/dexie/types"
 
 type Props = {

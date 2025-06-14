@@ -28,8 +28,15 @@ export const useMigration = () => {
         if (isMigrated) {
           return { success: false }
         }
+        notification.info({
+          message: "One-time update",
+          description: "Optimizing performance..."
+        })
         console.log("Starting background migration...")
         await runAllMigrations()
+        notification.success({
+          message: "Migration completed successfully"
+        })
         console.log("Background migration completed successfully")
         return { success: true }
       } catch (error) {
