@@ -1,4 +1,5 @@
-import { Source, createKnowledge } from "@/db/knowledge"
+import { createKnowledge } from "@/db/dexie/knowledge"
+import { Source } from "@/db/knowledge"
 import { defaultEmbeddingModelForRag } from "@/services/ollama"
 import { convertToSource } from "@/utils/to-source"
 import { useMutation } from "@tanstack/react-query"

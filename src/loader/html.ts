@@ -71,7 +71,7 @@ export class PageAssistHtmlLoader
 
         let text = ""
 
-        transcript.forEach((item) => {
+        transcript?.forEach((item) => {
           text += `[${item?.start}] ${item?.text}\n`
         })
 

@@ -1,5 +1,5 @@
 import { SaveButton } from "@/components/Common/SaveButton"
-import { saveModelNickname } from "@/db/nickname"
+import { saveModelNickname } from "@/db/dexie/nickname"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { Form, Input, Modal } from "antd"
 import React from "react"

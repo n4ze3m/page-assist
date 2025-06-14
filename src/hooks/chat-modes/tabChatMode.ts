@@ -4,7 +4,7 @@ import {
   promptForRag,
 } from "~/services/ollama"
 import { type ChatHistory, type Message } from "~/store/option"
-import { generateID,   } from "@/db"
+import { generateID } from "@/db/dexie/helpers"
 import { generateHistory } from "@/utils/generate-history"
 import { pageAssistModel } from "@/models"
 import { humanMessageFormatter } from "@/utils/human-message"
@@ -14,7 +14,7 @@ import {
   mergeReasoningContent,
   removeReasoning
 } from "@/libs/reasoning"
-import { getModelNicknameByID } from "@/db/nickname"
+import { getModelNicknameByID } from "@/db/dexie/nickname"
 import { ChatDocuments } from "@/models/ChatTypes"
 import { getTabContents } from "@/libs/get-tab-contents"
 

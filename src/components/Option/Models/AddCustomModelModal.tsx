@@ -1,5 +1,5 @@
-import { createModel } from "@/db/models"
-import { getAllOpenAIConfig } from "@/db/openai"
+import { createModel } from "@/db/dexie/models"
+import { getAllOpenAIConfig } from "@/db/dexie/openai"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Input, Modal, Form, Select, Radio } from "antd"
 import { Loader2 } from "lucide-react"

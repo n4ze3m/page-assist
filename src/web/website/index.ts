@@ -1,6 +1,8 @@
 import { cleanUrl } from "@/libs/clean-url"
 import { PageAssistHtmlLoader } from "@/loader/html"
 import { pageAssistEmbeddingModel } from "@/models/embedding"
+import { getNoOfRetrievedDocs } from "@/services/app"
+import { getMaxContextSize, isChatWithWebsiteEnabled } from "@/services/kb"
 import { defaultEmbeddingModelForRag, getOllamaURL } from "@/services/ollama"
 import { getPageAssistTextSplitter } from "@/utils/text-splitter"
 
@@ -12,6 +14,23 @@ export const processSingleWebsite = async (url: string, query: string) => {
         url
     })
     const docs = await loader.loadByURL()
+
+    const maxContextSize = await getMaxContextSize()
+
+    const useVS = await isChatWithWebsiteEnabled()
+
+    if (useVS) {
+        if (docs.length > 0) {
+            const doc = docs[0]
+            return [
+                {
+                    url: doc?.metadata?.url,
+                    content: doc?.pageContent?.substring(0, maxContextSize),
+                }
+            ]
+        }
+    }
+
 
     const ollamaUrl = await getOllamaURL()
 

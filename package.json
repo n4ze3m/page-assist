@@ -41,6 +41,8 @@
     "cheerio": "^1.0.0-rc.12",
     "d3-dsv": "2",
     "dayjs": "^1.11.10",
+    "dexie": "^4.0.11",
+    "dexie-react-hooks": "^1.1.7",
     "html-to-text": "^9.0.5",
     "html2canvas": "^1.4.1",
     "i18next": "^23.10.1",

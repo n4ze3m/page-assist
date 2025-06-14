@@ -18,7 +18,7 @@ import {
   getPromptById,
   removeMessageUsingHistoryId,
   updateMessageByIndex
-} from "@/db"
+} from "@/db/dexie/helpers"
 import { saveMessageOnError, saveMessageOnSuccess } from "./chat-helper"
 import { notification } from "antd"
 import { useTranslation } from "react-i18next"
@@ -40,7 +40,7 @@ import {
   mergeReasoningContent,
   removeReasoning
 } from "@/libs/reasoning"
-import { getModelNicknameByID } from "@/db/nickname"
+import { getModelNicknameByID } from "@/db/dexie/nickname"
 import { systemPromptFormatter } from "@/utils/system-message"
 
 export const useMessage = () => {

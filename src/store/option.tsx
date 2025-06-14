@@ -1,7 +1,7 @@
 import { Knowledge } from "@/db/knowledge"
 import { ChatDocuments } from "@/models/ChatTypes"
 import { create } from "zustand"
-import { type UploadedFile } from "@/db"
+import { type UploadedFile } from "@/db/dexie/types"
 
 type WebSearch = {
   search_engine: string

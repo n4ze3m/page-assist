@@ -1,4 +1,4 @@
-import { isCustomModel } from "@/db/models"
+import { isCustomModel } from "@/db/dexie/models"
 import { HumanMessage, type MessageContent } from "@langchain/core/messages"
 
 type HumanMessageType = {

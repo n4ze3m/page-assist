@@ -8,8 +8,7 @@ import {
   formatToMessage,
   getPromptById,
   getRecentChatFromWebUI
-} from "@/db"
-import { getLastUsedChatSystemPrompt } from "@/services/model-settings"
+} from "@/db/dexie/helpers"
 import { useStoreChatModelSettings } from "@/store/model"
 import { useSmartScroll } from "@/hooks/useSmartScroll"
 import { ChevronDown } from "lucide-react"
@@ -118,15 +117,13 @@ export const Playground = () => {
         setHistory(formatToChatHistory(recentChat.messages))
         setMessages(formatToMessage(recentChat.messages))
 
-        const lastUsedPrompt = await getLastUsedChatSystemPrompt(
-          recentChat.history.id
-        )
+        const lastUsedPrompt = recentChat?.history?.last_used_prompt
         if (lastUsedPrompt) {
           if (lastUsedPrompt.prompt_id) {
             const prompt = await getPromptById(lastUsedPrompt.prompt_id)
             if (prompt) {
               setSelectedSystemPrompt(lastUsedPrompt.prompt_id)
-              setSystemPrompt(lastUsedPrompt.prompt_content)
+              setSystemPrompt(prompt.content)
             }
           }
           setSystemPrompt(lastUsedPrompt.prompt_content)

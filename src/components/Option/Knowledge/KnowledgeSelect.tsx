@@ -1,4 +1,4 @@
-import { getAllKnowledge } from "@/db/knowledge"
+import { getAllKnowledge } from "@/db/dexie/knowledge"
 import { useMessageOption } from "@/hooks/useMessageOption"
 import { useQuery } from "@tanstack/react-query"
 import { Dropdown, Tooltip } from "antd"

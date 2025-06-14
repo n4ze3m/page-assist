@@ -1,10 +1,10 @@
-import { getOpenAIConfigById } from "@/db/openai"
+import { getOpenAIConfigById } from "@/db/dexie/openai"
 import { getAllOpenAIModels } from "@/libs/openai"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useTranslation } from "react-i18next"
 import { Checkbox, Input, Spin, message, Radio } from "antd"
 import { useState, useMemo } from "react"
-import { createManyModels } from "@/db/models"
+import { createManyModels } from "@/db/dexie/models"
 import { Popover } from "antd"
 import { InfoIcon } from "lucide-react"
 

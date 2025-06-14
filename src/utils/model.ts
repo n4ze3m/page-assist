@@ -1,4 +1,4 @@
-import { getModelInfo, isCustomModel } from "@/db/models"
+import { getModelInfo, isCustomModel } from "@/db/dexie/models"
 import { Storage } from "@plasmohq/storage"
 const storage = new Storage()
 

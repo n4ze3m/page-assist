@@ -1,13 +1,44 @@
+import { importChatHistory, importPrompts } from "@/db"
 import {
   exportChatHistory,
   exportPrompts,
-  importChatHistory,
-  importPrompts
-} from "@/db"
-import { exportKnowledge, importKnowledge } from "@/db/knowledge"
-import { exportVectors, importVectors } from "@/db/vector"
-import { notification } from "antd"
+  importChatHistoryV2,
+  importPromptsV2
+} from "@/db/dexie/helpers"
+import { exportKnowledge, importKnowledgeV2 } from "@/db/dexie/knowledge"
+import { db } from "@/db/dexie/schema"
+import { exportVectors, importVectorsV2 } from "@/db/dexie/vector"
+import { importKnowledge } from "@/db/knowledge"
+import { importVectors } from "@/db/vector"
 
+export const formatKnowledge = (knowledge: any[]) => {
+  const kb = []
+  for (const k of knowledge) {
+    if (Array.isArray(k)) {
+      kb.push(...formatKnowledge(k))
+    } else {
+      if (k?.db_type === "knowledge") {
+        kb.push(k)
+      }
+    }
+  }
+
+  return kb
+}
+export const formatVector = (vector: any[]) => {
+  const vec = []
+  for (const v of vector) {
+    if (Array.isArray(v)) {
+      vector.push(...formatVector(v))
+    } else {
+
+      if (v?.vectors) {
+        vec.push(v)
+      }
+    }
+  }
+  return vec
+}
 export const exportPageAssistData = async () => {
   const knowledge = await exportKnowledge()
   const chat = await exportChatHistory()
@@ -33,6 +64,62 @@ export const exportPageAssistData = async () => {
   URL.revokeObjectURL(url)
 }
 export const importPageAssistData = async (file: File) => {
+
+
+  // return importPageAssistDataOld(file)
+
+
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = async () => {
+      try {
+        const data = JSON.parse(reader.result as string)
+        const options = {
+        }
+        await db.transaction('rw', [
+          db.chatHistories,
+          db.messages,
+          db.prompts,
+          db.knowledge,
+          db.vectors,
+          db.sessionFiles
+        ], async () => {
+          if (data?.knowledge && Array.isArray(data.knowledge)) {
+            await importKnowledgeV2(formatKnowledge(data?.knowledge), options)
+          }
+
+          if (data?.chat && Array.isArray(data.chat)) {
+            await importChatHistoryV2(data.chat, options)
+          }
+
+          if (data?.vector && Array.isArray(data.vector)) {
+            await importVectorsV2(formatVector(data.vector), options)
+          }
+
+          if (data?.prompts && Array.isArray(data.prompts)) {
+            await importPromptsV2(data.prompts, options)
+          }
+        })
+
+
+        resolve(true)
+      } catch (e) {
+        console.error(e)
+        reject(e)
+      }
+    }
+
+    reader.onerror = () => reject(reader.error)
+    reader.readAsText(file)
+  })
+}
+
+
+
+
+
+// @deprecated don't use this
+export const importPageAssistDataOld = async (file: File) => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader()
     reader.onload = async () => {

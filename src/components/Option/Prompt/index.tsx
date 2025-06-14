@@ -14,7 +14,7 @@ import {
 import { Trash2, Pen, Computer, Zap } from "lucide-react"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
-import { deletePromptById, getAllPrompts, savePrompt, updatePrompt } from "@/db"
+import { deletePromptById, getAllPrompts, savePrompt, updatePrompt } from "@/db/dexie/helpers"
 import {
   getAllCopilotPrompts,
   setAllCopilotPrompts

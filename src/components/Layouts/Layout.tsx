@@ -8,10 +8,12 @@ import { useTranslation } from "react-i18next"
 import { CurrentChatModelSettings } from "../Common/Settings/CurrentChatModelSettings"
 import { Header } from "./Header"
 import { EraserIcon, XIcon } from "lucide-react"
-import { PageAssitDatabase } from "@/db"
+// import { PageAssitDatabase } from "@/db/"
 import { useMessageOption } from "@/hooks/useMessageOption"
 import { useQueryClient } from "@tanstack/react-query"
 import { useStoreChatModelSettings } from "@/store/model"
+import { PageAssistDatabase } from "@/db/dexie/chat"
+import { useMigration } from "../../hooks/useMigration"
 
 export default function OptionLayout({
   children
@@ -21,6 +23,7 @@ export default function OptionLayout({
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const { t } = useTranslation(["option", "common", "settings"])
   const [openModelSettings, setOpenModelSettings] = useState(false)
+  useMigration()
   const {
     setMessages,
     setHistory,
@@ -32,7 +35,6 @@ export default function OptionLayout({
     setSelectedSystemPrompt,
     setContextFiles
   } = useMessageOption()
-
   const queryClient = useQueryClient()
   const { setSystemPrompt } = useStoreChatModelSettings()
 
@@ -68,7 +70,7 @@ export default function OptionLayout({
                       )
 
                       if (confirm) {
-                        const db = new PageAssitDatabase()
+                        const db = new PageAssistDatabase()
                         await db.deleteAllChatHistory()
                         await queryClient.invalidateQueries({
                           queryKey: ["fetchChatHistory"]

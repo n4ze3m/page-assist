@@ -2,11 +2,11 @@ import { useState } from "react"
 import { useTranslation } from "react-i18next"
 import { AddKnowledge } from "./AddKnowledge"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { deleteKnowledge, deleteSource, getAllKnowledge } from "@/db/knowledge"
+import { deleteKnowledge, deleteSource, getAllKnowledge } from "@/db/dexie/knowledge"
 import { Skeleton, Table, Tag, Tooltip, message } from "antd"
 import { FileUpIcon, Trash2 } from "lucide-react"
 import { useMessageOption } from "@/hooks/useMessageOption"
-import { removeModelSuffix } from "@/db/models"
+import { removeModelSuffix } from "@/db/dexie/models"
 import { UpdateKnowledge } from "./UpdateKnowledge"
 
 export const KnowledgeSettings = () => {

@@ -8,8 +8,8 @@ import {
   setTotalFilePerKB
 } from "./app"
 import fetcher from "@/libs/fetcher"
-import { ollamaFormatAllCustomModels } from "@/db/models"
-import { getAllModelNicknames } from "@/db/nickname"
+import { ollamaFormatAllCustomModels } from "@/db/dexie/models"
+import { getAllModelNicknames } from "@/db/dexie/nickname"
 
 const storage = new Storage()
   

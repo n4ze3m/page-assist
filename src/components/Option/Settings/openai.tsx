@@ -12,7 +12,7 @@ import {
   getAllOpenAIConfig,
   deleteOpenAIConfig,
   updateOpenAIConfig
-} from "@/db/openai"
+} from "@/db/dexie/openai"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Pencil, Trash2, DownloadIcon, Trash2Icon } from "lucide-react"
 import { OpenAIFetchModel } from "./openai-fetch-model"

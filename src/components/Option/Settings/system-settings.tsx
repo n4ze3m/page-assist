@@ -1,6 +1,5 @@
 import { BetaTag } from "@/components/Common/Beta"
-import { useFontSize } from "@/context/FontSizeProvider"
-import { PageAssitDatabase } from "@/db"
+import { useFontSize } from "@/context/FontSizeProvider" 
 import { useMessageOption } from "@/hooks/useMessageOption"
 import {
   exportPageAssistData,
@@ -13,6 +12,7 @@ import { Select, notification, Switch } from "antd"
 import { useTranslation } from "react-i18next"
 import { Loader2, RotateCcw, Upload } from "lucide-react"
 import { toBase64 } from "@/libs/to-base64"
+import { PageAssistDatabase } from "@/db/dexie/chat"
 
 export const SystemSettings = () => {
   const { t } = useTranslation(["settings", "knowledge"])
@@ -265,8 +265,8 @@ export const SystemSettings = () => {
             )
 
             if (confirm) {
-              const db = new PageAssitDatabase()
-              await db.deleteAllChatHistory()
+              const db = new PageAssistDatabase()
+              await db.clearDB()
               queryClient.invalidateQueries({
                 queryKey: ["fetchChatHistory"]
               })
