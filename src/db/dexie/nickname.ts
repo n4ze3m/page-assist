@@ -1,44 +1,65 @@
-import { Storage } from "@plasmohq/storage"
+import { db } from "./schema"
+import { ModelNicknames, ModelNickname as MNick } from "./types";
 
 export class ModelNickname {
-    db: Storage
-    private KEY = "modelNickname"
-
-    constructor() {
-        this.db = new Storage({
-            area: "local"
-        })
-    }
-
     async saveModelNickname(
-        model_id: string,
+        id: string,
         model_name: string,
         model_avatar?: string
     ): Promise<void> {
-        const modelNames = (await this.db.get(this.KEY)) || {}
-
-        modelNames[model_id] = {
+        await db.modelNickname.put({
+            id,
             model_name,
-            ...(model_avatar && { model_avatar })
-        }
-
-        await this.db.set(this.KEY, modelNames)
+            model_id: id,
+            model_avatar
+        })
     }
 
     async getModelNicknameByID(model_id: string) {
-        const data = (await this.db.get(this.KEY)) || {}
-        return data[model_id]
+        return await db.modelNickname.get(model_id)
     }
 
     async getAllModelNicknames() {
-        const data = (await this.db.get(this.KEY)) || {}
-        return data
+        return await db.modelNickname.reverse().toArray()
+    }
+
+    async importDataV2(data: ModelNicknames, options: {
+        replaceExisting?: boolean;
+        mergeData?: boolean;
+    } = {}): Promise<void> {
+        const { replaceExisting = false, mergeData = true } = options;
+
+        for (const oai of data) {
+            const existingKnowledge = await this.getModelNicknameByID(oai.id);
+
+            if (existingKnowledge && !replaceExisting) {
+                if (mergeData) {
+                    await this.saveModelNickname(
+                        oai.model_id,
+                        oai.model_name,
+                        oai.model_avatar
+                    );
+                }
+                continue;
+            }
+
+            await this.saveModelNickname(
+                oai.model_id,
+                oai.model_name,
+                oai.model_avatar
+            );
+        }
     }
 }
 
 export const getAllModelNicknames = async () => {
     const modelNickname = new ModelNickname()
-    return await modelNickname.getAllModelNicknames()
+    const data = await modelNickname.getAllModelNicknames()
+    const result:Record<string, MNick> = {}
+    for(const d of data) {
+        result[d.model_id] = d
+    }
+    return result
 }
 
 export const getModelNicknameByID = async (

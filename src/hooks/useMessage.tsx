@@ -40,7 +40,7 @@ import {
   mergeReasoningContent,
   removeReasoning
 } from "@/libs/reasoning"
-import { getModelNicknameByID } from "@/db/nickname"
+import { getModelNicknameByID } from "@/db/dexie/nickname"
 import { systemPromptFormatter } from "@/utils/system-message"
 
 export const useMessage = () => {

@@ -16,7 +16,7 @@ import {
   mergeReasoningContent,
   removeReasoning
 } from "@/libs/reasoning"
-import { getModelNicknameByID } from "@/db/nickname"
+import { getModelNicknameByID } from "@/db/dexie/nickname"
 import { formatDocs } from "@/chain/chat-with-x"
 import { getAllDefaultModelSettings } from "@/services/model-settings"
 import { getNoOfRetrievedDocs } from "@/services/app"

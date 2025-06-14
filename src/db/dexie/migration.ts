@@ -6,9 +6,11 @@ import { PageAssistDatabase as DexieDB, } from "./chat"
 import { PageAssistKnowledge as DexieDBK } from "./knowledge"
 import { PageAssistVectorDb as DexieDBV } from "./vector"
 import { OpenAIModelDb as DexieDBOAI } from "./openai"
+import {ModelNickname as DexieDBNick} from "./nickname"
 import { ModelDb as DexieDBM } from "./models"
 import { getAllOpenAIConfig } from "../openai"
 import { getAllModelsExT } from "../models"
+import { getAllModelNicknamesMig } from "../nickname"
 
 
 
@@ -20,6 +22,7 @@ export class DatabaseMigration {
   private dexieDBV: DexieDBV
   private dexieDBOAI: DexieDBOAI
   private dexieDBM: DexieDBM
+  private dexieNick: DexieDBNick
 
   constructor() {
     this.chromeDB = new ChromeDB()
@@ -28,6 +31,7 @@ export class DatabaseMigration {
     this.dexieDBV = new DexieDBV()
     this.dexieDBOAI = new DexieDBOAI()
     this.dexieDBM = new DexieDBM()
+    this.dexieNick = new DexieDBNick()
   }
 
   async migrateAllData(): Promise<{
@@ -147,6 +151,14 @@ export class DatabaseMigration {
       } catch (error) {
         errors.push(`Failed to migrate knowledge: ${error}`)
       }
+     // Migrate nickname
+      try {
+        const nicknames = await getAllModelNicknamesMig()
+        await this.dexieNick.importDataV2(nicknames)
+      } catch (error) {
+        errors.push(`Failed to migrate nick: ${error}`)
+      }
+
 
 
       // Migrate prompts

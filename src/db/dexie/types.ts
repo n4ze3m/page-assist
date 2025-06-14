@@ -1,6 +1,6 @@
 import { ChatDocuments } from '@/models/ChatTypes';
 
-export type LastUsedModelType =  { prompt_id?: string; prompt_content?: string}
+export type LastUsedModelType = { prompt_id?: string; prompt_content?: string }
 
 export type HistoryInfo = {
   id: string;
@@ -140,14 +140,14 @@ export type Document = {
 };
 
 export type OpenAIModelConfig = {
-    id: string
-    name: string
-    baseUrl: string
-    apiKey?: string
-    createdAt: number
-    provider?: string
-    db_type: string
-    headers?: { key: string; value: string }[]
+  id: string
+  name: string
+  baseUrl: string
+  apiKey?: string
+  createdAt: number
+  provider?: string
+  db_type: string
+  headers?: { key: string; value: string }[]
 }
 
 export type Model = {
@@ -162,9 +162,17 @@ export type Model = {
   db_type: string
 }
 
+export type ModelNickname = {
+  id: string,
+  model_id: string,
+  model_name: string,
+  model_avatar?: string
+}
+
 
 export type MessageHistory = Message[];
 export type ChatHistory = HistoryInfo[];
 export type Prompts = Prompt[];
 export type OpenAIModelConfigs = OpenAIModelConfig[]
 export type Models = Model[]
+export type ModelNicknames = ModelNickname[]
