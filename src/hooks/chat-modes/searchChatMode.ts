@@ -112,7 +112,6 @@ export const searchChatMode = async (
 
     let query = message
 
-    // if (newMessage.length > 2) {
     let questionPrompt = await geWebSearchFollowUpPrompt()
     const lastTenMessages = newMessage.slice(-10)
     lastTenMessages.pop()
@@ -171,7 +170,6 @@ export const searchChatMode = async (
     const { prompt, source } = await getSystemPromptForWeb(query)
     setIsSearchingInternet(false)
 
-    //  message = message.trim().replaceAll("\n", " ")
 
     let humanMessage = await humanMessageFormatter({
       content: [
