@@ -14,7 +14,7 @@ import { useSmartScroll } from "@/hooks/useSmartScroll"
 import { ChevronDown } from "lucide-react"
 import { useStorage } from "@plasmohq/storage/hook"
 import { Storage } from "@plasmohq/storage"
-
+import { otherUnsupportedTypes } from "../Knowledge/utils/unsupported-types"
 export const Playground = () => {
   const drop = React.useRef<HTMLDivElement>(null)
   const [dropedFile, setDropedFile] = React.useState<File | undefined>()
@@ -65,19 +65,22 @@ export const Playground = () => {
 
       const files = Array.from(e.dataTransfer?.files || [])
 
-      const isImage = files.every((file) => file.type.startsWith("image/"))
+      const hasUnsupportedFiles = files.some((file) =>
+        otherUnsupportedTypes.includes(file.type)
+      )
 
-      if (!isImage) {
+      if (hasUnsupportedFiles) {
         setDropState("error")
         return
       }
 
-      const newFiles = Array.from(e.dataTransfer?.files || []).slice(0, 1)
+      const newFiles = Array.from(e.dataTransfer?.files || []).slice(0, 5) // Allow multiple files
       if (newFiles.length > 0) {
-        setDropedFile(newFiles[0])
+        newFiles.forEach((file) => {
+          setDropedFile(file)
+        })
       }
     }
-
     const handleDragEnter = (e: DragEvent) => {
       e.preventDefault()
       e.stopPropagation()
@@ -142,18 +145,21 @@ export const Playground = () => {
       className={`relative flex h-full flex-col items-center ${
         dropState === "dragging" ? "bg-gray-100 dark:bg-gray-800" : ""
       } bg-white dark:bg-[#171717]`}
-      style={chatBackgroundImage ? {
-        backgroundImage: `url(${chatBackgroundImage})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat'
-      } : {}}>
-      
+      style={
+        chatBackgroundImage
+          ? {
+              backgroundImage: `url(${chatBackgroundImage})`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              backgroundRepeat: "no-repeat"
+            }
+          : {}
+      }>
       {/* Background overlay for opacity effect */}
       {chatBackgroundImage && (
         <div
           className="absolute inset-0 bg-white dark:bg-[#171717]"
-          style={{ opacity: 0.9, pointerEvents: 'none' }}
+          style={{ opacity: 0.9, pointerEvents: "none" }}
         />
       )}
 
