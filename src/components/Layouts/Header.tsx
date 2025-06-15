@@ -59,6 +59,7 @@ export const Header: React.FC<Props> = ({
     queryKey: ["fetchModel"],
     queryFn: () => fetchChatModels({ returnEmpty: true }),
     refetchIntervalInBackground: false,
+    staleTime: 1000 * 60 *1, 
   })
 
   const { data: prompts, isLoading: isPromptLoading } = useQuery({
