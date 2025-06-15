@@ -8,14 +8,13 @@ import {
   formatToMessage,
   getPromptById,
   getRecentChatFromWebUI
-} from "@/db"
-import { getLastUsedChatSystemPrompt } from "@/services/model-settings"
+} from "@/db/dexie/helpers"
 import { useStoreChatModelSettings } from "@/store/model"
 import { useSmartScroll } from "@/hooks/useSmartScroll"
 import { ChevronDown } from "lucide-react"
 import { useStorage } from "@plasmohq/storage/hook"
 import { Storage } from "@plasmohq/storage"
-
+import { otherUnsupportedTypes } from "../Knowledge/utils/unsupported-types"
 export const Playground = () => {
   const drop = React.useRef<HTMLDivElement>(null)
   const [dropedFile, setDropedFile] = React.useState<File | undefined>()
@@ -66,19 +65,22 @@ export const Playground = () => {
 
       const files = Array.from(e.dataTransfer?.files || [])
 
-      const isImage = files.every((file) => file.type.startsWith("image/"))
+      const hasUnsupportedFiles = files.some((file) =>
+        otherUnsupportedTypes.includes(file.type)
+      )
 
-      if (!isImage) {
+      if (hasUnsupportedFiles) {
         setDropState("error")
         return
       }
 
-      const newFiles = Array.from(e.dataTransfer?.files || []).slice(0, 1)
+      const newFiles = Array.from(e.dataTransfer?.files || []).slice(0, 5) // Allow multiple files
       if (newFiles.length > 0) {
-        setDropedFile(newFiles[0])
+        newFiles.forEach((file) => {
+          setDropedFile(file)
+        })
       }
     }
-
     const handleDragEnter = (e: DragEvent) => {
       e.preventDefault()
       e.stopPropagation()
@@ -118,15 +120,13 @@ export const Playground = () => {
         setHistory(formatToChatHistory(recentChat.messages))
         setMessages(formatToMessage(recentChat.messages))
 
-        const lastUsedPrompt = await getLastUsedChatSystemPrompt(
-          recentChat.history.id
-        )
+        const lastUsedPrompt = recentChat?.history?.last_used_prompt
         if (lastUsedPrompt) {
           if (lastUsedPrompt.prompt_id) {
             const prompt = await getPromptById(lastUsedPrompt.prompt_id)
             if (prompt) {
               setSelectedSystemPrompt(lastUsedPrompt.prompt_id)
-              setSystemPrompt(lastUsedPrompt.prompt_content)
+              setSystemPrompt(prompt.content)
             }
           }
           setSystemPrompt(lastUsedPrompt.prompt_content)
@@ -145,18 +145,21 @@ export const Playground = () => {
       className={`relative flex h-full flex-col items-center ${
         dropState === "dragging" ? "bg-gray-100 dark:bg-gray-800" : ""
       } bg-white dark:bg-[#171717]`}
-      style={chatBackgroundImage ? {
-        backgroundImage: `url(${chatBackgroundImage})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat'
-      } : {}}>
-      
+      style={
+        chatBackgroundImage
+          ? {
+              backgroundImage: `url(${chatBackgroundImage})`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              backgroundRepeat: "no-repeat"
+            }
+          : {}
+      }>
       {/* Background overlay for opacity effect */}
       {chatBackgroundImage && (
         <div
           className="absolute inset-0 bg-white dark:bg-[#171717]"
-          style={{ opacity: 0.9, pointerEvents: 'none' }}
+          style={{ opacity: 0.9, pointerEvents: "none" }}
         />
       )}
 

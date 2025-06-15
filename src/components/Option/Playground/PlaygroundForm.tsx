@@ -29,7 +29,7 @@ import { useStorage } from "@plasmohq/storage/hook"
 import { useTabMentions } from "~/hooks/useTabMentions"
 import { MentionsDropdown } from "./MentionsDropdown"
 import { DocumentChip } from "./DocumentChip"
-
+import { otherUnsupportedTypes } from "../Knowledge/utils/unsupported-types"
 type Props = {
   dropedFile: File | undefined
 }
@@ -131,12 +131,23 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
     e: React.ChangeEvent<HTMLInputElement> | File
   ) => {
     if (e instanceof File) {
-      const base64 = await toBase64(e)
-      form.setFieldValue("image", base64)
+      const isUnsupported = otherUnsupportedTypes.includes(e.type)
+
+      if (isUnsupported) {
+        console.error("File type not supported:", e.type)
+        return
+      }
+
+      const isImage = e.type.startsWith("image/")
+      if (isImage) {
+        const base64 = await toBase64(e)
+        form.setFieldValue("image", base64)
+      } else {
+        await handleFileUpload(e)
+      }
     } else {
       if (e.target.files) {
-        const base64 = await toBase64(e.target.files[0])
-        form.setFieldValue("image", base64)
+        onFileInputChange(e)
       }
     }
   }
@@ -144,8 +155,15 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
   const onFileInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0]
-      const isImage = file.type.startsWith("image/")
 
+      const isUnsupported = otherUnsupportedTypes.includes(file.type)
+
+      if (isUnsupported) {
+        console.error("File type not supported:", file.type)
+        return
+      }
+
+      const isImage = file.type.startsWith("image/")
       if (isImage) {
         const base64 = await toBase64(file)
         form.setFieldValue("image", base64)
@@ -358,7 +376,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                     {uploadedFiles.map((file) => (
                       <button
                         key={file.id}
-                        className="relative group p-1.5 w-60 flex items-center gap-1 bg-white dark:bg-[#1a1a1a] border border-gray-50 dark:border-white/5 rounded-2xl text-left"
+                        className="relative group p-1.5 w-60 flex items-center gap-1 bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-white/5 rounded-2xl text-left"
                         type="button">
                         <div className="p-3 bg-black/20 dark:bg-white/10 text-white rounded-xl">
                           <FileIcon className="size-5" />

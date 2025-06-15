@@ -14,12 +14,12 @@ const getTranscript = async (url: string) => {
 
 const formatTranscriptText = (transcript: any[]) => {
     return transcript
-        .map((item) => {
+        ?.map((item) => {
             const timestamp = `[${item.start}s]`
             const transcriptText = item.text
             return `${timestamp} ${transcriptText}`
         })
-        .join(" ")
+        ?.join(" ")
 }
 
 const formatDocumentHeader = (title: string, url: string) => {

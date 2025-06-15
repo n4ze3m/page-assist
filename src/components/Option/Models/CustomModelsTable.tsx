@@ -1,4 +1,4 @@
-import { getAllCustomModels, deleteModel } from "@/db/models"
+import { getAllCustomModels, deleteModel } from "@/db/dexie/models"
 import { useStorage } from "@plasmohq/storage/hook"
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query"
 import { Avatar, Skeleton, Table, Tag, Tooltip } from "antd"

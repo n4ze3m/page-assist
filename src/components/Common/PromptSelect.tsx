@@ -3,7 +3,7 @@ import { Dropdown, Empty, Tooltip } from "antd"
 import { BookIcon, ComputerIcon, ZapIcon } from "lucide-react"
 import React from "react"
 import { useTranslation } from "react-i18next"
-import { getAllPrompts } from "@/db"
+import { getAllPrompts } from "@/db/dexie/helpers"
 
 type Props = {
   setSelectedSystemPrompt: (promptId: string | undefined) => void

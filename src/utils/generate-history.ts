@@ -1,4 +1,4 @@
-import { isCustomModel } from "@/db/models"
+import { isCustomModel } from "@/db/dexie/models"
 import { removeReasoning } from "@/libs/reasoning"
 import {
   HumanMessage,

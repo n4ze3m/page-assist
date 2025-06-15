@@ -18,7 +18,7 @@ import { useQuery } from "@tanstack/react-query"
 import { fetchChatModels } from "~/services/ollama"
 import { useMessageOption } from "~/hooks/useMessageOption"
 import { Avatar, Select, Tooltip } from "antd"
-import { getAllPrompts } from "@/db"
+import { getAllPrompts } from "@/db/dexie/helpers"
 import { ProviderIcons } from "../Common/ProviderIcon"
 import { NewChat } from "./NewChat"
 import { MoreOptions } from "./MoreOptions"
@@ -59,6 +59,7 @@ export const Header: React.FC<Props> = ({
     queryKey: ["fetchModel"],
     queryFn: () => fetchChatModels({ returnEmpty: true }),
     refetchIntervalInBackground: false,
+    staleTime: 1000 * 60 *1, 
   })
 
   const { data: prompts, isLoading: isPromptLoading } = useQuery({

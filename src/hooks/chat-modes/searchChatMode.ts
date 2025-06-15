@@ -4,7 +4,7 @@ import {
   getOllamaURL
 } from "~/services/ollama"
 import { type ChatHistory, type Message } from "~/store/option"
-import { generateID } from "@/db"
+import { generateID } from "@/db/dexie/helpers"
 import { getSystemPromptForWeb, isQueryHaveWebsite } from "~/web/web"
 import { generateHistory } from "@/utils/generate-history"
 import { pageAssistModel } from "@/models"
@@ -15,7 +15,7 @@ import {
   mergeReasoningContent,
   removeReasoning
 } from "@/libs/reasoning"
-import { getModelNicknameByID } from "@/db/nickname"
+import { getModelNicknameByID } from "@/db/dexie/nickname"
 import { systemPromptFormatter } from "@/utils/system-message"
 
 export const searchChatMode = async (
@@ -112,7 +112,6 @@ export const searchChatMode = async (
 
     let query = message
 
-    // if (newMessage.length > 2) {
     let questionPrompt = await geWebSearchFollowUpPrompt()
     const lastTenMessages = newMessage.slice(-10)
     lastTenMessages.pop()
@@ -171,7 +170,6 @@ export const searchChatMode = async (
     const { prompt, source } = await getSystemPromptForWeb(query)
     setIsSearchingInternet(false)
 
-    //  message = message.trim().replaceAll("\n", " ")
 
     let humanMessage = await humanMessageFormatter({
       content: [

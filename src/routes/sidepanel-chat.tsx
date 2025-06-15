@@ -2,8 +2,9 @@ import {
   formatToChatHistory,
   formatToMessage,
   getRecentChatFromCopilot
-} from "@/db"
+} from "@/db/dexie/helpers"
 import useBackgroundMessage from "@/hooks/useBackgroundMessage"
+import { useMigration } from "@/hooks/useMigration"
 import { useSmartScroll } from "@/hooks/useSmartScroll"
 import { copilotResumeLastChat } from "@/services/app"
 import { Storage } from "@plasmohq/storage"
@@ -24,6 +25,7 @@ const SidepanelChat = () => {
   const [dropState, setDropState] = React.useState<
     "idle" | "dragging" | "error"
   >("idle")
+  useMigration()
   const {
     chatMode,
     streaming,

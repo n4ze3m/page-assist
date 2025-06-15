@@ -7,7 +7,8 @@ type SpeechRecognitionEvent = {
 
 declare global {
   interface SpeechRecognitionErrorEvent extends Event {
-    error: string
+    //@ts-ignore
+    error: any
   }
   interface Window {
     SpeechRecognition: any

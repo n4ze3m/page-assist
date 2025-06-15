@@ -1,7 +1,7 @@
 import React from "react"
 import { type ChatHistory, type Message } from "~/store/option"
 import { useStoreMessageOption } from "~/store/option"
-import { removeMessageUsingHistoryId } from "@/db"
+import { removeMessageUsingHistoryId } from "@/db/dexie/helpers"
 import { useNavigate } from "react-router-dom"
 import { notification } from "antd"
 import { useTranslation } from "react-i18next"
@@ -27,8 +27,9 @@ import {
 } from "./handlers/messageHandlers"
 import { tabChatMode } from "./chat-modes/tabChatMode"
 import { documentChatMode } from "./chat-modes/documentChatMode"
-import { generateID, type UploadedFile } from "@/db"
+import { generateID } from "@/db/dexie/helpers"
 import { convertFileToSource } from "~/utils/to-source"
+import { UploadedFile } from "@/db/dexie/types"
 
 export const useMessageOption = () => {
   const {
@@ -111,9 +112,8 @@ export const useMessageOption = () => {
 
       const fileId = generateID()
 
-      const source = await convertFileToSource({
-        file
-      })
+      const { processFileUpload } = await import("~/utils/file-processor")
+      const source = await processFileUpload(file)
 
       const uploadedFile: UploadedFile = {
         id: fileId,

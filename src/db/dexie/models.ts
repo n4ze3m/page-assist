@@ -4,18 +4,9 @@ import {
   getOpenAIConfigById as providerInfo
 } from "./openai"
 import { getAllModelNicknames } from "./nickname"
+import { Model, Models } from "./types"
+import { db } from "./schema"
 
-type Model = {
-  id: string
-  model_id: string
-  name: string
-  model_name?: string,
-  model_image?: string,
-  provider_id: string
-  lookup: string
-  model_type: string
-  db_type: string
-}
 export const generateID = () => {
   return "model-xxxx-xxxx-xxx-xxxx".replace(/[x]/g, () => {
     const r = Math.floor(Math.random() * 16)
@@ -129,83 +120,51 @@ export const isCustomModel = (model: string) => {
   return customModelRegex.test(model)
 }
 export class ModelDb {
-  db: chrome.storage.StorageArea
 
-  constructor() {
-    this.db = chrome.storage.local
-  }
-
-  getAll = async (): Promise<Model[]> => {
-    return new Promise((resolve, reject) => {
-      this.db.get(null, (result) => {
-        if (chrome.runtime.lastError) {
-          reject(chrome.runtime.lastError)
-        } else {
-          const data = Object.keys(result).map((key) => result[key])
-          resolve(data)
-        }
-      })
-    })
+  getAll = async (): Promise<Models> => {
+    return await db.customModels.reverse().toArray()
   }
 
   create = async (model: Model): Promise<void> => {
-    return new Promise((resolve, reject) => {
-      this.db.set({ [model.id]: model }, () => {
-        if (chrome.runtime.lastError) {
-          reject(chrome.runtime.lastError)
-        } else {
-          resolve()
-        }
-      })
-    })
+    return await db.customModels.add(model)
   }
 
   getById = async (id: string): Promise<Model> => {
-    return new Promise((resolve, reject) => {
-      this.db.get(id, (result) => {
-        if (chrome.runtime.lastError) {
-          reject(chrome.runtime.lastError)
-        } else {
-          resolve(result[id])
-        }
-      })
-    })
+    return await db.customModels.get(id)
   }
 
   update = async (model: Model): Promise<void> => {
-    return new Promise((resolve, reject) => {
-      this.db.set({ [model.id]: model }, () => {
-        if (chrome.runtime.lastError) {
-          reject(chrome.runtime.lastError)
-        } else {
-          resolve()
-        }
-      })
-    })
+    return await db.customModels.put(model)
   }
 
   delete = async (id: string): Promise<void> => {
-    return new Promise((resolve, reject) => {
-      this.db.remove(id, () => {
-        if (chrome.runtime.lastError) {
-          reject(chrome.runtime.lastError)
-        } else {
-          resolve()
-        }
-      })
-    })
+    return await db.customModels.delete(id)
   }
 
   deleteAll = async (): Promise<void> => {
-    return new Promise((resolve, reject) => {
-      this.db.clear(() => {
-        if (chrome.runtime.lastError) {
-          reject(chrome.runtime.lastError)
-        } else {
-          resolve()
+    return await db.customModels.clear()
+  }
+
+  async importDataV2(data: Models, options: {
+    replaceExisting?: boolean;
+    mergeData?: boolean;
+  } = {}): Promise<void> {
+    const { replaceExisting = false, mergeData = true } = options;
+
+    for (const oai of data) {
+      const existingKnowledge = await this.getById(oai.id);
+
+      if (existingKnowledge && !replaceExisting) {
+        if (mergeData) {
+          await this.update({
+            ...existingKnowledge,
+          });
         }
-      })
-    })
+        continue;
+      }
+
+      await this.create(oai);
+    }
   }
 }
 
@@ -254,12 +213,6 @@ export const createModel = async (
   }
   await db.create(model)
   return model
-}
-
-export const getAllModelsExT = async () => {
-  const db = new ModelDb()
-  const allData = await db.getAll()
-  return allData?.filter((d) => d?.db_type === "openai_model") || []
 }
 
 export const getModelInfo = async (id: string) => {

@@ -1,5 +1,5 @@
 import { Message } from "@/types/message"
-import { removeModelSuffix } from "@/db/models"
+import { removeModelSuffix } from "@/db/dexie/models"
 import Markdown from "./Markdown"
 import { Avatar } from "antd"
 

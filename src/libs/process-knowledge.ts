@@ -1,4 +1,4 @@
-import { getKnowledgeById, updateKnowledgeStatus } from "@/db/knowledge"
+import { getKnowledgeById, updateKnowledgeStatus } from "@/db/dexie/knowledge"
 import { PageAssistPDFUrlLoader } from "@/loader/pdf-url"
 import { getOllamaURL } from "@/services/ollama"
 import { PageAssistVectorStore } from "./PageAssistVectorStore"
@@ -31,6 +31,7 @@ export const processKnowledge = async (msg: any, id: string): Promise<void> => {
     const textSplitter = await getPageAssistTextSplitter()
 
     for (const doc of knowledge.source) {
+
       // skip if there is no doc.content
       if (!doc?.content || doc?.content === null) {
         console.log(`Skipping document with id ${doc.source_id}`)
