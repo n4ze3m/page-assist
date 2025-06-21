@@ -32,7 +32,7 @@ export const Playground = () => {
     setHistory,
     setMessages,
     setSelectedSystemPrompt,
-    streaming
+    streaming,
   } = useMessageOption()
   const { setSystemPrompt } = useStoreChatModelSettings()
   const { containerRef, isAtBottom, scrollToBottom } = useSmartScroll(

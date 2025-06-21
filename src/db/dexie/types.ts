@@ -6,7 +6,7 @@ export type HistoryInfo = {
   id: string;
   title: string;
   is_rag: boolean;
-  message_source?: 'copilot' | 'web-ui';
+  message_source?: 'copilot' | 'web-ui' | 'branch';
   is_pinned?: boolean;
   createdAt: number;
   doc_id?: string;

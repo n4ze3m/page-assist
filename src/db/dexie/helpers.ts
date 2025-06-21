@@ -3,10 +3,10 @@ import {
   type Message as MessageType
 } from "~/store/option";
 import { ChatDocuments } from "@/models/ChatTypes";
-import { 
-     
-  type HistoryInfo, 
-  type MessageHistory, 
+import {
+
+  type HistoryInfo,
+  type MessageHistory,
   type Message,
   type Prompts,
   type UploadedFile,
@@ -29,22 +29,30 @@ export const generateID = () => {
 export const saveHistory = async (
   title: string,
   is_rag?: boolean,
-  message_source?: "copilot" | "web-ui",
+  message_source?: "copilot" | "web-ui" | "branch",
   doc_id?: string
 ) => {
   const id = generateID();
   const createdAt = Date.now();
-  const history: HistoryInfo = { 
-    id, 
-    title, 
-    createdAt, 
-    is_rag: is_rag || false, 
-    message_source, 
-    doc_id 
+  const history: HistoryInfo = {
+    id,
+    title,
+    createdAt,
+    is_rag: is_rag || false,
+    message_source,
+    doc_id
   };
   const db = new PageAssistDatabase();
   await db.addChatHistory(history);
   return history;
+};
+export const updateChatHistoryCreatedAt = async (
+  history_id: string,
+) => {
+  const createdAt = Date.now();
+  const db = new PageAssistDatabase();
+  await db.updateChatHistoryCreatedAt(history_id, createdAt);
+
 };
 
 export const updateMessage = async (
@@ -200,7 +208,7 @@ export const deleteChatForEdit = async (history_id: string, index: number) => {
   const db = new PageAssistDatabase();
   const chatHistory = await db.getChatHistory(history_id);
   const sortedHistory = chatHistory.sort((a, b) => a.createdAt - b.createdAt);
-  
+
   // Delete messages after the specified index
   const messagesToDelete = sortedHistory.slice(index + 1);
   for (const message of messagesToDelete) {
@@ -400,7 +408,7 @@ export const deleteHistoriesByDateRange = async (rangeLabel: string): Promise<st
   const lastWeek = new Date(today);
   lastWeek.setDate(lastWeek.getDate() - 7);
   let historiesToDelete: HistoryInfo[] = [];
-  
+
   switch (rangeLabel) {
     case 'today':
       historiesToDelete = allHistories.filter(

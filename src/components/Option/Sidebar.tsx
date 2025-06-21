@@ -24,7 +24,8 @@ import {
   SearchIcon,
   Trash2Icon,
   Loader2,
-  ChevronDown
+  ChevronDown,
+  GitBranch
 } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { useTranslation } from "react-i18next"
@@ -42,7 +43,7 @@ import {
   getSessionFiles,
   getPromptById
 } from "@/db/dexie/helpers"
-import { UploadedFile } from "@/db/dexie/types"
+import { UploadedFile } from "@/db/dexie/types" 
 
 type Props = {
   onClose: () => void
@@ -321,9 +322,10 @@ export const Sidebar = ({
                     key={index}
                     className="flex py-2 px-2 items-center gap-3 relative rounded-md truncate hover:pr-4 group transition-opacity duration-300 ease-in-out bg-gray-100 dark:bg-[#232222] dark:text-gray-100 text-gray-800 border hover:bg-gray-200 dark:hover:bg-[#2d2d2d] dark:border-gray-800">
                     {chat?.message_source === "copilot" && (
-                      <Tooltip title={t("common:sidebarChat")} placement="top">
-                        <BotIcon className="size-3 text-green-500" />
-                      </Tooltip>
+                      <BotIcon className="size-3 text-green-500" />
+                    )}
+                    {chat?.message_source === "branch" && (
+                      <GitBranch className="size-3 text-blue-500" />
                     )}
                     <button
                       className="flex-1 overflow-hidden break-all text-start truncate w-full"

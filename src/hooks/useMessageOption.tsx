@@ -23,12 +23,12 @@ import {
 import {
   createRegenerateLastMessage,
   createEditMessage,
-  createStopStreamingRequest
+  createStopStreamingRequest,
+  createBranchMessage
 } from "./handlers/messageHandlers"
 import { tabChatMode } from "./chat-modes/tabChatMode"
 import { documentChatMode } from "./chat-modes/documentChatMode"
 import { generateID } from "@/db/dexie/helpers"
-import { convertFileToSource } from "~/utils/to-source"
 import { UploadedFile } from "@/db/dexie/types"
 
 export const useMessageOption = () => {
@@ -77,6 +77,7 @@ export const useMessageOption = () => {
     setFileRetrievalEnabled,
     fileRetrievalEnabled
   } = useStoreMessageOption()
+
   const currentChatModelSettings = useStoreChatModelSettings()
   const [selectedModel, setSelectedModel] = useStorage("selectedModel")
   const [defaultInternetSearchOn] = useStorage("defaultInternetSearchOn", false)
@@ -362,6 +363,16 @@ export const useMessageOption = () => {
     onSubmit
   })
 
+  const createChatBranch = createBranchMessage({
+    historyId,
+    setHistory,
+    setHistoryId,
+    setMessages,
+    setContext: setContextFiles,
+    setSelectedSystemPrompt,
+    setSystemPrompt: currentChatModelSettings.setSystemPrompt
+  })
+
   return {
     editMessage,
     messages,
@@ -411,6 +422,7 @@ export const useMessageOption = () => {
     clearUploadedFiles,
     actionInfo,
     setActionInfo,
-    setContextFiles
+    setContextFiles,
+    createChatBranch
   }
 }
