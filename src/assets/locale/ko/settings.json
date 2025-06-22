@@ -65,6 +65,9 @@
       },
       "tabMentionsEnabled": {
         "label": "탭 멘션 (@tab) 활성화"
+      },
+      "pasteLargeTextAsFile": {
+        "label": "큰 텍스트를 파일로 붙여넣기"
       }
     },
     "sidepanelRag": {

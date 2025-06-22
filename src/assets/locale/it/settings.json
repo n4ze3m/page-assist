@@ -62,6 +62,9 @@
       },
       "tabMentionsEnabled": {
         "label": "Abilita Menzioni Scheda (@tab)"
+      },
+      "pasteLargeTextAsFile": {
+        "label": "Incolla Testo Lungo come File"
       }
     },
     "sidepanelRag": {

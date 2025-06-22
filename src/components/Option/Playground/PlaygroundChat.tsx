@@ -14,7 +14,8 @@ export const PlaygroundChat = () => {
     editMessage,
     ttsEnabled,
     onSubmit,
-    actionInfo
+    actionInfo,
+    createChatBranch
   } = useMessageOption()
   const [isSourceOpen, setIsSourceOpen] = React.useState(false)
   const [source, setSource] = React.useState<any>(null)
@@ -47,6 +48,9 @@ export const PlaygroundChat = () => {
             onSourceClick={(data) => {
               setSource(data)
               setIsSourceOpen(true)
+            }}
+            onNewBranch={()=> {
+              createChatBranch(index)
             }}
             isTTSEnabled={ttsEnabled}
             generationInfo={message?.generationInfo}

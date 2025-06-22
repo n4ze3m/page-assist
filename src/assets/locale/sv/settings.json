@@ -62,6 +62,9 @@
       },
       "tabMentionsEnabled": {
         "label": "Aktivera Flikbenämningar (@tab)"
+      },
+      "pasteLargeTextAsFile": {
+        "label": "Klistra in stor text som fil"
       }
     },
     "sidepanelRag": {

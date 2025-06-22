@@ -167,6 +167,10 @@ export class PageAssistDatabase {
     await db.chatHistories.add(history);
   }
 
+  async updateChatHistoryCreatedAt(id: string, createdAt: number) {
+    await db.chatHistories.update(id, { createdAt });
+  }
+
   async addMessage(message: Message) {
     await db.messages.add(message);
   }

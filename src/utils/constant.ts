@@ -1,0 +1,1 @@
+export const PASTED_TEXT_CHAR_LIMIT = 1_500

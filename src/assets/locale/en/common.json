@@ -187,5 +187,6 @@
     "mermaid": "Mermaid",
     "search": "Search",
     "embeddingGen": "Creating embeddings, this may take a while",
-    "semanticSearch": "Performing semantic search"
+    "semanticSearch": "Performing semantic search",
+    "newBranch": "New Branch"
 }

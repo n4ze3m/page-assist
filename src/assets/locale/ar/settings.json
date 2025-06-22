@@ -62,7 +62,11 @@
       },
       "tabMentionsEnabled": {
         "label": "تمكين إشارات التبويب (@tab)"
-      }    },
+      },
+      "pasteLargeTextAsFile": {
+        "label": "لصق النص الكبير كملف"
+      }
+    },
     "sidepanelRag": {
       "heading": "إعدادات الاسترجاع",
       "ragEnabled": {

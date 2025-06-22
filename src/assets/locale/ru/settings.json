@@ -62,6 +62,9 @@
       },
       "tabMentionsEnabled": {
         "label": "Включить упоминания вкладок (@tab)"
+      },
+      "pasteLargeTextAsFile": {
+        "label": "Вставить большой текст как файл"
       }
     },
     "sidepanelRag": {

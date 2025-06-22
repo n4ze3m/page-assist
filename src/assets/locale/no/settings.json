@@ -62,6 +62,9 @@
       },
       "tabMentionsEnabled": {
         "label": "Aktiver Fane Henvisninger (@tab)"
+      },
+      "pasteLargeTextAsFile": {
+        "label": "Lim inn stor tekst som fil"
       }
     },
     "sidepanelRag": {

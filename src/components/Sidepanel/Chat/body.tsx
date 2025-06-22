@@ -11,7 +11,8 @@ export const SidePanelBody = () => {
     streaming,
     regenerateLastMessage,
     editMessage,
-    isSearchingInternet
+    isSearchingInternet, 
+    createChatBranch
   } = useMessage()
   const [isSourceOpen, setIsSourceOpen] = React.useState(false)
   const [source, setSource] = React.useState<any>(null)
@@ -37,6 +38,9 @@ export const SidePanelBody = () => {
             sources={message.sources}
             onEditFormSubmit={(value) => {
               editMessage(index, value, !message.isBot)
+            }}
+            onNewBranch={() => {
+              createChatBranch(index)
             }}
             onSourceClick={(data) => {
               setSource(data)

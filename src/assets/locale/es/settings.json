@@ -62,6 +62,9 @@
       },
       "tabMentionsEnabled": {
         "label": "Habilitar Menciones de Pestañas (@tab)"
+      },
+      "pasteLargeTextAsFile": {
+        "label": "Pegar Texto Largo como Archivo"
       }
     },
     "sidepanelRag": {

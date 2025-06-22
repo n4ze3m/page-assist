@@ -66,6 +66,10 @@ export const GeneralSettings = () => {
     "tabMentionsEnabled",
     false
   )
+  const [pasteLargeTextAsFile, setPasteLargeTextAsFile] = useStorage(
+    "pasteLargeTextAsFile",
+    false
+  )
 
   const { mode, toggleDarkMode } = useDarkMode()
   const { t } = useTranslation("settings")
@@ -263,7 +267,7 @@ export const GeneralSettings = () => {
         />
       </div>
 
-       <div className="flex flex-row justify-between">
+      <div className="flex flex-row justify-between">
         <div className="inline-flex items-center gap-2">
           <span className="text-gray-700   dark:text-neutral-50">
             {t("generalSettings.settings.copyAsFormattedText.label")}
@@ -287,6 +291,18 @@ export const GeneralSettings = () => {
         <Switch
           checked={tabMentionsEnabled}
           onChange={(checked) => setTabMentionsEnabled(checked)}
+        />
+      </div>
+      <div className="flex flex-row justify-between">
+        <div className="inline-flex items-center gap-2">
+          <span className="text-gray-700   dark:text-neutral-50">
+            {t("generalSettings.settings.pasteLargeTextAsFile.label")}
+          </span>
+        </div>
+
+        <Switch
+          checked={pasteLargeTextAsFile}
+          onChange={(checked) => setPasteLargeTextAsFile(checked)}
         />
       </div>
 

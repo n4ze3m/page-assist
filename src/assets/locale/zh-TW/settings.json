@@ -62,6 +62,9 @@
       },
       "tabMentionsEnabled": {
         "label": "啟用分頁提及 (@tab)"
+      },
+      "pasteLargeTextAsFile": {
+        "label": "將大型文字貼上為檔案"
       }
     },
     "sidepanelRag": {

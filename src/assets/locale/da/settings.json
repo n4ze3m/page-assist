@@ -59,6 +59,9 @@
       },
       "tabMentionsEnabled": {
         "label": "Aktivér Tab Omtaler (@tab)"
+      },
+      "pasteLargeTextAsFile": {
+        "label": "Indsæt stor tekst som fil"
       }
     },
     "sidepanelRag": {

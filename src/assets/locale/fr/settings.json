@@ -62,6 +62,9 @@
       },
       "tabMentionsEnabled": {
         "label": "Activer les mentions d'onglets (@tab)"
+      },
+      "pasteLargeTextAsFile": {
+        "label": "Coller le texte volumineux en tant que fichier"
       }
     },
     "sidepanelRag": {

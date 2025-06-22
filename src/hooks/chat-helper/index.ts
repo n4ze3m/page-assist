@@ -1,7 +1,11 @@
 import {
-  getLastChatHistory, saveHistory, saveMessage, updateMessage,
+  getLastChatHistory,
+  saveHistory,
+  saveMessage,
+  updateMessage,
   updateLastUsedModel as setLastUsedChatModel,
-  updateLastUsedPrompt as setLastUsedChatSystemPrompt
+  updateLastUsedPrompt as setLastUsedChatSystemPrompt,
+  updateChatHistoryCreatedAt
 } from "@/db/dexie/helpers"
 import { ChatDocuments } from "@/models/ChatTypes"
 import { generateTitle } from "@/services/title"
@@ -23,7 +27,7 @@ export const saveMessageOnError = async ({
   prompt_content,
   prompt_id,
   isContinue,
-  documents = [],
+  documents = []
 }: {
   e: any
   setHistory: (history: ChatHistory) => void
@@ -39,7 +43,7 @@ export const saveMessageOnError = async ({
   message_type?: string
   prompt_id?: string
   prompt_content?: string
-  isContinue?: boolean,
+  isContinue?: boolean
   documents?: ChatDocuments
 }) => {
   if (
@@ -63,47 +67,40 @@ export const saveMessageOnError = async ({
 
     if (historyId) {
       if (!isRegenerating && !isContinue) {
-        await saveMessage(
-          {
-            history_id: historyId,
-            name: selectedModel,
-            role: "user",
-            content: userMessage,
-            images: [image],
-            time: 1,
-            message_type,
-            documents
-          }
-        )
+        await saveMessage({
+          history_id: historyId,
+          name: selectedModel,
+          role: "user",
+          content: userMessage,
+          images: [image],
+          time: 1,
+          message_type,
+          documents
+        })
       }
-
 
       if (isContinue) {
         console.log("Saving Last Message")
         const lastMessage = await getLastChatHistory(historyId)
-        await updateMessage(
-          historyId,
-          lastMessage.id,
-          botMessage
-        )
+        await updateMessage(historyId, lastMessage.id, botMessage)
       } else {
-
-        await saveMessage(
-          {
-            history_id: historyId,
-            name: selectedModel,
-            role: "assistant",
-            content: botMessage,
-            images: [],
-            source: [],
-            time: 2,
-            message_type,
-          }
-        )
+        await saveMessage({
+          history_id: historyId,
+          name: selectedModel,
+          role: "assistant",
+          content: botMessage,
+          images: [],
+          source: [],
+          time: 2,
+          message_type
+        })
       }
       await setLastUsedChatModel(historyId, selectedModel)
       if (prompt_id || prompt_content) {
-        await setLastUsedChatSystemPrompt(historyId, { prompt_content, prompt_id })
+        await setLastUsedChatSystemPrompt(historyId, {
+          prompt_content,
+          prompt_id
+        })
       }
 
       return historyId
@@ -111,39 +108,35 @@ export const saveMessageOnError = async ({
       const title = await generateTitle(selectedModel, userMessage, userMessage)
       const newHistoryId = await saveHistory(title, false, message_source)
       if (!isRegenerating) {
-
-        await saveMessage(
-          {
-            history_id: newHistoryId.id,
-            name: selectedModel,
-            role: "user",
-            content: userMessage,
-            images: [image],
-            time: 1,
-            message_type,
-            documents
-          }
-        )
-      }
-
-
-
-      await saveMessage(
-        {
+        await saveMessage({
           history_id: newHistoryId.id,
           name: selectedModel,
-          role: "assistant",
-          content: botMessage,
-          images: [],
-          source: [],
-          time: 2,
+          role: "user",
+          content: userMessage,
+          images: [image],
+          time: 1,
           message_type,
-        }
-      )
+          documents
+        })
+      }
+
+      await saveMessage({
+        history_id: newHistoryId.id,
+        name: selectedModel,
+        role: "assistant",
+        content: botMessage,
+        images: [],
+        source: [],
+        time: 2,
+        message_type
+      })
       setHistoryId(newHistoryId.id)
       await setLastUsedChatModel(newHistoryId.id, selectedModel)
       if (prompt_id || prompt_content) {
-        await setLastUsedChatSystemPrompt(newHistoryId.id, { prompt_content, prompt_id })
+        await setLastUsedChatSystemPrompt(newHistoryId.id, {
+          prompt_content,
+          prompt_id
+        })
       }
 
       return newHistoryId.id
@@ -163,12 +156,13 @@ export const saveMessageOnSuccess = async ({
   fullText,
   source,
   message_source = "web-ui",
-  message_type, generationInfo,
+  message_type,
+  generationInfo,
   prompt_id,
   prompt_content,
   reasoning_time_taken = 0,
   isContinue,
-  documents = [],
+  documents = []
 }: {
   historyId: string | null
   setHistoryId: (historyId: string) => void
@@ -178,44 +172,36 @@ export const saveMessageOnSuccess = async ({
   image: string
   fullText: string
   source: any[]
-  message_source?: "copilot" | "web-ui",
+  message_source?: "copilot" | "web-ui"
   message_type?: string
   generationInfo?: any
   prompt_id?: string
   prompt_content?: string
   reasoning_time_taken?: number
-  isContinue?: boolean,
+  isContinue?: boolean
   documents?: ChatDocuments
 }) => {
   if (historyId) {
     if (!isRegenerate && !isContinue) {
-
-      await saveMessage(
-        {
-          history_id: historyId,
-          name: selectedModel,
-          role: "user",
-          content: message,
-          images: [image],
-          time: 1,
-          message_type,
-          generationInfo,
-          reasoning_time_taken,
-          documents
-        }
-      )
+      await saveMessage({
+        history_id: historyId,
+        name: selectedModel,
+        role: "user",
+        content: message,
+        images: [image],
+        time: 1,
+        message_type,
+        generationInfo,
+        reasoning_time_taken,
+        documents
+      })
     }
-
 
     if (isContinue) {
       console.log("Saving Last Message")
       const lastMessage = await getLastChatHistory(historyId)
       console.log("lastMessage", lastMessage)
-      await updateMessage(
-        historyId,
-        lastMessage.id,
-        fullText
-      )
+      await updateMessage(historyId, lastMessage.id, fullText)
     } else {
       await saveMessage(
         {
@@ -228,7 +214,7 @@ export const saveMessageOnSuccess = async ({
           time: 2,
           message_type,
           generationInfo,
-          reasoning_time_taken,
+          reasoning_time_taken
         }
         // historyId,
         // selectedModel!,
@@ -245,14 +231,18 @@ export const saveMessageOnSuccess = async ({
 
     await setLastUsedChatModel(historyId, selectedModel!)
     if (prompt_id || prompt_content) {
-      await setLastUsedChatSystemPrompt(historyId, { prompt_content, prompt_id })
+      await setLastUsedChatSystemPrompt(historyId, {
+        prompt_content,
+        prompt_id
+      })
     }
+
+    await updateChatHistoryCreatedAt(historyId)
 
     return historyId
   } else {
     const title = await generateTitle(selectedModel, message, message)
     const newHistoryId = await saveHistory(title, false, message_source)
-
 
     await saveMessage(
       {
@@ -278,7 +268,6 @@ export const saveMessageOnSuccess = async ({
       // generationInfo,
       // reasoning_time_taken
     )
-
 
     await saveMessage(
       {
@@ -307,7 +296,10 @@ export const saveMessageOnSuccess = async ({
     setHistoryId(newHistoryId.id)
     await setLastUsedChatModel(newHistoryId.id, selectedModel!)
     if (prompt_id || prompt_content) {
-      await setLastUsedChatSystemPrompt(newHistoryId.id, { prompt_content, prompt_id })
+      await setLastUsedChatSystemPrompt(newHistoryId.id, {
+        prompt_content,
+        prompt_id
+      })
     }
 
     return newHistoryId.id
