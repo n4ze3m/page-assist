@@ -202,7 +202,7 @@ export const PlaygroundMessage = (props: Props) => {
                       return (
                         <Collapse
                           key={i}
-                          className="border-none !mb-3"
+                          className="border-none text-gray-500 dark:text-gray-400 !mb-3 "
                           defaultActiveKey={
                             props?.openReasoning ? "reasoning" : undefined
                           }
@@ -212,7 +212,7 @@ export const PlaygroundMessage = (props: Props) => {
                               label:
                                 props.isStreaming && e?.reasoning_running ? (
                                   <div className="flex items-center gap-2">
-                                    <span className="italic">
+                                    <span className="italic shimmer-text">
                                       {t("reasoning.thinking")}
                                     </span>
                                   </div>
