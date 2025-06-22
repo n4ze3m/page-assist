@@ -65,6 +65,9 @@
       },
       "tabMentionsEnabled": {
         "label": "启用标签提及功能 (@tab)"
+      },
+      "pasteLargeTextAsFile": {
+        "label": "将大文本粘贴为文件"
       }
     },
     "sidepanelRag": {

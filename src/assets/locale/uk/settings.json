@@ -62,6 +62,9 @@
       },
       "tabMentionsEnabled": {
         "label": "Увімкнути згадування вкладок (@tab)"
+      },
+      "pasteLargeTextAsFile": {
+        "label": "Вставити великий текст як файл"
       }
     },
     "sidepanelRag": {

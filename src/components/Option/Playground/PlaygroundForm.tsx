@@ -30,6 +30,7 @@ import { useTabMentions } from "~/hooks/useTabMentions"
 import { MentionsDropdown } from "./MentionsDropdown"
 import { DocumentChip } from "./DocumentChip"
 import { otherUnsupportedTypes } from "../Knowledge/utils/unsupported-types"
+import { PASTED_TEXT_CHAR_LIMIT } from "@/utils/constant"
 type Props = {
   dropedFile: File | undefined
 }
@@ -86,7 +87,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
     reloadTabs,
     handleMentionsOpen
   } = useTabMentions(textareaRef)
-
+  const [pasteLargeTextAsFile] = useStorage("pasteLargeTextAsFile", false)
   const isMobile = () => {
     return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
       navigator.userAgent
@@ -172,9 +173,27 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
       }
     }
   }
-  const handlePaste = (e: React.ClipboardEvent) => {
+  const handlePaste = async (e: React.ClipboardEvent) => {
     if (e.clipboardData.files.length > 0) {
       onInputChange(e.clipboardData.files[0])
+      return
+    }
+
+    const pastedText = e.clipboardData.getData("text/plain")
+
+    if (
+      pasteLargeTextAsFile &&
+      pastedText &&
+      pastedText.length > PASTED_TEXT_CHAR_LIMIT
+    ) {
+      e.preventDefault()
+      const blob = new Blob([pastedText], { type: "text/plain" })
+      const file = new File([blob], `pasted-text-${Date.now()}.txt`, {
+        type: "text/plain"
+      })
+
+      await handleFileUpload(file)
+      return
     }
   }
   React.useEffect(() => {

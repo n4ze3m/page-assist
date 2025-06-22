@@ -62,6 +62,9 @@
       },
       "tabMentionsEnabled": {
         "label": "Ativar Menções de Abas (@tab)"
+      },
+      "pasteLargeTextAsFile": {
+        "label": "Colar Texto Grande como Arquivo"
       }
     },
     "sidepanelRag": {

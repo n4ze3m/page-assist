@@ -65,6 +65,9 @@
       },
       "tabMentionsEnabled": {
         "label": "ടാബ് മെൻഷനുകൾ (@tab) പ്രവർത്തനക്ഷമമാക്കുക"
+      },
+      "pasteLargeTextAsFile": {
+        "label": "വലിയ ടെക്സ്റ്റ് ഫയലായി പേസ്റ്റ് ചെയ്യുക"
       }
     },
     "sidepanelRag": {

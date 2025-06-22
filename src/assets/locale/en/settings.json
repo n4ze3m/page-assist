@@ -62,6 +62,9 @@
       },
       "tabMentionsEnabled": {
         "label": "Enable Tab Mentions (@tab)"
+      },
+      "pasteLargeTextAsFile": {
+        "label": "Paste Large Text as File"
       }
     },
     "sidepanelRag": {
