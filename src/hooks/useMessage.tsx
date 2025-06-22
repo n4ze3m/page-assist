@@ -9,7 +9,7 @@ import {
 } from "~/services/ollama"
 import { useStoreMessageOption, type Message } from "~/store/option"
 import { useStoreMessage } from "~/store"
-import { getContentFromCurrentTab,  } from "~/libs/get-html"
+import { getContentFromCurrentTab } from "~/libs/get-html"
 import { memoryEmbedding } from "@/utils/memory-embeddings"
 import { ChatHistory } from "@/store/option"
 import {
@@ -42,6 +42,7 @@ import {
 } from "@/libs/reasoning"
 import { getModelNicknameByID } from "@/db/dexie/nickname"
 import { systemPromptFormatter } from "@/utils/system-message"
+import { createBranchMessage } from "./handlers/messageHandlers"
 
 export const useMessage = () => {
   const {
@@ -139,7 +140,7 @@ export const useMessage = () => {
 
     const ollama = await pageAssistModel({
       model: selectedModel!,
-      baseUrl: cleanUrl(url),
+      baseUrl: cleanUrl(url)
     })
 
     let newMessage: Message[] = []
@@ -257,7 +258,7 @@ export const useMessage = () => {
           .replaceAll("{question}", message)
         const questionOllama = await pageAssistModel({
           model: selectedModel!,
-          baseUrl: cleanUrl(url),
+          baseUrl: cleanUrl(url)
         })
         const response = await questionOllama.invoke(promptForQuestion)
         query = response.content.toString()
@@ -490,7 +491,7 @@ export const useMessage = () => {
 
     const ollama = await pageAssistModel({
       model: selectedModel!,
-      baseUrl: cleanUrl(url),
+      baseUrl: cleanUrl(url)
     })
 
     let newMessage: Message[] = []
@@ -746,7 +747,7 @@ export const useMessage = () => {
 
     const ollama = await pageAssistModel({
       model: selectedModel!,
-      baseUrl: cleanUrl(url),
+      baseUrl: cleanUrl(url)
     })
 
     let newMessage: Message[] = []
@@ -1002,7 +1003,7 @@ export const useMessage = () => {
 
     const ollama = await pageAssistModel({
       model: selectedModel!,
-      baseUrl: cleanUrl(url),
+      baseUrl: cleanUrl(url)
     })
 
     let newMessage: Message[] = []
@@ -1066,7 +1067,7 @@ export const useMessage = () => {
         .replaceAll("{question}", message)
       const questionModel = await pageAssistModel({
         model: selectedModel!,
-        baseUrl: cleanUrl(url),
+        baseUrl: cleanUrl(url)
       })
 
       let questionMessage = await humanMessageFormatter({
@@ -1312,7 +1313,7 @@ export const useMessage = () => {
 
     const ollama = await pageAssistModel({
       model: selectedModel!,
-      baseUrl: cleanUrl(url),
+      baseUrl: cleanUrl(url)
     })
 
     let newMessage: Message[] = []
@@ -1688,7 +1689,14 @@ export const useMessage = () => {
       }
     }
   }
-
+  const createChatBranch = createBranchMessage({
+    historyId,
+    setHistory,
+    setHistoryId,
+    setMessages,
+    setSelectedSystemPrompt,
+    setSystemPrompt: currentChatModelSettings.setSystemPrompt
+  })
   return {
     messages,
     setMessages,
@@ -1724,6 +1732,7 @@ export const useMessage = () => {
     setUseOCR,
     defaultInternetSearchOn,
     defaultChatWithWebsite,
-    history
+    history,
+    createChatBranch
   }
 }
