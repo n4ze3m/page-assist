@@ -17,6 +17,7 @@ import { AliBaBaCloudIcon } from "../Icons/AliBaBaCloud"
 import { LlamaCppLogo } from "../Icons/LlamacppLogo"
 import { InfinigenceAI } from "../Icons/InfinigenceAI"
 import { NovitaIcon } from "../Icons/Novita"
+import { VllmLogo } from "../Icons/VllmLogo"
 
 export const ProviderIcons = ({
   provider,
@@ -64,6 +65,8 @@ export const ProviderIcons = ({
       return <InfinigenceAI className={className} />
     case "novita":
       return <NovitaIcon className={className} />
+    case "vllm":
+      return <VllmLogo className={className} />
     default:
       return <OllamaIcon className={className} />
   }

@@ -94,4 +94,9 @@ export const OAI_API_PROVIDERS = [
         value: "alibabacloud",
         baseUrl: "https://dashscope.aliyuncs.com/compatible-mode/v1"
     },
+    {
+        label: "vLLM",
+        value: "vllm",
+        baseUrl: "http://localhost:8000/v1"
+    }
 ]

@@ -95,6 +95,11 @@ export const pageAssistModel = async ({
       await urlRewriteRuntime(providerInfo.baseUrl || "")
     }
 
+    if (providerInfo?.fix_cors) {
+      console.log("Fixing CORS for provider:", providerInfo.provider)
+      await urlRewriteRuntime(providerInfo.baseUrl || "")
+    }
+
     const modelConfig = {
       maxTokens: modelSettings?.numPredict || numPredict,
       temperature: modelSettings?.temperature || temperature,
