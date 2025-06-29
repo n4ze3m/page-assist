@@ -141,6 +141,7 @@ export const pageAssistModel = async ({
       }) as any
     }
 
+
     return new CustomChatOpenAI({
       modelName: modelInfo.model_id,
       openAIApiKey: providerInfo.apiKey || "temp",
