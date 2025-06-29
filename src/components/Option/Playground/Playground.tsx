@@ -170,7 +170,7 @@ export const Playground = () => {
       </div>
       <div className="absolute bottom-0 w-full z-10">
         {!isAtBottom && (
-          <div className="fixed bottom-28 z-20 left-0 right-0 flex justify-center">
+          <div className="fixed bottom-28 z-10 left-0 right-0 flex justify-center pointer-events-none">
             <button
               onClick={scrollToBottom}
               className="bg-gray-50 shadow border border-gray-200 dark:border-none dark:bg-white/20 p-1.5 rounded-full pointer-events-auto">

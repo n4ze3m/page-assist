@@ -208,7 +208,7 @@ export const normalChatMode = async (
     let reasoningEndTime: Date | null = null
     let apiReasoning: boolean = false
 
-    for await (const chunk of chunks) { 
+    for await (const chunk of chunks) {
       if (chunk?.additional_kwargs?.reasoning_content) {
         const reasoningContent = mergeReasoningContent(
           fullText,
@@ -306,6 +306,9 @@ export const normalChatMode = async (
     setIsProcessing(false)
     setStreaming(false)
   } catch (e) {
+
+    console.log(e)
+
     const errorSave = await saveMessageOnError({
       e,
       botMessage: fullText,

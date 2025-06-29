@@ -147,6 +147,7 @@ export type OpenAIModelConfig = {
   createdAt: number
   provider?: string
   db_type: string
+  fix_cors?: boolean
   headers?: { key: string; value: string }[]
 }
 
