@@ -1,4 +1,3 @@
-import { getAllModelNicknames } from '../nickname';
 import {
   ChatHistory,
   HistoryInfo,
@@ -13,6 +12,7 @@ import {
 
 } from "./types"
 import { db } from './schema';
+import { getAllModelNicknames } from "./nickname";
 const PAGE_SIZE = 30; 
 
 function fastForward(lastRow: any, idProp: string, otherCriterion?: (item: any) => boolean) {
