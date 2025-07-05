@@ -51,7 +51,7 @@ export class CustomAIMessageChunk {
                     value as NonNullable<BaseMessageFields["additional_kwargs"]>
                 );
             } else {
-                throw new Error(
+                console.warn(
                     `additional_kwargs[${key}] already exists in this message chunk and cannot be merged.`
                 );
             }
