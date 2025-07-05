@@ -318,9 +318,13 @@ export const Sidebar = ({
               </div>
               <div className="flex flex-col gap-2 mt-2">
                 {group.items.map((chat, index) => (
-                  <div
+                    <div
                     key={index}
-                    className="flex py-2 px-2 items-center gap-3 relative rounded-md truncate hover:pr-4 group transition-opacity duration-300 ease-in-out bg-gray-100 dark:bg-[#232222] dark:text-gray-100 text-gray-800 border hover:bg-gray-200 dark:hover:bg-[#2d2d2d] dark:border-gray-800">
+                    className={`flex py-2 px-2 items-center gap-3 relative rounded-md truncate hover:pr-4 group transition-opacity duration-300 ease-in-out border ${
+                      historyId === chat.id
+                      ? "bg-gray-200 dark:bg-[#454242] border-gray-400 dark:border-gray-600 text-gray-900 dark:text-gray-100"
+                      : "bg-gray-50 dark:bg-[#232222] dark:text-gray-100 text-gray-800 border-gray-300 dark:border-gray-800 hover:bg-gray-200 dark:hover:bg-[#2d2d2d]"
+                    }`}>
                     {chat?.message_source === "copilot" && (
                       <BotIcon className="size-3 text-gray-500 dark:text-gray-400" />
                     )}
