@@ -13,7 +13,20 @@ import {
 } from "./types"
 import { db } from './schema';
 import { getAllModelNicknames } from "./nickname";
-const PAGE_SIZE = 30; 
+const PAGE_SIZE = 30;
+
+function searchQueryInContent(content: string, query: string): boolean {
+  if (!content || !query) {
+    return false;
+  }
+  
+  const normalizedContent = content.toLowerCase();
+  const normalizedQuery = query.toLowerCase().trim();
+  
+  const wordBoundaryPattern = new RegExp(`\\b${normalizedQuery.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i');
+  
+  return wordBoundaryPattern.test(normalizedContent);
+}
 
 function fastForward(lastRow: any, idProp: string, otherCriterion?: (item: any) => boolean) {
   let fastForwardComplete = false;
@@ -26,50 +39,6 @@ function fastForward(lastRow: any, idProp: string, otherCriterion?: (item: any) 
   };
 }
 
-function simpleFuzzyMatch(text: string, query: string): boolean {
-  if (!text || !query) {
-    return false;
-  }
-
-  const lowerText = text.toLowerCase();
-  const lowerQuery = query.toLowerCase().trim();
-
-  if (lowerQuery === '') {
-    return true;
-  }
-
-  if (lowerText.includes(lowerQuery)) {
-    return true;
-  }
-
-  const queryWords = lowerQuery.split(/\s+/).filter((word) => word.length > 2);
-
-  if (queryWords.length > 1) {
-    const matchedWords = queryWords.filter((word) => lowerText.includes(word));
-    return matchedWords.length >= Math.ceil(queryWords.length * 0.7);
-  }
-
-  if (lowerQuery.length > 3) {
-    const maxDistance = Math.floor(lowerQuery.length * 0.3);
-
-    const textWords = lowerText.split(/\s+/);
-    return textWords.some((word) => {
-      if (Math.abs(word.length - lowerQuery.length) > maxDistance) {
-        return false;
-      }
-      let matches = 0;
-      for (let i = 0; i < lowerQuery.length; i++) {
-        if (word.includes(lowerQuery[i])) {
-          matches++;
-        }
-      }
-
-      return matches >= lowerQuery.length - maxDistance;
-    });
-  }
-
-  return false;
-}
 
 
 export class PageAssistDatabase {
@@ -154,6 +123,38 @@ export class PageAssistDatabase {
     return await db.chatHistories.orderBy('createdAt').reverse().toArray();
   }
 
+  async fullTextSearchChatHistories(query: string): Promise<ChatHistory> {
+    const normalizedQuery = query.toLowerCase().trim();
+    if (!normalizedQuery) {
+      return this.getChatHistories();
+    }
+
+    const titleMatches = await db.chatHistories
+      .where('title')
+      .startsWithIgnoreCase(normalizedQuery)
+      .or('title')
+      .anyOfIgnoreCase(normalizedQuery.split(' '))
+      .toArray();
+
+    const messageMatches = await db.messages
+      .filter(message => searchQueryInContent(message.content, normalizedQuery))
+      .toArray();
+
+    const historyIdsFromMessages = [...new Set(messageMatches.map(msg => msg.history_id))];
+
+    const historiesFromMessages = await db.chatHistories
+      .where('id')
+      .anyOf(historyIdsFromMessages)
+      .toArray();
+
+    const allMatches = [...titleMatches, ...historiesFromMessages];
+    const uniqueHistories = allMatches.filter((history, index, self) =>
+      index === self.findIndex(h => h.id === history.id)
+    );
+
+    return uniqueHistories.sort((a, b) => b.createdAt - a.createdAt);
+  }
+
   async getChatHistoryTitleById(id: string): Promise<string> {
     const chatHistory = await db.chatHistories.get(id);
     return chatHistory?.title || '';
@@ -228,11 +229,12 @@ export class PageAssistDatabase {
     totalCount: number;
   }> {
     const offset = (page - 1) * PAGE_SIZE;
-    
+
     if (searchQuery) {
-      const allResults = await this.searchChatHistories(searchQuery);
-      const paginatedResults = allResults.slice(offset, offset + PAGE_SIZE);
-      
+      console.log("Searching chat histories with query:", searchQuery);
+      const allResults = await this.fullTextSearchChatHistories(searchQuery);
+      const paginatedResults = allResults.slice(offset, offset + PAGE_SIZE)
+      console.log("Paginated search results:", paginatedResults);
       return {
         histories: paginatedResults,
         hasMore: offset + PAGE_SIZE < allResults.length,
@@ -246,9 +248,9 @@ export class PageAssistDatabase {
         .reverse()
         .limit(PAGE_SIZE)
         .toArray();
-      
+
       const totalCount = await db.chatHistories.count();
-      
+
       return {
         histories,
         hasMore: histories.length === PAGE_SIZE,
@@ -262,9 +264,9 @@ export class PageAssistDatabase {
         .offset(skipCount)
         .limit(PAGE_SIZE)
         .toArray();
-      
+
       const totalCount = await db.chatHistories.count();
-      
+
       return {
         histories,
         hasMore: offset + PAGE_SIZE < totalCount,
@@ -277,7 +279,7 @@ export class PageAssistDatabase {
     hasMore: boolean;
   }> {
     if (searchQuery) {
-      const allResults = await this.searchChatHistories(searchQuery);
+      const allResults = await this.fullTextSearchChatHistories(searchQuery);
       return {
         histories: allResults.slice(0, PAGE_SIZE),
         hasMore: allResults.length > PAGE_SIZE
@@ -290,7 +292,7 @@ export class PageAssistDatabase {
         .reverse()
         .limit(PAGE_SIZE)
         .toArray();
-      
+
       return {
         histories,
         hasMore: histories.length === PAGE_SIZE
@@ -303,7 +305,7 @@ export class PageAssistDatabase {
         .limit(PAGE_SIZE)
         .reverse()
         .toArray();
-      
+
       return {
         histories,
         hasMore: histories.length === PAGE_SIZE
@@ -359,50 +361,7 @@ export class PageAssistDatabase {
     await db.userSettings.put({ id: 'main', user_id: id });
   }
 
-  // Search Methods
-  async searchChatHistories(query: string): Promise<ChatHistory> {
-    const normalizedQuery = query.toLowerCase().trim();
-    if (!normalizedQuery) {
-      return this.getChatHistories();
-    }
 
-    const allHistories = await this.getChatHistories();
-    const matchedHistories: ChatHistory = [];
-    const matchedHistoryIds = new Set<string>();
-
-    for (const history of allHistories) {
-      if (simpleFuzzyMatch(history.title, normalizedQuery)) {
-        if (!matchedHistoryIds.has(history.id)) {
-          matchedHistories.push(history);
-          matchedHistoryIds.add(history.id);
-        }
-        continue;
-      }
-
-      try {
-        const messages = await this.getChatHistory(history.id);
-        for (const message of messages) {
-          if (
-            message.content &&
-            simpleFuzzyMatch(message.content, normalizedQuery)
-          ) {
-            if (!matchedHistoryIds.has(history.id)) {
-              matchedHistories.push(history);
-              matchedHistoryIds.add(history.id);
-            }
-            break;
-          }
-        }
-      } catch (error) {
-        console.error(
-          `Error fetching messages for history ${history.id}:`,
-          error
-        );
-      }
-    }
-
-    return matchedHistories;
-  }
   async importChatHistoryV2(data: any[], options: {
     replaceExisting?: boolean;
     mergeData?: boolean;
