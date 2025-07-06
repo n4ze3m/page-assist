@@ -1,6 +1,5 @@
 import {
   useMutation,
-  useQuery,
   useQueryClient,
   useInfiniteQuery
 } from "@tanstack/react-query"
@@ -99,7 +98,17 @@ export const Sidebar = ({
         debouncedSearchQuery || undefined
       )
 
-      // Group the histories by date as before
+      // If searching, don't group by date - just return all results in a single group
+      if (debouncedSearchQuery) {
+        console.log("Search results:", result.histories) 
+        return {
+          groups: result.histories.length > 0 ? [{ label: "searchResults", items: result.histories }] : [],
+          hasMore: result.hasMore,
+          totalCount: result.totalCount
+        }
+      }
+
+      // Group the histories by date only when not searching
       const now = new Date()
       const today = new Date(now.setHours(0, 0, 0, 0))
       const yesterday = new Date(today)
@@ -146,7 +155,7 @@ export const Sidebar = ({
     getNextPageParam: (lastPage, allPages) => {
       return lastPage.hasMore ? allPages.length + 1 : undefined
     },
-    placeholderData: (prev) => prev,
+    placeholderData: undefined, 
     enabled: isOpen,
     initialPageParam: 1
   })
@@ -253,6 +262,8 @@ export const Sidebar = ({
     }
   }
 
+  console.log("Chat histories data:", chatHistoriesData)
+
   return (
     <div
       className={`overflow-y-auto z-99 ${temporaryChat ? "pointer-events-none opacity-50" : ""}`}>
@@ -301,26 +312,34 @@ export const Sidebar = ({
             <div key={groupIndex}>
               <div className="flex items-center justify-between mt-2">
                 <h3 className="px-2 text-sm font-medium text-gray-500">
-                  {t(`common:date:${group.label}`)}
+                  {group.label === "searchResults" 
+                    ? t("common:searchResults") 
+                    : t(`common:date:${group.label}`)}
                 </h3>
-                <Tooltip
-                  title={t(`common:range:tooltip:${group.label}`)}
-                  placement="top">
-                  <button
-                    onClick={() => handleDeleteHistoriesByRange(group.label)}>
-                    {deleteRangeLoading && deleteGroup === group.label ? (
-                      <Loader2 className="w-4 h-4 text-gray-500 hover:text-gray-700 dark:hover:text-gray-200 animate-spin" />
-                    ) : (
-                      <Trash2Icon className="w-4 h-4 text-gray-500 hover:text-gray-700 dark:hover:text-gray-200" />
-                    )}
-                  </button>
-                </Tooltip>
+                {group.label !== "searchResults" && (
+                  <Tooltip
+                    title={t(`common:range:tooltip:${group.label}`)}
+                    placement="top">
+                    <button
+                      onClick={() => handleDeleteHistoriesByRange(group.label)}>
+                      {deleteRangeLoading && deleteGroup === group.label ? (
+                        <Loader2 className="w-4 h-4 text-gray-500 hover:text-gray-700 dark:hover:text-gray-200 animate-spin" />
+                      ) : (
+                        <Trash2Icon className="w-4 h-4 text-gray-500 hover:text-gray-700 dark:hover:text-gray-200" />
+                      )}
+                    </button>
+                  </Tooltip>
+                )}
               </div>
               <div className="flex flex-col gap-2 mt-2">
                 {group.items.map((chat, index) => (
-                  <div
-                    key={index}
-                    className="flex py-2 px-2 items-center gap-3 relative rounded-md truncate hover:pr-4 group transition-opacity duration-300 ease-in-out bg-gray-100 dark:bg-[#232222] dark:text-gray-100 text-gray-800 border hover:bg-gray-200 dark:hover:bg-[#2d2d2d] dark:border-gray-800">
+                    <div
+                    key={chat.id}
+                    className={`flex py-2 px-2 items-center gap-3 relative rounded-md truncate hover:pr-4 group transition-opacity duration-300 ease-in-out border ${
+                      historyId === chat.id
+                      ? "bg-gray-200 dark:bg-[#454242] border-gray-400 dark:border-gray-600 text-gray-900 dark:text-gray-100"
+                      : "bg-gray-50 dark:bg-[#232222] dark:text-gray-100 text-gray-800 border-gray-300 dark:border-gray-800 hover:bg-gray-200 dark:hover:bg-[#2d2d2d]"
+                    }`}>
                     {chat?.message_source === "copilot" && (
                       <BotIcon className="size-3 text-gray-500 dark:text-gray-400" />
                     )}
