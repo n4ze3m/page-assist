@@ -18,6 +18,7 @@ import { LlamaCppLogo } from "../Icons/LlamacppLogo"
 import { InfinigenceAI } from "../Icons/InfinigenceAI"
 import { NovitaIcon } from "../Icons/Novita"
 import { VllmLogo } from "../Icons/VllmLogo"
+import { MoonshotIcon } from "../Icons/Moonshot"
 
 export const ProviderIcons = ({
   provider,
@@ -67,6 +68,8 @@ export const ProviderIcons = ({
       return <NovitaIcon className={className} />
     case "vllm":
       return <VllmLogo className={className} />
+    case "moonshot":
+      return <MoonshotIcon className={className} />
     default:
       return <OllamaIcon className={className} />
   }
