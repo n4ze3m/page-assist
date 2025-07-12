@@ -36,7 +36,7 @@ const SidepanelChat = () => {
     setMessages,
     selectedModel
   } = useMessage()
-  const { containerRef, isAtBottom, scrollToBottom } = useSmartScroll(
+  const { containerRef, isAutoScrollToBottom, autoScrollToBottom } = useSmartScroll(
     messages,
     streaming,
     60
@@ -174,10 +174,10 @@ const SidepanelChat = () => {
           </div>
 
           <div className="absolute bottom-0 w-full z-10">
-            {!isAtBottom && (
+            {!isAutoScrollToBottom && (
               <div className="fixed bottom-32 z-20 left-0 right-0 flex justify-center">
                 <button
-                  onClick={scrollToBottom}
+                  onClick={autoScrollToBottom}
                   className="bg-gray-50 shadow border border-gray-200 dark:border-none dark:bg-white/20 p-1.5 rounded-full pointer-events-auto">
                   <ChevronDown className="size-4 text-gray-600 dark:text-gray-300" />
                 </button>
