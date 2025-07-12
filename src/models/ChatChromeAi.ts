@@ -94,7 +94,7 @@ export class ChatChromeAI extends SimpleChatModel<ChromeAICallOptions> {
 
     this.session = await createAITextSession({
       topK: this.topK,
-      temperature: this.temperature
+      temperature: this.temperature,
     })
   }
 

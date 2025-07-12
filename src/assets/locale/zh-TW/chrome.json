@@ -9,5 +9,7 @@
         "ai_not_ready": "Gemini Nano 尚未準備好，您需要再次檢查 Chrome 設定。",
         "internal_error": "發生內部錯誤，請稍後重試。"
     },
-    "errorDescription": "為了使用 Chrome AI，您需要版本127以上的瀏覽器，目前版本在 Dev 和 Canary 頻道中。下載支援的版本後，請按照以下步驟操作：\n\n1. 前往 `chrome://flags/#prompt-api-for-gemini-nano` 並選擇「啟用」\n2. 前往 `chrome://flags/#optimization-guide-on-device-model` 並選擇「EnabledBypassPrefRequirement」\n3. 前往 `chrome://components` 搜尋「Optimization Guide On Device Model」，然後點擊「檢查更新」。這將下載模型。如果您沒有看到這些設置，請重複步驟1和2，然後重新啟動瀏覽器。"
+    "errorDescription": "要使用 Chrome AI，您需要 Chrome 版本 138 或更高版本。請按照以下步驟操作：\n\n1. 前往 `chrome://flags/#prompt-api-for-gemini-nano` 並啟用「Prompt API for Gemini Nano」。\n2. 重新啟動 Chrome 以應用該標誌。\n3. 返回此頁面並單擊「下載模型」——這將首次下載 4GB 模型。\n4. 下載完成後，可以通過 Page Assist 啟用 Gemini Nano。",
+    "downloadModel": "下載模型",
+    "modelDownloadWarning": "這將下載一個大約 1.5 GB 到 2.4 GB 的模型。請確保您有足夠的磁碟空間。"
 }

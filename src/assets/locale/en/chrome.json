@@ -4,10 +4,24 @@
         "label": "Enable or Disable Chrome AI Support on Page Assist"
     },
     "error": {
-        "browser_not_supported": "This version of Chrome is not supported by the Gemini Nano model. Please update to version 127 or later",
+        "browser_not_supported": "This version of Chrome is not supported by the Gemini Nano model. Please update to version 138 or later.",
         "ai_not_supported": "The setting chrome://flags/#prompt-api-for-gemini-nano is not enabled. Please enable it.",
         "ai_not_ready": "Gemini Nano is not ready yet; you need to double-check Chrome settings.",
         "internal_error": "An internal error occurred. Please try again later."
     },
-    "errorDescription": "In order to use Chrome AI, you need a browser version greater than 127, which is currently in the Dev and Canary channels. After downloading the supported version, follow these steps:\n\n1. Go to `chrome://flags/#prompt-api-for-gemini-nano` and select \"Enable\".\n2. Go to `chrome://flags/#optimization-guide-on-device-model` and select \"EnabledBypassPrefRequirement\".\n3. Go to `chrome://components`, search for \"Optimization Guide On Device Model\", and click \"Check for Update\". This will download the model. If you don't see the settings, repeat steps 1 and 2 and relaunch your browser."
+    "errorDescription": "To use Chrome AI, you need Chrome version 138 or later. Follow these steps:\n\n1. Go to `chrome://flags/#prompt-api-for-gemini-nano` and enable \"Prompt API for Gemini Nano\".\n2. Restart Chrome to apply the flag.\n3. Return to this page and click \"Download Model\" — this will download a 4GB model for the first time.\n4. Once downloaded, Gemini Nano can be enabled through Page Assist.",
+    "downloadModel": "Download Model",
+    "modelDownloadWarning": "This will download a model with an approximate download size ranging from 1.5 GB to 2.4 GB. Ensure you have sufficient disk space.",
+    "downloadModal": {
+        "title": "Download Gemini Nano Model",
+        "warning": "Large Download Required",
+        "warningDescription": "This will download approximately 4GB of data. Ensure you have sufficient disk space and a stable internet connection.",
+        "confirm": "Download Now",
+        "cancel": "Cancel",
+        "downloading": "Downloading Model",
+        "downloadingDescription": "Downloading Gemini Nano model. This may take several minutes depending on your internet connection.",
+        "pleaseWait": "Please do not close this window while downloading..."
+    },
+    "downloadSuccess": "Model downloaded successfully!",
+    "downloadError": "Failed to download model. Please try again."
 }

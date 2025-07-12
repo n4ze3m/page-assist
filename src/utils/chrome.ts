@@ -5,15 +5,23 @@ export const getChromeAISupported = async () => {
     let browserInfo = navigator.userAgent.match(/Chrom(e|ium)\/([0-9]+)\./)
     let version = browserInfo ? parseInt(browserInfo[2], 10) : 0
 
-    if (version < 127) {
+    if (version < 138) {
       return "browser_not_supported"
     }
 
-    if (!("ai" in globalThis)) {
+    if (!("LanguageModel" in globalThis) && !("ai" in globalThis)) {
       return "ai_not_supported"
     }
 
     const capabilities = await checkChromeAIAvailability()
+    if (capabilities === 'downloadable') {
+      return "downloadable"
+    }
+
+    if (capabilities === 'downloading') {
+      return "downloading"
+    }
+
     if (capabilities !== "readily") {
       return "ai_not_ready"
     }
