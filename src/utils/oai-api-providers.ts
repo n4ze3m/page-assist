@@ -103,5 +103,10 @@ export const OAI_API_PROVIDERS = [
         label: "Moonshot",
         value: "moonshot",
         baseUrl: "https://api.moonshot.ai/v1"
-    } 
+    } ,
+    {
+        label: "xAI",
+        value: "xai",
+        baseUrl: "https://api.x.ai/v1" 
+    }
 ]
