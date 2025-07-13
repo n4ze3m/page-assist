@@ -9,5 +9,7 @@
         "ai_not_ready": "Gemini Nano er ikke tilgjengelig; du må dobbeltsjekke Chrome-innstillingene.",
         "internal_error": "Det oppsto en intern feil. Vennligst prøv på nytt senere."
     },
-    "errorDescription": "For å bruke Chrome AI trenger du en nettleserversjon nyere enn 127, som kun er tilgjengelig i Dev - og Canary-kanaler. Etter å ha lastet ned den støttede versjonen, følg disse trinnene:\n\n1. Gå til `chrome://flags/#prompt-api-for-gemini-nano` and select \"Enable\".\n2. Gå til `://flags/#optimization-guide-on-device-model` og velge \"EnabledBypassPrefRequirement\".\n3. Gå til URL-linjen `://components`, søk på \"Optimization Guide On Device Model\", og klikk \"Search for update\". Dette vil laste ned modellen. Hvis du ikke ser innstillingene, gjentar du trinn 1 og 2 og starter nettleseren på nytt."
+    "errorDescription": "For å bruke Chrome AI, trenger du Chrome versjon 138 eller nyere. Følg disse trinnene:\n\n1. Gå til `chrome://flags/#prompt-api-for-gemini-nano` og aktiver \"Prompt API for Gemini Nano\".\n2. Start Chrome på nytt for å bruke innstillingen.\n3. Gå tilbake til denne siden og klikk \"Last ned modell\" — dette vil laste ned en modell på 4 GB for første gang.\n4. Når nedlastingen er fullført, kan Gemini Nano aktiveres gjennom Page Assist.",
+    "downloadModel": "Last ned modell",
+    "modelDownloadWarning": "Dette vil laste ned en modell med en estimert nedlastingsstørrelse på mellom 1,5 GB og 2,4 GB. Sørg for at du har tilstrekkelig diskplass."
 }
