@@ -2,101 +2,115 @@ import { useRef, useEffect, useState, useCallback } from "react"
 
 export const useSmartScroll = (messages: any[], streaming: boolean, threshold: number = 50) => {
   const containerRef = useRef<HTMLDivElement>(null)
+  const [isAtBottom, setIsAtBottom] = useState(true)
   const [shouldAutoScroll, setShouldAutoScroll] = useState(true)
   const lastMessageCount = useRef(0)
-  const isUserScrolling = useRef(false)
-  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const scrollTimeout = useRef<NodeJS.Timeout | null>(null)
 
-  const isAtBottom = useCallback(() => {
+  const checkIfAtBottom = useCallback(() => {
     if (!containerRef.current) return false
     const { scrollTop, scrollHeight, clientHeight } = containerRef.current
     return scrollHeight - scrollTop - clientHeight <= threshold
   }, [threshold])
 
+  const updateScrollStates = useCallback(() => {
+    const atBottom = checkIfAtBottom()
+    setIsAtBottom(atBottom)
+    
+    if (atBottom) {
+      setShouldAutoScroll(true)
+    }
+  }, [checkIfAtBottom])
+
   const scrollToBottom = useCallback((smooth: boolean = true) => {
     if (!containerRef.current) return
     
-    const container = containerRef.current
-    container.scrollTo({
-      top: container.scrollHeight,
+    containerRef.current.scrollTo({
+      top: containerRef.current.scrollHeight,
       behavior: smooth ? "smooth" : "auto"
     })
   }, [])
 
+  // Handle scroll events
   useEffect(() => {
     const container = containerRef.current
     if (!container) return
 
-    const handleScrollStart = () => {
-      isUserScrolling.current = true
-    }
-
     const handleScroll = () => {
-      if (scrollTimeoutRef.current) {
-        clearTimeout(scrollTimeoutRef.current)
+      // Clear existing timeout
+      if (scrollTimeout.current) {
+        clearTimeout(scrollTimeout.current)
       }
 
-      scrollTimeoutRef.current = setTimeout(() => {
-        isUserScrolling.current = false
+      // Debounce scroll events
+      scrollTimeout.current = setTimeout(() => {
+        const atBottom = checkIfAtBottom()
+        setIsAtBottom(atBottom)
         
-        if (isAtBottom()) {
+        if (atBottom) {
           setShouldAutoScroll(true)
         } else {
+          // Only disable auto-scroll if user actively scrolled up
           setShouldAutoScroll(false)
         }
-      }, 150)
+      }, 100)
     }
 
-    // Listen for user interactions
-    container.addEventListener("mousedown", handleScrollStart, { passive: true })
-    container.addEventListener("touchstart", handleScrollStart, { passive: true })
-    container.addEventListener("wheel", handleScrollStart, { passive: true })
     container.addEventListener("scroll", handleScroll, { passive: true })
+    
+    // Initial check
+    updateScrollStates()
 
     return () => {
-      container.removeEventListener("mousedown", handleScrollStart)
-      container.removeEventListener("touchstart", handleScrollStart)
-      container.removeEventListener("wheel", handleScrollStart)
       container.removeEventListener("scroll", handleScroll)
-      if (scrollTimeoutRef.current) {
-        clearTimeout(scrollTimeoutRef.current)
+      if (scrollTimeout.current) {
+        clearTimeout(scrollTimeout.current)
       }
     }
-  }, [isAtBottom])
+  }, [checkIfAtBottom, updateScrollStates])
 
+  // Auto-scroll when new messages arrive
   useEffect(() => {
     const hasNewMessages = messages.length > lastMessageCount.current
     lastMessageCount.current = messages.length
 
     if (messages.length === 0) {
       setShouldAutoScroll(true)
+      setIsAtBottom(true)
       return
     }
 
-    if (shouldAutoScroll && hasNewMessages && !isUserScrolling.current) {
-      // Double RAF to ensure DOM updates are complete
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          scrollToBottom(false)
-        })
-      })
+    if (shouldAutoScroll && hasNewMessages) {
+      // Use setTimeout to ensure DOM is updated
+      setTimeout(() => {
+        scrollToBottom(false)
+        // Update states after scroll
+        setTimeout(() => {
+          updateScrollStates()
+        }, 50)
+      }, 0)
+    } else {
+      // Still update states even if not auto-scrolling
+      setTimeout(updateScrollStates, 50)
     }
-  }, [messages, shouldAutoScroll, scrollToBottom])
+  }, [messages, shouldAutoScroll, scrollToBottom, updateScrollStates])
 
+  // Enable auto-scroll when streaming starts if at bottom
   useEffect(() => {
-    if (streaming && isAtBottom()) {
+    if (streaming && isAtBottom) {
       setShouldAutoScroll(true)
     }
   }, [streaming, isAtBottom])
 
   const autoScrollToBottom = useCallback(() => {
     setShouldAutoScroll(true)
+    setIsAtBottom(true)
     scrollToBottom(true)
   }, [scrollToBottom])
 
   return { 
     containerRef, 
-    isAutoScrollToBottom: shouldAutoScroll, 
+    isAutoScrollToBottom: isAtBottom && shouldAutoScroll, 
     autoScrollToBottom 
   }
 }
