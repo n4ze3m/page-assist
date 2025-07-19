@@ -38,7 +38,8 @@ export const SidepanelHeader = () => {
     setHistoryId,
     setSelectedModel,
     historyId,
-    history
+    history,
+    useOCR
   } = useMessage()
   const { t } = useTranslation(["sidepanel", "common", "option"])
   const [openModelSettings, setOpenModelSettings] = React.useState(false)
@@ -129,6 +130,7 @@ export const SidepanelHeader = () => {
       <CurrentChatModelSettings
         open={openModelSettings}
         setOpen={setOpenModelSettings}
+        isOCREnabled={useOCR} 
       />
 
       <Drawer
