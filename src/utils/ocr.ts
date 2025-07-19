@@ -1,4 +1,4 @@
-import { createWorker } from "tesseract.js"
+import { createWorker } from "pa-tesseract.js"
 
 export async function processImageForOCR(imageData: string): Promise<string> {
     try {
