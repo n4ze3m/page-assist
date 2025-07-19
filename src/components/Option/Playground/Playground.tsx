@@ -37,7 +37,8 @@ export const Playground = () => {
   const { setSystemPrompt } = useStoreChatModelSettings()
   const { containerRef, isAutoScrollToBottom, autoScrollToBottom } = useSmartScroll(
     messages,
-    streaming
+    streaming,
+    10
   )
 
   const [dropState, setDropState] = React.useState<

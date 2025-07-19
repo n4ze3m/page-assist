@@ -1,77 +1,102 @@
-import { useRef, useEffect, useState } from "react"
+import { useRef, useEffect, useState, useCallback } from "react"
 
 export const useSmartScroll = (messages: any[], streaming: boolean, threshold: number = 50) => {
   const containerRef = useRef<HTMLDivElement>(null)
-  const [isAutoScrollToBottom, setIsAutoScrollToBottom] = useState(true)
-  const cooldownTimer = useRef<NodeJS.Timeout | null>(null)
-  const lastScrollTop = useRef(0)
-  const lastScrollHeight = useRef(0)
+  const [shouldAutoScroll, setShouldAutoScroll] = useState(true)
+  const lastMessageCount = useRef(0)
+  const isUserScrolling = useRef(false)
+  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+
+  const isAtBottom = useCallback(() => {
+    if (!containerRef.current) return false
+    const { scrollTop, scrollHeight, clientHeight } = containerRef.current
+    return scrollHeight - scrollTop - clientHeight <= threshold
+  }, [threshold])
+
+  const scrollToBottom = useCallback((smooth: boolean = true) => {
+    if (!containerRef.current) return
+    
+    const container = containerRef.current
+    container.scrollTo({
+      top: container.scrollHeight,
+      behavior: smooth ? "smooth" : "auto"
+    })
+  }, [])
 
   useEffect(() => {
     const container = containerRef.current
     if (!container) return
 
+    const handleScrollStart = () => {
+      isUserScrolling.current = true
+    }
+
     const handleScroll = () => {
-      const { scrollTop, scrollHeight, clientHeight } = container
-      const atBottom = scrollHeight - scrollTop - clientHeight < threshold
-      const isOverflow = scrollHeight > clientHeight
-      const isScrollingUp = scrollTop < lastScrollTop.current
-      // Prevent misjudging a sudden reduction in scrollHeight (e.g., during the creation of diagrams or charts) as an upward scroll
-      const isHeightReduced = scrollHeight < lastScrollHeight.current
-      lastScrollTop.current = scrollTop
-      lastScrollHeight.current = scrollHeight
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current)
+      }
 
-      if (isAutoScrollToBottom && isOverflow && !isHeightReduced && isScrollingUp) {
-        // User is scrolling up while auto-scroll is enabled; temporarily disable auto-scroll (with a short cooldown)
-        if (cooldownTimer.current) clearTimeout(cooldownTimer.current)
-        cooldownTimer.current = setTimeout(() => {
-          cooldownTimer.current = null
-        }, 300)
+      scrollTimeoutRef.current = setTimeout(() => {
+        isUserScrolling.current = false
+        
+        if (isAtBottom()) {
+          setShouldAutoScroll(true)
+        } else {
+          setShouldAutoScroll(false)
+        }
+      }, 150)
+    }
 
-        setIsAutoScrollToBottom(false)
-      } else if (atBottom && !cooldownTimer.current) {
-        setIsAutoScrollToBottom(true)
+    // Listen for user interactions
+    container.addEventListener("mousedown", handleScrollStart, { passive: true })
+    container.addEventListener("touchstart", handleScrollStart, { passive: true })
+    container.addEventListener("wheel", handleScrollStart, { passive: true })
+    container.addEventListener("scroll", handleScroll, { passive: true })
+
+    return () => {
+      container.removeEventListener("mousedown", handleScrollStart)
+      container.removeEventListener("touchstart", handleScrollStart)
+      container.removeEventListener("wheel", handleScrollStart)
+      container.removeEventListener("scroll", handleScroll)
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current)
       }
     }
-
-    container.addEventListener("scroll", handleScroll)
-    return () => {
-      container.removeEventListener("scroll", handleScroll)
-      if (cooldownTimer.current) clearTimeout(cooldownTimer.current)
-    }
-  }, [])
+  }, [isAtBottom])
 
   useEffect(() => {
-    if (streaming) {
-      setIsAutoScrollToBottom(true)
-    }
-  }, [streaming]) // Enable auto-scroll when LLM is replying (streaming)
+    const hasNewMessages = messages.length > lastMessageCount.current
+    lastMessageCount.current = messages.length
 
-  useEffect(() => {
     if (messages.length === 0) {
-      setIsAutoScrollToBottom(true)
-      lastScrollTop.current = 0
+      setShouldAutoScroll(true)
       return
     }
 
-    if (isAutoScrollToBottom) {
-      scrollToBottom(streaming)
+    if (shouldAutoScroll && hasNewMessages && !isUserScrolling.current) {
+      // Double RAF to ensure DOM updates are complete
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          scrollToBottom(false)
+        })
+      })
     }
-  }, [messages]) // Only auto-scroll on messages change
+  }, [messages, shouldAutoScroll, scrollToBottom])
 
-  const scrollToBottom = (smooth: boolean) => {
-    if (containerRef.current) {
-      const scrollOptions: ScrollIntoViewOptions = smooth
-        ? { behavior: "smooth", block: "end" }
-        : { behavior: "auto", block: "end" }
-      containerRef.current.lastElementChild?.scrollIntoView(scrollOptions)
+  useEffect(() => {
+    if (streaming && isAtBottom()) {
+      setShouldAutoScroll(true)
     }
-  }
+  }, [streaming, isAtBottom])
 
-  const autoScrollToBottom = (smooth: boolean = true) => {
-    scrollToBottom(smooth)
-    setIsAutoScrollToBottom(true)
-  }
+  const autoScrollToBottom = useCallback(() => {
+    setShouldAutoScroll(true)
+    scrollToBottom(true)
+  }, [scrollToBottom])
 
-  return { containerRef, isAutoScrollToBottom, autoScrollToBottom }
+  return { 
+    containerRef, 
+    isAutoScrollToBottom: shouldAutoScroll, 
+    autoScrollToBottom 
+  }
 }
