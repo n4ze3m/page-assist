@@ -12,33 +12,38 @@ import {
   Input,
   InputNumber,
   Modal,
+  Select,
   Skeleton,
   Switch
 } from "antd"
 import React, { useCallback } from "react"
 import { useTranslation } from "react-i18next"
 import { SaveButton } from "../SaveButton"
+import { getOCRLanguage } from "@/services/ocr"
+import { ocrLanguages } from "@/data/ocr-language"
 
 type Props = {
   open: boolean
   setOpen: (open: boolean) => void
   useDrawer?: boolean
+  isOCREnabled?: boolean
 }
 
 export const CurrentChatModelSettings = ({
   open,
   setOpen,
-  useDrawer
+  useDrawer,
+  isOCREnabled
 }: Props) => {
   const { t } = useTranslation("common")
   const [form] = Form.useForm()
   const cUserSettings = useStoreChatModelSettings()
-  const { 
-    selectedSystemPrompt, 
-    uploadedFiles, 
-    removeUploadedFile, 
+  const {
+    selectedSystemPrompt,
+    uploadedFiles,
+    removeUploadedFile,
     fileRetrievalEnabled,
-    setFileRetrievalEnabled 
+    setFileRetrievalEnabled
   } = useMessageOption()
 
   const savePrompt = useCallback(
@@ -51,7 +56,7 @@ export const CurrentChatModelSettings = ({
   const saveSettings = useCallback(
     (values: any) => {
       Object.entries(values).forEach(([key, value]) => {
-        if (key !== "systemPrompt") {
+        if (key !== "systemPrompt" && key !== "ocrLanguage") {
           cUserSettings.setX(key, value)
         }
       })
@@ -64,6 +69,11 @@ export const CurrentChatModelSettings = ({
     queryFn: async () => {
       const data = await getAllModelSettings()
 
+      const ocrLang = await getOCRLanguage()
+
+      if (isOCREnabled) {
+        cUserSettings.setOcrLanguage(ocrLang)
+      }
       let tempSystemPrompt = ""
 
       // i hate this method but i need this feature so badly that i need to do this
@@ -128,6 +138,33 @@ export const CurrentChatModelSettings = ({
                 <Divider />
               </>
             )}
+
+            {isOCREnabled && (
+              <div className="flex flex-col space-y-2 mb-3">
+                <span className="text-gray-700   dark:text-neutral-50">
+                  OCR Language
+                </span>
+
+                <Select
+                  showSearch
+                  style={{ width: "100%" }}
+                  options={ocrLanguages}
+                  value={cUserSettings.ocrLanguage}
+                  filterOption={(input, option) =>
+                    option!.label.toLowerCase().indexOf(input.toLowerCase()) >=
+                      0 ||
+                    option!.value.toLowerCase().indexOf(input.toLowerCase()) >=
+                      0
+                  }
+                  onChange={(value) => {
+                    cUserSettings.setOcrLanguage(value)
+                  }}
+                />
+                <Divider />
+
+              </div>
+            )}
+
             <Form.Item
               name="keepAlive"
               help={t("modelSettings.form.keepAlive.help")}
@@ -214,10 +251,16 @@ export const CurrentChatModelSettings = ({
                               <span>{(file.size / 1024).toFixed(1)} KB</span>
                               {fileRetrievalEnabled && (
                                 <span className="flex items-center gap-1">
-                                  <span className={`inline-block w-2 h-2 rounded-full ${
-                                    file.processed ? 'bg-green-500' : 'bg-yellow-500'
-                                  }`} />
-                                  {file.processed ? 'Processed' : 'Processing...'}
+                                  <span
+                                    className={`inline-block w-2 h-2 rounded-full ${
+                                      file.processed
+                                        ? "bg-green-500"
+                                        : "bg-yellow-500"
+                                    }`}
+                                  />
+                                  {file.processed
+                                    ? "Processed"
+                                    : "Processing..."}
                                 </span>
                               )}
                             </div>

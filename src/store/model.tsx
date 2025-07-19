@@ -76,6 +76,10 @@ type CurrentChatModelSettings = {
 
   thinking?: boolean
   setThinking?: (thinking: boolean) => void
+
+
+  ocrLanguage?: string
+  setOcrLanguage?: (ocrLanguage: string) => void 
 }
 
 export const useStoreChatModelSettings = create<CurrentChatModelSettings>(
@@ -119,6 +123,8 @@ export const useStoreChatModelSettings = create<CurrentChatModelSettings>(
     setUseMlock: (useMlock: boolean) => set({ useMlock }),
     setReasoningEffort: (reasoningEffort: string) => set({ reasoningEffort }),
     setThinking: (thinking: boolean) => set({ thinking }),
+    ocrLanguage: undefined, 
+    setOcrLanguage: (ocrLanguage: string) => set({ ocrLanguage }), 
     reset: () =>
       set({
         f16KV: undefined,
@@ -155,6 +161,7 @@ export const useStoreChatModelSettings = create<CurrentChatModelSettings>(
         useMlock: undefined,
         reasoningEffort: undefined,
         thinking: undefined,
+        ocrLanguage: undefined 
       })
   })
 )

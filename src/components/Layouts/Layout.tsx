@@ -33,7 +33,8 @@ export default function OptionLayout({
     setSelectedModel,
     temporaryChat,
     setSelectedSystemPrompt,
-    setContextFiles
+    setContextFiles,
+    useOCR
   } = useMessageOption()
   const queryClient = useQueryClient()
   const { setSystemPrompt } = useStoreChatModelSettings()
@@ -115,6 +116,7 @@ export default function OptionLayout({
           open={openModelSettings}
           setOpen={setOpenModelSettings}
           useDrawer
+          isOCREnabled={useOCR} 
         />
       </main>
     </div>

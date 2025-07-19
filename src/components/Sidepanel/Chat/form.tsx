@@ -22,6 +22,7 @@ import { PiGlobeX, PiGlobe } from "react-icons/pi"
 import { handleChatInputKeyDown } from "@/utils/key-down"
 import { getIsSimpleInternetSearch } from "@/services/search"
 import { useStorage } from "@plasmohq/storage/hook"
+import { useFocusShortcuts } from "@/hooks/keyboard"
 
 type Props = {
   dropedFile: File | undefined
@@ -76,6 +77,9 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
       textareaRef.current.focus()
     }
   }
+
+  useFocusShortcuts(textareaRef, true)
+
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Process" || e.key === "229") return
     if (

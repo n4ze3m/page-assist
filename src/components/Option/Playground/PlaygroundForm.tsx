@@ -27,6 +27,7 @@ import { handleChatInputKeyDown } from "@/utils/key-down"
 import { getIsSimpleInternetSearch } from "@/services/search"
 import { useStorage } from "@plasmohq/storage/hook"
 import { useTabMentions } from "~/hooks/useTabMentions"
+import { useFocusShortcuts } from "~/hooks/keyboard"
 import { MentionsDropdown } from "./MentionsDropdown"
 import { DocumentChip } from "./DocumentChip"
 import { otherUnsupportedTypes } from "../Knowledge/utils/unsupported-types"
@@ -87,6 +88,10 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
     reloadTabs,
     handleMentionsOpen
   } = useTabMentions(textareaRef)
+  
+  // Enable focus shortcuts (Shift+Esc to focus textarea)
+  useFocusShortcuts(textareaRef, true)
+  
   const [pasteLargeTextAsFile] = useStorage("pasteLargeTextAsFile", false)
   const isMobile = () => {
     return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
