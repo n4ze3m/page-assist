@@ -65,6 +65,10 @@
       },
       "pasteLargeTextAsFile": {
         "label": "Paste Large Text as File"
+      },
+      "ocrLanguage": {
+        "label": "Default OCR Language",
+        "placeholder": "Select an OCR language"
       }
     },
     "sidepanelRag": {

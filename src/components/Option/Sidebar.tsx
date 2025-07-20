@@ -262,8 +262,6 @@ export const Sidebar = ({
     }
   }
 
-  console.log("Chat histories data:", chatHistoriesData)
-
   return (
     <div
       className={`overflow-y-auto z-99 ${temporaryChat ? "pointer-events-none opacity-50" : ""}`}>

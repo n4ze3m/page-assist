@@ -59,6 +59,7 @@ type Props = {
   documents?: ChatDocuments
   actionInfo?: string | null
   onNewBranch?: () => void
+  temporaryChat?: boolean
 }
 
 export const PlaygroundMessage = (props: Props) => {
@@ -411,7 +412,7 @@ export const PlaygroundMessage = (props: Props) => {
                     </Tooltip>
                   )}
 
-                  {props?.onNewBranch && (
+                  {props?.onNewBranch && !props?.temporaryChat && (
                     <Tooltip title={t("newBranch")}>
                       <button
                         aria-label={t("newBranch")}

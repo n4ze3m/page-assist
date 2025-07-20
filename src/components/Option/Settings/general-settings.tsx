@@ -9,6 +9,7 @@ import { useStorage } from "@plasmohq/storage/hook"
 import { SystemSettings } from "./system-settings"
 import { SSTSettings } from "./sst-settings"
 import { BetaTag } from "@/components/Common/Beta"
+import { getDefaultOcrLanguage, ocrLanguages } from "@/data/ocr-language"
 
 export const GeneralSettings = () => {
   const [userChatBubble, setUserChatBubble] = useStorage("userChatBubble", true)
@@ -69,6 +70,11 @@ export const GeneralSettings = () => {
   const [pasteLargeTextAsFile, setPasteLargeTextAsFile] = useStorage(
     "pasteLargeTextAsFile",
     false
+  )
+
+  const [defaultOCRLanguage, setDefaultOCRLanguage] = useStorage(
+    "defaultOCRLanguage",
+    getDefaultOcrLanguage()
   )
 
   const { mode, toggleDarkMode } = useDarkMode()
@@ -303,6 +309,27 @@ export const GeneralSettings = () => {
         <Switch
           checked={pasteLargeTextAsFile}
           onChange={(checked) => setPasteLargeTextAsFile(checked)}
+        />
+      </div>
+
+      <div className="flex flex-row justify-between">
+        <span className="text-gray-700   dark:text-neutral-50">
+          {t("generalSettings.settings.ocrLanguage.label")}
+        </span>
+
+        <Select
+          placeholder={t("generalSettings.settings.ocrLanguage.placeholder")}
+          showSearch
+          style={{ width: "200px" }}
+          options={ocrLanguages}
+          value={defaultOCRLanguage}
+          filterOption={(input, option) =>
+            option!.label.toLowerCase().indexOf(input.toLowerCase()) >= 0 ||
+            option!.value.toLowerCase().indexOf(input.toLowerCase()) >= 0
+          }
+          onChange={(value) => {
+            setDefaultOCRLanguage(value)
+          }}
         />
       </div>
 
