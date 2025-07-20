@@ -19,7 +19,6 @@ import {
   removeMessageUsingHistoryId,
   updateMessageByIndex
 } from "@/db/dexie/helpers"
-import { saveMessageOnError, saveMessageOnSuccess } from "./chat-helper"
 import { notification } from "antd"
 import { useTranslation } from "react-i18next"
 import { usePageAssist } from "@/context"
@@ -43,6 +42,10 @@ import {
 import { getModelNicknameByID } from "@/db/dexie/nickname"
 import { systemPromptFormatter } from "@/utils/system-message"
 import { createBranchMessage } from "./handlers/messageHandlers"
+import {
+  createSaveMessageOnError,
+  createSaveMessageOnSuccess
+} from "./utils/messageHelpers"
 
 export const useMessage = () => {
   const {
@@ -60,7 +63,9 @@ export const useMessage = () => {
     setIsSearchingInternet,
     webSearch,
     setWebSearch,
-    isSearchingInternet
+    isSearchingInternet,
+    temporaryChat,
+    setTemporaryChat
   } = useStoreMessageOption()
   const [defaultInternetSearchOn] = useStorage("defaultInternetSearchOn", false)
 
@@ -124,6 +129,17 @@ export const useMessage = () => {
       setChatMode("rag")
     }
   }
+
+  const saveMessageOnSuccess = createSaveMessageOnSuccess(
+    temporaryChat,
+    setHistoryId as (id: string) => void
+  )
+  const saveMessageOnError = createSaveMessageOnError(
+    temporaryChat,
+    history,
+    setHistory,
+    setHistoryId as (id: string) => void
+  )
 
   const chatWithWebsiteMode = async (
     message: string,
@@ -1734,6 +1750,8 @@ export const useMessage = () => {
     defaultInternetSearchOn,
     defaultChatWithWebsite,
     history,
-    createChatBranch
+    createChatBranch,
+    temporaryChat,
+    setTemporaryChat
   }
 }
