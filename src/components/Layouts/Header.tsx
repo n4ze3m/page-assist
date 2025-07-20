@@ -59,7 +59,7 @@ export const Header: React.FC<Props> = ({
     queryKey: ["fetchModel"],
     queryFn: () => fetchChatModels({ returnEmpty: true }),
     refetchIntervalInBackground: false,
-    staleTime: 1000 * 60 *1, 
+    staleTime: 1000 * 60 * 1
   })
 
   const { data: prompts, isLoading: isPromptLoading } = useQuery({
@@ -90,9 +90,8 @@ export const Header: React.FC<Props> = ({
 
   return (
     <div
-      className={`absolute top-0 z-10 flex h-14 w-full flex-row items-center justify-center p-3 overflow-x-auto lg:overflow-x-visible bg-gray-50 border-b  dark:bg-[#171717] dark:border-gray-600 ${
-        temporaryChat && "!bg-gray-200 dark:!bg-black"
-      }`}>
+      data-istemporary-chat={temporaryChat}
+      className={`absolute top-0 z-10 flex h-14 w-full flex-row items-center justify-center p-3 overflow-x-auto lg:overflow-x-visible bg-gray-50 border-b  dark:bg-[#171717] dark:border-gray-600 data-[istemporary-chat='true']:bg-gray-200 data-[istemporary-chat='true']:dark:bg-black`}>
       <div className="flex gap-2 items-center">
         {pathname !== "/" && (
           <div>
