@@ -10,13 +10,15 @@ type Props = {
   setSelectedQuickPrompt: (prompt: string | undefined) => void
   selectedSystemPrompt: string | undefined
   className?: string
+  iconClassName?: string
 }
 
 export const PromptSelect: React.FC<Props> = ({
   setSelectedQuickPrompt,
   setSelectedSystemPrompt,
   selectedSystemPrompt,
-  className = "dark:text-gray-300"
+  className = "dark:text-gray-300",
+  iconClassName = "size-5"
 }) => {
   const { t } = useTranslation("option")
 
@@ -87,7 +89,7 @@ export const PromptSelect: React.FC<Props> = ({
           trigger={["click"]}>
           <Tooltip title={t("selectAPrompt")}>
             <button type="button" className={className}>
-              <BookIcon className="h-5 w-5" />
+              <BookIcon className={iconClassName} />
             </button>
           </Tooltip>
         </Dropdown>

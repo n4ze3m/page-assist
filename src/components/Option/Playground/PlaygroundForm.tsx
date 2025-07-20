@@ -88,10 +88,10 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
     reloadTabs,
     handleMentionsOpen
   } = useTabMentions(textareaRef)
-  
+
   // Enable focus shortcuts (Shift+Esc to focus textarea)
   useFocusShortcuts(textareaRef, true)
-  
+
   const [pasteLargeTextAsFile] = useStorage("pasteLargeTextAsFile", false)
   const isMobile = () => {
     return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
@@ -341,10 +341,9 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
       <div className="relative z-10 flex w-full flex-col items-center justify-center gap-2 text-base">
         <div className="relative flex w-full flex-row justify-center gap-2 lg:w-3/5">
           <div
-            className={` bg-neutral-50  dark:bg-[#2D2D2D] relative w-full max-w-[48rem] p-1 backdrop-blur-lg duration-100 border border-gray-300 rounded-t-xl  dark:border-gray-600
-            ${temporaryChat ? "!bg-gray-200 dark:!bg-black " : ""}
-            ${checkWideMode ? "max-w-none " : ""}
-            `}>
+            data-istemporary-chat={temporaryChat}
+            data-checkwidemode={checkWideMode}
+            className={` bg-neutral-50  dark:bg-[#2D2D2D] relative w-full max-w-[48rem] p-1 backdrop-blur-lg duration-100 border border-gray-300 rounded-t-xl  dark:border-gray-600 data-[istemporary-chat='true']:bg-gray-200 data-[istemporary-chat='true']:dark:bg-black data-[checkwidemode='true']:max-w-none`}>
             <div
               className={`border-b border-gray-200 dark:border-gray-600 relative ${
                 form.values.image.length === 0 ? "hidden" : "block"

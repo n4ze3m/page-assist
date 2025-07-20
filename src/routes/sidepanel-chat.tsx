@@ -36,11 +36,8 @@ const SidepanelChat = () => {
     setMessages,
     selectedModel
   } = useMessage()
-  const { containerRef, isAutoScrollToBottom, autoScrollToBottom } = useSmartScroll(
-    messages,
-    streaming,
-    60
-  )
+  const { containerRef, isAutoScrollToBottom, autoScrollToBottom } =
+    useSmartScroll(messages, streaming, 60)
   const [chatBackgroundImage] = useStorage({
     key: "chatBackgroundImage",
     instance: new Storage({
@@ -152,18 +149,21 @@ const SidepanelChat = () => {
           className={`relative flex h-full flex-col items-center ${
             dropState === "dragging" ? "bg-gray-100 dark:bg-gray-800" : ""
           } bg-white dark:bg-[#171717]`}
-          style={chatBackgroundImage ? {
-            backgroundImage: `url(${chatBackgroundImage})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat'
-          } : {}}>
-          
+          style={
+            chatBackgroundImage
+              ? {
+                  backgroundImage: `url(${chatBackgroundImage})`,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                  backgroundRepeat: "no-repeat"
+                }
+              : {}
+          }>
           {/* Background overlay for opacity effect */}
           {chatBackgroundImage && (
             <div
               className="absolute inset-0 bg-white dark:bg-[#171717]"
-              style={{ opacity: 0.9, pointerEvents: 'none' }}
+              style={{ opacity: 0.9, pointerEvents: "none" }}
             />
           )}
 
