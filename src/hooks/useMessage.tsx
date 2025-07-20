@@ -548,7 +548,8 @@ export const useMessage = () => {
 
       if (visionImage === "") {
         throw new Error(
-          "Please close and reopen the side panel. This is a bug that will be fixed soon."
+          data?.error ||
+            "Please close and reopen the side panel. This is a bug that will be fixed soon."
         )
       }
 

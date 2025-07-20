@@ -110,7 +110,7 @@ export const ocrLanguages = (
         ? baseOcrLanguages
         : [
             ...baseOcrLanguages,
-            { label: 'English (fast)', value: 'eng-fast' },
+            { label: 'English (Offline)', value: 'eng-fast' },
         ]
 );
 

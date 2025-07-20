@@ -7,7 +7,11 @@ import { fetchChatModels } from "@/services/ollama"
 import { useMessage } from "@/hooks/useMessage"
 import { ProviderIcons } from "./ProviderIcon"
 
-export const ModelSelect: React.FC = () => {
+type Props = {
+  iconClassName?: string
+}
+
+export const ModelSelect: React.FC<Props> = ({iconClassName = "size-5"}) => {
   const { t } = useTranslation("common")
   const { setSelectedModel, selectedModel } = useMessage()
   const { data } = useQuery({
@@ -60,7 +64,7 @@ export const ModelSelect: React.FC = () => {
           trigger={["click"]}>
           <Tooltip title={t("selectAModel")}>
             <button type="button" className="dark:text-gray-300">
-              <LucideBrain className="h-5 w-5" />
+              <LucideBrain className={iconClassName} />
             </button>
           </Tooltip>
         </Dropdown>

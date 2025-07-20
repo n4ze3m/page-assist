@@ -251,7 +251,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                   form.setFieldValue("image", "")
                 }}
                 className="absolute top-1 left-1 flex items-center justify-center z-10 bg-white dark:bg-[#262626] p-0.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-600 text-black dark:text-gray-100">
-                <X className="h-4 w-4" />
+                <X className="h-3 w-3" />
               </button>{" "}
               <Image
                 src={form.values.image}
@@ -346,14 +346,14 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                               chatMode === "rag" ? "hidden" : "block"
                             }`}>
                             {webSearch ? (
-                              <PiGlobe className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                              <PiGlobe className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                             ) : (
-                              <PiGlobeX className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+                              <PiGlobeX className="h-4 w-4 text-gray-600 dark:text-gray-400" />
                             )}
                           </button>
                         </Tooltip>
                       )}
-                      <ModelSelect />
+                      <ModelSelect iconClassName="size-4" />
                       {browserSupportsSpeechRecognition && (
                         <Tooltip title={t("tooltip.speechToText")}>
                           <button
@@ -371,11 +371,11 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                             }}
                             className={`flex items-center justify-center dark:text-gray-300`}>
                             {!isListening ? (
-                              <MicIcon className="h-5 w-5" />
+                              <MicIcon className="h-4 w-4" />
                             ) : (
                               <div className="relative">
-                                <span className="animate-ping absolute inline-flex h-3 w-3 rounded-full bg-red-400 opacity-75"></span>
-                                <MicIcon className="h-5 w-5" />
+                                <span className="animate-ping absolute inline-flex h-2 w-2 rounded-full bg-red-400 opacity-75"></span>
+                                <MicIcon className="h-4 w-4" />
                               </div>
                             )}
                           </button>
@@ -396,9 +396,9 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                             chatMode === "rag" ? "hidden" : "block"
                           } disabled:opacity-50`}>
                           {chatMode === "vision" ? (
-                            <EyeIcon className="h-5 w-5" />
+                            <EyeIcon className="h-4 w-4" />
                           ) : (
-                            <EyeOffIcon className="h-5 w-5" />
+                            <EyeOffIcon className="h-4 w-4" />
                           )}
                         </button>
                       </Tooltip>
@@ -412,7 +412,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                           className={`flex items-center justify-center disabled:opacity-50 dark:text-gray-300 ${
                             chatMode === "rag" ? "hidden" : "block"
                           }`}>
-                          <ImageIcon className="h-5 w-5" />
+                          <ImageIcon className="h-4 w-4" />
                         </button>
                       </Tooltip>
                       {!streaming ? (
@@ -427,7 +427,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                               viewBox="0 0 24 24"
                               strokeWidth={1.5}
                               stroke="currentColor"
-                              className="w-5 h-5">
+                              className="w-4 h-4">
                               <path
                                 strokeLinecap="round"
                                 strokeLinejoin="round"
@@ -486,7 +486,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                                 strokeLinecap="round"
                                 strokeLinejoin="round"
                                 strokeWidth="2"
-                                className="h-5 w-5"
+                                className="h-4 w-4"
                                 viewBox="0 0 24 24">
                                 <path d="M9 10L4 15 9 20"></path>
                                 <path d="M20 4v7a4 4 0 01-4 4H4"></path>
@@ -501,7 +501,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                             type="button"
                             onClick={stopStreamingRequest}
                             className="text-gray-800 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded-md p-1">
-                            <StopCircleIcon className="h-6 w-6" />
+                            <StopCircleIcon className="h-5 w-5" />
                           </button>
                         </Tooltip>
                       )}
