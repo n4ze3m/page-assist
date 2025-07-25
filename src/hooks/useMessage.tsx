@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useCallback, useMemo } from "react"
 import { cleanUrl } from "~/libs/clean-url"
 import {
   defaultEmbeddingModelForRag,
@@ -102,7 +102,7 @@ export const useMessage = () => {
     useOCR,
     setUseOCR
   } = useStoreMessage()
- const [sidepanelTemporaryChat, ] = useStorage(
+  const [sidepanelTemporaryChat] = useStorage(
     "sidepanelTemporaryChat",
     false
   )
@@ -115,7 +115,38 @@ export const useMessage = () => {
     [key: string]: PAMemoryVectorStore
   }>({})
 
-  const clearChat = () => {
+  // ============================ PERFORMANCE OPTIMIZATION ============================
+  // The functions returned by this hook are memoized using `useCallback` and `useMemo`.
+  // This is critical to prevent child components (like Sidebar) from re-rendering
+  // unnecessarily. Without this, this hook would return new function instances on every
+  // parent render, which would break `React.memo` optimizations down the component tree.
+  //
+  // These optimizations prevent component from re-rendering if their props have not changed.
+  //
+  // - `useCallback` stabilizes function definitions written in this file.
+  // - `useMemo` stabilizes the functions returned by the `create...` factories.
+  // =================================================================================
+
+  const stopStreamingRequest = useCallback(() => {
+    if (isEmbedding) {
+      if (embeddingController) {
+        embeddingController.abort()
+        setEmbeddingController(null)
+      }
+    }
+    if (abortController) {
+      abortController.abort()
+      setAbortController(null)
+    }
+  }, [
+    isEmbedding,
+    embeddingController,
+    setEmbeddingController,
+    abortController,
+    setAbortController
+  ])
+
+  const clearChat = useCallback(() => {
     stopStreamingRequest()
     setMessages([])
     setHistory([])
@@ -134,7 +165,23 @@ export const useMessage = () => {
     if (sidepanelTemporaryChat) {
       setTemporaryChat(true)
     }
-  }
+  }, [
+    stopStreamingRequest,
+    setMessages,
+    setHistory,
+    setHistoryId,
+    setIsFirstMessage,
+    setIsLoading,
+    setIsProcessing,
+    setStreaming,
+    currentChatModelSettings,
+    defaultInternetSearchOn,
+    setWebSearch,
+    defaultChatWithWebsite,
+    setChatMode,
+    sidepanelTemporaryChat,
+    setTemporaryChat
+  ])
 
   const saveMessageOnSuccess = createSaveMessageOnSuccess(
     temporaryChat,
@@ -147,1557 +194,1554 @@ export const useMessage = () => {
     setHistoryId as (id: string) => void
   )
 
-  const chatWithWebsiteMode = async (
-    message: string,
-    image: string,
-    isRegenerate: boolean,
-    messages: Message[],
-    history: ChatHistory,
-    signal: AbortSignal,
-    embeddingSignal: AbortSignal
-  ) => {
-    setStreaming(true)
-    const url = await getOllamaURL()
-    const userDefaultModelSettings = await getAllDefaultModelSettings()
-
-    const ollama = await pageAssistModel({
-      model: selectedModel!,
-      baseUrl: cleanUrl(url)
-    })
-
-    let newMessage: Message[] = []
-    let generateMessageId = generateID()
-    const modelInfo = await getModelNicknameByID(selectedModel)
-
-    if (!isRegenerate) {
-      newMessage = [
-        ...messages,
-        {
-          isBot: false,
-          name: "You",
-          message,
-          sources: [],
-          images: []
-        },
-        {
-          isBot: true,
-          name: selectedModel,
-          message: "▋",
-          sources: [],
-          id: generateMessageId,
-          modelImage: modelInfo?.model_avatar,
-          modelName: modelInfo?.model_name || selectedModel
-        }
-      ]
-    } else {
-      newMessage = [
-        ...messages,
-        {
-          isBot: true,
-          name: selectedModel,
-          message: "▋",
-          sources: [],
-          id: generateMessageId,
-          modelImage: modelInfo?.model_avatar,
-          modelName: modelInfo?.model_name || selectedModel
-        }
-      ]
-    }
-
-    setMessages(newMessage)
-    let fullText = ""
-    let contentToSave = ""
-    let embedURL: string, embedHTML: string, embedType: string
-    let embedPDF: { content: string; page: number }[] = []
-
-    let isAlreadyExistEmbedding: PAMemoryVectorStore
-    const {
-      content: html,
-      url: websiteUrl,
-      type,
-      pdf
-    } = await getContentFromCurrentTab(chatWithWebsiteEmbedding)
-
-    embedHTML = html
-    embedURL = websiteUrl
-    embedType = type
-    embedPDF = pdf
-    if (messages.length === 0) {
-      setCurrentURL(websiteUrl)
-      isAlreadyExistEmbedding = keepTrackOfEmbedding[currentURL]
-    } else {
-      if (currentURL !== websiteUrl) {
-        setCurrentURL(websiteUrl)
+  const onSubmit = useCallback(
+    async ({
+      message,
+      image,
+      isRegenerate,
+      controller,
+      memory,
+      messages: chatHistory,
+      messageType
+    }: {
+      message: string
+      image: string
+      isRegenerate?: boolean
+      messages?: Message[]
+      memory?: ChatHistory
+      controller?: AbortController
+      messageType?: string
+    }) => {
+      let signal: AbortSignal
+      if (!controller) {
+        const newController = new AbortController()
+        signal = newController.signal
+        setAbortController(newController)
       } else {
-        embedURL = currentURL
+        setAbortController(controller)
+        signal = controller.signal
       }
-      isAlreadyExistEmbedding = keepTrackOfEmbedding[websiteUrl]
-    }
-    setMessages(newMessage)
-    const ollamaUrl = await getOllamaURL()
-    const embeddingModle = await defaultEmbeddingModelForRag()
 
-    const ollamaEmbedding = await pageAssistEmbeddingModel({
-      model: embeddingModle || selectedModel,
-      baseUrl: cleanUrl(ollamaUrl),
-      signal: embeddingSignal,
-      keepAlive:
-        currentChatModelSettings?.keepAlive ??
-        userDefaultModelSettings?.keepAlive
-    })
-    let vectorstore: PAMemoryVectorStore
+      // All chat mode functions are defined inside `onSubmit` to capture the correct scope
+      // without needing to be memoized individually.
 
-    try {
-      if (isAlreadyExistEmbedding) {
-        vectorstore = isAlreadyExistEmbedding
-      } else {
-        if (chatWithWebsiteEmbedding) {
-          vectorstore = await memoryEmbedding({
-            html: embedHTML,
-            keepTrackOfEmbedding: keepTrackOfEmbedding,
-            ollamaEmbedding: ollamaEmbedding,
-            pdf: embedPDF,
-            setIsEmbedding: setIsEmbedding,
-            setKeepTrackOfEmbedding: setKeepTrackOfEmbedding,
-            type: embedType,
-            url: embedURL
-          })
-        }
-      }
-      let query = message
-      const { ragPrompt: systemPrompt, ragQuestionPrompt: questionPrompt } =
-        await promptForRag()
-      if (newMessage.length > 2) {
-        const lastTenMessages = newMessage.slice(-10)
-        lastTenMessages.pop()
-        const chat_history = lastTenMessages
-          .map((message) => {
-            return `${message.isBot ? "Assistant: " : "Human: "}${message.message}`
-          })
-          .join("\n")
-        const promptForQuestion = questionPrompt
-          .replaceAll("{chat_history}", chat_history)
-          .replaceAll("{question}", message)
-        const questionOllama = await pageAssistModel({
+      const chatWithWebsiteMode = async (
+        message: string,
+        image: string,
+        isRegenerate: boolean,
+        messages: Message[],
+        history: ChatHistory,
+        signal: AbortSignal,
+        embeddingSignal: AbortSignal
+      ) => {
+        setStreaming(true)
+        const url = await getOllamaURL()
+        const userDefaultModelSettings = await getAllDefaultModelSettings()
+
+        const ollama = await pageAssistModel({
           model: selectedModel!,
           baseUrl: cleanUrl(url)
         })
-        const response = await questionOllama.invoke(promptForQuestion)
-        query = response.content.toString()
-        query = removeReasoning(query)
-      }
 
-      let context: string = ""
-      let source: {
-        name: any
-        type: any
-        mode: string
-        url: string
-        pageContent: string
-        metadata: Record<string, any>
-      }[] = []
+        let newMessage: Message[] = []
+        let generateMessageId = generateID()
+        const modelInfo = await getModelNicknameByID(selectedModel)
 
-      if (chatWithWebsiteEmbedding) {
-        const docs = await vectorstore.similaritySearch(query, 4)
-        context = formatDocs(docs)
-        source = docs.map((doc) => {
-          return {
-            ...doc,
-            name: doc?.metadata?.source || "untitled",
-            type: doc?.metadata?.type || "unknown",
-            mode: "chat",
-            url: ""
-          }
-        })
-      } else {
-        if (type === "html") {
-          context = embedHTML.slice(0, maxWebsiteContext)
-        } else {
-          context = embedPDF
-            .map((pdf) => pdf.content)
-            .join(" ")
-            .slice(0, maxWebsiteContext)
-        }
-
-        source = [
-          {
-            name: embedURL,
-            type: type,
-            mode: "chat",
-            url: embedURL,
-            pageContent: context,
-            metadata: {
-              source: embedURL,
-              url: embedURL
-            }
-          }
-        ]
-      }
-
-      let humanMessage = await humanMessageFormatter({
-        content: [
-          {
-            text: systemPrompt
-              .replace("{context}", context)
-              .replace("{question}", query),
-            type: "text"
-          }
-        ],
-        model: selectedModel,
-        useOCR
-      })
-
-      const applicationChatHistory = generateHistory(history, selectedModel)
-
-      let generationInfo: any | undefined = undefined
-
-      const chunks = await ollama.stream(
-        [...applicationChatHistory, humanMessage],
-        {
-          signal: signal,
-          callbacks: [
+        if (!isRegenerate) {
+          newMessage = [
+            ...messages,
             {
-              handleLLMEnd(output: any): any {
-                try {
-                  generationInfo = output?.generations?.[0][0]?.generationInfo
-                } catch (e) {
-                  console.error("handleLLMEnd error", e)
-                }
-              }
+              isBot: false,
+              name: "You",
+              message,
+              sources: [],
+              images: []
+            },
+            {
+              isBot: true,
+              name: selectedModel,
+              message: "▋",
+              sources: [],
+              id: generateMessageId,
+              modelImage: modelInfo?.model_avatar,
+              modelName: modelInfo?.model_name || selectedModel
+            }
+          ]
+        } else {
+          newMessage = [
+            ...messages,
+            {
+              isBot: true,
+              name: selectedModel,
+              message: "▋",
+              sources: [],
+              id: generateMessageId,
+              modelImage: modelInfo?.model_avatar,
+              modelName: modelInfo?.model_name || selectedModel
             }
           ]
         }
-      )
-      let count = 0
-      let reasoningStartTime: Date | null = null
-      let reasoningEndTime: Date | null = null
-      let timetaken = 0
-      let apiReasoning = false
-      for await (const chunk of chunks) {
-        if (chunk?.additional_kwargs?.reasoning_content) {
-          const reasoningContent = mergeReasoningContent(
-            fullText,
-            chunk?.additional_kwargs?.reasoning_content || ""
-          )
-          contentToSave = reasoningContent
-          fullText = reasoningContent
-          apiReasoning = true
+
+        setMessages(newMessage)
+        let fullText = ""
+        let contentToSave = ""
+        let embedURL: string, embedHTML: string, embedType: string
+        let embedPDF: { content: string; page: number }[] = []
+
+        let isAlreadyExistEmbedding: PAMemoryVectorStore
+        const {
+          content: html,
+          url: websiteUrl,
+          type,
+          pdf
+        } = await getContentFromCurrentTab(chatWithWebsiteEmbedding)
+
+        embedHTML = html
+        embedURL = websiteUrl
+        embedType = type
+        embedPDF = pdf
+        if (messages.length === 0) {
+          setCurrentURL(websiteUrl)
+          isAlreadyExistEmbedding = keepTrackOfEmbedding[currentURL]
         } else {
-          if (apiReasoning) {
-            fullText += "</think>"
-            contentToSave += "</think>"
-            apiReasoning = false
+          if (currentURL !== websiteUrl) {
+            setCurrentURL(websiteUrl)
+          } else {
+            embedURL = currentURL
           }
+          isAlreadyExistEmbedding = keepTrackOfEmbedding[websiteUrl]
         }
+        setMessages(newMessage)
+        const ollamaUrl = await getOllamaURL()
+        const embeddingModle = await defaultEmbeddingModelForRag()
 
-        contentToSave += chunk?.content
-        fullText += chunk?.content
-        if (count === 0) {
-          setIsProcessing(true)
-        }
-        if (isReasoningStarted(fullText) && !reasoningStartTime) {
-          reasoningStartTime = new Date()
-        }
+        const ollamaEmbedding = await pageAssistEmbeddingModel({
+          model: embeddingModle || selectedModel,
+          baseUrl: cleanUrl(ollamaUrl),
+          signal: embeddingSignal,
+          keepAlive:
+            currentChatModelSettings?.keepAlive ??
+            userDefaultModelSettings?.keepAlive
+        })
+        let vectorstore: PAMemoryVectorStore
 
-        if (
-          reasoningStartTime &&
-          !reasoningEndTime &&
-          isReasoningEnded(fullText)
-        ) {
-          reasoningEndTime = new Date()
-          const reasoningTime =
-            reasoningEndTime.getTime() - reasoningStartTime.getTime()
-          timetaken = reasoningTime
-        }
-        setMessages((prev) => {
-          return prev.map((message) => {
-            if (message.id === generateMessageId) {
+        try {
+          if (isAlreadyExistEmbedding) {
+            vectorstore = isAlreadyExistEmbedding
+          } else {
+            if (chatWithWebsiteEmbedding) {
+              vectorstore = await memoryEmbedding({
+                html: embedHTML,
+                keepTrackOfEmbedding: keepTrackOfEmbedding,
+                ollamaEmbedding: ollamaEmbedding,
+                pdf: embedPDF,
+                setIsEmbedding: setIsEmbedding,
+                setKeepTrackOfEmbedding: setKeepTrackOfEmbedding,
+                type: embedType,
+                url: embedURL
+              })
+            }
+          }
+          let query = message
+          const { ragPrompt: systemPrompt, ragQuestionPrompt: questionPrompt } =
+            await promptForRag()
+          if (newMessage.length > 2) {
+            const lastTenMessages = newMessage.slice(-10)
+            lastTenMessages.pop()
+            const chat_history = lastTenMessages
+              .map((message) => {
+                return `${message.isBot ? "Assistant: " : "Human: "}${message.message}`
+              })
+              .join("\n")
+            const promptForQuestion = questionPrompt
+              .replaceAll("{chat_history}", chat_history)
+              .replaceAll("{question}", message)
+            const questionOllama = await pageAssistModel({
+              model: selectedModel!,
+              baseUrl: cleanUrl(url)
+            })
+            const response = await questionOllama.invoke(promptForQuestion)
+            query = response.content.toString()
+            query = removeReasoning(query)
+          }
+
+          let context: string = ""
+          let source: {
+            name: any
+            type: any
+            mode: string
+            url: string
+            pageContent: string
+            metadata: Record<string, any>
+          }[] = []
+
+          if (chatWithWebsiteEmbedding) {
+            const docs = await vectorstore.similaritySearch(query, 4)
+            context = formatDocs(docs)
+            source = docs.map((doc) => {
               return {
-                ...message,
-                message: fullText + "▋",
-                reasoning_time_taken: timetaken
+                ...doc,
+                name: doc?.metadata?.source || "untitled",
+                type: doc?.metadata?.type || "unknown",
+                mode: "chat",
+                url: ""
               }
+            })
+          } else {
+            if (type === "html") {
+              context = embedHTML.slice(0, maxWebsiteContext)
+            } else {
+              context = embedPDF
+                .map((pdf) => pdf.content)
+                .join(" ")
+                .slice(0, maxWebsiteContext)
             }
-            return message
-          })
-        })
-        count++
-      }
 
-      setMessages((prev) => {
-        return prev.map((message) => {
-          if (message.id === generateMessageId) {
-            return {
-              ...message,
-              message: fullText,
-              sources: source,
-              generationInfo,
-              reasoning_time_taken: timetaken
-            }
-          }
-          return message
-        })
-      })
-
-      setHistory([
-        ...history,
-        {
-          role: "user",
-          content: message,
-          image
-        },
-        {
-          role: "assistant",
-          content: fullText
-        }
-      ])
-
-      await saveMessageOnSuccess({
-        historyId,
-        setHistoryId,
-        isRegenerate,
-        selectedModel: selectedModel,
-        message,
-        image,
-        fullText,
-        source,
-        message_source: "copilot",
-        generationInfo,
-        reasoning_time_taken: timetaken
-      })
-
-      setIsProcessing(false)
-      setStreaming(false)
-    } catch (e) {
-      const errorSave = await saveMessageOnError({
-        e,
-        botMessage: fullText,
-        history,
-        historyId,
-        image,
-        selectedModel,
-        setHistory,
-        setHistoryId,
-        userMessage: message,
-        isRegenerating: isRegenerate,
-        message_source: "copilot"
-      })
-
-      if (!errorSave) {
-        notification.error({
-          message: t("error"),
-          description: e?.message || t("somethingWentWrong")
-        })
-      }
-      setIsProcessing(false)
-      setStreaming(false)
-      setIsProcessing(false)
-      setStreaming(false)
-      setIsEmbedding(false)
-    } finally {
-      setAbortController(null)
-      setEmbeddingController(null)
-    }
-  }
-
-  const visionChatMode = async (
-    message: string,
-    image: string,
-    isRegenerate: boolean,
-    messages: Message[],
-    history: ChatHistory,
-    signal: AbortSignal
-  ) => {
-    setStreaming(true)
-    const url = await getOllamaURL()
-
-    const ollama = await pageAssistModel({
-      model: selectedModel!,
-      baseUrl: cleanUrl(url)
-    })
-
-    let newMessage: Message[] = []
-    let generateMessageId = generateID()
-    const modelInfo = await getModelNicknameByID(selectedModel)
-
-    if (!isRegenerate) {
-      newMessage = [
-        ...messages,
-        {
-          isBot: false,
-          name: "You",
-          message,
-          sources: [],
-          images: []
-        },
-        {
-          isBot: true,
-          name: selectedModel,
-          message: "▋",
-          sources: [],
-          id: generateMessageId,
-          modelImage: modelInfo?.model_avatar,
-          modelName: modelInfo?.model_name || selectedModel
-        }
-      ]
-    } else {
-      newMessage = [
-        ...messages,
-        {
-          isBot: true,
-          name: selectedModel,
-          message: "▋",
-          sources: [],
-          id: generateMessageId,
-          modelImage: modelInfo?.model_avatar,
-          modelName: modelInfo?.model_name || selectedModel
-        }
-      ]
-    }
-    setMessages(newMessage)
-    let fullText = ""
-    let contentToSave = ""
-
-    try {
-      const prompt = await systemPromptForNonRag()
-      const selectedPrompt = await getPromptById(selectedSystemPrompt)
-
-      const applicationChatHistory = []
-
-      const data = await getScreenshotFromCurrentTab()
-
-      const visionImage = data?.screenshot || ""
-
-      if (visionImage === "") {
-        throw new Error(
-          data?.error ||
-            "Please close and reopen the side panel. This is a bug that will be fixed soon."
-        )
-      }
-
-      if (prompt && !selectedPrompt) {
-        applicationChatHistory.unshift(
-          await systemPromptFormatter({
-            content: prompt
-          })
-        )
-      }
-      if (selectedPrompt) {
-        applicationChatHistory.unshift(
-          await systemPromptFormatter({
-            content: selectedPrompt.content
-          })
-        )
-      }
-
-      let humanMessage = await humanMessageFormatter({
-        content: [
-          {
-            text: message,
-            type: "text"
-          },
-          {
-            image_url: visionImage,
-            type: "image_url"
-          }
-        ],
-        model: selectedModel,
-        useOCR
-      })
-
-      let generationInfo: any | undefined = undefined
-
-      const chunks = await ollama.stream(
-        [...applicationChatHistory, humanMessage],
-        {
-          signal: signal,
-          callbacks: [
-            {
-              handleLLMEnd(output: any): any {
-                try {
-                  generationInfo = output?.generations?.[0][0]?.generationInfo
-                } catch (e) {
-                  console.error("handleLLMEnd error", e)
+            source = [
+              {
+                name: embedURL,
+                type: type,
+                mode: "chat",
+                url: embedURL,
+                pageContent: context,
+                metadata: {
+                  source: embedURL,
+                  url: embedURL
                 }
               }
+            ]
+          }
+
+          let humanMessage = await humanMessageFormatter({
+            content: [
+              {
+                text: systemPrompt
+                  .replace("{context}", context)
+                  .replace("{question}", query),
+                type: "text"
+              }
+            ],
+            model: selectedModel,
+            useOCR
+          })
+
+          const applicationChatHistory = generateHistory(history, selectedModel)
+
+          let generationInfo: any | undefined = undefined
+
+          const chunks = await ollama.stream(
+            [...applicationChatHistory, humanMessage],
+            {
+              signal: signal,
+              callbacks: [
+                {
+                  handleLLMEnd(output: any): any {
+                    try {
+                      generationInfo =
+                        output?.generations?.[0][0]?.generationInfo
+                    } catch (e) {
+                      console.error("handleLLMEnd error", e)
+                    }
+                  }
+                }
+              ]
+            }
+          )
+          let count = 0
+          let reasoningStartTime: Date | null = null
+          let reasoningEndTime: Date | null = null
+          let timetaken = 0
+          let apiReasoning = false
+          for await (const chunk of chunks) {
+            if (chunk?.additional_kwargs?.reasoning_content) {
+              const reasoningContent = mergeReasoningContent(
+                fullText,
+                chunk?.additional_kwargs?.reasoning_content || ""
+              )
+              contentToSave = reasoningContent
+              fullText = reasoningContent
+              apiReasoning = true
+            } else {
+              if (apiReasoning) {
+                fullText += "</think>"
+                contentToSave += "</think>"
+                apiReasoning = false
+              }
+            }
+
+            contentToSave += chunk?.content
+            fullText += chunk?.content
+            if (count === 0) {
+              setIsProcessing(true)
+            }
+            if (isReasoningStarted(fullText) && !reasoningStartTime) {
+              reasoningStartTime = new Date()
+            }
+
+            if (
+              reasoningStartTime &&
+              !reasoningEndTime &&
+              isReasoningEnded(fullText)
+            ) {
+              reasoningEndTime = new Date()
+              const reasoningTime =
+                reasoningEndTime.getTime() - reasoningStartTime.getTime()
+              timetaken = reasoningTime
+            }
+            setMessages((prev) => {
+              return prev.map((message) => {
+                if (message.id === generateMessageId) {
+                  return {
+                    ...message,
+                    message: fullText + "▋",
+                    reasoning_time_taken: timetaken
+                  }
+                }
+                return message
+              })
+            })
+            count++
+          }
+
+          setMessages((prev) => {
+            return prev.map((message) => {
+              if (message.id === generateMessageId) {
+                return {
+                  ...message,
+                  message: fullText,
+                  sources: source,
+                  generationInfo,
+                  reasoning_time_taken: timetaken
+                }
+              }
+              return message
+            })
+          })
+
+          setHistory([
+            ...history,
+            {
+              role: "user",
+              content: message,
+              image
+            },
+            {
+              role: "assistant",
+              content: fullText
+            }
+          ])
+
+          await saveMessageOnSuccess({
+            historyId,
+            isRegenerate,
+            selectedModel: selectedModel,
+            message,
+            image,
+            fullText,
+            source,
+            message_source: "copilot",
+            generationInfo,
+            reasoning_time_taken: timetaken
+          })
+
+          setIsProcessing(false)
+          setStreaming(false)
+        } catch (e) {
+          const errorSave = await saveMessageOnError({
+            e,
+            botMessage: fullText,
+            userMessage: message,
+            isRegenerating: isRegenerate,
+            message_source: "copilot",
+            selectedModel,
+            image
+          })
+
+          if (!errorSave) {
+            notification.error({
+              message: t("error"),
+              description: e?.message || t("somethingWentWrong")
+            })
+          }
+          setIsProcessing(false)
+          setStreaming(false)
+          setIsProcessing(false)
+          setStreaming(false)
+          setIsEmbedding(false)
+        } finally {
+          setAbortController(null)
+          setEmbeddingController(null)
+        }
+      }
+
+      const visionChatMode = async (
+        message: string,
+        image: string,
+        isRegenerate: boolean,
+        messages: Message[],
+        history: ChatHistory,
+        signal: AbortSignal
+      ) => {
+        setStreaming(true)
+        const url = await getOllamaURL()
+
+        const ollama = await pageAssistModel({
+          model: selectedModel!,
+          baseUrl: cleanUrl(url)
+        })
+
+        let newMessage: Message[] = []
+        let generateMessageId = generateID()
+        const modelInfo = await getModelNicknameByID(selectedModel)
+
+        if (!isRegenerate) {
+          newMessage = [
+            ...messages,
+            {
+              isBot: false,
+              name: "You",
+              message,
+              sources: [],
+              images: []
+            },
+            {
+              isBot: true,
+              name: selectedModel,
+              message: "▋",
+              sources: [],
+              id: generateMessageId,
+              modelImage: modelInfo?.model_avatar,
+              modelName: modelInfo?.model_name || selectedModel
+            }
+          ]
+        } else {
+          newMessage = [
+            ...messages,
+            {
+              isBot: true,
+              name: selectedModel,
+              message: "▋",
+              sources: [],
+              id: generateMessageId,
+              modelImage: modelInfo?.model_avatar,
+              modelName: modelInfo?.model_name || selectedModel
             }
           ]
         }
-      )
-      let count = 0
-      let reasoningStartTime: Date | undefined = undefined
-      let reasoningEndTime: Date | undefined = undefined
-      let timetaken = 0
-      let apiReasoning = false
-      for await (const chunk of chunks) {
-        if (chunk?.additional_kwargs?.reasoning_content) {
-          const reasoningContent = mergeReasoningContent(
-            fullText,
-            chunk?.additional_kwargs?.reasoning_content || ""
-          )
-          contentToSave = reasoningContent
-          fullText = reasoningContent
-          apiReasoning = true
-        } else {
-          if (apiReasoning) {
-            fullText += "</think>"
-            contentToSave += "</think>"
-            apiReasoning = false
+        setMessages(newMessage)
+        let fullText = ""
+        let contentToSave = ""
+
+        try {
+          const prompt = await systemPromptForNonRag()
+          const selectedPrompt = await getPromptById(selectedSystemPrompt)
+
+          const applicationChatHistory = []
+
+          const data = await getScreenshotFromCurrentTab()
+
+          const visionImage = data?.screenshot || ""
+
+          if (visionImage === "") {
+            throw new Error(
+              data?.error ||
+                "Please close and reopen the side panel. This is a bug that will be fixed soon."
+            )
           }
-        }
 
-        contentToSave += chunk?.content
-        fullText += chunk?.content
-        if (count === 0) {
-          setIsProcessing(true)
-        }
-        if (isReasoningStarted(fullText) && !reasoningStartTime) {
-          reasoningStartTime = new Date()
-        }
+          if (prompt && !selectedPrompt) {
+            applicationChatHistory.unshift(
+              await systemPromptFormatter({
+                content: prompt
+              })
+            )
+          }
+          if (selectedPrompt) {
+            applicationChatHistory.unshift(
+              await systemPromptFormatter({
+                content: selectedPrompt.content
+              })
+            )
+          }
 
-        if (
-          reasoningStartTime &&
-          !reasoningEndTime &&
-          isReasoningEnded(fullText)
-        ) {
-          reasoningEndTime = new Date()
-          const reasoningTime =
-            reasoningEndTime.getTime() - reasoningStartTime.getTime()
-          timetaken = reasoningTime
-        }
-        setMessages((prev) => {
-          return prev.map((message) => {
-            if (message.id === generateMessageId) {
-              return {
-                ...message,
-                message: fullText + "▋",
-                reasoning_time_taken: timetaken
+          let humanMessage = await humanMessageFormatter({
+            content: [
+              {
+                text: message,
+                type: "text"
+              },
+              {
+                image_url: visionImage,
+                type: "image_url"
+              }
+            ],
+            model: selectedModel,
+            useOCR
+          })
+
+          let generationInfo: any | undefined = undefined
+
+          const chunks = await ollama.stream(
+            [...applicationChatHistory, humanMessage],
+            {
+              signal: signal,
+              callbacks: [
+                {
+                  handleLLMEnd(output: any): any {
+                    try {
+                      generationInfo =
+                        output?.generations?.[0][0]?.generationInfo
+                    } catch (e) {
+                      console.error("handleLLMEnd error", e)
+                    }
+                  }
+                }
+              ]
+            }
+          )
+          let count = 0
+          let reasoningStartTime: Date | undefined = undefined
+          let reasoningEndTime: Date | undefined = undefined
+          let timetaken = 0
+          let apiReasoning = false
+          for await (const chunk of chunks) {
+            if (chunk?.additional_kwargs?.reasoning_content) {
+              const reasoningContent = mergeReasoningContent(
+                fullText,
+                chunk?.additional_kwargs?.reasoning_content || ""
+              )
+              contentToSave = reasoningContent
+              fullText = reasoningContent
+              apiReasoning = true
+            } else {
+              if (apiReasoning) {
+                fullText += "</think>"
+                contentToSave += "</think>"
+                apiReasoning = false
               }
             }
-            return message
-          })
-        })
-        count++
-      }
-      setMessages((prev) => {
-        return prev.map((message) => {
-          if (message.id === generateMessageId) {
-            return {
-              ...message,
-              message: fullText,
-              generationInfo,
-              reasoning_time_taken: timetaken
+
+            contentToSave += chunk?.content
+            fullText += chunk?.content
+            if (count === 0) {
+              setIsProcessing(true)
             }
-          }
-          return message
-        })
-      })
-
-      setHistory([
-        ...history,
-        {
-          role: "user",
-          content: message
-        },
-        {
-          role: "assistant",
-          content: fullText
-        }
-      ])
-
-      await saveMessageOnSuccess({
-        historyId,
-        setHistoryId,
-        isRegenerate,
-        selectedModel: selectedModel,
-        message,
-        image,
-        fullText,
-        source: [],
-        message_source: "copilot",
-        generationInfo,
-        reasoning_time_taken: timetaken
-      })
-
-      setIsProcessing(false)
-      setStreaming(false)
-    } catch (e) {
-      const errorSave = await saveMessageOnError({
-        e,
-        botMessage: fullText,
-        history,
-        historyId,
-        image,
-        selectedModel,
-        setHistory,
-        setHistoryId,
-        userMessage: message,
-        isRegenerating: isRegenerate,
-        message_source: "copilot"
-      })
-
-      if (!errorSave) {
-        notification.error({
-          message: t("error"),
-          description: e?.message || t("somethingWentWrong")
-        })
-      }
-      setIsProcessing(false)
-      setStreaming(false)
-      setIsProcessing(false)
-      setStreaming(false)
-      setIsEmbedding(false)
-    } finally {
-      setAbortController(null)
-      setEmbeddingController(null)
-    }
-  }
-
-  const normalChatMode = async (
-    message: string,
-    image: string,
-    isRegenerate: boolean,
-    messages: Message[],
-    history: ChatHistory,
-    signal: AbortSignal
-  ) => {
-    setStreaming(true)
-    const url = await getOllamaURL()
-
-    if (image.length > 0) {
-      image = `data:image/jpeg;base64,${image.split(",")[1]}`
-    }
-
-    const ollama = await pageAssistModel({
-      model: selectedModel!,
-      baseUrl: cleanUrl(url)
-    })
-
-    let newMessage: Message[] = []
-    let generateMessageId = generateID()
-    const modelInfo = await getModelNicknameByID(selectedModel)
-
-    if (!isRegenerate) {
-      newMessage = [
-        ...messages,
-        {
-          isBot: false,
-          name: "You",
-          message,
-          sources: [],
-          images: [image]
-        },
-        {
-          isBot: true,
-          name: selectedModel,
-          message: "▋",
-          sources: [],
-          id: generateMessageId,
-          modelImage: modelInfo?.model_avatar,
-          modelName: modelInfo?.model_name || selectedModel
-        }
-      ]
-    } else {
-      newMessage = [
-        ...messages,
-        {
-          isBot: true,
-          name: selectedModel,
-          message: "▋",
-          sources: [],
-          id: generateMessageId,
-          modelImage: modelInfo?.model_avatar,
-          modelName: modelInfo?.model_name || selectedModel
-        }
-      ]
-    }
-    setMessages(newMessage)
-    let fullText = ""
-    let contentToSave = ""
-
-    try {
-      const prompt = await systemPromptForNonRag()
-      const selectedPrompt = await getPromptById(selectedSystemPrompt)
-
-      let humanMessage = await humanMessageFormatter({
-        content: [
-          {
-            text: message,
-            type: "text"
-          }
-        ],
-        model: selectedModel,
-        useOCR
-      })
-      if (image.length > 0) {
-        humanMessage = await humanMessageFormatter({
-          content: [
-            {
-              text: message,
-              type: "text"
-            },
-            {
-              image_url: image,
-              type: "image_url"
+            if (isReasoningStarted(fullText) && !reasoningStartTime) {
+              reasoningStartTime = new Date()
             }
-          ],
-          model: selectedModel,
-          useOCR
-        })
-      }
 
-      const applicationChatHistory = generateHistory(history, selectedModel)
-
-      if (prompt && !selectedPrompt) {
-        applicationChatHistory.unshift(
-          await systemPromptFormatter({
-            content: prompt
-          })
-        )
-      }
-      if (selectedPrompt) {
-        applicationChatHistory.unshift(
-          await systemPromptFormatter({
-            content: selectedPrompt.content
-          })
-        )
-      }
-
-      let generationInfo: any | undefined = undefined
-
-      const chunks = await ollama.stream(
-        [...applicationChatHistory, humanMessage],
-        {
-          signal: signal,
-          callbacks: [
-            {
-              handleLLMEnd(output: any): any {
-                try {
-                  generationInfo = output?.generations?.[0][0]?.generationInfo
-                } catch (e) {
-                  console.error("handleLLMEnd error", e)
+            if (
+              reasoningStartTime &&
+              !reasoningEndTime &&
+              isReasoningEnded(fullText)
+            ) {
+              reasoningEndTime = new Date()
+              const reasoningTime =
+                reasoningEndTime.getTime() - reasoningStartTime.getTime()
+              timetaken = reasoningTime
+            }
+            setMessages((prev) => {
+              return prev.map((message) => {
+                if (message.id === generateMessageId) {
+                  return {
+                    ...message,
+                    message: fullText + "▋",
+                    reasoning_time_taken: timetaken
+                  }
+                }
+                return message
+              })
+            })
+            count++
+          }
+          setMessages((prev) => {
+            return prev.map((message) => {
+              if (message.id === generateMessageId) {
+                return {
+                  ...message,
+                  message: fullText,
+                  generationInfo,
+                  reasoning_time_taken: timetaken
                 }
               }
+              return message
+            })
+          })
+
+          setHistory([
+            ...history,
+            {
+              role: "user",
+              content: message
+            },
+            {
+              role: "assistant",
+              content: fullText
+            }
+          ])
+
+          await saveMessageOnSuccess({
+            historyId,
+            isRegenerate,
+            selectedModel: selectedModel,
+            message,
+            image,
+            fullText,
+            source: [],
+            message_source: "copilot",
+            generationInfo,
+            reasoning_time_taken: timetaken
+          })
+
+          setIsProcessing(false)
+          setStreaming(false)
+        } catch (e) {
+          const errorSave = await saveMessageOnError({
+            e,
+            botMessage: fullText,
+            userMessage: message,
+            isRegenerating: isRegenerate,
+            message_source: "copilot",
+            selectedModel,
+            image
+          })
+
+          if (!errorSave) {
+            notification.error({
+              message: t("error"),
+              description: e?.message || t("somethingWentWrong")
+            })
+          }
+          setIsProcessing(false)
+          setStreaming(false)
+          setIsProcessing(false)
+          setStreaming(false)
+          setIsEmbedding(false)
+        } finally {
+          setAbortController(null)
+          setEmbeddingController(null)
+        }
+      }
+
+      const normalChatMode = async (
+        message: string,
+        image: string,
+        isRegenerate: boolean,
+        messages: Message[],
+        history: ChatHistory,
+        signal: AbortSignal
+      ) => {
+        setStreaming(true)
+        const url = await getOllamaURL()
+
+        if (image.length > 0) {
+          image = `data:image/jpeg;base64,${image.split(",")[1]}`
+        }
+
+        const ollama = await pageAssistModel({
+          model: selectedModel!,
+          baseUrl: cleanUrl(url)
+        })
+
+        let newMessage: Message[] = []
+        let generateMessageId = generateID()
+        const modelInfo = await getModelNicknameByID(selectedModel)
+
+        if (!isRegenerate) {
+          newMessage = [
+            ...messages,
+            {
+              isBot: false,
+              name: "You",
+              message,
+              sources: [],
+              images: [image]
+            },
+            {
+              isBot: true,
+              name: selectedModel,
+              message: "▋",
+              sources: [],
+              id: generateMessageId,
+              modelImage: modelInfo?.model_avatar,
+              modelName: modelInfo?.model_name || selectedModel
+            }
+          ]
+        } else {
+          newMessage = [
+            ...messages,
+            {
+              isBot: true,
+              name: selectedModel,
+              message: "▋",
+              sources: [],
+              id: generateMessageId,
+              modelImage: modelInfo?.model_avatar,
+              modelName: modelInfo?.model_name || selectedModel
             }
           ]
         }
-      )
-      let count = 0
-      let reasoningStartTime: Date | null = null
-      let reasoningEndTime: Date | null = null
-      let timetaken = 0
-      let apiReasoning = false
+        setMessages(newMessage)
+        let fullText = ""
+        let contentToSave = ""
 
-      for await (const chunk of chunks) {
-        if (chunk?.additional_kwargs?.reasoning_content) {
-          const reasoningContent = mergeReasoningContent(
-            fullText,
-            chunk?.additional_kwargs?.reasoning_content || ""
-          )
-          contentToSave = reasoningContent
-          fullText = reasoningContent
-          apiReasoning = true
-        } else {
-          if (apiReasoning) {
-            fullText += "</think>"
-            contentToSave += "</think>"
-            apiReasoning = false
+        try {
+          const prompt = await systemPromptForNonRag()
+          const selectedPrompt = await getPromptById(selectedSystemPrompt)
+
+          let humanMessage = await humanMessageFormatter({
+            content: [
+              {
+                text: message,
+                type: "text"
+              }
+            ],
+            model: selectedModel,
+            useOCR
+          })
+          if (image.length > 0) {
+            humanMessage = await humanMessageFormatter({
+              content: [
+                {
+                  text: message,
+                  type: "text"
+                },
+                {
+                  image_url: image,
+                  type: "image_url"
+                }
+              ],
+              model: selectedModel,
+              useOCR
+            })
           }
-        }
 
-        contentToSave += chunk?.content
-        fullText += chunk?.content
-        if (count === 0) {
-          setIsProcessing(true)
-        }
-        if (isReasoningStarted(fullText) && !reasoningStartTime) {
-          reasoningStartTime = new Date()
-        }
+          const applicationChatHistory = generateHistory(history, selectedModel)
 
-        if (
-          reasoningStartTime &&
-          !reasoningEndTime &&
-          isReasoningEnded(fullText)
-        ) {
-          reasoningEndTime = new Date()
-          const reasoningTime =
-            reasoningEndTime.getTime() - reasoningStartTime.getTime()
-          timetaken = reasoningTime
-        }
-        setMessages((prev) => {
-          return prev.map((message) => {
-            if (message.id === generateMessageId) {
-              return {
-                ...message,
-                message: fullText + "▋",
-                reasoning_time_taken: timetaken
+          if (prompt && !selectedPrompt) {
+            applicationChatHistory.unshift(
+              await systemPromptFormatter({
+                content: prompt
+              })
+            )
+          }
+          if (selectedPrompt) {
+            applicationChatHistory.unshift(
+              await systemPromptFormatter({
+                content: selectedPrompt.content
+              })
+            )
+          }
+
+          let generationInfo: any | undefined = undefined
+
+          const chunks = await ollama.stream(
+            [...applicationChatHistory, humanMessage],
+            {
+              signal: signal,
+              callbacks: [
+                {
+                  handleLLMEnd(output: any): any {
+                    try {
+                      generationInfo =
+                        output?.generations?.[0][0]?.generationInfo
+                    } catch (e) {
+                      console.error("handleLLMEnd error", e)
+                    }
+                  }
+                }
+              ]
+            }
+          )
+          let count = 0
+          let reasoningStartTime: Date | null = null
+          let reasoningEndTime: Date | null = null
+          let timetaken = 0
+          let apiReasoning = false
+
+          for await (const chunk of chunks) {
+            if (chunk?.additional_kwargs?.reasoning_content) {
+              const reasoningContent = mergeReasoningContent(
+                fullText,
+                chunk?.additional_kwargs?.reasoning_content || ""
+              )
+              contentToSave = reasoningContent
+              fullText = reasoningContent
+              apiReasoning = true
+            } else {
+              if (apiReasoning) {
+                fullText += "</think>"
+                contentToSave += "</think>"
+                apiReasoning = false
               }
             }
-            return message
-          })
-        })
-        count++
-      }
 
-      setMessages((prev) => {
-        return prev.map((message) => {
-          if (message.id === generateMessageId) {
-            return {
-              ...message,
-              message: fullText,
-              generationInfo,
-              reasoning_time_taken: timetaken
+            contentToSave += chunk?.content
+            fullText += chunk?.content
+            if (count === 0) {
+              setIsProcessing(true)
             }
-          }
-          return message
-        })
-      })
-
-      setHistory([
-        ...history,
-        {
-          role: "user",
-          content: message,
-          image
-        },
-        {
-          role: "assistant",
-          content: fullText
-        }
-      ])
-
-      await saveMessageOnSuccess({
-        historyId,
-        setHistoryId,
-        isRegenerate,
-        selectedModel: selectedModel,
-        message,
-        image,
-        fullText,
-        source: [],
-        message_source: "copilot",
-        generationInfo,
-        reasoning_time_taken: timetaken
-      })
-
-      setIsProcessing(false)
-      setStreaming(false)
-    } catch (e) {
-      const errorSave = await saveMessageOnError({
-        e,
-        botMessage: fullText,
-        history,
-        historyId,
-        image,
-        selectedModel,
-        setHistory,
-        setHistoryId,
-        userMessage: message,
-        isRegenerating: isRegenerate,
-        message_source: "copilot"
-      })
-
-      if (!errorSave) {
-        notification.error({
-          message: t("error"),
-          description: e?.message || t("somethingWentWrong")
-        })
-      }
-      setIsProcessing(false)
-      setStreaming(false)
-    } finally {
-      setAbortController(null)
-    }
-  }
-
-  const searchChatMode = async (
-    message: string,
-    image: string,
-    isRegenerate: boolean,
-    messages: Message[],
-    history: ChatHistory,
-    signal: AbortSignal
-  ) => {
-    const url = await getOllamaURL()
-    setStreaming(true)
-    if (image.length > 0) {
-      image = `data:image/jpeg;base64,${image.split(",")[1]}`
-    }
-
-    const ollama = await pageAssistModel({
-      model: selectedModel!,
-      baseUrl: cleanUrl(url)
-    })
-
-    let newMessage: Message[] = []
-    let generateMessageId = generateID()
-    const modelInfo = await getModelNicknameByID(selectedModel)
-
-    if (!isRegenerate) {
-      newMessage = [
-        ...messages,
-        {
-          isBot: false,
-          name: "You",
-          message,
-          sources: [],
-          images: [image]
-        },
-        {
-          isBot: true,
-          name: selectedModel,
-          message: "▋",
-          sources: [],
-          id: generateMessageId,
-          modelImage: modelInfo?.model_avatar,
-          modelName: modelInfo?.model_name || selectedModel
-        }
-      ]
-    } else {
-      newMessage = [
-        ...messages,
-        {
-          isBot: true,
-          name: selectedModel,
-          message: "▋",
-          sources: [],
-          id: generateMessageId,
-          modelImage: modelInfo?.model_avatar,
-          modelName: modelInfo?.model_name || selectedModel
-        }
-      ]
-    }
-    setMessages(newMessage)
-    let fullText = ""
-    let contentToSave = ""
-
-    try {
-      setIsSearchingInternet(true)
-
-      let query = message
-
-      // if (newMessage.length > 2) {
-      let questionPrompt = await geWebSearchFollowUpPrompt()
-      const lastTenMessages = newMessage.slice(-10)
-      lastTenMessages.pop()
-      const chat_history = lastTenMessages
-        .map((message) => {
-          return `${message.isBot ? "Assistant: " : "Human: "}${message.message}`
-        })
-        .join("\n")
-      const promptForQuestion = questionPrompt
-        .replaceAll("{chat_history}", chat_history)
-        .replaceAll("{question}", message)
-      const questionModel = await pageAssistModel({
-        model: selectedModel!,
-        baseUrl: cleanUrl(url)
-      })
-
-      let questionMessage = await humanMessageFormatter({
-        content: [
-          {
-            text: promptForQuestion,
-            type: "text"
-          }
-        ],
-        model: selectedModel,
-        useOCR: useOCR
-      })
-
-      if (image.length > 0) {
-        questionMessage = await humanMessageFormatter({
-          content: [
-            {
-              text: promptForQuestion,
-              type: "text"
-            },
-            {
-              image_url: image,
-              type: "image_url"
+            if (isReasoningStarted(fullText) && !reasoningStartTime) {
+              reasoningStartTime = new Date()
             }
-          ],
-          model: selectedModel,
-          useOCR: useOCR
-        })
-      }
-      try {
-        const isWebQuery = await isQueryHaveWebsite(query)
-        if (!isWebQuery) {
-          const response = await questionModel.invoke([questionMessage])
-          query = response?.content?.toString() || message
-          query = removeReasoning(query)
-        }
-      } catch (error) {
-        console.error("Error in questionModel.invoke:", error)
-      }
 
-      const { prompt, source } = await getSystemPromptForWeb(query)
-      setIsSearchingInternet(false)
-
-      //  message = message.trim().replaceAll("\n", " ")
-
-      let humanMessage = await humanMessageFormatter({
-        content: [
-          {
-            text: message,
-            type: "text"
-          }
-        ],
-        model: selectedModel,
-        useOCR
-      })
-      if (image.length > 0) {
-        humanMessage = await humanMessageFormatter({
-          content: [
-            {
-              text: message,
-              type: "text"
-            },
-            {
-              image_url: image,
-              type: "image_url"
+            if (
+              reasoningStartTime &&
+              !reasoningEndTime &&
+              isReasoningEnded(fullText)
+            ) {
+              reasoningEndTime = new Date()
+              const reasoningTime =
+                reasoningEndTime.getTime() - reasoningStartTime.getTime()
+              timetaken = reasoningTime
             }
-          ],
-          model: selectedModel,
-          useOCR
-        })
-      }
+            setMessages((prev) => {
+              return prev.map((message) => {
+                if (message.id === generateMessageId) {
+                  return {
+                    ...message,
+                    message: fullText + "▋",
+                    reasoning_time_taken: timetaken
+                  }
+                }
+                return message
+              })
+            })
+            count++
+          }
 
-      const applicationChatHistory = generateHistory(history, selectedModel)
-
-      if (prompt) {
-        applicationChatHistory.unshift(
-          await systemPromptFormatter({
-            content: prompt
-          })
-        )
-      }
-
-      let generationInfo: any | undefined = undefined
-      const chunks = await ollama.stream(
-        [...applicationChatHistory, humanMessage],
-        {
-          signal: signal,
-          callbacks: [
-            {
-              handleLLMEnd(output: any): any {
-                try {
-                  generationInfo = output?.generations?.[0][0]?.generationInfo
-                } catch (e) {
-                  console.error("handleLLMEnd error", e)
+          setMessages((prev) => {
+            return prev.map((message) => {
+              if (message.id === generateMessageId) {
+                return {
+                  ...message,
+                  message: fullText,
+                  generationInfo,
+                  reasoning_time_taken: timetaken
                 }
               }
+              return message
+            })
+          })
+
+          setHistory([
+            ...history,
+            {
+              role: "user",
+              content: message,
+              image
+            },
+            {
+              role: "assistant",
+              content: fullText
+            }
+          ])
+
+          await saveMessageOnSuccess({
+            historyId,
+            isRegenerate,
+            selectedModel: selectedModel,
+            message,
+            image,
+            fullText,
+            source: [],
+            message_source: "copilot",
+            generationInfo,
+            reasoning_time_taken: timetaken
+          })
+
+          setIsProcessing(false)
+          setStreaming(false)
+        } catch (e) {
+          const errorSave = await saveMessageOnError({
+            e,
+            botMessage: fullText,
+            userMessage: message,
+            isRegenerating: isRegenerate,
+            message_source: "copilot",
+            selectedModel,
+            image
+          })
+
+          if (!errorSave) {
+            notification.error({
+              message: t("error"),
+              description: e?.message || t("somethingWentWrong")
+            })
+          }
+          setIsProcessing(false)
+          setStreaming(false)
+        } finally {
+          setAbortController(null)
+        }
+      }
+
+      const searchChatMode = async (
+        message: string,
+        image: string,
+        isRegenerate: boolean,
+        messages: Message[],
+        history: ChatHistory,
+        signal: AbortSignal
+      ) => {
+        const url = await getOllamaURL()
+        setStreaming(true)
+        if (image.length > 0) {
+          image = `data:image/jpeg;base64,${image.split(",")[1]}`
+        }
+
+        const ollama = await pageAssistModel({
+          model: selectedModel!,
+          baseUrl: cleanUrl(url)
+        })
+
+        let newMessage: Message[] = []
+        let generateMessageId = generateID()
+        const modelInfo = await getModelNicknameByID(selectedModel)
+
+        if (!isRegenerate) {
+          newMessage = [
+            ...messages,
+            {
+              isBot: false,
+              name: "You",
+              message,
+              sources: [],
+              images: [image]
+            },
+            {
+              isBot: true,
+              name: selectedModel,
+              message: "▋",
+              sources: [],
+              id: generateMessageId,
+              modelImage: modelInfo?.model_avatar,
+              modelName: modelInfo?.model_name || selectedModel
+            }
+          ]
+        } else {
+          newMessage = [
+            ...messages,
+            {
+              isBot: true,
+              name: selectedModel,
+              message: "▋",
+              sources: [],
+              id: generateMessageId,
+              modelImage: modelInfo?.model_avatar,
+              modelName: modelInfo?.model_name || selectedModel
             }
           ]
         }
-      )
-      let count = 0
-      let timetaken = 0
-      let reasoningStartTime: Date | undefined = undefined
-      let reasoningEndTime: Date | undefined = undefined
-      let apiReasoning = false
-      for await (const chunk of chunks) {
-        if (chunk?.additional_kwargs?.reasoning_content) {
-          const reasoningContent = mergeReasoningContent(
-            fullText,
-            chunk?.additional_kwargs?.reasoning_content || ""
-          )
-          contentToSave = reasoningContent
-          fullText = reasoningContent
-          apiReasoning = true
-        } else {
-          if (apiReasoning) {
-            fullText += "</think>"
-            contentToSave += "</think>"
-            apiReasoning = false
+        setMessages(newMessage)
+        let fullText = ""
+        let contentToSave = ""
+
+        try {
+          setIsSearchingInternet(true)
+
+          let query = message
+
+          // if (newMessage.length > 2) {
+          let questionPrompt = await geWebSearchFollowUpPrompt()
+          const lastTenMessages = newMessage.slice(-10)
+          lastTenMessages.pop()
+          const chat_history = lastTenMessages
+            .map((message) => {
+              return `${message.isBot ? "Assistant: " : "Human: "}${message.message}`
+            })
+            .join("\n")
+          const promptForQuestion = questionPrompt
+            .replaceAll("{chat_history}", chat_history)
+            .replaceAll("{question}", message)
+          const questionModel = await pageAssistModel({
+            model: selectedModel!,
+            baseUrl: cleanUrl(url)
+          })
+
+          let questionMessage = await humanMessageFormatter({
+            content: [
+              {
+                text: promptForQuestion,
+                type: "text"
+              }
+            ],
+            model: selectedModel,
+            useOCR: useOCR
+          })
+
+          if (image.length > 0) {
+            questionMessage = await humanMessageFormatter({
+              content: [
+                {
+                  text: promptForQuestion,
+                  type: "text"
+                },
+                {
+                  image_url: image,
+                  type: "image_url"
+                }
+              ],
+              model: selectedModel,
+              useOCR: useOCR
+            })
           }
-        }
+          try {
+            const isWebQuery = await isQueryHaveWebsite(query)
+            if (!isWebQuery) {
+              const response = await questionModel.invoke([questionMessage])
+              query = response?.content?.toString() || message
+              query = removeReasoning(query)
+            }
+          } catch (error) {
+            console.error("Error in questionModel.invoke:", error)
+          }
 
-        contentToSave += chunk?.content
-        fullText += chunk?.content
-        if (count === 0) {
-          setIsProcessing(true)
-        }
+          const { prompt, source } = await getSystemPromptForWeb(query)
+          setIsSearchingInternet(false)
 
-        if (isReasoningStarted(fullText) && !reasoningStartTime) {
-          reasoningStartTime = new Date()
-        }
+          //  message = message.trim().replaceAll("\n", " ")
 
-        if (
-          reasoningStartTime &&
-          !reasoningEndTime &&
-          isReasoningEnded(fullText)
-        ) {
-          reasoningEndTime = new Date()
-          const reasoningTime =
-            reasoningEndTime.getTime() - reasoningStartTime.getTime()
-          timetaken = reasoningTime
-        }
-        setMessages((prev) => {
-          return prev.map((message) => {
-            if (message.id === generateMessageId) {
-              return {
-                ...message,
-                message: fullText + "▋",
-                reasoning_time_taken: timetaken
+          let humanMessage = await humanMessageFormatter({
+            content: [
+              {
+                text: message,
+                type: "text"
+              }
+            ],
+            model: selectedModel,
+            useOCR
+          })
+          if (image.length > 0) {
+            humanMessage = await humanMessageFormatter({
+              content: [
+                {
+                  text: message,
+                  type: "text"
+                },
+                {
+                  image_url: image,
+                  type: "image_url"
+                }
+              ],
+              model: selectedModel,
+              useOCR
+            })
+          }
+
+          const applicationChatHistory = generateHistory(history, selectedModel)
+
+          if (prompt) {
+            applicationChatHistory.unshift(
+              await systemPromptFormatter({
+                content: prompt
+              })
+            )
+          }
+
+          let generationInfo: any | undefined = undefined
+          const chunks = await ollama.stream(
+            [...applicationChatHistory, humanMessage],
+            {
+              signal: signal,
+              callbacks: [
+                {
+                  handleLLMEnd(output: any): any {
+                    try {
+                      generationInfo =
+                        output?.generations?.[0][0]?.generationInfo
+                    } catch (e) {
+                      console.error("handleLLMEnd error", e)
+                    }
+                  }
+                }
+              ]
+            }
+          )
+          let count = 0
+          let timetaken = 0
+          let reasoningStartTime: Date | undefined = undefined
+          let reasoningEndTime: Date | undefined = undefined
+          let apiReasoning = false
+          for await (const chunk of chunks) {
+            if (chunk?.additional_kwargs?.reasoning_content) {
+              const reasoningContent = mergeReasoningContent(
+                fullText,
+                chunk?.additional_kwargs?.reasoning_content || ""
+              )
+              contentToSave = reasoningContent
+              fullText = reasoningContent
+              apiReasoning = true
+            } else {
+              if (apiReasoning) {
+                fullText += "</think>"
+                contentToSave += "</think>"
+                apiReasoning = false
               }
             }
-            return message
-          })
-        })
-        count++
-      }
-      // update the message with the full text
-      setMessages((prev) => {
-        return prev.map((message) => {
-          if (message.id === generateMessageId) {
-            return {
-              ...message,
-              message: fullText,
-              sources: source,
-              generationInfo,
-              reasoning_time_taken: timetaken
+
+            contentToSave += chunk?.content
+            fullText += chunk?.content
+            if (count === 0) {
+              setIsProcessing(true)
             }
+
+            if (isReasoningStarted(fullText) && !reasoningStartTime) {
+              reasoningStartTime = new Date()
+            }
+
+            if (
+              reasoningStartTime &&
+              !reasoningEndTime &&
+              isReasoningEnded(fullText)
+            ) {
+              reasoningEndTime = new Date()
+              const reasoningTime =
+                reasoningEndTime.getTime() - reasoningStartTime.getTime()
+              timetaken = reasoningTime
+            }
+            setMessages((prev) => {
+              return prev.map((message) => {
+                if (message.id === generateMessageId) {
+                  return {
+                    ...message,
+                    message: fullText + "▋",
+                    reasoning_time_taken: timetaken
+                  }
+                }
+                return message
+              })
+            })
+            count++
           }
-          return message
-        })
-      })
+          // update the message with the full text
+          setMessages((prev) => {
+            return prev.map((message) => {
+              if (message.id === generateMessageId) {
+                return {
+                  ...message,
+                  message: fullText,
+                  sources: source,
+                  generationInfo,
+                  reasoning_time_taken: timetaken
+                }
+              }
+              return message
+            })
+          })
 
-      setHistory([
-        ...history,
-        {
-          role: "user",
-          content: message,
-          image
-        },
-        {
-          role: "assistant",
-          content: fullText
-        }
-      ])
-
-      await saveMessageOnSuccess({
-        historyId,
-        setHistoryId,
-        isRegenerate,
-        selectedModel: selectedModel,
-        message,
-        image,
-        fullText,
-        source,
-        generationInfo,
-        reasoning_time_taken: timetaken
-      })
-
-      setIsProcessing(false)
-      setStreaming(false)
-    } catch (e) {
-      const errorSave = await saveMessageOnError({
-        e,
-        botMessage: fullText,
-        history,
-        historyId,
-        image,
-        selectedModel,
-        setHistory,
-        setHistoryId,
-        userMessage: message,
-        isRegenerating: isRegenerate
-      })
-
-      if (!errorSave) {
-        notification.error({
-          message: t("error"),
-          description: e?.message || t("somethingWentWrong")
-        })
-      }
-      setIsProcessing(false)
-      setStreaming(false)
-    } finally {
-      setAbortController(null)
-    }
-  }
-
-  const presetChatMode = async (
-    message: string,
-    image: string,
-    isRegenerate: boolean,
-    messages: Message[],
-    history: ChatHistory,
-    signal: AbortSignal,
-    messageType: string
-  ) => {
-    setStreaming(true)
-    const url = await getOllamaURL()
-
-    if (image.length > 0) {
-      image = `data:image/jpeg;base64,${image.split(",")[1]}`
-    }
-
-    const ollama = await pageAssistModel({
-      model: selectedModel!,
-      baseUrl: cleanUrl(url)
-    })
-
-    let newMessage: Message[] = []
-    let generateMessageId = generateID()
-    const modelInfo = await getModelNicknameByID(selectedModel)
-
-    if (!isRegenerate) {
-      newMessage = [
-        ...messages,
-        {
-          isBot: false,
-          name: "You",
-          message,
-          sources: [],
-          images: [image],
-          messageType: messageType
-        },
-        {
-          isBot: true,
-          name: selectedModel,
-          message: "▋",
-          sources: [],
-          id: generateMessageId,
-          modelImage: modelInfo?.model_avatar,
-          modelName: modelInfo?.model_name || selectedModel
-        }
-      ]
-    } else {
-      newMessage = [
-        ...messages,
-        {
-          isBot: true,
-          name: selectedModel,
-          message: "▋",
-          sources: [],
-          id: generateMessageId,
-          modelImage: modelInfo?.model_avatar,
-          modelName: modelInfo?.model_name || selectedModel
-        }
-      ]
-    }
-    setMessages(newMessage)
-    let fullText = ""
-    let contentToSave = ""
-
-    try {
-      const prompt = await getPrompt(messageType)
-      let humanMessage = await humanMessageFormatter({
-        content: [
-          {
-            text: prompt.replace("{text}", message),
-            type: "text"
-          }
-        ],
-        model: selectedModel,
-        useOCR
-      })
-      if (image.length > 0) {
-        humanMessage = await humanMessageFormatter({
-          content: [
+          setHistory([
+            ...history,
             {
-              text: prompt.replace("{text}", message),
-              type: "text"
+              role: "user",
+              content: message,
+              image
             },
             {
-              image_url: image,
-              type: "image_url"
+              role: "assistant",
+              content: fullText
             }
-          ],
-          model: selectedModel,
-          useOCR
-        })
-      }
+          ])
 
-      let generationInfo: any | undefined = undefined
-
-      const chunks = await ollama.stream([humanMessage], {
-        signal: signal,
-        callbacks: [
-          {
-            handleLLMEnd(output: any): any {
-              try {
-                generationInfo = output?.generations?.[0][0]?.generationInfo
-              } catch (e) {
-                console.error("handleLLMEnd error", e)
-              }
-            }
-          }
-        ]
-      })
-      let count = 0
-      let reasoningStartTime: Date | null = null
-      let reasoningEndTime: Date | null = null
-      let timetaken = 0
-      let apiReasoning = false
-      for await (const chunk of chunks) {
-        if (chunk?.additional_kwargs?.reasoning_content) {
-          const reasoningContent = mergeReasoningContent(
+          await saveMessageOnSuccess({
+            historyId,
+            isRegenerate,
+            selectedModel: selectedModel,
+            message,
+            image,
             fullText,
-            chunk?.additional_kwargs?.reasoning_content || ""
-          )
-          contentToSave = reasoningContent
-          fullText = reasoningContent
-          apiReasoning = true
-        } else {
-          if (apiReasoning) {
-            fullText += "</think>"
-            contentToSave += "</think>"
-            apiReasoning = false
-          }
-        }
-
-        contentToSave += chunk?.content
-        fullText += chunk?.content
-        if (count === 0) {
-          setIsProcessing(true)
-        }
-        if (isReasoningStarted(fullText) && !reasoningStartTime) {
-          reasoningStartTime = new Date()
-        }
-
-        if (
-          reasoningStartTime &&
-          !reasoningEndTime &&
-          isReasoningEnded(fullText)
-        ) {
-          reasoningEndTime = new Date()
-          const reasoningTime =
-            reasoningEndTime.getTime() - reasoningStartTime.getTime()
-          timetaken = reasoningTime
-        }
-        setMessages((prev) => {
-          return prev.map((message) => {
-            if (message.id === generateMessageId) {
-              return {
-                ...message,
-                message: fullText + "▋",
-                reasoning_time_taken: timetaken
-              }
-            }
-            return message
+            source,
+            generationInfo,
+            reasoning_time_taken: timetaken
           })
-        })
-        count++
+
+          setIsProcessing(false)
+          setStreaming(false)
+        } catch (e) {
+          const errorSave = await saveMessageOnError({
+            e,
+            botMessage: fullText,
+            userMessage: message,
+            isRegenerating: isRegenerate,
+            selectedModel,
+            image
+          })
+
+          if (!errorSave) {
+            notification.error({
+              message: t("error"),
+              description: e?.message || t("somethingWentWrong")
+            })
+          }
+          setIsProcessing(false)
+          setStreaming(false)
+        } finally {
+          setAbortController(null)
+        }
       }
 
-      setMessages((prev) => {
-        return prev.map((message) => {
-          if (message.id === generateMessageId) {
-            return {
-              ...message,
-              message: fullText,
-              generationInfo,
-              reasoning_time_taken: timetaken
-            }
-          }
-          return message
-        })
-      })
+      const presetChatMode = async (
+        message: string,
+        image: string,
+        isRegenerate: boolean,
+        messages: Message[],
+        history: ChatHistory,
+        signal: AbortSignal,
+        messageType: string
+      ) => {
+        setStreaming(true)
+        const url = await getOllamaURL()
 
-      setHistory([
-        ...history,
-        {
-          role: "user",
-          content: message,
+        if (image.length > 0) {
+          image = `data:image/jpeg;base64,${image.split(",")[1]}`
+        }
+
+        const ollama = await pageAssistModel({
+          model: selectedModel!,
+          baseUrl: cleanUrl(url)
+        })
+
+        let newMessage: Message[] = []
+        let generateMessageId = generateID()
+        const modelInfo = await getModelNicknameByID(selectedModel)
+
+        if (!isRegenerate) {
+          newMessage = [
+            ...messages,
+            {
+              isBot: false,
+              name: "You",
+              message,
+              sources: [],
+              images: [image],
+              messageType: messageType
+            },
+            {
+              isBot: true,
+              name: selectedModel,
+              message: "▋",
+              sources: [],
+              id: generateMessageId,
+              modelImage: modelInfo?.model_avatar,
+              modelName: modelInfo?.model_name || selectedModel
+            }
+          ]
+        } else {
+          newMessage = [
+            ...messages,
+            {
+              isBot: true,
+              name: selectedModel,
+              message: "▋",
+              sources: [],
+              id: generateMessageId,
+              modelImage: modelInfo?.model_avatar,
+              modelName: modelInfo?.model_name || selectedModel
+            }
+          ]
+        }
+        setMessages(newMessage)
+        let fullText = ""
+        let contentToSave = ""
+
+        try {
+          const prompt = await getPrompt(messageType)
+          let humanMessage = await humanMessageFormatter({
+            content: [
+              {
+                text: prompt.replace("{text}", message),
+                type: "text"
+              }
+            ],
+            model: selectedModel,
+            useOCR
+          })
+          if (image.length > 0) {
+            humanMessage = await humanMessageFormatter({
+              content: [
+                {
+                  text: prompt.replace("{text}", message),
+                  type: "text"
+                },
+                {
+                  image_url: image,
+                  type: "image_url"
+                }
+              ],
+              model: selectedModel,
+              useOCR
+            })
+          }
+
+          let generationInfo: any | undefined = undefined
+
+          const chunks = await ollama.stream([humanMessage], {
+            signal: signal,
+            callbacks: [
+              {
+                handleLLMEnd(output: any): any {
+                  try {
+                    generationInfo =
+                      output?.generations?.[0][0]?.generationInfo
+                  } catch (e) {
+                    console.error("handleLLMEnd error", e)
+                  }
+                }
+              }
+            ]
+          })
+          let count = 0
+          let reasoningStartTime: Date | null = null
+          let reasoningEndTime: Date | null = null
+          let timetaken = 0
+          let apiReasoning = false
+          for await (const chunk of chunks) {
+            if (chunk?.additional_kwargs?.reasoning_content) {
+              const reasoningContent = mergeReasoningContent(
+                fullText,
+                chunk?.additional_kwargs?.reasoning_content || ""
+              )
+              contentToSave = reasoningContent
+              fullText = reasoningContent
+              apiReasoning = true
+            } else {
+              if (apiReasoning) {
+                fullText += "</think>"
+                contentToSave += "</think>"
+                apiReasoning = false
+              }
+            }
+
+            contentToSave += chunk?.content
+            fullText += chunk?.content
+            if (count === 0) {
+              setIsProcessing(true)
+            }
+            if (isReasoningStarted(fullText) && !reasoningStartTime) {
+              reasoningStartTime = new Date()
+            }
+
+            if (
+              reasoningStartTime &&
+              !reasoningEndTime &&
+              isReasoningEnded(fullText)
+            ) {
+              reasoningEndTime = new Date()
+              const reasoningTime =
+                reasoningEndTime.getTime() - reasoningStartTime.getTime()
+              timetaken = reasoningTime
+            }
+            setMessages((prev) => {
+              return prev.map((message) => {
+                if (message.id === generateMessageId) {
+                  return {
+                    ...message,
+                    message: fullText + "▋",
+                    reasoning_time_taken: timetaken
+                  }
+                }
+                return message
+              })
+            })
+            count++
+          }
+
+          setMessages((prev) => {
+            return prev.map((message) => {
+              if (message.id === generateMessageId) {
+                return {
+                  ...message,
+                  message: fullText,
+                  generationInfo,
+                  reasoning_time_taken: timetaken
+                }
+              }
+              return message
+            })
+          })
+
+          setHistory([
+            ...history,
+            {
+              role: "user",
+              content: message,
+              image,
+              messageType
+            },
+            {
+              role: "assistant",
+              content: fullText
+            }
+          ])
+
+          await saveMessageOnSuccess({
+            historyId,
+            isRegenerate,
+            selectedModel: selectedModel,
+            message,
+            image,
+            fullText,
+            source: [],
+            message_source: "copilot",
+            message_type: messageType,
+            generationInfo,
+            reasoning_time_taken: timetaken
+          })
+
+          setIsProcessing(false)
+          setStreaming(false)
+        } catch (e) {
+          const errorSave = await saveMessageOnError({
+            e,
+            botMessage: fullText,
+            userMessage: message,
+            isRegenerating: isRegenerate,
+            message_source: "copilot",
+            message_type: messageType,
+            selectedModel,
+            image
+          })
+
+          if (!errorSave) {
+            notification.error({
+              message: t("error"),
+              description: e?.message || t("somethingWentWrong")
+            })
+          }
+          setIsProcessing(false)
+          setStreaming(false)
+        } finally {
+          setAbortController(null)
+        }
+      }
+
+      if (messageType) {
+        await presetChatMode(
+          message,
           image,
+          isRegenerate || false,
+          chatHistory || messages,
+          memory || history,
+          signal,
           messageType
-        },
-        {
-          role: "assistant",
-          content: fullText
-        }
-      ])
-
-      await saveMessageOnSuccess({
-        historyId,
-        setHistoryId,
-        isRegenerate,
-        selectedModel: selectedModel,
-        message,
-        image,
-        fullText,
-        source: [],
-        message_source: "copilot",
-        message_type: messageType,
-        generationInfo,
-        reasoning_time_taken: timetaken
-      })
-
-      setIsProcessing(false)
-      setStreaming(false)
-    } catch (e) {
-      const errorSave = await saveMessageOnError({
-        e,
-        botMessage: fullText,
-        history,
-        historyId,
-        image,
-        selectedModel,
-        setHistory,
-        setHistoryId,
-        userMessage: message,
-        isRegenerating: isRegenerate,
-        message_source: "copilot",
-        message_type: messageType
-      })
-
-      if (!errorSave) {
-        notification.error({
-          message: t("error"),
-          description: e?.message || t("somethingWentWrong")
-        })
-      }
-      setIsProcessing(false)
-      setStreaming(false)
-    } finally {
-      setAbortController(null)
-    }
-  }
-
-  const onSubmit = async ({
-    message,
-    image,
-    isRegenerate,
-    controller,
-    memory,
-    messages: chatHistory,
-    messageType
-  }: {
-    message: string
-    image: string
-    isRegenerate?: boolean
-    messages?: Message[]
-    memory?: ChatHistory
-    controller?: AbortController
-    messageType?: string
-  }) => {
-    let signal: AbortSignal
-    if (!controller) {
-      const newController = new AbortController()
-      signal = newController.signal
-      setAbortController(newController)
-    } else {
-      setAbortController(controller)
-      signal = controller.signal
-    }
-
-    // this means that the user is trying to send something from a selected text on the web
-    if (messageType) {
-      await presetChatMode(
-        message,
-        image,
-        isRegenerate,
-        chatHistory || messages,
-        memory || history,
-        signal,
-        messageType
-      )
-    } else {
-      if (chatMode === "normal") {
-        if (webSearch) {
-          await searchChatMode(
+        )
+      } else {
+        if (chatMode === "normal") {
+          if (webSearch) {
+            await searchChatMode(
+              message,
+              image,
+              isRegenerate || false,
+              messages,
+              memory || history,
+              signal
+            )
+          } else {
+            await normalChatMode(
+              message,
+              image,
+              isRegenerate || false,
+              chatHistory || messages,
+              memory || history,
+              signal
+            )
+          }
+        } else if (chatMode === "vision") {
+          await visionChatMode(
             message,
             image,
             isRegenerate || false,
-            messages,
-            memory || history,
-            signal
-          )
-        } else {
-          await normalChatMode(
-            message,
-            image,
-            isRegenerate,
             chatHistory || messages,
             memory || history,
             signal
           )
+        } else {
+          const newEmbeddingController = new AbortController()
+          let embeddingSignal = newEmbeddingController.signal
+          setEmbeddingController(newEmbeddingController)
+          await chatWithWebsiteMode(
+            message,
+            image,
+            isRegenerate || false,
+            chatHistory || messages,
+            memory || history,
+            signal,
+            embeddingSignal
+          )
         }
-      } else if (chatMode === "vision") {
-        await visionChatMode(
-          message,
-          image,
-          isRegenerate,
-          chatHistory || messages,
-          memory || history,
-          signal
-        )
+      }
+    },
+    [
+      setAbortController,
+      chatMode,
+      webSearch,
+      setEmbeddingController,
+      setStreaming,
+      selectedModel,
+      useOCR,
+      setMessages,
+      chatWithWebsiteEmbedding,
+      setCurrentURL,
+      keepTrackOfEmbedding,
+      currentURL,
+      currentChatModelSettings,
+      setKeepTrackOfEmbedding,
+      setIsEmbedding,
+      setIsProcessing,
+      setHistory,
+      history,
+      historyId,
+      setHistoryId,
+      t,
+      selectedSystemPrompt,
+      setIsSearchingInternet,
+      saveMessageOnError,
+      saveMessageOnSuccess
+    ]
+  )
+
+  const editMessage = useCallback(
+    async (index: number, message: string, isHuman: boolean) => {
+      let newMessages = [...messages]
+      let newHistory = [...history]
+
+      if (isHuman) {
+        const currentHumanMessage = newMessages[index]
+        newMessages[index].message = message
+        const previousMessages = newMessages.slice(0, index + 1)
+        setMessages(previousMessages)
+        const previousHistory = newHistory.slice(0, index)
+        setHistory(previousHistory)
+        await updateMessageByIndex(historyId, index, message)
+        await deleteChatForEdit(historyId, index)
+        const abortController = new AbortController()
+        await onSubmit({
+          message: message,
+          image: currentHumanMessage.images[0] || "",
+          isRegenerate: true,
+          messages: previousMessages,
+          memory: previousHistory,
+          controller: abortController
+        })
       } else {
-        const newEmbeddingController = new AbortController()
-        let embeddingSignal = newEmbeddingController.signal
-        setEmbeddingController(newEmbeddingController)
-        await chatWithWebsiteMode(
-          message,
-          image,
-          isRegenerate,
-          chatHistory || messages,
-          memory || history,
-          signal,
-          embeddingSignal
-        )
+        newMessages[index].message = message
+        setMessages(newMessages)
+        newHistory[index].content = message
+        setHistory(newHistory)
+        await updateMessageByIndex(historyId, index, message)
       }
-    }
-  }
+    },
+    [messages, history, setMessages, setHistory, historyId, onSubmit]
+  )
 
-  const stopStreamingRequest = () => {
-    if (isEmbedding) {
-      if (embeddingController) {
-        embeddingController.abort()
-        setEmbeddingController(null)
-      }
-    }
-    if (abortController) {
-      abortController.abort()
-      setAbortController(null)
-    }
-  }
-
-  const editMessage = async (
-    index: number,
-    message: string,
-    isHuman: boolean
-  ) => {
-    let newMessages = messages
-    let newHistory = history
-
-    if (isHuman) {
-      const currentHumanMessage = newMessages[index]
-      newMessages[index].message = message
-      const previousMessages = newMessages.slice(0, index + 1)
-      setMessages(previousMessages)
-      const previousHistory = newHistory.slice(0, index)
-      setHistory(previousHistory)
-      await updateMessageByIndex(historyId, index, message)
-      await deleteChatForEdit(historyId, index)
-      const abortController = new AbortController()
-      await onSubmit({
-        message: message,
-        image: currentHumanMessage.images[0] || "",
-        isRegenerate: true,
-        messages: previousMessages,
-        memory: previousHistory,
-        controller: abortController
-      })
-    } else {
-      newMessages[index].message = message
-      setMessages(newMessages)
-      newHistory[index].content = message
-      setHistory(newHistory)
-      await updateMessageByIndex(historyId, index, message)
-    }
-  }
-
-  const regenerateLastMessage = async () => {
+  const regenerateLastMessage = useCallback(async () => {
     if (history.length > 0) {
       const lastMessage = history[history.length - 2]
       let newHistory = history.slice(0, -2)
-      let mewMessages = messages
-      mewMessages.pop()
+      let newMessages = [...messages]
+      newMessages.pop()
       setHistory(newHistory)
-      setMessages(mewMessages)
+      setMessages(newMessages)
       await removeMessageUsingHistoryId(historyId)
       if (lastMessage.role === "user") {
         const newController = new AbortController()
@@ -1711,15 +1755,28 @@ export const useMessage = () => {
         })
       }
     }
-  }
-  const createChatBranch = createBranchMessage({
-    historyId,
-    setHistory,
-    setHistoryId,
-    setMessages,
-    setSelectedSystemPrompt,
-    setSystemPrompt: currentChatModelSettings.setSystemPrompt
-  })
+  }, [history, messages, setHistory, setMessages, historyId, onSubmit])
+
+  const createChatBranch = useMemo(
+    () =>
+      createBranchMessage({
+        historyId,
+        setHistory,
+        setHistoryId,
+        setMessages,
+        setSelectedSystemPrompt,
+        setSystemPrompt: currentChatModelSettings.setSystemPrompt
+      }),
+    [
+      historyId,
+      setHistory,
+      setHistoryId,
+      setMessages,
+      setSelectedSystemPrompt,
+      currentChatModelSettings.setSystemPrompt
+    ]
+  )
+
   return {
     messages,
     setMessages,
@@ -1759,6 +1816,6 @@ export const useMessage = () => {
     createChatBranch,
     temporaryChat,
     setTemporaryChat,
-    sidepanelTemporaryChat,
+    sidepanelTemporaryChat
   }
 }

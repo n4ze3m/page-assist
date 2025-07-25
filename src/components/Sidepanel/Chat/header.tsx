@@ -7,7 +7,6 @@ import {
   BrainCog,
   CogIcon,
   EraserIcon,
-  // EraserIcon,
   HistoryIcon,
   PlusSquare,
   XIcon,
@@ -15,7 +14,7 @@ import {
 } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { CurrentChatModelSettings } from "@/components/Common/Settings/CurrentChatModelSettings"
-import React from "react"
+import React, { useCallback } from "react"
 import { useStorage } from "@plasmohq/storage/hook"
 import { PromptSelect } from "@/components/Common/PromptSelect"
 import { Sidebar } from "@/components/Option/Sidebar"
@@ -52,6 +51,14 @@ export const SidepanelHeader = () => {
     "webuiBtnSidePanel",
     false
   )
+
+  const handleCloseSidebar = useCallback(() => {
+    setSidebarOpen(false)
+  }, [])
+
+ // Create a stable, empty function for props that need a function but do nothing.
+ // Again, this prevents a new function from being created on every render.
+  const stableEmptyFn = useCallback(() => {}, [])
 
   return (
     <div
@@ -169,7 +176,6 @@ export const SidepanelHeader = () => {
             <div className="flex items-center justify-between">
               {t("tooltip.history")}
             </div>
-
             <button onClick={() => setSidebarOpen(false)}>
               <XIcon className="size-4 text-gray-500 dark:text-gray-400" />
             </button>
@@ -177,11 +183,11 @@ export const SidepanelHeader = () => {
         }
         placement="left"
         closeIcon={null}
-        onClose={() => setSidebarOpen(false)}
+        onClose={handleCloseSidebar}
         open={sidebarOpen}>
         <Sidebar
           isOpen={sidebarOpen}
-          onClose={() => setSidebarOpen(false)}
+          onClose={handleCloseSidebar}
           setMessages={setMessages}
           setHistory={setHistory}
           setHistoryId={setHistoryId}
@@ -189,7 +195,7 @@ export const SidepanelHeader = () => {
           setSelectedSystemPrompt={setSelectedSystemPrompt}
           clearChat={clearChat}
           historyId={historyId}
-          setSystemPrompt={(e) => {}}
+          setSystemPrompt={stableEmptyFn}
           temporaryChat={false}
           history={history}
         />

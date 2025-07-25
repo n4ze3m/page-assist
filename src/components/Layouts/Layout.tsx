@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useCallback } from "react"
 
 import { Sidebar } from "../Option/Sidebar"
 import { Drawer, Tooltip } from "antd"
@@ -34,10 +34,17 @@ export default function OptionLayout({
     temporaryChat,
     setSelectedSystemPrompt,
     setContextFiles,
-    useOCR
+    useOCR,
+    history // <-- Destructure history here as it's used in the Sidebar props
   } = useMessageOption()
   const queryClient = useQueryClient()
   const { setSystemPrompt } = useStoreChatModelSettings()
+
+  // Create a stable function for onClose using useCallback.
+  // This prevents a new function from being created on every render.
+  const handleCloseSidebar = useCallback(() => {
+    setSidebarOpen(false)
+  }, [])
 
   return (
     <div className="flex h-full w-full">
@@ -93,11 +100,11 @@ export default function OptionLayout({
           }
           placement="left"
           closeIcon={null}
-          onClose={() => setSidebarOpen(false)}
+          onClose={handleCloseSidebar}
           open={sidebarOpen}>
           <Sidebar
             isOpen={sidebarOpen}
-            onClose={() => setSidebarOpen(false)}
+            onClose={handleCloseSidebar}
             setMessages={setMessages}
             setHistory={setHistory}
             setHistoryId={setHistoryId}
