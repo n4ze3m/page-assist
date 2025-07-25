@@ -12,10 +12,12 @@ import {
   Document,
   OpenAIModelConfig,
   Model,
-  ModelNickname
+  ModelNickname,
+  McpServerConfig
 } from "./types"
 
 export class PageAssistDexieDB extends Dexie {
+  mcpServers!: Table<McpServerConfig>;
   chatHistories!: Table<HistoryInfo>;
   messages!: Table<Message>;
   prompts!: Table<Prompt>;
@@ -50,7 +52,9 @@ export class PageAssistDexieDB extends Dexie {
       // OpenAI Configs
       openaiConfigs: 'id, name, baseUrl, apiKey, createdAt, provider, db_type, headers',
       customModels: 'id, model_id, name, model_name, model_image, provider_id, lookup, model_type, db_type',
-      modelNickname: 'id, model_id, model_name, model_avatar'
+      modelNickname: 'id, model_id, model_name, model_avatar',
+      // MCP Servers
+      mcpServers: 'id, name, url, enabled'
     });
   }
 }

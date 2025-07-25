@@ -1,26 +1,37 @@
-const tags = ["think", "reason", "reasoning", "thought"]
+const tags = ["think", "reason", "reasoning", "thought", "tool_run"]
+
 export function parseReasoning(text: string): {
-  type: "reasoning" | "text"
+  type: "reasoning" | "text" | "tool_run"
   content: string
   reasoning_running?: boolean
+  tool_running?: boolean
+  duration?: number
 }[] {
   try {
     const result: {
-      type: "reasoning" | "text"
+      type: "reasoning" | "text" | "tool_run"
       content: string
       reasoning_running?: boolean
+      tool_running?: boolean
+      duration?: number
     }[] = []
+
     const tagPattern = new RegExp(`<(${tags.join("|")})>`, "i")
-    const closeTagPattern = new RegExp(`</(${tags.join("|")})>`, "i")
+
+    // Update close tag pattern to capture optional duration.
+    const closeTagPattern = new RegExp(`</(${tags.join("|")})(?:\\s+duration="(\\d+)")?>`, "i")
 
     let currentIndex = 0
-    let isReasoning = false
+
+    // Enhance the state from a boolean to a variable storing the current block type.
+    let currentBlockType: "reasoning" | "tool_run" | null = null
 
     while (currentIndex < text.length) {
       const openTagMatch = text.slice(currentIndex).match(tagPattern)
       const closeTagMatch = text.slice(currentIndex).match(closeTagPattern)
 
-      if (!isReasoning && openTagMatch) {
+      // If we are NOT in a block and we find an opening tag...
+      if (!currentBlockType && openTagMatch) {
         const beforeText = text.slice(
           currentIndex,
           currentIndex + openTagMatch.index
@@ -29,31 +40,46 @@ export function parseReasoning(text: string): {
           result.push({ type: "text", content: beforeText.trim() })
         }
 
-        isReasoning = true
+        // Set the state to the type of tag we found.
+        const tagName = openTagMatch[1].toLowerCase()
+        currentBlockType = tagName === 'tool_run' ? 'tool_run' : 'reasoning'
+        
         currentIndex += openTagMatch.index! + openTagMatch[0].length
         continue
       }
 
-      if (isReasoning && closeTagMatch) {
-        const reasoningContent = text.slice(
+      // If we ARE in a block and we find a closing tag...
+      if (currentBlockType && closeTagMatch) {
+        const blockContent = text.slice(
           currentIndex,
           currentIndex + closeTagMatch.index
         )
-        if (reasoningContent.trim()) {
-          result.push({ type: "reasoning", content: reasoningContent.trim() })
+        if (blockContent.trim()) {
+          // Push the content with the correct type and extract duration if it exists.
+          const duration = closeTagMatch[2] ? parseInt(closeTagMatch[2], 10) : undefined
+          result.push({ 
+            type: currentBlockType, 
+            content: blockContent.trim(),
+            // We inly add the duration property for tool_run blocks
+            duration: currentBlockType === 'tool_run' ? duration : undefined
+          })
         }
 
-        isReasoning = false
+        // Reset state
+        currentBlockType = null
         currentIndex += closeTagMatch.index! + closeTagMatch[0].length
         continue
       }
 
+      // If we reach the end of the string...
       if (currentIndex < text.length) {
         const remainingText = text.slice(currentIndex)
+        // Handle unterminated blocks correctly using the new state variable.
         result.push({
-          type: isReasoning ? "reasoning" : "text",
+          type: currentBlockType ? currentBlockType : "text",
           content: remainingText.trim(),
-          reasoning_running: isReasoning
+          reasoning_running: currentBlockType === 'reasoning',
+          tool_running: currentBlockType === 'tool_run'
         })
         break
       }

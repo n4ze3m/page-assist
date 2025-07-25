@@ -241,6 +241,19 @@
       "someError": "Something went wrong. Please try again later"
     }
   },
+  "mcpSettings": {
+    "title": "Manage Tools",
+    "addBtn": "Add New Tools",
+    "noServers": "No MCP servers configured.",
+    "deleteConfirm": "Are you sure you want to delete this server?",
+    "toolsExposed": "Tools:",
+    "table": {
+      "status": "Status",
+      "name": "Name",
+      "url": "URL",
+      "actions": "Actions"
+    }
+  },
   "managePrompts": {
     "title": "Manage Prompts",
     "addBtn": "Add New Prompt",

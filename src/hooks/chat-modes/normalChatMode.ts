@@ -15,6 +15,11 @@ import {
 } from "@/libs/reasoning"
 import { getModelNicknameByID } from "@/db/dexie/nickname"
 import { systemPromptFormatter } from "@/utils/system-message"
+import { McpManager } from "@/mcp/McpManager"
+import { generateMcpToolSystemPrompt } from "@/mcp/prompt"
+import { db } from "@/db/dexie/schema"
+
+const yieldToMainThread = () => new Promise(resolve => setTimeout(resolve, 0))
 
 export const normalChatMode = async (
   message: string,
@@ -118,6 +123,7 @@ export const normalChatMode = async (
   setMessages(newMessage)
   let fullText = ""
   let contentToSave = ""
+  let toolCallStartTime: Date | null = null 
   let timetaken = 0
 
   try {
@@ -183,25 +189,81 @@ export const normalChatMode = async (
       promptContent = currentChatModelSettings.systemPrompt
     }
 
+    let mcpTools: any[] = []
+    try {
+      mcpTools = await McpManager.getAllTools()
+    } catch (error) {
+      console.error("[normalChatMode] Error fetching MCP tools:", error)
+    }
+
+    let combinedPrompt = prompt || selectedPrompt?.content || "You are a helpful assistant."
+    if (mcpTools.length > 0) {
+      const mcpPrompt = generateMcpToolSystemPrompt(mcpTools)
+      combinedPrompt = `${combinedPrompt}\n\n${mcpPrompt}`
+    } else {
+        if (message.toLowerCase().includes("tools are available")) {
+            let configs: any[] = []
+            let allConfigs: any[] = []
+            try {
+              configs = (await db.mcpServers.toArray()).filter(server => server.enabled === true || server.enabled === 1)
+              allConfigs = await db.mcpServers.toArray()
+            } catch (error) {
+              console.error("[normalChatMode] Error querying mcpServers:", error)
+            }
+            fullText = configs.length === 0
+              ? `No MCP servers are enabled. All servers: ${JSON.stringify(allConfigs, null, 2)}. Please enable an MCP server in the settings or check the database configuration.`
+              : `No tools are available from enabled servers: ${JSON.stringify(configs, null, 2)}. Please verify the server configuration and ensure tools are registered.`
+
+            setMessages((prev) => prev.map((m) => m.id === generateMessageId ? { ...m, message: fullText, reasoning_time_taken: 0 } : m))
+            setHistory([...history, { role: "user", content: message, image }, { role: "assistant", content: fullText }])
+            await saveMessageOnSuccess({ historyId, setHistoryId, isRegenerate, selectedModel, message, image, fullText, source: [], generationInfo: null, prompt_content: promptContent, prompt_id: promptId, reasoning_time_taken: 0 })
+            setIsProcessing(false)
+            setStreaming(false)
+            setAbortController(null)
+            return
+        }
+    }
+
     let generationInfo: any | undefined = undefined
 
-    const chunks = await ollama.stream(
-      [...applicationChatHistory, humanMessage],
-      {
-        signal: signal,
-        callbacks: [
-          {
-            handleLLMEnd(output: any): any {
-              try {
-                generationInfo = output?.generations?.[0][0]?.generationInfo
-              } catch (e) {
-                console.error("handleLLMEnd error", e)
+    const streamOptions = {
+      signal,
+      tools: mcpTools,
+      onToolStart: async (tool: { name: string, arguments: any }) => {
+        console.log(`[normalChatMode] UI Callback: Starting tool ${tool.name}`)
+        toolCallStartTime = new Date()
+        const toolArgs = JSON.stringify(tool.arguments, null, 2)
+		const [serverName, actualToolName] = tool.name.split('::') // parse prefixed tool name for display
+        const startMessage = `\n<tool_run>**Server:** ${serverName}\n\n**Tool:** ${actualToolName}\n\n**Arguments:**\n\`\`\`json\n${toolArgs}\n\`\`\``
+        fullText += startMessage
+        contentToSave += startMessage
+        setMessages((prev) => prev.map((m) => m.id === generateMessageId ? { ...m, message: fullText.replace("▋", "") } : m))
+        await yieldToMainThread()
+      },
+      onToolEnd: async (tool: { name: string }, output: string) => {
+        console.log(`[normalChatMode] UI Callback: Tool ${tool.name} finished.`)
+        const duration = toolCallStartTime ? new Date().getTime() - toolCallStartTime.getTime() : 0
+        let formattedOutput = output
+        try { formattedOutput = JSON.stringify(JSON.parse(output), null, 2) } catch {}
+        const endMessage = `\n\n**Result:**\n\`\`\`json\n${formattedOutput}\n\`\`\`\n</tool_run duration="${duration}">`
+        fullText += endMessage
+        contentToSave += endMessage
+        setMessages((prev) => prev.map((m) => m.id === generateMessageId ? { ...m, message: fullText.replace("▋", "") } : m))
+        await yieldToMainThread()
+      },
+      onToolError: async (tool: { name: string }, error: any) => {
+        console.error(`[normalChatMode] UI Callback: Error in tool ${tool.name}:`, error)
+        const duration = toolCallStartTime ? new Date().getTime() - toolCallStartTime.getTime() : 0
+        const errorMessage = `\n\n**Error:**\n\`\`\`\n${error.message}\n\`\`\`\n</tool_run duration="${duration}">`
+        fullText += errorMessage
+        contentToSave += errorMessage
+        setMessages((prev) => prev.map((m) => m.id === generateMessageId ? { ...m, message: fullText.replace("▋", "") } : m))
+        await yieldToMainThread()
+      },
+      callbacks: [{ handleLLMEnd: (output: any) => { generationInfo = output?.generations?.[0][0]?.generationInfo || null }}]
               }
-            }
-          }
-        ]
-      }
-    )
+
+    const chunks = await ollama.stream([...applicationChatHistory, humanMessage], streamOptions)
 
     let count = 0
     let reasoningStartTime: Date | null = null
@@ -251,7 +313,7 @@ export const normalChatMode = async (
           if (message.id === generateMessageId) {
             return {
               ...message,
-              message: fullText + "▋",
+              message: fullText + (chunk.done ? "" : "▋"),
               reasoning_time_taken: timetaken
             }
           }
@@ -307,7 +369,7 @@ export const normalChatMode = async (
     setStreaming(false)
   } catch (e) {
 
-    console.log(e)
+    console.error("[normalChatMode] Error:", e)
 
     const errorSave = await saveMessageOnError({
       e,

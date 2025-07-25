@@ -403,11 +403,21 @@ export const getRecentChatFromWebUI = async () => {
   return { history, messages }
 }
 
-export const getTitleById = async (id: string) => {
-  const db = new PageAssistDatabase()
-  const title = await db.getChatHistoryTitleById(id)
-  return title
-}
+export const getTitleById = async (id: string | null): Promise<string | null> => {
+  if (!id || id.trim() === "") {
+    console.warn("[getTitleById] Invalid historyId:", id);
+    return null;
+  }
+  const db = new PageAssistDatabase();
+  try {
+    const title = await db.getChatHistoryTitleById(id);
+    console.log("[getTitleById] Fetched title for historyId:", id, "Title:", title);
+    return title;
+  } catch (error) {
+    console.error("[getTitleById] Error fetching title for historyId:", id, "Error:", error);
+    return null;
+  }
+};
 
 export const getLastChatHistory = async (history_id: string) => {
   const db = new PageAssistDatabase()
