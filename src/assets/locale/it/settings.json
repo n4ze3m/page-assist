@@ -65,6 +65,9 @@
       },
       "pasteLargeTextAsFile": {
         "label": "Incolla Testo Lungo come File"
+      },
+      "sidepanelTemporaryChat": {
+        "label": "Abilita Chat Temporanea nel Pannello Laterale per impostazione predefinita"
       }
     },
     "sidepanelRag": {

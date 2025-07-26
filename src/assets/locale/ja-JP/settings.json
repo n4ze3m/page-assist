@@ -68,6 +68,9 @@
       },
       "pasteLargeTextAsFile": {
         "label": "大きなテキストをファイルとして貼り付け"
+      },
+      "sidepanelTemporaryChat": {
+        "label": "サイドパネルでの一時チャットをデフォルトで有効にする"
       }
     },
     "sidepanelRag": {
