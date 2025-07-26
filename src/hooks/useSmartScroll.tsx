@@ -1,114 +1,116 @@
-import {
-  useRef,
-  useEffect,
-  useState,
-  useCallback,
-} from "react";
+import { useRef, useEffect, useState, useCallback } from "react"
 
-export const useSmartScroll = (
-  messages: any[],
-  streaming: boolean,
-  threshold: number = 50
-) => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [isAutoScrollEnabled, setIsAutoScrollEnabled] = useState(true);
-  const scrollTimeout = useRef<NodeJS.Timeout | null>(null);
-  const lastScrollTop = useRef(0);
-  const lastScrollHeight = useRef(0);
-  const isScrollingProgrammatically = useRef(false);
+export const useSmartScroll = (messages: any[], streaming: boolean, threshold: number = 50) => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [isAtBottom, setIsAtBottom] = useState(true)
+  const [shouldAutoScroll, setShouldAutoScroll] = useState(true)
+  const lastMessageCount = useRef(0)
+  const scrollTimeout = useRef<NodeJS.Timeout | null>(null)
 
-  const isAtBottom = useCallback(() => {
-    const container = containerRef.current;
-    if (!container) return false;
+  const checkIfAtBottom = useCallback(() => {
+    if (!containerRef.current) return false
+    const { scrollTop, scrollHeight, clientHeight } = containerRef.current
+    return scrollHeight - scrollTop - clientHeight <= threshold
+  }, [threshold])
 
-    const { scrollTop, scrollHeight, clientHeight } = container;
-    return scrollHeight - scrollTop - clientHeight <= threshold;
-  }, [threshold]);
+  const updateScrollStates = useCallback(() => {
+    const atBottom = checkIfAtBottom()
+    setIsAtBottom(atBottom)
+    
+    if (atBottom) {
+      setShouldAutoScroll(true)
+    }
+  }, [checkIfAtBottom])
 
-  const scrollToBottom = useCallback((smooth: boolean = false) => {
-    const container = containerRef.current;
-    if (!container) return;
+  const scrollToBottom = useCallback((smooth: boolean = true) => {
+    if (!containerRef.current) return
+    
+    containerRef.current.scrollTo({
+      top: containerRef.current.scrollHeight,
+      behavior: smooth ? "smooth" : "auto"
+    })
+  }, [])
 
-    isScrollingProgrammatically.current = true;
-
-    container.scrollTo({
-      top: container.scrollHeight,
-      behavior: smooth ? "smooth" : "auto",
-    });
-
-    setTimeout(() => {
-      isScrollingProgrammatically.current = false;
-    }, smooth ? 300 : 50); 
-  }, []);
-
+  // Handle scroll events
   useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
+    const container = containerRef.current
+    if (!container) return
 
     const handleScroll = () => {
-      if (isScrollingProgrammatically.current) return;
-
-      const { scrollTop, scrollHeight, clientHeight } = container;
-      const isScrollingUp = scrollTop < lastScrollTop.current;
-      const isHeightReduced = scrollHeight < lastScrollHeight.current;
-
-      lastScrollTop.current = scrollTop;
-      lastScrollHeight.current = scrollHeight;
-
+      // Clear existing timeout
       if (scrollTimeout.current) {
-        clearTimeout(scrollTimeout.current);
+        clearTimeout(scrollTimeout.current)
       }
 
+      // Debounce scroll events
       scrollTimeout.current = setTimeout(() => {
-        const atBottom = isAtBottom();
-
+        const atBottom = checkIfAtBottom()
+        setIsAtBottom(atBottom)
+        
         if (atBottom) {
-          setIsAutoScrollEnabled(true);
-        } else if (isScrollingUp && !isHeightReduced) {
-          setIsAutoScrollEnabled(false);
+          setShouldAutoScroll(true)
+        } else {
+          // Only disable auto-scroll if user actively scrolled up
+          setShouldAutoScroll(false)
         }
-      }, 50);
-    };
+      }, 100)
+    }
 
-    container.addEventListener("scroll", handleScroll, { passive: true });
+    container.addEventListener("scroll", handleScroll, { passive: true })
+    
+    // Initial check
+    updateScrollStates()
 
     return () => {
-      container.removeEventListener("scroll", handleScroll);
+      container.removeEventListener("scroll", handleScroll)
       if (scrollTimeout.current) {
-        clearTimeout(scrollTimeout.current);
+        clearTimeout(scrollTimeout.current)
       }
-    };
-  }, [isAtBottom]);
-
-  useEffect(() => {
-    if (streaming && isAutoScrollEnabled) {
-      requestAnimationFrame(() => {
-        scrollToBottom(false);
-      });
     }
-  }, [streaming, isAutoScrollEnabled, scrollToBottom]);
+  }, [checkIfAtBottom, updateScrollStates])
 
+  // Auto-scroll when new messages arrive
   useEffect(() => {
+    const hasNewMessages = messages.length > lastMessageCount.current
+    lastMessageCount.current = messages.length
+
     if (messages.length === 0) {
-      setIsAutoScrollEnabled(true);
-      return;
+      setShouldAutoScroll(true)
+      setIsAtBottom(true)
+      return
     }
 
-    if (isAutoScrollEnabled && !isAtBottom()) {
-      requestAnimationFrame(() => {
-        scrollToBottom(!streaming); 
-      });
+    if (shouldAutoScroll && hasNewMessages) {
+      // Use setTimeout to ensure DOM is updated
+      setTimeout(() => {
+        scrollToBottom(false)
+        // Update states after scroll
+        setTimeout(() => {
+          updateScrollStates()
+        }, 50)
+      }, 0)
+    } else {
+      // Still update states even if not auto-scrolling
+      setTimeout(updateScrollStates, 50)
     }
-  }, [messages, isAutoScrollEnabled, scrollToBottom, streaming, isAtBottom]);
+  }, [messages, shouldAutoScroll, scrollToBottom, updateScrollStates])
+
+  // Enable auto-scroll when streaming starts if at bottom
+  useEffect(() => {
+    if (streaming && isAtBottom) {
+      setShouldAutoScroll(true)
+    }
+  }, [streaming, isAtBottom])
 
   const autoScrollToBottom = useCallback(() => {
-    setIsAutoScrollEnabled(true);
-    scrollToBottom(true);
-  }, [scrollToBottom]);
+    setShouldAutoScroll(true)
+    setIsAtBottom(true)
+    scrollToBottom(true)
+  }, [scrollToBottom])
 
-  return {
-    containerRef,
-    isAutoScrollToBottom: isAutoScrollEnabled && isAtBottom(),
-    autoScrollToBottom,
-  };
-};
+  return { 
+    containerRef, 
+    isAutoScrollToBottom: isAtBottom && shouldAutoScroll, 
+    autoScrollToBottom 
+  }
+}
