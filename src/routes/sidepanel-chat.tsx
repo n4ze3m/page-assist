@@ -33,7 +33,11 @@ const SidepanelChat = () => {
     setHistory,
     setHistoryId,
     setMessages,
-    selectedModel
+    selectedModel,
+    defaultChatWithWebsite,
+    setChatMode,
+    setTemporaryChat,
+    sidepanelTemporaryChat
   } = useMessage()
   const { containerRef, isAutoScrollToBottom, autoScrollToBottom } =
     useSmartScroll(messages, streaming, 60)
@@ -120,6 +124,15 @@ const SidepanelChat = () => {
   React.useEffect(() => {
     setRecentMessagesOnLoad()
   }, [])
+
+  React.useEffect(() => {
+    if (defaultChatWithWebsite) {
+      setChatMode("rag")
+    }
+    if (sidepanelTemporaryChat) {
+      setTemporaryChat(true)
+    }
+  }, [defaultChatWithWebsite, sidepanelTemporaryChat])
 
   React.useEffect(() => {
     if (bgMsg && !streaming) {

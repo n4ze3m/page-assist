@@ -69,6 +69,9 @@
       "ocrLanguage": {
         "label": "Default OCR Language",
         "placeholder": "Select an OCR language"
+      },
+      "sidepanelTemporaryChat": {
+        "label": "Enable Temporary Chat in SidePanel by default"
       }
     },
     "sidepanelRag": {
