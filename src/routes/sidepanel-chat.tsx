@@ -27,7 +27,6 @@ const SidepanelChat = () => {
   >("idle")
   useMigration()
   const {
-    chatMode,
     streaming,
     onSubmit,
     messages,

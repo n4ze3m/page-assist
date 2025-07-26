@@ -87,7 +87,7 @@
 
 .custom-scrollbar:hover::-webkit-scrollbar {
   display: block;
-  width: 10px;
+  width: 15px;
 }
 
 /* Custom scrollbar styles for light theme */
