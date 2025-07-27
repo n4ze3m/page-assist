@@ -28,7 +28,7 @@ export const CustomModelsTable = () => {
     queryKey: ["fetchCustomModels"],
     queryFn: () => getAllCustomModels()
   })
- 
+
   const { mutate: deleteCustomModel } = useMutation({
     mutationFn: deleteModel,
     onSuccess: () => {
@@ -106,7 +106,8 @@ export const CustomModelsTable = () => {
                             })
                             setOpenSettingsModal(true)
                           }}
-                          className="text-gray-700 dark:text-gray-400">
+                          disabled={isFireFoxPrivateMode}
+                          className="text-gray-700 dark:text-gray-400 disabled:opacity-50">
                           <Settings className="size-4" />
                         </button>
                       </Tooltip>
@@ -125,7 +126,8 @@ export const CustomModelsTable = () => {
                               }
                             }
                           }}
-                          className="text-red-500 dark:text-red-400">
+                          disabled={isFireFoxPrivateMode}
+                          className="text-red-500 dark:text-red-400 disabled:opacity-50">
                           <Trash2 className="w-5 h-5" />
                         </button>
                       </Tooltip>

@@ -12,7 +12,8 @@ import {
   message,
   Tooltip,
   Select,
-  Switch
+  Switch,
+  notification
 } from "antd"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
@@ -139,6 +140,15 @@ export const OpenAIApp = () => {
             <div className="ml-4 mt-2 flex-shrink-0">
               <button
                 onClick={() => {
+                  if (isFireFoxPrivateMode) {
+                    notification.error({
+                      message: "Page Assist can't save data",
+                      description:
+                        "Firefox Private Mode does not support saving data to IndexedDB. Please add OpenAI configurations from a normal window."
+                    })
+                    return
+                  }
+
                   setEditingConfig(null)
                   setOpen(true)
                   form.resetFields()
@@ -169,7 +179,8 @@ export const OpenAIApp = () => {
                 <div className="flex gap-4">
                   <Tooltip title={t("edit")}>
                     <button
-                      className="text-gray-700 dark:text-gray-400"
+                      className="text-gray-700 dark:text-gray-400 disabled:opacity-50"
+                      disabled={isFireFoxPrivateMode}
                       onClick={() => handleEdit(record)}>
                       <Pencil className="size-4" />
                     </button>
@@ -188,7 +199,9 @@ export const OpenAIApp = () => {
                         setOpenaiId(record.id)
                       }}
                       disabled={
-                        !record.id || noPopupProvider.includes(record.provider)
+                        !record.id ||
+                        noPopupProvider.includes(record.provider) ||
+                        isFireFoxPrivateMode
                       }>
                       <DownloadIcon className="size-4" />
                     </button>
@@ -196,7 +209,8 @@ export const OpenAIApp = () => {
 
                   <Tooltip title={t("delete")}>
                     <button
-                      className="text-red-500 dark:text-red-400"
+                      className="text-red-500 dark:text-red-400 disabled:opacity-50"
+                      disabled={isFireFoxPrivateMode}
                       onClick={() => {
                         // add confirmation here
                         if (
