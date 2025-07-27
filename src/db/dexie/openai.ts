@@ -2,7 +2,14 @@ import { cleanUrl } from "@/libs/clean-url"
 import { db } from "./schema"
 import { OpenAIModelConfig, OpenAIModelConfigs } from "./types"
 import { deleteAllModelsByProviderId } from "./models"
-import { getAllOpenAIConfigFB } from "../openai"
+import {
+  addOpenAICofigFB,
+  deleteOpenAIConfigFB,
+  getAllOpenAIConfigFB,
+  getOpenAIConfigByIdFB,
+  updateOpenAIConfigApiKeyFB,
+  updateOpenAIConfigFB
+} from "../openai"
 
 export const generateID = () => {
   return "openai-xxxx-xxx-xxxx".replace(/[x]/g, () => {
@@ -86,6 +93,7 @@ export const addOpenAICofig = async ({
     fix_cors
   }
   await openaiDb.create(config)
+  await addOpenAICofigFB(config)
   return id
 }
 
@@ -95,9 +103,9 @@ export const getAllOpenAIConfig = async () => {
     const configs = await openaiDb.getAll()
     return configs.filter((config) => config?.db_type === "openai")
   } catch (e) {
-    // if (e?.name === "DatabaseClosedError") {
-    //   return await getAllOpenAIConfigFB()
-    // }
+    if (e?.name === "DatabaseClosedError") {
+      return await getAllOpenAIConfigFB()
+    }
     return []
   }
 }
@@ -132,7 +140,7 @@ export const updateOpenAIConfig = async ({
   }
 
   await openaiDb.update(config)
-
+  await updateOpenAIConfigFB(config)
   return config
 }
 
@@ -140,6 +148,7 @@ export const deleteOpenAIConfig = async (id: string) => {
   const openaiDb = new OpenAIModelDb()
   await openaiDb.delete(id)
   await deleteAllModelsByProviderId(id)
+  await deleteOpenAIConfigFB(id)
 }
 
 export const updateOpenAIConfigApiKey = async (
@@ -157,10 +166,18 @@ export const updateOpenAIConfigApiKey = async (
   }
 
   await openaiDb.update(config)
+  await updateOpenAIConfigApiKeyFB(config)
 }
 
 export const getOpenAIConfigById = async (id: string) => {
-  const openaiDb = new OpenAIModelDb()
-  const config = await openaiDb.getById(id)
-  return config
+  try {
+    const openaiDb = new OpenAIModelDb()
+    const config = await openaiDb.getById(id)
+    return config
+  } catch (e) {
+    if (e?.name === "DatabaseClosedError") {
+      return await getOpenAIConfigByIdFB(id)
+    }
+    return null
+  }
 }
