@@ -130,30 +130,262 @@
 }
 
 @keyframes shimmer-text {
-	0% {
-		background-position: 200% 0;
-	}
-	100% {
-		background-position: -200% 0;
-	}
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
 }
 
 .shimmer-text {
-	background: linear-gradient(90deg, #b8b9bc 25%, #3a3a3a 50%, #b8b9bc 75%);
-	background-size: 200% 100%;
-	background-clip: text;
-	-webkit-background-clip: text;
-	-webkit-text-fill-color: transparent;
-	animation: shimmer-text 4s linear infinite;
-	color: #9ea0a4;
+  background: linear-gradient(90deg, #b8b9bc 25%, #3a3a3a 50%, #b8b9bc 75%);
+  background-size: 200% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer-text 4s linear infinite;
+  color: #9ea0a4;
 }
 
 :global(.dark) .shimmer-text {
-	background: linear-gradient(90deg, #a0a2a6 25%, #f5f5f5 50%, #a0a2a6 75%);
-	background-size: 200% 100%;
-	background-clip: text;
-	-webkit-background-clip: text;
-	-webkit-text-fill-color: transparent;
-	animation: shimmer-text 4s linear infinite;
-	color: #bbbdc1;  
+  background: linear-gradient(90deg, #a0a2a6 25%, #f5f5f5 50%, #a0a2a6 75%);
+  background-size: 200% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer-text 4s linear infinite;
+  color: #bbbdc1;
+}
+/* =====================================
+   Design tokens — change once, theme everywhere
+   ===================================== */
+.table-wrapper {
+  --tbl-font-size: 0.875rem;
+  --tbl-header-weight: 500;
+  --tbl-border-radius: 0.5rem;
+  --tbl-row-padding-y: 1rem;
+  --tbl-row-padding-x: 1.5rem;
+
+  --tbl-bg-light: #ffffff;
+  --tbl-bg-dark: #0d0d0d;
+
+  --tbl-header-bg-light: #f9fafb;
+  --tbl-header-bg-dark: #1f1f1f;
+
+  --tbl-header-text-light: #374151;
+  --tbl-header-text-dark: #e5e7eb;
+
+  --tbl-cell-text-light: #374151;
+  --tbl-cell-text-dark: #d1d5db;
+
+  --tbl-row-border-light: #f3f4f6;
+  --tbl-row-border-dark: #2a2a2a;
+
+  --tbl-row-hover-light: #f8fafc;
+  --tbl-row-hover-dark: #1a1a1a;
+
+  --tbl-stripe-bg-light: #fbfcfd;
+  --tbl-stripe-bg-dark: #121212;
+}
+
+/* =====================================
+   Wrapper
+   ===================================== */
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  background-color: var(--tbl-bg-light);
+  border-radius: var(--tbl-border-radius);
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05);
+  scrollbar-width: thin; /* Firefox */
+}
+
+.dark .table-wrapper {
+  background-color: var(--tbl-bg-dark);
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.2);
+}
+
+/* WebKit scrollbar */
+.table-wrapper::-webkit-scrollbar {
+  height: 8px;
+}
+
+.table-wrapper::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.table-wrapper::-webkit-scrollbar-thumb {
+  background: rgb(0 0 0 / 0.2);
+  border-radius: 4px;
+}
+
+.dark .table-wrapper::-webkit-scrollbar-thumb {
+  background: rgb(255 255 255 / 0.15);
+}
+
+/* =====================================
+   Table basics
+   ===================================== */
+.table-wrapper table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  font-size: var(--tbl-font-size);
+  min-width: 100%;
+}
+
+/* =====================================
+   Header
+   ===================================== */
+.table-wrapper th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background-color: var(--tbl-header-bg-light);
+  color: var(--tbl-header-text-light);
+  font-weight: var(--tbl-header-weight);
+  text-align: left;
+  padding: var(--tbl-row-padding-y) var(--tbl-row-padding-x);
+  border-bottom: 1px solid var(--tbl-row-border-light);
+  min-width: 150px;
+  backdrop-filter: blur(4px);
+}
+
+.dark .table-wrapper th {
+  background-color: var(--tbl-header-bg-dark);
+  color: var(--tbl-header-text-dark);
+  border-bottom-color: var(--tbl-row-border-dark);
+}
+
+/* =====================================
+   Data cells
+   ===================================== */
+.table-wrapper td {
+  padding: var(--tbl-row-padding-y) var(--tbl-row-padding-x);
+  border-bottom: 1px solid var(--tbl-row-border-light);
+  color: var(--tbl-cell-text-light);
+  vertical-align: top;
+  word-wrap: break-word;
+  min-width: 150px;
+}
+
+.dark .table-wrapper td {
+  border-bottom-color: var(--tbl-row-border-dark);
+  color: var(--tbl-cell-text-dark);
+}
+
+/* =====================================
+   Row interactions
+   ===================================== */
+.table-wrapper tbody tr:nth-child(even) td {
+  background-color: var(--tbl-stripe-bg-light);
+}
+
+.dark .table-wrapper tbody tr:nth-child(even) td {
+  background-color: var(--tbl-stripe-bg-dark);
+}
+
+.table-wrapper tr:hover td {
+  background-color: var(--tbl-row-hover-light);
+}
+
+.dark .table-wrapper tr:hover td {
+  background-color: var(--tbl-row-hover-dark);
+}
+
+/* Remove border from last row */
+.table-wrapper tr:last-child td {
+  border-bottom: none;
+}
+
+/* =====================================
+   Helpers for code / pre blocks inside cells
+   ===================================== */
+.table-wrapper pre,
+.table-wrapper code {
+  font-family: 'SFMono-Regular', Consolas, Monaco, monospace;
+  font-size: 0.8em;
+  line-height: 1.4;
+  background-color: rgb(0 0 0 / 0.05);
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.dark .table-wrapper pre,
+.dark .table-wrapper code {
+  background-color: rgb(255 255 255 / 0.08);
+}
+
+/* =====================================
+   Responsiveness
+   ===================================== */
+@media (max-width: 768px) {
+  .table-wrapper th,
+  .table-wrapper td {
+    padding: 0.75rem 1rem;
+    font-size: 0.8125rem;
+    min-width: 150px;
+  }
+}
+
+@media (max-width: 640px) {
+  /* Option A — keep horizontal scroll (no markup changes needed) */
+  .table-wrapper th,
+  .table-wrapper td {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.75rem;
+    min-width: 180px;
+  }
+
+  /* -------- Uncomment for Option B -----------
+     Stacked mini-card view.
+     Requires each <td> to carry data-label="Header".
+  --------------------------------------------
+  .table-wrapper table,
+  .table-wrapper thead,
+  .table-wrapper tbody,
+  .table-wrapper th,
+  .table-wrapper td,
+  .table-wrapper tr {
+    display: block;
+  }
+
+  .table-wrapper thead {
+    display: none;
+  }
+
+  .table-wrapper tr {
+    margin-bottom: 0.75rem;
+    border: 1px solid var(--tbl-row-border-light);
+    border-radius: 0.375rem;
+    overflow: hidden;
+  }
+
+  .dark .table-wrapper tr {
+    border-color: var(--tbl-row-border-dark);
+  }
+
+  .table-wrapper td {
+    border: none;
+    position: relative;
+    padding-left: 50%;
+  }
+
+  .table-wrapper td::before {
+    content: attr(data-label);
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-weight: 500;
+    color: var(--tbl-header-text-light);
+  }
+
+  .dark .table-wrapper td::before {
+    color: var(--tbl-header-text-dark);
+  }
+  ------------------------------------------ */
 }
