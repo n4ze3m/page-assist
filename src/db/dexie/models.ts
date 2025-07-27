@@ -6,7 +6,12 @@ import {
 import { getAllModelNicknames } from "./nickname"
 import { Model, Models } from "./types"
 import { db } from "./schema"
-import { getAllCustomModelsFB } from "../models"
+import {
+  createModelFB,
+  deleteModelFB,
+  getAllCustomModelsFB,
+  getModelInfoFB
+} from "../models"
 
 export const generateID = () => {
   return "model-xxxx-xxxx-xxx-xxxx".replace(/[x]/g, () => {
@@ -221,6 +226,7 @@ export const createManyModels = async (
     }
 
     await db.create(model)
+    await createModelFB(model)
   }
 }
 
@@ -242,102 +248,111 @@ export const createModel = async (
     model_type: model_type
   }
   await db.create(model)
+  await createModelFB(model)
   return model
 }
 
 export const getModelInfo = async (id: string) => {
-  const db = new ModelDb()
+  try {
+    const db = new ModelDb()
 
-  if (isLMStudioModel(id)) {
-    const lmstudioId = getLMStudioModelId(id)
-    if (!lmstudioId) {
-      throw new Error("Invalid LMStudio model ID")
+    if (isLMStudioModel(id)) {
+      const lmstudioId = getLMStudioModelId(id)
+      if (!lmstudioId) {
+        throw new Error("Invalid LMStudio model ID")
+      }
+      return {
+        model_id: id.replace(
+          /_lmstudio_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/,
+          ""
+        ),
+        provider_id: `openai-${lmstudioId.provider_id}`,
+        name: id.replace(
+          /_lmstudio_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/,
+          ""
+        )
+      }
     }
-    return {
-      model_id: id.replace(
-        /_lmstudio_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/,
-        ""
-      ),
-      provider_id: `openai-${lmstudioId.provider_id}`,
-      name: id.replace(
-        /_lmstudio_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/,
-        ""
-      )
+
+    if (isLlamafileModel(id)) {
+      const llamafileId = getLlamafileModelId(id)
+      if (!llamafileId) {
+        throw new Error("Invalid LMStudio model ID")
+      }
+      return {
+        model_id: id.replace(
+          /_llamafile_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/,
+          ""
+        ),
+        provider_id: `openai-${llamafileId.provider_id}`,
+        name: id.replace(
+          /_llamafile_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/,
+          ""
+        )
+      }
     }
+
+    if (isLLamaCppModel(id)) {
+      const llamaCppId = getLLamaCppModelId(id)
+      if (!llamaCppId) {
+        throw new Error("Invalid llamaCPP model ID")
+      }
+
+      return {
+        model_id: id.replace(
+          /_llamacpp_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/,
+          ""
+        ),
+        provider_id: `openai-${llamaCppId.provider_id}`,
+        name: id.replace(
+          /_llamacpp_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/,
+          ""
+        )
+      }
+    }
+
+    if (isVLLMModel(id)) {
+      const vllmId = getVLLMModelId(id)
+      if (!vllmId) {
+        throw new Error("Invalid Vllm model ID")
+      }
+      return {
+        model_id: id.replace(
+          /_vllm_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/,
+          ""
+        ),
+        provider_id: `openai-${vllmId.provider_id}`,
+        name: id.replace(/_vllm_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/, "")
+      }
+    }
+
+    if (isOllamaModel(id)) {
+      const ollamaId = getOllamaModelId(id)
+      if (!ollamaId) {
+        throw new Error("Invalid LMStudio model ID")
+      }
+      return {
+        model_id: id.replace(
+          /_ollama2_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/,
+          ""
+        ),
+        provider_id: `openai-${ollamaId.provider_id}`,
+        name: id.replace(
+          /_ollama2_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/,
+          ""
+        )
+      }
+    }
+
+    const model = await db.getById(id)
+    return model
+  } catch (e) {
+    if (e?.name === "DatabaseClosedError") {
+      return await getModelInfoFB(id)
+    }
+
+    return null
   }
-
-  if (isLlamafileModel(id)) {
-    const llamafileId = getLlamafileModelId(id)
-    if (!llamafileId) {
-      throw new Error("Invalid LMStudio model ID")
-    }
-    return {
-      model_id: id.replace(
-        /_llamafile_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/,
-        ""
-      ),
-      provider_id: `openai-${llamafileId.provider_id}`,
-      name: id.replace(
-        /_llamafile_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/,
-        ""
-      )
-    }
-  }
-
-  if (isLLamaCppModel(id)) {
-    const llamaCppId = getLLamaCppModelId(id)
-    if (!llamaCppId) {
-      throw new Error("Invalid llamaCPP model ID")
-    }
-
-    return {
-      model_id: id.replace(
-        /_llamacpp_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/,
-        ""
-      ),
-      provider_id: `openai-${llamaCppId.provider_id}`,
-      name: id.replace(
-        /_llamacpp_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/,
-        ""
-      )
-    }
-  }
-
-  if (isVLLMModel(id)) {
-    const vllmId = getVLLMModelId(id)
-    if (!vllmId) {
-      throw new Error("Invalid Vllm model ID")
-    }
-    return {
-      model_id: id.replace(
-        /_vllm_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/,
-        ""
-      ),
-      provider_id: `openai-${vllmId.provider_id}`,
-      name: id.replace(/_vllm_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/, "")
-    }
-  }
-
-  if (isOllamaModel(id)) {
-    const ollamaId = getOllamaModelId(id)
-    if (!ollamaId) {
-      throw new Error("Invalid LMStudio model ID")
-    }
-    return {
-      model_id: id.replace(
-        /_ollama2_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/,
-        ""
-      ),
-      provider_id: `openai-${ollamaId.provider_id}`,
-      name: id.replace(
-        /_ollama2_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/,
-        ""
-      )
-    }
-  }
-
-  const model = await db.getById(id)
-  return model
 }
 
 export const getAllCustomModels = async () => {
@@ -362,9 +377,9 @@ export const getAllCustomModels = async () => {
       }
     })
   } catch (e) {
-    // if (e?.name === "DatabaseClosedError") {
-    //   return await getAllCustomModelsFB()
-    // }
+    if (e?.name === "DatabaseClosedError") {
+      return await getAllCustomModelsFB()
+    }
     return []
   }
 }
@@ -372,6 +387,7 @@ export const getAllCustomModels = async () => {
 export const deleteModel = async (id: string) => {
   const db = new ModelDb()
   await db.delete(id)
+  await deleteModelFB(id)
 }
 
 export const deleteAllModelsByProviderId = async (provider_id: string) => {

@@ -28,7 +28,7 @@ export const CustomModelsTable = () => {
     queryKey: ["fetchCustomModels"],
     queryFn: () => getAllCustomModels()
   })
-
+ 
   const { mutate: deleteCustomModel } = useMutation({
     mutationFn: deleteModel,
     onSuccess: () => {
