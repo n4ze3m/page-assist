@@ -1,6 +1,6 @@
 import { getAllOpenAIModels } from "@/libs/openai"
 import {
-  getAllOpenAIConfig,
+  getAllOpenAIConfigFB,
   getOpenAIConfigById as providerInfo
 } from "./openai"
 import { getAllModelNicknames } from "./nickname"
@@ -9,8 +9,8 @@ type Model = {
   id: string
   model_id: string
   name: string
-  model_name?: string,
-  model_image?: string,
+  model_name?: string
+  model_image?: string
   provider_id: string
   lookup: string
   model_type: string
@@ -44,13 +44,13 @@ export const isLlamafileModel = (model: string) => {
 }
 
 export const isLLamaCppModel = (model: string) => {
-  const llamaCppModelRegex = /_llamacpp_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/
+  const llamaCppModelRegex =
+    /_llamacpp_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/
   return llamaCppModelRegex.test(model)
 }
 
 export const isOllamaModel = (model: string) => {
-  const ollamaModelRegex =
-    /_ollama2_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/
+  const ollamaModelRegex = /_ollama2_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/
   return ollamaModelRegex.test(model)
 }
 export const getLMStudioModelId = (
@@ -69,8 +69,7 @@ export const getLMStudioModelId = (
 export const getOllamaModelId = (
   model: string
 ): { model_id: string; provider_id: string } => {
-  const ollamaModelRegex =
-    /_ollama2_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/
+  const ollamaModelRegex = /_ollama2_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/
   const match = model.match(ollamaModelRegex)
   if (match) {
     const modelId = match[0]
@@ -210,7 +209,12 @@ export class ModelDb {
 }
 
 export const createManyModels = async (
-  data: { model_id: string; name: string; provider_id: string, model_type: string }[]
+  data: {
+    model_id: string
+    name: string
+    provider_id: string
+    model_type: string
+  }[]
 ) => {
   const db = new ModelDb()
 
@@ -220,7 +224,7 @@ export const createManyModels = async (
       lookup: `${item.model_id}_${item.provider_id}`,
       id: `${item.model_id}_${generateID()}`,
       db_type: "openai_model",
-      name: item.name.replaceAll(/accounts\/[^\/]+\/models\//g, ""),
+      name: item.name.replaceAll(/accounts\/[^\/]+\/models\//g, "")
     }
   })
 
@@ -235,25 +239,11 @@ export const createManyModels = async (
   }
 }
 
-export const createModel = async (
-  model_id: string,
-  name: string,
-  provider_id: string,
-  model_type: string
-) => {
-  const db = new ModelDb()
-  const id = generateID()
-  const model: Model = {
-    id: `${model_id}_${id}`,
-    model_id,
-    name,
-    provider_id,
-    lookup: `${model_id}_${provider_id}`,
-    db_type: "openai_model",
-    model_type: model_type
-  }
-  await db.create(model)
-  return model
+export const createModelFB = async (model: any) => {
+  try {
+    const db = new ModelDb()
+    await db.create(model)
+  } catch (e) {}
 }
 
 export const getAllModelsExT = async () => {
@@ -262,7 +252,7 @@ export const getAllModelsExT = async () => {
   return allData?.filter((d) => d?.db_type === "openai_model") || []
 }
 
-export const getModelInfo = async (id: string) => {
+export const getModelInfoFB = async (id: string) => {
   const db = new ModelDb()
 
   if (isLMStudioModel(id)) {
@@ -282,7 +272,6 @@ export const getModelInfo = async (id: string) => {
       )
     }
   }
-
 
   if (isLlamafileModel(id)) {
     const llamafileId = getLlamafileModelId(id)
@@ -321,7 +310,6 @@ export const getModelInfo = async (id: string) => {
     }
   }
 
-
   if (isOllamaModel(id)) {
     const ollamaId = getOllamaModelId(id)
     if (!ollamaId) {
@@ -344,7 +332,7 @@ export const getModelInfo = async (id: string) => {
   return model
 }
 
-export const getAllCustomModels = async () => {
+export const getAllCustomModelsFB = async () => {
   const db = new ModelDb()
   const modelNicknames = await getAllModelNicknames()
   const models = (await db.getAll()).filter(
@@ -366,7 +354,7 @@ export const getAllCustomModels = async () => {
   })
 }
 
-export const deleteModel = async (id: string) => {
+export const deleteModelFB = async (id: string) => {
   const db = new ModelDb()
   await db.delete(id)
 }
@@ -379,6 +367,21 @@ export const deleteAllModelsByProviderId = async (provider_id: string) => {
   )
   for (const model of modelsToDelete) {
     await db.delete(model.id)
+  }
+}
+
+export const bulkAddModelsFB = async (models: Model[]) => {
+  // delete all exist models
+  const db = new ModelDb()
+  const modelsToDelete = (await db.getAll()).filter(
+    (model) => model?.db_type === "openai_model"
+  )
+  for (const model of modelsToDelete) {
+    await db.delete(model.id)
+  }
+  // add new models
+  for (const model of models) {
+    await db.create(model)
   }
 }
 
@@ -441,7 +444,7 @@ export const dynamicFetchOllama2 = async ({
   customHeaders = []
 }: {
   baseUrl: string
-  providerId: string,
+  providerId: string
   customHeaders?: { key: string; value: string }[]
 }) => {
   const models = await getAllOpenAIModels({ baseUrl, customHeaders })
@@ -464,7 +467,7 @@ export const dynamicFetchLlamafile = async ({
   customHeaders = []
 }: {
   baseUrl: string
-  providerId: string,
+  providerId: string
   customHeaders?: { key: string; value: string }[]
 }) => {
   const models = await getAllOpenAIModels({ baseUrl, customHeaders })
@@ -481,13 +484,13 @@ export const dynamicFetchLlamafile = async ({
   return llamafileModels
 }
 
-export const ollamaFormatAllCustomModels = async (
+export const ollamaFormatAllCustomModelsFallback = async (
   modelType: "all" | "chat" | "embedding" = "all"
 ) => {
   try {
     const [allModles, allProviders] = await Promise.all([
-      getAllCustomModels(),
-      getAllOpenAIConfig()
+      getAllCustomModelsFB(),
+      getAllOpenAIConfigFB()
     ])
     const modelNicknames = await getAllModelNicknames()
     const lmstudioProviders = allProviders.filter(
@@ -527,14 +530,16 @@ export const ollamaFormatAllCustomModels = async (
         baseUrl: provider.baseUrl,
         providerId: provider.id,
         customHeaders: provider.headers
-      }))
+      })
+    )
 
     const llamacppModelsPromises = llamacppProvider.map((provider) =>
       dynamicFetchLLamaCpp({
         baseUrl: provider.baseUrl,
         providerId: provider.id,
         customHeaders: provider.headers
-      }))
+      })
+    )
 
     const lmModelsFetch = await Promise.all(lmModelsPromises)
 

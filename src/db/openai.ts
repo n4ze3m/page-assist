@@ -1,168 +1,137 @@
 import { cleanUrl } from "@/libs/clean-url"
 import { deleteAllModelsByProviderId } from "./models"
+import { OpenAIModelConfig } from "./dexie/types"
 
-type OpenAIModelConfig = {
-    id: string
-    name: string
-    baseUrl: string
-    apiKey?: string
-    createdAt: number
-    provider?: string
-    db_type: string
-    headers?: { key: string; value: string }[]
-}
 export const generateID = () => {
-    return "openai-xxxx-xxx-xxxx".replace(/[x]/g, () => {
-        const r = Math.floor(Math.random() * 16)
-        return r.toString(16)
-    })
+  return "openai-xxxx-xxx-xxxx".replace(/[x]/g, () => {
+    const r = Math.floor(Math.random() * 16)
+    return r.toString(16)
+  })
 }
 
 export class OpenAIModelDb {
-    db: chrome.storage.StorageArea
+  db: chrome.storage.StorageArea
 
+  constructor() {
+    this.db = chrome.storage.local
+  }
 
-    constructor() {
-        this.db = chrome.storage.local
-    }
+  getAll = async (): Promise<OpenAIModelConfig[]> => {
+    return new Promise((resolve, reject) => {
+      this.db.get(null, (result) => {
+        if (chrome.runtime.lastError) {
+          reject(chrome.runtime.lastError)
+        } else {
+          const data = Object.keys(result).map((key) => result[key])
+          resolve(data)
+        }
+      })
+    })
+  }
 
+  create = async (config: OpenAIModelConfig): Promise<void> => {
+    return new Promise((resolve, reject) => {
+      this.db.set({ [config.id]: config }, () => {
+        if (chrome.runtime.lastError) {
+          reject(chrome.runtime.lastError)
+        } else {
+          resolve()
+        }
+      })
+    })
+  }
 
-    getAll = async (): Promise<OpenAIModelConfig[]> => {
-        return new Promise((resolve, reject) => {
-            this.db.get(null, (result) => {
-                if (chrome.runtime.lastError) {
-                    reject(chrome.runtime.lastError)
-                } else {
-                    const data = Object.keys(result).map((key) => result[key])
-                    resolve(data)
-                }
-            })
-        })
-    }
+  getById = async (id: string): Promise<OpenAIModelConfig> => {
+    return new Promise((resolve, reject) => {
+      this.db.get(id, (result) => {
+        if (chrome.runtime.lastError) {
+          reject(chrome.runtime.lastError)
+        } else {
+          resolve(result[id])
+        }
+      })
+    })
+  }
 
+  update = async (config: OpenAIModelConfig): Promise<void> => {
+    return new Promise((resolve, reject) => {
+      this.db.set({ [config.id]: config }, () => {
+        if (chrome.runtime.lastError) {
+          reject(chrome.runtime.lastError)
+        } else {
+          resolve()
+        }
+      })
+    })
+  }
 
-    create = async (config: OpenAIModelConfig): Promise<void> => {
-        return new Promise((resolve, reject) => {
-            this.db.set({ [config.id]: config }, () => {
-                if (chrome.runtime.lastError) {
-                    reject(chrome.runtime.lastError)
-                } else {
-                    resolve()
-                }
-            })
-        })
-    }
-
-
-    getById = async (id: string): Promise<OpenAIModelConfig> => {
-        return new Promise((resolve, reject) => {
-            this.db.get(id, (result) => {
-                if (chrome.runtime.lastError) {
-                    reject(chrome.runtime.lastError)
-                } else {
-                    resolve(result[id])
-                }
-            })
-        })
-    }
-
-
-    update = async (config: OpenAIModelConfig): Promise<void> => {
-        return new Promise((resolve, reject) => {
-            this.db.set({ [config.id]: config }, () => {
-                if (chrome.runtime.lastError) {
-                    reject(chrome.runtime.lastError)
-                } else {
-                    resolve()
-                }
-            })
-        })
-    }
-
-
-    delete = async (id: string): Promise<void> => {
-        return new Promise((resolve, reject) => {
-            this.db.remove(id, () => {
-                if (chrome.runtime.lastError) {
-                    reject(chrome.runtime.lastError)
-                } else {
-                    resolve()
-                }
-            })
-        })
-    }
-
+  delete = async (id: string): Promise<void> => {
+    return new Promise((resolve, reject) => {
+      this.db.remove(id, () => {
+        if (chrome.runtime.lastError) {
+          reject(chrome.runtime.lastError)
+        } else {
+          resolve()
+        }
+      })
+    })
+  }
 }
 
-
-export const addOpenAICofig = async ({ name, baseUrl, apiKey, provider, headers }: { name: string, baseUrl: string, apiKey: string, provider?: string, headers?: { key: string; value: string }[] }) => {
+export const addOpenAICofigFB = async (config: OpenAIModelConfig) => {
+  try {
     const openaiDb = new OpenAIModelDb()
-    const id = generateID()
-    const config: OpenAIModelConfig = {
-        id,
-        name,
-        baseUrl: cleanUrl(baseUrl),
-        apiKey,
-        createdAt: Date.now(),
-        db_type: "openai",
-        provider,
-        headers
-    }
     await openaiDb.create(config)
-    return id
+    return config.id
+  } catch (e) {
+    console.error("Error adding OpenAI config:", e)
+  }
 }
-
 
 export const getAllOpenAIConfig = async () => {
-    const openaiDb = new OpenAIModelDb()
-    const configs = await openaiDb.getAll()
-    return configs.filter(config => config?.db_type === "openai")
+  const openaiDb = new OpenAIModelDb()
+  const configs = await openaiDb.getAll()
+  return configs.filter((config) => config?.db_type === "openai")
 }
 
-export const updateOpenAIConfig = async ({ id, name, baseUrl, apiKey, headers }: { id: string, name: string, baseUrl: string, apiKey: string, headers?: { key: string; value: string }[] }) => {
-    const openaiDb = new OpenAIModelDb()
-    const oldData = await openaiDb.getById(id)
-    const config: OpenAIModelConfig = {
-        ...oldData,
-        id,
-        name,
-        baseUrl: cleanUrl(baseUrl),
-        apiKey,
-        createdAt: Date.now(),
-        db_type: "openai",
-        headers: headers || []
-    }
+export const getAllOpenAIConfigFB = async () => await getAllOpenAIConfig()
 
-    await openaiDb.update(config)
-
-    return config
+export const updateOpenAIConfigFB = async (config: OpenAIModelConfig) => {
+  const openaiDb = new OpenAIModelDb()
+  await openaiDb.update(config)
+  return config
 }
 
-
-export const deleteOpenAIConfig = async (id: string) => {
-    const openaiDb = new OpenAIModelDb()
-    await openaiDb.delete(id)
-    await deleteAllModelsByProviderId(id)
+export const deleteOpenAIConfigFB = async (id: string) => {
+  const openaiDb = new OpenAIModelDb()
+  await openaiDb.delete(id)
+  await deleteAllModelsByProviderId(id)
 }
 
+export const bulkAddOAIFB = async (configs: OpenAIModelConfig[]) => {
+  const openaiDb = new OpenAIModelDb()
 
-export const updateOpenAIConfigApiKey = async (id: string, { name, baseUrl, apiKey }: { name: string, baseUrl: string, apiKey: string }) => {
-    const openaiDb = new OpenAIModelDb()
-    const config: OpenAIModelConfig = {
-        id,
-        name,
-        baseUrl: cleanUrl(baseUrl),
-        apiKey,
-        createdAt: Date.now(),
-        db_type: "openai"
-    }
+  const oaiToDelete = await getAllOpenAIConfigFB()
 
-    await openaiDb.update(config)
+  for (const config of oaiToDelete) {
+    await openaiDb.delete(config.id)
+  }
+
+  for (const config of configs) {
+    await openaiDb.create(config)
+  }
 }
 
+export const updateOpenAIConfigApiKeyFB = async (config: OpenAIModelConfig) => {
+  const openaiDb = new OpenAIModelDb()
+  await openaiDb.update(config)
+}
 
 export const getOpenAIConfigById = async (id: string) => {
-    const openaiDb = new OpenAIModelDb()
-    const config = await openaiDb.getById(id)
-    return config
+  const openaiDb = new OpenAIModelDb()
+  const config = await openaiDb.getById(id)
+  return config
 }
+
+export const getOpenAIConfigByIdFB = async (id: string) =>
+  getOpenAIConfigById(id)

@@ -32,14 +32,11 @@ export const Playground = () => {
     setHistory,
     setMessages,
     setSelectedSystemPrompt,
-    streaming,
+    streaming
   } = useMessageOption()
   const { setSystemPrompt } = useStoreChatModelSettings()
-  const { containerRef, isAutoScrollToBottom, autoScrollToBottom } = useSmartScroll(
-    messages,
-    streaming,
-    10
-  )
+  const { containerRef, isAutoScrollToBottom, autoScrollToBottom } =
+    useSmartScroll(messages, streaming, 120)
 
   const [dropState, setDropState] = React.useState<
     "idle" | "dragging" | "error"
@@ -143,9 +140,8 @@ export const Playground = () => {
   return (
     <div
       ref={drop}
-      className={`relative flex h-full flex-col items-center ${
-        dropState === "dragging" ? "bg-gray-100 dark:bg-gray-800" : ""
-      } bg-white dark:bg-[#171717]`}
+      data-is-dragging={dropState === "dragging"}
+      className="relative flex h-full flex-col items-center bg-white dark:bg-[#171717] data-[is-dragging=true]:bg-gray-100 data-[is-dragging=true]:dark:bg-gray-800"
       style={
         chatBackgroundImage
           ? {

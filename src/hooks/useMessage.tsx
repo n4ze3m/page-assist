@@ -102,7 +102,10 @@ export const useMessage = () => {
     useOCR,
     setUseOCR
   } = useStoreMessage()
-
+ const [sidepanelTemporaryChat, ] = useStorage(
+    "sidepanelTemporaryChat",
+    false
+  )
   const [speechToTextLanguage, setSpeechToTextLanguage] = useStorage(
     "speechToTextLanguage",
     "en-US"
@@ -127,6 +130,9 @@ export const useMessage = () => {
     }
     if (defaultChatWithWebsite) {
       setChatMode("rag")
+    }
+    if (sidepanelTemporaryChat) {
+      setTemporaryChat(true)
     }
   }
 
@@ -1752,6 +1758,7 @@ export const useMessage = () => {
     history,
     createChatBranch,
     temporaryChat,
-    setTemporaryChat
+    setTemporaryChat,
+    sidepanelTemporaryChat,
   }
 }

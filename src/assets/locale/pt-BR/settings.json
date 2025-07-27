@@ -65,6 +65,9 @@
       },
       "pasteLargeTextAsFile": {
         "label": "Colar Texto Grande como Arquivo"
+      },
+      "sidepanelTemporaryChat": {
+        "label": "Ativar Chat Temporário no Painel Lateral por padrão"
       }
     },
     "sidepanelRag": {

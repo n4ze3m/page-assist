@@ -1,4 +1,4 @@
-import { Segmented } from "antd"
+import { notification, Segmented } from "antd"
 import dayjs from "dayjs"
 import relativeTime from "dayjs/plugin/relativeTime"
 import { useState } from "react"
@@ -7,6 +7,7 @@ import { OllamaModelsTable } from "./OllamaModelsTable"
 import { CustomModelsTable } from "./CustomModelsTable"
 import { AddOllamaModelModal } from "./AddOllamaModelModal"
 import { AddCustomModelModal } from "./AddCustomModelModal"
+import { isFireFoxPrivateMode } from "@/utils/is-private-mode"
 
 dayjs.extend(relativeTime)
 
@@ -29,6 +30,14 @@ export const ModelsBody = () => {
                   if (segmented === "ollama") {
                     setOpen(true)
                   } else {
+                    if (isFireFoxPrivateMode) {
+                      notification.error({
+                        message: "Page Assist can't save data",
+                        description:
+                          "Firefox Private Mode does not support saving data to IndexedDB. Please add custom model from a normal window."
+                      })
+                      return
+                    }
                     setOpenAddModelModal(true)
                   }
                 }}

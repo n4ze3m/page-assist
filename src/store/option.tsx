@@ -2,6 +2,7 @@ import { Knowledge } from "@/db/knowledge"
 import { ChatDocuments } from "@/models/ChatTypes"
 import { create } from "zustand"
 import { type UploadedFile } from "@/db/dexie/types"
+import { isFireFoxPrivateMode } from "@/utils/is-private-mode"
 
 type WebSearch = {
   search_engine: string
@@ -131,7 +132,7 @@ export const useStoreMessageOption = create<State>((set) => ({
   selectedKnowledge: null,
   setSelectedKnowledge: (selectedKnowledge) => set({ selectedKnowledge }),
 
-  temporaryChat: false,
+  temporaryChat: isFireFoxPrivateMode,
   setTemporaryChat: (temporaryChat) => set({ temporaryChat }),
 
   useOCR: false,
@@ -147,7 +148,8 @@ export const useStoreMessageOption = create<State>((set) => ({
 
   actionInfo: null,
   setActionInfo: (actionInfo) => set({ actionInfo }),
-  
+
   fileRetrievalEnabled: false,
-  setFileRetrievalEnabled: (fileRetrievalEnabled) => set({ fileRetrievalEnabled }),
+  setFileRetrievalEnabled: (fileRetrievalEnabled) =>
+    set({ fileRetrievalEnabled })
 }))

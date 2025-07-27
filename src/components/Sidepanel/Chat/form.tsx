@@ -229,12 +229,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
     }
   }, [defaultInternetSearchOn])
 
-  React.useEffect(() => {
-    if (defaultChatWithWebsite) {
-      setChatMode("rag")
-    }
-  }, [defaultChatWithWebsite])
-
+ 
   return (
     <div className="flex w-full flex-col items-center px-2">
       <div className="relative z-10 flex w-full flex-col items-center justify-center gap-2 text-base">

@@ -77,6 +77,11 @@ export const GeneralSettings = () => {
     getDefaultOcrLanguage()
   )
 
+  const [sidepanelTemporaryChat, setSidepanelTemporaryChat] = useStorage(
+    "sidepanelTemporaryChat",
+    false
+  )
+
   const { mode, toggleDarkMode } = useDarkMode()
   const { t } = useTranslation("settings")
   const { changeLocale, locale, supportLanguage } = useI18n()
@@ -330,6 +335,17 @@ export const GeneralSettings = () => {
           onChange={(value) => {
             setDefaultOCRLanguage(value)
           }}
+        />
+      </div>
+
+      <div className="flex flex-row justify-between">
+        <span className="text-gray-700 dark:text-neutral-50 ">
+          {t("generalSettings.settings.sidepanelTemporaryChat.label")}
+        </span>
+
+        <Switch
+          checked={sidepanelTemporaryChat}
+          onChange={(checked) => setSidepanelTemporaryChat(checked)}
         />
       </div>
 

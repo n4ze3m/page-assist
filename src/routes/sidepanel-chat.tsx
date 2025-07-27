@@ -27,17 +27,20 @@ const SidepanelChat = () => {
   >("idle")
   useMigration()
   const {
-    chatMode,
     streaming,
     onSubmit,
     messages,
     setHistory,
     setHistoryId,
     setMessages,
-    selectedModel
+    selectedModel,
+    defaultChatWithWebsite,
+    setChatMode,
+    setTemporaryChat,
+    sidepanelTemporaryChat
   } = useMessage()
   const { containerRef, isAutoScrollToBottom, autoScrollToBottom } =
-    useSmartScroll(messages, streaming, 60)
+    useSmartScroll(messages, streaming, 100)
   const [chatBackgroundImage] = useStorage({
     key: "chatBackgroundImage",
     instance: new Storage({
@@ -121,6 +124,15 @@ const SidepanelChat = () => {
   React.useEffect(() => {
     setRecentMessagesOnLoad()
   }, [])
+
+  React.useEffect(() => {
+    if (defaultChatWithWebsite) {
+      setChatMode("rag")
+    }
+    if (sidepanelTemporaryChat) {
+      setTemporaryChat(true)
+    }
+  }, [defaultChatWithWebsite, sidepanelTemporaryChat])
 
   React.useEffect(() => {
     if (bgMsg && !streaming) {

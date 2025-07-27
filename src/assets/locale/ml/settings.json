@@ -68,6 +68,9 @@
       },
       "pasteLargeTextAsFile": {
         "label": "വലിയ ടെക്സ്റ്റ് ഫയലായി പേസ്റ്റ് ചെയ്യുക"
+      },
+      "sidepanelTemporaryChat": {
+        "label": "സൈഡ്പാനലിൽ താൽക്കാലിക ചാറ്റ് സ്ഥിരസ്ഥിതിയായി പ്രവർത്തനക്ഷമമാക്കുക"
       }
     },
     "sidepanelRag": {

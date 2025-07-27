@@ -65,6 +65,9 @@
       },
       "pasteLargeTextAsFile": {
         "label": "Lim inn stor tekst som fil"
+      },
+      "sidepanelTemporaryChat": {
+        "label": "Aktiver midlertidig chat i sidepanelet som standard"
       }
     },
     "sidepanelRag": {

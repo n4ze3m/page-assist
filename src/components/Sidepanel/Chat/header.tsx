@@ -1,7 +1,7 @@
 import logoImage from "~/assets/icon.png"
 import { useMessage } from "~/hooks/useMessage"
 import { Link } from "react-router-dom"
-import { Tooltip, Drawer } from "antd"
+import { Tooltip, Drawer, notification } from "antd"
 import {
   BoxesIcon,
   BrainCog,
@@ -20,6 +20,7 @@ import { useStorage } from "@plasmohq/storage/hook"
 import { PromptSelect } from "@/components/Common/PromptSelect"
 import { Sidebar } from "@/components/Option/Sidebar"
 import { BsIncognito } from "react-icons/bs"
+import { isFireFoxPrivateMode } from "@/utils/is-private-mode"
 export const SidepanelHeader = () => {
   const [hideCurrentChatModelSettings] = useStorage(
     "hideCurrentChatModelSettings",
@@ -98,6 +99,15 @@ export const SidepanelHeader = () => {
         <button
           title={t("option:temporaryChat")}
           onClick={() => {
+            if (isFireFoxPrivateMode) {
+              notification.error({
+                message: "Error",
+                description:
+                  "Page Assist can't save chat in Firefox Private Mode. Temporary chat is enabled by default. More fixes coming soon."
+              })
+              return
+            }
+
             setTemporaryChat(!temporaryChat)
             if (messages.length > 0) {
               clearChat()

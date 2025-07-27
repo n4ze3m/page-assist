@@ -68,6 +68,9 @@
       },
       "pasteLargeTextAsFile": {
         "label": "将大文本粘贴为文件"
+      },
+      "sidepanelTemporaryChat": {
+        "label": "默认启用侧边栏临时聊天"
       }
     },
     "sidepanelRag": {

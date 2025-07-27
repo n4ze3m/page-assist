@@ -8,6 +8,7 @@ import rehypeKatex from "rehype-katex"
 import "property-information"
 import React from "react"
 import { CodeBlock } from "./CodeBlock"
+import { TableBlock } from "./TableBlock"
 import { preprocessLaTeX } from "@/utils/latex"
 import { useStorage } from "@plasmohq/storage/hook"
 
@@ -56,6 +57,9 @@ function Markdown({
                 {props.children}
               </a>
             )
+          },
+          table({ children,    }) {
+            return <TableBlock>{children}</TableBlock>
           },
           p({ children }) {
             return <p className="mb-2 last:mb-0">{children}</p>
