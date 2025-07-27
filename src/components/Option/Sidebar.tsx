@@ -80,6 +80,7 @@ export const Sidebar = ({
   const [searchQuery, setSearchQuery] = useState("")
   const debouncedSearchQuery = useDebounce(searchQuery, 300)
   const [deleteGroup, setDeleteGroup] = useState<string | null>(null)
+  const [dexiePrivateWindowError, setDexiePrivateWindowError] = useState(false)
 
   // Using infinite query for pagination
   const {
@@ -92,70 +93,84 @@ export const Sidebar = ({
   } = useInfiniteQuery({
     queryKey: ["fetchChatHistory", debouncedSearchQuery],
     queryFn: async ({ pageParam = 1 }) => {
-      const db = new PageAssistDatabase()
-      const result = await db.getChatHistoriesPaginated(
-        pageParam,
-        debouncedSearchQuery || undefined
-      )
+      try {
+        const db = new PageAssistDatabase()
+        const result = await db.getChatHistoriesPaginated(
+          pageParam,
+          debouncedSearchQuery || undefined
+        )
 
-      // If searching, don't group by date - just return all results in a single group
-      if (debouncedSearchQuery) {
-        console.log("Search results:", result.histories) 
+        // If searching, don't group by date - just return all results in a single group
+        if (debouncedSearchQuery) {
+          console.log("Search results:", result.histories)
+          return {
+            groups:
+              result.histories.length > 0
+                ? [{ label: "searchResults", items: result.histories }]
+                : [],
+            hasMore: result.hasMore,
+            totalCount: result.totalCount
+          }
+        }
+
+        // Group the histories by date only when not searching
+        const now = new Date()
+        const today = new Date(now.setHours(0, 0, 0, 0))
+        const yesterday = new Date(today)
+        yesterday.setDate(yesterday.getDate() - 1)
+        const lastWeek = new Date(today)
+        lastWeek.setDate(lastWeek.getDate() - 7)
+
+        const pinnedItems = result.histories.filter((item) => item.is_pinned)
+        const todayItems = result.histories.filter(
+          (item) => !item.is_pinned && new Date(item?.createdAt) >= today
+        )
+        const yesterdayItems = result.histories.filter(
+          (item) =>
+            !item.is_pinned &&
+            new Date(item?.createdAt) >= yesterday &&
+            new Date(item?.createdAt) < today
+        )
+        const lastWeekItems = result.histories.filter(
+          (item) =>
+            !item.is_pinned &&
+            new Date(item?.createdAt) >= lastWeek &&
+            new Date(item?.createdAt) < yesterday
+        )
+        const olderItems = result.histories.filter(
+          (item) => !item.is_pinned && new Date(item?.createdAt) < lastWeek
+        )
+
+        const groups = []
+        if (pinnedItems.length)
+          groups.push({ label: "pinned", items: pinnedItems })
+        if (todayItems.length)
+          groups.push({ label: "today", items: todayItems })
+        if (yesterdayItems.length)
+          groups.push({ label: "yesterday", items: yesterdayItems })
+        if (lastWeekItems.length)
+          groups.push({ label: "last7Days", items: lastWeekItems })
+        if (olderItems.length)
+          groups.push({ label: "older", items: olderItems })
+
         return {
-          groups: result.histories.length > 0 ? [{ label: "searchResults", items: result.histories }] : [],
+          groups,
           hasMore: result.hasMore,
           totalCount: result.totalCount
         }
-      }
-
-      // Group the histories by date only when not searching
-      const now = new Date()
-      const today = new Date(now.setHours(0, 0, 0, 0))
-      const yesterday = new Date(today)
-      yesterday.setDate(yesterday.getDate() - 1)
-      const lastWeek = new Date(today)
-      lastWeek.setDate(lastWeek.getDate() - 7)
-
-      const pinnedItems = result.histories.filter((item) => item.is_pinned)
-      const todayItems = result.histories.filter(
-        (item) => !item.is_pinned && new Date(item?.createdAt) >= today
-      )
-      const yesterdayItems = result.histories.filter(
-        (item) =>
-          !item.is_pinned &&
-          new Date(item?.createdAt) >= yesterday &&
-          new Date(item?.createdAt) < today
-      )
-      const lastWeekItems = result.histories.filter(
-        (item) =>
-          !item.is_pinned &&
-          new Date(item?.createdAt) >= lastWeek &&
-          new Date(item?.createdAt) < yesterday
-      )
-      const olderItems = result.histories.filter(
-        (item) => !item.is_pinned && new Date(item?.createdAt) < lastWeek
-      )
-
-      const groups = []
-      if (pinnedItems.length)
-        groups.push({ label: "pinned", items: pinnedItems })
-      if (todayItems.length) groups.push({ label: "today", items: todayItems })
-      if (yesterdayItems.length)
-        groups.push({ label: "yesterday", items: yesterdayItems })
-      if (lastWeekItems.length)
-        groups.push({ label: "last7Days", items: lastWeekItems })
-      if (olderItems.length) groups.push({ label: "older", items: olderItems })
-
-      return {
-        groups,
-        hasMore: result.hasMore,
-        totalCount: result.totalCount
+      } catch (e) {
+        setDexiePrivateWindowError(e?.name === "DatabaseClosedError")
+        return {
+          groups: [],
+          hasMore: false,
+          totalCount: 0
+        }
       }
     },
     getNextPageParam: (lastPage, allPages) => {
       return lastPage.hasMore ? allPages.length + 1 : undefined
     },
-    placeholderData: undefined, 
+    placeholderData: undefined,
     enabled: isOpen,
     initialPageParam: 1
   })
@@ -286,9 +301,22 @@ export const Sidebar = ({
         </div>
       </div>
 
-      {status === "success" && chatHistories.length === 0 && (
+      {status === "success" &&
+        chatHistories.length === 0 &&
+        !dexiePrivateWindowError && (
+          <div className="flex justify-center items-center mt-20 overflow-hidden">
+            <Empty description={t("common:noHistory")} />
+          </div>
+        )}
+
+      {dexiePrivateWindowError && (
         <div className="flex justify-center items-center mt-20 overflow-hidden">
-          <Empty description={t("common:noHistory")} />
+          <Empty
+            description={t("common:privateWindow", {
+              defaultValue:
+                "Don't worry, this is a known issue on Firefox: IndexedDB does not work in private mode. Please open the extension in a normal window to view your chat history."
+            })}
+          />
         </div>
       )}
 
@@ -310,8 +338,8 @@ export const Sidebar = ({
             <div key={groupIndex}>
               <div className="flex items-center justify-between mt-2">
                 <h3 className="px-2 text-sm font-medium text-gray-500">
-                  {group.label === "searchResults" 
-                    ? t("common:searchResults") 
+                  {group.label === "searchResults"
+                    ? t("common:searchResults")
                     : t(`common:date:${group.label}`)}
                 </h3>
                 {group.label !== "searchResults" && (
@@ -331,12 +359,12 @@ export const Sidebar = ({
               </div>
               <div className="flex flex-col gap-2 mt-2">
                 {group.items.map((chat, index) => (
-                    <div
+                  <div
                     key={chat.id}
                     className={`flex py-2 px-2 items-center gap-3 relative rounded-md truncate hover:pr-4 group transition-opacity duration-300 ease-in-out border ${
                       historyId === chat.id
-                      ? "bg-gray-200 dark:bg-[#454242] border-gray-400 dark:border-gray-600 text-gray-900 dark:text-gray-100"
-                      : "bg-gray-50 dark:bg-[#232222] dark:text-gray-100 text-gray-800 border-gray-300 dark:border-gray-800 hover:bg-gray-200 dark:hover:bg-[#2d2d2d]"
+                        ? "bg-gray-200 dark:bg-[#454242] border-gray-400 dark:border-gray-600 text-gray-900 dark:text-gray-100"
+                        : "bg-gray-50 dark:bg-[#232222] dark:text-gray-100 text-gray-800 border-gray-300 dark:border-gray-800 hover:bg-gray-200 dark:hover:bg-[#2d2d2d]"
                     }`}>
                     {chat?.message_source === "copilot" && (
                       <BotIcon className="size-3 text-gray-500 dark:text-gray-400" />

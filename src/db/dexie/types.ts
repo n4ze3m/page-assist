@@ -36,6 +36,7 @@ export type UploadedFile = {
 };
 
 export type SessionFiles = {
+  id?: any 
   sessionId: string;
   files: UploadedFile[];
   retrievalEnabled: boolean;

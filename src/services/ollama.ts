@@ -227,7 +227,7 @@ export const fetchChatModels = async ({
 
     return [...chatModels, ...chromeModel, ...customModels]
   } catch (e) {
-    console.error(e)
+    console.error("error", e)
     const allModels = await getAllModels({ returnEmpty })
     const models = allModels.map((model) => {
       return {
