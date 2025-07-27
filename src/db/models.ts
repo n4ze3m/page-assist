@@ -1,6 +1,6 @@
 import { getAllOpenAIModels } from "@/libs/openai"
 import {
-  getAllOpenAIConfig,
+  getAllOpenAIConfigFB,
   getOpenAIConfigById as providerInfo
 } from "./openai"
 import { getAllModelNicknames } from "./nickname"
@@ -344,7 +344,7 @@ export const getModelInfo = async (id: string) => {
   return model
 }
 
-export const getAllCustomModels = async () => {
+export const getAllCustomModelsFB = async () => {
   const db = new ModelDb()
   const modelNicknames = await getAllModelNicknames()
   const models = (await db.getAll()).filter(
@@ -481,13 +481,13 @@ export const dynamicFetchLlamafile = async ({
   return llamafileModels
 }
 
-export const ollamaFormatAllCustomModels = async (
+export const ollamaFormatAllCustomModelsFallback = async (
   modelType: "all" | "chat" | "embedding" = "all"
 ) => {
   try {
     const [allModles, allProviders] = await Promise.all([
-      getAllCustomModels(),
-      getAllOpenAIConfig()
+      getAllCustomModelsFB(),
+      getAllOpenAIConfigFB()
     ])
     const modelNicknames = await getAllModelNicknames()
     const lmstudioProviders = allProviders.filter(

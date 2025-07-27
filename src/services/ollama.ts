@@ -12,7 +12,6 @@ import { ollamaFormatAllCustomModels } from "@/db/dexie/models"
 import { getAllModelNicknames } from "@/db/dexie/nickname"
 
 const storage = new Storage()
-  
 
 const DEFAULT_OLLAMA_URL = "http://127.0.0.1:11434"
 const DEFAULT_ASK_FOR_MODEL_SELECTION_EVERY_TIME = true
@@ -59,7 +58,6 @@ Previous Conversation:
 
 Follow-up question: {question}
 `
-
 
 export const getOllamaURL = async () => {
   const ollamaURL = await storage.get("ollamaURL")
@@ -169,7 +167,6 @@ export const getEmbeddingModels = async ({
     const customModels = await ollamaFormatAllCustomModels("embedding")
 
     return [
-
       ...ollamaModels.map((model) => {
         return {
           ...model,

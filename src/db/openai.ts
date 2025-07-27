@@ -119,6 +119,8 @@ export const getAllOpenAIConfig = async () => {
     return configs.filter(config => config?.db_type === "openai")
 }
 
+export const getAllOpenAIConfigFB = async () => await getAllOpenAIConfig()
+
 export const updateOpenAIConfig = async ({ id, name, baseUrl, apiKey, headers }: { id: string, name: string, baseUrl: string, apiKey: string, headers?: { key: string; value: string }[] }) => {
     const openaiDb = new OpenAIModelDb()
     const oldData = await openaiDb.getById(id)

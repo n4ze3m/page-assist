@@ -6,6 +6,7 @@ import {
 import { getAllModelNicknames } from "./nickname"
 import { Model, Models } from "./types"
 import { db } from "./schema"
+import { getAllCustomModelsFB } from "../models"
 
 export const generateID = () => {
   return "model-xxxx-xxxx-xxx-xxxx".replace(/[x]/g, () => {
@@ -36,7 +37,8 @@ export const isLlamafileModel = (model: string) => {
 }
 
 export const isLLamaCppModel = (model: string) => {
-  const llamaCppModelRegex = /_llamacpp_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/
+  const llamaCppModelRegex =
+    /_llamacpp_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/
   return llamaCppModelRegex.test(model)
 }
 
@@ -46,8 +48,7 @@ export const isVLLMModel = (model: string) => {
 }
 
 export const isOllamaModel = (model: string) => {
-  const ollamaModelRegex =
-    /_ollama2_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/
+  const ollamaModelRegex = /_ollama2_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/
   return ollamaModelRegex.test(model)
 }
 export const getLMStudioModelId = (
@@ -66,8 +67,7 @@ export const getLMStudioModelId = (
 export const getOllamaModelId = (
   model: string
 ): { model_id: string; provider_id: string } => {
-  const ollamaModelRegex =
-    /_ollama2_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/
+  const ollamaModelRegex = /_ollama2_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/
   const match = model.match(ollamaModelRegex)
   if (match) {
     const modelId = match[0]
@@ -107,8 +107,7 @@ export const getLLamaCppModelId = (
 export const getVLLMModelId = (
   model: string
 ): { model_id: string; provider_id: string } => {
-  const vllmModelRegex =
-    /_vllm_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/
+  const vllmModelRegex = /_vllm_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/
   const match = model.match(vllmModelRegex)
   if (match) {
     const modelId = match[0]
@@ -144,7 +143,6 @@ export const isCustomModel = (model: string) => {
   return customModelRegex.test(model)
 }
 export class ModelDb {
-
   getAll = async (): Promise<Models> => {
     return await db.customModels.reverse().toArray()
   }
@@ -169,31 +167,39 @@ export class ModelDb {
     return await db.customModels.clear()
   }
 
-  async importDataV2(data: Models, options: {
-    replaceExisting?: boolean;
-    mergeData?: boolean;
-  } = {}): Promise<void> {
-    const { replaceExisting = false, mergeData = true } = options;
+  async importDataV2(
+    data: Models,
+    options: {
+      replaceExisting?: boolean
+      mergeData?: boolean
+    } = {}
+  ): Promise<void> {
+    const { replaceExisting = false, mergeData = true } = options
 
     for (const oai of data) {
-      const existingKnowledge = await this.getById(oai.id);
+      const existingKnowledge = await this.getById(oai.id)
 
       if (existingKnowledge && !replaceExisting) {
         if (mergeData) {
           await this.update({
-            ...existingKnowledge,
-          });
+            ...existingKnowledge
+          })
         }
-        continue;
+        continue
       }
 
-      await this.create(oai);
+      await this.create(oai)
     }
   }
 }
 
 export const createManyModels = async (
-  data: { model_id: string; name: string; provider_id: string, model_type: string }[]
+  data: {
+    model_id: string
+    name: string
+    provider_id: string
+    model_type: string
+  }[]
 ) => {
   const db = new ModelDb()
 
@@ -203,7 +209,7 @@ export const createManyModels = async (
       lookup: `${item.model_id}_${item.provider_id}`,
       id: `${item.model_id}_${generateID()}`,
       db_type: "openai_model",
-      name: item.name.replaceAll(/accounts\/[^\/]+\/models\//g, ""),
+      name: item.name.replaceAll(/accounts\/[^\/]+\/models\//g, "")
     }
   })
 
@@ -260,7 +266,6 @@ export const getModelInfo = async (id: string) => {
     }
   }
 
-
   if (isLlamafileModel(id)) {
     const llamafileId = getLlamafileModelId(id)
     if (!llamafileId) {
@@ -309,13 +314,9 @@ export const getModelInfo = async (id: string) => {
         ""
       ),
       provider_id: `openai-${vllmId.provider_id}`,
-      name: id.replace(
-        /_vllm_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/,
-        ""
-      )
+      name: id.replace(/_vllm_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/, "")
     }
   }
-
 
   if (isOllamaModel(id)) {
     const ollamaId = getOllamaModelId(id)
@@ -340,25 +341,32 @@ export const getModelInfo = async (id: string) => {
 }
 
 export const getAllCustomModels = async () => {
-  const db = new ModelDb()
-  const modelNicknames = await getAllModelNicknames()
-  const models = (await db.getAll()).filter(
-    (model) => model?.db_type === "openai_model"
-  )
-  const modelsWithProvider = await Promise.all(
-    models.map(async (model) => {
-      const provider = await providerInfo(model.provider_id)
-      return { ...model, provider }
-    })
-  )
+  try {
+    const db = new ModelDb()
+    const modelNicknames = await getAllModelNicknames()
+    const models = (await db.getAll()).filter(
+      (model) => model?.db_type === "openai_model"
+    )
+    const modelsWithProvider = await Promise.all(
+      models.map(async (model) => {
+        const provider = await providerInfo(model.provider_id)
+        return { ...model, provider }
+      })
+    )
 
-  return modelsWithProvider.map((model) => {
-    return {
-      ...model,
-      nickname: modelNicknames[model.id]?.model_name || model.model_id,
-      avatar: modelNicknames[model.id]?.model_avatar || undefined
-    }
-  })
+    return modelsWithProvider.map((model) => {
+      return {
+        ...model,
+        nickname: modelNicknames[model.id]?.model_name || model.model_id,
+        avatar: modelNicknames[model.id]?.model_avatar || undefined
+      }
+    })
+  } catch (e) {
+    // if (e?.name === "DatabaseClosedError") {
+    //   return await getAllCustomModelsFB()
+    // }
+    return []
+  }
 }
 
 export const deleteModel = async (id: string) => {
@@ -430,7 +438,6 @@ export const dynamicFetchLLamaCpp = async ({
   return llamaCppModels
 }
 
-
 export const dynamicFetchVLLM = async ({
   baseUrl,
   providerId,
@@ -460,7 +467,7 @@ export const dynamicFetchOllama2 = async ({
   customHeaders = []
 }: {
   baseUrl: string
-  providerId: string,
+  providerId: string
   customHeaders?: { key: string; value: string }[]
 }) => {
   const models = await getAllOpenAIModels({ baseUrl, customHeaders })
@@ -483,7 +490,7 @@ export const dynamicFetchLlamafile = async ({
   customHeaders = []
 }: {
   baseUrl: string
-  providerId: string,
+  providerId: string
   customHeaders?: { key: string; value: string }[]
 }) => {
   const models = await getAllOpenAIModels({ baseUrl, customHeaders })
@@ -550,21 +557,24 @@ export const ollamaFormatAllCustomModels = async (
         baseUrl: provider.baseUrl,
         providerId: provider.id,
         customHeaders: provider.headers
-      }))
+      })
+    )
 
     const llamacppModelsPromises = llamacppProvider.map((provider) =>
       dynamicFetchLLamaCpp({
         baseUrl: provider.baseUrl,
         providerId: provider.id,
         customHeaders: provider.headers
-      }))
+      })
+    )
 
     const vllmModelsPromises = vllmProviders.map((provider) =>
       dynamicFetchVLLM({
         baseUrl: provider.baseUrl,
         providerId: provider.id,
         customHeaders: provider.headers
-      }))
+      })
+    )
 
     const lmModelsFetch = await Promise.all(lmModelsPromises)
 
