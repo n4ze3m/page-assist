@@ -40,7 +40,7 @@ const SidepanelChat = () => {
     sidepanelTemporaryChat
   } = useMessage()
   const { containerRef, isAutoScrollToBottom, autoScrollToBottom } =
-    useSmartScroll(messages, streaming, 60)
+    useSmartScroll(messages, streaming, 100)
   const [chatBackgroundImage] = useStorage({
     key: "chatBackgroundImage",
     instance: new Storage({
