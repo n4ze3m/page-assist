@@ -370,6 +370,21 @@ export const deleteAllModelsByProviderId = async (provider_id: string) => {
   }
 }
 
+export const bulkAddModelsFB = async (models: Model[]) => {
+  // delete all exist models
+  const db = new ModelDb()
+  const modelsToDelete = (await db.getAll()).filter(
+    (model) => model?.db_type === "openai_model"
+  )
+  for (const model of modelsToDelete) {
+    await db.delete(model.id)
+  }
+  // add new models
+  for (const model of models) {
+    await db.create(model)
+  }
+}
+
 export const isLookupExist = async (lookup: string) => {
   const db = new ModelDb()
   const models = await db.getAll()

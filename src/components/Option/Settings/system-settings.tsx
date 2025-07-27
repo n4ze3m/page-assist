@@ -1,5 +1,5 @@
 import { BetaTag } from "@/components/Common/Beta"
-import { useFontSize } from "@/context/FontSizeProvider" 
+import { useFontSize } from "@/context/FontSizeProvider"
 import { useMessageOption } from "@/hooks/useMessageOption"
 import {
   exportPageAssistData,
@@ -13,6 +13,8 @@ import { useTranslation } from "react-i18next"
 import { Loader2, RotateCcw, Upload } from "lucide-react"
 import { toBase64 } from "@/libs/to-base64"
 import { PageAssistDatabase } from "@/db/dexie/chat"
+import { isFireFox, isFireFoxPrivateMode } from "@/utils/is-private-mode"
+import { firefoxSyncDataForPrivateMode } from "@/db/dexie/firefox-sync"
 
 export const SystemSettings = () => {
   const { t } = useTranslation(["settings", "knowledge"])
@@ -72,11 +74,29 @@ export const SystemSettings = () => {
     }
   })
 
-  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const syncFirefoxData = useMutation({
+    mutationFn: firefoxSyncDataForPrivateMode,
+    onSuccess: () => {
+      notification.success({
+        message:
+          "Firefox data synced successfully, You don't need to do this again"
+      })
+    },
+    onError: (error) => {
+      console.log(error)
+      notification.error({
+        message: "Firefox data sync failed"
+      })
+    }
+  })
+
+  const handleImageUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = event.target.files?.[0]
     if (file) {
       try {
-        if (!file.type.startsWith('image/')) {
+        if (!file.type.startsWith("image/")) {
           notification.error({
             message: "Please select a valid image file"
           })
@@ -170,6 +190,31 @@ export const SystemSettings = () => {
           }}
         />
       </div>
+      {isFireFox && !isFireFoxPrivateMode && (
+        <div className="flex flex-row mb-3 justify-between">
+          <span className="text-gray-700 dark:text-neutral-50 ">
+            <BetaTag />
+            {t("generalSettings.system.firefoxPrivateModeSync.label", {
+              defaultValue:
+                "Sync Custom Models, Prompts for Firefox Private Windows (Incognito Mode)"
+            })}
+          </span>
+          <button
+            onClick={() => {
+              syncFirefoxData.mutate()
+            }}
+            disabled={syncFirefoxData.isPending}
+            className="bg-gray-800 dark:bg-white text-white dark:text-gray-900 px-4 py-2 rounded-md cursor-pointer">
+            {syncFirefoxData.isPending ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              t("generalSettings.system.firefoxPrivateModeSync.button", {
+                defaultValue: "Sync Data"
+              })
+            )}
+          </button>
+        </div>
+      )}
       <div className="flex flex-row mb-3 justify-between">
         <span className="text-gray-700 dark:text-neutral-50 ">
           {t("generalSettings.system.webuiBtnSidePanel.label")}
@@ -200,8 +245,7 @@ export const SystemSettings = () => {
           <label
             htmlFor="background-image-upload"
             className="bg-gray-800 inline-flex gap-2 dark:bg-white text-white dark:text-gray-900 px-4 py-2 rounded-md cursor-pointer">
-           
-           <Upload className="size-4" />
+            <Upload className="size-4" />
             {t("knowledge:form.uploadFile.label")}
           </label>
           <input

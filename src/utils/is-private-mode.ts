@@ -1,2 +1,4 @@
+export const isFireFox = import.meta.env.BROWSER === "firefox"
+
 export const isFireFoxPrivateMode =
-  import.meta.env.BROWSER === "firefox" && browser.extension.inIncognitoContext
+  isFireFox && browser.extension.inIncognitoContext

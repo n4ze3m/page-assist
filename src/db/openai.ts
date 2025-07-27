@@ -108,6 +108,20 @@ export const deleteOpenAIConfigFB = async (id: string) => {
   await deleteAllModelsByProviderId(id)
 }
 
+export const bulkAddOAIFB = async (configs: OpenAIModelConfig[]) => {
+  const openaiDb = new OpenAIModelDb()
+
+  const oaiToDelete = await getAllOpenAIConfigFB()
+
+  for (const config of oaiToDelete) {
+    await openaiDb.delete(config.id)
+  }
+
+  for (const config of configs) {
+    await openaiDb.create(config)
+  }
+}
+
 export const updateOpenAIConfigApiKeyFB = async (config: OpenAIModelConfig) => {
   const openaiDb = new OpenAIModelDb()
   await openaiDb.update(config)
@@ -119,4 +133,5 @@ export const getOpenAIConfigById = async (id: string) => {
   return config
 }
 
-export const getOpenAIConfigByIdFB = async (id: string) => getOpenAIConfigById(id)
+export const getOpenAIConfigByIdFB = async (id: string) =>
+  getOpenAIConfigById(id)
