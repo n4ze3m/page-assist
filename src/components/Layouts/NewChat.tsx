@@ -1,8 +1,9 @@
 import { SquarePen } from "lucide-react"
 import { useTranslation } from "react-i18next"
-import { Tooltip } from "antd"
+import { notification, Tooltip } from "antd"
 import { useMessageOption } from "@/hooks/useMessageOption"
 import { BsIncognito } from "react-icons/bs"
+import { isFireFoxPrivateMode } from "@/utils/is-private-mode"
 
 type Props = {
   clearChat: () => void
@@ -25,6 +26,15 @@ export const NewChat: React.FC<Props> = ({ clearChat }) => {
         <button
           data-istemporary-chat={temporaryChat}
           onClick={() => {
+            if (isFireFoxPrivateMode) {
+              notification.error({
+                message: "Error",
+                description:
+                  "Page Assist can't save chat in Firefox Private Mode. Temporary chat is enabled by default. More fixes coming soon."
+              })
+              return
+            }
+
             setTemporaryChat(!temporaryChat)
             if (messages.length > 0) {
               clearChat()
