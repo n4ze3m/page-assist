@@ -2,12 +2,17 @@ import { useState } from "react"
 import { useTranslation } from "react-i18next"
 import { AddKnowledge } from "./AddKnowledge"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { deleteKnowledge, deleteSource, getAllKnowledge } from "@/db/dexie/knowledge"
-import { Skeleton, Table, Tag, Tooltip, message } from "antd"
+import {
+  deleteKnowledge,
+  deleteSource,
+  getAllKnowledge
+} from "@/db/dexie/knowledge"
+import { Skeleton, Table, Tag, Tooltip, message, notification } from "antd"
 import { FileUpIcon, Trash2 } from "lucide-react"
 import { useMessageOption } from "@/hooks/useMessageOption"
 import { removeModelSuffix } from "@/db/dexie/models"
 import { UpdateKnowledge } from "./UpdateKnowledge"
+import { isFireFoxPrivateMode } from "@/utils/is-private-mode"
 
 export const KnowledgeSettings = () => {
   const { t } = useTranslation(["knowledge", "common"])
@@ -53,7 +58,17 @@ export const KnowledgeSettings = () => {
           <div className="-ml-4 -mt-2 flex flex-wrap items-center justify-end sm:flex-nowrap">
             <div className="ml-4 mt-2 flex-shrink-0">
               <button
-                onClick={() => setOpen(true)}
+                onClick={() => {
+                  if (isFireFoxPrivateMode) {
+                    notification.error({
+                      message: "Page Assist can't save data",
+                      description:
+                        "Firefox Private Mode does not support saving data to IndexedDB. Please add knowledge base from a normal window."
+                    })
+                    return
+                  }
+                  setOpen(true)
+                }}
                 className="inline-flex items-center rounded-md border border-transparent bg-black px-2 py-2 text-md font-medium leading-4 text-white shadow-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-white dark:text-gray-800 dark:hover:bg-gray-100 dark:focus:ring-gray-500 dark:focus:ring-offset-gray-100 disabled:opacity-50">
                 {t("addBtn")}
               </button>
@@ -97,7 +112,7 @@ export const KnowledgeSettings = () => {
                   <div className="flex gap-4">
                     <Tooltip title={t("updateKnowledge")}>
                       <button
-                        disabled={isDeleting || record.status === "processing"} 
+                        disabled={isDeleting || record.status === "processing"}
                         onClick={() => {
                           setUpdateKnowledgeId(record.id)
                           setOpenUpdate(true)

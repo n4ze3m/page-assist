@@ -29,6 +29,7 @@ import { OpenAIFetchModel } from "./openai-fetch-model"
 import { OAI_API_PROVIDERS } from "@/utils/oai-api-providers"
 import { ProviderIcons } from "@/components/Common/ProviderIcon"
 const noPopupProvider = ["lmstudio", "llamafile", "ollama2", "llamacpp", "vllm"]
+import { isFireFoxPrivateMode } from "@/utils/is-private-mode"
 
 export const OpenAIApp = () => {
   const { t } = useTranslation(["openai", "settings"])

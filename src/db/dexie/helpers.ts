@@ -16,6 +16,13 @@ import {
 } from "./types"
 import { PageAssistDatabase } from "./chat"
 import { db as chatDB } from "./schema"
+import {
+  deletePromptByIdFB,
+  getAllPromptsFB,
+  getPromptByIdFB,
+  savePromptFB,
+  updatePromptFB
+} from ".."
 
 // Helper function to generate IDs (keeping the same format)
 export const generateID = () => {
@@ -205,8 +212,16 @@ export const deleteChatForEdit = async (history_id: string, index: number) => {
 
 // Prompt Functions
 export const getAllPrompts = async () => {
-  const db = new PageAssistDatabase()
-  return await db.getAllPrompts()
+  try {
+    const db = new PageAssistDatabase()
+    return await db.getAllPrompts()
+  } catch (e) {
+    if (isDatabaseClosedError(e)) {
+      return await getAllPromptsFB()
+    }
+
+    return []
+  }
 }
 
 export const savePrompt = async ({
@@ -223,12 +238,14 @@ export const savePrompt = async ({
   const createdAt = Date.now()
   const prompt = { id, title, content, is_system, createdAt }
   await db.addPrompt(prompt)
+  await savePromptFB(prompt)
   return prompt
 }
 
 export const deletePromptById = async (id: string) => {
   const db = new PageAssistDatabase()
   await db.deletePrompt(id)
+  await deletePromptByIdFB(id)
   return id
 }
 
@@ -245,6 +262,12 @@ export const updatePrompt = async ({
 }) => {
   const db = new PageAssistDatabase()
   await db.updatePrompt(id, title, content, is_system)
+  await updatePromptFB({
+    id,
+    title,
+    content,
+    is_system
+  })
   return id
 }
 
@@ -254,14 +277,21 @@ export const getPromptById = async (id: string) => {
     const db = new PageAssistDatabase()
     return await db.getPromptById(id)
   } catch (e) {
+    if (isDatabaseClosedError(e)) {
+      return await getPromptByIdFB(id)
+    }
     return null
   }
 }
 
 // Webshare Functions
 export const getAllWebshares = async () => {
-  const db = new PageAssistDatabase()
-  return await db.getAllWebshares()
+  try {
+    const db = new PageAssistDatabase()
+    return await db.getAllWebshares()
+  } catch (e) {
+    return []
+  }
 }
 
 export const deleteWebshare = async (id: string) => {

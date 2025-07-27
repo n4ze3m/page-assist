@@ -103,7 +103,7 @@ export const getAllOpenAIConfig = async () => {
     const configs = await openaiDb.getAll()
     return configs.filter((config) => config?.db_type === "openai")
   } catch (e) {
-    if (e?.name === "DatabaseClosedError") {
+    if (isDatabaseClosedError(e)) {
       return await getAllOpenAIConfigFB()
     }
     return []
@@ -175,7 +175,7 @@ export const getOpenAIConfigById = async (id: string) => {
     const config = await openaiDb.getById(id)
     return config
   } catch (e) {
-    if (e?.name === "DatabaseClosedError") {
+    if (isDatabaseClosedError(e)) {
       return await getOpenAIConfigByIdFB(id)
     }
     return null

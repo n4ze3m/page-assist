@@ -7,6 +7,7 @@ import { OllamaModelsTable } from "./OllamaModelsTable"
 import { CustomModelsTable } from "./CustomModelsTable"
 import { AddOllamaModelModal } from "./AddOllamaModelModal"
 import { AddCustomModelModal } from "./AddCustomModelModal"
+import { isFireFoxPrivateMode } from "@/utils/is-private-mode"
 
 dayjs.extend(relativeTime)
 

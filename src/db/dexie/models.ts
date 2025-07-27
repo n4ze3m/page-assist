@@ -12,6 +12,7 @@ import {
   getAllCustomModelsFB,
   getModelInfoFB
 } from "../models"
+import { isDatabaseClosedError } from "@/utils/ff-error"
 
 export const generateID = () => {
   return "model-xxxx-xxxx-xxx-xxxx".replace(/[x]/g, () => {
@@ -347,7 +348,7 @@ export const getModelInfo = async (id: string) => {
     const model = await db.getById(id)
     return model
   } catch (e) {
-    if (e?.name === "DatabaseClosedError") {
+    if (isDatabaseClosedError(e)) {
       return await getModelInfoFB(id)
     }
 
@@ -377,7 +378,7 @@ export const getAllCustomModels = async () => {
       }
     })
   } catch (e) {
-    if (e?.name === "DatabaseClosedError") {
+    if (isDatabaseClosedError(e)) {
       return await getAllCustomModelsFB()
     }
     return []

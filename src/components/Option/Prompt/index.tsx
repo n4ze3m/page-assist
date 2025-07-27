@@ -14,12 +14,18 @@ import {
 import { Trash2, Pen, Computer, Zap } from "lucide-react"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
-import { deletePromptById, getAllPrompts, savePrompt, updatePrompt } from "@/db/dexie/helpers"
+import {
+  deletePromptById,
+  getAllPrompts,
+  savePrompt,
+  updatePrompt
+} from "@/db/dexie/helpers"
 import {
   getAllCopilotPrompts,
   setAllCopilotPrompts
 } from "@/services/application"
 import { tagColors } from "@/utils/color"
+import { isFireFoxPrivateMode } from "@/utils/is-private-mode"
 
 export const PromptBody = () => {
   const queryClient = useQueryClient()
@@ -154,7 +160,17 @@ export const PromptBody = () => {
           <div className="-ml-4 -mt-2 flex flex-wrap items-center justify-end sm:flex-nowrap">
             <div className="ml-4 mt-2 flex-shrink-0">
               <button
-                onClick={() => setOpen(true)}
+                onClick={() => {
+                  if (isFireFoxPrivateMode) {
+                    notification.error({
+                      message: "Page Assist can't save data",
+                      description:
+                        "Firefox Private Mode does not support saving data to IndexedDB. Please add prompts from a normal window."
+                    })
+                    return
+                  }
+                  setOpen(true)
+                }}
                 className="inline-flex items-center rounded-md border border-transparent bg-black px-2 py-2 text-md font-medium leading-4 text-white shadow-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-white dark:text-gray-800 dark:hover:bg-gray-100 dark:focus:ring-gray-500 dark:focus:ring-offset-gray-100 disabled:opacity-50">
                 {t("managePrompts.addBtn")}
               </button>
@@ -216,7 +232,8 @@ export const PromptBody = () => {
                             deletePrompt(record.id)
                           }
                         }}
-                        className="text-red-500 dark:text-red-400">
+                        disabled={isFireFoxPrivateMode}
+                        className="text-red-500 dark:text-red-400 disabled:opacity-50">
                         <Trash2 className="size-4" />
                       </button>
                     </Tooltip>
@@ -227,7 +244,8 @@ export const PromptBody = () => {
                           editForm.setFieldsValue(record)
                           setOpenEdit(true)
                         }}
-                        className="text-gray-500 dark:text-gray-400">
+                        disabled={isFireFoxPrivateMode}
+                        className="text-gray-500 dark:text-gray-400 disabled:opacity-50">
                         <Pen className="size-4" />
                       </button>
                     </Tooltip>
@@ -306,15 +324,11 @@ export const PromptBody = () => {
           size="large"
           options={[
             {
-              label: t(
-                "managePrompts.segmented.custom"
-              ),
+              label: t("managePrompts.segmented.custom"),
               value: "custom"
             },
             {
-              label: t(
-                "managePrompts.segmented.copilot"
-              ),
+              label: t("managePrompts.segmented.copilot"),
               value: "copilot"
             }
           ]}

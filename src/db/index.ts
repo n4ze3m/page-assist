@@ -586,7 +586,7 @@ export const removeMessageUsingHistoryId = async (history_id: string) => {
   await db.db.set({ [history_id]: chatHistory })
 }
 
-export const getAllPrompts = async () => {
+export const getAllPromptsFB = async () => {
   const db = new PageAssitDatabase()
   return await db.getAllPrompts()
 }
@@ -613,30 +613,19 @@ export const deleteChatForEdit = async (history_id: string, index: number) => {
   await db.db.set({ [history_id]: previousHistory.reverse() })
 }
 
-export const savePrompt = async ({
-  content,
-  title,
-  is_system = false
-}: {
-  title: string
-  content: string
-  is_system: boolean
-}) => {
+export const savePromptFB = async (prompt: any ) => {
   const db = new PageAssitDatabase()
-  const id = generateID()
-  const createdAt = Date.now()
-  const prompt = { id, title, content, is_system, createdAt }
   await db.addPrompt(prompt)
   return prompt
 }
 
-export const deletePromptById = async (id: string) => {
+export const deletePromptByIdFB = async (id: string) => {
   const db = new PageAssitDatabase()
   await db.deletePrompt(id)
   return id
 }
 
-export const updatePrompt = async ({
+export const updatePromptFB = async ({
   content,
   id,
   title,
@@ -658,6 +647,8 @@ export const getPromptById = async (id: string) => {
   return await db.getPromptById(id)
 }
 
+export const getPromptByIdFB = async (id: string) => getPromptById(id)
+ 
 export const getAllWebshares = async () => {
   const db = new PageAssitDatabase()
   return await db.getAllWebshares()

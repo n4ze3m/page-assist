@@ -43,6 +43,7 @@ import {
   getPromptById
 } from "@/db/dexie/helpers"
 import { UploadedFile } from "@/db/dexie/types"
+import { isDatabaseClosedError } from "@/utils/ff-error"
 
 type Props = {
   onClose: () => void
@@ -159,7 +160,7 @@ export const Sidebar = ({
           totalCount: result.totalCount
         }
       } catch (e) {
-        setDexiePrivateWindowError(e?.name === "DatabaseClosedError")
+        setDexiePrivateWindowError(isDatabaseClosedError(e))
         return {
           groups: [],
           hasMore: false,
