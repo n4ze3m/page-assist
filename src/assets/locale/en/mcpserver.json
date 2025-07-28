@@ -1,0 +1,18 @@
+{
+  "mcpSettings": {
+    "addServer": "Add MCP Server",
+    "editServer": "Edit MCP Server",
+    "testConnection": "Test Connection",
+    "testSuccess": "Connection successful. Found {{count}} tool(s).",
+    "testSuccess_plural": "Connection successful. Found {{count}} tools.",
+    "testFailure": "Connection failed. Please check the URL and API key.",
+    "form": {
+      "name": "Name",
+      "nameRequired": "Please enter a server name",
+      "url": "URL",
+      "urlRequired": "Please enter a valid URL",
+      "urlPlaceholder": "http://localhost:8000",
+      "apiKey": "API Key (Optional)"
+    }
+  }
+}

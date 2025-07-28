@@ -171,6 +171,13 @@ export type ModelNickname = {
   model_avatar?: string
 }
 
+export type McpServerConfig = {
+  id: string,
+  name: string,
+  url: string,
+  apiKey?: string,
+  enabled: boolean
+}
 
 export type MessageHistory = Message[];
 export type ChatHistory = HistoryInfo[];

@@ -7,7 +7,8 @@ import {
   InfoIcon,
   CombineIcon,
   ChromeIcon,
-  CpuIcon
+  CpuIcon,
+  Wrench
 } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { Link, useLocation } from "react-router-dom"
@@ -102,6 +103,12 @@ export const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
                     name={t("manageModels.title")}
                     current={location.pathname}
                     icon={BrainCircuitIcon}
+                  />
+                  <LinkComponent
+                    href="/settings/mcp"
+                    name={t("mcpSettings.title")}
+                    icon={Wrench}
+                    current={location.pathname}
                   />
                   <LinkComponent
                     href="/settings/knowledge"

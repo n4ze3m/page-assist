@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useCallback, useMemo } from "react"
 import { type ChatHistory, type Message } from "~/store/option"
 import { useStoreMessageOption } from "~/store/option"
 import { removeMessageUsingHistoryId } from "@/db/dexie/helpers"
@@ -92,68 +92,83 @@ export const useMessageOption = () => {
   const navigate = useNavigate()
   const textareaRef = React.useRef<HTMLTextAreaElement>(null)
 
-  const handleFocusTextArea = () => focusTextArea(textareaRef)
+  // Wrap returned functions in useCallback/useMemo to ensure that the hooks themselves return the exact same function instances on every render, unless their own dependencies change.
+  // useCallback 'memoizes' (caches) a function definition, its use when defining a function directly inside a component or hook, and you need to pass that function down as a prop.
 
-  const handleFileUpload = async (file: File) => {
-    try {
-      const isImage = file.type.startsWith("image/")
+  const handleFocusTextArea = useCallback(
+    () => focusTextArea(textareaRef),
+    [textareaRef]
+  )
 
-      if (isImage) {
+  const handleFileUpload = useCallback(
+    async (file: File) => {
+      try {
+        const isImage = file.type.startsWith("image/")
+
+        if (isImage) {
+          return file
+        }
+
+        const maxSize = 10 * 1024 * 1024
+        if (file.size > maxSize) {
+          notification.error({
+            message: "File Too Large",
+            description: "File size must be less than 10MB"
+          })
+          return
+        }
+
+        const fileId = generateID()
+
+        const { processFileUpload } = await import("~/utils/file-processor")
+        const source = await processFileUpload(file)
+
+        const uploadedFile: UploadedFile = {
+          id: fileId,
+          filename: file.name,
+          type: file.type,
+          content: source.content,
+          size: file.size,
+          uploadedAt: Date.now(),
+          processed: false
+        }
+
+        setUploadedFiles([...uploadedFiles, uploadedFile])
+        setContextFiles([...contextFiles, uploadedFile])
+
         return file
-      }
-
-      const maxSize = 10 * 1024 * 1024
-      if (file.size > maxSize) {
+      } catch (error) {
+        console.error("Error uploading file:", error)
         notification.error({
-          message: "File Too Large",
-          description: "File size must be less than 10MB"
+          message: "Upload Failed",
+          description: "Failed to upload file. Please try again."
         })
-        return
+        throw error
       }
+    },
+    [uploadedFiles, contextFiles, setUploadedFiles, setContextFiles]
+  )
 
-      const fileId = generateID()
+  const removeUploadedFile = useCallback(
+    async (fileId: string) => {
+      setUploadedFiles(uploadedFiles.filter((f) => f.id !== fileId))
+      setContextFiles(contextFiles.filter((f) => f.id !== fileId))
+    },
+    [uploadedFiles, contextFiles, setUploadedFiles, setContextFiles]
+  )
 
-      const { processFileUpload } = await import("~/utils/file-processor")
-      const source = await processFileUpload(file)
-
-      const uploadedFile: UploadedFile = {
-        id: fileId,
-        filename: file.name,
-        type: file.type,
-        content: source.content,
-        size: file.size,
-        uploadedAt: Date.now(),
-        processed: false
-      }
-
-      setUploadedFiles([...uploadedFiles, uploadedFile])
-      setContextFiles([...contextFiles, uploadedFile])
-
-      return file
-    } catch (error) {
-      console.error("Error uploading file:", error)
-      notification.error({
-        message: "Upload Failed",
-        description: "Failed to upload file. Please try again."
-      })
-      throw error
-    }
-  }
-
-  const removeUploadedFile = async (fileId: string) => {
-    setUploadedFiles(uploadedFiles.filter((f) => f.id !== fileId))
-    setContextFiles(contextFiles.filter((f) => f.id !== fileId))
-  }
-
-  const clearUploadedFiles = () => {
+  const clearUploadedFiles = useCallback(() => {
     setUploadedFiles([])
-  }
+  }, [setUploadedFiles])
 
-  const handleSetFileRetrievalEnabled = async (enabled: boolean) => {
-    setFileRetrievalEnabled(enabled)
-  }
+  const handleSetFileRetrievalEnabled = useCallback(
+    async (enabled: boolean) => {
+      setFileRetrievalEnabled(enabled)
+    },
+    [setFileRetrievalEnabled]
+  )
 
-  const clearChat = () => {
+  const clearChat = useCallback(() => {
     navigate("/")
     setMessages([])
     setHistory([])
@@ -163,19 +178,34 @@ export const useMessageOption = () => {
     setIsProcessing(false)
     setStreaming(false)
     setContextFiles([])
-    console.log("clearChat", contextFiles)
     currentChatModelSettings.reset()
-    // textareaRef?.current?.focus()
     if (defaultInternetSearchOn) {
       setWebSearch(true)
     }
     handleFocusTextArea()
     setDocumentContext(null)
-    // Clear uploaded files
     setUploadedFiles([])
     setFileRetrievalEnabled(false)
     setActionInfo(null)
-  }
+  }, [
+    navigate,
+    setMessages,
+    setHistory,
+    setHistoryId,
+    setIsFirstMessage,
+    setIsLoading,
+    setIsProcessing,
+    setStreaming,
+    setContextFiles,
+    currentChatModelSettings,
+    defaultInternetSearchOn,
+    setWebSearch,
+    handleFocusTextArea,
+    setDocumentContext,
+    setUploadedFiles,
+    setFileRetrievalEnabled,
+    setActionInfo
+  ])
 
   const saveMessageOnSuccess = createSaveMessageOnSuccess(
     temporaryChat,
@@ -190,37 +220,156 @@ export const useMessageOption = () => {
 
   const validateBeforeSubmitFn = () => validateBeforeSubmit(selectedModel, t)
 
-  const onSubmit = async ({
-    message,
-    image,
-    isRegenerate = false,
-    messages: chatHistory,
-    memory,
-    controller,
-    isContinue,
-    docs
-  }: {
-    message: string
-    image: string
-    isRegenerate?: boolean
-    isContinue?: boolean
-    messages?: Message[]
-    memory?: ChatHistory
-    controller?: AbortController
-    docs?: ChatDocuments
-  }) => {
-    setStreaming(true)
-    let signal: AbortSignal
-    if (!controller) {
-      const newController = new AbortController()
-      signal = newController.signal
-      setAbortController(newController)
-    } else {
-      setAbortController(controller)
-      signal = controller.signal
-    }
+  const onSubmit = useCallback(
+    async ({
+      message,
+      image,
+      isRegenerate = false,
+      messages: chatHistory,
+      memory,
+      controller,
+      isContinue,
+      docs
+    }: {
+      message: string
+      image: string
+      isRegenerate?: boolean
+      isContinue?: boolean
+      messages?: Message[]
+      memory?: ChatHistory
+      controller?: AbortController
+      docs?: ChatDocuments
+    }) => {
+      setStreaming(true)
+      let signal: AbortSignal
+      if (!controller) {
+        const newController = new AbortController()
+        signal = newController.signal
+        setAbortController(newController)
+      } else {
+        setAbortController(controller)
+        signal = controller.signal
+      }
 
-    const chatModeParams = {
+      const chatModeParams = {
+        selectedModel,
+        useOCR,
+        selectedSystemPrompt,
+        selectedKnowledge,
+        currentChatModelSettings,
+        setMessages,
+        setIsSearchingInternet,
+        saveMessageOnSuccess,
+        saveMessageOnError,
+        setHistory,
+        setIsProcessing,
+        setStreaming,
+        setAbortController,
+        historyId,
+        setHistoryId,
+        fileRetrievalEnabled,
+        setActionInfo,
+        webSearch
+      }
+
+      try {
+        if (isContinue) {
+          await continueChatMode(
+            chatHistory || messages,
+            memory || history,
+            signal,
+            chatModeParams
+          )
+          return
+        }
+        // console.log("contextFiles", contextFiles)
+        if (contextFiles.length > 0) {
+          await documentChatMode(
+            message,
+            image,
+            isRegenerate,
+            chatHistory || messages,
+            memory || history,
+            signal,
+            contextFiles,
+            chatModeParams
+          )
+          // setFileRetrievalEnabled(false)
+          return
+        }
+
+        if (docs?.length > 0 || documentContext?.length > 0) {
+          const processingTabs = docs || documentContext || []
+
+          if (docs?.length > 0) {
+            setDocumentContext(
+              Array.from(new Set([...(documentContext || []), ...docs]))
+            )
+          }
+          await tabChatMode(
+            message,
+            image,
+            processingTabs,
+            isRegenerate,
+            chatHistory || messages,
+            memory || history,
+            signal,
+            chatModeParams
+          )
+          return
+        }
+
+        if (selectedKnowledge) {
+          await ragMode(
+            message,
+            image,
+            isRegenerate,
+            chatHistory || messages,
+            memory || history,
+            signal,
+            chatModeParams
+          )
+        } else {
+          if (webSearch) {
+            await searchChatMode(
+              message,
+              image,
+              isRegenerate,
+              chatHistory || messages,
+              memory || history,
+              signal,
+              chatModeParams
+            )
+          } else {
+            // Include uploaded files info even in normal mode
+            const enhancedChatModeParams = {
+              ...chatModeParams,
+              uploadedFiles: uploadedFiles
+            }
+
+            await normalChatMode(
+              message,
+              image,
+              isRegenerate,
+              chatHistory || messages,
+              memory || history,
+              signal,
+              enhancedChatModeParams
+            )
+          }
+        }
+      } catch (e: any) {
+        notification.error({
+          message: t("error"),
+          description: e?.message || t("somethingWentWrong")
+        })
+        setIsProcessing(false)
+        setStreaming(false)
+      }
+    },
+    [
+      setStreaming,
+      setAbortController,
       selectedModel,
       useOCR,
       selectedSystemPrompt,
@@ -232,146 +381,94 @@ export const useMessageOption = () => {
       saveMessageOnError,
       setHistory,
       setIsProcessing,
-      setStreaming,
-      setAbortController,
       historyId,
       setHistoryId,
       fileRetrievalEnabled,
       setActionInfo,
-      webSearch
-    }
-
-    try {
-      if (isContinue) {
-        await continueChatMode(
-          chatHistory || messages,
-          memory || history,
-          signal,
-          chatModeParams
-        )
-        return
-      }
-      // console.log("contextFiles", contextFiles)
-      if (contextFiles.length > 0) {
-        await documentChatMode(
-          message,
-          image,
-          isRegenerate,
-          chatHistory || messages,
-          memory || history,
-          signal,
-          contextFiles,
-          chatModeParams
-        )
-        // setFileRetrievalEnabled(false)
-        return
-      }
-
-      if (docs?.length > 0 || documentContext?.length > 0) {
-        const processingTabs = docs || documentContext || []
-
-        if (docs?.length > 0) {
-          setDocumentContext(
-            Array.from(new Set([...(documentContext || []), ...docs]))
-          )
-        }
-        await tabChatMode(
-          message,
-          image,
-          processingTabs,
-          isRegenerate,
-          chatHistory || messages,
-          memory || history,
-          signal,
-          chatModeParams
-        )
-        return
-      }
-
-      if (selectedKnowledge) {
-        await ragMode(
-          message,
-          image,
-          isRegenerate,
-          chatHistory || messages,
-          memory || history,
-          signal,
-          chatModeParams
-        )
-      } else {
-        if (webSearch) {
-          await searchChatMode(
-            message,
-            image,
-            isRegenerate,
-            chatHistory || messages,
-            memory || history,
-            signal,
-            chatModeParams
-          )
-        } else {
-          // Include uploaded files info even in normal mode
-          const enhancedChatModeParams = {
-            ...chatModeParams,
-            uploadedFiles: uploadedFiles
-          }
-
-          await normalChatMode(
-            message,
-            image,
-            isRegenerate,
-            chatHistory || messages,
-            memory || history,
-            signal,
-            enhancedChatModeParams
-          )
-        }
-      }
-    } catch (e: any) {
-      notification.error({
-        message: t("error"),
-        description: e?.message || t("somethingWentWrong")
-      })
-      setIsProcessing(false)
-      setStreaming(false)
-    }
-  }
-
-  const regenerateLastMessage = createRegenerateLastMessage({
-    validateBeforeSubmitFn,
-    history,
-    messages,
-    setHistory,
-    setMessages,
-    historyId,
-    removeMessageUsingHistoryIdFn: removeMessageUsingHistoryId,
-    onSubmit
-  })
-
-  const stopStreamingRequest = createStopStreamingRequest(
-    abortController,
-    setAbortController
+      webSearch,
+      messages,
+      history,
+      contextFiles,
+      documentContext,
+      setDocumentContext,
+      uploadedFiles,
+      t
+    ]
   )
 
-  const editMessage = createEditMessage({
-    messages,
-    history,
-    setMessages,
-    setHistory,
-    historyId,
-    validateBeforeSubmitFn,
-    onSubmit
-  })
+  // useMemo is used here because a factory function `create...` is called.
+  // This 'memoizes' the *result* of that factory call (which is the function we need).
+  const regenerateLastMessage = useMemo(
+    () =>
+      createRegenerateLastMessage({
+        validateBeforeSubmitFn,
+        history,
+        messages,
+        setHistory,
+        setMessages,
+        historyId,
+        removeMessageUsingHistoryIdFn: removeMessageUsingHistoryId,
+        onSubmit
+      }),
+    [
+      validateBeforeSubmitFn,
+      history,
+      messages,
+      setHistory,
+      setMessages,
+      historyId,
+      onSubmit
+    ]
+  )
 
-  const createChatBranch = createBranchMessage({
-    historyId,
-    setHistory,
-    setHistoryId,
-    setMessages,
-    setContext: setContextFiles,
-    setSelectedSystemPrompt,
-    setSystemPrompt: currentChatModelSettings.setSystemPrompt
-  })
+  const stopStreamingRequest = useMemo(
+    () => createStopStreamingRequest(abortController, setAbortController),
+    [abortController, setAbortController]
+  )
+
+  const editMessage = useMemo(
+    () =>
+      createEditMessage({
+        messages,
+        history,
+        setMessages,
+        setHistory,
+        historyId,
+        validateBeforeSubmitFn,
+        onSubmit
+      }),
+    [
+      messages,
+      history,
+      setMessages,
+      setHistory,
+      historyId,
+      validateBeforeSubmitFn,
+      onSubmit
+    ]
+  )
+
+  const createChatBranch = useMemo(
+    () =>
+      createBranchMessage({
+        historyId,
+        setHistory,
+        setHistoryId,
+        setMessages,
+        setContext: setContextFiles,
+        setSelectedSystemPrompt,
+        setSystemPrompt: currentChatModelSettings.setSystemPrompt
+      }),
+    [
+      historyId,
+      setHistory,
+      setHistoryId,
+      setMessages,
+      setContextFiles,
+      setSelectedSystemPrompt,
+      currentChatModelSettings.setSystemPrompt
+    ]
+  )
 
   return {
     editMessage,

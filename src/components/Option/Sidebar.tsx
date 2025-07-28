@@ -1,3 +1,4 @@
+import React from "react"
 import {
   useMutation,
   useQueryClient,
@@ -30,7 +31,7 @@ import { useNavigate } from "react-router-dom"
 import { useTranslation } from "react-i18next"
 import { lastUsedChatModelEnabled } from "@/services/model-settings"
 import { useDebounce } from "@/hooks/useDebounce"
-import { useState } from "react"
+import { useState, memo } from "react"
 import { PageAssistDatabase } from "@/db/dexie/chat"
 import {
   deleteByHistoryId,
@@ -61,7 +62,8 @@ type Props = {
   isOpen: boolean
 }
 
-export const Sidebar = ({
+// 2. Keep your React.memo wrapper
+export const Sidebar = memo( ({
   onClose,
   setMessages,
   setHistory,
@@ -176,131 +178,131 @@ export const Sidebar = ({
     initialPageParam: 1
   })
 
-  // Flatten all groups from all pages
-  const chatHistories =
-    chatHistoriesData?.pages.reduce(
-      (acc, page) => {
-        // Merge groups with same labels
-        page.groups.forEach((group) => {
-          const existingGroup = acc.find((g) => g.label === group.label)
-          if (existingGroup) {
-            existingGroup.items.push(...group.items)
-          } else {
-            acc.push({ ...group })
-          }
-        })
-        return acc
-      },
-      [] as Array<{ label: string; items: any[] }>
-    ) || []
+    // Flatten all groups from all pages
+    const chatHistories =
+      chatHistoriesData?.pages.reduce(
+        (acc, page) => {
+          // Merge groups with same labels
+          page.groups.forEach((group) => {
+            const existingGroup = acc.find((g) => g.label === group.label)
+            if (existingGroup) {
+              existingGroup.items.push(...group.items)
+            } else {
+              acc.push({ ...group })
+            }
+          })
+          return acc
+        },
+        [] as Array<{ label: string; items: any[] }>
+      ) || []
 
-  const { mutate: deleteHistory } = useMutation({
-    mutationKey: ["deleteHistory"],
-    mutationFn: deleteByHistoryId,
-    onSuccess: (history_id) => {
-      client.invalidateQueries({
-        queryKey: ["fetchChatHistory"]
-      })
-      if (historyId === history_id) {
-        clearChat()
-      }
-    }
-  })
-
-  const { mutate: editHistory } = useMutation({
-    mutationKey: ["editHistory"],
-    mutationFn: async (data: { id: string; title: string }) => {
-      return await updateHistory(data.id, data.title)
-    },
-    onSuccess: () => {
-      client.invalidateQueries({
-        queryKey: ["fetchChatHistory"]
-      })
-    }
-  })
-
-  const { mutate: deleteHistoriesByRange, isPending: deleteRangeLoading } =
-    useMutation({
-      mutationKey: ["deleteHistoriesByRange"],
-      mutationFn: async (rangeLabel: string) => {
-        setDeleteGroup(rangeLabel)
-        return await deleteHistoriesByDateRange(rangeLabel)
-      },
-      onSuccess: (deletedIds) => {
+    const { mutate: deleteHistory } = useMutation({
+      mutationKey: ["deleteHistory"],
+      mutationFn: deleteByHistoryId,
+      onSuccess: (history_id) => {
         client.invalidateQueries({
           queryKey: ["fetchChatHistory"]
         })
-
-        if (deletedIds.includes(historyId)) {
+        if (historyId === history_id) {
           clearChat()
         }
-
-        message.success(
-          t("common:historiesDeleted", { count: deletedIds.length })
-        )
-      },
-      onError: (error) => {
-        console.error("Failed to delete histories:", error)
-        message.error(t("common:deleteHistoriesError"))
       }
     })
 
-  const handleDeleteHistoriesByRange = (rangeLabel: string) => {
-    if (!confirm(t(`common:range:deleteConfirm:${rangeLabel}`))) {
-      return
-    }
-    deleteHistoriesByRange(rangeLabel)
-  }
+    const { mutate: editHistory } = useMutation({
+      mutationKey: ["editHistory"],
+      mutationFn: async (data: { id: string; title: string }) => {
+        return await updateHistory(data.id, data.title)
+      },
+      onSuccess: () => {
+        client.invalidateQueries({
+          queryKey: ["fetchChatHistory"]
+        })
+      }
+    })
 
-  const { mutate: pinChatHistory, isPending: pinLoading } = useMutation({
-    mutationKey: ["pinHistory"],
-    mutationFn: async (data: { id: string; is_pinned: boolean }) => {
-      return await pinHistory(data.id, data.is_pinned)
-    },
-    onSuccess: () => {
-      client.invalidateQueries({
-        queryKey: ["fetchChatHistory"]
+    const { mutate: deleteHistoriesByRange, isPending: deleteRangeLoading } =
+      useMutation({
+        mutationKey: ["deleteHistoriesByRange"],
+        mutationFn: async (rangeLabel: string) => {
+          setDeleteGroup(rangeLabel)
+          return await deleteHistoriesByDateRange(rangeLabel)
+        },
+        onSuccess: (deletedIds) => {
+          client.invalidateQueries({
+            queryKey: ["fetchChatHistory"]
+          })
+
+          if (deletedIds.includes(historyId)) {
+            clearChat()
+          }
+
+          message.success(
+            t("common:historiesDeleted", { count: deletedIds.length })
+          )
+        },
+        onError: (error) => {
+          console.error("Failed to delete histories:", error)
+          message.error(t("common:deleteHistoriesError"))
+        }
       })
+
+    const handleDeleteHistoriesByRange = (rangeLabel: string) => {
+      if (!confirm(t(`common:range:deleteConfirm:${rangeLabel}`))) {
+        return
+      }
+      deleteHistoriesByRange(rangeLabel)
     }
-  })
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value)
-  }
+    const { mutate: pinChatHistory, isPending: pinLoading } = useMutation({
+      mutationKey: ["pinHistory"],
+      mutationFn: async (data: { id: string; is_pinned: boolean }) => {
+        return await pinHistory(data.id, data.is_pinned)
+      },
+      onSuccess: () => {
+        client.invalidateQueries({
+          queryKey: ["fetchChatHistory"]
+        })
+      }
+    })
 
-  const clearSearch = () => {
-    setSearchQuery("")
-  }
-
-  const handleLoadMore = () => {
-    if (hasNextPage && !isFetchingNextPage) {
-      fetchNextPage()
+    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchQuery(e.target.value)
     }
-  }
 
-  return (
-    <div
-      className={`overflow-y-auto z-99 ${temporaryChat ? "pointer-events-none opacity-50" : ""}`}>
-      <div className="sticky top-0 z-10 my-3">
-        <div className="relative">
-          <Input
-            placeholder={t("common:search")}
-            value={searchQuery}
-            onChange={handleSearchChange}
-            prefix={<SearchIcon className="w-4 h-4 text-gray-400" />}
-            suffix={
-              searchQuery ? (
-                <button
-                  onClick={clearSearch}
-                  className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
-                  ✕
-                </button>
-              ) : null
-            }
-            className="w-full rounded-md border border-gray-300 dark:border-gray-700 dark:bg-[#232222]"
-          />
+    const clearSearch = () => {
+      setSearchQuery("")
+    }
+
+    const handleLoadMore = () => {
+      if (hasNextPage && !isFetchingNextPage) {
+        fetchNextPage()
+      }
+    }
+
+    return (
+      <div
+        className={`overflow-y-auto z-99 ${temporaryChat ? "pointer-events-none opacity-50" : ""}`}>
+        <div className="sticky top-0 z-10 my-3">
+          <div className="relative">
+            <Input
+              placeholder={t("common:search")}
+              value={searchQuery}
+              onChange={handleSearchChange}
+              prefix={<SearchIcon className="w-4 h-4 text-gray-400" />}
+              suffix={
+                searchQuery ? (
+                  <button
+                    onClick={clearSearch}
+                    className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
+                    ✕
+                  </button>
+                ) : null
+              }
+              className="w-full rounded-md border border-gray-300 dark:border-gray-700 dark:bg-[#232222]"
+            />
+          </div>
         </div>
-      </div>
 
       {status === "success" &&
         chatHistories.length === 0 &&
@@ -321,17 +323,17 @@ export const Sidebar = ({
         </div>
       )}
 
-      {(status === "pending" || isLoading) && (
-        <div className="flex justify-center items-center mt-5">
-          <Skeleton active paragraph={{ rows: 8 }} />
-        </div>
-      )}
+        {(status === "pending" || isLoading) && (
+          <div className="flex justify-center items-center mt-5">
+            <Skeleton active paragraph={{ rows: 8 }} />
+          </div>
+        )}
 
-      {status === "error" && (
-        <div className="flex justify-center items-center">
-          <span className="text-red-500">Error loading history</span>
-        </div>
-      )}
+        {status === "error" && (
+          <div className="flex justify-center items-center">
+            <span className="text-red-500">Error loading history</span>
+          </div>
+        )}
 
       {status === "success" && chatHistories.length > 0 && (
         <div className="flex flex-col gap-2">
@@ -379,124 +381,127 @@ export const Sidebar = ({
                         const db = new PageAssistDatabase()
                         const history = await db.getChatHistory(chat.id)
                         const historyDetails = await db.getHistoryInfo(chat.id)
-                        setHistoryId(chat.id)
-                        setHistory(formatToChatHistory(history))
-                        setMessages(formatToMessage(history))
-                        const isLastUsedChatModel =
-                          await lastUsedChatModelEnabled()
-                        if (isLastUsedChatModel) {
-                          const currentChatModel = historyDetails?.model_id
-                          if (currentChatModel) {
-                            setSelectedModel(currentChatModel)
-                          }
-                        }
-                        const lastUsedPrompt = historyDetails?.last_used_prompt
-                        if (lastUsedPrompt) {
-                          if (lastUsedPrompt.prompt_id) {
-                            const prompt = await getPromptById(
-                              lastUsedPrompt.prompt_id
-                            )
-                            if (prompt) {
-                              setSelectedSystemPrompt(lastUsedPrompt.prompt_id)
+                          setHistoryId(chat.id)
+                          setHistory(formatToChatHistory(history))
+                          setMessages(formatToMessage(history))
+                          const isLastUsedChatModel =
+                            await lastUsedChatModelEnabled()
+                          if (isLastUsedChatModel) {
+                            const currentChatModel = historyDetails?.model_id
+                            if (currentChatModel) {
+                              setSelectedModel(currentChatModel)
                             }
                           }
-                          setSystemPrompt(lastUsedPrompt.prompt_content)
-                        }
+                        const lastUsedPrompt = historyDetails?.last_used_prompt
+                          if (lastUsedPrompt) {
+                            if (lastUsedPrompt.prompt_id) {
+                              const prompt = await getPromptById(
+                                lastUsedPrompt.prompt_id
+                              )
+                              if (prompt) {
+                                setSelectedSystemPrompt(
+                                  lastUsedPrompt.prompt_id
+                                )
+                              }
+                            }
+                            setSystemPrompt(lastUsedPrompt.prompt_content)
+                          }
 
-                        if (setContext) {
-                          const session = await getSessionFiles(chat.id)
-                          setContext(session)
-                        }
-                        navigate("/")
-                        onClose()
-                      }}>
+                          if (setContext) {
+                            const session = await getSessionFiles(chat.id)
+                            setContext(session)
+                          }
+                          navigate("/")
+                          onClose()
+                        }}>
                       <span className="flex-grow truncate">{chat.title}</span>
-                    </button>
-                    <div className="flex items-center gap-2">
-                      <Dropdown
-                        overlay={
-                          <Menu>
-                            <Menu.Item
-                              key="pin"
-                              icon={
-                                chat.is_pinned ? (
-                                  <PinOffIcon className="w-4 h-4" />
-                                ) : (
-                                  <PinIcon className="w-4 h-4" />
-                                )
-                              }
-                              onClick={() =>
-                                pinChatHistory({
-                                  id: chat.id,
-                                  is_pinned: !chat.is_pinned
-                                })
-                              }
-                              disabled={pinLoading}>
-                              {chat.is_pinned
-                                ? t("common:unpin")
-                                : t("common:pin")}
-                            </Menu.Item>
-                            <Menu.Item
-                              key="edit"
-                              icon={<PencilIcon className="w-4 h-4" />}
-                              onClick={() => {
-                                const newTitle = prompt(
-                                  t("editHistoryTitle"),
-                                  chat.title
-                                )
-                                if (newTitle) {
-                                  editHistory({ id: chat.id, title: newTitle })
+                      </button>
+                      <div className="flex items-center gap-2">
+                        <Dropdown
+                          overlay={
+                            <Menu>
+                              <Menu.Item
+                                key="pin"
+                                icon={
+                                  chat.is_pinned ? (
+                                    <PinOffIcon className="w-4 h-4" />
+                                  ) : (
+                                    <PinIcon className="w-4 h-4" />
+                                  )
                                 }
-                              }}>
-                              {t("common:edit")}
-                            </Menu.Item>
-                            <Menu.Item
-                              key="delete"
-                              icon={<Trash2 className="w-4 h-4" />}
-                              danger
-                              onClick={() => {
-                                if (!confirm(t("deleteHistoryConfirmation")))
-                                  return
-                                deleteHistory(chat.id)
-                              }}>
-                              {t("common:delete")}
-                            </Menu.Item>
-                          </Menu>
-                        }
-                        trigger={["click"]}
-                        placement="bottomRight">
-                        <button className="text-gray-500 dark:text-gray-400 opacity-80 hover:opacity-100">
-                          <MoreVertical className="w-4 h-4" />
-                        </button>
-                      </Dropdown>
+                                onClick={() =>
+                                  pinChatHistory({
+                                    id: chat.id,
+                                    is_pinned: !chat.is_pinned
+                                  })
+                                }
+                                disabled={pinLoading}>
+                                {chat.is_pinned
+                                  ? t("common:unpin")
+                                  : t("common:pin")}
+                              </Menu.Item>
+                              <Menu.Item
+                                key="edit"
+                                icon={<PencilIcon className="w-4 h-4" />}
+                                onClick={() => {
+                                  const newTitle = prompt(
+                                    t("editHistoryTitle"),
+                                    chat.title
+                                  )
+                                  if (newTitle) {
+                                  editHistory({ id: chat.id, title: newTitle })
+                                  }
+                                }}>
+                                {t("common:edit")}
+                              </Menu.Item>
+                              <Menu.Item
+                                key="delete"
+                                icon={<Trash2 className="w-4 h-4" />}
+                                danger
+                                onClick={() => {
+                                  if (!confirm(t("deleteHistoryConfirmation")))
+                                    return
+                                  deleteHistory(chat.id)
+                                }}>
+                                {t("common:delete")}
+                              </Menu.Item>
+                            </Menu>
+                          }
+                          trigger={["click"]}
+                          placement="bottomRight">
+                          <button className="text-gray-500 dark:text-gray-400 opacity-80 hover:opacity-100">
+                            <MoreVertical className="w-4 h-4" />
+                          </button>
+                        </Dropdown>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
 
-          {/* Load More Button */}
-          {hasNextPage && (
-            <div className="flex justify-center mt-4 mb-2">
-              <Button
-                type="default"
-                onClick={handleLoadMore}
-                loading={isFetchingNextPage}
-                icon={
-                  !isFetchingNextPage ? (
-                    <ChevronDown className="w-4 h-4" />
-                  ) : undefined
-                }
-                className="flex items-center gap-2 text-sm">
-                {isFetchingNextPage
-                  ? t("common:loading")
-                  : t("common:loadMore")}
-              </Button>
-            </div>
-          )}
-        </div>
-      )}
-    </div>
-  )
-}
+            {/* Load More Button */}
+            {hasNextPage && (
+              <div className="flex justify-center mt-4 mb-2">
+                <Button
+                  type="default"
+                  onClick={handleLoadMore}
+                  loading={isFetchingNextPage}
+                  icon={
+                    !isFetchingNextPage ? (
+                      <ChevronDown className="w-4 h-4" />
+                    ) : undefined
+                  }
+                  className="flex items-center gap-2 text-sm">
+                  {isFetchingNextPage
+                    ? t("common:loading")
+                    : t("common:loadMore")}
+                </Button>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    )
+  }
+)

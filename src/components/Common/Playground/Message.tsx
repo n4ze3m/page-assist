@@ -203,7 +203,7 @@ export const PlaygroundMessage = (props: Props) => {
                       return (
                         <Collapse
                           key={i}
-                          className="border-none text-gray-500 dark:text-gray-400 !mb-3 "
+                          className="border-none text-gray-500 dark:text-gray-400 !mb-3"
                           defaultActiveKey={
                             props?.openReasoning ? "reasoning" : undefined
                           }
@@ -225,7 +225,29 @@ export const PlaygroundMessage = (props: Props) => {
                                   })
                                 ),
                               children: <Markdown message={e.content} />
-                            }
+                            },
+                          ]}
+                        />
+                      )
+                    } else if (e.type === 'tool_run') {
+                      return (
+                        <Collapse
+                          key={`tool-${i}`}
+                          className="border-none text-gray-500 dark:text-gray-400 !mb-3"
+                          items={[
+                            {
+                              key: "tool_run",
+                              label: e.tool_running ? (
+                                <div className="flex items-center gap-2">
+                                  <span className="italic shimmer-text">
+                                    Executing...
+                                  </span>
+                                </div>
+                              ) : (
+                                `Executed for ${humanizeMilliseconds(e.duration || 0)}`
+                              ),
+                              children: <Markdown message={e.content} />,
+                            },
                           ]}
                         />
                       )
