@@ -142,3 +142,35 @@ export const useChatShortcuts = (
     shortcuts
   }
 }
+
+/**
+ * Hook specifically for sidebar shortcuts
+ * @param toggleSidebar Function to toggle sidebar
+ * @param enabled Whether the shortcuts are enabled
+ */
+export const useSidebarShortcuts = (
+  toggleSidebar: () => void,
+  enabled: boolean = true
+) => {
+  const { shortcuts: configuredShortcuts } = useShortcutConfig()
+
+  const toggleSidebarAction = useCallback(() => {
+    toggleSidebar()
+  }, [toggleSidebar])
+
+  const shortcuts: KeyboardShortcutConfig[] = [
+    {
+      shortcut: configuredShortcuts.toggleSidebar,
+      action: toggleSidebarAction,
+      enabled,
+      description: 'Toggle sidebar'
+    }
+  ]
+
+  useKeyboardShortcuts(shortcuts)
+
+  return {
+    toggleSidebar: toggleSidebarAction,
+    shortcuts
+  }
+}

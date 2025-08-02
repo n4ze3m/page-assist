@@ -4,6 +4,7 @@ import { KeyboardShortcut } from "./useKeyboardShortcuts"
 export interface ShortcutConfig {
   focusTextarea: KeyboardShortcut
   newChat: KeyboardShortcut
+  toggleSidebar: KeyboardShortcut
 }
 
 export const defaultShortcuts: ShortcutConfig = {
@@ -17,6 +18,12 @@ export const defaultShortcuts: ShortcutConfig = {
     key: 'o',
     ctrlKey: true,
     shiftKey: true,
+    preventDefault: true,
+    stopPropagation: true
+  },
+  toggleSidebar: {
+    key: 'b',
+    ctrlKey: true,
     preventDefault: true,
     stopPropagation: true
   }

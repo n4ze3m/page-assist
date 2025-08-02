@@ -6,7 +6,7 @@ import {
 import useBackgroundMessage from "@/hooks/useBackgroundMessage"
 import { useMigration } from "@/hooks/useMigration"
 import { useSmartScroll } from "@/hooks/useSmartScroll"
-import { useChatShortcuts } from "@/hooks/keyboard/useKeyboardShortcuts"
+import { useChatShortcuts, useSidebarShortcuts } from "@/hooks/keyboard/useKeyboardShortcuts"
 import { copilotResumeLastChat } from "@/services/app"
 import { Storage } from "@plasmohq/storage"
 import { useStorage } from "@plasmohq/storage/hook"
@@ -22,6 +22,7 @@ import { useMessage } from "~/hooks/useMessage"
 const SidepanelChat = () => {
   const drop = React.useRef<HTMLDivElement>(null)
   const [dropedFile, setDropedFile] = React.useState<File | undefined>()
+  const [sidebarOpen, setSidebarOpen] = React.useState(false)
   const { t } = useTranslation(["playground"])
   const [dropState, setDropState] = React.useState<
     "idle" | "dragging" | "error"
@@ -44,8 +45,13 @@ const SidepanelChat = () => {
   const { containerRef, isAutoScrollToBottom, autoScrollToBottom } =
     useSmartScroll(messages, streaming, 100)
 
+  const toggleSidebar = () => {
+    setSidebarOpen(prev => !prev)
+  }
+
   useChatShortcuts(clearChat, true)
-  
+  useSidebarShortcuts(toggleSidebar, true)
+
   const [chatBackgroundImage] = useStorage({
     key: "chatBackgroundImage",
     instance: new Storage({
@@ -159,7 +165,10 @@ const SidepanelChat = () => {
     <div className="flex h-full w-full">
       <main className="relative h-dvh w-full">
         <div className="relative z-20 w-full">
-          <SidepanelHeader />
+          <SidepanelHeader 
+            sidebarOpen={sidebarOpen}
+            setSidebarOpen={setSidebarOpen}
+          />
         </div>
         <div
           ref={drop}
