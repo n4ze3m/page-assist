@@ -6,6 +6,7 @@ import {
 import useBackgroundMessage from "@/hooks/useBackgroundMessage"
 import { useMigration } from "@/hooks/useMigration"
 import { useSmartScroll } from "@/hooks/useSmartScroll"
+import { useChatShortcuts } from "@/hooks/keyboard/useKeyboardShortcuts"
 import { copilotResumeLastChat } from "@/services/app"
 import { Storage } from "@plasmohq/storage"
 import { useStorage } from "@plasmohq/storage/hook"
@@ -37,10 +38,14 @@ const SidepanelChat = () => {
     defaultChatWithWebsite,
     setChatMode,
     setTemporaryChat,
-    sidepanelTemporaryChat
+    sidepanelTemporaryChat,
+    clearChat
   } = useMessage()
   const { containerRef, isAutoScrollToBottom, autoScrollToBottom } =
     useSmartScroll(messages, streaming, 100)
+
+  useChatShortcuts(clearChat, true)
+  
   const [chatBackgroundImage] = useStorage({
     key: "chatBackgroundImage",
     instance: new Storage({

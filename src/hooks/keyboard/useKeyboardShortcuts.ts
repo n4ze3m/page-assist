@@ -110,3 +110,35 @@ export const useFocusShortcuts = (
     shortcuts
   }
 }
+
+/**
+ * Hook specifically for chat shortcuts
+ * @param clearChat Function to clear/start new chat
+ * @param enabled Whether the shortcuts are enabled
+ */
+export const useChatShortcuts = (
+  clearChat: () => void,
+  enabled: boolean = true
+) => {
+  const { shortcuts: configuredShortcuts } = useShortcutConfig()
+
+  const newChat = useCallback(() => {
+    clearChat()
+  }, [clearChat])
+
+  const shortcuts: KeyboardShortcutConfig[] = [
+    {
+      shortcut: configuredShortcuts.newChat,
+      action: newChat,
+      enabled,
+      description: 'Start new chat'
+    }
+  ]
+
+  useKeyboardShortcuts(shortcuts)
+
+  return {
+    newChat,
+    shortcuts
+  }
+}

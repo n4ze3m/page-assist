@@ -3,12 +3,19 @@ import { KeyboardShortcut } from "./useKeyboardShortcuts"
 
 export interface ShortcutConfig {
   focusTextarea: KeyboardShortcut
-  // Add more shortcuts here as needed
+  newChat: KeyboardShortcut
 }
 
 export const defaultShortcuts: ShortcutConfig = {
   focusTextarea: {
     key: 'Escape',
+    shiftKey: true,
+    preventDefault: true,
+    stopPropagation: true
+  },
+  newChat: {
+    key: 'o',
+    ctrlKey: true,
     shiftKey: true,
     preventDefault: true,
     stopPropagation: true
