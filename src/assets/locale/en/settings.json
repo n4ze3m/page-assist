@@ -234,12 +234,14 @@
     "notification": {
       "pullModel": "Pulling Model",
       "pullModelDescription": "Pulling {{modelName}} model. For more details, check the extension icon.",
+      "cancellingDownload": "Cancelling Download",
+      "cancellingDownloadDescription": "Model download is being cancelled...",
       "success": "Success",
       "error": "Error",
       "successDescription": "Successfully pulled the model",
       "successDeleteDescription": "Successfully deleted the model",
       "someError": "Something went wrong. Please try again later"
-    }
+    } 
   },
   "managePrompts": {
     "title": "Manage Prompts",

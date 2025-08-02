@@ -141,5 +141,9 @@
     },
     "mermaid": "Mermaid",
     "embeddingGen": "Creazione di embeddings, questo può richiedere un po' di tempo",
-    "semanticSearch": "Ricerca semantica in corso"
+    "semanticSearch": "Ricerca semantica in corso",
+    "downloading": "Download in corso",
+    "cancelPullingModel": {
+        "confirm": "Sei sicuro di voler annullare il download? Questo interromperà il processo di download. Secondo la documentazione di Ollama, puoi riprendere da dove hai interrotto."
+    }
 }

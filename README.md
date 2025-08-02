@@ -103,6 +103,29 @@ Default Keyboard Shortcut: `Ctrl+Shift+L`
 
 Note: You can change the keyboard shortcuts from the extension settings on the Chrome Extension Management page.
 
+## Keyboard Shortcuts
+
+Page Assist supports various keyboard shortcuts to enhance your productivity:
+
+### Extension Shortcuts
+
+| Action | Shortcut | Description |
+|--------|----------|-------------|
+| Open Sidebar | `Ctrl+Shift+Y` | Opens the sidebar on any webpage |
+| Open Web UI | `Ctrl+Shift+L` | Opens the Web UI in a new tab |
+
+**Note**: You can customize extension shortcuts from your browser's extension management page .
+
+### Application Shortcuts
+
+| Action | Shortcut | Description |
+|--------|----------|-------------|
+| New Chat | `Ctrl+Shift+O` | Starts a new chat conversation |
+| Toggle Sidebar | `Ctrl+B` | Opens/closes the chat history sidebar |
+| Focus Textarea | `Shift+Esc` | Focuses the message input field |
+
+
+
 ## Development
 
 You can run the extension in development mode to make changes and test them.

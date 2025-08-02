@@ -5,19 +5,22 @@ import {
   Tag,
   Tooltip,
   notification,
-  Avatar
+  Avatar,
 } from "antd"
 import { bytePerSecondFormatter } from "~/libs/byte-formater"
 import { deleteModel, getAllModels } from "~/services/ollama"
 import dayjs from "dayjs"
 import relativeTime from "dayjs/plugin/relativeTime"
 import { useForm } from "@mantine/form"
-import { Pencil, RotateCcw, Settings, Trash2 } from "lucide-react"
+import { Pencil, RotateCcw, Settings, Trash2, X } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useStorage } from "@plasmohq/storage/hook"
 import { ModelNickModelNicknameModal } from "./ModelNicknameModal"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { AddUpdateModelSettings } from "./AddUpdateModelSettings"
+import { getDownloadState } from "~/utils/pull-ollama"
+import { browser } from "wxt/browser"
+import { CancelPullingModel } from "./CancelPullingModel"
 
 dayjs.extend(relativeTime)
 
@@ -27,6 +30,10 @@ export const OllamaModelsTable = () => {
   const [selectedModel, setSelectedModel] = useStorage("selectedModel")
   const [openNicknameModal, setOpenNicknameModal] = useState(false)
   const [openSettingsModal, setOpenSettingsModal] = useState(false)
+  const [downloadState, setDownloadState] = useState({
+    modelName: null,
+    isDownloading: false
+  })
   const [model, setModel] = useState<{
     model_id: string
     model_name?: string
@@ -42,6 +49,27 @@ export const OllamaModelsTable = () => {
       model: ""
     }
   })
+
+  useEffect(() => {
+    const checkDownloadState = async () => {
+      const state = await getDownloadState()
+      if (
+        state &&
+        typeof state === "object" &&
+        "modelName" in state &&
+        "isDownloading" in state
+      ) {
+        setDownloadState(state)
+      } else {
+        setDownloadState({ modelName: null, isDownloading: false })
+      }
+    }
+
+    checkDownloadState()
+    const interval = setInterval(checkDownloadState, 1000)
+
+    return () => clearInterval(interval)
+  }, [])
 
   const { data, status } = useQuery({
     queryKey: ["fetchAllModels"],
@@ -89,8 +117,25 @@ export const OllamaModelsTable = () => {
     mutationFn: pullModel
   })
 
+  const cancelDownloadModel = () => {
+    browser.runtime.sendMessage({
+      type: "cancel_download"
+    })
+    notification.info({
+      message: t("manageModels.notification.cancellingDownload"),
+      description: t("manageModels.notification.cancellingDownloadDescription")
+    })
+  }
+
   return (
     <div>
+      {downloadState.isDownloading && (
+        <CancelPullingModel
+          cancelDownloadModel={cancelDownloadModel}
+          modelName={downloadState.modelName}
+        />
+      )}
+
       <div>
         {status === "pending" && <Skeleton paragraph={{ rows: 8 }} />}
 
@@ -159,7 +204,7 @@ export const OllamaModelsTable = () => {
                   title: t("manageModels.columns.actions"),
                   render: (_, record) => (
                     <div className="flex gap-2">
-                     <Tooltip title={t("common:modelSettings.label")}>
+                      <Tooltip title={t("common:modelSettings.label")}>
                         <button
                           onClick={() => {
                             setModel({
@@ -190,7 +235,7 @@ export const OllamaModelsTable = () => {
                           <Trash2 className="size-4" />
                         </button>
                       </Tooltip>
-                   
+
                       <Tooltip title={t("manageModels.tooltip.repull")}>
                         <button
                           onClick={() => {

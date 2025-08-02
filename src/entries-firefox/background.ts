@@ -1,6 +1,6 @@
 import { getOllamaURL, isOllamaRunning } from "../services/ollama"
 import { browser } from "wxt/browser"
-import { clearBadge, streamDownload } from "@/utils/pull-ollama"
+import { clearBadge, streamDownload, cancelDownload } from "@/utils/pull-ollama"
 import { Storage } from "@plasmohq/storage"
 import { getInitialConfig } from "@/services/action"
 
@@ -96,9 +96,12 @@ export default defineBackground({
           setTimeout(() => {
             clearBadge()
           }, 5000)
+          return
         }
 
         await streamDownload(ollamaURL, message.modelName)
+      } else if (message.type === "cancel_download") {
+        cancelDownload()
       }
     })
 
