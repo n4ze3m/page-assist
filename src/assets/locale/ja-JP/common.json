@@ -140,5 +140,9 @@
     "thought": "{{time}}の思考"
   },
   "embeddingGen": "埋め込みを作成中です。時間がかかる場合があります",
-  "semanticSearch": "意味検索を実行中"
+  "semanticSearch": "意味検索を実行中",
+  "downloading": "ダウンロード中",
+  "cancelPullingModel": {
+    "confirm": "ダウンロードをキャンセルしてもよろしいですか？これによりダウンロードプロセスが停止します。Ollamaのドキュメントによると、中断した場所から再開できます。"
+  }
 }

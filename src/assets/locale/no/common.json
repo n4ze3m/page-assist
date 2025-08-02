@@ -140,5 +140,9 @@
         "thought": "Tenkte i {{time}}"
     },
     "embeddingGen": "Oppretter embeddings, dette kan ta litt tid",
-    "semanticSearch": "Utfører semantisk søk"
+    "semanticSearch": "Utfører semantisk søk",
+    "downloading": "Laster ned",
+    "cancelPullingModel": {
+        "confirm": "Er du sikker på at du vil avbryte nedlastingen? Dette vil stoppe nedlastingsprosessen. Ifølge Ollama-dokumentasjonen kan du starte på nytt fra der du slapp."
+    }
 }

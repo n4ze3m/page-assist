@@ -141,5 +141,9 @@
         "thought": "Gedanke für {{time}}"
     },
     "embeddingGen": "Erstelle Embeddings, dies kann eine Weile dauern",
-    "semanticSearch": "Führe semantische Suche durch"
+    "semanticSearch": "Führe semantische Suche durch",
+    "downloading": "Herunterladen",
+    "cancelPullingModel": {
+        "confirm": "Sind Sie sicher, dass Sie den Download abbrechen möchten? Dadurch wird der Downloadvorgang gestoppt. Laut der Ollama-Dokumentation können Sie dort weitermachen, wo Sie aufgehört haben."
+    }
 }
