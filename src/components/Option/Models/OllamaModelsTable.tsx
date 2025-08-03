@@ -1,18 +1,18 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import {
-  Skeleton,
-  Table,
-  Tag,
-  Tooltip,
-  notification,
-  Avatar,
-} from "antd"
+import { Skeleton, Table, Tag, Tooltip, notification, Avatar } from "antd"
 import { bytePerSecondFormatter } from "~/libs/byte-formater"
 import { deleteModel, getAllModels } from "~/services/ollama"
 import dayjs from "dayjs"
 import relativeTime from "dayjs/plugin/relativeTime"
 import { useForm } from "@mantine/form"
-import { Pencil, RotateCcw, Settings, Trash2, X } from "lucide-react"
+import {
+  ExternalLink,
+  Pencil,
+  RotateCcw,
+  Settings,
+  Trash2,
+  X
+} from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useStorage } from "@plasmohq/storage/hook"
 import { ModelNickModelNicknameModal } from "./ModelNicknameModal"
@@ -297,6 +297,23 @@ export const OllamaModelsTable = () => {
               bordered
               dataSource={data}
               rowKey={(record) => `${record.model}-${record.digest}`}
+              footer={() => (
+                <div>
+                  <a
+                    href="https://ollama.com/search"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 text-[12px] text-neutral-50 dark:text-neutral-400 hover:text-neutral-300 dark:hover:text-neutral-200 "
+                    style={{ textDecoration: "none" }}>
+                    {t(
+                      "manageModels.getMoreModels",
+                      "Get more models from Ollama"
+                    )}
+
+                    <ExternalLink className="size-[12px] " />
+                  </a>
+                </div>
+              )}
             />
           </div>
         )}
