@@ -140,5 +140,9 @@
     "thought": "Pensou por {{time}}"
   },
   "embeddingGen": "Criando embeddings, isso pode levar algum tempo",
-  "semanticSearch": "Realizando busca semântica"
+  "semanticSearch": "Realizando busca semântica",
+  "downloading": "Baixando",
+  "cancelPullingModel": {
+    "confirm": "Tem certeza de que deseja cancelar o download? Isso interromperá o processo de download. De acordo com a documentação do Ollama, você pode reiniciar de onde parou."
+  }
 }

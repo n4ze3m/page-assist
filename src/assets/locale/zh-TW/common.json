@@ -179,5 +179,9 @@
         "thought": "思考了 {{time}}"
     },
     "embeddingGen": "正在建立嵌入向量，這可能需要一些時間",
-    "semanticSearch": "正在執行語意搜尋"
+    "semanticSearch": "正在執行語意搜尋",
+    "downloading": "正在下載",
+    "cancelPullingModel": {
+        "confirm": "確定要取消下載嗎？這將會停止下載過程。根據 Ollama 文件，您可以從中斷處重新開始下載。"
+    }
 }

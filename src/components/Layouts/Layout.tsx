@@ -10,6 +10,7 @@ import { Header } from "./Header"
 import { EraserIcon, XIcon } from "lucide-react"
 // import { PageAssitDatabase } from "@/db/"
 import { useMessageOption } from "@/hooks/useMessageOption"
+import { useChatShortcuts, useSidebarShortcuts } from "@/hooks/keyboard/useKeyboardShortcuts"
 import { useQueryClient } from "@tanstack/react-query"
 import { useStoreChatModelSettings } from "@/store/model"
 import { PageAssistDatabase } from "@/db/dexie/chat"
@@ -38,6 +39,15 @@ export default function OptionLayout({
   } = useMessageOption()
   const queryClient = useQueryClient()
   const { setSystemPrompt } = useStoreChatModelSettings()
+
+  // Create toggle function for sidebar
+  const toggleSidebar = () => {
+    setSidebarOpen(prev => !prev)
+  }
+
+  // Initialize shortcuts
+  useChatShortcuts(clearChat, true)
+  useSidebarShortcuts(toggleSidebar, true)
 
   return (
     <div className="flex h-full w-full">

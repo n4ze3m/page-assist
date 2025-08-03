@@ -267,7 +267,12 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
 
   const submitForm = () => {
     form.onSubmit(async (value) => {
-      if (value.message.trim().length === 0 && value.image.length === 0) {
+      if (
+        value.message.trim().length === 0 &&
+        value.image.length === 0 &&
+        selectedDocuments.length === 0 &&
+        uploadedFiles.length === 0
+      ) {
         return
       }
       const defaultEM = await defaultEmbeddingModelForRag()
@@ -456,7 +461,9 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                     }
                     if (
                       value.message.trim().length === 0 &&
-                      value.image.length === 0
+                      value.image.length === 0 &&
+                      selectedDocuments.length === 0 &&
+                      uploadedFiles.length === 0
                     ) {
                       return
                     }

@@ -176,5 +176,9 @@
     },
     "mermaid": "Mermaid",
     "embeddingGen": "正在创建嵌入向量，这可能需要一些时间",
-    "semanticSearch": "正在执行语义搜索"
+    "semanticSearch": "正在执行语义搜索",
+    "downloading": "正在下载",
+    "cancelPullingModel": {
+        "confirm": "确定要取消下载吗？这将停止下载过程。根据 Ollama 文档，您可以从中断处重新开始下载。"
+    }
 }

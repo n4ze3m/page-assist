@@ -140,5 +140,9 @@
     "thought": "{{time}} 동안 생각함"
   },
   "embeddingGen": "임베딩을 생성하는 중입니다. 시간이 걸릴 수 있습니다",
-  "semanticSearch": "의미론적 검색을 수행하는 중"
+  "semanticSearch": "의미론적 검색을 수행하는 중",
+  "downloading": "다운로드 중",
+  "cancelPullingModel": {
+    "confirm": "다운로드를 취소하시겠습니까? 이 작업은 다운로드 과정을 중단합니다. Ollama 문서에 따르면, 중단된 위치에서 다시 시작할 수 있습니다."
+  }
 }
