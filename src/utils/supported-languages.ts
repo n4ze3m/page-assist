@@ -402,5 +402,37 @@ export const SUPPORTED_LANGUAGES = [
   {
     label: "ภาษาไทย",
     value: "th-TH"
-  }
+  },
+  {
+    label: "العربية",
+    value: "ar-SA"
+  } ,
+  {
+    label: "العربية (الإمارات العربية المتحدة)",
+    value: "ar-AE"
+  },
+  {
+    label: "العربية (المغرب)",
+    value: "ar-MA"
+  },
+  {
+    label: "العربية (مصر)",
+    value: "ar-EG"
+  },
+  {
+    label: "العربية (الأردن)",
+    value: "ar-JO"
+  },
+  {
+    label: "العربية (الكويت)",
+    value: "ar-KW"
+  },
+  {
+    label: "العربية (قطر)",
+    value: "ar-QA"
+  },
+  {
+    label: "العربية (لبنان)",
+    value: "ar-LB"
+  } 
 ]
