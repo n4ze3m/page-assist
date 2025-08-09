@@ -7,7 +7,7 @@ import {
   EyeIcon,
   CodeIcon
 } from "lucide-react"
-import { FC, useState, useRef, useEffect } from "react"
+import { FC, useState, useRef, useEffect, useCallback } from "react"
 import { useTranslation } from "react-i18next"
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter"
 import { coldarkDark } from "react-syntax-highlighter/dist/cjs/styles/prism"
@@ -20,6 +20,9 @@ interface Props {
 
 export const CodeBlock: FC<Props> = ({ language, value }) => {
   const [isBtnPressed, setIsBtnPressed] = useState(false)
+  const [previewValue, setPreviewValue] = useState(value)
+  const debounceTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  
   const computeKey = () => {
     const base = `${language}::${value?.slice(0, 200)}`
     let hash = 0
@@ -61,8 +64,8 @@ export const CodeBlock: FC<Props> = ({ language, value }) => {
     (language || "").toLowerCase()
   )
 
-  const buildPreviewDoc = () => {
-    const code = value || ""
+  const buildPreviewDoc = useCallback(() => {
+    const code = previewValue || ""
     if ((language || "").toLowerCase() === "svg") {
       const hasSvgTag = /<svg[\s>]/i.test(code)
       const svgMarkup = hasSvgTag
@@ -71,7 +74,7 @@ export const CodeBlock: FC<Props> = ({ language, value }) => {
       return `<!doctype html><html><head><meta charset='utf-8'/><style>html,body{margin:0;padding:0;display:flex;align-items:center;justify-content:center;background:#fff;height:100%;}</style></head><body>${svgMarkup}</body></html>`
     }
     return `<!doctype html><html><head><meta charset='utf-8'/></head><body>${code}</body></html>`
-  }
+  }, [previewValue, language])
 
   const handleDownload = () => {
     const blob = new Blob([value], { type: "text/plain" })
@@ -88,6 +91,22 @@ export const CodeBlock: FC<Props> = ({ language, value }) => {
   useEffect(() => {
     globalStateMap.set(keyRef.current, showPreview)
   }, [showPreview])
+
+  useEffect(() => {
+    if (debounceTimeoutRef.current) {
+      clearTimeout(debounceTimeoutRef.current)
+    }
+    
+    debounceTimeoutRef.current = setTimeout(() => {
+      setPreviewValue(value)
+    }, 300) 
+    
+    return () => {
+      if (debounceTimeoutRef.current) {
+        clearTimeout(debounceTimeoutRef.current)
+      }
+    }
+  }, [value])
 
   useEffect(() => {
     const newKey = computeKey()
