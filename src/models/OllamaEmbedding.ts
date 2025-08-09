@@ -202,7 +202,7 @@ export class OllamaEmbeddingsPageAssist extends Embeddings {
     return snakeCasedOptions
   }
 
-  async _request(prompt: string): Promise<number[]> {
+  async _request(prompt: string | string[]): Promise<number[] | number[][]> {
     const { model, baseUrl, keepAlive, requestOptions } = this
 
     let formattedBaseUrl = baseUrl
@@ -242,10 +242,17 @@ export class OllamaEmbeddingsPageAssist extends Embeddings {
   }
 
   async _embed(texts: string[]): Promise<number[][]> {
-    const embeddings: number[][] = await Promise.all(
-      texts.map((text) => this.caller.call(() => this._request(text)))
-    )
-    return embeddings
+    try {
+      // Try new batch method first
+      const embeddings: number[][] = (await this._request(texts)) as number[][]
+      return embeddings
+    } catch (error) {
+      // Fallback to old method if batch fails
+      const embeddings: number[][] = await Promise.all(
+        texts.map((text) => this.caller.call(() => this._request(text)))
+      ) as any
+      return embeddings
+    }
   }
 
   async embedDocuments(documents: string[]) {
