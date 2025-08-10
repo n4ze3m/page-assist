@@ -41,6 +41,8 @@ Checkout the Demo (v1.0.0):
 
 - **Chat With Webpage**: You can chat with the webpage and ask questions about the content.
 
+- **Text-to-Speech (Kokoro)**: Select text and use the context menu "Speak selection (Kokoro)" to hear it. Use "Stop speaking (Kokoro)" to stop playback. Works on Chrome, Edge, and Firefox. First run may download the model and take a moment.
+
 want more features? Create an issue and let me know.
 
 ### Manual Installation
@@ -102,6 +104,15 @@ You can open the Web UI by clicking on the extension icon which will open a new 
 Default Keyboard Shortcut: `Ctrl+Shift+L`
 
 Note: You can change the keyboard shortcuts from the extension settings on the Chrome Extension Management page.
+
+### Kokoro TTS
+
+- Select text on a page → right-click → "Speak selection (Kokoro)".
+- To stop playback, choose "Stop speaking (Kokoro)".
+
+Notes:
+- On first use, the TTS model is downloaded; playback may take a moment.
+- Firefox performance can improve with WebGPU (optional). In `about:config`, set `dom.webgpu.enabled = true` and restart. The extension auto-falls back to WASM if WebGPU is unavailable.
 
 ## Keyboard Shortcuts
 
