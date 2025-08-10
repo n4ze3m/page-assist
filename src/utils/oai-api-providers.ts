@@ -45,6 +45,11 @@ export const OAI_API_PROVIDERS = [
         baseUrl: "https://api.novita.ai/v3/openai"
     },
     {
+        label: "Hugging Face",
+        value: "huggingface",
+        baseUrl: "https://router.huggingface.co/v1"
+    },
+    {
         label: "Groq",
         value: "groq",
         baseUrl: "https://api.groq.com/openai/v1"
