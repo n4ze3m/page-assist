@@ -145,6 +145,19 @@ You can run the extension in development mode to make changes and test them.
 bun dev
 ```
 
+For browser-specific development:
+
+```bash
+# Auto-loads in Firefox
+bun run dev:firefox
+
+# Auto-loads in Microsoft Edge
+bun run dev:edge
+
+# Using npm instead of Bun
+npm run dev:firefox
+```
+
 This will start a development server and watch for changes in the source files. You can load the extension in your browser and test the changes.
 
 ## Browser Support

@@ -99,12 +99,9 @@ export default defineConfig({
       process.env.TARGET === "firefox"
         ? firefoxMV2Permissions
         : chromeMV3Permissions,
-    content_scripts: [
-      {
-        matches: ["<all_urls>"],
-        js: ["content/tts.js"],
-        run_at: "document_idle"
-      }
-    ]
+    // content_scripts are auto-registered by WXT via *.content.ts entrypoints
+    // (e.g. src/entries/**/tts.content.ts). We inject TTS on-demand from
+    // background to avoid loading it on every page.
+    // https://wxt.dev/guide/entrypoints/content-scripts.html
   }
 }) as any
