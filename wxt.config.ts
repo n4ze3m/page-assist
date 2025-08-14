@@ -59,7 +59,6 @@ export default defineConfig({
     description: "__MSG_extDescription__",
     default_locale: "en",
     action: {},
-    author: "n4ze3m",
     browser_specific_settings:
       process.env.TARGET === "firefox"
         ? {
@@ -87,14 +86,22 @@ export default defineConfig({
       }
     },
     content_security_policy:
-      process.env.TARGET !== "firefox" ?
-        {
+      process.env.TARGET !== "firefox"
+        ? {
           extension_pages:
             "script-src 'self' 'wasm-unsafe-eval'; object-src 'self';"
-        } :  "script-src 'self' 'wasm-unsafe-eval' blob:; object-src 'self'; worker-src 'self' blob:;",
+        }
+        : {
+          extension_pages:
+            "script-src 'self' 'wasm-unsafe-eval' blob:; object-src 'self'; worker-src 'self' blob:;"
+        },
     permissions:
       process.env.TARGET === "firefox"
         ? firefoxMV2Permissions
-        : chromeMV3Permissions
+        : chromeMV3Permissions,
+    // content_scripts are auto-registered by WXT via *.content.ts entrypoints
+    // (e.g. src/entries/**/tts.content.ts). We inject TTS on-demand from
+    // background to avoid loading it on every page.
+    // https://wxt.dev/guide/entrypoints/content-scripts.html
   }
 }) as any
