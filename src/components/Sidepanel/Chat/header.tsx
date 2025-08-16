@@ -20,7 +20,16 @@ import { PromptSelect } from "@/components/Common/PromptSelect"
 import { Sidebar } from "@/components/Option/Sidebar"
 import { BsIncognito } from "react-icons/bs"
 import { isFireFoxPrivateMode } from "@/utils/is-private-mode"
-export const SidepanelHeader = () => {
+
+type SidepanelHeaderProps = {
+  sidebarOpen?: boolean
+  setSidebarOpen?: (open: boolean) => void
+}
+
+export const SidepanelHeader = ({ 
+  sidebarOpen: propSidebarOpen, 
+  setSidebarOpen: propSetSidebarOpen 
+}: SidepanelHeaderProps = {}) => {
   const [hideCurrentChatModelSettings] = useStorage(
     "hideCurrentChatModelSettings",
     false
@@ -46,11 +55,15 @@ export const SidepanelHeader = () => {
   } = useMessage()
   const { t } = useTranslation(["sidepanel", "common", "option"])
   const [openModelSettings, setOpenModelSettings] = React.useState(false)
-  const [sidebarOpen, setSidebarOpen] = React.useState(false)
+  const [localSidebarOpen, setLocalSidebarOpen] = React.useState(false)
   const [webuiBtnSidePanel, setWebuiBtnSidePanel] = useStorage(
     "webuiBtnSidePanel",
     false
   )
+
+  // Use prop state if provided, otherwise use local state
+  const sidebarOpen = propSidebarOpen !== undefined ? propSidebarOpen : localSidebarOpen
+  const setSidebarOpen = propSetSidebarOpen || setLocalSidebarOpen
 
   const handleCloseSidebar = useCallback(() => {
     setSidebarOpen(false)

@@ -547,6 +547,7 @@ export const useMessage = () => {
           setIsProcessing(false)
           setStreaming(false)
         } catch (e) {
+      console.log(e)
           const errorSave = await saveMessageOnError({
             e,
             botMessage: fullText,

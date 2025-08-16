@@ -43,7 +43,7 @@ export const saveHistory = async (
   const createdAt = Date.now()
   const history: HistoryInfo = {
     id,
-    title,
+    title: title?.trim()?.length > 0 ? title : "Untitled Chat",
     createdAt,
     is_rag: is_rag || false,
     message_source,

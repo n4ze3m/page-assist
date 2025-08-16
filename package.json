@@ -53,6 +53,7 @@
     "marked": "^15.0.12",
     "mermaid": "^11.4.1",
     "ml-distance": "^4.0.1",
+    "ollama": "^0.5.17",
     "openai": "^4.95.1",
     "pa-tesseract.js": "^5.1.1",
     "pdfjs-dist": "4.0.379",

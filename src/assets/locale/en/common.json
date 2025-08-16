@@ -189,5 +189,9 @@
     "searchResults": "Search Results",
     "embeddingGen": "Creating embeddings, this may take a while",
     "semanticSearch": "Performing semantic search",
-    "newBranch": "New Branch"
+    "newBranch": "New Branch",
+    "downloading": "Downloading" ,
+    "cancelPullingModel": {
+        "confirm": "Are you sure you want to cancel the download? This will stop the download process. According to the Ollama documentation, you can restart from where you left off."
+    }
 }

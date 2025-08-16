@@ -1,7 +1,7 @@
 import { type ClientOptions, OpenAI as OpenAIClient } from "openai"
 import { Embeddings, EmbeddingsParams } from "@langchain/core/embeddings"
 import { chunkArray } from "@langchain/core/utils/chunk_array"
-import { OpenAICoreRequestOptions, LegacyOpenAIInput } from "./types"
+import { LegacyOpenAIInput } from "./types"
 import { wrapOpenAIClientError } from "./utils/openai"
 
 export interface OpenAIEmbeddingsParams extends EmbeddingsParams {
@@ -19,16 +19,9 @@ export class OAIEmbedding
     modelName = "text-embedding-ada-002"
 
     model = "text-embedding-ada-002"
-
     batchSize = 512
-
-    // TODO: Update to `false` on next minor release (see: https://github.com/langchain-ai/langchainjs/pull/3612)
     stripNewLines = true
 
-    /**
-     * The number of dimensions the resulting output embeddings should have.
-     * Only supported in `text-embedding-3` and later models.
-     */
     dimensions?: number
 
     timeout?: number
