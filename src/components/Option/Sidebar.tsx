@@ -44,6 +44,7 @@ import {
 } from "@/db/dexie/helpers"
 import { UploadedFile } from "@/db/dexie/types"
 import { isDatabaseClosedError } from "@/utils/ff-error"
+import { updatePageTitle } from "@/utils/update-page-title"
 
 type Props = {
   onClose: () => void
@@ -203,6 +204,7 @@ export const Sidebar = ({
       })
       if (historyId === history_id) {
         clearChat()
+        updatePageTitle()
       }
     }
   })
@@ -407,6 +409,7 @@ export const Sidebar = ({
                           const session = await getSessionFiles(chat.id)
                           setContext(session)
                         }
+                        updatePageTitle(chat.title)
                         navigate("/")
                         onClose()
                       }}>
