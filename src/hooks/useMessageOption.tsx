@@ -30,6 +30,7 @@ import { tabChatMode } from "./chat-modes/tabChatMode"
 import { documentChatMode } from "./chat-modes/documentChatMode"
 import { generateID } from "@/db/dexie/helpers"
 import { UploadedFile } from "@/db/dexie/types"
+import { updatePageTitle } from "@/utils/update-page-title"
 
 export const useMessageOption = () => {
   const {
@@ -163,7 +164,7 @@ export const useMessageOption = () => {
     setIsProcessing(false)
     setStreaming(false)
     setContextFiles([])
-    console.log("clearChat", contextFiles)
+    updatePageTitle()
     currentChatModelSettings.reset()
     // textareaRef?.current?.focus()
     if (defaultInternetSearchOn) {

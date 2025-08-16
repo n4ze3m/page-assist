@@ -10,6 +10,7 @@ import {
 import { ChatDocuments } from "@/models/ChatTypes"
 import { generateTitle } from "@/services/title"
 import { ChatHistory } from "@/store/option"
+import { updatePageTitle } from "@/utils/update-page-title"
 
 export const saveMessageOnError = async ({
   e,
@@ -107,6 +108,7 @@ export const saveMessageOnError = async ({
     } else {
       const title = await generateTitle(selectedModel, userMessage, userMessage)
       const newHistoryId = await saveHistory(title, false, message_source)
+      updatePageTitle(title)
       if (!isRegenerating) {
         await saveMessage({
           history_id: newHistoryId.id,
@@ -242,6 +244,7 @@ export const saveMessageOnSuccess = async ({
     return historyId
   } else {
     const title = await generateTitle(selectedModel, message, message)
+    updatePageTitle(title)
     const newHistoryId = await saveHistory(title, false, message_source)
 
     await saveMessage(

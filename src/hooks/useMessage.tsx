@@ -46,6 +46,7 @@ import {
   createSaveMessageOnError,
   createSaveMessageOnSuccess
 } from "./utils/messageHelpers"
+import { updatePageTitle } from "@/utils/update-page-title"
 
 export const useMessage = () => {
   const {
@@ -124,6 +125,7 @@ export const useMessage = () => {
     setIsLoading(false)
     setIsProcessing(false)
     setStreaming(false)
+    updatePageTitle() 
     currentChatModelSettings.reset()
     if (defaultInternetSearchOn) {
       setWebSearch(true)
