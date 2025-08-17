@@ -447,6 +447,8 @@ export const dynamicFetchOllama2 = async ({
   providerId: string
   customHeaders?: { key: string; value: string }[]
 }) => {
+ 
+
   const models = await getAllOpenAIModels({ baseUrl, customHeaders })
   const ollama2Models = models.map((e) => {
     return {
