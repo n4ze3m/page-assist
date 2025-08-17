@@ -245,11 +245,11 @@ export default defineBackground({
               if ((chrome as any)?.scripting?.executeScript) {
                 await chrome.scripting.executeScript({
                   target: { tabId: tab.id },
-                  files: ["content/tts.js"]
+                  files: ["content-scripts/tts.js"]
                 })
               } else {
                 // Firefox MV2 fallback
-                await (browser.tabs as any).executeScript(tab.id, { file: "content/tts.js" })
+                await (browser.tabs as any).executeScript(tab.id, { file: "content-scripts/tts.js" })
               }
             } catch (e) {
               // ignore injection errors; the script may already be present
