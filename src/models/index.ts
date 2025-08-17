@@ -104,7 +104,8 @@ export const pageAssistModel = async ({
       maxTokens: modelSettings?.numPredict || numPredict,
       temperature: modelSettings?.temperature || temperature,
       topP: modelSettings?.topP || topP,
-      reasoningEffort: modelSettings?.reasoningEffort || reasoningEffort as any
+      reasoningEffort:
+        modelSettings?.reasoningEffort || (reasoningEffort as any)
     }
 
     if (providerInfo.provider === "gemini") {
@@ -146,6 +147,40 @@ export const pageAssistModel = async ({
       }) as any
     }
 
+    if (providerInfo.provider === "ollama2") {
+      const _keepAlive = modelSettings?.keepAlive || keepAlive || ""
+      const payload = {
+        keepAlive: _keepAlive.length > 0 ? _keepAlive : undefined,
+        temperature: modelSettings?.temperature || temperature,
+        topK: modelSettings?.topK || topK,
+        topP: modelSettings?.topP || topP,
+        numCtx: modelSettings?.numCtx || numCtx,
+        numGpu: modelSettings?.numGpu || numGpu,
+        numPredict: modelSettings?.numPredict || numPredict,
+        useMMap: modelSettings?.useMMap || useMMap,
+        minP: modelSettings?.minP || minP,
+        repeatPenalty: modelSettings?.repeatPenalty || repeatPenalty,
+        repeatLastN: modelSettings?.repeatLastN || repeatLastN,
+        tfsZ: modelSettings?.tfsZ || tfsZ,
+        numKeep: modelSettings?.numKeep || numKeep,
+        numThread: modelSettings?.numThread || numThread,
+        useMlock: modelSettings?.useMLock || useMlock,
+        thinking: currentChatModelSettings?.thinking || modelSettings?.thinking
+      }
+
+      return new ChatOllama({
+        baseUrl: providerInfo.baseUrl,
+        model: modelInfo.model_id,
+        seed,
+        headers: {
+          Authorization: `Bearer ${providerInfo.apiKey || "temp"}`,
+          ...getCustomHeaders({
+            headers: providerInfo?.headers || []
+          }) 
+        },
+        ...payload
+      })
+    }
 
     return new CustomChatOpenAI({
       modelName: modelInfo.model_id,
@@ -163,7 +198,6 @@ export const pageAssistModel = async ({
       reasoning_effort: modelConfig?.reasoningEffort as any
     }) as any
   }
-
 
   const _keepAlive = modelSettings?.keepAlive || keepAlive || ""
   const payload = {
@@ -189,6 +223,6 @@ export const pageAssistModel = async ({
     baseUrl,
     model,
     seed,
-    ...payload,
+    ...payload
   })
 }
