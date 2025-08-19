@@ -19,7 +19,7 @@
         }
       },
       "copilotResumeLastChat": {
-        "label": "打開側面板 (Copilot) 時恢復上次聊天"
+        "label": "打開側邊面板 (Copilot) 時恢復上次聊天"
       },
       "turnOnChatWithWebsite": {
         "label": "預設啟用與網站聊天 (Copilot)"
@@ -64,10 +64,14 @@
         "label": "啟用分頁提及 (@tab)"
       },
       "pasteLargeTextAsFile": {
-        "label": "將大型文字貼上為檔案"
+        "label": "將大量文字貼上為檔案"
+      },
+      "ocrLanguage": {
+        "label": "預設 OCR 語言",
+        "placeholder": "選擇 OCR 語言"
       },
       "sidepanelTemporaryChat": {
-        "label": "預設啟用側邊面板臨時聊天"
+        "label": "預設為側邊面板啟用臨時聊天"
       }
     },
     "sidepanelRag": {
@@ -191,7 +195,7 @@
         "placeholder": "輸入自動停止逾時的毫秒數"
       },
       "autoSubmitVoiceMessage": {
-        "label": "自動提交語音訊息"
+        "label": "自動送出語音訊息"
       }
     }
   },
@@ -228,6 +232,8 @@
     "notification": {
       "pullModel": "正在下載模型",
       "pullModelDescription": "模型 {{modelName}} 下載中，欲了解更多詳細資訊，請查看擴充圖標。",
+      "cancellingDownload": "取消下載",
+      "cancellingDownloadDescription": "正在取消模型下載...",
       "success": "成功",
       "error": "錯誤",
       "successDescription": "成功下載模型",
@@ -346,7 +352,7 @@
         "warning": "透過全域停用 Ollama 整合功能後，Page Assist 將不會從 Ollama 取得模型，您仍然可以從 <anchor>OpenAI 相容 API</anchor> 的部分新增 Ollama 實例，一樣可以正常運作。"
       },
       "advanced": {
-        "label": "進階 Ollama URL 配置",
+        "label": "進階 Ollama URL 設定",
         "urlRewriteEnabled": {
           "label": "啟用或停用自訂來源 URL"
         },
@@ -369,7 +375,7 @@
             "placeholder": "Bearer token"
           }
         },
-        "help": "如果您在 Page Assist 上遇到與 Ollama 的連線問題，您可以設定自訂來源 URL，要了解有關配置的更多資訊，請<anchor>點擊此處</anchor>。"
+        "help": "如果您在 Page Assist 上遇到與 Ollama 的連線問題，您可以設定自訂來源 URL，要了解有關設定的更多資訊，請<anchor>點擊此處</anchor>。"
       }
     }
   },
@@ -431,10 +437,10 @@
       }
     },
     "prompt": {
-      "label": "配置 RAG 提示詞",
+      "label": "設定 RAG 提示詞",
       "option1": "正常",
       "option2": "網頁",
-      "alert": "在此配置系統提示詞已被棄用，請使用「提示詞管理」的部分來新增或編輯提示詞，此部分將在未來的版本中移除。",
+      "alert": "在此設定系統提示詞已被棄用，請使用「提示詞管理」的部分來新增或編輯提示詞，此部分將在未來的版本中移除。",
       "systemPrompt": "系統提示詞",
       "systemPromptPlaceholder": "輸入系統提示詞",
       "webSearchPrompt": "網路搜尋提示詞",

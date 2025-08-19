@@ -1,15 +1,27 @@
 {
-    "heading": "設置 Chrome AI",
+    "heading": "設定 Chrome AI",
     "status": {
         "label": "在頁面輔助功能中啟用或停用 Chrome AI 支援"
     },
     "error": {
-        "browser_not_supported": "此版本的 Chrome 不支援 Gemini Nano 模型，請更新至版本127或更高",
+        "browser_not_supported": "此版本的 Chrome 不支援 Gemini Nano 模型，請更新至版本138或更高",
         "ai_not_supported": "設定 chrome://flags/#prompt-api-for-gemini-nano 未啟用，請先啟用它。",
         "ai_not_ready": "Gemini Nano 尚未準備好，您需要再次檢查 Chrome 設定。",
         "internal_error": "發生內部錯誤，請稍後重試。"
     },
-    "errorDescription": "要使用 Chrome AI，您需要 Chrome 版本 138 或更高版本。請按照以下步驟操作：\n\n1. 前往 `chrome://flags/#prompt-api-for-gemini-nano` 並啟用「Prompt API for Gemini Nano」。\n2. 重新啟動 Chrome 以應用該標誌。\n3. 返回此頁面並單擊「下載模型」——這將首次下載 4GB 模型。\n4. 下載完成後，可以通過 Page Assist 啟用 Gemini Nano。",
+    "errorDescription": "要使用 Chrome AI，您需要 Chrome 版本 138 或更高版本。請按照以下步驟操作：\n\n1. 前往 `chrome://flags/#prompt-api-for-gemini-nano` 並啟用「Prompt API for Gemini Nano」。\n2. 重新啟動 Chrome 以應用該設定。\n3. 返回此頁面並點擊「下載模型」，首次將下載一個 4GB 的模型。\n4. 下載完成後，可通過頁面輔助功能啟用 Gemini Nano。",
     "downloadModel": "下載模型",
-    "modelDownloadWarning": "這將下載一個大約 1.5 GB 到 2.4 GB 的模型。請確保您有足夠的磁碟空間。"
+    "modelDownloadWarning": "這將下載一個大約 1.5 GB 到 2.4 GB 的模型，請確保您有足夠的硬碟空間。",
+    "downloadModal": {
+        "title": "下載 Gemini Nano 模型",
+        "warning": "需要下載大量資料",
+        "warningDescription": "這將下載約 4GB 的資料，請確保您有足夠的硬碟空間和穩定的網路連線。",
+        "confirm": "立即下載",
+        "cancel": "取消",
+        "downloading": "正在下載模型",
+        "downloadingDescription": "正在下載 Gemini Nano 模型，根據您的網路連線，這可能需要數分鐘。",
+        "pleaseWait": "下載過程中請勿關閉此視窗..."
+    },
+    "downloadSuccess": "模型下載成功！",
+    "downloadError": "模型下載失敗，請再試一次。"
 }
