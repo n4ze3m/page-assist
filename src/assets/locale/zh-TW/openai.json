@@ -1,7 +1,7 @@
 {
     "settings": "OpenAI 相容 API",
     "heading": "OpenAI 相容 API",
-    "subheading": "在此管理和配置您與 OpenAI 相容的 API 提供商。",
+    "subheading": "在此管理和設定您與 OpenAI 相容的 API 提供商。",
     "addBtn": "新增提供商",
     "table": {
         "name": "提供商名稱",

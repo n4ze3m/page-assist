@@ -5,6 +5,7 @@
     "saved": "已儲存",
     "cancel": "取消",
     "retry": "重試",
+    "loadMore": "載入更多...",
     "share": {
         "tooltip": {
             "share": "分享"
@@ -74,6 +75,9 @@
             "numPredict": {
                 "label": "最大 Token 數 (num_predict)",
                 "placeholder": "例如：2048、4096"
+            },
+            "thinking": {
+                "label": "思考模式 (Ollama)"
             },
             "seed": {
                 "label": "隨機種子",
@@ -156,32 +160,35 @@
     },
     "range": {
         "deleteConfirm": {
-            "pinned": "確定要刪除所有置頂的訊息嗎？",
-            "today": "確定要刪除今天的所有訊息嗎？",
-            "yesterday": "確定要刪除昨天的所有訊息嗎？",
-            "last7Days": "確定要刪除最近7天的所有訊息嗎？",
-            "older": "確定要刪除所有較舊的訊息嗎？"
+            "pinned": "確定要刪除所有置頂的紀錄嗎？",
+            "today": "確定要刪除今天的所有紀錄嗎？",
+            "yesterday": "確定要刪除昨天的所有紀錄嗎？",
+            "last7Days": "確定要刪除最近7天的所有紀錄嗎？",
+            "older": "確定要刪除所有較舊的紀錄嗎？"
         },
         "tooltip": {
-            "pinned": "刪除所有置頂的訊息",
-            "today": "刪除今天的所有訊息",
-            "yesterday": "刪除昨天的所有訊息",
-            "last7Days": "刪除最近7天的所有訊息",
-            "older": "刪除所有較舊的訊息"
+            "pinned": "刪除所有置頂的紀錄",
+            "today": "刪除今天的所有紀錄",
+            "yesterday": "刪除昨天的所有紀錄",
+            "last7Days": "刪除最近7天的所有紀錄",
+            "older": "刪除所有較舊的紀錄"
         }
     },
+    "historiesDeleted": "{{count}} 條紀錄已刪除",
+    "deleteHistoriesError": "紀錄刪除錯誤",
     "pin": "置頂",
     "unpin": "取消置頂",
     "generationInfo": "生成資訊",
-    "sidebarChat": "側邊欄聊天",
+    "sidebarChat": "側邊面板聊天",
     "reasoning": {
         "thinking": "思考中....",
         "thought": "思考了 {{time}}"
     },
     "embeddingGen": "正在建立嵌入向量，這可能需要一些時間",
     "semanticSearch": "正在執行語意搜尋",
+    "newBranch": "新分支",
     "downloading": "正在下載",
     "cancelPullingModel": {
-        "confirm": "確定要取消下載嗎？這將會停止下載過程。根據 Ollama 文件，您可以從中斷處重新開始下載。"
+        "confirm": "確定要取消下載嗎？這將會停止下載過程。根據 Ollama 說明文件，您可以從中斷處重新開始下載。"
     }
 }
