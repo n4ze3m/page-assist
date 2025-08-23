@@ -36,7 +36,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
   const { t } = useTranslation(["playground", "common"])
   const [chatWithWebsiteEmbedding] = useStorage(
     "chatWithWebsiteEmbedding",
-    true
+    false
   )
   const form = useForm({
     initialValues: {
