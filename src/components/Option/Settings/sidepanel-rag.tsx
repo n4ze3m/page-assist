@@ -6,7 +6,7 @@ export const SidepanelRag = ({ hideBorder }: { hideBorder?: boolean }) => {
   const { t } = useTranslation("settings")
   const [chatWithWebsiteEmbedding, setChatWithWebsiteEmbedding] = useStorage(
     "chatWithWebsiteEmbedding",
-    true
+    false
   )
   const [maxWebsiteContext, setMaxWebsiteContext] = useStorage(
     "maxWebsiteContext",

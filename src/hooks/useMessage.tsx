@@ -74,7 +74,7 @@ export const useMessage = () => {
 
   const [chatWithWebsiteEmbedding] = useStorage(
     "chatWithWebsiteEmbedding",
-    true
+    false
   )
   const [maxWebsiteContext] = useStorage("maxWebsiteContext", 4028)
 

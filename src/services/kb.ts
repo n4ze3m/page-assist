@@ -6,7 +6,7 @@ export const isChatWithWebsiteEnabled = async (): Promise<boolean> => {
     const isChatWithWebsiteEnabled = await storage.get<boolean | undefined>(
         "chatWithWebsiteEmbedding"
     )
-    return isChatWithWebsiteEnabled ?? true
+    return isChatWithWebsiteEnabled ?? false
 }
 
 
