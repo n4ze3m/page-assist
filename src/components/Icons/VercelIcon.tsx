@@ -11,7 +11,7 @@ export const VercelIcon = React.forwardRef<
       viewBox="0 0 76 65"
       {...props}
       ref={ref}>
-      <path fill="#fff" d="m37.527 0 37.528 65H0z"></path>
+      <path fill="currentColor" d="m37.527 0 37.528 65H0z"></path>
     </svg>
   )
 })
