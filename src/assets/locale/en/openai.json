@@ -69,7 +69,7 @@
             "form": {
                 "name": {
                     "label": "Model ID",
-                    "placeholder": "llama3.2",
+                    "placeholder": "deepseek-v3.1",
                     "required": "Model ID is required."
                 },
                 "provider": {
