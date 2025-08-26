@@ -74,6 +74,18 @@ export default defineBackground({
           title: browser.i18n.getMessage("contextCustom"),
           contexts: ["selection"]
         })
+
+        // Kokoro TTS context menus (Firefox)
+        browser.contextMenus.create({
+          id: "kokoro-speak",
+          title: "Speak selection (Kokoro)",
+          contexts: ["selection"]
+        })
+        browser.contextMenus.create({
+          id: "kokoro-stop",
+          title: "Stop speaking (Kokoro)",
+          contexts: ["page", "selection"]
+        })
     
       } catch (error) {
         console.error("Error in initLogic:", error)
@@ -133,7 +145,7 @@ export default defineBackground({
     }
 
 
-    browser.contextMenus.onClicked.addListener((info, tab) => {
+    browser.contextMenus.onClicked.addListener(async (info, tab) => {
       if (info.menuItemId === "open-side-panel-pa") {
         browser.sidebarAction.toggle()
       } else if (info.menuItemId === "open-web-ui-pa") {
@@ -195,6 +207,29 @@ export default defineBackground({
             text: info.selectionText
           })
         }, isCopilotRunning ? 0 : 5000)
+      } else if (info.menuItemId === "kokoro-speak") {
+        if (tab?.id) {
+          try {
+            await browser.tabs.sendMessage(tab.id, {
+              type: "kokoro_tts_speak",
+              from: "background",
+              text: info.selectionText
+            })
+          } catch (e) {
+            console.error("Failed to send kokoro_tts_speak:", e)
+          }
+        }
+      } else if (info.menuItemId === "kokoro-stop") {
+        if (tab?.id) {
+          try {
+            await browser.tabs.sendMessage(tab.id, {
+              type: "kokoro_tts_stop",
+              from: "background"
+            })
+          } catch (e) {
+            console.error("Failed to send kokoro_tts_stop:", e)
+          }
+        }
       }
     })
 
