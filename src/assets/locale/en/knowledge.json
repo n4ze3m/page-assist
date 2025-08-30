@@ -24,9 +24,14 @@
     "addKnowledge": "Add Knowledge",
     "updateKnowledge": "Add Source",
     "form": {
+        "tabs": {
+            "upload": "Upload File",
+            "text": "Text Input"
+        },
         "title": {
-            "label": "Knowledge Title",
+            "label": "Knowledge Title (optional)",
             "placeholder": "Enter knowledge title",
+            "placeholderOptional": "Optional title (defaults to first 50 characters)",
             "required": "Knowledge title is required"
         },
         "uploadFile": {
@@ -35,6 +40,19 @@
             "uploadHint": "Supported file types: .pdf, .csv, .txt, .md, .docx",
             "required": "File is required",
             "uploadError": "Unsupported file type"
+        },
+        "textInput": {
+            "typeLabel": "Type",
+            "type": {
+                "plain": "Plain Text",
+                "markdown": "Markdown",
+                "code": "Code"
+            },
+            "contentLabel": "Content",
+            "placeholder": "Paste or type your text here...",
+            "required": "Text content is required",
+            "tooLarge": "Content is too large. Please keep it under 500k characters.",
+            "defaultTitle": "Untitled Text"
         },
         "submit": "Submit",
         "success": "Knowledge added successfully"

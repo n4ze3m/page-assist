@@ -22,6 +22,7 @@ import { MoonshotIcon } from "../Icons/Moonshot"
 import { XAIIcon } from "../Icons/XAI"
 import { HuggingFaceIcon } from "../Icons/HuggingFaceIcon"
 import { VercelIcon } from "../Icons/VercelIcon"
+import { ChutesIcon } from "../Icons/ChutesIcon"
 
 export const ProviderIcons = ({
   provider,
@@ -79,6 +80,8 @@ export const ProviderIcons = ({
       return <HuggingFaceIcon className={className} />
     case "vercel":
       return <VercelIcon className={className} />
+    case "chutes":
+      return <ChutesIcon className={className} />
     default:
       return <OllamaIcon className={className} />
   }

@@ -5,6 +5,8 @@ export type Source = {
   type: string
   filename?: string
   content: string
+  // Optional metadata to indicate how this source was added (e.g., 'text_input' or 'file_upload')
+  sourceType?: string
 }
 
 export type Knowledge = {
