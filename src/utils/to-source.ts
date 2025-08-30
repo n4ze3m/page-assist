@@ -35,22 +35,24 @@ export const generateSourceId = () => {
 
 export const convertToSource = async ({
   file,
-  mime
+  mime,
+  sourceType
 }: {
-  file: UploadFile, mime?: string
+  file: UploadFile, mime?: string, sourceType?: string
 }): Promise<Source> => {
   let type = mime || file.type
   let filename = file.name
   const content = await toBase64(file.originFileObj)
-  return { content, type, filename, source_id: generateSourceId() }
+  return { content, type, filename, source_id: generateSourceId(), sourceType }
 }
 
 
 export const convertFileToSource = async ({
   file,
-  mime
+  mime,
+  sourceType
 }: {
-  file: File, mime?: string
+  file: File, mime?: string, sourceType?: string
 }): Promise<Source> => {
   const allowedTypes = [
     "application/pdf",
@@ -70,5 +72,26 @@ export const convertFileToSource = async ({
     url,
     type
   })
-  return { content, type, filename, source_id: generateSourceId() }
+  return { content, type, filename, source_id: generateSourceId(), sourceType }
+}
+
+// Helper to convert raw text into a synthetic text file and then into a Source
+export const convertTextToSource = async ({
+  text,
+  filename = "pasted.txt",
+  mime = "text/plain",
+  asMarkdown = false,
+  sourceType = "text_input"
+}: {
+  text: string,
+  filename?: string,
+  mime?: string,
+  asMarkdown?: boolean,
+  sourceType?: string
+}): Promise<Source> => {
+  const finalMime = asMarkdown ? "text/markdown" : mime
+  const blob = new Blob([text], { type: finalMime })
+  const file = new File([blob], filename, { type: finalMime })
+  const content = await toBase64(file)
+  return { content, type: finalMime, filename, source_id: generateSourceId(), sourceType }
 }
