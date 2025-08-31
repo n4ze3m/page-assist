@@ -153,10 +153,10 @@ export const ragMode = async (
       query = removeReasoning(query)
     }
     const docSize = await getNoOfRetrievedDocs()
-    const useVS = await isChatWithWebsiteEnabled()
+    // const useVS = await isChatWithWebsiteEnabled()
     let context: string = ""
     let source: any[] = []
-    if (useVS) {
+    // if (useVS) {
       const docs = await vectorstore.similaritySearch(query, docSize)
       context = formatDocs(docs)
       source = docs.map((doc) => {
@@ -168,19 +168,19 @@ export const ragMode = async (
           url: ""
         }
       })
-    } else {
-      const docs = await vectorstore.getAllPageContent()
-      context = docs.pageContent
-      source = docs.metadata.map((doc) => {
-        return {
-          ...doc,
-          name: doc?.source || "untitled",
-          type: doc?.type || "unknown",
-          mode: "rag",
-          url: ""
-        }
-      })
-    }
+    // } else {
+    //   const docs = await vectorstore.getAllPageContent()
+    //   context = docs.pageContent
+    //   source = docs.metadata.map((doc) => {
+    //     return {
+    //       ...doc,
+    //       name: doc?.source || "untitled",
+    //       type: doc?.type || "unknown",
+    //       mode: "rag",
+    //       url: ""
+    //     }
+    //   })
+    // }
     //  message = message.trim().replaceAll("\n", " ")
 
     let humanMessage = await humanMessageFormatter({
