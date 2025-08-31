@@ -1,15 +1,16 @@
 import { createKnowledge } from "@/db/dexie/knowledge"
 import { Source } from "@/db/knowledge"
 import { defaultEmbeddingModelForRag } from "@/services/ollama"
-import { convertToSource } from "@/utils/to-source"
+import { convertTextToSource, convertToSource } from "@/utils/to-source"
 import { useMutation } from "@tanstack/react-query"
-import { Modal, Form, Input, Upload, message, UploadFile } from "antd"
+import { Modal, Form, Input, Upload, message, Tabs, Select } from "antd"
 import { InboxIcon } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import PubSub from "pubsub-js"
 import { KNOWLEDGE_QUEUE } from "@/queue"
 import { useStorage } from "@plasmohq/storage/hook"
 import { unsupportedTypes } from "./utils/unsupported-types"
+import React from "react"
 
 type Props = {
   open: boolean
@@ -20,18 +21,16 @@ export const AddKnowledge = ({ open, setOpen }: Props) => {
   const { t } = useTranslation(["knowledge", "common"])
   const [form] = Form.useForm()
   const [totalFilePerKB] = useStorage("totalFilePerKB", 5)
+  const [mode, setMode] = React.useState<"upload" | "text">("upload")
 
-  const onUploadHandler = async (data: {
-    title: string
-    file: UploadFile[]
-  }) => {
+  const onUploadHandler = async (data: any) => {
     const defaultEM = await defaultEmbeddingModelForRag()
 
     if (!defaultEM) {
       throw new Error(t("noEmbeddingModel"))
     }
 
-    const source: Source[] = []
+  const source: Source[] = []
 
     const allowedTypes = [
       "application/pdf",
@@ -41,19 +40,57 @@ export const AddKnowledge = ({ open, setOpen }: Props) => {
       "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
     ]
 
-    for (const file of data.file) {
-      let mime = file.type
-      if (!allowedTypes.includes(mime)) {
-        mime = "text/plain"
+    if (mode === "upload") {
+      for (const file of data.file || []) {
+        let mime = file.type
+        if (!allowedTypes.includes(mime)) {
+          mime = "text/plain"
+        }
+        const _src = await convertToSource({ file, mime, sourceType: "file_upload" })
+        source.push(_src)
       }
-      const data = await convertToSource({ file, mime })
-      source.push(data)
+    } else {
+      // Text mode validation
+      const rawText: string = (data?.textContent || "").trim()
+      const textType: string = data?.textType || "plain"
+      if (!rawText) {
+        throw new Error(t("form.textInput.required"))
+      }
+      // Prevent oversized content (e.g., > 500k chars)
+      if (rawText.length > 500000) {
+        throw new Error(t("form.textInput.tooLarge"))
+      }
+
+      const asMarkdown = textType === "markdown"
+      const filename = data?.title
+        ? `${data?.title}.txt`
+        : `pasted_${new Date().getTime()}.txt`
+      const _src = await convertTextToSource({
+        text: rawText,
+        filename,
+        mime: asMarkdown ? "text/markdown" : "text/plain",
+        asMarkdown,
+        sourceType: "text_input"
+      })
+      source.push(_src)
+    }
+
+    let title = data?.title?.trim()
+    if (!title || title.length === 0) {
+      if (mode === "text") {
+        const text = (data?.textContent || "").trim()
+        title = text.substring(0, 50) || t("form.textInput.defaultTitle")
+      } else if ((data?.file || []).length > 0) {
+        title = (data.file[0]?.name as string) || t("form.textInput.defaultTitle")
+      } else {
+        title = t("form.textInput.defaultTitle")
+      }
     }
 
     const knowledge = await createKnowledge({
       embedding_model: defaultEM,
       source,
-      title: data.title
+      title
     })
 
     return knowledge.id
@@ -78,69 +115,94 @@ export const AddKnowledge = ({ open, setOpen }: Props) => {
       open={open}
       footer={null}
       onCancel={() => setOpen(false)}>
+      <Tabs
+        activeKey={mode}
+        onChange={(key) => setMode(key as any)}
+        items={[
+          { key: "upload", label: t("form.tabs.upload") },
+          { key: "text", label: t("form.tabs.text") }
+        ]}
+      />
       <Form onFinish={saveKnowledge} form={form} layout="vertical">
-        <Form.Item
-          rules={[
-            {
-              required: true,
-              message: t("form.title.required")
-            }
-          ]}
-          name="title"
-          label={t("form.title.label")}>
-          <Input size="large" placeholder={t("form.title.placeholder")} />
+        {/* Title is optional now */}
+        <Form.Item name="title" label={t("form.title.label")}>
+          <Input size="large" placeholder={t("form.title.placeholderOptional")} />
         </Form.Item>
-        <Form.Item
-          name="file"
-          label={t("form.uploadFile.label")}
-          rules={[
-            {
-              required: true,
-              message: t("form.uploadFile.required")
-            }
-          ]}
-          getValueFromEvent={(e) => {
-            if (Array.isArray(e)) {
-              return e
-            }
-            return e?.fileList
-          }}>
-          <Upload.Dragger
-            multiple={true}
-            maxCount={totalFilePerKB}
-            beforeUpload={(file) => {
-              const allowedTypes = [
-                "application/pdf",
-                "text/csv",
-                "text/plain",
-                "text/markdown",
-                "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-              ]
-                .map((type) => type.toLowerCase())
-                .join(", ")
 
-              if (unsupportedTypes.includes(file.type.toLowerCase())) {
-                message.error(
-                  t("form.uploadFile.uploadError", { allowedTypes })
-                )
-                return Upload.LIST_IGNORE
+        {mode === "upload" ? (
+          <Form.Item
+            name="file"
+            label={t("form.uploadFile.label")}
+            rules={[
+              {
+                required: true,
+                message: t("form.uploadFile.required")
               }
-
-              return false
+            ]}
+            getValueFromEvent={(e) => {
+              if (Array.isArray(e)) {
+                return e
+              }
+              return e?.fileList
             }}>
-            <div className="p-3">
-              <p className="flex justify-center ant-upload-drag-icon">
-                <InboxIcon className="w-10 h-10 text-gray-400" />
-              </p>
-              <p className="ant-upload-text">
-                {t("form.uploadFile.uploadText")}
-              </p>
-              {/* <p className="ant-upload-hint">
-                {t("form.uploadFile.uploadHint")}
-              </p> */}
-            </div>
-          </Upload.Dragger>
-        </Form.Item>
+            <Upload.Dragger
+              multiple={true}
+              maxCount={totalFilePerKB}
+              beforeUpload={(file) => {
+                const allowedTypes = [
+                  "application/pdf",
+                  "text/csv",
+                  "text/plain",
+                  "text/markdown",
+                  "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                ]
+                  .map((type) => type.toLowerCase())
+                  .join(", ")
+
+                if (unsupportedTypes.includes(file.type.toLowerCase())) {
+                  message.error(
+                    t("form.uploadFile.uploadError", { allowedTypes })
+                  )
+                  return Upload.LIST_IGNORE
+                }
+
+                return false
+              }}>
+              <div className="p-3">
+                <p className="flex justify-center ant-upload-drag-icon">
+                  <InboxIcon className="w-10 h-10 text-gray-400" />
+                </p>
+                <p className="ant-upload-text">
+                  {t("form.uploadFile.uploadText")}
+                </p>
+              </div>
+            </Upload.Dragger>
+          </Form.Item>
+        ) : (
+          <>
+            <Form.Item
+              name="textType"
+              label={t("form.textInput.typeLabel")}
+              initialValue="plain">
+              <Select
+                options={[
+                  { value: "plain", label: t("form.textInput.type.plain") },
+                  { value: "markdown", label: t("form.textInput.type.markdown") },
+                  { value: "code", label: t("form.textInput.type.code") }
+                ]}
+              />
+            </Form.Item>
+            <Form.Item
+              name="textContent"
+              label={t("form.textInput.contentLabel")}
+              rules={[{ required: true, message: t("form.textInput.required") }]}>
+              <Input.TextArea
+                autoSize={{ minRows: 8, maxRows: 16 }}
+                placeholder={t("form.textInput.placeholder")}
+              />
+            </Form.Item>
+          </>
+        )}
 
         <Form.Item>
           <button

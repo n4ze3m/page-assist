@@ -118,5 +118,10 @@ export const OAI_API_PROVIDERS = [
     label: "Vercel AI Gateway",
     value: "vercel",
     baseUrl: "https://ai-gateway.vercel.sh/v1"
+  },
+  {
+    label: "Chutes",
+    value: "chutes",
+    baseUrl: "https://llm.chutes.ai/v1"
   }
 ]
