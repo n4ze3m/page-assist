@@ -65,6 +65,10 @@ export const SystemSettings = () => {
       notification.success({
         message: "Imported data successfully"
       })
+
+      setTimeout(() => { 
+        window.location.reload() 
+      }, 1000)   
     },
     onError: (error) => {
       console.error("Import error:", error)
