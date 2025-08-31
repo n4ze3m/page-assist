@@ -12,7 +12,10 @@ import {
   type SessionFiles,
   type Webshare,
   Prompt,
-  LastUsedModelType
+  LastUsedModelType,
+  OpenAIModelConfigs,
+  ModelNicknames,
+  Models
 } from "./types"
 import { PageAssistDatabase } from "./chat"
 import { db as chatDB } from "./schema"
@@ -23,6 +26,9 @@ import {
   savePromptFB,
   updatePromptFB
 } from ".."
+import { OpenAIModelDb } from "./openai"
+import { ModelNickname } from "./nickname"
+import { ModelDb } from "./models"
 
 // Helper function to generate IDs (keeping the same format)
 export const generateID = () => {
@@ -367,10 +373,55 @@ export const exportPrompts = async () => {
   return await db.getAllPrompts()
 }
 
+export const exportOAIConfigs = async () => {
+  const db = new OpenAIModelDb()
+  return await db.getAll()
+}
+
+export const exportNicknames = async () => {
+  const modelNickname = new ModelNickname()
+  const data = await modelNickname.getAllModelNicknames()
+  return data
+}
+
+export const exportModels = async () => {
+  const db = new ModelDb()
+  return db.getAll()
+}
+
+export const importNicknamesV2 = async (
+  nicknames: ModelNicknames,
+  options: {
+    replaceExisting?: boolean
+    mergeData?: boolean
+  } = {}
+) => {
+  const db = new ModelNickname()
+  await db.importDataV2(nicknames, options)
+}
+
+export const importModelsV2 = async (
+  models: Models,
+  options: {
+    replaceExisting?: boolean
+    mergeData?: boolean
+  } = {}
+) => {
+  const db = new ModelDb()
+  await db.importDataV2(models, options)
+}
+
 export const importPrompts = async (prompts: Prompts) => {
   const db = new PageAssistDatabase()
   for (const prompt of prompts) {
     await db.addPrompt(prompt)
+  }
+}
+
+export const importOAIConfigs = async (configs: OpenAIModelConfigs) => {
+  const db = new OpenAIModelDb()
+  for (const config of configs) {
+    await db.create(config)
   }
 }
 
@@ -548,6 +599,17 @@ export const importPromptsV2 = async (
 ) => {
   const chatDb = new PageAssistDatabase()
   return chatDb.importPromptsV2(data, options)
+}
+
+export const importOAIConfigsV2 = async (
+  data: OpenAIModelConfigs,
+  options: {
+    replaceExisting?: boolean
+    mergeData?: boolean
+  } = {}
+) => {
+  const db = new OpenAIModelDb()
+  return db.importDataV2(data, options)
 }
 
 export const updateLastUsedModel = async (
