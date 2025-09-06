@@ -29,7 +29,9 @@ export const setAutoCORSFix = async (enabled: boolean) => {
 
 export const getOllamaEnabled = async () => {
   try {
-    const enabled = await storage.get<boolean | undefined>("ollamaEnabledStatus")
+    const enabled = await storage.get<boolean | undefined>(
+      "ollamaEnabledStatus"
+    )
     return enabled ?? true
   } catch (e) {
     return true
@@ -53,9 +55,7 @@ export const setRewriteUrl = async (url: string) => {
 }
 
 export const getAdvancedOllamaSettings = async () => {
-  const [isEnableRewriteUrl, rewriteUrl,
-    autoCORSFix
-  ] = await Promise.all([
+  const [isEnableRewriteUrl, rewriteUrl, autoCORSFix] = await Promise.all([
     isUrlRewriteEnabled(),
     getRewriteUrl(),
     getIsAutoCORSFix()
@@ -100,7 +100,6 @@ export const customOllamaHeaders = async (): Promise<
   return headers
 }
 
-
 export const setCustomOllamaHeaders = async (headers: string[]) => {
   await storage.set("customOllamaHeaders", headers)
 }
@@ -120,39 +119,52 @@ export const getCustomOllamaHeaders = async (): Promise<
 }
 
 export const getOpenOnIconClick = async (): Promise<string> => {
-  const openOnIconClick = await storage.get<string>("openOnIconClick");
-  return openOnIconClick || "webUI";
-};
-
-export const setOpenOnIconClick = async (option: "webUI" | "sidePanel"): Promise<void> => {
-  await storage.set("openOnIconClick", option);
-};
-
-export const getOpenOnRightClick = async (): Promise<string> => {
-  const openOnRightClick = await storage.get<string>("openOnRightClick");
-  return openOnRightClick || "sidePanel";
-};
-
-export const setOpenOnRightClick = async (option: "webUI" | "sidePanel"): Promise<void> => {
-  await storage.set("openOnRightClick", option);
-};
-
-
-export const getTotalFilePerKB = async (): Promise<number> => {
-  const totalFilePerKB = await storage.get<number>("totalFilePerKB");
-  return totalFilePerKB || 5;
+  const openOnIconClick = await storage.get<string>("openOnIconClick")
+  return openOnIconClick || "webUI"
 }
 
+export const setOpenOnIconClick = async (
+  option: "webUI" | "sidePanel"
+): Promise<void> => {
+  await storage.set("openOnIconClick", option)
+}
 
-export const setTotalFilePerKB = async (totalFilePerKB: number): Promise<void> => {
-  await storage.set("totalFilePerKB", totalFilePerKB);
-};
+export const getOpenOnRightClick = async (): Promise<string> => {
+  const openOnRightClick = await storage.get<string>("openOnRightClick")
+  return openOnRightClick || "sidePanel"
+}
+
+export const setOpenOnRightClick = async (
+  option: "webUI" | "sidePanel"
+): Promise<void> => {
+  await storage.set("openOnRightClick", option)
+}
+
+export const getTotalFilePerKB = async (): Promise<number> => {
+  const totalFilePerKB = await storage.get<number>("totalFilePerKB")
+  return totalFilePerKB || 5
+}
+
+export const setTotalFilePerKB = async (
+  totalFilePerKB: number
+): Promise<void> => {
+  await storage.set("totalFilePerKB", totalFilePerKB)
+}
 
 export const getNoOfRetrievedDocs = async (): Promise<number> => {
-  const noOfRetrievedDocs = await storage.get<number>("noOfRetrievedDocs");
+  const noOfRetrievedDocs = await storage.get<number>("noOfRetrievedDocs")
   return noOfRetrievedDocs || 4
 }
 
-export const setNoOfRetrievedDocs = async (noOfRetrievedDocs: number): Promise<void> => {
-  await storage.set("noOfRetrievedDocs", noOfRetrievedDocs);
+export const setNoOfRetrievedDocs = async (
+  noOfRetrievedDocs: number
+): Promise<void> => {
+  await storage.set("noOfRetrievedDocs", noOfRetrievedDocs)
+}
+
+export const isRemoveReasoningTagFromCopy = async (): Promise<boolean> => {
+  const removeReasoningTagFromCopy = await storage.get<boolean>(
+    "removeReasoningTagFromCopy"
+  )
+  return removeReasoningTagFromCopy ?? true
 }
