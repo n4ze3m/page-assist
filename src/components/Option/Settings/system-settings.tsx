@@ -126,12 +126,12 @@ export const SystemSettings = () => {
         </h2>
         <div className="border border-b border-gray-200 dark:border-gray-600 mt-3"></div>
       </div>
-      <div className="flex flex-row mb-3 justify-between items-center">
+      <div className="flex flex-col sm:flex-row mb-3 gap-3 sm:gap-0 sm:justify-between sm:items-center">
         <span className="text-black dark:text-white font-medium">
           <BetaTag />
           {t("generalSettings.system.fontSize.label")}
         </span>
-        <div className="flex flex-row items-center gap-3">
+        <div className="flex flex-row items-center gap-3 justify-center sm:justify-end">
           <button
             onClick={decrease}
             className="bg-black hover:bg-gray-800 dark:bg-white dark:hover:bg-gray-200 text-white dark:text-black px-3 py-1.5 rounded-lg transition-colors duration-200 font-medium text-sm">
@@ -148,8 +148,8 @@ export const SystemSettings = () => {
         </div>
       </div>
 
-      <div className="flex flex-row mb-3 justify-between">
-        <span className="text-gray-700 dark:text-neutral-50 ">
+      <div className="flex flex-col sm:flex-row mb-3 gap-3 sm:gap-0 sm:justify-between sm:items-center">
+        <span className="text-gray-700 dark:text-neutral-50">
           <BetaTag />
           {t("generalSettings.system.actionIcon.label")}
         </span>
@@ -165,14 +165,14 @@ export const SystemSettings = () => {
             }
           ]}
           value={actionIconClick}
-          className="w-full mt-4 sm:mt-0 sm:w-[200px]"
+          className="w-full sm:w-[200px]"
           onChange={(value) => {
             setActionIconClick(value)
           }}
         />
       </div>
-      <div className="flex flex-row mb-3 justify-between">
-        <span className="text-gray-700 dark:text-neutral-50 ">
+      <div className="flex flex-col sm:flex-row mb-3 gap-3 sm:gap-0 sm:justify-between sm:items-center">
+        <span className="text-gray-700 dark:text-neutral-50">
           <BetaTag />
           {t("generalSettings.system.contextMenu.label")}
         </span>
@@ -188,15 +188,15 @@ export const SystemSettings = () => {
             }
           ]}
           value={contextMenuClick}
-          className="w-full mt-4 sm:mt-0 sm:w-[200px]"
+          className="w-full sm:w-[200px]"
           onChange={(value) => {
             setContextMenuClick(value)
           }}
         />
       </div>
       {isFireFox && !isFireFoxPrivateMode && (
-        <div className="flex flex-row mb-3 justify-between">
-          <span className="text-gray-700 dark:text-neutral-50 ">
+        <div className="flex flex-col sm:flex-row mb-3 gap-3 sm:gap-0 sm:justify-between sm:items-center">
+          <span className="text-gray-700 dark:text-neutral-50">
             <BetaTag />
             {t("generalSettings.system.firefoxPrivateModeSync.label", {
               defaultValue:
@@ -208,7 +208,7 @@ export const SystemSettings = () => {
               syncFirefoxData.mutate()
             }}
             disabled={syncFirefoxData.isPending}
-            className="bg-gray-800 dark:bg-white text-white dark:text-gray-900 px-4 py-2 rounded-md cursor-pointer">
+            className="bg-gray-800 dark:bg-white text-white dark:text-gray-900 px-4 py-2 rounded-md cursor-pointer w-full sm:w-auto">
             {syncFirefoxData.isPending ? (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             ) : (
@@ -219,30 +219,32 @@ export const SystemSettings = () => {
           </button>
         </div>
       )}
-      <div className="flex flex-row mb-3 justify-between">
-        <span className="text-gray-700 dark:text-neutral-50 ">
+      <div className="flex flex-col sm:flex-row mb-3 gap-3 sm:gap-0 sm:justify-between sm:items-center">
+        <span className="text-gray-700 dark:text-neutral-50">
           {t("generalSettings.system.webuiBtnSidePanel.label")}
         </span>
-        <Switch
+         <div>
+          <Switch
           checked={webuiBtnSidePanel}
           onChange={(checked) => {
             setWebuiBtnSidePanel(checked)
           }}
         />
+         </div>
       </div>
 
-      <div className="flex flex-row mb-3 justify-between">
-        <span className="text-gray-700 dark:text-neutral-50 ">
+      <div className="flex flex-col sm:flex-row mb-3 gap-3 sm:gap-0 sm:justify-between sm:items-center">
+        <span className="text-gray-700 dark:text-neutral-50">
           <BetaTag />
           {t("generalSettings.system.chatBackgroundImage.label")}
         </span>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 justify-center sm:justify-end">
           {chatBackgroundImage ? (
             <button
               onClick={() => {
                 setChatBackgroundImage(null)
               }}
-              className=" text-gray-800 dark:text-white">
+              className="text-gray-800 dark:text-white">
               <RotateCcw className="size-4" />
             </button>
           ) : null}
@@ -262,23 +264,23 @@ export const SystemSettings = () => {
         </div>
       </div>
 
-      <div className="flex flex-row mb-3 justify-between">
-        <span className="text-gray-700 dark:text-neutral-50 ">
+      <div className="flex flex-col sm:flex-row mb-3 gap-3 sm:gap-0 sm:justify-between sm:items-center">
+        <span className="text-gray-700 dark:text-neutral-50">
           {t("generalSettings.system.export.label")}
         </span>
         <button
           onClick={exportPageAssistData}
-          className="bg-gray-800 dark:bg-white text-white dark:text-gray-900 px-4 py-2 rounded-md cursor-pointer">
+          className="bg-gray-800 dark:bg-white text-white dark:text-gray-900 px-4 py-2 rounded-md cursor-pointer w-full sm:w-auto">
           {t("generalSettings.system.export.button")}
         </button>
       </div>
-      <div className="flex flex-row mb-3 justify-between">
-        <span className="text-gray-700 dark:text-neutral-50 ">
+      <div className="flex flex-col sm:flex-row mb-3 gap-3 sm:gap-0 sm:justify-between sm:items-center">
+        <span className="text-gray-700 dark:text-neutral-50">
           {t("generalSettings.system.import.label")}
         </span>
         <label
           htmlFor="import"
-          className="bg-gray-800 dark:bg-white text-white dark:text-gray-900 px-4 py-2 rounded-md cursor-pointer flex items-center">
+          className="bg-gray-800 dark:bg-white text-white dark:text-gray-900 px-4 py-2 rounded-md cursor-pointer flex items-center justify-center w-full sm:w-auto">
           {importDataMutation.isPending ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -301,8 +303,8 @@ export const SystemSettings = () => {
         />
       </div>
 
-      <div className="flex flex-row mb-3 justify-between">
-        <span className="text-gray-700 dark:text-neutral-50 ">
+      <div className="flex flex-col sm:flex-row mb-3 gap-3 sm:gap-0 sm:justify-between sm:items-center">
+        <span className="text-gray-700 dark:text-neutral-50">
           {t("generalSettings.system.deleteChatHistory.label")}
         </span>
 
@@ -328,7 +330,7 @@ export const SystemSettings = () => {
               }
             }
           }}
-          className="bg-red-500 dark:bg-red-600 text-white dark:text-gray-200 px-4 py-2 rounded-md">
+          className="bg-red-500 dark:bg-red-600 text-white dark:text-gray-200 px-4 py-2 rounded-md w-full sm:w-auto">
           {t("generalSettings.system.deleteChatHistory.button")}
         </button>
       </div>
