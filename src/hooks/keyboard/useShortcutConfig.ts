@@ -5,6 +5,7 @@ export interface ShortcutConfig {
   focusTextarea: KeyboardShortcut
   newChat: KeyboardShortcut
   toggleSidebar: KeyboardShortcut
+  toggleChatMode: KeyboardShortcut
 }
 
 export const defaultShortcuts: ShortcutConfig = {
@@ -23,6 +24,12 @@ export const defaultShortcuts: ShortcutConfig = {
   },
   toggleSidebar: {
     key: 'b',
+    ctrlKey: true,
+    preventDefault: true,
+    stopPropagation: true
+  },
+  toggleChatMode: {
+    key: 'e',
     ctrlKey: true,
     preventDefault: true,
     stopPropagation: true
