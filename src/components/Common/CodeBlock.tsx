@@ -68,10 +68,20 @@ export const CodeBlock: FC<Props> = ({ language, value }) => {
     const code = previewValue || ""
     if ((language || "").toLowerCase() === "svg") {
       const hasSvgTag = /<svg[\s>]/i.test(code)
-      const svgMarkup = hasSvgTag
+      let svgMarkup = hasSvgTag
         ? code
         : `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'>${code}</svg>`
-      return `<!doctype html><html><head><meta charset='utf-8'/><style>html,body{margin:0;padding:0;display:flex;align-items:center;justify-content:center;background:#fff;height:100%;}</style></head><body>${svgMarkup}</body></html>`
+      
+      const hasWidthHeight = /\s(width|height)\s*=/.test(svgMarkup)
+      
+      if (!hasWidthHeight && hasSvgTag) {
+        svgMarkup = svgMarkup.replace(
+          /<svg([^>]*?)>/i,
+          '<svg$1 width="100%" height="100%" style="max-width: 100%; max-height: 100%;">'
+        )
+      }
+      
+      return `<!doctype html><html><head><meta charset='utf-8'/><style>html,body{margin:0;padding:0;display:flex;align-items:center;justify-content:center;background:#fff;height:100%;overflow:hidden;}svg{max-width:100%;max-height:100%;}</style></head><body>${svgMarkup}</body></html>`
     }
     return `<!doctype html><html><head><meta charset='utf-8'/></head><body>${code}</body></html>`
   }, [previewValue, language])

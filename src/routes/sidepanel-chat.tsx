@@ -6,7 +6,11 @@ import {
 import useBackgroundMessage from "@/hooks/useBackgroundMessage"
 import { useMigration } from "@/hooks/useMigration"
 import { useSmartScroll } from "@/hooks/useSmartScroll"
-import { useChatShortcuts, useSidebarShortcuts } from "@/hooks/keyboard/useKeyboardShortcuts"
+import {
+  useChatShortcuts,
+  useSidebarShortcuts,
+  useChatModeShortcuts
+} from "@/hooks/keyboard/useKeyboardShortcuts"
 import { copilotResumeLastChat } from "@/services/app"
 import { Storage } from "@plasmohq/storage"
 import { useStorage } from "@plasmohq/storage/hook"
@@ -37,6 +41,7 @@ const SidepanelChat = () => {
     setMessages,
     selectedModel,
     defaultChatWithWebsite,
+    chatMode,
     setChatMode,
     setTemporaryChat,
     sidepanelTemporaryChat,
@@ -46,11 +51,16 @@ const SidepanelChat = () => {
     useSmartScroll(messages, streaming, 100)
 
   const toggleSidebar = () => {
-    setSidebarOpen(prev => !prev)
+    setSidebarOpen((prev) => !prev)
+  }
+
+  const toggleChatMode = () => {
+    setChatMode(chatMode === "rag" ? "normal" : "rag")
   }
 
   useChatShortcuts(clearChat, true)
   useSidebarShortcuts(toggleSidebar, true)
+  useChatModeShortcuts(toggleChatMode, true)
 
   const [chatBackgroundImage] = useStorage({
     key: "chatBackgroundImage",
@@ -165,7 +175,7 @@ const SidepanelChat = () => {
     <div className="flex h-full w-full">
       <main className="relative h-dvh w-full">
         <div className="relative z-20 w-full">
-          <SidepanelHeader 
+          <SidepanelHeader
             sidebarOpen={sidebarOpen}
             setSidebarOpen={setSidebarOpen}
           />

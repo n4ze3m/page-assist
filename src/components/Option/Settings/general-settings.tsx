@@ -82,6 +82,9 @@ export const GeneralSettings = () => {
     false
   )
 
+  const [removeReasoningTagFromCopy, setRemoveReasoningTagFromCopy] =
+    useStorage("removeReasoningTagFromCopy", true)
+
   const { mode, toggleDarkMode } = useDarkMode()
   const { t } = useTranslation("settings")
   const { changeLocale, locale, supportLanguage } = useI18n()
@@ -346,6 +349,17 @@ export const GeneralSettings = () => {
         <Switch
           checked={sidepanelTemporaryChat}
           onChange={(checked) => setSidepanelTemporaryChat(checked)}
+        />
+      </div>
+
+      <div className="flex flex-row justify-between">
+        <span className="text-gray-700 dark:text-neutral-50 ">
+          {t("generalSettings.settings.removeReasoningTagFromCopy.label")}
+        </span>
+
+        <Switch
+          checked={removeReasoningTagFromCopy}
+          onChange={(checked) => setRemoveReasoningTagFromCopy(checked)}
         />
       </div>
 

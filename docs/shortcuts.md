@@ -9,7 +9,16 @@ Page Assist supports the following shortcut keys:
 
 You can change the keyboard shortcuts from the extension settings on the Chrome Extension Management page.
 
-## Changing Keyboard Shortcuts
+## Application Shortcuts
+
+| Action | Shortcut | Description |
+|--------|----------|-------------|
+| New Chat | `Ctrl+Shift+O` | Starts a new chat conversation |
+| Toggle Sidebar | `Ctrl+B` | Opens/closes the chat history sidebar |
+| Focus Textarea | `Shift+Esc` | Focuses the message input field |
+| Toggle Chat Mode | `Ctrl+E` | Toggles between normal chat and chat with current page |
+
+## Changing Keyboard Shortcuts (Browser Specific)
 
 To change the keyboard shortcuts, follow these steps:
 

@@ -123,6 +123,7 @@ Page Assist supports various keyboard shortcuts to enhance your productivity:
 | New Chat | `Ctrl+Shift+O` | Starts a new chat conversation |
 | Toggle Sidebar | `Ctrl+B` | Opens/closes the chat history sidebar |
 | Focus Textarea | `Shift+Esc` | Focuses the message input field |
+| Toggle Chat Mode | `Ctrl+E` | Toggles between normal chat and chat with current page |
 
 
 

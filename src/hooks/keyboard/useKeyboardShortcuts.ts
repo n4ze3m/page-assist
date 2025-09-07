@@ -174,3 +174,35 @@ export const useSidebarShortcuts = (
     shortcuts
   }
 }
+
+/**
+ * Hook specifically for chat mode shortcuts
+ * @param toggleChatMode Function to toggle chat mode between normal and rag
+ * @param enabled Whether the shortcuts are enabled
+ */
+export const useChatModeShortcuts = (
+  toggleChatMode: () => void,
+  enabled: boolean = true
+) => {
+  const { shortcuts: configuredShortcuts } = useShortcutConfig()
+
+  const toggleChatModeAction = useCallback(() => {
+    toggleChatMode()
+  }, [toggleChatMode])
+
+  const shortcuts: KeyboardShortcutConfig[] = [
+    {
+      shortcut: configuredShortcuts.toggleChatMode,
+      action: toggleChatModeAction,
+      enabled,
+      description: 'Toggle chat with current page'
+    }
+  ]
+
+  useKeyboardShortcuts(shortcuts)
+
+  return {
+    toggleChatMode: toggleChatModeAction,
+    shortcuts
+  }
+}

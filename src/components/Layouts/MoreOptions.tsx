@@ -96,8 +96,11 @@ export const MoreOptions = ({
           key: "copy-text",
           label: t("more.copy.asText"),
           icon: <FileText className="w-4 h-4" />,
-          onClick: () => {
-            navigator.clipboard.writeText(formatAsText(messages))
+          onClick: async () => {
+            await copyToClipboard({
+              text: formatAsText(messages),
+              formatted: false
+            })
             message.success(t("more.copy.success"))
           }
         },
@@ -113,7 +116,6 @@ export const MoreOptions = ({
               text: mkd,
               formatted: true
             })
-            // navigator.clipboard.writeText(formatAsMarkdown(messages))
             message.success(t("more.copy.success"))
           }
         },
@@ -121,8 +123,11 @@ export const MoreOptions = ({
           key: "copy-markdown",
           label: t("more.copy.asMarkdown"),
           icon: <FileCode className="w-4 h-4" />,
-          onClick: () => {
-            navigator.clipboard.writeText(formatAsMarkdown(messages))
+          onClick: async () => {
+            await copyToClipboard({
+              text: formatAsMarkdown(messages),
+              formatted: false
+            })
             message.success(t("more.copy.success"))
           }
         }
