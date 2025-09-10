@@ -1,6 +1,5 @@
-import { Button } from "@/components/Common/Button"
 import { CheckIcon, XMarkIcon } from "@heroicons/react/24/outline"
-import { Segmented, Space, Input, Alert, Form, message, Spin } from "antd"
+import { Segmented, Space, Input, Alert, Form, message, Spin, Button } from "antd"
 import React, { useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { tldwClient, TldwConfig } from "@/services/tldw/TldwApiClient"
