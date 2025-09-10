@@ -1,9 +1,9 @@
 {
-  "name": "pageassist",
-  "displayName": "Page Assist - A Web UI for Local AI Models",
-  "version": "1.0.9",
-  "description": "Use your locally running AI models to assist you in your web browsing.",
-  "author": "n4ze3m",
+  "name": "tldw-assistant",
+  "displayName": "tldw Assistant - Browser Extension for tldw_server",
+  "version": "0.1.0",
+  "description": "A browser extension frontend for tldw_server - your unified AI assistant with RAG, media processing, and more.",
+  "author": "tldw-team",
   "scripts": {
     "dev": "cross-env TARGET=chrome wxt",
     "dev:firefox": "cross-env TARGET=firefox wxt -b firefox",

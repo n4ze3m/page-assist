@@ -15,12 +15,14 @@ const OptionKnowledgeBase = lazy(() => import("./option-settings-knowledge"))
 const OptionAbout = lazy(() => import("./option-settings-about"))
 const OptionRagSettings = lazy(() => import("./option-rag"))
 const OptionOpenAI = lazy(() => import("./option-settings-openai"))
+const OptionTldwSettings = lazy(() => import("./option-settings-tldw").then(m => ({ default: m.OptionTldwSettings })))
 
 export const OptionRoutingFirefox = () => {
   return (
     <Routes>
       <Route path="/" element={<OptionIndex />} />
       <Route path="/settings" element={<OptionSettings />} />
+      <Route path="/settings/tldw" element={<OptionTldwSettings />} />
       <Route path="/settings/model" element={<OptionModal />} />
       <Route path="/settings/prompt" element={<OptionPrompt />} />
       <Route path="/settings/ollama" element={<OptionOllamaSettings />} />

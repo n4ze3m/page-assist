@@ -12,12 +12,14 @@ import SidepanelSettings from "./sidepanel-settings"
 import OptionRagSettings from "./option-rag"
 import OptionChrome from "./option-settings-chrome"
 import OptionOpenAI from "./option-settings-openai"
+import { OptionTldwSettings } from "./option-settings-tldw"
 
 export const OptionRoutingChrome = () => {
   return (
     <Routes>
       <Route path="/" element={<OptionIndex />} />
       <Route path="/settings" element={<OptionSettings />} />
+      <Route path="/settings/tldw" element={<OptionTldwSettings />} />
       <Route path="/settings/model" element={<OptionModal />} />
       <Route path="/settings/prompt" element={<OptionPrompt />} />
       <Route path="/settings/ollama" element={<OptionOllamaSettings />} />

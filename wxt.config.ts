@@ -51,20 +51,20 @@ export default defineConfig({
   outDir: "build",
 
   manifest: {
-    version: "1.5.30",
+    version: "0.1.0",
     name:
       process.env.TARGET === "firefox"
-        ? "Page Assist - A Web UI for Local AI Models"
+        ? "tldw Assistant - Browser Extension for tldw_server"
         : "__MSG_extName__",
     description: "__MSG_extDescription__",
     default_locale: "en",
     action: {},
-    author: "n4ze3m",
+    author: "tldw-team",
     browser_specific_settings:
       process.env.TARGET === "firefox"
         ? {
           gecko: {
-            id: "page-assist@nazeem"
+            id: "tldw-assistant@tldw"
           }
         }
         : undefined,

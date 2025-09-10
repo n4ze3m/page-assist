@@ -7,7 +7,8 @@ import {
   InfoIcon,
   CombineIcon,
   ChromeIcon,
-  CpuIcon
+  CpuIcon,
+  ServerIcon
 } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { Link, useLocation } from "react-router-dom"
@@ -64,6 +65,12 @@ export const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
                 <ul
                   role="list"
                   className="flex flex-row lg:flex-col gap-x-3 gap-y-1 min-w-max lg:min-w-0">
+                  <LinkComponent
+                    href="/settings/tldw"
+                    name="tldw Server"
+                    icon={ServerIcon}
+                    current={location.pathname}
+                  />
                   <LinkComponent
                     href="/settings"
                     name={t("generalSettings.title")}

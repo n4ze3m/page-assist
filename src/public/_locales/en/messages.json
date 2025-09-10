@@ -1,9 +1,9 @@
 {
     "extName": {
-        "message": "Page Assist - A Web UI for Local AI Models"
+        "message": "tldw Assistant"
     },
     "extDescription": {
-        "message": "Use your locally running AI models to assist you in your web browsing."
+        "message": "Browser extension for tldw_server - your unified AI assistant with RAG, media processing, and more."
     },
     "openSidePanelToChat": {
         "message": "Open Side Panel to Chat"
