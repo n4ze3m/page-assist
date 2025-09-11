@@ -114,6 +114,13 @@
     },
     "system": {
       "heading": "സിസ്റ്റം ക്രമീകരണങ്ങൾ",
+      "uiMode": {
+        "label": "Default UI Mode",
+        "options": {
+          "webui": "Full Screen (Web UI)",
+          "sidePanel": "Sidebar"
+        }
+      },
       "deleteChatHistory": {
         "label": "സിസ്റ്റം റീസെറ്റ്",
         "button": "എല്ലാം റീസെറ്റ് ചെയ്യുക",

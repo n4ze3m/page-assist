@@ -5,6 +5,7 @@ import OptionModal from "./option-settings-model"
 import OptionPrompt from "./option-settings-prompt"
 import OptionShare from "./option-settings-share"
 import OptionProcessed from "./option-settings-processed"
+import OptionHealth from "./option-settings-health"
 import OptionKnowledgeBase from "./option-settings-knowledge"
 import OptionAbout from "./option-settings-about"
 import SidepanelChat from "./sidepanel-chat"
@@ -27,6 +28,7 @@ export const OptionRoutingChrome = () => {
       <Route path="/settings/openai" element={<OptionOpenAI />} />
       <Route path="/settings/share" element={<OptionShare />} />
       <Route path="/settings/processed" element={<OptionProcessed />} />
+      <Route path="/settings/health" element={<OptionHealth />} />
       <Route path="/settings/knowledge" element={<OptionKnowledgeBase />} />
       <Route path="/settings/rag" element={<OptionRagSettings />} />
       <Route path="/settings/about" element={<OptionAbout />} />

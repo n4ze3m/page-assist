@@ -27,6 +27,15 @@ export const SystemSettings = () => {
     false
   )
 
+  // Default UI mode: fullscreen (webui) or sidebar (sidePanel)
+  const [uiMode, setUiMode] = useStorage(
+    {
+      key: "uiMode",
+      instance: new Storage({ area: "local" })
+    },
+    "sidePanel"
+  )
+
   const [actionIconClick, setActionIconClick] = useStorage(
     {
       key: "actionIconClick",
@@ -125,6 +134,26 @@ export const SystemSettings = () => {
           {t("generalSettings.system.heading")}
         </h2>
         <div className="border border-b border-gray-200 dark:border-gray-600 mt-3"></div>
+      </div>
+
+      <div className="flex flex-col sm:flex-row mb-3 gap-3 sm:gap-0 sm:justify-between sm:items-center">
+        <span className="text-gray-700 dark:text-neutral-50">
+          {t("generalSettings.system.uiMode.label", { defaultValue: "Default UI Mode" })}
+        </span>
+        <Select
+          options={[
+            { label: t("generalSettings.system.uiMode.options.sidePanel", { defaultValue: "Sidebar" }), value: "sidePanel" },
+            { label: t("generalSettings.system.uiMode.options.webui", { defaultValue: "Full Screen (Web UI)" }), value: "webui" }
+          ]}
+          value={uiMode}
+          className="w-full sm:w-[220px]"
+          onChange={async (value) => {
+            setUiMode(value)
+            // Keep action/context menu behavior consistent with default mode
+            setActionIconClick(value)
+            setContextMenuClick(value === 'webui' ? 'sidePanel' : 'sidePanel')
+          }}
+        />
       </div>
       <div className="flex flex-col sm:flex-row mb-3 gap-3 sm:gap-0 sm:justify-between sm:items-center">
         <span className="text-black dark:text-white font-medium">

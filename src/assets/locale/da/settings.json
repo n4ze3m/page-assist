@@ -108,6 +108,13 @@
     },
     "system": {
       "heading": "Systemindstillinger",
+      "uiMode": {
+        "label": "Standard UI-tilstand",
+        "options": {
+          "webui": "Fuld skærm (Web UI)",
+          "sidePanel": "Sidepanel"
+        }
+      },
       "deleteChatHistory": {
         "label": "System Nulstilling",
         "button": "Nulstil Alt",

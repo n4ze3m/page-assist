@@ -1,9 +1,11 @@
 import { CheckIcon, XMarkIcon } from "@heroicons/react/24/outline"
 import { Segmented, Space, Input, Alert, Form, message, Spin, Button } from "antd"
+import { Link } from "react-router-dom"
 import React, { useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { tldwClient, TldwConfig } from "@/services/tldw/TldwApiClient"
 import { tldwAuth } from "@/services/tldw/TldwAuth"
+import { Tag } from "antd"
 
 export const TldwSettings = () => {
   const { t } = useTranslation(["settings", "common"])
@@ -11,8 +13,10 @@ export const TldwSettings = () => {
   const [loading, setLoading] = useState(false)
   const [testingConnection, setTestingConnection] = useState(false)
   const [connectionStatus, setConnectionStatus] = useState<'success' | 'error' | null>(null)
+  const [ragStatus, setRagStatus] = useState<'healthy' | 'unhealthy' | 'unknown'>("unknown")
   const [authMode, setAuthMode] = useState<'single-user' | 'multi-user'>('single-user')
   const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [serverUrl, setServerUrl] = useState("")
 
   useEffect(() => {
     loadConfig()
@@ -24,6 +28,7 @@ export const TldwSettings = () => {
       const config = await tldwClient.getConfig()
       if (config) {
         setAuthMode(config.authMode)
+        setServerUrl(config.serverUrl)
         form.setFieldsValue({
           serverUrl: config.serverUrl,
           apiKey: config.apiKey,
@@ -103,6 +108,14 @@ export const TldwSettings = () => {
       }
 
       setConnectionStatus(success ? 'success' : 'error')
+      // Probe RAG health after core connection test when server URL is present
+      try {
+        await tldwClient.initialize()
+        const rag = await tldwClient.ragHealth()
+        setRagStatus('healthy')
+      } catch (e) {
+        setRagStatus('unhealthy')
+      }
       
       if (success) {
         message.success("Connection successful!")
@@ -163,6 +176,18 @@ export const TldwSettings = () => {
   return (
     <Spin spinning={loading}>
       <div className="max-w-2xl">
+        <div className="mb-4 p-2 rounded border dark:border-gray-600 bg-white dark:bg-[#171717] flex items-center justify-between">
+          <div className="text-sm">
+            <span className="mr-2 font-medium">Server:</span>
+            <span className="text-gray-600 dark:text-gray-300 break-all">{serverUrl || 'Not configured'}</span>
+          </div>
+          <Space>
+            <Link to="/settings/health">
+              <Button>Health</Button>
+            </Link>
+            <Button type="primary" onClick={testConnection} loading={testingConnection}>Recheck</Button>
+          </Space>
+        </div>
         <h2 className="text-base font-semibold mb-4">tldw Server Configuration</h2>
         
         <Form
@@ -284,6 +309,18 @@ export const TldwSettings = () => {
               <span className={`text-sm ${connectionStatus === 'success' ? 'text-green-500' : 'text-red-500'}`}>
                 {connectionStatus === 'success' ? 'Connected' : 'Connection failed'}
               </span>
+            )}
+            {connectionStatus === 'success' && (
+              <div className="ml-4">
+                <span className="text-sm mr-2">RAG:</span>
+                {ragStatus === 'healthy' ? (
+                  <Tag color="green">Healthy</Tag>
+                ) : ragStatus === 'unhealthy' ? (
+                  <Tag color="red">Unhealthy</Tag>
+                ) : (
+                  <Tag>Unknown</Tag>
+                )}
+              </div>
             )}
           </Space>
         </Form>

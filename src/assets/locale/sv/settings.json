@@ -111,6 +111,13 @@
     },
     "system": {
       "heading": "Systeminställningar",
+      "uiMode": {
+        "label": "Standardläge för gränssnitt",
+        "options": {
+          "webui": "Helskärm (Web UI)",
+          "sidePanel": "Sidofält"
+        }
+      },
       "deleteChatHistory": {
         "label": "Systemåterställning",
         "button": "Återställ Allt",

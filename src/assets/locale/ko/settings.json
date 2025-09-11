@@ -114,6 +114,13 @@
     },
     "system": {
       "heading": "시스템 설정",
+      "uiMode": {
+        "label": "기본 UI 모드",
+        "options": {
+          "webui": "전체 화면 (Web UI)",
+          "sidePanel": "사이드바"
+        }
+      },
       "deleteChatHistory": {
         "label": "시스템 초기화",
         "button": "전체 초기화",

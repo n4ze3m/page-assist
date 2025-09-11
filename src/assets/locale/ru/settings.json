@@ -111,6 +111,13 @@
     },
     "system": {
       "heading": "Настройки системы",
+      "uiMode": {
+        "label": "Режим интерфейса по умолчанию",
+        "options": {
+          "webui": "Полноэкранный (Web UI)",
+          "sidePanel": "Боковая панель"
+        }
+      },
       "deleteChatHistory": {
         "label": "Сброс системы",
         "button": "Сбросить все",

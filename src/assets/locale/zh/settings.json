@@ -114,6 +114,13 @@
     },
     "system": {
       "heading": "系统设置",
+      "uiMode": {
+        "label": "默认界面模式",
+        "options": {
+          "webui": "全屏（Web UI）",
+          "sidePanel": "侧边栏"
+        }
+      },
       "deleteChatHistory": {
         "label": "系统重置",
         "button": "全部重置",

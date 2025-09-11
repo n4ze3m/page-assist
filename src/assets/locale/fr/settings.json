@@ -114,6 +114,13 @@
     },
     "system": {
       "heading": "Paramètres système",
+      "uiMode": {
+        "label": "Mode d'interface par défaut",
+        "options": {
+          "webui": "Plein écran (Web UI)",
+          "sidePanel": "Panneau latéral"
+        }
+      },
       "deleteChatHistory": {
         "label": "Réinitialisation du système",
         "button": "Tout réinitialiser",

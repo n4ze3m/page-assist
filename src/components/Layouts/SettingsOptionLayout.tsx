@@ -8,7 +8,8 @@ import {
   CombineIcon,
   ChromeIcon,
   CpuIcon,
-  ServerIcon
+  ServerIcon,
+  ActivityIcon
 } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { Link, useLocation } from "react-router-dom"
@@ -132,6 +133,12 @@ export const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
                     href="/settings/processed"
                     name={"Processed"}
                     icon={FileText}
+                    current={location.pathname}
+                  />
+                  <LinkComponent
+                    href="/settings/health"
+                    name={"Health"}
+                    icon={ActivityIcon}
                     current={location.pathname}
                   />
                   <LinkComponent

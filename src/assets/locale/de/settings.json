@@ -93,6 +93,13 @@
     },
     "system": {
       "heading": "Systemeinstellungen",
+      "uiMode": {
+        "label": "Standard-UI-Modus",
+        "options": {
+          "webui": "Vollbild (Web UI)",
+          "sidePanel": "Seitenleiste"
+        }
+      },
       "deleteChatHistory": {
         "label": "System zurücksetzen",
         "button": "Alles zurücksetzen",

@@ -115,6 +115,13 @@
     },
     "system": {
       "heading": "Configurações do Sistema",
+      "uiMode": {
+        "label": "Modo de UI Padrão",
+        "options": {
+          "webui": "Tela Cheia (Web UI)",
+          "sidePanel": "Barra Lateral"
+        }
+      },
       "deleteChatHistory": {
         "label": "Reiniciar Sistema",
         "button": "Reiniciar Tudo",

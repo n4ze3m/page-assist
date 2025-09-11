@@ -11,6 +11,7 @@ const OptionPrompt = lazy(() => import("./option-settings-prompt"))
 const OptionSettings = lazy(() => import("./option-settings"))
 const OptionShare = lazy(() => import("./option-settings-share"))
 const OptionProcessed = lazy(() => import("./option-settings-processed"))
+const OptionHealth = lazy(() => import("./option-settings-health"))
 const OptionKnowledgeBase = lazy(() => import("./option-settings-knowledge"))
 const OptionAbout = lazy(() => import("./option-settings-about"))
 const OptionRagSettings = lazy(() => import("./option-rag"))
@@ -29,6 +30,7 @@ export const OptionRoutingFirefox = () => {
       <Route path="/settings/openai" element={<OptionOpenAI />} />
       <Route path="/settings/share" element={<OptionShare />} />
       <Route path="/settings/processed" element={<OptionProcessed />} />
+      <Route path="/settings/health" element={<OptionHealth />} />
       <Route path="/settings/knowledge" element={<OptionKnowledgeBase />} />
       <Route path="/settings/about" element={<OptionAbout />} />
       <Route path="/settings/rag" element={<OptionRagSettings />} />

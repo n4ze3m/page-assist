@@ -77,6 +77,21 @@
         "label": "Remove Reasoning Tag from Copied Text" 
       }
     },
+    "system": {
+      "heading": "System",
+      "uiMode": {
+        "label": "Default UI Mode",
+        "options": {
+          "webui": "Full Screen (Web UI)",
+          "sidePanel": "Sidebar"
+        }
+      },
+      "actionIcon": { "label": "Browser Action Button" },
+      "contextMenu": { "label": "Context Menu Action" },
+      "webuiBtnSidePanel": { "label": "Show Web UI button in Sidepanel" },
+      "chatBackgroundImage": { "label": "Chat Background Image" },
+      "firefoxPrivateModeSync": { "label": "Firefox Private Mode Sync", "button": "Sync Data" }
+    },
     "sidepanelRag": {
       "heading": "Retrieval Settings",
       "ragEnabled": {

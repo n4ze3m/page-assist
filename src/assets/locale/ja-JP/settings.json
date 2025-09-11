@@ -114,6 +114,13 @@
     },
     "system": {
       "heading": "システム設定",
+      "uiMode": {
+        "label": "デフォルトのUIモード",
+        "options": {
+          "webui": "フルスクリーン（Web UI）",
+          "sidePanel": "サイドバー"
+        }
+      },
       "deleteChatHistory": {
         "label": "システムリセット",
         "button": "すべてリセット",

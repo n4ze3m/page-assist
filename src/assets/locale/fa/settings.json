@@ -108,6 +108,13 @@
     },
     "system": {
       "heading": "تنظیمات سیستم",
+      "uiMode": {
+        "label": "حالت پیش‌فرض رابط کاربری",
+        "options": {
+          "webui": "تمام‌صفحه (رابط وب)",
+          "sidePanel": "نوار کناری"
+        }
+      },
       "deleteChatHistory": {
         "label": "بازنشانی سیستم",
         "button": "بازنشانی همه",

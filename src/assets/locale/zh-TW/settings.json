@@ -130,6 +130,13 @@
     },
     "system": {
       "heading": "系統設定",
+      "uiMode": {
+        "label": "預設介面模式",
+        "options": {
+          "webui": "全螢幕（Web UI）",
+          "sidePanel": "側邊欄"
+        }
+      },
       "deleteChatHistory": {
         "label": "系統重置",
         "button": "全部重置",
