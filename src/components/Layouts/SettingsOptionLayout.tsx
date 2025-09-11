@@ -83,12 +83,7 @@ export const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
                     icon={CombineIcon}
                     current={location.pathname}
                   />
-                  <LinkComponent
-                    href="/settings/ollama"
-                    name={t("ollamaSettings.title")}
-                    icon={OllamaIcon}
-                    current={location.pathname}
-                  />
+                  {/** Ollama settings removed */}
                   {import.meta.env.BROWSER !== "firefox" && (
                     <LinkComponent
                       href="/settings/chrome"

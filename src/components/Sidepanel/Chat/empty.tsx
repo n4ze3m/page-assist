@@ -45,7 +45,10 @@ export const EmptySidePanel = () => {
   useEffect(() => {
     if (ollamaInfo?.ollamaURL) {
       setOllamaURL(ollamaInfo.ollamaURL)
+    } else if (!ollamaURL) {
+      setOllamaURL("http://127.0.0.1:8000")
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ollamaInfo])
 
   const { setSelectedModel, selectedModel, chatMode, setChatMode } =
@@ -178,7 +181,7 @@ export const EmptySidePanel = () => {
                 {t("common:retry")}
               </button>
               {ollamaURL &&
-                cleanUrl(ollamaURL) !== "http://127.0.0.1:11434" && (
+                cleanUrl(ollamaURL) !== "http://127.0.0.1:8000" && (
                   <p className="text-xs text-gray-700 dark:text-gray-400 mb-4 text-center">
                     <Trans
                       i18nKey="playground:ollamaState.connectionError"

@@ -67,9 +67,10 @@ export default defineConfig({
           }
         }
         : undefined,
-    host_permissions:
+    // Use optional host permissions on Chromium so users can grant their own server origin at runtime
+    optional_host_permissions:
       process.env.TARGET !== "firefox"
-        ? ["http://*/*", "https://*/*", "file://*/*"]
+        ? ["http://*/*", "https://*/*"]
         : undefined,
     commands: {
       _execute_action: {
@@ -89,7 +90,9 @@ export default defineConfig({
       process.env.TARGET !== "firefox" ?
         {
           extension_pages:
-            "script-src 'self' 'wasm-unsafe-eval'; object-src 'self';"
+            process.env.NODE_ENV === 'development' 
+              ? "script-src 'self' 'wasm-unsafe-eval' http://localhost:3000 http://localhost:3001; object-src 'self';"
+              : "script-src 'self' 'wasm-unsafe-eval'; object-src 'self';"
         } :  "script-src 'self' 'wasm-unsafe-eval' blob:; object-src 'self'; worker-src 'self' blob:;",
     permissions:
       process.env.TARGET === "firefox"

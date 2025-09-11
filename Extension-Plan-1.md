@@ -1,7 +1,52 @@
 # tldw_server Browser Extension Integration Plan v3.0
 
+## Progress Status (Last Updated: 2025-09-10)
+### Phase 1: Foundation (COMPLETED ✅)
+- ✅ Updated branding and package.json
+- ✅ Created TldwApiClient with full API integration
+- ✅ Implemented authentication (single/multi-user modes)
+- ✅ Created settings UI for server configuration
+- ✅ Fixed manifest loading issues
+
+### Phase 2: Core Chat Integration (IN PROGRESS 🚧)
+- ✅ Created TldwModels service for model management
+- ✅ Created TldwChat service for chat completions
+- ✅ Integrated ChatTldw LangChain-compatible model
+- ✅ Modified model factory to support tldw models
+- ✅ Updated model fetching to include tldw models
+- ✅ Fixed model fetching to work independently of Ollama
+- ⏳ Testing chat functionality with various models - NOT TESTED YET
+
+### Phase 3: Upcoming
+- ⏳ RAG search integration
+- ⏳ Media ingestion features
+- ⏳ STT/TTS capabilities
+
 ## Executive Summary
 This document outlines a comprehensive plan to refactor the page-assist browser extension into a dedicated, whitelabeled frontend for tldw_server. The extension will leverage tldw_server as an API aggregator that handles multiple LLM providers, while maintaining model selection capabilities in the UI.
+
+## Plan Review Summary (2025-09-11)
+- Accuracy: Core endpoint mapping aligns with the provided OpenAPI (`tldw_API.json`). Chat, RAG, Media, Notes, Prompts, and Audio endpoints exist as planned.
+- Status reality: Repo already contains tldw services (`TldwApiClient`, `TldwAuth`, `TldwModels`, `TldwChat`), a `ChatTldw` LangChain model, and an options page. However, Ollama code paths are still present across background, content, hooks, and web search modules and need removal or replacement.
+- Authentication: API keys are supported (confirmed; doc incoming). Bearer (OAuth2 password flow) is also supported. We will keep both modes, but standardize header usage and token refresh behavior.
+- Endpoint fidelity: Some endpoints in the OpenAPI include trailing slashes (e.g., `/api/v1/notes/search/`). Our current client uses some paths without trailing slashes. To avoid redirects and CORS complications, align client paths precisely to the API spec. See TODO under “Endpoints & Path Hygiene”.
+- MV3/WebRequest: For Chrome MV3, avoid blocking `webRequest` for header manipulation; prefer direct fetches from the background/service worker with proper `host_permissions` or `optional_host_permissions`.
+- Offscreen API: Chrome-only. Use feature detection; do not rely on it for core flows.
+- Security: Do not roll custom crypto without a sound key strategy. Prefer in-memory access tokens, persist refresh tokens only when needed, and never log secrets. Implement robust 401 handling with single-flight refresh and retry.
+
+## Corrections & Decisions
+- Auth modes: Maintain both Single-User (API key) and Multi-User (Bearer) modes. Confirm API key header and scope (pending doc). Default to Bearer where possible; keep API key mode for server setups that issue keys.
+- Background proxy: Centralize all network I/O in the background/service worker. Inject auth headers, manage SSE, handle retries/backoff, and perform 401-triggered refresh with a single-flight queue.
+- Permissions: Allow users to specify their own endpoint. Use `optional_host_permissions` and request permission for the configured origin at runtime. Avoid `https://*/*` where feasible; for Firefox (MV2) where optional host permissions are limited, document the necessity of broader URL permissions while minimizing others.
+- Ollama removal: Remove direct Ollama features and repurpose their UX to tldw_server (e.g., context-menu “Send to tldw_server” → `/api/v1/media/add` or `ingest-web-content`).
+- SSE handling: Explicitly set `Accept: text/event-stream` for streaming chat and support keep-alives. Add AbortController-based timeouts and cancellation.
+
+## Endpoints & Path Hygiene — TODO
+- Verify every client path matches OpenAPI exactly, including trailing slashes, to avoid 307 redirects on POST and CORS edge cases.
+  - Examples to double-check and align:
+    - `/api/v1/notes/search/` (client currently uses `/api/v1/notes/search`)
+    - Other trailing-slash paths under Notes, Prompts, RAG, and Characters.
+- Confirm API key header name and any required query params or header shapes from the upcoming API key document; update client accordingly.
 
 ## Architecture Understanding
 tldw_server acts as an **API aggregator/proxy** that:
@@ -362,18 +407,58 @@ class RequestSigner {
 - Sidepanel: wire chat to adapter; add RAG search bar, status indicator; STT upload widget; later TTS controls.
 - Context Menus: register “Send to tldw_server” for media ingest and track progress via notifications.
 
+### Background Proxy Design (MV3 + Firefox)
+- Centralize network: Implement a background/service-worker fetch layer that proxies all extension API calls, including SSE streaming.
+- Auth injection: Add auth headers per mode (API key or Bearer) in the proxy; never expose tokens to content scripts.
+- SSE support: Use `Accept: text/event-stream`, parse SSE lines, support keep-alives, and expose a message port/stream to UI.
+- Abort & timeouts: Use `AbortController` for cancellation and global per-request timeouts with exponential backoff retries.
+- 401 handling: Single-flight token refresh; queue/retry one time after refresh; surface errors with actionable messages.
+- CORS: Prefer background-origin fetch with `host_permissions`/`optional_host_permissions`; avoid blocking `webRequest` in MV3.
+
+### Permissions Strategy
+- User-defined endpoint: Users can set any `serverUrl`. Request runtime permission for that origin using `optional_host_permissions` on Chrome/Edge.
+- Least privilege: Avoid `https://*/*` in `host_permissions` where possible; on Firefox MV2, document broader URL permission constraints.
+- Safe defaults: Keep permissions minimal; elevate only when user config requires it and after user confirmation.
+
+### Storage Policy
+- Tokens: Keep access tokens in memory within the background context; persist only refresh tokens if necessary.
+- No custom crypto: Do not attempt local encryption without a defensible key strategy; avoid storing API keys in plaintext where possible.
+- Logging: Never log secrets or full request bodies. Redact sensitive fields in error telemetry.
+
+### Ollama Removal/Replacement Plan
+- Remove direct Ollama integrations and repurpose UX to tldw_server endpoints:
+  - Replace “pull”/model actions with Media ingest: context menu → `/api/v1/media/add` or `/api/v1/media/ingest-web-content`.
+  - Replace model selection to read from `/api/v1/llm/models` via `TldwModels`.
+  - Swap LangChain chat model to `ChatTldw` as default model adapter.
+- Code areas to update (high-level):
+  - Background: remove Ollama pull/stream logic and utils, add tldw media ingest progress.
+  - Entries/content: remove HF/Ollama pull content scripts; add minimal ingest helpers if needed.
+  - Hooks: replace `~/services/ollama` usage in `useMessage` and search engines with tldw chat/RAG.
+  - Utils/providers: remove Ollama provider entries and references in model factories.
+- Migration note: Keep feature flags to temporarily hide removed paths, easing rollout/testing.
+
+### Testing & Smoke Checks
+- Connectivity: Health check, server info, and permission request flows.
+- Auth flows: API key and Bearer login, token refresh on 401, retry behavior.
+- Chat: Non-stream and SSE stream, cancel, and error recovery.
+- Models: Fetch/render models from `/api/v1/llm/models`, selection flows.
+- RAG: `/api/v1/rag/simple` and `/rag/search` basic queries, insert into chat.
+- Media: `/api/v1/media/add` and `ingest-web-content` with progress notifications.
+- Notes/Prompts: Create/search basic flows.
+- STT: Upload/transcribe a short audio clip; verify multipart handling.
+
 ## Development Milestones
 
 ### Milestone 1: Basic Connectivity (Week 2)
-- [ ] Server connection established
-- [ ] Authentication working (both modes)
-- [ ] Simple chat request/response
-- [ ] Error handling for common failures
+- [x] Server connection established
+- [x] Authentication working (both modes)
+- [x] Simple chat request/response
+- [x] Error handling for common failures
 
 ### Milestone 2: Core Features (Week 4)
-- [ ] Streaming chat responses
+- [x] Streaming chat responses
 - [ ] RAG search integration
-- [ ] Settings persistence
+- [x] Settings persistence
 - [ ] Basic media ingestion (URL/page)
 - [ ] STT transcription (upload mic/file)
 - [ ] Notes and Prompts (MVP):
@@ -492,10 +577,10 @@ class RequestSigner {
 **Branch**: `tldw-refactor`
 **Started**: 2025-09-09
 
-### Completed Tasks - Phase 1 Foundation
+### ✅ Completed - Phase 1 Foundation
 - [x] Created git branch for tldw refactoring
 - [x] Updated package.json with tldw branding
-- [x] Updated wxt.config.ts manifest details
+- [x] Updated wxt.config.ts manifest details (fixed 'action' permission issue)
 - [x] Created tldw services directory structure
 - [x] Implemented TldwApiClient base class with:
   - Health check
@@ -521,19 +606,22 @@ class RequestSigner {
   - Connection testing
 - [x] Added tldw settings route to both Chrome and Firefox
 - [x] Updated settings navigation menu with tldw server as primary option
+- [x] Fixed locale messages for proper branding
+- [x] Successfully loaded extension in Chrome
+- [x] Tested connection interface loads correctly
 
-### Ready for Testing
-- Dependencies need to be installed with `bun install`
-- Run development server with `bun run dev`
-- Test server connection with provided API key
-- Navigate to Settings > tldw Server to configure
+### 🚧 In Progress - Phase 2 Core Chat Integration
+1. [ ] Update model fetching to use tldw `/api/v1/llm/models`
+2. [ ] Modify chat to use tldw `/api/v1/chat/completions`
+3. [ ] Implement streaming response handler
+4. [ ] Update background service for CORS proxy
+5. [ ] Test chat functionality with various models
 
-### Next Steps - Phase 2 Core Chat Integration
-1. Update model fetching to use tldw `/api/v1/llm/models`
-2. Modify chat to use tldw `/api/v1/chat/completions`
-3. Implement streaming response handler
-4. Update background service for CORS proxy
-5. Test chat functionality with various models
+### Next Immediate Steps
+- Create TldwModels service to fetch available models
+- Update model store to use tldw models
+- Modify chat hooks to use tldw API
+- Test streaming chat responses
 
 ## Conclusion
 

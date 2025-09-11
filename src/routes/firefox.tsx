@@ -8,7 +8,6 @@ const SidepanelSettings = lazy(() => import("./sidepanel-settings"))
 const OptionIndex = lazy(() => import("./option-index"))
 const OptionModal = lazy(() => import("./option-settings-model"))
 const OptionPrompt = lazy(() => import("./option-settings-prompt"))
-const OptionOllamaSettings = lazy(() => import("./options-settings-ollama"))
 const OptionSettings = lazy(() => import("./option-settings"))
 const OptionShare = lazy(() => import("./option-settings-share"))
 const OptionKnowledgeBase = lazy(() => import("./option-settings-knowledge"))
@@ -25,7 +24,7 @@ export const OptionRoutingFirefox = () => {
       <Route path="/settings/tldw" element={<OptionTldwSettings />} />
       <Route path="/settings/model" element={<OptionModal />} />
       <Route path="/settings/prompt" element={<OptionPrompt />} />
-      <Route path="/settings/ollama" element={<OptionOllamaSettings />} />
+      {/** Ollama settings removed in favor of tldw_server */}
       <Route path="/settings/openai" element={<OptionOpenAI />} />
       <Route path="/settings/share" element={<OptionShare />} />
       <Route path="/settings/knowledge" element={<OptionKnowledgeBase />} />

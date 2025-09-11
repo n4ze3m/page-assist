@@ -58,6 +58,22 @@ export const TldwSettings = () => {
       }
 
       await tldwClient.updateConfig(config)
+
+      // Request optional host permission for the configured origin on Chromium-based browsers
+      try {
+        const origin = new URL(values.serverUrl).origin
+        // @ts-ignore chrome may be undefined on Firefox builds
+        if (typeof chrome !== 'undefined' && chrome.permissions && chrome.permissions.request) {
+          // @ts-ignore callback style API
+          chrome.permissions.request({ origins: [origin + '/*'] }, (granted: boolean) => {
+            if (!granted) {
+              console.warn('Permission not granted for origin:', origin)
+            }
+          })
+        }
+      } catch (e) {
+        console.warn('Could not request optional host permission:', e)
+      }
       message.success(t("settings:savedSuccessfully"))
       
       // Test connection after saving

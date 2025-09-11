@@ -1,8 +1,8 @@
-import { getOllamaURL, isOllamaRunning } from "../services/ollama"
 import { browser } from "wxt/browser"
-import { clearBadge, streamDownload, cancelDownload } from "@/utils/pull-ollama"
 import { Storage } from "@plasmohq/storage"
 import { getInitialConfig } from "@/services/action"
+import { tldwClient } from "@/services/tldw/TldwApiClient"
+import { tldwAuth } from "@/services/tldw/TldwAuth"
 
 export default defineBackground({
   main() {
@@ -81,27 +81,68 @@ export default defineBackground({
     }
 
 
+    let refreshInFlight: Promise<any> | null = null
+
     browser.runtime.onMessage.addListener(async (message) => {
       if (message.type === "sidepanel") {
         await browser.sidebarAction.open()
-      } else if (message.type === "pull_model") {
-        const ollamaURL = await getOllamaURL()
-
-        const isRunning = await isOllamaRunning()
-
-        if (!isRunning) {
-          setBadgeText({ text: "E" })
-          setBadgeBackgroundColor({ color: "#FF0000" })
-          setTitle({ title: "Ollama is not running" })
-          setTimeout(() => {
-            clearBadge()
-          }, 5000)
-          return
+      } else if (message.type === 'tldw:request') {
+        const { path, method = 'GET', headers = {}, body } = message.payload || {}
+        const storage = new Storage({ area: 'local' })
+        const cfg = await storage.get<any>('tldwConfig')
+        if (!cfg?.serverUrl) {
+          return { ok: false, status: 400, error: 'tldw server not configured' }
         }
-
-        await streamDownload(ollamaURL, message.modelName)
-      } else if (message.type === "cancel_download") {
-        cancelDownload()
+        const baseUrl = String(cfg.serverUrl).replace(/\/$/, '')
+        const url = path.startsWith('http') ? path : `${baseUrl}${path.startsWith('/') ? '' : '/'}${path}`
+        const authHeaders: Record<string, string> = {}
+        if (cfg.authMode === 'single-user' && cfg.apiKey) {
+          authHeaders['X-API-KEY'] = cfg.apiKey
+        } else if (cfg.authMode === 'multi-user' && cfg.accessToken) {
+          authHeaders['Authorization'] = `Bearer ${cfg.accessToken}`
+        }
+        const h = { ...headers, ...authHeaders }
+        try {
+          const controller = new AbortController()
+          const timeout = setTimeout(() => controller.abort(), 60000)
+          let resp = await fetch(url, {
+            method,
+            headers: h,
+            body: body ? (typeof body === 'string' ? body : JSON.stringify(body)) : undefined,
+            signal: controller.signal
+          })
+          clearTimeout(timeout)
+          if (resp.status === 401 && cfg.authMode === 'multi-user' && cfg.refreshToken) {
+            if (!refreshInFlight) {
+              refreshInFlight = (async () => {
+                try { await tldwAuth.refreshToken() } finally { refreshInFlight = null }
+              })()
+            }
+            try { await refreshInFlight } catch {}
+            const updated = await storage.get<any>('tldwConfig')
+            const retryHeaders = { ...headers }
+            if (updated?.accessToken) retryHeaders['Authorization'] = `Bearer ${updated.accessToken}`
+            const retryController = new AbortController()
+            const retryTimeout = setTimeout(() => retryController.abort(), 60000)
+            resp = await fetch(url, {
+              method,
+              headers: retryHeaders,
+              body: body ? (typeof body === 'string' ? body : JSON.stringify(body)) : undefined,
+              signal: retryController.signal
+            })
+            clearTimeout(retryTimeout)
+          }
+          const contentType = resp.headers.get('content-type') || ''
+          let data: any = null
+          if (contentType.includes('application/json')) {
+            data = await resp.json().catch(() => null)
+          } else {
+            data = await resp.text().catch(() => null)
+          }
+          return { ok: resp.ok, status: resp.status, data }
+        } catch (e: any) {
+          return { ok: false, status: 0, error: e?.message || 'Network error' }
+        }
       }
     })
 
@@ -133,12 +174,29 @@ export default defineBackground({
     }
 
 
+    // Add context menu for tldw ingest
+    try {
+      browser.contextMenus.create({
+        id: 'send-to-tldw',
+        title: 'Send to tldw_server',
+        contexts: ["page", "link"]
+      })
+    } catch {}
+
     browser.contextMenus.onClicked.addListener((info, tab) => {
       if (info.menuItemId === "open-side-panel-pa") {
         browser.sidebarAction.toggle()
       } else if (info.menuItemId === "open-web-ui-pa") {
         browser.tabs.create({
           url: browser.runtime.getURL("/options.html")
+        })
+      } else if (info.menuItemId === 'send-to-tldw') {
+        const pageUrl = info.pageUrl || (tab && tab.url) || ''
+        const targetUrl = (info.linkUrl && /^https?:/i.test(info.linkUrl)) ? info.linkUrl : pageUrl
+        if (!targetUrl) return
+        browser.runtime.sendMessage({
+          type: 'tldw:request',
+          payload: { path: '/api/v1/media/add', method: 'POST', headers: { 'Content-Type': 'application/json' }, body: { url: targetUrl } }
         })
       } else if (info.menuItemId === "summarize-pa") {
         if (!isCopilotRunning) {
@@ -195,6 +253,86 @@ export default defineBackground({
             text: info.selectionText
           })
         }, isCopilotRunning ? 0 : 5000)
+      }
+    })
+
+    // Stream handler via Port API
+    browser.runtime.onConnect.addListener((port) => {
+      if (port.name === 'tldw:stream') {
+        const storage = new Storage({ area: 'local' })
+        let abort: AbortController | null = null
+        const onMsg = async (msg: any) => {
+          try {
+            const cfg = await storage.get<any>('tldwConfig')
+            if (!cfg?.serverUrl) throw new Error('tldw server not configured')
+            const baseUrl = String(cfg.serverUrl).replace(/\/$/, '')
+            const path = msg.path as string
+            const url = path.startsWith('http') ? path : `${baseUrl}${path.startsWith('/') ? '' : '/'}${path}`
+            const headers: Record<string, string> = { ...(msg.headers || {}) }
+            if (cfg.authMode === 'single-user' && cfg.apiKey) {
+              headers['X-API-KEY'] = cfg.apiKey
+            } else if (cfg.authMode === 'multi-user' && cfg.accessToken) {
+              headers['Authorization'] = `Bearer ${cfg.accessToken}`
+            }
+            headers['Accept'] = 'text/event-stream'
+            abort = new AbortController()
+            let resp = await fetch(url, {
+              method: msg.method || 'POST',
+              headers,
+              body: typeof msg.body === 'string' ? msg.body : JSON.stringify(msg.body),
+              signal: abort.signal
+            })
+            if (resp.status === 401 && cfg.authMode === 'multi-user' && cfg.refreshToken) {
+              if (!refreshInFlight) {
+                refreshInFlight = (async () => {
+                  try { await tldwAuth.refreshToken() } finally { refreshInFlight = null }
+                })()
+              }
+              try { await refreshInFlight } catch {}
+              const updated = await storage.get<any>('tldwConfig')
+              if (updated?.accessToken) headers['Authorization'] = `Bearer ${updated.accessToken}`
+              const retryController = new AbortController()
+              abort = retryController
+              resp = await fetch(url, {
+                method: msg.method || 'POST',
+                headers,
+                body: typeof msg.body === 'string' ? msg.body : JSON.stringify(msg.body),
+                signal: retryController.signal
+              })
+            }
+            if (!resp.body) throw new Error('No response body')
+            const reader = resp.body.getReader()
+            const decoder = new TextDecoder()
+            let buffer = ''
+            while (true) {
+              const { done, value } = await reader.read()
+              if (done) break
+              buffer += decoder.decode(value, { stream: true })
+              const lines = buffer.split('\n')
+              buffer = lines.pop() || ''
+              for (const line of lines) {
+                const trimmed = line.trim()
+                if (!trimmed) continue
+                if (trimmed.startsWith('data:')) {
+                  const data = trimmed.slice(5).trim()
+                  if (data === '[DONE]') {
+                    port.postMessage({ event: 'done' })
+                    return
+                  }
+                  port.postMessage({ event: 'data', data })
+                }
+              }
+            }
+            port.postMessage({ event: 'done' })
+          } catch (e: any) {
+            port.postMessage({ event: 'error', message: e?.message || 'Stream error' })
+          }
+        }
+        port.onMessage.addListener(onMsg)
+        port.onDisconnect.addListener(() => {
+          try { port.onMessage.removeListener(onMsg) } catch {}
+          try { abort?.abort() } catch {}
+        })
       }
     })
 

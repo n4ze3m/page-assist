@@ -1,6 +1,6 @@
 import { getModelInfo, isCustomModel, isOllamaModel } from "@/db/dexie/models"
 import { ChatChromeAI } from "./ChatChromeAi"
-import { ChatOllama } from "./ChatOllama"
+import { ChatTldw } from "./ChatTldw"
 import { getOpenAIConfigById } from "@/db/dexie/openai"
 import { urlRewriteRuntime } from "@/libs/runtime"
 import { ChatGoogleAI } from "./ChatGoogleAI"
@@ -148,38 +148,14 @@ export const pageAssistModel = async ({
     }
 
     if (providerInfo.provider === "ollama2") {
-      const _keepAlive = modelSettings?.keepAlive || keepAlive || ""
-      const payload = {
-        keepAlive: _keepAlive.length > 0 ? _keepAlive : undefined,
-        temperature: modelSettings?.temperature || temperature,
-        topK: modelSettings?.topK || topK,
-        topP: modelSettings?.topP || topP,
-        numCtx: modelSettings?.numCtx || numCtx,
-        numGpu: modelSettings?.numGpu || numGpu,
-        numPredict: modelSettings?.numPredict || numPredict,
-        useMMap: modelSettings?.useMMap || useMMap,
-        minP: modelSettings?.minP || minP,
-        repeatPenalty: modelSettings?.repeatPenalty || repeatPenalty,
-        repeatLastN: modelSettings?.repeatLastN || repeatLastN,
-        tfsZ: modelSettings?.tfsZ || tfsZ,
-        numKeep: modelSettings?.numKeep || numKeep,
-        numThread: modelSettings?.numThread || numThread,
-        useMlock: modelSettings?.useMLock || useMlock,
-        thinking: currentChatModelSettings?.thinking || modelSettings?.thinking
-      }
-
-      return new ChatOllama({
-        baseUrl: providerInfo.baseUrl,
+      // Redirect Ollama models to tldw_server Chat
+      return new ChatTldw({
         model: modelInfo.model_id,
-        seed,
-        headers: {
-          Authorization: `Bearer ${providerInfo.apiKey || "temp"}`,
-          ...getCustomHeaders({
-            headers: providerInfo?.headers || []
-          }) 
-        },
-        ...payload
-      })
+        temperature: modelSettings?.temperature || temperature,
+        topP: modelSettings?.topP || topP,
+        maxTokens: modelSettings?.numPredict || numPredict,
+        streaming: true
+      }) as any
     }
 
     return new CustomChatOpenAI({
@@ -219,10 +195,12 @@ export const pageAssistModel = async ({
     thinking: currentChatModelSettings?.thinking || modelSettings?.thinking
   }
 
-  return new ChatOllama({
-    baseUrl,
+  // Default to tldw_server chat model
+  return new ChatTldw({
     model,
-    seed,
-    ...payload
-  })
+    temperature: payload.temperature,
+    topP: payload.topP,
+    maxTokens: payload.numPredict,
+    streaming: true
+  }) as any
 }

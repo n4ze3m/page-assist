@@ -1,16 +1,10 @@
 import React from "react"
 import { cleanUrl } from "~/libs/clean-url"
-import {
-  defaultEmbeddingModelForRag,
-  geWebSearchFollowUpPrompt,
-  getOllamaURL,
-  promptForRag,
-  systemPromptForNonRag
-} from "~/services/ollama"
+import { geWebSearchFollowUpPrompt, promptForRag, systemPromptForNonRag } from "~/services/ollama"
 import { useStoreMessageOption, type Message } from "~/store/option"
 import { useStoreMessage } from "~/store"
 import { getContentFromCurrentTab } from "~/libs/get-html"
-import { memoryEmbedding } from "@/utils/memory-embeddings"
+// RAG now uses tldw_server endpoints instead of local embeddings
 import { ChatHistory } from "@/store/option"
 import {
   deleteChatForEdit,
@@ -30,8 +24,7 @@ import { getSystemPromptForWeb, isQueryHaveWebsite } from "@/web/web"
 import { pageAssistModel } from "@/models"
 import { getPrompt } from "@/services/application"
 import { humanMessageFormatter } from "@/utils/human-message"
-import { pageAssistEmbeddingModel } from "@/models/embedding"
-import { PAMemoryVectorStore } from "@/libs/PAMemoryVectorStore"
+import { tldwClient } from "@/services/tldw/TldwApiClient"
 import { getScreenshotFromCurrentTab } from "@/libs/get-screenshot"
 import {
   isReasoningEnded,
@@ -112,9 +105,7 @@ export const useMessage = () => {
     "en-US"
   )
 
-  const [keepTrackOfEmbedding, setKeepTrackOfEmbedding] = React.useState<{
-    [key: string]: PAMemoryVectorStore
-  }>({})
+  // Local embedding store removed; rely on tldw_server RAG
 
   const clearChat = () => {
     stopStreamingRequest()
@@ -159,12 +150,11 @@ export const useMessage = () => {
     embeddingSignal: AbortSignal
   ) => {
     setStreaming(true)
-    const url = await getOllamaURL()
     const userDefaultModelSettings = await getAllDefaultModelSettings()
 
     const ollama = await pageAssistModel({
       model: selectedModel!,
-      baseUrl: cleanUrl(url)
+      baseUrl: ""
     })
 
     let newMessage: Message[] = []
@@ -212,7 +202,6 @@ export const useMessage = () => {
     let embedURL: string, embedHTML: string, embedType: string
     let embedPDF: { content: string; page: number }[] = []
 
-    let isAlreadyExistEmbedding: PAMemoryVectorStore
     const {
       content: html,
       url: websiteUrl,
@@ -226,46 +215,13 @@ export const useMessage = () => {
     embedPDF = pdf
     if (messages.length === 0) {
       setCurrentURL(websiteUrl)
-      isAlreadyExistEmbedding = keepTrackOfEmbedding[currentURL]
+    } else if (currentURL !== websiteUrl) {
+      setCurrentURL(websiteUrl)
     } else {
-      if (currentURL !== websiteUrl) {
-        setCurrentURL(websiteUrl)
-      } else {
-        embedURL = currentURL
-      }
-      isAlreadyExistEmbedding = keepTrackOfEmbedding[websiteUrl]
+      embedURL = currentURL
     }
     setMessages(newMessage)
-    const ollamaUrl = await getOllamaURL()
-    const embeddingModle = await defaultEmbeddingModelForRag()
-
-    const ollamaEmbedding = await pageAssistEmbeddingModel({
-      model: embeddingModle || selectedModel,
-      baseUrl: cleanUrl(ollamaUrl),
-      signal: embeddingSignal,
-      keepAlive:
-        currentChatModelSettings?.keepAlive ??
-        userDefaultModelSettings?.keepAlive
-    })
-    let vectorstore: PAMemoryVectorStore
-
     try {
-      if (isAlreadyExistEmbedding) {
-        vectorstore = isAlreadyExistEmbedding
-      } else {
-        if (chatWithWebsiteEmbedding) {
-          vectorstore = await memoryEmbedding({
-            html: embedHTML,
-            keepTrackOfEmbedding: keepTrackOfEmbedding,
-            ollamaEmbedding: ollamaEmbedding,
-            pdf: embedPDF,
-            setIsEmbedding: setIsEmbedding,
-            setKeepTrackOfEmbedding: setKeepTrackOfEmbedding,
-            type: embedType,
-            url: embedURL
-          })
-        }
-      }
       let query = message
       const { ragPrompt: systemPrompt, ragQuestionPrompt: questionPrompt } =
         await promptForRag()
@@ -280,10 +236,7 @@ export const useMessage = () => {
         const promptForQuestion = questionPrompt
           .replaceAll("{chat_history}", chat_history)
           .replaceAll("{question}", message)
-        const questionOllama = await pageAssistModel({
-          model: selectedModel!,
-          baseUrl: cleanUrl(url)
-        })
+        const questionOllama = await pageAssistModel({ model: selectedModel!, baseUrl: "" })
         const response = await questionOllama.invoke(promptForQuestion)
         query = response.content.toString()
         query = removeReasoning(query)
@@ -300,18 +253,30 @@ export const useMessage = () => {
       }[] = []
 
       if (chatWithWebsiteEmbedding) {
-        const docs = await vectorstore.similaritySearch(query, 4)
-        context = formatDocs(docs)
-        source = docs.map((doc) => {
-          return {
-            ...doc,
-            name: doc?.metadata?.source || "untitled",
-            type: doc?.metadata?.type || "unknown",
-            mode: "chat",
-            url: ""
+        try {
+          await tldwClient.initialize()
+          // Optionally ensure server has the page content
+          if (embedURL) {
+            try { await tldwClient.ingestWebContent(embedURL) } catch {}
           }
-        })
-      } else {
+          const ragRes = await tldwClient.ragSearch(query, { top_k: 4, filters: { url: embedURL } })
+          const docs = ragRes?.results || ragRes?.documents || ragRes?.docs || []
+          context = formatDocs(
+            docs.map((d: any) => ({ pageContent: d.content || d.text || d.chunk || "", metadata: d.metadata || {} }))
+          )
+          source = docs.map((d: any) => ({
+            name: d.metadata?.source || d.metadata?.title || "untitled",
+            type: d.metadata?.type || "unknown",
+            mode: "chat",
+            url: d.metadata?.url || "",
+            pageContent: d.content || d.text || d.chunk || "",
+            metadata: d.metadata || {}
+          }))
+        } catch (e) {
+          console.error('tldw ragSearch failed, falling back to inline context', e)
+        }
+      }
+      if (!context) {
         if (type === "html") {
           context = embedHTML.slice(0, maxWebsiteContext)
         } else {

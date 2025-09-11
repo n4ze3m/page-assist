@@ -3,7 +3,6 @@ import OptionIndex from "./option-index"
 import OptionSettings from "./option-settings"
 import OptionModal from "./option-settings-model"
 import OptionPrompt from "./option-settings-prompt"
-import OptionOllamaSettings from "./options-settings-ollama"
 import OptionShare from "./option-settings-share"
 import OptionKnowledgeBase from "./option-settings-knowledge"
 import OptionAbout from "./option-settings-about"
@@ -22,7 +21,7 @@ export const OptionRoutingChrome = () => {
       <Route path="/settings/tldw" element={<OptionTldwSettings />} />
       <Route path="/settings/model" element={<OptionModal />} />
       <Route path="/settings/prompt" element={<OptionPrompt />} />
-      <Route path="/settings/ollama" element={<OptionOllamaSettings />} />
+      {/** Ollama settings removed in favor of tldw_server */}
       <Route path="/settings/chrome" element={<OptionChrome />} />
       <Route path="/settings/openai" element={<OptionOpenAI />} />
       <Route path="/settings/share" element={<OptionShare />} />

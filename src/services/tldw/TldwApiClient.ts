@@ -1,4 +1,5 @@
 import { Storage } from "@plasmohq/storage"
+import { bgRequest, bgStream } from "@/services/background-proxy"
 
 export interface TldwConfig {
   serverUrl: string
@@ -81,11 +82,8 @@ export class TldwApiClient {
 
   async healthCheck(): Promise<boolean> {
     try {
-      const response = await fetch(`${this.baseUrl}/api/v1/health`, {
-        method: 'GET',
-        headers: this.headers
-      })
-      return response.ok
+      const res = await bgRequest<{ status?: string; [k: string]: any }>({ path: '/api/v1/health', method: 'GET' })
+      return true
     } catch (error) {
       console.error('Health check failed:', error)
       return false
@@ -93,200 +91,71 @@ export class TldwApiClient {
   }
 
   async getServerInfo(): Promise<any> {
-    const response = await fetch(`${this.baseUrl}/`, {
-      method: 'GET',
-      headers: this.headers
-    })
-    
-    if (!response.ok) {
-      throw new Error(`Server info request failed: ${response.statusText}`)
-    }
-    
-    return response.json()
+    return await bgRequest<any>({ path: '/', method: 'GET' })
   }
 
   async getModels(): Promise<TldwModel[]> {
-    const response = await fetch(`${this.baseUrl}/api/v1/llm/models`, {
-      method: 'GET',
-      headers: this.headers
-    })
-    
-    if (!response.ok) {
-      throw new Error(`Failed to fetch models: ${response.statusText}`)
-    }
-    
-    const data = await response.json()
+    const data = await bgRequest<any>({ path: '/api/v1/llm/models', method: 'GET' })
     return data.models || data || []
   }
 
   async createChatCompletion(request: ChatCompletionRequest): Promise<Response> {
-    const response = await fetch(`${this.baseUrl}/api/v1/chat/completions`, {
-      method: 'POST',
-      headers: this.headers,
-      body: JSON.stringify(request)
-    })
-    
-    if (!response.ok) {
-      throw new Error(`Chat completion failed: ${response.statusText}`)
-    }
-    
-    return response
+    // Non-stream request via background
+    const res = await bgRequest<Response>({ path: '/api/v1/chat/completions', method: 'POST', headers: { 'Content-Type': 'application/json' }, body: request })
+    // bgRequest returns parsed data; for non-streaming chat we expect a JSON structure or text. To keep existing consumers happy, wrap as Response-like
+    // For simplicity, return a minimal object with json() and text()
+    const data = res as any
+    return new Response(typeof data === 'string' ? data : JSON.stringify(data), { status: 200, headers: { 'content-type': typeof data === 'string' ? 'text/plain' : 'application/json' } })
   }
 
   async *streamChatCompletion(request: ChatCompletionRequest): AsyncGenerator<any, void, unknown> {
     request.stream = true
-    const response = await this.createChatCompletion(request)
-    
-    if (!response.body) {
-      throw new Error('Response body is null')
-    }
-
-    const reader = response.body.getReader()
-    const decoder = new TextDecoder()
-    let buffer = ''
-
-    try {
-      while (true) {
-        const { done, value } = await reader.read()
-        if (done) break
-
-        buffer += decoder.decode(value, { stream: true })
-        const lines = buffer.split('\n')
-        buffer = lines.pop() || ''
-
-        for (const line of lines) {
-          if (line.startsWith('data: ')) {
-            const data = line.slice(6)
-            if (data === '[DONE]') {
-              return
-            }
-            try {
-              const parsed = JSON.parse(data)
-              yield parsed
-            } catch (e) {
-              console.error('Failed to parse SSE data:', data)
-            }
-          }
-        }
+    for await (const line of bgStream({ path: '/api/v1/chat/completions', method: 'POST', headers: { 'Content-Type': 'application/json' }, body: request })) {
+      try {
+        const parsed = JSON.parse(line)
+        yield parsed
+      } catch (e) {
+        // Ignore non-JSON lines
       }
-    } finally {
-      reader.releaseLock()
     }
   }
 
   // RAG Methods
   async ragSearch(query: string, options?: any): Promise<any> {
-    const response = await fetch(`${this.baseUrl}/api/v1/rag/search`, {
-      method: 'POST',
-      headers: this.headers,
-      body: JSON.stringify({ query, ...options })
-    })
-    
-    if (!response.ok) {
-      throw new Error(`RAG search failed: ${response.statusText}`)
-    }
-    
-    return response.json()
+    return await bgRequest<any>({ path: '/api/v1/rag/search', method: 'POST', headers: { 'Content-Type': 'application/json' }, body: { query, ...options } })
   }
 
   async ragSimple(query: string): Promise<any> {
-    const response = await fetch(`${this.baseUrl}/api/v1/rag/simple`, {
-      method: 'POST',
-      headers: this.headers,
-      body: JSON.stringify({ query })
-    })
-    
-    if (!response.ok) {
-      throw new Error(`RAG simple search failed: ${response.statusText}`)
-    }
-    
-    return response.json()
+    return await bgRequest<any>({ path: '/api/v1/rag/simple', method: 'POST', headers: { 'Content-Type': 'application/json' }, body: { query } })
   }
 
   // Media Methods
   async addMedia(url: string, metadata?: any): Promise<any> {
-    const response = await fetch(`${this.baseUrl}/api/v1/media/add`, {
-      method: 'POST',
-      headers: this.headers,
-      body: JSON.stringify({ url, ...metadata })
-    })
-    
-    if (!response.ok) {
-      throw new Error(`Media add failed: ${response.statusText}`)
-    }
-    
-    return response.json()
+    return await bgRequest<any>({ path: '/api/v1/media/add', method: 'POST', headers: { 'Content-Type': 'application/json' }, body: { url, ...metadata } })
   }
 
   async ingestWebContent(url: string, options?: any): Promise<any> {
-    const response = await fetch(`${this.baseUrl}/api/v1/media/ingest-web-content`, {
-      method: 'POST',
-      headers: this.headers,
-      body: JSON.stringify({ url, ...options })
-    })
-    
-    if (!response.ok) {
-      throw new Error(`Web content ingestion failed: ${response.statusText}`)
-    }
-    
-    return response.json()
+    return await bgRequest<any>({ path: '/api/v1/media/ingest-web-content', method: 'POST', headers: { 'Content-Type': 'application/json' }, body: { url, ...options } })
   }
 
   // Notes Methods
   async createNote(content: string, metadata?: any): Promise<any> {
-    const response = await fetch(`${this.baseUrl}/api/v1/notes/`, {
-      method: 'POST',
-      headers: this.headers,
-      body: JSON.stringify({ content, ...metadata })
-    })
-    
-    if (!response.ok) {
-      throw new Error(`Note creation failed: ${response.statusText}`)
-    }
-    
-    return response.json()
+    return await bgRequest<any>({ path: '/api/v1/notes/', method: 'POST', headers: { 'Content-Type': 'application/json' }, body: { content, ...metadata } })
   }
 
   async searchNotes(query: string): Promise<any> {
-    const response = await fetch(`${this.baseUrl}/api/v1/notes/search`, {
-      method: 'POST',
-      headers: this.headers,
-      body: JSON.stringify({ query })
-    })
-    
-    if (!response.ok) {
-      throw new Error(`Notes search failed: ${response.statusText}`)
-    }
-    
-    return response.json()
+    // OpenAPI uses trailing slash for this path
+    return await bgRequest<any>({ path: '/api/v1/notes/search/', method: 'POST', headers: { 'Content-Type': 'application/json' }, body: { query } })
   }
 
   // Prompts Methods
   async getPrompts(): Promise<any> {
-    const response = await fetch(`${this.baseUrl}/api/v1/prompts/`, {
-      method: 'GET',
-      headers: this.headers
-    })
-    
-    if (!response.ok) {
-      throw new Error(`Failed to fetch prompts: ${response.statusText}`)
-    }
-    
-    return response.json()
+    return await bgRequest<any>({ path: '/api/v1/prompts/', method: 'GET' })
   }
 
   async searchPrompts(query: string): Promise<any> {
-    const response = await fetch(`${this.baseUrl}/api/v1/prompts/search`, {
-      method: 'POST',
-      headers: this.headers,
-      body: JSON.stringify({ query })
-    })
-    
-    if (!response.ok) {
-      throw new Error(`Prompts search failed: ${response.statusText}`)
-    }
-    
-    return response.json()
+    // TODO: confirm trailing slash per OpenAPI (`/api/v1/prompts/search` exists without slash)
+    return await bgRequest<any>({ path: '/api/v1/prompts/search', method: 'POST', headers: { 'Content-Type': 'application/json' }, body: { query } })
   }
 
   // STT Methods
@@ -301,20 +170,17 @@ export class TldwApiClient {
       formData.append('language', options.language)
     }
 
-    const headers = { ...this.headers }
-    delete headers['Content-Type'] // Let browser set it for FormData
-
-    const response = await fetch(`${this.baseUrl}/api/v1/audio/v1/audio/transcriptions`, {
-      method: 'POST',
-      headers,
-      body: formData
-    })
-    
-    if (!response.ok) {
-      throw new Error(`Audio transcription failed: ${response.statusText}`)
-    }
-    
-    return response.json()
+    // STT remains a direct fetch because of multipart/form-data — use background proxy message with body passthrough is non-trivial.
+    // For now, fall back to direct fetch; future: implement background FormData relay if needed.
+    const cfg = await this.getConfig()
+    if (!cfg) throw new Error('tldw server not configured')
+    const baseUrl = cfg.serverUrl.replace(/\/$/, '')
+    const headers: Record<string, string> = {}
+    if (cfg.authMode === 'single-user' && cfg.apiKey) headers['X-API-KEY'] = cfg.apiKey
+    if (cfg.authMode === 'multi-user' && cfg.accessToken) headers['Authorization'] = `Bearer ${cfg.accessToken}`
+    const response = await fetch(`${baseUrl}/api/v1/audio/v1/audio/transcriptions`, { method: 'POST', headers, body: formData })
+    if (!response.ok) throw new Error(`Audio transcription failed: ${response.statusText}`)
+    return await response.json()
   }
 }
 

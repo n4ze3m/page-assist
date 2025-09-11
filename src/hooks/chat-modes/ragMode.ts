@@ -1,9 +1,5 @@
 import { cleanUrl } from "~/libs/clean-url"
-import {
-  defaultEmbeddingModelForRag,
-  getOllamaURL,
-  promptForRag
-} from "~/services/ollama"
+import { promptForRag } from "~/services/ollama" // Reuse prompts storage for now
 import { type ChatHistory, type Message } from "~/store/option"
 import { generateID } from "@/db/dexie/helpers"
 import { generateHistory } from "@/utils/generate-history"
@@ -16,12 +12,9 @@ import {
   removeReasoning
 } from "@/libs/reasoning"
 import { getModelNicknameByID } from "@/db/dexie/nickname"
-import { PageAssistVectorStore } from "@/libs/PageAssistVectorStore"
 import { formatDocs } from "@/chain/chat-with-x"
-import { getAllDefaultModelSettings } from "@/services/model-settings"
 import { getNoOfRetrievedDocs } from "@/services/app"
-import { pageAssistEmbeddingModel } from "@/models/embedding"
-import { isChatWithWebsiteEnabled } from "@/services/kb"
+import { tldwClient } from "@/services/tldw/TldwApiClient"
 
 export const ragMode = async (
   message: string,
@@ -61,12 +54,10 @@ export const ragMode = async (
   }
 ) => {
   console.log("Using ragMode")
-  const url = await getOllamaURL()
-  const userDefaultModelSettings = await getAllDefaultModelSettings()
-
+  const url = cleanUrl((await (await new (await import("@plasmohq/storage")).Storage({ area: 'local' })).get("tldwConfig") as any)?.serverUrl || "")
   const ollama = await pageAssistModel({
     model: selectedModel!,
-    baseUrl: cleanUrl(url)
+    baseUrl: url
   })
 
   let newMessage: Message[] = []
@@ -111,23 +102,7 @@ export const ragMode = async (
   let fullText = ""
   let contentToSave = ""
 
-  const embeddingModle = await defaultEmbeddingModelForRag()
-  const ollamaUrl = await getOllamaURL()
-  const ollamaEmbedding = await pageAssistEmbeddingModel({
-    model: embeddingModle || selectedModel,
-    baseUrl: cleanUrl(ollamaUrl),
-    keepAlive:
-      currentChatModelSettings?.keepAlive ??
-      userDefaultModelSettings?.keepAlive
-  })
-
-  let vectorstore = await PageAssistVectorStore.fromExistingIndex(
-    ollamaEmbedding,
-    {
-      file_id: null,
-      knownledge_id: selectedKnowledge.id
-    }
-  )
+  // Use tldw_server RAG endpoint instead of local embeddings
   let timetaken = 0
   try {
     let query = message
@@ -153,34 +128,31 @@ export const ragMode = async (
       query = removeReasoning(query)
     }
     const docSize = await getNoOfRetrievedDocs()
-    // const useVS = await isChatWithWebsiteEnabled()
     let context: string = ""
     let source: any[] = []
-    // if (useVS) {
-      const docs = await vectorstore.similaritySearch(query, docSize)
-      context = formatDocs(docs)
-      source = docs.map((doc) => {
-        return {
-          ...doc,
-          name: doc?.metadata?.source || "untitled",
-          type: doc?.metadata?.type || "unknown",
-          mode: "rag",
-          url: ""
-        }
+    try {
+      await tldwClient.initialize()
+      const ragRes = await tldwClient.ragSearch(query, {
+        top_k: docSize,
+        knowledge_id: selectedKnowledge?.id
       })
-    // } else {
-    //   const docs = await vectorstore.getAllPageContent()
-    //   context = docs.pageContent
-    //   source = docs.metadata.map((doc) => {
-    //     return {
-    //       ...doc,
-    //       name: doc?.source || "untitled",
-    //       type: doc?.type || "unknown",
-    //       mode: "rag",
-    //       url: ""
-    //     }
-    //   })
-    // }
+      const docs = ragRes?.results || ragRes?.documents || ragRes?.docs || []
+      context = formatDocs(
+        docs.map((d: any) => ({ pageContent: d.content || d.text || d.chunk || "", metadata: d.metadata || {} }))
+      )
+      source = docs.map((d: any) => ({
+        name: d.metadata?.source || d.metadata?.title || "untitled",
+        type: d.metadata?.type || "unknown",
+        mode: "rag",
+        url: d.metadata?.url || "",
+        pageContent: d.content || d.text || d.chunk || "",
+        metadata: d.metadata || {}
+      }))
+    } catch (e) {
+      console.error('tldw ragSearch failed, continuing without context', e)
+      context = ""
+      source = []
+    }
     //  message = message.trim().replaceAll("\n", " ")
 
     let humanMessage = await humanMessageFormatter({

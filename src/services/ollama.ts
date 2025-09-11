@@ -2,6 +2,8 @@ import { Storage } from "@plasmohq/storage"
 import { cleanUrl } from "../libs/clean-url"
 import { urlRewriteRuntime } from "../libs/runtime"
 import { getChromeAIModel } from "./chrome"
+import { tldwClient } from "@/services/tldw/TldwApiClient"
+import { tldwModels } from "@/services/tldw/TldwModels"
 import {
   getOllamaEnabled,
   setNoOfRetrievedDocs,
@@ -13,7 +15,8 @@ import { getAllModelNicknames } from "@/db/dexie/nickname"
 
 const storage = new Storage()
 
-const DEFAULT_OLLAMA_URL = "http://127.0.0.1:11434"
+// Repurposed: default to tldw_server local URL
+const DEFAULT_OLLAMA_URL = "http://127.0.0.1:8000"
 const DEFAULT_ASK_FOR_MODEL_SELECTION_EVERY_TIME = true
 const DEFAULT_PAGE_SHARE_URL = "https://pageassist.xyz"
 
@@ -60,13 +63,16 @@ Follow-up question: {question}
 `
 
 export const getOllamaURL = async () => {
-  const ollamaURL = await storage.get("ollamaURL")
-  if (!ollamaURL || ollamaURL.length === 0) {
+  // Source from tldw config when available; fallback to legacy key and default
+  try {
+    const cfg = await new Storage({ area: 'local' }).get<any>('tldwConfig')
+    const url = cfg?.serverUrl || (await storage.get("ollamaURL")) || DEFAULT_OLLAMA_URL
+    await urlRewriteRuntime(cleanUrl(url))
+    return url
+  } catch {
     await urlRewriteRuntime(DEFAULT_OLLAMA_URL)
     return DEFAULT_OLLAMA_URL
   }
-  await urlRewriteRuntime(cleanUrl(ollamaURL))
-  return ollamaURL
 }
 
 export const askForModelSelectionEveryTime = async () => {
@@ -87,13 +93,10 @@ export const defaultModel = async () => {
 }
 
 export const isOllamaRunning = async () => {
+  // Now checks tldw_server health
   try {
-    const baseUrl = await getOllamaURL()
-    const response = await fetcher(`${cleanUrl(baseUrl)}`)
-    if (!response.ok) {
-      throw new Error(response.statusText)
-    }
-    return true
+    await tldwClient.initialize()
+    return await tldwClient.healthCheck()
   } catch (e) {
     console.error(e)
     return false
@@ -107,45 +110,27 @@ export const getAllModels = async ({
 }) => {
   try {
     const modelNicknames = await getAllModelNicknames()
-    const isEnabled = await getOllamaEnabled()
+    // Fetch from tldw models and adapt shape for legacy consumers
+    await tldwClient.initialize()
+    const models = await tldwModels.getChatModels()
 
-    if (!isEnabled) {
-      return []
-    }
-
-    const baseUrl = await getOllamaURL()
-    const response = await fetcher(`${cleanUrl(baseUrl)}/api/tags`)
-    if (!response.ok) {
-      if (returnEmpty) {
-        return []
-      }
-      throw new Error(response.statusText)
-    }
-    const json = await response.json()
-
-    return json.models.map((model: any) => {
-      return {
-        ...model,
-        nickname: modelNicknames[model.name]?.model_name || model.name,
-        avatar: modelNicknames[model.name]?.model_avatar || undefined
-      }
-    }) as {
-      name: string
-      model: string
-      modified_at: string
-      size: number
-      digest: string
-      nickname?: string
-      avatar?: string
+    return models.map((m: any) => ({
+      name: m.name,
+      model: m.id,
+      modified_at: "",
+      size: 0,
+      digest: "",
+      nickname: modelNicknames[m.name]?.model_name || m.name,
+      avatar: modelNicknames[m.name]?.model_avatar || undefined,
       details: {
-        parent_model: string
-        format: string
-        family: string
-        families: string[]
-        parameter_size: string
-        quantization_level: string
+        parent_model: "",
+        format: "",
+        family: m.provider,
+        families: [],
+        parameter_size: "",
+        quantization_level: ""
       }
-    }[]
+    }))
   } catch (e) {
     console.error(e)
     return []
@@ -181,20 +166,9 @@ export const getEmbeddingModels = async ({
   }
 }
 
-export const deleteModel = async (model: string) => {
-  const baseUrl = await getOllamaURL()
-  const response = await fetcher(`${cleanUrl(baseUrl)}/api/delete`, {
-    method: "DELETE",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ name: model })
-  })
-
-  if (!response.ok) {
-    throw new Error(response.statusText)
-  }
-  return "ok"
+export const deleteModel = async (_model: string) => {
+  // Not supported via tldw_server from the extension
+  throw new Error("Model management is handled by tldw_server. Deletion is not supported from the extension.")
 }
 
 export const fetchChatModels = async ({
@@ -204,50 +178,32 @@ export const fetchChatModels = async ({
 }) => {
   try {
     const models = await getAllModels({ returnEmpty })
-
-    const chatModels = models
-      ?.filter((model) => {
-        return (
-          !model?.details?.families?.includes("bert") &&
-          !model?.details?.families?.includes("nomic-bert")
-        )
-      })
-      .map((model) => {
-        return {
-          ...model,
-          provider: "ollama"
-        }
-      })
+    const chatModels = models.map((model) => ({ ...model, provider: "tldw" }))
     const chromeModel = await getChromeAIModel()
-
     const customModels = await ollamaFormatAllCustomModels("chat")
-
     return [...chatModels, ...chromeModel, ...customModels]
   } catch (e) {
     console.error("error", e)
-    const allModels = await getAllModels({ returnEmpty })
-    const models = allModels.map((model) => {
-      return {
-        ...model,
-        provider: "ollama"
-      }
-    })
+    const models = await getAllModels({ returnEmpty })
+    const withProvider = models.map((m) => ({ ...m, provider: "tldw" }))
     const chromeModel = await getChromeAIModel()
     const customModels = await ollamaFormatAllCustomModels("chat")
-    return [...models, ...chromeModel, ...customModels]
+    return [...withProvider, ...chromeModel, ...customModels]
   }
 }
 
 export const setOllamaURL = async (ollamaURL: string) => {
   let formattedUrl = ollamaURL
   if (formattedUrl.startsWith("http://localhost:")) {
-    formattedUrl = formattedUrl.replace(
-      "http://localhost:",
-      "http://127.0.0.1:"
-    )
+    formattedUrl = formattedUrl.replace("http://localhost:", "http://127.0.0.1:")
   }
-  await storage.set("ollamaURL", cleanUrl(formattedUrl))
-  await urlRewriteRuntime(cleanUrl(formattedUrl))
+  const url = cleanUrl(formattedUrl)
+  await storage.set("ollamaURL", url)
+  try {
+    // Update tldw config
+    await tldwClient.updateConfig({ serverUrl: url })
+  } catch {}
+  await urlRewriteRuntime(url)
 }
 
 export const systemPromptForNonRag = async () => {

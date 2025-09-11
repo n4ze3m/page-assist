@@ -10,8 +10,8 @@ export default defineContentScript({
         )
 
         await browser.runtime.sendMessage({
-          type: "pull_model",
-          modelName
+          type: 'tldw:request',
+          payload: { path: '/api/v1/media/add', method: 'POST', headers: { 'Content-Type': 'application/json' }, body: { url: window.location.href } }
         })
         return true
       }
@@ -33,8 +33,8 @@ export default defineContentScript({
       if (!copyButton && !modal.querySelector(".pageassist-download-button")) {
         const downloadButton = document.createElement("button")
         downloadButton.classList.add("pageassist-download-button", "focus:outline-hidden", "inline-flex", "cursor-pointer", "items-center", "text-sm", "bg-white", "shadow-xs", "rounded-md", "border", "px-2", "py-1", "text-gray-600")
-        downloadButton.title = "Pull from Page Assist"
-        downloadButton.innerHTML = `${downloadSVG} <span class="ml-1.5">Pull from Page Assist</span>`
+        downloadButton.title = "Send to tldw_server"
+        downloadButton.innerHTML = `${downloadSVG} <span class=\"ml-1.5\">Send to tldw_server</span>`
         
         downloadButton.addEventListener("click", async () => {
           const preElement = modal.querySelector("pre")
@@ -70,7 +70,7 @@ export default defineContentScript({
         downloadButton.classList.add("pageassist-download-button")
         downloadButton.querySelector("svg")!.outerHTML = downloadSVG
         downloadButton.querySelector("span")!.textContent =
-          "Pull from Page Assist"
+          "Send to tldw_server"
         downloadButton.addEventListener("click", async () => {
           const preElement = modal.querySelector("pre")
           if (preElement) {
