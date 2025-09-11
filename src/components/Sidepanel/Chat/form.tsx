@@ -18,6 +18,8 @@ import {
 import { useTranslation } from "react-i18next"
 import { ModelSelect } from "@/components/Common/ModelSelect"
 import { useSpeechRecognition } from "@/hooks/useSpeechRecognition"
+import { useTldwStt } from "@/hooks/useTldwStt"
+import { useMicStream } from "@/hooks/useMicStream"
 import { PiGlobeX, PiGlobe } from "react-icons/pi"
 import { handleChatInputKeyDown } from "@/utils/key-down"
 import { getIsSimpleInternetSearch } from "@/services/search"
@@ -58,6 +60,13 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
       stopSpeechRecognition()
     }
   }
+
+  // tldw WS STT
+  const { connect: sttConnect, sendAudio, close: sttClose, connected: sttConnected } = useTldwStt()
+  const { start: micStart, stop: micStop, active: micActive } = useMicStream((chunk) => {
+    try { sendAudio(chunk) } catch {}
+  })
+  const [wsSttActive, setWsSttActive] = React.useState(false)
 
   const onInputChange = async (
     e: React.ChangeEvent<HTMLInputElement> | File
@@ -377,6 +386,25 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                           </button>
                         </Tooltip>
                       )}
+                      {/* tldw WS STT toggle */}
+                      <Tooltip title="Live transcription via tldw_server">
+                        <button
+                          type="button"
+                          onClick={async () => {
+                            if (wsSttActive) {
+                              try { micStop() } catch {}
+                              try { sttClose() } catch {}
+                              setWsSttActive(false)
+                            } else {
+                              sttConnect()
+                              await micStart()
+                              setWsSttActive(true)
+                            }
+                          }}
+                          className={`flex items-center justify-center ${wsSttActive ? 'text-red-500' : 'dark:text-gray-300'}`}>
+                          <MicIcon className="h-4 w-4" />
+                        </button>
+                      </Tooltip>
                       <Tooltip title={t("tooltip.vision")}>
                         <button
                           type="button"

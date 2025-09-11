@@ -148,7 +148,7 @@
   color: #9ea0a4;
 }
 
-:global(.dark) .shimmer-text {
+.dark .shimmer-text {
   background: linear-gradient(90deg, #a0a2a6 25%, #f5f5f5 50%, #a0a2a6 75%);
   background-size: 200% 100%;
   background-clip: text;

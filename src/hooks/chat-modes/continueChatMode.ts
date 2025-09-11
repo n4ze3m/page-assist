@@ -1,8 +1,5 @@
 import { cleanUrl } from "~/libs/clean-url"
-import {
-  getOllamaURL,
-  systemPromptForNonRagOption
-} from "~/services/ollama"
+import { systemPromptForNonRagOption } from "~/services/ollama"
 import { type ChatHistory, type Message } from "~/store/option"
 import { getPromptById } from "@/db/dexie/helpers"
 import { generateHistory } from "@/utils/generate-history"
@@ -47,14 +44,10 @@ export const continueChatMode = async (
   }
 ) => {
   console.log("Using continueChatMode")
-  const url = await getOllamaURL()
   let promptId: string | undefined = selectedSystemPrompt
   let promptContent: string | undefined = undefined
 
-  const ollama = await pageAssistModel({
-    model: selectedModel!,
-    baseUrl: cleanUrl(url)
-  })
+  const ollama = await pageAssistModel({ model: selectedModel!, baseUrl: "" })
 
   let newMessage: Message[] = []
 

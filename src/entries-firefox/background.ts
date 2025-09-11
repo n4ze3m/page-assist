@@ -143,6 +143,21 @@ export default defineBackground({
         } catch (e: any) {
           return { ok: false, status: 0, error: e?.message || 'Network error' }
         }
+      } else if (message.type === 'tldw:ingest') {
+        try {
+          const tabs = await browser.tabs.query({ active: true, currentWindow: true })
+          const tab = tabs[0]
+          const pageUrl = tab?.url || ''
+          if (!pageUrl) return { ok: false, status: 400, error: 'No active tab URL' }
+          const path = message.mode === 'process' ? '/api/v1/media/process' : '/api/v1/media/add'
+          const resp = await browser.runtime.sendMessage({
+            type: 'tldw:request',
+            payload: { path, method: 'POST', headers: { 'Content-Type': 'application/json' }, body: { url: pageUrl } }
+          })
+          return resp
+        } catch (e: any) {
+          return { ok: false, status: 0, error: e?.message || 'Ingest failed' }
+        }
       }
     })
 
@@ -151,6 +166,42 @@ export default defineBackground({
         isCopilotRunning = true
         port.onDisconnect.addListener(() => {
           isCopilotRunning = false
+        })
+      } else if (port.name === 'tldw:stt') {
+        const storage = new Storage({ area: 'local' })
+        let ws: WebSocket | null = null
+        const onMsg = async (msg: any) => {
+          try {
+            if (msg?.action === 'connect') {
+              const cfg = await storage.get<any>('tldwConfig')
+              if (!cfg?.serverUrl) throw new Error('tldw server not configured')
+              const base = cfg.serverUrl.replace(/^http/, 'ws').replace(/\/$/, '')
+              const token = cfg.authMode === 'single-user' ? cfg.apiKey : cfg.accessToken
+              const url = `${base}/api/v1/audio/v1/audio/stream/transcribe?token=${encodeURIComponent(token || '')}`
+              ws = new WebSocket(url)
+              ws.binaryType = 'arraybuffer'
+              ws.onopen = () => port.postMessage({ event: 'open' })
+              ws.onmessage = (ev) => port.postMessage({ event: 'data', data: ev.data })
+              ws.onerror = () => port.postMessage({ event: 'error', message: 'ws error' })
+              ws.onclose = () => port.postMessage({ event: 'close' })
+            } else if (msg?.action === 'audio' && ws && ws.readyState === WebSocket.OPEN) {
+              if (msg.data instanceof ArrayBuffer) {
+                ws.send(msg.data)
+              } else if (msg.data?.buffer) {
+                ws.send(msg.data.buffer)
+              }
+            } else if (msg?.action === 'close') {
+              try { ws?.close() } catch {}
+              ws = null
+            }
+          } catch (e: any) {
+            port.postMessage({ event: 'error', message: e?.message || 'ws error' })
+          }
+        }
+        port.onMessage.addListener(onMsg)
+        port.onDisconnect.addListener(() => {
+          try { port.onMessage.removeListener(onMsg) } catch {}
+          try { ws?.close() } catch {}
         })
       }
     })
@@ -181,6 +232,11 @@ export default defineBackground({
         title: 'Send to tldw_server',
         contexts: ["page", "link"]
       })
+      browser.contextMenus.create({
+        id: 'process-local-tldw',
+        title: 'Process (no server save)',
+        contexts: ["page", "link"]
+      })
     } catch {}
 
     browser.contextMenus.onClicked.addListener((info, tab) => {
@@ -197,6 +253,14 @@ export default defineBackground({
         browser.runtime.sendMessage({
           type: 'tldw:request',
           payload: { path: '/api/v1/media/add', method: 'POST', headers: { 'Content-Type': 'application/json' }, body: { url: targetUrl } }
+        })
+      } else if (info.menuItemId === 'process-local-tldw') {
+        const pageUrl = info.pageUrl || (tab && tab.url) || ''
+        const targetUrl = (info.linkUrl && /^https?:/i.test(info.linkUrl)) ? info.linkUrl : pageUrl
+        if (!targetUrl) return
+        browser.runtime.sendMessage({
+          type: 'tldw:request',
+          payload: { path: '/api/v1/media/process', method: 'POST', headers: { 'Content-Type': 'application/json' }, body: { url: targetUrl } }
         })
       } else if (info.menuItemId === "summarize-pa") {
         if (!isCopilotRunning) {

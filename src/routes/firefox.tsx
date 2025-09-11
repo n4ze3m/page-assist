@@ -10,6 +10,7 @@ const OptionModal = lazy(() => import("./option-settings-model"))
 const OptionPrompt = lazy(() => import("./option-settings-prompt"))
 const OptionSettings = lazy(() => import("./option-settings"))
 const OptionShare = lazy(() => import("./option-settings-share"))
+const OptionProcessed = lazy(() => import("./option-settings-processed"))
 const OptionKnowledgeBase = lazy(() => import("./option-settings-knowledge"))
 const OptionAbout = lazy(() => import("./option-settings-about"))
 const OptionRagSettings = lazy(() => import("./option-rag"))
@@ -27,6 +28,7 @@ export const OptionRoutingFirefox = () => {
       {/** Ollama settings removed in favor of tldw_server */}
       <Route path="/settings/openai" element={<OptionOpenAI />} />
       <Route path="/settings/share" element={<OptionShare />} />
+      <Route path="/settings/processed" element={<OptionProcessed />} />
       <Route path="/settings/knowledge" element={<OptionKnowledgeBase />} />
       <Route path="/settings/about" element={<OptionAbout />} />
       <Route path="/settings/rag" element={<OptionRagSettings />} />

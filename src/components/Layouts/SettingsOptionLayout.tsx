@@ -13,6 +13,7 @@ import {
 import { useTranslation } from "react-i18next"
 import { Link, useLocation } from "react-router-dom"
 import { OllamaIcon } from "../Icons/Ollama"
+import { FileText } from "lucide-react"
 import { BetaTag } from "../Common/Beta"
 
 function classNames(...classes: string[]) {
@@ -125,6 +126,12 @@ export const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
                     href="/settings/share"
                     name={t("manageShare.title")}
                     icon={ShareIcon}
+                    current={location.pathname}
+                  />
+                  <LinkComponent
+                    href="/settings/processed"
+                    name={"Processed"}
+                    icon={FileText}
                     current={location.pathname}
                   />
                   <LinkComponent

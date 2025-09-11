@@ -178,3 +178,13 @@ export type Prompts = Prompt[];
 export type OpenAIModelConfigs = OpenAIModelConfig[]
 export type Models = Model[]
 export type ModelNicknames = ModelNickname[]
+
+// Processed media (local-only store for 'process' results)
+export type ProcessedMedia = {
+  id: string
+  url: string
+  title?: string
+  content?: string
+  metadata?: Record<string, any>
+  createdAt: number
+}

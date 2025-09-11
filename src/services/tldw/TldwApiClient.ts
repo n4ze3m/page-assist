@@ -121,6 +121,10 @@ export class TldwApiClient {
   }
 
   // RAG Methods
+  async ragHealth(): Promise<any> {
+    return await bgRequest<any>({ path: '/api/v1/rag/health', method: 'GET' })
+  }
+
   async ragSearch(query: string, options?: any): Promise<any> {
     return await bgRequest<any>({ path: '/api/v1/rag/search', method: 'POST', headers: { 'Content-Type': 'application/json' }, body: { query, ...options } })
   }

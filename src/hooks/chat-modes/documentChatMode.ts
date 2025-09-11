@@ -1,10 +1,5 @@
 import { cleanUrl } from "~/libs/clean-url"
-import {
-  defaultEmbeddingModelForRag,
-  getOllamaURL,
-  geWebSearchFollowUpPrompt,
-  promptForRag
-} from "~/services/ollama"
+import { geWebSearchFollowUpPrompt, promptForRag } from "~/services/ollama"
 import { type ChatHistory, type Message } from "~/store/option"
 import { addFileToSession, generateID, getSessionFiles } from "@/db/dexie/helpers"
 import { generateHistory } from "@/utils/generate-history"
@@ -20,10 +15,9 @@ import { getModelNicknameByID } from "@/db/dexie/nickname"
 import { formatDocs } from "@/chain/chat-with-x"
 import { getAllDefaultModelSettings } from "@/services/model-settings"
 import { getNoOfRetrievedDocs } from "@/services/app"
-import { pageAssistEmbeddingModel } from "@/models/embedding"
 import { UploadedFile } from "@/db/dexie/types"
 import { getSystemPromptForWeb, isQueryHaveWebsite } from "@/web/web"
-import { PAMemoryVectorStore } from "@/libs/PAMemoryVectorStore"
+// Server-backed RAG replaces local vectorstore
 import { getMaxContextSize } from "@/services/kb"
 
 export const documentChatMode = async (
@@ -70,7 +64,6 @@ export const documentChatMode = async (
     webSearch: boolean
   }
 ) => {
-  const url = await getOllamaURL()
   const userDefaultModelSettings = await getAllDefaultModelSettings()
 
   let sessionFiles: UploadedFile[] = []
@@ -85,10 +78,7 @@ export const documentChatMode = async (
   )
 
   const allFiles = [...sessionFiles, ...newFiles]
-  const ollama = await pageAssistModel({
-    model: selectedModel!,
-    baseUrl: cleanUrl(url)
-  })
+  const ollama = await pageAssistModel({ model: selectedModel!, baseUrl: "" })
 
   let newMessage: Message[] = []
   let generateMessageId = generateID()
@@ -137,14 +127,7 @@ export const documentChatMode = async (
   let fullText = ""
   let contentToSave = ""
 
-  const embeddingModel = await defaultEmbeddingModelForRag()
-  const ollamaUrl = await getOllamaURL()
-  const ollamaEmbedding = await pageAssistEmbeddingModel({
-    model: embeddingModel || selectedModel,
-    baseUrl: cleanUrl(ollamaUrl),
-    keepAlive:
-      currentChatModelSettings?.keepAlive ?? userDefaultModelSettings?.keepAlive
-  })
+  // No local embedding model; will fall back to inline context for files
 
   let timetaken = 0
   try {
@@ -174,10 +157,7 @@ export const documentChatMode = async (
       const promptForQuestion = questionPrompt
         .replaceAll("{chat_history}", chat_history)
         .replaceAll("{question}", message)
-      const questionModel = await pageAssistModel({
-        model: selectedModel!,
-        baseUrl: cleanUrl(url)
-      })
+      const questionModel = await pageAssistModel({ model: selectedModel!, baseUrl: "" })
 
       let questionMessage = await humanMessageFormatter({
         content: [
@@ -254,70 +234,72 @@ export const documentChatMode = async (
       query = response.content.toString()
       query = removeReasoning(query)
     }
-    if (uploadedFiles.length > 0) {
-      if (fileRetrievalEnabled) {
-        if (!embeddingModel?.length) {
-          throw new Error("No embedding model selected")
-        }
-        setActionInfo("embeddingGen")
-        const documents = allFiles.map((file) => ({
-          pageContent: file.content,
-          metadata: {
-            source: file.filename,
-            type: file.type,
-            size: file.size,
-            uploadedAt: file.uploadedAt
-          }
-        }))
-
-        const textSplitter = await getPageAssistTextSplitter()
-        const chunks = await textSplitter.splitDocuments(documents)
-
-        const vectorstore = await PAMemoryVectorStore.fromDocuments(
-          chunks,
-          ollamaEmbedding
+    // Try server-backed RAG over media_db first
+    try {
+      const keyword_filter = uploadedFiles.map(f => f.filename).slice(0, 10)
+      const ragPayload: any = {
+        query,
+        sources: ["media_db"],
+        search_mode: 'hybrid',
+        hybrid_alpha: 0.7,
+        top_k: docSize,
+        min_score: 0,
+        enable_reranking: true,
+        reranking_strategy: 'flashrank',
+        rerank_top_k: Math.max(docSize * 2, 10),
+        keyword_filter,
+        enable_cache: true,
+        adaptive_cache: true,
+        enable_chunk_citations: true,
+        enable_generation: false
+      }
+      const ragRes = await (await import('@/services/tldw/TldwApiClient')).tldwClient.ragSearch(query, ragPayload)
+      const docs = ragRes?.results || ragRes?.documents || ragRes?.docs || []
+      if (docs.length > 0) {
+        context += formatDocs(
+          docs.map((d: any) => ({ pageContent: d.content || d.text || d.chunk || '', metadata: d.metadata || {} }))
         )
-        setActionInfo("semanticSearch")
-        const docs = await vectorstore.similaritySearch(query, docSize)
-        context += formatDocs(docs)
         source = [
           ...source,
-          ...docs.map((doc) => {
-            return {
-              ...doc,
-              name: doc?.metadata?.source || "untitled",
-              type: doc?.metadata?.type || "unknown",
-              mode: "rag",
-              url: ""
-            }
-          })
-        ]
-
-        setActionInfo(null)
-      } else {
-        const maxContextSize = await getMaxContextSize()
-
-        context += allFiles
-          .map((f) => `File: ${f.filename}\nContent: ${f.content}\n---\n`)
-          .join("")
-          .substring(0, maxContextSize)
-        source = [
-          ...source,
-          ...allFiles.map((file) => ({
-            pageContent: file.content.substring(0, 200) + "...",
-            metadata: {
-              source: file.filename,
-              type: file.type,
-              mode: "rag"
-            },
-            name: file.filename,
-            type: file.type,
-            mode: "rag",
-            url: ""
+          ...docs.map((d: any) => ({
+            name: d.metadata?.filename || d.metadata?.title || 'media',
+            type: d.metadata?.type || 'media',
+            mode: 'rag',
+            url: d.metadata?.url || '',
+            pageContent: d.content || d.text || d.chunk || '',
+            metadata: d.metadata || {}
           }))
         ]
       }
-    } else {
+    } catch (e) {
+      console.error('media_db RAG failed; will fallback to inline context', e)
+    }
+
+    // Fallback inline if no RAG context
+    if (uploadedFiles.length > 0 && context.length === 0) {
+      const maxContextSize = await getMaxContextSize()
+      context += allFiles
+        .map((f) => `File: ${f.filename}\nContent: ${f.content}\n---\n`)
+        .join("")
+        .substring(0, maxContextSize)
+      source = [
+        ...source,
+        ...allFiles.map((file) => ({
+          pageContent: file.content.substring(0, 200) + "...",
+          metadata: {
+            source: file.filename,
+            type: file.type,
+            mode: "rag"
+          },
+          name: file.filename,
+          type: file.type,
+          mode: "rag",
+          url: ""
+        }))
+      ]
+    }
+
+    if (uploadedFiles.length === 0 && context.length === 0) {
       context += "No documents uploaded for this conversation."
     }
 

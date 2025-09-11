@@ -1,8 +1,5 @@
 import { cleanUrl } from "~/libs/clean-url"
-import {
-  geWebSearchFollowUpPrompt,
-  getOllamaURL
-} from "~/services/ollama"
+import { geWebSearchFollowUpPrompt } from "~/services/ollama"
 import { type ChatHistory, type Message } from "~/store/option"
 import { generateID } from "@/db/dexie/helpers"
 import { getSystemPromptForWeb, isQueryHaveWebsite } from "~/web/web"
@@ -54,14 +51,13 @@ export const searchChatMode = async (
   }
 ) => {
   console.log("Using searchChatMode")
-  const url = await getOllamaURL()
   if (image.length > 0) {
     image = `data:image/jpeg;base64,${image.split(",")[1]}`
   }
 
   const ollama = await pageAssistModel({
     model: selectedModel!,
-    baseUrl: cleanUrl(url)
+    baseUrl: ""
   })
 
   let newMessage: Message[] = []
@@ -123,10 +119,7 @@ export const searchChatMode = async (
     const promptForQuestion = questionPrompt
       .replaceAll("{chat_history}", chat_history)
       .replaceAll("{question}", message)
-    const questionModel = await pageAssistModel({
-      model: selectedModel!,
-      baseUrl: cleanUrl(url)
-    })
+    const questionModel = await pageAssistModel({ model: selectedModel!, baseUrl: "" })
 
     let questionMessage = await humanMessageFormatter({
       content: [

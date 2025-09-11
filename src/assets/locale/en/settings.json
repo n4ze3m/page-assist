@@ -40,7 +40,7 @@
         "label": "Generate Title using AI"
       },
       "ollamaStatus": {
-        "label": "Enable or disable Ollama connection status check"
+        "label": "Enable or disable server connection status check"
       },
       "wideMode": {
         "label": "Enable wide screen mode"

@@ -1,8 +1,5 @@
 import { cleanUrl } from "~/libs/clean-url"
-import {
-  getOllamaURL,
-  promptForRag,
-} from "~/services/ollama"
+import { promptForRag } from "~/services/ollama"
 import { type ChatHistory, type Message } from "~/store/option"
 import { generateID } from "@/db/dexie/helpers"
 import { generateHistory } from "@/utils/generate-history"
@@ -57,12 +54,7 @@ export const tabChatMode = async (
   }
 ) => {
   console.log("Using tabChatMode")
-  const url = await getOllamaURL()
-
-  const ollama = await pageAssistModel({
-    model: selectedModel!,
-    baseUrl: cleanUrl(url)
-  })
+  const ollama = await pageAssistModel({ model: selectedModel!, baseUrl: "" })
 
   let newMessage: Message[] = []
   let generateMessageId = generateID()
@@ -155,10 +147,7 @@ export const tabChatMode = async (
       const promptForQuestion = questionPrompt
         .replaceAll("{chat_history}", chat_history)
         .replaceAll("{question}", message)
-      const questionOllama = await pageAssistModel({
-        model: selectedModel!,
-        baseUrl: cleanUrl(url)
-      })
+      const questionOllama = await pageAssistModel({ model: selectedModel!, baseUrl: "" })
       const response = await questionOllama.invoke(promptForQuestion)
       query = response.content.toString()
       query = removeReasoning(query)

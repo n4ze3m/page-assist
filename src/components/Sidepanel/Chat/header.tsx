@@ -21,6 +21,7 @@ import { PromptSelect } from "@/components/Common/PromptSelect"
 import { Sidebar } from "@/components/Option/Sidebar"
 import { BsIncognito } from "react-icons/bs"
 import { isFireFoxPrivateMode } from "@/utils/is-private-mode"
+import { Tooltip as AntdTooltip } from 'antd'
 
 type SidepanelHeaderProps = {
   sidebarOpen?: boolean
@@ -80,6 +81,26 @@ export const SidepanelHeader = ({
       </div>
 
       <div className="flex items-center space-x-3">
+        <AntdTooltip title="Save current page on server">
+          <button
+            onClick={async () => {
+              await browser.runtime.sendMessage({ type: 'tldw:ingest', mode: 'store' })
+              notification.success({ message: 'Sent to tldw_server', description: 'Current page has been submitted for ingestion.' })
+            }}
+            className="flex items-center space-x-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-700">
+            <MessageSquareShareIcon className="size-4 text-gray-500 dark:text-gray-400" />
+          </button>
+        </AntdTooltip>
+        <AntdTooltip title="Process current page locally (no server save)">
+          <button
+            onClick={async () => {
+              await browser.runtime.sendMessage({ type: 'tldw:ingest', mode: 'process' })
+              notification.success({ message: 'Processed locally', description: 'Processed content stored locally under Settings > Processed.' })
+            }}
+            className="flex items-center space-x-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-700">
+            <BoxesIcon className="size-4 text-gray-500 dark:text-gray-400" />
+          </button>
+        </AntdTooltip>
         {webuiBtnSidePanel ? (
           <Tooltip title={t("tooltip.openwebui")}>
             <button

@@ -477,12 +477,7 @@ export const useMessage = () => {
     signal: AbortSignal
   ) => {
     setStreaming(true)
-    const url = await getOllamaURL()
-
-    const ollama = await pageAssistModel({
-      model: selectedModel!,
-      baseUrl: cleanUrl(url)
-    })
+    const ollama = await pageAssistModel({ model: selectedModel!, baseUrl: "" })
 
     let newMessage: Message[] = []
     let generateMessageId = generateID()
@@ -730,16 +725,11 @@ export const useMessage = () => {
     signal: AbortSignal
   ) => {
     setStreaming(true)
-    const url = await getOllamaURL()
-
     if (image.length > 0) {
       image = `data:image/jpeg;base64,${image.split(",")[1]}`
     }
 
-    const ollama = await pageAssistModel({
-      model: selectedModel!,
-      baseUrl: cleanUrl(url)
-    })
+    const ollama = await pageAssistModel({ model: selectedModel!, baseUrl: "" })
 
     let newMessage: Message[] = []
     let generateMessageId = generateID()
@@ -986,7 +976,6 @@ export const useMessage = () => {
     history: ChatHistory,
     signal: AbortSignal
   ) => {
-    const url = await getOllamaURL()
     setStreaming(true)
     if (image.length > 0) {
       image = `data:image/jpeg;base64,${image.split(",")[1]}`
@@ -994,7 +983,7 @@ export const useMessage = () => {
 
     const ollama = await pageAssistModel({
       model: selectedModel!,
-      baseUrl: cleanUrl(url)
+      baseUrl: ""
     })
 
     let newMessage: Message[] = []
@@ -1056,10 +1045,7 @@ export const useMessage = () => {
       const promptForQuestion = questionPrompt
         .replaceAll("{chat_history}", chat_history)
         .replaceAll("{question}", message)
-      const questionModel = await pageAssistModel({
-        model: selectedModel!,
-        baseUrl: cleanUrl(url)
-      })
+      const questionModel = await pageAssistModel({ model: selectedModel!, baseUrl: "" })
 
       let questionMessage = await humanMessageFormatter({
         content: [
@@ -1296,16 +1282,12 @@ export const useMessage = () => {
     messageType: string
   ) => {
     setStreaming(true)
-    const url = await getOllamaURL()
 
     if (image.length > 0) {
       image = `data:image/jpeg;base64,${image.split(",")[1]}`
     }
 
-    const ollama = await pageAssistModel({
-      model: selectedModel!,
-      baseUrl: cleanUrl(url)
-    })
+    const ollama = await pageAssistModel({ model: selectedModel!, baseUrl: "" })
 
     let newMessage: Message[] = []
     let generateMessageId = generateID()

@@ -32,6 +32,7 @@ export class PageAssistDexieDB extends Dexie {
   openaiConfigs!: Table<OpenAIModelConfig>;
   customModels!: Table<Model>;
   modelNickname!: Table<ModelNickname>
+  processedMedia!: Table<any>
 
   constructor() {
     super('PageAssistDatabase');
@@ -50,7 +51,8 @@ export class PageAssistDexieDB extends Dexie {
       // OpenAI Configs
       openaiConfigs: 'id, name, baseUrl, apiKey, createdAt, provider, db_type, headers',
       customModels: 'id, model_id, name, model_name, model_image, provider_id, lookup, model_type, db_type',
-      modelNickname: 'id, model_id, model_name, model_avatar'
+      modelNickname: 'id, model_id, model_name, model_avatar',
+      processedMedia: 'id, url, createdAt'
     });
   }
 }
