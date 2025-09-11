@@ -81,6 +81,24 @@ export const SidepanelHeader = ({
       </div>
 
       <div className="flex items-center space-x-3">
+        <AntdTooltip title="Toggle Sidebar / Full Screen">
+          <button
+            onClick={async () => {
+              const storage = new (await import('@plasmohq/storage')).Storage({ area: 'local' })
+              const current = (await storage.get<string>('uiMode')) || 'sidePanel'
+              const next = current === 'sidePanel' ? 'webui' : 'sidePanel'
+              await storage.set('uiMode', next)
+              await storage.set('actionIconClick', next)
+              await storage.set('contextMenuClick', 'sidePanel')
+              if (next === 'webui') {
+                const url = browser.runtime.getURL('/options.html')
+                browser.tabs.create({ url })
+              }
+            }}
+            className="flex items-center space-x-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-700">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-4 text-gray-500 dark:text-gray-400"><path d="M3 4h18v2H3V4zm0 14h18v2H3v-2zM3 8h8v8H3V8zm10 0h8v8h-8V8z"/></svg>
+          </button>
+        </AntdTooltip>
         <AntdTooltip title="Save current page on server">
           <button
             onClick={async () => {

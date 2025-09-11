@@ -42,6 +42,10 @@ export const SidepanelSettingsHeader = () => {
             await storage.set('actionIconClick', value)
             // Keep context menu to sidePanel for consistency
             await storage.set('contextMenuClick', 'sidePanel')
+            if (value === 'webui') {
+              const url = browser.runtime.getURL('/options.html')
+              browser.tabs.create({ url })
+            }
           }}
         />
       </div>
