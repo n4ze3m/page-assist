@@ -165,12 +165,14 @@ export class TldwAuthService {
    * Test API key for single-user mode
    */
   async testApiKey(serverUrl: string, apiKey: string): Promise<boolean> {
+    // Validate against a protected endpoint that requires auth
+    const base = String(serverUrl).replace(/\/$/, '')
     try {
-      const abs = `${String(serverUrl).replace(/\/$/, '')}/api/v1/health`
-      const resp = await bgRequest<any>({ path: abs, method: 'GET', headers: { 'X-API-KEY': apiKey } })
-      return !!resp
-    } catch (error) {
-      console.error('API key test failed:', error)
+      // Use an absolute URL and bypass injected auth to verify the provided key directly
+      await bgRequest<any>({ path: `${base}/api/v1/llm/models`, method: 'GET', headers: { 'X-API-KEY': apiKey }, noAuth: true })
+      return true
+    } catch (error: any) {
+      console.error('API key test failed:', error?.message || error)
       return false
     }
   }

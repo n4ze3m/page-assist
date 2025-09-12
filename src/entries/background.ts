@@ -123,10 +123,19 @@ export default defineBackground({
             try { form.append('file', new File([blob], filename, { type: blob.type })) } catch { form.append('file', blob, filename) }
           }
           const headers: Record<string, string> = {}
-          if (cfg?.authMode === 'single-user' && cfg?.apiKey) headers['X-API-KEY'] = cfg.apiKey
-          if (cfg?.authMode === 'multi-user' && cfg?.accessToken) headers['Authorization'] = `Bearer ${cfg.accessToken}`
+          if (cfg?.authMode === 'single-user') {
+            const key = (cfg?.apiKey || '').trim()
+            if (!key) return { ok: false, status: 401, error: 'X-API-KEY header required for single-user mode. Configure API key in Settings > tldw.' }
+            headers['X-API-KEY'] = key
+          }
+          if (cfg?.authMode === 'multi-user') {
+            const token = (cfg?.accessToken || '').trim()
+            if (!token) return { ok: false, status: 401, error: 'Not authenticated. Please login under Settings > tldw.' }
+            headers['Authorization'] = `Bearer ${token}`
+          }
           const controller = new AbortController()
-          const timeout = setTimeout(() => controller.abort(), 120000)
+          const timeoutMs = Number(cfg?.requestTimeoutMs) > 0 ? Number(cfg.requestTimeoutMs) : 10000
+          const timeout = setTimeout(() => controller.abort(), timeoutMs)
           const resp = await fetch(url, { method, headers, body: form, signal: controller.signal })
           clearTimeout(timeout)
           const contentType = resp.headers.get('content-type') || ''
@@ -138,7 +147,7 @@ export default defineBackground({
           return { ok: false, status: 0, error: e?.message || 'Upload failed' }
         }
       } else if (message.type === 'tldw:request') {
-        const { path, method = 'GET', headers = {}, body } = message.payload || {}
+        const { path, method = 'GET', headers = {}, body, noAuth = false, timeoutMs: overrideTimeoutMs } = message.payload || {}
         const storage = new Storage({ area: 'local' })
         const cfg = await storage.get<any>('tldwConfig')
         const isAbsolute = typeof path === 'string' && /^https?:/i.test(path)
@@ -147,16 +156,26 @@ export default defineBackground({
         }
         const baseUrl = cfg?.serverUrl ? String(cfg.serverUrl).replace(/\/$/, '') : ''
         const url = isAbsolute ? path : `${baseUrl}${path.startsWith('/') ? '' : '/'}${path}`
-        const authHeaders: Record<string, string> = {}
-        if (cfg?.authMode === 'single-user' && cfg?.apiKey) {
-          authHeaders['X-API-KEY'] = cfg.apiKey
-        } else if (cfg?.authMode === 'multi-user' && cfg?.accessToken) {
-          authHeaders['Authorization'] = `Bearer ${cfg.accessToken}`
+        const h: Record<string, string> = { ...(headers || {}) }
+        if (!noAuth) {
+          for (const k of Object.keys(h)) {
+            const kl = k.toLowerCase()
+            if (kl === 'x-api-key' || kl === 'authorization') delete h[k]
+          }
+          if (cfg?.authMode === 'single-user') {
+            const key = (cfg?.apiKey || '').trim()
+            if (key) h['X-API-KEY'] = key
+            else return { ok: false, status: 401, error: 'X-API-KEY header required for single-user mode. Configure API key in Settings > tldw.' }
+          } else if (cfg?.authMode === 'multi-user') {
+            const token = (cfg?.accessToken || '').trim()
+            if (token) h['Authorization'] = `Bearer ${token}`
+            else return { ok: false, status: 401, error: 'Not authenticated. Please login under Settings > tldw.' }
+          }
         }
-        const h = { ...headers, ...authHeaders }
         try {
           const controller = new AbortController()
-          const timeout = setTimeout(() => controller.abort(), 60000)
+          const timeoutMs = Number(overrideTimeoutMs) > 0 ? Number(overrideTimeoutMs) : (Number(cfg?.requestTimeoutMs) > 0 ? Number(cfg.requestTimeoutMs) : 10000)
+          const timeout = setTimeout(() => controller.abort(), timeoutMs)
           let resp = await fetch(url, {
             method,
             headers: h,
@@ -176,7 +195,7 @@ export default defineBackground({
             const retryHeaders = { ...headers }
             if (updated?.accessToken) retryHeaders['Authorization'] = `Bearer ${updated.accessToken}`
             const retryController = new AbortController()
-            const retryTimeout = setTimeout(() => retryController.abort(), 60000)
+            const retryTimeout = setTimeout(() => retryController.abort(), timeoutMs)
             resp = await fetch(url, {
               method,
               headers: retryHeaders,
@@ -192,7 +211,11 @@ export default defineBackground({
           } else {
             data = await resp.text().catch(() => null)
           }
-          return { ok: resp.ok, status: resp.status, data }
+          if (!resp.ok) {
+            const detail = typeof data === 'object' && data && (data.detail || data.error || data.message)
+            return { ok: false, status: resp.status, error: detail || resp.statusText || `HTTP ${resp.status}`, data }
+          }
+          return { ok: true, status: resp.status, data }
         } catch (e: any) {
           return { ok: false, status: 0, error: e?.message || 'Network error' }
         }
@@ -427,6 +450,8 @@ export default defineBackground({
       if (port.name === 'tldw:stream') {
         const storage = new Storage({ area: 'local' })
         let abort: AbortController | null = null
+        let idleTimer: any = null
+        let closed = false
         const onMsg = async (msg: any) => {
           try {
             const cfg = await storage.get<any>('tldwConfig')
@@ -435,19 +460,49 @@ export default defineBackground({
             const path = msg.path as string
             const url = path.startsWith('http') ? path : `${baseUrl}${path.startsWith('/') ? '' : '/'}${path}`
             const headers: Record<string, string> = { ...(msg.headers || {}) }
-            if (cfg.authMode === 'single-user' && cfg.apiKey) {
-              headers['X-API-KEY'] = cfg.apiKey
-            } else if (cfg.authMode === 'multi-user' && cfg.accessToken) {
-              headers['Authorization'] = `Bearer ${cfg.accessToken}`
+            for (const k of Object.keys(headers)) {
+              const kl = k.toLowerCase()
+              if (kl === 'x-api-key' || kl === 'authorization') delete headers[k]
+            }
+            if (cfg.authMode === 'single-user') {
+              const key = (cfg.apiKey || '').trim()
+              if (key) headers['X-API-KEY'] = key
+              else return port.postMessage({ event: 'error', message: 'X-API-KEY header required for single-user mode. Configure API key in Settings > tldw.' })
+            } else if (cfg.authMode === 'multi-user') {
+              const token = (cfg.accessToken || '').trim()
+              if (token) headers['Authorization'] = `Bearer ${token}`
+              else return port.postMessage({ event: 'error', message: 'Not authenticated. Please login under Settings > tldw.' })
             }
             headers['Accept'] = 'text/event-stream'
             abort = new AbortController()
+            const idleMs = Number(msg?.streamIdleTimeoutMs) > 0 ? Number(msg.streamIdleTimeoutMs) : (Number(cfg?.streamIdleTimeoutMs) > 0 ? Number(cfg.streamIdleTimeoutMs) : 15000)
+            const resetIdle = () => {
+              if (idleTimer) clearTimeout(idleTimer)
+              idleTimer = setTimeout(() => {
+                if (!closed) {
+                  try { abort?.abort() } catch {}
+                  port.postMessage({ event: 'error', message: 'Stream timeout: no updates received' })
+                }
+              }, idleMs)
+            }
             let resp = await fetch(url, {
               method: msg.method || 'POST',
               headers,
               body: typeof msg.body === 'string' ? msg.body : JSON.stringify(msg.body),
               signal: abort.signal
             })
+            if (!resp.ok) {
+              const ct = resp.headers.get('content-type') || ''
+              let errMsg: any = resp.statusText
+              if (ct.includes('application/json')) {
+                const j = await resp.json().catch(() => null)
+                if (j && (j.detail || j.error || j.message)) errMsg = j.detail || j.error || j.message
+              } else {
+                const t = await resp.text().catch(() => null)
+                if (t) errMsg = t
+              }
+              return port.postMessage({ event: 'error', message: String(errMsg || `HTTP ${resp.status}`) })
+            }
             if (resp.status === 401 && cfg.authMode === 'multi-user' && cfg.refreshToken) {
               if (!refreshInFlight) {
                 refreshInFlight = (async () => {
@@ -470,6 +525,7 @@ export default defineBackground({
             const reader = resp.body.getReader()
             const decoder = new TextDecoder()
             let buffer = ''
+            resetIdle()
             while (true) {
               const { done, value } = await reader.read()
               if (done) break
@@ -482,15 +538,21 @@ export default defineBackground({
                 if (trimmed.startsWith('data:')) {
                   const data = trimmed.slice(5).trim()
                   if (data === '[DONE]') {
+                    closed = true
+                    if (idleTimer) clearTimeout(idleTimer)
                     port.postMessage({ event: 'done' })
                     return
                   }
+                  resetIdle()
                   port.postMessage({ event: 'data', data })
                 }
               }
             }
+            closed = true
+            if (idleTimer) clearTimeout(idleTimer)
             port.postMessage({ event: 'done' })
           } catch (e: any) {
+            if (idleTimer) clearTimeout(idleTimer)
             port.postMessage({ event: 'error', message: e?.message || 'Stream error' })
           }
         }

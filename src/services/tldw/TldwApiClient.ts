@@ -256,20 +256,24 @@ export class TldwApiClient {
   }
 
   async ragSearch(query: string, options?: any): Promise<any> {
-    return await bgRequest<any>({ path: '/api/v1/rag/search', method: 'POST', headers: { 'Content-Type': 'application/json' }, body: { query, ...options } })
+    const { timeoutMs, ...rest } = options || {}
+    return await bgRequest<any>({ path: '/api/v1/rag/search', method: 'POST', headers: { 'Content-Type': 'application/json' }, body: { query, ...rest }, timeoutMs })
   }
 
-  async ragSimple(query: string): Promise<any> {
-    return await bgRequest<any>({ path: '/api/v1/rag/simple', method: 'POST', headers: { 'Content-Type': 'application/json' }, body: { query } })
+  async ragSimple(query: string, options?: any): Promise<any> {
+    const { timeoutMs, ...rest } = options || {}
+    return await bgRequest<any>({ path: '/api/v1/rag/simple', method: 'POST', headers: { 'Content-Type': 'application/json' }, body: { query, ...rest }, timeoutMs })
   }
 
   // Media Methods
   async addMedia(url: string, metadata?: any): Promise<any> {
-    return await bgRequest<any>({ path: '/api/v1/media/add', method: 'POST', headers: { 'Content-Type': 'application/json' }, body: { url, ...metadata } })
+    const { timeoutMs, ...rest } = metadata || {}
+    return await bgRequest<any>({ path: '/api/v1/media/add', method: 'POST', headers: { 'Content-Type': 'application/json' }, body: { url, ...rest }, timeoutMs })
   }
 
   async ingestWebContent(url: string, options?: any): Promise<any> {
-    return await bgRequest<any>({ path: '/api/v1/media/ingest-web-content', method: 'POST', headers: { 'Content-Type': 'application/json' }, body: { url, ...options } })
+    const { timeoutMs, ...rest } = options || {}
+    return await bgRequest<any>({ path: '/api/v1/media/ingest-web-content', method: 'POST', headers: { 'Content-Type': 'application/json' }, body: { url, ...rest }, timeoutMs })
   }
 
   // Notes Methods

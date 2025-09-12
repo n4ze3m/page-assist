@@ -7,6 +7,7 @@ import {
   MessageContent
 } from "@langchain/core/messages"
 import { ChatGenerationChunk } from "@langchain/core/outputs"
+import { AIMessageChunk } from "@langchain/core/messages" 
 import { CallbackManagerForLLMRun } from "@langchain/core/callbacks/manager"
 import { tldwChat, ChatMessage } from "@/services/tldw"
 
@@ -33,7 +34,8 @@ export class ChatTldw extends BaseChatModel {
 
   constructor(options: ChatTldwOptions) {
     super({})
-    this.model = options.model
+    // Normalize model id: drop internal prefix like "tldw:" so server receives provider/model
+    this.model = String(options.model || '').replace(/^tldw:/, '')
     this.temperature = options.temperature ?? 0.7
     this.maxTokens = options.maxTokens
     this.topP = options.topP ?? 1
@@ -109,7 +111,7 @@ export class ChatTldw extends BaseChatModel {
     messages: BaseMessage[],
     options?: this["ParsedCallOptions"],
     runManager?: CallbackManagerForLLMRun
-  ): AsyncGenerator<ChatGenerationChunk> {
+  ): AsyncGenerator<any> {
     const tldwMessages = this.convertToTldwMessages(messages)
     
     const stream = tldwChat.streamMessage(tldwMessages, {
@@ -127,11 +129,8 @@ export class ChatTldw extends BaseChatModel {
       if (runManager) {
         await runManager.handleLLMNewToken(chunk)
       }
-      
-      yield new ChatGenerationChunk({
-        text: chunk,
-        message: new AIMessage(chunk)
-      })
+      // Yield an AIMessageChunk so downstream expects chunk.content
+      yield new AIMessageChunk({ content: chunk })
     }
   }
 

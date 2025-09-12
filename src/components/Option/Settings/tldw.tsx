@@ -18,6 +18,8 @@ export const TldwSettings = () => {
   const [authMode, setAuthMode] = useState<'single-user' | 'multi-user'>('single-user')
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [serverUrl, setServerUrl] = useState("")
+  const [requestTimeoutSec, setRequestTimeoutSec] = useState<number>(10)
+  const [streamIdleTimeoutSec, setStreamIdleTimeoutSec] = useState<number>(15)
 
   useEffect(() => {
     loadConfig()
@@ -30,6 +32,8 @@ export const TldwSettings = () => {
       if (config) {
         setAuthMode(config.authMode)
         setServerUrl(config.serverUrl)
+        if (typeof (config as any).requestTimeoutMs === 'number') setRequestTimeoutSec(Math.round((config as any).requestTimeoutMs / 1000))
+        if (typeof (config as any).streamIdleTimeoutMs === 'number') setStreamIdleTimeoutSec(Math.round((config as any).streamIdleTimeoutMs / 1000))
         form.setFieldsValue({
           serverUrl: config.serverUrl,
           apiKey: config.apiKey,
@@ -51,9 +55,11 @@ export const TldwSettings = () => {
   const handleSave = async (values: any) => {
     setLoading(true)
     try {
-      const config: Partial<TldwConfig> = {
+      const config: Partial<TldwConfig & { requestTimeoutMs?: number; streamIdleTimeoutMs?: number }> = {
         serverUrl: values.serverUrl,
-        authMode: values.authMode
+        authMode: values.authMode,
+        requestTimeoutMs: Math.max(1, Math.round(Number(requestTimeoutSec) || 10)) * 1000,
+        streamIdleTimeoutMs: Math.max(1, Math.round(Number(streamIdleTimeoutSec) || 15)) * 1000
       }
 
       if (values.authMode === 'single-user') {
@@ -101,16 +107,23 @@ export const TldwSettings = () => {
       let success = false
 
       if (values.authMode === 'single-user' && values.apiKey) {
-        // Route via background to avoid CORS; allow absolute URL
+        // Validate against a strictly protected endpoint by provoking a non-auth error (400) vs 401
+        // We intentionally use an invalid model id; if auth is valid, server should respond 400/404/422, not 401
         const resp = await browser.runtime.sendMessage({
           type: 'tldw:request',
           payload: {
-            path: `${String(values.serverUrl).replace(/\/$/, '')}/api/v1/health`,
-            method: 'GET',
-            headers: { 'X-API-KEY': values.apiKey }
+            path: `${String(values.serverUrl).replace(/\/$/, '')}/api/v1/chat/completions`,
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-API-KEY': String(values.apiKey).trim() },
+            body: { model: '__validation__', messages: [{ role: 'user', content: 'ping' }], stream: false },
+            noAuth: true
           }
         })
-        success = !!resp?.ok
+        // Treat any non-401 as valid auth; 401 means invalid key
+        success = resp?.status !== 401 && resp?.status !== 403
+        if (!success) {
+          message.error(resp?.error || 'API key validation failed')
+        }
       } else {
         // Test basic health endpoint via background proxy
         const resp = await browser.runtime.sendMessage({
@@ -135,14 +148,13 @@ export const TldwSettings = () => {
       
       if (success) {
         message.success("Connection successful!")
-        // Initialize client after successful test
         await tldwClient.initialize()
       } else {
         message.error("Connection failed. Please check your settings.")
       }
     } catch (error) {
       setConnectionStatus('error')
-      message.error("Connection failed. Please check your server URL.")
+      message.error((error as any)?.message || "Connection failed. Please check your server URL and API key.")
       console.error('Connection test failed:', error)
     } finally {
       setTestingConnection(false)
@@ -239,6 +251,31 @@ export const TldwSettings = () => {
               onChange={(value) => setAuthMode(value as 'single-user' | 'multi-user')}
             />
           </Form.Item>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium mb-1">Request Timeout (seconds)</label>
+              <Input
+                type="number"
+                min={1}
+                value={requestTimeoutSec}
+                onChange={(e) => setRequestTimeoutSec(parseInt(e.target.value || '10'))}
+                placeholder="10"
+              />
+              <div className="text-xs text-gray-500 mt-1">Abort initial requests if no response within this time. Default: 10s.</div>
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Streaming Idle Timeout (seconds)</label>
+              <Input
+                type="number"
+                min={1}
+                value={streamIdleTimeoutSec}
+                onChange={(e) => setStreamIdleTimeoutSec(parseInt(e.target.value || '15'))}
+                placeholder="15"
+              />
+              <div className="text-xs text-gray-500 mt-1">Abort streaming if no updates received within this time. Default: 15s.</div>
+            </div>
+          </div>
 
           {authMode === 'single-user' && (
             <Form.Item

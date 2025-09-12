@@ -5,12 +5,14 @@ export interface BgRequestInit {
   method?: string
   headers?: Record<string, string>
   body?: any
+  noAuth?: boolean
+  timeoutMs?: number
 }
 
-export async function bgRequest<T = any>({ path, method = 'GET', headers = {}, body }: BgRequestInit): Promise<T> {
+export async function bgRequest<T = any>({ path, method = 'GET', headers = {}, body, noAuth = false, timeoutMs }: BgRequestInit): Promise<T> {
   const resp = await browser.runtime.sendMessage({
     type: 'tldw:request',
-    payload: { path, method, headers, body }
+    payload: { path, method, headers, body, noAuth, timeoutMs }
   })
   if (!resp?.ok) {
     const msg = resp?.error || `Request failed: ${resp?.status}`
@@ -24,9 +26,10 @@ export interface BgStreamInit {
   method?: string
   headers?: Record<string, string>
   body?: any
+  streamIdleTimeoutMs?: number
 }
 
-export async function* bgStream({ path, method = 'POST', headers = {}, body }: BgStreamInit): AsyncGenerator<string> {
+export async function* bgStream({ path, method = 'POST', headers = {}, body, streamIdleTimeoutMs }: BgStreamInit): AsyncGenerator<string> {
   const port = browser.runtime.connect({ name: 'tldw:stream' })
   const encoder = new TextEncoder()
   const queue: string[] = []
@@ -44,7 +47,7 @@ export async function* bgStream({ path, method = 'POST', headers = {}, body }: B
     }
   }
   port.onMessage.addListener(onMessage)
-  port.postMessage({ path, method, headers, body })
+  port.postMessage({ path, method, headers, body, streamIdleTimeoutMs })
 
   try {
     while (!done || queue.length > 0) {
