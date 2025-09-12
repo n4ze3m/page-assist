@@ -67,6 +67,14 @@ export default defineConfig({
           }
         }
         : undefined,
+    // During development, grant localhost origins by default so background can fetch without prompts
+    host_permissions:
+      process.env.TARGET !== "firefox" && process.env.NODE_ENV === 'development'
+        ? [
+            "http://127.0.0.1/*",
+            "http://localhost/*"
+          ]
+        : undefined,
     // Use optional host permissions on Chromium so users can grant their own server origin at runtime
     optional_host_permissions:
       process.env.TARGET !== "firefox"

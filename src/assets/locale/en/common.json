@@ -77,7 +77,7 @@
                 "placeholder": "e.g. 2048, 4096"
             },
             "thinking": {
-                "label": "Thinking Mode (Ollama)"
+                "label": "Thinking Mode"
             },
             "seed": {
                 "label": "Seed",
@@ -147,7 +147,7 @@
     },
     "citations": "Citations",
     "segmented": {
-        "ollama": "Ollama Models",
+        "available": "Server Models",
         "custom": "Custom Models"
     },
     "downloadCode": "Download Code",
@@ -192,6 +192,6 @@
     "newBranch": "New Branch",
     "downloading": "Downloading" ,
     "cancelPullingModel": {
-        "confirm": "Are you sure you want to cancel the download? This will stop the download process. According to the Ollama documentation, you can restart from where you left off."
+        "confirm": "Are you sure you want to cancel the download? This will stop the download process. If supported by the provider, you can resume later."
     }
 }

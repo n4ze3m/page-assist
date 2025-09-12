@@ -4,6 +4,7 @@ import relativeTime from "dayjs/plugin/relativeTime"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
 import { CustomModelsTable } from "./CustomModelsTable"
+import { AvailableModelsList } from "./AvailableModelsList"
 import { AddCustomModelModal } from "./AddCustomModelModal"
 import { isFireFoxPrivateMode } from "@/utils/is-private-mode"
 
@@ -11,7 +12,7 @@ dayjs.extend(relativeTime)
 
 export const ModelsBody = () => {
   const [openAddModelModal, setOpenAddModelModal] = useState(false)
-  const [segmented, setSegmented] = useState<string>("custom")
+  const [segmented, setSegmented] = useState<string>("available")
 
   const { t } = useTranslation(["settings", "common", "openai"])
 
@@ -43,15 +44,20 @@ export const ModelsBody = () => {
             <Segmented
               options={[
                 {
+                  label: t("common:segmented.available"),
+                  value: "available"
+                },
+                {
                   label: t("common:segmented.custom"),
                   value: "custom"
                 }
               ]}
               value={segmented}
+              onChange={(v) => setSegmented(String(v))}
             />
           </div>
         </div>
-        <CustomModelsTable />
+        {segmented === 'available' ? <AvailableModelsList /> : <CustomModelsTable />}
       </div>
 
       <AddCustomModelModal

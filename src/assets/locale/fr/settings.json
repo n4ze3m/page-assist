@@ -40,7 +40,7 @@
         "label": "Générer le titre en utilisant l'IA"
       },
       "ollamaStatus": {
-        "label": "Activer ou désactiver la vérification de l'état de la connexion Ollama"
+        "label": "Activer ou désactiver la vérification de l'état de la connexion au serveur"
       },
       "wideMode": {
         "label": "Activer le mode écran large"
@@ -316,19 +316,19 @@
     }
   },
   "ollamaSettings": {
-    "title": "Paramètres d'Ollama",
-    "heading": "Configurer Ollama",
+    "title": "Paramètres du serveur",
+    "heading": "Configurer le serveur",
     "settings": {
       "ollamaUrl": {
-        "label": "URL d'Ollama",
-        "placeholder": "Entrer l'URL d'Ollama"
+        "label": "URL du serveur",
+        "placeholder": "Entrer l'URL du serveur"
       },
       "globalEnable": {
-        "label": "Activer ou désactiver l'intégration Ollama globalement",
-        "warning": "En désactivant l'intégration Ollama globalement, Page Assist ne récupérera pas les modèles d'Ollama. Vous pouvez toujours ajouter une instance Ollama depuis la section <anchor>API compatible OpenAI</anchor> qui fonctionnera correctement."
+        "label": "Activer ou désactiver l'intégration du serveur globalement",
+        "warning": "En désactivant l'intégration du serveur globalement, Page Assist ne récupérera pas de modèles depuis le serveur. Vous pouvez toujours ajouter des fournisseurs via la section <anchor>API compatible OpenAI</anchor>."
       },
       "advanced": {
-        "label": "Configuration avancée de l'URL d'Ollama",
+        "label": "Configuration avancée de l'URL du serveur",
         "urlRewriteEnabled": {
           "label": "Activer ou désactiver l'URL d'origine personnalisée"
         },
@@ -337,7 +337,7 @@
           "placeholder": "Entrer l'URL d'origine personnalisée"
         },
         "autoCORSFix": {
-          "label": "Activer ou désactiver la correction automatique CORS d'Ollama"
+          "label": "Activer ou désactiver la correction automatique CORS"
         },
         "headers": {
           "label": "En-têtes personnalisés",
@@ -351,7 +351,7 @@
             "placeholder": "Jeton Bearer"
           }
         },
-        "help": "Si vous rencontrez des problèmes de connexion avec Ollama sur Page Assist, vous pouvez configurer une URL d'origine personnalisée. Pour en savoir plus sur la configuration, <anchor>cliquez ici</anchor>."
+        "help": "Si vous rencontrez des problèmes de connexion avec le serveur, vous pouvez configurer une URL d'origine personnalisée. Pour en savoir plus sur la configuration, <anchor>cliquez ici</anchor>."
       }
     }
   },
@@ -363,7 +363,7 @@
     "title": "À propos",
     "heading": "À propos",
     "chromeVersion": "Version de Page Assist",
-    "ollamaVersion": "Version d'Ollama",
+    "ollamaVersion": "Version du serveur",
     "support": "Vous pouvez soutenir le projet Page Assist en faisant un don ou en parrainant via les plateformes suivantes :",
     "koFi": "Soutenir sur Ko-fi",
     "githubSponsor": "Parrainer sur GitHub",

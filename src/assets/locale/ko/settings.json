@@ -43,7 +43,7 @@
         "label": "AI로 제목 생성"
       },
       "ollamaStatus": {
-        "label": "Ollama 연결 상태 확인 활성화 또는 비활성화"
+        "label": "서버 연결 상태 확인 활성화 또는 비활성화"
       },
       "wideMode": {
         "label": "와이드 스크린 모드 활성화"
@@ -311,19 +311,19 @@
     }
   },
   "ollamaSettings": {
-    "title": "Ollama 설정",
-    "heading": "Ollama 설정하기",
+    "title": "서버 설정",
+    "heading": "서버 설정하기",
     "settings": {
       "ollamaUrl": {
-        "label": "Ollama URL",
-        "placeholder": "Ollama URL 입력"
+        "label": "서버 URL",
+        "placeholder": "서버 URL 입력"
       },
       "globalEnable": {
-        "label": "Ollama 통합 기능 전역 활성화 또는 비활성화",
-        "warning": "Ollama 통합을 전역적으로 비활성화하면 Page Assist가 Ollama에서 모델을 가져오지 않습니다. <anchor>OpenAI 호환 API</anchor> 섹션에서 Ollama 인스턴스를 추가할 수 있으며 정상적으로 작동합니다."
+        "label": "서버 통합 기능 전역 활성화 또는 비활성화",
+        "warning": "서버 통합을 전역적으로 비활성화하면 Page Assist가 서버에서 모델을 가져오지 않습니다. <anchor>OpenAI 호환 API</anchor> 섹션에서 공급자를 추가할 수 있습니다."
       },
       "advanced": {
-        "label": "Ollama URL 고급 설정",
+        "label": "서버 URL 고급 설정",
         "urlRewriteEnabled": {
           "label": "사용자 지정 Origin URL 활성화 또는 비활성화"
         },
@@ -332,7 +332,7 @@
           "placeholder": "사용자 지정 Origin URL 입력"
         },
         "autoCORSFix": {
-          "label": "자동 Ollama CORS 수정 활성화 또는 비활성화"
+          "label": "자동 CORS 수정 활성화 또는 비활성화"
         },
         "headers": {
           "label": "사용자 지정 헤더",
@@ -346,7 +346,7 @@
             "placeholder": "베어러 토큰"
           }
         },
-        "help": "Page Assist에서 Ollama 연결에 문제가 있는 경우 사용자 지정 Origin URL을 설정할 수 있습니다. 설정에 대한 자세한 내용은 <anchor>여기를 클릭</anchor>하세요."
+        "help": "서버 연결에 문제가 있는 경우 사용자 지정 Origin URL을 설정할 수 있습니다. 자세한 내용은 <anchor>여기를 클릭</anchor>하세요."
       }
     }
   },
@@ -358,7 +358,7 @@
     "title": "소개",
     "heading": "소개",
     "chromeVersion": "Page Assist 버전",
-    "ollamaVersion": "Ollama 버전",
+    "ollamaVersion": "서버 버전",
     "support": "Page Assist 프로젝트는 다음 플랫폼에서 기부나 후원을 통해 지원할 수 있습니다:",
     "koFi": "Ko-fi로 후원하기",
     "githubSponsor": "GitHub에서 후원하기",

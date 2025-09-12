@@ -43,7 +43,7 @@
         "label": "使用人工智能生成标题"
       },
       "ollamaStatus": {
-        "label": "启用或禁用Ollama连接状态检查"
+        "label": "启用或禁用服务器连接状态检查"
       },
       "wideMode": {
         "label": "启用宽屏模式"
@@ -312,19 +312,19 @@
     }
   },
   "ollamaSettings": {
-    "title": "Ollama 设置",
-    "heading": "配置 Ollama",
+    "title": "服务器集成",
+    "heading": "配置服务器集成",
     "settings": {
       "ollamaUrl": {
-        "label": "Ollama URL",
-        "placeholder": "输入 Ollama URL"
+        "label": "服务器 URL",
+        "placeholder": "输入服务器 URL"
       },
       "globalEnable": {
-        "label": "启用或禁用全局 Ollama 集成",
-        "warning": "通过全局禁用 Ollama 集成，Page Assist 将不会从 Ollama 获取模型。您仍然可以从<anchor>OpenAI 兼容 API</anchor>部分添加 Ollama 实例，这将正常工作。"
+        "label": "启用或禁用全局服务器集成",
+        "warning": "禁用服务器集成后，Page Assist 将不会从服务器获取模型。您仍可在<anchor>OpenAI 兼容 API</anchor>部分添加提供商。"
       },
       "advanced": {
-        "label": "Ollama URL 高级配置",
+        "label": "服务器 URL 高级配置",
         "urlRewriteEnabled": {
           "label": "启用或禁用自定义来源 URL"
         },
@@ -333,7 +333,7 @@
           "placeholder": "输入自定义来源 URL"
         },
         "autoCORSFix": {
-          "label": "启用或禁用自动 Ollama CORS 修复"
+          "label": "启用或禁用自动 CORS 修复"
         },
         "headers": {
           "label": "自定义头部",
@@ -347,7 +347,7 @@
             "placeholder": "承载令牌"
           }
         },
-        "help": "如果您在 Page Assist 上与 Ollama 有连接问题,您可以配置自定义来源 URL。要了解更多关于配置的信息,<anchor>点击此处</anchor>。"
+        "help": "如果您遇到服务器连接问题，可以配置自定义来源 URL。了解更多信息，<anchor>点击此处</anchor>。"
       }
     }
   },
@@ -359,7 +359,7 @@
     "title": "关于",
     "heading": "关于",
     "chromeVersion": "Page Assist版本",
-    "ollamaVersion": "Ollama版本",
+    "ollamaVersion": "服务器版本",
     "support": "您可以通过以下平台捐赠或赞助Page Assist项目:",
     "koFi": "在Ko-fi上支持",
     "githubSponsor": "在GitHub上赞助",

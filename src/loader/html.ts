@@ -1,6 +1,5 @@
 import { BaseDocumentLoader } from "langchain/document_loaders/base"
 import { Document } from "@langchain/core/documents"
-import { YtTranscript } from "yt-transcript"
 import { isWikipedia, parseWikipedia } from "@/parser/wiki"
 import { extractReadabilityContent } from "@/parser/reader"
 import { isYoutubeLink } from "@/utils/is-youtube"
@@ -8,8 +7,16 @@ import { isYoutubeLink } from "@/utils/is-youtube"
 
 
 const getTranscript = async (url: string) => {
-  const ytTranscript = new YtTranscript({ url })
-  return await ytTranscript.getTranscript()
+  try {
+    // Avoid Vite pre-bundling; load only at runtime in environments that support it
+    const mod = await import(/* @vite-ignore */ 'yt-transcript')
+    const YtTranscript = (mod as any).YtTranscript || mod
+    const ytTranscript = new YtTranscript({ url })
+    return await ytTranscript.getTranscript()
+  } catch (e) {
+    console.warn('YouTube transcript disabled in this environment:', e)
+    return null
+  }
 }
 
 export interface WebLoaderParams {

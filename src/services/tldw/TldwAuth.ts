@@ -1,5 +1,6 @@
 import { Storage } from "@plasmohq/storage"
 import { tldwClient } from "./TldwApiClient"
+import { bgRequest } from "@/services/background-proxy"
 
 export interface LoginCredentials {
   username: string
@@ -44,25 +45,13 @@ export class TldwAuthService {
     formData.append('username', credentials.username)
     formData.append('password', credentials.password)
 
-    const response = await fetch(`${config.serverUrl}/api/v1/auth/login`, {
+    const response = await bgRequest<any>({
+      path: '/api/v1/auth/login',
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: formData
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: formData.toString()
     })
-
-    if (!response.ok) {
-      if (response.status === 401) {
-        throw new Error('Invalid username or password')
-      }
-      if (response.status === 403) {
-        throw new Error('Account is inactive')
-      }
-      throw new Error(`Login failed: ${response.statusText}`)
-    }
-
-    const tokens = await response.json() as TokenResponse
+    const tokens = response as TokenResponse
     
     // Update config with tokens
     await tldwClient.updateConfig({
@@ -90,12 +79,7 @@ export class TldwAuthService {
 
     // Try to logout on server
     try {
-      await fetch(`${config.serverUrl}/api/v1/auth/logout`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${config.accessToken}`
-        }
-      })
+      await bgRequest<any>({ path: '/api/v1/auth/logout', method: 'POST' })
     } catch (error) {
       console.error('Server logout failed:', error)
     }
@@ -122,24 +106,12 @@ export class TldwAuthService {
       throw new Error('No refresh token available')
     }
 
-    const response = await fetch(`${config.serverUrl}/api/v1/auth/refresh`, {
+    const tokens = await bgRequest<TokenResponse>({
+      path: '/api/v1/auth/refresh',
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        refresh_token: config.refreshToken
-      })
+      headers: { 'Content-Type': 'application/json' },
+      body: { refresh_token: config.refreshToken }
     })
-
-    if (!response.ok) {
-      if (response.status === 401) {
-        throw new Error('Refresh token expired or invalid')
-      }
-      throw new Error(`Token refresh failed: ${response.statusText}`)
-    }
-
-    const tokens = await response.json() as TokenResponse
     
     // Update access token
     await tldwClient.updateConfig({
@@ -163,29 +135,8 @@ export class TldwAuthService {
       throw new Error('tldw server not configured')
     }
 
-    const headers: HeadersInit = {
-      'Content-Type': 'application/json',
-    }
-
-    if (config.authMode === 'single-user' && config.apiKey) {
-      headers['X-API-KEY'] = config.apiKey
-    } else if (config.authMode === 'multi-user' && config.accessToken) {
-      headers['Authorization'] = `Bearer ${config.accessToken}`
-    }
-
-    const response = await fetch(`${config.serverUrl}/api/v1/auth/me`, {
-      method: 'GET',
-      headers
-    })
-
-    if (!response.ok) {
-      if (response.status === 401) {
-        throw new Error('Not authenticated')
-      }
-      throw new Error(`Failed to get user info: ${response.statusText}`)
-    }
-
-    return response.json()
+    const me = await bgRequest<UserInfo>({ path: '/api/v1/auth/me', method: 'GET' })
+    return me
   }
 
   /**
@@ -197,31 +148,17 @@ export class TldwAuthService {
       throw new Error('tldw server not configured')
     }
 
-    const response = await fetch(`${config.serverUrl}/api/v1/auth/register`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        username,
-        password,
-        email,
-        registration_code: registrationCode
+    try {
+      const data = await bgRequest<any>({
+        path: '/api/v1/auth/register',
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: { username, password, email, registration_code: registrationCode }
       })
-    })
-
-    if (!response.ok) {
-      if (response.status === 400) {
-        const error = await response.json()
-        throw new Error(error.detail || 'Registration validation failed')
-      }
-      if (response.status === 409) {
-        throw new Error('User already exists')
-      }
-      throw new Error(`Registration failed: ${response.statusText}`)
+      return data
+    } catch (e: any) {
+      throw new Error(e?.message || 'Registration failed')
     }
-
-    return response.json()
   }
 
   /**
@@ -229,13 +166,9 @@ export class TldwAuthService {
    */
   async testApiKey(serverUrl: string, apiKey: string): Promise<boolean> {
     try {
-      const response = await fetch(`${serverUrl}/api/v1/health`, {
-        method: 'GET',
-        headers: {
-          'X-API-KEY': apiKey
-        }
-      })
-      return response.ok
+      const abs = `${String(serverUrl).replace(/\/$/, '')}/api/v1/health`
+      const resp = await bgRequest<any>({ path: abs, method: 'GET', headers: { 'X-API-KEY': apiKey } })
+      return !!resp
     } catch (error) {
       console.error('API key test failed:', error)
       return false

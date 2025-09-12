@@ -16,6 +16,8 @@ import { Link, useLocation } from "react-router-dom"
 import { OllamaIcon } from "../Icons/Ollama"
 import { FileText } from "lucide-react"
 import { BetaTag } from "../Common/Beta"
+import { Storage } from "@plasmohq/storage"
+import { browser } from "wxt/browser"
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ")
@@ -57,6 +59,9 @@ const LinkComponent = (item: {
 export const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
   const location = useLocation()
   const { t } = useTranslation(["settings", "common", "openai"])
+  const sidepanelSupported =
+    // @ts-ignore
+    (typeof chrome !== 'undefined' && (chrome as any).sidePanel) || ((browser as any)?.sidebarAction && (browser as any).sidebarAction.open)
   return (
     <div className="flex min-h-screen  w-full flex-col">
       <main className="relative w-full flex-1">
@@ -64,6 +69,31 @@ export const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
           <div className="flex flex-col lg:flex-row lg:gap-x-16 lg:px-24">
             <aside className="sticky lg:mt-0 mt-14 top-0  bg-white dark:bg-[#171717] border-b dark:border-gray-600 lg:border-0 lg:bg-transparent lg:dark:bg-transparent">
               <nav className="w-full overflow-x-auto px-4 py-4 sm:px-6 lg:px-0 lg:py-0 lg:mt-20">
+                <div className="flex justify-end mb-3">
+                  <button
+                    className="text-xs border rounded px-2 py-1 text-gray-700 dark:text-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled={!sidepanelSupported}
+                    onClick={async () => {
+                      const storage = new Storage({ area: 'local' })
+                      await storage.set('uiMode', 'sidePanel')
+                      await storage.set('actionIconClick', 'sidePanel')
+                      await storage.set('contextMenuClick', 'sidePanel')
+                      try {
+                        // Chromium sidePanel API
+                        // @ts-ignore
+                        if (chrome?.sidePanel) {
+                          const tabs = await chrome.tabs.query({ active: true, currentWindow: true })
+                          if (tabs?.[0]?.id) await chrome.sidePanel.open({ tabId: tabs[0].id })
+                        } else if ((browser as any)?.sidebarAction?.open) {
+                          // Firefox
+                          await (browser as any).sidebarAction.open()
+                        }
+                      } catch {}
+                    }}
+                    title="Switch to Sidebar">
+                    Switch to Sidebar
+                  </button>
+                </div>
                 <ul
                   role="list"
                   className="flex flex-row lg:flex-col gap-x-3 gap-y-1 min-w-max lg:min-w-0">

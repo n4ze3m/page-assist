@@ -40,7 +40,7 @@
         "label": "Generera titel med AI"
       },
       "ollamaStatus": {
-        "label": "Aktivera eller inaktivera Ollama anslutningsstatuskontroll"
+        "label": "Aktivera eller inaktivera serveranslutningsstatuskontroll"
       },
       "wideMode": {
         "label": "Aktivera bredskärmsläge"
@@ -308,19 +308,19 @@
     }
   },
   "ollamaSettings": {
-    "title": "Ollamainställningar",
-    "heading": "Konfigurera Ollama",
+    "title": "Serverinställningar",
+    "heading": "Konfigurera server",
     "settings": {
       "ollamaUrl": {
-        "label": "Ollama URL",
-        "placeholder": "Ange Ollama URL"
+        "label": "Server-URL",
+        "placeholder": "Ange server-URL"
       },
       "globalEnable": {
-        "label": "Aktivera eller inaktivera Ollama-integration globalt",
-        "warning": "Genom att inaktivera Ollama-integration globalt kommer Page Assist inte att hämta modeller från Ollama. Du kan fortfarande lägga till Ollama-instans från <anchor>OpenAI-kompatibel API</anchor>-sektionen som kommer att fungera bra."
+        "label": "Aktivera eller inaktivera serverintegration globalt",
+        "warning": "Genom att inaktivera serverintegrationen kommer Page Assist inte att hämta modeller från servern. Du kan fortfarande lägga till leverantörer under <anchor>OpenAI-kompatibelt API</anchor>."
       },
       "advanced": {
-        "label": "Avancerad Ollama URL-konfiguration",
+        "label": "Avancerad server-URL-konfiguration",
         "urlRewriteEnabled": {
           "label": "Aktivera eller inaktivera custom ursprungs-URL"
         },
@@ -329,7 +329,7 @@
           "placeholder": "Ange Custom ursprungs-URL"
         },
         "autoCORSFix": {
-          "label": "Aktivera eller inaktivera automatisk Ollama CORS-korrigering"
+          "label": "Aktivera eller inaktivera automatisk CORS-korrigering"
         },
         "headers": {
           "label": "Custom Headers",
@@ -343,7 +343,7 @@
             "placeholder": "Bärare token"
           }
         },
-        "help": "Om du har anslutningsproblem med Ollama på Page Assist, kan du konfigurera en custom ursprungs-URL. För att veta mer om konfigurationen, <anchor>klicka här</anchor>."
+        "help": "Om du har anslutningsproblem med servern kan du konfigurera en anpassad ursprungs-URL. För att veta mer, <anchor>klicka här</anchor>."
       }
     }
   },
@@ -355,7 +355,7 @@
     "title": "Om",
     "heading": "Om",
     "chromeVersion": "Page Assist Version",
-    "ollamaVersion": "Ollamaversion",
+    "ollamaVersion": "Serverversion",
     "support": "Du kan stödja Page Assist-projektet genom att donera eller sponsra genom följande plattformar:",
     "koFi": "Stöd på Ko-fi",
     "githubSponsor": "Sponsra på GitHub",

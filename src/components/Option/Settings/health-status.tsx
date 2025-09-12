@@ -13,7 +13,7 @@ type Check = {
 const checks: Check[] = [
   { key: 'core', label: 'Core API', path: '/api/v1/health' },
   { key: 'rag', label: 'RAG', path: '/api/v1/rag/health' },
-  { key: 'audio', label: 'Audio', path: '/api/v1/audio/v1/audio/health' },
+  { key: 'audio', label: 'Audio', path: '/api/v1/audio/health' },
   { key: 'embeddings', label: 'Embeddings', path: '/api/v1/embeddings/health' },
   { key: 'metrics', label: 'Metrics Health', path: '/api/v1/metrics/health' },
   { key: 'chatMetrics', label: 'Chat Metrics', path: '/api/v1/metrics/chat' },

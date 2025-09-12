@@ -112,7 +112,7 @@
     },
     "citations": "الاقتباسات",
     "segmented": {
-        "ollama": "نماذج Ollama",
+        "available": "نماذج الخادم",
         "custom": "نماذج مخصصة"
     },
     "downloadCode": "تنزيل الكود",

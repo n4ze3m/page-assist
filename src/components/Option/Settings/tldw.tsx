@@ -2,6 +2,7 @@ import { CheckIcon, XMarkIcon } from "@heroicons/react/24/outline"
 import { Segmented, Space, Input, Alert, Form, message, Spin, Button } from "antd"
 import { Link } from "react-router-dom"
 import React, { useEffect, useState } from "react"
+import { browser } from "wxt/browser"
 import { useTranslation } from "react-i18next"
 import { tldwClient, TldwConfig } from "@/services/tldw/TldwApiClient"
 import { tldwAuth } from "@/services/tldw/TldwAuth"
@@ -100,11 +101,26 @@ export const TldwSettings = () => {
       let success = false
 
       if (values.authMode === 'single-user' && values.apiKey) {
-        success = await tldwAuth.testApiKey(values.serverUrl, values.apiKey)
+        // Route via background to avoid CORS; allow absolute URL
+        const resp = await browser.runtime.sendMessage({
+          type: 'tldw:request',
+          payload: {
+            path: `${String(values.serverUrl).replace(/\/$/, '')}/api/v1/health`,
+            method: 'GET',
+            headers: { 'X-API-KEY': values.apiKey }
+          }
+        })
+        success = !!resp?.ok
       } else {
-        // Test basic health endpoint
-        const response = await fetch(`${values.serverUrl}/api/v1/health`)
-        success = response.ok
+        // Test basic health endpoint via background proxy
+        const resp = await browser.runtime.sendMessage({
+          type: 'tldw:request',
+          payload: {
+            path: `${String(values.serverUrl).replace(/\/$/, '')}/api/v1/health`,
+            method: 'GET'
+          }
+        })
+        success = !!resp?.ok
       }
 
       setConnectionStatus(success ? 'success' : 'error')

@@ -61,3 +61,23 @@ export async function* bgStream({ path, method = 'POST', headers = {}, body }: B
   }
 }
 
+export interface BgUploadInit {
+  path: string
+  method?: string
+  // key/value fields to include alongside file in FormData
+  fields?: Record<string, any>
+  // File payload as raw bytes with metadata (ArrayBuffer is structured-cloneable)
+  file?: { name?: string; type?: string; data: ArrayBuffer }
+}
+
+export async function bgUpload<T = any>({ path, method = 'POST', fields = {}, file }: BgUploadInit): Promise<T> {
+  const resp = await browser.runtime.sendMessage({
+    type: 'tldw:upload',
+    payload: { path, method, fields, file }
+  })
+  if (!resp?.ok) {
+    const msg = resp?.error || `Upload failed: ${resp?.status}`
+    throw new Error(msg)
+  }
+  return resp.data as T
+}

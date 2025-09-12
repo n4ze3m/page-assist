@@ -9,10 +9,16 @@ import {
 import { isGoogleDocs, parseGoogleDocs } from "@/parser/google-docs"
 import { cleanUnwantedUnicode } from "@/utils/clean"
 import { isYoutubeLink } from "@/utils/is-youtube"
-import { YtTranscript } from "yt-transcript"
 const getTranscript = async (url: string) => {
-  const ytTranscript = new YtTranscript({ url })
-  return await ytTranscript.getTranscript()
+  try {
+    const mod = await import(/* @vite-ignore */ 'yt-transcript')
+    const YtTranscript = (mod as any).YtTranscript || mod
+    const ytTranscript = new YtTranscript({ url })
+    return await ytTranscript.getTranscript()
+  } catch (e) {
+    console.warn('YouTube transcript disabled in this environment:', e)
+    return null
+  }
 }
 const _getHtml = () => {
   const url = window.location.href

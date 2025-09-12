@@ -1,7 +1,7 @@
 {
     "ollamaState": {
-        "searching": "Searching for Your Ollama 🦙",
-        "running": "Ollama is running 🦙",
+        "searching": "Searching for your tldw_server 🔎",
+        "running": "tldw is running ✅",
         "notRunning": "Unable to connect to tldw_server instance 🚨",
         "connectionError": "It seems like you are having a connection error. Please refer to this <anchor>documentation</anchor> for troubleshooting."
     },

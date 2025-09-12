@@ -139,7 +139,7 @@
     },
     "citations": "引用",
     "segmented": {
-        "ollama": "Ollama 模型",
+        "available": "服务器模型",
         "custom": "自定义模型"
     },
     "downloadCode": "下载代码",

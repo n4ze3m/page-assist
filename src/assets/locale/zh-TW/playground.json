@@ -1,8 +1,8 @@
 {
     "ollamaState": {
-        "searching": "正在搜尋您的 Ollama 🦙",
-        "running": "Ollama 正在運行 🦙",
-        "notRunning": "無法連接到 Ollama 🦙",
+        "searching": "正在搜尋您的 tldw_server",
+        "running": "tldw 正在運行",
+        "notRunning": "無法連接到 tldw_server",
         "connectionError": "看起來您遇到了連線錯誤，請參閱此<anchor>文件</anchor>進行故障排除。"
     },
     "formError": {

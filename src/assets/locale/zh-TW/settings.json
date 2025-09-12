@@ -40,7 +40,7 @@
         "label": "使用 AI 生成標題"
       },
       "ollamaStatus": {
-        "label": "啟用或停用 Ollama 連線狀態檢查"
+        "label": "啟用或停用伺服器連線狀態檢查"
       },
       "wideMode": {
         "label": "啟用寬螢幕模式"
@@ -347,19 +347,19 @@
     }
   },
   "ollamaSettings": {
-    "title": "Ollama 設定",
-    "heading": "Ollama 設定",
+    "title": "伺服器整合",
+    "heading": "設定伺服器整合",
     "settings": {
       "ollamaUrl": {
-        "label": "Ollama URL",
-        "placeholder": "輸入 Ollama URL"
+        "label": "伺服器 URL",
+        "placeholder": "輸入伺服器 URL"
       },
       "globalEnable": {
-        "label": "全域啟用或停用 Ollama 整合功能",
-        "warning": "透過全域停用 Ollama 整合功能後，Page Assist 將不會從 Ollama 取得模型，您仍然可以從 <anchor>OpenAI 相容 API</anchor> 的部分新增 Ollama 實例，一樣可以正常運作。"
+        "label": "全域啟用或停用伺服器整合",
+        "warning": "停用伺服器整合後，Page Assist 將不會從伺服器取得模型。您仍可在 <anchor>OpenAI 相容 API</anchor> 區段新增提供者。"
       },
       "advanced": {
-        "label": "進階 Ollama URL 設定",
+        "label": "進階伺服器 URL 設定",
         "urlRewriteEnabled": {
           "label": "啟用或停用自訂來源 URL"
         },
@@ -368,7 +368,7 @@
           "placeholder": "輸入自訂來源 URL"
         },
         "autoCORSFix": {
-          "label": "啟用或停用自動 Ollama CORS 修復"
+          "label": "啟用或停用自動 CORS 修復"
         },
         "headers": {
           "label": "自訂標頭",
@@ -382,7 +382,7 @@
             "placeholder": "Bearer token"
           }
         },
-        "help": "如果您在 Page Assist 上遇到與 Ollama 的連線問題，您可以設定自訂來源 URL，要了解有關設定的更多資訊，請<anchor>點擊此處</anchor>。"
+        "help": "如果您遇到伺服器連線問題，您可以設定自訂來源 URL。要了解更多資訊，請<anchor>點擊此處</anchor>。"
       }
     }
   },
@@ -394,7 +394,7 @@
     "title": "關於",
     "heading": "關於",
     "chromeVersion": "Page Assist 版本",
-    "ollamaVersion": "Ollama 版本",
+    "ollamaVersion": "伺服器版本",
     "support": "您可以透過以下平台捐款或贊助來支持 Page Assist 計畫：",
     "koFi": "在 Ko-fi 上支持",
     "githubSponsor": "在 GitHub 上支持",

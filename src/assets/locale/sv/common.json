@@ -109,7 +109,7 @@
     },
     "citations": "Citat",
     "segmented": {
-        "ollama": "Ollama-modeller",
+        "available": "Servermodeller",
         "custom": "Custom modeller"
     },
     "downloadCode": "Ladda ner kod",

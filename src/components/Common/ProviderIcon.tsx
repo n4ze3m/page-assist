@@ -32,6 +32,8 @@ export const ProviderIcons = ({
   className?: string
 }) => {
   switch (provider) {
+    case "tldw":
+      return <CpuIcon className={className} />
     case "chrome":
       return <ChromeIcon className={className} />
     case "custom":
@@ -83,6 +85,6 @@ export const ProviderIcons = ({
     case "chutes":
       return <ChutesIcon className={className} />
     default:
-      return <OllamaIcon className={className} />
+      return <CpuIcon className={className} />
   }
 }

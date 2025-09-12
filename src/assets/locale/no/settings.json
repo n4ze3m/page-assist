@@ -40,7 +40,7 @@
         "label": "Generer tittel med AI"
       },
       "ollamaStatus": {
-        "label": "Aktiver eller deaktiver Ollama tilkoblingsstatussjekk"
+        "label": "Aktiver eller deaktiver servertilkoblingsstatussjekk"
       },
       "wideMode": {
         "label": "Aktiver bredskjerm-modus"
@@ -308,19 +308,19 @@
     }
   },
   "ollamaSettings": {
-    "title": "Ollama Innstillinger",
-    "heading": "Konfigurer Ollama",
+    "title": "Serverinnstillinger",
+    "heading": "Konfigurer server",
     "settings": {
       "ollamaUrl": {
-        "label": "Ollama URL",
-        "placeholder": "Skriv inn Ollama URL"
+        "label": "Server-URL",
+        "placeholder": "Skriv inn server-URL"
       },
       "globalEnable": {
-        "label": "Aktiver eller Deaktiver Ollama-integrasjon Globalt",
-        "warning": "Ved å deaktivere Ollama-integrasjon globalt, vil ikke Page Assist hente modeller fra Ollama. Du kan fortsatt legge til Ollama-instans fra <anchor>OpenAI-kompatibel API</anchor>-seksjonen som vil fungere fint."
+        "label": "Aktiver eller deaktiver serverintegrasjon globalt",
+        "warning": "Ved å deaktivere serverintegrasjonen vil ikke Page Assist hente modeller fra serveren. Du kan fortsatt legge til leverandører under <anchor>OpenAI-kompatibel API</anchor>."
       },
       "advanced": {
-        "label": "Avansert Ollama URL-konfigurasjon",
+        "label": "Avansert server-URL-konfigurasjon",
         "urlRewriteEnabled": {
           "label": "Aktiver eller deaktiver tilpasset opprinnelses-URL"
         },
@@ -329,7 +329,7 @@
           "placeholder": "Skriv inn tilpasset opprinnelses-URL"
         },
         "autoCORSFix": {
-          "label": "Aktiver eller deaktiver automatisk Ollama CORS-fiks"
+          "label": "Aktiver eller deaktiver automatisk CORS-fiks"
         },
         "headers": {
           "label": "Tilpass Headers",
@@ -343,7 +343,7 @@
             "placeholder": "Bearer token"
           }
         },
-        "help": "Hvis du har forbindelsesproblemer med Ollama på Page Assist, kan du konfigurere en brukerdefinert opprinnelses-URL. For mer informasjon om konfigurasjonen, <anchor>klikk her</anchor>."
+        "help": "Hvis du har tilkoblingsproblemer med serveren, kan du konfigurere en egendefinert opprinnelses-URL. For mer informasjon, <anchor>klikk her</anchor>."
       }
     }
   },
@@ -355,7 +355,7 @@
     "title": "Om",
     "heading": "Om",
     "chromeVersion": "Page Assist Versjon",
-    "ollamaVersion": "Ollama Versjon",
+    "ollamaVersion": "Serverversjon",
     "support": "Du kan støtte Page Assist-prosjektet ved å donere eller sponse via følgende plattformer:",
     "koFi": "Støtt på Ko-fi",
     "githubSponsor": "Spons på GitHub",

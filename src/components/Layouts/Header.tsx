@@ -15,13 +15,14 @@ import { SelectedKnowledge } from "../Option/Knowledge/SelectedKnowledge"
 import { ModelSelect } from "../Common/ModelSelect"
 import { PromptSelect } from "../Common/PromptSelect"
 import { useQuery } from "@tanstack/react-query"
-import { fetchChatModels } from "~/services/ollama"
+import { fetchChatModels } from "@/services/tldw-server"
 import { useMessageOption } from "~/hooks/useMessageOption"
 import { Avatar, Select, Tooltip } from "antd"
 import { getAllPrompts } from "@/db/dexie/helpers"
 import { ProviderIcons } from "../Common/ProviderIcon"
 import { NewChat } from "./NewChat"
 import { MoreOptions } from "./MoreOptions"
+import { browser } from "wxt/browser"
 type Props = {
   setSidebarOpen: (open: boolean) => void
   setOpenModelSettings: (open: boolean) => void
@@ -106,11 +107,32 @@ export const Header: React.FC<Props> = ({
             </NavLink>
           </div>
         )}
-        <div>
+        <div className="flex items-center gap-2">
           <button
             className="text-gray-500 dark:text-gray-400"
             onClick={() => setSidebarOpen(true)}>
             <PanelLeftIcon className="w-6 h-6" />
+          </button>
+          <button
+            className="text-gray-500 dark:text-gray-400 text-xs border rounded px-2 py-1 disabled:opacity-50 disabled:cursor-not-allowed"
+            onClick={async () => {
+              const storage = new (await import('@plasmohq/storage')).Storage({ area: 'local' })
+              await storage.set('uiMode', 'sidePanel')
+              await storage.set('actionIconClick', 'sidePanel')
+              await storage.set('contextMenuClick', 'sidePanel')
+              try {
+                // Chromium sidePanel
+                // @ts-ignore
+                if (chrome?.sidePanel) {
+                  const tabs = await chrome.tabs.query({ active: true, currentWindow: true })
+                  if (tabs?.[0]?.id) await chrome.sidePanel.open({ tabId: tabs[0].id })
+                } else if ((browser as any)?.sidebarAction?.open) {
+                  await (browser as any).sidebarAction.open()
+                }
+              } catch {}
+            }}
+            title="Switch to Sidebar">
+            Switch to Sidebar
           </button>
         </div>
         <NewChat clearChat={clearChat} />

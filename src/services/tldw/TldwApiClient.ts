@@ -1,5 +1,5 @@
 import { Storage } from "@plasmohq/storage"
-import { bgRequest, bgStream } from "@/services/background-proxy"
+import { bgRequest, bgStream, bgUpload } from "@/services/background-proxy"
 
 export interface TldwConfig {
   serverUrl: string
@@ -15,6 +15,10 @@ export interface TldwModel {
   provider: string
   description?: string
   capabilities?: string[]
+  context_length?: number
+  vision?: boolean
+  function_calling?: boolean
+  json_output?: boolean
 }
 
 export interface ChatMessage {
@@ -95,8 +99,134 @@ export class TldwApiClient {
   }
 
   async getModels(): Promise<TldwModel[]> {
+    // Prefer flattened metadata endpoint when available
+    try {
+      const meta = await this.getModelsMetadata().catch(() => null)
+      if (Array.isArray(meta) && meta.length > 0) {
+        // Normalize fields to TldwModel
+        return meta.map((m: any) => ({
+          id: String(m.id || m.model || m.name),
+          name: String(m.name || m.id || m.model),
+          provider: String(m.provider || 'unknown'),
+          description: m.description,
+          capabilities: Array.isArray(m.capabilities) ? m.capabilities : (Array.isArray(m.features) ? m.features : undefined),
+          context_length: typeof m.context_length === 'number' ? m.context_length : (typeof m.contextLength === 'number' ? m.contextLength : undefined),
+          vision: Boolean(m.vision),
+          function_calling: Boolean(m.function_calling),
+          json_output: Boolean(m.json_output)
+        }))
+      }
+    } catch {}
+
+    // Next: use providers endpoint for richer info when available
+    try {
+      const providers = await this.getProviders().catch(() => null)
+      if (providers && typeof providers === 'object') {
+        const models: TldwModel[] = []
+
+        const pushModel = (providerName: string, id: any, value?: any) => {
+          const modelId = typeof id === 'string' ? id : (id?.id || id?.name || id?.model)
+          if (!modelId) return
+          const name = (typeof id === 'string') ? id : (id?.name || modelId)
+          const meta = (typeof id === 'object') ? id : (typeof value === 'object' ? value : {})
+          models.push({
+            id: String(modelId),
+            name: String(name),
+            provider: providerName,
+            description: meta?.description,
+            capabilities: Array.isArray(meta?.capabilities) ? meta.capabilities : undefined,
+            context_length: typeof meta?.context_length === 'number' ? meta.context_length : (typeof meta?.contextLength === 'number' ? meta.contextLength : undefined),
+            vision: Boolean(meta?.vision),
+            function_calling: Boolean(meta?.function_calling),
+            json_output: Boolean(meta?.json_output)
+          })
+        }
+
+        const extract = (providerName: string, info: any) => {
+          if (!info) return
+          if (Array.isArray(info)) {
+            for (const item of info) pushModel(providerName, item)
+            return
+          }
+          if (Array.isArray(info?.models)) {
+            for (const item of info.models) pushModel(providerName, item)
+          }
+          // Traverse object-of-arrays or object-of-objects structures
+          if (info && typeof info === 'object') {
+            for (const [k, v] of Object.entries(info)) {
+              if (k === 'models') continue
+              if (Array.isArray(v)) {
+                for (const item of v) pushModel(providerName, item)
+              } else if (v && typeof v === 'object') {
+                // keys might be model ids with metadata objects
+                for (const [mk, mv] of Object.entries<any>(v)) {
+                  if (typeof mv === 'object') pushModel(providerName, mk, mv)
+                  else pushModel(providerName, mk)
+                }
+              } else if (typeof v === 'string') {
+                pushModel(providerName, v)
+              }
+            }
+          }
+        }
+
+        for (const [providerName, info] of Object.entries<any>(providers)) {
+          extract(String(providerName), info)
+        }
+
+        // Deduplicate by id+provider
+        const uniq = new Map<string, TldwModel>()
+        for (const m of models) {
+          uniq.set(`${m.provider}:${m.id}`, m)
+        }
+        const list = Array.from(uniq.values())
+        if (list.length > 0) return list
+      }
+    } catch {}
+
+    // Fallback to flat list of model IDs
     const data = await bgRequest<any>({ path: '/api/v1/llm/models', method: 'GET' })
-    return data.models || data || []
+    let list: { id: string; provider: string }[] = []
+    if (Array.isArray(data)) {
+      // Assume plain model ids, possibly prefixed like "provider/model" or "provider/a/b"
+      list = data.map((m: any) => {
+        const s = String(m)
+        const parts = s.split('/')
+        const provider = parts.length > 1 ? parts[0] : 'unknown'
+        const rest = parts.length > 1 ? parts.slice(1).join('/') : s
+        return { id: s, provider, name: rest }
+      }) as any
+    } else if (data && typeof data === 'object') {
+      // Maybe { provider: [models...] }
+      for (const [providerName, arr] of Object.entries<any>(data)) {
+        if (Array.isArray(arr)) {
+          for (const item of arr) {
+            const s = String(item)
+            const parts = s.split('/')
+            const rest = parts.length > 1 ? parts.slice(1).join('/') : s
+            list.push({ id: s, provider: String(providerName), name: rest })
+          }
+        }
+      }
+      if (list.length === 0 && Array.isArray((data as any).models)) {
+        list = (data as any).models.map((m: any) => {
+          const s = String(m)
+          const parts = s.split('/')
+          const provider = parts.length > 1 ? parts[0] : 'unknown'
+          const rest = parts.length > 1 ? parts.slice(1).join('/') : s
+          return { id: s, provider, name: rest }
+        })
+      }
+    }
+    return list.map((m: any) => ({ id: String(m.id), name: String(m.name || m.id), provider: String(m.provider) }))
+  }
+
+  async getProviders(): Promise<any> {
+    return await bgRequest<any>({ path: '/api/v1/llm/providers', method: 'GET' })
+  }
+
+  async getModelsMetadata(): Promise<any[]> {
+    return await bgRequest<any[]>({ path: '/api/v1/llm/models/metadata', method: 'GET' })
   }
 
   async createChatCompletion(request: ChatCompletionRequest): Promise<Response> {
@@ -164,27 +294,15 @@ export class TldwApiClient {
 
   // STT Methods
   async transcribeAudio(audioFile: File | Blob, options?: any): Promise<any> {
-    const formData = new FormData()
-    formData.append('file', audioFile)
-    
-    if (options?.model) {
-      formData.append('model', options.model)
-    }
-    if (options?.language) {
-      formData.append('language', options.language)
-    }
-
-    // STT remains a direct fetch because of multipart/form-data — use background proxy message with body passthrough is non-trivial.
-    // For now, fall back to direct fetch; future: implement background FormData relay if needed.
     const cfg = await this.getConfig()
     if (!cfg) throw new Error('tldw server not configured')
-    const baseUrl = cfg.serverUrl.replace(/\/$/, '')
-    const headers: Record<string, string> = {}
-    if (cfg.authMode === 'single-user' && cfg.apiKey) headers['X-API-KEY'] = cfg.apiKey
-    if (cfg.authMode === 'multi-user' && cfg.accessToken) headers['Authorization'] = `Bearer ${cfg.accessToken}`
-    const response = await fetch(`${baseUrl}/api/v1/audio/v1/audio/transcriptions`, { method: 'POST', headers, body: formData })
-    if (!response.ok) throw new Error(`Audio transcription failed: ${response.statusText}`)
-    return await response.json()
+    const fields: Record<string, any> = {}
+    if (options?.model) fields.model = options.model
+    if (options?.language) fields.language = options.language
+    const data = await audioFile.arrayBuffer()
+    const name = (typeof File !== 'undefined' && audioFile instanceof File && (audioFile as File).name) ? (audioFile as File).name : 'audio'
+    const type = (audioFile as any)?.type || 'application/octet-stream'
+    return await bgUpload<any>({ path: '/api/v1/audio/transcriptions', method: 'POST', fields, file: { name, type, data } })
   }
 }
 

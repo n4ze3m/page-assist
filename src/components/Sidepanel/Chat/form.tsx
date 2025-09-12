@@ -25,6 +25,7 @@ import { handleChatInputKeyDown } from "@/utils/key-down"
 import { getIsSimpleInternetSearch } from "@/services/search"
 import { useStorage } from "@plasmohq/storage/hook"
 import { useFocusShortcuts } from "@/hooks/keyboard"
+import { RagSearchBar } from "@/components/Sidepanel/Chat/RagSearchBar"
 
 type Props = {
   dropedFile: File | undefined
@@ -320,6 +321,46 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                     onChange={onInputChange}
                   />
                   <div className="w-full  flex flex-col px-1">
+                    {/* RAG Search Bar: search KB, insert snippets, ask directly */}
+                    <RagSearchBar
+                      onInsert={(text) => {
+                        const current = form.values.message || ""
+                        const next = current ? `${current}\n\n${text}` : text
+                        form.setFieldValue("message", next)
+                        // Focus textarea for quick edits
+                        textareaRef.current?.focus()
+                      }}
+                      onAsk={async (text) => {
+                        // Set message and submit immediately
+                        form.setFieldValue("message", text)
+                        // Mimic Enter submit flow
+                        const value = { ...form.values, message: text }
+                        // Reuse the same checks as handleKeyDown/form submit
+                        if (!selectedModel || selectedModel.length === 0) {
+                          form.setFieldError("message", t("formError.noModel"))
+                          return
+                        }
+                        if (chatMode === "rag") {
+                          const defaultEM = await defaultEmbeddingModelForRag()
+                          if (!defaultEM && chatWithWebsiteEmbedding) {
+                            form.setFieldError("message", t("formError.noEmbeddingModel"))
+                            return
+                          }
+                        }
+                        if (webSearch) {
+                          const defaultEM = await defaultEmbeddingModelForRag()
+                          const simpleSearch = await getIsSimpleInternetSearch()
+                          if (!defaultEM && !simpleSearch) {
+                            form.setFieldError("message", t("formError.noEmbeddingModel"))
+                            return
+                          }
+                        }
+                        await stopListening()
+                        form.reset()
+                        textAreaFocus()
+                        await sendMessage({ image: "", message: value.message.trim() })
+                      }}
+                    />
                     <textarea
                       onKeyDown={(e) => handleKeyDown(e)}
                       ref={textareaRef}

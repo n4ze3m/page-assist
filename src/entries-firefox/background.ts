@@ -83,22 +83,69 @@ export default defineBackground({
 
     let refreshInFlight: Promise<any> | null = null
 
+    const getProcessPathForUrl = (url: string) => {
+      const u = (url || '').toLowerCase()
+      const endsWith = (exts: string[]) => exts.some((e) => u.endsWith(e))
+      if (endsWith(['.mp3', '.wav', '.m4a', '.flac', '.aac', '.ogg'])) return '/api/v1/media/process-audios'
+      if (endsWith(['.mp4', '.webm', '.mkv', '.mov', '.avi'])) return '/api/v1/media/process-videos'
+      if (endsWith(['.pdf'])) return '/api/v1/media/process-pdfs'
+      if (endsWith(['.epub', '.mobi'])) return '/api/v1/media/process-ebooks'
+      if (endsWith(['.doc', '.docx', '.rtf', '.odt', '.txt', '.md'])) return '/api/v1/media/process-documents'
+      return '/api/v1/media/process-web-scraping'
+    }
+
     browser.runtime.onMessage.addListener(async (message) => {
       if (message.type === "sidepanel") {
         await browser.sidebarAction.open()
+      } else if (message.type === 'tldw:upload') {
+        const { path, method = 'POST', fields = {}, file } = message.payload || {}
+        const storage = new Storage({ area: 'local' })
+        const cfg = await storage.get<any>('tldwConfig')
+        const isAbsolute = typeof path === 'string' && /^https?:/i.test(path)
+        if (!cfg?.serverUrl && !isAbsolute) {
+          return { ok: false, status: 400, error: 'tldw server not configured' }
+        }
+        const baseUrl = cfg?.serverUrl ? String(cfg.serverUrl).replace(/\/$/, '') : ''
+        const url = isAbsolute ? path : `${baseUrl}${path.startsWith('/') ? '' : '/'}${path}`
+        try {
+          const form = new FormData()
+          for (const [k, v] of Object.entries(fields || {})) {
+            form.append(k, typeof v === 'string' ? v : JSON.stringify(v))
+          }
+          if (file?.data) {
+            const blob = new Blob([file.data], { type: file.type || 'application/octet-stream' })
+            const filename = file.name || 'file'
+            try { form.append('file', new File([blob], filename, { type: blob.type })) } catch { form.append('file', blob, filename) }
+          }
+          const headers: Record<string, string> = {}
+          if (cfg?.authMode === 'single-user' && cfg?.apiKey) headers['X-API-KEY'] = cfg.apiKey
+          if (cfg?.authMode === 'multi-user' && cfg?.accessToken) headers['Authorization'] = `Bearer ${cfg.accessToken}`
+          const controller = new AbortController()
+          const timeout = setTimeout(() => controller.abort(), 120000)
+          const resp = await fetch(url, { method, headers, body: form, signal: controller.signal })
+          clearTimeout(timeout)
+          const contentType = resp.headers.get('content-type') || ''
+          let data: any = null
+          if (contentType.includes('application/json')) data = await resp.json().catch(() => null)
+          else data = await resp.text().catch(() => null)
+          return { ok: resp.ok, status: resp.status, data }
+        } catch (e: any) {
+          return { ok: false, status: 0, error: e?.message || 'Upload failed' }
+        }
       } else if (message.type === 'tldw:request') {
         const { path, method = 'GET', headers = {}, body } = message.payload || {}
         const storage = new Storage({ area: 'local' })
         const cfg = await storage.get<any>('tldwConfig')
-        if (!cfg?.serverUrl) {
+        const isAbsolute = typeof path === 'string' && /^https?:/i.test(path)
+        if (!cfg?.serverUrl && !isAbsolute) {
           return { ok: false, status: 400, error: 'tldw server not configured' }
         }
-        const baseUrl = String(cfg.serverUrl).replace(/\/$/, '')
-        const url = path.startsWith('http') ? path : `${baseUrl}${path.startsWith('/') ? '' : '/'}${path}`
+        const baseUrl = cfg?.serverUrl ? String(cfg.serverUrl).replace(/\/$/, '') : ''
+        const url = isAbsolute ? path : `${baseUrl}${path.startsWith('/') ? '' : '/'}${path}`
         const authHeaders: Record<string, string> = {}
-        if (cfg.authMode === 'single-user' && cfg.apiKey) {
+        if (cfg?.authMode === 'single-user' && cfg?.apiKey) {
           authHeaders['X-API-KEY'] = cfg.apiKey
-        } else if (cfg.authMode === 'multi-user' && cfg.accessToken) {
+        } else if (cfg?.authMode === 'multi-user' && cfg?.accessToken) {
           authHeaders['Authorization'] = `Bearer ${cfg.accessToken}`
         }
         const h = { ...headers, ...authHeaders }
@@ -149,7 +196,7 @@ export default defineBackground({
           const tab = tabs[0]
           const pageUrl = tab?.url || ''
           if (!pageUrl) return { ok: false, status: 400, error: 'No active tab URL' }
-          const path = message.mode === 'process' ? '/api/v1/media/process' : '/api/v1/media/add'
+          const path = message.mode === 'process' ? getProcessPathForUrl(pageUrl) : '/api/v1/media/add'
           const resp = await browser.runtime.sendMessage({
             type: 'tldw:request',
             payload: { path, method: 'POST', headers: { 'Content-Type': 'application/json' }, body: { url: pageUrl } }
@@ -177,7 +224,7 @@ export default defineBackground({
               if (!cfg?.serverUrl) throw new Error('tldw server not configured')
               const base = cfg.serverUrl.replace(/^http/, 'ws').replace(/\/$/, '')
               const token = cfg.authMode === 'single-user' ? cfg.apiKey : cfg.accessToken
-              const url = `${base}/api/v1/audio/v1/audio/stream/transcribe?token=${encodeURIComponent(token || '')}`
+              const url = `${base}/api/v1/audio/stream/transcribe?token=${encodeURIComponent(token || '')}`
               ws = new WebSocket(url)
               ws.binaryType = 'arraybuffer'
               ws.onopen = () => port.postMessage({ event: 'open' })
@@ -260,7 +307,7 @@ export default defineBackground({
         if (!targetUrl) return
         browser.runtime.sendMessage({
           type: 'tldw:request',
-          payload: { path: '/api/v1/media/process', method: 'POST', headers: { 'Content-Type': 'application/json' }, body: { url: targetUrl } }
+          payload: { path: getProcessPathForUrl(targetUrl), method: 'POST', headers: { 'Content-Type': 'application/json' }, body: { url: targetUrl } }
         })
       } else if (info.menuItemId === "summarize-pa") {
         if (!isCopilotRunning) {

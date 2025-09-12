@@ -1,8 +1,8 @@
 {
     "ollamaState": {
-        "searching": "Søker etter din Ollama 🦙",
-        "running": "Ollama kjører 🦙",
-        "notRunning": "Kan ikke koble til Ollama 🦙",
+        "searching": "Søker etter din tldw_server",
+        "running": "tldw kjører",
+        "notRunning": "Kan ikke koble til tldw_server",
         "connectionError": "Det ser ut til at du har en tilkoblingsfeil. Vennligst se denne <anchor>dokumentasjonen</anchor> for feilsøking."
     },
     "formError": {

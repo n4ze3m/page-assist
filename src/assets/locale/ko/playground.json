@@ -1,8 +1,8 @@
 {
     "ollamaState": {
-        "searching": "Ollama 검색 중 🦙",
-        "running": "Ollama 실행 중 🦙",
-        "notRunning": "Ollama에 연결할 수 없습니다 🦙",
+        "searching": "tldw_server 검색 중",
+        "running": "tldw 실행 중",
+        "notRunning": "tldw_server에 연결할 수 없습니다",
         "connectionError": "연결 오류가 발생한 것 같습니다. 문제 해결에 대한 자세한 내용은 <anchor>문서</anchor>를 참조하세요."
     },
     "formError": {

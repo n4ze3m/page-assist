@@ -147,7 +147,7 @@
     },
     "citations": "引用",
     "segmented": {
-        "ollama": "Ollama 模型",
+        "available": "伺服器模型",
         "custom": "自訂模型"
     },
     "downloadCode": "下載程式碼",

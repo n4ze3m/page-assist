@@ -139,7 +139,7 @@
     },
     "citations": "Citations",
     "segmented": {
-        "ollama": "Modèles Ollama",
+        "available": "Modèles serveur",
         "custom": "Modèles personnalisés"
     },
     "downloadCode": "Télécharger le code",

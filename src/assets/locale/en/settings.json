@@ -360,19 +360,19 @@
     }
   },
   "ollamaSettings": {
-    "title": "Ollama Settings",
-    "heading": "Configure Ollama",
+    "title": "Server Integration",
+    "heading": "Configure Server Integration",
     "settings": {
       "ollamaUrl": {
-        "label": "Ollama URL",
-        "placeholder": "Enter Ollama URL"
+        "label": "Server URL",
+        "placeholder": "Enter Server URL"
       },
       "globalEnable": {
-        "label": "Enable or Disable Ollama Integration Globally",
-        "warning": "By disabling Ollama integration globally, Page Assist won't fetch models from Ollama. You can still add Ollama instance from the <anchor>OpenAI compatible API</anchor> section which will work fine."
+        "label": "Enable or Disable Server Integration Globally",
+        "warning": "By disabling the server integration globally, Page Assist won't fetch models from the server. You can still add providers from the <anchor>OpenAI compatible API</anchor> section if needed."
       },
       "advanced": {
-        "label": "Advance Ollama URL Configuration",
+        "label": "Advanced Server URL Configuration",
         "urlRewriteEnabled": {
           "label": "Enable or Disable Custom Origin URL"
         },
@@ -381,7 +381,7 @@
           "placeholder": "Enter Custom Origin URL"
         },
         "autoCORSFix": {
-          "label": "Enable or Disable Automatic Ollama CORS Fix"
+          "label": "Enable or Disable Automatic CORS Fix"
         },
         "headers": {
           "label": "Custom Headers",
@@ -395,7 +395,7 @@
             "placeholder": "Bearer token"
           }
         },
-        "help": "If you have connection issues with Ollama on Page Assist, you can configure a custom origin URL. To learn more about the configuration, <anchor>click here</anchor>."
+        "help": "If you have connection issues with the server, you can configure a custom origin URL. To learn more about the configuration, <anchor>click here</anchor>."
       }
     }
   },
@@ -407,7 +407,7 @@
     "title": "About",
     "heading": "About",
     "chromeVersion": "Page Assist Version",
-    "ollamaVersion": "Ollama Version",
+    "ollamaVersion": "Server Version",
     "support": "You can support the Page Assist project by donating or sponsoring through the following platforms:",
     "koFi": "Support on Ko-fi",
     "githubSponsor": "Sponsor on GitHub",

@@ -1,8 +1,8 @@
 {
     "ollamaState": {
-        "searching": "Recherche de votre Ollama 🦙",
-        "running": "Ollama est en cours d'exécution 🦙",
-        "notRunning": "Impossible de se connecter à Ollama 🦙",
+        "searching": "Recherche de votre tldw_server",
+        "running": "tldw est en cours d'exécution",
+        "notRunning": "Impossible de se connecter à tldw_server",
         "connectionError": "Il semble que vous rencontriez une erreur de connexion. Veuillez consulter cette <anchor>documentation</anchor> pour résoudre le problème."
     },
     "formError": {

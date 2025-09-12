@@ -4,12 +4,18 @@ import { defaultExtractContent } from "@/parser/default"
 import { isTwitterProfile, isTwitterTimeline, parseTweetProfile, parseTwitterTimeline } from "@/parser/twitter"
 import { isWikipedia, parseWikipedia } from "@/parser/wiki"
 import { getMaxContextSize } from "@/services/kb"
-import { YtTranscript } from "yt-transcript"
 import { processPDFFromURL } from "./pdf"
 
 const getTranscript = async (url: string) => {
+  try {
+    const mod = await import(/* @vite-ignore */ 'yt-transcript')
+    const YtTranscript = (mod as any).YtTranscript || mod
     const ytTranscript = new YtTranscript({ url })
     return await ytTranscript.getTranscript()
+  } catch (e) {
+    console.warn('YouTube transcript disabled in this environment:', e)
+    return null
+  }
 }
 
 const formatTranscriptText = (transcript: any[]) => {
