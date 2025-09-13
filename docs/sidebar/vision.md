@@ -13,7 +13,7 @@ The vision feature of the sidebar allows LLM to see the current webpage. This is
 
 ## How to use Sidebar Vision with LLM without vision capabilities
 
-Page Assist converts the current webpage to text using Tesseract OCR. This is a very basic OCR and it is not very accurate, but it is good enough to get the basic idea of the webpage.
+The extension can convert the current webpage to text using Tesseract OCR. This is a basic OCR, suitable for rough extraction.
 
 1. Open the Sidebar
 2. Select a model 

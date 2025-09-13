@@ -1,7 +1,7 @@
 # Privacy Policy
 
 ## Data Collection
-Page Assist is committed to user privacy and does not collect any user data. All operations and data storage occur locally within your browser.
+tldw Assistant is committed to user privacy and does not collect analytics or tracking data. Core operations and settings occur locally within your browser; requests to models and features are proxied to the tldw_server you configure.
 
 ## Browser Permissions
 The extension requires the following permissions to function:
@@ -27,7 +27,7 @@ When using the Page Share feature:
 - Users maintain full control over their data
 
 ## Third-Party Services
-Page Assist does not integrate with any third-party analytics or tracking services.
+tldw Assistant does not integrate with third-party analytics or tracking services.
 
 ## Changes to Privacy Policy
 We reserve the right to update this privacy policy as needed. Users will be notified of any significant changes.

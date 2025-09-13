@@ -1,6 +1,6 @@
 # Browser Support
 
-For the best experience, we recommend using Page Assist with the latest versions of Google Chrome, Microsoft Edge, or Firefox.
+For the best experience, we recommend using tldw Assistant with the latest versions of Google Chrome, Microsoft Edge, or Firefox.
 
 
 ## Supported Browsers

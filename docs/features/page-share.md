@@ -1,6 +1,6 @@
 # Page Share 
 
-Page Share is a feature that allows you to share your chat with others like the share feature of ChatGPT. This feature interacts with the internet by default, and you can use the page assist server to share your chat.
+Page Share is a feature that allows you to share your chat with others, similar to ChatGPT’s share feature. This requires a small web service; you can self‑host it for privacy.
 
 But for privacy, it's better to self-host the page share server. You can do this by following the steps below.
 
@@ -38,6 +38,6 @@ docker-compose up
 Navigate to [http://localhost:3000](http://localhost:3000) in your browser.
 
 
-Once you have deployed the server, you can change the Page Share by going to the settings and manage share.
+Once you have deployed the server, configure the share endpoint under Settings → Share.
 
 ![Page Share](https://pub-35424b4473484be483c0afa08c69e7da.r2.dev/Screenshot%202025-02-19%20210635.png)

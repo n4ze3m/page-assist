@@ -2,18 +2,16 @@ import { defineConfig } from 'vitepress'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  title: "Page Assist",
-  description: "Page Assist is an open-source Chrome Extension that provides a Sidebar and Web UI for your Local AI model. It allows you to interact with your model from any webpage.",
+  title: "tldw Assistant",
+  description: "tldw Assistant is an open‑source browser extension frontend for tldw_server, providing a side panel and web UI for chat, RAG, media processing, and more.",
   lastUpdated: true,
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     search: {
       provider: "local",
     },
-    editLink: {
-      pattern: "https://github.com/n4ze3m/page-assist/edit/main/docs/:path",
-      text: "Edit this page on GitHub"
-    },
+    // editLink disabled until repository URL is finalized
+    // editLink: { pattern: "", text: "Edit this page on GitHub" },
     nav: [
       { text: 'Home', link: '/' },
     ],
@@ -22,7 +20,7 @@ export default defineConfig({
       {
         text: 'Guide',
         items: [
-          { text: 'Welcome to Page Assist', link: '/' },
+          { text: 'Welcome to tldw Assistant', link: '/' },
           {
             text: "Browser Support",
             link: "/browser-support"
@@ -74,10 +72,6 @@ export default defineConfig({
             link: "/features/page-share"
           },
           {
-            text: "Ollama",
-            link: "/features/ollama"
-          },
-          {
             text: "Other",
             link: "/features/other"
           }
@@ -88,12 +82,8 @@ export default defineConfig({
         collapsed: true,
         items: [
           {
-            text: "Ollama",
-            link: "/providers/ollama"
-          },
-          {
-            text: "LM Studio",
-            link: "/providers/lmstudio"
+            text: "tldw_server Setup",
+            link: "/tldw-server"
           },
           {
             text: "OpenAI Compatible API",
@@ -105,7 +95,7 @@ export default defineConfig({
         text: "Troubleshooting",
         items: [
           {
-            text: "Ollama Connection Issue",
+            text: "Connection Issues",
             link: "/connection-issue"
           },
           {
@@ -114,15 +104,10 @@ export default defineConfig({
           }
         ]
       }],
-
-    socialLinks: [
-      { icon: 'github', link: 'https://github.com/n4ze3m/page-assist' },
-      { icon: 'x', link: 'https://x.com/page_assist' },
-      { icon: 'discord', link: 'https://discord.gg/bu54382uBd' },
-    ],
+    // socialLinks can be added later
     footer: {
       message: "MIT Licensed Open Source Project",
-      copyright: "Copyright © 2025 Muhammed Nazeem  & Page Assist Contributors",
+      copyright: "Copyright © 2025 tldw Assistant Contributors",
     },
   },
   ignoreDeadLinks: true

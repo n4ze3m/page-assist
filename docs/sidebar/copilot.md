@@ -14,14 +14,14 @@ Sidebar Copilot is a feature that allows you to selected text from any webpage d
 
 1. Select the text you want to summarize, rephrase, translate, or explain.
 
-2. Right-click on the selected text there will be a options with name `Page Assist - A Web UI for Local AI Models` then select the option you want to use.
+2. Right-click on the selected text; choose `tldw Assistant` from the context menu, then select the action you want to use.
 
 
 ## How to update the prompts
 
 You can update the default prompts by following these steps:
 
-1. Click on the Page Assist icon on the browser toolbar.
+1. Click on the tldw Assistant icon on the browser toolbar.
 
 2. Click on the `Settings` icon.
 

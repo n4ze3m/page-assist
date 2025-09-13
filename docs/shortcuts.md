@@ -1,13 +1,13 @@
 # Shortcut Keys
 
-Page Assist supports the following shortcut keys:
+tldw Assistant supports the following shortcut keys:
 
 | Action       | Shortcut       |
 | ------------ | -------------- |
 | Open Sidebar | `Ctrl+Shift+Y` |
 | Open Web UI  | `Ctrl+Shift+L` |
 
-You can change the keyboard shortcuts from the extension settings on the Chrome Extension Management page.
+You can change the keyboard shortcuts from the browser’s extension shortcut settings.
 
 ## Application Shortcuts
 
@@ -26,7 +26,7 @@ To change the keyboard shortcuts, follow these steps:
 
 1. Go to the Extension Settings page by navigating to `chrome://extensions/shortcuts`.
 
-2. Find the Page Assist extension.
+2. Find the tldw Assistant extension.
 
 3. Change the shortcut keys for the desired action.
 
@@ -42,7 +42,7 @@ _*Note*: This works with Chromium-based browsers like Edge, Brave, etc._
 
 ![Manage Extension Shortcuts](https://pub-35424b4473484be483c0afa08c69e7da.r2.dev/Screenshot%202025-02-15%20114332.png)
 
-4. Find the Page Assist extension.
+4. Find the tldw Assistant extension.
 
 5. Change the shortcut keys for the desired action.
 

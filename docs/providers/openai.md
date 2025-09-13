@@ -1,47 +1,14 @@
-# OpenAI Compatible API
+# OpenAI Compatible API (via tldw_server)
 
-Page Assist supports OpenAI Compatible API endpoints. You can use any OpenAI Compatible API endpoint with Page Assist.
+tldw Assistant now connects exclusively to your tldw_server instance. Providers like OpenAI, LLaMA.cpp, and others are configured on the server. The extension fetches available models from `/api/v1/llm/models` exposed by your server.
 
-By default, Page Assist supports the following OpenAI Compatible API endpoints:
+## How to use
 
-- OpenAI
-- LLaMA.cpp
-- LM Studio
-- Ollama
-- Llamafile
-- Fireworks
-- Groq
-- Together
-- OpenRouter
-- Google AI
-- Mistral
-- DeepSeek
-- SiliconFlow
-- VolcEngine
-- TencentCloud
-- AlibabaCloud
-- Infinigence AI
-- Novita AI
-
-
-## Adding OpenAI Compatible API
-
-
-1. Click on the Page Assist icon on the browser toolbar.
-
-2. Click on the `Settings` icon.
-
-3. Go to the `OpenAI Compatible API` tab.
-
-4. Click on the `Add Provider` button.
-
-5. Select the API from the dropdown. In case it is not listed in the default list, select `Custom` and enter the API URL and API Key.
-
-6. Add API key if required.
-
-7. Click on the `Save` button.
-
+1. Configure your providers and API keys in tldw_server (see its documentation)
+2. In the extension, open Options → tldw Server and set the Server URL and authentication
+3. Save, then click “Test Connection”
+4. The model picker in the UI will list models from your server
 
 ::: info
-For Ollama, LM Studio, and Llamafile, you don't need to add any models since Page Assist will automatically fetch them from the API.
+If your server exposes model metadata, the extension will surface provider names and capabilities. Otherwise, it shows flat model IDs.
 :::

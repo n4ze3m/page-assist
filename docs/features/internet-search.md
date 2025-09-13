@@ -1,6 +1,6 @@
 # Internet Search
 
-Page Assist supports internet search which can be used with your LLM. It works similarly to ChatGPT's internet search.
+tldw Assistant supports internet search which can be used with your LLM. It works similarly to ChatGPT's internet search.
 
 ## Supported Search Engines
 
@@ -37,7 +37,7 @@ This feature is enabled by default. If you want to disable it, you can do it fro
 
 ### How it works?
 
-When you enable internet search and input a webpage URL into the input box and send it, Page Assist will visit the website and extract the text from it. Then it will send the text to the LLM.
+When you enable internet search and input a webpage URL into the input box and send it, the extension will visit the website and extract the text from it. Then it will send the text to the LLM.
 
 ## Deep Search Mode
 

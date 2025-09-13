@@ -1,39 +1,29 @@
-# Welcome to Page Assist
+# Welcome to tldw Assistant
 
-Welcome to Page Assist, the browser companion for your Local AI model! With Page Assist, your web browsing experience enters a new dimension of intelligence and efficiency.
+tldw Assistant is a browser extension frontend for tldw_server — your unified AI assistant. Use a side panel or full web UI to chat with models configured on your server, run RAG search with citations, ingest/process media, and access STT/TTS features.
 
-## What is Page Assist?
+## What is tldw_server integration?
 
-Page Assist makes AI interaction effortless! Simply:
+Instead of connecting directly to providers, the extension talks to your tldw_server instance, which aggregates multiple LLM providers behind a single API. You manage providers and models on the server; the extension fetches models via the server and handles chat, RAG, and media flows through it.
 
-- Chat with your AI from any webpage using our sleek Sidebar
-- Access the powerful Web UI Control Center
-- Connect to your favorite local AI models
+## Getting Started
 
-## Installation
+1. Build or load the extension (see project README)
+2. Open Options → tldw Server
+3. Enter your Server URL (e.g., http://localhost:8000)
+4. Choose authentication mode (API key or login) and save
+5. Click “Test Connection” to verify
 
-Download for your preferred browser:
-
-[![Chrome Web Store](https://pub-35424b4473484be483c0afa08c69e7da.r2.dev/UV4C4ybeBTsZt43U4xis.png)](https://chrome.google.com/webstore/detail/page-assist/jfgfiigpkhlkbnfnbobbkinehhfdhndo)
-
-[![Firefox Add-on](https://pub-35424b4473484be483c0afa08c69e7da.r2.dev/get-the-addon.png)](https://addons.mozilla.org/en-US/firefox/addon/page-assist/)
-
-[![Edge Add-on](https://pub-35424b4473484be483c0afa08c69e7da.r2.dev/edge-addon.png)](https://microsoftedge.microsoft.com/addons/detail/page-assist-a-web-ui-fo/ogkogooadflifpmmidmhjedogicnhooa)
+Once connected, open the side panel or web UI and start chatting.
 
 ## Privacy
 
-Cheeck out our [Privacy Policy](/privacy) to understand how we handle your data.
+Check out our [Privacy Policy](/privacy) to understand how we handle your data.
 
-## Sponsors
+## Contributing
 
-Page Assist is an open-source project. If you enjoy our work, please consider supporting us by becoming a sponsor. Your contribution will help us maintain and enhance Page Assist for everyone.
+We welcome issues and pull requests. See the repository README for build, style, and contribution guidelines.
 
-You can sponsor us on GitHub: [https://github.com/sponsors/n4ze3m](https://github.com/sponsors/n4ze3m)
+## Acknowledgements
 
-Support us on Ko-fi: [https://ko-fi.com/n4ze3m](https://ko-fi.com/n4ze3m)
-
-## Team
-
-Page Assist is maintained by [@n4ze3m](https://x.com/n4ze3m) and our wonderful community of contributors.
-
-![Contributors](https://contrib.rocks/image?repo=n4ze3m/page-assist)
+This project was refactored from the original Page Assist extension and would not exist without that work and community.

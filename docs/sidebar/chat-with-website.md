@@ -1,6 +1,6 @@
 # Sidebar Chat with Website
 
-This is one of the features of Page Assist that allows you to chat with your AI model from any webpage using the sleek Sidebar.
+This feature lets you chat with your AI model from any webpage using the side panel.
 
 
 ## How to chat with the website

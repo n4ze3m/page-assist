@@ -1,6 +1,6 @@
 # Prompts
 
-There are two types of prompts in Page Assist: 
+There are two types of prompts in tldw Assistant:
 
 1. Custom Prompts
 2. Copilot Prompts (Check out the [Copilot Prompts](/sidebar/copilot.md) page for more information)
@@ -8,7 +8,7 @@ There are two types of prompts in Page Assist:
 
 ## Custom Prompts
 
-Custom Prompts are prompts that you can create and use in Page Assist. You can create custom prompts by going to the `Settings` page and clicking on `Manage Prompts`.
+Custom Prompts are prompts that you can create and use in the extension. You can create custom prompts by going to the `Settings` page and clicking on `Manage Prompts`.
 
 ![Custom Prompts](https://pub-35424b4473484be483c0afa08c69e7da.r2.dev/Screenshot%202025-02-19%20205135.png)
 

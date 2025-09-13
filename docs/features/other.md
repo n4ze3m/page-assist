@@ -1,6 +1,6 @@
 # Other Features
 
-These are small utility features that Page Assist has.
+These are small utility features available in tldw Assistant.
 
 ## Wide Mode
 

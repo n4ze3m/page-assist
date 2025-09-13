@@ -1,6 +1,6 @@
 # Knowledge Base
 
-Page Assist supports Knowledge Base which is useful for chatting with your own data. You can use it to chat with your own data.
+tldw Assistant supports a local Knowledge Base which is useful for chatting with your own data.
 
 ::: warning
 Use this feature with caution. Due to no server-side storage, the data will be processed and embeddings will be stored in browser storage. This may cause performance issues.
