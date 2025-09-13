@@ -351,7 +351,7 @@ export const PlaygroundMessage = (props: Props) => {
                         })
                       }
                     }}
-                    className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 dark:bg-[#242424] hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                    className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 dark:bg-[#242424] border border-gray-300 dark:border-none hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
                     {!isSpeaking ? (
                       <Volume2Icon className="w-3 h-3 text-gray-400 group-hover:text-gray-500" />
                     ) : (
@@ -376,7 +376,7 @@ export const PlaygroundMessage = (props: Props) => {
                         setIsBtnPressed(false)
                       }, 2000)
                     }}
-                    className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 dark:bg-[#242424] hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                    className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 dark:bg-[#242424] border border-gray-300 dark:border-none hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
                     {!isBtnPressed ? (
                       <CopyIcon className="w-3 h-3 text-gray-400 group-hover:text-gray-500" />
                     ) : (
@@ -395,7 +395,7 @@ export const PlaygroundMessage = (props: Props) => {
                       title={t("generationInfo")}>
                       <button
                         aria-label={t("generationInfo")}
-                        className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 dark:bg-[#242424] hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                        className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 dark:bg-[#242424] border border-gray-300 dark:border-none hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
                         <InfoIcon className="w-3 h-3 text-gray-400 group-hover:text-gray-500" />
                       </button>
                     </Popover>
@@ -406,7 +406,7 @@ export const PlaygroundMessage = (props: Props) => {
                       <button
                         aria-label={t("regenerate")}
                         onClick={props.onRengerate}
-                        className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 dark:bg-[#242424] hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                        className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 dark:bg-[#242424] border border-gray-300 dark:border-none hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
                         <RotateCcw className="w-3 h-3 text-gray-400 group-hover:text-gray-500" />
                       </button>
                     </Tooltip>
@@ -417,7 +417,7 @@ export const PlaygroundMessage = (props: Props) => {
                       <button
                         aria-label={t("newBranch")}
                         onClick={props?.onNewBranch}
-                        className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 dark:bg-[#242424] hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                        className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 dark:bg-[#242424] border border-gray-300 dark:border-none hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
                         <GitBranchIcon className="w-3 h-3 text-gray-400 group-hover:text-gray-500" />
                       </button>
                     </Tooltip>
@@ -428,7 +428,7 @@ export const PlaygroundMessage = (props: Props) => {
                       <button
                         aria-label={t("continue")}
                         onClick={props?.onContinue}
-                        className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 dark:bg-[#242424] hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                        className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 dark:bg-[#242424] border border-gray-300 dark:border-none hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
                         <PlayCircle className="w-3 h-3 text-gray-400 group-hover:text-gray-500" />
                       </button>
                     </Tooltip>
@@ -440,7 +440,7 @@ export const PlaygroundMessage = (props: Props) => {
                   <button
                     onClick={() => setEditMode(true)}
                     aria-label={t("edit")}
-                    className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 dark:bg-[#242424] hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                    className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 dark:bg-[#242424] border border-gray-300 dark:border-none hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
                     <Pen className="w-3 h-3 text-gray-400 group-hover:text-gray-500" />
                   </button>
                 </Tooltip>
@@ -449,7 +449,7 @@ export const PlaygroundMessage = (props: Props) => {
           ) : (
             // add invisible div to prevent layout shift
             <div className="invisible">
-              <div className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 dark:bg-[#242424] hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"></div>
+              <div className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 dark:bg-[#242424] border border-gray-300 dark:border-none hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"></div>
             </div>
           )}
         </div>
