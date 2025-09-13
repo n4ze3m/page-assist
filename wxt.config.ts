@@ -38,6 +38,10 @@ export default defineConfig({
         promiseImportName: (i) => `__tla_${i}`
       }) as any
     ],
+    // Disable Hot Module Replacement so streaming connections aren't killed by dev reloads
+    server: {
+      hmr: false
+    },
     build: {
       rollupOptions: {
         external: ["langchain", "@langchain/community"]
@@ -49,7 +53,7 @@ export default defineConfig({
   srcDir: "src",
   outDir: "build",
 
-  manifest: {
+  manifest: ({
     version: "0.1.0",
     name:
       process.env.TARGET === "firefox"
@@ -106,5 +110,5 @@ export default defineConfig({
       process.env.TARGET === "firefox"
         ? firefoxMV2Permissions
         : chromeMV3Permissions
-  }
+  } as any)
 }) as any

@@ -85,6 +85,7 @@ export default defineBackground({
 
 
     let refreshInFlight: Promise<any> | null = null
+    let streamDebugEnabled = false
 
     const getProcessPathForUrl = (url: string) => {
       const u = (url || '').toLowerCase()
@@ -97,7 +98,35 @@ export default defineBackground({
       return '/api/v1/media/process-web-scraping'
     }
 
+    const deriveRequestTimeout = (cfg: any, path: string, override?: number) => {
+      if (override && override > 0) return override
+      const p = String(path || '')
+      if (p.includes('/api/v1/chat/completions')) {
+        return Number(cfg?.chatRequestTimeoutMs) > 0 ? Number(cfg.chatRequestTimeoutMs) : (Number(cfg?.requestTimeoutMs) > 0 ? Number(cfg.requestTimeoutMs) : 10000)
+      }
+      if (p.includes('/api/v1/rag/')) {
+        return Number(cfg?.ragRequestTimeoutMs) > 0 ? Number(cfg.ragRequestTimeoutMs) : (Number(cfg?.requestTimeoutMs) > 0 ? Number(cfg.requestTimeoutMs) : 10000)
+      }
+      if (p.includes('/api/v1/media/')) {
+        return Number(cfg?.mediaRequestTimeoutMs) > 0 ? Number(cfg.mediaRequestTimeoutMs) : (Number(cfg?.requestTimeoutMs) > 0 ? Number(cfg.requestTimeoutMs) : 10000)
+      }
+      return Number(cfg?.requestTimeoutMs) > 0 ? Number(cfg.requestTimeoutMs) : 10000
+    }
+
+    const deriveStreamIdleTimeout = (cfg: any, path: string, override?: number) => {
+      if (override && override > 0) return override
+      const p = String(path || '')
+      if (p.includes('/api/v1/chat/completions')) {
+        return Number(cfg?.chatStreamIdleTimeoutMs) > 0 ? Number(cfg.chatStreamIdleTimeoutMs) : (Number(cfg?.streamIdleTimeoutMs) > 0 ? Number(cfg.streamIdleTimeoutMs) : 15000)
+      }
+      return Number(cfg?.streamIdleTimeoutMs) > 0 ? Number(cfg.streamIdleTimeoutMs) : 15000
+    }
+
     browser.runtime.onMessage.addListener(async (message) => {
+      if (message.type === 'tldw:debug') {
+        streamDebugEnabled = Boolean(message?.enable)
+        return { ok: true }
+      }
       if (message.type === "sidepanel") {
         await browser.sidebarAction.open()
       } else if (message.type === 'tldw:upload') {
@@ -134,7 +163,7 @@ export default defineBackground({
             headers['Authorization'] = `Bearer ${token}`
           }
           const controller = new AbortController()
-          const timeoutMs = Number(cfg?.requestTimeoutMs) > 0 ? Number(cfg.requestTimeoutMs) : 10000
+          const timeoutMs = Number(cfg?.uploadRequestTimeoutMs) > 0 ? Number(cfg.uploadRequestTimeoutMs) : (Number(cfg?.requestTimeoutMs) > 0 ? Number(cfg.requestTimeoutMs) : 10000)
           const timeout = setTimeout(() => controller.abort(), timeoutMs)
           const resp = await fetch(url, { method, headers, body: form, signal: controller.signal })
           clearTimeout(timeout)
@@ -174,7 +203,7 @@ export default defineBackground({
         }
         try {
           const controller = new AbortController()
-          const timeoutMs = Number(overrideTimeoutMs) > 0 ? Number(overrideTimeoutMs) : (Number(cfg?.requestTimeoutMs) > 0 ? Number(cfg.requestTimeoutMs) : 10000)
+          const timeoutMs = deriveRequestTimeout(cfg, path, Number(overrideTimeoutMs))
           const timeout = setTimeout(() => controller.abort(), timeoutMs)
           let resp = await fetch(url, {
             method,
@@ -227,7 +256,7 @@ export default defineBackground({
           const path = message.mode === 'process' ? getProcessPathForUrl(pageUrl) : '/api/v1/media/add'
           const resp = await browser.runtime.sendMessage({
             type: 'tldw:request',
-            payload: { path, method: 'POST', headers: { 'Content-Type': 'application/json' }, body: { url: pageUrl } }
+            payload: { path, method: 'POST', headers: { 'Content-Type': 'application/json' }, body: { url: pageUrl }, timeoutMs: 120000 }
           })
           return resp
         } catch (e: any) {
@@ -245,6 +274,11 @@ export default defineBackground({
       } else if (port.name === 'tldw:stt') {
         const storage = new Storage({ area: 'local' })
         let ws: WebSocket | null = null
+        let disconnected = false
+        const safePost = (msg: any) => {
+          if (disconnected) return
+          try { port.postMessage(msg) } catch {}
+        }
         const onMsg = async (msg: any) => {
           try {
             if (msg?.action === 'connect') {
@@ -255,10 +289,10 @@ export default defineBackground({
               const url = `${base}/api/v1/audio/stream/transcribe?token=${encodeURIComponent(token || '')}`
               ws = new WebSocket(url)
               ws.binaryType = 'arraybuffer'
-              ws.onopen = () => port.postMessage({ event: 'open' })
-              ws.onmessage = (ev) => port.postMessage({ event: 'data', data: ev.data })
-              ws.onerror = (ev) => port.postMessage({ event: 'error', message: 'ws error' })
-              ws.onclose = () => port.postMessage({ event: 'close' })
+              ws.onopen = () => safePost({ event: 'open' })
+              ws.onmessage = (ev) => safePost({ event: 'data', data: ev.data })
+              ws.onerror = () => safePost({ event: 'error', message: 'ws error' })
+              ws.onclose = () => safePost({ event: 'close' })
             } else if (msg?.action === 'audio' && ws && ws.readyState === WebSocket.OPEN) {
               if (msg.data instanceof ArrayBuffer) {
                 ws.send(msg.data)
@@ -270,11 +304,12 @@ export default defineBackground({
               ws = null
             }
           } catch (e: any) {
-            port.postMessage({ event: 'error', message: e?.message || 'ws error' })
+            safePost({ event: 'error', message: e?.message || 'ws error' })
           }
         }
         port.onMessage.addListener(onMsg)
         port.onDisconnect.addListener(() => {
+          disconnected = true
           try { port.onMessage.removeListener(onMsg) } catch {}
           try { ws?.close() } catch {}
         })
@@ -452,6 +487,11 @@ export default defineBackground({
         let abort: AbortController | null = null
         let idleTimer: any = null
         let closed = false
+        let disconnected = false
+        const safePost = (msg: any) => {
+          if (disconnected) return
+          try { port.postMessage(msg) } catch {}
+        }
         const onMsg = async (msg: any) => {
           try {
             const cfg = await storage.get<any>('tldwConfig')
@@ -467,21 +507,23 @@ export default defineBackground({
             if (cfg.authMode === 'single-user') {
               const key = (cfg.apiKey || '').trim()
               if (key) headers['X-API-KEY'] = key
-              else return port.postMessage({ event: 'error', message: 'X-API-KEY header required for single-user mode. Configure API key in Settings > tldw.' })
+              else { safePost({ event: 'error', message: 'X-API-KEY header required for single-user mode. Configure API key in Settings > tldw.' }); return }
             } else if (cfg.authMode === 'multi-user') {
               const token = (cfg.accessToken || '').trim()
               if (token) headers['Authorization'] = `Bearer ${token}`
-              else return port.postMessage({ event: 'error', message: 'Not authenticated. Please login under Settings > tldw.' })
+              else { safePost({ event: 'error', message: 'Not authenticated. Please login under Settings > tldw.' }); return }
             }
             headers['Accept'] = 'text/event-stream'
+            headers['Cache-Control'] = headers['Cache-Control'] || 'no-cache'
+            headers['Connection'] = headers['Connection'] || 'keep-alive'
             abort = new AbortController()
-            const idleMs = Number(msg?.streamIdleTimeoutMs) > 0 ? Number(msg.streamIdleTimeoutMs) : (Number(cfg?.streamIdleTimeoutMs) > 0 ? Number(cfg.streamIdleTimeoutMs) : 15000)
+            const idleMs = deriveStreamIdleTimeout(cfg, path, Number(msg?.streamIdleTimeoutMs))
             const resetIdle = () => {
               if (idleTimer) clearTimeout(idleTimer)
               idleTimer = setTimeout(() => {
                 if (!closed) {
                   try { abort?.abort() } catch {}
-                  port.postMessage({ event: 'error', message: 'Stream timeout: no updates received' })
+                  safePost({ event: 'error', message: 'Stream timeout: no updates received' })
                 }
               }, idleMs)
             }
@@ -501,7 +543,8 @@ export default defineBackground({
                 const t = await resp.text().catch(() => null)
                 if (t) errMsg = t
               }
-              return port.postMessage({ event: 'error', message: String(errMsg || `HTTP ${resp.status}`) })
+              safePost({ event: 'error', message: String(errMsg || `HTTP ${resp.status}`) })
+              return
             }
             if (resp.status === 401 && cfg.authMode === 'multi-user' && cfg.refreshToken) {
               if (!refreshInFlight) {
@@ -529,35 +572,53 @@ export default defineBackground({
             while (true) {
               const { done, value } = await reader.read()
               if (done) break
+              resetIdle()
               buffer += decoder.decode(value, { stream: true })
               const lines = buffer.split('\n')
               buffer = lines.pop() || ''
               for (const line of lines) {
                 const trimmed = line.trim()
                 if (!trimmed) continue
-                if (trimmed.startsWith('data:')) {
+                // Any SSE activity resets idle timer
+                resetIdle()
+                if (trimmed.startsWith('event:')) {
+                  const name = trimmed.slice(6).trim()
+                  if (streamDebugEnabled) {
+                    try { await browser.runtime.sendMessage({ type: 'tldw:stream-debug', payload: { kind: 'event', name, time: Date.now() } }) } catch {}
+                  }
+                } else if (trimmed.startsWith('data:')) {
                   const data = trimmed.slice(5).trim()
+                  if (streamDebugEnabled) {
+                    try { await browser.runtime.sendMessage({ type: 'tldw:stream-debug', payload: { kind: 'data', data, time: Date.now() } }) } catch {}
+                  }
                   if (data === '[DONE]') {
                     closed = true
                     if (idleTimer) clearTimeout(idleTimer)
-                    port.postMessage({ event: 'done' })
+                    safePost({ event: 'done' })
                     return
                   }
-                  resetIdle()
-                  port.postMessage({ event: 'data', data })
+                  safePost({ event: 'data', data })
+                } else if (trimmed.startsWith('{') || trimmed.startsWith('[')) {
+                  // Some servers may omit the 'data:' prefix; treat JSON lines as data
+                  const data = trimmed
+                  if (streamDebugEnabled) {
+                    try { await browser.runtime.sendMessage({ type: 'tldw:stream-debug', payload: { kind: 'data', data, time: Date.now() } }) } catch {}
+                  }
+                  safePost({ event: 'data', data })
                 }
               }
             }
             closed = true
             if (idleTimer) clearTimeout(idleTimer)
-            port.postMessage({ event: 'done' })
+            safePost({ event: 'done' })
           } catch (e: any) {
             if (idleTimer) clearTimeout(idleTimer)
-            port.postMessage({ event: 'error', message: e?.message || 'Stream error' })
+            safePost({ event: 'error', message: e?.message || 'Stream error' })
           }
         }
         port.onMessage.addListener(onMsg)
         port.onDisconnect.addListener(() => {
+          disconnected = true
           try { port.onMessage.removeListener(onMsg) } catch {}
           try { abort?.abort() } catch {}
         })

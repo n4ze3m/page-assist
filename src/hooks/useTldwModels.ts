@@ -40,10 +40,6 @@ export const useTldwModels = () => {
           digest: "",
           details: {
             provider: model.provider,
-            context_length: model.context_length,
-            vision: model.vision,
-            function_calling: model.function_calling,
-            json_output: model.json_output
           }
         }))
 

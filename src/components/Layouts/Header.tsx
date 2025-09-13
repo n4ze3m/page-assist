@@ -1,3 +1,4 @@
+import React from "react"
 import { useStorage } from "@plasmohq/storage/hook"
 import {
   BrainCog,
@@ -17,7 +18,7 @@ import { PromptSelect } from "../Common/PromptSelect"
 import { useQuery } from "@tanstack/react-query"
 import { fetchChatModels } from "@/services/tldw-server"
 import { useMessageOption } from "~/hooks/useMessageOption"
-import { Avatar, Select, Tooltip } from "antd"
+import { Avatar, Select, Tooltip, Popover, Input } from "antd"
 import { getAllPrompts } from "@/db/dexie/helpers"
 import { ProviderIcons } from "../Common/ProviderIcon"
 import { NewChat } from "./NewChat"
@@ -69,6 +70,33 @@ export const Header: React.FC<Props> = ({
   })
 
   const { pathname } = useLocation()
+  const [chatTitle, setChatTitle] = React.useState("")
+  const [isEditingTitle, setIsEditingTitle] = React.useState(false)
+
+  React.useEffect(() => {
+    (async () => {
+      try {
+        if (historyId && historyId !== 'temp' && !temporaryChat) {
+          const { getTitleById } = await import('@/db')
+          const title = await getTitleById(historyId)
+          setChatTitle(title || '')
+        } else {
+          setChatTitle('')
+        }
+      } catch {}
+    })()
+  }, [historyId, temporaryChat])
+
+  const saveTitle = async (value: string) => {
+    try {
+      if (historyId && historyId !== 'temp' && !temporaryChat) {
+        const { updateHistory } = await import('@/db')
+        await updateHistory(historyId, value.trim() || 'Untitled')
+      }
+    } catch (e) {
+      console.error('Failed to update chat title', e)
+    }
+  }
 
   const getPromptInfoById = (id: string) => {
     return prompts?.find((prompt) => prompt.id === id)
@@ -112,27 +140,6 @@ export const Header: React.FC<Props> = ({
             className="text-gray-500 dark:text-gray-400"
             onClick={() => setSidebarOpen(true)}>
             <PanelLeftIcon className="w-6 h-6" />
-          </button>
-          <button
-            className="text-gray-500 dark:text-gray-400 text-xs border rounded px-2 py-1 disabled:opacity-50 disabled:cursor-not-allowed"
-            onClick={async () => {
-              const storage = new (await import('@plasmohq/storage')).Storage({ area: 'local' })
-              await storage.set('uiMode', 'sidePanel')
-              await storage.set('actionIconClick', 'sidePanel')
-              await storage.set('contextMenuClick', 'sidePanel')
-              try {
-                // Chromium sidePanel
-                // @ts-ignore
-                if (chrome?.sidePanel) {
-                  const tabs = await chrome.tabs.query({ active: true, currentWindow: true })
-                  if (tabs?.[0]?.id) await chrome.sidePanel.open({ tabId: tabs[0].id })
-                } else if ((browser as any)?.sidebarAction?.open) {
-                  await (browser as any).sidebarAction.open()
-                }
-              } catch {}
-            }}
-            title="Switch to Sidebar">
-            Switch to Sidebar
           </button>
         </div>
         <NewChat clearChat={clearChat} />
@@ -223,6 +230,29 @@ export const Header: React.FC<Props> = ({
             }))}
           />
         </div>
+        {/* Chat title next to prompt selection when persisted (non-anonymous) */}
+        {!temporaryChat && historyId && historyId !== 'temp' && (
+          <div className="hidden lg:flex items-center ml-2 max-w-[240px]">
+            {isEditingTitle ? (
+              <Input
+                size="small"
+                autoFocus
+                value={chatTitle}
+                onChange={(e) => setChatTitle(e.target.value)}
+                onPressEnter={async () => { setIsEditingTitle(false); await saveTitle(chatTitle) }}
+                onBlur={async () => { setIsEditingTitle(false); await saveTitle(chatTitle) }}
+              />
+            ) : (
+              <button
+                className="truncate text-sm text-gray-700 dark:text-gray-200 hover:underline"
+                title={chatTitle || 'Untitled'}
+                onClick={() => setIsEditingTitle(true)}
+              >
+                {chatTitle || 'Untitled'}
+              </button>
+            )}
+          </div>
+        )}
         <div className="lg:hidden">
           <PromptSelect
             selectedSystemPrompt={selectedSystemPrompt}
@@ -243,7 +273,7 @@ export const Header: React.FC<Props> = ({
               />
             )}
             {!hideCurrentChatModelSettings && (
-              <Tooltip title={t("common:currentChatModelSettings")}>
+              <Tooltip title={'Current Conversation Settings'}>
                 <button
                   onClick={() => setOpenModelSettings(true)}
                   className="!text-gray-500 dark:text-gray-300 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
@@ -259,6 +289,41 @@ export const Header: React.FC<Props> = ({
                 <GithubIcon className="w-6 h-6" />
               </a>
             </Tooltip>
+            {/* Three-dot menu between GitHub and Settings */}
+            <Popover
+              trigger="click"
+              placement="bottomRight"
+              content={
+                <div className="flex flex-col gap-1 min-w-48">
+                  <button
+                    onClick={async () => {
+                      const storage = new (await import('@plasmohq/storage')).Storage({ area: 'local' })
+                      await storage.set('uiMode', 'sidePanel')
+                      await storage.set('actionIconClick', 'sidePanel')
+                      await storage.set('contextMenuClick', 'sidePanel')
+                      try {
+                        // Chromium sidePanel
+                        // @ts-ignore
+                        if (chrome?.sidePanel) {
+                          const tabs = await chrome.tabs.query({ active: true, currentWindow: true })
+                          if (tabs?.[0]?.id) await chrome.sidePanel.open({ tabId: tabs[0].id })
+                        } else {
+                          // Firefox sidebar
+                          await browser.sidebarAction.open()
+                        }
+                      } catch {}
+                    }}
+                    className="text-left text-sm px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800"
+                  >
+                    Switch to Sidebar
+                  </button>
+                </div>
+              }
+            >
+              <button className="!text-gray-500 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6"><path d="M12 8a2 2 0 110-4 2 2 0 010 4zm0 7a2 2 0 110-4 2 2 0 010 4zm0 7a2 2 0 110-4 2 2 0 010 4z"/></svg>
+              </button>
+            </Popover>
             <Tooltip title={t("settings")}>
               <NavLink
                 to="/settings"

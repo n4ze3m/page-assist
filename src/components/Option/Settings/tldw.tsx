@@ -20,6 +20,11 @@ export const TldwSettings = () => {
   const [serverUrl, setServerUrl] = useState("")
   const [requestTimeoutSec, setRequestTimeoutSec] = useState<number>(10)
   const [streamIdleTimeoutSec, setStreamIdleTimeoutSec] = useState<number>(15)
+  const [chatRequestTimeoutSec, setChatRequestTimeoutSec] = useState<number>(10)
+  const [chatStreamIdleTimeoutSec, setChatStreamIdleTimeoutSec] = useState<number>(15)
+  const [ragRequestTimeoutSec, setRagRequestTimeoutSec] = useState<number>(10)
+  const [mediaRequestTimeoutSec, setMediaRequestTimeoutSec] = useState<number>(60)
+  const [uploadRequestTimeoutSec, setUploadRequestTimeoutSec] = useState<number>(60)
 
   useEffect(() => {
     loadConfig()
@@ -34,6 +39,11 @@ export const TldwSettings = () => {
         setServerUrl(config.serverUrl)
         if (typeof (config as any).requestTimeoutMs === 'number') setRequestTimeoutSec(Math.round((config as any).requestTimeoutMs / 1000))
         if (typeof (config as any).streamIdleTimeoutMs === 'number') setStreamIdleTimeoutSec(Math.round((config as any).streamIdleTimeoutMs / 1000))
+        if (typeof (config as any).chatRequestTimeoutMs === 'number') setChatRequestTimeoutSec(Math.round((config as any).chatRequestTimeoutMs / 1000))
+        if (typeof (config as any).chatStreamIdleTimeoutMs === 'number') setChatStreamIdleTimeoutSec(Math.round((config as any).chatStreamIdleTimeoutMs / 1000))
+        if (typeof (config as any).ragRequestTimeoutMs === 'number') setRagRequestTimeoutSec(Math.round((config as any).ragRequestTimeoutMs / 1000))
+        if (typeof (config as any).mediaRequestTimeoutMs === 'number') setMediaRequestTimeoutSec(Math.round((config as any).mediaRequestTimeoutMs / 1000))
+        if (typeof (config as any).uploadRequestTimeoutMs === 'number') setUploadRequestTimeoutSec(Math.round((config as any).uploadRequestTimeoutMs / 1000))
         form.setFieldsValue({
           serverUrl: config.serverUrl,
           apiKey: config.apiKey,
@@ -55,11 +65,24 @@ export const TldwSettings = () => {
   const handleSave = async (values: any) => {
     setLoading(true)
     try {
-      const config: Partial<TldwConfig & { requestTimeoutMs?: number; streamIdleTimeoutMs?: number }> = {
+      const config: Partial<TldwConfig & {
+        requestTimeoutMs?: number
+        streamIdleTimeoutMs?: number
+        chatRequestTimeoutMs?: number
+        chatStreamIdleTimeoutMs?: number
+        ragRequestTimeoutMs?: number
+        mediaRequestTimeoutMs?: number
+        uploadRequestTimeoutMs?: number
+      }> = {
         serverUrl: values.serverUrl,
         authMode: values.authMode,
         requestTimeoutMs: Math.max(1, Math.round(Number(requestTimeoutSec) || 10)) * 1000,
-        streamIdleTimeoutMs: Math.max(1, Math.round(Number(streamIdleTimeoutSec) || 15)) * 1000
+        streamIdleTimeoutMs: Math.max(1, Math.round(Number(streamIdleTimeoutSec) || 15)) * 1000,
+        chatRequestTimeoutMs: Math.max(1, Math.round(Number(chatRequestTimeoutSec) || requestTimeoutSec || 10)) * 1000,
+        chatStreamIdleTimeoutMs: Math.max(1, Math.round(Number(chatStreamIdleTimeoutSec) || streamIdleTimeoutSec || 15)) * 1000,
+        ragRequestTimeoutMs: Math.max(1, Math.round(Number(ragRequestTimeoutSec) || requestTimeoutSec || 10)) * 1000,
+        mediaRequestTimeoutMs: Math.max(1, Math.round(Number(mediaRequestTimeoutSec) || requestTimeoutSec || 10)) * 1000,
+        uploadRequestTimeoutMs: Math.max(1, Math.round(Number(uploadRequestTimeoutSec) || mediaRequestTimeoutSec || 60)) * 1000
       }
 
       if (values.authMode === 'single-user') {
@@ -274,6 +297,32 @@ export const TldwSettings = () => {
                 placeholder="15"
               />
               <div className="text-xs text-gray-500 mt-1">Abort streaming if no updates received within this time. Default: 15s.</div>
+            </div>
+          </div>
+
+          <div className="mt-4">
+            <h4 className="font-semibold mb-2">Per‑API Timeouts</h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium mb-1">Chat Request Timeout (s)</label>
+                <Input type="number" min={1} value={chatRequestTimeoutSec} onChange={(e) => setChatRequestTimeoutSec(parseInt(e.target.value||'10'))} />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Chat Stream Idle (s)</label>
+                <Input type="number" min={1} value={chatStreamIdleTimeoutSec} onChange={(e) => setChatStreamIdleTimeoutSec(parseInt(e.target.value||'15'))} />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">RAG Request Timeout (s)</label>
+                <Input type="number" min={1} value={ragRequestTimeoutSec} onChange={(e) => setRagRequestTimeoutSec(parseInt(e.target.value||'10'))} />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Media Request Timeout (s)</label>
+                <Input type="number" min={1} value={mediaRequestTimeoutSec} onChange={(e) => setMediaRequestTimeoutSec(parseInt(e.target.value||'60'))} />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Upload Request Timeout (s)</label>
+                <Input type="number" min={1} value={uploadRequestTimeoutSec} onChange={(e) => setUploadRequestTimeoutSec(parseInt(e.target.value||'60'))} />
+              </div>
             </div>
           </div>
 

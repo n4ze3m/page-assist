@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { Input, Select, Button, Tag, Space, Tooltip, Spin, List } from "antd"
+import { Input, Select, Button, Tag, Space, Tooltip, Spin, List, InputNumber } from "antd"
 import { tldwClient } from "@/services/tldw/TldwApiClient"
 
 type Props = {
@@ -39,6 +39,7 @@ export const RagSearchBar: React.FC<Props> = ({ onInsert, onAsk }) => {
   const [tagInput, setTagInput] = useState("")
   const [loading, setLoading] = useState(false)
   const [results, setResults] = useState<RagResult[]>([])
+  const [timeoutSec, setTimeoutSec] = useState<number>(10)
 
   const runSearch = async () => {
     if (!q.trim()) return
@@ -55,7 +56,7 @@ export const RagSearchBar: React.FC<Props> = ({ onInsert, onAsk }) => {
         from.setDate(from.getDate() - days)
         filters.date_from = from.toISOString()
       }
-      const ragRes = await tldwClient.ragSearch(q, { top_k: 8, filters })
+      const ragRes = await tldwClient.ragSearch(q, { top_k: 8, filters, timeoutMs: Math.max(1, Math.round(timeoutSec||10)) * 1000 })
       const docs = ragRes?.results || ragRes?.documents || ragRes?.docs || []
       setResults(docs)
     } catch (e) {
@@ -121,6 +122,10 @@ export const RagSearchBar: React.FC<Props> = ({ onInsert, onAsk }) => {
               />
               <Button size="small" onClick={addTag}>Add</Button>
             </Space>
+            <Space size="small" align="center">
+              <span className="text-xs text-gray-500">Timeout (s)</span>
+              <InputNumber size="small" min={1} value={timeoutSec} onChange={(v) => setTimeoutSec(Number(v||10))} />
+            </Space>
             <div className="flex items-center gap-1 flex-wrap">
               {tags.map((t) => (
                 <Tag key={t} closable onClose={() => setTags(tags.filter(x => x !== t))}>{t}</Tag>
@@ -167,4 +172,3 @@ export const RagSearchBar: React.FC<Props> = ({ onInsert, onAsk }) => {
 }
 
 export default RagSearchBar
-

@@ -1,7 +1,7 @@
 import logoImage from "~/assets/icon.png"
 import { useMessage } from "~/hooks/useMessage"
 import { Link } from "react-router-dom"
-import { Tooltip, Drawer, notification } from "antd"
+import { Tooltip, Drawer, notification, Popover, InputNumber, Space } from "antd"
 import {
   BoxesIcon,
   BrainCog,
@@ -62,6 +62,26 @@ export const SidepanelHeader = ({
     "webuiBtnSidePanel",
     false
   )
+  const [ingestTimeoutSec, setIngestTimeoutSec] = React.useState<number>(120)
+  const [debugOpen, setDebugOpen] = React.useState<boolean>(false)
+  const [debugLogs, setDebugLogs] = React.useState<Array<{ time: number; kind: string; name?: string; data?: string }>>([])
+
+  React.useEffect(() => {
+    const onMsg = (msg: any) => {
+      if (msg?.type === 'tldw:stream-debug' && msg?.payload) {
+        setDebugLogs((prev) => {
+          const next = [...prev, msg.payload]
+          if (next.length > 200) next.shift()
+          return next
+        })
+      }
+    }
+    // @ts-ignore
+    browser.runtime.onMessage.addListener(onMsg)
+    return () => {
+      try { /* @ts-ignore */ browser.runtime.onMessage.removeListener(onMsg) } catch {}
+    }
+  }, [])
 
   // Use prop state if provided, otherwise use local state
   const sidebarOpen = propSidebarOpen !== undefined ? propSidebarOpen : localSidebarOpen
@@ -81,28 +101,11 @@ export const SidepanelHeader = ({
       </div>
 
       <div className="flex items-center space-x-3">
-        <AntdTooltip title="Toggle Sidebar / Full Screen">
-          <button
-            onClick={async () => {
-              const storage = new (await import('@plasmohq/storage')).Storage({ area: 'local' })
-              const current = (await storage.get<string>('uiMode')) || 'sidePanel'
-              const next = current === 'sidePanel' ? 'webui' : 'sidePanel'
-              await storage.set('uiMode', next)
-              await storage.set('actionIconClick', next)
-              await storage.set('contextMenuClick', 'sidePanel')
-              if (next === 'webui') {
-                const url = browser.runtime.getURL('/options.html')
-                browser.tabs.create({ url })
-              }
-            }}
-            className="flex items-center space-x-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-700">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-4 text-gray-500 dark:text-gray-400"><path d="M3 4h18v2H3V4zm0 14h18v2H3v-2zM3 8h8v8H3V8zm10 0h8v8h-8V8z"/></svg>
-          </button>
-        </AntdTooltip>
+        {/* Toggle Sidebar / Full Screen moved into 3-dot menu when in sidepanel */}
         <AntdTooltip title="Save current page on server">
           <button
             onClick={async () => {
-              await browser.runtime.sendMessage({ type: 'tldw:ingest', mode: 'store' })
+              await browser.runtime.sendMessage({ type: 'tldw:ingest', mode: 'store', timeoutMs: Math.max(1, Math.round(Number(ingestTimeoutSec)||120))*1000 })
               notification.success({ message: 'Sent to tldw_server', description: 'Current page has been submitted for ingestion.' })
             }}
             className="flex items-center space-x-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-700">
@@ -112,13 +115,52 @@ export const SidepanelHeader = ({
         <AntdTooltip title="Process current page locally (no server save)">
           <button
             onClick={async () => {
-              await browser.runtime.sendMessage({ type: 'tldw:ingest', mode: 'process' })
+              await browser.runtime.sendMessage({ type: 'tldw:ingest', mode: 'process', timeoutMs: Math.max(1, Math.round(Number(ingestTimeoutSec)||120))*1000 })
               notification.success({ message: 'Processed locally', description: 'Processed content stored locally under Settings > Processed.' })
             }}
             className="flex items-center space-x-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-700">
             <BoxesIcon className="size-4 text-gray-500 dark:text-gray-400" />
           </button>
         </AntdTooltip>
+        <Popover
+          trigger="click"
+          content={
+            <Space size="small" direction="vertical">
+              <div className="text-xs text-gray-500">Ingest Timeout (seconds)</div>
+              <InputNumber min={1} value={ingestTimeoutSec} onChange={(v) => setIngestTimeoutSec(Number(v||120))} />
+              <div className="h-px bg-gray-200 dark:bg-gray-700 my-1" />
+              <button
+                onClick={async () => {
+                  const storage = new (await import('@plasmohq/storage')).Storage({ area: 'local' })
+                  const current = (await storage.get<string>('uiMode')) || 'sidePanel'
+                  const next = current === 'sidePanel' ? 'webui' : 'sidePanel'
+                  await storage.set('uiMode', next)
+                  await storage.set('actionIconClick', next)
+                  await storage.set('contextMenuClick', 'sidePanel')
+                  if (next === 'webui') {
+                    const url = browser.runtime.getURL('/options.html')
+                    browser.tabs.create({ url })
+                  }
+                }}
+                className="text-left text-sm px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
+                Toggle Sidebar / Full Screen
+              </button>
+              <button
+                onClick={async () => {
+                  const next = !debugOpen
+                  setDebugOpen(next)
+                  try { await browser.runtime.sendMessage({ type: 'tldw:debug', enable: next }) } catch {}
+                }}
+                className="text-left text-sm px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
+                {debugOpen ? 'Hide Stream Debug' : 'Show Stream Debug'}
+              </button>
+            </Space>
+          }
+        >
+          <button title="Ingest options" className="flex items-center space-x-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-700">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-4 text-gray-500 dark:text-gray-400"><path d="M12 8a2 2 0 110-4 2 2 0 010 4zm0 7a2 2 0 110-4 2 2 0 010 4zm0 7a2 2 0 110-4 2 2 0 010 4z"/></svg>
+          </button>
+        </Popover>
         {webuiBtnSidePanel ? (
           <Tooltip title={t("tooltip.openwebui")}>
             <button
@@ -214,6 +256,22 @@ export const SidepanelHeader = ({
         setOpen={setOpenModelSettings}
         isOCREnabled={useOCR}
       />
+
+      <Drawer title="Stream Debug" placement="right" onClose={() => setDebugOpen(false)} open={debugOpen} width={480}>
+        <div className="text-xs font-mono whitespace-pre-wrap break-all">
+          {debugLogs.length === 0 ? (
+            <div className="text-gray-500">No stream events yet.</div>
+          ) : (
+            debugLogs.map((l, idx) => (
+              <div key={idx} className="mb-1">
+                <span className="text-gray-400 mr-2">{new Date(l.time).toLocaleTimeString()}</span>
+                <span className="mr-2">{l.kind === 'event' ? `event: ${l.name}` : 'data:'}</span>
+                {l.data && <span>{l.data}</span>}
+              </div>
+            ))
+          )}
+        </div>
+      </Drawer>
 
       <Drawer
         title={

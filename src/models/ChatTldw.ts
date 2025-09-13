@@ -125,12 +125,14 @@ export class ChatTldw extends BaseChatModel {
       stream: true
     })
 
-    for await (const chunk of stream) {
+    for await (const token of stream) {
       if (runManager) {
-        await runManager.handleLLMNewToken(chunk)
+        await runManager.handleLLMNewToken(token)
       }
-      // Yield an AIMessageChunk so downstream expects chunk.content
-      yield new AIMessageChunk({ content: chunk })
+      // Yield a LangChain-compatible generation chunk so downstream can concat
+      const messageChunk = new AIMessageChunk({ content: token })
+      const genChunk = new ChatGenerationChunk({ message: messageChunk, text: token })
+      yield genChunk
     }
   }
 

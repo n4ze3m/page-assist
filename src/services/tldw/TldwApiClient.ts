@@ -186,7 +186,7 @@ export class TldwApiClient {
 
     // Fallback to flat list of model IDs
     const data = await bgRequest<any>({ path: '/api/v1/llm/models', method: 'GET' })
-    let list: { id: string; provider: string }[] = []
+    let list: { id: string; provider: string; name?: string }[] = []
     if (Array.isArray(data)) {
       // Assume plain model ids, possibly prefixed like "provider/model" or "provider/a/b"
       list = data.map((m: any) => {

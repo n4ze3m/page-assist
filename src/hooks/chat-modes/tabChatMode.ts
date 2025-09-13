@@ -182,6 +182,7 @@ export const tabChatMode = async (
     let apiReasoning = false
 
     for await (const chunk of chunks) {
+      const token = typeof chunk === 'string' ? chunk : (chunk?.content ?? (chunk?.choices?.[0]?.delta?.content ?? ''))
       if (chunk?.additional_kwargs?.reasoning_content) {
         const reasoningContent = mergeReasoningContent(
           fullText,
@@ -198,8 +199,10 @@ export const tabChatMode = async (
         }
       }
 
-      contentToSave += chunk?.content
-      fullText += chunk?.content
+      if (token) {
+        contentToSave += token
+        fullText += token
+      }
       if (count === 0) {
         setIsProcessing(true)
       }

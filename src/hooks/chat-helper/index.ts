@@ -47,12 +47,20 @@ export const saveMessageOnError = async ({
   isContinue?: boolean
   documents?: ChatDocuments
 }) => {
-  if (
+  const isAbort = (
     e?.name === "AbortError" ||
     e?.message === "AbortError" ||
-    e?.name?.includes("AbortError") ||
-    e?.message?.includes("AbortError")
-  ) {
+    e?.name?.includes?.("AbortError") ||
+    e?.message?.includes?.("AbortError")
+  )
+
+  // Compose assistant message content: prefer partial botMessage, else show error detail
+  const errText = String(e?.message || e?.error || e?.detail || 'Request failed')
+  const assistantContent = (botMessage && String(botMessage).trim().length > 0)
+    ? String(botMessage)
+    : `Error: ${errText}`
+
+  if (isAbort) {
     setHistory([
       ...history,
       {
@@ -62,7 +70,7 @@ export const saveMessageOnError = async ({
       },
       {
         role: "assistant",
-        content: botMessage
+        content: assistantContent
       }
     ])
 
@@ -89,7 +97,7 @@ export const saveMessageOnError = async ({
           history_id: historyId,
           name: selectedModel,
           role: "assistant",
-          content: botMessage,
+          content: assistantContent,
           images: [],
           source: [],
           time: 2,
@@ -126,7 +134,7 @@ export const saveMessageOnError = async ({
         history_id: newHistoryId.id,
         name: selectedModel,
         role: "assistant",
-        content: botMessage,
+        content: assistantContent,
         images: [],
         source: [],
         time: 2,
@@ -145,7 +153,76 @@ export const saveMessageOnError = async ({
     }
   }
 
-  return historyId
+  // Non-abort errors: append user + assistant with error content as well
+  setHistory([
+    ...history,
+    {
+      role: "user",
+      content: userMessage,
+      image
+    },
+    {
+      role: "assistant",
+      content: assistantContent
+    }
+  ])
+
+  if (historyId) {
+    try {
+      // Save user message if not regenerating
+      await saveMessage({
+        history_id: historyId,
+        name: selectedModel,
+        role: "user",
+        content: userMessage,
+        images: [image],
+        time: 1,
+        message_type,
+        documents
+      })
+      // Save assistant error message
+      await saveMessage({
+        history_id: historyId,
+        name: selectedModel,
+        role: "assistant",
+        content: assistantContent,
+        images: [],
+        source: [],
+        time: 2,
+        message_type
+      })
+    } catch {}
+    return historyId
+  } else {
+    // Create new history on error
+    const title = await generateTitle(selectedModel, userMessage, userMessage)
+    const newHistoryId = await saveHistory(title, false, message_source)
+    updatePageTitle(title)
+    try {
+      await saveMessage({
+        history_id: newHistoryId.id,
+        name: selectedModel,
+        role: "user",
+        content: userMessage,
+        images: [image],
+        time: 1,
+        message_type,
+        documents
+      })
+      await saveMessage({
+        history_id: newHistoryId.id,
+        name: selectedModel,
+        role: "assistant",
+        content: assistantContent,
+        images: [],
+        source: [],
+        time: 2,
+        message_type
+      })
+    } catch {}
+    setHistoryId(newHistoryId.id)
+    return newHistoryId.id
+  }
 }
 
 export const saveMessageOnSuccess = async ({
