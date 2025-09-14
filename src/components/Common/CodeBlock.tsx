@@ -137,7 +137,7 @@ export const CodeBlock: FC<Props> = ({ language, value }) => {
     <>
       <div className="not-prose">
         <div className=" [&_div+div]:!mt-0 my-4 bg-zinc-950 rounded-xl">
-          <div className="flex flex-row px-4 py-2 rounded-t-xl  gap-3 bg-gray-800 ">
+          <div className="flex flex-row px-4 py-2 rounded-t-xl  gap-3 bg-[#2D2D2D]  ">
             {isPreviewable && (
               <div className="flex rounded-md overflow-hidden border border-gray-700">
                 <button
@@ -163,7 +163,7 @@ export const CodeBlock: FC<Props> = ({ language, value }) => {
               </div>
             )}
 
-            <span className="font-mono text-xs">{language || "text"}</span>
+            <span className="font-mono text-xs text-white  ">{language || "text"}</span>
           </div>
           <div className="sticky top-9 md:top-[5.75rem]">
             <div className="absolute bottom-0 right-2 flex h-9 items-center gap-1">

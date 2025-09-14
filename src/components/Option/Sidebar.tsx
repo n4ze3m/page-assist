@@ -144,8 +144,23 @@ export const Sidebar = ({
         )
 
         const groups = []
-        if (pinnedItems.length)
-          groups.push({ label: "pinned", items: pinnedItems })
+        
+        // Always get all pinned items for the first page to ensure they appear at the top
+        if (pageParam === 1) {
+          try {
+            const db = new PageAssistDatabase()
+            const allPinnedItems = await db.getChatHistories()
+            const pinnedOnlyItems = allPinnedItems.filter((item) => item.is_pinned)
+            if (pinnedOnlyItems.length > 0) {
+              groups.push({ label: "pinned", items: pinnedOnlyItems })
+            }
+          } catch (e) {
+            // Fallback to pinned items from current page if db query fails
+            if (pinnedItems.length)
+              groups.push({ label: "pinned", items: pinnedItems })
+          }
+        }
+        
         if (todayItems.length)
           groups.push({ label: "today", items: todayItems })
         if (yesterdayItems.length)
@@ -181,11 +196,13 @@ export const Sidebar = ({
   const chatHistories =
     chatHistoriesData?.pages.reduce(
       (acc, page) => {
-        // Merge groups with same labels
         page.groups.forEach((group) => {
           const existingGroup = acc.find((g) => g.label === group.label)
           if (existingGroup) {
-            existingGroup.items.push(...group.items)
+            const newItems = group.items.filter(
+              newItem => !existingGroup.items.some(existingItem => existingItem.id === newItem.id)
+            )
+            existingGroup.items.push(...newItems)
           } else {
             acc.push({ ...group })
           }
@@ -194,6 +211,11 @@ export const Sidebar = ({
       },
       [] as Array<{ label: string; items: any[] }>
     ) || []
+
+  const orderedChatHistories = chatHistories.sort((a, b) => {
+    const order = ["pinned", "today", "yesterday", "last7Days", "older", "searchResults"]
+    return order.indexOf(a.label) - order.indexOf(b.label)
+  })
 
   const { mutate: deleteHistory } = useMutation({
     mutationKey: ["deleteHistory"],
@@ -305,7 +327,7 @@ export const Sidebar = ({
       </div>
 
       {status === "success" &&
-        chatHistories.length === 0 &&
+        orderedChatHistories.length === 0 &&
         !dexiePrivateWindowError && (
           <div className="flex justify-center items-center mt-20 overflow-hidden">
             <Empty description={t("common:noHistory")} />
@@ -335,9 +357,9 @@ export const Sidebar = ({
         </div>
       )}
 
-      {status === "success" && chatHistories.length > 0 && (
+      {status === "success" && orderedChatHistories.length > 0 && (
         <div className="flex flex-col gap-2">
-          {chatHistories.map((group, groupIndex) => (
+          {orderedChatHistories.map((group, groupIndex) => (
             <div key={groupIndex}>
               <div className="flex items-center justify-between mt-2">
                 <h3 className="px-2 text-sm font-medium text-gray-500">
