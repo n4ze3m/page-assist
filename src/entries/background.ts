@@ -9,6 +9,8 @@ export default defineBackground({
     const storage = new Storage({
       area: "local"
     })
+
+    let isSidePanelOpen: boolean = false
     let isCopilotRunning: boolean = false
     let actionIconClick: string = "webui"
     let contextMenuClick: string = "sidePanel"
@@ -225,9 +227,20 @@ export default defineBackground({
             { active: true, currentWindow: true },
             async (tabs) => {
               const tab = tabs[0]
-              chrome.sidePanel.open({
-                tabId: tab.id!
-              })
+                if (!isSidePanelOpen) {
+                  isSidePanelOpen = true
+                  chrome.sidePanel.setOptions({
+                    enabled: true
+                  })
+                chrome.sidePanel.open({
+                  tabId: tab.id!
+                })
+                } else {
+                  isSidePanelOpen  = false
+                  chrome.sidePanel.setOptions({
+                    enabled: false
+                  })
+                }
             }
           )
           break
