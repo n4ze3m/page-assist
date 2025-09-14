@@ -135,7 +135,7 @@ export const SettingsBody = () => {
   }
 
   return (
-    <div className="flex flex-col gap-4 p-4 max-w-2xl mx-auto lg:max-w-3xl xl:max-w-4xl 2xl:max-w-5xl">
+    <div className="flex flex-col gap-4 max-w-2xl mx-auto lg:max-w-3xl xl:max-w-4xl 2xl:max-w-5xl">
       <div className="border border-gray-300 dark:border-gray-700 rounded p-4 bg-white dark:bg-[#171717]">
         <h2 className="text-md font-semibold dark:text-white">
           {t("managePrompts.title")}

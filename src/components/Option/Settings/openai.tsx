@@ -125,20 +125,19 @@ export const OpenAIApp = () => {
   }
 
   return (
-    <div>
-      <div>
-        <div>
-          <h2 className="text-base font-semibold leading-7 text-gray-900 dark:text-white">
-            {t("heading")}
-          </h2>
-          <p className="mt-1 text-sm leading-6 text-gray-600 dark:text-gray-400">
-            {t("subheading")}
-          </p>
-          <div className="border border-b border-gray-200 dark:border-gray-600 mt-3 mb-6"></div>
-        </div>
+    <div className="w-full max-w-full overflow-hidden">
+      <div className="px-2 sm:px-0">
         <div className="mb-6">
-          <div className="-ml-4 -mt-2 flex flex-wrap items-center justify-end sm:flex-nowrap">
-            <div className="ml-4 mt-2 flex-shrink-0">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div className="flex-1">
+              <h2 className="text-base font-semibold leading-7 text-gray-900 dark:text-white">
+                {t("heading")}
+              </h2>
+              <p className="mt-1 text-sm leading-6 text-gray-600 dark:text-gray-400">
+                {t("subheading")}
+              </p>
+            </div>
+            <div className="flex-shrink-0">
               <button
                 onClick={() => {
                   if (isFireFoxPrivateMode) {
@@ -154,11 +153,12 @@ export const OpenAIApp = () => {
                   setOpen(true)
                   form.resetFields()
                 }}
-                className="inline-flex items-center rounded-md border border-transparent bg-black px-2 py-2 text-md font-medium leading-4 text-white shadow-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-white dark:text-gray-800 dark:hover:bg-gray-100 dark:focus:ring-gray-500 dark:focus:ring-offset-gray-100 disabled:opacity-50">
+                className="inline-flex items-center justify-center rounded-md border border-transparent bg-black px-3 py-2 text-sm font-medium leading-4 text-white shadow-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-white dark:text-gray-800 dark:hover:bg-gray-100 dark:focus:ring-gray-500 dark:focus:ring-offset-gray-100 disabled:opacity-50 w-full sm:w-auto">
                 {t("addBtn")}
               </button>
             </div>
           </div>
+          <div className="border border-b border-gray-200 dark:border-gray-600 mt-4 mb-0"></div>
         </div>
 
         <Table
@@ -166,21 +166,27 @@ export const OpenAIApp = () => {
             {
               title: t("table.name"),
               dataIndex: "name",
-              key: "name"
+              key: "name",
+              ellipsis: true
             },
             {
               title: t("table.baseUrl"),
               dataIndex: "baseUrl",
-              key: "baseUrl"
+              key: "baseUrl",
+              render: (text) => (
+                <span className="truncate block" title={text}>
+                  {text}
+                </span>
+              )
             },
             {
               title: t("table.actions"),
               key: "actions",
               render: (_, record) => (
-                <div className="flex gap-4">
+                <div className="flex gap-2 sm:gap-4 justify-start">
                   <Tooltip title={t("edit")}>
                     <button
-                      className="text-gray-700 dark:text-gray-400 disabled:opacity-50"
+                      className="text-gray-700 dark:text-gray-400 disabled:opacity-50 p-1"
                       disabled={isFireFoxPrivateMode}
                       onClick={() => handleEdit(record)}>
                       <Pencil className="size-4" />
@@ -194,7 +200,7 @@ export const OpenAIApp = () => {
                         : t("noNewModel")
                     }>
                     <button
-                      className="text-gray-700 dark:text-gray-400 disabled:opacity-50"
+                      className="text-gray-700 dark:text-gray-400 disabled:opacity-50 p-1"
                       onClick={() => {
                         setOpenModelModal(true)
                         setOpenaiId(record.id)
@@ -210,7 +216,7 @@ export const OpenAIApp = () => {
 
                   <Tooltip title={t("delete")}>
                     <button
-                      className="text-red-500 dark:text-red-400 disabled:opacity-50"
+                      className="text-red-500 dark:text-red-400 disabled:opacity-50 p-1"
                       disabled={isFireFoxPrivateMode}
                       onClick={() => {
                         // add confirmation here
@@ -235,6 +241,8 @@ export const OpenAIApp = () => {
           loading={isLoading}
           rowKey="id"
           bordered
+          scroll={{ x: 600 }}
+          className="[&_.ant-table]:text-sm"
         />
 
         <Modal
@@ -268,15 +276,19 @@ export const OpenAIApp = () => {
               }}
               showSearch
               className="w-full !mb-4"
+              size="large"
               options={OAI_API_PROVIDERS.map((e) => ({
                 value: e.value,
                 label: (
                   <span
                     key={e.value}
                     data-title={e.label}
-                    className="flex flex-row gap-3 items-center ">
-                    <ProviderIcons provider={e.value} className="size-5" />
-                    <span className="line-clamp-2">{e.label}</span>
+                    className="flex flex-row gap-3 items-center">
+                    <ProviderIcons
+                      provider={e.value}
+                      className="size-5 flex-shrink-0"
+                    />
+                    <span className="line-clamp-2 text-sm">{e.label}</span>
                   </span>
                 )
               }))}
@@ -333,16 +345,16 @@ export const OpenAIApp = () => {
 
             <Form.List name="headers">
               {(fields, { add, remove }) => (
-                <div className="flex flex-col ">
-                  <div className="flex justify-between items-center">
-                    <h3 className="text-md font-semibold">
+                <div className="flex flex-col">
+                  <div className="flex justify-between items-center mb-3">
+                    <h3 className="text-sm font-semibold">
                       {t(
                         "settings:ollamaSettings.settings.advanced.headers.label"
                       )}
                     </h3>
                     <button
                       type="button"
-                      className="dark:bg-white dark:text-black text-white bg-black p-1.5 text-xs rounded-md"
+                      className="dark:bg-white dark:text-black text-white bg-black px-2 py-1 text-xs rounded-md"
                       onClick={() => {
                         add()
                       }}>
@@ -352,14 +364,16 @@ export const OpenAIApp = () => {
                     </button>
                   </div>
                   {fields.map((field, index) => (
-                    <div key={field.key} className="flex items-center   w-full">
-                      <div className="flex-grow flex mt-3 space-x-4">
+                    <div
+                      key={field.key}
+                      className="flex flex-col sm:flex-row items-start sm:items-end gap-2 mb-3">
+                      <div className="flex-grow w-full space-y-2 sm:space-y-0 sm:space-x-2 sm:flex">
                         <Form.Item
                           label={t(
                             "settings:ollamaSettings.settings.advanced.headers.key.label"
                           )}
                           name={[field.name, "key"]}
-                          className="flex-1 mb-0">
+                          className="flex-1 mb-0 w-full">
                           <Input
                             className="w-full"
                             placeholder={t(
@@ -372,7 +386,7 @@ export const OpenAIApp = () => {
                             "settings:ollamaSettings.settings.advanced.headers.value.label"
                           )}
                           name={[field.name, "value"]}
-                          className="flex-1 mb-0">
+                          className="flex-1 mb-0 w-full">
                           <Input
                             className="w-full"
                             placeholder={t(
@@ -386,8 +400,8 @@ export const OpenAIApp = () => {
                         onClick={() => {
                           remove(field.name)
                         }}
-                        className="shrink-0 ml-2 text-red-500 dark:text-red-400">
-                        <Trash2Icon className="w-5 h-5" />
+                        className="shrink-0 p-1 text-red-500 dark:text-red-400 sm:ml-2 self-start sm:self-auto">
+                        <Trash2Icon className="w-4 h-4" />
                       </button>
                     </div>
                   ))}
@@ -395,7 +409,7 @@ export const OpenAIApp = () => {
               )}
             </Form.List>
             {provider === "lmstudio" && (
-              <div className="text-xs text-gray-600 dark:text-gray-400 mb-4">
+              <div className="text-xs text-gray-600 dark:text-gray-400 mb-4 p-2 bg-gray-50 dark:bg-gray-800 rounded-md">
                 {t("modal.tipLMStudio")}
               </div>
             )}
@@ -411,7 +425,8 @@ export const OpenAIApp = () => {
           open={openModelModal}
           title={t("modal.model.title")}
           footer={null}
-          onCancel={() => setOpenModelModal(false)}>
+          onCancel={() => setOpenModelModal(false)}
+  >
           {openaiId ? (
             <OpenAIFetchModel
               openaiId={openaiId}

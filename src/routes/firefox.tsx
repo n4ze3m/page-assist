@@ -5,6 +5,9 @@ import { Route, Routes } from "react-router-dom"
 
 const SidepanelChat = lazy(() => import("./sidepanel-chat"))
 const SidepanelSettings = lazy(() => import("./sidepanel-settings"))
+const SidepanelSettingsOpenAI = lazy(() => import("./sidepanel-settings-openai"))
+const SidepanelSettingsModel = lazy(() => import("./sidepanel-settings-model"))  
+
 const OptionIndex = lazy(() => import("./option-index"))
 const OptionModal = lazy(() => import("./option-settings-model"))
 const OptionPrompt = lazy(() => import("./option-settings-prompt"))
@@ -38,6 +41,8 @@ export const SidepanelRoutingFirefox = () => {
     <Routes>
       <Route path="/" element={<SidepanelChat />} />
       <Route path="/settings" element={<SidepanelSettings />} />
+      <Route path="/settings/openai" element={<SidepanelSettingsOpenAI />} /> 
+      <Route path="/settings/model" element={<SidepanelSettingsModel />} /> 
     </Routes>
   )
 }

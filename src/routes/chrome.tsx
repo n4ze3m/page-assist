@@ -12,6 +12,8 @@ import SidepanelSettings from "./sidepanel-settings"
 import OptionRagSettings from "./option-rag"
 import OptionChrome from "./option-settings-chrome"
 import OptionOpenAI from "./option-settings-openai"
+import SidepanelSettingsOpenAI from "./sidepanel-settings-openai"
+import SidepanelSettingsModel from "./sidepanel-settings-model"
 
 export const OptionRoutingChrome = () => {
   return (
@@ -36,6 +38,8 @@ export const SidepanelRoutingChrome = () => {
     <Routes>
       <Route path="/" element={<SidepanelChat />} />
       <Route path="/settings" element={<SidepanelSettings />} />
+      <Route path="/settings/openai" element={<SidepanelSettingsOpenAI />} />
+      <Route path="/settings/model" element={<SidepanelSettingsModel />} />
     </Routes>
   )
 }
