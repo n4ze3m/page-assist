@@ -12,7 +12,7 @@ export const CancelPullingModel = ({
 }: Props) => {
   const { t } = useTranslation("common")
   return (
-    <div className="mb-4 p-3  bg-neutral-50  dark:bg-[#2D2D2D] border border-neutral-200 dark:border-neutral-700 rounded-lg">
+    <div className="mb-4 p-3  bg-neutral-50  dark:bg-[#2a2a2a] border border-neutral-200 dark:border-neutral-700 rounded-lg">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <Loader2 className="w-5 h-5 animate-spin text-gray-700 dark:text-gray-300" />

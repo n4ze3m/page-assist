@@ -136,7 +136,7 @@ export const SettingsBody = () => {
 
   return (
     <div className="flex flex-col gap-4 max-w-2xl mx-auto lg:max-w-3xl xl:max-w-4xl 2xl:max-w-5xl">
-      <div className="border border-gray-300 dark:border-gray-700 rounded p-4 bg-white dark:bg-[#171717]">
+      <div className="border border-gray-300 dark:border-gray-700 rounded p-4 bg-white dark:bg-[#1a1a1a]">
         <h2 className="text-md font-semibold dark:text-white">
           {t("managePrompts.title")}
         </h2>
@@ -159,7 +159,7 @@ export const SettingsBody = () => {
               {t("managePrompts.systemPrompt")}
             </span>
             <textarea
-              className="w-full border border-gray-300 dark:border-gray-700 rounded p-2 dark:bg-[#171717] dark:text-white dark:placeholder-gray-400"
+              className="w-full border border-gray-300 dark:border-gray-700 rounded p-2 dark:bg-[#1a1a1a] dark:text-white dark:placeholder-gray-400"
               value={systemPrompt}
               onChange={(e) => setSystemPrompt(e.target.value)}
             />
@@ -180,7 +180,7 @@ export const SettingsBody = () => {
                 {t("managePrompts.systemPrompt")}
               </span>
               <textarea
-                className="w-full border border-gray-300 dark:border-gray-700 rounded p-2 dark:bg-[#171717] dark:text-white dark:placeholder-gray-400"
+                className="w-full border border-gray-300 dark:border-gray-700 rounded p-2 dark:bg-[#1a1a1a] dark:text-white dark:placeholder-gray-400"
                 value={ragPrompt}
                 onChange={(e) => setRagPrompt(e.target.value)}
               />
@@ -190,7 +190,7 @@ export const SettingsBody = () => {
                 {t("managePrompts.questionPrompt")}
               </span>
               <textarea
-                className="w-full border border-gray-300 dark:border-gray-700 rounded p-2 dark:bg-[#171717] dark:text-white dark:placeholder-gray-400"
+                className="w-full border border-gray-300 dark:border-gray-700 rounded p-2 dark:bg-[#1a1a1a] dark:text-white dark:placeholder-gray-400"
                 value={ragQuestionPrompt}
                 onChange={(e) => setRagQuestionPrompt(e.target.value)}
               />
@@ -206,15 +206,15 @@ export const SettingsBody = () => {
           </div>
         )}
       </div>
-      <div className="border border-gray-300 dark:border-gray-700 rounded p-4 bg-white dark:bg-[#171717]">
+      <div className="border border-gray-300 dark:border-gray-700 rounded p-4 bg-white dark:bg-[#1a1a1a]">
         <SidepanelRag hideBorder />
       </div>
-      <div className="border flex flex-col gap-4 border-gray-300 dark:border-gray-700 rounded p-4 bg-white dark:bg-[#171717]">
+      <div className="border flex flex-col gap-4 border-gray-300 dark:border-gray-700 rounded p-4 bg-white dark:bg-[#1a1a1a]">
         <h2 className="text-md font-semibold dark:text-white">
           {t("ollamaSettings.heading")}
         </h2>
         <input
-          className="w-full border border-gray-300 dark:border-gray-700 rounded p-2 dark:bg-[#171717] dark:text-white dark:placeholder-gray-400"
+          className="w-full border border-gray-300 dark:border-gray-700 rounded p-2 dark:bg-[#1a1a1a] dark:text-white dark:placeholder-gray-400"
           value={ollamaURL}
           type="url"
           onChange={(e) => setOllamaURL(e.target.value)}
@@ -259,7 +259,7 @@ export const SettingsBody = () => {
           />
         </div>
       </div>
-      <div className="border border-gray-300 dark:border-gray-700 rounded p-4 bg-white dark:bg-[#171717]">
+      <div className="border border-gray-300 dark:border-gray-700 rounded p-4 bg-white dark:bg-[#1a1a1a]">
         <h2 className="text-md mb-4 font-semibold dark:text-white">
           {t("rag.ragSettings.label")}
         </h2>
@@ -338,7 +338,7 @@ export const SettingsBody = () => {
         </Form>
       </div>
 
-      <div className="border space-y-3 w-full border-gray-300 dark:border-gray-700 rounded p-4 bg-white dark:bg-[#171717]">
+      <div className="border space-y-3 w-full border-gray-300 dark:border-gray-700 rounded p-4 bg-white dark:bg-[#1a1a1a]">
         <h2 className="text-base mb-4 font-semibold leading-7 text-gray-900 dark:text-white">
           {t("generalSettings.title")}
         </h2>
@@ -414,13 +414,13 @@ export const SettingsBody = () => {
           />
         </div>
       </div>
-      <div className="border border-gray-300 dark:border-gray-700 rounded p-4 bg-white dark:bg-[#171717]">
+      <div className="border border-gray-300 dark:border-gray-700 rounded p-4 bg-white dark:bg-[#1a1a1a]">
         <SSTSettings hideBorder />
       </div>
-      <div className="border border-gray-300 dark:border-gray-700 rounded p-4 bg-white dark:bg-[#171717]">
+      <div className="border border-gray-300 dark:border-gray-700 rounded p-4 bg-white dark:bg-[#1a1a1a]">
         <TTSModeSettings hideBorder />
       </div>
-      <div className="border border-gray-300 dark:border-gray-700 rounded p-4 bg-white dark:bg-[#171717]">
+      <div className="border border-gray-300 dark:border-gray-700 rounded p-4 bg-white dark:bg-[#1a1a1a]">
         <h2 className="text-md mb-4 font-semibold dark:text-white">
           {t("generalSettings.settings.darkMode.label")}{" "}
         </h2>

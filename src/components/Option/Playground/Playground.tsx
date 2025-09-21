@@ -141,7 +141,7 @@ export const Playground = () => {
     <div
       ref={drop}
       data-is-dragging={dropState === "dragging"}
-      className="relative flex h-full flex-col items-center bg-white dark:bg-[#171717] data-[is-dragging=true]:bg-gray-100 data-[is-dragging=true]:dark:bg-gray-800"
+      className="relative flex h-full flex-col items-center bg-white dark:bg-[#1a1a1a] data-[is-dragging=true]:bg-gray-100 data-[is-dragging=true]:dark:bg-gray-800"
       style={
         chatBackgroundImage
           ? {
@@ -155,7 +155,7 @@ export const Playground = () => {
       {/* Background overlay for opacity effect */}
       {chatBackgroundImage && (
         <div
-          className="absolute inset-0 bg-white dark:bg-[#171717]"
+          className="absolute inset-0 bg-white dark:bg-[#1a1a1a]"
           style={{ opacity: 0.9, pointerEvents: "none" }}
         />
       )}
@@ -167,7 +167,7 @@ export const Playground = () => {
       </div>
       <div className="absolute bottom-0 w-full z-10">
         {!isAutoScrollToBottom && (
-          <div className="fixed bottom-28 z-10 left-0 right-0 flex justify-center pointer-events-none">
+          <div className="absolute bottom-full mb-2 z-10 left-0 right-0 flex justify-center pointer-events-none">
             <button
               onClick={() => autoScrollToBottom()}
               className="bg-gray-50 shadow border border-gray-200 dark:border-none dark:bg-white/20 p-1.5 rounded-full pointer-events-auto hover:bg-gray-100 dark:hover:bg-white/30 transition-colors">

@@ -60,7 +60,7 @@ export const CodeBlock: FC<Props> = ({ language, value }) => {
     }, 4000)
   }
 
-  const isPreviewable = ["html", "svg", "xml"].includes(
+  const isPreviewable = ["html", "svg", "xml", "mathml"].includes(
     (language || "").toLowerCase()
   )
 
@@ -71,17 +71,25 @@ export const CodeBlock: FC<Props> = ({ language, value }) => {
       let svgMarkup = hasSvgTag
         ? code
         : `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'>${code}</svg>`
-      
+
       const hasWidthHeight = /\s(width|height)\s*=/.test(svgMarkup)
-      
+
       if (!hasWidthHeight && hasSvgTag) {
         svgMarkup = svgMarkup.replace(
           /<svg([^>]*?)>/i,
           '<svg$1 width="100%" height="100%" style="max-width: 100%; max-height: 100%;">'
         )
       }
-      
+
       return `<!doctype html><html><head><meta charset='utf-8'/><style>html,body{margin:0;padding:0;display:flex;align-items:center;justify-content:center;background:#fff;height:100%;overflow:hidden;}svg{max-width:100%;max-height:100%;}</style></head><body>${svgMarkup}</body></html>`
+    }
+    if ((language || "").toLowerCase() === "mathml") {
+      const hasMathTag = /<math[\s>]/i.test(code)
+      let mathMarkup = hasMathTag
+        ? code
+        : `<math xmlns='http://www.w3.org/1998/Math/MathML'>${code}</math>`
+
+      return `<!doctype html><html><head><meta charset='utf-8'/><style>html,body{margin:0;padding:20px;background:#fff;font-family:serif;line-height:1.5;display:flex;align-items:center;justify-content:center;min-height:100vh;}math{font-size:1.5em;}</style></head><body>${mathMarkup}</body></html>`
     }
     return `<!doctype html><html><head><meta charset='utf-8'/></head><body>${code}</body></html>`
   }, [previewValue, language])
@@ -137,7 +145,7 @@ export const CodeBlock: FC<Props> = ({ language, value }) => {
     <>
       <div className="not-prose">
         <div className=" [&_div+div]:!mt-0 my-4 bg-zinc-950 rounded-xl">
-          <div className="flex flex-row px-4 py-2 rounded-t-xl  gap-3 bg-[#2D2D2D]  ">
+          <div className="flex flex-row px-4 py-2 rounded-t-xl  gap-3 bg-[#2a2a2a]  ">
             {isPreviewable && (
               <div className="flex rounded-md overflow-hidden border border-gray-700">
                 <button
