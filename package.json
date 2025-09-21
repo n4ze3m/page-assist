@@ -80,6 +80,7 @@
   },
   "devDependencies": {
     "@plasmohq/prettier-plugin-sort-imports": "4.0.1",
+    "@playwright/test": "^1.55.0",
     "@types/chrome": "^0.0.280",
     "@types/d3-dsv": "^3.0.7",
     "@types/html-to-text": "^9.0.4",
