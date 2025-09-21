@@ -1,0 +1,27 @@
+name: Typecheck
+
+on:
+  push:
+    branches: [ main, master, develop, dev ]
+  pull_request:
+
+jobs:
+  typecheck:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: |
+          npm install
+
+      - name: TypeScript compile (OpenAPI path enforcement)
+        run: |
+          npm run compile
+

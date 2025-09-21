@@ -134,15 +134,13 @@ export const TldwSettings = () => {
       if (values.authMode === 'single-user' && values.apiKey) {
         // Validate against a strictly protected endpoint by provoking a non-auth error (400) vs 401
         // We intentionally use an invalid model id; if auth is valid, server should respond 400/404/422, not 401
-        const resp = await browser.runtime.sendMessage({
-          type: 'tldw:request',
-          payload: {
-            path: `${String(values.serverUrl).replace(/\/$/, '')}/api/v1/chat/completions`,
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'X-API-KEY': String(values.apiKey).trim() },
-            body: { model: '__validation__', messages: [{ role: 'user', content: 'ping' }], stream: false },
-            noAuth: true
-          }
+        const { apiSend } = await import('@/services/api-send')
+        const resp = await apiSend({
+          path: `${String(values.serverUrl).replace(/\/$/, '')}/api/v1/chat/completions`,
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'X-API-KEY': String(values.apiKey).trim() },
+          body: { model: '__validation__', messages: [{ role: 'user', content: 'ping' }], stream: false },
+          noAuth: true
         })
         // Treat any non-401 as valid auth; 401/403 invalid/forbidden
         success = resp?.status !== 401 && resp?.status !== 403
@@ -153,12 +151,10 @@ export const TldwSettings = () => {
         }
       } else {
         // Test basic health endpoint via background proxy
-        const resp = await browser.runtime.sendMessage({
-          type: 'tldw:request',
-          payload: {
-            path: `${String(values.serverUrl).replace(/\/$/, '')}/api/v1/health`,
-            method: 'GET'
-          }
+        const { apiSend } = await import('@/services/api-send')
+        const resp = await apiSend({
+          path: `${String(values.serverUrl).replace(/\/$/, '')}/api/v1/health`,
+          method: 'GET'
         })
         success = !!resp?.ok
         if (!success) setConnectionDetail(`Server unreachable${resp?.status ? ` — HTTP ${resp.status}` : ''}`)

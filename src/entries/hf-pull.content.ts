@@ -2,10 +2,10 @@ export default defineContentScript({
   main() {
     const sendToTldw = async () => {
       const url = window.location.href
-      await browser.runtime.sendMessage({
-        type: 'tldw:request',
-        payload: { path: '/api/v1/media/add', method: 'POST', headers: { 'Content-Type': 'application/json' }, body: { url } }
-      })
+      // The path is declared in the OpenAPI spec; annotate for compile-time safety
+      const path = '/api/v1/media/add' as import('@/services/tldw/openapi-guard').AllowedPath
+      const { apiSend } = await import('@/services/api-send')
+      await apiSend({ path, method: 'POST', headers: { 'Content-Type': 'application/json' }, body: { url } })
       alert('[tldw] Sent page to tldw_server for processing')
     }
 

@@ -140,6 +140,9 @@ Models are surfaced from your tldw_server configuration (OpenAI‑compatible pro
 - TailwindCSS for UI (`src/assets/tailwind.css`, `tailwind.config.js`).
 - Prettier + import sorting: `bunx prettier --write .`
 - Type‑check before PRs: `bun run compile`
+  - OpenAPI path enforcement: the web UI’s API calls are compile‑time checked against the bundled `openapi.json`. If you add or change an endpoint path/method, update `openapi.json` accordingly or your typecheck will fail.
+  - CI: GitHub Actions runs the typecheck on each push/PR (`.github/workflows/typecheck.yml`).
+  - Use the typed helpers `bgRequest`, `bgStream`, and `bgUpload` for all server calls. Direct `browser.runtime.sendMessage({ type: 'tldw:request' ... })` calls should pass a path typed as `AllowedPath` to participate in checks.
 
 ## Contributing
 

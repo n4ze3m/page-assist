@@ -110,8 +110,12 @@ export class TldwApiClient {
 
   async getOpenAPISpec(): Promise<any | null> {
     try {
-      // Prefer background proxy in extension context
-      return await bgRequest<any>({ path: '/openapi.json', method: 'GET' })
+      // Prefer background proxy in extension context. Use absolute URL to satisfy
+      // the OpenAPI path/method guard ("/openapi.json" is not a declared API path).
+      if (!this.baseUrl) await this.initialize()
+      if (this.baseUrl) {
+        return await bgRequest<any, `${'http' | 'https'}:${string}`>({ path: `${this.baseUrl.replace(/\/$/, '')}/openapi.json`, method: 'GET' })
+      }
     } catch {}
     try {
       if (!this.baseUrl) await this.initialize()
@@ -359,11 +363,8 @@ export class TldwApiClient {
 
   async updatePrompt(id: string | number, payload: { title: string; content: string; is_system?: boolean }): Promise<any> {
     const pid = String(id)
-    try {
-      return await bgRequest<any>({ path: `/api/v1/prompts/${pid}`, method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: payload })
-    } catch {
-      return await bgRequest<any>({ path: `/api/v1/prompts/${pid}/`, method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: payload })
-    }
+    // Path per OpenAPI: /api/v1/prompts/{prompt_identifier}
+    return await bgRequest<any>({ path: `/api/v1/prompts/${pid}`, method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: payload })
   }
 
   // STT Methods

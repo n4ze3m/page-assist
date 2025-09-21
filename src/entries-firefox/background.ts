@@ -1,5 +1,6 @@
 import { browser } from "wxt/browser"
 import { Storage } from "@plasmohq/storage"
+import type { AllowedPath } from "@/services/tldw/openapi-guard"
 import { getInitialConfig } from "@/services/action"
 import { tldwClient } from "@/services/tldw/TldwApiClient"
 import { tldwAuth } from "@/services/tldw/TldwAuth"
@@ -84,7 +85,7 @@ export default defineBackground({
     let refreshInFlight: Promise<any> | null = null
     let streamDebugEnabled = false
 
-    const getProcessPathForUrl = (url: string) => {
+    const getProcessPathForUrl = (url: string): AllowedPath => {
       const u = (url || '').toLowerCase()
       const endsWith = (exts: string[]) => exts.some((e) => u.endsWith(e))
       if (endsWith(['.mp3', '.wav', '.m4a', '.flac', '.aac', '.ogg'])) return '/api/v1/media/process-audios'
@@ -215,10 +216,8 @@ export default defineBackground({
           const pageUrl = tab?.url || ''
           if (!pageUrl) return { ok: false, status: 400, error: 'No active tab URL' }
           const path = message.mode === 'process' ? getProcessPathForUrl(pageUrl) : '/api/v1/media/add'
-          const resp = await browser.runtime.sendMessage({
-            type: 'tldw:request',
-            payload: { path, method: 'POST', headers: { 'Content-Type': 'application/json' }, body: { url: pageUrl }, timeoutMs: 120000 }
-          })
+          const { apiSend } = await import('@/services/api-send')
+          const resp = await apiSend({ path, method: 'POST', headers: { 'Content-Type': 'application/json' }, body: { url: pageUrl }, timeoutMs: 120000 })
           return resp
         } catch (e: any) {
           return { ok: false, status: 0, error: e?.message || 'Ingest failed' }

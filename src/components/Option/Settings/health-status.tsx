@@ -3,11 +3,13 @@ import { Tag, Card, Space, Typography, Button, Alert } from 'antd'
 import { browser } from 'wxt/browser'
 import { Link } from 'react-router-dom'
 import { tldwClient } from '@/services/tldw/TldwApiClient'
+import { apiSend } from '@/services/api-send'
+import type { AllowedPath } from '@/services/tldw/openapi-guard'
 
 type Check = {
   key: string
   label: string
-  path: string
+  path: AllowedPath
 }
 
 const checks: Check[] = [
@@ -33,7 +35,7 @@ export default function HealthStatus() {
   const runSingle = async (c: Check) => {
     const t0 = performance.now()
     try {
-      const resp = await browser.runtime.sendMessage({ type: 'tldw:request', payload: { path: c.path, method: 'GET' } })
+      const resp = await apiSend({ path: c.path, method: 'GET' })
       const t1 = performance.now()
       setResults(prev => ({ ...prev, [c.key]: { status: resp?.ok ? 'healthy' : 'unhealthy', detail: resp?.data, statusCode: resp?.status, durationMs: Math.round(t1 - t0) } }))
     } catch (e) {

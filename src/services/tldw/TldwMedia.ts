@@ -20,7 +20,7 @@ export const tldwMedia = {
   async processUrl(url: string, opts?: ProcessOptions) {
     // Process without storing on server
     const res = await bgRequest<any>({
-      path: '/api/v1/media/process',
+      path: '/api/v1/media/process-web-scraping',
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: { url, ...(opts?.metadata || {}) }

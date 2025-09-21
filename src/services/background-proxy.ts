@@ -1,16 +1,19 @@
 import { browser } from "wxt/browser"
 import { Storage } from "@plasmohq/storage"
+import type { AllowedMethodFor, AllowedPath, PathOrUrl, UpperLower } from "@/services/tldw/openapi-guard"
 
-export interface BgRequestInit {
-  path: string
-  method?: string
+export interface BgRequestInit<P extends PathOrUrl = AllowedPath, M extends AllowedMethodFor<P> = AllowedMethodFor<P>> {
+  path: P
+  method?: UpperLower<M>
   headers?: Record<string, string>
   body?: any
   noAuth?: boolean
   timeoutMs?: number
 }
 
-export async function bgRequest<T = any>({ path, method = 'GET', headers = {}, body, noAuth = false, timeoutMs }: BgRequestInit): Promise<T> {
+export async function bgRequest<T = any, P extends PathOrUrl = AllowedPath, M extends AllowedMethodFor<P> = AllowedMethodFor<P>>(
+  { path, method = 'GET' as UpperLower<M>, headers = {}, body, noAuth = false, timeoutMs }: BgRequestInit<P, M>
+): Promise<T> {
   // If extension messaging is available, use it (extension context)
   try {
     // @ts-ignore
@@ -61,15 +64,17 @@ export async function bgRequest<T = any>({ path, method = 'GET', headers = {}, b
   }
 }
 
-export interface BgStreamInit {
-  path: string
-  method?: string
+export interface BgStreamInit<P extends AllowedPath = AllowedPath, M extends AllowedMethodFor<P> = AllowedMethodFor<P>> {
+  path: P
+  method?: UpperLower<M>
   headers?: Record<string, string>
   body?: any
   streamIdleTimeoutMs?: number
 }
 
-export async function* bgStream({ path, method = 'POST', headers = {}, body, streamIdleTimeoutMs }: BgStreamInit): AsyncGenerator<string> {
+export async function* bgStream<P extends AllowedPath = AllowedPath, M extends AllowedMethodFor<P> = AllowedMethodFor<P>>(
+  { path, method = 'POST' as UpperLower<M>, headers = {}, body, streamIdleTimeoutMs }: BgStreamInit<P, M>
+): AsyncGenerator<string> {
   const port = browser.runtime.connect({ name: 'tldw:stream' })
   const encoder = new TextEncoder()
   const queue: string[] = []
@@ -104,16 +109,18 @@ export async function* bgStream({ path, method = 'POST', headers = {}, body, str
   }
 }
 
-export interface BgUploadInit {
-  path: string
-  method?: string
+export interface BgUploadInit<P extends AllowedPath = AllowedPath, M extends AllowedMethodFor<P> = AllowedMethodFor<P>> {
+  path: P
+  method?: UpperLower<M>
   // key/value fields to include alongside file in FormData
   fields?: Record<string, any>
   // File payload as raw bytes with metadata (ArrayBuffer is structured-cloneable)
   file?: { name?: string; type?: string; data: ArrayBuffer }
 }
 
-export async function bgUpload<T = any>({ path, method = 'POST', fields = {}, file }: BgUploadInit): Promise<T> {
+export async function bgUpload<T = any, P extends AllowedPath = AllowedPath, M extends AllowedMethodFor<P> = AllowedMethodFor<P>>(
+  { path, method = 'POST' as UpperLower<M>, fields = {}, file }: BgUploadInit<P, M>
+): Promise<T> {
   const resp = await browser.runtime.sendMessage({
     type: 'tldw:upload',
     payload: { path, method, fields, file }
@@ -123,4 +130,12 @@ export async function bgUpload<T = any>({ path, method = 'POST', fields = {}, fi
     throw new Error(msg)
   }
   return resp.data as T
+}
+
+export async function bgRequestValidated<T = any, P extends PathOrUrl = AllowedPath, M extends AllowedMethodFor<P> = AllowedMethodFor<P>>(
+  init: BgRequestInit<P, M>,
+  validate?: (data: unknown) => T
+): Promise<T> {
+  const data = await bgRequest<any, P, M>(init)
+  return validate ? validate(data) : (data as T)
 }

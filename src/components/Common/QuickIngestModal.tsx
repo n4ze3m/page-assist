@@ -42,9 +42,15 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
   const [rows, setRows] = React.useState<Entry[]>([
     { id: crypto.randomUUID(), url: '', type: 'auto' }
   ])
+  // Common ingest options available across media types (promote booleans only; rely on Advanced for the rest)
+  const [common, setCommon] = React.useState<{ perform_analysis: boolean; perform_chunking: boolean; overwrite_existing: boolean }>({
+    perform_analysis: true,
+    perform_chunking: true,
+    overwrite_existing: false
+  })
   const [running, setRunning] = React.useState<boolean>(false)
   const [results, setResults] = React.useState<ResultItem[]>([])
-  const [advancedOpen, setAdvancedOpen] = React.useState<boolean>(false)
+  const [advancedOpen, setAdvancedOpen] = React.useState<boolean>(true)
   const [advancedValues, setAdvancedValues] = React.useState<Record<string, any>>({})
   const [advSchema, setAdvSchema] = React.useState<Array<{ name: string; type: string; enum?: any[]; description?: string; title?: string; group: string }>>([])
   const [specSource, setSpecSource] = React.useState<'server' | 'server-cached' | 'bundled' | 'none'>('none')
@@ -87,12 +93,9 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
           const fields: Record<string, any> = {
             urls: r.url,
             media_type: t,
-            perform_analysis: true,
-            perform_chunking: true,
-            chunk_method: 'semantic',
-            chunk_size: 500,
-            chunk_overlap: 200,
-            overwrite_existing: false
+            perform_analysis: common.perform_analysis,
+            perform_chunking: common.perform_chunking,
+            overwrite_existing: common.overwrite_existing
           }
           // Merge advanced values
           for (const [k, v] of Object.entries(advancedValues)) fields[k] = v
@@ -104,7 +107,7 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
           data = await tldwClient.addMediaForm(fields)
         } else {
           // Process only (no store)
-          data = await tldwClient.ingestWebContent(r.url, { type: t, audio: r.audio, document: r.document, video: r.video, ...advancedValues })
+          data = await tldwClient.ingestWebContent(r.url, { type: t, audio: r.audio, document: r.document, video: r.video, ...common, ...advancedValues })
         }
         out.push({ id: r.id, status: 'ok', url: r.url, type: t, data })
         setResults([...out])
@@ -168,7 +171,8 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
     const mp = content['multipart/form-data'] || content['application/x-www-form-urlencoded'] || {}
     const props = mp?.schema?.properties || {}
     const entries: Array<{ name: string; type: string; enum?: any[]; description?: string; title?: string; group: string }> = []
-    const exclude = new Set([ 'urls', 'media_type', 'perform_analysis', 'perform_chunking', 'chunk_method', 'chunk_size', 'chunk_overlap', 'overwrite_existing' ])
+    // Expose all available ingestion-time options, except input list and media type selector which are handled above
+    const exclude = new Set([ 'urls', 'media_type' ])
     for (const [name, def] of Object.entries<any>(props)) {
       if (exclude.has(name)) continue
       const type = Array.isArray(def?.type) ? def.type[0] : (def?.type || 'string')
@@ -343,6 +347,25 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
           ))}
           <Button onClick={addRow}>{t('quickIngest.add') || 'Add URL'}</Button>
         </Space>
+
+        {/* Common ingestion options */}
+        <div className="mt-3">
+          <Typography.Title level={5}>{t('quickIngest.commonOptions') || 'Ingestion options'}</Typography.Title>
+          <Space wrap size="middle" align="center">
+            <Space align="center">
+              <span>Analysis</span>
+              <Switch checked={common.perform_analysis} onChange={(v) => setCommon((c) => ({ ...c, perform_analysis: v }))} />
+            </Space>
+            <Space align="center">
+              <span>Chunking</span>
+              <Switch checked={common.perform_chunking} onChange={(v) => setCommon((c) => ({ ...c, perform_chunking: v }))} />
+            </Space>
+            <Space align="center">
+              <span>Overwrite existing</span>
+              <Switch checked={common.overwrite_existing} onChange={(v) => setCommon((c) => ({ ...c, overwrite_existing: v }))} />
+            </Space>
+          </Space>
+        </div>
 
         {/* Per-type options: show union of all detected types */}
         {rows.some((r) => (r.type === 'audio' || (r.type === 'auto' && detectTypeFromUrl(r.url) === 'audio'))) && (

@@ -9,10 +9,10 @@ export default defineContentScript({
           `[Page Assist Extension] Pulling ${modelName} model. For more details, check the extension icon.`
         )
 
-        await browser.runtime.sendMessage({
-          type: 'tldw:request',
-          payload: { path: '/api/v1/media/add', method: 'POST', headers: { 'Content-Type': 'application/json' }, body: { url: window.location.href } }
-        })
+        // Path is declared in OpenAPI; annotate for compile-time safety
+        const path = '/api/v1/media/add' as import('@/services/tldw/openapi-guard').AllowedPath
+        const { apiSend } = await import('@/services/api-send')
+        await apiSend({ path, method: 'POST', headers: { 'Content-Type': 'application/json' }, body: { url: window.location.href } })
         return true
       }
       return false
