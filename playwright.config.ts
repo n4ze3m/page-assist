@@ -7,15 +7,19 @@ export default defineConfig({
   expect: { timeout: 10_000 },
   fullyParallel: true,
   reporter: [['list']],
+  outputDir: 'test-results',
   use: {
-    trace: 'on-first-retry'
+    trace: 'on-first-retry',
+    headless: !!process.env.CI,
+    screenshot: 'only-on-failure',
+    video: 'retain-on-failure'
   },
   projects: [
     {
       name: 'chromium-extension',
       use: {
         ...devices['Desktop Chrome'],
-        headless: false
+        headless: !!process.env.CI
       }
     }
   ],
@@ -23,4 +27,3 @@ export default defineConfig({
   // Locally, prefer: `bun run build` (or `npm run build`) first for faster dev feedback
   globalSetup: path.resolve(__dirname, 'tests/e2e/setup/build-extension.ts'),
 })
-

@@ -1,5 +1,5 @@
 import { CheckIcon, XMarkIcon } from "@heroicons/react/24/outline"
-import { Segmented, Space, Input, Alert, Form, message, Spin, Button } from "antd"
+import { Segmented, Space, Input, Alert, Form, message, Spin, Button, Collapse } from "antd"
 import { Link } from "react-router-dom"
 import React, { useEffect, useState } from "react"
 import { browser } from "wxt/browser"
@@ -14,6 +14,7 @@ export const TldwSettings = () => {
   const [loading, setLoading] = useState(false)
   const [testingConnection, setTestingConnection] = useState(false)
   const [connectionStatus, setConnectionStatus] = useState<'success' | 'error' | null>(null)
+  const [connectionDetail, setConnectionDetail] = useState<string>("")
   const [ragStatus, setRagStatus] = useState<'healthy' | 'unhealthy' | 'unknown'>("unknown")
   const [authMode, setAuthMode] = useState<'single-user' | 'multi-user'>('single-user')
   const [isLoggedIn, setIsLoggedIn] = useState(false)
@@ -124,6 +125,7 @@ export const TldwSettings = () => {
   const testConnection = async () => {
     setTestingConnection(true)
     setConnectionStatus(null)
+    setConnectionDetail("")
     
     try {
       const values = form.getFieldsValue()
@@ -142,10 +144,12 @@ export const TldwSettings = () => {
             noAuth: true
           }
         })
-        // Treat any non-401 as valid auth; 401 means invalid key
+        // Treat any non-401 as valid auth; 401/403 invalid/forbidden
         success = resp?.status !== 401 && resp?.status !== 403
         if (!success) {
-          message.error(resp?.error || 'API key validation failed')
+          const code = resp?.status
+          const hint = code === 401 ? 'Invalid API key' : code === 403 ? 'Forbidden (check permissions)' : resp?.error
+          setConnectionDetail(`${hint || 'API key validation failed'}${code ? ` — HTTP ${code}` : ''}`)
         }
       } else {
         // Test basic health endpoint via background proxy
@@ -157,6 +161,7 @@ export const TldwSettings = () => {
           }
         })
         success = !!resp?.ok
+        if (!success) setConnectionDetail(`Server unreachable${resp?.status ? ` — HTTP ${resp.status}` : ''}`)
       }
 
       setConnectionStatus(success ? 'success' : 'error')
@@ -177,7 +182,9 @@ export const TldwSettings = () => {
       }
     } catch (error) {
       setConnectionStatus('error')
-      message.error((error as any)?.message || "Connection failed. Please check your server URL and API key.")
+      const detail = (error as any)?.message || "Connection failed. Please check your server URL and API key."
+      setConnectionDetail(detail)
+      message.error(detail)
       console.error('Connection test failed:', error)
     } finally {
       setTestingConnection(false)
@@ -275,56 +282,60 @@ export const TldwSettings = () => {
             />
           </Form.Item>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium mb-1">Request Timeout (seconds)</label>
-              <Input
-                type="number"
-                min={1}
-                value={requestTimeoutSec}
-                onChange={(e) => setRequestTimeoutSec(parseInt(e.target.value || '10'))}
-                placeholder="10"
-              />
-              <div className="text-xs text-gray-500 mt-1">Abort initial requests if no response within this time. Default: 10s.</div>
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">Streaming Idle Timeout (seconds)</label>
-              <Input
-                type="number"
-                min={1}
-                value={streamIdleTimeoutSec}
-                onChange={(e) => setStreamIdleTimeoutSec(parseInt(e.target.value || '15'))}
-                placeholder="15"
-              />
-              <div className="text-xs text-gray-500 mt-1">Abort streaming if no updates received within this time. Default: 15s.</div>
-            </div>
-          </div>
-
-          <div className="mt-4">
-            <h4 className="font-semibold mb-2">Per‑API Timeouts</h4>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium mb-1">Chat Request Timeout (s)</label>
-                <Input type="number" min={1} value={chatRequestTimeoutSec} onChange={(e) => setChatRequestTimeoutSec(parseInt(e.target.value||'10'))} />
+          <Collapse className="mt-4" items={[{
+            key: 'adv',
+            label: t('settings:tldw.advancedTimeouts'),
+            children: (
+              <div className="space-y-3">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-1">{t('settings:tldw.requestTimeout')}</label>
+                    <Input type="number" min={1} value={requestTimeoutSec} onChange={(e) => setRequestTimeoutSec(parseInt(e.target.value || '10'))} placeholder="10" addonAfter="s" />
+                    <div className="text-xs text-gray-500 mt-1">Abort initial requests if no response within this time. Default: 10s.</div>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1">{t('settings:tldw.streamingIdle')}</label>
+                    <Input type="number" min={1} value={streamIdleTimeoutSec} onChange={(e) => setStreamIdleTimeoutSec(parseInt(e.target.value || '15'))} placeholder="15" addonAfter="s" />
+                    <div className="text-xs text-gray-500 mt-1">Abort streaming if no updates received within this time. Default: 15s.</div>
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-1">{t('settings:tldw.chatRequest')}</label>
+                    <Input type="number" min={1} value={chatRequestTimeoutSec} onChange={(e) => setChatRequestTimeoutSec(parseInt(e.target.value||'10'))} addonAfter="s" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1">{t('settings:tldw.chatStreamIdle')}</label>
+                    <Input type="number" min={1} value={chatStreamIdleTimeoutSec} onChange={(e) => setChatStreamIdleTimeoutSec(parseInt(e.target.value||'15'))} addonAfter="s" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1">{t('settings:tldw.ragRequest')}</label>
+                    <Input type="number" min={1} value={ragRequestTimeoutSec} onChange={(e) => setRagRequestTimeoutSec(parseInt(e.target.value||'10'))} addonAfter="s" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1">{t('settings:tldw.mediaRequest')}</label>
+                    <Input type="number" min={1} value={mediaRequestTimeoutSec} onChange={(e) => setMediaRequestTimeoutSec(parseInt(e.target.value||'60'))} addonAfter="s" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1">{t('settings:tldw.uploadRequest')}</label>
+                    <Input type="number" min={1} value={uploadRequestTimeoutSec} onChange={(e) => setUploadRequestTimeoutSec(parseInt(e.target.value||'60'))} addonAfter="s" />
+                  </div>
+                </div>
+                <div className="flex justify-end">
+                  <Button onClick={() => {
+                    setRequestTimeoutSec(10)
+                    setStreamIdleTimeoutSec(15)
+                    setChatRequestTimeoutSec(10)
+                    setChatStreamIdleTimeoutSec(15)
+                    setRagRequestTimeoutSec(10)
+                    setMediaRequestTimeoutSec(60)
+                    setUploadRequestTimeoutSec(60)
+                    message.success(t('settings:tldw.resetDone'))
+                  }}>{t('settings:tldw.reset')}</Button>
+                </div>
               </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">Chat Stream Idle (s)</label>
-                <Input type="number" min={1} value={chatStreamIdleTimeoutSec} onChange={(e) => setChatStreamIdleTimeoutSec(parseInt(e.target.value||'15'))} />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">RAG Request Timeout (s)</label>
-                <Input type="number" min={1} value={ragRequestTimeoutSec} onChange={(e) => setRagRequestTimeoutSec(parseInt(e.target.value||'10'))} />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">Media Request Timeout (s)</label>
-                <Input type="number" min={1} value={mediaRequestTimeoutSec} onChange={(e) => setMediaRequestTimeoutSec(parseInt(e.target.value||'60'))} />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">Upload Request Timeout (s)</label>
-                <Input type="number" min={1} value={uploadRequestTimeoutSec} onChange={(e) => setUploadRequestTimeoutSec(parseInt(e.target.value||'60'))} />
-              </div>
-            </div>
-          </div>
+            )
+          }]} />
 
           {authMode === 'single-user' && (
             <Form.Item
@@ -411,6 +422,9 @@ export const TldwSettings = () => {
               <span className={`text-sm ${connectionStatus === 'success' ? 'text-green-500' : 'text-red-500'}`}>
                 {connectionStatus === 'success' ? 'Connected' : 'Connection failed'}
               </span>
+            )}
+            {connectionDetail && connectionStatus !== 'success' && (
+              <span className="text-xs text-gray-500">{connectionDetail}</span>
             )}
             {connectionStatus === 'success' && (
               <div className="ml-4">

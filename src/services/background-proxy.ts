@@ -1,4 +1,5 @@
 import { browser } from "wxt/browser"
+import { Storage } from "@plasmohq/storage"
 
 export interface BgRequestInit {
   path: string
@@ -10,15 +11,54 @@ export interface BgRequestInit {
 }
 
 export async function bgRequest<T = any>({ path, method = 'GET', headers = {}, body, noAuth = false, timeoutMs }: BgRequestInit): Promise<T> {
-  const resp = await browser.runtime.sendMessage({
-    type: 'tldw:request',
-    payload: { path, method, headers, body, noAuth, timeoutMs }
-  })
-  if (!resp?.ok) {
-    const msg = resp?.error || `Request failed: ${resp?.status}`
-    throw new Error(msg)
+  // If extension messaging is available, use it (extension context)
+  try {
+    // @ts-ignore
+    if (browser?.runtime?.sendMessage) {
+      const resp = await browser.runtime.sendMessage({
+        type: 'tldw:request',
+        payload: { path, method, headers, body, noAuth, timeoutMs }
+      })
+      if (!resp?.ok) {
+        const msg = resp?.error || `Request failed: ${resp?.status}`
+        throw new Error(msg)
+      }
+      return resp.data as T
+    }
+  } catch (e) {
+    // fallthrough to direct fetch
   }
-  return resp.data as T
+
+  // Fallback: direct fetch (web/dev context)
+  const storage = new Storage({ area: 'local' })
+  const cfg = await storage.get('tldwConfig').catch(() => null) as any
+  const base = (cfg?.serverUrl || '').replace(/\/$/, '')
+  const isAbs = /^https?:/i.test(path)
+  const url = isAbs ? path : `${base}${path.startsWith('/') ? '' : '/'}${path}`
+
+  if (!url) throw new Error('Server not configured')
+
+  const controller = new AbortController()
+  const id = timeoutMs ? setTimeout(() => controller.abort(), timeoutMs) : null
+  try {
+    const res = await fetch(url, {
+      method,
+      headers,
+      body: body ? (typeof body === 'string' ? body : JSON.stringify(body)) : undefined,
+      credentials: 'include',
+      signal: controller.signal
+    })
+    if (!res.ok) {
+      throw new Error(`Request failed: ${res.status}`)
+    }
+    const contentType = res.headers.get('content-type') || ''
+    if (contentType.includes('application/json')) {
+      return (await res.json()) as T
+    }
+    return (await res.text()) as any as T
+  } finally {
+    if (id) clearTimeout(id)
+  }
 }
 
 export interface BgStreamInit {

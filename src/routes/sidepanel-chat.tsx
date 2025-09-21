@@ -206,7 +206,7 @@ const SidepanelChat = () => {
           <div
             ref={containerRef}
             className="custom-scrollbar flex h-full w-full flex-col items-center overflow-x-hidden overflow-y-auto px-5 relative z-10">
-            <SidePanelBody />
+            <SidePanelBody scrollParentRef={containerRef} />
           </div>
 
           <div className="absolute bottom-0 w-full z-10">

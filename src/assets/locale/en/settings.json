@@ -476,5 +476,55 @@
   "chromeAiSettings": {
     "title": "Chrome AI Settings"
   },
-  "mermaid": "Mermaid"
+  "mermaid": "Mermaid",
+  "onboarding": {
+    "title": "Welcome — Let’s get you connected",
+    "description": "Configure your server and authentication. We’ll verify the connection and RAG health inline.",
+    "serverUrl": {
+      "label": "Server URL",
+      "placeholder": "http://localhost:8000",
+      "help": "Example: http://127.0.0.1:8000"
+    },
+    "authMode": {
+      "label": "Authentication Mode",
+      "single": "Single User (API Key)",
+      "multi": "Multi User (Login)"
+    },
+    "apiKey": { "label": "API Key", "placeholder": "Enter your API key" },
+    "username": { "label": "Username", "placeholder": "Username" },
+    "password": { "label": "Password", "placeholder": "Password" },
+    "buttons": {
+      "next": "Next",
+      "back": "Back",
+      "continue": "Continue",
+      "recheck": "Recheck",
+      "finish": "Finish",
+      "skip": "Skip for now"
+    },
+    "connection": {
+      "label": "Connection:",
+      "unknown": "Unknown",
+      "connected": "Connected",
+      "failed": "Failed"
+    },
+    "rag": {
+      "label": "RAG:",
+      "healthy": "Healthy",
+      "unhealthy": "Unhealthy",
+      "unknown": "Unknown"
+    },
+    "connectionFailed": "Connection failed"
+  },
+  "tldw": {
+    "advancedTimeouts": "Advanced Timeouts",
+    "requestTimeout": "Request Timeout (seconds)",
+    "streamingIdle": "Streaming Idle Timeout (seconds)",
+    "chatRequest": "Chat Request Timeout",
+    "chatStreamIdle": "Chat Stream Idle",
+    "ragRequest": "RAG Request Timeout",
+    "mediaRequest": "Media Request Timeout",
+    "uploadRequest": "Upload Request Timeout",
+    "reset": "Reset to recommended",
+    "resetDone": "Reset to recommended defaults"
+  }
 }

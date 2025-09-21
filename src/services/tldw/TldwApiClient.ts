@@ -86,10 +86,20 @@ export class TldwApiClient {
 
   async healthCheck(): Promise<boolean> {
     try {
-      const res = await bgRequest<{ status?: string; [k: string]: any }>({ path: '/api/v1/health', method: 'GET' })
-      return true
+      // Prefer background proxy (extension messaging)
+      // @ts-ignore
+      if (typeof browser !== 'undefined' && browser?.runtime?.sendMessage) {
+        await bgRequest<{ status?: string; [k: string]: any }>({ path: '/api/v1/health', method: 'GET' })
+        return true
+      }
+    } catch {}
+    // Fallback: direct fetch in dev/non-extension contexts
+    try {
+      if (!this.baseUrl) await this.initialize()
+      const res = await fetch(`${this.baseUrl.replace(/\/$/, '')}/api/v1/health`, { credentials: 'include' })
+      return res.ok
     } catch (error) {
-      console.error('Health check failed:', error)
+      // Swallow errors to avoid noisy console during first-run
       return false
     }
   }
@@ -252,7 +262,18 @@ export class TldwApiClient {
 
   // RAG Methods
   async ragHealth(): Promise<any> {
-    return await bgRequest<any>({ path: '/api/v1/rag/health', method: 'GET' })
+    try {
+      // @ts-ignore
+      if (typeof browser !== 'undefined' && browser?.runtime?.sendMessage) {
+        return await bgRequest<any>({ path: '/api/v1/rag/health', method: 'GET' })
+      }
+    } catch {}
+    // Fallback direct fetch
+    if (!this.baseUrl) await this.initialize().catch(() => null)
+    if (!this.baseUrl) throw new Error('Not configured')
+    const res = await fetch(`${this.baseUrl.replace(/\/$/, '')}/api/v1/rag/health`, { credentials: 'include' })
+    if (!res.ok) throw new Error(`HTTP ${res.status}`)
+    return await res.json()
   }
 
   async ragSearch(query: string, options?: any): Promise<any> {

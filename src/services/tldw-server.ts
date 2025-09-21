@@ -38,6 +38,17 @@ export const isTldwServerRunning = async () => {
 
 export const getAllModels = async ({ returnEmpty = false }: { returnEmpty?: boolean }) => {
   try {
+    // If no config or server not reachable, avoid network calls when returnEmpty requested
+    try {
+      const cfg = await tldwClient.getConfig()
+      if (!cfg) {
+        if (returnEmpty) return []
+      }
+      const healthy = await tldwClient.healthCheck()
+      if (!healthy && returnEmpty) return []
+    } catch {
+      if (returnEmpty) return []
+    }
     // Prefer raw list from server for the landing dropdown so models, not providers, are shown
     try {
       const raw = await bgRequest<any>({ path: '/api/v1/llm/models', method: 'GET' })
@@ -90,7 +101,7 @@ export const getAllModels = async ({ returnEmpty = false }: { returnEmpty?: bool
       }
     }))
   } catch (e) {
-    console.error("Failed to fetch tldw models:", e)
+    if (!returnEmpty) console.error("Failed to fetch tldw models:", e)
     if (returnEmpty) return []
     throw e
   }

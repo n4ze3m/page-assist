@@ -1,21 +1,27 @@
-import { BrowserContext, Page, chromium, test, expect } from '@playwright/test'
+import { BrowserContext, Page, chromium } from '@playwright/test'
 import path from 'path'
 
 export async function launchWithExtension(extensionPath: string) {
   const context = await chromium.launchPersistentContext('', {
-    headless: false,
+    headless: !!process.env.CI,
     args: [
       `--disable-extensions-except=${extensionPath}`,
       `--load-extension=${extensionPath}`
     ]
   })
-  // Find the extension id by inspecting service workers/background pages
-  const background = context.serviceWorkers()[0] || context.backgroundPages()[0]
-  if (!background) {
-    // Wait briefly for background to appear
-    await context.waitForEvent('serviceworker', { timeout: 5000 }).catch(() => null)
+
+  // Wait for background targets to appear (service worker or background page)
+  const waitForTargets = async () => {
+    // Already present?
+    if (context.serviceWorkers().length || context.backgroundPages().length) return
+    await Promise.race([
+      context.waitForEvent('serviceworker').catch(() => null),
+      context.waitForEvent('backgroundpage').catch(() => null),
+      new Promise((r) => setTimeout(r, 7000))
+    ])
   }
-  // Heuristic: extension id is part of the background url: chrome-extension://<id>/_generated_background_page.html
+  await waitForTargets()
+
   const pages = context.backgroundPages()
   const workers = context.serviceWorkers()
   const targetUrl = pages[0]?.url() || workers[0]?.url() || ''
@@ -23,9 +29,16 @@ export async function launchWithExtension(extensionPath: string) {
   if (!match) throw new Error(`Could not determine extension id from ${targetUrl}`)
   const extensionId = match[1]
   const optionsUrl = `chrome-extension://${extensionId}/options.html`
+  const sidepanelUrl = `chrome-extension://${extensionId}/sidepanel.html`
 
   const page = await context.newPage()
   await page.goto(optionsUrl)
-  return { context, page, extensionId }
-}
 
+  async function openSidepanel() {
+    const p = await context.newPage()
+    await p.goto(sidepanelUrl)
+    return p
+  }
+
+  return { context, page, extensionId, openSidepanel }
+}
