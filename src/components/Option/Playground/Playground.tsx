@@ -141,7 +141,7 @@ export const Playground = () => {
     <div
       ref={drop}
       data-is-dragging={dropState === "dragging"}
-      className="relative flex h-full flex-col items-center bg-white dark:bg-[#171717] data-[is-dragging=true]:bg-gray-100 data-[is-dragging=true]:dark:bg-gray-800"
+      className="relative flex h-full flex-col items-center bg-white dark:bg-[#1a1a1a] data-[is-dragging=true]:bg-gray-100 data-[is-dragging=true]:dark:bg-gray-800"
       style={
         chatBackgroundImage
           ? {
@@ -155,7 +155,7 @@ export const Playground = () => {
       {/* Background overlay for opacity effect */}
       {chatBackgroundImage && (
         <div
-          className="absolute inset-0 bg-white dark:bg-[#171717]"
+          className="absolute inset-0 bg-white dark:bg-[#1a1a1a]"
           style={{ opacity: 0.9, pointerEvents: "none" }}
         />
       )}

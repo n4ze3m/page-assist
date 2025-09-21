@@ -145,7 +145,7 @@ export const CodeBlock: FC<Props> = ({ language, value }) => {
     <>
       <div className="not-prose">
         <div className=" [&_div+div]:!mt-0 my-4 bg-zinc-950 rounded-xl">
-          <div className="flex flex-row px-4 py-2 rounded-t-xl  gap-3 bg-[#2D2D2D]  ">
+          <div className="flex flex-row px-4 py-2 rounded-t-xl  gap-3 bg-[#2a2a2a]  ">
             {isPreviewable && (
               <div className="flex rounded-md overflow-hidden border border-gray-700">
                 <button

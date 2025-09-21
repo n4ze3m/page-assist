@@ -23,7 +23,7 @@ export const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
       <main className="relative w-full flex-1">
         <div className="mx-auto w-full h-full custom-scrollbar overflow-y-auto">
           <div className="flex flex-col lg:flex-row lg:gap-x-16 lg:px-24">
-            <aside className="sticky lg:mt-0 mt-14 top-0  bg-white dark:bg-[#171717] border-b dark:border-gray-600 lg:border-0 lg:bg-transparent lg:dark:bg-transparent">
+            <aside className="sticky lg:mt-0 mt-14 top-0  bg-white dark:bg-[#1a1a1a] border-b dark:border-gray-600 lg:border-0 lg:bg-transparent lg:dark:bg-transparent">
               <nav className="w-full overflow-x-auto px-4 py-4 sm:px-6 lg:px-0 lg:py-0 lg:mt-20">
                 <ul
                   role="list"

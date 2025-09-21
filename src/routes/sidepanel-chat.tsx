@@ -184,7 +184,7 @@ const SidepanelChat = () => {
           ref={drop}
           className={`relative flex h-full flex-col items-center ${
             dropState === "dragging" ? "bg-gray-100 dark:bg-gray-800" : ""
-          } bg-white dark:bg-[#171717]`}
+          } bg-white dark:bg-[#1a1a1a]`}
           style={
             chatBackgroundImage
               ? {
@@ -198,7 +198,7 @@ const SidepanelChat = () => {
           {/* Background overlay for opacity effect */}
           {chatBackgroundImage && (
             <div
-              className="absolute inset-0 bg-white dark:bg-[#171717]"
+              className="absolute inset-0 bg-white dark:bg-[#1a1a1a]"
               style={{ opacity: 0.9, pointerEvents: "none" }}
             />
           )}
