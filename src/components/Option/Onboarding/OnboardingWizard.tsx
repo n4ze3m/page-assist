@@ -27,6 +27,7 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
       try {
         const cfg = await tldwClient.getConfig()
         if (cfg?.serverUrl) setServerUrl(cfg.serverUrl)
+        else setServerUrl('http://127.0.0.1:8000')
         if ((cfg as any)?.authMode) setAuthMode((cfg as any).authMode)
       } catch {}
     })()
@@ -90,13 +91,13 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
   }
 
   return (
-    <div className="max-w-2xl mx-auto my-6 p-4 rounded border dark:border-gray-600 bg-white dark:bg-[#171717]">
-      <h2 className="text-lg font-semibold mb-2">{t('settings:onboarding.title')}</h2>
-      <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">{t('settings:onboarding.description')}</p>
+    <div className="max-w-2xl mx-auto my-6 mt-20 md:mt-24 p-4 rounded border dark:border-gray-600 bg-white dark:bg-[#171717] text-gray-900 dark:text-gray-100">
+      <h2 className="text-lg font-semibold mb-2 text-gray-900 dark:text-gray-100">{t('settings:onboarding.title')}</h2>
+      <p className="text-sm text-gray-700 dark:text-gray-300 mb-4">{t('settings:onboarding.description')}</p>
 
       {step === 1 && (
         <div className="space-y-3">
-          <label className="block text-sm font-medium">{t('settings:onboarding.serverUrl.label')}</label>
+          <label className="block text-sm font-medium text-gray-800 dark:text-gray-100">{t('settings:onboarding.serverUrl.label')}</label>
           <Input placeholder={t('settings:onboarding.serverUrl.placeholder')} value={serverUrl} onChange={(e) => setServerUrl(e.target.value)} />
           <div className="text-xs text-gray-500">{t('settings:onboarding.serverUrl.help')}</div>
           <div className="flex justify-end mt-2">
@@ -108,7 +109,7 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
       {step === 2 && (
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium mb-1">{t('settings:onboarding.authMode.label')}</label>
+            <label className="block text-sm font-medium mb-1 text-gray-800 dark:text-gray-100">{t('settings:onboarding.authMode.label')}</label>
             <Segmented
               options={[{ label: t('settings:onboarding.authMode.single'), value: 'single-user' }, { label: t('settings:onboarding.authMode.multi'), value: 'multi-user' }]}
               value={authMode}
@@ -117,17 +118,17 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
           </div>
           {authMode === 'single-user' ? (
             <div>
-              <label className="block text-sm font-medium">{t('settings:onboarding.apiKey.label')}</label>
+              <label className="block text-sm font-medium text-gray-800 dark:text-gray-100">{t('settings:onboarding.apiKey.label')}</label>
               <Input.Password placeholder={t('settings:onboarding.apiKey.placeholder')} value={apiKey} onChange={(e) => setApiKey(e.target.value)} />
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <div>
-                <label className="block text-sm font-medium">{t('settings:onboarding.username.label')}</label>
+                <label className="block text-sm font-medium text-gray-800 dark:text-gray-100">{t('settings:onboarding.username.label')}</label>
                 <Input placeholder={t('settings:onboarding.username.placeholder')} value={username} onChange={(e) => setUsername(e.target.value)} />
               </div>
               <div>
-                <label className="block text-sm font-medium">{t('settings:onboarding.password.label')}</label>
+                <label className="block text-sm font-medium text-gray-800 dark:text-gray-100">{t('settings:onboarding.password.label')}</label>
                 <Input.Password placeholder={t('settings:onboarding.password.placeholder')} value={password} onChange={(e) => setPassword(e.target.value)} />
               </div>
             </div>

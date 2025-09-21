@@ -17,9 +17,11 @@ import { PageAssistDatabase } from "@/db/dexie/chat"
 import { useMigration } from "../../hooks/useMigration"
 
 export default function OptionLayout({
-  children
+  children,
+  hideHeader = false
 }: {
   children: React.ReactNode
+  hideHeader?: boolean
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const { t } = useTranslation(["option", "common", "settings"])
@@ -52,15 +54,18 @@ export default function OptionLayout({
   return (
     <div className="flex h-full w-full">
       <main className="relative h-dvh w-full">
-        <div className="relative z-20 w-full">
-          <Header
-            setSidebarOpen={setSidebarOpen}
-            setOpenModelSettings={setOpenModelSettings}
-          />
-        </div>
+        {!hideHeader && (
+          <div className="relative z-20 w-full">
+            <Header
+              setSidebarOpen={setSidebarOpen}
+              setOpenModelSettings={setOpenModelSettings}
+            />
+          </div>
+        )}
         {/* <div className="relative flex h-full flex-col items-center"> */}
         {children}
         {/* </div> */}
+        {!hideHeader && (
         <Drawer
           title={
             <div className="flex items-center justify-between">
@@ -121,13 +126,16 @@ export default function OptionLayout({
             setContext={setContextFiles}
           />
         </Drawer>
+        )}
 
-        <CurrentChatModelSettings
-          open={openModelSettings}
-          setOpen={setOpenModelSettings}
-          useDrawer
-          isOCREnabled={useOCR} 
-        />
+        {!hideHeader && (
+          <CurrentChatModelSettings
+            open={openModelSettings}
+            setOpen={setOpenModelSettings}
+            useDrawer
+            isOCREnabled={useOCR}
+          />
+        )}
       </main>
     </div>
   )
