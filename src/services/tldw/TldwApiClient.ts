@@ -108,6 +108,21 @@ export class TldwApiClient {
     return await bgRequest<any>({ path: '/', method: 'GET' })
   }
 
+  async getOpenAPISpec(): Promise<any | null> {
+    try {
+      // Prefer background proxy in extension context
+      return await bgRequest<any>({ path: '/openapi.json', method: 'GET' })
+    } catch {}
+    try {
+      if (!this.baseUrl) await this.initialize()
+      const res = await fetch(`${this.baseUrl.replace(/\/$/, '')}/openapi.json`, { credentials: 'include' })
+      if (!res.ok) return null
+      return await res.json()
+    } catch {
+      return null
+    }
+  }
+
   async getModels(): Promise<TldwModel[]> {
     // Prefer flattened metadata endpoint when available
     try {
@@ -292,6 +307,18 @@ export class TldwApiClient {
     return await bgRequest<any>({ path: '/api/v1/media/add', method: 'POST', headers: { 'Content-Type': 'application/json' }, body: { url, ...rest }, timeoutMs })
   }
 
+  async addMediaForm(fields: Record<string, any>): Promise<any> {
+    // Multipart form for rich ingest parameters
+    // Accepts a flat fields map; callers may pass booleans/strings and they will be converted
+    const normalized: Record<string, any> = {}
+    for (const [k, v] of Object.entries(fields || {})) {
+      if (typeof v === 'undefined' || v === null) continue
+      if (typeof v === 'boolean') normalized[k] = v ? 'true' : 'false'
+      else normalized[k] = v
+    }
+    return await bgUpload<any>({ path: '/api/v1/media/add', method: 'POST', fields: normalized })
+  }
+
   async ingestWebContent(url: string, options?: any): Promise<any> {
     const { timeoutMs, ...rest } = options || {}
     return await bgRequest<any>({ path: '/api/v1/media/ingest-web-content', method: 'POST', headers: { 'Content-Type': 'application/json' }, body: { url, ...rest }, timeoutMs })
@@ -315,6 +342,28 @@ export class TldwApiClient {
   async searchPrompts(query: string): Promise<any> {
     // TODO: confirm trailing slash per OpenAPI (`/api/v1/prompts/search` exists without slash)
     return await bgRequest<any>({ path: '/api/v1/prompts/search', method: 'POST', headers: { 'Content-Type': 'application/json' }, body: { query } })
+  }
+
+  async createPrompt(payload: { title: string; content: string; is_system?: boolean }): Promise<any> {
+    try {
+      return await bgRequest<any>({ path: '/api/v1/prompts/', method: 'POST', headers: { 'Content-Type': 'application/json' }, body: payload })
+    } catch (e) {
+      // Some servers may use a different path without trailing slash
+      try {
+        return await bgRequest<any>({ path: '/api/v1/prompts', method: 'POST', headers: { 'Content-Type': 'application/json' }, body: payload })
+      } catch (err) {
+        throw err
+      }
+    }
+  }
+
+  async updatePrompt(id: string | number, payload: { title: string; content: string; is_system?: boolean }): Promise<any> {
+    const pid = String(id)
+    try {
+      return await bgRequest<any>({ path: `/api/v1/prompts/${pid}`, method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: payload })
+    } catch {
+      return await bgRequest<any>({ path: `/api/v1/prompts/${pid}/`, method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: payload })
+    }
   }
 
   // STT Methods

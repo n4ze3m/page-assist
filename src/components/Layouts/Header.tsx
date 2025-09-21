@@ -20,6 +20,8 @@ import { useQuery } from "@tanstack/react-query"
 import { fetchChatModels } from "@/services/tldw-server"
 import { useMessageOption } from "~/hooks/useMessageOption"
 import { Avatar, Select, Tooltip, Popover, Input } from "antd"
+import QuickIngestModal from "../Common/QuickIngestModal"
+import { PaperclipIcon } from "lucide-react"
 import { getAllPrompts } from "@/db/dexie/helpers"
 import { ProviderIcons } from "../Common/ProviderIcon"
 import { NewChat } from "./NewChat"
@@ -73,6 +75,7 @@ export const Header: React.FC<Props> = ({
   const { pathname } = useLocation()
   const [chatTitle, setChatTitle] = React.useState("")
   const [isEditingTitle, setIsEditingTitle] = React.useState(false)
+  const [quickIngestOpen, setQuickIngestOpen] = React.useState(false)
 
   React.useEffect(() => {
     (async () => {
@@ -251,6 +254,14 @@ export const Header: React.FC<Props> = ({
       <div className="flex flex-1 justify-end px-4">
         <div className="ml-4 flex items-center md:ml-6">
           <div className="flex gap-4 items-center">
+            <Tooltip title={'Quick ingest media'}>
+              <button
+                onClick={() => setQuickIngestOpen(true)}
+                className="!text-gray-500 dark:text-gray-300 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+              >
+                <PaperclipIcon className="w-6 h-6" />
+              </button>
+            </Tooltip>
             {messages.length > 0 && !streaming && (
               <MoreOptions
                 shareModeEnabled={shareModeEnabled}
@@ -320,6 +331,7 @@ export const Header: React.FC<Props> = ({
           </div>
         </div>
       </div>
+      <QuickIngestModal open={quickIngestOpen} onClose={() => setQuickIngestOpen(false)} />
     </div>
   )
 }

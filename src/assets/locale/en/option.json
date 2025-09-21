@@ -25,5 +25,45 @@
             "image": "Image (.png)"
         },
         "share": "Share"
+    },
+    "promptSearch": {
+        "title": "Title",
+        "content": "Content",
+        "systemPrompt": "System prompt",
+        "alsoSaveRemote": "Also save to server",
+        "cancel": "Cancel",
+        "insert": "Insert",
+        "saveAsNew": "Save as new",
+        "saveLocal": "Save changes (local)",
+        "saveServer": "Save changes (server)",
+        "saveLocalCopy": "Save local copy",
+        "saveServerOnly": "Save as new (server only)",
+        "saveLocalSuccess": "Prompt updated locally",
+        "saveServerSuccess": "Prompt updated on server",
+        "saveLocalFailed": "Failed to update local prompt",
+        "saveServerFailed": "Failed to update server prompt",
+        "manageLink": "View / Manage Prompts",
+        "overwriteLocalLabel": "Overwrite local prompt (optional)",
+        "overwriteLocalPlaceholder": "Select a local prompt to overwrite",
+        "saveSuccess": "Prompt saved",
+        "saveFailed": "Failed to save prompt"
+    },
+    "quickIngest": {
+        "title": "Quick Ingest Media",
+        "subtitle": "Enter one or more URLs. Force type per row if needed.",
+        "storeRemote": "Store to remote DB",
+        "bulkPlaceholder": "Paste URLs (one per line)",
+        "or": "or",
+        "remove": "Remove",
+        "add": "Add URL",
+        "audioOptions": "Audio options",
+        "audioLanguage": "Language (e.g., en)",
+        "documentOptions": "Document options",
+        "videoOptions": "Video options",
+        "cancel": "Cancel",
+        "ingest": "Ingest",
+        "process": "Process",
+        "results": "Results",
+        "downloadJson": "Download JSON"
     }
 }

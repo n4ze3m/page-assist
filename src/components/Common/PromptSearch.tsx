@@ -1,10 +1,14 @@
 import React from 'react'
-import { Input, List, Tag, Space, Tooltip, Modal, Checkbox, Button } from 'antd'
+import { Input, List, Tag, Space, Tooltip, Modal, Checkbox, Button, message, Select } from 'antd'
 import { useTranslation } from 'react-i18next'
 import { useQuery } from '@tanstack/react-query'
 import { getAllPrompts } from '@/db/dexie/helpers'
 import { useStorage } from '@plasmohq/storage/hook'
 import { tldwClient } from '@/services/tldw/TldwApiClient'
+import { savePromptFB, updatePromptFB } from '@/db'
+import { generateID, updateLastUsedPrompt as updateLastUsedPromptDB } from '@/db/dexie/helpers'
+import { useMessageOption } from "@/hooks/useMessageOption"
+import { Link } from 'react-router-dom'
 
 type PromptItem = { id?: string; title: string; content: string; is_system?: boolean; source: 'local' | 'server' }
 
@@ -15,6 +19,7 @@ type Props = {
 
 export const PromptSearch: React.FC<Props> = ({ onInsertMessage, onInsertSystem }) => {
   const { t } = useTranslation(['option'])
+  const { historyId } = useMessageOption()
   const [remote, setRemote] = useStorage('promptSearchIncludeServer', false)
   const [q, setQ] = React.useState('')
   const [open, setOpen] = React.useState(false)
@@ -25,6 +30,8 @@ export const PromptSearch: React.FC<Props> = ({ onInsertMessage, onInsertSystem 
   const [editTitle, setEditTitle] = React.useState('')
   const [editContent, setEditContent] = React.useState('')
   const [editIsSystem, setEditIsSystem] = React.useState<boolean>(false)
+  const [saveRemote, setSaveRemote] = React.useState<boolean>(false)
+  const [localOverwriteId, setLocalOverwriteId] = React.useState<string | undefined>(undefined)
 
   const { data: localPrompts } = useQuery({ queryKey: ['promptSearchAll'], queryFn: getAllPrompts })
 
@@ -69,6 +76,20 @@ export const PromptSearch: React.FC<Props> = ({ onInsertMessage, onInsertSystem 
     setEditorOpen(true)
   }
 
+  const handleInsert = async () => {
+    if (editIsSystem) onInsertSystem(editContent)
+    else onInsertMessage(editContent)
+    try {
+      if (historyId && historyId !== 'temp') {
+        await updateLastUsedPromptDB(historyId, {
+          prompt_id: selected?.source === 'local' && selected?.id ? String(selected.id) : undefined,
+          prompt_content: editContent
+        })
+      }
+    } catch {}
+    setEditorOpen(false)
+  }
+
   return (
     <div className="w-72">
       <Tooltip title={remote ? 'Search local + server prompts' : 'Search local prompts'}>
@@ -110,20 +131,91 @@ export const PromptSearch: React.FC<Props> = ({ onInsertMessage, onInsertSystem 
         destroyOnClose
         centered
       >
-        <Space direction="vertical" className="w-full">
-          <label className="text-xs text-gray-500">Title</label>
+        <Space direction="vertical" className="w-full" onKeyDown={(e) => { if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); handleInsert() } }}>
+          <label className="text-xs text-gray-500">{t('promptSearch.title')}</label>
           <Input value={editTitle} onChange={(e) => setEditTitle(e.target.value)} />
-          <label className="text-xs text-gray-500">Content</label>
-          <Input.TextArea value={editContent} onChange={(e) => setEditContent(e.target.value)} autoSize={{ minRows: 6 }} />
-          <Checkbox checked={editIsSystem} onChange={(e) => setEditIsSystem(e.target.checked)}>System prompt</Checkbox>
-          <div className="flex justify-end gap-2 mt-2">
-            <Button onClick={() => setEditorOpen(false)}>Cancel</Button>
-            <Button type="primary" onClick={() => {
-              // Insert per choice; if system toggle is on, prefer system insert
-              if (editIsSystem) onInsertSystem(editContent)
-              else onInsertMessage(editContent)
-              setEditorOpen(false)
-            }}>Insert</Button>
+          <label className="text-xs text-gray-500">{t('promptSearch.content')}</label>
+          <Input.TextArea value={editContent} onChange={(e) => setEditContent(e.target.value)} autoSize={{ minRows: 6 }} onKeyDown={(e) => { if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); handleInsert() } }} />
+          <Checkbox checked={editIsSystem} onChange={(e) => setEditIsSystem(e.target.checked)}>{t('promptSearch.systemPrompt')}</Checkbox>
+          <Checkbox checked={saveRemote} onChange={(e) => setSaveRemote(e.target.checked)}>{t('promptSearch.alsoSaveRemote')}</Checkbox>
+          {selected?.source === 'server' && (
+            <div className="mt-1">
+              <label className="text-xs text-gray-500">{t('promptSearch.overwriteLocalLabel') || 'Overwrite local prompt (optional)'}</label>
+              <Select
+                className="w-full"
+                allowClear
+                placeholder={t('promptSearch.overwriteLocalPlaceholder') || 'Select a local prompt to overwrite'}
+                value={localOverwriteId}
+                options={(localPrompts || []).map((p) => ({ value: p.id, label: p.title }))}
+                onChange={(v) => setLocalOverwriteId(v)}
+              />
+            </div>
+          )}
+          <div className="flex items-center justify-between gap-2 mt-2 flex-wrap">
+            <Link to="/settings/prompt" className="text-xs underline text-gray-600 dark:text-gray-300">{t('promptSearch.manageLink') || 'View/Manage Prompts'}</Link>
+            <div className="flex gap-2 flex-wrap">
+              <Button onClick={() => setEditorOpen(false)}>{t('promptSearch.cancel')}</Button>
+              <Button type="primary" title="Ctrl/Cmd+Enter" onClick={handleInsert}>{t('promptSearch.insert')}</Button>
+            {selected?.source === 'local' && selected?.id && (
+              <Button onClick={async () => {
+                try {
+                  await updatePromptFB({ id: String(selected.id), title: editTitle || 'Untitled', content: editContent, is_system: !!editIsSystem })
+                  message.success(t('promptSearch.saveLocalSuccess') || 'Saved')
+                } catch (e: any) {
+                  message.error(e?.message || t('promptSearch.saveLocalFailed') || 'Failed')
+                }
+              }}>{t('promptSearch.saveLocal') || 'Save changes (local)'}</Button>
+            )}
+            {selected?.source === 'server' && selected?.id && (
+              <Button onClick={async () => {
+                try {
+                  await tldwClient.updatePrompt(String(selected.id), { title: editTitle || 'Untitled', content: editContent, is_system: !!editIsSystem })
+                  message.success(t('promptSearch.saveServerSuccess') || 'Saved')
+                } catch (e: any) {
+                  message.error(e?.message || t('promptSearch.saveServerFailed') || 'Failed')
+                }
+              }}>{t('promptSearch.saveServer') || 'Save changes (server)'}</Button>
+            )}
+            {selected?.source === 'server' && (
+              <Button onClick={async () => {
+                try {
+                  if (localOverwriteId) {
+                    await updatePromptFB({ id: localOverwriteId, title: editTitle || 'Untitled', content: editContent, is_system: !!editIsSystem })
+                    message.success(t('promptSearch.saveLocalSuccess') || 'Saved')
+                  } else {
+                    const id = generateID()
+                    await savePromptFB({ id, title: editTitle || 'Untitled', content: editContent, is_system: !!editIsSystem, createdAt: Date.now() })
+                    message.success(t('promptSearch.saveLocalSuccess') || 'Saved')
+                  }
+                } catch (e: any) {
+                  message.error(e?.message || t('promptSearch.saveLocalFailed') || 'Failed')
+                }
+              }}>{t('promptSearch.saveLocalCopy') || 'Save local copy'}</Button>
+            )}
+            <Button onClick={async () => {
+              try {
+                const now = Date.now()
+                const id = generateID()
+                await savePromptFB({ id, title: editTitle || 'Untitled', content: editContent, is_system: !!editIsSystem, createdAt: now })
+                if (saveRemote) {
+                  try { await tldwClient.createPrompt({ title: editTitle || 'Untitled', content: editContent, is_system: !!editIsSystem }) } catch {}
+                }
+                message.success(t('promptSearch.saveSuccess'))
+              } catch (e: any) {
+                message.error(e?.message || t('promptSearch.saveFailed'))
+              }
+            }}>{t('promptSearch.saveAsNew')}</Button>
+            {selected?.source === 'server' && (
+              <Button onClick={async () => {
+                try {
+                  await tldwClient.createPrompt({ title: editTitle || 'Untitled', content: editContent, is_system: !!editIsSystem })
+                  message.success(t('promptSearch.saveServerSuccess') || 'Saved')
+                } catch (e: any) {
+                  message.error(e?.message || t('promptSearch.saveServerFailed') || 'Failed')
+                }
+              }}>{t('promptSearch.saveServerOnly') || 'Save as new (server only)'}</Button>
+            )}
+            </div>
           </div>
         </Space>
       </Modal>
@@ -132,4 +224,3 @@ export const PromptSearch: React.FC<Props> = ({ onInsertMessage, onInsertSystem 
 }
 
 export default PromptSearch
-
