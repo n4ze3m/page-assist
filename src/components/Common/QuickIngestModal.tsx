@@ -97,8 +97,21 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
             perform_chunking: common.perform_chunking,
             overwrite_existing: common.overwrite_existing
           }
-          // Merge advanced values
-          for (const [k, v] of Object.entries(advancedValues)) fields[k] = v
+          // Merge advanced values; rebuild nested structure for dot-notation keys
+          const nested: Record<string, any> = {}
+          const assignPath = (obj: any, path: string[], val: any) => {
+            let cur = obj
+            for (let i = 0; i < path.length; i++) {
+              const seg = path[i]
+              if (i === path.length - 1) cur[seg] = val
+              else cur = (cur[seg] = cur[seg] || {})
+            }
+          }
+          for (const [k, v] of Object.entries(advancedValues)) {
+            if (k.includes('.')) assignPath(nested, k.split('.'), v)
+            else fields[k] = v
+          }
+          for (const [k, v] of Object.entries(nested)) fields[k] = v
           if (r.audio?.language) fields['transcription_language'] = r.audio.language
           if (typeof r.audio?.diarize === 'boolean') fields['diarize'] = r.audio.diarize
           if (typeof r.video?.captions === 'boolean') fields['timestamp_option'] = r.video.captions
@@ -107,7 +120,20 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
           data = await tldwClient.addMediaForm(fields)
         } else {
           // Process only (no store)
-          data = await tldwClient.ingestWebContent(r.url, { type: t, audio: r.audio, document: r.document, video: r.video, ...common, ...advancedValues })
+          const nestedBody: Record<string, any> = {}
+          const assignPath = (obj: any, path: string[], val: any) => {
+            let cur = obj
+            for (let i = 0; i < path.length; i++) {
+              const seg = path[i]
+              if (i === path.length - 1) cur[seg] = val
+              else cur = (cur[seg] = cur[seg] || {})
+            }
+          }
+          for (const [k, v] of Object.entries(advancedValues)) {
+            if (k.includes('.')) assignPath(nestedBody, k.split('.'), v)
+            else nestedBody[k] = v
+          }
+          data = await tldwClient.ingestWebContent(r.url, { type: t, audio: r.audio, document: r.document, video: r.video, ...common, ...nestedBody })
         }
         out.push({ id: r.id, status: 'ok', url: r.url, type: t, data })
         setResults([...out])
@@ -165,19 +191,85 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
   }
 
   const parseSpec = (spec: any) => {
+    const getByRef = (ref: string): any => {
+      // Handles refs like '#/components/schemas/MediaIngestRequest'
+      if (!ref || typeof ref !== 'string' || !ref.startsWith('#/')) return null
+      const parts = ref.slice(2).split('/')
+      let cur: any = spec
+      for (const p of parts) {
+        if (cur && typeof cur === 'object' && p in cur) cur = cur[p]
+        else return null
+      }
+      return cur
+    }
+
+    const resolveRef = (schema: any): any => {
+      if (!schema) return {}
+      if (schema.$ref) {
+        const target = getByRef(schema.$ref)
+        return target ? resolveRef(target) : {}
+      }
+      return schema
+    }
+
+    const mergeProps = (schema: any): Record<string, any> => {
+      const s = resolveRef(schema)
+      let props: Record<string, any> = {}
+      if (!s || typeof s !== 'object') return props
+      // Merge from compositions
+      for (const key of ['allOf', 'oneOf', 'anyOf'] as const) {
+        if (Array.isArray((s as any)[key])) {
+          for (const sub of (s as any)[key]) {
+            props = { ...props, ...mergeProps(sub) }
+          }
+        }
+      }
+      if (s.properties && typeof s.properties === 'object') {
+        for (const [k, v] of Object.entries<any>(s.properties)) {
+          props[k] = resolveRef(v)
+        }
+      }
+      return props
+    }
+
+    const flattenProps = (obj: Record<string, any>, parent = ''): Array<[string, any]> => {
+      const out: Array<[string, any]> = []
+      for (const [k, v0] of Object.entries<any>(obj || {})) {
+        const v = resolveRef(v0)
+        const name = parent ? `${parent}.${k}` : k
+        const isObj = (v?.type === 'object' && v?.properties && typeof v.properties === 'object')
+        if (isObj) {
+          const child = mergeProps(v)
+          out.push(...flattenProps(child, name))
+        } else {
+          out.push([name, v])
+        }
+      }
+      return out
+    }
+
     const paths = spec?.paths || {}
     const mediaAdd = paths['/api/v1/media/add'] || paths['/api/v1/media/add/']
     const content = mediaAdd?.post?.requestBody?.content || {}
-    const mp = content['multipart/form-data'] || content['application/x-www-form-urlencoded'] || {}
-    const props = mp?.schema?.properties || {}
+    const mp = content['multipart/form-data'] || content['application/x-www-form-urlencoded'] || content['application/json'] || {}
+    const rootSchema = mp?.schema || {}
+    const props = mergeProps(rootSchema)
+    const flat = flattenProps(props)
+
     const entries: Array<{ name: string; type: string; enum?: any[]; description?: string; title?: string; group: string }> = []
     // Expose all available ingestion-time options, except input list and media type selector which are handled above
     const exclude = new Set([ 'urls', 'media_type' ])
-    for (const [name, def] of Object.entries<any>(props)) {
+    for (const [name, def0] of flat) {
       if (exclude.has(name)) continue
-      const type = Array.isArray(def?.type) ? def.type[0] : (def?.type || 'string')
+      const def = resolveRef(def0)
+      // Infer a reasonable type
+      let type: string = 'string'
+      if (def.type) type = Array.isArray(def.type) ? String(def.type[0]) : String(def.type)
+      else if (def.enum) type = 'string'
+      else if (def.anyOf || def.oneOf) type = 'string'
       const en = Array.isArray(def?.enum) ? def.enum : undefined
-      entries.push({ name, type: String(type), enum: en, description: def?.description, title: def?.title, group: groupForField(name) })
+      const description = def?.description || def?.title || undefined
+      entries.push({ name, type, enum: en, description, title: def?.title, group: groupForField(name) })
     }
     entries.sort((a,b) => a.name.localeCompare(b.name))
     setAdvSchema(entries)

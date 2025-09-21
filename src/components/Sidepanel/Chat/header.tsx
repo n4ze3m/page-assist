@@ -90,7 +90,7 @@ export const SidepanelHeader = ({
   return (
     <div
       data-istemporary-chat={temporaryChat}
-      className=" px-3 justify-between bg-white dark:bg-[#171717] border-b border-gray-300 dark:border-gray-700 py-4 items-center absolute top-0 z-10 flex h-14 w-full data-[istemporary-chat='true']:bg-purple-400 data-[istemporary-chat='true']:dark:bg-purple-950">
+      className=" px-3 justify-between bg-white dark:bg-[#171717] border-b border-gray-300 dark:border-gray-700 py-4 items-center absolute top-0 z-10 flex h-14 w-full data-[istemporary-chat='true']:bg-purple-700 data-[istemporary-chat='true']:dark:bg-purple-950">
       <div className="focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-700 flex items-center dark:text-white">
         <img
           className="h-6 w-auto"
@@ -231,7 +231,7 @@ export const SidepanelHeader = ({
           aria-label={t('sidepanel:header.tempChatAria')}
           aria-pressed={temporaryChat}
           data-istemporary-chat={temporaryChat}
-          className="flex items-center text-gray-500 dark:text-gray-400 space-x-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-700 rounded-full p-1 data-[istemporary-chat='true']:bg-purple-400 data-[istemporary-chat='true']:dark:bg-purple-900 data-[istemporary-chat='true']:text-purple-900 data-[istemporary-chat='true']:dark:text-purple-300">
+          className="flex items-center text-gray-500 dark:text-gray-400 space-x-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-700 rounded-full p-1 data-[istemporary-chat='true']:bg-purple-700 data-[istemporary-chat='true']:dark:bg-purple-900 data-[istemporary-chat='true']:text-white data-[istemporary-chat='true']:dark:text-purple-200">
           <BsIncognito className="size-4" />
           {temporaryChat && <span className="text-xs font-medium px-1">{t('sidepanel:header.tempPill')}</span>}
         </button>
