@@ -15,6 +15,7 @@ import { useLocation, NavLink } from "react-router-dom"
 import { SelectedKnowledge } from "../Option/Knowledge/SelectedKnowledge"
 import { ModelSelect } from "../Common/ModelSelect"
 import { PromptSelect } from "../Common/PromptSelect"
+import PromptSearch from "../Common/PromptSearch"
 import { useQuery } from "@tanstack/react-query"
 import { fetchChatModels } from "@/services/tldw-server"
 import { useMessageOption } from "~/hooks/useMessageOption"
@@ -199,35 +200,20 @@ export const Header: React.FC<Props> = ({
         <span className="text-lg font-thin text-zinc-300 dark:text-zinc-600">
           {"/"}
         </span>
-        <div className="hidden lg:block">
-          <Select
-            size="large"
-            loading={isPromptLoading}
-            showSearch
-            placeholder={t("selectAPrompt")}
-            className="w-60"
-            allowClear
-            onChange={handlePromptChange}
-            value={selectedSystemPrompt}
-            filterOption={(input, option) =>
-              //@ts-ignore
-              option.label.key.toLowerCase().indexOf(input.toLowerCase()) >= 0
-            }
-            options={prompts?.map((prompt) => ({
-              label: (
-                <span
-                  key={prompt.title}
-                  className="flex flex-row gap-3 items-center">
-                  {prompt.is_system ? (
-                    <ComputerIcon className="w-4 h-4" />
-                  ) : (
-                    <ZapIcon className="w-4 h-4" />
-                  )}
-                  {prompt.title}
-                </span>
-              ),
-              value: prompt.id
-            }))}
+        <div className="hidden lg:block relative">
+          <PromptSearch
+            onInsertMessage={(content) => {
+              setSelectedSystemPrompt(undefined)
+              setSelectedQuickPrompt(content)
+            }}
+            onInsertSystem={(content) => {
+              setSelectedSystemPrompt(undefined)
+              // Ensure this applies to current conversation system prompt
+              import('@/store/model').then(({ useStoreChatModelSettings }) => {
+                const { setSystemPrompt } = useStoreChatModelSettings.getState?.() || { setSystemPrompt: undefined }
+                if (setSystemPrompt) setSystemPrompt(content)
+              })
+            }}
           />
         </div>
         {/* Chat title next to prompt selection when persisted (non-anonymous) */}

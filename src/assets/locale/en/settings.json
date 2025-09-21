@@ -77,6 +77,9 @@
         "label": "Remove Reasoning Tag from Copied Text" 
       }
     },
+      "promptSearchIncludeServer": {
+        "label": "Include server prompts in prompt search"
+      },
     "system": {
       "heading": "System",
       "uiMode": {

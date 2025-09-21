@@ -85,6 +85,9 @@ export const GeneralSettings = () => {
   const [removeReasoningTagFromCopy, setRemoveReasoningTagFromCopy] =
     useStorage("removeReasoningTagFromCopy", true)
 
+  const [promptSearchIncludeServer, setPromptSearchIncludeServer] =
+    useStorage("promptSearchIncludeServer", false)
+
   const { mode, toggleDarkMode } = useDarkMode()
   const { t } = useTranslation("settings")
   const { changeLocale, locale, supportLanguage } = useI18n()
@@ -360,6 +363,16 @@ export const GeneralSettings = () => {
         <Switch
           checked={removeReasoningTagFromCopy}
           onChange={(checked) => setRemoveReasoningTagFromCopy(checked)}
+        />
+      </div>
+
+      <div className="flex flex-row justify-between">
+        <span className="text-gray-700 dark:text-neutral-50 ">
+          {t("generalSettings.settings.promptSearchIncludeServer.label")}
+        </span>
+        <Switch
+          checked={promptSearchIncludeServer}
+          onChange={setPromptSearchIncludeServer}
         />
       </div>
 
