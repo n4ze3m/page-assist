@@ -12,10 +12,11 @@ import {
   ActivityIcon
 } from "lucide-react"
 import { useTranslation } from "react-i18next"
-import { Link, useLocation } from "react-router-dom"
+import { Link, useLocation, useNavigate } from "react-router-dom"
 import { OllamaIcon } from "../Icons/Ollama"
 import { FileText } from "lucide-react"
 import { BetaTag } from "../Common/Beta"
+import { XIcon } from "lucide-react"
 import { Storage } from "@plasmohq/storage"
 import { browser } from "wxt/browser"
 
@@ -58,6 +59,7 @@ const LinkComponent = (item: {
 
 export const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
   const location = useLocation()
+  const navigate = useNavigate()
   const { t } = useTranslation(["settings", "common", "openai"])
   const sidepanelSupported =
     // @ts-ignore
@@ -69,7 +71,23 @@ export const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
           <div className="flex flex-col lg:flex-row lg:gap-x-16 lg:px-24">
             <aside className="sticky lg:mt-0 mt-14 top-0 z-20 bg-white dark:bg-[#171717] border-b dark:border-gray-600 lg:border-0 lg:bg-transparent lg:dark:bg-transparent">
               <nav className="w-full overflow-x-auto px-4 py-4 sm:px-6 lg:px-0 lg:py-0 lg:mt-20">
-                <div className="flex justify-end mb-3">
+                <div className="flex items-center justify-between mb-3">
+                  <button
+                    className="inline-flex items-center gap-1 text-xs border rounded px-2 py-1 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-[#262626]"
+                    title="Close settings and go back"
+                    onClick={(e) => {
+                      e.preventDefault()
+                      try {
+                        // Try router back; if none, go home
+                        navigate(-1)
+                      } catch {
+                        navigate('/')
+                      }
+                    }}
+                  >
+                    <XIcon className="h-4 w-4" />
+                    <span>Close</span>
+                  </button>
                   <button
                     className="text-xs border rounded px-2 py-1 text-gray-700 dark:text-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
                     disabled={!sidepanelSupported}
