@@ -100,7 +100,8 @@ export default function OptionLayout({
                 </Tooltip>
                 <button
                   onClick={() => setSidebarOpen(false)}
-                  className="md:hidden">
+                  aria-label="Close sidebar"
+                  title="Close sidebar">
                   <XIcon className="h-5 w-5 text-gray-500 dark:text-gray-400" />
                 </button>
               </div>

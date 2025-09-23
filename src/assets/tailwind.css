@@ -13,6 +13,20 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Simple fade-in animation for filter chips */
+@keyframes chip-in {
+  from { opacity: 0; transform: scale(0.98); }
+  to { opacity: 1; transform: scale(1); }
+}
+.chip-fade-in { animation: chip-in 150ms ease-out both; }
+
+/* Subtle result item entrance */
+@keyframes result-in {
+  from { opacity: 0; transform: translateY(2px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.result-fade-in { animation: result-in 140ms ease-out both; }
 @layer utilities {
   .mask-bottom-fade {
     mask-image: linear-gradient(0deg, transparent 0, #000 160px);

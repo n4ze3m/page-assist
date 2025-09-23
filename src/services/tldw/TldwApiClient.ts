@@ -114,7 +114,7 @@ export class TldwApiClient {
       // the OpenAPI path/method guard ("/openapi.json" is not a declared API path).
       if (!this.baseUrl) await this.initialize()
       if (this.baseUrl) {
-        return await bgRequest<any, `${'http' | 'https'}:${string}`>({ path: `${this.baseUrl.replace(/\/$/, '')}/openapi.json`, method: 'GET' })
+        return await bgRequest<any>({ path: `${this.baseUrl.replace(/\/$/, '')}/openapi.json` as any, method: 'GET' as any })
       }
     } catch {}
     try {

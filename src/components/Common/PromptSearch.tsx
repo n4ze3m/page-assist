@@ -113,7 +113,7 @@ export const PromptSearch: React.FC<Props> = ({ onInsertMessage, onInsertSystem 
                 <div className="truncate text-sm">
                   <div className="flex items-center justify-between gap-2">
                     <span className="font-medium">{item.title}</span>
-                    <Tag size="small" color={item.source === 'server' ? 'geekblue' : 'default'}>{item.source}</Tag>
+                    <Tag color={item.source === 'server' ? 'geekblue' : 'default'}>{item.source}</Tag>
                   </div>
                   <div className="text-xs text-gray-500 dark:text-gray-400 line-clamp-2">{item.content}</div>
                 </div>

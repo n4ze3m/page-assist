@@ -330,15 +330,15 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
         used = 'bundled'
       } catch {
         setAdvSchema([
-          { name: 'context_window_size', type: 'integer' },
-          { name: 'generate_embeddings', type: 'boolean' },
-          { name: 'embedding_model', type: 'string' },
-          { name: 'embedding_provider', type: 'string' },
-          { name: 'perform_rolling_summarization', type: 'boolean' },
-          { name: 'perform_confabulation_check_of_analysis', type: 'boolean' },
-          { name: 'system_prompt', type: 'string' },
-          { name: 'custom_prompt', type: 'string' },
-          { name: 'title', type: 'string' }
+          { name: 'context_window_size', type: 'integer', group: groupForField('context_window_size') },
+          { name: 'generate_embeddings', type: 'boolean', group: groupForField('generate_embeddings') },
+          { name: 'embedding_model', type: 'string', group: groupForField('embedding_model') },
+          { name: 'embedding_provider', type: 'string', group: groupForField('embedding_provider') },
+          { name: 'perform_rolling_summarization', type: 'boolean', group: groupForField('perform_rolling_summarization') },
+          { name: 'perform_confabulation_check_of_analysis', type: 'boolean', group: groupForField('perform_confabulation_check_of_analysis') },
+          { name: 'system_prompt', type: 'string', group: groupForField('system_prompt') },
+          { name: 'custom_prompt', type: 'string', group: groupForField('custom_prompt') },
+          { name: 'title', type: 'string', group: groupForField('title') }
         ])
         used = 'none'
       }

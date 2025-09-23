@@ -169,7 +169,7 @@ export class TldwAuthService {
     const base = String(serverUrl).replace(/\/$/, '')
     try {
       // Use an absolute URL and bypass injected auth to verify the provided key directly
-      await bgRequest<any>({ path: `${base}/api/v1/llm/models`, method: 'GET', headers: { 'X-API-KEY': apiKey }, noAuth: true })
+      await bgRequest<any>({ path: `${base}/api/v1/llm/models` as any, method: 'GET' as any, headers: { 'X-API-KEY': apiKey }, noAuth: true })
       return true
     } catch (error: any) {
       console.error('API key test failed:', error?.message || error)

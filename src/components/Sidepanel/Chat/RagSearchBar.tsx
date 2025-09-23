@@ -153,7 +153,7 @@ export const RagSearchBar: React.FC<Props> = ({ onInsert, onAsk }) => {
                 {t('sidepanel:rag.timeout.message')}
                 <div className="mt-1 flex items-center gap-2">
                   <Button size="small" onClick={() => { setTimeoutSec((v) => Number(v||10) + 5); runSearch() }}>{t('sidepanel:rag.timeout.increase')}</Button>
-                  <Button size="small" type="link" onClick={() => { try { const url = browser.runtime.getURL('options.html#/settings/health'); browser.tabs.create({ url }) } catch { window.open('#/settings/health', '_blank') } }}>{t('sidepanel:rag.timeout.checkHealth')}</Button>
+                  <Button size="small" type="link" onClick={() => { try { const url = browser.runtime.getURL('/options.html#/settings/health'); browser.tabs.create({ url }) } catch { window.open('#/settings/health', '_blank') } }}>{t('sidepanel:rag.timeout.checkHealth')}</Button>
                 </div>
               </div>
             ) : results.length === 0 ? (

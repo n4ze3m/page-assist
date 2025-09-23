@@ -19,7 +19,7 @@ import React from "react"
 import { useStorage } from "@plasmohq/storage/hook"
 import { PromptSelect } from "@/components/Common/PromptSelect"
 import { Sidebar } from "@/components/Option/Sidebar"
-import { BsIncognito } from "react-icons/bs"
+// import { BsIncognito } from "react-icons/bs"
 import { isFireFoxPrivateMode } from "@/utils/is-private-mode"
 import { Tooltip as AntdTooltip } from 'antd'
 
@@ -112,7 +112,7 @@ export const SidepanelHeader = ({
                   await browser.runtime.sendMessage({ type: 'tldw:ingest', mode: 'store', timeoutMs: Math.max(1, Math.round(Number(ingestTimeoutSec)||120))*1000 })
                   const btn = (
                     <Button size="small" type="link" onClick={() => {
-                      const url = browser.runtime.getURL("options.html#/settings/processed")
+                      const url = browser.runtime.getURL("/options.html#/settings/processed")
                       browser.tabs.create({ url })
                     }}>{t('sidepanel:header.viewProcessed')}</Button>
                   )
@@ -126,7 +126,7 @@ export const SidepanelHeader = ({
                   await browser.runtime.sendMessage({ type: 'tldw:ingest', mode: 'process', timeoutMs: Math.max(1, Math.round(Number(ingestTimeoutSec)||120))*1000 })
                   const btn = (
                     <Button size="small" type="link" onClick={() => {
-                      const url = browser.runtime.getURL("options.html#/settings/processed")
+                      const url = browser.runtime.getURL("/options.html#/settings/processed")
                       browser.tabs.create({ url })
                     }}>{t('sidepanel:header.viewProcessed')}</Button>
                   )
@@ -158,7 +158,7 @@ export const SidepanelHeader = ({
               </button>
               <button
                 onClick={() => {
-                  const url = browser.runtime.getURL('options.html#/docs/shortcuts')
+                  const url = browser.runtime.getURL('/options.html#/docs/shortcuts')
                   browser.tabs.create({ url })
                 }}
                 className="text-left text-sm px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
@@ -211,30 +211,7 @@ export const SidepanelHeader = ({
           </button>
         )}
 
-        <button
-          title={t("option:temporaryChat")}
-          onClick={() => {
-            if (isFireFoxPrivateMode) {
-              notification.error({
-                message: "Error",
-                description:
-                  "Page Assist can't save chat in Firefox Private Mode. Temporary chat is enabled by default. More fixes coming soon."
-              })
-              return
-            }
-
-            setTemporaryChat(!temporaryChat)
-            if (messages.length > 0) {
-              clearChat()
-            }
-          }}
-          aria-label={t('sidepanel:header.tempChatAria')}
-          aria-pressed={temporaryChat}
-          data-istemporary-chat={temporaryChat}
-          className="flex items-center text-gray-500 dark:text-gray-400 space-x-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-700 rounded-full p-1 data-[istemporary-chat='true']:bg-purple-900 data-[istemporary-chat='true']:dark:bg-purple-900 data-[istemporary-chat='true']:text-white data-[istemporary-chat='true']:dark:text-white data-[istemporary-chat='true']:ring-2 data-[istemporary-chat='true']:ring-purple-300 data-[istemporary-chat='true']:shadow data-[istemporary-chat='true']:shadow-purple-500/30">
-          <BsIncognito className="size-4" />
-          {temporaryChat && <span className="text-xs font-medium px-1">{t('sidepanel:header.tempPill')}</span>}
-        </button>
+        {/* Private chat toggle moved into chat input controls */}
 
         {history.length > 0 && (
           <button
@@ -264,16 +241,7 @@ export const SidepanelHeader = ({
           iconClassName="size-4"
           className="text-gray-500 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
         />
-        {!hideCurrentChatModelSettings && (
-          <Tooltip title={t("common:currentChatModelSettings")}>
-            <button
-              onClick={() => setOpenModelSettings(true)}
-              aria-label={t('sidepanel:header.openModelSettingsAria')}
-              className="text-gray-500 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
-              <BrainCog className="size-4" />
-            </button>
-          </Tooltip>
-        )}
+        {/* Conversation settings button moved next to submit in input bar */}
         <Link to="/settings">
           <CogIcon aria-label={t('sidepanel:header.openSettingsAria')} className="size-4 text-gray-500 dark:text-gray-400" />
         </Link>

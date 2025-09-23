@@ -136,7 +136,7 @@ export const TldwSettings = () => {
         // We intentionally use an invalid model id; if auth is valid, server should respond 400/404/422, not 401
         const { apiSend } = await import('@/services/api-send')
         const resp = await apiSend({
-          path: `${String(values.serverUrl).replace(/\/$/, '')}/api/v1/chat/completions`,
+          path: `${String(values.serverUrl).replace(/\/$/, '')}/api/v1/chat/completions` as any,
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'X-API-KEY': String(values.apiKey).trim() },
           body: { model: '__validation__', messages: [{ role: 'user', content: 'ping' }], stream: false },
@@ -153,7 +153,7 @@ export const TldwSettings = () => {
         // Test basic health endpoint via background proxy
         const { apiSend } = await import('@/services/api-send')
         const resp = await apiSend({
-          path: `${String(values.serverUrl).replace(/\/$/, '')}/api/v1/health`,
+          path: `${String(values.serverUrl).replace(/\/$/, '')}/api/v1/health` as any,
           method: 'GET'
         })
         success = !!resp?.ok
