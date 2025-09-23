@@ -95,22 +95,6 @@ export const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
                     title="Switch to Sidebar">
                     Switch to Sidebar
                   </button>
-                  <button
-                    className="inline-flex items-center gap-1 text-xs border rounded px-2 py-1 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-[#262626]"
-                    title="Close settings and go back"
-                    onClick={(e) => {
-                      e.preventDefault()
-                      try {
-                        // Try router back; if none, go home
-                        navigate(-1)
-                      } catch {
-                        navigate('/')
-                      }
-                    }}
-                  >
-                    <XIcon className="h-4 w-4" />
-                    <span>Close</span>
-                  </button>
                 </div>
                 <ul
                   role="list"
@@ -178,12 +162,6 @@ export const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
                     current={location.pathname}
                   />
                   <LinkComponent
-                    href="/settings/processed"
-                    name={"Processed"}
-                    icon={FileText}
-                    current={location.pathname}
-                  />
-                  <LinkComponent
                     href="/settings/health"
                     name={"Health"}
                     icon={ActivityIcon}
@@ -198,7 +176,25 @@ export const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
                 </ul>
               </nav>
             </aside>
-            <main className="flex-1 px-4 py-8 sm:px-6 lg:px-0 lg:py-20">
+            <main className="relative flex-1 px-4 py-8 sm:px-6 lg:px-0 lg:py-20">
+              {/* Close button over right of content area */}
+              <div className="absolute right-4 top-4 lg:right-0 lg:top-6 lg:translate-x-[-1rem]">
+                <button
+                  className="inline-flex items-center gap-1 text-xs border rounded px-2 py-1 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-[#262626]"
+                  title="Close settings and go back"
+                  onClick={(e) => {
+                    e.preventDefault()
+                    try {
+                      navigate(-1)
+                    } catch {
+                      navigate('/')
+                    }
+                  }}
+                >
+                  <XIcon className="h-4 w-4" />
+                  <span>Close</span>
+                </button>
+              </div>
               <div className="mx-auto max-w-4xl space-y-8 sm:space-y-10">
                 {children}
               </div>

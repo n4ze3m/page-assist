@@ -111,9 +111,9 @@ export const SidepanelHeader = ({
                   await browser.runtime.sendMessage({ type: 'tldw:ingest', mode: 'store', timeoutMs: Math.max(1, Math.round(Number(ingestTimeoutSec)||120))*1000 })
                   const btn = (
                     <Button size="small" type="link" onClick={() => {
-                      const url = browser.runtime.getURL("/options.html#/settings/processed")
+                      const url = browser.runtime.getURL("/options.html#/media")
                       browser.tabs.create({ url })
-                    }}>{t('sidepanel:header.viewProcessed')}</Button>
+                    }}>View Media</Button>
                   )
                   notification.success({ message: t('sidepanel:notification.ingestSent'), description: t('sidepanel:notification.ingestSentDesc'), btn })
                 }}
@@ -125,9 +125,9 @@ export const SidepanelHeader = ({
                   await browser.runtime.sendMessage({ type: 'tldw:ingest', mode: 'process', timeoutMs: Math.max(1, Math.round(Number(ingestTimeoutSec)||120))*1000 })
                   const btn = (
                     <Button size="small" type="link" onClick={() => {
-                      const url = browser.runtime.getURL("/options.html#/settings/processed")
+                      const url = browser.runtime.getURL("/options.html#/media")
                       browser.tabs.create({ url })
-                    }}>{t('sidepanel:header.viewProcessed')}</Button>
+                    }}>View Media</Button>
                   )
                   notification.success({ message: t('sidepanel:notification.processedLocal'), description: t('sidepanel:notification.processedLocalDesc'), btn })
                 }}

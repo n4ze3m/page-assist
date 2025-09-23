@@ -231,7 +231,7 @@ export const TldwSettings = () => {
     <Spin spinning={loading}>
       <div className="max-w-2xl">
         <div className="mb-4 p-2 rounded border dark:border-gray-600 bg-white dark:bg-[#171717] flex items-center justify-between">
-          <div className="text-sm">
+          <div className="text-sm text-gray-800 dark:text-gray-100">
             <span className="mr-2 font-medium">Server:</span>
             <span className="text-gray-600 dark:text-gray-300 break-all">{serverUrl || 'Not configured'}</span>
           </div>
@@ -242,7 +242,7 @@ export const TldwSettings = () => {
             <Button type="primary" onClick={testConnection} loading={testingConnection}>Recheck</Button>
           </Space>
         </div>
-        <h2 className="text-base font-semibold mb-4">tldw Server Configuration</h2>
+        <h2 className="text-base font-semibold mb-4 text-gray-900 dark:text-gray-100">tldw Server Configuration</h2>
         
         <Form
           form={form}
