@@ -9,7 +9,8 @@ import {
   ChromeIcon,
   CpuIcon,
   ServerIcon,
-  ActivityIcon
+  ActivityIcon,
+  BookText
 } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { Link, useLocation, useNavigate } from "react-router-dom"
@@ -165,6 +166,12 @@ export const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
                     href="/settings/health"
                     name={"Health"}
                     icon={ActivityIcon}
+                    current={location.pathname}
+                  />
+                  <LinkComponent
+                    href="/media"
+                    name={"Media"}
+                    icon={BookText}
                     current={location.pathname}
                   />
                   <LinkComponent

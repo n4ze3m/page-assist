@@ -16,7 +16,8 @@ import {
   Pagination,
   Radio,
   notification,
-  Modal
+  Modal,
+  Dropdown
 } from "antd"
 import { useQuery } from "@tanstack/react-query"
 import { bgRequest } from "@/services/background-proxy"
@@ -91,6 +92,13 @@ export const ReviewPage: React.FC = () => {
     "Summarize the following content into key points and a brief abstract."
   )
   const [summaryUserPrefix, setSummaryUserPrefix] = React.useState<string>("")
+  // Quick prompt search states (dropdown editors)
+  const [revQ, setRevQ] = React.useState("")
+  const [revResults, setRevResults] = React.useState<Array<{ id?: string; title: string; content: string }>>([])
+  const [revLoading, setRevLoading] = React.useState(false)
+  const [sumQ, setSumQ] = React.useState("")
+  const [sumResults, setSumResults] = React.useState<Array<{ id?: string; title: string; content: string }>>([])
+  const [sumLoading, setSumLoading] = React.useState(false)
   const [page, setPage] = React.useState<number>(1)
   const [pageSize, setPageSize] = React.useState<number>(20)
   const [mediaTotal, setMediaTotal] = React.useState<number>(0)
@@ -1221,6 +1229,121 @@ export const ReviewPage: React.FC = () => {
               >
                 Customize prompts
               </button>
+              {/* Quick dropdown editors for prompts */}
+              <Dropdown
+                trigger={["click"]}
+                placement="bottomLeft"
+                dropdownRender={() => (
+                  <div className="p-2 w-[420px] bg-white dark:bg-[#171717] border dark:border-gray-700 rounded shadow">
+                    <div className="text-xs text-gray-500 mb-1">Search prompts (server)</div>
+                    <Input.Search
+                      value={revQ}
+                      onChange={(e) => setRevQ(e.target.value)}
+                      onSearch={async (q) => {
+                        if (!q.trim()) { setRevResults([]); return }
+                        setRevLoading(true)
+                        try {
+                          await tldwClient.initialize().catch(() => null)
+                          const res = await tldwClient.searchPrompts(q).catch(() => [])
+                          const list: any[] = Array.isArray(res) ? res : (res?.results || res?.prompts || [])
+                          setRevResults(list.map((x) => ({ id: x.id, title: String(x.title || x.name || 'Untitled'), content: String(x.content || x.prompt || '') })).slice(0, 50))
+                        } finally { setRevLoading(false) }
+                      }}
+                      loading={revLoading}
+                      placeholder="Search server prompts"
+                      allowClear
+                    />
+                    {revResults.length > 0 && (
+                      <div className="mt-2 max-h-40 overflow-auto rounded border dark:border-gray-700">
+                        <List
+                          size="small"
+                          dataSource={revResults}
+                          renderItem={(it) => (
+                            <List.Item className="!px-2 !py-1 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer" onMouseDown={(e) => e.preventDefault()} onClick={() => { setReviewSystemPrompt(it.content); setRevResults([]); }}>
+                              <div className="truncate text-sm">{it.title}</div>
+                            </List.Item>
+                          )}
+                        />
+                      </div>
+                    )}
+                    <div className="text-xs text-gray-500 mb-1">Review: System prompt</div>
+                    <textarea
+                      className="w-full text-sm p-2 rounded border dark:border-gray-700 dark:bg-[#171717] mt-1"
+                      rows={4}
+                      value={reviewSystemPrompt}
+                      onChange={(e) => setReviewSystemPrompt(e.target.value)}
+                    />
+                    <div className="text-xs text-gray-500 mt-2 mb-1">Review: User prompt prefix</div>
+                    <textarea
+                      className="w-full text-sm p-2 rounded border dark:border-gray-700 dark:bg-[#171717]"
+                      rows={3}
+                      value={reviewUserPrefix}
+                      onChange={(e) => setReviewUserPrefix(e.target.value)}
+                    />
+                  </div>
+                )}
+              >
+                <button className="inline-flex items-center gap-1 text-xs border rounded px-2 py-1 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-[#262626]" aria-haspopup="true">
+                  Review prompt
+                </button>
+              </Dropdown>
+              <Dropdown
+                trigger={["click"]}
+                placement="bottomLeft"
+                dropdownRender={() => (
+                  <div className="p-2 w-[420px] bg-white dark:bg-[#171717] border dark:border-gray-700 rounded shadow">
+                    <div className="text-xs text-gray-500 mb-1">Search prompts (server)</div>
+                    <Input.Search
+                      value={sumQ}
+                      onChange={(e) => setSumQ(e.target.value)}
+                      onSearch={async (q) => {
+                        if (!q.trim()) { setSumResults([]); return }
+                        setSumLoading(true)
+                        try {
+                          await tldwClient.initialize().catch(() => null)
+                          const res = await tldwClient.searchPrompts(q).catch(() => [])
+                          const list: any[] = Array.isArray(res) ? res : (res?.results || res?.prompts || [])
+                          setSumResults(list.map((x) => ({ id: x.id, title: String(x.title || x.name || 'Untitled'), content: String(x.content || x.prompt || '') })).slice(0, 50))
+                        } finally { setSumLoading(false) }
+                      }}
+                      loading={sumLoading}
+                      placeholder="Search server prompts"
+                      allowClear
+                    />
+                    {sumResults.length > 0 && (
+                      <div className="mt-2 max-h-40 overflow-auto rounded border dark:border-gray-700">
+                        <List
+                          size="small"
+                          dataSource={sumResults}
+                          renderItem={(it) => (
+                            <List.Item className="!px-2 !py-1 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer" onMouseDown={(e) => e.preventDefault()} onClick={() => { setSummarySystemPrompt(it.content); setSumResults([]); }}>
+                              <div className="truncate text-sm">{it.title}</div>
+                            </List.Item>
+                          )}
+                        />
+                      </div>
+                    )}
+                    <div className="text-xs text-gray-500 mb-1">Summary: System prompt</div>
+                    <textarea
+                      className="w-full text-sm p-2 rounded border dark:border-gray-700 dark:bg-[#171717] mt-1"
+                      rows={4}
+                      value={summarySystemPrompt}
+                      onChange={(e) => setSummarySystemPrompt(e.target.value)}
+                    />
+                    <div className="text-xs text-gray-500 mt-2 mb-1">Summary: User prompt prefix</div>
+                    <textarea
+                      className="w-full text-sm p-2 rounded border dark:border-gray-700 dark:bg-[#171717]"
+                      rows={3}
+                      value={summaryUserPrefix}
+                      onChange={(e) => setSummaryUserPrefix(e.target.value)}
+                    />
+                  </div>
+                )}
+              >
+                <button className="inline-flex items-center gap-1 text-xs border rounded px-2 py-1 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-[#262626]" aria-haspopup="true">
+                  Summary prompt
+                </button>
+              </Dropdown>
               <button
                 className="inline-flex items-center gap-1 text-xs border rounded px-2 py-1 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-[#262626]"
                 onClick={() => setDebugOpen((v) => !v)}

@@ -1,7 +1,8 @@
 import React from "react"
-import { Input, Button, List, Spin, Space, Tag, Tooltip, Radio, Pagination, Empty } from "antd"
+import { Input, Button, List, Spin, Space, Tag, Tooltip, Radio, Pagination, Empty, Select, Checkbox } from "antd"
 import { bgRequest } from "@/services/background-proxy"
 import { useQuery } from "@tanstack/react-query"
+import { tldwClient } from "@/services/tldw/TldwApiClient"
 
 type MediaItem = {
   id: string | number
@@ -38,11 +39,18 @@ export const MediaReviewPage: React.FC = () => {
   const [orientation, setOrientation] = React.useState<"vertical" | "horizontal">("vertical")
   const [selectedIds, setSelectedIds] = React.useState<Array<string | number>>([])
   const [details, setDetails] = React.useState<Record<string | number, MediaDetail>>({})
+  const [availableTypes, setAvailableTypes] = React.useState<string[]>([])
+  const [types, setTypes] = React.useState<string[]>([])
+  const [keywordTokens, setKeywordTokens] = React.useState<string[]>([])
+  const [keywordOptions, setKeywordOptions] = React.useState<string[]>([])
+  const [includeContent, setIncludeContent] = React.useState<boolean>(false)
 
   const fetchList = async (): Promise<MediaItem[]> => {
     const hasQuery = query.trim().length > 0
     if (hasQuery) {
       const body: any = { query, fields: ["title", "content"], sort_by: "relevance" }
+      if (types.length > 0) body.media_types = types
+      if (keywordTokens.length > 0) body.must_have = keywordTokens
       const res = await bgRequest<any>({
         path: `/api/v1/media/search?page=${page}&results_per_page=${pageSize}` as any,
         method: "POST" as any,
@@ -52,26 +60,96 @@ export const MediaReviewPage: React.FC = () => {
       const items = Array.isArray(res?.items) ? res.items : (Array.isArray(res?.results) ? res.results : [])
       const pagination = res?.pagination
       setTotal(Number(pagination?.total_items || items.length || 0))
-      return items.map((m: any) => ({
+      const mapped = items.map((m: any) => ({
         id: m?.id ?? m?.media_id ?? m?.pk ?? m?.uuid,
         title: m?.title || m?.filename || `Media ${m?.id}`,
         snippet: m?.snippet || m?.summary || "",
         type: String(m?.type || m?.media_type || "").toLowerCase(),
         created_at: m?.created_at
       }))
+      // Update available types
+      const typeSet = new Set(availableTypes)
+      for (const it of mapped) if (it.type) typeSet.add(it.type)
+      setAvailableTypes(Array.from(typeSet))
+      let filtered = mapped
+      if (types.length > 0) filtered = filtered.filter((m) => m.type && types.includes(m.type))
+      if (keywordTokens.length > 0) {
+        const toks = keywordTokens.map((k) => k.toLowerCase())
+        filtered = filtered.filter((m) => {
+          const hay = `${m.title || ''} ${m.snippet || ''}`.toLowerCase()
+          return toks.every((k) => hay.includes(k))
+        })
+      }
+      if (includeContent && (keywordTokens.length > 0 || hasQuery)) {
+        // Fetch details to include content in filtering
+        const enriched = await Promise.all(filtered.map(async (m) => {
+          let d = details[m.id]
+          if (!d) {
+            try {
+              d = await bgRequest<MediaDetail>({ path: `/api/v1/media/${m.id}` as any, method: 'GET' as any })
+              setDetails((prev) => (prev[m.id] ? prev : { ...prev, [m.id]: d! }))
+            } catch {}
+          }
+          const content = d ? (d.content || d.text || d.raw_text || d.summary || d.latest_version?.content || '') : ''
+          return { m, content }
+        }))
+        const toks = keywordTokens.map((k) => k.toLowerCase())
+        const ql = query.toLowerCase()
+        filtered = enriched.filter(({ m, content }) => {
+          const hay = `${m.title || ''} ${m.snippet || ''} ${content}`.toLowerCase()
+          if (hasQuery && !hay.includes(ql)) return false
+          if (toks.length > 0 && !toks.every((k) => hay.includes(k))) return false
+          return true
+        }).map(({ m }) => m)
+      }
+      return filtered
     }
     // Browse listing when no query
     const res = await bgRequest<any>({ path: `/api/v1/media/?page=${page}&results_per_page=${pageSize}` as any, method: "GET" as any })
     const items = Array.isArray(res?.items) ? res.items : []
     const pagination = res?.pagination
     setTotal(Number(pagination?.total_items || items.length || 0))
-    return items.map((m: any) => ({
+    const mapped = items.map((m: any) => ({
       id: m?.id ?? m?.media_id ?? m?.pk ?? m?.uuid,
       title: m?.title || m?.filename || `Media ${m?.id}`,
       snippet: m?.snippet || m?.summary || "",
       type: String(m?.type || m?.media_type || "").toLowerCase(),
       created_at: m?.created_at
     }))
+    const typeSet = new Set(availableTypes)
+    for (const it of mapped) if (it.type) typeSet.add(it.type)
+    setAvailableTypes(Array.from(typeSet))
+    let filtered = mapped
+    if (types.length > 0) filtered = filtered.filter((m) => m.type && types.includes(m.type))
+    if (keywordTokens.length > 0) {
+      const toks = keywordTokens.map((k) => k.toLowerCase())
+      filtered = filtered.filter((m) => {
+        const hay = `${m.title || ''} ${m.snippet || ''}`.toLowerCase()
+        return toks.every((k) => hay.includes(k))
+      })
+    }
+    if (includeContent && (keywordTokens.length > 0 || query.trim().length > 0)) {
+      const enriched = await Promise.all(filtered.map(async (m) => {
+        let d = details[m.id]
+        if (!d) {
+          try {
+            d = await bgRequest<MediaDetail>({ path: `/api/v1/media/${m.id}` as any, method: 'GET' as any })
+            setDetails((prev) => (prev[m.id] ? prev : { ...prev, [m.id]: d! }))
+          } catch {}
+        }
+        const content = d ? (d.content || d.text || d.raw_text || d.summary || d.latest_version?.content || '') : ''
+        return { m, content }
+      }))
+      const toks = keywordTokens.map((k) => k.toLowerCase())
+      const ql = query.toLowerCase()
+      filtered = enriched.filter(({ m, content }) => {
+        const hay = `${m.title || ''} ${m.snippet || ''} ${content}`.toLowerCase()
+        if (query.trim().length > 0 && !hay.includes(ql)) return false
+        if (toks.length > 0 && !toks.every((k) => hay.includes(k))) return false
+        return true
+      }).map(({ m }) => m)
+    }
+    return filtered
   }
 
   const { data, isFetching, refetch } = useQuery({
@@ -84,6 +162,25 @@ export const MediaReviewPage: React.FC = () => {
     // auto fetch initial
     refetch()
   }, [])
+
+  // Keyword suggestions: preload and on-demand search
+  const loadKeywordSuggestions = React.useCallback(async (q?: string) => {
+    try {
+      const cfg = await tldwClient.getConfig()
+      const base = String(cfg?.serverUrl || "").replace(/\/$/, "")
+      if (q && q.trim().length > 0) {
+        const abs = await bgRequest<any>({ path: `${base}/api/v1/notes/keywords/search/?query=${encodeURIComponent(q)}&limit=10` as any, method: 'GET' as any })
+        const arr = Array.isArray(abs) ? abs.map((x: any) => String(x?.keyword || x?.keyword_text || x?.text || "")).filter(Boolean) : []
+        setKeywordOptions(arr)
+      } else {
+        const abs = await bgRequest<any>({ path: `${base}/api/v1/notes/keywords/?limit=200` as any, method: 'GET' as any })
+        const arr = Array.isArray(abs) ? abs.map((x: any) => String(x?.keyword || x?.keyword_text || x?.text || "")).filter(Boolean) : []
+        setKeywordOptions(arr)
+      }
+    } catch {}
+  }, [])
+
+  React.useEffect(() => { void loadKeywordSuggestions() }, [loadKeywordSuggestions])
 
   const toggleSelect = async (id: string | number) => {
     setSelectedIds((prev) => {
@@ -110,8 +207,8 @@ export const MediaReviewPage: React.FC = () => {
   const viewerItems = selectedIds.map((id) => details[id]).filter(Boolean)
 
   return (
-    <div className="w-full">
-      <div className="mb-3 flex items-center justify-between gap-3">
+    <div className="w-full h-[calc(100dvh-4rem)] mt-16 flex flex-col">
+      <div className="shrink-0 mb-3 flex items-center justify-between gap-3">
         <div className="flex items-center gap-2 w-full">
           <Input
             placeholder="Search media (title/content)"
@@ -121,6 +218,28 @@ export const MediaReviewPage: React.FC = () => {
           />
           <Button type="primary" onClick={() => { setPage(1); refetch() }}>Search</Button>
           <Button onClick={() => { setQuery(""); setPage(1); refetch() }}>Clear</Button>
+          <Select
+            mode="multiple"
+            allowClear
+            placeholder="Types"
+            className="min-w-[12rem]"
+            value={types}
+            onChange={(vals) => { setTypes(vals as string[]); setPage(1); refetch() }}
+            options={availableTypes.map((t) => ({ label: t, value: t }))}
+          />
+          <Select
+            mode="tags"
+            allowClear
+            showSearch
+            placeholder="Keywords"
+            className="min-w-[12rem]"
+            value={keywordTokens}
+            onSearch={(txt) => loadKeywordSuggestions(txt)}
+            onChange={(vals) => { setKeywordTokens(vals as string[]); setPage(1); refetch() }}
+            options={keywordOptions.map((k) => ({ label: k, value: k }))}
+          />
+          <Button onClick={() => { setTypes([]); setPage(1); refetch() }}>Reset Filters</Button>
+          <Checkbox checked={includeContent} onChange={(e) => { setIncludeContent(e.target.checked); setPage(1); refetch() }}>Content</Checkbox>
         </div>
         <Radio.Group
           size="small"
@@ -131,8 +250,8 @@ export const MediaReviewPage: React.FC = () => {
         />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <div className="lg:col-span-1 border rounded p-2 bg-white dark:bg-[#171717]">
+      <div className="flex-1 min-h-0 w-full grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div className="lg:col-span-1 border rounded p-2 bg-white dark:bg-[#171717] h-full overflow-auto">
           <div className="mb-2 text-sm text-gray-600 dark:text-gray-300">Results</div>
           {isFetching ? (
             <div className="py-8 flex items-center justify-center"><Spin /></div>
@@ -172,7 +291,7 @@ export const MediaReviewPage: React.FC = () => {
             <Empty description="No results" />
           )}
         </div>
-        <div className="lg:col-span-2 border rounded p-2 bg-white dark:bg-[#171717] min-h-64">
+        <div className="lg:col-span-2 border rounded p-2 bg-white dark:bg-[#171717] h-full overflow-auto">
           <div className="mb-2 text-sm text-gray-600 dark:text-gray-300">Viewer</div>
           {viewerItems.length === 0 ? (
             <div className="text-sm text-gray-500">Select items on the left to view here.</div>
@@ -185,7 +304,7 @@ export const MediaReviewPage: React.FC = () => {
                     {d.type && <Tag>{String(d.type).toLowerCase()}</Tag>}
                     {d.created_at && <span>{new Date(d.created_at).toLocaleString()}</span>}
                   </div>
-                  <div className="text-sm whitespace-pre-wrap break-words max-h-80 overflow-auto">
+                  <div className="text-sm whitespace-pre-wrap break-words">
                     {getContent(d) || <span className="text-gray-500">No content available</span>}
                   </div>
                 </div>
