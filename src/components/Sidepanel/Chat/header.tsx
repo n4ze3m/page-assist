@@ -4,7 +4,6 @@ import { Link } from "react-router-dom"
 import { Tooltip, Drawer, notification, Popover, InputNumber, Space, Button } from "antd"
 import {
   BoxesIcon,
-  BrainCog,
   CogIcon,
   EraserIcon,
   // EraserIcon,
@@ -14,7 +13,7 @@ import {
   MessageSquareShareIcon
 } from "lucide-react"
 import { useTranslation } from "react-i18next"
-import { CurrentChatModelSettings } from "@/components/Common/Settings/CurrentChatModelSettings"
+// import { CurrentChatModelSettings } from "@/components/Common/Settings/CurrentChatModelSettings"
 import React from "react"
 import { useStorage } from "@plasmohq/storage/hook"
 import { PromptSelect } from "@/components/Common/PromptSelect"
@@ -246,11 +245,7 @@ export const SidepanelHeader = ({
           <CogIcon aria-label={t('sidepanel:header.openSettingsAria')} className="size-4 text-gray-500 dark:text-gray-400" />
         </Link>
       </div>
-      <CurrentChatModelSettings
-        open={openModelSettings}
-        setOpen={setOpenModelSettings}
-        isOCREnabled={useOCR}
-      />
+      {/** Settings modal moved to input area; header trigger removed */}
 
       <Drawer title="Stream Debug" placement="right" onClose={() => setDebugOpen(false)} open={debugOpen} width={480}>
         <div className="text-xs font-mono whitespace-pre-wrap break-all">

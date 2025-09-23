@@ -14,9 +14,10 @@ import {
   X,
   EyeIcon,
   EyeOffIcon,
-  BrainCog
+  Gauge
 } from "lucide-react"
 import { useTranslation } from "react-i18next"
+import { getVariable } from "@/utils/select-variable"
 import { ModelSelect } from "@/components/Common/ModelSelect"
 import { useSpeechRecognition } from "@/hooks/useSpeechRecognition"
 import { useTldwStt } from "@/hooks/useTldwStt"
@@ -392,23 +393,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                       {...form.getInputProps("message")}
                     />
                     <div className="flex mt-4 justify-end gap-3 items-center">
-                      {chatMode !== "vision" && (
-                        <Tooltip title={t("tooltip.searchInternet")}>
-                          <button
-                            type="button"
-                            onClick={() => setWebSearch(!webSearch)}
-                            className={`inline-flex items-center gap-2   ${
-                              chatMode === "rag" ? "hidden" : "block"
-                            }`}>
-                            {webSearch ? (
-                              <PiGlobe className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-                            ) : (
-                              <PiGlobeX className="h-4 w-4 text-gray-600 dark:text-gray-400" />
-                            )}
-                          </button>
-                        </Tooltip>
-                      )}
-                      {/* Private/Temporary chat toggle + icon next to web search */}
+                      {/* Private/Temporary chat toggle (left of web search) */}
                       <div className="flex items-center gap-1">
                         <Tooltip title={t("option:temporaryChat")}>
                           <Switch
@@ -454,6 +439,22 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                           </button>
                         </Tooltip>
                       </div>
+                      {chatMode !== "vision" && (
+                        <Tooltip title={t("tooltip.searchInternet")}>
+                          <button
+                            type="button"
+                            onClick={() => setWebSearch(!webSearch)}
+                            className={`inline-flex items-center gap-2   ${
+                              chatMode === "rag" ? "hidden" : "block"
+                            }`}>
+                            {webSearch ? (
+                              <PiGlobe className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                            ) : (
+                              <PiGlobeX className="h-4 w-4 text-gray-600 dark:text-gray-400" />
+                            )}
+                          </button>
+                        </Tooltip>
+                      )}
                       <ModelSelect iconClassName="size-4" />
                       {browserSupportsSpeechRecognition && (
                         <Tooltip title={t("tooltip.speechToText")}>
@@ -621,8 +622,8 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                           <button
                             type="button"
                             onClick={() => setOpenModelSettings(true)}
-                            className="text-gray-800 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded-md p-1">
-                            <BrainCog className="h-5 w-5" />
+                            className="text-gray-700 dark:text-gray-300 p-1 hover:text-gray-900 dark:hover:text-gray-100">
+                            <Gauge className="h-5 w-5" />
                           </button>
                         </Tooltip>
                         </>
@@ -642,7 +643,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                             type="button"
                             onClick={() => setOpenModelSettings(true)}
                             className="text-gray-800 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded-md p-1">
-                            <BrainCog className="h-5 w-5" />
+                            <Gauge className="h-5 w-5" />
                           </button>
                         </Tooltip>
                       )}

@@ -13,7 +13,8 @@ import {
   Tooltip,
   Typography,
   Select,
-  Pagination
+  Pagination,
+  Radio
 } from "antd"
 import { useQuery } from "@tanstack/react-query"
 import { bgRequest } from "@/services/background-proxy"
@@ -27,7 +28,8 @@ import {
   SearchIcon,
   PaperclipIcon
 } from "lucide-react"
-import { ChevronDown } from "lucide-react"
+import { ChevronDown, CopyIcon, SendIcon } from "lucide-react"
+import { useNavigate } from "react-router-dom"
 import { Storage } from "@plasmohq/storage"
 
 type MediaItem = any
@@ -53,7 +55,8 @@ export const ReviewPage: React.FC = () => {
   const [analysis, setAnalysis] = React.useState<string>("")
   const [loadingAnalysis, setLoadingAnalysis] = React.useState<boolean>(false)
   const [existingAnalyses, setExistingAnalyses] = React.useState<NoteItem[]>([])
-  const { selectedModel } = useMessageOption()
+  const { selectedModel, messages, setMessages } = useMessageOption()
+  const navigate = useNavigate()
   const [lastPrompt, setLastPrompt] = React.useState<string | null>(null)
   const [mediaTypes, setMediaTypes] = React.useState<string[]>([])
   const [availableMediaTypes, setAvailableMediaTypes] = React.useState<
@@ -78,6 +81,30 @@ export const ReviewPage: React.FC = () => {
   const [pageSize, setPageSize] = React.useState<number>(20)
   const [mediaTotal, setMediaTotal] = React.useState<number>(0)
   const [filtersOpen, setFiltersOpen] = React.useState<boolean>(true)
+  const [analysisMode, setAnalysisMode] = React.useState<"review" | "summary">("review")
+
+  // Storage scoping: per server host and auth mode to avoid cross-user leakage
+  const scopedKey = React.useCallback((base: string) => {
+    try {
+      const raw = localStorage.getItem('tldwConfig')
+      if (raw) {
+        const cfg = JSON.parse(raw) || {}
+        const host = String(cfg?.serverUrl || '').replace(/\/+$/, '').replace(/^https?:\/\//, '')
+        const user = cfg?.authMode === 'multi-user' && cfg?.accessToken ? 'user' : 'single'
+        return `${base}:${host || 'nohost'}:${user}`
+      }
+    } catch {}
+    return base
+  }, [])
+
+  // Simple markdown-normalize (straight quotes, dashes, NBSP)
+  const toMarkdown = React.useCallback((text: string) => {
+    return String(text || '')
+      .replace(/[\u2018\u2019\u201A\u201B]/g, "'")
+      .replace(/[\u201C\u201D\u201E\u201F]/g, '"')
+      .replace(/[\u2013\u2014]/g, '-')
+      .replace(/\u00A0/g, ' ')
+  }, [])
 
   const runSearch = async (): Promise<ResultItem[]> => {
     const results: ResultItem[] = []
@@ -302,7 +329,7 @@ export const ReviewPage: React.FC = () => {
     ;(async () => {
       try {
         const storage = new Storage({ area: 'local' })
-        const data = (await storage.get('review:prompts').catch(() => null)) as any
+        const data = (await storage.get(scopedKey('review:prompts')).catch(() => null)) as any
         if (data && typeof data === 'object') {
           if (typeof data.reviewSystemPrompt === 'string') setReviewSystemPrompt(data.reviewSystemPrompt)
           if (typeof data.reviewUserPrefix === 'string') setReviewUserPrefix(data.reviewUserPrefix)
@@ -311,13 +338,13 @@ export const ReviewPage: React.FC = () => {
         }
       } catch {}
     })()
-  }, [])
+  }, [scopedKey])
 
   React.useEffect(() => {
     ;(async () => {
       try {
         const storage = new Storage({ area: 'local' })
-        await storage.set('review:prompts', {
+        await storage.set(scopedKey('review:prompts'), {
           reviewSystemPrompt,
           reviewUserPrefix,
           summarySystemPrompt,
@@ -325,30 +352,55 @@ export const ReviewPage: React.FC = () => {
         })
       } catch {}
     })()
-  }, [reviewSystemPrompt, reviewUserPrefix, summarySystemPrompt, summaryUserPrefix])
+  }, [reviewSystemPrompt, reviewUserPrefix, summarySystemPrompt, summaryUserPrefix, scopedKey])
 
   // Persist auto-review toggle in storage (load)
   React.useEffect(() => {
     ;(async () => {
       try {
         const storage = new Storage({ area: "local" })
-        const saved = (await storage
-          .get("review:autoReviewOnSelect")
-          .catch(() => null)) as any
+        const saved = (await storage.get(scopedKey("review:autoReviewOnSelect")).catch(() => null)) as any
         if (typeof saved === "boolean") setAutoReviewOnSelect(saved)
+        const savedPromptsOpen = (await storage.get(scopedKey('review:promptsOpen')).catch(() => null)) as any
+        if (typeof savedPromptsOpen === 'boolean') setPromptsOpen(savedPromptsOpen)
+        const savedFiltersOpen = (await storage.get(scopedKey('review:filtersOpen')).catch(() => null)) as any
+        if (typeof savedFiltersOpen === 'boolean') setFiltersOpen(savedFiltersOpen)
+        const savedMode = (await storage.get(scopedKey('review:defaultMode')).catch(() => null)) as any
+        if (savedMode === 'review' || savedMode === 'summary') setAnalysisMode(savedMode)
       } catch {}
     })()
-  }, [])
+  }, [scopedKey])
 
   // Persist auto-review toggle in storage (save)
   React.useEffect(() => {
     ;(async () => {
       try {
         const storage = new Storage({ area: "local" })
-        await storage.set("review:autoReviewOnSelect", autoReviewOnSelect)
+        await storage.set(scopedKey("review:autoReviewOnSelect"), autoReviewOnSelect)
       } catch {}
     })()
-  }, [autoReviewOnSelect])
+  }, [autoReviewOnSelect, scopedKey])
+
+  // Persist filters open/closed
+  React.useEffect(() => {
+    ;(async () => {
+      try {
+        const storage = new Storage({ area: "local" })
+        await storage.set(scopedKey("review:filtersOpen"), filtersOpen)
+      } catch {}
+    })()
+  }, [filtersOpen, scopedKey])
+
+  // Persist default analysis mode
+  React.useEffect(() => {
+    ;(async () => {
+      try {
+        const storage = new Storage({ area: "local" })
+        await storage.set(scopedKey("review:defaultMode"), analysisMode)
+      } catch {}
+    })()
+    message.info(analysisMode === 'review' ? 'Using Review prompts' : 'Using Summary prompts', 1)
+  }, [analysisMode, scopedKey])
 
   const loadKeywordSuggestions = React.useCallback(
     async (text: string) => {
@@ -737,6 +789,12 @@ export const ReviewPage: React.FC = () => {
               }>
               Notes
             </Checkbox>
+            <div className="ml-auto">
+              <Radio.Group size="small" value={analysisMode} onChange={(e) => setAnalysisMode(e.target.value)}>
+                <Radio.Button value="review">Use Review</Radio.Button>
+                <Radio.Button value="summary">Use Summary</Radio.Button>
+              </Radio.Group>
+            </div>
           </div>
           <div id="review-filters" className={`mt-2 grid grid-cols-1 gap-2 overflow-hidden transition-all duration-200 ${filtersOpen ? 'max-h-[640px] opacity-100' : 'max-h-0 opacity-0'}`}>
             <div className="flex flex-wrap items-center gap-2">
@@ -913,11 +971,11 @@ export const ReviewPage: React.FC = () => {
                 </Tooltip>
                 {selected?.kind === "media" && (
                   <Tooltip title="Analyze & attach to media">
-                    <Button onClick={() => analyzeAndSaveToMedia("review")} loading={loadingAnalysis}>Review + Save</Button>
+                    <Button onClick={() => analyzeAndSaveToMedia(analysisMode)} loading={loadingAnalysis}>{analysisMode === 'review' ? 'Review + Save' : 'Summary + Save'}</Button>
                   </Tooltip>
                 )}
                 <Tooltip title="Analyze & save as note">
-                  <Button onClick={() => analyzeAndSaveToNote("review")} loading={loadingAnalysis}>Review + Save Note</Button>
+                  <Button onClick={() => analyzeAndSaveToNote(analysisMode)} loading={loadingAnalysis}>{analysisMode === 'review' ? 'Review + Save Note' : 'Summary + Save Note'}</Button>
                 </Tooltip>
                 {selected?.kind === "media" && (
                   <Tooltip title="Attach analysis to media">
@@ -927,6 +985,10 @@ export const ReviewPage: React.FC = () => {
                 <Tooltip title="Create a note from analysis">
                   <Button type="primary" icon={(<SaveIcon className="w-4 h-4" />) as any} onClick={saveAnalysis} disabled={!analysis.trim()}>Save to Notes</Button>
                 </Tooltip>
+                <Radio.Group size="small" value={analysisMode} onChange={(e) => setAnalysisMode(e.target.value)}>
+                  <Radio.Button value="review">Use Review</Radio.Button>
+                  <Radio.Button value="summary">Use Summary</Radio.Button>
+                </Radio.Group>
               </div>
             </div>
             <div className="flex items-center gap-3 -mt-2">
@@ -970,13 +1032,36 @@ export const ReviewPage: React.FC = () => {
             {/* Stack: Media Content then Analysis then Existing Analyses */}
             <div className="flex flex-col gap-3 flex-1 min-h-0">
               <div className="rounded border dark:border-gray-700 p-2 overflow-auto min-h-[14rem] md:h-[32vh]">
-                <Typography.Text type="secondary">Media Content</Typography.Text>
+                <div className="flex items-center justify-between">
+                  <Typography.Text type="secondary">Media Content</Typography.Text>
+                  <Tooltip title="Copy content">
+                    <Button size="small" onClick={async () => { try { await navigator.clipboard.writeText(selectedContent || '') ; message.success('Content copied') } catch { message.error('Copy failed') } }} icon={(<CopyIcon className="w-4 h-4" />) as any} />
+                  </Tooltip>
+                </div>
                 <div className="mt-2 whitespace-pre-wrap text-sm text-gray-700 dark:text-gray-300">
                   {selectedContent ? selectedContent : <span className="text-xs text-gray-500">No content available</span>}
                 </div>
               </div>
               <div className="rounded border dark:border-gray-700 p-2 overflow-auto min-h-[14rem] md:h-[32vh]">
-                <Typography.Text type="secondary">Analysis</Typography.Text>
+                <div className="flex items-center justify-between">
+                  <Typography.Text type="secondary">Analysis</Typography.Text>
+                  <div className="flex items-center gap-2">
+                    <Tooltip title="Copy analysis">
+                      <Button size="small" onClick={async () => { try { await navigator.clipboard.writeText(analysis || '') ; message.success('Analysis copied') } catch { message.error('Copy failed') } }} icon={(<CopyIcon className="w-4 h-4" />) as any} />
+                    </Tooltip>
+                    <Tooltip title="Send analysis to chat">
+                      <Button size="small" onClick={async () => {
+                        if (!analysis.trim()) { message.warning('Nothing to send'); return }
+                        try {
+                          const payload = `Please review this analysis and continue the discussion:\n\n${analysis}`
+                          setMessages([...(messages || []), { isBot: false, name: 'You', message: payload, sources: [] }])
+                          navigate('/')
+                          message.success('Sent to chat')
+                        } catch { message.error('Failed to send') }
+                      }} icon={(<SendIcon className="w-4 h-4" />) as any} />
+                    </Tooltip>
+                  </div>
+                </div>
                 <textarea
                   className="w-full mt-2 min-h-[12rem] md:h-[26vh] text-sm p-2 rounded border dark:border-gray-700 dark:bg-[#171717] resize-y"
                   value={analysis}

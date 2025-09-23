@@ -4,7 +4,7 @@ import React from "react"
 import useDynamicTextareaSize from "~/hooks/useDynamicTextareaSize"
 import { toBase64 } from "~/libs/to-base64"
 import { useMessageOption } from "~/hooks/useMessageOption"
-import { Checkbox, Dropdown, Switch, Tooltip } from "antd"
+import { Checkbox, Dropdown, Switch, Tooltip, notification } from "antd"
 import { Image } from "antd"
 import { useWebUI } from "~/store/webui"
 import { defaultEmbeddingModelForRag } from "~/services/ollama"
@@ -16,13 +16,15 @@ import {
   X,
   FileIcon,
   FileText,
-  PaperclipIcon
+  PaperclipIcon,
+  Gauge
 } from "lucide-react"
 import { getVariable } from "@/utils/select-variable"
 import { useTranslation } from "react-i18next"
 import { KnowledgeSelect } from "../Knowledge/KnowledgeSelect"
 import { useSpeechRecognition } from "@/hooks/useSpeechRecognition"
 import { PiGlobe } from "react-icons/pi"
+import { BsIncognito } from "react-icons/bs"
 import { handleChatInputKeyDown } from "@/utils/key-down"
 import { getIsSimpleInternetSearch } from "@/services/search"
 import { useStorage } from "@plasmohq/storage/hook"
@@ -32,12 +34,14 @@ import { MentionsDropdown } from "./MentionsDropdown"
 import { DocumentChip } from "./DocumentChip"
 import { otherUnsupportedTypes } from "../Knowledge/utils/unsupported-types"
 import { PASTED_TEXT_CHAR_LIMIT } from "@/utils/constant"
+import { isFireFoxPrivateMode } from "@/utils/is-private-mode"
+import { CurrentChatModelSettings } from "@/components/Common/Settings/CurrentChatModelSettings"
 type Props = {
   dropedFile: File | undefined
 }
 
 export const PlaygroundForm = ({ dropedFile }: Props) => {
-  const { t } = useTranslation(["playground", "common"])
+  const { t } = useTranslation(["playground", "common", "option"])
   const inputRef = React.useRef<HTMLInputElement>(null)
   const fileInputRef = React.useRef<HTMLInputElement>(null)
 
@@ -57,6 +61,8 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
     setSelectedQuickPrompt,
     selectedKnowledge,
     temporaryChat,
+    setTemporaryChat,
+    clearChat,
     useOCR,
     setUseOCR,
     defaultInternetSearchOn,
@@ -71,6 +77,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
   } = useMessageOption()
 
   const [autoSubmitVoiceMessage] = useStorage("autoSubmitVoiceMessage", false)
+  const [openModelSettings, setOpenModelSettings] = React.useState(false)
 
   const [autoStopTimeout] = useStorage("autoStopTimeout", 2000)
 
@@ -564,7 +571,52 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                       />
                     </div>
                     <div className="mt-2 flex justify-between items-center">
-                      <div className="flex">
+                      <div className="flex items-center gap-3">
+                        {/* Private/Temporary chat controls: switch (left) + icon (right) */}
+                        <div className="inline-flex items-center gap-2">
+                          <Switch
+                            size="small"
+                            checked={temporaryChat}
+                            onChange={() => {
+                              if (isFireFoxPrivateMode) {
+                                notification.error({
+                                  message: "Error",
+                                  description:
+                                    "Page Assist can't save chat in Firefox Private Mode. Temporary chat is enabled by default. More fixes coming soon."
+                                })
+                                return
+                              }
+                              setTemporaryChat(!temporaryChat)
+                              if (history.length > 0) {
+                                clearChat()
+                              }
+                            }}
+                          />
+                          <Tooltip title={t("option:temporaryChat") as string}>
+                            <button
+                              type="button"
+                              aria-pressed={temporaryChat}
+                              className="inline-flex items-center rounded-md p-1 text-gray-600 dark:text-gray-300 data-[istemporary-chat='true']:bg-purple-900 data-[istemporary-chat='true']:text-white"
+                              data-istemporary-chat={temporaryChat}
+                              onClick={() => {
+                                if (isFireFoxPrivateMode) {
+                                  notification.error({
+                                    message: "Error",
+                                    description:
+                                      "Page Assist can't save chat in Firefox Private Mode. Temporary chat is enabled by default. More fixes coming soon."
+                                  })
+                                  return
+                                }
+                                setTemporaryChat(!temporaryChat)
+                                if (history.length > 0) {
+                                  clearChat()
+                                }
+                              }}
+                            >
+                              <BsIncognito className="h-4 w-4" />
+                            </button>
+                          </Tooltip>
+                        </div>
                         {!selectedKnowledge && (
                           <Tooltip title={t("tooltip.searchInternet")}>
                             <div className="inline-flex items-center gap-2">
@@ -652,6 +704,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                         <KnowledgeSelect />
 
                         {!isSending ? (
+                          <>
                           <Dropdown.Button
                             htmlType="submit"
                             disabled={isSending}
@@ -717,6 +770,16 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                               {t("common:submit")}
                             </div>
                           </Dropdown.Button>
+                          {/* Current Conversation Settings button to the right of submit */}
+                          <Tooltip title={t("common:currentChatModelSettings") as string}>
+                            <button
+                              type="button"
+                              onClick={() => setOpenModelSettings(true)}
+                              className="text-gray-700 dark:text-gray-300 p-1 hover:text-gray-900 dark:hover:text-gray-100">
+                              <Gauge className="h-5 w-5" />
+                            </button>
+                          </Tooltip>
+                          </>
                         ) : (
                           <Tooltip title={t("tooltip.stopStreaming")}>
                             <button
@@ -741,6 +804,12 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
           </div>
         </div>
       </div>
+      {/* Modal/Drawer for current conversation settings */}
+      <CurrentChatModelSettings
+        open={openModelSettings}
+        setOpen={setOpenModelSettings}
+        isOCREnabled={useOCR}
+      />
     </div>
   )
 }

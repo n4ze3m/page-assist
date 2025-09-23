@@ -1,7 +1,7 @@
 import React from "react"
 import { useStorage } from "@plasmohq/storage/hook"
 import {
-  BrainCog,
+  Gauge,
   ChevronLeft,
   ChevronRight,
   CogIcon,
@@ -282,7 +282,7 @@ export const Header: React.FC<Props> = ({
                 <button
                   onClick={() => setOpenModelSettings(true)}
                   className="!text-gray-500 dark:text-gray-300 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
-                  <BrainCog className="w-6 h-6" />
+                  <Gauge className="w-6 h-6" />
                 </button>
               </Tooltip>
             )}
