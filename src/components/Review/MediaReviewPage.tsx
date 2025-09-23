@@ -1,5 +1,6 @@
 import React from "react"
 import { Input, Button, List, Spin, Space, Tag, Tooltip, Radio, Pagination, Empty, Select, Checkbox } from "antd"
+import { PanelLeftClose, PanelLeftOpen } from "lucide-react"
 import { bgRequest } from "@/services/background-proxy"
 import { useQuery } from "@tanstack/react-query"
 import { tldwClient } from "@/services/tldw/TldwApiClient"
@@ -44,6 +45,8 @@ export const MediaReviewPage: React.FC = () => {
   const [keywordTokens, setKeywordTokens] = React.useState<string[]>([])
   const [keywordOptions, setKeywordOptions] = React.useState<string[]>([])
   const [includeContent, setIncludeContent] = React.useState<boolean>(false)
+  const [sidebarHidden, setSidebarHidden] = React.useState<boolean>(false)
+  const [contentLoading, setContentLoading] = React.useState<boolean>(false)
 
   const fetchList = async (): Promise<MediaItem[]> => {
     const hasQuery = query.trim().length > 0
@@ -81,6 +84,7 @@ export const MediaReviewPage: React.FC = () => {
         })
       }
       if (includeContent && (keywordTokens.length > 0 || hasQuery)) {
+        setContentLoading(true)
         // Fetch details to include content in filtering
         const enriched = await Promise.all(filtered.map(async (m) => {
           let d = details[m.id]
@@ -101,6 +105,7 @@ export const MediaReviewPage: React.FC = () => {
           if (toks.length > 0 && !toks.every((k) => hay.includes(k))) return false
           return true
         }).map(({ m }) => m)
+        setContentLoading(false)
       }
       return filtered
     }
@@ -129,6 +134,7 @@ export const MediaReviewPage: React.FC = () => {
       })
     }
     if (includeContent && (keywordTokens.length > 0 || query.trim().length > 0)) {
+      setContentLoading(true)
       const enriched = await Promise.all(filtered.map(async (m) => {
         let d = details[m.id]
         if (!d) {
@@ -148,6 +154,7 @@ export const MediaReviewPage: React.FC = () => {
         if (toks.length > 0 && !toks.every((k) => hay.includes(k))) return false
         return true
       }).map(({ m }) => m)
+      setContentLoading(false)
     }
     return filtered
   }
@@ -239,7 +246,7 @@ export const MediaReviewPage: React.FC = () => {
             options={keywordOptions.map((k) => ({ label: k, value: k }))}
           />
           <Button onClick={() => { setTypes([]); setPage(1); refetch() }}>Reset Filters</Button>
-          <Checkbox checked={includeContent} onChange={(e) => { setIncludeContent(e.target.checked); setPage(1); refetch() }}>Content</Checkbox>
+          <Checkbox checked={includeContent} onChange={(e) => { setIncludeContent(e.target.checked); setPage(1); refetch() }}>Content {contentLoading && (<Spin size="small" className="ml-1" />)}</Checkbox>
         </div>
         <Radio.Group
           size="small"
@@ -248,9 +255,19 @@ export const MediaReviewPage: React.FC = () => {
           options={[{ label: 'Vertical', value: 'vertical' }, { label: 'Horizontal', value: 'horizontal' }]}
           optionType="button"
         />
+        <Tooltip title={sidebarHidden ? 'Show sidebar' : 'Hide sidebar'}>
+          <button
+            onClick={() => setSidebarHidden((v) => !v)}
+            className="inline-flex items-center gap-1 text-xs border rounded px-2 py-1 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-[#262626]"
+          >
+            {sidebarHidden ? <PanelLeftOpen className="w-4 h-4" /> : <PanelLeftClose className="w-4 h-4" />}
+            {sidebarHidden ? 'Show' : 'Hide'} sidebar
+          </button>
+        </Tooltip>
       </div>
 
-      <div className="flex-1 min-h-0 w-full grid grid-cols-1 lg:grid-cols-3 gap-4">
+      <div className={`flex-1 min-h-0 w-full grid gap-4 ${sidebarHidden ? 'grid-cols-1' : 'grid-cols-1 lg:grid-cols-3'}`}>
+        {!sidebarHidden && (
         <div className="lg:col-span-1 border rounded p-2 bg-white dark:bg-[#171717] h-full overflow-auto">
           <div className="mb-2 text-sm text-gray-600 dark:text-gray-300">Results</div>
           {isFetching ? (
@@ -264,8 +281,10 @@ export const MediaReviewPage: React.FC = () => {
                 renderItem={(item) => (
                   <List.Item
                     key={String(item.id)}
+                    onClick={() => toggleSelect(item.id)}
+                    className={`cursor-pointer ${selectedIds.includes(item.id) ? '!bg-gray-100 dark:!bg-gray-800' : ''}`}
                     actions={[
-                      <Button size="small" onClick={() => toggleSelect(item.id)}>{selectedIds.includes(item.id) ? 'Remove' : 'View'}</Button>
+                      <Button size="small" onClick={(e) => { e.stopPropagation(); toggleSelect(item.id) }}>{selectedIds.includes(item.id) ? 'Remove' : 'View'}</Button>
                     ]}
                   >
                     <List.Item.Meta
@@ -291,7 +310,8 @@ export const MediaReviewPage: React.FC = () => {
             <Empty description="No results" />
           )}
         </div>
-        <div className="lg:col-span-2 border rounded p-2 bg-white dark:bg-[#171717] h-full overflow-auto">
+        )}
+        <div className={`${sidebarHidden ? 'lg:col-span-1' : 'lg:col-span-2'} border rounded p-2 bg-white dark:bg-[#171717] h-full overflow-auto`}>
           <div className="mb-2 text-sm text-gray-600 dark:text-gray-300">Viewer</div>
           {viewerItems.length === 0 ? (
             <div className="text-sm text-gray-500">Select items on the left to view here.</div>

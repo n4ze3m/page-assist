@@ -31,9 +31,10 @@ import {
   SearchIcon,
   PaperclipIcon
 } from "lucide-react"
-import { ChevronDown, CopyIcon, SendIcon } from "lucide-react"
+import { ChevronDown, CopyIcon, SendIcon, PanelLeftClose, PanelLeftOpen } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { Storage } from "@plasmohq/storage"
+import { getAllPrompts } from "@/db/dexie/helpers"
 
 type MediaItem = any
 type NoteItem = any
@@ -99,11 +100,16 @@ export const ReviewPage: React.FC = () => {
   const [sumQ, setSumQ] = React.useState("")
   const [sumResults, setSumResults] = React.useState<Array<{ id?: string; title: string; content: string }>>([])
   const [sumLoading, setSumLoading] = React.useState(false)
+  const [revIncludeLocal, setRevIncludeLocal] = React.useState(true)
+  const [revIncludeServer, setRevIncludeServer] = React.useState(true)
+  const [sumIncludeLocal, setSumIncludeLocal] = React.useState(true)
+  const [sumIncludeServer, setSumIncludeServer] = React.useState(true)
   const [page, setPage] = React.useState<number>(1)
   const [pageSize, setPageSize] = React.useState<number>(20)
   const [mediaTotal, setMediaTotal] = React.useState<number>(0)
   const [filtersOpen, setFiltersOpen] = React.useState<boolean>(true)
   const [analysisMode, setAnalysisMode] = React.useState<"review" | "summary">("review")
+  const [sidebarHidden, setSidebarHidden] = React.useState<boolean>(false)
 
   // Storage scoping: per server host and auth mode to avoid cross-user leakage
   const scopedKey = React.useCallback((base: string) => {
@@ -892,8 +898,9 @@ export const ReviewPage: React.FC = () => {
 
   return (
     <>
-    <div className="w-full h-full grid grid-cols-1 lg:grid-cols-3 gap-4 mt-16">
+    <div className={`w-full h-full grid gap-4 mt-16 ${sidebarHidden ? 'grid-cols-1' : 'grid-cols-1 lg:grid-cols-3'}`}>
       {/* Left column: search + results */}
+      {!sidebarHidden && (
       <div className="lg:col-span-1 min-w-0 lg:sticky lg:top-16 lg:self-start">
         <div className="p-3 rounded-lg border dark:border-gray-700 bg-white dark:bg-[#171717]">
           <div className="flex flex-wrap items-center gap-2">
@@ -914,6 +921,15 @@ export const ReviewPage: React.FC = () => {
               icon={(<SearchIcon className="w-4 h-4" />) as any}>
               Search
             </Button>
+            <Tooltip title={sidebarHidden ? 'Show sidebar' : 'Hide sidebar'}>
+              <button
+                onClick={() => setSidebarHidden((v) => !v)}
+                className="inline-flex items-center gap-1 text-xs border rounded px-2 py-1 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-[#262626]"
+              >
+                {sidebarHidden ? <PanelLeftOpen className="w-4 h-4" /> : <PanelLeftClose className="w-4 h-4" />}
+                {sidebarHidden ? 'Show' : 'Hide'} sidebar
+              </button>
+            </Tooltip>
           </div>
           <div className="mt-2 flex flex-wrap items-center gap-2 justify-between">
             <button
@@ -1045,7 +1061,7 @@ export const ReviewPage: React.FC = () => {
                     setAnalysis("")
                     loadExistingAnalyses(item)
                   }}
-                  className="cursor-pointer hover:bg-gray-50 dark:hover:bg-[#262626] rounded px-2 result-fade-in">
+                  className={`cursor-pointer hover:bg-gray-50 dark:hover:bg-[#262626] rounded px-2 result-fade-in ${selected && selected.id === item.id && selected.kind === item.kind ? '!bg-gray-100 dark:!bg-gray-800' : ''}`}>
                   <div className="w-full">
                     <div className="flex items-center gap-2">
                       <Tag color={item.kind === "media" ? "blue" : "gold"}>
@@ -1092,9 +1108,10 @@ export const ReviewPage: React.FC = () => {
           )}
         </div>
       </div>
+      )}
 
       {/* Right/center: analysis panel */}
-      <div className="lg:col-span-2 p-3 rounded-lg border dark:border-gray-700 bg-white dark:bg-[#171717] min-h-[70vh] min-w-0 lg:h-[calc(100dvh-8rem)] overflow-auto">
+      <div className={`${sidebarHidden ? 'lg:col-span-1' : 'lg:col-span-2'} p-3 rounded-lg border dark:border-gray-700 bg-white dark:bg-[#171717] min-h-[70vh] min-w-0 lg:h-[calc(100dvh-8rem)] overflow-auto`}>
         {!selected ? (
           <div className="h-full flex items-center justify-center">
             <Empty description="Select an item to review and analyze" />
@@ -1235,7 +1252,13 @@ export const ReviewPage: React.FC = () => {
                 placement="bottomLeft"
                 dropdownRender={() => (
                   <div className="p-2 w-[420px] bg-white dark:bg-[#171717] border dark:border-gray-700 rounded shadow">
-                    <div className="text-xs text-gray-500 mb-1">Search prompts (server)</div>
+                    <div className="flex items-center justify-between mb-1">
+                      <div className="text-xs text-gray-500">Search prompts</div>
+                      <div className="flex items-center gap-2 text-xs">
+                        <label className="inline-flex items-center gap-1"><input type="checkbox" checked={revIncludeLocal} onChange={(e) => setRevIncludeLocal(e.target.checked)} /> Local</label>
+                        <label className="inline-flex items-center gap-1"><input type="checkbox" checked={revIncludeServer} onChange={(e) => setRevIncludeServer(e.target.checked)} /> Server</label>
+                      </div>
+                    </div>
                     <Input.Search
                       value={revQ}
                       onChange={(e) => setRevQ(e.target.value)}
@@ -1243,14 +1266,26 @@ export const ReviewPage: React.FC = () => {
                         if (!q.trim()) { setRevResults([]); return }
                         setRevLoading(true)
                         try {
-                          await tldwClient.initialize().catch(() => null)
-                          const res = await tldwClient.searchPrompts(q).catch(() => [])
-                          const list: any[] = Array.isArray(res) ? res : (res?.results || res?.prompts || [])
-                          setRevResults(list.map((x) => ({ id: x.id, title: String(x.title || x.name || 'Untitled'), content: String(x.content || x.prompt || '') })).slice(0, 50))
+                          let merged: Array<{ id?: string; title: string; content: string }> = []
+                          if (revIncludeLocal) {
+                            const locals = await getAllPrompts()
+                            const fl = (locals || []).filter((p) => (p.title?.toLowerCase().includes(q.toLowerCase()) || p.content?.toLowerCase().includes(q.toLowerCase()))).map((p) => ({ id: p.id, title: p.title, content: p.content }))
+                            merged = merged.concat(fl)
+                          }
+                          if (revIncludeServer) {
+                            await tldwClient.initialize().catch(() => null)
+                            const res = await tldwClient.searchPrompts(q).catch(() => [])
+                            const list: any[] = Array.isArray(res) ? res : (res?.results || res?.prompts || [])
+                            merged = merged.concat(list.map((x) => ({ id: x.id, title: String(x.title || x.name || 'Untitled'), content: String(x.content || x.prompt || '') })))
+                          }
+                          // dedupe by title+first64
+                          const seen = new Set<string>()
+                          const unique = merged.filter((p) => { const k = `${p.title}:${p.content.slice(0,64)}`; if (seen.has(k)) return false; seen.add(k); return true })
+                          setRevResults(unique.slice(0, 50))
                         } finally { setRevLoading(false) }
                       }}
                       loading={revLoading}
-                      placeholder="Search server prompts"
+                      placeholder="Search prompts"
                       allowClear
                     />
                     {revResults.length > 0 && (
@@ -1266,6 +1301,14 @@ export const ReviewPage: React.FC = () => {
                         />
                       </div>
                     )}
+                    <div className="mt-2">
+                      <div className="text-xs text-gray-500 mb-1">Presets</div>
+                      <div className="flex flex-wrap gap-2">
+                        <Button size="small" onClick={() => setReviewSystemPrompt("You are an expert reviewer. Provide a concise, structured review with strengths, weaknesses, and actionable recommendations.")}>Critical</Button>
+                        <Button size="small" onClick={() => setReviewSystemPrompt("Act as a QA auditor. Identify issues, ambiguities, and missing information. Provide numbered findings and suggested fixes.")}>QA Audit</Button>
+                        <Button size="small" onClick={() => setReviewSystemPrompt("Provide a bullet-point review focusing on clarity, completeness, and relevance. Include a brief overall assessment at the end.")}>Bullet Review</Button>
+                      </div>
+                    </div>
                     <div className="text-xs text-gray-500 mb-1">Review: System prompt</div>
                     <textarea
                       className="w-full text-sm p-2 rounded border dark:border-gray-700 dark:bg-[#171717] mt-1"
@@ -1280,6 +1323,9 @@ export const ReviewPage: React.FC = () => {
                       value={reviewUserPrefix}
                       onChange={(e) => setReviewUserPrefix(e.target.value)}
                     />
+                    <div className="mt-2 flex justify-end">
+                      <Button size="small" onClick={async () => { try { const storage = new Storage({ area: 'local' }); await storage.set(scopedKey('review:prompts'), { reviewSystemPrompt, reviewUserPrefix, summarySystemPrompt, summaryUserPrefix }); message.success('Saved as default'); } catch {} }}>Save as default</Button>
+                    </div>
                   </div>
                 )}
               >
@@ -1292,7 +1338,13 @@ export const ReviewPage: React.FC = () => {
                 placement="bottomLeft"
                 dropdownRender={() => (
                   <div className="p-2 w-[420px] bg-white dark:bg-[#171717] border dark:border-gray-700 rounded shadow">
-                    <div className="text-xs text-gray-500 mb-1">Search prompts (server)</div>
+                    <div className="flex items-center justify-between mb-1">
+                      <div className="text-xs text-gray-500">Search prompts</div>
+                      <div className="flex items-center gap-2 text-xs">
+                        <label className="inline-flex items-center gap-1"><input type="checkbox" checked={sumIncludeLocal} onChange={(e) => setSumIncludeLocal(e.target.checked)} /> Local</label>
+                        <label className="inline-flex items-center gap-1"><input type="checkbox" checked={sumIncludeServer} onChange={(e) => setSumIncludeServer(e.target.checked)} /> Server</label>
+                      </div>
+                    </div>
                     <Input.Search
                       value={sumQ}
                       onChange={(e) => setSumQ(e.target.value)}
@@ -1300,14 +1352,25 @@ export const ReviewPage: React.FC = () => {
                         if (!q.trim()) { setSumResults([]); return }
                         setSumLoading(true)
                         try {
-                          await tldwClient.initialize().catch(() => null)
-                          const res = await tldwClient.searchPrompts(q).catch(() => [])
-                          const list: any[] = Array.isArray(res) ? res : (res?.results || res?.prompts || [])
-                          setSumResults(list.map((x) => ({ id: x.id, title: String(x.title || x.name || 'Untitled'), content: String(x.content || x.prompt || '') })).slice(0, 50))
+                          let merged: Array<{ id?: string; title: string; content: string }> = []
+                          if (sumIncludeLocal) {
+                            const locals = await getAllPrompts()
+                            const fl = (locals || []).filter((p) => (p.title?.toLowerCase().includes(q.toLowerCase()) || p.content?.toLowerCase().includes(q.toLowerCase()))).map((p) => ({ id: p.id, title: p.title, content: p.content }))
+                            merged = merged.concat(fl)
+                          }
+                          if (sumIncludeServer) {
+                            await tldwClient.initialize().catch(() => null)
+                            const res = await tldwClient.searchPrompts(q).catch(() => [])
+                            const list: any[] = Array.isArray(res) ? res : (res?.results || res?.prompts || [])
+                            merged = merged.concat(list.map((x) => ({ id: x.id, title: String(x.title || x.name || 'Untitled'), content: String(x.content || x.prompt || '') })))
+                          }
+                          const seen = new Set<string>()
+                          const unique = merged.filter((p) => { const k = `${p.title}:${p.content.slice(0,64)}`; if (seen.has(k)) return false; seen.add(k); return true })
+                          setSumResults(unique.slice(0, 50))
                         } finally { setSumLoading(false) }
                       }}
                       loading={sumLoading}
-                      placeholder="Search server prompts"
+                      placeholder="Search prompts"
                       allowClear
                     />
                     {sumResults.length > 0 && (
@@ -1323,6 +1386,14 @@ export const ReviewPage: React.FC = () => {
                         />
                       </div>
                     )}
+                    <div className="mt-2">
+                      <div className="text-xs text-gray-500 mb-1">Presets</div>
+                      <div className="flex flex-wrap gap-2">
+                        <Button size="small" onClick={() => setSummarySystemPrompt("Summarize into key points and an executive abstract. Keep it concise and actionable.")}>Executive</Button>
+                        <Button size="small" onClick={() => setSummarySystemPrompt("Write a detailed summary with sections: Overview, Key Points, and Takeaways. Keep neutral tone.")}>Detailed</Button>
+                        <Button size="small" onClick={() => setSummarySystemPrompt("Create a short bullet-point summary capturing the core ideas and any decisions.")}>Bullets</Button>
+                      </div>
+                    </div>
                     <div className="text-xs text-gray-500 mb-1">Summary: System prompt</div>
                     <textarea
                       className="w-full text-sm p-2 rounded border dark:border-gray-700 dark:bg-[#171717] mt-1"
@@ -1337,6 +1408,9 @@ export const ReviewPage: React.FC = () => {
                       value={summaryUserPrefix}
                       onChange={(e) => setSummaryUserPrefix(e.target.value)}
                     />
+                    <div className="mt-2 flex justify-end">
+                      <Button size="small" onClick={async () => { try { const storage = new Storage({ area: 'local' }); await storage.set(scopedKey('review:prompts'), { reviewSystemPrompt, reviewUserPrefix, summarySystemPrompt, summaryUserPrefix }); message.success('Saved as default'); } catch {} }}>Save as default</Button>
+                    </div>
                   </div>
                 )}
               >
