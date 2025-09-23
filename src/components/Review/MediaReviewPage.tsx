@@ -1,8 +1,7 @@
 import React from "react"
 import { Input, Button, List, Spin, Space, Tag, Tooltip, Radio, Pagination, Empty, Select, Checkbox } from "antd"
-import { PanelLeftClose, PanelLeftOpen } from "lucide-react"
 import { bgRequest } from "@/services/background-proxy"
-import { useQuery } from "@tanstack/react-query"
+import { useQuery, keepPreviousData } from "@tanstack/react-query"
 import { tldwClient } from "@/services/tldw/TldwApiClient"
 
 type MediaItem = {
@@ -27,9 +26,26 @@ type MediaDetail = {
 
 const getContent = (d: MediaDetail): string => {
   if (!d) return ""
-  return (
-    d.content || d.text || d.raw_text || d.summary || d.latest_version?.content || ""
-  )
+  const firstString = (...vals: any[]): string => {
+    for (const v of vals) {
+      if (typeof v === 'string' && v.trim().length > 0) return v
+    }
+    return ""
+  }
+  if (typeof d === 'string') return d
+  const root = firstString(d.content, d.text, (d as any).raw_text, (d as any).rawText, d.summary)
+  if (root) return root
+  const lv: any = (d as any).latest_version || (d as any).latestVersion
+  if (lv && typeof lv === 'object') {
+    const fromLatest = firstString(lv.content, lv.text, lv.raw_text, lv.rawText, lv.summary)
+    if (fromLatest) return fromLatest
+  }
+  const data: any = (d as any).data
+  if (data && typeof data === 'object') {
+    const fromData = firstString(data.content, data.text, data.raw_text, data.rawText, data.summary)
+    if (fromData) return fromData
+  }
+  return ""
 }
 
 export const MediaReviewPage: React.FC = () => {
@@ -162,7 +178,8 @@ export const MediaReviewPage: React.FC = () => {
   const { data, isFetching, refetch } = useQuery({
     queryKey: ["media-review", query, page, pageSize],
     queryFn: fetchList,
-    keepPreviousData: true
+    // React Query v5: use placeholderData helper to keep previous data
+    placeholderData: keepPreviousData
   })
 
   React.useEffect(() => {
@@ -216,16 +233,19 @@ export const MediaReviewPage: React.FC = () => {
   return (
     <div className="w-full h-[calc(100dvh-4rem)] mt-16 flex flex-col">
       <div className="shrink-0 mb-3 flex items-center justify-between gap-3">
-        <div className="flex items-center gap-2 w-full">
-          <Input
-            placeholder="Search media (title/content)"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            onPressEnter={() => { setPage(1); refetch() }}
-          />
-          <Button type="primary" onClick={() => { setPage(1); refetch() }}>Search</Button>
-          <Button onClick={() => { setQuery(""); setPage(1); refetch() }}>Clear</Button>
-          <Select
+        <div className="w-full">
+          <div className="flex items-center gap-2 w-full">
+            <Input
+              placeholder="Search media (title/content)"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              onPressEnter={() => { setPage(1); refetch() }}
+            />
+          </div>
+          <div className="flex items-center gap-2 w-full mt-2">
+            <Button type="primary" onClick={() => { setPage(1); refetch() }}>Search</Button>
+            <Button onClick={() => { setQuery(""); setPage(1); refetch() }}>Clear</Button>
+            <Select
             mode="multiple"
             allowClear
             placeholder="Types"
@@ -233,8 +253,8 @@ export const MediaReviewPage: React.FC = () => {
             value={types}
             onChange={(vals) => { setTypes(vals as string[]); setPage(1); refetch() }}
             options={availableTypes.map((t) => ({ label: t, value: t }))}
-          />
-          <Select
+            />
+            <Select
             mode="tags"
             allowClear
             showSearch
@@ -244,9 +264,10 @@ export const MediaReviewPage: React.FC = () => {
             onSearch={(txt) => loadKeywordSuggestions(txt)}
             onChange={(vals) => { setKeywordTokens(vals as string[]); setPage(1); refetch() }}
             options={keywordOptions.map((k) => ({ label: k, value: k }))}
-          />
-          <Button onClick={() => { setTypes([]); setPage(1); refetch() }}>Reset Filters</Button>
-          <Checkbox checked={includeContent} onChange={(e) => { setIncludeContent(e.target.checked); setPage(1); refetch() }}>Content {contentLoading && (<Spin size="small" className="ml-1" />)}</Checkbox>
+            />
+            <Button onClick={() => { setTypes([]); setKeywordTokens([]); setPage(1); refetch() }}>Reset Filters</Button>
+            <Checkbox checked={includeContent} onChange={(e) => { setIncludeContent(e.target.checked); setPage(1); refetch() }}>Content {contentLoading && (<Spin size="small" className="ml-1" />)}</Checkbox>
+          </div>
         </div>
         <Radio.Group
           size="small"
@@ -255,20 +276,11 @@ export const MediaReviewPage: React.FC = () => {
           options={[{ label: 'Vertical', value: 'vertical' }, { label: 'Horizontal', value: 'horizontal' }]}
           optionType="button"
         />
-        <Tooltip title={sidebarHidden ? 'Show sidebar' : 'Hide sidebar'}>
-          <button
-            onClick={() => setSidebarHidden((v) => !v)}
-            className="inline-flex items-center gap-1 text-xs border rounded px-2 py-1 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-[#262626]"
-          >
-            {sidebarHidden ? <PanelLeftOpen className="w-4 h-4" /> : <PanelLeftClose className="w-4 h-4" />}
-            {sidebarHidden ? 'Show' : 'Hide'} sidebar
-          </button>
-        </Tooltip>
       </div>
 
-      <div className={`flex-1 min-h-0 w-full grid gap-4 ${sidebarHidden ? 'grid-cols-1' : 'grid-cols-1 lg:grid-cols-3'}`}>
+      <div className="flex flex-1 min-h-0 w-full gap-4">
         {!sidebarHidden && (
-        <div className="lg:col-span-1 border rounded p-2 bg-white dark:bg-[#171717] h-full overflow-auto">
+        <div className="w-full lg:w-1/3 border rounded p-2 bg-white dark:bg-[#171717] h-full overflow-auto">
           <div className="mb-2 text-sm text-gray-600 dark:text-gray-300">Results</div>
           {isFetching ? (
             <div className="py-8 flex items-center justify-center"><Spin /></div>
@@ -311,7 +323,17 @@ export const MediaReviewPage: React.FC = () => {
           )}
         </div>
         )}
-        <div className={`${sidebarHidden ? 'lg:col-span-1' : 'lg:col-span-2'} border rounded p-2 bg-white dark:bg-[#171717] h-full overflow-auto`}>
+        {/* Toggle bar between sidebar and viewer */}
+        <div className="w-6 flex-shrink-0 h-full flex items-center">
+          <button
+            title={sidebarHidden ? 'Show sidebar' : 'Hide sidebar'}
+            onClick={() => setSidebarHidden((v) => !v)}
+            className="h-full w-6 rounded bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 flex items-center justify-center text-xs font-semibold text-gray-600 dark:text-gray-300"
+          >
+            {sidebarHidden ? '>>' : '<<'}
+          </button>
+        </div>
+        <div className="flex-1 border rounded p-2 bg-white dark:bg-[#171717] h-full overflow-auto">
           <div className="mb-2 text-sm text-gray-600 dark:text-gray-300">Viewer</div>
           {viewerItems.length === 0 ? (
             <div className="text-sm text-gray-500">Select items on the left to view here.</div>

@@ -31,7 +31,7 @@ import {
   SearchIcon,
   PaperclipIcon
 } from "lucide-react"
-import { ChevronDown, CopyIcon, SendIcon, PanelLeftClose, PanelLeftOpen } from "lucide-react"
+import { ChevronDown, CopyIcon, SendIcon } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { Storage } from "@plasmohq/storage"
 import { getAllPrompts } from "@/db/dexie/helpers"
@@ -518,18 +518,42 @@ export const ReviewPage: React.FC = () => {
   }, [])
 
   const contentFromDetail = (detail: any): string => {
-    if (!detail || typeof detail !== "object") return ""
-    // Try common fields
-    const candidates = [
-      detail?.content,
-      detail?.text,
-      detail?.raw_text,
-      detail?.summary,
-      detail?.latest_version?.content
-    ]
-    for (const c of candidates) {
-      if (typeof c === "string" && c.trim().length > 0) return c
+    if (!detail) return ""
+    // Helper: return first non-empty string from provided values
+    const firstString = (...vals: any[]): string => {
+      for (const v of vals) {
+        if (typeof v === 'string' && v.trim().length > 0) return v
+      }
+      return ""
     }
+    if (typeof detail === 'string') return detail
+    if (typeof detail !== 'object') return ""
+
+    // Common fields on root and nested structures
+    const fromRoot = firstString(detail.content, detail.text, detail.raw_text, detail.rawText, detail.summary)
+    if (fromRoot) return fromRoot
+
+    const lv = detail.latest_version || detail.latestVersion
+    if (lv && typeof lv === 'object') {
+      const fromLatest = firstString(lv.content, lv.text, lv.raw_text, lv.rawText, lv.summary)
+      if (fromLatest) return fromLatest
+    }
+
+    const data = detail.data
+    if (data && typeof data === 'object') {
+      const fromData = firstString(data.content, data.text, data.raw_text, data.rawText, data.summary)
+      if (fromData) return fromData
+    }
+
+    // As a last resort, try common nested objects directly
+    for (const key of ['content', 'text', 'raw_text', 'rawText', 'summary']) {
+      const v = (detail as any)[key]
+      if (v && typeof v === 'object') {
+        const nested = firstString(v.content, v.text, v.raw_text, v.rawText, v.summary)
+        if (nested) return nested
+      }
+    }
+
     return ""
   }
 
@@ -898,10 +922,10 @@ export const ReviewPage: React.FC = () => {
 
   return (
     <>
-    <div className={`w-full h-full grid gap-4 mt-16 ${sidebarHidden ? 'grid-cols-1' : 'grid-cols-1 lg:grid-cols-3'}`}>
+    <div className="w-full h-full flex gap-4 mt-16">
       {/* Left column: search + results */}
       {!sidebarHidden && (
-      <div className="lg:col-span-1 min-w-0 lg:sticky lg:top-16 lg:self-start">
+      <div className="w-full lg:w-1/3 min-w-0 lg:sticky lg:top-16 lg:self-start">
         <div className="p-3 rounded-lg border dark:border-gray-700 bg-white dark:bg-[#171717]">
           <div className="flex flex-wrap items-center gap-2">
             <Input
@@ -912,6 +936,8 @@ export const ReviewPage: React.FC = () => {
               onPressEnter={() => refetch()}
               className="flex-1 min-w-[12rem]"
             />
+          </div>
+          <div className="mt-2">
             <Button
               type="primary"
               onClick={() => {
@@ -921,15 +947,6 @@ export const ReviewPage: React.FC = () => {
               icon={(<SearchIcon className="w-4 h-4" />) as any}>
               Search
             </Button>
-            <Tooltip title={sidebarHidden ? 'Show sidebar' : 'Hide sidebar'}>
-              <button
-                onClick={() => setSidebarHidden((v) => !v)}
-                className="inline-flex items-center gap-1 text-xs border rounded px-2 py-1 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-[#262626]"
-              >
-                {sidebarHidden ? <PanelLeftOpen className="w-4 h-4" /> : <PanelLeftClose className="w-4 h-4" />}
-                {sidebarHidden ? 'Show' : 'Hide'} sidebar
-              </button>
-            </Tooltip>
           </div>
           <div className="mt-2 flex flex-wrap items-center gap-2 justify-between">
             <button
@@ -1109,9 +1126,19 @@ export const ReviewPage: React.FC = () => {
         </div>
       </div>
       )}
+      {/* Vertical toggle bar */}
+      <div className="w-6 flex-shrink-0 h-full flex items-center">
+        <button
+          title={sidebarHidden ? 'Show sidebar' : 'Hide sidebar'}
+          onClick={() => setSidebarHidden((v) => !v)}
+          className="h-full w-6 rounded bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 flex items-center justify-center text-xs font-semibold text-gray-600 dark:text-gray-300"
+        >
+          {sidebarHidden ? '>>' : '<<'}
+        </button>
+      </div>
 
       {/* Right/center: analysis panel */}
-      <div className={`${sidebarHidden ? 'lg:col-span-1' : 'lg:col-span-2'} p-3 rounded-lg border dark:border-gray-700 bg-white dark:bg-[#171717] min-h-[70vh] min-w-0 lg:h-[calc(100dvh-8rem)] overflow-auto`}>
+      <div className="flex-1 p-3 rounded-lg border dark:border-gray-700 bg-white dark:bg-[#171717] min-h-[70vh] min-w-0 lg:h-[calc(100dvh-8rem)] overflow-auto">
         {!selected ? (
           <div className="h-full flex items-center justify-center">
             <Empty description="Select an item to review and analyze" />
@@ -1468,7 +1495,7 @@ export const ReviewPage: React.FC = () => {
                     <Button size="small" onClick={() => setMediaJsonOpen(v => !v)}>{mediaJsonOpen ? 'Hide raw' : 'Show raw'}</Button>
                   </div>
                 </div>
-                <div className="mt-2 whitespace-pre-wrap text-sm text-gray-700 dark:text-gray-300">
+                <div className="mt-2 prose prose-sm dark:prose-invert max-w-none whitespace-pre-wrap break-words text-sm text-gray-700 dark:text-gray-300">
                   {selectedContent ? selectedContent : <span className="text-xs text-gray-500">No content available</span>}
                 </div>
                 {mediaJsonOpen && (
@@ -1498,50 +1525,52 @@ export const ReviewPage: React.FC = () => {
                   </div>
                 </div>
                 <textarea
-                  className="w-full mt-2 min-h-[12rem] md:h-[26vh] text-sm p-2 rounded border dark:border-gray-700 dark:bg-[#171717] resize-y"
+                  className="w-full mt-2 min-h-[12rem] md:h-[26vh] text-sm p-2 rounded border dark:border-gray-700 dark:bg-[#171717] resize-y leading-relaxed"
                   value={analysis}
                   onChange={(e) => setAnalysis(e.target.value)}
                   placeholder="Run Review or Summarize, then edit here..."
                 />
               </div>
-              <div className="rounded border dark:border-gray-700 p-2 overflow-auto min-h-[10rem]">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Typography.Text type="secondary">Existing Analyses</Typography.Text>
-                    <Checkbox checked={onlyWithAnalysis} onChange={(e) => setOnlyWithAnalysis(e.target.checked)} className="text-xs">Only with analysis</Checkbox>
-                  </div>
-                  <div className="flex items-center gap-2">
+              {/* Header above container */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Typography.Text type="secondary">Existing Analyses</Typography.Text>
+                  <Checkbox checked={onlyWithAnalysis} onChange={(e) => setOnlyWithAnalysis(e.target.checked)} className="text-xs">Only with analysis</Checkbox>
+                </div>
+                <div className="flex items-center gap-2">
                     <Tooltip title="Copy all as plain text">
                       <Button size="small" onClick={async () => { const text = (existingAnalyses || []).map((n, idx) => `Note ${n?.id ?? idx+1}\n\n${String(n?.content || '')}`).join("\n\n---\n\n"); try { await navigator.clipboard.writeText(text); message.success('Copied all notes') } catch { message.error('Copy failed') } }}>Copy All</Button>
                     </Tooltip>
                     <Tooltip title="Copy all as Markdown">
                       <Button size="small" onClick={async () => { const md = (existingAnalyses || []).map((n, idx) => `### Note ${n?.id ?? idx+1}\n\n${toMarkdown(String(n?.content || ''))}`).join("\n\n---\n\n"); try { await navigator.clipboard.writeText(md); message.success('Copied all notes as Markdown') } catch { message.error('Copy failed') } }}>Copy MD</Button>
                     </Tooltip>
-                    {displayedVersionIndices.length > 0 && (
-                      <>
-                        <span className="text-[10px] text-gray-500">{selectedDisplayPos >= 0 ? `${selectedDisplayPos + 1}/${displayedVersionIndices.length}` : `0/${displayedVersionIndices.length}`}</span>
-                        <Button size="small" onClick={goPrev}>Prev</Button>
-                        <Button size="small" onClick={goNext}>Next</Button>
-                        <Tooltip title="Load selected analysis into editor">
-                          <Button size="small" disabled={selectedExistingIndex < 0 || selectedExistingIndex >= existingAnalyses.length} onClick={() => { const v = existingAnalyses[selectedExistingIndex]; const text = getVersionAnalysis(v); if (text) setAnalysis(text) }}>Load</Button>
-                        </Tooltip>
-                        <Tooltip title="Load version prompt into editor">
-                          <Button size="small" disabled={selectedExistingIndex < 0 || selectedExistingIndex >= existingAnalyses.length} onClick={() => { const v = existingAnalyses[selectedExistingIndex]; const p = getVersionPrompt(v); if (!p) { message.warning('No prompt found'); return } if (analysisMode === 'review') setReviewSystemPrompt(p); else setSummarySystemPrompt(p) }}>Load Prompt</Button>
-                        </Tooltip>
-                        <Tooltip title="Copy selected version prompt">
-                          <Button size="small" disabled={selectedExistingIndex < 0 || selectedExistingIndex >= existingAnalyses.length} onClick={async () => { const v = existingAnalyses[selectedExistingIndex]; const p = getVersionPrompt(v); if (!p) { message.warning('No prompt found'); return } try { await navigator.clipboard.writeText(p); message.success('Prompt copied') } catch { message.error('Copy failed') } }}>Copy Prompt</Button>
-                        </Tooltip>
-                        <Tooltip title="Diff selected vs current analysis">
-                          <Button size="small" onClick={() => { if (selectedExistingIndex < 0 || selectedExistingIndex >= existingAnalyses.length) { message.warning('Select a version first'); return } const v = existingAnalyses[selectedExistingIndex]; const base = getVersionAnalysis(v); const diff = computeDiff(base, analysis || ''); setDiffLines(diff); setDiffLeftText(base); setDiffRightText(analysis || ''); setDiffOpen(true); }}>Diff with current</Button>
-                        </Tooltip>
-                        <Tooltip title="Delete selected version">
-                          <Button danger size="small" disabled={selectedExistingIndex < 0 || selectedExistingIndex >= existingAnalyses.length} onClick={async () => { try { const v = existingAnalyses[selectedExistingIndex]; const vv = getVersionNumber(v); if (!vv) { message.warning('No version number'); return } await bgRequest<any>({ path: `/api/v1/media/${selected?.id}/versions/${vv}` as any, method: 'DELETE' as any }); notification.open({ message: 'Version deleted', description: `Deleted version v${vv}.`, btn: (<Button type="link" size="small" onClick={async () => { try { await bgRequest<any>({ path: `/api/v1/media/${selected?.id}/versions/rollback` as any, method: 'POST' as any, headers: { 'Content-Type': 'application/json' }, body: { version_number: vv } }); message.success('Undo: rolled back to deleted version'); if (selected) await loadExistingAnalyses(selected) } catch (e: any) { message.error(e?.message || 'Undo failed') } }}>Undo</Button>), duration: 4 }); if (selected) await loadExistingAnalyses(selected) } catch (e: any) { message.error(e?.message || 'Delete failed') } }}>Delete</Button>
-                        </Tooltip>
-                      </>
-                    )}
-                    <Button size="small" onClick={() => setNotesJsonOpen(v => !v)}>{notesJsonOpen ? 'Hide raw' : 'Show raw'}</Button>
-                  </div>
                 </div>
+              </div>
+              <div className="rounded border dark:border-gray-700 p-2 overflow-auto min-h-[10rem]">
+                {displayedVersionIndices.length > 0 ? (
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="text-[10px] text-gray-500">{selectedDisplayPos >= 0 ? `${selectedDisplayPos + 1}/${displayedVersionIndices.length}` : `0/${displayedVersionIndices.length}`}</span>
+                    <Button size="small" onClick={goPrev}>Prev</Button>
+                    <Button size="small" onClick={goNext}>Next</Button>
+                    <Tooltip title="Load selected analysis into editor">
+                      <Button size="small" disabled={selectedExistingIndex < 0 || selectedExistingIndex >= existingAnalyses.length} onClick={() => { const v = existingAnalyses[selectedExistingIndex]; const text = getVersionAnalysis(v); if (text) setAnalysis(text) }}>Load</Button>
+                    </Tooltip>
+                    <Tooltip title="Load version prompt into editor">
+                      <Button size="small" disabled={selectedExistingIndex < 0 || selectedExistingIndex >= existingAnalyses.length} onClick={() => { const v = existingAnalyses[selectedExistingIndex]; const p = getVersionPrompt(v); if (!p) { message.warning('No prompt found'); return } if (analysisMode === 'review') setReviewSystemPrompt(p); else setSummarySystemPrompt(p) }}>Load Prompt</Button>
+                    </Tooltip>
+                    <Tooltip title="Copy selected version prompt">
+                      <Button size="small" disabled={selectedExistingIndex < 0 || selectedExistingIndex >= existingAnalyses.length} onClick={async () => { const v = existingAnalyses[selectedExistingIndex]; const p = getVersionPrompt(v); if (!p) { message.warning('No prompt found'); return } try { await navigator.clipboard.writeText(p); message.success('Prompt copied') } catch { message.error('Copy failed') } }}>Copy Prompt</Button>
+                    </Tooltip>
+                    <Tooltip title="Diff selected vs current analysis">
+                      <Button size="small" onClick={() => { if (selectedExistingIndex < 0 || selectedExistingIndex >= existingAnalyses.length) { message.warning('Select a version first'); return } const v = existingAnalyses[selectedExistingIndex]; const base = getVersionAnalysis(v); const diff = computeDiff(base, analysis || ''); setDiffLines(diff); setDiffLeftText(base); setDiffRightText(analysis || ''); setDiffOpen(true); }}>Diff with current</Button>
+                    </Tooltip>
+                    <Tooltip title="Delete selected version">
+                      <Button danger size="small" disabled={selectedExistingIndex < 0 || selectedExistingIndex >= existingAnalyses.length} onClick={async () => { try { const v = existingAnalyses[selectedExistingIndex]; const vv = getVersionNumber(v); if (!vv) { message.warning('No version number'); return } await bgRequest<any>({ path: `/api/v1/media/${selected?.id}/versions/${vv}` as any, method: 'DELETE' as any }); notification.open({ message: 'Version deleted', description: `Deleted version v${vv}.`, btn: (<Button type="link" size="small" onClick={async () => { try { await bgRequest<any>({ path: `/api/v1/media/${selected?.id}/versions/rollback` as any, method: 'POST' as any, headers: { 'Content-Type': 'application/json' }, body: { version_number: vv } }); message.success('Undo: rolled back to deleted version'); if (selected) await loadExistingAnalyses(selected) } catch (e: any) { message.error(e?.message || 'Undo failed') } }}>Undo</Button>), duration: 4 }); if (selected) await loadExistingAnalyses(selected) } catch (e: any) { message.error(e?.message || 'Delete failed') } }}>Delete</Button>
+                    </Tooltip>
+                  </div>
+                ) : null}
+                <Button size="small" onClick={() => setNotesJsonOpen(v => !v)}>{notesJsonOpen ? 'Hide raw' : 'Show raw'}</Button>
+              </div>
                 {displayedVersionIndices.length === 0 ? (
                   <div className="text-xs text-gray-500 mt-2">No saved analyses for this item yet.</div>
                 ) : (
@@ -1583,7 +1612,6 @@ export const ReviewPage: React.FC = () => {
                 )}
               </div>
             </div>
-          </div>
         )}
       </div>
     </div>
