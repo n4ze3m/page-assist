@@ -323,6 +323,19 @@ export class TldwApiClient {
     return await bgUpload<any>({ path: '/api/v1/media/add', method: 'POST', fields: normalized })
   }
 
+  async uploadMedia(file: File, fields?: Record<string, any>): Promise<any> {
+    const data = await file.arrayBuffer()
+    const name = file.name || 'upload'
+    const type = file.type || 'application/octet-stream'
+    const normalized: Record<string, any> = {}
+    for (const [k, v] of Object.entries(fields || {})) {
+      if (typeof v === 'undefined' || v === null) continue
+      if (typeof v === 'boolean') normalized[k] = v ? 'true' : 'false'
+      else normalized[k] = v
+    }
+    return await bgUpload<any>({ path: '/api/v1/media/add', method: 'POST', fields: normalized, file: { name, type, data } })
+  }
+
   async ingestWebContent(url: string, options?: any): Promise<any> {
     const { timeoutMs, ...rest } = options || {}
     return await bgRequest<any>({ path: '/api/v1/media/ingest-web-content', method: 'POST', headers: { 'Content-Type': 'application/json' }, body: { url, ...rest }, timeoutMs })

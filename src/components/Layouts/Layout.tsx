@@ -69,14 +69,24 @@ export default function OptionLayout({
         <Drawer
           title={
             <div className="flex items-center justify-between">
-              {t("sidebarTitle")}
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setSidebarOpen(false)}
+                  aria-label="Close sidebar"
+                  title="Close sidebar"
+                  className="-ml-1"
+                >
+                  <XIcon className="h-5 w-5 text-gray-500 dark:text-gray-400" />
+                </button>
+                <span>{t("sidebarTitle")}</span>
+              </div>
 
               <div className="flex items-center space-x-3">
                 <Tooltip
                   title={t(
                     "settings:generalSettings.system.deleteChatHistory.label"
                   )}
-                  placement="right">
+                  placement="left">
                   <button
                     onClick={async () => {
                       const confirm = window.confirm(
@@ -98,12 +108,6 @@ export default function OptionLayout({
                     <EraserIcon className="size-5" />
                   </button>
                 </Tooltip>
-                <button
-                  onClick={() => setSidebarOpen(false)}
-                  aria-label="Close sidebar"
-                  title="Close sidebar">
-                  <XIcon className="h-5 w-5 text-gray-500 dark:text-gray-400" />
-                </button>
               </div>
             </div>
           }

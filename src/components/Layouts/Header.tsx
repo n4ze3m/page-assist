@@ -21,7 +21,7 @@ import { fetchChatModels } from "@/services/tldw-server"
 import { useMessageOption } from "~/hooks/useMessageOption"
 import { Avatar, Select, Tooltip, Popover, Input } from "antd"
 import QuickIngestModal from "../Common/QuickIngestModal"
-import { PaperclipIcon, SearchIcon } from "lucide-react"
+import { UploadCloud, Microscope } from "lucide-react"
 import { getAllPrompts } from "@/db/dexie/helpers"
 import { ProviderIcons } from "../Common/ProviderIcon"
 import { NewChat } from "./NewChat"
@@ -259,7 +259,7 @@ export const Header: React.FC<Props> = ({
                 to="/review"
                 className="!text-gray-500 dark:text-gray-300 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
               >
-                <SearchIcon className="w-6 h-6" />
+                <Microscope className="w-6 h-6" />
               </NavLink>
             </Tooltip>
             <Tooltip title={'Quick ingest media'}>
@@ -267,7 +267,7 @@ export const Header: React.FC<Props> = ({
                 onClick={() => setQuickIngestOpen(true)}
                 className="!text-gray-500 dark:text-gray-300 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
               >
-                <PaperclipIcon className="w-6 h-6" />
+                <UploadCloud className="w-6 h-6" />
               </button>
             </Tooltip>
             {messages.length > 0 && !streaming && (
@@ -277,15 +277,7 @@ export const Header: React.FC<Props> = ({
                 messages={messages}
               />
             )}
-            {!hideCurrentChatModelSettings && (
-              <Tooltip title={'Current Conversation Settings'}>
-                <button
-                  onClick={() => setOpenModelSettings(true)}
-                  className="!text-gray-500 dark:text-gray-300 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
-                  <Gauge className="w-6 h-6" />
-                </button>
-              </Tooltip>
-            )}
+            
             <Tooltip title={t("githubRepository")}>
               <a
                 href="https://github.com/n4ze3m/page-assist"

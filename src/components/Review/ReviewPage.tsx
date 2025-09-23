@@ -14,7 +14,9 @@ import {
   Typography,
   Select,
   Pagination,
-  Radio
+  Radio,
+  notification,
+  Modal
 } from "antd"
 import { useQuery } from "@tanstack/react-query"
 import { bgRequest } from "@/services/background-proxy"
@@ -68,6 +70,18 @@ export const ReviewPage: React.FC = () => {
   const [autoReviewOnSelect, setAutoReviewOnSelect] =
     React.useState<boolean>(false)
   const [selectedContent, setSelectedContent] = React.useState<string>("")
+  const [selectedDetail, setSelectedDetail] = React.useState<any>(null)
+  const [debugOpen, setDebugOpen] = React.useState<boolean>(false)
+  const [mediaJsonOpen, setMediaJsonOpen] = React.useState<boolean>(false)
+  const [notesJsonOpen, setNotesJsonOpen] = React.useState<boolean>(false)
+  const [selectedExistingIndex, setSelectedExistingIndex] = React.useState<number>(-1)
+  const [onlyWithAnalysis, setOnlyWithAnalysis] = React.useState<boolean>(false)
+  const [diffOpen, setDiffOpen] = React.useState<boolean>(false)
+  const [diffLines, setDiffLines] = React.useState<Array<{ type: 'same'|'add'|'del'; text: string }>>([])
+  const [expandedPrompts, setExpandedPrompts] = React.useState<Set<string>>(new Set())
+  const [diffSideBySide, setDiffSideBySide] = React.useState<boolean>(false)
+  const [diffLeftText, setDiffLeftText] = React.useState<string>("")
+  const [diffRightText, setDiffRightText] = React.useState<string>("")
   const [promptsOpen, setPromptsOpen] = React.useState<boolean>(false)
   const [reviewSystemPrompt, setReviewSystemPrompt] = React.useState<string>(
     "You are an expert reviewer. Provide a concise, structured review of the following content."
@@ -513,30 +527,157 @@ export const ReviewPage: React.FC = () => {
         const detail = await fetchSelectedDetails(selected)
         const content = contentFromDetail(detail)
         setSelectedContent(String(content || ""))
-      } catch { setSelectedContent("") }
+        setSelectedDetail(detail)
+      } catch { setSelectedContent(""); setSelectedDetail(null) }
     })()
   }, [selected])
 
   const loadExistingAnalyses = React.useCallback(async (item: ResultItem) => {
     try {
-      if (item.kind !== "media") {
-        setExistingAnalyses([])
-        return
-      }
-      const tag = `media:${item.id}`
-      const cfg = await tldwClient.getConfig()
-      const base = String(cfg?.serverUrl || "").replace(/\/$/, "")
-      // GET /api/v1/notes/search/?query=media:<id>
-      const abs = await bgRequest<any>({
-        path: `${base}/api/v1/notes/search/?query=${encodeURIComponent(tag)}` as any,
-        method: "GET" as any
-      })
-      if (Array.isArray(abs)) setExistingAnalyses(abs)
-      else setExistingAnalyses([])
+      if (item.kind !== 'media') { setExistingAnalyses([]); setSelectedExistingIndex(-1); return }
+      // Fetch media versions (holds prompt/analysis per version)
+      const versions = await bgRequest<any[]>({ path: `/api/v1/media/${item.id}/versions?include_content=false&limit=50&page=1` as any, method: 'GET' as any })
+      const arr = Array.isArray(versions) ? versions : []
+      setExistingAnalyses(arr)
+      // Restore previously selected version index if present
+      try {
+        const storage = new Storage({ area: 'local' })
+        const idx = await storage.get(scopedKey(`review:selectedVersion:${item.id}`)).catch(() => null) as any
+        const sel = typeof idx === 'number' && idx >= 0 && idx < arr.length ? idx : (arr.length > 0 ? 0 : -1)
+        setSelectedExistingIndex(sel)
+      } catch { setSelectedExistingIndex(arr.length > 0 ? 0 : -1) }
     } catch {
       setExistingAnalyses([])
+      setSelectedExistingIndex(-1)
     }
   }, [])
+
+  // Persist selected version index per media
+  React.useEffect(() => {
+    ;(async () => {
+      try {
+        if (!selected || selected.kind !== 'media') return
+        const storage = new Storage({ area: 'local' })
+        await storage.set(scopedKey(`review:selectedVersion:${selected.id}`), selectedExistingIndex)
+      } catch {}
+    })()
+  }, [selectedExistingIndex, selected, scopedKey])
+
+  // Load/save the "only with analysis" toggle per media
+  React.useEffect(() => {
+    ;(async () => {
+      try {
+        if (!selected || selected.kind !== 'media') return
+        const storage = new Storage({ area: 'local' })
+        const saved = await storage.get(scopedKey(`review:withAnalysisOnly:${selected.id}`)).catch(() => null) as any
+        if (typeof saved === 'boolean') setOnlyWithAnalysis(saved)
+      } catch {}
+    })()
+  }, [selected, scopedKey])
+
+  React.useEffect(() => {
+    ;(async () => {
+      try {
+        if (!selected || selected.kind !== 'media') return
+        const storage = new Storage({ area: 'local' })
+        await storage.set(scopedKey(`review:withAnalysisOnly:${selected.id}`), onlyWithAnalysis)
+      } catch {}
+    })()
+  }, [onlyWithAnalysis, selected, scopedKey])
+
+  // Helpers to read version analysis/timestamp/label
+  const getVersionAnalysis = (v: any): string => String(v?.analysis_content || v?.analysis || '')
+  const getVersionPrompt = (v: any): string => String(v?.prompt || '')
+  const getVersionNumber = (v: any): number | undefined => (typeof v?.version_number === 'number' ? v.version_number : (typeof v?.version === 'number' ? v.version : undefined))
+  const getVersionTimestamp = (v: any): string => String(v?.created_at || v?.updated_at || v?.timestamp || '')
+
+  // Visible versions given filter
+  const displayedVersionIndices = React.useMemo(() => {
+    return (existingAnalyses || []).map((v, i) => ({ v, i })).filter(({ v }) => !onlyWithAnalysis || getVersionAnalysis(v).trim().length > 0).map(({ i }) => i)
+  }, [existingAnalyses, onlyWithAnalysis])
+
+  const displayedVersions = React.useMemo(() => displayedVersionIndices.map((i) => existingAnalyses[i]), [displayedVersionIndices, existingAnalyses])
+
+  const selectedDisplayPos = React.useMemo(() => (selectedExistingIndex >= 0 ? displayedVersionIndices.indexOf(selectedExistingIndex) : -1), [displayedVersionIndices, selectedExistingIndex])
+
+  const goPrev = () => {
+    if (displayedVersionIndices.length === 0) return
+    const pos = selectedDisplayPos >= 0 ? selectedDisplayPos : 0
+    const newPos = pos <= 0 ? displayedVersionIndices.length - 1 : pos - 1
+    setSelectedExistingIndex(displayedVersionIndices[newPos])
+  }
+  const goNext = () => {
+    if (displayedVersionIndices.length === 0) return
+    const pos = selectedDisplayPos >= 0 ? selectedDisplayPos : 0
+    const newPos = (pos + 1) % displayedVersionIndices.length
+    setSelectedExistingIndex(displayedVersionIndices[newPos])
+  }
+
+  // Current (active) version number badge
+  const currentVersionNumber = React.useMemo(() => {
+    const fromDetail = (typeof (selectedDetail?.version) === 'number') ? selectedDetail.version : (typeof (selectedDetail?.latest_version?.version_number) === 'number' ? selectedDetail.latest_version.version_number : undefined)
+    if (typeof fromDetail === 'number') return fromDetail
+    // Fallback: max version number
+    let max = -Infinity
+    for (const v of existingAnalyses || []) {
+      const n = getVersionNumber(v)
+      if (typeof n === 'number' && n > max) max = n
+    }
+    return isFinite(max) ? max : undefined
+  }, [selectedDetail, existingAnalyses])
+
+  // Fetch specific version with content when needed (clone)
+  const fetchVersionWithContent = React.useCallback(async (mediaId: string | number, versionNumber: number) => {
+    try {
+      const data = await bgRequest<any>({ path: `/api/v1/media/${mediaId}/versions/${versionNumber}?include_content=true` as any, method: 'GET' as any })
+      return data
+    } catch { return null }
+  }, [])
+
+  // Simple line diff for modal
+  const computeDiff = (oldStr: string, newStr: string) => {
+    const a = String(oldStr || '').split('\n')
+    const b = String(newStr || '').split('\n')
+    const n = a.length, m = b.length
+    const dp: number[][] = Array.from({ length: n + 1 }, () => Array(m + 1).fill(0))
+    for (let i = n - 1; i >= 0; i--) {
+      for (let j = m - 1; j >= 0; j--) {
+        dp[i][j] = a[i] === b[j] ? dp[i + 1][j + 1] + 1 : Math.max(dp[i + 1][j], dp[i][j + 1])
+      }
+    }
+    const out: Array<{ type: 'same'|'add'|'del'; text: string }> = []
+    let i = 0, j = 0
+    while (i < n && j < m) {
+      if (a[i] === b[j]) { out.push({ type: 'same', text: a[i] }); i++; j++; }
+      else if (dp[i + 1][j] >= dp[i][j + 1]) { out.push({ type: 'del', text: a[i] }); i++; }
+      else { out.push({ type: 'add', text: b[j] }); j++; }
+    }
+    while (i < n) { out.push({ type: 'del', text: a[i++] }) }
+    while (j < m) { out.push({ type: 'add', text: b[j++] }) }
+    return out
+  }
+
+  // Persist expanded prompts per media
+  React.useEffect(() => {
+    ;(async () => {
+      try {
+        if (!selected || selected.kind !== 'media') { setExpandedPrompts(new Set()); return }
+        const storage = new Storage({ area: 'local' })
+        const saved = await storage.get(scopedKey(`review:expandedPrompts:${selected.id}`)).catch(() => null) as any
+        if (Array.isArray(saved)) setExpandedPrompts(new Set(saved.map(String)))
+      } catch {}
+    })()
+  }, [selected, scopedKey])
+
+  React.useEffect(() => {
+    ;(async () => {
+      try {
+        if (!selected || selected.kind !== 'media') return
+        const storage = new Storage({ area: 'local' })
+        await storage.set(scopedKey(`review:expandedPrompts:${selected.id}`), Array.from(expandedPrompts))
+      } catch {}
+    })()
+  }, [expandedPrompts, selected, scopedKey])
 
   const runOneOff = async (mode: "review" | "summary") => {
     if (!selected) {
@@ -742,6 +883,7 @@ export const ReviewPage: React.FC = () => {
   }, [results, mediaTypes, keywordTokens])
 
   return (
+    <>
     <div className="w-full h-full grid grid-cols-1 lg:grid-cols-3 gap-4 mt-16">
       {/* Left column: search + results */}
       <div className="lg:col-span-1 min-w-0 lg:sticky lg:top-16 lg:self-start">
@@ -961,6 +1103,9 @@ export const ReviewPage: React.FC = () => {
                     {selected.title || String(selected.id)}
                   </Typography.Title>
                 </div>
+                {selected?.kind === 'media' && currentVersionNumber && (
+                  <Tag color="green">Current v{currentVersionNumber}</Tag>
+                )}
               </div>
               <div className="flex flex-wrap items-center gap-2">
                 <Tooltip title="Quick Review">
@@ -980,6 +1125,77 @@ export const ReviewPage: React.FC = () => {
                 {selected?.kind === "media" && (
                   <Tooltip title="Attach analysis to media">
                     <Button icon={(<PaperclipIcon className="w-4 h-4" />) as any} onClick={saveAnalysisToMedia} disabled={!analysis.trim()}>Save to Media</Button>
+                  </Tooltip>
+                )}
+                {selected?.kind === 'media' && (
+                  <Tooltip title="Create a new version with current analysis and prompt">
+                    <Button type="dashed" onClick={async () => {
+                      if (!selected || selected.kind !== 'media') return
+                      if (!selectedContent?.trim()) { message.warning('No media content available'); return }
+                      if (!analysis.trim()) { message.warning('Analysis is empty'); return }
+                      const sys = analysisMode === 'review' ? reviewSystemPrompt : summarySystemPrompt
+                      const prompt = lastPrompt || sys
+                      try {
+                        await bgRequest<any>({ path: `/api/v1/media/${selected.id}/versions` as any, method: 'POST' as any, headers: { 'Content-Type': 'application/json' }, body: { content: selectedContent, prompt, analysis_content: analysis } })
+                        message.success('Created new version')
+                        await loadExistingAnalyses(selected)
+                      } catch (e: any) { message.error(e?.message || 'Create version failed') }
+                    }}>Create Version</Button>
+                  </Tooltip>
+                )}
+                {selected?.kind === 'media' && (
+                  <Tooltip title="Create a new version cloned from the selected version">
+                    <Button type="dashed" onClick={async () => {
+                      if (!selected || selected.kind !== 'media') return
+                      if (selectedExistingIndex < 0 || selectedExistingIndex >= existingAnalyses.length) { message.warning('Select a version first'); return }
+                      const v = existingAnalyses[selectedExistingIndex]
+                      const vv = getVersionNumber(v)
+                      if (!vv) { message.warning('No version number'); return }
+                      try {
+                        const detail = await fetchVersionWithContent(selected.id, vv)
+                        const content = String(detail?.content || detail?.text || '')
+                        const prompt = getVersionPrompt(v) || ''
+                        const analysisText = getVersionAnalysis(v)
+                        if (!content) { message.warning('Selected version has no content'); return }
+                        await bgRequest<any>({ path: `/api/v1/media/${selected.id}/versions` as any, method: 'POST' as any, headers: { 'Content-Type': 'application/json' }, body: { content, prompt, analysis_content: analysisText } })
+                        message.success('Cloned version created')
+                        await loadExistingAnalyses(selected)
+                      } catch (e: any) { message.error(e?.message || 'Clone failed') }
+                    }}>Clone Version</Button>
+                  </Tooltip>
+                )}
+                {selected?.kind === 'media' && (
+                  <Tooltip title="Restore selected version as current">
+                    <Button onClick={async () => {
+                      if (!selected || selected.kind !== 'media') return
+                      if (selectedExistingIndex < 0 || selectedExistingIndex >= existingAnalyses.length) { message.warning('Select a version first'); return }
+                      const v = existingAnalyses[selectedExistingIndex]
+                      const vv = getVersionNumber(v)
+                      if (!vv) { message.warning('No version number'); return }
+                      const ok = window.confirm('Restore this version as current?')
+                      if (!ok) return
+                      try {
+                        await bgRequest<any>({ path: `/api/v1/media/${selected.id}/versions/rollback` as any, method: 'POST' as any, headers: { 'Content-Type': 'application/json' }, body: { version_number: vv } })
+                        message.success('Version restored')
+                        await loadExistingAnalyses(selected)
+                      } catch (e: any) { message.error(e?.message || 'Restore failed') }
+                    }}>Restore</Button>
+                  </Tooltip>
+                )}
+                {selected?.kind === 'media' && selectedExistingIndex >= 0 && selectedExistingIndex < existingAnalyses.length && (
+                  <Tooltip title="Restore selected version (header quick action)">
+                    <Button onClick={async () => {
+                      const v = existingAnalyses[selectedExistingIndex]
+                      const vv = getVersionNumber(v)
+                      if (!vv) { message.warning('No version number'); return }
+                      const ok = window.confirm(`Restore v${vv} as current?`)
+                      if (!ok) return
+                      try {
+                        await bgRequest<any>({ path: `/api/v1/media/${selected?.id}/versions/rollback` as any, method: 'POST' as any, headers: { 'Content-Type': 'application/json' }, body: { version_number: vv } })
+                        message.success('Version restored')
+                        if (selected) await loadExistingAnalyses(selected)
+                      } catch (e: any) { message.error(e?.message || 'Restore failed') }
+                    }}>Restore v{getVersionNumber(existingAnalyses[selectedExistingIndex])}</Button>
                   </Tooltip>
                 )}
                 <Tooltip title="Create a note from analysis">
@@ -1005,8 +1221,22 @@ export const ReviewPage: React.FC = () => {
               >
                 Customize prompts
               </button>
+              <button
+                className="inline-flex items-center gap-1 text-xs border rounded px-2 py-1 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-[#262626]"
+                onClick={() => setDebugOpen((v) => !v)}
+                aria-expanded={debugOpen}
+                aria-controls="debug-json"
+              >
+                Show raw JSON
+              </button>
             </div>
             <Divider className="!my-2" />
+            <div id="debug-json" className={`overflow-hidden transition-all duration-200 ${debugOpen ? 'max-h-[600px] opacity-100' : 'max-h-0 opacity-0'}`}>
+              <div className="rounded border dark:border-gray-700 p-2 bg-gray-50 dark:bg-[#111] text-xs">
+                <pre className="whitespace-pre-wrap break-all">{selectedDetail ? JSON.stringify(selectedDetail, null, 2) : 'No detail loaded'}</pre>
+              </div>
+              <Divider className="!my-3" />
+            </div>
             {/* Customize prompts section */}
             <div id="custom-prompts" className={`overflow-hidden transition-all duration-200 ${promptsOpen ? 'max-h-[700px] opacity-100' : 'max-h-0 opacity-0'}`}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -1034,13 +1264,21 @@ export const ReviewPage: React.FC = () => {
               <div className="rounded border dark:border-gray-700 p-2 overflow-auto min-h-[14rem] md:h-[32vh]">
                 <div className="flex items-center justify-between">
                   <Typography.Text type="secondary">Media Content</Typography.Text>
-                  <Tooltip title="Copy content">
-                    <Button size="small" onClick={async () => { try { await navigator.clipboard.writeText(selectedContent || '') ; message.success('Content copied') } catch { message.error('Copy failed') } }} icon={(<CopyIcon className="w-4 h-4" />) as any} />
-                  </Tooltip>
+                  <div className="flex items-center gap-2">
+                    <Tooltip title="Copy content">
+                      <Button size="small" onClick={async () => { try { await navigator.clipboard.writeText(selectedContent || '') ; message.success('Content copied') } catch { message.error('Copy failed') } }} icon={(<CopyIcon className="w-4 h-4" />) as any} />
+                    </Tooltip>
+                    <Button size="small" onClick={() => setMediaJsonOpen(v => !v)}>{mediaJsonOpen ? 'Hide raw' : 'Show raw'}</Button>
+                  </div>
                 </div>
                 <div className="mt-2 whitespace-pre-wrap text-sm text-gray-700 dark:text-gray-300">
                   {selectedContent ? selectedContent : <span className="text-xs text-gray-500">No content available</span>}
                 </div>
+                {mediaJsonOpen && (
+                  <div className="mt-2 rounded border dark:border-gray-700 bg-gray-50 dark:bg-[#111] text-xs p-2 overflow-auto max-h-40">
+                    <pre className="whitespace-pre-wrap break-all">{selectedDetail ? JSON.stringify(selectedDetail, null, 2) : 'No detail loaded'}</pre>
+                  </div>
+                )}
               </div>
               <div className="rounded border dark:border-gray-700 p-2 overflow-auto min-h-[14rem] md:h-[32vh]">
                 <div className="flex items-center justify-between">
@@ -1070,18 +1308,81 @@ export const ReviewPage: React.FC = () => {
                 />
               </div>
               <div className="rounded border dark:border-gray-700 p-2 overflow-auto min-h-[10rem]">
-                <Typography.Text type="secondary">Existing Analyses</Typography.Text>
-                {existingAnalyses.length === 0 ? (
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Typography.Text type="secondary">Existing Analyses</Typography.Text>
+                    <Checkbox checked={onlyWithAnalysis} onChange={(e) => setOnlyWithAnalysis(e.target.checked)} className="text-xs">Only with analysis</Checkbox>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Tooltip title="Copy all as plain text">
+                      <Button size="small" onClick={async () => { const text = (existingAnalyses || []).map((n, idx) => `Note ${n?.id ?? idx+1}\n\n${String(n?.content || '')}`).join("\n\n---\n\n"); try { await navigator.clipboard.writeText(text); message.success('Copied all notes') } catch { message.error('Copy failed') } }}>Copy All</Button>
+                    </Tooltip>
+                    <Tooltip title="Copy all as Markdown">
+                      <Button size="small" onClick={async () => { const md = (existingAnalyses || []).map((n, idx) => `### Note ${n?.id ?? idx+1}\n\n${toMarkdown(String(n?.content || ''))}`).join("\n\n---\n\n"); try { await navigator.clipboard.writeText(md); message.success('Copied all notes as Markdown') } catch { message.error('Copy failed') } }}>Copy MD</Button>
+                    </Tooltip>
+                    {displayedVersionIndices.length > 0 && (
+                      <>
+                        <span className="text-[10px] text-gray-500">{selectedDisplayPos >= 0 ? `${selectedDisplayPos + 1}/${displayedVersionIndices.length}` : `0/${displayedVersionIndices.length}`}</span>
+                        <Button size="small" onClick={goPrev}>Prev</Button>
+                        <Button size="small" onClick={goNext}>Next</Button>
+                        <Tooltip title="Load selected analysis into editor">
+                          <Button size="small" disabled={selectedExistingIndex < 0 || selectedExistingIndex >= existingAnalyses.length} onClick={() => { const v = existingAnalyses[selectedExistingIndex]; const text = getVersionAnalysis(v); if (text) setAnalysis(text) }}>Load</Button>
+                        </Tooltip>
+                        <Tooltip title="Load version prompt into editor">
+                          <Button size="small" disabled={selectedExistingIndex < 0 || selectedExistingIndex >= existingAnalyses.length} onClick={() => { const v = existingAnalyses[selectedExistingIndex]; const p = getVersionPrompt(v); if (!p) { message.warning('No prompt found'); return } if (analysisMode === 'review') setReviewSystemPrompt(p); else setSummarySystemPrompt(p) }}>Load Prompt</Button>
+                        </Tooltip>
+                        <Tooltip title="Copy selected version prompt">
+                          <Button size="small" disabled={selectedExistingIndex < 0 || selectedExistingIndex >= existingAnalyses.length} onClick={async () => { const v = existingAnalyses[selectedExistingIndex]; const p = getVersionPrompt(v); if (!p) { message.warning('No prompt found'); return } try { await navigator.clipboard.writeText(p); message.success('Prompt copied') } catch { message.error('Copy failed') } }}>Copy Prompt</Button>
+                        </Tooltip>
+                        <Tooltip title="Diff selected vs current analysis">
+                          <Button size="small" onClick={() => { if (selectedExistingIndex < 0 || selectedExistingIndex >= existingAnalyses.length) { message.warning('Select a version first'); return } const v = existingAnalyses[selectedExistingIndex]; const base = getVersionAnalysis(v); const diff = computeDiff(base, analysis || ''); setDiffLines(diff); setDiffLeftText(base); setDiffRightText(analysis || ''); setDiffOpen(true); }}>Diff with current</Button>
+                        </Tooltip>
+                        <Tooltip title="Delete selected version">
+                          <Button danger size="small" disabled={selectedExistingIndex < 0 || selectedExistingIndex >= existingAnalyses.length} onClick={async () => { try { const v = existingAnalyses[selectedExistingIndex]; const vv = getVersionNumber(v); if (!vv) { message.warning('No version number'); return } await bgRequest<any>({ path: `/api/v1/media/${selected?.id}/versions/${vv}` as any, method: 'DELETE' as any }); notification.open({ message: 'Version deleted', description: `Deleted version v${vv}.`, btn: (<Button type="link" size="small" onClick={async () => { try { await bgRequest<any>({ path: `/api/v1/media/${selected?.id}/versions/rollback` as any, method: 'POST' as any, headers: { 'Content-Type': 'application/json' }, body: { version_number: vv } }); message.success('Undo: rolled back to deleted version'); if (selected) await loadExistingAnalyses(selected) } catch (e: any) { message.error(e?.message || 'Undo failed') } }}>Undo</Button>), duration: 4 }); if (selected) await loadExistingAnalyses(selected) } catch (e: any) { message.error(e?.message || 'Delete failed') } }}>Delete</Button>
+                        </Tooltip>
+                      </>
+                    )}
+                    <Button size="small" onClick={() => setNotesJsonOpen(v => !v)}>{notesJsonOpen ? 'Hide raw' : 'Show raw'}</Button>
+                  </div>
+                </div>
+                {displayedVersionIndices.length === 0 ? (
                   <div className="text-xs text-gray-500 mt-2">No saved analyses for this item yet.</div>
                 ) : (
-                  <List size="small" dataSource={existingAnalyses} renderItem={(n) => (
-                    <List.Item className="!px-1">
-                      <div>
-                        <div className="text-xs font-medium">Note #{n?.id}</div>
-                        <div className="text-xs text-gray-500 whitespace-pre-wrap max-w-[48rem]">{String(n?.content || "").slice(0, 800)}</div>
+                  <List size="small" dataSource={displayedVersionIndices.map(i=>existingAnalyses[i])} renderItem={(n, i) => (
+                    <List.Item className={`!px-1 flex items-start justify-between gap-2 ${displayedVersionIndices[i] === selectedExistingIndex ? 'bg-gray-50 dark:bg-[#262626] rounded' : ''}`} onClick={() => setSelectedExistingIndex(displayedVersionIndices[i])}>
+                      <div className="min-w-0">
+                        <div className="text-xs font-medium">v{getVersionNumber(n) || (i+1)} {getVersionTimestamp(n) ? `· ${getVersionTimestamp(n)}` : ''} {currentVersionNumber && getVersionNumber(n) === currentVersionNumber ? (<Tag color="green">Current</Tag>) : null}</div>
+                        <div className="text-xs text-gray-500 whitespace-pre-wrap max-w-[48rem]">{getVersionAnalysis(n).slice(0, 800)}</div>
+                        <div className="text-[10px] text-gray-400 mt-1">
+                          <span className="opacity-70">Prompt:</span>{' '}
+                          {(() => { const key = String(getVersionNumber(n) ?? displayedVersionIndices[i]); const expanded = expandedPrompts.has(key); const p = getVersionPrompt(n); const shown = expanded ? p : (p ? (p.length > 140 ? p.slice(0,140) + '…' : p) : '—'); return (
+                            <>
+                              <span className="whitespace-pre-wrap">{shown || '—'}</span>
+                              {p && (
+                                <button className="ml-2 underline" onClick={(e) => { e.stopPropagation(); setExpandedPrompts(prev => { const ns = new Set(prev); if (ns.has(key)) ns.delete(key); else ns.add(key); return ns }) }}>{expanded ? 'Hide' : 'Show'}</button>
+                              )}
+                            </>
+                          ) })()}
+                        </div>
+                      </div>
+                      <div className="shrink-0">
+                        <Tooltip title="Copy analysis (plain)">
+                          <Button size="small" onClick={async () => { try { await navigator.clipboard.writeText(getVersionAnalysis(n)); message.success('Analysis copied') } catch { message.error('Copy failed') } }}>Copy</Button>
+                        </Tooltip>
+                        <Tooltip title="Copy as Markdown">
+                          <Button size="small" onClick={async () => { try { await navigator.clipboard.writeText(toMarkdown(getVersionAnalysis(n))); message.success('Copied analysis as Markdown') } catch { message.error('Copy failed') } }}>MD</Button>
+                        </Tooltip>
+                        <Tooltip title="Copy prompt">
+                          <Button size="small" className="ml-1" onClick={async () => { try { await navigator.clipboard.writeText(getVersionPrompt(n)); message.success('Prompt copied') } catch { message.error('Copy failed') } }}>Prompt</Button>
+                        </Tooltip>
                       </div>
                     </List.Item>
                   )} />
+                )}
+                {notesJsonOpen && (
+                  <div className="mt-2 rounded border dark:border-gray-700 bg-gray-50 dark:bg-[#111] text-xs p-2 overflow-auto max-h-48">
+                    <pre className="whitespace-pre-wrap break-all">{JSON.stringify(existingAnalyses || [], null, 2)}</pre>
+                  </div>
                 )}
               </div>
             </div>
@@ -1089,6 +1390,47 @@ export const ReviewPage: React.FC = () => {
         )}
       </div>
     </div>
+  
+  <Modal
+    key="diff-modal"
+    open={diffOpen}
+    onCancel={() => setDiffOpen(false)}
+    footer={[
+      <Button key="toggle" onClick={() => setDiffSideBySide(v => !v)}>{diffSideBySide ? 'Unified' : 'Side by side'}</Button>,
+      <Button key="copy" onClick={async () => { try { const txt = diffLines.map(l => (l.type==='add'?'+ ':l.type==='del'?'- ':'  ')+l.text).join('\n'); await navigator.clipboard.writeText(txt); message.success('Diff copied') } catch { message.error('Copy failed') } }}>Copy diff</Button>,
+      <Button key="close" type="primary" onClick={() => setDiffOpen(false)}>Close</Button>
+    ]}
+    title="Diff: selected vs current"
+    width={980}
+  >
+    {diffSideBySide ? (
+      <div className="grid grid-cols-2 gap-3 max-h-[60vh] overflow-auto text-xs font-mono">
+        <div>
+          <div className="text-[10px] text-gray-500 mb-1">Selected version</div>
+          <pre className="whitespace-pre-wrap bg-gray-50 dark:bg-[#111] p-2 rounded border dark:border-gray-700">{diffLeftText}</pre>
+        </div>
+        <div>
+          <div className="text-[10px] text-gray-500 mb-1">Current editor</div>
+          <pre className="whitespace-pre-wrap bg-gray-50 dark:bg-[#111] p-2 rounded border dark:border-gray-700">{diffRightText}</pre>
+        </div>
+      </div>
+    ) : (
+      <div className="max-h-[60vh] overflow-auto text-xs font-mono">
+        {diffLines.length === 0 ? (
+          <div className="text-gray-500">No differences</div>
+        ) : (
+          <pre className="whitespace-pre-wrap">
+            {diffLines.map((l, idx) => (
+              <div key={idx} className={l.type==='add' ? 'bg-green-200/40 dark:bg-green-900/30' : l.type==='del' ? 'bg-red-200/40 dark:bg-red-900/30' : ''}>
+                <span className="select-none mr-2 opacity-70">{l.type==='add'?'+':l.type==='del'?'-':' '}</span>{l.text}
+              </div>
+            ))}
+          </pre>
+        )}
+      </div>
+    )}
+  </Modal>
+  </>
   )
 }
 

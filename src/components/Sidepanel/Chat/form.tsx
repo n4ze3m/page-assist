@@ -14,7 +14,8 @@ import {
   X,
   EyeIcon,
   EyeOffIcon,
-  Gauge
+  Gauge,
+  UploadCloud
 } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { getVariable } from "@/utils/select-variable"
@@ -31,6 +32,7 @@ import { isFireFoxPrivateMode } from "@/utils/is-private-mode"
 import { useFocusShortcuts } from "@/hooks/keyboard"
 import { RagSearchBar } from "@/components/Sidepanel/Chat/RagSearchBar"
 import { CurrentChatModelSettings } from "@/components/Common/Settings/CurrentChatModelSettings"
+import QuickIngestModal from "@/components/Common/QuickIngestModal"
 
 type Props = {
   dropedFile: File | undefined
@@ -73,6 +75,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
     try { sendAudio(chunk) } catch {}
   })
   const [wsSttActive, setWsSttActive] = React.useState(false)
+  const [ingestOpen, setIngestOpen] = React.useState(false)
 
   const onInputChange = async (
     e: React.ChangeEvent<HTMLInputElement> | File
@@ -536,6 +539,15 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                           <ImageIcon className="h-4 w-4" />
                         </button>
                       </Tooltip>
+                      {/* Quick ingest media (opens full ingest modal) */}
+                      <Tooltip title="Quick ingest media">
+                        <button
+                          type="button"
+                          onClick={() => setIngestOpen(true)}
+                          className="flex items-center justify-center dark:text-gray-300">
+                          <UploadCloud className="h-4 w-4" />
+                        </button>
+                      </Tooltip>
                       {!streaming ? (
                         <>
                         <Dropdown.Button
@@ -666,6 +678,8 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
         setOpen={setOpenModelSettings}
         isOCREnabled={useOCR}
       />
+      {/* Quick ingest modal */}
+      <QuickIngestModal open={ingestOpen} onClose={() => setIngestOpen(false)} />
     </div>
   )
 }

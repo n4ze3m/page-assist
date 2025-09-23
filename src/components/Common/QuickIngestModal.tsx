@@ -15,7 +15,7 @@ type Entry = {
   video?: { captions?: boolean }
 }
 
-type ResultItem = { id: string; status: 'ok' | 'error'; url: string; type: string; data?: any; error?: string }
+type ResultItem = { id: string; status: 'ok' | 'error'; url?: string; fileName?: string; type: string; data?: any; error?: string }
 
 type Props = {
   open: boolean
@@ -50,6 +50,7 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
   })
   const [running, setRunning] = React.useState<boolean>(false)
   const [results, setResults] = React.useState<ResultItem[]>([])
+  const [localFiles, setLocalFiles] = React.useState<File[]>([])
   const [advancedOpen, setAdvancedOpen] = React.useState<boolean>(true)
   const [advancedValues, setAdvancedValues] = React.useState<Record<string, any>>({})
   const [advSchema, setAdvSchema] = React.useState<Array<{ name: string; type: string; enum?: any[]; description?: string; title?: string; group: string }>>([])
@@ -74,8 +75,8 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
 
   const run = async () => {
     const valid = rows.filter((r) => r.url.trim().length > 0)
-    if (valid.length === 0) {
-      message.error('Please enter at least one URL')
+    if (valid.length === 0 && localFiles.length === 0) {
+      message.error('Please add at least one URL or file')
       return
     }
     setRunning(true)
@@ -139,6 +140,73 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
         setResults([...out])
       } catch (e: any) {
         out.push({ id: r.id, status: 'error', url: r.url, type: t, error: e?.message || 'Request failed' })
+        setResults([...out])
+      }
+    }
+    // Process local files (upload or process)
+    for (const f of localFiles) {
+      const id = crypto.randomUUID()
+      try {
+        let data: any
+        const ft = (f.type || '').toLowerCase()
+        const mediaType: Entry['type'] = ft.startsWith('audio/') ? 'audio' : ft.startsWith('video/') ? 'video' : ft.includes('pdf') ? 'pdf' : 'document'
+        if (storeRemote) {
+          const fields: Record<string, any> = {
+            media_type: mediaType,
+            perform_analysis: common.perform_analysis,
+            perform_chunking: common.perform_chunking,
+            overwrite_existing: common.overwrite_existing
+          }
+          // Merge advanced values (respect dot notation like above)
+          const nested: Record<string, any> = {}
+          const assignPath = (obj: any, path: string[], val: any) => {
+            let cur = obj
+            for (let i = 0; i < path.length; i++) {
+              const seg = path[i]
+              if (i === path.length - 1) cur[seg] = val
+              else cur = (cur[seg] = cur[seg] || {})
+            }
+          }
+          for (const [k, v] of Object.entries(advancedValues)) {
+            if (k.includes('.')) assignPath(nested, k.split('.'), v)
+            else fields[k] = v
+          }
+          for (const [k, v] of Object.entries(nested)) fields[k] = v
+          data = await tldwClient.uploadMedia(f, fields)
+        } else {
+          // Process without storing
+          if (ft.startsWith('audio/')) {
+            data = await tldwClient.transcribeAudio(f)
+          } else {
+            // Best-effort: Some servers allow process-only via flags on add endpoint
+            const fields: Record<string, any> = {
+              media_type: mediaType,
+              perform_analysis: common.perform_analysis,
+              perform_chunking: common.perform_chunking,
+              overwrite_existing: false,
+              process_only: true
+            }
+            const nested: Record<string, any> = {}
+            const assignPath = (obj: any, path: string[], val: any) => {
+              let cur = obj
+              for (let i = 0; i < path.length; i++) {
+                const seg = path[i]
+                if (i === path.length - 1) cur[seg] = val
+                else cur = (cur[seg] = cur[seg] || {})
+              }
+            }
+            for (const [k, v] of Object.entries(advancedValues)) {
+              if (k.includes('.')) assignPath(nested, k.split('.'), v)
+              else fields[k] = v
+            }
+            for (const [k, v] of Object.entries(nested)) fields[k] = v
+            data = await tldwClient.uploadMedia(f, fields)
+          }
+        }
+        out.push({ id, status: 'ok', fileName: f.name, type: mediaType, data })
+        setResults([...out])
+      } catch (e: any) {
+        out.push({ id, status: 'error', fileName: f.name, type: 'file', error: e?.message || 'Upload failed' })
         setResults([...out])
       }
     }
@@ -440,6 +508,40 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
           <Button onClick={addRow}>{t('quickIngest.add') || 'Add URL'}</Button>
         </Space>
 
+        <Divider plain>{t('quickIngest.or') || 'or'}</Divider>
+        {/* Local file upload */}
+        <Space direction="vertical" className="w-full">
+          <input
+            type="file"
+            multiple
+            style={{ display: 'none' }}
+            id="qi-file-input"
+            onChange={(e) => {
+              const files = Array.from(e.target.files || [])
+              if (files.length > 0) setLocalFiles((prev) => [...prev, ...files])
+              e.currentTarget.value = ''
+            }}
+            accept=".pdf,.txt,.rtf,.doc,.docx,.md,.epub,application/pdf,text/plain,application/rtf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/epub+zip,audio/*,video/*"
+          />
+          <Button onClick={() => document.getElementById('qi-file-input')?.click()}>
+            {t('quickIngest.addFiles') || 'Add Files'}
+          </Button>
+          {localFiles.length > 0 && (
+            <List
+              size="small"
+              bordered
+              dataSource={localFiles}
+              renderItem={(f, idx) => (
+                <List.Item
+                  actions={[<a key="remove" onClick={() => setLocalFiles((prev) => prev.filter((_, i) => i !== idx))}>{t('quickIngest.remove') || 'Remove'}</a>]}
+                >
+                  <span className="truncate">{f.name}</span>
+                </List.Item>
+              )}
+            />
+          )}
+        </Space>
+
         {/* Common ingestion options */}
         <div className="mt-3">
           <Typography.Title level={5}>{t('quickIngest.commonOptions') || 'Ingestion options'}</Typography.Title>
@@ -516,7 +618,7 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
             </div>
           ),
           children: (
-            <Space direction="vertical" className="w-full">
+        <Space direction="vertical" className="w-full">
               <div className="flex items-center gap-2">
                 <Input
                   allowClear
