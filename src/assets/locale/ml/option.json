@@ -24,5 +24,7 @@
             "json": "JSON ഫയൽ (.json)"
         },
         "share": "പങ്കുവയ്ക്കുക"
-    }
+    },
+    "libraryView": "Library View",
+    "notes": "Notes"
 }

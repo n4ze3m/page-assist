@@ -24,5 +24,7 @@
             "json": "JSON файл (.json)"
         },
         "share": "Поділитися"
-    }
+    },
+    "libraryView": "Library View",
+    "notes": "Notes"
 }

@@ -25,5 +25,7 @@
             "image": "圖片 (.png)"
         },
         "share": "分享"
-    }
+    },
+    "libraryView": "Library View",
+    "notes": "Notes"
 }

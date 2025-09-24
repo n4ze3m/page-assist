@@ -25,5 +25,7 @@
             "image": "Image (.png)"
         },
         "share": "Partager"
-    }
+    },
+    "libraryView": "Library View",
+    "notes": "Notes"
 }

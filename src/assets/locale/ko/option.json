@@ -24,5 +24,7 @@
             "json": "JSON 파일 (.json)"
         },
         "share": "공유"
-    }
+    },
+    "libraryView": "Library View",
+    "notes": "Notes"
 }

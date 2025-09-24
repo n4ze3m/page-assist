@@ -24,5 +24,7 @@
             "json": "فایل JSON (.json)"
         },
         "share": "اشتراک‌گذاری"
-    }
+    },
+    "libraryView": "Library View",
+    "notes": "Notes"
 }

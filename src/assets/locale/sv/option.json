@@ -24,5 +24,7 @@
             "json": "JSON-fil (.json)"
         },
         "share": "Dela"
-    }
+    },
+    "libraryView": "Library View",
+    "notes": "Notes"
 }

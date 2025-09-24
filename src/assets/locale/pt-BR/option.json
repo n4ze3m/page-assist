@@ -24,5 +24,7 @@
             "json": "Arquivo JSON (.json)"
         },
         "share": "Compartilhar"
-    }
+    },
+    "libraryView": "Library View",
+    "notes": "Notes"
 }
