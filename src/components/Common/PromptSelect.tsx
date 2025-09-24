@@ -48,7 +48,11 @@ export const PromptSelect: React.FC<Props> = ({
           menu={{
             items:
               data.length > 0
-                ? data?.map((prompt) => ({
+                ? [...data]
+                    .sort(
+                      (a: any, b: any) => Number(!!b.favorite) - Number(!!a.favorite)
+                    )
+                    .map((prompt: any) => ({
                     key: prompt.id,
                     label: (
                       <div className="w-52 gap-2 text-lg truncate inline-flex line-clamp-3  items-center  dark:border-gray-700">
@@ -59,6 +63,11 @@ export const PromptSelect: React.FC<Props> = ({
                             <ComputerIcon className="w-4 h-4" />
                           ) : (
                             <ZapIcon className="w-4 h-4" />
+                          )}
+                          {prompt?.favorite && (
+                            <span className="text-yellow-500" title="Favorite">
+                              ★
+                            </span>
                           )}
                           {prompt.title}
                         </span>

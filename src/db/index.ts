@@ -120,6 +120,8 @@ type Prompt = {
   is_system: boolean
   createdBy?: string
   createdAt: number
+  tags?: string[]
+  favorite?: boolean
 }
 
 type MessageHistory = Message[]
@@ -338,7 +340,8 @@ export class PageAssitDatabase {
     id: string,
     title: string,
     content: string,
-    is_system: boolean
+    is_system: boolean,
+    options: { tags?: string[]; favorite?: boolean } = {}
   ) {
     const prompts = await this.getAllPrompts()
     const newPrompts = prompts.map((prompt) => {
@@ -346,6 +349,8 @@ export class PageAssitDatabase {
         prompt.title = title
         prompt.content = content
         prompt.is_system = is_system
+        if (options.tags !== undefined) prompt.tags = options.tags
+        if (options.favorite !== undefined) prompt.favorite = options.favorite
       }
       return prompt
     })
@@ -640,15 +645,19 @@ export const updatePromptFB = async ({
   content,
   id,
   title,
-  is_system
+  is_system,
+  tags,
+  favorite
 }: {
   id: string
   title: string
   content: string
   is_system: boolean
+  tags?: string[]
+  favorite?: boolean
 }) => {
   const db = new PageAssitDatabase()
-  await db.updatePrompt(id, title, content, is_system)
+  await db.updatePrompt(id, title, content, is_system, { tags, favorite })
   return id
 }
 

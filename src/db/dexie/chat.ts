@@ -326,8 +326,15 @@ export class PageAssistDatabase {
     await db.prompts.delete(id);
   }
 
-  async updatePrompt(id: string, title: string, content: string, is_system: boolean) {
-    await db.prompts.update(id, { title, content, is_system });
+  async updatePrompt(
+    id: string,
+    title: string,
+    content: string,
+    is_system: boolean,
+    options: { tags?: string[]; favorite?: boolean } = {}
+  ) {
+    const { tags, favorite } = options
+    await db.prompts.update(id, { title, content, is_system, tags, favorite });
   }
 
   async getPromptById(id: string): Promise<Prompt | undefined> {
@@ -448,4 +455,3 @@ export class PageAssistDatabase {
   }
 
 }
-

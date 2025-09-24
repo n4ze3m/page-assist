@@ -11,7 +11,7 @@ import {
   ZapIcon
 } from "lucide-react"
 import { useTranslation } from "react-i18next"
-import { useLocation, NavLink } from "react-router-dom"
+import { useLocation, NavLink, useNavigate } from "react-router-dom"
 import { SelectedKnowledge } from "../Option/Knowledge/SelectedKnowledge"
 import { ModelSelect } from "../Common/ModelSelect"
 import { PromptSelect } from "../Common/PromptSelect"
@@ -76,6 +76,8 @@ export const Header: React.FC<Props> = ({
   })
 
   const { pathname } = useLocation()
+  const navigate = useNavigate()
+  const [moreMenuOpen, setMoreMenuOpen] = React.useState(false)
   const [chatTitle, setChatTitle] = React.useState("")
   const [isEditingTitle, setIsEditingTitle] = React.useState(false)
   const [quickIngestOpen, setQuickIngestOpen] = React.useState(false)
@@ -315,10 +317,20 @@ export const Header: React.FC<Props> = ({
             </Tooltip>
             {/* Three-dot menu between GitHub and Settings */}
             <Popover
+              open={moreMenuOpen}
+              onOpenChange={setMoreMenuOpen}
               trigger="click"
               placement="bottomRight"
               content={
                 <div className="flex flex-col gap-1 min-w-48">
+                  <button
+                    onClick={() => {
+                      try { navigate('/settings/prompt') } finally { setMoreMenuOpen(false) }
+                    }}
+                    className="text-left text-sm px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800"
+                  >
+                    {t('settings:managePrompts.title')}
+                  </button>
                   <button
                     onClick={async () => {
                       const storage = new (await import('@plasmohq/storage')).Storage({ area: 'local' })
@@ -336,6 +348,7 @@ export const Header: React.FC<Props> = ({
                           await browser.sidebarAction.open()
                         }
                       } catch {}
+                      setMoreMenuOpen(false)
                     }}
                     className="text-left text-sm px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800"
                   >

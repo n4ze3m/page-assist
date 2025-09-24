@@ -54,7 +54,7 @@ export const SidepanelHeader = ({
     temporaryChat,
     setTemporaryChat
   } = useMessage()
-  const { t } = useTranslation(["sidepanel", "common", "option"])
+  const { t } = useTranslation(["sidepanel", "common", "option", "settings"])
   const [openModelSettings, setOpenModelSettings] = React.useState(false)
   const [localSidebarOpen, setLocalSidebarOpen] = React.useState(false)
   const [webuiBtnSidePanel, setWebuiBtnSidePanel] = useStorage(
@@ -105,6 +105,15 @@ export const SidepanelHeader = ({
           trigger="click"
           content={
             <Space size="small" direction="vertical">
+              <button
+                onClick={() => {
+                  const url = browser.runtime.getURL("/options.html#/settings/prompt")
+                  browser.tabs.create({ url })
+                }}
+                className="text-left text-sm px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800"
+              >
+                {t('settings:managePrompts.title')}
+              </button>
               <div className="text-xs text-gray-500">{t('sidepanel:header.ingest')}</div>
               <button
                 onClick={async () => {

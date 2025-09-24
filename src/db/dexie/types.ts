@@ -77,6 +77,9 @@ export type Prompt = {
   is_system: boolean;
   createdBy?: string;
   createdAt: number;
+  // optional metadata
+  tags?: string[];
+  favorite?: boolean;
 };
 
 export type UserSettings = {

@@ -233,16 +233,20 @@ export const getAllPrompts = async () => {
 export const savePrompt = async ({
   content,
   title,
-  is_system = false
+  is_system = false,
+  tags = [],
+  favorite = false
 }: {
   title: string
   content: string
   is_system: boolean
+  tags?: string[]
+  favorite?: boolean
 }) => {
   const db = new PageAssistDatabase()
   const id = generateID()
   const createdAt = Date.now()
-  const prompt = { id, title, content, is_system, createdAt }
+  const prompt = { id, title, content, is_system, createdAt, tags, favorite }
   await db.addPrompt(prompt)
   await savePromptFB(prompt)
   return prompt
@@ -259,20 +263,26 @@ export const updatePrompt = async ({
   content,
   id,
   title,
-  is_system
+  is_system,
+  tags = [],
+  favorite
 }: {
   id: string
   title: string
   content: string
   is_system: boolean
+  tags?: string[]
+  favorite?: boolean
 }) => {
   const db = new PageAssistDatabase()
-  await db.updatePrompt(id, title, content, is_system)
+  await db.updatePrompt(id, title, content, is_system, { tags, favorite })
   await updatePromptFB({
     id,
     title,
     content,
-    is_system
+    is_system,
+    tags,
+    favorite
   })
   return id
 }

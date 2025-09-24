@@ -11,14 +11,16 @@ import {
   Segmented,
   Tag
 } from "antd"
-import { Trash2, Pen, Computer, Zap } from "lucide-react"
-import { useState } from "react"
+import { Trash2, Pen, Computer, Zap, Star, CopyIcon, UploadCloud, Download } from "lucide-react"
+import { useMemo, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 import {
   deletePromptById,
   getAllPrompts,
   savePrompt,
-  updatePrompt
+  updatePrompt,
+  exportPrompts,
+  importPromptsV2
 } from "@/db/dexie/helpers"
 import {
   getAllCopilotPrompts,
@@ -38,6 +40,13 @@ export const PromptBody = () => {
   const [selectedSegment, setSelectedSegment] = useState<"custom" | "copilot">(
     "custom"
   )
+  const [searchText, setSearchText] = useState("")
+  const [typeFilter, setTypeFilter] = useState<"all" | "system" | "quick">(
+    "all"
+  )
+  const [tagFilter, setTagFilter] = useState<string[]>([])
+  const fileInputRef = useRef<HTMLInputElement | null>(null)
+  const [importMode, setImportMode] = useState<"merge" | "replace">("merge")
 
   const [openCopilotEdit, setOpenCopilotEdit] = useState(false)
   const [editCopilotId, setEditCopilotId] = useState("")
@@ -94,6 +103,22 @@ export const PromptBody = () => {
         })
       }
     })
+
+  const { mutate: updatePromptDirect } = useMutation({
+    mutationFn: updatePrompt,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["fetchAllPrompts"]
+      })
+    },
+    onError: (error) => {
+      notification.error({
+        message: t("managePrompts.notification.error"),
+        description:
+          error?.message || t("managePrompts.notification.someError")
+      })
+    }
+  })
 
   const { mutate: updatePromptMutation, isPending: isUpdatingPrompt } =
     useMutation({
@@ -153,12 +178,82 @@ export const PromptBody = () => {
       }
     })
 
+  const allTags = useMemo(() => {
+    const set = new Set<string>()
+    ;(data || []).forEach((p: any) => (p?.tags || []).forEach((t: string) => set.add(t)))
+    return Array.from(set.values())
+  }, [data])
+
+  const filteredData = useMemo(() => {
+    let items = (data || []) as any[]
+    if (typeFilter !== "all") {
+      const system = typeFilter === "system"
+      items = items.filter((p) => p.is_system === system)
+    }
+    if (tagFilter.length > 0) {
+      items = items.filter((p) => (p?.tags || []).some((t: string) => tagFilter.includes(t)))
+    }
+    if (searchText.trim().length > 0) {
+      const q = searchText.toLowerCase()
+      items = items.filter(
+        (p) =>
+          p.title?.toLowerCase?.().includes(q) ||
+          p.content?.toLowerCase?.().includes(q)
+      )
+    }
+    // favorites first, then newest
+    items = items.sort((a, b) => Number(!!b.favorite) - Number(!!a.favorite) || b.createdAt - a.createdAt)
+    return items
+  }, [data, typeFilter, tagFilter, searchText])
+
+  const triggerExport = async () => {
+    try {
+      const items = await exportPrompts()
+      const blob = new Blob([JSON.stringify(items, null, 2)], {
+        type: "application/json"
+      })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement("a")
+      a.href = url
+      a.download = `prompts_${new Date().toISOString()}.json`
+      a.click()
+      URL.revokeObjectURL(url)
+    } catch (e) {
+      notification.error({
+        message: t("managePrompts.notification.error"),
+        description: t("managePrompts.notification.someError")
+      })
+    }
+  }
+
+  const handleImportFile = async (file: File) => {
+    try {
+      const text = await file.text()
+      const json = JSON.parse(text)
+      const prompts = Array.isArray(json) ? json : json?.prompts || []
+      await importPromptsV2(prompts, {
+        replaceExisting: importMode === "replace",
+        mergeData: importMode === "merge"
+      })
+      queryClient.invalidateQueries({ queryKey: ["fetchAllPrompts"] })
+      notification.success({
+        message: t("managePrompts.notification.addSuccess"),
+        description: t("managePrompts.notification.addSuccessDesc")
+      })
+    } catch (e) {
+      notification.error({
+        message: t("managePrompts.notification.error"),
+        description: t("managePrompts.notification.someError")
+      })
+    }
+  }
+
   function customPrompts() {
     return (
       <div>
-        <div className="mb-6">
-          <div className="-ml-4 -mt-2 flex flex-wrap items-center justify-end sm:flex-nowrap">
-            <div className="ml-4 mt-2 flex-shrink-0">
+        <div className="mb-6 space-y-3">
+          <div className="-ml-4 -mt-2 flex flex-wrap items-center justify-between sm:flex-nowrap">
+            <div className="ml-4 mt-2 flex-shrink-0 inline-flex gap-2">
               <button
                 onClick={() => {
                   if (isFireFoxPrivateMode) {
@@ -174,6 +269,63 @@ export const PromptBody = () => {
                 className="inline-flex items-center rounded-md border border-transparent bg-black px-2 py-2 text-md font-medium leading-4 text-white shadow-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-white dark:text-gray-800 dark:hover:bg-gray-100 dark:focus:ring-gray-500 dark:focus:ring-offset-gray-100 disabled:opacity-50">
                 {t("managePrompts.addBtn")}
               </button>
+              <button
+                onClick={() => triggerExport()}
+                className="inline-flex items-center gap-2 rounded-md border border-gray-300 dark:border-gray-700 px-2 py-2 text-md font-medium leading-4 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800">
+                <Download className="size-4" /> {t("managePrompts.export", { defaultValue: "Export" })}
+              </button>
+              <button
+                onClick={() => fileInputRef.current?.click()}
+                className="inline-flex items-center gap-2 rounded-md border border-gray-300 dark:border-gray-700 px-2 py-2 text-md font-medium leading-4 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800">
+                <UploadCloud className="size-4" /> {t("managePrompts.import", { defaultValue: "Import" })}
+              </button>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="application/json"
+                className="hidden"
+                onChange={(e) => {
+                  const file = e.target.files?.[0]
+                  if (file) handleImportFile(file)
+                  e.currentTarget.value = ""
+                }}
+              />
+            </div>
+            <div className="ml-4 mt-2 flex-shrink-0 inline-flex gap-2 items-center">
+              <Input
+                allowClear
+                placeholder={t("managePrompts.search", { defaultValue: "Search prompts..." })}
+                value={searchText}
+                onChange={(e) => setSearchText(e.target.value)}
+                style={{ width: 260 }}
+              />
+              <Segmented
+                value={typeFilter}
+                onChange={(v) => setTypeFilter(v as any)}
+                options={[
+                  { label: t("managePrompts.filter.all", { defaultValue: "All" }), value: "all" },
+                  { label: t("managePrompts.filter.system", { defaultValue: "System" }), value: "system" },
+                  { label: t("managePrompts.filter.quick", { defaultValue: "Quick" }), value: "quick" }
+                ]}
+              />
+              <Select
+                mode="multiple"
+                allowClear
+                placeholder={t("managePrompts.tags.placeholder", { defaultValue: "Filter tags" })}
+                style={{ minWidth: 200 }}
+                value={tagFilter}
+                onChange={(v) => setTagFilter(v)}
+                options={allTags.map((t) => ({ label: t, value: t }))}
+              />
+              <Select
+                value={importMode}
+                onChange={(v) => setImportMode(v as any)}
+                options={[
+                  { label: t("managePrompts.importMode.merge", { defaultValue: "Merge" }), value: "merge" },
+                  { label: t("managePrompts.importMode.replace", { defaultValue: "Replace" }), value: "replace" }
+                ]}
+                style={{ width: 110 }}
+              />
             </div>
           </div>
         </div>
@@ -183,6 +335,30 @@ export const PromptBody = () => {
         {status === "success" && (
           <Table
             columns={[
+              {
+                title: "",
+                dataIndex: "favorite",
+                key: "favorite",
+                width: 48,
+                render: (_: any, record: any) => (
+                  <button
+                    onClick={() =>
+                      updatePromptDirect({
+                        id: record.id,
+                        title: record.title,
+                        content: record.content,
+                        is_system: record.is_system,
+                        tags: record?.tags || [],
+                        favorite: !record?.favorite
+                      })
+                    }
+                    className="text-yellow-500"
+                    title={record?.favorite ? t("managePrompts.unfavorite", { defaultValue: "Unfavorite" }) : t("managePrompts.favorite", { defaultValue: "Favorite" })}
+                  >
+                    <Star className={`size-4 ${record?.favorite ? '' : 'opacity-30'}`} />
+                  </button>
+                )
+              },
               {
                 title: t("managePrompts.columns.title"),
                 dataIndex: "title",
@@ -197,6 +373,18 @@ export const PromptBody = () => {
                 key: "content",
                 render: (content) => (
                   <span className="line-clamp-1">{content}</span>
+                )
+              },
+              {
+                title: t("managePrompts.tags.label", { defaultValue: "Tags" }),
+                dataIndex: "tags",
+                key: "tags",
+                render: (tags: string[]) => (
+                  <div className="flex flex-wrap gap-1 max-w-64">
+                    {(tags || []).map((tag) => (
+                      <Tag key={tag}>{tag}</Tag>
+                    ))}
+                  </div>
                 )
               },
               {
@@ -223,6 +411,22 @@ export const PromptBody = () => {
                 title: t("managePrompts.columns.actions"),
                 render: (_, record) => (
                   <div className="flex gap-4">
+                    <Tooltip title={t("managePrompts.tooltip.duplicate", { defaultValue: "Duplicate Prompt" })}>
+                      <button
+                        onClick={() => {
+                          savePromptMutation({
+                            title: `${record.title} (Copy)`,
+                            content: record.content,
+                            is_system: record.is_system,
+                            tags: record?.tags || [],
+                            favorite: !!record?.favorite
+                          })
+                        }}
+                        disabled={isFireFoxPrivateMode}
+                        className="text-gray-500 dark:text-gray-400 disabled:opacity-50">
+                        <CopyIcon className="size-4" />
+                      </button>
+                    </Tooltip>
                     <Tooltip title={t("managePrompts.tooltip.delete")}>
                       <button
                         onClick={() => {
@@ -254,7 +458,7 @@ export const PromptBody = () => {
               }
             ]}
             bordered
-            dataSource={data}
+            dataSource={filteredData}
             rowKey={(record) => record.id}
           />
         )}
@@ -377,6 +581,15 @@ export const PromptBody = () => {
             />
           </Form.Item>
 
+          <Form.Item name="tags" label={t("managePrompts.tags.label", { defaultValue: "Tags" })}>
+            <Select
+              mode="tags"
+              allowClear
+              placeholder={t("managePrompts.tags.placeholder", { defaultValue: "Add tags" })}
+              options={allTags.map((t) => ({ label: t, value: t }))}
+            />
+          </Form.Item>
+
           <Form.Item
             name="is_system"
             label={t("managePrompts.form.isSystem.label")}
@@ -430,6 +643,15 @@ export const PromptBody = () => {
             <Input.TextArea
               placeholder={t("managePrompts.form.prompt.placeholder")}
               autoSize={{ minRows: 3, maxRows: 10 }}
+            />
+          </Form.Item>
+
+          <Form.Item name="tags" label={t("managePrompts.tags.label", { defaultValue: "Tags" })}>
+            <Select
+              mode="tags"
+              allowClear
+              placeholder={t("managePrompts.tags.placeholder", { defaultValue: "Add tags" })}
+              options={allTags.map((t) => ({ label: t, value: t }))}
             />
           </Form.Item>
 
