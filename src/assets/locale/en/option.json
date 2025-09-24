@@ -48,7 +48,7 @@
         "saveSuccess": "Prompt saved",
         "saveFailed": "Failed to save prompt"
     },
-    "quickIngest": {
+  "quickIngest": {
         "title": "Quick Ingest Media",
         "subtitle": "Enter one or more URLs. Force type per row if needed.",
         "storeRemote": "Store to remote DB",
@@ -64,6 +64,9 @@
         "ingest": "Ingest",
         "process": "Process",
         "results": "Results",
-        "downloadJson": "Download JSON"
-    }
+    "downloadJson": "Download JSON"
+  }
+  ,
+  "libraryView": "Library View",
+  "notes": "Notes"
 }

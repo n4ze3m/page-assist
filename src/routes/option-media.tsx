@@ -1,13 +1,12 @@
 import OptionLayout from "~/components/Layouts/Layout"
-import MediaReviewPage from "@/components/Review/MediaReviewPage"
+import ViewMediaPage from "@/components/Review/ViewMediaPage"
 
 const OptionMedia = () => {
   return (
     <OptionLayout>
-      <MediaReviewPage />
+      <ViewMediaPage />
     </OptionLayout>
   )
 }
 
 export default OptionMedia
-

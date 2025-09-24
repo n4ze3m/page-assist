@@ -17,11 +17,12 @@ import { ModelSelect } from "../Common/ModelSelect"
 import { PromptSelect } from "../Common/PromptSelect"
 import PromptSearch from "../Common/PromptSearch"
 import { useQuery } from "@tanstack/react-query"
+import { useServerOnline } from "@/hooks/useServerOnline"
 import { fetchChatModels } from "@/services/tldw-server"
 import { useMessageOption } from "~/hooks/useMessageOption"
 import { Avatar, Select, Tooltip, Popover, Input } from "antd"
 import QuickIngestModal from "../Common/QuickIngestModal"
-import { UploadCloud, Microscope, BookText } from "lucide-react"
+import { UploadCloud, Microscope, BookText, LayoutGrid, StickyNote } from "lucide-react"
 import { getAllPrompts } from "@/db/dexie/helpers"
 import { ProviderIcons } from "../Common/ProviderIcon"
 import { NewChat } from "./NewChat"
@@ -56,6 +57,7 @@ export const Header: React.FC<Props> = ({
     historyId,
     temporaryChat
   } = useMessageOption()
+  const isOnline = useServerOnline()
   const {
     data: models,
     isLoading: isModelsLoading,
@@ -64,7 +66,8 @@ export const Header: React.FC<Props> = ({
     queryKey: ["fetchModel"],
     queryFn: () => fetchChatModels({ returnEmpty: true }),
     refetchIntervalInBackground: false,
-    staleTime: 1000 * 60 * 1
+    staleTime: 1000 * 60 * 1,
+    enabled: isOnline
   })
 
   const { data: prompts, isLoading: isPromptLoading } = useQuery({
@@ -268,6 +271,22 @@ export const Header: React.FC<Props> = ({
                 className="!text-gray-500 dark:text-gray-300 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
               >
                 <BookText className="w-6 h-6" />
+              </NavLink>
+            </Tooltip>
+            <Tooltip title={t('libraryView', { defaultValue: 'Library View' })}>
+              <NavLink
+                to="/media-multi"
+                className="!text-gray-500 dark:text-gray-300 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+              >
+                <LayoutGrid className="w-6 h-6" />
+              </NavLink>
+            </Tooltip>
+            <Tooltip title={t('notes', { defaultValue: 'Notes' })}>
+              <NavLink
+                to="/notes"
+                className="!text-gray-500 dark:text-gray-300 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+              >
+                <StickyNote className="w-6 h-6" />
               </NavLink>
             </Tooltip>
             <Tooltip title={'Quick ingest media'}>

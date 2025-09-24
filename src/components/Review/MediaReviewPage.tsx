@@ -1,7 +1,9 @@
 import React from "react"
-import { Input, Button, List, Spin, Space, Tag, Tooltip, Radio, Pagination, Empty, Select, Checkbox } from "antd"
+import { Input, Button, List, Spin, Space, Tag, Tooltip, Radio, Pagination, Empty, Select, Checkbox, Typography, message } from "antd"
 import { bgRequest } from "@/services/background-proxy"
 import { useQuery, keepPreviousData } from "@tanstack/react-query"
+import { useServerOnline } from "@/hooks/useServerOnline"
+import { CopyIcon } from "lucide-react"
 import { tldwClient } from "@/services/tldw/TldwApiClient"
 
 type MediaItem = {
@@ -63,6 +65,8 @@ export const MediaReviewPage: React.FC = () => {
   const [includeContent, setIncludeContent] = React.useState<boolean>(false)
   const [sidebarHidden, setSidebarHidden] = React.useState<boolean>(false)
   const [contentLoading, setContentLoading] = React.useState<boolean>(false)
+  const [expandedIds, setExpandedIds] = React.useState<Set<string>>(new Set())
+  const isOnline = useServerOnline()
 
   const fetchList = async (): Promise<MediaItem[]> => {
     const hasQuery = query.trim().length > 0
@@ -110,7 +114,7 @@ export const MediaReviewPage: React.FC = () => {
               setDetails((prev) => (prev[m.id] ? prev : { ...prev, [m.id]: d! }))
             } catch {}
           }
-          const content = d ? (d.content || d.text || d.raw_text || d.summary || d.latest_version?.content || '') : ''
+          const content = d ? getContent(d) : ''
           return { m, content }
         }))
         const toks = keywordTokens.map((k) => k.toLowerCase())
@@ -159,7 +163,7 @@ export const MediaReviewPage: React.FC = () => {
             setDetails((prev) => (prev[m.id] ? prev : { ...prev, [m.id]: d! }))
           } catch {}
         }
-        const content = d ? (d.content || d.text || d.raw_text || d.summary || d.latest_version?.content || '') : ''
+        const content = d ? getContent(d) : ''
         return { m, content }
       }))
       const toks = keywordTokens.map((k) => k.toLowerCase())
@@ -179,7 +183,8 @@ export const MediaReviewPage: React.FC = () => {
     queryKey: ["media-review", query, page, pageSize],
     queryFn: fetchList,
     // React Query v5: use placeholderData helper to keep previous data
-    placeholderData: keepPreviousData
+    placeholderData: keepPreviousData,
+    enabled: isOnline
   })
 
   React.useEffect(() => {
@@ -204,7 +209,7 @@ export const MediaReviewPage: React.FC = () => {
     } catch {}
   }, [])
 
-  React.useEffect(() => { void loadKeywordSuggestions() }, [loadKeywordSuggestions])
+  React.useEffect(() => { if (isOnline) void loadKeywordSuggestions() }, [loadKeywordSuggestions, isOnline])
 
   const toggleSelect = async (id: string | number) => {
     setSelectedIds((prev) => {
@@ -216,7 +221,9 @@ export const MediaReviewPage: React.FC = () => {
     if (!details[id]) {
       try {
         const d = await bgRequest<MediaDetail>({ path: `/api/v1/media/${id}` as any, method: 'GET' as any })
-        setDetails((prev) => ({ ...prev, [id]: d }))
+        const base = Array.isArray(data) ? (data as MediaItem[]).find((x) => x.id === id) : undefined
+        const enriched = { ...d, id, title: (d as any)?.title ?? base?.title, type: (d as any)?.type ?? base?.type, created_at: (d as any)?.created_at ?? base?.created_at } as any
+        setDetails((prev) => ({ ...prev, [id]: enriched }))
       } catch {}
     }
   }
@@ -225,8 +232,8 @@ export const MediaReviewPage: React.FC = () => {
     ? 'flex flex-col gap-4'
     : 'flex flex-row flex-wrap gap-4'
   const cardCls = orientation === 'vertical'
-    ? 'border rounded p-3 bg-gray-50 dark:bg-gray-800 w-full'
-    : 'border rounded p-3 bg-gray-50 dark:bg-gray-800 w-full md:w-[48%]'
+    ? 'border dark:border-gray-700 rounded p-3 bg-white dark:bg-[#171717] w-full'
+    : 'border dark:border-gray-700 rounded p-3 bg-white dark:bg-[#171717] w-full md:w-[48%]'
 
   const viewerItems = selectedIds.map((id) => details[id]).filter(Boolean)
 
@@ -346,8 +353,48 @@ export const MediaReviewPage: React.FC = () => {
                     {d.type && <Tag>{String(d.type).toLowerCase()}</Tag>}
                     {d.created_at && <span>{new Date(d.created_at).toLocaleString()}</span>}
                   </div>
-                  <div className="text-sm whitespace-pre-wrap break-words">
-                    {getContent(d) || <span className="text-gray-500">No content available</span>}
+                  <div className="rounded border dark:border-gray-700 p-2">
+                    <div className="flex items-center justify-between">
+                      <Typography.Text type="secondary">Media Content</Typography.Text>
+                      <div className="flex items-center gap-2">
+                        <Tooltip title="Copy content">
+                          <Button
+                            size="small"
+                            onClick={async () => {
+                              const full = getContent(d) || ''
+                              try { await navigator.clipboard.writeText(full); message.success('Content copied') }
+                              catch { message.error('Copy failed') }
+                            }}
+                            icon={(<CopyIcon className="w-4 h-4" />) as any}
+                          />
+                        </Tooltip>
+                      </div>
+                    </div>
+                    <div className="mt-2 prose prose-sm dark:prose-invert max-w-none whitespace-pre-wrap break-words text-sm text-gray-700 dark:text-gray-300 min-h-[12rem] leading-relaxed">
+                      {(() => {
+                        const full = getContent(d) || ""
+                        if (!full) return <span className="text-gray-500">No content available</span>
+                        const isLong = full.length > 2500
+                        const key = String(d.id)
+                        const expanded = expandedIds.has(key)
+                        const shown = expanded || !isLong ? full : (full.slice(0, 2500) + '…')
+                        return (
+                          <>
+                            {shown}
+                            {isLong && (
+                              <button
+                                className="ml-2 underline text-xs"
+                                onClick={() => {
+                                  setExpandedIds(prev => { const ns = new Set(prev); if (ns.has(key)) ns.delete(key); else ns.add(key); return ns })
+                                }}
+                              >
+                                {expanded ? 'Collapse' : 'Expand'}
+                              </button>
+                            )}
+                          </>
+                        )
+                      })()}
+                    </div>
                   </div>
                 </div>
               ))}

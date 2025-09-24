@@ -24,5 +24,7 @@
             "json": "ملف JSON (.json)"
         },
         "share": "مشاركة"
-    }
+    },
+    "libraryView": "Library View",
+    "notes": "Notes"
 }

@@ -24,6 +24,7 @@ import { bgRequest } from "@/services/background-proxy"
 import { tldwClient } from "@/services/tldw/TldwApiClient"
 import { useTranslation } from "react-i18next"
 import { useMessageOption } from "@/hooks/useMessageOption"
+import { useServerOnline } from "@/hooks/useServerOnline"
 import {
   SaveIcon,
   SparklesIcon,
@@ -48,7 +49,9 @@ type ResultItem = {
   raw: any
 }
 
-export const ReviewPage: React.FC = () => {
+type ReviewPageProps = { allowGeneration?: boolean }
+
+export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true }) => {
   const { t } = useTranslation(["option"])
   const [query, setQuery] = React.useState<string>("")
   const [kinds, setKinds] = React.useState<{ media: boolean; notes: boolean }>({
@@ -75,12 +78,14 @@ export const ReviewPage: React.FC = () => {
   const [selectedDetail, setSelectedDetail] = React.useState<any>(null)
   const [debugOpen, setDebugOpen] = React.useState<boolean>(false)
   const [mediaJsonOpen, setMediaJsonOpen] = React.useState<boolean>(false)
+  const [mediaExpanded, setMediaExpanded] = React.useState<boolean>(false)
   const [notesJsonOpen, setNotesJsonOpen] = React.useState<boolean>(false)
   const [selectedExistingIndex, setSelectedExistingIndex] = React.useState<number>(-1)
   const [onlyWithAnalysis, setOnlyWithAnalysis] = React.useState<boolean>(false)
   const [diffOpen, setDiffOpen] = React.useState<boolean>(false)
   const [diffLines, setDiffLines] = React.useState<Array<{ type: 'same'|'add'|'del'; text: string }>>([])
   const [expandedPrompts, setExpandedPrompts] = React.useState<Set<string>>(new Set())
+  const [expandedAnalyses, setExpandedAnalyses] = React.useState<Set<string>>(new Set())
   const [diffSideBySide, setDiffSideBySide] = React.useState<boolean>(false)
   const [diffLeftText, setDiffLeftText] = React.useState<string>("")
   const [diffRightText, setDiffRightText] = React.useState<string>("")
@@ -110,6 +115,7 @@ export const ReviewPage: React.FC = () => {
   const [filtersOpen, setFiltersOpen] = React.useState<boolean>(true)
   const [analysisMode, setAnalysisMode] = React.useState<"review" | "summary">("review")
   const [sidebarHidden, setSidebarHidden] = React.useState<boolean>(false)
+  const isOnline = useServerOnline()
 
   // Storage scoping: per server host and auth mode to avoid cross-user leakage
   const scopedKey = React.useCallback((base: string) => {
@@ -268,11 +274,11 @@ export const ReviewPage: React.FC = () => {
     // If user is browsing (blank query) or using filter-only search, update results on page change
     const hasQuery = query.trim().length > 0
     const hasFilters = mediaTypes.length > 0 || keywordTokens.length > 0
-    if (!hasQuery || hasFilters) {
+    if (isOnline && (!hasQuery || hasFilters)) {
       refetch()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, pageSize])
+  }, [page, pageSize, isOnline])
 
   // Initial load: populate media types (cached) and auto-browse first page
   React.useEffect(() => {
@@ -297,43 +303,45 @@ export const ReviewPage: React.FC = () => {
           )
         }
 
-        // Sample first up-to-3 pages to enrich types list
-        const first = await bgRequest<any>({
-          path: `/api/v1/media/?page=1&results_per_page=50` as any,
-          method: "GET" as any
-        })
-        const totalPages = Math.max(
-          1,
-          Number(first?.pagination?.total_pages || 1)
-        )
-        const pagesToFetch = [1, 2, 3].filter((p) => p <= totalPages)
-        const listings = await Promise.all(
-          pagesToFetch.map((p) =>
-            p === 1
-              ? Promise.resolve(first)
-              : bgRequest<any>({
-                  path: `/api/v1/media/?page=${p}&results_per_page=50` as any,
-                  method: "GET" as any
-                })
+        if (isOnline) {
+          // Sample first up-to-3 pages to enrich types list
+          const first = await bgRequest<any>({
+            path: `/api/v1/media/?page=1&results_per_page=50` as any,
+            method: "GET" as any
+          })
+          const totalPages = Math.max(
+            1,
+            Number(first?.pagination?.total_pages || 1)
           )
-        )
-        const typeSet = new Set<string>()
-        for (const listing of listings) {
-          const items = Array.isArray(listing?.items) ? listing.items : []
-          for (const m of items) {
-            const t = String(m?.type || m?.media_type || "")
-              .toLowerCase()
-              .trim()
-            if (t) typeSet.add(t)
+          const pagesToFetch = [1, 2, 3].filter((p) => p <= totalPages)
+          const listings = await Promise.all(
+            pagesToFetch.map((p) =>
+              p === 1
+                ? Promise.resolve(first)
+                : bgRequest<any>({
+                    path: `/api/v1/media/?page=${p}&results_per_page=50` as any,
+                    method: "GET" as any
+                  })
+            )
+          )
+          const typeSet = new Set<string>()
+          for (const listing of listings) {
+            const items = Array.isArray(listing?.items) ? listing.items : []
+            for (const m of items) {
+              const t = String(m?.type || m?.media_type || "")
+                .toLowerCase()
+                .trim()
+              if (t) typeSet.add(t)
+            }
           }
-        }
-        const newTypes = Array.from(typeSet)
-        if (newTypes.length) {
-          setAvailableMediaTypes(
-            (prev) =>
-              Array.from(new Set<string>([...prev, ...newTypes])) as string[]
-          )
-          await storage.set(cacheKey, { types: newTypes, cachedAt: now })
+          const newTypes = Array.from(typeSet)
+          if (newTypes.length) {
+            setAvailableMediaTypes(
+              (prev) =>
+                Array.from(new Set<string>([...prev, ...newTypes])) as string[]
+            )
+            await storage.set(cacheKey, { types: newTypes, cachedAt: now })
+          }
         }
       } catch {}
 
@@ -342,7 +350,7 @@ export const ReviewPage: React.FC = () => {
         if (
           !query.trim() &&
           mediaTypes.length === 0 &&
-          keywordTokens.length === 0
+          keywordTokens.length === 0 && isOnline
         ) {
           await refetch()
         }
@@ -566,6 +574,7 @@ export const ReviewPage: React.FC = () => {
         const content = contentFromDetail(detail)
         setSelectedContent(String(content || ""))
         setSelectedDetail(detail)
+        setMediaExpanded(false)
       } catch { setSelectedContent(""); setSelectedDetail(null) }
     })()
   }, [selected])
@@ -774,18 +783,20 @@ export const ReviewPage: React.FC = () => {
   React.useEffect(() => {
     ;(async () => {
       try {
+        if (!allowGeneration) return
         if (autoReviewOnSelect && selected) {
           const text = await generateAnalysis("review")
           if (text) setAnalysis(text)
         }
       } catch {}
     })()
-  }, [autoReviewOnSelect, selected])
+  }, [autoReviewOnSelect, selected, allowGeneration])
 
   // Preload keyword suggestions (top list)
   React.useEffect(() => {
     ;(async () => {
       try {
+        if (!isOnline) return
         const cfg = await tldwClient.getConfig()
         const base = String(cfg?.serverUrl || "").replace(/\/$/, "")
         const abs = await bgRequest<any>({
@@ -804,7 +815,7 @@ export const ReviewPage: React.FC = () => {
         if (uniq.length) setKeywordOptions(uniq)
       } catch {}
     })()
-  }, [])
+  }, [isOnline])
 
   const saveAnalysis = async () => {
     if (!selected || !analysis.trim()) {
@@ -1141,7 +1152,7 @@ export const ReviewPage: React.FC = () => {
       <div className="flex-1 p-3 rounded-lg border dark:border-gray-700 bg-white dark:bg-[#171717] min-h-[70vh] min-w-0 lg:h-[calc(100dvh-8rem)] overflow-auto">
         {!selected ? (
           <div className="h-full flex items-center justify-center">
-            <Empty description="Select an item to review and analyze" />
+            <Empty description={allowGeneration ? "Select an item to review and analyze" : "Select a media item to view analyses"} />
           </div>
         ) : (
           <div className="flex flex-col gap-3 h-full min-w-0">
@@ -1160,20 +1171,24 @@ export const ReviewPage: React.FC = () => {
                 )}
               </div>
               <div className="flex flex-wrap items-center gap-2">
-                <Tooltip title="Quick Review">
-                  <Button icon={(<SparklesIcon className="w-4 h-4" />) as any} onClick={() => runOneOff("review")} loading={loadingAnalysis}>Review</Button>
-                </Tooltip>
-                <Tooltip title="Summarize">
-                  <Button icon={(<FileTextIcon className="w-4 h-4" />) as any} onClick={() => runOneOff("summary")} loading={loadingAnalysis}>Summarize</Button>
-                </Tooltip>
-                {selected?.kind === "media" && (
-                  <Tooltip title="Analyze & attach to media">
-                    <Button onClick={() => analyzeAndSaveToMedia(analysisMode)} loading={loadingAnalysis}>{analysisMode === 'review' ? 'Review + Save' : 'Summary + Save'}</Button>
-                  </Tooltip>
+                {allowGeneration && (
+                  <>
+                    <Tooltip title="Quick Review">
+                      <Button icon={(<SparklesIcon className="w-4 h-4" />) as any} onClick={() => runOneOff("review")} loading={loadingAnalysis}>Review</Button>
+                    </Tooltip>
+                    <Tooltip title="Summarize">
+                      <Button icon={(<FileTextIcon className="w-4 h-4" />) as any} onClick={() => runOneOff("summary")} loading={loadingAnalysis}>Summarize</Button>
+                    </Tooltip>
+                    {selected?.kind === "media" && (
+                      <Tooltip title="Analyze & attach to media">
+                        <Button onClick={() => analyzeAndSaveToMedia(analysisMode)} loading={loadingAnalysis}>{analysisMode === 'review' ? 'Review + Save' : 'Summary + Save'}</Button>
+                      </Tooltip>
+                    )}
+                    <Tooltip title="Analyze & save as note">
+                      <Button onClick={() => analyzeAndSaveToNote(analysisMode)} loading={loadingAnalysis}>{analysisMode === 'review' ? 'Review + Save Note' : 'Summary + Save Note'}</Button>
+                    </Tooltip>
+                  </>
                 )}
-                <Tooltip title="Analyze & save as note">
-                  <Button onClick={() => analyzeAndSaveToNote(analysisMode)} loading={loadingAnalysis}>{analysisMode === 'review' ? 'Review + Save Note' : 'Summary + Save Note'}</Button>
-                </Tooltip>
                 {selected?.kind === "media" && (
                   <Tooltip title="Attach analysis to media">
                     <Button icon={(<PaperclipIcon className="w-4 h-4" />) as any} onClick={saveAnalysisToMedia} disabled={!analysis.trim()}>Save to Media</Button>
@@ -1253,26 +1268,32 @@ export const ReviewPage: React.FC = () => {
                 <Tooltip title="Create a note from analysis">
                   <Button type="primary" icon={(<SaveIcon className="w-4 h-4" />) as any} onClick={saveAnalysis} disabled={!analysis.trim()}>Save to Notes</Button>
                 </Tooltip>
-                <Radio.Group size="small" value={analysisMode} onChange={(e) => setAnalysisMode(e.target.value)}>
-                  <Radio.Button value="review">Use Review</Radio.Button>
-                  <Radio.Button value="summary">Use Summary</Radio.Button>
-                </Radio.Group>
+                {allowGeneration && (
+                  <Radio.Group size="small" value={analysisMode} onChange={(e) => setAnalysisMode(e.target.value)}>
+                    <Radio.Button value="review">Use Review</Radio.Button>
+                    <Radio.Button value="summary">Use Summary</Radio.Button>
+                  </Radio.Group>
+                )}
               </div>
             </div>
             <div className="flex items-center gap-3 -mt-2">
-              <Checkbox
-                checked={autoReviewOnSelect}
-                onChange={(e) => setAutoReviewOnSelect(e.target.checked)}>
-                Auto-review on select
-              </Checkbox>
-              <button
-                className="inline-flex items-center gap-1 text-xs border rounded px-2 py-1 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-[#262626]"
-                onClick={() => setPromptsOpen((v) => !v)}
-                aria-expanded={promptsOpen}
-                aria-controls="custom-prompts"
-              >
-                Customize prompts
-              </button>
+              {allowGeneration && (
+                <>
+                  <Checkbox
+                    checked={autoReviewOnSelect}
+                    onChange={(e) => setAutoReviewOnSelect(e.target.checked)}>
+                    Auto-review on select
+                  </Checkbox>
+                  <button
+                    className="inline-flex items-center gap-1 text-xs border rounded px-2 py-1 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-[#262626]"
+                    onClick={() => setPromptsOpen((v) => !v)}
+                    aria-expanded={promptsOpen}
+                    aria-controls="custom-prompts"
+                  >
+                    Customize prompts
+                  </button>
+                </>
+              )}
               {/* Quick dropdown editors for prompts */}
               <Dropdown
                 trigger={["click"]}
@@ -1462,6 +1483,7 @@ export const ReviewPage: React.FC = () => {
               <Divider className="!my-3" />
             </div>
             {/* Customize prompts section */}
+            {allowGeneration && (
             <div id="custom-prompts" className={`overflow-hidden transition-all duration-200 ${promptsOpen ? 'max-h-[700px] opacity-100' : 'max-h-0 opacity-0'}`}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div className="rounded border dark:border-gray-700 p-2">
@@ -1482,6 +1504,7 @@ export const ReviewPage: React.FC = () => {
               </div>
               <Divider className="!my-3" />
             </div>
+            )}
 
             {/* Stack: Media Content then Analysis then Existing Analyses */}
             <div className="flex flex-col gap-3 flex-1 min-h-0">
@@ -1496,7 +1519,23 @@ export const ReviewPage: React.FC = () => {
                   </div>
                 </div>
                 <div className="mt-2 prose prose-sm dark:prose-invert max-w-none whitespace-pre-wrap break-words text-sm text-gray-700 dark:text-gray-300">
-                  {selectedContent ? selectedContent : <span className="text-xs text-gray-500">No content available</span>}
+                  {selectedContent ? (
+                    <>
+                      {mediaExpanded || selectedContent.length <= 2500
+                        ? selectedContent
+                        : (selectedContent.slice(0, 2500) + '…')}
+                      {selectedContent.length > 2500 && (
+                        <button
+                          className="ml-2 underline text-xs"
+                          onClick={() => setMediaExpanded((v) => !v)}
+                        >
+                          {mediaExpanded ? 'Show less' : 'Show more'}
+                        </button>
+                      )}
+                    </>
+                  ) : (
+                    <span className="text-xs text-gray-500">No content available</span>
+                  )}
                 </div>
                 {mediaJsonOpen && (
                   <div className="mt-2 rounded border dark:border-gray-700 bg-gray-50 dark:bg-[#111] text-xs p-2 overflow-auto max-h-40">
@@ -1578,7 +1617,28 @@ export const ReviewPage: React.FC = () => {
                     <List.Item className={`!px-1 flex items-start justify-between gap-2 ${displayedVersionIndices[i] === selectedExistingIndex ? 'bg-gray-50 dark:bg-[#262626] rounded' : ''}`} onClick={() => setSelectedExistingIndex(displayedVersionIndices[i])}>
                       <div className="min-w-0">
                         <div className="text-xs font-medium">v{getVersionNumber(n) || (i+1)} {getVersionTimestamp(n) ? `· ${getVersionTimestamp(n)}` : ''} {currentVersionNumber && getVersionNumber(n) === currentVersionNumber ? (<Tag color="green">Current</Tag>) : null}</div>
-                        <div className="text-xs text-gray-500 whitespace-pre-wrap max-w-[48rem]">{getVersionAnalysis(n).slice(0, 800)}</div>
+                        <div className="text-xs text-gray-500 whitespace-pre-wrap max-w-[48rem]">
+                          {(() => {
+                            const key = String(getVersionNumber(n) ?? displayedVersionIndices[i])
+                            const a = getVersionAnalysis(n) || ''
+                            const isLong = a.length > 2500
+                            const expanded = expandedAnalyses.has(key)
+                            const shown = expanded || !isLong ? a : (a.slice(0, 2500) + '…')
+                            return (
+                              <>
+                                {shown}
+                                {isLong && (
+                                  <button
+                                    className="ml-2 underline text-[10px]"
+                                    onClick={(e) => { e.stopPropagation(); setExpandedAnalyses(prev => { const ns = new Set(prev); if (ns.has(key)) ns.delete(key); else ns.add(key); return ns }) }}
+                                  >
+                                    {expanded ? 'Show less' : 'Show more'}
+                                  </button>
+                                )}
+                              </>
+                            )
+                          })()}
+                        </div>
                         <div className="text-[10px] text-gray-400 mt-1">
                           <span className="opacity-70">Prompt:</span>{' '}
                           {(() => { const key = String(getVersionNumber(n) ?? displayedVersionIndices[i]); const expanded = expandedPrompts.has(key); const p = getVersionPrompt(n); const shown = expanded ? p : (p ? (p.length > 140 ? p.slice(0,140) + '…' : p) : '—'); return (

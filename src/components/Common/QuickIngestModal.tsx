@@ -347,7 +347,10 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
     let used: 'server' | 'bundled' | 'none' = 'none'
     let remote: any | null = null
     if (preferServer) {
-      try { remote = await tldwClient.getOpenAPISpec() } catch {}
+      try {
+        const healthy = await tldwClient.healthCheck()
+        if (healthy) remote = await tldwClient.getOpenAPISpec()
+      } catch {}
     }
     if (remote) {
       parseSpec(remote)

@@ -18,6 +18,8 @@ const OptionRagSettings = lazy(() => import("./option-rag"))
 const OptionOpenAI = lazy(() => import("./option-settings-openai"))
 const OptionReview = lazy(() => import("./option-review"))
 const OptionMedia = lazy(() => import("./option-media"))
+const OptionMediaMulti = lazy(() => import("./option-media-multi"))
+const OptionNotes = lazy(() => import("./option-notes"))
 const OptionTldwSettings = lazy(() => import("./option-settings-tldw").then(m => ({ default: m.OptionTldwSettings })))
 
 export const OptionRoutingFirefox = () => {
@@ -38,6 +40,8 @@ export const OptionRoutingFirefox = () => {
       <Route path="/settings/rag" element={<OptionRagSettings />} />
       <Route path="/review" element={<OptionReview />} />
       <Route path="/media" element={<OptionMedia />} />
+      <Route path="/media-multi" element={<OptionMediaMulti />} />
+      <Route path="/notes" element={<OptionNotes />} />
     </Routes>
   )
 }

@@ -16,6 +16,8 @@ import OptionOpenAI from "./option-settings-openai"
 import { OptionTldwSettings } from "./option-settings-tldw"
 import OptionReview from "./option-review"
 import OptionMedia from "./option-media"
+import OptionMediaMulti from "./option-media-multi"
+import OptionNotes from "./option-notes"
 
 export const OptionRoutingChrome = () => {
   return (
@@ -36,6 +38,8 @@ export const OptionRoutingChrome = () => {
       <Route path="/settings/about" element={<OptionAbout />} />
       <Route path="/review" element={<OptionReview />} />
       <Route path="/media" element={<OptionMedia />} />
+      <Route path="/media-multi" element={<OptionMediaMulti />} />
+      <Route path="/notes" element={<OptionNotes />} />
     </Routes>
   )
 }
