@@ -71,6 +71,13 @@
         "extendedHeader": "Extended header",
         "download": "Download",
         "duplicate": "Duplicate",
-        "move": "Move"
+        "move": "Move",
+        "bulkMove": "Bulk Move",
+        "bulkDelete": "Bulk Delete",
+        "exportSelectedCsv": "Export selected (CSV/TSV)",
+        "selectedCount": "Selected",
+        "selectAllOnPage": "Select all on page",
+        "selectAllAcross": "Select all across results",
+        "clearSelection": "Clear selection"
     }
 }

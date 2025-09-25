@@ -121,6 +121,7 @@
     "exportSelectedCsv": "Export selected (CSV/TSV)",
     "selectedCount": "Selected",
     "selectAllOnPage": "Select all on page",
+    "selectAllAcross": "Select all across results",
     "clearSelection": "Clear selection"
   }
 }

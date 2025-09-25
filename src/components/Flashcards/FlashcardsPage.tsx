@@ -132,6 +132,8 @@ export const FlashcardsPage: React.FC = () => {
   const [pageSize, setPageSize] = React.useState(20)
   const [selectedIds, setSelectedIds] = React.useState<Set<string>>(new Set())
   const [previewOpen, setPreviewOpen] = React.useState<Set<string>>(new Set())
+  const [selectAllAcross, setSelectAllAcross] = React.useState<boolean>(false)
+  const [deselectedIds, setDeselectedIds] = React.useState<Set<string>>(new Set())
 
   const manageQuery = useQuery({
     queryKey: ["flashcards:list", mDeckId, mQuery, mTag, mDue, page, pageSize],
@@ -149,18 +151,30 @@ export const FlashcardsPage: React.FC = () => {
   })
 
   const toggleSelect = (uuid: string, checked: boolean) => {
-    setSelectedIds((prev) => {
-      const next = new Set(prev)
-      if (checked) next.add(uuid)
-      else next.delete(uuid)
-      return next
-    })
+    if (selectAllAcross) {
+      setDeselectedIds((prev) => {
+        const next = new Set(prev)
+        if (checked) next.delete(uuid)
+        else next.add(uuid)
+        return next
+      })
+    } else {
+      setSelectedIds((prev) => {
+        const next = new Set(prev)
+        if (checked) next.add(uuid)
+        else next.delete(uuid)
+        return next
+      })
+    }
   }
   const selectAllOnPage = () => {
     const ids = (manageQuery.data?.items || []).map((i) => i.uuid)
+    setSelectAllAcross(false)
     setSelectedIds(new Set([...(selectedIds || new Set()), ...ids]))
+    setDeselectedIds(new Set())
   }
-  const clearSelection = () => setSelectedIds(new Set())
+  const clearSelection = () => { setSelectedIds(new Set()); setSelectAllAcross(false); setDeselectedIds(new Set()) }
+  const selectAllAcrossResults = () => { setSelectAllAcross(true); setDeselectedIds(new Set()); setSelectedIds(new Set()) }
   const togglePreview = (uuid: string) => {
     setPreviewOpen((prev) => {
       const next = new Set(prev)
@@ -221,9 +235,18 @@ export const FlashcardsPage: React.FC = () => {
   }
   const submitMove = async () => {
     try {
-      if (!moveCard) return
-      const full = await getFlashcard(moveCard.uuid)
-      await updateFlashcard(moveCard.uuid, { deck_id: moveDeckId ?? null, expected_version: full.version })
+      if (moveCard) {
+        const full = await getFlashcard(moveCard.uuid)
+        await updateFlashcard(moveCard.uuid, { deck_id: moveDeckId ?? null, expected_version: full.version })
+      } else {
+        // bulk move
+        const items = manageQuery.data?.items || []
+        const toMove = items.filter((i) => selectedIds.has(i.uuid))
+        await Promise.all(
+          toMove.map((i) => updateFlashcard(i.uuid, { deck_id: moveDeckId ?? null, expected_version: i.version }))
+        )
+        clearSelection()
+      }
       setMoveOpen(false)
       setMoveCard(null)
       await qc.invalidateQueries({ queryKey: ["flashcards:list"] })
@@ -477,15 +500,15 @@ export const FlashcardsPage: React.FC = () => {
                   />
                 </Space>
                 <div className="mb-2 flex flex-wrap items-center gap-2">
-                  <Text type="secondary">{t("option:flashcards.selectedCount", { defaultValue: "Selected" })}: {selectedIds.size}</Text>
+                  <Text type="secondary">{t("option:flashcards.selectedCount", { defaultValue: "Selected" })}: {selectedCount}{selectAllAcross ? ` / ${totalCount}` : ''}</Text>
                   <Button size="small" onClick={selectAllOnPage}>{t("option:flashcards.selectAllOnPage", { defaultValue: "Select all on page" })}</Button>
+                  <Button size="small" onClick={selectAllAcrossResults}>{t("option:flashcards.selectAllAcross", { defaultValue: "Select all across results" })}</Button>
                   <Button size="small" onClick={clearSelection}>{t("option:flashcards.clearSelection", { defaultValue: "Clear selection" })}</Button>
                   <Button size="small" disabled={selectedIds.size === 0} onClick={() => setMoveOpen(true)}>
                     {t("option:flashcards.bulkMove", { defaultValue: "Bulk Move" })}
                   </Button>
                   <Button danger size="small" disabled={selectedIds.size === 0} onClick={async () => {
-                    const items = manageQuery.data?.items || []
-                    const toDelete = items.filter((i) => selectedIds.has(i.uuid))
+                    const toDelete = await getSelectedItems()
                     if (!toDelete.length) return
                     if (!confirm(t("common:delete", { defaultValue: "Delete" }) + ` ${toDelete.length}?`)) return
                     try {
@@ -498,8 +521,9 @@ export const FlashcardsPage: React.FC = () => {
                     {t("option:flashcards.bulkDelete", { defaultValue: "Bulk Delete" })}
                   </Button>
                   <Button size="small" disabled={selectedIds.size === 0} onClick={() => {
-                    try {
-                      const items = (manageQuery.data?.items || []).filter((i) => selectedIds.has(i.uuid))
+                    (async () => {
+                      try {
+                        const items = await getSelectedItems()
                       const header = ['Deck','Front','Back','Tags','Notes']
                       const decks = decksQuery.data || []
                       const nameById = new Map<number, string>()
@@ -521,7 +545,8 @@ export const FlashcardsPage: React.FC = () => {
                       a.click()
                       a.remove()
                       URL.revokeObjectURL(url)
-                    } catch (e: any) { message.error(e?.message || 'Export failed') }
+                      } catch (e: any) { message.error(e?.message || 'Export failed') }
+                    })()
                   }}>
                     {t("option:flashcards.exportSelectedCsv", { defaultValue: "Export selected (CSV/TSV)" })}
                   </Button>
@@ -533,7 +558,7 @@ export const FlashcardsPage: React.FC = () => {
                   renderItem={(item) => (
                     <List.Item
                       actions={[
-                        <Checkbox key="sel" checked={selectedIds.has(item.uuid)} onChange={(e) => toggleSelect(item.uuid, e.target.checked)} />,
+                        <Checkbox key="sel" checked={selectAllAcross ? !deselectedIds.has(item.uuid) : selectedIds.has(item.uuid)} onChange={(e) => toggleSelect(item.uuid, e.target.checked)} />,
                         <Button key="preview" size="small" onClick={() => togglePreview(item.uuid)}>
                           {previewOpen.has(item.uuid) ? t("option:flashcards.hideAnswer", { defaultValue: "Hide Answer" }) : t("option:flashcards.showAnswer", { defaultValue: "Show Answer" })}
                         </Button>,
@@ -608,7 +633,7 @@ export const FlashcardsPage: React.FC = () => {
                 </Modal>
 
                 <Modal
-                  title={t("option:flashcards.deck", { defaultValue: "Deck" })}
+                  title={moveCard ? t("option:flashcards.deck", { defaultValue: "Deck" }) : t("option:flashcards.bulkMove", { defaultValue: "Bulk Move" })}
                   open={moveOpen}
                   onCancel={() => { setMoveOpen(false); setMoveCard(null) }}
                   onOk={submitMove}
@@ -978,5 +1003,36 @@ const ExportPanel: React.FC = () => {
         </Button>
       </div>
     </div>
+  const totalCount = manageQuery.data?.count || 0
+  const selectedCount = selectAllAcross ? Math.max(0, totalCount - deselectedIds.size) : selectedIds.size
+
+  async function fetchAllItemsAcrossFilters(): Promise<Flashcard[]> {
+    const items: Flashcard[] = []
+    const maxPerPage = 1000
+    const total = totalCount
+    for (let offset = 0; offset < total; offset += maxPerPage) {
+      const res = await listFlashcards({
+        deck_id: mDeckId ?? undefined,
+        q: mQuery || undefined,
+        tag: mTag || undefined,
+        due_status: mDue,
+        limit: maxPerPage,
+        offset,
+        order_by: "due_at"
+      })
+      items.push(...(res.items || []))
+      if (!res.items || res.items.length < maxPerPage) break
+    }
+    return items
+  }
+
+  async function getSelectedItems(): Promise<Flashcard[]> {
+    if (!selectAllAcross) {
+      const onPage = manageQuery.data?.items || []
+      return onPage.filter((i) => selectedIds.has(i.uuid))
+    }
+    const all = await fetchAllItemsAcrossFilters()
+    return all.filter((i) => !deselectedIds.has(i.uuid))
+  }
   )
 }
