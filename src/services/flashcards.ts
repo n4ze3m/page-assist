@@ -1,4 +1,5 @@
 import { bgRequest } from "@/services/background-proxy"
+import { Storage } from "@plasmohq/storage"
 import type { AllowedPath } from "@/services/tldw/openapi-guard"
 
 // Minimal client types based on openapi.json
@@ -231,4 +232,36 @@ export async function exportFlashcards(params: FlashcardsExportParams = {}): Pro
     method: "GET",
     headers: { Accept: "text/plain, text/csv, application/octet-stream, application/json;q=0.5" }
   })
+}
+
+// Export binary (APKG). Uses direct fetch to preserve binary payload.
+export async function exportFlashcardsFile(params: FlashcardsExportParams & { format: 'apkg' }): Promise<Blob> {
+  const storage = new Storage({ area: 'local' })
+  const cfg = await storage.get<any>('tldwConfig').catch(() => null)
+  const base = (cfg?.serverUrl || '').replace(/\/$/, '')
+  if (!base) throw new Error('Server not configured')
+  const search = new URLSearchParams()
+  if (params.deck_id != null) search.set("deck_id", String(params.deck_id))
+  if (params.tag) search.set("tag", params.tag)
+  if (params.q) search.set("q", params.q)
+  search.set("format", "apkg")
+  if (params.include_reverse != null) search.set("include_reverse", String(params.include_reverse))
+  // CSV specific options ignored for apkg on server side, but safe to pass
+  if (params.delimiter) search.set("delimiter", params.delimiter)
+  if (params.include_header != null) search.set("include_header", String(params.include_header))
+  if (params.extended_header != null) search.set("extended_header", String(params.extended_header))
+  const url = `${base}/api/v1/flashcards/export?${search.toString()}`
+
+  const headers: Record<string, string> = { Accept: 'application/octet-stream' }
+  // Auth
+  if (cfg?.authMode === 'single-user' && cfg?.apiKey) headers['X-API-KEY'] = String(cfg.apiKey)
+  else if (cfg?.authMode === 'multi-user' && cfg?.accessToken) headers['Authorization'] = `Bearer ${cfg.accessToken}`
+
+  const res = await fetch(url, { method: 'GET', headers, credentials: 'include' })
+  if (!res.ok) {
+    let msg = res.statusText
+    try { const j = await res.json(); msg = j?.detail || j?.error || j?.message || msg } catch {}
+    throw new Error(msg || `Export failed: ${res.status}`)
+  }
+  return await res.blob()
 }

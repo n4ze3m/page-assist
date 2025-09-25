@@ -80,6 +80,8 @@
     "back": "Back",
     "extra": "Extra",
     "showAnswer": "Show Answer",
+    "hideAnswer": "Hide Answer",
+    "preview": "Preview",
     "rate": "Rate",
     "answerMs": "Answer ms (opt)",
     "noDue": "No due cards",
@@ -111,6 +113,14 @@
     "includeReverse": "Include reverse",
     "includeHeader": "Include header",
     "extendedHeader": "Extended header",
-    "download": "Download"
+    "download": "Download",
+    "duplicate": "Duplicate",
+    "move": "Move",
+    "bulkMove": "Bulk Move",
+    "bulkDelete": "Bulk Delete",
+    "exportSelectedCsv": "Export selected (CSV/TSV)",
+    "selectedCount": "Selected",
+    "selectAllOnPage": "Select all on page",
+    "clearSelection": "Clear selection"
   }
 }

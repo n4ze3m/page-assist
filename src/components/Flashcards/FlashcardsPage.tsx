@@ -20,6 +20,7 @@ import {
   Typography,
   message
 } from "antd"
+import { Checkbox } from "antd"
 import { useTranslation } from "react-i18next"
 import { useServerOnline } from "@/hooks/useServerOnline"
 import {
@@ -37,7 +38,8 @@ import {
   type Flashcard,
   type FlashcardCreate,
   type FlashcardUpdate,
-  exportFlashcards
+  exportFlashcards,
+  exportFlashcardsFile
 } from "@/services/flashcards"
 
 const { Text, Title } = Typography
@@ -128,6 +130,8 @@ export const FlashcardsPage: React.FC = () => {
   const [mDue, setMDue] = React.useState<DueStatus>("all")
   const [page, setPage] = React.useState(1)
   const [pageSize, setPageSize] = React.useState(20)
+  const [selectedIds, setSelectedIds] = React.useState<Set<string>>(new Set())
+  const [previewOpen, setPreviewOpen] = React.useState<Set<string>>(new Set())
 
   const manageQuery = useQuery({
     queryKey: ["flashcards:list", mDeckId, mQuery, mTag, mDue, page, pageSize],
@@ -144,10 +148,88 @@ export const FlashcardsPage: React.FC = () => {
     enabled: isOnline
   })
 
+  const toggleSelect = (uuid: string, checked: boolean) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev)
+      if (checked) next.add(uuid)
+      else next.delete(uuid)
+      return next
+    })
+  }
+  const selectAllOnPage = () => {
+    const ids = (manageQuery.data?.items || []).map((i) => i.uuid)
+    setSelectedIds(new Set([...(selectedIds || new Set()), ...ids]))
+  }
+  const clearSelection = () => setSelectedIds(new Set())
+  const togglePreview = (uuid: string) => {
+    setPreviewOpen((prev) => {
+      const next = new Set(prev)
+      if (next.has(uuid)) next.delete(uuid)
+      else next.add(uuid)
+      return next
+    })
+  }
+
   // Edit modal
   const [editOpen, setEditOpen] = React.useState(false)
   const [editing, setEditing] = React.useState<Flashcard | null>(null)
   const [editForm] = Form.useForm<FlashcardUpdate & { tags_text?: string[] }>()
+
+  // Quick actions: review
+  const [quickReviewOpen, setQuickReviewOpen] = React.useState(false)
+  const [quickReviewCard, setQuickReviewCard] = React.useState<Flashcard | null>(null)
+  const openQuickReview = async (card: Flashcard) => {
+    try { const full = await getFlashcard(card.uuid); setQuickReviewCard(full); setQuickReviewOpen(true) } catch (e: any) { message.error(e?.message || 'Failed to load card') }
+  }
+  const submitQuickRating = async (rating: number) => {
+    try {
+      if (!quickReviewCard) return
+      await reviewFlashcard({ card_uuid: quickReviewCard.uuid, rating })
+      setQuickReviewOpen(false)
+      setQuickReviewCard(null)
+      await qc.invalidateQueries({ queryKey: ["flashcards:list"] })
+      message.success(t("common:success", { defaultValue: "Success" }))
+    } catch (e: any) { message.error(e?.message || 'Review failed') }
+  }
+
+  // Quick actions: duplicate
+  const duplicateCard = async (card: Flashcard) => {
+    try {
+      const full = await getFlashcard(card.uuid)
+      await createFlashcard({
+        deck_id: full.deck_id ?? undefined,
+        front: full.front,
+        back: full.back,
+        notes: full.notes || undefined,
+        extra: full.extra || undefined,
+        is_cloze: full.is_cloze,
+        tags: full.tags || undefined,
+        model_type: full.model_type,
+        reverse: full.reverse
+      })
+      await qc.invalidateQueries({ queryKey: ["flashcards:list"] })
+      message.success(t("common:created", { defaultValue: "Created" }))
+    } catch (e: any) { message.error(e?.message || 'Duplicate failed') }
+  }
+
+  // Quick actions: move (change deck)
+  const [moveOpen, setMoveOpen] = React.useState(false)
+  const [moveCard, setMoveCard] = React.useState<Flashcard | null>(null)
+  const [moveDeckId, setMoveDeckId] = React.useState<number | null>(null)
+  const openMove = async (card: Flashcard) => {
+    try { const full = await getFlashcard(card.uuid); setMoveCard(full); setMoveDeckId(full.deck_id ?? null); setMoveOpen(true) } catch (e: any) { message.error(e?.message || 'Failed to load card') }
+  }
+  const submitMove = async () => {
+    try {
+      if (!moveCard) return
+      const full = await getFlashcard(moveCard.uuid)
+      await updateFlashcard(moveCard.uuid, { deck_id: moveDeckId ?? null, expected_version: full.version })
+      setMoveOpen(false)
+      setMoveCard(null)
+      await qc.invalidateQueries({ queryKey: ["flashcards:list"] })
+      message.success(t("common:updated", { defaultValue: "Updated" }))
+    } catch (e: any) { message.error(e?.message || 'Move failed') }
+  }
 
   const openEdit = async (card: Flashcard) => {
     try {
@@ -394,6 +476,56 @@ export const FlashcardsPage: React.FC = () => {
                     className="min-w-44"
                   />
                 </Space>
+                <div className="mb-2 flex flex-wrap items-center gap-2">
+                  <Text type="secondary">{t("option:flashcards.selectedCount", { defaultValue: "Selected" })}: {selectedIds.size}</Text>
+                  <Button size="small" onClick={selectAllOnPage}>{t("option:flashcards.selectAllOnPage", { defaultValue: "Select all on page" })}</Button>
+                  <Button size="small" onClick={clearSelection}>{t("option:flashcards.clearSelection", { defaultValue: "Clear selection" })}</Button>
+                  <Button size="small" disabled={selectedIds.size === 0} onClick={() => setMoveOpen(true)}>
+                    {t("option:flashcards.bulkMove", { defaultValue: "Bulk Move" })}
+                  </Button>
+                  <Button danger size="small" disabled={selectedIds.size === 0} onClick={async () => {
+                    const items = manageQuery.data?.items || []
+                    const toDelete = items.filter((i) => selectedIds.has(i.uuid))
+                    if (!toDelete.length) return
+                    if (!confirm(t("common:delete", { defaultValue: "Delete" }) + ` ${toDelete.length}?`)) return
+                    try {
+                      await Promise.all(toDelete.map((i) => deleteFlashcard(i.uuid, i.version)))
+                      message.success(t("common:deleted", { defaultValue: "Deleted" }))
+                      clearSelection()
+                      await qc.invalidateQueries({ queryKey: ["flashcards:list"] })
+                    } catch (e: any) { message.error(e?.message || 'Bulk delete failed') }
+                  }}>
+                    {t("option:flashcards.bulkDelete", { defaultValue: "Bulk Delete" })}
+                  </Button>
+                  <Button size="small" disabled={selectedIds.size === 0} onClick={() => {
+                    try {
+                      const items = (manageQuery.data?.items || []).filter((i) => selectedIds.has(i.uuid))
+                      const header = ['Deck','Front','Back','Tags','Notes']
+                      const decks = decksQuery.data || []
+                      const nameById = new Map<number, string>()
+                      decks.forEach((d) => nameById.set(d.id, d.name))
+                      const rows = items.map((i) => [
+                        i.deck_id != null ? (nameById.get(i.deck_id) || `Deck ${i.deck_id}`) : '',
+                        i.front || '',
+                        i.back || '',
+                        Array.isArray(i.tags) ? i.tags.join(' ') : '',
+                        i.notes || ''
+                      ].join('\t'))
+                      const text = [header.join('\t'), ...rows].join('\n')
+                      const blob = new Blob([text], { type: 'text/tab-separated-values;charset=utf-8' })
+                      const url = URL.createObjectURL(blob)
+                      const a = document.createElement('a')
+                      a.href = url
+                      a.download = 'flashcards-selected.tsv'
+                      document.body.appendChild(a)
+                      a.click()
+                      a.remove()
+                      URL.revokeObjectURL(url)
+                    } catch (e: any) { message.error(e?.message || 'Export failed') }
+                  }}>
+                    {t("option:flashcards.exportSelectedCsv", { defaultValue: "Export selected (CSV/TSV)" })}
+                  </Button>
+                </div>
                 <List
                   loading={manageQuery.isFetching}
                   dataSource={manageQuery.data?.items || []}
@@ -401,6 +533,13 @@ export const FlashcardsPage: React.FC = () => {
                   renderItem={(item) => (
                     <List.Item
                       actions={[
+                        <Checkbox key="sel" checked={selectedIds.has(item.uuid)} onChange={(e) => toggleSelect(item.uuid, e.target.checked)} />,
+                        <Button key="preview" size="small" onClick={() => togglePreview(item.uuid)}>
+                          {previewOpen.has(item.uuid) ? t("option:flashcards.hideAnswer", { defaultValue: "Hide Answer" }) : t("option:flashcards.showAnswer", { defaultValue: "Show Answer" })}
+                        </Button>,
+                        <Button key="review" size="small" onClick={() => openQuickReview(item)}>{t("option:flashcards.review", { defaultValue: "Review" })}</Button>,
+                        <Button key="duplicate" size="small" onClick={() => duplicateCard(item)}>{t("option:flashcards.duplicate", { defaultValue: "Duplicate" })}</Button>,
+                        <Button key="move" size="small" onClick={() => openMove(item)}>{t("option:flashcards.move", { defaultValue: "Move" })}</Button>,
                         <Button key="edit" size="small" onClick={() => openEdit(item)}>{t("common:edit", { defaultValue: "Edit" })}</Button>
                       ]}
                     >
@@ -425,6 +564,12 @@ export const FlashcardsPage: React.FC = () => {
                           </div>
                         }
                       />
+                      {previewOpen.has(item.uuid) && (
+                        <div className="mt-2">
+                          <div className="whitespace-pre-wrap border rounded p-2 bg-white dark:bg-[#111]">{item.back}</div>
+                          {item.extra && <div className="opacity-80 text-xs whitespace-pre-wrap mt-1">{item.extra}</div>}
+                        </div>
+                      )}
                     </List.Item>
                   )}
                 />
@@ -441,6 +586,42 @@ export const FlashcardsPage: React.FC = () => {
                     pageSizeOptions={[10, 20, 50, 100]}
                   />
                 </div>
+
+                <Modal
+                  title={t("option:flashcards.review", { defaultValue: "Review" })}
+                  open={quickReviewOpen}
+                  onCancel={() => { setQuickReviewOpen(false); setQuickReviewCard(null) }}
+                  footer={null}
+                >
+                  {quickReviewCard && (
+                    <div className="flex flex-col gap-3">
+                      <div className="whitespace-pre-wrap border rounded p-3">{quickReviewCard.front}</div>
+                      <div className="whitespace-pre-wrap border rounded p-3">{quickReviewCard.back}</div>
+                      {quickReviewCard.extra && <div className="opacity-80 text-sm whitespace-pre-wrap">{quickReviewCard.extra}</div>}
+                      <div className="flex gap-2">
+                        {[0,1,2,3,4,5].map((r) => (
+                          <Button key={r} onClick={() => submitQuickRating(r)}>{r}</Button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </Modal>
+
+                <Modal
+                  title={t("option:flashcards.deck", { defaultValue: "Deck" })}
+                  open={moveOpen}
+                  onCancel={() => { setMoveOpen(false); setMoveCard(null) }}
+                  onOk={submitMove}
+                >
+                  <Select
+                    className="w-full"
+                    allowClear
+                    loading={decksQuery.isLoading}
+                    value={moveDeckId as any}
+                    onChange={(v) => setMoveDeckId(v)}
+                    options={(decksQuery.data || []).map((d) => ({ label: d.name, value: d.id }))}
+                  />
+                </Modal>
 
                 <Modal
                   title={t("option:flashcards.editCard", { defaultValue: "Edit Card" })}
@@ -536,9 +717,48 @@ const ImportPanel: React.FC = () => {
     enabled: isOnline
   })
 
+  // Column mapping (optional)
+  const [useMapping, setUseMapping] = React.useState<boolean>(false)
+  const [colCount, setColCount] = React.useState<number>(0)
+  const [mapping, setMapping] = React.useState<{ deck: number; front: number; back: number; tags?: number; notes?: number } | null>(null)
+
+  React.useEffect(() => {
+    const lines = (content || '').split(/\r?\n/).filter((l) => l.trim().length)
+    const first = lines[0]
+    if (!first) { setColCount(0); setMapping(null); return }
+    const cols = first.split(delimiter || '\t')
+    setColCount(cols.length)
+    setMapping((m) => m || ({ deck: 0, front: Math.min(1, cols.length-1), back: Math.min(2, cols.length-1), tags: cols.length > 3 ? 3 : undefined, notes: cols.length > 4 ? 4 : undefined }))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [content, delimiter])
+
+  const buildMappedTSV = React.useCallback(() => {
+    if (!useMapping || !mapping) return content
+    const rows = (content || '').split(/\r?\n/)
+    const out: string[] = []
+    for (let i = 0; i < rows.length; i++) {
+      const raw = rows[i]
+      if (!raw.trim()) continue
+      if (i === 0 && hasHeader) continue
+      const cols = raw.split(delimiter || '\t')
+      const safe = (idx?: number) => (typeof idx === 'number' && idx >= 0 && idx < cols.length ? cols[idx] : '')
+      const deck = safe(mapping.deck)
+      const front = safe(mapping.front)
+      const back = safe(mapping.back)
+      const tags = safe(mapping.tags)
+      const notes = safe(mapping.notes)
+      out.push([deck, front, back, tags, notes].join('\t'))
+    }
+    return out.join('\n')
+  }, [content, delimiter, hasHeader, mapping, useMapping])
+
   const importMutation = useMutation({
     mutationKey: ["flashcards:import"],
-    mutationFn: () => importFlashcards({ content, delimiter, has_header: hasHeader }),
+    mutationFn: () => {
+      const mapped = buildMappedTSV()
+      const payload = useMapping ? { content: mapped, delimiter: '\\t', has_header: false } : { content, delimiter, has_header: hasHeader }
+      return importFlashcards(payload as any)
+    },
     onSuccess: () => {
       message.success(t("option:flashcards.imported", { defaultValue: "Imported" }))
       setContent("")
@@ -597,6 +817,34 @@ const ImportPanel: React.FC = () => {
           </Tooltip>
         )}
       </div>
+      <Space align="center">
+        <Text>{t("option:flashcards.importTitle", { defaultValue: "Import" })} mapping</Text>
+        <Switch checked={useMapping} onChange={setUseMapping} />
+      </Space>
+      {useMapping && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div>
+            <Text type="secondary">{t("option:flashcards.deck", { defaultValue: "Deck" })}</Text>
+            <Select className="w-full" value={mapping?.deck} onChange={(v) => setMapping((m) => ({ ...(m as any), deck: v }))} options={Array.from({ length: colCount }, (_, i) => ({ label: `Col ${i+1}`, value: i }))} />
+          </div>
+          <div>
+            <Text type="secondary">{t("option:flashcards.front", { defaultValue: "Front" })}</Text>
+            <Select className="w-full" value={mapping?.front} onChange={(v) => setMapping((m) => ({ ...(m as any), front: v }))} options={Array.from({ length: colCount }, (_, i) => ({ label: `Col ${i+1}`, value: i }))} />
+          </div>
+          <div>
+            <Text type="secondary">{t("option:flashcards.back", { defaultValue: "Back" })}</Text>
+            <Select className="w-full" value={mapping?.back} onChange={(v) => setMapping((m) => ({ ...(m as any), back: v }))} options={Array.from({ length: colCount }, (_, i) => ({ label: `Col ${i+1}`, value: i }))} />
+          </div>
+          <div>
+            <Text type="secondary">{t("option:flashcards.tags", { defaultValue: "Tags" })}</Text>
+            <Select className="w-full" allowClear value={mapping?.tags} onChange={(v) => setMapping((m) => ({ ...(m as any), tags: v }))} options={Array.from({ length: colCount }, (_, i) => ({ label: `Col ${i+1}`, value: i }))} />
+          </div>
+          <div>
+            <Text type="secondary">{t("option:flashcards.notes", { defaultValue: "Notes" })}</Text>
+            <Select className="w-full" allowClear value={mapping?.notes} onChange={(v) => setMapping((m) => ({ ...(m as any), notes: v }))} options={Array.from({ length: colCount }, (_, i) => ({ label: `Col ${i+1}`, value: i }))} />
+          </div>
+        </div>
+      )}
     </div>
   )
 }
@@ -624,17 +872,31 @@ const ExportPanel: React.FC = () => {
   const doExport = async () => {
     try {
       setDownloading(true)
-      const text = await exportFlashcards({
-        deck_id: deckId ?? null,
-        q: query || null,
-        tag: tag || null,
-        format,
-        include_reverse: includeReverse,
-        delimiter,
-        include_header: includeHeader,
-        extended_header: extendedHeader
-      })
-      const blob = new Blob([text], { type: format === 'csv' ? 'text/csv;charset=utf-8' : 'application/octet-stream' })
+      let blob: Blob
+      if (format === 'apkg') {
+        blob = await exportFlashcardsFile({
+          deck_id: deckId ?? null,
+          q: query || null,
+          tag: tag || null,
+          format: 'apkg',
+          include_reverse: includeReverse,
+          delimiter,
+          include_header: includeHeader,
+          extended_header: extendedHeader
+        })
+      } else {
+        const text = await exportFlashcards({
+          deck_id: deckId ?? null,
+          q: query || null,
+          tag: tag || null,
+          format,
+          include_reverse: includeReverse,
+          delimiter,
+          include_header: includeHeader,
+          extended_header: extendedHeader
+        })
+        blob = new Blob([text], { type: 'text/csv;charset=utf-8' })
+      }
       const url = URL.createObjectURL(blob)
       const a = document.createElement('a')
       a.href = url
