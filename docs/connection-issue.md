@@ -36,14 +36,14 @@ _This will resolve the connection issue, and you will be able to use Ollama with
 
 ## 2. Solution
 
-You can set OLLAMA_ORIGIN=* to allow connections from any origin. Here's how to do it on different operating systems:
+You can set OLLAMA_ORIGINS=* to allow connections from any origin. Here's how to do it on different operating systems:
 
 ### Windows
 1. Open Start menu and search for "Environment Variables"
 2. Click "Edit the system environment variables"
 3. Click "Environment Variables" button
 4. Under "System Variables" click "New"
-5. Set Variable name: `OLLAMA_ORIGIN` and Variable value: `*`
+5. Set Variable name: `OLLAMA_ORIGINS` and Variable value: `*`
 6. Click OK to save
 7. Restart Ollama service
 
@@ -54,7 +54,7 @@ You can set OLLAMA_ORIGIN=* to allow connections from any origin. Here's how to 
 2. Run the following command:
 
 ```bash
-launchctl setenv OLLAMA_ORIGIN "*"
+launchctl setenv OLLAMA_ORIGINS "*"
 ```
 3. Restart Ollama service
 
@@ -63,7 +63,7 @@ launchctl setenv OLLAMA_ORIGIN "*"
 2. Run the following command:
 
 ```bash
-export OLLAMA_ORIGIN="*"
+export OLLAMA_ORIGINS="*"
 ```
 3. Restart Ollama service
 
