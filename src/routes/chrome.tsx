@@ -21,6 +21,7 @@ import OptionNotes from "./option-notes"
 import OptionWorldBooks from "./option-settings-world-books"
 import OptionDictionaries from "./option-settings-dictionaries"
 import OptionCharacters from "./option-settings-characters"
+import OptionFlashcards from "./option-flashcards"
 
 export const OptionRoutingChrome = () => {
   return (
@@ -43,6 +44,7 @@ export const OptionRoutingChrome = () => {
       <Route path="/settings/rag" element={<OptionRagSettings />} />
       <Route path="/settings/about" element={<OptionAbout />} />
       <Route path="/review" element={<OptionReview />} />
+      <Route path="/flashcards" element={<OptionFlashcards />} />
       <Route path="/media" element={<OptionMedia />} />
       <Route path="/media-multi" element={<OptionMediaMulti />} />
       <Route path="/notes" element={<OptionNotes />} />

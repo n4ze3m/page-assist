@@ -151,6 +151,13 @@
         "custom": "Custom Models"
     },
     "downloadCode": "Download Code",
+    "success": "Success",
+    "created": "Created",
+    "updated": "Updated",
+    "deleted": "Deleted",
+    "create": "Create",
+    "reset": "Reset",
+    "serverOffline": "Server offline or not configured",
     "date": {
         "pinned": "Pinned",
         "today": "Today",

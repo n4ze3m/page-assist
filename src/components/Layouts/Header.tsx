@@ -22,7 +22,7 @@ import { fetchChatModels } from "@/services/tldw-server"
 import { useMessageOption } from "~/hooks/useMessageOption"
 import { Avatar, Select, Tooltip, Popover, Input } from "antd"
 import QuickIngestModal from "../Common/QuickIngestModal"
-import { UploadCloud, Microscope, BookText, LayoutGrid, StickyNote } from "lucide-react"
+import { UploadCloud, Microscope, BookText, LayoutGrid, StickyNote, Layers } from "lucide-react"
 import { getAllPrompts } from "@/db/dexie/helpers"
 import { ProviderIcons } from "../Common/ProviderIcon"
 import { NewChat } from "./NewChat"
@@ -267,6 +267,14 @@ export const Header: React.FC<Props> = ({
                 className="!text-gray-500 dark:text-gray-300 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
               >
                 <Microscope className="w-6 h-6" />
+              </NavLink>
+            </Tooltip>
+            <Tooltip title={'Flashcards'}>
+              <NavLink
+                to="/flashcards"
+                className="!text-gray-500 dark:text-gray-300 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+              >
+                <Layers className="w-6 h-6" />
               </NavLink>
             </Tooltip>
             <Tooltip title={'View Media'}>

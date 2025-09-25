@@ -60,6 +60,10 @@ export default defineConfig({
             link: "/features/internet-search"
           },
           {
+            text: "Flashcards (Experimental)",
+            link: "/features/flashcards"
+          },
+          {
             text: "Prompts",
             link: "/features/prompts"
           },
