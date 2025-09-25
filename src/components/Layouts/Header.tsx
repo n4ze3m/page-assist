@@ -28,6 +28,7 @@ import { ProviderIcons } from "../Common/ProviderIcon"
 import { NewChat } from "./NewChat"
 import { MoreOptions } from "./MoreOptions"
 import { browser } from "wxt/browser"
+import { CharacterSelect } from "../Common/CharacterSelect"
 type Props = {
   setSidebarOpen: (open: boolean) => void
   setOpenModelSettings: (open: boolean) => void
@@ -254,6 +255,7 @@ export const Header: React.FC<Props> = ({
             setSelectedQuickPrompt={setSelectedQuickPrompt}
           />
         </div>
+        <CharacterSelect className="!text-gray-500 dark:text-gray-300 hover:text-gray-600 dark:hover:text-gray-300 transition-colors" />
         <SelectedKnowledge />
       </div>
       <div className="flex flex-1 justify-end px-4">
@@ -307,15 +309,15 @@ export const Header: React.FC<Props> = ({
               />
             )}
             
-            <Tooltip title={t("githubRepository")}>
-              <a
-                href="https://github.com/n4ze3m/page-assist"
-                target="_blank"
-                className="!text-gray-500 hidden lg:block dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
-                <GithubIcon className="w-6 h-6" />
-              </a>
+            {/** GitHub link moved into kebab menu */}
+            <Tooltip title={t("settings")}>
+              <NavLink
+                to="/settings"
+                className="!text-gray-500 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+                <CogIcon className="w-6 h-6" />
+              </NavLink>
             </Tooltip>
-            {/* Three-dot menu between GitHub and Settings */}
+            {/* Three-dot menu to the right of Settings */}
             <Popover
               open={moreMenuOpen}
               onOpenChange={setMoreMenuOpen}
@@ -330,6 +332,26 @@ export const Header: React.FC<Props> = ({
                     className="text-left text-sm px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800"
                   >
                     {t('settings:managePrompts.title')}
+                  </button>
+                  <button
+                    onClick={() => { try { navigate('/settings/world-books') } finally { setMoreMenuOpen(false) } }}
+                    className="text-left text-sm px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800"
+                  >
+                    World Books
+                  </button>
+                  <button
+                    onClick={() => { try { navigate('/settings/chat-dictionaries') } finally { setMoreMenuOpen(false) } }}
+                    className="text-left text-sm px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800"
+                  >
+                    Chat Dictionaries
+                  </button>
+                  <button
+                    onClick={() => {
+                      try { window.open('https://github.com/n4ze3m/page-assist', '_blank') } finally { setMoreMenuOpen(false) }
+                    }}
+                    className="text-left text-sm px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800"
+                  >
+                    {t('option:githubRepository')}
                   </button>
                   <button
                     onClick={async () => {
@@ -361,13 +383,6 @@ export const Header: React.FC<Props> = ({
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6"><path d="M12 8a2 2 0 110-4 2 2 0 010 4zm0 7a2 2 0 110-4 2 2 0 010 4zm0 7a2 2 0 110-4 2 2 0 010 4z"/></svg>
               </button>
             </Popover>
-            <Tooltip title={t("settings")}>
-              <NavLink
-                to="/settings"
-                className="!text-gray-500 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
-                <CogIcon className="w-6 h-6" />
-              </NavLink>
-            </Tooltip>
           </div>
         </div>
       </div>

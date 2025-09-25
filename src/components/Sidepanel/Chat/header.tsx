@@ -17,6 +17,7 @@ import { useTranslation } from "react-i18next"
 import React from "react"
 import { useStorage } from "@plasmohq/storage/hook"
 import { PromptSelect } from "@/components/Common/PromptSelect"
+import { CharacterSelect } from "@/components/Common/CharacterSelect"
 import { Sidebar } from "@/components/Option/Sidebar"
 // import { BsIncognito } from "react-icons/bs"
 import { isFireFoxPrivateMode } from "@/utils/is-private-mode"
@@ -113,6 +114,24 @@ export const SidepanelHeader = ({
                 className="text-left text-sm px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800"
               >
                 {t('settings:managePrompts.title')}
+              </button>
+              <button
+                onClick={() => {
+                  const url = browser.runtime.getURL("/options.html#/settings/world-books")
+                  browser.tabs.create({ url })
+                }}
+                className="text-left text-sm px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800"
+              >
+                World Books
+              </button>
+              <button
+                onClick={() => {
+                  const url = browser.runtime.getURL("/options.html#/settings/chat-dictionaries")
+                  browser.tabs.create({ url })
+                }}
+                className="text-left text-sm px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800"
+              >
+                Chat Dictionaries
               </button>
               <div className="text-xs text-gray-500">{t('sidepanel:header.ingest')}</div>
               <button
@@ -249,6 +268,7 @@ export const SidepanelHeader = ({
           iconClassName="size-4"
           className="text-gray-500 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
         />
+        <CharacterSelect className="text-gray-500 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors" iconClassName="size-4" />
         {/* Conversation settings button moved next to submit in input bar */}
         <Link to="/settings">
           <CogIcon aria-label={t('sidepanel:header.openSettingsAria')} className="size-4 text-gray-500 dark:text-gray-400" />

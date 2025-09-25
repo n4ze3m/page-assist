@@ -151,6 +151,24 @@ export const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
                     current={location.pathname}
                   />
                   <LinkComponent
+                    href="/settings/characters"
+                    name={"Manage Characters"}
+                    icon={BookIcon}
+                    current={location.pathname}
+                  />
+                  <LinkComponent
+                    href="/settings/world-books"
+                    name={"World Books"}
+                    icon={BookText}
+                    current={location.pathname}
+                  />
+                  <LinkComponent
+                    href="/settings/chat-dictionaries"
+                    name={"Chat Dictionaries"}
+                    icon={BookText}
+                    current={location.pathname}
+                  />
+                  <LinkComponent
                     href="/settings/prompt"
                     name={t("managePrompts.title")}
                     icon={BookIcon}

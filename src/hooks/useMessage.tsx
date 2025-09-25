@@ -70,6 +70,7 @@ export const useMessage = () => {
     false
   )
   const [maxWebsiteContext] = useStorage("maxWebsiteContext", 4028)
+  const [selectedCharacter] = useStorage<any>("selectedCharacter", null)
 
   const {
     history,
@@ -96,6 +97,7 @@ export const useMessage = () => {
     useOCR,
     setUseOCR
   } = useStoreMessage()
+  const { serverChatId, setServerChatId } = useStoreMessageOption()
  const [sidepanelTemporaryChat, ] = useStorage(
     "sidepanelTemporaryChat",
     false
@@ -104,6 +106,11 @@ export const useMessage = () => {
     "speechToTextLanguage",
     "en-US"
   )
+
+  React.useEffect(() => {
+    // Reset server chat when character changes
+    setServerChatId(null)
+  }, [selectedCharacter?.id])
 
   // Local embedding store removed; rely on tldw_server RAG
 
@@ -118,6 +125,7 @@ export const useMessage = () => {
     setStreaming(false)
     updatePageTitle() 
     currentChatModelSettings.reset()
+    setServerChatId(null)
     if (defaultInternetSearchOn) {
       setWebSearch(true)
     }
@@ -531,6 +539,12 @@ export const useMessage = () => {
       const selectedPrompt = await getPromptById(selectedSystemPrompt)
 
       const applicationChatHistory = []
+      // Inject selected character's system prompt at highest priority
+      if (selectedCharacter?.system_prompt) {
+        applicationChatHistory.unshift(
+          await systemPromptFormatter({ content: selectedCharacter.system_prompt })
+        )
+      }
 
       const data = await getScreenshotFromCurrentTab()
 
@@ -543,14 +557,14 @@ export const useMessage = () => {
         )
       }
 
-      if (prompt && !selectedPrompt) {
+      if (!selectedCharacter?.system_prompt && prompt && !selectedPrompt) {
         applicationChatHistory.unshift(
           await systemPromptFormatter({
             content: prompt
           })
         )
       }
-      if (selectedPrompt) {
+      if (!selectedCharacter?.system_prompt && selectedPrompt) {
         applicationChatHistory.unshift(
           await systemPromptFormatter({
             content: selectedPrompt.content
@@ -734,6 +748,10 @@ export const useMessage = () => {
     history: ChatHistory,
     signal: AbortSignal
   ) => {
+    // If a character is selected, route to server-backed character chat mode
+    if (selectedCharacter?.id) {
+      return await characterChatMode(message, image, isRegenerate, messages, history, signal)
+    }
     setStreaming(true)
     if (image.length > 0) {
       image = `data:image/jpeg;base64,${image.split(",")[1]}`
@@ -976,6 +994,117 @@ export const useMessage = () => {
           description: e?.message || t("somethingWentWrong")
         })
       }
+      setIsProcessing(false)
+      setStreaming(false)
+    } finally {
+      setAbortController(null)
+    }
+  }
+
+  const characterChatMode = async (
+    message: string,
+    image: string,
+    isRegenerate: boolean,
+    messages: Message[],
+    history: ChatHistory,
+    signal: AbortSignal
+  ) => {
+    setStreaming(true)
+    try {
+      await tldwClient.initialize()
+
+      // Visual placeholder
+      const modelInfo = await getModelNicknameByID(selectedModel)
+      const generateMessageId = generateID()
+      const newMessageList: Message[] = !isRegenerate
+        ? [
+            ...messages,
+            { isBot: false, name: 'You', message, sources: [], images: [] },
+            { isBot: true, name: selectedModel, message: '▋', sources: [], id: generateMessageId, modelImage: modelInfo?.model_avatar, modelName: modelInfo?.model_name || selectedModel }
+          ]
+        : [
+            ...messages,
+            { isBot: true, name: selectedModel, message: '▋', sources: [], id: generateMessageId, modelImage: modelInfo?.model_avatar, modelName: modelInfo?.model_name || selectedModel }
+          ]
+      setMessages(newMessageList)
+
+      // Ensure server chat session exists
+      let chatId = serverChatId
+      if (!chatId) {
+        const created = await tldwClient.createChat({ character_id: selectedCharacter.id })
+        chatId = created?.id || created?.chat_id || created
+        if (!chatId) throw new Error('Failed to create character chat session')
+        setServerChatId(chatId)
+      }
+
+      // Add user message to server (only if not regenerate)
+      if (!isRegenerate) {
+        const payload: any = { role: 'user', content: message }
+        if (image && image.startsWith('data:')) {
+          const b64 = image.split(',')[1]
+          if (b64) payload.image_base64 = b64
+        }
+        const createdUser = await tldwClient.addChatMessage(chatId, payload)
+        setMessages((prev) => {
+          const updated = [...prev]
+          for (let i = updated.length - 1; i >= 0; i--) {
+            if (!updated[i].isBot) {
+              updated[i] = { ...updated[i], serverMessageId: createdUser?.id, serverMessageVersion: createdUser?.version }
+              break
+            }
+          }
+          return updated
+        })
+      }
+
+      // Get messages formatted for completions with character context
+      const formatted = await tldwClient.listChatMessages(chatId, { include_character_context: 'true', format_for_completions: 'true' } as any)
+      const msgs = formatted?.messages || []
+
+      // Stream completion from server /chat/completions
+      let fullText = ''
+      let count = 0
+      for await (const chunk of tldwClient.streamChatCompletion({ messages: msgs, model: selectedModel!, stream: true }, { signal })) {
+        const token = chunk?.choices?.[0]?.delta?.content || chunk?.content || ''
+        if (token) {
+          fullText += token
+          setMessages((prev) => prev.map((m) => (m.id === generateMessageId ? { ...m, message: fullText + '▋' } : m)))
+        }
+        if (count === 0) setIsProcessing(true)
+        count++
+        if (signal?.aborted) break
+      }
+      setMessages((prev) => prev.map((m) => (m.id === generateMessageId ? { ...m, message: fullText } : m)))
+
+      // Persist assistant reply on server
+      try {
+        const createdAsst = await tldwClient.addChatMessage(chatId, { role: 'assistant', content: fullText })
+        setMessages((prev) => prev.map((m) => (m.id === generateMessageId ? { ...m, serverMessageId: createdAsst?.id, serverMessageVersion: createdAsst?.version } : m)))
+      } catch {}
+
+      // Update local history as well (keeps local features consistent)
+      setHistory([
+        ...history,
+        { role: 'user', content: message, image },
+        { role: 'assistant', content: fullText }
+      ])
+
+      await saveMessageOnSuccess({
+        historyId,
+        setHistoryId,
+        isRegenerate,
+        selectedModel: selectedModel,
+        message,
+        image,
+        fullText,
+        source: [],
+        message_source: 'copilot'
+      })
+
+      setIsProcessing(false)
+      setStreaming(false)
+    } catch (e) {
+      notification.error({ message: t('error'), description: e?.message || t('somethingWentWrong') })
       setIsProcessing(false)
       setStreaming(false)
     } finally {
@@ -1647,6 +1776,29 @@ export const useMessage = () => {
       setHistory(previousHistory)
       await updateMessageByIndex(historyId, index, message)
       await deleteChatForEdit(historyId, index)
+      // Server-backed edit and cleanup
+      if (selectedCharacter?.id && serverChatId) {
+        if (currentHumanMessage?.serverMessageId) {
+          try {
+            const srv = await tldwClient.getMessage(currentHumanMessage.serverMessageId)
+            const ver = srv?.version
+            if (ver != null) await tldwClient.editMessage(currentHumanMessage.serverMessageId, message, Number(ver))
+          } catch {}
+        }
+        try {
+          const res = await tldwClient.listChatMessages(serverChatId, { include_deleted: 'false' } as any)
+          const list = res?.messages || []
+          const serverIds = list.map((m: any) => m.id)
+          const targetSrvId = currentHumanMessage?.serverMessageId
+          const startIdx = targetSrvId ? serverIds.indexOf(targetSrvId) : -1
+          if (startIdx >= 0) {
+            for (let i = startIdx + 1; i < list.length; i++) {
+              const m = list[i]
+              try { await tldwClient.deleteMessage(m.id, Number(m.version)) } catch {}
+            }
+          }
+        } catch {}
+      }
       const abortController = new AbortController()
       await onSubmit({
         message: message,
@@ -1657,11 +1809,21 @@ export const useMessage = () => {
         controller: abortController
       })
     } else {
+      // Assistant message edited
+      const currentAssistant = newMessages[index]
       newMessages[index].message = message
       setMessages(newMessages)
       newHistory[index].content = message
       setHistory(newHistory)
       await updateMessageByIndex(historyId, index, message)
+      // Server-backed: update assistant server message too
+      if (selectedCharacter?.id && currentAssistant?.serverMessageId) {
+        try {
+          const srv = await tldwClient.getMessage(currentAssistant.serverMessageId)
+          const ver = srv?.version
+          if (ver != null) await tldwClient.editMessage(currentAssistant.serverMessageId, message, Number(ver))
+        } catch {}
+      }
     }
   }
 
@@ -1670,6 +1832,20 @@ export const useMessage = () => {
       const lastMessage = history[history.length - 2]
       let newHistory = history.slice(0, -2)
       let mewMessages = messages
+      // If server-backed and last assistant has server message id, delete it on server
+      if (selectedCharacter?.id && serverChatId) {
+        const lastAssistant = [...mewMessages].reverse().find((m) => m.isBot)
+        if (lastAssistant?.serverMessageId) {
+          try {
+            let version = lastAssistant.serverMessageVersion
+            if (version == null) {
+              const srv = await tldwClient.getMessage(lastAssistant.serverMessageId)
+              version = srv?.version
+            }
+            if (version != null) await tldwClient.deleteMessage(lastAssistant.serverMessageId, Number(version))
+          } catch {}
+        }
+      }
       mewMessages.pop()
       setHistory(newHistory)
       setMessages(mewMessages)

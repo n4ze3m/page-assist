@@ -70,10 +70,11 @@ export interface BgStreamInit<P extends AllowedPath = AllowedPath, M extends All
   headers?: Record<string, string>
   body?: any
   streamIdleTimeoutMs?: number
+  abortSignal?: AbortSignal
 }
 
 export async function* bgStream<P extends AllowedPath = AllowedPath, M extends AllowedMethodFor<P> = AllowedMethodFor<P>>(
-  { path, method = 'POST' as UpperLower<M>, headers = {}, body, streamIdleTimeoutMs }: BgStreamInit<P, M>
+  { path, method = 'POST' as UpperLower<M>, headers = {}, body, streamIdleTimeoutMs, abortSignal }: BgStreamInit<P, M>
 ): AsyncGenerator<string> {
   const port = browser.runtime.connect({ name: 'tldw:stream' })
   const encoder = new TextEncoder()
@@ -92,6 +93,13 @@ export async function* bgStream<P extends AllowedPath = AllowedPath, M extends A
     }
   }
   port.onMessage.addListener(onMessage)
+  const onAbort = () => {
+    try { port.disconnect() } catch {}
+  }
+  if (abortSignal) {
+    if (abortSignal.aborted) onAbort()
+    else abortSignal.addEventListener('abort', onAbort, { once: true })
+  }
   port.postMessage({ path, method, headers, body, streamIdleTimeoutMs })
 
   try {
@@ -106,6 +114,9 @@ export async function* bgStream<P extends AllowedPath = AllowedPath, M extends A
   } finally {
     try { port.onMessage.removeListener(onMessage); } catch {}
     try { port.disconnect(); } catch {}
+    if (abortSignal) {
+      try { abortSignal.removeEventListener('abort', onAbort) } catch {}
+    }
   }
 }
 

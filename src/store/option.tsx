@@ -26,6 +26,8 @@ export type Message = {
   modelName?: string
   modelImage?: string
   documents?: ChatDocuments
+  serverMessageId?: string
+  serverMessageVersion?: number
 }
 
 export type ChatHistory = {
@@ -93,6 +95,10 @@ type State = {
 
   fileRetrievalEnabled: boolean
   setFileRetrievalEnabled: (fileRetrievalEnabled: boolean) => void
+
+  // Server-backed character chat id
+  serverChatId: string | null
+  setServerChatId: (id: string | null) => void
 }
 
 export const useStoreMessageOption = create<State>((set) => ({
@@ -152,4 +158,7 @@ export const useStoreMessageOption = create<State>((set) => ({
   fileRetrievalEnabled: false,
   setFileRetrievalEnabled: (fileRetrievalEnabled) =>
     set({ fileRetrievalEnabled })
+  ,
+  serverChatId: null,
+  setServerChatId: (id) => set({ serverChatId: id })
 }))

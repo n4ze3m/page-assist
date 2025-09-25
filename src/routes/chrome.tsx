@@ -18,6 +18,9 @@ import OptionReview from "./option-review"
 import OptionMedia from "./option-media"
 import OptionMediaMulti from "./option-media-multi"
 import OptionNotes from "./option-notes"
+import OptionWorldBooks from "./option-settings-world-books"
+import OptionDictionaries from "./option-settings-dictionaries"
+import OptionCharacters from "./option-settings-characters"
 
 export const OptionRoutingChrome = () => {
   return (
@@ -34,6 +37,9 @@ export const OptionRoutingChrome = () => {
       <Route path="/settings/processed" element={<OptionProcessed />} />
       <Route path="/settings/health" element={<OptionHealth />} />
       <Route path="/settings/knowledge" element={<OptionKnowledgeBase />} />
+      <Route path="/settings/characters" element={<OptionCharacters />} />
+      <Route path="/settings/world-books" element={<OptionWorldBooks />} />
+      <Route path="/settings/chat-dictionaries" element={<OptionDictionaries />} />
       <Route path="/settings/rag" element={<OptionRagSettings />} />
       <Route path="/settings/about" element={<OptionAbout />} />
       <Route path="/review" element={<OptionReview />} />

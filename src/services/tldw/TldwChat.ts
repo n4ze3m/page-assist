@@ -107,7 +107,7 @@ export class TldwChatService {
         ]
       }
 
-      const stream = tldwClient.streamChatCompletion(request)
+      const stream = tldwClient.streamChatCompletion(request, { signal: this.currentController.signal })
 
       for await (const chunk of stream) {
         // Check if stream was cancelled

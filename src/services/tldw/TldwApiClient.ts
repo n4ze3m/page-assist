@@ -127,6 +127,57 @@ export class TldwApiClient {
     }
   }
 
+  // Chats API (resource-based)
+  async listChats(params?: Record<string, any>): Promise<any[]> {
+    return await bgRequest<any[]>({ path: '/api/v1/chats/', method: 'GET', params })
+  }
+
+  async createChat(payload: Record<string, any>): Promise<any> {
+    return await bgRequest<any>({ path: '/api/v1/chats/', method: 'POST', headers: { 'Content-Type': 'application/json' }, body: payload })
+  }
+
+  async getChat(chat_id: string | number): Promise<any> {
+    const cid = String(chat_id)
+    return await bgRequest<any>({ path: `/api/v1/chats/${cid}`, method: 'GET' })
+  }
+
+  async updateChat(chat_id: string | number, payload: Record<string, any>): Promise<any> {
+    const cid = String(chat_id)
+    return await bgRequest<any>({ path: `/api/v1/chats/${cid}`, method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: payload })
+  }
+
+  async deleteChat(chat_id: string | number): Promise<void> {
+    const cid = String(chat_id)
+    await bgRequest<void>({ path: `/api/v1/chats/${cid}`, method: 'DELETE' })
+  }
+
+  async listChatMessages(chat_id: string | number, params?: Record<string, any>): Promise<any[]> {
+    const cid = String(chat_id)
+    return await bgRequest<any[]>({ path: `/api/v1/chats/${cid}/messages`, method: 'GET', params })
+  }
+
+  async addChatMessage(chat_id: string | number, payload: Record<string, any>): Promise<any> {
+    const cid = String(chat_id)
+    return await bgRequest<any>({ path: `/api/v1/chats/${cid}/messages`, method: 'POST', headers: { 'Content-Type': 'application/json' }, body: payload })
+  }
+
+  async searchChatMessages(chat_id: string | number, payload: Record<string, any>): Promise<any> {
+    const cid = String(chat_id)
+    return await bgRequest<any>({ path: `/api/v1/chats/${cid}/messages/search`, method: 'POST', headers: { 'Content-Type': 'application/json' }, body: payload })
+  }
+
+  async completeChat(chat_id: string | number, payload: Record<string, any>): Promise<any> {
+    const cid = String(chat_id)
+    return await bgRequest<any>({ path: `/api/v1/chats/${cid}/complete`, method: 'POST', headers: { 'Content-Type': 'application/json' }, body: payload })
+  }
+
+  async * streamCompleteChat(chat_id: string | number, payload: Record<string, any>): AsyncGenerator<any> {
+    const cid = String(chat_id)
+    for await (const line of bgStream({ path: `/api/v1/chats/${cid}/complete`, method: 'POST', headers: { 'Content-Type': 'application/json' }, body: payload })) {
+      try { yield JSON.parse(line) } catch {}
+    }
+  }
+
   async getModels(): Promise<TldwModel[]> {
     // Prefer flattened metadata endpoint when available
     try {
@@ -267,9 +318,9 @@ export class TldwApiClient {
     return new Response(typeof data === 'string' ? data : JSON.stringify(data), { status: 200, headers: { 'content-type': typeof data === 'string' ? 'text/plain' : 'application/json' } })
   }
 
-  async *streamChatCompletion(request: ChatCompletionRequest): AsyncGenerator<any, void, unknown> {
+  async *streamChatCompletion(request: ChatCompletionRequest, options?: { signal?: AbortSignal; streamIdleTimeoutMs?: number }): AsyncGenerator<any, void, unknown> {
     request.stream = true
-    for await (const line of bgStream({ path: '/api/v1/chat/completions', method: 'POST', headers: { 'Content-Type': 'application/json' }, body: request })) {
+    for await (const line of bgStream({ path: '/api/v1/chat/completions', method: 'POST', headers: { 'Content-Type': 'application/json' }, body: request, abortSignal: options?.signal, streamIdleTimeoutMs: options?.streamIdleTimeoutMs })) {
       try {
         const parsed = JSON.parse(line)
         yield parsed
@@ -378,6 +429,335 @@ export class TldwApiClient {
     const pid = String(id)
     // Path per OpenAPI: /api/v1/prompts/{prompt_identifier}
     return await bgRequest<any>({ path: `/api/v1/prompts/${pid}`, method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: payload })
+  }
+
+  // Characters API
+  async listCharacters(params?: Record<string, any>): Promise<any[]> {
+    try {
+      return await bgRequest<any[]>({ path: '/api/v1/characters/', method: 'GET', params })
+    } catch {
+      return await bgRequest<any[]>({ path: '/api/v1/characters', method: 'GET', params })
+    }
+  }
+
+  async getCharacter(id: string | number): Promise<any> {
+    const cid = String(id)
+    try {
+      return await bgRequest<any>({ path: `/api/v1/characters/${cid}`, method: 'GET' })
+    } catch {
+      return await bgRequest<any>({ path: `/api/v1/characters/${cid}/`, method: 'GET' })
+    }
+  }
+
+  async createCharacter(payload: Record<string, any>): Promise<any> {
+    try {
+      return await bgRequest<any>({ path: '/api/v1/characters/', method: 'POST', headers: { 'Content-Type': 'application/json' }, body: payload })
+    } catch {
+      return await bgRequest<any>({ path: '/api/v1/characters', method: 'POST', headers: { 'Content-Type': 'application/json' }, body: payload })
+    }
+  }
+
+  async updateCharacter(id: string | number, payload: Record<string, any>, expectedVersion?: number): Promise<any> {
+    const cid = String(id)
+    const qp = expectedVersion != null ? `?expected_version=${encodeURIComponent(String(expectedVersion))}` : ''
+    return await bgRequest<any>({ path: `/api/v1/characters/${cid}${qp}`, method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: payload })
+  }
+
+  async deleteCharacter(id: string | number): Promise<void> {
+    const cid = String(id)
+    await bgRequest<void>({ path: `/api/v1/characters/${cid}`, method: 'DELETE' })
+  }
+
+  // Character chat sessions
+  async listCharacterChatSessions(): Promise<any[]> {
+    // Try common variants
+    try {
+      return await bgRequest<any[]>({ path: '/api/v1/character-chat/sessions', method: 'GET' })
+    } catch {}
+    try {
+      return await bgRequest<any[]>({ path: '/api/v1/character_chat_sessions/', method: 'GET' })
+    } catch {}
+    return await bgRequest<any[]>({ path: '/api/v1/character_chat_sessions', method: 'GET' })
+  }
+
+  async createCharacterChatSession(character_id: string): Promise<any> {
+    const body = { character_id }
+    try {
+      return await bgRequest<any>({ path: '/api/v1/character-chat/sessions', method: 'POST', headers: { 'Content-Type': 'application/json' }, body })
+    } catch {}
+    try {
+      return await bgRequest<any>({ path: '/api/v1/character_chat_sessions/', method: 'POST', headers: { 'Content-Type': 'application/json' }, body })
+    } catch {}
+    return await bgRequest<any>({ path: '/api/v1/character_chat_sessions', method: 'POST', headers: { 'Content-Type': 'application/json' }, body })
+  }
+
+  async deleteCharacterChatSession(session_id: string | number): Promise<void> {
+    const sid = String(session_id)
+    try {
+      await bgRequest<void>({ path: `/api/v1/character-chat/sessions/${sid}`, method: 'DELETE' })
+      return
+    } catch {}
+    try {
+      await bgRequest<void>({ path: `/api/v1/character_chat_sessions/${sid}`, method: 'DELETE' })
+      return
+    } catch {}
+    await bgRequest<void>({ path: `/api/v1/character_chat_sessions/${sid}/`, method: 'DELETE' })
+  }
+
+  // Character messages
+  async listCharacterMessages(session_id: string | number): Promise<any[]> {
+    const sid = String(session_id)
+    // Prefer nested session path if available
+    try {
+      return await bgRequest<any[]>({ path: `/api/v1/character-chat/sessions/${sid}/messages`, method: 'GET' })
+    } catch {}
+    // Fallback to flat endpoint
+    try {
+      return await bgRequest<any[]>({ path: '/api/v1/character-messages', method: 'GET', params: { session_id: sid } as any })
+    } catch {}
+    return await bgRequest<any[]>({ path: '/api/v1/character_messages', method: 'GET', params: { session_id: sid } as any })
+  }
+
+  async sendCharacterMessage(session_id: string | number, content: string, options?: { extra?: Record<string, any> }): Promise<any> {
+    const sid = String(session_id)
+    const body = { content, session_id: sid, ...(options?.extra || {}) }
+    // Non-streaming create
+    try {
+      return await bgRequest<any>({ path: `/api/v1/character-chat/sessions/${sid}/messages`, method: 'POST', headers: { 'Content-Type': 'application/json' }, body })
+    } catch {}
+    try {
+      return await bgRequest<any>({ path: '/api/v1/character_messages', method: 'POST', headers: { 'Content-Type': 'application/json' }, body })
+    } catch {}
+    return await bgRequest<any>({ path: '/api/v1/character-messages', method: 'POST', headers: { 'Content-Type': 'application/json' }, body })
+  }
+
+  async * streamCharacterMessage(session_id: string | number, content: string, options?: { extra?: Record<string, any> }): AsyncGenerator<any> {
+    const sid = String(session_id)
+    const body = { content, session_id: sid, ...(options?.extra || {}) }
+    // Try nested stream path first
+    try {
+      for await (const line of bgStream({ path: `/api/v1/character-chat/sessions/${sid}/messages/stream`, method: 'POST', headers: { 'Content-Type': 'application/json' }, body })) {
+        try { yield JSON.parse(line) } catch {}
+      }
+      return
+    } catch {}
+    // Fallback to flat stream
+    try {
+      for await (const line of bgStream({ path: '/api/v1/character_messages/stream', method: 'POST', headers: { 'Content-Type': 'application/json' }, body })) {
+        try { yield JSON.parse(line) } catch {}
+      }
+      return
+    } catch {}
+    for await (const line of bgStream({ path: '/api/v1/character-messages/stream', method: 'POST', headers: { 'Content-Type': 'application/json' }, body })) {
+      try { yield JSON.parse(line) } catch {}
+    }
+  }
+
+  // Chats API (resource-based)
+  async listChats(params?: Record<string, any>): Promise<any[]> {
+    return await bgRequest<any[]>({ path: '/api/v1/chats/', method: 'GET', params })
+  }
+
+  async createChat(payload: Record<string, any>): Promise<any> {
+    return await bgRequest<any>({ path: '/api/v1/chats/', method: 'POST', headers: { 'Content-Type': 'application/json' }, body: payload })
+  }
+
+  async getChat(chat_id: string | number): Promise<any> {
+    const cid = String(chat_id)
+    return await bgRequest<any>({ path: `/api/v1/chats/${cid}`, method: 'GET' })
+  }
+
+  async updateChat(chat_id: string | number, payload: Record<string, any>): Promise<any> {
+    const cid = String(chat_id)
+    return await bgRequest<any>({ path: `/api/v1/chats/${cid}`, method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: payload })
+  }
+
+  async deleteChat(chat_id: string | number): Promise<void> {
+    const cid = String(chat_id)
+    await bgRequest<void>({ path: `/api/v1/chats/${cid}`, method: 'DELETE' })
+  }
+
+  async listChatMessages(chat_id: string | number, params?: Record<string, any>): Promise<any[]> {
+    const cid = String(chat_id)
+    return await bgRequest<any[]>({ path: `/api/v1/chats/${cid}/messages`, method: 'GET', params })
+  }
+
+  async addChatMessage(chat_id: string | number, payload: Record<string, any>): Promise<any> {
+    const cid = String(chat_id)
+    return await bgRequest<any>({ path: `/api/v1/chats/${cid}/messages`, method: 'POST', headers: { 'Content-Type': 'application/json' }, body: payload })
+  }
+
+  async searchChatMessages(chat_id: string | number, query: string, limit?: number): Promise<any> {
+    const cid = String(chat_id)
+    const qp = `?query=${encodeURIComponent(query)}${typeof limit === 'number' ? `&limit=${encodeURIComponent(String(limit))}` : ''}`
+    return await bgRequest<any>({ path: `/api/v1/chats/${cid}/messages/search${qp}`, method: 'GET' })
+  }
+
+  async completeChat(chat_id: string | number, payload?: Record<string, any>): Promise<any> {
+    const cid = String(chat_id)
+    return await bgRequest<any>({ path: `/api/v1/chats/${cid}/complete`, method: 'POST', headers: { 'Content-Type': 'application/json' }, body: payload || {} })
+  }
+
+  async * streamCompleteChat(chat_id: string | number, payload?: Record<string, any>): AsyncGenerator<any> {
+    const cid = String(chat_id)
+    for await (const line of bgStream({ path: `/api/v1/chats/${cid}/complete`, method: 'POST', headers: { 'Content-Type': 'application/json' }, body: payload || {} })) {
+      try { yield JSON.parse(line) } catch {}
+    }
+  }
+
+  // Message (single) APIs
+  async getMessage(message_id: string | number): Promise<any> {
+    const mid = String(message_id)
+    return await bgRequest<any>({ path: `/api/v1/messages/${mid}`, method: 'GET' })
+  }
+
+  async editMessage(message_id: string | number, content: string, expectedVersion: number): Promise<any> {
+    const mid = String(message_id)
+    const qp = `?expected_version=${encodeURIComponent(String(expectedVersion))}`
+    return await bgRequest<any>({ path: `/api/v1/messages/${mid}${qp}`, method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: { content } })
+  }
+
+  async deleteMessage(message_id: string | number, expectedVersion: number): Promise<void> {
+    const mid = String(message_id)
+    const qp = `?expected_version=${encodeURIComponent(String(expectedVersion))}`
+    await bgRequest<void>({ path: `/api/v1/messages/${mid}${qp}`, method: 'DELETE' })
+  }
+
+  // World Books
+  async listWorldBooks(include_disabled?: boolean): Promise<any> {
+    const qp = include_disabled ? `?include_disabled=true` : ''
+    return await bgRequest<any>({ path: `/api/v1/characters/world-books${qp}`, method: 'GET' })
+  }
+
+  async createWorldBook(payload: Record<string, any>): Promise<any> {
+    return await bgRequest<any>({ path: '/api/v1/characters/world-books', method: 'POST', headers: { 'Content-Type': 'application/json' }, body: payload })
+  }
+
+  async updateWorldBook(world_book_id: number | string, payload: Record<string, any>): Promise<any> {
+    const wid = String(world_book_id)
+    return await bgRequest<any>({ path: `/api/v1/characters/world-books/${wid}`, method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: payload })
+  }
+
+  async deleteWorldBook(world_book_id: number | string): Promise<any> {
+    const wid = String(world_book_id)
+    return await bgRequest<any>({ path: `/api/v1/characters/world-books/${wid}`, method: 'DELETE' })
+  }
+
+  async listWorldBookEntries(world_book_id: number | string, enabled_only?: boolean): Promise<any> {
+    const wid = String(world_book_id)
+    const qp = enabled_only ? `?enabled_only=true` : ''
+    return await bgRequest<any>({ path: `/api/v1/characters/world-books/${wid}/entries${qp}`, method: 'GET' })
+  }
+
+  async addWorldBookEntry(world_book_id: number | string, payload: Record<string, any>): Promise<any> {
+    const wid = String(world_book_id)
+    return await bgRequest<any>({ path: `/api/v1/characters/world-books/${wid}/entries`, method: 'POST', headers: { 'Content-Type': 'application/json' }, body: payload })
+  }
+
+  async updateWorldBookEntry(entry_id: number | string, payload: Record<string, any>): Promise<any> {
+    const eid = String(entry_id)
+    return await bgRequest<any>({ path: `/api/v1/characters/world-books/entries/${eid}`, method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: payload })
+  }
+
+  async deleteWorldBookEntry(entry_id: number | string): Promise<any> {
+    const eid = String(entry_id)
+    return await bgRequest<any>({ path: `/api/v1/characters/world-books/entries/${eid}`, method: 'DELETE' })
+  }
+
+  async attachWorldBookToCharacter(character_id: number | string, world_book_id: number | string): Promise<any> {
+    const cid = String(character_id)
+    return await bgRequest<any>({ path: `/api/v1/characters/${cid}/world-books`, method: 'POST', headers: { 'Content-Type': 'application/json' }, body: { world_book_id: Number(world_book_id) } })
+  }
+
+  async detachWorldBookFromCharacter(character_id: number | string, world_book_id: number | string): Promise<any> {
+    const cid = String(character_id)
+    const wid = String(world_book_id)
+    return await bgRequest<any>({ path: `/api/v1/characters/${cid}/world-books/${wid}`, method: 'DELETE' })
+  }
+
+  async listCharacterWorldBooks(character_id: number | string): Promise<any> {
+    const cid = String(character_id)
+    return await bgRequest<any>({ path: `/api/v1/characters/${cid}/world-books`, method: 'GET' })
+  }
+
+  async exportWorldBook(world_book_id: number | string): Promise<any> {
+    const wid = String(world_book_id)
+    return await bgRequest<any>({ path: `/api/v1/characters/world-books/${wid}/export`, method: 'GET' })
+  }
+
+  async importWorldBook(request: { world_book: Record<string, any>; entries?: any[]; merge_on_conflict?: boolean }): Promise<any> {
+    return await bgRequest<any>({ path: '/api/v1/characters/world-books/import', method: 'POST', headers: { 'Content-Type': 'application/json' }, body: request })
+  }
+
+  async worldBookStatistics(world_book_id: number | string): Promise<any> {
+    const wid = String(world_book_id)
+    return await bgRequest<any>({ path: `/api/v1/characters/world-books/${wid}/statistics`, method: 'GET' })
+  }
+
+  // Chat Dictionaries
+  async createDictionary(payload: Record<string, any>): Promise<any> {
+    return await bgRequest<any>({ path: '/api/v1/chat/dictionaries', method: 'POST', headers: { 'Content-Type': 'application/json' }, body: payload })
+  }
+
+  async listDictionaries(include_inactive?: boolean): Promise<any> {
+    const qp = include_inactive ? `?include_inactive=true` : ''
+    return await bgRequest<any>({ path: `/api/v1/chat/dictionaries${qp}`, method: 'GET' })
+  }
+
+  async getDictionary(dictionary_id: number | string): Promise<any> {
+    const id = String(dictionary_id)
+    return await bgRequest<any>({ path: `/api/v1/chat/dictionaries/${id}`, method: 'GET' })
+  }
+
+  async updateDictionary(dictionary_id: number | string, payload: Record<string, any>): Promise<any> {
+    const id = String(dictionary_id)
+    return await bgRequest<any>({ path: `/api/v1/chat/dictionaries/${id}`, method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: payload })
+  }
+
+  async deleteDictionary(dictionary_id: number | string, hard_delete?: boolean): Promise<any> {
+    const id = String(dictionary_id)
+    const qp = hard_delete ? `?hard_delete=true` : ''
+    return await bgRequest<any>({ path: `/api/v1/chat/dictionaries/${id}${qp}`, method: 'DELETE' })
+  }
+
+  async listDictionaryEntries(dictionary_id: number | string, group?: string): Promise<any> {
+    const id = String(dictionary_id)
+    const qp = group ? `?group=${encodeURIComponent(group)}` : ''
+    return await bgRequest<any>({ path: `/api/v1/chat/dictionaries/${id}/entries${qp}`, method: 'GET' })
+    }
+
+  async addDictionaryEntry(dictionary_id: number | string, payload: Record<string, any>): Promise<any> {
+    const id = String(dictionary_id)
+    return await bgRequest<any>({ path: `/api/v1/chat/dictionaries/${id}/entries`, method: 'POST', headers: { 'Content-Type': 'application/json' }, body: payload })
+  }
+
+  async updateDictionaryEntry(entry_id: number | string, payload: Record<string, any>): Promise<any> {
+    const eid = String(entry_id)
+    return await bgRequest<any>({ path: `/api/v1/chat/dictionaries/entries/${eid}`, method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: payload })
+  }
+
+  async deleteDictionaryEntry(entry_id: number | string): Promise<any> {
+    const eid = String(entry_id)
+    return await bgRequest<any>({ path: `/api/v1/chat/dictionaries/entries/${eid}`, method: 'DELETE' })
+  }
+
+  async exportDictionaryMarkdown(dictionary_id: number | string): Promise<any> {
+    const id = String(dictionary_id)
+    return await bgRequest<any>({ path: `/api/v1/chat/dictionaries/${id}/export/markdown`, method: 'GET' })
+  }
+
+  async exportDictionaryJSON(dictionary_id: number | string): Promise<any> {
+    const id = String(dictionary_id)
+    return await bgRequest<any>({ path: `/api/v1/chat/dictionaries/${id}/export/json`, method: 'GET' })
+  }
+
+  async importDictionaryJSON(data: any, activate?: boolean): Promise<any> {
+    return await bgRequest<any>({ path: '/api/v1/chat/dictionaries/import/json', method: 'POST', headers: { 'Content-Type': 'application/json' }, body: { data, activate: !!activate } })
+  }
+
+  async dictionaryStatistics(dictionary_id: number | string): Promise<any> {
+    const id = String(dictionary_id)
+    return await bgRequest<any>({ path: `/api/v1/chat/dictionaries/${id}/statistics`, method: 'GET' })
   }
 
   // STT Methods
