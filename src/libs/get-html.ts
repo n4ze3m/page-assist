@@ -438,10 +438,7 @@ export const getDataFromCurrentTab = async () => {
 export const getContentFromCurrentTab = async (isUsingVS: boolean) => {
   const data = await getDataFromCurrentTab()
 
-  if (isUsingVS) {
-    return data
-  }
-
+ 
   if (isYoutubeLink(data.url)) {
     console.log("Youtube link detected")
     const transcript = await fetchTranscriptYT()
@@ -451,6 +448,7 @@ export const getContentFromCurrentTab = async (isUsingVS: boolean) => {
       content: transcript
     }
   }
+
 
   return data
 }

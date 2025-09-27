@@ -50,5 +50,9 @@ export const SUPPORTED_SERACH_PROVIDERS = [
     {
         label: "Firecrawl",
         value: "firecrawl"
+    },
+    {
+        label: "Ollama Web search",
+        value: "ollama-search"
     }
 ]

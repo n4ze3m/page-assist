@@ -11,15 +11,15 @@ const DEFAULT_PROVIDER = "duckduckgo"
 const AVAILABLE_PROVIDERS = ["google", "duckduckgo"] as const
 
 export const getIsSimpleInternetSearch = async () => {
- try {
-  const isSimpleInternetSearch = await storage.get("isSimpleInternetSearch")
-  if (!isSimpleInternetSearch || isSimpleInternetSearch.length === 0) {
+  try {
+    const isSimpleInternetSearch = await storage.get("isSimpleInternetSearch")
+    if (!isSimpleInternetSearch || isSimpleInternetSearch.length === 0) {
+      return true
+    }
+    return isSimpleInternetSearch === "true"
+  } catch (e) {
     return true
   }
-  return isSimpleInternetSearch === "true"
- } catch(e) {
-  return true
- }
 }
 
 export const getIsVisitSpecificWebsite = async () => {
@@ -91,6 +91,11 @@ export const getBraveApiKey = async () => {
   return braveApiKey || ""
 }
 
+export const getOllamaSearchApiKey = async () => {
+  const ollamaSearchApiKey = await storage2.get("ollamaSearchApiKey")
+  return ollamaSearchApiKey || ""
+}
+
 export const getTavilyApiKey = async () => {
   const tavilyApiKey = await storage2.get("tavilyApiKey")
   return tavilyApiKey || ""
@@ -103,6 +108,10 @@ export const getFirecrawlAPIKey = async () => {
 
 export const setBraveApiKey = async (braveApiKey: string) => {
   await storage2.set("braveApiKey", braveApiKey)
+}
+
+export const setOllamaSearchApiKey = async (ollamaSearchApiKey: string) => {
+  await storage2.set("ollamaSearchApiKey", ollamaSearchApiKey)
 }
 
 export const setFirecrawlAPIKey = async (firecrawlAPIKey: string) => {
@@ -155,7 +164,8 @@ export const getSearchSettings = async () => {
     googleDomain,
     defaultInternetSearchOn,
     exaAPIKey,
-    firecrawlAPIKey
+    firecrawlAPIKey,
+    ollamaSearchApiKey
   ] = await Promise.all([
     getIsSimpleInternetSearch(),
     getSearchProvider(),
@@ -168,7 +178,8 @@ export const getSearchSettings = async () => {
     getGoogleDomain(),
     getInternetSearchOn(),
     getExaAPIKey(),
-    getFirecrawlAPIKey()
+    getFirecrawlAPIKey(),
+    getOllamaSearchApiKey()
   ])
 
   return {
@@ -183,7 +194,8 @@ export const getSearchSettings = async () => {
     googleDomain,
     defaultInternetSearchOn,
     exaAPIKey,
-    firecrawlAPIKey
+    firecrawlAPIKey,
+    ollamaSearchApiKey
   }
 }
 
@@ -199,7 +211,8 @@ export const setSearchSettings = async ({
   googleDomain,
   defaultInternetSearchOn,
   exaAPIKey,
-  firecrawlAPIKey
+  firecrawlAPIKey,
+  ollamaSearchApiKey
 }: {
   isSimpleInternetSearch: boolean
   searchProvider: string
@@ -209,10 +222,11 @@ export const setSearchSettings = async ({
   searxngJSONMode: boolean
   braveApiKey: string
   tavilyApiKey: string
-  googleDomain: string,
+  googleDomain: string
   defaultInternetSearchOn: boolean
-  exaAPIKey: string,
+  exaAPIKey: string
   firecrawlAPIKey: string
+  ollamaSearchApiKey: string
 }) => {
   await Promise.all([
     setIsSimpleInternetSearch(isSimpleInternetSearch),
@@ -226,6 +240,7 @@ export const setSearchSettings = async ({
     setGoogleDomain(googleDomain),
     setInternetSearchOn(defaultInternetSearchOn),
     setExaAPIKey(exaAPIKey),
-    setFirecrawlAPIKey(firecrawlAPIKey)
+    setFirecrawlAPIKey(firecrawlAPIKey),
+    setOllamaSearchApiKey(ollamaSearchApiKey)
   ])
 }

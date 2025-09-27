@@ -488,25 +488,22 @@ export const dynamicFetchOllama2 = async ({
   customHeaders?: { key: string; value: string }[]
 }) => {
   if (baseUrl.includes("ollama.com")) {
-    // ollama.com is turbo pro something it only have 2 models
-    // we are currenly hardcoding it i don't why
-    const models = [
-      {
-        name: "gpt-oss:20b",
-        id: "gpt-oss:20b"
-      },
-      {
-        name: "gpt-oss:120b",
-        id: "gpt-oss:120b"
+    const res = await fetch("https://ollama.com/api/tags", {
+      headers: {
+        "Content-Type": "application/json"
       }
-    ]
+    })
+
+    const data = await res.json()
+
+    const models = data.models as { model: string; name: string }[]
 
     return models.map((e) => {
       return {
-        name: e?.name || e?.id,
-        id: `${e?.id}_ollama2_${providerId}`,
+        name: e?.name || e?.model,
+        id: `${e?.model}_ollama2_${providerId}`,
         provider: providerId,
-        lookup: `${e?.id}_${providerId}`,
+        lookup: `${e?.model}_${providerId}`,
         provider_id: providerId
       }
     })

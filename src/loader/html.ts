@@ -31,6 +31,13 @@ export class PageAssistHtmlLoader
 
   async load(): Promise<Document<Record<string, any>>[]> {
     console.log("Loading HTML...", this.url)
+   
+    if (isYoutubeLink(this.url) && this.html) {
+      console.log("[SidePanel] Youtube link with HTML detected, skipping transcript")
+      const metadata = { source: this.url, url: this.url, }
+      return [new Document({ pageContent: this.html, metadata })]
+    } 
+   
     if (isYoutubeLink(this.url)) {
       console.log("Youtube link detected")
       const transcript = await getTranscript(this.url)
