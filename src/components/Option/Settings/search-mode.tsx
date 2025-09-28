@@ -1,7 +1,7 @@
 import { SaveButton } from "@/components/Common/SaveButton"
 import { getSearchSettings, setSearchSettings } from "@/services/search"
 import { ALL_GOOGLE_DOMAINS } from "@/utils/google-domains"
-import { SUPPORTED_SERACH_PROVIDERS } from "@/utils/search-provider"
+import { SUPPORTED_SEARCH_PROVIDERS } from "@/utils/search-provider"
 import { useForm } from "@mantine/form"
 import { useQuery } from "@tanstack/react-query"
 import { Select, Skeleton, Switch, InputNumber, Input } from "antd"
@@ -23,7 +23,8 @@ export const SearchModeSettings = () => {
       googleDomain: "",
       defaultInternetSearchOn: false,
       exaAPIKey: "",
-      firecrawlAPIKey: ""
+      firecrawlAPIKey: "",
+      ollamaSearchApiKey: ""
     }
   })
 
@@ -62,7 +63,7 @@ export const SearchModeSettings = () => {
               placeholder={t("generalSettings.webSearch.provider.placeholder")}
               showSearch
               className="w-full mt-4 sm:mt-0 sm:w-[200px]"
-              options={SUPPORTED_SERACH_PROVIDERS}
+              options={SUPPORTED_SEARCH_PROVIDERS}
               filterOption={(input, option) =>
                 option!.label.toLowerCase().indexOf(input.toLowerCase()) >= 0 ||
                 option!.value.toLowerCase().indexOf(input.toLowerCase()) >= 0
@@ -185,6 +186,30 @@ export const SearchModeSettings = () => {
                   required
                   className="w-full mt-4 sm:mt-0 sm:w-[200px]"
                   {...form.getInputProps("firecrawlAPIKey")}
+                />
+              </div>
+            </div>
+          </>
+        )}
+
+        {form.values.searchProvider === "ollama-search" && (
+          <>
+            <div className="flex sm:flex-row flex-col space-y-4 sm:space-y-0 sm:justify-between">
+              <span className="text-gray-700 dark:text-neutral-50">
+                {t(
+                  "generalSettings.webSearch.ollamaSearchApiKey.label",
+                  "Ollama Search API Key"
+                )}
+              </span>
+              <div>
+                <Input.Password
+                  placeholder={t(
+                    "generalSettings.webSearch.ollamaSearchApiKey.placeholder",
+                    "Ollama Search API Key"
+                  )}
+                  required
+                  className="w-full mt-4 sm:mt-0 sm:w-[200px]"
+                  {...form.getInputProps("ollamaSearchApiKey")}
                 />
               </div>
             </div>
