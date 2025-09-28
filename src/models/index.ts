@@ -173,10 +173,12 @@ export const pageAssistModel = async ({
         model: modelInfo.model_id,
         seed,
         headers: {
-          Authorization: `Bearer ${providerInfo.apiKey || "temp"}`,
+          ...(providerInfo.apiKey && {
+            Authorization: `Bearer ${providerInfo.apiKey}`
+          }),
           ...getCustomHeaders({
             headers: providerInfo?.headers || []
-          }) 
+          })
         },
         ...payload
       })
