@@ -1,7 +1,7 @@
 import { SaveButton } from "@/components/Common/SaveButton"
 import { getSearchSettings, setSearchSettings } from "@/services/search"
 import { ALL_GOOGLE_DOMAINS } from "@/utils/google-domains"
-import { SUPPORTED_SERACH_PROVIDERS } from "@/utils/search-provider"
+import { SUPPORTED_SEARCH_PROVIDERS } from "@/utils/search-provider"
 import { useForm } from "@mantine/form"
 import { useQuery } from "@tanstack/react-query"
 import { Select, Skeleton, Switch, InputNumber, Input } from "antd"
@@ -63,7 +63,7 @@ export const SearchModeSettings = () => {
               placeholder={t("generalSettings.webSearch.provider.placeholder")}
               showSearch
               className="w-full mt-4 sm:mt-0 sm:w-[200px]"
-              options={SUPPORTED_SERACH_PROVIDERS}
+              options={SUPPORTED_SEARCH_PROVIDERS}
               filterOption={(input, option) =>
                 option!.label.toLowerCase().indexOf(input.toLowerCase()) >= 0 ||
                 option!.value.toLowerCase().indexOf(input.toLowerCase()) >= 0
