@@ -78,6 +78,17 @@ export default defineBackground({
           title: browser.i18n.getMessage("contextCustom"),
           contexts: ["selection"]
         })
+        // Kokoro TTS context menus
+        browser.contextMenus.create({
+          id: "kokoro-speak",
+          title: "Speak selection (Kokoro)",
+          contexts: ["selection"]
+        })
+        browser.contextMenus.create({
+          id: "kokoro-stop",
+          title: "Stop speaking (Kokoro)",
+          contexts: ["page", "selection"]
+        })
       } catch (error) {
         console.error("Error in initLogic:", error)
       }
@@ -215,6 +226,56 @@ export default defineBackground({
           },
           isCopilotRunning ? 0 : 5000
         )
+      } else if (info.menuItemId === "kokoro-speak") {
+        // Ask content script to speak; if not present, inject and retry
+        if (tab?.id) {
+          let sent = false
+          try {
+            await browser.tabs.sendMessage(tab.id, {
+              type: "kokoro_tts_speak",
+              from: "background",
+              text: info.selectionText
+            })
+            sent = true
+          } catch (e) {
+            // likely no receiver; inject then retry
+          }
+          if (!sent) {
+            try {
+              if ((chrome as any)?.scripting?.executeScript) {
+                await chrome.scripting.executeScript({
+                  target: { tabId: tab.id },
+                  files: ["content-scripts/tts.js"]
+                })
+              } else {
+                // Firefox MV2 fallback
+                await (browser.tabs as any).executeScript(tab.id, { file: "content-scripts/tts.js" })
+              }
+            } catch (e) {
+              // ignore injection errors; the script may already be present
+            }
+            try {
+              await browser.tabs.sendMessage(tab.id, {
+                type: "kokoro_tts_speak",
+                from: "background",
+                text: info.selectionText
+              })
+            } catch (e) {
+              console.error("Failed to send kokoro_tts_speak after inject:", e)
+            }
+          }
+        }
+      } else if (info.menuItemId === "kokoro-stop") {
+        if (tab?.id) {
+          try {
+            await browser.tabs.sendMessage(tab.id, {
+              type: "kokoro_tts_stop",
+              from: "background"
+            })
+          } catch (e) {
+            console.error("Failed to send kokoro_tts_stop:", e)
+          }
+        }
       }
     })
 

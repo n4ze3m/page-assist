@@ -323,7 +323,13 @@ export const getDataFromCurrentTab = async () => {
         })
 
         if (data.length > 0) {
-          resolve(data[0].result)
+          resolve(
+            data[0].result as {
+              url: string
+              content: string
+              type: string
+            }
+          )
         }
       })
     } else {
@@ -338,7 +344,13 @@ export const getDataFromCurrentTab = async () => {
             })
 
             if (data.length > 0) {
-              resolve(data[0].result)
+              resolve(
+                data[0].result as {
+                  url: string
+                  content: string
+                  type: string
+                }
+              )
             }
           } catch (e) {
             console.error("error", e)

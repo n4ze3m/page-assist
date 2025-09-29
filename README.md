@@ -41,6 +41,8 @@ Checkout the Demo (v1.0.0):
 
 - **Chat With Webpage**: You can chat with the webpage and ask questions about the content.
 
+- **Text-to-Speech (Kokoro)**: Select text and use the context menu "Speak selection (Kokoro)" to hear it. Use "Stop speaking (Kokoro)" to stop playback. Works on Chrome, Edge, and Firefox. First run may download the model and take a moment.
+
 want more features? Create an issue and let me know.
 
 ### Manual Installation
@@ -103,6 +105,15 @@ Default Keyboard Shortcut: `Ctrl+Shift+L`
 
 Note: You can change the keyboard shortcuts from the extension settings on the Chrome Extension Management page.
 
+### Kokoro TTS
+
+- Select text on a page → right-click → "Speak selection (Kokoro)".
+- To stop playback, choose "Stop speaking (Kokoro)".
+
+Notes:
+- On first use, the TTS model is downloaded; playback may take a moment.
+- Firefox performance can improve with WebGPU (optional). In `about:config`, set `dom.webgpu.enabled = true` and restart. The extension auto-falls back to WASM if WebGPU is unavailable.
+
 ## Keyboard Shortcuts
 
 Page Assist supports various keyboard shortcuts to enhance your productivity:
@@ -133,6 +144,19 @@ You can run the extension in development mode to make changes and test them.
 
 ```bash
 bun dev
+```
+
+For browser-specific development:
+
+```bash
+# Auto-loads in Firefox
+bun run dev:firefox
+
+# Auto-loads in Microsoft Edge
+bun run dev:edge
+
+# Using npm instead of Bun
+npm run dev:firefox
 ```
 
 This will start a development server and watch for changes in the source files. You can load the extension in your browser and test the changes.
