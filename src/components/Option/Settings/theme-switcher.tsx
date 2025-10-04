@@ -13,7 +13,8 @@ export function ThemeSwitcher() {
       style={{ width: 160 }}
     >
       <Option value="default">Default</Option>
-      <Option value="moss">Mossy Green</Option>
+      <Option value="moss">Moss</Option>
+      <Option value="commodore">Commodore</Option>
     </Select>
   )
 }

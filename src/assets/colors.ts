@@ -1,28 +1,28 @@
 export const themes = {
   moss: {
     primary: {
-      50:  "#f7fdf5",  // misty light
+      50:  "#f7fdf5",  
       100: "#e7f4e0",
       200: "#cfeac2",
       300: "#a9d69e",
       400: "#7bbf74",
-      500: "#5a9f59",  // true mossy green
+      500: "#5a9f59",  
       600: "#4b874d",
       700: "#3b6e3f",
       800: "#2f5633",
-      900: "#1f3b22",  // deep moss
+      900: "#1f3b22", 
     },
     surface: {
-      50:  "#f8fbf7",  // very light moss
-      100: "#eaf3e6",  // pale greenish gray
-      200: "#d6e4d1",  // soft sage
-      300: "#c0d3bb",  // muted green
-      400: "#a3bfa1",  // earthy gray-green
-      500: "#7e9c7d",  // mossy neutral
-      600: "#5f7c5f",  // muted olive
-      700: "#4a5f48",  // deep moss surface
-      800: "#344233",  // shadowed moss
-      900: "#212a1f",  // dark earthy
+      50:  "#f8fbf7",
+      100: "#eaf3e6",
+      200: "#d6e4d1",
+      300: "#c0d3bb",
+      400: "#a3bfa1",
+      500: "#7e9c7d",
+      600: "#5f7c5f",
+      700: "#4a5f48",
+      800: "#344233",
+      900: "#212a1f",
     }
   },
   default: {
@@ -39,7 +39,7 @@ export const themes = {
       900: "#0c4a6e",
     },
     surface: {
-      50:  '#fafafa', // near white
+      50:  '#fafafa', 
       100: '#f4f4f5',
       200: '#e4e4e7',
       300: '#d4d4d8',
@@ -48,7 +48,33 @@ export const themes = {
       600: '#52525b',
       700: '#3f3f46',
       800: '#27272a',
-      900: '#18181b', // near black
+      900: '#18181b', 
+    }
+  },
+  commodore: {
+    primary: {
+      50:  "#fff7e6",  
+      100: "#ffe4b3",  
+      200: "#ffd18a",  
+      300: "#ffb84d",  
+      400: "#ff9900",  
+      500: "#cc7a00",  
+      600: "#a6641a",  
+      700: "#7a4a1e",  
+      800: "#52331a",  
+      900: "#2e1a0f"
+    },
+    surface: {
+      50:  "#fffaf5",  
+      100: "#fff2e0",  
+      200: "#ffe2c2",  
+      300: "#ffd1a3",  
+      400: "#efa356",  
+      500: "#c99056",  
+      600: "#a3763d",  
+      700: "#7c5523",  
+      800: "#56370f",  
+      900: "#251801",  
     }
   }
 }
