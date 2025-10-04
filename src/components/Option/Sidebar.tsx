@@ -321,7 +321,7 @@ export const Sidebar = ({
                 </button>
               ) : null
             }
-            className="w-full rounded-md border border-gray-300 dark:border-gray-700 dark:bg-[#232222]"
+            className="w-full rounded-md border border-gray-300 dark:border-gray-700 dark:bg-surface-800"
           />
         </div>
       </div>
