@@ -369,20 +369,23 @@ export const GeneralSettings = () => {
           {t("generalSettings.settings.darkMode.label")}
         </span>
 
-        <ThemeSwitcher></ThemeSwitcher>
+        
 
-        <button
-          onClick={toggleDarkMode}
-          className={`inline-flex mt-4 items-center rounded-md border border-transparent bg-surface-900 px-2 py-2 text-sm font-medium leading-4 text-white shadow-sm  dark:bg-surface-50 dark:text-gray-800 disabled:opacity-50 `}>
-          {mode === "dark" ? (
-            <SunIcon className="w-4 h-4 mr-2" />
-          ) : (
-            <MoonIcon className="w-4 h-4 mr-2" />
-          )}
-          {mode === "dark"
-            ? t("generalSettings.settings.darkMode.options.light")
-            : t("generalSettings.settings.darkMode.options.dark")}
-        </button>
+        <div className="flex flex-row items-center">
+          <ThemeSwitcher />
+          <button
+            onClick={toggleDarkMode}
+            className={`ml-2 inline-flex items-center rounded-md border border-transparent bg-surface-900 px-2 py-2 text-sm font-medium leading-4 text-white shadow-sm  dark:bg-surface-50 dark:text-gray-800 disabled:opacity-50 `}>
+            {mode === "dark" ? (
+              <SunIcon className="w-4 h-4 mr-2" />
+            ) : (
+              <MoonIcon className="w-4 h-4 mr-2" />
+            )}
+            {mode === "dark"
+              ? t("generalSettings.settings.darkMode.options.light")
+              : t("generalSettings.settings.darkMode.options.dark")}
+          </button>
+        </div>
       </div>
       <SearchModeSettings />
       <SSTSettings />

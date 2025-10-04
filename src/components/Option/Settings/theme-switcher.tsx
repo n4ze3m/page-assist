@@ -3,7 +3,7 @@ import { useTheme } from "@/hooks/useTheme"
 
 const { Option } = Select
 
-export function ThemeSwitcher() {
+export function ThemeSwitcher({ className }: { className?: string }) {
   const { themeName, setTheme } = useTheme()
 
   return (
@@ -11,6 +11,7 @@ export function ThemeSwitcher() {
       value={themeName}
       onChange={(value) => setTheme(value)}
       style={{ width: 160 }}
+      className={`${className}`}
     >
       <Option value="default">Default</Option>
       <Option value="moss">Moss</Option>
