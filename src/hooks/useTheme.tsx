@@ -1,18 +1,21 @@
-import { useEffect, useState } from "react"
-import { themes, Theme } from "@/assets/colors"
 
-export function useTheme(defaultTheme: Theme = "sky") {
-  const [themeName, setThemeName] = useState<Theme>(defaultTheme)
+import { useEffect } from "react"
+import { themes, Theme } from "@/assets/colors"
+import { useThemeStore } from "@/store/theme"
+
+export function useTheme() {
+  const themeName = useThemeStore((state) => state.themeName)
+  const setTheme = useThemeStore((state) => state.setTheme)
 
   useEffect(() => {
-    const themeObj = themes[themeName??"sky"];
+    const themeObj = themes[themeName ?? "sky"]
     Object.entries(themeObj.primary).forEach(([key, hex]) => {
       const rgb = hexToRgb(hex)
       document.documentElement.style.setProperty(`--primary-${key}`, rgb)
     })
   }, [themeName])
 
-  return { themeName, setTheme: setThemeName }
+  return { themeName, setTheme }
 }
 
 // Utility: Convert hex to R, G, B (no alpha)
