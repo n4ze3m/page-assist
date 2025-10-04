@@ -141,7 +141,7 @@ export const Playground = () => {
     <div
       ref={drop}
       data-is-dragging={dropState === "dragging"}
-      className="relative flex h-full flex-col items-center bg-surface-50 dark:bg-surface-900 data-[is-dragging=true]:bg-surface-100 data-[is-dragging=true]:dark:bg-surface-800"
+      className="relative flex h-full flex-col items-center bg-surface-100 dark:bg-surface-900 data-[is-dragging=true]:bg-surface-100 data-[is-dragging=true]:dark:bg-surface-800"
       style={
         chatBackgroundImage
           ? {

@@ -62,7 +62,7 @@ export default function OptionLayout({
         {children}
         {/* </div> */}
         <Drawer
-        className="!bg-surface-900"
+        className="!bg-surface-100 dark:!bg-surface-900"
           title={
             <div className="flex items-center justify-between">
               {t("sidebarTitle")}

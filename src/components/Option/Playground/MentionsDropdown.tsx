@@ -100,7 +100,7 @@ export const MentionsDropdown: React.FC<MentionsDropdownProps> = ({
   return (
     <div
       ref={dropdownRef}
-      className="absolute z-50 bg-neutral-50 dark:bg-surface-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg max-h-80 overflow-y-auto w-80"
+      className="absolute z-50 bg-surface-50 dark:bg-surface-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg max-h-80 overflow-y-auto w-80"
       style={{
         top: position.top,
         left: position.left,

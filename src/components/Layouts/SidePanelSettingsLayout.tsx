@@ -20,7 +20,7 @@ export const SidePanelSettingsLayout = ({
   const isRTL = i18n?.dir() === "rtl"
 
   return (
-    <div className="flex w-full flex-col min-h-screen bg-neutral-50 dark:bg-surface-900">
+    <div className="flex w-full flex-col min-h-screen bg-surface-50 dark:bg-surface-900">
       {/* Mobile-optimized Header */}
       <header className="sticky top-0 z-20 bg-surface-50 dark:bg-surface-900 border-b border-gray-200 dark:border-gray-700 shadow-sm">
         <div className="flex items-center justify-between px-4 py-3 sm:px-6">
