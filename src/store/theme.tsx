@@ -7,6 +7,6 @@ interface ThemeState {
 }
 
 export const useThemeStore = create<ThemeState>((set) => ({
-  themeName: "sky",
+  themeName: "default",
   setTheme: (theme) => set({ themeName: theme })
 }))

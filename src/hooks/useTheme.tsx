@@ -8,7 +8,7 @@ export function useTheme() {
   const setTheme = useThemeStore((state) => state.setTheme)
 
   useEffect(() => {
-    const themeObj = themes[themeName ?? "sky"]
+    const themeObj = themes[themeName ?? "default"]
     Object.entries(themeObj.primary).forEach(([key, hex]) => {
       const rgb = hexToRgb(hex)
       document.documentElement.style.setProperty(`--primary-${key}`, rgb)

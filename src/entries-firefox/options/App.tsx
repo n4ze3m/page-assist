@@ -10,7 +10,7 @@ import "~/i18n"
 import { useTranslation } from "react-i18next"
 import { PageAssistProvider } from "@/components/Common/PageAssistProvider"
 import { FontSizeProvider } from "@/context/FontSizeProvider"
-import { surface, themes } from "@/assets/colors"
+import { themes } from "@/assets/colors"
 import { useTheme } from "@/hooks/useTheme"
 import React from "react"
 
@@ -30,7 +30,7 @@ function IndexOption() {
 
   const theme = React.useMemo(() => {
     if (!themes[themeName]) {
-      return themes['sky'];
+      return themes['default'];
     }
     return themes[themeName];
   }, [themeName]);

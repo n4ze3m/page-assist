@@ -12,7 +12,7 @@ export function ThemeSwitcher() {
       onChange={(value) => setTheme(value)}
       style={{ width: 160 }}
     >
-      <Option value="sky">Sky</Option>
+      <Option value="default">Default</Option>
       <Option value="moss">Mossy Green</Option>
     </Select>
   )
