@@ -11,7 +11,7 @@ export const DocumentCard: React.FC<Props> = ({ name, onRemove, loading }) => {
   return (
     <button
       disabled={loading}
-      className="relative group p-1.5 w-60 flex items-center gap-1 bg-white dark:bg-[#211e1e] border border-gray-200 dark:border-gray-700 rounded-2xl text-left"
+      className="relative group p-1.5 w-60 flex items-center gap-1 bg-surface-50 dark:bg-[#211e1e] border border-gray-200 dark:border-gray-700 rounded-2xl text-left"
       type="button">
       <div className="p-3 bg-black/20 dark:bg-surface-800 text-white rounded-xl">
         {loading ? <Spin size="small" /> : <FileIcon className="w-6 h-6" />}
@@ -24,7 +24,7 @@ export const DocumentCard: React.FC<Props> = ({ name, onRemove, loading }) => {
       <div className="absolute -top-1 -right-1">
         <button
           onClick={onRemove}
-          className="bg-white dark:bg-surface-800 text-black dark:text-gray-200 border border-gray-50 dark:border-gray-700 rounded-full group-hover:visible invisible transition"
+          className="bg-surface-50 dark:bg-surface-800 text-black dark:text-gray-200 border border-gray-50 dark:border-gray-700 rounded-full group-hover:visible invisible transition"
           type="button">
           <XIcon className="w-3 h-3" />
         </button>

@@ -32,7 +32,7 @@ export default defineContentScript({
       
       if (!copyButton && !modal.querySelector(".pageassist-download-button")) {
         const downloadButton = document.createElement("button")
-        downloadButton.classList.add("pageassist-download-button", "focus:outline-hidden", "inline-flex", "cursor-pointer", "items-center", "text-sm", "bg-white", "shadow-xs", "rounded-md", "border", "px-2", "py-1", "text-gray-600")
+        downloadButton.classList.add("pageassist-download-button", "focus:outline-hidden", "inline-flex", "cursor-pointer", "items-center", "text-sm", "bg-surface-50", "shadow-xs", "rounded-md", "border", "px-2", "py-1", "text-gray-600")
         downloadButton.title = "Pull from Page Assist"
         downloadButton.innerHTML = `${downloadSVG} <span class="ml-1.5">Pull from Page Assist</span>`
         

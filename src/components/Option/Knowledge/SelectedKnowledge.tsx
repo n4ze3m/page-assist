@@ -25,7 +25,7 @@ export const SelectedKnowledge = () => {
         <div>
           <button
             onClick={() => setSelectedKnowledge(null)}
-            className="flex items-center justify-center   bg-white  dark:bg-surface-900 p-1 rounded-full hover:bg-surface-100 dark:hover:bg-surface-800 text-black dark:text-gray-100">
+            className="flex items-center justify-center   bg-surface-50  dark:bg-surface-900 p-1 rounded-full hover:bg-surface-100 dark:hover:bg-surface-800 text-black dark:text-gray-100">
             <XIcon className="h-3 w-3" />
           </button>
         </div>

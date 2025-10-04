@@ -115,7 +115,7 @@ export const TableBlock: FC<TableProps> = ({ children }) => {
 
   return (
     <div className="not-prose">
-      <div className="my-4 bg-white dark:bg-surface-900 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+      <div className="my-4 bg-surface-50 dark:bg-surface-900 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
         <div className="flex flex-row px-4 py-2 rounded-t-xl bg-surface-50 dark:bg-surface-900 border-b border-gray-200 dark:border-gray-700">
           <div className="flex items-center gap-2 flex-1">
             <TableIcon className="size-4 text-gray-600 dark:text-gray-300" />

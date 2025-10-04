@@ -246,7 +246,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                 onClick={() => {
                   form.setFieldValue("image", "")
                 }}
-                className="absolute top-1 left-1 flex items-center justify-center z-10 bg-white dark:bg-surface-700 p-0.5 rounded-full hover:bg-surface-100 dark:hover:bg-[#404040] text-black dark:text-gray-100">
+                className="absolute top-1 left-1 flex items-center justify-center z-10 bg-surface-50 dark:bg-surface-700 p-0.5 rounded-full hover:bg-surface-100 dark:hover:bg-[#404040] text-black dark:text-gray-100">
                 <X className="h-3 w-3" />
               </button>{" "}
               <Image

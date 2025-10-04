@@ -179,11 +179,11 @@ export const PageAssistSelect: React.FC<SelectProps> = ({
     transition-all duration-200
     dark:text-white
     dark:border-[#353534]
-    bg-white dark:bg-surface-900
+    bg-surface-50 dark:bg-surface-900
   `
 
   const defaultDropdownClass = `
-    absolute z-50 w-full mt-1 bg-white dark:bg-[#1e1e1f] dark:text-white rounded-lg shadow-lg 
+    absolute z-50 w-full mt-1 bg-surface-50 dark:bg-[#1e1e1f] dark:text-white rounded-lg shadow-lg 
     border border-gray-200 dark:border-[#353534]
   `
 

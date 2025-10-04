@@ -136,7 +136,7 @@ export const SettingsBody = () => {
 
   return (
     <div className="flex flex-col gap-4 max-w-2xl mx-auto lg:max-w-3xl xl:max-w-4xl 2xl:max-w-5xl">
-      <div className="border border-gray-300 dark:border-gray-700 rounded p-4 bg-white dark:bg-surface-900">
+      <div className="border border-gray-300 dark:border-gray-700 rounded p-4 bg-surface-50 dark:bg-surface-900">
         <h2 className="text-md font-semibold dark:text-white">
           {t("managePrompts.title")}
         </h2>
@@ -206,10 +206,10 @@ export const SettingsBody = () => {
           </div>
         )}
       </div>
-      <div className="border border-gray-300 dark:border-gray-700 rounded p-4 bg-white dark:bg-surface-900">
+      <div className="border border-gray-300 dark:border-gray-700 rounded p-4 bg-surface-50 dark:bg-surface-900">
         <SidepanelRag hideBorder />
       </div>
-      <div className="border flex flex-col gap-4 border-gray-300 dark:border-gray-700 rounded p-4 bg-white dark:bg-surface-900">
+      <div className="border flex flex-col gap-4 border-gray-300 dark:border-gray-700 rounded p-4 bg-surface-50 dark:bg-surface-900">
         <h2 className="text-md font-semibold dark:text-white">
           {t("ollamaSettings.heading")}
         </h2>
@@ -259,7 +259,7 @@ export const SettingsBody = () => {
           />
         </div>
       </div>
-      <div className="border border-gray-300 dark:border-gray-700 rounded p-4 bg-white dark:bg-surface-900">
+      <div className="border border-gray-300 dark:border-gray-700 rounded p-4 bg-surface-50 dark:bg-surface-900">
         <h2 className="text-md mb-4 font-semibold dark:text-white">
           {t("rag.ragSettings.label")}
         </h2>
@@ -338,7 +338,7 @@ export const SettingsBody = () => {
         </Form>
       </div>
 
-      <div className="border space-y-3 w-full border-gray-300 dark:border-gray-700 rounded p-4 bg-white dark:bg-surface-900">
+      <div className="border space-y-3 w-full border-gray-300 dark:border-gray-700 rounded p-4 bg-surface-50 dark:bg-surface-900">
         <h2 className="text-base mb-4 font-semibold leading-7 text-gray-900 dark:text-white">
           {t("generalSettings.title")}
         </h2>
@@ -414,13 +414,13 @@ export const SettingsBody = () => {
           />
         </div>
       </div>
-      <div className="border border-gray-300 dark:border-gray-700 rounded p-4 bg-white dark:bg-surface-900">
+      <div className="border border-gray-300 dark:border-gray-700 rounded p-4 bg-surface-50 dark:bg-surface-900">
         <SSTSettings hideBorder />
       </div>
-      <div className="border border-gray-300 dark:border-gray-700 rounded p-4 bg-white dark:bg-surface-900">
+      <div className="border border-gray-300 dark:border-gray-700 rounded p-4 bg-surface-50 dark:bg-surface-900">
         <TTSModeSettings hideBorder />
       </div>
-      <div className="border border-gray-300 dark:border-gray-700 rounded p-4 bg-white dark:bg-surface-900">
+      <div className="border border-gray-300 dark:border-gray-700 rounded p-4 bg-surface-50 dark:bg-surface-900">
         <h2 className="text-md mb-4 font-semibold dark:text-white">
           {t("generalSettings.settings.darkMode.label")}{" "}
         </h2>

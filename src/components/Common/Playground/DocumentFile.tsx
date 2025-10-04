@@ -11,9 +11,9 @@ interface DocumentFileProps {
 export const DocumentFile: React.FC<DocumentFileProps> = ({ document }) => {
   return (
     <button
-      className="relative group p-1.5 w-80 flex items-center gap-1 bg-white dark:bg-surface-900 border border-gray-200 dark:border-white/5 rounded-2xl text-left"
+      className="relative group p-1.5 w-80 flex items-center gap-1 bg-surface-50 dark:bg-surface-900 border border-gray-200 dark:border-white/5 rounded-2xl text-left"
       type="button">
-      <div className="p-3 bg-black/20 dark:bg-white/10 text-white rounded-xl">
+      <div className="p-3 bg-black/20 dark:bg-surface-50/10 text-white rounded-xl">
         <FileIcon className="size-5" />
       </div>
       <div className="flex flex-col justify-center -space-y-0.5 px-2.5 w-full">

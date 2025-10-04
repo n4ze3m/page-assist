@@ -220,7 +220,7 @@ export const CodeBlock: FC<Props> = ({ language, value }) => {
             </SyntaxHighlighter>
           )}
           {showPreview && isPreviewable && (
-            <div className="w-full h-[420px] bg-white rounded-b-xl overflow-hidden border-t border-gray-800">
+            <div className="w-full h-[420px] bg-surface-50 rounded-b-xl overflow-hidden border-t border-gray-800">
               <iframe
                 title="Preview"
                 srcDoc={buildPreviewDoc()}

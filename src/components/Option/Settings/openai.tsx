@@ -153,7 +153,7 @@ export const OpenAIApp = () => {
                   setOpen(true)
                   form.resetFields()
                 }}
-                className="inline-flex items-center justify-center rounded-md border border-transparent bg-black px-3 py-2 text-sm font-medium leading-4 text-white shadow-sm hover:bg-surface-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-white dark:text-gray-800 dark:hover:bg-surface-100 dark:focus:ring-gray-500 dark:focus:ring-offset-gray-100 disabled:opacity-50 w-full sm:w-auto">
+                className="inline-flex items-center justify-center rounded-md border border-transparent bg-black px-3 py-2 text-sm font-medium leading-4 text-white shadow-sm hover:bg-surface-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-surface-50 dark:text-gray-800 dark:hover:bg-surface-100 dark:focus:ring-gray-500 dark:focus:ring-offset-gray-100 disabled:opacity-50 w-full sm:w-auto">
                 {t("addBtn")}
               </button>
             </div>
@@ -354,7 +354,7 @@ export const OpenAIApp = () => {
                     </h3>
                     <button
                       type="button"
-                      className="dark:bg-white dark:text-black text-white bg-black px-2 py-1 text-xs rounded-md"
+                      className="dark:bg-surface-50 dark:text-black text-white bg-black px-2 py-1 text-xs rounded-md"
                       onClick={() => {
                         add()
                       }}>
@@ -415,7 +415,7 @@ export const OpenAIApp = () => {
             )}
             <button
               type="submit"
-              className="inline-flex justify-center w-full text-center mt-4 items-center rounded-md border border-transparent bg-black px-2 py-2 text-sm font-medium leading-4 text-white shadow-sm hover:bg-surface-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-white dark:text-gray-800 dark:hover:bg-surface-100 dark:focus:ring-gray-500 dark:focus:ring-offset-gray-100 disabled:opacity-50">
+              className="inline-flex justify-center w-full text-center mt-4 items-center rounded-md border border-transparent bg-black px-2 py-2 text-sm font-medium leading-4 text-white shadow-sm hover:bg-surface-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-surface-50 dark:text-gray-800 dark:hover:bg-surface-100 dark:focus:ring-gray-500 dark:focus:ring-offset-gray-100 disabled:opacity-50">
               {editingConfig ? t("modal.update") : t("modal.submit")}
             </button>
           </Form>

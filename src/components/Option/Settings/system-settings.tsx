@@ -134,7 +134,7 @@ export const SystemSettings = () => {
         <div className="flex flex-row items-center gap-3 justify-center sm:justify-end">
           <button
             onClick={decrease}
-            className="bg-black hover:bg-surface-800 dark:bg-white dark:hover:bg-surface-200 text-white dark:text-black px-3 py-1.5 rounded-lg transition-colors duration-200 font-medium text-sm">
+            className="bg-black hover:bg-surface-800 dark:bg-surface-50 dark:hover:bg-surface-200 text-white dark:text-black px-3 py-1.5 rounded-lg transition-colors duration-200 font-medium text-sm">
             A-
           </button>
           <span className="min-w-[2rem] text-center font-medium text-black dark:text-white">
@@ -142,7 +142,7 @@ export const SystemSettings = () => {
           </span>
           <button
             onClick={increase}
-            className="bg-black hover:bg-surface-800 dark:bg-white dark:hover:bg-surface-200 text-white dark:text-black px-3 py-1.5 rounded-lg transition-colors duration-200 font-medium text-sm">
+            className="bg-black hover:bg-surface-800 dark:bg-surface-50 dark:hover:bg-surface-200 text-white dark:text-black px-3 py-1.5 rounded-lg transition-colors duration-200 font-medium text-sm">
             A+
           </button>{" "}
         </div>
@@ -208,7 +208,7 @@ export const SystemSettings = () => {
               syncFirefoxData.mutate()
             }}
             disabled={syncFirefoxData.isPending}
-            className="bg-surface-800 dark:bg-white text-white dark:text-gray-900 px-4 py-2 rounded-md cursor-pointer w-full sm:w-auto">
+            className="bg-surface-800 dark:bg-surface-50 text-white dark:text-gray-900 px-4 py-2 rounded-md cursor-pointer w-full sm:w-auto">
             {syncFirefoxData.isPending ? (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             ) : (
@@ -250,7 +250,7 @@ export const SystemSettings = () => {
           ) : null}
           <label
             htmlFor="background-image-upload"
-            className="bg-surface-800 inline-flex gap-2 dark:bg-white text-white dark:text-gray-900 px-4 py-2 rounded-md cursor-pointer">
+            className="bg-surface-800 inline-flex gap-2 dark:bg-surface-50 text-white dark:text-gray-900 px-4 py-2 rounded-md cursor-pointer">
             <Upload className="size-4" />
             {t("knowledge:form.uploadFile.label")}
           </label>
@@ -270,7 +270,7 @@ export const SystemSettings = () => {
         </span>
         <button
           onClick={exportPageAssistData}
-          className="bg-surface-800 dark:bg-white text-white dark:text-gray-900 px-4 py-2 rounded-md cursor-pointer w-full sm:w-auto">
+          className="bg-surface-800 dark:bg-surface-50 text-white dark:text-gray-900 px-4 py-2 rounded-md cursor-pointer w-full sm:w-auto">
           {t("generalSettings.system.export.button")}
         </button>
       </div>
@@ -280,7 +280,7 @@ export const SystemSettings = () => {
         </span>
         <label
           htmlFor="import"
-          className="bg-surface-800 dark:bg-white text-white dark:text-gray-900 px-4 py-2 rounded-md cursor-pointer flex items-center justify-center w-full sm:w-auto">
+          className="bg-surface-800 dark:bg-surface-50 text-white dark:text-gray-900 px-4 py-2 rounded-md cursor-pointer flex items-center justify-center w-full sm:w-auto">
           {importDataMutation.isPending ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />

@@ -77,7 +77,7 @@ export const ChromeApp = () => {
                   onClick={() => setShowWarningModal(true)}
                   disabled={isDownloading}
                   className="px-4 py-2 rounded-md font-medium transition-colors duration-200 
-                    dark:bg-white dark:text-black bg-black text-white hover:opacity-90 disabled:opacity-50">
+                    dark:bg-surface-50 dark:text-black bg-black text-white hover:opacity-90 disabled:opacity-50">
                   {isDownloading ? `${downloadProgress}%` : t("downloadModel")}
                 </button>
               </div>

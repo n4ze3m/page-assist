@@ -184,7 +184,7 @@ const SidepanelChat = () => {
           ref={drop}
           className={`relative flex h-full flex-col items-center ${
             dropState === "dragging" ? "bg-surface-100 dark:bg-surface-800" : ""
-          } bg-white dark:bg-surface-900`}
+          } bg-surface-50 dark:bg-surface-900`}
           style={
             chatBackgroundImage
               ? {
@@ -198,7 +198,7 @@ const SidepanelChat = () => {
           {/* Background overlay for opacity effect */}
           {chatBackgroundImage && (
             <div
-              className="absolute inset-0 bg-white dark:bg-surface-900"
+              className="absolute inset-0 bg-surface-50 dark:bg-surface-900"
               style={{ opacity: 0.9, pointerEvents: "none" }}
             />
           )}
@@ -214,7 +214,7 @@ const SidepanelChat = () => {
               <div className="fixed bottom-32 z-20 left-0 right-0 flex justify-center">
                 <button
                   onClick={() => autoScrollToBottom()}
-                  className="bg-surface-50 shadow border border-gray-200 dark:border-none dark:bg-white/20 p-1.5 rounded-full pointer-events-auto hover:bg-surface-100 dark:hover:bg-white/30 transition-colors">
+                  className="bg-surface-50 shadow border border-gray-200 dark:border-none dark:bg-surface-50/20 p-1.5 rounded-full pointer-events-auto hover:bg-surface-100 dark:hover:bg-surface-50/30 transition-colors">
                   <ChevronDown className="size-4 text-gray-600 dark:text-gray-300" />
                 </button>
               </div>
