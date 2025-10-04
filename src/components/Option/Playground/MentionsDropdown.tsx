@@ -100,7 +100,7 @@ export const MentionsDropdown: React.FC<MentionsDropdownProps> = ({
   return (
     <div
       ref={dropdownRef}
-      className="absolute z-50 bg-neutral-50 dark:bg-[#2a2a2a] border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg max-h-80 overflow-y-auto w-80"
+      className="absolute z-50 bg-neutral-50 dark:bg-surface-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg max-h-80 overflow-y-auto w-80"
       style={{
         top: position.top,
         left: position.left,
@@ -132,9 +132,9 @@ export const MentionsDropdown: React.FC<MentionsDropdownProps> = ({
           <button
             key={tab.id}
             onClick={() => onSelectTab(tab)}
-            className={`w-full text-left p-3 hover:bg-gray-100 dark:hover:bg-gray-600 flex items-center gap-3 transition-colors ${
+            className={`w-full text-left p-3 hover:bg-surface-100 dark:hover:bg-surface-600 flex items-center gap-3 transition-colors ${
               index === selectedIndex
-                ? "bg-gray-100 dark:bg-gray-600 border-r-2 border-blue-500"
+                ? "bg-surface-100 dark:bg-surface-600 border-r-2 border-blue-500"
                 : ""
             }`}>
             <div className="flex-shrink-0">

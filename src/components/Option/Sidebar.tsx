@@ -388,8 +388,8 @@ export const Sidebar = ({
                     key={chat.id}
                     className={`flex py-2 px-2 items-center gap-3 relative rounded-md truncate hover:pr-4 group transition-opacity duration-300 ease-in-out border ${
                       historyId === chat.id
-                        ? "bg-gray-200 dark:bg-[#454242] border-gray-400 dark:border-gray-600 text-gray-900 dark:text-gray-100"
-                        : "bg-gray-50 dark:bg-[#242424] dark:text-gray-100 text-gray-800 border-gray-300 dark:border-[#404040] hover:bg-gray-200 dark:hover:bg-[#2a2a2a]"
+                        ? "bg-surface-200 dark:bg-[#454242] border-gray-400 dark:border-gray-600 text-gray-900 dark:text-gray-100"
+                        : "bg-surface-50 dark:bg-[#242424] dark:text-gray-100 text-gray-800 border-gray-300 dark:border-[#404040] hover:bg-surface-200 dark:hover:bg-surface-800"
                     }`}>
                     {chat?.message_source === "copilot" && (
                       <BotIcon className="size-3 text-gray-500 dark:text-gray-400" />

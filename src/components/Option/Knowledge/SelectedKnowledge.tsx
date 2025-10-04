@@ -13,7 +13,7 @@ export const SelectedKnowledge = () => {
       <span className="text-lg font-thin text-zinc-300 dark:text-zinc-600">
         {"/"}
       </span>
-      <div className="border flex  justify-between items-center rounded-full px-2 py-1 gap-2 bg-gray-100 dark:bg-[#2a2a2a] dark:border-[#404040]">
+      <div className="border flex  justify-between items-center rounded-full px-2 py-1 gap-2 bg-surface-100 dark:bg-surface-800 dark:border-[#404040]">
         <Tooltip title={knowledge.title}>
           <div className="inline-flex items-center gap-2 max-w-[150px]">
             <Blocks className="h-5  w-5 text-gray-400 flex-shrink-0" />
@@ -25,7 +25,7 @@ export const SelectedKnowledge = () => {
         <div>
           <button
             onClick={() => setSelectedKnowledge(null)}
-            className="flex items-center justify-center   bg-white  dark:bg-[#1a1a1a] p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 text-black dark:text-gray-100">
+            className="flex items-center justify-center   bg-white  dark:bg-surface-900 p-1 rounded-full hover:bg-surface-100 dark:hover:bg-surface-800 text-black dark:text-gray-100">
             <XIcon className="h-3 w-3" />
           </button>
         </div>

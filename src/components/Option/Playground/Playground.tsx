@@ -141,7 +141,7 @@ export const Playground = () => {
     <div
       ref={drop}
       data-is-dragging={dropState === "dragging"}
-      className="relative flex h-full flex-col items-center bg-white dark:bg-[#1a1a1a] data-[is-dragging=true]:bg-gray-100 data-[is-dragging=true]:dark:bg-gray-800"
+      className="relative flex h-full flex-col items-center bg-white dark:bg-surface-900 data-[is-dragging=true]:bg-surface-100 data-[is-dragging=true]:dark:bg-surface-800"
       style={
         chatBackgroundImage
           ? {
@@ -155,7 +155,7 @@ export const Playground = () => {
       {/* Background overlay for opacity effect */}
       {chatBackgroundImage && (
         <div
-          className="absolute inset-0 bg-white dark:bg-[#1a1a1a]"
+          className="absolute inset-0 bg-white dark:bg-surface-900"
           style={{ opacity: 0.9, pointerEvents: "none" }}
         />
       )}
@@ -170,7 +170,7 @@ export const Playground = () => {
           <div className="absolute bottom-full mb-2 z-10 left-0 right-0 flex justify-center pointer-events-none">
             <button
               onClick={() => autoScrollToBottom()}
-              className="bg-gray-50 shadow border border-gray-200 dark:border-none dark:bg-white/20 p-1.5 rounded-full pointer-events-auto hover:bg-gray-100 dark:hover:bg-white/30 transition-colors">
+              className="bg-surface-50 shadow border border-gray-200 dark:border-none dark:bg-white/20 p-1.5 rounded-full pointer-events-auto hover:bg-surface-100 dark:hover:bg-white/30 transition-colors">
               <ChevronDown className="size-4 text-gray-600 dark:text-gray-300" />
             </button>
           </div>

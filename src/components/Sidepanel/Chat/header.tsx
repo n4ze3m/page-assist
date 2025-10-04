@@ -69,7 +69,7 @@ export const SidepanelHeader = ({
   return (
     <div
       data-istemporary-chat={temporaryChat}
-      className=" px-3 justify-between bg-white dark:bg-[#1a1a1a] border-b border-gray-300 dark:border-gray-700 py-4 items-center absolute top-0 z-10 flex h-14 w-full data-[istemporary-chat='true']:bg-gray-200 data-[istemporary-chat='true']:dark:bg-black">
+      className=" px-3 justify-between bg-white dark:bg-surface-900 border-b border-gray-300 dark:border-gray-700 py-4 items-center absolute top-0 z-10 flex h-14 w-full data-[istemporary-chat='true']:bg-surface-200 data-[istemporary-chat='true']:dark:bg-black">
       <div className="focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-700 flex items-center dark:text-white">
         <img
           className="h-6 w-auto"
@@ -127,7 +127,7 @@ export const SidepanelHeader = ({
             }
           }}
           data-istemporary-chat={temporaryChat}
-          className="flex items-center text-gray-500 dark:text-gray-400 space-x-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-700 rounded-full p-1 data-[istemporary-chat='true']:bg-gray-300 data-[istemporary-chat='true']:dark:bg-gray-800">
+          className="flex items-center text-gray-500 dark:text-gray-400 space-x-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-700 rounded-full p-1 data-[istemporary-chat='true']:bg-surface-300 data-[istemporary-chat='true']:dark:bg-surface-800">
           <BsIncognito className="size-4 " />
         </button>
 

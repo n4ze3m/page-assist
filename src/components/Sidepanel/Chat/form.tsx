@@ -236,7 +236,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
         <div className="relative flex w-full flex-row justify-center gap-2 lg:w-4/5">
           <div
             data-istemporary-chat={temporaryChat}
-            className={` bg-neutral-50  dark:bg-[#262626] relative w-full max-w-[48rem] p-1 backdrop-blur-lg duration-100 border border-gray-300 rounded-t-xl  dark:border-[#404040] data-[istemporary-chat='true']:bg-gray-200 data-[istemporary-chat='true']:dark:bg-black`}>
+            className={` bg-neutral-50  dark:bg-surface-700 relative w-full max-w-[48rem] p-1 backdrop-blur-lg duration-100 border border-gray-300 rounded-t-xl  dark:border-[#404040] data-[istemporary-chat='true']:bg-surface-200 data-[istemporary-chat='true']:dark:bg-black`}>
             <div
               className={`border-b border-gray-200 dark:border-[#404040] relative ${
                 form.values.image.length === 0 ? "hidden" : "block"
@@ -246,7 +246,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                 onClick={() => {
                   form.setFieldValue("image", "")
                 }}
-                className="absolute top-1 left-1 flex items-center justify-center z-10 bg-white dark:bg-[#262626] p-0.5 rounded-full hover:bg-gray-100 dark:hover:bg-[#404040] text-black dark:text-gray-100">
+                className="absolute top-1 left-1 flex items-center justify-center z-10 bg-white dark:bg-surface-700 p-0.5 rounded-full hover:bg-surface-100 dark:hover:bg-[#404040] text-black dark:text-gray-100">
                 <X className="h-3 w-3" />
               </button>{" "}
               <Image

@@ -49,7 +49,7 @@ export const PlaygroundEmpty = () => {
   if (!checkOllamaStatus) {
     return (
       <div className="mx-auto sm:max-w-xl px-4 mt-10">
-        <div className="rounded-lg justify-center items-center flex flex-col border p-8 bg-gray-50 dark:bg-[#262626] dark:border-gray-600">
+        <div className="rounded-lg justify-center items-center flex flex-col border p-8 bg-surface-50 dark:bg-surface-700 dark:border-gray-600">
           <h1 className="text-sm  font-medium text-center text-gray-500 dark:text-gray-400 flex gap-3 items-center justify-center">
             <span >👋</span>
             <span className="text-gray-700 dark:text-gray-300">
@@ -62,7 +62,7 @@ export const PlaygroundEmpty = () => {
   }
   return (
     <div className="mx-auto sm:max-w-xl px-4 mt-10">
-      <div className="rounded-lg justify-center items-center flex flex-col border p-8 bg-gray-50 dark:bg-[#262626]  dark:border-gray-600">
+      <div className="rounded-lg justify-center items-center flex flex-col border p-8 bg-surface-50 dark:bg-surface-700  dark:border-gray-600">
         {(ollamaStatus === "pending" || isRefetching) && (
           <div className="inline-flex items-center space-x-2">
             <div className="w-3 h-3 bg-blue-500 rounded-full animate-pulse"></div>
@@ -89,7 +89,7 @@ export const PlaygroundEmpty = () => {
               </div>
 
               <input
-                className="bg-gray-100 dark:bg-[#262626] dark:text-gray-100 rounded-md px-4 py-2 mt-2 w-full"
+                className="bg-surface-100 dark:bg-surface-700 dark:text-gray-100 rounded-md px-4 py-2 mt-2 w-full"
                 type="url"
                 value={ollamaURL}
                 onChange={(e) => setOllamaURL(e.target.value)}
@@ -100,7 +100,7 @@ export const PlaygroundEmpty = () => {
                   saveOllamaURL(ollamaURL)
                   refetch()
                 }}
-                className="inline-flex mt-4 items-center rounded-md border border-transparent bg-black px-2 py-2 text-sm font-medium leading-4 text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-white dark:text-gray-800 dark:hover:bg-gray-100 dark:focus:ring-gray-500 dark:focus:ring-offset-gray-100 disabled:opacity-50 ">
+                className="inline-flex mt-4 items-center rounded-md border border-transparent bg-black px-2 py-2 text-sm font-medium leading-4 text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-white dark:text-gray-800 dark:hover:bg-surface-100 dark:focus:ring-gray-500 dark:focus:ring-offset-gray-100 disabled:opacity-50 ">
                 <RotateCcw className="h-4 w-4 mr-3" />
                 {t("common:retry")}
               </button>

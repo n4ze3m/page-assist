@@ -67,21 +67,21 @@ export const EditMessageForm = (props: Props) => {
                 props.onClose()
               }}
               aria-label={t("save")}
-              className="border border-gray-600 px-2 py-1.5 rounded-lg text-gray-700 dark:text-gray-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-gray-500 hover:bg-gray-100 dark:hover:bg-gray-900 text-sm">
+              className="border border-gray-600 px-2 py-1.5 rounded-lg text-gray-700 dark:text-gray-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-gray-500 hover:bg-surface-100 dark:hover:bg-surface-900 text-sm">
               {t("save")}
             </button>
           )}
           <div className="flex space-x-2">
             <button
               aria-label={t("save")}
-              className="bg-black px-2 py-1.5 rounded-lg text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-gray-500 hover:bg-gray-900 text-sm">
+              className="bg-black px-2 py-1.5 rounded-lg text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-gray-500 hover:bg-surface-900 text-sm">
               {props.isBot ? t("save") : t("saveAndSubmit")}
             </button>
 
             <button
               onClick={props.onClose}
               aria-label={t("cancel")}
-              className="border dark:border-gray-600 px-2 py-1.5 rounded-lg text-gray-700 dark:text-gray-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-gray-500 hover:bg-gray-100 dark:hover:bg-gray-900 text-sm">
+              className="border dark:border-gray-600 px-2 py-1.5 rounded-lg text-gray-700 dark:text-gray-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-gray-500 hover:bg-surface-100 dark:hover:bg-surface-900 text-sm">
               {t("cancel")}
             </button>
           </div>

@@ -179,7 +179,7 @@ export const PageAssistSelect: React.FC<SelectProps> = ({
     transition-all duration-200
     dark:text-white
     dark:border-[#353534]
-    bg-white dark:bg-[#1a1a1a]
+    bg-white dark:bg-surface-900
   `
 
   const defaultDropdownClass = `
@@ -189,7 +189,7 @@ export const PageAssistSelect: React.FC<SelectProps> = ({
 
   const defaultSearchClass = `
     w-full pl-8 pr-8 py-1.5 rounded-md
-    bg-gray-50 border border-gray-200
+    bg-surface-50 border border-gray-200
     focus:outline-none focus:ring-2 focus:ring-gray-100
     text-gray-900
     dark:bg-[#1e1e1f] dark:text-white
@@ -320,8 +320,8 @@ export const PageAssistSelect: React.FC<SelectProps> = ({
                   }}
                   className={`
                     ${defaultOptionClass}
-                    ${value === option.value ? "bg-blue-50 dark:bg-[#262627]" : "hover:bg-gray-100 dark:hover:bg-[#272728]"}
-                    ${activeIndex === index ? "bg-gray-100 dark:bg-[#272728]" : ""}
+                    ${value === option.value ? "bg-blue-50 dark:bg-[#262627]" : "hover:bg-surface-100 dark:hover:bg-[#272728]"}
+                    ${activeIndex === index ? "bg-surface-100 dark:bg-[#272728]" : ""}
                     ${optionClassName}`}>
                   {option.label}
                 </div>
