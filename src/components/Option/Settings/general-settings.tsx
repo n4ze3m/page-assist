@@ -10,6 +10,7 @@ import { SystemSettings } from "./system-settings"
 import { SSTSettings } from "./sst-settings"
 import { BetaTag } from "@/components/Common/Beta"
 import { getDefaultOcrLanguage, ocrLanguages } from "@/data/ocr-language"
+import { ThemeSwitcher } from "./theme-switcher"
 
 export const GeneralSettings = () => {
   const [userChatBubble, setUserChatBubble] = useStorage("userChatBubble", true)
@@ -367,6 +368,8 @@ export const GeneralSettings = () => {
         <span className="text-gray-700 dark:text-neutral-50 ">
           {t("generalSettings.settings.darkMode.label")}
         </span>
+
+        <ThemeSwitcher></ThemeSwitcher>
 
         <button
           onClick={toggleDarkMode}
