@@ -37,6 +37,18 @@ export const themes = {
       700: "#3b6e3f",
       800: "#2f5633",
       900: "#1f3b22",  // deep moss
+    },
+    surface: {
+      50:  "#f8fbf7",  // very light moss
+      100: "#eaf3e6",  // pale greenish gray
+      200: "#d6e4d1",  // soft sage
+      300: "#c0d3bb",  // muted green
+      400: "#a3bfa1",  // earthy gray-green
+      500: "#7e9c7d",  // mossy neutral
+      600: "#5f7c5f",  // muted olive
+      700: "#4a5f48",  // deep moss surface
+      800: "#344233",  // shadowed moss
+      900: "#212a1f",  // dark earthy
     }
   },
   sky: {
@@ -51,6 +63,18 @@ export const themes = {
       700: "#0369a1",
       800: "#075985",
       900: "#0c4a6e",
+    },
+    surface: {
+      50:  '#f8fafc',
+      100: '#f1f5f9',
+      200: '#e2e8f0',
+      300: '#cbd5e1',
+      400: '#94a3b8',
+      500: '#64748b',
+      600: '#475569',
+      700: '#334155',
+      800: '#1e293b',
+      900: '#0f172a',
     }
   }
 }

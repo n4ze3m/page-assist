@@ -44,7 +44,7 @@ function IndexOption() {
           token: {
             fontFamily: "Arimo",
             colorPrimary: theme.primary[500],
-            colorBgContainer: mode == "dark" ? surface[900] : surface[50]
+            colorBgContainer: mode == "dark" ? theme.surface[900] : theme.surface[50]
           }
         }}
         renderEmpty={() => (

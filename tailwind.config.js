@@ -20,10 +20,32 @@ module.exports = {
           800: "rgb(var(--primary-800) / <alpha-value>)",
           900: "rgb(var(--primary-900) / <alpha-value>)",
         },
-        surface
+        surface:{
+          50:  "rgb(var(--surface-50) / <alpha-value>)",
+          100: "rgb(var(--surface-100) / <alpha-value>)",
+          200: "rgb(var(--surface-200) / <alpha-value>)",
+          300: "rgb(var(--surface-300) / <alpha-value>)",
+          400: "rgb(var(--surface-400) / <alpha-value>)",
+          500: "rgb(var(--surface-500) / <alpha-value>)",
+          600: "rgb(var(--surface-600) / <alpha-value>)",
+          700: "rgb(var(--surface-700) / <alpha-value>)",
+          800: "rgb(var(--surface-800) / <alpha-value>)",
+          900: "rgb(var(--surface-900) / <alpha-value>)",
+        },
       },
       backgroundColor:{
-        surface
+        surface:{
+          50:  "rgb(var(--surface-50) / <alpha-value>)",
+          100: "rgb(var(--surface-100) / <alpha-value>)",
+          200: "rgb(var(--surface-200) / <alpha-value>)",
+          300: "rgb(var(--surface-300) / <alpha-value>)",
+          400: "rgb(var(--surface-400) / <alpha-value>)",
+          500: "rgb(var(--surface-500) / <alpha-value>)",
+          600: "rgb(var(--surface-600) / <alpha-value>)",
+          700: "rgb(var(--surface-700) / <alpha-value>)",
+          800: "rgb(var(--surface-800) / <alpha-value>)",
+          900: "rgb(var(--surface-900) / <alpha-value>)",
+        }
       },
       backgroundImage: {
         'bottom-mask-light': 'linear-gradient(0deg, transparent 0, #ffffff 160px)',

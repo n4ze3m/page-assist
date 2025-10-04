@@ -13,6 +13,10 @@ export function useTheme() {
       const rgb = hexToRgb(hex)
       document.documentElement.style.setProperty(`--primary-${key}`, rgb)
     })
+    Object.entries(themeObj.surface).forEach(([key, hex]) => {
+      const rgb = hexToRgb(hex)
+      document.documentElement.style.setProperty(`--surface-${key}`, rgb)
+    })
   }, [themeName])
 
   return { themeName, setTheme }
