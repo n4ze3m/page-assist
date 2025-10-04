@@ -8,16 +8,16 @@ export function useTheme() {
   const setTheme = useThemeStore((state) => state.setTheme)
 
   useEffect(() => {
-    const themeObj = themes[themeName ?? "default"]
+    const themeObj = themes[themeName ?? "default"];
     Object.entries(themeObj.primary).forEach(([key, hex]) => {
-      const rgb = hexToRgb(hex)
-      document.documentElement.style.setProperty(`--primary-${key}`, rgb)
-    })
+      const rgb = hexToRgb(hex);
+      document.documentElement.style.setProperty(`--primary-${key}`, rgb);
+    });
     Object.entries(themeObj.surface).forEach(([key, hex]) => {
-      const rgb = hexToRgb(hex)
-      document.documentElement.style.setProperty(`--surface-${key}`, rgb)
-    })
-  }, [themeName])
+      const rgb = hexToRgb(hex);
+      document.documentElement.style.setProperty(`--surface-${key}`, rgb);
+    });
+  }, [themeName]);
 
   return { themeName, setTheme }
 }
