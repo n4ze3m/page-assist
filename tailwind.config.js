@@ -8,7 +8,8 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary
+        primary,
+        surface
       },
       backgroundColor:{
         surface
