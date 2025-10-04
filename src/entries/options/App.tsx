@@ -11,6 +11,7 @@ import { useTranslation } from "react-i18next"
 import { PageAssistProvider } from "@/components/Common/PageAssistProvider"
 import { FontSizeProvider } from "@/context/FontSizeProvider"
 import { runAllMigrations } from "@/db/dexie/migration"
+import { surface, primary } from "@/assets/colors"
 
 function IndexOption() {
   const { mode } = useDarkMode()
@@ -32,7 +33,9 @@ function IndexOption() {
           algorithm:
             mode === "dark" ? theme.darkAlgorithm : theme.defaultAlgorithm,
           token: {
-            fontFamily: "Arimo"
+            fontFamily: "Arimo",
+            colorPrimary: primary[500],
+            colorBgContainer: mode == "dark" ? surface[900] : surface[50]
           }
         }}
         renderEmpty={() => (

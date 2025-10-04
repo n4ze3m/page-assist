@@ -10,6 +10,7 @@ import "~/i18n"
 import { useTranslation } from "react-i18next"
 import { PageAssistProvider } from "@/components/Common/PageAssistProvider"
 import { FontSizeProvider } from "@/context/FontSizeProvider"
+import { surface, primary } from "@/assets/colors"
 
 function IndexSidepanel() {
   const { mode } = useDarkMode()
@@ -29,7 +30,9 @@ function IndexSidepanel() {
           algorithm:
             mode === "dark" ? theme.darkAlgorithm : theme.defaultAlgorithm,
           token: {
-            fontFamily: "Arimo"
+            fontFamily: "Arimo",
+            colorPrimary: primary[500],
+            colorBgContainer: mode == "dark" ? surface[900] : surface[50]
           }
         }}
         renderEmpty={() => (
