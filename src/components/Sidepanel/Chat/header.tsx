@@ -69,7 +69,7 @@ export const SidepanelHeader = ({
   return (
     <div
       data-istemporary-chat={temporaryChat}
-      className=" px-3 justify-between bg-surface-50 dark:bg-surface-900 border-b border-gray-300 dark:border-gray-700 py-4 items-center absolute top-0 z-10 flex h-14 w-full data-[istemporary-chat='true']:bg-surface-200 data-[istemporary-chat='true']:dark:bg-black">
+      className=" px-3 justify-between bg-surface-50 dark:bg-surface-900 border-b border-gray-300 dark:border-gray-700 py-4 items-center absolute top-0 z-10 flex h-14 w-full data-[istemporary-chat='true']:bg-surface-200 data-[istemporary-chat='true']:dark:bg-surface-900">
       <div className="focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-700 flex items-center dark:text-white">
         <img
           className="h-6 w-auto"

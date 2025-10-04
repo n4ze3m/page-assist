@@ -134,7 +134,7 @@ export const SystemSettings = () => {
         <div className="flex flex-row items-center gap-3 justify-center sm:justify-end">
           <button
             onClick={decrease}
-            className="bg-black hover:bg-surface-800 dark:bg-surface-50 dark:hover:bg-surface-200 text-white dark:text-black px-3 py-1.5 rounded-lg transition-colors duration-200 font-medium text-sm">
+            className="bg-surface-900 hover:bg-surface-800 dark:bg-surface-50 dark:hover:bg-surface-200 text-white dark:text-black px-3 py-1.5 rounded-lg transition-colors duration-200 font-medium text-sm">
             A-
           </button>
           <span className="min-w-[2rem] text-center font-medium text-black dark:text-white">
@@ -142,7 +142,7 @@ export const SystemSettings = () => {
           </span>
           <button
             onClick={increase}
-            className="bg-black hover:bg-surface-800 dark:bg-surface-50 dark:hover:bg-surface-200 text-white dark:text-black px-3 py-1.5 rounded-lg transition-colors duration-200 font-medium text-sm">
+            className="bg-surface-900 hover:bg-surface-800 dark:bg-surface-50 dark:hover:bg-surface-200 text-white dark:text-black px-3 py-1.5 rounded-lg transition-colors duration-200 font-medium text-sm">
             A+
           </button>{" "}
         </div>

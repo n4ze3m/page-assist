@@ -91,7 +91,7 @@ export const AdvanceOllamaSettings = () => {
               </h3>
               <button
                 type="button"
-                className="dark:bg-surface-50 dark:text-black text-white bg-black p-1.5 text-xs rounded-md"
+                className="dark:bg-surface-50 dark:text-black text-white bg-surface-900 p-1.5 text-xs rounded-md"
                 onClick={() => {
                   add()
                 }}>

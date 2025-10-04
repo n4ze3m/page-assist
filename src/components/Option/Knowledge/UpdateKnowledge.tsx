@@ -201,7 +201,7 @@ export const UpdateKnowledge = ({ id, open, setOpen }: Props) => {
           <button
             type="submit"
             disabled={isSaving}
-            className="inline-flex items-center justify-center w-full px-2 py-2 font-medium leading-4 text-center text-white bg-black border border-transparent rounded-md shadow-sm text-md hover:bg-surface-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-surface-50 dark:text-gray-800 dark:hover:bg-surface-100 dark:focus:ring-gray-500 dark:focus:ring-offset-gray-100 disabled:opacity-50">
+            className="inline-flex items-center justify-center w-full px-2 py-2 font-medium leading-4 text-center text-white bg-surface-900 border border-transparent rounded-md shadow-sm text-md hover:bg-surface-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-surface-50 dark:text-gray-800 dark:hover:bg-surface-100 dark:focus:ring-gray-500 dark:focus:ring-offset-gray-100 disabled:opacity-50">
             {t("form.submit")}
           </button>
         </Form.Item>

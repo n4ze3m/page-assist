@@ -162,7 +162,7 @@ export const EmptySidePanel = () => {
               </div>
 
               <input
-                className="bg-surface-100 dark:bg-black dark:text-gray-100 rounded-md px-4 py-2 mt-2 w-full"
+                className="bg-surface-100 dark:bg-surface-900 dark:text-gray-100 rounded-md px-4 py-2 mt-2 w-full"
                 type="url"
                 value={ollamaURL}
                 onChange={(e) => setOllamaURL(e.target.value)}
@@ -173,7 +173,7 @@ export const EmptySidePanel = () => {
                   saveOllamaURL(ollamaURL)
                   refetch()
                 }}
-                className="inline-flex mt-4 items-center rounded-md border border-transparent bg-black px-2 py-2 text-sm font-medium leading-4 text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-surface-50 dark:text-gray-800 dark:hover:bg-surface-100 dark:focus:ring-gray-500 dark:focus:ring-offset-gray-100 disabled:opacity-50 ">
+                className="inline-flex mt-4 items-center rounded-md border border-transparent bg-surface-900 px-2 py-2 text-sm font-medium leading-4 text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-surface-50 dark:text-gray-800 dark:hover:bg-surface-100 dark:focus:ring-gray-500 dark:focus:ring-offset-gray-100 disabled:opacity-50 ">
                 <RotateCcw className="h-4 w-4 mr-3" />
                 {t("common:retry")}
               </button>

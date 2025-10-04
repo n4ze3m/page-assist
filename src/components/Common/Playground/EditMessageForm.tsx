@@ -74,7 +74,7 @@ export const EditMessageForm = (props: Props) => {
           <div className="flex space-x-2">
             <button
               aria-label={t("save")}
-              className="bg-black px-2 py-1.5 rounded-lg text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-gray-500 hover:bg-surface-900 text-sm">
+              className="bg-surface-900 px-2 py-1.5 rounded-lg text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-gray-500 hover:bg-surface-900 text-sm">
               {props.isBot ? t("save") : t("saveAndSubmit")}
             </button>
 

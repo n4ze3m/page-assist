@@ -370,7 +370,7 @@ export const GeneralSettings = () => {
 
         <button
           onClick={toggleDarkMode}
-          className={`inline-flex mt-4 items-center rounded-md border border-transparent bg-black px-2 py-2 text-sm font-medium leading-4 text-white shadow-sm  dark:bg-surface-50 dark:text-gray-800 disabled:opacity-50 `}>
+          className={`inline-flex mt-4 items-center rounded-md border border-transparent bg-surface-900 px-2 py-2 text-sm font-medium leading-4 text-white shadow-sm  dark:bg-surface-50 dark:text-gray-800 disabled:opacity-50 `}>
           {mode === "dark" ? (
             <SunIcon className="w-4 h-4 mr-2" />
           ) : (

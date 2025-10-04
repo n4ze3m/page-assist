@@ -13,7 +13,7 @@ export const DocumentCard: React.FC<Props> = ({ name, onRemove, loading }) => {
       disabled={loading}
       className="relative group p-1.5 w-60 flex items-center gap-1 bg-surface-50 dark:bg-[#211e1e] border border-gray-200 dark:border-gray-700 rounded-2xl text-left"
       type="button">
-      <div className="p-3 bg-black/20 dark:bg-surface-800 text-white rounded-xl">
+      <div className="p-3 bg-surface-900/20 dark:bg-surface-800 text-white rounded-xl">
         {loading ? <Spin size="small" /> : <FileIcon className="w-6 h-6" />}
       </div>
       <div className="flex flex-col justify-center -space-y-0.5 px-2.5 w-full">
