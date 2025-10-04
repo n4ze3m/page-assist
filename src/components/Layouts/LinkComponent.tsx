@@ -18,8 +18,8 @@ export const LinkComponent = (item: {
         to={item.href}
         className={classNames(
           item.current === item.href
-            ? "bg-gray-100 text-gray-600 dark:bg-[#262626] dark:text-white"
-            : "text-gray-700 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-200 dark:hover:text-white dark:hover:bg-[#262626]",
+            ? "bg-surface-100 text-gray-600 dark:bg-surface-700 dark:text-white"
+            : "text-gray-700 hover:text-gray-600 hover:bg-surface-100 dark:text-gray-200 dark:hover:text-white dark:hover:bg-surface-700",
           "group flex gap-x-3 rounded-md py-2 pl-2 pr-3 text-sm font-semibold"
         )}>
         <item.icon

@@ -125,7 +125,7 @@ export const OpenAIFetchModel = ({ openaiId, setOpenModelModal }: Props) => {
           onChange={(e) => handleSelectAll(e.target.checked)}>
           {t("selectAll")}
         </Checkbox>
-        <div className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200">
+        <div className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-surface-100 text-gray-800 dark:bg-surface-700 dark:text-gray-200">
           {`${selectedModels?.length} / ${data?.length}`}
         </div>
       </div>
@@ -137,7 +137,7 @@ export const OpenAIFetchModel = ({ openaiId, setOpenModelModal }: Props) => {
               onClick={() => {
                 handleModelSelect(model.id, !selectedModels.includes(model.id))
               }}
-              className="flex cursor-pointer items-center justify-between py-3 hover:bg-gray-50 dark:hover:bg-gray-800 px-2 ">
+              className="flex cursor-pointer items-center justify-between py-3 hover:bg-surface-50 dark:hover:bg-surface-800 px-2 ">
               <div className="flex items-center space-x-3">
                 <Checkbox
                   checked={selectedModels.includes(model.id)}
@@ -193,7 +193,7 @@ export const OpenAIFetchModel = ({ openaiId, setOpenModelModal }: Props) => {
       <button
         onClick={handleSave}
         disabled={isSaving}
-        className="inline-flex justify-center w-full text-center mt-4 items-center rounded-md border border-transparent bg-black px-2 py-2 text-sm font-medium leading-4 text-white shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-white dark:text-gray-800 dark:hover:bg-gray-100 dark:focus:ring-gray-500 dark:focus:ring-offset-gray-100 disabled:opacity-50">
+        className="inline-flex justify-center w-full text-center mt-4 items-center rounded-md border border-transparent bg-surface-900 px-2 py-2 text-sm font-medium leading-4 text-white shadow-sm hover:bg-surface-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-surface-50 dark:text-gray-800 dark:hover:bg-surface-100 dark:focus:ring-gray-500 dark:focus:ring-offset-gray-100 disabled:opacity-50">
         {isSaving ? t("saving") : t("save")}
       </button>
     </div>

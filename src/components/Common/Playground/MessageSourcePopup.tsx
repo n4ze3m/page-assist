@@ -21,7 +21,7 @@ export const MessageSourcePopup: React.FC<Props> = ({
       footer={null}
       onOk={() => setOpen(false)}>
       <div className="flex flex-col gap-2 mt-6">
-        <h4 className="bg-gray-100 text-md dark:bg-gray-800 inline-flex gap-2 items-center text-gray-800 dark:text-gray-100 font-semibold p-2">
+        <h4 className="bg-surface-100 text-md dark:bg-surface-800 inline-flex gap-2 items-center text-gray-800 dark:text-gray-100 font-semibold p-2">
           {source?.type && (
             <KnowledgeIcon type={source?.type} className="h-4 w-5" />
           )}

@@ -8,7 +8,7 @@ export const SidepanelSettingsHeader = () => {
   const isRTL = i18n?.dir() === "rtl"
  
   return (
-    <div className="flex px-3 justify-start gap-3 bg-white dark:bg-[#1a1a1a] border-b border-gray-300 dark:border-gray-700  py-4 items-center">
+    <div className="flex px-3 justify-start gap-3 bg-surface-50 dark:bg-surface-900 border-b border-gray-300 dark:border-gray-700  py-4 items-center">
       <Link to="/">
       {
         isRTL ? (

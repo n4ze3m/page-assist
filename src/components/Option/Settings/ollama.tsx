@@ -58,7 +58,7 @@ export const SettingsOllama = () => {
                   setOllamaURL(e.target.value)
                 }}
                 placeholder={t("ollamaSettings.settings.ollamaUrl.placeholder")}
-                className="w-full p-2 border border-gray-300 rounded-md dark:bg-[#262626] dark:text-gray-100"
+                className="w-full p-2 border border-gray-300 rounded-md dark:bg-surface-700 dark:text-gray-100"
               />
             </div>
             <div className="flex justify-end mb-3">

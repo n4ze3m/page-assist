@@ -145,15 +145,15 @@ export const CodeBlock: FC<Props> = ({ language, value }) => {
     <>
       <div className="not-prose">
         <div className=" [&_div+div]:!mt-0 my-4 bg-zinc-950 rounded-xl">
-          <div className="flex flex-row px-4 py-2 rounded-t-xl  gap-3 bg-[#2a2a2a]  ">
+          <div className="flex flex-row px-4 py-2 rounded-t-xl  gap-3 bg-surface-800  ">
             {isPreviewable && (
               <div className="flex rounded-md overflow-hidden border border-gray-700">
                 <button
                   onClick={() => setShowPreview(false)}
                   className={`px-2 flex items-center gap-1 text-xs transition-colors ${
                     !showPreview
-                      ? "bg-gray-700 text-white"
-                      : "bg-transparent text-gray-300 hover:bg-gray-700/60"
+                      ? "bg-surface-700 text-white"
+                      : "bg-transparent text-gray-300 hover:bg-surface-700/60"
                   }`}
                   aria-label={t("showCode") || "Code"}>
                   <CodeIcon className="size-3" />
@@ -162,8 +162,8 @@ export const CodeBlock: FC<Props> = ({ language, value }) => {
                   onClick={() => setShowPreview(true)}
                   className={`px-2 flex items-center gap-1 text-xs transition-colors ${
                     showPreview
-                      ? "bg-gray-700 text-white"
-                      : "bg-transparent text-gray-300 hover:bg-gray-700/60"
+                      ? "bg-surface-700 text-white"
+                      : "bg-transparent text-gray-300 hover:bg-surface-700/60"
                   }`}
                   aria-label={t("preview") || "Preview"}>
                   <EyeIcon className="size-3" />
@@ -178,14 +178,14 @@ export const CodeBlock: FC<Props> = ({ language, value }) => {
               <Tooltip title={t("downloadCode")}>
                 <button
                   onClick={handleDownload}
-                  className="flex gap-1.5 items-center rounded bg-none p-1 text-xs text-gray-200 hover:bg-gray-700 hover:text-gray-100 focus:outline-none">
+                  className="flex gap-1.5 items-center rounded bg-none p-1 text-xs text-gray-200 hover:bg-surface-700 hover:text-gray-100 focus:outline-none">
                   <DownloadIcon className="size-4" />
                 </button>
               </Tooltip>
               <Tooltip title={t("copyToClipboard")}>
                 <button
                   onClick={handleCopy}
-                  className="flex gap-1.5 items-center rounded bg-none p-1 text-xs text-gray-200 hover:bg-gray-700 hover:text-gray-100 focus:outline-none">
+                  className="flex gap-1.5 items-center rounded bg-none p-1 text-xs text-gray-200 hover:bg-surface-700 hover:text-gray-100 focus:outline-none">
                   {!isBtnPressed ? (
                     <CopyIcon className="size-4" />
                   ) : (
@@ -220,7 +220,7 @@ export const CodeBlock: FC<Props> = ({ language, value }) => {
             </SyntaxHighlighter>
           )}
           {showPreview && isPreviewable && (
-            <div className="w-full h-[420px] bg-white rounded-b-xl overflow-hidden border-t border-gray-800">
+            <div className="w-full h-[420px] bg-surface-50 rounded-b-xl overflow-hidden border-t border-gray-800">
               <iframe
                 title="Preview"
                 srcDoc={buildPreviewDoc()}
