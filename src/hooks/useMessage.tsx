@@ -47,6 +47,7 @@ import {
   createSaveMessageOnSuccess
 } from "./utils/messageHelpers"
 import { updatePageTitle } from "@/utils/update-page-title"
+import { getNoOfRetrievedDocs } from "@/services/app"
 
 export const useMessage = () => {
   const {
@@ -297,7 +298,9 @@ export const useMessage = () => {
       }[] = []
 
       if (chatWithWebsiteEmbedding) {
-        const docs = await vectorstore.similaritySearch(query, 4)
+        const docSize = await getNoOfRetrievedDocs()
+
+        const docs = await vectorstore.similaritySearch(query, docSize)
         context = formatDocs(docs)
         source = docs.map((doc) => {
           return {
