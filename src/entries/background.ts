@@ -38,6 +38,22 @@ export default defineBackground({
                 contexts: ["page", "selection"]
               })
             }
+          },
+          youtubeAutoSummarize: async (value) => {
+            const newValue = value?.newValue || false
+            const tabs = await browser.tabs.query({
+              url: "*://www.youtube.com/watch*"
+            })
+            tabs.forEach((tab) => {
+              if (tab.id) {
+                browser.tabs
+                  .sendMessage(tab.id, {
+                    type: "youtube_summarize_setting_changed",
+                    enabled: newValue
+                  })
+                  .catch(() => {})
+              }
+            })
           }
         })
         const data = await getInitialConfig()
@@ -83,9 +99,11 @@ export default defineBackground({
       }
     }
 
-
-    browser.runtime.onMessage.addListener(async (message) => {
-      if (message.type === "sidepanel") {
+    browser.runtime.onMessage.addListener(async (message, sender) => {
+      if (message.type === "check_youtube_summarize_enabled") {
+        const enabled = await storage.get("youtubeAutoSummarize")
+        return Promise.resolve({ enabled: enabled || false })
+      } else if (message.type === "sidepanel") {
         await browser.sidebarAction.open()
       } else if (message.type === "pull_model") {
         const ollamaURL = await getOllamaURL()
@@ -105,6 +123,25 @@ export default defineBackground({
         await streamDownload(ollamaURL, message.modelName)
       } else if (message.type === "cancel_download") {
         cancelDownload()
+      } else if (message.type === "youtube_summarize") {
+        if (sender.tab?.id) {
+          chrome.sidePanel.open({
+            tabId: sender.tab.id
+          })
+        }
+
+        setTimeout(
+          async () => {
+            const prompt = `Summarize this YouTube video: "${message.videoTitle}".\n\nPlease provide a comprehensive summary of the video content.`
+
+            await browser.runtime.sendMessage({
+              from: "background",
+              type: "yt_summarize",
+              text: prompt
+            })
+          },
+          isCopilotRunning ? 0 : 5000
+        )
       }
     })
 

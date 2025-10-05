@@ -10,6 +10,7 @@ import { SystemSettings } from "./system-settings"
 import { SSTSettings } from "./sst-settings"
 import { BetaTag } from "@/components/Common/Beta"
 import { getDefaultOcrLanguage, ocrLanguages } from "@/data/ocr-language"
+import { Storage } from "@plasmohq/storage"
 
 export const GeneralSettings = () => {
   const [userChatBubble, setUserChatBubble] = useStorage("userChatBubble", true)
@@ -84,6 +85,16 @@ export const GeneralSettings = () => {
 
   const [removeReasoningTagFromCopy, setRemoveReasoningTagFromCopy] =
     useStorage("removeReasoningTagFromCopy", true)
+
+  const [youtubeAutoSummarize, setYoutubeAutoSummarize] = useStorage(
+    {
+      key: "youtubeAutoSummarize",
+      instance: new Storage({
+        area: "local"
+      })
+    },
+    false
+  )
 
   const { mode, toggleDarkMode } = useDarkMode()
   const { t } = useTranslation("settings")
@@ -362,6 +373,22 @@ export const GeneralSettings = () => {
           onChange={(checked) => setRemoveReasoningTagFromCopy(checked)}
         />
       </div>
+
+      {!isFireFox && (
+        <div className="flex flex-row justify-between">
+          <div className="inline-flex items-center gap-2">
+            <BetaTag />
+            <span className="text-gray-700 dark:text-neutral-50 ">
+              {t("generalSettings.settings.youtubeAutoSummarize.label")}
+            </span>
+          </div>
+
+          <Switch
+            checked={youtubeAutoSummarize}
+            onChange={(checked) => setYoutubeAutoSummarize(checked)}
+          />
+        </div>
+      )}
 
       <div className="flex flex-row justify-between">
         <span className="text-gray-700 dark:text-neutral-50 ">
