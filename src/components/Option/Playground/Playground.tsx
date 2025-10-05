@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 import { PlaygroundForm } from "./PlaygroundForm"
 import { PlaygroundChat } from "./PlaygroundChat"
 import { useMessageOption } from "@/hooks/useMessageOption"
@@ -15,6 +15,9 @@ import { ChevronDown } from "lucide-react"
 import { useStorage } from "@plasmohq/storage/hook"
 import { Storage } from "@plasmohq/storage"
 import { otherUnsupportedTypes } from "../Knowledge/utils/unsupported-types"
+import { useTheme } from "@/hooks/useTheme"
+
+
 export const Playground = () => {
   const drop = React.useRef<HTMLDivElement>(null)
   const [dropedFile, setDropedFile] = React.useState<File | undefined>()
@@ -24,6 +27,8 @@ export const Playground = () => {
       area: "local"
     })
   })
+
+  const { themeName, getThemedSVGUri } = useTheme();
 
   const {
     selectedKnowledge,
@@ -38,9 +43,19 @@ export const Playground = () => {
   const { containerRef, isAutoScrollToBottom, autoScrollToBottom } =
     useSmartScroll(messages, streaming, 120)
 
+  const [backgroundImage, setBackgroundImage] = useState(null);
+
   const [dropState, setDropState] = React.useState<
     "idle" | "dragging" | "error"
   >("idle")
+
+   React.useEffect(() => {
+    async function loadBackground() {
+      setBackgroundImage(getThemedSVGUri());
+    }
+    loadBackground();
+  }, [themeName]);
+  
 
   React.useEffect(() => {
     if (selectedKnowledge) {
@@ -162,6 +177,12 @@ export const Playground = () => {
 
       <div
         ref={containerRef}
+        style={{
+          height: '100vh',
+          backgroundImage: backgroundImage ? `url("${backgroundImage}")` : 'none',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }}
         className="custom-scrollbar flex h-full w-full flex-col items-center overflow-x-hidden overflow-y-auto px-5 relative z-10">
         <PlaygroundChat />
       </div>
