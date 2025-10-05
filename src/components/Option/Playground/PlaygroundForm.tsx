@@ -348,7 +348,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
           <div
             data-istemporary-chat={temporaryChat}
             data-checkwidemode={checkWideMode}
-            className={` bg-neutral-50  dark:bg-[#2a2a2a] relative w-full max-w-[48rem] p-1 backdrop-blur-lg duration-100 border border-gray-300 rounded-t-xl  dark:border-[#404040] data-[istemporary-chat='true']:bg-gray-200 data-[istemporary-chat='true']:dark:bg-black data-[checkwidemode='true']:max-w-none`}>
+            className={` bg-surface-50  dark:bg-surface-800 relative w-full max-w-[48rem] p-1 backdrop-blur-lg duration-100 border border-gray-300 rounded-t-xl  dark:border-[#404040] data-[istemporary-chat='true']:bg-surface-200 data-[istemporary-chat='true']:dark:bg-surface-900 data-[checkwidemode='true']:max-w-none`}>
             <div
               className={`border-b border-gray-200 dark:border-[#404040] relative ${
                 form.values.image.length === 0 ? "hidden" : "block"
@@ -358,7 +358,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                 onClick={() => {
                   form.setFieldValue("image", "")
                 }}
-                className="absolute top-1 left-1 flex items-center justify-center z-10 bg-white dark:bg-[#2a2a2a] p-0.5 rounded-full hover:bg-gray-100 dark:hover:bg-[#404040] text-black dark:text-gray-100">
+                className="absolute top-1 left-1 flex items-center justify-center z-10 bg-surface-50 dark:bg-surface-800 p-0.5 rounded-full hover:bg-surface-100 dark:hover:bg-[#404040] text-black dark:text-gray-100">
                 <X className="h-4 w-4" />
               </button>{" "}
               <Image
@@ -404,9 +404,9 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                     {uploadedFiles.map((file) => (
                       <button
                         key={file.id}
-                        className="relative group p-1.5 w-60 flex items-center gap-1 bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-white/5 rounded-2xl text-left"
+                        className="relative group p-1.5 w-60 flex items-center gap-1 bg-surface-50 dark:bg-surface-900 border border-gray-200 dark:border-white/5 rounded-2xl text-left"
                         type="button">
-                        <div className="p-3 bg-black/20 dark:bg-white/10 text-white rounded-xl">
+                        <div className="p-3 bg-surface-900/20 dark:bg-surface-50/10 text-white rounded-xl">
                           <FileIcon className="size-5" />
                         </div>
                         <div className="flex flex-col justify-center -space-y-0.5 px-2.5 w-full">
@@ -427,7 +427,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                         <div className="absolute -top-1 -right-1">
                           <button
                             onClick={() => removeUploadedFile(file.id)}
-                            className="bg-white dark:bg-gray-700 text-black dark:text-gray-100 border border-gray-50 dark:border-[#404040] rounded-full group-hover:visible invisible transition"
+                            className="bg-surface-50 dark:bg-surface-700 text-black dark:text-gray-100 border border-gray-50 dark:border-[#404040] rounded-full group-hover:visible invisible transition"
                             type="button">
                             <X className="w-4 h-4" />
                           </button>

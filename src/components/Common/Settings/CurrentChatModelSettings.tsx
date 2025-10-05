@@ -240,7 +240,7 @@ export const CurrentChatModelSettings = ({
                     {uploadedFiles.map((file) => (
                       <div
                         key={file.id}
-                        className="flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-800 rounded-md">
+                        className="flex items-center justify-between p-2 bg-surface-50 dark:bg-surface-800 rounded-md">
                         <div className="flex items-center gap-2 flex-1 min-w-0">
                           <FileIcon className="h-4 w-4 text-gray-500 flex-shrink-0" />
                           <div className="min-w-0 flex-1">

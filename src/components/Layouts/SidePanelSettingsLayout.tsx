@@ -20,14 +20,14 @@ export const SidePanelSettingsLayout = ({
   const isRTL = i18n?.dir() === "rtl"
 
   return (
-    <div className="flex w-full flex-col min-h-screen bg-neutral-50 dark:bg-[#1a1a1a]">
+    <div className="flex w-full flex-col min-h-screen bg-surface-50 dark:bg-surface-900">
       {/* Mobile-optimized Header */}
-      <header className="sticky top-0 z-20 bg-white dark:bg-[#1a1a1a] border-b border-gray-200 dark:border-gray-700 shadow-sm">
+      <header className="sticky top-0 z-20 bg-surface-50 dark:bg-surface-900 border-b border-gray-200 dark:border-gray-700 shadow-sm">
         <div className="flex items-center justify-between px-4 py-3 sm:px-6">
           <div className="flex items-center gap-3">
             <Link
               to="/"
-              className="flex items-center justify-center w-8 h-8 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
+              className="flex items-center justify-center w-8 h-8 rounded-full hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
               aria-label={t("common:goBack")}>
               {isRTL ? (
                 <ChevronRight className="h-5 w-5 text-gray-600 dark:text-gray-400" />
@@ -54,7 +54,7 @@ export const SidePanelSettingsLayout = ({
       <main className="relative w-full flex-1">
         <div className="mx-auto w-full h-full custom-scrollbar overflow-y-auto">
           <div className="flex flex-col lg:flex-row lg:gap-x-16 lg:px-24">
-            <aside className="sticky lg:mt-0 top-0 bg-white dark:bg-[#1a1a1a] border-b dark:border-gray-600 lg:border-0 lg:bg-transparent lg:dark:bg-transparent">
+            <aside className="sticky lg:mt-0 top-0 bg-surface-50 dark:bg-surface-900 border-b dark:border-gray-600 lg:border-0 lg:bg-transparent lg:dark:bg-transparent">
               <nav className="w-full overflow-x-auto px-4 py-4 sm:px-6 lg:px-0 lg:py-0 lg:mt-8">
                 <ul
                   role="list"

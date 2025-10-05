@@ -92,18 +92,18 @@
 
 /* Custom scrollbar styles for light theme */
 .custom-scrollbar:hover::-webkit-scrollbar-track {
-  @apply bg-gray-50;
+  @apply bg-surface-50;
   border-radius: 6px;
 }
 
 .custom-scrollbar:hover::-webkit-scrollbar-thumb {
-  @apply bg-gray-300;
+  @apply bg-surface-300;
   border-radius: 6px;
   transition: background 0.2s ease;
 }
 
 .custom-scrollbar:hover::-webkit-scrollbar-thumb:hover {
-  @apply bg-gray-400;
+  @apply bg-surface-400;
 }
 
 /* Custom scrollbar styles for dark theme */

@@ -209,7 +209,7 @@ export const ShareModal: React.FC<Props> = ({
           <div className="flex justify-end">
             <button
               type="submit"
-              className="inline-flex items-center rounded-md border border-transparent bg-black px-2 py-2.5 text-md font-medium leading-4 text-white shadow-sm dark:bg-white dark:text-gray-800 disabled:opacity-50 ">
+              className="inline-flex items-center rounded-md border border-transparent bg-surface-900 px-2 py-2.5 text-md font-medium leading-4 text-white shadow-sm dark:bg-surface-50 dark:text-gray-800 disabled:opacity-50 ">
               {isPending
                 ? t("share.form.btn.saving")
                 : t("share.form.btn.save")}

@@ -12,7 +12,7 @@ export const DocumentChip: React.FC<DocumentChipProps> = ({
   onRemove,
 }) => {
   return (
-    <div className="inline-flex items-center gap-2 bg-neutral-50 dark:bg-[#404040] border border-neutral-200 dark:border-[#525252] rounded-lg px-3 py-1.5 mr-2 mb-2">
+    <div className="inline-flex items-center gap-2 bg-surface-50 dark:bg-[#404040] border border-neutral-200 dark:border-[#525252] rounded-lg px-3 py-1.5 mr-2 mb-2">
       <div className="flex items-center gap-2 flex-1 min-w-0">
         <div className="flex-shrink-0">
           {document.favIconUrl ? (
