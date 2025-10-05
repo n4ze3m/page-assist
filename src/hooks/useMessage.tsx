@@ -47,6 +47,7 @@ import {
   createSaveMessageOnSuccess
 } from "./utils/messageHelpers"
 import { updatePageTitle } from "@/utils/update-page-title"
+import { getNoOfRetrievedDocs } from "@/services/app"
 
 export const useMessage = () => {
   const {
@@ -103,10 +104,7 @@ export const useMessage = () => {
     useOCR,
     setUseOCR
   } = useStoreMessage()
- const [sidepanelTemporaryChat, ] = useStorage(
-    "sidepanelTemporaryChat",
-    false
-  )
+  const [sidepanelTemporaryChat] = useStorage("sidepanelTemporaryChat", false)
   const [speechToTextLanguage, setSpeechToTextLanguage] = useStorage(
     "speechToTextLanguage",
     "en-US"
@@ -125,7 +123,7 @@ export const useMessage = () => {
     setIsLoading(false)
     setIsProcessing(false)
     setStreaming(false)
-    updatePageTitle() 
+    updatePageTitle()
     currentChatModelSettings.reset()
     if (defaultInternetSearchOn) {
       setWebSearch(true)
@@ -300,7 +298,9 @@ export const useMessage = () => {
       }[] = []
 
       if (chatWithWebsiteEmbedding) {
-        const docs = await vectorstore.similaritySearch(query, 4)
+        const docSize = await getNoOfRetrievedDocs()
+
+        const docs = await vectorstore.similaritySearch(query, docSize)
         context = formatDocs(docs)
         source = docs.map((doc) => {
           return {
@@ -1567,7 +1567,8 @@ export const useMessage = () => {
     controller,
     memory,
     messages: chatHistory,
-    messageType
+    messageType,
+    chatType
   }: {
     message: string
     image: string
@@ -1576,6 +1577,7 @@ export const useMessage = () => {
     memory?: ChatHistory
     controller?: AbortController
     messageType?: string
+    chatType?: string
   }) => {
     let signal: AbortSignal
     if (!controller) {
@@ -1587,7 +1589,23 @@ export const useMessage = () => {
       signal = controller.signal
     }
 
-    // this means that the user is trying to send something from a selected text on the web
+    if (chatType === "youtube") {
+      setChatMode("rag")
+      const newEmbeddingController = new AbortController()
+      let embeddingSignal = newEmbeddingController.signal
+      setEmbeddingController(newEmbeddingController)
+      await chatWithWebsiteMode(
+        message,
+        image,
+        isRegenerate,
+        chatHistory || messages,
+        memory || history,
+        signal,
+        embeddingSignal
+      )
+      return
+    }
+
     if (messageType) {
       await presetChatMode(
         message,
@@ -1762,6 +1780,6 @@ export const useMessage = () => {
     createChatBranch,
     temporaryChat,
     setTemporaryChat,
-    sidepanelTemporaryChat,
+    sidepanelTemporaryChat
   }
 }

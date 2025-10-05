@@ -1,5 +1,6 @@
 import React from "react"
 import { FileIcon, Globe } from "lucide-react"
+import { formatFileSize } from "@/utils/format-file-size"
 
 interface DocumentFileProps {
   document: {
@@ -11,7 +12,7 @@ interface DocumentFileProps {
 export const DocumentFile: React.FC<DocumentFileProps> = ({ document }) => {
   return (
     <button
-      className="relative group p-1.5 w-80 flex items-center gap-1 bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-white/5 rounded-2xl text-left"
+      className="relative group p-1.5 w-80 flex items-center gap-1 bg-white dark:bg-[#262626] border border-gray-200 dark:border-white/5 rounded-2xl text-left"
       type="button">
       <div className="p-3 bg-black/20 dark:bg-white/10 text-white rounded-xl">
         <FileIcon className="size-5" />
@@ -23,11 +24,7 @@ export const DocumentFile: React.FC<DocumentFileProps> = ({ document }) => {
         <div className="flex justify-between text-gray-500 text-xs line-clamp-1">
           File{" "}
           <span className="capitalize">
-            {new Intl.NumberFormat(undefined, {
-              style: "unit",
-              unit: "megabyte",
-              maximumFractionDigits: 2
-            }).format(document.fileSize / (1024 * 1024))}
+            {formatFileSize(document.fileSize)}
           </span>
         </div>
       </div>

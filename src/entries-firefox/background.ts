@@ -16,14 +16,14 @@ export default defineBackground({
     const initialize = async () => {
       try {
         storage.watch({
-          "actionIconClick": (value) => {
+          actionIconClick: (value) => {
             const oldValue = value?.oldValue || "webui"
             const newValue = value?.newValue || "webui"
             if (oldValue !== newValue) {
               actionIconClick = newValue
             }
           },
-          "contextMenuClick": (value) => {
+          contextMenuClick: (value) => {
             const oldValue = value?.oldValue || "sidePanel"
             const newValue = value?.newValue || "sidePanel"
             if (oldValue !== newValue) {
@@ -35,6 +35,22 @@ export default defineBackground({
                 contexts: ["page", "selection"]
               })
             }
+          },
+          youtubeAutoSummarize: async (value) => {
+            const newValue = value?.newValue || false
+            const tabs = await browser.tabs.query({
+              url: "*://www.youtube.com/watch*"
+            })
+            tabs.forEach((tab) => {
+              if (tab.id) {
+                browser.tabs
+                  .sendMessage(tab.id, {
+                    type: "youtube_summarize_setting_changed",
+                    enabled: newValue
+                  })
+                  .catch(() => {})
+              }
+            })
           }
         })
         const data = await getInitialConfig()
@@ -50,39 +66,40 @@ export default defineBackground({
           title: browser.i18n.getMessage("contextSummarize"),
           contexts: ["selection"]
         })
-    
+
         browser.contextMenus.create({
           id: "explain-pa",
           title: browser.i18n.getMessage("contextExplain"),
           contexts: ["selection"]
         })
-    
+
         browser.contextMenus.create({
           id: "rephrase-pa",
           title: browser.i18n.getMessage("contextRephrase"),
           contexts: ["selection"]
         })
-    
+
         browser.contextMenus.create({
           id: "translate-pg",
           title: browser.i18n.getMessage("contextTranslate"),
           contexts: ["selection"]
         })
-    
+
         browser.contextMenus.create({
           id: "custom-pg",
           title: browser.i18n.getMessage("contextCustom"),
           contexts: ["selection"]
         })
-    
       } catch (error) {
         console.error("Error in initLogic:", error)
       }
     }
 
-
-    browser.runtime.onMessage.addListener(async (message) => {
-      if (message.type === "sidepanel") {
+    browser.runtime.onMessage.addListener(async (message, sender) => {
+      if (message.type === "check_youtube_summarize_enabled") {
+        const enabled = await storage.get("youtubeAutoSummarize")
+        return Promise.resolve({ enabled: enabled || false })
+      } else if (message.type === "sidepanel") {
         await browser.sidebarAction.open()
       } else if (message.type === "pull_model") {
         const ollamaURL = await getOllamaURL()
@@ -102,6 +119,23 @@ export default defineBackground({
         await streamDownload(ollamaURL, message.modelName)
       } else if (message.type === "cancel_download") {
         cancelDownload()
+      } else if (message.type === "youtube_summarize") {
+        if (sender.tab?.id) {
+          await browser.sidebarAction.open()
+        }
+
+        setTimeout(
+          async () => {
+            const prompt = `Summarize this YouTube video: "${message.videoTitle}".\n\nPlease provide a comprehensive summary of the video content.`
+
+            await browser.runtime.sendMessage({
+              from: "background",
+              type: "yt_summarize",
+              text: prompt
+            })
+          },
+          isCopilotRunning ? 0 : 5000
+        )
       }
     })
 
@@ -132,7 +166,6 @@ export default defineBackground({
       sidePanel: "open-side-panel-pa"
     }
 
-
     browser.contextMenus.onClicked.addListener((info, tab) => {
       if (info.menuItemId === "open-side-panel-pa") {
         browser.sidebarAction.toggle()
@@ -144,57 +177,72 @@ export default defineBackground({
         if (!isCopilotRunning) {
           browser.sidebarAction.toggle()
         }
-        setTimeout(async () => {
-          await browser.runtime.sendMessage({
-            from: "background",
-            type: "summary",
-            text: info.selectionText
-          })
-        }, isCopilotRunning ? 0 : 5000)
+        setTimeout(
+          async () => {
+            await browser.runtime.sendMessage({
+              from: "background",
+              type: "summary",
+              text: info.selectionText
+            })
+          },
+          isCopilotRunning ? 0 : 5000
+        )
       } else if (info.menuItemId === "rephrase-pa") {
         if (!isCopilotRunning) {
           browser.sidebarAction.toggle()
         }
-        setTimeout(async () => {
-          await browser.runtime.sendMessage({
-            type: "rephrase",
-            from: "background",
-            text: info.selectionText
-          })
-        }, isCopilotRunning ? 0 : 5000)
+        setTimeout(
+          async () => {
+            await browser.runtime.sendMessage({
+              type: "rephrase",
+              from: "background",
+              text: info.selectionText
+            })
+          },
+          isCopilotRunning ? 0 : 5000
+        )
       } else if (info.menuItemId === "translate-pg") {
         if (!isCopilotRunning) {
           browser.sidebarAction.toggle()
         }
-        setTimeout(async () => {
-          await browser.runtime.sendMessage({
-            type: "translate",
-            from: "background",
-            text: info.selectionText
-          })
-        }, isCopilotRunning ? 0 : 5000)
+        setTimeout(
+          async () => {
+            await browser.runtime.sendMessage({
+              type: "translate",
+              from: "background",
+              text: info.selectionText
+            })
+          },
+          isCopilotRunning ? 0 : 5000
+        )
       } else if (info.menuItemId === "explain-pa") {
         if (!isCopilotRunning) {
           browser.sidebarAction.toggle()
         }
-        setTimeout(async () => {
-          await browser.runtime.sendMessage({
-            type: "explain",
-            from: "background",
-            text: info.selectionText
-          })
-        }, isCopilotRunning ? 0 : 5000)
+        setTimeout(
+          async () => {
+            await browser.runtime.sendMessage({
+              type: "explain",
+              from: "background",
+              text: info.selectionText
+            })
+          },
+          isCopilotRunning ? 0 : 5000
+        )
       } else if (info.menuItemId === "custom-pg") {
         if (!isCopilotRunning) {
           browser.sidebarAction.toggle()
         }
-        setTimeout(async () => {
-          await browser.runtime.sendMessage({
-            type: "custom",
-            from: "background",
-            text: info.selectionText
-          })
-        }, isCopilotRunning ? 0 : 5000)
+        setTimeout(
+          async () => {
+            await browser.runtime.sendMessage({
+              type: "custom",
+              from: "background",
+              text: info.selectionText
+            })
+          },
+          isCopilotRunning ? 0 : 5000
+        )
       }
     })
 
@@ -209,7 +257,6 @@ export default defineBackground({
     })
 
     initialize()
-
   },
   persistent: true
 })
