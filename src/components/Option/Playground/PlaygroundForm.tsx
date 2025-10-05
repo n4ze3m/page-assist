@@ -348,7 +348,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
           <div
             data-istemporary-chat={temporaryChat}
             data-checkwidemode={checkWideMode}
-            className={` bg-surface-50  dark:bg-surface-800 relative w-full max-w-[48rem] p-1 backdrop-blur-lg duration-100 border border-gray-300 rounded-t-xl  dark:border-[#404040] data-[istemporary-chat='true']:bg-surface-200 data-[istemporary-chat='true']:dark:bg-surface-900 data-[checkwidemode='true']:max-w-none`}>
+            className={`relative w-full max-w-[48rem] p-1 border rounded-t-xl backdrop-blur-lg bg-white/30 dark:bg-gray-800/30 border-gray-300 dark:border-[#404040] duration-100 data-[istemporary-chat='true']:bg-white/50 data-[istemporary-chat='true']:dark:bg-gray-900/50 data-[checkwidemode='true']:max-w-none`}>
             <div
               className={`border-b border-gray-200 dark:border-[#404040] relative ${
                 form.values.image.length === 0 ? "hidden" : "block"
