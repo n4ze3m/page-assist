@@ -68,10 +68,13 @@ export function useTheme() {
     switch(backgroundName){
       case "blurryGradient":
         customizedSVG = generateBlurryGradient();
+        break;
       case "layeredWaves":
         customizedSVG = generateLayeredWaves();
+        break;
       default:
         customizedSVG = generateLayeredWaves();
+        break;
     }
     return svgToDataURI(customizedSVG);
   }
