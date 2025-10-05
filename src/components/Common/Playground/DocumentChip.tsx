@@ -15,7 +15,7 @@ export const DocumentChip: React.FC<DocumentChipProps> = ({ document }) => {
       href={document.url}
       target="_blank"
       rel="noreferrer"
-      className="inline-flex items-center gap-2 bg-neutral-50 dark:bg-[#242424] border border-neutral-200 dark:border-[#2a2a2a] rounded-2xl px-3 py-1.5 mr-2 mb-2">
+      className="inline-flex items-center gap-2 bg-neutral-50 dark:bg-[#262626] border border-neutral-200 dark:border-[#2a2a2a] rounded-2xl px-3 py-1.5 mr-2 mb-2">
       <div className="flex items-center gap-2 flex-1 min-w-0">
         <div className="flex-shrink-0">
           {document.favIconUrl ? (
