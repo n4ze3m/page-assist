@@ -1,15 +1,21 @@
 
 import { useEffect } from "react"
-import { themes, Theme } from "@/assets/colors"
+import { themes } from "@/assets/colors"
 import { useThemeStore } from "@/store/theme"
 import { TinyColor } from '@ctrl/tinycolor';
-import svgString from "@/assets/backgrounds/layered-waves.svg?raw"; // the ?raw is key!
+import layeredWavesSVG from "@/assets/backgrounds/layered-waves.svg?raw"; // the ?raw is key!
+import blurryGradientSVG from "@/assets/backgrounds/blurry-gradient.svg?raw"; // the ?raw is key!
+
 import { useDarkMode } from "./useDarkmode";
 
+export type BackgroundType = "blurryGradient" | "layeredWaves"
 
 export function useTheme() {
   const themeName = useThemeStore((state) => state.themeName)
   const setTheme = useThemeStore((state) => state.setTheme)
+  const backgroundName = useThemeStore((state) => state.backgroundName)
+  const setBackground = useThemeStore((state) => state.setBackground)
+
   const { mode } = useDarkMode()
 
   useEffect(() => {
@@ -24,10 +30,8 @@ export function useTheme() {
     });
   }, [themeName]);
 
-  const getThemedSVGUri = () : string => {
-
-    const svgText = svgString
-    console.log("svgText", svgText)
+  const generateLayeredWaves = () : string => {
+    const svgText = layeredWavesSVG
 
     const color = new TinyColor(themes[themeName].primary[500]);
 
@@ -39,12 +43,40 @@ export function useTheme() {
       .replace(/{{color5}}/g, color.clone().spin(-2).darken(7).toHexString())
       .replace(/{{color6}}/g, color.clone().spin(2).darken(10).toHexString())
 
+    return customizedSVG
+  }
+
+  const generateBlurryGradient = () : string => {
+    const svgText = blurryGradientSVG
+
+    const color = new TinyColor(themes[themeName].primary[500]);
+
+    const customizedSVG = svgText
+      .replace(/{{color1}}/g, themes[themeName].surface[mode == "dark" ? 900: 100])
+      .replace(/{{color2}}/g, color.clone().lighten(10).toHexString())
+      .replace(/{{color3}}/g, color.toHexString())
+      .replace(/{{color4}}/g, color.clone().spin(2).lighten(7).toHexString())
+      .replace(/{{color5}}/g, color.clone().spin(-2).darken(11).toHexString())
+      .replace(/{{color6}}/g, color.clone().spin(2).lighten(14).toHexString())
+      .replace(/{{color7}}/g, color.clone().spin(2).darken(17).toHexString())
+
+    return customizedSVG;
+  }
+
+  const getThemedSVGUri = () : string => {
+    let customizedSVG = "";
+    switch(backgroundName){
+      case "blurryGradient":
+        customizedSVG = generateBlurryGradient();
+      case "layeredWaves":
+        customizedSVG = generateLayeredWaves();
+      default:
+        customizedSVG = generateLayeredWaves();
+    }
     return svgToDataURI(customizedSVG);
   }
 
-  
-
-  return { themeName, setTheme, getThemedSVGUri }
+  return { themeName, setTheme, backgroundName, setBackground, getThemedSVGUri }
 }
 
 function svgToDataURI(svgString) {
