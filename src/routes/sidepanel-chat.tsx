@@ -158,11 +158,19 @@ const SidepanelChat = () => {
   React.useEffect(() => {
     if (bgMsg && !streaming) {
       if (selectedModel) {
-        onSubmit({
-          message: bgMsg.text,
-          messageType: bgMsg.type,
-          image: ""
-        })
+        if (bgMsg.type === "yt_summarize") {
+          onSubmit({
+            message: bgMsg.text,
+            image: "",
+            chatType: "youtube"
+          })
+        } else {
+          onSubmit({
+            message: bgMsg.text,
+            messageType: bgMsg.type,
+            image: ""
+          })
+        }
       } else {
         notification.error({
           message: t("formError.noModel")
