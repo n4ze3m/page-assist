@@ -3,12 +3,14 @@ import { useEffect } from "react"
 import { themes } from "@/assets/colors"
 import { useThemeStore } from "@/store/theme"
 import { TinyColor } from '@ctrl/tinycolor';
-import layeredWavesSVG from "@/assets/backgrounds/layered-waves.svg?raw"; // the ?raw is key!
-import blurryGradientSVG from "@/assets/backgrounds/blurry-gradient.svg?raw"; // the ?raw is key!
+import layeredWavesSVG from "@/assets/backgrounds/layered-waves.svg?raw"; 
+import blurryGradientSVG from "@/assets/backgrounds/blurry-gradient.svg?raw"; 
+import blobSceneSVG from "@/assets/backgrounds/blob-scene.svg?raw"; 
+
 
 import { useDarkMode } from "./useDarkmode";
 
-export type BackgroundType = "blurryGradient" | "layeredWaves"
+export type BackgroundType = "blurryGradient" | "layeredWaves" | "blobScene"
 
 export function useTheme() {
   const themeName = useThemeStore((state) => state.themeName)
@@ -46,6 +48,23 @@ export function useTheme() {
     return customizedSVG
   }
 
+  const generateBlobScene = () : string => {
+    const svgText = blobSceneSVG
+
+    const color = new TinyColor(themes[themeName].primary[mode == "dark" ? 900: 100]);
+
+    const customizedSVG = svgText
+      .replace(/{{color1}}/g, themes[themeName].surface[mode == "dark" ? 900: 100])
+      .replace(/{{color2}}/g, color.clone().lighten(5).toHexString())
+      .replace(/{{color3}}/g, color.toHexString())
+      .replace(/{{color4}}/g, color.clone().spin(3).darken(5).toHexString())
+      .replace(/{{color5}}/g, color.clone().spin(-2).darken(7).toHexString())
+      .replace(/{{color6}}/g, color.clone().spin(2).darken(4).toHexString())
+      .replace(/{{color7}}/g, color.clone().spin(-4).darken(3).toHexString())
+
+    return customizedSVG
+  }
+
   const generateBlurryGradient = () : string => {
     const svgText = blurryGradientSVG
 
@@ -71,6 +90,9 @@ export function useTheme() {
         break;
       case "layeredWaves":
         customizedSVG = generateLayeredWaves();
+        break;
+      case "blobScene":
+        customizedSVG = generateBlobScene();
         break;
       default:
         customizedSVG = generateLayeredWaves();

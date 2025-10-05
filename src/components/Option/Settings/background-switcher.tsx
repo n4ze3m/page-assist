@@ -15,6 +15,7 @@ export function BackgroundSwitcher({ className }: { className?: string }) {
     >
       <Option value="blurryGradient">Blurry Gradient</Option>
       <Option value="layeredWaves">Layered Waves</Option>
+      <Option value="blobScene">Blob Scene</Option>
     </Select>
   )
 }
