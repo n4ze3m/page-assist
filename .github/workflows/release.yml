@@ -1,0 +1,166 @@
+name: Release Artifacts
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+jobs:
+  build-and-zip:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Type check
+        run: bun run compile
+
+      - name: Build (all browsers)
+        run: bun run build
+
+      - name: Zip Chrome
+        run: bun run zip
+
+      - name: Zip Firefox
+        run: bun run zip:firefox
+
+      - name: Zip Edge
+        run: bunx wxt zip -b edge
+
+      - name: Lint Firefox bundle
+        run: npx web-ext lint --source-dir ./.output/firefox-mv3/ --verbose
+
+      - name: Sign Firefox (pre-release, unlisted)
+        if: ${{ github.event.release.prerelease && secrets.FIREFOX_AMO_JWT_ISSUER && secrets.FIREFOX_AMO_JWT_SECRET }}
+        env:
+          WEB_EXT_API_KEY: ${{ secrets.FIREFOX_AMO_JWT_ISSUER }}
+          WEB_EXT_API_SECRET: ${{ secrets.FIREFOX_AMO_JWT_SECRET }}
+        run: |
+          mkdir -p webext-artifacts
+          npx web-ext sign \
+            --source-dir ./.output/firefox-mv3/ \
+            --artifacts-dir ./webext-artifacts \
+            --api-key "$WEB_EXT_API_KEY" \
+            --api-secret "$WEB_EXT_API_SECRET" \
+            --channel unlisted
+
+      - name: Sign Firefox (release, listed)
+        if: ${{ !github.event.release.prerelease && secrets.FIREFOX_AMO_JWT_ISSUER && secrets.FIREFOX_AMO_JWT_SECRET }}
+        env:
+          WEB_EXT_API_KEY: ${{ secrets.FIREFOX_AMO_JWT_ISSUER }}
+          WEB_EXT_API_SECRET: ${{ secrets.FIREFOX_AMO_JWT_SECRET }}
+        run: |
+          mkdir -p webext-artifacts
+          npx web-ext sign \
+            --source-dir ./.output/firefox-mv3/ \
+            --artifacts-dir ./webext-artifacts \
+            --api-key "$WEB_EXT_API_KEY" \
+            --api-secret "$WEB_EXT_API_SECRET" \
+            --channel listed
+
+      - name: Upload signed Firefox XPI
+        if: ${{ secrets.FIREFOX_AMO_JWT_ISSUER && secrets.FIREFOX_AMO_JWT_SECRET }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: signed-firefox
+          path: webext-artifacts/*.xpi
+          if-no-files-found: warn
+
+      - name: List build outputs
+        run: |
+          echo "Outputs:"
+          ls -la .output || true
+          echo "Zips found:"
+          find . -maxdepth 3 -type f -name "*.zip" -print || true
+
+      - name: Upload zips as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: extension-zips
+          path: |
+            .output/**/*.zip
+            ./*.zip
+          if-no-files-found: warn
+
+  upload-assets:
+    runs-on: ubuntu-latest
+    needs: build-and-zip
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download zips
+        uses: actions/download-artifact@v4
+        with:
+          name: extension-zips
+          path: dist-zips
+
+      - name: Download signed Firefox (if any)
+        if: always()
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          name: signed-firefox
+          path: dist-signed/firefox
+
+      - name: Attach assets to current Release
+        uses: softprops/action-gh-release@v1
+        with:
+          draft: false
+          prerelease: ${{ github.event.release.prerelease }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag_name: ${{ github.event.release.tag_name }}
+          files: |
+            dist-zips/**/*.zip
+            dist-signed/firefox/*.xpi
+
+  publish-stores:
+    if: ${{ !github.event.release.prerelease }}
+    runs-on: ubuntu-latest
+    needs: build-and-zip
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download zips
+        uses: actions/download-artifact@v4
+        with:
+          name: extension-zips
+          path: dist-zips
+
+      - name: Locate zipped artifacts
+        id: locate
+        run: |
+          CHROME_ZIP=$(find dist-zips -type f -name '*chrome*zip' | head -n1)
+          EDGE_ZIP=$(find dist-zips -type f -name '*edge*zip' | head -n1)
+          echo "chrome_zip=$CHROME_ZIP" >> $GITHUB_OUTPUT
+          echo "edge_zip=$EDGE_ZIP" >> $GITHUB_OUTPUT
+
+      - name: Publish to Chrome Web Store
+        if: ${{ steps.locate.outputs.chrome_zip && secrets.CHROME_CLIENT_ID && secrets.CHROME_CLIENT_SECRET && secrets.CHROME_REFRESH_TOKEN && secrets.CHROME_EXTENSION_ID }}
+        uses: Klemensas/chrome-extension-upload-action@v1.4
+        with:
+          refresh-token: ${{ secrets.CHROME_REFRESH_TOKEN }}
+          client-id: ${{ secrets.CHROME_CLIENT_ID }}
+          client-secret: ${{ secrets.CHROME_CLIENT_SECRET }}
+          file-name: ${{ steps.locate.outputs.chrome_zip }}
+          extension-id: ${{ secrets.CHROME_EXTENSION_ID }}
+          publish: true
+
+      - name: Publish to Microsoft Edge Add-ons
+        if: ${{ steps.locate.outputs.edge_zip && secrets.EDGE_PRODUCT_ID && secrets.EDGE_CLIENT_ID && secrets.EDGE_CLIENT_SECRET }}
+        uses: wdzeng/edge-addons@v1
+        with:
+          product_id: ${{ secrets.EDGE_PRODUCT_ID }}
+          client_id: ${{ secrets.EDGE_CLIENT_ID }}
+          client_secret: ${{ secrets.EDGE_CLIENT_SECRET }}
+          file: ${{ steps.locate.outputs.edge_zip }}
+          notes: "Automated release ${{ github.event.release.tag_name }}"

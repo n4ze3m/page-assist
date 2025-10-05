@@ -184,6 +184,39 @@ export const FlashcardsPage: React.FC = () => {
     })
   }
 
+  // Selection across results helpers
+  const totalCount = manageQuery.data?.count || 0
+  const selectedCount = selectAllAcross ? Math.max(0, totalCount - deselectedIds.size) : selectedIds.size
+
+  async function fetchAllItemsAcrossFilters(): Promise<Flashcard[]> {
+    const items: Flashcard[] = []
+    const maxPerPage = 1000
+    const total = totalCount
+    for (let offset = 0; offset < total; offset += maxPerPage) {
+      const res = await listFlashcards({
+        deck_id: mDeckId ?? undefined,
+        q: mQuery || undefined,
+        tag: mTag || undefined,
+        due_status: mDue,
+        limit: maxPerPage,
+        offset,
+        order_by: "due_at"
+      })
+      items.push(...(res.items || []))
+      if (!res.items || res.items.length < maxPerPage) break
+    }
+    return items
+  }
+
+  async function getSelectedItems(): Promise<Flashcard[]> {
+    if (!selectAllAcross) {
+      const onPage = manageQuery.data?.items || []
+      return onPage.filter((i) => selectedIds.has(i.uuid))
+    }
+    const all = await fetchAllItemsAcrossFilters()
+    return all.filter((i) => !deselectedIds.has(i.uuid))
+  }
+
   // Edit modal
   const [editOpen, setEditOpen] = React.useState(false)
   const [editing, setEditing] = React.useState<Flashcard | null>(null)
@@ -1003,36 +1036,5 @@ const ExportPanel: React.FC = () => {
         </Button>
       </div>
     </div>
-  const totalCount = manageQuery.data?.count || 0
-  const selectedCount = selectAllAcross ? Math.max(0, totalCount - deselectedIds.size) : selectedIds.size
-
-  async function fetchAllItemsAcrossFilters(): Promise<Flashcard[]> {
-    const items: Flashcard[] = []
-    const maxPerPage = 1000
-    const total = totalCount
-    for (let offset = 0; offset < total; offset += maxPerPage) {
-      const res = await listFlashcards({
-        deck_id: mDeckId ?? undefined,
-        q: mQuery || undefined,
-        tag: mTag || undefined,
-        due_status: mDue,
-        limit: maxPerPage,
-        offset,
-        order_by: "due_at"
-      })
-      items.push(...(res.items || []))
-      if (!res.items || res.items.length < maxPerPage) break
-    }
-    return items
-  }
-
-  async function getSelectedItems(): Promise<Flashcard[]> {
-    if (!selectAllAcross) {
-      const onPage = manageQuery.data?.items || []
-      return onPage.filter((i) => selectedIds.has(i.uuid))
-    }
-    const all = await fetchAllItemsAcrossFilters()
-    return all.filter((i) => !deselectedIds.has(i.uuid))
-  }
   )
 }
