@@ -49,16 +49,16 @@ export function useTheme() {
   const generateBlurryGradient = () : string => {
     const svgText = blurryGradientSVG
 
-    const color = new TinyColor(themes[themeName].primary[500]);
+    const color = new TinyColor(themes[themeName].primary[mode == "dark" ? 800: 200]);
 
     const customizedSVG = svgText
-      .replace(/{{color1}}/g, themes[themeName].surface[mode == "dark" ? 900: 100])
-      .replace(/{{color2}}/g, color.clone().lighten(10).toHexString())
+      .replace(/{{color1}}/g, themes[themeName].surface[mode == "dark" ? 800: 100])
+      .replace(/{{color2}}/g, color.clone().lighten(7).toHexString())
       .replace(/{{color3}}/g, color.toHexString())
-      .replace(/{{color4}}/g, color.clone().spin(2).lighten(7).toHexString())
-      .replace(/{{color5}}/g, color.clone().spin(-2).darken(11).toHexString())
-      .replace(/{{color6}}/g, color.clone().spin(2).lighten(14).toHexString())
-      .replace(/{{color7}}/g, color.clone().spin(2).darken(17).toHexString())
+      .replace(/{{color4}}/g, color.clone().spin(2).lighten(3).toHexString())
+      .replace(/{{color5}}/g, color.clone().spin(-2).darken(3).toHexString())
+      .replace(/{{color6}}/g, color.clone().spin(2).lighten(7).toHexString())
+      .replace(/{{color7}}/g, color.clone().spin(-6).lighten(3).toHexString())
 
     return customizedSVG;
   }
