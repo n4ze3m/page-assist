@@ -1,13 +1,13 @@
+import { ProviderIcons } from "@/components/Common/ProviderIcon"
 import { cleanUrl } from "@/libs/clean-url"
 import { useStorage } from "@plasmohq/storage/hook"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
-import { Select } from "antd"
+import { Avatar, Select } from "antd"
 import { Loader2, RotateCcw } from "lucide-react"
 import { useEffect, useState } from "react"
 import { Trans, useTranslation } from "react-i18next"
 import { useMessage } from "~/hooks/useMessage"
 import {
-  getAllModels,
   getOllamaURL,
   isOllamaRunning,
   setOllamaURL as saveOllamaURL,
@@ -60,16 +60,37 @@ export const EmptySidePanel = () => {
           }}
           value={selectedModel}
           size="large"
-          filterOption={(input, option) =>
-            option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0 ||
-            option.value.toLowerCase().indexOf(input.toLowerCase()) >= 0
-          }
+          filterOption={(input, option) => {
+            //@ts-ignore
+            return (
+              option?.label?.props["data-title"]
+                ?.toLowerCase()
+                ?.indexOf(input.toLowerCase()) >= 0
+            )
+          }}
           showSearch
           placeholder={t("common:selectAModel")}
           style={{ width: "100%" }}
           className="mt-4 min-w-60 max-w-64"
-          options={ollamaInfo.models?.map((model) => ({
-            label: model?.nickname || model.name,
+          options={ollamaInfo?.models?.map((model) => ({
+            label: (
+              <span
+                key={model.model}
+                data-title={model.name}
+                className="flex flex-row gap-3 items-center ">
+                {model?.avatar ? (
+                  <Avatar src={model.avatar} alt={model.name} size="small" />
+                ) : (
+                  <ProviderIcons
+                    provider={model?.provider}
+                    className="w-5 h-5"
+                  />
+                )}
+                <span className="line-clamp-2">
+                  {model?.nickname || model.model}
+                </span>
+              </span>
+            ),
             value: model.model
           }))}
         />
