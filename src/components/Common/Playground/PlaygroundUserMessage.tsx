@@ -96,7 +96,7 @@ export const PlaygroundUserMessageBubble: React.FC<Props> = (props) => {
         <div
           dir="auto"
           data-is-not-editable={!editMode}
-          className={`message-bubble bg-surface-50 dark:bg-[#242424] rounded-3xl prose dark:prose-invert break-words text-primary min-h-7 prose-p:opacity-95 prose-strong:opacity-100 bg-foreground border border-input-border max-w-[100%] sm:max-w-[90%] px-4 py-2.5 rounded-br-lg dark:border-[#2a2a2a] ${
+          className={`message-bubble bg-surface-50 dark:bg-surface-900 rounded-3xl prose dark:prose-invert break-words text-primary min-h-7 prose-p:opacity-95 prose-strong:opacity-100 bg-foreground border border-input-border max-w-[100%] sm:max-w-[90%] px-4 py-2.5 rounded-br-lg dark:border-[#2a2a2a] ${
             props.message_type && !editMode ? "italic" : ""
           }`}>
           <HumanMessage message={props.message} />
@@ -161,7 +161,7 @@ export const PlaygroundUserMessageBubble: React.FC<Props> = (props) => {
                     })
                   }
                 }}
-                className="flex items-center justify-center w-6 h-6 rounded-full bg-surface-100 dark:bg-[#242424] hover:bg-surface-200 dark:hover:bg-surface-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                className="flex items-center justify-center w-6 h-6 rounded-full bg-surface-100 dark:bg-surface-900 hover:bg-surface-200 dark:hover:bg-surface-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
                 {!isSpeaking ? (
                   <PlayIcon className="w-3 h-3 text-gray-400 group-hover:text-gray-500" />
                 ) : (
@@ -181,7 +181,7 @@ export const PlaygroundUserMessageBubble: React.FC<Props> = (props) => {
                     setIsBtnPressed(false)
                   }, 2000)
                 }}
-                className="flex items-center justify-center w-6 h-6 rounded-full bg-surface-50 dark:bg-[#242424] hover:bg-surface-200 dark:hover:bg-surface-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                className="flex items-center justify-center w-6 h-6 rounded-full bg-surface-50 dark:bg-surface-900 hover:bg-surface-200 dark:hover:bg-surface-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
                 {!isBtnPressed ? (
                   <CopyIcon className="w-3 h-3 text-gray-400 group-hover:text-gray-500" />
                 ) : (
@@ -196,7 +196,7 @@ export const PlaygroundUserMessageBubble: React.FC<Props> = (props) => {
               <button
                 onClick={() => setEditMode(true)}
                 aria-label={t("edit")}
-                className="flex items-center justify-center w-6 h-6 rounded-full bg-surface-50 dark:bg-[#242424] hover:bg-surface-200 dark:hover:bg-surface-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                className="flex items-center justify-center w-6 h-6 rounded-full bg-surface-50 dark:bg-surface-900 hover:bg-surface-200 dark:hover:bg-surface-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
                 <Pen className="w-3 h-3 text-gray-400 group-hover:text-gray-500" />
               </button>
             </Tooltip>
@@ -205,7 +205,7 @@ export const PlaygroundUserMessageBubble: React.FC<Props> = (props) => {
       ) : (
         // add invisible div to prevent layout shift
         <div className="invisible">
-          <div className="flex items-center justify-center w-6 h-6 rounded-full bg-surface-50 dark:bg-[#242424] hover:bg-surface-200 dark:hover:bg-surface-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"></div>
+          <div className="flex items-center justify-center w-6 h-6 rounded-full bg-surface-50 dark:bg-surface-900 hover:bg-surface-200 dark:hover:bg-surface-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"></div>
         </div>
       )}
     </div>
