@@ -51,7 +51,7 @@ export function useTheme() {
   const generateBlobScene = () : string => {
     const svgText = blobSceneSVG
 
-    const color = new TinyColor(themes[themeName].primary[mode == "dark" ? 900: 100]);
+    const color = new TinyColor(themes[themeName].primary[mode == "dark" ? 800: 200]);
 
     const customizedSVG = svgText
       .replace(/{{color1}}/g, themes[themeName].surface[mode == "dark" ? 900: 100])
