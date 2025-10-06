@@ -108,6 +108,23 @@ export class TldwApiClient {
     return await bgRequest<any>({ path: '/', method: 'GET' })
   }
 
+  private buildQuery(params?: Record<string, any>): string {
+    if (!params || Object.keys(params).length === 0) {
+      return ''
+    }
+    const search = new URLSearchParams()
+    for (const [key, value] of Object.entries(params)) {
+      if (value === undefined || value === null) continue
+      if (Array.isArray(value)) {
+        value.forEach((entry) => search.append(key, String(entry)))
+        continue
+      }
+      search.append(key, String(value))
+    }
+    const query = search.toString()
+    return query ? `?${query}` : ''
+  }
+
   async getOpenAPISpec(): Promise<any | null> {
     try {
       // Prefer background proxy in extension context. Use absolute URL to satisfy
@@ -124,57 +141,6 @@ export class TldwApiClient {
       return await res.json()
     } catch {
       return null
-    }
-  }
-
-  // Chats API (resource-based)
-  async listChats(params?: Record<string, any>): Promise<any[]> {
-    return await bgRequest<any[]>({ path: '/api/v1/chats/', method: 'GET', params })
-  }
-
-  async createChat(payload: Record<string, any>): Promise<any> {
-    return await bgRequest<any>({ path: '/api/v1/chats/', method: 'POST', headers: { 'Content-Type': 'application/json' }, body: payload })
-  }
-
-  async getChat(chat_id: string | number): Promise<any> {
-    const cid = String(chat_id)
-    return await bgRequest<any>({ path: `/api/v1/chats/${cid}`, method: 'GET' })
-  }
-
-  async updateChat(chat_id: string | number, payload: Record<string, any>): Promise<any> {
-    const cid = String(chat_id)
-    return await bgRequest<any>({ path: `/api/v1/chats/${cid}`, method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: payload })
-  }
-
-  async deleteChat(chat_id: string | number): Promise<void> {
-    const cid = String(chat_id)
-    await bgRequest<void>({ path: `/api/v1/chats/${cid}`, method: 'DELETE' })
-  }
-
-  async listChatMessages(chat_id: string | number, params?: Record<string, any>): Promise<any[]> {
-    const cid = String(chat_id)
-    return await bgRequest<any[]>({ path: `/api/v1/chats/${cid}/messages`, method: 'GET', params })
-  }
-
-  async addChatMessage(chat_id: string | number, payload: Record<string, any>): Promise<any> {
-    const cid = String(chat_id)
-    return await bgRequest<any>({ path: `/api/v1/chats/${cid}/messages`, method: 'POST', headers: { 'Content-Type': 'application/json' }, body: payload })
-  }
-
-  async searchChatMessages(chat_id: string | number, payload: Record<string, any>): Promise<any> {
-    const cid = String(chat_id)
-    return await bgRequest<any>({ path: `/api/v1/chats/${cid}/messages/search`, method: 'POST', headers: { 'Content-Type': 'application/json' }, body: payload })
-  }
-
-  async completeChat(chat_id: string | number, payload: Record<string, any>): Promise<any> {
-    const cid = String(chat_id)
-    return await bgRequest<any>({ path: `/api/v1/chats/${cid}/complete`, method: 'POST', headers: { 'Content-Type': 'application/json' }, body: payload })
-  }
-
-  async * streamCompleteChat(chat_id: string | number, payload: Record<string, any>): AsyncGenerator<any> {
-    const cid = String(chat_id)
-    for await (const line of bgStream({ path: `/api/v1/chats/${cid}/complete`, method: 'POST', headers: { 'Content-Type': 'application/json' }, body: payload })) {
-      try { yield JSON.parse(line) } catch {}
     }
   }
 
@@ -433,10 +399,11 @@ export class TldwApiClient {
 
   // Characters API
   async listCharacters(params?: Record<string, any>): Promise<any[]> {
+    const query = this.buildQuery(params)
     try {
-      return await bgRequest<any[]>({ path: '/api/v1/characters/', method: 'GET', params })
+      return await bgRequest<any[]>({ path: `/api/v1/characters/${query}`, method: 'GET' })
     } catch {
-      return await bgRequest<any[]>({ path: '/api/v1/characters', method: 'GET', params })
+      return await bgRequest<any[]>({ path: `/api/v1/characters${query}`, method: 'GET' })
     }
   }
 
@@ -512,10 +479,11 @@ export class TldwApiClient {
       return await bgRequest<any[]>({ path: `/api/v1/character-chat/sessions/${sid}/messages`, method: 'GET' })
     } catch {}
     // Fallback to flat endpoint
+    const query = this.buildQuery({ session_id: sid })
     try {
-      return await bgRequest<any[]>({ path: '/api/v1/character-messages', method: 'GET', params: { session_id: sid } as any })
+      return await bgRequest<any[]>({ path: `/api/v1/character-messages${query}`, method: 'GET' })
     } catch {}
-    return await bgRequest<any[]>({ path: '/api/v1/character_messages', method: 'GET', params: { session_id: sid } as any })
+    return await bgRequest<any[]>({ path: `/api/v1/character_messages${query}`, method: 'GET' })
   }
 
   async sendCharacterMessage(session_id: string | number, content: string, options?: { extra?: Record<string, any> }): Promise<any> {
@@ -555,7 +523,8 @@ export class TldwApiClient {
 
   // Chats API (resource-based)
   async listChats(params?: Record<string, any>): Promise<any[]> {
-    return await bgRequest<any[]>({ path: '/api/v1/chats/', method: 'GET', params })
+    const query = this.buildQuery(params)
+    return await bgRequest<any[]>({ path: `/api/v1/chats/${query}`, method: 'GET' })
   }
 
   async createChat(payload: Record<string, any>): Promise<any> {
@@ -579,7 +548,8 @@ export class TldwApiClient {
 
   async listChatMessages(chat_id: string | number, params?: Record<string, any>): Promise<any[]> {
     const cid = String(chat_id)
-    return await bgRequest<any[]>({ path: `/api/v1/chats/${cid}/messages`, method: 'GET', params })
+    const query = this.buildQuery(params)
+    return await bgRequest<any[]>({ path: `/api/v1/chats/${cid}/messages${query}`, method: 'GET' })
   }
 
   async addChatMessage(chat_id: string | number, payload: Record<string, any>): Promise<any> {

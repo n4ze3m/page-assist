@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Tag, Card, Space, Typography, Button, Alert } from 'antd'
 import { browser } from 'wxt/browser'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { tldwClient } from '@/services/tldw/TldwApiClient'
 import { apiSend } from '@/services/api-send'
 import type { AllowedPath } from '@/services/tldw/openapi-guard'
@@ -31,6 +31,7 @@ export default function HealthStatus() {
   const [coreStatus, setCoreStatus] = useState<'unknown'|'connected'|'failed'>('unknown')
   const [autoRefresh, setAutoRefresh] = useState<boolean>(false)
   const [intervalSec, setIntervalSec] = useState<number>(30)
+  const navigate = useNavigate()
 
   const runSingle = async (c: Check) => {
     const t0 = performance.now()
@@ -88,6 +89,7 @@ export default function HealthStatus() {
           <Typography.Paragraph type="secondary" className="!mb-0">Quick overview of subsystem health endpoints exposed by the server.</Typography.Paragraph>
         </div>
         <Space>
+          <Button onClick={() => navigate(-1)}>← Back to chat</Button>
           <Link to="/settings/tldw"><Button>Open tldw Settings</Button></Link>
           <Button type="primary" onClick={runChecks} loading={loading}>Recheck All</Button>
         </Space>

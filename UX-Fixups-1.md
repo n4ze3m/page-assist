@@ -1,0 +1,6 @@
+- Add skeleton loaders across options sub-routes so users always see a loading state instead of a blank panel while data resolves. (DONE)
+- Group the top navigation into clearer sections with text labels at tablet/phone breakpoints, and expose settings shortcuts directly instead of burying them in the overflow menu. (DONE)
+- Replace the remaining “Page Assist” branding and iconography in the sidepanel with “tldw Assistant” assets to maintain a consistent identity. (DONE)
+- Raise user-facing notifications whenever server initialization fails so CORS/health issues don’t silently stall the UI. (DONE)
+- Restructure the settings sidebar into themed clusters (Server & Auth, Knowledge Tools, Workspace) to reduce scanning effort. (DONE)
+- Promote high-frequency sidepanel actions (model settings, quick ingest, prompt management) to visible controls and reserve the kebab menu for rarely used utilities. (DONE)

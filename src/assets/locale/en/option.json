@@ -1,9 +1,30 @@
 {
     "newChat": "New Chat",
     "selectAPrompt": "Select a Prompt",
-    "githubRepository": "GitHub Repository",
-    "settings": "Settings",
-    "sidebarTitle": "Chat History",
+  "githubRepository": "GitHub Repository",
+  "settings": "Settings",
+  "header": {
+    "backToHome": "Back to home",
+    "openSidebar": "Open chat sidebar",
+    "untitledChat": "Untitled",
+    "modelLabel": "Model",
+    "promptLabel": "Prompt",
+    "review": "Review",
+    "flashcards": "Flashcards",
+    "media": "Media",
+    "libraryView": "Library view",
+    "notes": "Notes",
+    "showShortcuts": "Show shortcuts",
+    "hideShortcuts": "Hide shortcuts",
+    "quickIngest": "Quick ingest",
+    "modelSettings": "Model settings",
+    "more": "More",
+    "moreMenu": {
+      "title": "Advanced tools"
+    },
+    "moreActions": "More actions"
+  },
+  "sidebarTitle": "Chat History",
     "error": "Error",
     "somethingWentWrong": "Something went wrong",
     "validationSelectModel": "Please select a model to continue",

@@ -4,7 +4,7 @@ import { RagSettings } from "@/components/Option/Settings/rag"
 
 const OptionRagSettings = () => {
   return (
-    <OptionLayout>
+    <OptionLayout hideHeader>
       <SettingsLayout>
         <RagSettings />
       </SettingsLayout>

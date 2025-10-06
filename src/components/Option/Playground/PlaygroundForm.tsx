@@ -4,7 +4,7 @@ import React from "react"
 import useDynamicTextareaSize from "~/hooks/useDynamicTextareaSize"
 import { toBase64 } from "~/libs/to-base64"
 import { useMessageOption } from "~/hooks/useMessageOption"
-import { Checkbox, Dropdown, Switch, Tooltip, notification } from "antd"
+import { Checkbox, Dropdown, Switch, Tooltip, notification, Popover } from "antd"
 import { Image } from "antd"
 import { useWebUI } from "~/store/webui"
 import { defaultEmbeddingModelForRag } from "~/services/ollama"
@@ -17,14 +17,13 @@ import {
   FileIcon,
   FileText,
   PaperclipIcon,
-  Gauge
+  Gauge,
+  MoreHorizontal
 } from "lucide-react"
 import { getVariable } from "@/utils/select-variable"
 import { useTranslation } from "react-i18next"
 import { KnowledgeSelect } from "../Knowledge/KnowledgeSelect"
 import { useSpeechRecognition } from "@/hooks/useSpeechRecognition"
-import { PiGlobe } from "react-icons/pi"
-import { BsIncognito } from "react-icons/bs"
 import { handleChatInputKeyDown } from "@/utils/key-down"
 import { getIsSimpleInternetSearch } from "@/services/search"
 import { useStorage } from "@plasmohq/storage/hook"
@@ -313,6 +312,134 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
     })()
   }
 
+  const handleToggleTemporaryChat = React.useCallback(
+    (next: boolean) => {
+      if (isFireFoxPrivateMode) {
+        notification.error({
+          message: "Error",
+          description:
+            "tldw Assistant can't save chat in Firefox Private Mode. Temporary chat is enabled by default. More fixes coming soon."
+        })
+        return
+      }
+      setTemporaryChat(next)
+      if (history.length > 0) {
+        clearChat()
+      }
+    },
+    [clearChat, history.length]
+  )
+
+  const handleClearContext = React.useCallback(() => {
+    setHistory([])
+  }, [setHistory])
+
+  const handleImageUpload = React.useCallback(() => {
+    inputRef.current?.click()
+  }, [])
+
+  const handleDocumentUpload = React.useCallback(() => {
+    fileInputRef.current?.click()
+  }, [])
+
+  const handleSpeechToggle = React.useCallback(() => {
+    if (isListening) {
+      stopSpeechRecognition()
+    } else {
+      resetTranscript()
+      startListening({
+        continuous: true,
+        lang: speechToTextLanguage
+      })
+    }
+  }, [isListening, resetTranscript, speechToTextLanguage, startListening, stopSpeechRecognition])
+
+  const moreToolsContent = React.useMemo(() => (
+    <div className="flex w-64 flex-col gap-3">
+      <div className="flex items-center justify-between">
+        <span className="text-sm font-medium text-gray-700 dark:text-gray-200">
+          {temporaryChat ? t('playground:actions.temporaryOn') : t('playground:actions.temporaryOff')}
+        </span>
+        <Switch
+          size="small"
+          checked={temporaryChat}
+          onChange={handleToggleTemporaryChat}
+        />
+      </div>
+      {!selectedKnowledge && (
+        <div className="flex items-center justify-between">
+          <span className="text-sm text-gray-700 dark:text-gray-200">
+            {t('tooltip.searchInternet')}
+          </span>
+          <Switch
+            size="small"
+            checked={webSearch}
+            onChange={(value) => setWebSearch(value)}
+            checkedChildren={t('form.webSearch.on')}
+            unCheckedChildren={t('form.webSearch.off')}
+          />
+        </div>
+      )}
+      <button
+        type="button"
+        onClick={handleClearContext}
+        disabled={history.length === 0}
+        className="flex w-full items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-40 dark:text-gray-200 dark:hover:bg-[#2a2a2a]"
+      >
+        <span>{t('tooltip.clearContext')}</span>
+        <EraserIcon className="h-4 w-4" />
+      </button>
+      {!selectedKnowledge && (
+        <button
+          type="button"
+          onClick={handleImageUpload}
+          disabled={chatMode === 'rag'}
+          className="flex w-full items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-40 dark:text-gray-200 dark:hover:bg-[#2a2a2a]"
+        >
+          <span>{t('tooltip.uploadImage')}</span>
+          <ImageIcon className="h-4 w-4" />
+        </button>
+      )}
+      <button
+        type="button"
+        onClick={handleDocumentUpload}
+        className="flex w-full items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 transition hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-[#2a2a2a]"
+      >
+        <span>{t('tooltip.uploadDocuments')}</span>
+        <PaperclipIcon className="h-4 w-4" />
+      </button>
+      {browserSupportsSpeechRecognition && (
+        <button
+          type="button"
+          onClick={handleSpeechToggle}
+          className="flex w-full items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 transition hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-[#2a2a2a]"
+        >
+          <span>
+            {isListening
+              ? t('playground:actions.speechStop')
+              : t('playground:actions.speechStart')}
+          </span>
+          <MicIcon className="h-4 w-4" />
+        </button>
+      )}
+    </div>
+  ), [
+    browserSupportsSpeechRecognition,
+    chatMode,
+    handleClearContext,
+    handleDocumentUpload,
+    handleImageUpload,
+    handleSpeechToggle,
+    handleToggleTemporaryChat,
+    history.length,
+    isListening,
+    selectedKnowledge,
+    setWebSearch,
+    t,
+    temporaryChat,
+    webSearch
+  ])
+
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (import.meta.env.BROWSER !== "firefox") {
       if (e.key === "Process" || e.key === "229") return
@@ -570,138 +697,25 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                         onMentionsOpen={handleMentionsOpen}
                       />
                     </div>
-                    <div className="mt-2 flex justify-between items-center">
-                      <div className="flex items-center gap-3">
-                        {/* Private/Temporary chat controls: switch (left) + icon (right) */}
-                        <div className="inline-flex items-center gap-2">
-                          <Switch
-                            size="small"
-                            checked={temporaryChat}
-                            onChange={() => {
-                              if (isFireFoxPrivateMode) {
-                                notification.error({
-                                  message: "Error",
-                                  description:
-                                    "Page Assist can't save chat in Firefox Private Mode. Temporary chat is enabled by default. More fixes coming soon."
-                                })
-                                return
-                              }
-                              setTemporaryChat(!temporaryChat)
-                              if (history.length > 0) {
-                                clearChat()
-                              }
-                            }}
-                          />
-                          <Tooltip title={t("option:temporaryChat") as string}>
-                            <button
-                              type="button"
-                              aria-pressed={temporaryChat}
-                              className="inline-flex items-center rounded-md p-1 text-gray-600 dark:text-gray-300 data-[istemporary-chat='true']:bg-purple-900 data-[istemporary-chat='true']:text-white"
-                              data-istemporary-chat={temporaryChat}
-                              onClick={() => {
-                                if (isFireFoxPrivateMode) {
-                                  notification.error({
-                                    message: "Error",
-                                    description:
-                                      "Page Assist can't save chat in Firefox Private Mode. Temporary chat is enabled by default. More fixes coming soon."
-                                  })
-                                  return
-                                }
-                                setTemporaryChat(!temporaryChat)
-                                if (history.length > 0) {
-                                  clearChat()
-                                }
-                              }}
-                            >
-                              <BsIncognito className="h-4 w-4" />
-                            </button>
-                          </Tooltip>
-                        </div>
-                        {!selectedKnowledge && (
-                          <Tooltip title={t("tooltip.searchInternet")}>
-                            <div className="inline-flex items-center gap-2">
-                              <PiGlobe
-                                className={`h-5 w-5 dark:text-gray-300 `}
-                              />
-                              <Switch
-                                value={webSearch}
-                                onChange={(e) => setWebSearch(e)}
-                                checkedChildren={t("form.webSearch.on")}
-                                unCheckedChildren={t("form.webSearch.off")}
-                              />
-                            </div>
-                          </Tooltip>
-                        )}
+                    <div className="mt-2 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                      <div className="flex flex-wrap items-center gap-3">
+                        <KnowledgeSelect />
                       </div>
-                      <div className="flex !justify-end gap-3">
-                        {history.length > 0 && (
-                          <Tooltip title={t("tooltip.clearContext")}>
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setHistory([])
-                              }}
-                              className={`flex items-center justify-center dark:text-gray-300 ${
-                                chatMode === "rag" ? "hidden" : "block"
-                              }`}>
-                              <EraserIcon className="h-5 w-5" />
-                            </button>
-                          </Tooltip>
-                        )}
-                        {!selectedKnowledge && (
-                          <Tooltip title={t("tooltip.uploadImage")}>
-                            <button
-                              type="button"
-                              onClick={() => {
-                                inputRef.current?.click()
-                              }}
-                              className={`flex items-center justify-center dark:text-gray-300 ${
-                                chatMode === "rag" ? "hidden" : "block"
-                              }`}>
-                              <ImageIcon className="h-5 w-5" />
-                            </button>
-                          </Tooltip>
-                        )}
-
-                        <Tooltip title={t("tooltip.uploadDocuments")}>
+                      <div className="flex items-center justify-end gap-3">
+                        <Popover
+                          trigger="click"
+                          placement="topRight"
+                          content={moreToolsContent}
+                          overlayClassName="playground-more-tools"
+                        >
                           <button
                             type="button"
-                            onClick={() => {
-                              fileInputRef.current?.click()
-                            }}
-                            className="flex items-center justify-center dark:text-gray-300">
-                            <PaperclipIcon className="h-5 w-5" />
+                            className="inline-flex items-center gap-2 rounded-md border border-gray-200 px-3 py-1.5 text-sm text-gray-700 transition hover:bg-gray-100 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-[#2a2a2a]"
+                          >
+                            <MoreHorizontal className="h-4 w-4" />
+                            <span>{t('playground:composer.moreTools')}</span>
                           </button>
-                        </Tooltip>
-
-                        {browserSupportsSpeechRecognition && (
-                          <Tooltip title={t("tooltip.speechToText")}>
-                            <button
-                              type="button"
-                              onClick={async () => {
-                                if (isListening) {
-                                  stopSpeechRecognition()
-                                } else {
-                                  resetTranscript()
-                                  startListening({
-                                    continuous: true,
-                                    lang: speechToTextLanguage
-                                  })
-                                }
-                              }}
-                              className={`flex items-center justify-center dark:text-gray-300`}>
-                              {!isListening ? (
-                                <MicIcon className="h-5 w-5" />
-                              ) : (
-                                <div className="relative">
-                                  <span className="animate-ping absolute inline-flex h-3 w-3 rounded-full bg-red-400 opacity-75"></span>
-                                  <MicIcon className="h-5 w-5" />
-                                </div>
-                              )}
-                            </button>
-                          </Tooltip>
-                        )}
-                        <KnowledgeSelect />
+                        </Popover>
 
                         {!isSending ? (
                           <>

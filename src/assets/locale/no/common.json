@@ -1,5 +1,5 @@
 {
-    "pageAssist": "Sideassistent",
+    "pageAssist": "tldw Assistant",
     "selectAModel": "Velg en modell",
     "save": "Lagre",
     "saved": "Lagret",
@@ -131,7 +131,8 @@
             "last7Days": "Slett alle meldinger fra de siste 7 dagene",
             "older": "Slett alle eldre meldinger"
         }
-    },    "pin": "Fest",
+    },
+    "pin": "Fest",
     "unpin": "Løsne",
     "generationInfo": "Generasjonsinformasjon",
     "sidebarChat": "Sidepanel-chat",

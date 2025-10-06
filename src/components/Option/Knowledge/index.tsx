@@ -61,7 +61,7 @@ export const KnowledgeSettings = () => {
                 onClick={() => {
                   if (isFireFoxPrivateMode) {
                     notification.error({
-                      message: "Page Assist can't save data",
+                      message: "tldw Assistant can't save data",
                       description:
                         "Firefox Private Mode does not support saving data to IndexedDB. Please add knowledge base from a normal window."
                     })

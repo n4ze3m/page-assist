@@ -4,7 +4,7 @@ import { OptionShareBody } from "~/components/Option/Share"
 
  const OptionShare = () => {
   return (
-    <OptionLayout>
+    <OptionLayout hideHeader>
       <SettingsLayout>
         <OptionShareBody />
       </SettingsLayout>

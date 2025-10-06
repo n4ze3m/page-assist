@@ -41,6 +41,11 @@ import {
 } from "./utils/messageHelpers"
 import { updatePageTitle } from "@/utils/update-page-title"
 
+type ServerBackedMessage = Message & {
+  serverMessageId?: string
+  serverMessageVersion?: number
+}
+
 export const useMessage = () => {
   const {
     controller: abortController,
@@ -1046,7 +1051,7 @@ export const useMessage = () => {
         }
         const createdUser = await tldwClient.addChatMessage(chatId, payload)
         setMessages((prev) => {
-          const updated = [...prev]
+          const updated = [...prev] as ServerBackedMessage[]
           for (let i = updated.length - 1; i >= 0; i--) {
             if (!updated[i].isBot) {
               updated[i] = { ...updated[i], serverMessageId: createdUser?.id, serverMessageVersion: createdUser?.version }
@@ -1058,8 +1063,8 @@ export const useMessage = () => {
       }
 
       // Get messages formatted for completions with character context
-      const formatted = await tldwClient.listChatMessages(chatId, { include_character_context: 'true', format_for_completions: 'true' } as any)
-      const msgs = formatted?.messages || []
+      const formatted: any = await tldwClient.listChatMessages(chatId, { include_character_context: 'true', format_for_completions: 'true' })
+      const msgs = Array.isArray(formatted) ? formatted : (formatted?.messages || [])
 
       // Stream completion from server /chat/completions
       let fullText = ''
@@ -1079,7 +1084,7 @@ export const useMessage = () => {
       // Persist assistant reply on server
       try {
         const createdAsst = await tldwClient.addChatMessage(chatId, { role: 'assistant', content: fullText })
-        setMessages((prev) => prev.map((m) => (m.id === generateMessageId ? { ...m, serverMessageId: createdAsst?.id, serverMessageVersion: createdAsst?.version } : m)))
+        setMessages((prev) => (prev as ServerBackedMessage[]).map((m) => (m.id === generateMessageId ? { ...m, serverMessageId: createdAsst?.id, serverMessageVersion: createdAsst?.version } : m)))
       } catch {}
 
       // Update local history as well (keeps local features consistent)
@@ -1764,11 +1769,11 @@ export const useMessage = () => {
     message: string,
     isHuman: boolean
   ) => {
-    let newMessages = messages
+    let newMessages = messages as ServerBackedMessage[]
     let newHistory = history
 
     if (isHuman) {
-      const currentHumanMessage = newMessages[index]
+      const currentHumanMessage = newMessages[index] as ServerBackedMessage | undefined
       newMessages[index].message = message
       const previousMessages = newMessages.slice(0, index + 1)
       setMessages(previousMessages)
@@ -1786,8 +1791,8 @@ export const useMessage = () => {
           } catch {}
         }
         try {
-          const res = await tldwClient.listChatMessages(serverChatId, { include_deleted: 'false' } as any)
-          const list = res?.messages || []
+          const res: any = await tldwClient.listChatMessages(serverChatId, { include_deleted: 'false' })
+          const list: any[] = Array.isArray(res) ? res : (res?.messages || [])
           const serverIds = list.map((m: any) => m.id)
           const targetSrvId = currentHumanMessage?.serverMessageId
           const startIdx = targetSrvId ? serverIds.indexOf(targetSrvId) : -1
@@ -1810,7 +1815,7 @@ export const useMessage = () => {
       })
     } else {
       // Assistant message edited
-      const currentAssistant = newMessages[index]
+      const currentAssistant = newMessages[index] as ServerBackedMessage | undefined
       newMessages[index].message = message
       setMessages(newMessages)
       newHistory[index].content = message
@@ -1831,10 +1836,10 @@ export const useMessage = () => {
     if (history.length > 0) {
       const lastMessage = history[history.length - 2]
       let newHistory = history.slice(0, -2)
-      let mewMessages = messages
+      let mewMessages = messages as ServerBackedMessage[]
       // If server-backed and last assistant has server message id, delete it on server
       if (selectedCharacter?.id && serverChatId) {
-        const lastAssistant = [...mewMessages].reverse().find((m) => m.isBot)
+        const lastAssistant = ([...mewMessages].reverse().find((m) => m.isBot) as ServerBackedMessage | undefined)
         if (lastAssistant?.serverMessageId) {
           try {
             let version = lastAssistant.serverMessageVersion

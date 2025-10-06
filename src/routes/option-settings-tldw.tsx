@@ -4,7 +4,7 @@ import { TldwSettings } from "@/components/Option/Settings/tldw"
 
 export const OptionTldwSettings = () => {
   return (
-    <OptionLayout>
+    <OptionLayout hideHeader>
       <SettingsLayout>
         <TldwSettings />
       </SettingsLayout>

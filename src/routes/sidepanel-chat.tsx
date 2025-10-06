@@ -31,6 +31,25 @@ const SidepanelChat = () => {
   const [dropState, setDropState] = React.useState<
     "idle" | "dragging" | "error"
   >("idle")
+  const [dropFeedback, setDropFeedback] = React.useState<
+    { type: "info" | "error"; message: string } | null
+  >(null)
+  const feedbackTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(
+    null
+  )
+  const showDropFeedback = React.useCallback(
+    (feedback: { type: "info" | "error"; message: string }) => {
+      setDropFeedback(feedback)
+      if (feedbackTimerRef.current) {
+        clearTimeout(feedbackTimerRef.current)
+      }
+      feedbackTimerRef.current = setTimeout(() => {
+        setDropFeedback(null)
+        feedbackTimerRef.current = null
+      }, 4000)
+    },
+    []
+  )
   useMigration()
   const {
     streaming,
@@ -106,12 +125,23 @@ const SidepanelChat = () => {
 
       if (!isImage) {
         setDropState("error")
+        showDropFeedback({
+          type: "error",
+          message: t(
+            "playground:drop.imageOnly",
+            "Only images can be dropped here right now."
+          )
+        })
         return
       }
 
       const newFiles = Array.from(e.dataTransfer?.files || []).slice(0, 1)
       if (newFiles.length > 0) {
         setDropedFile(newFiles[0])
+        showDropFeedback({
+          type: "info",
+          message: `${newFiles[0]?.name || "Image"} ready to send`
+        })
       }
     }
 
@@ -119,6 +149,13 @@ const SidepanelChat = () => {
       e.preventDefault()
       e.stopPropagation()
       setDropState("dragging")
+      showDropFeedback({
+        type: "info",
+        message: t(
+          "playground:drop.imageHint",
+          "Drop an image to include it in your message"
+        )
+      })
     }
 
     const handleDragLeave = (e: DragEvent) => {
@@ -138,6 +175,14 @@ const SidepanelChat = () => {
         drop.current.removeEventListener("drop", handleDrop)
         drop.current.removeEventListener("dragenter", handleDragEnter)
         drop.current.removeEventListener("dragleave", handleDragLeave)
+      }
+    }
+  }, [])
+
+  React.useEffect(() => {
+    return () => {
+      if (feedbackTimerRef.current) {
+        clearTimeout(feedbackTimerRef.current)
       }
     }
   }, [])
@@ -201,6 +246,33 @@ const SidepanelChat = () => {
               className="absolute inset-0 bg-white dark:bg-[#171717]"
               style={{ opacity: 0.9, pointerEvents: "none" }}
             />
+          )}
+
+          {dropState === "dragging" && (
+            <div className="pointer-events-none absolute inset-0 z-30 flex flex-col items-center justify-center">
+              <div className="rounded-2xl border border-dashed border-white/70 bg-black/70 px-5 py-3 text-center text-sm font-medium text-white shadow-lg backdrop-blur-sm dark:border-white/40">
+                {t(
+                  "playground:drop.overlayInstruction",
+                  "Drop the image to attach it to your next reply"
+                )}
+              </div>
+            </div>
+          )}
+
+          {dropFeedback && (
+            <div className="pointer-events-none absolute top-20 left-0 right-0 z-30 flex justify-center px-4">
+              <div
+                role="status"
+                aria-live="polite"
+                className={`max-w-lg rounded-full px-4 py-2 text-sm shadow-lg backdrop-blur-sm ${
+                  dropFeedback.type === "error"
+                    ? "bg-red-600 text-white"
+                    : "bg-slate-900/80 text-white dark:bg-slate-100/90 dark:text-slate-900"
+                }`}
+              >
+                {dropFeedback.message}
+              </div>
+            </div>
           )}
 
           <div

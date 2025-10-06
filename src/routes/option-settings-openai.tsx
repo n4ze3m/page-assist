@@ -4,7 +4,7 @@ import { OpenAIApp } from "@/components/Option/Settings/openai"
 
 const OptionOpenAI = () => {
   return (
-    <OptionLayout>
+    <OptionLayout hideHeader>
       <SettingsLayout>
         <OpenAIApp />
       </SettingsLayout>

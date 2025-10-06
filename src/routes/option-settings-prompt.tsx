@@ -4,7 +4,7 @@ import { PromptBody } from "~/components/Option/Prompt"
 
  const OptionPrompt = () => {
   return (
-    <OptionLayout>
+    <OptionLayout hideHeader>
       <SettingsLayout>
         <PromptBody />
       </SettingsLayout>

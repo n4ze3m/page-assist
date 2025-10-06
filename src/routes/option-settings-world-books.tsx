@@ -4,7 +4,7 @@ import { WorldBooksManager } from "~/components/Option/WorldBooks/Manager"
 
 const OptionWorldBooks = () => {
   return (
-    <OptionLayout>
+    <OptionLayout hideHeader>
       <SettingsLayout>
         <WorldBooksManager />
       </SettingsLayout>
@@ -13,4 +13,3 @@ const OptionWorldBooks = () => {
 }
 
 export default OptionWorldBooks
-

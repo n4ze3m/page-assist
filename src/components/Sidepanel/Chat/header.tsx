@@ -1,7 +1,17 @@
 import logoImage from "~/assets/icon.png"
 import { useMessage } from "~/hooks/useMessage"
 import { Link } from "react-router-dom"
-import { Tooltip, Drawer, notification, Popover, InputNumber, Space, Button } from "antd"
+import {
+  Tooltip,
+  Drawer,
+  notification,
+  Popover,
+  InputNumber,
+  Space,
+  Button,
+  Dropdown
+} from "antd"
+import type { MenuProps } from "antd"
 import {
   BoxesIcon,
   CogIcon,
@@ -10,7 +20,10 @@ import {
   HistoryIcon,
   PlusSquare,
   XIcon,
-  MessageSquareShareIcon
+  MessageSquareShareIcon,
+  UploadCloud,
+  NotebookPen,
+  Gauge
 } from "lucide-react"
 import { useTranslation } from "react-i18next"
 // import { CurrentChatModelSettings } from "@/components/Common/Settings/CurrentChatModelSettings"
@@ -21,7 +34,6 @@ import { CharacterSelect } from "@/components/Common/CharacterSelect"
 import { Sidebar } from "@/components/Option/Sidebar"
 // import { BsIncognito } from "react-icons/bs"
 import { isFireFoxPrivateMode } from "@/utils/is-private-mode"
-import { Tooltip as AntdTooltip } from 'antd'
 
 type SidepanelHeaderProps = {
   sidebarOpen?: boolean
@@ -87,6 +99,62 @@ export const SidepanelHeader = ({
   const sidebarOpen = propSidebarOpen !== undefined ? propSidebarOpen : localSidebarOpen
   const setSidebarOpen = propSetSidebarOpen || setLocalSidebarOpen
 
+  const openOptionsPage = React.useCallback((hash: string) => {
+    try {
+      const url = browser.runtime.getURL(`/options.html${hash}`)
+      browser.tabs.create({ url })
+    } catch {
+      window.open(`/options.html${hash}`, '_blank')
+    }
+  }, [])
+
+  const sendQuickIngest = React.useCallback(
+    async (mode: 'store' | 'process') => {
+      const timeoutMs = Math.max(1, Math.round(Number(ingestTimeoutSec) || 120)) * 1000
+      await browser.runtime.sendMessage({ type: 'tldw:ingest', mode, timeoutMs })
+      const btn = (
+        <Button
+          size="small"
+          type="link"
+          onClick={() => {
+            const url = browser.runtime.getURL("/options.html#/media")
+            browser.tabs.create({ url })
+          }}>
+          {t('sidepanel:header.viewProcessed', 'View Media')}
+        </Button>
+      )
+      if (mode === 'store') {
+        notification.success({
+          message: t('sidepanel:notification.ingestSent'),
+          description: t('sidepanel:notification.ingestSentDesc'),
+          btn
+        })
+      } else {
+        notification.success({
+          message: t('sidepanel:notification.processedLocal'),
+          description: t('sidepanel:notification.processedLocalDesc'),
+          btn
+        })
+      }
+    },
+    [ingestTimeoutSec, t]
+  )
+
+  const quickIngestMenu = React.useMemo<MenuProps>(
+    () => ({
+      onClick: ({ key }) => {
+        if (key === 'store' || key === 'process') {
+          void sendQuickIngest(key)
+        }
+      },
+      items: [
+        { key: 'store', label: t('sidepanel:header.saveCurrent') },
+        { key: 'process', label: t('sidepanel:header.processLocal') }
+      ]
+    }),
+    [sendQuickIngest, t]
+  )
+
   return (
     <div
       data-istemporary-chat={temporaryChat}
@@ -101,72 +169,59 @@ export const SidepanelHeader = ({
       </div>
 
       <div className="flex items-center space-x-3">
+        <Dropdown menu={quickIngestMenu} placement="bottomRight" trigger={["click"]}>
+          <Tooltip title={t('sidepanel:header.ingest')}>
+            <button
+              type="button"
+              aria-label={t('sidepanel:header.ingest')}
+              className="flex items-center space-x-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-700">
+              <UploadCloud className="size-4 text-gray-500 dark:text-gray-400" />
+            </button>
+          </Tooltip>
+        </Dropdown>
+        <Tooltip title={t('settings:managePrompts.title')}>
+          <button
+            type="button"
+            aria-label={t('settings:managePrompts.title')}
+            onClick={() => openOptionsPage('#/settings/prompt')}
+            className="flex items-center space-x-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-700">
+            <NotebookPen className="size-4 text-gray-500 dark:text-gray-400" />
+          </button>
+        </Tooltip>
+        <Tooltip title={t('sidepanel:header.openModelSettingsAria')}>
+          <button
+            type="button"
+            aria-label={t('sidepanel:header.openModelSettingsAria')}
+            onClick={() => openOptionsPage('#/settings/model')}
+            className="flex items-center space-x-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-700">
+            <Gauge className="size-4 text-gray-500 dark:text-gray-400" />
+          </button>
+        </Tooltip>
         {/* Consolidate less-used actions into kebab menu */}
         <Popover
           trigger="click"
           content={
             <Space size="small" direction="vertical">
+              <div className="text-xs text-gray-500">{t('sidepanel:header.timeoutLabel')}</div>
+              <InputNumber
+                min={1}
+                size="small"
+                value={ingestTimeoutSec}
+                onChange={(v) => setIngestTimeoutSec(Number(v || 120))}
+              />
+              <div className="h-px bg-gray-200 dark:bg-gray-700 my-1" />
               <button
-                onClick={() => {
-                  const url = browser.runtime.getURL("/options.html#/settings/prompt")
-                  browser.tabs.create({ url })
-                }}
-                className="text-left text-sm px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800"
-              >
-                {t('settings:managePrompts.title')}
-              </button>
-              <button
-                onClick={() => {
-                  const url = browser.runtime.getURL("/options.html#/settings/world-books")
-                  browser.tabs.create({ url })
-                }}
+                onClick={() => openOptionsPage('#/settings/world-books')}
                 className="text-left text-sm px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800"
               >
                 World Books
               </button>
               <button
-                onClick={() => {
-                  const url = browser.runtime.getURL("/options.html#/settings/chat-dictionaries")
-                  browser.tabs.create({ url })
-                }}
+                onClick={() => openOptionsPage('#/settings/chat-dictionaries')}
                 className="text-left text-sm px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800"
               >
                 Chat Dictionaries
               </button>
-              <div className="text-xs text-gray-500">{t('sidepanel:header.ingest')}</div>
-              <button
-                onClick={async () => {
-                  await browser.runtime.sendMessage({ type: 'tldw:ingest', mode: 'store', timeoutMs: Math.max(1, Math.round(Number(ingestTimeoutSec)||120))*1000 })
-                  const btn = (
-                    <Button size="small" type="link" onClick={() => {
-                      const url = browser.runtime.getURL("/options.html#/media")
-                      browser.tabs.create({ url })
-                    }}>View Media</Button>
-                  )
-                  notification.success({ message: t('sidepanel:notification.ingestSent'), description: t('sidepanel:notification.ingestSentDesc'), btn })
-                }}
-                className="text-left text-sm px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
-                {t('sidepanel:header.saveCurrent')}
-              </button>
-              <button
-                onClick={async () => {
-                  await browser.runtime.sendMessage({ type: 'tldw:ingest', mode: 'process', timeoutMs: Math.max(1, Math.round(Number(ingestTimeoutSec)||120))*1000 })
-                  const btn = (
-                    <Button size="small" type="link" onClick={() => {
-                      const url = browser.runtime.getURL("/options.html#/media")
-                      browser.tabs.create({ url })
-                    }}>View Media</Button>
-                  )
-                  notification.success({ message: t('sidepanel:notification.processedLocal'), description: t('sidepanel:notification.processedLocalDesc'), btn })
-                }}
-                className="text-left text-sm px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
-                {t('sidepanel:header.processLocal')}
-              </button>
-              <div className="flex items-center gap-2 px-2 pt-1">
-                <span className="text-xs text-gray-500">{t('sidepanel:header.timeoutLabel')}</span>
-                <InputNumber min={1} size="small" value={ingestTimeoutSec} onChange={(v) => setIngestTimeoutSec(Number(v||120))} />
-              </div>
-              <div className="h-px bg-gray-200 dark:bg-gray-700 my-1" />
               <button
                 onClick={async () => {
                   const storage = new (await import('@plasmohq/storage')).Storage({ area: 'local' })
@@ -205,6 +260,7 @@ export const SidepanelHeader = ({
         >
           <button aria-label={t('sidepanel:header.moreOptionsAria')} title={t('sidepanel:header.moreOptionsTitle')} className="flex items-center space-x-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-700">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-4 text-gray-500 dark:text-gray-400"><path d="M12 8a2 2 0 110-4 2 2 0 010 4zm0 7a2 2 0 110-4 2 2 0 010 4zm0 7a2 2 0 110-4 2 2 0 010 4z"/></svg>
+            <span className="sr-only">{t('sidepanel:header.moreOptionsTitle')}</span>
           </button>
         </Popover>
         {webuiBtnSidePanel ? (
@@ -227,29 +283,31 @@ export const SidepanelHeader = ({
         ) : null}
 
         {messages.length > 0 && !streaming && (
-          <button
-            title={t("option:newChat")}
-            onClick={() => {
-              clearChat()
-            }}
-            aria-label={t('sidepanel:header.newChatAria')}
-            className="flex items-center space-x-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-700">
-            <PlusSquare className="size-4 text-gray-500 dark:text-gray-400" />
-          </button>
+          <Tooltip title={t("option:newChat")}>
+            <button
+              onClick={() => {
+                clearChat()
+              }}
+              aria-label={t('sidepanel:header.newChatAria')}
+              className="flex items-center space-x-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-700">
+              <PlusSquare className="size-4 text-gray-500 dark:text-gray-400" />
+            </button>
+          </Tooltip>
         )}
 
         {/* Private chat toggle moved into chat input controls */}
 
         {history.length > 0 && (
-          <button
-            title={t("tooltip.clear")}
-            onClick={() => {
-              setHistory([])
-            }}
-            aria-label={t('sidepanel:header.clearHistoryAria')}
-            className="flex items-center space-x-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-700">
-            <EraserIcon className="size-4 text-gray-500 dark:text-gray-400" />
-          </button>
+          <Tooltip title={t("tooltip.clear")}>
+            <button
+              onClick={() => {
+                setHistory([])
+              }}
+              aria-label={t('sidepanel:header.clearHistoryAria')}
+              className="flex items-center space-x-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-700">
+              <EraserIcon className="size-4 text-gray-500 dark:text-gray-400" />
+            </button>
+          </Tooltip>
         )}
         <Tooltip title={t("tooltip.history")}>
           <button

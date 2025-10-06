@@ -4,7 +4,7 @@ import { ModelsBody } from "~/components/Option/Models"
 
 const OptionModal = () => {
   return (
-    <OptionLayout>
+    <OptionLayout hideHeader>
       <SettingsLayout>
         <ModelsBody />
       </SettingsLayout>

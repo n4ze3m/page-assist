@@ -4,7 +4,7 @@ import { GeneralSettings } from "~/components/Option/Settings/general-settings"
 
  const OptionSettings = () => {
   return (
-    <OptionLayout>
+    <OptionLayout hideHeader>
       <SettingsLayout>
         <GeneralSettings />
       </SettingsLayout>

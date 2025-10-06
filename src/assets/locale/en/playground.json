@@ -1,9 +1,21 @@
 {
     "ollamaState": {
+        "title": "Waiting for your tldw server",
+        "subtitle": "We’re pinging {{host}} to verify the connection.",
         "searching": "Searching for your tldw_server 🔎",
         "running": "tldw is running ✅",
         "notRunning": "Unable to connect to tldw_server instance 🚨",
-        "connectionError": "It seems like you are having a connection error. Please refer to this <anchor>documentation</anchor> for troubleshooting."
+        "missing": "Server URL not configured",
+        "noServer": "Add your tldw server to start chatting.",
+        "connectedSubtitle": "Connected to {{host}}. Start chatting when you’re ready.",
+        "errorSubtitle": "We couldn’t reach {{host}} yet. Retry or update your server settings.",
+        "openSettings": "Open settings",
+        "changeServer": "Change server",
+        "elapsed": "Checking… {{seconds}}s",
+        "connectedHint": "Connected to {{host}}.",
+        "lastChecked": "Checked {{seconds}}s ago",
+        "recheck": "Check again",
+        "connectionError": "Troubleshooting guide"
     },
     "formError": {
         "noModel": "Please select a model",
@@ -18,6 +30,16 @@
             "off": "Off"
         }
     },
+    "drop": {
+        "hint": "Drop files to attach them to your message",
+        "readySingle": "{{name}} ready to send",
+        "readyMultiple": "{{count}} files ready to send",
+        "unsupported": "That file type isn’t supported. Try images or text-based files.",
+        "defaultFileName": "File",
+        "imageOnly": "Only images can be dropped here right now.",
+        "imageHint": "Drop an image to include it in your message",
+        "overlayInstruction": "Drop the image to attach it to your next reply"
+    },
     "tooltip": {
         "searchInternet": "Search Internet",
         "speechToText": "Speech to Text",
@@ -31,5 +53,28 @@
     "sendWhenEnter": "Send when Enter pressed",
     "welcome": "Hello! How can I help you today?",
     "useOCR": "Extract text from image (OCR)",
-    "fileRetrievalEnabled": "Enable RAG for Documents"
+    "fileRetrievalEnabled": "Enable RAG for Documents",
+    "actions": {
+        "temporaryOn": "Temporary chat",
+        "temporaryOff": "Save chat",
+        "webSearchOn": "Web search on",
+        "webSearchOff": "Web search off",
+        "speechStart": "Start dictation",
+        "speechStop": "Stop dictation",
+        "streamStart": "Live captions",
+        "streamStop": "Stop captions",
+        "visionOn": "Vision on",
+        "visionOff": "Vision off",
+        "upload": "Attach image",
+        "ingest": "Quick ingest"
+    },
+    "composer": {
+        "coreTools": "Conversation options",
+        "captureTools": "Capture and assist tools",
+        "actions": "Send options",
+        "moreTools": "More tools",
+        "submitAria": "Send message",
+        "openModelSettings": "Open current chat settings",
+        "stopStreaming": "Stop streaming response"
+    }
 }

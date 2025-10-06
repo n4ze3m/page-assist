@@ -4,7 +4,7 @@ import { AboutApp } from "@/components/Option/Settings/about"
 
 const OptionAbout = () => {
   return (
-    <OptionLayout>
+    <OptionLayout hideHeader>
       <SettingsLayout>
         <AboutApp />
       </SettingsLayout>

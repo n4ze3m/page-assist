@@ -8,6 +8,8 @@ export type Message = {
   images?: string[]
   modelName?: string
   modelImage?: string
+  serverMessageId?: string
+  serverMessageVersion?: number
 }
 
 export type ChatHistory = {

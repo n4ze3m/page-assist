@@ -23,4 +23,6 @@ export type Message = {
   modelImage?: string
   modelName?: string
   documents?: ChatDocuments
+  serverMessageId?: string
+  serverMessageVersion?: number
 }

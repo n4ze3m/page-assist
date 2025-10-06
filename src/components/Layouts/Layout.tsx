@@ -1,19 +1,21 @@
 import React, { useState } from "react"
 
-import { Sidebar } from "../Option/Sidebar"
 import { Drawer, Tooltip } from "antd"
-
-import { useTranslation } from "react-i18next"
-
-import { CurrentChatModelSettings } from "../Common/Settings/CurrentChatModelSettings"
-import { Header } from "./Header"
 import { EraserIcon, XIcon } from "lucide-react"
-// import { PageAssitDatabase } from "@/db/"
-import { useMessageOption } from "@/hooks/useMessageOption"
-import { useChatShortcuts, useSidebarShortcuts } from "@/hooks/keyboard/useKeyboardShortcuts"
+import { useTranslation } from "react-i18next"
 import { useQueryClient } from "@tanstack/react-query"
-import { useStoreChatModelSettings } from "@/store/model"
+
+import { classNames } from "@/libs/class-name"
 import { PageAssistDatabase } from "@/db/dexie/chat"
+import { useMessageOption } from "@/hooks/useMessageOption"
+import {
+  useChatShortcuts,
+  useSidebarShortcuts
+} from "@/hooks/keyboard/useKeyboardShortcuts"
+import { useStoreChatModelSettings } from "@/store/model"
+import { CurrentChatModelSettings } from "../Common/Settings/CurrentChatModelSettings"
+import { Sidebar } from "../Option/Sidebar"
+import { Header } from "./Header"
 import { useMigration } from "../../hooks/useMigration"
 
 export default function OptionLayout({
@@ -53,7 +55,11 @@ export default function OptionLayout({
 
   return (
     <div className="flex h-full w-full">
-      <main className="relative h-dvh w-full">
+      <main
+        className={classNames(
+          "relative w-full",
+          hideHeader ? "min-h-screen bg-slate-50 dark:bg-[#101010]" : "h-dvh"
+        )}>
         {!hideHeader && (
           <div className="relative z-20 w-full">
             <Header
@@ -62,57 +68,63 @@ export default function OptionLayout({
             />
           </div>
         )}
-        {/* <div className="relative flex h-full flex-col items-center"> */}
-        {children}
-        {/* </div> */}
+        <div
+          className={classNames(
+            "relative flex h-full flex-col",
+            hideHeader
+              ? "min-h-screen items-center justify-center px-4 py-10 sm:px-8"
+              : ""
+          )}>
+          {children}
+        </div>
         {!hideHeader && (
-        <Drawer
-          title={
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => setSidebarOpen(false)}
-                  aria-label="Close sidebar"
-                  title="Close sidebar"
-                  className="-ml-1"
-                >
-                  <XIcon className="h-5 w-5 text-gray-500 dark:text-gray-400" />
-                </button>
-                <span>{t("sidebarTitle")}</span>
-              </div>
-
-              <div className="flex items-center space-x-3">
-                <Tooltip
-                  title={t(
-                    "settings:generalSettings.system.deleteChatHistory.label"
-                  )}
-                  placement="left">
+          <Drawer
+            title={
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
                   <button
-                    onClick={async () => {
-                      const confirm = window.confirm(
-                        t(
-                          "settings:generalSettings.system.deleteChatHistory.confirm"
-                        )
-                      )
-
-                      if (confirm) {
-                        const db = new PageAssistDatabase()
-                        await db.deleteAllChatHistory()
-                        await queryClient.invalidateQueries({
-                          queryKey: ["fetchChatHistory"]
-                        })
-                        clearChat()
-                      }
-                    }}
-                    className="text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100">
-                    <EraserIcon className="size-5" />
+                    onClick={() => setSidebarOpen(false)}
+                    aria-label="Close sidebar"
+                    title="Close sidebar"
+                    className="-ml-1"
+                  >
+                    <XIcon className="h-5 w-5 text-gray-500 dark:text-gray-400" />
                   </button>
-                </Tooltip>
+                  <span>{t("sidebarTitle")}</span>
+                </div>
+
+                <div className="flex items-center space-x-3">
+                  <Tooltip
+                    title={t(
+                      "settings:generalSettings.system.deleteChatHistory.label"
+                    )}
+                    placement="left">
+                    <button
+                      onClick={async () => {
+                        const confirm = window.confirm(
+                          t(
+                            "settings:generalSettings.system.deleteChatHistory.confirm"
+                          )
+                        )
+
+                        if (confirm) {
+                          const db = new PageAssistDatabase()
+                          await db.deleteAllChatHistory()
+                          await queryClient.invalidateQueries({
+                            queryKey: ["fetchChatHistory"]
+                          })
+                          clearChat()
+                        }
+                      }}
+                      className="text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100">
+                      <EraserIcon className="size-5" />
+                    </button>
+                  </Tooltip>
+                </div>
               </div>
-            </div>
-          }
-          placement="left"
-          closeIcon={null}
+            }
+            placement="left"
+            closeIcon={null}
           onClose={() => setSidebarOpen(false)}
           open={sidebarOpen}>
           <Sidebar

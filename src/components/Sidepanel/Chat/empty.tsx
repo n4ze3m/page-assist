@@ -1,206 +1,236 @@
+import { Button, Tag, notification } from "antd"
+import { Clock, ExternalLink, RefreshCw, Server, Settings } from "lucide-react"
+import React from "react"
+import { useTranslation } from "react-i18next"
+import { useQuery } from "@tanstack/react-query"
+
 import { cleanUrl } from "@/libs/clean-url"
-import { useStorage } from "@plasmohq/storage/hook"
-import { useQuery, useQueryClient } from "@tanstack/react-query"
-import { Select } from "antd"
-import { Loader2, RotateCcw } from "lucide-react"
-import { useEffect, useState } from "react"
-import { Trans, useTranslation } from "react-i18next"
-import { useMessage } from "~/hooks/useMessage"
-import {
-  getAllModels,
-  getOllamaURL,
-  isOllamaRunning,
-  setOllamaURL as saveOllamaURL,
-  fetchChatModels
-} from "~/services/ollama"
+import { tldwClient } from "@/services/tldw/TldwApiClient"
+
+const useElapsedTimer = (isRunning: boolean) => {
+  const [elapsed, setElapsed] = React.useState(0)
+
+  React.useEffect(() => {
+    if (!isRunning) {
+      setElapsed(0)
+      return
+    }
+    const startedAt = Date.now()
+    const id = window.setInterval(() => {
+      setElapsed(Math.floor((Date.now() - startedAt) / 1000))
+    }, 1000)
+    return () => window.clearInterval(id)
+  }, [isRunning])
+
+  return elapsed
+}
+
+const useElapsedSince = (timestamp: number | null) => {
+  const [elapsed, setElapsed] = React.useState<number | null>(null)
+
+  React.useEffect(() => {
+    if (!timestamp) {
+      setElapsed(null)
+      return
+    }
+
+    const update = () => {
+      setElapsed(Math.max(0, Math.floor((Date.now() - timestamp) / 1000)))
+    }
+
+    update()
+    const id = window.setInterval(update, 1000)
+    return () => window.clearInterval(id)
+  }, [timestamp])
+
+  return elapsed
+}
 
 export const EmptySidePanel = () => {
-  const [ollamaURL, setOllamaURL] = useState<string>("")
   const { t } = useTranslation(["playground", "common"])
-  const queryClient = useQueryClient()
-  const [checkOllamaStatus] = useStorage("checkOllamaStatus", true)
+  const toastIssuedRef = React.useRef(false)
 
-  const {
-    data: ollamaInfo,
-    status: ollamaStatus,
-    refetch,
-    isRefetching
-  } = useQuery({
-    queryKey: ["ollamaStatus", checkOllamaStatus],
+  const statusQuery = useQuery({
+    queryKey: ["tldw-server-status"],
     queryFn: async () => {
-      const ollamaURL = await getOllamaURL()
-      const isOk = await isOllamaRunning()
-      const models = await fetchChatModels({ returnEmpty: false })
-      queryClient.invalidateQueries({
-        queryKey: ["getAllModelsForSelect"]
-      })
-      return {
-        isOk: checkOllamaStatus ? isOk : true,
-        models,
-        ollamaURL
+      const config = await tldwClient.getConfig()
+      if (!config?.serverUrl) {
+        throw new Error("missing-config")
       }
-    }
+      await tldwClient.initialize()
+      const ok = await tldwClient.healthCheck()
+      return {
+        ok,
+        config
+      }
+    },
+    retry: false,
+    refetchOnWindowFocus: false
   })
 
-  useEffect(() => {
-    if (ollamaInfo?.ollamaURL) {
-      setOllamaURL(ollamaInfo.ollamaURL)
-    } else if (!ollamaURL) {
-      setOllamaURL("http://127.0.0.1:8000")
+  const elapsed = useElapsedTimer(statusQuery.isLoading || statusQuery.isFetching)
+  const lastCheckedAt = statusQuery.isFetching
+    ? null
+    : (statusQuery.dataUpdatedAt || statusQuery.errorUpdatedAt || null)
+  const secondsSinceLastCheck = useElapsedSince(lastCheckedAt)
+
+  const openSettings = () => {
+    if (typeof chrome !== "undefined" && chrome.runtime?.openOptionsPage) {
+      chrome.runtime.openOptionsPage()
+    } else {
+      window.open("/options.html#/settings/tldw", "_blank")
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ollamaInfo])
-
-  const { setSelectedModel, selectedModel, chatMode, setChatMode } =
-    useMessage()
-  const renderSection = () => {
-    return (
-      <div className="mt-4">
-        <Select
-          onChange={(e) => {
-            setSelectedModel(e)
-            localStorage.setItem("selectedModel", e)
-          }}
-          value={selectedModel}
-          size="large"
-          filterOption={(input, option) =>
-            option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0 ||
-            option.value.toLowerCase().indexOf(input.toLowerCase()) >= 0
-          }
-          showSearch
-          placeholder={t("common:selectAModel")}
-          style={{ width: "100%" }}
-          className="mt-4 min-w-60 max-w-64"
-          options={ollamaInfo.models?.map((model) => ({
-            label: model?.nickname || model.name,
-            value: model.model
-          }))}
-        />
-
-        <div className="mt-4">
-          <div className="inline-flex items-center">
-            <label
-              className="relative flex items-center p-3 rounded-full cursor-pointer"
-              htmlFor="check">
-              <input
-                type="checkbox"
-                checked={chatMode === "rag"}
-                onChange={(e) => {
-                  setChatMode(e.target.checked ? "rag" : "normal")
-                }}
-                className="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity"
-                id="check"
-              />
-              <span className="absolute text-white transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100 ">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-3.5 w-3.5"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                  stroke="currentColor"
-                  strokeWidth="1">
-                  <path
-                    fillRule="evenodd"
-                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                    clipRule="evenodd"></path>
-                </svg>
-              </span>
-            </label>
-            <label
-              className="mt-px font-light  cursor-pointer select-none text-gray-900 dark:text-gray-400"
-              htmlFor="check">
-              {t("common:chatWithCurrentPage")}
-            </label>
-          </div>
-        </div>
-      </div>
-    )
   }
 
-  if (!checkOllamaStatus) {
-    return (
-      <div className="mx-auto sm:max-w-md px-4 mt-10">
-        <div className="rounded-lg justify-center items-center flex flex-col border dark:border-gray-700 p-8 bg-white dark:bg-[#262626] shadow-sm">
-          <div className="inline-flex items-center space-x-2">
-            <p className="dark:text-gray-400 text-gray-900">
-              <span>👋</span>
-              {t("welcome")}
-            </p>
-          </div>
-          {ollamaStatus === "pending" && (
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-          )}
-          {ollamaStatus === "success" && ollamaInfo.isOk && renderSection()}
-        </div>
-      </div>
-    )
+  const serverUrl = statusQuery.data?.config?.serverUrl
+  const serverHost = serverUrl ? cleanUrl(serverUrl) : null
+
+  let statusVariant: "loading" | "ok" | "error" | "missing" = "loading"
+  if (statusQuery.isLoading) {
+    statusVariant = "loading"
+  } else if (statusQuery.isError) {
+    statusVariant = (statusQuery.error as Error)?.message === "missing-config" ? "missing" : "error"
+  } else if (statusQuery.data?.ok) {
+    statusVariant = "ok"
+  } else {
+    statusVariant = "error"
   }
+
+  const descriptionCopy = !serverHost
+    ? t("ollamaState.noServer", "Add your tldw server to start chatting.")
+    : statusVariant === "loading"
+    ? t("ollamaState.subtitle", "We’re pinging {{host}} to verify the connection.", {
+        host: serverHost
+      })
+    : statusVariant === "ok"
+    ? t("ollamaState.connectedSubtitle", "Connected to {{host}}.", {
+        host: serverHost
+      })
+    : t("ollamaState.errorSubtitle", "We couldn’t reach {{host}} yet.", {
+        host: serverHost
+      })
+
+  const retryLabel = statusVariant === "ok"
+    ? t("ollamaState.recheck", "Check again")
+    : t("common:retry")
+
+  React.useEffect(() => {
+    const toastKey = "tldw-sidepanel-connection"
+    if ((statusVariant === "error" && serverHost) || statusVariant === "missing") {
+      if (!toastIssuedRef.current) {
+        notification.error({
+          key: toastKey,
+          message:
+            statusVariant === "missing"
+              ? t("ollamaState.noServer", "Add your tldw server to start chatting.")
+              : t("ollamaState.errorToast", "We couldn’t reach {{host}}", {
+                  host: serverHost ?? "tldw_server"
+                }),
+          description:
+            statusVariant === "missing"
+              ? t(
+                  "ollamaState.missingHelp",
+                  "Open Settings → tldw Server to add your URL or connect to the Options page."
+                )
+              : t(
+                  "ollamaState.troubleshoot",
+                  "Confirm your server is running and that the browser is allowed to reach it, then retry from the Options page."
+                ),
+          placement: "bottomRight",
+          duration: 6
+        })
+        toastIssuedRef.current = true
+      }
+    } else if (statusVariant === "ok") {
+      notification.destroy(toastKey)
+      toastIssuedRef.current = false
+    }
+  }, [statusVariant, serverHost, t])
 
   return (
-    <div className="mx-auto sm:max-w-lg px-4 mt-10">
-      <div className="rounded-lg  justify-center items-center flex flex-col border border-gray-300 dark:border-gray-700 p-8 bg-white dark:bg-[#262626] shadow-sm">
-        {(ollamaStatus === "pending" || isRefetching) && (
-          <div className="inline-flex items-center space-x-2">
-            <div className="w-3 h-3 bg-blue-500 rounded-full animate-bounce"></div>
-            <p className="dark:text-gray-400 text-gray-900">
+    <div className="mx-auto mt-12 w-full max-w-xl px-4">
+      <div className="flex flex-col items-center gap-4 rounded-xl border border-gray-200 bg-white px-6 py-8 text-center shadow-sm dark:border-gray-700 dark:bg-[#1f1f1f] dark:text-gray-100">
+        <div className="flex items-center gap-2 text-lg font-semibold">
+          <Server className="h-5 w-5 text-blue-500" />
+          <span>{t("ollamaState.title", "Waiting for your tldw server")}</span>
+        </div>
+
+        <p className="text-sm text-gray-600 dark:text-gray-300 text-center">
+          {descriptionCopy}
+        </p>
+
+        <div className="flex flex-col items-center gap-2">
+          {statusVariant === "loading" && (
+            <Tag color="blue" className="px-4 py-1 text-sm">
               {t("ollamaState.searching")}
-            </p>
-          </div>
-        )}
-        {!isRefetching && ollamaStatus === "success" ? (
-          ollamaInfo.isOk ? (
-            <div className="inline-flex  items-center space-x-2">
-              <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-              <p className="dark:text-gray-400 text-gray-900">
-                {t("ollamaState.running")}
-              </p>
-            </div>
-          ) : (
-            <div className="flex flex-col space-y-2 justify-center items-center">
-              <div className="inline-flex  space-x-2">
-                <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-                <p className="dark:text-gray-400 text-gray-900">
-                  {t("ollamaState.notRunning")}
-                </p>
-              </div>
+              {elapsed > 0 ? ` · ${elapsed}s` : ""}
+            </Tag>
+          )}
+          {statusVariant === "ok" && (
+            <Tag color="green" className="px-4 py-1 text-sm">
+              {t("ollamaState.running")}
+            </Tag>
+          )}
+          {statusVariant === "missing" && (
+            <Tag color="orange" className="px-4 py-1 text-sm">
+              {t("ollamaState.missing", "Server URL not configured")}
+            </Tag>
+          )}
+          {statusVariant === "error" && (
+            <Tag color="red" className="px-4 py-1 text-sm">
+              {t("ollamaState.notRunning")}
+            </Tag>
+          )}
+        </div>
 
-              <input
-                className="bg-gray-100 dark:bg-black dark:text-gray-100 rounded-md px-4 py-2 mt-2 w-full"
-                type="url"
-                value={ollamaURL}
-                onChange={(e) => setOllamaURL(e.target.value)}
-              />
+        <div className="flex flex-col items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+          {(statusQuery.isFetching || statusVariant === "loading") && (
+            <span className="inline-flex items-center gap-1">
+              <Clock className="h-3 w-3" />
+              {t("ollamaState.elapsed", "Checking… {{seconds}}s", { seconds: elapsed })}
+            </span>
+          )}
+          {statusVariant === "ok" && serverHost && (
+            <span className="inline-flex items-center gap-1">
+              <Server className="h-3 w-3" />
+              {t("ollamaState.connectedHint", "Connected to {{host}}.", { host: serverHost })}
+            </span>
+          )}
+          {secondsSinceLastCheck != null && !statusQuery.isFetching && (
+            <span className="inline-flex items-center gap-1">
+              <Clock className="h-3 w-3" />
+              {t("ollamaState.lastChecked", "Checked {{seconds}}s ago", { seconds: secondsSinceLastCheck })}
+            </span>
+          )}
+        </div>
 
-              <button
-                onClick={() => {
-                  saveOllamaURL(ollamaURL)
-                  refetch()
-                }}
-                className="inline-flex mt-4 items-center rounded-md border border-transparent bg-black px-2 py-2 text-sm font-medium leading-4 text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-white dark:text-gray-800 dark:hover:bg-gray-100 dark:focus:ring-gray-500 dark:focus:ring-offset-gray-100 disabled:opacity-50 ">
-                <RotateCcw className="h-4 w-4 mr-3" />
-                {t("common:retry")}
-              </button>
-              {ollamaURL &&
-                cleanUrl(ollamaURL) !== "http://127.0.0.1:8000" && (
-                  <p className="text-xs text-gray-700 dark:text-gray-400 mb-4 text-center">
-                    <Trans
-                      i18nKey="playground:ollamaState.connectionError"
-                      components={{
-                        anchor: (
-                          <a
-                            href="https://github.com/n4ze3m/page-assist/blob/main/docs/connection-issue.md"
-                            target="__blank"
-                            className="text-blue-600 dark:text-blue-400"></a>
-                        )
-                      }}
-                    />
-                  </p>
-                )}
-            </div>
-          )
-        ) : null}
+        <div className="flex w-full flex-col gap-2 sm:flex-row">
+          <Button
+            type="primary"
+            icon={<RefreshCw className="h-4 w-4" />}
+            onClick={() => statusQuery.refetch()}
+            loading={statusQuery.isFetching}
+            block>
+            {retryLabel}
+          </Button>
+          <Button
+            icon={<Settings className="h-4 w-4" />}
+            onClick={openSettings}
+            block>
+            {serverHost
+              ? t("ollamaState.changeServer", "Change server")
+              : t("ollamaState.openSettings", "Open settings")}
+          </Button>
+        </div>
 
-        {ollamaStatus === "success" && ollamaInfo.isOk && renderSection()}
+        <a
+          href="https://github.com/n4ze3m/page-assist/blob/main/docs/connection-issue.md"
+          target="_blank"
+          rel="noreferrer"
+          className="inline-flex items-center gap-1 text-xs text-blue-600 hover:text-blue-500 dark:text-blue-400">
+          <ExternalLink className="h-3 w-3" />
+          {t("ollamaState.connectionError")}
+        </a>
       </div>
     </div>
   )

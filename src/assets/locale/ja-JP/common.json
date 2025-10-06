@@ -1,148 +1,148 @@
 {
-  "pageAssist": "ページアシスト",
-  "selectAModel": "モデルを選択",
-  "save": "保存",
-  "saved": "保存済み",
-  "cancel": "キャンセル",
-  "retry": "再試行",
-  "share": {
-    "tooltip": {
-      "share": "共有"
+    "pageAssist": "tldw Assistant",
+    "selectAModel": "モデルを選択",
+    "save": "保存",
+    "saved": "保存済み",
+    "cancel": "キャンセル",
+    "retry": "再試行",
+    "share": {
+        "tooltip": {
+            "share": "共有"
+        },
+        "modal": {
+            "title": "チャットリンクを共有"
+        },
+        "form": {
+            "defaultValue": {
+                "name": "匿名",
+                "title": "無題のチャット"
+            },
+            "title": {
+                "label": "チャットタイトル",
+                "placeholder": "チャットタイトルを入力",
+                "required": "チャットタイトルは必須です"
+            },
+            "name": {
+                "label": "あなたの名前",
+                "placeholder": "名前を入力",
+                "required": "名前は必須です"
+            },
+            "btn": {
+                "save": "リンクを生成",
+                "saving": "リンクを生成中..."
+            }
+        },
+        "notification": {
+            "successGenerate": "リンクがクリップボードにコピーされました",
+            "failGenerate": "リンクの生成に失敗しました"
+        }
     },
-    "modal": {
-      "title": "チャットリンクを共有"
+    "copyToClipboard": "クリップボードにコピー",
+    "webSearch": "ウェブを検索中",
+    "regenerate": "再生成",
+    "continue": "続ける",
+    "edit": "編集",
+    "delete": "削除",
+    "saveAndSubmit": "保存して送信",
+    "editMessage": {
+        "placeholder": "メッセージを入力..."
     },
-    "form": {
-      "defaultValue": {
-        "name": "匿名",
-        "title": "無題のチャット"
-      },
-      "title": {
-        "label": "チャットタイトル",
-        "placeholder": "チャットタイトルを入力",
-        "required": "チャットタイトルは必須です"
-      },
-      "name": {
-        "label": "あなたの名前",
-        "placeholder": "名前を入力",
-        "required": "名前は必須です"
-      },
-      "btn": {
-        "save": "リンクを生成",
-        "saving": "リンクを生成中..."
-      }
+    "submit": "送信",
+    "noData": "データがありません",
+    "noHistory": "チャット履歴がありません",
+    "chatWithCurrentPage": "現在のページでチャット",
+    "beta": "ベータ",
+    "tts": "読み上げ",
+    "currentChatModelSettings": "現在のチャットモデル設定",
+    "modelSettings": {
+        "label": "モデル設定",
+        "description": "すべてのチャットに対してモデルオプションをグローバルに設定します",
+        "form": {
+            "keepAlive": {
+                "label": "キープアライブ",
+                "help": "リクエスト後にモデルがメモリに保持される時間をコントロールします（デフォルト: 5 分）",
+                "placeholder": "キープアライブの期間を入力してください（例：5分、10分、1時間）"
+            },
+            "temperature": {
+                "label": "温度",
+                "placeholder": "温度値を入力してください（例：0.7、1.0）"
+            },
+            "numCtx": {
+                "label": "コンテキストウィンドウサイズ (num_ctx)",
+                "placeholder": "コンテキストウィンドウサイズを入力してください（デフォルト：2048）"
+            },
+            "numPredict": {
+                "label": "最大トークン数 (num_predict)",
+                "placeholder": "最大トークン数を入力してください（例：2048、4096）"
+            },
+            "seed": {
+                "label": "シード",
+                "placeholder": "シード値を入力してください（例：1234）",
+                "help": "モデル出力の再現性"
+            },
+            "topK": {
+                "label": "Top K",
+                "placeholder": "Top K値を入力してください（例：40、100）"
+            },
+            "topP": {
+                "label": "Top P",
+                "placeholder": "Top P値を入力してください（例：0.9、0.95）"
+            },
+            "numGpu": {
+                "label": "Num GPU",
+                "placeholder": "GPU(s)に送信するレイヤー数を入力してください"
+            },
+            "systemPrompt": {
+                "label": "一時的なシステムプロンプト",
+                "placeholder": "システムプロンプトを入力",
+                "help": "これは現在のチャットでシステムプロンプトを素早く設定する方法で、選択されたシステムプロンプトが存在する場合はそれを上書きします。"
+            }
+        },
+        "advanced": "その他のモデル設定"
     },
-    "notification": {
-      "successGenerate": "リンクがクリップボードにコピーされました",
-      "failGenerate": "リンクの生成に失敗しました"
+    "copilot": {
+        "summary": "要約",
+        "explain": "説明",
+        "rephrase": "言い換え",
+        "translate": "翻訳"
+    },
+    "citations": "引用",
+    "downloadCode": "コードをダウンロード",
+    "date": {
+        "pinned": "固定",
+        "today": "今日",
+        "yesterday": "昨日",
+        "last7Days": "過去7日間",
+        "older": "それ以前"
+    },
+    "range": {
+        "deleteConfirm": {
+            "pinned": "固定されたメッセージをすべて削除してもよろしいですか？",
+            "today": "今日のメッセージをすべて削除してもよろしいですか？",
+            "yesterday": "昨日のメッセージをすべて削除してもよろしいですか？",
+            "last7Days": "過去7日間のメッセージをすべて削除してもよろしいですか？",
+            "older": "それ以前のメッセージをすべて削除してもよろしいですか？"
+        },
+        "tooltip": {
+            "pinned": "固定されたメッセージをすべて削除",
+            "today": "今日のメッセージをすべて削除",
+            "yesterday": "昨日のメッセージをすべて削除",
+            "last7Days": "過去7日間のメッセージをすべて削除",
+            "older": "それ以前のメッセージをすべて削除"
+        }
+    },
+    "pin": "固定",
+    "unpin": "固定解除",
+    "generationInfo": "生成情報",
+    "sidebarChat": "サイドバーチャット",
+    "reasoning": {
+        "thinking": "考え中....",
+        "thought": "{{time}}の思考"
+    },
+    "embeddingGen": "埋め込みを作成中です。時間がかかる場合があります",
+    "semanticSearch": "意味検索を実行中",
+    "downloading": "ダウンロード中",
+    "cancelPullingModel": {
+        "confirm": "ダウンロードをキャンセルしてもよろしいですか？これによりダウンロードプロセスが停止します。Ollamaのドキュメントによると、中断した場所から再開できます。"
     }
-  },
-  "copyToClipboard": "クリップボードにコピー",
-  "webSearch": "ウェブを検索中",
-  "regenerate": "再生成",
-  "continue": "続ける",
-  "edit": "編集",
-  "delete": "削除",
-  "saveAndSubmit": "保存して送信",
-  "editMessage": {
-    "placeholder": "メッセージを入力..."
-  },
-  "submit": "送信",
-  "noData": "データがありません",
-  "noHistory": "チャット履歴がありません",
-  "chatWithCurrentPage": "現在のページでチャット",
-  "beta": "ベータ",
-  "tts": "読み上げ",
-  "currentChatModelSettings": "現在のチャットモデル設定",
-  "modelSettings": {
-    "label": "モデル設定",
-    "description": "すべてのチャットに対してモデルオプションをグローバルに設定します",
-    "form": {
-      "keepAlive": {
-        "label": "キープアライブ",
-        "help": "リクエスト後にモデルがメモリに保持される時間をコントロールします（デフォルト: 5 分）",
-        "placeholder": "キープアライブの期間を入力してください（例：5分、10分、1時間）"
-      },
-      "temperature": {
-        "label": "温度",
-        "placeholder": "温度値を入力してください（例：0.7、1.0）"
-      },
-      "numCtx": {
-        "label": "コンテキストウィンドウサイズ (num_ctx)",
-        "placeholder": "コンテキストウィンドウサイズを入力してください（デフォルト：2048）"
-      },
-      "numPredict": {
-        "label": "最大トークン数 (num_predict)",
-        "placeholder": "最大トークン数を入力してください（例：2048、4096）"
-      },
-      "seed": {
-        "label": "シード",
-        "placeholder": "シード値を入力してください（例：1234）",
-        "help": "モデル出力の再現性"
-      },
-      "topK": {
-        "label": "Top K",
-        "placeholder": "Top K値を入力してください（例：40、100）"
-      },
-      "topP": {
-        "label": "Top P",
-        "placeholder": "Top P値を入力してください（例：0.9、0.95）"
-      },
-      "numGpu": {
-        "label": "Num GPU",
-        "placeholder": "GPU(s)に送信するレイヤー数を入力してください"
-      },
-      "systemPrompt": {
-        "label": "一時的なシステムプロンプト",
-        "placeholder": "システムプロンプトを入力",
-        "help": "これは現在のチャットでシステムプロンプトを素早く設定する方法で、選択されたシステムプロンプトが存在する場合はそれを上書きします。"
-      }
-    },
-    "advanced": "その他のモデル設定"
-  },
-  "copilot": {
-    "summary": "要約",
-    "explain": "説明",
-    "rephrase": "言い換え",
-    "translate": "翻訳"
-  },
-  "citations": "引用",
-  "downloadCode": "コードをダウンロード",
-  "date": {
-    "pinned": "固定",
-    "today": "今日",
-    "yesterday": "昨日",
-    "last7Days": "過去7日間",
-    "older": "それ以前"
-  },
-  "range": {
-    "deleteConfirm": {
-      "pinned": "固定されたメッセージをすべて削除してもよろしいですか？",
-      "today": "今日のメッセージをすべて削除してもよろしいですか？",
-      "yesterday": "昨日のメッセージをすべて削除してもよろしいですか？",
-      "last7Days": "過去7日間のメッセージをすべて削除してもよろしいですか？",
-      "older": "それ以前のメッセージをすべて削除してもよろしいですか？"
-    },
-    "tooltip": {
-      "pinned": "固定されたメッセージをすべて削除",
-      "today": "今日のメッセージをすべて削除",
-      "yesterday": "昨日のメッセージをすべて削除",
-      "last7Days": "過去7日間のメッセージをすべて削除",
-      "older": "それ以前のメッセージをすべて削除"
-    }
-  },
-  "pin": "固定",
-  "unpin": "固定解除",
-  "generationInfo": "生成情報",
-  "sidebarChat": "サイドバーチャット",
-  "reasoning": {
-    "thinking": "考え中....",
-    "thought": "{{time}}の思考"
-  },
-  "embeddingGen": "埋め込みを作成中です。時間がかかる場合があります",
-  "semanticSearch": "意味検索を実行中",
-  "downloading": "ダウンロード中",
-  "cancelPullingModel": {
-    "confirm": "ダウンロードをキャンセルしてもよろしいですか？これによりダウンロードプロセスが停止します。Ollamaのドキュメントによると、中断した場所から再開できます。"
-  }
 }

@@ -14,6 +14,7 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
   const [loading, setLoading] = React.useState(false)
   const [testing, setTesting] = React.useState(false)
   const [serverUrl, setServerUrl] = React.useState('')
+  const [serverTouched, setServerTouched] = React.useState(false)
   const [authMode, setAuthMode] = React.useState<'single-user'|'multi-user'>('single-user')
   const [apiKey, setApiKey] = React.useState('')
   const [username, setUsername] = React.useState('')
@@ -21,23 +22,118 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
   const [connected, setConnected] = React.useState<boolean|null>(null)
   const [ragHealthy, setRagHealthy] = React.useState<'unknown'|'healthy'|'unhealthy'>('unknown')
   const [errorDetail, setErrorDetail] = React.useState<string>('')
+  const [reachability, setReachability] = React.useState<'idle' | 'checking' | 'reachable' | 'unreachable'>('idle')
+  const reachabilityAbortRef = React.useRef<AbortController | null>(null)
+  const reachabilityDebounceRef = React.useRef<ReturnType<typeof setTimeout> | null>(null)
 
   React.useEffect(() => {
     (async () => {
       try {
         const cfg = await tldwClient.getConfig()
-        if (cfg?.serverUrl) setServerUrl(cfg.serverUrl)
-        else setServerUrl('http://127.0.0.1:8000')
+        if (cfg?.serverUrl) {
+          setServerUrl(cfg.serverUrl)
+          setServerTouched(true)
+        }
         if ((cfg as any)?.authMode) setAuthMode((cfg as any).authMode)
       } catch {}
     })()
   }, [])
+
+  const urlState = React.useMemo(() => {
+    const trimmed = serverUrl.trim()
+    if (!trimmed) {
+      return { valid: false, reason: 'empty' as const }
+    }
+    try {
+      const parsed = new URL(trimmed)
+      if (!['http:', 'https:'].includes(parsed.protocol)) {
+        return { valid: false, reason: 'protocol' as const }
+      }
+      return { valid: true, reason: 'ok' as const }
+    } catch {
+      return { valid: false, reason: 'invalid' as const }
+    }
+  }, [serverUrl])
 
   const savePartial = async () => {
     const cfg: Partial<TldwConfig> = { serverUrl, authMode }
     if (authMode === 'single-user') cfg.apiKey = apiKey
     await tldwClient.updateConfig(cfg)
   }
+
+  React.useEffect(() => {
+    const trimmed = serverUrl.trim()
+
+    if (!urlState.valid || !serverTouched || !trimmed) {
+      setReachability('idle')
+      if (reachabilityDebounceRef.current) {
+        clearTimeout(reachabilityDebounceRef.current)
+        reachabilityDebounceRef.current = null
+      }
+      if (reachabilityAbortRef.current) {
+        reachabilityAbortRef.current.abort()
+        reachabilityAbortRef.current = null
+      }
+      return
+    }
+
+    if (reachabilityDebounceRef.current) {
+      clearTimeout(reachabilityDebounceRef.current)
+      reachabilityDebounceRef.current = null
+    }
+    if (reachabilityAbortRef.current) {
+      reachabilityAbortRef.current.abort()
+      reachabilityAbortRef.current = null
+    }
+
+    setReachability('checking')
+
+    reachabilityDebounceRef.current = setTimeout(() => {
+      const controller = new AbortController()
+      reachabilityAbortRef.current = controller
+      const normalized = trimmed.replace(/\/$/, '')
+      const target = `${normalized}/api/v1/health`
+
+      fetch(target, { signal: controller.signal, credentials: 'include' })
+        .then((res) => {
+          if (controller.signal.aborted) return
+          if (res.ok || res.status === 401 || res.status === 403) {
+            setReachability('reachable')
+          } else {
+            setReachability('unreachable')
+          }
+        })
+        .catch(() => {
+          if (!controller.signal.aborted) {
+            setReachability('unreachable')
+          }
+        })
+        .finally(() => {
+          if (reachabilityAbortRef.current === controller) {
+            reachabilityAbortRef.current = null
+          }
+        })
+    }, 400)
+
+    return () => {
+      if (reachabilityDebounceRef.current) {
+        clearTimeout(reachabilityDebounceRef.current)
+        reachabilityDebounceRef.current = null
+      }
+    }
+  }, [serverUrl, serverTouched, urlState])
+
+  React.useEffect(() => {
+    return () => {
+      if (reachabilityDebounceRef.current) {
+        clearTimeout(reachabilityDebounceRef.current)
+      }
+      if (reachabilityAbortRef.current) {
+        reachabilityAbortRef.current.abort()
+        reachabilityAbortRef.current = null
+      }
+    }
+  }, [])
 
   const doTest = async () => {
     setTesting(true)
@@ -90,18 +186,109 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
     onFinish?.()
   }
 
+  const serverHint = React.useMemo(() => {
+    if (!urlState.valid) {
+      const tone = urlState.reason === 'empty' ? 'neutral' : 'error'
+      const message = urlState.reason === 'empty'
+        ? t(
+            'settings:onboarding.serverUrl.emptyHint',
+            'Enter your tldw server URL to enable Next.'
+          )
+        : urlState.reason === 'protocol'
+        ? t(
+            'settings:onboarding.serverUrl.invalidProtocol',
+            'Use http or https URLs, for example http://127.0.0.1:8000.'
+          )
+        : t(
+            'settings:onboarding.serverUrl.invalid',
+            'Enter a full URL such as http://127.0.0.1:8000.'
+          )
+      return { valid: false, tone, message }
+    }
+
+    let tone: 'neutral' | 'success' | 'error' = 'neutral'
+    let message: string
+
+    if (!serverTouched || reachability === 'idle') {
+      tone = 'neutral'
+      message = t(
+        'settings:onboarding.serverUrl.ready',
+        'We’ll enable Next once we can reach this address.'
+      )
+    } else if (reachability === 'checking') {
+      tone = 'neutral'
+      message = t(
+        'settings:onboarding.serverUrl.checking',
+        'Checking reachability…'
+      )
+    } else if (reachability === 'reachable') {
+      tone = 'success'
+      message = t(
+        'settings:onboarding.serverUrl.reachable',
+        'Server responded successfully. You can continue.'
+      )
+    } else {
+      tone = 'error'
+      message = t(
+        'settings:onboarding.serverUrl.unreachable',
+        'We couldn’t reach this address yet. Double-check the URL or try again.'
+      )
+    }
+
+    return { valid: true, tone, message }
+  }, [urlState, reachability, serverTouched, t])
+
   return (
-    <div className="max-w-2xl mx-auto my-6 mt-20 md:mt-24 p-4 rounded border dark:border-gray-600 bg-white dark:bg-[#171717] text-gray-900 dark:text-gray-100">
+    <div className="mx-auto w-full max-w-2xl rounded-xl border border-gray-200 bg-white px-6 py-6 text-gray-900 shadow-sm dark:border-gray-700 dark:bg-[#171717] dark:text-gray-100">
       <h2 className="text-lg font-semibold mb-2 text-gray-900 dark:text-gray-100">{t('settings:onboarding.title')}</h2>
       <p className="text-sm text-gray-700 dark:text-gray-300 mb-4">{t('settings:onboarding.description')}</p>
 
       {step === 1 && (
         <div className="space-y-3">
           <label className="block text-sm font-medium text-gray-800 dark:text-gray-100">{t('settings:onboarding.serverUrl.label')}</label>
-          <Input placeholder={t('settings:onboarding.serverUrl.placeholder')} value={serverUrl} onChange={(e) => setServerUrl(e.target.value)} />
+          <Input
+            placeholder={t('settings:onboarding.serverUrl.placeholder')}
+            value={serverUrl}
+            onChange={(e) => {
+              if (!serverTouched) setServerTouched(true)
+              setServerUrl(e.target.value)
+            }}
+            onBlur={() => setServerTouched(true)}
+            status={serverHint.tone === 'error' && serverTouched ? 'error' : ''}
+          />
+          <div
+            className={
+              'text-xs ' +
+              (serverHint.tone === 'error'
+                ? 'text-red-500'
+                : serverHint.tone === 'success'
+                ? 'text-emerald-600'
+                : 'text-gray-500')
+            }
+          >
+            <span className="inline-flex items-center gap-2">
+              {serverHint.message}
+              {reachability === 'checking' && <Spin size="small" />}
+            </span>
+          </div>
           <div className="text-xs text-gray-500">{t('settings:onboarding.serverUrl.help')}</div>
+          {connected === false && errorDetail && (
+            <Alert
+              className="mt-2"
+              type="warning"
+              showIcon
+              message={t('settings:onboarding.connectionFailed')}
+              description={errorDetail}
+            />
+          )}
           <div className="flex justify-end mt-2">
-            <Button type="primary" disabled={!serverUrl} onClick={next}>{t('settings:onboarding.buttons.next')}</Button>
+            <Button
+              type="primary"
+              disabled={!urlState.valid || reachability !== 'reachable'}
+              onClick={next}
+            >
+              {t('settings:onboarding.buttons.next')}
+            </Button>
           </div>
         </div>
       )}
@@ -153,6 +340,17 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
             )}
             <Button size="small" onClick={doTest} loading={testing}>{t('settings:onboarding.buttons.recheck')}</Button>
           </div>
+          {connected === false && (
+            <Alert
+              type="warning"
+              showIcon
+              message={t('settings:onboarding.connectionFailed')}
+              description={t(
+                'settings:onboarding.connection.continueAnyway',
+                'You can finish setup now and connect later from Settings.'
+              )}
+            />
+          )}
           {typeof ragHealthy !== 'undefined' && (
             <div className="flex items-center gap-2">
               <span className="text-sm font-medium">{t('settings:onboarding.rag.label')}</span>
@@ -165,7 +363,19 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
           <div className="flex justify-end">
             <Space>
               <Button onClick={finish}>{t('settings:onboarding.buttons.skip')}</Button>
-              <Button type="primary" onClick={finish} disabled={!connected}>{t('settings:onboarding.buttons.finish')}</Button>
+              <Button
+                type="primary"
+                danger={connected === false}
+                onClick={finish}
+                disabled={testing}
+              >
+                {connected === false
+                  ? t(
+                      'settings:onboarding.buttons.finishAnyway',
+                      'Finish without connecting'
+                    )
+                  : t('settings:onboarding.buttons.finish')}
+              </Button>
             </Space>
           </div>
         </div>

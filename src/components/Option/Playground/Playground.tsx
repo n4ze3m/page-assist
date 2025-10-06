@@ -15,9 +15,11 @@ import { ChevronDown } from "lucide-react"
 import { useStorage } from "@plasmohq/storage/hook"
 import { Storage } from "@plasmohq/storage"
 import { otherUnsupportedTypes } from "../Knowledge/utils/unsupported-types"
+import { useTranslation } from "react-i18next"
 export const Playground = () => {
   const drop = React.useRef<HTMLDivElement>(null)
   const [dropedFile, setDropedFile] = React.useState<File | undefined>()
+  const { t } = useTranslation(["playground"])
   const [chatBackgroundImage] = useStorage({
     key: "chatBackgroundImage",
     instance: new Storage({
@@ -41,6 +43,26 @@ export const Playground = () => {
   const [dropState, setDropState] = React.useState<
     "idle" | "dragging" | "error"
   >("idle")
+  const [dropFeedback, setDropFeedback] = React.useState<
+    { type: "info" | "error"; message: string } | null
+  >(null)
+  const feedbackTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(
+    null
+  )
+
+  const showDropFeedback = React.useCallback(
+    (feedback: { type: "info" | "error"; message: string }) => {
+      setDropFeedback(feedback)
+      if (feedbackTimerRef.current) {
+        clearTimeout(feedbackTimerRef.current)
+      }
+      feedbackTimerRef.current = setTimeout(() => {
+        setDropFeedback(null)
+        feedbackTimerRef.current = null
+      }, 4000)
+    },
+    []
+  )
 
   React.useEffect(() => {
     if (selectedKnowledge) {
@@ -69,6 +91,13 @@ export const Playground = () => {
 
       if (hasUnsupportedFiles) {
         setDropState("error")
+        showDropFeedback({
+          type: "error",
+          message: t(
+            "playground:drop.unsupported",
+            "That file type isn’t supported. Try images or text-based files."
+          )
+        })
         return
       }
 
@@ -77,12 +106,32 @@ export const Playground = () => {
         newFiles.forEach((file) => {
           setDropedFile(file)
         })
+        showDropFeedback({
+          type: "info",
+          message:
+            newFiles.length > 1
+              ? t("playground:drop.readyMultiple", {
+                  count: newFiles.length
+                })
+              : t("playground:drop.readySingle", {
+                  name:
+                    newFiles[0]?.name ||
+                    t("playground:drop.defaultFileName", "File")
+                })
+        })
       }
     }
     const handleDragEnter = (e: DragEvent) => {
       e.preventDefault()
       e.stopPropagation()
       setDropState("dragging")
+      showDropFeedback({
+        type: "info",
+        message: t(
+          "playground:drop.hint",
+          "Drop files to attach them to your message"
+        )
+      })
     }
 
     const handleDragLeave = (e: DragEvent) => {
@@ -105,6 +154,14 @@ export const Playground = () => {
       }
     }
   }, [selectedKnowledge])
+
+  React.useEffect(() => {
+    return () => {
+      if (feedbackTimerRef.current) {
+        clearTimeout(feedbackTimerRef.current)
+      }
+    }
+  }, [])
 
   const setRecentMessagesOnLoad = async () => {
     const isEnabled = await webUIResumeLastChat()
@@ -160,9 +217,33 @@ export const Playground = () => {
         />
       )}
 
+      {dropState === "dragging" && (
+        <div className="pointer-events-none absolute inset-0 z-30 flex flex-col items-center justify-center">
+          <div className="rounded-2xl border border-dashed border-white/70 bg-black/70 px-6 py-4 text-center text-sm font-medium text-white shadow-lg backdrop-blur-sm dark:border-white/40">
+            {t("playground:drop.hint", "Drop files to attach them to your message")}
+          </div>
+        </div>
+      )}
+
+      {dropFeedback && (
+        <div className="pointer-events-none absolute top-4 left-0 right-0 z-30 flex justify-center px-4">
+          <div
+            role="status"
+            aria-live="polite"
+            className={`max-w-lg rounded-full px-4 py-2 text-sm shadow-lg backdrop-blur-sm ${
+              dropFeedback.type === "error"
+                ? "bg-red-600 text-white"
+                : "bg-slate-900/80 text-white dark:bg-slate-100/90 dark:text-slate-900"
+            }`}
+          >
+            {dropFeedback.message}
+          </div>
+        </div>
+      )}
+
       <div
         ref={containerRef}
-        className="custom-scrollbar flex h-full w-full flex-col items-center overflow-x-hidden overflow-y-auto px-5 relative z-10">
+        className="custom-scrollbar relative z-10 flex h-full w-full flex-col items-center overflow-x-hidden overflow-y-auto px-5">
         <PlaygroundChat />
       </div>
       <div className="absolute bottom-0 w-full z-10">

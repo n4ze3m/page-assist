@@ -4,7 +4,7 @@ import React from "react"
 import useDynamicTextareaSize from "~/hooks/useDynamicTextareaSize"
 import { useMessage } from "~/hooks/useMessage"
 import { toBase64 } from "~/libs/to-base64"
-import { Checkbox, Dropdown, Image, Switch, Tooltip, notification } from "antd"
+import { Checkbox, Dropdown, Image, Tooltip, notification, Popover } from "antd"
 import { useWebUI } from "~/store/webui"
 import { defaultEmbeddingModelForRag } from "~/services/ollama"
 import {
@@ -15,7 +15,8 @@ import {
   EyeIcon,
   EyeOffIcon,
   Gauge,
-  UploadCloud
+  UploadCloud,
+  MoreHorizontal
 } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { getVariable } from "@/utils/select-variable"
@@ -149,6 +150,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
     }
   }
 
+
   const {
     onSubmit,
     selectedModel,
@@ -172,6 +174,168 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
   } = useMessage()
 
   const [openModelSettings, setOpenModelSettings] = React.useState(false)
+
+  const handleToggleTemporaryChat = React.useCallback(() => {
+    if (isFireFoxPrivateMode) {
+      notification.error({
+        message: "Error",
+        description:
+          "tldw Assistant can't save chat in Firefox Private Mode. Temporary chat is enabled by default. More fixes coming soon."
+      })
+      return
+    }
+    setTemporaryChat(!temporaryChat)
+    if (messages.length > 0) {
+      clearChat()
+    }
+  }, [clearChat, messages.length, temporaryChat])
+
+  const handleWebSearchToggle = React.useCallback(() => {
+    setWebSearch(!webSearch)
+  }, [setWebSearch, webSearch])
+
+  const handleSpeechToggle = React.useCallback(() => {
+    if (isListening) {
+      stopListening()
+    } else {
+      resetTranscript()
+      startListening({
+        continuous: true,
+        lang: speechToTextLanguage
+      })
+    }
+  }, [isListening, resetTranscript, speechToTextLanguage, startListening, stopListening])
+
+  const handleLiveCaptionsToggle = React.useCallback(async () => {
+    if (wsSttActive) {
+      try {
+        micStop()
+      } catch {}
+      try {
+        sttClose()
+      } catch {}
+      setWsSttActive(false)
+    } else {
+      sttConnect()
+      await micStart()
+      setWsSttActive(true)
+    }
+  }, [micStart, micStop, sttClose, sttConnect, wsSttActive])
+
+  const handleVisionToggle = React.useCallback(() => {
+    setChatMode(chatMode === 'vision' ? 'normal' : 'vision')
+  }, [chatMode, setChatMode])
+
+  const handleImageUpload = React.useCallback(() => {
+    inputRef.current?.click()
+  }, [])
+
+  const handleQuickIngestOpen = React.useCallback(() => {
+    setIngestOpen(true)
+  }, [])
+
+  const moreToolsContent = React.useMemo(() => (
+    <div className="flex w-72 flex-col gap-3">
+      <button
+        type="button"
+        onClick={handleToggleTemporaryChat}
+        className="flex w-full items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 transition hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-[#2a2a2a]"
+      >
+        <span>
+          {temporaryChat
+            ? t('playground:actions.temporaryOn', 'Temporary chat')
+            : t('playground:actions.temporaryOff', 'Save chat')}
+        </span>
+        <BsIncognito className="h-4 w-4" />
+      </button>
+      {chatMode !== 'vision' && (
+        <button
+          type="button"
+          onClick={handleWebSearchToggle}
+          disabled={chatMode === 'rag'}
+          className="flex w-full items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-40 dark:text-gray-200 dark:hover:bg-[#2a2a2a]"
+        >
+          <span>
+            {webSearch
+              ? t('playground:actions.webSearchOn', 'Web search on')
+              : t('playground:actions.webSearchOff', 'Web search off')}
+          </span>
+          {webSearch ? <PiGlobe className="h-4 w-4" /> : <PiGlobeX className="h-4 w-4" />}
+        </button>
+      )}
+      {browserSupportsSpeechRecognition && (
+        <button
+          type="button"
+          onClick={handleSpeechToggle}
+          className="flex w-full items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 transition hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-[#2a2a2a]"
+        >
+          <span>
+            {isListening
+              ? t('playground:actions.speechStop', 'Stop dictation')
+              : t('playground:actions.speechStart', 'Start dictation')}
+          </span>
+          <MicIcon className="h-4 w-4" />
+        </button>
+      )}
+      <button
+        type="button"
+        onClick={handleLiveCaptionsToggle}
+        className="flex w-full items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 transition hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-[#2a2a2a]"
+      >
+        <span>
+          {wsSttActive
+            ? t('playground:actions.streamStop', 'Stop captions')
+            : t('playground:actions.streamStart', 'Live captions')}
+        </span>
+        <MicIcon className="h-4 w-4" />
+      </button>
+      <button
+        type="button"
+        onClick={handleVisionToggle}
+        disabled={chatMode === 'rag'}
+        className="flex w-full items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-40 dark:text-gray-200 dark:hover:bg-[#2a2a2a]"
+      >
+        <span>
+          {chatMode === 'vision'
+            ? t('playground:actions.visionOn', 'Vision on')
+            : t('playground:actions.visionOff', 'Vision off')}
+        </span>
+        {chatMode === 'vision' ? <EyeIcon className="h-4 w-4" /> : <EyeOffIcon className="h-4 w-4" />}
+      </button>
+      <button
+        type="button"
+        onClick={handleImageUpload}
+        disabled={chatMode === 'vision' || chatMode === 'rag'}
+        className="flex w-full items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-40 dark:text-gray-200 dark:hover:bg-[#2a2a2a]"
+      >
+        <span>{t('playground:actions.upload', 'Attach image')}</span>
+        <ImageIcon className="h-4 w-4" />
+      </button>
+      <button
+        type="button"
+        onClick={handleQuickIngestOpen}
+        className="flex w-full items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 transition hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-[#2a2a2a]"
+      >
+        <span>{t('playground:actions.ingest', 'Quick ingest')}</span>
+        <UploadCloud className="h-4 w-4" />
+      </button>
+    </div>
+  ), [
+    browserSupportsSpeechRecognition,
+    chatMode,
+    handleImageUpload,
+    handleLiveCaptionsToggle,
+    handleQuickIngestOpen,
+    handleSpeechToggle,
+    handleToggleTemporaryChat,
+    handleVisionToggle,
+    handleWebSearchToggle,
+    isListening,
+    temporaryChat,
+    t,
+    webSearch,
+    wsSttActive
+  ])
 
   React.useEffect(() => {
     if (dropedFile) {
@@ -395,272 +559,169 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                       placeholder={t("form.textarea.placeholder")}
                       {...form.getInputProps("message")}
                     />
-                    <div className="flex mt-4 justify-end gap-3 items-center">
-                      {/* Private/Temporary chat toggle (left of web search) */}
-                      <div className="flex items-center gap-1">
-                        <Tooltip title={t("option:temporaryChat")}>
-                          <Switch
-                            size="small"
-                            checked={temporaryChat}
-                            onChange={() => {
-                              if (isFireFoxPrivateMode) {
-                                notification.error({
-                                  message: "Error",
-                                  description:
-                                    "Page Assist can't save chat in Firefox Private Mode. Temporary chat is enabled by default. More fixes coming soon."
-                                })
-                                return
-                              }
-                              setTemporaryChat(!temporaryChat)
-                              if (messages.length > 0) {
-                                clearChat()
-                              }
-                            }}
-                          />
-                        </Tooltip>
-                        <Tooltip title={t("option:temporaryChat")}>
-                          <button
-                            type="button"
-                            aria-pressed={temporaryChat}
-                            data-istemporary-chat={temporaryChat}
-                            onClick={() => {
-                              if (isFireFoxPrivateMode) {
-                                notification.error({
-                                  message: "Error",
-                                  description:
-                                    "Page Assist can't save chat in Firefox Private Mode. Temporary chat is enabled by default. More fixes coming soon."
-                                })
-                                return
-                              }
-                              setTemporaryChat(!temporaryChat)
-                              if (messages.length > 0) {
-                                clearChat()
-                              }
-                            }}
-                            className="inline-flex items-center rounded-md p-1 text-gray-600 dark:text-gray-300 data-[istemporary-chat='true']:bg-purple-900 data-[istemporary-chat='true']:text-white">
-                            <BsIncognito className="h-4 w-4" />
-                          </button>
-                        </Tooltip>
+                    <div className="mt-4 flex w-full flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <ModelSelect iconClassName="size-4" />
                       </div>
-                      {chatMode !== "vision" && (
-                        <Tooltip title={t("tooltip.searchInternet")}>
+                      <div className="flex flex-wrap items-center justify-end gap-2">
+                        <Popover
+                          trigger="click"
+                          placement="topRight"
+                          content={moreToolsContent}
+                          overlayClassName="sidepanel-more-tools"
+                        >
                           <button
                             type="button"
-                            onClick={() => setWebSearch(!webSearch)}
-                            className={`inline-flex items-center gap-2   ${
-                              chatMode === "rag" ? "hidden" : "block"
-                            }`}>
-                            {webSearch ? (
-                              <PiGlobe className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-                            ) : (
-                              <PiGlobeX className="h-4 w-4 text-gray-600 dark:text-gray-400" />
-                            )}
+                            className="inline-flex items-center gap-2 rounded-md border border-gray-200 px-3 py-1.5 text-xs font-semibold text-gray-700 transition hover:bg-gray-100 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-[#2a2a2a]"
+                          >
+                            <MoreHorizontal className="h-4 w-4" />
+                            <span>{t('playground:composer.moreTools')}</span>
                           </button>
-                        </Tooltip>
-                      )}
-                      <ModelSelect iconClassName="size-4" />
-                      {browserSupportsSpeechRecognition && (
-                        <Tooltip title={t("tooltip.speechToText")}>
-                          <button
-                            type="button"
-                            onClick={async () => {
-                              if (isListening) {
-                                stopListening()
-                              } else {
-                                resetTranscript()
-                                startListening({
-                                  continuous: true,
-                                  lang: speechToTextLanguage
-                                })
-                              }
-                            }}
-                            className={`flex items-center justify-center dark:text-gray-300`}>
-                            {!isListening ? (
-                              <MicIcon className="h-4 w-4" />
-                            ) : (
-                              <div className="relative">
-                                <span className="animate-ping absolute inline-flex h-2 w-2 rounded-full bg-red-400 opacity-75"></span>
-                                <MicIcon className="h-4 w-4" />
-                              </div>
-                            )}
-                          </button>
-                        </Tooltip>
-                      )}
-                      {/* tldw WS STT toggle */}
-                      <Tooltip title="Live transcription via tldw_server">
-                        <button
-                          type="button"
-                          onClick={async () => {
-                            if (wsSttActive) {
-                              try { micStop() } catch {}
-                              try { sttClose() } catch {}
-                              setWsSttActive(false)
-                            } else {
-                              sttConnect()
-                              await micStart()
-                              setWsSttActive(true)
-                            }
-                          }}
-                          className={`flex items-center justify-center ${wsSttActive ? 'text-red-500' : 'dark:text-gray-300'}`}>
-                          <MicIcon className="h-4 w-4" />
-                        </button>
-                      </Tooltip>
-                      <Tooltip title={t("tooltip.vision")}>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            if (chatMode === "vision") {
-                              setChatMode("normal")
-                            } else {
-                              setChatMode("vision")
-                            }
-                          }}
-                          disabled={chatMode === "rag"}
-                          className={`flex items-center justify-center dark:text-gray-300 ${
-                            chatMode === "rag" ? "hidden" : "block"
-                          } disabled:opacity-50`}>
-                          {chatMode === "vision" ? (
-                            <EyeIcon className="h-4 w-4" />
-                          ) : (
-                            <EyeOffIcon className="h-4 w-4" />
+                        </Popover>
+                        <div
+                          role="group"
+                          aria-label={t(
+                            'playground:composer.actions',
+                            'Send options'
                           )}
-                        </button>
-                      </Tooltip>
-                      <Tooltip title={t("tooltip.uploadImage")}>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            inputRef.current?.click()
-                          }}
-                          disabled={chatMode === "vision"}
-                          className={`flex items-center justify-center disabled:opacity-50 dark:text-gray-300 ${
-                            chatMode === "rag" ? "hidden" : "block"
-                          }`}>
-                          <ImageIcon className="h-4 w-4" />
-                        </button>
-                      </Tooltip>
-                      {/* Quick ingest media (opens full ingest modal) */}
-                      <Tooltip title="Quick ingest media">
-                        <button
-                          type="button"
-                          onClick={() => setIngestOpen(true)}
-                          className="flex items-center justify-center dark:text-gray-300">
-                          <UploadCloud className="h-4 w-4" />
-                        </button>
-                      </Tooltip>
-                      {!streaming ? (
-                        <>
-                        <Dropdown.Button
-                          htmlType="submit"
-                          disabled={isSending}
-                          className="!justify-end !w-auto"
-                          icon={
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              strokeWidth={1.5}
-                              stroke="currentColor"
-                              className="w-4 h-4">
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="m19.5 8.25-7.5 7.5-7.5-7.5"
-                              />
-                            </svg>
-                          }
-                          menu={{
-                            items: [
-                              {
-                                key: 1,
-                                label: (
-                                  <Checkbox
-                                    checked={sendWhenEnter}
-                                    onChange={(e) =>
-                                      setSendWhenEnter(e.target.checked)
-                                    }>
-                                    {t("sendWhenEnter")}
-                                  </Checkbox>
-                                )
-                              },
-                              {
-                                key: 2,
-                                label: (
-                                  <Checkbox
-                                    checked={chatMode === "rag"}
-                                    onChange={(e) => {
-                                      setChatMode(
-                                        e.target.checked ? "rag" : "normal"
-                                      )
-                                    }}>
-                                    {t("common:chatWithCurrentPage")}
-                                  </Checkbox>
-                                )
-                              },
-                              {
-                                key: 3,
-                                label: (
-                                  <Checkbox
-                                    checked={useOCR}
-                                    onChange={(e) =>
-                                      setUseOCR(e.target.checked)
-                                    }>
-                                    {t("useOCR")}
-                                  </Checkbox>
-                                )
+                          className="flex items-center gap-2">
+                          {!streaming ? (
+                          <>
+                            <Dropdown.Button
+                              aria-label={t(
+                                'playground:composer.submitAria',
+                                'Send message'
+                              )}
+                              htmlType="submit"
+                              disabled={isSending}
+                              className="!justify-end !w-auto"
+                              icon={
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  strokeWidth={1.5}
+                                  stroke="currentColor"
+                                  className="w-4 h-4">
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="m19.5 8.25-7.5 7.5-7.5-7.5"
+                                  />
+                                </svg>
                               }
-                            ]
-                          }}>
-                          <div className="inline-flex gap-2">
-                            {sendWhenEnter ? (
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth="2"
-                                className="h-4 w-4"
-                                viewBox="0 0 24 24">
-                                <path d="M9 10L4 15 9 20"></path>
-                                <path d="M20 4v7a4 4 0 01-4 4H4"></path>
-                              </svg>
-                            ) : null}
-                            {t("common:submit")}
-                          </div>
-                        </Dropdown.Button>
-                        {/* Current Conversation Settings button to the right of submit */}
-                        <Tooltip title={t("common:currentChatModelSettings") as string}>
-                          <button
-                            type="button"
-                            onClick={() => setOpenModelSettings(true)}
-                            className="text-gray-700 dark:text-gray-300 p-1 hover:text-gray-900 dark:hover:text-gray-100">
-                            <Gauge className="h-5 w-5" />
-                          </button>
-                        </Tooltip>
-                        </>
-                      ) : (
-                        <Tooltip title={t("tooltip.stopStreaming")}>
-                          <button
-                            type="button"
-                            onClick={stopStreamingRequest}
-                            className="text-gray-800 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded-md p-1">
-                            <StopCircleIcon className="h-5 w-5" />
-                          </button>
-                        </Tooltip>
-                      )}
-                      {streaming && (
-                        <Tooltip title={t("common:currentChatModelSettings") as string}>
-                          <button
-                            type="button"
-                            onClick={() => setOpenModelSettings(true)}
-                            className="text-gray-800 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded-md p-1">
-                            <Gauge className="h-5 w-5" />
-                          </button>
-                        </Tooltip>
-                      )}
+                              menu={{
+                                items: [
+                                  {
+                                    key: 1,
+                                    label: (
+                                      <Checkbox
+                                        checked={sendWhenEnter}
+                                        onChange={(e) =>
+                                          setSendWhenEnter(e.target.checked)
+                                        }>
+                                        {t("sendWhenEnter")}
+                                      </Checkbox>
+                                    )
+                                  },
+                                  {
+                                    key: 2,
+                                    label: (
+                                      <Checkbox
+                                        checked={chatMode === "rag"}
+                                        onChange={(e) => {
+                                          setChatMode(
+                                            e.target.checked ? "rag" : "normal"
+                                          )
+                                        }}>
+                                        {t("common:chatWithCurrentPage")}
+                                      </Checkbox>
+                                    )
+                                  },
+                                  {
+                                    key: 3,
+                                    label: (
+                                      <Checkbox
+                                        checked={useOCR}
+                                        onChange={(e) =>
+                                          setUseOCR(e.target.checked)
+                                        }>
+                                        {t("useOCR")}
+                                      </Checkbox>
+                                    )
+                                  }
+                                ]
+                              }}>
+                              <div className="inline-flex gap-2">
+                                {sendWhenEnter ? (
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="2"
+                                    className="h-4 w-4"
+                                    viewBox="0 0 24 24">
+                                    <path d="M9 10L4 15 9 20"></path>
+                                    <path d="M20 4v7a4 4 0 01-4 4H4"></path>
+                                  </svg>
+                                ) : null}
+                                {t("common:submit")}
+                              </div>
+                            </Dropdown.Button>
+                            {/* Current Conversation Settings button to the right of submit */}
+                            <Tooltip title={t("common:currentChatModelSettings") as string}>
+                              <button
+                                type="button"
+                                onClick={() => setOpenModelSettings(true)}
+                                className="text-gray-700 dark:text-gray-300 p-1 hover:text-gray-900 dark:hover:text-gray-100">
+                                <Gauge className="h-5 w-5" />
+                                <span className="sr-only">
+                                  {t(
+                                    'playground:composer.openModelSettings',
+                                    'Open current chat settings'
+                                  )}
+                                </span>
+                              </button>
+                            </Tooltip>
+                          </>
+                        ) : (
+                          <Tooltip title={t("tooltip.stopStreaming")}>
+                            <button
+                              type="button"
+                              onClick={stopStreamingRequest}
+                              className="text-gray-800 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded-md p-1">
+                              <StopCircleIcon className="h-5 w-5" />
+                              <span className="sr-only">
+                                {t(
+                                  'playground:composer.stopStreaming',
+                                  'Stop streaming response'
+                                )}
+                              </span>
+                            </button>
+                          </Tooltip>
+                        )}
+                        {streaming && (
+                          <Tooltip title={t("common:currentChatModelSettings") as string}>
+                            <button
+                              type="button"
+                              onClick={() => setOpenModelSettings(true)}
+                              className="text-gray-800 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded-md p-1">
+                              <Gauge className="h-5 w-5" />
+                              <span className="sr-only">
+                                {t(
+                                  'playground:composer.openModelSettings',
+                                  'Open current chat settings'
+                                )}
+                              </span>
+                            </button>
+                          </Tooltip>
+                        )}
+                      </div>
                     </div>
                   </div>
+                </div>
                 </form>
               </div>
               {form.errors.message && (

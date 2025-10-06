@@ -1,17 +1,63 @@
 import { CheckIcon, XMarkIcon } from "@heroicons/react/24/outline"
-import { Segmented, Space, Input, Alert, Form, message, Spin, Button, Collapse } from "antd"
+import {
+  Segmented,
+  Space,
+  Input,
+  Alert,
+  Form,
+  message,
+  Spin,
+  Button,
+  Collapse,
+  Tag
+} from "antd"
 import { Link } from "react-router-dom"
 import React, { useEffect, useState } from "react"
 import { browser } from "wxt/browser"
 import { useTranslation } from "react-i18next"
 import { tldwClient, TldwConfig } from "@/services/tldw/TldwApiClient"
 import { tldwAuth } from "@/services/tldw/TldwAuth"
-import { Tag } from "antd"
+import { SettingsSkeleton } from "@/components/Common/Settings/SettingsSkeleton"
+
+type TimeoutPresetKey = 'balanced' | 'extended'
+
+type TimeoutValues = {
+  request: number
+  stream: number
+  chatRequest: number
+  chatStream: number
+  ragRequest: number
+  media: number
+  upload: number
+}
+
+const TIMEOUT_PRESETS: Record<TimeoutPresetKey, TimeoutValues> = {
+  balanced: {
+    request: 10,
+    stream: 15,
+    chatRequest: 10,
+    chatStream: 15,
+    ragRequest: 10,
+    media: 60,
+    upload: 60
+  },
+  extended: {
+    request: 20,
+    stream: 30,
+    chatRequest: 20,
+    chatStream: 30,
+    ragRequest: 20,
+    media: 90,
+    upload: 90
+  }
+}
 
 export const TldwSettings = () => {
   const { t } = useTranslation(["settings", "common"])
   const [form] = Form.useForm()
   const [loading, setLoading] = useState(false)
+  const [initializing, setInitializing] = useState(true)
+  const [initializingError, setInitializingError] = useState<string | null>(null)
   const [testingConnection, setTestingConnection] = useState(false)
   const [connectionStatus, setConnectionStatus] = useState<'success' | 'error' | null>(null)
   const [connectionDetail, setConnectionDetail] = useState<string>("")
@@ -26,6 +72,41 @@ export const TldwSettings = () => {
   const [ragRequestTimeoutSec, setRagRequestTimeoutSec] = useState<number>(10)
   const [mediaRequestTimeoutSec, setMediaRequestTimeoutSec] = useState<number>(60)
   const [uploadRequestTimeoutSec, setUploadRequestTimeoutSec] = useState<number>(60)
+  const [timeoutPreset, setTimeoutPreset] = useState<TimeoutPresetKey | 'custom'>('balanced')
+
+  const determinePreset = (values: TimeoutValues): TimeoutPresetKey | 'custom' => {
+    for (const [key, presetValues] of Object.entries(TIMEOUT_PRESETS) as [TimeoutPresetKey, typeof TIMEOUT_PRESETS[TimeoutPresetKey]][]) {
+      const matches =
+        presetValues.request === values.request &&
+        presetValues.stream === values.stream &&
+        presetValues.chatRequest === values.chatRequest &&
+        presetValues.chatStream === values.chatStream &&
+        presetValues.ragRequest === values.ragRequest &&
+        presetValues.media === values.media &&
+        presetValues.upload === values.upload
+      if (matches) {
+        return key
+      }
+    }
+    return 'custom'
+  }
+
+  const applyTimeoutPreset = (preset: TimeoutPresetKey) => {
+    const presetValues = TIMEOUT_PRESETS[preset]
+    setRequestTimeoutSec(presetValues.request)
+    setStreamIdleTimeoutSec(presetValues.stream)
+    setChatRequestTimeoutSec(presetValues.chatRequest)
+    setChatStreamIdleTimeoutSec(presetValues.chatStream)
+    setRagRequestTimeoutSec(presetValues.ragRequest)
+    setMediaRequestTimeoutSec(presetValues.media)
+    setUploadRequestTimeoutSec(presetValues.upload)
+    setTimeoutPreset(preset)
+  }
+
+  const parseSeconds = (value: string, fallback: number) => {
+    const parsed = parseInt(value, 10)
+    return Number.isNaN(parsed) ? fallback : parsed
+  }
 
   useEffect(() => {
     loadConfig()
@@ -33,18 +114,29 @@ export const TldwSettings = () => {
 
   const loadConfig = async () => {
     setLoading(true)
+    setInitializingError(null)
     try {
       const config = await tldwClient.getConfig()
       if (config) {
         setAuthMode(config.authMode)
         setServerUrl(config.serverUrl)
-        if (typeof (config as any).requestTimeoutMs === 'number') setRequestTimeoutSec(Math.round((config as any).requestTimeoutMs / 1000))
-        if (typeof (config as any).streamIdleTimeoutMs === 'number') setStreamIdleTimeoutSec(Math.round((config as any).streamIdleTimeoutMs / 1000))
-        if (typeof (config as any).chatRequestTimeoutMs === 'number') setChatRequestTimeoutSec(Math.round((config as any).chatRequestTimeoutMs / 1000))
-        if (typeof (config as any).chatStreamIdleTimeoutMs === 'number') setChatStreamIdleTimeoutSec(Math.round((config as any).chatStreamIdleTimeoutMs / 1000))
-        if (typeof (config as any).ragRequestTimeoutMs === 'number') setRagRequestTimeoutSec(Math.round((config as any).ragRequestTimeoutMs / 1000))
-        if (typeof (config as any).mediaRequestTimeoutMs === 'number') setMediaRequestTimeoutSec(Math.round((config as any).mediaRequestTimeoutMs / 1000))
-        if (typeof (config as any).uploadRequestTimeoutMs === 'number') setUploadRequestTimeoutSec(Math.round((config as any).uploadRequestTimeoutMs / 1000))
+        const nextTimeouts = { ...TIMEOUT_PRESETS.balanced }
+        if (typeof (config as any).requestTimeoutMs === 'number') nextTimeouts.request = Math.round((config as any).requestTimeoutMs / 1000)
+        if (typeof (config as any).streamIdleTimeoutMs === 'number') nextTimeouts.stream = Math.round((config as any).streamIdleTimeoutMs / 1000)
+        if (typeof (config as any).chatRequestTimeoutMs === 'number') nextTimeouts.chatRequest = Math.round((config as any).chatRequestTimeoutMs / 1000)
+        if (typeof (config as any).chatStreamIdleTimeoutMs === 'number') nextTimeouts.chatStream = Math.round((config as any).chatStreamIdleTimeoutMs / 1000)
+        if (typeof (config as any).ragRequestTimeoutMs === 'number') nextTimeouts.ragRequest = Math.round((config as any).ragRequestTimeoutMs / 1000)
+        if (typeof (config as any).mediaRequestTimeoutMs === 'number') nextTimeouts.media = Math.round((config as any).mediaRequestTimeoutMs / 1000)
+        if (typeof (config as any).uploadRequestTimeoutMs === 'number') nextTimeouts.upload = Math.round((config as any).uploadRequestTimeoutMs / 1000)
+
+        setRequestTimeoutSec(nextTimeouts.request)
+        setStreamIdleTimeoutSec(nextTimeouts.stream)
+        setChatRequestTimeoutSec(nextTimeouts.chatRequest)
+        setChatStreamIdleTimeoutSec(nextTimeouts.chatStream)
+        setRagRequestTimeoutSec(nextTimeouts.ragRequest)
+        setMediaRequestTimeoutSec(nextTimeouts.media)
+        setUploadRequestTimeoutSec(nextTimeouts.upload)
+        setTimeoutPreset(determinePreset(nextTimeouts))
         form.setFieldsValue({
           serverUrl: config.serverUrl,
           apiKey: config.apiKey,
@@ -55,11 +147,19 @@ export const TldwSettings = () => {
         if (config.authMode === 'multi-user' && config.accessToken) {
           setIsLoggedIn(true)
         }
+      } else {
+        setTimeoutPreset('balanced')
       }
+      setInitializingError(null)
     } catch (error) {
       console.error('Failed to load config:', error)
+      setInitializingError(
+        (error as Error)?.message ||
+          'Unable to load tldw server settings. Check your connection and try again.'
+      )
     } finally {
       setLoading(false)
+      setInitializing(false)
     }
   }
 
@@ -227,9 +327,30 @@ export const TldwSettings = () => {
     }
   }
 
-  return (
-    <Spin spinning={loading}>
+  if (initializing) {
+    return (
       <div className="max-w-2xl">
+        <SettingsSkeleton sections={3} />
+      </div>
+    )
+  }
+
+  return (
+    <Spin
+      spinning={loading}
+      tip={loading ? t('common:saving', 'Saving...') : undefined}>
+      <div className="max-w-2xl">
+        {initializingError && (
+          <Alert
+            type="error"
+            showIcon
+            closable
+            className="mb-4"
+            message={t('settings:tldw.loadError', 'Unable to load tldw settings')}
+            description={initializingError}
+            onClose={() => setInitializingError(null)}
+          />
+        )}
         <div className="mb-4 p-2 rounded border dark:border-gray-600 bg-white dark:bg-[#171717] flex items-center justify-between">
           <div className="text-sm text-gray-800 dark:text-gray-100">
             <span className="mr-2 font-medium">Server:</span>
@@ -283,51 +404,135 @@ export const TldwSettings = () => {
             label: t('settings:tldw.advancedTimeouts'),
             children: (
               <div className="space-y-3">
+                <div className="flex flex-col gap-2">
+                  <span className="text-sm font-medium">
+                    {t('settings:tldw.timeoutPresetLabel')}
+                  </span>
+                  <div className="flex flex-wrap items-center gap-3">
+                    <Segmented
+                      value={timeoutPreset === 'extended' ? 'extended' : 'balanced'}
+                      onChange={(value) => applyTimeoutPreset(value as TimeoutPresetKey)}
+                      options={[
+                        { label: t('settings:tldw.timeoutPresetBalanced'), value: 'balanced' },
+                        { label: t('settings:tldw.timeoutPresetExtended'), value: 'extended' }
+                      ]}
+                    />
+                    {timeoutPreset === 'custom' && (
+                      <Tag color="default">{t('settings:tldw.timeoutPresetCustom')}</Tag>
+                    )}
+                  </div>
+                  <span className="text-xs text-gray-500">
+                    {t('settings:tldw.timeoutPresetHint')}
+                  </span>
+                </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium mb-1">{t('settings:tldw.requestTimeout')}</label>
-                    <Input type="number" min={1} value={requestTimeoutSec} onChange={(e) => setRequestTimeoutSec(parseInt(e.target.value || '10'))} placeholder="10" addonAfter="s" />
+                    <Input
+                      type="number"
+                      min={1}
+                      value={requestTimeoutSec}
+                      onChange={(e) => {
+                        setRequestTimeoutSec(parseSeconds(e.target.value, TIMEOUT_PRESETS.balanced.request))
+                        setTimeoutPreset('custom')
+                      }}
+                      placeholder="10"
+                      addonAfter="s"
+                    />
                     <div className="text-xs text-gray-500 mt-1">Abort initial requests if no response within this time. Default: 10s.</div>
                   </div>
                   <div>
                     <label className="block text-sm font-medium mb-1">{t('settings:tldw.streamingIdle')}</label>
-                    <Input type="number" min={1} value={streamIdleTimeoutSec} onChange={(e) => setStreamIdleTimeoutSec(parseInt(e.target.value || '15'))} placeholder="15" addonAfter="s" />
+                    <Input
+                      type="number"
+                      min={1}
+                      value={streamIdleTimeoutSec}
+                      onChange={(e) => {
+                        setStreamIdleTimeoutSec(parseSeconds(e.target.value, TIMEOUT_PRESETS.balanced.stream))
+                        setTimeoutPreset('custom')
+                      }}
+                      placeholder="15"
+                      addonAfter="s"
+                    />
                     <div className="text-xs text-gray-500 mt-1">Abort streaming if no updates received within this time. Default: 15s.</div>
                   </div>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium mb-1">{t('settings:tldw.chatRequest')}</label>
-                    <Input type="number" min={1} value={chatRequestTimeoutSec} onChange={(e) => setChatRequestTimeoutSec(parseInt(e.target.value||'10'))} addonAfter="s" />
+                    <Input
+                      type="number"
+                      min={1}
+                      value={chatRequestTimeoutSec}
+                      onChange={(e) => {
+                        setChatRequestTimeoutSec(parseSeconds(e.target.value, TIMEOUT_PRESETS.balanced.chatRequest))
+                        setTimeoutPreset('custom')
+                      }}
+                      addonAfter="s"
+                    />
                   </div>
                   <div>
                     <label className="block text-sm font-medium mb-1">{t('settings:tldw.chatStreamIdle')}</label>
-                    <Input type="number" min={1} value={chatStreamIdleTimeoutSec} onChange={(e) => setChatStreamIdleTimeoutSec(parseInt(e.target.value||'15'))} addonAfter="s" />
+                    <Input
+                      type="number"
+                      min={1}
+                      value={chatStreamIdleTimeoutSec}
+                      onChange={(e) => {
+                        setChatStreamIdleTimeoutSec(parseSeconds(e.target.value, TIMEOUT_PRESETS.balanced.chatStream))
+                        setTimeoutPreset('custom')
+                      }}
+                      addonAfter="s"
+                    />
                   </div>
                   <div>
                     <label className="block text-sm font-medium mb-1">{t('settings:tldw.ragRequest')}</label>
-                    <Input type="number" min={1} value={ragRequestTimeoutSec} onChange={(e) => setRagRequestTimeoutSec(parseInt(e.target.value||'10'))} addonAfter="s" />
+                    <Input
+                      type="number"
+                      min={1}
+                      value={ragRequestTimeoutSec}
+                      onChange={(e) => {
+                        setRagRequestTimeoutSec(parseSeconds(e.target.value, TIMEOUT_PRESETS.balanced.ragRequest))
+                        setTimeoutPreset('custom')
+                      }}
+                      addonAfter="s"
+                    />
                   </div>
                   <div>
                     <label className="block text-sm font-medium mb-1">{t('settings:tldw.mediaRequest')}</label>
-                    <Input type="number" min={1} value={mediaRequestTimeoutSec} onChange={(e) => setMediaRequestTimeoutSec(parseInt(e.target.value||'60'))} addonAfter="s" />
+                    <Input
+                      type="number"
+                      min={1}
+                      value={mediaRequestTimeoutSec}
+                      onChange={(e) => {
+                        setMediaRequestTimeoutSec(parseSeconds(e.target.value, TIMEOUT_PRESETS.balanced.media))
+                        setTimeoutPreset('custom')
+                      }}
+                      addonAfter="s"
+                    />
                   </div>
                   <div>
                     <label className="block text-sm font-medium mb-1">{t('settings:tldw.uploadRequest')}</label>
-                    <Input type="number" min={1} value={uploadRequestTimeoutSec} onChange={(e) => setUploadRequestTimeoutSec(parseInt(e.target.value||'60'))} addonAfter="s" />
+                    <Input
+                      type="number"
+                      min={1}
+                      value={uploadRequestTimeoutSec}
+                      onChange={(e) => {
+                        setUploadRequestTimeoutSec(parseSeconds(e.target.value, TIMEOUT_PRESETS.balanced.upload))
+                        setTimeoutPreset('custom')
+                      }}
+                      addonAfter="s"
+                    />
                   </div>
                 </div>
                 <div className="flex justify-end">
-                  <Button onClick={() => {
-                    setRequestTimeoutSec(10)
-                    setStreamIdleTimeoutSec(15)
-                    setChatRequestTimeoutSec(10)
-                    setChatStreamIdleTimeoutSec(15)
-                    setRagRequestTimeoutSec(10)
-                    setMediaRequestTimeoutSec(60)
-                    setUploadRequestTimeoutSec(60)
-                    message.success(t('settings:tldw.resetDone'))
-                  }}>{t('settings:tldw.reset')}</Button>
+                  <Button
+                    onClick={() => {
+                      applyTimeoutPreset('balanced')
+                      message.success(t('settings:tldw.resetDone'))
+                    }}
+                  >
+                    {t('settings:tldw.reset')}
+                  </Button>
                 </div>
               </div>
             )

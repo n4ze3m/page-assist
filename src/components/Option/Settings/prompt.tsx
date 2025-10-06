@@ -1,5 +1,5 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query"
-import { Skeleton, Radio, Form, Input } from "antd"
+import { Skeleton, Radio, Form, Input, Alert } from "antd"
 import React from "react"
 import { useTranslation } from "react-i18next"
 import { SaveButton } from "~/components/Common/SaveButton"
@@ -39,6 +39,18 @@ export const SettingPrompt = () => {
   return (
     <div className="flex flex-col gap-3">
       {status === "pending" && <Skeleton paragraph={{ rows: 4 }} active />}
+
+      {status === "error" && (
+        <Alert
+          type="error"
+          showIcon
+          message={t("managePrompts.loadError", "Unable to load prompt settings")}
+          description={t(
+            "managePrompts.loadErrorHelp",
+            "Connect to your tldw server, then refresh the page."
+          )}
+        />
+      )}
 
       {status === "success" && (
         <div>

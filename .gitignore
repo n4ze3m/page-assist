@@ -50,3 +50,4 @@ keys.json
 /docs/.vitepress/cache/
 package-lock.json
 bun.lockb
+/playwright-mcp-artifacts

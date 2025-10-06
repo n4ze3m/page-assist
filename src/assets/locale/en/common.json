@@ -1,5 +1,5 @@
 {
-    "pageAssist": "Page Assist",
+    "pageAssist": "tldw Assistant",
     "selectAModel": "Select a Model",
     "save": "Save",
     "saved": "Saved",
@@ -197,7 +197,7 @@
     "embeddingGen": "Creating embeddings, this may take a while",
     "semanticSearch": "Performing semantic search",
     "newBranch": "New Branch",
-    "downloading": "Downloading" ,
+    "downloading": "Downloading",
     "cancelPullingModel": {
         "confirm": "Are you sure you want to cancel the download? This will stop the download process. If supported by the provider, you can resume later."
     }

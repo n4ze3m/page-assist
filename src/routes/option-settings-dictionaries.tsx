@@ -4,7 +4,7 @@ import { DictionariesManager } from "~/components/Option/Dictionaries/Manager"
 
 const OptionDictionaries = () => {
   return (
-    <OptionLayout>
+    <OptionLayout hideHeader>
       <SettingsLayout>
         <DictionariesManager />
       </SettingsLayout>

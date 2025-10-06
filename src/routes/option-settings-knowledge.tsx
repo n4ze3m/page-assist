@@ -4,7 +4,7 @@ import { KnowledgeSettings } from "@/components/Option/Knowledge"
 
  const OptionKnowledgeBase = () => {
   return (
-    <OptionLayout>
+    <OptionLayout hideHeader>
       <SettingsLayout>
         <KnowledgeSettings />
       </SettingsLayout>

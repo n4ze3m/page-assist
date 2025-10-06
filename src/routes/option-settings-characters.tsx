@@ -4,7 +4,7 @@ import { CharactersManager } from "~/components/Option/Characters/Manager"
 
 const OptionCharacters = () => {
   return (
-    <OptionLayout>
+    <OptionLayout hideHeader>
       <SettingsLayout>
         <CharactersManager />
       </SettingsLayout>
@@ -13,4 +13,3 @@ const OptionCharacters = () => {
 }
 
 export default OptionCharacters
-

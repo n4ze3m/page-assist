@@ -9,7 +9,9 @@ import {
   Form,
   Switch,
   Segmented,
-  Tag
+  Tag,
+  Select,
+  Alert
 } from "antd"
 import { Trash2, Pen, Computer, Zap, Star, CopyIcon, UploadCloud, Download } from "lucide-react"
 import { useMemo, useRef, useState } from "react"
@@ -61,6 +63,25 @@ export const PromptBody = () => {
     queryKey: ["fetchCopilotPrompts"],
     queryFn: getAllCopilotPrompts
   })
+
+  const promptLoadFailed = status === "error"
+  const copilotLoadFailed = copilotStatus === "error"
+  const loadErrorDescription = [
+    promptLoadFailed
+      ? t(
+          "managePrompts.loadErrorDetail",
+          "Custom prompts couldn’t be retrieved from your tldw server."
+        )
+      : null,
+    copilotLoadFailed
+      ? t(
+          "managePrompts.copilotLoadErrorDetail",
+          "Copilot prompts couldn’t be retrieved."
+        )
+      : null
+  ]
+    .filter(Boolean)
+    .join(" ")
 
   const { mutate: deletePrompt } = useMutation({
     mutationFn: deletePromptById,
@@ -258,7 +279,7 @@ export const PromptBody = () => {
                 onClick={() => {
                   if (isFireFoxPrivateMode) {
                     notification.error({
-                      message: "Page Assist can't save data",
+                      message: "tldw Assistant can't save data",
                       description:
                         "Firefox Private Mode does not support saving data to IndexedDB. Please add prompts from a normal window."
                     })
@@ -523,6 +544,24 @@ export const PromptBody = () => {
 
   return (
     <div>
+      {(promptLoadFailed || copilotLoadFailed) && (
+        <Alert
+          type="error"
+          showIcon
+          className="mb-4"
+          message={t(
+            "managePrompts.partialLoad",
+            "Some prompt data isn’t available"
+          )}
+          description={
+            loadErrorDescription ||
+            t(
+              "managePrompts.loadErrorHelp",
+              "Check your server connection and refresh to try again."
+            )
+          }
+        />
+      )}
       <div className="flex items-center justify-end mb-6">
         <Segmented
           size="large"

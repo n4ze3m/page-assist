@@ -2,11 +2,11 @@ export default defineContentScript({
   main(ctx) {
     const downloadModel = async (modelName: string) => {
       const ok = confirm(
-        `[Page Assist Extension] Do you want to pull the ${modelName} model? This has nothing to do with the huggingface.co website. The model will be pulled locally once you confirm. Make sure Ollama is running.`
+        `[tldw Assistant] Do you want to pull the ${modelName} model? This has nothing to do with the huggingface.co website. The model will be pulled locally once you confirm. Make sure Ollama is running.`
       )
       if (ok) {
         alert(
-          `[Page Assist Extension] Pulling ${modelName} model. For more details, check the extension icon.`
+          `[tldw Assistant] Pulling ${modelName} model. For more details, check the extension icon.`
         )
 
         // Path is declared in OpenAPI; annotate for compile-time safety

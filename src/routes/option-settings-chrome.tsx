@@ -4,7 +4,7 @@ import { ChromeApp } from "@/components/Option/Settings/chrome"
 
 const OptionChrome = () => {
   return (
-    <OptionLayout>
+    <OptionLayout hideHeader>
       <SettingsLayout>
         <ChromeApp />
       </SettingsLayout>
