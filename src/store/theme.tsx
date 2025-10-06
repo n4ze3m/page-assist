@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { Theme } from "@/assets/colors";
 import { BackgroundType } from "@/hooks/useTheme";
-export const backgroundTypes: BackgroundType[] = ["blurryGradient", "layeredWaves", "blobScene"]
+export const backgroundTypes: BackgroundType[] = ["plain", "blurryGradient", "layeredWaves", "blobScene"]
 
 interface ThemeState {
   themeName: Theme;
@@ -17,7 +17,7 @@ const getInitialTheme = (): Theme => {
 
 const getInitialBackground = (): BackgroundType => {
   const saved = localStorage.getItem("backgroundName") as BackgroundType | null;
-  return saved && backgroundTypes.includes(saved) ? saved : "layeredWaves";
+  return saved && backgroundTypes.includes(saved) ? saved : "plain";
 };
 
 export const useThemeStore = create<ThemeState>((set) => ({

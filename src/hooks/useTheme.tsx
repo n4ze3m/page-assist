@@ -3,6 +3,7 @@ import { useEffect } from "react"
 import { themes } from "@/assets/colors"
 import { useThemeStore } from "@/store/theme"
 import { TinyColor } from '@ctrl/tinycolor';
+import plainSVG from "@/assets/backgrounds/plain.svg?raw"; 
 import layeredWavesSVG from "@/assets/backgrounds/layered-waves.svg?raw"; 
 import blurryGradientSVG from "@/assets/backgrounds/blurry-gradient.svg?raw"; 
 import blobSceneSVG from "@/assets/backgrounds/blob-scene.svg?raw"; 
@@ -10,7 +11,7 @@ import blobSceneSVG from "@/assets/backgrounds/blob-scene.svg?raw";
 
 import { useDarkMode } from "./useDarkmode";
 
-export type BackgroundType = "blurryGradient" | "layeredWaves" | "blobScene"
+export type BackgroundType = "plain" | "blurryGradient" | "layeredWaves" | "blobScene"
 
 export function useTheme() {
   const themeName = useThemeStore((state) => state.themeName)
@@ -31,6 +32,15 @@ export function useTheme() {
       document.documentElement.style.setProperty(`--surface-${key}`, rgb);
     });
   }, [themeName]);
+
+  const generatePlain = () : string => {
+    const svgText = plainSVG
+
+    const customizedSVG = svgText
+      .replace(/{{color1}}/g, themes[themeName].surface[mode == "dark" ? 900: 200])
+
+    return customizedSVG
+  }
 
   const generateLayeredWaves = () : string => {
     const svgText = layeredWavesSVG
@@ -94,8 +104,11 @@ export function useTheme() {
       case "blobScene":
         customizedSVG = generateBlobScene();
         break;
+      case "plain":
+        customizedSVG = generatePlain();
+        break;
       default:
-        customizedSVG = generateLayeredWaves();
+        customizedSVG = generatePlain();
         break;
     }
     return svgToDataURI(customizedSVG);

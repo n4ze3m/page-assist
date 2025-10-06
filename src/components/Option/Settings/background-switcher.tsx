@@ -16,6 +16,7 @@ export function BackgroundSwitcher({ className }: { className?: string }) {
       style={{ width: 160 }}
       className={`${className}`}
     >
+      <Option value="plain">Plain</Option>
       <Option value="blurryGradient">Blurry Gradient</Option>
       <Option value="layeredWaves">Layered Waves</Option>
       <Option value="blobScene">Blob Scene</Option>
