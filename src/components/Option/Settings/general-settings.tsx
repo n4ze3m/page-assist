@@ -83,6 +83,11 @@ export const GeneralSettings = () => {
     false
   )
 
+  const [webuiTemporaryChat, setWebuiTemporaryChat] = useStorage(
+    "webuiTemporaryChat",
+    false
+  )
+
   const [removeReasoningTagFromCopy, setRemoveReasoningTagFromCopy] =
     useStorage("removeReasoningTagFromCopy", true)
 
@@ -389,6 +394,17 @@ export const GeneralSettings = () => {
           />
         </div>
       )}
+
+      <div className="flex flex-row justify-between">
+        <span className="text-gray-700 dark:text-neutral-50 ">
+          {t("generalSettings.settings.webuiTemporaryChat.label")}
+        </span>
+
+        <Switch
+          checked={webuiTemporaryChat}
+          onChange={(checked) => setWebuiTemporaryChat(checked)}
+        />
+      </div>
 
       <div className="flex flex-row justify-between">
         <span className="text-gray-700 dark:text-neutral-50 ">
