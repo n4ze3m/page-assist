@@ -32,7 +32,9 @@ export const Playground = () => {
     setHistory,
     setMessages,
     setSelectedSystemPrompt,
-    streaming
+    streaming,
+    webuiTemporaryChat,
+    setTemporaryChat
   } = useMessageOption()
   const { setSystemPrompt } = useStoreChatModelSettings()
   const { containerRef, isAutoScrollToBottom, autoScrollToBottom } =
@@ -136,6 +138,12 @@ export const Playground = () => {
   React.useEffect(() => {
     setRecentMessagesOnLoad()
   }, [])
+
+  React.useEffect(() => {
+    if (webuiTemporaryChat) {
+      setTemporaryChat(true)
+    }
+  }, [webuiTemporaryChat])
 
   return (
     <div
