@@ -1,4 +1,4 @@
-import { useStorage } from "@plasmohq/storage/hook"
+import { useStorage } from "@/packages/storage/hook"
 import { useQuery } from "@tanstack/react-query"
 import { Alert, Skeleton, Switch, Modal, Progress, message } from "antd"
 import { useTranslation } from "react-i18next"

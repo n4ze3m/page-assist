@@ -1,5 +1,5 @@
 import React from "react"
-import { useStorage } from "@plasmohq/storage/hook"
+import { useStorage } from "@/packages/storage/hook"
 
 export interface TabInfo {
   id: number

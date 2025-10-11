@@ -16,7 +16,7 @@ import {
 import { useTranslation } from "react-i18next"
 import { CurrentChatModelSettings } from "@/components/Common/Settings/CurrentChatModelSettings"
 import React from "react"
-import { useStorage } from "@plasmohq/storage/hook"
+import { useStorage } from "@/packages/storage/hook"
 import { PromptSelect } from "@/components/Common/PromptSelect"
 import { Sidebar } from "@/components/Option/Sidebar"
 import { BsIncognito } from "react-icons/bs"

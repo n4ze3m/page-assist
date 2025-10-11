@@ -12,8 +12,8 @@ import {
   useChatModeShortcuts
 } from "@/hooks/keyboard/useKeyboardShortcuts"
 import { copilotResumeLastChat } from "@/services/app"
-import { Storage } from "@plasmohq/storage"
-import { useStorage } from "@plasmohq/storage/hook"
+import { Storage } from "@/packages/storage"
+import { useStorage } from "@/packages/storage/hook"
 import { notification } from "antd"
 import { ChevronDown } from "lucide-react"
 import React from "react"

@@ -3,7 +3,7 @@ import { useMessageOption } from "~/hooks/useMessageOption"
 import { PlaygroundEmpty } from "./PlaygroundEmpty"
 import { PlaygroundMessage } from "~/components/Common/Playground/Message"
 import { MessageSourcePopup } from "@/components/Common/Playground/MessageSourcePopup"
-import { useStorage } from "@plasmohq/storage/hook"
+import { useStorage } from "@/packages/storage/hook"
 
 export const PlaygroundChat = () => {
   const {

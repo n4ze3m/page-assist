@@ -1,5 +1,5 @@
 import { getAllCustomModels, deleteModel } from "@/db/dexie/models"
-import { useStorage } from "@plasmohq/storage/hook"
+import { useStorage } from "@/packages/storage/hook"
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query"
 import { Avatar, Skeleton, Table, Tag, Tooltip } from "antd"
 import { Pencil, Settings, Trash2 } from "lucide-react"

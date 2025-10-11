@@ -1,6 +1,6 @@
 import { ProviderIcons } from "@/components/Common/ProviderIcon"
 import { cleanUrl } from "@/libs/clean-url"
-import { useStorage } from "@plasmohq/storage/hook"
+import { useStorage } from "@/packages/storage/hook"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { Avatar, Select } from "antd"
 import { Loader2, RotateCcw } from "lucide-react"

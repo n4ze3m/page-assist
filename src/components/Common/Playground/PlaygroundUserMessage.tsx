@@ -1,5 +1,5 @@
 import { useTTS } from "@/hooks/useTTS"
-import { useStorage } from "@plasmohq/storage/hook"
+import { useStorage } from "@/packages/storage/hook"
 import React from "react"
 import { useTranslation } from "react-i18next"
 import { EditMessageForm } from "./EditMessageForm"

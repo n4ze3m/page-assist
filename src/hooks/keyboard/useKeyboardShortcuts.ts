@@ -96,7 +96,7 @@ export const useFocusShortcuts = (
 
   const shortcuts: KeyboardShortcutConfig[] = [
     {
-      shortcut: configuredShortcuts.focusTextarea,
+      shortcut: configuredShortcuts?.focusTextarea,
       action: focusTextarea,
       enabled,
       description: 'Focus textarea'
@@ -128,7 +128,7 @@ export const useChatShortcuts = (
 
   const shortcuts: KeyboardShortcutConfig[] = [
     {
-      shortcut: configuredShortcuts.newChat,
+      shortcut: configuredShortcuts?.newChat,
       action: newChat,
       enabled,
       description: 'Start new chat'
@@ -160,7 +160,7 @@ export const useSidebarShortcuts = (
 
   const shortcuts: KeyboardShortcutConfig[] = [
     {
-      shortcut: configuredShortcuts.toggleSidebar,
+      shortcut: configuredShortcuts?.toggleSidebar,
       action: toggleSidebarAction,
       enabled,
       description: 'Toggle sidebar'
@@ -192,7 +192,7 @@ export const useChatModeShortcuts = (
 
   const shortcuts: KeyboardShortcutConfig[] = [
     {
-      shortcut: configuredShortcuts.toggleChatMode,
+      shortcut: configuredShortcuts?.toggleChatMode,
       action: toggleChatModeAction,
       enabled,
       description: 'Toggle chat with current page'

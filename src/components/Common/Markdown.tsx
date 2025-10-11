@@ -10,7 +10,7 @@ import React from "react"
 import { CodeBlock } from "./CodeBlock"
 import { TableBlock } from "./TableBlock"
 import { preprocessLaTeX } from "@/utils/latex"
-import { useStorage } from "@plasmohq/storage/hook"
+import { useStorage } from "@/packages/storage/hook"
 
 function Markdown({
   message,

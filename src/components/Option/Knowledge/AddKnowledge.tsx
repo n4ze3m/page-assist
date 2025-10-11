@@ -8,7 +8,7 @@ import { InboxIcon } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import PubSub from "pubsub-js"
 import { KNOWLEDGE_QUEUE } from "@/queue"
-import { useStorage } from "@plasmohq/storage/hook"
+import { useStorage } from "@/packages/storage/hook"
 import { unsupportedTypes } from "./utils/unsupported-types"
 import React from "react"
 

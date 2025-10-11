@@ -5,8 +5,8 @@ import {
   exportPageAssistData,
   importPageAssistData
 } from "@/libs/export-import"
-import { Storage } from "@plasmohq/storage"
-import { useStorage } from "@plasmohq/storage/hook"
+import { Storage } from "@/packages/storage"
+import { useStorage } from "@/packages/storage/hook"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { Select, notification, Switch } from "antd"
 import { useTranslation } from "react-i18next"

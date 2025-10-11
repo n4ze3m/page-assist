@@ -1,4 +1,4 @@
-import { useStorage } from "@plasmohq/storage/hook"
+import { useStorage } from "@/packages/storage/hook"
 import OptionLayout from "~/components/Layouts/Layout"
 import { Playground } from "~/components/Option/Playground/Playground"
 

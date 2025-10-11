@@ -24,7 +24,7 @@ export default function OptionLayout({
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const { t } = useTranslation(["option", "common", "settings"])
   const [openModelSettings, setOpenModelSettings] = useState(false)
-  useMigration()
+  // useMigration()
   const {
     setMessages,
     setHistory,

@@ -14,7 +14,7 @@ import {
   X
 } from "lucide-react"
 import { useTranslation } from "react-i18next"
-import { useStorage } from "@plasmohq/storage/hook"
+import { useStorage } from "@/packages/storage/hook"
 import { ModelNickModelNicknameModal } from "./ModelNicknameModal"
 import { useState, useEffect } from "react"
 import { AddUpdateModelSettings } from "./AddUpdateModelSettings"

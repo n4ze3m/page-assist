@@ -6,7 +6,7 @@ import { SaveButton } from "~/components/Common/SaveButton"
 import { deleteWebshare, getAllWebshares, getUserId } from "@/db/dexie/helpers"
 import { getPageShareUrl, setPageShareUrl } from "~/services/ollama"
 import { verifyPageShareURL } from "~/utils/verify-page-share"
-import { useStorage } from "@plasmohq/storage/hook"
+import { useStorage } from "@/packages/storage/hook"
 import fetcher from "@/libs/fetcher"
 
 export const OptionShareBody = () => {

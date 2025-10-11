@@ -1,7 +1,7 @@
 import { getOllamaURL, isOllamaRunning } from "../services/ollama"
 import { browser } from "wxt/browser"
 import { clearBadge, streamDownload, cancelDownload } from "@/utils/pull-ollama"
-import { Storage } from "@plasmohq/storage"
+import { Storage } from "@/packages/storage"
 import { getInitialConfig } from "@/services/action"
 
 export default defineBackground({

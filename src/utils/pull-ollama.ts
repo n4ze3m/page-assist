@@ -1,6 +1,6 @@
 import { setBadgeBackgroundColor, setBadgeText, setTitle } from "@/utils/action"
 import fetcher from "@/libs/fetcher"
-import { Storage } from "@plasmohq/storage"
+import { Storage } from "@/packages/storage"
 
 const storage = new Storage({
   area: "local"

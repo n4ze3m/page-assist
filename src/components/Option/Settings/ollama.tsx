@@ -6,7 +6,7 @@ import { getOllamaURL, setOllamaURL as saveOllamaURL } from "~/services/ollama"
 import { Trans, useTranslation } from "react-i18next"
 import { AdvanceOllamaSettings } from "@/components/Common/Settings/AdvanceOllamaSettings"
 import { ModelSettings } from "./model-settings"
-import { useStorage } from "@plasmohq/storage/hook"
+import { useStorage } from "@/packages/storage/hook"
 import { AlertCircleIcon } from "lucide-react"
 import { Link } from "react-router-dom"
 export const SettingsOllama = () => {

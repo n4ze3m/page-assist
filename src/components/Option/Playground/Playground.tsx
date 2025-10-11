@@ -12,8 +12,8 @@ import {
 import { useStoreChatModelSettings } from "@/store/model"
 import { useSmartScroll } from "@/hooks/useSmartScroll"
 import { ChevronDown } from "lucide-react"
-import { useStorage } from "@plasmohq/storage/hook"
-import { Storage } from "@plasmohq/storage"
+import { useStorage } from "@/packages/storage/hook"
+import { Storage } from "@/packages/storage"
 import { otherUnsupportedTypes } from "../Knowledge/utils/unsupported-types"
 export const Playground = () => {
   const drop = React.useRef<HTMLDivElement>(null)

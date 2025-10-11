@@ -1,5 +1,5 @@
 import { pageAssistModel } from "@/models"
-import { Storage } from "@plasmohq/storage"
+import { Storage } from "@/packages/storage"
 import { getOllamaURL } from "./ollama"
 import { cleanUrl } from "@/libs/clean-url"
 import { HumanMessage } from "langchain/schema"

@@ -1,4 +1,4 @@
-import { Storage } from "@plasmohq/storage"
+import { Storage } from "@/packages/storage"
 
 const storage = new Storage()
 

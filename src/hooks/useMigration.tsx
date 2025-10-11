@@ -1,7 +1,7 @@
 import { useEffect } from "react"
 import { useMutation } from "@tanstack/react-query"
 import { runAllMigrations } from "~/db/dexie/migration"
-import { Storage } from "@plasmohq/storage"
+import { Storage } from "@/packages/storage"
 import { message, notification } from "antd"
 
 const storage = new Storage()
@@ -24,6 +24,14 @@ export const useMigration = () => {
   const migrationMutation = useMutation<MigrationResult, Error>({
     mutationFn: async () => {
       try {
+        const isExtensionEnv =
+          typeof chrome !== "undefined" && typeof chrome.runtime !== "undefined" && !!chrome.runtime.id
+        const isBrowserEnv = typeof window !== "undefined" && !isExtensionEnv
+
+        if (isBrowserEnv) {
+          return { success: true }
+        }
+
         const isMigrated = await getIsMigrated()
         if (isMigrated) {
           return { success: false }
@@ -43,7 +51,7 @@ export const useMigration = () => {
           error: error instanceof Error ? error.message : "Unknown error"
         }
       }
-  },
+    },
     onSuccess: async (result) => {
       if (result.success) {
         await setIsMigrated(true)

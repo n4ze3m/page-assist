@@ -1,4 +1,4 @@
-import { Storage } from "@plasmohq/storage"
+import { Storage } from "@/packages/storage"
 import { ModelNicknames } from "./dexie/types"
 
 export class ModelNickname {

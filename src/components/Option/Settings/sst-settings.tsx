@@ -1,4 +1,4 @@
-import { useStorage } from "@plasmohq/storage/hook"
+import { useStorage } from "@/packages/storage/hook"
 import { InputNumber, Select, Switch } from "antd"
 import { useTranslation } from "react-i18next"
 import { SUPPORTED_LANGUAGES } from "~/utils/supported-languages"

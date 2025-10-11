@@ -1,6 +1,6 @@
 import { getDefaultOcrLanguage } from "@/data/ocr-language"
 import { useStoreChatModelSettings } from "@/store/model"
-import { Storage } from "@plasmohq/storage"
+import { Storage } from "@/packages/storage"
 
 const storage = new Storage()
 

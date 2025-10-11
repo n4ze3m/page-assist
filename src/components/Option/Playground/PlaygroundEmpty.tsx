@@ -1,5 +1,5 @@
 import { cleanUrl } from "@/libs/clean-url"
-import { useStorage } from "@plasmohq/storage/hook"
+import { useStorage } from "@/packages/storage/hook"
 import { useQuery } from "@tanstack/react-query"
 import { RotateCcw } from "lucide-react"
 import { useEffect, useState } from "react"

@@ -21,7 +21,7 @@ import { useSpeechRecognition } from "@/hooks/useSpeechRecognition"
 import { PiGlobeX, PiGlobe } from "react-icons/pi"
 import { handleChatInputKeyDown } from "@/utils/key-down"
 import { getIsSimpleInternetSearch } from "@/services/search"
-import { useStorage } from "@plasmohq/storage/hook"
+import { useStorage } from "@/packages/storage/hook"
 import { useFocusShortcuts } from "@/hooks/keyboard"
 
 type Props = {
