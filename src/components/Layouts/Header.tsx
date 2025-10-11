@@ -23,13 +23,19 @@ import { ProviderIcons } from "../Common/ProviderIcon"
 import { NewChat } from "./NewChat"
 import { MoreOptions } from "./MoreOptions"
 type Props = {
-  setSidebarOpen: (open: boolean) => void
+  setDesktopSidebarOpen: (open: boolean) => void
+  desktopSidebarOpen: boolean
+  setMobileSidebarOpen: (open: boolean) => void
+  mobileSidebarOpen: boolean
   setOpenModelSettings: (open: boolean) => void
 }
 
 export const Header: React.FC<Props> = ({
   setOpenModelSettings,
-  setSidebarOpen
+  setDesktopSidebarOpen,
+  desktopSidebarOpen,
+  setMobileSidebarOpen,
+  mobileSidebarOpen
 }) => {
   const { t, i18n } = useTranslation(["option", "common"])
   const isRTL = i18n?.dir() === "rtl"
@@ -106,10 +112,22 @@ export const Header: React.FC<Props> = ({
             </NavLink>
           </div>
         )}
-        <div>
+        {/* Desktop sidebar toggle - only show when sidebar is closed */}
+        {!desktopSidebarOpen && (
+          <div className="hidden lg:block">
+            <button
+              className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
+              onClick={() => setDesktopSidebarOpen(true)}>
+              <PanelLeftIcon className="w-6 h-6" />
+            </button>
+          </div>
+        )}
+
+        {/* Mobile sidebar toggle - always show on mobile */}
+        <div className="lg:hidden">
           <button
-            className="text-gray-500 dark:text-gray-400"
-            onClick={() => setSidebarOpen(true)}>
+            className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
+            onClick={() => setMobileSidebarOpen(true)}>
             <PanelLeftIcon className="w-6 h-6" />
           </button>
         </div>

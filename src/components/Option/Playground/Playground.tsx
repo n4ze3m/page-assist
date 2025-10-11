@@ -170,7 +170,7 @@ export const Playground = () => {
 
       <div
         ref={containerRef}
-        className="custom-scrollbar flex h-full w-full flex-col items-center overflow-x-hidden overflow-y-auto px-5 relative z-10">
+        className="custom-scrollbar flex h-full w-full flex-col items-center overflow-x-hidden overflow-y-auto px-5 pt-16 relative z-10">
         <PlaygroundChat />
       </div>
       <div className="absolute bottom-0 w-full z-10">
