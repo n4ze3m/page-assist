@@ -44,7 +44,7 @@ export class PageAssistDexieDB extends Dexie {
       sessionFiles: 'sessionId, retrievalEnabled, createdAt',
       userSettings: 'id, user_id',
       // Knowledge management tables
-      knowledge: 'id, db_type, title, status, embedding_model, createdAt',
+      knowledge: 'id, db_type, title, status, embedding_model, systemPrompt, followupPrompt, createdAt',
       documents: 'id, db_type, title, status, embedding_model, createdAt',
       vectors: 'id, vectors',
       // OpenAI Configs

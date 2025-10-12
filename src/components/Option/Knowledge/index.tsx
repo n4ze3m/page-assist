@@ -8,10 +8,11 @@ import {
   getAllKnowledge
 } from "@/db/dexie/knowledge"
 import { Skeleton, Table, Tag, Tooltip, message, notification } from "antd"
-import { FileUpIcon, Trash2 } from "lucide-react"
+import { FileUpIcon, Trash2, Settings } from "lucide-react"
 import { useMessageOption } from "@/hooks/useMessageOption"
 import { removeModelSuffix } from "@/db/dexie/models"
 import { UpdateKnowledge } from "./UpdateKnowledge"
+import { EditKnowledgeSettings } from "./EditKnowledgeSettings"
 import { isFireFoxPrivateMode } from "@/utils/is-private-mode"
 
 export const KnowledgeSettings = () => {
@@ -21,6 +22,8 @@ export const KnowledgeSettings = () => {
   const { selectedKnowledge, setSelectedKnowledge } = useMessageOption()
   const [openUpdate, setOpenUpdate] = useState(false)
   const [updateKnowledgeId, setUpdateKnowledgeId] = useState("")
+  const [openEditSettings, setOpenEditSettings] = useState(false)
+  const [editSettingsKnowledgeId, setEditSettingsKnowledgeId] = useState("")
 
   const { data, status } = useQuery({
     queryKey: ["fetchAllKnowledge"],
@@ -110,6 +113,17 @@ export const KnowledgeSettings = () => {
                 key: "action",
                 render: (text: string, record: any) => (
                   <div className="flex gap-4">
+                    <Tooltip title={t("editSettings.tooltip", )}>
+                      <button
+                        disabled={isDeleting}
+                        onClick={() => {
+                          setEditSettingsKnowledgeId(record.id)
+                          setOpenEditSettings(true)
+                        }}
+                        className="text-gray-800 dark:text-gray-500 disabled:opacity-50">
+                        <Settings className="w-5 h-5" />
+                      </button>
+                    </Tooltip>
                     <Tooltip title={t("updateKnowledge")}>
                       <button
                         disabled={isDeleting || record.status === "processing"}
@@ -193,6 +207,11 @@ export const KnowledgeSettings = () => {
         id={updateKnowledgeId}
         open={openUpdate}
         setOpen={setOpenUpdate}
+      />
+      <EditKnowledgeSettings
+        id={editSettingsKnowledgeId}
+        open={openEditSettings}
+        setOpen={setOpenEditSettings}
       />
     </div>
   )
