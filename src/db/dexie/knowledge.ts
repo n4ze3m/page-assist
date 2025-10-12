@@ -240,12 +240,14 @@ export const importKnowledge = async (data: Knowledge[]) => {
 
 export const updateKnowledgebase = async ({
   id,
+  title,
   systemPrompt,
-  title
+  followupPrompt
 }: {
   id: string
   title: string
-  systemPrompt: string
+  systemPrompt?: string
+  followupPrompt?: string
 }) => {
   const kb = new PageAssistKnowledge()
   const knowledgeBase = await kb.getById(id)
@@ -253,7 +255,8 @@ export const updateKnowledgebase = async ({
     await kb.update({
       ...knowledgeBase,
       title,
-      systemPrompt
+      systemPrompt,
+      followupPrompt,
     })
   }
 }

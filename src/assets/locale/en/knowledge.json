@@ -58,5 +58,35 @@
         "success": "Knowledge added successfully"
     },
     "noEmbeddingModel": "Please add an embedding model from the RAG settings page first",
-    "newSource": "New Source"
+    "newSource": "New Source",
+    "editSettings": {
+        "title": "Edit Knowledge Settings",
+        "success": "Knowledge settings updated successfully",
+        "variableInfo": {
+            "title": "Available Variables",
+            "description": "You can use the following variables in your prompts:",
+            "context": "The retrieved context from your knowledge base",
+            "query": "The user's question or query"
+        },
+        "form": {
+            "title": {
+                "label": "Knowledge Title",
+                "placeholder": "Enter knowledge title",
+                "required": "Knowledge title is required"
+            },
+            "systemPrompt": {
+                "label": "System Prompt",
+                "help": "Customize how the AI responds using your knowledge base. Use {context} for retrieved information and {question} for the user's question. Note: {question} is required in the prompt, otherwise character won't get question context.",
+                "placeholder": "Enter your custom system prompt...",
+                "prefillButton": "Use Default Prompt"
+            },
+            "followupPrompt": {
+                "label": "Follow-up Question Prompt",
+                "help": "Customize how follow-up questions are processed. This prompt rephrases follow-up questions into standalone questions.",
+                "placeholder": "Enter your custom follow-up prompt...",
+                "prefillButton": "Use Default Prompt"
+            }
+        },
+        "tooltip": "Edit knowledge settings"
+    }
 }

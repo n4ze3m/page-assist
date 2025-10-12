@@ -78,6 +78,7 @@ export const useMessageOption = () => {
     setFileRetrievalEnabled,
     fileRetrievalEnabled
   } = useStoreMessageOption()
+  const [webuiTemporaryChat] = useStorage("webuiTemporaryChat", false)
 
   const currentChatModelSettings = useStoreChatModelSettings()
   const [selectedModel, setSelectedModel] = useStorage("selectedModel")
@@ -176,6 +177,9 @@ export const useMessageOption = () => {
     setUploadedFiles([])
     setFileRetrievalEnabled(false)
     setActionInfo(null)
+    if (webuiTemporaryChat) {
+      setTemporaryChat(true)
+    }
   }
 
   const saveMessageOnSuccess = createSaveMessageOnSuccess(
@@ -424,6 +428,7 @@ export const useMessageOption = () => {
     actionInfo,
     setActionInfo,
     setContextFiles,
-    createChatBranch
+    createChatBranch,
+    webuiTemporaryChat
   }
 }

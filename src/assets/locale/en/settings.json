@@ -73,6 +73,9 @@
       "sidepanelTemporaryChat": {
         "label": "Enable Temporary Chat in SidePanel by default"
       },
+      "webuiTemporaryChat": {
+        "label": "Enable Temporary Chat in Web UI by default"
+      },
       "removeReasoningTagFromCopy": {
         "label": "Remove Reasoning Tag from Copied Text"
       },

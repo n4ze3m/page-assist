@@ -22,6 +22,7 @@ import { getAllDefaultModelSettings } from "@/services/model-settings"
 import { getNoOfRetrievedDocs } from "@/services/app"
 import { pageAssistEmbeddingModel } from "@/models/embedding"
 import { isChatWithWebsiteEnabled } from "@/services/kb"
+import { getKnowledgeById } from "@/db/dexie/knowledge"
 
 export const ragMode = async (
   message: string,
@@ -121,6 +122,8 @@ export const ragMode = async (
       userDefaultModelSettings?.keepAlive
   })
 
+  const kbInfo = await getKnowledgeById(selectedKnowledge.id)
+
   let vectorstore = await PageAssistVectorStore.fromExistingIndex(
     ollamaEmbedding,
     {
@@ -131,8 +134,19 @@ export const ragMode = async (
   let timetaken = 0
   try {
     let query = message
-    const { ragPrompt: systemPrompt, ragQuestionPrompt: questionPrompt } =
+    let { ragPrompt: systemPrompt, ragQuestionPrompt: questionPrompt } =
       await promptForRag()
+
+    console.log(kbInfo, "kbInfo")
+    if (kbInfo?.systemPrompt?.trim()) {
+      systemPrompt = kbInfo.systemPrompt
+    }
+
+    if (kbInfo?.followupPrompt?.trim()) {
+      questionPrompt = kbInfo.followupPrompt
+    }
+
+
     if (newMessage.length > 2) {
       const lastTenMessages = newMessage.slice(-10)
       lastTenMessages.pop()
@@ -157,17 +171,17 @@ export const ragMode = async (
     let context: string = ""
     let source: any[] = []
     // if (useVS) {
-      const docs = await vectorstore.similaritySearch(query, docSize)
-      context = formatDocs(docs)
-      source = docs.map((doc) => {
-        return {
-          ...doc,
-          name: doc?.metadata?.source || "untitled",
-          type: doc?.metadata?.type || "unknown",
-          mode: "rag",
-          url: ""
-        }
-      })
+    const docs = await vectorstore.similaritySearchKB(query, docSize)
+    context = formatDocs(docs)
+    source = docs.map((doc) => {
+      return {
+        ...doc,
+        name: doc?.metadata?.source || "untitled",
+        type: doc?.metadata?.type || "unknown",
+        mode: "rag",
+        url: ""
+      }
+    })
     // } else {
     //   const docs = await vectorstore.getAllPageContent()
     //   context = docs.pageContent
