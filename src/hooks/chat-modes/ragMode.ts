@@ -137,7 +137,7 @@ export const ragMode = async (
     let { ragPrompt: systemPrompt, ragQuestionPrompt: questionPrompt } =
       await promptForRag()
 
-      console.log(kbInfo, "kbInfo")
+    console.log(kbInfo, "kbInfo")
     if (kbInfo?.systemPrompt?.trim()) {
       systemPrompt = kbInfo.systemPrompt
     }
@@ -171,7 +171,7 @@ export const ragMode = async (
     let context: string = ""
     let source: any[] = []
     // if (useVS) {
-    const docs = await vectorstore.similaritySearch(query, docSize)
+    const docs = await vectorstore.similaritySearchKB(query, docSize)
     context = formatDocs(docs)
     source = docs.map((doc) => {
       return {

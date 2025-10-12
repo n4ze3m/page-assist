@@ -133,6 +133,10 @@ export class PageAssistVectorStore extends VectorStore {
       pgVector = [...data.vectors]
     }
 
+    if (!pgVector.length) {
+      return []
+    }
+
     const filteredMemoryVectors = pgVector.filter(filterFunction)
     const searches = filteredMemoryVectors
       .map((vector, index) => ({
@@ -253,5 +257,51 @@ export class PageAssistVectorStore extends VectorStore {
   clearMemory() {
     this.memoryVectors = []
   }
-}
 
+  async similaritySearchKB(queryTxt: string, k = 4, filter = undefined) {
+    const filterFunction = (memoryVector: PageAssistVector) => {
+      if (!filter) {
+        return true
+      }
+
+      const doc = new Document({
+        metadata: memoryVector.metadata,
+        pageContent: memoryVector.content
+      })
+      return filter(doc)
+    }
+
+    let pgVector: PageAssistVector[]
+
+    // Use memory vectors for temp uploaded files, otherwise get from database
+    if (this.file_id === "temp_uploaded_files") {
+      pgVector = [...this.memoryVectors]
+    } else {
+      const data = await getVector(`vector:${this.knownledge_id}`)
+      pgVector = [...data.vectors]
+    }
+
+    if (!pgVector.length) {
+      return []
+    }
+
+    const query = await this.embeddings.embedQuery(queryTxt)
+
+    const filteredMemoryVectors = pgVector.filter(filterFunction)
+    const searches = filteredMemoryVectors
+      .map((vector, index) => ({
+        similarity: this.similarity(query, vector.embedding),
+        index
+      }))
+      .sort((a, b) => (a.similarity > b.similarity ? -1 : 0))
+      .slice(0, k)
+    const result: [Document, number][] = searches.map((search) => [
+      new Document({
+        metadata: filteredMemoryVectors[search.index].metadata,
+        pageContent: filteredMemoryVectors[search.index].content
+      }),
+      search.similarity
+    ])
+    return result.map((result) => result[0])
+  }
+}
