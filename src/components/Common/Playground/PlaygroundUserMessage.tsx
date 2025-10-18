@@ -9,7 +9,7 @@ import { HumanMessage } from "./HumanMessge"
 import { ChatDocuments } from "@/models/ChatTypes"
 import { DocumentChip } from "./DocumentChip"
 import { DocumentFile } from "./DocumentFile"
-
+import { tagColors } from "@/utils/color"
 type Props = {
   message: string
   message_type?: string
@@ -50,8 +50,10 @@ export const PlaygroundUserMessageBubble: React.FC<Props> = (props) => {
     <div
       className={`group gap-2 relative flex w-full max-w-3xl flex-col items-end justify-center pb-2 md:px-4 lg:w-4/5 text-[#242424] dark:text-gray-100 ${checkWideMode ? "max-w-none" : ""}`}>
       {!editMode && props?.message_type ? (
-        <Tag color={tagColors[props?.message_type] || "default"}>
-          {t(`copilot.${props?.message_type}`)}
+        <Tag color={props?.message_type?.startsWith("custom_copilot_custom_") ? "orange" : tagColors[props?.message_type] || "default"}>
+          {props?.message_type?.startsWith("custom_copilot_custom_")
+            ? t("copilot.custom")
+            : t(`copilot.${props?.message_type}`)}
         </Tag>
       ) : null}
 
