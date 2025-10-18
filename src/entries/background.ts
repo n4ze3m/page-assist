@@ -3,7 +3,7 @@ import { browser } from "wxt/browser"
 import { clearBadge, streamDownload, cancelDownload } from "@/utils/pull-ollama"
 import { Storage } from "@plasmohq/storage"
 import { getInitialConfig } from "@/services/action"
-import { getCustomCopilotPrompts, type CustomCopilotPrompt } from "@/services/application"
+import { getCustomCopilotPrompts, getCopilotPromptsEnabledState, type CustomCopilotPrompt } from "@/services/application"
 
 export default defineBackground({
   main() {
@@ -19,6 +19,35 @@ export default defineBackground({
     }
 
     let customCopilotMenuIds: string[] = []
+    const builtinCopilotMenus = [
+      { id: "summarize-pa", key: "summary", title: "contextSummarize" },
+      { id: "explain-pa", key: "explain", title: "contextExplain" },
+      { id: "rephrase-pa", key: "rephrase", title: "contextRephrase" },
+      { id: "translate-pg", key: "translate", title: "contextTranslate" },
+      { id: "custom-pg", key: "custom", title: "contextCustom" }
+    ]
+
+    const createBuiltinCopilotMenus = async () => {
+      const enabledState = await getCopilotPromptsEnabledState()
+
+      for (const menu of builtinCopilotMenus) {
+        // Remove existing menu
+        try {
+          await browser.contextMenus.remove(menu.id)
+        } catch (e) {
+          // Menu might not exist, ignore
+        }
+
+        // Create menu only if enabled
+        if (enabledState[menu.key]) {
+          browser.contextMenus.create({
+            id: menu.id,
+            title: menu.title,
+            contexts: ["selection"]
+          })
+        }
+      }
+    }
 
     const createCustomCopilotMenus = async () => {
       // Remove existing custom copilot menus
@@ -99,35 +128,9 @@ export default defineBackground({
           title: contextMenuTitle[contextMenuClick],
           contexts: ["page", "selection"]
         })
-        browser.contextMenus.create({
-          id: "summarize-pa",
-          title: browser.i18n.getMessage("contextSummarize"),
-          contexts: ["selection"]
-        })
 
-        browser.contextMenus.create({
-          id: "explain-pa",
-          title: browser.i18n.getMessage("contextExplain"),
-          contexts: ["selection"]
-        })
-
-        browser.contextMenus.create({
-          id: "rephrase-pa",
-          title: browser.i18n.getMessage("contextRephrase"),
-          contexts: ["selection"]
-        })
-
-        browser.contextMenus.create({
-          id: "translate-pg",
-          title: browser.i18n.getMessage("contextTranslate"),
-          contexts: ["selection"]
-        })
-
-        browser.contextMenus.create({
-          id: "custom-pg",
-          title: browser.i18n.getMessage("contextCustom"),
-          contexts: ["selection"]
-        })
+        // Create built-in copilot menus
+        await createBuiltinCopilotMenus()
 
         // Create custom copilot menus
         await createCustomCopilotMenus()
@@ -139,6 +142,9 @@ export default defineBackground({
     browser.runtime.onMessage.addListener(async (message, sender) => {
       if (message.type === "refresh_custom_copilot_menus") {
         await createCustomCopilotMenus()
+        return Promise.resolve({ success: true })
+      } else if (message.type === "refresh_builtin_copilot_menus") {
+        await createBuiltinCopilotMenus()
         return Promise.resolve({ success: true })
       } else if (message.type === "check_youtube_summarize_enabled") {
         const enabled = await storage.get("youtubeAutoSummarize")

@@ -28,6 +28,7 @@ import {
   updateCustomCopilotPrompt,
   deleteCustomCopilotPrompt,
   toggleCustomCopilotPrompt,
+  toggleCopilotPromptEnabled,
   type CustomCopilotPrompt
 } from "@/services/application"
 import { tagColors } from "@/utils/color"
@@ -258,6 +259,22 @@ export const PromptBody = () => {
     }
   })
 
+  const { mutate: toggleBuiltinCopilotMutation } = useMutation({
+    mutationFn: ({ key, enabled }: { key: string; enabled: boolean }) =>
+      toggleCopilotPromptEnabled(key, enabled),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["fetchCopilotPrompts"]
+      })
+    },
+    onError: (error) => {
+      notification.error({
+        message: t("managePrompts.notification.error"),
+        description: error?.message || t("managePrompts.notification.someError")
+      })
+    }
+  })
+
   function customPrompts() {
     return (
       <div>
@@ -393,6 +410,19 @@ export const PromptBody = () => {
                 key: "prompt",
                 render: (content) => (
                   <span className="line-clamp-1">{content}</span>
+                )
+              },
+              {
+                title: "Enabled",
+                dataIndex: "enabled",
+                key: "enabled",
+                render: (enabled, record) => (
+                  <Switch
+                    checked={enabled}
+                    onChange={(checked) =>
+                      toggleBuiltinCopilotMutation({ key: record.key, enabled: checked })
+                    }
+                  />
                 )
               },
               {

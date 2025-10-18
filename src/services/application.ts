@@ -102,22 +102,50 @@ export const getAllCopilotPrompts = async () => {
         rephrasePrompt,
         translatePrompt,
         explainPrompt,
-        customPrompt
+        customPrompt,
+        enabledStates
     ] = await Promise.all([
         getSummaryPrompt(),
         getRephrasePrompt(),
         getTranslatePrompt(),
         getExplainPrompt(),
-        getCustomPrompt()
+        getCustomPrompt(),
+        getCopilotPromptsEnabledState()
     ])
 
     return [
-        { key: "summary", prompt: summaryPrompt },
-        { key: "rephrase", prompt: rephrasePrompt },
-        { key: "translate", prompt: translatePrompt },
-        { key: "explain", prompt: explainPrompt },
-        { key: "custom", prompt: customPrompt }
+        { key: "summary", prompt: summaryPrompt, enabled: enabledStates.summary },
+        { key: "rephrase", prompt: rephrasePrompt, enabled: enabledStates.rephrase },
+        { key: "translate", prompt: translatePrompt, enabled: enabledStates.translate },
+        { key: "explain", prompt: explainPrompt, enabled: enabledStates.explain },
+        { key: "custom", prompt: customPrompt, enabled: enabledStates.custom }
     ]
+}
+
+export const getCopilotPromptsEnabledState = async () => {
+    const state = await storage.get<Record<string, boolean>>("copilotPromptsEnabled")
+    return state || {
+        summary: true,
+        rephrase: true,
+        translate: true,
+        explain: true,
+        custom: true
+    }
+}
+
+export const toggleCopilotPromptEnabled = async (key: string, enabled: boolean) => {
+    const state = await getCopilotPromptsEnabledState()
+    state[key] = enabled
+    await storage.set("copilotPromptsEnabled", state)
+
+    // Notify background worker to refresh context menus
+    try {
+        await browser.runtime.sendMessage({
+            type: "refresh_builtin_copilot_menus"
+        })
+    } catch (e) {
+        // Background worker might not be ready, ignore
+    }
 }
 
 export const setAllCopilotPrompts = async (
