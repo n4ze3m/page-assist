@@ -3,6 +3,7 @@ import { browser } from "wxt/browser"
 import { clearBadge, streamDownload, cancelDownload } from "@/utils/pull-ollama"
 import { Storage } from "@plasmohq/storage"
 import { getInitialConfig } from "@/services/action"
+import { getCustomCopilotPrompts, type CustomCopilotPrompt } from "@/services/application"
 
 export default defineBackground({
   main() {
@@ -16,6 +17,35 @@ export default defineBackground({
       webui: "open-web-ui-pa",
       sidePanel: "open-side-panel-pa"
     }
+
+    let customCopilotMenuIds: string[] = []
+
+    const createCustomCopilotMenus = async () => {
+      // Remove existing custom copilot menus
+      for (const menuId of customCopilotMenuIds) {
+        try {
+          await browser.contextMenus.remove(menuId)
+        } catch (e) {
+          // Menu might not exist, ignore
+        }
+      }
+      customCopilotMenuIds = []
+
+      // Create new custom copilot menus
+      const customPrompts = await getCustomCopilotPrompts()
+      const enabledPrompts = customPrompts.filter(p => p.enabled)
+
+      for (const prompt of enabledPrompts) {
+        const menuId = `custom_copilot_${prompt.id}`
+        customCopilotMenuIds.push(menuId)
+        browser.contextMenus.create({
+          id: menuId,
+          title: prompt.title,
+          contexts: ["selection"]
+        })
+      }
+    }
+
     const initialize = async () => {
       try {
         storage.watch({
@@ -38,6 +68,10 @@ export default defineBackground({
                 contexts: ["page", "selection"]
               })
             }
+          },
+          customCopilotPrompts: async () => {
+            // Recreate custom copilot menus when prompts change
+            await createCustomCopilotMenus()
           },
           youtubeAutoSummarize: async (value) => {
             const newValue = value?.newValue || false
@@ -94,13 +128,19 @@ export default defineBackground({
           title: browser.i18n.getMessage("contextCustom"),
           contexts: ["selection"]
         })
+
+        // Create custom copilot menus
+        await createCustomCopilotMenus()
       } catch (error) {
         console.error("Error in initLogic:", error)
       }
     }
 
     browser.runtime.onMessage.addListener(async (message, sender) => {
-      if (message.type === "check_youtube_summarize_enabled") {
+      if (message.type === "refresh_custom_copilot_menus") {
+        await createCustomCopilotMenus()
+        return Promise.resolve({ success: true })
+      } else if (message.type === "check_youtube_summarize_enabled") {
         const enabled = await storage.get("youtubeAutoSummarize")
         return Promise.resolve({ enabled: enabled || false })
       } else if (message.type === "sidepanel") {
@@ -246,6 +286,22 @@ export default defineBackground({
           async () => {
             await browser.runtime.sendMessage({
               type: "custom",
+              from: "background",
+              text: info.selectionText
+            })
+          },
+          isCopilotRunning ? 0 : 5000
+        )
+      } else if (typeof info.menuItemId === "string" && info.menuItemId.startsWith("custom_copilot_")) {
+        // Handle custom copilot prompts
+        chrome.sidePanel.open({
+          tabId: tab.id!
+        })
+
+        setTimeout(
+          async () => {
+            await browser.runtime.sendMessage({
+              type: info.menuItemId,
               from: "background",
               text: info.selectionText
             })

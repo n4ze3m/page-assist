@@ -22,7 +22,13 @@ import {
 } from "@/db/dexie/helpers"
 import {
   getAllCopilotPrompts,
-  setAllCopilotPrompts
+  setAllCopilotPrompts,
+  getCustomCopilotPrompts,
+  saveCustomCopilotPrompt,
+  updateCustomCopilotPrompt,
+  deleteCustomCopilotPrompt,
+  toggleCustomCopilotPrompt,
+  type CustomCopilotPrompt
 } from "@/services/application"
 import { tagColors } from "@/utils/color"
 import { isFireFoxPrivateMode } from "@/utils/is-private-mode"
@@ -35,13 +41,20 @@ export const PromptBody = () => {
   const [createForm] = Form.useForm()
   const [editForm] = Form.useForm()
   const { t } = useTranslation(["settings", "common"])
-  const [selectedSegment, setSelectedSegment] = useState<"custom" | "copilot">(
+  const [selectedSegment, setSelectedSegment] = useState<"custom" | "copilot" | "custom-copilot">(
     "custom"
   )
 
   const [openCopilotEdit, setOpenCopilotEdit] = useState(false)
   const [editCopilotId, setEditCopilotId] = useState("")
   const [editCopilotForm] = Form.useForm()
+
+  // Custom Copilot Prompts state
+  const [openCustomCopilot, setOpenCustomCopilot] = useState(false)
+  const [openEditCustomCopilot, setOpenEditCustomCopilot] = useState(false)
+  const [editCustomCopilotId, setEditCustomCopilotId] = useState("")
+  const [createCustomCopilotForm] = Form.useForm()
+  const [editCustomCopilotForm] = Form.useForm()
 
   const { data, status } = useQuery({
     queryKey: ["fetchAllPrompts"],
@@ -51,6 +64,11 @@ export const PromptBody = () => {
   const { data: copilotData, status: copilotStatus } = useQuery({
     queryKey: ["fetchCopilotPrompts"],
     queryFn: getAllCopilotPrompts
+  })
+
+  const { data: customCopilotData, status: customCopilotStatus } = useQuery({
+    queryKey: ["fetchCustomCopilotPrompts"],
+    queryFn: getCustomCopilotPrompts
   })
 
   const { mutate: deletePrompt } = useMutation({
@@ -152,6 +170,93 @@ export const PromptBody = () => {
         })
       }
     })
+
+  // Custom Copilot Prompts mutations
+  const { mutate: saveCustomCopilotMutation, isPending: isSavingCustomCopilot } =
+    useMutation({
+      mutationFn: saveCustomCopilotPrompt,
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: ["fetchCustomCopilotPrompts"]
+        })
+        setOpenCustomCopilot(false)
+        createCustomCopilotForm.resetFields()
+        notification.success({
+          message: t("managePrompts.notification.addSuccess"),
+          description: t("managePrompts.notification.addSuccessDesc")
+        })
+      },
+      onError: (error) => {
+        notification.error({
+          message: t("managePrompts.notification.error"),
+          description:
+            error?.message || t("managePrompts.notification.someError")
+        })
+      }
+    })
+
+  const { mutate: updateCustomCopilotMutation, isPending: isUpdatingCustomCopilot } =
+    useMutation({
+      mutationFn: async (data: { id: string; title: string; prompt: string }) => {
+        return await updateCustomCopilotPrompt(data.id, {
+          title: data.title,
+          prompt: data.prompt
+        })
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: ["fetchCustomCopilotPrompts"]
+        })
+        setOpenEditCustomCopilot(false)
+        editCustomCopilotForm.resetFields()
+        notification.success({
+          message: t("managePrompts.notification.updatedSuccess"),
+          description: t("managePrompts.notification.updatedSuccessDesc")
+        })
+      },
+      onError: (error) => {
+        notification.error({
+          message: t("managePrompts.notification.error"),
+          description:
+            error?.message || t("managePrompts.notification.someError")
+        })
+      }
+    })
+
+  const { mutate: deleteCustomCopilotMutation } = useMutation({
+    mutationFn: deleteCustomCopilotPrompt,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["fetchCustomCopilotPrompts"]
+      })
+      notification.success({
+        message: t("managePrompts.notification.deletedSuccess"),
+        description: t("managePrompts.notification.deletedSuccessDesc")
+      })
+    },
+    onError: (error) => {
+      notification.error({
+        message: t("managePrompts.notification.error"),
+        description: error?.message || t("managePrompts.notification.someError")
+      })
+    }
+  })
+
+  const { mutate: toggleCustomCopilotMutation } = useMutation({
+    mutationFn: ({ id, enabled }: { id: string; enabled: boolean }) =>
+      toggleCustomCopilotPrompt(id, enabled),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["fetchCustomCopilotPrompts"]
+      })
+    },
+    onError: (error) => {
+      notification.error({
+        message: t("managePrompts.notification.error"),
+        description: error?.message || t("managePrompts.notification.someError")
+      })
+    }
+  })
 
   function customPrompts() {
     return (
@@ -317,6 +422,96 @@ export const PromptBody = () => {
     )
   }
 
+  function customCopilotPrompts() {
+    return (
+      <div>
+        <div className="mb-6">
+          <div className="-ml-4 -mt-2 flex flex-wrap items-center justify-end sm:flex-nowrap">
+            <div className="ml-4 mt-2 flex-shrink-0">
+              <button
+                onClick={() => setOpenCustomCopilot(true)}
+                className="inline-flex items-center rounded-md border border-transparent bg-black px-2 py-2 text-md font-medium leading-4 text-white shadow-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-white dark:text-gray-800 dark:hover:bg-gray-100 dark:focus:ring-gray-500 dark:focus:ring-offset-gray-100 disabled:opacity-50">
+                {t("managePrompts.addBtn")}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {customCopilotStatus === "pending" && <Skeleton paragraph={{ rows: 8 }} />}
+
+        {customCopilotStatus === "success" && (
+          <Table
+            columns={[
+              {
+                title: t("managePrompts.columns.title"),
+                dataIndex: "title",
+                key: "title",
+                render: (content) => (
+                  <span className="line-clamp-1">{content}</span>
+                )
+              },
+              {
+                title: t("managePrompts.columns.prompt"),
+                dataIndex: "prompt",
+                key: "prompt",
+                render: (content) => (
+                  <span className="line-clamp-1">{content}</span>
+                )
+              },
+              {
+                title: "Enabled",
+                dataIndex: "enabled",
+                key: "enabled",
+                render: (enabled, record) => (
+                  <Switch
+                    checked={enabled}
+                    onChange={(checked) =>
+                      toggleCustomCopilotMutation({ id: record.id, enabled: checked })
+                    }
+                  />
+                )
+              },
+              {
+                title: t("managePrompts.columns.actions"),
+                render: (_, record) => (
+                  <div className="flex gap-4">
+                    <Tooltip title={t("managePrompts.tooltip.delete")}>
+                      <button
+                        onClick={() => {
+                          if (
+                            window.confirm(t("managePrompts.confirm.delete"))
+                          ) {
+                            deleteCustomCopilotMutation(record.id)
+                          }
+                        }}
+                        className="text-red-500 dark:text-red-400">
+                        <Trash2 className="size-4" />
+                      </button>
+                    </Tooltip>
+                    <Tooltip title={t("managePrompts.tooltip.edit")}>
+                      <button
+                        onClick={() => {
+                          setEditCustomCopilotId(record.id)
+                          editCustomCopilotForm.setFieldsValue(record)
+                          setOpenEditCustomCopilot(true)
+                        }}
+                        className="text-gray-500 dark:text-gray-400">
+                        <Pen className="size-4" />
+                      </button>
+                    </Tooltip>
+                  </div>
+                )
+              }
+            ]}
+            bordered
+            dataSource={customCopilotData}
+            rowKey={(record) => record.id}
+          />
+        )}
+      </div>
+    )
+  }
+
   return (
     <div>
       <div className="flex items-center justify-end mb-6">
@@ -330,15 +525,20 @@ export const PromptBody = () => {
             {
               label: t("managePrompts.segmented.copilot"),
               value: "copilot"
+            },
+            {
+              label: "Custom Copilot",
+              value: "custom-copilot"
             }
           ]}
           onChange={(value) => {
-            setSelectedSegment(value as "custom" | "copilot")
+            setSelectedSegment(value as "custom" | "copilot" | "custom-copilot")
           }}
         />
       </div>
       {selectedSegment === "custom" && customPrompts()}
       {selectedSegment === "copilot" && copilotPrompts()}
+      {selectedSegment === "custom-copilot" && customCopilotPrompts()}
 
       <Modal
         title={t("managePrompts.modal.addTitle")}
@@ -500,6 +700,129 @@ export const PromptBody = () => {
               {isUpdatingCopilotPrompt
                 ? t("managePrompts.form.btnEdit.saving")
                 : t("managePrompts.form.btnEdit.save")}
+            </button>
+          </Form.Item>
+        </Form>
+      </Modal>
+
+      {/* Custom Copilot Prompts Modals */}
+      <Modal
+        title="Add Custom Copilot Prompt"
+        open={openCustomCopilot}
+        onCancel={() => setOpenCustomCopilot(false)}
+        footer={null}>
+        <Form
+          onFinish={(values) => saveCustomCopilotMutation(values)}
+          layout="vertical"
+          form={createCustomCopilotForm}>
+          <Form.Item
+            name="title"
+            label="Title"
+            rules={[
+              {
+                required: true,
+                message: "Please enter a title"
+              }
+            ]}
+            help="This will appear in the context menu">
+            <Input placeholder="e.g. Simplify Text" />
+          </Form.Item>
+
+          <Form.Item
+            name="prompt"
+            label="Prompt Template"
+            rules={[
+              {
+                required: true,
+                message: "Please enter a prompt"
+              },
+              {
+                validator: (_, value) => {
+                  if (value && value.includes("{text}")) {
+                    return Promise.resolve()
+                  }
+                  return Promise.reject(
+                    new Error("Prompt must include {text} placeholder")
+                  )
+                }
+              }
+            ]}
+            help="Use {text} as placeholder for selected text">
+            <Input.TextArea
+              placeholder="e.g. Simplify the following text:\n\n{text}"
+              autoSize={{ minRows: 3, maxRows: 10 }}
+            />
+          </Form.Item>
+
+          <Form.Item>
+            <button
+              disabled={isSavingCustomCopilot}
+              className="inline-flex justify-center w-full text-center mt-4 items-center rounded-md border border-transparent bg-black px-2 py-2 text-sm font-medium leading-4 text-white shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-white dark:text-gray-800 dark:hover:bg-gray-100 dark:focus:ring-gray-500 dark:focus:ring-offset-gray-100 disabled:opacity-50 ">
+              {isSavingCustomCopilot ? "Saving..." : "Save"}
+            </button>
+          </Form.Item>
+        </Form>
+      </Modal>
+
+      <Modal
+        title="Edit Custom Copilot Prompt"
+        open={openEditCustomCopilot}
+        onCancel={() => setOpenEditCustomCopilot(false)}
+        footer={null}>
+        <Form
+          onFinish={(values) =>
+            updateCustomCopilotMutation({
+              id: editCustomCopilotId,
+              title: values.title,
+              prompt: values.prompt
+            })
+          }
+          layout="vertical"
+          form={editCustomCopilotForm}>
+          <Form.Item
+            name="title"
+            label="Title"
+            rules={[
+              {
+                required: true,
+                message: "Please enter a title"
+              }
+            ]}
+            help="This will appear in the context menu">
+            <Input placeholder="e.g. Simplify Text" />
+          </Form.Item>
+
+          <Form.Item
+            name="prompt"
+            label="Prompt Template"
+            rules={[
+              {
+                required: true,
+                message: "Please enter a prompt"
+              },
+              {
+                validator: (_, value) => {
+                  if (value && value.includes("{text}")) {
+                    return Promise.resolve()
+                  }
+                  return Promise.reject(
+                    new Error("Prompt must include {text} placeholder")
+                  )
+                }
+              }
+            ]}
+            help="Use {text} as placeholder for selected text">
+            <Input.TextArea
+              placeholder="e.g. Simplify the following text:\n\n{text}"
+              autoSize={{ minRows: 3, maxRows: 10 }}
+            />
+          </Form.Item>
+
+          <Form.Item>
+            <button
+              disabled={isUpdatingCustomCopilot}
+              className="inline-flex justify-center w-full text-center mt-4 items-center rounded-md border border-transparent bg-black px-2 py-2 text-sm font-medium leading-4 text-white shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-white dark:text-gray-800 dark:hover:bg-gray-100 dark:focus:ring-gray-500 dark:focus:ring-offset-gray-100 disabled:opacity-50 ">
+              {isUpdatingCustomCopilot ? "Saving..." : "Save"}
             </button>
           </Form.Item>
         </Form>
