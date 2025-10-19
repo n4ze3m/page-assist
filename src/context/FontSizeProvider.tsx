@@ -123,6 +123,13 @@ export const FontSizeProvider = ({
       .prose code {
         font-size: calc(0.875em * var(--font-scale));
       }
+
+      /* Table content scaling */
+      .prose table,
+      .prose th,
+      .prose td {
+        font-size: calc(1em * var(--font-scale));
+      }
     `;
     
     const sizeDefinitions = `
