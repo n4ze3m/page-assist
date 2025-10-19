@@ -387,6 +387,12 @@ export const PromptBody = () => {
   function copilotPrompts() {
     return (
       <div>
+        <div className="mb-4 p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-md">
+          <p className="text-yellow-800 dark:text-yellow-200 text-sm">
+            ⚠️ Copilot prompts are deprecated. Please use Custom Copilot instead. Copilot prompts will be removed in a future version.
+          </p>
+        </div>
+
         {copilotStatus === "pending" && <Skeleton paragraph={{ rows: 8 }} />}
 
         {copilotStatus === "success" && (
@@ -553,13 +559,13 @@ export const PromptBody = () => {
               value: "custom"
             },
             {
+              label: "Custom Copilot",
+              value: "custom-copilot"
+            },
+            {
               label: t("managePrompts.segmented.copilot"),
               value: "copilot"
             },
-            {
-              label: "Custom Copilot",
-              value: "custom-copilot"
-            }
           ]}
           onChange={(value) => {
             setSelectedSegment(value as "custom" | "copilot" | "custom-copilot")
