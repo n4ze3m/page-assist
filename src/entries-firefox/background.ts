@@ -16,11 +16,11 @@ export default defineBackground({
 
     let customCopilotMenuIds: string[] = []
     const builtinCopilotMenus = [
-      { id: "summarize-pa", key: "summary", title: "contextSummarize" },
-      { id: "explain-pa", key: "explain", title: "contextExplain" },
-      { id: "rephrase-pa", key: "rephrase", title: "contextRephrase" },
-      { id: "translate-pg", key: "translate", title: "contextTranslate" },
-      { id: "custom-pg", key: "custom", title: "contextCustom" }
+      { id: "summarize-pa", key: "summary", title: "Summarize" },
+      { id: "explain-pa", key: "explain", title: "Explain" },
+      { id: "rephrase-pa", key: "rephrase", title: "Rephrase" },
+      { id: "translate-pg", key: "translate", title: "Translate" },
+      { id: "custom-pg", key: "custom", title: "Custom" }
     ]
 
     const createBuiltinCopilotMenus = async () => {
