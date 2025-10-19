@@ -114,7 +114,7 @@ export const TableBlock: FC<TableProps> = ({ children }) => {
   }
 
   return (
-    <div className="not-prose">
+    <div>
       <div className="my-4 bg-white dark:bg-[#1a1a1a] rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
         <div className="flex flex-row px-4 py-2 rounded-t-xl bg-gray-50 dark:bg-[#1a1a1a] border-b border-gray-200 dark:border-gray-700">
           <div className="flex items-center gap-2 flex-1">
@@ -164,7 +164,10 @@ export const TableBlock: FC<TableProps> = ({ children }) => {
         <div className="overflow-x-auto">
           <div
             ref={ref}
-            className={`prose prose-gray dark:prose-invert max-w-none [&_table]:table-fixed [&_table]:text-sm [&_table]:w-full [&_table]:border-collapse [&_thead]:bg-neutral-50 [&_thead]:dark:bg-[#2a2a2a] [&_th]:px-6 [&_th]:py-4 [&_th]:text-left [&_th]:font-semibold [&_th]:text-gray-900 [&_th]:dark:text-gray-100 [&_th]:text-xs [&_th]:uppercase [&_th]:tracking-wider [&_th]:whitespace-nowrap [&_th:nth-child(1)]:w-1/2 [&_th:nth-child(2)]:w-1/2 [&_th:nth-child(3)]:w-1/3 [&_th]:border-b [&_th]:border-gray-200 [&_th]:dark:border-gray-700 [&_td]:px-6 [&_td]:py-4 [&_td]:text-gray-700 [&_td]:dark:text-gray-300 [&_td]:text-sm [&_td]:text-left [&_td]:whitespace-nowrap  [&_td]:border-b [&_td]:border-gray-200 [&_td]:dark:border-gray-700 [&_tr:last-child_td]:border-b-0`}>
+            className={`prose prose-gray dark:prose-invert max-w-none [&_table]:table-fixed [&_table]:w-full [&_table]:border-collapse [&_thead]:bg-neutral-50 [&_thead]:dark:bg-[#2a2a2a] [&_th]:px-6 [&_th]:py-4 [&_th]:text-left [&_th]:font-semibold [&_th]:text-gray-900 [&_th]:dark:text-gray-100 [&_th]:uppercase [&_th]:tracking-wider [&_th]:whitespace-nowrap [&_th:nth-child(1)]:w-1/2 [&_th:nth-child(2)]:w-1/2 [&_th:nth-child(3)]:w-1/3 [&_th]:border-b [&_th]:border-gray-200 [&_th]:dark:border-gray-700 [&_td]:px-6 [&_td]:py-4 [&_td]:text-gray-700 [&_td]:dark:text-gray-300 [&_td]:text-left [&_td]:whitespace-nowrap  [&_td]:border-b [&_td]:border-gray-200 [&_td]:dark:border-gray-700 [&_tr:last-child_td]:border-b-0`}
+            style={{
+              fontSize: `calc(0.875rem * var(--font-scale, 1))`
+            }}>
             {children}
           </div>
         </div>

@@ -1,14 +1,16 @@
 # Prompts
 
-There are two types of prompts in Page Assist: 
+Page Assist offers three types of prompts to enhance your AI interaction experience:
 
-1. Custom Prompts
-2. Copilot Prompts (Check out the [Copilot Prompts](/sidebar/copilot.md) page for more information)
-
+1. **Custom Prompts** - For use within the chat interface
+2. **Copilot Prompts** - Built-in context menu actions (See [Copilot Prompts](/sidebar/copilot.md))
+3. **Custom Copilot Prompts** - Create your own context menu actions (See [Custom Copilot Prompts](/sidebar/copilot.md#custom-copilot-prompts))
 
 ## Custom Prompts
 
-Custom Prompts are prompts that you can create and use in Page Assist. You can create custom prompts by going to the `Settings` page and clicking on `Manage Prompts`.
+Custom Prompts are prompts that you can create and use within the Page Assist chat interface. These are different from Copilot prompts, which appear in the browser's context menu.
+
+You can create custom prompts by going to `Settings` → `Manage Prompts` → `Custom` tab.
 
 ![Custom Prompts](https://pub-35424b4473484be483c0afa08c69e7da.r2.dev/Screenshot%202025-02-19%20205135.png)
 

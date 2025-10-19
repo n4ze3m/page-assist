@@ -1,4 +1,5 @@
 import { Storage } from "@plasmohq/storage"
+import { browser } from "wxt/browser"
 const storage = new Storage()
 
 const DEFAULT_SUMMARY_PROMPT = `Provide a concise summary of the following text, capturing its main ideas and key points:
@@ -101,22 +102,50 @@ export const getAllCopilotPrompts = async () => {
         rephrasePrompt,
         translatePrompt,
         explainPrompt,
-        customPrompt
+        customPrompt,
+        enabledStates
     ] = await Promise.all([
         getSummaryPrompt(),
         getRephrasePrompt(),
         getTranslatePrompt(),
         getExplainPrompt(),
-        getCustomPrompt()
+        getCustomPrompt(),
+        getCopilotPromptsEnabledState()
     ])
 
     return [
-        { key: "summary", prompt: summaryPrompt },
-        { key: "rephrase", prompt: rephrasePrompt },
-        { key: "translate", prompt: translatePrompt },
-        { key: "explain", prompt: explainPrompt },
-        { key: "custom", prompt: customPrompt }
+        { key: "summary", prompt: summaryPrompt, enabled: enabledStates.summary },
+        { key: "rephrase", prompt: rephrasePrompt, enabled: enabledStates.rephrase },
+        { key: "translate", prompt: translatePrompt, enabled: enabledStates.translate },
+        { key: "explain", prompt: explainPrompt, enabled: enabledStates.explain },
+        { key: "custom", prompt: customPrompt, enabled: enabledStates.custom }
     ]
+}
+
+export const getCopilotPromptsEnabledState = async () => {
+    const state = await storage.get<Record<string, boolean>>("copilotPromptsEnabled")
+    return state || {
+        summary: true,
+        rephrase: true,
+        translate: true,
+        explain: true,
+        custom: true
+    }
+}
+
+export const toggleCopilotPromptEnabled = async (key: string, enabled: boolean) => {
+    const state = await getCopilotPromptsEnabledState()
+    state[key] = enabled
+    await storage.set("copilotPromptsEnabled", state)
+
+    // Notify background worker to refresh context menus
+    try {
+        await browser.runtime.sendMessage({
+            type: "refresh_builtin_copilot_menus"
+        })
+    } catch (e) {
+        // Background worker might not be ready, ignore
+    }
 }
 
 export const setAllCopilotPrompts = async (
@@ -145,6 +174,14 @@ export const setAllCopilotPrompts = async (
 }
 
 export const getPrompt = async (key: string) => {
+    // Check if it's a custom copilot prompt
+    if (key.startsWith("custom_copilot_")) {
+        const customPrompts = await getCustomCopilotPrompts()
+        const promptId = key.replace("custom_copilot_", "")
+        const customPrompt = customPrompts.find(p => p.id === promptId)
+        return customPrompt?.prompt || ""
+    }
+
     switch (key) {
         case "summary":
             return await getSummaryPrompt()
@@ -159,4 +196,100 @@ export const getPrompt = async (key: string) => {
         default:
             return ""
     }
+}
+
+// Custom Copilot Prompts Management
+export interface CustomCopilotPrompt {
+    id: string
+    title: string
+    prompt: string
+    enabled: boolean
+    createdAt: number
+}
+
+const generateID = () => {
+    return "custom_xxxx-xxxx-xxx-xxxx".replace(/[x]/g, () => {
+        const r = Math.floor(Math.random() * 16)
+        return r.toString(16)
+    })
+}
+
+export const getCustomCopilotPrompts = async (): Promise<CustomCopilotPrompt[]> => {
+    const prompts = await storage.get<CustomCopilotPrompt[]>("customCopilotPrompts")
+    return prompts || []
+}
+
+export const saveCustomCopilotPrompt = async (data: {
+    title: string
+    prompt: string
+}) => {
+    const customPrompts = await getCustomCopilotPrompts()
+    const newPrompt: CustomCopilotPrompt = {
+        id: generateID(),
+        title: data.title,
+        prompt: data.prompt,
+        enabled: true,
+        createdAt: Date.now()
+    }
+    customPrompts.push(newPrompt)
+    await storage.set("customCopilotPrompts", customPrompts)
+
+    // Notify background worker to refresh context menus
+    try {
+        await browser.runtime.sendMessage({
+            type: "refresh_custom_copilot_menus"
+        })
+    } catch (e) {
+        // Background worker might not be ready, ignore
+    }
+
+    return newPrompt
+}
+
+export const updateCustomCopilotPrompt = async (
+    id: string,
+    data: Partial<Omit<CustomCopilotPrompt, "id" | "createdAt">>
+) => {
+    const customPrompts = await getCustomCopilotPrompts()
+    const index = customPrompts.findIndex(p => p.id === id)
+    if (index !== -1) {
+        customPrompts[index] = {
+            ...customPrompts[index],
+            ...data
+        }
+        await storage.set("customCopilotPrompts", customPrompts)
+
+        // Notify background worker to refresh context menus
+        try {
+            await browser.runtime.sendMessage({
+                type: "refresh_custom_copilot_menus"
+            })
+        } catch (e) {
+            // Background worker might not be ready, ignore
+        }
+
+        return customPrompts[index]
+    }
+    return null
+}
+
+export const deleteCustomCopilotPrompt = async (id: string) => {
+    const customPrompts = await getCustomCopilotPrompts()
+    const filtered = customPrompts.filter(p => p.id !== id)
+    await storage.set("customCopilotPrompts", filtered)
+
+    // Notify background worker to refresh context menus
+    try {
+        await browser.runtime.sendMessage({
+            type: "refresh_custom_copilot_menus"
+        })
+    } catch (e) {
+        // Background worker might not be ready, ignore
+    }
+
+    return id
+}
+
+export const toggleCustomCopilotPrompt = async (id: string, enabled: boolean) => {
+    return await updateCustomCopilotPrompt(id, { enabled })
 }
