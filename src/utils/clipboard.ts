@@ -2,6 +2,7 @@ import { marked } from "marked"
 import markedKatexExtension from "./marked/katex"
 import { removeReasoning, replaceThinkTagToEM } from "@/libs/reasoning"
 import { isRemoveReasoningTagFromCopy } from "@/services/app"
+import { convertMathDelimiters } from "./math-delimiter"
 
 export const copyToClipboard = async ({
   text,
@@ -11,6 +12,8 @@ export const copyToClipboard = async ({
   formatted?: boolean
 }) => {
   const isClean = await isRemoveReasoningTagFromCopy()
+
+  text = convertMathDelimiters(text)
 
   if (isClean) {
     text = removeReasoning(text)
