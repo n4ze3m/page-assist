@@ -89,13 +89,34 @@ export default defineContentScript({
         !document.querySelector(".pageassist-youtube-summarize-container")
       ) {
         const button = createSummarizeButton()
-        // Insert after the like/dislike button group
+
+        // Try multiple insertion strategies for better compatibility
+        // Strategy 1: Insert after like/dislike button (new UI)
         const likeDislikeButton = topLevelButtons.querySelector(
           "segmented-like-dislike-button-view-model"
         )
-        if (likeDislikeButton && likeDislikeButton.nextSibling) {
-          topLevelButtons.insertBefore(button, likeDislikeButton.nextSibling)
-        } else if (likeDislikeButton) {
+
+        // Strategy 2: Insert after share button as fallback
+        const shareButton = topLevelButtons.querySelector(
+          "yt-button-view-model"
+        )
+
+        if (likeDislikeButton) {
+          // Insert after like/dislike button
+          if (likeDislikeButton.nextSibling) {
+            topLevelButtons.insertBefore(button, likeDislikeButton.nextSibling)
+          } else {
+            topLevelButtons.appendChild(button)
+          }
+        } else if (shareButton) {
+          // Fallback: insert after share button
+          if (shareButton.nextSibling) {
+            topLevelButtons.insertBefore(button, shareButton.nextSibling)
+          } else {
+            topLevelButtons.appendChild(button)
+          }
+        } else {
+          // Last resort: just append to the container
           topLevelButtons.appendChild(button)
         }
       }
@@ -123,17 +144,44 @@ export default defineContentScript({
 
     // Observer to detect when top-level buttons are loaded
     const observer = new MutationObserver(() => {
-      if (document.querySelector("#top-level-buttons-computed")) {
+      const topLevelButtons = document.querySelector("#top-level-buttons-computed")
+      const existingButton = document.querySelector(".pageassist-youtube-summarize-container")
+
+      // Inject button if container exists but button doesn't
+      if (topLevelButtons && !existingButton) {
         injectSummarizeButton()
       }
     })
 
     observer.observe(document.body, { childList: true, subtree: true })
 
-    // Initial injection attempt
+    // Multiple injection attempts with different timings for better reliability
+    // Immediate attempt
+    injectSummarizeButton()
+
+    // Short delay for quick page loads
     setTimeout(() => {
       injectSummarizeButton()
-    }, 1000)
+    }, 500)
+
+    // Longer delay for slower connections
+    setTimeout(() => {
+      injectSummarizeButton()
+    }, 2000)
+
+    // Handle YouTube's SPA navigation
+    let lastUrl = location.href
+    new MutationObserver(() => {
+      const url = location.href
+      if (url !== lastUrl) {
+        lastUrl = url
+        // Remove old button and re-inject on navigation
+        removeSummarizeButton()
+        setTimeout(() => {
+          injectSummarizeButton()
+        }, 1000)
+      }
+    }).observe(document.body, { childList: true, subtree: true })
   },
   matches: ["*://www.youtube.com/watch*"],
   runAt: "document_end"

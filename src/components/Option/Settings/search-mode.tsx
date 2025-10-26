@@ -24,7 +24,8 @@ export const SearchModeSettings = () => {
       defaultInternetSearchOn: false,
       exaAPIKey: "",
       firecrawlAPIKey: "",
-      ollamaSearchApiKey: ""
+      ollamaSearchApiKey: "",
+      kagiApiKey: ""
     }
   })
 
@@ -210,6 +211,30 @@ export const SearchModeSettings = () => {
                   required
                   className="w-full mt-4 sm:mt-0 sm:w-[200px]"
                   {...form.getInputProps("ollamaSearchApiKey")}
+                />
+              </div>
+            </div>
+          </>
+        )}
+
+        {form.values.searchProvider === "kagi-api" && (
+          <>
+            <div className="flex sm:flex-row flex-col space-y-4 sm:space-y-0 sm:justify-between">
+              <span className="text-gray-700 dark:text-neutral-50">
+                {t(
+                  "generalSettings.webSearch.kagiApi.label",
+                  "Kagi API Key"
+                )}
+              </span>
+              <div>
+                <Input.Password
+                  placeholder={t(
+                    "generalSettings.webSearch.kagiApi.placeholder",
+                    "Kagi API Key"
+                  )}
+                  required
+                  className="w-full mt-4 sm:mt-0 sm:w-[200px]"
+                  {...form.getInputProps("kagiApiKey")}
                 />
               </div>
             </div>

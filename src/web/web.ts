@@ -15,6 +15,7 @@ import { startpageSearch } from "./search-engines/startpage"
 import { exaAPISearch } from "./search-engines/exa"
 import { firecrawlAPISearch } from "./search-engines/firecrawl"
 import { ollamaAPISearch } from "./search-engines/ollama"
+import { kagiAPISearch } from "./search-engines/kagi-api"
 
 interface ProviderResults {
   url: any
@@ -64,7 +65,9 @@ const searchWeb = (provider: string, query: string) => {
     case "firecrawl":
       return firecrawlAPISearch(query)
     case "ollama-search":
-      return ollamaAPISearch(query)  
+      return ollamaAPISearch(query)
+    case "kagi-api":
+      return kagiAPISearch(query)
     default:
       return webGoogleSearch(query)
   }

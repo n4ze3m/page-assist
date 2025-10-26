@@ -16,6 +16,7 @@ import { copyToClipboard } from "@/utils/clipboard"
 import ReactDOM from "react-dom"
 import html2canvas from "html2canvas"
 import { ImageExportWrapper } from "../Common/ImageExport"
+import { convertMathDelimiters } from "@/utils/math-delimiter"
 interface MoreOptionsProps {
   messages: Message[]
   historyId: string
@@ -29,10 +30,12 @@ const formatAsText = (messages: Message[]) => {
     })
     .join("\n\n")
 }
+
+
 const formatAsMarkdown = (messages: Message[]) => {
   return messages
     .map((msg) => {
-      let content = `### **${msg.isBot ? removeModelSuffix(`${msg.modelName || msg.name}`?.replaceAll(/accounts\/[^\/]+\/models\//g, "")) : "You"}**:\n\n${msg.message}`
+      let content = `### **${msg.isBot ? removeModelSuffix(`${msg.modelName || msg.name}`?.replaceAll(/accounts\/[^\/]+\/models\//g, "")) : "You"}**:\n\n${convertMathDelimiters(msg.message)}`
 
       if (msg.images && msg.images.length > 0) {
         const imageMarkdown = msg.images

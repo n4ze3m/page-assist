@@ -18,6 +18,7 @@ Page Assist supports internet search which can be used with your LLM. It works s
 - Exa
 - Firecrawl
 - Ollama Web search
+- Kagi Search API (Private Beta - requires API access)
 
 ## How to use Internet Search
 

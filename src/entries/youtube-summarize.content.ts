@@ -61,7 +61,6 @@ export default defineContentScript({
             ?.textContent?.trim() ||
           document.title.replace(" - YouTube", "")
 
-        // Open sidebar and send summarize message
         await browser.runtime.sendMessage({
           type: "youtube_summarize",
           videoTitle,
@@ -89,13 +88,28 @@ export default defineContentScript({
         !document.querySelector(".pageassist-youtube-summarize-container")
       ) {
         const button = createSummarizeButton()
-        // Insert after the like/dislike button group
         const likeDislikeButton = topLevelButtons.querySelector(
           "segmented-like-dislike-button-view-model"
         )
-        if (likeDislikeButton && likeDislikeButton.nextSibling) {
-          topLevelButtons.insertBefore(button, likeDislikeButton.nextSibling)
-        } else if (likeDislikeButton) {
+
+        const shareButton = topLevelButtons.querySelector(
+          "yt-button-view-model"
+        )
+
+        if (likeDislikeButton) {
+          if (likeDislikeButton.nextSibling) {
+            topLevelButtons.insertBefore(button, likeDislikeButton.nextSibling)
+          } else {
+            topLevelButtons.appendChild(button)
+          }
+        } else if (shareButton) {
+          if (shareButton.nextSibling) {
+            topLevelButtons.insertBefore(button, shareButton.nextSibling)
+          } else {
+            topLevelButtons.appendChild(button)
+          }
+        } else {
+          // Last resort: just append to the container
           topLevelButtons.appendChild(button)
         }
       }
@@ -123,17 +137,37 @@ export default defineContentScript({
 
     // Observer to detect when top-level buttons are loaded
     const observer = new MutationObserver(() => {
-      if (document.querySelector("#top-level-buttons-computed")) {
+      const topLevelButtons = document.querySelector("#top-level-buttons-computed")
+      const existingButton = document.querySelector(".pageassist-youtube-summarize-container")
+
+      // Inject button if container exists but button doesn't
+      if (topLevelButtons && !existingButton) {
         injectSummarizeButton()
       }
     })
 
     observer.observe(document.body, { childList: true, subtree: true })
 
-    // Initial injection attempt
+    injectSummarizeButton()
     setTimeout(() => {
       injectSummarizeButton()
-    }, 1000)
+    }, 500)
+
+    setTimeout(() => {
+      injectSummarizeButton()
+    }, 2000)
+
+    let lastUrl = location.href
+    new MutationObserver(() => {
+      const url = location.href
+      if (url !== lastUrl) {
+        lastUrl = url
+        removeSummarizeButton()
+        setTimeout(() => {
+          injectSummarizeButton()
+        }, 1000)
+      }
+    }).observe(document.body, { childList: true, subtree: true })
   },
   matches: ["*://www.youtube.com/watch*"],
   runAt: "document_end"
