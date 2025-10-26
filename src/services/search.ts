@@ -96,6 +96,11 @@ export const getOllamaSearchApiKey = async () => {
   return ollamaSearchApiKey || ""
 }
 
+export const getKagiApiKey = async () => {
+  const kagiApiKey = await storage2.get("kagiApiKey")
+  return kagiApiKey || ""
+}
+
 export const getTavilyApiKey = async () => {
   const tavilyApiKey = await storage2.get("tavilyApiKey")
   return tavilyApiKey || ""
@@ -112,6 +117,10 @@ export const setBraveApiKey = async (braveApiKey: string) => {
 
 export const setOllamaSearchApiKey = async (ollamaSearchApiKey: string) => {
   await storage2.set("ollamaSearchApiKey", ollamaSearchApiKey)
+}
+
+export const setKagiApiKey = async (kagiApiKey: string) => {
+  await storage2.set("kagiApiKey", kagiApiKey)
 }
 
 export const setFirecrawlAPIKey = async (firecrawlAPIKey: string) => {
@@ -165,7 +174,8 @@ export const getSearchSettings = async () => {
     defaultInternetSearchOn,
     exaAPIKey,
     firecrawlAPIKey,
-    ollamaSearchApiKey
+    ollamaSearchApiKey,
+    kagiApiKey
   ] = await Promise.all([
     getIsSimpleInternetSearch(),
     getSearchProvider(),
@@ -179,7 +189,8 @@ export const getSearchSettings = async () => {
     getInternetSearchOn(),
     getExaAPIKey(),
     getFirecrawlAPIKey(),
-    getOllamaSearchApiKey()
+    getOllamaSearchApiKey(),
+    getKagiApiKey()
   ])
 
   return {
@@ -195,7 +206,8 @@ export const getSearchSettings = async () => {
     defaultInternetSearchOn,
     exaAPIKey,
     firecrawlAPIKey,
-    ollamaSearchApiKey
+    ollamaSearchApiKey,
+    kagiApiKey
   }
 }
 
@@ -212,7 +224,8 @@ export const setSearchSettings = async ({
   defaultInternetSearchOn,
   exaAPIKey,
   firecrawlAPIKey,
-  ollamaSearchApiKey
+  ollamaSearchApiKey,
+  kagiApiKey
 }: {
   isSimpleInternetSearch: boolean
   searchProvider: string
@@ -227,6 +240,7 @@ export const setSearchSettings = async ({
   exaAPIKey: string
   firecrawlAPIKey: string
   ollamaSearchApiKey: string
+  kagiApiKey: string
 }) => {
   await Promise.all([
     setIsSimpleInternetSearch(isSimpleInternetSearch),
@@ -241,6 +255,7 @@ export const setSearchSettings = async ({
     setInternetSearchOn(defaultInternetSearchOn),
     setExaAPIKey(exaAPIKey),
     setFirecrawlAPIKey(firecrawlAPIKey),
-    setOllamaSearchApiKey(ollamaSearchApiKey)
+    setOllamaSearchApiKey(ollamaSearchApiKey),
+    setKagiApiKey(kagiApiKey)
   ])
 }

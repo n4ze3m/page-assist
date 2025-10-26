@@ -54,5 +54,9 @@ export const SUPPORTED_SEARCH_PROVIDERS = [
     {
         label: "Ollama Web search",
         value: "ollama-search"
+    },
+    {
+        label: "Kagi Search API*",
+        value: "kagi-api",
     }
 ]
