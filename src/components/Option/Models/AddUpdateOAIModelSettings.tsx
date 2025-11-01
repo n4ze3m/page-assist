@@ -107,6 +107,26 @@ export const AddUpdateOAIModelSettings: React.FC<Props> = ({
               placeholder={t("modelSettings.form.reasoningEffort.placeholder")}
             />
           </Form.Item>
+          <Form.Item name="topK" label={t("modelSettings.form.topK.label")}>
+            <InputNumber
+              style={{ width: "100%" }}
+              placeholder={t("modelSettings.form.topK.placeholder")}
+            />
+          </Form.Item>
+          <Form.Item name="minP" label={t("modelSettings.form.minP.label")}>
+            <InputNumber
+              style={{ width: "100%" }}
+              placeholder={t("modelSettings.form.minP.placeholder")}
+            />
+          </Form.Item>
+          <Form.Item
+            name="numCtx"
+            label={t("modelSettings.form.numCtx.label")}>
+            <InputNumber
+              style={{ width: "100%" }}
+              placeholder={t("modelSettings.form.numCtx.placeholder")}
+            />
+          </Form.Item>
 
           <button
             type="submit"

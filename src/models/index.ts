@@ -104,6 +104,9 @@ export const pageAssistModel = async ({
       maxTokens: modelSettings?.numPredict || numPredict,
       temperature: modelSettings?.temperature || temperature,
       topP: modelSettings?.topP || topP,
+      topK: modelSettings?.topK || topK,
+      minP: modelSettings?.minP || minP,
+      numCtx: modelSettings?.numCtx || numCtx,
       reasoningEffort:
         modelSettings?.reasoningEffort || (reasoningEffort as any)
     }
@@ -132,6 +135,11 @@ export const pageAssistModel = async ({
         temperature: modelConfig?.temperature,
         topP: modelConfig?.topP,
         maxTokens: modelConfig?.maxTokens,
+        modelKwargs: {
+          ...(modelConfig?.topK && { top_k: modelConfig.topK }),
+          ...(modelConfig?.minP && { min_p: modelConfig.minP }),
+          ...(modelConfig?.numCtx && { context_length: modelConfig.numCtx })
+        },
         configuration: {
           apiKey: providerInfo.apiKey || "temp",
           baseURL: providerInfo.baseUrl || "",
@@ -190,6 +198,11 @@ export const pageAssistModel = async ({
       temperature: modelConfig?.temperature,
       topP: modelConfig?.topP,
       maxTokens: modelConfig?.maxTokens,
+      modelKwargs: {
+        ...(modelConfig?.topK && { top_k: modelConfig.topK }),
+        ...(modelConfig?.minP && { min_p: modelConfig.minP }),
+        ...(modelConfig?.numCtx && { context_length: modelConfig.numCtx })
+      },
       configuration: {
         apiKey: providerInfo.apiKey || "temp",
         baseURL: providerInfo.baseUrl || "",
