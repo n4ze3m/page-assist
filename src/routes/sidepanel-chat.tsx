@@ -1,7 +1,8 @@
 import {
   formatToChatHistory,
   formatToMessage,
-  getRecentChatFromCopilot
+  getRecentChatFromCopilot,
+  getPromptById
 } from "@/db/dexie/helpers"
 import useBackgroundMessage from "@/hooks/useBackgroundMessage"
 import { useMigration } from "@/hooks/useMigration"
@@ -22,6 +23,7 @@ import { SidePanelBody } from "~/components/Sidepanel/Chat/body"
 import { SidepanelForm } from "~/components/Sidepanel/Chat/form"
 import { SidepanelHeader } from "~/components/Sidepanel/Chat/header"
 import { useMessage } from "~/hooks/useMessage"
+import { useStoreChatModelSettings } from "@/store/model"
 
 const SidepanelChat = () => {
   const drop = React.useRef<HTMLDivElement>(null)
@@ -31,6 +33,9 @@ const SidepanelChat = () => {
   const [dropState, setDropState] = React.useState<
     "idle" | "dragging" | "error"
   >("idle")
+
+  const [defaultCopilotPrompt] = useStorage("defaultCopilotPrompt", undefined)
+
   useMigration()
   const {
     streaming,
@@ -45,7 +50,8 @@ const SidepanelChat = () => {
     setChatMode,
     setTemporaryChat,
     sidepanelTemporaryChat,
-    clearChat
+    clearChat,
+    setSelectedSystemPrompt
   } = useMessage()
   const { containerRef, isAutoScrollToBottom, autoScrollToBottom } =
     useSmartScroll(messages, streaming, 100)
@@ -141,6 +147,24 @@ const SidepanelChat = () => {
       }
     }
   }, [])
+
+  React.useEffect(() => {
+    const loadDefaultPrompt = async () => {
+      if (defaultCopilotPrompt && messages.length === 0) {
+        try {
+          const prompt = await getPromptById(defaultCopilotPrompt)
+          console.log("Loaded default copilot prompt:", prompt)
+          if (prompt) {
+            setSelectedSystemPrompt(prompt.id)
+          }
+        } catch (error) {
+          console.error("Failed to load default prompt:", error)
+        }
+      }
+    }
+
+    loadDefaultPrompt()
+  }, [defaultCopilotPrompt])
 
   React.useEffect(() => {
     setRecentMessagesOnLoad()

@@ -18,6 +18,14 @@
           "dark": "Dunkel"
         }
       },
+      "defaultCopilotPrompt": {
+        "label": "Standardabfrage für Seitenpanel (Copilot)",
+        "placeholder": "Wählen Sie eine Aufforderung"
+      },
+      "defaultWebUIPrompt": {
+        "label": "Standardabfrage für Web-UI",
+        "placeholder": "Wählen Sie eine Aufforderung"
+      },
       "copilotResumeLastChat": {
         "label": "Letzten Chat beim Öffnen des Seitenpanels fortsetzen (Copilot)"
       },
