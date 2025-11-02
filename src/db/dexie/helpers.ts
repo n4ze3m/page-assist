@@ -230,6 +230,19 @@ export const getAllPrompts = async () => {
   }
 }
 
+export const getAllPromptsSystem = async () => {
+  try {
+    const db = new PageAssistDatabase()
+    return (await db.getAllPrompts()).filter((prompt) => prompt.is_system)
+  } catch (e) {
+    if (isDatabaseClosedError(e)) {
+      return (await getAllPromptsFB()).filter((prompt) => prompt.is_system)
+    }
+
+    return []
+  }
+}
+
 export const savePrompt = async ({
   content,
   title,

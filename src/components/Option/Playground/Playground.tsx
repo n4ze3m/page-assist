@@ -18,6 +18,8 @@ import { otherUnsupportedTypes } from "../Knowledge/utils/unsupported-types"
 export const Playground = () => {
   const drop = React.useRef<HTMLDivElement>(null)
   const [dropedFile, setDropedFile] = React.useState<File | undefined>()
+  const [defaultWebUIPrompt] = useStorage("defaultWebUIPrompt", undefined)
+
   const [chatBackgroundImage] = useStorage({
     key: "chatBackgroundImage",
     instance: new Storage({
@@ -134,6 +136,24 @@ export const Playground = () => {
       }
     }
   }
+
+  React.useEffect(() => {
+    const loadDefaultPrompt = async () => {
+      if (defaultWebUIPrompt && messages.length === 0) {
+        try {
+          const prompt = await getPromptById(defaultWebUIPrompt)
+          if (prompt) {
+            setSelectedSystemPrompt(prompt.id)
+            setSystemPrompt(prompt.content)
+          }
+        } catch (error) {
+          console.error("Failed to load default prompt:", error)
+        }
+      }
+    }
+
+    loadDefaultPrompt()
+  }, [defaultWebUIPrompt])
 
   React.useEffect(() => {
     setRecentMessagesOnLoad()

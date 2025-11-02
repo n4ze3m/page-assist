@@ -11,9 +11,21 @@ import { SSTSettings } from "./sst-settings"
 import { BetaTag } from "@/components/Common/Beta"
 import { getDefaultOcrLanguage, ocrLanguages } from "@/data/ocr-language"
 import { Storage } from "@plasmohq/storage"
+import { useQuery } from "@tanstack/react-query"
+import { getAllPrompts, getAllPromptsSystem } from "@/db/dexie/helpers"
 
 export const GeneralSettings = () => {
   const [userChatBubble, setUserChatBubble] = useStorage("userChatBubble", true)
+
+  const [defaultCopilotPrompt, setDefaultCopilotPrompt] = useStorage(
+    "defaultCopilotPrompt",
+    undefined
+  )
+
+  const [defaultWebUIPrompt, setDefaultWebUIPrompt] = useStorage(
+    "defaultWebUIPrompt",
+    undefined
+  )
 
   const [copilotResumeLastChat, setCopilotResumeLastChat] = useStorage(
     "copilotResumeLastChat",
@@ -105,6 +117,11 @@ export const GeneralSettings = () => {
   const { t } = useTranslation("settings")
   const { changeLocale, locale, supportLanguage } = useI18n()
 
+  const { data: prompts } = useQuery({
+    queryKey: ["getAllPromptsForSettings"],
+    queryFn: getAllPromptsSystem
+  })
+
   return (
     <dl className="flex flex-col space-y-6 text-sm">
       <div>
@@ -135,6 +152,7 @@ export const GeneralSettings = () => {
           }}
         />
       </div>
+
       <div className="flex flex-row justify-between">
         <div className="inline-flex items-center gap-2">
           <span className="text-gray-700   dark:text-neutral-50">
@@ -403,6 +421,68 @@ export const GeneralSettings = () => {
         <Switch
           checked={webuiTemporaryChat}
           onChange={(checked) => setWebuiTemporaryChat(checked)}
+        />
+      </div>
+
+      <div className="flex flex-row justify-between">
+        <span className="text-gray-700   dark:text-neutral-50">
+          {t("generalSettings.settings.defaultCopilotPrompt.label")}
+        </span>
+
+        <Select
+          placeholder={t(
+            "generalSettings.settings.defaultCopilotPrompt.placeholder"
+          )}
+          allowClear
+          showSearch
+          style={{ width: "200px" }}
+          options={
+            prompts
+              ? prompts.map((prompt) => ({
+                  key: prompt.id,
+                  value: prompt.id,
+                  label: prompt.title
+                }))
+              : []
+          }
+          value={defaultCopilotPrompt || undefined}
+          filterOption={(input, option) =>
+            option!.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
+          }
+          onChange={(value) => {
+            setDefaultCopilotPrompt(value || null)
+          }}
+        />
+      </div>
+
+      <div className="flex flex-row justify-between">
+        <span className="text-gray-700   dark:text-neutral-50">
+          {t("generalSettings.settings.defaultWebUIPrompt.label")}
+        </span>
+
+        <Select
+          placeholder={t(
+            "generalSettings.settings.defaultWebUIPrompt.placeholder"
+          )}
+          allowClear
+          showSearch
+          style={{ width: "200px" }}
+          options={
+            prompts
+              ? prompts.map((prompt) => ({
+                  key: prompt.id,
+                  value: prompt.id,
+                  label: prompt.title
+                }))
+              : []
+          }
+          value={defaultWebUIPrompt || undefined}
+          filterOption={(input, option) =>
+            option!.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
+          }
+          onChange={(value) => {
+            setDefaultWebUIPrompt(value || null)
+          }}
         />
       </div>
 

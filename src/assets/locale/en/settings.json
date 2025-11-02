@@ -18,6 +18,14 @@
           "dark": "Dark"
         }
       },
+      "defaultCopilotPrompt": {
+        "label": "Default Prompt for SidePanel (Copilot)",
+        "placeholder": "Select a prompt"
+      },
+      "defaultWebUIPrompt": {
+        "label": "Default Prompt for Web UI",
+        "placeholder": "Select a prompt"
+      },
       "copilotResumeLastChat": {
         "label": "Resume the last chat when opening the SidePanel (Copilot)"
       },
