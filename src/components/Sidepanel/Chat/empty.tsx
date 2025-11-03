@@ -206,7 +206,7 @@ export const EmptySidePanel = () => {
 
         <div className="flex w-full flex-col gap-2 sm:flex-row">
           <Button
-            type="primary"
+            type={statusVariant === "ok" ? "default" : "primary"}
             icon={<RefreshCw className="h-4 w-4" />}
             onClick={() => statusQuery.refetch()}
             loading={statusQuery.isFetching}

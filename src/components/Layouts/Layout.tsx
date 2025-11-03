@@ -73,7 +73,7 @@ export default function OptionLayout({
             "relative flex h-full flex-col",
             hideHeader
               ? "min-h-screen items-center justify-center px-4 py-10 sm:px-8"
-              : ""
+              : "pt-2 sm:pt-3"
           )}>
           {children}
         </div>

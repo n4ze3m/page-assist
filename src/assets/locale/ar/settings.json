@@ -1,4 +1,15 @@
 {
+  "navigation": {
+    "serverAndAuth": "الخادم والمصادقة",
+    "knowledgeTools": "أدوات المعرفة",
+    "workspace": "مساحة العمل",
+    "about": "نبذة"
+  },
+  "healthNav": "الحالة",
+  "worldBooksNav": "World Books",
+  "chatDictionariesNav": "قواميس الدردشة",
+  "charactersNav": "الشخصيات",
+  "mediaNav": "الوسائط",
   "generalSettings": {
     "title": "الإعدادات العامة",
     "settings": {

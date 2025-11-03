@@ -3,6 +3,13 @@
     "selectAPrompt": "Välj en fråga",
     "githubRepository": "GitHu repository",
     "settings": "Inställningar",
+    "header": {
+      "showShortcuts": "Visa genvägar",
+      "hideShortcuts": "Dölj genvägar",
+      "groupWorkspace": "Arbetsyta",
+      "groupKnowledge": "Kunskap",
+      "groupSettings": "Inställningsgenvägar"
+    },
     "sidebarTitle": "Chatthistorik",
     "error": "Fel",
     "somethingWentWrong": "Något gick fel",

@@ -1,4 +1,15 @@
 {
+  "navigation": {
+    "serverAndAuth": "서버 및 인증",
+    "knowledgeTools": "지식 도구",
+    "workspace": "작업 공간",
+    "about": "정보"
+  },
+  "healthNav": "상태",
+  "worldBooksNav": "World Books",
+  "chatDictionariesNav": "채팅 사전",
+  "charactersNav": "캐릭터",
+  "mediaNav": "미디어",
   "generalSettings": {
     "title": "일반 설정",
     "settings": {

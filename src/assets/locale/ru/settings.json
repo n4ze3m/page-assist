@@ -1,4 +1,15 @@
 {
+  "navigation": {
+    "serverAndAuth": "Сервер и авторизация",
+    "knowledgeTools": "Инструменты знаний",
+    "workspace": "Рабочее пространство",
+    "about": "О нас"
+  },
+  "healthNav": "Состояние",
+  "worldBooksNav": "World Books",
+  "chatDictionariesNav": "Словари чата",
+  "charactersNav": "Персонажи",
+  "mediaNav": "Медиа",
   "generalSettings": {
     "title": "Общие настройки",
     "settings": {

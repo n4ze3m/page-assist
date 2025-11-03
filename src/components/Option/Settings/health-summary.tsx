@@ -26,7 +26,7 @@ export default function HealthSummary() {
 
   return (
     <div className="mb-3 p-2 rounded border dark:border-gray-700 bg-white dark:bg-[#171717] flex items-center justify-between">
-      <div className="flex items-center gap-4 text-sm">
+      <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-300">
         <span className="flex items-center gap-2"><Dot status={core}/> Core</span>
         <span className="flex items-center gap-2"><Dot status={rag}/> RAG</span>
       </div>
@@ -34,4 +34,3 @@ export default function HealthSummary() {
     </div>
   )
 }
-

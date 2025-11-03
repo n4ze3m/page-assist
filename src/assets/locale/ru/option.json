@@ -3,6 +3,13 @@
     "selectAPrompt": "Выберите подсказку",
     "githubRepository": "Репозиторий GitHub",
     "settings": "Настройки",
+    "header": {
+      "showShortcuts": "Показать ярлыки",
+      "hideShortcuts": "Скрыть ярлыки",
+      "groupWorkspace": "Рабочее пространство",
+      "groupKnowledge": "Знания",
+      "groupSettings": "Ярлыки настроек"
+    },
     "sidebarTitle": "История чата",
     "error": "Ошибка",
     "somethingWentWrong": "Что-то пошло не так",

@@ -3,6 +3,13 @@
     "selectAPrompt": "Velg en Prompt",
     "githubRepository": "GitHub Repository",
     "settings": "Innstillinger",
+    "header": {
+      "showShortcuts": "Vis snarveier",
+      "hideShortcuts": "Skjul snarveier",
+      "groupWorkspace": "Arbeidsområde",
+      "groupKnowledge": "Kunnskap",
+      "groupSettings": "Innstillingssnarveier"
+    },
     "sidebarTitle": "Chathistorikk",
     "error": "Feil",
     "somethingWentWrong": "Noe gikk galt",

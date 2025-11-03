@@ -3,6 +3,13 @@
     "selectAPrompt": "프롬프트 선택",
     "githubRepository": "GitHub 리포지토리",
     "settings": "설정",
+    "header": {
+      "showShortcuts": "바로가기 표시",
+      "hideShortcuts": "바로가기 숨기기",
+      "groupWorkspace": "작업 공간",
+      "groupKnowledge": "지식",
+      "groupSettings": "설정 바로가기"
+    },
     "sidebarTitle": "채팅 기록",
     "error": "오류",
     "somethingWentWrong": "문제가 발생했습니다",

@@ -3,6 +3,13 @@
     "selectAPrompt": "选择一个提示词",
     "githubRepository": "GitHub 仓库",
     "settings": "设置",
+    "header": {
+      "showShortcuts": "显示快捷方式",
+      "hideShortcuts": "隐藏快捷方式",
+      "groupWorkspace": "工作区",
+      "groupKnowledge": "知识",
+      "groupSettings": "设置快捷方式"
+    },
     "sidebarTitle": "聊天历史",
     "error": "错误",
     "somethingWentWrong": "出现了错误",

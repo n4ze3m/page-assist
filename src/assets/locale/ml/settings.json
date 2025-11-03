@@ -1,4 +1,15 @@
 {
+  "navigation": {
+    "serverAndAuth": "സെർവർ & ഓത്",
+    "knowledgeTools": "നോളജ് ടൂളുകൾ",
+    "workspace": "വർക്ക്സ്പേസ്",
+    "about": "അറിയുക"
+  },
+  "healthNav": "ഹെൽത്ത്",
+  "worldBooksNav": "World Books",
+  "chatDictionariesNav": "ചാറ്റ് നിഘണ്ടു",
+  "charactersNav": "ക്യാരക്ടേഴ്സ്",
+  "mediaNav": "മീഡിയ",
   "generalSettings": {
     "title": "പൊതുവായ സെറ്റിംഗുകൾ",
     "settings": {

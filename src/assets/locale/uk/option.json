@@ -3,6 +3,13 @@
     "selectAPrompt": "Виберіть запит",
     "githubRepository": "Репозиторій GitHub",
     "settings": "Налаштування",
+    "header": {
+      "showShortcuts": "Показати ярлики",
+      "hideShortcuts": "Приховати ярлики",
+      "groupWorkspace": "Робочий простір",
+      "groupKnowledge": "Знання",
+      "groupSettings": "Ярлики налаштувань"
+    },
     "sidebarTitle": "Історія чату",
     "error": "Збій",
     "somethingWentWrong": "Щось пішло не так",

@@ -3,6 +3,13 @@
     "selectAPrompt": "Wähle eine Eingabeaufforderung",
     "githubRepository": "GitHub-Repository",
     "settings": "Einstellungen",
+    "header": {
+      "showShortcuts": "Kurzbefehle anzeigen",
+      "hideShortcuts": "Kurzbefehle ausblenden",
+      "groupWorkspace": "Arbeitsbereich",
+      "groupKnowledge": "Wissen",
+      "groupSettings": "Einstellungen‑Shortcuts"
+    },
     "sidebarTitle": "Chat-Verlauf",
     "error": "Fehler",
     "somethingWentWrong": "Etwas ist schiefgelaufen",

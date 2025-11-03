@@ -7,7 +7,11 @@ export default async function globalSetup() {
   try {
     execSync('bun run build', { stdio: 'inherit' })
   } catch {
-    execSync('npm run build', { stdio: 'inherit' })
+    try {
+      execSync('npm run build:chrome', { stdio: 'inherit' })
+    } catch {
+      // Final fallback: use wxt directly if available
+      execSync('cross-env TARGET=chrome wxt build', { stdio: 'inherit' })
+    }
   }
 }
-

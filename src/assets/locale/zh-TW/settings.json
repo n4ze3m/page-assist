@@ -1,4 +1,15 @@
 {
+  "navigation": {
+    "serverAndAuth": "伺服器與驗證",
+    "knowledgeTools": "知識工具",
+    "workspace": "工作區",
+    "about": "關於"
+  },
+  "healthNav": "健康",
+  "worldBooksNav": "World Books",
+  "chatDictionariesNav": "聊天字典",
+  "charactersNav": "角色",
+  "mediaNav": "媒體",
   "generalSettings": {
     "title": "一般設定",
     "settings": {

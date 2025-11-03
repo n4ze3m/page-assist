@@ -10,7 +10,7 @@ Instead of connecting directly to providers, the extension talks to your tldw_se
 
 1. Build or load the extension (see project README)
 2. Open Options → tldw Server
-3. Enter your Server URL (e.g., http://localhost:8000)
+3. Enter your Server URL (e.g., http://127.0.0.1:8000)
 4. Choose authentication mode (API key or login) and save
 5. Click “Test Connection” to verify
 

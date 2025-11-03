@@ -3,6 +3,13 @@
     "selectAPrompt": "ഒരു പ്രോംപ്റ്റ് തിരഞ്ഞെടുക്കുക",
     "githubRepository": "ഗിറ്റ്ഹബ് റെപ്പോസിറ്ററി",
     "settings": "സെറ്റിംഗുകൾ",
+    "header": {
+      "showShortcuts": "ഷോർട്ട്കട്ടുകൾ കാണിക്കുക",
+      "hideShortcuts": "ഷോർട്ട്കട്ടുകൾ മറയ്ക്കുക",
+      "groupWorkspace": "വർക്ക്സ്പേസ്",
+      "groupKnowledge": "നോളജ്",
+      "groupSettings": "സജ്ജീകരണ ഷോർട്ട്കട്ടുകൾ"
+    },
     "sidebarTitle": "ചാറ്റ് ചരിത്രം",
     "error": "പിശക്",
     "somethingWentWrong": "എന്തോ തെറ്റായി",

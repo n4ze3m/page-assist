@@ -1,4 +1,15 @@
 {
+  "navigation": {
+    "serverAndAuth": "سرور و احراز هویت",
+    "knowledgeTools": "ابزارهای دانش",
+    "workspace": "محیط کار",
+    "about": "درباره"
+  },
+  "healthNav": "سلامت",
+  "worldBooksNav": "World Books",
+  "chatDictionariesNav": "واژه‌نامه‌های چت",
+  "charactersNav": "شخصیت‌ها",
+  "mediaNav": "رسانه",
   "generalSettings": {
     "title": "تنظیمات عمومی",
     "settings": {

@@ -35,11 +35,13 @@ This document outlines a comprehensive plan to refactor the page-assist browser 
 - Security: Do not roll custom crypto without a sound key strategy. Prefer in-memory access tokens, persist refresh tokens only when needed, and never log secrets. Implement robust 401 handling with single-flight refresh and retry.
 
 ## Corrections & Decisions
-- Auth modes: Maintain both Single-User (API key) and Multi-User (Bearer) modes. Confirm API key header and scope (pending doc). Default to Bearer where possible; keep API key mode for server setups that issue keys.
+- Auth modes: Maintain both Single-User (API key) and Multi-User (Bearer) modes. Use `X-API-KEY` for single-user and `Authorization: Bearer <JWT>` for multi-user.
+- Token storage (updated): Keep access tokens in background memory or `chrome.storage.session`; persist refresh tokens in local storage only if necessary; never expose tokens to content scripts; never log secrets.
 - Background proxy: Centralize all network I/O in the background/service worker. Inject auth headers, manage SSE, handle retries/backoff, and perform 401-triggered refresh with a single-flight queue.
-- Permissions: Allow users to specify their own endpoint. Use `optional_host_permissions` and request permission for the configured origin at runtime. Avoid `https://*/*` where feasible; for Firefox (MV2) where optional host permissions are limited, document the necessity of broader URL permissions while minimizing others.
-- Ollama removal: Remove direct Ollama features and repurpose their UX to tldw_server (e.g., context-menu “Send to tldw_server” → `/api/v1/media/add` or `ingest-web-content`).
-- SSE handling: Explicitly set `Accept: text/event-stream` for streaming chat and support keep-alives. Add AbortController-based timeouts and cancellation.
+- Permissions: Prefer `optional_host_permissions` on Chromium and request only the configured server origin at runtime. On Firefox MV2, minimize wildcard hosts. Remove unused permissions like `declarativeNetRequest`, `webRequest`, and `webRequestBlocking` unless strictly required.
+- Ollama removal: Remove direct Ollama features and repurpose their UX to tldw_server (e.g., context-menu “Send to tldw_server” → `POST /api/v1/media/add`).
+- Streaming (SSE) handling (updated): Set `Accept: text/event-stream` and `Connection: keep-alive`; increase default stream idle timeout (45–60s); use AbortController cancellation.
+- OpenAPI drift check (new): On background startup, fetch `/openapi.json` and warn if required client paths are missing.
 
 ## Endpoints & Path Hygiene — TODO
 - Verify every client path matches OpenAPI exactly, including trailing slashes, to avoid 307 redirects on POST and CORS edge cases.
@@ -61,14 +63,15 @@ tldw_server acts as an **API aggregator/proxy** that:
 - Later: MCP integration and advanced studio/evaluation features.
 
 ## Core Endpoint Mapping
-- Models: `/api/v1/llm/models` — fetch available models from tldw_server.
-- Chat: `/api/v1/chat/completions` — streaming completions with model selection.
-- RAG: `/api/v1/rag/{search|simple|advanced}` — retrieval with snippet insertion.
-- Media: `/api/v1/media/add`, `process-{videos|audios|documents|pdfs|ebooks}`, `ingest-web-content` — capture and processing; versions under `/media/{media_id}`.
-- Notes: `/api/v1/notes/`, `/notes/search/`, keywords under `/notes/keywords/*` — quick capture and organize.
-- Prompts: `/api/v1/prompts/`, `/prompts/search`, `/prompts/export` — library and export.
-- STT: `/api/v1/audio/v1/audio/transcriptions` (and `/translations`) — upload audio and get text.
-- TTS: `/api/v1/audio/v1/audio/speech` — text-to-speech synthesis (if available).
+- Models: `/api/v1/llm/models`, `/api/v1/llm/models/metadata`, `/api/v1/llm/providers`.
+- Chat: `POST /api/v1/chat/completions` (non-stream and SSE stream).
+- RAG: `POST /api/v1/rag/search`, `POST /api/v1/rag/search/stream`.
+- Media: `POST /api/v1/media/add`, `POST /api/v1/media/process-{videos|audios|pdfs|ebooks|documents|web-scraping}` (drop any reference to "ingest-web-content").
+- Reading: `POST /api/v1/reading/save`, `GET /api/v1/reading/items`.
+- Notes: `/api/v1/notes/*` (list/search/CRUD), keywords under `/api/v1/notes/keywords/*` when available.
+- Prompts: `/api/v1/prompts/*` (CRUD, search, export).
+- STT: `POST /api/v1/audio/transcriptions` and `WS /api/v1/audio/stream/transcribe?token=...` (real-time).
+- TTS: `POST /api/v1/audio/speech`.
 
 ## Critical Considerations & Solutions
 
@@ -79,12 +82,11 @@ tldw_server acts as an **API aggregator/proxy** that:
 - Content Security Policy restrictions
 - Preventing credential leakage
 
-**Solutions:**
-- Use browser's encrypted storage API (`chrome.storage.local` with encryption)
-- Implement secure credential manager with memory-only sensitive data
-- Add origin validation for all API requests
-- Implement request signing for additional security
-- Use manifest V3 service workers for better security isolation
+**Solutions (updated):**
+- Credential handling: access tokens in memory/session; refresh tokens optionally persisted in local; never in content scripts.
+- Background-only header injection; sanitize request headers in the background before fetch.
+- Avoid custom request signing (not supported by server); rely on server AuthNZ.
+- MV3 service worker isolation and least-privilege host permissions.
 
 ### 2. CORS & Network Configuration
 **Challenges:**
@@ -94,11 +96,10 @@ tldw_server acts as an **API aggregator/proxy** that:
 - WebSocket connections from extension context
 
 **Solutions:**
-- Server-side: Configure CORS headers specifically for extension origin
-- Add `host_permissions` in manifest for server URLs
-- Implement proxy pattern through background service worker
-- Use `chrome.webRequest` API for header manipulation if needed
-- Fallback to polling if WebSocket fails
+- Server-side: Configure CORS for the server origin users configure (or rely on extension background privileges).
+- Use `optional_host_permissions` for the configured origin; avoid broad host globs where possible.
+- Implement proxy pattern through the background service worker; do not rely on `webRequest` APIs for header injection.
+- Fallbacks: For WS failures, use file-based STT (`/api/v1/audio/transcriptions`).
 
 ### 3. Performance & Resource Management
 **Challenges:**
@@ -197,10 +198,10 @@ class TldwApiClient {
 - **Status Indicator**: Connection status in toolbar icon
 
 ### 1.5 Core MVP Feature Targets
-- Chat (non-stream → stream) wired to `/chat/completions` via background proxy.
-- RAG search (simple) UI and insertion using `/rag/{simple|search}`.
-- Media: minimal ingest (page/URL) using `/media/add` and `ingest-web-content` with progress toasts.
-- STT: upload mic/selected audio to `/audio/v1/audio/transcriptions` and render transcript.
+- Chat (non-stream → stream) wired to `/api/v1/chat/completions` via background proxy.
+- RAG search UI and insertion using `POST /api/v1/rag/search` (and `.../search/stream` for previews).
+- Media: minimal ingest (page/URL) using `POST /api/v1/media/add`; process-only using `POST /api/v1/media/process-*`.
+- STT: upload mic/selected audio to `POST /api/v1/audio/transcriptions` and render transcript.
  - Notes (MVP): quick capture from selection, tag organization, search, export.
  - Prompts (MVP): library browser, quick insertion toolbar, custom prompt creation, import/export.
 
@@ -233,9 +234,9 @@ class TldwApiClient {
 
 ## Phase 3: Advanced Features (Weeks 7-9)
 
-### 3.1 TTS (Next Priority)
-- TTS synthesis via `/api/v1/audio/v1/audio/speech`.
-- Voice management: list/upload/preview under `/audio/v1/audio/voices*`.
+-### 3.1 TTS (Next Priority)
+- TTS synthesis via `POST /api/v1/audio/speech`.
+- Voice catalog: `GET /api/v1/audio/voices/catalog` (if available in deployment).
 - UI: speak replies, voice picker, rate/pitch controls.
 
 ### 3.2 Batch Operations

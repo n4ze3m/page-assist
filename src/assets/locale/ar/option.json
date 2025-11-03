@@ -3,6 +3,13 @@
     "selectAPrompt": "اختر موجهاً",
     "githubRepository": "مستودع GitHub",
     "settings": "الإعدادات",
+    "header": {
+      "showShortcuts": "إظهار الاختصارات",
+      "hideShortcuts": "إخفاء الاختصارات",
+      "groupWorkspace": "مساحة العمل",
+      "groupKnowledge": "المعرفة",
+      "groupSettings": "اختصارات الإعدادات"
+    },
     "sidebarTitle": "سجل المحادثات",
     "error": "خطأ",
     "somethingWentWrong": "حدث خطأ ما",

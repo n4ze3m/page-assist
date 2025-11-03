@@ -1,4 +1,15 @@
 {
+  "navigation": {
+    "serverAndAuth": "サーバーと認証",
+    "knowledgeTools": "ナレッジツール",
+    "workspace": "ワークスペース",
+    "about": "情報"
+  },
+  "healthNav": "ヘルス",
+  "worldBooksNav": "World Books",
+  "chatDictionariesNav": "チャット辞書",
+  "charactersNav": "キャラクター",
+  "mediaNav": "メディア",
   "generalSettings": {
     "title": "一般設定",
     "settings": {

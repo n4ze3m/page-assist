@@ -1,4 +1,15 @@
 {
+  "navigation": {
+    "serverAndAuth": "Server & Auth",
+    "knowledgeTools": "Videnværktøjer",
+    "workspace": "Arbejdsområde",
+    "about": "Om"
+  },
+  "healthNav": "Sundhed",
+  "worldBooksNav": "World Books",
+  "chatDictionariesNav": "Chatordbøger",
+  "charactersNav": "Karakterer",
+  "mediaNav": "Medier",
   "generalSettings": {
     "title": "Generelle Indstillinger",
     "settings": {

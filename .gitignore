@@ -51,3 +51,4 @@ keys.json
 package-lock.json
 bun.lockb
 /playwright-mcp-artifacts
+/test-results

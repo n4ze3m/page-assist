@@ -3,6 +3,13 @@
     "selectAPrompt": "Selecionar um Prompt",
     "githubRepository": "Repositório GitHub",
     "settings": "Configurações",
+    "header": {
+      "showShortcuts": "Mostrar atalhos",
+      "hideShortcuts": "Ocultar atalhos",
+      "groupWorkspace": "Área de trabalho",
+      "groupKnowledge": "Conhecimento",
+      "groupSettings": "Atalhos de configurações"
+    },
     "sidebarTitle": "Histórico de Chat",
     "error": "Erro",
     "somethingWentWrong": "Algo deu errado",

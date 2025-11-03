@@ -3,6 +3,13 @@
     "selectAPrompt": "یک پرامپت را انتخاب کنید",
     "githubRepository": "مخزن GitHub",
     "settings": "تنظیمات",
+    "header": {
+      "showShortcuts": "نمایش میانبرها",
+      "hideShortcuts": "پنهان کردن میانبرها",
+      "groupWorkspace": "محیط کار",
+      "groupKnowledge": "دانش",
+      "groupSettings": "میانبرهای تنظیمات"
+    },
     "sidebarTitle": "تاریخچه گپ",
     "error": "خطا",
     "somethingWentWrong": "مشکلی پیش آمد",

@@ -6,6 +6,7 @@ import HealthSummary from "@/components/Option/Settings/health-summary"
 import { OnboardingWizard } from "@/components/Option/Onboarding/OnboardingWizard"
 import { PageAssistLoader } from "@/components/Common/PageAssistLoader"
 import { tldwClient } from "@/services/tldw/TldwApiClient"
+import { getTldwServerURL } from "@/services/tldw-server"
 import OptionLayout from "~/components/Layouts/Layout"
 import { Playground } from "~/components/Option/Playground/Playground"
 
@@ -45,8 +46,21 @@ const OptionIndex = () => {
   React.useEffect(() => {
     (async () => {
       try {
-        const cfg = await tldwClient.getConfig()
-        const hasServer = !!cfg?.serverUrl
+        let cfg = await tldwClient.getConfig()
+        let hasServer = !!cfg?.serverUrl
+
+        // Auto-seed a default/fallback URL for first-run to reduce friction
+        if (!hasServer) {
+          try {
+            const fallback = await getTldwServerURL()
+            if (fallback) {
+              await tldwClient.updateConfig({ serverUrl: fallback, authMode: 'single-user' as any })
+              cfg = await tldwClient.getConfig()
+              hasServer = !!cfg?.serverUrl
+            }
+          } catch {}
+        }
+
         if (!hasServer) {
           setNeedsOnboarding(true)
         } else {

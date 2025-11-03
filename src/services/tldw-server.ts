@@ -6,7 +6,8 @@ import { ollamaFormatAllCustomModels } from "@/db/dexie/models"
 
 const storage = new Storage()
 
-const DEFAULT_TLDW_URL = "http://localhost:8080"
+// Default local tldw_server endpoint
+const DEFAULT_TLDW_URL = "http://127.0.0.1:8000"
 
 export const getTldwServerURL = async () => {
   const config = await tldwClient.getConfig()

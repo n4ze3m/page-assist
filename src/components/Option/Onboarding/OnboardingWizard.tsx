@@ -1,7 +1,10 @@
 import React from 'react'
-import { Alert, Button, Form, Input, Segmented, Space, Spin, Tag } from 'antd'
+import { Alert, Button, Form, Input, Segmented, Space, Spin, Tag, Checkbox } from 'antd'
+import { useStorage } from '@plasmohq/storage/hook'
+import { Storage } from '@plasmohq/storage'
 import { useTranslation } from 'react-i18next'
 import { tldwClient, TldwConfig } from '@/services/tldw/TldwApiClient'
+import { getTldwServerURL } from '@/services/tldw-server'
 import { tldwAuth } from '@/services/tldw/TldwAuth'
 
 type Props = {
@@ -25,6 +28,10 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
   const [reachability, setReachability] = React.useState<'idle' | 'checking' | 'reachable' | 'unreachable'>('idle')
   const reachabilityAbortRef = React.useRef<AbortController | null>(null)
   const reachabilityDebounceRef = React.useRef<ReturnType<typeof setTimeout> | null>(null)
+  const [autoFinishOnSuccess, setAutoFinishOnSuccess] = useStorage(
+    { key: 'onboardingAutoFinish', instance: new Storage({ area: 'local' }) },
+    true
+  )
 
   React.useEffect(() => {
     (async () => {
@@ -35,6 +42,13 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
           setServerTouched(true)
         }
         if ((cfg as any)?.authMode) setAuthMode((cfg as any).authMode)
+        // If no configured URL yet, prefill with default/fallback to reduce friction
+        if (!cfg?.serverUrl) {
+          try {
+            const fallback = await getTldwServerURL()
+            if (fallback) setServerUrl(fallback)
+          } catch {}
+        }
       } catch {}
     })()
   }, [])
@@ -64,7 +78,10 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
   React.useEffect(() => {
     const trimmed = serverUrl.trim()
 
-    if (!urlState.valid || !serverTouched || !trimmed) {
+    // Run reachability checks whenever a valid URL is present,
+    // even if the user hasn't focused/edited the field yet. This
+    // enables first-run auto advance when a default URL is prefilled.
+    if (!urlState.valid || !trimmed) {
       setReachability('idle')
       if (reachabilityDebounceRef.current) {
         clearTimeout(reachabilityDebounceRef.current)
@@ -123,6 +140,27 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
     }
   }, [serverUrl, serverTouched, urlState])
 
+  // Auto-advance to step 2 when the URL is reachable
+  const autoAdvancedRef = React.useRef(false)
+  React.useEffect(() => {
+    if (step === 1 && reachability === 'reachable' && urlState.valid && !autoAdvancedRef.current) {
+      autoAdvancedRef.current = true
+      ;(async () => {
+        try { await savePartial() } catch {}
+        setStep(2)
+      })()
+    }
+  }, [step, reachability, urlState])
+
+  // In step 3, auto-finish as soon as both checks pass, if enabled
+  const autoFinishRef = React.useRef(false)
+  React.useEffect(() => {
+    if (step === 3 && autoFinishOnSuccess && connected === true && ragHealthy === 'healthy' && !autoFinishRef.current) {
+      autoFinishRef.current = true
+      finish()
+    }
+  }, [step, autoFinishOnSuccess, connected, ragHealthy])
+
   React.useEffect(() => {
     return () => {
       if (reachabilityDebounceRef.current) {
@@ -135,7 +173,7 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
     }
   }, [])
 
-  const doTest = async () => {
+  const doTest = async (): Promise<{ connected: boolean; rag: 'healthy'|'unhealthy'|'unknown' }> => {
     setTesting(true)
     setErrorDetail('')
     setConnected(null)
@@ -145,15 +183,17 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
       const ok = await tldwClient.healthCheck()
       setConnected(!!ok)
       try {
-        const rag = await tldwClient.ragHealth()
+        await tldwClient.ragHealth()
         setRagHealthy('healthy')
       } catch {
         setRagHealthy('unhealthy')
       }
+      return { connected: !!ok, rag: 'healthy' }
     } catch (e: any) {
       setConnected(false)
       const msg = e?.message || 'Connection failed. Please check your server URL and credentials.'
       setErrorDetail(msg)
+      return { connected: false, rag: 'unknown' }
     } finally {
       setTesting(false)
     }
@@ -169,8 +209,13 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
         if (authMode === 'multi-user' && username && password) {
           await tldwAuth.login({ username, password })
         }
-        await doTest()
-        setStep(3)
+        const result = await doTest()
+        if (autoFinishOnSuccess && result.connected && (ragHealthy === 'healthy' || result.rag === 'healthy')) {
+          await savePartial().catch(() => {})
+          onFinish?.()
+        } else {
+          setStep(3)
+        }
       } catch (e: any) {
         setErrorDetail(e?.message || 'Login failed')
       } finally {
@@ -320,6 +365,14 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
               </div>
             </div>
           )}
+          <div>
+            <Checkbox
+              checked={autoFinishOnSuccess}
+              onChange={(e) => setAutoFinishOnSuccess(e.target.checked)}
+            >
+              {t('settings:onboarding.autoFinish', 'Finish automatically when connection and RAG are healthy')}
+            </Checkbox>
+          </div>
           <div className="flex justify-between">
             <Button onClick={() => setStep(1)}>{t('settings:onboarding.buttons.back')}</Button>
             <Button type="primary" onClick={next} loading={loading}>{t('settings:onboarding.buttons.continue')}</Button>
@@ -329,6 +382,14 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
 
       {step === 3 && (
         <div className="space-y-3">
+          <div>
+            <Checkbox
+              checked={autoFinishOnSuccess}
+              onChange={(e) => setAutoFinishOnSuccess(e.target.checked)}
+            >
+              {t('settings:onboarding.autoFinish', 'Finish automatically when connection and RAG are healthy')}
+            </Checkbox>
+          </div>
           <div className="flex items-center gap-2">
             <span className="text-sm font-medium">{t('settings:onboarding.connection.label')}</span>
             {connected === null ? (

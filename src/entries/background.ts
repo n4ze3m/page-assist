@@ -79,6 +79,51 @@ export default defineBackground({
           title: browser.i18n.getMessage("contextCustom"),
           contexts: ["selection"]
         })
+
+        // One-time OpenAPI drift check (advisory): warn on missing critical paths
+        try {
+          const cfg = await storage.get<any>('tldwConfig')
+          const base = String(cfg?.serverUrl || '').replace(/\/$/, '')
+          if (base) {
+            const controller = new AbortController()
+            const timeout = setTimeout(() => controller.abort(), 10000)
+            const res = await fetch(`${base}/openapi.json`, { signal: controller.signal })
+            clearTimeout(timeout)
+            if (res.ok) {
+              const spec = await res.json().catch(() => null)
+              const paths = (spec && spec.paths) ? spec.paths : {}
+              const required = [
+                '/api/v1/chat/completions',
+                '/api/v1/rag/search',
+                '/api/v1/rag/search/stream',
+                '/api/v1/media/add',
+                '/api/v1/media/process-videos',
+                '/api/v1/media/process-audios',
+                '/api/v1/media/process-pdfs',
+                '/api/v1/media/process-ebooks',
+                '/api/v1/media/process-documents',
+                '/api/v1/media/process-web-scraping',
+                '/api/v1/reading/save',
+                '/api/v1/reading/items',
+                '/api/v1/audio/transcriptions',
+                '/api/v1/audio/speech',
+                '/api/v1/llm/models',
+                '/api/v1/llm/models/metadata',
+                '/api/v1/llm/providers'
+              ]
+              const missing = required.filter((p) => !(p in paths))
+              if (missing.length > 0) {
+                console.warn('[tldw] OpenAPI drift detected — missing endpoints:', missing)
+                try {
+                  await browser.runtime.sendMessage({ type: 'tldw:openapi-warn', payload: { missing } })
+                } catch {}
+              }
+            }
+          }
+        } catch (e) {
+          // Best-effort warning; no-op on failure
+          console.debug('[tldw] OpenAPI check skipped:', (e as any)?.message || e)
+        }
       } catch (error) {
         console.error("Error in initLogic:", error)
       }
@@ -117,10 +162,13 @@ export default defineBackground({
     const deriveStreamIdleTimeout = (cfg: any, path: string, override?: number) => {
       if (override && override > 0) return override
       const p = String(path || '')
+      const defaultIdle = 45000 // bump default idle timeout to 45s to tolerate slow providers
       if (p.includes('/api/v1/chat/completions')) {
-        return Number(cfg?.chatStreamIdleTimeoutMs) > 0 ? Number(cfg.chatStreamIdleTimeoutMs) : (Number(cfg?.streamIdleTimeoutMs) > 0 ? Number(cfg.streamIdleTimeoutMs) : 15000)
+        return Number(cfg?.chatStreamIdleTimeoutMs) > 0
+          ? Number(cfg.chatStreamIdleTimeoutMs)
+          : (Number(cfg?.streamIdleTimeoutMs) > 0 ? Number(cfg.streamIdleTimeoutMs) : defaultIdle)
       }
-      return Number(cfg?.streamIdleTimeoutMs) > 0 ? Number(cfg.streamIdleTimeoutMs) : 15000
+      return Number(cfg?.streamIdleTimeoutMs) > 0 ? Number(cfg.streamIdleTimeoutMs) : defaultIdle
     }
 
     browser.runtime.onMessage.addListener(async (message) => {
@@ -526,6 +574,11 @@ export default defineBackground({
                 }
               }, idleMs)
             }
+            // Ensure SSE-friendly headers
+            headers['Accept'] = headers['Accept'] || 'text/event-stream'
+            headers['Cache-Control'] = headers['Cache-Control'] || 'no-cache'
+            headers['Connection'] = headers['Connection'] || 'keep-alive'
+
             let resp = await fetch(url, {
               method: msg.method || 'POST',
               headers,

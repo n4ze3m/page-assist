@@ -92,6 +92,20 @@ export default function HealthStatus() {
           <Button onClick={() => navigate(-1)}>← Back to chat</Button>
           <Link to="/settings/tldw"><Button>Open tldw Settings</Button></Link>
           <Button type="primary" onClick={runChecks} loading={loading}>Recheck All</Button>
+          <Button
+            onClick={() => {
+              try {
+                const payload = {
+                  serverUrl,
+                  coreStatus,
+                  timestamp: new Date().toISOString(),
+                  results
+                }
+                const text = JSON.stringify(payload, null, 2)
+                void navigator.clipboard.writeText(text)
+              } catch {}
+            }}
+          >Copy diagnostics</Button>
         </Space>
       </div>
 

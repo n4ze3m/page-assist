@@ -38,6 +38,12 @@ export const GeneralSettings = () => {
     false
   )
 
+  // Persisted preference: auto-finish onboarding when connection & RAG are healthy
+  const [onboardingAutoFinish, setOnboardingAutoFinish] = useStorage(
+    "onboardingAutoFinish",
+    true
+  )
+
   const [autoCopyResponseToClipboard, setAutoCopyResponseToClipboard] =
     useStorage("autoCopyResponseToClipboard", false)
 
@@ -294,6 +300,22 @@ export const GeneralSettings = () => {
         <Switch
           checked={copyAsFormattedText}
           onChange={(checked) => setCopyAsFormattedText(checked)}
+        />
+      </div>
+
+      <div className="flex flex-row justify-between">
+        <div className="inline-flex items-center gap-2">
+          <span className="text-gray-700   dark:text-neutral-50">
+            {t(
+              "generalSettings.settings.onboardingAutoFinish.label",
+              "Auto-finish onboarding after successful connection"
+            )}
+          </span>
+        </div>
+
+        <Switch
+          checked={onboardingAutoFinish}
+          onChange={(checked) => setOnboardingAutoFinish(checked)}
         />
       </div>
 

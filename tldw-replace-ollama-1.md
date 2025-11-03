@@ -23,7 +23,7 @@
   - Docs: `docs/connection-issue.md`, `CONTRIBUTING.md` (Ollama install), any readme/docs branding.
   - Background: `src/entries-firefox/background.ts` uses `isOllamaRunning()` and `streamDownload()`.
 - Confirm build/runtime constraints
-  - Ensure `wxt.config.ts` permissions for network requests match tldw_server endpoints (likely `http://localhost:8000` by default).
+  - Ensure `wxt.config.ts` permissions for network requests match tldw_server endpoints (default `http://127.0.0.1:8000`).
   - Confirm if CORS header rewriting currently in use for Ollama is necessary for tldw_server.
 
 Artifacts to produce
@@ -49,7 +49,7 @@ Steps
    - This appears partially present; review and complete export mapping for any other helpers used by UI/models.
 
 3) Select default base URL
-   - Default to `http://localhost:8000` (confirm with tldw team), normalize via existing `cleanUrl()` util pattern.
+   - Default to `http://127.0.0.1:8000`, normalize via existing `cleanUrl()` util pattern.
 
 Deliverables
 - `tldw-server.ts` exposes a complete, documented surface
@@ -161,7 +161,7 @@ Goal: Align WXT/Tailwind and manifest with tldw_server networking and branding.
 Steps
 1) `wxt.config.ts` and manifest pieces
    - Update extension name, description, icons to tldw branding.
-   - Host permissions: include `http://localhost:8000/*` by default and allow user-configured origins via dynamic rules if supported.
+   - Host permissions: include `http://127.0.0.1:8000/*` by default and allow user-configured origins via dynamic rules if supported.
    - Remove `webRequest` permissions tied to Ollama header-rewrite if not needed for tldw_server.
 
 2) Tailwind/theme
@@ -253,4 +253,3 @@ Deliverables
 - Docs: `docs/**` for rebrand and new connection guide
 - Config: `wxt.config.ts` manifest fields and permissions
 - Migration: add on-install/update script to migrate storage keys
-

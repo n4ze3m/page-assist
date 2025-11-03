@@ -3,6 +3,13 @@
     "selectAPrompt": "Sélectionner un prompt",
     "githubRepository": "Dépôt GitHub",
     "settings": "Paramètres",
+    "header": {
+      "showShortcuts": "Afficher les raccourcis",
+      "hideShortcuts": "Masquer les raccourcis",
+      "groupWorkspace": "Espace de travail",
+      "groupKnowledge": "Connaissances",
+      "groupSettings": "Raccourcis des paramètres"
+    },
     "sidebarTitle": "Historique de chat",
     "error": "Erreur",
     "somethingWentWrong": "Une erreur s'est produite",

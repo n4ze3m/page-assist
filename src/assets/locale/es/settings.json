@@ -1,4 +1,15 @@
 {
+  "navigation": {
+    "serverAndAuth": "Servidor y Auth",
+    "knowledgeTools": "Herramientas de conocimiento",
+    "workspace": "Área de trabajo",
+    "about": "Acerca de"
+  },
+  "healthNav": "Estado",
+  "worldBooksNav": "World Books",
+  "chatDictionariesNav": "Diccionarios de chat",
+  "charactersNav": "Personajes",
+  "mediaNav": "Multimedia",
   "generalSettings": {
     "title": "Configuraciones Generales",
     "settings": {

@@ -227,13 +227,47 @@ export const Header: React.FC<Props> = ({
     [t]
   )
 
-  const [shortcutsExpanded, setShortcutsExpanded] = React.useState(false)
+  // Persist the shortcuts collapse state so the header doesn't reset
+  const [shortcutsExpanded, setShortcutsExpanded] = useStorage(
+    "headerShortcutsExpanded",
+    false
+  )
+  const shortcutsToggleRef = React.useRef<HTMLButtonElement>(null)
+  const shortcutsContainerRef = React.useRef<HTMLDivElement>(null)
+  const shortcutsSectionId = "header-shortcuts-section"
+
+  // Manage focus for accessibility when expanding/collapsing
+  React.useEffect(() => {
+    if (shortcutsExpanded) {
+      // Wait for the shortcuts container to mount, then focus the first
+      // interactive element so keyboard users can continue naturally
+      requestAnimationFrame(() => {
+        const container = shortcutsContainerRef.current
+        if (!container) return
+        const firstFocusable = container.querySelector<HTMLElement>(
+          'a, button, [tabindex]:not([tabindex="-1"])'
+        )
+        firstFocusable?.focus()
+      })
+    } else {
+      // If focus is currently inside the shortcuts container, return it to the toggle
+      const container = shortcutsContainerRef.current
+      const active = document.activeElement
+      if (container && active && container.contains(active)) {
+        shortcutsToggleRef.current?.focus()
+      }
+    }
+  }, [shortcutsExpanded])
 
   return (
     <header
       data-istemporary-chat={temporaryChat}
       className="sticky top-0 z-30 flex w-full flex-col gap-3 border-b bg-gray-50/95 p-3 backdrop-blur dark:border-gray-600 dark:bg-[#171717]/95 data-[istemporary-chat='true']:bg-purple-900 data-[istemporary-chat='true']:dark:bg-purple-900">
-      <div className="flex w-full flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+      {/*
+        Top band: place the details bar directly below the PrimaryToolbar (New Chat)
+        on all breakpoints to keep the most-used actions grouped together.
+      */}
+      <div className="flex w-full flex-col gap-3">
         <PrimaryToolbar
           onToggleSidebar={() => setSidebarOpen(true)}
           showBack={pathname !== "/"}
@@ -272,7 +306,7 @@ export const Header: React.FC<Props> = ({
           </div>
         </PrimaryToolbar>
 
-        <div className="flex flex-1 flex-wrap items-center gap-3 lg:justify-end">
+        <div className="flex flex-wrap items-center gap-3">
           <div className="flex flex-col gap-1 min-w-[220px]">
             <span className="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
               {t("option:header.modelLabel", "Model")}
@@ -357,8 +391,10 @@ export const Header: React.FC<Props> = ({
         <div className="flex flex-col gap-2 lg:flex-1">
           <button
             type="button"
-            onClick={() => setShortcutsExpanded((prev) => !prev)}
+            onClick={() => setShortcutsExpanded(!shortcutsExpanded)}
             aria-expanded={shortcutsExpanded}
+            aria-controls={shortcutsSectionId}
+            ref={shortcutsToggleRef}
             className="inline-flex items-center self-start rounded-md border border-transparent px-2 py-1 text-xs font-semibold uppercase tracking-wide text-gray-500 transition hover:border-gray-300 hover:bg-white dark:text-gray-300 dark:hover:border-gray-500 dark:hover:bg-[#1f1f1f]">
             <ChevronDown
               className={classNames(
@@ -371,7 +407,23 @@ export const Header: React.FC<Props> = ({
               : t("option:header.showShortcuts", "Show shortcuts")}
           </button>
           {shortcutsExpanded && (
-            <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+            <div
+              id={shortcutsSectionId}
+              ref={shortcutsContainerRef}
+              onKeyDown={(e) => {
+                if (e.key === "Escape") {
+                  e.preventDefault()
+                  setShortcutsExpanded(false)
+                  // focus is returned by effect, but ensure it in next frame
+                  requestAnimationFrame(() => {
+                    shortcutsToggleRef.current?.focus()
+                  })
+                }
+              }}
+              className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between"
+              role="region"
+              aria-label={t("option:header.showShortcuts", "Shortcuts")}
+            >
               <div className="flex flex-col gap-4 lg:flex-1">
                 {navigationGroups.map((group) => (
                   <div key={group.title} className="flex flex-col gap-2">

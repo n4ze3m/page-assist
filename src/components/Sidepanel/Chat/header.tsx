@@ -76,6 +76,8 @@ export const SidepanelHeader = ({
   )
   const [ingestTimeoutSec, setIngestTimeoutSec] = React.useState<number>(120)
   const [debugOpen, setDebugOpen] = React.useState<boolean>(false)
+  const [moreOpen, setMoreOpen] = React.useState<boolean>(false)
+  const moreBtnRef = React.useRef<HTMLButtonElement>(null)
   const [debugLogs, setDebugLogs] = React.useState<Array<{ time: number; kind: string; name?: string; data?: string }>>([])
 
   React.useEffect(() => {
@@ -140,11 +142,20 @@ export const SidepanelHeader = ({
     [ingestTimeoutSec, t]
   )
 
+  const [ingestOpen, setIngestOpen] = React.useState(false)
+  const ingestBtnRef = React.useRef<HTMLButtonElement>(null)
+
   const quickIngestMenu = React.useMemo<MenuProps>(
     () => ({
       onClick: ({ key }) => {
         if (key === 'store' || key === 'process') {
-          void sendQuickIngest(key)
+          void (async () => {
+            try { await sendQuickIngest(key) } finally {
+              setIngestOpen(false)
+              // Return focus to the trigger for keyboard users
+              requestAnimationFrame(() => ingestBtnRef.current?.focus())
+            }
+          })()
         }
       },
       items: [
@@ -169,11 +180,24 @@ export const SidepanelHeader = ({
       </div>
 
       <div className="flex items-center space-x-3">
-        <Dropdown menu={quickIngestMenu} placement="bottomRight" trigger={["click"]}>
+        <Dropdown
+          menu={quickIngestMenu}
+          placement="bottomRight"
+          trigger={["click"]}
+          open={ingestOpen}
+          onOpenChange={(open) => {
+            setIngestOpen(open)
+            if (!open) requestAnimationFrame(() => ingestBtnRef.current?.focus())
+          }}
+        >
           <Tooltip title={t('sidepanel:header.ingest')}>
             <button
               type="button"
               aria-label={t('sidepanel:header.ingest')}
+              aria-haspopup="menu"
+              aria-expanded={ingestOpen}
+              aria-controls="quick-ingest-menu"
+              ref={ingestBtnRef}
               className="flex items-center space-x-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-700">
               <UploadCloud className="size-4 text-gray-500 dark:text-gray-400" />
             </button>
@@ -200,8 +224,23 @@ export const SidepanelHeader = ({
         {/* Consolidate less-used actions into kebab menu */}
         <Popover
           trigger="click"
+          open={moreOpen}
+          onOpenChange={(o) => {
+            setMoreOpen(o)
+            if (!o) requestAnimationFrame(() => moreBtnRef.current?.focus())
+          }}
           content={
-            <Space size="small" direction="vertical">
+            <Space
+              size="small"
+              direction="vertical"
+              onKeyDown={(e) => {
+                if (e.key === 'Escape') {
+                  e.preventDefault()
+                  setMoreOpen(false)
+                  requestAnimationFrame(() => moreBtnRef.current?.focus())
+                }
+              }}
+            >
               <div className="text-xs text-gray-500">{t('sidepanel:header.timeoutLabel')}</div>
               <InputNumber
                 min={1}
@@ -258,7 +297,14 @@ export const SidepanelHeader = ({
             </Space>
           }
         >
-          <button aria-label={t('sidepanel:header.moreOptionsAria')} title={t('sidepanel:header.moreOptionsTitle')} className="flex items-center space-x-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-700">
+          <button
+            aria-label={t('sidepanel:header.moreOptionsAria')}
+            title={t('sidepanel:header.moreOptionsTitle')}
+            aria-haspopup="menu"
+            aria-expanded={moreOpen}
+            aria-controls="sidepanel-more-menu"
+            ref={moreBtnRef}
+            className="flex items-center space-x-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-700">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-4 text-gray-500 dark:text-gray-400"><path d="M12 8a2 2 0 110-4 2 2 0 010 4zm0 7a2 2 0 110-4 2 2 0 010 4zm0 7a2 2 0 110-4 2 2 0 010 4z"/></svg>
             <span className="sr-only">{t('sidepanel:header.moreOptionsTitle')}</span>
           </button>

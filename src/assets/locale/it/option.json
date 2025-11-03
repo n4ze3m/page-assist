@@ -3,6 +3,13 @@
     "selectAPrompt": "Scegli un Prompt",
     "githubRepository": "GitHub Repository",
     "settings": "Impsotazioni",
+    "header": {
+      "showShortcuts": "Mostra scorciatoie",
+      "hideShortcuts": "Nascondi scorciatoie",
+      "groupWorkspace": "Area di lavoro",
+      "groupKnowledge": "Conoscenza",
+      "groupSettings": "Scorciatoie impostazioni"
+    },
     "sidebarTitle": "Cronologia Chat",
     "error": "Errore",
     "somethingWentWrong": "Qualcosa è andato storto",

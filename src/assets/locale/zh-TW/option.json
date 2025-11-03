@@ -3,6 +3,13 @@
     "selectAPrompt": "選擇一個提示詞",
     "githubRepository": "GitHub Repo",
     "settings": "設定",
+    "header": {
+      "showShortcuts": "顯示快捷方式",
+      "hideShortcuts": "隱藏快捷方式",
+      "groupWorkspace": "工作區",
+      "groupKnowledge": "知識",
+      "groupSettings": "設定快捷方式"
+    },
     "sidebarTitle": "聊天紀錄",
     "error": "錯誤",
     "somethingWentWrong": "出現了錯誤",

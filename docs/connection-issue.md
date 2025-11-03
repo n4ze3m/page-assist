@@ -17,7 +17,7 @@ You can also manage this under `chrome://extensions` → tldw Assistant → “S
 
 ## 3) Check server CORS and HTTPS
 
-- For local development, HTTP is fine (http://localhost:8000)
+- For local development, HTTP is fine (http://127.0.0.1:8000)
 - For remote servers, prefer HTTPS
 - Ensure your server’s CORS policy allows your extension to fetch if required by your setup
 

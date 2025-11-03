@@ -515,7 +515,7 @@
     "description": "Configure your server and authentication. We’ll verify the connection and RAG health inline.",
     "serverUrl": {
       "label": "Server URL",
-      "placeholder": "http://localhost:8000",
+      "placeholder": "http://127.0.0.1:8000",
       "help": "Example: http://127.0.0.1:8000",
       "emptyHint": "Enter your tldw server URL to enable Next.",
       "invalid": "Enter a full URL such as http://127.0.0.1:8000.",
