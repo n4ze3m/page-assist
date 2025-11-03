@@ -35,7 +35,7 @@
             "subheading": "請選擇您想要從此提供商使用的聊天模型。",
             "success": "成功新增模型。"
         },
-        "tipLMStudio": "Page Assist 將自動取得您在 LM Studio 中載入的模型，您無需手動新增它們。"
+        "tipLMStudio": "tldw Browser_Assistant 將自動取得您在 LM Studio 中載入的模型，您無需手動新增它們。"
     },
     "addSuccess": "提供商新增成功。",
     "deleteSuccess": "提供商刪除成功。",

@@ -431,5 +431,24 @@
   },
   "chromeAiSettings": {
     "title": "Chrome AI Indstillinger"
+  },
+  "onboarding": {
+    "title": "Welcome — Let’s get you connected",
+    "description": "Configure your server and authentication. We’ll verify the connection and RAG health inline.",
+    "serverUrl": {
+      "placeholder": "http://127.0.0.1:8000",
+      "help": "Eksempel: http://127.0.0.1:8000",
+      "invalid": "Indtast en fuld URL som http://127.0.0.1:8000.",
+      "invalidProtocol": "Brug http- eller https-URL'er, f.eks. http://127.0.0.1:8000."
+    },
+    "buttons": {
+      "next": "Next",
+      "back": "Back",
+      "continue": "Continue",
+      "recheck": "Recheck",
+      "finish": "Finish",
+      "finishAnyway": "Finish without connecting",
+      "skip": "Skip for now"
+    }
   }
 }

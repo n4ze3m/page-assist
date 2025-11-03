@@ -332,7 +332,7 @@
       },
       "globalEnable": {
         "label": "启用或禁用全局服务器集成",
-        "warning": "禁用服务器集成后，Page Assist 将不会从服务器获取模型。您仍可在<anchor>OpenAI 兼容 API</anchor>部分添加提供商。"
+        "warning": "禁用服务器集成后，tldw Browser_Assistant 将不会从服务器获取模型。您仍可在<anchor>OpenAI 兼容 API</anchor>部分添加提供商。"
       },
       "advanced": {
         "label": "服务器 URL 高级配置",
@@ -369,9 +369,9 @@
   "about": {
     "title": "关于",
     "heading": "关于",
-    "chromeVersion": "Page Assist版本",
+    "chromeVersion": "tldw Browser_Assistant 版本",
     "ollamaVersion": "服务器版本",
-    "support": "您可以通过以下平台捐赠或赞助Page Assist项目:",
+    "support": "您可以通过以下平台捐赠或赞助 tldw Browser_Assistant 项目:",
     "koFi": "在Ko-fi上支持",
     "githubSponsor": "在GitHub上赞助",
     "githubRepo": "GitHub仓库"
@@ -438,5 +438,24 @@
   },
   "chromeAiSettings": {
     "title": "Chrome AI 设置"
+  },
+  "onboarding": {
+    "title": "Welcome — Let’s get you connected",
+    "description": "Configure your server and authentication. We’ll verify the connection and RAG health inline.",
+    "serverUrl": {
+      "placeholder": "http://127.0.0.1:8000",
+      "help": "示例：http://127.0.0.1:8000",
+      "invalid": "请输入完整的 URL，例如 http://127.0.0.1:8000。",
+      "invalidProtocol": "请使用 http 或 https 的网址，例如 http://127.0.0.1:8000。"
+    },
+    "buttons": {
+      "next": "Next",
+      "back": "Back",
+      "continue": "Continue",
+      "recheck": "Recheck",
+      "finish": "Finish",
+      "finishAnyway": "Finish without connecting",
+      "skip": "Skip for now"
+    }
   }
 }

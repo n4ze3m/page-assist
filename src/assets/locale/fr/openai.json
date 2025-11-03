@@ -35,7 +35,7 @@
             "subheading": "Veuillez sélectionner les modèles de chat que vous souhaitez utiliser avec ce fournisseur.",
             "success": "Nouveaux modèles ajoutés avec succès."
         },
-        "tipLMStudio": "Page Assist récupérera automatiquement les modèles que vous avez chargés sur LM Studio. Vous n'avez pas besoin de les ajouter manuellement."
+        "tipLMStudio": "tldw Browser_Assistant récupérera automatiquement les modèles que vous avez chargés sur LM Studio. Vous n'avez pas besoin de les ajouter manuellement."
     },
     "addSuccess": "Fournisseur ajouté avec succès.",
     "deleteSuccess": "Fournisseur supprimé avec succès.",
@@ -43,7 +43,7 @@
     "delete": "Supprimer",
     "edit": "Modifier",
     "newModel": "Ajouter des modèles au fournisseur",
-    "noNewModel": "Page Assist récupérera automatiquement les modèles que vous avez chargés sur LM Studio. Vous n'avez pas besoin de les ajouter manuellement.",
+    "noNewModel": "tldw Browser_Assistant récupérera automatiquement les modèles que vous avez chargés sur LM Studio. Vous n'avez pas besoin de les ajouter manuellement.",
     "searchModel": "Rechercher un modèle",
     "selectAll": "Sélectionner tout",
     "save": "Enregistrer",

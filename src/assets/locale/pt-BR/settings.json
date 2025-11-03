@@ -369,9 +369,9 @@
   "about": {
     "title": "Sobre",
     "heading": "Sobre",
-    "chromeVersion": "Versão do Page Assist",
+    "chromeVersion": "Versão do tldw Browser_Assistant",
     "ollamaVersion": "Versão do servidor",
-    "support": "Você pode apoiar o projeto Page Assist doando ou patrocinando através das seguintes plataformas:",
+    "support": "Você pode apoiar o projeto tldw Browser_Assistant doando ou patrocinando através das seguintes plataformas:",
     "koFi": "Apoiar no Ko-fi",
     "githubSponsor": "Patrocinar no GitHub",
     "githubRepo": "Repositório GitHub"
@@ -438,5 +438,24 @@
   },
   "chromeAiSettings": {
     "title": "Configurações do Chrome AI"
+  },
+  "onboarding": {
+    "title": "Welcome — Let’s get you connected",
+    "description": "Configure your server and authentication. We’ll verify the connection and RAG health inline.",
+    "serverUrl": {
+      "placeholder": "http://127.0.0.1:8000",
+      "help": "Exemplo: http://127.0.0.1:8000",
+      "invalid": "Insira uma URL completa como http://127.0.0.1:8000.",
+      "invalidProtocol": "Use URLs http ou https, por exemplo http://127.0.0.1:8000."
+    },
+    "buttons": {
+      "next": "Next",
+      "back": "Back",
+      "continue": "Continue",
+      "recheck": "Recheck",
+      "finish": "Finish",
+      "finishAnyway": "Finish without connecting",
+      "skip": "Skip for now"
+    }
   }
 }

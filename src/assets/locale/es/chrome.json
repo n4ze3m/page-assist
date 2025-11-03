@@ -1,7 +1,7 @@
 {
     "heading": "Configurar Chrome AI",
     "status": {
-        "label": "Habilitar o deshabilitar el soporte de Chrome AI en Page Assist"
+        "label": "Habilitar o deshabilitar el soporte de Chrome AI en tldw Browser_Assistant"
     },
     "error": {
         "browser_not_supported": "Esta versión de Chrome no es compatible con el modelo Gemini Nano. Por favor, actualice a la versión 127 o posterior.",
@@ -9,7 +9,7 @@
         "ai_not_ready": "Gemini Nano aún no está listo; necesita verificar la configuración de Chrome.",
         "internal_error": "Ocurrió un error interno. Por favor, inténtelo de nuevo más tarde."
     },
-    "errorDescription": "Para usar Chrome AI, necesita la versión 138 o posterior de Chrome. Siga estos pasos:\n\n1. Vaya a `chrome://flags/#prompt-api-for-gemini-nano` y habilite \"Prompt API for Gemini Nano\".\n2. Reinicie Chrome para aplicar el cambio.\n3. Regrese a esta página y haga clic en \"Descargar Modelo\" — esto descargará un modelo de 4GB por primera vez.\n4. Una vez descargado, Gemini Nano se puede habilitar a través de Page Assist.",
+    "errorDescription": "Para usar Chrome AI, necesita Chrome 138 o posterior. Siga estos pasos:\n\n1. Vaya a `chrome://flags/#prompt-api-for-gemini-nano` y habilite \"Prompt API for Gemini Nano\".\n2. Reinicie Chrome para aplicar el cambio.\n3. Regrese a esta página y haga clic en \"Descargar modelo\" — se descargarán ~4 GB por primera vez.\n4. Una vez descargado, Gemini Nano se puede habilitar a través de tldw Browser_Assistant.",
     "downloadModel": "Descargar Modelo",
     "modelDownloadWarning": "Esto descargará un modelo con un tamaño de descarga aproximado que varía entre 1.5 GB y 2.4 GB. Asegúrese de tener suficiente espacio en disco."
 }

@@ -328,7 +328,7 @@
       },
       "globalEnable": {
         "label": "Увімкнути або вимкнути інтеграцію сервера глобально",
-        "warning": "При вимкненні інтеграції сервера Page Assist не отримуватиме моделі з сервера. Ви все ще можете додати постачальників у розділі <anchor>API, сумісного з OpenAI</anchor>."
+        "warning": "При вимкненні інтеграції сервера tldw Browser_Assistant не отримуватиме моделі з сервера. Ви все ще можете додати постачальників у розділі <anchor>API, сумісного з OpenAI</anchor>."
       },
       "advanced": {
         "label": "Розширене налаштування URL сервера",
@@ -365,9 +365,9 @@
   "about": {
     "title": "Про додаток",
     "heading": "Інформація про цей додаток",
-    "chromeVersion": "Версія Page Assist",
+    "chromeVersion": "Версія tldw Browser_Assistant",
     "ollamaVersion": "Версія сервера",
-    "support": "Ви можете підтримати проект Page Assist, зробивши пожертву або ставши спонсором через наступні платформи:",
+    "support": "Ви можете підтримати проект tldw Browser_Assistant, зробивши пожертву або ставши спонсором через наступні платформи:",
     "koFi": "Підтримка на Ko-fi",
     "githubSponsor": "Стати спонсором на GitHub",
     "githubRepo": "Репозиторій GitHub"
@@ -434,5 +434,24 @@
   },
   "chromeAiSettings": {
     "title": "Налаштування Chrome AI"
+  },
+  "onboarding": {
+    "title": "Welcome — Let’s get you connected",
+    "description": "Configure your server and authentication. We’ll verify the connection and RAG health inline.",
+    "serverUrl": {
+      "placeholder": "http://127.0.0.1:8000",
+      "help": "Приклад: http://127.0.0.1:8000",
+      "invalid": "Введіть повну URL‑адресу, наприклад http://127.0.0.1:8000.",
+      "invalidProtocol": "Використовуйте адреси http або https, наприклад http://127.0.0.1:8000."
+    },
+    "buttons": {
+      "next": "Next",
+      "back": "Back",
+      "continue": "Continue",
+      "recheck": "Recheck",
+      "finish": "Finish",
+      "finishAnyway": "Finish without connecting",
+      "skip": "Skip for now"
+    }
   }
 }

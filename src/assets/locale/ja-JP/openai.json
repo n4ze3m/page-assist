@@ -34,7 +34,7 @@
             "subheading": "このプロバイダーで使用したいチャットモデルを選択してください。",
             "success": "新しいモデルが正常に追加されました。"
         },
-        "tipLMStudio": "Page AssistはLM Studioにロードしたモデルを自動的に取得します。手動で追加する必要はありません。"
+        "tipLMStudio": "tldw Browser_AssistantはLM Studioにロードしたモデルを自動的に取得します。手動で追加する必要はありません。"
     },
     "addSuccess": "プロバイダーが正常に追加されました。",
     "deleteSuccess": "プロバイダーが正常に削除されました。",

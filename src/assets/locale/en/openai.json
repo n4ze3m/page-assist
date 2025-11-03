@@ -35,7 +35,7 @@
             "subheading": "Please select the chat models you want to use with this provider.",
             "success": "Successfully added new models."
         },
-        "tipLMStudio": "Page Assist will automatically fetch the models you loaded on LM Studio. You don't need to add them manually."
+        "tipLMStudio": "tldw Browser_Assistant will automatically fetch the models you loaded on LM Studio. You don't need to add them manually."
     },
     "addSuccess": "Provider added successfully.",
     "deleteSuccess": "Provider deleted successfully.",

@@ -1,6 +1,6 @@
 {
     "extName": {
-        "message": "tldw Assistant"
+        "message": "tldw Browser_Assistant"
     },
     "extDescription": {
         "message": "Browser extension for tldw_server - your unified AI assistant with RAG, media processing, and more."

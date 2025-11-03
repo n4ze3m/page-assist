@@ -434,5 +434,24 @@
   },
   "chromeAiSettings": {
     "title": "Configuración de IA de Chrome"
+  },
+  "onboarding": {
+    "title": "Welcome — Let’s get you connected",
+    "description": "Configure your server and authentication. We’ll verify the connection and RAG health inline.",
+    "serverUrl": {
+      "placeholder": "http://127.0.0.1:8000",
+      "help": "Ejemplo: http://127.0.0.1:8000",
+      "invalid": "Introduce una URL completa como http://127.0.0.1:8000.",
+      "invalidProtocol": "Usa URLs http o https, por ejemplo http://127.0.0.1:8000."
+    },
+    "buttons": {
+      "next": "Next",
+      "back": "Back",
+      "continue": "Continue",
+      "recheck": "Recheck",
+      "finish": "Finish",
+      "finishAnyway": "Finish without connecting",
+      "skip": "Skip for now"
+    }
   }
 }

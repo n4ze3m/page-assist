@@ -443,5 +443,24 @@
   "chromeAiSettings": {
     "title": "Paramètres Chrome AI"
   },
-  "mermaid": "Mermaid"
+  "mermaid": "Mermaid",
+  "onboarding": {
+    "title": "Welcome — Let’s get you connected",
+    "description": "Configure your server and authentication. We’ll verify the connection and RAG health inline.",
+    "serverUrl": {
+      "placeholder": "http://127.0.0.1:8000",
+      "help": "Exemple : http://127.0.0.1:8000",
+      "invalid": "Saisissez une URL complète telle que http://127.0.0.1:8000.",
+      "invalidProtocol": "Utilisez des URL http ou https, par exemple http://127.0.0.1:8000."
+    },
+    "buttons": {
+      "next": "Next",
+      "back": "Back",
+      "continue": "Continue",
+      "recheck": "Recheck",
+      "finish": "Finish",
+      "finishAnyway": "Finish without connecting",
+      "skip": "Skip for now"
+    }
+  }
 }

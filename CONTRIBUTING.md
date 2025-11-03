@@ -1,24 +1,24 @@
-# Contributing to Page Assist
+# Contributing to tldw Browser_Assistant
 
-Thank you for your interest in contributing to Page Assist! We welcome contributions from anyone, whether it's reporting bugs, suggesting improvements, or submitting code changes.
+Thank you for your interest in contributing to tldw Browser_Assistant! We welcome contributions from anyone, whether it's reporting bugs, suggesting improvements, or submitting code changes.
 
 ## Getting Started
 
 1. **Fork the repository**
 
-   To start contributing, you'll need to fork the [Page Assist repository](https://github.com/n4ze3m/page-assist) by clicking the "Fork" button at the top right of the page.
+   To start contributing, fork this repository on GitHub by clicking the "Fork" button at the top right of the page.
 
 2. **Clone your forked repository**
 
    Once you have your own fork, clone it to your local machine:
 
    ```
-   git clone https://github.com/YOUR-USERNAME/page-assist.git
+   git clone https://github.com/YOUR-USERNAME/REPO-NAME.git
    ```
 
 3. **Install dependencies**
 
-   Page Assist uses [Bun](https://bun.sh/) for dependency management. Install the required dependencies by running the following command in the project root directory:
+   This project uses [Bun](https://bun.sh/) (or Node) for dependency management. Install the required dependencies by running the following command in the project root directory:
 
    ```
    bun install
@@ -34,17 +34,17 @@ Thank you for your interest in contributing to Page Assist! We welcome contribut
    bun dev
    ```
 
-   This will open a  chrome browser window with the extension loaded.
+   This starts the WXT dev server for Chrome.
 
-   for firefox:
+   For Firefox:
 
    ```
-   bun dev:firefox
+   bun run dev:firefox
    ```
 
-5. **Install Ollama locally**
+5. **Connect to your tldw_server**
 
-   Page Assist requires [Ollama](https://ollama.ai) to be installed locally. Follow the installation instructions provided in the Ollama repository.
+   tldw Browser_Assistant is a frontend for `tldw_server`. Make sure you have a local or remote instance running and configure the server URL and authentication in the extension Options page.
 
 ## Making Changes
 
@@ -88,14 +88,18 @@ Make your desired changes, and don't forget to add or update tests if necessary.
 
 ## Code Style and Guidelines
 
-To ensure consistency and maintainability, we follow certain code style guidelines. Please ensure your code adheres to these guidelines before submitting a pull request.
+To ensure consistency and maintainability, please:
 
-- Use proper indentation and code formatting
-- Write clear and concise comments when necessary
-- Follow best practices for TypeScript and React development
+- Use Prettier (with import sorting): `bunx prettier --write .`
+- Run type checks before PRs: `bun run compile`
+- Follow best practices for TypeScript/React and TailwindCSS
 
 ## Need Help?
 
 If you have any questions or need further assistance, feel free to open an issue or reach out to the maintainers.
+
+## Attribution
+
+This project was refactored from the original Page Assist extension. We’re grateful for that work and community.
 
 Thank you for your contribution!

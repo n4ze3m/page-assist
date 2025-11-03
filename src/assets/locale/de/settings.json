@@ -416,5 +416,24 @@
   },
   "chromeAiSettings": {
     "title": "Chrome AI-Einstellungen"
+  },
+  "onboarding": {
+    "title": "Welcome — Let’s get you connected",
+    "description": "Configure your server and authentication. We’ll verify the connection and RAG health inline.",
+    "serverUrl": {
+      "placeholder": "http://127.0.0.1:8000",
+      "help": "Beispiel: http://127.0.0.1:8000",
+      "invalid": "Geben Sie eine vollständige URL wie http://127.0.0.1:8000 ein.",
+      "invalidProtocol": "Verwenden Sie http- oder https‑URLs, z. B. http://127.0.0.1:8000."
+    },
+    "buttons": {
+      "next": "Next",
+      "back": "Back",
+      "continue": "Continue",
+      "recheck": "Recheck",
+      "finish": "Finish",
+      "finishAnyway": "Finish without connecting",
+      "skip": "Skip for now"
+    }
   }
 }

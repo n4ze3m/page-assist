@@ -367,7 +367,7 @@
       },
       "globalEnable": {
         "label": "全域啟用或停用伺服器整合",
-        "warning": "停用伺服器整合後，Page Assist 將不會從伺服器取得模型。您仍可在 <anchor>OpenAI 相容 API</anchor> 區段新增提供者。"
+        "warning": "停用伺服器整合後，tldw Browser_Assistant 將不會從伺服器取得模型。您仍可在 <anchor>OpenAI 相容 API</anchor> 區段新增提供者。"
       },
       "advanced": {
         "label": "進階伺服器 URL 設定",
@@ -404,9 +404,9 @@
   "about": {
     "title": "關於",
     "heading": "關於",
-    "chromeVersion": "Page Assist 版本",
+    "chromeVersion": "tldw Browser_Assistant 版本",
     "ollamaVersion": "伺服器版本",
-    "support": "您可以透過以下平台捐款或贊助來支持 Page Assist 計畫：",
+    "support": "您可以透過以下平台捐款或贊助來支持 tldw Browser_Assistant 計畫：",
     "koFi": "在 Ko-fi 上支持",
     "githubSponsor": "在 GitHub 上支持",
     "githubRepo": "GitHub Repository"
@@ -473,5 +473,24 @@
   },
   "chromeAiSettings": {
     "title": "Chrome AI 設定"
+  },
+  "onboarding": {
+    "title": "Welcome — Let’s get you connected",
+    "description": "Configure your server and authentication. We’ll verify the connection and RAG health inline.",
+    "serverUrl": {
+      "placeholder": "http://127.0.0.1:8000",
+      "help": "範例：http://127.0.0.1:8000",
+      "invalid": "請輸入完整的 URL，例如 http://127.0.0.1:8000。",
+      "invalidProtocol": "請使用 http 或 https 的網址，例如 http://127.0.0.1:8000。"
+    },
+    "buttons": {
+      "next": "Next",
+      "back": "Back",
+      "continue": "Continue",
+      "recheck": "Recheck",
+      "finish": "Finish",
+      "finishAnyway": "Finish without connecting",
+      "skip": "Skip for now"
+    }
   }
 }

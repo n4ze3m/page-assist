@@ -1,5 +1,5 @@
 <p align="center">
-  <h1 align="center">tldw Assistant</h1>
+  <h1 align="center">tldw Browser_Assistant</h1>
 </p>
 
 <p align="center">
@@ -8,7 +8,7 @@
 
 ## Overview
 
-tldw Assistant is an open‑source browser extension that provides a side panel and full‑page web UI for your own tldw_server instance. It connects to tldw_server (an API aggregator for multiple LLM providers) so you can:
+tldw Browser_Assistant is an open‑source browser extension that provides a side panel and full‑page web UI for your own tldw_server instance. It connects to tldw_server (an API aggregator for multiple LLM providers) so you can:
 
 - Chat with any model configured on your server
 - Search and cite with RAG (retrieval‑augmented generation)

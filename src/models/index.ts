@@ -137,7 +137,7 @@ export const pageAssistModel = async ({
           baseURL: providerInfo.baseUrl || "",
           defaultHeaders: {
             "HTTP-Referer": "https://pageassist.xyz/",
-            "X-Title": "Page Assist",
+            "X-Title": "tldw Browser_Assistant",
             ...getCustomHeaders({
               headers: providerInfo?.headers || []
             })

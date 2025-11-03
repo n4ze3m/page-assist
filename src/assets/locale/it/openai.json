@@ -34,7 +34,7 @@
             "subheading": "Seleziona i modelli di chat che desideri utilizzare con questo provider.",
             "success": "Nuovi modelli aggiunti con successo."
         },
-        "tipLMStudio": "Page Assist recupererà automaticamente i modelli caricati su LM Studio. Non è necessario aggiungerli manualmente."
+        "tipLMStudio": "tldw Browser_Assistant recupererà automaticamente i modelli caricati su LM Studio. Non è necessario aggiungerli manualmente."
     },
     "addSuccess": "Provider aggiunto con successo.",
     "deleteSuccess": "Provider eliminato con successo.",

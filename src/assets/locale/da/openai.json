@@ -34,7 +34,7 @@
             "subheading": "Vælg venligst de chatmodeller, du ønsker at bruge med denne udbyder.",
             "success": "Nye modeller tilføjet med succes."
         },
-        "tipLMStudio": "Page Assist vil automatisk hente de modeller, du har indlæst på LM Studio. Du behøver ikke at tilføje dem manuelt."
+        "tipLMStudio": "tldw Browser_Assistant vil automatisk hente de modeller, du har indlæst på LM Studio. Du behøver ikke at tilføje dem manuelt."
     },
     "addSuccess": "Udbyder tilføjet med succes.",
     "deleteSuccess": "Udbyder slettet med succes.",

@@ -328,7 +328,7 @@
       },
       "globalEnable": {
         "label": "Включить или отключить интеграцию сервера глобально",
-        "warning": "При отключении интеграции сервера Page Assist не будет получать модели с сервера. Вы все еще можете добавить провайдеров в разделе <anchor>API, совместимый с OpenAI</anchor>."
+        "warning": "При отключении интеграции сервера tldw Browser_Assistant не будет получать модели с сервера. Вы все ещё можете добавить провайдеров в разделе <anchor>API, совместимый с OpenAI</anchor>."
       },
       "advanced": {
         "label": "Расширенная конфигурация URL сервера",
@@ -365,9 +365,9 @@
   "about": {
     "title": "О программе",
     "heading": "О программе",
-    "chromeVersion": "Версия Page Assist",
+    "chromeVersion": "Версия tldw Browser_Assistant",
     "ollamaVersion": "Версия сервера",
-    "support": "Вы можете поддержать проект Page Assist, сделав пожертвование или спонсорирование через следующие платформы:",
+    "support": "Вы можете поддержать проект tldw Browser_Assistant, сделав пожертвование или спонсорство через следующие платформы:",
     "koFi": "Поддержать на Ko-fi",
     "githubSponsor": "Стать спонсором на GitHub",
     "githubRepo": "Репозиторий GitHub"
@@ -434,5 +434,24 @@
   },
   "chromeAiSettings": {
     "title": "Настройки ИИ Chrome"
+  },
+  "onboarding": {
+    "title": "Welcome — Let’s get you connected",
+    "description": "Configure your server and authentication. We’ll verify the connection and RAG health inline.",
+    "serverUrl": {
+      "placeholder": "http://127.0.0.1:8000",
+      "help": "Пример: http://127.0.0.1:8000",
+      "invalid": "Введите полный URL, например http://127.0.0.1:8000.",
+      "invalidProtocol": "Используйте URL вида http или https, например http://127.0.0.1:8000."
+    },
+    "buttons": {
+      "next": "Next",
+      "back": "Back",
+      "continue": "Continue",
+      "recheck": "Recheck",
+      "finish": "Finish",
+      "finishAnyway": "Finish without connecting",
+      "skip": "Skip for now"
+    }
   }
 }

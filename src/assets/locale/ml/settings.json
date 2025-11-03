@@ -437,5 +437,24 @@
   },
   "chromeAiSettings": {
     "title": "ക്രോം AI ക്രമീകരണങ്ങൾ"
+  },
+  "onboarding": {
+    "title": "Welcome — Let’s get you connected",
+    "description": "Configure your server and authentication. We’ll verify the connection and RAG health inline.",
+    "serverUrl": {
+      "placeholder": "http://127.0.0.1:8000",
+      "help": "ഉദാഹരണം: http://127.0.0.1:8000",
+      "invalid": "http://127.0.0.1:8000 പോലുള്ള പൂർണ്ണ URL നൽകുക.",
+      "invalidProtocol": "http അല്ലെങ്കിൽ https URL ഉപയോഗിക്കുക (ഉദാ: http://127.0.0.1:8000)."
+    },
+    "buttons": {
+      "next": "Next",
+      "back": "Back",
+      "continue": "Continue",
+      "recheck": "Recheck",
+      "finish": "Finish",
+      "finishAnyway": "Finish without connecting",
+      "skip": "Skip for now"
+    }
   }
 }

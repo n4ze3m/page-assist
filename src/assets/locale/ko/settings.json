@@ -437,5 +437,24 @@
   },
   "chromeAiSettings": {
     "title": "Chrome AI 설정"
+  },
+  "onboarding": {
+    "title": "Welcome — Let’s get you connected",
+    "description": "Configure your server and authentication. We’ll verify the connection and RAG health inline.",
+    "serverUrl": {
+      "placeholder": "http://127.0.0.1:8000",
+      "help": "예: http://127.0.0.1:8000",
+      "invalid": "http://127.0.0.1:8000 과 같은 전체 URL을 입력하세요.",
+      "invalidProtocol": "http 또는 https URL을 사용하세요(예: http://127.0.0.1:8000)."
+    },
+    "buttons": {
+      "next": "Next",
+      "back": "Back",
+      "continue": "Continue",
+      "recheck": "Recheck",
+      "finish": "Finish",
+      "finishAnyway": "Finish without connecting",
+      "skip": "Skip for now"
+    }
   }
 }

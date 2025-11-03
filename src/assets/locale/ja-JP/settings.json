@@ -437,5 +437,24 @@
   },
   "chromeAiSettings": {
     "title": "Chrome AI設定"
+  },
+  "onboarding": {
+    "title": "Welcome — Let’s get you connected",
+    "description": "Configure your server and authentication. We’ll verify the connection and RAG health inline.",
+    "serverUrl": {
+      "placeholder": "http://127.0.0.1:8000",
+      "help": "例: http://127.0.0.1:8000",
+      "invalid": "http://127.0.0.1:8000 のような完全な URL を入力してください。",
+      "invalidProtocol": "http または https の URL を使用してください（例: http://127.0.0.1:8000）。"
+    },
+    "buttons": {
+      "next": "Next",
+      "back": "Back",
+      "continue": "Continue",
+      "recheck": "Recheck",
+      "finish": "Finish",
+      "finishAnyway": "Finish without connecting",
+      "skip": "Skip for now"
+    }
   }
 }

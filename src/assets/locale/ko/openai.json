@@ -34,7 +34,7 @@
             "subheading": "이 공급자에서 사용하고자 하는 챗 모델을 선택하세요.",
             "success": "새로운 모델이 정상적으로 추가되었습니다."
         },
-        "tipLMStudio": "Page Assist는 LM Studio에 로드된 모델을 자동으로 가져옵니다. 수동 추가가 필요하지 않습니다."
+        "tipLMStudio": "tldw Browser_Assistant는 LM Studio에 로드된 모델을 자동으로 가져옵니다. 수동 추가가 필요하지 않습니다."
     },
     "addSuccess": "공급자가 정상적으로 추가되었습니다.",
     "deleteSuccess": "공급자가 정상적으로 삭제되었습니다.",

@@ -328,7 +328,7 @@
       },
       "globalEnable": {
         "label": "Aktivera eller inaktivera serverintegration globalt",
-        "warning": "Genom att inaktivera serverintegrationen kommer Page Assist inte att hämta modeller från servern. Du kan fortfarande lägga till leverantörer under <anchor>OpenAI-kompatibelt API</anchor>."
+        "warning": "Om du inaktiverar serverintegrationen hämtar tldw Browser_Assistant inte modeller från servern. Du kan fortfarande lägga till leverantörer under <anchor>OpenAI‑kompatibelt API</anchor>."
       },
       "advanced": {
         "label": "Avancerad server-URL-konfiguration",
@@ -365,9 +365,9 @@
   "about": {
     "title": "Om",
     "heading": "Om",
-    "chromeVersion": "Page Assist Version",
+    "chromeVersion": "tldw Browser_Assistant Version",
     "ollamaVersion": "Serverversion",
-    "support": "Du kan stödja Page Assist-projektet genom att donera eller sponsra genom följande plattformar:",
+    "support": "Du kan stödja tldw Browser_Assistant genom att donera eller sponsra via följande plattformar:",
     "koFi": "Stöd på Ko-fi",
     "githubSponsor": "Sponsra på GitHub",
     "githubRepo": "GitHub repository"
@@ -434,5 +434,24 @@
   },
   "chromeAiSettings": {
     "title": "Chrome AI-inställningar"
+  },
+  "onboarding": {
+    "title": "Welcome — Let’s get you connected",
+    "description": "Configure your server and authentication. We’ll verify the connection and RAG health inline.",
+    "serverUrl": {
+      "placeholder": "http://127.0.0.1:8000",
+      "help": "Exempel: http://127.0.0.1:8000",
+      "invalid": "Ange en fullständig URL som http://127.0.0.1:8000.",
+      "invalidProtocol": "Använd http- eller https‑URL:er, t.ex. http://127.0.0.1:8000."
+    },
+    "buttons": {
+      "next": "Next",
+      "back": "Back",
+      "continue": "Continue",
+      "recheck": "Recheck",
+      "finish": "Finish",
+      "finishAnyway": "Finish without connecting",
+      "skip": "Skip for now"
+    }
   }
 }
