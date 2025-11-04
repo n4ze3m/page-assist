@@ -48,6 +48,7 @@
         "placeholder": "Nachricht eingeben..."
     },
     "submit": "Absenden",
+    "send": "Absenden",
     "noData": "Keine Daten",
     "noHistory": "Kein Chat-Verlauf",
     "chatWithCurrentPage": "Mit aktueller Seite chatten",

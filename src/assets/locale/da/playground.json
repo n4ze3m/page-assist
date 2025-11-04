@@ -1,8 +1,8 @@
 {
     "ollamaState": {
-        "searching": "Søger efter din tldw_server",
+        "searching": "Søger efter din tldw server",
         "running": "tldw kører",
-        "notRunning": "Kan ikke oprette forbindelse til tldw_server",
+        "notRunning": "Kan ikke oprette forbindelse til tldw server",
         "connectionError": "Det lader til, at du har en forbindelsesfejl. Se venligst denne <anchor>dokumentation</anchor> for fejlfinding."
     },
     "formError": {

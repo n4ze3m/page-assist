@@ -1,8 +1,8 @@
 {
     "ollamaState": {
-        "searching": "جارٍ البحث عن tldw_server الخاص بك",
+        "searching": "جارٍ البحث عن tldw server الخاص بك",
         "running": "tldw يعمل",
-        "notRunning": "تعذر الاتصال بـ tldw_server",
+        "notRunning": "تعذر الاتصال بـ tldw server",
         "connectionError": "يبدو أنك تواجه خطأ في الاتصال. يرجى الرجوع إلى هذا <anchor>الدليل</anchor> لاستكشاف الأخطاء وإصلاحها."
     },
     "formError": {

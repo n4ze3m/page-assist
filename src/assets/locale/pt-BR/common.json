@@ -48,6 +48,7 @@
         "placeholder": "Digite uma mensagem..."
     },
     "submit": "Enviar",
+    "send": "Enviar",
     "noData": "Sem dados",
     "noHistory": "Sem histórico de chat",
     "chatWithCurrentPage": "Conversar com a página atual",

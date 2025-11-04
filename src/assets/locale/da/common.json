@@ -48,6 +48,7 @@
         "placeholder": "Skriv en besked..."
     },
     "submit": "Indsend",
+    "send": "Indsend",
     "noData": "Igen data",
     "noHistory": "Igen chat history",
     "chatWithCurrentPage": "Chat med nuværende side",

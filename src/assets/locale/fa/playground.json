@@ -1,8 +1,8 @@
 {
     "ollamaState": {
-        "searching": "در حال جستجوی tldw_server شما",
+        "searching": "در حال جستجوی tldw server شما",
         "running": "tldw در حال اجرا است",
-        "notRunning": "امکان اتصال به tldw_server وجود ندارد",
+        "notRunning": "امکان اتصال به tldw server وجود ندارد",
         "connectionError": "به نظر می رسد که خطای اتصال دارید. لطفا برای عیب یابی به این <anchor>مستندات</anchor> مراجعه کنید."
     },
     "formError": {

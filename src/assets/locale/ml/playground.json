@@ -1,8 +1,8 @@
 {
     "ollamaState": {
-        "searching": "നിങ്ങളുടെ tldw_server നെ അന്വേഷിക്കുന്നു",
+        "searching": "നിങ്ങളുടെ tldw server നെ അന്വേഷിക്കുന്നു",
         "running": "tldw പ്രവര്‍ത്തിക്കുന്നു",
-        "notRunning": "tldw_server ലേക്ക് ബന്ധിപ്പിക്കാൻ കഴിയുന്നില്ല",
+        "notRunning": "tldw server ലേക്ക് ബന്ധിപ്പിക്കാൻ കഴിയുന്നില്ല",
         "connectionError": "നിങ്ങൾക്ക് കണക്ഷൻ പ്രശ്നം ഉണ്ടെന്നു കാണുന്നു. ഈ <anchor>ഡോക്യുമെന്റേഷൻ</anchor> പരിശോധിക്കാൻ കൂടുതൽ സഹായത്തിനായി."
     },
     "formError": {

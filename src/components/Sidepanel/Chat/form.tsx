@@ -25,6 +25,7 @@ import { useSpeechRecognition } from "@/hooks/useSpeechRecognition"
 import { useTldwStt } from "@/hooks/useTldwStt"
 import { useMicStream } from "@/hooks/useMicStream"
 import { PiGlobeX, PiGlobe } from "react-icons/pi"
+import { Search } from "lucide-react"
 import { BsIncognito } from "react-icons/bs"
 import { handleChatInputKeyDown } from "@/utils/key-down"
 import { getIsSimpleInternetSearch } from "@/services/search"
@@ -96,6 +97,17 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
       textareaRef.current.focus()
     }
   }
+
+  // Allow other components (e.g., connection card) to request focus
+  React.useEffect(() => {
+    const handler = () => {
+      if (document.visibilityState === 'visible') {
+        textAreaFocus()
+      }
+    }
+    window.addEventListener('tldw:focus-composer', handler)
+    return () => window.removeEventListener('tldw:focus-composer', handler)
+  }, [])
 
   useFocusShortcuts(textareaRef, true)
 
@@ -564,6 +576,15 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                         <ModelSelect iconClassName="size-4" />
                       </div>
                       <div className="flex flex-wrap items-center justify-end gap-2">
+                        {/* RAG toggle for better discoverability */}
+                        <button
+                          type="button"
+                          onClick={() => window.dispatchEvent(new CustomEvent('tldw:toggle-rag'))}
+                          className="inline-flex items-center gap-2 rounded-md border border-gray-200 px-3 py-1.5 text-xs font-semibold text-gray-700 transition hover:bg-gray-100 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-[#2a2a2a]"
+                          title="RAG Search">
+                          <Search className="h-4 w-4" />
+                          <span className="hidden sm:inline">RAG Search</span>
+                        </button>
                         <Popover
                           trigger="click"
                           placement="topRight"
@@ -592,6 +613,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                                 'playground:composer.submitAria',
                                 'Send message'
                               )}
+                              title={sendWhenEnter ? (t('playground:sendWhenEnter') as string) : undefined}
                               htmlType="submit"
                               disabled={isSending}
                               className="!justify-end !w-auto"
@@ -667,7 +689,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                                     <path d="M20 4v7a4 4 0 01-4 4H4"></path>
                                   </svg>
                                 ) : null}
-                                {t("common:submit")}
+                                {t("common:send", "Send")}
                               </div>
                             </Dropdown.Button>
                             {/* Current Conversation Settings button to the right of submit */}

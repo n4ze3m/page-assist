@@ -48,6 +48,7 @@
         "placeholder": "メッセージを入力..."
     },
     "submit": "送信",
+    "send": "送信",
     "noData": "データがありません",
     "noHistory": "チャット履歴がありません",
     "chatWithCurrentPage": "現在のページでチャット",

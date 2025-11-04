@@ -48,6 +48,7 @@
         "placeholder": "Scrivi un messaggio..."
     },
     "submit": "Invia",
+    "send": "Invia",
     "noData": "Nessun Dato",
     "noHistory": "Nessuna Cronologia Chat",
     "chatWithCurrentPage": "Chatta con la Pagina Corrente",

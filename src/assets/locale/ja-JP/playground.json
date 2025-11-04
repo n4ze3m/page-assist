@@ -1,8 +1,8 @@
 {
     "ollamaState": {
-        "searching": "tldw_server を検索中",
+        "searching": "tldw server を検索中",
         "running": "tldw が実行中",
-        "notRunning": "tldw_server に接続できません",
+        "notRunning": "tldw server に接続できません",
         "connectionError": "接続エラーが発生しているようです。トラブルシューティングについては<anchor>ドキュメント</anchor>をご覧ください。"
     },
     "formError": {

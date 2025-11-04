@@ -1,8 +1,8 @@
 {
     "ollamaState": {
-        "searching": "Пошук вашого tldw_server",
+        "searching": "Пошук вашого tldw server",
         "running": "tldw працює",
-        "notRunning": "Неможливо підключитися до tldw_server",
+        "notRunning": "Неможливо підключитися до tldw server",
         "connectionError": "Здається, у вас виникла проблема з підключенням. Будь ласка, зверніться до цієї документації<anchor> для усунення несправностей.</anchor>"
     },
     "formError": {

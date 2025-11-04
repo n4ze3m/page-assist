@@ -27,7 +27,7 @@
         "tempPill": "Temp"
     },
     "notification": {
-        "ingestSent": "Sent to tldw_server",
+        "ingestSent": "Sent to tldw server",
         "ingestSentDesc": "Current page has been submitted for ingestion.",
         "processedLocal": "Processed locally",
         "processedLocalDesc": "Processed content stored locally under Settings > Processed."

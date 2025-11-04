@@ -48,6 +48,7 @@
         "placeholder": "Skriv en melding..."
     },
     "submit": "Send inn",
+    "send": "Send inn",
     "noData": "Ingen data",
     "noHistory": "Ingen chathistorikk",
     "chatWithCurrentPage": "Chat med nåværende side",

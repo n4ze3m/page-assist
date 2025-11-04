@@ -48,6 +48,7 @@
         "placeholder": "Tapez un message..."
     },
     "submit": "Soumettre",
+    "send": "Soumettre",
     "noData": "Aucune donnée",
     "noHistory": "Pas d'historique de chat",
     "chatWithCurrentPage": "Discuter avec la page actuelle",

@@ -44,11 +44,13 @@
     "edit": "Edit",
     "delete": "Delete",
     "continue": "Continue Response",
-    "saveAndSubmit": "Save & Submit",
+    "saveAndSubmit": "Save & Send",
     "editMessage": {
         "placeholder": "Type a message..."
     },
     "submit": "Submit",
+    "send": "Send",
+    "startChat": "Start chatting",
     "noData": "No data",
     "noHistory": "No chat history",
     "chatWithCurrentPage": "Chat with current page",

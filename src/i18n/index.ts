@@ -50,6 +50,10 @@ i18n
         },
         fallbackLng: "en",
         lng: localStorage.getItem("i18nextLng") || "en",
+        // React already escapes; avoid double-escaping (e.g., http:// -> http:\/\/)
+        interpolation: {
+            escapeValue: false
+        }
     });
 
 export default i18n;

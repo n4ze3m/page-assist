@@ -781,7 +781,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                                   <path d="M20 4v7a4 4 0 01-4 4H4"></path>
                                 </svg>
                               ) : null}
-                              {t("common:submit")}
+                              {t("common:send", "Send")}
                             </div>
                           </Dropdown.Button>
                           {/* Current Conversation Settings button to the right of submit */}

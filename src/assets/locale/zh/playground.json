@@ -1,8 +1,8 @@
 {
     "ollamaState": {
-        "searching": "正在搜索您的 tldw_server",
+        "searching": "正在搜索您的 tldw server",
         "running": "tldw 正在运行",
-        "notRunning": "无法连接到 tldw_server",
+        "notRunning": "无法连接到 tldw server",
         "connectionError": "看起来您遇到了连接错误。请参阅这<anchor>文档</anchor>进行故障排除。"
     },
     "formError": {

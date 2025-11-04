@@ -1,5 +1,5 @@
 import { Button, Tag, notification } from "antd"
-import { Clock, ExternalLink, RefreshCw, Server, Settings } from "lucide-react"
+import { Clock, ExternalLink, Send, Server, Settings } from "lucide-react"
 import React from "react"
 import { useTranslation } from "react-i18next"
 import { useQuery } from "@tanstack/react-query"
@@ -110,9 +110,17 @@ export const EmptySidePanel = () => {
         host: serverHost
       })
 
-  const retryLabel = statusVariant === "ok"
-    ? t("ollamaState.recheck", "Check again")
-    : t("common:retry")
+  const primaryLabel = statusVariant === "ok"
+    ? t("common:startChat", "Start chatting")
+    : t("common:retry", "Retry")
+
+  const handlePrimary = () => {
+    if (statusVariant === "ok") {
+      window.dispatchEvent(new CustomEvent('tldw:focus-composer'))
+    } else {
+      statusQuery.refetch()
+    }
+  }
 
   React.useEffect(() => {
     const toastKey = "tldw-sidepanel-connection"
@@ -206,12 +214,12 @@ export const EmptySidePanel = () => {
 
         <div className="flex w-full flex-col gap-2 sm:flex-row">
           <Button
-            type={statusVariant === "ok" ? "default" : "primary"}
-            icon={<RefreshCw className="h-4 w-4" />}
-            onClick={() => statusQuery.refetch()}
+            type={"primary"}
+            icon={statusVariant === "ok" ? <Send className="h-4 w-4" /> : <Send className="h-4 w-4 rotate-45" />}
+            onClick={handlePrimary}
             loading={statusQuery.isFetching}
             block>
-            {retryLabel}
+            {primaryLabel}
           </Button>
           <Button
             icon={<Settings className="h-4 w-4" />}

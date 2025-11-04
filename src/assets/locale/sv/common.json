@@ -48,6 +48,7 @@
         "placeholder": "Skriv ett meddelande..."
     },
     "submit": "Skicka",
+    "send": "Skicka",
     "noData": "Inga data",
     "noHistory": "Ingen chattlogg",
     "chatWithCurrentPage": "Chatta med nuvarande sidan",

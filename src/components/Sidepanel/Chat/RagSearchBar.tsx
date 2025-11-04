@@ -87,12 +87,19 @@ export const RagSearchBar: React.FC<Props> = ({ onInsert, onAsk }) => {
     setTagInput("")
   }
 
+  // Allow toolbar button to toggle this panel without prop drilling
+  React.useEffect(() => {
+    const handler = () => setOpen((v) => !v)
+    window.addEventListener('tldw:toggle-rag', handler)
+    return () => window.removeEventListener('tldw:toggle-rag', handler)
+  }, [])
+
   return (
     <div className="w-full mb-2">
       <div className="flex items-center justify-between mb-1">
         <button
           type="button"
-          className="text-xs text-gray-600 dark:text-gray-300 underline"
+          className="text-xs text-gray-600 dark:text-gray-300 underline md:hidden"
           onClick={() => setOpen(!open)}
         >
           {open ? "Hide RAG Search" : "Show RAG Search"}

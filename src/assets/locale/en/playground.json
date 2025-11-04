@@ -2,9 +2,9 @@
     "ollamaState": {
         "title": "Waiting for your tldw server",
         "subtitle": "We’re pinging {{host}} to verify the connection.",
-        "searching": "Searching for your tldw_server 🔎",
+        "searching": "Searching for your tldw server",
         "running": "tldw is running ✅",
-        "notRunning": "Unable to connect to tldw_server instance 🚨",
+        "notRunning": "Unable to connect to tldw server 🚨",
         "missing": "Server URL not configured",
         "noServer": "Add your tldw server to start chatting.",
         "connectedSubtitle": "Connected to {{host}}. Start chatting when you’re ready.",
