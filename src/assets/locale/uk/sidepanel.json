@@ -4,5 +4,8 @@
         "clear": "Стерти історію чату",
         "history": "Історія чату",
         "openwebui": "Відкрити веб-інтерфейс"
+    },
+    "toolbar": {
+        "ragSearch": "RAG Search"
     }
 }

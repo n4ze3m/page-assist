@@ -4,5 +4,8 @@
         "clear": "پاک کردن تاریخچه گپ",
         "history": "تاریخچه گپ",
         "openwebui": "باز کردن رابط کاربری وب"
+    },
+    "toolbar": {
+        "ragSearch": "RAG Search"
     }
 }

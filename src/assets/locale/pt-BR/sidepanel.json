@@ -4,5 +4,8 @@
         "clear": "Apagar histórico de chat",
         "history": "Histórico de chat",
         "openwebui": "Abrir WebUI"
+    },
+    "toolbar": {
+        "ragSearch": "RAG Search"
     }
 }

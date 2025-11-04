@@ -4,5 +4,8 @@
         "clear": "Cancella la cronologia della chat",
         "history": "Cronologia della chat",
         "openwebui": "Apri WebUI"
+    },
+    "toolbar": {
+        "ragSearch": "RAG Search"
     }
 }

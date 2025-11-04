@@ -4,5 +4,8 @@
         "clear": "Slet chat historiken",
         "history": "Chat historik",
         "openwebui": "Åbn WebUI"
+    },
+    "toolbar": {
+        "ragSearch": "RAG Search"
     }
 }

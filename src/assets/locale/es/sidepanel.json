@@ -4,5 +4,8 @@
         "clear": "Borrar el histórico de conversación",
         "history": "Histórico de la conversación",
         "openwebui": "Abrir WebUI"
+    },
+    "toolbar": {
+        "ragSearch": "RAG Search"
     }
 }

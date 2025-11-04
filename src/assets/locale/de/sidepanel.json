@@ -4,5 +4,8 @@
         "clear": "Chatverlauf löschen",
         "history": "Chatverlauf",
         "openwebui": "WebUI öffnen"
+    },
+    "toolbar": {
+        "ragSearch": "RAG Search"
     }
 }

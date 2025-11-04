@@ -581,9 +581,9 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                           type="button"
                           onClick={() => window.dispatchEvent(new CustomEvent('tldw:toggle-rag'))}
                           className="inline-flex items-center gap-2 rounded-md border border-gray-200 px-3 py-1.5 text-xs font-semibold text-gray-700 transition hover:bg-gray-100 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-[#2a2a2a]"
-                          title="RAG Search">
+                          title={t('sidepanel:toolbar.ragSearch', 'RAG Search') as string}>
                           <Search className="h-4 w-4" />
-                          <span className="hidden sm:inline">RAG Search</span>
+                          <span className="hidden sm:inline">{t('sidepanel:toolbar.ragSearch', 'RAG Search')}</span>
                         </button>
                         <Popover
                           trigger="click"

@@ -4,5 +4,8 @@
         "clear": "清除对话历史",
         "history": "对话历史",
         "openwebui": "打开网页界面"
+    },
+    "toolbar": {
+        "ragSearch": "RAG Search"
     }
 }

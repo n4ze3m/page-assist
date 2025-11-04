@@ -4,5 +4,8 @@
         "clear": "Radera chatthistorik",
         "history": "Chatthistorik",
         "openwebui": "Öppna WebUI"
+    },
+    "toolbar": {
+        "ragSearch": "RAG Search"
     }
 }

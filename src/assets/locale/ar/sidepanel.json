@@ -4,5 +4,8 @@
         "clear": "مسح سجل المحادثة",
         "history": "سجل المحادثة",
         "openwebui": "فتح واجهة الويب"
+    },
+    "toolbar": {
+        "ragSearch": "RAG Search"
     }
 }

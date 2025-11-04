@@ -26,6 +26,9 @@
         "openSettingsAria": "Open settings",
         "tempPill": "Temp"
     },
+    "toolbar": {
+        "ragSearch": "RAG Search"
+    },
     "notification": {
         "ingestSent": "Sent to tldw server",
         "ingestSentDesc": "Current page has been submitted for ingestion.",

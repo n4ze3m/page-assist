@@ -4,5 +4,8 @@
         "clear": "刪除聊天紀錄",
         "history": "聊天紀錄",
         "openwebui": "開啟網頁介面"
+    },
+    "toolbar": {
+        "ragSearch": "RAG Search"
     }
 }
