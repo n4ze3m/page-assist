@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Tag, Card, Space, Typography, Button, Alert } from 'antd'
+import { Tag, Card, Space, Typography, Button, Alert, notification } from 'antd'
 import { browser } from 'wxt/browser'
 import { Link, useNavigate } from 'react-router-dom'
 import { tldwClient } from '@/services/tldw/TldwApiClient'
@@ -35,27 +35,79 @@ export default function HealthStatus() {
   const [coreStatus, setCoreStatus] = useState<'unknown'|'connected'|'failed'>('unknown')
   const [autoRefresh, setAutoRefresh] = useState<boolean>(false)
   const [intervalSec, setIntervalSec] = useState<number>(30)
+  const [recentHealthy, setRecentHealthy] = useState<Set<string>>(new Set())
   const navigate = useNavigate()
 
-  const runSingle = async (c: Check) => {
+  const runSingle = async (c: Check): Promise<boolean> => {
     const t0 = performance.now()
     try {
       const resp = await apiSend({ path: c.path, method: 'GET' })
       const t1 = performance.now()
       setResults(prev => ({ ...prev, [c.key]: { status: resp?.ok ? 'healthy' : 'unhealthy', detail: resp?.data, statusCode: resp?.status, durationMs: Math.round(t1 - t0) } }))
+      return !!resp?.ok
     } catch (e) {
       const t1 = performance.now()
       setResults(prev => ({ ...prev, [c.key]: { status: 'unhealthy', durationMs: Math.round(t1 - t0) } }))
+      return false
     }
   }
 
-  const runChecks = async () => {
+  const runChecks = async (userTriggered: boolean = false) => {
     setLoading(true)
+    let allHealthy = true
     for (const c of checks) {
       // eslint-disable-next-line no-await-in-loop
-      await runSingle(c)
+      const prev = results[c.key]?.status
+      const ok = await runSingle(c)
+      if (userTriggered && ok && prev !== 'healthy') {
+        // Mark as recently turned healthy for a subtle pulse
+        setRecentHealthy(prevSet => {
+          const next = new Set(prevSet)
+          next.add(c.key)
+          return next
+        })
+        setTimeout(() => {
+          setRecentHealthy(prevSet => {
+            const next = new Set(prevSet)
+            next.delete(c.key)
+            return next
+          })
+        }, 1200)
+      }
+      if (!ok) allHealthy = false
     }
     setLoading(false)
+    if (userTriggered && allHealthy) {
+      notification.success({
+        message: t('settings:tldw.connection.success', 'Server responded successfully. You can continue.'),
+        placement: 'bottomRight',
+        duration: 2
+      })
+    }
+  }
+
+  const recheckOne = async (c: Check) => {
+    const prev = results[c.key]?.status
+    const ok = await runSingle(c)
+    if (ok && prev !== 'healthy') {
+      setRecentHealthy(prevSet => {
+        const next = new Set(prevSet)
+        next.add(c.key)
+        return next
+      })
+      setTimeout(() => {
+        setRecentHealthy(prevSet => {
+          const next = new Set(prevSet)
+          next.delete(c.key)
+          return next
+        })
+      }, 1200)
+      notification.success({
+        message: t('settings:tldw.connection.success', 'Server responded successfully. You can continue.'),
+        placement: 'bottomRight',
+        duration: 2
+      })
+    }
   }
 
   const testCoreConnection = async () => {
@@ -95,7 +147,7 @@ export default function HealthStatus() {
         <Space>
           <Button onClick={() => navigate(-1)}>← {t('healthPage.backToChat', 'Back to chat')}</Button>
           <Link to="/settings/tldw"><Button>{t('healthPage.openSettings', 'Open tldw Settings')}</Button></Link>
-          <Button type="primary" onClick={runChecks} loading={loading}>{t('healthPage.recheckAll', 'Recheck All')}</Button>
+          <Button type="primary" onClick={() => runChecks(true)} loading={loading}>{t('healthPage.recheckAll', 'Recheck All')}</Button>
           <Button
             onClick={() => {
               try {
@@ -139,9 +191,17 @@ export default function HealthStatus() {
         {checks.map(c => {
           const r = results[c.key] || { status: 'unknown' }
           return (
-            <Card key={c.key} title={c.label} extra={<a onClick={() => runSingle(c)}>{loading ? t('healthPage.checking', 'Checking…') : t('healthPage.recheck', 'Recheck')}</a>}>
+            <Card key={c.key} title={c.label} extra={<a onClick={() => recheckOne(c)}>{loading ? t('healthPage.checking', 'Checking…') : t('healthPage.recheck', 'Recheck')}</a>}>
               <Space size="middle" className="flex flex-wrap">
-                {r.status === 'healthy' ? <Tag color="green">{t('healthPage.healthy', 'Healthy')}</Tag> : r.status === 'unhealthy' ? <Tag color="red">{t('healthPage.unhealthy', 'Unhealthy')}</Tag> : <Tag>{t('healthPage.unknown', 'Unknown')}</Tag>}
+                {r.status === 'healthy' ? (
+                  <Tag color="green" className={recentHealthy.has(c.key) ? 'animate-pulse ring-2 ring-emerald-400' : undefined}>
+                    {t('healthPage.healthy', 'Healthy')}
+                  </Tag>
+                ) : r.status === 'unhealthy' ? (
+                  <Tag color="red">{t('healthPage.unhealthy', 'Unhealthy')}</Tag>
+                ) : (
+                  <Tag>{t('healthPage.unknown', 'Unknown')}</Tag>
+                )}
                 <Typography.Text type="secondary">{c.path}</Typography.Text>
                 {typeof r.statusCode !== 'undefined' && (
                   <Tag>HTTP {r.statusCode}</Tag>

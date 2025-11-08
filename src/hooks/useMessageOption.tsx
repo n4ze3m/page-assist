@@ -93,6 +93,38 @@ export const useMessageOption = () => {
   const navigate = useNavigate()
   const textareaRef = React.useRef<HTMLTextAreaElement>(null)
 
+  // Persist prompt selections across views/contexts
+  const [storedSystemPrompt, setStoredSystemPrompt] = useStorage<string | null>(
+    "selectedSystemPrompt",
+    null
+  )
+  const [storedQuickPrompt, setStoredQuickPrompt] = useStorage<string | null>(
+    "selectedQuickPrompt",
+    null
+  )
+
+  React.useEffect(() => {
+    if (storedSystemPrompt && storedSystemPrompt !== selectedSystemPrompt) {
+      setSelectedSystemPrompt(storedSystemPrompt)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [storedSystemPrompt])
+
+  React.useEffect(() => {
+    if (storedQuickPrompt && storedQuickPrompt !== selectedQuickPrompt) {
+      setSelectedQuickPrompt(storedQuickPrompt)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [storedQuickPrompt])
+
+  React.useEffect(() => {
+    setStoredSystemPrompt(selectedSystemPrompt ?? null)
+  }, [selectedSystemPrompt, setStoredSystemPrompt])
+
+  React.useEffect(() => {
+    setStoredQuickPrompt(selectedQuickPrompt ?? null)
+  }, [selectedQuickPrompt, setStoredQuickPrompt])
+
   const handleFocusTextArea = () => focusTextArea(textareaRef)
 
   const handleFileUpload = async (file: File) => {

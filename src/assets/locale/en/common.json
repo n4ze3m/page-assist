@@ -1,8 +1,8 @@
 {
     "pageAssist": "tldw Assistant",
     "titles": {
-        "options": "tldw Assistant — Options",
-        "sidepanel": "tldw Assistant — Sidepanel"
+        "options": "tldw Assistant",
+        "sidepanel": "tldw Assistant"
     },
     "confirmTitle": "Please confirm",
     "pdf": {

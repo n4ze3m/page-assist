@@ -1,12 +1,12 @@
 {
     "extName": {
-        "message": "tldw Browser_Assistant"
+        "message": "tldw Assistant"
     },
     "extDescription": {
         "message": "Browser extension for tldw_server - your unified AI assistant with RAG, media processing, and more."
     },
     "openSidePanelToChat": {
-        "message": "Open Side Panel to Chat"
+        "message": "Open Sidebar to chat"
     },
     "openOptionToChat": {
         "message": "Open Web UI to Chat"

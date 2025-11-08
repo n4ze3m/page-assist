@@ -3,7 +3,9 @@
         "searching": "Söker efter din tldw server",
         "running": "tldw körs",
         "notRunning": "Kan inte ansluta till tldw server",
-        "connectionError": "Det verkar som att du har ett anslutningsfel. Vänligen se denna <anchor>dokumentation</anchor> för felsökning."
+        "connectionError": "Det verkar som att du har ett anslutningsfel. Vänligen se denna <anchor>dokumentation</anchor> för felsökning.",
+        "openTldwSettings": "Open tldw Settings",
+        "cancelSearch": "Cancel search"
     },
     "formError": {
         "noModel": "Vänligen välj en modell",
@@ -28,5 +30,11 @@
     },
     "sendWhenEnter": "Skicka när Enter trycks",
     "welcome": "Hej! Hur kan jag hjälpa dig idag?",
-    "useOCR": "Extrahera text från bild (OCR)"
+    "useOCR": "Extrahera text från bild (OCR)",
+    "tips": {
+        "title": "Tips",
+        "quickIngest": "Use Quick ingest to add documents and web pages.",
+        "pickModelPrompt": "Pick a Model and a Prompt from the header.",
+        "startChatFocus": "When connected, \u201cStart chatting\u201d focuses the composer."
+    }
 }

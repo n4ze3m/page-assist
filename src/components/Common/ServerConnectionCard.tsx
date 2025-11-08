@@ -1,5 +1,5 @@
 import React from "react"
-import { useQuery } from "@tanstack/react-query"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { useTranslation } from "react-i18next"
 import { Button, Tag, notification } from "antd"
 import { Clock, ExternalLink, Send, Server, Settings } from "lucide-react"
@@ -50,7 +50,9 @@ export const ServerConnectionCard: React.FC<Props> = ({
   onOpenSettings,
   showToastOnError = false
 }) => {
-  const { t } = useTranslation(["playground", "common"]) 
+  const { t } = useTranslation(["playground", "common", "settings"]) 
+  const queryClient = useQueryClient()
+  const [aborted, setAborted] = React.useState(false)
 
   const statusQuery = useQuery({
     queryKey: ["tldw-server-status-shared"],
@@ -82,6 +84,7 @@ export const ServerConnectionCard: React.FC<Props> = ({
   else if (statusQuery.isError) statusVariant = (statusQuery.error as Error)?.message === "missing-config" ? "missing" : "error"
   else if (statusQuery.data?.ok) statusVariant = "ok"
   else statusVariant = "error"
+  if (aborted) statusVariant = "missing"
 
   React.useEffect(() => {
     if (!showToastOnError) return
@@ -122,15 +125,24 @@ export const ServerConnectionCard: React.FC<Props> = ({
     ? t("ollamaState.connectedSubtitle", "Connected to {{host}}. Start chatting when you’re ready.", { host: serverHost })
     : t("ollamaState.errorSubtitle", "We couldn’t reach {{host}} yet. Retry or update your server settings.", { host: serverHost })
 
+  const isStuck = statusVariant === "error" || statusVariant === "missing"
   const primaryLabel = statusVariant === "ok"
     ? t("common:startChat", "Start chatting")
-    : t("common:retry", "Retry")
+    : isStuck
+      ? t("ollamaState.openTldwSettings", "Open tldw Settings")
+      : t("ollamaState.cancelSearch", "Cancel search")
 
   const handlePrimary = () => {
     if (statusVariant === "ok") {
       window.dispatchEvent(new CustomEvent("tldw:focus-composer"))
+    } else if (isStuck) {
+      handleOpenSettings()
     } else {
-      statusQuery.refetch()
+      // Cancel search: mark aborted and cancel in-flight query if possible
+      try {
+        setAborted(true)
+        queryClient.cancelQueries({ queryKey: ["tldw-server-status-shared"] })
+      } catch {}
     }
   }
 
@@ -222,19 +234,36 @@ export const ServerConnectionCard: React.FC<Props> = ({
         <div className="flex w-full flex-col gap-2 sm:flex-row">
           <Button
             type={"primary"}
-            icon={statusVariant === "ok" ? <Send className="h-4 w-4" /> : <Send className="h-4 w-4 rotate-45" />}
+            icon={statusVariant === "ok" ? <Send className="h-4 w-4" /> : <Settings className="h-4 w-4" />}
             onClick={handlePrimary}
             loading={statusQuery.isFetching}
             block>
             {primaryLabel}
           </Button>
           <Button
-            icon={<Settings className="h-4 w-4" />}
-            onClick={handleOpenSettings}
+            icon={statusVariant === "ok" ? <Settings className="h-4 w-4" /> : <Send className="h-4 w-4 rotate-45" />}
+            onClick={async () => {
+              if (isStuck) {
+                const res = await statusQuery.refetch()
+                if (showToastOnError && (res.data as any)?.ok) {
+                  notification.success({
+                    message: t('settings:onboarding.serverUrl.reachable', 'Server responded successfully. You can continue.'),
+                    placement: 'bottomRight',
+                    duration: 3
+                  })
+                }
+              } else {
+                handleOpenSettings()
+              }
+            }}
             block>
-            {serverHost
-              ? t("ollamaState.changeServer", "Change server")
-              : t("ollamaState.openSettings", "Open settings")}
+            {statusVariant === "ok"
+              ? (serverHost
+                  ? t("ollamaState.changeServer", "Change server")
+                  : t("ollamaState.openSettings", "Open settings"))
+              : statusVariant === "loading"
+                ? t("settings:tldw.setupLink", "Set up server")
+                : t("common:retry", "Retry")}
           </Button>
         </div>
 

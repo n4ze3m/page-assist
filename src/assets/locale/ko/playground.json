@@ -6,7 +6,9 @@
         "connectionError": "연결 오류가 발생한 것 같습니다. 문제 해결에 대한 자세한 내용은 <anchor>문서</anchor>를 참조하세요.",
         "errorToast": "We couldn’t reach {{host}}",
         "missingHelp": "Open Settings → tldw Server to add your URL or connect to the Options page.",
-        "troubleshoot": "Confirm your server is running and that the browser is allowed to reach it, then retry from the Options page."
+        "troubleshoot": "Confirm your server is running and that the browser is allowed to reach it, then retry from the Options page.",
+        "openTldwSettings": "Open tldw Settings",
+        "cancelSearch": "Cancel search"
     },
     "formError": {
         "noModel": "모델을 선택하세요",
@@ -31,5 +33,11 @@
     },
     "sendWhenEnter": "Enter 키를 누르면 전송",
     "welcome": "안녕하세요! 오늘 어떻게 도와드릴까요?",
-    "useOCR": "이미지에서 텍스트 추출 (OCR)"
+    "useOCR": "이미지에서 텍스트 추출 (OCR)",
+    "tips": {
+        "title": "Tips",
+        "quickIngest": "Use Quick ingest to add documents and web pages.",
+        "pickModelPrompt": "Pick a Model and a Prompt from the header.",
+        "startChatFocus": "When connected, \u201cStart chatting\u201d focuses the composer."
+    }
 }

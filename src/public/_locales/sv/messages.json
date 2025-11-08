@@ -1,12 +1,12 @@
 {
     "extName": {
-        "message": "tldw Browser_Assistant"
+        "message": "tldw Assistant"
     },
     "extDescription": {
         "message": "Använd dina lokalt körande AI-modeller för att hjälpa dig i din webbsurfning."
     },
     "openSidePanelToChat": {
-        "message": "Öppna sidopanelen för att chatta"
+        "message": "Open Sidebar to chat"
     },
     "openOptionToChat": {
         "message": "Öppna Web UI för att chatta"

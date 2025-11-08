@@ -1,12 +1,12 @@
 {
     "extName": {
-        "message": "دستیار صفحه - یک رابط کاربری وب برای مدل های هوش مصنوعی لوکال"
+        "message": "tldw Assistant"
     },
     "extDescription": {
         "message": "از مدل های هوش مصنوعی لوکال خود برای دریافت کمک در هنگام مرور وب استفاده کنید."
     },
     "openSidePanelToChat": {
-        "message": "باز کردن پنل کناری برای گفتگو"
+        "message": "Open Sidebar to chat"
     },
     "openOptionToChat": {
         "message": "باز کردن رابط کاربری وب برای گفتگو"

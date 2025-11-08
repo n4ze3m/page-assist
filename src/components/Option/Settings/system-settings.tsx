@@ -190,7 +190,7 @@ export const SystemSettings = () => {
               value: "webui"
             },
             {
-              label: "Open SidePanel",
+              label: "Open Sidebar",
               value: "sidePanel"
             }
           ]}
@@ -213,7 +213,7 @@ export const SystemSettings = () => {
               value: "webui"
             },
             {
-              label: "Open SidePanel",
+              label: "Open Sidebar",
               value: "sidePanel"
             }
           ]}
@@ -251,7 +251,7 @@ export const SystemSettings = () => {
       )}
       <div className="flex flex-col sm:flex-row mb-3 gap-3 sm:gap-0 sm:justify-between sm:items-center">
         <span className="text-gray-700 dark:text-neutral-50">
-          {t("generalSettings.systemBasics.webuiBtnSidePanel.label", { defaultValue: t("generalSettings.system.webuiBtnSidePanel.label", { defaultValue: "Show Web UI button in Sidepanel" }) as string })}
+          {t("generalSettings.systemBasics.webuiBtnSidePanel.label", { defaultValue: t("generalSettings.system.webuiBtnSidePanel.label", { defaultValue: "Show Web UI button in Sidebar" }) as string })}
         </span>
          <div>
           <Switch

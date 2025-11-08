@@ -6,7 +6,9 @@
         "connectionError": "Hubo un error de conexión. Por favor, consulte la <anchor>documentación</anchor> para solucionar el problema.",
         "errorToast": "We couldn’t reach {{host}}",
         "missingHelp": "Open Settings → tldw Server to add your URL or connect to the Options page.",
-        "troubleshoot": "Confirm your server is running and that the browser is allowed to reach it, then retry from the Options page."
+        "troubleshoot": "Confirm your server is running and that the browser is allowed to reach it, then retry from the Options page.",
+        "openTldwSettings": "Open tldw Settings",
+        "cancelSearch": "Cancel search"
     },
     "formError": {
         "noModel": "Por favor, selecione un modelo",
@@ -31,5 +33,11 @@
     },
     "sendWhenEnter": "Enviar cuando presione Enter",
     "welcome": "¡Hola! ¿Cómo puedo ayudarte hoy?",
-    "useOCR": "Extraer texto de imagen (OCR)"
+    "useOCR": "Extraer texto de imagen (OCR)",
+    "tips": {
+        "title": "Tips",
+        "quickIngest": "Use Quick ingest to add documents and web pages.",
+        "pickModelPrompt": "Pick a Model and a Prompt from the header.",
+        "startChatFocus": "When connected, \u201cStart chatting\u201d focuses the composer."
+    }
 }

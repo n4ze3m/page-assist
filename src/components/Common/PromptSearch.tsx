@@ -15,9 +15,12 @@ type PromptItem = { id?: string; title: string; content: string; is_system?: boo
 type Props = {
   onInsertMessage: (content: string) => void
   onInsertSystem: (content: string) => void
+  inputId?: string
+  ariaLabel?: string
+  ariaLabelledby?: string
 }
 
-export const PromptSearch: React.FC<Props> = ({ onInsertMessage, onInsertSystem }) => {
+export const PromptSearch: React.FC<Props> = ({ onInsertMessage, onInsertSystem, inputId, ariaLabel, ariaLabelledby }) => {
   const { t } = useTranslation(['option'])
   const { historyId } = useMessageOption()
   const [remote, setRemote] = useStorage('promptSearchIncludeServer', false)
@@ -94,6 +97,7 @@ export const PromptSearch: React.FC<Props> = ({ onInsertMessage, onInsertSystem 
     <div className="w-72">
       <Tooltip title={remote ? 'Search local + server prompts' : 'Search local prompts'}>
         <Input.Search
+          id={inputId}
           placeholder={t('selectAPrompt') || 'Search prompts'}
           allowClear
           value={q}
@@ -101,6 +105,8 @@ export const PromptSearch: React.FC<Props> = ({ onInsertMessage, onInsertSystem 
           onFocus={() => setOpen(true)}
           onBlur={() => { setTimeout(() => setOpen(false), 200) }}
           loading={loading}
+          aria-label={ariaLabel}
+          aria-labelledby={ariaLabelledby}
         />
       </Tooltip>
       {open && results.length > 0 && (

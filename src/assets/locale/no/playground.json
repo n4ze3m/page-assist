@@ -3,7 +3,9 @@
         "searching": "Søker etter din tldw server",
         "running": "tldw kjører",
         "notRunning": "Kan ikke koble til tldw server",
-        "connectionError": "Det ser ut til at du har en tilkoblingsfeil. Vennligst se denne <anchor>dokumentasjonen</anchor> for feilsøking."
+        "connectionError": "Det ser ut til at du har en tilkoblingsfeil. Vennligst se denne <anchor>dokumentasjonen</anchor> for feilsøking.",
+        "openTldwSettings": "Open tldw Settings",
+        "cancelSearch": "Cancel search"
     },
     "formError": {
         "noModel": "Vennligst velg en modell",
@@ -28,5 +30,11 @@
     },
     "sendWhenEnter": "Søk når Enter trykkes",
     "welcome": "Hei! Hvordan kan jeg hjelpe deg i dag?",
-    "useOCR": "Trekk ut tekst fra bilde (OCR)"
+    "useOCR": "Trekk ut tekst fra bilde (OCR)",
+    "tips": {
+        "title": "Tips",
+        "quickIngest": "Use Quick ingest to add documents and web pages.",
+        "pickModelPrompt": "Pick a Model and a Prompt from the header.",
+        "startChatFocus": "When connected, \u201cStart chatting\u201d focuses the composer."
+    }
 }

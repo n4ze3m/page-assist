@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Drawer, Button } from 'antd'
+import { Drawer, Button, Tooltip } from 'antd'
 import { tldwClient } from '@/services/tldw/TldwApiClient'
 import { useTranslation } from 'react-i18next'
 
@@ -11,6 +11,7 @@ export default function HealthSummary() {
   const [coreCheckedAt, setCoreCheckedAt] = useState<number|null>(null)
   const [ragCheckedAt, setRagCheckedAt] = useState<number|null>(null)
   const [open, setOpen] = useState(false)
+  const diagnosticsPanelId = 'health-diagnostics-panel'
 
   useEffect(() => {
     (async () => {
@@ -40,9 +41,20 @@ export default function HealthSummary() {
         <span className="flex items-center gap-2" title={t('healthSummary.coreAria', 'Core: server/API health')} aria-label={t('healthSummary.coreAria', 'Core: server/API health')}><Dot status={core}/> {t('healthSummary.core', 'Core')}</span>
         <span className="flex items-center gap-2" title={t('healthSummary.ragAria', 'RAG: knowledge index health')} aria-label={t('healthSummary.ragAria', 'RAG: knowledge index health')}><Dot status={rag}/> {t('healthSummary.rag', 'RAG')}</span>
       </div>
-      <Button size="small" type="link" className="text-blue-600 dark:text-blue-400" onClick={() => setOpen(true)}>{t('healthSummary.diagnostics', 'Diagnostics')}</Button>
+      <Tooltip title={t('healthSummary.diagnosticsTooltip', 'Open detailed diagnostics to troubleshoot or inspect health checks.') as string}>
+        <Button
+          size="small"
+          type="link"
+          className="text-blue-600 dark:text-blue-400"
+          onClick={() => setOpen(true)}
+          aria-expanded={open}
+          aria-controls={diagnosticsPanelId}
+        >
+          {t('healthSummary.diagnostics', 'Diagnostics')}
+        </Button>
+      </Tooltip>
       <Drawer title={t('healthSummary.diagnostics', 'Diagnostics')} placement="right" width={360} onClose={() => setOpen(false)} open={open}>
-        <div className="space-y-3 text-sm">
+        <div id={diagnosticsPanelId} className="space-y-3 text-sm">
           <div className="flex items-center justify-between">
             <span className="flex items-center gap-2"><Dot status={core}/> {t('healthSummary.core', 'Core')}</span>
             <span className="text-gray-500">{coreCheckedAt ? new Date(coreCheckedAt).toLocaleString() : ''}</span>

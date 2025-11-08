@@ -3,7 +3,9 @@
         "searching": "നിങ്ങളുടെ tldw server നെ അന്വേഷിക്കുന്നു",
         "running": "tldw പ്രവര്‍ത്തിക്കുന്നു",
         "notRunning": "tldw server ലേക്ക് ബന്ധിപ്പിക്കാൻ കഴിയുന്നില്ല",
-        "connectionError": "നിങ്ങൾക്ക് കണക്ഷൻ പ്രശ്നം ഉണ്ടെന്നു കാണുന്നു. ഈ <anchor>ഡോക്യുമെന്റേഷൻ</anchor> പരിശോധിക്കാൻ കൂടുതൽ സഹായത്തിനായി."
+        "connectionError": "നിങ്ങൾക്ക് കണക്ഷൻ പ്രശ്നം ഉണ്ടെന്നു കാണുന്നു. ഈ <anchor>ഡോക്യുമെന്റേഷൻ</anchor> പരിശോധിക്കാൻ കൂടുതൽ സഹായത്തിനായി.",
+        "openTldwSettings": "Open tldw Settings",
+        "cancelSearch": "Cancel search"
     },
     "formError": {
         "noModel": "ദയവായി ഒരു മോഡല്‍ തിരഞ്ഞെടുക്കുക",
@@ -28,5 +30,11 @@
     },
     "sendWhenEnter": "എന്റര്‍ അമര്‍ത്തുമ്പോള്‍ അയയ്ക്കുക",
     "welcome": "നമസ്കാരം! ഇന്ന് എനിക്ക് നിങ്ങളെ എങ്ങനെ സഹായിക്കാൻ കഴിയും?",
-    "useOCR": "ചിത്രത്തിൽ നിന്ന് ടെക്സ്റ്റ് എടുക്കുക (OCR)"
+    "useOCR": "ചിത്രത്തിൽ നിന്ന് ടെക്സ്റ്റ് എടുക്കുക (OCR)",
+    "tips": {
+        "title": "Tips",
+        "quickIngest": "Use Quick ingest to add documents and web pages.",
+        "pickModelPrompt": "Pick a Model and a Prompt from the header.",
+        "startChatFocus": "When connected, \u201cStart chatting\u201d focuses the composer."
+    }
 }

@@ -22,6 +22,10 @@ function IndexSidepanel() {
     }
   }, [i18n, i18n.resolvedLanguage])
 
+  useEffect(() => {
+    document.title = t('common:titles.sidepanel', { defaultValue: 'tldw Assistant — Sidebar' })
+  }, [t])
+
   return (
     <MemoryRouter>
       <ConfigProvider

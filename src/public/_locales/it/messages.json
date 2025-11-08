@@ -1,12 +1,12 @@
 {
     "extName": {
-        "message": "Page Assist - Un'interfaccia web per modelli AI locali"
+        "message": "tldw Assistant"
     },
     "extDescription": {
         "message": "Usa i tuoi modelli AI in esecuzione locale per assisterti nella navigazione web."
     },
     "openSidePanelToChat": {
-        "message": "Apri il pannello laterale per chattare"
+        "message": "Open Sidebar to chat"
     },
     "contextSummarize": {
         "message": "Riassumi"

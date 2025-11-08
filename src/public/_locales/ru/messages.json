@@ -1,12 +1,12 @@
 {
     "extName": {
-        "message": "tldw Browser_Assistant"
+        "message": "tldw Assistant"
     },
     "extDescription": {
         "message": "Используйте запущенные локально модели искусственного интеллекта для помощи в веб-просмотре."
     },
     "openSidePanelToChat": {
-        "message": "Открыть боковую панель для чата"
+        "message": "Open Sidebar to chat"
     },
     "contextSummarize": {
         "message": "Обобщить"

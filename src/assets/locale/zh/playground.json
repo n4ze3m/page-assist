@@ -3,7 +3,9 @@
         "searching": "正在搜索您的 tldw server",
         "running": "tldw 正在运行",
         "notRunning": "无法连接到 tldw server",
-        "connectionError": "看起来您遇到了连接错误。请参阅这<anchor>文档</anchor>进行故障排除。"
+        "connectionError": "看起来您遇到了连接错误。请参阅这<anchor>文档</anchor>进行故障排除。",
+        "openTldwSettings": "Open tldw Settings",
+        "cancelSearch": "Cancel search"
     },
     "formError": {
         "noModel": "请选择一个模型",
@@ -29,5 +31,11 @@
     },
     "sendWhenEnter": "按Enter发送",
     "welcome": "你好！今天我能帮你什么？",
-    "useOCR": "从图片中提取文字（OCR）"
+    "useOCR": "从图片中提取文字（OCR）",
+    "tips": {
+        "title": "Tips",
+        "quickIngest": "Use Quick ingest to add documents and web pages.",
+        "pickModelPrompt": "Pick a Model and a Prompt from the header.",
+        "startChatFocus": "When connected, \u201cStart chatting\u201d focuses the composer."
+    }
 }

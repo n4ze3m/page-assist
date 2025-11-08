@@ -16,7 +16,7 @@ import { Playground } from "~/components/Option/Playground/Playground"
 const OptionIndex = () => {
   const [needsOnboarding, setNeedsOnboarding] = React.useState<boolean>(false)
   const [loading, setLoading] = React.useState<boolean>(true)
-  const { t } = useTranslation(["settings"]) 
+  const { t } = useTranslation(["settings", "playground"]) 
   const errorToastRef = React.useRef(false)
   const navigate = useNavigate()
 
@@ -107,12 +107,14 @@ const OptionIndex = () => {
               {t("tldw.setupLink", "Set up server")}
             </button>
           </p>
-          <p className="mt-2 text-center text-xs text-gray-600 dark:text-gray-300">
-            {t(
-              "onboarding.footerHelp",
-              "Once connected, you can revisit these settings anytime from the extension menu."
-            )}
-          </p>
+          <div className="mt-4 mx-auto max-w-xl rounded-md border border-gray-200 bg-white p-3 text-xs text-gray-700 shadow-sm dark:border-gray-700 dark:bg-[#1f1f1f] dark:text-gray-300">
+            <div className="font-semibold mb-1">{t('playground:tips.title', 'Tips')}</div>
+            <ul className="list-disc pl-5 space-y-1">
+              <li>{t('playground:tips.quickIngest', 'Use Quick ingest to add documents and web pages.')}</li>
+              <li>{t('playground:tips.pickModelPrompt', 'Pick a Model and a Prompt from the header.')}</li>
+              <li>{t('playground:tips.startChatFocus', 'When connected, “Start chatting” focuses the composer.')}</li>
+            </ul>
+          </div>
         </div>
       ) : (
         <>

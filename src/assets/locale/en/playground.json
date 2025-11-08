@@ -10,6 +10,7 @@
         "connectedSubtitle": "Connected to {{host}}. Start chatting when you’re ready.",
         "errorSubtitle": "We couldn’t reach {{host}} yet. Retry or update your server settings.",
         "openSettings": "Open settings",
+        "openTldwSettings": "Open tldw Settings",
         "changeServer": "Change server",
         "elapsed": "Checking… {{seconds}}s",
         "connectedHint": "Connected to {{host}}.",
@@ -18,7 +19,14 @@
         "connectionError": "Troubleshooting guide",
         "errorToast": "We couldn’t reach {{host}}",
         "missingHelp": "Open Settings → tldw Server to add your URL or connect to the Options page.",
-        "troubleshoot": "Confirm your server is running and that the browser is allowed to reach it, then retry from the Options page."
+        "troubleshoot": "Confirm your server is running and that the browser is allowed to reach it, then retry from the Options page.",
+        "cancelSearch": "Cancel search"
+    },
+    "tips": {
+        "title": "Tips",
+        "quickIngest": "Use Quick ingest to add documents and web pages.",
+        "pickModelPrompt": "Pick a Model and a Prompt from the header.",
+        "startChatFocus": "When connected, \u201cStart chatting\u201d focuses the composer."
     },
     "formError": {
         "noModel": "Please select a model",

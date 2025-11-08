@@ -3,7 +3,9 @@
         "searching": "جارٍ البحث عن tldw server الخاص بك",
         "running": "tldw يعمل",
         "notRunning": "تعذر الاتصال بـ tldw server",
-        "connectionError": "يبدو أنك تواجه خطأ في الاتصال. يرجى الرجوع إلى هذا <anchor>الدليل</anchor> لاستكشاف الأخطاء وإصلاحها."
+        "connectionError": "يبدو أنك تواجه خطأ في الاتصال. يرجى الرجوع إلى هذا <anchor>الدليل</anchor> لاستكشاف الأخطاء وإصلاحها.",
+        "openTldwSettings": "Open tldw Settings",
+        "cancelSearch": "Cancel search"
     },
     "formError": {
         "noModel": "الرجاء اختيار نموذج",
@@ -29,5 +31,11 @@
     },
     "sendWhenEnter": "إرسال عند الضغط على Enter",
     "welcome": "مرحباً! كيف يمكنني مساعدتك اليوم؟",
-    "useOCR": "استخراج النص من الصورة (OCR)"
+    "useOCR": "استخراج النص من الصورة (OCR)",
+    "tips": {
+        "title": "Tips",
+        "quickIngest": "Use Quick ingest to add documents and web pages.",
+        "pickModelPrompt": "Pick a Model and a Prompt from the header.",
+        "startChatFocus": "When connected, \u201cStart chatting\u201d focuses the composer."
+    }
 }

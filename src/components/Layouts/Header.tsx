@@ -71,6 +71,7 @@ export const Header: React.FC<Props> = ({
     setSelectedModel,
     clearChat,
     selectedSystemPrompt,
+    selectedQuickPrompt,
     setSelectedQuickPrompt,
     setSelectedSystemPrompt,
     messages,
@@ -314,18 +315,52 @@ export const Header: React.FC<Props> = ({
                 )}
               </div>
             )}
+            {/* Status chips for current selections */}
+            <div className="hidden md:flex items-center gap-2">
+              {selectedModel && (
+                <span className="inline-flex items-center gap-1 rounded-full border border-gray-200 bg-white px-2 py-0.5 text-xs text-gray-700 shadow-sm dark:border-gray-700 dark:bg-[#1f1f1f] dark:text-gray-300">
+                  {t("option:header.modelLabel", "Model")}:
+                  <span className="max-w-[140px] truncate">
+                    {(() => {
+                      const m = models?.find((m) => m.model === selectedModel)
+                      return m?.nickname || m?.model || selectedModel
+                    })()}
+                  </span>
+                </span>
+              )}
+              {(selectedSystemPrompt || selectedQuickPrompt) && (
+                <span className="inline-flex items-center gap-1 rounded-full border border-gray-200 bg-white px-2 py-0.5 text-xs text-gray-700 shadow-sm dark:border-gray-700 dark:bg-[#1f1f1f] dark:text-gray-300">
+                  {t("option:header.promptLabel", "Prompt")}:
+                  <span className="max-w-[140px] truncate">
+                    {selectedSystemPrompt
+                      ? (getPromptInfoById(selectedSystemPrompt)?.title || t("option:header.systemPrompt", "System prompt"))
+                      : t("option:header.customPrompt", "Custom")}
+                  </span>
+                </span>
+              )}
+            </div>
           </div>
         </PrimaryToolbar>
 
         <div className="flex flex-wrap items-center gap-3">
           <div className="flex flex-col gap-1 min-w-[220px]">
-            <span className="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
-              {t("option:header.modelLabel", "Model")}
-            </span>
+            {(() => {
+              const id = "header-model-label"
+              return (
+                <span
+                  id={id}
+                  className="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+                >
+                  {t("option:header.modelLabel", "Model")}
+                </span>
+              )
+            })()}
             <div className="hidden lg:block">
               <Select
                 className="min-w-[220px] max-w-[320px]"
                 placeholder={t("common:selectAModel")}
+                aria-label={t("common:selectAModel") as string}
+                aria-labelledby="header-model-label"
                 value={selectedModel}
                 onChange={(value) => {
                   setSelectedModel(value)
@@ -365,10 +400,21 @@ export const Header: React.FC<Props> = ({
           </div>
 
           <div className="hidden min-w-[240px] flex-col gap-1 lg:flex">
-            <span className="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
-              {t("option:header.promptLabel", "Prompt")}
-            </span>
+            {(() => {
+              const id = "header-prompt-label"
+              return (
+                <span
+                  id={id}
+                  className="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+                >
+                  {t("option:header.promptLabel", "Prompt")}
+                </span>
+              )
+            })()}
             <PromptSearch
+              inputId="header-prompt-search"
+              ariaLabel={t("option:selectAPrompt", "Select a Prompt") as string}
+              ariaLabelledby="header-prompt-label"
               onInsertMessage={(content) => {
                 setSelectedSystemPrompt(undefined)
                 setSelectedQuickPrompt(content)

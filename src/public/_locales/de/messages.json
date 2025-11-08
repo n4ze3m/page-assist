@@ -1,12 +1,12 @@
 {
     "extName": {
-        "message": "tldw Browser_Assistant"
+        "message": "tldw Assistant"
     },
     "extDescription": {
         "message": "Nutzen Sie Ihre lokal laufenden KI-Modelle, um Sie beim Surfen im Web zu unterstützen."
     },
     "openSidePanelToChat": {
-        "message": "Seitenleiste zum Chatten öffnen"
+        "message": "Open Sidebar to chat"
     },
     "openOptionToChat": {
         "message": "Web-Benutzeroberfläche zum Chatten öffnen"

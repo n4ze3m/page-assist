@@ -3,7 +3,9 @@
         "searching": "Поиск вашего tldw server",
         "running": "tldw работает",
         "notRunning": "Не удалось подключиться к tldw server",
-        "connectionError": "Похоже, у вас возникла ошибка соединения. Пожалуйста, обратитесь к этой <anchor>документации</anchor> для устранения неисправностей."
+        "connectionError": "Похоже, у вас возникла ошибка соединения. Пожалуйста, обратитесь к этой <anchor>документации</anchor> для устранения неисправностей.",
+        "openTldwSettings": "Open tldw Settings",
+        "cancelSearch": "Cancel search"
     },
     "formError": {
         "noModel": "Пожалуйста, выберите модель",
@@ -28,5 +30,11 @@
     },
     "sendWhenEnter": "Отправить при нажатии клавиши Enter",
     "welcome": "Здравствуйте! Как я могу помочь вам сегодня?",
-    "useOCR": "Извлечь текст из изображения (OCR)"
+    "useOCR": "Извлечь текст из изображения (OCR)",
+    "tips": {
+        "title": "Tips",
+        "quickIngest": "Use Quick ingest to add documents and web pages.",
+        "pickModelPrompt": "Pick a Model and a Prompt from the header.",
+        "startChatFocus": "When connected, \u201cStart chatting\u201d focuses the composer."
+    }
 }

@@ -25,6 +25,10 @@ function IndexOption() {
     }
   }, [i18n, i18n.resolvedLanguage])
 
+  useEffect(() => {
+    document.title = t('common:titles.options', { defaultValue: 'tldw Assistant — Options' })
+  }, [t])
+
   return (
     <MemoryRouter>
       <ConfigProvider

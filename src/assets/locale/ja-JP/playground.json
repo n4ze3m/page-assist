@@ -3,7 +3,9 @@
         "searching": "tldw server を検索中",
         "running": "tldw が実行中",
         "notRunning": "tldw server に接続できません",
-        "connectionError": "接続エラーが発生しているようです。トラブルシューティングについては<anchor>ドキュメント</anchor>をご覧ください。"
+        "connectionError": "接続エラーが発生しているようです。トラブルシューティングについては<anchor>ドキュメント</anchor>をご覧ください。",
+        "openTldwSettings": "Open tldw Settings",
+        "cancelSearch": "Cancel search"
     },
     "formError": {
         "noModel": "モデルを選択してください",
@@ -28,5 +30,11 @@
     },
     "sendWhenEnter": "Enterキーを押すと送信",
     "welcome": "こんにちは！本日はどのようなお手伝いができますか？",
-    "useOCR": "画像からテキストを抽出（OCR）"
+    "useOCR": "画像からテキストを抽出（OCR）",
+    "tips": {
+        "title": "Tips",
+        "quickIngest": "Use Quick ingest to add documents and web pages.",
+        "pickModelPrompt": "Pick a Model and a Prompt from the header.",
+        "startChatFocus": "When connected, \u201cStart chatting\u201d focuses the composer."
+    }
 }

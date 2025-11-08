@@ -21,7 +21,7 @@ function IndexOption() {
       document.documentElement.lang = i18n.resolvedLanguage
       document.documentElement.dir = i18n.dir(i18n.resolvedLanguage)
       setDirection(i18n.dir(i18n.resolvedLanguage))
-      document.title = t('common:titles.options', { defaultValue: 'tldw Assistant — Options' })
+      document.title = t('common:titles.options', { defaultValue: 'tldw Assistant' })
     }
   }, [i18n, i18n.resolvedLanguage])
 
