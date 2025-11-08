@@ -89,7 +89,10 @@ export class TldwApiClient {
       // Prefer background proxy (extension messaging)
       // @ts-ignore
       if (typeof browser !== 'undefined' && browser?.runtime?.sendMessage) {
-        await bgRequest<{ status?: string; [k: string]: any }>({ path: '/api/v1/health', method: 'GET' })
+        // Do not require auth for health checks; avoid pre-emptive 401s if
+        // the user hasn't configured credentials yet or the server exposes
+        // a public health endpoint.
+        await bgRequest<{ status?: string; [k: string]: any }>({ path: '/api/v1/health', method: 'GET', noAuth: true })
         return true
       }
     } catch {}

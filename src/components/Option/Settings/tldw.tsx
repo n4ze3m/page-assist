@@ -155,7 +155,7 @@ export const TldwSettings = () => {
       console.error('Failed to load config:', error)
       setInitializingError(
         (error as Error)?.message ||
-          'Unable to load tldw server settings. Check your connection and try again.'
+          t('settings:tldw.loadError', 'Unable to load tldw server settings. Check your connection and try again.')
       )
     } finally {
       setLoading(false)
@@ -246,8 +246,12 @@ export const TldwSettings = () => {
         success = resp?.status !== 401 && resp?.status !== 403
         if (!success) {
           const code = resp?.status
-          const hint = code === 401 ? 'Invalid API key' : code === 403 ? 'Forbidden (check permissions)' : resp?.error
-          setConnectionDetail(`${hint || 'API key validation failed'}${code ? ` — HTTP ${code}` : ''}`)
+          const hint = code === 401
+            ? t('settings:tldw.errors.invalidApiKey', 'Invalid API key')
+            : code === 403
+              ? t('settings:tldw.errors.forbidden', 'Forbidden (check permissions)')
+              : (resp?.error || t('settings:tldw.errors.apiKeyValidationFailed', 'API key validation failed'))
+          setConnectionDetail(`${hint}${code ? ` — HTTP ${code}` : ''}`)
         }
       } else {
         // Test basic health endpoint via background proxy
@@ -257,7 +261,7 @@ export const TldwSettings = () => {
           method: 'GET'
         })
         success = !!resp?.ok
-        if (!success) setConnectionDetail(`Server unreachable${resp?.status ? ` — HTTP ${resp.status}` : ''}`)
+        if (!success) setConnectionDetail(`${t('settings:tldw.errors.serverUnreachable', 'Server unreachable')}${resp?.status ? ` — HTTP ${resp.status}` : ''}`)
       }
 
       setConnectionStatus(success ? 'success' : 'error')
@@ -278,12 +282,36 @@ export const TldwSettings = () => {
       }
     } catch (error) {
       setConnectionStatus('error')
-      const detail = (error as any)?.message || "Connection failed. Please check your server URL and API key."
+      const detail = (error as any)?.message || t('settings:tldw.connection.failedDetailed', 'Connection failed. Please check your server URL and API key.')
       setConnectionDetail(detail)
       message.error(detail)
       console.error('Connection test failed:', error)
     } finally {
       setTestingConnection(false)
+    }
+  }
+
+  const grantSiteAccess = async () => {
+    try {
+      const values = form.getFieldsValue()
+      const urlStr = String(values?.serverUrl || serverUrl || '')
+      if (!urlStr) {
+        message.warning(t('settings:enterServerUrlFirst', 'Enter a server URL first'))
+        return
+      }
+      const origin = new URL(urlStr).origin
+      // @ts-ignore chrome may be undefined on Firefox builds
+      if (typeof chrome === 'undefined' || !chrome?.permissions?.request) {
+        message.info(t('settings:siteAccessChromiumOnly', 'Site access is only needed on Chrome/Edge'))
+        return
+      }
+      // @ts-ignore callback style API
+      chrome.permissions.request({ origins: [origin + '/*'] }, (granted: boolean) => {
+        if (granted) message.success(t('settings:siteAccessGranted', 'Host permission granted for {{origin}}', { origin }))
+        else message.warning(t('settings:siteAccessDenied', 'Permission not granted for {{origin}}', { origin }))
+      })
+    } catch (e: any) {
+      message.error(t('settings:siteAccessFailed', 'Failed to request site access: {{msg}}', { msg: e?.message || String(e) }))
     }
   }
 
@@ -540,12 +568,12 @@ export const TldwSettings = () => {
 
           {authMode === 'single-user' && (
             <Form.Item
-              label="API Key"
+              label={t('settings:tldw.fields.apiKey.label', 'API Key')}
               name="apiKey"
-              rules={[{ required: true, message: 'Please enter your API key' }]}
-              extra="Your tldw_server API key for authentication"
+              rules={[{ required: true, message: t('settings:tldw.fields.apiKey.required', 'Please enter your API key') }]}
+              extra={t('settings:tldw.fields.apiKey.extra', 'Your tldw_server API key for authentication')}
             >
-              <Input.Password placeholder="Enter your API key" />
+              <Input.Password placeholder={t('settings:tldw.fields.apiKey.placeholder', 'Enter your API key')} />
             </Form.Item>
           )}
 
@@ -560,19 +588,19 @@ export const TldwSettings = () => {
               />
               
               <Form.Item
-                label="Username"
+                label={t('settings:tldw.fields.username.label', 'Username')}
                 name="username"
-                rules={[{ required: true, message: 'Please enter your username' }]}
+                rules={[{ required: true, message: t('settings:tldw.fields.username.required', 'Please enter your username') }]}
               >
-                <Input placeholder="Enter username" />
+                <Input placeholder={t('settings:tldw.fields.username.placeholder', 'Enter username')} />
               </Form.Item>
 
               <Form.Item
-                label="Password"
+                label={t('settings:tldw.fields.password.label', 'Password')}
                 name="password"
-                rules={[{ required: true, message: 'Please enter your password' }]}
+                rules={[{ required: true, message: t('settings:tldw.fields.password.required', 'Please enter your password') }]}
               >
-                <Input.Password placeholder="Enter password" />
+                <Input.Password placeholder={t('settings:tldw.fields.password.placeholder', 'Enter password')} />
               </Form.Item>
 
               <Form.Item>
@@ -599,25 +627,29 @@ export const TldwSettings = () => {
           )}
 
           <Space className="w-full justify-between">
-            <Space>
-              <Button type="primary" htmlType="submit">
-                {t("common:save")}
-              </Button>
-              
-              <Button 
-                onClick={testConnection}
-                loading={testingConnection}
-                icon={
-                  connectionStatus === 'success' ? (
-                    <CheckIcon className="w-4 h-4 text-green-500" />
-                  ) : connectionStatus === 'error' ? (
-                    <XMarkIcon className="w-4 h-4 text-red-500" />
-                  ) : null
-                }
-              >
-                {t('settings:tldw.buttons.testConnection', 'Test Connection')}
-              </Button>
-            </Space>
+          <Space>
+            <Button type="primary" htmlType="submit">
+              {t("common:save")}
+            </Button>
+            
+            <Button 
+              onClick={testConnection}
+              loading={testingConnection}
+              icon={
+                connectionStatus === 'success' ? (
+                  <CheckIcon className="w-4 h-4 text-green-500" />
+                ) : connectionStatus === 'error' ? (
+                  <XMarkIcon className="w-4 h-4 text-red-500" />
+                ) : null
+              }
+            >
+              {t('settings:tldw.buttons.testConnection', 'Test Connection')}
+            </Button>
+
+            <Button onClick={grantSiteAccess}>
+              {t('settings:tldw.buttons.grantSiteAccess', 'Grant Site Access')}
+            </Button>
+          </Space>
 
             {connectionStatus && (
               <span className={`text-sm ${connectionStatus === 'success' ? 'text-green-500' : 'text-red-500'}`}>
@@ -629,13 +661,13 @@ export const TldwSettings = () => {
             )}
             {connectionStatus === 'success' && (
               <div className="ml-4">
-                <span className="text-sm mr-2">RAG:</span>
+                <span className="text-sm mr-2">{t('settings:onboarding.rag.label', 'RAG:')}</span>
                 {ragStatus === 'healthy' ? (
-                  <Tag color="green">Healthy</Tag>
+                  <Tag color="green">{t('settings:healthPage.healthy', 'Healthy')}</Tag>
                 ) : ragStatus === 'unhealthy' ? (
-                  <Tag color="red">Unhealthy</Tag>
+                  <Tag color="red">{t('settings:healthPage.unhealthy', 'Unhealthy')}</Tag>
                 ) : (
-                  <Tag>Unknown</Tag>
+                  <Tag>{t('settings:healthPage.unknown', 'Unknown')}</Tag>
                 )}
               </div>
             )}
@@ -643,16 +675,16 @@ export const TldwSettings = () => {
         </Form>
 
         <div className="mt-8 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
-          <h3 className="font-semibold mb-2">About tldw_server Integration</h3>
+          <h3 className="font-semibold mb-2">{t('settings:tldw.about.title', 'About tldw_server Integration')}</h3>
           <p className="text-sm text-gray-600 dark:text-gray-400">
-            This extension connects to your tldw_server instance, providing access to:
+            {t('settings:tldw.about.description', 'This extension connects to your tldw_server instance, providing access to:')}
           </p>
           <ul className="mt-2 text-sm text-gray-600 dark:text-gray-400 list-disc list-inside">
-            <li>Multiple LLM providers through a unified API</li>
-            <li>RAG (Retrieval-Augmented Generation) search</li>
-            <li>Media ingestion and processing</li>
-            <li>Notes and prompts management</li>
-            <li>Speech-to-text transcription</li>
+            <li>{t('settings:tldw.about.points.providers', 'Multiple LLM providers through a unified API')}</li>
+            <li>{t('settings:tldw.about.points.rag', 'RAG (Retrieval-Augmented Generation) search')}</li>
+            <li>{t('settings:tldw.about.points.media', 'Media ingestion and processing')}</li>
+            <li>{t('settings:tldw.about.points.notes', 'Notes and prompts management')}</li>
+            <li>{t('settings:tldw.about.points.stt', 'Speech-to-text transcription')}</li>
           </ul>
         </div>
       </div>

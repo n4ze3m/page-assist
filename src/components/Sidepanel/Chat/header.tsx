@@ -28,6 +28,7 @@ import {
 import { useTranslation } from "react-i18next"
 // import { CurrentChatModelSettings } from "@/components/Common/Settings/CurrentChatModelSettings"
 import React from "react"
+import { IconButton } from "@/components/Common/IconButton"
 import { useStorage } from "@plasmohq/storage/hook"
 import { PromptSelect } from "@/components/Common/PromptSelect"
 import { CharacterSelect } from "@/components/Common/CharacterSelect"
@@ -297,29 +298,29 @@ export const SidepanelHeader = ({
             </Space>
           }
         >
-          <button
-            aria-label={t('sidepanel:header.moreOptionsAria')}
-            title={t('sidepanel:header.moreOptionsTitle')}
-            aria-haspopup="menu"
-            aria-expanded={moreOpen}
-            aria-controls="sidepanel-more-menu"
+          <IconButton
             ref={moreBtnRef}
+            ariaLabel={t('sidepanel:header.moreOptionsAria') as string}
+            title={t('sidepanel:header.moreOptionsTitle') as string}
+            hasPopup="menu"
+            ariaExpanded={moreOpen}
+            ariaControls="sidepanel-more-menu"
             className="flex items-center space-x-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-700">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-4 text-gray-500 dark:text-gray-400"><path d="M12 8a2 2 0 110-4 2 2 0 010 4zm0 7a2 2 0 110-4 2 2 0 010 4zm0 7a2 2 0 110-4 2 2 0 010 4z"/></svg>
             <span className="sr-only">{t('sidepanel:header.moreOptionsTitle')}</span>
-          </button>
+          </IconButton>
         </Popover>
         {webuiBtnSidePanel ? (
           <Tooltip title={t("tooltip.openwebui")}>
-            <button
+            <IconButton
+              ariaLabel={t('sidepanel:header.openWebuiAria') as string}
               onClick={() => {
                 const url = browser.runtime.getURL("/options.html")
                 browser.tabs.create({ url })
               }}
-              aria-label={t('sidepanel:header.openWebuiAria')}
               className="flex items-center space-x-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-700">
               <MessageSquareShareIcon className="size-4 text-gray-500 dark:text-gray-400" />
-            </button>
+            </IconButton>
           </Tooltip>
         ) : null}
         {isEmbedding ? (
@@ -330,14 +331,14 @@ export const SidepanelHeader = ({
 
         {messages.length > 0 && !streaming && (
           <Tooltip title={t("option:newChat")}>
-            <button
+            <IconButton
+              ariaLabel={t('sidepanel:header.newChatAria') as string}
               onClick={() => {
                 clearChat()
               }}
-              aria-label={t('sidepanel:header.newChatAria')}
               className="flex items-center space-x-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-700">
               <PlusSquare className="size-4 text-gray-500 dark:text-gray-400" />
-            </button>
+            </IconButton>
           </Tooltip>
         )}
 
@@ -345,25 +346,25 @@ export const SidepanelHeader = ({
 
         {history.length > 0 && (
           <Tooltip title={t("tooltip.clear")}>
-            <button
+            <IconButton
+              ariaLabel={t('sidepanel:header.clearHistoryAria') as string}
               onClick={() => {
                 setHistory([])
               }}
-              aria-label={t('sidepanel:header.clearHistoryAria')}
               className="flex items-center space-x-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-700">
               <EraserIcon className="size-4 text-gray-500 dark:text-gray-400" />
-            </button>
+            </IconButton>
           </Tooltip>
         )}
         <Tooltip title={t("tooltip.history")}>
-          <button
+          <IconButton
+            ariaLabel={t('sidepanel:header.openHistoryAria') as string}
             onClick={() => {
               setSidebarOpen(true)
             }}
-            aria-label={t('sidepanel:header.openHistoryAria')}
             className="flex items-center space-x-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-700">
             <HistoryIcon className="size-4 text-gray-500 dark:text-gray-400" />
-          </button>
+          </IconButton>
         </Tooltip>
         <PromptSelect
           selectedSystemPrompt={selectedSystemPrompt}

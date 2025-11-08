@@ -1,162 +1,166 @@
 {
-    "pageAssist": "tldw Assistant",
-    "titles": {
-        "options": "tldw Assistant — Options",
-        "sidepanel": "tldw Assistant — Sidepanel"
+  "pageAssist": "tldw Assistant",
+  "titles": {
+    "options": "tldw Assistant — Options",
+    "sidepanel": "tldw Assistant — Sidepanel"
+  },
+  "pdf": {
+    "passwordTitle": "Enter the PDF password",
+    "unlock": "Unlock"
+  },
+  "loading": {
+    "title": "Loading…",
+    "description": "Please wait while we get things ready."
+  },
+  "selectAModel": "Velg en modell",
+  "save": "Lagre",
+  "saved": "Lagret",
+  "cancel": "Avbryt",
+  "retry": "Prøv igjen",
+  "share": {
+    "tooltip": {
+      "share": "Del"
     },
-    "pdf": {
-        "passwordTitle": "Enter the PDF password",
-        "unlock": "Unlock"
+    "modal": {
+      "title": "Del lenke til chatten"
     },
-    "loading": {
-        "title": "Loading…",
-        "description": "Please wait while we get things ready."
+    "form": {
+      "defaultValue": {
+        "name": "Anonym",
+        "title": "Navnløs chat"
+      },
+      "title": {
+        "label": "Chattittel",
+        "placeholder": "Skriv inn chattittel",
+        "required": "Chattittel er nødvendig"
+      },
+      "name": {
+        "label": "Ditt navn",
+        "placeholder": "Skriv inn ditt navn",
+        "required": "Ditt navn er nødvendig"
+      },
+      "btn": {
+        "save": "Generer en lenke",
+        "saving": "Genererer lenke..."
+      }
     },
-    "selectAModel": "Velg en modell",
-    "save": "Lagre",
-    "saved": "Lagret",
-    "cancel": "Avbryt",
-    "retry": "Prøv igjen",
-    "share": {
-        "tooltip": {
-            "share": "Del"
-        },
-        "modal": {
-            "title": "Del lenke til chatten"
-        },
-        "form": {
-            "defaultValue": {
-                "name": "Anonym",
-                "title": "Navnløs chat"
-            },
-            "title": {
-                "label": "Chattittel",
-                "placeholder": "Skriv inn chattittel",
-                "required": "Chattittel er nødvendig"
-            },
-            "name": {
-                "label": "Ditt navn",
-                "placeholder": "Skriv inn ditt navn",
-                "required": "Ditt navn er nødvendig"
-            },
-            "btn": {
-                "save": "Generer en lenke",
-                "saving": "Genererer lenke..."
-            }
-        },
-        "notification": {
-            "successGenerate": "Lenke kopiert til utklippstavle",
-            "failGenerate": "Kunne ikke generere lenke"
-        }
-    },
-    "copyToClipboard": "Kopier til utklippstavle",
-    "webSearch": "Søker på internett",
-    "regenerate": "Regenerer",
-    "continue": "Continue Response",
-    "edit": "Endre",
-    "delete": "Slett",
-    "saveAndSubmit": "Lagre & Send inn",
-    "editMessage": {
-        "placeholder": "Skriv en melding..."
-    },
-    "submit": "Send inn",
-    "send": "Send inn",
-    "noData": "Ingen data",
-    "noHistory": "Ingen chathistorikk",
-    "chatWithCurrentPage": "Chat med nåværende side",
-    "beta": "Beta",
-    "tts": "Les opp",
-    "currentChatModelSettings": "Nåværende chatmodellinnstillinger",
-    "modelSettings": {
-        "label": "Modellinnstillinger",
-        "description": "Konfigurer modellinnstillingene for alle chatter",
-        "form": {
-            "keepAlive": {
-                "label": "Hold i live",
-                "help": "kontrollerer hvor lenge modellen vil forbli lastet i minnet etter forespørselen (standard: 5m)",
-                "placeholder": "Skriv inn lengden på økten (f.eks. 5m, 10m, 1t)"
-            },
-            "temperature": {
-                "label": "Temperatur",
-                "placeholder": "Skriv inn temperaturverdi (f.eks. 0.7, 1.0)"
-            },
-            "numCtx": {
-                "label": "Kontekstvindustørrelse (num_ctx)",
-                "placeholder": "Skriv inn kontekstvindustørrelse-verdi (standard: 2048)"
-            },
-            "numPredict": {
-                "label": "Maks Tokens (num_predict)",
-                "placeholder": "Skriv inn Maks Tokens-verdi (f.eks. 2048, 4096)"
-            },
-            "seed": {
-                "label": "Seed",
-                "placeholder": "Skriv inn seedverdi (f.eks. 1234)",
-                "help": "Reproduserbarhet av modellutdata"
-            },
-            "topK": {
-                "label": "Topp K",
-                "placeholder": "Skriv inn Topp K-verdi (f.eks. 40, 100)"
-            },
-            "topP": {
-                "label": "Topp P",
-                "placeholder": "Skriv inn Topp P-verdi (f.eks. 0.9, 0.95)"
-            },
-            "numGpu": {
-                "label": "Antall GPUer",
-                "placeholder": "Skriv inn antall lag som sendes til GPU(er)"
-            },
-            "systemPrompt": {
-                "label": "Midlertidig systemprompt",
-                "placeholder": "Skriv inn systemprompt",
-                "help": "Dette er en rask måte å sette systemprompt i den nåværende chatten, som vil overstyre den valgte systemprompt hvis den finnes."
-            }
-        },
-        "advanced": "Flere modellinnstillinger"
-    },
-    "copilot": {
-        "summary": "Oppsummer",
-        "explain": "Forklar",
-        "rephrase": "Omformulér",
-        "translate": "Oversett",
-        "custom": "Egendefinert"
-    },
-    "citations": "Sitater",
-    "downloadCode": "Last ned kode",
-    "date": {
-        "pinned": "Festet",
-        "today": "I dag",
-        "yesterday": "I går",
-        "last7Days": "Siste 7 dager",
-        "older": "Eldre"
-    },
-    "range": {
-        "deleteConfirm": {
-            "pinned": "Er du sikker på at du vil slette alle festede meldinger?",
-            "today": "Er du sikker på at du vil slette alle meldinger fra i dag?",
-            "yesterday": "Er du sikker på at du vil slette alle meldinger fra i går?",
-            "last7Days": "Er du sikker på at du vil slette alle meldinger fra de siste 7 dagene?",
-            "older": "Er du sikker på at du vil slette alle eldre meldinger?"
-        },
-        "tooltip": {
-            "pinned": "Slett alle festede meldinger",
-            "today": "Slett alle meldinger fra i dag",
-            "yesterday": "Slett alle meldinger fra i går",
-            "last7Days": "Slett alle meldinger fra de siste 7 dagene",
-            "older": "Slett alle eldre meldinger"
-        }
-    },
-    "pin": "Fest",
-    "unpin": "Løsne",
-    "generationInfo": "Generasjonsinformasjon",
-    "sidebarChat": "Sidepanel-chat",
-    "reasoning": {
-        "thinking": "Tenker....",
-        "thought": "Tenkte i {{time}}"
-    },
-    "embeddingGen": "Oppretter embeddings, dette kan ta litt tid",
-    "semanticSearch": "Utfører semantisk søk",
-    "downloading": "Laster ned",
-    "cancelPullingModel": {
-        "confirm": "Er du sikker på at du vil avbryte nedlastingen? Dette vil stoppe nedlastingsprosessen. Ifølge Ollama-dokumentasjonen kan du starte på nytt fra der du slapp."
+    "notification": {
+      "successGenerate": "Lenke kopiert til utklippstavle",
+      "failGenerate": "Kunne ikke generere lenke"
     }
+  },
+  "copyToClipboard": "Kopier til utklippstavle",
+  "webSearch": "Søker på internett",
+  "regenerate": "Regenerer",
+  "continue": "Continue Response",
+  "edit": "Endre",
+  "delete": "Slett",
+  "saveAndSubmit": "Lagre & Send inn",
+  "editMessage": {
+    "placeholder": "Skriv en melding..."
+  },
+  "submit": "Send inn",
+  "send": "Send inn",
+  "noData": "Ingen data",
+  "noHistory": "Ingen chathistorikk",
+  "chatWithCurrentPage": "Chat med nåværende side",
+  "beta": "Beta",
+  "tts": "Les opp",
+  "currentChatModelSettings": "Nåværende chatmodellinnstillinger",
+  "modelSettings": {
+    "label": "Modellinnstillinger",
+    "description": "Konfigurer modellinnstillingene for alle chatter",
+    "form": {
+      "keepAlive": {
+        "label": "Hold i live",
+        "help": "kontrollerer hvor lenge modellen vil forbli lastet i minnet etter forespørselen (standard: 5m)",
+        "placeholder": "Skriv inn lengden på økten (f.eks. 5m, 10m, 1t)"
+      },
+      "temperature": {
+        "label": "Temperatur",
+        "placeholder": "Skriv inn temperaturverdi (f.eks. 0.7, 1.0)"
+      },
+      "numCtx": {
+        "label": "Kontekstvindustørrelse (num_ctx)",
+        "placeholder": "Skriv inn kontekstvindustørrelse-verdi (standard: 2048)"
+      },
+      "numPredict": {
+        "label": "Maks Tokens (num_predict)",
+        "placeholder": "Skriv inn Maks Tokens-verdi (f.eks. 2048, 4096)"
+      },
+      "seed": {
+        "label": "Seed",
+        "placeholder": "Skriv inn seedverdi (f.eks. 1234)",
+        "help": "Reproduserbarhet av modellutdata"
+      },
+      "topK": {
+        "label": "Topp K",
+        "placeholder": "Skriv inn Topp K-verdi (f.eks. 40, 100)"
+      },
+      "topP": {
+        "label": "Topp P",
+        "placeholder": "Skriv inn Topp P-verdi (f.eks. 0.9, 0.95)"
+      },
+      "numGpu": {
+        "label": "Antall GPUer",
+        "placeholder": "Skriv inn antall lag som sendes til GPU(er)"
+      },
+      "systemPrompt": {
+        "label": "Midlertidig systemprompt",
+        "placeholder": "Skriv inn systemprompt",
+        "help": "Dette er en rask måte å sette systemprompt i den nåværende chatten, som vil overstyre den valgte systemprompt hvis den finnes."
+      }
+    },
+    "advanced": "Flere modellinnstillinger"
+  },
+  "copilot": {
+    "summary": "Oppsummer",
+    "explain": "Forklar",
+    "rephrase": "Omformulér",
+    "translate": "Oversett",
+    "custom": "Egendefinert"
+  },
+  "citations": "Sitater",
+  "downloadCode": "Last ned kode",
+  "date": {
+    "pinned": "Festet",
+    "today": "I dag",
+    "yesterday": "I går",
+    "last7Days": "Siste 7 dager",
+    "older": "Eldre"
+  },
+  "range": {
+    "deleteConfirm": {
+      "pinned": "Er du sikker på at du vil slette alle festede meldinger?",
+      "today": "Er du sikker på at du vil slette alle meldinger fra i dag?",
+      "yesterday": "Er du sikker på at du vil slette alle meldinger fra i går?",
+      "last7Days": "Er du sikker på at du vil slette alle meldinger fra de siste 7 dagene?",
+      "older": "Er du sikker på at du vil slette alle eldre meldinger?"
+    },
+    "tooltip": {
+      "pinned": "Slett alle festede meldinger",
+      "today": "Slett alle meldinger fra i dag",
+      "yesterday": "Slett alle meldinger fra i går",
+      "last7Days": "Slett alle meldinger fra de siste 7 dagene",
+      "older": "Slett alle eldre meldinger"
+    }
+  },
+  "pin": "Fest",
+  "unpin": "Løsne",
+  "generationInfo": "Generasjonsinformasjon",
+  "sidebarChat": "Sidepanel-chat",
+  "reasoning": {
+    "thinking": "Tenker....",
+    "thought": "Tenkte i {{time}}"
+  },
+  "embeddingGen": "Oppretter embeddings, dette kan ta litt tid",
+  "semanticSearch": "Utfører semantisk søk",
+  "downloading": "Laster ned",
+  "cancelPullingModel": {
+    "confirm": "Er du sikker på at du vil avbryte nedlastingen? Dette vil stoppe nedlastingsprosessen. Ifølge Ollama-dokumentasjonen kan du starte på nytt fra der du slapp."
+  },
+  "table": {
+    "copyCsv": "Copy as CSV",
+    "downloadCsv": "Download CSV"
+  }
 }

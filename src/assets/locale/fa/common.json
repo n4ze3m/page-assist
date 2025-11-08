@@ -1,155 +1,159 @@
 {
-    "pageAssist": "tldw Assistant",
-    "titles": {
-        "options": "tldw Assistant — Options",
-        "sidepanel": "tldw Assistant — Sidepanel"
+  "pageAssist": "tldw Assistant",
+  "titles": {
+    "options": "tldw Assistant — Options",
+    "sidepanel": "tldw Assistant — Sidepanel"
+  },
+  "pdf": {
+    "passwordTitle": "Enter the PDF password",
+    "unlock": "Unlock"
+  },
+  "loading": {
+    "title": "Loading…",
+    "description": "Please wait while we get things ready."
+  },
+  "selectAModel": "یک مدل انتخاب کنید",
+  "save": "ذخیره",
+  "saved": "ذخیره شد",
+  "cancel": "لغو",
+  "retry": "تلاش مجدد",
+  "share": {
+    "tooltip": {
+      "share": "اشتراک گذاری"
     },
-    "pdf": {
-        "passwordTitle": "Enter the PDF password",
-        "unlock": "Unlock"
+    "modal": {
+      "title": "اشتراک گذاری لینک به گپ"
     },
-    "loading": {
-        "title": "Loading…",
-        "description": "Please wait while we get things ready."
+    "form": {
+      "defaultValue": {
+        "name": "ناشناس",
+        "title": "گپ بی نام"
+      },
+      "title": {
+        "label": "عنوان گپ",
+        "placeholder": "عنوان گپ را وارد کنید",
+        "required": "وارد کردن عنوان چت الزامی است"
+      },
+      "name": {
+        "label": "نام شما",
+        "placeholder": "نام خود را وارد کنید",
+        "required": "وارد کردن نام الزامی است"
+      },
+      "btn": {
+        "save": "ایجاد لینک",
+        "saving": "در حال ایجاد لینک..."
+      }
     },
-    "selectAModel": "یک مدل انتخاب کنید",
-    "save": "ذخیره",
-    "saved": "ذخیره شد",
-    "cancel": "لغو",
-    "retry": "تلاش مجدد",
-    "share": {
-        "tooltip": {
-            "share": "اشتراک گذاری"
-        },
-        "modal": {
-            "title": "اشتراک گذاری لینک به گپ"
-        },
-        "form": {
-            "defaultValue": {
-                "name": "ناشناس",
-                "title": "گپ بی نام"
-            },
-            "title": {
-                "label": "عنوان گپ",
-                "placeholder": "عنوان گپ را وارد کنید",
-                "required": "وارد کردن عنوان چت الزامی است"
-            },
-            "name": {
-                "label": "نام شما",
-                "placeholder": "نام خود را وارد کنید",
-                "required": "وارد کردن نام الزامی است"
-            },
-            "btn": {
-                "save": "ایجاد لینک",
-                "saving": "در حال ایجاد لینک..."
-            }
-        },
-        "notification": {
-            "successGenerate": "پیوند در کلیپ بورد کپی شد",
-            "failGenerate": "پیوند ایجاد نشد"
-        }
-    },
-    "copyToClipboard": "کپی به کلیپ بورد",
-    "webSearch": "جستجوی وب",
-    "regenerate": "ایجاد مجدد",
-    "continue": "ادامه پاسخ",
-    "edit": "ویرایش",
-    "delete": "حذف",
-    "saveAndSubmit": "ذخیره و ارسال",
-    "editMessage": {
-        "placeholder": "یک پیام وارد کنید..."
-    },
-    "submit": "ارسال",
-    "send": "ارسال",
-    "noData": "اطلاعاتی وجود ندارد",
-    "noHistory": "تاریخچه گپ وجود ندارد",
-    "chatWithCurrentPage": "گپ زدن با این صفحه",
-    "beta": "بتا",
-    "tts": "بلند بخوان",
-    "currentChatModelSettings": "تنظیمات مدل گپ فعلی",
-    "modelSettings": {
-        "label": "تنظیمات مدل",
-        "description": "گزینه های مدل را به صورت کلی برای همه گپ ها تنظیم کنید",
-        "form": {
-            "keepAlive": {
-                "label": "Keep Alive",
-                "help": "کنترل می کند که چه مدت مدل پس از درخواست در حافظه باقی می ماند (پیش فرض: 5 دقیقه)",
-                "placeholder": "مدت زمان Keep Alive را وارد کنید (مثلا 5m, 10m, 1h)"
-            },
-            "temperature": {
-                "label": "Temperature",
-                "placeholder": "مقدار Temperature را وارد کنید (مثلا 0.7, 1.0)"
-            },
-            "numCtx": {
-                "label": "اندازه پنجره متن (num_ctx)",
-                "placeholder": "مقدار اندازه پنجره متن را وارد کنید (پیش فرض: 2048)"
-            },
-            "numPredict": {
-                "label": "حداکثر توکن‌ها (num_predict)",
-                "placeholder": "مقدار حداکثر توکن‌ها را وارد کنید (مثلا 2048، 4096)"
-            },
-            "seed": {
-                "label": "Seed",
-                "placeholder": "مقدار Seed را وارد کنید (e.g. 1234)",
-                "help": "تکرارپذیری خروجی مدل"
-            },
-            "topK": {
-                "label": "Top K",
-                "placeholder": "مقدار Top K را وارد کنید (مثلا 40, 100)"
-            },
-            "topP": {
-                "label": "Top P",
-                "placeholder": "مقدار Top P را وارد کنید (مثلا 0.9, 0.95)"
-            },
-            "numGpu": {
-                "label": "Num GPU",
-                "placeholder": "تعداد لایه‌هایی که به GPU(ها) ارسال می‌شود را وارد کنید"
-            },
-            "systemPrompt": {
-                "label": "پرامپت سیستم موقت",
-                "placeholder": "پرامپت سیستم را وارد کنید",
-                "help": "این یک روش سریع برای تنظیم پرامپت سیستم در گفتگوی فعلی است که در صورت وجود، پرامپت سیستم انتخاب شده را لغو خواهد کرد."
-            }
-        },
-        "advanced": "تنظیمات بیشتر مدل"
-    },
-    "citations": "منابع",
-    "downloadCode": "دانلود کد",
-    "date": {
-        "pinned": "پین شده",
-        "today": "امروز",
-        "yesterday": "دیروز",
-        "last7Days": "۷ روز گذشته",
-        "older": "قدیمی‌تر"
-    },
-    "range": {
-        "deleteConfirm": {
-            "pinned": "آیا مطمئن هستید که می‌خواهید تمام پیام‌های پین شده را حذف کنید؟",
-            "today": "آیا مطمئن هستید که می‌خواهید تمام پیام‌های امروز را حذف کنید؟",
-            "yesterday": "آیا مطمئن هستید که می‌خواهید تمام پیام‌های دیروز را حذف کنید؟",
-            "last7Days": "آیا مطمئن هستید که می‌خواهید تمام پیام‌های ۷ روز گذشته را حذف کنید؟",
-            "older": "آیا مطمئن هستید که می‌خواهید تمام پیام‌های قدیمی‌تر را حذف کنید؟"
-        },
-        "tooltip": {
-            "pinned": "حذف تمام پیام‌های پین شده",
-            "today": "حذف تمام پیام‌های امروز",
-            "yesterday": "حذف تمام پیام‌های دیروز",
-            "last7Days": "حذف تمام پیام‌های ۷ روز گذشته",
-            "older": "حذف تمام پیام‌های قدیمی‌تر"
-        }
-    },
-    "pin": "پین کردن",
-    "unpin": "حذف پین",
-    "generationInfo": "اطلاعات تولید",
-    "sidebarChat": "چت کناری",
-    "reasoning": {
-        "thinking": "در حال فکر کردن....",
-        "thought": "فکر کردن برای {{time}}"
-    },
-    "embeddingGen": "در حال ایجاد تمثیلات، این ممکن است چند لحظه طول بکشد",
-    "semanticSearch": "در حال جستجوی معنایی",
-    "downloading": "در حال دانلود",
-    "cancelPullingModel": {
-        "confirm": "آیا مطمئن هستید که می‌خواهید دانلود را لغو کنید؟ این کار فرآیند دانلود را متوقف می‌کند. طبق مستندات Ollama، می‌توانید دانلود را از همان جایی که متوقف شده ادامه دهید."
+    "notification": {
+      "successGenerate": "پیوند در کلیپ بورد کپی شد",
+      "failGenerate": "پیوند ایجاد نشد"
     }
+  },
+  "copyToClipboard": "کپی به کلیپ بورد",
+  "webSearch": "جستجوی وب",
+  "regenerate": "ایجاد مجدد",
+  "continue": "ادامه پاسخ",
+  "edit": "ویرایش",
+  "delete": "حذف",
+  "saveAndSubmit": "ذخیره و ارسال",
+  "editMessage": {
+    "placeholder": "یک پیام وارد کنید..."
+  },
+  "submit": "ارسال",
+  "send": "ارسال",
+  "noData": "اطلاعاتی وجود ندارد",
+  "noHistory": "تاریخچه گپ وجود ندارد",
+  "chatWithCurrentPage": "گپ زدن با این صفحه",
+  "beta": "بتا",
+  "tts": "بلند بخوان",
+  "currentChatModelSettings": "تنظیمات مدل گپ فعلی",
+  "modelSettings": {
+    "label": "تنظیمات مدل",
+    "description": "گزینه های مدل را به صورت کلی برای همه گپ ها تنظیم کنید",
+    "form": {
+      "keepAlive": {
+        "label": "Keep Alive",
+        "help": "کنترل می کند که چه مدت مدل پس از درخواست در حافظه باقی می ماند (پیش فرض: 5 دقیقه)",
+        "placeholder": "مدت زمان Keep Alive را وارد کنید (مثلا 5m, 10m, 1h)"
+      },
+      "temperature": {
+        "label": "Temperature",
+        "placeholder": "مقدار Temperature را وارد کنید (مثلا 0.7, 1.0)"
+      },
+      "numCtx": {
+        "label": "اندازه پنجره متن (num_ctx)",
+        "placeholder": "مقدار اندازه پنجره متن را وارد کنید (پیش فرض: 2048)"
+      },
+      "numPredict": {
+        "label": "حداکثر توکن‌ها (num_predict)",
+        "placeholder": "مقدار حداکثر توکن‌ها را وارد کنید (مثلا 2048، 4096)"
+      },
+      "seed": {
+        "label": "Seed",
+        "placeholder": "مقدار Seed را وارد کنید (e.g. 1234)",
+        "help": "تکرارپذیری خروجی مدل"
+      },
+      "topK": {
+        "label": "Top K",
+        "placeholder": "مقدار Top K را وارد کنید (مثلا 40, 100)"
+      },
+      "topP": {
+        "label": "Top P",
+        "placeholder": "مقدار Top P را وارد کنید (مثلا 0.9, 0.95)"
+      },
+      "numGpu": {
+        "label": "Num GPU",
+        "placeholder": "تعداد لایه‌هایی که به GPU(ها) ارسال می‌شود را وارد کنید"
+      },
+      "systemPrompt": {
+        "label": "پرامپت سیستم موقت",
+        "placeholder": "پرامپت سیستم را وارد کنید",
+        "help": "این یک روش سریع برای تنظیم پرامپت سیستم در گفتگوی فعلی است که در صورت وجود، پرامپت سیستم انتخاب شده را لغو خواهد کرد."
+      }
+    },
+    "advanced": "تنظیمات بیشتر مدل"
+  },
+  "citations": "منابع",
+  "downloadCode": "دانلود کد",
+  "date": {
+    "pinned": "پین شده",
+    "today": "امروز",
+    "yesterday": "دیروز",
+    "last7Days": "۷ روز گذشته",
+    "older": "قدیمی‌تر"
+  },
+  "range": {
+    "deleteConfirm": {
+      "pinned": "آیا مطمئن هستید که می‌خواهید تمام پیام‌های پین شده را حذف کنید؟",
+      "today": "آیا مطمئن هستید که می‌خواهید تمام پیام‌های امروز را حذف کنید؟",
+      "yesterday": "آیا مطمئن هستید که می‌خواهید تمام پیام‌های دیروز را حذف کنید؟",
+      "last7Days": "آیا مطمئن هستید که می‌خواهید تمام پیام‌های ۷ روز گذشته را حذف کنید؟",
+      "older": "آیا مطمئن هستید که می‌خواهید تمام پیام‌های قدیمی‌تر را حذف کنید؟"
+    },
+    "tooltip": {
+      "pinned": "حذف تمام پیام‌های پین شده",
+      "today": "حذف تمام پیام‌های امروز",
+      "yesterday": "حذف تمام پیام‌های دیروز",
+      "last7Days": "حذف تمام پیام‌های ۷ روز گذشته",
+      "older": "حذف تمام پیام‌های قدیمی‌تر"
+    }
+  },
+  "pin": "پین کردن",
+  "unpin": "حذف پین",
+  "generationInfo": "اطلاعات تولید",
+  "sidebarChat": "چت کناری",
+  "reasoning": {
+    "thinking": "در حال فکر کردن....",
+    "thought": "فکر کردن برای {{time}}"
+  },
+  "embeddingGen": "در حال ایجاد تمثیلات، این ممکن است چند لحظه طول بکشد",
+  "semanticSearch": "در حال جستجوی معنایی",
+  "downloading": "در حال دانلود",
+  "cancelPullingModel": {
+    "confirm": "آیا مطمئن هستید که می‌خواهید دانلود را لغو کنید؟ این کار فرآیند دانلود را متوقف می‌کند. طبق مستندات Ollama، می‌توانید دانلود را از همان جایی که متوقف شده ادامه دهید."
+  },
+  "table": {
+    "copyCsv": "Copy as CSV",
+    "downloadCsv": "Download CSV"
+  }
 }

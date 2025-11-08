@@ -1,166 +1,170 @@
 {
-    "pageAssist": "tldw Assistant",
-    "titles": {
-        "options": "tldw Assistant — Options",
-        "sidepanel": "tldw Assistant — Sidepanel"
+  "pageAssist": "tldw Assistant",
+  "titles": {
+    "options": "tldw Assistant — Options",
+    "sidepanel": "tldw Assistant — Sidepanel"
+  },
+  "pdf": {
+    "passwordTitle": "Enter the PDF password",
+    "unlock": "Unlock"
+  },
+  "loading": {
+    "title": "Loading…",
+    "description": "Please wait while we get things ready."
+  },
+  "selectAModel": "Välj en modell",
+  "save": "Spara",
+  "saved": "Sparad",
+  "cancel": "Avbryt",
+  "retry": "Försök igen",
+  "share": {
+    "tooltip": {
+      "share": "Dela"
     },
-    "pdf": {
-        "passwordTitle": "Enter the PDF password",
-        "unlock": "Unlock"
+    "modal": {
+      "title": "Dela länk till chatt"
     },
-    "loading": {
-        "title": "Loading…",
-        "description": "Please wait while we get things ready."
+    "form": {
+      "defaultValue": {
+        "name": "Anonym",
+        "title": "Chatt utan titel"
+      },
+      "title": {
+        "label": "Chattitel",
+        "placeholder": "Ange chattitel",
+        "required": "Chattitel krävs"
+      },
+      "name": {
+        "label": "Ditt namn",
+        "placeholder": "Ange ditt namn",
+        "required": "Ditt namn krävs"
+      },
+      "btn": {
+        "save": "Generera länk",
+        "saving": "Genererar länk..."
+      }
     },
-    "selectAModel": "Välj en modell",
-    "save": "Spara",
-    "saved": "Sparad",
-    "cancel": "Avbryt",
-    "retry": "Försök igen",
-    "share": {
-        "tooltip": {
-            "share": "Dela"
-        },
-        "modal": {
-            "title": "Dela länk till chatt"
-        },
-        "form": {
-            "defaultValue": {
-                "name": "Anonym",
-                "title": "Chatt utan titel"
-            },
-            "title": {
-                "label": "Chattitel",
-                "placeholder": "Ange chattitel",
-                "required": "Chattitel krävs"
-            },
-            "name": {
-                "label": "Ditt namn",
-                "placeholder": "Ange ditt namn",
-                "required": "Ditt namn krävs"
-            },
-            "btn": {
-                "save": "Generera länk",
-                "saving": "Genererar länk..."
-            }
-        },
-        "notification": {
-            "successGenerate": "Länk kopierad till urklipp",
-            "failGenerate": "Misslyckades med att generera länk"
-        }
-    },
-    "copyToClipboard": "Kopiera till urklipp",
-    "webSearch": "Söker på webben",
-    "regenerate": "Återskapa",
-    "continue": "Fortsätt svar",
-    "edit": "Redigera",
-    "delete": "Radera",
-    "saveAndSubmit": "Spara & Skicka",
-    "editMessage": {
-        "placeholder": "Skriv ett meddelande..."
-    },
-    "submit": "Skicka",
-    "send": "Skicka",
-    "noData": "Inga data",
-    "noHistory": "Ingen chattlogg",
-    "chatWithCurrentPage": "Chatta med nuvarande sidan",
-    "beta": "Beta",
-    "tts": "Läs högt",
-    "currentChatModelSettings": "Nuvarande chattmodellinställningar",
-    "modelSettings": {
-        "label": "Modellinställningar",
-        "description": "Ställ in modellalternativen globalt för alla chatter",
-        "form": {
-            "keepAlive": {
-                "label": "Keep Alive",
-                "help": "kontrollerar hur länge modellen kommer att vara laddad i minnet efter förfrågan (standard: 5 min)",
-                "placeholder": "Ange Keep Alive varaktighet (t.ex. 5m, 10m, 1h)"
-            },
-            "temperature": {
-                "label": "Temperatur",
-                "placeholder": "Ange temperaturvärde (t.ex. 0.7, 1.0)"
-            },
-            "numCtx": {
-                "label": "Kontextfönsterstorlek (num_ctx)",
-                "placeholder": "Ange kontextfönsterstorlek (standard: 2048)"
-            },
-            "numPredict": {
-                "label": "Max antal tokens (num_predict)",
-                "placeholder": "Ange Max antal tokens värde (t.ex. 2048, 4096)"
-            },
-            "seed": {
-                "label": "Frö",
-                "placeholder": "Ange frövärde (t.ex. 1234)",
-                "help": "Reproducerbarhet av modellens utskrift"
-            },
-            "topK": {
-                "label": "Topp K",
-                "placeholder": "Ange Topp K värde (t.ex. 40, 100)"
-            },
-            "topP": {
-                "label": "Topp P",
-                "placeholder": "Ange Topp P värde (t.ex. 0.9, 0.95)"
-            },
-            "numGpu": {
-                "label": "Antal GPU",
-                "placeholder": "Ange antal lager att skicka till GPU(s)"
-            },
-            "systemPrompt": {
-                "label": "Tillfällig systempromt",
-                "placeholder": "Ange systemprompt",
-                "help": "Detta är ett snabbt sätt att ställa in systemprompten i den nuvarande chatten, vilket kommer att åsidosätta den valda systemprompten om den finns."
-            }
-        },
-        "advanced": "Fler modellinställningar"
-    },
-    "copilot": {
-        "summary": "Sammanfatta",
-        "explain": "Förklara",
-        "rephrase": "Formulera om",
-        "translate": "Översätt",
-        "custom": "Custom"
-    },
-    "citations": "Citat",
-    "segmented": {
-        "available": "Servermodeller",
-        "custom": "Custom modeller"
-    },
-    "downloadCode": "Ladda ner kod",
-    "date": {
-        "pinned": "Fäst",
-        "today": "Idag",
-        "yesterday": "Igår",
-        "last7Days": "Senaste 7 dagarna",
-        "older": "Äldre"
-    },
-    "range": {
-        "deleteConfirm": {
-            "pinned": "Är du säker på att du vill ta bort alla fästa meddelanden?",
-            "today": "Är du säker på att du vill ta bort alla meddelanden från idag?",
-            "yesterday": "Är du säker på att du vill ta bort alla meddelanden från igår?",
-            "last7Days": "Är du säker på att du vill ta bort alla meddelanden från de senaste 7 dagarna?",
-            "older": "Är du säker på att du vill ta bort alla äldre meddelanden?"
-        },
-        "tooltip": {
-            "pinned": "Ta bort alla fästa meddelanden",
-            "today": "Ta bort alla meddelanden från idag",
-            "yesterday": "Ta bort alla meddelanden från igår",
-            "last7Days": "Ta bort alla meddelanden från de senaste 7 dagarna",
-            "older": "Ta bort alla äldre meddelanden"
-        }
-    },
-    "pin": "Fäst",
-    "unpin": "Ta bort fäst",
-    "generationInfo": "Generationsinformation",
-    "sidebarChat": "Sidofältschatt",
-    "reasoning": {
-        "thinking": "Tänker....",
-        "thought": "Tänkte i {{time}}"
-    },
-    "embeddingGen": "Skapar embeddings, detta kan ta lite tid",
-    "semanticSearch": "Utför semantisk sökning",
-    "downloading": "Laddar ner",
-    "cancelPullingModel": {
-        "confirm": "Är du säker på att du vill avbryta nedladdningen? Detta kommer att stoppa nedladdningsprocessen. Enligt Ollama-dokumentationen kan du återuppta från där du slutade."
+    "notification": {
+      "successGenerate": "Länk kopierad till urklipp",
+      "failGenerate": "Misslyckades med att generera länk"
     }
+  },
+  "copyToClipboard": "Kopiera till urklipp",
+  "webSearch": "Söker på webben",
+  "regenerate": "Återskapa",
+  "continue": "Fortsätt svar",
+  "edit": "Redigera",
+  "delete": "Radera",
+  "saveAndSubmit": "Spara & Skicka",
+  "editMessage": {
+    "placeholder": "Skriv ett meddelande..."
+  },
+  "submit": "Skicka",
+  "send": "Skicka",
+  "noData": "Inga data",
+  "noHistory": "Ingen chattlogg",
+  "chatWithCurrentPage": "Chatta med nuvarande sidan",
+  "beta": "Beta",
+  "tts": "Läs högt",
+  "currentChatModelSettings": "Nuvarande chattmodellinställningar",
+  "modelSettings": {
+    "label": "Modellinställningar",
+    "description": "Ställ in modellalternativen globalt för alla chatter",
+    "form": {
+      "keepAlive": {
+        "label": "Keep Alive",
+        "help": "kontrollerar hur länge modellen kommer att vara laddad i minnet efter förfrågan (standard: 5 min)",
+        "placeholder": "Ange Keep Alive varaktighet (t.ex. 5m, 10m, 1h)"
+      },
+      "temperature": {
+        "label": "Temperatur",
+        "placeholder": "Ange temperaturvärde (t.ex. 0.7, 1.0)"
+      },
+      "numCtx": {
+        "label": "Kontextfönsterstorlek (num_ctx)",
+        "placeholder": "Ange kontextfönsterstorlek (standard: 2048)"
+      },
+      "numPredict": {
+        "label": "Max antal tokens (num_predict)",
+        "placeholder": "Ange Max antal tokens värde (t.ex. 2048, 4096)"
+      },
+      "seed": {
+        "label": "Frö",
+        "placeholder": "Ange frövärde (t.ex. 1234)",
+        "help": "Reproducerbarhet av modellens utskrift"
+      },
+      "topK": {
+        "label": "Topp K",
+        "placeholder": "Ange Topp K värde (t.ex. 40, 100)"
+      },
+      "topP": {
+        "label": "Topp P",
+        "placeholder": "Ange Topp P värde (t.ex. 0.9, 0.95)"
+      },
+      "numGpu": {
+        "label": "Antal GPU",
+        "placeholder": "Ange antal lager att skicka till GPU(s)"
+      },
+      "systemPrompt": {
+        "label": "Tillfällig systempromt",
+        "placeholder": "Ange systemprompt",
+        "help": "Detta är ett snabbt sätt att ställa in systemprompten i den nuvarande chatten, vilket kommer att åsidosätta den valda systemprompten om den finns."
+      }
+    },
+    "advanced": "Fler modellinställningar"
+  },
+  "copilot": {
+    "summary": "Sammanfatta",
+    "explain": "Förklara",
+    "rephrase": "Formulera om",
+    "translate": "Översätt",
+    "custom": "Custom"
+  },
+  "citations": "Citat",
+  "segmented": {
+    "available": "Servermodeller",
+    "custom": "Custom modeller"
+  },
+  "downloadCode": "Ladda ner kod",
+  "date": {
+    "pinned": "Fäst",
+    "today": "Idag",
+    "yesterday": "Igår",
+    "last7Days": "Senaste 7 dagarna",
+    "older": "Äldre"
+  },
+  "range": {
+    "deleteConfirm": {
+      "pinned": "Är du säker på att du vill ta bort alla fästa meddelanden?",
+      "today": "Är du säker på att du vill ta bort alla meddelanden från idag?",
+      "yesterday": "Är du säker på att du vill ta bort alla meddelanden från igår?",
+      "last7Days": "Är du säker på att du vill ta bort alla meddelanden från de senaste 7 dagarna?",
+      "older": "Är du säker på att du vill ta bort alla äldre meddelanden?"
+    },
+    "tooltip": {
+      "pinned": "Ta bort alla fästa meddelanden",
+      "today": "Ta bort alla meddelanden från idag",
+      "yesterday": "Ta bort alla meddelanden från igår",
+      "last7Days": "Ta bort alla meddelanden från de senaste 7 dagarna",
+      "older": "Ta bort alla äldre meddelanden"
+    }
+  },
+  "pin": "Fäst",
+  "unpin": "Ta bort fäst",
+  "generationInfo": "Generationsinformation",
+  "sidebarChat": "Sidofältschatt",
+  "reasoning": {
+    "thinking": "Tänker....",
+    "thought": "Tänkte i {{time}}"
+  },
+  "embeddingGen": "Skapar embeddings, detta kan ta lite tid",
+  "semanticSearch": "Utför semantisk sökning",
+  "downloading": "Laddar ner",
+  "cancelPullingModel": {
+    "confirm": "Är du säker på att du vill avbryta nedladdningen? Detta kommer att stoppa nedladdningsprocessen. Enligt Ollama-dokumentationen kan du återuppta från där du slutade."
+  },
+  "table": {
+    "copyCsv": "Copy as CSV",
+    "downloadCsv": "Download CSV"
+  }
 }

@@ -3,8 +3,11 @@ import { notification } from "antd"
 import { useTranslation } from "react-i18next"
 
 import HealthSummary from "@/components/Option/Settings/health-summary"
-import { OnboardingWizard } from "@/components/Option/Onboarding/OnboardingWizard"
+// Replaced the bespoke onboarding wizard with the shared server connection panel
+// to match Sidepanel’s first-run/empty state UX.
 import { PageAssistLoader } from "@/components/Common/PageAssistLoader"
+import ServerConnectionCard from "@/components/Common/ServerConnectionCard"
+import { useNavigate } from "react-router-dom"
 import { tldwClient } from "@/services/tldw/TldwApiClient"
 import { getTldwServerURL } from "@/services/tldw-server"
 import OptionLayout from "~/components/Layouts/Layout"
@@ -13,8 +16,9 @@ import { Playground } from "~/components/Option/Playground/Playground"
 const OptionIndex = () => {
   const [needsOnboarding, setNeedsOnboarding] = React.useState<boolean>(false)
   const [loading, setLoading] = React.useState<boolean>(true)
-  const { t } = useTranslation(["settings"])
+  const { t } = useTranslation(["settings"]) 
   const errorToastRef = React.useRef(false)
+  const navigate = useNavigate()
 
   const notifyConnectionIssue = React.useCallback(
     (reason?: string) => {
@@ -96,9 +100,14 @@ const OptionIndex = () => {
           <PageAssistLoader />
         </div>
       ) : showOnboarding ? (
-        <div className="w-full max-w-3xl rounded-xl border border-gray-200 bg-white px-6 py-8 shadow-sm dark:border-gray-700 dark:bg-[#1a1a1a]">
-          <OnboardingWizard onFinish={() => setNeedsOnboarding(false)} />
-          <p className="mt-6 text-center text-sm text-gray-600 dark:text-gray-300">
+        <div className="w-full">
+          <ServerConnectionCard onOpenSettings={() => navigate("/settings/tldw")} />
+          <p className="mt-4 text-center text-sm text-blue-600 hover:text-blue-500 dark:text-blue-400">
+            <button onClick={() => navigate("/settings/tldw")}>
+              {t("tldw.setupLink", "Set up server")}
+            </button>
+          </p>
+          <p className="mt-2 text-center text-xs text-gray-600 dark:text-gray-300">
             {t(
               "onboarding.footerHelp",
               "Once connected, you can revisit these settings anytime from the extension menu."

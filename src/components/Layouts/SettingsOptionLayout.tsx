@@ -10,8 +10,9 @@ function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ")
 }
 
-const shouldHideForFirefox = (item: SettingsNavItem) =>
-  import.meta.env.BROWSER === "firefox" && item.to === "/settings/chrome"
+const shouldHideForBrowser = (item: SettingsNavItem) =>
+  // Hide Chrome-specific settings on non-Chrome targets
+  import.meta.env.BROWSER !== "chrome" && item.to === "/settings/chrome"
 
 export const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
   const location = useLocation()
@@ -54,7 +55,7 @@ export const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
                 </div>
                 <div className="flex flex-col gap-6">
                   {SETTINGS_NAV_GROUPS.map((group) => {
-                    const items = group.items.filter((item) => !shouldHideForFirefox(item))
+                    const items = group.items.filter((item) => !shouldHideForBrowser(item))
                     if (items.length === 0) {
                       return null
                     }
@@ -75,7 +76,8 @@ export const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
                                     ? "bg-gray-100 text-gray-700 dark:bg-[#262626] dark:text-white"
                                     : "text-gray-700 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-200 dark:hover:text-white dark:hover:bg-[#262626]",
                                   "group flex gap-x-3 rounded-md py-2 pl-2 pr-3 text-sm font-semibold"
-                                )}>
+                                )}
+                                aria-current={location.pathname === item.to ? "page" : undefined}>
                                 <item.icon
                                   className={classNames(
                                     location.pathname === item.to

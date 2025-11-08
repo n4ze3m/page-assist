@@ -7,6 +7,7 @@ import {
   ImageIcon
 } from "lucide-react"
 import { Dropdown, MenuProps, message } from "antd"
+import { IconButton } from "../Common/IconButton"
 import { Message } from "@/types/message"
 import { useState } from "react"
 import { ShareModal } from "../Common/ShareModal"
@@ -87,6 +88,7 @@ export const MoreOptions = ({
 }: MoreOptionsProps) => {
   const { t } = useTranslation(["option", "settings"])
   const [onShareOpen, setOnShareOpen] = useState(false)
+  const [open, setOpen] = useState(false)
   const baseItems: MenuProps["items"] = [
     {
       type: "group",
@@ -209,10 +211,16 @@ export const MoreOptions = ({
           items
         }}
         trigger={["click"]}
-        placement="bottomRight">
-        <button className="!text-gray-500 dark:text-gray-300 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+        placement="bottomRight"
+        open={open}
+        onOpenChange={setOpen}>
+        <IconButton
+          className="!text-gray-500 dark:text-gray-300 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+          ariaLabel={t("option:header.moreActions", "More actions")}
+          hasPopup="menu"
+          ariaExpanded={open}>
           <MoreHorizontal className="w-6 h-6" />
-        </button>
+        </IconButton>
       </Dropdown>
       <ShareModal
         open={onShareOpen}

@@ -1,6 +1,8 @@
 import React from "react"
 import { Globe, X } from "lucide-react"
 import { TabInfo } from "~/hooks/useTabMentions"
+import { useTranslation } from "react-i18next"
+import { IconButton } from "../../Common/IconButton"
 
 interface DocumentChipProps {
   document: TabInfo
@@ -11,6 +13,7 @@ export const DocumentChip: React.FC<DocumentChipProps> = ({
   document,
   onRemove,
 }) => {
+  const { t } = useTranslation(["option"]) 
   return (
     <div className="inline-flex items-center gap-2 bg-neutral-50 dark:bg-[#404040] border border-neutral-200 dark:border-[#525252] rounded-lg px-3 py-1.5 mr-2 mb-2">
       <div className="flex items-center gap-2 flex-1 min-w-0">
@@ -38,12 +41,13 @@ export const DocumentChip: React.FC<DocumentChipProps> = ({
         </div>{" "}
       </div>
 
-      <button
+      <IconButton
+        ariaLabel={t("quickIngest.remove", { defaultValue: "Remove" }) as string}
         onClick={() => onRemove(document.id)}
         className="flex-shrink-0 text-neutral-600 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200 transition-colors"
         type="button">
         <X className="w-3 h-3" />
-      </button>
+      </IconButton>
     </div>
   )
 }

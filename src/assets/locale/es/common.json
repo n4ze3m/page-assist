@@ -1,161 +1,165 @@
 {
-    "pageAssist": "tldw Assistant",
-    "titles": {
-        "options": "tldw Assistant — Options",
-        "sidepanel": "tldw Assistant — Sidepanel"
+  "pageAssist": "tldw Assistant",
+  "titles": {
+    "options": "tldw Assistant — Options",
+    "sidepanel": "tldw Assistant — Sidepanel"
+  },
+  "pdf": {
+    "passwordTitle": "Enter the PDF password",
+    "unlock": "Unlock"
+  },
+  "loading": {
+    "title": "Loading…",
+    "description": "Please wait while we get things ready."
+  },
+  "selectAModel": "Selecione un Modelo",
+  "save": "Guardar",
+  "saved": "Guardado",
+  "cancel": "Cancelar",
+  "retry": "Reintentar",
+  "share": {
+    "tooltip": {
+      "share": "Compartir"
     },
-    "pdf": {
-        "passwordTitle": "Enter the PDF password",
-        "unlock": "Unlock"
+    "modal": {
+      "title": "Compartir enlace para chat"
     },
-    "loading": {
-        "title": "Loading…",
-        "description": "Please wait while we get things ready."
+    "form": {
+      "defaultValue": {
+        "name": "Anónimo",
+        "title": "Chat sin título"
+      },
+      "title": {
+        "label": "Título del Chat",
+        "placeholder": "Ingresar el título del Chat",
+        "required": "El título del Chat es obligatorio"
+      },
+      "name": {
+        "label": "Tu nombre",
+        "placeholder": "Ingresar tu nombre",
+        "required": "Tu nombre es obligatorio"
+      },
+      "btn": {
+        "save": "Generar enlace",
+        "saving": "Generando enlace..."
+      }
     },
-    "selectAModel": "Selecione un Modelo",
-    "save": "Guardar",
-    "saved": "Guardado",
-    "cancel": "Cancelar",
-    "retry": "Reintentar",
-    "share": {
-        "tooltip": {
-            "share": "Compartir"
-        },
-        "modal": {
-            "title": "Compartir enlace para chat"
-        },
-        "form": {
-            "defaultValue": {
-                "name": "Anónimo",
-                "title": "Chat sin título"
-            },
-            "title": {
-                "label": "Título del Chat",
-                "placeholder": "Ingresar el título del Chat",
-                "required": "El título del Chat es obligatorio"
-            },
-            "name": {
-                "label": "Tu nombre",
-                "placeholder": "Ingresar tu nombre",
-                "required": "Tu nombre es obligatorio"
-            },
-            "btn": {
-                "save": "Generar enlace",
-                "saving": "Generando enlace..."
-            }
-        },
-        "notification": {
-            "successGenerate": "Enlace copiado al Clipboard",
-            "failGenerate": "Fallo al generar el enlace"
-        }
-    },
-    "copyToClipboard": "Copiar al clipboard",
-    "webSearch": "Buscando en la web",
-    "regenerate": "Regenerar",
-    "continue": "Continuar Respuesta",
-    "edit": "Editar",
-    "delete": "Borrar",
-    "saveAndSubmit": "Guardar y Enviar",
-    "editMessage": {
-        "placeholder": "Ingresar un mensaje..."
-    },
-    "submit": "Enviar",
-    "send": "Enviar",
-    "noData": "Sin datos",
-    "noHistory": "Chat sin histórico",
-    "chatWithCurrentPage": "Conversar con la página actual",
-    "beta": "Beta",
-    "tts": "Leer en voz alta",
-    "currentChatModelSettings": "Configuraciones del Modelo de Chat Actual",
-    "modelSettings": {
-        "label": "Configuraciones del Modelo",
-        "description": "Definir las opciones del modelo globalmente para todos los chats",
-        "form": {
-            "keepAlive": {
-                "label": "Mantener vivo",
-                "help": "controlar cuanto tiempo el modelo permanecera cargado en la memoria luego de su utilización (por defecto: 5m)",
-                "placeholder": "Ingresar duración para mantenerlo vivo (ej: 5m, 10m, 1h)"
-            },
-            "temperature": {
-                "label": "Temperatura",
-                "placeholder": "Ingresar valor de la Temperatura (ej: 0.7, 1.0)"
-            },
-            "numCtx": {
-                "label": "Tamaño de la Ventana de Contexto (num_ctx)",
-                "placeholder": "Ingrese el valor del tamaño de la ventana de contexto (por defecto: 2048)"
-            },
-            "numPredict": {
-                "label": "Máximo de Tokens (num_predict)",
-                "placeholder": "Ingrese el valor máximo de Tokens (ej: 2048, 4096)"
-            },
-            "seed": {
-                "label": "Semilla",
-                "placeholder": "Ingresar el valor de la semilla (ej: 1234)",
-                "help": "Reproductibilidad de la salida del modelo"
-            },
-            "topK": {
-                "label": "Top K",
-                "placeholder": "Ingresar el valor de Top K (ej: 40, 100)"
-            },
-            "topP": {
-                "label": "Top P",
-                "placeholder": "Ingresar el valor de Top P (ej: 0.9, 0.95)"
-            },
-            "numGpu": {
-                "label": "Num GPU",
-                "placeholder": "Ingrese el número de capas para enviar a la(s) GPU(s)"
-            },
-            "systemPrompt": {
-                "label": "Prompt de Sistema Temporal",
-                "placeholder": "Ingrese el Prompt de Sistema",
-                "help": "Esta es una forma rápida de establecer el prompt de sistema en el chat actual, que anulará el prompt de sistema seleccionado si existe."
-            }
-        },
-        "advanced": "Más Configuraciones del Modelo"
-    },
-    "copilot": {
-        "summary": "Resumir",
-        "explain": "Explicar",
-        "rephrase": "Reformular",
-        "translate": "Traducir"
-    },
-    "citations": "Citas",
-    "downloadCode": "Descargar Código",
-    "date": {
-        "pinned": "Fijado",
-        "today": "Hoy",
-        "yesterday": "Ayer",
-        "last7Days": "Últimos 7 días",
-        "older": "Más antiguo"
-    },
-    "range": {
-        "deleteConfirm": {
-            "pinned": "¿Está seguro de que desea eliminar todos los mensajes fijados?",
-            "today": "¿Está seguro de que desea eliminar todos los mensajes de hoy?",
-            "yesterday": "¿Está seguro de que desea eliminar todos los mensajes de ayer?",
-            "last7Days": "¿Está seguro de que desea eliminar todos los mensajes de los últimos 7 días?",
-            "older": "¿Está seguro de que desea eliminar todos los mensajes más antiguos?"
-        },
-        "tooltip": {
-            "pinned": "Eliminar todos los mensajes fijados",
-            "today": "Eliminar todos los mensajes de hoy",
-            "yesterday": "Eliminar todos los mensajes de ayer",
-            "last7Days": "Eliminar todos los mensajes de los últimos 7 días",
-            "older": "Eliminar todos los mensajes más antiguos"
-        }
-    },
-    "pin": "Fijar",
-    "unpin": "Desfijar",
-    "generationInfo": "Información de Generación",
-    "sidebarChat": "Chat lateral",
-    "reasoning": {
-        "thinking": "Pensando....",
-        "thought": "Pensamiento por {{time}}"
-    },
-    "embeddingGen": "Creando embeddings, esto puede tardar un poco",
-    "semanticSearch": "Realizando búsqueda semántica",
-    "downloading": "Descargando",
-    "cancelPullingModel": {
-        "confirm": "¿Está seguro de que desea cancelar la descarga? Esto detendrá el proceso de descarga. Según la documentación de Ollama, puede reiniciar desde donde lo dejó."
+    "notification": {
+      "successGenerate": "Enlace copiado al Clipboard",
+      "failGenerate": "Fallo al generar el enlace"
     }
+  },
+  "copyToClipboard": "Copiar al clipboard",
+  "webSearch": "Buscando en la web",
+  "regenerate": "Regenerar",
+  "continue": "Continuar Respuesta",
+  "edit": "Editar",
+  "delete": "Borrar",
+  "saveAndSubmit": "Guardar y Enviar",
+  "editMessage": {
+    "placeholder": "Ingresar un mensaje..."
+  },
+  "submit": "Enviar",
+  "send": "Enviar",
+  "noData": "Sin datos",
+  "noHistory": "Chat sin histórico",
+  "chatWithCurrentPage": "Conversar con la página actual",
+  "beta": "Beta",
+  "tts": "Leer en voz alta",
+  "currentChatModelSettings": "Configuraciones del Modelo de Chat Actual",
+  "modelSettings": {
+    "label": "Configuraciones del Modelo",
+    "description": "Definir las opciones del modelo globalmente para todos los chats",
+    "form": {
+      "keepAlive": {
+        "label": "Mantener vivo",
+        "help": "controlar cuanto tiempo el modelo permanecera cargado en la memoria luego de su utilización (por defecto: 5m)",
+        "placeholder": "Ingresar duración para mantenerlo vivo (ej: 5m, 10m, 1h)"
+      },
+      "temperature": {
+        "label": "Temperatura",
+        "placeholder": "Ingresar valor de la Temperatura (ej: 0.7, 1.0)"
+      },
+      "numCtx": {
+        "label": "Tamaño de la Ventana de Contexto (num_ctx)",
+        "placeholder": "Ingrese el valor del tamaño de la ventana de contexto (por defecto: 2048)"
+      },
+      "numPredict": {
+        "label": "Máximo de Tokens (num_predict)",
+        "placeholder": "Ingrese el valor máximo de Tokens (ej: 2048, 4096)"
+      },
+      "seed": {
+        "label": "Semilla",
+        "placeholder": "Ingresar el valor de la semilla (ej: 1234)",
+        "help": "Reproductibilidad de la salida del modelo"
+      },
+      "topK": {
+        "label": "Top K",
+        "placeholder": "Ingresar el valor de Top K (ej: 40, 100)"
+      },
+      "topP": {
+        "label": "Top P",
+        "placeholder": "Ingresar el valor de Top P (ej: 0.9, 0.95)"
+      },
+      "numGpu": {
+        "label": "Num GPU",
+        "placeholder": "Ingrese el número de capas para enviar a la(s) GPU(s)"
+      },
+      "systemPrompt": {
+        "label": "Prompt de Sistema Temporal",
+        "placeholder": "Ingrese el Prompt de Sistema",
+        "help": "Esta es una forma rápida de establecer el prompt de sistema en el chat actual, que anulará el prompt de sistema seleccionado si existe."
+      }
+    },
+    "advanced": "Más Configuraciones del Modelo"
+  },
+  "copilot": {
+    "summary": "Resumir",
+    "explain": "Explicar",
+    "rephrase": "Reformular",
+    "translate": "Traducir"
+  },
+  "citations": "Citas",
+  "downloadCode": "Descargar Código",
+  "date": {
+    "pinned": "Fijado",
+    "today": "Hoy",
+    "yesterday": "Ayer",
+    "last7Days": "Últimos 7 días",
+    "older": "Más antiguo"
+  },
+  "range": {
+    "deleteConfirm": {
+      "pinned": "¿Está seguro de que desea eliminar todos los mensajes fijados?",
+      "today": "¿Está seguro de que desea eliminar todos los mensajes de hoy?",
+      "yesterday": "¿Está seguro de que desea eliminar todos los mensajes de ayer?",
+      "last7Days": "¿Está seguro de que desea eliminar todos los mensajes de los últimos 7 días?",
+      "older": "¿Está seguro de que desea eliminar todos los mensajes más antiguos?"
+    },
+    "tooltip": {
+      "pinned": "Eliminar todos los mensajes fijados",
+      "today": "Eliminar todos los mensajes de hoy",
+      "yesterday": "Eliminar todos los mensajes de ayer",
+      "last7Days": "Eliminar todos los mensajes de los últimos 7 días",
+      "older": "Eliminar todos los mensajes más antiguos"
+    }
+  },
+  "pin": "Fijar",
+  "unpin": "Desfijar",
+  "generationInfo": "Información de Generación",
+  "sidebarChat": "Chat lateral",
+  "reasoning": {
+    "thinking": "Pensando....",
+    "thought": "Pensamiento por {{time}}"
+  },
+  "embeddingGen": "Creando embeddings, esto puede tardar un poco",
+  "semanticSearch": "Realizando búsqueda semántica",
+  "downloading": "Descargando",
+  "cancelPullingModel": {
+    "confirm": "¿Está seguro de que desea cancelar la descarga? Esto detendrá el proceso de descarga. Según la documentación de Ollama, puede reiniciar desde donde lo dejó."
+  },
+  "table": {
+    "copyCsv": "Copy as CSV",
+    "downloadCsv": "Download CSV"
+  }
 }

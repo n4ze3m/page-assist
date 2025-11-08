@@ -27,12 +27,12 @@ export class MockTldwServer {
   }
 
   private unauthorized(res: http.ServerResponse, msg = 'Invalid X-API-KEY') {
-    res.writeHead(401, { 'content-type': 'application/json', 'access-control-allow-origin': 'http://127.0.0.1', 'access-control-allow-credentials': 'true' })
+    res.writeHead(401, { 'content-type': 'application/json', 'access-control-allow-origin': '*', 'access-control-allow-credentials': 'true' })
     res.end(JSON.stringify({ detail: msg }))
   }
 
   private ok(res: http.ServerResponse, body: any, headers: Record<string, string> = {}) {
-    res.writeHead(200, { 'content-type': 'application/json', ...headers })
+    res.writeHead(200, { 'content-type': 'application/json', 'access-control-allow-origin': '*', ...headers })
     res.end(typeof body === 'string' ? body : JSON.stringify(body))
   }
 
@@ -96,12 +96,12 @@ export class MockTldwServer {
     if (this.handlers && this.handlers[url]) return this.handlers[url]!(req, res)
 
     if (url === '/api/v1/health') {
-      return this.ok(res, { status: 'ok' }, { 'access-control-allow-origin': 'http://127.0.0.1' })
+      return this.ok(res, { status: 'ok' })
     }
     if (url === '/api/v1/llm/models') {
       const key = String(req.headers['x-api-key'] || '')
       if (key !== this.apiKey) return this.unauthorized(res)
-      return this.ok(res, ['openai/gpt-4.1-2025-04-14'], { 'access-control-allow-origin': 'http://127.0.0.1' })
+      return this.ok(res, ['openai/gpt-4.1-2025-04-14'])
     }
     if (url === '/api/v1/chat/completions') {
       const key = String(req.headers['x-api-key'] || '')

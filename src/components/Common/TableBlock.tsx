@@ -9,6 +9,7 @@ import {
 } from "lucide-react"
 import { FC, useState, useMemo, useRef } from "react"
 import { useTranslation } from "react-i18next"
+import { IconButton } from "./IconButton"
 
 interface TableProps {
   children: React.ReactNode
@@ -125,8 +126,9 @@ export const TableBlock: FC<TableProps> = ({ children }) => {
           </div>
 
           <div className="flex items-center gap-1">
-            <Tooltip title="Copy as CSV">
-              <button
+            <Tooltip title={t('table.copyCsv', 'Copy as CSV')}>
+              <IconButton
+                ariaLabel={t('table.copyCsv', 'Copy as CSV') as string}
                 onClick={handleCopyCSV}
                 className="flex gap-1.5 items-center rounded bg-none p-1 text-xs text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600 hover:text-gray-800 dark:hover:text-gray-100 focus:outline-none transition-colors">
                 {copyStatus === "csv" ? (
@@ -134,7 +136,7 @@ export const TableBlock: FC<TableProps> = ({ children }) => {
                 ) : (
                   <CopyIcon className="size-4" />
                 )}
-              </button>
+              </IconButton>
             </Tooltip>
 
             <ConfigProvider
@@ -150,12 +152,13 @@ export const TableBlock: FC<TableProps> = ({ children }) => {
                   }
                 }
               }}>
-              <Tooltip title="Download CSV">
-                <button
+              <Tooltip title={t('table.downloadCsv', 'Download CSV')}>
+                <IconButton
+                  ariaLabel={t('table.downloadCsv', 'Download CSV') as string}
                   onClick={handleDownloadCSV}
                   className="flex gap-1.5 items-center rounded bg-none p-1 text-xs text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600 hover:text-gray-800 dark:hover:text-gray-100 focus:outline-none transition-colors">
                   <DownloadIcon className="size-4" />
-                </button>
+                </IconButton>
               </Tooltip>
             </ConfigProvider>
           </div>

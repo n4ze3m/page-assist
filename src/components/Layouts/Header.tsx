@@ -103,6 +103,17 @@ export const Header: React.FC<Props> = ({
   const [isEditingTitle, setIsEditingTitle] = React.useState(false)
   const [quickIngestOpen, setQuickIngestOpen] = React.useState(false)
 
+  // When the More menu opens, focus the first interactive item for a11y
+  React.useEffect(() => {
+    if (!moreMenuOpen) return
+    const id = requestAnimationFrame(() => {
+      const menu = document.getElementById('header-more-menu')
+      const first = menu?.querySelector<HTMLElement>('button, a, [tabindex]:not([tabindex="-1"])')
+      first?.focus()
+    })
+    return () => cancelAnimationFrame(id)
+  }, [moreMenuOpen])
+
   React.useEffect(() => {
     (async () => {
       try {
@@ -501,7 +512,11 @@ export const Header: React.FC<Props> = ({
             trigger="click"
             placement="bottomRight"
             content={
-              <div className="flex flex-col gap-1 min-w-48 text-sm">
+              <div
+                id="header-more-menu"
+                className="flex flex-col gap-1 min-w-48 text-sm"
+                role="menu"
+                aria-label={t("option:header.moreMenu.title", "Advanced tools")}>
                 <span className="px-2 text-xs font-semibold uppercase tracking-wide text-gray-400">
                   {t("option:header.moreMenu.title", "Advanced tools")}
                 </span>
@@ -544,6 +559,9 @@ export const Header: React.FC<Props> = ({
             <button
               type="button"
               className="flex items-center gap-2 rounded-md border border-transparent px-2 py-1 text-sm text-gray-600 transition hover:border-gray-300 hover:bg-white dark:text-gray-200 dark:hover:border-gray-500 dark:hover:bg-[#1f1f1f]"
+              aria-haspopup="menu"
+              aria-expanded={moreMenuOpen}
+              aria-controls="header-more-menu"
             >
               <span>{t("option:header.more", "More")}</span>
               <svg

@@ -1,5 +1,6 @@
 import React from "react"
 import { ChevronLeft, ChevronRight, PanelLeftIcon } from "lucide-react"
+import { IconButton } from "../Common/IconButton"
 import { NavLink } from "react-router-dom"
 import { useTranslation } from "react-i18next"
 
@@ -31,14 +32,12 @@ export const PrimaryToolbar: React.FC<React.PropsWithChildren<Props>> = ({
           )}
         </NavLink>
       )}
-      <button
-        type="button"
+      <IconButton
         onClick={onToggleSidebar}
         className="rounded-md p-1 text-gray-500 hover:text-gray-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-amber-500 dark:text-gray-400 dark:hover:text-gray-200"
-        aria-label={t("option:header.openSidebar", "Open chat sidebar")}
-      >
+        ariaLabel={t("option:header.openSidebar", "Open chat sidebar") as string}>
         <PanelLeftIcon className="h-5 w-5" />
-      </button>
+      </IconButton>
       {children}
     </div>
   )

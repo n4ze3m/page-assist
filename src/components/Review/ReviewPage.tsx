@@ -53,7 +53,7 @@ type ResultItem = {
 type ReviewPageProps = { allowGeneration?: boolean }
 
 export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true }) => {
-  const { t } = useTranslation(["option"])
+  const { t } = useTranslation(["option", "review"]) 
   const [query, setQuery] = React.useState<string>("")
   const [kinds, setKinds] = React.useState<{ media: boolean; notes: boolean }>({
     media: true,
@@ -436,7 +436,12 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true }
         await storage.set(scopedKey("review:defaultMode"), analysisMode)
       } catch {}
     })()
-    message.info(analysisMode === 'review' ? 'Using Review prompts' : 'Using Summary prompts', 1)
+    message.info(
+      analysisMode === 'review'
+        ? t('review:reviewPage.usingReviewPrompts', 'Using Review prompts')
+        : t('review:reviewPage.usingSummaryPrompts', 'Using Summary prompts'),
+      1
+    )
   }, [analysisMode, scopedKey])
 
   const loadKeywordSuggestions = React.useCallback(
@@ -736,7 +741,7 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true }
     try {
       const text = await generateAnalysis(mode)
       if (!text) {
-        message.warning("No content available to analyze")
+        message.warning(t('review:reviewPage.analyze.none', 'No content available to analyze'))
         setLoadingAnalysis(false)
         return
       }
@@ -902,10 +907,10 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true }
         headers: { "Content-Type": "application/json" },
         body: payload
       })
-      message.success("Analysis saved as note")
+      message.success(t('review:reviewPage.analyze.saved', 'Analysis saved as note'))
       if (selected.kind === "media") await loadExistingAnalyses(selected)
     } catch (e: any) {
-      message.error(e?.message || "Failed to analyze & save note")
+      message.error(e?.message || t('review:reviewPage.analyze.failed', 'Failed to analyze & save note'))
     } finally {
       setLoadingAnalysis(false)
     }
@@ -942,7 +947,7 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true }
           <div className="flex flex-wrap items-center gap-2">
             <Input
               allowClear
-              placeholder="Search media, notes..."
+              placeholder={t('review:reviewPage.searchPlaceholder', 'Search media, notes...')}
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               onPressEnter={() => refetch()}
@@ -957,7 +962,7 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true }
                 refetch()
               }}
               icon={(<SearchIcon className="w-4 h-4" />) as any}>
-              Search
+              {t('review:reviewPage.search', 'Search')}
             </Button>
           </div>
           <div className="mt-2 flex flex-wrap items-center gap-2 justify-between">
@@ -968,26 +973,26 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true }
               onClick={() => setFiltersOpen((v) => !v)}
             >
               <ChevronDown className={`w-4 h-4 transition-transform ${filtersOpen ? '' : '-rotate-90'}`} />
-              <span>Filters</span>
+              <span>{t('review:reviewPage.filters', 'Filters')}</span>
             </button>
             <Checkbox
               checked={kinds.media}
               onChange={(e) =>
                 setKinds((k) => ({ ...k, media: e.target.checked }))
               }>
-              Media
+              {t('review:reviewPage.media', 'Media')}
             </Checkbox>
             <Checkbox
               checked={kinds.notes}
               onChange={(e) =>
                 setKinds((k) => ({ ...k, notes: e.target.checked }))
               }>
-              Notes
+              {t('review:reviewPage.notes', 'Notes')}
             </Checkbox>
             <div className="ml-auto">
               <Radio.Group size="small" value={analysisMode} onChange={(e) => setAnalysisMode(e.target.value)}>
-                <Radio.Button value="review">Use Review</Radio.Button>
-                <Radio.Button value="summary">Use Summary</Radio.Button>
+                <Radio.Button value="review">{t('review:reviewPage.useReview', 'Use Review')}</Radio.Button>
+                <Radio.Button value="summary">{t('review:reviewPage.useSummary', 'Use Summary')}</Radio.Button>
               </Radio.Group>
             </div>
           </div>
@@ -996,7 +1001,7 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true }
               <Select
                 mode="tags"
                 allowClear
-                placeholder="Media types"
+                placeholder={t('review:reviewPage.mediaTypes', 'Media types')}
                 className="min-w-[12rem] flex-1"
                 value={mediaTypes}
                 onChange={(vals) => {
@@ -1011,7 +1016,7 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true }
               <Select
                 mode="tags"
                 allowClear
-                placeholder="Keywords"
+                placeholder={t('review:reviewPage.keywords', 'Keywords')}
                 className="min-w-[12rem] flex-1"
                 value={keywordTokens}
                 onSearch={(txt) => loadKeywordSuggestions(txt)}
@@ -1027,7 +1032,7 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true }
                   setKeywordTokens([])
                   setPage(1)
                 }}>
-                Clear
+                {t('review:reviewPage.clear', 'Clear')}
               </Button>
             </div>
             {(mediaTypes.length > 0 || keywordTokens.length > 0) && (
@@ -1062,7 +1067,7 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true }
                     setKeywordTokens([])
                     setPage(1)
                   }}>
-                  Reset filters
+                  {t('review:reviewPage.resetFilters', 'Reset filters')}
                 </Button>
               </div>
             )}
@@ -1070,7 +1075,7 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true }
         </div>
         <div className="mt-3 p-3 rounded-lg border dark:border-gray-700 bg-white dark:bg-[#171717] max-h-[50vh] md:max-h-[60vh] lg:max-h-[calc(100dvh-18rem)] overflow-auto">
           <div className="sticky -m-3 mb-2 top-0 z-10 px-3 py-2 bg-white dark:bg-[#171717] border-b dark:border-gray-700 flex items-center justify-between">
-            <span className="text-xs uppercase tracking-wide text-gray-500">Results</span>
+            <span className="text-xs uppercase tracking-wide text-gray-500">{t('review:reviewPage.results', 'Results')}</span>
             <span className="text-xs text-gray-400">{displayedResults.length}</span>
           </div>
           {isFetching ? (
@@ -1081,7 +1086,7 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true }
             <List
               size="small"
               dataSource={displayedResults}
-              locale={{ emptyText: <Empty description="No results" /> }}
+              locale={{ emptyText: <Empty description={t('review:reviewPage.noResults', 'No results')} /> }}
               renderItem={(item) => (
                 <List.Item
                   key={`${item.kind}:${item.id}`}
@@ -1291,7 +1296,7 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true }
                     aria-expanded={promptsOpen}
                     aria-controls="custom-prompts"
                   >
-                    Customize prompts
+                    {t('review:reviewPage.customizePrompts', 'Customize prompts')}
                   </button>
                 </>
               )}
@@ -1302,10 +1307,10 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true }
                 dropdownRender={() => (
                   <div className="p-2 w-[420px] bg-white dark:bg-[#171717] border dark:border-gray-700 rounded shadow">
                     <div className="flex items-center justify-between mb-1">
-                      <div className="text-xs text-gray-500">Search prompts</div>
+                      <div className="text-xs text-gray-500">{t('review:reviewPage.searchPrompts', 'Search prompts')}</div>
                       <div className="flex items-center gap-2 text-xs">
-                        <label className="inline-flex items-center gap-1"><input type="checkbox" checked={revIncludeLocal} onChange={(e) => setRevIncludeLocal(e.target.checked)} /> Local</label>
-                        <label className="inline-flex items-center gap-1"><input type="checkbox" checked={revIncludeServer} onChange={(e) => setRevIncludeServer(e.target.checked)} /> Server</label>
+                        <label className="inline-flex items-center gap-1"><input type="checkbox" checked={revIncludeLocal} onChange={(e) => setRevIncludeLocal(e.target.checked)} /> {t('review:reviewPage.includeLocal', 'Local')}</label>
+                        <label className="inline-flex items-center gap-1"><input type="checkbox" checked={revIncludeServer} onChange={(e) => setRevIncludeServer(e.target.checked)} /> {t('review:reviewPage.includeServer', 'Server')}</label>
                       </div>
                     </div>
                     <Input.Search
@@ -1334,7 +1339,7 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true }
                         } finally { setRevLoading(false) }
                       }}
                       loading={revLoading}
-                      placeholder="Search prompts"
+                      placeholder={t('review:reviewPage.searchPrompts', 'Search prompts') as string}
                       allowClear
                     />
                     {revResults.length > 0 && (
@@ -1351,21 +1356,21 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true }
                       </div>
                     )}
                     <div className="mt-2">
-                      <div className="text-xs text-gray-500 mb-1">Presets</div>
+                      <div className="text-xs text-gray-500 mb-1">{t('review:reviewPage.presets', 'Presets')}</div>
                       <div className="flex flex-wrap gap-2">
-                        <Button size="small" onClick={() => setReviewSystemPrompt("You are an expert reviewer. Provide a concise, structured review with strengths, weaknesses, and actionable recommendations.")}>Critical</Button>
-                        <Button size="small" onClick={() => setReviewSystemPrompt("Act as a QA auditor. Identify issues, ambiguities, and missing information. Provide numbered findings and suggested fixes.")}>QA Audit</Button>
-                        <Button size="small" onClick={() => setReviewSystemPrompt("Provide a bullet-point review focusing on clarity, completeness, and relevance. Include a brief overall assessment at the end.")}>Bullet Review</Button>
+                        <Button size="small" onClick={() => setReviewSystemPrompt("You are an expert reviewer. Provide a concise, structured review with strengths, weaknesses, and actionable recommendations.")}>{t('review:reviewPage.presetsCritical', 'Critical')}</Button>
+                        <Button size="small" onClick={() => setReviewSystemPrompt("Act as a QA auditor. Identify issues, ambiguities, and missing information. Provide numbered findings and suggested fixes.")}>{t('review:reviewPage.presetsQaAudit', 'QA Audit')}</Button>
+                        <Button size="small" onClick={() => setReviewSystemPrompt("Provide a bullet-point review focusing on clarity, completeness, and relevance. Include a brief overall assessment at the end.")}>{t('review:reviewPage.presetsBulletReview', 'Bullet Review')}</Button>
                       </div>
                     </div>
-                    <div className="text-xs text-gray-500 mb-1">Review: System prompt</div>
+                    <div className="text-xs text-gray-500 mb-1">{t('review:reviewPage.reviewSystemPrompt', 'Review: System prompt')}</div>
                     <textarea
                       className="w-full text-sm p-2 rounded border dark:border-gray-700 dark:bg-[#171717] mt-1"
                       rows={4}
                       value={reviewSystemPrompt}
                       onChange={(e) => setReviewSystemPrompt(e.target.value)}
                     />
-                    <div className="text-xs text-gray-500 mt-2 mb-1">Review: User prompt prefix</div>
+                    <div className="text-xs text-gray-500 mt-2 mb-1">{t('review:reviewPage.reviewUserPrefix', 'Review: User prompt prefix')}</div>
                     <textarea
                       className="w-full text-sm p-2 rounded border dark:border-gray-700 dark:bg-[#171717]"
                       rows={3}
@@ -1373,13 +1378,13 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true }
                       onChange={(e) => setReviewUserPrefix(e.target.value)}
                     />
                     <div className="mt-2 flex justify-end">
-                      <Button size="small" onClick={async () => { try { const storage = new Storage({ area: 'local' }); await storage.set(scopedKey('review:prompts'), { reviewSystemPrompt, reviewUserPrefix, summarySystemPrompt, summaryUserPrefix }); message.success('Saved as default'); } catch {} }}>Save as default</Button>
+                      <Button size="small" onClick={async () => { try { const storage = new Storage({ area: 'local' }); await storage.set(scopedKey('review:prompts'), { reviewSystemPrompt, reviewUserPrefix, summarySystemPrompt, summaryUserPrefix }); message.success(t('review:reviewPage.saveAsDefault', 'Saved as default')); } catch {} }}>{t('review:reviewPage.saveAsDefault', 'Save as default')}</Button>
                     </div>
                   </div>
                 )}
               >
                 <button className="inline-flex items-center gap-1 text-xs border rounded px-2 py-1 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-[#262626]" aria-haspopup="true">
-                  Review prompt
+                  {t('review:reviewPage.reviewPrompt', 'Review prompt')}
                 </button>
               </Dropdown>
               <Dropdown
@@ -1388,10 +1393,10 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true }
                 dropdownRender={() => (
                   <div className="p-2 w-[420px] bg-white dark:bg-[#171717] border dark:border-gray-700 rounded shadow">
                     <div className="flex items-center justify-between mb-1">
-                      <div className="text-xs text-gray-500">Search prompts</div>
+                      <div className="text-xs text-gray-500">{t('review:reviewPage.searchPrompts', 'Search prompts')}</div>
                       <div className="flex items-center gap-2 text-xs">
-                        <label className="inline-flex items-center gap-1"><input type="checkbox" checked={sumIncludeLocal} onChange={(e) => setSumIncludeLocal(e.target.checked)} /> Local</label>
-                        <label className="inline-flex items-center gap-1"><input type="checkbox" checked={sumIncludeServer} onChange={(e) => setSumIncludeServer(e.target.checked)} /> Server</label>
+                        <label className="inline-flex items-center gap-1"><input type="checkbox" checked={sumIncludeLocal} onChange={(e) => setSumIncludeLocal(e.target.checked)} /> {t('review:reviewPage.includeLocal', 'Local')}</label>
+                        <label className="inline-flex items-center gap-1"><input type="checkbox" checked={sumIncludeServer} onChange={(e) => setSumIncludeServer(e.target.checked)} /> {t('review:reviewPage.includeServer', 'Server')}</label>
                       </div>
                     </div>
                     <Input.Search
@@ -1419,7 +1424,7 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true }
                         } finally { setSumLoading(false) }
                       }}
                       loading={sumLoading}
-                      placeholder="Search prompts"
+                      placeholder={t('review:reviewPage.searchPrompts', 'Search prompts') as string}
                       allowClear
                     />
                     {sumResults.length > 0 && (
@@ -1436,21 +1441,21 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true }
                       </div>
                     )}
                     <div className="mt-2">
-                      <div className="text-xs text-gray-500 mb-1">Presets</div>
+                      <div className="text-xs text-gray-500 mb-1">{t('review:reviewPage.presets', 'Presets')}</div>
                       <div className="flex flex-wrap gap-2">
-                        <Button size="small" onClick={() => setSummarySystemPrompt("Summarize into key points and an executive abstract. Keep it concise and actionable.")}>Executive</Button>
-                        <Button size="small" onClick={() => setSummarySystemPrompt("Write a detailed summary with sections: Overview, Key Points, and Takeaways. Keep neutral tone.")}>Detailed</Button>
-                        <Button size="small" onClick={() => setSummarySystemPrompt("Create a short bullet-point summary capturing the core ideas and any decisions.")}>Bullets</Button>
+                        <Button size="small" onClick={() => setSummarySystemPrompt("Summarize into key points and an executive abstract. Keep it concise and actionable.")}>{t('review:reviewPage.presetsExecutive', 'Executive')}</Button>
+                        <Button size="small" onClick={() => setSummarySystemPrompt("Write a detailed summary with sections: Overview, Key Points, and Takeaways. Keep neutral tone.")}>{t('review:reviewPage.presetsDetailed', 'Detailed')}</Button>
+                        <Button size="small" onClick={() => setSummarySystemPrompt("Create a short bullet-point summary capturing the core ideas and any decisions.")}>{t('review:reviewPage.presetsBullets', 'Bullets')}</Button>
                       </div>
                     </div>
-                    <div className="text-xs text-gray-500 mb-1">Summary: System prompt</div>
+                    <div className="text-xs text-gray-500 mb-1">{t('review:reviewPage.summarySystemPrompt', 'Summary: System prompt')}</div>
                     <textarea
                       className="w-full text-sm p-2 rounded border dark:border-gray-700 dark:bg-[#171717] mt-1"
                       rows={4}
                       value={summarySystemPrompt}
                       onChange={(e) => setSummarySystemPrompt(e.target.value)}
                     />
-                    <div className="text-xs text-gray-500 mt-2 mb-1">Summary: User prompt prefix</div>
+                    <div className="text-xs text-gray-500 mt-2 mb-1">{t('review:reviewPage.summaryUserPrefix', 'Summary: User prompt prefix')}</div>
                     <textarea
                       className="w-full text-sm p-2 rounded border dark:border-gray-700 dark:bg-[#171717]"
                       rows={3}
@@ -1458,13 +1463,13 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true }
                       onChange={(e) => setSummaryUserPrefix(e.target.value)}
                     />
                     <div className="mt-2 flex justify-end">
-                      <Button size="small" onClick={async () => { try { const storage = new Storage({ area: 'local' }); await storage.set(scopedKey('review:prompts'), { reviewSystemPrompt, reviewUserPrefix, summarySystemPrompt, summaryUserPrefix }); message.success('Saved as default'); } catch {} }}>Save as default</Button>
+                      <Button size="small" onClick={async () => { try { const storage = new Storage({ area: 'local' }); await storage.set(scopedKey('review:prompts'), { reviewSystemPrompt, reviewUserPrefix, summarySystemPrompt, summaryUserPrefix }); message.success(t('review:reviewPage.saveAsDefault', 'Saved as default')); } catch {} }}>{t('review:reviewPage.saveAsDefault', 'Save as default')}</Button>
                     </div>
                   </div>
                 )}
               >
                 <button className="inline-flex items-center gap-1 text-xs border rounded px-2 py-1 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-[#262626]" aria-haspopup="true">
-                  Summary prompt
+                  {t('review:reviewPage.summaryPrompt', 'Summary prompt')}
                 </button>
               </Dropdown>
               <button
@@ -1473,13 +1478,13 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true }
                 aria-expanded={debugOpen}
                 aria-controls="debug-json"
               >
-                Show raw JSON
+                {t('review:reviewPage.showRawJson', 'Show raw JSON')}
               </button>
             </div>
             <Divider className="!my-2" />
             <div id="debug-json" className={`overflow-hidden transition-all duration-200 ${debugOpen ? 'max-h-[600px] opacity-100' : 'max-h-0 opacity-0'}`}>
               <div className="rounded border dark:border-gray-700 p-2 bg-gray-50 dark:bg-[#111] text-xs">
-                <pre className="whitespace-pre-wrap break-all">{selectedDetail ? JSON.stringify(selectedDetail, null, 2) : 'No detail loaded'}</pre>
+                <pre className="whitespace-pre-wrap break-all">{selectedDetail ? JSON.stringify(selectedDetail, null, 2) : t('review:reviewPage.noDetailLoaded', 'No detail loaded')}</pre>
               </div>
               <Divider className="!my-3" />
             </div>
@@ -1488,20 +1493,20 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true }
             <div id="custom-prompts" className={`overflow-hidden transition-all duration-200 ${promptsOpen ? 'max-h-[700px] opacity-100' : 'max-h-0 opacity-0'}`}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div className="rounded border dark:border-gray-700 p-2">
-                  <Typography.Text type="secondary">Review: System prompt</Typography.Text>
+                  <Typography.Text type="secondary">{t('review:reviewPage.reviewSystemPrompt', 'Review: System prompt')}</Typography.Text>
                   <textarea className="w-full mt-2 min-h-[6rem] text-sm p-2 rounded border dark:border-gray-700 dark:bg-[#171717]" value={reviewSystemPrompt} onChange={(e) => setReviewSystemPrompt(e.target.value)} />
-                  <Typography.Text type="secondary" className="block mt-2">Review: User prompt prefix</Typography.Text>
+                  <Typography.Text type="secondary" className="block mt-2">{t('review:reviewPage.reviewUserPrefix', 'Review: User prompt prefix')}</Typography.Text>
                   <textarea className="w-full mt-2 min-h-[4rem] text-sm p-2 rounded border dark:border-gray-700 dark:bg-[#171717]" value={reviewUserPrefix} onChange={(e) => setReviewUserPrefix(e.target.value)} />
                 </div>
                 <div className="rounded border dark:border-gray-700 p-2">
-                  <Typography.Text type="secondary">Summary: System prompt</Typography.Text>
+                  <Typography.Text type="secondary">{t('review:reviewPage.summarySystemPrompt', 'Summary: System prompt')}</Typography.Text>
                   <textarea className="w-full mt-2 min-h-[6rem] text-sm p-2 rounded border dark:border-gray-700 dark:bg-[#171717]" value={summarySystemPrompt} onChange={(e) => setSummarySystemPrompt(e.target.value)} />
-                  <Typography.Text type="secondary" className="block mt-2">Summary: User prompt prefix</Typography.Text>
+                  <Typography.Text type="secondary" className="block mt-2">{t('review:reviewPage.summaryUserPrefix', 'Summary: User prompt prefix')}</Typography.Text>
                   <textarea className="w-full mt-2 min-h-[4rem] text-sm p-2 rounded border dark:border-gray-700 dark:bg-[#171717]" value={summaryUserPrefix} onChange={(e) => setSummaryUserPrefix(e.target.value)} />
                 </div>
               </div>
               <div className="mt-2">
-                <Button size="small" onClick={() => { setReviewSystemPrompt("You are an expert reviewer. Provide a concise, structured review of the following content."); setReviewUserPrefix(""); setSummarySystemPrompt("Summarize the following content into key points and a brief abstract."); setSummaryUserPrefix("") }}>Reset to defaults</Button>
+                <Button size="small" onClick={() => { setReviewSystemPrompt("You are an expert reviewer. Provide a concise, structured review of the following content."); setReviewUserPrefix(""); setSummarySystemPrompt("Summarize the following content into key points and a brief abstract."); setSummaryUserPrefix("") }}>{t('review:reviewPage.resetToDefaults', 'Reset to defaults')}</Button>
               </div>
               <Divider className="!my-3" />
             </div>
@@ -1540,7 +1545,7 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true }
                 </div>
                 {mediaJsonOpen && (
                   <div className="mt-2 rounded border dark:border-gray-700 bg-gray-50 dark:bg-[#111] text-xs p-2 overflow-auto max-h-40">
-                    <pre className="whitespace-pre-wrap break-all">{selectedDetail ? JSON.stringify(selectedDetail, null, 2) : 'No detail loaded'}</pre>
+                <pre className="whitespace-pre-wrap break-all">{selectedDetail ? JSON.stringify(selectedDetail, null, 2) : t('review:reviewPage.noDetailLoaded', 'No detail loaded')}</pre>
                   </div>
                 )}
               </div>

@@ -406,6 +406,8 @@
       "mcp": "MCP"
     }
   },
+  "savedSuccessfully": "Settings saved",
+  "saveFailed": "Failed to save settings",
   "tldw": {
     "advancedTimeouts": "Advanced Timeouts",
     "requestTimeout": "Request Timeout (seconds)",
@@ -429,9 +431,14 @@
     "buttons": { "health": "Health", "recheck": "Recheck", "testConnection": "Test Connection", "login": "Login", "logout": "Logout" },
     "loginRequired": { "title": "Login Required", "description": "Please login with your tldw_server credentials" },
     "loggedIn": { "title": "Logged In", "description": "You are currently logged in to tldw_server" },
-    "connection": { "success": "Connection successful!", "failed": "Connection failed. Please check your settings." },
+    "connection": { "success": "Connection successful!", "failed": "Connection failed. Please check your settings.", "failedDetailed": "Connection failed. Please check your server URL and API key." },
     "login": { "success": "Login successful!", "failed": "Login failed" },
-    "logout": { "success": "Logged out successfully", "failed": "Logout failed" }
+    "logout": { "success": "Logged out successfully", "failed": "Logout failed" },
+    "setupLink": "Set up server",
+    "loadError": "Unable to load tldw server settings. Check your connection and try again.",
+    "fields": { "apiKey": { "label": "API Key", "placeholder": "Enter your API key", "required": "Please enter your API key", "extra": "Your tldw_server API key for authentication" }, "username": { "label": "Username", "placeholder": "Enter username", "required": "Please enter your username" }, "password": { "label": "Password", "placeholder": "Enter password", "required": "Please enter your password" } },
+    "errors": { "invalidApiKey": "Invalid API key", "forbidden": "Forbidden (check permissions)", "apiKeyValidationFailed": "API key validation failed", "serverUnreachable": "Server unreachable" },
+    "about": { "title": "About tldw_server Integration", "description": "This extension connects to your tldw_server instance, providing access to:", "points": { "providers": "Multiple LLM providers through a unified API", "rag": "RAG (Retrieval-Augmented Generation) search", "media": "Media ingestion and processing", "notes": "Notes and prompts management", "stt": "Speech-to-text transcription" } }
   },
   "manageKnowledge": {
     "title": "지식 관리",

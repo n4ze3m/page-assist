@@ -5,6 +5,7 @@ import { Dropdown, Tooltip } from "antd"
 import { Blocks } from "lucide-react"
 import React from "react"
 import { useTranslation } from "react-i18next"
+import { IconButton } from "../../Common/IconButton"
 
 export const KnowledgeSelect: React.FC = () => {
   const { t } = useTranslation("playground")
@@ -53,9 +54,12 @@ export const KnowledgeSelect: React.FC = () => {
           placement={"topLeft"}
           trigger={["click"]}>
           <Tooltip title={t("tooltip.knowledge")}>
-            <button type="button" className="dark:text-gray-300">
+            <IconButton
+              ariaLabel={(t("tooltip.knowledge") as string) || "Knowledge"}
+              hasPopup="menu"
+              className="dark:text-gray-300">
               <Blocks className="h-6 w-6" />
-            </button>
+            </IconButton>
           </Tooltip>
         </Dropdown>
       )}

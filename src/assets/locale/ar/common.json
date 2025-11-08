@@ -1,169 +1,173 @@
 {
-    "pageAssist": "tldw Assistant",
-    "titles": {
-        "options": "tldw Assistant — Options",
-        "sidepanel": "tldw Assistant — Sidepanel"
+  "pageAssist": "tldw Assistant",
+  "titles": {
+    "options": "tldw Assistant — Options",
+    "sidepanel": "tldw Assistant — Sidepanel"
+  },
+  "pdf": {
+    "passwordTitle": "Enter the PDF password",
+    "unlock": "Unlock"
+  },
+  "loading": {
+    "title": "Loading…",
+    "description": "Please wait while we get things ready."
+  },
+  "selectAModel": "اختر نموذجًا",
+  "save": "حفظ",
+  "saved": "تم الحفظ",
+  "cancel": "إلغاء",
+  "retry": "إعادة المحاولة",
+  "share": {
+    "tooltip": {
+      "share": "مشاركة"
     },
-    "pdf": {
-        "passwordTitle": "Enter the PDF password",
-        "unlock": "Unlock"
+    "modal": {
+      "title": "مشاركة رابط المحادثة"
     },
-    "loading": {
-        "title": "Loading…",
-        "description": "Please wait while we get things ready."
+    "form": {
+      "defaultValue": {
+        "name": "مجهول",
+        "title": "محادثة بدون عنوان"
+      },
+      "title": {
+        "label": "عنوان المحادثة",
+        "placeholder": "أدخل عنوان المحادثة",
+        "required": "عنوان المحادثة مطلوب"
+      },
+      "name": {
+        "label": "اسمك",
+        "placeholder": "أدخل اسمك",
+        "required": "اسمك مطلوب"
+      },
+      "btn": {
+        "save": "إنشاء رابط",
+        "saving": "جاري إنشاء الرابط..."
+      }
     },
-    "selectAModel": "اختر نموذجًا",
-    "save": "حفظ",
-    "saved": "تم الحفظ",
-    "cancel": "إلغاء",
-    "retry": "إعادة المحاولة",
-    "share": {
-        "tooltip": {
-            "share": "مشاركة"
-        },
-        "modal": {
-            "title": "مشاركة رابط المحادثة"
-        },
-        "form": {
-            "defaultValue": {
-                "name": "مجهول",
-                "title": "محادثة بدون عنوان"
-            },
-            "title": {
-                "label": "عنوان المحادثة",
-                "placeholder": "أدخل عنوان المحادثة",
-                "required": "عنوان المحادثة مطلوب"
-            },
-            "name": {
-                "label": "اسمك",
-                "placeholder": "أدخل اسمك",
-                "required": "اسمك مطلوب"
-            },
-            "btn": {
-                "save": "إنشاء رابط",
-                "saving": "جاري إنشاء الرابط..."
-            }
-        },
-        "notification": {
-            "successGenerate": "تم نسخ الرابط إلى الحافظة",
-            "failGenerate": "فشل في إنشاء الرابط"
-        }
-    },
-    "copyToClipboard": "نسخ إلى الحافظة",
-    "webSearch": "البحث في الويب",
-    "regenerate": "إعادة التوليد",
-    "continue": "متابعة الرد",
-    "edit": "تعديل",
-    "delete": "حذف",
-    "saveAndSubmit": "حفظ وإرسال",
-    "editMessage": {
-        "placeholder": "اكتب رسالة..."
-    },
-    "submit": "إرسال",
-    "send": "إرسال",
-    "noData": "لا توجد بيانات",
-    "noHistory": "لا يوجد سجل محادثات",
-    "chatWithCurrentPage": "الدردشة مع الصفحة الحالية",
-    "beta": "تجريبي",
-    "tts": "قراءة بصوت عالٍ",
-    "currentChatModelSettings": "إعدادات نموذج المحادثة الحالي",
-    "modelSettings": {
-        "label": "إعدادات النموذج",
-        "description": "تعيين خيارات النموذج عالمياً لجميع المحادثات",
-        "form": {
-            "keepAlive": {
-                "label": "الإبقاء نشطاً",
-                "help": "يتحكم في المدة التي سيظل فيها النموذج محملاً في الذاكرة بعد الطلب (الافتراضي: 5 دقائق)",
-                "placeholder": "أدخل مدة البقاء نشطاً (مثال: 5م، 10م، 1س)"
-            },
-            "temperature": {
-                "label": "درجة الحرارة",
-                "placeholder": "أدخل قيمة درجة الحرارة (مثال: 0.7، 1.0)"
-            },
-            "numCtx": {
-                "label": "حجم نافذة السياق (num_ctx)",
-                "placeholder": "أدخل قيمة حجم نافذة السياق (الافتراضي: 2048)"
-            },
-            "numPredict": {
-                "label": "الحد الأقصى للرموز",
-                "placeholder": "أدخل قيمة الحد الأقصى للرموز (مثال: 2048، 4096)"
-            },
-            "seed": {
-                "label": "البذرة",
-                "placeholder": "أدخل قيمة البذرة (مثال: 1234)",
-                "help": "إمكانية تكرار مخرجات النموذج"
-            },
-            "topK": {
-                "label": "أعلى K",
-                "placeholder": "أدخل قيمة أعلى K (مثال: 40، 100)"
-            },
-            "topP": {
-                "label": "أعلى P",
-                "placeholder": "أدخل قيمة أعلى P (مثال: 0.9، 0.95)"
-            },
-            "useMMap": {
-                "label": "استخدام MMap"
-            },
-            "numGpu": {
-                "label": "عدد وحدات معالجة الرسومات",
-                "placeholder": "أدخل عدد الطبقات لإرسالها إلى وحدة/وحدات معالجة الرسومات"
-            },
-            "systemPrompt": {
-                "label": "موجه النظام المؤقت",
-                "placeholder": "أدخل موجه النظام",
-                "help": "هذه طريقة سريعة لتعيين موجه النظام في المحادثة الحالية، والذي سيتجاوز موجه النظام المحدد إذا كان موجوداً."
-            }
-        },
-        "advanced": "المزيد من إعدادات النموذج"
-    },
-    "copilot": {
-        "summary": "تلخيص",
-        "explain": "شرح",
-        "rephrase": "إعادة صياغة",
-        "translate": "ترجمة",
-        "custom": "مخصص"
-    },
-    "citations": "الاقتباسات",
-    "segmented": {
-        "available": "نماذج الخادم",
-        "custom": "نماذج مخصصة"
-    },
-    "downloadCode": "تنزيل الكود",
-    "date": {
-        "pinned": "مثبت",
-        "today": "اليوم",
-        "yesterday": "الأمس",
-        "last7Days": "آخر 7 أيام",
-        "older": "أقدم"
-    },
-    "range": {
-        "deleteConfirm": {
-            "pinned": "هل أنت متأكد أنك تريد حذف جميع الرسائل المثبتة؟",
-            "today": "هل أنت متأكد أنك تريد حذف جميع رسائل اليوم؟",
-            "yesterday": "هل أنت متأكد أنك تريد حذف جميع رسائل الأمس؟",
-            "last7Days": "هل أنت متأكد أنك تريد حذف جميع رسائل آخر 7 أيام؟",
-            "older": "هل أنت متأكد أنك تريد حذف جميع الرسائل القديمة؟"
-        },
-        "tooltip": {
-            "pinned": "حذف جميع الرسائل المثبتة",
-            "today": "حذف جميع رسائل اليوم",
-            "yesterday": "حذف جميع رسائل الأمس",
-            "last7Days": "حذف جميع رسائل آخر 7 أيام",
-            "older": "حذف جميع الرسائل القديمة"
-        }
-    },
-    "pin": "تثبيت",
-    "unpin": "إلغاء التثبيت",
-    "generationInfo": "معلومات التوليد",
-    "sidebarChat": "دردشة الشريط الجانبي",
-    "reasoning": {
-        "thinking": "جاري التفكير....",
-        "thought": "فكر لمدة {{time}}"
-    },
-    "embeddingGen": "إنشاء تمثيلات، قد يستغرق هذا وقتًا",
-    "semanticSearch": "جاري البحث الدلالي",
-    "downloading": "جاري التنزيل",
-    "cancelPullingModel": {
-        "confirm": "هل أنت متأكد أنك تريد إلغاء التنزيل؟ سيؤدي ذلك إلى إيقاف عملية التنزيل. وفقًا لتوثيق Ollama، يمكنك المتابعة من حيث توقفت."
+    "notification": {
+      "successGenerate": "تم نسخ الرابط إلى الحافظة",
+      "failGenerate": "فشل في إنشاء الرابط"
     }
+  },
+  "copyToClipboard": "نسخ إلى الحافظة",
+  "webSearch": "البحث في الويب",
+  "regenerate": "إعادة التوليد",
+  "continue": "متابعة الرد",
+  "edit": "تعديل",
+  "delete": "حذف",
+  "saveAndSubmit": "حفظ وإرسال",
+  "editMessage": {
+    "placeholder": "اكتب رسالة..."
+  },
+  "submit": "إرسال",
+  "send": "إرسال",
+  "noData": "لا توجد بيانات",
+  "noHistory": "لا يوجد سجل محادثات",
+  "chatWithCurrentPage": "الدردشة مع الصفحة الحالية",
+  "beta": "تجريبي",
+  "tts": "قراءة بصوت عالٍ",
+  "currentChatModelSettings": "إعدادات نموذج المحادثة الحالي",
+  "modelSettings": {
+    "label": "إعدادات النموذج",
+    "description": "تعيين خيارات النموذج عالمياً لجميع المحادثات",
+    "form": {
+      "keepAlive": {
+        "label": "الإبقاء نشطاً",
+        "help": "يتحكم في المدة التي سيظل فيها النموذج محملاً في الذاكرة بعد الطلب (الافتراضي: 5 دقائق)",
+        "placeholder": "أدخل مدة البقاء نشطاً (مثال: 5م، 10م، 1س)"
+      },
+      "temperature": {
+        "label": "درجة الحرارة",
+        "placeholder": "أدخل قيمة درجة الحرارة (مثال: 0.7، 1.0)"
+      },
+      "numCtx": {
+        "label": "حجم نافذة السياق (num_ctx)",
+        "placeholder": "أدخل قيمة حجم نافذة السياق (الافتراضي: 2048)"
+      },
+      "numPredict": {
+        "label": "الحد الأقصى للرموز",
+        "placeholder": "أدخل قيمة الحد الأقصى للرموز (مثال: 2048، 4096)"
+      },
+      "seed": {
+        "label": "البذرة",
+        "placeholder": "أدخل قيمة البذرة (مثال: 1234)",
+        "help": "إمكانية تكرار مخرجات النموذج"
+      },
+      "topK": {
+        "label": "أعلى K",
+        "placeholder": "أدخل قيمة أعلى K (مثال: 40، 100)"
+      },
+      "topP": {
+        "label": "أعلى P",
+        "placeholder": "أدخل قيمة أعلى P (مثال: 0.9، 0.95)"
+      },
+      "useMMap": {
+        "label": "استخدام MMap"
+      },
+      "numGpu": {
+        "label": "عدد وحدات معالجة الرسومات",
+        "placeholder": "أدخل عدد الطبقات لإرسالها إلى وحدة/وحدات معالجة الرسومات"
+      },
+      "systemPrompt": {
+        "label": "موجه النظام المؤقت",
+        "placeholder": "أدخل موجه النظام",
+        "help": "هذه طريقة سريعة لتعيين موجه النظام في المحادثة الحالية، والذي سيتجاوز موجه النظام المحدد إذا كان موجوداً."
+      }
+    },
+    "advanced": "المزيد من إعدادات النموذج"
+  },
+  "copilot": {
+    "summary": "تلخيص",
+    "explain": "شرح",
+    "rephrase": "إعادة صياغة",
+    "translate": "ترجمة",
+    "custom": "مخصص"
+  },
+  "citations": "الاقتباسات",
+  "segmented": {
+    "available": "نماذج الخادم",
+    "custom": "نماذج مخصصة"
+  },
+  "downloadCode": "تنزيل الكود",
+  "date": {
+    "pinned": "مثبت",
+    "today": "اليوم",
+    "yesterday": "الأمس",
+    "last7Days": "آخر 7 أيام",
+    "older": "أقدم"
+  },
+  "range": {
+    "deleteConfirm": {
+      "pinned": "هل أنت متأكد أنك تريد حذف جميع الرسائل المثبتة؟",
+      "today": "هل أنت متأكد أنك تريد حذف جميع رسائل اليوم؟",
+      "yesterday": "هل أنت متأكد أنك تريد حذف جميع رسائل الأمس؟",
+      "last7Days": "هل أنت متأكد أنك تريد حذف جميع رسائل آخر 7 أيام؟",
+      "older": "هل أنت متأكد أنك تريد حذف جميع الرسائل القديمة؟"
+    },
+    "tooltip": {
+      "pinned": "حذف جميع الرسائل المثبتة",
+      "today": "حذف جميع رسائل اليوم",
+      "yesterday": "حذف جميع رسائل الأمس",
+      "last7Days": "حذف جميع رسائل آخر 7 أيام",
+      "older": "حذف جميع الرسائل القديمة"
+    }
+  },
+  "pin": "تثبيت",
+  "unpin": "إلغاء التثبيت",
+  "generationInfo": "معلومات التوليد",
+  "sidebarChat": "دردشة الشريط الجانبي",
+  "reasoning": {
+    "thinking": "جاري التفكير....",
+    "thought": "فكر لمدة {{time}}"
+  },
+  "embeddingGen": "إنشاء تمثيلات، قد يستغرق هذا وقتًا",
+  "semanticSearch": "جاري البحث الدلالي",
+  "downloading": "جاري التنزيل",
+  "cancelPullingModel": {
+    "confirm": "هل أنت متأكد أنك تريد إلغاء التنزيل؟ سيؤدي ذلك إلى إيقاف عملية التنزيل. وفقًا لتوثيق Ollama، يمكنك المتابعة من حيث توقفت."
+  },
+  "table": {
+    "copyCsv": "Copy as CSV",
+    "downloadCsv": "Download CSV"
+  }
 }

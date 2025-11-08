@@ -1,6 +1,7 @@
 import Markdown from "../../Common/Markdown"
 import React, { useEffect } from "react"
 import { Tag, Image, Tooltip, Collapse, Popover, Avatar } from "antd"
+import { IconButton } from "../IconButton"
 import { ActionInfo } from "./ActionInfo"
 import {
   CheckIcon,
@@ -340,8 +341,8 @@ export const PlaygroundMessage = (props: Props) => {
               }`}>
               {props.isTTSEnabled && (
                 <Tooltip title={t("tts")}>
-                  <button
-                    aria-label={t("tts")}
+                  <IconButton
+                    ariaLabel={t("tts") as string}
                     onClick={() => {
                       if (isSpeaking) {
                         cancel()
@@ -357,13 +358,13 @@ export const PlaygroundMessage = (props: Props) => {
                     ) : (
                       <Square className="w-3 h-3 text-red-400 group-hover:text-red-500" />
                     )}
-                  </button>
+                  </IconButton>
                 </Tooltip>
               )}
               {!props.hideCopy && (
                 <Tooltip title={t("copyToClipboard")}>
-                  <button
-                    aria-label={t("copyToClipboard")}
+                  <IconButton
+                    ariaLabel={t("copyToClipboard") as string}
                     onClick={async () => {
                       await copyToClipboard({
                         text: props.message,
@@ -382,7 +383,7 @@ export const PlaygroundMessage = (props: Props) => {
                     ) : (
                       <CheckIcon className="w-3 h-3 text-green-400 group-hover:text-green-500" />
                     )}
-                  </button>
+                  </IconButton>
                 </Tooltip>
               )}
               {props.isBot && (
@@ -393,56 +394,56 @@ export const PlaygroundMessage = (props: Props) => {
                         <GenerationInfo generationInfo={props.generationInfo} />
                       }
                       title={t("generationInfo")}>
-                      <button
-                        aria-label={t("generationInfo")}
+                      <IconButton
+                        ariaLabel={t("generationInfo") as string}
                         className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 dark:bg-[#242424] hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
                         <InfoIcon className="w-3 h-3 text-gray-400 group-hover:text-gray-500" />
-                      </button>
+                      </IconButton>
                     </Popover>
                   )}
 
                   {!props.hideEditAndRegenerate && isLastMessage && (
                     <Tooltip title={t("regenerate")}>
-                      <button
-                        aria-label={t("regenerate")}
+                      <IconButton
+                        ariaLabel={t("regenerate") as string}
                         onClick={props.onRengerate}
                         className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 dark:bg-[#242424] hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
                         <RotateCcw className="w-3 h-3 text-gray-400 group-hover:text-gray-500" />
-                      </button>
+                      </IconButton>
                     </Tooltip>
                   )}
 
                   {props?.onNewBranch && !props?.temporaryChat && (
                     <Tooltip title={t("newBranch")}>
-                      <button
-                        aria-label={t("newBranch")}
+                      <IconButton
+                        ariaLabel={t("newBranch") as string}
                         onClick={props?.onNewBranch}
                         className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 dark:bg-[#242424] hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
                         <GitBranchIcon className="w-3 h-3 text-gray-400 group-hover:text-gray-500" />
-                      </button>
+                      </IconButton>
                     </Tooltip>
                   )}
 
                   {!props.hideContinue && isLastMessage && (
                     <Tooltip title={t("continue")}>
-                      <button
-                        aria-label={t("continue")}
+                      <IconButton
+                        ariaLabel={t("continue") as string}
                         onClick={props?.onContinue}
                         className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 dark:bg-[#242424] hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
                         <PlayCircle className="w-3 h-3 text-gray-400 group-hover:text-gray-500" />
-                      </button>
+                      </IconButton>
                     </Tooltip>
                   )}
                 </>
               )}
               {!props.hideEditAndRegenerate && (
                 <Tooltip title={t("edit")}>
-                  <button
+                  <IconButton
                     onClick={() => setEditMode(true)}
-                    aria-label={t("edit")}
+                    ariaLabel={t("edit") as string}
                     className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 dark:bg-[#242424] hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
                     <Pen className="w-3 h-3 text-gray-400 group-hover:text-gray-500" />
-                  </button>
+                  </IconButton>
                 </Tooltip>
               )}
             </div>

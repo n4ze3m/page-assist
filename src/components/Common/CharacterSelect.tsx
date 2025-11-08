@@ -4,6 +4,7 @@ import { UserCircle2 } from "lucide-react"
 import React from "react"
 import { useStorage } from "@plasmohq/storage/hook"
 import { tldwClient } from "@/services/tldw/TldwApiClient"
+import { IconButton } from "./IconButton"
 
 type Props = {
   className?: string
@@ -66,7 +67,10 @@ export const CharacterSelect: React.FC<Props> = ({
       placement="topLeft"
       trigger={["click"]}>
       <Tooltip title={selectedCharacter?.name || "Select Character"}>
-        <button type="button" className={className}>
+        <IconButton
+          ariaLabel={(selectedCharacter?.name || "Select Character") as string}
+          hasPopup="menu"
+          className={className}>
           {selectedCharacter?.avatar_url ? (
             <img
               src={selectedCharacter.avatar_url}
@@ -75,7 +79,7 @@ export const CharacterSelect: React.FC<Props> = ({
           ) : (
             <UserCircle2 className={iconClassName} />
           )}
-        </button>
+        </IconButton>
       </Tooltip>
     </Dropdown>
   )

@@ -133,6 +133,7 @@ export const DictionariesManager: React.FC = () => {
 }
 
 const DictionaryEntryManager: React.FC<{ dictionaryId: number; form: any }> = ({ dictionaryId, form }) => {
+  const { t } = useTranslation(["common"]) 
   const qc = useQueryClient()
   const { data, status } = useQuery({
     queryKey: ['tldw:listDictionaryEntries', dictionaryId],

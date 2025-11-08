@@ -1,197 +1,201 @@
 {
-    "pageAssist": "tldw Assistant",
-    "titles": {
-        "options": "tldw Assistant — Options",
-        "sidepanel": "tldw Assistant — Sidepanel"
+  "pageAssist": "tldw Assistant",
+  "titles": {
+    "options": "tldw Assistant — Options",
+    "sidepanel": "tldw Assistant — Sidepanel"
+  },
+  "pdf": {
+    "passwordTitle": "Enter the PDF password",
+    "unlock": "Unlock"
+  },
+  "loading": {
+    "title": "Loading…",
+    "description": "Please wait while we get things ready."
+  },
+  "selectAModel": "选择一个模型",
+  "save": "保存",
+  "saved": "已保存",
+  "cancel": "取消",
+  "retry": "重试",
+  "share": {
+    "tooltip": {
+      "share": "分享"
     },
-    "pdf": {
-        "passwordTitle": "Enter the PDF password",
-        "unlock": "Unlock"
+    "modal": {
+      "title": "为聊天创建分享链接"
     },
-    "loading": {
-        "title": "Loading…",
-        "description": "Please wait while we get things ready."
+    "form": {
+      "defaultValue": {
+        "name": "匿名",
+        "title": "未命名聊天"
+      },
+      "title": {
+        "label": "聊天标题",
+        "placeholder": "输入聊天标题",
+        "required": "聊天标题是必填的"
+      },
+      "name": {
+        "label": "您的名字",
+        "placeholder": "输入您的名字",
+        "required": "您的名字是必填的"
+      },
+      "btn": {
+        "save": "生成链接",
+        "saving": "正在生成链接..."
+      }
     },
-    "selectAModel": "选择一个模型",
-    "save": "保存",
-    "saved": "已保存",
-    "cancel": "取消",
-    "retry": "重试",
-    "share": {
-        "tooltip": {
-            "share": "分享"
-        },
-        "modal": {
-            "title": "为聊天创建分享链接"
-        },
-        "form": {
-            "defaultValue": {
-                "name": "匿名",
-                "title": "未命名聊天"
-            },
-            "title": {
-                "label": "聊天标题",
-                "placeholder": "输入聊天标题",
-                "required": "聊天标题是必填的"
-            },
-            "name": {
-                "label": "您的名字",
-                "placeholder": "输入您的名字",
-                "required": "您的名字是必填的"
-            },
-            "btn": {
-                "save": "生成链接",
-                "saving": "正在生成链接..."
-            }
-        },
-        "notification": {
-            "successGenerate": "链接已复制到剪贴板",
-            "failGenerate": "生成链接失败"
-        }
-    },
-    "copyToClipboard": "复制到剪贴板",
-    "webSearch": "搜索网络",
-    "regenerate": "重新生成",
-    "continue": "继续回答",
-    "edit": "编辑",
-    "delete": "删除",
-    "saveAndSubmit": "保存 & 提交",
-    "editMessage": {
-        "placeholder": "输入一条消息..."
-    },
-    "submit": "提交",
-    "send": "提交",
-    "noData": "无数据",
-    "noHistory": "无聊天记录",
-    "chatWithCurrentPage": "与当前页面聊天",
-    "beta": "Beta",
-    "tts": "朗读",
-    "currentChatModelSettings": "当前聊天模型设置",
-    "modelSettings": {
-        "label": "模型设置",
-        "description": "全局设置所有聊天的模型选项",
-        "form": {
-            "keepAlive": {
-                "label": "保留时间",
-                "help": "控制请求后模型在内存中保持的时间（默认：5分钟）",
-                "placeholder": "输入保留时间（例如：5分、10分、1小时）"
-            },
-            "temperature": {
-                "label": "温度",
-                "placeholder": "输入温度值（例如：0.7、1.0）"
-            },
-            "numCtx": {
-                "label": "上下文窗口大小 (num_ctx)",
-                "placeholder": "输入上下文窗口大小（默认：2048）"
-            },
-            "numPredict": {
-                "label": "最大令牌数 (num_predict)",
-                "placeholder": "输入最大令牌数（例如：2048、4096）"
-            },
-            "seed": {
-                "label": "随机种子",
-                "placeholder": "输入随机种子值（例如：1234）",
-                "help": "模型输出的可重复性"
-            },
-            "topK": {
-                "label": "Top K",
-                "placeholder": "输入Top K值（例如：40、100）"
-            },
-            "topP": {
-                "label": "Top P",
-                "placeholder": "输入Top P值（例如：0.9、0.95）"
-            },
-            "useMMap": {
-                "label": "使用 mmap"
-            },
-            "tfsZ": {
-                "label": "TFS-Z",
-                "placeholder": "例如：1.0, 1.1"
-            },
-            "numKeep": {
-                "label": "Num Keep",
-                "placeholder": "例如：256, 512"
-            },
-            "numThread": {
-                "label": "Num Thread",
-                "placeholder": "例如：8, 16"
-            },
-            "useMlock": {
-                "label": "使用 mlock"
-            },
-            "minP": {
-                "label": "Min P",
-                "placeholder": "例如：0.05"
-            },
-            "repeatPenalty": {
-                "label": "Repeat Penalty",
-                "placeholder": "例如：1.1, 1.2"
-            },
-            "repeatLastN": {
-                "label": "Repeat Last N",
-                "placeholder": "例如：64, 128"
-            },
-            "numGpu": {
-                "label": "Num GPU",
-                "placeholder": "输入要发送到 GPU 的层数"
-            },
-            "systemPrompt": {
-                "label": "临时系统提示",
-                "placeholder": "输入系统提示",
-                "help": "这是一种在当前聊天中快速设置系统提示的方法，如果存在已选择的系统提示，它将覆盖该提示。"
-            }
-        },
-        "advanced": "更多模型设置"
-    },
-    "copilot": {
-        "summary": "总结",
-        "explain": "解释",
-        "rephrase": "重述",
-        "translate": "翻译",
-        "custom": "自定义"
-    },
-    "citations": "引用",
-    "segmented": {
-        "available": "服务器模型",
-        "custom": "自定义模型"
-    },
-    "downloadCode": "下载代码",
-    "date": {
-        "pinned": "已置顶",
-        "today": "今天",
-        "yesterday": "昨天",
-        "last7Days": "最近7天",
-        "older": "更早"
-    },
-    "range": {
-        "deleteConfirm": {
-            "pinned": "确定要删除所有置顶的消息吗？",
-            "today": "确定要删除今天的所有消息吗？",
-            "yesterday": "确定要删除昨天的所有消息吗？",
-            "last7Days": "确定要删除最近7天的所有消息吗？",
-            "older": "确定要删除所有更早的消息吗？"
-        },
-        "tooltip": {
-            "pinned": "删除所有置顶消息",
-            "today": "删除今天的所有消息",
-            "yesterday": "删除昨天的所有消息",
-            "last7Days": "删除最近7天的所有消息",
-            "older": "删除所有更早的消息"
-        }
-    },
-    "pin": "置顶",
-    "unpin": "取消置顶",
-    "generationInfo": "生成信息",
-    "sidebarChat": "侧边栏聊天",
-    "reasoning": {
-        "thinking": "思考中....",
-        "thought": "思考了 {{time}}"
-    },
-    "mermaid": "Mermaid",
-    "embeddingGen": "正在创建嵌入向量，这可能需要一些时间",
-    "semanticSearch": "正在执行语义搜索",
-    "downloading": "正在下载",
-    "cancelPullingModel": {
-        "confirm": "确定要取消下载吗？这将停止下载过程。根据 Ollama 文档，您可以从中断处重新开始下载。"
+    "notification": {
+      "successGenerate": "链接已复制到剪贴板",
+      "failGenerate": "生成链接失败"
     }
+  },
+  "copyToClipboard": "复制到剪贴板",
+  "webSearch": "搜索网络",
+  "regenerate": "重新生成",
+  "continue": "继续回答",
+  "edit": "编辑",
+  "delete": "删除",
+  "saveAndSubmit": "保存 & 提交",
+  "editMessage": {
+    "placeholder": "输入一条消息..."
+  },
+  "submit": "提交",
+  "send": "提交",
+  "noData": "无数据",
+  "noHistory": "无聊天记录",
+  "chatWithCurrentPage": "与当前页面聊天",
+  "beta": "Beta",
+  "tts": "朗读",
+  "currentChatModelSettings": "当前聊天模型设置",
+  "modelSettings": {
+    "label": "模型设置",
+    "description": "全局设置所有聊天的模型选项",
+    "form": {
+      "keepAlive": {
+        "label": "保留时间",
+        "help": "控制请求后模型在内存中保持的时间（默认：5分钟）",
+        "placeholder": "输入保留时间（例如：5分、10分、1小时）"
+      },
+      "temperature": {
+        "label": "温度",
+        "placeholder": "输入温度值（例如：0.7、1.0）"
+      },
+      "numCtx": {
+        "label": "上下文窗口大小 (num_ctx)",
+        "placeholder": "输入上下文窗口大小（默认：2048）"
+      },
+      "numPredict": {
+        "label": "最大令牌数 (num_predict)",
+        "placeholder": "输入最大令牌数（例如：2048、4096）"
+      },
+      "seed": {
+        "label": "随机种子",
+        "placeholder": "输入随机种子值（例如：1234）",
+        "help": "模型输出的可重复性"
+      },
+      "topK": {
+        "label": "Top K",
+        "placeholder": "输入Top K值（例如：40、100）"
+      },
+      "topP": {
+        "label": "Top P",
+        "placeholder": "输入Top P值（例如：0.9、0.95）"
+      },
+      "useMMap": {
+        "label": "使用 mmap"
+      },
+      "tfsZ": {
+        "label": "TFS-Z",
+        "placeholder": "例如：1.0, 1.1"
+      },
+      "numKeep": {
+        "label": "Num Keep",
+        "placeholder": "例如：256, 512"
+      },
+      "numThread": {
+        "label": "Num Thread",
+        "placeholder": "例如：8, 16"
+      },
+      "useMlock": {
+        "label": "使用 mlock"
+      },
+      "minP": {
+        "label": "Min P",
+        "placeholder": "例如：0.05"
+      },
+      "repeatPenalty": {
+        "label": "Repeat Penalty",
+        "placeholder": "例如：1.1, 1.2"
+      },
+      "repeatLastN": {
+        "label": "Repeat Last N",
+        "placeholder": "例如：64, 128"
+      },
+      "numGpu": {
+        "label": "Num GPU",
+        "placeholder": "输入要发送到 GPU 的层数"
+      },
+      "systemPrompt": {
+        "label": "临时系统提示",
+        "placeholder": "输入系统提示",
+        "help": "这是一种在当前聊天中快速设置系统提示的方法，如果存在已选择的系统提示，它将覆盖该提示。"
+      }
+    },
+    "advanced": "更多模型设置"
+  },
+  "copilot": {
+    "summary": "总结",
+    "explain": "解释",
+    "rephrase": "重述",
+    "translate": "翻译",
+    "custom": "自定义"
+  },
+  "citations": "引用",
+  "segmented": {
+    "available": "服务器模型",
+    "custom": "自定义模型"
+  },
+  "downloadCode": "下载代码",
+  "date": {
+    "pinned": "已置顶",
+    "today": "今天",
+    "yesterday": "昨天",
+    "last7Days": "最近7天",
+    "older": "更早"
+  },
+  "range": {
+    "deleteConfirm": {
+      "pinned": "确定要删除所有置顶的消息吗？",
+      "today": "确定要删除今天的所有消息吗？",
+      "yesterday": "确定要删除昨天的所有消息吗？",
+      "last7Days": "确定要删除最近7天的所有消息吗？",
+      "older": "确定要删除所有更早的消息吗？"
+    },
+    "tooltip": {
+      "pinned": "删除所有置顶消息",
+      "today": "删除今天的所有消息",
+      "yesterday": "删除昨天的所有消息",
+      "last7Days": "删除最近7天的所有消息",
+      "older": "删除所有更早的消息"
+    }
+  },
+  "pin": "置顶",
+  "unpin": "取消置顶",
+  "generationInfo": "生成信息",
+  "sidebarChat": "侧边栏聊天",
+  "reasoning": {
+    "thinking": "思考中....",
+    "thought": "思考了 {{time}}"
+  },
+  "mermaid": "Mermaid",
+  "embeddingGen": "正在创建嵌入向量，这可能需要一些时间",
+  "semanticSearch": "正在执行语义搜索",
+  "downloading": "正在下载",
+  "cancelPullingModel": {
+    "confirm": "确定要取消下载吗？这将停止下载过程。根据 Ollama 文档，您可以从中断处重新开始下载。"
+  },
+  "table": {
+    "copyCsv": "Copy as CSV",
+    "downloadCsv": "Download CSV"
+  }
 }

@@ -1,197 +1,201 @@
 {
-    "pageAssist": "tldw Assistant",
-    "titles": {
-        "options": "tldw Assistant — Options",
-        "sidepanel": "tldw Assistant — Sidepanel"
+  "pageAssist": "tldw Assistant",
+  "titles": {
+    "options": "tldw Assistant — Options",
+    "sidepanel": "tldw Assistant — Sidepanel"
+  },
+  "pdf": {
+    "passwordTitle": "Enter the PDF password",
+    "unlock": "Unlock"
+  },
+  "loading": {
+    "title": "Loading…",
+    "description": "Please wait while we get things ready."
+  },
+  "selectAModel": "Sélectionner un modèle",
+  "save": "Enregistrer",
+  "saved": "Enregistré",
+  "cancel": "Annuler",
+  "retry": "Réessayer",
+  "share": {
+    "tooltip": {
+      "share": "Partager"
     },
-    "pdf": {
-        "passwordTitle": "Enter the PDF password",
-        "unlock": "Unlock"
+    "modal": {
+      "title": "Partagez le lien vers le chat"
     },
-    "loading": {
-        "title": "Loading…",
-        "description": "Please wait while we get things ready."
+    "form": {
+      "defaultValue": {
+        "name": "Anonyme",
+        "title": "Chat sans titre"
+      },
+      "title": {
+        "label": "Titre du chat",
+        "placeholder": "Entrer le titre du chat",
+        "required": "Le titre du chat est nécessaire"
+      },
+      "name": {
+        "label": "Votre nom",
+        "placeholder": "Entrer votre nom",
+        "required": "Votre nom est nécessaire"
+      },
+      "btn": {
+        "save": "Générer le lien",
+        "saving": "Génération du lien..."
+      }
     },
-    "selectAModel": "Sélectionner un modèle",
-    "save": "Enregistrer",
-    "saved": "Enregistré",
-    "cancel": "Annuler",
-    "retry": "Réessayer",
-    "share": {
-        "tooltip": {
-            "share": "Partager"
-        },
-        "modal": {
-            "title": "Partagez le lien vers le chat"
-        },
-        "form": {
-            "defaultValue": {
-                "name": "Anonyme",
-                "title": "Chat sans titre"
-            },
-            "title": {
-                "label": "Titre du chat",
-                "placeholder": "Entrer le titre du chat",
-                "required": "Le titre du chat est nécessaire"
-            },
-            "name": {
-                "label": "Votre nom",
-                "placeholder": "Entrer votre nom",
-                "required": "Votre nom est nécessaire"
-            },
-            "btn": {
-                "save": "Générer le lien",
-                "saving": "Génération du lien..."
-            }
-        },
-        "notification": {
-            "successGenerate": "Lien copié dans le presse-papiers",
-            "failGenerate": "Échec de la génération du lien"
-        }
-    },
-    "copyToClipboard": "Copier dans le presse-papier",
-    "webSearch": "Recherche sur le Web",
-    "regenerate": "Régénérer",
-    "continue": "Continuer la réponse",
-    "edit": "Modifier",
-    "delete": "Supprimer",
-    "saveAndSubmit": "Enregistrer et soumettre",
-    "editMessage": {
-        "placeholder": "Tapez un message..."
-    },
-    "submit": "Soumettre",
-    "send": "Soumettre",
-    "noData": "Aucune donnée",
-    "noHistory": "Pas d'historique de chat",
-    "chatWithCurrentPage": "Discuter avec la page actuelle",
-    "beta": "Bêta",
-    "tts": "Synthèse vocale",
-    "currentChatModelSettings": "Paramètres actuels du modèle de chat",
-    "modelSettings": {
-        "label": "Paramètres du modèle",
-        "description": "Définissez les options globales du modèle pour tous les chats",
-        "form": {
-            "keepAlive": {
-                "label": "Maintenir en mémoire",
-                "help": "contrôle la durée pendant laquelle le modèle reste chargé en mémoire après la demande (par défaut : 5m)",
-                "placeholder": "Par exemple : 5m, 10m, 1h"
-            },
-            "temperature": {
-                "label": "Température",
-                "placeholder": "Par exemple : 0.7, 1.0"
-            },
-            "numCtx": {
-                "label": "Taille de la fenêtre de contexte (num_ctx)",
-                "placeholder": "Entrer la taille de la fenêtre de contexte (par défaut : 2048)"
-            },
-            "numPredict": {
-                "label": "Nombre maximum de jetons (num_predict)",
-                "placeholder": "Par exemple : 2048, 4096"
-            },
-            "seed": {
-                "label": "Graine",
-                "placeholder": "Par exemple : 1234",
-                "help": "Reproductibilité de la sortie du modèle"
-            },
-            "topK": {
-                "label": "Top K",
-                "placeholder": "Par exemple : 40, 100"
-            },
-            "topP": {
-                "label": "Top P",
-                "placeholder": "Par exemple : 0.9, 0.95"
-            },
-            "useMMap": {
-                "label": "Utiliser MMap"
-            },
-            "tfsZ": {
-                "label": "TFS-Z",
-                "placeholder": "Par exemple : 1.0, 1.1"
-            },
-            "numKeep": {
-                "label": "Nombre de conservation",
-                "placeholder": "Par exemple : 256, 512"
-            },
-            "numThread": {
-                "label": "Nombre de threads",
-                "placeholder": "Par exemple : 8, 16"
-            },
-            "useMlock": {
-                "label": "Utiliser Mlock"
-            },
-            "minP": {
-                "label": "Min P",
-                "placeholder": "Par exemple : 0.05"
-            },
-            "repeatPenalty": {
-                "label": "Pénalité de répétition",
-                "placeholder": "Par exemple : 1.1, 1.2"
-            },
-            "repeatLastN": {
-                "label": "Répéter les N derniers éléments",
-                "placeholder": "Par exemple : 64, 128"
-            },
-            "numGpu": {
-                "label": "Nombre de GPU",
-                "placeholder": "Entrer le nombre de couches à envoyer aux GPU"
-            },
-            "systemPrompt": {
-                "label": "Prompt système temporaire",
-                "placeholder": "Entrer le prompt système",
-                "help": "C'est un moyen rapide de définir le prompt système dans le chat actuel, qui remplacera le prompt système sélectionné si il existe."
-            }
-        },
-        "advanced": "Plus de paramètres du modèle"
-    },
-    "copilot": {
-        "summary": "Résumer",
-        "explain": "Expliquer",
-        "rephrase": "Reformuler",
-        "translate": "Traduire",
-        "custom": "Personnalisé"
-    },
-    "citations": "Citations",
-    "segmented": {
-        "available": "Modèles serveur",
-        "custom": "Modèles personnalisés"
-    },
-    "downloadCode": "Télécharger le code",
-    "date": {
-        "pinned": "Épinglé",
-        "today": "Aujourd'hui",
-        "yesterday": "Hier",
-        "last7Days": "7 derniers jours",
-        "older": "Plus ancien"
-    },
-    "range": {
-        "deleteConfirm": {
-            "pinned": "Êtes-vous sûr de vouloir supprimer tous les messages épinglés ?",
-            "today": "Êtes-vous sûr de vouloir supprimer tous les messages d'aujourd'hui ?",
-            "yesterday": "Êtes-vous sûr de vouloir supprimer tous les messages d'hier ?",
-            "last7Days": "Êtes-vous sûr de vouloir supprimer tous les messages des 7 derniers jours ?",
-            "older": "Êtes-vous sûr de vouloir supprimer tous les messages plus anciens ?"
-        },
-        "tooltip": {
-            "pinned": "Supprimer tous les messages épinglés",
-            "today": "Supprimer tous les messages d'aujourd'hui",
-            "yesterday": "Supprimer tous les messages d'hier",
-            "last7Days": "Supprimer tous les messages des 7 derniers jours",
-            "older": "Supprimer tous les messages plus anciens"
-        }
-    },
-    "pin": "Épingler",
-    "unpin": "Désépingler",
-    "generationInfo": "Informations de génération",
-    "sidebarChat": "Chat dans le panneau latérale",
-    "reasoning": {
-        "thinking": "Réflexion....",
-        "thought": "Réflexion pendant {{time}}"
-    },
-    "mermaid": "Mermaid",
-    "embeddingGen": "Création d'embeddings, cela peut prendre un certain temps",
-    "semanticSearch": "Recherche sémantique en cours",
-    "downloading": "Téléchargement en cours",
-    "cancelPullingModel": {
-        "confirm": "Êtes-vous sûr de vouloir annuler le téléchargement ? Cela arrêtera le processus de téléchargement. Selon la documentation Ollama, vous pouvez reprendre là où vous vous êtes arrêté."
+    "notification": {
+      "successGenerate": "Lien copié dans le presse-papiers",
+      "failGenerate": "Échec de la génération du lien"
     }
+  },
+  "copyToClipboard": "Copier dans le presse-papier",
+  "webSearch": "Recherche sur le Web",
+  "regenerate": "Régénérer",
+  "continue": "Continuer la réponse",
+  "edit": "Modifier",
+  "delete": "Supprimer",
+  "saveAndSubmit": "Enregistrer et soumettre",
+  "editMessage": {
+    "placeholder": "Tapez un message..."
+  },
+  "submit": "Soumettre",
+  "send": "Soumettre",
+  "noData": "Aucune donnée",
+  "noHistory": "Pas d'historique de chat",
+  "chatWithCurrentPage": "Discuter avec la page actuelle",
+  "beta": "Bêta",
+  "tts": "Synthèse vocale",
+  "currentChatModelSettings": "Paramètres actuels du modèle de chat",
+  "modelSettings": {
+    "label": "Paramètres du modèle",
+    "description": "Définissez les options globales du modèle pour tous les chats",
+    "form": {
+      "keepAlive": {
+        "label": "Maintenir en mémoire",
+        "help": "contrôle la durée pendant laquelle le modèle reste chargé en mémoire après la demande (par défaut : 5m)",
+        "placeholder": "Par exemple : 5m, 10m, 1h"
+      },
+      "temperature": {
+        "label": "Température",
+        "placeholder": "Par exemple : 0.7, 1.0"
+      },
+      "numCtx": {
+        "label": "Taille de la fenêtre de contexte (num_ctx)",
+        "placeholder": "Entrer la taille de la fenêtre de contexte (par défaut : 2048)"
+      },
+      "numPredict": {
+        "label": "Nombre maximum de jetons (num_predict)",
+        "placeholder": "Par exemple : 2048, 4096"
+      },
+      "seed": {
+        "label": "Graine",
+        "placeholder": "Par exemple : 1234",
+        "help": "Reproductibilité de la sortie du modèle"
+      },
+      "topK": {
+        "label": "Top K",
+        "placeholder": "Par exemple : 40, 100"
+      },
+      "topP": {
+        "label": "Top P",
+        "placeholder": "Par exemple : 0.9, 0.95"
+      },
+      "useMMap": {
+        "label": "Utiliser MMap"
+      },
+      "tfsZ": {
+        "label": "TFS-Z",
+        "placeholder": "Par exemple : 1.0, 1.1"
+      },
+      "numKeep": {
+        "label": "Nombre de conservation",
+        "placeholder": "Par exemple : 256, 512"
+      },
+      "numThread": {
+        "label": "Nombre de threads",
+        "placeholder": "Par exemple : 8, 16"
+      },
+      "useMlock": {
+        "label": "Utiliser Mlock"
+      },
+      "minP": {
+        "label": "Min P",
+        "placeholder": "Par exemple : 0.05"
+      },
+      "repeatPenalty": {
+        "label": "Pénalité de répétition",
+        "placeholder": "Par exemple : 1.1, 1.2"
+      },
+      "repeatLastN": {
+        "label": "Répéter les N derniers éléments",
+        "placeholder": "Par exemple : 64, 128"
+      },
+      "numGpu": {
+        "label": "Nombre de GPU",
+        "placeholder": "Entrer le nombre de couches à envoyer aux GPU"
+      },
+      "systemPrompt": {
+        "label": "Prompt système temporaire",
+        "placeholder": "Entrer le prompt système",
+        "help": "C'est un moyen rapide de définir le prompt système dans le chat actuel, qui remplacera le prompt système sélectionné si il existe."
+      }
+    },
+    "advanced": "Plus de paramètres du modèle"
+  },
+  "copilot": {
+    "summary": "Résumer",
+    "explain": "Expliquer",
+    "rephrase": "Reformuler",
+    "translate": "Traduire",
+    "custom": "Personnalisé"
+  },
+  "citations": "Citations",
+  "segmented": {
+    "available": "Modèles serveur",
+    "custom": "Modèles personnalisés"
+  },
+  "downloadCode": "Télécharger le code",
+  "date": {
+    "pinned": "Épinglé",
+    "today": "Aujourd'hui",
+    "yesterday": "Hier",
+    "last7Days": "7 derniers jours",
+    "older": "Plus ancien"
+  },
+  "range": {
+    "deleteConfirm": {
+      "pinned": "Êtes-vous sûr de vouloir supprimer tous les messages épinglés ?",
+      "today": "Êtes-vous sûr de vouloir supprimer tous les messages d'aujourd'hui ?",
+      "yesterday": "Êtes-vous sûr de vouloir supprimer tous les messages d'hier ?",
+      "last7Days": "Êtes-vous sûr de vouloir supprimer tous les messages des 7 derniers jours ?",
+      "older": "Êtes-vous sûr de vouloir supprimer tous les messages plus anciens ?"
+    },
+    "tooltip": {
+      "pinned": "Supprimer tous les messages épinglés",
+      "today": "Supprimer tous les messages d'aujourd'hui",
+      "yesterday": "Supprimer tous les messages d'hier",
+      "last7Days": "Supprimer tous les messages des 7 derniers jours",
+      "older": "Supprimer tous les messages plus anciens"
+    }
+  },
+  "pin": "Épingler",
+  "unpin": "Désépingler",
+  "generationInfo": "Informations de génération",
+  "sidebarChat": "Chat dans le panneau latérale",
+  "reasoning": {
+    "thinking": "Réflexion....",
+    "thought": "Réflexion pendant {{time}}"
+  },
+  "mermaid": "Mermaid",
+  "embeddingGen": "Création d'embeddings, cela peut prendre un certain temps",
+  "semanticSearch": "Recherche sémantique en cours",
+  "downloading": "Téléchargement en cours",
+  "cancelPullingModel": {
+    "confirm": "Êtes-vous sûr de vouloir annuler le téléchargement ? Cela arrêtera le processus de téléchargement. Selon la documentation Ollama, vous pouvez reprendre là où vous vous êtes arrêté."
+  },
+  "table": {
+    "copyCsv": "Copy as CSV",
+    "downloadCsv": "Download CSV"
+  }
 }

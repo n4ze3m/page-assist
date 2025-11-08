@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next"
 import { fetchChatModels } from "@/services/tldw-server"
 import { useMessage } from "@/hooks/useMessage"
 import { ProviderIcons } from "./ProviderIcon"
+import { IconButton } from "./IconButton"
 
 type Props = {
   iconClassName?: string
@@ -90,9 +91,12 @@ export const ModelSelect: React.FC<Props> = ({iconClassName = "size-5"}) => {
           placement={"topLeft"}
           trigger={["click"]}>
           <Tooltip title={t("selectAModel")}>
-            <button type="button" className="dark:text-gray-300">
+            <IconButton
+              ariaLabel={t("selectAModel") as string}
+              hasPopup="menu"
+              className="dark:text-gray-300">
               <LucideBrain className={iconClassName} />
-            </button>
+            </IconButton>
           </Tooltip>
         </Dropdown>
       )}

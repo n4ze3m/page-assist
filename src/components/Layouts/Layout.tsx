@@ -2,6 +2,7 @@ import React, { useState } from "react"
 
 import { Drawer, Tooltip } from "antd"
 import { EraserIcon, XIcon } from "lucide-react"
+import { IconButton } from "../Common/IconButton"
 import { useTranslation } from "react-i18next"
 import { useQueryClient } from "@tanstack/react-query"
 
@@ -83,14 +84,13 @@ export default function OptionLayout({
             title={
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <button
+                  <IconButton
                     onClick={() => setSidebarOpen(false)}
-                    aria-label="Close sidebar"
+                    ariaLabel="Close sidebar"
                     title="Close sidebar"
-                    className="-ml-1"
-                  >
+                    className="-ml-1">
                     <XIcon className="h-5 w-5 text-gray-500 dark:text-gray-400" />
-                  </button>
+                  </IconButton>
                   <span>{t("sidebarTitle")}</span>
                 </div>
 
@@ -100,7 +100,10 @@ export default function OptionLayout({
                       "settings:generalSettings.system.deleteChatHistory.label"
                     )}
                     placement="left">
-                    <button
+                    <IconButton
+                      ariaLabel={t(
+                        "settings:generalSettings.system.deleteChatHistory.label"
+                      ) as string}
                       onClick={async () => {
                         const ok = await confirmDanger({
                           title: t("common:confirmTitle", {
@@ -124,7 +127,7 @@ export default function OptionLayout({
                       }}
                       className="text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100">
                       <EraserIcon className="size-5" />
-                    </button>
+                    </IconButton>
                   </Tooltip>
                 </div>
               </div>

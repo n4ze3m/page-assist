@@ -6,6 +6,7 @@ import { tldwClient } from '@/services/tldw/TldwApiClient'
 import { apiSend } from '@/services/api-send'
 import type { AllowedPath } from '@/services/tldw/openapi-guard'
 import { useTranslation } from 'react-i18next'
+import type { TFunction } from 'i18next'
 
 type Check = {
   key: string
@@ -13,7 +14,7 @@ type Check = {
   path: AllowedPath
 }
 
-const makeChecks = (t: (k: string, d?: string) => string): Check[] => [
+const makeChecks = (t: TFunction): Check[] => [
   { key: 'core', label: t('settings:healthPage.checks.core', 'Core API'), path: '/api/v1/health' },
   { key: 'rag', label: t('settings:healthPage.checks.rag', 'RAG'), path: '/api/v1/rag/health' },
   { key: 'audio', label: t('settings:healthPage.checks.audio', 'Audio'), path: '/api/v1/audio/health' },

@@ -1,5 +1,6 @@
 import React from "react"
 import { Input, Button, List, Spin, Space, Tag, Tooltip, Radio, Pagination, Empty, Select, Checkbox, Typography, message } from "antd"
+import { useTranslation } from "react-i18next"
 import { bgRequest } from "@/services/background-proxy"
 import { useQuery, keepPreviousData } from "@tanstack/react-query"
 import { useServerOnline } from "@/hooks/useServerOnline"
@@ -51,6 +52,7 @@ const getContent = (d: MediaDetail): string => {
 }
 
 export const MediaReviewPage: React.FC = () => {
+  const { t } = useTranslation(['review'])
   const [query, setQuery] = React.useState("")
   const [page, setPage] = React.useState(1)
   const [pageSize, setPageSize] = React.useState(20)
@@ -243,19 +245,19 @@ export const MediaReviewPage: React.FC = () => {
         <div className="w-full">
           <div className="flex items-center gap-2 w-full">
             <Input
-              placeholder="Search media (title/content)"
+              placeholder={t('mediaPage.searchPlaceholder', 'Search media (title/content)')}
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               onPressEnter={() => { setPage(1); refetch() }}
             />
           </div>
           <div className="flex items-center gap-2 w-full mt-2">
-            <Button type="primary" onClick={() => { setPage(1); refetch() }}>Search</Button>
-            <Button onClick={() => { setQuery(""); setPage(1); refetch() }}>Clear</Button>
+            <Button type="primary" onClick={() => { setPage(1); refetch() }}>{t('mediaPage.search', 'Search')}</Button>
+            <Button onClick={() => { setQuery(""); setPage(1); refetch() }}>{t('mediaPage.clear', 'Clear')}</Button>
             <Select
             mode="multiple"
             allowClear
-            placeholder="Types"
+            placeholder={t('mediaPage.types', 'Types')}
             className="min-w-[12rem]"
             value={types}
             onChange={(vals) => { setTypes(vals as string[]); setPage(1); refetch() }}
@@ -265,22 +267,22 @@ export const MediaReviewPage: React.FC = () => {
             mode="tags"
             allowClear
             showSearch
-            placeholder="Keywords"
+            placeholder={t('mediaPage.keywords', 'Keywords')}
             className="min-w-[12rem]"
             value={keywordTokens}
             onSearch={(txt) => loadKeywordSuggestions(txt)}
             onChange={(vals) => { setKeywordTokens(vals as string[]); setPage(1); refetch() }}
             options={keywordOptions.map((k) => ({ label: k, value: k }))}
             />
-            <Button onClick={() => { setTypes([]); setKeywordTokens([]); setPage(1); refetch() }}>Reset Filters</Button>
-            <Checkbox checked={includeContent} onChange={(e) => { setIncludeContent(e.target.checked); setPage(1); refetch() }}>Content {contentLoading && (<Spin size="small" className="ml-1" />)}</Checkbox>
+            <Button onClick={() => { setTypes([]); setKeywordTokens([]); setPage(1); refetch() }}>{t('mediaPage.resetFilters', 'Reset Filters')}</Button>
+            <Checkbox checked={includeContent} onChange={(e) => { setIncludeContent(e.target.checked); setPage(1); refetch() }}>{t('mediaPage.content', 'Content')} {contentLoading && (<Spin size="small" className="ml-1" />)}</Checkbox>
           </div>
         </div>
         <Radio.Group
           size="small"
           value={orientation}
           onChange={(e) => setOrientation(e.target.value)}
-          options={[{ label: 'Vertical', value: 'vertical' }, { label: 'Horizontal', value: 'horizontal' }]}
+          options={[{ label: t('mediaPage.vertical', 'Vertical'), value: 'vertical' }, { label: t('mediaPage.horizontal', 'Horizontal'), value: 'horizontal' }]}
           optionType="button"
         />
       </div>
@@ -288,7 +290,7 @@ export const MediaReviewPage: React.FC = () => {
       <div className="flex flex-1 min-h-0 w-full gap-4">
         {!sidebarHidden && (
         <div className="w-full lg:w-1/3 border rounded p-2 bg-white dark:bg-[#171717] h-full overflow-auto">
-          <div className="mb-2 text-sm text-gray-600 dark:text-gray-300">Results</div>
+          <div className="mb-2 text-sm text-gray-600 dark:text-gray-300">{t('mediaPage.results', 'Results')}</div>
           {isFetching ? (
             <div className="py-8 flex items-center justify-center"><Spin /></div>
           ) : (Array.isArray(data) && data.length > 0) ? (
@@ -326,14 +328,14 @@ export const MediaReviewPage: React.FC = () => {
               </div>
             </>
           ) : (
-            <Empty description="No results" />
+            <Empty description={t('mediaPage.noResults', 'No results')} />
           )}
         </div>
         )}
         {/* Toggle bar between sidebar and viewer */}
         <div className="w-6 flex-shrink-0 h-full flex items-center">
           <button
-            title={sidebarHidden ? 'Show sidebar' : 'Hide sidebar'}
+            title={sidebarHidden ? t('mediaPage.showSidebar', 'Show sidebar') : t('mediaPage.hideSidebar', 'Hide sidebar')}
             onClick={() => setSidebarHidden((v) => !v)}
             className="h-full w-6 rounded bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 flex items-center justify-center text-xs font-semibold text-gray-600 dark:text-gray-300"
           >
@@ -341,29 +343,29 @@ export const MediaReviewPage: React.FC = () => {
           </button>
         </div>
         <div className="flex-1 border rounded p-2 bg-white dark:bg-[#171717] h-full overflow-auto">
-          <div className="mb-2 text-sm text-gray-600 dark:text-gray-300">Viewer</div>
+          <div className="mb-2 text-sm text-gray-600 dark:text-gray-300">{t('mediaPage.viewer', 'Viewer')}</div>
           {viewerItems.length === 0 ? (
-            <div className="text-sm text-gray-500">Select items on the left to view here.</div>
+            <div className="text-sm text-gray-500">{t('mediaPage.selectItemsHint', 'Select items on the left to view here.')}</div>
           ) : (
             <div className={orientationCls}>
               {viewerItems.map((d) => (
                 <div key={String(d.id)} className={cardCls}>
-                  <div className="mb-1 font-medium">{d.title || `Media ${d.id}`}</div>
+                  <div className="mb-1 font-medium">{d.title || `${t('mediaPage.media', 'Media')} ${d.id}`}</div>
                   <div className="mb-2 text-xs text-gray-500 flex items-center gap-2">
                     {d.type && <Tag>{String(d.type).toLowerCase()}</Tag>}
                     {d.created_at && <span>{new Date(d.created_at).toLocaleString()}</span>}
                   </div>
                   <div className="rounded border dark:border-gray-700 p-2">
                     <div className="flex items-center justify-between">
-                      <Typography.Text type="secondary">Media Content</Typography.Text>
+                      <Typography.Text type="secondary">{t('mediaPage.mediaContent', 'Media Content')}</Typography.Text>
                       <div className="flex items-center gap-2">
-                        <Tooltip title="Copy content">
+                        <Tooltip title={t('mediaPage.copyContent', 'Copy content')}>
                           <Button
                             size="small"
                             onClick={async () => {
                               const full = getContent(d) || ''
-                              try { await navigator.clipboard.writeText(full); message.success('Content copied') }
-                              catch { message.error('Copy failed') }
+                              try { await navigator.clipboard.writeText(full); message.success(t('mediaPage.contentCopied', 'Content copied')) }
+                              catch { message.error(t('mediaPage.copyFailed', 'Copy failed')) }
                             }}
                             icon={(<CopyIcon className="w-4 h-4" />) as any}
                           />
@@ -373,7 +375,7 @@ export const MediaReviewPage: React.FC = () => {
                     <div className="mt-2 prose prose-sm dark:prose-invert max-w-none whitespace-pre-wrap break-words text-sm text-gray-700 dark:text-gray-300 min-h-[12rem] leading-relaxed">
                       {(() => {
                         const full = getContent(d) || ""
-                        if (!full) return <span className="text-gray-500">No content available</span>
+                        if (!full) return <span className="text-gray-500">{t('mediaPage.noContent', 'No content available')}</span>
                         const isLong = full.length > 2500
                         const key = String(d.id)
                         const expanded = expandedIds.has(key)
@@ -388,7 +390,7 @@ export const MediaReviewPage: React.FC = () => {
                                   setExpandedIds(prev => { const ns = new Set(prev); if (ns.has(key)) ns.delete(key); else ns.add(key); return ns })
                                 }}
                               >
-                                {expanded ? 'Collapse' : 'Expand'}
+                                {expanded ? t('mediaPage.collapse', 'Collapse') : t('mediaPage.expand', 'Expand')}
                               </button>
                             )}
                           </>

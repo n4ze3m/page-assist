@@ -277,6 +277,10 @@ const SidepanelChat = () => {
 
           <div
             ref={containerRef}
+            role="log"
+            aria-live="polite"
+            aria-relevant="additions"
+            aria-label={t("playground:aria.chatTranscript", "Chat messages")}
             className="custom-scrollbar flex h-full w-full flex-col items-center overflow-x-hidden overflow-y-auto px-5 relative z-10">
             <SidePanelBody scrollParentRef={containerRef} />
           </div>

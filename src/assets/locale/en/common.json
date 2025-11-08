@@ -17,6 +17,7 @@
     "save": "Save",
     "saved": "Saved",
     "cancel": "Cancel",
+    "saving": "Saving...",
     "retry": "Retry",
     "close": "Close",
     "loadMore": "Load More...",
@@ -53,6 +54,10 @@
         }
     },
     "copyToClipboard": "Copy to clipboard",
+    "table": {
+        "copyCsv": "Copy as CSV",
+        "downloadCsv": "Download CSV"
+    },
     "webSearch": "Searching the web",
     "regenerate": "Regenerate",
     "edit": "Edit",

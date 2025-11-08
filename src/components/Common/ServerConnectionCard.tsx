@@ -6,6 +6,7 @@ import { Clock, ExternalLink, Send, Server, Settings } from "lucide-react"
 
 import { tldwClient } from "@/services/tldw/TldwApiClient"
 import { cleanUrl } from "@/libs/clean-url"
+import { apiSend } from "@/services/api-send"
 
 type Props = {
   onOpenSettings?: () => void
@@ -59,8 +60,9 @@ export const ServerConnectionCard: React.FC<Props> = ({
         throw new Error("missing-config")
       }
       await tldwClient.initialize()
-      const ok = await tldwClient.healthCheck()
-      return { ok, config }
+      // Get detailed background response for clearer errors
+      const resp = await apiSend({ path: '/api/v1/health', method: 'GET', noAuth: true })
+      return { ok: Boolean(resp?.ok), status: resp?.status, error: resp?.ok ? undefined : resp?.error, config }
     },
     retry: false,
     refetchOnWindowFocus: false
@@ -85,6 +87,7 @@ export const ServerConnectionCard: React.FC<Props> = ({
     if (!showToastOnError) return
     const toastKey = "tldw-connection-toast"
     if ((statusVariant === "error" && serverHost) || statusVariant === "missing") {
+      const detail = (statusQuery.data as any)?.error as string | undefined
       notification.error({
         key: toastKey,
         message:
@@ -102,7 +105,7 @@ export const ServerConnectionCard: React.FC<Props> = ({
             : t(
                 "ollamaState.troubleshoot",
                 "Confirm your server is running and that the browser is allowed to reach it, then retry from the Options page."
-              ),
+              ) + (detail ? `\nDetails: ${detail}` : ""),
         placement: "bottomRight",
         duration: 6
       })
@@ -199,6 +202,11 @@ export const ServerConnectionCard: React.FC<Props> = ({
               {t("ollamaState.connectedHint", "Connected to {{host}}.", { host: serverHost })}
             </span>
           )}
+          {statusVariant === "error" && (statusQuery.data as any)?.error && (
+            <span className="inline-flex items-center gap-1 text-red-500">
+              Error: {(statusQuery.data as any).error}
+            </span>
+          )}
           {secondsSinceLastCheck != null && !statusQuery.isFetching && (
             <span className="inline-flex items-center gap-1">
               <Clock className="h-3 w-3" />
@@ -240,4 +248,3 @@ export const ServerConnectionCard: React.FC<Props> = ({
 }
 
 export default ServerConnectionCard
-

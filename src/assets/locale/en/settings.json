@@ -535,6 +535,8 @@
     "ragAria": "RAG: knowledge index health",
     "footerInfo": "These checks summarize the last successful ping to your tldw server and knowledge index."
   },
+  "savedSuccessfully": "Settings saved",
+  "saveFailed": "Failed to save settings",
   "onboarding": {
     "title": "Welcome — Let’s get you connected",
     "description": "Configure your server and authentication. We’ll verify the connection and RAG health inline.",
@@ -584,6 +586,43 @@
     "footerHelp": "Once connected, you can revisit these settings anytime from the extension menu."
   },
   "tldw": {
+    "setupLink": "Set up server",
+    "loadError": "Unable to load tldw server settings. Check your connection and try again.",
+    "fields": {
+      "apiKey": {
+        "label": "API Key",
+        "placeholder": "Enter your API key",
+        "required": "Please enter your API key",
+        "extra": "Your tldw_server API key for authentication"
+      },
+      "username": {
+        "label": "Username",
+        "placeholder": "Enter username",
+        "required": "Please enter your username"
+      },
+      "password": {
+        "label": "Password",
+        "placeholder": "Enter password",
+        "required": "Please enter your password"
+      }
+    },
+    "errors": {
+      "invalidApiKey": "Invalid API key",
+      "forbidden": "Forbidden (check permissions)",
+      "apiKeyValidationFailed": "API key validation failed",
+      "serverUnreachable": "Server unreachable"
+    },
+    "about": {
+      "title": "About tldw_server Integration",
+      "description": "This extension connects to your tldw_server instance, providing access to:",
+      "points": {
+        "providers": "Multiple LLM providers through a unified API",
+        "rag": "RAG (Retrieval-Augmented Generation) search",
+        "media": "Media ingestion and processing",
+        "notes": "Notes and prompts management",
+        "stt": "Speech-to-text transcription"
+      }
+    },
     "advancedTimeouts": "Advanced Timeouts",
     "requestTimeout": "Request Timeout (seconds)",
     "streamingIdle": "Streaming Idle Timeout (seconds)",

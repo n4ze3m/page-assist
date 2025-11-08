@@ -150,8 +150,8 @@ export const PlaygroundUserMessageBubble: React.FC<Props> = (props) => {
           }`}>
           {props.isTTSEnabled && (
             <Tooltip title={t("tts")}>
-              <button
-                aria-label={t("tts")}
+              <IconButton
+                ariaLabel={t("tts") as string}
                 onClick={() => {
                   if (isSpeaking) {
                     cancel()
@@ -167,13 +167,13 @@ export const PlaygroundUserMessageBubble: React.FC<Props> = (props) => {
                 ) : (
                   <Square className="w-3 h-3 text-red-400 group-hover:text-red-500" />
                 )}
-              </button>
+              </IconButton>
             </Tooltip>
           )}
           {!props.hideCopy && (
             <Tooltip title={t("copyToClipboard")}>
-              <button
-                aria-label={t("copyToClipboard")}
+              <IconButton
+                ariaLabel={t("copyToClipboard") as string}
                 onClick={() => {
                   navigator.clipboard.writeText(props.message)
                   setIsBtnPressed(true)
@@ -187,18 +187,18 @@ export const PlaygroundUserMessageBubble: React.FC<Props> = (props) => {
                 ) : (
                   <CheckIcon className="w-3 h-3 text-green-400 group-hover:text-green-500" />
                 )}
-              </button>
+              </IconButton>
             </Tooltip>
           )}
 
           {!props.hideEditAndRegenerate && (
             <Tooltip title={t("edit")}>
-              <button
+              <IconButton
                 onClick={() => setEditMode(true)}
-                aria-label={t("edit")}
+                ariaLabel={t("edit") as string}
                 className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-50 dark:bg-[#242424] hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
                 <Pen className="w-3 h-3 text-gray-400 group-hover:text-gray-500" />
-              </button>
+              </IconButton>
             </Tooltip>
           )}
         </div>
@@ -211,3 +211,4 @@ export const PlaygroundUserMessageBubble: React.FC<Props> = (props) => {
     </div>
   )
 }
+import { IconButton } from "../IconButton"

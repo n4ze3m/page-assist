@@ -4,6 +4,7 @@ import { BookIcon, ComputerIcon, ZapIcon } from "lucide-react"
 import React from "react"
 import { useTranslation } from "react-i18next"
 import { getAllPrompts } from "@/db/dexie/helpers"
+import { IconButton } from "./IconButton"
 
 type Props = {
   setSelectedSystemPrompt: (promptId: string | undefined) => void
@@ -97,9 +98,12 @@ export const PromptSelect: React.FC<Props> = ({
           placement={"topLeft"}
           trigger={["click"]}>
           <Tooltip title={t("selectAPrompt")}>
-            <button type="button" className={className}>
+            <IconButton
+              ariaLabel={t("selectAPrompt") as string}
+              hasPopup="menu"
+              className={className}>
               <BookIcon className={iconClassName} />
-            </button>
+            </IconButton>
           </Tooltip>
         </Dropdown>
       )}
