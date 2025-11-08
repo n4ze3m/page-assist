@@ -86,8 +86,8 @@ export default function OptionLayout({
                 <div className="flex items-center gap-2">
                   <IconButton
                     onClick={() => setSidebarOpen(false)}
-                    ariaLabel="Close sidebar"
-                    title="Close sidebar"
+                    ariaLabel={t('common:close', { defaultValue: 'Close' }) as string}
+                    title={t('common:close', { defaultValue: 'Close' }) as string}
                     className="-ml-1">
                     <XIcon className="h-5 w-5 text-gray-500 dark:text-gray-400" />
                   </IconButton>

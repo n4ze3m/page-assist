@@ -184,7 +184,11 @@ export const ServerConnectionCard: React.FC<Props> = ({
           )}
           {statusVariant === "error" && (
             <Tag color="red" className="px-4 py-1 text-sm">
-              {t("ollamaState.notRunning")}
+              {(() => {
+                const code = Number((statusQuery.data as any)?.status)
+                const hasCode = Number.isFinite(code) && code > 0
+                return `${t("ollamaState.notRunning")} ${hasCode ? `(HTTP ${code})` : ''}`.trim()
+              })()}
             </Tag>
           )}
         </div>

@@ -604,6 +604,13 @@
         "label": "Password",
         "placeholder": "Enter password",
         "required": "Please enter your password"
+      },
+      "serverUrl": {
+        "label": "Server URL",
+        "placeholder": "http://localhost:8000",
+        "required": "Please enter the server URL",
+        "invalid": "Please enter a valid URL",
+        "extra": "The URL of your tldw_server instance (e.g., http://localhost:8000)"
       }
     },
     "errors": {
@@ -646,6 +653,7 @@
       "health": "Health",
       "recheck": "Recheck",
       "testConnection": "Test Connection",
+      "grantSiteAccess": "Grant Site Access",
       "login": "Login",
       "logout": "Logout"
     },
@@ -660,6 +668,15 @@
     "connection": {
       "success": "Connection successful!",
       "failed": "Connection failed. Please check your settings."
+    },
+    "authMode": {
+      "label": "Authentication Mode",
+      "single": "Single User (API Key)",
+      "multi": "Multi User (Login)"
+    },
+    "hints": {
+      "requestTimeout": "Abort initial requests if no response within this time. Default: {{seconds}}s.",
+      "streamingIdle": "Abort streaming if no updates received within this time. Default: {{seconds}}s."
     },
     "login": {
       "success": "Login successful!",

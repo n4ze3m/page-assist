@@ -402,26 +402,26 @@ export const TldwSettings = () => {
           }}
         >
           <Form.Item
-            label="Server URL"
+            label={t('settings:tldw.fields.serverUrl.label', 'Server URL')}
             name="serverUrl"
             rules={[
-              { required: true, message: 'Please enter the server URL' },
-              { type: 'url', message: 'Please enter a valid URL' }
+              { required: true, message: t('settings:tldw.fields.serverUrl.required', 'Please enter the server URL') as string },
+              { type: 'url', message: t('settings:tldw.fields.serverUrl.invalid', 'Please enter a valid URL') as string }
             ]}
-            extra="The URL of your tldw_server instance (e.g., http://localhost:8000)"
+            extra={t('settings:tldw.fields.serverUrl.extra', 'The URL of your tldw_server instance (e.g., http://localhost:8000)')}
           >
-            <Input placeholder="http://localhost:8000" />
+            <Input placeholder={t('settings:tldw.fields.serverUrl.placeholder', 'http://localhost:8000') as string} />
           </Form.Item>
 
           <Form.Item
-            label="Authentication Mode"
+            label={t('settings:tldw.authMode.label', 'Authentication Mode')}
             name="authMode"
             rules={[{ required: true }]}
           >
             <Segmented
               options={[
-                { label: 'Single User (API Key)', value: 'single-user' },
-                { label: 'Multi User (Login)', value: 'multi-user' }
+                { label: t('settings:tldw.authMode.single', 'Single User (API Key)'), value: 'single-user' },
+                { label: t('settings:tldw.authMode.multi', 'Multi User (Login)'), value: 'multi-user' }
               ]}
               onChange={(value) => setAuthMode(value as 'single-user' | 'multi-user')}
             />
@@ -467,7 +467,13 @@ export const TldwSettings = () => {
                       placeholder="10"
                       addonAfter="s"
                     />
-                    <div className="text-xs text-gray-500 mt-1">Abort initial requests if no response within this time. Default: 10s.</div>
+                    <div className="text-xs text-gray-500 mt-1">
+                      {t('settings:tldw.hints.requestTimeout', {
+                        defaultValue:
+                          'Abort initial requests if no response within this time. Default: {{seconds}}s.',
+                        seconds: TIMEOUT_PRESETS.balanced.request
+                      })}
+                    </div>
                   </div>
                   <div>
                     <label className="block text-sm font-medium mb-1">{t('settings:tldw.streamingIdle')}</label>
@@ -482,7 +488,13 @@ export const TldwSettings = () => {
                       placeholder="15"
                       addonAfter="s"
                     />
-                    <div className="text-xs text-gray-500 mt-1">Abort streaming if no updates received within this time. Default: 15s.</div>
+                    <div className="text-xs text-gray-500 mt-1">
+                      {t('settings:tldw.hints.streamingIdle', {
+                        defaultValue:
+                          'Abort streaming if no updates received within this time. Default: {{seconds}}s.',
+                        seconds: TIMEOUT_PRESETS.balanced.stream
+                      })}
+                    </div>
                   </div>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -646,9 +658,11 @@ export const TldwSettings = () => {
               {t('settings:tldw.buttons.testConnection', 'Test Connection')}
             </Button>
 
-            <Button onClick={grantSiteAccess}>
-              {t('settings:tldw.buttons.grantSiteAccess', 'Grant Site Access')}
-            </Button>
+            {import.meta.env.BROWSER !== 'firefox' && (
+              <Button onClick={grantSiteAccess}>
+                {t('settings:tldw.buttons.grantSiteAccess', 'Grant Site Access')}
+              </Button>
+            )}
           </Space>
 
             {connectionStatus && (
