@@ -33,8 +33,8 @@ export const SidepanelSettingsHeader = () => {
           className="w-[180px]"
           value={uiMode}
           options={[
-            { label: t('settings:generalSettings.system.uiMode.options.sidePanel', { defaultValue: 'Sidebar' }), value: 'sidePanel' },
-            { label: t('settings:generalSettings.system.uiMode.options.webui', { defaultValue: 'Full Screen (Web UI)' }), value: 'webui' }
+            { label: t('settings:generalSettings.systemBasics.uiMode.options.sidePanel', { defaultValue: 'Sidebar' }), value: 'sidePanel' },
+            { label: t('settings:generalSettings.systemBasics.uiMode.options.webui', { defaultValue: 'Full Screen (Web UI)' }), value: 'webui' }
           ]}
           onChange={async (value) => {
             setUiMode(value)

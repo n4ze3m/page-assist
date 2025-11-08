@@ -91,7 +91,7 @@
         "label": "Include server prompts in prompt search"
       }
     },
-    "system": {
+    "systemBasics": {
       "heading": "System",
       "uiMode": {
         "label": "Default UI Mode",
@@ -104,6 +104,12 @@
       "contextMenu": { "label": "Context Menu Action" },
       "webuiBtnSidePanel": { "label": "Show Web UI button in Sidepanel" },
       "chatBackgroundImage": { "label": "Chat Background Image" },
+      "fontSize": {
+        "label": "Font Size"
+      }
+    },
+    "systemData": {
+      "heading": "Data",
       "firefoxPrivateModeSync": { "label": "Firefox Private Mode Sync", "button": "Sync Data" },
       "deleteChatHistory": {
         "label": "System Reset",
@@ -120,9 +126,6 @@
         "button": "Import Data",
         "success": "Import Success",
         "error": "Import Error"
-      },
-      "fontSize": {
-        "label": "Font Size"
       }
     },
     "sidepanelRag": {
@@ -537,6 +540,7 @@
   },
   "savedSuccessfully": "Settings saved",
   "saveFailed": "Failed to save settings",
+  "siteAccessGranted": "Host permission granted for {{origin}}",
   "onboarding": {
     "title": "Welcome — Let’s get you connected",
     "description": "Configure your server and authentication. We’ll verify the connection and RAG health inline.",

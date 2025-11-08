@@ -97,12 +97,14 @@ export default function OptionLayout({
                 <div className="flex items-center space-x-3">
                   <Tooltip
                     title={t(
-                      "settings:generalSettings.system.deleteChatHistory.label"
+                      "settings:generalSettings.systemData.deleteChatHistory.label",
+                      { defaultValue: t("settings:generalSettings.system.deleteChatHistory.label") as string }
                     )}
                     placement="left">
                     <IconButton
                       ariaLabel={t(
-                        "settings:generalSettings.system.deleteChatHistory.label"
+                        "settings:generalSettings.systemData.deleteChatHistory.label",
+                        { defaultValue: t("settings:generalSettings.system.deleteChatHistory.label") as string }
                       ) as string}
                       onClick={async () => {
                         const ok = await confirmDanger({
@@ -110,7 +112,12 @@ export default function OptionLayout({
                             defaultValue: "Please confirm"
                           }),
                           content: t(
-                            "settings:generalSettings.system.deleteChatHistory.confirm"
+                            "settings:generalSettings.systemData.deleteChatHistory.confirm",
+                            {
+                              defaultValue: t(
+                                "settings:generalSettings.system.deleteChatHistory.confirm"
+                              ) as string
+                            }
                           ),
                           okText: t("common:delete", { defaultValue: "Delete" }),
                           cancelText: t("common:cancel", { defaultValue: "Cancel" })
