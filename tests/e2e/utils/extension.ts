@@ -1,12 +1,22 @@
 import { BrowserContext, Page, chromium } from '@playwright/test'
 import path from 'path'
+import fs from 'fs'
 
 export async function launchWithExtension(extensionPath: string) {
+  // Fallback to build/chrome-mv3 if .output/chrome-mv3 does not exist
+  let extPath = extensionPath
+  if (!fs.existsSync(extPath)) {
+    const alt = path.resolve('build/chrome-mv3')
+    if (fs.existsSync(alt)) {
+      extPath = alt
+    }
+  }
+
   const context = await chromium.launchPersistentContext('', {
     headless: !!process.env.CI,
     args: [
-      `--disable-extensions-except=${extensionPath}`,
-      `--load-extension=${extensionPath}`
+      `--disable-extensions-except=${extPath}`,
+      `--load-extension=${extPath}`
     ]
   })
 

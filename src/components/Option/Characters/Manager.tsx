@@ -4,6 +4,7 @@ import React from "react"
 import { tldwClient } from "@/services/tldw/TldwApiClient"
 import { Pen, Trash2, UserCircle2 } from "lucide-react"
 import { useTranslation } from "react-i18next"
+import { confirmDanger } from "@/components/Common/confirm-danger"
 
 export const CharactersManager: React.FC = () => {
   const { t } = useTranslation(["settings", "common"])
@@ -100,7 +101,7 @@ export const CharactersManager: React.FC = () => {
                   </button>
                 </Tooltip>
                 <Tooltip title={t('managePrompts.tooltip.delete')}>
-                  <button className="text-red-500" disabled={deleting} onClick={() => { if (confirm(t('managePrompts.confirm.delete'))) deleteCharacter(record.id || record.slug || record.name) }}>
+                  <button className="text-red-500" disabled={deleting} onClick={async () => { const ok = await confirmDanger({ title: t('common:confirmTitle', { defaultValue: 'Please confirm' }), content: t('managePrompts.confirm.delete'), okText: t('common:delete', { defaultValue: 'Delete' }), cancelText: t('common:cancel', { defaultValue: 'Cancel' }) }); if (ok) deleteCharacter(record.id || record.slug || record.name) }}>
                     <Trash2 className="w-4 h-4" />
                   </button>
                 </Tooltip>

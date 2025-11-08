@@ -1,10 +1,13 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Button, Form, Input, Modal, Skeleton, Switch, Table, Tooltip, Tag, InputNumber, Select, notification, Descriptions } from "antd"
+import { useTranslation } from "react-i18next"
 import React from "react"
 import { tldwClient } from "@/services/tldw/TldwApiClient"
 import { Pen, Trash2, Book } from "lucide-react"
+import { confirmDanger } from "@/components/Common/confirm-danger"
 
 export const DictionariesManager: React.FC = () => {
+  const { t } = useTranslation(["common"])
   const qc = useQueryClient()
   const [open, setOpen] = React.useState(false)
   const [openEdit, setOpenEdit] = React.useState(false)
@@ -59,7 +62,7 @@ export const DictionariesManager: React.FC = () => {
         <Tooltip title="Export JSON"><button className="text-gray-500" onClick={async () => { try { const exp = await tldwClient.exportDictionaryJSON(record.id); const blob = new Blob([JSON.stringify(exp, null, 2)], { type: 'application/json' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = `${record.name || 'dictionary'}.json`; a.click(); URL.revokeObjectURL(url) } catch (e: any) { notification.error({ message: 'Export failed', description: e?.message }) } }}>Export JSON</button></Tooltip>
         <Tooltip title="Export Markdown"><button className="text-gray-500" onClick={async () => { try { const exp = await tldwClient.exportDictionaryMarkdown(record.id); const blob = new Blob([exp?.content || '' ], { type: 'text/markdown' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = `${record.name || 'dictionary'}.md`; a.click(); URL.revokeObjectURL(url) } catch (e: any) { notification.error({ message: 'Export failed', description: e?.message }) } }}>Export MD</button></Tooltip>
         <Tooltip title="Statistics"><button className="text-gray-500" onClick={async () => { try { const s = await tldwClient.dictionaryStatistics(record.id); setStatsFor(s) } catch (e: any) { notification.error({ message: 'Stats failed', description: e?.message }) } }}>Stats</button></Tooltip>
-        <Tooltip title="Delete"><button className="text-red-500" onClick={() => { if (confirm('Delete dictionary?')) deleteDict(record.id) }}><Trash2 className="w-4 h-4" /></button></Tooltip>
+        <Tooltip title="Delete"><button className="text-red-500" onClick={async () => { const ok = await confirmDanger({ title: t('common:confirmTitle', { defaultValue: 'Please confirm' }), content: 'Delete dictionary?', okText: t('common:delete', { defaultValue: 'Delete' }), cancelText: t('common:cancel', { defaultValue: 'Cancel' }) }); if (ok) deleteDict(record.id) }}><Trash2 className="w-4 h-4" /></button></Tooltip>
       </div>
     )}
   ]
@@ -164,7 +167,7 @@ const DictionaryEntryManager: React.FC<{ dictionaryId: number; form: any }> = ({
             { title: 'Enabled', dataIndex: 'enabled', key: 'enabled', render: (v: boolean) => v ? 'Yes' : 'No' },
             { title: 'Actions', key: 'actions', render: (_: any, r: any) => (
               <div className="flex gap-2">
-                <Tooltip title="Delete"><button className="text-red-500" onClick={() => { if (confirm('Delete entry?')) deleteEntry(r.id) }}><Trash2 className="w-4 h-4" /></button></Tooltip>
+                <Tooltip title="Delete"><button className="text-red-500" onClick={async () => { const ok = await confirmDanger({ title: t('common:confirmTitle', { defaultValue: 'Please confirm' }), content: 'Delete entry?', okText: t('common:delete', { defaultValue: 'Delete' }), cancelText: t('common:cancel', { defaultValue: 'Cancel' }) }); if (ok) deleteEntry(r.id) }}><Trash2 className="w-4 h-4" /></button></Tooltip>
               </div>
             ) }
           ] as any}

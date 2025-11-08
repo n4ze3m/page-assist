@@ -45,6 +45,8 @@ import {
 import { UploadedFile } from "@/db/dexie/types"
 import { isDatabaseClosedError } from "@/utils/ff-error"
 import { updatePageTitle } from "@/utils/update-page-title"
+import { promptInput } from "@/components/Common/prompt-input"
+import { confirmDanger } from "@/components/Common/confirm-danger"
 
 type Props = {
   onClose: () => void
@@ -247,10 +249,14 @@ export const Sidebar = ({
       }
     })
 
-  const handleDeleteHistoriesByRange = (rangeLabel: string) => {
-    if (!confirm(t(`common:range:deleteConfirm:${rangeLabel}`))) {
-      return
-    }
+  const handleDeleteHistoriesByRange = async (rangeLabel: string) => {
+    const ok = await confirmDanger({
+      title: t("common:confirmTitle", { defaultValue: "Please confirm" }),
+      content: t(`common:range:deleteConfirm:${rangeLabel}`),
+      okText: t("common:delete", { defaultValue: "Delete" }),
+      cancelText: t("common:cancel", { defaultValue: "Cancel" })
+    })
+    if (!ok) return
     deleteHistoriesByRange(rangeLabel)
   }
 
@@ -442,12 +448,14 @@ export const Sidebar = ({
                             <Menu.Item
                               key="edit"
                               icon={<PencilIcon className="w-4 h-4" />}
-                              onClick={() => {
-                                const newTitle = prompt(
-                                  t("editHistoryTitle"),
-                                  chat.title
-                                )
-                                if (newTitle) {
+                              onClick={async () => {
+                                const newTitle = await promptInput({
+                                  title: t("editHistoryTitle", { defaultValue: "Rename chat" }),
+                                  defaultValue: chat.title,
+                                  okText: t("common:save", { defaultValue: "Save" }),
+                                  cancelText: t("common:cancel", { defaultValue: "Cancel" })
+                                })
+                                if (newTitle && newTitle !== chat.title) {
                                   editHistory({ id: chat.id, title: newTitle })
                                 }
                               }}>
@@ -457,9 +465,20 @@ export const Sidebar = ({
                               key="delete"
                               icon={<Trash2 className="w-4 h-4" />}
                               danger
-                              onClick={() => {
-                                if (!confirm(t("deleteHistoryConfirmation")))
-                                  return
+                              onClick={async () => {
+                                const ok = await confirmDanger({
+                                  title: t("common:confirmTitle", {
+                                    defaultValue: "Please confirm"
+                                  }),
+                                  content: t("deleteHistoryConfirmation"),
+                                  okText: t("common:delete", {
+                                    defaultValue: "Delete"
+                                  }),
+                                  cancelText: t("common:cancel", {
+                                    defaultValue: "Cancel"
+                                  })
+                                })
+                                if (!ok) return
                                 deleteHistory(chat.id)
                               }}>
                               {t("common:delete")}

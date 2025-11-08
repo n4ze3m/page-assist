@@ -4,6 +4,14 @@
         "options": "tldw Assistant — Options",
         "sidepanel": "tldw Assistant — Sidepanel"
     },
+    "pdf": {
+        "passwordTitle": "Enter the PDF password",
+        "unlock": "Unlock"
+    },
+    "loading": {
+        "title": "Loading…",
+        "description": "Please wait while we get things ready."
+    },
     "selectAModel": "Velg en modell",
     "save": "Lagre",
     "saved": "Lagret",

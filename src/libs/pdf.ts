@@ -1,4 +1,6 @@
 import { pdfDist } from "./pdfjs"
+import i18n from "@/i18n"
+import { promptInput } from "@/components/Common/prompt-input"
 
 export const getPdf = async (data: ArrayBuffer) => {
   const pdf = pdfDist.getDocument({
@@ -8,8 +10,13 @@ export const getPdf = async (data: ArrayBuffer) => {
     useSystemFonts: true
   })
 
-  pdf.onPassword = (callback: any) => {
-    const password = prompt("Enter the password: ")
+  pdf.onPassword = async (callback: any) => {
+    const password = await promptInput({
+      title: i18n.t("common:pdf.passwordTitle", { defaultValue: "Enter the PDF password" }),
+      inputType: "password",
+      okText: i18n.t("common:pdf.unlock", { defaultValue: "Unlock" }),
+      cancelText: i18n.t("common:cancel", { defaultValue: "Cancel" })
+    })
     if (!password) {
       throw new Error("Password required to open the PDF.")
     }

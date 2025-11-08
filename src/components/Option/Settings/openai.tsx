@@ -30,6 +30,7 @@ import { OAI_API_PROVIDERS } from "@/utils/oai-api-providers"
 import { ProviderIcons } from "@/components/Common/ProviderIcon"
 const noPopupProvider = ["lmstudio", "llamafile", "ollama2", "llamacpp", "vllm"]
 import { isFireFoxPrivateMode } from "@/utils/is-private-mode"
+import { confirmDanger } from "@/components/Common/confirm-danger"
 
 export const OpenAIApp = () => {
   const { t } = useTranslation(["openai", "settings"])
@@ -212,17 +213,15 @@ export const OpenAIApp = () => {
                     <button
                       className="text-red-500 dark:text-red-400 disabled:opacity-50"
                       disabled={isFireFoxPrivateMode}
-                      onClick={() => {
-                        // add confirmation here
-                        if (
-                          confirm(
-                            t("modal.deleteConfirm", {
-                              name: record.name
-                            })
-                          )
-                        ) {
-                          handleDelete(record.id)
-                        }
+                      onClick={async () => {
+                        const ok = await confirmDanger({
+                          title: t("common:confirmTitle", { defaultValue: "Please confirm" }),
+                          content: t("modal.deleteConfirm", { name: record.name }),
+                          okText: t("common:delete", { defaultValue: "Delete" }),
+                          cancelText: t("common:cancel", { defaultValue: "Cancel" })
+                        })
+                        if (!ok) return
+                        handleDelete(record.id)
                       }}>
                       <Trash2 className="size-4" />
                     </button>

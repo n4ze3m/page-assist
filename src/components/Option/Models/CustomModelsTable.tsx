@@ -8,6 +8,7 @@ import { useTranslation } from "react-i18next"
 import { ModelNickModelNicknameModal } from "./ModelNicknameModal"
 import { AddUpdateOAIModelSettings } from "./AddUpdateOAIModelSettings"
 import { isFireFoxPrivateMode } from "@/utils/is-private-mode"
+import { confirmDanger } from "@/components/Common/confirm-danger"
 
 export const CustomModelsTable = () => {
   const [selectedModel, setSelectedModel] = useStorage("selectedModel")
@@ -114,17 +115,17 @@ export const CustomModelsTable = () => {
                       </Tooltip>
                       <Tooltip title={t("manageModels.tooltip.delete")}>
                         <button
-                          onClick={() => {
-                            if (
-                              window.confirm(t("manageModels.confirm.delete"))
-                            ) {
-                              deleteCustomModel(record.id)
-                              if (
-                                selectedModel &&
-                                selectedModel === record.id
-                              ) {
-                                setSelectedModel(null)
-                              }
+                          onClick={async () => {
+                            const ok = await confirmDanger({
+                              title: t("common:confirmTitle", { defaultValue: "Please confirm" }),
+                              content: t("manageModels.confirm.delete"),
+                              okText: t("common:delete", { defaultValue: "Delete" }),
+                              cancelText: t("common:cancel", { defaultValue: "Cancel" })
+                            })
+                            if (!ok) return
+                            deleteCustomModel(record.id)
+                            if (selectedModel && selectedModel === record.id) {
+                              setSelectedModel(null)
                             }
                           }}
                           disabled={isFireFoxPrivateMode}

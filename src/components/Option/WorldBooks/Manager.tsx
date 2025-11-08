@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Button, Form, Input, InputNumber, Modal, Skeleton, Switch, Table, Tooltip, Tag, Select, notification, Descriptions } from "antd"
 import React from "react"
+import { confirmDanger } from "@/components/Common/confirm-danger"
 import { tldwClient } from "@/services/tldw/TldwApiClient"
 import { Pen, Trash2, BookOpen } from "lucide-react"
 
@@ -102,7 +103,7 @@ export const WorldBooksManager: React.FC = () => {
           }}>Stats</button>
         </Tooltip>
         <Tooltip title="Delete">
-          <button className="text-red-500" disabled={deleting} onClick={() => { if (confirm('Delete this world book?')) deleteWB(record.id) }}>
+          <button className="text-red-500" disabled={deleting} onClick={async () => { const ok = await confirmDanger({ title: 'Please confirm', content: 'Delete this world book?', okText: 'Delete', cancelText: 'Cancel' }); if (ok) deleteWB(record.id) }}>
             <Trash2 className="w-4 h-4" />
           </button>
         </Tooltip>
@@ -230,7 +231,7 @@ const EntryManager: React.FC<{ worldBookId: number; form: any }> = ({ worldBookI
             { title: 'Enabled', dataIndex: 'enabled', key: 'enabled', render: (v: boolean) => v ? 'Yes' : 'No' },
             { title: 'Actions', key: 'actions', render: (_: any, r: any) => (
               <div className="flex gap-2">
-                <Tooltip title="Delete"><button className="text-red-500" onClick={() => { if (confirm('Delete entry?')) deleteEntry(r.entry_id) }}><Trash2 className="w-4 h-4" /></button></Tooltip>
+                <Tooltip title="Delete"><button className="text-red-500" onClick={async () => { const ok = await confirmDanger({ title: 'Please confirm', content: 'Delete entry?', okText: 'Delete', cancelText: 'Cancel' }); if (ok) deleteEntry(r.entry_id) }}><Trash2 className="w-4 h-4" /></button></Tooltip>
               </div>
             ) }
           ] as any}

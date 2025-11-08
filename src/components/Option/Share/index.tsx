@@ -8,6 +8,7 @@ import { getPageShareUrl, setPageShareUrl } from "~/services/ollama"
 import { verifyPageShareURL } from "~/utils/verify-page-share"
 import { useStorage } from "@plasmohq/storage/hook"
 import fetcher from "@/libs/fetcher"
+import { confirmDanger } from "@/components/Common/confirm-danger"
 
 export const OptionShareBody = () => {
   const queryClient = useQueryClient()
@@ -191,18 +192,25 @@ export const OptionShareBody = () => {
                     render: (_, render) => (
                       <Tooltip title={t("manageShare.webshare.tooltip.delete")}>
                         <button
-                          onClick={() => {
-                            if (
-                              window.confirm(
-                                t("manageShare.webshare.confirm.delete")
-                              )
-                            ) {
-                              deleteMutation({
-                                id: render.id,
-                                share_id: render.share_id,
-                                api_url: render.api_url
+                          onClick={async () => {
+                            const ok = await confirmDanger({
+                              title: t("common:confirmTitle", {
+                                defaultValue: "Please confirm"
+                              }),
+                              content: t("manageShare.webshare.confirm.delete"),
+                              okText: t("common:delete", {
+                                defaultValue: "Delete"
+                              }),
+                              cancelText: t("common:cancel", {
+                                defaultValue: "Cancel"
                               })
-                            }
+                            })
+                            if (!ok) return
+                            deleteMutation({
+                              id: render.id,
+                              share_id: render.share_id,
+                              api_url: render.api_url
+                            })
                           }}
                           className="text-red-500 dark:text-red-400">
                           <Trash2 className="w-5 h-5" />

@@ -22,6 +22,7 @@ import {
 } from "antd"
 import { Checkbox } from "antd"
 import { useTranslation } from "react-i18next"
+import { confirmDanger } from "@/components/Common/confirm-danger"
 import { useServerOnline } from "@/hooks/useServerOnline"
 import {
   createDeck,
@@ -543,7 +544,13 @@ export const FlashcardsPage: React.FC = () => {
                   <Button danger size="small" disabled={selectedIds.size === 0} onClick={async () => {
                     const toDelete = await getSelectedItems()
                     if (!toDelete.length) return
-                    if (!confirm(t("common:delete", { defaultValue: "Delete" }) + ` ${toDelete.length}?`)) return
+                    const ok = await confirmDanger({
+							title: t('common:confirmTitle', { defaultValue: 'Please confirm' }),
+							content: t('option:flashcards.bulkDeleteConfirm', { defaultValue: t('common:delete', { defaultValue: 'Delete' }) + ` ${toDelete.length}?` }),
+							okText: t('common:delete', { defaultValue: 'Delete' }),
+							cancelText: t('common:cancel', { defaultValue: 'Cancel' })
+						})
+                    if (!ok) return
                     try {
                       await Promise.all(toDelete.map((i) => deleteFlashcard(i.uuid, i.version)))
                       message.success(t("common:deleted", { defaultValue: "Deleted" }))

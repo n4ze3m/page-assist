@@ -13,6 +13,7 @@ import { useMessageOption } from "@/hooks/useMessageOption"
 import { removeModelSuffix } from "@/db/dexie/models"
 import { UpdateKnowledge } from "./UpdateKnowledge"
 import { isFireFoxPrivateMode } from "@/utils/is-private-mode"
+import { confirmDanger } from "@/components/Common/confirm-danger"
 
 export const KnowledgeSettings = () => {
   const { t } = useTranslation(["knowledge", "common"])
@@ -124,12 +125,17 @@ export const KnowledgeSettings = () => {
                     <Tooltip title={t("common:delete")}>
                       <button
                         disabled={isDeleting}
-                        onClick={() => {
-                          if (window.confirm(t("confirm.delete"))) {
-                            deleteKnowledgeMutation(record.id)
-                            if (selectedKnowledge?.id === record?.id) {
-                              setSelectedKnowledge(null)
-                            }
+                        onClick={async () => {
+                          const ok = await confirmDanger({
+                            title: t("common:confirmTitle", { defaultValue: "Please confirm" }),
+                            content: t("confirm.delete"),
+                            okText: t("common:delete", { defaultValue: "Delete" }),
+                            cancelText: t("common:cancel", { defaultValue: "Cancel" })
+                          })
+                          if (!ok) return
+                          deleteKnowledgeMutation(record.id)
+                          if (selectedKnowledge?.id === record?.id) {
+                            setSelectedKnowledge(null)
                           }
                         }}
                         className="text-red-500 dark:text-red-400">
@@ -161,9 +167,14 @@ export const KnowledgeSettings = () => {
                                 isDeleting || record.status === "processing"
                               }
                               onClick={async () => {
-                                if (window.confirm(t("confirm.deleteSource"))) {
-                                  await deleteSource(record.id, r.source_id)
-                                }
+                                const ok = await confirmDanger({
+                                  title: t("common:confirmTitle", { defaultValue: "Please confirm" }),
+                                  content: t("confirm.deleteSource"),
+                                  okText: t("common:delete", { defaultValue: "Delete" }),
+                                  cancelText: t("common:cancel", { defaultValue: "Cancel" })
+                                })
+                                if (!ok) return
+                                await deleteSource(record.id, r.source_id)
                               }}
                               className="text-red-500 dark:text-red-400 disabled:opacity-50">
                               <Trash2 className="w-5 h-5" />

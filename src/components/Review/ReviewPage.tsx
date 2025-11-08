@@ -36,6 +36,7 @@ import { ChevronDown, CopyIcon, SendIcon } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { Storage } from "@plasmohq/storage"
 import { getAllPrompts } from "@/db/dexie/helpers"
+import { confirmDanger } from "@/components/Common/confirm-danger"
 
 type MediaItem = any
 type NoteItem = any
@@ -1239,7 +1240,7 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true }
                       const v = existingAnalyses[selectedExistingIndex]
                       const vv = getVersionNumber(v)
                       if (!vv) { message.warning('No version number'); return }
-                      const ok = window.confirm('Restore this version as current?')
+                      const ok = await confirmDanger({ title: 'Please confirm', content: 'Restore this version as current?', okText: 'Restore', cancelText: 'Cancel' })
                       if (!ok) return
                       try {
                         await bgRequest<any>({ path: `/api/v1/media/${selected.id}/versions/rollback` as any, method: 'POST' as any, headers: { 'Content-Type': 'application/json' }, body: { version_number: vv } })
@@ -1255,7 +1256,7 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true }
                       const v = existingAnalyses[selectedExistingIndex]
                       const vv = getVersionNumber(v)
                       if (!vv) { message.warning('No version number'); return }
-                      const ok = window.confirm(`Restore v${vv} as current?`)
+                      const ok = await confirmDanger({ title: 'Please confirm', content: `Restore v${vv} as current?`, okText: 'Restore', cancelText: 'Cancel' })
                       if (!ok) return
                       try {
                         await bgRequest<any>({ path: `/api/v1/media/${selected?.id}/versions/rollback` as any, method: 'POST' as any, headers: { 'Content-Type': 'application/json' }, body: { version_number: vv } })

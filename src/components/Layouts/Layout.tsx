@@ -17,6 +17,7 @@ import { CurrentChatModelSettings } from "../Common/Settings/CurrentChatModelSet
 import { Sidebar } from "../Option/Sidebar"
 import { Header } from "./Header"
 import { useMigration } from "../../hooks/useMigration"
+import { confirmDanger } from "@/components/Common/confirm-danger"
 
 export default function OptionLayout({
   children,
@@ -101,20 +102,25 @@ export default function OptionLayout({
                     placement="left">
                     <button
                       onClick={async () => {
-                        const confirm = window.confirm(
-                          t(
+                        const ok = await confirmDanger({
+                          title: t("common:confirmTitle", {
+                            defaultValue: "Please confirm"
+                          }),
+                          content: t(
                             "settings:generalSettings.system.deleteChatHistory.confirm"
-                          )
-                        )
+                          ),
+                          okText: t("common:delete", { defaultValue: "Delete" }),
+                          cancelText: t("common:cancel", { defaultValue: "Cancel" })
+                        })
 
-                        if (confirm) {
-                          const db = new PageAssistDatabase()
-                          await db.deleteAllChatHistory()
-                          await queryClient.invalidateQueries({
-                            queryKey: ["fetchChatHistory"]
-                          })
-                          clearChat()
-                        }
+                        if (!ok) return
+
+                        const db = new PageAssistDatabase()
+                        await db.deleteAllChatHistory()
+                        await queryClient.invalidateQueries({
+                          queryKey: ["fetchChatHistory"]
+                        })
+                        clearChat()
                       }}
                       className="text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100">
                       <EraserIcon className="size-5" />

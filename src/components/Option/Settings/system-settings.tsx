@@ -15,6 +15,7 @@ import { toBase64 } from "@/libs/to-base64"
 import { PageAssistDatabase } from "@/db/dexie/chat"
 import { isFireFox, isFireFoxPrivateMode } from "@/utils/is-private-mode"
 import { firefoxSyncDataForPrivateMode } from "@/db/dexie/firefox-sync"
+import { confirmDanger } from "@/components/Common/confirm-danger"
 
 export const SystemSettings = () => {
   const { t } = useTranslation(["settings", "knowledge"])
@@ -339,24 +340,27 @@ export const SystemSettings = () => {
 
         <button
           onClick={async () => {
-            const confirm = window.confirm(
-              t("generalSettings.system.deleteChatHistory.confirm")
-            )
+            const ok = await confirmDanger({
+              title: t("common:confirmTitle", { defaultValue: "Please confirm" }),
+              content: t("generalSettings.system.deleteChatHistory.confirm"),
+              okText: t("common:reset", { defaultValue: "Reset" }),
+              cancelText: t("common:cancel", { defaultValue: "Cancel" })
+            })
 
-            if (confirm) {
-              const db = new PageAssistDatabase()
-              await db.clearDB()
-              queryClient.invalidateQueries({
-                queryKey: ["fetchChatHistory"]
-              })
-              clearChat()
-              try {
-                await browser.storage.sync.clear()
-                await browser.storage.local.clear()
-                await browser.storage.session.clear()
-              } catch (e) {
-                console.error("Error clearing storage:", e)
-              }
+            if (!ok) return
+
+            const db = new PageAssistDatabase()
+            await db.clearDB()
+            queryClient.invalidateQueries({
+              queryKey: ["fetchChatHistory"]
+            })
+            clearChat()
+            try {
+              await browser.storage.sync.clear()
+              await browser.storage.local.clear()
+              await browser.storage.session.clear()
+            } catch (e) {
+              console.error("Error clearing storage:", e)
             }
           }}
           className="bg-red-500 dark:bg-red-600 text-white dark:text-gray-200 px-4 py-2 rounded-md w-full sm:w-auto">

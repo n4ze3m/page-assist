@@ -30,6 +30,7 @@ import {
 } from "@/services/application"
 import { tagColors } from "@/utils/color"
 import { isFireFoxPrivateMode } from "@/utils/is-private-mode"
+import { confirmDanger } from "@/components/Common/confirm-danger"
 
 export const PromptBody = () => {
   const queryClient = useQueryClient()
@@ -450,12 +451,15 @@ export const PromptBody = () => {
                     </Tooltip>
                     <Tooltip title={t("managePrompts.tooltip.delete")}>
                       <button
-                        onClick={() => {
-                          if (
-                            window.confirm(t("managePrompts.confirm.delete"))
-                          ) {
-                            deletePrompt(record.id)
-                          }
+                        onClick={async () => {
+                          const ok = await confirmDanger({
+                            title: t("common:confirmTitle", { defaultValue: "Please confirm" }),
+                            content: t("managePrompts.confirm.delete"),
+                            okText: t("common:delete", { defaultValue: "Delete" }),
+                            cancelText: t("common:cancel", { defaultValue: "Cancel" })
+                          })
+                          if (!ok) return
+                          deletePrompt(record.id)
                         }}
                         disabled={isFireFoxPrivateMode}
                         className="text-red-500 dark:text-red-400 disabled:opacity-50">

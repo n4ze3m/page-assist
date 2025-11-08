@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { tldwClient } from '@/services/tldw/TldwApiClient'
 import { HelpCircle, Headphones, Layers, Database, FileText, Film, Cookie, Info, Clock, Grid, BookText } from 'lucide-react'
 import { useStorage } from '@plasmohq/storage/hook'
+import { confirmDanger } from '@/components/Common/confirm-danger'
 
 type Entry = {
   id: string
@@ -608,9 +609,9 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
                   <Switch size="small" checked={!!specPrefs?.preferServer} onChange={async (v) => { setSpecPrefs({ ...(specPrefs||{}), preferServer: v }); await loadSpec(v, true) }} />
                 </Space>
                 <Button size="small" onClick={(e) => { e.stopPropagation(); void loadSpec(true, true) }}>Reload from server</Button>
-                <Button size="small" danger onClick={(e) => {
+                <Button size="small" danger onClick={async (e) => {
                   e.stopPropagation();
-                  const ok = window.confirm('Reset all advanced options and UI state?')
+                  const ok = await confirmDanger({ title: 'Please confirm', content: 'Reset all advanced options and UI state?', okText: 'Reset', cancelText: 'Cancel' })
                   if (!ok) return
                   setAdvancedValues({}); setSavedAdvValues({}); setFieldDetailsOpen({}); setUiPrefs({ advancedOpen: false, fieldDetailsOpen: {} }); setAdvSearch(''); setAdvancedOpen(false); message.success('Advanced options reset')
                 }}>Reset Advanced</Button>

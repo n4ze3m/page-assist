@@ -4,6 +4,7 @@ import { bgRequest } from '@/services/background-proxy'
 import { useQuery, keepPreviousData, useQueryClient } from '@tanstack/react-query'
 import { useServerOnline } from '@/hooks/useServerOnline'
 import { Copy as CopyIcon, Save as SaveIcon, Trash2 as TrashIcon, FileDown as FileDownIcon, Plus as PlusIcon, Search as SearchIcon } from 'lucide-react'
+import { confirmDanger } from '@/components/Common/confirm-danger'
 
 type NoteListItem = {
   id: string | number
@@ -110,7 +111,7 @@ const NotesManagerPage: React.FC = () => {
   const deleteNote = async (id?: string | number | null) => {
     const target = id ?? selectedId
     if (target == null) { message.warning('No note selected'); return }
-    const ok = window.confirm('Delete this note?')
+    const ok = await confirmDanger({ title: 'Please confirm', content: 'Delete this note?', okText: 'Delete', cancelText: 'Cancel' })
     if (!ok) return
     try {
       await bgRequest<any>({ path: `/api/v1/notes/${target}` as any, method: 'DELETE' as any })
