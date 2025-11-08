@@ -1,5 +1,9 @@
 {
     "pageAssist": "tldw Assistant",
+    "titles": {
+        "options": "tldw Assistant — Options",
+        "sidepanel": "tldw Assistant — Sidepanel"
+    },
     "selectAModel": "اختر نموذجًا",
     "save": "حفظ",
     "saved": "تم الحفظ",

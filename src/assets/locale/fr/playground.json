@@ -3,7 +3,10 @@
         "searching": "Recherche de votre tldw server",
         "running": "tldw est en cours d'exécution",
         "notRunning": "Impossible de se connecter à tldw server",
-        "connectionError": "Il semble que vous rencontriez une erreur de connexion. Veuillez consulter cette <anchor>documentation</anchor> pour résoudre le problème."
+        "connectionError": "Il semble que vous rencontriez une erreur de connexion. Veuillez consulter cette <anchor>documentation</anchor> pour résoudre le problème.",
+        "errorToast": "We couldn’t reach {{host}}",
+        "missingHelp": "Open Settings → tldw Server to add your URL or connect to the Options page.",
+        "troubleshoot": "Confirm your server is running and that the browser is allowed to reach it, then retry from the Options page."
     },
     "formError": {
         "noModel": "Veuillez sélectionner un modèle",

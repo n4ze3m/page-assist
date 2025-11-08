@@ -271,10 +271,10 @@ export const TldwSettings = () => {
       }
       
       if (success) {
-        message.success("Connection successful!")
+        message.success(t('settings:tldw.connection.success', 'Connection successful!'))
         await tldwClient.initialize()
       } else {
-        message.error("Connection failed. Please check your settings.")
+        message.error(t('settings:tldw.connection.failed', 'Connection failed. Please check your settings.'))
       }
     } catch (error) {
       setConnectionStatus('error')
@@ -298,7 +298,7 @@ export const TldwSettings = () => {
       })
       
       setIsLoggedIn(true)
-      message.success("Login successful!")
+      message.success(t('settings:tldw.login.success', 'Login successful!'))
       
       // Clear password field
       form.setFieldValue('password', '')
@@ -306,7 +306,7 @@ export const TldwSettings = () => {
       // Test connection after login
       await testConnection()
     } catch (error: any) {
-      message.error(error.message || "Login failed")
+      message.error(error.message || t('settings:tldw.login.failed', 'Login failed'))
       console.error('Login failed:', error)
     } finally {
       setLoading(false)
@@ -318,9 +318,9 @@ export const TldwSettings = () => {
       setLoading(true)
       await tldwAuth.logout()
       setIsLoggedIn(false)
-      message.success("Logged out successfully")
+      message.success(t('settings:tldw.logout.success', 'Logged out successfully'))
     } catch (error) {
-      message.error("Logout failed")
+      message.error(t('settings:tldw.logout.failed', 'Logout failed'))
       console.error('Logout failed:', error)
     } finally {
       setLoading(false)
@@ -353,17 +353,17 @@ export const TldwSettings = () => {
         )}
         <div className="mb-4 p-2 rounded border dark:border-gray-600 bg-white dark:bg-[#171717] flex items-center justify-between">
           <div className="text-sm text-gray-800 dark:text-gray-100">
-            <span className="mr-2 font-medium">Server:</span>
-            <span className="text-gray-600 dark:text-gray-300 break-all">{serverUrl || 'Not configured'}</span>
+            <span className="mr-2 font-medium">{t('settings:tldw.serverLabel', 'Server:')}</span>
+            <span className="text-gray-600 dark:text-gray-300 break-all">{serverUrl || t('settings:tldw.notConfigured', 'Not configured')}</span>
           </div>
           <Space>
             <Link to="/settings/health">
-              <Button>Health</Button>
+              <Button>{t('settings:tldw.buttons.health', 'Health')}</Button>
             </Link>
-            <Button type="primary" onClick={testConnection} loading={testingConnection}>Recheck</Button>
+            <Button type="primary" onClick={testConnection} loading={testingConnection}>{t('settings:tldw.buttons.recheck', 'Recheck')}</Button>
           </Space>
         </div>
-        <h2 className="text-base font-semibold mb-4 text-gray-900 dark:text-gray-100">tldw Server Configuration</h2>
+        <h2 className="text-base font-semibold mb-4 text-gray-900 dark:text-gray-100">{t('settings:tldw.serverConfigTitle', 'tldw Server Configuration')}</h2>
         
         <Form
           form={form}
@@ -552,8 +552,8 @@ export const TldwSettings = () => {
           {authMode === 'multi-user' && !isLoggedIn && (
             <>
               <Alert
-                message="Login Required"
-                description="Please login with your tldw_server credentials"
+                message={t('settings:tldw.loginRequired.title', 'Login Required')}
+                description={t('settings:tldw.loginRequired.description', 'Please login with your tldw_server credentials')}
                 type="info"
                 showIcon
                 className="mb-4"
@@ -577,7 +577,7 @@ export const TldwSettings = () => {
 
               <Form.Item>
                 <Button type="primary" onClick={handleLogin}>
-                  Login
+                  {t('settings:tldw.buttons.login', 'Login')}
                 </Button>
               </Form.Item>
             </>
@@ -585,13 +585,13 @@ export const TldwSettings = () => {
 
           {authMode === 'multi-user' && isLoggedIn && (
             <Alert
-              message="Logged In"
-              description="You are currently logged in to tldw_server"
+              message={t('settings:tldw.loggedIn.title', 'Logged In')}
+              description={t('settings:tldw.loggedIn.description', 'You are currently logged in to tldw_server')}
               type="success"
               showIcon
               action={
                 <Button size="small" danger onClick={handleLogout}>
-                  Logout
+                  {t('settings:tldw.buttons.logout', 'Logout')}
                 </Button>
               }
               className="mb-4"
@@ -615,13 +615,13 @@ export const TldwSettings = () => {
                   ) : null
                 }
               >
-                Test Connection
+                {t('settings:tldw.buttons.testConnection', 'Test Connection')}
               </Button>
             </Space>
 
             {connectionStatus && (
               <span className={`text-sm ${connectionStatus === 'success' ? 'text-green-500' : 'text-red-500'}`}>
-                {connectionStatus === 'success' ? 'Connected' : 'Connection failed'}
+                {connectionStatus === 'success' ? t('settings:tldw.connection.success', 'Connection successful!') : t('settings:tldw.connection.failed', 'Connection failed. Please check your settings.')}
               </span>
             )}
             {connectionDetail && connectionStatus !== 'success' && (

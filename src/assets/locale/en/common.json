@@ -1,10 +1,15 @@
 {
     "pageAssist": "tldw Assistant",
+    "titles": {
+        "options": "tldw Assistant — Options",
+        "sidepanel": "tldw Assistant — Sidepanel"
+    },
     "selectAModel": "Select a Model",
     "save": "Save",
     "saved": "Saved",
     "cancel": "Cancel",
     "retry": "Retry",
+    "close": "Close",
     "loadMore": "Load More...",
     "share": {
         "tooltip": {

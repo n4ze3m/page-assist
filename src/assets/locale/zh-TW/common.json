@@ -1,5 +1,9 @@
 {
     "pageAssist": "tldw Assistant",
+    "titles": {
+        "options": "tldw Assistant — Options",
+        "sidepanel": "tldw Assistant — Sidepanel"
+    },
     "selectAModel": "選擇一個模型",
     "save": "儲存",
     "saved": "已儲存",

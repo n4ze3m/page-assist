@@ -1,5 +1,9 @@
 {
     "pageAssist": "tldw Assistant",
+    "titles": {
+        "options": "tldw Assistant — Options",
+        "sidepanel": "tldw Assistant — Sidepanel"
+    },
     "selectAModel": "یک مدل انتخاب کنید",
     "save": "ذخیره",
     "saved": "ذخیره شد",

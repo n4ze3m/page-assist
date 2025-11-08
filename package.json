@@ -21,7 +21,8 @@
     "docs:preview": "vitepress preview docs",
     "postinstall": "wxt prepare",
     "test:e2e": "playwright test",
-    "test:e2e:ui": "playwright test --ui"
+    "test:e2e:ui": "playwright test --ui",
+    "check:i18n:dupes": "node scripts/check-duplicate-keys.mjs"
   },
   "dependencies": {
     "@ant-design/cssinjs": "^1.18.4",

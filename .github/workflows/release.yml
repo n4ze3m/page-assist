@@ -20,6 +20,9 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
+      - name: Check duplicate i18n keys
+        run: node scripts/check-duplicate-keys.mjs
+
       - name: Type check
         run: bun run compile
 

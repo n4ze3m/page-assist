@@ -126,6 +126,17 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
     }
   })
 
+  // Allow other components (e.g., connection card) to request focus
+  React.useEffect(() => {
+    const handler = () => {
+      if (document.visibilityState === 'visible') {
+        textAreaFocus()
+      }
+    }
+    window.addEventListener('tldw:focus-composer', handler)
+    return () => window.removeEventListener('tldw:focus-composer', handler)
+  }, [])
+
   React.useEffect(() => {
     textAreaFocus()
     if (defaultInternetSearchOn) {

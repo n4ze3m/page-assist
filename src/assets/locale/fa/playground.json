@@ -3,7 +3,10 @@
         "searching": "در حال جستجوی tldw server شما",
         "running": "tldw در حال اجرا است",
         "notRunning": "امکان اتصال به tldw server وجود ندارد",
-        "connectionError": "به نظر می رسد که خطای اتصال دارید. لطفا برای عیب یابی به این <anchor>مستندات</anchor> مراجعه کنید."
+        "connectionError": "به نظر می رسد که خطای اتصال دارید. لطفا برای عیب یابی به این <anchor>مستندات</anchor> مراجعه کنید.",
+        "errorToast": "We couldn’t reach {{host}}",
+        "missingHelp": "Open Settings → tldw Server to add your URL or connect to the Options page.",
+        "troubleshoot": "Confirm your server is running and that the browser is allowed to reach it, then retry from the Options page."
     },
     "formError": {
         "noModel": "لطفا یک مدل را انتخاب کنید",

@@ -5,6 +5,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { tldwClient } from '@/services/tldw/TldwApiClient'
 import { apiSend } from '@/services/api-send'
 import type { AllowedPath } from '@/services/tldw/openapi-guard'
+import { useTranslation } from 'react-i18next'
 
 type Check = {
   key: string
@@ -12,19 +13,21 @@ type Check = {
   path: AllowedPath
 }
 
-const checks: Check[] = [
-  { key: 'core', label: 'Core API', path: '/api/v1/health' },
-  { key: 'rag', label: 'RAG', path: '/api/v1/rag/health' },
-  { key: 'audio', label: 'Audio', path: '/api/v1/audio/health' },
-  { key: 'embeddings', label: 'Embeddings', path: '/api/v1/embeddings/health' },
-  { key: 'metrics', label: 'Metrics Health', path: '/api/v1/metrics/health' },
-  { key: 'chatMetrics', label: 'Chat Metrics', path: '/api/v1/metrics/chat' },
-  { key: 'mcp', label: 'MCP', path: '/api/v1/mcp/health' },
+const makeChecks = (t: (k: string, d?: string) => string): Check[] => [
+  { key: 'core', label: t('settings:healthPage.checks.core', 'Core API'), path: '/api/v1/health' },
+  { key: 'rag', label: t('settings:healthPage.checks.rag', 'RAG'), path: '/api/v1/rag/health' },
+  { key: 'audio', label: t('settings:healthPage.checks.audio', 'Audio'), path: '/api/v1/audio/health' },
+  { key: 'embeddings', label: t('settings:healthPage.checks.embeddings', 'Embeddings'), path: '/api/v1/embeddings/health' },
+  { key: 'metrics', label: t('settings:healthPage.checks.metrics', 'Metrics Health'), path: '/api/v1/metrics/health' },
+  { key: 'chatMetrics', label: t('settings:healthPage.checks.chatMetrics', 'Chat Metrics'), path: '/api/v1/metrics/chat' },
+  { key: 'mcp', label: t('settings:healthPage.checks.mcp', 'MCP'), path: '/api/v1/mcp/health' },
 ]
 
 type Result = { status: 'unknown'|'healthy'|'unhealthy', detail?: any, statusCode?: number, durationMs?: number }
 
 export default function HealthStatus() {
+  const { t } = useTranslation(['settings', 'common'])
+  const checks = makeChecks(t)
   const [results, setResults] = useState<Record<string, Result>>({})
   const [loading, setLoading] = useState(false)
   const [serverUrl, setServerUrl] = useState<string>('')
@@ -85,13 +88,13 @@ export default function HealthStatus() {
     <Space direction="vertical" size="large" className="w-full">
       <div className="flex items-center justify-between">
         <div>
-          <Typography.Title level={4} className="!mb-0">Health Status</Typography.Title>
-          <Typography.Paragraph type="secondary" className="!mb-0">Quick overview of subsystem health endpoints exposed by the server.</Typography.Paragraph>
+          <Typography.Title level={4} className="!mb-0">{t('healthPage.title', 'Health Status')}</Typography.Title>
+          <Typography.Paragraph type="secondary" className="!mb-0">{t('healthPage.subtitle', 'Quick overview of subsystem health endpoints exposed by the server.')}</Typography.Paragraph>
         </div>
         <Space>
-          <Button onClick={() => navigate(-1)}>← Back to chat</Button>
-          <Link to="/settings/tldw"><Button>Open tldw Settings</Button></Link>
-          <Button type="primary" onClick={runChecks} loading={loading}>Recheck All</Button>
+          <Button onClick={() => navigate(-1)}>← {t('healthPage.backToChat', 'Back to chat')}</Button>
+          <Link to="/settings/tldw"><Button>{t('healthPage.openSettings', 'Open tldw Settings')}</Button></Link>
+          <Button type="primary" onClick={runChecks} loading={loading}>{t('healthPage.recheckAll', 'Recheck All')}</Button>
           <Button
             onClick={() => {
               try {
@@ -105,7 +108,7 @@ export default function HealthStatus() {
                 void navigator.clipboard.writeText(text)
               } catch {}
             }}
-          >Copy diagnostics</Button>
+          >{t('healthPage.copyDiagnostics', 'Copy diagnostics')}</Button>
         </Space>
       </div>
 
@@ -113,20 +116,20 @@ export default function HealthStatus() {
         <Alert
           type="warning"
           showIcon
-          message={!serverUrl ? 'Server is not configured.' : 'Unable to reach server core health endpoint.'}
-          description={serverUrl ? `Tried GET ${serverUrl.replace(/\/$/, '')}/api/v1/health` : 'Please configure a server URL under tldw settings.'}
-          action={<Link to="/settings/tldw"><Button size="small">Configure</Button></Link>}
+          message={!serverUrl ? t('healthPage.serverNotConfigured', 'Server is not configured.') : t('healthPage.unableToReachCore', 'Unable to reach server core health endpoint.')}
+          description={serverUrl ? t('healthPage.triedGet', 'Tried GET {{url}}', { url: `${serverUrl.replace(/\/$/, '')}/api/v1/health` }) : t('healthPage.configureHint', 'Please configure a server URL under tldw settings.')}
+          action={<Link to="/settings/tldw"><Button size="small">{t('healthPage.configureCta', 'Configure')}</Button></Link>}
         />
       ) : (
-        <Alert type="success" showIcon message={`Connected to ${serverUrl}`} />
+        <Alert type="success" showIcon message={t('healthPage.connectedTo', 'Connected to {{host}}', { host: serverUrl })} />
       )}
 
       <div className="flex items-center gap-4">
         <label className="text-sm flex items-center gap-2">
-          <input type="checkbox" checked={autoRefresh} onChange={(e) => setAutoRefresh(e.target.checked)} /> Auto-refresh
+          <input type="checkbox" checked={autoRefresh} onChange={(e) => setAutoRefresh(e.target.checked)} /> {t('healthPage.autoRefresh', 'Auto-refresh')}
         </label>
         <label className="text-sm flex items-center gap-2">
-          Interval (s):
+          {t('healthPage.intervalLabel', 'Interval (s):')}
           <input type="number" min={5} className="w-20 px-2 py-1 rounded border dark:bg-[#262626]" value={intervalSec} onChange={(e) => setIntervalSec(parseInt(e.target.value || '30'))} />
         </label>
       </div>
@@ -135,9 +138,9 @@ export default function HealthStatus() {
         {checks.map(c => {
           const r = results[c.key] || { status: 'unknown' }
           return (
-            <Card key={c.key} title={c.label} extra={<a onClick={() => runSingle(c)}>{loading ? 'Checking…' : 'Recheck'}</a>}>
+            <Card key={c.key} title={c.label} extra={<a onClick={() => runSingle(c)}>{loading ? t('healthPage.checking', 'Checking…') : t('healthPage.recheck', 'Recheck')}</a>}>
               <Space size="middle" className="flex flex-wrap">
-                {r.status === 'healthy' ? <Tag color="green">Healthy</Tag> : r.status === 'unhealthy' ? <Tag color="red">Unhealthy</Tag> : <Tag>Unknown</Tag>}
+                {r.status === 'healthy' ? <Tag color="green">{t('healthPage.healthy', 'Healthy')}</Tag> : r.status === 'unhealthy' ? <Tag color="red">{t('healthPage.unhealthy', 'Unhealthy')}</Tag> : <Tag>{t('healthPage.unknown', 'Unknown')}</Tag>}
                 <Typography.Text type="secondary">{c.path}</Typography.Text>
                 {typeof r.statusCode !== 'undefined' && (
                   <Tag>HTTP {r.statusCode}</Tag>

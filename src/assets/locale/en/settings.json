@@ -104,7 +104,26 @@
       "contextMenu": { "label": "Context Menu Action" },
       "webuiBtnSidePanel": { "label": "Show Web UI button in Sidepanel" },
       "chatBackgroundImage": { "label": "Chat Background Image" },
-      "firefoxPrivateModeSync": { "label": "Firefox Private Mode Sync", "button": "Sync Data" }
+      "firefoxPrivateModeSync": { "label": "Firefox Private Mode Sync", "button": "Sync Data" },
+      "deleteChatHistory": {
+        "label": "System Reset",
+        "button": "Reset All",
+        "confirm": "Are you sure you want to perform a system reset? This will clear all data and cannot be undone."
+      },
+      "export": {
+        "label": "Export Chat History, Knowledge Base, and Prompts",
+        "button": "Export Data",
+        "success": "Export Success"
+      },
+      "import": {
+        "label": "Import Chat History, Knowledge Base, and Prompts",
+        "button": "Import Data",
+        "success": "Import Success",
+        "error": "Import Error"
+      },
+      "fontSize": {
+        "label": "Font Size"
+      }
     },
     "sidepanelRag": {
       "heading": "Retrieval Settings",
@@ -160,40 +179,7 @@
         "placeholder": "Enter your Firecrawl API key"
       }
     },
-    "system": {
-      "heading": "System Settings",
-      "deleteChatHistory": {
-        "label": "System Reset",
-        "button": "Reset All",
-        "confirm": "Are you sure you want to perform a system reset? This will clear all data and cannot be undone."
-      },
-      "export": {
-        "label": "Export Chat History, Knowledge Base, and Prompts",
-        "button": "Export Data",
-        "success": "Export Success"
-      },
-      "import": {
-        "label": "Import Chat History, Knowledge Base, and Prompts",
-        "button": "Import Data",
-        "success": "Import Success",
-        "error": "Import Error"
-      },
-      "actionIcon": {
-        "label": "Set Default Action for Extension Icon Clicks"
-      },
-      "contextMenu": {
-        "label": "Set Default action for Context Menu"
-      },
-      "fontSize": {
-        "label": "Font Size"
-      },
-      "webuiBtnSidePanel": {
-        "label": "Show Web UI Button in Side Panel"
-      },
-      "chatBackgroundImage": {
-        "label": "Chat Background Image"
-      }
-    },
+    
     "tts": {
       "heading": "Text-to-Speech Settings",
       "ttsEnabled": {
@@ -510,6 +496,45 @@
     "title": "Chrome AI Settings"
   },
   "mermaid": "Mermaid",
+  "switchToSidebar": "Switch to Sidebar",
+  "healthPage": {
+    "title": "Health Status",
+    "subtitle": "Quick overview of subsystem health endpoints exposed by the server.",
+    "backToChat": "Back to chat",
+    "openSettings": "Open tldw Settings",
+    "recheckAll": "Recheck All",
+    "copyDiagnostics": "Copy diagnostics",
+    "serverNotConfigured": "Server is not configured.",
+    "unableToReachCore": "Unable to reach server core health endpoint.",
+    "triedGet": "Tried GET {{url}}",
+    "configureHint": "Please configure a server URL under tldw settings.",
+    "configureCta": "Configure",
+    "connectedTo": "Connected to {{host}}",
+    "autoRefresh": "Auto-refresh",
+    "intervalLabel": "Interval (s):",
+    "checking": "Checking…",
+    "recheck": "Recheck",
+    "healthy": "Healthy",
+    "unhealthy": "Unhealthy",
+    "unknown": "Unknown",
+    "checks": {
+      "core": "Core API",
+      "rag": "RAG",
+      "audio": "Audio",
+      "embeddings": "Embeddings",
+      "metrics": "Metrics Health",
+      "chatMetrics": "Chat Metrics",
+      "mcp": "MCP"
+    }
+  },
+  "healthSummary": {
+    "diagnostics": "Diagnostics",
+    "core": "Core",
+    "rag": "RAG",
+    "coreAria": "Core: server/API health",
+    "ragAria": "RAG: knowledge index health",
+    "footerInfo": "These checks summarize the last successful ping to your tldw server and knowledge index."
+  },
   "onboarding": {
     "title": "Welcome — Let’s get you connected",
     "description": "Configure your server and authentication. We’ll verify the connection and RAG health inline.",
@@ -574,6 +599,36 @@
     "timeoutPresetHint": "Balanced works well for most setups. Extended adds extra headroom for slower networks or long-running jobs.",
     "reset": "Reset to recommended",
     "resetDone": "Reset to recommended defaults",
-    "serverNav": "tldw Server"
+    "serverNav": "tldw Server",
+    "serverConfigTitle": "tldw Server Configuration",
+    "serverLabel": "Server:",
+    "notConfigured": "Not configured",
+    "buttons": {
+      "health": "Health",
+      "recheck": "Recheck",
+      "testConnection": "Test Connection",
+      "login": "Login",
+      "logout": "Logout"
+    },
+    "loginRequired": {
+      "title": "Login Required",
+      "description": "Please login with your tldw_server credentials"
+    },
+    "loggedIn": {
+      "title": "Logged In",
+      "description": "You are currently logged in to tldw_server"
+    },
+    "connection": {
+      "success": "Connection successful!",
+      "failed": "Connection failed. Please check your settings."
+    },
+    "login": {
+      "success": "Login successful!",
+      "failed": "Login failed"
+    },
+    "logout": {
+      "success": "Logged out successfully",
+      "failed": "Logout failed"
+    }
   }
 }

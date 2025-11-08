@@ -48,8 +48,8 @@ export const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
                         }
                       } catch {}
                     }}
-                    title="Switch to Sidebar">
-                    Switch to Sidebar
+                    title={t('settings:switchToSidebar', 'Switch to Sidebar')}>
+                    {t('settings:switchToSidebar', 'Switch to Sidebar')}
                   </button>
                 </div>
                 <div className="flex flex-col gap-6">
@@ -101,7 +101,7 @@ export const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
               <div className="absolute right-4 top-4 lg:right-0 lg:top-6 lg:translate-x-[-1rem]">
                 <button
                   className="inline-flex items-center gap-1 text-xs border rounded px-2 py-1 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-[#262626]"
-                  title="Close settings and go back"
+                  title={t('common:close', 'Close')}
                   onClick={(e) => {
                     e.preventDefault()
                     try {
@@ -112,7 +112,7 @@ export const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
                   }}
                 >
                   <XIcon className="h-4 w-4" />
-                  <span>Close</span>
+                  <span>{t('common:close', 'Close')}</span>
                 </button>
               </div>
               <div className="mx-auto max-w-4xl space-y-8 sm:space-y-10">

@@ -21,7 +21,10 @@ jobs:
         run: |
           npm install
 
+      - name: Check duplicate i18n keys
+        run: |
+          node scripts/check-duplicate-keys.mjs
+
       - name: TypeScript compile (OpenAPI path enforcement)
         run: |
           npm run compile
-
