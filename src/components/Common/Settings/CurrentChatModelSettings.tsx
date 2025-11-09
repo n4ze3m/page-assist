@@ -1,7 +1,7 @@
 import { getPromptById } from "@/db/dexie/helpers"
 import { useMessageOption } from "@/hooks/useMessageOption"
 import { FileIcon, X } from "lucide-react"
-import { getAllModelSettings } from "@/services/model-settings"
+import { getAllModelSettings, getModelSettings } from "@/services/model-settings"
 import { useStoreChatModelSettings } from "@/store/model"
 import { useQuery } from "@tanstack/react-query"
 import {
@@ -21,6 +21,7 @@ import { useTranslation } from "react-i18next"
 import { SaveButton } from "../SaveButton"
 import { getOCRLanguage } from "@/services/ocr"
 import { ocrLanguages } from "@/data/ocr-language"
+import { useMessage } from "@/hooks/useMessage"
 
 type Props = {
   open: boolean
@@ -38,6 +39,7 @@ export const CurrentChatModelSettings = ({
   const { t } = useTranslation("common")
   const [form] = Form.useForm()
   const cUserSettings = useStoreChatModelSettings()
+  const { selectedModel } = useMessage()
   const {
     selectedSystemPrompt,
     uploadedFiles,
@@ -65,9 +67,19 @@ export const CurrentChatModelSettings = ({
   )
 
   const { isPending: isLoading } = useQuery({
-    queryKey: ["fetchModelConfig2", open],
+    queryKey: ["fetchModelConfig2", open, selectedModel],
     queryFn: async () => {
       const data = await getAllModelSettings()
+
+      // Load model-specific settings if a model is selected
+      let modelSpecificSettings = null
+      if (selectedModel) {
+        try {
+          modelSpecificSettings = await getModelSettings(selectedModel)
+        } catch (e) {
+          console.error("Failed to load model-specific settings:", e)
+        }
+      }
 
       const ocrLang = await getOCRLanguage()
 
@@ -83,25 +95,25 @@ export const CurrentChatModelSettings = ({
       }
 
       form.setFieldsValue({
-        temperature: cUserSettings.temperature ?? data.temperature,
-        topK: cUserSettings.topK ?? data.topK,
-        topP: cUserSettings.topP ?? data.topP,
-        keepAlive: cUserSettings.keepAlive ?? data.keepAlive,
-        numCtx: cUserSettings.numCtx ?? data.numCtx,
-        seed: cUserSettings.seed,
-        numGpu: cUserSettings.numGpu ?? data.numGpu,
-        numPredict: cUserSettings.numPredict ?? data.numPredict,
+        temperature: cUserSettings.temperature ?? modelSpecificSettings?.temperature ?? data.temperature,
+        topK: cUserSettings.topK ?? modelSpecificSettings?.topK ?? data.topK,
+        topP: cUserSettings.topP ?? modelSpecificSettings?.topP ?? data.topP,
+        keepAlive: cUserSettings.keepAlive ?? modelSpecificSettings?.keepAlive ?? data.keepAlive,
+        numCtx: cUserSettings.numCtx ?? modelSpecificSettings?.numCtx ?? data.numCtx,
+        seed: cUserSettings.seed ?? modelSpecificSettings?.seed,
+        numGpu: cUserSettings.numGpu ?? modelSpecificSettings?.numGpu ?? data.numGpu,
+        numPredict: cUserSettings.numPredict ?? modelSpecificSettings?.numPredict ?? data.numPredict,
         systemPrompt: cUserSettings.systemPrompt ?? tempSystemPrompt,
-        useMMap: cUserSettings.useMMap ?? data.useMMap,
-        minP: cUserSettings.minP ?? data.minP,
-        repeatLastN: cUserSettings.repeatLastN ?? data.repeatLastN,
-        repeatPenalty: cUserSettings.repeatPenalty ?? data.repeatPenalty,
-        useMlock: cUserSettings.useMlock ?? data.useMlock,
-        tfsZ: cUserSettings.tfsZ ?? data.tfsZ,
-        numKeep: cUserSettings.numKeep ?? data.numKeep,
-        numThread: cUserSettings.numThread ?? data.numThread,
-        reasoningEffort: cUserSettings?.reasoningEffort,
-        thinking: cUserSettings?.thinking
+        useMMap: cUserSettings.useMMap ?? modelSpecificSettings?.useMMap ?? data.useMMap,
+        minP: cUserSettings.minP ?? modelSpecificSettings?.minP ?? data.minP,
+        repeatLastN: cUserSettings.repeatLastN ?? modelSpecificSettings?.repeatLastN ?? data.repeatLastN,
+        repeatPenalty: cUserSettings.repeatPenalty ?? modelSpecificSettings?.repeatPenalty ?? data.repeatPenalty,
+        useMlock: cUserSettings.useMlock ?? modelSpecificSettings?.useMlock ?? data.useMlock,
+        tfsZ: cUserSettings.tfsZ ?? modelSpecificSettings?.tfsZ ?? data.tfsZ,
+        numKeep: cUserSettings.numKeep ?? modelSpecificSettings?.numKeep ?? data.numKeep,
+        numThread: cUserSettings.numThread ?? modelSpecificSettings?.numThread ?? data.numThread,
+        reasoningEffort: cUserSettings?.reasoningEffort ?? modelSpecificSettings?.reasoningEffort,
+        thinking: cUserSettings?.thinking ?? modelSpecificSettings?.thinking
       })
       return data
     },

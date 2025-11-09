@@ -36,7 +36,8 @@ export const Playground = () => {
     setSelectedSystemPrompt,
     streaming,
     webuiTemporaryChat,
-    setTemporaryChat
+    setTemporaryChat,
+    setSelectedQuickPrompt
   } = useMessageOption()
   const { setSystemPrompt } = useStoreChatModelSettings()
   const { containerRef, isAutoScrollToBottom, autoScrollToBottom } =
@@ -143,8 +144,13 @@ export const Playground = () => {
         try {
           const prompt = await getPromptById(defaultWebUIPrompt)
           if (prompt) {
-            setSelectedSystemPrompt(prompt.id)
-            setSystemPrompt(prompt.content)
+            if (prompt.is_system) {
+              setSelectedSystemPrompt(prompt.id)
+              setSystemPrompt(prompt.content)
+            } else {
+              setSelectedSystemPrompt(undefined)
+              setSelectedQuickPrompt(prompt!.content)
+            }
           }
         } catch (error) {
           console.error("Failed to load default prompt:", error)
