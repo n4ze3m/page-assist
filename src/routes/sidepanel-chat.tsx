@@ -51,7 +51,8 @@ const SidepanelChat = () => {
     setTemporaryChat,
     sidepanelTemporaryChat,
     clearChat,
-    setSelectedSystemPrompt
+    setSelectedSystemPrompt,
+    setSelectedQuickPrompt
   } = useMessage()
   const { containerRef, isAutoScrollToBottom, autoScrollToBottom } =
     useSmartScroll(messages, streaming, 100)
@@ -154,8 +155,11 @@ const SidepanelChat = () => {
         try {
           const prompt = await getPromptById(defaultCopilotPrompt)
           console.log("Loaded default copilot prompt:", prompt)
-          if (prompt) {
+          if (prompt.is_system) {
             setSelectedSystemPrompt(prompt.id)
+          } else {
+            setSelectedSystemPrompt(undefined)
+            setSelectedQuickPrompt(prompt!.content)
           }
         } catch (error) {
           console.error("Failed to load default prompt:", error)
