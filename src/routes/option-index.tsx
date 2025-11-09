@@ -101,7 +101,16 @@ const OptionIndex = () => {
         </div>
       ) : showOnboarding ? (
         <div className="w-full">
-          <ServerConnectionCard onOpenSettings={() => navigate("/settings/tldw")} />
+          <ServerConnectionCard
+            onOpenSettings={() => navigate("/settings/tldw")}
+            onStartChat={() => {
+              setNeedsOnboarding(false)
+              // Ensure composer receives focus after the chat loads
+              setTimeout(() => {
+                window.dispatchEvent(new CustomEvent('tldw:focus-composer'))
+              }, 0)
+            }}
+          />
           <p className="mt-4 text-center text-sm text-blue-600 hover:text-blue-500 dark:text-blue-400">
             <button onClick={() => navigate("/settings/tldw")}>
               {t("tldw.setupLink", "Set up server")}

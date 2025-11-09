@@ -10,6 +10,7 @@ import { apiSend } from "@/services/api-send"
 
 type Props = {
   onOpenSettings?: () => void
+  onStartChat?: () => void
   showToastOnError?: boolean
 }
 
@@ -48,6 +49,7 @@ const useElapsedSince = (timestamp: number | null) => {
 
 export const ServerConnectionCard: React.FC<Props> = ({
   onOpenSettings,
+  onStartChat,
   showToastOnError = false
 }) => {
   const { t } = useTranslation(["playground", "common", "settings"]) 
@@ -134,7 +136,14 @@ export const ServerConnectionCard: React.FC<Props> = ({
 
   const handlePrimary = () => {
     if (statusVariant === "ok") {
-      window.dispatchEvent(new CustomEvent("tldw:focus-composer"))
+      if (onStartChat) {
+        try { onStartChat() } finally {
+          // Also try to focus once the chat is visible
+          setTimeout(() => window.dispatchEvent(new CustomEvent("tldw:focus-composer")), 0)
+        }
+      } else {
+        window.dispatchEvent(new CustomEvent("tldw:focus-composer"))
+      }
     } else if (isStuck) {
       handleOpenSettings()
     } else {

@@ -12,11 +12,13 @@ export const SidePanelBody = ({ scrollParentRef }: Props) => {
   const {
     messages,
     streaming,
+    isProcessing,
     regenerateLastMessage,
     editMessage,
     isSearchingInternet, 
     createChatBranch,
-    temporaryChat
+    temporaryChat,
+    stopStreamingRequest
   } = useMessage()
   const [isSourceOpen, setIsSourceOpen] = React.useState(false)
   const [source, setSource] = React.useState<any>(null)
@@ -50,7 +52,7 @@ export const SidePanelBody = ({ scrollParentRef }: Props) => {
                   totalMessages={messages.length}
                   onRengerate={regenerateLastMessage}
                   message_type={message.messageType}
-                  isProcessing={streaming}
+                  isProcessing={isProcessing}
                   isSearchingInternet={isSearchingInternet}
                   sources={message.sources}
                   onEditFormSubmit={(value) => { editMessage(index, value, !message.isBot) }}
@@ -63,6 +65,7 @@ export const SidePanelBody = ({ scrollParentRef }: Props) => {
                   modelImage={message?.modelImage}
                   modelName={message?.modelName}
                   temporaryChat={temporaryChat}
+                  onStopStreaming={stopStreamingRequest}
                 />
               </div>
             )

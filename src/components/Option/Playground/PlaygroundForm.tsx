@@ -35,6 +35,8 @@ import { otherUnsupportedTypes } from "../Knowledge/utils/unsupported-types"
 import { PASTED_TEXT_CHAR_LIMIT } from "@/utils/constant"
 import { isFireFoxPrivateMode } from "@/utils/is-private-mode"
 import { CurrentChatModelSettings } from "@/components/Common/Settings/CurrentChatModelSettings"
+import { PromptSelect } from "@/components/Common/PromptSelect"
+import { ModelSelectOption } from "@/components/Common/ModelSelectOption"
 type Props = {
   dropedFile: File | undefined
 }
@@ -58,6 +60,8 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
     selectedQuickPrompt,
     textareaRef,
     setSelectedQuickPrompt,
+    selectedSystemPrompt,
+    setSelectedSystemPrompt,
     selectedKnowledge,
     temporaryChat,
     setTemporaryChat,
@@ -713,6 +717,15 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                         <KnowledgeSelect />
                       </div>
                       <div className="flex items-center justify-end gap-3">
+                        {/* Inline Model and Prompt selectors next to More Tools */}
+                        <PromptSelect
+                          selectedSystemPrompt={selectedSystemPrompt}
+                          setSelectedSystemPrompt={setSelectedSystemPrompt}
+                          setSelectedQuickPrompt={setSelectedQuickPrompt}
+                          iconClassName="size-4"
+                          className="text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-gray-100"
+                        />
+                        <ModelSelectOption iconClassName="size-4" />
                         <Popover
                           trigger="click"
                           placement="topRight"

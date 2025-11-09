@@ -21,6 +21,7 @@ import {
 import { useTranslation } from "react-i18next"
 import { getVariable } from "@/utils/select-variable"
 import { ModelSelect } from "@/components/Common/ModelSelect"
+import { PromptSelect } from "@/components/Common/PromptSelect"
 import { useSpeechRecognition } from "@/hooks/useSpeechRecognition"
 import { useTldwStt } from "@/hooks/useTldwStt"
 import { useMicStream } from "@/hooks/useMicStream"
@@ -174,6 +175,8 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
     setWebSearch,
     selectedQuickPrompt,
     setSelectedQuickPrompt,
+    selectedSystemPrompt,
+    setSelectedSystemPrompt,
     speechToTextLanguage,
     useOCR,
     setUseOCR,
@@ -572,9 +575,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                       {...form.getInputProps("message")}
                     />
                     <div className="mt-4 flex w-full flex-col gap-3 md:flex-row md:items-center md:justify-between">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <ModelSelect iconClassName="size-4" />
-                      </div>
+                      <div className="flex flex-wrap items-center gap-2"></div>
                       <div className="flex flex-wrap items-center justify-end gap-2">
                         {/* RAG toggle for better discoverability */}
                         <button
@@ -585,6 +586,15 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                           <Search className="h-4 w-4" />
                           <span className="hidden sm:inline">{t('sidepanel:toolbar.ragSearch', 'RAG Search')}</span>
                         </button>
+                        {/* Move Prompt and Model selectors next to More Tools */}
+                        <PromptSelect
+                          selectedSystemPrompt={selectedSystemPrompt}
+                          setSelectedSystemPrompt={setSelectedSystemPrompt}
+                          setSelectedQuickPrompt={setSelectedQuickPrompt}
+                          iconClassName="size-4"
+                          className="text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-gray-100"
+                        />
+                        <ModelSelect iconClassName="size-4" />
                         <Popover
                           trigger="click"
                           placement="topRight"

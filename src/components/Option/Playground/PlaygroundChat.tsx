@@ -9,6 +9,7 @@ export const PlaygroundChat = () => {
   const {
     messages,
     streaming,
+    isProcessing,
     regenerateLastMessage,
     isSearchingInternet,
     editMessage,
@@ -16,7 +17,8 @@ export const PlaygroundChat = () => {
     onSubmit,
     actionInfo,
     createChatBranch,
-    temporaryChat
+    temporaryChat,
+    stopStreamingRequest
   } = useMessageOption()
   const [isSourceOpen, setIsSourceOpen] = React.useState(false)
   const [source, setSource] = React.useState<any>(null)
@@ -40,7 +42,7 @@ export const PlaygroundChat = () => {
             currentMessageIndex={index}
             totalMessages={messages.length}
             onRengerate={regenerateLastMessage}
-            isProcessing={streaming}
+            isProcessing={isProcessing}
             isSearchingInternet={isSearchingInternet}
             sources={message.sources}
             onEditFormSubmit={(value, isSend) => {
@@ -61,6 +63,7 @@ export const PlaygroundChat = () => {
             modelImage={message?.modelImage}
             modelName={message?.modelName}
             temporaryChat={temporaryChat}  
+            onStopStreaming={stopStreamingRequest}
             onContinue={() => {
               onSubmit({
                 image: "",

@@ -14,6 +14,7 @@ import {
   Square,
   Volume2Icon
 } from "lucide-react"
+import { StopCircle as StopCircleIcon } from "lucide-react"
 import { EditMessageForm } from "./EditMessageForm"
 import { useTranslation } from "react-i18next"
 import { MessageSource } from "./MessageSource"
@@ -61,6 +62,7 @@ type Props = {
   actionInfo?: string | null
   onNewBranch?: () => void
   temporaryChat?: boolean
+  onStopStreaming?: () => void
 }
 
 export const PlaygroundMessage = (props: Props) => {
@@ -145,6 +147,20 @@ export const PlaygroundMessage = (props: Props) => {
   return (
     <div
       className={`group relative flex w-full max-w-3xl flex-col items-end justify-center pb-2 md:px-4 lg:w-4/5 text-gray-800 dark:text-gray-100 ${checkWideMode ? "max-w-none" : ""}`}>
+      {/* Inline stop button while streaming on the latest assistant message */}
+      {props.isBot && (props.isStreaming || props.isProcessing) && isLastMessage && props.onStopStreaming && (
+        <div className="absolute right-2 top-0 z-10">
+          <Tooltip title={t("playground:tooltip.stopStreaming") as string}>
+            <button
+              type="button"
+              onClick={props.onStopStreaming}
+              className="text-gray-800 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded-md p-1 bg-white/70 dark:bg-[#1f1f1f]/70 backdrop-blur hover:bg-white dark:hover:bg-[#2a2a2a]">
+              <StopCircleIcon className="w-5 h-5" />
+              <span className="sr-only">{t("playground:composer.stopStreaming")}</span>
+            </button>
+          </Tooltip>
+        </div>
+      )}
       {/* <div className="text-base md:max-w-2xl lg:max-w-xl xl:max-w-3xl flex lg:px-0 m-auto w-full"> */}
       <div className="flex flex-row gap-4 md:gap-6 my-2 m-auto w-full">
         <div className="w-8 flex flex-col relative items-end">

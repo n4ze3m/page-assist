@@ -4,7 +4,7 @@ import { LucideBrain } from "lucide-react"
 import React from "react"
 import { useTranslation } from "react-i18next"
 import { fetchChatModels } from "@/services/tldw-server"
-import { useMessage } from "@/hooks/useMessage"
+import { useMessageOption } from "~/hooks/useMessageOption"
 import { ProviderIcons } from "./ProviderIcon"
 import { IconButton } from "./IconButton"
 
@@ -12,11 +12,11 @@ type Props = {
   iconClassName?: string
 }
 
-export const ModelSelect: React.FC<Props> = ({iconClassName = "size-5"}) => {
+export const ModelSelectOption: React.FC<Props> = ({ iconClassName = "size-5" }) => {
   const { t } = useTranslation("common")
-  const { setSelectedModel, selectedModel } = useMessage()
+  const { setSelectedModel, selectedModel } = useMessageOption()
   const { data } = useQuery({
-    queryKey: ["getAllModelsForSelect"],
+    queryKey: ["getAllModelsForSelectOption"],
     queryFn: async () => {
       const models = await fetchChatModels({ returnEmpty: false })
       return models
@@ -55,7 +55,6 @@ export const ModelSelect: React.FC<Props> = ({iconClassName = "size-5"}) => {
       if (!groups.has(groupKey)) groups.set(groupKey, [])
       groups.get(groupKey)!.push(item)
     }
-    // Build grouped menu items
     const items: any[] = []
     for (const [groupKey, children] of groups) {
       const labelText = groupKey === 'default' ? 'Default' : (groupKey === 'custom' ? 'Custom' : groupKey)
@@ -81,20 +80,14 @@ export const ModelSelect: React.FC<Props> = ({iconClassName = "size-5"}) => {
         <Dropdown
           menu={{
             items: groupedItems,
-            style: {
-              maxHeight: 500,
-              overflowY: "scroll"
-            },
+            style: { maxHeight: 500, overflowY: "scroll" },
             className: "no-scrollbar",
             activeKey: selectedModel
           }}
           placement={"topLeft"}
           trigger={["click"]}>
           <Tooltip title={t("selectAModel")}>
-            <IconButton
-              ariaLabel={t("selectAModel") as string}
-              hasPopup="menu"
-              className="dark:text-gray-300">
+            <IconButton ariaLabel={t("selectAModel") as string} hasPopup="menu" className="dark:text-gray-300">
               <LucideBrain className={iconClassName} />
             </IconButton>
           </Tooltip>
@@ -103,3 +96,5 @@ export const ModelSelect: React.FC<Props> = ({iconClassName = "size-5"}) => {
     </>
   )
 }
+
+export default ModelSelectOption

@@ -30,7 +30,6 @@ import { useTranslation } from "react-i18next"
 import React from "react"
 import { IconButton } from "@/components/Common/IconButton"
 import { useStorage } from "@plasmohq/storage/hook"
-import { PromptSelect } from "@/components/Common/PromptSelect"
 import { CharacterSelect } from "@/components/Common/CharacterSelect"
 import { Sidebar } from "@/components/Option/Sidebar"
 // import { BsIncognito } from "react-icons/bs"
@@ -366,13 +365,6 @@ export const SidepanelHeader = ({
             <HistoryIcon className="size-4 text-gray-500 dark:text-gray-400" />
           </IconButton>
         </Tooltip>
-        <PromptSelect
-          selectedSystemPrompt={selectedSystemPrompt}
-          setSelectedSystemPrompt={setSelectedSystemPrompt}
-          setSelectedQuickPrompt={setSelectedQuickPrompt}
-          iconClassName="size-4"
-          className="text-gray-500 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
-        />
         <CharacterSelect className="text-gray-500 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors" iconClassName="size-4" />
         {/* Conversation settings button moved next to submit in input bar */}
         <Link to="/settings">
