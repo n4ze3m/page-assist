@@ -1,0 +1,29 @@
+{
+    "extName": {
+        "message": "Page Assist - 本地 AI 模型的網頁介面"
+    },
+    "extDescription": {
+        "message": "使用本地運行的 AI 模型來協助您的網頁瀏覽。"
+    },
+    "openSidePanelToChat": {
+        "message": "開啟側邊面板聊天"
+    },
+    "openOptionToChat": {
+        "message": "開啟網頁介面聊天"
+    },
+    "contextSummarize": {
+        "message": "總結"
+    },
+    "contextExplain": {
+        "message": "解釋"
+    },
+    "contextRephrase": {
+        "message": "重寫"
+    },
+    "contextTranslate": {
+        "message": "翻譯"
+    },
+    "contextCustom": {
+        "message": "自訂"
+    }
+}
