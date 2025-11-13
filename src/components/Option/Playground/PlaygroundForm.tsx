@@ -4,7 +4,7 @@ import React from "react"
 import useDynamicTextareaSize from "~/hooks/useDynamicTextareaSize"
 import { toBase64 } from "~/libs/to-base64"
 import { useMessageOption } from "~/hooks/useMessageOption"
-import { Checkbox, Dropdown, Switch, Tooltip } from "antd"
+import { Checkbox, Dropdown, Switch, Tooltip, Select } from "antd"
 import { Image } from "antd"
 import { useWebUI } from "~/store/webui"
 import { defaultEmbeddingModelForRag } from "~/services/ollama"
@@ -16,7 +16,8 @@ import {
   X,
   FileIcon,
   FileText,
-  PaperclipIcon
+  PaperclipIcon,
+  Brain
 } from "lucide-react"
 import { getVariable } from "@/utils/select-variable"
 import { useTranslation } from "react-i18next"
@@ -33,6 +34,8 @@ import { DocumentChip } from "./DocumentChip"
 import { otherUnsupportedTypes } from "../Knowledge/utils/unsupported-types"
 import { PASTED_TEXT_CHAR_LIMIT } from "@/utils/constant"
 import { PlaygroundFile } from "./PlaygroundFile"
+import { isThinkingCapableModel, isGptOssModel } from "~/libs/model-utils"
+import { useStoreChatModelSettings } from "~/store/model"
 type Props = {
   dropedFile: File | undefined
 }
@@ -74,6 +77,10 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
   const [autoSubmitVoiceMessage] = useStorage("autoSubmitVoiceMessage", false)
 
   const [autoStopTimeout] = useStorage("autoStopTimeout", 2000)
+
+  // Thinking mode state
+  const thinking = useStoreChatModelSettings((state) => state.thinking)
+  const setThinking = useStoreChatModelSettings((state) => state.setThinking)
 
   const {
     tabMentionsEnabled,
@@ -539,7 +546,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                       />
                     </div>
                     <div className="mt-2 flex justify-between items-center">
-                      <div className="flex">
+                      <div className="flex gap-3">
                         {!selectedKnowledge && (
                           <Tooltip title={t("tooltip.searchInternet")}>
                             <div className="inline-flex items-center gap-2">
@@ -554,6 +561,47 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                               />
                             </div>
                           </Tooltip>
+                        )}
+                        {isThinkingCapableModel(selectedModel) && (
+                          isGptOssModel(selectedModel) ? (
+                            // For gpt-oss: Only show level selector (no on/off toggle)
+                            <div className="inline-flex items-center gap-2">
+                              <Tooltip title="Adjust reasoning intensity (always enabled)">
+                                <div className="inline-flex items-center gap-2">
+                                  <Brain className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                                  <span className="text-sm text-gray-600 dark:text-gray-400">
+                                    {t("form.thinking.level")}:
+                                  </span>
+                                </div>
+                              </Tooltip>
+                              <Select
+                                size="small"
+                                value={typeof thinking === "string" ? thinking : "medium"}
+                                onChange={(value) => setThinking?.(value as "low" | "medium" | "high")}
+                                options={[
+                                  { value: "low", label: t("form.thinking.levels.low") },
+                                  { value: "medium", label: t("form.thinking.levels.medium") },
+                                  { value: "high", label: t("form.thinking.levels.high") }
+                                ]}
+                                className="w-24"
+                              />
+                            </div>
+                          ) : (
+                            // For other models: Show toggle (can enable/disable)
+                            <div className="inline-flex items-center gap-2">
+                              <Tooltip title={t("tooltip.thinking")}>
+                                <div className="inline-flex items-center gap-2">
+                                  <Brain className="h-5 w-5 dark:text-gray-300" />
+                                  <Switch
+                                    checked={!!thinking}
+                                    onChange={(e) => setThinking?.(e)}
+                                    checkedChildren={t("form.thinking.on")}
+                                    unCheckedChildren={t("form.thinking.off")}
+                                  />
+                                </div>
+                              </Tooltip>
+                            </div>
+                          )
                         )}
                       </div>
                       <div className="flex !justify-end gap-3">

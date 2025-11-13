@@ -10,7 +10,7 @@ import {
   getAllDefaultModelSettings,
   getModelSettings
 } from "@/services/model-settings"
-import { useStoreChatModelSettings } from "@/store/model"
+import { useStoreChatModelSettings, normalizeThinking } from "@/store/model"
 
 export const pageAssistModel = async ({
   model,
@@ -173,7 +173,10 @@ export const pageAssistModel = async ({
         numKeep: currentChatModelSettings?.numKeep ?? modelSettings?.numKeep ?? numKeep,
         numThread: currentChatModelSettings?.numThread ?? modelSettings?.numThread ?? numThread,
         useMlock: currentChatModelSettings?.useMlock ?? modelSettings?.useMLock ?? useMlock,
-        thinking: currentChatModelSettings?.thinking ?? modelSettings?.thinking
+        thinking: normalizeThinking(
+          currentChatModelSettings?.thinking ?? modelSettings?.thinking,
+          model
+        )
       }
 
       return new ChatOllama({
@@ -231,7 +234,10 @@ export const pageAssistModel = async ({
     numKeep: currentChatModelSettings?.numKeep ?? modelSettings?.numKeep ?? numKeep,
     numThread: currentChatModelSettings?.numThread ?? modelSettings?.numThread ?? numThread,
     useMlock: currentChatModelSettings?.useMlock ?? modelSettings?.useMLock ?? useMlock,
-    thinking: currentChatModelSettings?.thinking ?? modelSettings?.thinking
+    thinking: normalizeThinking(
+      currentChatModelSettings?.thinking ?? modelSettings?.thinking,
+      model
+    )
   }
 
   return new ChatOllama({

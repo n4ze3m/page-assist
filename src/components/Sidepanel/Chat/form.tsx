@@ -4,7 +4,7 @@ import React from "react"
 import useDynamicTextareaSize from "~/hooks/useDynamicTextareaSize"
 import { useMessage } from "~/hooks/useMessage"
 import { toBase64 } from "~/libs/to-base64"
-import { Checkbox, Dropdown, Image, Switch, Tooltip } from "antd"
+import { Checkbox, Dropdown, Image, Switch, Tooltip, Popover, Radio } from "antd"
 import { useWebUI } from "~/store/webui"
 import { defaultEmbeddingModelForRag } from "~/services/ollama"
 import {
@@ -13,7 +13,9 @@ import {
   StopCircleIcon,
   X,
   EyeIcon,
-  EyeOffIcon
+  EyeOffIcon,
+  Brain,
+  BrainCircuit
 } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { ModelSelect } from "@/components/Common/ModelSelect"
@@ -23,6 +25,9 @@ import { handleChatInputKeyDown } from "@/utils/key-down"
 import { getIsSimpleInternetSearch } from "@/services/search"
 import { useStorage } from "@plasmohq/storage/hook"
 import { useFocusShortcuts } from "@/hooks/keyboard"
+import { isThinkingCapableModel } from "~/libs/model-utils"
+import { useStoreChatModelSettings } from "~/store/model"
+import { getVariable } from "@/utils/select-variable"
 
 type Props = {
   dropedFile: File | undefined
@@ -149,6 +154,10 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
     defaultChatWithWebsite,
     temporaryChat
   } = useMessage()
+
+  // Thinking mode state
+  const thinking = useStoreChatModelSettings((state) => state.thinking)
+  const setThinking = useStoreChatModelSettings((state) => state.setThinking)
 
   React.useEffect(() => {
     if (dropedFile) {
@@ -348,6 +357,49 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                             )}
                           </button>
                         </Tooltip>
+                      )}
+                      {isThinkingCapableModel(selectedModel) && (
+                        isGptOssModel(selectedModel) ? (
+                          <Popover
+                            content={
+                              <div>
+                                <Radio.Group
+                                  value={thinking || "medium"}
+                                  onChange={(e) => setThinking?.(e.target.value)}
+                                  className="flex flex-col gap-2">
+                                  <Radio value="low">{t("common:modelSettings.form.thinking.levels.low")}</Radio>
+                                  <Radio value="medium">{t("common:modelSettings.form.thinking.levels.medium")}</Radio>
+                                  <Radio value="high">{t("common:modelSettings.form.thinking.levels.high")}</Radio>
+                                </Radio.Group>
+                                <div className="text-xs text-gray-500 dark:text-gray-400 mt-2 px-1 border-t border-gray-200 dark:border-gray-700 pt-2">
+                                  Note: This model always includes reasoning
+                                </div>
+                              </div>
+                            }
+                            title="Reasoning Level"
+                            trigger="click">
+                            <Tooltip title="Adjust reasoning intensity">
+                              <button
+                                type="button"
+                                className="inline-flex items-center gap-2">
+                                <Brain className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                              </button>
+                            </Tooltip>
+                          </Popover>
+                        ) : (
+                          <Tooltip title={t("tooltip.thinking")}>
+                            <button
+                              type="button"
+                              onClick={() => setThinking?.(!thinking)}
+                              className="inline-flex items-center gap-2">
+                              {thinking ?? true ? (
+                                <Brain className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                              ) : (
+                                <BrainCircuit className="h-4 w-4 text-[#404040] dark:text-gray-400" />
+                              )}
+                            </button>
+                          </Tooltip>
+                        )
                       )}
                       <ModelSelect iconClassName="size-4" />
                       {browserSupportsSpeechRecognition && (

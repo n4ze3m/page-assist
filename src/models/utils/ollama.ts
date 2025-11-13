@@ -42,7 +42,7 @@ export interface OllamaInput {
   vocabOnly?: boolean
   useMlock?: boolean
   seed?: number
-  thinking?: boolean
+  thinking?: boolean | "low" | "medium" | "high"
   format?: StringWithAutocomplete<"json">
 }
 

@@ -41,7 +41,7 @@ export class ChatOllama
 
     keepAlive?: string;
 
-    thinking?: boolean;
+    thinking?: boolean | "low" | "medium" | "high";
 
     embeddingOnly?: boolean;
 

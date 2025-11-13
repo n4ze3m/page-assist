@@ -77,7 +77,14 @@
                 "placeholder": "e.g. 2048, 4096"
             },
             "thinking": {
-                "label": "Thinking Mode (Ollama)"
+                "label": "Thinking Mode (Ollama)",
+                "levels": {
+                    "off": "Off",
+                    "on": "On",
+                    "low": "Low reasoning effort",
+                    "medium": "Medium reasoning effort",
+                    "high": "High reasoning effort"
+                }
             },
             "seed": {
                 "label": "Seed",
@@ -182,7 +189,10 @@
     "sidebarChat": "Sidebar Chat",
     "reasoning": {
         "thinking": "Thinking....",
-        "thought": "Thought for {{time}}"
+        "thought": "Thought for {{time}}",
+        "title": "Reasoning Process",
+        "expand": "Show reasoning",
+        "collapse": "Hide reasoning"
     },
     "mermaid": "Mermaid",
     "search": "Search",
