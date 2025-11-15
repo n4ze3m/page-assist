@@ -16,10 +16,21 @@
         "webSearch": {
             "on": "On",
             "off": "Off"
+        },
+        "thinking": {
+            "on": "On",
+            "off": "Off",
+            "level": "Level",
+            "levels": {
+                "low": "Low",
+                "medium": "Medium",
+                "high": "High"
+            }
         }
     },
     "tooltip": {
         "searchInternet": "Search Internet",
+        "thinking": "Enable reasoning mode to see the model's thinking process",
         "speechToText": "Speech to Text",
         "uploadImage": "Upload Image",
         "stopStreaming": "Stop Streaming",
