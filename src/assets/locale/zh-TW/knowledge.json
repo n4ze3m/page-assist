@@ -24,10 +24,15 @@
     "addKnowledge": "新增知識",
     "updateKnowledge": "新增來源",
     "form": {
+        "tabs": {
+            "upload": "上傳檔案",
+            "text": "文字輸入"
+        },
         "title": {
-            "label": "知識標題",
+            "label": "知識標題（選填）",
             "placeholder": "輸入知識標題",
-            "required": "輸入知識標題是必需的"
+            "placeholderOptional": "選填標題（預設使用前 50 個字元）",
+            "required": "知識標題是必需的"
         },
         "uploadFile": {
             "label": "上傳文件",
@@ -36,8 +41,52 @@
             "required": "文件是必需的",
             "uploadError": "不支援的檔案類型"
         },
+        "textInput": {
+            "typeLabel": "類型",
+            "type": {
+                "plain": "純文字",
+                "markdown": "Markdown",
+                "code": "程式碼"
+            },
+            "contentLabel": "內容",
+            "placeholder": "請在此處貼上或輸入您的文字...",
+            "required": "文字內容是必需的",
+            "tooLarge": "內容過多，請保持在50萬個字元以內。",
+            "defaultTitle": "未命名文字"
+        },
         "submit": "新增",
         "success": "知識新增成功"
     },
-    "noEmbeddingModel": "請先從 RAG 設定頁面新增一個嵌入模型"
+    "noEmbeddingModel": "請先從 RAG 設定頁面新增一個嵌入模型",
+    "newSource": "新增來源",
+    "editSettings": {
+        "title": "編輯知識設定",
+        "success": "知識設定已成功更新",
+        "variableInfo": {
+            "title": "支援的變數",
+            "description": "您可以在提示詞中使用以下變數：",
+            "context": "從您的知識庫中檢索的上下文",
+            "query": "用戶的問題或查詢"
+        },
+        "form": {
+            "title": {
+                "label": "知識標題",
+                "placeholder": "輸入知識標題",
+                "required": "知識標題是必需的"
+            },
+            "systemPrompt": {
+                "label": "系統提示詞",
+                "help": "使用您的知識庫自訂 AI 的回應方式。使用 {context} 來檢索資訊，並在提示詞中包含 {question} 作為用戶問題的上下文。注意：如果提示詞中沒有包含 {question}，角色將無法獲取問題的上下文。",
+                "placeholder": "輸入您的自訂系統提示詞...",
+                "prefillButton": "使用預設提示詞"
+            },
+            "followupPrompt": {
+                "label": "後續問題提示詞",
+                "help": "自訂後續問題的處理方式，此提示詞將後續問題視為獨立的問題。",
+                "placeholder": "輸入您的自訂後續提示詞...",
+                "prefillButton": "使用預設提示詞"
+            }
+        },
+        "tooltip": "編輯知識設定"
+    }
 }

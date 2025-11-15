@@ -18,6 +18,14 @@
           "dark": "暗色"
         }
       },
+      "defaultCopilotPrompt": {
+        "label": "側邊面板的預設提示詞 (Copilot)",
+        "placeholder": "選擇提示詞"
+      },
+      "defaultWebUIPrompt": {
+        "label": "網頁介面預設提示詞",
+        "placeholder": "選擇提示詞"
+      },
       "copilotResumeLastChat": {
         "label": "打開側邊面板 (Copilot) 時恢復上次聊天"
       },
@@ -72,6 +80,15 @@
       },
       "sidepanelTemporaryChat": {
         "label": "預設為側邊面板啟用臨時聊天"
+      },
+      "webuiTemporaryChat": {
+        "label": "預設為網頁介面啟用臨時聊天"
+      },
+      "removeReasoningTagFromCopy": {
+        "label": "從複製的文字中刪除推理標籤"
+      },
+      "youtubeAutoSummarize": {
+        "label": "在 YouTube 影片顯示「總結」按鈕。"
       }
     },
     "sidepanelRag": {
