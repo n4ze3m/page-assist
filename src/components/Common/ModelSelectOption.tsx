@@ -3,6 +3,7 @@ import { Avatar, Dropdown, Tooltip } from "antd"
 import { LucideBrain } from "lucide-react"
 import React from "react"
 import { useTranslation } from "react-i18next"
+import { useStorage } from "@plasmohq/storage/hook"
 import { fetchChatModels } from "@/services/tldw-server"
 import { useMessageOption } from "~/hooks/useMessageOption"
 import { ProviderIcons } from "./ProviderIcon"
@@ -15,6 +16,7 @@ type Props = {
 export const ModelSelectOption: React.FC<Props> = ({ iconClassName = "size-5" }) => {
   const { t } = useTranslation("common")
   const { setSelectedModel, selectedModel } = useMessageOption()
+  const [menuDensity] = useStorage("menuDensity", "comfortable")
   const { data } = useQuery({
     queryKey: ["getAllModelsForSelectOption"],
     queryFn: async () => {
@@ -63,8 +65,8 @@ export const ModelSelectOption: React.FC<Props> = ({ iconClassName = "size-5" })
         type: 'group',
         key: `group-${groupKey}`,
         label: (
-          <div className="flex items-center gap-2 text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">
-            <ProviderIcons provider={iconKey} className="h-4 w-4" />
+          <div className="flex items-center gap-1.5 text-xs leading-4 font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
+            <ProviderIcons provider={iconKey} className="h-3 w-3" />
             <span>{labelText}</span>
           </div>
         ),
@@ -81,7 +83,7 @@ export const ModelSelectOption: React.FC<Props> = ({ iconClassName = "size-5" })
           menu={{
             items: groupedItems,
             style: { maxHeight: 500, overflowY: "scroll" },
-            className: "no-scrollbar",
+            className: `no-scrollbar ${menuDensity === 'compact' ? 'menu-density-compact' : 'menu-density-comfortable'}`,
             activeKey: selectedModel
           }}
           placement={"topLeft"}

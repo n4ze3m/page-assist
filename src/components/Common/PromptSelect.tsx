@@ -4,6 +4,7 @@ import { BookIcon, ComputerIcon, ZapIcon } from "lucide-react"
 import React from "react"
 import { useTranslation } from "react-i18next"
 import { getAllPrompts } from "@/db/dexie/helpers"
+import { useStorage } from "@plasmohq/storage/hook"
 import { IconButton } from "./IconButton"
 
 type Props = {
@@ -22,6 +23,7 @@ export const PromptSelect: React.FC<Props> = ({
   iconClassName = "size-5"
 }) => {
   const { t } = useTranslation("option")
+  const [menuDensity] = useStorage("menuDensity", "comfortable")
 
   const { data } = useQuery({
     queryKey: ["getAllPromptsForSelect"],
@@ -56,21 +58,17 @@ export const PromptSelect: React.FC<Props> = ({
                     .map((prompt: any) => ({
                     key: prompt.id,
                     label: (
-                      <div className="w-52 gap-2 text-lg truncate inline-flex line-clamp-3  items-center  dark:border-gray-700">
-                        <span
-                          key={prompt.title}
-                          className="flex flex-row gap-3 items-center">
+                      <div className="w-52 gap-2 text-sm truncate inline-flex items-center leading-5 dark:border-gray-700">
+                        <span key={prompt.title} className="flex flex-row gap-2 items-center">
                           {prompt.is_system ? (
                             <ComputerIcon className="w-4 h-4" />
                           ) : (
                             <ZapIcon className="w-4 h-4" />
                           )}
                           {prompt?.favorite && (
-                            <span className="text-yellow-500" title="Favorite">
-                              ★
-                            </span>
+                            <span className="text-yellow-500" title="Favorite">★</span>
                           )}
-                          {prompt.title}
+                          <span className="truncate">{prompt.title}</span>
                         </span>
                       </div>
                     ),
@@ -92,7 +90,7 @@ export const PromptSelect: React.FC<Props> = ({
               maxHeight: 500,
               overflowY: "scroll"
             },
-            className: "no-scrollbar",
+            className: `no-scrollbar ${menuDensity === 'compact' ? 'menu-density-compact' : 'menu-density-comfortable'}`,
             activeKey: selectedSystemPrompt
           }}
           placement={"topLeft"}

@@ -63,6 +63,10 @@ export const GeneralSettings = () => {
   const [checkWideMode, setCheckWideMode] = useStorage("checkWideMode", false)
 
   const [openReasoning, setOpenReasoning] = useStorage("openReasoning", false)
+  const [menuDensity, setMenuDensity] = useStorage(
+    "menuDensity",
+    "comfortable"
+  )
 
   const [useMarkdownForUserMessage, setUseMarkdownForUserMessage] = useStorage(
     "useMarkdownForUserMessage",
@@ -235,6 +239,23 @@ export const GeneralSettings = () => {
         <Switch
           checked={checkWideMode}
           onChange={(checked) => setCheckWideMode(checked)}
+        />
+      </div>
+
+      <div className="flex flex-row justify-between">
+        <div className="inline-flex items-center gap-2">
+          <span className="text-gray-700   dark:text-neutral-50">
+            {t("generalSettings.settings.menuDensity.label", "Menu density")}
+          </span>
+        </div>
+        <Select
+          style={{ width: 200 }}
+          value={menuDensity}
+          onChange={(v) => setMenuDensity(v)}
+          options={[
+            { value: "comfortable", label: t("generalSettings.settings.menuDensity.comfortable", "Comfortable") },
+            { value: "compact", label: t("generalSettings.settings.menuDensity.compact", "Compact") }
+          ]}
         />
       </div>
 

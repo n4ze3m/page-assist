@@ -50,6 +50,39 @@
   scrollbar-width: none; /* Firefox */
 }
 
+/* Density controls for Ant Design Dropdown menus */
+.menu-density-compact .ant-dropdown-menu-item,
+.menu-density-compact .ant-dropdown-menu-submenu-title {
+  padding-top: 4px !important;
+  padding-bottom: 4px !important;
+  padding-left: 8px !important;
+  padding-right: 8px !important;
+  line-height: 1.25 !important;
+  font-size: 12px !important;
+}
+
+.menu-density-compact .ant-dropdown-menu-item-group-title {
+  padding: 6px 8px 4px 8px !important;
+  line-height: 1.25 !important;
+  font-size: 11px !important;
+}
+
+.menu-density-comfortable .ant-dropdown-menu-item,
+.menu-density-comfortable .ant-dropdown-menu-submenu-title {
+  padding-top: 8px !important;
+  padding-bottom: 8px !important;
+  padding-left: 12px !important;
+  padding-right: 12px !important;
+  line-height: 1.4 !important;
+  font-size: 14px !important;
+}
+
+.menu-density-comfortable .ant-dropdown-menu-item-group-title {
+  padding: 8px 12px 6px 12px !important;
+  line-height: 1.35 !important;
+  font-size: 12px !important;
+}
+
 @keyframes gradient-border {
   0% {
     border-image-source: linear-gradient(

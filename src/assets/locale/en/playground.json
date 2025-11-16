@@ -86,6 +86,9 @@
         "moreTools": "More tools",
         "submitAria": "Send message",
         "openModelSettings": "Open current chat settings",
-        "stopStreaming": "Stop streaming response"
+        "stopStreaming": "Stop streaming response",
+        "connectionPlaceholder": "Waiting for your server — set it up in Settings.",
+        "connectNotice": "Connect to your tldw server in Settings to send messages.",
+        "connectToSend": "Connect to your tldw server to start chatting."
     }
 }

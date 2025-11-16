@@ -4,7 +4,14 @@ import React from "react"
 import useDynamicTextareaSize from "~/hooks/useDynamicTextareaSize"
 import { toBase64 } from "~/libs/to-base64"
 import { useMessageOption } from "~/hooks/useMessageOption"
-import { Checkbox, Dropdown, Switch, Tooltip, notification, Popover } from "antd"
+import {
+  Checkbox,
+  Dropdown,
+  Switch,
+  Tooltip,
+  notification,
+  Popover
+} from "antd"
 import { Image } from "antd"
 import { useWebUI } from "~/store/webui"
 import { defaultEmbeddingModelForRag } from "~/services/ollama"
@@ -37,6 +44,8 @@ import { isFireFoxPrivateMode } from "@/utils/is-private-mode"
 import { CurrentChatModelSettings } from "@/components/Common/Settings/CurrentChatModelSettings"
 import { PromptSelect } from "@/components/Common/PromptSelect"
 import { ModelSelectOption } from "@/components/Common/ModelSelectOption"
+import { useConnectionState } from "@/hooks/useConnectionState"
+import { ConnectionPhase } from "@/types/connection"
 type Props = {
   dropedFile: File | undefined
 }
@@ -83,6 +92,8 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
   const [openModelSettings, setOpenModelSettings] = React.useState(false)
 
   const [autoStopTimeout] = useStorage("autoStopTimeout", 2000)
+  const { phase, isConnected } = useConnectionState()
+  const isConnectionReady = isConnected && phase === ConnectionPhase.CONNECTED
 
   const {
     tabMentionsEnabled,
@@ -287,6 +298,9 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
   })
 
   const submitForm = () => {
+    if (!isConnectionReady) {
+      return
+    }
     form.onSubmit(async (value) => {
       if (
         value.message.trim().length === 0 &&
@@ -667,14 +681,29 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                             setTyping(false)
                           }
                         }}
-                        onKeyDown={(e) => handleKeyDown(e)}
+                        onKeyDown={(e) => {
+                          if (!isConnectionReady) {
+                            if (e.key === "Enter") {
+                              e.preventDefault()
+                            }
+                            return
+                          }
+                          handleKeyDown(e)
+                        }}
                         ref={textareaRef}
                         className="px-2 py-2 w-full resize-none bg-transparent focus-within:outline-none focus:ring-0 focus-visible:ring-0 ring-0 dark:ring-0 border-0 dark:text-gray-100"
                         onPaste={handlePaste}
                         rows={1}
                         style={{ minHeight: "35px" }}
                         tabIndex={0}
-                        placeholder={t("form.textarea.placeholder")}
+                        placeholder={
+                          isConnectionReady
+                            ? t("form.textarea.placeholder")
+                            : t(
+                                "playground:composer.connectionPlaceholder",
+                                "Waiting for your server — set it up in Settings."
+                              )
+                        }
                         {...form.getInputProps("message")}
                         onChange={(e) => {
                           form.getInputProps("message").onChange(e)
@@ -715,6 +744,14 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                     <div className="mt-2 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                       <div className="flex flex-wrap items-center gap-3">
                         <KnowledgeSelect />
+                        {!isConnectionReady && (
+                          <p className="text-xs text-gray-500 dark:text-gray-400">
+                            {t(
+                              "playground:composer.connectNotice",
+                              "Connect to your tldw server in Settings to send messages."
+                            )}
+                          </p>
+                        )}
                       </div>
                       <div className="flex items-center justify-end gap-3">
                         {/* Inline Model and Prompt selectors next to More Tools */}
@@ -745,7 +782,15 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                           <>
                           <Dropdown.Button
                             htmlType="submit"
-                            disabled={isSending}
+                            disabled={isSending || !isConnectionReady}
+                            title={
+                              !isConnectionReady
+                                ? (t(
+                                    "playground:composer.connectToSend",
+                                    "Connect to your tldw server to start chatting."
+                                  ) as string)
+                                : undefined
+                            }
                             className="!justify-end !w-auto"
                             icon={
                               <svg

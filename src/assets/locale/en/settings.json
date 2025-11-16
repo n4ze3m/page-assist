@@ -533,10 +533,10 @@
   "healthSummary": {
     "diagnostics": "Diagnostics",
     "diagnosticsTooltip": "Open detailed diagnostics to troubleshoot or inspect health checks.",
-    "core": "Core",
-    "rag": "RAG",
-    "coreAria": "Core: server/API health",
-    "ragAria": "RAG: knowledge index health",
+    "core": "Server",
+    "rag": "Knowledge",
+    "coreAria": "Server: server/API health",
+    "ragAria": "Knowledge: knowledge index health",
     "footerInfo": "These checks summarize the last successful ping to your tldw server and knowledge index."
   },
   "savedSuccessfully": "Settings saved",

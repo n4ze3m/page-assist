@@ -11,6 +11,7 @@ import {
   useSidebarShortcuts,
   useChatModeShortcuts
 } from "@/hooks/keyboard/useKeyboardShortcuts"
+import { useConnectionActions } from "@/hooks/useConnectionState"
 import { copilotResumeLastChat } from "@/services/app"
 import { Storage } from "@plasmohq/storage"
 import { useStorage } from "@plasmohq/storage/hook"
@@ -68,6 +69,7 @@ const SidepanelChat = () => {
   } = useMessage()
   const { containerRef, isAutoScrollToBottom, autoScrollToBottom } =
     useSmartScroll(messages, streaming, 100)
+  const { checkOnce } = useConnectionActions()
 
   const toggleSidebar = () => {
     setSidebarOpen((prev) => !prev)
@@ -103,6 +105,10 @@ const SidepanelChat = () => {
       }
     }
   }
+
+  React.useEffect(() => {
+    void checkOnce()
+  }, [checkOnce])
 
   React.useEffect(() => {
     if (!drop.current) {

@@ -4,7 +4,14 @@ import React from "react"
 import useDynamicTextareaSize from "~/hooks/useDynamicTextareaSize"
 import { useMessage } from "~/hooks/useMessage"
 import { toBase64 } from "~/libs/to-base64"
-import { Checkbox, Dropdown, Image, Tooltip, notification, Popover } from "antd"
+import {
+  Checkbox,
+  Dropdown,
+  Image,
+  Tooltip,
+  notification,
+  Popover
+} from "antd"
 import { useWebUI } from "~/store/webui"
 import { defaultEmbeddingModelForRag } from "~/services/ollama"
 import {
@@ -36,6 +43,8 @@ import { useFocusShortcuts } from "@/hooks/keyboard"
 import { RagSearchBar } from "@/components/Sidepanel/Chat/RagSearchBar"
 import { CurrentChatModelSettings } from "@/components/Common/Settings/CurrentChatModelSettings"
 import QuickIngestModal from "@/components/Common/QuickIngestModal"
+import { useConnectionState } from "@/hooks/useConnectionState"
+import { ConnectionPhase } from "@/types/connection"
 
 type Props = {
   dropedFile: File | undefined
@@ -79,6 +88,8 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
   })
   const [wsSttActive, setWsSttActive] = React.useState(false)
   const [ingestOpen, setIngestOpen] = React.useState(false)
+  const { phase, isConnected } = useConnectionState()
+  const isConnectionReady = isConnected && phase === ConnectionPhase.CONNECTED
 
   const onInputChange = async (
     e: React.ChangeEvent<HTMLInputElement> | File
@@ -113,6 +124,12 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
   useFocusShortcuts(textareaRef, true)
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (!isConnectionReady) {
+      if (e.key === "Enter") {
+        e.preventDefault()
+      }
+      return
+    }
     if (e.key === "Process" || e.key === "229") return
     if (
       handleChatInputKeyDown({
@@ -571,11 +588,27 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                           setTyping(false)
                         }
                       }}
-                      placeholder={t("form.textarea.placeholder")}
+                      placeholder={
+                        isConnectionReady
+                          ? t("form.textarea.placeholder")
+                          : t(
+                              "playground:composer.connectionPlaceholder",
+                              "Waiting for your server — set it up in Settings."
+                            )
+                      }
                       {...form.getInputProps("message")}
                     />
                     <div className="mt-4 flex w-full flex-col gap-3 md:flex-row md:items-center md:justify-between">
-                      <div className="flex flex-wrap items-center gap-2"></div>
+                      <div className="flex flex-wrap items-center gap-2">
+                        {!isConnectionReady && (
+                          <p className="text-xs text-gray-500 dark:text-gray-400">
+                            {t(
+                              "playground:composer.connectNotice",
+                              "Connect to your tldw server in Settings to send messages."
+                            )}
+                          </p>
+                        )}
+                      </div>
                       <div className="flex flex-wrap items-center justify-end gap-2">
                         {/* RAG toggle for better discoverability */}
                         <button
@@ -623,9 +656,20 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                                 'playground:composer.submitAria',
                                 'Send message'
                               )}
-                              title={sendWhenEnter ? (t('playground:sendWhenEnter') as string) : undefined}
+                              title={
+                                !isConnectionReady
+                                  ? (t(
+                                      "playground:composer.connectToSend",
+                                      "Connect to your tldw server to start chatting."
+                                    ) as string)
+                                  : sendWhenEnter
+                                    ? (t(
+                                        "playground:sendWhenEnter"
+                                      ) as string)
+                                    : undefined
+                              }
                               htmlType="submit"
-                              disabled={isSending}
+                              disabled={isSending || !isConnectionReady}
                               className="!justify-end !w-auto"
                               icon={
                                 <svg

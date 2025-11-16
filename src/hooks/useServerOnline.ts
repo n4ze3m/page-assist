@@ -1,33 +1,37 @@
-import React from 'react'
-import { tldwClient } from '@/services/tldw/TldwApiClient'
+import React from "react"
+
+import {
+  useConnectionActions,
+  useConnectionState
+} from "@/hooks/useConnectionState"
 
 /**
- * Lightweight health gate. Polls the server health endpoint and returns
- * a boolean indicating whether the backend appears reachable.
+ * Derived "online" flag backed by the shared connection store.
  *
- * Defaults to conservative false until the first successful check to
- * avoid firing queries on mount when offline.
+ * Uses the central connection state (and checkOnce) instead of calling
+ * tldwClient.healthCheck directly in each consumer.
  */
 export function useServerOnline(pollMs: number = 15000): boolean {
-  const [online, setOnline] = React.useState<boolean>(false)
+  const { isConnected } = useConnectionState()
+  const { checkOnce } = useConnectionActions()
 
   React.useEffect(() => {
-    let mounted = true
-    let timer: any
-    const check = async () => {
-      try {
-        const ok = await tldwClient.healthCheck()
-        if (mounted) setOnline(Boolean(ok))
-      } catch {
-        if (mounted) setOnline(false)
-      }
-    }
-    // initial, then poll
-    void check()
-    timer = setInterval(check, Math.max(5000, pollMs))
-    return () => { mounted = false; if (timer) clearInterval(timer) }
-  }, [pollMs])
+    void checkOnce()
+  }, [checkOnce])
 
-  return online
+  React.useEffect(() => {
+    const intervalMs = Math.max(5000, pollMs || 0)
+    if (!intervalMs) {
+      return
+    }
+    const id = window.setInterval(() => {
+      void checkOnce()
+    }, intervalMs)
+    return () => {
+      window.clearInterval(id)
+    }
+  }, [pollMs, checkOnce])
+
+  return isConnected
 }
 
