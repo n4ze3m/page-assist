@@ -25,7 +25,7 @@ import { handleChatInputKeyDown } from "@/utils/key-down"
 import { getIsSimpleInternetSearch } from "@/services/search"
 import { useStorage } from "@plasmohq/storage/hook"
 import { useFocusShortcuts } from "@/hooks/keyboard"
-import { isThinkingCapableModel } from "~/libs/model-utils"
+import { isThinkingCapableModel, isGptOssModel } from "~/libs/model-utils"
 import { useStoreChatModelSettings } from "~/store/model"
 import { getVariable } from "@/utils/select-variable"
 
