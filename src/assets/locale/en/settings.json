@@ -56,6 +56,9 @@
       "openReasoning": {
         "label": "Open Reasoning Collapse by default"
       },
+      "defaultThinkingMode": {
+        "label": "Show Thinking Mode State in Forms"
+      },
       "userChatBubble": {
         "label": "Use Chat Bubble for User Messages"
       },

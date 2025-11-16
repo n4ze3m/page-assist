@@ -156,6 +156,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
   } = useMessage()
 
   // Thinking mode state
+  const [defaultThinkingMode] = useStorage("defaultThinkingMode", false)
   const thinking = useStoreChatModelSettings((state) => state.thinking)
   const setThinking = useStoreChatModelSettings((state) => state.setThinking)
 
@@ -358,7 +359,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                           </button>
                         </Tooltip>
                       )}
-                      {isThinkingCapableModel(selectedModel) && (
+                      {defaultThinkingMode && isThinkingCapableModel(selectedModel) && (
                         isGptOssModel(selectedModel) ? (
                           <Popover
                             content={
