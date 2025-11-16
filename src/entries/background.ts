@@ -87,7 +87,15 @@ export default defineBackground({
           if (base) {
             const controller = new AbortController()
             const timeout = setTimeout(() => controller.abort(), 10000)
-            const res = await fetch(`${base}/openapi.json`, { signal: controller.signal })
+            const headers: Record<string, string> = {}
+            if (cfg?.authMode === 'single-user') {
+              const key = String(cfg?.apiKey || '').trim()
+              if (key) headers['X-API-KEY'] = key
+            } else if (cfg?.authMode === 'multi-user') {
+              const token = String(cfg?.accessToken || '').trim()
+              if (token) headers['Authorization'] = `Bearer ${token}`
+            }
+            const res = await fetch(`${base}/openapi.json`, { headers, signal: controller.signal })
             clearTimeout(timeout)
             if (res.ok) {
               const spec = await res.json().catch(() => null)

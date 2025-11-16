@@ -23,6 +23,7 @@ const initialState: ConnectionState = {
   serverUrl: null,
   lastCheckedAt: null,
   lastError: null,
+  lastStatusCode: null,
   isConnected: false,
   isChecking: false,
   knowledgeStatus: "unknown",
@@ -35,6 +36,23 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
 
   async checkOnce() {
     const prev = get().state
+
+    // Avoid overlapping checks
+    if (prev.isChecking) {
+      return
+    }
+
+    // Throttle repeated checks when already connected recently.
+    // This prevents the landing page/header from hammering the server.
+    const now = Date.now()
+    if (
+      prev.isConnected &&
+      prev.phase === ConnectionPhase.CONNECTED &&
+      prev.lastCheckedAt != null &&
+      now - prev.lastCheckedAt < 60_000
+    ) {
+      return
+    }
 
     set({
       state: {
@@ -75,6 +93,7 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
             isChecking: false,
             lastCheckedAt: Date.now(),
             lastError: null,
+            lastStatusCode: null,
             knowledgeStatus: "unknown",
             knowledgeLastCheckedAt: null,
             knowledgeError: null
@@ -85,13 +104,23 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
 
       await tldwClient.initialize()
 
-      const healthPromise = tldwClient.healthCheck()
-      const ok = await Promise.race<boolean>([
+      // Request health via background for detailed status codes
+      const { apiSend } = await import("@/services/api-send")
+      const healthPromise = (async () => {
+        try {
+          const resp = await apiSend({ path: '/api/v1/health', method: 'GET', noAuth: true })
+          return { ok: Boolean(resp?.ok), status: Number(resp?.status) || 0, error: resp?.ok ? null : (resp?.error || null) }
+        } catch (e) {
+          return { ok: false, status: 0, error: (e as Error)?.message || 'Network error' }
+        }
+      })()
+      const raced = await Promise.race([
         healthPromise,
-        new Promise<boolean>((resolve) =>
-          setTimeout(() => resolve(false), CONNECTION_TIMEOUT_MS)
+        new Promise<{ ok: boolean; status: number; error: string | null }>((resolve) =>
+          setTimeout(() => resolve({ ok: false, status: 0, error: 'timeout' }), CONNECTION_TIMEOUT_MS)
         )
       ])
+      const ok = raced.ok
 
       let knowledgeStatus: KnowledgeStatus = prev.knowledgeStatus
       let knowledgeLastCheckedAt = prev.knowledgeLastCheckedAt
@@ -122,7 +151,8 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
           isConnected: ok,
           isChecking: false,
           lastCheckedAt: Date.now(),
-          lastError: ok ? null : "timeout-or-offline",
+          lastError: ok ? null : (raced.error || 'timeout-or-offline'),
+          lastStatusCode: ok ? null : raced.status,
           knowledgeStatus,
           knowledgeLastCheckedAt,
           knowledgeError
@@ -137,6 +167,7 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
           isChecking: false,
           lastCheckedAt: Date.now(),
           lastError: (error as Error)?.message ?? "unknown-error",
+          lastStatusCode: 0,
           knowledgeStatus: "offline",
           knowledgeLastCheckedAt: Date.now(),
           knowledgeError: (error as Error)?.message ?? "unknown-error"

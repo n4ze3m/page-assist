@@ -41,12 +41,37 @@ export async function bgRequest<T = any, P extends PathOrUrl = AllowedPath, M ex
 
   if (!url) throw new Error('Server not configured')
 
+   // Mirror background auth behavior for direct fetches so that
+   // single-user and multi-user modes include the correct headers.
+   const h: Record<string, string> = { ...(headers || {}) }
+   if (!noAuth) {
+     for (const k of Object.keys(h)) {
+       const kl = k.toLowerCase()
+       if (kl === 'x-api-key' || kl === 'authorization') delete h[k]
+     }
+     if (cfg?.authMode === 'single-user') {
+       const key = String(cfg?.apiKey || '').trim()
+       if (key) {
+         h['X-API-KEY'] = key
+       } else {
+         throw new Error('X-API-KEY header required for single-user mode. Configure API key in Settings > tldw.')
+       }
+     } else if (cfg?.authMode === 'multi-user') {
+       const token = String(cfg?.accessToken || '').trim()
+       if (token) {
+         h['Authorization'] = `Bearer ${token}`
+       } else {
+         throw new Error('Not authenticated. Please login under Settings > tldw.')
+       }
+     }
+   }
+
   const controller = new AbortController()
   const id = timeoutMs ? setTimeout(() => controller.abort(), timeoutMs) : null
   try {
     const res = await fetch(url, {
       method,
-      headers,
+      headers: h,
       body: body ? (typeof body === 'string' ? body : JSON.stringify(body)) : undefined,
       credentials: 'include',
       signal: controller.signal

@@ -1,12 +1,14 @@
 import React from "react"
-import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { useTranslation } from "react-i18next"
 import { Button, Tag, notification } from "antd"
 import { Clock, ExternalLink, Send, Server, Settings } from "lucide-react"
 
-import { tldwClient } from "@/services/tldw/TldwApiClient"
 import { cleanUrl } from "@/libs/clean-url"
-import { apiSend } from "@/services/api-send"
+import {
+  useConnectionActions,
+  useConnectionState
+} from "@/hooks/useConnectionState"
+import { ConnectionPhase } from "@/types/connection"
 
 type Props = {
   onOpenSettings?: () => void
@@ -52,55 +54,45 @@ export const ServerConnectionCard: React.FC<Props> = ({
   onStartChat,
   showToastOnError = false
 }) => {
-  const { t } = useTranslation(["playground", "common", "settings"]) 
-  const queryClient = useQueryClient()
-  const [aborted, setAborted] = React.useState(false)
+  const { t } = useTranslation(["playground", "common", "settings"])
+  const { phase, serverUrl, lastCheckedAt, lastError, isChecking, lastStatusCode } =
+    useConnectionState()
+  const { checkOnce } = useConnectionActions()
 
-  const statusQuery = useQuery({
-    queryKey: ["tldw-server-status-shared"],
-    queryFn: async () => {
-      const config = await tldwClient.getConfig()
-      if (!config?.serverUrl) {
-        throw new Error("missing-config")
-      }
-      await tldwClient.initialize()
-      // Get detailed background response for clearer errors
-      const resp = await apiSend({ path: '/api/v1/health', method: 'GET', noAuth: true })
-      return { ok: Boolean(resp?.ok), status: resp?.status, error: resp?.ok ? undefined : resp?.error, config }
-    },
-    retry: false,
-    refetchOnWindowFocus: false
-  })
-
-  const elapsed = useElapsedTimer(statusQuery.isLoading || statusQuery.isFetching)
-  const lastCheckedAt = statusQuery.isFetching
-    ? null
-    : (statusQuery.dataUpdatedAt || statusQuery.errorUpdatedAt || null)
-  const secondsSinceLastCheck = useElapsedSince(lastCheckedAt)
-
-  const serverUrl = (statusQuery.data as any)?.config?.serverUrl as string | undefined
   const serverHost = serverUrl ? cleanUrl(serverUrl) : null
 
+  const isSearching = phase === ConnectionPhase.SEARCHING && isChecking
+  const elapsed = useElapsedTimer(isSearching)
+  const secondsSinceLastCheck = useElapsedSince(lastCheckedAt)
+
   let statusVariant: "loading" | "ok" | "error" | "missing" = "loading"
-  if (statusQuery.isLoading) statusVariant = "loading"
-  else if (statusQuery.isError) statusVariant = (statusQuery.error as Error)?.message === "missing-config" ? "missing" : "error"
-  else if (statusQuery.data?.ok) statusVariant = "ok"
-  else statusVariant = "error"
-  if (aborted) statusVariant = "missing"
+  if (phase === ConnectionPhase.UNCONFIGURED) statusVariant = "missing"
+  else if (phase === ConnectionPhase.SEARCHING) statusVariant = "loading"
+  else if (phase === ConnectionPhase.CONNECTED) statusVariant = "ok"
+  else if (phase === ConnectionPhase.ERROR) statusVariant = "error"
 
   React.useEffect(() => {
     if (!showToastOnError) return
     const toastKey = "tldw-connection-toast"
-    if ((statusVariant === "error" && serverHost) || statusVariant === "missing") {
-      const detail = (statusQuery.data as any)?.error as string | undefined
+    if (
+      (statusVariant === "error" && serverHost) ||
+      statusVariant === "missing"
+    ) {
+      const detail = lastError || undefined
+      const code = Number(lastStatusCode)
+      const hasCode = Number.isFinite(code) && code > 0
       notification.error({
         key: toastKey,
         message:
           statusVariant === "missing"
-            ? t("ollamaState.noServer", "Add your tldw server to start chatting.")
-            : t("ollamaState.errorToast", "We couldn’t reach {{host}}", {
-                host: serverHost ?? "tldw_server"
-              }),
+            ? t(
+                "ollamaState.noServer",
+                "Add your tldw server to start chatting."
+              )
+            : (
+                t("ollamaState.errorToast", "We couldn’t reach {{host}}", { host: serverHost ?? "tldw_server" }) +
+                (hasCode ? ` (HTTP ${code})` : "")
+              ),
         description:
           statusVariant === "missing"
             ? t(
@@ -117,7 +109,7 @@ export const ServerConnectionCard: React.FC<Props> = ({
     } else if (statusVariant === "ok") {
       notification.destroy(toastKey)
     }
-  }, [showToastOnError, statusVariant, serverHost, t])
+  }, [showToastOnError, statusVariant, serverHost, lastError, lastStatusCode, t])
 
   const descriptionCopy = !serverHost
     ? t("ollamaState.noServer", "Add your tldw server to start chatting.")
@@ -127,31 +119,34 @@ export const ServerConnectionCard: React.FC<Props> = ({
     ? t("ollamaState.connectedSubtitle", "Connected to {{host}}. Start chatting when you’re ready.", { host: serverHost })
     : t("ollamaState.errorSubtitle", "We couldn’t reach {{host}} yet. Retry or update your server settings.", { host: serverHost })
 
-  const isStuck = statusVariant === "error" || statusVariant === "missing"
-  const primaryLabel = statusVariant === "ok"
-    ? t("common:startChat", "Start chatting")
-    : isStuck
-      ? t("ollamaState.openTldwSettings", "Open tldw Settings")
-      : t("ollamaState.cancelSearch", "Cancel search")
+  const primaryLabel =
+    statusVariant === "ok"
+      ? t("common:startChat", "Start chatting")
+      : statusVariant === "error"
+        ? t("common:retry", "Retry")
+        : statusVariant === "missing"
+          ? t("settings:tldw.setupLink", "Set up server")
+          : t("ollamaState.changeServer", "Change server")
 
   const handlePrimary = () => {
     if (statusVariant === "ok") {
       if (onStartChat) {
-        try { onStartChat() } finally {
+        try {
+          onStartChat()
+        } finally {
           // Also try to focus once the chat is visible
-          setTimeout(() => window.dispatchEvent(new CustomEvent("tldw:focus-composer")), 0)
+          setTimeout(
+            () => window.dispatchEvent(new CustomEvent("tldw:focus-composer")),
+            0
+          )
         }
       } else {
         window.dispatchEvent(new CustomEvent("tldw:focus-composer"))
       }
-    } else if (isStuck) {
-      handleOpenSettings()
+    } else if (statusVariant === "error") {
+      void checkOnce()
     } else {
-      // Cancel search: mark aborted and cancel in-flight query if possible
-      try {
-        setAborted(true)
-        queryClient.cancelQueries({ queryKey: ["tldw-server-status-shared"] })
-      } catch {}
+      handleOpenSettings()
     }
   }
 
@@ -187,7 +182,7 @@ export const ServerConnectionCard: React.FC<Props> = ({
         </p>
 
         <div className="flex flex-col items-center gap-2">
-          {statusVariant === "loading" && (
+          {isSearching && (
             <Tag color="blue" className="px-4 py-1 text-sm">
               {t("ollamaState.searching")}
               {elapsed > 0 ? ` · ${elapsed}s` : ""}
@@ -206,16 +201,16 @@ export const ServerConnectionCard: React.FC<Props> = ({
           {statusVariant === "error" && (
             <Tag color="red" className="px-4 py-1 text-sm">
               {(() => {
-                const code = Number((statusQuery.data as any)?.status)
+                const code = Number(lastStatusCode)
                 const hasCode = Number.isFinite(code) && code > 0
-                return `${t("ollamaState.notRunning")} ${hasCode ? `(HTTP ${code})` : ''}`.trim()
+                return `${t("ollamaState.notRunning")} ${hasCode ? `(HTTP ${code})` : (lastError ? `(${lastError})` : '')}`.trim()
               })()}
             </Tag>
           )}
         </div>
 
         <div className="flex flex-col items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
-          {(statusQuery.isFetching || statusVariant === "loading") && (
+          {isSearching && (
             <span className="inline-flex items-center gap-1">
               <Clock className="h-3 w-3" />
               {t("ollamaState.elapsed", "Checking… {{seconds}}s", { seconds: elapsed })}
@@ -227,12 +222,13 @@ export const ServerConnectionCard: React.FC<Props> = ({
               {t("ollamaState.connectedHint", "Connected to {{host}}.", { host: serverHost })}
             </span>
           )}
-          {statusVariant === "error" && (statusQuery.data as any)?.error && (
+          {statusVariant === "error" && lastError && (
             <span className="inline-flex items-center gap-1 text-red-500">
-              Error: {(statusQuery.data as any).error}
+              Error: {lastError}
             </span>
           )}
-          {secondsSinceLastCheck != null && !statusQuery.isFetching && (
+          {secondsSinceLastCheck != null &&
+            !(phase === ConnectionPhase.SEARCHING && isChecking) && (
             <span className="inline-flex items-center gap-1">
               <Clock className="h-3 w-3" />
               {t("ollamaState.lastChecked", "Checked {{seconds}}s ago", { seconds: secondsSinceLastCheck })}
@@ -245,26 +241,13 @@ export const ServerConnectionCard: React.FC<Props> = ({
             type={"primary"}
             icon={statusVariant === "ok" ? <Send className="h-4 w-4" /> : <Settings className="h-4 w-4" />}
             onClick={handlePrimary}
-            loading={statusQuery.isFetching}
+            loading={isSearching}
             block>
             {primaryLabel}
           </Button>
           <Button
             icon={statusVariant === "ok" ? <Settings className="h-4 w-4" /> : <Send className="h-4 w-4 rotate-45" />}
-            onClick={async () => {
-              if (isStuck) {
-                const res = await statusQuery.refetch()
-                if (showToastOnError && (res.data as any)?.ok) {
-                  notification.success({
-                    message: t('settings:onboarding.serverUrl.reachable', 'Server responded successfully. You can continue.'),
-                    placement: 'bottomRight',
-                    duration: 3
-                  })
-                }
-              } else {
-                handleOpenSettings()
-              }
-            }}
+            onClick={handleOpenSettings}
             block>
             {statusVariant === "ok"
               ? (serverHost
@@ -277,7 +260,7 @@ export const ServerConnectionCard: React.FC<Props> = ({
         </div>
 
         <a
-          href="https://github.com/n4ze3m/page-assist/blob/main/docs/connection-issue.md"
+          href="/options.html#/settings/health"
           target="_blank"
           rel="noreferrer"
           className="inline-flex items-center gap-1 text-xs text-blue-600 hover:text-blue-500 dark:text-blue-400">

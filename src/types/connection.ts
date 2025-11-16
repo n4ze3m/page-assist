@@ -12,6 +12,7 @@ export type ConnectionState = {
   serverUrl: string | null
   lastCheckedAt: number | null
   lastError: string | null
+  lastStatusCode: number | null
   isConnected: boolean
   isChecking: boolean
   knowledgeStatus: KnowledgeStatus

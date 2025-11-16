@@ -11,7 +11,7 @@ import {
  * Uses the central connection state (and checkOnce) instead of calling
  * tldwClient.healthCheck directly in each consumer.
  */
-export function useServerOnline(pollMs: number = 15000): boolean {
+export function useServerOnline(pollMs: number = 0): boolean {
   const { isConnected } = useConnectionState()
   const { checkOnce } = useConnectionActions()
 
@@ -20,10 +20,10 @@ export function useServerOnline(pollMs: number = 15000): boolean {
   }, [checkOnce])
 
   React.useEffect(() => {
-    const intervalMs = Math.max(5000, pollMs || 0)
-    if (!intervalMs) {
+    if (!pollMs) {
       return
     }
+    const intervalMs = Math.max(5000, pollMs || 0)
     const id = window.setInterval(() => {
       void checkOnce()
     }, intervalMs)
@@ -34,4 +34,3 @@ export function useServerOnline(pollMs: number = 15000): boolean {
 
   return isConnected
 }
-

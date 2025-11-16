@@ -3,7 +3,6 @@ import { notification } from "antd"
 import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
 
-import { PageAssistLoader } from "@/components/Common/PageAssistLoader"
 import ServerConnectionCard from "@/components/Common/ServerConnectionCard"
 import HealthSummary from "@/components/Option/Settings/health-summary"
 import {
@@ -19,7 +18,7 @@ const OptionIndex = () => {
   const navigate = useNavigate()
   const errorToastRef = React.useRef(false)
 
-  const { phase, isChecking, lastError } = useConnectionState()
+  const { phase, lastError } = useConnectionState()
   const { checkOnce } = useConnectionActions()
 
   const notifyConnectionIssue = React.useCallback(
@@ -64,17 +63,11 @@ const OptionIndex = () => {
     }
   }, [phase, lastError, notifyConnectionIssue, clearConnectionIssue])
 
-  const loading =
-    phase === ConnectionPhase.SEARCHING && isChecking
-  const showOnboarding = !loading && phase !== ConnectionPhase.CONNECTED
+  const showOnboarding = phase !== ConnectionPhase.CONNECTED
 
   return (
     <OptionLayout hideHeader={showOnboarding}>
-      {loading ? (
-        <div className="flex h-full min-h-[50vh] items-center justify-center">
-          <PageAssistLoader />
-        </div>
-      ) : showOnboarding ? (
+      {showOnboarding ? (
         <div className="w-full">
           <ServerConnectionCard
             onOpenSettings={() => navigate("/settings/tldw")}
