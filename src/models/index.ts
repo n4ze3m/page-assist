@@ -138,7 +138,6 @@ export const pageAssistModel = async ({
         modelKwargs: {
           ...(modelConfig?.topK && { top_k: modelConfig.topK }),
           ...(modelConfig?.minP && { min_p: modelConfig.minP }),
-          ...(modelConfig?.numCtx && { context_length: modelConfig.numCtx })
         },
         configuration: {
           apiKey: providerInfo.apiKey || "temp",
@@ -203,8 +202,7 @@ export const pageAssistModel = async ({
       maxTokens: modelConfig?.maxTokens,
       modelKwargs: {
         ...(modelConfig?.topK && { top_k: topK }),
-        ...(modelConfig?.minP && { min_p: minP }),
-        ...(modelConfig?.numCtx && { context_length: numCtx })
+        ...(modelConfig?.minP && { min_p: minP }), 
       },
       configuration: {
         apiKey: providerInfo.apiKey || "temp",

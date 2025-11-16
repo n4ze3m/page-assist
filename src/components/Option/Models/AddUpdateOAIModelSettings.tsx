@@ -121,7 +121,7 @@ export const AddUpdateOAIModelSettings: React.FC<Props> = ({
           </Form.Item>
           <Form.Item
             name="numCtx"
-            label={t("modelSettings.form.numCtx.label")}>
+            label={`${t("modelSettings.form.numCtx.label")} (Ollama)`}>
             <InputNumber
               style={{ width: "100%" }}
               placeholder={t("modelSettings.form.numCtx.placeholder")}
