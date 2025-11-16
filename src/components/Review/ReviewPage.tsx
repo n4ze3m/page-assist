@@ -37,6 +37,7 @@ import { useNavigate } from "react-router-dom"
 import { Storage } from "@plasmohq/storage"
 import { getAllPrompts } from "@/db/dexie/helpers"
 import { confirmDanger } from "@/components/Common/confirm-danger"
+import FeatureEmptyState from "@/components/Common/FeatureEmptyState"
 
 type MediaItem = any
 type NoteItem = any
@@ -936,6 +937,34 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true }
     }
     return arr
   }, [results, mediaTypes, keywordTokens])
+
+  if (!isOnline) {
+    return (
+      <FeatureEmptyState
+        title={t('review:empty.connectTitle', {
+          defaultValue: 'Connect to use Review'
+        })}
+        description={t('review:empty.connectDescription', {
+          defaultValue:
+            'To review media and notes, first connect to your tldw server.'
+        })}
+        examples={[
+          t('review:empty.connectExample1', {
+            defaultValue:
+              'Open Settings → tldw server to add your server URL.'
+          }),
+          t('review:empty.connectExample2', {
+            defaultValue:
+              'Once connected, browse media and notes, then generate structured reviews and summaries.'
+          })
+        ]}
+        primaryActionLabel={t('common:connectToServer', {
+          defaultValue: 'Connect to server'
+        })}
+        onPrimaryAction={() => navigate('/settings/tldw')}
+      />
+    )
+  }
 
   return (
     <>

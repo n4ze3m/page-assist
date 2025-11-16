@@ -32,9 +32,8 @@ import { MoreOptions } from "./MoreOptions"
 import { browser } from "wxt/browser"
 import { CharacterSelect } from "../Common/CharacterSelect"
 import { PrimaryToolbar } from "./PrimaryToolbar"
-import {
-  useConnectionState
-} from "@/hooks/useConnectionState"
+import { useConnectionState } from "@/hooks/useConnectionState"
+import { useShortcutConfig, formatShortcut } from "@/hooks/keyboard/useShortcutConfig"
 import { ConnectionPhase } from "@/types/connection"
 import type { TFunction } from "i18next"
 import { Link } from "react-router-dom"
@@ -59,6 +58,15 @@ type NavigationItem =
       key: string
       node: React.ReactNode
     }
+
+type CoreMode =
+  | "playground"
+  | "review"
+  | "media"
+  | "knowledge"
+  | "notes"
+  | "prompts"
+  | "flashcards"
 
 export const Header: React.FC<Props> = ({
   setOpenModelSettings,
@@ -115,6 +123,44 @@ export const Header: React.FC<Props> = ({
     isConnected,
     knowledgeStatus
   } = useConnectionState()
+  const { shortcuts: shortcutConfig } = useShortcutConfig()
+
+  const currentCoreMode: CoreMode = React.useMemo(() => {
+    if (pathname.startsWith("/review")) return "review"
+    if (pathname.startsWith("/media-multi") || pathname.startsWith("/media"))
+      return "media"
+    if (pathname.startsWith("/settings/knowledge")) return "knowledge"
+    if (pathname.startsWith("/notes")) return "notes"
+    if (pathname.startsWith("/settings/prompt")) return "prompts"
+    if (pathname.startsWith("/flashcards")) return "flashcards"
+    return "playground"
+  }, [pathname])
+
+  const handleCoreModeChange = (mode: CoreMode) => {
+    switch (mode) {
+      case "playground":
+        navigate("/")
+        break
+      case "review":
+        navigate("/review")
+        break
+      case "media":
+        navigate("/media")
+        break
+      case "knowledge":
+        navigate("/settings/knowledge")
+        break
+      case "notes":
+        navigate("/notes")
+        break
+      case "prompts":
+        navigate("/settings/prompt")
+        break
+      case "flashcards":
+        navigate("/flashcards")
+        break
+    }
+  }
 
   // When the More menu opens, focus the first interactive item for a11y
   React.useEffect(() => {
@@ -260,7 +306,9 @@ export const Header: React.FC<Props> = ({
   const shortcutsContainerRef = React.useRef<HTMLDivElement>(null)
   const shortcutsSectionId = "header-shortcuts-section"
 
-  const coreStatus: "unknown" | "ok" | "fail" =
+  type StatusKind = "unknown" | "ok" | "fail"
+
+  const coreStatus: StatusKind =
     phase === ConnectionPhase.SEARCHING
       ? "unknown"
       : isConnected && phase === ConnectionPhase.CONNECTED
@@ -269,14 +317,34 @@ export const Header: React.FC<Props> = ({
           ? "fail"
           : "unknown"
 
-  const ragStatus: "unknown" | "ok" | "fail" =
+  const ragStatus: StatusKind =
     knowledgeStatus === "ready" || knowledgeStatus === "indexing"
       ? "ok"
       : knowledgeStatus === "offline"
         ? "fail"
         : "unknown"
 
-  const StatusDot = ({ status }: { status: "unknown" | "ok" | "fail" }) => (
+  const statusLabelForCore = (status: StatusKind): string => {
+    if (status === "ok") {
+      return t("settings:healthSummary.coreOnline", "Server: Online")
+    }
+    if (status === "fail") {
+      return t("settings:healthSummary.coreOffline", "Server: Offline")
+    }
+    return t("settings:healthSummary.coreChecking", "Server: Checking…")
+  }
+
+  const statusLabelForRag = (status: StatusKind): string => {
+    if (status === "ok") {
+      return t("settings:healthSummary.ragReady", "Knowledge: Ready")
+    }
+    if (status === "fail") {
+      return t("settings:healthSummary.ragOffline", "Knowledge: Offline")
+    }
+    return t("settings:healthSummary.ragChecking", "Knowledge: Checking…")
+  }
+
+  const StatusDot = ({ status }: { status: StatusKind }) => (
     <span
       aria-hidden
       className={`inline-block h-2 w-2 rounded-full ${
@@ -487,6 +555,75 @@ export const Header: React.FC<Props> = ({
 
       <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
         <div className="flex flex-col gap-2 lg:flex-1">
+          <div className="flex flex-wrap items-center gap-2 text-xs">
+            <span className="font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
+              {t("option:header.modesLabel", "Modes")}
+            </span>
+            <div className="flex flex-wrap gap-1">
+              {(
+                [
+                  {
+                    key: "playground",
+                    label: t("option:header.modePlayground", "Playground"),
+                    shortcut: shortcutConfig.modePlayground
+                  },
+                  {
+                    key: "review",
+                    label: t("option:header.modeReview", "Review"),
+                    shortcut: shortcutConfig.modeReview
+                  },
+                  {
+                    key: "media",
+                    label: t("option:header.modeMedia", "Media"),
+                    shortcut: shortcutConfig.modeMedia
+                  },
+                  {
+                    key: "knowledge",
+                    label: t("option:header.modeKnowledge", "Knowledge"),
+                    shortcut: shortcutConfig.modeKnowledge
+                  },
+                  {
+                    key: "notes",
+                    label: t("option:header.modeNotes", "Notes"),
+                    shortcut: shortcutConfig.modeNotes
+                  },
+                  {
+                    key: "prompts",
+                    label: t("option:header.modePrompts", "Prompts"),
+                    shortcut: shortcutConfig.modePrompts
+                  },
+                  {
+                    key: "flashcards",
+                    label: t("option:header.modeFlashcards", "Flashcards"),
+                    shortcut: shortcutConfig.modeFlashcards
+                  }
+                ] as Array<{ key: CoreMode; label: string; shortcut?: import("@/hooks/keyboard/useKeyboardShortcuts").KeyboardShortcut }>
+              ).map((mode) => (
+                <button
+                  key={mode.key}
+                  type="button"
+                  onClick={() => handleCoreModeChange(mode.key)}
+                  title={
+                    mode.shortcut
+                      ? t("option:header.modeShortcutHint", "{{shortcut}} to switch", {
+                          shortcut: formatShortcut(mode.shortcut)
+                        }) || undefined
+                      : undefined
+                  }
+                  className={classNames(
+                    "rounded-full px-3 py-1 text-xs font-medium transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500",
+                    currentCoreMode === mode.key
+                      ? "bg-black text-white dark:bg-white dark:text-gray-900"
+                      : "bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-[#262626] dark:text-gray-200 dark:hover:bg-[#333333]"
+                  )}
+                  aria-current={currentCoreMode === mode.key ? "page" : undefined}
+                >
+                  {mode.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
           <button
             type="button"
             onClick={() => setShortcutsExpanded(!shortcutsExpanded)}
@@ -565,32 +702,44 @@ export const Header: React.FC<Props> = ({
 
         <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:justify-end">
           <div className="flex items-center gap-3 text-xs text-gray-600 dark:text-gray-300">
-            <span
-              className="inline-flex items-center gap-1"
+            <button
+              type="button"
+              onClick={() => navigate("/settings/health")}
+              className="inline-flex items-center gap-1 rounded-full border border-transparent px-2 py-1 text-xs transition hover:border-gray-300 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500 dark:hover:border-gray-500 dark:hover:bg-[#1f1f1f]"
               title={t(
                 "settings:healthSummary.coreAria",
-                "Server: server/API health"
+                "Server status — click for diagnostics"
               ) as string}
-              aria-label={t(
-                "settings:healthSummary.coreAria",
-                "Server: server/API health"
-              ) as string}>
+              aria-label={
+                statusLabelForCore(coreStatus) +
+                ". " +
+                t(
+                  "settings:healthSummary.diagnosticsTooltip",
+                  "Open detailed diagnostics to troubleshoot or inspect health checks."
+                )
+              }>
               <StatusDot status={coreStatus} />
-              <span>{t("settings:healthSummary.core", "Server")}</span>
-            </span>
-            <span
-              className="inline-flex items-center gap-1"
+              <span>{statusLabelForCore(coreStatus)}</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => navigate("/settings/health")}
+              className="inline-flex items-center gap-1 rounded-full border border-transparent px-2 py-1 text-xs transition hover:border-gray-300 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500 dark:hover:border-gray-500 dark:hover:bg-[#1f1f1f]"
               title={t(
                 "settings:healthSummary.ragAria",
-                "Knowledge: knowledge index health"
+                "Knowledge status — click for diagnostics"
               ) as string}
-              aria-label={t(
-                "settings:healthSummary.ragAria",
-                "Knowledge: knowledge index health"
-              ) as string}>
+              aria-label={
+                statusLabelForRag(ragStatus) +
+                ". " +
+                t(
+                  "settings:healthSummary.diagnosticsTooltip",
+                  "Open detailed diagnostics to troubleshoot or inspect health checks."
+                )
+              }>
               <StatusDot status={ragStatus} />
-              <span>{t("settings:healthSummary.rag", "Knowledge")}</span>
-            </span>
+              <span>{statusLabelForRag(ragStatus)}</span>
+            </button>
             <Link
               to="/settings/health"
               className="text-xs font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400">
@@ -682,8 +831,12 @@ export const Header: React.FC<Props> = ({
               aria-haspopup="menu"
               aria-expanded={moreMenuOpen}
               aria-controls="header-more-menu"
+              title={t(
+                "option:header.moreMenu.tooltip",
+                "Advanced tools like sidebar, repository, and debug options"
+              ) as string}
             >
-              <span>{t("option:header.more", "More")}</span>
+              <span>{t("option:header.more", "AI tools")}</span>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"

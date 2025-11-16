@@ -3,6 +3,21 @@
     "selectAPrompt": "选择一个提示词",
     "githubRepository": "GitHub 仓库",
     "settings": "设置",
+    "connectionCard": {
+      "headlineMissing": "Connect tldw Assistant to your server",
+      "headlineSearching": "Searching for your tldw server…",
+      "headlineConnected": "Connected to your tldw server",
+      "headlineError": "Can’t reach your tldw server",
+      "descriptionMissing": "tldw_server is the backend that powers chat, knowledge search, and media processing. Connect your own tldw server URL to start using the assistant.",
+      "descriptionSearching": "We’re checking {{host}} to see if your tldw server is reachable. This may take a moment while we wait for a response.",
+      "descriptionConnected": "Connected to your tldw server at {{host}}. You can start chatting or use Review, Knowledge, and other tools.",
+      "descriptionError": "We couldn’t reach your tldw server at {{host}}. Make sure the server is running, the URL is correct, and your browser can reach it over the network.",
+      "buttonStartChat": "Start chatting",
+      "buttonRetry": "Retry connection",
+      "buttonChangeServer": "Change server",
+      "buttonOpenDiagnostics": "Open diagnostics",
+      "buttonViewDiagnostics": "View diagnostics"
+    },
     "header": {
       "showShortcuts": "显示快捷方式",
       "hideShortcuts": "隐藏快捷方式",

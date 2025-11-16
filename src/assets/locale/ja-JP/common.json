@@ -61,6 +61,7 @@
   },
   "submit": "送信",
   "send": "送信",
+  "connectToServer": "Connect to server",
   "noData": "データがありません",
   "noHistory": "チャット履歴がありません",
   "chatWithCurrentPage": "現在のページでチャット",

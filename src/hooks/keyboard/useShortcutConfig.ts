@@ -6,31 +6,80 @@ export interface ShortcutConfig {
   newChat: KeyboardShortcut
   toggleSidebar: KeyboardShortcut
   toggleChatMode: KeyboardShortcut
+  modePlayground: KeyboardShortcut
+  modeReview: KeyboardShortcut
+  modeMedia: KeyboardShortcut
+  modeKnowledge: KeyboardShortcut
+  modeNotes: KeyboardShortcut
+  modePrompts: KeyboardShortcut
+  modeFlashcards: KeyboardShortcut
 }
 
 export const defaultShortcuts: ShortcutConfig = {
   focusTextarea: {
-    key: 'Escape',
+    key: "Escape",
     shiftKey: true,
     preventDefault: true,
     stopPropagation: true
   },
   newChat: {
-    key: 'o',
+    key: "o",
     ctrlKey: true,
     shiftKey: true,
     preventDefault: true,
     stopPropagation: true
   },
   toggleSidebar: {
-    key: 'b',
+    key: "b",
     ctrlKey: true,
     preventDefault: true,
     stopPropagation: true
   },
   toggleChatMode: {
-    key: 'e',
+    key: "e",
     ctrlKey: true,
+    preventDefault: true,
+    stopPropagation: true
+  },
+  modePlayground: {
+    key: "1",
+    altKey: true,
+    preventDefault: true,
+    stopPropagation: true
+  },
+  modeReview: {
+    key: "2",
+    altKey: true,
+    preventDefault: true,
+    stopPropagation: true
+  },
+  modeMedia: {
+    key: "3",
+    altKey: true,
+    preventDefault: true,
+    stopPropagation: true
+  },
+  modeKnowledge: {
+    key: "4",
+    altKey: true,
+    preventDefault: true,
+    stopPropagation: true
+  },
+  modeNotes: {
+    key: "5",
+    altKey: true,
+    preventDefault: true,
+    stopPropagation: true
+  },
+  modePrompts: {
+    key: "6",
+    altKey: true,
+    preventDefault: true,
+    stopPropagation: true
+  },
+  modeFlashcards: {
+    key: "7",
+    altKey: true,
     preventDefault: true,
     stopPropagation: true
   }

@@ -28,6 +28,15 @@
         "pickModelPrompt": "Pick a Model and a Prompt from the header.",
         "startChatFocus": "When connected, \u201cStart chatting\u201d focuses the composer."
     },
+    "empty": {
+        "title": "Start a new Playground chat",
+        "description": "Experiment with different models, prompts, and knowledge sources in one place.",
+        "example1": "Ask a question, then drag in documents or web pages you want to discuss.",
+        "example2": "Use Quick ingest to add transcripts or notes, then reference them in chat.",
+        "example3": "Try different prompts or models from the header to compare answers.",
+        "primaryCta": "Start chatting",
+        "secondaryCta": "Open server settings"
+    },
     "formError": {
         "noModel": "Please select a model",
         "noEmbeddingModel": "Please set an embedding model on the Settings > RAG page"

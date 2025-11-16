@@ -42,6 +42,8 @@ import {
   exportFlashcards,
   exportFlashcardsFile
 } from "@/services/flashcards"
+import FeatureEmptyState from "@/components/Common/FeatureEmptyState"
+import { useNavigate } from "react-router-dom"
 
 const { Text, Title } = Typography
 
@@ -51,6 +53,35 @@ export const FlashcardsPage: React.FC = () => {
   const { t } = useTranslation(["option", "common"]) // keys use defaultValue fallbacks
   const isOnline = useServerOnline()
   const qc = useQueryClient()
+  const navigate = useNavigate()
+
+  if (!isOnline) {
+    return (
+      <FeatureEmptyState
+        title={t("option:flashcards.emptyConnectTitle", {
+          defaultValue: "Connect to use Flashcards"
+        })}
+        description={t("option:flashcards.emptyConnectDescription", {
+          defaultValue:
+            "To review or generate flashcards, first connect to your tldw server."
+        })}
+        examples={[
+          t("option:flashcards.emptyConnectExample1", {
+            defaultValue:
+              "Go to Settings → tldw server to add your server URL."
+          }),
+          t("option:flashcards.emptyConnectExample2", {
+            defaultValue:
+              "Once connected, review due cards or create new decks from your notes and media."
+          })
+        ]}
+        primaryActionLabel={t("common:connectToServer", {
+          defaultValue: "Connect to server"
+        })}
+        onPrimaryAction={() => navigate("/settings/tldw")}
+      />
+    )
+  }
 
   // Shared: decks
   const decksQuery = useQuery({

@@ -62,6 +62,7 @@
   },
   "submit": "送出",
   "send": "送出",
+  "connectToServer": "Connect to server",
   "noData": "沒有資料",
   "noHistory": "無聊天記錄",
   "chatWithCurrentPage": "與目前頁面聊天",

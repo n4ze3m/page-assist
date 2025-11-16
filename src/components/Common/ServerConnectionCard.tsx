@@ -54,7 +54,7 @@ export const ServerConnectionCard: React.FC<Props> = ({
   onStartChat,
   showToastOnError = false
 }) => {
-  const { t } = useTranslation(["playground", "common", "settings"])
+  const { t } = useTranslation(["playground", "common", "settings", "option"])
   const { phase, serverUrl, lastCheckedAt, lastError, isChecking, lastStatusCode } =
     useConnectionState()
   const { checkOnce } = useConnectionActions()
@@ -111,22 +111,79 @@ export const ServerConnectionCard: React.FC<Props> = ({
     }
   }, [showToastOnError, statusVariant, serverHost, lastError, lastStatusCode, t])
 
-  const descriptionCopy = !serverHost
-    ? t("ollamaState.noServer", "Add your tldw server to start chatting.")
-    : statusVariant === "loading"
-    ? t("ollamaState.subtitle", "We’re pinging {{host}} to verify the connection.", { host: serverHost })
-    : statusVariant === "ok"
-    ? t("ollamaState.connectedSubtitle", "Connected to {{host}}. Start chatting when you’re ready.", { host: serverHost })
-    : t("ollamaState.errorSubtitle", "We couldn’t reach {{host}} yet. Retry or update your server settings.", { host: serverHost })
+  const headline =
+    statusVariant === "missing"
+      ? t(
+          "option:connectionCard.headlineMissing",
+          "Connect tldw Assistant to your server"
+        )
+      : statusVariant === "loading"
+        ? t(
+            "option:connectionCard.headlineSearching",
+            "Searching for your tldw server…"
+          )
+        : statusVariant === "ok"
+          ? t(
+              "option:connectionCard.headlineConnected",
+              "Connected to your tldw server"
+            )
+          : t(
+              "option:connectionCard.headlineError",
+              "Can’t reach your tldw server"
+            )
+
+  const descriptionCopy =
+    statusVariant === "missing"
+      ? t(
+          "option:connectionCard.descriptionMissing",
+          "tldw_server runs on your own infrastructure and powers chat, knowledge search, and media processing. Add your server URL to get started."
+        )
+      : statusVariant === "loading"
+        ? t(
+            "option:connectionCard.descriptionSearching",
+            "We’re checking {{host}} to verify your tldw server is reachable.",
+            { host: serverHost ?? "tldw_server" }
+          )
+        : statusVariant === "ok"
+          ? t(
+              "option:connectionCard.descriptionConnected",
+              "Connected to {{host}}. Start chatting in the Playground or sidebar.",
+              { host: serverHost ?? "tldw_server" }
+            )
+          : t(
+              "option:connectionCard.descriptionError",
+              "We couldn’t reach {{host}}. Check that the server is running, the URL is correct, and your browser can reach it.",
+              { host: serverHost ?? "tldw_server" }
+            )
 
   const primaryLabel =
     statusVariant === "ok"
-      ? t("common:startChat", "Start chatting")
+      ? t(
+          "option:connectionCard.buttonStartChat",
+          t("common:startChat", "Start chatting")
+        )
       : statusVariant === "error"
-        ? t("common:retry", "Retry")
-        : statusVariant === "missing"
-          ? t("settings:tldw.setupLink", "Set up server")
-          : t("ollamaState.changeServer", "Change server")
+        ? t(
+            "option:connectionCard.buttonRetry",
+            "Retry connection"
+          )
+      : statusVariant === "missing"
+        ? t("settings:tldw.setupLink", "Set up server")
+        : t(
+            "option:connectionCard.buttonChangeServer",
+            t("ollamaState.changeServer", "Change server")
+          )
+
+  const diagnosticsLabel =
+    statusVariant === "missing"
+      ? t(
+          "option:connectionCard.buttonOpenDiagnostics",
+          "Open diagnostics"
+        )
+      : t(
+          "option:connectionCard.buttonViewDiagnostics",
+          "View diagnostics"
+        )
 
   const handlePrimary = () => {
     if (statusVariant === "ok") {
@@ -169,12 +226,16 @@ export const ServerConnectionCard: React.FC<Props> = ({
     defaultOpenSettings()
   }
 
+  const handleOpenDiagnostics = () => {
+    window.open("/options.html#/settings/health", "_blank")
+  }
+
   return (
     <div className="mx-auto mt-12 w-full max-w-xl px-4">
       <div className="flex flex-col items-center gap-4 rounded-xl border border-gray-200 bg-white px-6 py-8 text-center shadow-sm dark:border-gray-700 dark:bg-[#1f1f1f] dark:text-gray-100">
         <div className="flex items-center gap-2 text-lg font-semibold">
           <Server className="h-5 w-5 text-blue-500" />
-          <span>{t("ollamaState.title", "Waiting for your tldw server")}</span>
+          <span>{headline}</span>
         </div>
 
         <p className="text-sm text-gray-600 dark:text-gray-300 text-center">
@@ -249,24 +310,22 @@ export const ServerConnectionCard: React.FC<Props> = ({
             icon={statusVariant === "ok" ? <Settings className="h-4 w-4" /> : <Send className="h-4 w-4 rotate-45" />}
             onClick={handleOpenSettings}
             block>
-            {statusVariant === "ok"
-              ? (serverHost
-                  ? t("ollamaState.changeServer", "Change server")
-                  : t("ollamaState.openSettings", "Open settings"))
-              : statusVariant === "loading"
-                ? t("settings:tldw.setupLink", "Set up server")
-                : t("common:retry", "Retry")}
+            {statusVariant === "ok" || statusVariant === "error"
+              ? t(
+                  "option:connectionCard.buttonChangeServer",
+                  t("ollamaState.changeServer", "Change server")
+                )
+              : t("ollamaState.openSettings", "Open settings")}
           </Button>
         </div>
 
-        <a
-          href="/options.html#/settings/health"
-          target="_blank"
-          rel="noreferrer"
+        <button
+          type="button"
+          onClick={handleOpenDiagnostics}
           className="inline-flex items-center gap-1 text-xs text-blue-600 hover:text-blue-500 dark:text-blue-400">
           <ExternalLink className="h-3 w-3" />
-          {t("ollamaState.connectionError")}
-        </a>
+          {diagnosticsLabel}
+        </button>
       </div>
     </div>
   )

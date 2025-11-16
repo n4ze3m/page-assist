@@ -61,6 +61,7 @@
   },
   "submit": "Absenden",
   "send": "Absenden",
+  "connectToServer": "Connect to server",
   "noData": "Keine Daten",
   "noHistory": "Kein Chat-Verlauf",
   "chatWithCurrentPage": "Mit aktueller Seite chatten",

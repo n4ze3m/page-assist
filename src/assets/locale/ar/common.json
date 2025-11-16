@@ -61,6 +61,7 @@
   },
   "submit": "إرسال",
   "send": "إرسال",
+  "connectToServer": "Connect to server",
   "noData": "لا توجد بيانات",
   "noHistory": "لا يوجد سجل محادثات",
   "chatWithCurrentPage": "الدردشة مع الصفحة الحالية",

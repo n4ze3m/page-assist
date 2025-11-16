@@ -16,6 +16,7 @@ import {
 import { Trash2, Pen, Computer, Zap, Star, CopyIcon, UploadCloud, Download } from "lucide-react"
 import { useMemo, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
+import { useNavigate } from "react-router-dom"
 import {
   deletePromptById,
   getAllPrompts,
@@ -31,6 +32,8 @@ import {
 import { tagColors } from "@/utils/color"
 import { isFireFoxPrivateMode } from "@/utils/is-private-mode"
 import { confirmDanger } from "@/components/Common/confirm-danger"
+import { useServerOnline } from "@/hooks/useServerOnline"
+import FeatureEmptyState from "@/components/Common/FeatureEmptyState"
 
 export const PromptBody = () => {
   const queryClient = useQueryClient()
@@ -40,6 +43,8 @@ export const PromptBody = () => {
   const [createForm] = Form.useForm()
   const [editForm] = Form.useForm()
   const { t } = useTranslation(["settings", "common"])
+  const navigate = useNavigate()
+  const isOnline = useServerOnline()
   const [selectedSegment, setSelectedSegment] = useState<"custom" | "copilot">(
     "custom"
   )
@@ -354,7 +359,33 @@ export const PromptBody = () => {
 
         {status === "pending" && <Skeleton paragraph={{ rows: 8 }} />}
 
-        {status === "success" && (
+        {status === "success" && Array.isArray(data) && data.length === 0 && (
+          <FeatureEmptyState
+            title={t("settings:managePrompts.emptyTitle", {
+              defaultValue: "No custom prompts yet"
+            })}
+            description={t("settings:managePrompts.emptyDescription", {
+              defaultValue:
+                "Create reusable prompts for recurring tasks, workflows, and team conventions."
+            })}
+            examples={[
+              t("settings:managePrompts.emptyExample1", {
+                defaultValue:
+                  "Save your favorite system prompt for summaries, explanations, or translations."
+              }),
+              t("settings:managePrompts.emptyExample2", {
+                defaultValue:
+                  "Create quick prompts for common actions like drafting emails or refining notes."
+              })
+            ]}
+            primaryActionLabel={t("settings:managePrompts.emptyPrimaryCta", {
+              defaultValue: "Create prompt"
+            })}
+            onPrimaryAction={() => setOpen(true)}
+          />
+        )}
+
+        {status === "success" && Array.isArray(data) && data.length > 0 && (
           <Table
             columns={[
               {
@@ -543,6 +574,34 @@ export const PromptBody = () => {
           />
         )}
       </div>
+    )
+  }
+
+  if (!isOnline) {
+    return (
+      <FeatureEmptyState
+        title={t("settings:managePrompts.emptyConnectTitle", {
+          defaultValue: "Connect to use Prompts"
+        })}
+        description={t("settings:managePrompts.emptyConnectDescription", {
+          defaultValue:
+            "To manage reusable prompts, first connect to your tldw server."
+        })}
+        examples={[
+          t("settings:managePrompts.emptyConnectExample1", {
+            defaultValue:
+              "Open Settings → tldw server to add your server URL."
+          }),
+          t("settings:managePrompts.emptyConnectExample2", {
+            defaultValue:
+              "Once connected, create custom prompts you can reuse across chats."
+          })
+        ]}
+        primaryActionLabel={t("common:connectToServer", {
+          defaultValue: "Connect to server"
+        })}
+        onPrimaryAction={() => navigate("/settings/tldw")}
+      />
     )
   }
 

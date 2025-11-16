@@ -419,77 +419,77 @@ This section translates the requirements into a concrete, implementation-oriente
 
 ### 10.1 Connection Card & First-Run (Options + Sidepanel)
 
-  - [ ] Implement a single shared connection store/hook that drives:
+  - [x] Implement a single shared connection store/hook that drives:
     - Options homepage connection card
     - Sidepanel first-run view (reusing the same card component with responsive layout)
     - Chat composer enabled/disabled state (details in 10.2)
     - Header connection indicators (visual treatment in 10.5)
-  - [ ] Define shared connection constants/behavior:
-    - [ ] `CONNECTION_TIMEOUT_MS` used to transition from “Searching” to “Error”.
-    - [ ] Retry/backoff strategy; UIs must not implement their own timeouts.
-  - [ ] Refactor `OptionIndex` (options landing route) to subscribe to the shared connection state instead of running its own health checks, and
+  - [x] Define shared connection constants/behavior:
+    - [x] `CONNECTION_TIMEOUT_MS` used to transition from “Searching” to “Error”.
+    - [x] Retry/backoff strategy; UIs must not implement their own timeouts.
+  - [x] Refactor `OptionIndex` (options landing route) to subscribe to the shared connection state instead of running its own health checks, and
   render state-specific cards:
 
-    - [ ] **First-run** (no server URL configured):
+    - [x] **First-run** (no server URL configured):
       - Headline: “Connect tldw Assistant to your server”.
       - Brief description of what tldw_server is and why it’s required.
       - Primary button: “Set up server”.
       - Secondary action: “Open diagnostics”.
       - Optional button: “Try a demo” (only when a demo-mode feature flag is enabled).
 
-    - [ ] **Searching / connecting**:
+    - [x] **Searching / connecting**:
       - Headline: “Searching for your tldw server…”.
       - Subtext showing the `{{serverUrl}}` being checked and a short explanation.
       - Spinner/status indicator and “last checked” time.
       - Primary button: “Change server”.
       - Secondary in-card action: “View diagnostics”.
 
-    - [ ] **Connected**:
+    - [x] **Connected**:
       - Headline: “Connected to your tldw server”.
       - Subtext showing the current `{{serverUrl}}`.
       - Clear success indicator (icon + green label).
       - Primary button: “Start chatting” (focuses or reveals the main chat composer).
       - Secondary actions: “Change server”, “View diagnostics”.
 
-    - [ ] **Error / cannot reach server** (after `CONNECTION_TIMEOUT_MS` or explicit failure):
+    - [x] **Error / cannot reach server** (after `CONNECTION_TIMEOUT_MS` or explicit failure):
       - Headline: “Can’t reach your tldw server”.
       - Subtext including the attempted `{{serverUrl}}` and likely causes (server not running, wrong URL, network issues).
       - Primary button: “Retry connection”.
       - Secondary button: “Change server”.
       - In-card “Diagnostics” link, with optional inline error summary (e.g., HTTP status or timeout).
 
-  - [ ] Ensure all non-connected states (**First-run**, **Searching**, **Error**) expose an in-card Diagnostics entry point, in addition to any
+  - [x] Ensure all non-connected states (**First-run**, **Searching**, **Error**) expose an in-card Diagnostics entry point, in addition to any
   existing header link.
-  - [ ] Ensure the current `serverUrl` is visible in the connection card for **Searching**, **Connected**, and **Error** states; “Change server”
+  - [x] Ensure the current `serverUrl` is visible in the connection card for **Searching**, **Connected**, and **Error** states; “Change server”
   must route to the canonical Settings → tldw Server configuration UI (not a duplicate form).
-  - [ ] Refactor the sidepanel first-run experience to reuse the shared connection card component, with layout tweaks for narrow width but
+  - [x] Refactor the sidepanel first-run experience to reuse the shared connection card component, with layout tweaks for narrow width but
   identical states, copy, and actions.
-  - [ ] Wire “Set up server” / “Change server” / “Diagnostics” actions to:
-    - [ ] Navigate to the relevant Settings → tldw Server section or use `openOptionsPage` when invoked from the sidepanel.
-    - [ ] Open the Diagnostics view or troubleshooting docs in a new tab, as appropriate.
-  - [ ] Add i18n keys for all connection card headlines, subtexts, and button/label copy in the `option` (and shared `common` where appropriate)
+  - [x] Wire “Set up server” / “Change server” / “Diagnostics” actions to:
+    - [x] Navigate to the relevant Settings → tldw Server section or use `openOptionsPage` when invoked from the sidepanel.
+    - [x] Open the Diagnostics view or troubleshooting docs in a new tab, as appropriate.
+  - [x] Add i18n keys for all connection card headlines, subtexts, and button/label copy in the `option` (and shared `common` where appropriate)
   namespaces; avoid hard-coded English strings.
 
 ### 10.2 Chat Composer Readiness (Web UI + Sidepanel)
 
-- [ ] Connect both Web UI and sidepanel composers to the shared connection state.
+- [x] Connect both Web UI and sidepanel composers to the shared connection state.
 - [ ] When state is **No configuration / Searching / Error**:
-  - [ ] Disable the Send button and apply “inactive” styling.
-  - [ ] De-emphasize the input area (without making text unreadable).
-  - [ ] Show an inline helper message near the composer explaining that messages won’t send until the server is reachable.
-  - [ ] Change the placeholder to a connection-aware variant (e.g., “Waiting for your server — set it up in Settings.”).
-  - [ ] On first focus/click, show a small banner or tooltip with:
+  - [x] Disable the Send button and apply “inactive” styling.
+  - [x] De-emphasize the input area (without making text unreadable).
+  - [x] Show an inline helper message near the composer explaining that messages won’t send until the server is reachable.
+  - [x] Change the placeholder to a connection-aware variant (e.g., “Waiting for your server — set it up in Settings.”).
+  - [x] On first focus/click, show a small banner or tooltip with:
     - “Connect to server” button.
     - Optional Diagnostics link.
 - [ ] When state is **Connected**:
-  - [ ] Restore normal placeholder.
-  - [ ] Enable Send button and normal styling.
+  - [x] Restore normal placeholder.
+  - [x] Enable Send button and normal styling.
 
 ### 10.3 Feature Empty States
 
-- [ ] For each core feature (Review, Media, Knowledge, Notes, Prompts, Flashcards, Playground, Settings):
-  - [ ] Implement a feature-specific empty-state component (title, description, examples, primary CTA).
-  - [ ] Wire it to show when:
+- [x] For each core feature (Review, Media, Knowledge, Notes, Prompts, Flashcards, Playground, Settings):
+  - [x] Implement a feature-specific empty-state component (title, description, examples, primary CTA).
+  - [x] Wire it to show when:
     - Connection is **Connected**, and
     - The feature has “no data” (e.g., no items, no sessions).
     - Define “no data” per feature, for example:
@@ -501,43 +501,58 @@ This section translates the requirements into a concrete, implementation-oriente
       - Flashcards: no decks or cards available to review.
       - Playground: no saved playground sessions or experiments.
       - Settings: no prior configuration beyond defaults (first visit).
-  - [ ] Use the i18n keys defined for these empty states in the relevant namespaces (`option`, `review`, `knowledge`, `settings`) and add per-feature namespaces (`media`, `notes`, `prompts`, `flashcards`, `playground`) for feature-specific empty-state copy, reserving `common` for shared phrases like “Connect to server”.
-- [ ] When **not connected**:
-  - [ ] Ensure a prominent connection notice or card appears first.
-  - [ ] Show a “Connect to server” CTA that routes to the connection/settings view.
-  - [ ] Either hide the feature-specific empty state or render it below the connection messaging per the design decision.
+  - [x] Use the i18n keys defined for these empty states in the relevant namespaces (`option`, `review`, `knowledge`, `settings`) and add per-feature namespaces (`media`, `notes`, `prompts`, `flashcards`, `playground`) for feature-specific empty-state copy, reserving `common` for shared phrases like “Connect to server”.
+- [x] When **not connected**:
+  - [x] Ensure a prominent connection notice or card appears first.
+  - [x] Show a “Connect to server” CTA that routes to the connection/settings view.
+  - [x] Either hide the feature-specific empty state or render it below the connection messaging per the design decision.
+
+- **Implementation status (2025-11-16)**:
+  - Notes: connected-state “No notes yet” empty state implemented with title, description, examples, and “Create note” CTA; when not connected, a connection-focused empty state with “Connect to server” CTA is shown instead.
+  - Flashcards: when not connected, the entire Flashcards view now shows a connection-focused empty state with “Connect to server” CTA; feature-specific “no due cards” and “no cards” empties remain for connected state.
+  - Review / Media: when not connected, Review and Media routes now show a connection-focused empty state with “Connect to server” CTA instead of generic empties; when connected, existing per-feature “no items” messaging is preserved.
+  - Knowledge: when not connected, the Knowledge Settings view shows a connection-focused empty state; when connected but there are no knowledge bases, a “No knowledge sources yet” empty state with examples and an “Add knowledge” CTA is shown.
+  - Prompts: when not connected, the Manage Prompts view shows a connection-focused empty state; when connected but there are no custom prompts, a “No custom prompts yet” empty state with examples and a “Create prompt” CTA replaces the bare table.
+  - Playground: when not connected, the Options landing view shows the shared server connection card; when connected but there are no messages in the Playground chat, a “Start a new Playground chat” empty state with examples and “Start chatting” CTA is shown.
+  - Settings: the General Settings home now includes a small intro empty state explaining key categories when connected (with a “Configure server & auth” CTA) and a connection-focused notice when the server is offline.
 
 ### 10.4 Navigation & “More tools”
 
-- [ ] Identify where core modes are selected today (e.g., header shortcuts, dropdowns, sidepanel toolbar).
-- [ ] Promote core modes (Review, Media, Knowledge, Notes, Prompts, Flashcards, Playground) to:
-  - [ ] A visible tab bar, segmented control, or equivalent first-class navigation in the Web UI.
-  - [ ] Matching or analogous entry points in the sidepanel where feasible.
-- [ ] Ensure navigation works in both the full-width options UI and the narrow sidepanel without horizontal overflow; the tab bar or segmented control should degrade gracefully (e.g., wrapping, overflow menu, or icons-only) on smaller viewports.
-- [ ] Restrict the “More tools” menu to advanced or secondary tools:
-  - [ ] Rename to a more descriptive label (e.g., “AI tools”).
-  - [ ] Add a tooltip listing a few representative tools.
-- [ ] Surface keyboard shortcuts for mode switching (if they exist) in a subtle way (e.g., tooltip or shortcut hint).
+- [x] Identify where core modes are selected today (e.g., header shortcuts, dropdowns, sidepanel toolbar).
+- [x] Promote core modes (Review, Media, Knowledge, Notes, Prompts, Flashcards, Playground) to:
+  - [x] A visible tab bar, segmented control, or equivalent first-class navigation in the Web UI.
+  - [x] Matching or analogous entry points in the sidepanel where feasible.
+- [x] Ensure navigation works in both the full-width options UI and the narrow sidepanel without horizontal overflow; the tab bar or segmented control should degrade gracefully (e.g., wrapping, overflow menu, or icons-only) on smaller viewports.
+- [x] Restrict the “More tools” menu to advanced or secondary tools:
+  - [x] Rename to a more descriptive label (e.g., “AI tools”).
+  - [x] Add a tooltip listing a few representative tools.
+- [x] Surface keyboard shortcuts for mode switching (if they exist) in a subtle way (e.g., tooltip or shortcut hint).
+
+- **Implementation status (2025-11-16)**:
+  - Web UI: a “Modes” pill row (Playground, Review, Media, Knowledge, Notes, Prompts, Flashcards) has been added below the header toolbar; the active mode is highlighted and clicking a pill routes to the corresponding view.
+  - Sidepanel: a compact “modes” popover in the sidepanel header opens Web UI routes for the same core modes, keeping navigation accessible even in the narrow layout.
+  - “More” menu: the header “More” button now reads “AI tools” with an “Advanced tools” tooltip string, and the menu itself remains reserved for advanced actions (open sidebar, GitHub, etc.).
+  - Mode shortcuts: default `Alt+1`–`Alt+7` shortcuts are wired for Playground/Review/Media/Knowledge/Notes/Prompts/Flashcards, and each mode pill exposes its shortcut via a tooltip (“{{shortcut}} to switch”) so power users can discover them without cluttering the UI.
 
 ### 10.5 Connection Status Indicators (Core/RAG → Server/Knowledge)
 
-- [ ] Locate header status components currently labeled “Core” and “RAG”.
-- [ ] Replace user-visible labels with plain-language text:
-  - [ ] “Server: Online / Offline / Checking…”
-  - [ ] “Knowledge: Ready / Indexing / Offline”
-- [ ] Add icon + text combinations (checkmark/warning/info) and ensure:
-  - [ ] Indicators do not rely solely on color to convey status.
-  - [ ] ARIA labels describe the status (e.g., “Connection status: Server online”).
-- [ ] Decide on interactivity:
-  - [ ] If interactive: make them look and behave like buttons that open Diagnostics (or Settings → Diagnostics/Health).
+- [x] Locate header status components currently labeled “Core” and “RAG”.
+- [x] Replace user-visible labels with plain-language text:
+  - [x] “Server: Online / Offline / Checking…”
+  - [x] “Knowledge: Ready / Indexing / Offline”
+- [x] Add icon + text combinations (checkmark/warning/info) and ensure:
+  - [x] Indicators do not rely solely on color to convey status.
+  - [x] ARIA labels describe the status (e.g., “Connection status: Server online”).
+- [x] Decide on interactivity:
+  - [x] If interactive: make them look and behave like buttons that open Diagnostics (or Settings → Diagnostics/Health).
   - [ ] If non-interactive: ensure they are clearly informational-only (no pointer cursor, no click handlers).
 
 ### 10.6 Diagnostics Entry Points
 
-- [ ] Ensure Diagnostics is reachable from:
-  - [ ] Connection card in all non-connected states.
-  - [ ] Header status indicators (if interactive).
-  - [ ] Settings navigation (e.g., Health / Diagnostics section).
+- [x] Ensure Diagnostics is reachable from:
+  - [x] Connection card in all non-connected states.
+  - [x] Header status indicators (if interactive).
+  - [x] Settings navigation (e.g., Health / Diagnostics section).
 - [ ] Standardize user-facing labels on “Diagnostics”:
   - [ ] Buttons/links labeled “Open diagnostics” or “Diagnostics”.
   - [ ] External documentation link clearly labeled as a diagnostics/troubleshooting guide.

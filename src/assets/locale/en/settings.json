@@ -218,6 +218,18 @@
       "autoSubmitVoiceMessage": {
         "label": "Auto Submit Voice Message"
       }
+    },
+    "empty": {
+      "connectTitle": "Connect tldw Assistant to your server",
+      "connectDescription": "Some settings only take effect when your tldw server is reachable. Connect your server to get the full experience.",
+      "connectExample1": "Open Settings \u2192 tldw server to add your server URL and API key.",
+      "connectExample2": "Use Diagnostics to confirm your server is healthy before trying advanced tools.",
+      "title": "Tune how tldw Assistant behaves",
+      "description": "Adjust defaults for the Web UI, sidepanel, speech, search, and data handling from one place.",
+      "example1": "Choose your default language, theme, and chat resume behavior.",
+      "example2": "Control whether chats are temporary, how large pastes are handled, and how reasoning is displayed.",
+      "primaryCta": "Configure server & auth",
+      "secondaryCta": "Dismiss"
     }
   },
   "manageModels": {
@@ -346,7 +358,16 @@
       "updatedSuccessDesc": "Prompt has been updated successfully",
       "deletedSuccess": "Prompt Deleted",
       "deletedSuccessDesc": "Prompt has been deleted successfully"
-    }
+    },
+    "emptyConnectTitle": "Connect to use Prompts",
+    "emptyConnectDescription": "To manage reusable prompts, first connect to your tldw server.",
+    "emptyConnectExample1": "Open Settings \u2192 tldw server to add your server URL.",
+    "emptyConnectExample2": "Once connected, create custom prompts you can reuse across chats.",
+    "emptyTitle": "No custom prompts yet",
+    "emptyDescription": "Create reusable prompts for recurring tasks, workflows, and team conventions.",
+    "emptyExample1": "Save your favorite system prompt for summaries, explanations, or translations.",
+    "emptyExample2": "Create quick prompts for common actions like drafting emails or refining notes.",
+    "emptyPrimaryCta": "Create prompt"
   },
   "manageShare": {
     "title": "Manage Share",
@@ -537,6 +558,12 @@
     "rag": "Knowledge",
     "coreAria": "Server: server/API health",
     "ragAria": "Knowledge: knowledge index health",
+    "coreOnline": "Server: Online",
+    "coreOffline": "Server: Offline",
+    "coreChecking": "Server: Checking…",
+    "ragReady": "Knowledge: Ready",
+    "ragOffline": "Knowledge: Offline",
+    "ragChecking": "Knowledge: Checking…",
     "footerInfo": "These checks summarize the last successful ping to your tldw server and knowledge index."
   },
   "savedSuccessfully": "Settings saved",

@@ -16,14 +16,18 @@ import {
   BoxesIcon,
   CogIcon,
   EraserIcon,
-  // EraserIcon,
   HistoryIcon,
   PlusSquare,
   XIcon,
   MessageSquareShareIcon,
   UploadCloud,
   NotebookPen,
-  Gauge
+  Gauge,
+  LayoutGrid,
+  Microscope,
+  StickyNote,
+  Layers,
+  BookText
 } from "lucide-react"
 import { useTranslation } from "react-i18next"
 // import { CurrentChatModelSettings } from "@/components/Common/Settings/CurrentChatModelSettings"
@@ -144,6 +148,8 @@ export const SidepanelHeader = ({
 
   const [ingestOpen, setIngestOpen] = React.useState(false)
   const ingestBtnRef = React.useRef<HTMLButtonElement>(null)
+  const [modeOpen, setModeOpen] = React.useState(false)
+  const modeBtnRef = React.useRef<HTMLButtonElement>(null)
 
   const quickIngestMenu = React.useMemo<MenuProps>(
     () => ({
@@ -180,6 +186,89 @@ export const SidepanelHeader = ({
       </div>
 
       <div className="flex items-center space-x-3">
+        <Popover
+          trigger="click"
+          open={modeOpen}
+          onOpenChange={(o) => {
+            setModeOpen(o)
+            if (!o) requestAnimationFrame(() => modeBtnRef.current?.focus())
+          }}
+          content={
+            <Space
+              size="small"
+              direction="vertical"
+              onKeyDown={(e) => {
+                if (e.key === "Escape") {
+                  e.preventDefault()
+                  setModeOpen(false)
+                  requestAnimationFrame(() => modeBtnRef.current?.focus())
+                }
+              }}>
+              <div className="text-xs text-gray-500">
+                {t("sidepanel:header.modesLabel", "Open modes in Web UI")}
+              </div>
+              <button
+                onClick={() =>
+                  openOptionsPage("#/")
+                }
+                className="flex items-center gap-2 rounded px-2 py-1 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-800">
+                <LayoutGrid className="size-4 text-gray-500 dark:text-gray-400" />
+                <span>{t("sidepanel:header.modePlayground", "Playground")}</span>
+              </button>
+              <button
+                onClick={() => openOptionsPage("#/review")}
+                className="flex items-center gap-2 rounded px-2 py-1 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-800">
+                <Microscope className="size-4 text-gray-500 dark:text-gray-400" />
+                <span>{t("sidepanel:header.modeReview", "Review")}</span>
+              </button>
+              <button
+                onClick={() => openOptionsPage("#/media")}
+                className="flex items-center gap-2 rounded px-2 py-1 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-800">
+                <BookText className="size-4 text-gray-500 dark:text-gray-400" />
+                <span>{t("sidepanel:header.modeMedia", "Media")}</span>
+              </button>
+              <button
+                onClick={() => openOptionsPage("#/settings/knowledge")}
+                className="flex items-center gap-2 rounded px-2 py-1 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-800">
+                <LayoutGrid className="size-4 text-gray-500 dark:text-gray-400" />
+                <span>{t("sidepanel:header.modeKnowledge", "Knowledge")}</span>
+              </button>
+              <button
+                onClick={() => openOptionsPage("#/notes")}
+                className="flex items-center gap-2 rounded px-2 py-1 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-800">
+                <StickyNote className="size-4 text-gray-500 dark:text-gray-400" />
+                <span>{t("sidepanel:header.modeNotes", "Notes")}</span>
+              </button>
+              <button
+                onClick={() => openOptionsPage("#/settings/prompt")}
+                className="flex items-center gap-2 rounded px-2 py-1 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-800">
+                <NotebookPen className="size-4 text-gray-500 dark:text-gray-400" />
+                <span>{t("sidepanel:header.modePrompts", "Prompts")}</span>
+              </button>
+              <button
+                onClick={() => openOptionsPage("#/flashcards")}
+                className="flex items-center gap-2 rounded px-2 py-1 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-800">
+                <Layers className="size-4 text-gray-500 dark:text-gray-400" />
+                <span>{t("sidepanel:header.modeFlashcards", "Flashcards")}</span>
+              </button>
+            </Space>
+          }>
+          <Tooltip title={t("sidepanel:header.modesLabel", "Open modes in Web UI")}>
+            <button
+              ref={modeBtnRef}
+              type="button"
+              aria-label={t(
+                "sidepanel:header.modesLabel",
+                "Open modes in Web UI"
+              )}
+              aria-haspopup="menu"
+              aria-expanded={modeOpen}
+              aria-controls="sidepanel-modes-menu"
+              className="flex items-center space-x-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-700">
+              <LayoutGrid className="size-4 text-gray-500 dark:text-gray-400" />
+            </button>
+          </Tooltip>
+        </Popover>
         <Dropdown
           menu={quickIngestMenu}
           placement="bottomRight"

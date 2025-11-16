@@ -3,6 +3,21 @@
     "selectAPrompt": "ഒരു പ്രോംപ്റ്റ് തിരഞ്ഞെടുക്കുക",
     "githubRepository": "ഗിറ്റ്ഹബ് റെപ്പോസിറ്ററി",
     "settings": "സെറ്റിംഗുകൾ",
+    "connectionCard": {
+      "headlineMissing": "Connect tldw Assistant to your server",
+      "headlineSearching": "Searching for your tldw server…",
+      "headlineConnected": "Connected to your tldw server",
+      "headlineError": "Can’t reach your tldw server",
+      "descriptionMissing": "tldw_server is the backend that powers chat, knowledge search, and media processing. Connect your own tldw server URL to start using the assistant.",
+      "descriptionSearching": "We’re checking {{host}} to see if your tldw server is reachable. This may take a moment while we wait for a response.",
+      "descriptionConnected": "Connected to your tldw server at {{host}}. You can start chatting or use Review, Knowledge, and other tools.",
+      "descriptionError": "We couldn’t reach your tldw server at {{host}}. Make sure the server is running, the URL is correct, and your browser can reach it over the network.",
+      "buttonStartChat": "Start chatting",
+      "buttonRetry": "Retry connection",
+      "buttonChangeServer": "Change server",
+      "buttonOpenDiagnostics": "Open diagnostics",
+      "buttonViewDiagnostics": "View diagnostics"
+    },
     "header": {
       "showShortcuts": "ഷോർട്ട്കട്ടുകൾ കാണിക്കുക",
       "hideShortcuts": "ഷോർട്ട്കട്ടുകൾ മറയ്ക്കുക",

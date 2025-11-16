@@ -58,5 +58,16 @@
         "success": "Knowledge added successfully"
     },
     "noEmbeddingModel": "Please add an embedding model from the RAG settings page first",
-    "newSource": "New Source"
+    "newSource": "New Source",
+    "empty": {
+        "connectTitle": "Connect to use Knowledge",
+        "connectDescription": "To use Knowledge, first connect to your tldw server so new sources can be indexed.",
+        "connectExample1": "Open Settings \u2192 tldw server to add your server URL.",
+        "connectExample2": "Use Diagnostics if your server is running but not reachable.",
+        "title": "No knowledge sources yet",
+        "description": "Add knowledge bases so tldw can ground answers in your own documents, transcripts, and files.",
+        "example1": "Upload PDFs, transcripts, or notes that you frequently reference in chat.",
+        "example2": "Organize related documents into a single knowledge base to reuse across chats.",
+        "primaryCta": "Add knowledge"
+    }
 }

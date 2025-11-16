@@ -61,6 +61,7 @@
   },
   "submit": "제출",
   "send": "제출",
+  "connectToServer": "Connect to server",
   "noData": "데이터가 없습니다",
   "noHistory": "채팅 기록이 없습니다",
   "chatWithCurrentPage": "현재 페이지에서 채팅",

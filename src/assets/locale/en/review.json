@@ -1,4 +1,10 @@
 {
+  "empty": {
+    "connectTitle": "Connect to use Review",
+    "connectDescription": "To review media and notes, first connect to your tldw server.",
+    "connectExample1": "Open Settings \u2192 tldw server to add your server URL.",
+    "connectExample2": "Once connected, browse media and notes, then generate structured reviews and summaries."
+  },
   "reviewPage": {
     "searchPrompts": "Search prompts",
     "includeLocal": "Local",

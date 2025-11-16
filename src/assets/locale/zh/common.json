@@ -61,6 +61,7 @@
   },
   "submit": "提交",
   "send": "提交",
+  "connectToServer": "Connect to server",
   "noData": "无数据",
   "noHistory": "无聊天记录",
   "chatWithCurrentPage": "与当前页面聊天",

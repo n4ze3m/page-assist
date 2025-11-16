@@ -61,6 +61,7 @@
   },
   "submit": "സമർപ്പിക്കുക",
   "send": "സമർപ്പിക്കുക",
+  "connectToServer": "Connect to server",
   "noData": "ഡാറ്റ ലഭ്യമല്ല",
   "noHistory": "ചാറ്റ് ചരിത്രം ലഭ്യമല്ല",
   "chatWithCurrentPage": "നിലവിലെ പേജിനുമായി ചാറ്റ് ചെയ്യുക",

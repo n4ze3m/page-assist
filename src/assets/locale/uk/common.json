@@ -61,6 +61,7 @@
   },
   "submit": "Надіслати",
   "send": "Надіслати",
+  "connectToServer": "Connect to server",
   "noData": "Немає даних",
   "noHistory": "Немає історії чату",
   "chatWithCurrentPage": "Чат з поточної сторінки",

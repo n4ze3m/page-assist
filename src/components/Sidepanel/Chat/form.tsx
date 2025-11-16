@@ -90,6 +90,8 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
   const [ingestOpen, setIngestOpen] = React.useState(false)
   const { phase, isConnected } = useConnectionState()
   const isConnectionReady = isConnected && phase === ConnectionPhase.CONNECTED
+  const [hasShownConnectBanner, setHasShownConnectBanner] = React.useState(false)
+  const [showConnectBanner, setShowConnectBanner] = React.useState(false)
 
   const onInputChange = async (
     e: React.ChangeEvent<HTMLInputElement> | File
@@ -174,6 +176,13 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
     }
   }
 
+  const handleDisconnectedFocus = () => {
+    if (!isConnectionReady && !hasShownConnectBanner) {
+      setShowConnectBanner(true)
+      setHasShownConnectBanner(true)
+    }
+  }
+
   const handlePaste = (e: React.ClipboardEvent) => {
     if (e.clipboardData.files.length > 0) {
       onInputChange(e.clipboardData.files[0])
@@ -206,6 +215,21 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
   } = useMessage()
 
   const [openModelSettings, setOpenModelSettings] = React.useState(false)
+  const openSettings = React.useCallback(() => {
+    try {
+      // @ts-ignore
+      if (chrome?.runtime?.openOptionsPage) {
+        // @ts-ignore
+        chrome.runtime.openOptionsPage()
+        return
+      }
+    } catch {}
+    window.open("/options.html#/settings/tldw", "_blank")
+  }, [])
+
+  const openDiagnostics = React.useCallback(() => {
+    window.open("/options.html#/settings/health", "_blank")
+  }, [])
 
   const handleToggleTemporaryChat = React.useCallback(() => {
     if (isFireFoxPrivateMode) {
@@ -448,6 +472,12 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
     }
   }, [defaultInternetSearchOn])
 
+  React.useEffect(() => {
+    if (isConnectionReady) {
+      setShowConnectBanner(false)
+    }
+  }, [isConnectionReady])
+
  
   return (
     <div className="flex w-full flex-col items-center px-2">
@@ -455,7 +485,9 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
         <div className="relative flex w-full flex-row justify-center gap-2 lg:w-4/5">
           <div
             data-istemporary-chat={temporaryChat}
-            className={` bg-neutral-50  dark:bg-[#262626] relative w-full max-w-[48rem] p-1 backdrop-blur-lg duration-100 border border-gray-300 rounded-t-xl  dark:border-gray-600 data-[istemporary-chat='true']:bg-purple-900 data-[istemporary-chat='true']:dark:bg-purple-900`}>
+            className={` bg-neutral-50  dark:bg-[#262626] relative w-full max-w-[48rem] p-1 backdrop-blur-lg duration-100 border border-gray-300 rounded-t-xl  dark:border-gray-600 data-[istemporary-chat='true']:bg-purple-900 data-[istemporary-chat='true']:dark:bg-purple-900 ${
+              !isConnectionReady ? "opacity-80" : ""
+            }`}>
             <div
               className={`border-b border-gray-200 dark:border-gray-600 relative ${
                 form.values.image.length === 0 ? "hidden" : "block"
@@ -572,6 +604,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                     />
                     <textarea
                       onKeyDown={(e) => handleKeyDown(e)}
+                      onFocus={handleDisconnectedFocus}
                       ref={textareaRef}
                       className="px-2 py-2 w-full resize-none bg-transparent focus-within:outline-none focus:ring-0 focus-visible:ring-0 ring-0 dark:ring-0 border-0 dark:text-gray-100"
                       onPaste={handlePaste}
@@ -796,6 +829,40 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                         )}
                       </div>
                     </div>
+                    {showConnectBanner && !isConnectionReady && (
+                      <div className="mt-2 flex flex-wrap items-center justify-between gap-2 rounded-md border border-amber-300 bg-amber-50 px-3 py-2 text-xs text-amber-900 dark:border-amber-500 dark:bg-[#2a2310] dark:text-amber-100">
+                        <p className="max-w-xs text-left">
+                          {t(
+                            "playground:composer.connectNotice",
+                            "Connect to your tldw server in Settings to send messages."
+                          )}
+                        </p>
+                        <div className="flex flex-wrap items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={openSettings}
+                            className="rounded-md border border-amber-300 bg-white px-2 py-1 text-xs font-medium text-amber-900 hover:bg-amber-100 dark:bg-[#3a2b10] dark:text-amber-50 dark:hover:bg-[#4a3512]"
+                          >
+                            {t("settings:tldw.setupLink", "Set up server")}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={openDiagnostics}
+                            className="text-xs font-medium text-amber-900 underline hover:text-amber-700 dark:text-amber-100 dark:hover:text-amber-300"
+                          >
+                            {t("settings:healthSummary.diagnostics", "Diagnostics")}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setShowConnectBanner(false)}
+                            className="inline-flex items-center rounded-full p-1 text-amber-700 hover:bg-amber-100 dark:text-amber-200 dark:hover:bg-[#3a2b10]"
+                            aria-label={t("common:close", "Dismiss")}
+                          >
+                            <X className="h-3 w-3" />
+                          </button>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
                 </form>

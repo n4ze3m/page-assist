@@ -61,6 +61,7 @@
   },
   "submit": "Indsend",
   "send": "Indsend",
+  "connectToServer": "Connect to server",
   "noData": "Igen data",
   "noHistory": "Igen chat history",
   "chatWithCurrentPage": "Chat med nuværende side",

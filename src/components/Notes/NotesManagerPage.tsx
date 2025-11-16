@@ -1,10 +1,13 @@
 import React from 'react'
-import { Button, Empty, Input, List, Pagination, Space, Spin, Tooltip, Typography, message, Select } from 'antd'
+import { Button, Input, List, Pagination, Space, Spin, Tooltip, Typography, message, Select } from 'antd'
 import { bgRequest } from '@/services/background-proxy'
 import { useQuery, keepPreviousData, useQueryClient } from '@tanstack/react-query'
 import { useServerOnline } from '@/hooks/useServerOnline'
 import { Copy as CopyIcon, Save as SaveIcon, Trash2 as TrashIcon, FileDown as FileDownIcon, Plus as PlusIcon, Search as SearchIcon } from 'lucide-react'
 import { confirmDanger } from '@/components/Common/confirm-danger'
+import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router-dom'
+import FeatureEmptyState from '@/components/Common/FeatureEmptyState'
 
 type NoteListItem = {
   id: string | number
@@ -14,6 +17,7 @@ type NoteListItem = {
 }
 
 const NotesManagerPage: React.FC = () => {
+  const { t } = useTranslation(['option', 'common'])
   const [query, setQuery] = React.useState('')
   const [page, setPage] = React.useState(1)
   const [pageSize, setPageSize] = React.useState(20)
@@ -27,6 +31,7 @@ const NotesManagerPage: React.FC = () => {
   const [editorKeywords, setEditorKeywords] = React.useState<string[]>([])
   const isOnline = useServerOnline()
   const queryClient = useQueryClient()
+  const navigate = useNavigate()
 
   const fetchNotes = async (): Promise<NoteListItem[]> => {
     const q = query.trim()
@@ -327,7 +332,24 @@ const NotesManagerPage: React.FC = () => {
           </div>
           {isFetching ? (
             <div className="flex items-center justify-center py-10"><Spin /></div>
-          ) : (Array.isArray(data) && data.length > 0) ? (
+          ) : !isOnline ? (
+            <FeatureEmptyState
+              title={t('option:notesEmpty.connectTitle', { defaultValue: 'Connect to use Notes' })}
+              description={t('option:notesEmpty.connectDescription', {
+                defaultValue: 'To use Notes, first connect to your tldw server.'
+              })}
+              examples={[
+                t('option:notesEmpty.connectExample1', {
+                  defaultValue: 'Open Settings → tldw server to add your server URL.'
+                }),
+                t('option:notesEmpty.connectExample2', {
+                  defaultValue: 'Use Diagnostics if your server is running but not reachable.'
+                })
+              ]}
+              primaryActionLabel={t('common:connectToServer', { defaultValue: 'Connect to server' })}
+              onPrimaryAction={() => navigate('/settings/tldw')}
+            />
+          ) : Array.isArray(data) && data.length > 0 ? (
             <>
               <List
                 size="small"
@@ -353,7 +375,22 @@ const NotesManagerPage: React.FC = () => {
               </div>
             </>
           ) : (
-            <Empty description="No notes" />
+            <FeatureEmptyState
+              title={t('option:notesEmpty.title', { defaultValue: 'No notes yet' })}
+              description={t('option:notesEmpty.description', {
+                defaultValue: 'Capture and organize free-form notes connected to your tldw insights.'
+              })}
+              examples={[
+                t('option:notesEmpty.exampleCreate', {
+                  defaultValue: 'Create a new note for a recent meeting or transcript.'
+                }),
+                t('option:notesEmpty.exampleLink', {
+                  defaultValue: 'Save review outputs into Notes so you can revisit them later.'
+                })
+              ]}
+              primaryActionLabel={t('option:notesEmpty.primaryCta', { defaultValue: 'Create note' })}
+              onPrimaryAction={resetEditor}
+            />
           )}
         </div>
       </div>

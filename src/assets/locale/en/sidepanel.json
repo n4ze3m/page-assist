@@ -24,7 +24,15 @@
         "openHistoryAria": "Open history",
         "openModelSettingsAria": "Open model settings",
         "openSettingsAria": "Open settings",
-        "tempPill": "Temp"
+        "tempPill": "Temp",
+        "modesLabel": "Open modes in Web UI",
+        "modePlayground": "Playground",
+        "modeReview": "Review",
+        "modeMedia": "Media",
+        "modeKnowledge": "Knowledge",
+        "modeNotes": "Notes",
+        "modePrompts": "Prompts",
+        "modeFlashcards": "Flashcards"
     },
     "toolbar": {
         "ragSearch": "RAG Search"

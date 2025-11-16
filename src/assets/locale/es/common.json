@@ -61,6 +61,7 @@
   },
   "submit": "Enviar",
   "send": "Enviar",
+  "connectToServer": "Connect to server",
   "noData": "Sin datos",
   "noHistory": "Chat sin histórico",
   "chatWithCurrentPage": "Conversar con la página actual",

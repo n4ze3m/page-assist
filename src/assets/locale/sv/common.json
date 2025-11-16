@@ -61,6 +61,7 @@
   },
   "submit": "Skicka",
   "send": "Skicka",
+  "connectToServer": "Connect to server",
   "noData": "Inga data",
   "noHistory": "Ingen chattlogg",
   "chatWithCurrentPage": "Chatta med nuvarande sidan",

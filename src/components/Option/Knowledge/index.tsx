@@ -1,6 +1,5 @@
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
-import { AddKnowledge } from "./AddKnowledge"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import {
   deleteKnowledge,
@@ -11,17 +10,23 @@ import { Skeleton, Table, Tag, Tooltip, message, notification } from "antd"
 import { FileUpIcon, Trash2 } from "lucide-react"
 import { useMessageOption } from "@/hooks/useMessageOption"
 import { removeModelSuffix } from "@/db/dexie/models"
+import { useNavigate } from "react-router-dom"
+import { AddKnowledge } from "./AddKnowledge"
 import { UpdateKnowledge } from "./UpdateKnowledge"
 import { isFireFoxPrivateMode } from "@/utils/is-private-mode"
 import { confirmDanger } from "@/components/Common/confirm-danger"
+import { useServerOnline } from "@/hooks/useServerOnline"
+import FeatureEmptyState from "@/components/Common/FeatureEmptyState"
 
 export const KnowledgeSettings = () => {
   const { t } = useTranslation(["knowledge", "common"])
+  const navigate = useNavigate()
   const [open, setOpen] = useState(false)
   const queryClient = useQueryClient()
   const { selectedKnowledge, setSelectedKnowledge } = useMessageOption()
   const [openUpdate, setOpenUpdate] = useState(false)
   const [updateKnowledgeId, setUpdateKnowledgeId] = useState("")
+  const isOnline = useServerOnline()
 
   const { data, status } = useQuery({
     queryKey: ["fetchAllKnowledge"],
@@ -51,6 +56,34 @@ export const KnowledgeSettings = () => {
     failed: "red"
   }
 
+  if (!isOnline) {
+    return (
+      <FeatureEmptyState
+        title={t("knowledge:empty.connectTitle", {
+          defaultValue: "Connect to use Knowledge"
+        })}
+        description={t("knowledge:empty.connectDescription", {
+          defaultValue:
+            "To use Knowledge, first connect to your tldw server so new sources can be indexed."
+        })}
+        examples={[
+          t("knowledge:empty.connectExample1", {
+            defaultValue:
+              "Open Settings → tldw server to add your server URL."
+          }),
+          t("knowledge:empty.connectExample2", {
+            defaultValue:
+              "Use Diagnostics if your server is running but not reachable."
+          })
+        ]}
+        primaryActionLabel={t("common:connectToServer", {
+          defaultValue: "Connect to server"
+        })}
+        onPrimaryAction={() => navigate("/settings/tldw")}
+      />
+    )
+  }
+
   return (
     <div>
       <div>
@@ -78,7 +111,33 @@ export const KnowledgeSettings = () => {
         </div>
         {status === "pending" && <Skeleton paragraph={{ rows: 8 }} />}
 
-        {status === "success" && (
+        {status === "success" && Array.isArray(data) && data.length === 0 && (
+          <FeatureEmptyState
+            title={t("knowledge:empty.title", {
+              defaultValue: "No knowledge sources yet"
+            })}
+            description={t("knowledge:empty.description", {
+              defaultValue:
+                "Add knowledge bases so tldw can ground answers in your own documents, transcripts, and files."
+            })}
+            examples={[
+              t("knowledge:empty.example1", {
+                defaultValue:
+                  "Upload PDFs, transcripts, or notes that you frequently reference in chat."
+              }),
+              t("knowledge:empty.example2", {
+                defaultValue:
+                  "Organize related documents into a single knowledge base to reuse across chats."
+              })
+            ]}
+            primaryActionLabel={t("knowledge:empty.primaryCta", {
+              defaultValue: "Add knowledge"
+            })}
+            onPrimaryAction={() => setOpen(true)}
+          />
+        )}
+
+        {status === "success" && Array.isArray(data) && data.length > 0 && (
           <Table
             columns={[
               {

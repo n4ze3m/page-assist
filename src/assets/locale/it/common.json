@@ -61,6 +61,7 @@
   },
   "submit": "Invia",
   "send": "Invia",
+  "connectToServer": "Connect to server",
   "noData": "Nessun Dato",
   "noHistory": "Nessuna Cronologia Chat",
   "chatWithCurrentPage": "Chatta con la Pagina Corrente",
