@@ -79,6 +79,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
   const [autoStopTimeout] = useStorage("autoStopTimeout", 2000)
 
   // Thinking mode state
+  const [defaultThinkingMode] = useStorage("defaultThinkingMode", false)
   const thinking = useStoreChatModelSettings((state) => state.thinking)
   const setThinking = useStoreChatModelSettings((state) => state.setThinking)
 
@@ -410,7 +411,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                 <div className="max-h-24 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-[#404040] scrollbar-track-transparent">
                   <div className="flex flex-wrap gap-1.5">
                     {uploadedFiles.map((file) => (
-                      <PlaygroundFile 
+                      <PlaygroundFile
                         key={file.id}
                         file={file}
                         removeUploadedFile={removeUploadedFile}
@@ -562,26 +563,40 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                             </div>
                           </Tooltip>
                         )}
-                        {isThinkingCapableModel(selectedModel) && (
-                          isGptOssModel(selectedModel) ? (
+                        {defaultThinkingMode && isThinkingCapableModel(selectedModel) &&
+                          (isGptOssModel(selectedModel) ? (
                             // For gpt-oss: Only show level selector (no on/off toggle)
                             <div className="inline-flex items-center gap-2">
                               <Tooltip title="Adjust reasoning intensity (always enabled)">
                                 <div className="inline-flex items-center gap-2">
-                                  <Brain className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-                                  <span className="text-sm text-gray-600 dark:text-gray-400">
-                                    {t("form.thinking.level")}:
-                                  </span>
+                                  <Brain className="h-5 w-5 text-gray-600 dark:text-gray-400" />
                                 </div>
                               </Tooltip>
                               <Select
                                 size="small"
-                                value={typeof thinking === "string" ? thinking : "medium"}
-                                onChange={(value) => setThinking?.(value as "low" | "medium" | "high")}
+                                value={
+                                  typeof thinking === "string"
+                                    ? thinking
+                                    : "medium"
+                                }
+                                onChange={(value) =>
+                                  setThinking?.(
+                                    value as "low" | "medium" | "high"
+                                  )
+                                }
                                 options={[
-                                  { value: "low", label: t("form.thinking.levels.low") },
-                                  { value: "medium", label: t("form.thinking.levels.medium") },
-                                  { value: "high", label: t("form.thinking.levels.high") }
+                                  {
+                                    value: "low",
+                                    label: t("form.thinking.levels.low")
+                                  },
+                                  {
+                                    value: "medium",
+                                    label: t("form.thinking.levels.medium")
+                                  },
+                                  {
+                                    value: "high",
+                                    label: t("form.thinking.levels.high")
+                                  }
                                 ]}
                                 className="w-24"
                               />
@@ -601,8 +616,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                                 </div>
                               </Tooltip>
                             </div>
-                          )
-                        )}
+                          ))}
                       </div>
                       <div className="flex !justify-end gap-3">
                         {history.length > 0 && (

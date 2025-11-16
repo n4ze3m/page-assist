@@ -71,6 +71,11 @@ export const GeneralSettings = () => {
 
   const [openReasoning, setOpenReasoning] = useStorage("openReasoning", false)
 
+  const [defaultThinkingMode, setDefaultThinkingMode] = useStorage(
+    "defaultThinkingMode",
+    false
+  )
+
   const [useMarkdownForUserMessage, setUseMarkdownForUserMessage] = useStorage(
     "useMarkdownForUserMessage",
     false
@@ -483,6 +488,19 @@ export const GeneralSettings = () => {
           onChange={(value) => {
             setDefaultWebUIPrompt(value || null)
           }}
+        />
+      </div>
+
+      <div className="flex flex-row justify-between">
+        <div className="inline-flex items-center gap-2">
+          <span className="text-gray-700   dark:text-neutral-50">
+            {t("generalSettings.settings.defaultThinkingMode.label")}
+          </span>
+        </div>
+
+        <Switch
+          checked={defaultThinkingMode}
+          onChange={(checked) => setDefaultThinkingMode(checked)}
         />
       </div>
 
