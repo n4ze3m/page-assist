@@ -4,7 +4,6 @@ import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
 
 import ServerConnectionCard from "@/components/Common/ServerConnectionCard"
-import HealthSummary from "@/components/Option/Settings/health-summary"
 import {
   useConnectionActions,
   useConnectionState
@@ -109,10 +108,7 @@ const OptionIndex = () => {
           </div>
         </div>
       ) : (
-        <>
-          <HealthSummary />
-          <Playground />
-        </>
+        <Playground />
       )}
     </OptionLayout>
   )

@@ -32,6 +32,12 @@ import { MoreOptions } from "./MoreOptions"
 import { browser } from "wxt/browser"
 import { CharacterSelect } from "../Common/CharacterSelect"
 import { PrimaryToolbar } from "./PrimaryToolbar"
+import {
+  useConnectionState
+} from "@/hooks/useConnectionState"
+import { ConnectionPhase } from "@/types/connection"
+import type { TFunction } from "i18next"
+import { Link } from "react-router-dom"
 
 const classNames = (...classes: (string | false | null | undefined)[]) =>
   classes.filter(Boolean).join(" ")
@@ -58,7 +64,7 @@ export const Header: React.FC<Props> = ({
   setOpenModelSettings,
   setSidebarOpen
 }) => {
-  const { t, i18n } = useTranslation(["option", "common"])
+  const { t, i18n } = useTranslation(["option", "common", "settings"])
   const isRTL = i18n?.dir() === "rtl"
 
   const [shareModeEnabled] = useStorage("shareMode", false)
@@ -103,6 +109,12 @@ export const Header: React.FC<Props> = ({
   const [chatTitle, setChatTitle] = React.useState("")
   const [isEditingTitle, setIsEditingTitle] = React.useState(false)
   const [quickIngestOpen, setQuickIngestOpen] = React.useState(false)
+
+  const {
+    phase,
+    isConnected,
+    knowledgeStatus
+  } = useConnectionState()
 
   // When the More menu opens, focus the first interactive item for a11y
   React.useEffect(() => {
@@ -247,6 +259,35 @@ export const Header: React.FC<Props> = ({
   const shortcutsToggleRef = React.useRef<HTMLButtonElement>(null)
   const shortcutsContainerRef = React.useRef<HTMLDivElement>(null)
   const shortcutsSectionId = "header-shortcuts-section"
+
+  const coreStatus: "unknown" | "ok" | "fail" =
+    phase === ConnectionPhase.SEARCHING
+      ? "unknown"
+      : isConnected && phase === ConnectionPhase.CONNECTED
+        ? "ok"
+        : phase === ConnectionPhase.ERROR || phase === ConnectionPhase.UNCONFIGURED
+          ? "fail"
+          : "unknown"
+
+  const ragStatus: "unknown" | "ok" | "fail" =
+    knowledgeStatus === "ready" || knowledgeStatus === "indexing"
+      ? "ok"
+      : knowledgeStatus === "offline"
+        ? "fail"
+        : "unknown"
+
+  const StatusDot = ({ status }: { status: "unknown" | "ok" | "fail" }) => (
+    <span
+      aria-hidden
+      className={`inline-block h-2 w-2 rounded-full ${
+        status === "ok"
+          ? "bg-green-500"
+          : status === "fail"
+            ? "bg-red-500"
+            : "bg-gray-400"
+      }`}
+    />
+  )
 
   // Manage focus for accessibility when expanding/collapsing
   React.useEffect(() => {
@@ -523,6 +564,39 @@ export const Header: React.FC<Props> = ({
         </div>
 
         <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:justify-end">
+          <div className="flex items-center gap-3 text-xs text-gray-600 dark:text-gray-300">
+            <span
+              className="inline-flex items-center gap-1"
+              title={t(
+                "settings:healthSummary.coreAria",
+                "Server: server/API health"
+              ) as string}
+              aria-label={t(
+                "settings:healthSummary.coreAria",
+                "Server: server/API health"
+              ) as string}>
+              <StatusDot status={coreStatus} />
+              <span>{t("settings:healthSummary.core", "Server")}</span>
+            </span>
+            <span
+              className="inline-flex items-center gap-1"
+              title={t(
+                "settings:healthSummary.ragAria",
+                "Knowledge: knowledge index health"
+              ) as string}
+              aria-label={t(
+                "settings:healthSummary.ragAria",
+                "Knowledge: knowledge index health"
+              ) as string}>
+              <StatusDot status={ragStatus} />
+              <span>{t("settings:healthSummary.rag", "Knowledge")}</span>
+            </span>
+            <Link
+              to="/settings/health"
+              className="text-xs font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400">
+              {t("settings:healthSummary.diagnostics", "Diagnostics")}
+            </Link>
+          </div>
           <button
             type="button"
             onClick={() => setOpenModelSettings(true)}
