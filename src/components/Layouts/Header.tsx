@@ -429,6 +429,16 @@ export const Header: React.FC<Props> = ({
           isRTL={isRTL}>
           <div className="flex items-center gap-3 min-w-0">
             <NewChat clearChat={clearChat} />
+            <button
+              type="button"
+              onClick={() => navigate("/settings/tldw")}
+              className="inline-flex items-center gap-1 rounded-md border border-transparent px-2 py-1 text-xs text-gray-600 transition hover:border-gray-300 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-amber-500 dark:text-gray-200 dark:hover:border-gray-500 dark:hover:bg-[#1f1f1f]"
+            >
+              <CogIcon className="h-4 w-4" aria-hidden="true" />
+              <span className="hidden sm:inline">
+                {t("option:header.serverSettings", "Server settings")}
+              </span>
+            </button>
             {!temporaryChat && historyId && historyId !== "temp" && (
               <div className="hidden min-w-[160px] max-w-[280px] lg:block">
                 {isEditingTitle ? (
@@ -598,7 +608,7 @@ export const Header: React.FC<Props> = ({
                 [
                   {
                     key: "playground",
-                    label: t("option:header.modePlayground", "Playground"),
+                    label: t("option:header.modePlayground", "Chat"),
                     shortcut: shortcutConfig.modePlayground
                   },
                   {
@@ -751,9 +761,9 @@ export const Header: React.FC<Props> = ({
 
         <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:justify-end">
           <div className="flex items-center gap-3 text-xs text-gray-600 dark:text-gray-300">
-            <button
-              type="button"
-              onClick={() => navigate("/settings/health")}
+          <button
+            type="button"
+            onClick={() => navigate("/settings/health")}
               className="inline-flex items-center gap-1 rounded-full border border-transparent px-2 py-1 text-xs transition hover:border-gray-300 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500 dark:hover:border-gray-500 dark:hover:bg-[#1f1f1f]"
               title={t(
                 "settings:healthSummary.coreAria",

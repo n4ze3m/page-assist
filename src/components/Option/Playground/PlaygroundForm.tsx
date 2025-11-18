@@ -26,8 +26,7 @@ import {
   FileText,
   PaperclipIcon,
   Gauge,
-  MoreHorizontal,
-  CogIcon
+  MoreHorizontal
 } from "lucide-react"
 import { getVariable } from "@/utils/select-variable"
 import { useTranslation } from "react-i18next"
@@ -985,14 +984,6 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                               className="text-gray-700 dark:text-gray-300 p-1 hover:text-gray-900 dark:hover:text-gray-100">
                               <Gauge className="h-5 w-5" />
                             </button>
-                          </Tooltip>
-                          <Tooltip title={t("settings:tldw.serverConfigTitle", "tldw Server Configuration") as string}>
-                            <Link
-                              to="/settings/tldw"
-                              className="text-gray-700 dark:text-gray-300 p-1 hover:text-gray-900 dark:hover:text-gray-100"
-                            >
-                              <CogIcon className="h-5 w-5" />
-                            </Link>
                           </Tooltip>
                           </>
                         ) : (

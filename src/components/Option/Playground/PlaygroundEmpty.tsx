@@ -17,7 +17,7 @@ export const PlaygroundEmpty = () => {
     <div className="mx-auto mt-10 max-w-xl px-4">
       <FeatureEmptyState
         title={t("playground:empty.title", {
-          defaultValue: "Start a new Playground chat"
+          defaultValue: "Start a new chat"
         })}
         description={
           demoEnabled
@@ -27,7 +27,7 @@ export const PlaygroundEmpty = () => {
               })
             : t("playground:empty.description", {
                 defaultValue:
-                  "Experiment with different models, prompts, and knowledge sources in one place."
+                  "Experiment with different models, prompts, and knowledge sources here."
               })
         }
         examples={[

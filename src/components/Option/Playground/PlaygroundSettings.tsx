@@ -32,7 +32,7 @@ export const PlaygroundSettings = () => {
 
       <Modal
         footer={null}
-        title="Playground Settings"
+        title="Chat settings"
         open={open}
         onCancel={() => setOpen(false)}>
             Nothing to see here

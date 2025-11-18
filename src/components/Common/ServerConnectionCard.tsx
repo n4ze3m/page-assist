@@ -149,7 +149,7 @@ export const ServerConnectionCard: React.FC<Props> = ({
         : statusVariant === "ok"
           ? t(
               "option:connectionCard.descriptionConnected",
-              "Connected to {{host}}. Start chatting in the Playground or sidebar.",
+              "Connected to {{host}}. Start chatting in the main view or sidebar.",
               { host: serverHost ?? "tldw_server" }
             )
           : t(

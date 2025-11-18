@@ -36,7 +36,7 @@
     "groupKnowledge": "Knowledge",
     "groupSettings": "Settings shortcuts",
     "modesLabel": "Modes",
-    "modePlayground": "Playground",
+    "modePlayground": "Chat",
     "modeReview": "Review",
     "modeMedia": "Media",
     "modeKnowledge": "Knowledge",
@@ -49,6 +49,7 @@
     "modeShortcutHint": "{{shortcut}} to switch",
     "quickIngest": "Quick ingest",
     "modelSettings": "Model settings",
+    "serverSettings": "Server settings",
     "more": "AI tools",
     "moreMenu": {
       "title": "Advanced tools",
