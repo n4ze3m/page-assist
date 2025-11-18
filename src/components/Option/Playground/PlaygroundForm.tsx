@@ -883,6 +883,15 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                           iconClassName="size-4"
                           className="text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-gray-100"
                         />
+                        {/* Current conversation model settings, adjacent to prompt selector */}
+                        <Tooltip title={t("common:currentChatModelSettings") as string}>
+                          <button
+                            type="button"
+                            onClick={() => setOpenModelSettings(true)}
+                            className="text-gray-700 dark:text-gray-300 p-1 hover:text-gray-900 dark:hover:text-gray-100">
+                            <Gauge className="h-5 w-5" />
+                          </button>
+                        </Tooltip>
                         <ModelSelectOption iconClassName="size-4" />
                         <Popover
                           trigger="click"
@@ -896,13 +905,12 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                           >
                             <MoreHorizontal className="h-4 w-4" />
                             <span>
-                              {t("option:header.more", "AI tools")}
+                              {t("playground:composer.toolsButton", "Tools+")}
                             </span>
                           </button>
                         </Popover>
 
                         {!isSending ? (
-                          <>
                           <Dropdown.Button
                             htmlType="submit"
                             disabled={isSending || !isConnectionReady}
@@ -976,16 +984,6 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                               {t("common:send", "Send")}
                             </div>
                           </Dropdown.Button>
-                          {/* Current Conversation Settings button to the right of submit */}
-                          <Tooltip title={t("common:currentChatModelSettings") as string}>
-                            <button
-                              type="button"
-                              onClick={() => setOpenModelSettings(true)}
-                              className="text-gray-700 dark:text-gray-300 p-1 hover:text-gray-900 dark:hover:text-gray-100">
-                              <Gauge className="h-5 w-5" />
-                            </button>
-                          </Tooltip>
-                          </>
                         ) : (
                           <Tooltip title={t("tooltip.stopStreaming")}>
                             <button

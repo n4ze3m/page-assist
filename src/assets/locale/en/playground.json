@@ -91,6 +91,9 @@
         "streamErrorTitle": "Live captions unavailable"
     },
     "composer": {
+        "toolsButton": "Tools+"
+    },
+    "composer": {
         "queuedBanner": {
             "title": "Queued while offline",
             "body": "We’ll hold these messages and send them once your tldw server is connected.",
