@@ -1,0 +1,79 @@
+import { test, expect } from '@playwright/test'
+import path from 'path'
+import { launchWithExtension } from './utils/extension'
+import { MockTldwServer } from './utils/mock-server'
+import { grantHostPermission } from './utils/permissions'
+
+test.describe('Composer readiness based on connection state', () => {
+  test('sidepanel composer is disabled and shows connection helper when server is not configured', async () => {
+    const extPath = path.resolve('.output/chrome-mv3')
+    const { context, openSidepanel } = (await launchWithExtension(extPath)) as any
+    const page = await openSidepanel()
+
+    // Composer placeholder should reflect disconnected state
+    const textarea = page.getByPlaceholder(/Waiting for your server/i)
+    await expect(textarea).toBeVisible()
+
+    // Send button should be disabled while disconnected
+    const sendButton = page.getByRole('button', { name: /Send/i }).first()
+    await expect(sendButton).toBeDisabled()
+
+    // Inline helper copy explains that messages cannot be sent
+    await expect(
+      page.getByText(/Connect to your tldw server in Settings to send messages\./i)
+    ).toBeVisible()
+
+    // Focusing the composer should reveal the connect banner with CTAs
+    await textarea.focus()
+    await expect(
+      page.getByText(/Connect to your tldw server in Settings to send messages\./i)
+    ).toBeVisible()
+    await expect(
+      page.getByRole('button', { name: /Set up server/i })
+    ).toBeVisible()
+    await expect(
+      page.getByRole('button', { name: /Diagnostics/i })
+    ).toBeVisible()
+
+    await context.close()
+  })
+
+  test('sidepanel composer is enabled with normal placeholder when connected', async () => {
+    const server = new MockTldwServer()
+    await server.start()
+
+    const extPath = path.resolve('.output/chrome-mv3')
+    const { context, openSidepanel, extensionId } = (await launchWithExtension(extPath)) as any
+
+    // Ensure host permission for the mock server is granted
+    const granted = await grantHostPermission(context, extensionId, 'http://127.0.0.1/*')
+    if (!granted) {
+      test.skip(
+        true,
+        'Host permission not granted for http://127.0.0.1/*; allow it in chrome://extensions > tldw Assistant > Site access, then re-run'
+      )
+    }
+
+    const page = await openSidepanel()
+
+    // Seed a valid config so the shared connection store can reach the mock server
+    await page.evaluate((cfg) => new Promise<void>((resolve) => {
+      // @ts-ignore
+      chrome.storage.local.set({ tldwConfig: cfg }, () => resolve())
+    }), { serverUrl: server.url, authMode: 'single-user', apiKey: 'test-valid-key' })
+
+    await page.reload()
+
+    // Once connected, composer should use the normal chat placeholder
+    const textarea = page.getByPlaceholder(/Type a message/i)
+    await expect(textarea).toBeVisible({ timeout: 15_000 })
+
+    // Send button should be enabled when the server is connected
+    const sendButton = page.getByRole('button', { name: /Send/i }).first()
+    await expect(sendButton).toBeEnabled()
+
+    await context.close()
+    await server.stop()
+  })
+})
+

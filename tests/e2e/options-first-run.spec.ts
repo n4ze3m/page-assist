@@ -12,6 +12,13 @@ test.describe('Options first-run and connection panel', () => {
     // First-run: Waiting panel visible
     await expect(page.getByText(/Waiting for your tldw server/i)).toBeVisible()
 
+    // Demo CTA should be visible for first-run
+    await expect(page.getByRole('button', { name: /Try a demo/i })).toBeVisible()
+
+    // Clicking Try a demo should flip demo mode flag on the main layout
+    await page.getByRole('button', { name: /Try a demo/i }).click()
+    await expect(page.locator('main[data-demo-mode="on"]')).toBeVisible()
+
     // Inline link button: "Set up server" should navigate to Settings → tldw
     await page.getByRole('button', { name: /Set up server/i }).click()
 

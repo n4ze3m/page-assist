@@ -129,6 +129,16 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
     if (!isConnectionReady) {
       if (e.key === "Enter") {
         e.preventDefault()
+        form.onSubmit(async (value) => {
+          if (value.message.trim().length === 0 && value.image.length === 0) {
+            return
+          }
+          addQueuedMessage({
+            message: value.message.trim(),
+            image: value.image
+          })
+          form.reset()
+        })()
       }
       return
     }
@@ -211,7 +221,10 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
     temporaryChat,
     setTemporaryChat,
     messages,
-    clearChat
+    clearChat,
+    queuedMessages,
+    addQueuedMessage,
+    clearQueuedMessages
   } = useMessage()
 
   const [openModelSettings, setOpenModelSettings] = React.useState(false)
@@ -432,6 +445,34 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
       textAreaFocus()
     }
   })
+
+  const submitQueuedInSidepanel = async (message: string, image: string) => {
+    if (!isConnectionReady) return
+    await stopListening()
+    if (!selectedModel || selectedModel.length === 0) {
+      form.setFieldError("message", t("formError.noModel"))
+      return
+    }
+    if (chatMode === "rag") {
+      const defaultEM = await defaultEmbeddingModelForRag()
+      if (!defaultEM && chatWithWebsiteEmbedding) {
+        form.setFieldError("message", t("formError.noEmbeddingModel"))
+        return
+      }
+    }
+    if (webSearch) {
+      const defaultEM = await defaultEmbeddingModelForRag()
+      const simpleSearch = await getIsSimpleInternetSearch()
+      if (!defaultEM && !simpleSearch) {
+        form.setFieldError("message", t("formError.noEmbeddingModel"))
+        return
+      }
+    }
+    await sendMessage({
+      image,
+      message
+    })
+  }
 
   React.useEffect(() => {
     const handleDrop = (e: DragEvent) => {
@@ -672,7 +713,9 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                             className="inline-flex items-center gap-2 rounded-md border border-gray-200 px-3 py-1.5 text-xs font-semibold text-gray-700 transition hover:bg-gray-100 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-[#2a2a2a]"
                           >
                             <MoreHorizontal className="h-4 w-4" />
-                            <span>{t('playground:composer.moreTools')}</span>
+                            <span>
+                              {t("option:header.more", "AI tools")}
+                            </span>
                           </button>
                         </Popover>
                         <div
@@ -859,6 +902,49 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                             aria-label={t("common:close", "Dismiss")}
                           >
                             <X className="h-3 w-3" />
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                    {isConnectionReady && queuedMessages.length > 0 && (
+                      <div className="mt-2 flex flex-wrap items-center justify-between gap-2 rounded-md border border-green-300 bg-green-50 px-3 py-2 text-xs text-green-900 dark:border-green-500 dark:bg-[#102a10] dark:text-green-100">
+                        <p className="max-w-xs text-left">
+                          <span className="block font-medium">
+                            {t(
+                              "playground:composer.queuedBanner.title",
+                              "Queued while offline"
+                            )}
+                          </span>
+                          {t(
+                            "playground:composer.queuedBanner.body",
+                            "We’ll hold these messages and send them once your tldw server is connected."
+                          )}
+                        </p>
+                        <div className="flex flex-wrap items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={async () => {
+                              for (const item of queuedMessages) {
+                                await submitQueuedInSidepanel(item.message, item.image)
+                              }
+                              clearQueuedMessages()
+                            }}
+                            className="rounded-md border border-green-300 bg-white px-2 py-1 text-xs font-medium text-green-900 hover:bg-green-100 dark:bg-[#163816] dark:text-green-50 dark:hover:bg-[#194419]"
+                          >
+                            {t(
+                              "playground:composer.queuedBanner.sendNow",
+                              "Send queued messages"
+                            )}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => clearQueuedMessages()}
+                            className="text-xs font-medium text-green-900 underline hover:text-green-700 dark:text-green-100 dark:hover:text-green-300"
+                          >
+                            {t(
+                              "playground:composer.queuedBanner.clear",
+                              "Clear queue"
+                            )}
                           </button>
                         </div>
                       </div>

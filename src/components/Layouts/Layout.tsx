@@ -19,18 +19,22 @@ import { Sidebar } from "../Option/Sidebar"
 import { Header } from "./Header"
 import { useMigration } from "../../hooks/useMigration"
 import { confirmDanger } from "@/components/Common/confirm-danger"
+import { DemoModeProvider, useDemoMode } from "@/context/demo-mode"
 
-export default function OptionLayout({
-  children,
-  hideHeader = false
-}: {
+type OptionLayoutProps = {
   children: React.ReactNode
   hideHeader?: boolean
-}) {
+}
+
+const OptionLayoutInner: React.FC<OptionLayoutProps> = ({
+  children,
+  hideHeader = false
+}) => {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const { t } = useTranslation(["option", "common", "settings"])
   const [openModelSettings, setOpenModelSettings] = useState(false)
   useMigration()
+  const { demoEnabled } = useDemoMode()
   const {
     setMessages,
     setHistory,
@@ -61,7 +65,8 @@ export default function OptionLayout({
         className={classNames(
           "relative w-full",
           hideHeader ? "min-h-screen bg-slate-50 dark:bg-[#101010]" : "h-dvh"
-        )}>
+        )}
+        data-demo-mode={demoEnabled ? "on" : "off"}>
         {!hideHeader && (
           <div className="relative z-20 w-full">
             <Header
@@ -171,5 +176,13 @@ export default function OptionLayout({
         )}
       </main>
     </div>
+  )
+}
+
+export default function OptionLayout(props: OptionLayoutProps) {
+  return (
+    <DemoModeProvider>
+      <OptionLayoutInner {...props} />
+    </DemoModeProvider>
   )
 }

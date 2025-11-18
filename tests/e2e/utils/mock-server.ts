@@ -101,7 +101,13 @@ export class MockTldwServer {
     if (url === '/api/v1/llm/models') {
       const key = String(req.headers['x-api-key'] || '')
       if (key !== this.apiKey) return this.unauthorized(res)
-      return this.ok(res, ['openai/gpt-4.1-2025-04-14'])
+      // Return a small set of models from different providers so UI tests
+      // can assert grouping and selection across providers.
+      return this.ok(res, [
+        'openai/gpt-4.1-mini',
+        'anthropic/claude-3.5-sonnet',
+        'mistral/mistral-small'
+      ])
     }
     if (url === '/api/v1/chat/completions') {
       const key = String(req.headers['x-api-key'] || '')

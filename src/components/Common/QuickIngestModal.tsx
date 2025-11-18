@@ -135,7 +135,8 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
             if (k.includes('.')) assignPath(nestedBody, k.split('.'), v)
             else nestedBody[k] = v
           }
-          data = await tldwClient.ingestWebContent(r.url, { type: t, audio: r.audio, document: r.document, video: r.video, ...common, ...nestedBody })
+          // Use addMedia with flags to request processing for remote URL
+          data = await tldwClient.addMedia(r.url, { type: t, audio: r.audio, document: r.document, video: r.video, ...common, ...nestedBody })
         }
         out.push({ id: r.id, status: 'ok', url: r.url, type: t, data })
         setResults([...out])

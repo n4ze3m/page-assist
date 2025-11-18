@@ -612,17 +612,47 @@ class RequestSigner {
 - [x] Tested connection interface loads correctly
 
 ### 🚧 In Progress - Phase 2 Core Chat Integration
-1. [ ] Update model fetching to use tldw `/api/v1/llm/models`
-2. [ ] Modify chat to use tldw `/api/v1/chat/completions`
-3. [ ] Implement streaming response handler
-4. [ ] Update background service for CORS proxy
-5. [ ] Test chat functionality with various models
+1. [x] Update model fetching to use tldw `/api/v1/llm/models`
+2. [x] Modify chat to use tldw `/api/v1/chat/completions`
+3. [x] Implement streaming response handler (SSE via `bgStream` + `tldwClient.streamChatCompletion`)
+4. [x] Update background service for CORS/auth proxy (`tldw:request` / `tldw:upload` / `tldw:stream` handlers)
+5. [ ] Test chat functionality with various models (providers, timeouts, error paths)
+
+## Remaining Work (high-level checklist)
+
+**Core integration & hygiene**
+- [ ] Audit all client endpoints against OpenAPI (paths + trailing slashes), especially Notes, Prompts, RAG, Media, Characters.
+- [ ] Remove/rename remaining Ollama‑specific concepts so the extension is fully tldw_server‑branded.
+- [ ] Implement a stricter credential storage strategy (access tokens in memory/session, optional encrypted refresh token at rest).
+- [ ] Decide whether to introduce a shared background `ExtensionState` (as sketched above) or keep per‑view Zustand only.
+
+**Chat, reliability, and UX**
+- [ ] Systematically test chat across several providers/models (latency, streaming robustness, cancellation, retry behavior).
+- [ ] Generalize the error‑recovery pattern (beyond chat) with retries, timeouts, and user‑visible recovery hints for RAG, Media, Notes, and Prompts.
+
+**RAG, media, and advanced flows**
+- [ ] Finish RAG integration per plan (sidepanel search bar ergonomics, richer filters, and “insert into chat” flows).
+- [ ] Expand media ingestion UX: right‑click “Send to tldw_server”, clearer progress / status for long‑running `media/process-*` jobs, and (optionally) a queue view.
+- [ ] Implement batch operations for multiple URLs/files and surface background processing status.
+
+**Audio features (STT/TTS)**
+- [ ] Harden STT flows (upload + WebSocket) with better failure messages and health diagnostics.
+- [ ] Add tldw_server‑backed TTS (`POST /api/v1/audio/speech` and optional voice catalog) as a provider alongside browser/ElevenLabs/OpenAI in `useTTS` and TTS settings.
+
+**MCP & tooling**
+- [ ] Wire basic MCP integration using `/api/v1/mcp/{request|status}`, with a minimal UI to browse tools and run them safely from chat.
+
+**Testing, docs, and release**
+- [ ] Add targeted unit tests for tldw services (API client, auth, background proxy helpers) and critical utilities.
+- [ ] Extend Playwright coverage where needed (multi‑model chat matrix, RAG and media workflows, key error states).
+- [ ] Flesh out docs: end‑user setup/FAQ, API integration reference, and a short “troubleshooting & diagnostics” guide.
+- [ ] Align with the deployment plan (Alpha → Beta → Public), including store metadata, screenshots, and basic success metrics tracking.
 
 ### Next Immediate Steps
-- Create TldwModels service to fetch available models
-- Update model store to use tldw models
-- Modify chat hooks to use tldw API
-- Test streaming chat responses
+- Finalize multi‑model chat testing (happy paths and failure modes).
+- Run an endpoints/path audit against the current `openapi.json` and fix any remaining drift.
+- Tighten error‑recovery behavior for RAG/media operations using the existing background proxy.
+- Sketch initial MCP + TTS‑via‑tldw integration so they’re ready for the next milestone.
 
 ## Conclusion
 

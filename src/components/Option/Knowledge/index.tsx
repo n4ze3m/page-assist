@@ -17,6 +17,7 @@ import { isFireFoxPrivateMode } from "@/utils/is-private-mode"
 import { confirmDanger } from "@/components/Common/confirm-danger"
 import { useServerOnline } from "@/hooks/useServerOnline"
 import FeatureEmptyState from "@/components/Common/FeatureEmptyState"
+import { useDemoMode } from "@/context/demo-mode"
 
 export const KnowledgeSettings = () => {
   const { t } = useTranslation(["knowledge", "common"])
@@ -27,6 +28,7 @@ export const KnowledgeSettings = () => {
   const [openUpdate, setOpenUpdate] = useState(false)
   const [updateKnowledgeId, setUpdateKnowledgeId] = useState("")
   const isOnline = useServerOnline()
+  const { demoEnabled } = useDemoMode()
 
   const { data, status } = useQuery({
     queryKey: ["fetchAllKnowledge"],
@@ -57,7 +59,31 @@ export const KnowledgeSettings = () => {
   }
 
   if (!isOnline) {
-    return (
+    return demoEnabled ? (
+      <FeatureEmptyState
+        title={t("knowledge:empty.demoTitle", {
+          defaultValue: "Explore Knowledge in demo mode"
+        })}
+        description={t("knowledge:empty.demoDescription", {
+          defaultValue:
+            "This demo shows how Knowledge can organize your sources for better search. Connect your own server later to index your real documents and transcripts."
+        })}
+        examples={[
+          t("knowledge:empty.demoExample1", {
+            defaultValue:
+              "See how knowledge bases and sources appear in this table."
+          }),
+          t("knowledge:empty.demoExample2", {
+            defaultValue:
+              "When you connect, you’ll be able to upload files and text that tldw can search across."
+          })
+        ]}
+        primaryActionLabel={t("common:connectToServer", {
+          defaultValue: "Connect to server"
+        })}
+        onPrimaryAction={() => navigate("/settings/tldw")}
+      />
+    ) : (
       <FeatureEmptyState
         title={t("knowledge:empty.connectTitle", {
           defaultValue: "Connect to use Knowledge"

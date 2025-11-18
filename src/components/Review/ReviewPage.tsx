@@ -38,6 +38,7 @@ import { Storage } from "@plasmohq/storage"
 import { getAllPrompts } from "@/db/dexie/helpers"
 import { confirmDanger } from "@/components/Common/confirm-danger"
 import FeatureEmptyState from "@/components/Common/FeatureEmptyState"
+import { useDemoMode } from "@/context/demo-mode"
 
 type MediaItem = any
 type NoteItem = any
@@ -938,8 +939,34 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true }
     return arr
   }, [results, mediaTypes, keywordTokens])
 
+  const { demoEnabled } = useDemoMode()
+
   if (!isOnline) {
-    return (
+    return demoEnabled ? (
+      <FeatureEmptyState
+        title={t('review:empty.demoTitle', {
+          defaultValue: 'Explore Review in demo mode'
+        })}
+        description={t('review:empty.demoDescription', {
+          defaultValue:
+            'This demo shows how tldw Assistant can turn media and notes into structured reviews. Connect your own server later to analyze your own content.'
+        })}
+        examples={[
+          t('review:empty.demoExample1', {
+            defaultValue:
+              'See how selected media and notes appear in the review workspace.'
+          }),
+          t('review:empty.demoExample2', {
+            defaultValue:
+              'When you connect, you’ll be able to generate summaries and action items from your own recordings and notes.'
+          })
+        ]}
+        primaryActionLabel={t('common:connectToServer', {
+          defaultValue: 'Connect to server'
+        })}
+        onPrimaryAction={() => navigate('/settings/tldw')}
+      />
+    ) : (
       <FeatureEmptyState
         title={t('review:empty.connectTitle', {
           defaultValue: 'Connect to use Review'

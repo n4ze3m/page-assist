@@ -16,7 +16,8 @@
     "buttonRetry": "Retry connection",
     "buttonChangeServer": "Change server",
     "buttonOpenDiagnostics": "Open diagnostics",
-    "buttonViewDiagnostics": "View diagnostics"
+    "buttonViewDiagnostics": "View diagnostics",
+    "buttonTryDemo": "Try a demo"
   },
   "header": {
     "backToHome": "Back to home",
@@ -123,6 +124,10 @@
     "connectDescription": "To use Notes, first connect to your tldw server.",
     "connectExample1": "Open Settings \u2192 tldw server to add your server URL.",
     "connectExample2": "Use Diagnostics if your server is running but not reachable.",
+    "demoTitle": "Explore Notes in demo mode",
+    "demoDescription": "This demo shows how Notes can organize your insights. Connect your own server later to create and save real notes.",
+    "demoExample1": "See how note titles, previews, and timestamps appear in the list.",
+    "demoExample2": "When you connect, you’ll be able to create notes from meetings, reviews, and more.",
     "title": "No notes yet",
     "description": "Capture and organize free-form notes connected to your tldw insights.",
     "exampleCreate": "Create a new note for a recent meeting or transcript.",
@@ -138,6 +143,10 @@
     "emptyConnectDescription": "To review or generate flashcards, first connect to your tldw server.",
     "emptyConnectExample1": "Go to Settings \u2192 tldw server to add your server URL.",
     "emptyConnectExample2": "Once connected, review due cards or create new decks from your notes and media.",
+    "demoTitle": "Explore Flashcards in demo mode",
+    "demoDescription": "This demo shows how Flashcards can turn your content into spaced‑repetition cards. Connect your own server later to generate and review cards from your own notes and media.",
+    "demoExample1": "See how decks, cards, and tags are organized across Review and Manage tabs.",
+    "demoExample2": "When you connect, you’ll be able to generate cards from lectures, meetings, or notes and review them on a schedule.",
     "selectDeck": "Select deck",
     "nextDue": "Next due",
     "front": "Front",

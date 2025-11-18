@@ -19,6 +19,11 @@ export type ChatHistory = {
   messageType?: string
 }[]
 
+export type QueuedMessage = {
+  message: string
+  image: string
+}
+
 type State = {
   messages: Message[]
   setMessages: (messages: Message[]) => void

@@ -2,10 +2,12 @@ import React from "react"
 import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
 import FeatureEmptyState from "@/components/Common/FeatureEmptyState"
+import { useDemoMode } from "@/context/demo-mode"
 
 export const PlaygroundEmpty = () => {
   const { t } = useTranslation(["playground", "common"])
   const navigate = useNavigate()
+  const { demoEnabled } = useDemoMode()
 
   const handleStartChat = React.useCallback(() => {
     window.dispatchEvent(new CustomEvent("tldw:focus-composer"))
@@ -17,10 +19,17 @@ export const PlaygroundEmpty = () => {
         title={t("playground:empty.title", {
           defaultValue: "Start a new Playground chat"
         })}
-        description={t("playground:empty.description", {
-          defaultValue:
-            "Experiment with different models, prompts, and knowledge sources in one place."
-        })}
+        description={
+          demoEnabled
+            ? t("playground:empty.demoDescription", {
+                defaultValue:
+                  "You’re in demo mode — try asking a question to see how the assistant responds. You can connect your own tldw server later."
+              })
+            : t("playground:empty.description", {
+                defaultValue:
+                  "Experiment with different models, prompts, and knowledge sources in one place."
+              })
+        }
         examples={[
           t("playground:empty.example1", {
             defaultValue:

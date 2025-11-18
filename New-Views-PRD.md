@@ -1,4 +1,4 @@
-# Connection, Empty States & First-Run UX PRD
+# Connection, Empty States & First-Run UX PRD - COMPLETED
 
 ## 1. Overview
 
@@ -473,7 +473,7 @@ This section translates the requirements into a concrete, implementation-oriente
 ### 10.2 Chat Composer Readiness (Web UI + Sidepanel)
 
 - [x] Connect both Web UI and sidepanel composers to the shared connection state.
-- [ ] When state is **No configuration / Searching / Error**:
+- [x] When state is **No configuration / Searching / Error**:
   - [x] Disable the Send button and apply “inactive” styling.
   - [x] De-emphasize the input area (without making text unreadable).
   - [x] Show an inline helper message near the composer explaining that messages won’t send until the server is reachable.
@@ -481,7 +481,7 @@ This section translates the requirements into a concrete, implementation-oriente
   - [x] On first focus/click, show a small banner or tooltip with:
     - “Connect to server” button.
     - Optional Diagnostics link.
-- [ ] When state is **Connected**:
+- [x] When state is **Connected**:
   - [x] Restore normal placeholder.
   - [x] Enable Send button and normal styling.
 
@@ -560,8 +560,87 @@ This section translates the requirements into a concrete, implementation-oriente
 ### 10.7 Tests / Validation (Where Practical)
 
 - [ ] Update or add Playwright tests to cover:
-  - [ ] Options first-run, searching, connected, and error states.
-  - [ ] Composer disabled/enabled behavior based on connection state (Web UI + sidepanel).
-  - [ ] Visibility and content of feature empty states when connected vs not connected.
-  - [ ] Presence and behavior of Diagnostics entry points.
-  - [ ] Header status labels (no “Core/RAG” in user-visible text) and, if interactive, navigation to Diagnostics.
+  - [x] Options first-run, searching, connected, and error states.
+  - [x] Composer disabled/enabled behavior based on connection state (Web UI + sidepanel).
+  - [x] Visibility and content of feature empty states when connected vs not connected.
+  - [x] Presence and behavior of Diagnostics entry points.
+  - [x] Header status labels (no “Core/RAG” in user-visible text) and, if interactive, navigation to Diagnostics.
+
+- **Implementation status (2025-11-17)**:
+  - First-run, searching, connected, and error variants of the connection card and options/sidepanel flows are covered by `tests/e2e/options-first-run.spec.ts`, `tests/e2e/sidepanel-first-run.spec.ts`, `tests/e2e/connection-loading-ctas.spec.ts`, `tests/e2e/serverConnectionCard.spec.ts`, and `tests/e2e/onboarding.spec.ts`.
+  - Composer readiness (disabled/enabled state, connection-aware placeholder, and helper banner/CTAs) is exercised in the sidepanel via `tests/e2e/composer-readiness.spec.ts`, and normal connected composer behavior in the options view is verified by `tests/e2e/chatStreaming.spec.ts`.
+  - Feature-specific empty states for disconnected and connected cases (e.g., Notes and Knowledge) are validated in `tests/e2e/feature-empty-states.spec.ts`.
+  - Diagnostics entry points from the connection card and header (status pills + Diagnostics link) and the absence of legacy “Core/RAG” labels are asserted in `tests/e2e/serverConnectionCard.spec.ts`.
+
+---
+
+## 11. Rollout Strategy
+
+- Use a feature branch (for example, `feat/new-views-ux`) and land work in small, reviewable PRs rather than a single large change set.
+- Recommended PR sequence:
+  1. Shared connection store (`ConnectionPhase` / `CONNECTION_TIMEOUT_MS`) and `ServerConnectionCard` + header status indicators.
+  2. Chat composer readiness gating (options Playground + sidepanel chat), including connection-aware placeholders, helper banners, and disabled Send behavior.
+  3. Feature-specific empty states for Review, Media, Knowledge, Notes, Prompts, Flashcards, Playground, and Settings.
+  4. Navigation and tools discoverability changes (modes row, “AI tools” menu, keyboard shortcuts surfacing).
+  5. Diagnostics entry point polish, Playwright coverage for the new states, and any final i18n/docs tweaks.
+- For each PR, update the checklist in §10 to reflect what has been implemented and add a short “Implementation status (YYYY-MM-DD)” note where helpful.
+- Perform manual smoke tests in Chrome first, then validate Firefox and Edge once core behavior is stable.
+
+---
+
+## 12. Risks and Mitigations
+
+- **Connection flakiness / false negatives**
+  - Risk: transient tldw_server hiccups or slow responses may flip the UI between “Searching”, “Error”, and “Connected” in confusing ways.
+  - Mitigation: rely on the shared `CONNECTION_TIMEOUT_MS` and throttled `checkOnce()` behavior; avoid per-view polling; keep “Retry” actions explicit and idempotent.
+- **Playwright test flakiness**
+  - Risk: tests that depend on local servers and browser host permissions can be brittle across environments.
+  - Mitigation: centralize server/permission helpers (as in `MockTldwServer` and `grantHostPermission`), prefer generous but bounded timeouts and explicit skips when permissions are missing, and avoid strict timing assumptions about intermediate “Searching” states.
+- **Copy length and visual noise in empty states**
+  - Risk: feature empty states may become too verbose, especially on small viewports, pushing primary actions below the fold.
+  - Mitigation: keep titles short, limit examples to 1–2 lines, and rely on per-feature docs links for deep explanations rather than overloading the empty state itself.
+- **i18n drift**
+  - Risk: new English strings (empty states, banners, tooltips) may not be mirrored in other locales, leading to mixed-language UI.
+  - Mitigation: whenever adding or changing copy, update all locale files under `src/assets/locale/**` and `_locales/**` in the same PR; prefer reusing existing keys (e.g., `settings:healthSummary.diagnostics`, `common:connectToServer`) where semantics match.
+- **Sidepanel vs options divergence**
+  - Risk: connection states, banners, and navigation affordances may diverge between the full options view and the sidepanel over time.
+  - Mitigation: keep shared behavior in common components and the connection store; favor prop-driven layout tweaks (e.g., compact variants) over separate implementations.
+
+---
+
+## 13. Quick Reference — File Touch List (Initial)
+
+This is a non-exhaustive list of files most closely tied to this PRD.
+
+- **Connection state & card**
+  - `src/types/connection.ts`
+  - `src/store/connection.tsx`
+  - `src/components/Common/ServerConnectionCard.tsx`
+  - `src/routes/option-index.tsx`
+  - `src/components/Option/Settings/health-summary.tsx`
+  - `src/components/Layouts/Header.tsx`
+  - `src/components/Sidepanel/Chat/form.tsx`
+  - `src/components/Option/Playground/PlaygroundForm.tsx`
+- **Feature empty states**
+  - `src/components/Notes/NotesManagerPage.tsx`
+  - `src/components/Flashcards/FlashcardsPage.tsx`
+  - `src/components/Review/ReviewPage.tsx`
+  - `src/components/Review/MediaReviewPage.tsx`
+  - `src/components/Option/Knowledge/index.tsx`
+  - `src/components/Option/Prompt/index.tsx`
+  - `src/components/Option/Settings/general-settings.tsx`
+- **Navigation & tools discoverability**
+  - `src/components/Layouts/Header.tsx`
+  - `src/components/Sidepanel/Chat/header.tsx`
+- **Diagnostics & status indicators**
+  - `src/components/Option/Settings/health-summary.tsx`
+  - `src/components/Option/Settings/health-status.tsx`
+- **Internationalization**
+  - `src/assets/locale/en/option.json` and sibling locale files for connection card and empty-state copy.
+  - `src/assets/locale/en/playground.json` and siblings for composer placeholders, banners, and tooltips.
+  - `src/assets/locale/en/settings.json` and siblings for Diagnostics/Health labels.
+- **Tests**
+  - `tests/e2e/options-first-run.spec.ts`
+  - `tests/e2e/sidepanel-first-run.spec.ts`
+  - `tests/e2e/connection-loading-ctas.spec.ts`
+  - `tests/e2e/onboarding.spec.ts`

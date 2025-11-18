@@ -181,3 +181,9 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
     await get().checkOnce()
   }
 }))
+
+if (typeof window !== "undefined") {
+  // Expose for Playwright tests and debugging only.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ;(window as any).__tldw_useConnectionStore = useConnectionStore
+}

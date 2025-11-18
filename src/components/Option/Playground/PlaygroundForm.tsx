@@ -87,17 +87,21 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
     setFileRetrievalEnabled,
     handleFileUpload,
     removeUploadedFile,
-    clearUploadedFiles
+    clearUploadedFiles,
+    queuedMessages,
+    addQueuedMessage,
+    clearQueuedMessages
   } = useMessageOption()
 
   const [autoSubmitVoiceMessage] = useStorage("autoSubmitVoiceMessage", false)
   const [openModelSettings, setOpenModelSettings] = React.useState(false)
 
-  const [autoStopTimeout] = useStorage("autoStopTimeout", 2000)
   const { phase, isConnected } = useConnectionState()
   const isConnectionReady = isConnected && phase === ConnectionPhase.CONNECTED
   const [hasShownConnectBanner, setHasShownConnectBanner] = React.useState(false)
   const [showConnectBanner, setShowConnectBanner] = React.useState(false)
+  const [showQueuedBanner, setShowQueuedBanner] = React.useState(true)
+  const [autoStopTimeout] = useStorage("autoStopTimeout", 2000)
 
   const {
     tabMentionsEnabled,
@@ -174,6 +178,14 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
       setShowConnectBanner(false)
     }
   }, [isConnectionReady])
+
+  React.useEffect(() => {
+    if (queuedMessages.length > 0) {
+      setShowQueuedBanner(true)
+    } else {
+      setShowQueuedBanner(false)
+    }
+  }, [queuedMessages])
 
   const onInputChange = async (
     e: React.ChangeEvent<HTMLInputElement> | File
@@ -315,9 +327,6 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
   })
 
   const submitForm = () => {
-    if (!isConnectionReady) {
-      return
-    }
     form.onSubmit(async (value) => {
       if (
         value.message.trim().length === 0 &&
@@ -325,6 +334,16 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
         selectedDocuments.length === 0 &&
         uploadedFiles.length === 0
       ) {
+        return
+      }
+      if (!isConnectionReady) {
+        addQueuedMessage({
+          message: value.message.trim(),
+          image: value.image
+        })
+        form.reset()
+        clearSelectedDocuments()
+        clearUploadedFiles()
         return
       }
       const defaultEM = await defaultEmbeddingModelForRag()
@@ -347,6 +366,41 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
       await sendMessage({
         image: value.image,
         message: value.message.trim(),
+        docs: selectedDocuments.map((doc) => ({
+          type: "tab",
+          tabId: doc.id,
+          title: doc.title,
+          url: doc.url,
+          favIconUrl: doc.favIconUrl
+        }))
+      })
+    })()
+  }
+
+  const submitFormFromQueued = (message: string, image: string) => {
+    if (!isConnectionReady) {
+      return
+    }
+    form.onSubmit(async () => {
+      const defaultEM = await defaultEmbeddingModelForRag()
+      if (!selectedModel || selectedModel.length === 0) {
+        form.setFieldError("message", t("formError.noModel"))
+        return
+      }
+      if (webSearch) {
+        const simpleSearch = await getIsSimpleInternetSearch()
+        if (!defaultEM && !simpleSearch) {
+          form.setFieldError("message", t("formError.noEmbeddingModel"))
+          return
+        }
+      }
+      form.reset()
+      clearSelectedDocuments()
+      clearUploadedFiles()
+      textAreaFocus()
+      await sendMessage({
+        image,
+        message,
         docs: selectedDocuments.map((doc) => ({
           type: "tab",
           tabId: doc.id,
@@ -794,7 +848,9 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                             className="inline-flex items-center gap-2 rounded-md border border-gray-200 px-3 py-1.5 text-sm text-gray-700 transition hover:bg-gray-100 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-[#2a2a2a]"
                           >
                             <MoreHorizontal className="h-4 w-4" />
-                            <span>{t('playground:composer.moreTools')}</span>
+                            <span>
+                              {t("option:header.more", "AI tools")}
+                            </span>
                           </button>
                         </Popover>
 
@@ -935,6 +991,56 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                         </div>
                       </div>
                     )}
+                    {isConnectionReady && queuedMessages.length > 0 && showQueuedBanner && (
+                        <div className="mt-2 flex flex-wrap items-center justify-between gap-2 rounded-md border border-green-300 bg-green-50 px-3 py-2 text-xs text-green-900 dark:border-green-500 dark:bg-[#102a10] dark:text-green-100">
+                          <p className="max-w-xs text-left">
+                            <span className="block font-medium">
+                              {t(
+                                "playground:composer.queuedBanner.title",
+                                "Queued while offline"
+                              )}
+                            </span>
+                            {t(
+                              "playground:composer.queuedBanner.body",
+                              "We’ll hold these messages and send them once your tldw server is connected."
+                            )}
+                          </p>
+                          <div className="flex flex-wrap items-center gap-2">
+                            <button
+                              type="button"
+                              className="rounded-md border border-green-300 bg-white px-2 py-1 text-xs font-medium text-green-900 hover:bg-green-100 dark:bg-[#163816] dark:text-green-50 dark:hover:bg-[#194419]"
+                              onClick={async () => {
+                                for (const item of queuedMessages) {
+                                  await submitFormFromQueued(item.message, item.image)
+                                }
+                                clearQueuedMessages()
+                              }}>
+                              {t(
+                                "playground:composer.queuedBanner.sendNow",
+                                "Send queued messages"
+                              )}
+                            </button>
+                            <button
+                              type="button"
+                              className="text-xs font-medium text-green-900 underline hover:text-green-700 dark:text-green-100 dark:hover:text-green-300"
+                              onClick={() => {
+                                clearQueuedMessages()
+                              }}>
+                              {t(
+                                "playground:composer.queuedBanner.clear",
+                                "Clear queue"
+                              )}
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setShowQueuedBanner(false)}
+                              className="inline-flex items-center rounded-full p-1 text-green-700 hover:bg-green-100 dark:text-green-200 dark:hover:bg-[#163816]"
+                              aria-label={t("common:close", "Dismiss")}>
+                              <X className="h-3 w-3" />
+                            </button>
+                          </div>
+                        </div>
+                      )}
                   </div>
                 </form>
               </div>

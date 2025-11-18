@@ -3,7 +3,11 @@
     "connectTitle": "Connect to use Review",
     "connectDescription": "To review media and notes, first connect to your tldw server.",
     "connectExample1": "Open Settings \u2192 tldw server to add your server URL.",
-    "connectExample2": "Once connected, browse media and notes, then generate structured reviews and summaries."
+    "connectExample2": "Once connected, browse media and notes, then generate structured reviews and summaries.",
+    "demoTitle": "Explore Review in demo mode",
+    "demoDescription": "This demo shows how tldw Assistant can turn media and notes into structured reviews. Connect your own server later to analyze your own content.",
+    "demoExample1": "See how selected media and notes appear in the review workspace.",
+    "demoExample2": "When you connect, you’ll be able to generate summaries and action items from your own recordings and notes."
   },
   "reviewPage": {
     "searchPrompts": "Search prompts",

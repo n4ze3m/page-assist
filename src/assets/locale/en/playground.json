@@ -31,6 +31,7 @@
     "empty": {
         "title": "Start a new Playground chat",
         "description": "Experiment with different models, prompts, and knowledge sources in one place.",
+        "demoDescription": "You’re in demo mode — try asking a question to see how the assistant responds. You can connect your own tldw server later.",
         "example1": "Ask a question, then drag in documents or web pages you want to discuss.",
         "example2": "Use Quick ingest to add transcripts or notes, then reference them in chat.",
         "example3": "Try different prompts or models from the header to compare answers.",
@@ -89,6 +90,12 @@
         "ingest": "Quick ingest"
     },
     "composer": {
+        "queuedBanner": {
+            "title": "Queued while offline",
+            "body": "We’ll hold these messages and send them once your tldw server is connected.",
+            "sendNow": "Send queued messages",
+            "clear": "Clear queue"
+        },
         "coreTools": "Conversation options",
         "captureTools": "Capture and assist tools",
         "actions": "Send options",

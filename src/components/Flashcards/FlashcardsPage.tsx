@@ -44,6 +44,7 @@ import {
 } from "@/services/flashcards"
 import FeatureEmptyState from "@/components/Common/FeatureEmptyState"
 import { useNavigate } from "react-router-dom"
+import { useDemoMode } from "@/context/demo-mode"
 
 const { Text, Title } = Typography
 
@@ -54,9 +55,34 @@ export const FlashcardsPage: React.FC = () => {
   const isOnline = useServerOnline()
   const qc = useQueryClient()
   const navigate = useNavigate()
+  const { demoEnabled } = useDemoMode()
 
   if (!isOnline) {
-    return (
+    return demoEnabled ? (
+      <FeatureEmptyState
+        title={t("option:flashcards.demoTitle", {
+          defaultValue: "Explore Flashcards in demo mode"
+        })}
+        description={t("option:flashcards.demoDescription", {
+          defaultValue:
+            "This demo shows how Flashcards can turn your content into spaced‑repetition cards. Connect your own server later to generate and review cards from your own notes and media."
+        })}
+        examples={[
+          t("option:flashcards.demoExample1", {
+            defaultValue:
+              "See how decks, cards, and tags are organized across Review and Manage tabs."
+          }),
+          t("option:flashcards.demoExample2", {
+            defaultValue:
+              "When you connect, you’ll be able to generate cards from lectures, meetings, or notes and review them on a schedule."
+          })
+        ]}
+        primaryActionLabel={t("common:connectToServer", {
+          defaultValue: "Connect to server"
+        })}
+        onPrimaryAction={() => navigate("/settings/tldw")}
+      />
+    ) : (
       <FeatureEmptyState
         title={t("option:flashcards.emptyConnectTitle", {
           defaultValue: "Connect to use Flashcards"

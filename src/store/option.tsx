@@ -69,6 +69,10 @@ type State = {
   selectedQuickPrompt: string | null
   setSelectedQuickPrompt: (selectedQuickPrompt: string) => void
 
+  queuedMessages: { message: string; image: string }[]
+  addQueuedMessage: (payload: { message: string; image: string }) => void
+  clearQueuedMessages: () => void
+
   selectedKnowledge: Knowledge | null
   setSelectedKnowledge: (selectedKnowledge: Knowledge) => void
 
@@ -135,6 +139,13 @@ export const useStoreMessageOption = create<State>((set) => ({
   selectedQuickPrompt: null,
   setSelectedQuickPrompt: (selectedQuickPrompt) => set({ selectedQuickPrompt }),
 
+  queuedMessages: [],
+  addQueuedMessage: (payload) =>
+    set((state) => ({
+      queuedMessages: [...state.queuedMessages, payload]
+    })),
+  clearQueuedMessages: () => set({ queuedMessages: [] }),
+
   selectedKnowledge: null,
   setSelectedKnowledge: (selectedKnowledge) => set({ selectedKnowledge }),
 
@@ -157,8 +168,13 @@ export const useStoreMessageOption = create<State>((set) => ({
 
   fileRetrievalEnabled: false,
   setFileRetrievalEnabled: (fileRetrievalEnabled) =>
-    set({ fileRetrievalEnabled })
-  ,
+    set({ fileRetrievalEnabled }),
   serverChatId: null,
   setServerChatId: (id) => set({ serverChatId: id })
 }))
+
+if (typeof window !== "undefined") {
+  // Expose for Playwright tests and debugging only.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ;(window as any).__tldw_useStoreMessageOption = useStoreMessageOption
+}

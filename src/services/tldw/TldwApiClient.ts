@@ -356,11 +356,6 @@ export class TldwApiClient {
     return await bgUpload<any>({ path: '/api/v1/media/add', method: 'POST', fields: normalized, file: { name, type, data } })
   }
 
-  async ingestWebContent(url: string, options?: any): Promise<any> {
-    const { timeoutMs, ...rest } = options || {}
-    return await bgRequest<any>({ path: '/api/v1/media/ingest-web-content', method: 'POST', headers: { 'Content-Type': 'application/json' }, body: { url, ...rest }, timeoutMs })
-  }
-
   // Notes Methods
   async createNote(content: string, metadata?: any): Promise<any> {
     return await bgRequest<any>({ path: '/api/v1/notes/', method: 'POST', headers: { 'Content-Type': 'application/json' }, body: { content, ...metadata } })

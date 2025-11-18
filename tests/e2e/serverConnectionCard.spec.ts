@@ -59,5 +59,64 @@ test.describe('ServerConnectionCard states', () => {
 
     await context.close()
   })
-})
 
+  test('diagnostics link from connection card opens Health Status in a new tab', async () => {
+    const extPath = path.resolve('.output/chrome-mv3')
+    const { context, page } = await launchWithExtension(extPath)
+
+    // First-run: connection card should be visible with diagnostics entry point
+    await expect(page.getByText(/Waiting for your tldw server/i)).toBeVisible()
+
+    const [healthPage] = await Promise.all([
+      context.waitForEvent('page'),
+      page.getByRole('button', { name: /Open diagnostics|View diagnostics/i }).click()
+    ])
+
+    await healthPage.waitForLoadState('domcontentloaded')
+    await expect(healthPage).toHaveURL(/options\.html#\/settings\/health/i)
+    await expect(healthPage.getByText(/Health Status/i)).toBeVisible()
+
+    await context.close()
+  })
+
+  test('header status chips and Diagnostics link navigate to Health Status', async () => {
+    const extPath = path.resolve('.output/chrome-mv3')
+    const { context, page, extensionId } = (await launchWithExtension(extPath)) as any
+    const optionsUrl = `chrome-extension://${extensionId}/options.html`
+
+    // Navigate to a route that always shows the main header
+    await page.goto(`${optionsUrl}#/media`)
+
+    // Header should use plain-language labels for connection status
+    await expect(page.getByText(/Server: /i)).toBeVisible()
+    await expect(page.getByText(/Knowledge: /i)).toBeVisible()
+
+    // Old "Core"/"RAG" labels should not appear in the header
+    const coreLabelVisible = await page
+      .getByText(/Core:/i)
+      .isVisible()
+      .catch(() => false)
+    const ragLabelVisible = await page
+      .getByText(/RAG/i)
+      .isVisible()
+      .catch(() => false)
+    expect(coreLabelVisible || ragLabelVisible).toBeFalsy()
+
+    // Server status pill opens Health Status
+    await page.getByRole('button', { name: /Server:/i }).click()
+    await expect(page).toHaveURL(/options\.html#\/settings\/health/i)
+    await expect(page.getByText(/Health Status/i)).toBeVisible()
+
+    // Navigate back to a content route and verify Knowledge pill
+    await page.goto(`${optionsUrl}#/media`)
+    await page.getByRole('button', { name: /Knowledge:/i }).click()
+    await expect(page).toHaveURL(/options\.html#\/settings\/health/i)
+
+    // Navigate back again and verify the header Diagnostics link
+    await page.goto(`${optionsUrl}#/media`)
+    await page.getByRole('link', { name: /Diagnostics/i }).click()
+    await expect(page).toHaveURL(/options\.html#\/settings\/health/i)
+
+    await context.close()
+  })
+})

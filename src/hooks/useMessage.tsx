@@ -64,7 +64,10 @@ export const useMessage = () => {
     setWebSearch,
     isSearchingInternet,
     temporaryChat,
-    setTemporaryChat
+    setTemporaryChat,
+    queuedMessages,
+    addQueuedMessage,
+    clearQueuedMessages
   } = useStoreMessageOption()
   const [defaultInternetSearchOn] = useStorage("defaultInternetSearchOn", false)
 
@@ -268,9 +271,9 @@ export const useMessage = () => {
       if (chatWithWebsiteEmbedding) {
         try {
           await tldwClient.initialize()
-          // Optionally ensure server has the page content
+          // Optionally ensure server has the page content in the media index
           if (embedURL) {
-            try { await tldwClient.ingestWebContent(embedURL) } catch {}
+            try { await tldwClient.addMedia(embedURL, {}) } catch {}
           }
           const ragRes = await tldwClient.ragSearch(query, { top_k: 4, filters: { url: embedURL } })
           const docs = ragRes?.results || ragRes?.documents || ragRes?.docs || []
@@ -1916,5 +1919,8 @@ export const useMessage = () => {
     temporaryChat,
     setTemporaryChat,
     sidepanelTemporaryChat,
+    queuedMessages,
+    addQueuedMessage,
+    clearQueuedMessages
   }
 }

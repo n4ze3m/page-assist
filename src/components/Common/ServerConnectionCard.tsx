@@ -14,6 +14,7 @@ type Props = {
   onOpenSettings?: () => void
   onStartChat?: () => void
   showToastOnError?: boolean
+  enableDemo?: boolean
 }
 
 const useElapsedTimer = (isRunning: boolean) => {
@@ -52,7 +53,8 @@ const useElapsedSince = (timestamp: number | null) => {
 export const ServerConnectionCard: React.FC<Props> = ({
   onOpenSettings,
   onStartChat,
-  showToastOnError = false
+  showToastOnError = false,
+  enableDemo = false
 }) => {
   const { t } = useTranslation(["playground", "common", "settings", "option"])
   const { phase, serverUrl, lastCheckedAt, lastError, isChecking, lastStatusCode } =
@@ -306,6 +308,19 @@ export const ServerConnectionCard: React.FC<Props> = ({
             block>
             {primaryLabel}
           </Button>
+          {enableDemo && statusVariant === "missing" && (
+            <Button
+              onClick={() =>
+                window.dispatchEvent(
+                  new CustomEvent("tldw:demo-mode-toggle", {
+                    detail: { enabled: true }
+                  })
+                )
+              }
+              block>
+              {t("option:connectionCard.buttonTryDemo", "Try a demo")}
+            </Button>
+          )}
           <Button
             icon={statusVariant === "ok" ? <Settings className="h-4 w-4" /> : <Send className="h-4 w-4 rotate-45" />}
             onClick={handleOpenSettings}

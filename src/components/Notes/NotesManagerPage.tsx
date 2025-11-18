@@ -8,6 +8,7 @@ import { confirmDanger } from '@/components/Common/confirm-danger'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import FeatureEmptyState from '@/components/Common/FeatureEmptyState'
+import { useDemoMode } from '@/context/demo-mode'
 
 type NoteListItem = {
   id: string | number
@@ -30,6 +31,7 @@ const NotesManagerPage: React.FC = () => {
   const [keywordOptions, setKeywordOptions] = React.useState<string[]>([])
   const [editorKeywords, setEditorKeywords] = React.useState<string[]>([])
   const isOnline = useServerOnline()
+  const { demoEnabled } = useDemoMode()
   const queryClient = useQueryClient()
   const navigate = useNavigate()
 
@@ -333,22 +335,54 @@ const NotesManagerPage: React.FC = () => {
           {isFetching ? (
             <div className="flex items-center justify-center py-10"><Spin /></div>
           ) : !isOnline ? (
-            <FeatureEmptyState
-              title={t('option:notesEmpty.connectTitle', { defaultValue: 'Connect to use Notes' })}
-              description={t('option:notesEmpty.connectDescription', {
-                defaultValue: 'To use Notes, first connect to your tldw server.'
-              })}
-              examples={[
-                t('option:notesEmpty.connectExample1', {
-                  defaultValue: 'Open Settings → tldw server to add your server URL.'
-                }),
-                t('option:notesEmpty.connectExample2', {
-                  defaultValue: 'Use Diagnostics if your server is running but not reachable.'
-                })
-              ]}
-              primaryActionLabel={t('common:connectToServer', { defaultValue: 'Connect to server' })}
-              onPrimaryAction={() => navigate('/settings/tldw')}
-            />
+            demoEnabled ? (
+              <FeatureEmptyState
+                title={t('option:notesEmpty.demoTitle', {
+                  defaultValue: 'Explore Notes in demo mode'
+                })}
+                description={t('option:notesEmpty.demoDescription', {
+                  defaultValue:
+                    'This demo shows how Notes can organize your insights. Connect your own server later to create and save real notes.'
+                })}
+                examples={[
+                  t('option:notesEmpty.demoExample1', {
+                    defaultValue:
+                      'See how note titles, previews, and timestamps appear in this list.'
+                  }),
+                  t('option:notesEmpty.demoExample2', {
+                    defaultValue:
+                      'When you connect, you’ll be able to create notes from meetings, reviews, and more.'
+                  })
+                ]}
+                primaryActionLabel={t('common:connectToServer', {
+                  defaultValue: 'Connect to server'
+                })}
+                onPrimaryAction={() => navigate('/settings/tldw')}
+              />
+            ) : (
+              <FeatureEmptyState
+                title={t('option:notesEmpty.connectTitle', {
+                  defaultValue: 'Connect to use Notes'
+                })}
+                description={t('option:notesEmpty.connectDescription', {
+                  defaultValue: 'To use Notes, first connect to your tldw server.'
+                })}
+                examples={[
+                  t('option:notesEmpty.connectExample1', {
+                    defaultValue:
+                      'Open Settings → tldw server to add your server URL.'
+                  }),
+                  t('option:notesEmpty.connectExample2', {
+                    defaultValue:
+                      'Use Diagnostics if your server is running but not reachable.'
+                  })
+                ]}
+                primaryActionLabel={t('common:connectToServer', {
+                  defaultValue: 'Connect to server'
+                })}
+                onPrimaryAction={() => navigate('/settings/tldw')}
+              />
+            )
           ) : Array.isArray(data) && data.length > 0 ? (
             <>
               <List
