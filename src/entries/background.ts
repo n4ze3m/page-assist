@@ -80,6 +80,18 @@ export default defineBackground({
           contexts: ["selection"]
         })
 
+        browser.contextMenus.create({
+          id: "send-to-tldw",
+          title: browser.i18n.getMessage("contextSendToTldw"),
+          contexts: ["page", "link"]
+        })
+
+        browser.contextMenus.create({
+          id: "process-local-tldw",
+          title: browser.i18n.getMessage("contextProcessLocalTldw"),
+          contexts: ["page", "link"]
+        })
+
         // One-time OpenAPI drift check (advisory): warn on missing critical paths
         try {
           const cfg = await storage.get<any>('tldwConfig')
@@ -330,6 +342,7 @@ export default defineBackground({
         const storage = new Storage({ area: 'local' })
         let ws: WebSocket | null = null
         let disconnected = false
+        let connectTimer: ReturnType<typeof setTimeout> | null = null
         const safePost = (msg: any) => {
           if (disconnected) return
           try { port.postMessage(msg) } catch {}
@@ -341,13 +354,33 @@ export default defineBackground({
               if (!cfg?.serverUrl) throw new Error('tldw server not configured')
               const base = cfg.serverUrl.replace(/^http/, 'ws').replace(/\/$/, '')
               const token = cfg.authMode === 'single-user' ? cfg.apiKey : cfg.accessToken
+              if (!token) throw new Error('Not authenticated. Configure tldw credentials in Settings > tldw.')
               const url = `${base}/api/v1/audio/stream/transcribe?token=${encodeURIComponent(token || '')}`
               ws = new WebSocket(url)
               ws.binaryType = 'arraybuffer'
-              ws.onopen = () => safePost({ event: 'open' })
+              connectTimer = setTimeout(() => {
+                if (!ws || ws.readyState !== WebSocket.OPEN) {
+                  safePost({ event: 'error', message: 'STT connection timeout. Check tldw server health.' })
+                  try { ws?.close() } catch {}
+                  ws = null
+                }
+              }, 10000)
+              ws.onopen = () => {
+                if (connectTimer) {
+                  clearTimeout(connectTimer)
+                  connectTimer = null
+                }
+                safePost({ event: 'open' })
+              }
               ws.onmessage = (ev) => safePost({ event: 'data', data: ev.data })
-              ws.onerror = () => safePost({ event: 'error', message: 'ws error' })
-              ws.onclose = () => safePost({ event: 'close' })
+              ws.onerror = () => safePost({ event: 'error', message: 'STT websocket error' })
+              ws.onclose = () => {
+                if (connectTimer) {
+                  clearTimeout(connectTimer)
+                  connectTimer = null
+                }
+                safePost({ event: 'close' })
+              }
             } else if (msg?.action === 'audio' && ws && ws.readyState === WebSocket.OPEN) {
               if (msg.data instanceof ArrayBuffer) {
                 ws.send(msg.data)
@@ -366,6 +399,10 @@ export default defineBackground({
         port.onDisconnect.addListener(() => {
           disconnected = true
           try { port.onMessage.removeListener(onMsg) } catch {}
+          if (connectTimer) {
+            clearTimeout(connectTimer)
+            connectTimer = null
+          }
           try { ws?.close() } catch {}
         })
       }

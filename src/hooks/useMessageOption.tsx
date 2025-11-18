@@ -59,9 +59,9 @@ export const useMessageOption = () => {
     setIsSearchingInternet,
     selectedQuickPrompt,
     setSelectedQuickPrompt,
-    queuedMessages,
-    addQueuedMessage,
-    clearQueuedMessages,
+    queuedMessages: storeQueuedMessages,
+    addQueuedMessage: storeAddQueuedMessage,
+    clearQueuedMessages: storeClearQueuedMessages,
     selectedSystemPrompt,
     setSelectedSystemPrompt,
     selectedKnowledge,
@@ -211,7 +211,7 @@ export const useMessageOption = () => {
     setUploadedFiles([])
     setFileRetrievalEnabled(false)
     setActionInfo(null)
-    clearQueuedMessages()
+    storeClearQueuedMessages()
   }
 
   const saveMessageOnSuccess = createSaveMessageOnSuccess(
@@ -461,8 +461,8 @@ export const useMessageOption = () => {
     setActionInfo,
     setContextFiles,
     createChatBranch,
-    queuedMessages,
-    addQueuedMessage,
-    clearQueuedMessages
+    queuedMessages: storeQueuedMessages,
+    addQueuedMessage: storeAddQueuedMessage,
+    clearQueuedMessages: storeClearQueuedMessages
   }
 }

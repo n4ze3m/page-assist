@@ -46,6 +46,8 @@
     "rag": {
         "searchPlaceholder": "Search your knowledge…",
         "search": "Search",
+        "show": "Show RAG search",
+        "hide": "Hide RAG search",
         "addTagPlaceholder": "Add tag (Enter)",
         "add": "Add",
         "noResults": "No results",

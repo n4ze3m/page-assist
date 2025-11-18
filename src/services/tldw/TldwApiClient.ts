@@ -740,6 +740,38 @@ export class TldwApiClient {
     const type = (audioFile as any)?.type || 'application/octet-stream'
     return await bgUpload<any>({ path: '/api/v1/audio/transcriptions', method: 'POST', fields, file: { name, type, data } })
   }
+
+  async synthesizeSpeech(text: string, options?: { voice?: string; model?: string; format?: string }): Promise<ArrayBuffer> {
+    const cfg = await this.getConfig()
+    if (!cfg) throw new Error('tldw server not configured')
+    if (!this.baseUrl) await this.initialize()
+    const base = this.baseUrl.replace(/\/$/, '')
+    const url = `${base}/api/v1/audio/speech`
+    const body: Record<string, any> = { text }
+    if (options?.voice) body.voice = options.voice
+    if (options?.model) body.model = options.model
+    if (options?.format) body.format = options.format
+    const headers: HeadersInit = {
+      ...this.headers,
+      Accept: 'audio/mpeg'
+    }
+    const resp = await fetch(url, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(body)
+    })
+    if (!resp.ok) {
+      let detail: string | undefined
+      try {
+        const data = await resp.json()
+        detail = data?.detail || data?.error || data?.message
+      } catch {
+        // ignore JSON parse failures; fall back to status text
+      }
+      throw new Error(detail || `TTS failed (HTTP ${resp.status})`)
+    }
+    return await resp.arrayBuffer()
+  }
 }
 
 // Singleton instance

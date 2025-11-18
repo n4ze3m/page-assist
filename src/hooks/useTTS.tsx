@@ -16,6 +16,7 @@ import { splitMessageContent } from "@/utils/tts"
 import { removeReasoning } from "@/libs/reasoning"
 import { markdownToText } from "@/utils/markdown-to-text"
 import { generateOpenAITTS } from "@/services/openai-tts"
+import { tldwClient } from "@/services/tldw/TldwApiClient"
 
 export interface VoiceOptions {
   utterance: string
@@ -173,6 +174,50 @@ export const useTTS = () => {
             nextAudioPromise?.then((data) => {
               nextAudioData = data
             }).catch(console.error) || Promise.resolve()
+          ])
+
+          URL.revokeObjectURL(url)
+        }
+
+        setIsSpeaking(false)
+        setAudioElement(null)
+      } else if (provider === "tldw") {
+        const sentences = splitMessageContent(utterance)
+
+        let nextAudioData: ArrayBuffer | null = null
+        let nextAudioPromise: Promise<ArrayBuffer> | null = null
+
+        for (let i = 0; i < sentences.length; i++) {
+          setIsSpeaking(true)
+
+          let currentAudioData: ArrayBuffer
+          if (nextAudioData) {
+            currentAudioData = nextAudioData
+            nextAudioData = null
+          } else {
+            currentAudioData = await tldwClient.synthesizeSpeech(sentences[i])
+          }
+
+          if (i < sentences.length - 1) {
+            nextAudioPromise = tldwClient.synthesizeSpeech(sentences[i + 1])
+          }
+
+          const blob = new Blob([currentAudioData], { type: "audio/mpeg" })
+          const url = URL.createObjectURL(blob)
+          const audio = new Audio(url)
+          audio.playbackRate = playbackSpeed
+          setAudioElement(audio)
+
+          await Promise.all([
+            new Promise((resolve) => {
+              audio.onended = resolve
+              audio.play()
+            }),
+            nextAudioPromise
+              ?.then((data) => {
+                nextAudioData = data
+              })
+              .catch(console.error) || Promise.resolve()
           ])
 
           URL.revokeObjectURL(url)

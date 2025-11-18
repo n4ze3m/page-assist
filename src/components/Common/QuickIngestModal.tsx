@@ -1,5 +1,5 @@
 import React from 'react'
-import { Modal, Button, Input, Select, Space, Switch, Typography, Divider, List, Tag, message, Collapse, InputNumber, Tooltip as AntTooltip } from 'antd'
+import { Modal, Button, Input, Select, Space, Switch, Typography, Divider, List, Tag, message, Collapse, InputNumber, Tooltip as AntTooltip, Spin } from 'antd'
 import { useTranslation } from 'react-i18next'
 import { tldwClient } from '@/services/tldw/TldwApiClient'
 import { HelpCircle, Headphones, Layers, Database, FileText, Film, Cookie, Info, Clock, Grid, BookText } from 'lucide-react'
@@ -62,6 +62,7 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
   const [savedAdvValues, setSavedAdvValues] = useStorage<Record<string, any>>('quickIngestAdvancedValues', {})
   const [uiPrefs, setUiPrefs] = useStorage<{ advancedOpen?: boolean; fieldDetailsOpen?: Record<string, boolean> }>('quickIngestAdvancedUI', {})
   const [specPrefs, setSpecPrefs] = useStorage<{ preferServer?: boolean; lastRemote?: { version?: string; cachedAt?: number; spec?: any } }>('quickIngestSpecPrefs', { preferServer: true })
+  const [totalPlanned, setTotalPlanned] = React.useState<number>(0)
 
   const addRow = () => setRows((r) => [...r, { id: crypto.randomUUID(), url: '', type: 'auto' }])
   const removeRow = (id: string) => setRows((r) => r.filter((x) => x.id !== id))
@@ -80,6 +81,8 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
       message.error('Please add at least one URL or file')
       return
     }
+    const total = valid.length + localFiles.length
+    setTotalPlanned(total)
     setRunning(true)
     setResults([])
     try {
@@ -588,6 +591,18 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
           <div className="mt-2">
             <Typography.Title level={5}>{t('quickIngest.videoOptions') || 'Video options'}</Typography.Title>
             <Select className="min-w-40" defaultValue={false} onChange={(v) => setRows((rs) => rs.map((x) => ({ ...x, video: { ...(x.video || {}), captions: Boolean(v) } })))} options={[{ label: 'Captions: Off', value: false }, { label: 'Captions: On', value: true }]} />
+          </div>
+        )}
+
+        {running && totalPlanned > 0 && (
+          <div className="mt-2 flex items-center gap-2 text-xs text-gray-600 dark:text-gray-300">
+            <Spin size="small" />
+            <span>
+              {t("quickIngest.progress", "Processing {{done}} / {{total}} items…", {
+                done: results.length,
+                total: totalPlanned
+              })}
+            </span>
           </div>
         )}
 

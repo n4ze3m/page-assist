@@ -114,7 +114,8 @@
         "ingest": "Ingest",
         "process": "Process",
         "results": "Results",
-    "downloadJson": "Download JSON"
+        "downloadJson": "Download JSON",
+        "progress": "Processing {{done}} / {{total}} items…"
   }
   ,
   "libraryView": "Library View",

@@ -82,7 +82,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
   }
 
   // tldw WS STT
-  const { connect: sttConnect, sendAudio, close: sttClose, connected: sttConnected } = useTldwStt()
+  const { connect: sttConnect, sendAudio, close: sttClose, connected: sttConnected, lastError: sttError } = useTldwStt()
   const { start: micStart, stop: micStop, active: micActive } = useMicStream((chunk) => {
     try { sendAudio(chunk) } catch {}
   })
@@ -302,6 +302,15 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
   const handleQuickIngestOpen = React.useCallback(() => {
     setIngestOpen(true)
   }, [])
+
+  React.useEffect(() => {
+    if (sttError) {
+      notification.error({
+        message: t("playground:actions.streamErrorTitle", "Live captions unavailable"),
+        description: sttError
+      })
+    }
+  }, [sttError, t])
 
   const moreToolsContent = React.useMemo(() => (
     <div className="flex w-72 flex-col gap-3">
@@ -614,9 +623,16 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                       }}
                       onAsk={async (text) => {
                         // Set message and submit immediately
+                        const trimmed = text.trim()
+                        if (!trimmed) return
                         form.setFieldValue("message", text)
                         // Mimic Enter submit flow
-                        const value = { ...form.values, message: text }
+                        const value = { ...form.values, message: trimmed }
+                        if (!isConnectionReady) {
+                          addQueuedMessage({ message: value.message, image: value.image })
+                          form.reset()
+                          return
+                        }
                         // Reuse the same checks as handleKeyDown/form submit
                         if (!selectedModel || selectedModel.length === 0) {
                           form.setFieldError("message", t("formError.noModel"))
@@ -640,7 +656,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                         await stopListening()
                         form.reset()
                         textAreaFocus()
-                        await sendMessage({ image: "", message: value.message.trim() })
+                        await sendMessage({ image: "", message: value.message })
                       }}
                     />
                     <textarea

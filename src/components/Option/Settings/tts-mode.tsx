@@ -127,6 +127,10 @@ export const TTSModeSettings = ({ hideBorder }: { hideBorder?: boolean }) => {
                 {
                   label: "OpenAI TTS",
                   value: "openai"
+                },
+                {
+                  label: "tldw server (audio/speech)",
+                  value: "tldw"
                 }
               ]}
               {...form.getInputProps("ttsProvider")}

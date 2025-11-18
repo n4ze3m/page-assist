@@ -87,7 +87,8 @@
         "visionOn": "Vision on",
         "visionOff": "Vision off",
         "upload": "Attach image",
-        "ingest": "Quick ingest"
+        "ingest": "Quick ingest",
+        "streamErrorTitle": "Live captions unavailable"
     },
     "composer": {
         "queuedBanner": {

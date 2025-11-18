@@ -7,7 +7,7 @@ const storage2 = new Storage({
 
 const DEFAULT_TTS_PROVIDER = "browser"
 
-const AVAILABLE_TTS_PROVIDERS = ["browser", "elevenlabs"] as const
+const AVAILABLE_TTS_PROVIDERS = ["browser", "elevenlabs", "openai", "tldw"] as const
 
 export const getTTSProvider = async (): Promise<
   (typeof AVAILABLE_TTS_PROVIDERS)[number]
