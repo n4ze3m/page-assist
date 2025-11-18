@@ -25,6 +25,10 @@ const OptionWorldBooks = lazy(() => import("./option-settings-world-books"))
 const OptionDictionaries = lazy(() => import("./option-settings-dictionaries"))
 const OptionTldwSettings = lazy(() => import("./option-settings-tldw").then(m => ({ default: m.OptionTldwSettings })))
 const OptionFlashcards = lazy(() => import("./option-flashcards"))
+const OptionWorldBooksWorkspace = lazy(() => import("./option-world-books"))
+const OptionDictionariesWorkspace = lazy(() => import("./option-dictionaries"))
+const OptionCharactersWorkspace = lazy(() => import("./option-characters"))
+const OptionPromptsWorkspace = lazy(() => import("./option-prompts"))
 
 export const OptionRoutingFirefox = () => {
   return (
@@ -50,6 +54,10 @@ export const OptionRoutingFirefox = () => {
       <Route path="/media" element={<OptionMedia />} />
       <Route path="/media-multi" element={<OptionMediaMulti />} />
       <Route path="/notes" element={<OptionNotes />} />
+      <Route path="/world-books" element={<OptionWorldBooksWorkspace />} />
+      <Route path="/dictionaries" element={<OptionDictionariesWorkspace />} />
+      <Route path="/characters" element={<OptionCharactersWorkspace />} />
+      <Route path="/prompts" element={<OptionPromptsWorkspace />} />
     </Routes>
   )
 }

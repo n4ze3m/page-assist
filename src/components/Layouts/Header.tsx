@@ -1,6 +1,6 @@
 import React from "react"
 import { useStorage } from "@plasmohq/storage/hook"
-import { CogIcon, Gauge } from "lucide-react"
+import { CogIcon, Gauge, UserCircle2 } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useLocation, NavLink, useNavigate } from "react-router-dom"
 import { SelectedKnowledge } from "../Option/Knowledge/SelectedKnowledge"
@@ -67,6 +67,9 @@ type CoreMode =
   | "notes"
   | "prompts"
   | "flashcards"
+  | "worldBooks"
+  | "dictionaries"
+  | "characters"
 
 export const Header: React.FC<Props> = ({
   setOpenModelSettings,
@@ -131,7 +134,23 @@ export const Header: React.FC<Props> = ({
       return "media"
     if (pathname.startsWith("/settings/knowledge")) return "knowledge"
     if (pathname.startsWith("/notes")) return "notes"
-    if (pathname.startsWith("/settings/prompt")) return "prompts"
+    if (pathname.startsWith("/prompts") || pathname.startsWith("/settings/prompt"))
+      return "prompts"
+    if (
+      pathname.startsWith("/world-books") ||
+      pathname.startsWith("/settings/world-books")
+    )
+      return "worldBooks"
+    if (
+      pathname.startsWith("/dictionaries") ||
+      pathname.startsWith("/settings/chat-dictionaries")
+    )
+      return "dictionaries"
+    if (
+      pathname.startsWith("/characters") ||
+      pathname.startsWith("/settings/characters")
+    )
+      return "characters"
     if (pathname.startsWith("/flashcards")) return "flashcards"
     return "playground"
   }, [pathname])
@@ -154,10 +173,19 @@ export const Header: React.FC<Props> = ({
         navigate("/notes")
         break
       case "prompts":
-        navigate("/settings/prompt")
+        navigate("/prompts")
         break
       case "flashcards":
         navigate("/flashcards")
+        break
+      case "worldBooks":
+        navigate("/world-books")
+        break
+      case "dictionaries":
+        navigate("/dictionaries")
+        break
+      case "characters":
+        navigate("/characters")
         break
     }
   }
@@ -290,6 +318,12 @@ export const Header: React.FC<Props> = ({
             to: "/settings/chat-dictionaries",
             icon: BookMarked,
             label: t("settings:manageKnowledge.chatDictionaries", "Chat dictionaries")
+          },
+          {
+            type: "link" as const,
+            to: "/settings/characters",
+            icon: UserCircle2,
+            label: t("settings:charactersNav", "Characters")
           }
         ]
       }
@@ -596,6 +630,21 @@ export const Header: React.FC<Props> = ({
                     key: "flashcards",
                     label: t("option:header.modeFlashcards", "Flashcards"),
                     shortcut: shortcutConfig.modeFlashcards
+                  },
+                  {
+                    key: "worldBooks",
+                    label: t("option:header.modeWorldBooks", "World Books"),
+                    shortcut: shortcutConfig.modeWorldBooks
+                  },
+                  {
+                    key: "dictionaries",
+                    label: t("option:header.modeDictionaries", "Chat dictionaries"),
+                    shortcut: shortcutConfig.modeDictionaries
+                  },
+                  {
+                    key: "characters",
+                    label: t("option:header.modeCharacters", "Characters"),
+                    shortcut: shortcutConfig.modeCharacters
                   }
                 ] as Array<{ key: CoreMode; label: string; shortcut?: import("@/hooks/keyboard/useKeyboardShortcuts").KeyboardShortcut }>
               ).map((mode) => (

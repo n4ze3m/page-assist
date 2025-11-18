@@ -563,15 +563,6 @@ export default defineBackground({
       }
     })
 
-    // Add context menu for tldw ingest
-    try {
-      browser.contextMenus.create({
-        id: 'send-to-tldw',
-        title: 'Send to tldw_server',
-        contexts: ["page", "link"]
-      })
-    } catch {}
-
     // Stream handler via Port API
     browser.runtime.onConnect.addListener((port) => {
       if (port.name === 'tldw:stream') {

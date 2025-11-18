@@ -302,7 +302,15 @@ export const ServerConnectionCard: React.FC<Props> = ({
         <div className="flex w-full flex-col gap-2 sm:flex-row">
           <Button
             type={"primary"}
-            icon={statusVariant === "ok" ? <Send className="h-4 w-4" /> : <Settings className="h-4 w-4" />}
+            icon={
+              statusVariant === "ok" ? (
+                <Send className="h-4 w-4" />
+              ) : statusVariant === "error" ? (
+                <Send className="h-4 w-4 rotate-45" />
+              ) : (
+                <Settings className="h-4 w-4" />
+              )
+            }
             onClick={handlePrimary}
             loading={isSearching}
             block>
@@ -322,7 +330,15 @@ export const ServerConnectionCard: React.FC<Props> = ({
             </Button>
           )}
           <Button
-            icon={statusVariant === "ok" ? <Settings className="h-4 w-4" /> : <Send className="h-4 w-4 rotate-45" />}
+            icon={
+              statusVariant === "ok" ? (
+                <Settings className="h-4 w-4" />
+              ) : statusVariant === "error" ? (
+                <Settings className="h-4 w-4" />
+              ) : (
+                <Send className="h-4 w-4 rotate-45" />
+              )
+            }
             onClick={handleOpenSettings}
             block>
             {statusVariant === "ok" || statusVariant === "error"

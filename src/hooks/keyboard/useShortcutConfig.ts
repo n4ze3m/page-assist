@@ -13,6 +13,9 @@ export interface ShortcutConfig {
   modeNotes: KeyboardShortcut
   modePrompts: KeyboardShortcut
   modeFlashcards: KeyboardShortcut
+  modeWorldBooks: KeyboardShortcut
+  modeDictionaries: KeyboardShortcut
+  modeCharacters: KeyboardShortcut
 }
 
 export const defaultShortcuts: ShortcutConfig = {
@@ -79,6 +82,24 @@ export const defaultShortcuts: ShortcutConfig = {
   },
   modeFlashcards: {
     key: "7",
+    altKey: true,
+    preventDefault: true,
+    stopPropagation: true
+  },
+  modeWorldBooks: {
+    key: "8",
+    altKey: true,
+    preventDefault: true,
+    stopPropagation: true
+  },
+  modeDictionaries: {
+    key: "9",
+    altKey: true,
+    preventDefault: true,
+    stopPropagation: true
+  },
+  modeCharacters: {
+    key: "0",
     altKey: true,
     preventDefault: true,
     stopPropagation: true

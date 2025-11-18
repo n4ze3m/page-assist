@@ -4,8 +4,13 @@ import React from "react"
 import { confirmDanger } from "@/components/Common/confirm-danger"
 import { tldwClient } from "@/services/tldw/TldwApiClient"
 import { Pen, Trash2, BookOpen } from "lucide-react"
+import { useServerOnline } from "@/hooks/useServerOnline"
+import FeatureEmptyState from "@/components/Common/FeatureEmptyState"
+import { useTranslation } from "react-i18next"
 
 export const WorldBooksManager: React.FC = () => {
+  const isOnline = useServerOnline()
+  const { t } = useTranslation(["option"])
   const qc = useQueryClient()
   const [open, setOpen] = React.useState(false)
   const [openEdit, setOpenEdit] = React.useState(false)
@@ -26,7 +31,8 @@ export const WorldBooksManager: React.FC = () => {
       await tldwClient.initialize()
       const res = await tldwClient.listWorldBooks(false)
       return res?.world_books || []
-    }
+    },
+    enabled: isOnline
   })
 
   const { data: characters } = useQuery({
@@ -110,6 +116,20 @@ export const WorldBooksManager: React.FC = () => {
       </div>
     )}
   ]
+
+  if (!isOnline) {
+    return (
+      <FeatureEmptyState
+        title={t("option:worldBooksEmpty.offlineTitle", {
+          defaultValue: "World Books are offline"
+        })}
+        description={t("option:worldBooksEmpty.offlineDescription", {
+          defaultValue:
+            "Connect to your tldw server from the main settings page to view and edit World Books."
+        })}
+      />
+    )
+  }
 
   return (
     <div className="space-y-4">

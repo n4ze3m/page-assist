@@ -2,19 +2,23 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Button, Form, Input, Modal, Skeleton, Table, Tag, Tooltip, notification } from "antd"
 import React from "react"
 import { tldwClient } from "@/services/tldw/TldwApiClient"
-import { Pen, Trash2, UserCircle2 } from "lucide-react"
+import { Pen, Trash2, UserCircle2, MessageCircle } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { confirmDanger } from "@/components/Common/confirm-danger"
+import { useNavigate } from "react-router-dom"
+import { useStorage } from "@plasmohq/storage/hook"
 
 export const CharactersManager: React.FC = () => {
   const { t } = useTranslation(["settings", "common"])
   const qc = useQueryClient()
+  const navigate = useNavigate()
   const [open, setOpen] = React.useState(false)
   const [openEdit, setOpenEdit] = React.useState(false)
   const [editId, setEditId] = React.useState<string | null>(null)
   const [editVersion, setEditVersion] = React.useState<number | null>(null)
   const [createForm] = Form.useForm()
   const [editForm] = Form.useForm()
+  const [, setSelectedCharacter] = useStorage<any>("selectedCharacter", null)
 
   const { data, status } = useQuery({
     queryKey: ["tldw:listCharacters"],
@@ -88,25 +92,94 @@ export const CharactersManager: React.FC = () => {
             },
             { title: t('managePrompts.columns.title'), dataIndex: 'name', key: 'name' },
             { title: 'Description', dataIndex: 'description', key: 'description', render: (v: string) => <span className="line-clamp-1">{v}</span> },
-            { title: t('managePrompts.tags.label', { defaultValue: 'Tags' }), dataIndex: 'tags', key: 'tags', render: (tags: string[]) => (
-              <div className="flex flex-wrap gap-1">
-                {(tags || []).map((t: string) => <Tag key={t}>{t}</Tag>)}
-              </div>
-            ) },
-            { title: t('managePrompts.columns.actions'), key: 'actions', render: (_: any, record: any) => (
-              <div className="flex gap-3">
-                <Tooltip title={t('managePrompts.tooltip.edit')}>
-                  <button className="text-gray-500" onClick={() => { setEditId(record.id || record.slug || record.name); setEditVersion(record?.version ?? null); editForm.setFieldsValue({ name: record.name, description: record.description, system_prompt: record.system_prompt }) ; setOpenEdit(true) }}>
-                    <Pen className="w-4 h-4" />
-                  </button>
-                </Tooltip>
-                <Tooltip title={t('managePrompts.tooltip.delete')}>
-                  <button className="text-red-500" disabled={deleting} onClick={async () => { const ok = await confirmDanger({ title: t('common:confirmTitle', { defaultValue: 'Please confirm' }), content: t('managePrompts.confirm.delete'), okText: t('common:delete', { defaultValue: 'Delete' }), cancelText: t('common:cancel', { defaultValue: 'Cancel' }) }); if (ok) deleteCharacter(record.id || record.slug || record.name) }}>
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                </Tooltip>
-              </div>
-            ) }
+            {
+              title: t('managePrompts.tags.label', { defaultValue: 'Tags' }),
+              dataIndex: 'tags',
+              key: 'tags',
+              render: (tags: string[]) => (
+                <div className="flex flex-wrap gap-1">
+                  {(tags || []).map((tag: string) => <Tag key={tag}>{tag}</Tag>)}
+                </div>
+              )
+            },
+            {
+              title: t('managePrompts.columns.actions'),
+              key: 'actions',
+              render: (_: any, record: any) => (
+                <div className="flex gap-3">
+                  <Tooltip title={t('managePrompts.tooltip.edit')}>
+                    <button
+                      className="text-gray-500"
+                      onClick={() => {
+                        setEditId(record.id || record.slug || record.name)
+                        setEditVersion(record?.version ?? null)
+                        editForm.setFieldsValue({
+                          name: record.name,
+                          description: record.description,
+                          system_prompt: record.system_prompt
+                        })
+                        setOpenEdit(true)
+                      }}>
+                      <Pen className="w-4 h-4" />
+                    </button>
+                  </Tooltip>
+                  <Tooltip title={t('managePrompts.tooltip.delete')}>
+                    <button
+                      className="text-red-500"
+                      disabled={deleting}
+                      onClick={async () => {
+                        const ok = await confirmDanger({
+                          title: t("common:confirmTitle", {
+                            defaultValue: "Please confirm"
+                          }),
+                          content: t("managePrompts.confirm.delete"),
+                          okText: t("common:delete", { defaultValue: "Delete" }),
+                          cancelText: t("common:cancel", {
+                            defaultValue: "Cancel"
+                          })
+                        })
+                        if (ok) {
+                          deleteCharacter(record.id || record.slug || record.name)
+                        }
+                      }}>
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </Tooltip>
+                  <Tooltip
+                    title={t("common:chatWithCharacter", {
+                      defaultValue: "Chat with character"
+                    })}>
+                    <button
+                      className="text-gray-500"
+                      onClick={() => {
+                        const id = record.id || record.slug || record.name
+                        setSelectedCharacter({
+                          id,
+                          name: record.name || record.title || record.slug,
+                          system_prompt:
+                            record.system_prompt ||
+                            record.systemPrompt ||
+                            record.instructions ||
+                            "",
+                          greeting:
+                            record.greeting ||
+                            record.first_message ||
+                            record.greet ||
+                            "",
+                          avatar_url:
+                            record.avatar_url ||
+                            (record.image_base64
+                              ? `data:image/png;base64,${record.image_base64}`
+                              : "")
+                        })
+                        navigate("/")
+                      }}>
+                      <MessageCircle className="w-4 h-4" />
+                    </button>
+                  </Tooltip>
+                </div>
+              )
+            }
           ]}
         />
       )}

@@ -10,7 +10,8 @@ import {
   Switch,
   Tooltip,
   notification,
-  Popover
+  Popover,
+  Modal
 } from "antd"
 import { Image } from "antd"
 import { useWebUI } from "~/store/webui"
@@ -295,9 +296,16 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
   }, [transcript])
 
   React.useEffect(() => {
-    if (selectedQuickPrompt) {
-      const word = getVariable(selectedQuickPrompt)
-      form.setFieldValue("message", selectedQuickPrompt)
+    if (!selectedQuickPrompt) {
+      return
+    }
+
+    const currentMessage = form.values.message || ""
+    const promptText = selectedQuickPrompt
+
+    const applyOverwrite = () => {
+      const word = getVariable(promptText)
+      form.setFieldValue("message", promptText)
       if (word) {
         textareaRef.current?.focus()
         const interval = setTimeout(() => {
@@ -308,7 +316,47 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
           clearInterval(interval)
         }
       }
+      setSelectedQuickPrompt(null)
+      return
     }
+
+    const applyAppend = () => {
+      const next =
+        currentMessage.trim().length > 0
+          ? `${currentMessage}\n\n${promptText}`
+          : promptText
+      form.setFieldValue("message", next)
+      setSelectedQuickPrompt(null)
+    }
+
+    if (!currentMessage.trim()) {
+      applyOverwrite()
+      return
+    }
+
+    Modal.confirm({
+      title: t("option:promptInsert.confirmTitle", {
+        defaultValue: "Use prompt in chat?"
+      }),
+      content: t("option:promptInsert.confirmDescription", {
+        defaultValue:
+          "Your message already has text. Do you want to overwrite it with this prompt or append the prompt below it?"
+      }),
+      okText: t("option:promptInsert.overwrite", {
+        defaultValue: "Overwrite message"
+      }),
+      cancelText: t("option:promptInsert.append", {
+        defaultValue: "Append"
+      }),
+      closable: false,
+      maskClosable: false,
+      onOk: () => {
+        applyOverwrite()
+      },
+      onCancel: () => {
+        applyAppend()
+      }
+    })
   }, [selectedQuickPrompt])
 
   const queryClient = useQueryClient()

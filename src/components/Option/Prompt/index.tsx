@@ -13,7 +13,7 @@ import {
   Select,
   Alert
 } from "antd"
-import { Trash2, Pen, Computer, Zap, Star, CopyIcon, UploadCloud, Download } from "lucide-react"
+import { Trash2, Pen, Computer, Zap, Star, CopyIcon, UploadCloud, Download, MessageCircle } from "lucide-react"
 import { useMemo, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
@@ -34,6 +34,7 @@ import { isFireFoxPrivateMode } from "@/utils/is-private-mode"
 import { confirmDanger } from "@/components/Common/confirm-danger"
 import { useServerOnline } from "@/hooks/useServerOnline"
 import FeatureEmptyState from "@/components/Common/FeatureEmptyState"
+import { useMessageOption } from "@/hooks/useMessageOption"
 
 export const PromptBody = () => {
   const queryClient = useQueryClient()
@@ -59,6 +60,8 @@ export const PromptBody = () => {
   const [openCopilotEdit, setOpenCopilotEdit] = useState(false)
   const [editCopilotId, setEditCopilotId] = useState("")
   const [editCopilotForm] = Form.useForm()
+
+  const { setSelectedQuickPrompt } = useMessageOption()
 
   const { data, status } = useQuery({
     queryKey: ["fetchAllPrompts"],
@@ -464,6 +467,20 @@ export const PromptBody = () => {
                 title: t("managePrompts.columns.actions"),
                 render: (_, record) => (
                   <div className="flex gap-4">
+                    <Tooltip
+                      title={t("option:promptInsert.useInChat", {
+                        defaultValue: "Use in chat"
+                      })}>
+                      <button
+                        onClick={() => {
+                          setSelectedQuickPrompt(record.content)
+                          navigate("/")
+                        }}
+                        disabled={isFireFoxPrivateMode}
+                        className="text-gray-500 dark:text-gray-400 disabled:opacity-50">
+                        <MessageCircle className="size-4" />
+                      </button>
+                    </Tooltip>
                     <Tooltip title={t("managePrompts.tooltip.duplicate", { defaultValue: "Duplicate Prompt" })}>
                       <button
                         onClick={() => {

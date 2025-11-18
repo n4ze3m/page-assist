@@ -5,9 +5,12 @@ import React from "react"
 import { tldwClient } from "@/services/tldw/TldwApiClient"
 import { Pen, Trash2, Book } from "lucide-react"
 import { confirmDanger } from "@/components/Common/confirm-danger"
+import { useServerOnline } from "@/hooks/useServerOnline"
+import FeatureEmptyState from "@/components/Common/FeatureEmptyState"
 
 export const DictionariesManager: React.FC = () => {
-  const { t } = useTranslation(["common"])
+  const { t } = useTranslation(["common", "option"])
+  const isOnline = useServerOnline()
   const qc = useQueryClient()
   const [open, setOpen] = React.useState(false)
   const [openEdit, setOpenEdit] = React.useState(false)
@@ -26,7 +29,8 @@ export const DictionariesManager: React.FC = () => {
       await tldwClient.initialize()
       const res = await tldwClient.listDictionaries(false)
       return res?.dictionaries || []
-    }
+    },
+    enabled: isOnline
   })
 
   const { mutate: createDict, isPending: creating } = useMutation({
@@ -151,6 +155,7 @@ const DictionaryEntryManager: React.FC<{ dictionaryId: number; form: any }> = ({
     mutationFn: (id: number) => tldwClient.deleteDictionaryEntry(id),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['tldw:listDictionaryEntries', dictionaryId] })
   })
+
   return (
     <div className="space-y-3">
       {status === 'pending' && <Skeleton active paragraph={{ rows: 4 }} />}
