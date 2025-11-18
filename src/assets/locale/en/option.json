@@ -138,6 +138,50 @@
     "exampleLink": "Save review outputs into Notes so you can revisit them later.",
     "primaryCta": "Create note"
   },
+  "worldBooksEmpty": {
+    "demoTitle": "Explore World Books in demo mode",
+    "demoDescription": "This demo shows how World Books can organize structured knowledge about your worlds, settings, or products.",
+    "demoExample1": "See example books like a fantasy setting, product glossary, or campaign notes.",
+    "demoExample2": "When you connect, you’ll be able to create world books that tldw can use while chatting.",
+    "connectTitle": "Connect to use World Books",
+    "connectDescription": "To use World Books, first connect to your tldw server so world knowledge can be saved and retrieved.",
+    "connectExample1": "Open Settings \u2192 tldw server to add your server URL.",
+    "connectExample2": "Use Diagnostics if your server is running but not reachable.",
+    "headerDescription": "Create and manage structured knowledge bases that characters and chats can reference.",
+    "offlineTitle": "World Books are offline",
+    "offlineDescription": "Connect to your tldw server from the main settings page to view and edit World Books."
+  },
+  "dictionariesEmpty": {
+    "demoTitle": "Explore Chat dictionaries in demo mode",
+    "demoDescription": "This demo shows how Chat dictionaries can normalize names, acronyms, and terms before they reach the model.",
+    "demoExample1": "See example dictionaries for product names, project codenames, or company jargon.",
+    "demoExample2": "When you connect, you’ll be able to activate dictionaries across all chats.",
+    "connectTitle": "Connect to use Chat dictionaries",
+    "connectDescription": "To use Chat dictionaries, first connect to your tldw server so substitutions can be stored.",
+    "connectExample1": "Open Settings \u2192 tldw server to add your server URL.",
+    "connectExample2": "Use Diagnostics if your server is running but not reachable.",
+    "headerDescription": "Define reusable substitutions so tldw understands your organization\u2019s names, acronyms, and terminology.",
+    "offlineTitle": "Chat dictionaries are offline",
+    "offlineDescription": "Connect to your tldw server from the main settings page to view and edit Chat dictionaries."
+  },
+  "charactersEmpty": {
+    "demoTitle": "Explore Characters in demo mode",
+    "demoDescription": "This demo shows how Characters encapsulate a persona and system prompt that you can chat with.",
+    "demoExample1": "See example characters like a writing coach, lore expert, or coding assistant.",
+    "demoExample2": "When you connect, you\u2019ll be able to create characters that appear in the chat header and selection.",
+    "connectTitle": "Connect to use Characters",
+    "connectDescription": "To use Characters, first connect to your tldw server so character definitions can be stored.",
+    "connectExample1": "Open Settings \u2192 tldw server to add your server URL.",
+    "connectExample2": "Use Diagnostics if your server is running but not reachable.",
+    "headerDescription": "Create reusable characters with names, descriptions, and system prompts you can chat with."
+  },
+  "promptInsert": {
+    "useInChat": "Use in chat",
+    "confirmTitle": "Use prompt in chat?",
+    "confirmDescription": "Your message already has text. Do you want to overwrite it with this prompt or append the prompt below it?",
+    "overwrite": "Overwrite message",
+    "append": "Append"
+  },
   "flashcards": {
     "review": "Review",
     "create": "Create",

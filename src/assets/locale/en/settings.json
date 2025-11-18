@@ -458,7 +458,21 @@
   },
   "manageKnowledge": {
     "title": "Manage Knowledge",
-    "heading": "Configure Knowledge Base"
+    "heading": "Configure Knowledge Base",
+    "worldBooksSettingsTitle": "World Books workspace",
+    "worldBooksSettingsDescription": "World Books are managed from the World Books workspace. Use the button below to open it.",
+    "worldBooksOpenWorkspace": "Open World Books workspace",
+    "dictionariesSettingsTitle": "Chat dictionaries workspace",
+    "dictionariesSettingsDescription": "Chat dictionaries are managed from the Chat dictionaries workspace. Use the button below to open it.",
+    "dictionariesOpenWorkspace": "Open Chat dictionaries workspace"
+  },
+  "charactersSettingsTitle": "Characters workspace",
+  "charactersSettingsDescription": "Characters are managed from the Characters workspace. Use the button below to open it.",
+  "charactersOpenWorkspace": "Open Characters workspace",
+  "managePrompts": {
+    "workspaceTitle": "Prompts workspace",
+    "workspaceDescription": "Reusable prompts are managed from the Prompts workspace. Use the button below to open it.",
+    "openWorkspace": "Open Prompts workspace"
   },
   "rag": {
     "title": "RAG Settings",
