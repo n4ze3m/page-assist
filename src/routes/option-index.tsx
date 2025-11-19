@@ -122,6 +122,7 @@ const OptionIndex = () => {
                 window.dispatchEvent(new CustomEvent("tldw:focus-composer"))
               }, 0)
             }}
+            showToastOnError
             enableDemo
           />
           <p className="mt-4 text-center text-sm text-blue-600 hover:text-blue-500 dark:text-blue-400">

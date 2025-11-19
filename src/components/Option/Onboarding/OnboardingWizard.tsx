@@ -4,7 +4,7 @@ import { useStorage } from '@plasmohq/storage/hook'
 import { Storage } from '@plasmohq/storage'
 import { useTranslation } from 'react-i18next'
 import { tldwClient, TldwConfig } from '@/services/tldw/TldwApiClient'
-import { getTldwServerURL } from '@/services/tldw-server'
+import { getTldwServerURL, DEFAULT_TLDW_API_KEY } from '@/services/tldw-server'
 import { tldwAuth } from '@/services/tldw/TldwAuth'
 
 type Props = {
@@ -19,7 +19,7 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
   const [serverUrl, setServerUrl] = React.useState('')
   const [serverTouched, setServerTouched] = React.useState(false)
   const [authMode, setAuthMode] = React.useState<'single-user'|'multi-user'>('single-user')
-  const [apiKey, setApiKey] = React.useState('')
+  const [apiKey, setApiKey] = React.useState(DEFAULT_TLDW_API_KEY)
   const [username, setUsername] = React.useState('')
   const [password, setPassword] = React.useState('')
   const [connected, setConnected] = React.useState<boolean|null>(null)
@@ -42,6 +42,7 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
           setServerTouched(true)
         }
         if ((cfg as any)?.authMode) setAuthMode((cfg as any).authMode)
+        if ((cfg as any)?.apiKey) setApiKey((cfg as any).apiKey)
         // If no configured URL yet, prefill with default/fallback to reduce friction
         if (!cfg?.serverUrl) {
           try {

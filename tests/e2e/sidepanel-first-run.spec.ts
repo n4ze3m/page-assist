@@ -13,10 +13,10 @@ test.describe('Sidepanel first-run and connection panel', () => {
     // First-run: Waiting panel visible in Sidepanel
     await expect(page.getByText(/Waiting for your tldw server/i)).toBeVisible()
 
-    // Clicking Open/Change settings should open the Options page in a new tab
+    // Clicking Set up/Open/Change settings should open the Options page in a new tab
     const [settingsPage] = await Promise.all([
       context.waitForEvent('page'),
-      page.getByRole('button', { name: /Change server|Open settings/i }).click()
+      page.getByRole('button', { name: /Set up server|Change server|Open settings/i }).click()
     ])
     await settingsPage.waitForLoadState('domcontentloaded')
     // In Chromium, chrome.runtime.openOptionsPage navigates to chrome://extensions/?options=<id>

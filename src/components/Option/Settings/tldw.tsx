@@ -18,6 +18,7 @@ import { useTranslation } from "react-i18next"
 import { tldwClient, TldwConfig } from "@/services/tldw/TldwApiClient"
 import { tldwAuth } from "@/services/tldw/TldwAuth"
 import { SettingsSkeleton } from "@/components/Common/Settings/SettingsSkeleton"
+import { DEFAULT_TLDW_API_KEY } from "@/services/tldw-server"
 
 type TimeoutPresetKey = 'balanced' | 'extended'
 
@@ -398,7 +399,8 @@ export const TldwSettings = () => {
           onFinish={handleSave}
           layout="vertical"
           initialValues={{
-            authMode: 'single-user'
+            authMode: 'single-user',
+            apiKey: DEFAULT_TLDW_API_KEY
           }}
         >
           <Form.Item

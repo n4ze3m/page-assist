@@ -549,8 +549,9 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
         <div className="relative flex w-full flex-row justify-center gap-2 lg:w-4/5">
           <div
             data-istemporary-chat={temporaryChat}
+            aria-disabled={!isConnectionReady}
             className={` bg-neutral-50  dark:bg-[#262626] relative w-full max-w-[48rem] p-1 backdrop-blur-lg duration-100 border border-gray-300 rounded-t-xl  dark:border-gray-600 data-[istemporary-chat='true']:bg-purple-900 data-[istemporary-chat='true']:dark:bg-purple-900 ${
-              !isConnectionReady ? "opacity-80" : ""
+              !isConnectionReady ? "opacity-60" : ""
             }`}>
             <div
               className={`border-b border-gray-200 dark:border-gray-600 relative ${
@@ -623,6 +624,8 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                     ref={inputRef}
                     accept="image/*"
                     multiple={false}
+                    tabIndex={-1}
+                    aria-hidden="true"
                     onChange={onInputChange}
                   />
                   <div className="w-full  flex flex-col px-1">

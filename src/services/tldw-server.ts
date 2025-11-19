@@ -9,6 +9,11 @@ const storage = new Storage()
 // Default local tldw_server endpoint
 const DEFAULT_TLDW_URL = "http://127.0.0.1:8000"
 
+// Default API key for single-user/demo setups.
+// This is intended for self-hosted environments and should be replaced
+// or overridden in production deployments.
+export const DEFAULT_TLDW_API_KEY = "THIS-IS-A-SECURE-KEY-123-REPLACE-ME"
+
 export const getTldwServerURL = async () => {
   const config = await tldwClient.getConfig()
   if (config?.serverUrl) {

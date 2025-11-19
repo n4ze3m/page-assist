@@ -10,10 +10,11 @@ test.describe('ServerConnectionCard states', () => {
 
     // Card visible with missing-config state
     await expect(page.getByText(/Waiting for your tldw server/i)).toBeVisible()
-    await expect(page.getByRole('button', { name: /Open settings/i })).toBeVisible()
+    // Primary CTA should clearly guide users to configure the server
+    await expect(page.getByRole('button', { name: /Set up server/i })).toBeVisible()
 
     // Navigate to settings
-    await page.getByRole('button', { name: /Open settings/i }).click()
+    await page.getByRole('button', { name: /Set up server/i }).click()
     await expect(page.getByText(/tldw Server Configuration/i)).toBeVisible()
 
     await context.close()

@@ -76,42 +76,37 @@ export const ServerConnectionCard: React.FC<Props> = ({
   React.useEffect(() => {
     if (!showToastOnError) return
     const toastKey = "tldw-connection-toast"
-    if (
-      (statusVariant === "error" && serverHost) ||
-      statusVariant === "missing"
-    ) {
+
+    if (statusVariant === "error") {
       const detail = lastError || undefined
       const code = Number(lastStatusCode)
       const hasCode = Number.isFinite(code) && code > 0
+
       notification.error({
         key: toastKey,
-        message:
-          statusVariant === "missing"
-            ? t(
-                "ollamaState.noServer",
-                "Add your tldw server to start chatting."
-              )
-            : (
-                t("ollamaState.errorToast", "We couldn’t reach {{host}}", { host: serverHost ?? "tldw_server" }) +
-                (hasCode ? ` (HTTP ${code})` : "")
-              ),
-        description:
-          statusVariant === "missing"
-            ? t(
-                "ollamaState.missingHelp",
-                "Open Settings → tldw Server to add your URL or connect to the Options page."
-              )
-            : t(
-                "ollamaState.troubleshoot",
-                "Confirm your server is running and that the browser is allowed to reach it, then retry from the Options page."
-              ) + (detail ? `\nDetails: ${detail}` : ""),
+        message: t(
+          "ollamaState.errorToast",
+          "We couldn’t reach {{host}}",
+          { host: serverHost ?? "tldw_server" }
+        ) + (hasCode ? ` (HTTP ${code})` : ""),
+        description: t(
+          "ollamaState.troubleshoot",
+          "Confirm your server is running and that the browser is allowed to reach it, then retry from the Options page."
+        ) + (detail ? `\nDetails: ${detail}` : ""),
         placement: "bottomRight",
         duration: 6
       })
-    } else if (statusVariant === "ok") {
+    } else if (statusVariant === "ok" || statusVariant === "missing") {
       notification.destroy(toastKey)
     }
-  }, [showToastOnError, statusVariant, serverHost, lastError, lastStatusCode, t])
+  }, [
+    showToastOnError,
+    statusVariant,
+    serverHost,
+    lastError,
+    lastStatusCode,
+    t
+  ])
 
   const headline =
     statusVariant === "missing"
