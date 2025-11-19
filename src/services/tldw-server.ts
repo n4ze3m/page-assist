@@ -39,14 +39,12 @@ export const isTldwServerRunning = async () => {
 
 export const getAllModels = async ({ returnEmpty = false }: { returnEmpty?: boolean }) => {
   try {
-    // If no config or server not reachable, avoid network calls when returnEmpty requested
+    // If no config, avoid network calls when returnEmpty requested
     try {
       const cfg = await tldwClient.getConfig()
       if (!cfg) {
         if (returnEmpty) return []
       }
-      const healthy = await tldwClient.healthCheck()
-      if (!healthy && returnEmpty) return []
     } catch {
       if (returnEmpty) return []
     }
@@ -84,7 +82,12 @@ export const getAllModels = async ({ returnEmpty = false }: { returnEmpty?: bool
           }
         }))
       }
-    } catch {}
+    } catch (e) {
+      // In dev builds it's helpful to know why the flat models list failed.
+      if (!returnEmpty && import.meta.env?.DEV) {
+        console.warn("tldw_server: GET /api/v1/llm/models failed, falling back to metadata/providers", e)
+      }
+    }
 
     // Fallback to the richer tldwModels API if raw list fails
     const models = await tldwModels.getModels(true)
@@ -118,7 +121,18 @@ export const fetchChatModels = async ({ returnEmpty = false }: { returnEmpty?: b
     const customModels = await ollamaFormatAllCustomModels("chat")
 
     // Normalize providers for display; keep existing fields from custom/chrome entries
-    return [...tldw, ...chromeModel, ...customModels]
+    const combined = [...tldw, ...chromeModel, ...customModels]
+
+    if (import.meta.env?.DEV) {
+      console.debug("tldw_server: fetchChatModels resolved", {
+        tldwCount: tldw.length,
+        chromeCount: chromeModel.length,
+        customCount: customModels.length,
+        total: combined.length
+      })
+    }
+
+    return combined
   } catch (e) {
     console.error("Failed to fetch chat models:", e)
     if (returnEmpty) return []

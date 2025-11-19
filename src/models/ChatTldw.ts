@@ -1,4 +1,3 @@
-import { BaseChatModel } from "@langchain/core/language_models/chat_models"
 import {
   BaseMessage,
   AIMessage,
@@ -6,9 +5,6 @@ import {
   SystemMessage,
   MessageContent
 } from "@langchain/core/messages"
-import { ChatGenerationChunk } from "@langchain/core/outputs"
-import { AIMessageChunk } from "@langchain/core/messages" 
-import { CallbackManagerForLLMRun } from "@langchain/core/callbacks/manager"
 import { tldwChat, ChatMessage } from "@/services/tldw"
 
 export interface ChatTldwOptions {
@@ -22,7 +18,7 @@ export interface ChatTldwOptions {
   streaming?: boolean
 }
 
-export class ChatTldw extends BaseChatModel {
+export class ChatTldw {
   model: string
   temperature?: number
   maxTokens?: number
@@ -33,7 +29,6 @@ export class ChatTldw extends BaseChatModel {
   streaming: boolean
 
   constructor(options: ChatTldwOptions) {
-    super({})
     // Normalize model id: drop internal prefix like "tldw:" so server receives provider/model
     this.model = String(options.model || '').replace(/^tldw:/, '')
     this.temperature = options.temperature ?? 0.7
@@ -45,75 +40,25 @@ export class ChatTldw extends BaseChatModel {
     this.streaming = options.streaming ?? false
   }
 
-  _llmType(): string {
-    return "tldw"
-  }
-
-  async _generate(
+  /**
+   * Streaming API used by existing chat modes.
+   *
+   * This intentionally mirrors the previous `ollama.stream(...)` contract:
+   * - yields plain string tokens
+   * - optionally calls `callbacks[i].handleLLMEnd(result)` once at the end
+   */
+  async stream(
     messages: BaseMessage[],
-    options?: this["ParsedCallOptions"],
-    runManager?: CallbackManagerForLLMRun
-  ): Promise<any> {
-    const tldwMessages = this.convertToTldwMessages(messages)
-    
-    if (this.streaming && runManager) {
-      // Use streaming
-      const stream = tldwChat.streamMessage(tldwMessages, {
-        model: this.model,
-        temperature: this.temperature,
-        maxTokens: this.maxTokens,
-        topP: this.topP,
-        frequencyPenalty: this.frequencyPenalty,
-        presencePenalty: this.presencePenalty,
-        systemPrompt: this.systemPrompt,
-        stream: true
-      })
-
-      let fullContent = ""
-      for await (const chunk of stream) {
-        fullContent += chunk
-        await runManager.handleLLMNewToken(chunk)
-      }
-
-      return {
-        generations: [
-          {
-            text: fullContent,
-            message: new AIMessage(fullContent)
-          }
-        ]
-      }
-    } else {
-      // Non-streaming
-      const response = await tldwChat.sendMessage(tldwMessages, {
-        model: this.model,
-        temperature: this.temperature,
-        maxTokens: this.maxTokens,
-        topP: this.topP,
-        frequencyPenalty: this.frequencyPenalty,
-        presencePenalty: this.presencePenalty,
-        systemPrompt: this.systemPrompt,
-        stream: false
-      })
-
-      return {
-        generations: [
-          {
-            text: response,
-            message: new AIMessage(response)
-          }
-        ]
-      }
+    options?: {
+      signal?: AbortSignal
+      // Matches the shape used in normalChatMode/search/rag, where
+      // callbacks: [{ handleLLMEnd(output) { ... } }]
+      callbacks?: Array<{ handleLLMEnd?: (output: any) => any }>
     }
-  }
+  ): Promise<AsyncGenerator<any, void, unknown>> {
+    const { signal, callbacks } = options || {}
 
-  async *_streamResponseChunks(
-    messages: BaseMessage[],
-    options?: this["ParsedCallOptions"],
-    runManager?: CallbackManagerForLLMRun
-  ): AsyncGenerator<any> {
     const tldwMessages = this.convertToTldwMessages(messages)
-    
     const stream = tldwChat.streamMessage(tldwMessages, {
       model: this.model,
       temperature: this.temperature,
@@ -125,16 +70,68 @@ export class ChatTldw extends BaseChatModel {
       stream: true
     })
 
-    for await (const token of stream) {
-      if (runManager) {
-        await runManager.handleLLMNewToken(token)
+    const self = this
+    async function* generator() {
+      let fullText = ""
+      try {
+        for await (const token of stream) {
+          if (signal?.aborted) {
+            break
+          }
+          if (typeof token !== "string") continue
+          fullText += token
+          // Downstream chat-modes treat chunks as strings or objects with
+          // `content` / `choices[0].delta.content`. Yielding the plain
+          // string keeps the simple path working (`typeof chunk === 'string'`).
+          yield token
+        }
+      } finally {
+        // Synthesize a minimal LangChain-style result for handleLLMEnd
+        if (callbacks && callbacks.length > 0) {
+          const result = {
+            generations: [[{ text: fullText, generationInfo: undefined }]]
+          }
+          for (const cb of callbacks) {
+            try {
+              await cb?.handleLLMEnd?.(result)
+            } catch {
+              // Ignore callback errors to avoid breaking chat flow
+            }
+          }
+        }
       }
-      // Yield a LangChain-compatible generation chunk so downstream can concat
-      const messageChunk = new AIMessageChunk({ content: token })
-      const genChunk = new ChatGenerationChunk({ message: messageChunk, text: token })
-      yield genChunk
+    }
+
+    return generator()
+  }
+
+  // Non-streaming helper mirroring the LangChain-style _generate,
+  // used only internally if needed.
+  async generateOnce(
+    messages: BaseMessage[]
+  ): Promise<{ text: string; message: AIMessage }> {
+    const tldwMessages = this.convertToTldwMessages(messages)
+    
+    const response = await tldwChat.sendMessage(tldwMessages, {
+      model: this.model,
+      temperature: this.temperature,
+      maxTokens: this.maxTokens,
+      topP: this.topP,
+      frequencyPenalty: this.frequencyPenalty,
+      presencePenalty: this.presencePenalty,
+      systemPrompt: this.systemPrompt,
+      stream: false
+    })
+
+    return {
+      text: response,
+      message: new AIMessage(response)
     }
   }
+
+  // We don't rely on BaseChatModel's default stream helper in the current
+  // chat pipeline; see the custom `stream` implementation above which
+  // matches the expected `ollama.stream` contract.
 
   private convertToTldwMessages(messages: BaseMessage[]): ChatMessage[] {
     return messages.map(msg => {

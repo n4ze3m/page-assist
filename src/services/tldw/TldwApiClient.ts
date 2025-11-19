@@ -37,6 +37,28 @@ export interface ChatCompletionRequest {
   presence_penalty?: number
 }
 
+export interface TldwEmbeddingModel {
+  provider: string
+  model: string
+  allowed?: boolean
+  default?: boolean
+}
+
+export interface TldwEmbeddingModelsResponse {
+  data?: TldwEmbeddingModel[]
+  allowed_providers?: string[] | null
+  allowed_models?: string[] | null
+}
+
+export interface TldwEmbeddingProvidersConfig {
+  default_provider: string
+  default_model: string
+  providers: {
+    name: string
+    models: string[]
+  }[]
+}
+
 export class TldwApiClient {
   private storage: Storage
   private config: TldwConfig | null = null
@@ -89,10 +111,13 @@ export class TldwApiClient {
       // Prefer background proxy (extension messaging)
       // @ts-ignore
       if (typeof browser !== 'undefined' && browser?.runtime?.sendMessage) {
-        // Do not require auth for health checks; avoid pre-emptive 401s if
-        // the user hasn't configured credentials yet or the server exposes
-        // a public health endpoint.
-        await bgRequest<{ status?: string; [k: string]: any }>({ path: '/api/v1/health', method: 'GET', noAuth: true })
+        // Use authenticated health check so deployments that protect
+        // /api/v1/health still work. Auth headers are injected by the
+        // background proxy from tldwConfig (API key / access token).
+        await bgRequest<{ status?: string; [k: string]: any }>({
+          path: '/api/v1/health',
+          method: 'GET'
+        })
         return true
       }
     } catch {}
@@ -151,18 +176,44 @@ export class TldwApiClient {
     // Prefer flattened metadata endpoint when available
     try {
       const meta = await this.getModelsMetadata().catch(() => null)
-      if (Array.isArray(meta) && meta.length > 0) {
+      const list =
+        Array.isArray(meta) && meta.length > 0
+          ? meta
+          : meta && typeof meta === "object" && Array.isArray((meta as any).models)
+            ? (meta as any).models
+            : null
+
+      if (list && list.length > 0) {
         // Normalize fields to TldwModel
-        return meta.map((m: any) => ({
+        return list.map((m: any) => ({
           id: String(m.id || m.model || m.name),
           name: String(m.name || m.id || m.model),
-          provider: String(m.provider || 'unknown'),
+          provider: String(m.provider || "unknown"),
           description: m.description,
-          capabilities: Array.isArray(m.capabilities) ? m.capabilities : (Array.isArray(m.features) ? m.features : undefined),
-          context_length: typeof m.context_length === 'number' ? m.context_length : (typeof m.contextLength === 'number' ? m.contextLength : undefined),
-          vision: Boolean(m.vision),
-          function_calling: Boolean(m.function_calling),
-          json_output: Boolean(m.json_output)
+          capabilities: Array.isArray(m.capabilities)
+            ? m.capabilities
+            : Array.isArray(m.features)
+              ? m.features
+              : undefined,
+          context_length:
+            typeof m.context_length === "number"
+              ? m.context_length
+              : typeof m.context_window === "number"
+                ? m.context_window
+                : typeof m.contextLength === "number"
+                  ? m.contextLength
+                  : undefined,
+          vision: Boolean(
+            (m.capabilities && m.capabilities.vision) ?? m.vision
+          ),
+          function_calling: Boolean(
+            (m.capabilities &&
+              (m.capabilities.function_calling || m.capabilities.tool_use)) ??
+              m.function_calling
+          ),
+          json_output: Boolean(
+            (m.capabilities && m.capabilities.json_mode) ?? m.json_output
+          )
         }))
       }
     } catch {}
@@ -170,21 +221,101 @@ export class TldwApiClient {
     // Next: use providers endpoint for richer info when available
     try {
       const providers = await this.getProviders().catch(() => null)
-      if (providers && typeof providers === 'object') {
+      if (providers && typeof providers === "object") {
+        // Newer tldw_server builds return { providers: [...], ... }.
+        // Older builds may return a plain array or other shapes. Prefer the
+        // documented shape first and fall back to a legacy extractor.
+        const providerList = Array.isArray((providers as any).providers)
+          ? (providers as any).providers
+          : Array.isArray(providers)
+            ? (providers as any)
+            : null
+
+        if (providerList && providerList.length > 0) {
+          const models: TldwModel[] = []
+
+          for (const p of providerList as any[]) {
+            const providerName = String(p.name || p.provider || "unknown")
+
+            const modelsInfo = Array.isArray(p.models_info) ? p.models_info : []
+            const simpleModels = Array.isArray(p.models) ? p.models : []
+
+            if (modelsInfo.length > 0) {
+              for (const mi of modelsInfo) {
+                const id = String(mi.id || mi.name || mi.model)
+                const name = String(mi.name || id)
+                const caps = mi.capabilities || {}
+                models.push({
+                  id,
+                  name,
+                  provider: providerName,
+                  description: mi.notes || mi.description,
+                  capabilities: Array.isArray(caps) ? caps : undefined,
+                  context_length:
+                    typeof mi.context_length === "number"
+                      ? mi.context_length
+                      : typeof mi.context_window === "number"
+                        ? mi.context_window
+                        : typeof mi.contextLength === "number"
+                          ? mi.contextLength
+                          : undefined,
+                  vision: Boolean(caps.vision),
+                  function_calling: Boolean(
+                    caps.function_calling ?? caps.tool_use
+                  ),
+                  json_output: Boolean(caps.json_mode)
+                })
+              }
+            } else {
+              for (const m of simpleModels) {
+                const id = String(m)
+                models.push({
+                  id,
+                  name: id,
+                  provider: providerName
+                })
+              }
+            }
+          }
+
+          const uniq = new Map<string, TldwModel>()
+          for (const m of models) {
+            uniq.set(`${m.provider}:${m.id}`, m)
+          }
+          const list = Array.from(uniq.values())
+          if (list.length > 0) return list
+        }
+
+        // Legacy fallback: tolerate older/non-standard shapes by walking
+        // arbitrary object structures looking for model-like values.
         const models: TldwModel[] = []
 
         const pushModel = (providerName: string, id: any, value?: any) => {
-          const modelId = typeof id === 'string' ? id : (id?.id || id?.name || id?.model)
+          const modelId =
+            typeof id === "string" ? id : id?.id || id?.name || id?.model
           if (!modelId) return
-          const name = (typeof id === 'string') ? id : (id?.name || modelId)
-          const meta = (typeof id === 'object') ? id : (typeof value === 'object' ? value : {})
+          const name =
+            typeof id === "string" ? id : id?.name || modelId
+          const meta =
+            typeof id === "object"
+              ? id
+              : typeof value === "object"
+                ? value
+                : {}
           models.push({
             id: String(modelId),
             name: String(name),
             provider: providerName,
             description: meta?.description,
-            capabilities: Array.isArray(meta?.capabilities) ? meta.capabilities : undefined,
-            context_length: typeof meta?.context_length === 'number' ? meta.context_length : (typeof meta?.contextLength === 'number' ? meta.contextLength : undefined),
+            capabilities: Array.isArray(meta?.capabilities)
+              ? meta.capabilities
+              : undefined,
+            context_length:
+              typeof meta?.context_length === "number"
+                ? meta.context_length
+                : typeof meta?.contextLength === "number"
+                  ? meta.contextLength
+                  : undefined,
             vision: Boolean(meta?.vision),
             function_calling: Boolean(meta?.function_calling),
             json_output: Boolean(meta?.json_output)
@@ -200,19 +331,17 @@ export class TldwApiClient {
           if (Array.isArray(info?.models)) {
             for (const item of info.models) pushModel(providerName, item)
           }
-          // Traverse object-of-arrays or object-of-objects structures
-          if (info && typeof info === 'object') {
+          if (info && typeof info === "object") {
             for (const [k, v] of Object.entries(info)) {
-              if (k === 'models') continue
+              if (k === "models") continue
               if (Array.isArray(v)) {
                 for (const item of v) pushModel(providerName, item)
-              } else if (v && typeof v === 'object') {
-                // keys might be model ids with metadata objects
+              } else if (v && typeof v === "object") {
                 for (const [mk, mv] of Object.entries<any>(v)) {
-                  if (typeof mv === 'object') pushModel(providerName, mk, mv)
+                  if (typeof mv === "object") pushModel(providerName, mk, mv)
                   else pushModel(providerName, mk)
                 }
-              } else if (typeof v === 'string') {
+              } else if (typeof v === "string") {
                 pushModel(providerName, v)
               }
             }
@@ -223,7 +352,6 @@ export class TldwApiClient {
           extract(String(providerName), info)
         }
 
-        // Deduplicate by id+provider
         const uniq = new Map<string, TldwModel>()
         for (const m of models) {
           uniq.set(`${m.provider}:${m.id}`, m)
@@ -274,8 +402,61 @@ export class TldwApiClient {
     return await bgRequest<any>({ path: '/api/v1/llm/providers', method: 'GET' })
   }
 
-  async getModelsMetadata(): Promise<any[]> {
-    return await bgRequest<any[]>({ path: '/api/v1/llm/models/metadata', method: 'GET' })
+  async getModelsMetadata(): Promise<any> {
+    // tldw_server returns either an array or an object
+    // of the form { models: [...], total: N }.
+    return await bgRequest<any>({ path: '/api/v1/llm/models/metadata', method: 'GET' })
+  }
+
+  // Embeddings - Models & Providers
+  async getEmbeddingModelsList(): Promise<TldwEmbeddingModel[]> {
+    try {
+      const data = await bgRequest<TldwEmbeddingModelsResponse | TldwEmbeddingModel[]>({
+        path: "/api/v1/embeddings/models",
+        method: "GET"
+      })
+
+      const list: any[] = Array.isArray(data)
+        ? data
+        : Array.isArray((data as TldwEmbeddingModelsResponse)?.data)
+          ? (data as TldwEmbeddingModelsResponse).data!
+          : []
+
+      return list
+        .map((item) => ({
+          provider: String((item as any).provider || "unknown"),
+          model: String((item as any).model || ""),
+          allowed:
+            typeof (item as any).allowed === "boolean"
+              ? Boolean((item as any).allowed)
+              : true,
+          default: Boolean((item as any).default)
+        }))
+        .filter((m) => m.model.length > 0)
+    } catch (e) {
+      if (import.meta.env?.DEV) {
+        console.warn("tldw_server: GET /api/v1/embeddings/models failed", e)
+      }
+      return []
+    }
+  }
+
+  async getEmbeddingProvidersConfig(): Promise<TldwEmbeddingProvidersConfig | null> {
+    try {
+      const cfg = await bgRequest<TldwEmbeddingProvidersConfig>({
+        path: "/api/v1/embeddings/providers-config",
+        method: "GET"
+      })
+      return cfg
+    } catch (e) {
+      if (import.meta.env?.DEV) {
+        console.warn(
+          "tldw_server: GET /api/v1/embeddings/providers-config failed",
+          e
+        )
+      }
+      return null
+    }
   }
 
   async createChatCompletion(request: ChatCompletionRequest): Promise<Response> {

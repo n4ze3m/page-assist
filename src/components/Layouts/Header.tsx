@@ -11,7 +11,7 @@ import { useQuery } from "@tanstack/react-query"
 import { useServerOnline } from "@/hooks/useServerOnline"
 import { fetchChatModels } from "@/services/tldw-server"
 import { useMessageOption } from "~/hooks/useMessageOption"
-import { Avatar, Select, Popover, Input, Divider } from "antd"
+import { Avatar, Select, Input, Divider } from "antd"
 import QuickIngestModal from "../Common/QuickIngestModal"
 import {
   UploadCloud,
@@ -154,6 +154,22 @@ export const Header: React.FC<Props> = ({
     if (pathname.startsWith("/flashcards")) return "flashcards"
     return "playground"
   }, [pathname])
+
+  const openSidebar = React.useCallback(async () => {
+    try {
+      // @ts-ignore
+      if (chrome?.sidePanel) {
+        // @ts-ignore
+        const tabs = await chrome.tabs.query({ active: true, currentWindow: true })
+        if (tabs?.[0]?.id) {
+          // @ts-ignore
+          await chrome.sidePanel.open({ tabId: tabs[0].id })
+        }
+      } else {
+        await browser.sidebarAction.open()
+      }
+    } catch {}
+  }, [])
 
   const handleCoreModeChange = (mode: CoreMode) => {
     switch (mode) {
@@ -439,6 +455,23 @@ export const Header: React.FC<Props> = ({
                 {t("option:header.serverSettings", "Server settings")}
               </span>
             </button>
+            <button
+              type="button"
+              onClick={() => {
+                try {
+                  window.open(
+                    "https://github.com/rmusser01/tldw_browser_assistant",
+                    "_blank",
+                    "noopener"
+                  )
+                } catch {}
+              }}
+              className="inline-flex items-center gap-1 rounded-md border border-transparent px-2 py-1 text-xs text-gray-600 transition hover:border-gray-300 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-amber-500 dark:text-gray-200 dark:hover:border-gray-500 dark:hover:bg-[#1f1f1f]"
+            >
+              <span className="hidden sm:inline">
+                {t("option:githubRepository", "GitHub Repository")}
+              </span>
+            </button>
             {!temporaryChat && historyId && historyId !== "temp" && (
               <div className="hidden min-w-[160px] max-w-[280px] lg:block">
                 {isEditingTitle ? (
@@ -597,7 +630,92 @@ export const Header: React.FC<Props> = ({
 
       <Divider className="hidden lg:block" plain />
 
-      <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+      <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:justify-end">
+          <div className="flex items-center gap-3 text-xs text-gray-600 dark:text-gray-300">
+          <button
+            type="button"
+            onClick={() => navigate("/settings/health")}
+              className="inline-flex items-center gap-1 rounded-full border border-transparent px-2 py-1 text-xs transition hover:border-gray-300 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500 dark:hover:border-gray-500 dark:hover:bg-[#1f1f1f]"
+              title={t(
+                "settings:healthSummary.coreAria",
+                "Server status — click for diagnostics"
+              ) as string}
+              aria-label={
+                statusLabelForCore(coreStatus) +
+                ". " +
+                t(
+                  "settings:healthSummary.diagnosticsTooltip",
+                  "Open detailed diagnostics to troubleshoot or inspect health checks."
+                )
+              }>
+              <StatusDot status={coreStatus} />
+              <span>{statusLabelForCore(coreStatus)}</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => navigate("/settings/health")}
+              className="inline-flex items-center gap-1 rounded-full border border-transparent px-2 py-1 text-xs transition hover:border-gray-300 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500 dark:hover:border-gray-500 dark:hover:bg-[#1f1f1f]"
+              title={t(
+                "settings:healthSummary.ragAria",
+                "Knowledge status — click for diagnostics"
+              ) as string}
+              aria-label={
+                statusLabelForRag(ragStatus) +
+                ". " +
+                t(
+                  "settings:healthSummary.diagnosticsTooltip",
+                  "Open detailed diagnostics to troubleshoot or inspect health checks."
+                )
+              }>
+              <StatusDot status={ragStatus} />
+              <span>{statusLabelForRag(ragStatus)}</span>
+            </button>
+            <Link
+              to="/settings/health"
+              className="text-xs font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400">
+              {t("settings:healthSummary.diagnostics", "Diagnostics")}
+            </Link>
+          </div>
+          <button
+            type="button"
+            onClick={() => setOpenModelSettings(true)}
+            className="flex w-full items-center gap-2 rounded-md border border-transparent px-3 py-2 text-sm text-gray-600 transition hover:border-gray-300 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500 dark:text-gray-200 dark:hover:border-gray-500 dark:hover:bg-[#1f1f1f] sm:w-auto"
+          >
+            <Gauge className="h-4 w-4" aria-hidden="true" />
+            <span>{t("option:header.modelSettings", "Model settings")}</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setQuickIngestOpen(true)}
+            className="flex w-full items-center gap-2 rounded-md border border-transparent px-3 py-2 text-sm text-gray-600 transition hover:border-gray-300 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500 dark:text-gray-200 dark:hover:border-gray-500 dark:hover:bg-[#1f1f1f] sm:w-auto"
+          >
+            <UploadCloud className="h-4 w-4" aria-hidden="true" />
+            <span>{t("option:header.quickIngest", "Quick ingest")}</span>
+          </button>
+
+          {messages.length > 0 && !streaming && (
+            <div className="flex items-center gap-1">
+              <MoreOptions
+                shareModeEnabled={shareModeEnabled}
+                historyId={historyId}
+                messages={messages}
+              />
+              <span className="sr-only">{t("option:header.moreActions", "More actions")}</span>
+            </div>
+          )}
+
+          <button
+            type="button"
+            onClick={() => { void openSidebar() }}
+            className="flex w-full items-center gap-2 rounded-md border border-transparent px-3 py-2 text-sm text-gray-600 transition hover:border-gray-300 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500 dark:text-gray-200 dark:hover:border-gray-500 dark:hover:bg-[#1f1f1f] sm:w-auto"
+          >
+            <LayoutGrid className="h-4 w-4" aria-hidden="true" />
+            <span>{t("option:header.openSidebar", "Open sidebar")}</span>
+          </button>
+        </div>
+
         <div className="flex flex-col gap-2 lg:flex-1">
           <div className="flex flex-wrap items-center gap-2 text-xs">
             <span className="font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
@@ -672,7 +790,7 @@ export const Header: React.FC<Props> = ({
                   className={classNames(
                     "rounded-full px-3 py-1 text-xs font-medium transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500",
                     currentCoreMode === mode.key
-                      ? "bg-black text-white dark:bg-white dark:text-gray-900"
+                      ? "bg-black text-white dark:bg白 white dark:text-gray-900".replace('白','') // keep original classes
                       : "bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-[#262626] dark:text-gray-200 dark:hover:bg-[#333333]"
                   )}
                   aria-current={currentCoreMode === mode.key ? "page" : undefined}
@@ -757,155 +875,6 @@ export const Header: React.FC<Props> = ({
               </div>
             </div>
           )}
-        </div>
-
-        <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:justify-end">
-          <div className="flex items-center gap-3 text-xs text-gray-600 dark:text-gray-300">
-          <button
-            type="button"
-            onClick={() => navigate("/settings/health")}
-              className="inline-flex items-center gap-1 rounded-full border border-transparent px-2 py-1 text-xs transition hover:border-gray-300 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500 dark:hover:border-gray-500 dark:hover:bg-[#1f1f1f]"
-              title={t(
-                "settings:healthSummary.coreAria",
-                "Server status — click for diagnostics"
-              ) as string}
-              aria-label={
-                statusLabelForCore(coreStatus) +
-                ". " +
-                t(
-                  "settings:healthSummary.diagnosticsTooltip",
-                  "Open detailed diagnostics to troubleshoot or inspect health checks."
-                )
-              }>
-              <StatusDot status={coreStatus} />
-              <span>{statusLabelForCore(coreStatus)}</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => navigate("/settings/health")}
-              className="inline-flex items-center gap-1 rounded-full border border-transparent px-2 py-1 text-xs transition hover:border-gray-300 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500 dark:hover:border-gray-500 dark:hover:bg-[#1f1f1f]"
-              title={t(
-                "settings:healthSummary.ragAria",
-                "Knowledge status — click for diagnostics"
-              ) as string}
-              aria-label={
-                statusLabelForRag(ragStatus) +
-                ". " +
-                t(
-                  "settings:healthSummary.diagnosticsTooltip",
-                  "Open detailed diagnostics to troubleshoot or inspect health checks."
-                )
-              }>
-              <StatusDot status={ragStatus} />
-              <span>{statusLabelForRag(ragStatus)}</span>
-            </button>
-            <Link
-              to="/settings/health"
-              className="text-xs font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400">
-              {t("settings:healthSummary.diagnostics", "Diagnostics")}
-            </Link>
-          </div>
-          <button
-            type="button"
-            onClick={() => setOpenModelSettings(true)}
-            className="flex w-full items-center gap-2 rounded-md border border-transparent px-3 py-2 text-sm text-gray-600 transition hover:border-gray-300 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500 dark:text-gray-200 dark:hover:border-gray-500 dark:hover:bg-[#1f1f1f] sm:w-auto"
-          >
-            <Gauge className="h-4 w-4" aria-hidden="true" />
-            <span>{t("option:header.modelSettings", "Model settings")}</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setQuickIngestOpen(true)}
-            className="flex w-full items-center gap-2 rounded-md border border-transparent px-3 py-2 text-sm text-gray-600 transition hover:border-gray-300 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500 dark:text-gray-200 dark:hover:border-gray-500 dark:hover:bg-[#1f1f1f] sm:w-auto"
-          >
-            <UploadCloud className="h-4 w-4" aria-hidden="true" />
-            <span>{t("option:header.quickIngest", "Quick ingest")}</span>
-          </button>
-
-          {messages.length > 0 && !streaming && (
-            <div className="flex items-center gap-1">
-              <MoreOptions
-                shareModeEnabled={shareModeEnabled}
-                historyId={historyId}
-                messages={messages}
-              />
-              <span className="sr-only">{t("option:header.moreActions", "More actions")}</span>
-            </div>
-          )}
-
-          <Popover
-            open={moreMenuOpen}
-            onOpenChange={setMoreMenuOpen}
-            trigger="click"
-            placement="bottomRight"
-            content={
-              <div
-                id="header-more-menu"
-                className="flex flex-col gap-1 min-w-48 text-sm"
-                role="menu"
-                aria-label={t("option:header.moreMenu.title", "Advanced tools")}>
-                <span className="px-2 text-xs font-semibold uppercase tracking-wide text-gray-400">
-                  {t("option:header.moreMenu.title", "Advanced tools")}
-                </span>
-                <button
-                  onClick={() => {
-                    try {
-                      window.open("https://github.com/n4ze3m/page-assist", "_blank", "noopener")
-                    } finally {
-                      setMoreMenuOpen(false)
-                    }
-                  }}
-                  className="rounded px-2 py-1 text-left hover:bg-gray-100 dark:hover:bg-gray-800"
-                >
-                  {t("option:githubRepository")}
-                </button>
-                <button
-                  onClick={async () => {
-                    const storage = new (await import("@plasmohq/storage")).Storage({ area: "local" })
-                    await storage.set("uiMode", "sidePanel")
-                    await storage.set("actionIconClick", "sidePanel")
-                    await storage.set("contextMenuClick", "sidePanel")
-                    try {
-                      // @ts-ignore
-                      if (chrome?.sidePanel) {
-                        const tabs = await chrome.tabs.query({ active: true, currentWindow: true })
-                        if (tabs?.[0]?.id) await chrome.sidePanel.open({ tabId: tabs[0].id })
-                      } else {
-                        await browser.sidebarAction.open()
-                      }
-                    } catch {}
-                    setMoreMenuOpen(false)
-                  }}
-                  className="rounded px-2 py-1 text-left hover:bg-gray-100 dark:hover:bg-gray-800"
-                >
-                  {t("option:header.openSidebar", "Switch to sidebar")}
-                </button>
-              </div>
-            }
-          >
-            <button
-              type="button"
-              className="flex items-center gap-2 rounded-md border border-transparent px-2 py-1 text-sm text-gray-600 transition hover:border-gray-300 hover:bg-white dark:text-gray-200 dark:hover:border-gray-500 dark:hover:bg-[#1f1f1f]"
-              aria-haspopup="menu"
-              aria-expanded={moreMenuOpen}
-              aria-controls="header-more-menu"
-              title={t(
-                "option:header.moreMenu.tooltip",
-                "Advanced tools like sidebar, repository, and debug options"
-              ) as string}
-            >
-              <span>{t("option:header.more", "AI tools")}</span>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                className="h-4 w-4"
-                aria-hidden="true">
-                <path d="M12 8a2 2 0 110-4 2 2 0 010 4zm0 7a2 2 0 110-4 2 2 0 010 4zm0 7a2 2 0 110-4 2 2 0 010 4z" />
-              </svg>
-            </button>
-          </Popover>
         </div>
       </div>
 

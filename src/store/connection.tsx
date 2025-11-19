@@ -104,11 +104,16 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
 
       await tldwClient.initialize()
 
-      // Request health via background for detailed status codes
+      // Request health via background for detailed status codes.
+      // Health endpoints may require auth; apiSend injects headers based
+      // on tldwConfig (API key / access token).
       const { apiSend } = await import("@/services/api-send")
       const healthPromise = (async () => {
         try {
-          const resp = await apiSend({ path: '/api/v1/health', method: 'GET', noAuth: true })
+          const resp = await apiSend({
+            path: '/api/v1/health',
+            method: 'GET'
+          })
           return { ok: Boolean(resp?.ok), status: Number(resp?.status) || 0, error: resp?.ok ? null : (resp?.error || null) }
         } catch (e) {
           return { ok: false, status: 0, error: (e as Error)?.message || 'Network error' }

@@ -1,5 +1,5 @@
 import { useForm } from "@mantine/form"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import React from "react"
 import useDynamicTextareaSize from "~/hooks/useDynamicTextareaSize"
 import { toBase64 } from "~/libs/to-base64"
@@ -11,7 +11,8 @@ import {
   Tooltip,
   notification,
   Popover,
-  Modal
+  Modal,
+  Select
 } from "antd"
 import { Image } from "antd"
 import { useWebUI } from "~/store/webui"
@@ -25,8 +26,7 @@ import {
   FileIcon,
   FileText,
   PaperclipIcon,
-  Gauge,
-  MoreHorizontal
+  Gauge
 } from "lucide-react"
 import { getVariable } from "@/utils/select-variable"
 import { useTranslation } from "react-i18next"
@@ -44,10 +44,11 @@ import { PASTED_TEXT_CHAR_LIMIT } from "@/utils/constant"
 import { isFireFoxPrivateMode } from "@/utils/is-private-mode"
 import { CurrentChatModelSettings } from "@/components/Common/Settings/CurrentChatModelSettings"
 import { PromptSelect } from "@/components/Common/PromptSelect"
-import { ModelSelectOption } from "@/components/Common/ModelSelectOption"
 import { useConnectionState } from "@/hooks/useConnectionState"
 import { ConnectionPhase } from "@/types/connection"
 import { Link } from "react-router-dom"
+import { fetchChatModels } from "@/services/tldw-server"
+import { ProviderIcons } from "@/components/Common/ProviderIcon"
 type Props = {
   dropedFile: File | undefined
 }
@@ -62,6 +63,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
   const {
     onSubmit,
     selectedModel,
+    setSelectedModel,
     chatMode,
     speechToTextLanguage,
     stopStreamingRequest,
@@ -117,6 +119,72 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
     reloadTabs,
     handleMentionsOpen
   } = useTabMentions(textareaRef)
+
+  const { data: composerModels, isLoading: isComposerModelsLoading } = useQuery({
+    queryKey: ["playground:chatModels"],
+    queryFn: () => fetchChatModels({ returnEmpty: true }),
+    enabled: true
+  })
+
+  const composerModelOptions = React.useMemo(() => {
+    const providerDisplayName = (provider?: string) => {
+      const key = String(provider || "unknown").toLowerCase()
+      if (key === "openai") return "OpenAI"
+      if (key === "anthropic") return "Anthropic"
+      if (key === "google") return "Google"
+      if (key === "mistral") return "Mistral"
+      if (key === "cohere") return "Cohere"
+      if (key === "groq") return "Groq"
+      if (key === "huggingface") return "HuggingFace"
+      if (key === "openrouter") return "OpenRouter"
+      if (key === "ollama") return "Ollama"
+      if (key === "llama") return "Llama.cpp"
+      if (key === "kobold") return "Kobold.cpp"
+      if (key === "ooba") return "Oobabooga"
+      if (key === "tabby") return "TabbyAPI"
+      if (key === "vllm") return "vLLM"
+      if (key === "aphrodite") return "Aphrodite"
+      if (key === "zai") return "Z.AI"
+      if (key === "custom_openai_api") return "Custom OpenAI API"
+      return provider || "API"
+    }
+
+    const mapped =
+      (composerModels || []).map((m: any) => {
+        const rawProvider = (m.details && m.details.provider) || m.provider
+        const providerLabel = providerDisplayName(rawProvider)
+        const modelLabel = m.nickname || m.model
+
+        return {
+          label: (
+            <div className="flex items-center gap-2">
+              <ProviderIcons provider={rawProvider} className="h-4 w-4" />
+              <span className="truncate">
+                {providerLabel} - {modelLabel}
+              </span>
+            </div>
+          ),
+          value: m.model
+        }
+      }) || []
+
+    // Fallback: if we have a persisted selectedModel but no
+    // server-provided metadata yet, still allow selecting it.
+    if ((!mapped || mapped.length === 0) && selectedModel) {
+      return [
+        {
+          label: (
+            <span className="truncate">
+              Custom - {selectedModel}
+            </span>
+          ),
+          value: selectedModel
+        }
+      ]
+    }
+
+    return mapped
+  }, [composerModels, selectedModel])
 
   // Enable focus shortcuts (Shift+Esc to focus textarea)
   useFocusShortcuts(textareaRef, true)
@@ -883,6 +951,20 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                           iconClassName="size-4"
                           className="text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-gray-100"
                         />
+                        <Select
+                          size="small"
+                          style={{ minWidth: 220 }}
+                          placeholder={t(
+                            "playground:composer.modelPlaceholder",
+                            "API / model"
+                          )}
+                          loading={isComposerModelsLoading}
+                          value={selectedModel ?? undefined}
+                          onChange={(value: string) => {
+                            setSelectedModel(value)
+                          }}
+                          options={composerModelOptions}
+                        />
                         {/* Current conversation model settings, adjacent to prompt selector */}
                         <Tooltip title={t("common:currentChatModelSettings") as string}>
                           <button
@@ -892,7 +974,6 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                             <Gauge className="h-5 w-5" />
                           </button>
                         </Tooltip>
-                        <ModelSelectOption iconClassName="size-4" />
                         <Popover
                           trigger="click"
                           placement="topRight"
@@ -903,9 +984,8 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                             type="button"
                             className="inline-flex items-center gap-2 rounded-md border border-gray-200 px-3 py-1.5 text-sm text-gray-700 transition hover:bg-gray-100 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-[#2a2a2a]"
                           >
-                            <MoreHorizontal className="h-4 w-4" />
                             <span>
-                              {t("playground:composer.toolsButton", "Tools+")}
+                              {t("playground:composer.toolsButton", "+Tools")}
                             </span>
                           </button>
                         </Popover>
