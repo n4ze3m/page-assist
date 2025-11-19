@@ -402,6 +402,7 @@ export const SidepanelHeader = ({
           <Tooltip title={t("tooltip.openwebui")}>
             <IconButton
               ariaLabel={t('sidepanel:header.openWebuiAria') as string}
+              title={t('tooltip.openwebui') as string}
               onClick={() => {
                 const url = browser.runtime.getURL("/options.html")
                 browser.tabs.create({ url })
@@ -421,6 +422,7 @@ export const SidepanelHeader = ({
           <Tooltip title={t("option:newChat")}>
             <IconButton
               ariaLabel={t('sidepanel:header.newChatAria') as string}
+              title={t("option:newChat") as string}
               onClick={() => {
                 clearChat()
               }}
@@ -436,6 +438,7 @@ export const SidepanelHeader = ({
           <Tooltip title={t("tooltip.clear")}>
             <IconButton
               ariaLabel={t('sidepanel:header.clearHistoryAria') as string}
+              title={t("tooltip.clear") as string}
               onClick={() => {
                 setHistory([])
               }}
@@ -447,6 +450,7 @@ export const SidepanelHeader = ({
         <Tooltip title={t("tooltip.history")}>
           <IconButton
             ariaLabel={t('sidepanel:header.openHistoryAria') as string}
+            title={t("tooltip.history") as string}
             onClick={() => {
               setSidebarOpen(true)
             }}

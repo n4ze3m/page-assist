@@ -149,41 +149,88 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
       return provider || "API"
     }
 
-    const mapped =
-      (composerModels || []).map((m: any) => {
-        const rawProvider = (m.details && m.details.provider) || m.provider
-        const providerLabel = providerDisplayName(rawProvider)
-        const modelLabel = m.nickname || m.model
-
-        return {
-          label: (
-            <div className="flex items-center gap-2">
-              <ProviderIcons provider={rawProvider} className="h-4 w-4" />
+    const models = composerModels || []
+    if (!models.length) {
+      if (selectedModel) {
+        return [
+          {
+            label: (
               <span className="truncate">
-                {providerLabel} - {modelLabel}
+                Custom - {selectedModel}
               </span>
-            </div>
-          ),
-          value: m.model
-        }
-      }) || []
-
-    // Fallback: if we have a persisted selectedModel but no
-    // server-provided metadata yet, still allow selecting it.
-    if ((!mapped || mapped.length === 0) && selectedModel) {
-      return [
-        {
-          label: (
-            <span className="truncate">
-              Custom - {selectedModel}
-            </span>
-          ),
-          value: selectedModel
-        }
-      ]
+            ),
+            value: selectedModel
+          }
+        ]
+      }
+      return []
     }
 
-    return mapped
+    type GroupOption = { label: React.ReactNode; options: Array<{ label: React.ReactNode; value: string }> }
+    const groups = new Map<string, GroupOption>()
+
+    for (const m of models as any[]) {
+      const rawProvider = (m.details && m.details.provider) || m.provider
+      const providerKey = String(rawProvider || "other").toLowerCase()
+      const providerLabel = providerDisplayName(rawProvider)
+      const modelLabel = m.nickname || m.model
+      const caps: string[] = Array.isArray(m.details?.capabilities)
+        ? m.details.capabilities
+        : []
+      const hasVision = caps.includes("vision")
+      const hasTools = caps.includes("tools")
+      const hasFast = caps.includes("fast")
+
+      const optionLabel = (
+        <div className="flex items-center gap-2" data-title={`${providerLabel} - ${modelLabel}`}>
+          <ProviderIcons provider={rawProvider} className="h-4 w-4" />
+          <div className="flex flex-col min-w-0">
+            <span className="truncate">
+              {providerLabel} - {modelLabel}
+            </span>
+            {(hasVision || hasTools || hasFast) && (
+              <div className="mt-0.5 flex flex-wrap gap-1 text-[10px]">
+                {hasVision && (
+                  <span className="rounded-full bg-blue-50 px-1.5 py-0.5 text-blue-700 dark:bg-blue-900/30 dark:text-blue-100">
+                    Vision
+                  </span>
+                )}
+                {hasTools && (
+                  <span className="rounded-full bg-purple-50 px-1.5 py-0.5 text-purple-700 dark:bg-purple-900/30 dark:text-purple-100">
+                    Tools
+                  </span>
+                )}
+                {hasFast && (
+                  <span className="rounded-full bg-emerald-50 px-1.5 py-0.5 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-100">
+                    Fast
+                  </span>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      )
+
+      if (!groups.has(providerKey)) {
+        groups.set(providerKey, {
+          label: (
+            <div className="flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
+              <ProviderIcons provider={rawProvider} className="h-3 w-3" />
+              <span>{providerLabel}</span>
+            </div>
+          ),
+          options: []
+        })
+      }
+      const group = groups.get(providerKey)!
+      group.options.push({
+        label: optionLabel,
+        value: m.model
+      })
+    }
+
+    const groupedOptions: GroupOption[] = Array.from(groups.values())
+    return groupedOptions
   }, [composerModels, selectedModel])
 
   // Enable focus shortcuts (Shift+Esc to focus textarea)
@@ -970,8 +1017,12 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                           <button
                             type="button"
                             onClick={() => setOpenModelSettings(true)}
-                            className="text-gray-700 dark:text-gray-300 p-1 hover:text-gray-900 dark:hover:text-gray-100">
-                            <Gauge className="h-5 w-5" />
+                            aria-label={t("common:currentChatModelSettings") as string}
+                            className="inline-flex items-center gap-1 text-gray-700 dark:text-gray-300 px-2 py-1 hover:text-gray-900 dark:hover:text-gray-100">
+                            <Gauge className="h-5 w-5" aria-hidden="true" />
+                            <span className="hidden sm:inline text-xs">
+                              {t("option:header.modelSettings", "Model settings")}
+                            </span>
                           </button>
                         </Tooltip>
                         <Popover

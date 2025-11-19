@@ -26,11 +26,43 @@ export const ModelSelect: React.FC<Props> = ({iconClassName = "size-5"}) => {
   })
 
   const groupedItems = React.useMemo(() => {
+    const providerDisplayName = (provider?: string) => {
+      const key = String(provider || "unknown").toLowerCase()
+      if (key === "openai") return "OpenAI"
+      if (key === "anthropic") return "Anthropic"
+      if (key === "google") return "Google"
+      if (key === "mistral") return "Mistral"
+      if (key === "cohere") return "Cohere"
+      if (key === "groq") return "Groq"
+      if (key === "huggingface") return "HuggingFace"
+      if (key === "openrouter") return "OpenRouter"
+      if (key === "ollama") return "Ollama"
+      if (key === "llama") return "Llama.cpp"
+      if (key === "kobold") return "Kobold.cpp"
+      if (key === "ooba") return "Oobabooga"
+      if (key === "tabby") return "TabbyAPI"
+      if (key === "vllm") return "vLLM"
+      if (key === "aphrodite") return "Aphrodite"
+      if (key === "zai") return "Z.AI"
+      if (key === "custom_openai_api") return "Custom OpenAI API"
+      if (key === "chrome") return "Chrome"
+      return provider || "API"
+    }
+
     const groups = new Map<string, any[]>()
     const localProviders = new Set(["lmstudio", "llamafile", "ollama", "ollama2", "llamacpp", "vllm", "custom"]) // group as "custom"
     for (const d of data || []) {
       const providerRaw = (d.provider || "other").toLowerCase()
       const groupKey = providerRaw === 'chrome' ? 'default' : (localProviders.has(providerRaw) ? 'custom' : providerRaw)
+      const providerLabel = providerDisplayName(d.provider)
+      const modelLabel = d.nickname || d.model
+      const caps: string[] = Array.isArray(d.details?.capabilities)
+        ? d.details.capabilities
+        : []
+      const hasVision = caps.includes("vision")
+      const hasTools = caps.includes("tools")
+      const hasFast = caps.includes("fast")
+
       const labelNode = (
         <div className="w-52 gap-2 text-sm truncate inline-flex items-center leading-5 dark:border-gray-700">
           <div>
@@ -40,7 +72,30 @@ export const ModelSelect: React.FC<Props> = ({iconClassName = "size-5"}) => {
               <ProviderIcons provider={d?.provider} className="h-4 w-4 text-gray-400" />
             )}
           </div>
-          {d?.nickname || d.model}
+          <div className="flex flex-col min-w-0">
+            <span className="truncate">
+              {providerLabel} - {modelLabel}
+            </span>
+            {(hasVision || hasTools || hasFast) && (
+              <div className="mt-0.5 flex flex-wrap gap-1 text-[10px]">
+                {hasVision && (
+                  <span className="rounded-full bg-blue-50 px-1.5 py-0.5 text-blue-700 dark:bg-blue-900/30 dark:text-blue-100">
+                    Vision
+                  </span>
+                )}
+                {hasTools && (
+                  <span className="rounded-full bg-purple-50 px-1.5 py-0.5 text-purple-700 dark:bg-purple-900/30 dark:text-purple-100">
+                    Tools
+                  </span>
+                )}
+                {hasFast && (
+                  <span className="rounded-full bg-emerald-50 px-1.5 py-0.5 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-100">
+                    Fast
+                  </span>
+                )}
+              </div>
+            )}
+          </div>
         </div>
       )
       const item = {
@@ -96,8 +151,11 @@ export const ModelSelect: React.FC<Props> = ({iconClassName = "size-5"}) => {
             <IconButton
               ariaLabel={t("selectAModel") as string}
               hasPopup="menu"
-              className="dark:text-gray-300">
+              className="dark:text-gray-300 px-2">
               <LucideBrain className={iconClassName} />
+              <span className="ml-1 hidden sm:inline text-xs">
+                {t("modelSelect.label", "Model")}
+              </span>
             </IconButton>
           </Tooltip>
         </Dropdown>

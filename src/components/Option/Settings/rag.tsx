@@ -85,6 +85,11 @@ export const RagSettings = () => {
     }
   })
 
+  const missingDefaultEmbedding =
+    !!ollamaInfo?.defaultEM &&
+    Array.isArray(ollamaInfo?.models) &&
+    !ollamaInfo.models.some((model) => model.model === ollamaInfo.defaultEM)
+
   return (
     <div className="flex flex-col space-y-3">
       {status === "pending" && <Skeleton paragraph={{ rows: 4 }} active />}
@@ -123,7 +128,20 @@ export const RagSettings = () => {
               <Form.Item
                 name="defaultEM"
                 label={t("rag.ragSettings.model.label")}
-                help={t("rag.ragSettings.model.help")}
+                help={
+                  missingDefaultEmbedding
+                    ? t(
+                        "rag.ragSettings.model.helpMissing",
+                        "Previously saved embedding model is no longer available on the server. Please choose another model."
+                      )
+                    : ollamaInfo?.defaultEM
+                        ? t(
+                            "rag.ragSettings.model.helpRecommended",
+                            "Recommended: {{model}} (from server config)",
+                            { model: ollamaInfo.defaultEM }
+                          )
+                        : t("rag.ragSettings.model.help")
+                }
                 rules={[
                   {
                     required: true,

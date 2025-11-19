@@ -482,6 +482,8 @@
         "label": "Embedding Model",
         "required": "Please select a model",
         "help": "Highly recommended to use embedding models like `nomic-embed-text`.",
+        "helpRecommended": "Recommended: {{model}} (from server config)",
+        "helpMissing": "Previously saved embedding model is no longer available on the server. Please choose another model.",
         "placeholder": "Select a model"
       },
       "chunkSize": {
@@ -542,6 +544,7 @@
     "openSettings": "Open tldw Settings",
     "recheckAll": "Recheck All",
     "copyDiagnostics": "Copy diagnostics",
+    "copyDiagnosticsHelp": "Copies JSON diagnostics to clipboard",
     "serverNotConfigured": "Server is not configured.",
     "unableToReachCore": "Unable to reach server core health endpoint.",
     "triedGet": "Tried GET {{url}}",
@@ -555,6 +558,11 @@
     "healthy": "Healthy",
     "unhealthy": "Unhealthy",
     "unknown": "Unknown",
+    "statusHealthy": "Healthy",
+    "statusUnhealthy": "Unhealthy",
+    "statusUnknown": "Unknown",
+    "updatedJustNow": "Updated just now",
+    "updatedSecondsAgo": "Updated {{seconds}}s ago",
     "checks": {
       "core": "Core API",
       "rag": "RAG",

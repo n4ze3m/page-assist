@@ -837,11 +837,18 @@ export const Header: React.FC<Props> = ({
               aria-label={t("option:header.showShortcuts", "Shortcuts")}
             >
               <div className="flex flex-col gap-4 lg:flex-1">
-                {navigationGroups.map((group) => (
-                  <div key={group.title} className="flex flex-col gap-2">
-                    <span className="text-xs font-semibold uppercase tracking-wide text-gray-400">
-                      {group.title}
-                    </span>
+                {navigationGroups.map((group, index) => {
+                  const groupId = `header-shortcuts-group-${index}`
+                  return (
+                    <section
+                      key={group.title}
+                      className="flex flex-col gap-2"
+                      aria-labelledby={groupId}>
+                      <h3
+                        id={groupId}
+                        className="text-xs font-semibold uppercase tracking-wide text-gray-400">
+                        {group.title}
+                      </h3>
                     <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
                       {group.items.map((item) => {
                         if (item.type === "component") {
@@ -870,8 +877,9 @@ export const Header: React.FC<Props> = ({
                         )
                       })}
                     </div>
-                  </div>
-                ))}
+                    </section>
+                  )
+                })}
               </div>
             </div>
           )}

@@ -22,6 +22,24 @@ export const AddKnowledge = ({ open, setOpen }: Props) => {
   const [form] = Form.useForm()
   const [totalFilePerKB] = useStorage("totalFilePerKB", 5)
   const [mode, setMode] = React.useState<"upload" | "text">("upload")
+  const [embeddingLabel, setEmbeddingLabel] = React.useState<string | null>(
+    null
+  )
+
+  React.useEffect(() => {
+    ;(async () => {
+      try {
+        const em = await defaultEmbeddingModelForRag()
+        if (!em) {
+          setEmbeddingLabel(null)
+          return
+        }
+        setEmbeddingLabel(em)
+      } catch {
+        setEmbeddingLabel(null)
+      }
+    })()
+  }, [])
 
   const onUploadHandler = async (data: any) => {
     const defaultEM = await defaultEmbeddingModelForRag()
@@ -212,6 +230,15 @@ export const AddKnowledge = ({ open, setOpen }: Props) => {
             {t("form.submit")}
           </button>
         </Form.Item>
+        {embeddingLabel && (
+          <div className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+            {t(
+              "form.embeddingNote",
+              "Will use embedding model: {{model}}",
+              { model: embeddingLabel }
+            )}
+          </div>
+        )}
       </Form>
     </Modal>
   )

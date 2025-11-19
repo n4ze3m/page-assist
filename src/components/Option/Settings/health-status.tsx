@@ -36,6 +36,8 @@ export default function HealthStatus() {
   const [autoRefresh, setAutoRefresh] = useState<boolean>(false)
   const [intervalSec, setIntervalSec] = useState<number>(30)
   const [recentHealthy, setRecentHealthy] = useState<Set<string>>(new Set())
+  const [lastUpdatedAt, setLastUpdatedAt] = useState<number | null>(null)
+  const [secondsSinceUpdate, setSecondsSinceUpdate] = useState<number | null>(null)
   const navigate = useNavigate()
 
   const runSingle = async (c: Check): Promise<boolean> => {
@@ -77,6 +79,7 @@ export default function HealthStatus() {
       if (!ok) allHealthy = false
     }
     setLoading(false)
+    setLastUpdatedAt(Date.now())
     if (userTriggered && allHealthy) {
       notification.success({
         message: t('settings:tldw.connection.success', 'Server responded successfully. You can continue.'),
@@ -137,6 +140,30 @@ export default function HealthStatus() {
     return () => clearInterval(id)
   }, [autoRefresh, intervalSec])
 
+  useEffect(() => {
+    if (!lastUpdatedAt) {
+      setSecondsSinceUpdate(null)
+      return
+    }
+    const update = () => {
+      const diff = Math.max(0, Math.floor((Date.now() - lastUpdatedAt) / 1000))
+      setSecondsSinceUpdate(diff)
+    }
+    update()
+    const id = setInterval(update, 1000)
+    return () => clearInterval(id)
+  }, [lastUpdatedAt])
+
+  const describeStatus = (status: Result['status']): string => {
+    if (status === 'healthy') {
+      return t('healthPage.statusHealthy', 'Healthy')
+    }
+    if (status === 'unhealthy') {
+      return t('healthPage.statusUnhealthy', 'Unhealthy')
+    }
+    return t('healthPage.statusUnknown', 'Unknown')
+  }
+
   return (
     <Space direction="vertical" size="large" className="w-full">
       <div className="flex items-center justify-between">
@@ -145,9 +172,13 @@ export default function HealthStatus() {
           <Typography.Paragraph type="secondary" className="!mb-0">{t('healthPage.subtitle', 'Quick overview of subsystem health endpoints exposed by the server.')}</Typography.Paragraph>
         </div>
         <Space>
-          <Button onClick={() => navigate(-1)}>← {t('healthPage.backToChat', 'Back to chat')}</Button>
-          <Link to="/settings/tldw"><Button>{t('healthPage.openSettings', 'Open tldw Settings')}</Button></Link>
-          <Button type="primary" onClick={() => runChecks(true)} loading={loading}>{t('healthPage.recheckAll', 'Recheck All')}</Button>
+          <Button
+            type="primary"
+            onClick={() => runChecks(true)}
+            loading={loading}
+          >
+            {t('healthPage.recheckAll', 'Recheck All')}
+          </Button>
           <Button
             onClick={() => {
               try {
@@ -161,7 +192,16 @@ export default function HealthStatus() {
                 void navigator.clipboard.writeText(text)
               } catch {}
             }}
-          >{t('healthPage.copyDiagnostics', 'Copy diagnostics')}</Button>
+            title={t('healthPage.copyDiagnosticsHelp', 'Copies JSON diagnostics to clipboard') as string}
+          >
+            {t('healthPage.copyDiagnostics', 'Copy diagnostics')}
+          </Button>
+          <Button onClick={() => navigate(-1)}>
+            ← {t('healthPage.backToChat', 'Back to chat')}
+          </Button>
+          <Link to="/settings/tldw">
+            <Button>{t('healthPage.openSettings', 'Open tldw Settings')}</Button>
+          </Link>
         </Space>
       </div>
 
@@ -185,39 +225,55 @@ export default function HealthStatus() {
           {t('healthPage.intervalLabel', 'Interval (s):')}
           <input type="number" min={5} className="w-20 px-2 py-1 rounded border dark:bg-[#262626]" value={intervalSec} onChange={(e) => setIntervalSec(parseInt(e.target.value || '30'))} />
         </label>
+        {secondsSinceUpdate != null && (
+          <span className="text-xs text-gray-500 dark:text-gray-400">
+            {secondsSinceUpdate <= 5
+              ? t('healthPage.updatedJustNow', 'Updated just now')
+              : t('healthPage.updatedSecondsAgo', 'Updated {{seconds}}s ago', { seconds: secondsSinceUpdate })}
+          </span>
+        )}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {checks.map(c => {
-          const r = results[c.key] || { status: 'unknown' }
-          return (
-            <Card key={c.key} title={c.label} extra={<a onClick={() => recheckOne(c)}>{loading ? t('healthPage.checking', 'Checking…') : t('healthPage.recheck', 'Recheck')}</a>}>
-              <Space size="middle" className="flex flex-wrap">
-                {r.status === 'healthy' ? (
-                  <Tag color="green" className={recentHealthy.has(c.key) ? 'animate-pulse ring-2 ring-emerald-400' : undefined}>
-                    {t('healthPage.healthy', 'Healthy')}
-                  </Tag>
-                ) : r.status === 'unhealthy' ? (
-                  <Tag color="red">{t('healthPage.unhealthy', 'Unhealthy')}</Tag>
-                ) : (
-                  <Tag>{t('healthPage.unknown', 'Unknown')}</Tag>
+      <div aria-live="polite" aria-atomic="false">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {checks.map(c => {
+            const r = results[c.key] || { status: 'unknown' }
+            const statusLabel = describeStatus(r.status)
+            return (
+              <Card
+                key={c.key}
+                title={c.label}
+                extra={<a onClick={() => recheckOne(c)}>{loading ? t('healthPage.checking', 'Checking…') : t('healthPage.recheck', 'Recheck')}</a>}
+                role="group"
+                aria-label={`${c.label}: ${statusLabel}`}
+              >
+                <Space size="middle" className="flex flex-wrap">
+                  {r.status === 'healthy' ? (
+                    <Tag color="green" className={recentHealthy.has(c.key) ? 'animate-pulse ring-2 ring-emerald-400' : undefined}>
+                      {t('healthPage.healthy', 'Healthy')}
+                    </Tag>
+                  ) : r.status === 'unhealthy' ? (
+                    <Tag color="red">{t('healthPage.unhealthy', 'Unhealthy')}</Tag>
+                  ) : (
+                    <Tag>{t('healthPage.unknown', 'Unknown')}</Tag>
+                  )}
+                  <Typography.Text type="secondary">{c.path}</Typography.Text>
+                  {typeof r.statusCode !== 'undefined' && (
+                    <Tag>HTTP {r.statusCode}</Tag>
+                  )}
+                  {typeof r.durationMs !== 'undefined' && (
+                    <Tag>{r.durationMs} ms</Tag>
+                  )}
+                </Space>
+                {r.detail && (
+                  <pre className="mt-3 p-2 bg-gray-50 dark:bg-[#262626] rounded text-xs overflow-auto max-h-40">
+                    {JSON.stringify(r.detail, null, 2)}
+                  </pre>
                 )}
-                <Typography.Text type="secondary">{c.path}</Typography.Text>
-                {typeof r.statusCode !== 'undefined' && (
-                  <Tag>HTTP {r.statusCode}</Tag>
-                )}
-                {typeof r.durationMs !== 'undefined' && (
-                  <Tag>{r.durationMs} ms</Tag>
-                )}
-              </Space>
-              {r.detail && (
-                <pre className="mt-3 p-2 bg-gray-50 dark:bg-[#262626] rounded text-xs overflow-auto max-h-40">
-                  {JSON.stringify(r.detail, null, 2)}
-                </pre>
-              )}
-            </Card>
-          )
-        })}
+              </Card>
+            )
+          })}
+        </div>
       </div>
     </Space>
   )

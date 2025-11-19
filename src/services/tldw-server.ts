@@ -102,6 +102,7 @@ export const getAllModels = async ({ returnEmpty = false }: { returnEmpty?: bool
       digest: "",
       details: {
         provider: model.provider,
+        capabilities: model.capabilities
       }
     }))
   } catch (e) {

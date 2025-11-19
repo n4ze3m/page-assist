@@ -112,6 +112,20 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
     }
   }
 
+  // When sidepanel connection transitions to CONNECTED, focus the composer
+  const previousPhaseRef = React.useRef<ConnectionPhase | null>(null)
+  React.useEffect(() => {
+    if (
+      previousPhaseRef.current !== ConnectionPhase.CONNECTED &&
+      phase === ConnectionPhase.CONNECTED
+    ) {
+      setTimeout(() => {
+        window.dispatchEvent(new CustomEvent("tldw:focus-composer"))
+      }, 0)
+    }
+    previousPhaseRef.current = phase
+  }, [phase])
+
   // Allow other components (e.g., connection card) to request focus
   React.useEffect(() => {
     const handler = () => {
@@ -664,6 +678,8 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                       onFocus={handleDisconnectedFocus}
                       ref={textareaRef}
                       className="px-2 py-2 w-full resize-none bg-transparent focus-within:outline-none focus:ring-0 focus-visible:ring-0 ring-0 dark:ring-0 border-0 dark:text-gray-100"
+                      readOnly={!isConnectionReady}
+                      aria-disabled={!isConnectionReady}
                       onPaste={handlePaste}
                       rows={1}
                       style={{ minHeight: "60px" }}
@@ -683,7 +699,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                           ? t("form.textarea.placeholder")
                           : t(
                               "playground:composer.connectionPlaceholder",
-                              "Waiting for your server — set it up in Settings."
+                              "Connect to your tldw server to start chatting."
                             )
                       }
                       {...form.getInputProps("message")}

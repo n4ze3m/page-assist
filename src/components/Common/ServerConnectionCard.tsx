@@ -138,7 +138,7 @@ export const ServerConnectionCard: React.FC<Props> = ({
     statusVariant === "missing"
       ? t(
           "option:connectionCard.descriptionMissing",
-          "tldw_server runs on your own infrastructure and powers chat, knowledge search, and media processing. Add your server URL to get started."
+          "tldw_server is your private AI workspace that keeps chats, notes, and media on your own machine. It runs on your infrastructure and powers chat, knowledge search, and media processing. Add your server URL to get started."
         )
       : statusVariant === "loading"
         ? t(
@@ -164,16 +164,16 @@ export const ServerConnectionCard: React.FC<Props> = ({
           "option:connectionCard.buttonStartChat",
           t("common:startChat", "Start chatting")
         )
-      : statusVariant === "error"
-        ? t(
-            "option:connectionCard.buttonRetry",
-            "Retry connection"
-          )
+          : statusVariant === "error"
+            ? t(
+                "option:connectionCard.buttonRetry",
+                "Retry connection"
+              )
       : statusVariant === "missing"
         ? t("settings:tldw.setupLink", "Set up server")
         : t(
-            "option:connectionCard.buttonChangeServer",
-            t("ollamaState.changeServer", "Change server")
+            "option:connectionCard.buttonChecking",
+            "Checking…"
           )
 
   const diagnosticsLabel =
@@ -183,8 +183,8 @@ export const ServerConnectionCard: React.FC<Props> = ({
           "Open diagnostics"
         )
       : t(
-          "option:connectionCard.buttonViewDiagnostics",
-          "View diagnostics"
+            "option:connectionCard.buttonViewDiagnostics",
+            "View diagnostics"
         )
 
   const handlePrimary = () => {
@@ -232,6 +232,13 @@ export const ServerConnectionCard: React.FC<Props> = ({
     window.open("/options.html#/settings/health", "_blank")
   }
 
+  const handleOpenHelpDocs = () => {
+    window.open(
+      "https://github.com/rmusser01/tldw_browser_assistant",
+      "_blank"
+    )
+  }
+
   return (
     <div className="mx-auto mt-12 w-full max-w-xl px-4">
       <div className="flex flex-col items-center gap-4 rounded-xl border border-gray-200 bg-white px-6 py-8 text-center shadow-sm dark:border-gray-700 dark:bg-[#1f1f1f] dark:text-gray-100">
@@ -243,6 +250,29 @@ export const ServerConnectionCard: React.FC<Props> = ({
         <p className="text-sm text-gray-600 dark:text-gray-300 text-center">
           {descriptionCopy}
         </p>
+
+        {statusVariant === "ok" && (
+          <ul className="mt-1 max-w-sm list-disc text-left text-xs text-gray-600 dark:text-gray-300">
+            <li>
+              {t(
+                "option:connectionCard.descriptionConnectedList.reviewMedia",
+                "Review media & transcripts"
+              )}
+            </li>
+            <li>
+              {t(
+                "option:connectionCard.descriptionConnectedList.searchKnowledge",
+                "Search knowledge and notes"
+              )}
+            </li>
+            <li>
+              {t(
+                "option:connectionCard.descriptionConnectedList.useRag",
+                "Use RAG with your own documents"
+              )}
+            </li>
+          </ul>
+        )}
 
         <div className="flex flex-col items-center gap-2">
           {isSearching && (
@@ -266,7 +296,17 @@ export const ServerConnectionCard: React.FC<Props> = ({
               {(() => {
                 const code = Number(lastStatusCode)
                 const hasCode = Number.isFinite(code) && code > 0
-                return `${t("ollamaState.notRunning")} ${hasCode ? `(HTTP ${code})` : (lastError ? `(${lastError})` : '')}`.trim()
+                if (hasCode) {
+                  return t(
+                    "ollamaState.connectionFailedWithCode",
+                    "Connection failed (HTTP {{code}})",
+                    { code }
+                  )
+                }
+                return t(
+                  "ollamaState.connectionFailed",
+                  "Connection failed"
+                )
               })()}
             </Tag>
           )}
@@ -286,8 +326,13 @@ export const ServerConnectionCard: React.FC<Props> = ({
             </span>
           )}
           {statusVariant === "error" && lastError && (
-            <span className="inline-flex items-center gap-1 text-red-500">
-              Error: {lastError}
+            <span className="inline-flex items-center gap-1 text-xs text-red-500">
+              <span>
+                {t("ollamaState.errorDetailsLabel", "Details:")}
+              </span>
+              <code className="rounded bg-red-50 px-1 py-0.5 font-mono text-[0.7rem] text-red-700 dark:bg-red-900/30 dark:text-red-200">
+                {lastError}
+              </code>
             </span>
           )}
           {secondsSinceLastCheck != null &&
@@ -313,6 +358,7 @@ export const ServerConnectionCard: React.FC<Props> = ({
             }
             onClick={handlePrimary}
             loading={isSearching}
+            disabled={statusVariant === "loading"}
             block>
             {primaryLabel}
           </Button>
@@ -330,15 +376,7 @@ export const ServerConnectionCard: React.FC<Props> = ({
             </Button>
           )}
           <Button
-            icon={
-              statusVariant === "ok" ? (
-                <Settings className="h-4 w-4" />
-              ) : statusVariant === "error" ? (
-                <Settings className="h-4 w-4" />
-              ) : (
-                <Send className="h-4 w-4 rotate-45" />
-              )
-            }
+            icon={<Settings className="h-4 w-4" />}
             onClick={handleOpenSettings}
             block>
             {statusVariant === "ok" || statusVariant === "error"
@@ -346,9 +384,35 @@ export const ServerConnectionCard: React.FC<Props> = ({
                   "option:connectionCard.buttonChangeServer",
                   t("ollamaState.changeServer", "Change server")
                 )
-              : t("ollamaState.openSettings", "Open settings")}
+              : t(
+                  "option:connectionCard.buttonAdvancedSettings",
+                  "Open tldw Settings"
+                )}
           </Button>
         </div>
+
+        {statusVariant === "error" && (
+          <div className="flex w-full flex-col gap-2 sm:flex-row">
+            <Button
+              size="small"
+              onClick={handleOpenDiagnostics}
+              className="border-gray-300 text-gray-700 dark:border-gray-600 dark:text-gray-200">
+              {t(
+                "option:connectionCard.buttonDiagnostics",
+                "Diagnostics"
+              )}
+            </Button>
+            <Button
+              size="small"
+              onClick={handleOpenHelpDocs}
+              className="border-gray-300 text-gray-700 dark:border-gray-600 dark:text-gray-200">
+              {t(
+                "option:connectionCard.buttonHelpDocs",
+                "Help docs"
+              )}
+            </Button>
+          </div>
+        )}
 
         <button
           type="button"

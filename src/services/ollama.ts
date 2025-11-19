@@ -318,10 +318,31 @@ export const setSendWhenEnter = async (sendWhenEnter: boolean) => {
 
 export const defaultEmbeddingModelForRag = async () => {
   const embeddingMode = await storage.get("defaultEmbeddingModel")
-  if (!embeddingMode || embeddingMode.length === 0) {
-    return null
+  if (embeddingMode && typeof embeddingMode === "string" && embeddingMode.length > 0) {
+    return embeddingMode
   }
-  return embeddingMode
+
+  // Fallback: derive from tldw_server embeddings providers-config
+  try {
+    await tldwClient.initialize()
+    // @ts-ignore - method is defined on TldwApiClient instance
+    const cfg = await tldwClient.getEmbeddingProvidersConfig()
+
+    const provider = cfg?.default_provider
+    const model = cfg?.default_model
+
+    if (provider && model) {
+      const id = `${provider}/${model}`
+      await storage.set("defaultEmbeddingModel", id)
+      return id
+    }
+  } catch (e) {
+    if (import.meta.env?.DEV) {
+      console.warn("tldw_server: unable to resolve default embedding model from providers-config", e)
+    }
+  }
+
+  return null
 }
 
 export const defaultEmbeddingChunkSize = async () => {

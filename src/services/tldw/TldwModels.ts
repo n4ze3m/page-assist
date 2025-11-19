@@ -127,12 +127,28 @@ export class TldwModelsService {
       else if (idLower.includes('mistral')) provider = 'mistral'
     }
 
+    const caps: string[] = []
+    if (Array.isArray(tldwModel.capabilities)) {
+      caps.push(...tldwModel.capabilities)
+    }
+    if (tldwModel.vision) caps.push('vision')
+    if (tldwModel.function_calling) caps.push('tools')
+    // Heuristic: flag some models as "fast" based on name
+    if (
+      nameLower.includes('mini') ||
+      nameLower.includes('flash') ||
+      nameLower.includes('small') ||
+      nameLower.includes('haiku')
+    ) {
+      caps.push('fast')
+    }
+
     return {
       id: tldwModel.id,
       name: tldwModel.name || tldwModel.id,
       provider: provider,
       type: type,
-      capabilities: tldwModel.capabilities,
+      capabilities: caps.length ? Array.from(new Set(caps)) : undefined,
       description: tldwModel.description
     }
   }

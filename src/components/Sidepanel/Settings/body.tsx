@@ -134,6 +134,11 @@ export const SettingsBody = () => {
     return <div>Error</div>
   }
 
+  const missingDefaultEmbedding =
+    !!data?.defaultEM &&
+    Array.isArray(data?.models) &&
+    !data.models.some((model) => model.model === data.defaultEM)
+
   return (
     <div className="flex flex-col gap-4 p-4 max-w-2xl mx-auto lg:max-w-3xl xl:max-w-4xl 2xl:max-w-5xl">
       <div className="border border-gray-300 dark:border-gray-700 rounded p-4 bg-white dark:bg-[#171717]">
@@ -279,7 +284,20 @@ export const SettingsBody = () => {
           <Form.Item
             name="defaultEM"
             label={t("rag.ragSettings.model.label")}
-            help={t("rag.ragSettings.model.help")}
+            help={
+              missingDefaultEmbedding
+                ? t(
+                    "rag.ragSettings.model.helpMissing",
+                    "Previously saved embedding model is no longer available on the server. Please choose another model."
+                  )
+                : data?.defaultEM
+                    ? t(
+                        "rag.ragSettings.model.helpRecommended",
+                        "Recommended: {{model}} (from server config)",
+                        { model: data.defaultEM }
+                      )
+                    : t("rag.ragSettings.model.help")
+            }
             rules={[
               {
                 required: true,

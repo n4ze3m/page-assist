@@ -5,6 +5,8 @@ import { tldwClient } from '@/services/tldw/TldwApiClient'
 import { HelpCircle, Headphones, Layers, Database, FileText, Film, Cookie, Info, Clock, Grid, BookText } from 'lucide-react'
 import { useStorage } from '@plasmohq/storage/hook'
 import { confirmDanger } from '@/components/Common/confirm-danger'
+import { defaultEmbeddingModelForRag } from '@/services/ollama'
+import { tldwModels } from '@/services/tldw'
 
 type Entry = {
   id: string
@@ -63,6 +65,7 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
   const [uiPrefs, setUiPrefs] = useStorage<{ advancedOpen?: boolean; fieldDetailsOpen?: Record<string, boolean> }>('quickIngestAdvancedUI', {})
   const [specPrefs, setSpecPrefs] = useStorage<{ preferServer?: boolean; lastRemote?: { version?: string; cachedAt?: number; spec?: any } }>('quickIngestSpecPrefs', { preferServer: true })
   const [totalPlanned, setTotalPlanned] = React.useState<number>(0)
+  const [ragEmbeddingLabel, setRagEmbeddingLabel] = React.useState<string | null>(null)
 
   const addRow = () => setRows((r) => [...r, { id: crypto.randomUUID(), url: '', type: 'auto' }])
   const removeRow = (id: string) => setRows((r) => r.filter((x) => x.id !== id))
@@ -74,6 +77,32 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
     const next: Entry[] = lines.map((u) => ({ id: crypto.randomUUID(), url: u, type: detectTypeFromUrl(u) }))
     setRows(next)
   }
+
+  // Resolve current RAG embedding model for display in Advanced section
+  React.useEffect(() => {
+    ;(async () => {
+      try {
+        const id = await defaultEmbeddingModelForRag()
+        if (!id) {
+          setRagEmbeddingLabel(null)
+          return
+        }
+        // id comes from defaultEmbeddingModelForRag as provider/model
+        const parts = String(id).split('/')
+        const provider = parts.length > 1 ? parts[0] : 'unknown'
+        const modelName = parts.length > 1 ? parts.slice(1).join('/') : id
+        const models = await tldwModels.getEmbeddingModels().catch(() => [])
+        const match = models.find((m) => m.id === id || m.id === modelName)
+        const providerLabel = tldwModels.getProviderDisplayName(
+          match?.provider || provider
+        )
+        const label = `${providerLabel} / ${modelName}`
+        setRagEmbeddingLabel(label)
+      } catch {
+        setRagEmbeddingLabel(null)
+      }
+    })()
+  }, [])
 
   const run = async () => {
     const valid = rows.filter((r) => r.url.trim().length > 0)
@@ -482,41 +511,65 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
   return (
     <Modal title={t('quickIngest.title') || 'Quick Ingest Media'} open={open} onCancel={onClose} footer={null} width={760} destroyOnClose>
       <Space direction="vertical" className="w-full">
-        <div className="flex items-center justify-between">
-          <Typography.Text>{t('quickIngest.subtitle') || 'Enter one or more URLs. Force type per row if needed.'}</Typography.Text>
-          <Space align="center">
-            <Typography.Text>{t('quickIngest.storeRemote') || 'Store to remote DB'}</Typography.Text>
-            <Switch checked={storeRemote} onChange={setStoreRemote} />
+        {/* Source URLs / files */}
+        <div>
+          <Typography.Title level={5} className="!mb-2">
+            {t('quickIngest.sourceHeading') || 'Source URLs or files'}
+          </Typography.Title>
+          <div className="flex items-center justify-between mb-2">
+            <Typography.Text>
+              {t('quickIngest.subtitle') || 'Enter one or more URLs. Force type per row if needed.'}
+            </Typography.Text>
+            <Space align="center">
+              <Typography.Text>
+                {t('quickIngest.storeRemote') || 'Store to remote DB'}
+              </Typography.Text>
+              <Switch checked={storeRemote} onChange={setStoreRemote} />
+            </Space>
+          </div>
+
+          <Input.TextArea
+            placeholder={t('quickIngest.bulkPlaceholder') || 'Paste URLs (one per line)'}
+            onPressEnter={(e) => e.stopPropagation()}
+            autoSize={{ minRows: 2 }}
+            onBlur={(e) => bulkPaste(e.target.value)}
+          />
+          <Divider plain>{t('quickIngest.or') || 'or'}</Divider>
+
+          <Space direction="vertical" className="w-full">
+            {rows.map((row) => (
+              <div key={row.id} className="flex items-start gap-2">
+                <Input
+                  placeholder="https://..."
+                  value={row.url}
+                  onChange={(e) => updateRow(row.id, { url: e.target.value })}
+                />
+                <Select
+                  className="min-w-32"
+                  value={row.type}
+                  onChange={(v) => updateRow(row.id, { type: v as Entry['type'] })}
+                  options={[
+                    { label: 'Auto', value: 'auto' },
+                    { label: 'HTML', value: 'html' },
+                    { label: 'PDF', value: 'pdf' },
+                    { label: 'Document', value: 'document' },
+                    { label: 'Audio', value: 'audio' },
+                    { label: 'Video', value: 'video' }
+                  ]}
+                />
+                <Button onClick={() => removeRow(row.id)} danger>
+                  {t('quickIngest.remove') || 'Remove'}
+                </Button>
+              </div>
+            ))}
+            <Button onClick={addRow}>
+              {t('quickIngest.add') || 'Add URL'}
+            </Button>
           </Space>
+
+          <Divider plain>{t('quickIngest.or') || 'or'}</Divider>
         </div>
 
-        <Input.TextArea placeholder={t('quickIngest.bulkPlaceholder') || 'Paste URLs (one per line)'} onPressEnter={(e) => e.stopPropagation()} autoSize={{ minRows: 2 }} onBlur={(e) => bulkPaste(e.target.value)} />
-        <Divider plain>{t('quickIngest.or') || 'or'}</Divider>
-
-        <Space direction="vertical" className="w-full">
-          {rows.map((row) => (
-            <div key={row.id} className="flex items-start gap-2">
-              <Input placeholder="https://..." value={row.url} onChange={(e) => updateRow(row.id, { url: e.target.value })} />
-              <Select
-                className="min-w-32"
-                value={row.type}
-                onChange={(v) => updateRow(row.id, { type: v as Entry['type'] })}
-                options={[
-                  { label: 'Auto', value: 'auto' },
-                  { label: 'HTML', value: 'html' },
-                  { label: 'PDF', value: 'pdf' },
-                  { label: 'Document', value: 'document' },
-                  { label: 'Audio', value: 'audio' },
-                  { label: 'Video', value: 'video' }
-                ]}
-              />
-              <Button onClick={() => removeRow(row.id)} danger>{t('quickIngest.remove') || 'Remove'}</Button>
-            </div>
-          ))}
-          <Button onClick={addRow}>{t('quickIngest.add') || 'Add URL'}</Button>
-        </Space>
-
-        <Divider plain>{t('quickIngest.or') || 'or'}</Divider>
         {/* Local file upload */}
         <Space direction="vertical" className="w-full">
           <input
@@ -607,33 +660,94 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
         )}
 
         <div className="flex justify-end gap-2 mt-3">
-          <Button onClick={onClose}>{t('quickIngest.cancel') || 'Cancel'}</Button>
-          <Button type="primary" loading={running} onClick={run}>{storeRemote ? (t('quickIngest.ingest') || 'Ingest') : (t('quickIngest.process') || 'Process')}</Button>
+          <Button
+            type="primary"
+            loading={running}
+            onClick={run}
+          >
+            {storeRemote
+              ? (t('quickIngest.ingest') || 'Ingest')
+              : (t('quickIngest.process') || 'Process')}
+          </Button>
+          <Button onClick={onClose}>
+            {t('quickIngest.cancel') || 'Cancel'}
+          </Button>
         </div>
 
-        <Collapse className="mt-3" activeKey={advancedOpen ? ['adv'] : []} onChange={(k) => setAdvancedOpen(Array.isArray(k) ? k.includes('adv') : Boolean(k))} items={[{
+        <Collapse
+          className="mt-3"
+          activeKey={advancedOpen ? ['adv'] : []}
+          onChange={(k) =>
+            setAdvancedOpen(Array.isArray(k) ? k.includes('adv') : Boolean(k))
+          }
+          items={[{
           key: 'adv',
           label: (
             <div className="flex items-center gap-2 w-full">
               <span>Advanced options</span>
-              <div className="flex items-center gap-2 ml-auto">
-                <Tag color={specSource.startsWith('server') ? 'green' : specSource === 'bundled' ? 'default' : 'red'}>
-                  {specSource === 'server' ? 'Spec: server' : specSource === 'server-cached' ? 'Spec: server (cached)' : specSource === 'bundled' ? 'Spec: bundled' : 'Spec: none'}
-                </Tag>
-                <Space size="small" align="center">
-                  <span className="text-xs text-gray-500">Prefer server</span>
-                  <Switch size="small" checked={!!specPrefs?.preferServer} onChange={async (v) => { setSpecPrefs({ ...(specPrefs||{}), preferServer: v }); await loadSpec(v, true) }} />
-                </Space>
-                <Button size="small" onClick={(e) => { e.stopPropagation(); void loadSpec(true, true) }}>Reload from server</Button>
-                <Button size="small" danger onClick={async (e) => {
-                  e.stopPropagation();
-                  const ok = await confirmDanger({ title: 'Please confirm', content: 'Reset all advanced options and UI state?', okText: 'Reset', cancelText: 'Cancel' })
-                  if (!ok) return
-                  setAdvancedValues({}); setSavedAdvValues({}); setFieldDetailsOpen({}); setUiPrefs({ advancedOpen: false, fieldDetailsOpen: {} }); setAdvSearch(''); setAdvancedOpen(false); message.success('Advanced options reset')
-                }}>Reset Advanced</Button>
-                <AntTooltip title={<div className="max-w-80 text-xs">Clears saved Advanced values and UI state (search, open sections, field details). Does not affect regular ingest options.</div>}>
-                  <Info className="w-4 h-4 text-gray-500" />
-                </AntTooltip>
+              <div className="flex flex-col items-end gap-1 ml-auto">
+                {ragEmbeddingLabel && (
+                  <Typography.Text className="text-[11px] text-gray-500">
+                    {t(
+                      'quickIngest.ragEmbeddingHint',
+                      'RAG embedding model: {{label}}',
+                      { label: ragEmbeddingLabel }
+                    )}
+                  </Typography.Text>
+                )}
+                <div className="flex items-center gap-2">
+                  <Tag color={specSource.startsWith('server') ? 'green' : specSource === 'bundled' ? 'default' : 'red'}>
+                    {specSource === 'server' ? 'Spec: server' : specSource === 'server-cached' ? 'Spec: server (cached)' : specSource === 'bundled' ? 'Spec: bundled' : 'Spec: none'}
+                  </Tag>
+                  <Space size="small" align="center">
+                    <span className="text-xs text-gray-500">Prefer server</span>
+                    <Switch
+                      size="small"
+                      checked={!!specPrefs?.preferServer}
+                      onChange={async (v) => {
+                        setSpecPrefs({ ...(specPrefs || {}), preferServer: v })
+                        await loadSpec(v, true)
+                      }}
+                    />
+                  </Space>
+                  <Button
+                    size="small"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      void loadSpec(true, true)
+                    }}>
+                    Reload from server
+                  </Button>
+                  <Button
+                    size="small"
+                    danger
+                    onClick={async (e) => {
+                      e.stopPropagation()
+                      const ok = await confirmDanger({
+                        title: 'Please confirm',
+                        content:
+                          'Reset all advanced options and UI state?',
+                        okText: 'Reset',
+                        cancelText: 'Cancel'
+                      })
+                      if (!ok) return
+                      setAdvancedValues({})
+                      setSavedAdvValues({})
+                      setFieldDetailsOpen({})
+                      setUiPrefs({
+                        advancedOpen: false,
+                        fieldDetailsOpen: {}
+                      })
+                      setAdvSearch('')
+                      setAdvancedOpen(false)
+                      message.success('Advanced options reset')
+                    }}>
+                    Reset Advanced
+                  </Button>
+                  <AntTooltip title={<div className="max-w-80 text-xs">Clears saved Advanced values and UI state (search, open sections, field details). Does not affect regular ingest options.</div>}>
+                    <Info className="w-4 h-4 text-gray-500" />
+                  </AntTooltip>
+                </div>
               </div>
             </div>
           ),
