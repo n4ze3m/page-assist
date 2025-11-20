@@ -5,12 +5,14 @@ import FeatureEmptyState from "@/components/Common/FeatureEmptyState"
 import { useServerOnline } from "@/hooks/useServerOnline"
 import { useDemoMode } from "@/context/demo-mode"
 import { CharactersManager } from "./Manager"
+import { useServerCapabilities } from "@/hooks/useServerCapabilities"
 
 export const CharactersWorkspace: React.FC = () => {
   const { t } = useTranslation(["option", "common", "settings"])
   const navigate = useNavigate()
   const isOnline = useServerOnline()
   const { demoEnabled } = useDemoMode()
+   const { capabilities, loading: capsLoading } = useServerCapabilities()
 
   if (!isOnline) {
     return demoEnabled ? (
@@ -64,6 +66,37 @@ export const CharactersWorkspace: React.FC = () => {
     )
   }
 
+  const charactersUnsupported =
+    !capsLoading && capabilities && !capabilities.hasCharacters
+
+  if (isOnline && charactersUnsupported) {
+    return (
+      <FeatureEmptyState
+        title={t("option:charactersEmpty.offlineTitle", {
+          defaultValue: "Characters API not available on this server"
+        })}
+        description={t("option:charactersEmpty.offlineDescription", {
+          defaultValue:
+            "This tldw server does not advertise the Characters endpoints (for example, /api/v1/characters). Upgrade your server to a version that includes Characters to use this workspace."
+        })}
+        examples={[
+          t("option:charactersEmpty.offlineExample1", {
+            defaultValue:
+              "Open Diagnostics to confirm your server version and available APIs."
+          }),
+          t("option:charactersEmpty.offlineExample2", {
+            defaultValue:
+              "After upgrading, reload the extension and return to Characters."
+          })
+        ]}
+        primaryActionLabel={t("settings:healthSummary.diagnostics", {
+          defaultValue: "Open Diagnostics"
+        })}
+        onPrimaryAction={() => navigate("/settings/health")}
+      />
+    )
+  }
+
   return (
     <div className="w-full max-w-5xl mx-auto space-y-4">
       <div className="space-y-1">
@@ -73,7 +106,7 @@ export const CharactersWorkspace: React.FC = () => {
         <p className="text-xs text-gray-600 dark:text-gray-300">
           {t("option:charactersEmpty.headerDescription", {
             defaultValue:
-              "Create reusable characters with names, descriptions, and system prompts you can chat with."
+              "Create reusable characters you can pick from the chat header and reuse across conversations."
           })}
         </p>
       </div>
@@ -81,4 +114,3 @@ export const CharactersWorkspace: React.FC = () => {
     </div>
   )
 }
-

@@ -174,7 +174,7 @@
     "connectDescription": "To use Characters, first connect to your tldw server so character definitions can be stored.",
     "connectExample1": "Open Settings \u2192 tldw server to add your server URL.",
     "connectExample2": "Use Diagnostics if your server is running but not reachable.",
-    "headerDescription": "Create reusable characters with names, descriptions, and system prompts you can chat with."
+    "headerDescription": "Create reusable characters you can pick from the chat header and reuse across conversations."
   },
   "promptInsert": {
     "useInChat": "Use in chat",
