@@ -45,5 +45,4 @@ test.describe('Prompts workspace UX', () => {
 
     await context.close()
   })
-}
-
+})

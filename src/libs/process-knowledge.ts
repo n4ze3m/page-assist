@@ -4,7 +4,6 @@ import { getOllamaURL } from "@/services/ollama"
 import { PageAssistVectorStore } from "./PageAssistVectorStore"
 import { PageAssisCSVUrlLoader } from "@/loader/csv"
 import { PageAssisTXTUrlLoader } from "@/loader/txt"
-import { PageAssistDocxLoader } from "@/loader/docx"
 import { cleanUrl } from "./clean-url"
 import { sendEmbeddingCompleteNotification } from "./send-notification"
 import { pageAssistEmbeddingModel } from "@/models/embedding"
@@ -68,23 +67,9 @@ export const processKnowledge = async (msg: any, id: string): Promise<void> => {
         doc.type ===
           "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
       ) {
-        try {
-          const loader = new PageAssistDocxLoader({
-            fileName: doc.filename,
-            buffer: await toArrayBufferFromBase64(doc.content)
-          })
-
-          let docs = await loader.load()
-
-          const chunks = await textSplitter.splitDocuments(docs)
-
-          await PageAssistVectorStore.fromDocuments(chunks, ollamaEmbedding, {
-            knownledge_id: knowledge.id,
-            file_id: doc.source_id
-          })
-        } catch (error) {
-          console.error(`Error processing knowledge with id: ${id}`, error)
-        }
+        console.warn(
+          `Skipping DOCX document "${doc.filename}" in processKnowledge: client-side DOCX parsing is disabled.`
+        )
       } else {
         const loader = new PageAssisTXTUrlLoader({
           name: doc.filename,
