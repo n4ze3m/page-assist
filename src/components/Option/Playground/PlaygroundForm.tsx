@@ -1214,7 +1214,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                             {t("playground:composer.contextTabs", {
                               defaultValue: "{{count}} tabs",
                               count: selectedDocuments.length
-                            } as any)}
+                            } as any) as string}
                           </span>
                         </button>
                         <button
@@ -1234,7 +1234,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                             {t("playground:composer.contextFiles", {
                               defaultValue: "{{count}} files",
                               count: uploadedFiles.length
-                            } as any)}
+                            } as any) as string}
                           </span>
                         </button>
                       </div>
