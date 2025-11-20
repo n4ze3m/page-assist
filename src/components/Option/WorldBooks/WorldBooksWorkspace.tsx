@@ -5,12 +5,14 @@ import FeatureEmptyState from "@/components/Common/FeatureEmptyState"
 import { useServerOnline } from "@/hooks/useServerOnline"
 import { useDemoMode } from "@/context/demo-mode"
 import { WorldBooksManager } from "./Manager"
+import { useServerCapabilities } from "@/hooks/useServerCapabilities"
 
 export const WorldBooksWorkspace: React.FC = () => {
   const { t } = useTranslation(["option", "common"])
   const navigate = useNavigate()
   const isOnline = useServerOnline()
   const { demoEnabled } = useDemoMode()
+  const { capabilities, loading: capsLoading } = useServerCapabilities()
 
   if (!isOnline) {
     return demoEnabled ? (
@@ -64,6 +66,37 @@ export const WorldBooksWorkspace: React.FC = () => {
     )
   }
 
+  const worldBooksUnsupported =
+    !capsLoading && capabilities && !capabilities.hasWorldBooks
+
+  if (isOnline && worldBooksUnsupported) {
+    return (
+      <FeatureEmptyState
+        title={t("option:worldBooksEmpty.offlineTitle", {
+          defaultValue: "World Books API not available on this server"
+        })}
+        description={t("option:worldBooksEmpty.offlineDescription", {
+          defaultValue:
+            "This tldw server does not advertise the World Books endpoints (for example, /api/v1/characters/world-books). Upgrade your server to a version that includes World Books to use this workspace."
+        })}
+        examples={[
+          t("option:worldBooksEmpty.offlineExample1", {
+            defaultValue:
+              "Open Diagnostics to confirm your server version and available APIs."
+          }),
+          t("option:worldBooksEmpty.offlineExample2", {
+            defaultValue:
+              "After upgrading, reload the extension and return to World Books."
+          })
+        ]}
+        primaryActionLabel={t("settings:healthSummary.diagnostics", {
+          defaultValue: "Open Diagnostics"
+        })}
+        onPrimaryAction={() => navigate("/settings/health")}
+      />
+    )
+  }
+
   return (
     <div className="w-full max-w-5xl mx-auto space-y-4">
       <div className="space-y-1">
@@ -81,4 +114,3 @@ export const WorldBooksWorkspace: React.FC = () => {
     </div>
   )
 }
-

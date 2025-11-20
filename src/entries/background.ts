@@ -129,7 +129,14 @@ export default defineBackground({
                 '/api/v1/audio/speech',
                 '/api/v1/llm/models',
                 '/api/v1/llm/models/metadata',
-                '/api/v1/llm/providers'
+                '/api/v1/llm/providers',
+                // Workspace features
+                '/api/v1/notes/',
+                '/api/v1/notes/search/',
+                '/api/v1/flashcards',
+                '/api/v1/flashcards/decks',
+                '/api/v1/characters/world-books',
+                '/api/v1/chat/dictionaries'
               ]
               const missing = required.filter((p) => !(p in paths))
               if (missing.length > 0) {

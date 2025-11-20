@@ -45,6 +45,7 @@ import {
 import FeatureEmptyState from "@/components/Common/FeatureEmptyState"
 import { useNavigate } from "react-router-dom"
 import { useDemoMode } from "@/context/demo-mode"
+import { useServerCapabilities } from "@/hooks/useServerCapabilities"
 
 const { Text, Title } = Typography
 
@@ -56,6 +57,7 @@ export const FlashcardsPage: React.FC = () => {
   const qc = useQueryClient()
   const navigate = useNavigate()
   const { demoEnabled } = useDemoMode()
+  const { capabilities, loading: capsLoading } = useServerCapabilities()
 
   if (!isOnline) {
     return demoEnabled ? (
@@ -105,6 +107,37 @@ export const FlashcardsPage: React.FC = () => {
           defaultValue: "Connect to server"
         })}
         onPrimaryAction={() => navigate("/settings/tldw")}
+      />
+    )
+  }
+
+  const flashcardsUnsupported =
+    !capsLoading && capabilities && !capabilities.hasFlashcards
+
+  if (isOnline && flashcardsUnsupported) {
+    return (
+      <FeatureEmptyState
+        title={t("option:flashcards.offlineTitle", {
+          defaultValue: "Flashcards API not available on this server"
+        })}
+        description={t("option:flashcards.offlineDescription", {
+          defaultValue:
+            "This tldw server does not advertise the Flashcards endpoints. Upgrade your server to a version that includes /api/v1/flashcards… to use this workspace."
+        })}
+        examples={[
+          t("option:flashcards.offlineExample1", {
+            defaultValue:
+              "Check Diagnostics to confirm your server version and available APIs."
+          }),
+          t("option:flashcards.offlineExample2", {
+            defaultValue:
+              "After upgrading, reload the extension and return to Flashcards."
+          })
+        ]}
+        primaryActionLabel={t("settings:healthSummary.diagnostics", {
+          defaultValue: "Open Diagnostics"
+        })}
+        onPrimaryAction={() => navigate("/settings/health")}
       />
     )
   }

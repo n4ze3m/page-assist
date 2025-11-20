@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import FeatureEmptyState from '@/components/Common/FeatureEmptyState'
 import { useDemoMode } from '@/context/demo-mode'
+import { useServerCapabilities } from '@/hooks/useServerCapabilities'
 
 type NoteListItem = {
   id: string | number
@@ -34,6 +35,7 @@ const NotesManagerPage: React.FC = () => {
   const { demoEnabled } = useDemoMode()
   const queryClient = useQueryClient()
   const navigate = useNavigate()
+  const { capabilities, loading: capsLoading } = useServerCapabilities()
 
   const fetchNotes = async (): Promise<NoteListItem[]> => {
     const q = query.trim()
@@ -383,6 +385,30 @@ const NotesManagerPage: React.FC = () => {
                 onPrimaryAction={() => navigate('/settings/tldw')}
               />
             )
+          ) : (!capsLoading && capabilities && !capabilities.hasNotes) ? (
+            <FeatureEmptyState
+              title={t('option:notesEmpty.offlineTitle', {
+                defaultValue: 'Notes API not available on this server'
+              })}
+              description={t('option:notesEmpty.offlineDescription', {
+                defaultValue:
+                  'This tldw server does not advertise the Notes endpoints (for example, /api/v1/notes/). Upgrade your server to a version that includes the Notes API to use this workspace.'
+              })}
+              examples={[
+                t('option:notesEmpty.offlineExample1', {
+                  defaultValue:
+                    'Open Diagnostics to confirm your server version and available APIs.'
+                }),
+                t('option:notesEmpty.offlineExample2', {
+                  defaultValue:
+                    'After upgrading, reload the extension and return to Notes.'
+                })
+              ]}
+              primaryActionLabel={t('settings:healthSummary.diagnostics', {
+                defaultValue: 'Open Diagnostics'
+              })}
+              onPrimaryAction={() => navigate('/settings/health')}
+            />
           ) : Array.isArray(data) && data.length > 0 ? (
             <>
               <List

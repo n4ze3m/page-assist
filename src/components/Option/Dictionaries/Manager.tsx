@@ -7,6 +7,7 @@ import { Pen, Trash2, Book } from "lucide-react"
 import { confirmDanger } from "@/components/Common/confirm-danger"
 import { useServerOnline } from "@/hooks/useServerOnline"
 import FeatureEmptyState from "@/components/Common/FeatureEmptyState"
+import { useServerCapabilities } from "@/hooks/useServerCapabilities"
 
 export const DictionariesManager: React.FC = () => {
   const { t } = useTranslation(["common", "option"])
@@ -22,6 +23,7 @@ export const DictionariesManager: React.FC = () => {
   const [openImport, setOpenImport] = React.useState(false)
   const [activateOnImport, setActivateOnImport] = React.useState(false)
   const [statsFor, setStatsFor] = React.useState<any | null>(null)
+  const { capabilities, loading: capsLoading } = useServerCapabilities()
 
   const { data, status } = useQuery({
     queryKey: ['tldw:listDictionaries'],
@@ -53,6 +55,9 @@ export const DictionariesManager: React.FC = () => {
     onError: (e: any) => notification.error({ message: 'Import failed', description: e?.message })
   })
 
+  const dictionariesUnsupported =
+    !capsLoading && capabilities && !capabilities.hasChatDictionaries
+
   const columns = [
     { title: '', key: 'icon', width: 40, render: () => <Book className="w-4 h-4" /> },
     { title: 'Name', dataIndex: 'name', key: 'name' },
@@ -78,7 +83,28 @@ export const DictionariesManager: React.FC = () => {
         <Button type="primary" onClick={() => setOpen(true)}>New Dictionary</Button>
       </div>
       {status === 'pending' && <Skeleton active paragraph={{ rows: 6 }} />}
-      {status === 'success' && <Table rowKey={(r: any) => r.id} dataSource={data} columns={columns as any} />}
+      {status === 'success' && dictionariesUnsupported && (
+        <FeatureEmptyState
+          title={t("option:dictionaries.offlineTitle", {
+            defaultValue: "Chat dictionaries API not available on this server"
+          })}
+          description={t("option:dictionaries.offlineDescription", {
+            defaultValue:
+              "This tldw server does not advertise the /api/v1/chat/dictionaries endpoints. Upgrade your server to a version that includes chat dictionaries to use this workspace."
+          })}
+          primaryActionLabel={t("settings:healthSummary.diagnostics", {
+            defaultValue: "Open Diagnostics"
+          })}
+          onPrimaryAction={() => {
+            try {
+              window.location.hash = "#/settings/health"
+            } catch {}
+          }}
+        />
+      )}
+      {status === 'success' && !dictionariesUnsupported && (
+        <Table rowKey={(r: any) => r.id} dataSource={data} columns={columns as any} />
+      )}
 
       <Modal title="Create Dictionary" open={open} onCancel={() => setOpen(false)} footer={null}>
         <Form layout="vertical" form={createForm} onFinish={(v) => createDict(v)}>
