@@ -107,6 +107,25 @@
         "stopStreaming": "Stop streaming response",
         "connectionPlaceholder": "Waiting for your server — set it up in Settings.",
         "connectNotice": "Connect to your tldw server in Settings to send messages.",
+        "connectionChipDisconnected": "Server: Not connected",
         "connectToSend": "Connect to your tldw server to start chatting."
+    },
+    "tts": {
+        "title": "TTS Playground",
+        "subtitle": "Try out text-to-speech with your current TTS provider and settings.",
+        "currentProvider": "Current provider",
+        "inputLabel": "Enter some text to hear it spoken.",
+        "inputPlaceholder": "Type or paste text here, then use Play to listen.",
+        "play": "Play",
+        "playing": "Playing…",
+        "stop": "Stop",
+        "tldwStatusOnline": "tldw server audio API detected (audio/speech)",
+        "tldwStatusOffline": "Audio API not detected; check your tldw server version.",
+        "tldwWarningTitle": "tldw audio/speech API not detected",
+        "tldwWarningBody": "Ensure your tldw_server version includes /api/v1/audio/speech and that your extension is connected with a valid API key.",
+        "speechErrorTitle": "Dictation failed",
+        "speechErrorBody": "Transcription request failed. Check tldw server health.",
+        "speechNoText": "The transcription did not return any text.",
+        "speechMicError": "Unable to access your microphone. Check browser permissions and try again."
     }
 }

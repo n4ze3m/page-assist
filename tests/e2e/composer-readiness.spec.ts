@@ -23,6 +23,11 @@ test.describe('Composer readiness based on connection state', () => {
       page.getByText(/Connect to your tldw server in Settings to send messages\./i)
     ).toBeVisible()
 
+    // Connection chip makes the disconnected state obvious
+    await expect(
+      page.getByText(/Server: Not connected/i)
+    ).toBeVisible()
+
     // Focusing the composer should reveal the connect banner with CTAs
     await textarea.focus()
     await expect(
@@ -33,6 +38,46 @@ test.describe('Composer readiness based on connection state', () => {
     ).toBeVisible()
     await expect(
       page.getByRole('button', { name: /Diagnostics/i })
+    ).toBeVisible()
+
+    await context.close()
+  })
+
+  test('options Playground composer shows connection chip when connection is not ready', async () => {
+    const extPath = path.resolve('.output/chrome-mv3')
+    const { context, page } = await launchWithExtension(extPath)
+
+    // Force the shared connection state into a "connected phase but not ready" state
+    await page.evaluate(() => {
+      const conn: any = (window as any).__tldw_useConnectionStore
+      if (!conn) return
+      const prev = conn.getState().state
+      conn.setState({
+        state: {
+          ...prev,
+          phase: 'connected',
+          isConnected: false,
+          isChecking: false
+        }
+      })
+    })
+
+    await page.reload()
+
+    // Playground composer should show the disconnected placeholder
+    const textarea = page.getByPlaceholder(/Waiting for your server/i)
+    await expect(textarea).toBeVisible()
+
+    // Send button should be disabled
+    const sendButton = page.getByRole('button', { name: /Send/i }).first()
+    await expect(sendButton).toBeDisabled()
+
+    // Connection chip and helper text should be visible near the composer
+    await expect(
+      page.getByText(/Server: Not connected/i)
+    ).toBeVisible()
+    await expect(
+      page.getByText(/Connect to your tldw server in Settings to send messages\./i)
     ).toBeVisible()
 
     await context.close()
@@ -76,4 +121,3 @@ test.describe('Composer readiness based on connection state', () => {
     await server.stop()
   })
 })
-

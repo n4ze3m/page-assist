@@ -1,5 +1,6 @@
 import React from 'react'
-import { Button, Input, List, Pagination, Space, Spin, Tooltip, Typography, message, Select } from 'antd'
+import type { InputRef } from 'antd'
+import { Button, Input, List, Pagination, Space, Spin, Tooltip, Typography, message, Select, Dropdown } from 'antd'
 import { bgRequest } from '@/services/background-proxy'
 import { useQuery, keepPreviousData, useQueryClient } from '@tanstack/react-query'
 import { useServerOnline } from '@/hooks/useServerOnline'
@@ -41,11 +42,15 @@ const NotesManagerPage: React.FC = () => {
   const [keywordTokens, setKeywordTokens] = React.useState<string[]>([])
   const [keywordOptions, setKeywordOptions] = React.useState<string[]>([])
   const [editorKeywords, setEditorKeywords] = React.useState<string[]>([])
+  const [isDirty, setIsDirty] = React.useState(false)
   const isOnline = useServerOnline()
   const { demoEnabled } = useDemoMode()
   const queryClient = useQueryClient()
   const navigate = useNavigate()
   const { capabilities, loading: capsLoading } = useServerCapabilities()
+  const titleInputRef = React.useRef<InputRef | null>(null)
+
+  const editorDisabled = !isOnline || (!capsLoading && capabilities && !capabilities.hasNotes)
 
   const fetchNotes = async (): Promise<NoteListItem[]> => {
     const q = query.trim()
@@ -96,6 +101,7 @@ const NotesManagerPage: React.FC = () => {
       setContent(String(d?.content || ''))
       const k = (Array.isArray(d?.metadata?.keywords) ? d.metadata.keywords : (Array.isArray(d?.keywords) ? d.keywords : [])) as any[]
       setEditorKeywords((k || []).map(String))
+      setIsDirty(false)
     } catch {
       message.error('Failed to load note')
     } finally { setLoadingDetail(false) }
@@ -105,7 +111,38 @@ const NotesManagerPage: React.FC = () => {
     setSelectedId(null)
     setTitle('')
     setContent('')
+    setEditorKeywords([])
+    setIsDirty(false)
   }
+
+  const confirmDiscardIfDirty = React.useCallback(async () => {
+    if (!isDirty) return true
+    const ok = await confirmDanger({
+      title: 'Discard changes?',
+      content: 'You have unsaved changes. Discard them?',
+      okText: 'Discard',
+      cancelText: 'Cancel'
+    })
+    return ok
+  }, [isDirty])
+
+  const handleNewNote = React.useCallback(async () => {
+    const ok = await confirmDiscardIfDirty()
+    if (!ok) return
+    resetEditor()
+    setTimeout(() => {
+      titleInputRef.current?.focus()
+    }, 0)
+  }, [confirmDiscardIfDirty])
+
+  const handleSelectNote = React.useCallback(
+    async (id: string | number) => {
+      const ok = await confirmDiscardIfDirty()
+      if (!ok) return
+      await loadDetail(id)
+    },
+    [confirmDiscardIfDirty, loadDetail]
+  )
 
   const saveNote = async () => {
     if (!content.trim() && !title.trim()) { message.warning('Nothing to save'); return }
@@ -115,12 +152,14 @@ const NotesManagerPage: React.FC = () => {
         const payload = { title: title || undefined, content, metadata: { keywords: editorKeywords } }
         const created = await bgRequest<any>({ path: '/api/v1/notes/' as any, method: 'POST' as any, headers: { 'Content-Type': 'application/json' }, body: payload })
         message.success('Note created')
+        setIsDirty(false)
         await refetch()
         if (created?.id != null) await loadDetail(created.id)
       } else {
         const payload = { title: title || undefined, content, metadata: { keywords: editorKeywords } }
         await bgRequest<any>({ path: `/api/v1/notes/${selectedId}` as any, method: 'PUT' as any, headers: { 'Content-Type': 'application/json' }, body: payload })
         message.success('Note updated')
+        setIsDirty(false)
         await refetch()
       }
     } catch (e: any) {
@@ -304,8 +343,18 @@ const NotesManagerPage: React.FC = () => {
     } catch {}
   }, [])
 
+  React.useEffect(() => {
+    const handler = (e: BeforeUnloadEvent) => {
+      if (!isDirty) return
+      e.preventDefault()
+      e.returnValue = ''
+    }
+    window.addEventListener('beforeunload', handler)
+    return () => window.removeEventListener('beforeunload', handler)
+  }, [isDirty])
+
   return (
-    <div className="w-full h-full flex gap-4 mt-16">
+    <div className="w-full h-full flex flex-col lg:flex-row gap-4 mt-16">
       {/* Left: search + list */}
       <div className="w-full lg:w-1/3 min-w-0 lg:sticky lg:top-16 lg:self-start">
         <div className="p-3 rounded-lg border dark:border-gray-700 bg-white dark:bg-[#171717]">
@@ -330,7 +379,7 @@ const NotesManagerPage: React.FC = () => {
               title={t('option:notesSearch.newTooltip', {
                 defaultValue: 'Create a new note'
               })}>
-              <Button onClick={resetEditor} icon={(<PlusIcon className="w-4 h-4" />) as any}>
+              <Button onClick={() => { void handleNewNote() }} icon={(<PlusIcon className="w-4 h-4" />) as any}>
                 {t('option:notesSearch.new', { defaultValue: 'New note' })}
               </Button>
             </Tooltip>
@@ -350,7 +399,7 @@ const NotesManagerPage: React.FC = () => {
             />
           </div>
         </div>
-        <div className="mt-3 p-3 rounded-lg border dark:border-gray-700 bg-white dark:bg-[#171717] max-h-[50vh] md:max-h-[60vh] lg:max-h-[calc(100dvh-18rem)] overflow-auto">
+          <div className="mt-3 p-3 rounded-lg border dark:border-gray-700 bg-white dark:bg-[#171717] max-h-[50vh] md:max-h-[60vh] lg:max-h-[calc(100dvh-18rem)] overflow-auto">
           <div className="sticky -m-3 mb-2 top-0 z-10 px-3 py-2 bg-white dark:bg-[#171717] border-b dark:border-gray-700 flex items-center justify-between">
             <span className="text-xs uppercase tracking-wide text-gray-500">Notes</span>
             <span className="text-xs text-gray-400">
@@ -360,24 +409,41 @@ const NotesManagerPage: React.FC = () => {
               })}
             </span>
             <div className="ml-auto flex items-center gap-2">
-              <Tooltip
-                title={t('option:notesSearch.exportMdTooltip', {
-                  defaultValue: 'Export matching notes as Markdown (.md)'
-                })}>
-                <Button size="small" onClick={() => void exportAll()}>MD</Button>
-              </Tooltip>
-              <Tooltip
-                title={t('option:notesSearch.exportCsvTooltip', {
-                  defaultValue: 'Export matching notes as CSV'
-                })}>
-                <Button size="small" onClick={() => void exportAllCSV()}>CSV</Button>
-              </Tooltip>
-              <Tooltip
-                title={t('option:notesSearch.exportJsonTooltip', {
-                  defaultValue: 'Export matching notes as JSON'
-                })}>
-                <Button size="small" onClick={() => void exportAllJSON()}>JSON</Button>
-              </Tooltip>
+              <Dropdown
+                menu={{
+                  items: [
+                    {
+                      key: 'md',
+                      label: t('option:notesSearch.exportMdTooltip', {
+                        defaultValue: 'Export matching notes as Markdown (.md)'
+                      })
+                    },
+                    {
+                      key: 'csv',
+                      label: t('option:notesSearch.exportCsvTooltip', {
+                        defaultValue: 'Export matching notes as CSV'
+                      })
+                    },
+                    {
+                      key: 'json',
+                      label: t('option:notesSearch.exportJsonTooltip', {
+                        defaultValue: 'Export matching notes as JSON'
+                      })
+                    }
+                  ],
+                  onClick: ({ key }) => {
+                    if (key === 'md') void exportAll()
+                    if (key === 'csv') void exportAllCSV()
+                    if (key === 'json') void exportAllJSON()
+                  }
+                }}
+              >
+                <Button size="small">
+                  {t('option:notesSearch.exportMenuTrigger', {
+                    defaultValue: 'Export'
+                  })}
+                </Button>
+              </Dropdown>
             </div>
           </div>
           {isFetching ? (
@@ -457,19 +523,19 @@ const NotesManagerPage: React.FC = () => {
             />
           ) : Array.isArray(data) && data.length > 0 ? (
             <>
-              <List
-                size="small"
-                dataSource={data}
-                renderItem={(item) => (
-                  <List.Item
-                    key={String(item.id)}
-                    onClick={() => void loadDetail(item.id)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault()
-                        void loadDetail(item.id)
-                      }
-                    }}
+                  <List
+                    size="small"
+                    dataSource={data}
+                    renderItem={(item) => (
+                      <List.Item
+                        key={String(item.id)}
+                        onClick={() => { void handleSelectNote(item.id) }}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault()
+                            void handleSelectNote(item.id)
+                          }
+                        }}
                     role="button"
                     tabIndex={0}
                     aria-selected={selectedId === item.id}
@@ -512,34 +578,128 @@ const NotesManagerPage: React.FC = () => {
             />
           )}
         </div>
-      </div>
+        </div>
 
-      {/* Right: editor */}
-      <div className="flex-1 p-3 rounded-lg border dark:border-gray-700 bg-white dark:bg-[#171717] min-h-[70vh] min-w-0 lg:h-[calc(100dvh-8rem)] overflow-auto">
-        <div className="flex items-center justify-between">
-          <Typography.Title level={5} className="!mb-0">{selectedId == null ? 'New Note' : (title || `Note ${selectedId}`)}</Typography.Title>
-          <Space>
-            <Tooltip title="New note"><Button size="small" onClick={resetEditor} icon={(<PlusIcon className="w-4 h-4" />) as any}>New</Button></Tooltip>
-            <Tooltip title="Copy"><Button size="small" onClick={copySelected} icon={(<CopyIcon className="w-4 h-4" />) as any} /></Tooltip>
+        {/* Right: editor */}
+        <div
+          className="relative flex-1 p-3 rounded-lg border dark:border-gray-700 bg-white dark:bg-[#171717] min-h-[70vh] min-w-0 lg:h-[calc(100dvh-8rem)] overflow-auto"
+          aria-disabled={editorDisabled}
+        >
+          {editorDisabled && (
+            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center px-4 text-center bg-white/70 dark:bg-black/60">
+              <Typography.Text className="text-sm font-medium mb-1">
+                {(!capsLoading && capabilities && !capabilities.hasNotes)
+                  ? t('option:notesEmpty.offlineTitle', {
+                    defaultValue: 'Notes API not available on this server'
+                  })
+                  : t('option:notesEmpty.connectTitle', {
+                    defaultValue: 'Connect to use Notes'
+                  })}
+              </Typography.Text>
+              <Typography.Text type="secondary" className="text-xs">
+                {(!capsLoading && capabilities && !capabilities.hasNotes)
+                  ? t('option:notesEmpty.offlineDescription', {
+                    defaultValue:
+                      'This tldw server does not advertise the Notes endpoints (for example, /api/v1/notes/). Upgrade your server to a version that includes the Notes API to use this workspace.'
+                  })
+                  : t('option:notesEmpty.connectDescription', {
+                    defaultValue: 'To use Notes, first connect to your tldw server.'
+                  })}
+              </Typography.Text>
+            </div>
+          )}
+          <div className="flex items-center justify-between">
+            <Typography.Title level={5} className="!mb-0">{selectedId == null ? 'New Note' : (title || `Note ${selectedId}`)}</Typography.Title>
+            <Space>
+            <Tooltip title={t('option:notesSearch.newTooltip', {
+              defaultValue: 'Create a new note'
+            })}>
+              <Button
+                size="small"
+                onClick={() => { void handleNewNote() }}
+                icon={(<PlusIcon className="w-4 h-4" />) as any}
+                disabled={editorDisabled}
+              >
+                {t('option:notesSearch.new', { defaultValue: 'New note' })}
+              </Button>
+            </Tooltip>
+            <Tooltip
+              title={t('option:notesSearch.toolbarCopyTooltip', {
+                defaultValue: 'Copy note content'
+              })}
+            >
+              <Button
+                size="small"
+                onClick={copySelected}
+                icon={(<CopyIcon className="w-4 h-4" />) as any}
+                aria-label={t('option:notesSearch.toolbarCopyTooltip', {
+                  defaultValue: 'Copy note content'
+                })}
+                disabled={editorDisabled}
+              />
+            </Tooltip>
             <Tooltip
               title={t('option:notesSearch.toolbarExportMdTooltip', {
                 defaultValue: 'Export note as Markdown (.md)'
               })}>
-              <Button size="small" onClick={exportSelected} icon={(<FileDownIcon className="w-4 h-4" />) as any}>MD</Button>
+              <Button
+                size="small"
+                onClick={exportSelected}
+                icon={(<FileDownIcon className="w-4 h-4" />) as any}
+                aria-label={t('option:notesSearch.toolbarExportMdTooltip', {
+                  defaultValue: 'Export note as Markdown (.md)'
+                })}
+                disabled={editorDisabled}
+              >
+                MD
+              </Button>
             </Tooltip>
             <Tooltip
               title={t('option:notesSearch.toolbarSaveTooltip', {
                 defaultValue: 'Save note'
               })}>
-              <Button type="primary" size="small" onClick={saveNote} loading={saving} icon={(<SaveIcon className="w-4 h-4" />) as any}>Save</Button>
+              <Button
+                type="primary"
+                size="small"
+                onClick={saveNote}
+                loading={saving}
+                icon={(<SaveIcon className="w-4 h-4" />) as any}
+                aria-label={t('option:notesSearch.toolbarSaveTooltip', {
+                  defaultValue: 'Save note'
+                })}
+                disabled={editorDisabled}
+              >
+                Save
+              </Button>
             </Tooltip>
-            <Tooltip title="Delete">
-              <Button danger size="small" onClick={() => void deleteNote()} icon={(<TrashIcon className="w-4 h-4" />) as any} disabled={selectedId == null}>Delete</Button>
+            <Tooltip
+              title={t('option:notesSearch.toolbarDeleteTooltip', {
+                defaultValue: 'Delete note'
+              })}
+            >
+              <Button
+                danger
+                size="small"
+                onClick={() => void deleteNote()}
+                icon={(<TrashIcon className="w-4 h-4" />) as any}
+                disabled={selectedId == null || editorDisabled}
+                aria-label={t('option:notesSearch.toolbarDeleteTooltip', {
+                  defaultValue: 'Delete note'
+                })}
+              >
+                {t('common:delete', { defaultValue: 'Delete' })}
+              </Button>
             </Tooltip>
           </Space>
         </div>
         <div className="mt-2">
-          <Input placeholder="Title" value={title} onChange={(e) => setTitle(e.target.value)} />
+          <Input
+            placeholder="Title"
+            value={title}
+            onChange={(e) => { setTitle(e.target.value); setIsDirty(true) }}
+            disabled={editorDisabled}
+            ref={titleInputRef}
+          />
         </div>
         <div className="mt-2">
           <Select
@@ -549,8 +709,9 @@ const NotesManagerPage: React.FC = () => {
             className="min-w-[12rem] w-full"
             value={editorKeywords}
             onSearch={(txt) => { if (isOnline) void loadKeywordSuggestions(txt) }}
-            onChange={(vals) => setEditorKeywords(vals as string[])}
+            onChange={(vals) => { setEditorKeywords(vals as string[]); setIsDirty(true) }}
             options={keywordOptions.map((k) => ({ label: k, value: k }))}
+            disabled={editorDisabled}
           />
           <Typography.Text type="secondary" className="block text-[11px] mt-1">
             {t('option:notesSearch.tagsHelp', {
@@ -563,8 +724,9 @@ const NotesManagerPage: React.FC = () => {
           <textarea
             className="w-full min-h-[50vh] text-sm p-2 rounded border dark:border-gray-700 dark:bg-[#171717] resize-y leading-relaxed"
             value={content}
-            onChange={(e) => setContent(e.target.value)}
+            onChange={(e) => { setContent(e.target.value); setIsDirty(true) }}
             placeholder="Write your note here..."
+            readOnly={editorDisabled}
           />
         </div>
       </div>

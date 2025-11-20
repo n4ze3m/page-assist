@@ -54,6 +54,7 @@ export type ClientPath =
   | "/api/v1/character-messages/stream"
   | "/api/v1/audio/speech"
   | "/api/v1/audio/transcriptions"
+  | "/api/v1/audio/voices"
   | "/api/v1/audio/health"
   | "/api/v1/embeddings/models"
   | "/api/v1/embeddings/providers-config"

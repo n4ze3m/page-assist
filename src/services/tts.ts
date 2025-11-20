@@ -183,6 +183,42 @@ export const setSpeechPlaybackSpeed = async (speechPlaybackSpeed: number) => {
   await storage.set("speechPlaybackSpeed", speechPlaybackSpeed)
 }
 
+export const getTldwTTSModel = async () => {
+  const data = await storage.get<string | undefined>("tldwTtsModel")
+  return data && data.length > 0 ? data : "kokoro"
+}
+
+export const setTldwTTSModel = async (model: string) => {
+  await storage.set("tldwTtsModel", model)
+}
+
+export const getTldwTTSVoice = async () => {
+  const data = await storage.get<string | undefined>("tldwTtsVoice")
+  return data && data.length > 0 ? data : "af_heart"
+}
+
+export const setTldwTTSVoice = async (voice: string) => {
+  await storage.set("tldwTtsVoice", voice)
+}
+
+export const getTldwTTSResponseFormat = async () => {
+  const data = await storage.get<string | undefined>("tldwTtsResponseFormat")
+  return data && data.length > 0 ? data : "mp3"
+}
+
+export const setTldwTTSResponseFormat = async (fmt: string) => {
+  await storage.set("tldwTtsResponseFormat", fmt)
+}
+
+export const getTldwTTSSpeed = async () => {
+  const data = await storage.get<number | undefined>("tldwTtsSpeed")
+  return typeof data === "number" && data > 0 ? data : 1
+}
+
+export const setTldwTTSSpeed = async (speed: number) => {
+  await storage.set("tldwTtsSpeed", speed)
+}
+
 export const getTTSSettings = async () => {
   const [
     ttsEnabled,
@@ -203,6 +239,11 @@ export const getTTSSettings = async () => {
     // UTILS
     ttsAutoPlay,
     playbackSpeed,
+    // tldw_server TTS
+    tldwTtsModel,
+    tldwTtsVoice,
+    tldwTtsResponseFormat,
+    tldwTtsSpeed,
   ] = await Promise.all([
     isTTSEnabled(),
     getTTSProvider(),
@@ -222,6 +263,11 @@ export const getTTSSettings = async () => {
     // UTILS
     isTTSAutoPlayEnabled(),
     getSpeechPlaybackSpeed(),
+    // tldw_server TTS
+    getTldwTTSModel(),
+    getTldwTTSVoice(),
+    getTldwTTSResponseFormat(),
+    getTldwTTSSpeed(),
   ])
 
   return {
@@ -242,6 +288,10 @@ export const getTTSSettings = async () => {
     openAITTSVoice,
     ttsAutoPlay,
     playbackSpeed,
+    tldwTtsModel,
+    tldwTtsVoice,
+    tldwTtsResponseFormat,
+    tldwTtsSpeed,
   }
 }
 
@@ -261,6 +311,10 @@ export const setTTSSettings = async ({
   openAITTSVoice,
   ttsAutoPlay,
   playbackSpeed,
+  tldwTtsModel,
+  tldwTtsVoice,
+  tldwTtsResponseFormat,
+  tldwTtsSpeed,
 }: {
   ttsEnabled: boolean
   ttsProvider: string
@@ -277,6 +331,10 @@ export const setTTSSettings = async ({
   openAITTSVoice: string,
   ttsAutoPlay: boolean,
   playbackSpeed: number,
+  tldwTtsModel: string,
+  tldwTtsVoice: string,
+  tldwTtsResponseFormat: string,
+  tldwTtsSpeed: number,
 }) => {
   await Promise.all([
     setTTSEnabled(ttsEnabled),
@@ -294,5 +352,9 @@ export const setTTSSettings = async ({
     setOpenAITTSVoice(openAITTSVoice),
     setTTSAutoPlayEnabled(ttsAutoPlay),
     setSpeechPlaybackSpeed(playbackSpeed),
+    setTldwTTSModel(tldwTtsModel),
+    setTldwTTSVoice(tldwTtsVoice),
+    setTldwTTSResponseFormat(tldwTtsResponseFormat),
+    setTldwTTSSpeed(tldwTtsSpeed),
   ])
 }

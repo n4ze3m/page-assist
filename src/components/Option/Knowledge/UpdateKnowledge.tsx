@@ -163,6 +163,12 @@ export const UpdateKnowledge = ({ id, open, setOpen }: Props) => {
                 <p className="ant-upload-text">
                   {t("form.uploadFile.uploadText")}
                 </p>
+                <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+                  {t("form.uploadFile.uploadHint", {
+                    defaultValue:
+                      "Supported file types: .pdf, .csv, .txt, .md, .docx"
+                  })}
+                </p>
               </div>
             </Upload.Dragger>
           </Form.Item>
@@ -189,10 +195,18 @@ export const UpdateKnowledge = ({ id, open, setOpen }: Props) => {
               rules={[
                 { required: true, message: t("form.textInput.required") }
               ]}>
-              <Input.TextArea
-                autoSize={{ minRows: 8, maxRows: 16 }}
-                placeholder={t("form.textInput.placeholder")}
-              />
+              <>
+                <Input.TextArea
+                  autoSize={{ minRows: 8, maxRows: 16 }}
+                  placeholder={t("form.textInput.placeholder")}
+                />
+                <div className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                  {t("form.textInput.sizeHint", {
+                    defaultValue:
+                      "For very long documents, prefer file upload. Pasted text is limited to about 500k characters."
+                  })}
+                </div>
+              </>
             </Form.Item>
           </>
         )}

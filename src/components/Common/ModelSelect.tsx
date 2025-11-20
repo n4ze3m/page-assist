@@ -56,8 +56,9 @@ export const ModelSelect: React.FC<Props> = ({iconClassName = "size-5"}) => {
       const groupKey = providerRaw === 'chrome' ? 'default' : (localProviders.has(providerRaw) ? 'custom' : providerRaw)
       const providerLabel = providerDisplayName(d.provider)
       const modelLabel = d.nickname || d.model
-      const caps: string[] = Array.isArray(d.details?.capabilities)
-        ? d.details.capabilities
+      const details: any = d.details || {}
+      const caps: string[] = Array.isArray(details.capabilities)
+        ? details.capabilities
         : []
       const hasVision = caps.includes("vision")
       const hasTools = caps.includes("tools")

@@ -228,7 +228,7 @@ export const SidepanelHeader = ({
                 <span>{t("sidepanel:header.modeMedia", "Media")}</span>
               </button>
               <button
-                onClick={() => openOptionsPage("#/settings/knowledge")}
+                onClick={() => openOptionsPage("#/knowledge")}
                 className="flex items-center gap-2 rounded px-2 py-1 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-800">
                 <LayoutGrid className="size-4 text-gray-500 dark:text-gray-400" />
                 <span>{t("sidepanel:header.modeKnowledge", "Knowledge")}</span>

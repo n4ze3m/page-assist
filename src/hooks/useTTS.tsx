@@ -8,7 +8,11 @@ import {
   getTTSProvider,
   getVoice,
   isSSMLEnabled,
-  getSpeechPlaybackSpeed
+  getSpeechPlaybackSpeed,
+  getTldwTTSModel,
+  getTldwTTSVoice,
+  getTldwTTSResponseFormat,
+  getTldwTTSSpeed
 } from "@/services/tts"
 import { markdownToSSML } from "@/utils/markdown-to-ssml"
 import { generateSpeech } from "@/services/elevenlabs"
@@ -182,6 +186,10 @@ export const useTTS = () => {
         setIsSpeaking(false)
         setAudioElement(null)
       } else if (provider === "tldw") {
+        const tldwModel = await getTldwTTSModel()
+        const tldwVoice = await getTldwTTSVoice()
+        const tldwResponseFormat = await getTldwTTSResponseFormat()
+        const tldwSpeed = await getTldwTTSSpeed()
         const sentences = splitMessageContent(utterance)
 
         let nextAudioData: ArrayBuffer | null = null
@@ -195,11 +203,21 @@ export const useTTS = () => {
             currentAudioData = nextAudioData
             nextAudioData = null
           } else {
-            currentAudioData = await tldwClient.synthesizeSpeech(sentences[i])
+            currentAudioData = await tldwClient.synthesizeSpeech(sentences[i], {
+              model: tldwModel,
+              voice: tldwVoice,
+              responseFormat: tldwResponseFormat,
+              speed: tldwSpeed
+            })
           }
 
           if (i < sentences.length - 1) {
-            nextAudioPromise = tldwClient.synthesizeSpeech(sentences[i + 1])
+            nextAudioPromise = tldwClient.synthesizeSpeech(sentences[i + 1], {
+              model: tldwModel,
+              voice: tldwVoice,
+              responseFormat: tldwResponseFormat,
+              speed: tldwSpeed
+            })
           }
 
           const blob = new Blob([currentAudioData], { type: "audio/mpeg" })

@@ -136,7 +136,13 @@
     "exportJsonTooltip": "Export matching notes as JSON",
     "toolbarExportMdTooltip": "Export note as Markdown (.md)",
     "toolbarSaveTooltip": "Save note",
+    "toolbarCopyTooltip": "Copy note content",
+    "toolbarDeleteTooltip": "Delete note",
+    "exportMenuTrigger": "Export",
     "tagsHelp": "Keywords help you find this note using the keyword filter on the left."
+  },
+  "tts": {
+    "playground": "TTS Playground"
   },
   "notesEmpty": {
     "connectTitle": "Connect to use Notes",

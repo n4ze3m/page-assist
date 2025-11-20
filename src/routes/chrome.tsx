@@ -25,7 +25,9 @@ import OptionWorldBooksWorkspace from "./option-world-books"
 import OptionDictionariesWorkspace from "./option-dictionaries"
 import OptionCharactersWorkspace from "./option-characters"
 import OptionPromptsWorkspace from "./option-prompts"
+import OptionKnowledgeWorkspace from "./option-knowledge"
 import OptionFlashcards from "./option-flashcards"
+import OptionTts from "./option-tts"
 
 export const OptionRoutingChrome = () => {
   return (
@@ -52,10 +54,12 @@ export const OptionRoutingChrome = () => {
       <Route path="/media" element={<OptionMedia />} />
       <Route path="/media-multi" element={<OptionMediaMulti />} />
       <Route path="/notes" element={<OptionNotes />} />
+      <Route path="/knowledge" element={<OptionKnowledgeWorkspace />} />
       <Route path="/world-books" element={<OptionWorldBooksWorkspace />} />
       <Route path="/dictionaries" element={<OptionDictionariesWorkspace />} />
       <Route path="/characters" element={<OptionCharactersWorkspace />} />
       <Route path="/prompts" element={<OptionPromptsWorkspace />} />
+      <Route path="/tts" element={<OptionTts />} />
     </Routes>
   )
 }

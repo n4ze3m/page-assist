@@ -49,6 +49,8 @@ import { ConnectionPhase } from "@/types/connection"
 import { Link } from "react-router-dom"
 import { fetchChatModels } from "@/services/tldw-server"
 import { ProviderIcons } from "@/components/Common/ProviderIcon"
+import { useServerCapabilities } from "@/hooks/useServerCapabilities"
+import { tldwClient } from "@/services/tldw/TldwApiClient"
 type Props = {
   dropedFile: File | undefined
 }
@@ -100,6 +102,8 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
 
   const { phase, isConnected } = useConnectionState()
   const isConnectionReady = isConnected && phase === ConnectionPhase.CONNECTED
+  const { capabilities, loading: capsLoading } = useServerCapabilities()
+  const hasServerAudio = isConnectionReady && !capsLoading && capabilities?.hasAudio
   const [hasShownConnectBanner, setHasShownConnectBanner] = React.useState(false)
   const [showConnectBanner, setShowConnectBanner] = React.useState(false)
   const [showQueuedBanner, setShowQueuedBanner] = React.useState(true)
@@ -149,24 +153,32 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
       return provider || "API"
     }
 
+    type GroupOption = { label: React.ReactNode; options: Array<{ label: React.ReactNode; value: string }> }
     const models = composerModels || []
     if (!models.length) {
       if (selectedModel) {
-        return [
-          {
-            label: (
-              <span className="truncate">
-                Custom - {selectedModel}
-              </span>
-            ),
-            value: selectedModel
-          }
-        ]
+        const fallbackGroup: GroupOption = {
+          label: (
+            <span className="truncate">
+              Custom
+            </span>
+          ),
+          options: [
+            {
+              label: (
+                <span className="truncate">
+                  Custom - {selectedModel}
+                </span>
+              ),
+              value: selectedModel
+            }
+          ]
+        }
+        return [fallbackGroup]
       }
       return []
     }
 
-    type GroupOption = { label: React.ReactNode; options: Array<{ label: React.ReactNode; value: string }> }
     const groups = new Map<string, GroupOption>()
 
     for (const m of models as any[]) {
@@ -174,8 +186,9 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
       const providerKey = String(rawProvider || "other").toLowerCase()
       const providerLabel = providerDisplayName(rawProvider)
       const modelLabel = m.nickname || m.model
-      const caps: string[] = Array.isArray(m.details?.capabilities)
-        ? m.details.capabilities
+      const details: any = m.details || {}
+      const caps: string[] = Array.isArray(details.capabilities)
+        ? details.capabilities
         : []
       const hasVision = caps.includes("vision")
       const hasTools = caps.includes("tools")
@@ -232,6 +245,41 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
     const groupedOptions: GroupOption[] = Array.from(groups.values())
     return groupedOptions
   }, [composerModels, selectedModel])
+
+  const modelSummaryLabel = React.useMemo(() => {
+    if (!selectedModel) {
+      return t(
+        "playground:composer.modelPlaceholder",
+        "API / model"
+      )
+    }
+    const models = (composerModels as any[]) || []
+    const match = models.find((m) => m.model === selectedModel)
+    return (
+      match?.nickname ||
+      match?.model ||
+      selectedModel
+    )
+  }, [composerModels, selectedModel, t])
+
+  const promptSummaryLabel = React.useMemo(() => {
+    if (selectedSystemPrompt) {
+      return t(
+        "playground:composer.summary.systemPrompt",
+        "System prompt"
+      )
+    }
+    if (selectedQuickPrompt) {
+      return t(
+        "playground:composer.summary.customPrompt",
+        "Custom prompt"
+      )
+    }
+    return t(
+      "playground:composer.summary.noPrompt",
+      "No prompt"
+    )
+  }, [selectedQuickPrompt, selectedSystemPrompt, t])
 
   // Enable focus shortcuts (Shift+Esc to focus textarea)
   useFocusShortcuts(textareaRef, true)
@@ -604,6 +652,19 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
     fileInputRef.current?.click()
   }, [])
 
+  const serverRecorderRef = React.useRef<MediaRecorder | null>(null)
+  const serverChunksRef = React.useRef<BlobPart[]>([])
+  const [isServerDictating, setIsServerDictating] = React.useState(false)
+
+  const stopServerDictation = React.useCallback(() => {
+    const rec = serverRecorderRef.current
+    if (rec && rec.state !== "inactive") {
+      try {
+        rec.stop()
+      } catch {}
+    }
+  }, [])
+
   const handleSpeechToggle = React.useCallback(() => {
     if (isListening) {
       stopSpeechRecognition()
@@ -615,6 +676,107 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
       })
     }
   }, [isListening, resetTranscript, speechToTextLanguage, startListening, stopSpeechRecognition])
+
+  const handleServerDictationToggle = React.useCallback(async () => {
+    if (isServerDictating) {
+      stopServerDictation()
+      return
+    }
+    if (!hasServerAudio) {
+      notification.error({
+        message: t("playground:actions.speechErrorTitle", "Dictation unavailable"),
+        description: t(
+          "playground:actions.speechErrorBody",
+          "Connect to a tldw server that exposes the audio transcriptions API to use dictation."
+        )
+      })
+      return
+    }
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+      const recorder = new MediaRecorder(stream)
+      serverChunksRef.current = []
+      recorder.ondataavailable = (ev: BlobEvent) => {
+        if (ev.data && ev.data.size > 0) {
+          serverChunksRef.current.push(ev.data)
+        }
+      }
+      recorder.onerror = (event: Event) => {
+        console.error("MediaRecorder error", event)
+        notification.error({
+          message: t("playground:actions.speechErrorTitle", "Dictation failed"),
+          description: t(
+            "playground:actions.speechErrorBody",
+            "Microphone recording error. Check your permissions and try again."
+          )
+        })
+      }
+      recorder.onstop = async () => {
+        try {
+          const blob = new Blob(serverChunksRef.current, {
+            type: recorder.mimeType || "audio/webm"
+          })
+          if (blob.size === 0) {
+            return
+          }
+          const res = await tldwClient.transcribeAudio(blob, {
+            language: speechToTextLanguage
+          })
+          let text = ""
+          if (res) {
+            if (typeof res === "string") {
+              text = res
+            } else if (typeof (res as any).text === "string") {
+              text = (res as any).text
+            } else if (typeof (res as any).transcript === "string") {
+              text = (res as any).transcript
+            } else if (Array.isArray((res as any).segments)) {
+              text = (res as any).segments
+                .map((s: any) => s?.text || "")
+                .join(" ")
+                .trim()
+            }
+          }
+          if (text) {
+            form.setFieldValue("message", text)
+          } else {
+            notification.error({
+              message: t("playground:actions.speechErrorTitle", "Dictation failed"),
+              description: t(
+                "playground:actions.speechNoText",
+                "The transcription did not return any text."
+              )
+            })
+          }
+        } catch (e: any) {
+          notification.error({
+            message: t("playground:actions.speechErrorTitle", "Dictation failed"),
+            description: e?.message || t(
+              "playground:actions.speechErrorBody",
+              "Transcription request failed. Check tldw server health."
+            )
+          })
+        } finally {
+          try {
+            stream.getTracks().forEach((trk) => trk.stop())
+          } catch {}
+          serverRecorderRef.current = null
+          setIsServerDictating(false)
+        }
+      }
+      serverRecorderRef.current = recorder
+      recorder.start()
+      setIsServerDictating(true)
+    } catch (e: any) {
+      notification.error({
+        message: t("playground:actions.speechErrorTitle", "Dictation failed"),
+        description: t(
+          "playground:actions.speechMicError",
+          "Unable to access your microphone. Check browser permissions and try again."
+        )
+      })
+    }
+  }, [hasServerAudio, isServerDictating, speechToTextLanguage, stopServerDictation, t, form])
 
   const moreToolsContent = React.useMemo(() => (
     <div className="flex w-64 flex-col gap-3">
@@ -670,7 +832,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
         <span>{t('tooltip.uploadDocuments')}</span>
         <PaperclipIcon className="h-4 w-4" />
       </button>
-      {browserSupportsSpeechRecognition && (
+      {browserSupportsSpeechRecognition ? (
         <button
           type="button"
           onClick={handleSpeechToggle}
@@ -683,6 +845,19 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
           </span>
           <MicIcon className="h-4 w-4" />
         </button>
+      ) : hasServerAudio && (
+        <button
+          type="button"
+          onClick={handleServerDictationToggle}
+          className="flex w-full items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 transition hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-[#2a2a2a]"
+        >
+          <span>
+            {isServerDictating
+              ? t('playground:actions.speechStop', 'Stop dictation')
+              : t('playground:actions.speechStart', 'Start dictation')}
+          </span>
+          <MicIcon className="h-4 w-4" />
+        </button>
       )}
     </div>
   ), [
@@ -691,10 +866,13 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
     handleClearContext,
     handleDocumentUpload,
     handleImageUpload,
+    handleServerDictationToggle,
     handleSpeechToggle,
     handleToggleTemporaryChat,
     history.length,
+    hasServerAudio,
     isListening,
+    isServerDictating,
     selectedKnowledge,
     setWebSearch,
     t,
@@ -902,7 +1080,13 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                     onChange={onFileInputChange}
                   />
 
-                  <div className="w-full  flex flex-col dark:border-gray-600  px-2 ">
+                  <div
+                    className={`w-full flex flex-col px-2 ${
+                      !isConnectionReady
+                        ? "rounded-md border border-dashed border-gray-300 bg-gray-50 dark:border-gray-700 dark:bg-[#1b1b1b]"
+                        : ""
+                    }`}
+                  >
                     <div className="relative">
                       <textarea
                         id="textarea-message"
@@ -927,7 +1111,11 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                         }}
                         onFocus={handleDisconnectedFocus}
                         ref={textareaRef}
-                        className="px-2 py-2 w-full resize-none bg-transparent focus-within:outline-none focus:ring-0 focus-visible:ring-0 ring-0 dark:ring-0 border-0 dark:text-gray-100"
+                        className={`px-2 py-2 w-full resize-none bg-transparent focus-within:outline-none focus:ring-0 focus-visible:ring-0 ring-0 dark:ring-0 border-0 dark:text-gray-100 ${
+                          !isConnectionReady
+                            ? "cursor-not-allowed text-gray-500 placeholder:text-gray-400 dark:text-gray-400 dark:placeholder:text-gray-500"
+                            : ""
+                        }`}
                         onPaste={handlePaste}
                         rows={1}
                         style={{ minHeight: "35px" }}
@@ -981,47 +1169,41 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                       <div className="flex flex-wrap items-center gap-3">
                         <KnowledgeSelect />
                         {!isConnectionReady && (
-                          <p className="text-xs text-gray-500 dark:text-gray-400">
-                            {t(
-                              "playground:composer.connectNotice",
-                              "Connect to your tldw server in Settings to send messages."
-                            )}
-                          </p>
+                          <>
+                            <span className="inline-flex items-center gap-1 rounded-full border border-dashed border-gray-300 bg-gray-100 px-2 py-0.5 text-[11px] font-medium text-gray-700 dark:border-gray-600 dark:bg-[#262626] dark:text-gray-200">
+                              <span className="h-1.5 w-1.5 rounded-full bg-red-500" />
+                              <span>
+                                {t(
+                                  "playground:composer.connectionChipDisconnected",
+                                  "Server: Not connected"
+                                )}
+                              </span>
+                            </span>
+                            <p className="text-xs text-gray-500 dark:text-gray-400">
+                              {t(
+                                "playground:composer.connectNotice",
+                                "Connect to your tldw server in Settings to send messages."
+                              )}
+                            </p>
+                          </>
                         )}
                       </div>
                       <div className="flex items-center justify-end gap-3">
-                        {/* Inline Model and Prompt selectors next to More Tools */}
-                        <PromptSelect
-                          selectedSystemPrompt={selectedSystemPrompt}
-                          setSelectedSystemPrompt={setSelectedSystemPrompt}
-                          setSelectedQuickPrompt={setSelectedQuickPrompt}
-                          iconClassName="size-4"
-                          className="text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-gray-100"
-                        />
-                        <Select
-                          size="small"
-                          style={{ minWidth: 220 }}
-                          placeholder={t(
-                            "playground:composer.modelPlaceholder",
-                            "API / model"
-                          )}
-                          loading={isComposerModelsLoading}
-                          value={selectedModel ?? undefined}
-                          onChange={(value: string) => {
-                            setSelectedModel(value)
-                          }}
-                          options={composerModelOptions}
-                        />
-                        {/* Current conversation model settings, adjacent to prompt selector */}
                         <Tooltip title={t("common:currentChatModelSettings") as string}>
                           <button
                             type="button"
                             onClick={() => setOpenModelSettings(true)}
                             aria-label={t("common:currentChatModelSettings") as string}
-                            className="inline-flex items-center gap-1 text-gray-700 dark:text-gray-300 px-2 py-1 hover:text-gray-900 dark:hover:text-gray-100">
-                            <Gauge className="h-5 w-5" aria-hidden="true" />
-                            <span className="hidden sm:inline text-xs">
-                              {t("option:header.modelSettings", "Model settings")}
+                            className="inline-flex items-center gap-2 rounded-md border border-gray-200 px-3 py-1.5 text-xs text-gray-700 transition hover:bg-gray-100 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-[#2a2a2a]"
+                          >
+                            <Gauge className="h-4 w-4" aria-hidden="true" />
+                            <span className="flex flex-col items-start text-left">
+                              <span className="font-medium">
+                                {modelSummaryLabel}
+                              </span>
+                              <span className="text-[11px] text-gray-500 dark:text-gray-400">
+                                {promptSummaryLabel}
+                              </span>
                             </span>
                           </button>
                         </Tooltip>
@@ -1160,55 +1342,61 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                       </div>
                     )}
                     {isConnectionReady && queuedMessages.length > 0 && showQueuedBanner && (
-                        <div className="mt-2 flex flex-wrap items-center justify-between gap-2 rounded-md border border-green-300 bg-green-50 px-3 py-2 text-xs text-green-900 dark:border-green-500 dark:bg-[#102a10] dark:text-green-100">
-                          <p className="max-w-xs text-left">
-                            <span className="block font-medium">
-                              {t(
-                                "playground:composer.queuedBanner.title",
-                                "Queued while offline"
-                              )}
-                            </span>
+                      <div className="mt-2 flex flex-wrap items-center justify-between gap-2 rounded-md border border-green-300 bg-green-50 px-3 py-2 text-xs text-green-900 dark:border-green-500 dark:bg-[#102a10] dark:text-green-100">
+                        <p className="max-w-xs text-left">
+                          <span className="block font-medium">
                             {t(
-                              "playground:composer.queuedBanner.body",
-                              "We’ll hold these messages and send them once your tldw server is connected."
+                              "playground:composer.queuedBanner.title",
+                              "Queued while offline"
                             )}
-                          </p>
-                          <div className="flex flex-wrap items-center gap-2">
-                            <button
-                              type="button"
-                              className="rounded-md border border-green-300 bg-white px-2 py-1 text-xs font-medium text-green-900 hover:bg-green-100 dark:bg-[#163816] dark:text-green-50 dark:hover:bg-[#194419]"
-                              onClick={async () => {
-                                for (const item of queuedMessages) {
-                                  await submitFormFromQueued(item.message, item.image)
-                                }
-                                clearQueuedMessages()
-                              }}>
-                              {t(
-                                "playground:composer.queuedBanner.sendNow",
-                                "Send queued messages"
-                              )}
-                            </button>
-                            <button
-                              type="button"
-                              className="text-xs font-medium text-green-900 underline hover:text-green-700 dark:text-green-100 dark:hover:text-green-300"
-                              onClick={() => {
-                                clearQueuedMessages()
-                              }}>
-                              {t(
-                                "playground:composer.queuedBanner.clear",
-                                "Clear queue"
-                              )}
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => setShowQueuedBanner(false)}
-                              className="inline-flex items-center rounded-full p-1 text-green-700 hover:bg-green-100 dark:text-green-200 dark:hover:bg-[#163816]"
-                              aria-label={t("common:close", "Dismiss")}>
-                              <X className="h-3 w-3" />
-                            </button>
-                          </div>
+                          </span>
+                          {t(
+                            "playground:composer.queuedBanner.body",
+                            "We’ll hold these messages and send them once your tldw server is connected."
+                          )}
+                        </p>
+                        <div className="flex flex-wrap items-center gap-2">
+                          <button
+                            type="button"
+                            className="rounded-md border border-green-300 bg-white px-2 py-1 text-xs font-medium text-green-900 hover:bg-green-100 dark:bg-[#163816] dark:text-green-50 dark:hover:bg-[#194419]"
+                            onClick={async () => {
+                              for (const item of queuedMessages) {
+                                await submitFormFromQueued(item.message, item.image)
+                              }
+                              clearQueuedMessages()
+                            }}>
+                            {t(
+                              "playground:composer.queuedBanner.sendNow",
+                              "Send queued messages"
+                            )}
+                          </button>
+                          <button
+                            type="button"
+                            className="text-xs font-medium text-green-900 underline hover:text-green-700 dark:text-green-100 dark:hover:text-green-300"
+                            onClick={() => {
+                              clearQueuedMessages()
+                            }}>
+                            {t(
+                              "playground:composer.queuedBanner.clear",
+                              "Clear queue"
+                            )}
+                          </button>
+                          <Link
+                            to="/settings/health"
+                            className="text-xs font-medium text-green-900 underline hover:text-green-700 dark:text-green-100 dark:hover:text-green-300"
+                          >
+                            {t("settings:healthSummary.diagnostics", "Diagnostics")}
+                          </Link>
+                          <button
+                            type="button"
+                            onClick={() => setShowQueuedBanner(false)}
+                            className="inline-flex items-center rounded-full p-1 text-green-700 hover:bg-green-100 dark:text-green-200 dark:hover:bg-[#163816]"
+                            aria-label={t("common:close", "Dismiss")}>
+                            <X className="h-3 w-3" />
+                          </button>
                         </div>
-                      )}
+                      </div>
+                    )}
                   </div>
                 </form>
               </div>

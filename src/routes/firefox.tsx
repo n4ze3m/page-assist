@@ -29,6 +29,8 @@ const OptionWorldBooksWorkspace = lazy(() => import("./option-world-books"))
 const OptionDictionariesWorkspace = lazy(() => import("./option-dictionaries"))
 const OptionCharactersWorkspace = lazy(() => import("./option-characters"))
 const OptionPromptsWorkspace = lazy(() => import("./option-prompts"))
+const OptionKnowledgeWorkspace = lazy(() => import("./option-knowledge"))
+const OptionTts = lazy(() => import("./option-tts"))
 
 export const OptionRoutingFirefox = () => {
   return (
@@ -54,10 +56,12 @@ export const OptionRoutingFirefox = () => {
       <Route path="/media" element={<OptionMedia />} />
       <Route path="/media-multi" element={<OptionMediaMulti />} />
       <Route path="/notes" element={<OptionNotes />} />
+      <Route path="/knowledge" element={<OptionKnowledgeWorkspace />} />
       <Route path="/world-books" element={<OptionWorldBooksWorkspace />} />
       <Route path="/dictionaries" element={<OptionDictionariesWorkspace />} />
       <Route path="/characters" element={<OptionCharactersWorkspace />} />
       <Route path="/prompts" element={<OptionPromptsWorkspace />} />
+      <Route path="/tts" element={<OptionTts />} />
     </Routes>
   )
 }

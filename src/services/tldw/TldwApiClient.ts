@@ -922,16 +922,20 @@ export class TldwApiClient {
     return await bgUpload<any>({ path: '/api/v1/audio/transcriptions', method: 'POST', fields, file: { name, type, data } })
   }
 
-  async synthesizeSpeech(text: string, options?: { voice?: string; model?: string; format?: string }): Promise<ArrayBuffer> {
+  async synthesizeSpeech(
+    text: string,
+    options?: { voice?: string; model?: string; responseFormat?: string; speed?: number }
+  ): Promise<ArrayBuffer> {
     const cfg = await this.getConfig()
     if (!cfg) throw new Error('tldw server not configured')
     if (!this.baseUrl) await this.initialize()
     const base = this.baseUrl.replace(/\/$/, '')
     const url = `${base}/api/v1/audio/speech`
-    const body: Record<string, any> = { text }
+    const body: Record<string, any> = { input: text, text }
     if (options?.voice) body.voice = options.voice
     if (options?.model) body.model = options.model
-    if (options?.format) body.format = options.format
+    if (options?.responseFormat) body.response_format = options.responseFormat
+    if (options?.speed != null) body.speed = options.speed
     const headers: HeadersInit = {
       ...this.headers,
       Accept: 'audio/mpeg'

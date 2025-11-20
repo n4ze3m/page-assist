@@ -45,6 +45,8 @@ import { CurrentChatModelSettings } from "@/components/Common/Settings/CurrentCh
 import QuickIngestModal from "@/components/Common/QuickIngestModal"
 import { useConnectionState } from "@/hooks/useConnectionState"
 import { ConnectionPhase } from "@/types/connection"
+import { useServerCapabilities } from "@/hooks/useServerCapabilities"
+import { tldwClient } from "@/services/tldw/TldwApiClient"
 
 type Props = {
   dropedFile: File | undefined
@@ -81,6 +83,19 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
     }
   }
 
+  const serverRecorderRef = React.useRef<MediaRecorder | null>(null)
+  const serverChunksRef = React.useRef<BlobPart[]>([])
+  const [isServerDictating, setIsServerDictating] = React.useState(false)
+
+  const stopServerDictation = React.useCallback(() => {
+    const rec = serverRecorderRef.current
+    if (rec && rec.state !== "inactive") {
+      try {
+        rec.stop()
+      } catch {}
+    }
+  }, [])
+
   // tldw WS STT
   const { connect: sttConnect, sendAudio, close: sttClose, connected: sttConnected, lastError: sttError } = useTldwStt()
   const { start: micStart, stop: micStop, active: micActive } = useMicStream((chunk) => {
@@ -90,6 +105,8 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
   const [ingestOpen, setIngestOpen] = React.useState(false)
   const { phase, isConnected } = useConnectionState()
   const isConnectionReady = isConnected && phase === ConnectionPhase.CONNECTED
+  const { capabilities, loading: capsLoading } = useServerCapabilities()
+  const hasServerAudio = isConnectionReady && !capsLoading && capabilities?.hasAudio
   const [hasShownConnectBanner, setHasShownConnectBanner] = React.useState(false)
   const [showConnectBanner, setShowConnectBanner] = React.useState(false)
 
@@ -289,6 +306,107 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
     }
   }, [isListening, resetTranscript, speechToTextLanguage, startListening, stopListening])
 
+  const handleServerDictationToggle = React.useCallback(async () => {
+    if (isServerDictating) {
+      stopServerDictation()
+      return
+    }
+    if (!hasServerAudio) {
+      notification.error({
+        message: t("playground:actions.speechErrorTitle", "Dictation unavailable"),
+        description: t(
+          "playground:actions.speechErrorBody",
+          "Connect to a tldw server that exposes the audio transcriptions API to use dictation."
+        )
+      })
+      return
+    }
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+      const recorder = new MediaRecorder(stream)
+      serverChunksRef.current = []
+      recorder.ondataavailable = (ev: BlobEvent) => {
+        if (ev.data && ev.data.size > 0) {
+          serverChunksRef.current.push(ev.data)
+        }
+      }
+      recorder.onerror = (event: Event) => {
+        console.error("MediaRecorder error", event)
+        notification.error({
+          message: t("playground:actions.speechErrorTitle", "Dictation failed"),
+          description: t(
+            "playground:actions.speechErrorBody",
+            "Microphone recording error. Check your permissions and try again."
+          )
+        })
+      }
+      recorder.onstop = async () => {
+        try {
+          const blob = new Blob(serverChunksRef.current, {
+            type: recorder.mimeType || "audio/webm"
+          })
+          if (blob.size === 0) {
+            return
+          }
+          const res = await tldwClient.transcribeAudio(blob, {
+            language: speechToTextLanguage
+          })
+          let text = ""
+          if (res) {
+            if (typeof res === "string") {
+              text = res
+            } else if (typeof (res as any).text === "string") {
+              text = (res as any).text
+            } else if (typeof (res as any).transcript === "string") {
+              text = (res as any).transcript
+            } else if (Array.isArray((res as any).segments)) {
+              text = (res as any).segments
+                .map((s: any) => s?.text || "")
+                .join(" ")
+                .trim()
+            }
+          }
+          if (text) {
+            form.setFieldValue("message", text)
+          } else {
+            notification.error({
+              message: t("playground:actions.speechErrorTitle", "Dictation failed"),
+              description: t(
+                "playground:actions.speechNoText",
+                "The transcription did not return any text."
+              )
+            })
+          }
+        } catch (e: any) {
+          notification.error({
+            message: t("playground:actions.speechErrorTitle", "Dictation failed"),
+            description: e?.message || t(
+              "playground:actions.speechErrorBody",
+              "Transcription request failed. Check tldw server health."
+            )
+          })
+        } finally {
+          try {
+            stream.getTracks().forEach((trk) => trk.stop())
+          } catch {}
+          serverRecorderRef.current = null
+          setIsServerDictating(false)
+        }
+      }
+      serverRecorderRef.current = recorder
+      recorder.start()
+      setIsServerDictating(true)
+    } catch (e: any) {
+      notification.error({
+        message: t("playground:actions.speechErrorTitle", "Dictation failed"),
+        description: t(
+          "playground:actions.speechMicError",
+          "Unable to access your microphone. Check browser permissions and try again."
+        )
+      })
+    }
+  }, [hasServerAudio, isServerDictating, speechToTextLanguage, stopServerDictation, t, form])
+
   const handleLiveCaptionsToggle = React.useCallback(async () => {
     if (wsSttActive) {
       try {
@@ -327,90 +445,134 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
   }, [sttError, t])
 
   const moreToolsContent = React.useMemo(() => (
-    <div className="flex w-72 flex-col gap-3">
-      <button
-        type="button"
-        onClick={handleToggleTemporaryChat}
-        className="flex w-full items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 transition hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-[#2a2a2a]"
-      >
-        <span>
-          {temporaryChat
-            ? t('playground:actions.temporaryOn', 'Temporary chat')
-            : t('playground:actions.temporaryOff', 'Save chat')}
-        </span>
-        <BsIncognito className="h-4 w-4" />
-      </button>
-      {chatMode !== 'vision' && (
+    <div className="flex w-72 flex-col gap-4">
+      <div className="space-y-2">
+        <p className="text-[11px] font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
+          {t("playground:more.history", "History & saving")}
+        </p>
         <button
           type="button"
-          onClick={handleWebSearchToggle}
-          disabled={chatMode === 'rag'}
-          className="flex w-full items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-40 dark:text-gray-200 dark:hover:bg-[#2a2a2a]"
-        >
-          <span>
-            {webSearch
-              ? t('playground:actions.webSearchOn', 'Web search on')
-              : t('playground:actions.webSearchOff', 'Web search off')}
-          </span>
-          {webSearch ? <PiGlobe className="h-4 w-4" /> : <PiGlobeX className="h-4 w-4" />}
-        </button>
-      )}
-      {browserSupportsSpeechRecognition && (
-        <button
-          type="button"
-          onClick={handleSpeechToggle}
+          onClick={handleToggleTemporaryChat}
           className="flex w-full items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 transition hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-[#2a2a2a]"
         >
           <span>
-            {isListening
-              ? t('playground:actions.speechStop', 'Stop dictation')
-              : t('playground:actions.speechStart', 'Start dictation')}
+            {temporaryChat
+              ? t("playground:actions.temporaryOn", "Temporary chat")
+              : t("playground:actions.temporaryOff", "Save chat")}
+          </span>
+          <BsIncognito className="h-4 w-4" />
+        </button>
+      </div>
+
+      <div className="space-y-2">
+        <p className="text-[11px] font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
+          {t("playground:more.searchRag", "Search & RAG")}
+        </p>
+        {chatMode !== "vision" && (
+          <button
+            type="button"
+            onClick={handleWebSearchToggle}
+            disabled={chatMode === "rag"}
+            className="flex w-full items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-40 dark:text-gray-200 dark:hover:bg-[#2a2a2a]"
+          >
+            <span>
+              {webSearch
+                ? t("playground:actions.webSearchOn", "Web search on")
+                : t("playground:actions.webSearchOff", "Web search off")}
+            </span>
+            {webSearch ? (
+              <PiGlobe className="h-4 w-4" />
+            ) : (
+              <PiGlobeX className="h-4 w-4" />
+            )}
+          </button>
+        )}
+        <button
+          type="button"
+          onClick={handleVisionToggle}
+          disabled={chatMode === "rag"}
+          className="flex w-full items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-40 dark:text-gray-200 dark:hover:bg-[#2a2a2a]"
+        >
+          <span>
+            {chatMode === "vision"
+              ? t("playground:actions.visionOn", "Vision on")
+              : t("playground:actions.visionOff", "Vision off")}
+          </span>
+          {chatMode === "vision" ? (
+            <EyeIcon className="h-4 w-4" />
+          ) : (
+            <EyeOffIcon className="h-4 w-4" />
+          )}
+        </button>
+      </div>
+
+      <div className="space-y-2">
+        <p className="text-[11px] font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
+          {t("playground:more.voice", "Voice & captions")}
+        </p>
+        {browserSupportsSpeechRecognition ? (
+          <button
+            type="button"
+            onClick={handleSpeechToggle}
+            className="flex w-full items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 transition hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-[#2a2a2a]"
+          >
+            <span>
+              {isListening
+                ? t("playground:actions.speechStop", "Stop dictation")
+                : t("playground:actions.speechStart", "Start dictation")}
+            </span>
+            <MicIcon className="h-4 w-4" />
+          </button>
+        ) : hasServerAudio && (
+          <button
+            type="button"
+            onClick={handleServerDictationToggle}
+            className="flex w-full items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 transition hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-[#2a2a2a]"
+          >
+            <span>
+              {isServerDictating
+                ? t("playground:actions.speechStop", "Stop dictation")
+                : t("playground:actions.speechStart", "Start dictation")}
+            </span>
+            <MicIcon className="h-4 w-4" />
+          </button>
+        )}
+        <button
+          type="button"
+          onClick={handleLiveCaptionsToggle}
+          className="flex w-full items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 transition hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-[#2a2a2a]"
+        >
+          <span>
+            {wsSttActive
+              ? t("playground:actions.streamStop", "Stop captions")
+              : t("playground:actions.streamStart", "Live captions")}
           </span>
           <MicIcon className="h-4 w-4" />
         </button>
-      )}
-      <button
-        type="button"
-        onClick={handleLiveCaptionsToggle}
-        className="flex w-full items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 transition hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-[#2a2a2a]"
-      >
-        <span>
-          {wsSttActive
-            ? t('playground:actions.streamStop', 'Stop captions')
-            : t('playground:actions.streamStart', 'Live captions')}
-        </span>
-        <MicIcon className="h-4 w-4" />
-      </button>
-      <button
-        type="button"
-        onClick={handleVisionToggle}
-        disabled={chatMode === 'rag'}
-        className="flex w-full items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-40 dark:text-gray-200 dark:hover:bg-[#2a2a2a]"
-      >
-        <span>
-          {chatMode === 'vision'
-            ? t('playground:actions.visionOn', 'Vision on')
-            : t('playground:actions.visionOff', 'Vision off')}
-        </span>
-        {chatMode === 'vision' ? <EyeIcon className="h-4 w-4" /> : <EyeOffIcon className="h-4 w-4" />}
-      </button>
-      <button
-        type="button"
-        onClick={handleImageUpload}
-        disabled={chatMode === 'vision' || chatMode === 'rag'}
-        className="flex w-full items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-40 dark:text-gray-200 dark:hover:bg-[#2a2a2a]"
-      >
-        <span>{t('playground:actions.upload', 'Attach image')}</span>
-        <ImageIcon className="h-4 w-4" />
-      </button>
-      <button
-        type="button"
-        onClick={handleQuickIngestOpen}
-        className="flex w-full items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 transition hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-[#2a2a2a]"
-      >
-        <span>{t('playground:actions.ingest', 'Quick ingest')}</span>
-        <UploadCloud className="h-4 w-4" />
-      </button>
+      </div>
+
+      <div className="space-y-2">
+        <p className="text-[11px] font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
+          {t("playground:more.uploads", "Uploads & ingest")}
+        </p>
+        <button
+          type="button"
+          onClick={handleImageUpload}
+          disabled={chatMode === "vision" || chatMode === "rag"}
+          className="flex w-full items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-40 dark:text-gray-200 dark:hover:bg-[#2a2a2a]"
+        >
+          <span>{t("playground:actions.upload", "Attach image")}</span>
+          <ImageIcon className="h-4 w-4" />
+        </button>
+        <button
+          type="button"
+          onClick={handleQuickIngestOpen}
+          className="flex w-full items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 transition hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-[#2a2a2a]"
+        >
+          <span>{t("playground:actions.ingest", "Quick ingest")}</span>
+          <UploadCloud className="h-4 w-4" />
+        </button>
+      </div>
     </div>
   ), [
     browserSupportsSpeechRecognition,
@@ -418,11 +580,14 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
     handleImageUpload,
     handleLiveCaptionsToggle,
     handleQuickIngestOpen,
+    handleServerDictationToggle,
     handleSpeechToggle,
     handleToggleTemporaryChat,
     handleVisionToggle,
     handleWebSearchToggle,
+    hasServerAudio,
     isListening,
+    isServerDictating,
     temporaryChat,
     t,
     webSearch,
@@ -472,6 +637,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
   const submitQueuedInSidepanel = async (message: string, image: string) => {
     if (!isConnectionReady) return
     await stopListening()
+    stopServerDictation()
     if (!selectedModel || selectedModel.length === 0) {
       form.setFieldError("message", t("formError.noModel"))
       return
@@ -628,7 +794,13 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                     aria-hidden="true"
                     onChange={onInputChange}
                   />
-                  <div className="w-full  flex flex-col px-1">
+                  <div
+                    className={`w-full flex flex-col px-1 ${
+                      !isConnectionReady
+                        ? "rounded-md border border-dashed border-gray-300 bg-gray-50 dark:border-gray-700 dark:bg-[#1b1b1b]"
+                        : ""
+                    }`}
+                  >
                     {/* RAG Search Bar: search KB, insert snippets, ask directly */}
                     <RagSearchBar
                       onInsert={(text) => {
@@ -680,7 +852,11 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                       onKeyDown={(e) => handleKeyDown(e)}
                       onFocus={handleDisconnectedFocus}
                       ref={textareaRef}
-                      className="px-2 py-2 w-full resize-none bg-transparent focus-within:outline-none focus:ring-0 focus-visible:ring-0 ring-0 dark:ring-0 border-0 dark:text-gray-100"
+                      className={`px-2 py-2 w-full resize-none bg-transparent focus-within:outline-none focus:ring-0 focus-visible:ring-0 ring-0 dark:ring-0 border-0 dark:text-gray-100 ${
+                        !isConnectionReady
+                          ? "cursor-not-allowed text-gray-500 placeholder:text-gray-400 dark:text-gray-400 dark:placeholder:text-gray-500"
+                          : ""
+                      }`}
                       readOnly={!isConnectionReady}
                       aria-disabled={!isConnectionReady}
                       onPaste={handlePaste}
@@ -710,12 +886,23 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                     <div className="mt-4 flex w-full flex-col gap-3 md:flex-row md:items-center md:justify-between">
                       <div className="flex flex-wrap items-center gap-2">
                         {!isConnectionReady && (
-                          <p className="text-xs text-gray-500 dark:text-gray-400">
-                            {t(
-                              "playground:composer.connectNotice",
-                              "Connect to your tldw server in Settings to send messages."
-                            )}
-                          </p>
+                          <>
+                            <span className="inline-flex items-center gap-1 rounded-full border border-dashed border-gray-300 bg-gray-100 px-2 py-0.5 text-[11px] font-medium text-gray-700 dark:border-gray-600 dark:bg-[#262626] dark:text-gray-200">
+                              <span className="h-1.5 w-1.5 rounded-full bg-red-500" />
+                              <span>
+                                {t(
+                                  "playground:composer.connectionChipDisconnected",
+                                  "Server: Not connected"
+                                )}
+                              </span>
+                            </span>
+                            <p className="text-xs text-gray-500 dark:text-gray-400">
+                              {t(
+                                "playground:composer.connectNotice",
+                                "Connect to your tldw server in Settings to send messages."
+                              )}
+                            </p>
+                          </>
                         )}
                       </div>
                       <div className="flex flex-wrap items-center justify-end gap-2">
@@ -980,6 +1167,13 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                               "playground:composer.queuedBanner.clear",
                               "Clear queue"
                             )}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={openDiagnostics}
+                            className="text-xs font-medium text-green-900 underline hover:text-green-700 dark:text-green-100 dark:hover:text-green-300"
+                          >
+                            {t("settings:healthSummary.diagnostics", "Diagnostics")}
                           </button>
                         </div>
                       </div>

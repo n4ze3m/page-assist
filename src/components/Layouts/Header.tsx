@@ -70,6 +70,7 @@ type CoreMode =
   | "worldBooks"
   | "dictionaries"
   | "characters"
+  | "tts"
 
 export const Header: React.FC<Props> = ({
   setOpenModelSettings,
@@ -152,6 +153,7 @@ export const Header: React.FC<Props> = ({
     )
       return "characters"
     if (pathname.startsWith("/flashcards")) return "flashcards"
+    if (pathname.startsWith("/tts")) return "tts"
     return "playground"
   }, [pathname])
 
@@ -183,7 +185,7 @@ export const Header: React.FC<Props> = ({
         navigate("/media")
         break
       case "knowledge":
-        navigate("/settings/knowledge")
+        navigate("/knowledge")
         break
       case "notes":
         navigate("/notes")
@@ -202,6 +204,9 @@ export const Header: React.FC<Props> = ({
         break
       case "characters":
         navigate("/characters")
+        break
+      case "tts":
+        navigate("/tts")
         break
     }
   }
@@ -277,6 +282,12 @@ export const Header: React.FC<Props> = ({
             to: "/flashcards",
             icon: Layers,
             label: t("option:header.flashcards", "Flashcards")
+          },
+          {
+            type: "link" as const,
+            to: "/tts",
+            icon: Gauge,
+            label: t("option:tts.playground", "TTS Playground")
           },
           {
             type: "link" as const,
