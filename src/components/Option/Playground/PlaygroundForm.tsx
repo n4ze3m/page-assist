@@ -782,7 +782,9 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
     <div className="flex w-64 flex-col gap-3">
       <div className="flex items-center justify-between">
         <span className="text-sm font-medium text-gray-700 dark:text-gray-200">
-          {temporaryChat ? t('playground:actions.temporaryOn') : t('playground:actions.temporaryOff')}
+          {temporaryChat
+            ? t("playground:actions.temporaryOn")
+            : t("playground:actions.temporaryOff")}
         </span>
         <Switch
           size="small"
@@ -793,45 +795,19 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
       {!selectedKnowledge && (
         <div className="flex items-center justify-between">
           <span className="text-sm text-gray-700 dark:text-gray-200">
-            {t('tooltip.searchInternet')}
+            {webSearch
+              ? t("playground:actions.webSearchOn")
+              : t("playground:actions.webSearchOff")}
           </span>
           <Switch
             size="small"
             checked={webSearch}
             onChange={(value) => setWebSearch(value)}
-            checkedChildren={t('form.webSearch.on')}
-            unCheckedChildren={t('form.webSearch.off')}
+            checkedChildren={t("form.webSearch.on")}
+            unCheckedChildren={t("form.webSearch.off")}
           />
         </div>
       )}
-      <button
-        type="button"
-        onClick={handleClearContext}
-        disabled={history.length === 0}
-        className="flex w-full items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-40 dark:text-gray-200 dark:hover:bg-[#2a2a2a]"
-      >
-        <span>{t('tooltip.clearContext')}</span>
-        <EraserIcon className="h-4 w-4" />
-      </button>
-      {!selectedKnowledge && (
-        <button
-          type="button"
-          onClick={handleImageUpload}
-          disabled={chatMode === 'rag'}
-          className="flex w-full items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-40 dark:text-gray-200 dark:hover:bg-[#2a2a2a]"
-        >
-          <span>{t('tooltip.uploadImage')}</span>
-          <ImageIcon className="h-4 w-4" />
-        </button>
-      )}
-      <button
-        type="button"
-        onClick={handleDocumentUpload}
-        className="flex w-full items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 transition hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-[#2a2a2a]"
-      >
-        <span>{t('tooltip.uploadDocuments')}</span>
-        <PaperclipIcon className="h-4 w-4" />
-      </button>
       {browserSupportsSpeechRecognition ? (
         <button
           type="button"
@@ -840,8 +816,8 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
         >
           <span>
             {isListening
-              ? t('playground:actions.speechStop')
-              : t('playground:actions.speechStart')}
+              ? t("playground:actions.speechStop")
+              : t("playground:actions.speechStart")}
           </span>
           <MicIcon className="h-4 w-4" />
         </button>
@@ -853,12 +829,40 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
         >
           <span>
             {isServerDictating
-              ? t('playground:actions.speechStop', 'Stop dictation')
-              : t('playground:actions.speechStart', 'Start dictation')}
+              ? t("playground:actions.speechStop", "Stop dictation")
+              : t("playground:actions.speechStart", "Start dictation")}
           </span>
           <MicIcon className="h-4 w-4" />
         </button>
       )}
+      {!selectedKnowledge && (
+        <button
+          type="button"
+          onClick={handleImageUpload}
+          disabled={chatMode === "rag"}
+          className="flex w-full items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-40 dark:text-gray-200 dark:hover:bg-[#2a2a2a]"
+        >
+          <span>{t("playground:actions.upload", "Attach image")}</span>
+          <ImageIcon className="h-4 w-4" />
+        </button>
+      )}
+      <button
+        type="button"
+        onClick={handleDocumentUpload}
+        className="flex w-full items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 transition hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-[#2a2a2a]"
+      >
+        <span>{t("tooltip.uploadDocuments")}</span>
+        <PaperclipIcon className="h-4 w-4" />
+      </button>
+      <button
+        type="button"
+        onClick={handleClearContext}
+        disabled={history.length === 0}
+        className="flex w-full items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-40 dark:text-gray-200 dark:hover:bg-[#2a2a2a]"
+      >
+        <span>{t("tooltip.clearContext")}</span>
+        <EraserIcon className="h-4 w-4" />
+      </button>
     </div>
   ), [
     browserSupportsSpeechRecognition,
@@ -1294,6 +1298,8 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                             overlayClassName="playground-more-tools">
                             <button
                               type="button"
+                              aria-label={t("playground:composer.moreTools", "More tools") as string}
+                              title={t("playground:composer.moreTools", "More tools") as string}
                               className="inline-flex items-center gap-2 rounded-md border border-gray-200 px-3 py-1.5 text-sm text-gray-700 transition hover:bg-gray-100 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-[#2a2a2a]">
                               <span>
                                 {t(
