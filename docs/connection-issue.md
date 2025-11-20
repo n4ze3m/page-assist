@@ -6,8 +6,9 @@ If the extension can’t reach your tldw_server, try these steps.
 
 1. Open Options → tldw Server
 2. Confirm Server URL (no trailing slash needed)
-3. Select the correct auth mode (API key or login)
-4. Click “Save”, then “Test Connection”
+3. If you are running a local, single‑user demo of tldw_server, you can use the default API key `THIS-IS-A-SECURE-KEY-123-REPLACE-ME` (the extension fills this in for new installs) unless you have changed it on the server.
+4. Select the correct auth mode (API key or login)
+5. Click “Save”, then “Test Connection”
 
 ## 2) Grant host permission (Chromium)
 

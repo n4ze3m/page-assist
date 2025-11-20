@@ -278,11 +278,14 @@
   },
   "managePrompts": {
     "title": "Manage Prompts",
+    "workspaceTitle": "Prompts workspace",
+    "workspaceDescription": "Reusable prompts are managed from the Prompts workspace. Use the button below to open it.",
+    "openWorkspace": "Open Prompts workspace",
     "addBtn": "Add New Prompt",
     "option1": "Normal",
     "option2": "RAG",
     "questionPrompt": "Question Prompt",
-    "search": "Search prompts...",
+    "search": "Search titles and contents",
     "filter": {
       "all": "All",
       "system": "System",
@@ -299,8 +302,10 @@
       "replace": "Replace"
     },
     "segmented": {
-      "custom": "Custom Prompts",
-      "copilot": "Copilot Prompts"
+      "custom": "Custom prompts",
+      "copilot": "Copilot prompts",
+      "helpCustom": "Create and manage reusable prompts you can insert into chat.",
+      "helpCopilot": "View and tweak predefined Copilot prompts provided by your server."
     },
     "columns": {
       "title": "Title",
@@ -338,7 +343,7 @@
         "missingTextPlaceholder": "The {text} variable is missing in the prompt. Please add it."
       },
       "isSystem": {
-        "label": "Is System Prompt"
+        "label": "Use as system prompt"
       },
       "btnSave": {
         "saving": "Adding Prompt...",
@@ -359,6 +364,8 @@
       "deletedSuccess": "Prompt Deleted",
       "deletedSuccessDesc": "Prompt has been deleted successfully"
     },
+    "partialLoad": "Some prompt data isn’t available",
+    "loadErrorHelp": "Check your server connection and refresh to try again.",
     "emptyConnectTitle": "Connect to use Prompts",
     "emptyConnectDescription": "To manage reusable prompts, first connect to your tldw server.",
     "emptyConnectExample1": "Open Settings \u2192 tldw server to add your server URL.",
@@ -367,7 +374,13 @@
     "emptyDescription": "Create reusable prompts for recurring tasks, workflows, and team conventions.",
     "emptyExample1": "Save your favorite system prompt for summaries, explanations, or translations.",
     "emptyExample2": "Create quick prompts for common actions like drafting emails or refining notes.",
-    "emptyPrimaryCta": "Create prompt"
+    "emptyPrimaryCta": "Create prompt",
+    "filterHelp": "Search matches title and prompt content. Use type and tags to narrow the list.",
+    "copilotEmptyTitle": "No Copilot prompts available",
+    "copilotEmptyDescription": "Copilot prompts are predefined templates provided by your tldw server.",
+    "copilotEmptyExample1": "Check your server version or configuration if you expect Copilot prompts to be available.",
+    "copilotEmptyExample2": "After updating your server, reload the extension and return to this tab.",
+    "copilotEmptyCta": "Open Diagnostics"
   },
   "manageShare": {
     "title": "Manage Share",
@@ -525,11 +538,6 @@
     "emptyExample2": "Give each character a clear description and behavior so their responses stay consistent.",
     "emptyPrimaryCta": "Create character"
   },
-  "managePrompts": {
-    "workspaceTitle": "Prompts workspace",
-    "workspaceDescription": "Reusable prompts are managed from the Prompts workspace. Use the button below to open it.",
-    "openWorkspace": "Open Prompts workspace"
-  },
   "rag": {
     "title": "RAG Settings",
     "ragSettings": {
@@ -667,7 +675,10 @@
       "single": "Single User (API Key)",
       "multi": "Multi User (Login)"
     },
-    "apiKey": { "label": "API Key", "placeholder": "Enter your API key" },
+    "apiKey": {
+      "label": "API Key",
+      "placeholder": "Enter your API key (or use the default demo key THIS-IS-A-SECURE-KEY-123-REPLACE-ME for local single-user setups)"
+    },
     "username": { "label": "Username", "placeholder": "Username" },
     "password": { "label": "Password", "placeholder": "Password" },
     "buttons": {
@@ -701,9 +712,9 @@
     "fields": {
       "apiKey": {
         "label": "API Key",
-        "placeholder": "Enter your API key",
+        "placeholder": "Enter your API key (default demo key: THIS-IS-A-SECURE-KEY-123-REPLACE-ME for local single-user setups)",
         "required": "Please enter your API key",
-        "extra": "Your tldw_server API key for authentication"
+        "extra": "Your tldw_server API key for authentication. For local single-user demos, you can use the default key THIS-IS-A-SECURE-KEY-123-REPLACE-ME unless you have changed it on the server."
       },
       "username": {
         "label": "Username",

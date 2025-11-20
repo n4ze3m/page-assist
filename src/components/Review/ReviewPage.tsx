@@ -55,12 +55,13 @@ type ResultItem = {
 type ReviewPageProps = { allowGeneration?: boolean }
 
 export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true }) => {
-  const { t } = useTranslation(["option", "review"]) 
+  const { t } = useTranslation(["option", "review"])
+  const isViewMediaMode = !allowGeneration
   const [query, setQuery] = React.useState<string>("")
-  const [kinds, setKinds] = React.useState<{ media: boolean; notes: boolean }>({
+  const [kinds, setKinds] = React.useState<{ media: boolean; notes: boolean }>(() => ({
     media: true,
-    notes: true
-  })
+    notes: allowGeneration
+  }))
   const [selected, setSelected] = React.useState<ResultItem | null>(null)
   const [analysis, setAnalysis] = React.useState<string>("")
   const [loadingAnalysis, setLoadingAnalysis] = React.useState<boolean>(false)
@@ -430,7 +431,7 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true }
     })()
   }, [filtersOpen, scopedKey])
 
-  // Persist default analysis mode
+  // Persist default analysis mode (Review workspace only)
   React.useEffect(() => {
     ;(async () => {
       try {
@@ -438,13 +439,14 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true }
         await storage.set(scopedKey("review:defaultMode"), analysisMode)
       } catch {}
     })()
+    if (!allowGeneration) return
     message.info(
       analysisMode === 'review'
         ? t('review:reviewPage.usingReviewPrompts', 'Using Review prompts')
         : t('review:reviewPage.usingSummaryPrompts', 'Using Summary prompts'),
       1
     )
-  }, [analysisMode, scopedKey])
+  }, [analysisMode, scopedKey, allowGeneration])
 
   const loadKeywordSuggestions = React.useCallback(
     async (text: string) => {
@@ -944,23 +946,49 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true }
   if (!isOnline) {
     return demoEnabled ? (
       <FeatureEmptyState
-        title={t('review:empty.demoTitle', {
-          defaultValue: 'Explore Review in demo mode'
-        })}
-        description={t('review:empty.demoDescription', {
-          defaultValue:
-            'This demo shows how tldw Assistant can turn media and notes into structured reviews. Connect your own server later to analyze your own content.'
-        })}
-        examples={[
-          t('review:empty.demoExample1', {
-            defaultValue:
-              'See how selected media and notes appear in the review workspace.'
-          }),
-          t('review:empty.demoExample2', {
-            defaultValue:
-              'When you connect, you’ll be able to generate summaries and action items from your own recordings and notes.'
-          })
-        ]}
+        title={
+          isViewMediaMode
+            ? t('review:mediaEmpty.demoTitle', {
+              defaultValue: 'Explore Media in demo mode'
+            })
+            : t('review:empty.demoTitle', {
+              defaultValue: 'Explore Review in demo mode'
+            })
+        }
+        description={
+          isViewMediaMode
+            ? t('review:mediaEmpty.demoDescription', {
+              defaultValue:
+                'This demo shows how tldw Assistant can display and inspect processed media. Connect your own server later to browse your own recordings and documents.'
+            })
+            : t('review:empty.demoDescription', {
+              defaultValue:
+                'This demo shows how tldw Assistant can turn media and notes into structured reviews. Connect your own server later to analyze your own content.'
+            })
+        }
+        examples={
+          isViewMediaMode
+            ? [
+                t('review:mediaEmpty.demoExample1', {
+                  defaultValue:
+                    'See how processed media items appear in the Media viewer.'
+                }),
+                t('review:mediaEmpty.demoExample2', {
+                  defaultValue:
+                    'When you connect, you’ll be able to browse and inspect media ingested from your own recordings and files.'
+                })
+              ]
+            : [
+                t('review:empty.demoExample1', {
+                  defaultValue:
+                    'See how selected media and notes appear in the review workspace.'
+                }),
+                t('review:empty.demoExample2', {
+                  defaultValue:
+                    'When you connect, you’ll be able to generate summaries and action items from your own recordings and notes.'
+                })
+              ]
+        }
         primaryActionLabel={t('common:connectToServer', {
           defaultValue: 'Connect to server'
         })}
@@ -968,23 +996,49 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true }
       />
     ) : (
       <FeatureEmptyState
-        title={t('review:empty.connectTitle', {
-          defaultValue: 'Connect to use Review'
-        })}
-        description={t('review:empty.connectDescription', {
-          defaultValue:
-            'To review media and notes, first connect to your tldw server.'
-        })}
-        examples={[
-          t('review:empty.connectExample1', {
-            defaultValue:
-              'Open Settings → tldw server to add your server URL.'
-          }),
-          t('review:empty.connectExample2', {
-            defaultValue:
-              'Once connected, browse media and notes, then generate structured reviews and summaries.'
-          })
-        ]}
+        title={
+          isViewMediaMode
+            ? t('review:mediaEmpty.connectTitle', {
+              defaultValue: 'Connect to use Media'
+            })
+            : t('review:empty.connectTitle', {
+              defaultValue: 'Connect to use Review'
+            })
+        }
+        description={
+          isViewMediaMode
+            ? t('review:mediaEmpty.connectDescription', {
+              defaultValue:
+                'To view processed media, first connect to your tldw server so recordings and documents can be listed here.'
+            })
+            : t('review:empty.connectDescription', {
+              defaultValue:
+                'To review media and notes, first connect to your tldw server.'
+            })
+        }
+        examples={
+          isViewMediaMode
+            ? [
+                t('review:mediaEmpty.connectExample1', {
+                  defaultValue:
+                    'Open Settings → tldw server to add your server URL.'
+                }),
+                t('review:mediaEmpty.connectExample2', {
+                  defaultValue:
+                    'Once connected, use Quick ingest in the header to add media from your recordings and files.'
+                })
+              ]
+            : [
+                t('review:empty.connectExample1', {
+                  defaultValue:
+                    'Open Settings → tldw server to add your server URL.'
+                }),
+                t('review:empty.connectExample2', {
+                  defaultValue:
+                    'Once connected, browse media and notes, then generate structured reviews and summaries.'
+                })
+              ]
+        }
         primaryActionLabel={t('common:connectToServer', {
           defaultValue: 'Connect to server'
         })}
@@ -1003,7 +1057,11 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true }
           <div className="flex flex-wrap items-center gap-2">
             <Input
               allowClear
-              placeholder={t('review:reviewPage.searchPlaceholder', 'Search media, notes...')}
+              placeholder={
+                isViewMediaMode
+                  ? t('review:reviewPage.mediaOnlySearchPlaceholder', 'Search media (title/content)')
+                  : t('review:reviewPage.searchPlaceholder', 'Search media, notes...')
+              }
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               onPressEnter={() => refetch()}
@@ -1046,10 +1104,12 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true }
               {t('review:reviewPage.notes', 'Notes')}
             </Checkbox>
             <div className="ml-auto">
-              <Radio.Group size="small" value={analysisMode} onChange={(e) => setAnalysisMode(e.target.value)}>
-                <Radio.Button value="review">{t('review:reviewPage.useReview', 'Use Review')}</Radio.Button>
-                <Radio.Button value="summary">{t('review:reviewPage.useSummary', 'Use Summary')}</Radio.Button>
-              </Radio.Group>
+              {allowGeneration && (
+                <Radio.Group size="small" value={analysisMode} onChange={(e) => setAnalysisMode(e.target.value)}>
+                  <Radio.Button value="review">{t('review:reviewPage.useReview', 'Use Review')}</Radio.Button>
+                  <Radio.Button value="summary">{t('review:reviewPage.useSummary', 'Use Summary')}</Radio.Button>
+                </Radio.Group>
+              )}
             </div>
           </div>
           <div id="review-filters" className={`mt-2 grid grid-cols-1 gap-2 overflow-hidden transition-all duration-200 ${filtersOpen ? 'max-h-[640px] opacity-100' : 'max-h-0 opacity-0'}`}>
@@ -1142,42 +1202,71 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true }
             <List
               size="small"
               dataSource={displayedResults}
-              locale={{ emptyText: <Empty description={t('review:reviewPage.noResults', 'No results')} /> }}
-              renderItem={(item) => (
-                <List.Item
-                  key={`${item.kind}:${item.id}`}
-                  onClick={() => {
-                    setSelected(item)
-                    setAnalysis("")
-                    loadExistingAnalyses(item)
-                  }}
-                  className={`cursor-pointer hover:bg-gray-50 dark:hover:bg-[#262626] rounded px-2 result-fade-in ${selected && selected.id === item.id && selected.kind === item.kind ? '!bg-gray-100 dark:!bg-gray-800' : ''}`}>
-                  <div className="w-full">
-                    <div className="flex items-center gap-2">
-                      <Tag color={item.kind === "media" ? "blue" : "gold"}>
-                        {item.kind.toUpperCase()}
-                      </Tag>
-                      <Typography.Text
-                        strong
-                        ellipsis
-                        className="max-w-[18rem]">
-                        {item.title || String(item.id)}
-                      </Typography.Text>
-                    </div>
-                    {item.snippet && (
-                      <div className="text-xs text-gray-500 truncate mt-0.5">
-                        {item.snippet}
+              locale={{
+                emptyText: (
+                  <Empty
+                    description={
+                      isViewMediaMode
+                        ? t('review:mediaPage.noResults', 'No media found. Use Quick ingest in the header to add media from your recordings and files.')
+                        : t('review:reviewPage.noResults', 'No results')
+                    }
+                  />
+                )
+              }}
+              renderItem={(item) => {
+                const isSelected =
+                  !!selected &&
+                  selected.id === item.id &&
+                  selected.kind === item.kind
+                return (
+                  <List.Item
+                    key={`${item.kind}:${item.id}`}
+                    onClick={() => {
+                      setSelected(item)
+                      setAnalysis("")
+                      loadExistingAnalyses(item)
+                    }}
+                    role="button"
+                    tabIndex={0}
+                    aria-selected={isSelected}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault()
+                        setSelected(item)
+                        setAnalysis("")
+                        loadExistingAnalyses(item)
+                      }
+                    }}
+                    className={`cursor-pointer hover:bg-gray-50 dark:hover:bg-[#262626] rounded px-2 result-fade-in ${
+                      isSelected ? '!bg-gray-100 dark:!bg-gray-800' : ''
+                    }`}>
+                    <div className="w-full">
+                      <div className="flex items-center gap-2">
+                        <Tag color={item.kind === "media" ? "blue" : "gold"}>
+                          {item.kind.toUpperCase()}
+                        </Tag>
+                        <Typography.Text
+                          strong
+                          ellipsis
+                          className="max-w-[18rem]">
+                          {item.title || String(item.id)}
+                        </Typography.Text>
                       </div>
-                    )}
-                    <div className="text-[10px] text-gray-400 mt-0.5">
-                      {item.meta?.type ? String(item.meta.type) : ""}{" "}
-                      {item.meta?.created_at
-                        ? `· ${new Date(item.meta.created_at).toLocaleString()}`
-                        : ""}
+                      {item.snippet && (
+                        <div className="text-xs text-gray-500 truncate mt-0.5">
+                          {item.snippet}
+                        </div>
+                      )}
+                      <div className="text-[10px] text-gray-400 mt-0.5">
+                        {item.meta?.type ? String(item.meta.type) : ""}{" "}
+                        {item.meta?.created_at
+                          ? `· ${new Date(item.meta.created_at).toLocaleString()}`
+                          : ""}
+                      </div>
                     </div>
-                  </div>
-                </List.Item>
-              )}
+                  </List.Item>
+                )
+              }}
             />
           )}
           {kinds.media && mediaTotal > 0 && (
@@ -1202,7 +1291,11 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true }
       {/* Vertical toggle bar */}
       <div className="w-6 flex-shrink-0 h-full flex items-center">
         <button
-          title={sidebarHidden ? 'Show sidebar' : 'Hide sidebar'}
+          title={
+            sidebarHidden
+              ? t('review:reviewPage.showSidebar', 'Show results sidebar')
+              : t('review:reviewPage.hideSidebar', 'Hide results sidebar')
+          }
           onClick={() => setSidebarHidden((v) => !v)}
           className="h-full w-6 rounded bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 flex items-center justify-center text-xs font-semibold text-gray-600 dark:text-gray-300"
         >

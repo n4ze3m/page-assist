@@ -277,6 +277,12 @@ export const MediaReviewPage: React.FC = () => {
             <Button onClick={() => { setTypes([]); setKeywordTokens([]); setPage(1); refetch() }}>{t('mediaPage.resetFilters', 'Reset Filters')}</Button>
             <Checkbox checked={includeContent} onChange={(e) => { setIncludeContent(e.target.checked); setPage(1); refetch() }}>{t('mediaPage.content', 'Content')} {contentLoading && (<Spin size="small" className="ml-1" />)}</Checkbox>
           </div>
+          <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+            {t(
+              'mediaPage.filterHelp',
+              'Search matches title and content; Types and Keywords further narrow the results.'
+            )}
+          </p>
         </div>
         <Radio.Group
           size="small"
@@ -299,29 +305,53 @@ export const MediaReviewPage: React.FC = () => {
                 size="small"
                 itemLayout="vertical"
                 dataSource={data}
-                renderItem={(item) => (
-                  <List.Item
-                    key={String(item.id)}
-                    onClick={() => toggleSelect(item.id)}
-                    className={`cursor-pointer ${selectedIds.includes(item.id) ? '!bg-gray-100 dark:!bg-gray-800' : ''}`}
-                    actions={[
-                      <Button size="small" onClick={(e) => { e.stopPropagation(); toggleSelect(item.id) }}>{selectedIds.includes(item.id) ? 'Remove' : 'View'}</Button>
-                    ]}
-                  >
-                    <List.Item.Meta
-                      title={<span className="truncate inline-block max-w-full">{item.title}</span>}
-                      description={
-                        <Space size="small" wrap>
-                          {item.type && <Tag>{item.type}</Tag>}
-                          {item.created_at && <span className="text-xs text-gray-500">{new Date(item.created_at).toLocaleString()}</span>}
-                        </Space>
-                      }
-                    />
-                    {item.snippet && (
-                      <div className="text-xs text-gray-600 dark:text-gray-400 line-clamp-3">{item.snippet}</div>
-                    )}
-                  </List.Item>
-                )}
+                renderItem={(item) => {
+                  const isSelected = selectedIds.includes(item.id)
+                  return (
+                    <List.Item
+                      key={String(item.id)}
+                      onClick={() => toggleSelect(item.id)}
+                      role="button"
+                      tabIndex={0}
+                      aria-selected={isSelected}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault()
+                          toggleSelect(item.id)
+                        }
+                      }}
+                      className={`cursor-pointer ${isSelected ? '!bg-gray-100 dark:!bg-gray-800' : ''}`}
+                      actions={[
+                        <Button
+                          size="small"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            toggleSelect(item.id)
+                          }}
+                        >
+                          {isSelected ? 'Remove' : 'View'}
+                        </Button>
+                      ]}
+                    >
+                      <List.Item.Meta
+                        title={<span className="truncate inline-block max-w-full">{item.title}</span>}
+                        description={
+                          <Space size="small" wrap>
+                            {item.type && <Tag>{item.type}</Tag>}
+                            {item.created_at && (
+                              <span className="text-xs text-gray-500">
+                                {new Date(item.created_at).toLocaleString()}
+                              </span>
+                            )}
+                          </Space>
+                        }
+                      />
+                      {item.snippet && (
+                        <div className="text-xs text-gray-600 dark:text-gray-400 line-clamp-3">{item.snippet}</div>
+                      )}
+                    </List.Item>
+                  )
+                }}
               />
               <div className="mt-2 flex justify-end">
                 <Pagination size="small" current={page} pageSize={pageSize} total={total} onChange={(p, ps) => { setPage(p); setPageSize(ps); }} />

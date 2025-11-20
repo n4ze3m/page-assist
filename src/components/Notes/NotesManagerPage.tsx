@@ -18,6 +18,15 @@ type NoteListItem = {
   updated_at?: string
 }
 
+const MAX_TITLE_LENGTH = 80
+const MAX_PREVIEW_LENGTH = 100
+
+const truncateText = (value?: string | null, max?: number) => {
+  if (!value) return ""
+  if (!max || value.length <= max) return value
+  return `${value.slice(0, max)}...`
+}
+
 const NotesManagerPage: React.FC = () => {
   const { t } = useTranslation(['option', 'common'])
   const [query, setQuery] = React.useState('')
@@ -28,6 +37,7 @@ const NotesManagerPage: React.FC = () => {
   const [title, setTitle] = React.useState('')
   const [content, setContent] = React.useState('')
   const [loadingDetail, setLoadingDetail] = React.useState(false)
+  const [saving, setSaving] = React.useState(false)
   const [keywordTokens, setKeywordTokens] = React.useState<string[]>([])
   const [keywordOptions, setKeywordOptions] = React.useState<string[]>([])
   const [editorKeywords, setEditorKeywords] = React.useState<string[]>([])
@@ -99,6 +109,7 @@ const NotesManagerPage: React.FC = () => {
 
   const saveNote = async () => {
     if (!content.trim() && !title.trim()) { message.warning('Nothing to save'); return }
+    setSaving(true)
     try {
       if (selectedId == null) {
         const payload = { title: title || undefined, content, metadata: { keywords: editorKeywords } }
@@ -114,7 +125,7 @@ const NotesManagerPage: React.FC = () => {
       }
     } catch (e: any) {
       message.error(e?.message || 'Save failed')
-    }
+    } finally { setSaving(false) }
   }
 
   const deleteNote = async (id?: string | number | null) => {
@@ -301,37 +312,72 @@ const NotesManagerPage: React.FC = () => {
           <div className="flex items-center gap-2">
             <Input
               allowClear
-              placeholder="Search notes..."
+              placeholder={t('option:notesSearch.placeholder', {
+                defaultValue: 'Search titles and contents'
+              })}
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               onPressEnter={() => { setPage(1); refetch() }}
               className="flex-1 min-w-[12rem]"
             />
             <Button type="primary" onClick={() => { setPage(1); refetch() }} icon={(<SearchIcon className="w-4 h-4" />) as any}>Search</Button>
-            <Button onClick={() => { setQuery(''); setKeywordTokens([]); setPage(1); refetch() }}>Clear</Button>
+            <Button onClick={() => { setQuery(''); setKeywordTokens([]); setPage(1); refetch() }}>
+              {t('option:notesSearch.clear', {
+                defaultValue: 'Clear search & filters'
+              })}
+            </Button>
+            <Tooltip
+              title={t('option:notesSearch.newTooltip', {
+                defaultValue: 'Create a new note'
+              })}>
+              <Button onClick={resetEditor} icon={(<PlusIcon className="w-4 h-4" />) as any}>
+                {t('option:notesSearch.new', { defaultValue: 'New note' })}
+              </Button>
+            </Tooltip>
           </div>
           <div className="mt-2 flex items-center gap-2">
             <Select
               mode="tags"
               allowClear
-              placeholder="Keywords"
+              placeholder={t('option:notesSearch.keywordsPlaceholder', {
+                defaultValue: 'Filter by keyword'
+              })}
               className="min-w-[12rem] flex-1"
               value={keywordTokens}
               onSearch={(txt) => { if (isOnline) void loadKeywordSuggestions(txt) }}
               onChange={(vals) => { setKeywordTokens(vals as string[]); setPage(1); refetch() }}
               options={keywordOptions.map((k) => ({ label: k, value: k }))}
             />
-            <Button type="link" onClick={() => { setKeywordTokens([]); setPage(1); refetch() }}>Reset filters</Button>
           </div>
         </div>
         <div className="mt-3 p-3 rounded-lg border dark:border-gray-700 bg-white dark:bg-[#171717] max-h-[50vh] md:max-h-[60vh] lg:max-h-[calc(100dvh-18rem)] overflow-auto">
           <div className="sticky -m-3 mb-2 top-0 z-10 px-3 py-2 bg-white dark:bg-[#171717] border-b dark:border-gray-700 flex items-center justify-between">
             <span className="text-xs uppercase tracking-wide text-gray-500">Notes</span>
-            <span className="text-xs text-gray-400">{total}</span>
+            <span className="text-xs text-gray-400">
+              {t('option:notesSearch.listCount', {
+                defaultValue: '{{count}} notes',
+                count: total
+              })}
+            </span>
             <div className="ml-auto flex items-center gap-2">
-              <Tooltip title="Export all (Markdown)"><Button size="small" onClick={() => void exportAll()}>MD</Button></Tooltip>
-              <Tooltip title="Export all (CSV)"><Button size="small" onClick={() => void exportAllCSV()}>CSV</Button></Tooltip>
-              <Tooltip title="Export all (JSON)"><Button size="small" onClick={() => void exportAllJSON()}>JSON</Button></Tooltip>
+              <Tooltip
+                title={t('option:notesSearch.exportMdTooltip', {
+                  defaultValue: 'Export matching notes as Markdown (.md)'
+                })}>
+                <Button size="small" onClick={() => void exportAll()}>MD</Button>
+              </Tooltip>
+              <Tooltip
+                title={t('option:notesSearch.exportCsvTooltip', {
+                  defaultValue: 'Export matching notes as CSV'
+                })}>
+                <Button size="small" onClick={() => void exportAllCSV()}>CSV</Button>
+              </Tooltip>
+              <Tooltip
+                title={t('option:notesSearch.exportJsonTooltip', {
+                  defaultValue: 'Export matching notes as JSON'
+                })}>
+                <Button size="small" onClick={() => void exportAllJSON()}>JSON</Button>
+              </Tooltip>
             </div>
           </div>
           {isFetching ? (
@@ -418,12 +464,25 @@ const NotesManagerPage: React.FC = () => {
                   <List.Item
                     key={String(item.id)}
                     onClick={() => void loadDetail(item.id)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault()
+                        void loadDetail(item.id)
+                      }
+                    }}
+                    role="button"
+                    tabIndex={0}
+                    aria-selected={selectedId === item.id}
                     className={`cursor-pointer hover:bg-gray-50 dark:hover:bg-[#262626] rounded px-2 ${selectedId === item.id ? '!bg-gray-100 dark:!bg-gray-800' : ''}`}
                   >
                     <div className="w-full">
-                      <Typography.Text strong ellipsis className="max-w-[18rem]">{item.title || `Note ${item.id}`}</Typography.Text>
+                      <Typography.Text strong ellipsis className="max-w-[18rem]">
+                        {truncateText(item.title || `Note ${item.id}`, MAX_TITLE_LENGTH)}
+                      </Typography.Text>
                       {item.content && (
-                        <div className="text-xs text-gray-500 truncate mt-0.5">{String(item.content).slice(0, 160)}</div>
+                        <div className="text-xs text-gray-500 truncate mt-0.5">
+                          {truncateText(String(item.content), MAX_PREVIEW_LENGTH)}
+                        </div>
                       )}
                       <div className="text-[10px] text-gray-400 mt-0.5">{item.updated_at ? new Date(item.updated_at).toLocaleString() : ''}</div>
                     </div>
@@ -462,8 +521,18 @@ const NotesManagerPage: React.FC = () => {
           <Space>
             <Tooltip title="New note"><Button size="small" onClick={resetEditor} icon={(<PlusIcon className="w-4 h-4" />) as any}>New</Button></Tooltip>
             <Tooltip title="Copy"><Button size="small" onClick={copySelected} icon={(<CopyIcon className="w-4 h-4" />) as any} /></Tooltip>
-            <Tooltip title="Export as Markdown"><Button size="small" onClick={exportSelected} icon={(<FileDownIcon className="w-4 h-4" />) as any}>MD</Button></Tooltip>
-            <Tooltip title="Save"><Button type="primary" size="small" onClick={saveNote} loading={loadingDetail} icon={(<SaveIcon className="w-4 h-4" />) as any}>Save</Button></Tooltip>
+            <Tooltip
+              title={t('option:notesSearch.toolbarExportMdTooltip', {
+                defaultValue: 'Export note as Markdown (.md)'
+              })}>
+              <Button size="small" onClick={exportSelected} icon={(<FileDownIcon className="w-4 h-4" />) as any}>MD</Button>
+            </Tooltip>
+            <Tooltip
+              title={t('option:notesSearch.toolbarSaveTooltip', {
+                defaultValue: 'Save note'
+              })}>
+              <Button type="primary" size="small" onClick={saveNote} loading={saving} icon={(<SaveIcon className="w-4 h-4" />) as any}>Save</Button>
+            </Tooltip>
             <Tooltip title="Delete">
               <Button danger size="small" onClick={() => void deleteNote()} icon={(<TrashIcon className="w-4 h-4" />) as any} disabled={selectedId == null}>Delete</Button>
             </Tooltip>
@@ -483,6 +552,12 @@ const NotesManagerPage: React.FC = () => {
             onChange={(vals) => setEditorKeywords(vals as string[])}
             options={keywordOptions.map((k) => ({ label: k, value: k }))}
           />
+          <Typography.Text type="secondary" className="block text-[11px] mt-1">
+            {t('option:notesSearch.tagsHelp', {
+              defaultValue:
+                'Keywords help you find this note using the keyword filter on the left.'
+            })}
+          </Typography.Text>
         </div>
         <div className="mt-2">
           <textarea

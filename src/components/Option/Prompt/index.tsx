@@ -43,7 +43,7 @@ export const PromptBody = () => {
   const [editId, setEditId] = useState("")
   const [createForm] = Form.useForm()
   const [editForm] = Form.useForm()
-  const { t } = useTranslation(["settings", "common"])
+  const { t } = useTranslation(["settings", "common", "option"])
   const navigate = useNavigate()
   const isOnline = useServerOnline()
   const [selectedSegment, setSelectedSegment] = useState<"custom" | "copilot">(
@@ -358,6 +358,12 @@ export const PromptBody = () => {
               />
             </div>
           </div>
+          <p className="ml-4 text-xs text-gray-500 dark:text-gray-400">
+            {t("managePrompts.filterHelp", {
+              defaultValue:
+                "Search matches title and prompt content. Use type and tags to narrow the list."
+            })}
+          </p>
         </div>
 
         {status === "pending" && <Skeleton paragraph={{ rows: 8 }} />}
@@ -468,10 +474,15 @@ export const PromptBody = () => {
                 render: (_, record) => (
                   <div className="flex gap-4">
                     <Tooltip
-                      title={t("option:promptInsert.useInChat", {
-                        defaultValue: "Use in chat"
+                      title={t("option:promptInsert.useInChatTooltip", {
+                        defaultValue:
+                          "Open chat and insert this prompt into the composer."
                       })}>
                       <button
+                        type="button"
+                        aria-label={t("option:promptInsert.useInChat", {
+                          defaultValue: "Use in chat"
+                        })}
                         onClick={() => {
                           setSelectedQuickPrompt(record.content)
                           navigate("/")
@@ -483,6 +494,10 @@ export const PromptBody = () => {
                     </Tooltip>
                     <Tooltip title={t("managePrompts.tooltip.duplicate", { defaultValue: "Duplicate Prompt" })}>
                       <button
+                        type="button"
+                        aria-label={t("managePrompts.tooltip.duplicate", {
+                          defaultValue: "Duplicate Prompt"
+                        })}
                         onClick={() => {
                           savePromptMutation({
                             title: `${record.title} (Copy)`,
@@ -499,6 +514,8 @@ export const PromptBody = () => {
                     </Tooltip>
                     <Tooltip title={t("managePrompts.tooltip.delete")}>
                       <button
+                        type="button"
+                        aria-label={t("managePrompts.tooltip.delete")}
                         onClick={async () => {
                           const ok = await confirmDanger({
                             title: t("common:confirmTitle", { defaultValue: "Please confirm" }),
@@ -516,6 +533,8 @@ export const PromptBody = () => {
                     </Tooltip>
                     <Tooltip title={t("managePrompts.tooltip.edit")}>
                       <button
+                        type="button"
+                        aria-label={t("managePrompts.tooltip.edit")}
                         onClick={() => {
                           setEditId(record.id)
                           editForm.setFieldsValue(record)
@@ -544,7 +563,33 @@ export const PromptBody = () => {
       <div>
         {copilotStatus === "pending" && <Skeleton paragraph={{ rows: 8 }} />}
 
-        {copilotStatus === "success" && (
+        {copilotStatus === "success" && Array.isArray(copilotData) && copilotData.length === 0 && (
+          <FeatureEmptyState
+            title={t("managePrompts.copilotEmptyTitle", {
+              defaultValue: "No Copilot prompts available"
+            })}
+            description={t("managePrompts.copilotEmptyDescription", {
+              defaultValue:
+                "Copilot prompts are predefined templates provided by your tldw server."
+            })}
+            examples={[
+              t("managePrompts.copilotEmptyExample1", {
+                defaultValue:
+                  "Check your server version or configuration if you expect Copilot prompts to be available."
+              }),
+              t("managePrompts.copilotEmptyExample2", {
+                defaultValue:
+                  "After updating your server, reload the extension and return to this tab."
+              })
+            ]}
+            primaryActionLabel={t("settings:healthSummary.diagnostics", {
+              defaultValue: "Open Diagnostics"
+            })}
+            onPrimaryAction={() => navigate("/settings/health")}
+          />
+        )}
+
+        {copilotStatus === "success" && Array.isArray(copilotData) && copilotData.length > 0 && (
           <Table
             columns={[
               {
@@ -572,6 +617,8 @@ export const PromptBody = () => {
                   <div className="flex gap-4">
                     <Tooltip title={t("managePrompts.tooltip.edit")}>
                       <button
+                        type="button"
+                        aria-label={t("managePrompts.tooltip.edit")}
                         onClick={() => {
                           setEditCopilotId(record.key)
                           editCopilotForm.setFieldsValue(record)
@@ -642,23 +689,39 @@ export const PromptBody = () => {
           }
         />
       )}
-      <div className="flex items-center justify-end mb-6">
+      <div className="flex flex-col items-end gap-1 mb-6">
         <Segmented
           size="large"
           options={[
             {
-              label: t("managePrompts.segmented.custom"),
+              label: t("managePrompts.segmented.custom", {
+                defaultValue: "Custom prompts"
+              }),
               value: "custom"
             },
             {
-              label: t("managePrompts.segmented.copilot"),
+              label: t("managePrompts.segmented.copilot", {
+                defaultValue: "Copilot prompts"
+              }),
               value: "copilot"
             }
           ]}
+          value={selectedSegment}
           onChange={(value) => {
             setSelectedSegment(value as "custom" | "copilot")
           }}
         />
+        <p className="text-xs text-gray-500 dark:text-gray-400 text-right">
+          {selectedSegment === "custom"
+            ? t("managePrompts.segmented.helpCustom", {
+                defaultValue:
+                  "Create and manage reusable prompts you can insert into chat."
+              })
+            : t("managePrompts.segmented.helpCopilot", {
+                defaultValue:
+                  "View and tweak predefined Copilot prompts provided by your server."
+              })}
+        </p>
       </div>
       {selectedSegment === "custom" && customPrompts()}
       {selectedSegment === "copilot" && copilotPrompts()}
