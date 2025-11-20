@@ -11,7 +11,7 @@ import { useQuery } from "@tanstack/react-query"
 import { useServerOnline } from "@/hooks/useServerOnline"
 import { fetchChatModels } from "@/services/tldw-server"
 import { useMessageOption } from "~/hooks/useMessageOption"
-import { Avatar, Select, Input, Divider } from "antd"
+import { Avatar, Select, Input, Divider, Dropdown } from "antd"
 import QuickIngestModal from "../Common/QuickIngestModal"
 import {
   UploadCloud,
@@ -418,6 +418,11 @@ export const Header: React.FC<Props> = ({
     />
   )
 
+  const isChatRoute = React.useMemo(
+    () => currentCoreMode === "playground",
+    [currentCoreMode]
+  )
+
   // Manage focus for accessibility when expanding/collapsing
   React.useEffect(() => {
     if (shortcutsExpanded) {
@@ -444,7 +449,8 @@ export const Header: React.FC<Props> = ({
   return (
     <header
       data-istemporary-chat={temporaryChat}
-      className="sticky top-0 z-30 flex w-full flex-col gap-3 border-b bg-gray-50/95 p-3 backdrop-blur dark:border-gray-600 dark:bg-[#171717]/95 data-[istemporary-chat='true']:bg-purple-900 data-[istemporary-chat='true']:dark:bg-purple-900">
+      data-ischat-route={isChatRoute}
+      className="sticky top-0 z-30 flex w-full flex-col gap-3 border-b bg-gray-50/95 p-3 backdrop-blur dark:border-gray-600 dark:bg-[#171717]/95 data-[istemporary-chat='true']:bg-purple-900 data-[istemporary-chat='true']:dark:bg-purple-900 data-[ischat-route='true']:bg-white/95 data-[ischat-route='true']:dark:bg-[#111111]/95">
       {/*
         Top band: place the details bar directly below the PrimaryToolbar (New Chat)
         on all breakpoints to keep the most-used actions grouped together.
@@ -644,9 +650,9 @@ export const Header: React.FC<Props> = ({
       <div className="flex flex-col gap-3">
         <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:justify-end">
           <div className="flex items-center gap-3 text-xs text-gray-600 dark:text-gray-300">
-          <button
-            type="button"
-            onClick={() => navigate("/settings/health")}
+            <button
+              type="button"
+              onClick={() => navigate("/settings/health")}
               className="inline-flex items-center gap-1 rounded-full border border-transparent px-2 py-1 text-xs transition hover:border-gray-300 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500 dark:hover:border-gray-500 dark:hover:bg-[#1f1f1f]"
               title={t(
                 "settings:healthSummary.coreAria",
@@ -688,43 +694,106 @@ export const Header: React.FC<Props> = ({
               {t("settings:healthSummary.diagnostics", "Diagnostics")}
             </Link>
           </div>
-          <button
-            type="button"
-            onClick={() => setOpenModelSettings(true)}
-            className="flex w-full items-center gap-2 rounded-md border border-transparent px-3 py-2 text-sm text-gray-600 transition hover:border-gray-300 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500 dark:text-gray-200 dark:hover:border-gray-500 dark:hover:bg-[#1f1f1f] sm:w-auto"
-          >
-            <Gauge className="h-4 w-4" aria-hidden="true" />
-            <span>{t("option:header.modelSettings", "Model settings")}</span>
-          </button>
 
-          <button
-            type="button"
-            onClick={() => setQuickIngestOpen(true)}
-            className="flex w-full items-center gap-2 rounded-md border border-transparent px-3 py-2 text-sm text-gray-600 transition hover:border-gray-300 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500 dark:text-gray-200 dark:hover:border-gray-500 dark:hover:bg-[#1f1f1f] sm:w-auto"
-          >
-            <UploadCloud className="h-4 w-4" aria-hidden="true" />
-            <span>{t("option:header.quickIngest", "Quick ingest")}</span>
-          </button>
+          {!isChatRoute && (
+            <>
+              <button
+                type="button"
+                onClick={() => setOpenModelSettings(true)}
+                className="flex w-full items-center gap-2 rounded-md border border-transparent px-3 py-2 text-sm text-gray-600 transition hover:border-gray-300 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500 dark:text-gray-200 dark:hover:border-gray-500 dark:hover:bg-[#1f1f1f] sm:w-auto"
+              >
+                <Gauge className="h-4 w-4" aria-hidden="true" />
+                <span>{t("option:header.modelSettings", "Model settings")}</span>
+              </button>
 
-          {messages.length > 0 && !streaming && (
-            <div className="flex items-center gap-1">
-              <MoreOptions
-                shareModeEnabled={shareModeEnabled}
-                historyId={historyId}
-                messages={messages}
-              />
-              <span className="sr-only">{t("option:header.moreActions", "More actions")}</span>
-            </div>
+              <button
+                type="button"
+                onClick={() => setQuickIngestOpen(true)}
+                className="flex w-full items-center gap-2 rounded-md border border-transparent px-3 py-2 text-sm text-gray-600 transition hover:border-gray-300 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500 dark:text-gray-200 dark:hover:border-gray-500 dark:hover:bg-[#1f1f1f] sm:w-auto"
+              >
+                <UploadCloud className="h-4 w-4" aria-hidden="true" />
+                <span>{t("option:header.quickIngest", "Quick ingest")}</span>
+              </button>
+
+              {messages.length > 0 && !streaming && (
+                <div className="flex items-center gap-1">
+                  <MoreOptions
+                    shareModeEnabled={shareModeEnabled}
+                    historyId={historyId}
+                    messages={messages}
+                  />
+                  <span className="sr-only">{t("option:header.moreActions", "More actions")}</span>
+                </div>
+              )}
+
+              <button
+                type="button"
+                onClick={() => { void openSidebar() }}
+                className="flex w-full items-center gap-2 rounded-md border border-transparent px-3 py-2 text-sm text-gray-600 transition hover:border-gray-300 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500 dark:text-gray-200 dark:hover:border-gray-500 dark:hover:bg-[#1f1f1f] sm:w-auto"
+              >
+                <LayoutGrid className="h-4 w-4" aria-hidden="true" />
+                <span>{t("option:header.openSidebar", "Open sidebar")}</span>
+              </button>
+            </>
           )}
 
-          <button
-            type="button"
-            onClick={() => { void openSidebar() }}
-            className="flex w-full items-center gap-2 rounded-md border border-transparent px-3 py-2 text-sm text-gray-600 transition hover:border-gray-300 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500 dark:text-gray-200 dark:hover:border-gray-500 dark:hover:bg-[#1f1f1f] sm:w-auto"
-          >
-            <LayoutGrid className="h-4 w-4" aria-hidden="true" />
-            <span>{t("option:header.openSidebar", "Open sidebar")}</span>
-          </button>
+          {isChatRoute && (
+            <Dropdown
+              trigger={["click"]}
+              menu={{
+                items: [
+                  {
+                    key: "modelSettings",
+                    label: (
+                      <span className="inline-flex items-center gap-2">
+                        <Gauge className="h-4 w-4" aria-hidden="true" />
+                        <span>{t("option:header.modelSettings", "Model settings")}</span>
+                      </span>
+                    ),
+                    onClick: () => setOpenModelSettings(true)
+                  },
+                  {
+                    key: "quickIngest",
+                    label: (
+                      <span className="inline-flex items-center gap-2">
+                        <UploadCloud className="h-4 w-4" aria-hidden="true" />
+                        <span>{t("option:header.quickIngest", "Quick ingest")}</span>
+                      </span>
+                    ),
+                    onClick: () => setQuickIngestOpen(true)
+                  },
+                  {
+                    key: "diagnostics",
+                    label: (
+                      <span className="inline-flex items-center gap-2">
+                        <Microscope className="h-4 w-4" aria-hidden="true" />
+                        <span>{t("settings:healthSummary.diagnostics", "Diagnostics")}</span>
+                      </span>
+                    ),
+                    onClick: () => navigate("/settings/health")
+                  },
+                  {
+                    key: "openSidebar",
+                    label: (
+                      <span className="inline-flex items-center gap-2">
+                        <LayoutGrid className="h-4 w-4" aria-hidden="true" />
+                        <span>{t("option:header.openSidebar", "Open sidebar")}</span>
+                      </span>
+                    ),
+                    onClick: () => { void openSidebar() }
+                  }
+                ]
+              }}
+            >
+              <button
+                type="button"
+                className="flex w-full items-center gap-2 rounded-md border border-gray-200 px-3 py-2 text-sm text-gray-700 transition hover:bg-white dark:border-gray-600 dark:text-gray-200 dark:hover:bg-[#1f1f1f] sm:w-auto"
+              >
+                <LayoutGrid className="h-4 w-4" aria-hidden="true" />
+                <span>{t("option:header.toolsMenu", "Chat tools")}</span>
+              </button>
+            </Dropdown>
+          )}
         </div>
 
         <div className="flex flex-col gap-2 lg:flex-1">

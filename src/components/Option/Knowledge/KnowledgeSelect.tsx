@@ -57,7 +57,8 @@ export const KnowledgeSelect: React.FC = () => {
             <IconButton
               ariaLabel={(t("tooltip.knowledge") as string) || "Knowledge"}
               hasPopup="menu"
-              className="dark:text-gray-300">
+              className="dark:text-gray-300"
+              data-playground-knowledge-trigger="true">
               <Blocks className="h-6 w-6" />
             </IconButton>
           </Tooltip>

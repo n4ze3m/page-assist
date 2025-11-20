@@ -48,5 +48,43 @@ test.describe('RAG search in sidepanel', () => {
 
     await context.close()
   })
-})
 
+  test('Playground shows context summary when knowledge + tabs are active', async () => {
+    const extPath = path.resolve('.output/chrome-mv3')
+    const { context, page } = await launchWithExtension(extPath)
+
+    // Seed connection + a selected tab via exposed stores
+    await page.evaluate(() => {
+      const conn: any = (window as any).__tldw_useConnectionStore
+      const msgStore: any = (window as any).__tldw_useStoreMessageOption
+      if (!conn || !msgStore) return
+      const prevState = conn.getState().state
+      conn.setState({
+        state: {
+          ...prevState,
+          phase: 'connected',
+          isConnected: true,
+          isChecking: false
+        }
+      })
+      msgStore.setState({
+        selectedDocuments: [
+          { id: 'tab-1', title: 'Example tab', url: 'https://example.com', favIconUrl: '' }
+        ]
+      })
+    })
+
+    // Context label should be visible above the composer
+    const contextLabel = page.getByText(/Context:/i)
+    await expect(contextLabel).toBeVisible()
+
+    // Clicking the knowledge chip should focus and open the Knowledge control
+    const knowledgeChip = page.getByRole('button', { name: /No knowledge selected|Knowledge/i }).first()
+    await knowledgeChip.click()
+    // After clicking, the Knowledge menu/button should be focused (via data attribute)
+    const knowledgeTrigger = page.locator('[data-playground-knowledge-trigger="true"]').first()
+    await expect(knowledgeTrigger).toBeFocused()
+
+    await context.close()
+  })
+})

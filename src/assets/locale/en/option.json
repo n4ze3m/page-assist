@@ -55,7 +55,8 @@
       "title": "Advanced tools",
       "tooltip": "Advanced tools like sidebar, repository, and debug options"
     },
-    "moreActions": "More actions"
+    "moreActions": "More actions",
+    "toolsMenu": "Chat tools"
   },
   "sidebarTitle": "Chat History",
     "error": "Error",

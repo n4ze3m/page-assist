@@ -86,7 +86,7 @@
     "@types/chrome": "^0.0.280",
     "@types/d3-dsv": "^3.0.7",
     "@types/html-to-text": "^9.0.4",
-    "@types/node": "20.11.9",
+    "@types/node": "20.19.0",
     "@types/pubsub-js": "^1.8.6",
     "@types/react": "18.2.48",
     "@types/react-dom": "18.2.18",

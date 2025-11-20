@@ -945,7 +945,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
               />
             </div>
             {selectedDocuments.length > 0 && (
-              <div className="p-3">
+              <div className="p-3" data-playground-tabs="true" tabIndex={-1}>
                 <div className="max-h-24 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-transparent">
                   <div className="flex flex-wrap gap-1.5">
                     {selectedDocuments.map((document) => (
@@ -960,7 +960,11 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
               </div>
             )}
             {uploadedFiles.length > 0 && (
-              <div className="p-3 border-b border-gray-200 dark:border-gray-600">
+              <div
+                className="p-3 border-b border-gray-200 dark:border-gray-600"
+                data-playground-uploads="true"
+                tabIndex={-1}
+              >
                 <div className="flex items-center justify-end mb-2">
                   <div className="flex items-center gap-2">
                     <Tooltip title={t("fileRetrievalEnabled")}>
@@ -1165,8 +1169,68 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                         onMentionsOpen={handleMentionsOpen}
                       />
                     </div>
-                    <div className="mt-2 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-                      <div className="flex flex-wrap items-center gap-3">
+                    <div className="mt-2 flex flex-col gap-1">
+                      <div className="flex flex-wrap items-center gap-2 text-[11px] text-gray-600 dark:text-gray-300">
+                        <span className="font-semibold uppercase tracking-wide">
+                          {t("playground:composer.contextLabel", "Context:")}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const trigger = document.querySelector<HTMLElement>("[data-playground-knowledge-trigger='true']")
+                            if (trigger) {
+                              trigger.focus()
+                              if (trigger instanceof HTMLButtonElement) {
+                                trigger.click()
+                              }
+                            }
+                          }}
+                          className="inline-flex items-center gap-1 rounded-full border border-transparent px-2 py-0.5 hover:border-gray-300 hover:bg-gray-50 dark:hover:border-gray-600 dark:hover:bg-[#262626]"
+                        >
+                          <span className="font-medium">
+                            {selectedKnowledge?.title ||
+                              t(
+                                "playground:composer.contextKnowledgeEmpty",
+                                "No knowledge selected"
+                              )}
+                          </span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const chips = document.querySelector<HTMLElement>("[data-playground-tabs='true']")
+                            chips?.focus()
+                          }}
+                          className="inline-flex items-center gap-1 rounded-full border border-transparent px-2 py-0.5 hover:border-gray-300 hover:bg-gray-50 dark:hover:border-gray-600 dark:hover:bg-[#262626]"
+                        >
+                          <span>
+                            {t("playground:composer.contextTabs", {
+                              defaultValue: "{{count}} tabs",
+                              count: selectedDocuments.length
+                            } as any)}
+                          </span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const files = document.querySelector<HTMLElement>("[data-playground-uploads='true']")
+                            if (files) {
+                              files.focus()
+                              files.scrollIntoView({ block: "nearest" })
+                            }
+                          }}
+                          className="inline-flex items-center gap-1 rounded-full border border-transparent px-2 py-0.5 hover:border-gray-300 hover:bg-gray-50 dark:hover:border-gray-600 dark:hover:bg-[#262626]"
+                        >
+                          <span>
+                            {t("playground:composer.contextFiles", {
+                              defaultValue: "{{count}} files",
+                              count: uploadedFiles.length
+                            } as any)}
+                          </span>
+                        </button>
+                      </div>
+                      <div className="mt-1 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                        <div className="flex flex-wrap items-center gap-3">
                         <KnowledgeSelect />
                         {!isConnectionReady && (
                           <>
