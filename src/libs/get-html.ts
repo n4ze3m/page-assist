@@ -33,8 +33,14 @@ const _getHtml = () => {
   }
 }
 
+type TabSnapshot = {
+  url: string
+  content: string
+  type: string
+}
+
 export const getDataFromCurrentTab = async () => {
-  const result = new Promise((resolve) => {
+  const result = new Promise<TabSnapshot>((resolve) => {
     if (import.meta.env.BROWSER === "chrome" || import.meta.env.BROWSER === "edge") {
       chrome.tabs.query({ active: true, currentWindow: true }, async (tabs) => {
         const tab = tabs[0]
@@ -45,7 +51,7 @@ export const getDataFromCurrentTab = async () => {
         })
 
         if (data.length > 0) {
-          resolve(data[0].result)
+          resolve(data[0].result as TabSnapshot)
         }
       })
     } else {
@@ -60,7 +66,7 @@ export const getDataFromCurrentTab = async () => {
             })
 
             if (data.length > 0) {
-              resolve(data[0].result)
+              resolve(data[0].result as TabSnapshot)
             }
           } catch (e) {
             console.error("error", e)
@@ -70,7 +76,7 @@ export const getDataFromCurrentTab = async () => {
               // firefox won't allow extensions to run content scripts on pdf https://bugzilla.mozilla.org/show_bug.cgi?id=1454760
               // so I set up a weird method to fix this issue by asking tab to give the url 
               // and then I can get the pdf url
-              const result = {
+              const result: TabSnapshot = {
                 url: tab.url,
                 content: "",
                 type: "pdf"
@@ -80,11 +86,7 @@ export const getDataFromCurrentTab = async () => {
           }
         })
     }
-  }) as Promise<{
-    url: string
-    content: string
-    type: string
-  }>
+  })
 
   const { content, type, url } = await result
 

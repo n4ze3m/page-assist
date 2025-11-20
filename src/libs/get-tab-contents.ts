@@ -70,7 +70,12 @@ export const getTabContents = async (documents: ChatDocuments) => {
                     isPDF: document.contentType === 'application/pdf'
                 })
             })
-            const content = pageContent[0].result
+            const content = pageContent[0].result as {
+                html: string
+                title: string
+                url: string
+                isPDF: boolean
+            }
             const header = formatDocumentHeader(doc.title, doc.url)
             let extractedContent = ""
 
@@ -80,7 +85,7 @@ export const getTabContents = async (documents: ChatDocuments) => {
                     extractedContent = formatTranscriptText(transcript)
                 }
             } else if (isWikipedia(doc.url)) {
-                extractedContent = parseWikipedia(content)
+                extractedContent = parseWikipedia(content.html)
             } else if (isAmazonURL(doc.url)) {
                 extractedContent = parseAmazonWebsite(content.html)
             } else if (isTwitterProfile(doc.url)) {

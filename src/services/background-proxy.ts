@@ -21,7 +21,7 @@ export async function bgRequest<T = any, P extends PathOrUrl = AllowedPath, M ex
       const resp = await browser.runtime.sendMessage({
         type: 'tldw:request',
         payload: { path, method, headers, body, noAuth, timeoutMs }
-      })
+      }) as { ok: boolean; error?: string; status?: number; data: T } | undefined
       if (!resp?.ok) {
         const msg = resp?.error || `Request failed: ${resp?.status}`
         throw new Error(msg)
@@ -160,7 +160,7 @@ export async function bgUpload<T = any, P extends AllowedPath = AllowedPath, M e
   const resp = await browser.runtime.sendMessage({
     type: 'tldw:upload',
     payload: { path, method, fields, file }
-  })
+  }) as { ok: boolean; error?: string; status?: number; data: T } | undefined
   if (!resp?.ok) {
     const msg = resp?.error || `Upload failed: ${resp?.status}`
     throw new Error(msg)
