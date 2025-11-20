@@ -557,20 +557,20 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
         </p>
         <button
           type="button"
+          onClick={handleQuickIngestOpen}
+          className="flex w-full items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 transition hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-[#2a2a2a]"
+        >
+          <span>{t("playground:actions.ingest", "Quick ingest")}</span>
+          <UploadCloud className="h-4 w-4" />
+        </button>
+        <button
+          type="button"
           onClick={handleImageUpload}
           disabled={chatMode === "vision" || chatMode === "rag"}
           className="flex w-full items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-40 dark:text-gray-200 dark:hover:bg-[#2a2a2a]"
         >
           <span>{t("playground:actions.upload", "Attach image")}</span>
           <ImageIcon className="h-4 w-4" />
-        </button>
-        <button
-          type="button"
-          onClick={handleQuickIngestOpen}
-          className="flex w-full items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 transition hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-[#2a2a2a]"
-        >
-          <span>{t("playground:actions.ingest", "Quick ingest")}</span>
-          <UploadCloud className="h-4 w-4" />
         </button>
       </div>
     </div>
@@ -848,6 +848,36 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                         await sendMessage({ image: "", message: value.message })
                       }}
                     />
+                    {/* Minimal connection indicator is always visible so users see status before focusing */}
+                    {!isConnectionReady && (
+                      <div className="mb-2 flex flex-wrap items-center justify-between gap-2 text-[11px] text-gray-600 dark:text-gray-300">
+                        <div className="inline-flex items-center gap-1 rounded-full border border-dashed border-gray-300 bg-gray-100 px-2 py-0.5 font-medium text-gray-700 dark:border-gray-600 dark:bg-[#262626] dark:text-gray-200">
+                          <span className="h-1.5 w-1.5 rounded-full bg-red-500" />
+                          <span>
+                            {t(
+                              "playground:composer.connectionChipDisconnected",
+                              "Server: Not connected"
+                            )}
+                          </span>
+                        </div>
+                        <div className="flex flex-wrap items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={openSettings}
+                            className="text-[11px] font-medium text-pink-600 hover:underline dark:text-pink-300"
+                          >
+                            {t("settings:tldw.setupLink", "Set up server")}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={openDiagnostics}
+                            className="text-[11px] font-medium text-gray-600 underline hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100"
+                          >
+                            {t("settings:healthSummary.diagnostics", "Diagnostics")}
+                          </button>
+                        </div>
+                      </div>
+                    )}
                     <textarea
                       onKeyDown={(e) => handleKeyDown(e)}
                       onFocus={handleDisconnectedFocus}
@@ -884,27 +914,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                       {...form.getInputProps("message")}
                     />
                     <div className="mt-4 flex w-full flex-col gap-3 md:flex-row md:items-center md:justify-between">
-                      <div className="flex flex-wrap items-center gap-2">
-                        {!isConnectionReady && (
-                          <>
-                            <span className="inline-flex items-center gap-1 rounded-full border border-dashed border-gray-300 bg-gray-100 px-2 py-0.5 text-[11px] font-medium text-gray-700 dark:border-gray-600 dark:bg-[#262626] dark:text-gray-200">
-                              <span className="h-1.5 w-1.5 rounded-full bg-red-500" />
-                              <span>
-                                {t(
-                                  "playground:composer.connectionChipDisconnected",
-                                  "Server: Not connected"
-                                )}
-                              </span>
-                            </span>
-                            <p className="text-xs text-gray-500 dark:text-gray-400">
-                              {t(
-                                "playground:composer.connectNotice",
-                                "Connect to your tldw server in Settings to send messages."
-                              )}
-                            </p>
-                          </>
-                        )}
-                      </div>
+                      <div className="flex flex-wrap items-center gap-2" />
                       <div className="flex flex-wrap items-center justify-end gap-2">
                         {/* RAG toggle for better discoverability */}
                         <button
@@ -932,11 +942,13 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                         >
                           <button
                             type="button"
+                            aria-label={t("playground:composer.moreTools", "More tools") as string}
+                            title={t("playground:composer.moreTools", "More tools") as string}
                             className="inline-flex items-center gap-2 rounded-md border border-gray-200 px-3 py-1.5 text-xs font-semibold text-gray-700 transition hover:bg-gray-100 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-[#2a2a2a]"
                           >
                             <MoreHorizontal className="h-4 w-4" />
                             <span>
-                              {t("option:header.more", "AI tools")}
+                              {t("playground:composer.moreTools", "More tools")}
                             </span>
                           </button>
                         </Popover>

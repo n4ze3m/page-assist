@@ -231,15 +231,25 @@ export const PlaygroundMessage = (props: Props) => {
                                 props.isStreaming && e?.reasoning_running ? (
                                   <div className="flex items-center gap-2">
                                     <span className="italic shimmer-text">
-                                      {t("reasoning.thinking")}
+                                      {t("reasoning.thinking", "Thinking…")}
                                     </span>
                                   </div>
                                 ) : (
-                                  t("reasoning.thought", {
-                                    time: humanizeMilliseconds(
-                                      props.reasoningTimeTaken
-                                    )
-                                  })
+                                  <span className="flex items-center gap-2">
+                                    <span>
+                                      {t(
+                                        "reasoning.thought",
+                                        "Model’s reasoning (optional)"
+                                      )}
+                                    </span>
+                                    {props.reasoningTimeTaken != null && (
+                                      <span className="text-[11px] text-gray-400">
+                                        {humanizeMilliseconds(
+                                          props.reasoningTimeTaken
+                                        )}
+                                      </span>
+                                    )}
+                                  </span>
                                 ),
                               children: <Markdown message={e.content} />
                             }
@@ -348,12 +358,8 @@ export const PlaygroundMessage = (props: Props) => {
             <div
               className={`space-x-2 gap-2 flex ${
                 props.currentMessageIndex !== props.totalMessages - 1
-                  ? //  there is few style issue so i am commenting this out for v1.4.5 release
-                    // next release we will fix this
-                    "invisible group-hover:visible"
-                  : // ? "hidden group-hover:flex"
-                    ""
-                // : "flex"
+                  ? "invisible group-hover:visible group-focus-within:visible"
+                  : ""
               }`}>
               {props.isTTSEnabled && (
                 <Tooltip title={t("tts")}>
@@ -369,11 +375,20 @@ export const PlaygroundMessage = (props: Props) => {
                       }
                     }}
                     className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 dark:bg-[#242424] hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
-                    {!isSpeaking ? (
-                      <Volume2Icon className="w-3 h-3 text-gray-400 group-hover:text-gray-500" />
-                    ) : (
-                      <Square className="w-3 h-3 text-red-400 group-hover:text-red-500" />
-                    )}
+                    <span className="inline-flex items-center gap-1">
+                      {!isSpeaking ? (
+                        <Volume2Icon className="w-3 h-3 text-gray-400 group-hover:text-gray-500" />
+                      ) : (
+                        <Square className="w-3 h-3 text-red-400 group-hover:text-red-500" />
+                      )}
+                      <span
+                        className={`text-[10px] text-gray-500 dark:text-gray-400 hidden group-focus-within:inline ${
+                          isLastMessage ? "inline" : ""
+                        }`}
+                      >
+                        {t("ttsShort", "TTS")}
+                      </span>
+                    </span>
                   </IconButton>
                 </Tooltip>
               )}
@@ -394,11 +409,20 @@ export const PlaygroundMessage = (props: Props) => {
                       }, 2000)
                     }}
                     className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 dark:bg-[#242424] hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
-                    {!isBtnPressed ? (
-                      <CopyIcon className="w-3 h-3 text-gray-400 group-hover:text-gray-500" />
-                    ) : (
-                      <CheckIcon className="w-3 h-3 text-green-400 group-hover:text-green-500" />
-                    )}
+                    <span className="inline-flex items-center gap-1">
+                      {!isBtnPressed ? (
+                        <CopyIcon className="w-3 h-3 text-gray-400 group-hover:text-gray-500" />
+                      ) : (
+                        <CheckIcon className="w-3 h-3 text-green-400 group-hover:text-green-500" />
+                      )}
+                      <span
+                        className={`text-[10px] text-gray-500 dark:text-gray-400 hidden group-focus-within:inline ${
+                          isLastMessage ? "inline" : ""
+                        }`}
+                      >
+                        {t("copyShort", "Copy")}
+                      </span>
+                    </span>
                   </IconButton>
                 </Tooltip>
               )}
@@ -435,7 +459,16 @@ export const PlaygroundMessage = (props: Props) => {
                         ariaLabel={t("newBranch") as string}
                         onClick={props?.onNewBranch}
                         className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 dark:bg-[#242424] hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
-                        <GitBranchIcon className="w-3 h-3 text-gray-400 group-hover:text-gray-500" />
+                        <span className="inline-flex items-center gap-1">
+                          <GitBranchIcon className="w-3 h-3 text-gray-400 group-hover:text-gray-500" />
+                          <span
+                            className={`text-[10px] text-gray-500 dark:text-gray-400 hidden group-focus-within:inline ${
+                              isLastMessage ? "inline" : ""
+                            }`}
+                          >
+                            {t("branchShort", "Branch")}
+                          </span>
+                        </span>
                       </IconButton>
                     </Tooltip>
                   )}
@@ -458,7 +491,16 @@ export const PlaygroundMessage = (props: Props) => {
                     onClick={() => setEditMode(true)}
                     ariaLabel={t("edit") as string}
                     className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 dark:bg-[#242424] hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
-                    <Pen className="w-3 h-3 text-gray-400 group-hover:text-gray-500" />
+                    <span className="inline-flex items-center gap-1">
+                      <Pen className="w-3 h-3 text-gray-400 group-hover:text-gray-500" />
+                      <span
+                        className={`text-[10px] text-gray-500 dark:text-gray-400 hidden group-focus-within:inline ${
+                          isLastMessage ? "inline" : ""
+                        }`}
+                      >
+                        {t("edit", "Edit")}
+                      </span>
+                    </span>
                   </IconButton>
                 </Tooltip>
               )}

@@ -77,6 +77,9 @@
     "chatWithCharacter": "Chat with character",
     "beta": "Beta",
     "tts": "Read aloud",
+    "ttsShort": "TTS",
+    "copyShort": "Copy",
+    "branchShort": "Branch",
     "currentChatModelSettings": "Current Chat Model Settings",
     "modelSettings": {
         "label": "Model Settings",
@@ -211,8 +214,8 @@
     "generationInfo": "Generation Info",
     "sidebarChat": "Sidebar Chat",
     "reasoning": {
-        "thinking": "Thinking....",
-        "thought": "Thought for {{time}}"
+        "thinking": "Thinking…",
+        "thought": "Model’s reasoning (optional)"
     },
     "mermaid": "Mermaid",
     "search": "Search",
