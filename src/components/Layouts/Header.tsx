@@ -37,6 +37,7 @@ import { useShortcutConfig, formatShortcut } from "@/hooks/keyboard/useShortcutC
 import { ConnectionPhase } from "@/types/connection"
 import type { TFunction } from "i18next"
 import { Link } from "react-router-dom"
+import { hasPromptStudio } from "@/services/prompt-studio"
 
 const classNames = (...classes: (string | false | null | undefined)[]) =>
   classes.filter(Boolean).join(" ")
@@ -109,6 +110,13 @@ export const Header: React.FC<Props> = ({
     refetchIntervalInBackground: false,
     staleTime: 1000 * 60 * 1,
     enabled: isOnline
+  })
+
+  const promptStudioCapability = useQuery({
+    queryKey: ["prompt-studio", "capability-header"],
+    queryFn: hasPromptStudio,
+    enabled: isOnline,
+    staleTime: 60_000
   })
 
   const { data: prompts, isLoading: isPromptLoading } = useQuery({
@@ -811,14 +819,18 @@ export const Header: React.FC<Props> = ({
           )}
         </div>
 
-        <div className="flex flex-col gap-2 lg:flex-1">
-          <div className="flex flex-wrap items-center gap-2 text-xs">
-            <span className="font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
-              {t("option:header.modesLabel", "Modes")}
-            </span>
+          <div className="flex flex-col gap-2 lg:flex-1">
+            <div className="flex flex-wrap items-center gap-2 text-xs">
+              <span className="font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
+                {t("option:header.modesLabel", "Modes")}
+              </span>
             <div className="flex flex-wrap gap-1">
-              {(
-                [
+              {(() => {
+                const modeOptions: Array<{
+                  key: CoreMode
+                  label: string
+                  shortcut?: import("@/hooks/keyboard/useKeyboardShortcuts").KeyboardShortcut
+                }> = [
                   {
                     key: "playground",
                     label: t("option:header.modePlayground", "Chat"),
@@ -842,20 +854,20 @@ export const Header: React.FC<Props> = ({
                   {
                     key: "notes",
                     label: t("option:header.modeNotes", "Notes"),
-                shortcut: shortcutConfig.modeNotes
-              },
-      {
-        key: "prompts",
-        label: t("option:header.modePromptsPlayground", "Prompts Playground"),
-        shortcut: shortcutConfig.modePrompts
-      },
-      {
-        key: "promptStudio",
-        label: t("option:header.modePromptStudio", "Prompt Studio"),
-        shortcut: undefined
-      },
-              {
-                key: "flashcards",
+                    shortcut: shortcutConfig.modeNotes
+                  },
+                  {
+                    key: "prompts",
+                    label: t("option:header.modePromptsPlayground", "Prompts Playground"),
+                    shortcut: shortcutConfig.modePrompts
+                  },
+                  {
+                    key: "promptStudio",
+                    label: t("option:header.modePromptStudio", "Prompt Studio"),
+                    shortcut: undefined
+                  },
+                  {
+                    key: "flashcards",
                     label: t("option:header.modeFlashcards", "Flashcards"),
                     shortcut: shortcutConfig.modeFlashcards
                   },
@@ -874,30 +886,35 @@ export const Header: React.FC<Props> = ({
                     label: t("option:header.modeCharacters", "Characters"),
                     shortcut: shortcutConfig.modeCharacters
                   }
-                ] as Array<{ key: CoreMode; label: string; shortcut?: import("@/hooks/keyboard/useKeyboardShortcuts").KeyboardShortcut }>
-              ).map((mode) => (
-                <button
-                  key={mode.key}
-                  type="button"
-                  onClick={() => handleCoreModeChange(mode.key)}
-                  title={
-                    mode.shortcut
-                      ? t("option:header.modeShortcutHint", "{{shortcut}} to switch", {
-                          shortcut: formatShortcut(mode.shortcut)
-                        }) || undefined
-                      : undefined
-                  }
-                  className={classNames(
-                    "rounded-full px-3 py-1 text-xs font-medium transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500",
-                    currentCoreMode === mode.key
-                      ? "bg-black text-white dark:bg白 white dark:text-gray-900".replace('白','') // keep original classes
-                      : "bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-[#262626] dark:text-gray-200 dark:hover:bg-[#333333]"
-                  )}
-                  aria-current={currentCoreMode === mode.key ? "page" : undefined}
-                >
-                  {mode.label}
-                </button>
-              ))}
+                ]
+                const visibleModes =
+                  promptStudioCapability.data === false
+                    ? modeOptions.filter((m) => m.key !== "promptStudio")
+                    : modeOptions
+                return visibleModes.map((mode) => (
+                  <button
+                    key={mode.key}
+                    type="button"
+                    onClick={() => handleCoreModeChange(mode.key)}
+                    title={
+                      mode.shortcut
+                        ? t("option:header.modeShortcutHint", "{{shortcut}} to switch", {
+                            shortcut: formatShortcut(mode.shortcut)
+                          }) || undefined
+                        : undefined
+                    }
+                    className={classNames(
+                      "rounded-full px-3 py-1 text-xs font-medium transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500",
+                      currentCoreMode === mode.key
+                        ? "bg-black text-white dark:bg白 white dark:text-gray-900".replace('白','') // keep original classes
+                        : "bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-[#262626] dark:text-gray-200 dark:hover:bg-[#333333]"
+                    )}
+                    aria-current={currentCoreMode === mode.key ? "page" : undefined}
+                  >
+                    {mode.label}
+                  </button>
+                ))
+              })()}
             </div>
           </div>
 
