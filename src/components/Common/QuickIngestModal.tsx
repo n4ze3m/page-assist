@@ -41,6 +41,11 @@ function detectTypeFromUrl(url: string): Entry['type'] {
 
 export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
   const { t } = useTranslation(['option'])
+  const [messageApi, contextHolder] = message.useMessage({
+    top: 12,
+    getContainer: () =>
+      (document.querySelector('.quick-ingest-modal .ant-modal-content') as HTMLElement) || document.body
+  })
   const [storeRemote, setStoreRemote] = React.useState<boolean>(true)
   const [rows, setRows] = React.useState<Entry[]>([
     { id: crypto.randomUUID(), url: '', type: 'auto' }
@@ -54,7 +59,7 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
   const [running, setRunning] = React.useState<boolean>(false)
   const [results, setResults] = React.useState<ResultItem[]>([])
   const [localFiles, setLocalFiles] = React.useState<File[]>([])
-  const [advancedOpen, setAdvancedOpen] = React.useState<boolean>(true)
+  const [advancedOpen, setAdvancedOpen] = React.useState<boolean>(false)
   const [advancedValues, setAdvancedValues] = React.useState<Record<string, any>>({})
   const [advSchema, setAdvSchema] = React.useState<Array<{ name: string; type: string; enum?: any[]; description?: string; title?: string; group: string }>>([])
   const [specSource, setSpecSource] = React.useState<'server' | 'server-cached' | 'bundled' | 'none'>('none')
@@ -84,6 +89,20 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
   const addRow = () => setRows((r) => [...r, { id: crypto.randomUUID(), url: '', type: 'auto' }])
   const removeRow = (id: string) => setRows((r) => r.filter((x) => x.id !== id))
   const updateRow = (id: string, patch: Partial<Entry>) => setRows((r) => r.map((x) => (x.id === id ? { ...x, ...patch } : x)))
+
+  // Default OCR to on for document/PDF rows so users get best extraction without extra clicks
+  React.useEffect(() => {
+    let changed = false
+    const next = rows.map((r) => {
+      const isDocType = r.type === 'document' || r.type === 'pdf' || (r.type === 'auto' && ['document', 'pdf'].includes(detectTypeFromUrl(r.url)))
+      if (isDocType && r.document?.ocr === undefined) {
+        changed = true
+        return { ...r, document: { ...(r.document || {}), ocr: true } }
+      }
+      return r
+    })
+    if (changed) setRows(next)
+  }, [rows])
 
   const bulkPaste = (text: string) => {
     const lines = text.split(/\r?\n/).map((s) => s.trim()).filter(Boolean)
@@ -121,7 +140,7 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
   const run = async () => {
     const valid = rows.filter((r) => r.url.trim().length > 0)
     if (valid.length === 0 && localFiles.length === 0) {
-      message.error('Please add at least one URL or file')
+      messageApi.error('Please add at least one URL or file')
       return
     }
     const total = valid.length + localFiles.length
@@ -259,7 +278,7 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
       }
     }
     setRunning(false)
-    if (!storeRemote && out.length > 0) message.info('Processing complete. You can download results as JSON.')
+    if (!storeRemote && out.length > 0) messageApi.info('Processing complete. You can download results as JSON.')
   }
 
   // Load OpenAPI schema to build advanced fields (best-effort)
@@ -440,9 +459,9 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
           if (bVer && rVer && bVer !== rVer) msgs.push(`Spec version differs (server: ${rVer}, bundled: ${bVer})`)
           if (newFields.length) msgs.push(`Server has new fields: ${newFields.slice(0,6).join(', ')}${newFields.length>6?'…':''}`)
           if (missingFields.length) msgs.push(`Bundled fields not on server: ${missingFields.slice(0,6).join(', ')}${missingFields.length>6?'…':''}`)
-          message.warning(msgs.join(' • '))
+          messageApi.warning(msgs.join(' • '))
         } else {
-          message.success('Advanced spec reloaded from server')
+          messageApi.success('Advanced spec reloaded from server')
         }
       }
     } else {
@@ -547,24 +566,74 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
     URL.revokeObjectURL(a.href)
   }
 
+  const plannedCount = React.useMemo(() => {
+    const valid = rows.filter((r) => r.url.trim().length > 0)
+    return valid.length + localFiles.length
+  }, [rows, localFiles])
+
+  const firstAudioRow = React.useMemo(
+    () => rows.find((r) => r.type === 'audio' || (r.type === 'auto' && detectTypeFromUrl(r.url) === 'audio')),
+    [rows]
+  )
+
+  const firstDocumentRow = React.useMemo(
+    () => rows.find((r) => r.type === 'document' || r.type === 'pdf' || (r.type === 'auto' && ['document', 'pdf'].includes(detectTypeFromUrl(r.url)))),
+    [rows]
+  )
+
+  const firstVideoRow = React.useMemo(
+    () => rows.find((r) => r.type === 'video' || (r.type === 'auto' && detectTypeFromUrl(r.url) === 'video')),
+    [rows]
+  )
+
+  const resultById = React.useMemo(() => {
+    const map = new Map<string, ResultItem>()
+    for (const r of results) map.set(r.id, r)
+    return map
+  }, [results])
+
+  const modifiedAdvancedCount = React.useMemo(
+    () => Object.keys(advancedValues || {}).length,
+    [advancedValues]
+  )
+
   return (
-    <Modal title={t('quickIngest.title') || 'Quick Ingest Media'} open={open} onCancel={onClose} footer={null} width={760} destroyOnClose>
+    <Modal
+      title={t('quickIngest.title') || 'Quick Ingest Media'}
+      open={open}
+      onCancel={onClose}
+      footer={null}
+      width={760}
+      destroyOnClose
+      rootClassName="quick-ingest-modal"
+      maskClosable={!running}
+    >
+      {contextHolder}
       <Space direction="vertical" className="w-full">
         {/* Source URLs / files */}
-        <div>
-          <Typography.Title level={5} className="!mb-2">
-            {t('quickIngest.sourceHeading') || 'Source URLs or files'}
-          </Typography.Title>
-          <div className="flex items-center justify-between mb-2">
-            <Typography.Text>
-              {t('quickIngest.subtitle') || 'Enter one or more URLs. Force type per row if needed.'}
-            </Typography.Text>
-            <Space align="center">
+        <div className="space-y-2 pb-2">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <Typography.Title level={5} className="!mb-1">
+                {t('quickIngest.sourceHeading') || 'Source URLs or files'}
+              </Typography.Title>
               <Typography.Text>
-                {t('quickIngest.storeRemote') || 'Store to remote DB'}
+                {t('quickIngest.subtitle') || 'Enter one or more URLs. Force type per row if needed.'}
               </Typography.Text>
-              <Switch checked={storeRemote} onChange={setStoreRemote} />
-            </Space>
+            </div>
+            <div className="flex items-start gap-2 text-sm">
+              <Space align="center">
+                <Typography.Text>
+                  {storeRemote ? (t('quickIngest.storeRemote') || 'Store to remote DB') : (t('quickIngest.process') || 'Process')}
+                </Typography.Text>
+                <Switch checked={storeRemote} onChange={setStoreRemote} disabled={running} />
+              </Space>
+              <div className="text-xs text-gray-500 mt-0.5 max-w-[180px]">
+                {storeRemote
+                  ? (t('quickIngest.storeRemoteHelp') || 'Uploads to your tldw server for indexing.')
+                  : (t('quickIngest.processOnlyHelp') || 'Process only and keep results local (download JSON).')}
+              </div>
+            </div>
           </div>
 
           <Input.TextArea
@@ -572,17 +641,28 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
             onPressEnter={(e) => e.stopPropagation()}
             autoSize={{ minRows: 2 }}
             onBlur={(e) => bulkPaste(e.target.value)}
+            disabled={running}
           />
           <Divider plain>{t('quickIngest.or') || 'or'}</Divider>
 
           <Space direction="vertical" className="w-full">
             {rows.map((row) => (
               <div key={row.id} className="flex items-start gap-2">
-                <Input
-                  placeholder="https://..."
-                  value={row.url}
-                  onChange={(e) => updateRow(row.id, { url: e.target.value })}
-                />
+                <div className="flex flex-col gap-1 flex-1">
+                  <Input
+                    placeholder="https://..."
+                    value={row.url}
+                    onChange={(e) => updateRow(row.id, { url: e.target.value })}
+                    disabled={running}
+                  />
+                  {(() => {
+                    const res = resultById.get(row.id)
+                    if (!res && !running) return null
+                    if (res?.status === 'ok') return <Tag color="green">Done</Tag>
+                    if (res?.status === 'error') return <Tag color="red">Failed</Tag>
+                    return running ? <Tag icon={<Spin size="small" />} color="blue">Running</Tag> : null
+                  })()}
+                </div>
                 <Select
                   className="min-w-32"
                   value={row.type}
@@ -595,13 +675,14 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
                     { label: 'Audio', value: 'audio' },
                     { label: 'Video', value: 'video' }
                   ]}
+                  disabled={running}
                 />
-                <Button onClick={() => removeRow(row.id)} danger>
+                <Button onClick={() => removeRow(row.id)} danger disabled={rows.length === 1 || running}>
                   {t('quickIngest.remove') || 'Remove'}
                 </Button>
               </div>
             ))}
-            <Button onClick={addRow}>
+            <Button onClick={addRow} disabled={running}>
               {t('quickIngest.add') || 'Add URL'}
             </Button>
           </Space>
@@ -623,7 +704,7 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
             }}
             accept=".pdf,.txt,.rtf,.doc,.docx,.md,.epub,application/pdf,text/plain,application/rtf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/epub+zip,audio/*,video/*"
           />
-          <Button onClick={() => document.getElementById('qi-file-input')?.click()}>
+          <Button onClick={() => document.getElementById('qi-file-input')?.click()} disabled={running}>
             {t('quickIngest.addFiles') || 'Add Files'}
           </Button>
           {localFiles.length > 0 && (
@@ -633,9 +714,18 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
               dataSource={localFiles}
               renderItem={(f, idx) => (
                 <List.Item
-                  actions={[<a key="remove" onClick={() => setLocalFiles((prev) => prev.filter((_, i) => i !== idx))}>{t('quickIngest.remove') || 'Remove'}</a>]}
+                  actions={[<a key="remove" onClick={() => setLocalFiles((prev) => prev.filter((_, i) => i !== idx))} aria-disabled={running} className={running ? 'pointer-events-none text-gray-400' : ''}>{t('quickIngest.remove') || 'Remove'}</a>]}
                 >
-                  <span className="truncate">{f.name}</span>
+                  <div className="flex items-center gap-2">
+                    <span className="truncate">{f.name}</span>
+                    {(() => {
+                      const status = results.find((r) => r.fileName === f.name)?.status
+                      if (!status && !running) return null
+                      if (status === 'ok') return <Tag color="green">Done</Tag>
+                      if (status === 'error') return <Tag color="red">Failed</Tag>
+                      return running ? <Tag icon={<Spin size="small" />} color="blue">Running</Tag> : null
+                    })()}
+                  </div>
                 </List.Item>
               )}
             />
@@ -643,20 +733,20 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
         </Space>
 
         {/* Common ingestion options */}
-        <div className="mt-3">
+        <div className="mt-3 space-y-2">
           <Typography.Title level={5}>{t('quickIngest.commonOptions') || 'Ingestion options'}</Typography.Title>
           <Space wrap size="middle" align="center">
             <Space align="center">
               <span>Analysis</span>
-              <Switch checked={common.perform_analysis} onChange={(v) => setCommon((c) => ({ ...c, perform_analysis: v }))} />
+              <Switch checked={common.perform_analysis} onChange={(v) => setCommon((c) => ({ ...c, perform_analysis: v }))} disabled={running} />
             </Space>
             <Space align="center">
               <span>Chunking</span>
-              <Switch checked={common.perform_chunking} onChange={(v) => setCommon((c) => ({ ...c, perform_chunking: v }))} />
+              <Switch checked={common.perform_chunking} onChange={(v) => setCommon((c) => ({ ...c, perform_chunking: v }))} disabled={running} />
             </Space>
             <Space align="center">
               <span>Overwrite existing</span>
-              <Switch checked={common.overwrite_existing} onChange={(v) => setCommon((c) => ({ ...c, overwrite_existing: v }))} />
+              <Switch checked={common.overwrite_existing} onChange={(v) => setCommon((c) => ({ ...c, overwrite_existing: v }))} disabled={running} />
             </Space>
           </Space>
         </div>
@@ -666,51 +756,105 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
           <div className="mt-2">
             <Typography.Title level={5}>{t('quickIngest.audioOptions') || 'Audio options'}</Typography.Title>
             <Space className="w-full">
-              <Input placeholder={t('quickIngest.audioLanguage') || 'Language (e.g., en)'} onChange={(e) => setRows((rs) => rs.map((x) => ({ ...x, audio: { ...(x.audio || {}), language: e.target.value } })))} />
-              <Select className="min-w-40" defaultValue={false} onChange={(v) => setRows((rs) => rs.map((x) => ({ ...x, audio: { ...(x.audio || {}), diarize: Boolean(v) } })))} options={[{ label: 'Diarization: Off', value: false }, { label: 'Diarization: On', value: true }]} />
+              <Input
+                placeholder={t('quickIngest.audioLanguage') || 'Language (e.g., en)'}
+                value={firstAudioRow?.audio?.language || ''}
+                onChange={(e) => setRows((rs) => rs.map((x) => {
+                  const isAudio = x.type === 'audio' || (x.type === 'auto' && detectTypeFromUrl(x.url) === 'audio')
+                  if (!isAudio) return x
+                  return { ...x, audio: { ...(x.audio || {}), language: e.target.value } }
+                }))}
+                disabled={running}
+              />
+              <Select
+                className="min-w-40"
+                value={firstAudioRow?.audio?.diarize ?? false}
+                onChange={(v) => setRows((rs) => rs.map((x) => {
+                  const isAudio = x.type === 'audio' || (x.type === 'auto' && detectTypeFromUrl(x.url) === 'audio')
+                  if (!isAudio) return x
+                  return { ...x, audio: { ...(x.audio || {}), diarize: Boolean(v) } }
+                }))}
+                options={[{ label: 'Diarization: Off', value: false }, { label: 'Diarization: On', value: true }]}
+                disabled={running}
+              />
             </Space>
+            <Typography.Text type="secondary" className="text-xs">
+              {t('quickIngest.audioDiarizationHelp') || 'Turn on to separate speakers in transcripts.'}
+            </Typography.Text>
           </div>
         )}
 
         {rows.some((r) => (r.type === 'document' || r.type === 'pdf' || (r.type === 'auto' && ['document', 'pdf'].includes(detectTypeFromUrl(r.url))))) && (
           <div className="mt-2">
             <Typography.Title level={5}>{t('quickIngest.documentOptions') || 'Document options'}</Typography.Title>
-            <Select className="min-w-40" defaultValue={false} onChange={(v) => setRows((rs) => rs.map((x) => ({ ...x, document: { ...(x.document || {}), ocr: Boolean(v) } })))} options={[{ label: 'OCR: Off', value: false }, { label: 'OCR: On', value: true }]} />
+            <Select
+              className="min-w-40"
+              value={firstDocumentRow?.document?.ocr ?? true}
+              onChange={(v) => setRows((rs) => rs.map((x) => {
+                const isDoc = x.type === 'document' || x.type === 'pdf' || (x.type === 'auto' && ['document', 'pdf'].includes(detectTypeFromUrl(x.url)))
+                if (!isDoc) return x
+                return { ...x, document: { ...(x.document || {}), ocr: Boolean(v) } }
+              }))}
+              options={[{ label: 'OCR: Off', value: false }, { label: 'OCR: On', value: true }]}
+              disabled={running}
+            />
+            <Typography.Text type="secondary" className="text-xs">
+              {t('quickIngest.ocrHelp') || 'OCR helps extract text from scanned PDFs or images.'}
+            </Typography.Text>
           </div>
         )}
 
         {rows.some((r) => (r.type === 'video' || (r.type === 'auto' && detectTypeFromUrl(r.url) === 'video'))) && (
           <div className="mt-2">
             <Typography.Title level={5}>{t('quickIngest.videoOptions') || 'Video options'}</Typography.Title>
-            <Select className="min-w-40" defaultValue={false} onChange={(v) => setRows((rs) => rs.map((x) => ({ ...x, video: { ...(x.video || {}), captions: Boolean(v) } })))} options={[{ label: 'Captions: Off', value: false }, { label: 'Captions: On', value: true }]} />
+            <Select
+              className="min-w-40"
+              value={firstVideoRow?.video?.captions ?? false}
+              onChange={(v) => setRows((rs) => rs.map((x) => {
+                const isVideo = x.type === 'video' || (x.type === 'auto' && detectTypeFromUrl(x.url) === 'video')
+                if (!isVideo) return x
+                return { ...x, video: { ...(x.video || {}), captions: Boolean(v) } }
+              }))}
+              options={[{ label: 'Captions: Off', value: false }, { label: 'Captions: On', value: true }]}
+              disabled={running}
+            />
+            <Typography.Text type="secondary" className="text-xs">
+              {t('quickIngest.captionsHelp') || 'Include timestamps/captions when available.'}
+            </Typography.Text>
           </div>
         )}
 
-        {running && totalPlanned > 0 && (
-          <div className="mt-2 flex items-center gap-2 text-xs text-gray-600 dark:text-gray-300">
-            <Spin size="small" />
-            <span>
-              {t("quickIngest.progress", "Processing {{done}} / {{total}} items…", {
-                done: results.length,
-                total: totalPlanned
-              })}
+        <div className="sticky bottom-0 z-10 mt-3 bg-white/90 dark:bg-[#111111]/90 backdrop-blur pt-2 pb-2 border-t border-gray-200 dark:border-gray-700">
+          <div className="flex items-center justify-between text-sm text-gray-700 dark:text-gray-200 mb-2">
+            <span className="truncate">
+              {storeRemote
+                ? (t('quickIngest.storeRemoteHelp') || 'Uploads to your tldw server for indexing.')
+                : (t('quickIngest.processOnlyHelp') || 'Process only and keep results local (download JSON).')}
+            </span>
+            <span className="text-xs text-gray-500 dark:text-gray-400">
+              {running && totalPlanned > 0
+                ? t('quickIngest.progress', 'Processing {{done}} / {{total}} items…', {
+                    done: results.length,
+                    total: totalPlanned
+                  })
+                : `${plannedCount || 0} ${plannedCount === 1 ? 'item' : 'items'} ready`}
             </span>
           </div>
-        )}
-
-        <div className="flex justify-end gap-2 mt-3">
-          <Button
-            type="primary"
-            loading={running}
-            onClick={run}
-          >
-            {storeRemote
-              ? (t('quickIngest.ingest') || 'Ingest')
-              : (t('quickIngest.process') || 'Process')}
-          </Button>
-          <Button onClick={onClose}>
-            {t('quickIngest.cancel') || 'Cancel'}
-          </Button>
+          <div className="flex justify-end gap-2">
+            <Button
+              type="primary"
+              loading={running}
+              onClick={run}
+              disabled={plannedCount === 0}
+            >
+              {storeRemote
+                ? (t('quickIngest.ingest') || 'Ingest')
+                : (t('quickIngest.process') || 'Process')}
+            </Button>
+            <Button onClick={onClose} disabled={running}>
+              {t('quickIngest.cancel') || 'Cancel'}
+            </Button>
+          </div>
         </div>
 
         <Collapse
@@ -735,9 +879,21 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
                   </Typography.Text>
                 )}
                 <div className="flex items-center gap-2">
-                  <Tag color={specSource.startsWith('server') ? 'green' : specSource === 'bundled' ? 'default' : 'red'}>
-                    {specSource === 'server' ? 'Spec: server' : specSource === 'server-cached' ? 'Spec: server (cached)' : specSource === 'bundled' ? 'Spec: bundled' : 'Spec: none'}
-                  </Tag>
+                  <Tag color="blue">{t('quickIngest.advancedSummary', '{{count}} advanced fields loaded', { count: advSchema.length })}</Tag>
+                  {modifiedAdvancedCount > 0 && (
+                    <Tag color="gold">{t('quickIngest.modifiedCount', '{{count}} modified', { count: modifiedAdvancedCount })}</Tag>
+                  )}
+                  <AntTooltip
+                    title={<div className="max-w-80 text-xs">{specSource === 'server'
+                      ? 'Using live server OpenAPI spec'
+                      : specSource === 'server-cached'
+                        ? 'Using cached server OpenAPI spec'
+                        : specSource === 'bundled'
+                          ? 'Using bundled spec from extension'
+                          : 'No spec detected; using fallback fields'}</div>}
+                  >
+                    <Info className="w-4 h-4 text-gray-500" />
+                  </AntTooltip>
                   <Space size="small" align="center">
                     <span className="text-xs text-gray-500">Prefer server</span>
                     <Switch
@@ -779,13 +935,10 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
                       })
                       setAdvSearch('')
                       setAdvancedOpen(false)
-                      message.success('Advanced options reset')
+                      messageApi.success('Advanced options reset')
                     }}>
                     Reset Advanced
                   </Button>
-                  <AntTooltip title={<div className="max-w-80 text-xs">Clears saved Advanced values and UI state (search, open sections, field details). Does not affect regular ingest options.</div>}>
-                    <Info className="w-4 h-4 text-gray-500" />
-                  </AntTooltip>
                 </div>
               </div>
             </div>
@@ -802,7 +955,7 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
                 />
               </div>
               {advSchema.length === 0 ? (
-                <Typography.Text type="secondary">No advanced options detected.</Typography.Text>
+                <Typography.Text type="secondary">{t('quickIngest.advancedEmpty', 'No advanced options detected — try reloading the spec.')}</Typography.Text>
               ) : (
                 (() => {
                   const grouped: Record<string, typeof advSchema> = {}

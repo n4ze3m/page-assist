@@ -198,6 +198,19 @@ export default defineBackground({
       return Number(cfg?.streamIdleTimeoutMs) > 0 ? Number(cfg.streamIdleTimeoutMs) : defaultIdle
     }
 
+    const parseRetryAfter = (headerValue?: string | null): number | null => {
+      if (!headerValue) return null
+      const asNumber = Number(headerValue)
+      if (!Number.isNaN(asNumber)) {
+        return Math.max(0, asNumber * 1000)
+      }
+      const asDate = Date.parse(headerValue)
+      if (!Number.isNaN(asDate)) {
+        return Math.max(0, asDate - Date.now())
+      }
+      return null
+    }
+
     browser.runtime.onMessage.addListener(async (message) => {
       if (message.type === 'tldw:debug') {
         streamDebugEnabled = Boolean(message?.enable)
@@ -309,6 +322,13 @@ export default defineBackground({
             })
             clearTimeout(retryTimeout)
           }
+          const headersOut: Record<string, string> = {}
+          try {
+            resp.headers.forEach((v, k) => {
+              headersOut[k] = v
+            })
+          } catch {}
+          const retryAfterMs = parseRetryAfter(resp.headers?.get?.('retry-after'))
           const contentType = resp.headers.get('content-type') || ''
           let data: any = null
           if (contentType.includes('application/json')) {
@@ -318,9 +338,9 @@ export default defineBackground({
           }
           if (!resp.ok) {
             const detail = typeof data === 'object' && data && (data.detail || data.error || data.message)
-            return { ok: false, status: resp.status, error: detail || resp.statusText || `HTTP ${resp.status}`, data }
+            return { ok: false, status: resp.status, error: detail || resp.statusText || `HTTP ${resp.status}`, data, headers: headersOut, retryAfterMs }
           }
-          return { ok: true, status: resp.status, data }
+          return { ok: true, status: resp.status, data, headers: headersOut, retryAfterMs }
         } catch (e: any) {
           return { ok: false, status: 0, error: e?.message || 'Network error' }
         }

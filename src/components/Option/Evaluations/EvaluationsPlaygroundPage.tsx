@@ -13,6 +13,8 @@ import {
   Spin,
   Tag,
   Typography,
+  Checkbox,
+  Divider,
 } from "antd"
 import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
@@ -24,22 +26,40 @@ import {
   DatasetResponse,
   EvaluationRateLimitStatus,
   EvaluationRunDetail,
+  EvaluationDetail,
+  EvaluationHistoryItem,
   EvaluationSummary,
+  cancelRun,
   createDataset,
   createEvaluation,
+  deleteEvaluation,
   createRun,
   deleteDataset,
+  getDataset,
+  getEvaluation,
+  getHistory,
   getRateLimits,
   getRun,
   listDatasets,
   listEvaluations,
-  listRuns
+  listRuns,
+  listWebhooks,
+  registerWebhook,
+  updateEvaluation,
+  deleteWebhook
 } from "@/services/evaluations"
 
 const { Title, Text } = Typography
 
 const getDefaultEvalSpecForType = (evalType: string) => {
   switch (evalType) {
+    case "model_graded":
+      return {
+        sub_type: "response_quality",
+        metrics: ["coherence", "relevance", "groundedness"],
+        threshold: 0.7,
+        evaluator_model: "openai"
+      }
     case "response_quality":
       return {
         metrics: ["coherence", "conciseness", "relevance"],
@@ -70,6 +90,49 @@ const getDefaultEvalSpecForType = (evalType: string) => {
         model: "gpt-3.5-turbo",
         temperature: 0
       }
+    case "includes":
+      return {
+        metrics: ["includes"],
+        case_sensitive: false
+      }
+    case "fuzzy_match":
+      return {
+        metrics: ["fuzzy_match"],
+        threshold: 0.85
+      }
+    case "rag_pipeline":
+      return {
+        sub_type: "rag_pipeline",
+        metrics: ["retrieval_precision", "faithfulness", "answer_relevancy"],
+        evaluator_model: "openai"
+      }
+    case "proposition_extraction":
+      return {
+        metrics: ["proposition_extraction"],
+        evaluator_model: "openai",
+        proposition_schema: ["claim", "evidence"]
+      }
+    case "qa3":
+      return {
+        metrics: ["qa3"],
+        evaluator_model: "openai",
+        labels: ["good", "borderline", "bad"]
+      }
+    case "label_choice":
+      return {
+        metrics: ["label_choice"],
+        allowed_labels: ["A", "B", "C"]
+      }
+    case "nli_factcheck":
+      return {
+        metrics: ["nli_factcheck"],
+        allowed_labels: ["entailed", "contradicted", "neutral"]
+      }
+    case "ocr":
+      return {
+        metrics: ["cer", "wer", "coverage"],
+        language: "eng"
+      }
     default:
       return {
         metrics: ["accuracy"],
@@ -94,9 +157,54 @@ export const EvaluationsPlaygroundPage = () => {
   const [evalSpecError, setEvalSpecError] = React.useState<string | null>(null)
   const [selectedEvalId, setSelectedEvalId] = React.useState<string | null>(null)
   const [selectedRunId, setSelectedRunId] = React.useState<string | null>(null)
+  const [editingEvalId, setEditingEvalId] = React.useState<string | null>(null)
+  const [inlineDatasetEnabled, setInlineDatasetEnabled] = React.useState(false)
+  const [inlineDatasetText, setInlineDatasetText] = React.useState(
+    JSON.stringify(
+      [
+        {
+          input: {
+            question: "Q1",
+            contexts: ["ctx"],
+            response: "A"
+          },
+          expected: { answer: "A" }
+        }
+      ],
+      null,
+      2
+    )
+  )
+  const [runConfigText, setRunConfigText] = React.useState(
+    JSON.stringify({ batch_size: 10 }, null, 2)
+  )
+  const [datasetOverrideText, setDatasetOverrideText] = React.useState("")
+  const [runIdempotencyKey, setRunIdempotencyKey] = React.useState(
+    (crypto as any)?.randomUUID?.() || Math.random().toString(36).slice(2)
+  )
+  const [evalIdempotencyKey, setEvalIdempotencyKey] = React.useState(
+    (crypto as any)?.randomUUID?.() || Math.random().toString(36).slice(2)
+  )
+  const [historyResults, setHistoryResults] = React.useState<
+    EvaluationHistoryItem[]
+  >([])
+  const [viewingDataset, setViewingDataset] = React.useState<DatasetResponse | null>(null)
+  const [webhookSecretText, setWebhookSecretText] = React.useState<string | null>(null)
 
   const [createEvalForm] = Form.useForm()
   const [createDatasetForm] = Form.useForm()
+  const [runForm] = Form.useForm()
+  const [historyForm] = Form.useForm()
+  const [webhookForm] = Form.useForm()
+
+  React.useEffect(() => {
+    runForm.setFieldsValue({
+      targetModel: runForm.getFieldValue("targetModel") || "gpt-3.5-turbo",
+      configJson: runConfigText,
+      datasetOverrideJson: datasetOverrideText,
+      idempotencyKey: runIdempotencyKey
+    })
+  }, [runForm, runConfigText, datasetOverrideText, runIdempotencyKey])
 
   const {
     data: evalListResp,
@@ -142,12 +250,54 @@ export const EvaluationsPlaygroundPage = () => {
   } = useQuery({
     queryKey: ["evaluations", "run", selectedRunId],
     queryFn: () => getRun(selectedRunId as string),
-    enabled: !!selectedRunId
+    enabled: !!selectedRunId,
+    refetchInterval: (query) => {
+      const status = (query?.state?.data as any)?.data?.status
+      if (!status) return false
+      return ["running", "pending"].includes(String(status).toLowerCase())
+        ? 3000
+        : false
+    }
   })
+
+  const {
+    data: evalDetailResp,
+    isLoading: evalDetailLoading,
+    isError: evalDetailError
+  } = useQuery({
+    queryKey: ["evaluations", "detail", selectedEvalId],
+    queryFn: () => getEvaluation(selectedEvalId as string),
+    enabled: !!selectedEvalId
+  })
+
+  const {
+    data: webhooksResp,
+    isLoading: webhooksLoading,
+    isError: webhooksError,
+    refetch: refetchWebhooks
+  } = useQuery({
+    queryKey: ["evaluations", "webhooks"],
+    queryFn: () => listWebhooks(),
+    enabled: isOnline
+  })
+
+  const ensureOk = <T,>(resp: any) => {
+    if (!resp?.ok) {
+      const err = new Error(resp?.error || `HTTP ${resp?.status}`)
+      ;(err as any).resp = resp
+      throw err
+    }
+    return resp as typeof resp
+  }
 
   const { mutateAsync: mutateCreateDataset, isPending: creatingDataset } =
     useMutation({
-      mutationFn: createDataset,
+      mutationFn: async (payload: {
+        name: string
+        description?: string
+        samples: any[]
+        metadata?: Record<string, any>
+      }) => ensureOk(await createDataset(payload)),
       onSuccess: () => {
         void queryClient.invalidateQueries({
           queryKey: ["evaluations", "datasets"]
@@ -165,6 +315,7 @@ export const EvaluationsPlaygroundPage = () => {
         })
       },
       onError: (error: any) => {
+        const retryAfter = error?.resp?.retryAfterMs
         notification.error({
           message: t("settings:evaluations.datasetCreateErrorTitle", {
             defaultValue: "Failed to create dataset"
@@ -174,14 +325,25 @@ export const EvaluationsPlaygroundPage = () => {
             t("settings:evaluations.datasetCreateErrorDescription", {
               defaultValue:
                 "The server rejected this dataset. Check the fields and try again."
-            })
+            }) +
+            (retryAfter
+              ? ` — retry after ${Math.ceil(Number(retryAfter) / 1000)}s`
+              : "")
         })
       }
     })
 
   const { mutateAsync: mutateCreateEvaluation, isPending: creatingEval } =
     useMutation({
-      mutationFn: createEvaluation,
+      mutationFn: async (params: {
+        payload: any
+        idempotencyKey?: string
+      }) =>
+        ensureOk(
+          await createEvaluation(params.payload, {
+            idempotencyKey: params.idempotencyKey
+          })
+        ),
       onSuccess: (resp) => {
         void queryClient.invalidateQueries({
           queryKey: ["evaluations", "list"]
@@ -197,6 +359,7 @@ export const EvaluationsPlaygroundPage = () => {
         })
       },
       onError: (error: any) => {
+        const retryAfter = error?.resp?.retryAfterMs
         notification.error({
           message: t("settings:evaluations.createErrorTitle", {
             defaultValue: "Failed to create evaluation"
@@ -206,19 +369,33 @@ export const EvaluationsPlaygroundPage = () => {
             t("settings:evaluations.createErrorDescription", {
               defaultValue:
                 "The server rejected this evaluation. Ensure name, type, and spec are valid."
-            })
+            }) +
+            (retryAfter
+              ? ` — retry after ${Math.ceil(Number(retryAfter) / 1000)}s`
+              : "")
         })
       }
     })
 
   const { mutateAsync: mutateCreateRun, isPending: creatingRun } = useMutation({
-    mutationFn: (params: { evalId: string; targetModel: string }) =>
-      createRun(params.evalId, {
-        target_model: params.targetModel,
-        config: {},
-        webhook_url: undefined
-      }),
-    onSuccess: () => {
+    mutationFn: async (params: {
+      evalId: string
+      payload: any
+      idempotencyKey?: string
+    }) =>
+      ensureOk(
+        await createRun(params.evalId, params.payload, {
+          idempotencyKey: params.idempotencyKey
+        })
+      ),
+    onSuccess: (resp) => {
+      const runId = (resp as any)?.data?.id || (resp as any)?.data?.run_id
+      if (runId) {
+        setSelectedRunId(String(runId))
+        void queryClient.invalidateQueries({
+          queryKey: ["evaluations", "runs", selectedEvalId, { limit: 20 }]
+        })
+      }
       notification.success({
         message: t("settings:evaluations.runCreateSuccessTitle", {
           defaultValue: "Run started"
@@ -230,6 +407,7 @@ export const EvaluationsPlaygroundPage = () => {
       })
     },
     onError: (error: any) => {
+      const retryAfter = error?.resp?.retryAfterMs
       notification.error({
         message: t("settings:evaluations.runCreateErrorTitle", {
           defaultValue: "Failed to start run"
@@ -239,14 +417,18 @@ export const EvaluationsPlaygroundPage = () => {
           t("settings:evaluations.runCreateErrorDescription", {
             defaultValue:
               "The server rejected this run request. Check the model and try again."
-          })
+          }) +
+            (retryAfter
+              ? ` — retry after ${Math.ceil(Number(retryAfter) / 1000)}s`
+              : "")
       })
     }
   })
 
   const { mutateAsync: mutateDeleteDataset, isPending: deletingDataset } =
     useMutation({
-      mutationFn: deleteDataset,
+      mutationFn: async (datasetId: string) =>
+        ensureOk(await deleteDataset(datasetId)),
       onSuccess: () => {
         void queryClient.invalidateQueries({
           queryKey: ["evaluations", "datasets"]
@@ -262,6 +444,177 @@ export const EvaluationsPlaygroundPage = () => {
           message: t("settings:evaluations.datasetDeleteErrorTitle", {
             defaultValue: "Failed to delete dataset"
           })
+        })
+      }
+    })
+
+  const { mutateAsync: mutateUpdateEvaluation, isPending: updatingEval } =
+    useMutation({
+      mutationFn: async (params: {
+        evalId: string
+        payload: Partial<any>
+      }) => ensureOk(await updateEvaluation(params.evalId, params.payload)),
+      onSuccess: () => {
+        void queryClient.invalidateQueries({
+          queryKey: ["evaluations", "list"]
+        })
+        if (selectedEvalId) {
+          void queryClient.invalidateQueries({
+            queryKey: ["evaluations", "detail", selectedEvalId]
+          })
+        }
+        notification.success({
+          message: t("settings:evaluations.updateSuccessTitle", {
+            defaultValue: "Evaluation updated"
+          })
+        })
+      },
+      onError: (error: any) => {
+        notification.error({
+          message: t("settings:evaluations.updateErrorTitle", {
+            defaultValue: "Failed to update evaluation"
+          }),
+          description: error?.message
+        })
+      }
+    })
+
+  const { mutateAsync: mutateDeleteEvaluation, isPending: deletingEval } =
+    useMutation({
+      mutationFn: async (evalId: string) =>
+        ensureOk(await deleteEvaluation(evalId)),
+      onSuccess: (_resp, evalId) => {
+        void queryClient.invalidateQueries({
+          queryKey: ["evaluations", "list"]
+        })
+        if (selectedEvalId === evalId) {
+          setSelectedEvalId(null)
+          setSelectedRunId(null)
+        }
+        setEditingEvalId(null)
+        notification.success({
+          message: t("common:deleted", { defaultValue: "Deleted" })
+        })
+      },
+      onError: (error: any) => {
+        notification.error({
+          message: t("settings:evaluations.deleteErrorTitle", {
+            defaultValue: "Failed to delete evaluation"
+          }),
+          description: error?.message
+        })
+      }
+    })
+
+  const { mutateAsync: mutateCancelRun, isPending: cancelingRun } =
+    useMutation({
+      mutationFn: async (runId: string) => ensureOk(await cancelRun(runId)),
+      onSuccess: () => {
+        notification.success({
+          message: t("settings:evaluations.runCancelSuccessTitle", {
+            defaultValue: "Run cancellation requested"
+          })
+        })
+        if (selectedEvalId) {
+          void queryClient.invalidateQueries({
+            queryKey: ["evaluations", "runs", selectedEvalId, { limit: 20 }]
+          })
+        }
+        if (selectedRunId) {
+          void queryClient.invalidateQueries({
+            queryKey: ["evaluations", "run", selectedRunId]
+          })
+        }
+      },
+      onError: (error: any) => {
+        notification.error({
+          message: t("settings:evaluations.runCancelErrorTitle", {
+            defaultValue: "Failed to cancel run"
+          }),
+          description: error?.message
+        })
+      }
+    })
+
+  const { mutateAsync: mutateHistory, isPending: historyPending } =
+    useMutation({
+      mutationFn: async (filters: any) => ensureOk(await getHistory(filters)),
+      onSuccess: (resp) => {
+        const list =
+          (resp as any)?.data?.data ||
+          (Array.isArray((resp as any)?.data)
+            ? (resp as any)?.data
+            : (resp as any)?.data?.items) ||
+          []
+        setHistoryResults(list as EvaluationHistoryItem[])
+      },
+      onError: (error: any) => {
+        notification.error({
+          message: t("settings:evaluations.historyErrorTitle", {
+            defaultValue: "Failed to fetch history"
+          }),
+          description: error?.message
+        })
+      }
+    })
+
+  const { mutateAsync: mutateLoadDataset, isPending: loadingDatasetDetail } =
+    useMutation({
+      mutationFn: async (datasetId: string) =>
+        ensureOk(await getDataset(datasetId)),
+      onSuccess: (resp) => {
+        setViewingDataset((resp as any)?.data || null)
+      },
+      onError: (error: any) => {
+        notification.error({
+          message: t("settings:evaluations.datasetLoadErrorTitle", {
+            defaultValue: "Failed to load dataset"
+          }),
+          description: error?.message
+        })
+      }
+    })
+
+  const { mutateAsync: mutateRegisterWebhook, isPending: registeringWebhook } =
+    useMutation({
+      mutationFn: async (payload: { url: string; events: string[] }) =>
+        ensureOk(await registerWebhook(payload)),
+      onSuccess: (resp) => {
+        setWebhookSecretText((resp as any)?.data?.secret || null)
+        void refetchWebhooks()
+        webhookForm.resetFields()
+        notification.success({
+          message: t("settings:evaluations.webhookCreateSuccessTitle", {
+            defaultValue: "Webhook registered"
+          })
+        })
+      },
+      onError: (error: any) => {
+        notification.error({
+          message: t("settings:evaluations.webhookCreateErrorTitle", {
+            defaultValue: "Failed to register webhook"
+          }),
+          description: error?.message
+        })
+      }
+    })
+
+  const { mutateAsync: mutateDeleteWebhook, isPending: deletingWebhook } =
+    useMutation({
+      mutationFn: async (webhookId: string) =>
+        ensureOk(await deleteWebhook(webhookId)),
+      onSuccess: () => {
+        void refetchWebhooks()
+        notification.success({
+          message: t("common:deleted", { defaultValue: "Deleted" })
+        })
+      },
+      onError: (error: any) => {
+        notification.error({
+          message: t("settings:evaluations.webhookDeleteErrorTitle", {
+            defaultValue: "Failed to delete webhook"
+          }),
+          description: error?.message
         })
       }
     })
@@ -299,20 +652,53 @@ export const EvaluationsPlaygroundPage = () => {
   const datasets: DatasetResponse[] = datasetListResp?.data?.data || []
   const runs = runsListResp?.data?.data || []
   const runDetail: EvaluationRunDetail | undefined = runDetailResp?.data
+  const evalDetail: EvaluationDetail | undefined = evalDetailResp?.data
+  const webhooks = webhooksResp?.data?.data || []
 
   const handleSubmitCreateDataset = async () => {
     try {
       const values = await createDatasetForm.validateFields()
-      const samples = [
+      let samples = [
         {
           input: values.sampleInput,
           expected: values.sampleExpected || undefined
         }
       ]
+      if (values.samplesJson) {
+        try {
+          const parsed = JSON.parse(values.samplesJson)
+          if (Array.isArray(parsed)) {
+            samples = parsed
+          }
+        } catch (e: any) {
+          notification.error({
+            message: t("settings:evaluations.datasetParseErrorTitle", {
+              defaultValue: "Invalid samples JSON"
+            }),
+            description: e?.message
+          })
+          return
+        }
+      }
+      let metadata: Record<string, any> | undefined
+      if (values.metadataJson) {
+        try {
+          metadata = JSON.parse(values.metadataJson)
+        } catch (e: any) {
+          notification.error({
+            message: t("settings:evaluations.datasetParseErrorTitle", {
+              defaultValue: "Invalid samples JSON"
+            }),
+            description: e?.message
+          })
+          return
+        }
+      }
       await mutateCreateDataset({
         name: values.name,
         description: values.description,
-        samples
+        samples,
+        metadata
       })
       createDatasetForm.resetFields()
       setCreateDatasetOpen(false)
@@ -342,16 +728,72 @@ export const EvaluationsPlaygroundPage = () => {
         .trim()
         .replace(/[^a-zA-Z0-9_-]/g, "-")
 
-      await mutateCreateEvaluation({
+      let inlineDataset: any[] | undefined
+      if (inlineDatasetEnabled && inlineDatasetText.trim().length > 0) {
+        try {
+          const parsed = JSON.parse(inlineDatasetText)
+          if (Array.isArray(parsed)) {
+            inlineDataset = parsed
+          } else {
+            throw new Error("Inline dataset must be an array.")
+          }
+        } catch (e: any) {
+          notification.error({
+            message: t("settings:evaluations.inlineDatasetErrorTitle", {
+              defaultValue: "Invalid inline dataset"
+            }),
+            description: e?.message
+          })
+          return
+        }
+      }
+
+      let metadata: Record<string, any> | undefined
+      if (values.evalMetadataJson) {
+        try {
+          metadata = JSON.parse(values.evalMetadataJson)
+        } catch (e: any) {
+          notification.error({
+            message: t("settings:evaluations.evalSpecParseError", {
+              defaultValue: "Evaluation spec must be valid JSON."
+            }),
+            description: e?.message
+          })
+          return
+        }
+      }
+
+      const payload = {
         name: sanitizedName,
         description: values.description,
         eval_type: values.evalType,
         eval_spec: spec,
-        dataset_id: values.datasetId || undefined
-      })
+        dataset_id: inlineDataset ? undefined : values.datasetId || undefined,
+        dataset: inlineDataset,
+        metadata
+      }
+
+      const requestIdKey = values.idempotencyKey || evalIdempotencyKey
+
+      if (editingEvalId) {
+        await mutateUpdateEvaluation({
+          evalId: editingEvalId,
+          payload
+        })
+      } else {
+        await mutateCreateEvaluation({
+          payload,
+          idempotencyKey: requestIdKey
+        })
+        setEvalIdempotencyKey(
+          (crypto as any)?.randomUUID?.() || Math.random().toString(36).slice(2)
+        )
+      }
 
       setCreateEvalOpen(false)
+      setEditingEvalId(null)
       createEvalForm.resetFields()
+      setInlineDatasetEnabled(false)
     } catch {
       // handled by form
     }
@@ -366,9 +808,121 @@ export const EvaluationsPlaygroundPage = () => {
       })
       return
     }
-    const targetModel =
-      createEvalForm.getFieldValue("runModel") || "gpt-3.5-turbo"
-    await mutateCreateRun({ evalId: selectedEvalId, targetModel })
+    const values = await runForm.validateFields().catch(() => null)
+    if (!values) return
+    let config: Record<string, any> | undefined
+    if (values.configJson) {
+      try {
+        config = JSON.parse(values.configJson)
+      } catch (e: any) {
+        notification.error({
+          message: t("settings:evaluations.runConfigParseError", {
+            defaultValue: "Invalid config JSON"
+          }),
+          description: e?.message
+        })
+        return
+      }
+    }
+    let datasetOverride: { samples: any[] } | undefined
+    if (values.datasetOverrideJson) {
+      try {
+        const parsed = JSON.parse(values.datasetOverrideJson)
+        if (Array.isArray(parsed)) {
+          datasetOverride = { samples: parsed }
+        } else if (parsed?.samples && Array.isArray(parsed.samples)) {
+          datasetOverride = { samples: parsed.samples }
+        } else {
+          throw new Error("Dataset override must be an array of samples.")
+        }
+      } catch (e: any) {
+        notification.error({
+          message: t("settings:evaluations.datasetParseErrorTitle", {
+            defaultValue: "Invalid samples JSON"
+          }),
+          description: e?.message
+        })
+        return
+      }
+    }
+    await mutateCreateRun({
+      evalId: selectedEvalId,
+      payload: {
+        target_model: values.targetModel || "gpt-3.5-turbo",
+        config,
+        dataset_override: datasetOverride,
+        webhook_url: values.webhookUrl || undefined
+      },
+      idempotencyKey: values.idempotencyKey || runIdempotencyKey
+    })
+    setRunIdempotencyKey(
+      (crypto as any)?.randomUUID?.() || Math.random().toString(36).slice(2)
+    )
+  }
+
+  const handleOpenCreateEval = () => {
+    const nextKey =
+      (crypto as any)?.randomUUID?.() || Math.random().toString(36).slice(2)
+    setEvalSpecError(null)
+    setEvalSpecText(
+      JSON.stringify(getDefaultEvalSpecForType("response_quality"), null, 2)
+    )
+    setInlineDatasetEnabled(false)
+    createEvalForm.setFieldsValue({
+      evalType: "response_quality",
+      runModel: "gpt-3.5-turbo",
+      name: "",
+      description: "",
+      datasetId: undefined,
+      idempotencyKey: nextKey,
+      evalMetadataJson: undefined
+    })
+    setEvalIdempotencyKey(nextKey)
+    setEditingEvalId(null)
+    setCreateEvalOpen(true)
+  }
+
+  const handleOpenEditEval = () => {
+    if (!selectedEvalId) return
+    const detail = evalDetail as any
+    const selectedSummary = evaluations.find((e) => e.id === selectedEvalId)
+    const type =
+      detail?.eval_type || selectedSummary?.eval_type || "response_quality"
+    setEvalSpecError(null)
+    setEvalSpecText(
+      JSON.stringify(
+        detail?.eval_spec || getDefaultEvalSpecForType(type),
+        null,
+        2
+      )
+    )
+    createEvalForm.setFieldsValue({
+      evalType: type,
+      name: detail?.name || selectedSummary?.name || selectedEvalId,
+      description: detail?.description || selectedSummary?.description,
+      datasetId: detail?.dataset_id || selectedSummary?.dataset_id,
+      evalMetadataJson: detail?.metadata
+        ? JSON.stringify(detail.metadata, null, 2)
+        : undefined
+    })
+    setInlineDatasetEnabled(false)
+    setEditingEvalId(selectedEvalId)
+    setCreateEvalOpen(true)
+  }
+
+  const handleDeleteSelectedEval = () => {
+    if (!selectedEvalId) return
+    Modal.confirm({
+      title: t("settings:evaluations.deleteConfirmTitle", {
+        defaultValue: "Delete this evaluation?"
+      }),
+      content: t("settings:evaluations.deleteConfirmDescription", {
+        defaultValue:
+          "This will remove the evaluation definition. Runs already created remain in history."
+      }),
+      okButtonProps: { danger: true, loading: deletingEval },
+      onOk: () => mutateDeleteEvaluation(selectedEvalId)
+    })
   }
 
   return (
@@ -395,26 +949,22 @@ export const EvaluationsPlaygroundPage = () => {
             })}
             extra={
               <Space>
-                <Button
-                  onClick={() => {
-                    setEvalSpecError(null)
-                    setEvalSpecText(
-                      JSON.stringify(
-                        getDefaultEvalSpecForType("response_quality"),
-                        null,
-                        2
-                      )
-                    )
-                    createEvalForm.setFieldsValue({
-                      evalType: "response_quality",
-                      runModel: "gpt-3.5-turbo"
-                    })
-                    setCreateEvalOpen(true)
-                  }}
-                  type="primary">
+                <Button onClick={handleOpenCreateEval} type="primary">
                   {t("settings:evaluations.newEvaluationCta", {
                     defaultValue: "New evaluation"
                   })}
+                </Button>
+                <Button
+                  disabled={!selectedEvalId}
+                  onClick={handleOpenEditEval}>
+                  {t("common:edit", { defaultValue: "Edit" })}
+                </Button>
+                <Button
+                  danger
+                  disabled={!selectedEvalId}
+                  loading={deletingEval}
+                  onClick={handleDeleteSelectedEval}>
+                  {t("common:delete", { defaultValue: "Delete" })}
                 </Button>
                 <Button
                   disabled={creatingRun}
@@ -490,6 +1040,98 @@ export const EvaluationsPlaygroundPage = () => {
               </div>
             )}
           </Card>
+          <Card
+            title={t("settings:evaluations.detailTitle", {
+              defaultValue: "Evaluation details"
+            })}
+            extra={
+              selectedEvalId && (
+                <Space>
+                  <Button size="small" onClick={handleOpenEditEval}>
+                    {t("common:edit", { defaultValue: "Edit" })}
+                  </Button>
+                  <Button
+                    size="small"
+                    onClick={() =>
+                      void queryClient.invalidateQueries({
+                        queryKey: ["evaluations", "detail", selectedEvalId]
+                      })
+                    }>
+                    {t("common:refresh", { defaultValue: "Refresh" })}
+                  </Button>
+                </Space>
+              )
+            }>
+            {!selectedEvalId ? (
+              <Text type="secondary" className="text-xs">
+                {t("settings:evaluations.noEvalSelectedDetails", {
+                  defaultValue: "Select an evaluation to inspect its spec."
+                })}
+              </Text>
+            ) : evalDetailLoading ? (
+              <div className="flex justify-center py-4">
+                <Spin />
+              </div>
+            ) : evalDetailError || evalDetailResp?.ok === false ? (
+              <Alert
+                type="warning"
+                message={t("settings:evaluations.detailErrorTitle", {
+                  defaultValue: "Unable to load evaluation details"
+                })}
+              />
+            ) : evalDetail ? (
+              <div className="space-y-2 text-xs">
+                <div className="flex flex-wrap gap-3">
+                  <Tag>
+                    {t("common:id", { defaultValue: "ID" })}:{" "}
+                    <code>{evalDetail.id}</code>
+                  </Tag>
+                  {evalDetail.eval_type && (
+                    <Tag color="blue">{evalDetail.eval_type}</Tag>
+                  )}
+                  {evalDetail.dataset_id && (
+                    <Tag color="purple">
+                      {t("settings:evaluations.datasetLabel", {
+                        defaultValue: "Dataset"
+                      })}
+                      : {evalDetail.dataset_id}
+                    </Tag>
+                  )}
+                </div>
+                {evalDetail.description && (
+                  <div>
+                    <Text type="secondary">
+                      {t("settings:evaluations.descriptionLabel", {
+                        defaultValue: "Description"
+                      })}
+                      {": "}
+                    </Text>
+                    <Text>{evalDetail.description}</Text>
+                  </div>
+                )}
+                {evalDetail.metadata && (
+                  <div>
+                    <Text type="secondary">
+                      {t("common:metadata", { defaultValue: "Metadata" })}
+                    </Text>
+                    <pre className="mt-1 max-h-32 overflow-auto rounded bg-gray-900 p-2 text-[11px] text-gray-100 dark:bg-black">
+                      {JSON.stringify(evalDetail.metadata, null, 2)}
+                    </pre>
+                  </div>
+                )}
+                <div>
+                  <Text type="secondary">
+                    {t("settings:evaluations.evalSpecLabel", {
+                      defaultValue: "Evaluation spec (snippet)"
+                    })}
+                  </Text>
+                  <pre className="mt-1 max-h-48 overflow-auto rounded bg-gray-900 p-2 text-[11px] text-gray-100 dark:bg-black">
+                    {JSON.stringify(evalDetail.eval_spec || {}, null, 2)}
+                  </pre>
+                </div>
+              </div>
+            ) : null}
+          </Card>
         </div>
 
         <div className="space-y-4">
@@ -551,6 +1193,24 @@ export const EvaluationsPlaygroundPage = () => {
                     {rateLimits.limits.tokens_per_day}
                   </Text>
                 </div>
+                <div>
+                  <Text type="secondary">
+                    {t("settings:evaluations.perMinuteLabel", {
+                      defaultValue: "Per-minute limit"
+                    })}
+                    {": "}
+                  </Text>
+                  <Text>{rateLimits.limits.evaluations_per_minute}</Text>
+                </div>
+                <div>
+                  <Text type="secondary">
+                    {t("settings:evaluations.resetAtLabel", {
+                      defaultValue: "Resets at"
+                    })}
+                    {": "}
+                  </Text>
+                  <Text>{rateLimits.reset_at}</Text>
+                </div>
               </div>
             ) : (
               <Text type="secondary" className="text-xs">
@@ -572,56 +1232,186 @@ export const EvaluationsPlaygroundPage = () => {
                   defaultValue: "Select an evaluation to see its recent runs."
                 })}
               </Text>
-            ) : runsLoading ? (
-              <div className="flex justify-center py-4">
-                <Spin />
-              </div>
-            ) : runsError || runsListResp?.ok === false ? (
-              <Alert
-                type="warning"
-                showIcon
-                message={t("settings:evaluations.runsErrorTitle", {
-                  defaultValue: "Unable to load runs"
-                })}
-              />
-            ) : runs.length === 0 ? (
-              <Empty
-                description={t("settings:evaluations.runsEmpty", {
-                  defaultValue: "No runs yet for this evaluation."
-                })}
-              />
             ) : (
-              <div className="flex flex-col gap-2 text-xs">
-                {runs.map((run) => (
-                  <div
-                    key={run.id}
-                    className="flex cursor-pointer items-center justify-between rounded border border-gray-200 px-2 py-1 dark:border-gray-700"
-                    onClick={() => setSelectedRunId(run.id)}>
-                    <div className="flex flex-col">
-                      <span className="font-medium">Run {run.id}</span>
-                      {run.status && (
-                        <span className="text-[11px] text-gray-500 dark:text-gray-400">
-                          {run.status}
-                        </span>
+              <>
+                <Form form={runForm} layout="vertical" size="small">
+                  <Form.Item
+                    label={t("settings:evaluations.runModelLabelShort", {
+                      defaultValue: "Target model"
+                    })}
+                    name="targetModel"
+                    initialValue="gpt-3.5-turbo">
+                    <Input />
+                  </Form.Item>
+                  <Form.Item
+                    label={t("settings:evaluations.runConfigLabel", {
+                      defaultValue: "Config (JSON)"
+                    })}
+                    name="configJson"
+                    initialValue={runConfigText}>
+                    <Input.TextArea
+                      rows={3}
+                      onChange={(e) => setRunConfigText(e.target.value)}
+                    />
+                  </Form.Item>
+                  <Form.Item
+                    label={t("settings:evaluations.datasetOverrideLabel", {
+                      defaultValue: "Dataset override (JSON array of samples)"
+                    })}
+                    name="datasetOverrideJson"
+                    initialValue={datasetOverrideText}>
+                    <Input.TextArea
+                      rows={3}
+                      placeholder='[{"input": {...}, "expected": {...}}]'
+                      onChange={(e) =>
+                        setDatasetOverrideText(e.target.value || "")
+                      }
+                    />
+                  </Form.Item>
+                  <Form.Item
+                    label={t("settings:evaluations.webhookUrlLabel", {
+                      defaultValue: "Webhook URL (optional)"
+                    })}
+                    name="webhookUrl">
+                    <Input placeholder="https://example.com/hook" />
+                  </Form.Item>
+                  <Form.Item
+                    label={t("settings:evaluations.idempotencyKeyLabel", {
+                      defaultValue: "Idempotency key"
+                    })}
+                    name="idempotencyKey"
+                    initialValue={runIdempotencyKey}>
+                    <Input
+                      addonAfter={
+                        <Button
+                          size="small"
+                          onClick={() => {
+                            const next =
+                              (crypto as any)?.randomUUID?.() ||
+                              Math.random().toString(36).slice(2)
+                            setRunIdempotencyKey(next)
+                            runForm.setFieldsValue({ idempotencyKey: next })
+                          }}>
+                          {t("common:regenerate", {
+                            defaultValue: "Regenerate"
+                          })}
+                        </Button>
+                      }
+                    />
+                  </Form.Item>
+                  <Space>
+                    <Button
+                      type="primary"
+                      loading={creatingRun}
+                      onClick={() => void handleStartRunForSelection()}>
+                      {t("settings:evaluations.startRunCta", {
+                        defaultValue: "Start run"
+                      })}
+                    </Button>
+                    {selectedRunId &&
+                      ["running", "pending"].includes(
+                        String(runDetail?.status || "").toLowerCase()
+                      ) && (
+                        <Button
+                          danger
+                          loading={cancelingRun}
+                          onClick={() =>
+                            selectedRunId
+                              ? void mutateCancelRun(selectedRunId)
+                              : undefined
+                          }>
+                          {t("settings:evaluations.cancelRunCta", {
+                            defaultValue: "Cancel run"
+                          })}
+                        </Button>
                       )}
-                    </div>
-                    {selectedRunId === run.id && (
-                      <Tag color="green" className="text-[11px]">
-                        {t("settings:evaluations.selectedTag", {
-                          defaultValue: "Selected"
-                        })}
-                      </Tag>
-                    )}
+                  </Space>
+                </Form>
+                <Divider className="my-3" />
+                {runsLoading ? (
+                  <div className="flex justify-center py-4">
+                    <Spin />
                   </div>
-                ))}
-              </div>
+                ) : runsError || runsListResp?.ok === false ? (
+                  <Alert
+                    type="warning"
+                    showIcon
+                    message={t("settings:evaluations.runsErrorTitle", {
+                      defaultValue: "Unable to load runs"
+                    })}
+                  />
+                ) : runs.length === 0 ? (
+                  <Empty
+                    description={t("settings:evaluations.runsEmpty", {
+                      defaultValue: "No runs yet for this evaluation."
+                    })}
+                  />
+                ) : (
+                  <div className="flex flex-col gap-2 text-xs">
+                    {runs.map((run) => (
+                      <div
+                        key={run.id}
+                        className="flex cursor-pointer items-center justify-between rounded border border-gray-200 px-2 py-1 dark:border-gray-700"
+                        onClick={() => setSelectedRunId(run.id)}>
+                        <div className="flex flex-col">
+                          <span className="font-medium">Run {run.id}</span>
+                          {run.status && (
+                            <span className="text-[11px] text-gray-500 dark:text-gray-400">
+                              {run.status}
+                            </span>
+                          )}
+                        </div>
+                        {selectedRunId === run.id && (
+                          <Tag color="green" className="text-[11px]">
+                            {t("settings:evaluations.selectedTag", {
+                              defaultValue: "Selected"
+                            })}
+                          </Tag>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </>
             )}
           </Card>
 
           <Card
             title={t("settings:evaluations.runDetailTitle", {
               defaultValue: "Run details"
-            })}>
+            })}
+            extra={
+              selectedRunId && (
+                <Space>
+                  <Button
+                    size="small"
+                    onClick={() =>
+                      void queryClient.invalidateQueries({
+                        queryKey: ["evaluations", "run", selectedRunId]
+                      })
+                    }>
+                    {t("common:refresh", { defaultValue: "Refresh" })}
+                  </Button>
+                  {["running", "pending"].includes(
+                    String(runDetail?.status || "").toLowerCase()
+                  ) && (
+                    <Button
+                      size="small"
+                      danger
+                      loading={cancelingRun}
+                      onClick={() =>
+                        selectedRunId
+                          ? void mutateCancelRun(selectedRunId)
+                          : undefined
+                      }>
+                      {t("settings:evaluations.cancelRunCta", {
+                        defaultValue: "Cancel run"
+                      })}
+                    </Button>
+                  )}
+                </Space>
+              )
+            }>
             {!selectedRunId ? (
               <Text type="secondary" className="text-xs">
                 {t("settings:evaluations.noRunSelected", {
@@ -660,6 +1450,15 @@ export const EvaluationsPlaygroundPage = () => {
                   </Text>
                   <Text>{runDetail.target_model}</Text>
                 </div>
+                <div>
+                  <Text type="secondary">
+                    {t("settings:evaluations.runEvalIdLabel", {
+                      defaultValue: "Evaluation"
+                    })}
+                    {": "}
+                  </Text>
+                  <Text>{runDetail.eval_id}</Text>
+                </div>
                 {runDetail.error_message && (
                   <div>
                     <Text type="secondary">
@@ -680,6 +1479,30 @@ export const EvaluationsPlaygroundPage = () => {
                     </Text>
                     <pre className="mt-1 max-h-40 overflow-auto rounded bg-gray-900 p-2 text-[11px] text-gray-100 dark:bg-black">
                       {JSON.stringify(runDetail.results, null, 2)}
+                    </pre>
+                  </div>
+                )}
+                {runDetail.progress && (
+                  <div className="mt-2">
+                    <Text type="secondary">
+                      {t("settings:evaluations.runProgressLabel", {
+                        defaultValue: "Progress"
+                      })}
+                    </Text>
+                    <pre className="mt-1 max-h-32 overflow-auto rounded bg-gray-900 p-2 text-[11px] text-gray-100 dark:bg-black">
+                      {JSON.stringify(runDetail.progress, null, 2)}
+                    </pre>
+                  </div>
+                )}
+                {runDetail.usage && (
+                  <div className="mt-2">
+                    <Text type="secondary">
+                      {t("settings:evaluations.runUsageLabel", {
+                        defaultValue: "Usage"
+                      })}
+                    </Text>
+                    <pre className="mt-1 max-h-32 overflow-auto rounded bg-gray-900 p-2 text-[11px] text-gray-100 dark:bg-black">
+                      {JSON.stringify(runDetail.usage, null, 2)}
                     </pre>
                   </div>
                 )}
@@ -740,11 +1563,217 @@ export const EvaluationsPlaygroundPage = () => {
                         })}
                       </span>
                     </div>
+                    <Space>
+                      <Button
+                        size="small"
+                        loading={loadingDatasetDetail}
+                        onClick={() => void mutateLoadDataset(ds.id)}>
+                        {t("common:view", { defaultValue: "View" })}
+                      </Button>
+                      <Button
+                        size="small"
+                        danger
+                        loading={deletingDataset}
+                        onClick={() => void mutateDeleteDataset(ds.id)}>
+                        {t("common:delete", { defaultValue: "Delete" })}
+                      </Button>
+                    </Space>
+                  </div>
+                ))}
+              </div>
+            )}
+          </Card>
+
+          <Card
+            title={t("settings:evaluations.historyTitle", {
+              defaultValue: "History"
+            })}>
+            <Form form={historyForm} layout="vertical" size="small">
+              <Form.Item
+                label={t("settings:evaluations.historyTypeLabel", {
+                  defaultValue: "Type"
+                })}
+                name="type">
+                <Input placeholder="evaluation.completed" />
+              </Form.Item>
+              <Form.Item
+                label={t("settings:evaluations.historyUserLabel", {
+                  defaultValue: "User ID"
+                })}
+                name="user_id">
+                <Input placeholder="user_123" />
+              </Form.Item>
+              <Form.Item
+                label={t("settings:evaluations.historyStartLabel", {
+                  defaultValue: "Start date (ISO)"
+                })}
+                name="start_date">
+                <Input placeholder="2024-01-01T00:00:00Z" />
+              </Form.Item>
+              <Form.Item
+                label={t("settings:evaluations.historyEndLabel", {
+                  defaultValue: "End date (ISO)"
+                })}
+                name="end_date">
+                <Input placeholder="2024-12-31T23:59:59Z" />
+              </Form.Item>
+              <Button
+                type="primary"
+                loading={historyPending}
+                onClick={() => void mutateHistory(historyForm.getFieldsValue())}>
+                {t("settings:evaluations.historyFetchCta", {
+                  defaultValue: "Fetch history"
+                })}
+              </Button>
+            </Form>
+            <Divider />
+            {historyPending ? (
+              <div className="flex justify-center py-2">
+                <Spin size="small" />
+              </div>
+            ) : historyResults.length === 0 ? (
+              <Text type="secondary" className="text-xs">
+                {t("settings:evaluations.historyEmpty", {
+                  defaultValue: "Run a query to see recent activity."
+                })}
+              </Text>
+            ) : (
+              <div className="flex flex-col gap-2 text-xs">
+                {historyResults.map((item) => (
+                  <div
+                    key={item.id}
+                    className="rounded border border-gray-200 p-2 dark:border-gray-700">
+                    <div className="flex items-center justify-between">
+                      <span className="font-medium">{item.type}</span>
+                      <Text type="secondary">
+                        {item.created_at || ""}
+                      </Text>
+                    </div>
+                    <div className="flex gap-2">
+                      {item.eval_id && (
+                        <Tag>eval: {item.eval_id}</Tag>
+                      )}
+                      {item.run_id && (
+                        <Tag>run: {item.run_id}</Tag>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </Card>
+
+          <Card
+            title={t("settings:evaluations.webhooksTitle", {
+              defaultValue: "Webhooks"
+            })}
+            extra={
+              webhooksLoading ? (
+                <Spin size="small" />
+              ) : webhooksError || webhooksResp?.ok === false ? (
+                <Tag color="red">Error</Tag>
+              ) : (
+                <Tag>{webhooks.length}</Tag>
+              )
+            }>
+            <Form form={webhookForm} layout="vertical" size="small">
+              <Form.Item
+                label={t("settings:evaluations.webhookUrlLabel", {
+                  defaultValue: "URL"
+                })}
+                name="url"
+                rules={[{ required: true }]}>
+                <Input placeholder="https://example.com/hook" />
+              </Form.Item>
+              <Form.Item
+                label={t("settings:evaluations.webhookEventsLabel", {
+                  defaultValue: "Events"
+                })}
+                name="events"
+                initialValue={[
+                  "evaluation.started",
+                  "evaluation.completed",
+                  "evaluation.failed"
+                ]}
+                rules={[{ required: true }]}>
+                <Select
+                  mode="multiple"
+                  options={[
+                    { value: "evaluation.started", label: "evaluation.started" },
+                    {
+                      value: "evaluation.completed",
+                      label: "evaluation.completed"
+                    },
+                    { value: "evaluation.failed", label: "evaluation.failed" },
+                    {
+                      value: "evaluation.cancelled",
+                      label: "evaluation.cancelled"
+                    },
+                    {
+                      value: "evaluation.progress",
+                      label: "evaluation.progress"
+                    }
+                  ]}
+                />
+              </Form.Item>
+              <Button
+                type="primary"
+                loading={registeringWebhook}
+                onClick={() =>
+                  void webhookForm
+                    .validateFields()
+                    .then((vals) => mutateRegisterWebhook(vals))
+                }>
+                {t("settings:evaluations.webhookCreateCta", {
+                  defaultValue: "Register webhook"
+                })}
+              </Button>
+              {webhookSecretText && (
+                <Alert
+                  className="mt-2"
+                  type="info"
+                  message={t("settings:evaluations.webhookSecretTitle", {
+                    defaultValue: "Secret"
+                  })}
+                  description={webhookSecretText}
+                />
+              )}
+            </Form>
+            <Divider />
+            {webhooksLoading ? (
+              <div className="flex justify-center py-3">
+                <Spin size="small" />
+              </div>
+            ) : webhooksError || webhooksResp?.ok === false ? (
+              <Alert
+                type="warning"
+                message={t("settings:evaluations.webhookListErrorTitle", {
+                  defaultValue: "Unable to load webhooks"
+                })}
+              />
+            ) : webhooks.length === 0 ? (
+              <Text type="secondary" className="text-xs">
+                {t("settings:evaluations.webhooksEmpty", {
+                  defaultValue: "No webhooks registered yet."
+                })}
+              </Text>
+            ) : (
+              <div className="flex flex-col gap-2 text-xs">
+                {webhooks.map((hook: any) => (
+                  <div
+                    key={hook.id}
+                    className="flex items-center justify-between rounded border border-gray-200 px-2 py-1 dark:border-gray-700">
+                    <div className="flex flex-col">
+                      <span className="font-medium">{hook.url}</span>
+                      <span className="text-[11px] text-gray-500 dark:text-gray-400">
+                        {(hook.events || []).join(", ")}
+                      </span>
+                    </div>
                     <Button
                       size="small"
                       danger
-                      loading={deletingDataset}
-                      onClick={() => void mutateDeleteDataset(ds.id)}>
+                      loading={deletingWebhook}
+                      onClick={() => void mutateDeleteWebhook(hook.id)}>
                       {t("common:delete", { defaultValue: "Delete" })}
                     </Button>
                   </div>
@@ -756,14 +1785,27 @@ export const EvaluationsPlaygroundPage = () => {
       </div>
 
       <Modal
-        title={t("settings:evaluations.createEvalModalTitle", {
-          defaultValue: "New evaluation"
-        })}
+        title={
+          editingEvalId
+            ? t("settings:evaluations.editEvalModalTitle", {
+                defaultValue: "Edit evaluation"
+              })
+            : t("settings:evaluations.createEvalModalTitle", {
+                defaultValue: "New evaluation"
+              })
+        }
         open={createEvalOpen}
-        onCancel={() => setCreateEvalOpen(false)}
+        onCancel={() => {
+          setCreateEvalOpen(false)
+          setEditingEvalId(null)
+        }}
         onOk={() => void handleSubmitCreateEvaluation()}
-        confirmLoading={creatingEval}
-        okText={t("common:create", { defaultValue: "Create" }) as string}>
+        confirmLoading={creatingEval || updatingEval}
+        okText={
+          editingEvalId
+            ? (t("common:save", { defaultValue: "Save" }) as string)
+            : (t("common:create", { defaultValue: "Create" }) as string)
+        }>
         <Form form={createEvalForm} layout="vertical">
           <Form.Item
             label={t("settings:evaluations.evalNameLabel", {
@@ -801,10 +1843,19 @@ export const EvaluationsPlaygroundPage = () => {
                 )
               }}
               options={[
+                { value: "model_graded", label: "model_graded" },
                 { value: "response_quality", label: "response_quality" },
                 { value: "rag", label: "rag" },
+                { value: "rag_pipeline", label: "rag_pipeline" },
                 { value: "geval", label: "geval" },
-                { value: "exact_match", label: "exact_match" }
+                { value: "exact_match", label: "exact_match" },
+                { value: "includes", label: "includes" },
+                { value: "fuzzy_match", label: "fuzzy_match" },
+                { value: "proposition_extraction", label: "proposition_extraction" },
+                { value: "qa3", label: "qa3" },
+                { value: "label_choice", label: "label_choice" },
+                { value: "nli_factcheck", label: "nli_factcheck" },
+                { value: "ocr", label: "ocr" }
               ]}
             />
           </Form.Item>
@@ -825,6 +1876,25 @@ export const EvaluationsPlaygroundPage = () => {
               }))}
             />
           </Form.Item>
+          <Form.Item>
+            <Checkbox
+              checked={inlineDatasetEnabled}
+              onChange={(e) => setInlineDatasetEnabled(e.target.checked)}>
+              {t("settings:evaluations.inlineDatasetCheckbox", {
+                defaultValue:
+                  "Attach inline dataset instead of referencing dataset_id"
+              })}
+            </Checkbox>
+            {inlineDatasetEnabled && (
+              <Input.TextArea
+                rows={3}
+                className="mt-2"
+                value={inlineDatasetText}
+                onChange={(e) => setInlineDatasetText(e.target.value)}
+                placeholder='[{"input": {...}, "expected": {...}}]'
+              />
+            )}
+          </Form.Item>
           <Form.Item
             label={t("settings:evaluations.runModelLabel", {
               defaultValue: "Run model (used for quick runs)"
@@ -832,6 +1902,13 @@ export const EvaluationsPlaygroundPage = () => {
             name="runModel"
             initialValue="gpt-3.5-turbo">
             <Input />
+          </Form.Item>
+          <Form.Item
+            label={t("settings:evaluations.evalMetadataLabel", {
+              defaultValue: "Metadata (JSON, optional)"
+            })}
+            name="evalMetadataJson">
+            <Input.TextArea rows={3} />
           </Form.Item>
           <Form.Item
             label={t("settings:evaluations.evalSpecLabel", {
@@ -848,6 +1925,32 @@ export const EvaluationsPlaygroundPage = () => {
               </div>
             )}
           </Form.Item>
+          {!editingEvalId && (
+            <Form.Item
+              label={t("settings:evaluations.idempotencyKeyLabel", {
+                defaultValue: "Idempotency key"
+              })}
+              name="idempotencyKey"
+              initialValue={evalIdempotencyKey}>
+              <Input
+                addonAfter={
+                  <Button
+                    size="small"
+                    onClick={() => {
+                      const next =
+                        (crypto as any)?.randomUUID?.() ||
+                        Math.random().toString(36).slice(2)
+                      setEvalIdempotencyKey(next)
+                      createEvalForm.setFieldsValue({
+                        idempotencyKey: next
+                      })
+                    }}>
+                    {t("common:regenerate", { defaultValue: "Regenerate" })}
+                  </Button>
+                }
+              />
+            </Form.Item>
+          )}
         </Form>
       </Modal>
 
@@ -896,7 +1999,78 @@ export const EvaluationsPlaygroundPage = () => {
             name="sampleExpected">
             <Input.TextArea rows={3} />
           </Form.Item>
+          <Form.Item
+            label={t("settings:evaluations.samplesJsonLabel", {
+              defaultValue: "Samples JSON (optional, overrides fields)"
+            })}
+            name="samplesJson">
+            <Input.TextArea rows={4} placeholder='[{"input": {...}, "expected": {...}}]' />
+          </Form.Item>
+          <Form.Item
+            label={t("settings:evaluations.datasetMetadataLabel", {
+              defaultValue: "Metadata (JSON, optional)"
+            })}
+            name="metadataJson">
+            <Input.TextArea rows={3} />
+          </Form.Item>
         </Form>
+      </Modal>
+
+      <Modal
+        title={t("settings:evaluations.datasetDetailTitle", {
+          defaultValue: "Dataset details"
+        })}
+        open={!!viewingDataset}
+        onCancel={() => setViewingDataset(null)}
+        footer={
+          <Button onClick={() => setViewingDataset(null)}>
+            {t("common:close", { defaultValue: "Close" })}
+          </Button>
+        }>
+        {viewingDataset ? (
+          <div className="space-y-2 text-xs">
+            <div className="flex flex-wrap gap-2">
+              <Tag>
+                {t("common:id", { defaultValue: "ID" })}:{" "}
+                {(viewingDataset as any).id}
+              </Tag>
+              <Tag>
+                {t("settings:evaluations.datasetSampleCount", {
+                  defaultValue: "{{count}} samples",
+                  count: viewingDataset.sample_count
+                })}
+              </Tag>
+            </div>
+            <div>
+              <Text type="secondary">
+                {t("common:name", { defaultValue: "Name" })}
+                {": "}
+              </Text>
+              <Text>{viewingDataset.name}</Text>
+            </div>
+            {viewingDataset.description && (
+              <div>
+                <Text type="secondary">
+                  {t("settings:evaluations.datasetDescriptionLabel", {
+                    defaultValue: "Description"
+                  })}
+                  {": "}
+                </Text>
+                <Text>{viewingDataset.description}</Text>
+              </div>
+            )}
+            {viewingDataset.metadata && (
+              <div>
+                <Text type="secondary">
+                  {t("common:metadata", { defaultValue: "Metadata" })}
+                </Text>
+                <pre className="mt-1 max-h-32 overflow-auto rounded bg-gray-900 p-2 text-[11px] text-gray-100 dark:bg-black">
+                  {JSON.stringify(viewingDataset.metadata, null, 2)}
+                </pre>
+              </div>
+            )}
+          </div>
+        ) : null}
       </Modal>
     </div>
   )

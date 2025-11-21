@@ -15,6 +15,8 @@ export interface ApiSendResponse<T = any> {
   status: number
   data?: T
   error?: string
+  headers?: Record<string, string>
+  retryAfterMs?: number | null
 }
 
 export async function apiSend<T = any, P extends PathOrUrl = PathOrUrl, M extends AllowedMethodFor<P> = AllowedMethodFor<P>>(
@@ -23,4 +25,3 @@ export async function apiSend<T = any, P extends PathOrUrl = PathOrUrl, M extend
   const resp = await browser.runtime.sendMessage({ type: 'tldw:request', payload })
   return resp as ApiSendResponse<T>
 }
-

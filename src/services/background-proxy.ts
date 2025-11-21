@@ -73,7 +73,9 @@ export async function bgRequest<T = any, P extends PathOrUrl = AllowedPath, M ex
       method,
       headers: h,
       body: body ? (typeof body === 'string' ? body : JSON.stringify(body)) : undefined,
-      credentials: 'include',
+      // Use 'omit' to play nicely with mock/test servers using wildcard CORS
+      // (no cookies are needed for API key / bearer flows).
+      credentials: 'omit',
       signal: controller.signal
     })
     if (!res.ok) {
