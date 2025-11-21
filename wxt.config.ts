@@ -138,8 +138,6 @@ export default defineConfig({
         ...(isFirefox
           ? {
               output: {
-                format: "iife",
-                inlineDynamicImports: true,
                 manualChunks: undefined
               }
             }

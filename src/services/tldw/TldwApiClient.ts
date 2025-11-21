@@ -111,11 +111,11 @@ export class TldwApiClient {
   }
 
   async updateConfig(config: Partial<TldwConfig>): Promise<void> {
-    const currentConfig = await this.getConfig()
-    const newConfig = { ...currentConfig, ...config } as TldwConfig
+    const currentConfig = (await this.getConfig()) || {}
+    const newConfig = { ...(currentConfig as any), ...config } as TldwConfig
     await this.storage.set('tldwConfig', newConfig)
     this.config = newConfig
-    await this.initialize()
+    await this.initialize().catch(() => null)
   }
 
   async healthCheck(): Promise<boolean> {

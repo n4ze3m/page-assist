@@ -82,7 +82,7 @@ export default function HealthSummary() {
   )
 
   return (
-    <div className="mb-3 p-2 rounded border dark:border-gray-700 bg-white dark:bg-[#171717] flex items-center justify-between">
+    <div className="mb-3 p-2 rounded border border-transparent bg-transparent flex items-center justify-between transition-colors duration-150 hover:border-gray-200 hover:bg-gray-50 dark:border-transparent dark:hover:border-gray-700 dark:hover:bg-[#1c1c1c]">
       <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-300">
         <span
           className="flex items-center gap-2"

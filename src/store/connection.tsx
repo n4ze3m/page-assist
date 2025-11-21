@@ -12,6 +12,59 @@ import {
 // See New-Views-PRD.md §5.1.x / §10.1 (20 seconds).
 export const CONNECTION_TIMEOUT_MS = 20_000
 
+const TEST_BYPASS_KEY = "__tldw_allow_offline"
+
+const getOfflineBypassFlag = async (): Promise<boolean> => {
+  // Build-time flag for Playwright/CI: VITE_TLDW_E2E_ALLOW_OFFLINE=true
+  if ((import.meta as any)?.env?.VITE_TLDW_E2E_ALLOW_OFFLINE === "true") {
+    return true
+  }
+
+  // Runtime toggle (settable by tests) via chrome.storage.local or localStorage.
+  try {
+    if (typeof chrome !== "undefined" && chrome?.storage?.local) {
+      return await new Promise<boolean>((resolve) => {
+        chrome.storage.local.get(TEST_BYPASS_KEY, (res) =>
+          resolve(Boolean(res?.[TEST_BYPASS_KEY]))
+        )
+      })
+    }
+  } catch {
+    // ignore storage read errors
+  }
+
+  try {
+    if (typeof localStorage !== "undefined") {
+      return localStorage.getItem(TEST_BYPASS_KEY) === "true"
+    }
+  } catch {
+    // ignore localStorage availability
+  }
+
+  return false
+}
+
+const ensurePlaceholderConfig = async (): Promise<string | null> => {
+  try {
+    const cfg = await tldwClient.getConfig()
+    if (cfg?.serverUrl) return cfg.serverUrl
+  } catch {
+    // ignore missing config
+  }
+
+  const placeholderUrl = "http://127.0.0.1:0"
+  try {
+    await tldwClient.updateConfig({
+      serverUrl: placeholderUrl,
+      authMode: "single-user" as any,
+      apiKey: "test-bypass"
+    })
+    return placeholderUrl
+  } catch {
+    return null
+  }
+}
+
 type ConnectionStore = {
   state: ConnectionState
   checkOnce: () => Promise<void>
@@ -39,6 +92,30 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
 
     // Avoid overlapping checks
     if (prev.isChecking) {
+      return
+    }
+
+    // Optional test toggle: allow CI/Playwright to treat the app as "connected"
+    // without hitting a live server. Controlled via env VITE_TLDW_E2E_ALLOW_OFFLINE
+    // or chrome.storage.local[__tldw_allow_offline].
+    const bypass = await getOfflineBypassFlag()
+    if (bypass) {
+      const serverUrl = (await ensurePlaceholderConfig()) ?? prev.serverUrl ?? "offline://local"
+      set({
+        state: {
+          ...prev,
+          phase: ConnectionPhase.CONNECTED,
+          serverUrl,
+          isConnected: true,
+          isChecking: false,
+          lastCheckedAt: Date.now(),
+          lastError: null,
+          lastStatusCode: null,
+          knowledgeStatus: "ready",
+          knowledgeLastCheckedAt: Date.now(),
+          knowledgeError: null
+        }
+      })
       return
     }
 
@@ -191,4 +268,39 @@ if (typeof window !== "undefined") {
   // Expose for Playwright tests and debugging only.
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ;(window as any).__tldw_useConnectionStore = useConnectionStore
+
+  // Allow tests to flip the offline bypass without rebuilding the extension.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ;(window as any).__tldw_enableOfflineBypass = async () => {
+    try {
+      if (typeof chrome !== "undefined" && chrome?.storage?.local) {
+        await new Promise<void>((resolve) =>
+          chrome.storage.local.set({ [TEST_BYPASS_KEY]: true }, () => resolve())
+        )
+      } else if (typeof localStorage !== "undefined") {
+        localStorage.setItem(TEST_BYPASS_KEY, "true")
+      }
+      await useConnectionStore.getState().checkOnce()
+      return true
+    } catch {
+      return false
+    }
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ;(window as any).__tldw_disableOfflineBypass = async () => {
+    try {
+      if (typeof chrome !== "undefined" && chrome?.storage?.local) {
+        await new Promise<void>((resolve) =>
+          chrome.storage.local.remove(TEST_BYPASS_KEY, () => resolve())
+        )
+      } else if (typeof localStorage !== "undefined") {
+        localStorage.removeItem(TEST_BYPASS_KEY)
+      }
+      await useConnectionStore.getState().checkOnce()
+      return true
+    } catch {
+      return false
+    }
+  }
 }

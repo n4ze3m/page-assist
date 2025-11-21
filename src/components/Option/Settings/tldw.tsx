@@ -380,7 +380,7 @@ export const TldwSettings = () => {
             onClose={() => setInitializingError(null)}
           />
         )}
-        <div className="mb-4 p-2 rounded border dark:border-gray-600 bg-white dark:bg-[#171717] flex items-center justify-between">
+        <div className="mb-4 p-2 rounded border border-transparent bg-transparent flex items-center justify-between transition-colors duration-150 hover:border-gray-200 hover:bg-gray-50 dark:border-transparent dark:hover:border-gray-700 dark:hover:bg-[#1c1c1c]">
           <div className="text-sm text-gray-800 dark:text-gray-100">
             <span className="mr-2 font-medium">{t('settings:tldw.serverLabel', 'Server:')}</span>
             <span className="text-gray-600 dark:text-gray-300 break-all">{serverUrl || t('settings:tldw.notConfigured', 'Not configured')}</span>

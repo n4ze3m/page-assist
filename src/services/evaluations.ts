@@ -323,7 +323,11 @@ export async function createSpecializedEvaluation(
     | "propositions"
     | "ocr"
     | "ocr-pdf"
-    | "batch",
+    | "batch"
+    | "embeddings"
+    | "embeddings-ab"
+    | "embeddings-batch"
+    | string,
   payload: Record<string, any>,
   options?: { idempotencyKey?: string }
 ) {

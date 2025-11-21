@@ -1234,6 +1234,19 @@ export const EvaluationsPlaygroundPage = () => {
               </Text>
             ) : (
               <>
+                <Alert
+                  type="info"
+                  showIcon
+                  className="mb-2 text-xs"
+                  message={t("settings:evaluations.runPollingHint", {
+                    defaultValue:
+                      "Runs execute asynchronously. The UI polls every ~3s until status leaves running/pending. Provide a webhook URL if your backend can receive events instead."
+                  })}
+                  description={t("settings:evaluations.runBackoffHint", {
+                    defaultValue:
+                      "Attach an Idempotency-Key to avoid duplicates. Honor Retry-After on 429 responses; the UI shows rate limits separately."
+                  })}
+                />
                 <Form form={runForm} layout="vertical" size="small">
                   <Form.Item
                     label={t("settings:evaluations.runModelLabelShort", {
@@ -1262,7 +1275,7 @@ export const EvaluationsPlaygroundPage = () => {
                     initialValue={datasetOverrideText}>
                     <Input.TextArea
                       rows={3}
-                      placeholder='[{"input": {...}, "expected": {...}}]'
+                      placeholder='[{"input": {"question": "Q1", "contexts": ["ctx"], "response": "A"}, "expected": {"answer": "A"}}]'
                       onChange={(e) =>
                         setDatasetOverrideText(e.target.value || "")
                       }
@@ -1297,6 +1310,9 @@ export const EvaluationsPlaygroundPage = () => {
                           })}
                         </Button>
                       }
+                      placeholder={t("settings:evaluations.idempotencyKeyPlaceholder", {
+                        defaultValue: "Use to avoid duplicate runs when retrying"
+                      }) as string}
                     />
                   </Form.Item>
                   <Space>
@@ -1807,6 +1823,19 @@ export const EvaluationsPlaygroundPage = () => {
             : (t("common:create", { defaultValue: "Create" }) as string)
         }>
         <Form form={createEvalForm} layout="vertical">
+          <Alert
+            type="info"
+            showIcon
+            className="mb-3 text-xs"
+            message={t("settings:evaluations.evalTypesHint", {
+              defaultValue:
+                "Supported: model_graded (summarization, rag, response_quality, rag_pipeline), response_quality, rag, rag_pipeline, geval, exact_match, includes, fuzzy_match, proposition_extraction, qa3, label_choice, nli_factcheck, ocr. Specialized helpers: /api/v1/evaluations/{geval|rag|response-quality|propositions|ocr|ocr-pdf|batch|embeddings|embeddings-ab}."
+            })}
+            description={t("settings:evaluations.evalSpecHint", {
+              defaultValue:
+                "Provide an eval_spec that matches the eval_type payload shape (see docs). Use an Idempotency-Key to avoid duplicate creations if the browser retries."
+            })}
+          />
           <Form.Item
             label={t("settings:evaluations.evalNameLabel", {
               defaultValue: "Name"
@@ -1891,7 +1920,7 @@ export const EvaluationsPlaygroundPage = () => {
                 className="mt-2"
                 value={inlineDatasetText}
                 onChange={(e) => setInlineDatasetText(e.target.value)}
-                placeholder='[{"input": {...}, "expected": {...}}]'
+                placeholder='[{"input": {"question": "Q1", "contexts": ["ctx"], "response": "A"}, "expected": {"answer": "A"}}]'
               />
             )}
           </Form.Item>
@@ -1948,6 +1977,9 @@ export const EvaluationsPlaygroundPage = () => {
                     {t("common:regenerate", { defaultValue: "Regenerate" })}
                   </Button>
                 }
+                placeholder={t("settings:evaluations.idempotencyKeyPlaceholder", {
+                  defaultValue: "Prevents duplicate create on retry"
+                }) as string}
               />
             </Form.Item>
           )}
