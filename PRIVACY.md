@@ -33,4 +33,4 @@ Page Assist does not integrate with any third-party analytics or tracking servic
 We reserve the right to update this privacy policy as needed. Users will be notified of any significant changes.
 
 ## Contact
-For privacy-related questions or concerns, please open an issue on our GitHub repository or mail me at me@n4ze3m.com
+For privacy-related questions or concerns, please open an issue on our GitHub repository or mail me at the email in my profile.

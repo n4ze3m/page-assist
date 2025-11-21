@@ -8,7 +8,7 @@
 
 ## Overview
 
-tldw Browser_Assistant is an open‑source browser extension that provides a side panel and full‑page web UI for your own tldw_server instance. It connects to tldw_server (an API aggregator for multiple LLM providers) so you can:
+tldw Browser_Assistant is an open‑source browser extension that provides a side panel and full‑page web UI for your own tldw_server instance. It connects to tldw_server so you can:
 
 - Chat with any model configured on your server
 - Search and cite with RAG (retrieval‑augmented generation)
@@ -16,7 +16,6 @@ tldw Browser_Assistant is an open‑source browser extension that provides a sid
 - Transcribe speech (STT) and synthesize speech (TTS)
 - Chat with the current page, use internet search, OCR snippets, and more
 
-This repo refactors the original Page Assist extension into a dedicated, whitelabeled frontend for tldw_server.
 
 ## Requirements
 
@@ -24,6 +23,7 @@ This repo refactors the original Page Assist extension into a dedicated, whitela
 - A running tldw_server instance (local or remote)
   - Single‑user: API key
   - Multi‑user: username/password (Bearer tokens)
+
 
 ## Quick Start (Development)
 
@@ -77,9 +77,6 @@ The extension requests optional host permission (Chromium) for your configured o
 - RAG: Simple/search modes; insert citations into context
 - Media: Add URLs, ingest web content; progress via notifications
 - STT/TTS: Transcribe uploads and play synthesized speech (where available)
-- Knowledge Base: Load files/notes and chat with your data
-- Internet Search: Integrations for web search providers
-- OCR: Basic OCR for selections/screenshots
 - Multi‑language UI: Locales under `src/assets/locale/*` and `_locales/*`
 
 Want something else? Please open an issue.
@@ -122,10 +119,10 @@ Models are surfaced from your tldw_server configuration (OpenAI‑compatible pro
 
 - ✅ Foundation: branding, settings, auth (API key + login)
 - ✅ Models: fetch and select models from tldw_server
-- 🚧 Chat: streaming completions via `/api/v1/chat/completions`
-- ⏳ RAG search and citations
-- ⏳ Media ingestion (URL/page) and processing
-- ⏳ STT/TTS integration
+- ✅ Chat: streaming completions via `/api/v1/chat/completions`
+- 🚧 RAG search and citations
+- 🚧 Media ingestion (URL/page) and processing
+- 🚧 STT/TTS integration
 
 ## Privacy
 
@@ -152,8 +149,8 @@ Contributions are welcome! Please open an issue or PR. Follow conventional commi
 
 ## License
 
-MIT
+AGPL
 
 ## Acknowledgements
 
-This project builds on the excellent work of the original Page Assist extension and community.
+This project builds on the excellent work of the original Page Assist extension.
