@@ -29,6 +29,9 @@ import OptionKnowledgeWorkspace from "./option-knowledge"
 import OptionFlashcards from "./option-flashcards"
 import OptionTts from "./option-tts"
 import OptionEvaluations from "./option-evaluations"
+import OptionSettingsEvaluations from "./option-settings-evaluations"
+import OptionPromptStudio from "./option-prompt-studio"
+import OptionSettingsPromptStudio from "./option-settings-prompt-studio"
 
 export const OptionRoutingChrome = () => {
   return (
@@ -38,12 +41,14 @@ export const OptionRoutingChrome = () => {
       <Route path="/settings/tldw" element={<OptionTldwSettings />} />
       <Route path="/settings/model" element={<OptionModal />} />
       <Route path="/settings/prompt" element={<OptionPrompt />} />
+      <Route path="/settings/evaluations" element={<OptionSettingsEvaluations />} />
       {/** Ollama settings removed in favor of tldw_server */}
       <Route path="/settings/chrome" element={<OptionChrome />} />
       <Route path="/settings/openai" element={<OptionOpenAI />} />
       <Route path="/settings/share" element={<OptionShare />} />
       <Route path="/settings/processed" element={<OptionProcessed />} />
       <Route path="/settings/health" element={<OptionHealth />} />
+      <Route path="/settings/prompt-studio" element={<OptionSettingsPromptStudio />} />
       <Route path="/settings/knowledge" element={<OptionKnowledgeBase />} />
       <Route path="/settings/characters" element={<OptionCharacters />} />
       <Route path="/settings/world-books" element={<OptionWorldBooks />} />
@@ -60,6 +65,7 @@ export const OptionRoutingChrome = () => {
       <Route path="/dictionaries" element={<OptionDictionariesWorkspace />} />
       <Route path="/characters" element={<OptionCharactersWorkspace />} />
       <Route path="/prompts" element={<OptionPromptsWorkspace />} />
+      <Route path="/prompt-studio" element={<OptionPromptStudio />} />
       <Route path="/tts" element={<OptionTts />} />
       <Route path="/evaluations" element={<OptionEvaluations />} />
     </Routes>

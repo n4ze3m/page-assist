@@ -52,6 +52,7 @@ export type DatasetResponse = {
   created_at?: number | null
   created_by: string
   metadata?: Record<string, any> | null
+  samples?: DatasetSample[]
 }
 
 export type DatasetListResponse = {
@@ -272,11 +273,20 @@ export async function listDatasets(params?: {
   })
 }
 
-export async function getDataset(datasetId: string) {
+export async function getDataset(
+  datasetId: string,
+  params?: { limit?: number; offset?: number; include_samples?: boolean }
+) {
+  const search = new URLSearchParams()
+  if (params?.limit != null) search.set("limit", String(params.limit))
+  if (params?.offset != null) search.set("offset", String(params.offset))
+  if (params?.include_samples) search.set("include_samples", "true")
+  const path =
+    `/api/v1/evaluations/datasets/${encodeURIComponent(datasetId)}` +
+    (search.toString() ? `?${search.toString()}` : "")
+
   return await apiSend<DatasetResponse>({
-    path: `/api/v1/evaluations/datasets/${encodeURIComponent(
-      datasetId
-    )}` as any,
+    path: path as any,
     method: "GET"
   })
 }

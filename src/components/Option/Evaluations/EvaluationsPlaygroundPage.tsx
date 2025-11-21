@@ -24,6 +24,7 @@ import { useServerOnline } from "@/hooks/useServerOnline"
 import { useAntdNotification } from "@/hooks/useAntdNotification"
 import {
   DatasetResponse,
+  DatasetSample,
   EvaluationRateLimitStatus,
   EvaluationRunDetail,
   EvaluationDetail,
@@ -32,6 +33,7 @@ import {
   cancelRun,
   createDataset,
   createEvaluation,
+  createSpecializedEvaluation,
   deleteEvaluation,
   createRun,
   deleteDataset,
@@ -48,10 +50,24 @@ import {
   updateEvaluation,
   deleteWebhook
 } from "@/services/evaluations"
+import {
+  getEvaluationDefaults,
+  setDefaultSpecForType
+} from "@/services/evaluations-settings"
 
 const { Title, Text } = Typography
 
-const getDefaultEvalSpecForType = (evalType: string) => {
+const getDefaultEvalSpecForType = (
+  evalType: string,
+  overrides?: Record<string, string>
+) => {
+  if (overrides && overrides[evalType]) {
+    try {
+      return JSON.parse(overrides[evalType])
+    } catch {
+      // fall through to defaults
+    }
+  }
   switch (evalType) {
     case "model_graded":
       return {
@@ -142,6 +158,68 @@ const getDefaultEvalSpecForType = (evalType: string) => {
   }
 }
 
+const extractMetricsSummary = (
+  results: any
+): { key: string; value: number }[] => {
+  if (!results) return []
+  const list: { key: string; value: number }[] = []
+  const candidate =
+    results?.metrics && typeof results.metrics === "object"
+      ? results.metrics
+      : results
+
+  const walk = (obj: any, prefix = "") => {
+    if (!obj || typeof obj !== "object" || Array.isArray(obj)) return
+    for (const [k, v] of Object.entries(obj)) {
+      const name = prefix ? `${prefix}.${k}` : k
+      if (typeof v === "number" && Number.isFinite(v)) {
+        list.push({ key: name, value: v })
+      } else if (v && typeof v === "object" && list.length < 20) {
+        walk(v, name)
+      }
+    }
+  }
+
+  walk(candidate)
+  return list.slice(0, 20)
+}
+
+const parseQuotaSnapshot = (
+  headers?: Record<string, string> | null
+): {
+  limitDay?: number
+  remainingDay?: number
+  limitMinute?: number
+  remainingMinute?: number
+  reset?: string | null
+} | null => {
+  if (!headers) return null
+  const h: Record<string, string> = {}
+  for (const [k, v] of Object.entries(headers)) {
+    h[k.toLowerCase()] = v
+  }
+  const num = (s?: string | null) => {
+    if (s == null) return undefined
+    const n = Number(s)
+    return Number.isFinite(n) ? n : undefined
+  }
+  const snapshot = {
+    limitDay: num(h["x-ratelimit-limit-day"] || h["x-ratelimit-day-limit"]),
+    remainingDay: num(
+      h["x-ratelimit-remaining-day"] || h["x-ratelimit-day-remaining"]
+    ),
+    limitMinute: num(
+      h["x-ratelimit-limit-minute"] || h["x-ratelimit-minute-limit"]
+    ),
+    remainingMinute: num(
+      h["x-ratelimit-remaining-minute"] || h["x-ratelimit-minute-remaining"]
+    ),
+    reset: h["x-ratelimit-reset"] || h["x-ratelimit-reset-at"] || null
+  }
+  const hasData = Object.values(snapshot).some((v) => v !== undefined && v !== null)
+  return hasData ? snapshot : null
+}
+
 export const EvaluationsPlaygroundPage = () => {
   const { t } = useTranslation(["settings", "common"])
   const isOnline = useServerOnline()
@@ -151,9 +229,7 @@ export const EvaluationsPlaygroundPage = () => {
 
   const [createEvalOpen, setCreateEvalOpen] = React.useState(false)
   const [createDatasetOpen, setCreateDatasetOpen] = React.useState(false)
-  const [evalSpecText, setEvalSpecText] = React.useState(
-    JSON.stringify(getDefaultEvalSpecForType("response_quality"), null, 2)
-  )
+  const [evalSpecText, setEvalSpecText] = React.useState("")
   const [evalSpecError, setEvalSpecError] = React.useState<string | null>(null)
   const [selectedEvalId, setSelectedEvalId] = React.useState<string | null>(null)
   const [selectedRunId, setSelectedRunId] = React.useState<string | null>(null)
@@ -175,9 +251,7 @@ export const EvaluationsPlaygroundPage = () => {
       2
     )
   )
-  const [runConfigText, setRunConfigText] = React.useState(
-    JSON.stringify({ batch_size: 10 }, null, 2)
-  )
+  const [runConfigText, setRunConfigText] = React.useState("")
   const [datasetOverrideText, setDatasetOverrideText] = React.useState("")
   const [runIdempotencyKey, setRunIdempotencyKey] = React.useState(
     (crypto as any)?.randomUUID?.() || Math.random().toString(36).slice(2)
@@ -190,12 +264,37 @@ export const EvaluationsPlaygroundPage = () => {
   >([])
   const [viewingDataset, setViewingDataset] = React.useState<DatasetResponse | null>(null)
   const [webhookSecretText, setWebhookSecretText] = React.useState<string | null>(null)
+  const [datasetSamples, setDatasetSamples] = React.useState<DatasetSample[]>([])
+  const [datasetSamplesPage, setDatasetSamplesPage] = React.useState(1)
+  const [datasetSamplesPageSize] = React.useState(5)
+  const [datasetSamplesTotal, setDatasetSamplesTotal] = React.useState<number | null>(null)
+  const [defaultsApplied, setDefaultsApplied] = React.useState(false)
+  const [quotaSnapshot, setQuotaSnapshot] = React.useState<
+    | null
+    | {
+        limitDay?: number
+        remainingDay?: number
+        limitMinute?: number
+        remainingMinute?: number
+        reset?: string | null
+      }
+  >(null)
+  const [adhocEndpoint, setAdhocEndpoint] = React.useState("response-quality")
+  const [adhocPayloadText, setAdhocPayloadText] = React.useState(
+    JSON.stringify({ input: "Sample text", reference: "Expected reply" }, null, 2)
+  )
+  const [adhocResult, setAdhocResult] = React.useState<any>(null)
 
   const [createEvalForm] = Form.useForm()
   const [createDatasetForm] = Form.useForm()
   const [runForm] = Form.useForm()
   const [historyForm] = Form.useForm()
   const [webhookForm] = Form.useForm()
+
+  const { data: evalDefaults } = useQuery({
+    queryKey: ["evaluations", "defaults", "ui"],
+    queryFn: () => getEvaluationDefaults()
+  })
 
   React.useEffect(() => {
     runForm.setFieldsValue({
@@ -205,6 +304,32 @@ export const EvaluationsPlaygroundPage = () => {
       idempotencyKey: runIdempotencyKey
     })
   }, [runForm, runConfigText, datasetOverrideText, runIdempotencyKey])
+
+  React.useEffect(() => {
+    if (!evalDefaults || defaultsApplied) return
+    const defaultType = evalDefaults.defaultEvalType || "response_quality"
+    const defaultModel = evalDefaults.defaultTargetModel || "gpt-3.5-turbo"
+    const spec = getDefaultEvalSpecForType(
+      defaultType,
+      evalDefaults.defaultSpecByType
+    )
+    const runCfg =
+      evalDefaults.defaultRunConfig ||
+      JSON.stringify({ batch_size: 10 }, null, 2)
+
+    setEvalSpecText(JSON.stringify(spec, null, 2))
+    setRunConfigText(runCfg)
+    setDefaultsApplied(true)
+    createEvalForm.setFieldsValue({
+      evalType: defaultType,
+      runModel: defaultModel,
+      datasetId: evalDefaults.defaultDatasetId || undefined
+    })
+    runForm.setFieldsValue({
+      targetModel: defaultModel,
+      configJson: runCfg
+    })
+  }, [evalDefaults, defaultsApplied, createEvalForm, runForm])
 
   const {
     data: evalListResp,
@@ -260,6 +385,11 @@ export const EvaluationsPlaygroundPage = () => {
     }
   })
 
+  React.useEffect(() => {
+    const snapshot = parseQuotaSnapshot(runDetailResp?.headers)
+    if (snapshot) setQuotaSnapshot(snapshot)
+  }, [runDetailResp?.headers])
+
   const {
     data: evalDetailResp,
     isLoading: evalDetailLoading,
@@ -298,10 +428,15 @@ export const EvaluationsPlaygroundPage = () => {
         samples: any[]
         metadata?: Record<string, any>
       }) => ensureOk(await createDataset(payload)),
-      onSuccess: () => {
+      onSuccess: (resp) => {
         void queryClient.invalidateQueries({
           queryKey: ["evaluations", "datasets"]
         })
+        const createdId = (resp as any)?.data?.id
+        if (createdId && createEvalOpen) {
+          setInlineDatasetEnabled(false)
+          createEvalForm.setFieldsValue({ datasetId: createdId })
+        }
         notification.success({
           message: t("settings:evaluations.datasetCreateSuccessTitle", {
             defaultValue: "Dataset created"
@@ -390,6 +525,8 @@ export const EvaluationsPlaygroundPage = () => {
       ),
     onSuccess: (resp) => {
       const runId = (resp as any)?.data?.id || (resp as any)?.data?.run_id
+      const snapshot = parseQuotaSnapshot((resp as any)?.headers)
+      if (snapshot) setQuotaSnapshot(snapshot)
       if (runId) {
         setSelectedRunId(String(runId))
         void queryClient.invalidateQueries({
@@ -558,12 +695,53 @@ export const EvaluationsPlaygroundPage = () => {
       }
     })
 
+  const { mutateAsync: mutateAdhocEval, isPending: adhocPending } =
+    useMutation({
+      mutationFn: async (payload: { endpoint: string; body: any }) =>
+        ensureOk(await createSpecializedEvaluation(payload.endpoint, payload.body)),
+      onSuccess: (resp) => {
+        setAdhocResult((resp as any)?.data || resp)
+        notification.success({
+          message: t("settings:evaluations.runCreateSuccessTitle", {
+            defaultValue: "Run started"
+          }),
+          description: t("settings:evaluations.runCreateSuccessDescription", {
+            defaultValue:
+              "Your evaluation run has started. You can monitor it from the server UI."
+          })
+        })
+      },
+      onError: (error: any) => {
+        notification.error({
+          message: t("settings:evaluations.createErrorTitle", {
+            defaultValue: "Failed to create evaluation"
+          }),
+          description: error?.message
+        })
+      }
+    })
+
   const { mutateAsync: mutateLoadDataset, isPending: loadingDatasetDetail } =
     useMutation({
-      mutationFn: async (datasetId: string) =>
-        ensureOk(await getDataset(datasetId)),
-      onSuccess: (resp) => {
-        setViewingDataset((resp as any)?.data || null)
+      mutationFn: async (args: { datasetId: string; page?: number }) => {
+        const page = args.page || 1
+        const offset = (page - 1) * datasetSamplesPageSize
+        return ensureOk(
+          await getDataset(args.datasetId, {
+            limit: datasetSamplesPageSize,
+            offset,
+            include_samples: true
+          })
+        )
+      },
+      onSuccess: (resp, variables) => {
+        const data = (resp as any)?.data || null
+        setViewingDataset(data)
+        setDatasetSamples(data?.samples || [])
+        setDatasetSamplesPage(variables?.page || 1)
+        setDatasetSamplesTotal(
+          typeof data?.sample_count === "number" ? data.sample_count : null
+        )
       },
       onError: (error: any) => {
         notification.error({
@@ -654,6 +832,34 @@ export const EvaluationsPlaygroundPage = () => {
   const runDetail: EvaluationRunDetail | undefined = runDetailResp?.data
   const evalDetail: EvaluationDetail | undefined = evalDetailResp?.data
   const webhooks = webhooksResp?.data?.data || []
+  const runMetrics = React.useMemo(
+    () => extractMetricsSummary(runDetail?.results),
+    [runDetail]
+  )
+  const quotaText = React.useMemo(() => {
+    if (!quotaSnapshot) return null
+    const parts: string[] = []
+    if (
+      quotaSnapshot.remainingDay != null &&
+      quotaSnapshot.limitDay != null
+    ) {
+      parts.push(
+        `Day ${quotaSnapshot.remainingDay}/${quotaSnapshot.limitDay} remaining`
+      )
+    }
+    if (
+      quotaSnapshot.remainingMinute != null &&
+      quotaSnapshot.limitMinute != null
+    ) {
+      parts.push(
+        `Minute ${quotaSnapshot.remainingMinute}/${quotaSnapshot.limitMinute} remaining`
+      )
+    }
+    if (quotaSnapshot.reset) {
+      parts.push(`Resets at ${quotaSnapshot.reset}`)
+    }
+    return parts.join(" • ")
+  }, [quotaSnapshot])
 
   const handleSubmitCreateDataset = async () => {
     try {
@@ -775,6 +981,11 @@ export const EvaluationsPlaygroundPage = () => {
 
       const requestIdKey = values.idempotencyKey || evalIdempotencyKey
 
+      // Persist the spec as the default for this type so the next session preloads it.
+      if (evalSpecText) {
+        void setDefaultSpecForType(values.evalType, evalSpecText)
+      }
+
       if (editingEvalId) {
         await mutateUpdateEvaluation({
           evalId: editingEvalId,
@@ -863,17 +1074,21 @@ export const EvaluationsPlaygroundPage = () => {
   const handleOpenCreateEval = () => {
     const nextKey =
       (crypto as any)?.randomUUID?.() || Math.random().toString(36).slice(2)
-    setEvalSpecError(null)
-    setEvalSpecText(
-      JSON.stringify(getDefaultEvalSpecForType("response_quality"), null, 2)
+    const defaultType = evalDefaults?.defaultEvalType || "response_quality"
+    const defaultModel = evalDefaults?.defaultTargetModel || "gpt-3.5-turbo"
+    const spec = getDefaultEvalSpecForType(
+      defaultType,
+      evalDefaults?.defaultSpecByType
     )
+    setEvalSpecError(null)
+    setEvalSpecText(JSON.stringify(spec, null, 2))
     setInlineDatasetEnabled(false)
     createEvalForm.setFieldsValue({
-      evalType: "response_quality",
-      runModel: "gpt-3.5-turbo",
+      evalType: defaultType,
+      runModel: defaultModel,
       name: "",
       description: "",
-      datasetId: undefined,
+      datasetId: evalDefaults?.defaultDatasetId || undefined,
       idempotencyKey: nextKey,
       evalMetadataJson: undefined
     })
@@ -1223,6 +1438,79 @@ export const EvaluationsPlaygroundPage = () => {
           </Card>
 
           <Card
+            title={t("settings:evaluations.adhocTitle", {
+              defaultValue: "Ad-hoc evaluator"
+            })}
+            extra={
+              <Select
+                size="small"
+                style={{ width: 200 }}
+                value={adhocEndpoint}
+                onChange={(val) => {
+                  setAdhocEndpoint(val)
+                  setAdhocPayloadText(
+                    JSON.stringify(
+                      val.includes("ocr")
+                        ? { image_b64: "<base64-data>" }
+                        : { input: "Sample text", reference: "Expected reply" },
+                      null,
+                      2
+                    )
+                  )
+                }}
+                options={[
+                  { value: "response-quality", label: "response-quality" },
+                  { value: "rag", label: "rag" },
+                  { value: "geval", label: "geval" },
+                  { value: "propositions", label: "propositions" },
+                  { value: "ocr", label: "ocr" },
+                  { value: "ocr-pdf", label: "ocr-pdf" },
+                  { value: "batch", label: "batch" }
+                ]}
+              />
+            }>
+            <Form layout="vertical" size="small">
+              <Form.Item
+                label={t("settings:evaluations.runConfigLabel", {
+                  defaultValue: "Config (JSON)"
+                })}>
+                <Input.TextArea
+                  rows={4}
+                  value={adhocPayloadText}
+                  onChange={(e) => setAdhocPayloadText(e.target.value)}
+                />
+              </Form.Item>
+              <Button
+                type="primary"
+                loading={adhocPending}
+                onClick={async () => {
+                  try {
+                    const parsed = adhocPayloadText
+                      ? JSON.parse(adhocPayloadText)
+                      : {}
+                    await mutateAdhocEval({ endpoint: adhocEndpoint, body: parsed })
+                  } catch (e: any) {
+                    notification.error({
+                      message: t("settings:evaluations.runConfigParseError", {
+                        defaultValue: "Invalid config JSON"
+                      }),
+                      description: e?.message
+                    })
+                  }
+                }}>
+                {t("settings:evaluations.startRunCta", {
+                  defaultValue: "Start run"
+                })}
+              </Button>
+            </Form>
+            {adhocResult && (
+              <pre className="mt-2 max-h-40 overflow-auto rounded bg-gray-900 p-2 text-[11px] text-gray-100 dark:bg-black">
+                {JSON.stringify(adhocResult, null, 2)}
+              </pre>
+            )}
+          </Card>
+
+          <Card
             title={t("settings:evaluations.runsTitle", {
               defaultValue: "Runs"
             })}>
@@ -1368,7 +1656,10 @@ export const EvaluationsPlaygroundPage = () => {
                       <div
                         key={run.id}
                         className="flex cursor-pointer items-center justify-between rounded border border-gray-200 px-2 py-1 dark:border-gray-700"
-                        onClick={() => setSelectedRunId(run.id)}>
+                        onClick={() => {
+                          setSelectedRunId(run.id)
+                          setQuotaSnapshot(null)
+                        }}>
                         <div className="flex flex-col">
                           <span className="font-medium">Run {run.id}</span>
                           {run.status && (
@@ -1448,6 +1739,16 @@ export const EvaluationsPlaygroundPage = () => {
               />
             ) : runDetail ? (
               <div className="space-y-1 text-xs">
+                {quotaText && (
+                  <Alert
+                    type="info"
+                    showIcon
+                    message={t("settings:evaluations.rateLimitsTitle", {
+                      defaultValue: "Evaluation limits"
+                    })}
+                    description={quotaText}
+                  />
+                )}
                 <div>
                   <Text type="secondary">
                     {t("settings:evaluations.runStatusLabel", {
@@ -1475,6 +1776,27 @@ export const EvaluationsPlaygroundPage = () => {
                   </Text>
                   <Text>{runDetail.eval_id}</Text>
                 </div>
+                {runMetrics.length > 0 && (
+                  <div className="mt-2">
+                    <Text type="secondary">
+                      {t("settings:evaluations.metricsLabel", {
+                        defaultValue: "Metrics"
+                      })}
+                    </Text>
+                    <div className="mt-1 grid grid-cols-2 gap-2">
+                      {runMetrics.map((m) => (
+                        <div
+                          key={m.key}
+                          className="flex items-center justify-between rounded border border-gray-200 px-2 py-1 dark:border-gray-700">
+                          <span className="text-[11px]">{m.key}</span>
+                          <span className="font-mono text-[11px]">
+                            {m.value.toFixed ? m.value.toFixed(3) : m.value}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
                 {runDetail.error_message && (
                   <div>
                     <Text type="secondary">
@@ -1583,7 +1905,9 @@ export const EvaluationsPlaygroundPage = () => {
                       <Button
                         size="small"
                         loading={loadingDatasetDetail}
-                        onClick={() => void mutateLoadDataset(ds.id)}>
+                        onClick={() =>
+                          void mutateLoadDataset({ datasetId: ds.id, page: 1 })
+                        }>
                         {t("common:view", { defaultValue: "View" })}
                       </Button>
                       <Button
@@ -1868,7 +2192,14 @@ export const EvaluationsPlaygroundPage = () => {
               onChange={(value) => {
                 setEvalSpecError(null)
                 setEvalSpecText(
-                  JSON.stringify(getDefaultEvalSpecForType(value), null, 2)
+                  JSON.stringify(
+                    getDefaultEvalSpecForType(
+                      value,
+                      evalDefaults?.defaultSpecByType
+                    ),
+                    null,
+                    2
+                  )
                 )
               }}
               options={[
@@ -2053,9 +2384,18 @@ export const EvaluationsPlaygroundPage = () => {
           defaultValue: "Dataset details"
         })}
         open={!!viewingDataset}
-        onCancel={() => setViewingDataset(null)}
+        onCancel={() => {
+          setViewingDataset(null)
+          setDatasetSamples([])
+          setDatasetSamplesTotal(null)
+        }}
         footer={
-          <Button onClick={() => setViewingDataset(null)}>
+          <Button
+            onClick={() => {
+              setViewingDataset(null)
+              setDatasetSamples([])
+              setDatasetSamplesTotal(null)
+            }}>
             {t("common:close", { defaultValue: "Close" })}
           </Button>
         }>
@@ -2101,6 +2441,85 @@ export const EvaluationsPlaygroundPage = () => {
                 </pre>
               </div>
             )}
+            <div>
+              <div className="flex items-center justify-between">
+                <Text type="secondary">
+                  {t("settings:evaluations.datasetSamplesLabel", {
+                    defaultValue: "Samples"
+                  })}
+                </Text>
+                {datasetSamplesTotal != null && (
+                  <Text type="secondary" className="text-[11px]">
+                    {datasetSamplesTotal} total
+                  </Text>
+                )}
+              </div>
+              {datasetSamples.length === 0 ? (
+                <Text type="secondary" className="text-xs">
+                  {t("settings:evaluations.datasetSamplesEmpty", {
+                    defaultValue: "No samples returned for this page."
+                  })}
+                </Text>
+              ) : (
+                <div className="mt-2 flex flex-col gap-2">
+                  {datasetSamples.map((samp, idx) => (
+                    <div
+                      key={`${idx}-${datasetSamplesPage}`}
+                      className="rounded border border-gray-200 p-2 text-xs dark:border-gray-700">
+                      <div className="text-[11px] text-gray-500 dark:text-gray-400">
+                        #{(datasetSamplesPage - 1) * datasetSamplesPageSize + idx + 1}
+                      </div>
+                      <div className="mt-1">
+                        <Text type="secondary">Input</Text>
+                        <pre className="mt-1 max-h-32 overflow-auto rounded bg-gray-900 p-2 text-[11px] text-gray-100 dark:bg-black">
+                          {JSON.stringify(samp.input, null, 2)}
+                        </pre>
+                      </div>
+                      {samp.expected !== undefined && (
+                        <div className="mt-1">
+                          <Text type="secondary">Expected</Text>
+                          <pre className="mt-1 max-h-24 overflow-auto rounded bg-gray-900 p-2 text-[11px] text-gray-100 dark:bg-black">
+                            {JSON.stringify(samp.expected, null, 2)}
+                          </pre>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+              <div className="mt-2 flex items-center gap-2">
+                <Button
+                  size="small"
+                  disabled={datasetSamplesPage === 1 || loadingDatasetDetail}
+                  onClick={() =>
+                    viewingDataset?.id
+                      ? void mutateLoadDataset({
+                          datasetId: viewingDataset.id,
+                          page: Math.max(1, datasetSamplesPage - 1)
+                        })
+                      : undefined
+                  }>
+                  {t("common:previous", { defaultValue: "Previous" })}
+                </Button>
+                <Button
+                  size="small"
+                  disabled={
+                    loadingDatasetDetail ||
+                    (datasetSamplesTotal != null &&
+                      datasetSamplesPage * datasetSamplesPageSize >= datasetSamplesTotal)
+                  }
+                  onClick={() =>
+                    viewingDataset?.id
+                      ? void mutateLoadDataset({
+                          datasetId: viewingDataset.id,
+                          page: datasetSamplesPage + 1
+                        })
+                      : undefined
+                  }>
+                  {t("common:next", { defaultValue: "Next" })}
+                </Button>
+              </div>
+            </div>
           </div>
         ) : null}
       </Modal>

@@ -71,6 +71,8 @@
     "send": "Send",
     "startChat": "Start chatting",
     "connectToServer": "Connect to server",
+    "previous": "Previous",
+    "next": "Next",
     "noData": "No data",
     "noHistory": "No chat history",
     "chatWithCurrentPage": "Chat with current page",

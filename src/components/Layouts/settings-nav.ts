@@ -15,7 +15,8 @@ import {
   ShareIcon,
   Layers,
   StickyNote,
-  Microscope
+  Microscope,
+  FlaskConical
 } from "lucide-react"
 
 export type SettingsNavItem = {
@@ -47,6 +48,8 @@ export const SETTINGS_NAV_GROUPS: SettingsNavGroup[] = [
       },
       { to: "/settings/openai", icon: CpuIcon, labelToken: "openai:settings" },
       { to: "/settings/model", icon: BrainCircuitIcon, labelToken: "settings:manageModels.title" },
+      { to: "/settings/evaluations", icon: FlaskConical, labelToken: "settings:evaluationsSettings.title", beta: true },
+      { to: "/settings/prompt-studio", icon: Microscope, labelToken: "settings:promptStudio.nav", beta: true },
       { to: "/settings/health", icon: ActivityIcon, labelToken: "settings:healthNav" }
     ]
   },

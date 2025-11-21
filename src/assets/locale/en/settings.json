@@ -10,6 +10,22 @@
   "chatDictionariesNav": "Chat Dictionaries",
   "charactersNav": "Characters",
   "mediaNav": "Media",
+  "evaluationsSettingsNav": "Evaluations",
+  "promptStudioNav": "Prompt Studio",
+  "promptStudio": {
+    "nav": "Prompt Studio",
+    "title": "Prompt Studio",
+    "subtitle": "Configure defaults and monitor Prompt Studio health. Connection and auth reuse the main server settings.",
+    "probeError": "Unable to reach Prompt Studio",
+    "statusCard": "Status",
+    "statusHint": "Button calls /prompt-studio/status with warn_seconds.",
+    "statusError": "Status endpoint unavailable",
+    "defaultsCard": "Defaults",
+    "defaultsHint": "Store default project, model configs, and list page size.",
+    "defaultsPlaceholder": "Persist defaults using existing settings storage (TBD) for initial project selection, execute/evaluation model presets, and pagination.",
+    "unavailable": "Prompt Studio isn’t available on the server yet.",
+    "unavailableBody": "Once enabled, you can monitor queue health and set defaults here."
+  },
   "generalSettings": {
     "title": "General Settings",
     "settings": {
@@ -920,6 +936,22 @@
     "emptyConnectTitle": "Connect to use Evaluations",
     "emptyConnectDescription": "To create and run evaluations, first connect to your tldw server.",
     "emptyConnectExample1": "Open Settings → tldw server to add your server URL and API key.",
-    "emptyConnectExample2": "Once connected, you can define evaluations and inspect metrics here."
+    "emptyConnectExample2": "Once connected, you can define evaluations and inspect metrics here.",
+    "datasetSamplesLabel": "Samples",
+    "datasetSamplesEmpty": "No samples returned for this page.",
+    "metricsLabel": "Metrics"
+  },
+  "evaluationsSettings": {
+    "title": "Evaluations",
+    "subtitle": "Configure defaults used by the Evaluations playground.",
+    "offline": "Connect to your tldw server to test Evaluations.",
+    "defaultType": "Default evaluation type",
+    "defaultModel": "Default target model",
+    "defaultRunConfig": "Default run config (JSON)",
+    "defaultDataset": "Default dataset id (optional)",
+    "specForType": "Spec preset for selected type",
+    "testCta": "Test Evaluations API",
+    "testOk": "Evaluations API reachable",
+    "testFail": "Unable to reach Evaluations API"
   }
 }

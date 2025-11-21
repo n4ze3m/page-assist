@@ -31,6 +31,10 @@ const OptionCharactersWorkspace = lazy(() => import("./option-characters"))
 const OptionPromptsWorkspace = lazy(() => import("./option-prompts"))
 const OptionKnowledgeWorkspace = lazy(() => import("./option-knowledge"))
 const OptionTts = lazy(() => import("./option-tts"))
+const OptionEvaluations = lazy(() => import("./option-evaluations"))
+const OptionSettingsEvaluations = lazy(() => import("./option-settings-evaluations"))
+const OptionPromptStudio = lazy(() => import("./option-prompt-studio"))
+const OptionSettingsPromptStudio = lazy(() => import("./option-settings-prompt-studio"))
 
 export const OptionRoutingFirefox = () => {
   return (
@@ -49,6 +53,8 @@ export const OptionRoutingFirefox = () => {
       <Route path="/settings/characters" element={<OptionCharacters />} />
       <Route path="/settings/world-books" element={<OptionWorldBooks />} />
       <Route path="/settings/chat-dictionaries" element={<OptionDictionaries />} />
+      <Route path="/settings/evaluations" element={<OptionSettingsEvaluations />} />
+      <Route path="/settings/prompt-studio" element={<OptionSettingsPromptStudio />} />
       <Route path="/settings/about" element={<OptionAbout />} />
       <Route path="/settings/rag" element={<OptionRagSettings />} />
       <Route path="/review" element={<OptionReview />} />
@@ -61,7 +67,9 @@ export const OptionRoutingFirefox = () => {
       <Route path="/dictionaries" element={<OptionDictionariesWorkspace />} />
       <Route path="/characters" element={<OptionCharactersWorkspace />} />
       <Route path="/prompts" element={<OptionPromptsWorkspace />} />
+      <Route path="/prompt-studio" element={<OptionPromptStudio />} />
       <Route path="/tts" element={<OptionTts />} />
+      <Route path="/evaluations" element={<OptionEvaluations />} />
     </Routes>
   )
 }

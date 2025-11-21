@@ -118,3 +118,29 @@ PRD 2 — Prompt Studio Playground & Settings (Prompt Studio Module)
       - No UI for all Prompt Studio job types (optimizations, complex job queues) beyond the basic status readout.
       - No advanced import/export or code evaluators configuration UI (these remain server/CLI concerns).
       - No cross‑module wiring to the Evaluations module (e.g., automatic creation of Evaluations entries from Prompt Studio) in v1.
+
+  6. Implementation Plan (MVP → polish)
+      - Phase 0 — Services & capability probe:
+          - Add `src/services/prompt-studio.ts` with typed calls for projects, prompts, prompt history/revert, test cases, evaluations, execute, and status; mirror error handling/loading states used in `src/services/evaluations.ts`.
+          - Expose a capability probe `hasPromptStudio()` (e.g., GET projects or status) to gate UI visibility and empty states.
+          - Align request/response shapes with server: project list/create use page/per_page ListResponse; prompts include few_shot_examples/modules_config/signature_id/parent_version_id/change_description; prompt update requires change_description; test cases list filter by tags/is_golden/search with page/per_page; execute expects {prompt_id, inputs, provider, model} and returns {output, tokens_used, execution_time}; evaluations create requires test_case_ids + model_configs[] (first entry used) and supports optional run_async; evaluations list uses limit/offset; status supports warn_seconds query.
+      - Phase 1 — Routes & scaffolding:
+          - Add routes `#/playground/prompt-studio` and `#/settings/prompt-studio`, with nav wiring in options layout where other modules live.
+          - Stub pages that render loading/error/empty states off the new services so incremental UI can be layered without blocking.
+          - Gate nav/entries on capability probe to avoid dead links when the server lacks Prompt Studio.
+      - Phase 2 — Playground: projects & prompts:
+          - Project selector with inline create; list projects with per-page size from settings/defaults.
+          - Prompt list per project with “open” and “new prompt”; prompt editor with system/user/few-shot fields; “save new version”; history list and “revert” action.
+          - Surface optional prompt fields (few_shot_examples, modules_config, signature_id, parent_version_id) and require change_description on versioning to match API validation.
+      - Phase 3 — Playground: execute, test cases, evaluations:
+          - Ad-hoc execute form (provider/model/temp/max_tokens/inputs) with output panel (text, tokens, latency, errors).
+          - Test-case manager: list, create single, optional small JSON bulk add; tags and is_golden flags if available.
+          - Evaluation creation (name/description/test_case_ids/model config/run_async), list with status/metrics, detail view showing metrics/test runs.
+          - Use limit/offset for evaluation list; poll GET /prompt-studio/evaluations/{id} until status ∈ {completed, failed}; capture aggregate metrics and optional test_run_ids; no cancel endpoint in v1.
+      - Phase 4 — Settings: defaults & status:
+          - Display server base/auth info (read-only), default project, execute/evaluation model defaults, list page size; persist via existing settings storage.
+          - “Test Prompt Studio” button calling status; show queue depth/processing/lease metrics with friendly guidance text.
+          - Decide storage scope (sync vs local) and migrate/namespace keys to avoid conflicts with existing prompt/evaluation settings.
+      - Phase 5 — UX polish, i18n, QA:
+          - Add i18n strings/empty states/errors; guard rails when capability probe fails or config missing.
+          - Manual smoke checklist: create project/prompt, save version, run execute, create test case, run evaluation, use status probe; run `bun run compile` and prettier.

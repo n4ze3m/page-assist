@@ -66,6 +66,7 @@ type CoreMode =
   | "knowledge"
   | "notes"
   | "prompts"
+  | "promptStudio"
   | "flashcards"
   | "worldBooks"
   | "dictionaries"
@@ -138,6 +139,11 @@ export const Header: React.FC<Props> = ({
     if (pathname.startsWith("/prompts") || pathname.startsWith("/settings/prompt"))
       return "prompts"
     if (
+      pathname.startsWith("/prompt-studio") ||
+      pathname.startsWith("/settings/prompt-studio")
+    )
+      return "promptStudio"
+    if (
       pathname.startsWith("/world-books") ||
       pathname.startsWith("/settings/world-books")
     )
@@ -192,6 +198,9 @@ export const Header: React.FC<Props> = ({
         break
       case "prompts":
         navigate("/prompts")
+        break
+      case "promptStudio":
+        navigate("/prompt-studio")
         break
       case "flashcards":
         navigate("/flashcards")
@@ -835,11 +844,16 @@ export const Header: React.FC<Props> = ({
                     label: t("option:header.modeNotes", "Notes"),
                 shortcut: shortcutConfig.modeNotes
               },
-              {
-                key: "prompts",
-                label: t("option:header.modePromptsPlayground", "Prompts Playground"),
-                shortcut: shortcutConfig.modePrompts
-              },
+      {
+        key: "prompts",
+        label: t("option:header.modePromptsPlayground", "Prompts Playground"),
+        shortcut: shortcutConfig.modePrompts
+      },
+      {
+        key: "promptStudio",
+        label: t("option:header.modePromptStudio", "Prompt Studio"),
+        shortcut: undefined
+      },
               {
                 key: "flashcards",
                     label: t("option:header.modeFlashcards", "Flashcards"),
