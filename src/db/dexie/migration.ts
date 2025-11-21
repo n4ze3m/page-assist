@@ -11,7 +11,6 @@ import { ModelDb as DexieDBM } from "./models"
 import { getAllOpenAIConfig } from "../openai"
 import { getAllModelsExT } from "../models"
 import { getAllModelNicknamesMig } from "../nickname"
-import { notification } from "antd"
 
 export class DatabaseMigration {
   private chromeDB: ChromeDB

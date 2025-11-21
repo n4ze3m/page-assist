@@ -729,14 +729,14 @@ export const FlashcardsPage: React.FC = () => {
                     </Button>
                   </Space>
                   <Form.Item name="model_type" label={t("option:flashcards.modelType", { defaultValue: "Card template" })}>
-                    <Select
-                      options={[
-                        { label: "basic", value: "basic" },
-                        { label: "basic_reverse", value: "basic_reverse" },
-                        { label: "cloze", value: "cloze" }
-                      ]}
-                    />
-                    <div className="mt-1">
+                    <div className="space-y-1">
+                      <Select
+                        options={[
+                          { label: "basic", value: "basic" },
+                          { label: "basic_reverse", value: "basic_reverse" },
+                          { label: "cloze", value: "cloze" }
+                        ]}
+                      />
                       <Text type="secondary" className="text-xs">
                         {t("option:flashcards.modelTypeHelp", {
                           defaultValue:
@@ -746,8 +746,8 @@ export const FlashcardsPage: React.FC = () => {
                     </div>
                   </Form.Item>
                    <Form.Item name="reverse" label={t("option:flashcards.reverse", { defaultValue: "Also create reverse card" })} valuePropName="checked">
-                    <Switch />
-                    <div className="mt-1">
+                    <div className="space-y-1">
+                      <Switch />
                       <Text type="secondary" className="text-xs">
                         {t("option:flashcards.reverseHelp", {
                           defaultValue:
@@ -757,8 +757,8 @@ export const FlashcardsPage: React.FC = () => {
                     </div>
                   </Form.Item>
                    <Form.Item name="is_cloze" label={t("option:flashcards.isCloze", { defaultValue: "Cloze deletion" })} valuePropName="checked">
-                    <Switch />
-                    <div className="mt-1">
+                    <div className="space-y-1">
+                      <Switch />
                       <Text type="secondary" className="text-xs">
                         {t("option:flashcards.isClozeHelp", {
                           defaultValue:

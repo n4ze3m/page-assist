@@ -15,7 +15,6 @@ import {
   Select,
   Pagination,
   Radio,
-  notification,
   Modal,
   Dropdown
 } from "antd"
@@ -38,6 +37,7 @@ import { Storage } from "@plasmohq/storage"
 import { getAllPrompts } from "@/db/dexie/helpers"
 import { confirmDanger } from "@/components/Common/confirm-danger"
 import FeatureEmptyState from "@/components/Common/FeatureEmptyState"
+import { useAntdNotification } from "@/hooks/useAntdNotification"
 import { useDemoMode } from "@/context/demo-mode"
 
 type MediaItem = any
@@ -56,6 +56,7 @@ type ReviewPageProps = { allowGeneration?: boolean }
 
 export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true }) => {
   const { t } = useTranslation(["option", "review"])
+  const notification = useAntdNotification()
   const isViewMediaMode = !allowGeneration
   const [query, setQuery] = React.useState<string>("")
   const [kinds, setKinds] = React.useState<{ media: boolean; notes: boolean }>(() => ({

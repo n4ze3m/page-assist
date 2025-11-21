@@ -3,6 +3,10 @@ import { getModels, getVoices } from "@/services/elevenlabs"
 import { getTTSSettings, setTTSSettings } from "@/services/tts"
 import { useQuery as useRQ, useQueryClient } from "@tanstack/react-query"
 import { fetchTldwVoices, type TldwVoice } from "@/services/tldw/audio-voices"
+import {
+  fetchTldwTtsModels,
+  type TldwTtsModel
+} from "@/services/tldw/audio-models"
 import { useWebUI } from "@/store/webui"
 import { useForm } from "@mantine/form"
 import { useQuery } from "@tanstack/react-query"
@@ -72,6 +76,12 @@ export const TTSModeSettings = ({ hideBorder }: { hideBorder?: boolean }) => {
   const { data: tldwVoices } = useRQ({
     queryKey: ["fetchTldwVoices"],
     queryFn: fetchTldwVoices,
+    enabled: form.values.ttsProvider === "tldw"
+  })
+
+  const { data: tldwModels } = useRQ<TldwTtsModel[]>({
+    queryKey: ["fetchTldwTtsModels"],
+    queryFn: fetchTldwTtsModels,
     enabled: form.values.ttsProvider === "tldw"
   })
 
@@ -267,10 +277,17 @@ export const TTSModeSettings = ({ hideBorder }: { hideBorder?: boolean }) => {
               <span className="text-gray-700 dark:text-neutral-50">
                 TTS Voice
               </span>
-              <Input
-                placeholder="alloy"
+              <Select
                 className=" mt-4 sm:mt-0 !w-[300px] sm:w-[200px]"
-                required
+                placeholder="Select a voice"
+                options={[
+                  { label: "alloy", value: "alloy" },
+                  { label: "echo", value: "echo" },
+                  { label: "fable", value: "fable" },
+                  { label: "onyx", value: "onyx" },
+                  { label: "nova", value: "nova" },
+                  { label: "shimmer", value: "shimmer" }
+                ]}
                 {...form.getInputProps("openAITTSVoice")}
               />
             </div>
@@ -279,10 +296,13 @@ export const TTSModeSettings = ({ hideBorder }: { hideBorder?: boolean }) => {
               <span className="text-gray-700 dark:text-neutral-50">
                 TTS Model
               </span>
-              <Input
-                placeholder="tts-1"
+              <Select
                 className=" mt-4 sm:mt-0 !w-[300px] sm:w-[200px]"
-                required
+                placeholder="Select a model"
+                options={[
+                  { label: "tts-1", value: "tts-1" },
+                  { label: "tts-1-hd", value: "tts-1-hd" }
+                ]}
                 {...form.getInputProps("openAITTSModel")}
               />
             </div>
@@ -294,11 +314,23 @@ export const TTSModeSettings = ({ hideBorder }: { hideBorder?: boolean }) => {
               <span className="text-gray-700 dark:text-neutral-50">
                 TTS Model
               </span>
-              <Input
-                placeholder="kokoro"
-                className=" mt-4 sm:mt-0 !w-[300px] sm:w-[200px]"
-                {...form.getInputProps("tldwTtsModel")}
-              />
+              {tldwModels && tldwModels.length > 0 ? (
+                <Select
+                  className=" mt-4 sm:mt-0 !w-[300px] sm:w-[200px]"
+                  placeholder="Select a model"
+                  options={tldwModels.map((m: TldwTtsModel) => ({
+                    label: m.label,
+                    value: m.id
+                  }))}
+                  {...form.getInputProps("tldwTtsModel")}
+                />
+              ) : (
+                <Input
+                  placeholder="kokoro"
+                  className=" mt-4 sm:mt-0 !w-[300px] sm:w-[200px]"
+                  {...form.getInputProps("tldwTtsModel")}
+                />
+              )}
             </div>
             <div className="flex sm:flex-row flex-col space-y-4 sm:space-y-0 sm:justify-between">
               <span className="text-gray-700 dark:text-neutral-50">

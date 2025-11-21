@@ -8,23 +8,54 @@ import {
   Card,
   Divider,
   Tag,
-  Popover
+  Popover,
+  Select
 } from "antd"
 import { useTranslation } from "react-i18next"
-import { useTTS } from "@/hooks/useTTS"
-import { useQuery } from "@tanstack/react-query"
-import { getTTSSettings } from "@/services/tts"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
+import { getTTSSettings, setTTSSettings } from "@/services/tts"
 import { useServerCapabilities } from "@/hooks/useServerCapabilities"
 import { useServerOnline } from "@/hooks/useServerOnline"
 import { TTSModeSettings } from "@/components/Option/Settings/tts-mode"
+import {
+  fetchTldwTtsModels,
+  type TldwTtsModel
+} from "@/services/tldw/audio-models"
+import { fetchTldwVoiceCatalog } from "@/services/tldw/audio-voices"
 import {
   fetchTtsProviders,
   type TldwTtsProviderCapabilities,
   type TldwTtsVoiceInfo,
   type TldwTtsProvidersInfo
 } from "@/services/tldw/audio-providers"
+import { useTtsPlayground } from "@/hooks/useTtsPlayground"
+import { getModels, getVoices } from "@/services/elevenlabs"
 
 const { Text, Title, Paragraph } = Typography
+
+const OPENAI_TTS_MODELS = [
+  { label: "tts-1", value: "tts-1" },
+  { label: "tts-1-hd", value: "tts-1-hd" }
+]
+
+const OPENAI_TTS_VOICES: Record<string, { label: string; value: string }[]> = {
+  "tts-1": [
+    { label: "alloy", value: "alloy" },
+    { label: "echo", value: "echo" },
+    { label: "fable", value: "fable" },
+    { label: "onyx", value: "onyx" },
+    { label: "nova", value: "nova" },
+    { label: "shimmer", value: "shimmer" }
+  ],
+  "tts-1-hd": [
+    { label: "alloy", value: "alloy" },
+    { label: "echo", value: "echo" },
+    { label: "fable", value: "fable" },
+    { label: "onyx", value: "onyx" },
+    { label: "nova", value: "nova" },
+    { label: "shimmer", value: "shimmer" }
+  ]
+}
 
 const inferProviderFromModel = (model?: string | null): string | null => {
   if (!model) return null
@@ -44,11 +75,11 @@ const inferProviderFromModel = (model?: string | null): string | null => {
 const TtsPlaygroundPage: React.FC = () => {
   const { t } = useTranslation(["playground", "settings"])
   const [text, setText] = React.useState("")
-  const { speak, cancel, isSpeaking } = useTTS()
   const { data: ttsSettings } = useQuery({
     queryKey: ["fetchTTSSettings"],
     queryFn: getTTSSettings
   })
+  const queryClient = useQueryClient()
   const { capabilities, loading: capsLoading } = useServerCapabilities()
   const isOnline = useServerOnline()
   const hasAudio = isOnline && !capsLoading && capabilities?.hasAudio
@@ -59,13 +90,147 @@ const TtsPlaygroundPage: React.FC = () => {
     enabled: hasAudio
   })
 
+  const { data: tldwTtsModels } = useQuery<TldwTtsModel[]>({
+    queryKey: ["tldw-tts-models"],
+    queryFn: fetchTldwTtsModels,
+    enabled: hasAudio
+  })
+
+  const { data: elevenLabsData } = useQuery({
+    queryKey: [
+      "tts-playground-elevenlabs",
+      ttsSettings?.ttsProvider,
+      ttsSettings?.elevenLabsApiKey
+    ],
+    queryFn: async () => {
+      if (ttsSettings?.ttsProvider !== "elevenlabs" || !ttsSettings.elevenLabsApiKey) {
+        return null
+      }
+      try {
+        const voices = await getVoices(ttsSettings.elevenLabsApiKey)
+        const models = await getModels(ttsSettings.elevenLabsApiKey)
+        return { voices, models }
+      } catch (e) {
+        console.error(e)
+        return null
+      }
+    },
+    enabled:
+      ttsSettings?.ttsProvider === "elevenlabs" &&
+      !!ttsSettings?.elevenLabsApiKey
+  })
+
+  const {
+    segments,
+    isGenerating,
+    generateSegments,
+    clearSegments
+  } = useTtsPlayground()
+  const [activeSegmentIndex, setActiveSegmentIndex] = React.useState<
+    number | null
+  >(null)
+  const audioRef = React.useRef<HTMLAudioElement | null>(null)
+  const [currentTime, setCurrentTime] = React.useState(0)
+  const [duration, setDuration] = React.useState(0)
+
+  const provider = ttsSettings?.ttsProvider || "browser"
+
+  const [elevenVoiceId, setElevenVoiceId] = React.useState<string | undefined>(
+    undefined
+  )
+  const [elevenModelId, setElevenModelId] = React.useState<string | undefined>(
+    undefined
+  )
+  const [tldwModel, setTldwModel] = React.useState<string | undefined>(
+    undefined
+  )
+  const [tldwVoice, setTldwVoice] = React.useState<string | undefined>(
+    undefined
+  )
+  const [openAiModel, setOpenAiModel] = React.useState<string | undefined>(
+    undefined
+  )
+  const [openAiVoice, setOpenAiVoice] = React.useState<string | undefined>(
+    undefined
+  )
+
+  React.useEffect(() => {
+    if (!ttsSettings) return
+    setElevenVoiceId(ttsSettings.elevenLabsVoiceId || undefined)
+    setElevenModelId(ttsSettings.elevenLabsModel || undefined)
+    setTldwModel(ttsSettings.tldwTtsModel || undefined)
+    setTldwVoice(ttsSettings.tldwTtsVoice || undefined)
+    setOpenAiModel(ttsSettings.openAITTSModel || undefined)
+    setOpenAiVoice(ttsSettings.openAITTSVoice || undefined)
+  }, [ttsSettings])
+
+  const handleAudioTimeUpdate = () => {
+    const el = audioRef.current
+    if (!el) return
+    setCurrentTime(el.currentTime || 0)
+    setDuration(el.duration || 0)
+  }
+
+  const handleSegmentSelect = (idx: number) => {
+    setActiveSegmentIndex(idx)
+    setCurrentTime(0)
+    setDuration(0)
+  }
+
   const handlePlay = async () => {
     if (!text.trim()) return
-    await speak({ utterance: text })
+    clearSegments()
+    setActiveSegmentIndex(null)
+    setCurrentTime(0)
+    setDuration(0)
+
+    await generateSegments(text, {
+      provider,
+      elevenLabsModel: elevenModelId,
+      elevenLabsVoiceId: elevenVoiceId,
+      tldwModel,
+      tldwVoice,
+      openAiModel,
+      openAiVoice
+    })
+
+    if (ttsSettings) {
+      void setTTSSettings({
+        ttsEnabled: ttsSettings.ttsEnabled,
+        ttsProvider: ttsSettings.ttsProvider,
+        voice: ttsSettings.voice,
+        ssmlEnabled: ttsSettings.ssmlEnabled,
+        elevenLabsApiKey: ttsSettings.elevenLabsApiKey,
+        elevenLabsVoiceId: elevenVoiceId ?? ttsSettings.elevenLabsVoiceId,
+        elevenLabsModel: elevenModelId ?? ttsSettings.elevenLabsModel,
+        responseSplitting: ttsSettings.responseSplitting,
+        removeReasoningTagTTS: ttsSettings.removeReasoningTagTTS,
+        openAITTSBaseUrl: ttsSettings.openAITTSBaseUrl,
+        openAITTSApiKey: ttsSettings.openAITTSApiKey,
+        openAITTSModel: openAiModel ?? ttsSettings.openAITTSModel,
+        openAITTSVoice: openAiVoice ?? ttsSettings.openAITTSVoice,
+        ttsAutoPlay: ttsSettings.ttsAutoPlay,
+        playbackSpeed: ttsSettings.playbackSpeed,
+        tldwTtsModel: tldwModel ?? ttsSettings.tldwTtsModel,
+        tldwTtsVoice: tldwVoice ?? ttsSettings.tldwTtsVoice,
+        tldwTtsResponseFormat: ttsSettings.tldwTtsResponseFormat,
+        tldwTtsSpeed: ttsSettings.tldwTtsSpeed
+      }).then(() => {
+        queryClient.invalidateQueries({ queryKey: ["fetchTTSSettings"] })
+      })
+    }
+
+    setActiveSegmentIndex(0)
   }
 
   const handleStop = () => {
-    cancel()
+    const el = audioRef.current
+    if (el) {
+      el.pause()
+      el.currentTime = 0
+    }
+    setCurrentTime(0)
+    setDuration(0)
   }
 
   const providerLabel = React.useMemo(() => {
@@ -81,8 +246,25 @@ const TtsPlaygroundPage: React.FC = () => {
 
   const inferredProviderKey = React.useMemo(() => {
     if (!isTldw) return null
-    return inferProviderFromModel(ttsSettings?.tldwTtsModel)
-  }, [isTldw, ttsSettings?.tldwTtsModel])
+    return inferProviderFromModel(tldwModel || ttsSettings?.tldwTtsModel)
+  }, [isTldw, tldwModel, ttsSettings?.tldwTtsModel])
+
+  const { data: tldwVoiceCatalog } = useQuery<TldwTtsVoiceInfo[]>({
+    queryKey: ["tldw-voice-catalog", inferredProviderKey],
+    queryFn: async () => {
+      if (!inferredProviderKey) return []
+      const voices = await fetchTldwVoiceCatalog(inferredProviderKey)
+      return voices.map((v) => ({
+        id: v.voice_id || v.id || v.name,
+        name: v.name || v.voice_id || v.id,
+        language: (v as any)?.language,
+        gender: (v as any)?.gender,
+        description: v.description,
+        preview_url: (v as any)?.preview_url
+      })) as TldwTtsVoiceInfo[]
+    },
+    enabled: hasAudio && isTldw && Boolean(inferredProviderKey)
+  })
 
   const activeProviderCaps = React.useMemo(
     (): { key: string; caps: TldwTtsProviderCapabilities } | null => {
@@ -98,6 +280,9 @@ const TtsPlaygroundPage: React.FC = () => {
   )
 
   const activeVoices = React.useMemo((): TldwTtsVoiceInfo[] => {
+    if (tldwVoiceCatalog && tldwVoiceCatalog.length > 0) {
+      return tldwVoiceCatalog.slice(0, 4)
+    }
     if (!providersInfo || !activeProviderCaps) return []
     const allVoices = providersInfo.voices || {}
     const direct = allVoices[activeProviderCaps.key]
@@ -110,7 +295,43 @@ const TtsPlaygroundPage: React.FC = () => {
       return fallback.slice(0, 4)
     }
     return []
-  }, [providersInfo, activeProviderCaps])
+  }, [providersInfo, activeProviderCaps, tldwVoiceCatalog])
+
+  const providerVoices = React.useMemo((): TldwTtsVoiceInfo[] => {
+    if (tldwVoiceCatalog && tldwVoiceCatalog.length > 0) {
+      return tldwVoiceCatalog
+    }
+    if (!providersInfo || !activeProviderCaps) return []
+    const allVoices = providersInfo.voices || {}
+    const direct = allVoices[activeProviderCaps.key]
+    if (Array.isArray(direct) && direct.length > 0) {
+      return direct
+    }
+    const fallbackKey = activeProviderCaps.key.toLowerCase()
+    const fallback = allVoices[fallbackKey]
+    if (Array.isArray(fallback) && fallback.length > 0) {
+      return fallback
+    }
+    return []
+  }, [providersInfo, activeProviderCaps, tldwVoiceCatalog])
+
+  const openAiVoiceOptions = React.useMemo(() => {
+    if (!openAiModel) {
+      // If no model selected yet, show the union of known voices.
+      const seen = new Set<string>()
+      const all: { label: string; value: string }[] = []
+      Object.values(OPENAI_TTS_VOICES).forEach((list) => {
+        list.forEach((v) => {
+          if (!seen.has(v.value)) {
+            seen.add(v.value)
+            all.push(v)
+          }
+        })
+      })
+      return all
+    }
+    return OPENAI_TTS_VOICES[openAiModel] || []
+  }, [openAiModel])
 
   return (
     <div className="max-w-3xl mx-auto py-6">
@@ -302,21 +523,227 @@ const TtsPlaygroundPage: React.FC = () => {
                 ) as string}
               />
             </div>
+
+            {ttsSettings?.ttsProvider === "elevenlabs" && elevenLabsData && (
+              <div className="flex flex-col gap-2">
+                <Text type="secondary">
+                  {t(
+                    "playground:tts.voiceSelector.elevenLabs",
+                    "Choose an ElevenLabs voice and model for this run."
+                  )}
+                </Text>
+                <Space className="flex flex-wrap" size="middle">
+                  <div>
+                    <Text className="block text-xs mb-1">Voice</Text>
+                    <Select
+                      style={{ minWidth: 160 }}
+                      placeholder="Select voice"
+                      options={elevenLabsData.voices.map((v: any) => ({
+                        label: v.name,
+                        value: v.voice_id
+                      }))}
+                      value={elevenVoiceId}
+                      onChange={(val) => setElevenVoiceId(val)}
+                    />
+                  </div>
+                  <div>
+                    <Text className="block text-xs mb-1">Model</Text>
+                    <Select
+                      style={{ minWidth: 160 }}
+                      placeholder="Select model"
+                      options={elevenLabsData.models.map((m: any) => ({
+                        label: m.name,
+                        value: m.model_id
+                      }))}
+                      value={elevenModelId}
+                      onChange={(val) => setElevenModelId(val)}
+                    />
+                  </div>
+                </Space>
+              </div>
+            )}
+
+            {isTldw && providerVoices.length > 0 && (
+              <div className="flex flex-col gap-2">
+                <Text type="secondary">
+                  {t(
+                    "playground:tts.voiceSelector.tldw",
+                    "Choose a server voice and model for this run."
+                  )}
+                </Text>
+                <Space className="flex flex-wrap" size="middle">
+                  <div>
+                    <Text className="block text-xs mb-1">Voice</Text>
+                    <Select
+                      style={{ minWidth: 200 }}
+                      placeholder="Select voice"
+                      options={providerVoices.map((v, idx) => ({
+                        label: `${v.name || v.id || `Voice ${idx + 1}`}${
+                          v.language ? ` (${v.language})` : ""
+                        }`,
+                        value: v.id || v.name || ""
+                      }))}
+                      value={tldwVoice}
+                      onChange={(val) => setTldwVoice(val)}
+                    />
+                  </div>
+                  <div>
+                    <Text className="block text-xs mb-1">Model</Text>
+                    {tldwTtsModels && tldwTtsModels.length > 0 ? (
+                      <Select
+                        style={{ minWidth: 160 }}
+                        placeholder="Select model"
+                        showSearch
+                        optionFilterProp="label"
+                        options={tldwTtsModels.map((m) => ({
+                          label: m.label,
+                          value: m.id
+                        }))}
+                        value={tldwModel}
+                        onChange={(val) => setTldwModel(val)}
+                      />
+                    ) : (
+                      <Input
+                        style={{ minWidth: 160 }}
+                        value={tldwModel || ""}
+                        onChange={(e) => setTldwModel(e.target.value)}
+                        placeholder="kokoro"
+                      />
+                    )}
+                  </div>
+                </Space>
+              </div>
+            )}
+
+            {ttsSettings?.ttsProvider === "openai" && (
+              <div className="flex flex-col gap-2">
+                <Text type="secondary">
+                  {t(
+                    "playground:tts.voiceSelector.openai",
+                    "Choose an OpenAI TTS model and voice for this run."
+                  )}
+                </Text>
+                <Space className="flex flex-wrap" size="middle">
+                  <div>
+                    <Text className="block text-xs mb-1">Model</Text>
+                    <Select
+                      style={{ minWidth: 160 }}
+                      placeholder="Select model"
+                      options={OPENAI_TTS_MODELS}
+                      value={openAiModel}
+                      onChange={(val) => {
+                        setOpenAiModel(val)
+                        const voicesForModel =
+                          OPENAI_TTS_VOICES[val] || openAiVoiceOptions
+                        if (
+                          voicesForModel.length > 0 &&
+                          !voicesForModel.find((v) => v.value === openAiVoice)
+                        ) {
+                          setOpenAiVoice(voicesForModel[0].value)
+                        }
+                      }}
+                    />
+                  </div>
+                  <div>
+                    <Text className="block text-xs mb-1">Voice</Text>
+                    <Select
+                      style={{ minWidth: 160 }}
+                      placeholder="Select voice"
+                      options={openAiVoiceOptions}
+                      value={openAiVoice}
+                      onChange={(val) => setOpenAiVoice(val)}
+                    />
+                  </div>
+                </Space>
+              </div>
+            )}
+
             <Space>
               <Button
                 type="primary"
                 onClick={handlePlay}
                 disabled={!text.trim()}
-                loading={isSpeaking}
+                loading={isGenerating}
               >
-                {isSpeaking
+                {isGenerating
                   ? t("playground:tts.playing", "Playing…")
                   : t("playground:tts.play", "Play")}
               </Button>
-              <Button onClick={handleStop} disabled={!isSpeaking}>
+              <Button
+                onClick={handleStop}
+                disabled={!segments.length && !audioRef.current}
+              >
                 {t("playground:tts.stop", "Stop")}
               </Button>
             </Space>
+
+            {segments.length > 0 && (
+              <div className="mt-4 space-y-2 w-full">
+                <div>
+                  <Text strong>
+                    {t(
+                      "playground:tts.outputTitle",
+                      "Generated audio segments"
+                    )}
+                  </Text>
+                  <Paragraph className="!mb-1 text-xs text-gray-500 dark:text-gray-400">
+                    {t(
+                      "playground:tts.outputHelp",
+                      "Select a segment, then use the player controls to play, pause, or seek."
+                    )}
+                  </Paragraph>
+                </div>
+                <div className="border border-gray-200 dark:border-gray-700 rounded-md p-3 space-y-2">
+                  <audio
+                    ref={audioRef}
+                    controls
+                    className="w-full"
+                    src={
+                      activeSegmentIndex != null
+                        ? segments[activeSegmentIndex]?.url
+                        : segments[0]?.url
+                    }
+                    onTimeUpdate={handleAudioTimeUpdate}
+                  />
+                  <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
+                    <span>
+                      {activeSegmentIndex != null
+                        ? t("playground:tts.currentSegment", "Segment") +
+                          ` ${activeSegmentIndex + 1}/${segments.length}`
+                        : t(
+                            "playground:tts.currentSegmentNone",
+                            "No segment selected"
+                          )}
+                    </span>
+                    {duration > 0 && (
+                      <span>
+                        {t("playground:tts.timeLabel", "Time")}:{" "}
+                        {Math.floor(currentTime)}s / {Math.floor(duration)}s
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex flex-wrap gap-2 pt-1">
+                    {segments.map((seg, idx) => (
+                      <Button
+                        key={seg.id}
+                        size="small"
+                        type={
+                          idx ===
+                          (activeSegmentIndex != null
+                            ? activeSegmentIndex
+                            : 0)
+                            ? "primary"
+                            : "default"
+                        }
+                        onClick={() => handleSegmentSelect(idx)}
+                      >
+                        {t("playground:tts.segmentLabel", "Part")} {idx + 1}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
           </Space>
         </Card>
 

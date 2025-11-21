@@ -7,18 +7,26 @@ import {
 } from "./tts"
 
 export const generateOpenAITTS = async ({
-  text
+  text,
+  model: overrideModel,
+  voice: overrideVoice,
+  baseURL: overrideBaseUrl,
+  apiKey: overrideApiKey
 }: {
   text: string
+  model?: string
+  voice?: string
+  baseURL?: string
+  apiKey?: string
 }): Promise<ArrayBuffer> => {
-  const baseURL = await getOpenAITTSBaseUrl()
-  const apiKey = await getOpenAITTSApiKey()
-  const model = await getOpenAITTSModel()
-  const voice = await getOpenAITTSVoice()
+  const baseURL = overrideBaseUrl || (await getOpenAITTSBaseUrl())
+  const apiKey = overrideApiKey || (await getOpenAITTSApiKey())
+  const model = overrideModel || (await getOpenAITTSModel())
+  const voice = overrideVoice || (await getOpenAITTSVoice())
 
   const openai = new OpenAI({
-    baseURL: baseURL,
-    apiKey: apiKey,
+    baseURL,
+    apiKey,
     dangerouslyAllowBrowser: true
   })
 

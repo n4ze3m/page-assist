@@ -3,7 +3,7 @@ import { MemoryRouter } from "react-router-dom"
 import { useEffect } from "react"
 import { SidepanelRouting } from "@/routes/chrome-route"
 const queryClient = new QueryClient()
-import { ConfigProvider, Empty, theme } from "antd"
+import { App as AntdApp, ConfigProvider, Empty, theme } from "antd"
 import { StyleProvider } from "@ant-design/cssinjs"
 import { useDarkMode } from "~/hooks/useDarkmode"
 import "~/i18n"
@@ -44,15 +44,17 @@ function IndexSidepanel() {
             description={t("common:noData")}
           />
         )}>
-        <StyleProvider hashPriority="high">
-          <QueryClientProvider client={queryClient}>
-            <PageAssistProvider>
-              <FontSizeProvider>
-                <SidepanelRouting />
-              </FontSizeProvider>
-            </PageAssistProvider>
-          </QueryClientProvider>
-        </StyleProvider>
+        <AntdApp>
+          <StyleProvider hashPriority="high">
+            <QueryClientProvider client={queryClient}>
+              <PageAssistProvider>
+                <FontSizeProvider>
+                  <SidepanelRouting />
+                </FontSizeProvider>
+              </PageAssistProvider>
+            </QueryClientProvider>
+          </StyleProvider>
+        </AntdApp>
       </ConfigProvider>
     </MemoryRouter>
   )

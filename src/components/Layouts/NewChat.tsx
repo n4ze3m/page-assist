@@ -1,9 +1,6 @@
 import { SquarePen } from "lucide-react"
 import { useTranslation } from "react-i18next"
-import { notification, Tooltip } from "antd"
 import { useMessageOption } from "@/hooks/useMessageOption"
-import { BsIncognito } from "react-icons/bs"
-import { isFireFoxPrivateMode } from "@/utils/is-private-mode"
 
 type Props = {
   clearChat: () => void

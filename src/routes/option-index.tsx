@@ -1,5 +1,5 @@
 import React from "react"
-import { notification } from "antd"
+import { App } from "antd"
 import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
 
@@ -16,6 +16,7 @@ import { Playground } from "~/components/Option/Playground/Playground"
 const OptionIndex = () => {
   const { t } = useTranslation(["settings", "playground"])
   const navigate = useNavigate()
+  const { notification } = App.useApp()
   const errorToastRef = React.useRef(false)
   const successToastRef = React.useRef(false)
 

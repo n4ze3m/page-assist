@@ -167,12 +167,6 @@ export const AddCustomModelModal: React.FC<Props> = ({ open, setOpen }) => {
               )
             }))}
           />
-          {/* {data?.map((provider: any) => (
-              <Select.Option key={provider.id} value={provider.id}>
-                {provider.name}
-              </Select.Option>
-            ))} */}
-          {/* </Select> */}
         </Form.Item>
 
         <Form.Item

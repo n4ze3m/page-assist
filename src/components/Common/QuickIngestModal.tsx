@@ -64,8 +64,22 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
   const [savedAdvValues, setSavedAdvValues] = useStorage<Record<string, any>>('quickIngestAdvancedValues', {})
   const [uiPrefs, setUiPrefs] = useStorage<{ advancedOpen?: boolean; fieldDetailsOpen?: Record<string, boolean> }>('quickIngestAdvancedUI', {})
   const [specPrefs, setSpecPrefs] = useStorage<{ preferServer?: boolean; lastRemote?: { version?: string; cachedAt?: number } }>('quickIngestSpecPrefs', { preferServer: true })
+  const SAVE_DEBOUNCE_MS = 2000
+  const lastSavedAdvValuesRef = React.useRef<string | null>(null)
+  const lastSavedUiPrefsRef = React.useRef<string | null>(null)
+  const specPrefsCacheRef = React.useRef<string | null>(null)
   const [totalPlanned, setTotalPlanned] = React.useState<number>(0)
   const [ragEmbeddingLabel, setRagEmbeddingLabel] = React.useState<string | null>(null)
+
+  const persistSpecPrefs = React.useCallback(
+    (next: { preferServer?: boolean; lastRemote?: { version?: string; cachedAt?: number } }) => {
+      const serialized = JSON.stringify(next || {})
+      if (specPrefsCacheRef.current === serialized) return
+      specPrefsCacheRef.current = serialized
+      setSpecPrefs(next)
+    },
+    [setSpecPrefs]
+  )
 
   const addRow = () => setRows((r) => [...r, { id: crypto.randomUUID(), url: '', type: 'auto' }])
   const removeRow = (id: string) => setRows((r) => r.filter((x) => x.id !== id))
@@ -405,7 +419,7 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
             approxSize
           )
         } catch {}
-        setSpecPrefs(payload)
+        persistSpecPrefs(payload)
       } catch {}
       if (reportDiff && bundledSpec) {
         // Compare fields
@@ -455,7 +469,11 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
       }
     }
     setSpecSource(used)
-  }, [bundledSpec, setSpecPrefs, specPrefs])
+  }, [bundledSpec, persistSpecPrefs, specPrefs])
+
+  React.useEffect(() => {
+    specPrefsCacheRef.current = JSON.stringify(specPrefs || {})
+  }, [specPrefs])
 
   React.useEffect(() => {
     (async () => {
@@ -474,6 +492,14 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  React.useEffect(() => {
+    lastSavedAdvValuesRef.current = JSON.stringify(savedAdvValues || {})
+  }, [savedAdvValues])
+
+  React.useEffect(() => {
+    lastSavedUiPrefsRef.current = JSON.stringify(uiPrefs || {})
+  }, [uiPrefs])
+
   // Load persisted advanced values on mount
   React.useEffect(() => {
     if (savedAdvValues && typeof savedAdvValues === 'object') {
@@ -482,13 +508,16 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // Persist advanced values when they change (light debounce)
+  // Persist advanced values when they change (debounced to reduce storage writes)
   React.useEffect(() => {
     const id = setTimeout(() => {
+      const serialized = JSON.stringify(advancedValues || {})
+      if (lastSavedAdvValuesRef.current === serialized) return
+      lastSavedAdvValuesRef.current = serialized
       try { setSavedAdvValues(advancedValues) } catch {}
-    }, 200)
+    }, SAVE_DEBOUNCE_MS)
     return () => clearTimeout(id)
-  }, [advancedValues, setSavedAdvValues])
+  }, [SAVE_DEBOUNCE_MS, advancedValues, setSavedAdvValues])
 
   // Restore UI prefs for Advanced section and details
   React.useEffect(() => {
@@ -500,10 +529,14 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
   // Persist UI prefs
   React.useEffect(() => {
     const id = setTimeout(() => {
-      try { setUiPrefs({ advancedOpen, fieldDetailsOpen }) } catch {}
-    }, 200)
+      const nextPrefs = { advancedOpen, fieldDetailsOpen }
+      const serialized = JSON.stringify(nextPrefs)
+      if (lastSavedUiPrefsRef.current === serialized) return
+      lastSavedUiPrefsRef.current = serialized
+      try { setUiPrefs(nextPrefs) } catch {}
+    }, SAVE_DEBOUNCE_MS)
     return () => clearTimeout(id)
-  }, [advancedOpen, fieldDetailsOpen, setUiPrefs])
+  }, [SAVE_DEBOUNCE_MS, advancedOpen, fieldDetailsOpen, setUiPrefs])
 
   const downloadJson = (item: ResultItem) => {
     const blob = new Blob([JSON.stringify(item.data ?? {}, null, 2)], { type: 'application/json' })
@@ -711,7 +744,7 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
                       size="small"
                       checked={!!specPrefs?.preferServer}
                       onChange={async (v) => {
-                        setSpecPrefs({ ...(specPrefs || {}), preferServer: v })
+                        persistSpecPrefs({ ...(specPrefs || {}), preferServer: v })
                         await loadSpec(v, true)
                       }}
                     />

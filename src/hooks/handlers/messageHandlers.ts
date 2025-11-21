@@ -5,7 +5,6 @@ import {
   formatToMessage,
   updateMessageByIndex
 } from "@/db/dexie/helpers"
-import { validateBeforeSubmit } from "../utils/messageHelpers"
 import { generateBranchMessage } from "@/db/dexie/branch"
 import { getPromptById, getSessionFiles, UploadedFile } from "@/db"
 

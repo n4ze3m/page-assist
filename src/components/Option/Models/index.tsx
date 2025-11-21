@@ -1,4 +1,4 @@
-import { notification, Segmented } from "antd"
+import { Segmented } from "antd"
 import dayjs from "dayjs"
 import relativeTime from "dayjs/plugin/relativeTime"
 import { useState } from "react"
@@ -7,6 +7,7 @@ import { CustomModelsTable } from "./CustomModelsTable"
 import { AvailableModelsList } from "./AvailableModelsList"
 import { AddCustomModelModal } from "./AddCustomModelModal"
 import { isFireFoxPrivateMode } from "@/utils/is-private-mode"
+import { useAntdNotification } from "@/hooks/useAntdNotification"
 
 dayjs.extend(relativeTime)
 
@@ -15,6 +16,7 @@ export const ModelsBody = () => {
   const [segmented, setSegmented] = useState<string>("available")
 
   const { t } = useTranslation(["settings", "common", "openai"])
+  const notification = useAntdNotification()
 
   return (
     <div>

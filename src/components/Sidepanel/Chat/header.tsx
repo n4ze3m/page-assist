@@ -4,7 +4,6 @@ import { Link } from "react-router-dom"
 import {
   Tooltip,
   Drawer,
-  notification,
   Popover,
   InputNumber,
   Space,
@@ -38,6 +37,7 @@ import { CharacterSelect } from "@/components/Common/CharacterSelect"
 import { Sidebar } from "@/components/Option/Sidebar"
 // import { BsIncognito } from "react-icons/bs"
 import { isFireFoxPrivateMode } from "@/utils/is-private-mode"
+import { useAntdNotification } from "@/hooks/useAntdNotification"
 
 type SidepanelHeaderProps = {
   sidebarOpen?: boolean
@@ -48,6 +48,7 @@ export const SidepanelHeader = ({
   sidebarOpen: propSidebarOpen, 
   setSidebarOpen: propSetSidebarOpen 
 }: SidepanelHeaderProps = {}) => {
+  const notification = useAntdNotification()
   const [hideCurrentChatModelSettings] = useStorage(
     "hideCurrentChatModelSettings",
     false

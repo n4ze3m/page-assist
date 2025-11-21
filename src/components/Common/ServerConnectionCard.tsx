@@ -1,6 +1,6 @@
 import React from "react"
 import { useTranslation } from "react-i18next"
-import { Button, Tag, notification } from "antd"
+import { Button, Tag } from "antd"
 import { Clock, ExternalLink, Send, Server, Settings } from "lucide-react"
 
 import { cleanUrl } from "@/libs/clean-url"
@@ -9,6 +9,7 @@ import {
   useConnectionState
 } from "@/hooks/useConnectionState"
 import { ConnectionPhase } from "@/types/connection"
+import { useAntdNotification } from "@/hooks/useAntdNotification"
 
 type Props = {
   onOpenSettings?: () => void
@@ -60,6 +61,7 @@ export const ServerConnectionCard: React.FC<Props> = ({
   const { phase, serverUrl, lastCheckedAt, lastError, isChecking, lastStatusCode } =
     useConnectionState()
   const { checkOnce } = useConnectionActions()
+  const notification = useAntdNotification()
 
   const serverHost = serverUrl ? cleanUrl(serverUrl) : null
 

@@ -25,3 +25,22 @@ export const fetchTldwVoices = async (): Promise<TldwVoice[]> => {
   }
 }
 
+export const fetchTldwVoiceCatalog = async (
+  provider: string
+): Promise<TldwVoice[]> => {
+  const p = String(provider || "").trim()
+  if (!p) return []
+  try {
+    const res = await bgRequest<any>({
+      path: `/api/v1/audio/voices/catalog?provider=${encodeURIComponent(p)}`,
+      method: "GET"
+    })
+    if (!res) return []
+    if (Array.isArray(res)) return res as TldwVoice[]
+    if (Array.isArray(res.voices)) return res.voices as TldwVoice[]
+    if (Array.isArray(res.data)) return res.data as TldwVoice[]
+    return []
+  } catch {
+    return []
+  }
+}

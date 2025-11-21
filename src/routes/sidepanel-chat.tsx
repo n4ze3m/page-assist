@@ -12,10 +12,10 @@ import {
   useChatModeShortcuts
 } from "@/hooks/keyboard/useKeyboardShortcuts"
 import { useConnectionActions } from "@/hooks/useConnectionState"
+import { useAntdNotification } from "@/hooks/useAntdNotification"
 import { copilotResumeLastChat } from "@/services/app"
 import { Storage } from "@plasmohq/storage"
 import { useStorage } from "@plasmohq/storage/hook"
-import { notification } from "antd"
 import { ChevronDown } from "lucide-react"
 import React from "react"
 import { useTranslation } from "react-i18next"
@@ -70,6 +70,7 @@ const SidepanelChat = () => {
   const { containerRef, isAutoScrollToBottom, autoScrollToBottom } =
     useSmartScroll(messages, streaming, 100)
   const { checkOnce } = useConnectionActions()
+  const notification = useAntdNotification()
 
   const toggleSidebar = () => {
     setSidebarOpen((prev) => !prev)

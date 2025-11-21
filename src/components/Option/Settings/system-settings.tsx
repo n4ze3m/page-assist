@@ -8,7 +8,7 @@ import {
 import { Storage } from "@plasmohq/storage"
 import { useStorage } from "@plasmohq/storage/hook"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { Select, notification, Switch } from "antd"
+import { Select, Switch } from "antd"
 import { useTranslation } from "react-i18next"
 import { Loader2, RotateCcw, Upload } from "lucide-react"
 import { toBase64 } from "@/libs/to-base64"
@@ -16,12 +16,14 @@ import { PageAssistDatabase } from "@/db/dexie/chat"
 import { isFireFox, isFireFoxPrivateMode } from "@/utils/is-private-mode"
 import { firefoxSyncDataForPrivateMode } from "@/db/dexie/firefox-sync"
 import { confirmDanger } from "@/components/Common/confirm-danger"
+import { useAntdNotification } from "@/hooks/useAntdNotification"
 
 export const SystemSettings = () => {
   const { t } = useTranslation(["settings", "knowledge"])
   const queryClient = useQueryClient()
   const { clearChat } = useMessageOption()
   const { increase, decrease, scale } = useFontSize()
+  const notification = useAntdNotification()
 
   const [webuiBtnSidePanel, setWebuiBtnSidePanel] = useStorage(
     "webuiBtnSidePanel",

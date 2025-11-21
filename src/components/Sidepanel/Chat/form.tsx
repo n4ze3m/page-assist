@@ -9,7 +9,6 @@ import {
   Dropdown,
   Image,
   Tooltip,
-  notification,
   Popover
 } from "antd"
 import { useWebUI } from "~/store/webui"
@@ -47,6 +46,7 @@ import { useConnectionState } from "@/hooks/useConnectionState"
 import { ConnectionPhase } from "@/types/connection"
 import { useServerCapabilities } from "@/hooks/useServerCapabilities"
 import { tldwClient } from "@/services/tldw/TldwApiClient"
+import { useAntdNotification } from "@/hooks/useAntdNotification"
 
 type Props = {
   dropedFile: File | undefined
@@ -58,6 +58,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
   const { sendWhenEnter, setSendWhenEnter } = useWebUI()
   const [typing, setTyping] = React.useState<boolean>(false)
   const { t } = useTranslation(["playground", "common", "option"])
+  const notification = useAntdNotification()
   const [chatWithWebsiteEmbedding] = useStorage(
     "chatWithWebsiteEmbedding",
     false

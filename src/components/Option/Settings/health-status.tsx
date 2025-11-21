@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Tag, Card, Space, Typography, Button, Alert, notification } from 'antd'
+import { Tag, Card, Space, Typography, Button, Alert } from 'antd'
 import { browser } from 'wxt/browser'
 import { Link, useNavigate } from 'react-router-dom'
 import { tldwClient } from '@/services/tldw/TldwApiClient'
@@ -7,6 +7,7 @@ import { apiSend } from '@/services/api-send'
 import type { AllowedPath } from '@/services/tldw/openapi-guard'
 import { useTranslation } from 'react-i18next'
 import type { TFunction } from 'i18next'
+import { useAntdNotification } from '@/hooks/useAntdNotification'
 
 type Check = {
   key: string
@@ -28,6 +29,7 @@ type Result = { status: 'unknown'|'healthy'|'unhealthy', detail?: any, statusCod
 
 export default function HealthStatus() {
   const { t } = useTranslation(['settings', 'common'])
+  const notification = useAntdNotification()
   const checks = makeChecks(t)
   const [results, setResults] = useState<Record<string, Result>>({})
   const [loading, setLoading] = useState(false)

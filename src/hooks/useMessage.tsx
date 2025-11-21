@@ -13,7 +13,6 @@ import {
   removeMessageUsingHistoryId,
   updateMessageByIndex
 } from "@/db/dexie/helpers"
-import { notification } from "antd"
 import { useTranslation } from "react-i18next"
 import { usePageAssist } from "@/context"
 import { formatDocs } from "@/chain/chat-with-x"
@@ -40,6 +39,7 @@ import {
   createSaveMessageOnSuccess
 } from "./utils/messageHelpers"
 import { updatePageTitle } from "@/utils/update-page-title"
+import { useAntdNotification } from "./useAntdNotification"
 
 type ServerBackedMessage = Message & {
   serverMessageId?: string
@@ -106,6 +106,7 @@ export const useMessage = () => {
     setUseOCR
   } = useStoreMessage()
   const { serverChatId, setServerChatId } = useStoreMessageOption()
+  const notification = useAntdNotification()
  const [sidepanelTemporaryChat, ] = useStorage(
     "sidepanelTemporaryChat",
     false

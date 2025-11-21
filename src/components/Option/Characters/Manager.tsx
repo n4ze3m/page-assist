@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { Button, Form, Input, Modal, Skeleton, Table, Tag, Tooltip, notification, Select } from "antd"
+import { Button, Form, Input, Modal, Skeleton, Table, Tag, Tooltip, Select } from "antd"
 import React from "react"
 import { tldwClient } from "@/services/tldw/TldwApiClient"
 import { Pen, Trash2, UserCircle2, MessageCircle } from "lucide-react"
@@ -8,6 +8,7 @@ import { confirmDanger } from "@/components/Common/confirm-danger"
 import { useNavigate } from "react-router-dom"
 import { useStorage } from "@plasmohq/storage/hook"
 import FeatureEmptyState from "@/components/Common/FeatureEmptyState"
+import { useAntdNotification } from "@/hooks/useAntdNotification"
 
 const MAX_NAME_LENGTH = 75
 const MAX_DESCRIPTION_LENGTH = 65
@@ -24,6 +25,7 @@ export const CharactersManager: React.FC = () => {
   const { t } = useTranslation(["settings", "common"])
   const qc = useQueryClient()
   const navigate = useNavigate()
+  const notification = useAntdNotification()
   const [open, setOpen] = React.useState(false)
   const [openEdit, setOpenEdit] = React.useState(false)
   const [editId, setEditId] = React.useState<string | null>(null)

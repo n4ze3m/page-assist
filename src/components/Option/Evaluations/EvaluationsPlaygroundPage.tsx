@@ -13,13 +13,13 @@ import {
   Spin,
   Tag,
   Typography,
-  notification
 } from "antd"
 import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
 
 import FeatureEmptyState from "@/components/Common/FeatureEmptyState"
 import { useServerOnline } from "@/hooks/useServerOnline"
+import { useAntdNotification } from "@/hooks/useAntdNotification"
 import {
   DatasetResponse,
   EvaluationRateLimitStatus,
@@ -84,6 +84,7 @@ export const EvaluationsPlaygroundPage = () => {
   const isOnline = useServerOnline()
   const navigate = useNavigate()
   const queryClient = useQueryClient()
+  const notification = useAntdNotification()
 
   const [createEvalOpen, setCreateEvalOpen] = React.useState(false)
   const [createDatasetOpen, setCreateDatasetOpen] = React.useState(false)

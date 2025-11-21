@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { Button, Form, Input, Modal, Skeleton, Switch, Table, Tooltip, Tag, InputNumber, Select, notification, Descriptions } from "antd"
+import { Button, Form, Input, Modal, Skeleton, Switch, Table, Tooltip, Tag, InputNumber, Select, Descriptions } from "antd"
 import { useTranslation } from "react-i18next"
 import React from "react"
 import { tldwClient } from "@/services/tldw/TldwApiClient"
@@ -8,11 +8,13 @@ import { confirmDanger } from "@/components/Common/confirm-danger"
 import { useServerOnline } from "@/hooks/useServerOnline"
 import FeatureEmptyState from "@/components/Common/FeatureEmptyState"
 import { useServerCapabilities } from "@/hooks/useServerCapabilities"
+import { useAntdNotification } from "@/hooks/useAntdNotification"
 
 export const DictionariesManager: React.FC = () => {
   const { t } = useTranslation(["common", "option"])
   const isOnline = useServerOnline()
   const qc = useQueryClient()
+  const notification = useAntdNotification()
   const [open, setOpen] = React.useState(false)
   const [openEdit, setOpenEdit] = React.useState(false)
   const [openEntries, setOpenEntries] = React.useState<null | number>(null)

@@ -195,7 +195,7 @@ export const UpdateKnowledge = ({ id, open, setOpen }: Props) => {
               rules={[
                 { required: true, message: t("form.textInput.required") }
               ]}>
-              <>
+              <div className="space-y-1">
                 <Input.TextArea
                   autoSize={{ minRows: 8, maxRows: 16 }}
                   placeholder={t("form.textInput.placeholder")}
@@ -206,7 +206,7 @@ export const UpdateKnowledge = ({ id, open, setOpen }: Props) => {
                       "For very long documents, prefer file upload. Pasted text is limited to about 500k characters."
                   })}
                 </div>
-              </>
+              </div>
             </Form.Item>
           </>
         )}

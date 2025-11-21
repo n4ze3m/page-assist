@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react"
-import { notification } from "antd"
 import {
   getElevenLabsApiKey,
   getElevenLabsModel,
@@ -21,6 +20,7 @@ import { removeReasoning } from "@/libs/reasoning"
 import { markdownToText } from "@/utils/markdown-to-text"
 import { generateOpenAITTS } from "@/services/openai-tts"
 import { tldwClient } from "@/services/tldw/TldwApiClient"
+import { useAntdNotification } from "./useAntdNotification"
 
 export interface VoiceOptions {
   utterance: string
@@ -31,6 +31,7 @@ export const useTTS = () => {
   const [audioElement, setAudioElement] = useState<HTMLAudioElement | null>(
     null
   )
+  const notification = useAntdNotification()
 
   const speak = async ({ utterance }: VoiceOptions) => {
     try {
@@ -139,7 +140,7 @@ export const useTTS = () => {
         setAudioElement(null)
       } else if (provider === "openai") {
         const sentences = splitMessageContent(utterance)
-        
+
         let nextAudioData: ArrayBuffer | null = null
         let nextAudioPromise: Promise<ArrayBuffer> | null = null
 

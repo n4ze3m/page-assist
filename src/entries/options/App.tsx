@@ -2,7 +2,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { MemoryRouter } from "react-router-dom"
 import { useEffect, useState } from "react"
 const queryClient = new QueryClient()
-import { ConfigProvider, Empty, theme } from "antd"
+import { App as AntdApp, ConfigProvider, Empty, theme } from "antd"
 import { StyleProvider } from "@ant-design/cssinjs"
 import { useDarkMode } from "~/hooks/useDarkmode"
 import { OptionRouting } from "@/routes/chrome-route"
@@ -48,15 +48,17 @@ function IndexOption() {
           />
         )}
         direction={direction}>
-        <StyleProvider hashPriority="high">
-          <QueryClientProvider client={queryClient}>
-            <PageAssistProvider>
-              <FontSizeProvider>
-                <OptionRouting />
-              </FontSizeProvider>
-            </PageAssistProvider>
-          </QueryClientProvider>
-        </StyleProvider>
+        <AntdApp>
+          <StyleProvider hashPriority="high">
+            <QueryClientProvider client={queryClient}>
+              <PageAssistProvider>
+                <FontSizeProvider>
+                  <OptionRouting />
+                </FontSizeProvider>
+              </PageAssistProvider>
+            </QueryClientProvider>
+          </StyleProvider>
+        </AntdApp>
       </ConfigProvider>
     </MemoryRouter>
   )

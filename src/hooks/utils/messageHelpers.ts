@@ -1,4 +1,4 @@
-import { notification } from "antd"
+import type { NotificationInstance } from "antd/es/notification/interface"
 import { useTranslation } from "react-i18next"
 import {
   saveMessageOnError as saveError,
@@ -20,7 +20,11 @@ export const focusTextArea = (textareaRef?: React.RefObject<HTMLTextAreaElement>
   } catch (e) { }
 }
 
-export const validateBeforeSubmit = (selectedModel: string, t: any) => {
+export const validateBeforeSubmit = (
+  selectedModel: string,
+  t: any,
+  notification: NotificationInstance
+) => {
   if (!selectedModel || selectedModel?.trim()?.length === 0) {
     notification.error({
       message: t("error"),
