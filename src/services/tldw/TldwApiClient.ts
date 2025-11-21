@@ -37,6 +37,18 @@ export interface ChatCompletionRequest {
   presence_penalty?: number
 }
 
+type PromptPayload = {
+  name?: string
+  title?: string
+  author?: string
+  details?: string
+  system_prompt?: string | null
+  user_prompt?: string | null
+  keywords?: string[]
+  content?: string
+  is_system?: boolean
+}
+
 export interface TldwEmbeddingModel {
   provider: string
   model: string
@@ -546,7 +558,6 @@ export class TldwApiClient {
     // OpenAPI uses trailing slash for this path
     return await bgRequest<any>({ path: '/api/v1/notes/search/', method: 'POST', headers: { 'Content-Type': 'application/json' }, body: { query } })
   }
-
   // Prompts Methods
   async getPrompts(): Promise<any> {
     return await bgRequest<any>({ path: '/api/v1/prompts/', method: 'GET' })
@@ -557,23 +568,58 @@ export class TldwApiClient {
     return await bgRequest<any>({ path: '/api/v1/prompts/search', method: 'POST', headers: { 'Content-Type': 'application/json' }, body: { query } })
   }
 
-  async createPrompt(payload: { title: string; content: string; is_system?: boolean }): Promise<any> {
+  async createPrompt(payload: PromptPayload): Promise<any> {
+    const name = payload.name || payload.title || 'Untitled'
+    const system_prompt = payload.system_prompt ?? (payload.is_system ? payload.content : undefined)
+    const user_prompt = payload.user_prompt ?? (!payload.is_system ? payload.content : undefined)
+    const keywords = payload.keywords
+    const normalized: Record<string, any> = {
+      name,
+      author: payload.author,
+      details: payload.details,
+      system_prompt,
+      user_prompt,
+      keywords
+    }
+
+    Object.keys(normalized).forEach((key) => {
+      if (typeof normalized[key] === 'undefined') delete normalized[key]
+    })
+
     try {
-      return await bgRequest<any>({ path: '/api/v1/prompts/', method: 'POST', headers: { 'Content-Type': 'application/json' }, body: payload })
+      return await bgRequest<any>({ path: '/api/v1/prompts/', method: 'POST', headers: { 'Content-Type': 'application/json' }, body: normalized })
     } catch (e) {
       // Some servers may use a different path without trailing slash
       try {
-        return await bgRequest<any>({ path: '/api/v1/prompts', method: 'POST', headers: { 'Content-Type': 'application/json' }, body: payload })
+        return await bgRequest<any>({ path: '/api/v1/prompts', method: 'POST', headers: { 'Content-Type': 'application/json' }, body: normalized })
       } catch (err) {
         throw err
       }
     }
   }
 
-  async updatePrompt(id: string | number, payload: { title: string; content: string; is_system?: boolean }): Promise<any> {
+  async updatePrompt(id: string | number, payload: PromptPayload): Promise<any> {
     const pid = String(id)
+    const name = payload.name || payload.title || 'Untitled'
+    const system_prompt = payload.system_prompt ?? (payload.is_system ? payload.content : undefined)
+    const user_prompt = payload.user_prompt ?? (!payload.is_system ? payload.content : undefined)
+    const keywords = payload.keywords
+
+    const normalized: Record<string, any> = {
+      name,
+      author: payload.author,
+      details: payload.details,
+      system_prompt,
+      user_prompt,
+      keywords
+    }
+
+    Object.keys(normalized).forEach((key) => {
+      if (typeof normalized[key] === 'undefined') delete normalized[key]
+    })
+
     // Path per OpenAPI: /api/v1/prompts/{prompt_identifier}
-    return await bgRequest<any>({ path: `/api/v1/prompts/${pid}`, method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: payload })
+    return await bgRequest<any>({ path: `/api/v1/prompts/${pid}`, method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: normalized })
   }
 
   // Characters API

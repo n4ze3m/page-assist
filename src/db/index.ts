@@ -118,6 +118,13 @@ type Prompt = {
   title: string
   content: string
   is_system: boolean
+  // API-aligned fields
+  name?: string
+  author?: string
+  details?: string
+  system_prompt?: string | null
+  user_prompt?: string | null
+  keywords?: string[]
   createdBy?: string
   createdAt: number
   tags?: string[]
@@ -326,7 +333,15 @@ export class PageAssitDatabase {
 
   async addPrompt(prompt: Prompt) {
     const prompts = await this.getAllPrompts()
-    const newPrompts = [prompt, ...prompts]
+    const mergedKeywords = prompt.keywords ?? prompt.tags
+    const normalized: Prompt = {
+      ...prompt,
+      title: prompt.title || prompt.name,
+      name: prompt.name ?? prompt.title,
+      tags: mergedKeywords ?? prompt.tags,
+      keywords: mergedKeywords ?? prompt.keywords ?? prompt.tags
+    }
+    const newPrompts = [normalized, ...prompts]
     this.db.set({ prompts: newPrompts })
   }
 
@@ -338,19 +353,35 @@ export class PageAssitDatabase {
 
   async updatePrompt(
     id: string,
-    title: string,
-    content: string,
-    is_system: boolean,
-    options: { tags?: string[]; favorite?: boolean } = {}
+    updates: Partial<Prompt> & {
+      title?: string
+      name?: string
+      content?: string
+      is_system?: boolean
+      tags?: string[]
+      keywords?: string[]
+      favorite?: boolean
+    }
   ) {
     const prompts = await this.getAllPrompts()
     const newPrompts = prompts.map((prompt) => {
       if (prompt.id === id) {
-        prompt.title = title
-        prompt.content = content
-        prompt.is_system = is_system
-        if (options.tags !== undefined) prompt.tags = options.tags
-        if (options.favorite !== undefined) prompt.favorite = options.favorite
+        const mergedKeywords = updates.keywords ?? updates.tags
+        return {
+          ...prompt,
+          ...updates,
+          title: updates.name ?? updates.title ?? prompt.title,
+          name: updates.name ?? prompt.name ?? prompt.title,
+          content: updates.content ?? prompt.content,
+          system_prompt: updates.system_prompt ?? prompt.system_prompt,
+          user_prompt: updates.user_prompt ?? prompt.user_prompt,
+          tags: mergedKeywords ?? prompt.tags,
+          keywords: mergedKeywords ?? prompt.keywords ?? prompt.tags,
+          favorite:
+            typeof updates.favorite === "boolean"
+              ? updates.favorite
+              : prompt.favorite
+        }
       }
       return prompt
     })
@@ -629,10 +660,18 @@ export const deleteChatForEdit = async (history_id: string, index: number) => {
   await db.db.set({ [history_id]: previousHistory.reverse() })
 }
 
-export const savePromptFB = async (prompt: any) => {
+export const savePromptFB = async (prompt: Partial<Prompt> & { id: string }) => {
   const db = new PageAssitDatabase()
-  await db.addPrompt(prompt)
-  return prompt
+  const mergedKeywords = prompt.keywords ?? prompt.tags
+  const normalized = {
+    ...prompt,
+    title: prompt.name ?? prompt.title,
+    name: prompt.name ?? prompt.title,
+    tags: mergedKeywords ?? prompt.tags,
+    keywords: mergedKeywords ?? prompt.keywords ?? prompt.tags
+  }
+  await db.addPrompt(normalized as Prompt)
+  return normalized
 }
 
 export const deletePromptByIdFB = async (id: string) => {
@@ -641,24 +680,28 @@ export const deletePromptByIdFB = async (id: string) => {
   return id
 }
 
-export const updatePromptFB = async ({
-  content,
-  id,
-  title,
-  is_system,
-  tags,
-  favorite
-}: {
-  id: string
-  title: string
-  content: string
-  is_system: boolean
-  tags?: string[]
-  favorite?: boolean
-}) => {
+export const updatePromptFB = async (
+  updates: Partial<Prompt> & {
+    id: string
+    title?: string
+    name?: string
+    content?: string
+    is_system?: boolean
+    tags?: string[]
+    keywords?: string[]
+    favorite?: boolean
+  }
+) => {
   const db = new PageAssitDatabase()
-  await db.updatePrompt(id, title, content, is_system, { tags, favorite })
-  return id
+  const mergedKeywords = updates.keywords ?? updates.tags
+  await db.updatePrompt(updates.id, {
+    ...updates,
+    name: updates.name ?? updates.title,
+    title: updates.title || updates.name,
+    tags: mergedKeywords ?? updates.tags,
+    keywords: mergedKeywords ?? updates.keywords ?? updates.tags
+  })
+  return updates.id
 }
 
 export const getPromptById = async (id: string) => {

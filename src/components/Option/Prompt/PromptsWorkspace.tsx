@@ -42,7 +42,7 @@ export const PromptsWorkspace: React.FC = () => {
     <div className="w-full max-w-5xl mx-auto space-y-4">
       <div className="space-y-1">
         <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-50">
-          {t("option:header.modePrompts", "Prompts")}
+          {t("option:header.modePromptsPlayground", "Prompts Playground")}
         </h1>
         <p className="text-xs text-gray-600 dark:text-gray-300">
           {t("settings:managePrompts.emptyDescription", {
@@ -55,4 +55,3 @@ export const PromptsWorkspace: React.FC = () => {
     </div>
   )
 }
-

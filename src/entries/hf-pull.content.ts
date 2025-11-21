@@ -16,12 +16,33 @@ export default defineContentScript({
       </svg>
     `
 
+    const createDownloadIcon = () => {
+      const ns = "http://www.w3.org/2000/svg"
+      const svg = document.createElementNS(ns, "svg")
+      svg.setAttribute("xmlns", ns)
+      svg.setAttribute("fill", "currentColor")
+      svg.setAttribute("viewBox", "0 0 24 24")
+      svg.setAttribute("width", "16")
+      svg.setAttribute("height", "16")
+
+      const path1 = document.createElementNS(ns, "path")
+      path1.setAttribute("d", "M12 16l-6-6h4V4h4v6h4l-6 6z")
+      const path2 = document.createElementNS(ns, "path")
+      path2.setAttribute("d", "M4 20h16v-2H4v2z")
+      svg.append(path1, path2)
+      return svg
+    }
+
     const injectButton = () => {
       if (document.querySelector('.tldw-send-button')) return
       const btn = document.createElement('button')
       btn.className = 'tldw-send-button focus:outline-hidden inline-flex cursor-pointer items-center text-sm bg-white shadow-xs rounded-md border px-2 py-1 text-gray-600'
       btn.title = 'Send to tldw_server'
-      btn.innerHTML = `${downloadSVG} <span class="ml-1.5">Send to tldw_server</span>`
+      const icon = createDownloadIcon()
+      const label = document.createElement("span")
+      label.classList.add("ml-1.5")
+      label.textContent = "Send to tldw_server"
+      btn.append(icon, label)
       btn.style.position = 'fixed'
       btn.style.bottom = '60px'
       btn.style.right = '20px'

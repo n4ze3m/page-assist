@@ -75,6 +75,13 @@ export type Prompt = {
   title: string;
   content: string;
   is_system: boolean;
+  // API-aligned fields
+  name?: string;
+  author?: string;
+  details?: string;
+  system_prompt?: string | null;
+  user_prompt?: string | null;
+  keywords?: string[];
   createdBy?: string;
   createdAt: number;
   // optional metadata

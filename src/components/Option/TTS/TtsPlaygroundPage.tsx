@@ -13,7 +13,7 @@ import {
 } from "antd"
 import { useTranslation } from "react-i18next"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
-import { getTTSSettings, setTTSSettings } from "@/services/tts"
+import { getTTSProvider, getTTSSettings, setTTSSettings } from "@/services/tts"
 import { useServerCapabilities } from "@/hooks/useServerCapabilities"
 import { useServerOnline } from "@/hooks/useServerOnline"
 import { TTSModeSettings } from "@/components/Option/Settings/tts-mode"
@@ -184,8 +184,10 @@ const TtsPlaygroundPage: React.FC = () => {
     setCurrentTime(0)
     setDuration(0)
 
+    const effectiveProvider = ttsSettings?.ttsProvider || (await getTTSProvider())
+
     await generateSegments(text, {
-      provider,
+      provider: effectiveProvider,
       elevenLabsModel: elevenModelId,
       elevenLabsVoiceId: elevenVoiceId,
       tldwModel,

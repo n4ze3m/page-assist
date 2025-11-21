@@ -233,20 +233,55 @@ export const getAllPrompts = async () => {
 export const savePrompt = async ({
   content,
   title,
+  name,
+  author,
+  details,
+  system_prompt,
+  user_prompt,
   is_system = false,
   tags = [],
+  keywords,
   favorite = false
 }: {
   title: string
-  content: string
-  is_system: boolean
+  name?: string
+  content?: string
+  author?: string
+  details?: string
+  system_prompt?: string
+  user_prompt?: string
+  is_system?: boolean
   tags?: string[]
+  keywords?: string[]
   favorite?: boolean
 }) => {
   const db = new PageAssistDatabase()
   const id = generateID()
   const createdAt = Date.now()
-  const prompt = { id, title, content, is_system, createdAt, tags, favorite }
+  const promptName = name || title
+  const resolvedKeywords = keywords ?? tags
+  const resolvedContent =
+    content ??
+    (is_system ? system_prompt : user_prompt) ??
+    system_prompt ??
+    user_prompt ??
+    ""
+
+  const prompt = {
+    id,
+    title: promptName,
+    name: promptName,
+    content: resolvedContent,
+    is_system: !!is_system,
+    createdAt,
+    tags: resolvedKeywords,
+    keywords: resolvedKeywords,
+    favorite,
+    author,
+    details,
+    system_prompt: system_prompt ?? (is_system ? resolvedContent : undefined),
+    user_prompt: user_prompt ?? (!is_system ? resolvedContent : undefined)
+  }
   await db.addPrompt(prompt)
   await savePromptFB(prompt)
   return prompt
@@ -263,26 +298,55 @@ export const updatePrompt = async ({
   content,
   id,
   title,
+  name,
+  author,
+  details,
+  system_prompt,
+  user_prompt,
   is_system,
   tags = [],
+  keywords,
   favorite
 }: {
   id: string
-  title: string
-  content: string
-  is_system: boolean
+  title?: string
+  name?: string
+  content?: string
+  author?: string
+  details?: string
+  system_prompt?: string
+  user_prompt?: string
+  is_system?: boolean
   tags?: string[]
+  keywords?: string[]
   favorite?: boolean
 }) => {
   const db = new PageAssistDatabase()
-  await db.updatePrompt(id, title, content, is_system, { tags, favorite })
+  const resolvedKeywords = keywords ?? tags
+  const resolvedContent =
+    content ??
+    (is_system ? system_prompt : user_prompt) ??
+    system_prompt ??
+    user_prompt
+
+  const payload = {
+    title: name || title,
+    name: name || title,
+    content: resolvedContent,
+    is_system,
+    tags: resolvedKeywords,
+    keywords: resolvedKeywords,
+    favorite,
+    author,
+    details,
+    system_prompt,
+    user_prompt
+  }
+
+  await db.updatePrompt(id, payload)
   await updatePromptFB({
     id,
-    title,
-    content,
-    is_system,
-    tags,
-    favorite
+    ...payload
   })
   return id
 }

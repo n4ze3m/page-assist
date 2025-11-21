@@ -319,7 +319,15 @@ export class PageAssistDatabase {
   }
 
   async addPrompt(prompt: Prompt) {
-    await db.prompts.add(prompt);
+    const mergedKeywords = prompt.keywords ?? prompt.tags;
+    const normalized: Prompt = {
+      ...prompt,
+      title: prompt.title || prompt.name,
+      name: prompt.name ?? prompt.title,
+      tags: mergedKeywords ?? prompt.tags,
+      keywords: mergedKeywords ?? prompt.keywords ?? prompt.tags
+    };
+    await db.prompts.add(normalized);
   }
 
   async deletePrompt(id: string) {
@@ -328,13 +336,27 @@ export class PageAssistDatabase {
 
   async updatePrompt(
     id: string,
-    title: string,
-    content: string,
-    is_system: boolean,
-    options: { tags?: string[]; favorite?: boolean } = {}
+    updates: Partial<Prompt> & { title?: string; name?: string; content?: string; is_system?: boolean; tags?: string[]; keywords?: string[]; favorite?: boolean }
   ) {
-    const { tags, favorite } = options
-    await db.prompts.update(id, { title, content, is_system, tags, favorite });
+    const existing = await db.prompts.get(id);
+    if (!existing) return;
+
+    const mergedKeywords = updates.keywords ?? updates.tags;
+    const merged: Prompt = {
+      ...existing,
+      ...updates,
+      title: updates.name ?? updates.title ?? existing.title,
+      name: updates.name ?? existing.name ?? existing.title,
+      content: updates.content ?? existing.content,
+      system_prompt: updates.system_prompt ?? existing.system_prompt,
+      user_prompt: updates.user_prompt ?? existing.user_prompt,
+      tags: mergedKeywords ?? existing.tags,
+      keywords: mergedKeywords ?? existing.keywords ?? existing.tags,
+      favorite:
+        typeof updates.favorite === "boolean" ? updates.favorite : existing.favorite
+    };
+
+    await db.prompts.put(merged);
   }
 
   async getPromptById(id: string): Promise<Prompt | undefined> {
@@ -416,7 +438,16 @@ export class PageAssistDatabase {
         continue;
       }
 
-      await db.prompts.put(prompt);
+      const mergedKeywords = prompt.keywords ?? prompt.tags;
+      const normalizedPrompt: Prompt = {
+        ...prompt,
+        title: prompt.title || prompt.name,
+        name: prompt.name ?? prompt.title,
+        tags: mergedKeywords ?? prompt.tags,
+        keywords: mergedKeywords ?? prompt.keywords ?? prompt.tags
+      };
+
+      await db.prompts.put(normalizedPrompt);
     }
   }
 

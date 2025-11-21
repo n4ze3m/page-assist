@@ -40,6 +40,9 @@ export default defineConfig({
       hmr: false
     },
     build: {
+      // Firefox MV2 validator chokes on modern ESM in chunks; downlevel and turn off module preload there.
+      target: process.env.TARGET === "firefox" ? "es2017" : "esnext",
+      modulePreload: process.env.TARGET === "firefox" ? false : undefined,
       rollupOptions: {
         external: ["langchain", "@langchain/community"]
       }
@@ -54,7 +57,7 @@ export default defineConfig({
     version: "0.1.0",
     name:
       process.env.TARGET === "firefox"
-        ? "tldw Assistant - Browser Extension for tldw_server"
+        ? "tldw Assistant"
         : "__MSG_extName__",
     description: "__MSG_extDescription__",
     default_locale: "en",
@@ -64,23 +67,17 @@ export default defineConfig({
       process.env.TARGET === "firefox"
         ? {
           gecko: {
-            id: "tldw-assistant@tldw"
+            id: "tldw-assistant@tldw",
+            data_collection_permissions: {
+              required: false,
+              reasons: ["Not collecting user data."]
+            }
           }
         }
         : undefined,
-    // During development, grant localhost origins by default so background can fetch without prompts
-    host_permissions:
-      process.env.TARGET !== "firefox" && process.env.NODE_ENV === 'development'
-        ? [
-            "http://127.0.0.1/*",
-            "http://localhost/*"
-          ]
-        : undefined,
-    // Use optional host permissions on Chromium so users can grant their own server origin at runtime
-    optional_host_permissions:
-      process.env.TARGET !== "firefox"
-        ? ["http://*/*", "https://*/*"]
-        : undefined,
+    // Allow outbound calls to the user's tldw_server (local or remote) without an extra permission prompt.
+    host_permissions: ["http://*/*", "https://*/*"],
+    optional_host_permissions: undefined,
     commands: {
       _execute_action: {
         description: "Open the Web UI",

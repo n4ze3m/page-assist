@@ -833,15 +833,15 @@ export const Header: React.FC<Props> = ({
                   {
                     key: "notes",
                     label: t("option:header.modeNotes", "Notes"),
-                    shortcut: shortcutConfig.modeNotes
-                  },
-                  {
-                    key: "prompts",
-                    label: t("option:header.modePrompts", "Prompts"),
-                    shortcut: shortcutConfig.modePrompts
-                  },
-                  {
-                    key: "flashcards",
+                shortcut: shortcutConfig.modeNotes
+              },
+              {
+                key: "prompts",
+                label: t("option:header.modePromptsPlayground", "Prompts Playground"),
+                shortcut: shortcutConfig.modePrompts
+              },
+              {
+                key: "flashcards",
                     label: t("option:header.modeFlashcards", "Flashcards"),
                     shortcut: shortcutConfig.modeFlashcards
                   },

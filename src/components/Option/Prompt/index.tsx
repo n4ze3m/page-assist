@@ -14,7 +14,7 @@ import {
   Alert
 } from "antd"
 import { Trash2, Pen, Computer, Zap, Star, CopyIcon, UploadCloud, Download, MessageCircle } from "lucide-react"
-import { useMemo, useRef, useState } from "react"
+import React, { useMemo, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
 import {
@@ -91,6 +91,35 @@ export const PromptBody = () => {
   ]
     .filter(Boolean)
     .join(" ")
+
+  const getPromptKeywords = React.useCallback(
+    (prompt: any) => prompt?.keywords ?? prompt?.tags ?? [],
+    []
+  )
+
+  const normalizePromptPayload = React.useCallback((values: any) => {
+    const keywords = values?.keywords ?? values?.tags ?? []
+    const promptName = values?.name || values?.title
+    const resolvedContent =
+      values?.content ??
+      (values?.is_system ? values?.system_prompt : values?.user_prompt) ??
+      values?.system_prompt ??
+      values?.user_prompt
+
+    return {
+      ...values,
+      title: promptName,
+      name: promptName,
+      tags: keywords,
+      keywords,
+      content: resolvedContent,
+      system_prompt: values?.system_prompt,
+      user_prompt: values?.user_prompt,
+      author: values?.author,
+      details: values?.details,
+      is_system: !!values?.is_system
+    }
+  }, [])
 
   const { mutate: deletePrompt } = useMutation({
     mutationFn: deletePromptById,
@@ -210,31 +239,51 @@ export const PromptBody = () => {
 
   const allTags = useMemo(() => {
     const set = new Set<string>()
-    ;(data || []).forEach((p: any) => (p?.tags || []).forEach((t: string) => set.add(t)))
+    ;(data || []).forEach((p: any) =>
+      (getPromptKeywords(p) || []).forEach((t: string) => set.add(t))
+    )
     return Array.from(set.values())
-  }, [data])
+  }, [data, getPromptKeywords])
 
   const filteredData = useMemo(() => {
     let items = (data || []) as any[]
     if (typeFilter !== "all") {
       const system = typeFilter === "system"
-      items = items.filter((p) => p.is_system === system)
+      items = items.filter((p) => Boolean(p.is_system) === system)
     }
     if (tagFilter.length > 0) {
-      items = items.filter((p) => (p?.tags || []).some((t: string) => tagFilter.includes(t)))
+      items = items.filter((p) =>
+        (getPromptKeywords(p) || []).some((t: string) => tagFilter.includes(t))
+      )
     }
     if (searchText.trim().length > 0) {
       const q = searchText.toLowerCase()
       items = items.filter(
-        (p) =>
-          p.title?.toLowerCase?.().includes(q) ||
-          p.content?.toLowerCase?.().includes(q)
+        (p) => {
+          const haystack = [
+            p.title,
+            p.name,
+            p.content,
+            p.system_prompt,
+            p.user_prompt,
+            p.details,
+            p.author,
+            ...(getPromptKeywords(p) || [])
+          ]
+          return haystack.some((field: any) =>
+            typeof field === "string" ? field.toLowerCase().includes(q) : false
+          )
+        }
       )
     }
     // favorites first, then newest
-    items = items.sort((a, b) => Number(!!b.favorite) - Number(!!a.favorite) || b.createdAt - a.createdAt)
+    items = items.sort(
+      (a, b) =>
+        Number(!!b.favorite) - Number(!!a.favorite) ||
+        (b.createdAt || 0) - (a.createdAt || 0)
+    )
     return items
-  }, [data, typeFilter, tagFilter, searchText])
+  }, [data, typeFilter, tagFilter, searchText, getPromptKeywords])
 
   const triggerExport = async () => {
     try {
@@ -341,7 +390,7 @@ export const PromptBody = () => {
               <Select
                 mode="multiple"
                 allowClear
-                placeholder={t("managePrompts.tags.placeholder", { defaultValue: "Filter tags" })}
+                placeholder={t("managePrompts.tags.placeholder", { defaultValue: "Filter keywords" })}
                 style={{ minWidth: 200 }}
                 value={tagFilter}
                 onChange={(v) => setTagFilter(v)}
@@ -361,7 +410,7 @@ export const PromptBody = () => {
           <p className="ml-4 text-xs text-gray-500 dark:text-gray-400">
             {t("managePrompts.filterHelp", {
               defaultValue:
-                "Search matches title and prompt content. Use type and tags to narrow the list."
+                "Search matches name, author, details, and prompt text. Use type and keywords to narrow the list."
             })}
           </p>
         </div>
@@ -408,9 +457,11 @@ export const PromptBody = () => {
                       updatePromptDirect({
                         id: record.id,
                         title: record.title,
+                        name: record.name,
                         content: record.content,
                         is_system: record.is_system,
-                        tags: record?.tags || [],
+                        keywords: getPromptKeywords(record),
+                        tags: getPromptKeywords(record),
                         favorite: !record?.favorite
                       })
                     }
@@ -425,29 +476,77 @@ export const PromptBody = () => {
                 title: t("managePrompts.columns.title"),
                 dataIndex: "title",
                 key: "title",
-                render: (content) => (
-                  <span className="line-clamp-1">{content}</span>
+                render: (_: any, record: any) => (
+                  <div className="flex max-w-64 flex-col">
+                    <span className="line-clamp-1 font-medium">
+                      {record?.name || record?.title}
+                    </span>
+                    {record?.author && (
+                      <span className="text-xs text-gray-500 dark:text-gray-400">
+                        {t("managePrompts.form.author.label", {
+                          defaultValue: "Author"
+                        })}
+                        : {record.author}
+                      </span>
+                    )}
+                    {record?.details && (
+                      <span className="text-xs text-gray-500 dark:text-gray-400 line-clamp-2">
+                        {record.details}
+                      </span>
+                    )}
+                  </div>
                 )
               },
               {
                 title: t("managePrompts.columns.prompt"),
-                dataIndex: "content",
                 key: "content",
-                render: (content) => (
-                  <span className="line-clamp-1">{content}</span>
-                )
+                render: (_: any, record: any) => {
+                  const systemText =
+                    record?.system_prompt ||
+                    (record?.is_system ? record?.content : undefined)
+                  const userText =
+                    record?.user_prompt ||
+                    (!record?.is_system ? record?.content : undefined)
+                  return (
+                    <div className="flex max-w-[26rem] flex-col gap-1">
+                      {systemText && (
+                        <div className="flex items-start gap-2">
+                          <Tag color="volcano">
+                            {t("managePrompts.form.systemPrompt.shortLabel", {
+                              defaultValue: "System"
+                            })}
+                          </Tag>
+                          <span className="line-clamp-2">{systemText}</span>
+                        </div>
+                      )}
+                      {userText && (
+                        <div className="flex items-start gap-2">
+                          <Tag color="blue">
+                            {t("managePrompts.form.userPrompt.shortLabel", {
+                              defaultValue: "User"
+                            })}
+                          </Tag>
+                          <span className="line-clamp-2">{userText}</span>
+                        </div>
+                      )}
+                    </div>
+                  )
+                }
               },
               {
-                title: t("managePrompts.tags.label", { defaultValue: "Tags" }),
-                dataIndex: "tags",
-                key: "tags",
-                render: (tags: string[]) => (
-                  <div className="flex flex-wrap gap-1 max-w-64">
-                    {(tags || []).map((tag) => (
-                      <Tag key={tag}>{tag}</Tag>
-                    ))}
-                  </div>
-                )
+                title: t("managePrompts.tags.label", { defaultValue: "Keywords" }),
+                dataIndex: "keywords",
+                key: "keywords",
+                render: (_: any, record: any) => {
+                  const tags = getPromptKeywords(record)
+                  return (
+                    <div className="flex max-w-64 flex-wrap gap-1">
+                      {(tags || []).map((tag: string) => (
+                        <Tag key={tag}>{tag}</Tag>
+                      ))}
+                    </div>
+                  )
+                }
               },
               {
                 title: t("managePrompts.columns.type"),
@@ -484,7 +583,12 @@ export const PromptBody = () => {
                           defaultValue: "Use in chat"
                         })}
                         onClick={() => {
-                          setSelectedQuickPrompt(record.content)
+                          const quickContent =
+                            record?.user_prompt ??
+                            (!record?.is_system ? record?.content : undefined) ??
+                            record?.system_prompt ??
+                            record?.content
+                          setSelectedQuickPrompt(quickContent)
                           navigate("/")
                         }}
                         disabled={isFireFoxPrivateMode}
@@ -500,11 +604,17 @@ export const PromptBody = () => {
                         })}
                         onClick={() => {
                           savePromptMutation({
-                            title: `${record.title} (Copy)`,
+                            title: `${record.title || record.name} (Copy)`,
+                            name: `${record.name || record.title} (Copy)`,
                             content: record.content,
                             is_system: record.is_system,
-                            tags: record?.tags || [],
-                            favorite: !!record?.favorite
+                            keywords: getPromptKeywords(record),
+                            tags: getPromptKeywords(record),
+                            favorite: !!record?.favorite,
+                            author: record?.author,
+                            details: record?.details,
+                            system_prompt: record?.system_prompt,
+                            user_prompt: record?.user_prompt
                           })
                         }}
                         disabled={isFireFoxPrivateMode}
@@ -537,7 +647,19 @@ export const PromptBody = () => {
                         aria-label={t("managePrompts.tooltip.edit")}
                         onClick={() => {
                           setEditId(record.id)
-                          editForm.setFieldsValue(record)
+                          editForm.setFieldsValue({
+                            name: record?.name || record?.title,
+                            author: record?.author,
+                            details: record?.details,
+                            system_prompt:
+                              record?.system_prompt ||
+                              (record?.is_system ? record?.content : undefined),
+                            user_prompt:
+                              record?.user_prompt ||
+                              (!record?.is_system ? record?.content : undefined),
+                            keywords: getPromptKeywords(record),
+                            is_system: !!record?.is_system
+                          })
                           setOpenEdit(true)
                         }}
                         disabled={isFireFoxPrivateMode}
@@ -732,11 +854,12 @@ export const PromptBody = () => {
         onCancel={() => setOpen(false)}
         footer={null}>
         <Form
-          onFinish={(values) => savePromptMutation(values)}
+          onFinish={(values) => savePromptMutation(normalizePromptPayload(values))}
           layout="vertical"
-          form={createForm}>
+          form={createForm}
+          initialValues={{ is_system: false, keywords: [] }}>
           <Form.Item
-            name="title"
+            name="name"
             label={t("managePrompts.form.title.label")}
             rules={[
               {
@@ -748,26 +871,46 @@ export const PromptBody = () => {
           </Form.Item>
 
           <Form.Item
-            name="content"
-            label={t("managePrompts.form.prompt.label")}
-            rules={[
-              {
-                required: true,
-                message: t("managePrompts.form.prompt.required")
-              }
-            ]}
-            help={t("managePrompts.form.prompt.help")}>
+            name="author"
+            label={t("managePrompts.form.author.label", { defaultValue: "Author" })}>
+            <Input placeholder={t("managePrompts.form.author.placeholder", { defaultValue: "Optional author" })} />
+          </Form.Item>
+
+          <Form.Item
+            name="details"
+            label={t("managePrompts.form.details.label", { defaultValue: "Details / notes" })}>
             <Input.TextArea
-              placeholder={t("managePrompts.form.prompt.placeholder")}
+              placeholder={t("managePrompts.form.details.placeholder", { defaultValue: "Add context or usage notes" })}
+              autoSize={{ minRows: 2, maxRows: 6 }}
+            />
+          </Form.Item>
+
+          <Form.Item
+            name="system_prompt"
+            label={t("managePrompts.form.systemPrompt.label", { defaultValue: "System prompt" })}
+            help={t("managePrompts.form.prompt.help")}
+          >
+            <Input.TextArea
+              placeholder={t("managePrompts.form.systemPrompt.placeholder", { defaultValue: "Optional system prompt sent as the system message" })}
               autoSize={{ minRows: 3, maxRows: 10 }}
             />
           </Form.Item>
 
-          <Form.Item name="tags" label={t("managePrompts.tags.label", { defaultValue: "Tags" })}>
+          <Form.Item
+            name="user_prompt"
+            label={t("managePrompts.form.userPrompt.label", { defaultValue: "User prompt" })}
+            help={t("managePrompts.form.userPrompt.help", { defaultValue: "Template inserted as the user message when using this prompt." })}>
+            <Input.TextArea
+              placeholder={t("managePrompts.form.userPrompt.placeholder", { defaultValue: "Optional user prompt template" })}
+              autoSize={{ minRows: 3, maxRows: 10 }}
+            />
+          </Form.Item>
+
+          <Form.Item name="keywords" label={t("managePrompts.tags.label", { defaultValue: "Keywords" })}>
             <Select
               mode="tags"
               allowClear
-              placeholder={t("managePrompts.tags.placeholder", { defaultValue: "Add tags" })}
+              placeholder={t("managePrompts.tags.placeholder", { defaultValue: "Add keywords" })}
               options={allTags.map((t) => ({ label: t, value: t }))}
             />
           </Form.Item>
@@ -797,11 +940,12 @@ export const PromptBody = () => {
         onCancel={() => setOpenEdit(false)}
         footer={null}>
         <Form
-          onFinish={(values) => updatePromptMutation(values)}
+          onFinish={(values) => updatePromptMutation(normalizePromptPayload(values))}
           layout="vertical"
-          form={editForm}>
+          form={editForm}
+          initialValues={{ is_system: false, keywords: [] }}>
           <Form.Item
-            name="title"
+            name="name"
             label={t("managePrompts.form.title.label")}
             rules={[
               {
@@ -813,26 +957,46 @@ export const PromptBody = () => {
           </Form.Item>
 
           <Form.Item
-            name="content"
-            label={t("managePrompts.form.prompt.label")}
-            rules={[
-              {
-                required: true,
-                message: t("managePrompts.form.prompt.required")
-              }
-            ]}
-            help={t("managePrompts.form.prompt.help")}>
+            name="author"
+            label={t("managePrompts.form.author.label", { defaultValue: "Author" })}>
+            <Input placeholder={t("managePrompts.form.author.placeholder", { defaultValue: "Optional author" })} />
+          </Form.Item>
+
+          <Form.Item
+            name="details"
+            label={t("managePrompts.form.details.label", { defaultValue: "Details / notes" })}>
             <Input.TextArea
-              placeholder={t("managePrompts.form.prompt.placeholder")}
+              placeholder={t("managePrompts.form.details.placeholder", { defaultValue: "Add context or usage notes" })}
+              autoSize={{ minRows: 2, maxRows: 6 }}
+            />
+          </Form.Item>
+
+          <Form.Item
+            name="system_prompt"
+            label={t("managePrompts.form.systemPrompt.label", { defaultValue: "System prompt" })}
+            help={t("managePrompts.form.prompt.help")}
+          >
+            <Input.TextArea
+              placeholder={t("managePrompts.form.systemPrompt.placeholder", { defaultValue: "Optional system prompt sent as the system message" })}
               autoSize={{ minRows: 3, maxRows: 10 }}
             />
           </Form.Item>
 
-          <Form.Item name="tags" label={t("managePrompts.tags.label", { defaultValue: "Tags" })}>
+          <Form.Item
+            name="user_prompt"
+            label={t("managePrompts.form.userPrompt.label", { defaultValue: "User prompt" })}
+            help={t("managePrompts.form.userPrompt.help", { defaultValue: "Template inserted as the user message when using this prompt." })}>
+            <Input.TextArea
+              placeholder={t("managePrompts.form.userPrompt.placeholder", { defaultValue: "Optional user prompt template" })}
+              autoSize={{ minRows: 3, maxRows: 10 }}
+            />
+          </Form.Item>
+
+          <Form.Item name="keywords" label={t("managePrompts.tags.label", { defaultValue: "Keywords" })}>
             <Select
               mode="tags"
               allowClear
-              placeholder={t("managePrompts.tags.placeholder", { defaultValue: "Add tags" })}
+              placeholder={t("managePrompts.tags.placeholder", { defaultValue: "Add keywords" })}
               options={allTags.map((t) => ({ label: t, value: t }))}
             />
           </Form.Item>

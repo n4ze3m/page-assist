@@ -100,7 +100,10 @@ const NotesManagerPage: React.FC = () => {
       setTitle(String(d?.title || ''))
       setContent(String(d?.content || ''))
       const k = (Array.isArray(d?.metadata?.keywords) ? d.metadata.keywords : (Array.isArray(d?.keywords) ? d.keywords : [])) as any[]
-      setEditorKeywords((k || []).map(String))
+      const normalizedKeywords = (k || []).map((item: any) =>
+        String(item?.keyword || item?.keyword_text || item?.text || item)
+      ).filter((s) => s && s.trim().length > 0)
+      setEditorKeywords(normalizedKeywords)
       setIsDirty(false)
     } catch {
       message.error('Failed to load note')
@@ -699,6 +702,7 @@ const NotesManagerPage: React.FC = () => {
             onChange={(e) => { setTitle(e.target.value); setIsDirty(true) }}
             disabled={editorDisabled}
             ref={titleInputRef}
+            className="bg-transparent hover:bg-white focus:bg-white dark:bg-transparent dark:hover:bg-[#1f1f1f] dark:focus:bg-[#1f1f1f] transition-colors"
           />
         </div>
         <div className="mt-2">
