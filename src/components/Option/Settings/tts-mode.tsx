@@ -1,7 +1,7 @@
 import { SaveButton } from "@/components/Common/SaveButton"
 import { getModels, getVoices } from "@/services/elevenlabs"
 import { getTTSSettings, setTTSSettings } from "@/services/tts"
-import { useQuery as useRQ } from "@tanstack/react-query"
+import { useQuery as useRQ, useQueryClient } from "@tanstack/react-query"
 import { fetchTldwVoices, type TldwVoice } from "@/services/tldw/audio-voices"
 import { useWebUI } from "@/store/webui"
 import { useForm } from "@mantine/form"
@@ -12,6 +12,7 @@ import { useTranslation } from "react-i18next"
 export const TTSModeSettings = ({ hideBorder }: { hideBorder?: boolean }) => {
   const { t } = useTranslation("settings")
   const { setTTSEnabled } = useWebUI()
+  const queryClient = useQueryClient()
 
   const form = useForm({
     initialValues: {
@@ -67,15 +68,16 @@ export const TTSModeSettings = ({ hideBorder }: { hideBorder?: boolean }) => {
     enabled:
       form.values.ttsProvider === "elevenlabs" && !!form.values.elevenLabsApiKey
   })
-  if (status === "pending" || status === "error") {
-    return <Skeleton active />
-  }
 
   const { data: tldwVoices } = useRQ({
     queryKey: ["fetchTldwVoices"],
     queryFn: fetchTldwVoices,
     enabled: form.values.ttsProvider === "tldw"
   })
+
+  if (status === "pending" || status === "error") {
+    return <Skeleton active />
+  }
 
   return (
     <div>
@@ -94,6 +96,7 @@ export const TTSModeSettings = ({ hideBorder }: { hideBorder?: boolean }) => {
         onSubmit={form.onSubmit(async (values) => {
           await setTTSSettings(values)
           setTTSEnabled(values.ttsEnabled)
+          queryClient.invalidateQueries({ queryKey: ["fetchTTSSettings"] })
         })}
         className="space-y-4">
         <div className="flex sm:flex-row flex-col space-y-4 sm:space-y-0 sm:justify-between">

@@ -285,6 +285,12 @@ export const Header: React.FC<Props> = ({
           },
           {
             type: "link" as const,
+            to: "/evaluations",
+            icon: Microscope,
+            label: t("option:header.evaluations", "Evaluations")
+          },
+          {
+            type: "link" as const,
             to: "/tts",
             icon: Gauge,
             label: t("option:tts.playground", "TTS Playground")

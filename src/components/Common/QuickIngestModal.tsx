@@ -63,7 +63,7 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
   const [advSearch, setAdvSearch] = React.useState<string>('')
   const [savedAdvValues, setSavedAdvValues] = useStorage<Record<string, any>>('quickIngestAdvancedValues', {})
   const [uiPrefs, setUiPrefs] = useStorage<{ advancedOpen?: boolean; fieldDetailsOpen?: Record<string, boolean> }>('quickIngestAdvancedUI', {})
-  const [specPrefs, setSpecPrefs] = useStorage<{ preferServer?: boolean; lastRemote?: { version?: string; cachedAt?: number; spec?: any } }>('quickIngestSpecPrefs', { preferServer: true })
+  const [specPrefs, setSpecPrefs] = useStorage<{ preferServer?: boolean; lastRemote?: { version?: string; cachedAt?: number } }>('quickIngestSpecPrefs', { preferServer: true })
   const [totalPlanned, setTotalPlanned] = React.useState<number>(0)
   const [ragEmbeddingLabel, setRagEmbeddingLabel] = React.useState<string | null>(null)
 
@@ -391,7 +391,21 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
       used = 'server'
       try {
         const rVer = remote?.info?.version
-        setSpecPrefs({ ...(specPrefs || {}), preferServer: true, lastRemote: { version: rVer, cachedAt: Date.now(), spec: remote } })
+        const payload = {
+          ...(specPrefs || {}),
+          preferServer: true,
+          lastRemote: { version: rVer, cachedAt: Date.now() }
+        }
+        // Log approximate size of what we persist for debugging quota issues
+        try {
+          const approxSize = JSON.stringify(payload).length
+          // eslint-disable-next-line no-console
+          console.info(
+            "[QuickIngest] Persisting quickIngestSpecPrefs (~%d bytes)",
+            approxSize
+          )
+        } catch {}
+        setSpecPrefs(payload)
       } catch {}
       if (reportDiff && bundledSpec) {
         // Compare fields
@@ -418,14 +432,6 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
         }
       }
     } else {
-      // Try cached last remote spec from storage
-      if (preferServer && specPrefs?.lastRemote?.spec) {
-        try {
-          parseSpec(specPrefs.lastRemote.spec)
-          setSpecSource('server-cached')
-          return
-        } catch {}
-      }
       try {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore

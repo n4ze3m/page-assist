@@ -5,6 +5,7 @@ import {
   Button,
   Card,
   Divider,
+  Dropdown,
   Empty,
   Form,
   Input,
@@ -21,6 +22,8 @@ import {
   message
 } from "antd"
 import { Checkbox } from "antd"
+import dayjs from "dayjs"
+import relativeTime from "dayjs/plugin/relativeTime"
 import { useTranslation } from "react-i18next"
 import { confirmDanger } from "@/components/Common/confirm-danger"
 import { useServerOnline } from "@/hooks/useServerOnline"
@@ -47,6 +50,8 @@ import { useNavigate } from "react-router-dom"
 import { useDemoMode } from "@/context/demo-mode"
 import { useServerCapabilities } from "@/hooks/useServerCapabilities"
 
+dayjs.extend(relativeTime)
+
 const { Text, Title } = Typography
 
 type DueStatus = "new" | "learning" | "due" | "all"
@@ -58,6 +63,7 @@ export const FlashcardsPage: React.FC = () => {
   const navigate = useNavigate()
   const { demoEnabled } = useDemoMode()
   const { capabilities, loading: capsLoading } = useServerCapabilities()
+  const [activeTab, setActiveTab] = React.useState<string>("review")
 
   if (!isOnline) {
     return demoEnabled ? (
@@ -153,6 +159,7 @@ export const FlashcardsPage: React.FC = () => {
   const [reviewDeckId, setReviewDeckId] = React.useState<number | null | undefined>(undefined)
   const [showAnswer, setShowAnswer] = React.useState(false)
   const [answerMs, setAnswerMs] = React.useState<number | undefined>(undefined)
+  const [showAdvancedTiming, setShowAdvancedTiming] = React.useState(false)
 
   const reviewQuery = useQuery({
     queryKey: ["flashcards:review:next", reviewDeckId],
@@ -174,9 +181,14 @@ export const FlashcardsPage: React.FC = () => {
     try {
       const card = reviewQuery.data
       if (!card) return
-      await reviewFlashcard({ card_uuid: card.uuid, rating, answer_time_ms: answerMs })
+      const answer_time_ms =
+        typeof answerMs === "number" && !Number.isNaN(answerMs)
+          ? Math.round(answerMs * 1000)
+          : undefined
+      await reviewFlashcard({ card_uuid: card.uuid, rating, answer_time_ms })
       setShowAnswer(false)
       setAnswerMs(undefined)
+      setShowAdvancedTiming(false)
       await qc.invalidateQueries({ queryKey: ["flashcards:review:next"] })
       message.success(t("common:success", { defaultValue: "Success" }))
     } catch (e: any) {
@@ -278,6 +290,7 @@ export const FlashcardsPage: React.FC = () => {
   // Selection across results helpers
   const totalCount = manageQuery.data?.count || 0
   const selectedCount = selectAllAcross ? Math.max(0, totalCount - deselectedIds.size) : selectedIds.size
+  const anySelection = selectedCount > 0
 
   async function fetchAllItemsAcrossFilters(): Promise<Flashcard[]> {
     const items: Flashcard[] = []
@@ -306,6 +319,69 @@ export const FlashcardsPage: React.FC = () => {
     }
     const all = await fetchAllItemsAcrossFilters()
     return all.filter((i) => !deselectedIds.has(i.uuid))
+  }
+
+  const openBulkMove = () => {
+    if (!anySelection) return
+    setMoveCard(null)
+    setMoveOpen(true)
+  }
+
+  const handleBulkDelete = async () => {
+    const toDelete = await getSelectedItems()
+    if (!toDelete.length) return
+    const ok = await confirmDanger({
+      title: t("common:confirmTitle", { defaultValue: "Please confirm" }),
+      content:
+        t("option:flashcards.bulkDeleteConfirm", {
+          defaultValue: `Delete ${toDelete.length} selected cards? This cannot be undone.`
+        }),
+      okText: t("common:delete", { defaultValue: "Delete" }),
+      cancelText: t("common:cancel", { defaultValue: "Cancel" })
+    })
+    if (!ok) return
+    try {
+      await Promise.all(toDelete.map((i) => deleteFlashcard(i.uuid, i.version)))
+      message.success(t("common:deleted", { defaultValue: "Deleted" }))
+      clearSelection()
+      await qc.invalidateQueries({ queryKey: ["flashcards:list"] })
+    } catch (e: any) {
+      message.error(e?.message || "Bulk delete failed")
+    }
+  }
+
+  const handleExportSelected = async () => {
+    try {
+      const items = await getSelectedItems()
+      if (!items.length) return
+      const header = ["Deck", "Front", "Back", "Tags", "Notes"]
+      const decks = decksQuery.data || []
+      const nameById = new Map<number, string>()
+      decks.forEach((d) => nameById.set(d.id, d.name))
+      const rows = items.map((i) =>
+        [
+          i.deck_id != null ? nameById.get(i.deck_id) || `Deck ${i.deck_id}` : "",
+          i.front || "",
+          i.back || "",
+          Array.isArray(i.tags) ? i.tags.join(" ") : "",
+          i.notes || ""
+        ].join("\t")
+      )
+      const text = [header.join("\t"), ...rows].join("\n")
+      const blob = new Blob([text], {
+        type: "text/tab-separated-values;charset=utf-8"
+      })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement("a")
+      a.href = url
+      a.download = "flashcards-selected.tsv"
+      document.body.appendChild(a)
+      a.click()
+      a.remove()
+      URL.revokeObjectURL(url)
+    } catch (e: any) {
+      message.error(e?.message || "Export failed")
+    }
   }
 
   // Edit modal
@@ -433,13 +509,48 @@ export const FlashcardsPage: React.FC = () => {
     }
   }
 
+  const ratingOptions = React.useMemo(
+    () => [
+      {
+        value: 0,
+        label: t("option:flashcards.ratingAgain", { defaultValue: "Again" }),
+        description: t("option:flashcards.ratingAgainHelp", {
+          defaultValue: "I didn’t remember this card."
+        })
+      },
+      {
+        value: 2,
+        label: t("option:flashcards.ratingHard", { defaultValue: "Hard" }),
+        description: t("option:flashcards.ratingHardHelp", {
+          defaultValue: "I barely remembered; it felt difficult."
+        })
+      },
+      {
+        value: 3,
+        label: t("option:flashcards.ratingGood", { defaultValue: "Good" }),
+        description: t("option:flashcards.ratingGoodHelp", {
+          defaultValue: "I remembered with a bit of effort."
+        })
+      },
+      {
+        value: 5,
+        label: t("option:flashcards.ratingEasy", { defaultValue: "Easy" }),
+        description: t("option:flashcards.ratingEasyHelp", {
+          defaultValue: "I recalled it quickly and confidently."
+        })
+      }
+    ],
+    [t]
+  )
+
   return (
     <div className="mx-auto max-w-6xl p-4">
       {!isOnline && (
         <Alert type="warning" showIcon message={t("common:serverOffline", { defaultValue: "Server offline or not configured" })} className="mb-4" />
       )}
       <Tabs
-        defaultActiveKey="review"
+        activeKey={activeTab}
+        onChange={setActiveTab}
         items={[
           {
             key: "review",
@@ -482,31 +593,104 @@ export const FlashcardsPage: React.FC = () => {
                           )}
                         </div>
                       )}
-                      <div className="flex items-center gap-2">
+                      <div className="mt-2 flex flex-col gap-3">
                         {!showAnswer ? (
                           <Button type="primary" onClick={() => setShowAnswer(true)}>
                             {t("option:flashcards.showAnswer", { defaultValue: "Show Answer" })}
                           </Button>
                         ) : (
                           <>
-                            <Text className="mr-2">{t("option:flashcards.rate", { defaultValue: "Rate" })}:</Text>
-                            {[0,1,2,3,4,5].map((r) => (
-                              <Button key={r} onClick={() => onSubmitReview(r)}>{r}</Button>
-                            ))}
-                            <Input
-                              className="ml-2 w-40"
-                              type="number"
-                              placeholder={t("option:flashcards.answerMs", { defaultValue: "Answer ms (opt)" })}
-                              value={typeof answerMs === 'number' ? String(answerMs) : ''}
-                              onChange={(e) => setAnswerMs(e.target.value ? Number(e.target.value) : undefined)}
-                            />
+                            <div className="flex flex-col gap-2">
+                              <Text>
+                                {t("option:flashcards.rate", {
+                                  defaultValue: "How well did you remember this card?"
+                                })}
+                              </Text>
+                              <div className="flex flex-wrap gap-2">
+                                {ratingOptions.map((opt) => (
+                                  <Tooltip key={opt.value} title={opt.description}>
+                                    <Button
+                                      onClick={() => onSubmitReview(opt.value)}
+                                      aria-label={`${opt.label}`}
+                                    >
+                                      {opt.label}
+                                    </Button>
+                                  </Tooltip>
+                                ))}
+                              </div>
+                            </div>
+                            <button
+                              type="button"
+                              className="self-start text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                              onClick={() => setShowAdvancedTiming((v) => !v)}
+                            >
+                              {showAdvancedTiming
+                                ? t("option:flashcards.hideTiming", {
+                                    defaultValue: "Hide timing"
+                                  })
+                                : t("option:flashcards.showTiming", {
+                                    defaultValue: "Track answer time"
+                                  })}
+                            </button>
+                            {showAdvancedTiming && (
+                              <div className="flex items-center gap-2">
+                                <Text type="secondary">
+                                  {t("option:flashcards.answerMs", {
+                                    defaultValue: "Time to answer (seconds, optional)"
+                                  })}
+                                </Text>
+                                <Input
+                                  className="w-32"
+                                  type="number"
+                                  min={0}
+                                  value={
+                                    typeof answerMs === "number" && !Number.isNaN(answerMs)
+                                      ? String(answerMs)
+                                      : ""
+                                  }
+                                  onChange={(e) => {
+                                    const v = Number(e.target.value)
+                                    setAnswerMs(
+                                      Number.isFinite(v) && v >= 0 ? v : undefined
+                                    )
+                                  }}
+                                />
+                              </div>
+                            )}
                           </>
                         )}
                       </div>
                     </div>
                   </Card>
                 ) : (
-                  <Empty description={t("option:flashcards.noDue", { defaultValue: "No due cards" })} />
+                  <Card>
+                    <Empty
+                      description={t("option:flashcards.noDueTitle", {
+                        defaultValue: "No cards due for review"
+                      })}
+                    >
+                      <Space direction="vertical" align="center">
+                        <Text type="secondary">
+                          {t("option:flashcards.noDueDescription", {
+                            defaultValue:
+                              "You’re all caught up. Create new cards or import an existing deck to start reviewing."
+                          })}
+                        </Text>
+                        <Space>
+                          <Button type="primary" onClick={() => setActiveTab("create")}>
+                            {t("option:flashcards.noDueCreateCta", {
+                              defaultValue: "Create a new card"
+                            })}
+                          </Button>
+                          <Button onClick={() => setActiveTab("importExport")}>
+                            {t("option:flashcards.noDueImportCta", {
+                              defaultValue: "Import a deck"
+                            })}
+                          </Button>
+                        </Space>
+                      </Space>
+                    </Empty>
+                  </Card>
                 )}
               </div>
             )
@@ -516,6 +700,19 @@ export const FlashcardsPage: React.FC = () => {
             label: t("option:flashcards.create", { defaultValue: "Create" }),
             children: (
               <div className="max-w-3xl">
+                <div className="mb-3">
+                  <Title level={5}>
+                    {t("option:flashcards.createTitle", {
+                      defaultValue: "Create flashcards from your notes"
+                    })}
+                  </Title>
+                  <Text type="secondary">
+                    {t("option:flashcards.createDescription", {
+                      defaultValue:
+                        "Use the front for the question and the back for the answer. You can group cards into decks and add tags for faster search."
+                    })}
+                  </Text>
+                </div>
                 <Form form={createForm} layout="vertical" initialValues={{ is_cloze: false, model_type: "basic", reverse: false }}>
                   <Space align="end" className="mb-2">
                     <Form.Item name="deck_id" label={t("option:flashcards.deck", { defaultValue: "Deck" })} className="!mb-0">
@@ -531,7 +728,7 @@ export const FlashcardsPage: React.FC = () => {
                       {t("option:flashcards.newDeck", { defaultValue: "New Deck" })}
                     </Button>
                   </Space>
-                  <Form.Item name="model_type" label={t("option:flashcards.modelType", { defaultValue: "Model Type" })}>
+                  <Form.Item name="model_type" label={t("option:flashcards.modelType", { defaultValue: "Card template" })}>
                     <Select
                       options={[
                         { label: "basic", value: "basic" },
@@ -539,12 +736,36 @@ export const FlashcardsPage: React.FC = () => {
                         { label: "cloze", value: "cloze" }
                       ]}
                     />
+                    <div className="mt-1">
+                      <Text type="secondary" className="text-xs">
+                        {t("option:flashcards.modelTypeHelp", {
+                          defaultValue:
+                            "Basic shows a question on the front and answer on the back. Reverse also creates the opposite card. Cloze hides parts of the text using {{...}}."
+                        })}
+                      </Text>
+                    </div>
                   </Form.Item>
-                  <Form.Item name="reverse" label={t("option:flashcards.reverse", { defaultValue: "Reverse" })} valuePropName="checked">
+                   <Form.Item name="reverse" label={t("option:flashcards.reverse", { defaultValue: "Also create reverse card" })} valuePropName="checked">
                     <Switch />
+                    <div className="mt-1">
+                      <Text type="secondary" className="text-xs">
+                        {t("option:flashcards.reverseHelp", {
+                          defaultValue:
+                            "Also create a card where the back becomes the question."
+                        })}
+                      </Text>
+                    </div>
                   </Form.Item>
-                  <Form.Item name="is_cloze" label={t("option:flashcards.isCloze", { defaultValue: "Is Cloze" })} valuePropName="checked">
+                   <Form.Item name="is_cloze" label={t("option:flashcards.isCloze", { defaultValue: "Cloze deletion" })} valuePropName="checked">
                     <Switch />
+                    <div className="mt-1">
+                      <Text type="secondary" className="text-xs">
+                        {t("option:flashcards.isClozeHelp", {
+                          defaultValue:
+                            "Use for fill‑in‑the‑blank cards. Wrap hidden text in {{...}} on the front."
+                        })}
+                      </Text>
+                    </div>
                   </Form.Item>
                   <Form.Item name="tags" label={t("option:flashcards.tags", { defaultValue: "Tags" })}>
                     <Select mode="tags" placeholder="tag1, tag2" open={false} allowClear />
@@ -628,67 +849,118 @@ export const FlashcardsPage: React.FC = () => {
                   <Button size="small" onClick={selectAllOnPage}>{t("option:flashcards.selectAllOnPage", { defaultValue: "Select all on page" })}</Button>
                   <Button size="small" onClick={selectAllAcrossResults}>{t("option:flashcards.selectAllAcross", { defaultValue: "Select all across results" })}</Button>
                   <Button size="small" onClick={clearSelection}>{t("option:flashcards.clearSelection", { defaultValue: "Clear selection" })}</Button>
-                  <Button size="small" disabled={selectedIds.size === 0} onClick={() => setMoveOpen(true)}>
-                    {t("option:flashcards.bulkMove", { defaultValue: "Bulk Move" })}
-                  </Button>
-                  <Button danger size="small" disabled={selectedIds.size === 0} onClick={async () => {
-                    const toDelete = await getSelectedItems()
-                    if (!toDelete.length) return
-                    const ok = await confirmDanger({
-							title: t('common:confirmTitle', { defaultValue: 'Please confirm' }),
-							content: t('option:flashcards.bulkDeleteConfirm', { defaultValue: t('common:delete', { defaultValue: 'Delete' }) + ` ${toDelete.length}?` }),
-							okText: t('common:delete', { defaultValue: 'Delete' }),
-							cancelText: t('common:cancel', { defaultValue: 'Cancel' })
-						})
-                    if (!ok) return
-                    try {
-                      await Promise.all(toDelete.map((i) => deleteFlashcard(i.uuid, i.version)))
-                      message.success(t("common:deleted", { defaultValue: "Deleted" }))
-                      clearSelection()
-                      await qc.invalidateQueries({ queryKey: ["flashcards:list"] })
-                    } catch (e: any) { message.error(e?.message || 'Bulk delete failed') }
-                  }}>
-                    {t("option:flashcards.bulkDelete", { defaultValue: "Bulk Delete" })}
-                  </Button>
-                  <Button size="small" disabled={selectedIds.size === 0} onClick={() => {
-                    (async () => {
-                      try {
-                        const items = await getSelectedItems()
-                      const header = ['Deck','Front','Back','Tags','Notes']
-                      const decks = decksQuery.data || []
-                      const nameById = new Map<number, string>()
-                      decks.forEach((d) => nameById.set(d.id, d.name))
-                      const rows = items.map((i) => [
-                        i.deck_id != null ? (nameById.get(i.deck_id) || `Deck ${i.deck_id}`) : '',
-                        i.front || '',
-                        i.back || '',
-                        Array.isArray(i.tags) ? i.tags.join(' ') : '',
-                        i.notes || ''
-                      ].join('\t'))
-                      const text = [header.join('\t'), ...rows].join('\n')
-                      const blob = new Blob([text], { type: 'text/tab-separated-values;charset=utf-8' })
-                      const url = URL.createObjectURL(blob)
-                      const a = document.createElement('a')
-                      a.href = url
-                      a.download = 'flashcards-selected.tsv'
-                      document.body.appendChild(a)
-                      a.click()
-                      a.remove()
-                      URL.revokeObjectURL(url)
-                      } catch (e: any) { message.error(e?.message || 'Export failed') }
-                    })()
-                  }}>
-                    {t("option:flashcards.exportSelectedCsv", { defaultValue: "Export selected (CSV/TSV)" })}
-                  </Button>
+                  <Dropdown
+                    disabled={!anySelection}
+                    menu={{
+                      onClick: (info) => {
+                        if (info.key === "bulk-move") openBulkMove()
+                        if (info.key === "bulk-delete") handleBulkDelete()
+                        if (info.key === "bulk-export") handleExportSelected()
+                      },
+                      items: [
+                        {
+                          key: "bulk-move",
+                          label: t("option:flashcards.bulkMove", {
+                            defaultValue: "Bulk Move"
+                          })
+                        },
+                        {
+                          key: "bulk-delete",
+                          label: t("option:flashcards.bulkDelete", {
+                            defaultValue: "Bulk Delete"
+                          })
+                        },
+                        {
+                          type: "divider"
+                        },
+                        {
+                          key: "bulk-export",
+                          label: t("option:flashcards.exportSelectedCsv", {
+                            defaultValue: "Export selected (CSV/TSV)"
+                          })
+                        }
+                      ]
+                    }}
+                  >
+                    <Button size="small">
+                      {t("option:flashcards.bulkActions", {
+                        defaultValue: "Bulk actions"
+                      })}
+                    </Button>
+                  </Dropdown>
                 </div>
+                <Text type="secondary" className="mb-2 block text-xs">
+                  {t("option:flashcards.selectionHelp", {
+                    defaultValue:
+                      "“Select all across results” applies actions to every card that matches your filters, not just this page."
+                  })}
+                </Text>
                 <List
                   loading={manageQuery.isFetching}
                   dataSource={manageQuery.data?.items || []}
-                  locale={{ emptyText: <Empty description={t("option:flashcards.noCards", { defaultValue: "No cards" })} /> }}
+                  locale={{
+                    emptyText: (
+                      <Empty
+                        description={t("option:flashcards.noCardsTitle", {
+                          defaultValue: mQuery || mTag || mDeckId != null || mDue !== "all"
+                            ? "No cards match your filters"
+                            : "No flashcards yet"
+                        })}
+                      >
+                        <Space direction="vertical" align="center">
+                          <Text type="secondary">
+                            {t("option:flashcards.noCardsDescription", {
+                              defaultValue:
+                                mQuery || mTag || mDeckId != null || mDue !== "all"
+                                  ? "Try adjusting your search, deck, tag, or due filters."
+                                  : "Create cards from your notes and media, or import an existing deck."
+                            })}
+                          </Text>
+                          <Space>
+                            {mQuery || mTag || mDeckId != null || mDue !== "all" ? (
+                              <Button
+                                onClick={() => {
+                                  setMQuery("")
+                                  setMTag(undefined)
+                                  setMDeckId(undefined)
+                                  setMDue("all")
+                                }}
+                              >
+                                {t("option:flashcards.clearFilters", {
+                                  defaultValue: "Clear filters"
+                                })}
+                              </Button>
+                            ) : (
+                              <>
+                                <Button
+                                  type="primary"
+                                  onClick={() => setActiveTab("create")}
+                                >
+                                  {t("option:flashcards.noCardsCreateCta", {
+                                    defaultValue: "Create your first card"
+                                  })}
+                                </Button>
+                                <Button onClick={() => setActiveTab("importExport")}>
+                                  {t("option:flashcards.noCardsImportCta", {
+                                    defaultValue: "Import flashcards"
+                                  })}
+                                </Button>
+                              </>
+                            )}
+                          </Space>
+                        </Space>
+                      </Empty>
+                    )
+                  }}
                   renderItem={(item) => (
                     <List.Item
                       actions={[
-                        <Checkbox key="sel" checked={selectAllAcross ? !deselectedIds.has(item.uuid) : selectedIds.has(item.uuid)} onChange={(e) => toggleSelect(item.uuid, e.target.checked)} />,
+                        <Checkbox
+                          key="sel"
+                          checked={selectAllAcross ? !deselectedIds.has(item.uuid) : selectedIds.has(item.uuid)}
+                          onChange={(e) => toggleSelect(item.uuid, e.target.checked)}
+                          aria-label={`Select card: ${item.front.slice(0, 80)}`}
+                        />,
                         <Button key="preview" size="small" onClick={() => togglePreview(item.uuid)}>
                           {previewOpen.has(item.uuid) ? t("option:flashcards.hideAnswer", { defaultValue: "Hide Answer" }) : t("option:flashcards.showAnswer", { defaultValue: "Show Answer" })}
                         </Button>,
@@ -715,7 +987,16 @@ export const FlashcardsPage: React.FC = () => {
                             {(item.tags || []).map((t) => (
                               <Tag key={t}>{t}</Tag>
                             ))}
-                            {item.due_at && <Tag color="green">{t("option:flashcards.due", { defaultValue: "Due" })}: {new Date(item.due_at).toLocaleString()}</Tag>}
+                            {item.due_at && (
+                              <Tag color="green">
+                                {t("option:flashcards.due", {
+                                  defaultValue: "Due"
+                                })}
+                                :{" "}
+                                {dayjs(item.due_at).fromNow()}{" "}
+                                ({dayjs(item.due_at).format("YYYY-MM-DD HH:mm")})
+                              </Tag>
+                            )}
                           </div>
                         }
                       />
@@ -753,9 +1034,16 @@ export const FlashcardsPage: React.FC = () => {
                       <div className="whitespace-pre-wrap border rounded p-3">{quickReviewCard.front}</div>
                       <div className="whitespace-pre-wrap border rounded p-3">{quickReviewCard.back}</div>
                       {quickReviewCard.extra && <div className="opacity-80 text-sm whitespace-pre-wrap">{quickReviewCard.extra}</div>}
-                      <div className="flex gap-2">
-                        {[0,1,2,3,4,5].map((r) => (
-                          <Button key={r} onClick={() => submitQuickRating(r)}>{r}</Button>
+                      <div className="flex flex-wrap gap-2">
+                        {ratingOptions.map((opt) => (
+                          <Tooltip key={opt.value} title={opt.description}>
+                            <Button
+                              onClick={() => submitQuickRating(opt.value)}
+                              aria-label={opt.label}
+                            >
+                              {opt.label}
+                            </Button>
+                          </Tooltip>
                         ))}
                       </div>
                     </div>
@@ -876,16 +1164,17 @@ const ImportPanel: React.FC = () => {
   const [useMapping, setUseMapping] = React.useState<boolean>(false)
   const [colCount, setColCount] = React.useState<number>(0)
   const [mapping, setMapping] = React.useState<{ deck: number; front: number; back: number; tags?: number; notes?: number } | null>(null)
+  const [previewMapped, setPreviewMapped] = React.useState<string>("")
 
   React.useEffect(() => {
-    const lines = (content || '').split(/\r?\n/).filter((l) => l.trim().length)
-    const first = lines[0]
-    if (!first) { setColCount(0); setMapping(null); return }
-    const cols = first.split(delimiter || '\t')
-    setColCount(cols.length)
-    setMapping((m) => m || ({ deck: 0, front: Math.min(1, cols.length-1), back: Math.min(2, cols.length-1), tags: cols.length > 3 ? 3 : undefined, notes: cols.length > 4 ? 4 : undefined }))
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [content, delimiter])
+	    const lines = (content || '').split(/\r?\n/).filter((l) => l.trim().length)
+	    const first = lines[0]
+	    if (!first) { setColCount(0); setMapping(null); setPreviewMapped(""); return }
+	    const cols = first.split(delimiter || '\t')
+	    setColCount(cols.length)
+	    setMapping((m) => m || ({ deck: 0, front: Math.min(1, cols.length-1), back: Math.min(2, cols.length-1), tags: cols.length > 3 ? 3 : undefined, notes: cols.length > 4 ? 4 : undefined }))
+	    // eslint-disable-next-line react-hooks/exhaustive-deps
+	  }, [content, delimiter])
 
   const buildMappedTSV = React.useCallback(() => {
     if (!useMapping || !mapping) return content
@@ -904,8 +1193,21 @@ const ImportPanel: React.FC = () => {
       const notes = safe(mapping.notes)
       out.push([deck, front, back, tags, notes].join('\t'))
     }
-    return out.join('\n')
-  }, [content, delimiter, hasHeader, mapping, useMapping])
+	    return out.join('\n')
+	  }, [content, delimiter, hasHeader, mapping, useMapping])
+
+	  React.useEffect(() => {
+	    if (!useMapping) {
+	      setPreviewMapped("")
+	      return
+	    }
+	    const mapped = buildMappedTSV()
+	    if (!mapped) {
+	      setPreviewMapped("")
+	      return
+	    }
+	    setPreviewMapped(mapped.split(/\r?\n/).slice(0, 3).join("\n"))
+	  }, [buildMappedTSV, useMapping])
 
   const importMutation = useMutation({
     mutationKey: ["flashcards:import"],
@@ -921,14 +1223,20 @@ const ImportPanel: React.FC = () => {
     onError: (e: any) => message.error(e?.message || "Import failed")
   })
 
-  return (
-    <div className="flex flex-col gap-3">
+	  return (
+	    <div className="flex flex-col gap-3">
       {!isOnline && (
         <Alert type="warning" showIcon message={t("common:serverOffline", { defaultValue: "Server offline or not configured" })} />
       )}
-      <Text type="secondary">
-        {t("option:flashcards.importHelp", { defaultValue: "Paste TSV/CSV lines: Deck, Front, Back, Tags, Notes" })}
-      </Text>
+	      <div>
+	        <Text type="secondary">
+	          {t("option:flashcards.importHelp", { defaultValue: "Paste TSV/CSV lines: Deck, Front, Back, Tags, Notes" })}
+	        </Text>
+	        <pre className="mt-1 rounded bg-gray-50 p-2 text-xs text-gray-700 dark:bg-[#111] dark:text-gray-200">
+Deck	Front	Back	Tags	Notes
+My deck	What is a closure?	A function with preserved outer scope.	javascript; fundamentals	Lecture 3
+	        </pre>
+	      </div>
       <Input.TextArea
         rows={10}
         placeholder={t("option:flashcards.pasteContent", { defaultValue: "Paste content here..." })}
@@ -972,10 +1280,10 @@ const ImportPanel: React.FC = () => {
           </Tooltip>
         )}
       </div>
-      <Space align="center">
-        <Text>{t("option:flashcards.importTitle", { defaultValue: "Import" })} mapping</Text>
-        <Switch checked={useMapping} onChange={setUseMapping} />
-      </Space>
+	      <Space align="center">
+	        <Text>{t("option:flashcards.mapping", { defaultValue: "Column mapping" })}</Text>
+	        <Switch checked={useMapping} onChange={setUseMapping} />
+	      </Space>
       {useMapping && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           <div>
@@ -994,12 +1302,24 @@ const ImportPanel: React.FC = () => {
             <Text type="secondary">{t("option:flashcards.tags", { defaultValue: "Tags" })}</Text>
             <Select className="w-full" allowClear value={mapping?.tags} onChange={(v) => setMapping((m) => ({ ...(m as any), tags: v }))} options={Array.from({ length: colCount }, (_, i) => ({ label: `Col ${i+1}`, value: i }))} />
           </div>
-          <div>
-            <Text type="secondary">{t("option:flashcards.notes", { defaultValue: "Notes" })}</Text>
-            <Select className="w-full" allowClear value={mapping?.notes} onChange={(v) => setMapping((m) => ({ ...(m as any), notes: v }))} options={Array.from({ length: colCount }, (_, i) => ({ label: `Col ${i+1}`, value: i }))} />
-          </div>
-        </div>
-      )}
+	          <div>
+	            <Text type="secondary">{t("option:flashcards.notes", { defaultValue: "Notes" })}</Text>
+	            <Select className="w-full" allowClear value={mapping?.notes} onChange={(v) => setMapping((m) => ({ ...(m as any), notes: v }))} options={Array.from({ length: colCount }, (_, i) => ({ label: `Col ${i+1}`, value: i }))} />
+	          </div>
+	        </div>
+	      )}
+	      {useMapping && previewMapped && (
+	        <div className="mt-2">
+	          <Text type="secondary" className="text-xs">
+	            {t("option:flashcards.mappingPreview", {
+	              defaultValue: "Preview of the first few mapped rows:"
+	            })}
+	          </Text>
+	          <pre className="mt-1 rounded bg-gray-50 p-2 text-xs text-gray-700 dark:bg-[#111] dark:text-gray-200 whitespace-pre-wrap">
+	            {previewMapped}
+	          </pre>
+	        </div>
+	      )}
     </div>
   )
 }
@@ -1067,12 +1387,20 @@ const ExportPanel: React.FC = () => {
     }
   }
 
-  return (
-    <div className="flex flex-col gap-3">
-      {!isOnline && (
-        <Alert type="warning" showIcon message={t("common:serverOffline", { defaultValue: "Server offline or not configured" })} />
-      )}
-      <Space wrap>
+	  return (
+	    <div className="flex flex-col gap-3">
+	      {!isOnline && (
+	        <Alert type="warning" showIcon message={t("common:serverOffline", { defaultValue: "Server offline or not configured" })} />
+	      )}
+	      <div>
+	        <Text type="secondary">
+	          {t("option:flashcards.exportHelp", {
+	            defaultValue:
+	              "Filter by deck, tag, or search, then export as CSV/TSV for spreadsheets or Anki (.apkg) for Anki clients."
+	          })}
+	        </Text>
+	      </div>
+	      <Space wrap>
         <Select
           placeholder={t("option:flashcards.deck", { defaultValue: "Deck" })}
           allowClear
@@ -1118,14 +1446,14 @@ const ExportPanel: React.FC = () => {
             { label: t("option:flashcards.pipe", { defaultValue: "| (Pipe)" }), value: "|" }
           ]}
         />
-        <Space>
-          <Text>{t("option:flashcards.includeHeader", { defaultValue: "Include header" })}</Text>
-          <Switch checked={includeHeader} onChange={setIncludeHeader} />
-        </Space>
-        <Space>
-          <Text>{t("option:flashcards.extendedHeader", { defaultValue: "Extended header" })}</Text>
-          <Switch checked={extendedHeader} onChange={setExtendedHeader} />
-        </Space>
+	        <Space>
+	          <Text>{t("option:flashcards.includeHeader", { defaultValue: "Include header row" })}</Text>
+	          <Switch checked={includeHeader} onChange={setIncludeHeader} />
+	        </Space>
+	        <Space>
+	          <Text>{t("option:flashcards.extendedHeader", { defaultValue: "Extended header (technical metadata)" })}</Text>
+	          <Switch checked={extendedHeader} onChange={setExtendedHeader} />
+	        </Space>
       </Space>
       <div>
         <Button type="primary" onClick={doExport} loading={downloading}>

@@ -28,6 +28,7 @@ import OptionPromptsWorkspace from "./option-prompts"
 import OptionKnowledgeWorkspace from "./option-knowledge"
 import OptionFlashcards from "./option-flashcards"
 import OptionTts from "./option-tts"
+import OptionEvaluations from "./option-evaluations"
 
 export const OptionRoutingChrome = () => {
   return (
@@ -60,6 +61,7 @@ export const OptionRoutingChrome = () => {
       <Route path="/characters" element={<OptionCharactersWorkspace />} />
       <Route path="/prompts" element={<OptionPromptsWorkspace />} />
       <Route path="/tts" element={<OptionTts />} />
+      <Route path="/evaluations" element={<OptionEvaluations />} />
     </Routes>
   )
 }

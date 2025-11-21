@@ -1,0 +1,122 @@
+PRD 1 — Evaluations Playground & Settings (Evaluations Module)
+
+  1. Purpose & Scope
+
+  - Provide a browser‑extension UX for the core Evaluations module (/api/v1/evaluations*), enabling:
+      - Creating evaluation definitions and datasets.
+      - Running evaluations and inspecting metrics.
+      - Viewing rate limits and configuring sensible defaults for evaluation flows.
+  - Strictly about the Evaluations system (unified evaluation service, RAG / GEval / response‑quality / OCR, etc.), not Prompt Studio.
+
+  2. Target Users & Use Cases
+
+  - Target users
+      - Self‑hosted tldw admins and advanced users who tune/monitor model behavior.
+      - Engineers debugging RAG / response quality regressions.
+  - Key use cases
+      - Define a new evaluation (e.g., RAG or response quality) with a dataset and run it against a model.
+      - Inspect past evaluations and runs with metrics (scores, pass rates, OCR error rates, etc.).
+      - Understand evaluation rate limits and usage to avoid 429s.
+      - Manage evaluation datasets (small QA sets, label_choice / NLI examples) from the browser.
+
+  3. Relevant APIs (Evaluations module)
+
+  - CRUD & runs (evaluations_crud.py, evaluations_unified.py)
+      - POST /api/v1/evaluations – create evaluation.
+      - GET /api/v1/evaluations – list evaluations.
+      - GET /api/v1/evaluations/{eval_id} – get evaluation.
+      - PATCH /api/v1/evaluations/{eval_id} – update.
+      - DELETE /api/v1/evaluations/{eval_id} – delete.
+      - POST /api/v1/evaluations/{eval_id}/runs – create run.
+      - GET /api/v1/evaluations/{eval_id}/runs – list runs.
+      - GET /api/v1/evaluations/runs/{run_id} – get run.
+      - POST /api/v1/evaluations/runs/{run_id}/cancel – cancel run.
+  - Datasets (evaluations_datasets.py, evaluations_unified.py)
+      - POST /api/v1/evaluations/datasets – create dataset.
+      - GET /api/v1/evaluations/datasets – list datasets.
+      - GET /api/v1/evaluations/datasets/{dataset_id} – get.
+      - DELETE /api/v1/evaluations/datasets/{dataset_id} – delete.
+  - Evaluator endpoints (evaluations_unified.py)
+      - POST /api/v1/evaluations/geval
+      - POST /api/v1/evaluations/rag
+      - POST /api/v1/evaluations/response-quality
+      - POST /api/v1/evaluations/propositions
+      - POST /api/v1/evaluations/ocr, /ocr-pdf
+      - POST /api/v1/evaluations/batch
+      - POST /api/v1/evaluations/history
+  - Rate limits
+      - GET /api/v1/evaluations/rate-limits – returns tier, limits, usage, remaining, reset.
+
+  4. Evaluations Playground Page
+
+  Route: Options → “Playground → Evaluations” (e.g. #/playground/evaluations).
+
+  - 4.1 Evaluation Setup
+      - Inputs (maps to CreateEvaluationRequest):
+          - Name (required).
+          - Description (optional).
+          - Evaluation type (select): rag, response_quality, geval, propositions, ocr, etc.
+          - Dataset:
+              - Dropdown of existing datasets (GET /evaluations/datasets).
+              - Button: “Create quick dataset” → inline modal to define a few examples and call POST /evaluations/datasets.
+          - Eval spec:
+              - A JSON editor wired to eval_spec, with type‑specific templates (e.g. metrics and options for RAG, label sets for label_choice/NLI).
+              - Client‑side validation of JSON shape (basic, not full schema).
+  - 4.2 Run Configuration & Execution
+      - Run configuration (maps to CreateRunSimpleRequest / evaluator endpoints):
+          - Target model (text or dropdown, leveraging existing model settings).
+          - Optional webhook URL passed via run config (if the server supports it on runs).
+      - Actions:
+          - “Create evaluation & run”:
+              - POST /evaluations then POST /evaluations/{eval_id}/runs.
+          - “Run ad‑hoc eval” (optional v1, type‑dependent):
+              - For quick one‑off checks, call POST /evaluations/<type> directly (e.g. /rag, /response-quality) with a single payload.
+  - 4.3 Runs & Results
+      - Runs list for selected evaluation:
+          - GET /evaluations/{eval_id}/runs.
+          - Columns: status, created_at, target_model, config summary, last metrics summary.
+      - Run detail view:
+          - GET /evaluations/runs/{run_id}.
+          - Show:
+              - High‑level metrics (e.g. pass_rate, average_score, OCR CER/WER, etc.) as a table.
+              - Raw response JSON (collapsible).
+              - Any usage info and cost if returned.
+          - If rate‑limit headers present from the last call, show a small “quota snapshot” banner.
+  - 4.4 Datasets Mini‑Manager
+      - Sidebar/table of datasets:
+          - GET /evaluations/datasets.
+          - Actions: view, delete (DELETE /evaluations/datasets/{id}).
+      - Dataset detail:
+          - GET /evaluations/datasets/{id}.
+          - Show sample items (paginated, read-only).
+
+  5. Evaluations Settings Page
+
+  Route: Options → “Settings → Evaluations” (e.g. #/settings/evaluations).
+
+  - 5.1 Connection & Auth
+      - Display server base URL (from existing extension config).
+      - API key/authorization:
+          - Reuse the extension’s existing auth mechanism (where verify_api_key is satisfied).
+          - “Test Evaluations API” button:
+              - Calls GET /evaluations/rate-limits (or another lightweight eval endpoint).
+              - Shows success/failure and basic quota.
+  - 5.2 Defaults & Presets
+      - Default evaluation type.
+      - Default target model for evaluations (can be “follow global model” or override).
+      - Default per‑type spec snippets stored in extension storage:
+          - RAG: default metrics and thresholds.
+          - Response quality: default rubric.
+          - Propositions / label_choice / NLI: default allowed_labels, label_mapping, structured_output.
+      - These defaults prefill the Playground’s eval spec editor.
+  - 5.3 Rate Limits & Usage
+      - On load, fetch GET /evaluations/rate-limits.
+      - Display:
+          - Tier.
+          - Evaluations per minute/day: limits and remaining.
+          - Tokens per day and cost per day/month: limits and remaining.
+          - Reset time (from reset_at or inferred midnight).
+  - 5.4 Non‑Goals (v1)
+      - No full webhook management UI (beyond possibly showing a configured webhook URL in the playground).
+      - No embeddings A/B‑test UI in v1.
+      - No admin‑only endpoints like /admin/idempotency/cleanup exposed in the extension.
