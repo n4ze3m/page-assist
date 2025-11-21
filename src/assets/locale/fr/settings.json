@@ -336,7 +336,7 @@
       },
       "globalEnable": {
         "label": "Activer ou désactiver l'intégration du serveur globalement",
-        "warning": "En désactivant l'intégration du serveur globalement, Page Assist ne récupérera pas de modèles depuis le serveur. Vous pouvez toujours ajouter des fournisseurs via la section <anchor>API compatible OpenAI</anchor>."
+        "warning": "En désactivant l'intégration du serveur globalement, tldw Assistant ne récupérera pas de modèles depuis le serveur. Vous pouvez toujours ajouter des fournisseurs via la section <anchor>API compatible OpenAI</anchor>."
       },
       "advanced": {
         "label": "Configuration avancée de l'URL du serveur",
@@ -373,9 +373,9 @@
   "about": {
     "title": "À propos",
     "heading": "À propos",
-    "chromeVersion": "Version de Page Assist",
+    "chromeVersion": "Version de tldw Assistant",
     "ollamaVersion": "Version du serveur",
-    "support": "Vous pouvez soutenir le projet Page Assist en faisant un don ou en parrainant via les plateformes suivantes :",
+    "support": "Vous pouvez soutenir le projet tldw Assistant en faisant un don ou en parrainant via les plateformes suivantes :",
     "koFi": "Soutenir sur Ko-fi",
     "githubSponsor": "Parrainer sur GitHub",
     "githubRepo": "Dépôt GitHub"

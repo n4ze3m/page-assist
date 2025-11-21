@@ -1,4 +1,4 @@
-export const updatePageTitle = (title: string = 'Page Assist - A Web UI for Local AI Models') => {
+export const updatePageTitle = (title: string = 'tldw Assistant') => {
   const pageTitle = document.querySelector("title")
   if (pageTitle) {
     pageTitle.textContent = title

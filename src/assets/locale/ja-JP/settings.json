@@ -331,7 +331,7 @@
       },
       "globalEnable": {
         "label": "サーバー連携を全体的に有効または無効にする",
-        "warning": "サーバー連携を無効にすると、Page Assistはサーバーからモデルを取得しません。<anchor>OpenAI互換API</anchor>セクションからプロバイダーを追加できます。"
+        "warning": "サーバー連携を無効にすると、tldw Assistantはサーバーからモデルを取得しません。<anchor>OpenAI互換API</anchor>セクションからプロバイダーを追加できます。"
       },
       "advanced": {
         "label": "サーバーURLの高度な設定",
@@ -368,9 +368,9 @@
   "about": {
     "title": "About",
     "heading": "About",
-    "chromeVersion": "Page Assistのバージョン",
+    "chromeVersion": "tldw Assistantのバージョン",
     "ollamaVersion": "サーバーのバージョン",
-    "support": "Page Assistプロジェクトは、以下のプラットフォームで寄付やスポンサーシップをすることで支援できます:",
+    "support": "tldw Assistantプロジェクトは、以下のプラットフォームで寄付やスポンサーシップをすることで支援できます:",
     "koFi": "Ko-fiで支援する",
     "githubSponsor": "GitHubでスポンサーする",
     "githubRepo": "GitHubリポジトリ"

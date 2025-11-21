@@ -325,7 +325,7 @@
       },
       "globalEnable": {
         "label": "Aktiver eller deaktiver serverintegration globalt",
-        "warning": "Ved at deaktivere serverintegration globalt henter Page Assist ikke modeller fra serveren. Du kan stadig tilføje udbydere under sektionen <anchor>OpenAI kompatibel API</anchor>."
+        "warning": "Ved at deaktivere serverintegration globalt henter tldw Assistant ikke modeller fra serveren. Du kan stadig tilføje udbydere under sektionen <anchor>OpenAI kompatibel API</anchor>."
       },
       "advanced": {
         "label": "Avanceret server-URL konfiguration",
@@ -362,9 +362,9 @@
   "about": {
     "title": "Om",
     "heading": "Om",
-    "chromeVersion": "Page Assist Version",
+    "chromeVersion": "tldw Assistant Version",
     "ollamaVersion": "Serverversion",
-    "support": "Du kan støtte Page Assist-projektet ved at donere eller sponsorere via følgende platforme:",
+    "support": "Du kan støtte tldw Assistant-projektet ved at donere eller sponsorere via følgende platforme:",
     "koFi": "Støt på Ko-fi",
     "githubSponsor": "Sponsor på GitHub",
     "githubRepo": "GitHub Repository"

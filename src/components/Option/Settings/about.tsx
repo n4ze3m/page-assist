@@ -59,56 +59,20 @@ export const AboutApp = () => {
                 children: data.ollama
               },
               {
-                key: 2,
-                label: "Community",
-                children: (
-                  <a
-                    href="https://discord.com/invite/bu54382uBd"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="text-blue-500 dark:text-blue-400">
-                    Discord Server
-                  </a>
-                )
-              },
-              {
                 key: 3,
-                label: "X (formerly Twitter)",
+                label: "GitHub",
                 children: (
                   <a
-                    href="https://twitter.com/page_assist"
+                    href="https://github.com/rmusser01/tldw_browser_assistant"
                     target="_blank"
                     rel="noreferrer"
                     className="text-blue-500 dark:text-blue-400">
-                    @page_assist
+                    tldw Assistant on GitHub
                   </a>
                 )
               }
             ]}
           />
-          <div>
-            <p className="text-sm text-gray-700 dark:text-gray-400 mb-4">
-              {t("about.support")}
-            </p>
-
-            <div className="flex gap-2">
-              <a
-                href="https://ko-fi.com/n4ze3m"
-                target="_blank"
-                rel="noreferrer"
-                className="text-blue-500 dark:text-blue-400 border dark:border-gray-600 px-2.5 py-2 rounded-md">
-                {t("about.koFi")}
-              </a>
-
-              <a
-                href="https://github.com/sponsors/n4ze3m"
-                target="_blank"
-                rel="noreferrer"
-                className="text-blue-500 dark:text-blue-400 border dark:border-gray-600 px-2.5 py-2 rounded-md">
-                {t("about.githubSponsor")}
-              </a>
-            </div>
-          </div>
         </div>
       )}
     </div>

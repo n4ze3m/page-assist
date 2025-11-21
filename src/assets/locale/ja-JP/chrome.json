@@ -1,7 +1,7 @@
 {
     "heading": "Chrome AIの設定",
     "status": {
-        "label": "Page AssistでChrome AIサポートを有効または無効にする"
+        "label": "tldw AssistantでChrome AIサポートを有効または無効にする"
     },
     "error": {
         "browser_not_supported": "このバージョンのChromeはGemini Nanoモデルに対応していません。バージョン127以降に更新してください。",
@@ -9,7 +9,7 @@
         "ai_not_ready": "Gemini Nanoはまだ準備ができていません。Chromeの設定を再確認する必要があります。",
         "internal_error": "内部エラーが発生しました。後でもう一度お試しください。"
     },
-    "errorDescription": "Chrome AIを使用するには、Chromeバージョン138以降が必要です。以下の手順に従ってください:\n\n1. `chrome://flags/#prompt-api-for-gemini-nano`にアクセスし、「Prompt API for Gemini Nano」を有効にします。\n2. フラグを適用するためにChromeを再起動します。\n3. このページに戻り、「モデルをダウンロード」をクリックします — 初回は4GBのモデルがダウンロードされます。\n4. ダウンロードが完了すると、Gemini NanoをPage Assistを通じて有効にできます。",
+    "errorDescription": "Chrome AIを使用するには、Chromeバージョン138以降が必要です。以下の手順に従ってください:\n\n1. `chrome://flags/#prompt-api-for-gemini-nano`にアクセスし、「Prompt API for Gemini Nano」を有効にします。\n2. フラグを適用するためにChromeを再起動します。\n3. このページに戻り、「モデルをダウンロード」をクリックします — 初回は4GBのモデルがダウンロードされます。\n4. ダウンロードが完了すると、Gemini Nanoをtldw Assistantを通じて有効にできます。",
     "downloadModel": "モデルをダウンロード",
     "modelDownloadWarning": "これは、約1.5GBから2.4GBの範囲のダウンロードサイズを持つモデルをダウンロードします。十分なディスクスペースがあることを確認してください。"
 }

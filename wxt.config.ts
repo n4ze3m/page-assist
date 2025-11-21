@@ -6,6 +6,8 @@ import MagicString from "magic-string"
 import { walk } from "estree-walker"
 import type { Plugin } from "vite"
 
+const isFirefox = process.env.TARGET === "firefox"
+
 const safeInnerHTMLPlugin = (): Plugin => ({
   name: "sanitize-innerhtml",
   enforce: "post",
@@ -129,15 +131,24 @@ export default defineConfig({
     },
     build: {
       // Firefox MV2 validator chokes on modern ESM in chunks; downlevel and turn off module preload there.
-      target: process.env.TARGET === "firefox" ? "es2017" : "esnext",
-      modulePreload: process.env.TARGET === "firefox" ? false : undefined,
+      target: isFirefox ? "es2017" : "esnext",
+      modulePreload: isFirefox ? false : undefined,
       rollupOptions: {
-        external: ["langchain", "@langchain/community"]
+        external: ["langchain", "@langchain/community"],
+        ...(isFirefox
+          ? {
+              output: {
+                format: "iife",
+                inlineDynamicImports: true,
+                manualChunks: undefined
+              }
+            }
+          : {})
       }
     }
   }),
   entrypointsDir:
-    process.env.TARGET === "firefox" ? "entries-firefox" : "entries",
+    isFirefox ? "entries-firefox" : "entries",
   srcDir: "src",
   outDir: "build",
 
@@ -155,11 +166,7 @@ export default defineConfig({
       process.env.TARGET === "firefox"
         ? {
           gecko: {
-            id: "tldw-assistant@tldw",
-            data_collection_permissions: {
-              required: false,
-              reasons: ["Not collecting user data."]
-            }
+            id: "tldw-assistant@tldw"
           }
         }
         : undefined,

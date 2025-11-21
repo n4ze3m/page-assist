@@ -331,7 +331,7 @@
       },
       "globalEnable": {
         "label": "서버 통합 기능 전역 활성화 또는 비활성화",
-        "warning": "서버 통합을 전역적으로 비활성화하면 Page Assist가 서버에서 모델을 가져오지 않습니다. <anchor>OpenAI 호환 API</anchor> 섹션에서 공급자를 추가할 수 있습니다."
+        "warning": "서버 통합을 전역적으로 비활성화하면 tldw Assistant가 서버에서 모델을 가져오지 않습니다. <anchor>OpenAI 호환 API</anchor> 섹션에서 공급자를 추가할 수 있습니다."
       },
       "advanced": {
         "label": "서버 URL 고급 설정",
@@ -368,9 +368,9 @@
   "about": {
     "title": "소개",
     "heading": "소개",
-    "chromeVersion": "Page Assist 버전",
+    "chromeVersion": "tldw Assistant 버전",
     "ollamaVersion": "서버 버전",
-    "support": "Page Assist 프로젝트는 다음 플랫폼에서 기부나 후원을 통해 지원할 수 있습니다:",
+    "support": "tldw Assistant 프로젝트는 다음 플랫폼에서 기부나 후원을 통해 지원할 수 있습니다:",
     "koFi": "Ko-fi로 후원하기",
     "githubSponsor": "GitHub에서 후원하기",
     "githubRepo": "GitHub 저장소"

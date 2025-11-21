@@ -332,7 +332,7 @@
       },
       "globalEnable": {
         "label": "Ativar ou desativar integração do servidor globalmente",
-        "warning": "Ao desativar a integração do servidor, o Page Assist não buscará modelos do servidor. Você ainda pode adicionar provedores na seção <anchor>API compatível com OpenAI</anchor>."
+        "warning": "Ao desativar a integração do servidor, o tldw Assistant não buscará modelos do servidor. Você ainda pode adicionar provedores na seção <anchor>API compatível com OpenAI</anchor>."
       },
       "advanced": {
         "label": "Configuração avançada da URL do servidor",
