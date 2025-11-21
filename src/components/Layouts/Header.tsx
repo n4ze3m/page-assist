@@ -906,7 +906,7 @@ export const Header: React.FC<Props> = ({
                     className={classNames(
                       "rounded-full px-3 py-1 text-xs font-medium transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500",
                       currentCoreMode === mode.key
-                        ? "bg-black text-white dark:bg白 white dark:text-gray-900".replace('白','') // keep original classes
+                        ? "bg-amber-600 text-white dark:bg-amber-400 dark:text-gray-900"
                         : "bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-[#262626] dark:text-gray-200 dark:hover:bg-[#333333]"
                     )}
                     aria-current={currentCoreMode === mode.key ? "page" : undefined}

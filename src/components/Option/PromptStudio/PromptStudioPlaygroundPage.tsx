@@ -145,14 +145,14 @@ export const PromptStudioPlaygroundPage: React.FC = () => {
   })
 
   React.useEffect(() => {
-    if (!projectsQuery.data?.data?.length) return
+    if (!projectList.length) return
     const defaultId = defaultsQuery.data?.defaultProjectId
-    if (defaultId && projectsQuery.data.data.some((p) => p.id === defaultId)) {
+    if (defaultId && projectList.some((p) => p.id === defaultId)) {
       setSelectedProjectId((prev) => prev ?? defaultId)
     } else {
-      setSelectedProjectId((prev) => prev ?? projectsQuery.data.data[0].id)
+      setSelectedProjectId((prev) => prev ?? projectList[0].id)
     }
-  }, [projectsQuery.data, defaultsQuery.data])
+  }, [projectList, defaultsQuery.data])
 
   const promptsQuery = useQuery({
     queryKey: ["prompt-studio", "prompts", selectedProjectId, promptPage, pageSize],
@@ -164,9 +164,9 @@ export const PromptStudioPlaygroundPage: React.FC = () => {
   })
 
   React.useEffect(() => {
-    if (!promptsQuery.data?.data?.length) return
-    setSelectedPromptId((prev) => prev ?? (promptsQuery.data?.data?.[0]?.id || null))
-  }, [promptsQuery.data])
+    if (!promptList.length) return
+    setSelectedPromptId((prev) => prev ?? (promptList[0]?.id || null))
+  }, [promptList])
 
   const promptDetailQuery = useQuery({
     queryKey: ["prompt-studio", "prompt", selectedPromptId],
@@ -224,9 +224,9 @@ export const PromptStudioPlaygroundPage: React.FC = () => {
   })
 
   React.useEffect(() => {
-    if (!evaluationsQuery.data?.evaluations?.length) return
-    setSelectedEvaluationId((prev) => prev ?? (evaluationsQuery.data?.evaluations?.[0]?.id || null))
-  }, [evaluationsQuery.data])
+    if (!evaluationList.length) return
+    setSelectedEvaluationId((prev) => prev ?? (evaluationList[0]?.id || null))
+  }, [evaluationList])
 
   React.useEffect(() => {
     if (!defaultsQuery.data) return
@@ -260,8 +260,8 @@ export const PromptStudioPlaygroundPage: React.FC = () => {
     onSuccess: (resp) => {
       setProjectModalOpen(false)
       queryClient.invalidateQueries({ queryKey: ["prompt-studio", "projects"] })
-      if (resp?.data?.id) {
-        setSelectedProjectId(resp.data.id)
+      if (resp?.data?.data?.id) {
+        setSelectedProjectId(resp.data.data.id)
       }
     }
   })
@@ -312,8 +312,8 @@ export const PromptStudioPlaygroundPage: React.FC = () => {
       return revertPrompt(selectedPromptId, version)
     },
     onSuccess: (resp) => {
-      if (resp?.data?.id) {
-        setSelectedPromptId(resp.data.id)
+      if (resp?.data?.data?.id) {
+        setSelectedPromptId(resp.data.data.id)
       }
       queryClient.invalidateQueries({ queryKey: ["prompt-studio", "prompt-history"] })
       queryClient.invalidateQueries({ queryKey: ["prompt-studio", "prompt"] })
@@ -333,7 +333,7 @@ export const PromptStudioPlaygroundPage: React.FC = () => {
       })
     },
     onSuccess: (data) => {
-      setExecutionResult(data)
+      setExecutionResult(data?.data || data)
       setExecutionError(null)
     },
     onError: (err: any) => {
@@ -413,11 +413,33 @@ export const PromptStudioPlaygroundPage: React.FC = () => {
     }
   })
 
-  const projectList = projectsQuery.data?.data || []
-  const promptList = promptsQuery.data?.data || []
+  const projectsPayload = projectsQuery.data?.data
+  const projectList = Array.isArray(projectsPayload?.data)
+    ? projectsPayload?.data || []
+    : Array.isArray((projectsPayload as any)?.projects)
+      ? (projectsPayload as any).projects
+      : []
+  const projectMeta =
+    (projectsPayload as any)?.metadata || (projectsPayload as any)?.pagination
+
+  const promptsPayload = promptsQuery.data?.data
+  const promptList = Array.isArray(promptsPayload?.data)
+    ? promptsPayload?.data || []
+    : []
+  const promptMeta = (promptsPayload as any)?.metadata || (promptsPayload as any)?.pagination
+
   const promptHistory = promptHistoryQuery.data?.data || []
-  const testCaseList = testCasesQuery.data?.data || []
-  const evaluationList = evaluationsQuery.data?.evaluations || []
+
+  const testCasesPayload = testCasesQuery.data?.data
+  const testCaseList = Array.isArray(testCasesPayload?.data)
+    ? testCasesPayload?.data || []
+    : []
+  const testCaseMeta =
+    (testCasesPayload as any)?.metadata || (testCasesPayload as any)?.pagination
+
+  const evaluationsPayload = evaluationsQuery.data?.data
+  const evaluationList = evaluationsPayload?.evaluations || []
+  const evaluationTotal = evaluationsPayload?.total
 
   if (!online) {
     return (
@@ -505,7 +527,7 @@ export const PromptStudioPlaygroundPage: React.FC = () => {
               pagination={{
                 current: projectPage,
                 pageSize: pageSize,
-                total: projectsQuery.data?.metadata?.total,
+                total: projectMeta?.total,
                 onChange: (page) => setProjectPage(page)
               }}
               loading={projectsQuery.isLoading}
@@ -531,7 +553,7 @@ export const PromptStudioPlaygroundPage: React.FC = () => {
               pagination={{
                 current: promptPage,
                 pageSize: pageSize,
-                total: promptsQuery.data?.metadata?.total,
+                total: promptMeta?.total,
                 onChange: (page) => setPromptPage(page)
               }}
               loading={promptsQuery.isLoading}
@@ -714,7 +736,7 @@ export const PromptStudioPlaygroundPage: React.FC = () => {
               pagination={{
                 current: testCasePage,
                 pageSize,
-                total: testCasesQuery.data?.metadata?.total,
+                total: testCaseMeta?.total,
                 onChange: (page) => setTestCasePage(page)
               }}
               loading={testCasesQuery.isLoading}
@@ -795,7 +817,7 @@ export const PromptStudioPlaygroundPage: React.FC = () => {
               pagination={{
                 current: evaluationPage,
                 pageSize,
-                total: evaluationsQuery.data?.total,
+                total: evaluationTotal,
                 onChange: (page) => setEvaluationPage(page)
               }}
               loading={evaluationsQuery.isLoading}
@@ -824,15 +846,15 @@ export const PromptStudioPlaygroundPage: React.FC = () => {
               }
             />
 
-            {evaluationDetailQuery.data && (
-              <Card size="small" type="inner" title={evaluationDetailQuery.data.name || "Evaluation"}>
+            {evaluationDetailQuery.data?.data && (
+              <Card size="small" type="inner" title={evaluationDetailQuery.data.data.name || "Evaluation"}>
                 <div className="flex flex-wrap items-center gap-2 text-sm">
-                  <Tag color={statusColor(evaluationDetailQuery.data.status)}>
-                    {evaluationDetailQuery.data.status}
+                  <Tag color={statusColor(evaluationDetailQuery.data.data.status)}>
+                    {evaluationDetailQuery.data.data.status}
                   </Tag>
-                  {evaluationDetailQuery.data.completed_at && (
+                  {evaluationDetailQuery.data.data.completed_at && (
                     <Text type="secondary">
-                      {`${t("common:completed", "Completed")}: ${evaluationDetailQuery.data.completed_at}`}
+                      {`${t("common:completed", "Completed")}: ${evaluationDetailQuery.data.data.completed_at}`}
                     </Text>
                   )}
                 </div>
@@ -840,25 +862,25 @@ export const PromptStudioPlaygroundPage: React.FC = () => {
                 <div className="text-sm">
                   <div className="flex gap-2">
                     <Text strong>Project:</Text>
-                    <Text>{evaluationDetailQuery.data.project_id}</Text>
+                    <Text>{evaluationDetailQuery.data.data.project_id}</Text>
                   </div>
                   <div className="flex gap-2">
                     <Text strong>Prompt:</Text>
-                    <Text>{evaluationDetailQuery.data.prompt_id}</Text>
+                    <Text>{evaluationDetailQuery.data.data.prompt_id}</Text>
                   </div>
-                  {evaluationDetailQuery.data.aggregate_metrics && (
+                  {evaluationDetailQuery.data.data.aggregate_metrics && (
                     <div className="mt-2">
                       <Text strong>Metrics</Text>
                       <pre className="whitespace-pre-wrap text-xs bg-gray-50 dark:bg-[#1f1f1f] p-2 rounded">
-                        {JSON.stringify(evaluationDetailQuery.data.aggregate_metrics, null, 2)}
+                        {JSON.stringify(evaluationDetailQuery.data.data.aggregate_metrics, null, 2)}
                       </pre>
                     </div>
                   )}
-                  {evaluationDetailQuery.data.metrics && !evaluationDetailQuery.data.aggregate_metrics && (
+                  {evaluationDetailQuery.data.data.metrics && !evaluationDetailQuery.data.data.aggregate_metrics && (
                     <div className="mt-2">
                       <Text strong>Metrics</Text>
                       <pre className="whitespace-pre-wrap text-xs bg-gray-50 dark:bg-[#1f1f1f] p-2 rounded">
-                        {JSON.stringify(evaluationDetailQuery.data.metrics, null, 2)}
+                        {JSON.stringify(evaluationDetailQuery.data.data.metrics, null, 2)}
                       </pre>
                     </div>
                   )}

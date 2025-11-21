@@ -39,6 +39,83 @@
   box-shadow: none !important;
 }
 
+/* Inputs/selects background + focus states for light/dark themes */
+.ant-input,
+.ant-input-affix-wrapper,
+.ant-input-number,
+.ant-input-number-input,
+.ant-input-textarea,
+.ant-input-textarea textarea,
+.ant-select-selector,
+.ant-picker {
+  background-color: #f8fafc;
+  border-color: #e5e7eb;
+  color: #0f172a;
+  transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.ant-input:hover,
+.ant-input-affix-wrapper:hover,
+.ant-input-number:hover,
+.ant-select-selector:hover,
+.ant-picker:hover {
+  border-color: #d97706;
+}
+
+.ant-input:focus,
+.ant-input-focused,
+.ant-input-affix-wrapper-focused,
+.ant-input-number-focused,
+.ant-select-focused .ant-select-selector,
+.ant-picker-focused {
+  border-color: #f59e0b;
+  box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.16);
+}
+
+.ant-input::placeholder,
+.ant-input-textarea::placeholder,
+.ant-input-textarea textarea::placeholder {
+  color: #94a3b8;
+}
+
+.dark .ant-input,
+.dark .ant-input-affix-wrapper,
+.dark .ant-input-number,
+.dark .ant-input-number-input,
+.dark .ant-input-textarea,
+.dark .ant-input-textarea textarea,
+.dark .ant-select-selector,
+.dark .ant-picker {
+  background-color: #111827;
+  border-color: #374151;
+  color: #e5e7eb;
+}
+
+.dark .ant-input:hover,
+.dark .ant-input-affix-wrapper:hover,
+.dark .ant-input-number:hover,
+.dark .ant-select-selector:hover,
+.dark .ant-picker:hover {
+  border-color: #fbbf24;
+}
+
+.dark .ant-input:focus,
+.dark .ant-input-focused,
+.dark .ant-input-affix-wrapper-focused,
+.dark .ant-input-number-focused,
+.dark .ant-select-focused .ant-select-selector,
+.dark .ant-picker-focused {
+  border-color: #f59e0b;
+  box-shadow: 0 0 0 2px rgba(251, 191, 36, 0.2);
+}
+
+.dark .ant-input::placeholder,
+.dark .ant-input-textarea::placeholder,
+.dark .ant-input-textarea textarea::placeholder,
+.dark .ant-select-selection-placeholder {
+  color: #9ca3af;
+}
+
 /* Hide scrollbar for Chrome, Safari and Opera */
 .no-scrollbar::-webkit-scrollbar {
   display: none;
