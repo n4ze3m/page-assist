@@ -114,14 +114,14 @@
         "confirm": "Er du sikker på, at du vil udføre en systemnulstilling? Dette vil slette alle data og kan ikke fortrydes."
       },
       "export": {
-        "label": "Eksporter chathistorik, vidensbase og prompts",
-        "button": "Eksporter Data",
-        "success": "Export lykkedes"
+        "label": "Eksporter alle data (chat-historik, vidensbase, prompts og indstillinger)",
+        "button": "Eksporter data",
+        "success": "Eksport fuldført"
       },
       "import": {
-        "label": "Importer chathistorik, vidensbase og prompts",
-        "button": "Importer Data",
-        "success": "Import lykkedes",
+        "label": "Importer alle data (chat-historik, vidensbase, prompts og indstillinger)",
+        "button": "Importer data",
+        "success": "Import fuldført",
         "error": "Importfejl"
       }
     },

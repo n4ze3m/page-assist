@@ -117,14 +117,14 @@
         "confirm": "Er du sikker på at du vil utføre en system tilbakestilling? Dette vil slette alle data og kan ikke angres."
       },
       "export": {
-        "label": "Eksporter chathistorikk, kunnskapsbase og prompts",
-        "button": "Eksporter Data",
-        "success": "Eksport vellykket"
+        "label": "Eksporter all data (chathistorikk, kunnskapsbase, forespørsler og innstillinger)",
+        "button": "Eksporter data",
+        "success": "Eksport fullført"
       },
       "import": {
-        "label": "Importer chathistorikk, kunnskapsbase og prompts",
-        "button": "Importer Data",
-        "success": "Import vellykket",
+        "label": "Importer all data (chathistorikk, kunnskapsbase, forespørsler og innstillinger)",
+        "button": "Importer data",
+        "success": "Import fullført",
         "error": "Importfeil"
       }
     },

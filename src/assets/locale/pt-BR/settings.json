@@ -121,15 +121,15 @@
         "confirm": "Tem certeza que deseja realizar um reinício do sistema? Isso irá apagar todos os dados e não poderá ser desfeito."
       },
       "export": {
-        "label": "Exportar Histórico de Chat, Base de Conhecimento e Prompts",
-        "button": "Exportar Dados",
-        "success": "Exportação com Sucesso"
+        "label": "Exportar todos os dados (histórico de chat, base de conhecimento, prompts e configurações)",
+        "button": "Exportar dados",
+        "success": "Exportação bem-sucedida"
       },
       "import": {
-        "label": "Importar Histórico de Chat, Base de Conhecimento e Prompts",
-        "button": "Importar Dados",
-        "success": "Importação com Sucesso",
-        "error": "Erro na Importação"
+        "label": "Importar todos os dados (histórico de chat, base de conhecimento, prompts e configurações)",
+        "button": "Importar dados",
+        "success": "Importação bem-sucedida",
+        "error": "Erro na importação"
       }
     },
     "tts": {

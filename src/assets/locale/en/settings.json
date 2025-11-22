@@ -156,12 +156,12 @@
         "confirm": "Are you sure you want to perform a system reset? This will clear all data and cannot be undone."
       },
       "export": {
-        "label": "Export Chat History, Knowledge Base, and Prompts",
+        "label": "Export All Data (Chat History, Knowledge Base, Prompts, and Settings)",
         "button": "Export Data",
         "success": "Export Success"
       },
       "import": {
-        "label": "Import Chat History, Knowledge Base, and Prompts",
+        "label": "Import All Data (Chat History, Knowledge Base, Prompts, and Settings)",
         "button": "Import Data",
         "success": "Import Success",
         "error": "Import Error"
