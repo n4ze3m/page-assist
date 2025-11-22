@@ -8,9 +8,8 @@ test.describe('Review page UX', () => {
     await page.goto(optionsUrl + '#/review')
     await page.waitForLoadState('networkidle')
 
-    // When the server is not connected, the Review workspace should
-    // guide the user to connect instead of rendering a broken UI.
-    const headline = page.getByText(/Connect to use Review|Explore Review in demo mode/i)
+    // Offline/unauthenticated: show the inline connect prompt.
+    const headline = page.getByText(/Connect to use Review/i)
     await expect(headline).toBeVisible()
 
     const connectCta = page.getByRole('button', { name: /Connect to server/i })
@@ -48,15 +47,14 @@ test.describe('Review page UX', () => {
     await page.waitForLoadState('networkidle')
 
     // Left column: search input and Filters toggle
-    await expect(
-      page.getByPlaceholder(/Search media \(title\/content\)|Search media, notes/i)
-    ).toBeVisible()
+    const searchInput = page.getByPlaceholder(/Search media \(title\/content\)|Search media, notes/i)
+    await expect(searchInput).toBeVisible()
 
-    const filtersButton = page.getByRole('button', { name: /Filters/i })
+    const filtersButton = page.getByRole('button', { name: /^Filters$/i })
     await expect(filtersButton).toBeVisible()
-    await expect(filtersButton).toHaveAttribute('aria-expanded', /false/i)
-    await filtersButton.click()
     await expect(filtersButton).toHaveAttribute('aria-expanded', /true/i)
+    await filtersButton.click()
+    await expect(filtersButton).toHaveAttribute('aria-expanded', /false/i)
 
     // Result types and generation mode labels should be present
     await expect(page.getByText(/Result types/i)).toBeVisible()
@@ -69,11 +67,10 @@ test.describe('Review page UX', () => {
     await expect(sidebarToggle).toBeVisible()
 
     // Results header shows a count string like "0 items"
-    const resultsHeader = page.getByText(/Results/i)
+    const resultsHeader = page.getByTestId('review-results-header')
     await expect(resultsHeader).toBeVisible()
     await expect(page.getByText(/items$/i)).toBeVisible()
 
     await context.close()
   })
 })
-

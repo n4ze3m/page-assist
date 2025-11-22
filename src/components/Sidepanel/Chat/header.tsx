@@ -38,6 +38,8 @@ import { Sidebar } from "@/components/Option/Sidebar"
 // import { BsIncognito } from "react-icons/bs"
 import { isFireFoxPrivateMode } from "@/utils/is-private-mode"
 import { useAntdNotification } from "@/hooks/useAntdNotification"
+import { useConnectionState } from "@/hooks/useConnectionState"
+import { ConnectionPhase } from "@/types/connection"
 
 type SidepanelHeaderProps = {
   sidebarOpen?: boolean
@@ -172,6 +174,8 @@ export const SidepanelHeader = ({
     }),
     [sendQuickIngest, t]
   )
+  const { isConnected, phase } = useConnectionState()
+  const ingestDisabled = phase === ConnectionPhase.UNCONFIGURED
 
   return (
     <div
@@ -217,7 +221,7 @@ export const SidepanelHeader = ({
                 <span>{t("sidepanel:header.modePlayground", "Chat")}</span>
               </button>
               <button
-                onClick={() => openOptionsPage("#/review")}
+                onClick={() => openOptionsPage("#/media-multi")}
                 className="flex items-center gap-2 rounded px-2 py-1 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-800">
                 <Microscope className="size-4 text-gray-500 dark:text-gray-400" />
                 <span>{t("sidepanel:header.modeReview", "Review")}</span>
@@ -274,21 +278,29 @@ export const SidepanelHeader = ({
           menu={quickIngestMenu}
           placement="bottomRight"
           trigger={["click"]}
-          open={ingestOpen}
+          open={ingestDisabled ? false : ingestOpen}
           onOpenChange={(open) => {
+            if (ingestDisabled) return
             setIngestOpen(open)
             if (!open) requestAnimationFrame(() => ingestBtnRef.current?.focus())
           }}
         >
-          <Tooltip title={t('sidepanel:header.ingest')}>
+          <Tooltip
+            title={
+              ingestDisabled
+                ? t("sidepanel:header.ingestConnect", "Connect first to save/process the current page.")
+                : t("sidepanel:header.ingestHint", "Quick action: save current page or process locally.")
+            }>
             <button
               type="button"
               aria-label={t('sidepanel:header.ingest')}
               aria-haspopup="menu"
-              aria-expanded={ingestOpen}
+              aria-expanded={!ingestDisabled && ingestOpen}
               aria-controls="quick-ingest-menu"
+              aria-disabled={ingestDisabled}
+              disabled={ingestDisabled}
               ref={ingestBtnRef}
-              className="flex items-center space-x-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-700">
+              className={`flex items-center space-x-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-700 ${ingestDisabled ? 'cursor-not-allowed text-gray-400 dark:text-gray-600' : ''}`}>
               <UploadCloud className="size-4 text-gray-500 dark:text-gray-400" />
             </button>
           </Tooltip>

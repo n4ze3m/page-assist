@@ -14,7 +14,6 @@ import OptionRagSettings from "./option-rag"
 import OptionChrome from "./option-settings-chrome"
 import OptionOpenAI from "./option-settings-openai"
 import { OptionTldwSettings } from "./option-settings-tldw"
-import OptionReview from "./option-review"
 import OptionMedia from "./option-media"
 import OptionMediaMulti from "./option-media-multi"
 import OptionNotes from "./option-notes"
@@ -55,7 +54,7 @@ export const OptionRoutingChrome = () => {
       <Route path="/settings/chat-dictionaries" element={<OptionDictionaries />} />
       <Route path="/settings/rag" element={<OptionRagSettings />} />
       <Route path="/settings/about" element={<OptionAbout />} />
-      <Route path="/review" element={<OptionReview />} />
+      <Route path="/review" element={<OptionMediaMulti />} />
       <Route path="/flashcards" element={<OptionFlashcards />} />
       <Route path="/media" element={<OptionMedia />} />
       <Route path="/media-multi" element={<OptionMediaMulti />} />

@@ -136,10 +136,12 @@ export const Header: React.FC<Props> = ({
     isConnected,
     knowledgeStatus
   } = useConnectionState()
+  const ingestDisabled = phase === ConnectionPhase.UNCONFIGURED
   const { shortcuts: shortcutConfig } = useShortcutConfig()
+  const quickIngestBtnRef = React.useRef<HTMLButtonElement>(null)
 
   const currentCoreMode: CoreMode = React.useMemo(() => {
-    if (pathname.startsWith("/review")) return "review"
+    if (pathname.startsWith("/review")) return "media"
     if (pathname.startsWith("/media-multi") || pathname.startsWith("/media"))
       return "media"
     if (pathname.startsWith("/settings/knowledge")) return "knowledge"
@@ -193,7 +195,7 @@ export const Header: React.FC<Props> = ({
         navigate("/")
         break
       case "review":
-        navigate("/review")
+        navigate("/media-multi")
         break
       case "media":
         navigate("/media")
@@ -290,7 +292,7 @@ export const Header: React.FC<Props> = ({
         items: [
           {
             type: "link" as const,
-            to: "/review",
+            to: "/media-multi",
             icon: Microscope,
             label: t("option:header.review", "Review")
           },
@@ -338,7 +340,7 @@ export const Header: React.FC<Props> = ({
             type: "link" as const,
             to: "/media-multi",
             icon: LayoutGrid,
-            label: t("option:header.libraryView", "Library view")
+            label: t("option:header.libraryView", "Multi-Item Review")
           }
         ]
       },
@@ -731,11 +733,27 @@ export const Header: React.FC<Props> = ({
 
               <button
                 type="button"
+                ref={quickIngestBtnRef}
                 onClick={() => setQuickIngestOpen(true)}
-                className="flex w-full items-center gap-2 rounded-md border border-transparent px-3 py-2 text-sm text-gray-600 transition hover:border-gray-300 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500 dark:text-gray-200 dark:hover:border-gray-500 dark:hover:bg-[#1f1f1f] sm:w-auto"
+                disabled={ingestDisabled}
+                title={
+                  ingestDisabled
+                    ? t("option:header.connectToIngest", "Connect to your server to ingest.")
+                    : t("option:header.quickIngestHelp", "Upload URLs/files with analysis and advanced options.")
+                }
+                className={classNames(
+                  "flex w-full items-center gap-2 rounded-md border border-transparent px-3 py-2 text-sm transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500 sm:w-auto",
+                  ingestDisabled
+                    ? "cursor-not-allowed text-gray-400 dark:text-gray-600"
+                    : "text-gray-600 hover:border-gray-300 hover:bg-white dark:text-gray-200 dark:hover:border-gray-500 dark:hover:bg-[#1f1f1f]"
+                )}
+                aria-disabled={ingestDisabled}
               >
                 <UploadCloud className="h-4 w-4" aria-hidden="true" />
                 <span>{t("option:header.quickIngest", "Quick ingest")}</span>
+                <span className="hidden text-[11px] font-normal text-gray-500 sm:inline">
+                  {t("option:header.quickIngestHint", "URLs & files with extra controls")}
+                </span>
               </button>
 
               {messages.length > 0 && !streaming && (
@@ -887,15 +905,17 @@ export const Header: React.FC<Props> = ({
                     shortcut: shortcutConfig.modeCharacters
                   }
                 ]
-                const visibleModes =
-                  promptStudioCapability.data === false
-                    ? modeOptions.filter((m) => m.key !== "promptStudio")
-                    : modeOptions
-                return visibleModes.map((mode) => (
+                return modeOptions.map((mode) => {
+                  const promptStudioUnavailable = mode.key === "promptStudio" && promptStudioCapability.data === false
+                  return (
                   <button
                     key={mode.key}
                     type="button"
-                    onClick={() => handleCoreModeChange(mode.key)}
+                    onClick={() => {
+                      if (promptStudioUnavailable) return
+                      handleCoreModeChange(mode.key)
+                    }}
+                    disabled={promptStudioUnavailable}
                     title={
                       mode.shortcut
                         ? t("option:header.modeShortcutHint", "{{shortcut}} to switch", {
@@ -906,14 +926,16 @@ export const Header: React.FC<Props> = ({
                     className={classNames(
                       "rounded-full px-3 py-1 text-xs font-medium transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500",
                       currentCoreMode === mode.key
-                        ? "bg-amber-600 text-white dark:bg-amber-400 dark:text-gray-900"
-                        : "bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-[#262626] dark:text-gray-200 dark:hover:bg-[#333333]"
+                        ? "bg-amber-500 text-gray-900 shadow-sm dark:bg-amber-400 dark:text-gray-900"
+                        : "bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-[#262626] dark:text-gray-200 dark:hover:bg-[#333333]",
+                      promptStudioUnavailable ? "opacity-60 cursor-not-allowed" : ""
                     )}
                     aria-current={currentCoreMode === mode.key ? "page" : undefined}
                   >
                     {mode.label}
                   </button>
-                ))
+                  )
+                })
               })()}
             </div>
           </div>
@@ -1003,7 +1025,13 @@ export const Header: React.FC<Props> = ({
         </div>
       </div>
 
-      <QuickIngestModal open={quickIngestOpen} onClose={() => setQuickIngestOpen(false)} />
+      <QuickIngestModal
+        open={quickIngestOpen}
+        onClose={() => {
+          setQuickIngestOpen(false)
+          requestAnimationFrame(() => quickIngestBtnRef.current?.focus())
+        }}
+      />
     </header>
   )
 }

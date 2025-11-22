@@ -107,10 +107,11 @@ export const PromptStudioSettings: React.FC = () => {
     mutationFn: async (warnSeconds?: number) => {
       setStatusError(null)
       const resp = await getPromptStudioStatus({ warn_seconds: warnSeconds })
-      if (!resp?.success) {
-        throw new Error(resp?.error || "Status failed")
+      const payload = resp?.data
+      if (!payload?.success) {
+        throw new Error(payload?.error || "Status failed")
       }
-      return resp.data
+      return payload.data
     },
     onSuccess: (data) => {
       setStatusResult(data || null)

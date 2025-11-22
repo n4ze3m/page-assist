@@ -84,6 +84,8 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true }
   const [debugOpen, setDebugOpen] = React.useState<boolean>(false)
   const [mediaJsonOpen, setMediaJsonOpen] = React.useState<boolean>(false)
   const [mediaExpanded, setMediaExpanded] = React.useState<boolean>(false)
+  const [contentCollapsed, setContentCollapsed] = React.useState<boolean>(false)
+  const [analysisCollapsed, setAnalysisCollapsed] = React.useState<boolean>(false)
   const [notesJsonOpen, setNotesJsonOpen] = React.useState<boolean>(false)
   const [selectedExistingIndex, setSelectedExistingIndex] = React.useState<number>(-1)
   const [onlyWithAnalysis, setOnlyWithAnalysis] = React.useState<boolean>(false)
@@ -103,6 +105,10 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true }
     "Summarize the following content into key points and a brief abstract."
   )
   const [summaryUserPrefix, setSummaryUserPrefix] = React.useState<string>("")
+  React.useEffect(() => {
+    setContentCollapsed(false)
+    setAnalysisCollapsed(false)
+  }, [selected])
   // Quick prompt search states (dropdown editors)
   const [revQ, setRevQ] = React.useState("")
   const [revResults, setRevResults] = React.useState<Array<{ id?: string; title: string; content: string }>>([])
@@ -677,6 +683,26 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true }
     setSelectedExistingIndex(displayedVersionIndices[newPos])
   }
 
+  const goPrevItem = () => {
+    if (selectedResultIndex <= 0) return
+    const next = displayedResults[selectedResultIndex - 1]
+    if (next) {
+      setSelected(next)
+      setAnalysis("")
+      loadExistingAnalyses(next)
+    }
+  }
+
+  const goNextItem = () => {
+    if (selectedResultIndex < 0 || selectedResultIndex >= displayedResults.length - 1) return
+    const next = displayedResults[selectedResultIndex + 1]
+    if (next) {
+      setSelected(next)
+      setAnalysis("")
+      loadExistingAnalyses(next)
+    }
+  }
+
   // Current (active) version number badge
   const currentVersionNumber = React.useMemo(() => {
     const fromDetail = (typeof (selectedDetail?.version) === 'number') ? selectedDetail.version : (typeof (selectedDetail?.latest_version?.version_number) === 'number' ? selectedDetail.latest_version.version_number : undefined)
@@ -947,11 +973,21 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true }
     }
     return arr
   }, [results, mediaTypes, keywordTokens])
+  const selectedResultIndex = React.useMemo(() => {
+    if (!selected) return -1
+    return displayedResults.findIndex((r) => r.id === selected.id && r.kind === selected.kind)
+  }, [displayedResults, selected])
 
   const { demoEnabled } = useDemoMode()
+  const [previewExpanded, setPreviewExpanded] = React.useState<{ content: boolean; analysis: boolean }>({ content: false, analysis: false })
+  const previewCards = React.useMemo(() => ([
+    { title: 'Sample media item 1', meta: 'Video · 12:34', status: 'Ready' },
+    { title: 'Sample media item 2', meta: 'Audio · 08:12', status: 'Processing' },
+    { title: 'Sample media item 3', meta: 'PDF · 4 pages', status: 'Ready' }
+  ]), [])
 
   if (!isOnline) {
-    const empty = demoEnabled ? (
+    const baseEmpty = demoEnabled ? (
       <FeatureEmptyState
         title={
           isViewMediaMode
@@ -1053,14 +1089,82 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true }
       />
     )
 
+    const previewToolbar = (
+      <div className="sticky top-2 z-10 mb-3 flex flex-wrap items-center gap-2 rounded-md border border-dashed border-gray-300 bg-white/80 p-2 dark:border-gray-700 dark:bg-[#111111]/80 backdrop-blur">
+        <div className="text-xs font-semibold text-gray-700 dark:text-gray-200">
+          {t('review:preview.bulkHint', 'Preview: scroll multiple items with collapsible Content & Analysis')}
+        </div>
+        <div className="flex flex-wrap items-center gap-2 ml-auto">
+          <Button size="small" onClick={() => setPreviewExpanded({ content: true, analysis: true })}>
+            {t('review:preview.expandAll', 'Expand all')}
+          </Button>
+          <Button size="small" onClick={() => setPreviewExpanded({ content: false, analysis: false })}>
+            {t('review:preview.collapseAll', 'Collapse all')}
+          </Button>
+        </div>
+      </div>
+    )
+
+    const previewCardsUi = (
+      <div className="space-y-3">
+        {previewCards.map((c, idx) => (
+          <div key={idx} className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-[#111] shadow-sm">
+            <div className="flex items-center justify-between px-3 py-2 border-b dark:border-gray-700">
+              <div className="flex flex-col">
+                <span className="text-sm font-semibold text-gray-800 dark:text-gray-100">{c.title}</span>
+                <span className="text-[11px] text-gray-500">{c.meta}</span>
+              </div>
+              <Tag color={c.status === 'Processing' ? 'orange' : 'green'}>{c.status}</Tag>
+            </div>
+            <div className="divide-y divide-gray-200 dark:divide-gray-800">
+              <div className="px-3 py-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-semibold uppercase text-gray-600 dark:text-gray-300">Content / Transcript</span>
+                  <Button size="small" type="link" onClick={() => setPreviewExpanded((v) => ({ ...v, content: !v.content }))}>
+                    {previewExpanded.content ? t('review:preview.hide', 'Hide') : t('review:preview.show', 'Show')}
+                  </Button>
+                </div>
+                {previewExpanded.content && (
+                  <div className="mt-2 space-y-1 text-sm text-gray-600 dark:text-gray-300">
+                    <div className="h-3 w-3/4 bg-gray-200 dark:bg-gray-800 rounded"></div>
+                    <div className="h-3 w-5/6 bg-gray-200 dark:bg-gray-800 rounded"></div>
+                    <div className="h-3 w-2/3 bg-gray-200 dark:bg-gray-800 rounded"></div>
+                  </div>
+                )}
+              </div>
+              <div className="px-3 py-2 bg-gray-50 dark:bg-[#0c0c0c]">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-semibold uppercase text-gray-600 dark:text-gray-300">Analysis / Summary</span>
+                  <Button size="small" type="link" onClick={() => setPreviewExpanded((v) => ({ ...v, analysis: !v.analysis }))}>
+                    {previewExpanded.analysis ? t('review:preview.hide', 'Hide') : t('review:preview.show', 'Show')}
+                  </Button>
+                </div>
+                {previewExpanded.analysis && (
+                  <div className="mt-2 space-y-1 text-sm text-gray-600 dark:text-gray-300">
+                    <div className="h-3 w-2/3 bg-gray-200 dark:bg-gray-800 rounded"></div>
+                    <div className="h-3 w-5/6 bg-gray-200 dark:bg-gray-800 rounded"></div>
+                    <div className="h-3 w-1/2 bg-gray-200 dark:bg-gray-800 rounded"></div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    )
+
     return (
-      <div className="mt-4">
+      <div className="mt-4 space-y-4">
         {demoEnabled && (
           <div className="mb-2 inline-flex items-center rounded-full border border-amber-300 bg-amber-50 px-2 py-0.5 text-[11px] font-medium text-amber-700 dark:border-amber-600 dark:bg-amber-900/30 dark:text-amber-200">
             {t('review:reviewPage.demoMode', 'Demo mode')}
           </div>
         )}
-        {empty}
+        {baseEmpty}
+        <div className="mt-4 rounded-lg border border-dashed border-gray-300 bg-white dark:border-gray-700 dark:bg-[#171717] p-3">
+          {previewToolbar}
+          {previewCardsUi}
+        </div>
       </div>
     )
   }
@@ -1209,8 +1313,18 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true }
           </div>
         </div>
         <div className="mt-3 p-3 rounded-lg border dark:border-gray-700 bg-white dark:bg-[#171717] max-h-[50vh] md:max-h-[60vh] lg:max-h-[calc(100dvh-18rem)] overflow-auto">
-          <div className="sticky -m-3 mb-2 top-0 z-10 px-3 py-2 bg-white dark:bg-[#171717] border-b dark:border-gray-700 flex items-center justify-between">
-            <span className="text-xs uppercase tracking-wide text-gray-500">{t('review:reviewPage.results', 'Results')}</span>
+          <div
+            className="sticky -m-3 mb-2 top-0 z-10 px-3 py-2 bg-white dark:bg-[#171717] border-b dark:border-gray-700 flex items-center justify-between"
+            role="heading"
+            aria-level={2}
+            aria-label={`${t('review:reviewPage.results', 'Results')} (${displayedResults.length} items)`}
+            data-testid="review-results-header">
+            <div className="flex items-center gap-2">
+              <span className="text-xs uppercase tracking-wide text-gray-500">{t('review:reviewPage.results', 'Results')}</span>
+              <span className="text-[11px] text-gray-400">
+                {t('review:reviewPage.loadedOf', '{{count}} loaded', { count: displayedResults.length })}{mediaTotal ? ` · ${mediaTotal} total` : ''}
+              </span>
+            </div>
             <span className="text-xs text-gray-400">
               {`${displayedResults.length} item${displayedResults.length === 1 ? '' : 's'}`}
             </span>
@@ -1332,6 +1446,49 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true }
 
       {/* Right/center: analysis panel */}
       <div className="flex-1 p-3 rounded-lg border dark:border-gray-700 bg-white dark:bg-[#171717] min-h-[70vh] min-w-0 lg:h-[calc(100dvh-8rem)] overflow-auto">
+        <div className="sticky top-0 z-20 mb-3 flex flex-wrap items-center gap-2 rounded-md border border-dashed border-gray-300 bg-white/80 p-2 dark:border-gray-700 dark:bg-[#111111]/80 backdrop-blur">
+          <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-300">
+            <span className="font-semibold uppercase">{t('review:reviewPage.bulkToolbar', 'Bulk view toolbar')}</span>
+            <span className="text-gray-500">
+              {t('review:reviewPage.loadedCount', '{{count}} loaded', { count: displayedResults.length })}
+              {mediaTotal > 0 ? ` / ${mediaTotal}` : ""}
+            </span>
+          </div>
+          <div className="flex flex-wrap items-center gap-2 ml-auto">
+            <Button size="small" onClick={() => { setContentCollapsed(false); setAnalysisCollapsed(false) }}>
+              {t('review:reviewPage.expandAllContent', 'Expand all')}
+            </Button>
+            <Button size="small" onClick={() => { setContentCollapsed(true); setAnalysisCollapsed(true) }}>
+              {t('review:reviewPage.collapseAllContent', 'Collapse all')}
+            </Button>
+            <Button size="small" onClick={goPrevItem} disabled={selectedResultIndex <= 0}>
+              {t('review:reviewPage.prevItem', 'Prev item')}
+            </Button>
+            <Button size="small" onClick={goNextItem} disabled={selectedResultIndex < 0 || selectedResultIndex >= displayedResults.length - 1}>
+              {t('review:reviewPage.nextItem', 'Next item')}
+            </Button>
+          </div>
+          {displayedResults.length > 5 && (
+            <div className="w-full flex flex-wrap items-center gap-2">
+              <span className="text-[11px] text-gray-500">{t('review:reviewPage.jumpTo', 'Jump to')}</span>
+              <div className="flex flex-wrap gap-1">
+                {displayedResults.slice(0, 12).map((r) => (
+                  <Button
+                    key={`${r.kind}:${r.id}`}
+                    size="small"
+                    type={selected?.id === r.id ? 'primary' : 'default'}
+                    onClick={() => {
+                      setSelected(r)
+                      setAnalysis("")
+                      loadExistingAnalyses(r)
+                    }}>
+                    {String(r.title || r.id).slice(0, 24)}
+                  </Button>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
         {!selected ? (
           <div className="h-full flex items-center justify-center">
             <Empty
@@ -1716,6 +1873,9 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true }
                 <div className="flex items-center justify-between">
                   <Typography.Text type="secondary">Media Content</Typography.Text>
                   <div className="flex items-center gap-2">
+                    <Button size="small" type="link" onClick={() => setContentCollapsed((v) => !v)}>
+                      {contentCollapsed ? t('review:reviewPage.expandContent', 'Expand') : t('review:reviewPage.collapseContent', 'Collapse')}
+                    </Button>
                     <Tooltip title="Copy content">
                       <Button size="small" onClick={async () => { try { await navigator.clipboard.writeText(selectedContent || '') ; message.success('Content copied') } catch { message.error('Copy failed') } }} icon={(<CopyIcon className="w-4 h-4" />) as any} />
                     </Tooltip>
@@ -1724,19 +1884,23 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true }
                 </div>
                 <div className="mt-2 prose prose-sm dark:prose-invert max-w-none whitespace-pre-wrap break-words text-sm text-gray-700 dark:text-gray-300">
                   {selectedContent ? (
-                    <>
-                      {mediaExpanded || selectedContent.length <= 2500
-                        ? selectedContent
-                        : (selectedContent.slice(0, 2500) + '…')}
-                      {selectedContent.length > 2500 && (
-                        <button
-                          className="ml-2 underline text-xs"
-                          onClick={() => setMediaExpanded((v) => !v)}
-                        >
-                          {mediaExpanded ? 'Show less' : 'Show more'}
-                        </button>
-                      )}
-                    </>
+                    contentCollapsed
+                      ? <span className="text-xs text-gray-500">{selectedContent.slice(0, 160)}{selectedContent.length > 160 ? '…' : ''}</span>
+                      : (
+                        <>
+                          {mediaExpanded || selectedContent.length <= 2500
+                            ? selectedContent
+                            : (selectedContent.slice(0, 2500) + '…')}
+                          {selectedContent.length > 2500 && (
+                            <button
+                              className="ml-2 underline text-xs"
+                              onClick={() => setMediaExpanded((v) => !v)}
+                            >
+                              {mediaExpanded ? 'Show less' : 'Show more'}
+                            </button>
+                          )}
+                        </>
+                      )
                   ) : (
                     <span className="text-xs text-gray-500">No content available</span>
                   )}
@@ -1747,10 +1911,13 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true }
                   </div>
                 )}
               </div>
-              <div className="rounded border dark:border-gray-700 p-2 overflow-auto min-h-[14rem] md:h-[32vh]">
+              <div className="rounded border dark:border-gray-700 p-2 overflow-auto min-h-[14rem] md:h-[32vh] bg-gray-50 dark:bg-[#121212]">
                 <div className="flex items-center justify-between">
                   <Typography.Text type="secondary">Analysis</Typography.Text>
                   <div className="flex items-center gap-2">
+                    <Button size="small" type="link" onClick={() => setAnalysisCollapsed((v) => !v)}>
+                      {analysisCollapsed ? t('review:reviewPage.expandAnalysis', 'Expand') : t('review:reviewPage.collapseAnalysis', 'Collapse')}
+                    </Button>
                     <Tooltip title="Copy analysis">
                       <Button size="small" onClick={async () => { try { await navigator.clipboard.writeText(analysis || '') ; message.success('Analysis copied') } catch { message.error('Copy failed') } }} icon={(<CopyIcon className="w-4 h-4" />) as any} />
                     </Tooltip>
@@ -1767,12 +1934,18 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true }
                     </Tooltip>
                   </div>
                 </div>
-                <textarea
-                  className="w-full mt-2 min-h-[12rem] md:h-[26vh] text-sm p-2 rounded border dark:border-gray-700 dark:bg-[#171717] resize-y leading-relaxed"
-                  value={analysis}
-                  onChange={(e) => setAnalysis(e.target.value)}
-                  placeholder="Run Review or Summarize, then edit here..."
-                />
+                {analysisCollapsed ? (
+                  <div className="mt-2 text-sm text-gray-600 dark:text-gray-300">
+                    {analysis ? `${analysis.slice(0, 200)}${analysis.length > 200 ? '…' : ''}` : t('review:reviewPage.noAnalysis', 'No analysis yet')}
+                  </div>
+                ) : (
+                  <textarea
+                    className="w-full mt-2 min-h-[12rem] md:h-[26vh] text-sm p-2 rounded border dark:border-gray-700 dark:bg-[#171717] resize-y leading-relaxed"
+                    value={analysis}
+                    onChange={(e) => setAnalysis(e.target.value)}
+                    placeholder="Run Review or Summarize, then edit here..."
+                  />
+                )}
               </div>
               {/* Header above container */}
               <div className="flex items-center justify-between">

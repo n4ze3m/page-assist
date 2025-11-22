@@ -16,7 +16,6 @@ const OptionKnowledgeBase = lazy(() => import("./option-settings-knowledge"))
 const OptionAbout = lazy(() => import("./option-settings-about"))
 const OptionRagSettings = lazy(() => import("./option-rag"))
 const OptionOpenAI = lazy(() => import("./option-settings-openai"))
-const OptionReview = lazy(() => import("./option-review"))
 const OptionMedia = lazy(() => import("./option-media"))
 const OptionMediaMulti = lazy(() => import("./option-media-multi"))
 const OptionNotes = lazy(() => import("./option-notes"))
@@ -57,7 +56,7 @@ export const OptionRoutingFirefox = () => {
       <Route path="/settings/prompt-studio" element={<OptionSettingsPromptStudio />} />
       <Route path="/settings/about" element={<OptionAbout />} />
       <Route path="/settings/rag" element={<OptionRagSettings />} />
-      <Route path="/review" element={<OptionReview />} />
+      <Route path="/review" element={<OptionMediaMulti />} />
       <Route path="/flashcards" element={<OptionFlashcards />} />
       <Route path="/media" element={<OptionMedia />} />
       <Route path="/media-multi" element={<OptionMediaMulti />} />

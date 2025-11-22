@@ -2,9 +2,11 @@ import React from "react"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import {
   Alert,
+  Badge,
   Button,
   Card,
   Divider,
+  Empty,
   Form,
   Input,
   InputNumber,
@@ -14,9 +16,11 @@ import {
   Space,
   Switch,
   Table,
+  Tabs,
   Tag,
   Typography
 } from "antd"
+import { BugOutlined, HistoryOutlined, PlayCircleOutlined } from "@ant-design/icons"
 import { useTranslation } from "react-i18next"
 
 import { useServerOnline } from "@/hooks/useServerOnline"
@@ -125,6 +129,14 @@ export const PromptStudioPlaygroundPage: React.FC = () => {
   const [testCaseForm] = Form.useForm<TestCaseFormFields>()
   const [bulkTestCaseForm] = Form.useForm<{ json: string }>()
   const [evaluationForm] = Form.useForm<EvaluationFormFields>()
+  const [activeTab, setActiveTab] = React.useState<string>("overview")
+  const [lastDebugTestCase, setLastDebugTestCase] = React.useState<TestCase | null>(null)
+  const [testCaseRuns, setTestCaseRuns] = React.useState<
+    Record<
+      number,
+      { status: "running" | "done" | "error"; output?: string; tokens?: number; time?: number; error?: string }
+    >
+  >({})
 
   const capabilityQuery = useQuery({
     queryKey: ["prompt-studio", "capability"],
@@ -143,6 +155,22 @@ export const PromptStudioPlaygroundPage: React.FC = () => {
     queryFn: () => listProjects({ page: projectPage, per_page: pageSize }),
     enabled: capabilityQuery.data === true && online
   })
+
+  // Unwrap payloads up front so effects/hooks don't use variables before declaration
+  const projectsPayload = projectsQuery.data?.data
+  const projectList = React.useMemo(() => {
+    const raw =
+      Array.isArray(projectsPayload?.data)
+        ? projectsPayload?.data
+        : Array.isArray((projectsPayload as any)?.projects)
+          ? (projectsPayload as any).projects
+          : []
+    return raw || []
+  }, [projectsPayload])
+  const projectMeta = React.useMemo(
+    () => (projectsPayload as any)?.metadata || (projectsPayload as any)?.pagination,
+    [projectsPayload]
+  )
 
   React.useEffect(() => {
     if (!projectList.length) return
@@ -163,10 +191,28 @@ export const PromptStudioPlaygroundPage: React.FC = () => {
     enabled: capabilityQuery.data === true && !!selectedProjectId && online
   })
 
+  const promptsPayload = promptsQuery.data?.data
+  const promptList = React.useMemo(
+    () => (Array.isArray(promptsPayload?.data) ? promptsPayload?.data || [] : []),
+    [promptsPayload]
+  )
+  const promptMeta = React.useMemo(
+    () => (promptsPayload as any)?.metadata || (promptsPayload as any)?.pagination,
+    [promptsPayload]
+  )
+
   React.useEffect(() => {
     if (!promptList.length) return
     setSelectedPromptId((prev) => prev ?? (promptList[0]?.id || null))
   }, [promptList])
+
+  React.useEffect(() => {
+    if (selectedPromptId) {
+      setActiveTab((prev) => (prev === "overview" ? "editor" : prev))
+    } else {
+      setActiveTab("overview")
+    }
+  }, [selectedPromptId])
 
   const promptDetailQuery = useQuery({
     queryKey: ["prompt-studio", "prompt", selectedPromptId],
@@ -175,7 +221,7 @@ export const PromptStudioPlaygroundPage: React.FC = () => {
   })
 
   React.useEffect(() => {
-    const prompt = promptDetailQuery.data?.data
+    const prompt = promptDetailQuery.data?.data?.data
     if (!prompt) return
     savePromptForm.setFieldsValue({
       name: prompt.name,
@@ -193,6 +239,11 @@ export const PromptStudioPlaygroundPage: React.FC = () => {
     enabled: capabilityQuery.data === true && !!selectedPromptId && online
   })
 
+  const promptHistory = React.useMemo(
+    () => promptHistoryQuery.data?.data?.data || [],
+    [promptHistoryQuery.data]
+  )
+
   const testCasesQuery = useQuery({
     queryKey: ["prompt-studio", "test-cases", selectedProjectId, testCasePage, pageSize],
     queryFn: () =>
@@ -201,6 +252,16 @@ export const PromptStudioPlaygroundPage: React.FC = () => {
         : null,
     enabled: capabilityQuery.data === true && !!selectedProjectId && online
   })
+
+  const testCasesPayload = testCasesQuery.data?.data
+  const testCaseList = React.useMemo(
+    () => (Array.isArray(testCasesPayload?.data) ? testCasesPayload?.data || [] : []),
+    [testCasesPayload]
+  )
+  const testCaseMeta = React.useMemo(
+    () => (testCasesPayload as any)?.metadata || (testCasesPayload as any)?.pagination,
+    [testCasesPayload]
+  )
 
   const evaluationsQuery = useQuery({
     queryKey: ["prompt-studio", "evaluations", selectedProjectId, selectedPromptId, evaluationPage, pageSize],
@@ -216,12 +277,19 @@ export const PromptStudioPlaygroundPage: React.FC = () => {
     enabled: capabilityQuery.data === true && !!selectedProjectId && online,
     refetchInterval: (data) => {
       const hasRunning =
-        data?.evaluations?.some((e) =>
+        (data as any)?.data?.evaluations?.some((e: any) =>
           ["running", "pending", "processing"].includes((e.status || "").toLowerCase())
         ) ?? false
       return hasRunning ? 5000 : false
     }
   })
+
+  const evaluationsPayload = evaluationsQuery.data?.data
+  const evaluationList = React.useMemo(
+    () => evaluationsPayload?.evaluations || [],
+    [evaluationsPayload]
+  )
+  const evaluationTotal = evaluationsPayload?.total
 
   React.useEffect(() => {
     if (!evaluationList.length) return
@@ -248,10 +316,31 @@ export const PromptStudioPlaygroundPage: React.FC = () => {
     queryFn: () => (selectedEvaluationId ? getEvaluation(selectedEvaluationId) : null),
     enabled: capabilityQuery.data === true && !!selectedEvaluationId && online,
     refetchInterval: (data) => {
-      const status = (data?.status || "").toLowerCase()
+      const status = ((data as any)?.data?.status || "").toLowerCase()
       return status === "running" || status === "pending" ? 4000 : false
     }
   })
+
+  const promptDetail = React.useMemo(() => {
+    const raw = promptDetailQuery.data?.data as any
+    return raw?.data ?? raw
+  }, [promptDetailQuery.data])
+
+  const evaluationDetail = React.useMemo(() => {
+    const raw = evaluationDetailQuery.data as any
+    return raw?.data ?? raw
+  }, [evaluationDetailQuery.data])
+
+  const selectedProject = React.useMemo(
+    () => projectList.find((p) => p.id === selectedProjectId),
+    [projectList, selectedProjectId]
+  )
+  const promptCountForProject = promptMeta?.total ?? promptList.length
+  const testCaseCountForProject = testCaseMeta?.total ?? testCaseList.length
+  const runningEvalCount =
+    evaluationList?.filter((e) =>
+      ["running", "processing", "pending"].includes((e.status || "").toLowerCase())
+    ).length || 0
 
   // Mutations
   const createProjectMutation = useMutation({
@@ -342,6 +431,53 @@ export const PromptStudioPlaygroundPage: React.FC = () => {
     }
   })
 
+  const runTestCaseMutation = useMutation({
+    mutationFn: async (testCase: TestCase) => {
+      if (!selectedPromptId) throw new Error("No prompt selected")
+      const provider =
+        executeForm.getFieldValue("provider") ||
+        defaultsQuery.data?.executeProvider ||
+        "openai"
+      const model =
+        evaluationForm.getFieldValue("model_name") ||
+        executeForm.getFieldValue("model") ||
+        defaultsQuery.data?.evalModelName ||
+        defaultsQuery.data?.executeModel ||
+        "gpt-3.5-turbo"
+
+      return await executePrompt({
+        prompt_id: selectedPromptId,
+        inputs: testCase.inputs || {},
+        provider,
+        model
+      })
+    },
+    onMutate: (testCase) => {
+      setTestCaseRuns((prev) => ({
+        ...prev,
+        [testCase.id]: { status: "running" }
+      }))
+    },
+    onSuccess: (resp, testCase) => {
+      const payload = (resp as any)?.data || (resp as any)
+      setTestCaseRuns((prev) => ({
+        ...prev,
+        [testCase.id]: {
+          status: "done",
+          output: payload?.output,
+          tokens: payload?.tokens_used,
+          time: payload?.execution_time
+        }
+      }))
+    },
+    onError: (err: any, testCase) => {
+      setTestCaseRuns((prev) => ({
+        ...prev,
+        [testCase.id]: { status: "error", error: err?.message || "Inline run failed" }
+      }))
+    }
+  })
+
   const createTestCaseMutation = useMutation({
     mutationFn: async (values: TestCaseFormFields) => {
       if (!selectedProjectId) throw new Error("No project selected")
@@ -413,33 +549,24 @@ export const PromptStudioPlaygroundPage: React.FC = () => {
     }
   })
 
-  const projectsPayload = projectsQuery.data?.data
-  const projectList = Array.isArray(projectsPayload?.data)
-    ? projectsPayload?.data || []
-    : Array.isArray((projectsPayload as any)?.projects)
-      ? (projectsPayload as any).projects
-      : []
-  const projectMeta =
-    (projectsPayload as any)?.metadata || (projectsPayload as any)?.pagination
-
-  const promptsPayload = promptsQuery.data?.data
-  const promptList = Array.isArray(promptsPayload?.data)
-    ? promptsPayload?.data || []
-    : []
-  const promptMeta = (promptsPayload as any)?.metadata || (promptsPayload as any)?.pagination
-
-  const promptHistory = promptHistoryQuery.data?.data || []
-
-  const testCasesPayload = testCasesQuery.data?.data
-  const testCaseList = Array.isArray(testCasesPayload?.data)
-    ? testCasesPayload?.data || []
-    : []
-  const testCaseMeta =
-    (testCasesPayload as any)?.metadata || (testCasesPayload as any)?.pagination
-
-  const evaluationsPayload = evaluationsQuery.data?.data
-  const evaluationList = evaluationsPayload?.evaluations || []
-  const evaluationTotal = evaluationsPayload?.total
+  const handleDebugTestCase = React.useCallback(
+    (testCase: TestCase) => {
+      executeForm.setFieldsValue({
+        provider:
+          executeForm.getFieldValue("provider") ||
+          defaultsQuery.data?.executeProvider ||
+          "openai",
+        model:
+          executeForm.getFieldValue("model") ||
+          defaultsQuery.data?.executeModel ||
+          "gpt-3.5-turbo",
+        inputs: JSON.stringify(testCase.inputs || {}, null, 2)
+      })
+      setLastDebugTestCase(testCase)
+      setActiveTab("playground")
+    },
+    [defaultsQuery.data, executeForm]
+  )
 
   if (!online) {
     return (
@@ -469,7 +596,7 @@ export const PromptStudioPlaygroundPage: React.FC = () => {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <Title level={3} className="mb-0">
             {t("option:promptStudio.title", "Prompt Studio Playground")}
@@ -481,30 +608,47 @@ export const PromptStudioPlaygroundPage: React.FC = () => {
             )}
           </Paragraph>
         </div>
+        <div className="flex flex-wrap items-center gap-2 text-xs text-gray-600 dark:text-gray-300">
+          <Badge
+            status={capabilityQuery.data ? "success" : "warning"}
+            text={
+              capabilityQuery.data
+                ? t("option:promptStudio.capable", "Prompt Studio available")
+                : t("option:promptStudio.capabilityUnknown", "Status check failed")
+            }
+          />
+          <Tag color="blue">{selectedProject?.name || t("common:selectProject", "Select project")}</Tag>
+          <Tag color="purple">
+            {selectedPromptId
+              ? t("option:promptStudio.promptId", "Prompt {{id}}", { id: selectedPromptId })
+              : t("option:promptStudio.noPromptSelected", "No prompt selected")}
+          </Tag>
+          <Tag color={runningEvalCount ? "blue" : "default"}>
+            {t("option:promptStudio.runningEvals", "{{count}} running", { count: runningEvalCount })}
+          </Tag>
+        </div>
       </div>
 
-      <Card
-        title={t("option:promptStudio.workspaceCard", "Projects & prompts")}
-        extra={
-          <Space>
-            <Button onClick={() => setProjectModalOpen(true)} type="primary">
-              {t("common:newProject", "New project")}
-            </Button>
-            <Button
-              disabled={!selectedProjectId}
-              onClick={() => setPromptModalOpen(true)}>
-              {t("common:newPrompt", "New prompt")}
-            </Button>
-          </Space>
-        }>
-        {projectsQuery.isError && (
-          <Alert
-            type="error"
-            message={t("option:promptStudio.projectsError", "Could not load projects")}
-          />
-        )}
-        <div className="grid gap-4 md:grid-cols-3">
-          <div className="md:col-span-1 space-y-3">
+      <div className="grid gap-4 lg:grid-cols-[320px_1fr]">
+        <Card
+          title={t("option:promptStudio.workspaceCard", "Projects & prompts")}
+          extra={
+            <Space>
+              <Button onClick={() => setProjectModalOpen(true)} size="small">
+                {t("common:newProject", "New project")}
+              </Button>
+              <Button disabled={!selectedProjectId} onClick={() => setPromptModalOpen(true)} size="small" type="primary">
+                {t("common:newPrompt", "New prompt")}
+              </Button>
+            </Space>
+          }>
+          {projectsQuery.isError && (
+            <Alert
+              type="error"
+              message={t("option:promptStudio.projectsError", "Could not load projects")}
+            />
+          )}
+          <Space direction="vertical" className="w-full">
             <Select
               className="w-full"
               placeholder={t("common:selectProject", "Select project") as string}
@@ -519,6 +663,11 @@ export const PromptStudioPlaygroundPage: React.FC = () => {
                 setPromptPage(1)
                 setSelectedPromptId(null)
                 setSelectedEvaluationId(null)
+                setTestCasePage(1)
+                setEvaluationPage(1)
+                setSelectedTestCaseIds([])
+                setLastDebugTestCase(null)
+                setExecutionResult(null)
               }}
             />
             <Table<Project>
@@ -532,20 +681,22 @@ export const PromptStudioPlaygroundPage: React.FC = () => {
               }}
               loading={projectsQuery.isLoading}
               columns={[
-                { title: "Name", dataIndex: "name" },
-                { title: "Prompts", dataIndex: "prompt_count", width: 80 },
-                { title: "Test cases", dataIndex: "test_case_count", width: 100 }
+                { title: t("common:name", "Name"), dataIndex: "name" },
+                { title: t("common:prompts", "Prompts"), dataIndex: "prompt_count", width: 90 },
+                { title: t("common:testCases", "Test cases"), dataIndex: "test_case_count", width: 110 }
               ]}
+              locale={{ emptyText: t("option:promptStudio.noProjects", "No projects yet") }}
               dataSource={projectList}
               onRow={(record) => ({
                 onClick: () => setSelectedProjectId(record.id)
               })}
             />
-          </div>
-
-          <div className="md:col-span-2 space-y-3">
+            <Divider className="my-2" />
             <div className="flex items-center justify-between">
               <Text strong>{t("common:prompts", "Prompts")}</Text>
+              <Button size="small" type="link" disabled={!selectedProjectId} onClick={() => setPromptModalOpen(true)}>
+                {t("common:newPrompt", "New prompt")}
+              </Button>
             </div>
             <Table<Prompt>
               size="small"
@@ -558,14 +709,15 @@ export const PromptStudioPlaygroundPage: React.FC = () => {
               }}
               loading={promptsQuery.isLoading}
               columns={[
-                { title: "Name", dataIndex: "name" },
-                { title: "Version", dataIndex: "version_number", width: 80 },
+                { title: t("common:name", "Name"), dataIndex: "name" },
+                { title: t("option:promptStudio.promptVersion", "Version"), dataIndex: "version_number", width: 90 },
                 {
-                  title: "Updated",
+                  title: t("common:updated", "Updated"),
                   dataIndex: "updated_at",
                   render: (v) => v || "-"
                 }
               ]}
+              locale={{ emptyText: t("option:promptStudio.noPrompts", "No prompts in this project") }}
               dataSource={promptList}
               onRow={(record) => ({
                 onClick: () => setSelectedPromptId(record.id)
@@ -576,320 +728,495 @@ export const PromptStudioPlaygroundPage: React.FC = () => {
                   : ""
               }
             />
-
-            {promptDetailQuery.isLoading && <Skeleton active paragraph={{ rows: 4 }} />}
-
-            {promptDetailQuery.data?.data && (
-              <Card
-                type="inner"
-                title={promptDetailQuery.data.data.name}
-                extra={
-                  <Text type="secondary">
-                    {t("option:promptStudio.promptVersion", "Version")}{" "}
-                    {promptDetailQuery.data.data.version_number}
-                  </Text>
-                }>
-                <Form
-                  layout="vertical"
-                  form={savePromptForm}
-                  onFinish={(values) => updatePromptMutation.mutate(values)}>
-                  <div className="grid gap-4 md:grid-cols-2">
-                    <Form.Item label={t("common:name", "Name")} name="name">
-                      <Input />
-                    </Form.Item>
-                    <Form.Item
-                      label={t("option:promptStudio.changeDescription", "Change description")}
-                      name="change_description"
-                      rules={[{ required: true }]}>
-                      <Input placeholder="What changed?" />
-                    </Form.Item>
-                  </div>
-                  <Form.Item
-                    label={t("option:promptStudio.systemPrompt", "System prompt")}
-                    name="system_prompt">
-                    <Input.TextArea rows={3} />
-                  </Form.Item>
-                  <Form.Item
-                    label={t("option:promptStudio.userPrompt", "User prompt")}
-                    name="user_prompt">
-                    <Input.TextArea rows={3} />
-                  </Form.Item>
-                  <div className="grid gap-4 md:grid-cols-2">
-                    <Form.Item
-                      label={t("option:promptStudio.fewShot", "Few-shot examples (JSON)")}
-                      name="few_shot_examples">
-                      <Input.TextArea rows={4} placeholder='[{"inputs":{},"outputs":{}}]' />
-                    </Form.Item>
-                    <Form.Item
-                      label={t("option:promptStudio.modulesConfig", "Modules config (JSON)")}
-                      name="modules_config">
-                      <Input.TextArea rows={4} placeholder='[{"type":"cot","enabled":true}]' />
-                    </Form.Item>
-                  </div>
-                  <Space>
-                    <Button
-                      type="primary"
-                      htmlType="submit"
-                      loading={updatePromptMutation.isPending}>
-                      {t("common:save", "Save new version")}
-                    </Button>
-                  </Space>
-                </Form>
-
-                <Divider />
-
-                <Text strong>{t("option:promptStudio.history", "History")}</Text>
-                <div className="mt-2 flex flex-wrap gap-2">
-                  {promptHistoryQuery.isLoading && <Skeleton active paragraph={{ rows: 2 }} />}
-                  {promptHistory?.map((v: PromptVersion) => (
-                    <Tag
-                      key={v.id}
-                      color={v.id === selectedPromptId ? "blue" : "default"}
-                      closable={false}
-                      onClick={() => setSelectedPromptId(v.id)}
-                      style={{ cursor: "pointer" }}>
-                      {`v${v.version_number} — ${v.change_description || ""}`}
-                      <Button
-                        size="small"
-                        className="ml-2"
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          revertPromptMutation.mutate({ version: v.version_number })
-                        }}
-                        loading={revertPromptMutation.isPending}>
-                        {t("common:revert", "Revert")}
-                      </Button>
-                    </Tag>
-                  ))}
-                </div>
-              </Card>
-            )}
-          </div>
-        </div>
-      </Card>
-
-      <Card
-        title={t("option:promptStudio.executeCard", "Ad-hoc execute")}
-        extra={
-          <Text type="secondary">{t("option:promptStudio.executeHint", "Provider, model, temperature, inputs.")}</Text>
-        }>
-        <Form
-          layout="vertical"
-          form={executeForm}
-          onFinish={(values) => executePromptMutation.mutate(values)}
-          initialValues={{
-            provider: defaultsQuery.data?.executeProvider || "openai",
-            model: defaultsQuery.data?.executeModel || "gpt-3.5-turbo",
-            inputs: "{}"
-          }}>
-          <div className="grid gap-4 md:grid-cols-3">
-            <Form.Item label={t("option:promptStudio.provider", "Provider")} name="provider">
-              <Input placeholder="openai" />
-            </Form.Item>
-            <Form.Item label={t("option:promptStudio.model", "Model")} name="model">
-              <Input placeholder="gpt-3.5-turbo" />
-            </Form.Item>
-            <Form.Item label="Inputs (JSON)" name="inputs">
-              <Input.TextArea rows={3} placeholder='{"text":"hello"}' />
-            </Form.Item>
-          </div>
-          <Space>
-            <Button
-              type="primary"
-              htmlType="submit"
-              loading={executePromptMutation.isPending}
-              disabled={!selectedPromptId}>
-              {t("option:promptStudio.runPrompt", "Run prompt")}
-            </Button>
           </Space>
-        </Form>
-        {executionError && (
-          <Alert className="mt-3" type="error" message={executionError} />
-        )}
-        {executionResult && (
-          <Card className="mt-3" size="small" title={t("common:result", "Result")}>
-            <pre className="whitespace-pre-wrap text-sm">{executionResult.output}</pre>
-            <div className="mt-2 text-xs text-gray-600 dark:text-gray-300">
-              <div>{`Tokens: ${executionResult.tokens_used ?? 0}`}</div>
-              <div>{`Execution time: ${executionResult.execution_time ?? 0}s`}</div>
+        </Card>
+
+        <div className="space-y-4">
+          <Card
+            size="small"
+            title={t("option:promptStudio.atGlance", "Workspace at a glance")}
+            extra={
+              <Text type="secondary">
+                {selectedProject
+                  ? t("option:promptStudio.filterLabel", "Showing test cases for {{project}}", {
+                      project: selectedProject.name
+                    })
+                  : t("option:promptStudio.pickProject", "Pick a project to begin")}
+              </Text>
+            }>
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              <div>
+                <Text type="secondary">{t("common:projects", "Projects")}</Text>
+                <div className="text-xl font-semibold">{projectMeta?.total ?? projectList.length}</div>
+              </div>
+              <div>
+                <Text type="secondary">{t("common:prompts", "Prompts")}</Text>
+                <div className="text-xl font-semibold">{promptCountForProject}</div>
+              </div>
+              <div>
+                <Text type="secondary">{t("common:testCases", "Test cases")}</Text>
+                <div className="text-xl font-semibold">{testCaseCountForProject}</div>
+              </div>
+              <div>
+                <Text type="secondary">{t("option:promptStudio.evaluations", "Evaluations")}</Text>
+                <div className="text-xl font-semibold">
+                  {(evaluationTotal ?? evaluationList?.length ?? 0) || 0}
+                  {runningEvalCount ? (
+                    <span className="ml-1 text-xs text-blue-600 dark:text-blue-300">
+                      ({t("option:promptStudio.running", "running")} {runningEvalCount})
+                    </span>
+                  ) : null}
+                </div>
+              </div>
             </div>
           </Card>
-        )}
-      </Card>
 
-      <Card
-        title={t("option:promptStudio.testsCard", "Test cases & evaluations")}
-        extra={
-          <Space>
-            <Button onClick={() => setTestCaseModalOpen(true)}>{t("common:newTestCase", "New test case")}</Button>
-            <Button onClick={() => setBulkTestCaseModalOpen(true)}>
-              {t("option:promptStudio.bulkAdd", "Bulk add")}
-            </Button>
-          </Space>
-        }>
-        <div className="grid gap-4 lg:grid-cols-2">
-          <div className="space-y-3">
-            <Text strong>{t("option:promptStudio.testCases", "Test cases")}</Text>
-            <Table<TestCase>
-              size="small"
-              rowKey="id"
-              pagination={{
-                current: testCasePage,
-                pageSize,
-                total: testCaseMeta?.total,
-                onChange: (page) => setTestCasePage(page)
-              }}
-              loading={testCasesQuery.isLoading}
-              rowSelection={{
-                selectedRowKeys: selectedTestCaseIds,
-                onChange: (keys) => setSelectedTestCaseIds(keys as number[])
-              }}
-              columns={[
-                { title: "Name", dataIndex: "name" },
+          {selectedPromptId ? (
+            <Tabs
+              activeKey={activeTab}
+              onChange={(key) => setActiveTab(key)}
+              destroyInactiveTabPane={false}
+              items={[
                 {
-                  title: "Tags",
-                  dataIndex: "tags",
-                  render: (tags?: string[]) =>
-                    tags?.map((tag) => <Tag key={tag}>{tag}</Tag>)
+                  key: "editor",
+                  label: (
+                    <span className="flex items-center gap-2">
+                      <HistoryOutlined />
+                      {t("option:promptStudio.editorTab", "Editor")}
+                    </span>
+                  ),
+                  children: (
+                    <div className="space-y-3">
+                      {promptDetailQuery.isLoading && <Skeleton active paragraph={{ rows: 4 }} />}
+                      {promptDetail ? (
+                        <Card
+                          type="inner"
+                          title={promptDetail?.name}
+                          extra={
+                            <Text type="secondary">
+                              {t("option:promptStudio.promptVersion", "Version")}{" "}
+                              {promptDetail?.version_number}
+                            </Text>
+                          }>
+                          <Form
+                            layout="vertical"
+                            form={savePromptForm}
+                            onFinish={(values) => updatePromptMutation.mutate(values)}>
+                            <div className="grid gap-4 md:grid-cols-2">
+                              <Form.Item label={t("common:name", "Name")} name="name">
+                                <Input />
+                              </Form.Item>
+                              <Form.Item
+                                label={t("option:promptStudio.changeDescription", "Change description")}
+                                name="change_description"
+                                rules={[{ required: true }]}>
+                                <Input placeholder="What changed?" />
+                              </Form.Item>
+                            </div>
+                            <Form.Item
+                              label={t("option:promptStudio.systemPrompt", "System prompt")}
+                              name="system_prompt">
+                              <Input.TextArea rows={3} />
+                            </Form.Item>
+                            <Form.Item
+                              label={t("option:promptStudio.userPrompt", "User prompt")}
+                              name="user_prompt">
+                              <Input.TextArea rows={3} />
+                            </Form.Item>
+                            <div className="grid gap-4 md:grid-cols-2">
+                              <Form.Item
+                                label={t("option:promptStudio.fewShot", "Few-shot examples (JSON)")}
+                                name="few_shot_examples">
+                                <Input.TextArea rows={4} placeholder='[{"inputs":{},"outputs":{}}]' />
+                              </Form.Item>
+                              <Form.Item
+                                label={t("option:promptStudio.modulesConfig", "Modules config (JSON)")}
+                                name="modules_config">
+                                <Input.TextArea rows={4} placeholder='[{"type":"cot","enabled":true}]' />
+                              </Form.Item>
+                            </div>
+                            <Space>
+                              <Button
+                                type="primary"
+                                htmlType="submit"
+                                loading={updatePromptMutation.isPending}>
+                                {t("common:save", "Save new version")}
+                              </Button>
+                            </Space>
+                          </Form>
+
+                          <Divider />
+                          <div className="flex items-center gap-2">
+                            <HistoryOutlined />
+                            <Text strong>{t("option:promptStudio.history", "History")}</Text>
+                          </div>
+                          <div className="mt-2 flex flex-wrap gap-2">
+                            {promptHistoryQuery.isLoading && <Skeleton active paragraph={{ rows: 2 }} />}
+                            {promptHistory?.map((v: PromptVersion) => (
+                              <Tag
+                                key={v.id}
+                                color={v.id === selectedPromptId ? "blue" : "default"}
+                                closable={false}
+                                onClick={() => setSelectedPromptId(v.id)}
+                                style={{ cursor: "pointer" }}>
+                                {`v${v.version_number} — ${v.change_description || ""}`}
+                                <Button
+                                  size="small"
+                                  className="ml-2"
+                                  onClick={(e) => {
+                                    e.stopPropagation()
+                                    revertPromptMutation.mutate({ version: v.version_number })
+                                  }}
+                                  loading={revertPromptMutation.isPending}>
+                                  {t("common:revert", "Revert")}
+                                </Button>
+                              </Tag>
+                            ))}
+                          </div>
+                        </Card>
+                      ) : (
+                        <Empty description={t("option:promptStudio.noPromptSelected", "Select a prompt to edit")} />
+                      )}
+                    </div>
+                  )
                 },
                 {
-                  title: "Golden",
-                  dataIndex: "is_golden",
-                  width: 80,
-                  render: (val) => (val ? "Yes" : "No")
-                }
-              ]}
-              dataSource={testCaseList}
-            />
-          </div>
-
-          <div className="space-y-3">
-            <Text strong>{t("option:promptStudio.evaluations", "Evaluations")}</Text>
-            <Form
-              layout="vertical"
-              form={evaluationForm}
-              onFinish={(values) => createEvaluationMutation.mutate(values)}
-              initialValues={{
-                model_name: defaultsQuery.data?.evalModelName || "gpt-3.5-turbo",
-                temperature: defaultsQuery.data?.evalTemperature ?? 0.2,
-                max_tokens: defaultsQuery.data?.evalMaxTokens ?? 512,
-                run_async: true
-              }}>
-              <div className="grid gap-3 md:grid-cols-2">
-                <Form.Item label={t("common:name", "Name")} name="name">
-                  <Input placeholder="Baseline eval" />
-                </Form.Item>
-                <Form.Item
-                  label={t("option:promptStudio.runAsync", "Run async")}
-                  name="run_async"
-                  valuePropName="checked">
-                  <Switch />
-                </Form.Item>
-              </div>
-              <Form.Item label={t("common:description", "Description")} name="description">
-                <Input.TextArea rows={2} />
-              </Form.Item>
-              <div className="grid gap-3 md:grid-cols-3">
-                <Form.Item label={t("option:promptStudio.model", "Model")} name="model_name">
-                  <Input placeholder="gpt-3.5-turbo" />
-                </Form.Item>
-                <Form.Item label={t("option:promptStudio.temperature", "Temperature")} name="temperature">
-                  <InputNumber step={0.1} min={0} max={2} className="w-full" />
-                </Form.Item>
-                <Form.Item label={t("option:promptStudio.maxTokens", "Max tokens")} name="max_tokens">
-                  <InputNumber min={1} className="w-full" />
-                </Form.Item>
-              </div>
-              <Space>
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  loading={createEvaluationMutation.isPending}
-                  disabled={!selectedPromptId || !selectedTestCaseIds.length}>
-                  {t("option:promptStudio.runEvaluation", "Run evaluation")}
-                </Button>
-              </Space>
-            </Form>
-
-            <Table<PromptStudioEvaluation>
-              size="small"
-              rowKey="id"
-              pagination={{
-                current: evaluationPage,
-                pageSize,
-                total: evaluationTotal,
-                onChange: (page) => setEvaluationPage(page)
-              }}
-              loading={evaluationsQuery.isLoading}
-              dataSource={evaluationList}
-              columns={[
-                { title: "Name", dataIndex: "name" },
-                {
-                  title: "Status",
-                  dataIndex: "status",
-                  render: (val) => <Tag color={statusColor(val)}>{val}</Tag>
+                  key: "playground",
+                  label: t("option:promptStudio.playgroundTab", "Playground"),
+                  children: (
+                    <Card
+                      title={t("option:promptStudio.executeCard", "Ad-hoc execute")}
+                      extra={
+                        <Text type="secondary">
+                          {t("option:promptStudio.executeHint", "Provider, model, temperature, inputs.")}
+                        </Text>
+                      }>
+                      {lastDebugTestCase && (
+                        <Alert
+                          type="info"
+                          className="mb-3"
+                          message={t("option:promptStudio.debugging", "Debugging {{name}}", {
+                            name: lastDebugTestCase.name || lastDebugTestCase.id
+                          })}
+                          description={t(
+                            "option:promptStudio.debuggingDesc",
+                            "Inputs pre-filled from this test case. Adjust and run to iterate quickly."
+                          )}
+                        />
+                      )}
+                      <Form
+                        layout="vertical"
+                        form={executeForm}
+                        onFinish={(values) => executePromptMutation.mutate(values)}
+                        initialValues={{
+                          provider: defaultsQuery.data?.executeProvider || "openai",
+                          model: defaultsQuery.data?.executeModel || "gpt-3.5-turbo",
+                          inputs: "{}"
+                        }}>
+                        <div className="grid gap-4 md:grid-cols-3">
+                          <Form.Item label={t("option:promptStudio.provider", "Provider")} name="provider">
+                            <Input placeholder="openai" />
+                          </Form.Item>
+                          <Form.Item label={t("option:promptStudio.model", "Model")} name="model">
+                            <Input placeholder="gpt-3.5-turbo" />
+                          </Form.Item>
+                          <Form.Item label="Inputs (JSON)" name="inputs">
+                            <Input.TextArea rows={3} placeholder='{"text":"hello"}' />
+                          </Form.Item>
+                        </div>
+                        <Space>
+                          <Button
+                            type="primary"
+                            htmlType="submit"
+                            loading={executePromptMutation.isPending}
+                            disabled={!selectedPromptId}>
+                            {t("option:promptStudio.runPrompt", "Run prompt")}
+                          </Button>
+                        </Space>
+                      </Form>
+                      {executionError && (
+                        <Alert className="mt-3" type="error" message={executionError} />
+                      )}
+                      {executionResult && (
+                        <Card className="mt-3" size="small" title={t("common:result", "Result")}>
+                          <pre className="whitespace-pre-wrap text-sm">{executionResult.output}</pre>
+                          <div className="mt-2 text-xs text-gray-600 dark:text-gray-300">
+                            <div>{`Tokens: ${executionResult.tokens_used ?? 0}`}</div>
+                            <div>{`Execution time: ${executionResult.execution_time ?? 0}s`}</div>
+                          </div>
+                        </Card>
+                      )}
+                    </Card>
+                  )
                 },
                 {
-                  title: "Avg score",
-                  dataIndex: "aggregate_metrics",
-                  render: (metrics: any) =>
-                    metrics?.average_score != null
-                      ? Number(metrics.average_score).toFixed(3)
-                      : "-"
+                  key: "tests",
+                  label: t("option:promptStudio.testsTab", "Tests & evals"),
+                  children: (
+                    <div className="space-y-3">
+                      <Card
+                        size="small"
+                        title={t("option:promptStudio.evalConfig", "Evaluation config")}
+                        extra={
+                          <Text type="secondary">
+                            {t("option:promptStudio.evalHint", "Applies to new runs and inline test plays")}
+                          </Text>
+                        }>
+                        <Form
+                          layout="vertical"
+                          form={evaluationForm}
+                          onFinish={(values) => createEvaluationMutation.mutate(values)}
+                          initialValues={{
+                            model_name: defaultsQuery.data?.evalModelName || "gpt-3.5-turbo",
+                            temperature: defaultsQuery.data?.evalTemperature ?? 0.2,
+                            max_tokens: defaultsQuery.data?.evalMaxTokens ?? 512,
+                            run_async: true
+                          }}>
+                          <div className="grid gap-3 md:grid-cols-4">
+                            <Form.Item label={t("common:name", "Name")} name="name">
+                              <Input placeholder="Baseline eval" />
+                            </Form.Item>
+                            <Form.Item label={t("option:promptStudio.model", "Model")} name="model_name">
+                              <Input placeholder="gpt-3.5-turbo" />
+                            </Form.Item>
+                            <Form.Item label={t("option:promptStudio.temperature", "Temperature")} name="temperature">
+                              <InputNumber step={0.1} min={0} max={2} className="w-full" />
+                            </Form.Item>
+                            <Form.Item label={t("option:promptStudio.maxTokens", "Max tokens")} name="max_tokens">
+                              <InputNumber min={1} className="w-full" />
+                            </Form.Item>
+                          </div>
+                          <div className="grid gap-3 md:grid-cols-3">
+                            <Form.Item label={t("common:description", "Description")} name="description">
+                              <Input.TextArea rows={2} />
+                            </Form.Item>
+                            <Form.Item
+                              label={t("option:promptStudio.runAsync", "Run async")}
+                              name="run_async"
+                              valuePropName="checked">
+                              <Switch />
+                            </Form.Item>
+                          </div>
+                          <Space>
+                            <Button
+                              type="primary"
+                              htmlType="submit"
+                              loading={createEvaluationMutation.isPending}
+                              disabled={!selectedPromptId || !selectedTestCaseIds.length}>
+                              {t("option:promptStudio.runEvaluation", "Run evaluation")}
+                            </Button>
+                          </Space>
+                        </Form>
+                      </Card>
+
+                      <div className="grid gap-4 lg:grid-cols-2">
+                        <Card
+                          title={t("option:promptStudio.testCases", "Test cases")}
+                          extra={
+                            <Space>
+                              <Button size="small" onClick={() => setTestCaseModalOpen(true)}>
+                                {t("common:newTestCase", "New test case")}
+                              </Button>
+                              <Button size="small" onClick={() => setBulkTestCaseModalOpen(true)}>
+                                {t("option:promptStudio.bulkAdd", "Bulk add")}
+                              </Button>
+                            </Space>
+                          }>
+                          <Table<TestCase>
+                            size="small"
+                            rowKey="id"
+                            pagination={{
+                              current: testCasePage,
+                              pageSize,
+                              total: testCaseMeta?.total,
+                              onChange: (page) => setTestCasePage(page)
+                            }}
+                            loading={testCasesQuery.isLoading}
+                            rowSelection={{
+                              selectedRowKeys: selectedTestCaseIds,
+                              onChange: (keys) => setSelectedTestCaseIds(keys as number[])
+                            }}
+                            locale={{ emptyText: t("option:promptStudio.noTestCases", "No test cases yet") }}
+                            columns={[
+                              { title: t("common:name", "Name"), dataIndex: "name" },
+                              {
+                                title: t("common:tags", "Tags"),
+                                dataIndex: "tags",
+                                render: (tags?: string[]) =>
+                                  tags?.map((tag) => <Tag key={tag}>{tag}</Tag>)
+                              },
+                              {
+                                title: t("option:promptStudio.golden", "Golden"),
+                                dataIndex: "is_golden",
+                                width: 80,
+                                render: (val) => (val ? t("common:yes", "Yes") : t("common:no", "No"))
+                              },
+                              {
+                                title: t("common:actions", "Actions"),
+                                width: 180,
+                                render: (_: any, record: TestCase) => (
+                                  <Space size="small">
+                                    <Button
+                                      size="small"
+                                      icon={<BugOutlined />}
+                                      onClick={() => handleDebugTestCase(record)}>
+                                      {t("option:promptStudio.debug", "Debug")}
+                                    </Button>
+                                    <Button
+                                      size="small"
+                                      icon={<PlayCircleOutlined />}
+                                      loading={testCaseRuns[record.id]?.status === "running"}
+                                      onClick={() => runTestCaseMutation.mutate(record)}>
+                                      {t("common:run", "Run")}
+                                    </Button>
+                                  </Space>
+                                )
+                              },
+                              {
+                                title: t("option:promptStudio.lastRun", "Last run"),
+                                width: 120,
+                                render: (_: any, record: TestCase) => {
+                                  const run = testCaseRuns[record.id]
+                                  if (!run) return <Text type="secondary">-</Text>
+                                  if (run.status === "running") return <Tag color="blue">{t("common:running", "Running")}</Tag>
+                                  if (run.status === "error") return <Tag color="red">{t("common:error", "Error")}</Tag>
+                                  return <Tag color="green">{t("common:done", "Done")}</Tag>
+                                }
+                              }
+                            ]}
+                            expandable={{
+                              expandedRowRender: (record) => {
+                                const run = testCaseRuns[record.id]
+                                if (!run) {
+                                  return (
+                                    <Text type="secondary">
+                                      {t("option:promptStudio.noInlineRun", "Run this case inline to see output")}
+                                    </Text>
+                                  )
+                                }
+                                if (run.status === "error") {
+                                  return <Alert type="error" message={run.error} />
+                                }
+                                return (
+                                  <div>
+                                    <Text strong>{t("common:output", "Output")}</Text>
+                                    <pre className="mt-1 whitespace-pre-wrap text-xs bg-gray-50 dark:bg-[#1f1f1f] p-2 rounded">
+                                      {run.output || t("option:promptStudio.noOutput", "No output returned")}
+                                    </pre>
+                                    <div className="mt-1 text-xs text-gray-500 dark:text-gray-300">
+                                      {run.tokens != null && <span className="mr-3">{`Tokens: ${run.tokens}`}</span>}
+                                      {run.time != null && <span>{`Time: ${run.time ?? 0}s`}</span>}
+                                    </div>
+                                  </div>
+                                )
+                              }
+                            }}
+                            dataSource={testCaseList}
+                          />
+                        </Card>
+
+                        <Card title={t("option:promptStudio.evaluations", "Evaluations")}>
+                          <Table<PromptStudioEvaluation>
+                            size="small"
+                            rowKey="id"
+                            pagination={{
+                              current: evaluationPage,
+                              pageSize,
+                              total: evaluationTotal,
+                              onChange: (page) => setEvaluationPage(page)
+                            }}
+                            loading={evaluationsQuery.isLoading}
+                            dataSource={evaluationList}
+                            columns={[
+                              { title: t("common:name", "Name"), dataIndex: "name" },
+                              {
+                                title: t("common:status", "Status"),
+                                dataIndex: "status",
+                                render: (val) => <Tag color={statusColor(val)}>{val}</Tag>
+                              },
+                              {
+                                title: t("option:promptStudio.avgScore", "Avg score"),
+                                dataIndex: "aggregate_metrics",
+                                render: (metrics: any) =>
+                                  metrics?.average_score != null
+                                    ? Number(metrics.average_score).toFixed(3)
+                                    : "-"
+                              }
+                            ]}
+                            onRow={(record) => ({
+                              onClick: () => setSelectedEvaluationId(record.id)
+                            })}
+                            rowClassName={(record) =>
+                              record.id === selectedEvaluationId ? "bg-gray-50 dark:bg-[#1f1f1f]" : ""
+                            }
+                          />
+
+                          {evaluationDetail && (
+                            <Card size="small" type="inner" className="mt-3" title={evaluationDetail.name || "Evaluation"}>
+                              <div className="flex flex-wrap items-center gap-2 text-sm">
+                                <Tag color={statusColor(evaluationDetail.status)}>
+                                  {evaluationDetail.status}
+                                </Tag>
+                                {evaluationDetail.completed_at && (
+                                  <Text type="secondary">
+                                    {`${t("common:completed", "Completed")}: ${evaluationDetail.completed_at}`}
+                                  </Text>
+                                )}
+                              </div>
+                              <Divider />
+                              <div className="text-sm space-y-2">
+                                <div className="flex gap-2">
+                                  <Text strong>Project:</Text>
+                                  <Text>{evaluationDetail.project_id}</Text>
+                                </div>
+                                <div className="flex gap-2">
+                                  <Text strong>Prompt:</Text>
+                                  <Text>{evaluationDetail.prompt_id}</Text>
+                                </div>
+                                {evaluationDetail.aggregate_metrics && (
+                                  <div>
+                                    <Text strong>Metrics</Text>
+                                    <pre className="whitespace-pre-wrap text-xs bg-gray-50 dark:bg-[#1f1f1f] p-2 rounded">
+                                      {JSON.stringify(evaluationDetail.aggregate_metrics, null, 2)}
+                                    </pre>
+                                  </div>
+                                )}
+                                {evaluationDetail.metrics && !evaluationDetail.aggregate_metrics && (
+                                  <div>
+                                    <Text strong>Metrics</Text>
+                                    <pre className="whitespace-pre-wrap text-xs bg-gray-50 dark:bg-[#1f1f1f] p-2 rounded">
+                                      {JSON.stringify(evaluationDetail.metrics, null, 2)}
+                                    </pre>
+                                  </div>
+                                )}
+                              </div>
+                            </Card>
+                          )}
+                        </Card>
+                      </div>
+                    </div>
+                  )
                 }
               ]}
-              onRow={(record) => ({
-                onClick: () => setSelectedEvaluationId(record.id)
-              })}
-              rowClassName={(record) =>
-                record.id === selectedEvaluationId ? "bg-gray-50 dark:bg-[#1f1f1f]" : ""
-              }
             />
-
-            {evaluationDetailQuery.data?.data && (
-              <Card size="small" type="inner" title={evaluationDetailQuery.data.data.name || "Evaluation"}>
-                <div className="flex flex-wrap items-center gap-2 text-sm">
-                  <Tag color={statusColor(evaluationDetailQuery.data.data.status)}>
-                    {evaluationDetailQuery.data.data.status}
-                  </Tag>
-                  {evaluationDetailQuery.data.data.completed_at && (
-                    <Text type="secondary">
-                      {`${t("common:completed", "Completed")}: ${evaluationDetailQuery.data.data.completed_at}`}
-                    </Text>
-                  )}
-                </div>
-                <Divider />
-                <div className="text-sm">
-                  <div className="flex gap-2">
-                    <Text strong>Project:</Text>
-                    <Text>{evaluationDetailQuery.data.data.project_id}</Text>
-                  </div>
-                  <div className="flex gap-2">
-                    <Text strong>Prompt:</Text>
-                    <Text>{evaluationDetailQuery.data.data.prompt_id}</Text>
-                  </div>
-                  {evaluationDetailQuery.data.data.aggregate_metrics && (
-                    <div className="mt-2">
-                      <Text strong>Metrics</Text>
-                      <pre className="whitespace-pre-wrap text-xs bg-gray-50 dark:bg-[#1f1f1f] p-2 rounded">
-                        {JSON.stringify(evaluationDetailQuery.data.data.aggregate_metrics, null, 2)}
-                      </pre>
-                    </div>
-                  )}
-                  {evaluationDetailQuery.data.data.metrics && !evaluationDetailQuery.data.data.aggregate_metrics && (
-                    <div className="mt-2">
-                      <Text strong>Metrics</Text>
-                      <pre className="whitespace-pre-wrap text-xs bg-gray-50 dark:bg-[#1f1f1f] p-2 rounded">
-                        {JSON.stringify(evaluationDetailQuery.data.data.metrics, null, 2)}
-                      </pre>
-                    </div>
-                  )}
-                </div>
-              </Card>
-            )}
-          </div>
+          ) : (
+            <Card>
+              <Empty
+                description={t("option:promptStudio.pickPrompt", "Select or create a prompt to begin")}
+                image={Empty.PRESENTED_IMAGE_SIMPLE}>
+                <Space>
+                  <Button type="primary" disabled={!selectedProjectId} onClick={() => setPromptModalOpen(true)}>
+                    {t("common:newPrompt", "New prompt")}
+                  </Button>
+                  <Button onClick={() => setProjectModalOpen(true)}>
+                    {t("common:newProject", "New project")}
+                  </Button>
+                </Space>
+              </Empty>
+            </Card>
+          )}
         </div>
-      </Card>
+      </div>
 
       <Modal
         title={t("common:newProject", "New project")}

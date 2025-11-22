@@ -141,6 +141,37 @@ PRD 2 — Prompt Studio Playground & Settings (Prompt Studio Module)
           - Display server base/auth info (read-only), default project, execute/evaluation model defaults, list page size; persist via existing settings storage.
           - “Test Prompt Studio” button calling status; show queue depth/processing/lease metrics with friendly guidance text.
           - Decide storage scope (sync vs local) and migrate/namespace keys to avoid conflicts with existing prompt/evaluation settings.
-      - Phase 5 — UX polish, i18n, QA:
-          - Add i18n strings/empty states/errors; guard rails when capability probe fails or config missing.
-          - Manual smoke checklist: create project/prompt, save version, run execute, create test case, run evaluation, use status probe; run `bun run compile` and prettier.
+  - Phase 5 — UX polish, i18n, QA:
+      - Add i18n strings/empty states/errors; guard rails when capability probe fails or config missing.
+      - Manual smoke checklist: create project/prompt, save version, run execute, create test case, run evaluation, use status probe; run `bun run compile` and prettier.
+
+7. Updated Implementation Plan (v2 — layout + workflow polish)
+
+  - Context from server (tldw_server2):
+      - List endpoints return StandardResponse with `data` + `metadata/pagination` (projects/prompts/test-cases) or bare dicts (evaluations list -> {evaluations,total,limit,offset}).
+      - Project list also mirrors `projects` array for compatibility; prompt history/revert/execute use StandardResponse; status uses StandardResponse{success,data}.
+      - Execute returns `{output, tokens_used, execution_time}`; evaluation detail returns metrics/test_run_ids directly (no StandardResponse wrapper).
+
+  - Phase A — Navigation & capability:
+      - Keep Prompt Studio discoverable in header/nav even if capability probe fails; show inline badge/tooltip when status endpoint is unreachable instead of hiding the mode.
+      - Continue capability probe (GET status) to gate destructive actions and empty states.
+
+  - Phase B — Layout restructure (reduce vertical scroll):
+      - Adopt a master–detail shell: left sidebar houses Project selector/create and Prompt list; right pane is main workspace.
+      - Main pane states:
+          - No prompt selected → overview dashboard (recent prompts/evaluations summaries, helpful empty copy).
+          - Prompt selected → tabs: (1) Editor (prompt form + version history/revert), (2) Playground (ad-hoc execute + quick debug), (3) Tests & evals (test-case list + evaluation config/results).
+      - Use compact empty states (single line + action) instead of tall placeholders; add sticky section headers/dividers for visual hierarchy.
+
+  - Phase C — Playground interactions:
+      - Hook test-case rows to the ad-hoc execute form: clicking a case pre-fills Inputs JSON; add a play/run icon per case to execute immediately and show inline result/status.
+      - Separate evaluation config bar (model/temp/tokens/run_async) from results list; keep results panel dedicated to history/detail with polling.
+      - Enforce project scoping on lists and show a subtitle (“Showing N cases for <project>”) to clarify filtering.
+
+  - Phase D — Settings & defaults:
+      - Persist default project, execute model/provider, evaluation model config, page size, warn_seconds; reuse status probe in “Test Prompt Studio” with warn_seconds.
+      - Apply empty/error/loading states to all new flows; surface API errors from StandardResponse.error/error_code where available.
+
+  - Phase E — QA checklist:
+      - Smoke: load Prompt Studio, create project/prompt, save new version, execute with inputs, create/bulk test cases, run evaluation (async), view detail, run status probe.
+      - Validate UI responsiveness (no giant scroll), tab switching preserves selection, nav chip visible; run `bun run compile` before shipping.

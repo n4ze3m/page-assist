@@ -104,6 +104,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
   })
   const [wsSttActive, setWsSttActive] = React.useState(false)
   const [ingestOpen, setIngestOpen] = React.useState(false)
+  const quickIngestBtnRef = React.useRef<HTMLButtonElement>(null)
   const { phase, isConnected } = useConnectionState()
   const isConnectionReady = isConnected && phase === ConnectionPhase.CONNECTED
   const { capabilities, loading: capsLoading } = useServerCapabilities()
@@ -558,10 +559,22 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
         </p>
         <button
           type="button"
+          ref={quickIngestBtnRef}
           onClick={handleQuickIngestOpen}
-          className="flex w-full items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 transition hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-[#2a2a2a]"
+          disabled={!isConnectionReady}
+          title={
+            !isConnectionReady
+              ? t("playground:actions.ingestDisabled", "Connect to your tldw server to ingest.")
+              : t("playground:actions.ingestHint", "Upload URLs or files with advanced options.")
+          }
+          className="flex w-full items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50 dark:text-gray-200 dark:hover:bg-[#2a2a2a]"
         >
-          <span>{t("playground:actions.ingest", "Quick ingest")}</span>
+          <span className="flex flex-col items-start text-left">
+            <span>{t("playground:actions.ingest", "Quick ingest")}</span>
+            <span className="text-[11px] text-gray-500">
+              {t("playground:actions.ingestSub", "Use URLs/files; download or store.")}
+            </span>
+          </span>
           <UploadCloud className="h-4 w-4" />
         </button>
         <button
@@ -1211,7 +1224,13 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
         isOCREnabled={useOCR}
       />
       {/* Quick ingest modal */}
-      <QuickIngestModal open={ingestOpen} onClose={() => setIngestOpen(false)} />
+      <QuickIngestModal
+        open={ingestOpen}
+        onClose={() => {
+          setIngestOpen(false)
+          requestAnimationFrame(() => quickIngestBtnRef.current?.focus())
+        }}
+      />
     </div>
   )
 }

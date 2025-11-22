@@ -6,7 +6,9 @@ export async function launchWithBuiltExtension() {
     headless: !!process.env.CI,
     args: [
       `--disable-extensions-except=${extensionPath}`,
-      `--load-extension=${extensionPath}`
+      `--load-extension=${extensionPath}`,
+      '--disable-crash-reporter',
+      '--crash-dumps-dir=/tmp'
     ]
   })
 
@@ -41,4 +43,3 @@ export async function launchWithBuiltExtension() {
 
   return { context, page, openSidepanel, extensionId, optionsUrl, sidepanelUrl }
 }
-

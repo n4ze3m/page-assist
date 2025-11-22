@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
-import { MemoryRouter } from "react-router-dom"
+import { HashRouter } from "react-router-dom"
 import { useEffect, useState } from "react"
 const queryClient = new QueryClient()
 import { App as AntdApp, ConfigProvider, Empty, theme } from "antd"
@@ -30,7 +30,7 @@ function IndexOption() {
   }, [t])
 
   return (
-    <MemoryRouter>
+    <HashRouter>
       <ConfigProvider
         theme={{
           algorithm:
@@ -60,7 +60,7 @@ function IndexOption() {
           </StyleProvider>
         </AntdApp>
       </ConfigProvider>
-    </MemoryRouter>
+    </HashRouter>
   )
 }
 

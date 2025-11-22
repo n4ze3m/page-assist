@@ -69,6 +69,12 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
   const [savedAdvValues, setSavedAdvValues] = useStorage<Record<string, any>>('quickIngestAdvancedValues', {})
   const [uiPrefs, setUiPrefs] = useStorage<{ advancedOpen?: boolean; fieldDetailsOpen?: Record<string, boolean> }>('quickIngestAdvancedUI', {})
   const [specPrefs, setSpecPrefs] = useStorage<{ preferServer?: boolean; lastRemote?: { version?: string; cachedAt?: number } }>('quickIngestSpecPrefs', { preferServer: true })
+  const lastRefreshedLabel = React.useMemo(() => {
+    const ts = specPrefs?.lastRemote?.cachedAt
+    if (!ts) return null
+    const d = new Date(ts)
+    return d.toLocaleString()
+  }, [specPrefs])
   const SAVE_DEBOUNCE_MS = 2000
   const lastSavedAdvValuesRef = React.useRef<string | null>(null)
   const lastSavedUiPrefsRef = React.useRef<string | null>(null)
@@ -279,6 +285,13 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
     }
     setRunning(false)
     if (!storeRemote && out.length > 0) messageApi.info('Processing complete. You can download results as JSON.')
+    if (out.length > 0) {
+      const successCount = out.filter((r) => r.status === 'ok').length
+      const failCount = out.length - successCount
+      const summary = `${successCount} succeeded · ${failCount} failed`
+      if (failCount > 0) messageApi.warning(summary)
+      else messageApi.success(summary)
+    }
   }
 
   // Load OpenAPI schema to build advanced fields (best-effort)
@@ -596,6 +609,30 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
     () => Object.keys(advancedValues || {}).length,
     [advancedValues]
   )
+  const specSourceLabel = React.useMemo(() => {
+    switch (specSource) {
+      case 'server':
+        return 'Live server spec'
+      case 'server-cached':
+        return 'Cached server spec'
+      case 'bundled':
+        return 'Bundled spec'
+      default:
+        return 'Fallback spec'
+    }
+  }, [specSource])
+
+  const setAdvancedValue = React.useCallback((name: string, value: any) => {
+    setAdvancedValues((prev) => {
+      const next = { ...(prev || {}) }
+      if (value === undefined || value === null || value === '') {
+        delete next[name]
+      } else {
+        next[name] = value
+      }
+      return next
+    })
+  }, [])
 
   return (
     <Modal
@@ -610,9 +647,18 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
     >
       {contextHolder}
       <Space direction="vertical" className="w-full">
+        <div className="flex flex-col gap-1">
+          <Typography.Text strong>{t('quickIngest.howItWorks', 'How this works')}</Typography.Text>
+          <Typography.Paragraph type="secondary" className="!mb-1 text-sm text-gray-600">
+            {t(
+              'quickIngest.howItWorksDesc',
+              'Add URLs or files, pick processing mode (store vs process-only), tweak options, then run Ingest/Process.'
+            )}
+          </Typography.Paragraph>
+        </div>
         {/* Source URLs / files */}
         <div className="space-y-2 pb-2">
-          <div className="flex items-start justify-between gap-3">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between sm:gap-3">
             <div>
               <Typography.Title level={5} className="!mb-1">
                 {t('quickIngest.sourceHeading') || 'Source URLs or files'}
@@ -620,19 +666,14 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
               <Typography.Text>
                 {t('quickIngest.subtitle') || 'Enter one or more URLs. Force type per row if needed.'}
               </Typography.Text>
-            </div>
-            <div className="flex items-start gap-2 text-sm">
-              <Space align="center">
-                <Typography.Text>
-                  {storeRemote ? (t('quickIngest.storeRemote') || 'Store to remote DB') : (t('quickIngest.process') || 'Process')}
-                </Typography.Text>
-                <Switch checked={storeRemote} onChange={setStoreRemote} disabled={running} />
-              </Space>
-              <div className="text-xs text-gray-500 mt-0.5 max-w-[180px]">
-                {storeRemote
-                  ? (t('quickIngest.storeRemoteHelp') || 'Uploads to your tldw server for indexing.')
-                  : (t('quickIngest.processOnlyHelp') || 'Process only and keep results local (download JSON).')}
+              <div className="text-xs text-gray-500 mt-1">
+                Choose how to process in the footer — the toggle sits next to the primary action for clarity.
               </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <Tag color="blue">
+                {plannedCount || 0} {plannedCount === 1 ? 'item ready' : 'items ready'}
+              </Tag>
             </div>
           </div>
 
@@ -659,7 +700,13 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
                     const res = resultById.get(row.id)
                     if (!res && !running) return null
                     if (res?.status === 'ok') return <Tag color="green">Done</Tag>
-                    if (res?.status === 'error') return <Tag color="red">Failed</Tag>
+                    if (res?.status === 'error') {
+                      return (
+                        <AntTooltip title={res.error || 'Failed'}>
+                          <Tag color="red">Failed</Tag>
+                        </AntTooltip>
+                      )
+                    }
                     return running ? <Tag icon={<Spin size="small" />} color="blue">Running</Tag> : null
                   })()}
                 </div>
@@ -714,15 +761,33 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
               dataSource={localFiles}
               renderItem={(f, idx) => (
                 <List.Item
-                  actions={[<a key="remove" onClick={() => setLocalFiles((prev) => prev.filter((_, i) => i !== idx))} aria-disabled={running} className={running ? 'pointer-events-none text-gray-400' : ''}>{t('quickIngest.remove') || 'Remove'}</a>]}
+                  actions={[
+                    <button
+                    key="remove"
+                    type="button"
+                    onClick={() => setLocalFiles((prev) => prev.filter((_, i) => i !== idx))}
+                    disabled={running}
+                    aria-disabled={running}
+                    aria-label={`Remove file ${f.name}`}
+                    className={`text-blue-600 hover:underline ${running ? 'pointer-events-none text-gray-400' : ''}`}>
+                    {t('quickIngest.remove') || 'Remove'}
+                  </button>
+                ]}
                 >
                   <div className="flex items-center gap-2">
                     <span className="truncate">{f.name}</span>
                     {(() => {
-                      const status = results.find((r) => r.fileName === f.name)?.status
+                      const match = results.find((r) => r.fileName === f.name)
+                      const status = match?.status
                       if (!status && !running) return null
                       if (status === 'ok') return <Tag color="green">Done</Tag>
-                      if (status === 'error') return <Tag color="red">Failed</Tag>
+                      if (status === 'error') {
+                        return (
+                          <AntTooltip title={match?.error || 'Failed'}>
+                            <Tag color="red">Failed</Tag>
+                          </AntTooltip>
+                        )
+                      }
                       return running ? <Tag icon={<Spin size="small" />} color="blue">Running</Tag> : null
                     })()}
                   </div>
@@ -779,7 +844,7 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
               />
             </Space>
             <Typography.Text type="secondary" className="text-xs">
-              {t('quickIngest.audioDiarizationHelp') || 'Turn on to separate speakers in transcripts.'}
+              {t('quickIngest.audioDiarizationHelp') || 'Turn on to separate speakers in transcripts; applies to all audio rows in this batch.'}
             </Typography.Text>
           </div>
         )}
@@ -799,7 +864,7 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
               disabled={running}
             />
             <Typography.Text type="secondary" className="text-xs">
-              {t('quickIngest.ocrHelp') || 'OCR helps extract text from scanned PDFs or images.'}
+              {t('quickIngest.ocrHelp') || 'OCR helps extract text from scanned PDFs or images; applies to all document/PDF rows.'}
             </Typography.Text>
           </div>
         )}
@@ -819,26 +884,50 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
               disabled={running}
             />
             <Typography.Text type="secondary" className="text-xs">
-              {t('quickIngest.captionsHelp') || 'Include timestamps/captions when available.'}
+              {t('quickIngest.captionsHelp') || 'Include timestamps/captions for all video rows; helpful for search and summaries.'}
             </Typography.Text>
           </div>
         )}
 
         <div className="sticky bottom-0 z-10 mt-3 bg-white/90 dark:bg-[#111111]/90 backdrop-blur pt-2 pb-2 border-t border-gray-200 dark:border-gray-700">
-          <div className="flex items-center justify-between text-sm text-gray-700 dark:text-gray-200 mb-2">
-            <span className="truncate">
-              {storeRemote
-                ? (t('quickIngest.storeRemoteHelp') || 'Uploads to your tldw server for indexing.')
-                : (t('quickIngest.processOnlyHelp') || 'Process only and keep results local (download JSON).')}
-            </span>
-            <span className="text-xs text-gray-500 dark:text-gray-400">
+          <div className="flex flex-col gap-2">
+            <div className="sr-only" aria-live="polite" role="status">
               {running && totalPlanned > 0
                 ? t('quickIngest.progress', 'Processing {{done}} / {{total}} items…', {
                     done: results.length,
                     total: totalPlanned
                   })
                 : `${plannedCount || 0} ${plannedCount === 1 ? 'item' : 'items'} ready`}
-            </span>
+            </div>
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-sm text-gray-700 dark:text-gray-200">
+              <div className="flex items-start gap-3">
+                <Space align="center">
+                  <Typography.Text strong>Processing mode</Typography.Text>
+                  <Switch
+                    aria-label="Toggle processing mode"
+                    checked={storeRemote}
+                    onChange={setStoreRemote}
+                    disabled={running}
+                  />
+                  <Typography.Text>
+                    {storeRemote ? (t('quickIngest.storeRemote') || 'Store to remote DB') : (t('quickIngest.process') || 'Process locally')}
+                  </Typography.Text>
+                </Space>
+              </div>
+              <span className="text-xs text-gray-500 dark:text-gray-400">
+                {running && totalPlanned > 0
+                  ? t('quickIngest.progress', 'Processing {{done}} / {{total}} items…', {
+                      done: results.length,
+                      total: totalPlanned
+                    })
+                  : `${plannedCount || 0} ${plannedCount === 1 ? 'item' : 'items'} ready`}
+              </span>
+            </div>
+            <Typography.Text type="secondary" className="text-xs">
+              {storeRemote
+                ? (t('quickIngest.storeRemoteHelp') || 'Uploads to your tldw server for indexing.')
+                : (t('quickIngest.processOnlyHelp') || 'Process only and keep results local (download JSON).')}
+            </Typography.Text>
           </div>
           <div className="flex justify-end gap-2">
             <Button
@@ -866,9 +955,32 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
           items={[{
           key: 'adv',
           label: (
-            <div className="flex items-center gap-2 w-full">
-              <span>Advanced options</span>
-              <div className="flex flex-col items-end gap-1 ml-auto">
+            <div className="flex flex-col gap-1 w-full">
+              <div className="flex items-center gap-2">
+                <span>Advanced options</span>
+                <Tag color="blue">{t('quickIngest.advancedSummary', '{{count}} advanced fields loaded', { count: advSchema.length })}</Tag>
+                {modifiedAdvancedCount > 0 && (
+                  <Tag color="gold">{t('quickIngest.modifiedCount', '{{count}} modified', { count: modifiedAdvancedCount })}</Tag>
+                )}
+                <Tag color="geekblue">{specSourceLabel}</Tag>
+                {lastRefreshedLabel && (
+                  <Typography.Text className="text-[11px] text-gray-500">
+                    {t('quickIngest.advancedRefreshed', 'Refreshed {{time}}', { time: lastRefreshedLabel })}
+                  </Typography.Text>
+                )}
+                <AntTooltip
+                  title={<div className="max-w-80 text-xs">{specSource === 'server'
+                    ? 'Using live server OpenAPI spec'
+                    : specSource === 'server-cached'
+                      ? 'Using cached server OpenAPI spec'
+                      : specSource === 'bundled'
+                        ? 'Using bundled spec from extension'
+                        : 'No spec detected; using fallback fields'}</div>}
+                >
+                  <Info className="w-4 h-4 text-gray-500" />
+                </AntTooltip>
+              </div>
+              <div className="flex flex-wrap items-center gap-2 text-xs text-gray-500 ml-auto">
                 {ragEmbeddingLabel && (
                   <Typography.Text className="text-[11px] text-gray-500">
                     {t(
@@ -878,68 +990,53 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
                     )}
                   </Typography.Text>
                 )}
-                <div className="flex items-center gap-2">
-                  <Tag color="blue">{t('quickIngest.advancedSummary', '{{count}} advanced fields loaded', { count: advSchema.length })}</Tag>
-                  {modifiedAdvancedCount > 0 && (
-                    <Tag color="gold">{t('quickIngest.modifiedCount', '{{count}} modified', { count: modifiedAdvancedCount })}</Tag>
-                  )}
-                  <AntTooltip
-                    title={<div className="max-w-80 text-xs">{specSource === 'server'
-                      ? 'Using live server OpenAPI spec'
-                      : specSource === 'server-cached'
-                        ? 'Using cached server OpenAPI spec'
-                        : specSource === 'bundled'
-                          ? 'Using bundled spec from extension'
-                          : 'No spec detected; using fallback fields'}</div>}
-                  >
-                    <Info className="w-4 h-4 text-gray-500" />
-                  </AntTooltip>
-                  <Space size="small" align="center">
-                    <span className="text-xs text-gray-500">Prefer server</span>
-                    <Switch
-                      size="small"
-                      checked={!!specPrefs?.preferServer}
-                      onChange={async (v) => {
-                        persistSpecPrefs({ ...(specPrefs || {}), preferServer: v })
-                        await loadSpec(v, true)
-                      }}
-                    />
-                  </Space>
-                  <Button
+                <Space size="small" align="center">
+                  <span className="text-xs text-gray-500">Prefer server</span>
+                  <Switch
                     size="small"
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      void loadSpec(true, true)
-                    }}>
-                    Reload from server
-                  </Button>
-                  <Button
-                    size="small"
-                    danger
-                    onClick={async (e) => {
-                      e.stopPropagation()
-                      const ok = await confirmDanger({
-                        title: 'Please confirm',
-                        content:
-                          'Reset all advanced options and UI state?',
-                        okText: 'Reset',
-                        cancelText: 'Cancel'
-                      })
-                      if (!ok) return
-                      setAdvancedValues({})
-                      setSavedAdvValues({})
-                      setFieldDetailsOpen({})
-                      setUiPrefs({
-                        advancedOpen: false,
-                        fieldDetailsOpen: {}
-                      })
-                      setAdvSearch('')
-                      setAdvancedOpen(false)
-                      messageApi.success('Advanced options reset')
-                    }}>
-                    Reset Advanced
-                  </Button>
-                </div>
+                    aria-label="Prefer server OpenAPI spec"
+                    checked={!!specPrefs?.preferServer}
+                    onChange={async (v) => {
+                      persistSpecPrefs({ ...(specPrefs || {}), preferServer: v })
+                      await loadSpec(v, true)
+                    }}
+                  />
+                </Space>
+                <Button
+                  size="small"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    void loadSpec(true, true)
+                  }}>
+                  Reload from server
+                </Button>
+                <span className="h-4 border-l border-gray-300 dark:border-gray-600" aria-hidden />
+                <Button
+                  size="small"
+                  danger
+                  onClick={async (e) => {
+                    e.stopPropagation()
+                    const ok = await confirmDanger({
+                      title: 'Please confirm',
+                      content:
+                        'Reset all advanced options and UI state?',
+                      okText: 'Reset',
+                      cancelText: 'Cancel'
+                    })
+                    if (!ok) return
+                    setAdvancedValues({})
+                    setSavedAdvValues({})
+                    setFieldDetailsOpen({})
+                    setUiPrefs({
+                      advancedOpen: false,
+                      fieldDetailsOpen: {}
+                    })
+                    setAdvSearch('')
+                    setAdvancedOpen(false)
+                    messageApi.success('Advanced options reset')
+                  }}>
+                  Reset Advanced
+                </Button>
               </div>
             </div>
           ),
@@ -953,6 +1050,9 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
                   onChange={(e) => setAdvSearch(e.target.value)}
                   className="max-w-80"
                 />
+                {modifiedAdvancedCount > 0 && (
+                  <Tag color="gold">{t('quickIngest.modifiedCount', '{{count}} modified', { count: modifiedAdvancedCount })}</Tag>
+                )}
               </div>
               {advSchema.length === 0 ? (
                 <Typography.Text type="secondary">{t('quickIngest.advancedEmpty', 'No advanced options detected — try reloading the spec.')}</Typography.Text>
@@ -979,7 +1079,7 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
                       <Space direction="vertical" className="w-full">
                         {grouped[g].map((f) => {
                           const v = advancedValues[f.name]
-                          const setV = (nv: any) => setAdvancedValues((prev) => ({ ...prev, [f.name]: nv }))
+                          const setV = (nv: any) => setAdvancedValue(f.name, nv)
                           const isOpen = fieldDetailsOpen[f.name]
                           const setOpen = (open: boolean) => setFieldDetailsOpen((prev) => ({ ...prev, [f.name]: open }))
                           const Label = (
@@ -1004,10 +1104,24 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
                             )
                           }
                           if (f.type === 'boolean') {
+                            const boolState = v === true || v === 'true' ? 'true' : v === false || v === 'false' ? 'false' : 'unset'
                             return (
                               <div key={f.name} className="flex items-center gap-2">
                                 {Label}
-                                <Select className="w-40" value={v ?? ''} onChange={setV as any} options={[{ value: '', label: 'Unset' }, { value: 'true', label: 'true' }, { value: 'false', label: 'false' }]} />
+                                <Switch
+                                  checked={boolState === 'true'}
+                                  onChange={(checked) => setAdvancedValue(f.name, checked)}
+                                  aria-label={`Toggle ${f.title || f.name}`}
+                                />
+                                <Button
+                                  size="small"
+                                  onClick={() => setAdvancedValue(f.name, undefined)}
+                                  disabled={boolState === 'unset'}>
+                                  Unset
+                                </Button>
+                                <Typography.Text type="secondary" className="text-[11px] text-gray-500">
+                                  {boolState === 'unset' ? 'Currently unset (server defaults)' : boolState === 'true' ? 'On' : 'Off'}
+                                </Typography.Text>
                                 {f.description && (
                                   <button className="text-xs underline text-gray-500" onClick={() => setOpen(!isOpen)}>{isOpen ? 'Hide details' : 'Show details'}</button>
                                 )}
@@ -1060,7 +1174,16 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
               dataSource={results}
               renderItem={(item) => (
                 <List.Item actions={[
-                  !storeRemote && item.status === 'ok' ? <a key="dl" onClick={() => downloadJson(item)}>{t('quickIngest.downloadJson') || 'Download JSON'}</a> : null
+                  !storeRemote && item.status === 'ok' ? (
+                    <button
+                      key="dl"
+                      type="button"
+                      onClick={() => downloadJson(item)}
+                      aria-label={`Download JSON for ${item.url || item.fileName || 'item'}`}
+                      className="text-blue-600 hover:underline">
+                      {t('quickIngest.downloadJson') || 'Download JSON'}
+                    </button>
+                  ) : null
                 ]}>
                   <div className="text-sm">
                     <div className="flex items-center gap-2">

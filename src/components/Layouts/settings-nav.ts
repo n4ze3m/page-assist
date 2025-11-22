@@ -68,7 +68,7 @@ export const SETTINGS_NAV_GROUPS: SettingsNavGroup[] = [
     key: "workspace",
     titleToken: "settings:navigation.workspace",
     items: [
-      { to: "/review", icon: Microscope, labelToken: "option:header.review" },
+      { to: "/media-multi", icon: Microscope, labelToken: "option:header.review" },
       { to: "/flashcards", icon: Layers, labelToken: "option:header.flashcards" },
       { to: "/notes", icon: StickyNote, labelToken: "option:header.notes" },
       { to: "/settings/prompt", icon: BookIcon, labelToken: "settings:managePrompts.title" },
