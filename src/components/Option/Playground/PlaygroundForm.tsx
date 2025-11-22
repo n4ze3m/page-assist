@@ -51,6 +51,7 @@ import { fetchChatModels } from "@/services/tldw-server"
 import { ProviderIcons } from "@/components/Common/ProviderIcon"
 import { useServerCapabilities } from "@/hooks/useServerCapabilities"
 import { tldwClient } from "@/services/tldw/TldwApiClient"
+import { CharacterSelect } from "@/components/Common/CharacterSelect"
 type Props = {
   dropedFile: File | undefined
 }
@@ -77,6 +78,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
     setSelectedQuickPrompt,
     selectedSystemPrompt,
     setSelectedSystemPrompt,
+    setSelectedKnowledge,
     selectedKnowledge,
     temporaryChat,
     setTemporaryChat,
@@ -99,6 +101,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
 
   const [autoSubmitVoiceMessage] = useStorage("autoSubmitVoiceMessage", false)
   const [openModelSettings, setOpenModelSettings] = React.useState(false)
+  const [isContextModalOpen, setIsContextModalOpen] = React.useState(false)
 
   const { phase, isConnected } = useConnectionState()
   const isConnectionReady = isConnected && phase === ConnectionPhase.CONNECTED
@@ -114,10 +117,12 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
     showMentions,
     mentionPosition,
     filteredTabs,
+    availableTabs,
     selectedDocuments,
     handleTextChange,
     insertMention,
     closeMentions,
+    addDocument,
     removeDocument,
     clearSelectedDocuments,
     reloadTabs,
@@ -778,6 +783,12 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
     }
   }, [hasServerAudio, isServerDictating, speechToTextLanguage, stopServerDictation, t, form])
 
+  React.useEffect(() => {
+    if (isContextModalOpen) {
+      reloadTabs()
+    }
+  }, [isContextModalOpen, reloadTabs])
+
   const moreToolsContent = React.useMemo(() => (
     <div className="flex w-64 flex-col gap-3">
       <div className="flex items-center justify-between">
@@ -1261,7 +1272,29 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                             </>
                           )}
                         </div>
-                        <div className="flex items-center justify-end gap-3">
+                        <div className="flex items-center justify-end gap-3 flex-wrap">
+                          {composerModelOptions.length > 0 && (
+                            <Select
+                              className="min-w-[220px] max-w-[320px]"
+                              placeholder={t("playground:composer.modelPlaceholder", "API / model")}
+                              aria-label={t("playground:composer.modelPlaceholder", "API / model") as string}
+                              value={selectedModel || undefined}
+                              onChange={(value) => setSelectedModel(value)}
+                              loading={isComposerModelsLoading}
+                              options={composerModelOptions as any}
+                              optionLabelProp="label"
+                              dropdownMatchSelectWidth={false}
+                              showSearch
+                              size="middle"
+                            />
+                          )}
+                          <CharacterSelect className="text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100" iconClassName="size-5" />
+                          <button
+                            type="button"
+                            onClick={() => setIsContextModalOpen(true)}
+                            className="inline-flex items-center gap-2 rounded-md border border-gray-200 px-3 py-1.5 text-sm text-gray-700 transition hover:bg-gray-100 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-[#2a2a2a]">
+                            {t("playground:composer.contextManager", "Context Management")}
+                          </button>
                           <Tooltip
                             title={
                               t(
@@ -1501,6 +1534,224 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
         </div>
       </div>
       {/* Modal/Drawer for current conversation settings */}
+      <Modal
+        open={isContextModalOpen}
+        title={t("playground:composer.contextManagerTitle", "Context Management")}
+        onCancel={() => setIsContextModalOpen(false)}
+        footer={null}
+        width={760}
+        destroyOnClose>
+        <div className="flex flex-col gap-5">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <div className="text-sm font-semibold text-gray-800 dark:text-gray-100">
+                {t("playground:composer.contextMedia", "Media / Notes")}
+              </div>
+              <p className="text-xs text-gray-500 dark:text-gray-400">
+                {t("playground:composer.contextMediaHint", "Attach knowledge or notes that should steer the response.")}
+              </p>
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  const trigger =
+                    document.querySelector<HTMLElement>(
+                      "[data-playground-knowledge-trigger='true']"
+                    )
+                  if (trigger) {
+                    trigger.click()
+                  }
+                  setIsContextModalOpen(false)
+                }}
+                className="rounded-md border border-gray-200 px-2.5 py-1 text-xs font-medium text-gray-700 hover:bg-gray-100 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-[#2a2a2a]">
+                {t("playground:composer.addKnowledge", "Add media / notes")}
+              </button>
+              {selectedKnowledge && (
+                <button
+                  type="button"
+                  onClick={() => setSelectedKnowledge(null)}
+                  className="rounded-md border border-gray-200 px-2.5 py-1 text-xs font-medium text-gray-700 hover:bg-gray-100 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-[#2a2a2a]">
+                  {t("common:remove", "Remove")}
+                </button>
+              )}
+            </div>
+          </div>
+          <div className="rounded-lg border border-gray-200 bg-white p-3 dark:border-gray-700 dark:bg-[#1a1a1a]">
+            {selectedKnowledge ? (
+              <div className="flex items-center justify-between gap-3">
+                <div className="min-w-0">
+                  <div className="text-sm font-medium text-gray-800 dark:text-gray-100 truncate">
+                    {selectedKnowledge.title}
+                  </div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400">
+                    {selectedKnowledge?.db_type || t("playground:composer.contextMediaSelected", "Knowledge item")}
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setSelectedKnowledge(null)}
+                  className="rounded-full border border-gray-200 p-1 text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-[#2a2a2a]">
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+            ) : (
+              <div className="text-sm text-gray-500 dark:text-gray-400">
+                {t("playground:composer.contextMediaEmpty", "No media or notes selected yet.")}
+              </div>
+            )}
+          </div>
+
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <div className="text-sm font-semibold text-gray-800 dark:text-gray-100">
+                {t("playground:composer.contextTabsTitle", "Tabs in context")}
+              </div>
+              <p className="text-xs text-gray-500 dark:text-gray-400">
+                {t("playground:composer.contextTabsHint", "Review or remove referenced tabs, or add more from your open browser tabs.")}
+              </p>
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                onClick={() => reloadTabs()}
+                className="rounded-md border border-gray-200 px-2.5 py-1 text-xs font-medium text-gray-700 hover:bg-gray-100 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-[#2a2a2a]">
+                {t("common:refresh", "Refresh")}
+              </button>
+              {selectedDocuments.length > 0 && (
+                <button
+                  type="button"
+                  onClick={clearSelectedDocuments}
+                  className="rounded-md border border-gray-200 px-2.5 py-1 text-xs font-medium text-gray-700 hover:bg-gray-100 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-[#2a2a2a]">
+                  {t("playground:composer.clearTabs", "Remove all tabs")}
+                </button>
+              )}
+            </div>
+          </div>
+          <div className="rounded-lg border border-gray-200 bg-white p-3 dark:border-gray-700 dark:bg-[#1a1a1a]">
+            {selectedDocuments.length > 0 ? (
+              <div className="flex flex-col gap-2">
+                {selectedDocuments.map((doc) => (
+                  <div
+                    key={doc.id}
+                    className="flex items-center justify-between gap-3 rounded-md border border-gray-100 bg-gray-50 px-3 py-2 dark:border-gray-700 dark:bg-[#111]">
+                    <div className="min-w-0">
+                      <div className="truncate text-sm font-medium text-gray-800 dark:text-gray-100">
+                        {doc.title}
+                      </div>
+                      <div className="truncate text-xs text-gray-500 dark:text-gray-400">
+                        {doc.url}
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => removeDocument(doc.id)}
+                      className="rounded-full border border-gray-200 p-1 text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-[#2a2a2a]">
+                      <X className="h-4 w-4" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-sm text-gray-500 dark:text-gray-400">
+                {t("playground:composer.contextTabsEmpty", "No tabs added yet.")}
+              </div>
+            )}
+            <div className="mt-3">
+              <div className="text-xs font-semibold text-gray-700 dark:text-gray-200">
+                {t("playground:composer.contextTabsAvailable", "Open tabs")}
+              </div>
+              <div className="mt-2 max-h-40 overflow-y-auto space-y-2">
+                {availableTabs.length > 0 ? (
+                  availableTabs.map((tab) => (
+                    <div
+                      key={tab.id}
+                      className="flex items-center justify-between gap-3 rounded-md border border-gray-100 bg-white px-3 py-2 shadow-sm dark:border-gray-700 dark:bg-[#161616]">
+                      <div className="min-w-0">
+                        <div className="truncate text-sm font-medium text-gray-800 dark:text-gray-100">
+                          {tab.title}
+                        </div>
+                        <div className="truncate text-xs text-gray-500 dark:text-gray-400">
+                          {tab.url}
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => addDocument(tab)}
+                        className="rounded-md border border-gray-200 px-2 py-1 text-xs font-medium text-gray-700 hover:bg-gray-100 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-[#2a2a2a]">
+                        {t("common:add", "Add")}
+                      </button>
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-xs text-gray-500 dark:text-gray-400">
+                    {t("playground:composer.noTabsFound", "No eligible open tabs found.")}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <div className="text-sm font-semibold text-gray-800 dark:text-gray-100">
+                {t("playground:composer.contextFilesTitle", "Files in context")}
+              </div>
+              <p className="text-xs text-gray-500 dark:text-gray-400">
+                {t("playground:composer.contextFilesHint", "Review attached files, remove them, or add more.")}
+              </p>
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  fileInputRef.current?.click()
+                }}
+                className="rounded-md border border-gray-200 px-2.5 py-1 text-xs font-medium text-gray-700 hover:bg-gray-100 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-[#2a2a2a]">
+                {t("playground:composer.addFile", "Add file")}
+              </button>
+              {uploadedFiles.length > 0 && (
+                <button
+                  type="button"
+                  onClick={clearUploadedFiles}
+                  className="rounded-md border border-gray-200 px-2.5 py-1 text-xs font-medium text-gray-700 hover:bg-gray-100 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-[#2a2a2a]">
+                  {t("playground:composer.clearFiles", "Remove all files")}
+                </button>
+              )}
+            </div>
+          </div>
+          <div className="rounded-lg border border-gray-200 bg-white p-3 dark:border-gray-700 dark:bg-[#1a1a1a]">
+            {uploadedFiles.length > 0 ? (
+              <div className="flex flex-col gap-2">
+                {uploadedFiles.map((file) => (
+                  <div
+                    key={file.id}
+                    className="flex items-center justify-between gap-3 rounded-md border border-gray-100 bg-gray-50 px-3 py-2 dark:border-gray-700 dark:bg-[#111]">
+                    <div className="min-w-0">
+                      <div className="truncate text-sm font-medium text-gray-800 dark:text-gray-100">
+                        {file.filename}
+                      </div>
+                      <div className="text-xs text-gray-500 dark:text-gray-400">
+                        {(file.size / (1024 * 1024)).toFixed(2)} MB
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => removeUploadedFile(file.id)}
+                      className="rounded-full border border-gray-200 p-1 text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-[#2a2a2a]">
+                      <X className="h-4 w-4" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-sm text-gray-500 dark:text-gray-400">
+                {t("playground:composer.contextFilesEmpty", "No files attached yet.")}
+              </div>
+            )}
+          </div>
+        </div>
+      </Modal>
       <CurrentChatModelSettings
         open={openModelSettings}
         setOpen={setOpenModelSettings}

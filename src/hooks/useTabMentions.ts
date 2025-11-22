@@ -144,6 +144,15 @@ export const useTabMentions = (textareaRef: React.RefObject<HTMLTextAreaElement>
     setMentionPosition(null)
   }, [])
 
+  const addDocument = React.useCallback((doc: TabInfo) => {
+    setSelectedDocuments(prev => {
+      if (prev.find(d => d.id === doc.id)) {
+        return prev
+      }
+      return [...prev, doc]
+    })
+  }, [])
+
   const removeDocument = React.useCallback((id: number) => {
     setSelectedDocuments(prev => prev.filter(doc => doc.id !== id))
   }, [])
@@ -157,10 +166,12 @@ export const useTabMentions = (textareaRef: React.RefObject<HTMLTextAreaElement>
     showMentions,
     mentionPosition,
     filteredTabs,
+    availableTabs,
     selectedDocuments,
     handleTextChange,
     insertMention,
     closeMentions,
+    addDocument,
     removeDocument,
     clearSelectedDocuments,
     reloadTabs: fetchTabs,

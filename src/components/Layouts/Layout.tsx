@@ -24,11 +24,13 @@ import { DemoModeProvider, useDemoMode } from "@/context/demo-mode"
 type OptionLayoutProps = {
   children: React.ReactNode
   hideHeader?: boolean
+  showHeaderSelectors?: boolean
 }
 
 const OptionLayoutInner: React.FC<OptionLayoutProps> = ({
   children,
-  hideHeader = false
+  hideHeader = false,
+  showHeaderSelectors = true
 }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const { t } = useTranslation(["option", "common", "settings"])
@@ -72,6 +74,7 @@ const OptionLayoutInner: React.FC<OptionLayoutProps> = ({
             <Header
               setSidebarOpen={setSidebarOpen}
               setOpenModelSettings={setOpenModelSettings}
+              showSelectors={showHeaderSelectors}
             />
           </div>
         )}

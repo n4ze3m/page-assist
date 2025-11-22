@@ -47,6 +47,7 @@ const classNames = (...classes: (string | false | null | undefined)[]) =>
 type Props = {
   setSidebarOpen: (open: boolean) => void
   setOpenModelSettings: (open: boolean) => void
+  showSelectors?: boolean
 }
 
 type NavigationItem =
@@ -78,7 +79,8 @@ type CoreMode =
 
 export const Header: React.FC<Props> = ({
   setOpenModelSettings,
-  setSidebarOpen
+  setSidebarOpen,
+  showSelectors = true
 }) => {
   const { t, i18n } = useTranslation(["option", "common", "settings"])
   const isRTL = i18n?.dir() === "rtl"
@@ -570,105 +572,107 @@ export const Header: React.FC<Props> = ({
           </div>
         </PrimaryToolbar>
 
-        <div className="flex flex-wrap items-center gap-3">
-          <div className="flex flex-col gap-1 min-w-[220px]">
-            {(() => {
-              const id = "header-model-label"
-              return (
-                <span
-                  id={id}
-                  className="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
-                >
-                  {t("option:header.modelLabel", "Model")}
-                </span>
-              )
-            })()}
-            <div className="hidden lg:block">
-              <Select
-                className="min-w-[220px] max-w-[320px]"
-                placeholder={t("common:selectAModel")}
-                aria-label={t("common:selectAModel") as string}
-                aria-labelledby="header-model-label"
-                value={selectedModel}
-                onChange={(value) => {
-                  setSelectedModel(value)
-                  localStorage.setItem("selectedModel", value)
-                }}
-                filterOption={(input, option) => {
-                  // @ts-ignore
-                  const haystack = option?.label?.props?.["data-title"] as string | undefined
-                  return haystack?.toLowerCase().includes(input.toLowerCase()) ?? false
-                }}
-                showSearch
-                loading={isModelsLoading}
-                options={models?.map((model) => ({
-                  label: (
-                    <span
-                      key={model.model}
-                      data-title={model.name}
-                      className="flex items-center gap-2">
-                      {model?.avatar ? (
-                        <Avatar src={model.avatar} alt={model.name} size="small" />
-                      ) : (
-                        <ProviderIcons provider={model?.provider} className="h-4 w-4" />
-                      )}
-                      <span className="truncate">
-                        {model?.nickname || model.model}
+        {showSelectors && (
+          <div className="flex flex-wrap items-center gap-3">
+            <div className="flex flex-col gap-1 min-w-[220px]">
+              {(() => {
+                const id = "header-model-label"
+                return (
+                  <span
+                    id={id}
+                    className="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+                  >
+                    {t("option:header.modelLabel", "Model")}
+                  </span>
+                )
+              })()}
+              <div className="hidden lg:block">
+                <Select
+                  className="min-w-[220px] max-w-[320px]"
+                  placeholder={t("common:selectAModel")}
+                  aria-label={t("common:selectAModel") as string}
+                  aria-labelledby="header-model-label"
+                  value={selectedModel}
+                  onChange={(value) => {
+                    setSelectedModel(value)
+                    localStorage.setItem("selectedModel", value)
+                  }}
+                  filterOption={(input, option) => {
+                    // @ts-ignore
+                    const haystack = option?.label?.props?.["data-title"] as string | undefined
+                    return haystack?.toLowerCase().includes(input.toLowerCase()) ?? false
+                  }}
+                  showSearch
+                  loading={isModelsLoading}
+                  options={models?.map((model) => ({
+                    label: (
+                      <span
+                        key={model.model}
+                        data-title={model.name}
+                        className="flex items-center gap-2">
+                        {model?.avatar ? (
+                          <Avatar src={model.avatar} alt={model.name} size="small" />
+                        ) : (
+                          <ProviderIcons provider={model?.provider} className="h-4 w-4" />
+                        )}
+                        <span className="truncate">
+                          {model?.nickname || model.model}
+                        </span>
                       </span>
-                    </span>
-                  ),
-                  value: model.model
-                }))}
-                size="large"
+                    ),
+                    value: model.model
+                  }))}
+                  size="large"
+                />
+              </div>
+              <div className="lg:hidden">
+                <ModelSelect />
+              </div>
+            </div>
+
+            <div className="hidden min-w-[240px] flex-col gap-1 lg:flex">
+              {(() => {
+                const id = "header-prompt-label"
+                return (
+                  <span
+                    id={id}
+                    className="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+                  >
+                    {t("option:header.promptLabel", "Prompt")}
+                  </span>
+                )
+              })()}
+              <PromptSearch
+                inputId="header-prompt-search"
+                ariaLabel={t("option:selectAPrompt", "Select a Prompt") as string}
+                ariaLabelledby="header-prompt-label"
+                onInsertMessage={(content) => {
+                  setSelectedSystemPrompt(undefined)
+                  setSelectedQuickPrompt(content)
+                }}
+                onInsertSystem={(content) => {
+                  setSelectedSystemPrompt(undefined)
+                  const { setSystemPrompt } =
+                    useStoreChatModelSettings.getState?.() || ({ setSystemPrompt: undefined } as any)
+                  setSystemPrompt?.(content)
+                }}
               />
             </div>
-            <div className="lg:hidden">
-              <ModelSelect />
+
+            <div className="w-full min-w-[180px] lg:hidden">
+              <PromptSelect
+                selectedSystemPrompt={selectedSystemPrompt}
+                setSelectedSystemPrompt={setSelectedSystemPrompt}
+                setSelectedQuickPrompt={setSelectedQuickPrompt}
+              />
             </div>
-          </div>
 
-          <div className="hidden min-w-[240px] flex-col gap-1 lg:flex">
-            {(() => {
-              const id = "header-prompt-label"
-              return (
-                <span
-                  id={id}
-                  className="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
-                >
-                  {t("option:header.promptLabel", "Prompt")}
-                </span>
-              )
-            })()}
-            <PromptSearch
-              inputId="header-prompt-search"
-              ariaLabel={t("option:selectAPrompt", "Select a Prompt") as string}
-              ariaLabelledby="header-prompt-label"
-              onInsertMessage={(content) => {
-                setSelectedSystemPrompt(undefined)
-                setSelectedQuickPrompt(content)
-              }}
-              onInsertSystem={(content) => {
-                setSelectedSystemPrompt(undefined)
-                const { setSystemPrompt } =
-                  useStoreChatModelSettings.getState?.() || ({ setSystemPrompt: undefined } as any)
-                setSystemPrompt?.(content)
-              }}
-            />
+            <CharacterSelect className="text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100" />
           </div>
-
-          <div className="w-full min-w-[180px] lg:hidden">
-            <PromptSelect
-              selectedSystemPrompt={selectedSystemPrompt}
-              setSelectedSystemPrompt={setSelectedSystemPrompt}
-              setSelectedQuickPrompt={setSelectedQuickPrompt}
-            />
-          </div>
-
-          <CharacterSelect className="text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100" />
-        </div>
+        )}
       </div>
 
-      <Divider className="hidden lg:block" plain />
+      {showSelectors && <Divider className="hidden lg:block" plain />}
 
       <div className="flex flex-col gap-3">
         <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:justify-end">
