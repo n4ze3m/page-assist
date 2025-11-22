@@ -1,4 +1,5 @@
 import { defineConfig } from "wxt"
+import path from "path"
 import react from "@vitejs/plugin-react"
 import topLevelAwait from "vite-plugin-top-level-await"
 import { parse } from "acorn"
@@ -125,9 +126,20 @@ export default defineConfig({
         promiseImportName: (i) => `__tla_${i}`
       }) as any
     ],
+    // Ensure every entry (options, sidepanel, content scripts) shares a single React instance.
+    resolve: {
+      dedupe: ["react", "react-dom"],
+      alias: {
+        react: path.resolve(__dirname, "node_modules/react"),
+        "react-dom": path.resolve(__dirname, "node_modules/react-dom")
+      }
+    },
     // Disable Hot Module Replacement so streaming connections aren't killed by dev reloads
     server: {
       hmr: false
+    },
+    optimizeDeps: {
+      include: ["react", "react-dom", "react/jsx-runtime", "react/jsx-dev-runtime"]
     },
     build: {
       // Firefox MV2 validator chokes on modern ESM in chunks; downlevel and turn off module preload there.

@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router-dom'
 import FeatureEmptyState from '@/components/Common/FeatureEmptyState'
 import { useDemoMode } from '@/context/demo-mode'
 import { useServerCapabilities } from '@/hooks/useServerCapabilities'
+import { tldwClient } from '@/services/tldw/TldwApiClient'
 
 type NoteListItem = {
   id: string | number
@@ -58,7 +59,7 @@ const NotesManagerPage: React.FC = () => {
     // Prefer search when query or keyword filters are present
     if (q || toks.length > 0) {
       const cfg = await (async () => {
-        try { return await (await import('@/services/tldw/TldwApiClient')).tldwClient.getConfig() } catch { return null }
+        try { return await tldwClient.getConfig() } catch { return null }
       })()
       const base = String(cfg?.serverUrl || '').replace(/\/$/, '')
       const qstr = q || toks.join(' ')
@@ -210,7 +211,7 @@ const NotesManagerPage: React.FC = () => {
       const q = query.trim()
       const toks = keywordTokens.map((k) => k.toLowerCase())
       if (q || toks.length > 0) {
-        const cfg = await (await import('@/services/tldw/TldwApiClient')).tldwClient.getConfig().catch(() => null)
+        const cfg = await tldwClient.getConfig().catch(() => null)
         const base = String(cfg?.serverUrl || '').replace(/\/$/, '')
         const qstr = q || toks.join(' ')
         const abs = await bgRequest<any>({ path: `${base}/api/v1/notes/search/?query=${encodeURIComponent(qstr)}` as any, method: 'GET' as any })
@@ -260,7 +261,7 @@ const NotesManagerPage: React.FC = () => {
     const q = query.trim()
     const toks = keywordTokens.map((k) => k.toLowerCase())
     if (q || toks.length > 0) {
-      const cfg = await (await import('@/services/tldw/TldwApiClient')).tldwClient.getConfig().catch(() => null)
+      const cfg = await tldwClient.getConfig().catch(() => null)
       const base = String(cfg?.serverUrl || '').replace(/\/$/, '')
       const qstr = q || toks.join(' ')
       const abs = await bgRequest<any>({ path: `${base}/api/v1/notes/search/?query=${encodeURIComponent(qstr)}` as any, method: 'GET' as any })
@@ -332,7 +333,7 @@ const NotesManagerPage: React.FC = () => {
 
   const loadKeywordSuggestions = React.useCallback(async (text?: string) => {
     try {
-      const cfg = await (await import('@/services/tldw/TldwApiClient')).tldwClient.getConfig().catch(() => null)
+      const cfg = await tldwClient.getConfig().catch(() => null)
       const base = String(cfg?.serverUrl || '').replace(/\/$/, '')
       if (text && text.trim().length > 0) {
         const abs = await bgRequest<any>({ path: `${base}/api/v1/notes/keywords/search/?query=${encodeURIComponent(text)}&limit=10` as any, method: 'GET' as any })

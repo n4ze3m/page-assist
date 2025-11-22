@@ -4,6 +4,7 @@ import type { AllowedPath } from "@/services/tldw/openapi-guard"
 import { getInitialConfig } from "@/services/action"
 import { tldwClient } from "@/services/tldw/TldwApiClient"
 import { tldwAuth } from "@/services/tldw/TldwAuth"
+import { apiSend } from "@/services/api-send"
 
 export default defineBackground({
   main() {
@@ -236,7 +237,6 @@ export default defineBackground({
           const pageUrl = tab?.url || ''
           if (!pageUrl) return { ok: false, status: 400, error: 'No active tab URL' }
           const path = message.mode === 'process' ? getProcessPathForUrl(pageUrl) : '/api/v1/media/add'
-          const { apiSend } = await import('@/services/api-send')
           const resp = await apiSend({ path, method: 'POST', headers: { 'Content-Type': 'application/json' }, body: { url: pageUrl }, timeoutMs: 120000 })
           return resp
         } catch (e: any) {

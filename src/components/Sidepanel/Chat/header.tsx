@@ -40,6 +40,7 @@ import { isFireFoxPrivateMode } from "@/utils/is-private-mode"
 import { useAntdNotification } from "@/hooks/useAntdNotification"
 import { useConnectionState } from "@/hooks/useConnectionState"
 import { ConnectionPhase } from "@/types/connection"
+import { Storage } from "@plasmohq/storage"
 
 type SidepanelHeaderProps = {
   sidebarOpen?: boolean
@@ -365,7 +366,7 @@ export const SidepanelHeader = ({
               </button>
               <button
                 onClick={async () => {
-                  const storage = new (await import('@plasmohq/storage')).Storage({ area: 'local' })
+                  const storage = new Storage({ area: 'local' })
                   const current = (await storage.get<string>('uiMode')) || 'sidePanel'
                   const next = current === 'sidePanel' ? 'webui' : 'sidePanel'
                   await storage.set('uiMode', next)

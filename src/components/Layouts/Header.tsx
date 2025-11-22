@@ -10,6 +10,8 @@ import PromptSearch from "../Common/PromptSearch"
 import { useQuery } from "@tanstack/react-query"
 import { useServerOnline } from "@/hooks/useServerOnline"
 import { fetchChatModels } from "@/services/tldw-server"
+import { getTitleById, updateHistory } from "@/db"
+import { useStoreChatModelSettings } from "@/store/model"
 import { useMessageOption } from "~/hooks/useMessageOption"
 import { Avatar, Select, Input, Divider, Dropdown } from "antd"
 import QuickIngestModal from "../Common/QuickIngestModal"
@@ -245,7 +247,6 @@ export const Header: React.FC<Props> = ({
     (async () => {
       try {
         if (historyId && historyId !== 'temp' && !temporaryChat) {
-          const { getTitleById } = await import('@/db')
           const title = await getTitleById(historyId)
           setChatTitle(title || '')
         } else {
@@ -258,7 +259,6 @@ export const Header: React.FC<Props> = ({
   const saveTitle = async (value: string) => {
     try {
       if (historyId && historyId !== 'temp' && !temporaryChat) {
-        const { updateHistory } = await import('@/db')
         await updateHistory(historyId, value.trim() || 'Untitled')
       }
     } catch (e) {
@@ -649,11 +649,9 @@ export const Header: React.FC<Props> = ({
               }}
               onInsertSystem={(content) => {
                 setSelectedSystemPrompt(undefined)
-                import("@/store/model").then(({ useStoreChatModelSettings }) => {
-                  const { setSystemPrompt } =
-                    useStoreChatModelSettings.getState?.() || ({ setSystemPrompt: undefined } as any)
-                  setSystemPrompt?.(content)
-                })
+                const { setSystemPrompt } =
+                  useStoreChatModelSettings.getState?.() || ({ setSystemPrompt: undefined } as any)
+                setSystemPrompt?.(content)
               }}
             />
           </div>

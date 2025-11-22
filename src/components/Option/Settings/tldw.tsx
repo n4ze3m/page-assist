@@ -19,6 +19,7 @@ import { tldwClient, TldwConfig } from "@/services/tldw/TldwApiClient"
 import { tldwAuth } from "@/services/tldw/TldwAuth"
 import { SettingsSkeleton } from "@/components/Common/Settings/SettingsSkeleton"
 import { DEFAULT_TLDW_API_KEY } from "@/services/tldw-server"
+import { apiSend } from "@/services/api-send"
 
 type TimeoutPresetKey = 'balanced' | 'extended'
 
@@ -235,7 +236,6 @@ export const TldwSettings = () => {
       if (values.authMode === 'single-user' && values.apiKey) {
         // Validate against a strictly protected endpoint by provoking a non-auth error (400) vs 401
         // We intentionally use an invalid model id; if auth is valid, server should respond 400/404/422, not 401
-        const { apiSend } = await import('@/services/api-send')
         const resp = await apiSend({
           path: `${String(values.serverUrl).replace(/\/$/, '')}/api/v1/chat/completions` as any,
           method: 'POST',
@@ -256,7 +256,6 @@ export const TldwSettings = () => {
         }
       } else {
         // Test basic health endpoint via background proxy
-        const { apiSend } = await import('@/services/api-send')
         const resp = await apiSend({
           path: `${String(values.serverUrl).replace(/\/$/, '')}/api/v1/health` as any,
           method: 'GET'

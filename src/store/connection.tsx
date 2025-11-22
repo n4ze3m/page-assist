@@ -2,6 +2,7 @@ import { create } from "zustand"
 
 import { tldwClient } from "@/services/tldw/TldwApiClient"
 import { getTldwServerURL } from "@/services/tldw-server"
+import { apiSend } from "@/services/api-send"
 import {
   ConnectionPhase,
   type ConnectionState,
@@ -184,7 +185,6 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
       // Request health via background for detailed status codes.
       // Health endpoints may require auth; apiSend injects headers based
       // on tldwConfig (API key / access token).
-      const { apiSend } = await import("@/services/api-send")
       const healthPromise = (async () => {
         try {
           const resp = await apiSend({

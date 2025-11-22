@@ -385,7 +385,11 @@ export const MediaReviewPage: React.FC = () => {
     const contentShown = !contentIsLong || contentExpanded ? content : `${content.slice(0, 2000)}…`
     const analysisShown = !analysisIsLong || analysisExpanded ? analysisText : `${analysisText.slice(0, 1600)}…`
     const isLoadingDetail = detailLoading[d.id]
-    const source = (d as any)?.source || (d as any)?.url || (d as any)?.original_url
+    const rawSource = (d as any)?.source || (d as any)?.url || (d as any)?.original_url
+    const source =
+      rawSource && typeof rawSource === "object"
+        ? (rawSource.url || rawSource.title || rawSource.href || "")
+        : rawSource
     const transcriptLen = content?.length ? Math.round(content.length / 1000) : null
 
     const style =
@@ -421,7 +425,7 @@ export const MediaReviewPage: React.FC = () => {
               {d.type && <Tag>{String(d.type).toLowerCase()}</Tag>}
               {d.created_at && <span>{new Date(d.created_at).toLocaleString()}</span>}
               {(d as any)?.duration && <span>{t("mediaPage.duration", "{{value}}", { value: (d as any).duration })}</span>}
-              {source && <span className="truncate max-w-[10rem]">{source}</span>}
+              {source && <span className="truncate max-w-[10rem]">{String(source)}</span>}
               {transcriptLen ? <span>{t("mediaPage.transcriptLength", "{{k}}k chars", { k: transcriptLen })}</span> : null}
             </div>
           </div>

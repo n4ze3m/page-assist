@@ -1,3 +1,6 @@
+import { apiSend } from "@/services/api-send"
+import type { AllowedPath } from "@/services/tldw/openapi-guard"
+
 export default defineContentScript({
   main(ctx) {
     const downloadModel = async (modelName: string) => {
@@ -10,8 +13,7 @@ export default defineContentScript({
         )
 
         // Path is declared in OpenAPI; annotate for compile-time safety
-        const path = '/api/v1/media/add' as import('@/services/tldw/openapi-guard').AllowedPath
-        const { apiSend } = await import('@/services/api-send')
+        const path = '/api/v1/media/add' as AllowedPath
         await apiSend({ path, method: 'POST', headers: { 'Content-Type': 'application/json' }, body: { url: window.location.href } })
         return true
       }

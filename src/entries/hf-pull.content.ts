@@ -1,10 +1,12 @@
+import { apiSend } from "@/services/api-send"
+import type { AllowedPath } from "@/services/tldw/openapi-guard"
+
 export default defineContentScript({
   main() {
     const sendToTldw = async () => {
       const url = window.location.href
       // The path is declared in the OpenAPI spec; annotate for compile-time safety
-      const path = '/api/v1/media/add' as import('@/services/tldw/openapi-guard').AllowedPath
-      const { apiSend } = await import('@/services/api-send')
+      const path = '/api/v1/media/add' as AllowedPath
       await apiSend({ path, method: 'POST', headers: { 'Content-Type': 'application/json' }, body: { url } })
       alert('[tldw] Sent page to tldw_server for processing')
     }

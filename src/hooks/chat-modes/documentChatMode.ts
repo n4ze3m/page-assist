@@ -19,6 +19,7 @@ import { UploadedFile } from "@/db/dexie/types"
 import { getSystemPromptForWeb, isQueryHaveWebsite } from "@/web/web"
 // Server-backed RAG replaces local vectorstore
 import { getMaxContextSize } from "@/services/kb"
+import { tldwClient } from "@/services/tldw/TldwApiClient"
 
 export const documentChatMode = async (
   message: string,
@@ -253,7 +254,7 @@ export const documentChatMode = async (
         enable_chunk_citations: true,
         enable_generation: false
       }
-      const ragRes = await (await import('@/services/tldw/TldwApiClient')).tldwClient.ragSearch(query, ragPayload)
+      const ragRes = await tldwClient.ragSearch(query, ragPayload)
       const docs = ragRes?.results || ragRes?.documents || ragRes?.docs || []
       if (docs.length > 0) {
         context += formatDocs(
