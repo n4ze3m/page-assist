@@ -120,15 +120,15 @@
         "confirm": "Êtes-vous sûr de vouloir effectuer une réinitialisation du système ? Cela effacera toutes les données et ne pourra pas être annulé."
       },
       "export": {
-        "label": "Exporter l'historique de chat, la base de connaissances et les prompts",
+        "label": "Exporter toutes les données (historique de chat, base de connaissances, prompts et paramètres)",
         "button": "Exporter les données",
         "success": "Exportation réussie"
       },
       "import": {
-        "label": "Importer l'historique de chat, la base de connaissances et les prompts",
+        "label": "Importer toutes les données (historique de chat, base de connaissances, prompts et paramètres)",
         "button": "Importer les données",
         "success": "Importation réussie",
-        "error": "Erreur d'importation"
+        "error": "Erreur d’importation"
       }
     },
     "tts": {

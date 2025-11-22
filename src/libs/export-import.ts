@@ -53,6 +53,9 @@ export const exportPageAssistData = async () => {
   const nicknames = await exportNicknames()
   const models = await exportModels()
 
+  const storageLocal = await chrome.storage.local.get()
+  const storageSync = await chrome.storage.sync.get()
+
   const data = {
     knowledge,
     chat,
@@ -60,7 +63,9 @@ export const exportPageAssistData = async () => {
     prompts,
     oaiConfigs,
     nicknames,
-    models
+    models,
+    storageLocal,
+    storageSync
   }
 
   const dataStr = JSON.stringify(data, null, 2)
@@ -123,6 +128,14 @@ export const importPageAssistData = async (file: File) => {
             }
           }
         )
+
+        if (data?.storageLocal && typeof data.storageLocal === "object") {
+          await chrome.storage.local.set(data.storageLocal)
+        }
+
+        if (data?.storageSync && typeof data.storageSync === "object") {
+          await chrome.storage.sync.set(data.storageSync)
+        }
 
         resolve(true)
       } catch (e) {

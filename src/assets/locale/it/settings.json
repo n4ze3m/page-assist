@@ -117,15 +117,15 @@
         "confirm": "Sei sicuro di voler eseguire un reset del sistema? Questa operazione cancellerà tutti i dati e non può essere annullata."
       },
       "export": {
-        "label": "Esporta la cronologia Chat, Base di Conoscenza, e Prompts",
-        "button": "Esporta Dati",
-        "success": "Esportato con Successo"
+        "label": "Esporta tutti i dati (cronologia chat, knowledge base, prompt e impostazioni)",
+        "button": "Esporta dati",
+        "success": "Esportazione riuscita"
       },
       "import": {
-        "label": "Imposta la cronologia Chat, Base di Conoscenza, e Prompts",
-        "button": "Importa Dati",
-        "success": "Importato con Successo",
-        "error": "Errore Importazione"
+        "label": "Importa tutti i dati (cronologia chat, knowledge base, prompt e impostazioni)",
+        "button": "Importa dati",
+        "success": "Importazione riuscita",
+        "error": "Errore di importazione"
       }
     },
     "tts": {
