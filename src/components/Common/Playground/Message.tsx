@@ -1,4 +1,3 @@
-import Markdown from "../../Common/Markdown"
 import React, { useEffect } from "react"
 import { Tag, Image, Tooltip, Collapse, Popover, Avatar } from "antd"
 import { IconButton } from "../IconButton"
@@ -29,6 +28,8 @@ import { PlaygroundUserMessageBubble } from "./PlaygroundUserMessage"
 import { copyToClipboard } from "@/utils/clipboard"
 import { ChatDocuments } from "@/models/ChatTypes"
 import { PiGitBranch } from "react-icons/pi"
+
+const Markdown = React.lazy(() => import("../../Common/Markdown"))
 
 type Props = {
   message: string
@@ -251,14 +252,24 @@ export const PlaygroundMessage = (props: Props) => {
                                     )}
                                   </span>
                                 ),
-                              children: <Markdown message={e.content} />
+                              children: (
+                                <React.Suspense fallback={<p className="text-sm text-gray-500 dark:text-gray-400">Loading reasoning…</p>}>
+                                  <Markdown message={e.content} />
+                                </React.Suspense>
+                              )
                             }
                           ]}
                         />
                       )
                     }
 
-                    return <Markdown key={i} message={e.content} />
+                    return (
+                      <React.Suspense
+                        key={i}
+                        fallback={<p className="text-sm text-gray-500 dark:text-gray-400">Loading content…</p>}>
+                        <Markdown message={e.content} />
+                      </React.Suspense>
+                    )
                   })}
                 </>
               ) : (

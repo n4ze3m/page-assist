@@ -143,10 +143,18 @@ export const CurrentChatModelSettings = ({
       return provider || "API"
     }
 
-    type GroupOption = { label: React.ReactNode; options: Array<{ label: React.ReactNode; value: string }> }
+    type GroupOption = {
+      label: React.ReactNode
+      options: Array<{
+        label: React.ReactNode
+        value: string
+        searchLabel: string
+      }>
+    }
     const models = (composerModels as any[]) || []
     if (!models.length) {
       if (selectedModel) {
+        const displayText = `Custom - ${selectedModel}`
         const fallbackGroup: GroupOption = {
           label: (
             <span className="truncate">
@@ -157,10 +165,11 @@ export const CurrentChatModelSettings = ({
             {
               label: (
                 <span className="truncate">
-                  Custom - {selectedModel}
+                  {displayText}
                 </span>
               ),
-              value: selectedModel
+              value: selectedModel,
+              searchLabel: displayText.toLowerCase()
             }
           ]
         }
@@ -184,13 +193,12 @@ export const CurrentChatModelSettings = ({
       const hasTools = caps.includes("tools")
       const hasFast = caps.includes("fast")
 
+      const optionDisplay = `${providerLabel} - ${modelLabel}`
       const optionLabel = (
         <div className="flex items-center gap-2" data-title={`${providerLabel} - ${modelLabel}`}>
           <ProviderIcons provider={rawProvider} className="h-4 w-4" />
           <div className="flex flex-col min-w-0">
-            <span className="truncate">
-              {providerLabel} - {modelLabel}
-            </span>
+            <span className="truncate">{optionDisplay}</span>
             {(hasVision || hasTools || hasFast) && (
               <div className="mt-0.5 flex flex-wrap gap-1 text-[10px]">
                 {hasVision && (
@@ -228,7 +236,8 @@ export const CurrentChatModelSettings = ({
       const group = groups.get(providerKey)!
       group.options.push({
         label: optionLabel,
-        value: m.model
+        value: m.model,
+        searchLabel: optionDisplay.toLowerCase()
       })
     }
 
@@ -309,11 +318,14 @@ export const CurrentChatModelSettings = ({
                   overflowY: "auto"
                 }}
                 listHeight={560}
-                filterOption={(input, option) =>
-                  (option?.label as string)
-                    ?.toLowerCase()
-                    .includes(input.toLowerCase())
-                }
+                filterOption={(input, option) => {
+                  const normalizedInput = input.toLowerCase()
+                  const rawSearchLabel =
+                    (option as any)?.searchLabel ??
+                    (typeof option?.label === "string" ? option.label : "")
+                  const normalizedLabel = String(rawSearchLabel).toLowerCase()
+                  return normalizedLabel.includes(normalizedInput)
+                }}
               />
             </Form.Item>
 

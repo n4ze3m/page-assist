@@ -179,6 +179,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
     return models.map((m: any) => {
       const rawProvider = (m.details && m.details.provider) || m.provider
       const providerLabel = providerDisplayName(rawProvider)
+      const providerKey = String(rawProvider || "unknown").toLowerCase()
       const modelLabel = m.nickname || m.model
       const caps: string[] = Array.isArray(m.details?.capabilities)
         ? m.details.capabilities
@@ -186,6 +187,23 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
       const hasVision = caps.includes("vision")
       const hasTools = caps.includes("tools")
       const hasFast = caps.includes("fast")
+      const providerBadge = (() => {
+        if (providerKey === "anthropic") {
+          return (
+            <span className="rounded-full bg-orange-50 px-1.5 py-0.5 text-orange-700 dark:bg-orange-900/30 dark:text-orange-100">
+              Anthropic
+            </span>
+          )
+        }
+        if (providerKey === "zai" || providerKey === "z.ai") {
+          return (
+            <span className="rounded-full bg-indigo-50 px-1.5 py-0.5 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-100">
+              Z.ai
+            </span>
+          )
+        }
+        return null
+      })()
 
       return {
         value: m.model,
@@ -197,8 +215,13 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
               <span className="truncate text-sm">
                 {providerLabel} - {modelLabel}
               </span>
-              {(hasVision || hasTools || hasFast) && (
+              {(hasVision || hasTools || hasFast || providerBadge) && (
                 <div className="mt-0.5 flex flex-wrap gap-1 text-[10px]">
+                  {providerBadge && (
+                    <span className="rounded-full bg-slate-100 px-1.5 py-0.5 text-slate-700 dark:bg-slate-800/60 dark:text-slate-100">
+                      {providerBadge}
+                    </span>
+                  )}
                   {hasVision && (
                     <span className="rounded-full bg-blue-50 px-1.5 py-0.5 text-blue-700 dark:bg-blue-900/30 dark:text-blue-100">
                       Vision
@@ -262,25 +285,25 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
   useFocusShortcuts(textareaRef, true)
 
   const [pasteLargeTextAsFile] = useStorage("pasteLargeTextAsFile", false)
-  const isMobile = () => {
-    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-      navigator.userAgent
-    )
-  }
-
-  const textAreaFocus = () => {
-    if (textareaRef.current) {
-      if (
-        textareaRef.current.selectionStart === textareaRef.current.selectionEnd
-      ) {
-        if (!isMobile()) {
-          textareaRef.current.focus()
-        } else {
-          textareaRef.current.blur()
-        }
+  const textAreaFocus = React.useCallback(() => {
+    const el = textareaRef.current
+    if (!el) {
+      return
+    }
+    if (el.selectionStart === el.selectionEnd) {
+      const ua =
+        typeof navigator !== "undefined" ? navigator.userAgent : ""
+      const isMobile =
+        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+          ua
+        )
+      if (!isMobile) {
+        el.focus()
+      } else {
+        el.blur()
       }
     }
-  }
+  }, [])
 
   const form = useForm({
     initialValues: {
@@ -298,7 +321,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
     }
     window.addEventListener('tldw:focus-composer', handler)
     return () => window.removeEventListener('tldw:focus-composer', handler)
-  }, [])
+  }, [textAreaFocus])
 
   // Seed composer when a media item requests discussion (e.g., from Quick ingest)
   React.useEffect(() => {
@@ -1155,7 +1178,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                             ? t("form.textarea.placeholder")
                             : t(
                                 "playground:composer.connectionPlaceholder",
-                                "Waiting for your server — set it up in Settings."
+                                "Connect your server in Settings to send messages."
                               )
                         }
                         {...form.getInputProps("message")}
@@ -1286,25 +1309,6 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                       <div className="mt-1 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                         <div className="flex flex-wrap items-center gap-3">
                           <KnowledgeSelect />
-                          {!isConnectionReady && (
-                            <>
-                              <span className="inline-flex items-center gap-1 rounded-full border border-dashed border-gray-300 bg-gray-100 px-2 py-0.5 text-[11px] font-medium text-gray-700 dark:border-gray-600 dark:bg-[#262626] dark:text-gray-200">
-                                <span className="h-1.5 w-1.5 rounded-full bg-red-500" />
-                                <span>
-                                  {t(
-                                    "playground:composer.connectionChipDisconnected",
-                                    "Server: Not connected"
-                                  )}
-                                </span>
-                              </span>
-                              <p className="text-xs text-gray-500 dark:text-gray-400">
-                                {t(
-                                  "playground:composer.connectNotice",
-                                  "Connect to your tldw server in Settings to send messages."
-                                )}
-                              </p>
-                            </>
-                          )}
                         </div>
                         <div className="flex items-center justify-end gap-3 flex-wrap">
                           <CharacterSelect className="text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100" iconClassName="size-5" />

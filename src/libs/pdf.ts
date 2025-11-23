@@ -1,8 +1,9 @@
-import { pdfDist } from "./pdfjs"
+import { getPdfDist } from "./pdfjs"
 import i18n from "@/i18n"
 import { promptInput } from "@/components/Common/prompt-input"
 
 export const getPdf = async (data: ArrayBuffer) => {
+  const pdfDist = await getPdfDist()
   const pdf = pdfDist.getDocument({
     data,
     useWorkerFetch: false,

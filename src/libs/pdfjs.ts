@@ -1,8 +1,22 @@
-import * as pdfDist from "pdfjs-dist"
-import * as pdfWorker from "pdfjs-dist/build/pdf.worker.mjs";
+import type * as PdfJsType from "pdfjs-dist"
 
-pdfDist.GlobalWorkerOptions.workerSrc = pdfWorker
+let cachedPdfDist: typeof PdfJsType | null = null
 
-export {
-    pdfDist
+export const getPdfDist = async (): Promise<typeof PdfJsType> => {
+  if (cachedPdfDist) {
+    return cachedPdfDist
+  }
+
+  const [pdfDistModule, pdfWorkerModule] = await Promise.all([
+    import("pdfjs-dist"),
+    import("pdfjs-dist/build/pdf.worker.mjs")
+  ])
+
+  const pdfDist = pdfDistModule as unknown as typeof PdfJsType
+
+  // Match previous behaviour: configure the worker script once.
+  ;(pdfDist as any).GlobalWorkerOptions.workerSrc = pdfWorkerModule
+
+  cachedPdfDist = pdfDist
+  return pdfDist
 }

@@ -3,29 +3,53 @@ import type { AllowedPath } from "@/services/tldw/openapi-guard"
 
 export default defineContentScript({
   main(ctx) {
+    let isPulling = false
+
     const downloadModel = async (modelName: string) => {
+      if (isPulling) {
+        alert(
+          `[tldw Assistant] A model pull is already in progress. Please wait for it to finish before starting another one.`
+        )
+        return false
+      }
+
       const ok = confirm(
         `[tldw Assistant] Do you want to pull the ${modelName} model? This has nothing to do with the huggingface.co website. The model will be pulled locally once you confirm. Make sure Ollama is running.`
       )
       if (ok) {
+        isPulling = true
         alert(
           `[tldw Assistant] Pulling ${modelName} model. For more details, check the extension icon.`
         )
 
         // Path is declared in OpenAPI; annotate for compile-time safety
         const path = '/api/v1/media/add' as AllowedPath
-        await apiSend({ path, method: 'POST', headers: { 'Content-Type': 'application/json' }, body: { url: window.location.href } })
-        return true
+        try {
+          await apiSend({
+            path,
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: { url: window.location.href }
+          })
+          alert(
+            `[tldw Assistant] Sent ${modelName} to tldw_server. Check the extension icon for progress and status.`
+          )
+          return true
+        } catch (error) {
+          console.error(
+            "[tldw Assistant] Failed to send model pull request to tldw_server",
+            error
+          )
+          alert(
+            `[tldw Assistant] Something went wrong while sending ${modelName} to tldw_server. Check that your tldw server and extension are running, then try again.`
+          )
+          return false
+        } finally {
+          isPulling = false
+        }
       }
       return false
     }
-
-    const downloadSVG = `
-        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" width="16" height="16">
-          <path d="M12 16l-6-6h4V4h4v6h4l-6 6z"/>
-          <path d="M4 20h16v-2H4v2z"/>
-        </svg>
-      `
 
     const createDownloadIcon = () => {
       const ns = "http://www.w3.org/2000/svg"
@@ -91,7 +115,10 @@ export default defineContentScript({
       if (copyButton && !modal.querySelector(".pageassist-download-button")) {
         const downloadButton = copyButton.cloneNode(true) as HTMLElement
         downloadButton.classList.add("pageassist-download-button")
-        downloadButton.querySelector("svg")!.outerHTML = downloadSVG
+        const existingIcon = downloadButton.querySelector("svg")
+        if (existingIcon) {
+          existingIcon.replaceWith(createDownloadIcon())
+        }
         downloadButton.querySelector("span")!.textContent =
           "Send to tldw_server"
         downloadButton.addEventListener("click", async () => {

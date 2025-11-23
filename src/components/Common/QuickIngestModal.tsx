@@ -39,10 +39,22 @@ function detectTypeFromUrl(url: string): Entry['type'] {
   }
 }
 
-function mediaIdFromPayload(data: any): string | number | null {
+function mediaIdFromPayload(
+  data: any,
+  visited?: WeakSet<object>
+): string | number | null {
   if (!data || typeof data !== "object") {
     return null
   }
+  if (!visited) {
+    visited = new WeakSet<object>()
+  }
+
+  if (visited.has(data as object)) {
+    return null
+  }
+  visited.add(data as object)
+
   const direct =
     (data as any).id ??
     (data as any).media_id ??
@@ -52,7 +64,7 @@ function mediaIdFromPayload(data: any): string | number | null {
     return direct
   }
   if ((data as any).media && typeof (data as any).media === "object") {
-    return mediaIdFromPayload((data as any).media)
+    return mediaIdFromPayload((data as any).media, visited)
   }
   return null
 }
@@ -875,15 +887,36 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
           <Space wrap size="middle" align="center">
             <Space align="center">
               <span>Analysis</span>
-              <Switch checked={common.perform_analysis} onChange={(v) => setCommon((c) => ({ ...c, perform_analysis: v }))} disabled={running} />
+              <Switch
+                aria-label="Ingestion options \u2013 analysis"
+                checked={common.perform_analysis}
+                onChange={(v) =>
+                  setCommon((c) => ({ ...c, perform_analysis: v }))
+                }
+                disabled={running}
+              />
             </Space>
             <Space align="center">
               <span>Chunking</span>
-              <Switch checked={common.perform_chunking} onChange={(v) => setCommon((c) => ({ ...c, perform_chunking: v }))} disabled={running} />
+              <Switch
+                aria-label="Ingestion options \u2013 chunking"
+                checked={common.perform_chunking}
+                onChange={(v) =>
+                  setCommon((c) => ({ ...c, perform_chunking: v }))
+                }
+                disabled={running}
+              />
             </Space>
             <Space align="center">
               <span>Overwrite existing</span>
-              <Switch checked={common.overwrite_existing} onChange={(v) => setCommon((c) => ({ ...c, overwrite_existing: v }))} disabled={running} />
+              <Switch
+                aria-label="Ingestion options \u2013 overwrite existing"
+                checked={common.overwrite_existing}
+                onChange={(v) =>
+                  setCommon((c) => ({ ...c, overwrite_existing: v }))
+                }
+                disabled={running}
+              />
             </Space>
           </Space>
         </div>
@@ -962,7 +995,7 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
         )}
 
         <div className="sticky bottom-0 z-10 mt-3 bg-white/90 dark:bg-[#111111]/90 backdrop-blur pt-2 pb-2 border-t border-gray-200 dark:border-gray-700">
-          <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-2">
             <div className="sr-only" aria-live="polite" role="status">
               {running && totalPlanned > 0
                 ? t('quickIngest.progress', 'Processing {{done}} / {{total}} items…', {
@@ -976,7 +1009,11 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
                 <Space align="center">
                   <Typography.Text strong>Processing mode</Typography.Text>
                   <Switch
-                    aria-label="Toggle processing mode"
+                    aria-label={
+                      storeRemote
+                        ? "Processing mode \u2013 store to remote DB"
+                        : "Processing mode \u2013 process locally"
+                    }
                     checked={storeRemote}
                     onChange={setStoreRemote}
                     disabled={running}
@@ -1066,7 +1103,7 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
                   <span className="text-xs text-gray-500">Prefer server</span>
                   <Switch
                     size="small"
-                    aria-label="Prefer server OpenAPI spec"
+                    aria-label="Advanced options \u2013 prefer server OpenAPI spec"
                     checked={!!specPrefs?.preferServer}
                     onChange={async (v) => {
                       persistSpecPrefs({ ...(specPrefs || {}), preferServer: v })
@@ -1154,6 +1191,7 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
                           const setV = (nv: any) => setAdvancedValue(f.name, nv)
                           const isOpen = fieldDetailsOpen[f.name]
                           const setOpen = (open: boolean) => setFieldDetailsOpen((prev) => ({ ...prev, [f.name]: open }))
+                          const ariaLabel = `${g} \u2013 ${f.title || f.name}`
                           const Label = (
                             <div className="flex items-center gap-1">
                               <span className="min-w-60 text-sm">{f.title || f.name}</span>
@@ -1168,7 +1206,14 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
                             return (
                               <div key={f.name} className="flex items-center gap-2">
                                 {Label}
-                                <Select className="w-72" allowClear value={v} onChange={setV as any} options={f.enum.map((e) => ({ value: e, label: String(e) }))} />
+                                <Select
+                                  className="w-72"
+                                  allowClear
+                                  aria-label={ariaLabel}
+                                  value={v}
+                                  onChange={setV as any}
+                                  options={f.enum.map((e) => ({ value: e, label: String(e) }))}
+                                />
                                 {f.description && (
                                   <button className="text-xs underline text-gray-500" onClick={() => setOpen(!isOpen)}>{isOpen ? 'Hide details' : 'Show details'}</button>
                                 )}
@@ -1183,7 +1228,7 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
                                 <Switch
                                   checked={boolState === 'true'}
                                   onChange={(checked) => setAdvancedValue(f.name, checked)}
-                                  aria-label={`Toggle ${f.title || f.name}`}
+                                  aria-label={ariaLabel}
                                 />
                                 <Button
                                   size="small"
@@ -1204,7 +1249,12 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
                             return (
                               <div key={f.name} className="flex items-center gap-2">
                                 {Label}
-                                <InputNumber className="w-40" value={v} onChange={setV as any} />
+                                <InputNumber
+                                  className="w-40"
+                                  aria-label={ariaLabel}
+                                  value={v}
+                                  onChange={setV as any}
+                                />
                                 {f.description && (
                                   <button className="text-xs underline text-gray-500" onClick={() => setOpen(!isOpen)}>{isOpen ? 'Hide details' : 'Show details'}</button>
                                 )}
@@ -1214,7 +1264,12 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
                           return (
                             <div key={f.name} className="flex items-center gap-2">
                               {Label}
-                              <Input className="w-96" value={v} onChange={(e) => setV(e.target.value)} />
+                              <Input
+                                className="w-96"
+                                aria-label={ariaLabel}
+                                value={v}
+                                onChange={(e) => setV(e.target.value)}
+                              />
                               {f.description && (
                                 <button className="text-xs underline text-gray-500" onClick={() => setOpen(!isOpen)}>{isOpen ? 'Hide details' : 'Show details'}</button>
                               )}

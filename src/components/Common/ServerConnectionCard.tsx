@@ -16,6 +16,57 @@ type Props = {
   onStartChat?: () => void
   showToastOnError?: boolean
   enableDemo?: boolean
+  variant?: "default" | "compact"
+}
+
+type ConnectionToastContentProps = {
+  title: string
+  body: string
+  onDismiss: () => void
+}
+
+const ConnectionToastContent: React.FC<ConnectionToastContentProps> = ({
+  title,
+  body,
+  onDismiss
+}) => {
+  const containerRef = React.useRef<HTMLDivElement | null>(null)
+
+  React.useEffect(() => {
+    const node = containerRef.current
+    if (node && document.visibilityState === "visible") {
+      node.focus()
+    }
+  }, [])
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === "Escape" || event.key === "Esc") {
+      event.preventDefault()
+      event.stopPropagation()
+      onDismiss()
+    }
+  }
+
+  return (
+    <div
+      ref={containerRef}
+      tabIndex={-1}
+      role="alert"
+      aria-live="assertive"
+      className="outline-none text-left"
+      onKeyDown={handleKeyDown}>
+      <p className="font-medium">{title}</p>
+      <p className="mt-1 text-xs whitespace-pre-line">
+        {body}
+      </p>
+      <button
+        type="button"
+        onClick={onDismiss}
+        className="mt-2 text-xs text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300">
+        Dismiss
+      </button>
+    </div>
+  )
 }
 
 const useElapsedTimer = (isRunning: boolean) => {
@@ -55,7 +106,8 @@ export const ServerConnectionCard: React.FC<Props> = ({
   onOpenSettings,
   onStartChat,
   showToastOnError = false,
-  enableDemo = false
+  enableDemo = false,
+  variant = "default"
 }) => {
   const { t } = useTranslation(["playground", "common", "settings", "option"])
   const { phase, serverUrl, lastCheckedAt, lastError, isChecking, lastStatusCode } =
@@ -84,19 +136,32 @@ export const ServerConnectionCard: React.FC<Props> = ({
       const code = Number(lastStatusCode)
       const hasCode = Number.isFinite(code) && code > 0
 
-      notification.error({
-        key: toastKey,
-        message: t(
+      const heading =
+        t(
           "ollamaState.errorToast",
           "We couldn't reach {{host}}",
           { host: serverHost ?? "tldw_server" }
-        ) + (hasCode ? ` (HTTP ${code})` : ""),
-        description: t(
+        ) + (hasCode ? ` (HTTP ${code})` : "")
+
+      const body =
+        t(
           "ollamaState.troubleshoot",
           "Confirm your server is running and that the browser is allowed to reach it, then retry from the Options page."
-        ) + (detail ? `\nDetails: ${detail}` : ""),
-        placement: "bottomRight",
-        duration: 6
+        ) + (detail ? `\nDetails: ${detail}` : "")
+
+      notification.error({
+        key: toastKey,
+        message: null,
+        description: (
+          <ConnectionToastContent
+            title={heading}
+            body={body}
+            onDismiss={() => notification.destroy(toastKey)}
+          />
+        ),
+        placement: "bottomLeft",
+        duration: 0,
+        className: "tldw-connection-toast"
       })
     } else {
       // Clear error toast when connection succeeds, is missing, or is checking
@@ -111,6 +176,8 @@ export const ServerConnectionCard: React.FC<Props> = ({
     t,
     notification
   ])
+
+  const isCompact = variant === "compact"
 
   const headline =
     statusVariant === "missing"
@@ -153,7 +220,7 @@ export const ServerConnectionCard: React.FC<Props> = ({
             )
           : t(
               "option:connectionCard.descriptionError",
-              "We couldn’t reach {{host}}. Check that the server is running, the URL is correct, and your browser can reach it.",
+              "Add or update your API key in Settings → tldw server, then retry. Double-check the server URL and that your browser can reach it.",
               { host: serverHost ?? "tldw_server" }
             )
 
@@ -163,11 +230,11 @@ export const ServerConnectionCard: React.FC<Props> = ({
           "option:connectionCard.buttonStartChat",
           t("common:startChat", "Start chatting")
         )
-          : statusVariant === "error"
-            ? t(
-                "option:connectionCard.buttonRetry",
-                "Retry connection"
-              )
+      : statusVariant === "error"
+        ? t(
+            "option:connectionCard.buttonOpenSettings",
+            "Open tldw server settings"
+          )
       : statusVariant === "missing"
         ? t("settings:tldw.setupLink", "Set up server")
         : t(
@@ -202,7 +269,7 @@ export const ServerConnectionCard: React.FC<Props> = ({
         window.dispatchEvent(new CustomEvent("tldw:focus-composer"))
       }
     } else if (statusVariant === "error") {
-      void checkOnce()
+      handleOpenSettings()
     } else {
       handleOpenSettings()
     }
@@ -239,9 +306,18 @@ export const ServerConnectionCard: React.FC<Props> = ({
   }
 
   return (
-    <div className="mx-auto mt-12 w-full max-w-xl px-4">
-      <div className="flex flex-col items-center gap-4 rounded-xl border border-gray-200 bg-white px-6 py-8 text-center shadow-sm dark:border-gray-700 dark:bg-[#1f1f1f] dark:text-gray-100">
-        <div className="flex items-center gap-2 text-lg font-semibold">
+    <div
+      className={`mx-auto w-full ${
+        isCompact ? "mt-4 max-w-md px-3" : "mt-12 max-w-xl px-4"
+      }`}>
+      <div
+        className={`flex flex-col items-center rounded-xl border border-gray-200 bg-white text-center shadow-sm dark:border-gray-700 dark:bg-[#1f1f1f] dark:text-gray-100 ${
+          isCompact ? "gap-3 px-4 py-4" : "gap-4 px-6 py-8"
+        }`}>
+        <div
+          className={`flex items-center gap-2 font-semibold ${
+            isCompact ? "text-base" : "text-lg"
+          }`}>
           <Server className="h-5 w-5 text-blue-500" />
           <span>{headline}</span>
         </div>
@@ -250,7 +326,7 @@ export const ServerConnectionCard: React.FC<Props> = ({
           {descriptionCopy}
         </p>
 
-        {statusVariant === "ok" && (
+        {!isCompact && statusVariant === "ok" && (
           <ul className="mt-1 max-w-sm list-disc text-left text-xs text-gray-600 dark:text-gray-300">
             <li>
               {t(
@@ -418,7 +494,7 @@ export const ServerConnectionCard: React.FC<Props> = ({
           </div>
         )}
 
-{statusVariant !== "error" && (
+        {statusVariant !== "error" && (
           <button
             type="button"
             onClick={handleOpenDiagnostics}

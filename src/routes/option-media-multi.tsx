@@ -42,7 +42,6 @@ const MediaMultiInner = () => {
         onSecondaryAction={() =>
           window.dispatchEvent(new CustomEvent("tldw:open-quick-ingest"))
         }
-        secondaryDisabled={!isOnline}
       />
     ) : (
       <FeatureEmptyState

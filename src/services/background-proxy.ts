@@ -54,7 +54,7 @@ export async function bgRequest<T = any, P extends PathOrUrl = AllowedPath, M ex
        if (key) {
          h['X-API-KEY'] = key
        } else {
-         throw new Error('X-API-KEY header required for single-user mode. Configure API key in Settings > tldw.')
+        throw new Error('Add or update your API key in Settings → tldw server, then try again.')
        }
      } else if (cfg?.authMode === 'multi-user') {
        const token = String(cfg?.accessToken || '').trim()

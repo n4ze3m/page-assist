@@ -16,61 +16,14 @@ const ViewMediaPage: React.FC = () => {
   const { capabilities, loading: capsLoading } = useServerCapabilities()
   const { demoEnabled } = useDemoMode()
 
+  // Keep media search UI visible even when offline (disabled state handled in ReviewPage)
+  if (!isOnline && demoEnabled) {
+    // Still render ReviewPage so search UI is visible; demo mode stays offline-disabled
+    return <ReviewPage allowGeneration={false} forceOffline />
+  }
+
   if (!isOnline) {
-    return demoEnabled ? (
-      <FeatureEmptyState
-        title={t("review:mediaEmpty.demoTitle", {
-          defaultValue: "Explore Media in demo mode"
-        })}
-        description={t("review:mediaEmpty.demoDescription", {
-          defaultValue:
-            "This demo shows how tldw Assistant can display and inspect processed media. Connect your own server later to browse your own recordings and documents."
-        })}
-        examples={[
-          t("review:mediaEmpty.demoExample1", {
-            defaultValue:
-              "See how processed media items appear in the Media viewer."
-          }),
-          t("review:mediaEmpty.demoExample2", {
-            defaultValue:
-              "When you connect, you’ll be able to browse and inspect media ingested from your own recordings and files."
-          })
-        ]}
-        primaryActionLabel={t("common:connectToServer", {
-          defaultValue: "Connect to server"
-        })}
-        onPrimaryAction={() => navigate("/settings/tldw")}
-        secondaryActionLabel={t("option:header.quickIngest", "Quick ingest")}
-        onSecondaryAction={() =>
-          window.dispatchEvent(new CustomEvent("tldw:open-quick-ingest"))
-        }
-        secondaryDisabled={!isOnline}
-      />
-    ) : (
-      <FeatureEmptyState
-        title={t("review:mediaEmpty.connectTitle", {
-          defaultValue: "Connect to use Media"
-        })}
-        description={t("review:mediaEmpty.connectDescription", {
-          defaultValue:
-            "To view processed media, first connect to your tldw server so recordings and documents can be listed here."
-        })}
-        examples={[
-          t("review:mediaEmpty.connectExample1", {
-            defaultValue:
-              "Open Settings → tldw server to add your server URL."
-          }),
-          t("review:mediaEmpty.connectExample2", {
-            defaultValue:
-              "Once connected, use Quick ingest in the header to add media from your own recordings and files."
-          })
-        ]}
-        primaryActionLabel={t("common:connectToServer", {
-          defaultValue: "Connect to server"
-        })}
-        onPrimaryAction={() => navigate("/settings/tldw")}
-      />
-    )
+    return <ReviewPage allowGeneration={false} forceOffline />
   }
 
   const mediaUnsupported =

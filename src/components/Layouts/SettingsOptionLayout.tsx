@@ -19,8 +19,10 @@ export const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate()
   const { t } = useTranslation(["settings", "common", "openai"])
   const sidepanelSupported =
-    // @ts-ignore
-    (typeof chrome !== 'undefined' && (chrome as any).sidePanel) || ((browser as any)?.sidebarAction && (browser as any).sidebarAction.open)
+    import.meta.env.BROWSER === "firefox"
+      ? !!(browser as any)?.sidebarAction?.open
+      : // @ts-ignore
+        (typeof chrome !== "undefined" && !!(chrome as any).sidePanel)
   return (
     <div className="flex min-h-screen  w-full flex-col">
       <main className="relative w-full flex-1">
@@ -38,14 +40,18 @@ export const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
                       await storage.set('actionIconClick', 'sidePanel')
                       await storage.set('contextMenuClick', 'sidePanel')
                       try {
-                        // Chromium sidePanel API
-                        // @ts-ignore
-                        if (chrome?.sidePanel) {
+                        if (import.meta.env.BROWSER === "firefox") {
+                          if ((browser as any)?.sidebarAction?.open) {
+                            await (browser as any).sidebarAction.open()
+                          }
+                        } else {
+                          // Chromium sidePanel API
+                          // @ts-ignore
                           const tabs = await chrome.tabs.query({ active: true, currentWindow: true })
-                          if (tabs?.[0]?.id) await chrome.sidePanel.open({ tabId: tabs[0].id })
-                        } else if ((browser as any)?.sidebarAction?.open) {
-                          // Firefox
-                          await (browser as any).sidebarAction.open()
+                          if (tabs?.[0]?.id) {
+                            // @ts-ignore
+                            await chrome.sidePanel.open({ tabId: tabs[0].id })
+                          }
                         }
                       } catch {}
                     }}

@@ -171,7 +171,7 @@ export default defineBackground({
           }
           if (cfg?.authMode === 'single-user') {
             if (cfg?.apiKey) h['X-API-KEY'] = String(cfg.apiKey).trim()
-            else return { ok: false, status: 401, error: 'X-API-KEY header required for single-user mode. Configure API key in Settings > tldw.' }
+            else return { ok: false, status: 401, error: 'Add or update your API key in Settings → tldw server, then try again.' }
           } else if (cfg?.authMode === 'multi-user') {
             if (cfg?.accessToken) h['Authorization'] = `Bearer ${String(cfg.accessToken).trim()}`
             else return { ok: false, status: 401, error: 'Not authenticated. Please login under Settings > tldw.' }
@@ -437,7 +437,7 @@ export default defineBackground({
             if (cfg.authMode === 'single-user') {
               const key = (cfg.apiKey || '').trim()
               if (key) headers['X-API-KEY'] = key
-              else { safePost({ event: 'error', message: 'X-API-KEY header required for single-user mode. Configure API key in Settings > tldw.' }); return }
+              else { safePost({ event: 'error', message: 'Add or update your API key in Settings → tldw server, then try again.' }); return }
             } else if (cfg.authMode === 'multi-user') {
               const token = (cfg.accessToken || '').trim()
               if (token) headers['Authorization'] = `Bearer ${token}`

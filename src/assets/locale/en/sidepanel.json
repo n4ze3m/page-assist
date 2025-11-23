@@ -37,6 +37,9 @@
     "toolbar": {
         "ragSearch": "RAG Search"
     },
+    "composer": {
+        "connectHint": "Connect your server to chat."
+    },
     "notification": {
         "ingestSent": "Sent to tldw server",
         "ingestSentDesc": "Current page has been submitted for ingestion.",

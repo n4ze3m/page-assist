@@ -195,16 +195,16 @@ export const Header: React.FC<Props> = ({
 
   const openSidebar = React.useCallback(async () => {
     try {
-      // @ts-ignore
-      if (chrome?.sidePanel) {
+      if (import.meta.env.BROWSER === "firefox") {
+        await browser.sidebarAction.open()
+      } else {
+        // Chromium sidePanel API
         // @ts-ignore
         const tabs = await chrome.tabs.query({ active: true, currentWindow: true })
         if (tabs?.[0]?.id) {
           // @ts-ignore
           await chrome.sidePanel.open({ tabId: tabs[0].id })
         }
-      } else {
-        await browser.sidebarAction.open()
       }
     } catch {}
   }, [])

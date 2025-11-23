@@ -45,6 +45,7 @@
     "cheerio": "^1.0.0-rc.12",
     "d3-dsv": "2",
     "dayjs": "^1.11.10",
+    "dompurify": "^3.1.7",
     "dexie": "^4.0.11",
     "dexie-react-hooks": "^1.1.7",
     "html-to-text": "^9.0.5",
@@ -60,7 +61,6 @@
     "openai": "^4.95.1",
     "pa-tesseract.js": "^5.1.1",
     "pdfjs-dist": "4.0.379",
-    "playwright": "^1.56.1",
     "property-information": "^6.4.1",
     "pubsub-js": "^1.9.4",
     "react": "18.2.0",
@@ -82,6 +82,7 @@
   },
   "devDependencies": {
     "@plasmohq/prettier-plugin-sort-imports": "4.0.1",
+    "playwright": "^1.56.1",
     "@playwright/test": "^1.56.1",
     "@types/chrome": "^0.0.280",
     "@types/d3-dsv": "^3.0.7",

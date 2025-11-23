@@ -6,8 +6,14 @@ import { parse } from "acorn"
 import MagicString from "magic-string"
 import { walk } from "estree-walker"
 import type { Plugin } from "vite"
+import { fileURLToPath } from "url"
 
 const isFirefox = process.env.TARGET === "firefox"
+const projectRoot = path.dirname(fileURLToPath(import.meta.url))
+
+const isAnyMatch = (id: string, matches: string[]) => {
+  return matches.some((m) => id.includes(m))
+}
 
 const safeInnerHTMLPlugin = (): Plugin => ({
   name: "sanitize-innerhtml",
@@ -49,10 +55,14 @@ const safeInnerHTMLPlugin = (): Plugin => ({
     if (!replaced) return null
 
     const helper = `
+import DOMPurifyInit from "dompurify";
+const DOMPurify = DOMPurifyInit(window);
+
 const __setSafeInnerHTML = (el, html) => {
   if (!el) return;
   const doc = el.ownerDocument || document;
   const raw = html?.valueOf?.() ?? html ?? "";
+  const sanitized = DOMPurify.sanitize(String(raw), { RETURN_TRUSTED_TYPE: false });
   while (el.firstChild) {
     el.removeChild(el.firstChild);
   }
@@ -60,8 +70,8 @@ const __setSafeInnerHTML = (el, html) => {
   range.selectNodeContents(el);
   const markup =
     el.namespaceURI === "http://www.w3.org/2000/svg"
-      ? "<svg xmlns=\\"http://www.w3.org/2000/svg\\">" + String(raw) + "</svg>"
-      : String(raw);
+      ? "<svg xmlns=\\"http://www.w3.org/2000/svg\\">" + sanitized + "</svg>"
+      : sanitized;
   const fragment = range.createContextualFragment(markup);
   const target =
     el.namespaceURI === "http://www.w3.org/2000/svg" ? fragment.firstChild : fragment;
@@ -130,10 +140,10 @@ export default defineConfig({
     resolve: {
       dedupe: ["react", "react-dom", "react/jsx-runtime", "react/jsx-dev-runtime"],
       alias: {
-        react: path.resolve(__dirname, "node_modules/react"),
-        "react-dom": path.resolve(__dirname, "node_modules/react-dom"),
-        "react/jsx-runtime": path.resolve(__dirname, "node_modules/react/jsx-runtime"),
-        "react/jsx-dev-runtime": path.resolve(__dirname, "node_modules/react/jsx-dev-runtime")
+        react: path.resolve(projectRoot, "node_modules/react"),
+        "react-dom": path.resolve(projectRoot, "node_modules/react-dom"),
+        "react/jsx-runtime": path.resolve(projectRoot, "node_modules/react/jsx-runtime"),
+        "react/jsx-dev-runtime": path.resolve(projectRoot, "node_modules/react/jsx-dev-runtime")
       }
     },
     // Disable Hot Module Replacement so streaming connections aren't killed by dev reloads
@@ -150,12 +160,43 @@ export default defineConfig({
       rollupOptions: {
         external: ["langchain", "@langchain/community"],
         ...(isFirefox
-          ? {
+          ? {}
+          : {
               output: {
-                manualChunks: undefined
+                manualChunks(id) {
+                  // Keep the bundled OpenAPI spec in its own chunk
+                  if (id.includes("openapi.json")) {
+                    return "openapi-spec"
+                  }
+
+                  // Group pdfjs-dist and its worker into a dedicated vendor chunk
+                  if (id.includes("pdfjs-dist")) {
+                    return "pdfjs-vendor"
+                  }
+
+                  // Group Markdown + KaTeX rendering stack together
+                  if (
+                    isAnyMatch(id, [
+                      "react-markdown",
+                      "remark-gfm",
+                      "remark-math",
+                      "rehype-katex",
+                      "katex/dist",
+                      "property-information"
+                    ])
+                  ) {
+                    return "markdown-katex"
+                  }
+
+                  // FontSizeProvider context and its heavy dependencies
+                  if (id.includes("/src/context/FontSizeProvider")) {
+                    return "font-size-provider"
+                  }
+
+                  return undefined
+                }
               }
-            }
-          : {})
+            })
       }
     }
   }),
@@ -177,10 +218,10 @@ export default defineConfig({
     browser_specific_settings:
       process.env.TARGET === "firefox"
         ? {
-          gecko: {
-            id: "tldw-assistant@tldw"
+            gecko: {
+              id: "tldw-assistant@tldw"
+            }
           }
-        }
         : undefined,
     // Allow outbound calls to the user's tldw_server (local or remote) without an extra permission prompt.
     host_permissions: ["http://*/*", "https://*/*"],

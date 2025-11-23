@@ -99,6 +99,7 @@
     "collapse": "Collapse",
     "expand": "Expand",
     "media": "Media",
+    "searchingBanner": "Searching media…",
     "filterHelp": "Search matches title and content; Types and Keywords further narrow the results.",
     "noResults": "No media found. Use Quick ingest in the header to add media from your recordings and files."
   }

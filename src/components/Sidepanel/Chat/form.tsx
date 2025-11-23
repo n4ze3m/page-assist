@@ -57,7 +57,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
   const inputRef = React.useRef<HTMLInputElement>(null)
   const { sendWhenEnter, setSendWhenEnter } = useWebUI()
   const [typing, setTyping] = React.useState<boolean>(false)
-  const { t } = useTranslation(["playground", "common", "option"])
+  const { t } = useTranslation(["playground", "common", "option", "sidepanel"])
   const notification = useAntdNotification()
   const [chatWithWebsiteEmbedding] = useStorage(
     "chatWithWebsiteEmbedding",
@@ -878,36 +878,6 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                         await sendMessage({ image: "", message: value.message })
                       }}
                     />
-                    {/* Minimal connection indicator is always visible so users see status before focusing */}
-                    {!isConnectionReady && (
-                      <div className="mb-2 flex flex-wrap items-center justify-between gap-2 text-[11px] text-gray-600 dark:text-gray-300">
-                        <div className="inline-flex items-center gap-1 rounded-full border border-dashed border-gray-300 bg-gray-100 px-2 py-0.5 font-medium text-gray-700 dark:border-gray-600 dark:bg-[#262626] dark:text-gray-200">
-                          <span className="h-1.5 w-1.5 rounded-full bg-red-500" />
-                          <span>
-                            {t(
-                              "playground:composer.connectionChipDisconnected",
-                              "Server: Not connected"
-                            )}
-                          </span>
-                        </div>
-                        <div className="flex flex-wrap items-center gap-2">
-                          <button
-                            type="button"
-                            onClick={openSettings}
-                            className="text-[11px] font-medium text-pink-600 hover:underline dark:text-pink-300"
-                          >
-                            {t("settings:tldw.setupLink", "Set up server")}
-                          </button>
-                          <button
-                            type="button"
-                            onClick={openDiagnostics}
-                            className="text-[11px] font-medium text-gray-600 underline hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100"
-                          >
-                            {t("settings:healthSummary.diagnostics", "Diagnostics")}
-                          </button>
-                        </div>
-                      </div>
-                    )}
                     <textarea
                       onKeyDown={(e) => handleKeyDown(e)}
                       onFocus={handleDisconnectedFocus}
@@ -938,7 +908,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                           ? t("form.textarea.placeholder")
                           : t(
                               "playground:composer.connectionPlaceholder",
-                              "Connect to your tldw server to start chatting."
+                              "Connect your server in Settings to send messages."
                             )
                       }
                       {...form.getInputProps("message")}
@@ -1140,8 +1110,8 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                       <div className="mt-2 flex flex-wrap items-center justify-between gap-2 rounded-md border border-amber-300 bg-amber-50 px-3 py-2 text-xs text-amber-900 dark:border-amber-500 dark:bg-[#2a2310] dark:text-amber-100">
                         <p className="max-w-xs text-left">
                           {t(
-                            "playground:composer.connectNotice",
-                            "Connect to your tldw server in Settings to send messages."
+                            "sidepanel:composer.connectHint",
+                            "Connect your server to chat."
                           )}
                         </p>
                         <div className="flex flex-wrap items-center gap-2">

@@ -52,9 +52,9 @@ type ResultItem = {
   raw: any
 }
 
-type ReviewPageProps = { allowGeneration?: boolean }
+type ReviewPageProps = { allowGeneration?: boolean; forceOffline?: boolean }
 
-export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true }) => {
+export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true, forceOffline = false }) => {
   const { t } = useTranslation(["option", "review"])
   const notification = useAntdNotification()
   const isViewMediaMode = !allowGeneration
@@ -128,7 +128,7 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true }
   const [sidebarHidden, setSidebarHidden] = React.useState<boolean>(false)
   const [advancedOpen, setAdvancedOpen] = React.useState<boolean>(false)
   const modeToastPrev = React.useRef<"review" | "summary" | null>(null)
-  const isOnline = useServerOnline()
+  const isOnline = forceOffline ? false : useServerOnline()
 
   // Storage scoping: per server host and auth mode to avoid cross-user leakage
   const scopedKey = React.useCallback((base: string) => {
@@ -1040,7 +1040,6 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true }
         onSecondaryAction={() =>
           window.dispatchEvent(new CustomEvent("tldw:open-quick-ingest"))
         }
-        secondaryDisabled={!isOnline}
       />
     ) : (
       <FeatureEmptyState
@@ -1091,6 +1090,11 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true }
           defaultValue: 'Connect to server'
         })}
         onPrimaryAction={() => navigate('/settings/tldw')}
+        secondaryActionLabel={t('option:header.quickIngest', 'Quick ingest')}
+        onSecondaryAction={() =>
+          window.dispatchEvent(new CustomEvent("tldw:open-quick-ingest"))
+        }
+        secondaryDisabled={!isOnline}
       />
     )
 
@@ -1184,6 +1188,7 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true }
           <div className="flex flex-wrap items-center gap-2">
             <Input
               allowClear
+              disabled={!isOnline}
               placeholder={
                 isViewMediaMode
                   ? t('review:reviewPage.mediaOnlySearchPlaceholder', 'Search media (title/content)')
@@ -1195,9 +1200,15 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true }
               className="flex-1 min-w-[12rem]"
             />
           </div>
+          {!isOnline && (
+            <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+              {t('review:reviewPage.offlineHint', 'Connect your server to search media.')}
+            </p>
+          )}
           <div className="mt-2">
             <Button
               type="primary"
+              disabled={!isOnline}
               onClick={() => {
                 setPage(1)
                 refetch()
@@ -1521,6 +1532,22 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true }
                 )}
               </div>
               <div className="flex flex-wrap items-center gap-2">
+                {selected?.kind === "media" && (
+                  <Tooltip title={t('review:reviewPage.chatAboutMedia', 'Chat about this media') as string}>
+                    <Button
+                      icon={(<SendIcon className="w-4 h-4" />) as any}
+                      onClick={() => {
+                        const prompt = t('review:reviewPage.chatPrompt', 'Chat about this media:')
+                        const payload = `${prompt} ${selected.title || selected.id}`
+                        setMessages([...(messages || []), { isBot: false, name: 'You', message: payload, sources: [] }])
+                        navigate('/')
+                        message.success(t('review:reviewPage.chatSent', 'Opened chat with this media.'))
+                      }}
+                    >
+                      {t('review:reviewPage.chatAboutMedia', 'Chat about this media')}
+                    </Button>
+                  </Tooltip>
+                )}
                 {allowGeneration && (
                   <>
                     <Tooltip title="Quick Review">

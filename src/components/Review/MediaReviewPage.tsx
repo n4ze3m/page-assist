@@ -290,6 +290,7 @@ export const MediaReviewPage: React.FC = () => {
     : 'border dark:border-gray-700 rounded p-3 bg-white dark:bg-[#171717] w-full md:w-[48%]'
 
   const allResults: MediaItem[] = Array.isArray(data) ? data : []
+  const hasResults = allResults.length > 0
   const viewerItems = selectedIds.map((id) => details[id]).filter(Boolean)
   const visibleIds = viewMode === "spread"
     ? selectedIds
@@ -607,12 +608,35 @@ export const MediaReviewPage: React.FC = () => {
         {!sidebarHidden && (
           <div className="w-full lg:w-1/3 border rounded p-2 bg-white dark:bg-[#171717] h-full flex flex-col">
             <div className="flex items-center justify-between mb-1">
-              <div className="text-sm text-gray-600 dark:text-gray-300">{t('mediaPage.results', 'Results')} {Array.isArray(data) ? `(${data.length})` : ""}</div>
+              <div className="text-sm text-gray-600 dark:text-gray-300">
+                {t("mediaPage.results", "Results")}{" "}
+                {hasResults ? `(${allResults.length})` : ""}
+              </div>
               <span className="text-[11px] text-gray-500 dark:text-gray-400">{t("mediaPage.resultsHint", "Click to stack items into the viewer")}</span>
             </div>
-            {isFetching ? (
-              <div className="py-8 flex items-center justify-center"><Spin /></div>
-            ) : (Array.isArray(data) && data.length > 0) ? (
+            {isFetching && (
+              <div
+                className="mb-2 rounded-md border border-blue-200 bg-blue-50 px-2 py-1 text-xs text-blue-800 dark:border-blue-500 dark:bg-[#102a43] dark:text-blue-100"
+                role="status"
+                aria-live="polite">
+                {t("mediaPage.searchingBanner", "Searching media…")}
+              </div>
+            )}
+            {isFetching && !hasResults ? (
+              <div className="relative flex-1 min-h-0 overflow-auto rounded border border-dashed border-gray-200 dark:border-gray-700">
+                <div className="divide-y divide-gray-100 dark:divide-gray-800">
+                  {Array.from({ length: 6 }).map((_, idx) => (
+                    <div key={idx} className="px-3 py-2">
+                      <Skeleton
+                        active
+                        title={{ width: "60%" }}
+                        paragraph={{ rows: 2, width: ["40%", "80%"] }}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : hasResults ? (
               <>
                 <div ref={listParentRef} className="relative flex-1 min-h-0 overflow-auto rounded border border-dashed border-gray-200 dark:border-gray-700">
                   <div
@@ -623,7 +647,7 @@ export const MediaReviewPage: React.FC = () => {
                     }}
                   >
                     {listVirtualizer.getVirtualItems().map((virtualRow) => {
-                      const item = (data as MediaItem[])[virtualRow.index]
+                      const item = allResults[virtualRow.index]
                       const isSelected = selectedIds.includes(item.id)
                       return (
                         <div
@@ -682,7 +706,7 @@ export const MediaReviewPage: React.FC = () => {
                 </div>
               </>
             ) : (
-              <Empty description={t('mediaPage.noResults', 'No results')} />
+              <Empty description={t("mediaPage.noResults", "No results")} />
             )}
           </div>
         )}
