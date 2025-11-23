@@ -53,7 +53,7 @@ export const AddUpdateModelSettings: React.FC<Props> = ({
       await queryClient.invalidateQueries({
         queryKey: ["fetchCustomModels"]
       })
-
+      form.resetFields()
       setOpen(false)
     }
   })
@@ -63,6 +63,7 @@ export const AddUpdateModelSettings: React.FC<Props> = ({
       title={t("modelSettings.label")}
       open={open}
       onCancel={() => {
+        form.resetFields()
         setOpen(false)
       }}
       footer={null}>
