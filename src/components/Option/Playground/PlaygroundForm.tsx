@@ -136,17 +136,90 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
   })
 
   const modelSelectOptions = React.useMemo(() => {
+    const providerDisplayName = (provider?: string) => {
+      const key = String(provider || "unknown").toLowerCase()
+      if (key === "openai") return "OpenAI"
+      if (key === "anthropic") return "Anthropic"
+      if (key === "google") return "Google"
+      if (key === "mistral") return "Mistral"
+      if (key === "cohere") return "Cohere"
+      if (key === "groq") return "Groq"
+      if (key === "huggingface") return "HuggingFace"
+      if (key === "openrouter") return "OpenRouter"
+      if (key === "ollama") return "Ollama"
+      if (key === "llama") return "Llama.cpp"
+      if (key === "kobold") return "Kobold.cpp"
+      if (key === "ooba") return "Oobabooga"
+      if (key === "tabby") return "TabbyAPI"
+      if (key === "vllm") return "vLLM"
+      if (key === "aphrodite") return "Aphrodite"
+      if (key === "zai") return "Z.AI"
+      if (key === "custom_openai_api") return "Custom OpenAI API"
+      return provider || "API"
+    }
+
     const models = (composerModels as any[]) || []
     if (!models.length) {
       if (selectedModel) {
-        return [{ label: selectedModel, value: selectedModel }]
+        return [
+          {
+            label: (
+              <span className="truncate">
+                Custom - {selectedModel}
+              </span>
+            ),
+            value: selectedModel,
+            searchText: selectedModel
+          }
+        ]
       }
       return []
     }
+
     return models.map((m: any) => {
-      const provider = (m.details && m.details.provider) || m.provider || "API"
-      const label = `${provider} - ${m.nickname || m.model}`
-      return { label, value: m.model }
+      const rawProvider = (m.details && m.details.provider) || m.provider
+      const providerLabel = providerDisplayName(rawProvider)
+      const modelLabel = m.nickname || m.model
+      const caps: string[] = Array.isArray(m.details?.capabilities)
+        ? m.details.capabilities
+        : []
+      const hasVision = caps.includes("vision")
+      const hasTools = caps.includes("tools")
+      const hasFast = caps.includes("fast")
+
+      return {
+        value: m.model,
+        searchText: `${providerLabel} ${modelLabel} ${m.model}`,
+        label: (
+          <div className="flex items-start gap-2 min-w-0">
+            <ProviderIcons provider={rawProvider} className="h-4 w-4 shrink-0 mt-0.5" />
+            <div className="flex flex-col min-w-0">
+              <span className="truncate text-sm">
+                {providerLabel} - {modelLabel}
+              </span>
+              {(hasVision || hasTools || hasFast) && (
+                <div className="mt-0.5 flex flex-wrap gap-1 text-[10px]">
+                  {hasVision && (
+                    <span className="rounded-full bg-blue-50 px-1.5 py-0.5 text-blue-700 dark:bg-blue-900/30 dark:text-blue-100">
+                      Vision
+                    </span>
+                  )}
+                  {hasTools && (
+                    <span className="rounded-full bg-purple-50 px-1.5 py-0.5 text-purple-700 dark:bg-purple-900/30 dark:text-purple-100">
+                      Tools
+                    </span>
+                  )}
+                  {hasFast && (
+                    <span className="rounded-full bg-emerald-50 px-1.5 py-0.5 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-100">
+                      Fast
+                    </span>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+        )
+      }
     })
   }, [composerModels, selectedModel])
 
@@ -1137,8 +1210,12 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                           allowClear
                           showSearch
                           filterOption={(input, option) =>
-                            (option?.label as string)
-                              ?.toLowerCase()
+                            ((option as any)?.searchText || "")
+                              .toLowerCase()
+                              .includes(input.toLowerCase()) ||
+                            ((option as any)?.value || "")
+                              .toString()
+                              .toLowerCase()
                               .includes(input.toLowerCase())
                           }
                         />
