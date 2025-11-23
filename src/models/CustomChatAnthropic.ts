@@ -23,21 +23,116 @@ export interface AnthropicMessageOptions {
 
 export interface AnthropicCallOptions extends BaseLanguageModelCallOptions { }
 
+function detectImageMediaType(base64Data: string): string | null {
+    try {
+        const binaryString = atob(base64Data.slice(0, 32))
+        const bytes = new Uint8Array(binaryString.length)
+        for (let i = 0; i < binaryString.length; i++) {
+            bytes[i] = binaryString.charCodeAt(i)
+        }
+
+        if (bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff) {
+            return "image/jpeg"
+        }
+        if (bytes[0] === 0x89 && bytes[1] === 0x50 && bytes[2] === 0x4e && bytes[3] === 0x47) {
+            return "image/png"
+        }
+        if (bytes[0] === 0x47 && bytes[1] === 0x49 && bytes[2] === 0x46) {
+            return "image/gif"
+        }
+        if (bytes[0] === 0x52 && bytes[1] === 0x49 && bytes[2] === 0x46 && bytes[3] === 0x46) {
+            if (bytes[8] === 0x57 && bytes[9] === 0x45 && bytes[10] === 0x42 && bytes[11] === 0x50) {
+                return "image/webp"
+            }
+        }
+    } catch (e) {
+    }
+    return null
+}
+
 function convertMessagesToAnthropicFormat(messages: BaseMessage[]): Array<{
     role: "user" | "assistant"
-    content: string
+    content: string | Array<{ type: string; text?: string; source?: any }>
 }> {
-    const result: Array<{ role: "user" | "assistant"; content: string }> = []
+    const result: Array<{ role: "user" | "assistant"; content: string | Array<{ type: string; text?: string; source?: any }> }> = []
 
     for (const message of messages) {
         const type = message._getType()
-        const content = typeof message.content === "string" ? message.content : ""
 
         if (type === "system") {
-            // System messages are handled separately
         } else if (type === "human") {
-            result.push({ role: "user", content })
+            if (typeof message.content === "string") {
+                result.push({ role: "user", content: message.content })
+            } else if (Array.isArray(message.content)) {
+                const anthropicContent: Array<{ type: string; text?: string; source?: any }> = []
+
+                for (const block of message.content) {
+                    if (typeof block === "object") {
+                        if ("text" in block && block.type === "text") {
+                            anthropicContent.push({
+                                type: "text",
+                                text: block.text
+                            })
+                        } else if ("image_url" in block && block.type === "image_url") {
+                            const imageUrl = block.image_url
+                            if (typeof imageUrl === "string" && imageUrl.startsWith("data:image/")) {
+                                const [header, data] = imageUrl.split(",")
+                                const mediaType = header.match(/data:([^;]+)/)?.[1] || "image/jpeg"
+
+                                const actualMediaType = detectImageMediaType(data) || mediaType
+
+                                anthropicContent.push({
+                                    type: "image",
+                                    source: {
+                                        type: "base64",
+                                        media_type: actualMediaType,
+                                        data: data
+                                    }
+                                })
+                            } else if (typeof imageUrl === "string") {
+                                // Handle URL-referenced images
+                                anthropicContent.push({
+                                    type: "image",
+                                    source: {
+                                        type: "url",
+                                        url: imageUrl
+                                    }
+                                })
+                            } else if (typeof imageUrl === "object" && "url" in imageUrl) {
+                                const url = imageUrl.url
+                                if (url.startsWith("data:image/")) {
+                                    const [header, data] = url.split(",")
+                                    const mediaType = header.match(/data:([^;]+)/)?.[1] || "image/jpeg"
+                                    const actualMediaType = detectImageMediaType(data) || mediaType
+
+                                    anthropicContent.push({
+                                        type: "image",
+                                        source: {
+                                            type: "base64",
+                                            media_type: actualMediaType,
+                                            data: data
+                                        }
+                                    })
+                                } else {
+                                    anthropicContent.push({
+                                        type: "image",
+                                        source: {
+                                            type: "url",
+                                            url: url
+                                        }
+                                    })
+                                }
+                            }
+                        }
+                    }
+                }
+
+                result.push({ role: "user", content: anthropicContent })
+            } else {
+                result.push({ role: "user", content: "" })
+            }
         } else if (type === "ai") {
+            const content = typeof message.content === "string" ? message.content : ""
             result.push({ role: "assistant", content })
         }
     }
@@ -85,8 +180,6 @@ export class ChatAnthropic extends SimpleChatModel<AnthropicCallOptions> {
         runManager?: CallbackManagerForLLMRun
     ): AsyncGenerator<ChatGenerationChunk> {
         const convertedMessages = convertMessagesToAnthropicFormat(messages)
-
-        // Extract system prompt if present
         let systemPrompt = ""
         for (const message of messages) {
             if (message._getType() === "system") {
