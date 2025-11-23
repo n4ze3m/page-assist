@@ -8,6 +8,57 @@ type Model = {
   type: string
 }
 
+export const isAnthropicAPI = (baseUrl: string) => {
+  return baseUrl === "https://api.anthropic.com/v1"
+}
+
+
+export const getAllAnthropicModels = async ({
+  apiKey,
+  customHeaders = []
+}: {
+  apiKey: string
+  customHeaders?: { key: string; value: string }[]
+}) => {
+
+  try {
+    const url = "https://api.anthropic.com/v1/models"
+    const headers = {
+      'x-api-key': apiKey,
+      'Content-Type': 'application/json',
+      "anthropic-dangerous-direct-browser-access": "true",
+      "anthropic-version": "2023-06-01",
+      ...getCustomHeaders({ headers: customHeaders }),
+
+    }
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), 10000)
+
+    const res = await fetch(url, {
+      headers,
+      signal: controller.signal
+    })
+
+    clearTimeout(timeoutId)
+
+    if (!res.ok) {
+      throw new Error("Failed to fetch models")
+    }
+
+    const data = await res.json()
+    return data.data.map(e=> {
+      return {
+        ...e,
+        name: e?.display_name
+      }
+    }) as Model[]
+
+  } catch (e) {
+    return []
+  }
+}
+
+
 export const getAllOpenAIModels = async ({
   baseUrl,
   apiKey,
@@ -18,6 +69,11 @@ export const getAllOpenAIModels = async ({
   customHeaders?: { key: string; value: string }[]
 }) => {
   try {
+
+    if (isAnthropicAPI(baseUrl)) {
+      return getAllAnthropicModels({ apiKey, customHeaders })
+    }
+
     const url = `${baseUrl}/models`
     const headers = apiKey
       ? {

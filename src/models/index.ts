@@ -5,6 +5,7 @@ import { getOpenAIConfigById } from "@/db/dexie/openai"
 import { urlRewriteRuntime } from "@/libs/runtime"
 import { ChatGoogleAI } from "./ChatGoogleAI"
 import { CustomChatOpenAI } from "./CustomChatOpenAI"
+import { ChatAnthropic } from "./CustomChatAnthropic"
 import { getCustomHeaders } from "@/utils/clean-headers"
 import {
   getAllDefaultModelSettings,
@@ -125,6 +126,17 @@ export const pageAssistModel = async ({
             headers: providerInfo?.headers || []
           })
         }
+      }) as any
+    }
+
+    if (providerInfo.provider === "anthropic") {
+      return new ChatAnthropic({
+        apiKey: providerInfo.apiKey || "",
+        modelName: modelInfo.model_id,
+        temperature: modelConfig?.temperature,
+        topP: modelConfig?.topP,
+        maxTokens: modelConfig?.maxTokens,
+        topK: modelConfig?.topK
       }) as any
     }
 
