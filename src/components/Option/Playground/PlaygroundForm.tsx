@@ -48,10 +48,10 @@ import { useConnectionState } from "@/hooks/useConnectionState"
 import { ConnectionPhase } from "@/types/connection"
 import { Link } from "react-router-dom"
 import { fetchChatModels } from "@/services/tldw-server"
-import { ProviderIcons } from "@/components/Common/ProviderIcon"
 import { useServerCapabilities } from "@/hooks/useServerCapabilities"
 import { tldwClient } from "@/services/tldw/TldwApiClient"
 import { CharacterSelect } from "@/components/Common/CharacterSelect"
+import { ProviderIcons } from "@/components/Common/ProviderIcon"
 type Props = {
   dropedFile: File | undefined
 }
@@ -135,120 +135,19 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
     enabled: true
   })
 
-  const composerModelOptions = React.useMemo(() => {
-    const providerDisplayName = (provider?: string) => {
-      const key = String(provider || "unknown").toLowerCase()
-      if (key === "openai") return "OpenAI"
-      if (key === "anthropic") return "Anthropic"
-      if (key === "google") return "Google"
-      if (key === "mistral") return "Mistral"
-      if (key === "cohere") return "Cohere"
-      if (key === "groq") return "Groq"
-      if (key === "huggingface") return "HuggingFace"
-      if (key === "openrouter") return "OpenRouter"
-      if (key === "ollama") return "Ollama"
-      if (key === "llama") return "Llama.cpp"
-      if (key === "kobold") return "Kobold.cpp"
-      if (key === "ooba") return "Oobabooga"
-      if (key === "tabby") return "TabbyAPI"
-      if (key === "vllm") return "vLLM"
-      if (key === "aphrodite") return "Aphrodite"
-      if (key === "zai") return "Z.AI"
-      if (key === "custom_openai_api") return "Custom OpenAI API"
-      return provider || "API"
-    }
-
-    type GroupOption = { label: React.ReactNode; options: Array<{ label: React.ReactNode; value: string }> }
-    const models = composerModels || []
+  const modelSelectOptions = React.useMemo(() => {
+    const models = (composerModels as any[]) || []
     if (!models.length) {
       if (selectedModel) {
-        const fallbackGroup: GroupOption = {
-          label: (
-            <span className="truncate">
-              Custom
-            </span>
-          ),
-          options: [
-            {
-              label: (
-                <span className="truncate">
-                  Custom - {selectedModel}
-                </span>
-              ),
-              value: selectedModel
-            }
-          ]
-        }
-        return [fallbackGroup]
+        return [{ label: selectedModel, value: selectedModel }]
       }
       return []
     }
-
-    const groups = new Map<string, GroupOption>()
-
-    for (const m of models as any[]) {
-      const rawProvider = (m.details && m.details.provider) || m.provider
-      const providerKey = String(rawProvider || "other").toLowerCase()
-      const providerLabel = providerDisplayName(rawProvider)
-      const modelLabel = m.nickname || m.model
-      const details: any = m.details || {}
-      const caps: string[] = Array.isArray(details.capabilities)
-        ? details.capabilities
-        : []
-      const hasVision = caps.includes("vision")
-      const hasTools = caps.includes("tools")
-      const hasFast = caps.includes("fast")
-
-      const optionLabel = (
-        <div className="flex items-center gap-2" data-title={`${providerLabel} - ${modelLabel}`}>
-          <ProviderIcons provider={rawProvider} className="h-4 w-4" />
-          <div className="flex flex-col min-w-0">
-            <span className="truncate">
-              {providerLabel} - {modelLabel}
-            </span>
-            {(hasVision || hasTools || hasFast) && (
-              <div className="mt-0.5 flex flex-wrap gap-1 text-[10px]">
-                {hasVision && (
-                  <span className="rounded-full bg-blue-50 px-1.5 py-0.5 text-blue-700 dark:bg-blue-900/30 dark:text-blue-100">
-                    Vision
-                  </span>
-                )}
-                {hasTools && (
-                  <span className="rounded-full bg-purple-50 px-1.5 py-0.5 text-purple-700 dark:bg-purple-900/30 dark:text-purple-100">
-                    Tools
-                  </span>
-                )}
-                {hasFast && (
-                  <span className="rounded-full bg-emerald-50 px-1.5 py-0.5 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-100">
-                    Fast
-                  </span>
-                )}
-              </div>
-            )}
-          </div>
-        </div>
-      )
-
-      if (!groups.has(providerKey)) {
-        groups.set(providerKey, {
-          label: (
-            <div className="flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
-              <ProviderIcons provider={rawProvider} className="h-3 w-3" />
-              <span>{providerLabel}</span>
-            </div>
-          ),
-          options: []
-        })
-      }
-      const group = groups.get(providerKey)!
-      group.options.push({
-        label: optionLabel,
-        value: m.model
-      })
-    }
-
-    const groupedOptions: GroupOption[] = Array.from(groups.values())
-    return groupedOptions
+    return models.map((m: any) => {
+      const provider = (m.details && m.details.provider) || m.provider || "API"
+      const label = `${provider} - ${m.nickname || m.model}`
+      return { label, value: m.model }
+    })
   }, [composerModels, selectedModel])
 
   const modelSummaryLabel = React.useMemo(() => {
@@ -327,6 +226,46 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
     window.addEventListener('tldw:focus-composer', handler)
     return () => window.removeEventListener('tldw:focus-composer', handler)
   }, [])
+
+  // Seed composer when a media item requests discussion (e.g., from Quick ingest)
+  React.useEffect(() => {
+    try {
+      if (typeof window === "undefined") return
+      const raw = localStorage.getItem("tldw:discussMediaPrompt")
+      if (!raw) return
+      localStorage.removeItem("tldw:discussMediaPrompt")
+      const payload = JSON.parse(raw) as { mediaId?: string; url?: string }
+      const hint = payload?.url
+        ? `Let's talk about the media I just ingested: ${payload.url}`
+        : payload?.mediaId
+          ? `Let's talk about media ${payload.mediaId}.`
+          : ""
+      if (!hint) return
+      form.setFieldValue("message", hint)
+      textAreaFocus()
+    } catch {
+      // ignore storage/parse errors
+    }
+  }, [form, textAreaFocus])
+
+  React.useEffect(() => {
+    const handler = (event: Event) => {
+      const detail = (event as CustomEvent).detail as any
+      if (!detail) return
+      const hint = detail.url
+        ? `Let's talk about the media I just ingested: ${detail.url}`
+        : detail.mediaId
+          ? `Let's talk about media ${detail.mediaId}.`
+          : ""
+      if (!hint) return
+      form.setFieldValue("message", hint)
+      textAreaFocus()
+    }
+    window.addEventListener("tldw:discuss-media", handler as any)
+    return () => {
+      window.removeEventListener("tldw:discuss-media", handler as any)
+    }
+  }, [form, textAreaFocus])
 
   React.useEffect(() => {
     textAreaFocus()
@@ -1185,6 +1124,24 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                     </div>
                     <div className="mt-2 flex flex-col gap-1">
                       <div className="flex flex-wrap items-center gap-2 text-[11px] text-gray-600 dark:text-gray-300">
+                        <Select
+                          className="min-w-[220px] max-w-[300px]"
+                          placeholder={t("playground:composer.modelPlaceholder", "API / model")}
+                          aria-label={t("playground:composer.modelPlaceholder", "API / model") as string}
+                          value={selectedModel || undefined}
+                          onChange={(value) => setSelectedModel(value)}
+                          loading={isComposerModelsLoading}
+                          options={modelSelectOptions as any}
+                          optionLabelProp="label"
+                          dropdownMatchSelectWidth={false}
+                          allowClear
+                          showSearch
+                          filterOption={(input, option) =>
+                            (option?.label as string)
+                              ?.toLowerCase()
+                              .includes(input.toLowerCase())
+                          }
+                        />
                         <span className="font-semibold uppercase tracking-wide">
                           {t("playground:composer.contextLabel", "Context:")}
                         </span>
@@ -1273,21 +1230,6 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                           )}
                         </div>
                         <div className="flex items-center justify-end gap-3 flex-wrap">
-                          {composerModelOptions.length > 0 && (
-                            <Select
-                              className="min-w-[220px] max-w-[320px]"
-                              placeholder={t("playground:composer.modelPlaceholder", "API / model")}
-                              aria-label={t("playground:composer.modelPlaceholder", "API / model") as string}
-                              value={selectedModel || undefined}
-                              onChange={(value) => setSelectedModel(value)}
-                              loading={isComposerModelsLoading}
-                              options={composerModelOptions as any}
-                              optionLabelProp="label"
-                              dropdownMatchSelectWidth={false}
-                              showSearch
-                              size="middle"
-                            />
-                          )}
                           <CharacterSelect className="text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100" iconClassName="size-5" />
                           <button
                             type="button"
@@ -1316,10 +1258,10 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                               />
                               <span className="flex flex-col items-start text-left">
                                 <span className="font-medium">
-                                  {modelSummaryLabel}
+                                  {t("playground:composer.chatSettings", "Chat Settings")}
                                 </span>
                                 <span className="text-[11px] text-gray-500 dark:text-gray-400">
-                                  {promptSummaryLabel}
+                                  {modelSummaryLabel} • {promptSummaryLabel}
                                 </span>
                               </span>
                             </button>

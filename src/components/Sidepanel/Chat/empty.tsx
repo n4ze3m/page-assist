@@ -1,5 +1,6 @@
 import React from "react"
 import { useTranslation } from "react-i18next"
+import { Button } from "antd"
 import { ServerConnectionCard } from "@/components/Common/ServerConnectionCard"
 import { useConnectionState } from "@/hooks/useConnectionState"
 import { ConnectionPhase } from "@/types/connection"
@@ -26,7 +27,19 @@ export const EmptySidePanel = () => {
 
   if (showConnectionCard) {
     return (
-      <ServerConnectionCard onOpenSettings={openSettings} showToastOnError />
+      <div className="mt-2 flex w-full flex-col items-stretch gap-3">
+        <ServerConnectionCard onOpenSettings={openSettings} />
+        <div className="px-6">
+          <Button
+            type="default"
+            size="small"
+            block
+            disabled
+          >
+            {t("option:header.quickIngest", "Quick ingest")}
+          </Button>
+        </div>
+      </div>
     )
   }
 

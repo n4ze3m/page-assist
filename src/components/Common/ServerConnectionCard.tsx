@@ -88,7 +88,7 @@ export const ServerConnectionCard: React.FC<Props> = ({
         key: toastKey,
         message: t(
           "ollamaState.errorToast",
-          "We couldn’t reach {{host}}",
+          "We couldn't reach {{host}}",
           { host: serverHost ?? "tldw_server" }
         ) + (hasCode ? ` (HTTP ${code})` : ""),
         description: t(
@@ -98,7 +98,8 @@ export const ServerConnectionCard: React.FC<Props> = ({
         placement: "bottomRight",
         duration: 6
       })
-    } else if (statusVariant === "ok" || statusVariant === "missing") {
+    } else {
+      // Clear error toast when connection succeeds, is missing, or is checking
       notification.destroy(toastKey)
     }
   }, [
@@ -107,7 +108,8 @@ export const ServerConnectionCard: React.FC<Props> = ({
     serverHost,
     lastError,
     lastStatusCode,
-    t
+    t,
+    notification
   ])
 
   const headline =
@@ -271,7 +273,12 @@ export const ServerConnectionCard: React.FC<Props> = ({
           </ul>
         )}
 
-        <div className="flex flex-col items-center gap-2">
+        <div
+          className="flex flex-col items-center gap-2"
+          role="status"
+          aria-live="polite"
+          aria-atomic="true"
+        >
           {isSearching && (
             <Tag color="blue" className="px-4 py-1 text-sm">
               {t("ollamaState.searching")}
@@ -327,15 +334,15 @@ export const ServerConnectionCard: React.FC<Props> = ({
               <span>
                 {t("ollamaState.errorDetailsLabel", "Details:")}
               </span>
-              <code className="rounded bg-red-50 px-1 py-0.5 font-mono text-[0.7rem] text-red-700 dark:bg-red-900/30 dark:text-red-200">
+              <span className="rounded bg-red-50 px-1.5 py-0.5 text-[0.7rem] text-red-700 dark:bg-red-900/30 dark:text-red-200">
                 {lastError}
-              </code>
+              </span>
             </span>
           )}
           {secondsSinceLastCheck != null &&
             !(phase === ConnectionPhase.SEARCHING && isChecking) && (
-            <span className="inline-flex items-center gap-1">
-              <Clock className="h-3 w-3" />
+            <span className="inline-flex items-center gap-1 text-sm text-gray-600 dark:text-gray-300">
+              <Clock className="h-3.5 w-3.5" />
               {t("ollamaState.lastChecked", "Checked {{seconds}}s ago", { seconds: secondsSinceLastCheck })}
             </span>
           )}
@@ -376,14 +383,14 @@ export const ServerConnectionCard: React.FC<Props> = ({
             icon={<Settings className="h-4 w-4" />}
             onClick={handleOpenSettings}
             block>
-            {statusVariant === "ok" || statusVariant === "error"
+            {(statusVariant === "ok" || statusVariant === "error") && serverUrl
               ? t(
                   "option:connectionCard.buttonChangeServer",
                   t("ollamaState.changeServer", "Change server")
                 )
               : t(
-                  "option:connectionCard.buttonAdvancedSettings",
-                  "Open tldw Settings"
+                  "option:connectionCard.buttonConfigureServer",
+                  "Configure server"
                 )}
           </Button>
         </div>
@@ -411,13 +418,15 @@ export const ServerConnectionCard: React.FC<Props> = ({
           </div>
         )}
 
-        <button
-          type="button"
-          onClick={handleOpenDiagnostics}
-          className="inline-flex items-center gap-1 text-xs text-blue-600 hover:text-blue-500 dark:text-blue-400">
-          <ExternalLink className="h-3 w-3" />
-          {diagnosticsLabel}
-        </button>
+{statusVariant !== "error" && (
+          <button
+            type="button"
+            onClick={handleOpenDiagnostics}
+            className="inline-flex items-center gap-1 text-xs text-blue-600 hover:text-blue-500 dark:text-blue-400">
+            <ExternalLink className="h-3 w-3" />
+            {diagnosticsLabel}
+          </button>
+        )}
       </div>
     </div>
   )

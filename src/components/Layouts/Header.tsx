@@ -144,6 +144,22 @@ export const Header: React.FC<Props> = ({
   const { shortcuts: shortcutConfig } = useShortcutConfig()
   const quickIngestBtnRef = React.useRef<HTMLButtonElement>(null)
 
+  React.useEffect(() => {
+    const handler = () => {
+      if (ingestDisabled) {
+        return
+      }
+      setQuickIngestOpen(true)
+      requestAnimationFrame(() => {
+        quickIngestBtnRef.current?.focus()
+      })
+    }
+    window.addEventListener("tldw:open-quick-ingest", handler)
+    return () => {
+      window.removeEventListener("tldw:open-quick-ingest", handler)
+    }
+  }, [ingestDisabled])
+
   const currentCoreMode: CoreMode = React.useMemo(() => {
     if (pathname.startsWith("/review")) return "media"
     if (pathname.startsWith("/media-multi") || pathname.startsWith("/media"))
@@ -753,9 +769,6 @@ export const Header: React.FC<Props> = ({
               >
                 <UploadCloud className="h-4 w-4" aria-hidden="true" />
                 <span>{t("option:header.quickIngest", "Quick ingest")}</span>
-                <span className="hidden text-[11px] font-normal text-gray-500 sm:inline">
-                  {t("option:header.quickIngestHint", "URLs & files with extra controls")}
-                </span>
               </button>
 
               {messages.length > 0 && !streaming && (
@@ -844,9 +857,13 @@ export const Header: React.FC<Props> = ({
               <span className="font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
                 {t("option:header.modesLabel", "Modes")}
               </span>
-            <div className="flex flex-wrap gap-1">
+            <div
+              className="flex flex-wrap gap-1"
+              role="tablist"
+              aria-label={t("option:header.modesAriaLabel", "Application modes")}
+            >
               {(() => {
-                const modeOptions: Array<{
+                const primaryModes: Array<{
                   key: CoreMode
                   label: string
                   shortcut?: import("@/hooks/keyboard/useKeyboardShortcuts").KeyboardShortcut
@@ -875,7 +892,13 @@ export const Header: React.FC<Props> = ({
                     key: "notes",
                     label: t("option:header.modeNotes", "Notes"),
                     shortcut: shortcutConfig.modeNotes
-                  },
+                  }
+                ]
+                const secondaryModes: Array<{
+                  key: CoreMode
+                  label: string
+                  shortcut?: import("@/hooks/keyboard/useKeyboardShortcuts").KeyboardShortcut
+                }> = [
                   {
                     key: "prompts",
                     label: t("option:header.modePromptsPlayground", "Prompts Playground"),
@@ -907,37 +930,70 @@ export const Header: React.FC<Props> = ({
                     shortcut: shortcutConfig.modeCharacters
                   }
                 ]
-                return modeOptions.map((mode) => {
+                const renderModeButton = (mode: typeof primaryModes[0]) => {
                   const promptStudioUnavailable = mode.key === "promptStudio" && promptStudioCapability.data === false
+                  const isSelected = currentCoreMode === mode.key
                   return (
-                  <button
-                    key={mode.key}
-                    type="button"
-                    onClick={() => {
-                      if (promptStudioUnavailable) return
-                      handleCoreModeChange(mode.key)
-                    }}
-                    disabled={promptStudioUnavailable}
-                    title={
-                      mode.shortcut
-                        ? t("option:header.modeShortcutHint", "{{shortcut}} to switch", {
-                            shortcut: formatShortcut(mode.shortcut)
-                          }) || undefined
-                        : undefined
-                    }
-                    className={classNames(
-                      "rounded-full px-3 py-1 text-xs font-medium transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500",
-                      currentCoreMode === mode.key
-                        ? "bg-amber-500 text-gray-900 shadow-sm dark:bg-amber-400 dark:text-gray-900"
-                        : "bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-[#262626] dark:text-gray-200 dark:hover:bg-[#333333]",
-                      promptStudioUnavailable ? "opacity-60 cursor-not-allowed" : ""
-                    )}
-                    aria-current={currentCoreMode === mode.key ? "page" : undefined}
-                  >
-                    {mode.label}
-                  </button>
+                    <button
+                      key={mode.key}
+                      type="button"
+                      role="tab"
+                      aria-selected={isSelected}
+                      onClick={() => {
+                        if (promptStudioUnavailable) return
+                        handleCoreModeChange(mode.key)
+                      }}
+                      disabled={promptStudioUnavailable}
+                      aria-disabled={promptStudioUnavailable}
+                      title={
+                        mode.shortcut
+                          ? t("option:header.modeShortcutHint", "{{shortcut}} to switch", {
+                              shortcut: formatShortcut(mode.shortcut)
+                            }) || undefined
+                          : undefined
+                      }
+                      className={classNames(
+                        "rounded-full px-3 py-1 text-xs font-medium transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500",
+                        isSelected
+                          ? "bg-amber-500 text-gray-900 shadow-sm dark:bg-amber-400 dark:text-gray-900"
+                          : "bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-[#262626] dark:text-gray-200 dark:hover:bg-[#333333]",
+                        promptStudioUnavailable ? "opacity-60 cursor-not-allowed" : ""
+                      )}
+                    >
+                      {mode.label}
+                    </button>
                   )
-                })
+                }
+                const isSecondaryActive = secondaryModes.some(m => m.key === currentCoreMode)
+                return (
+                  <>
+                    {primaryModes.map(renderModeButton)}
+                    <Dropdown
+                      menu={{
+                        items: secondaryModes.map((mode) => ({
+                          key: mode.key,
+                          label: mode.label,
+                          disabled: mode.key === "promptStudio" && promptStudioCapability.data === false
+                        })),
+                        onClick: ({ key }) => handleCoreModeChange(key as CoreMode)
+                      }}
+                    >
+                      <button
+                        type="button"
+                        className={classNames(
+                          "rounded-full px-3 py-1 text-xs font-medium transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500",
+                          isSecondaryActive
+                            ? "bg-amber-500 text-gray-900 shadow-sm dark:bg-amber-400 dark:text-gray-900"
+                            : "bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-[#262626] dark:text-gray-200 dark:hover:bg-[#333333]"
+                        )}
+                      >
+                        {isSecondaryActive
+                          ? secondaryModes.find(m => m.key === currentCoreMode)?.label
+                          : t("option:header.moreTools", "More...")}
+                      </button>
+                    </Dropdown>
+                  </>
+                )
               })()}
             </div>
           </div>
@@ -948,6 +1004,7 @@ export const Header: React.FC<Props> = ({
             aria-expanded={shortcutsExpanded}
             aria-controls={shortcutsSectionId}
             ref={shortcutsToggleRef}
+            title={t("option:header.shortcutsKeyHint", "Press ? to toggle shortcuts")}
             className="inline-flex items-center self-start rounded-md border border-transparent px-2 py-1 text-xs font-semibold uppercase tracking-wide text-gray-500 transition hover:border-gray-300 hover:bg-white dark:text-gray-300 dark:hover:border-gray-500 dark:hover:bg-[#1f1f1f]">
             <ChevronDown
               className={classNames(
@@ -958,6 +1015,11 @@ export const Header: React.FC<Props> = ({
             {shortcutsExpanded
               ? t("option:header.hideShortcuts", "Hide shortcuts")
               : t("option:header.showShortcuts", "Show shortcuts")}
+            {!shortcutsExpanded && (
+              <span className="ml-1.5 text-[10px] font-normal normal-case tracking-normal text-gray-400">
+                {t("option:header.shortcutsKeyHintInline", "(Press ?)")}
+              </span>
+            )}
           </button>
           {shortcutsExpanded && (
             <div

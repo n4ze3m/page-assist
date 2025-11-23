@@ -16,11 +16,13 @@ import {
   Skeleton,
   Switch
 } from "antd"
-import React, { useCallback } from "react"
+import React, { useCallback, useMemo } from "react"
 import { useTranslation } from "react-i18next"
 import { SaveButton } from "../SaveButton"
 import { getOCRLanguage } from "@/services/ocr"
 import { ocrLanguages } from "@/data/ocr-language"
+import { fetchChatModels } from "@/services/tldw-server"
+import { ProviderIcons } from "@/components/Common/ProviderIcon"
 
 type Props = {
   open: boolean
@@ -42,6 +44,8 @@ export const CurrentChatModelSettings = ({
     selectedSystemPrompt,
     uploadedFiles,
     removeUploadedFile,
+    selectedModel,
+    setSelectedModel,
     fileRetrievalEnabled,
     setFileRetrievalEnabled
   } = useMessageOption()
@@ -110,6 +114,128 @@ export const CurrentChatModelSettings = ({
     refetchOnWindowFocus: false
   })
 
+  const { data: composerModels, isLoading: modelsLoading } = useQuery({
+    queryKey: ["playground:chatModels", open],
+    queryFn: () => fetchChatModels({ returnEmpty: true }),
+    enabled: open
+  })
+
+  const modelOptions = useMemo(() => {
+    const providerDisplayName = (provider?: string) => {
+      const key = String(provider || "unknown").toLowerCase()
+      if (key === "openai") return "OpenAI"
+      if (key === "anthropic") return "Anthropic"
+      if (key === "google") return "Google"
+      if (key === "mistral") return "Mistral"
+      if (key === "cohere") return "Cohere"
+      if (key === "groq") return "Groq"
+      if (key === "huggingface") return "HuggingFace"
+      if (key === "openrouter") return "OpenRouter"
+      if (key === "ollama") return "Ollama"
+      if (key === "llama") return "Llama.cpp"
+      if (key === "kobold") return "Kobold.cpp"
+      if (key === "ooba") return "Oobabooga"
+      if (key === "tabby") return "TabbyAPI"
+      if (key === "vllm") return "vLLM"
+      if (key === "aphrodite") return "Aphrodite"
+      if (key === "zai") return "Z.AI"
+      if (key === "custom_openai_api") return "Custom OpenAI API"
+      return provider || "API"
+    }
+
+    type GroupOption = { label: React.ReactNode; options: Array<{ label: React.ReactNode; value: string }> }
+    const models = (composerModels as any[]) || []
+    if (!models.length) {
+      if (selectedModel) {
+        const fallbackGroup: GroupOption = {
+          label: (
+            <span className="truncate">
+              Custom
+            </span>
+          ),
+          options: [
+            {
+              label: (
+                <span className="truncate">
+                  Custom - {selectedModel}
+                </span>
+              ),
+              value: selectedModel
+            }
+          ]
+        }
+        return [fallbackGroup]
+      }
+      return []
+    }
+
+    const groups = new Map<string, GroupOption>()
+
+    for (const m of models as any[]) {
+      const rawProvider = (m.details && m.details.provider) || m.provider
+      const providerKey = String(rawProvider || "other").toLowerCase()
+      const providerLabel = providerDisplayName(rawProvider)
+      const modelLabel = m.nickname || m.model
+      const details: any = m.details || {}
+      const caps: string[] = Array.isArray(details.capabilities)
+        ? details.capabilities
+        : []
+      const hasVision = caps.includes("vision")
+      const hasTools = caps.includes("tools")
+      const hasFast = caps.includes("fast")
+
+      const optionLabel = (
+        <div className="flex items-center gap-2" data-title={`${providerLabel} - ${modelLabel}`}>
+          <ProviderIcons provider={rawProvider} className="h-4 w-4" />
+          <div className="flex flex-col min-w-0">
+            <span className="truncate">
+              {providerLabel} - {modelLabel}
+            </span>
+            {(hasVision || hasTools || hasFast) && (
+              <div className="mt-0.5 flex flex-wrap gap-1 text-[10px]">
+                {hasVision && (
+                  <span className="rounded-full bg-blue-50 px-1.5 py-0.5 text-blue-700 dark:bg-blue-900/30 dark:text-blue-100">
+                    Vision
+                  </span>
+                )}
+                {hasTools && (
+                  <span className="rounded-full bg-purple-50 px-1.5 py-0.5 text-purple-700 dark:bg-purple-900/30 dark:text-purple-100">
+                    Tools
+                  </span>
+                )}
+                {hasFast && (
+                  <span className="rounded-full bg-emerald-50 px-1.5 py-0.5 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-100">
+                    Fast
+                  </span>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      )
+
+      if (!groups.has(providerKey)) {
+        groups.set(providerKey, {
+          label: (
+            <div className="flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
+              <ProviderIcons provider={rawProvider} className="h-3 w-3" />
+              <span>{providerLabel}</span>
+            </div>
+          ),
+          options: []
+        })
+      }
+      const group = groups.get(providerKey)!
+      group.options.push({
+        label: optionLabel,
+        value: m.model
+      })
+    }
+
+    const groupedOptions: GroupOption[] = Array.from(groups.values())
+    return groupedOptions
+  }, [composerModels, selectedModel])
+
   const renderBody = () => {
     return (
       <>
@@ -164,6 +290,32 @@ export const CurrentChatModelSettings = ({
 
               </div>
             )}
+
+            <Form.Item
+              label={t("modelSettings.form.model.label", { defaultValue: "API / model" })}
+              help={t("modelSettings.form.model.help", { defaultValue: "Choose the API/model used for this chat." })}>
+              <Select
+                showSearch
+                value={selectedModel || undefined}
+                onChange={(value) => setSelectedModel(value)}
+                placeholder={t("playground:composer.modelPlaceholder", "API / model")}
+                options={modelOptions as any}
+                loading={modelsLoading}
+                allowClear
+                optionLabelProp="label"
+                dropdownMatchSelectWidth={false}
+                dropdownStyle={{
+                  maxHeight: "calc(100vh - 220px)",
+                  overflowY: "auto"
+                }}
+                listHeight={560}
+                filterOption={(input, option) =>
+                  (option?.label as string)
+                    ?.toLowerCase()
+                    .includes(input.toLowerCase())
+                }
+              />
+            </Form.Item>
 
             <Form.Item
               name="keepAlive"

@@ -38,6 +38,11 @@ const MediaMultiInner = () => {
           defaultValue: "Connect to server"
         })}
         onPrimaryAction={() => navigate("/settings/tldw")}
+        secondaryActionLabel={t("option:header.quickIngest", "Quick ingest")}
+        onSecondaryAction={() =>
+          window.dispatchEvent(new CustomEvent("tldw:open-quick-ingest"))
+        }
+        secondaryDisabled={!isOnline}
       />
     ) : (
       <FeatureEmptyState

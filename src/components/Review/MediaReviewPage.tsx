@@ -80,6 +80,15 @@ export const MediaReviewPage: React.FC = () => {
   const [viewMode, setViewMode] = React.useState<"spread" | "list" | "all">("spread")
   const [focusedId, setFocusedId] = React.useState<string | number | null>(null)
   const [collapseOthers, setCollapseOthers] = React.useState<boolean>(false)
+  const [pendingInitialMediaId, setPendingInitialMediaId] = React.useState<string | null>(() => {
+    try {
+      if (typeof window === "undefined") return null
+      const raw = localStorage.getItem("tldw:lastMediaId")
+      return raw || null
+    } catch {
+      return null
+    }
+  })
   const isOnline = useServerOnline()
 
   React.useEffect(() => {
@@ -348,6 +357,23 @@ export const MediaReviewPage: React.FC = () => {
     },
     [viewMode, viewerItems, viewerVirtualizer]
   )
+
+  React.useEffect(() => {
+    if (!pendingInitialMediaId) return
+    if (!Array.isArray(allResults) || allResults.length === 0) return
+    const match = allResults.find((m) => String(m.id) === pendingInitialMediaId)
+    if (!match) return
+    setSelectedIds([match.id])
+    setFocusedId(match.id)
+    void ensureDetail(match.id)
+    scrollToCard(match.id)
+    setPendingInitialMediaId(null)
+    try {
+      localStorage.removeItem("tldw:lastMediaId")
+    } catch {
+      // ignore storage errors
+    }
+  }, [pendingInitialMediaId, allResults, ensureDetail, scrollToCard])
 
   const goRelative = React.useCallback(
     (delta: number) => {

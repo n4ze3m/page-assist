@@ -20,6 +20,7 @@ import { tldwAuth } from "@/services/tldw/TldwAuth"
 import { SettingsSkeleton } from "@/components/Common/Settings/SettingsSkeleton"
 import { DEFAULT_TLDW_API_KEY } from "@/services/tldw-server"
 import { apiSend } from "@/services/api-send"
+import { useConnectionStore } from "@/store/connection"
 
 type TimeoutPresetKey = 'balanced' | 'extended'
 
@@ -277,6 +278,13 @@ export const TldwSettings = () => {
       if (success) {
         message.success(t('settings:tldw.connection.success', 'Connection successful!'))
         await tldwClient.initialize()
+        try {
+          // Refresh shared connection state so entry views transition
+          // from the connection card to the live chat/media UI.
+          await useConnectionStore.getState().checkOnce()
+        } catch {
+          // Best-effort only; ignore failures here.
+        }
       } else {
         message.error(t('settings:tldw.connection.failed', 'Connection failed. Please check your settings.'))
       }

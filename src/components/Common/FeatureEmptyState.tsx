@@ -10,6 +10,8 @@ type FeatureEmptyStateProps = {
   secondaryActionLabel?: React.ReactNode
   onSecondaryAction?: () => void
   className?: string
+  primaryDisabled?: boolean
+  secondaryDisabled?: boolean
 }
 
 const FeatureEmptyState: React.FC<FeatureEmptyStateProps> = ({
@@ -20,7 +22,9 @@ const FeatureEmptyState: React.FC<FeatureEmptyStateProps> = ({
   onPrimaryAction,
   secondaryActionLabel,
   onSecondaryAction,
-  className
+  className,
+  primaryDisabled = false,
+  secondaryDisabled = false
 }) => {
   return (
     <div
@@ -53,12 +57,16 @@ const FeatureEmptyState: React.FC<FeatureEmptyStateProps> = ({
                 type="primary"
                 size="small"
                 onClick={onPrimaryAction}
-                className="mr-1">
+                className="mr-1"
+                disabled={primaryDisabled}>
                 {primaryActionLabel}
               </Button>
             )}
             {secondaryActionLabel && (
-              <Button size="small" onClick={onSecondaryAction}>
+              <Button
+                size="small"
+                onClick={onSecondaryAction}
+                disabled={secondaryDisabled}>
                 {secondaryActionLabel}
               </Button>
             )}

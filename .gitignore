@@ -53,3 +53,11 @@ bun.lockb
 /playwright-mcp-artifacts
 /test-results
 /.playwright-home
+
+# Playwright
+node_modules/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/
+/tmp-playwright-profile

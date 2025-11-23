@@ -1,16 +1,20 @@
 import React from "react"
 import { useTranslation } from "react-i18next"
-import { useNavigate } from "react-router-dom"
 import FeatureEmptyState from "@/components/Common/FeatureEmptyState"
 import { useDemoMode } from "@/context/demo-mode"
+import { useServerOnline } from "@/hooks/useServerOnline"
 
 export const PlaygroundEmpty = () => {
   const { t } = useTranslation(["playground", "common"])
-  const navigate = useNavigate()
   const { demoEnabled } = useDemoMode()
+  const isOnline = useServerOnline()
 
   const handleStartChat = React.useCallback(() => {
     window.dispatchEvent(new CustomEvent("tldw:focus-composer"))
+  }, [])
+
+  const handleOpenQuickIngest = React.useCallback(() => {
+    window.dispatchEvent(new CustomEvent("tldw:open-quick-ingest"))
   }, [])
 
   return (
@@ -48,10 +52,9 @@ export const PlaygroundEmpty = () => {
           defaultValue: "Start chatting"
         })}
         onPrimaryAction={handleStartChat}
-        secondaryActionLabel={t("playground:empty.secondaryCta", {
-          defaultValue: "Open server settings"
-        })}
-        onSecondaryAction={() => navigate("/settings/tldw")}
+        secondaryActionLabel={t("option:header.quickIngest", "Quick ingest")}
+        onSecondaryAction={handleOpenQuickIngest}
+        secondaryDisabled={!isOnline}
       />
     </div>
   )

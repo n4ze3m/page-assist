@@ -374,11 +374,13 @@ const NotesManagerPage: React.FC = () => {
               className="flex-1 min-w-[12rem]"
             />
             <Button type="primary" onClick={() => { setPage(1); refetch() }} icon={(<SearchIcon className="w-4 h-4" />) as any}>Search</Button>
-            <Button onClick={() => { setQuery(''); setKeywordTokens([]); setPage(1); refetch() }}>
-              {t('option:notesSearch.clear', {
-                defaultValue: 'Clear search & filters'
-              })}
-            </Button>
+            <Tooltip title={t('option:notesSearch.clearTooltip', { defaultValue: 'Clear search and filters' })}>
+              <Button onClick={() => { setQuery(''); setKeywordTokens([]); setPage(1); refetch() }}>
+                {t('option:notesSearch.clear', {
+                  defaultValue: 'Clear'
+                })}
+              </Button>
+            </Tooltip>
             <Tooltip
               title={t('option:notesSearch.newTooltip', {
                 defaultValue: 'Create a new note'
@@ -405,14 +407,16 @@ const NotesManagerPage: React.FC = () => {
         </div>
           <div className="mt-3 p-3 rounded-lg border dark:border-gray-700 bg-white dark:bg-[#171717] max-h-[50vh] md:max-h-[60vh] lg:max-h-[calc(100dvh-18rem)] overflow-auto">
           <div className="sticky -m-3 mb-2 top-0 z-10 px-3 py-2 bg-white dark:bg-[#171717] border-b dark:border-gray-700 flex items-center justify-between">
-            <span className="text-xs uppercase tracking-wide text-gray-500">Notes</span>
-            <span className="text-xs text-gray-400">
-              {t('option:notesSearch.listCount', {
-                defaultValue: '{{count}} notes',
-                count: total
-              })}
+            <span className="text-xs text-gray-500">
+              <span className="uppercase tracking-wide">Notes</span>
+              <span className="text-gray-400 ml-1">
+                {t('option:notesSearch.listCount', {
+                  defaultValue: '{{count}} notes',
+                  count: total
+                })}
+              </span>
             </span>
-            <div className="ml-auto flex items-center gap-2">
+            <div className="flex items-center gap-2">
               <Dropdown
                 menu={{
                   items: [
@@ -589,112 +593,87 @@ const NotesManagerPage: React.FC = () => {
           className="relative flex-1 p-3 rounded-lg border dark:border-gray-700 bg-white dark:bg-[#171717] min-h-[70vh] min-w-0 lg:h-[calc(100dvh-8rem)] overflow-auto"
           aria-disabled={editorDisabled}
         >
-          {editorDisabled && (
-            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center px-4 text-center bg-white/70 dark:bg-black/60">
-              <Typography.Text className="text-sm font-medium mb-1">
-                {(!capsLoading && capabilities && !capabilities.hasNotes)
-                  ? t('option:notesEmpty.offlineTitle', {
-                    defaultValue: 'Notes API not available on this server'
-                  })
-                  : t('option:notesEmpty.connectTitle', {
-                    defaultValue: 'Connect to use Notes'
-                  })}
-              </Typography.Text>
-              <Typography.Text type="secondary" className="text-xs">
-                {(!capsLoading && capabilities && !capabilities.hasNotes)
-                  ? t('option:notesEmpty.offlineDescription', {
-                    defaultValue:
-                      'This tldw server does not advertise the Notes endpoints (for example, /api/v1/notes/). Upgrade your server to a version that includes the Notes API to use this workspace.'
-                  })
-                  : t('option:notesEmpty.connectDescription', {
-                    defaultValue: 'To use Notes, first connect to your tldw server.'
-                  })}
-              </Typography.Text>
-            </div>
-          )}
-          <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between">
             <Typography.Title level={5} className="!mb-0">{selectedId == null ? 'New Note' : (title || `Note ${selectedId}`)}</Typography.Title>
-            <Space>
-            <Tooltip title={t('option:notesSearch.newTooltip', {
-              defaultValue: 'Create a new note'
-            })}>
-              <Button
-                size="small"
-                onClick={() => { void handleNewNote() }}
-                icon={(<PlusIcon className="w-4 h-4" />) as any}
-                disabled={editorDisabled}
-              >
-                {t('option:notesSearch.new', { defaultValue: 'New note' })}
-              </Button>
-            </Tooltip>
-            <Tooltip
-              title={t('option:notesSearch.toolbarCopyTooltip', {
-                defaultValue: 'Copy note content'
-              })}
-            >
-              <Button
-                size="small"
-                onClick={copySelected}
-                icon={(<CopyIcon className="w-4 h-4" />) as any}
-                aria-label={t('option:notesSearch.toolbarCopyTooltip', {
+            {!editorDisabled && (
+              <Space>
+              <Tooltip title={t('option:notesSearch.newTooltip', {
+                defaultValue: 'Create a new note'
+              })}>
+                <Button
+                  size="small"
+                  onClick={() => { void handleNewNote() }}
+                  icon={(<PlusIcon className="w-4 h-4" />) as any}
+                >
+                  {t('option:notesSearch.new', { defaultValue: 'New note' })}
+                </Button>
+              </Tooltip>
+              <Tooltip
+                title={t('option:notesSearch.toolbarCopyTooltip', {
                   defaultValue: 'Copy note content'
                 })}
-                disabled={editorDisabled}
-              />
-            </Tooltip>
-            <Tooltip
-              title={t('option:notesSearch.toolbarExportMdTooltip', {
-                defaultValue: 'Export note as Markdown (.md)'
-              })}>
-              <Button
-                size="small"
-                onClick={exportSelected}
-                icon={(<FileDownIcon className="w-4 h-4" />) as any}
-                aria-label={t('option:notesSearch.toolbarExportMdTooltip', {
+              >
+                <Button
+                  size="small"
+                  onClick={copySelected}
+                  icon={(<CopyIcon className="w-4 h-4" />) as any}
+                  aria-label={t('option:notesSearch.toolbarCopyTooltip', {
+                    defaultValue: 'Copy note content'
+                  })}
+                />
+              </Tooltip>
+              <Tooltip
+                title={t('option:notesSearch.toolbarExportMdTooltip', {
                   defaultValue: 'Export note as Markdown (.md)'
-                })}
-                disabled={editorDisabled}
-              >
-                MD
-              </Button>
-            </Tooltip>
-            <Tooltip
-              title={t('option:notesSearch.toolbarSaveTooltip', {
-                defaultValue: 'Save note'
-              })}>
-              <Button
-                type="primary"
-                size="small"
-                onClick={saveNote}
-                loading={saving}
-                icon={(<SaveIcon className="w-4 h-4" />) as any}
-                aria-label={t('option:notesSearch.toolbarSaveTooltip', {
+                })}>
+                <Button
+                  size="small"
+                  onClick={exportSelected}
+                  icon={(<FileDownIcon className="w-4 h-4" />) as any}
+                  aria-label={t('option:notesSearch.toolbarExportMdTooltip', {
+                    defaultValue: 'Export note as Markdown (.md)'
+                  })}
+                >
+                  MD
+                </Button>
+              </Tooltip>
+              <Tooltip
+                title={t('option:notesSearch.toolbarSaveTooltip', {
                   defaultValue: 'Save note'
-                })}
-                disabled={editorDisabled}
-              >
-                Save
-              </Button>
-            </Tooltip>
-            <Tooltip
-              title={t('option:notesSearch.toolbarDeleteTooltip', {
-                defaultValue: 'Delete note'
-              })}
-            >
-              <Button
-                danger
-                size="small"
-                onClick={() => void deleteNote()}
-                icon={(<TrashIcon className="w-4 h-4" />) as any}
-                disabled={selectedId == null || editorDisabled}
-                aria-label={t('option:notesSearch.toolbarDeleteTooltip', {
+                })}>
+                <Button
+                  type="primary"
+                  size="small"
+                  onClick={saveNote}
+                  loading={saving}
+                  icon={(<SaveIcon className="w-4 h-4" />) as any}
+                  aria-label={t('option:notesSearch.toolbarSaveTooltip', {
+                    defaultValue: 'Save note'
+                  })}
+                >
+                  Save
+                </Button>
+              </Tooltip>
+              <Tooltip
+                title={t('option:notesSearch.toolbarDeleteTooltip', {
                   defaultValue: 'Delete note'
                 })}
               >
-                {t('common:delete', { defaultValue: 'Delete' })}
-              </Button>
-            </Tooltip>
-          </Space>
+                <Button
+                  danger
+                  size="small"
+                  onClick={() => void deleteNote()}
+                  icon={(<TrashIcon className="w-4 h-4" />) as any}
+                  disabled={selectedId == null}
+                  aria-label={t('option:notesSearch.toolbarDeleteTooltip', {
+                    defaultValue: 'Delete note'
+                  })}
+                >
+                  {t('common:delete', { defaultValue: 'Delete' })}
+                </Button>
+              </Tooltip>
+            </Space>
+            )}
         </div>
         <div className="mt-2">
           <Input

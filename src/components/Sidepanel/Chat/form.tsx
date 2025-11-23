@@ -438,6 +438,22 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
   }, [])
 
   React.useEffect(() => {
+    const handler = () => {
+      if (!isConnectionReady) {
+        return
+      }
+      setIngestOpen(true)
+      requestAnimationFrame(() => {
+        quickIngestBtnRef.current?.focus()
+      })
+    }
+    window.addEventListener("tldw:open-quick-ingest", handler)
+    return () => {
+      window.removeEventListener("tldw:open-quick-ingest", handler)
+    }
+  }, [isConnectionReady])
+
+  React.useEffect(() => {
     if (sttError) {
       notification.error({
         message: t("playground:actions.streamErrorTitle", "Live captions unavailable"),

@@ -60,6 +60,7 @@
     "openai": "^4.95.1",
     "pa-tesseract.js": "^5.1.1",
     "pdfjs-dist": "4.0.379",
+    "playwright": "^1.56.1",
     "property-information": "^6.4.1",
     "pubsub-js": "^1.9.4",
     "react": "18.2.0",
@@ -81,7 +82,7 @@
   },
   "devDependencies": {
     "@plasmohq/prettier-plugin-sort-imports": "4.0.1",
-    "@playwright/test": "^1.55.0",
+    "@playwright/test": "^1.56.1",
     "@types/chrome": "^0.0.280",
     "@types/d3-dsv": "^3.0.7",
     "@types/html-to-text": "^9.0.4",

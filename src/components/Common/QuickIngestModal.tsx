@@ -39,6 +39,24 @@ function detectTypeFromUrl(url: string): Entry['type'] {
   }
 }
 
+function mediaIdFromPayload(data: any): string | number | null {
+  if (!data || typeof data !== "object") {
+    return null
+  }
+  const direct =
+    (data as any).id ??
+    (data as any).media_id ??
+    (data as any).pk ??
+    (data as any).uuid
+  if (direct !== undefined && direct !== null) {
+    return direct
+  }
+  if ((data as any).media && typeof (data as any).media === "object") {
+    return mediaIdFromPayload((data as any).media)
+  }
+  return null
+}
+
 export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
   const { t } = useTranslation(['option'])
   const [messageApi, contextHolder] = message.useMessage({
@@ -577,6 +595,60 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
     a.download = 'processed.json'
     a.click()
     URL.revokeObjectURL(a.href)
+  }
+
+  const openInMediaViewer = (item: ResultItem) => {
+    try {
+      const id = mediaIdFromPayload(item.data)
+      if (id == null) {
+        return
+      }
+      const idStr = String(id)
+      try {
+        localStorage.setItem("tldw:lastMediaId", idStr)
+      } catch {
+        // ignore storage failures
+      }
+      const hash = "#/media-multi"
+      const path = window.location.pathname || ""
+      if (path.includes("options.html")) {
+        window.location.hash = hash
+      } else {
+        window.open(`/options.html${hash}`, "_blank")
+      }
+    } catch {
+      // best-effort — do not crash modal
+    }
+  }
+
+  const discussInChat = (item: ResultItem) => {
+    try {
+      const id = mediaIdFromPayload(item.data)
+      if (id == null) {
+        return
+      }
+      const payload = {
+        mediaId: String(id),
+        url: item.url || (item.data && (item.data.url || item.data.source_url)) || undefined
+      }
+      try {
+        localStorage.setItem("tldw:discussMediaPrompt", JSON.stringify(payload))
+      } catch {
+        // ignore localStorage failures
+      }
+      const hash = "#/"
+      const path = window.location.pathname || ""
+      if (path.includes("options.html")) {
+        window.location.hash = hash
+        window.dispatchEvent(
+          new CustomEvent("tldw:discuss-media", { detail: payload })
+        )
+      } else {
+        window.open(`/options.html${hash}`, "_blank")
+      }
+    } catch {
+      // swallow errors; logging not needed here
+    }
   }
 
   const plannedCount = React.useMemo(() => {
@@ -1172,29 +1244,71 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
             <List
               size="small"
               dataSource={results}
-              renderItem={(item) => (
-                <List.Item actions={[
-                  !storeRemote && item.status === 'ok' ? (
+              renderItem={(item) => {
+                const mediaId = item.status === "ok" && storeRemote ? mediaIdFromPayload(item.data) : null
+                const hasMediaId = mediaId != null
+                const actions: React.ReactNode[] = []
+                if (!storeRemote && item.status === "ok") {
+                  actions.push(
                     <button
                       key="dl"
                       type="button"
                       onClick={() => downloadJson(item)}
-                      aria-label={`Download JSON for ${item.url || item.fileName || 'item'}`}
-                      className="text-blue-600 hover:underline">
-                      {t('quickIngest.downloadJson') || 'Download JSON'}
+                      aria-label={`Download JSON for ${item.url || item.fileName || "item"}`}
+                      className="text-blue-600 hover:underline"
+                    >
+                      {t("quickIngest.downloadJson") || "Download JSON"}
                     </button>
-                  ) : null
-                ]}>
-                  <div className="text-sm">
-                    <div className="flex items-center gap-2">
-                      <Tag color={item.status === 'ok' ? 'green' : 'red'}>{item.status.toUpperCase()}</Tag>
-                      <span>{item.type.toUpperCase()}</span>
+                  )
+                }
+                if (hasMediaId) {
+                  actions.push(
+                    <button
+                      key="open-media"
+                      type="button"
+                      onClick={() => openInMediaViewer(item)}
+                      className="text-blue-600 hover:underline"
+                    >
+                      {t("quickIngest.openInMedia", "Open in Media viewer")}
+                    </button>
+                  )
+                  actions.push(
+                    <button
+                      key="discuss-chat"
+                      type="button"
+                      onClick={() => discussInChat(item)}
+                      className="text-blue-600 hover:underline"
+                    >
+                      {t("quickIngest.discussInChat", "Discuss in chat")}
+                    </button>
+                  )
+                }
+                return (
+                  <List.Item actions={actions}>
+                    <div className="text-sm">
+                      <div className="flex items-center gap-2">
+                        <Tag color={item.status === "ok" ? "green" : "red"}>
+                          {item.status.toUpperCase()}
+                        </Tag>
+                        <span>{item.type.toUpperCase()}</span>
+                      </div>
+                      <div className="text-xs text-gray-500 break-all">
+                        {item.url || item.fileName}
+                      </div>
+                      {hasMediaId ? (
+                        <div className="text-[11px] text-gray-500">
+                          {t("quickIngest.savedAsMedia", "Saved as media {{id}}", {
+                            id: String(mediaId)
+                          })}
+                        </div>
+                      ) : null}
+                      {item.error ? (
+                        <div className="text-xs text-red-500">{item.error}</div>
+                      ) : null}
                     </div>
-                    <div className="text-xs text-gray-500 break-all">{item.url}</div>
-                    {item.error ? <div className="text-xs text-red-500">{item.error}</div> : null}
-                  </div>
-                </List.Item>
-              )}
+                  </List.Item>
+                )
+              }}
             />
           </div>
         )}
