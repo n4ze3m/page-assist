@@ -158,45 +158,7 @@ export default defineConfig({
       target: isFirefox ? "es2017" : "esnext",
       modulePreload: isFirefox ? false : undefined,
       rollupOptions: {
-        external: ["langchain", "@langchain/community"],
-        ...(isFirefox
-          ? {}
-          : {
-              output: {
-                manualChunks(id) {
-                  // Keep the bundled OpenAPI spec in its own chunk
-                  if (id.includes("openapi.json")) {
-                    return "openapi-spec"
-                  }
-
-                  // Group pdfjs-dist and its worker into a dedicated vendor chunk
-                  if (id.includes("pdfjs-dist")) {
-                    return "pdfjs-vendor"
-                  }
-
-                  // Group Markdown + KaTeX rendering stack together
-                  if (
-                    isAnyMatch(id, [
-                      "react-markdown",
-                      "remark-gfm",
-                      "remark-math",
-                      "rehype-katex",
-                      "katex/dist",
-                      "property-information"
-                    ])
-                  ) {
-                    return "markdown-katex"
-                  }
-
-                  // FontSizeProvider context and its heavy dependencies
-                  if (id.includes("/src/context/FontSizeProvider")) {
-                    return "font-size-provider"
-                  }
-
-                  return undefined
-                }
-              }
-            })
+        external: ["langchain", "@langchain/community"]
       }
     }
   }),
