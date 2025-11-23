@@ -16,6 +16,7 @@ import {
   notification
 } from "antd"
 import { useState } from "react"
+import { useWatch } from "antd/es/form/Form"
 import { useTranslation } from "react-i18next"
 import {
   addOpenAICofig,
@@ -122,6 +123,16 @@ export const OpenAIApp = () => {
 
   const handleDelete = (id: string) => {
     deleteMutation.mutate(id)
+  }
+
+  const baseUrl = useWatch("baseUrl", form)
+  if (!editingConfig && baseUrl && provider === "custom") {
+    const matchedProvider = OAI_API_PROVIDERS.find(
+      (p) => p.baseUrl.toLowerCase() === baseUrl.toLowerCase()
+    )
+    if (matchedProvider) {
+      setProvider(matchedProvider.value)
+    }
   }
 
   return (
