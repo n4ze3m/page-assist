@@ -159,10 +159,9 @@ export const OpenAIApp = () => {
                     })
                     return
                   }
-
+                  form.resetFields()
                   setEditingConfig(null)
                   setOpen(true)
-                  form.resetFields()
                 }}
                 className="inline-flex items-center justify-center rounded-md border border-transparent bg-black px-3 py-2 text-sm font-medium leading-4 text-white shadow-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-white dark:text-gray-800 dark:hover:bg-gray-100 dark:focus:ring-gray-500 dark:focus:ring-offset-gray-100 disabled:opacity-50 w-full sm:w-auto">
                 {t("addBtn")}
@@ -260,10 +259,10 @@ export const OpenAIApp = () => {
           open={open}
           title={editingConfig ? t("modal.titleEdit") : t("modal.titleAdd")}
           onCancel={() => {
+            form.resetFields()
             setOpen(false)
             setEditingConfig(null)
             setProvider("custom")
-            form.resetFields()
           }}
           footer={null}>
           {!editingConfig && (
@@ -436,8 +435,7 @@ export const OpenAIApp = () => {
           open={openModelModal}
           title={t("modal.model.title")}
           footer={null}
-          onCancel={() => setOpenModelModal(false)}
-  >
+          onCancel={() => setOpenModelModal(false)}>
           {openaiId ? (
             <OpenAIFetchModel
               openaiId={openaiId}
