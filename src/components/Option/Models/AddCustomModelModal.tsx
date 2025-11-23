@@ -82,8 +82,8 @@ export const AddCustomModelModal: React.FC<Props> = ({ open, setOpen }) => {
       queryClient.invalidateQueries({
         queryKey: ["fetchModel"]
       })
-      setOpen(false)
       form.resetFields()
+      setOpen(false)
     }
   })
 
@@ -92,7 +92,10 @@ export const AddCustomModelModal: React.FC<Props> = ({ open, setOpen }) => {
       footer={null}
       open={open}
       title={t("manageModels.modal.title")}
-      onCancel={() => setOpen(false)}>
+      onCancel={() => {
+        form.resetFields()
+        setOpen(false)
+      }}>
       <Form form={form} onFinish={createModelMutation} layout="vertical">
         <Form.Item
           name="model_id"

@@ -117,15 +117,15 @@
         "confirm": "Är du säker på att du vill utföra en systemåterställning? Detta kommer att radera all data och kan inte ångras."
       },
       "export": {
-        "label": "Exportera chatthistorik, kunskapsbas och instruktioner",
-        "button": "Exportera Data",
-        "success": "Exportering Lyckades"
+        "label": "Exportera all data (chatthistorik, kunskapsbas, prompts och inställningar)",
+        "button": "Exportera data",
+        "success": "Export lyckades"
       },
       "import": {
-        "label": "Importera chatthistorik, kunskapsbas och instruktioner",
-        "button": "Importera Data",
-        "success": "Importering Lyckades",
-        "error": "Importeringsfel"
+        "label": "Importera all data (chatthistorik, kunskapsbas, prompts och inställningar)",
+        "button": "Importera data",
+        "success": "Import lyckades",
+        "error": "Importfel"
       }
     },
     "tts": {

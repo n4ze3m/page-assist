@@ -107,12 +107,12 @@
         "confirm": "Sind Sie sicher, dass Sie einen Systemreset durchführen möchten? Dies löscht alle Daten und kann nicht rückgängig gemacht werden."
       },
       "export": {
-        "label": "Chatverlauf, Wissensbasis und Prompts exportieren",
+        "label": "Alle Daten exportieren (Chatverlauf, Wissensdatenbank, Prompts und Einstellungen)",
         "button": "Daten exportieren",
         "success": "Export erfolgreich"
       },
       "import": {
-        "label": "Chatverlauf, Wissensbasis und Prompts importieren",
+        "label": "Alle Daten importieren (Chatverlauf, Wissensdatenbank, Prompts und Einstellungen)",
         "button": "Daten importieren",
         "success": "Import erfolgreich",
         "error": "Importfehler"

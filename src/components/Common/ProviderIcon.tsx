@@ -23,6 +23,7 @@ import { XAIIcon } from "../Icons/XAI"
 import { HuggingFaceIcon } from "../Icons/HuggingFaceIcon"
 import { VercelIcon } from "../Icons/VercelIcon"
 import { ChutesIcon } from "../Icons/ChutesIcon"
+import { AnthropicIcon } from "../Icons/AnthropicIcon"
 
 export const ProviderIcons = ({
   provider,
@@ -82,6 +83,8 @@ export const ProviderIcons = ({
       return <VercelIcon className={className} />
     case "chutes":
       return <ChutesIcon className={className} />
+    case "anthropic":
+      return <AnthropicIcon className={className} />
     default:
       return <OllamaIcon className={className} />
   }
