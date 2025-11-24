@@ -5,6 +5,22 @@ export default defineContentScript({
   main(ctx) {
     let isPulling = false
 
+    const extractOllamaModelName = (cmd: string): string | null => {
+      const line = cmd
+        .split("\n")
+        .find((l) => {
+          const trimmed = l.trim()
+          return (
+            trimmed.startsWith("ollama run") ||
+            trimmed.startsWith("ollama pull")
+          )
+        })
+      if (!line) return null
+      const [, , ...rest] = line.trim().split(/\s+/)
+      if (!rest.length) return null
+      return rest[0]
+    }
+
     const downloadModel = async (modelName: string) => {
       if (isPulling) {
         alert(
@@ -25,12 +41,24 @@ export default defineContentScript({
         // Path is declared in OpenAPI; annotate for compile-time safety
         const path = '/api/v1/media/add' as AllowedPath
         try {
-          await apiSend({
+          const resp = await apiSend({
             path,
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: { url: window.location.href, model: modelName }
           })
+          if (!resp?.ok) {
+            console.error(
+              "[tldw Assistant] Model pull request rejected by tldw_server",
+              resp
+            )
+            alert(
+              `[tldw Assistant] Failed to send a pull request for "${modelName}": ${
+                resp.error || `status ${resp.status ?? "unknown"}`
+              }. Check Settings → tldw server and try again.`
+            )
+            return false
+          }
           alert(
             `[tldw Assistant] Request sent to your tldw_server to pull "${modelName}". Monitor the extension icon or tldw_server logs for status.`
           )
@@ -85,26 +113,13 @@ export default defineContentScript({
         
         downloadButton.addEventListener("click", async () => {
           const preElement = modal.querySelector("pre")
-          if (preElement) {
-            const modelCommand = preElement.textContent?.trim() || ""
-            
-            if (modelCommand.includes("ollama run") || modelCommand.includes("ollama pull")) {
-              const lines = modelCommand.split('\n')
-              const ollamaLine = lines.find(line => 
-                line.trim().startsWith("ollama run") || line.trim().startsWith("ollama pull")
-              )
-              
-              if (ollamaLine) {
-                await downloadModel(
-                  ollamaLine
-                    .trim()
-                    .replaceAll("ollama run", "")
-                    .replaceAll("ollama pull", "")
-                    .trim()
-                )
-              }
-            }
-          }
+          if (!preElement) return
+
+          const modelCommand = preElement.textContent?.trim() || ""
+          const modelName = extractOllamaModelName(modelCommand)
+          if (!modelName) return
+
+          await downloadModel(modelName)
         })
         
         modal.appendChild(downloadButton)
@@ -123,44 +138,31 @@ export default defineContentScript({
           "Send to tldw_server"
         downloadButton.addEventListener("click", async () => {
           const preElement = modal.querySelector("pre")
-          if (preElement) {
-            let modelCommand = ""
-            preElement.childNodes.forEach((node) => {
-              if (node.nodeType === Node.TEXT_NODE) {
+          if (!preElement) return
+
+          let modelCommand = ""
+          preElement.childNodes.forEach((node) => {
+            if (node.nodeType === Node.TEXT_NODE) {
+              modelCommand += node.textContent
+            } else if (node instanceof HTMLSelectElement) {
+              modelCommand += node.value
+            } else if (node instanceof HTMLElement) {
+              const selectElement = node.querySelector(
+                "select"
+              ) as HTMLSelectElement
+              if (selectElement) {
+                modelCommand += selectElement.value
+              } else {
                 modelCommand += node.textContent
-              } else if (node instanceof HTMLSelectElement) {
-                modelCommand += node.value
-              } else if (node instanceof HTMLElement) {
-                const selectElement = node.querySelector(
-                  "select"
-                ) as HTMLSelectElement
-                if (selectElement) {
-                  modelCommand += selectElement.value
-                } else {
-                  modelCommand += node.textContent
-                }
-              }
-            })
-
-            modelCommand = modelCommand.trim()
-
-            if (modelCommand.includes("ollama run") || modelCommand.includes("ollama pull")) {
-              const lines = modelCommand.split('\n')
-              const ollamaLine = lines.find(line => 
-                line.trim().startsWith("ollama run") || line.trim().startsWith("ollama pull")
-              )
-              
-              if (ollamaLine) {
-                await downloadModel(
-                  ollamaLine
-                    .trim()
-                    .replaceAll("ollama run", "")
-                    .replaceAll("ollama pull", "")
-                    .trim()
-                )
               }
             }
-          }
+          })
+
+          modelCommand = modelCommand.trim()
+          const modelName = extractOllamaModelName(modelCommand)
+          if (!modelName) return
+
+          await downloadModel(modelName)
         })
         const buttonContainer = document.createElement('div')
         buttonContainer.classList.add("mb-3")

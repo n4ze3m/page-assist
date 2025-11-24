@@ -25,19 +25,19 @@
   "useOCR": "Trekk ut tekst fra bilde (OCR)",
   "tips": {
     "title": "Tips",
-    "quickIngest": "Use Quick ingest to add documents and web pages.",
-    "pickModelPrompt": "Pick a Model and a Prompt from the header.",
-    "startChatFocus": "When connected, “Start chatting” focuses the composer."
+    "quickIngest": "Bruk Hurtiginnlasting for å legge til dokumenter og nettsider.",
+    "pickModelPrompt": "Velg en modell og en prompt fra toppmenyen.",
+    "startChatFocus": "Når tilkoblet, fokuserer «Start chatting» på komposisjonsfeltet."
   },
   "tldwState": {
     "searching": "Søker etter din tldw server",
     "running": "tldw kjører",
     "notRunning": "Kan ikke koble til tldw server",
     "connectionError": "Det ser ut til at du har en tilkoblingsfeil. Vennligst se denne <anchor>dokumentasjonen</anchor> for feilsøking.",
-    "openTldwSettings": "Open tldw Settings",
-    "cancelSearch": "Cancel search",
-    "connectionFailedWithCode": "Connection failed (HTTP {{code}})",
-    "connectionFailed": "Connection failed",
-    "errorDetailsLabel": "Details:"
+    "openTldwSettings": "Åpne tldw-innstillinger",
+    "cancelSearch": "Avbryt søk",
+    "connectionFailedWithCode": "Tilkobling mislyktes (HTTP {{code}})",
+    "connectionFailed": "Tilkobling mislyktes",
+    "errorDetailsLabel": "Detaljer:"
   }
 }

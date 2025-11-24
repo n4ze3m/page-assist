@@ -104,17 +104,25 @@ export default defineBackground({
     }
 
     const ensureSidepanelOpen = () => {
+      const sidebar: any = (browser as any)?.sidebarAction
+      if (!sidebar) return
+
       try {
-        // @ts-ignore Firefox sidebar API
-        if (browser?.sidebarAction?.open) {
-          // @ts-ignore
-          browser.sidebarAction.open()
+        if (typeof sidebar.open === "function") {
+          sidebar.open()
           return
         }
-        if (browser?.sidebarAction?.toggle) {
-          browser.sidebarAction.toggle()
+      } catch {
+        // fall through to toggle
+      }
+
+      try {
+        if (typeof sidebar.toggle === "function") {
+          sidebar.toggle()
         }
-      } catch {}
+      } catch {
+        // swallow any sidebar errors
+      }
     }
 
     const pickFirstString = (value: any, keys: string[]): string | null => {
@@ -232,8 +240,8 @@ export default defineBackground({
                 text: combinedText,
                 payload: {
                   url: targetUrl,
-                  transcript,
-                  summary,
+                  transcript: safeTranscript,
+                  summary: safeSummary,
                   mode
                 }
               })
@@ -512,6 +520,10 @@ export default defineBackground({
         }
         if (!isCopilotRunning) {
           ensureSidepanelOpen()
+          notify(
+            browser.i18n.getMessage("contextSaveToNotes"),
+            browser.i18n.getMessage("contextSaveToNotesOpeningSidebar")
+          )
         }
         setTimeout(async () => {
           await browser.runtime.sendMessage({
@@ -524,7 +536,7 @@ export default defineBackground({
               pageTitle: tab?.title || ""
             }
           })
-        }, isCopilotRunning ? 0 : 5000)
+        }, isCopilotRunning ? 0 : 1000)
       } else if (info.menuItemId === 'send-to-tldw') {
         const pageUrl = info.pageUrl || (tab && tab.url) || ''
         const targetUrl = (info.linkUrl && /^https?:/i.test(info.linkUrl)) ? info.linkUrl : pageUrl
@@ -544,6 +556,10 @@ export default defineBackground({
       } else if (info.menuItemId === "summarize-pa") {
         if (!isCopilotRunning) {
           browser.sidebarAction.toggle()
+          notify(
+            browser.i18n.getMessage("contextSummarize"),
+            browser.i18n.getMessage("contextSidebarOpening")
+          )
         }
         setTimeout(async () => {
           await browser.runtime.sendMessage({
@@ -551,10 +567,14 @@ export default defineBackground({
             type: "summary",
             text: info.selectionText
           })
-        }, isCopilotRunning ? 0 : 5000)
+        }, isCopilotRunning ? 0 : 1000)
       } else if (info.menuItemId === "rephrase-pa") {
         if (!isCopilotRunning) {
           browser.sidebarAction.toggle()
+          notify(
+            browser.i18n.getMessage("contextRephrase"),
+            browser.i18n.getMessage("contextSidebarOpening")
+          )
         }
         setTimeout(async () => {
           await browser.runtime.sendMessage({
@@ -562,10 +582,14 @@ export default defineBackground({
             from: "background",
             text: info.selectionText
           })
-        }, isCopilotRunning ? 0 : 5000)
+        }, isCopilotRunning ? 0 : 1000)
       } else if (info.menuItemId === "translate-pg") {
         if (!isCopilotRunning) {
           browser.sidebarAction.toggle()
+          notify(
+            browser.i18n.getMessage("contextTranslate"),
+            browser.i18n.getMessage("contextSidebarOpening")
+          )
         }
         setTimeout(async () => {
           await browser.runtime.sendMessage({
@@ -573,10 +597,14 @@ export default defineBackground({
             from: "background",
             text: info.selectionText
           })
-        }, isCopilotRunning ? 0 : 5000)
+        }, isCopilotRunning ? 0 : 1000)
       } else if (info.menuItemId === "explain-pa") {
         if (!isCopilotRunning) {
           browser.sidebarAction.toggle()
+          notify(
+            browser.i18n.getMessage("contextExplain"),
+            browser.i18n.getMessage("contextSidebarOpening")
+          )
         }
         setTimeout(async () => {
           await browser.runtime.sendMessage({
@@ -584,10 +612,14 @@ export default defineBackground({
             from: "background",
             text: info.selectionText
           })
-        }, isCopilotRunning ? 0 : 5000)
+        }, isCopilotRunning ? 0 : 1000)
       } else if (info.menuItemId === "custom-pg") {
         if (!isCopilotRunning) {
           browser.sidebarAction.toggle()
+          notify(
+            browser.i18n.getMessage("contextCustom"),
+            browser.i18n.getMessage("contextSidebarOpening")
+          )
         }
         setTimeout(async () => {
           await browser.runtime.sendMessage({
@@ -595,7 +627,7 @@ export default defineBackground({
             from: "background",
             text: info.selectionText
           })
-        }, isCopilotRunning ? 0 : 5000)
+        }, isCopilotRunning ? 0 : 1000)
       }
     })
 

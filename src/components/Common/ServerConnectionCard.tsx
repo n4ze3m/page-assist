@@ -23,15 +23,23 @@ type ConnectionToastContentProps = {
   title: string
   body: string
   onDismiss: () => void
+  shouldAutoFocus?: () => boolean
 }
 
 const ConnectionToastContent: React.FC<ConnectionToastContentProps> = ({
   title,
   body,
-  onDismiss
+  onDismiss,
+  shouldAutoFocus
 }) => {
   const { t } = useTranslation("common")
   const containerRef = React.useRef<HTMLDivElement | null>(null)
+
+  React.useEffect(() => {
+    if (shouldAutoFocus && shouldAutoFocus()) {
+      containerRef.current?.focus()
+    }
+  }, [shouldAutoFocus])
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
     if (event.key === "Escape" || event.key === "Esc") {
@@ -121,23 +129,24 @@ export const ServerConnectionCard: React.FC<Props> = ({
   else if (phase === ConnectionPhase.CONNECTED) statusVariant = "ok"
   else if (phase === ConnectionPhase.ERROR) statusVariant = "error"
 
+  const canStealFocus = React.useCallback((): boolean => {
+    if (typeof document === "undefined") return false
+    if (document.visibilityState !== "visible") return false
+    const active = document.activeElement
+    if (!active || active === document.body) return true
+    const tag = (active.tagName || "").toLowerCase()
+    const focusableTags = new Set(["input", "textarea", "select", "button"])
+    if (focusableTags.has(tag)) return false
+    const tabIndex = (active as HTMLElement).getAttribute?.("tabindex")
+    if (tabIndex && !Number.isNaN(Number(tabIndex)) && Number(tabIndex) >= 0) {
+      return false
+    }
+    return true
+  }, [])
+
   React.useEffect(() => {
     if (!showToastOnError) return
     const toastKey = "tldw-connection-toast"
-
-    const canStealFocus = (): boolean => {
-      if (document.visibilityState !== "visible") return false
-      const active = document.activeElement
-      if (!active || active === document.body) return true
-      const tag = (active.tagName || "").toLowerCase()
-      const focusableTags = new Set(["input", "textarea", "select", "button"])
-      if (focusableTags.has(tag)) return false
-      const tabIndex = (active as HTMLElement).getAttribute?.("tabindex")
-      if (tabIndex && !Number.isNaN(Number(tabIndex)) && Number(tabIndex) >= 0) {
-        return false
-      }
-      return true
-    }
 
     if (statusVariant === "error") {
       const detail = lastError || undefined
@@ -163,14 +172,6 @@ export const ServerConnectionCard: React.FC<Props> = ({
         { detailSection: detailSection ? `\n${detailSection}` : "" }
       )
 
-      const focusToastIfNeeded = () => {
-        const node = document.querySelector<HTMLElement>(".tldw-connection-toast")
-        if (!node) return
-        if (canStealFocus()) {
-          node.focus()
-        }
-      }
-
       notification.error({
         key: toastKey,
         message: null,
@@ -179,13 +180,13 @@ export const ServerConnectionCard: React.FC<Props> = ({
             title={heading}
             body={body}
             onDismiss={() => notification.destroy(toastKey)}
+            shouldAutoFocus={canStealFocus}
           />
         ),
         placement: "bottomLeft",
         duration: 0,
         className: "tldw-connection-toast"
       })
-      requestAnimationFrame(() => focusToastIfNeeded())
     } else {
       // Clear error toast when connection succeeds, is missing, or is checking
       notification.destroy(toastKey)

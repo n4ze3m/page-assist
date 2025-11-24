@@ -39,7 +39,10 @@ const OptionIndex = () => {
   const showOnboarding = phase !== ConnectionPhase.CONNECTED
 
   return (
-    <OptionLayout hideHeader={showOnboarding} showHeaderSelectors={false}>
+    <OptionLayout
+      hideHeader={showOnboarding}
+      showHeaderSelectors={!showOnboarding}
+    >
       {showOnboarding ? (
         <div className="w-full">
           <ServerConnectionCard

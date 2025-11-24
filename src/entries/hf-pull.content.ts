@@ -7,8 +7,37 @@ export default defineContentScript({
       const url = window.location.href
       // The path is declared in the OpenAPI spec; annotate for compile-time safety
       const path = '/api/v1/media/add' as AllowedPath
-      await apiSend({ path, method: 'POST', headers: { 'Content-Type': 'application/json' }, body: { url } })
-      alert('[tldw] Sent page to tldw_server for processing')
+      try {
+        const resp = await apiSend({
+          path,
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: { url }
+        })
+
+        if (!resp?.ok) {
+          console.error(
+            "[tldw] Page send request rejected by tldw_server",
+            resp
+          )
+          alert(
+            `[tldw] Failed to send this page to tldw_server: ${
+              resp.error || `status ${resp.status ?? "unknown"}`
+            }. Check Settings → tldw server and try again.`
+          )
+          return
+        }
+
+        alert("[tldw] Sent page to tldw_server for processing")
+      } catch (error) {
+        console.error(
+          "[tldw] Failed to send page to tldw_server for processing",
+          error
+        )
+        alert(
+          "[tldw] Something went wrong while sending this page to tldw_server. Check that your tldw_server and the extension are running, then try again."
+        )
+      }
     }
 
     const downloadSVG = `

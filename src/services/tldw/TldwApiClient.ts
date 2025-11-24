@@ -1,5 +1,6 @@
 import { Storage } from "@plasmohq/storage"
 import { bgRequest, bgStream, bgUpload } from "@/services/background-proxy"
+import { isPlaceholderApiKey } from "@/utils/api-key"
 
 const DEFAULT_SERVER_URL = "http://127.0.0.1:8000"
 
@@ -105,14 +106,6 @@ export class TldwApiClient {
     } catch {
       return false
     }
-  }
-
-  private isPlaceholderApiKey(key?: string | null): boolean {
-    if (!key) return false
-    const normalized = String(key).trim()
-    if (!normalized) return false
-    // Treat any key that still contains "REPLACE-ME" as a placeholder.
-    return normalized.toUpperCase().includes("REPLACE-ME")
   }
 
   private getMissingApiKeyMessage(): string {

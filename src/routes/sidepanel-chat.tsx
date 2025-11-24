@@ -363,7 +363,7 @@ const SidepanelChat = () => {
         ...prev,
         { isBot: true, name: label, message: messageBody, sources: [], id }
       ])
-      setHistory([...history, { role: "assistant", content: messageBody }])
+      setHistory((prev) => [...prev, { role: "assistant", content: messageBody }])
       return
     }
 
