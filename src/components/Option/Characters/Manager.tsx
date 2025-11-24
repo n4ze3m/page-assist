@@ -16,7 +16,7 @@ const MAX_DESCRIPTION_LENGTH = 65
 const MAX_TAG_LENGTH = 20
 const MAX_TAGS_DISPLAYED = 6
 const BASE64_IMAGE_PATTERN =
-  /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/
+  /^(?:[A-Za-z0-9+/_-]{4})*(?:[A-Za-z0-9+/_-]{2}==|[A-Za-z0-9+/_-]{3}=)?$/
 const ALLOWED_IMAGE_MIME_TYPES = new Set(["image/png", "image/jpeg", "image/gif"])
 
 const truncateText = (value?: string, max?: number) => {
@@ -502,6 +502,7 @@ export const CharactersManager: React.FC = () => {
         open={open}
         onCancel={() => {
           setOpen(false)
+          createForm.resetFields()
           setTimeout(() => {
             newButtonRef.current?.focus()
           }, 0)
@@ -667,6 +668,9 @@ export const CharactersManager: React.FC = () => {
         open={openEdit}
         onCancel={() => {
           setOpenEdit(false)
+          editForm.resetFields()
+          setEditId(null)
+          setEditVersion(null)
           setTimeout(() => {
             lastEditTriggerRef.current?.focus()
           }, 0)

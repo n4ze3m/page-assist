@@ -7,7 +7,7 @@ const fs = require('fs/promises')
 const { chromium } = require('@playwright/test')
 
 async function ensureExtensionPath() {
-  const extensionPath = path.resolve('build', 'chrome-zip')
+  const extensionPath = path.resolve('build', 'chrome-mv3')
   const manifestPath = path.join(extensionPath, 'manifest.json')
   await fs.access(manifestPath)
   return extensionPath
@@ -82,4 +82,3 @@ main().catch((error) => {
   console.error(error)
   process.exit(1)
 })
-

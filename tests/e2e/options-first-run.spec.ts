@@ -49,16 +49,17 @@ test.describe('Options first-run and connection panel', () => {
 
   test('Start chatting focuses the composer when connected', async () => {
     const server = new MockTldwServer()
-    server.setApiKey('THIS-IS-A-SECURE-KEY-123-REPLACE-ME')
+    server.setApiKey(DEFAULT_TLDW_API_KEY)
     const serverPort = await server.start(0)
     const serverBaseUrl = `http://127.0.0.1:${serverPort}`
+    const hostPermissionOrigin = `${serverBaseUrl}/*`
 
     const extPath = path.resolve('.output/chrome-mv3')
     const seed = {
       tldwConfig: {
         serverUrl: serverBaseUrl,
         authMode: 'single-user',
-        apiKey: 'THIS-IS-A-SECURE-KEY-123-REPLACE-ME'
+        apiKey: DEFAULT_TLDW_API_KEY
       }
     }
     const { context, page: initialPage, extensionId } = await launchWithExtension(extPath, { seedConfig: seed }) as any
@@ -66,16 +67,16 @@ test.describe('Options first-run and connection panel', () => {
     const optionsUrl = `chrome-extension://${extensionId}/options.html`
 
     // Ensure host permission for the mock server is granted
-    const granted = await grantHostPermission(context, extensionId, `${serverBaseUrl}/*`)
+    const granted = await grantHostPermission(context, extensionId, hostPermissionOrigin)
     if (!granted) {
-      test.skip(true, `Host permission not granted for ${serverBaseUrl}/*; allow it in chrome://extensions > tldw Assistant > Site access, then re-run`)
+      test.skip(true, `Host permission not granted for ${hostPermissionOrigin}; allow it in chrome://extensions > tldw Assistant > Site access, then re-run`)
     }
 
     // Seed valid config so the card shows connected state
     await page.evaluate((cfg) => new Promise<void>((resolve) => {
       // @ts-ignore
       chrome.storage.local.set({ tldwConfig: cfg }, () => resolve())
-    }), { serverUrl: serverBaseUrl, authMode: 'single-user', apiKey: 'THIS-IS-A-SECURE-KEY-123-REPLACE-ME' })
+    }), { serverUrl: serverBaseUrl, authMode: 'single-user', apiKey: DEFAULT_TLDW_API_KEY })
     await page.reload()
     page = await context.newPage()
     page.on('console', (msg) => console.log('console', msg.type(), msg.text()))

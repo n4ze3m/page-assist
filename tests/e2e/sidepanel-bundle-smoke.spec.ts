@@ -4,7 +4,7 @@ import { launchWithExtension } from './utils/extension'
 
 test.describe('Packaged sidepanel bundle', () => {
   test('renders the connection card from the built artifact', async () => {
-    const extPath = path.resolve('build/chrome-zip')
+    const extPath = path.resolve('build/chrome-mv3')
     const { context, openSidepanel } = (await launchWithExtension(extPath)) as any
     const page = await openSidepanel()
 
