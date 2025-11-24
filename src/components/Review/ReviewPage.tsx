@@ -128,7 +128,8 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true, 
   const [sidebarHidden, setSidebarHidden] = React.useState<boolean>(false)
   const [advancedOpen, setAdvancedOpen] = React.useState<boolean>(false)
   const modeToastPrev = React.useRef<"review" | "summary" | null>(null)
-  const isOnline = forceOffline ? false : useServerOnline()
+  const serverOnline = useServerOnline()
+  const isOnline = forceOffline ? false : serverOnline
 
   // Storage scoping: per server host and auth mode to avoid cross-user leakage
   const scopedKey = React.useCallback((base: string) => {

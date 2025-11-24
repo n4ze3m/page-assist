@@ -39,3 +39,4 @@ Tip: WXT outputs to `.output/<browser>-mv3/` for loading as an unpacked extensio
 
 ## Security & Configuration Tips
 - Do not hard-code API keys/tokens; configure providers via Options pages and extension storage. Avoid committing secrets.
+- For local dev/testing, you may set `VITE_TLDW_API_KEY` (or `VITE_TLDW_DEFAULT_API_KEY`) in your environment or `.env` file so the extension seeds `tldwConfig.apiKey` from env. Never use placeholder keys (e.g., values containing `REPLACE-ME`) in production builds. 

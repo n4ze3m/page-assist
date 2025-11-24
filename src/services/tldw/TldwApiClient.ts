@@ -1,6 +1,8 @@
 import { Storage } from "@plasmohq/storage"
 import { bgRequest, bgStream, bgUpload } from "@/services/background-proxy"
 
+const DEFAULT_SERVER_URL = "http://127.0.0.1:8000"
+
 export interface TldwConfig {
   serverUrl: string
   apiKey?: string
@@ -83,21 +85,158 @@ export class TldwApiClient {
     })
   }
 
-  async initialize(): Promise<void> {
-    const config = await this.storage.get<TldwConfig>('tldwConfig')
-    if (!config) {
-      throw new Error('tldw server not configured')
+  private getEnvApiKey(): string | null {
+    try {
+      const env: any = (import.meta as any)?.env || {}
+      const raw =
+        (env?.VITE_TLDW_API_KEY as string | undefined) ??
+        (env?.VITE_TLDW_DEFAULT_API_KEY as string | undefined)
+      const key = (raw || "").trim()
+      return key || null
+    } catch {
+      return null
     }
-    this.config = config
-    this.baseUrl = config.serverUrl.replace(/\/$/, '') // Remove trailing slash
-    
+  }
+
+  private isDevMode(): boolean {
+    try {
+      const env: any = (import.meta as any)?.env || {}
+      return Boolean(env?.DEV) || env?.MODE === "development"
+    } catch {
+      return false
+    }
+  }
+
+  private isPlaceholderApiKey(key?: string | null): boolean {
+    if (!key) return false
+    const normalized = String(key).trim()
+    if (!normalized) return false
+    // Treat any key that still contains "REPLACE-ME" as a placeholder.
+    return normalized.toUpperCase().includes("REPLACE-ME")
+  }
+
+  private getMissingApiKeyMessage(): string {
+    return "tldw server API key is missing. Open Settings → tldw server and configure an API key before continuing."
+  }
+
+  private getPlaceholderApiKeyMessage(): string {
+    return "tldw server API key is still set to the default demo value. Replace it with your real API key in Settings → tldw server before continuing."
+  }
+
+  private async ensureConfigForRequest(requireAuth: boolean): Promise<TldwConfig> {
+    const cfg = (await this.getConfig()) || null
+    if (!cfg || !cfg.serverUrl) {
+      const msg =
+        "tldw server is not configured. Open Settings → tldw server in the extension and set the server URL and API key."
+      // eslint-disable-next-line no-console
+      console.warn(msg)
+      throw new Error(msg)
+    }
+
+    if (!requireAuth) {
+      return cfg
+    }
+
+    if (cfg.authMode === "multi-user") {
+      const token = (cfg.accessToken || "").trim()
+      if (!token) {
+        const msg =
+          "Not authenticated. Please log in under Settings → tldw server before continuing."
+        // eslint-disable-next-line no-console
+        console.warn(msg)
+        throw new Error(msg)
+      }
+      return cfg
+    }
+
+    // single-user auth
+    const key = (cfg.apiKey || "").trim()
+    if (!key) {
+      const msg = this.getMissingApiKeyMessage()
+      // eslint-disable-next-line no-console
+      console.warn(msg)
+      throw new Error(msg)
+    }
+
+    const isPlaceholder = this.isPlaceholderApiKey(key)
+    if (isPlaceholder && !this.isDevMode()) {
+      const msg = this.getPlaceholderApiKeyMessage()
+      // eslint-disable-next-line no-console
+      console.warn(msg)
+      throw new Error(msg)
+    }
+
+    if (isPlaceholder && this.isDevMode()) {
+      // eslint-disable-next-line no-console
+      console.warn(
+        "[tldw] Using placeholder API key in development. Do not use this key in production deployments."
+      )
+    }
+
+    return cfg
+  }
+
+  private async request<T>(init: any, requireAuth = true): Promise<T> {
+    await this.ensureConfigForRequest(requireAuth && !init?.noAuth)
+    return await bgRequest<T>(init)
+  }
+
+  private async upload<T>(init: any, requireAuth = true): Promise<T> {
+    await this.ensureConfigForRequest(requireAuth)
+    return await bgUpload<T>(init)
+  }
+
+  private async *stream(init: any, requireAuth = true): AsyncGenerator<string> {
+    await this.ensureConfigForRequest(requireAuth)
+    for await (const line of bgStream(init)) {
+      yield line as string
+    }
+  }
+
+  async initialize(): Promise<void> {
+    const stored = await this.storage.get<TldwConfig>('tldwConfig')
+    const envApiKey = this.getEnvApiKey()
+
+    // Seed a default local single-user config so first-run prefers the real server
+    // before falling back to mocked/placeholder flows. API keys are never auto-filled;
+    // users must explicitly configure credentials in Settings/Onboarding.
+    if (!stored) {
+      const seeded: TldwConfig = {
+        serverUrl: DEFAULT_SERVER_URL,
+        authMode: 'single-user'
+      }
+      if (envApiKey) {
+        seeded.apiKey = envApiKey
+      }
+      await this.storage.set('tldwConfig', seeded)
+      this.config = seeded
+    } else {
+      const hydrated: TldwConfig = {
+        ...stored,
+        serverUrl: stored.serverUrl || DEFAULT_SERVER_URL,
+        authMode: stored.authMode || 'single-user'
+      }
+      if (!hydrated.apiKey && envApiKey) {
+        hydrated.apiKey = envApiKey
+      }
+      this.config = hydrated
+      // Persist any hydrated defaults for later reads (e.g., background proxy)
+      await this.storage.set('tldwConfig', hydrated)
+    }
+
+    const config = this.config!
+    this.baseUrl = (config.serverUrl || DEFAULT_SERVER_URL).replace(/\/$/, '') // Remove trailing slash
+
     // Set up headers based on auth mode
     this.headers = {
       'Content-Type': 'application/json',
     }
 
     if (config.authMode === 'single-user' && config.apiKey) {
-      this.headers['X-API-KEY'] = config.apiKey
+      const key = String(config.apiKey || '').trim()
+      if (key && (!this.isPlaceholderApiKey(key) || this.isDevMode())) {
+        this.headers['X-API-KEY'] = key
+      }
     } else if (config.authMode === 'multi-user' && config.accessToken) {
       this.headers['Authorization'] = `Bearer ${config.accessToken}`
     }
@@ -957,23 +1096,21 @@ export class TldwApiClient {
 
   // STT Methods
   async transcribeAudio(audioFile: File | Blob, options?: any): Promise<any> {
-    const cfg = await this.getConfig()
-    if (!cfg) throw new Error('tldw server not configured')
+    await this.ensureConfigForRequest(true)
     const fields: Record<string, any> = {}
     if (options?.model) fields.model = options.model
     if (options?.language) fields.language = options.language
     const data = await audioFile.arrayBuffer()
     const name = (typeof File !== 'undefined' && audioFile instanceof File && (audioFile as File).name) ? (audioFile as File).name : 'audio'
     const type = (audioFile as any)?.type || 'application/octet-stream'
-    return await bgUpload<any>({ path: '/api/v1/audio/transcriptions', method: 'POST', fields, file: { name, type, data } })
+    return await this.upload<any>({ path: '/api/v1/audio/transcriptions', method: 'POST', fields, file: { name, type, data } })
   }
 
   async synthesizeSpeech(
     text: string,
     options?: { voice?: string; model?: string; responseFormat?: string; speed?: number }
   ): Promise<ArrayBuffer> {
-    const cfg = await this.getConfig()
-    if (!cfg) throw new Error('tldw server not configured')
+    await this.ensureConfigForRequest(true)
     if (!this.baseUrl) await this.initialize()
     const base = this.baseUrl.replace(/\/$/, '')
     const url = `${base}/api/v1/audio/speech`

@@ -37,6 +37,18 @@ type MockFlashcard = {
   reverse: boolean
 }
 
+type MockCharacter = {
+  id: string
+  name: string
+  description?: string | null
+  avatar_url?: string | null
+  tags?: string[] | null
+  system_prompt?: string | null
+  greeting?: string | null
+  deleted?: boolean
+  version: number
+}
+
 export class MockTldwServer {
   private server: http.Server
   public url!: string
@@ -45,14 +57,18 @@ export class MockTldwServer {
   // Minimal in-memory flashcards/decks for UX tests
   private decks: MockDeck[] = []
   private cards: MockFlashcard[] = []
+  private characters: MockCharacter[] = []
   private nextDeckId = 1
+  private nextCharacterId = 1
 
   constructor(private handlers?: Partial<Record<string, Handler>>) {
     this.server = http.createServer(this.route.bind(this))
   }
 
   async start(port = 0) {
-    await new Promise<void>((resolve) => this.server.listen(port, resolve))
+    await new Promise<void>((resolve) =>
+      this.server.listen(port, '127.0.0.1', resolve)
+    )
     const addr = this.server.address() as AddressInfo
     this.url = `http://127.0.0.1:${addr.port}`
   }
@@ -169,6 +185,22 @@ export class MockTldwServer {
       return true
     }
 
+    const defaultOpenApi = () => {
+      this.ok(res, {
+        openapi: '3.0.0',
+        info: { version: 'test' },
+        paths: {
+          '/api/v1/health': { get: {} },
+          '/api/v1/characters': { get: {}, post: {} },
+          '/api/v1/characters/': { get: {}, post: {} },
+          '/api/v1/flashcards': { get: {}, post: {} },
+          '/api/v1/flashcards/': { get: {}, post: {} },
+          '/api/v1/flashcards/decks': { get: {}, post: {} },
+          '/api/v1/llm/models': { get: {} }
+        }
+      })
+    }
+
     const readJsonBody = (cb: (body: any) => void) => {
       let body = ''
       req.on('data', (c) => (body += c))
@@ -263,6 +295,10 @@ export class MockTldwServer {
       return this.ok(res, { status: 'ok' })
     }
 
+    if (pathname === '/openapi.json') {
+      return defaultOpenApi()
+    }
+
     // Models
     if (pathname === '/api/v1/llm/models') {
       if (!requireApiKey()) return
@@ -298,6 +334,74 @@ export class MockTldwServer {
         })
       )
       return
+    }
+
+    // Characters
+    const isCharactersCollection =
+      pathname === '/api/v1/characters' || pathname === '/api/v1/characters/'
+    const isCharacterItem = pathname.startsWith('/api/v1/characters/')
+    if (isCharactersCollection && method === 'GET') {
+      if (!requireApiKey()) return
+      const items = this.characters.filter((c) => !c.deleted)
+      return this.ok(res, items)
+    }
+    if (isCharactersCollection && method === 'POST') {
+      if (!requireApiKey()) return
+      return readJsonBody((body) => {
+        const now = nowIso()
+        const id = `char-${this.nextCharacterId++}`
+        const character: MockCharacter = {
+          id,
+          name: String(body?.name || `Character ${this.nextCharacterId}`),
+          description: body?.description ?? null,
+          avatar_url: body?.avatar_url ?? null,
+          tags: Array.isArray(body?.tags)
+            ? body.tags.map((t: any) => String(t))
+            : [],
+          system_prompt: body?.system_prompt ?? null,
+          greeting: body?.greeting ?? null,
+          version: 1,
+          deleted: false
+        }
+        this.characters.push(character)
+        this.ok(res, character, { location: `/api/v1/characters/${id}` })
+      })
+    }
+    if (isCharacterItem) {
+      if (!requireApiKey()) return
+      const cid = pathname.replace('/api/v1/characters/', '').replace(/\/$/, '')
+      const character = this.characters.find((c) => c.id === cid)
+      if (!character || character.deleted) {
+        res.writeHead(404)
+        res.end('not found')
+        return
+      }
+      if (method === 'GET') {
+        return this.ok(res, character)
+      }
+      if (method === 'PUT') {
+        return readJsonBody((body) => {
+          if ('name' in body) character.name = String(body.name)
+          if ('description' in body) character.description = body.description ?? null
+          if ('avatar_url' in body) character.avatar_url = body.avatar_url ?? null
+          if ('tags' in body) {
+            character.tags = Array.isArray(body.tags)
+              ? body.tags.map((t: any) => String(t))
+              : []
+          }
+          if ('system_prompt' in body) character.system_prompt = body.system_prompt ?? null
+          if ('greeting' in body) character.greeting = body.greeting ?? null
+          character.version += 1
+          this.ok(res, character)
+        })
+      }
+      if (method === 'DELETE') {
+        character.deleted = true
+        character.version += 1
+        res.writeHead(204)
+        res.end()
+        return
+      }
     }
 
     // Flashcards: decks

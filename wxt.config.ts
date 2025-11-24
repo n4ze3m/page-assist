@@ -18,7 +18,7 @@ const isAnyMatch = (id: string, matches: string[]) => {
 const safeInnerHTMLPlugin = (): Plugin => ({
   name: "sanitize-innerhtml",
   enforce: "post",
-  renderChunk(code) {
+  transform(code) {
     if (!code.includes("innerHTML")) return null
 
     const ast = parse(code, { ecmaVersion: "latest", sourceType: "module" }) as any
@@ -55,8 +55,19 @@ const safeInnerHTMLPlugin = (): Plugin => ({
     if (!replaced) return null
 
     const helper = `
-import DOMPurifyInit from "dompurify";
-const DOMPurify = DOMPurifyInit(window);
+import * as __DOMPurifyModule from "dompurify";
+const __createDOMPurify =
+  // ESM default export or CJS default property
+  typeof __DOMPurifyModule === "object" &&
+  __DOMPurifyModule &&
+  "default" in __DOMPurifyModule
+    ? // @ts-ignore
+      __DOMPurifyModule.default
+    : __DOMPurifyModule;
+const DOMPurify =
+  typeof __createDOMPurify === "function"
+    ? __createDOMPurify(typeof window !== "undefined" ? window : undefined)
+    : __createDOMPurify;
 
 const __setSafeInnerHTML = (el, html) => {
   if (!el) return;

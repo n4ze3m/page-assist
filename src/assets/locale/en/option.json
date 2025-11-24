@@ -246,7 +246,15 @@
     "connectDescription": "To use Characters, first connect to your tldw server so character definitions can be stored.",
     "connectExample1": "Open Settings \u2192 tldw server to add your server URL.",
     "connectExample2": "Use Diagnostics if your server is running but not reachable.",
-    "headerDescription": "Create reusable characters you can pick from the chat header and reuse across conversations."
+    "headerDescription": "Create reusable characters you can pick from the chat header and reuse across conversations.",
+    "offlineTitle": "Characters API not available on this server",
+    "offlineDescription": "This server does not advertise /api/v1/characters.",
+    "offlineExample1": "Open Diagnostics to confirm your server version and available APIs for Characters.",
+    "offlineExample2": "If you upgrade your server, reload the extension and return to Characters."
+  },
+  "characters": {
+    "selectCharacter": "Select character",
+    "chattingAs": "You're now chatting as {{name}}."
   },
   "promptInsert": {
     "useInChat": "Use in chat",

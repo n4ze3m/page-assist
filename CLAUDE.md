@@ -1,5 +1,14 @@
 # Repository Guidelines
 
+## Prerequisites
+- OS: macOS 13+, Linux, or Windows 11 (WSL2 recommended for Linux tooling).
+- Node.js: 20.x LTS (>= 20.10). Check with `node -v`. Install via nvm: see https://nodejs.org and https://github.com/nvm-sh/nvm.
+- Bun: >= 1.0 (used for dev/build scripts). Check with `bun -v`. Install from https://bun.sh.
+- npm: >= 10 (bundled with recent Node). Check with `npm -v`. If using other package managers (pnpm/yarn), keep them up to date.
+- Git: >= 2.40. Check with `git --version`. Install from https://git-scm.com/downloads.
+- Browsers: Current Chrome, Firefox, and Edge for extension dev/testing (load unpacked builds from `.output/<browser>-mv3/`).
+- Optional CLIs: Playwright browsers via `npx playwright install chromium` for e2e tests; see https://playwright.dev/docs/intro.
+
 ## Project Structure & Module Organization
 - `src/`: Extension source (TypeScript/React).
   - `entries-firefox/`: background, content, sidepanel, options entries.
@@ -39,3 +48,4 @@ Tip: WXT outputs to `.output/<browser>-mv3/` for loading as an unpacked extensio
 
 ## Security & Configuration Tips
 - Do not hard-code API keys/tokens; configure providers via Options pages and extension storage. Avoid committing secrets.
+

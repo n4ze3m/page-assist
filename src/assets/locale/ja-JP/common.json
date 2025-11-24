@@ -162,5 +162,6 @@
   "table": {
     "copyCsv": "Copy as CSV",
     "downloadCsv": "Download CSV"
-  }
+  },
+  "dismiss": "Dismiss"
 }

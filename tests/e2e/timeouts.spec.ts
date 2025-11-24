@@ -99,7 +99,7 @@ function chatIdleServer() {
 test.describe('Timeouts', () => {
   test('RAG per-request timeout triggers error', async () => {
     const srv = delayedServer(20_000)
-    await new Promise<void>(r => srv.listen(0, r))
+    await new Promise<void>((r) => srv.listen(0, '127.0.0.1', r))
     const addr = srv.address() as AddressInfo
     const url = `http://127.0.0.1:${addr.port}`
 
@@ -128,7 +128,7 @@ test.describe('Timeouts', () => {
 
   test('Chat stream idle timeout triggers assistant error', async () => {
     const srv = chatIdleServer()
-    await new Promise<void>((r) => srv.listen(0, r))
+    await new Promise<void>((r) => srv.listen(0, '127.0.0.1', r))
     const addr = srv.address() as AddressInfo
     const url = `http://127.0.0.1:${addr.port}`
 

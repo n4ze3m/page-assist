@@ -1,9 +1,10 @@
 {
     "pageAssist": "tldw Assistant",
-    "titles": {
-        "options": "tldw Assistant",
-        "sidepanel": "tldw Assistant"
-    },
+  "titles": {
+    "options": "tldw Assistant",
+    "sidepanel": "tldw Assistant"
+  },
+  "dismiss": "Dismiss",
     "confirmTitle": "Please confirm",
     "pdf": {
         "passwordTitle": "Enter the PDF password",

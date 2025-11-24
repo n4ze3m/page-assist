@@ -373,11 +373,142 @@
     "githubRepo": "GitHub repository"
   },
   "switchToSidebar": "Switch to Sidebar",
-  "healthPage": { "title": "Health Status", "subtitle": "Quick overview of subsystem health endpoints exposed by the server.", "backToChat": "Back to chat", "openSettings": "Open tldw Settings", "recheckAll": "Recheck All", "copyDiagnostics": "Copy diagnostics", "serverNotConfigured": "Server is not configured.", "unableToReachCore": "Unable to reach server core health endpoint.", "triedGet": "Tried GET {{url}}", "configureHint": "Please configure a server URL under tldw settings.", "configureCta": "Configure", "connectedTo": "Connected to {{host}}", "autoRefresh": "Auto-refresh", "intervalLabel": "Interval (s):", "checking": "Checking…", "recheck": "Recheck", "healthy": "Healthy", "unhealthy": "Unhealthy", "unknown": "Unknown", "checks": { "core": "Core API", "rag": "RAG", "audio": "Audio", "embeddings": "Embeddings", "metrics": "Metrics Health", "chatMetrics": "Chat Metrics", "mcp": "MCP" } },
+  "healthPage": {
+    "title": "Health Status",
+    "subtitle": "Quick overview of subsystem health endpoints exposed by the server.",
+    "backToChat": "Back to chat",
+    "openSettings": "Open tldw Settings",
+    "recheckAll": "Recheck All",
+    "copyDiagnostics": "Copy diagnostics",
+    "serverNotConfigured": "Server is not configured.",
+    "unableToReachCore": "Unable to reach server core health endpoint.",
+    "triedGet": "Tried GET {{url}}",
+    "configureHint": "Please configure a server URL under tldw settings.",
+    "configureCta": "Configure",
+    "connectedTo": "Connected to {{host}}",
+    "autoRefresh": "Auto-refresh",
+    "intervalLabel": "Interval (s):",
+    "checking": "Checking…",
+    "recheck": "Recheck",
+    "healthy": "Healthy",
+    "unhealthy": "Unhealthy",
+    "unknown": "Unknown",
+    "checks": {
+      "core": "Core API",
+      "rag": "RAG",
+      "audio": "Audio",
+      "embeddings": "Embeddings",
+      "metrics": "Metrics Health",
+      "chatMetrics": "Chat Metrics",
+      "mcp": "MCP"
+    }
+  },
   "savedSuccessfully": "Settings saved",
   "saveFailed": "Failed to save settings",
   "siteAccessGranted": "Host permission granted for {{origin}}",
-  "tldw": { "advancedTimeouts": "Advanced Timeouts", "requestTimeout": "Request Timeout (seconds)", "streamingIdle": "Streaming Idle Timeout (seconds)", "chatRequest": "Chat Request Timeout", "chatStreamIdle": "Chat Stream Idle", "ragRequest": "RAG Request Timeout", "mediaRequest": "Media Request Timeout", "uploadRequest": "Upload Request Timeout", "timeoutPresetLabel": "Timeout profile", "timeoutPresetBalanced": "Balanced", "timeoutPresetExtended": "Extended", "timeoutPresetCustom": "Custom", "timeoutPresetHint": "Balanced works well for most setups. Extended adds extra headroom for slower networks or long-running jobs.", "reset": "Reset to recommended", "resetDone": "Reset to recommended defaults", "serverNav": "tldw Server", "serverConfigTitle": "tldw Server Configuration", "serverLabel": "Server:", "notConfigured": "Not configured", "buttons": { "health": "Health", "recheck": "Recheck", "testConnection": "Test Connection", "grantSiteAccess": "Grant Site Access", "login": "Login", "logout": "Logout" }, "loginRequired": { "title": "Login Required", "description": "Please login with your tldw_server credentials" }, "loggedIn": { "title": "Logged In", "description": "You are currently logged in to tldw_server" }, "connection": { "success": "Connection successful!", "failed": "Connection failed. Please check your settings.", "failedDetailed": "Connection failed. Please check your server URL and API key." }, "authMode": { "label": "Authentication Mode", "single": "Single User (API Key)", "multi": "Multi User (Login)" }, "hints": { "requestTimeout": "Abort initial requests if no response within this time. Default: {{seconds}}s.", "streamingIdle": "Abort streaming if no updates received within this time. Default: {{seconds}}s." }, "login": { "success": "Login successful!", "failed": "Login failed" }, "logout": { "success": "Logged out successfully", "failed": "Logout failed" }, "setupLink": "Set up server", "loadError": "Unable to load tldw server settings. Check your connection and try again.", "fields": { "apiKey": { "label": "API Key", "placeholder": "Enter your API key", "required": "Please enter your API key", "extra": "Your tldw_server API key for authentication" }, "username": { "label": "Username", "placeholder": "Enter username", "required": "Please enter your username" }, "password": { "label": "Password", "placeholder": "Enter password", "required": "Please enter your password" }, "serverUrl": { "label": "Server URL", "placeholder": "http://localhost:8000", "required": "Please enter the server URL", "invalid": "Please enter a valid URL", "extra": "The URL of your tldw_server instance (e.g., http://localhost:8000)" } }, "errors": { "invalidApiKey": "Invalid API key", "forbidden": "Forbidden (check permissions)", "apiKeyValidationFailed": "API key validation failed", "serverUnreachable": "Server unreachable" }, "about": { "title": "About tldw_server Integration", "description": "This extension connects to your tldw_server instance, providing access to:", "points": { "providers": "Multiple LLM providers through a unified API", "rag": "RAG (Retrieval-Augmented Generation) search", "media": "Media ingestion and processing", "notes": "Notes and prompts management", "stt": "Speech-to-text transcription" } } },
+  "tldw": {
+    "advancedTimeouts": "Advanced Timeouts",
+    "requestTimeout": "Request Timeout (seconds)",
+    "streamingIdle": "Streaming Idle Timeout (seconds)",
+    "chatRequest": "Chat Request Timeout",
+    "chatStreamIdle": "Chat Stream Idle",
+    "ragRequest": "RAG Request Timeout",
+    "mediaRequest": "Media Request Timeout",
+    "uploadRequest": "Upload Request Timeout",
+    "timeoutPresetLabel": "Timeout profile",
+    "timeoutPresetBalanced": "Balanced",
+    "timeoutPresetExtended": "Extended",
+    "timeoutPresetCustom": "Custom",
+    "timeoutPresetHint": "Balanced works well for most setups. Extended adds extra headroom for slower networks or long-running jobs.",
+    "reset": "Reset to recommended",
+    "resetDone": "Reset to recommended defaults",
+    "serverNav": "tldw Server",
+    "serverConfigTitle": "tldw Server Configuration",
+    "serverLabel": "Server:",
+    "notConfigured": "Not configured",
+    "buttons": {
+      "health": "Health",
+      "recheck": "Recheck",
+      "testConnection": "Test Connection",
+      "grantSiteAccess": "Grant Site Access",
+      "login": "Login",
+      "logout": "Logout"
+    },
+    "loginRequired": {
+      "title": "Login Required",
+      "description": "Please login with your tldw_server credentials"
+    },
+    "loggedIn": {
+      "title": "Logged In",
+      "description": "You are currently logged in to tldw_server"
+    },
+    "connection": {
+      "success": "Connection successful!",
+      "failed": "Connection failed. Please check your settings.",
+      "failedDetailed": "Connection failed. Please check your server URL and API key."
+    },
+    "authMode": {
+      "label": "Authentication Mode",
+      "single": "Single User (API Key)",
+      "multi": "Multi User (Login)"
+    },
+    "hints": {
+      "requestTimeout": "Abort initial requests if no response within this time. Default: {{seconds}}s.",
+      "streamingIdle": "Abort streaming if no updates received within this time. Default: {{seconds}}s."
+    },
+    "login": {
+      "success": "Login successful!",
+      "failed": "Login failed"
+    },
+    "logout": {
+      "success": "Logged out successfully",
+      "failed": "Logout failed"
+    },
+    "setupLink": "Set up server",
+    "loadError": "Unable to load tldw server settings. Check your connection and try again.",
+    "fields": {
+      "apiKey": {
+        "label": "API Key",
+        "placeholder": "Enter your API key",
+        "required": "Please enter your API key",
+        "extra": "Your tldw_server API key for authentication"
+      },
+      "username": {
+        "label": "Username",
+        "placeholder": "Enter username",
+        "required": "Please enter your username"
+      },
+      "password": {
+        "label": "Password",
+        "placeholder": "Enter password",
+        "required": "Please enter your password"
+      },
+      "serverUrl": {
+        "label": "Server URL",
+        "placeholder": "http://localhost:8000",
+        "required": "Please enter the server URL",
+        "invalid": "Please enter a valid URL",
+        "extra": "The URL of your tldw_server instance (e.g., http://localhost:8000)"
+      }
+    },
+    "errors": {
+      "invalidApiKey": "Invalid API key",
+      "forbidden": "Forbidden (check permissions)",
+      "apiKeyValidationFailed": "API key validation failed",
+      "serverUnreachable": "Server unreachable"
+    },
+    "about": {
+      "title": "About tldw_server Integration",
+      "description": "This extension connects to your tldw_server instance, providing access to:",
+      "points": {
+        "providers": "Multiple LLM providers through a unified API",
+        "rag": "RAG (Retrieval-Augmented Generation) search",
+        "media": "Media ingestion and processing",
+        "notes": "Notes and prompts management",
+        "stt": "Speech-to-text transcription"
+      }
+    }
+  },
   "manageKnowledge": {
     "title": "Hantera kunskap",
     "heading": "Konfigurera kunskapsbas"
@@ -459,5 +590,83 @@
       "finishAnyway": "Finish without connecting",
       "skip": "Skip for now"
     }
+  },
+  "manageCharacters": {
+    "title": "Manage Characters",
+    "addBtn": "New character",
+    "columns": {
+      "name": "Name",
+      "description": "Description",
+      "actions": "Actions"
+    },
+    "actions": {
+      "chat": "Chat",
+      "edit": "Edit",
+      "delete": "Delete"
+    },
+    "tags": {
+      "label": "Tags",
+      "placeholder": "Add tags",
+      "help": "Use tags to group characters by use case (e.g., “writing”, “teaching”)."
+    },
+    "tooltip": {
+      "edit": "Edit character",
+      "delete": "Delete character"
+    },
+    "aria": {
+      "chatWith": "Chat as {{name}}",
+      "edit": "Edit character {{name}}",
+      "delete": "Delete character {{name}}"
+    },
+    "confirm": {
+      "delete": "Are you sure you want to delete this character? This action cannot be undone."
+    },
+    "form": {
+      "name": {
+        "label": "Name",
+        "placeholder": "e.g. Writing coach",
+        "required": "Please enter a name"
+      },
+      "description": "Define a reusable character you can chat with in the sidebar.",
+      "systemPrompt": {
+        "label": "Behavior / instructions",
+        "placeholder": "E.g., You are a patient math teacher who explains concepts step by step and checks understanding with short examples.",
+        "help": "Explain the character's role, tone, and constraints. For example: \"You are a patient math tutor who explains concepts step by step.\"",
+        "min": "Add a short description so the character knows how to respond."
+      },
+      "avatarUrl": {
+        "label": "Avatar URL (optional)",
+        "placeholder": "https://example.com/avatar.png"
+      },
+      "greeting": {
+        "label": "Greeting message (optional)",
+        "placeholder": "Hi there! I’m your writing coach. Paste your draft and I’ll help you tighten it up.",
+        "help": "Optional first message the character will send when you start a chat."
+      },
+      "btnSave": {
+        "saving": "Creating character...",
+        "save": "Create character"
+      },
+      "btnEdit": {
+        "saving": "Saving changes...",
+        "save": "Save changes"
+      }
+    },
+    "notification": {
+      "addSuccess": "Character created",
+      "error": "Error",
+      "someError": "Something went wrong. Please try again later",
+      "updatedSuccess": "Character updated",
+      "deletedSuccess": "Character deleted"
+    },
+    "loadError": {
+      "title": "Couldn't load characters",
+      "description": "Check your connection and try again."
+    },
+    "emptyTitle": "No characters yet",
+    "emptyDescription": "Create a reusable character with a name, description, and system prompt you can chat with.",
+    "emptyExample1": "Define a writing coach, lore expert, or coding assistant you can reuse across chats.",
+    "emptyExample2": "Give each character a clear description and behavior so their responses stay consistent.",
+    "emptyPrimaryCta": "Create character"
   }
 }

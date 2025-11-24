@@ -8,18 +8,18 @@ export default defineContentScript({
     const downloadModel = async (modelName: string) => {
       if (isPulling) {
         alert(
-          `[tldw Assistant] A model pull is already in progress. Please wait for it to finish before starting another one.`
+          `[tldw Assistant] A model pull request is already in progress. Please wait for it to finish before starting another one.`
         )
         return false
       }
 
       const ok = confirm(
-        `[tldw Assistant] Do you want to pull the ${modelName} model? This has nothing to do with the huggingface.co website. The model will be pulled locally once you confirm. Make sure Ollama is running.`
+        `[tldw Assistant] Do you want to send a request to your tldw_server to pull the "${modelName}" model? This is independent of the huggingface.co website. Your server will start pulling the model after you confirm.`
       )
       if (ok) {
         isPulling = true
         alert(
-          `[tldw Assistant] Pulling ${modelName} model. For more details, check the extension icon.`
+          `[tldw Assistant] Sending a request to your tldw_server to pull "${modelName}". Check the extension icon or your tldw_server logs for progress.`
         )
 
         // Path is declared in OpenAPI; annotate for compile-time safety
@@ -29,10 +29,10 @@ export default defineContentScript({
             path,
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: { url: window.location.href }
+            body: { url: window.location.href, model: modelName }
           })
           alert(
-            `[tldw Assistant] Sent ${modelName} to tldw_server. Check the extension icon for progress and status.`
+            `[tldw Assistant] Request sent to your tldw_server to pull "${modelName}". Monitor the extension icon or tldw_server logs for status.`
           )
           return true
         } catch (error) {
@@ -41,7 +41,7 @@ export default defineContentScript({
             error
           )
           alert(
-            `[tldw Assistant] Something went wrong while sending ${modelName} to tldw_server. Check that your tldw server and extension are running, then try again.`
+            `[tldw Assistant] Something went wrong while sending a pull request for "${modelName}" to your tldw_server. Check that your tldw_server and the extension are running, then try again.`
           )
           return false
         } finally {

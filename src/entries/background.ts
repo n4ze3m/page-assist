@@ -242,9 +242,25 @@ export default defineBackground({
             try { form.append('file', new File([blob], filename, { type: blob.type })) } catch { form.append('file', blob, filename) }
           }
           const headers: Record<string, string> = {}
+          const isDev = Boolean((import.meta as any)?.env?.DEV)
+          const isPlaceholderApiKey = (key?: string | null) =>
+            !!key && String(key).toUpperCase().includes("REPLACE-ME")
           if (cfg?.authMode === 'single-user') {
             const key = (cfg?.apiKey || '').trim()
-            if (!key) return { ok: false, status: 401, error: 'Add or update your API key in Settings → tldw server, then try again.' }
+            const isPlaceholder = isPlaceholderApiKey(key)
+            if (!key || (!isDev && isPlaceholder)) {
+              const error =
+                isPlaceholder
+                  ? 'Your API key is still set to the default demo value. Open Settings → tldw server and replace it with your real API key before uploading.'
+                  : 'Add or update your API key in Settings → tldw server, then try again.'
+              return { ok: false, status: 401, error }
+            }
+            if (isPlaceholder && isDev) {
+              // eslint-disable-next-line no-console
+              console.warn(
+                "[tldw] Using placeholder API key in development. Do not use this key in production deployments."
+              )
+            }
             headers['X-API-KEY'] = key
           }
           if (cfg?.authMode === 'multi-user') {
@@ -276,6 +292,9 @@ export default defineBackground({
         const baseUrl = cfg?.serverUrl ? String(cfg.serverUrl).replace(/\/$/, '') : ''
         const url = isAbsolute ? path : `${baseUrl}${path.startsWith('/') ? '' : '/'}${path}`
         const h: Record<string, string> = { ...(headers || {}) }
+        const isDev = Boolean((import.meta as any)?.env?.DEV)
+        const isPlaceholderApiKey = (key?: string | null) =>
+          !!key && String(key).toUpperCase().includes("REPLACE-ME")
         if (!noAuth) {
           for (const k of Object.keys(h)) {
             const kl = k.toLowerCase()
@@ -283,8 +302,21 @@ export default defineBackground({
           }
           if (cfg?.authMode === 'single-user') {
             const key = (cfg?.apiKey || '').trim()
-            if (key) h['X-API-KEY'] = key
-            else return { ok: false, status: 401, error: 'Add or update your API key in Settings → tldw server, then try again.' }
+            const isPlaceholder = isPlaceholderApiKey(key)
+            if (!key || (!isDev && isPlaceholder)) {
+              const error =
+                isPlaceholder
+                  ? 'Your API key is still set to the default demo value. Open Settings → tldw server and replace it with your real API key before continuing.'
+                  : 'Add or update your API key in Settings → tldw server, then try again.'
+              return { ok: false, status: 401, error }
+            }
+            if (isPlaceholder && isDev) {
+              // eslint-disable-next-line no-console
+              console.warn(
+                "[tldw] Using placeholder API key in development. Do not use this key in production deployments."
+              )
+            }
+            h['X-API-KEY'] = key
           } else if (cfg?.authMode === 'multi-user') {
             const token = (cfg?.accessToken || '').trim()
             if (token) h['Authorization'] = `Bearer ${token}`
@@ -380,9 +412,26 @@ export default defineBackground({
               const cfg = await storage.get<any>('tldwConfig')
               if (!cfg?.serverUrl) throw new Error('tldw server not configured')
               const base = cfg.serverUrl.replace(/^http/, 'ws').replace(/\/$/, '')
-              const token = cfg.authMode === 'single-user' ? cfg.apiKey : cfg.accessToken
-              if (!token) throw new Error('Not authenticated. Configure tldw credentials in Settings > tldw.')
-              const url = `${base}/api/v1/audio/stream/transcribe?token=${encodeURIComponent(token || '')}`
+              const rawToken = cfg.authMode === 'single-user' ? cfg.apiKey : cfg.accessToken
+              const token = String(rawToken || '').trim()
+              const isDev = Boolean((import.meta as any)?.env?.DEV)
+              const isPlaceholderApiKey = (key?: string | null) =>
+                !!key && String(key).toUpperCase().includes("REPLACE-ME")
+              const isPlaceholder = cfg.authMode === 'single-user' && isPlaceholderApiKey(token)
+              if (!token || (!isDev && isPlaceholder)) {
+                const error =
+                  isPlaceholder
+                    ? 'Your API key is still set to the default demo value. Update it in Settings > tldw before using live captions.'
+                    : 'Not authenticated. Configure tldw credentials in Settings > tldw.'
+                throw new Error(error)
+              }
+              if (isPlaceholder && isDev) {
+                // eslint-disable-next-line no-console
+                console.warn(
+                  "[tldw] Using placeholder API key in development for STT. Do not use this key in production deployments."
+                )
+              }
+              const url = `${base}/api/v1/audio/stream/transcribe?token=${encodeURIComponent(token)}`
               ws = new WebSocket(url)
               ws.binaryType = 'arraybuffer'
               connectTimer = setTimeout(() => {
@@ -614,10 +663,27 @@ export default defineBackground({
               const kl = k.toLowerCase()
               if (kl === 'x-api-key' || kl === 'authorization') delete headers[k]
             }
+            const isDev = Boolean((import.meta as any)?.env?.DEV)
+            const isPlaceholderApiKey = (key?: string | null) =>
+              !!key && String(key).toUpperCase().includes("REPLACE-ME")
             if (cfg.authMode === 'single-user') {
               const key = (cfg.apiKey || '').trim()
-              if (key) headers['X-API-KEY'] = key
-              else { safePost({ event: 'error', message: 'Add or update your API key in Settings → tldw server, then try again.' }); return }
+              const isPlaceholder = isPlaceholderApiKey(key)
+              if (!key || (!isDev && isPlaceholder)) {
+                const error =
+                  isPlaceholder
+                    ? 'Your API key is still set to the default demo value. Open Settings → tldw server and replace it with your real API key before starting a streaming chat.'
+                    : 'Add or update your API key in Settings → tldw server, then try again.'
+                safePost({ event: 'error', message: error })
+                return
+              }
+              if (isPlaceholder && isDev) {
+                // eslint-disable-next-line no-console
+                console.warn(
+                  "[tldw] Using placeholder API key in development for streaming chat. Do not use this key in production deployments."
+                )
+              }
+              headers['X-API-KEY'] = key
             } else if (cfg.authMode === 'multi-user') {
               const token = (cfg.accessToken || '').trim()
               if (token) headers['Authorization'] = `Bearer ${token}`

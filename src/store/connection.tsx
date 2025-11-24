@@ -14,6 +14,7 @@ import {
 export const CONNECTION_TIMEOUT_MS = 20_000
 
 const TEST_BYPASS_KEY = "__tldw_allow_offline"
+const FORCE_UNCONFIGURED_KEY = "__tldw_force_unconfigured"
 
 const getOfflineBypassFlag = async (): Promise<boolean> => {
   // Build-time flag for Playwright/CI: VITE_TLDW_E2E_ALLOW_OFFLINE=true
@@ -37,6 +38,30 @@ const getOfflineBypassFlag = async (): Promise<boolean> => {
   try {
     if (typeof localStorage !== "undefined") {
       return localStorage.getItem(TEST_BYPASS_KEY) === "true"
+    }
+  } catch {
+    // ignore localStorage availability
+  }
+
+  return false
+}
+
+const getForceUnconfiguredFlag = async (): Promise<boolean> => {
+  try {
+    if (typeof chrome !== "undefined" && chrome?.storage?.local) {
+      return await new Promise<boolean>((resolve) => {
+        chrome.storage.local.get(FORCE_UNCONFIGURED_KEY, (res) =>
+          resolve(Boolean(res?.[FORCE_UNCONFIGURED_KEY]))
+        )
+      })
+    }
+  } catch {
+    // ignore storage read errors
+  }
+
+  try {
+    if (typeof localStorage !== "undefined") {
+      return localStorage.getItem(FORCE_UNCONFIGURED_KEY) === "true"
     }
   } catch {
     // ignore localStorage availability
@@ -96,6 +121,27 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
       return
     }
 
+    // Test-only hook: force a missing/unconfigured state without network calls.
+    const forceUnconfigured = await getForceUnconfiguredFlag()
+    if (forceUnconfigured) {
+      set({
+        state: {
+          ...prev,
+          phase: ConnectionPhase.UNCONFIGURED,
+          serverUrl: null,
+          isConnected: false,
+          isChecking: false,
+          lastCheckedAt: Date.now(),
+          lastError: null,
+          lastStatusCode: null,
+          knowledgeStatus: "unknown",
+          knowledgeLastCheckedAt: null,
+          knowledgeError: null
+        }
+      })
+      return
+    }
+
     // Optional test toggle: allow CI/Playwright to treat the app as "connected"
     // without hitting a live server. Controlled via env VITE_TLDW_E2E_ALLOW_OFFLINE
     // or chrome.storage.local[__tldw_allow_offline].
@@ -150,8 +196,7 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
           const fallback = await getTldwServerURL()
           if (fallback) {
             await tldwClient.updateConfig({
-              serverUrl: fallback,
-              authMode: "single-user" as any
+              serverUrl: fallback
             })
             cfg = await tldwClient.getConfig()
             serverUrl = cfg?.serverUrl ?? null
@@ -160,6 +205,9 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
           // ignore fallback errors; we will treat as unconfigured below
         }
       }
+
+      // If we have a server URL but no API key, treat as unconfigured/unauthenticated.
+      // Users must explicitly configure their own credentials in Settings/Onboarding.
 
       if (!serverUrl) {
         set({
@@ -296,6 +344,26 @@ if (typeof window !== "undefined") {
         )
       } else if (typeof localStorage !== "undefined") {
         localStorage.removeItem(TEST_BYPASS_KEY)
+      }
+      await useConnectionStore.getState().checkOnce()
+      return true
+    } catch {
+      return false
+    }
+  }
+
+  // Allow tests to force the unconfigured/waiting state without network calls.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ;(window as any).__tldw_forceUnconfigured = async () => {
+    try {
+      if (typeof chrome !== "undefined" && chrome?.storage?.local) {
+        await new Promise<void>((resolve) =>
+          chrome.storage.local.set({ [FORCE_UNCONFIGURED_KEY]: true }, () =>
+            resolve()
+          )
+        )
+      } else if (typeof localStorage !== "undefined") {
+        localStorage.setItem(FORCE_UNCONFIGURED_KEY, "true")
       }
       await useConnectionStore.getState().checkOnce()
       return true

@@ -54,7 +54,9 @@ test.describe('Media ingest context menu & Quick Ingest progress', () => {
       res.writeHead(404)
       res.end('not found')
     })
-    await new Promise<void>((resolve) => server.listen(0, resolve))
+    await new Promise<void>((resolve) =>
+      server.listen(0, '127.0.0.1', resolve)
+    )
     const addr = server.address() as AddressInfo
     baseUrl = `http://127.0.0.1:${addr.port}`
   })
@@ -186,4 +188,3 @@ test.describe('tldw TTS provider', () => {
     await context.close()
   })
 })
-

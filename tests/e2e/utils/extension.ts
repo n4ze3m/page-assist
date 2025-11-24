@@ -2,21 +2,45 @@ import { BrowserContext, Page, chromium } from '@playwright/test'
 import path from 'path'
 import fs from 'fs'
 
-export async function launchWithExtension(extensionPath: string) {
-  // Fallback to build/chrome-mv3 if .output/chrome-mv3 does not exist
-  let extPath = extensionPath
-  if (!fs.existsSync(extPath)) {
-    const alt = path.resolve('build/chrome-mv3')
-    if (fs.existsSync(alt)) {
-      extPath = alt
-    }
+function makeTempProfileDirs() {
+  const root = path.resolve('tmp-playwright-profile')
+  fs.mkdirSync(root, { recursive: true })
+  const homeDir = fs.mkdtempSync(path.join(root, 'home-'))
+  const userDataDir = fs.mkdtempSync(path.join(root, 'user-data-'))
+  return { homeDir, userDataDir }
+}
+
+export async function launchWithExtension(extensionPath: string, {
+  seedConfig
+}: { seedConfig?: Record<string, any> } = {}) {
+  // Pick the first existing extension build so tests work whether dev output or prod build is present.
+  const candidates = [
+    extensionPath,
+    path.resolve('.output/chrome-mv3'),
+    path.resolve('build/chrome-mv3')
+  ]
+  const extPath = candidates.find((p) => fs.existsSync(p))
+  if (!extPath) {
+    throw new Error(
+      `No extension build found. Tried: ${candidates.join(
+        ', '
+      )}. Run "bun run build:chrome" first.`
+    )
   }
 
-  const context = await chromium.launchPersistentContext('', {
+  const { homeDir, userDataDir } = makeTempProfileDirs()
+
+  const context = await chromium.launchPersistentContext(userDataDir, {
     headless: !!process.env.CI,
+    env: {
+      ...process.env,
+      HOME: homeDir
+    },
     args: [
       `--disable-extensions-except=${extPath}`,
-      `--load-extension=${extPath}`
+      `--load-extension=${extPath}`,
+      '--disable-crash-reporter',
+      '--crash-dumps-dir=/tmp'
     ]
   })
 
@@ -41,7 +65,21 @@ export async function launchWithExtension(extensionPath: string) {
   const optionsUrl = `chrome-extension://${extensionId}/options.html`
   const sidepanelUrl = `chrome-extension://${extensionId}/sidepanel.html`
 
+  if (seedConfig) {
+    // Pre-seed storage before any pages load so the extension picks it up immediately.
+    await context.addInitScript((cfg) => {
+      try {
+        // @ts-ignore
+        chrome?.storage?.local?.set?.(cfg, () => {})
+      } catch {
+        // ignore if not available
+      }
+    }, seedConfig)
+  }
+
   const page = await context.newPage()
+  // Ensure the extension is ready before navigating
+  await page.waitForTimeout(250)
   await page.goto(optionsUrl)
 
   async function openSidepanel() {

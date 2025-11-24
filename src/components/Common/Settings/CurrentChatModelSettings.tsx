@@ -117,7 +117,11 @@ export const CurrentChatModelSettings = ({
   const { data: composerModels, isLoading: modelsLoading } = useQuery({
     queryKey: ["playground:chatModels", open],
     queryFn: () => fetchChatModels({ returnEmpty: true }),
-    enabled: open
+    enabled: open,
+    retry: 2,
+    onError: (error) => {
+      console.error("Failed to fetch chat models:", error)
+    }
   })
 
   const modelOptions = useMemo(() => {

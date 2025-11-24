@@ -30,6 +30,7 @@ const ConnectionToastContent: React.FC<ConnectionToastContentProps> = ({
   body,
   onDismiss
 }) => {
+  const { t } = useTranslation("common")
   const containerRef = React.useRef<HTMLDivElement | null>(null)
 
   React.useEffect(() => {
@@ -63,7 +64,7 @@ const ConnectionToastContent: React.FC<ConnectionToastContentProps> = ({
         type="button"
         onClick={onDismiss}
         className="mt-2 text-xs text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300">
-        Dismiss
+        {t("dismiss", { defaultValue: "Dismiss" })}
       </button>
     </div>
   )

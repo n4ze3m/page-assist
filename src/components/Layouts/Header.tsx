@@ -90,6 +90,7 @@ export const Header: React.FC<Props> = ({
     "hideCurrentChatModelSettings",
     false
   )
+  const [selectedCharacter] = useStorage<any>("selectedCharacter", null)
   const {
     selectedModel,
     setSelectedModel,
@@ -563,6 +564,21 @@ export const Header: React.FC<Props> = ({
             )}
             {/* Status chips for current selections */}
             <div className="hidden md:flex items-center gap-2">
+              {selectedCharacter?.name && (
+                <span className="inline-flex items-center gap-2 rounded-full border border-blue-100 bg-blue-50 px-2 py-0.5 text-xs text-blue-700 shadow-sm dark:border-blue-400/40 dark:bg-blue-500/10 dark:text-blue-100">
+                  {selectedCharacter?.avatar_url ? (
+                    <img
+                      src={selectedCharacter.avatar_url}
+                      className="h-4 w-4 rounded-full"
+                    />
+                  ) : (
+                    <UserCircle2 className="h-4 w-4" />
+                  )}
+                  <span className="max-w-[140px] truncate">
+                    {selectedCharacter.name}
+                  </span>
+                </span>
+              )}
               {selectedModel && (
                 <span className="inline-flex items-center gap-1 rounded-full border border-gray-200 bg-white px-2 py-0.5 text-xs text-gray-700 shadow-sm dark:border-gray-700 dark:bg-[#1f1f1f] dark:text-gray-300">
                   {t("option:header.modelLabel", "Model")}:
