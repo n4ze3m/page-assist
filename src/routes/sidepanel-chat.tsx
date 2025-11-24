@@ -15,6 +15,7 @@ import {
 import { useConnectionActions } from "@/hooks/useConnectionState"
 import { useAntdNotification } from "@/hooks/useAntdNotification"
 import { copilotResumeLastChat } from "@/services/app"
+import { tldwClient } from "@/services/tldw/TldwApiClient"
 import { Storage } from "@plasmohq/storage"
 import { useStorage } from "@plasmohq/storage/hook"
 import { ChevronDown } from "lucide-react"
@@ -23,7 +24,30 @@ import { useTranslation } from "react-i18next"
 import { SidePanelBody } from "~/components/Sidepanel/Chat/body"
 import { SidepanelForm } from "~/components/Sidepanel/Chat/form"
 import { SidepanelHeader } from "~/components/Sidepanel/Chat/header"
+import NoteQuickSaveModal from "~/components/Sidepanel/Notes/NoteQuickSaveModal"
 import { useMessage } from "~/hooks/useMessage"
+
+const deriveNoteTitle = (
+  content: string,
+  pageTitle?: string,
+  url?: string
+): string => {
+  const cleanedTitle = (pageTitle || "").trim()
+  if (cleanedTitle) return cleanedTitle
+  const normalized = (content || "").trim().replace(/\s+/g, " ")
+  if (normalized) {
+    const words = normalized.split(" ").slice(0, 8).join(" ")
+    return words + (normalized.length > words.length ? "..." : "")
+  }
+  if (url) {
+    try {
+      return new URL(url).hostname
+    } catch {
+      return url
+    }
+  }
+  return ""
+}
 
 const SidepanelChat = () => {
   const drop = React.useRef<HTMLDivElement>(null)
@@ -73,6 +97,75 @@ const SidepanelChat = () => {
     useSmartScroll(messages, streaming, 100)
   const { checkOnce } = useConnectionActions()
   const notification = useAntdNotification()
+  const [noteModalOpen, setNoteModalOpen] = React.useState(false)
+  const [noteDraftContent, setNoteDraftContent] = React.useState("")
+  const [noteDraftTitle, setNoteDraftTitle] = React.useState("")
+  const [noteSuggestedTitle, setNoteSuggestedTitle] = React.useState("")
+  const [noteSourceUrl, setNoteSourceUrl] = React.useState<string | undefined>()
+  const [noteSaving, setNoteSaving] = React.useState(false)
+  const [noteError, setNoteError] = React.useState<string | null>(null)
+
+  const resetNoteModal = React.useCallback(() => {
+    setNoteModalOpen(false)
+    setNoteDraftContent("")
+    setNoteDraftTitle("")
+    setNoteSuggestedTitle("")
+    setNoteSourceUrl(undefined)
+    setNoteSaving(false)
+    setNoteError(null)
+  }, [])
+
+  const handleNoteSave = React.useCallback(async () => {
+    const content = noteDraftContent.trim()
+    const title = (noteDraftTitle || noteSuggestedTitle).trim()
+    if (!content) {
+      setNoteError("Nothing to save")
+      return
+    }
+    if (!title) {
+      setNoteError("Add a title to save this note")
+      return
+    }
+    setNoteError(null)
+    setNoteSaving(true)
+    try {
+      await tldwClient.createNote(content, {
+        title,
+        metadata: {
+          source_url: noteSourceUrl,
+          origin: "context-menu"
+        }
+      })
+      notification.success({
+        message: t("sidepanel:notification.savedToNotes", "Saved to Notes")
+      })
+      resetNoteModal()
+    } catch (e: any) {
+      const msg = e?.message || "Failed to save note"
+      setNoteError(msg)
+      notification.error({ message: msg })
+    } finally {
+      setNoteSaving(false)
+    }
+  }, [
+    noteDraftContent,
+    noteDraftTitle,
+    noteSuggestedTitle,
+    noteSourceUrl,
+    notification,
+    resetNoteModal,
+    t
+  ])
+
+  const handleNoteTitleChange = (value: string) => {
+    setNoteDraftTitle(value)
+    if (noteError) setNoteError(null)
+  }
+
+  const handleNoteContentChange = (value: string) => {
+    setNoteDraftContent(value)
+    if (noteError) setNoteError(null)
+  }
 
   const toggleSidebar = () => {
     setSidebarOpen((prev) => !prev)
@@ -210,7 +303,36 @@ const SidepanelChat = () => {
   }, [defaultChatWithWebsite, sidepanelTemporaryChat])
 
   React.useEffect(() => {
-    if (!bgMsg || streaming) return
+    if (!bgMsg) return
+
+    if (bgMsg.type === "save-to-notes") {
+      const selected = (bgMsg.text || bgMsg.payload?.selectionText || "").trim()
+      if (!selected) {
+        notification.warning({
+          message: t(
+            "sidepanel:notification.noSelectionForNotes",
+            "Select text to save to Notes"
+          )
+        })
+        return
+      }
+      const sourceUrl = (bgMsg.payload?.pageUrl as string | undefined) || undefined
+      const suggestedTitle = deriveNoteTitle(
+        selected,
+        bgMsg.payload?.pageTitle as string | undefined,
+        sourceUrl
+      )
+      setNoteDraftContent(selected)
+      setNoteSuggestedTitle(suggestedTitle)
+      setNoteDraftTitle(suggestedTitle)
+      setNoteSourceUrl(sourceUrl)
+      setNoteSaving(false)
+      setNoteError(null)
+      setNoteModalOpen(true)
+      return
+    }
+
+    if (streaming) return
 
     if (bgMsg.type === "transcription" || bgMsg.type === "transcription+summary") {
       const transcript = (bgMsg.payload?.transcript || bgMsg.text || "").trim()
@@ -256,7 +378,23 @@ const SidepanelChat = () => {
         message: t("formError.noModel")
       })
     }
-  }, [bgMsg, streaming, selectedModel, onSubmit, notification, t, setMessages, setHistory])
+  }, [
+    bgMsg,
+    streaming,
+    selectedModel,
+    onSubmit,
+    notification,
+    t,
+    setMessages,
+    setHistory,
+    setNoteDraftContent,
+    setNoteSuggestedTitle,
+    setNoteDraftTitle,
+    setNoteSourceUrl,
+    setNoteSaving,
+    setNoteError,
+    setNoteModalOpen
+  ])
 
   return (
     <div className="flex h-full w-full">
@@ -343,6 +481,27 @@ const SidepanelChat = () => {
           </div>
         </div>
       </main>
+      <NoteQuickSaveModal
+        open={noteModalOpen}
+        title={noteDraftTitle}
+        content={noteDraftContent}
+        suggestedTitle={noteSuggestedTitle}
+        sourceUrl={noteSourceUrl}
+        loading={noteSaving}
+        error={noteError}
+        onTitleChange={handleNoteTitleChange}
+        onContentChange={handleNoteContentChange}
+        onCancel={resetNoteModal}
+        onSave={handleNoteSave}
+        modalTitle={t("sidepanel:notes.saveToNotesTitle", "Save to Notes")}
+        saveText={t("common:save", "Save")}
+        cancelText={t("common:cancel", "Cancel")}
+        titleLabel={t("sidepanel:notes.titleLabel", "Title")}
+        contentLabel={t("sidepanel:notes.contentLabel", "Content")}
+        titleRequiredText={t("sidepanel:notes.titleRequired", "Title is required to create a note.")}
+        helperText={t("sidepanel:notes.helperText", "Review or edit the selected text, then Save or Cancel.")}
+        sourceLabel={t("sidepanel:notes.sourceLabel", "Source")}
+      />
     </div>
   )
 }

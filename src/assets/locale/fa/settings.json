@@ -368,34 +368,34 @@
     "githubSponsor": "حمایت مالی در GitHub",
     "githubRepo": "مخزن GitHub"
   },
-  "switchToSidebar": "Switch to Sidebar",
+  "switchToSidebar": "رفتن به نوار کناری",
   "healthPage": {
-    "title": "Health Status",
-    "subtitle": "Quick overview of subsystem health endpoints exposed by the server.",
-    "backToChat": "Back to chat",
-    "openSettings": "Open tldw Settings",
-    "recheckAll": "Recheck All",
-    "copyDiagnostics": "Copy diagnostics",
-    "serverNotConfigured": "Server is not configured.",
-    "unableToReachCore": "Unable to reach server core health endpoint.",
-    "triedGet": "Tried GET {{url}}",
-    "configureHint": "Please configure a server URL under tldw settings.",
-    "configureCta": "Configure",
-    "connectedTo": "Connected to {{host}}",
-    "autoRefresh": "Auto-refresh",
-    "intervalLabel": "Interval (s):",
-    "checking": "Checking…",
-    "recheck": "Recheck",
-    "healthy": "Healthy",
-    "unhealthy": "Unhealthy",
-    "unknown": "Unknown",
+    "title": "وضعیت سلامت",
+    "subtitle": "نمای کلی سریع از نقاط سلامتی زیرسامانه‌هایی که سرور ارائه می‌کند.",
+    "backToChat": "بازگشت به چت",
+    "openSettings": "باز کردن تنظیمات tldw",
+    "recheckAll": "بررسی مجدد همه",
+    "copyDiagnostics": "کپی تشخیص‌ها",
+    "serverNotConfigured": "سرور پیکربندی نشده است.",
+    "unableToReachCore": "دسترسی به نقطه سلامت اصلی سرور ممکن نیست.",
+    "triedGet": "تلاش شد GET {{url}}",
+    "configureHint": "لطفاً آدرس سرور را در تنظیمات tldw پیکربندی کنید.",
+    "configureCta": "پیکربندی",
+    "connectedTo": "متصل به {{host}}",
+    "autoRefresh": "نوسازی خودکار",
+    "intervalLabel": "بازه (ثانیه):",
+    "checking": "در حال بررسی…",
+    "recheck": "بررسی مجدد",
+    "healthy": "سالم",
+    "unhealthy": "ناسالم",
+    "unknown": "نامشخص",
     "checks": {
-      "core": "Core API",
+      "core": "API اصلی",
       "rag": "RAG",
-      "audio": "Audio",
-      "embeddings": "Embeddings",
-      "metrics": "Metrics Health",
-      "chatMetrics": "Chat Metrics",
+      "audio": "صوت",
+      "embeddings": "جاسازی‌ها",
+      "metrics": "سلامت متریک‌ها",
+      "chatMetrics": "متریک‌های چت",
       "mcp": "MCP"
     }
   },
@@ -569,81 +569,81 @@
     "title": "تنظیمات هوش مصنوعی کروم"
   },
   "manageCharacters": {
-    "title": "Manage Characters",
-    "addBtn": "New character",
+    "title": "مدیریت شخصیت‌ها",
+    "addBtn": "شخصیت جدید",
     "columns": {
-      "name": "Name",
-      "description": "Description",
-      "actions": "Actions"
+      "name": "نام",
+      "description": "توضیحات",
+      "actions": "اقدامات"
     },
     "actions": {
-      "chat": "Chat",
-      "edit": "Edit",
-      "delete": "Delete"
+      "chat": "گفتگو",
+      "edit": "ویرایش",
+      "delete": "حذف"
     },
     "tags": {
-      "label": "Tags",
-      "placeholder": "Add tags",
-      "help": "Use tags to group characters by use case (e.g., “writing”, “teaching”)."
+      "label": "برچسب‌ها",
+      "placeholder": "افزودن برچسب",
+      "help": "از برچسب‌ها برای گروه‌بندی شخصیت‌ها بر اساس کاربرد استفاده کنید (مثلاً «نویسندگی»، «تدریس»)."
     },
     "tooltip": {
-      "edit": "Edit character",
-      "delete": "Delete character"
+      "edit": "ویرایش شخصیت",
+      "delete": "حذف شخصیت"
     },
     "aria": {
-      "chatWith": "Chat as {{name}}",
-      "edit": "Edit character {{name}}",
-      "delete": "Delete character {{name}}"
+      "chatWith": "گفتگو به‌عنوان {{name}}",
+      "edit": "ویرایش شخصیت {{name}}",
+      "delete": "حذف شخصیت {{name}}"
     },
     "confirm": {
-      "delete": "Are you sure you want to delete this character? This action cannot be undone."
+      "delete": "آیا مطمئن هستید که می‌خواهید این شخصیت را حذف کنید؟ این کار قابل بازگشت نیست."
     },
     "form": {
       "name": {
-        "label": "Name",
-        "placeholder": "e.g. Writing coach",
-        "required": "Please enter a name"
+        "label": "نام",
+        "placeholder": "مثلاً مربی نوشتن",
+        "required": "لطفاً نام را وارد کنید"
       },
-      "description": "Define a reusable character you can chat with in the sidebar.",
+      "description": "یک شخصیت قابل‌استفاده مجدد تعریف کنید تا در نوار کناری با آن گفتگو کنید.",
       "systemPrompt": {
-        "label": "Behavior / instructions",
-        "placeholder": "E.g., You are a patient math teacher who explains concepts step by step and checks understanding with short examples.",
-        "help": "Explain the character's role, tone, and constraints. For example: \"You are a patient math tutor who explains concepts step by step.\"",
-        "min": "Add a short description so the character knows how to respond."
+        "label": "رفتار / دستورالعمل‌ها",
+        "placeholder": "مثلاً: شما معلم ریاضی صبوری هستید که مفاهیم را مرحله‌به‌مرحله توضیح می‌دهید و با مثال‌های کوتاه فهم را می‌سنجید.",
+        "help": "نقش، لحن و محدودیت‌های شخصیت را توضیح دهید. مثال: «شما معلم صبوری هستید که مفاهیم را مرحله‌به‌مرحله توضیح می‌دهید.»",
+        "min": "یک توضیح کوتاه اضافه کنید تا شخصیت بداند چگونه پاسخ دهد."
       },
       "avatarUrl": {
-        "label": "Avatar URL (optional)",
+        "label": "آدرس تصویر آواتار (اختیاری)",
         "placeholder": "https://example.com/avatar.png"
       },
       "greeting": {
-        "label": "Greeting message (optional)",
-        "placeholder": "Hi there! I’m your writing coach. Paste your draft and I’ll help you tighten it up.",
-        "help": "Optional first message the character will send when you start a chat."
+        "label": "پیام خوشامد (اختیاری)",
+        "placeholder": "سلام! من مربی نوشتن شما هستم. پیش‌نویس‌تان را بفرستید تا به بهتر شدنش کمک کنم.",
+        "help": "پیام اولیه اختیاری که شخصیت هنگام شروع گفتگو می‌فرستد."
       },
       "btnSave": {
-        "saving": "Creating character...",
-        "save": "Create character"
+        "saving": "در حال ایجاد شخصیت...",
+        "save": "ایجاد شخصیت"
       },
       "btnEdit": {
-        "saving": "Saving changes...",
-        "save": "Save changes"
+        "saving": "در حال ذخیره تغییرات...",
+        "save": "ذخیره تغییرات"
       }
     },
     "notification": {
-      "addSuccess": "Character created",
-      "error": "Error",
-      "someError": "Something went wrong. Please try again later",
-      "updatedSuccess": "Character updated",
-      "deletedSuccess": "Character deleted"
+      "addSuccess": "شخصیت ایجاد شد",
+      "error": "خطا",
+      "someError": "مشکلی پیش آمد. لطفاً بعداً دوباره تلاش کنید",
+      "updatedSuccess": "شخصیت به‌روزرسانی شد",
+      "deletedSuccess": "شخصیت حذف شد"
     },
     "loadError": {
-      "title": "Couldn't load characters",
-      "description": "Check your connection and try again."
+      "title": "بارگذاری شخصیت‌ها ممکن نشد",
+      "description": "اتصال خود را بررسی کرده و دوباره تلاش کنید."
     },
-    "emptyTitle": "No characters yet",
-    "emptyDescription": "Create a reusable character with a name, description, and system prompt you can chat with.",
-    "emptyExample1": "Define a writing coach, lore expert, or coding assistant you can reuse across chats.",
-    "emptyExample2": "Give each character a clear description and behavior so their responses stay consistent.",
-    "emptyPrimaryCta": "Create character"
+    "emptyTitle": "هنوز شخصیتی وجود ندارد",
+    "emptyDescription": "یک شخصیت قابل استفاده مجدد با نام، توضیح و پرامپت سیستم بسازید تا با آن گفتگو کنید.",
+    "emptyExample1": "یک مربی نوشتن، کارشناس داستان یا دستیار کدنویسی تعریف کنید که بتوانید در چت‌ها دوباره استفاده کنید.",
+    "emptyExample2": "به هر شخصیت توضیح و رفتار واضحی بدهید تا پاسخ‌هایش منسجم بماند.",
+    "emptyPrimaryCta": "ایجاد شخصیت"
   }
 }

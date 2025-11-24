@@ -37,5 +37,11 @@
     },
     "contextTranscribeAndSummarizeMedia": {
         "message": "Transcribe + Summarize Video/Audio"
+    },
+    "contextSaveToNotes": {
+        "message": "Save to Notes"
+    },
+    "contextSaveToNotesNoSelection": {
+        "message": "Select text first to save to Notes."
     }
 }

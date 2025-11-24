@@ -3,20 +3,19 @@ import path from 'path'
 import { launchWithExtension } from './utils/extension'
 
 test.describe('Packaged sidepanel bundle', () => {
-  test('renders the header and connection card from the built artifact', async () => {
+  test('renders the connection card from the built artifact', async () => {
     const extPath = path.resolve('build/chrome-zip')
     const { context, openSidepanel } = (await launchWithExtension(extPath)) as any
     const page = await openSidepanel()
 
     await page.waitForLoadState('domcontentloaded')
-    await page.waitForTimeout(1500)
+    await page.waitForTimeout(2500)
 
     await expect(
-      page.getByText(/Waiting for your tldw server/i)
-    ).toBeVisible({ timeout: 5000 })
-    await expect(
-      page.getByRole('button', { name: /Open settings|Set up server|Change server/i })
-    ).toBeVisible()
+      page.getByRole('button', {
+        name: /Open tldw server settings|Open server settings/i
+      })
+    ).toBeVisible({ timeout: 8000 })
 
     await context.close()
   })

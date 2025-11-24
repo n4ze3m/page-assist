@@ -40,9 +40,20 @@ export const getAllOpenAIModels = async ({
     }
     const segments = pathname.split("/").filter(Boolean)
     const allowedSingle = ["v1", "v1beta", "openai"]
+    const allowedPatterns = [
+      ["v1"],
+      ["v1beta"],
+      ["openai"],
+      ["v1beta", "openai"] // Google OpenAI-compatible base
+    ]
     const isShallow =
       segments.length === 0 ||
-      (segments.length === 1 && allowedSingle.includes(segments[0]))
+      (segments.length === 1 && allowedSingle.includes(segments[0])) ||
+      allowedPatterns.some(
+        (pattern) =>
+          pattern.length === segments.length &&
+          pattern.every((seg, idx) => seg === segments[idx])
+      )
     const looksLikeTldw =
       pathname.includes("/api/") ||
       ((hostname === "127.0.0.1" || hostname === "localhost") &&

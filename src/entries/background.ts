@@ -22,6 +22,7 @@ export default defineBackground({
       transcribe: "transcribe-media-pa",
       transcribeAndSummarize: "transcribe-and-summarize-media-pa"
     }
+    const saveToNotesMenuId = "save-to-notes-pa"
     const initialize = async () => {
       try {
         storage.watch({
@@ -82,6 +83,12 @@ export default defineBackground({
         browser.contextMenus.create({
           id: "custom-pg",
           title: browser.i18n.getMessage("contextCustom"),
+          contexts: ["selection"]
+        })
+
+        browser.contextMenus.create({
+          id: saveToNotesMenuId,
+          title: browser.i18n.getMessage("contextSaveToNotes"),
           contexts: ["selection"]
         })
 
@@ -639,6 +646,30 @@ export default defineBackground({
         await handleTranscribeClick(info, tab, 'transcribe')
       } else if (info.menuItemId === transcribeMenuId.transcribeAndSummarize) {
         await handleTranscribeClick(info, tab, 'transcribe+summary')
+      } else if (info.menuItemId === saveToNotesMenuId) {
+        const selection = String(info.selectionText || '').trim()
+        if (!selection) {
+          notify(browser.i18n.getMessage("contextSaveToNotes"), browser.i18n.getMessage("contextSaveToNotesNoSelection"))
+          return
+        }
+        chrome.sidePanel.open({
+          tabId: tab.id!
+        })
+        setTimeout(
+          async () => {
+            await browser.runtime.sendMessage({
+              from: "background",
+              type: "save-to-notes",
+              text: selection,
+              payload: {
+                selectionText: selection,
+                pageUrl: info.pageUrl || (tab && tab.url) || "",
+                pageTitle: tab?.title || ""
+              }
+            })
+          },
+          isCopilotRunning ? 0 : 5000
+        )
       } else if (info.menuItemId === "send-to-tldw") {
         try {
           const pageUrl = info.pageUrl || (tab && tab.url) || ''

@@ -125,23 +125,51 @@ export const ServerConnectionCard: React.FC<Props> = ({
     if (!showToastOnError) return
     const toastKey = "tldw-connection-toast"
 
+    const canStealFocus = (): boolean => {
+      if (document.visibilityState !== "visible") return false
+      const active = document.activeElement
+      if (!active || active === document.body) return true
+      const tag = (active.tagName || "").toLowerCase()
+      const focusableTags = new Set(["input", "textarea", "select", "button"])
+      if (focusableTags.has(tag)) return false
+      const tabIndex = (active as HTMLElement).getAttribute?.("tabindex")
+      if (tabIndex && !Number.isNaN(Number(tabIndex)) && Number(tabIndex) >= 0) {
+        return false
+      }
+      return true
+    }
+
     if (statusVariant === "error") {
       const detail = lastError || undefined
       const code = Number(lastStatusCode)
       const hasCode = Number.isFinite(code) && code > 0
 
-      const heading =
-        t(
-          "tldwState.errorToast",
-          "We couldn't reach {{host}}",
-          { host: serverHost ?? "tldw_server" }
-        ) + (hasCode ? ` (HTTP ${code})` : "")
+      const heading = t(
+        "tldwState.errorToast",
+        "We couldn't reach {{host}}{{code}}",
+        {
+          host: serverHost ?? "tldw_server",
+          code: hasCode ? ` (HTTP ${code})` : ""
+        }
+      )
 
-      const body =
-        t(
-          "tldwState.troubleshoot",
-          "Confirm your server is running and that the browser is allowed to reach it, then retry from the Options page."
-        ) + (detail ? `\nDetails: ${detail}` : "")
+      const detailSection = detail
+        ? t("tldwState.troubleshootDetail", "Details: {{detail}}", { detail })
+        : ""
+
+      const body = t(
+        "tldwState.troubleshoot",
+        "Confirm your server is running and that the browser is allowed to reach it, then retry from the Options page.{{detailSection}}",
+        { detailSection: detailSection ? `\n${detailSection}` : "" }
+      )
+
+      const focusToastIfNeeded = () => {
+        const node = document.querySelector<HTMLElement>(".tldw-connection-toast")
+        if (!node) return
+        if (canStealFocus()) {
+          node.focus()
+        }
+      }
 
       notification.error({
         key: toastKey,
@@ -157,6 +185,7 @@ export const ServerConnectionCard: React.FC<Props> = ({
         duration: 0,
         className: "tldw-connection-toast"
       })
+      requestAnimationFrame(() => focusToastIfNeeded())
     } else {
       // Clear error toast when connection succeeds, is missing, or is checking
       notification.destroy(toastKey)

@@ -350,10 +350,11 @@ export class MockTldwServer {
       if (!requireApiKey()) return
       return readJsonBody((body) => {
         const now = nowIso()
-        const id = `char-${this.nextCharacterId++}`
+        const idNum = this.nextCharacterId++
+        const id = `char-${idNum}`
         const character: MockCharacter = {
           id,
-          name: String(body?.name || `Character ${this.nextCharacterId}`),
+          name: String(body?.name || `Character ${idNum}`),
           description: body?.description ?? null,
           avatar_url: body?.avatar_url ?? null,
           tags: Array.isArray(body?.tags)

@@ -17,16 +17,18 @@ test.describe('Options first-run and connection panel', () => {
         chrome.storage.local.clear(() => resolve())
       })
       // @ts-ignore
-      chrome.storage.local.set(
-        {
-          tldwConfig: {
-            serverUrl: 'http://127.0.0.1:8000',
-            authMode: 'single-user',
-            apiKey: 'THIS-IS-A-SECURE-KEY-123-REPLACE-ME'
-          }
-        },
-        () => {}
-      )
+      await new Promise<void>((resolve) => {
+        chrome.storage.local.set(
+          {
+            tldwConfig: {
+              serverUrl: 'http://127.0.0.1:8000',
+              authMode: 'single-user',
+              apiKey: DEFAULT_TLDW_API_KEY
+            }
+          },
+          () => resolve()
+        )
+      })
     })
     await page.reload()
 

@@ -62,7 +62,7 @@
   },
   "submit": "ارسال",
   "send": "ارسال",
-  "connectToServer": "Connect to server",
+  "connectToServer": "اتصال به سرور",
   "noData": "اطلاعاتی وجود ندارد",
   "noHistory": "تاریخچه گپ وجود ندارد",
   "chatWithCurrentPage": "گپ زدن با این صفحه",
@@ -159,5 +159,5 @@
     "copyCsv": "Copy as CSV",
     "downloadCsv": "Download CSV"
   },
-  "dismiss": "Dismiss"
+  "dismiss": "بستن"
 }
