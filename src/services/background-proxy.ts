@@ -49,26 +49,13 @@ export async function bgRequest<T = any, P extends PathOrUrl = AllowedPath, M ex
       const kl = k.toLowerCase()
       if (kl === 'x-api-key' || kl === 'authorization') delete h[k]
     }
-    const isDev = Boolean((import.meta as any)?.env?.DEV)
-    const isPlaceholderApiKey = (key?: string | null) =>
-      !!key && String(key).toUpperCase().includes("REPLACE-ME")
     if (cfg?.authMode === 'single-user') {
       const key = String(cfg?.apiKey || '').trim()
-      const isPlaceholder = isPlaceholderApiKey(key)
-      if (!key || (!isDev && isPlaceholder)) {
-        const error =
-          isPlaceholder
-            ? 'Your API key is still set to the default demo value. Open Settings → tldw server and replace it with your real API key before continuing.'
-            : 'Add or update your API key in Settings → tldw server, then try again.'
-        throw new Error(error)
+      if (key) {
+        h['X-API-KEY'] = key
+      } else {
+        throw new Error('Add or update your API key in Settings → tldw server, then try again.')
       }
-      if (isPlaceholder && isDev) {
-        // eslint-disable-next-line no-console
-        console.warn(
-          "[tldw] Using placeholder API key in development. Do not use this key in production deployments."
-        )
-      }
-      h['X-API-KEY'] = key
     } else if (cfg?.authMode === 'multi-user') {
       const token = String(cfg?.accessToken || '').trim()
       if (token) {

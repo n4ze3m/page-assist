@@ -76,6 +76,7 @@ export const TldwSettings = () => {
   const [mediaRequestTimeoutSec, setMediaRequestTimeoutSec] = useState<number>(60)
   const [uploadRequestTimeoutSec, setUploadRequestTimeoutSec] = useState<number>(60)
   const [timeoutPreset, setTimeoutPreset] = useState<TimeoutPresetKey | 'custom'>('balanced')
+  const [showDefaultKeyWarning, setShowDefaultKeyWarning] = useState(false)
 
   const determinePreset = (values: TimeoutValues): TimeoutPresetKey | 'custom' => {
     for (const [key, presetValues] of Object.entries(TIMEOUT_PRESETS) as [TimeoutPresetKey, typeof TIMEOUT_PRESETS[TimeoutPresetKey]][]) {
@@ -277,6 +278,15 @@ export const TldwSettings = () => {
       
       if (success) {
         message.success(t('settings:tldw.connection.success', 'Connection successful!'))
+        if (
+          values.authMode === 'single-user' &&
+          typeof values.apiKey === 'string' &&
+          values.apiKey.trim() === DEFAULT_TLDW_API_KEY
+        ) {
+          setShowDefaultKeyWarning(true)
+        } else {
+          setShowDefaultKeyWarning(false)
+        }
         await tldwClient.initialize()
         try {
           // Refresh shared connection state so entry views transition
@@ -287,6 +297,7 @@ export const TldwSettings = () => {
         }
       } else {
         message.error(t('settings:tldw.connection.failed', 'Connection failed. Please check your settings.'))
+        setShowDefaultKeyWarning(false)
       }
     } catch (error) {
       setConnectionStatus('error')
@@ -385,6 +396,23 @@ export const TldwSettings = () => {
             message={t('settings:tldw.loadError', 'Unable to load tldw settings')}
             description={initializingError}
             onClose={() => setInitializingError(null)}
+          />
+        )}
+        {showDefaultKeyWarning && authMode === 'single-user' && (
+          <Alert
+            type="warning"
+            showIcon
+            closable
+            className="mb-4"
+            message={t(
+              'settings:tldw.defaultKeyWarning.title',
+              'Default demo API key in use'
+            )}
+            description={t(
+              'settings:tldw.defaultKeyWarning.body',
+              'You are using the default demo API key for tldw_server. For production or shared deployments, rotate the key on your server and update it here. Continue at your own risk.'
+            )}
+            onClose={() => setShowDefaultKeyWarning(false)}
           />
         )}
         <div className="mb-4 p-2 rounded border border-transparent bg-transparent flex items-center justify-between transition-colors duration-150 hover:border-gray-200 hover:bg-gray-50 dark:border-transparent dark:hover:border-gray-700 dark:hover:bg-[#1c1c1c]">

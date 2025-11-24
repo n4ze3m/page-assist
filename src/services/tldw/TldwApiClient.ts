@@ -157,22 +157,6 @@ export class TldwApiClient {
       console.warn(msg)
       throw new Error(msg)
     }
-
-    const isPlaceholder = this.isPlaceholderApiKey(key)
-    if (isPlaceholder && !this.isDevMode()) {
-      const msg = this.getPlaceholderApiKeyMessage()
-      // eslint-disable-next-line no-console
-      console.warn(msg)
-      throw new Error(msg)
-    }
-
-    if (isPlaceholder && this.isDevMode()) {
-      // eslint-disable-next-line no-console
-      console.warn(
-        "[tldw] Using placeholder API key in development. Do not use this key in production deployments."
-      )
-    }
-
     return cfg
   }
 
@@ -234,7 +218,7 @@ export class TldwApiClient {
 
     if (config.authMode === 'single-user' && config.apiKey) {
       const key = String(config.apiKey || '').trim()
-      if (key && (!this.isPlaceholderApiKey(key) || this.isDevMode())) {
+      if (key) {
         this.headers['X-API-KEY'] = key
       }
     } else if (config.authMode === 'multi-user' && config.accessToken) {

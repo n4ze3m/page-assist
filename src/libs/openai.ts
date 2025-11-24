@@ -1,4 +1,5 @@
 
+import { Storage } from "@plasmohq/storage"
 import { getCustomHeaders } from "@/utils/clean-headers"
 
 type Model = {
@@ -17,8 +18,45 @@ export const getAllOpenAIModels = async ({
   apiKey?: string
   customHeaders?: { key: string; value: string }[]
 }) => {
+  // Only probe model listings for OpenAI-compatible bases. Skip obvious non-OpenAI
+  // URLs (e.g., tldw_server /api paths or deeply nested endpoints) to avoid noisy
+  // 404s like /v1/chat/completions/models.
+  const normalizedBase = baseUrl.replace(/\/+$/, "")
+  let serverOrigin: string | null = null
   try {
-    const url = `${baseUrl}/models`
+    const cfg = await new Storage({ area: "local" }).get<any>("tldwConfig")
+    if (cfg?.serverUrl) {
+      serverOrigin = new URL(String(cfg.serverUrl)).origin
+    }
+  } catch {
+    // ignore storage parsing failures
+  }
+  try {
+    const urlObj = new URL(normalizedBase)
+    if (serverOrigin && urlObj.origin === serverOrigin) {
+      // Use the dedicated tldw model endpoint instead of OpenAI-compatible /models
+      return []
+    }
+    const segments = urlObj.pathname.split("/").filter(Boolean)
+    const allowedSingle = ["v1", "v1beta", "openai"]
+    const isShallow =
+      segments.length === 0 ||
+      (segments.length === 1 && allowedSingle.includes(segments[0]))
+    const looksLikeTldw =
+      normalizedBase.includes("/api/") ||
+      ((urlObj.hostname === "127.0.0.1" || urlObj.hostname === "localhost") &&
+        urlObj.port === "8000")
+
+    if (!isShallow || looksLikeTldw) {
+      return []
+    }
+  } catch {
+    // If URL parsing fails, avoid probing
+    return []
+  }
+
+  try {
+    const url = `${normalizedBase}/models`
     const headers = apiKey
       ? {
         Authorization: `Bearer ${apiKey}`,
@@ -56,7 +94,7 @@ export const getAllOpenAIModels = async ({
       return []
     }
 
-    if (baseUrl === "https://api.together.xyz/v1") {
+    if (normalizedBase === "https://api.together.xyz/v1") {
       const data = (await res.json()) as Model[]
       return data.map(model => ({
         id: model.id,
