@@ -10,7 +10,8 @@
   },
   "loading": {
     "title": "Loading…",
-    "description": "Please wait while we get things ready."
+    "description": "Please wait while we get things ready.",
+    "content": "Loading content…"
   },
   "selectAModel": "اختر نموذجًا",
   "save": "حفظ",
@@ -159,6 +160,7 @@
   "sidebarChat": "دردشة الشريط الجانبي",
   "reasoning": {
     "thinking": "جاري التفكير....",
+    "loading": "جاري تحميل الاستدلال....",
     "thought": "فكر لمدة {{time}}"
   },
   "embeddingGen": "إنشاء تمثيلات، قد يستغرق هذا وقتًا",

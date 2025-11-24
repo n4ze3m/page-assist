@@ -4,6 +4,7 @@ interface Message {
   from: string
   type: string
   text: string
+  payload?: any
 }
 
 function useBackgroundMessage() {

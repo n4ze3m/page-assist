@@ -10,7 +10,8 @@
   },
   "loading": {
     "title": "Loading…",
-    "description": "Please wait while we get things ready."
+    "description": "Please wait while we get things ready.",
+    "content": "Loading content…"
   },
   "selectAModel": "ഒരു മോഡല്‍ തിരഞ്ഞെടുക്കുക",
   "save": "സേവ് ചെയ്യുക",
@@ -150,6 +151,7 @@
   "sidebarChat": "സൈഡ്ബാർ ചാറ്റ്",
   "reasoning": {
     "thinking": "ചിന്തിക്കുന്നു....",
+    "loading": "യുക്തിചിന്തനം ലോഡുചെയ്യുന്നു....",
     "thought": "{{time}} നേരത്തെ ചിന്ത"
   },
   "embeddingGen": "എംബെഡിങ്ങുകൾ സൃഷ്ടിക്കുന്നു, ഇതിന് കുറച്ച് സമയമെടുക്കും",

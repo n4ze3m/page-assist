@@ -10,7 +10,8 @@
   },
   "loading": {
     "title": "Loading…",
-    "description": "Please wait while we get things ready."
+    "description": "Please wait while we get things ready.",
+    "content": "Loading content…"
   },
   "selectAModel": "Modell auswählen",
   "save": "Speichern",
@@ -152,6 +153,7 @@
   "sidebarChat": "Seitenleisten-Chat",
   "reasoning": {
     "thinking": "Denke nach....",
+    "loading": "Lade Begründung....",
     "thought": "Gedanke für {{time}}"
   },
   "embeddingGen": "Erstelle Embeddings, dies kann eine Weile dauern",

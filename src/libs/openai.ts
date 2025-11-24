@@ -33,19 +33,20 @@ export const getAllOpenAIModels = async ({
   }
   try {
     const urlObj = new URL(normalizedBase)
+    const { pathname, hostname, port } = urlObj
     if (serverOrigin && urlObj.origin === serverOrigin) {
       // Use the dedicated tldw model endpoint instead of OpenAI-compatible /models
       return []
     }
-    const segments = urlObj.pathname.split("/").filter(Boolean)
+    const segments = pathname.split("/").filter(Boolean)
     const allowedSingle = ["v1", "v1beta", "openai"]
     const isShallow =
       segments.length === 0 ||
       (segments.length === 1 && allowedSingle.includes(segments[0]))
     const looksLikeTldw =
-      normalizedBase.includes("/api/") ||
-      ((urlObj.hostname === "127.0.0.1" || urlObj.hostname === "localhost") &&
-        urlObj.port === "8000")
+      pathname.includes("/api/") ||
+      ((hostname === "127.0.0.1" || hostname === "localhost") &&
+        port === "8000")
 
     if (!isShallow || looksLikeTldw) {
       return []

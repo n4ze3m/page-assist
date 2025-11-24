@@ -10,7 +10,8 @@
   },
   "loading": {
     "title": "Loading…",
-    "description": "Please wait while we get things ready."
+    "description": "Please wait while we get things ready.",
+    "content": "Loading content…"
   },
   "selectAModel": "Виберіть модель",
   "save": "Зберегти",
@@ -156,6 +157,7 @@
   "sidebarChat": "Бічний чат",
   "reasoning": {
     "thinking": "Думаю....",
+    "loading": "Завантажую міркування....",
     "thought": "Думав протягом {{time}}"
   },
   "embeddingGen": "Створюю вставки, це може зайняти деякий час",

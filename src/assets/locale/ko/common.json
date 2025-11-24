@@ -10,7 +10,8 @@
   },
   "loading": {
     "title": "Loading…",
-    "description": "Please wait while we get things ready."
+    "description": "Please wait while we get things ready.",
+    "content": "Loading content…"
   },
   "selectAModel": "모델 선택",
   "save": "저장",
@@ -151,6 +152,7 @@
   "sidebarChat": "사이드바 채팅",
   "reasoning": {
     "thinking": "생각 중....",
+    "loading": "추론을 불러오는 중....",
     "thought": "{{time}} 동안 생각함"
   },
   "embeddingGen": "임베딩을 생성하는 중입니다. 시간이 걸릴 수 있습니다",

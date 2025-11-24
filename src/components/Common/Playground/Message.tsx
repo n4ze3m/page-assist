@@ -253,7 +253,12 @@ export const PlaygroundMessage = (props: Props) => {
                                   </span>
                                 ),
                               children: (
-                                <React.Suspense fallback={<p className="text-sm text-gray-500 dark:text-gray-400">Loading reasoning…</p>}>
+                                <React.Suspense
+                                  fallback={
+                                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                                      {t("reasoning.loading")}
+                                    </p>
+                                  }>
                                   <Markdown message={e.content} />
                                 </React.Suspense>
                               )
@@ -266,7 +271,11 @@ export const PlaygroundMessage = (props: Props) => {
                     return (
                       <React.Suspense
                         key={i}
-                        fallback={<p className="text-sm text-gray-500 dark:text-gray-400">Loading content…</p>}>
+                        fallback={
+                          <p className="text-sm text-gray-500 dark:text-gray-400">
+                            {t("loading.content")}
+                          </p>
+                        }>
                         <Markdown message={e.content} />
                       </React.Suspense>
                     )

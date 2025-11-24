@@ -403,105 +403,105 @@
   "saveFailed": "Failed to save settings",
   "siteAccessGranted": "Host permission granted for {{origin}}",
   "tldw": {
-    "advancedTimeouts": "Advanced Timeouts",
-    "requestTimeout": "Request Timeout (seconds)",
-    "streamingIdle": "Streaming Idle Timeout (seconds)",
-    "chatRequest": "Chat Request Timeout",
-    "chatStreamIdle": "Chat Stream Idle",
-    "ragRequest": "RAG Request Timeout",
-    "mediaRequest": "Media Request Timeout",
-    "uploadRequest": "Upload Request Timeout",
-    "timeoutPresetLabel": "Timeout profile",
-    "timeoutPresetBalanced": "Balanced",
-    "timeoutPresetExtended": "Extended",
-    "timeoutPresetCustom": "Custom",
-    "timeoutPresetHint": "Balanced works well for most setups. Extended adds extra headroom for slower networks or long-running jobs.",
-    "reset": "Reset to recommended",
-    "resetDone": "Reset to recommended defaults",
-    "serverNav": "tldw Server",
-    "serverConfigTitle": "tldw Server Configuration",
-    "serverLabel": "Server:",
-    "notConfigured": "Not configured",
+    "advancedTimeouts": "مهلت‌های پیشرفته",
+    "requestTimeout": "مهلت درخواست (ثانیه)",
+    "streamingIdle": "مهلت بی‌کاری استریم (ثانیه)",
+    "chatRequest": "مهلت درخواست چت",
+    "chatStreamIdle": "مهلت بی‌کاری استریم چت",
+    "ragRequest": "مهلت درخواست RAG",
+    "mediaRequest": "مهلت درخواست رسانه",
+    "uploadRequest": "مهلت درخواست بارگذاری",
+    "timeoutPresetLabel": "پروفایل مهلت",
+    "timeoutPresetBalanced": "متعادل",
+    "timeoutPresetExtended": "افزایش‌یافته",
+    "timeoutPresetCustom": "سفارشی",
+    "timeoutPresetHint": "پروفایل متعادل برای بیشتر تنظیمات مناسب است. افزایش‌یافته برای شبکه‌های کند یا کارهای طولانی حاشیه بیشتری می‌دهد.",
+    "reset": "بازنشانی به پیشنهادشده",
+    "resetDone": "به مقادیر پیشنهادی بازنشانی شد",
+    "serverNav": "سرور tldw",
+    "serverConfigTitle": "پیکربندی سرور tldw",
+    "serverLabel": "سرور:",
+    "notConfigured": "پیکربندی نشده",
     "buttons": {
-      "health": "Health",
-      "recheck": "Recheck",
-      "testConnection": "Test Connection",
-      "grantSiteAccess": "Grant Site Access",
-      "login": "Login",
-      "logout": "Logout"
+      "health": "سلامت",
+      "recheck": "بررسی مجدد",
+      "testConnection": "تست اتصال",
+      "grantSiteAccess": "اعطای دسترسی به سایت",
+      "login": "ورود",
+      "logout": "خروج"
     },
     "loginRequired": {
-      "title": "Login Required",
-      "description": "Please login with your tldw_server credentials"
+      "title": "نیاز به ورود",
+      "description": "لطفاً با اطلاعات کاربری tldw_server وارد شوید"
     },
     "loggedIn": {
-      "title": "Logged In",
-      "description": "You are currently logged in to tldw_server"
+      "title": "وارد شده‌اید",
+      "description": "در حال حاضر به tldw_server وارد هستید"
     },
     "connection": {
-      "success": "Connection successful!",
-      "failed": "Connection failed. Please check your settings.",
-      "failedDetailed": "Connection failed. Please check your server URL and API key."
+      "success": "اتصال با موفقیت برقرار شد!",
+      "failed": "اتصال ناموفق بود. لطفاً تنظیمات را بررسی کنید.",
+      "failedDetailed": "اتصال برقرار نشد. لطفاً URL سرور و کلید API را بررسی کنید."
     },
     "authMode": {
-      "label": "Authentication Mode",
-      "single": "Single User (API Key)",
-      "multi": "Multi User (Login)"
+      "label": "حالت احراز هویت",
+      "single": "کاربر تکی (کلید API)",
+      "multi": "چندکاربره (ورود)"
     },
     "hints": {
-      "requestTimeout": "Abort initial requests if no response within this time. Default: {{seconds}}s.",
-      "streamingIdle": "Abort streaming if no updates received within this time. Default: {{seconds}}s."
+      "requestTimeout": "اگر در این زمان پاسخی دریافت نشد، درخواست‌های اولیه متوقف می‌شود. پیش‌فرض: {{seconds}}s.",
+      "streamingIdle": "اگر در این مدت به‌روزرسانی دریافت نشود، استریم قطع می‌شود. پیش‌فرض: {{seconds}}s."
     },
     "login": {
-      "success": "Login successful!",
-      "failed": "Login failed"
+      "success": "ورود موفقیت‌آمیز بود!",
+      "failed": "ورود ناموفق بود"
     },
     "logout": {
-      "success": "Logged out successfully",
-      "failed": "Logout failed"
+      "success": "با موفقیت خارج شدید",
+      "failed": "خروج ناموفق بود"
     },
-    "setupLink": "Set up server",
-    "loadError": "Unable to load tldw server settings. Check your connection and try again.",
+    "setupLink": "راه‌اندازی سرور",
+    "loadError": "بارگذاری تنظیمات سرور tldw ممکن نشد. اتصال خود را بررسی و دوباره تلاش کنید.",
     "fields": {
       "apiKey": {
-        "label": "API Key",
-        "placeholder": "Enter your API key",
-        "required": "Please enter your API key",
-        "extra": "Your tldw_server API key for authentication"
+        "label": "کلید API",
+        "placeholder": "کلید API خود را وارد کنید",
+        "required": "لطفاً کلید API خود را وارد کنید",
+        "extra": "کلید API tldw_server شما برای احراز هویت"
       },
       "username": {
-        "label": "Username",
-        "placeholder": "Enter username",
-        "required": "Please enter your username"
+        "label": "نام کاربری",
+        "placeholder": "نام کاربری را وارد کنید",
+        "required": "لطفاً نام کاربری را وارد کنید"
       },
       "password": {
-        "label": "Password",
-        "placeholder": "Enter password",
-        "required": "Please enter your password"
+        "label": "رمز عبور",
+        "placeholder": "رمز عبور را وارد کنید",
+        "required": "لطفاً رمز عبور را وارد کنید"
       },
       "serverUrl": {
-        "label": "Server URL",
+        "label": "آدرس سرور",
         "placeholder": "http://localhost:8000",
-        "required": "Please enter the server URL",
-        "invalid": "Please enter a valid URL",
-        "extra": "The URL of your tldw_server instance (e.g., http://localhost:8000)"
+        "required": "لطفاً آدرس سرور را وارد کنید",
+        "invalid": "لطفاً یک آدرس معتبر وارد کنید",
+        "extra": "آدرس نمونه tldw_server شما (مثلاً http://localhost:8000)"
       }
     },
     "errors": {
-      "invalidApiKey": "Invalid API key",
-      "forbidden": "Forbidden (check permissions)",
-      "apiKeyValidationFailed": "API key validation failed",
-      "serverUnreachable": "Server unreachable"
+      "invalidApiKey": "کلید API نامعتبر است",
+      "forbidden": "ممنوع (مجوزها را بررسی کنید)",
+      "apiKeyValidationFailed": "اعتبارسنجی کلید API ناموفق بود",
+      "serverUnreachable": "سرور در دسترس نیست"
     },
     "about": {
-      "title": "About tldw_server Integration",
-      "description": "This extension connects to your tldw_server instance, providing access to:",
+      "title": "درباره یکپارچه‌سازی tldw_server",
+      "description": "این افزونه به نمونه tldw_server شما متصل می‌شود و دسترسی به موارد زیر را فراهم می‌کند:",
       "points": {
-        "providers": "Multiple LLM providers through a unified API",
-        "rag": "RAG (Retrieval-Augmented Generation) search",
-        "media": "Media ingestion and processing",
-        "notes": "Notes and prompts management",
-        "stt": "Speech-to-text transcription"
+        "providers": "چندین ارائه‌دهنده LLM از طریق یک API یکپارچه",
+        "rag": "جستجوی RAG (بازیابی تقویت‌شده)",
+        "media": "دریافت و پردازش رسانه",
+        "notes": "مدیریت یادداشت‌ها و پرامپت‌ها",
+        "stt": "تبدیل گفتار به متن"
       }
     }
   },

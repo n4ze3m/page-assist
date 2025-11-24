@@ -37,6 +37,7 @@ import { PrimaryToolbar } from "./PrimaryToolbar"
 import { useConnectionState } from "@/hooks/useConnectionState"
 import { useShortcutConfig, formatShortcut } from "@/hooks/keyboard/useShortcutConfig"
 import { ConnectionPhase } from "@/types/connection"
+import type { Character } from "@/types/character"
 import type { TFunction } from "i18next"
 import { Link } from "react-router-dom"
 import { hasPromptStudio } from "@/services/prompt-studio"
@@ -90,7 +91,10 @@ export const Header: React.FC<Props> = ({
     "hideCurrentChatModelSettings",
     false
   )
-  const [selectedCharacter] = useStorage<any>("selectedCharacter", null)
+  const [selectedCharacter] = useStorage<Character | null>(
+    "selectedCharacter",
+    null
+  )
   const {
     selectedModel,
     setSelectedModel,

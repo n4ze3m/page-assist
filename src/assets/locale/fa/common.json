@@ -10,7 +10,8 @@
   },
   "loading": {
     "title": "Loading…",
-    "description": "Please wait while we get things ready."
+    "description": "Please wait while we get things ready.",
+    "content": "Loading content…"
   },
   "selectAModel": "یک مدل انتخاب کنید",
   "save": "ذخیره",
@@ -145,6 +146,7 @@
   "sidebarChat": "چت کناری",
   "reasoning": {
     "thinking": "در حال فکر کردن....",
+    "loading": "در حال بارگذاری استدلال....",
     "thought": "فکر کردن برای {{time}}"
   },
   "embeddingGen": "در حال ایجاد تمثیلات، این ممکن است چند لحظه طول بکشد",

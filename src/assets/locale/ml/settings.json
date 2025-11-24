@@ -410,105 +410,105 @@
   "saveFailed": "Failed to save settings",
   "siteAccessGranted": "Host permission granted for {{origin}}",
   "tldw": {
-    "advancedTimeouts": "Advanced Timeouts",
-    "requestTimeout": "Request Timeout (seconds)",
-    "streamingIdle": "Streaming Idle Timeout (seconds)",
-    "chatRequest": "Chat Request Timeout",
-    "chatStreamIdle": "Chat Stream Idle",
-    "ragRequest": "RAG Request Timeout",
-    "mediaRequest": "Media Request Timeout",
-    "uploadRequest": "Upload Request Timeout",
-    "timeoutPresetLabel": "Timeout profile",
-    "timeoutPresetBalanced": "Balanced",
-    "timeoutPresetExtended": "Extended",
-    "timeoutPresetCustom": "Custom",
-    "timeoutPresetHint": "Balanced works well for most setups. Extended adds extra headroom for slower networks or long-running jobs.",
-    "reset": "Reset to recommended",
-    "resetDone": "Reset to recommended defaults",
-    "serverNav": "tldw Server",
-    "serverConfigTitle": "tldw Server Configuration",
-    "serverLabel": "Server:",
-    "notConfigured": "Not configured",
+    "advancedTimeouts": "ഉന്നത ടൈംഔട്ടുകൾ",
+    "requestTimeout": "അഭ്യർത്ഥന ടൈംഔട്ട് (സെക്കൻഡ്)",
+    "streamingIdle": "സ്ട്രീമിംഗ് ഐഡിൽ ടൈംഔട്ട് (സെക്കൻഡ്)",
+    "chatRequest": "ചാറ്റ് അഭ്യർത്ഥന ടൈംഔട്ട്",
+    "chatStreamIdle": "ചാറ്റ് സ്ട്രീം ഐഡിൽ",
+    "ragRequest": "RAG അഭ്യർത്ഥന ടൈംഔട്ട്",
+    "mediaRequest": "മീഡിയ അഭ്യർത്ഥന ടൈംഔട്ട്",
+    "uploadRequest": "അപ്‌ലോഡ് അഭ്യർത്ഥന ടൈംഔട്ട്",
+    "timeoutPresetLabel": "ടൈംഔട്ട് പ്രൊഫൈൽ",
+    "timeoutPresetBalanced": "ബാലൻസ്ഡ്",
+    "timeoutPresetExtended": "വിപുലീകരിച്ചത്",
+    "timeoutPresetCustom": "ഇച്ഛാനുസൃതം",
+    "timeoutPresetHint": "ബാലൻസ്ഡ് ഭൂരിഭാഗം ക്രമീകരണങ്ങൾക്ക് നല്ലതാണ്. വിപുലീകരിച്ചത് മന്ദഗതിയിലുള്ള നെറ്റ്‌വർക്കുകൾക്കും ദീർഘകാല ജോലികൾക്കും കൂടുതൽ സമയം നൽകുന്നു.",
+    "reset": "ശുപാർശ ചെയ്തതിനേക്ക് റിസെറ്റ് ചെയ്യുക",
+    "resetDone": "ശുപാർശ ചെയ്ത ഡീഫോൾട്ടിലേക്ക് റിസെറ്റ് ചെയ്തു",
+    "serverNav": "tldw സർവർ",
+    "serverConfigTitle": "tldw സർവർ ക്രമീകരണം",
+    "serverLabel": "സർവർ:",
+    "notConfigured": "ക്രമീകരിച്ചിട്ടില്ല",
     "buttons": {
-      "health": "Health",
-      "recheck": "Recheck",
-      "testConnection": "Test Connection",
-      "grantSiteAccess": "Grant Site Access",
-      "login": "Login",
-      "logout": "Logout"
+      "health": "സ്ഥിതി",
+      "recheck": "വീണ്ടും പരിശോധിക്കുക",
+      "testConnection": "കണക്ഷൻ പരിശോധിക്കുക",
+      "grantSiteAccess": "സൈറ്റ് പ്രവേശനം അനുവദിക്കുക",
+      "login": "ലോഗിൻ",
+      "logout": "ലോഗൗട്ട്"
     },
     "loginRequired": {
-      "title": "Login Required",
-      "description": "Please login with your tldw_server credentials"
+      "title": "ലോഗിൻ ആവശ്യമാണ്",
+      "description": "താങ്കളുടെ tldw_server ക്രെഡൻഷ്യലുകളുമായി ലോഗിൻ ചെയ്യുക"
     },
     "loggedIn": {
-      "title": "Logged In",
-      "description": "You are currently logged in to tldw_server"
+      "title": "ലോഗിൻ ചെയ്തു",
+      "description": "നിങ്ങൾ ഇപ്പോൾ tldw_server ൽ ലോഗിൻ ചെയ്‌തിരിക്കുന്നു"
     },
     "connection": {
-      "success": "Connection successful!",
-      "failed": "Connection failed. Please check your settings.",
-      "failedDetailed": "Connection failed. Please check your server URL and API key."
+      "success": "കണക്ഷൻ വിജയകരം!",
+      "failed": "കണക്ഷൻ പരാജയപ്പെട്ടു. ക്രമീകരണങ്ങൾ പരിശോധിക്കുക.",
+      "failedDetailed": "കണക്ഷൻ പരാജയപ്പെട്ടു. സർവർ URLയും API കീയും പരിശോധിക്കുക."
     },
     "authMode": {
-      "label": "Authentication Mode",
-      "single": "Single User (API Key)",
-      "multi": "Multi User (Login)"
+      "label": "പ്രാമാണീകരണ മോഡ്",
+      "single": "ഒറ്റ ഉപയോക്താവ് (API കീ)",
+      "multi": "മൾട്ടി ഉപയോക്താവ് (ലോഗിൻ)"
     },
     "hints": {
-      "requestTimeout": "Abort initial requests if no response within this time. Default: {{seconds}}s.",
-      "streamingIdle": "Abort streaming if no updates received within this time. Default: {{seconds}}s."
+      "requestTimeout": "ഈ സമയത്തിനുള്ളിൽ പ്രതികരണം ഇല്ലെങ്കിൽ ആദ്യ അഭ്യർത്ഥനകൾ അവസാനിപ്പിക്കുക. നിർദിഷ്ടം: {{seconds}}s.",
+      "streamingIdle": "ഈ സമയത്തിനുള്ളിൽ അപ്‌ഡേറ്റുകൾ ലഭ്യമല്ലെങ്കിൽ സ്ട്രീമിംഗ് അവസാനിപ്പിക്കുക. നിർദിഷ്ടം: {{seconds}}s."
     },
     "login": {
-      "success": "Login successful!",
-      "failed": "Login failed"
+      "success": "ലോഗിൻ വിജയകരമാണ്!",
+      "failed": "ലോഗിൻ പരാജയപ്പെട്ടു"
     },
     "logout": {
-      "success": "Logged out successfully",
-      "failed": "Logout failed"
+      "success": "വിജയകരമായി ലോഗൗട്ട് ചെയ്തു",
+      "failed": "ലോഗൗട്ട് പരാജയപ്പെട്ടു"
     },
-    "setupLink": "Set up server",
-    "loadError": "Unable to load tldw server settings. Check your connection and try again.",
+    "setupLink": "സർവർ സജ്ജമാക്കുക",
+    "loadError": "tldw സർവർ ക്രമീകരണങ്ങൾ ലോഡ് ചെയ്യാനായില്ല. കണക്ഷൻ പരിശോധിച്ച് വീണ്ടും ശ്രമിക്കുക.",
     "fields": {
       "apiKey": {
-        "label": "API Key",
-        "placeholder": "Enter your API key",
-        "required": "Please enter your API key",
-        "extra": "Your tldw_server API key for authentication"
+        "label": "API കീ",
+        "placeholder": "നിങ്ങളുടെ API കീ നൽകുക",
+        "required": "ദയവായി നിങ്ങളുടെ API കീ നൽകുക",
+        "extra": "പ്രാമാണീകരണത്തിനുള്ള നിങ്ങളുടെ tldw_server API കീ"
       },
       "username": {
-        "label": "Username",
-        "placeholder": "Enter username",
-        "required": "Please enter your username"
+        "label": "ഉപയോക്തൃനാമം",
+        "placeholder": "ഉപയോക്തൃനാമം നൽകുക",
+        "required": "ദയവായി നിങ്ങളുടെ ഉപയോക്തൃനാമം നൽകുക"
       },
       "password": {
-        "label": "Password",
-        "placeholder": "Enter password",
-        "required": "Please enter your password"
+        "label": "പാസ്‌വേഡ്",
+        "placeholder": "പാസ്‌വേഡ് നൽകുക",
+        "required": "ദയവായി നിങ്ങളുടെ പാസ്‌വേഡ് നൽകുക"
       },
       "serverUrl": {
-        "label": "Server URL",
+        "label": "സർവർ URL",
         "placeholder": "http://localhost:8000",
-        "required": "Please enter the server URL",
-        "invalid": "Please enter a valid URL",
-        "extra": "The URL of your tldw_server instance (e.g., http://localhost:8000)"
+        "required": "ദയവായി സർവർ URL നൽകുക",
+        "invalid": "ദയവായി സാധുവായ URL നൽകുക",
+        "extra": "നിങ്ങളുടെ tldw_server ഇൻസ്റ്റൻസിന്റെ URL (ഉദാ., http://localhost:8000)"
       }
     },
     "errors": {
-      "invalidApiKey": "Invalid API key",
-      "forbidden": "Forbidden (check permissions)",
-      "apiKeyValidationFailed": "API key validation failed",
-      "serverUnreachable": "Server unreachable"
+      "invalidApiKey": "അസാധുവായ API കീ",
+      "forbidden": "നിരോധിച്ചു (അനുമതികൾ പരിശോധിക്കുക)",
+      "apiKeyValidationFailed": "API കീ വാലിഡേഷൻ പരാജയപ്പെട്ടു",
+      "serverUnreachable": "സർവർ എത്തിച്ചേരാനാകുന്നില്ല"
     },
     "about": {
-      "title": "About tldw_server Integration",
-      "description": "This extension connects to your tldw_server instance, providing access to:",
+      "title": "tldw_server ഇന്റഗ്രേഷൻ സംബന്ധിച്ച്",
+      "description": "ഈ വിപുലീകരണം നിങ്ങളുടെ tldw_server ഇൻസ്റ്റൻസിലേക്ക് ബന്ധിപ്പിച്ച് പ്രവേശനം നൽകുന്നു:",
       "points": {
-        "providers": "Multiple LLM providers through a unified API",
-        "rag": "RAG (Retrieval-Augmented Generation) search",
-        "media": "Media ingestion and processing",
-        "notes": "Notes and prompts management",
-        "stt": "Speech-to-text transcription"
+        "providers": "ഒറ്റ API വഴി ഒന്നിലധികം LLM പ്രൊവൈഡർമാർ",
+        "rag": "RAG (Retrieval-Augmented Generation) തിരയൽ",
+        "media": "മീഡിയ ഇൻജക്ഷനും പ്രോസസ്സിംഗും",
+        "notes": "കുറിപ്പുകളും പ്രോംപ്റ്റുകളും നിയന്ത്രിക്കൽ",
+        "stt": "വായനയെ ടെക്സ്റ്റിലേക്ക് മാറ്റൽ"
       }
     }
   },

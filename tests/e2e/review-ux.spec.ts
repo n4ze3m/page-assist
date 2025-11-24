@@ -55,10 +55,6 @@ function startMediaMockServer() {
       return writeJson(200, { items })
     }
 
-    if (url.startsWith('/api/v1/media/') && method === 'GET') {
-      return writeJson(200, { items })
-    }
-
     if (url.startsWith('/api/v1/media') && method === 'GET') {
       return writeJson(200, { items })
     }

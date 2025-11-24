@@ -10,7 +10,8 @@
   },
   "loading": {
     "title": "Loading…",
-    "description": "Please wait while we get things ready."
+    "description": "Please wait while we get things ready.",
+    "content": "Loading content…"
   },
   "selectAModel": "モデルを選択",
   "save": "保存",
@@ -151,6 +152,7 @@
   "sidebarChat": "サイドバーチャット",
   "reasoning": {
     "thinking": "考え中....",
+    "loading": "推論を読み込み中....",
     "thought": "{{time}}の思考"
   },
   "embeddingGen": "埋め込みを作成中です。時間がかかる場合があります",

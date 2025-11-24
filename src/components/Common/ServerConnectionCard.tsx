@@ -33,13 +33,6 @@ const ConnectionToastContent: React.FC<ConnectionToastContentProps> = ({
   const { t } = useTranslation("common")
   const containerRef = React.useRef<HTMLDivElement | null>(null)
 
-  React.useEffect(() => {
-    const node = containerRef.current
-    if (node && document.visibilityState === "visible") {
-      node.focus()
-    }
-  }, [])
-
   const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
     if (event.key === "Escape" || event.key === "Esc") {
       event.preventDefault()
@@ -139,14 +132,14 @@ export const ServerConnectionCard: React.FC<Props> = ({
 
       const heading =
         t(
-          "ollamaState.errorToast",
+          "tldwState.errorToast",
           "We couldn't reach {{host}}",
           { host: serverHost ?? "tldw_server" }
         ) + (hasCode ? ` (HTTP ${code})` : "")
 
       const body =
         t(
-          "ollamaState.troubleshoot",
+          "tldwState.troubleshoot",
           "Confirm your server is running and that the browser is allowed to reach it, then retry from the Options page."
         ) + (detail ? `\nDetails: ${detail}` : "")
 
@@ -358,18 +351,18 @@ export const ServerConnectionCard: React.FC<Props> = ({
         >
           {isSearching && (
             <Tag color="blue" className="px-4 py-1 text-sm">
-              {t("ollamaState.searching")}
+              {t("tldwState.searching")}
               {elapsed > 0 ? ` · ${elapsed}s` : ""}
             </Tag>
           )}
           {statusVariant === "ok" && (
             <Tag color="green" className="px-4 py-1 text-sm">
-              {t("ollamaState.running")}
+              {t("tldwState.running")}
             </Tag>
           )}
           {statusVariant === "missing" && (
             <Tag color="orange" className="px-4 py-1 text-sm">
-              {t("ollamaState.missing", "Server URL not configured")}
+              {t("tldwState.missing", "Server URL not configured")}
             </Tag>
           )}
           {statusVariant === "error" && (
@@ -379,13 +372,13 @@ export const ServerConnectionCard: React.FC<Props> = ({
                 const hasCode = Number.isFinite(code) && code > 0
                 if (hasCode) {
                   return t(
-                    "ollamaState.connectionFailedWithCode",
+                    "tldwState.connectionFailedWithCode",
                     "Connection failed (HTTP {{code}})",
                     { code }
                   )
                 }
                 return t(
-                  "ollamaState.connectionFailed",
+                  "tldwState.connectionFailed",
                   "Connection failed"
                 )
               })()}
@@ -397,19 +390,19 @@ export const ServerConnectionCard: React.FC<Props> = ({
           {isSearching && (
             <span className="inline-flex items-center gap-1">
               <Clock className="h-3 w-3" />
-              {t("ollamaState.elapsed", "Checking… {{seconds}}s", { seconds: elapsed })}
+              {t("tldwState.elapsed", "Checking… {{seconds}}s", { seconds: elapsed })}
             </span>
           )}
           {statusVariant === "ok" && serverHost && (
             <span className="inline-flex items-center gap-1">
               <Server className="h-3 w-3" />
-              {t("ollamaState.connectedHint", "Connected to {{host}}.", { host: serverHost })}
+              {t("tldwState.connectedHint", "Connected to {{host}}.", { host: serverHost })}
             </span>
           )}
           {statusVariant === "error" && lastError && (
             <span className="inline-flex items-center gap-1 text-xs text-red-500">
               <span>
-                {t("ollamaState.errorDetailsLabel", "Details:")}
+                {t("tldwState.errorDetailsLabel", "Details:")}
               </span>
               <span className="rounded bg-red-50 px-1.5 py-0.5 text-[0.7rem] text-red-700 dark:bg-red-900/30 dark:text-red-200">
                 {lastError}
@@ -420,7 +413,7 @@ export const ServerConnectionCard: React.FC<Props> = ({
             !(phase === ConnectionPhase.SEARCHING && isChecking) && (
             <span className="inline-flex items-center gap-1 text-sm text-gray-600 dark:text-gray-300">
               <Clock className="h-3.5 w-3.5" />
-              {t("ollamaState.lastChecked", "Checked {{seconds}}s ago", { seconds: secondsSinceLastCheck })}
+              {t("tldwState.lastChecked", "Checked {{seconds}}s ago", { seconds: secondsSinceLastCheck })}
             </span>
           )}
         </div>
@@ -463,7 +456,7 @@ export const ServerConnectionCard: React.FC<Props> = ({
             {(statusVariant === "ok" || statusVariant === "error") && serverUrl
               ? t(
                   "option:connectionCard.buttonChangeServer",
-                  t("ollamaState.changeServer", "Change server")
+                  t("tldwState.changeServer", "Change server")
                 )
               : t(
                   "option:connectionCard.buttonConfigureServer",

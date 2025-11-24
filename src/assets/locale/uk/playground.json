@@ -1,40 +1,43 @@
 {
-    "ollamaState": {
-        "searching": "Пошук вашого tldw server",
-        "running": "tldw працює",
-        "notRunning": "Неможливо підключитися до tldw server",
-        "connectionError": "Здається, у вас виникла проблема з підключенням. Будь ласка, зверніться до цієї документації<anchor> для усунення несправностей.</anchor>",
-        "openTldwSettings": "Open tldw Settings",
-        "cancelSearch": "Cancel search"
+  "formError": {
+    "noModel": "Виберіть модель",
+    "noEmbeddingModel": "Налаштуйте модель вкладень на сторінці Налаштування > RAG"
+  },
+  "form": {
+    "textarea": {
+      "placeholder": "Введіть повідомлення..."
     },
-    "formError": {
-        "noModel": "Виберіть модель",
-        "noEmbeddingModel": "Налаштуйте модель вкладень на сторінці Налаштування > RAG"
-    },
-    "form": {
-        "textarea": {
-            "placeholder": "Введіть повідомлення..."
-        },
-        "webSearch": {
-            "on": "Увімкнено",
-            "off": "Вимкнено"
-        }
-    },
-    "tooltip": {
-        "searchInternet": "Пошук в Інтернеті",
-        "speechToText": "Голос у текст",
-        "uploadImage": "Завантажити зображення",
-        "stopStreaming": "Зупинити трансляцію",
-        "knowledge": "Знання",
-        "clearContext": "Очистити контекст"
-    },
-    "sendWhenEnter": "Надсилати при натисканні Enter",
-    "welcome": "Вітаю! Як я можу допомогти вам сьогодні?",
-    "useOCR": "Витягти текст із зображення (OCR)",
-    "tips": {
-        "title": "Tips",
-        "quickIngest": "Use Quick ingest to add documents and web pages.",
-        "pickModelPrompt": "Pick a Model and a Prompt from the header.",
-        "startChatFocus": "When connected, \u201cStart chatting\u201d focuses the composer."
+    "webSearch": {
+      "on": "Увімкнено",
+      "off": "Вимкнено"
     }
+  },
+  "tooltip": {
+    "searchInternet": "Пошук в Інтернеті",
+    "speechToText": "Голос у текст",
+    "uploadImage": "Завантажити зображення",
+    "stopStreaming": "Зупинити трансляцію",
+    "knowledge": "Знання",
+    "clearContext": "Очистити контекст"
+  },
+  "sendWhenEnter": "Надсилати при натисканні Enter",
+  "welcome": "Вітаю! Як я можу допомогти вам сьогодні?",
+  "useOCR": "Витягти текст із зображення (OCR)",
+  "tips": {
+    "title": "Tips",
+    "quickIngest": "Use Quick ingest to add documents and web pages.",
+    "pickModelPrompt": "Pick a Model and a Prompt from the header.",
+    "startChatFocus": "When connected, “Start chatting” focuses the composer."
+  },
+  "tldwState": {
+    "searching": "Пошук вашого tldw server",
+    "running": "tldw працює",
+    "notRunning": "Неможливо підключитися до tldw server",
+    "connectionError": "Здається, у вас виникла проблема з підключенням. Будь ласка, зверніться до цієї документації<anchor> для усунення несправностей.</anchor>",
+    "openTldwSettings": "Open tldw Settings",
+    "cancelSearch": "Cancel search",
+    "connectionFailedWithCode": "Connection failed (HTTP {{code}})",
+    "connectionFailed": "Connection failed",
+    "errorDetailsLabel": "Details:"
+  }
 }

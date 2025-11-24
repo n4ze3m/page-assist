@@ -1,233 +1,235 @@
 {
-    "pageAssist": "tldw Assistant",
+  "pageAssist": "tldw Assistant",
   "titles": {
     "options": "tldw Assistant",
     "sidepanel": "tldw Assistant"
   },
   "dismiss": "Dismiss",
-    "confirmTitle": "Please confirm",
-    "pdf": {
-        "passwordTitle": "Enter the PDF password",
-        "unlock": "Unlock"
+  "confirmTitle": "Please confirm",
+  "pdf": {
+    "passwordTitle": "Enter the PDF password",
+    "unlock": "Unlock"
+  },
+  "loading": {
+    "title": "Loading…",
+    "description": "Please wait while we get things ready.",
+    "content": "Loading content…"
+  },
+  "selectAModel": "Select a Model",
+  "save": "Save",
+  "saved": "Saved",
+  "cancel": "Cancel",
+  "saving": "Saving...",
+  "retry": "Retry",
+  "close": "Close",
+  "loadMore": "Load More...",
+  "share": {
+    "tooltip": {
+      "share": "Share"
     },
-    "loading": {
-        "title": "Loading…",
-        "description": "Please wait while we get things ready."
+    "modal": {
+      "title": "Share link to Chat"
     },
-    "selectAModel": "Select a Model",
-    "save": "Save",
-    "saved": "Saved",
-    "cancel": "Cancel",
-    "saving": "Saving...",
-    "retry": "Retry",
-    "close": "Close",
-    "loadMore": "Load More...",
-    "share": {
-        "tooltip": {
-            "share": "Share"
-        },
-        "modal": {
-            "title": "Share link to Chat"
-        },
-        "form": {
-            "defaultValue": {
-                "name": "Anonymous",
-                "title": "Untitled chat"
-            },
-            "title": {
-                "label": "Chat title",
-                "placeholder": "Enter Chat title",
-                "required": "Chat title is required"
-            },
-            "name": {
-                "label": "Your name",
-                "placeholder": "Enter your name",
-                "required": "Your name is required"
-            },
-            "btn": {
-                "save": "Generate Link",
-                "saving": "Generating Link..."
-            }
-        },
-        "notification": {
-            "successGenerate": "Link copied to clipboard",
-            "failGenerate": "Failed to generate link"
-        }
+    "form": {
+      "defaultValue": {
+        "name": "Anonymous",
+        "title": "Untitled chat"
+      },
+      "title": {
+        "label": "Chat title",
+        "placeholder": "Enter Chat title",
+        "required": "Chat title is required"
+      },
+      "name": {
+        "label": "Your name",
+        "placeholder": "Enter your name",
+        "required": "Your name is required"
+      },
+      "btn": {
+        "save": "Generate Link",
+        "saving": "Generating Link..."
+      }
     },
-    "copyToClipboard": "Copy to clipboard",
-    "table": {
-        "copyCsv": "Copy as CSV",
-        "downloadCsv": "Download CSV"
-    },
-    "webSearch": "Searching the web",
-    "regenerate": "Regenerate",
-    "edit": "Edit",
-    "delete": "Delete",
-    "continue": "Continue Response",
-    "saveAndSubmit": "Save & Send",
-    "editMessage": {
-        "placeholder": "Type a message..."
-    },
-    "submit": "Submit",
-    "send": "Send",
-    "startChat": "Start chatting",
-    "connectToServer": "Connect to server",
-    "previous": "Previous",
-    "next": "Next",
-    "noData": "No data",
-    "noHistory": "No chat history",
-    "chatWithCurrentPage": "Chat with current page",
-    "chatWithCharacter": "Chat with character",
-    "beta": "Beta",
-    "tts": "Read aloud",
-    "ttsShort": "TTS",
-    "copyShort": "Copy",
-    "branchShort": "Branch",
-    "currentChatModelSettings": "Current Chat Model Settings",
-    "modelSettings": {
-        "label": "Model Settings",
-        "description": "Set the model options globally for all chats",
-        "form": {
-            "keepAlive": {
-                "label": "Keep Alive",
-                "help": "controls how long the model will stay loaded into memory following the request (default: 5m)",
-                "placeholder": "e.g. 5m, 10m, 1h"
-            },
-            "temperature": {
-                "label": "Temperature",
-                "placeholder": "e.g. 0.7, 1.0"
-            },
-            "numCtx": {
-                "label": "Context Window Size (num_ctx)",
-                "placeholder": "Enter Context Window Size value (default: 2048)"
-            },
-            "numPredict": {
-                "label": "Max Tokens (num_predict)",
-                "placeholder": "e.g. 2048, 4096"
-            },
-            "thinking": {
-                "label": "Thinking Mode"
-            },
-            "seed": {
-                "label": "Seed",
-                "placeholder": "e.g. 1234",
-                "help": "Reproducibility of the model output"
-            },
-            "topK": {
-                "label": "Top K",
-                "placeholder": "e.g. 40, 100"
-            },
-            "topP": {
-                "label": "Top P",
-                "placeholder": "e.g. 0.9, 0.95"
-            },
-            "useMMap": {
-                "label": "useMmap"
-            },
-            "tfsZ": {
-                "label": "TFS-Z",
-                "placeholder": "e.g. 1.0, 1.1"
-            },
-            "numKeep": {
-                "label": "Num Keep",
-                "placeholder": "e.g. 256, 512"
-            },
-            "numThread": {
-                "label": "Num Thread",
-                "placeholder": "e.g. 8, 16"
-            },
-            "useMlock": {
-                "label": "useMlock"
-            },
-            "reasoningEffort": {
-                "label": "Reasoning Effort",
-                "placeholder": "low, medium, high"
-            },
-            "minP": {
-                "label": "Min P",
-                "placeholder": "e.g. 0.05"
-            },
-            "repeatPenalty": {
-                "label": "Repeat Penalty",
-                "placeholder": "e.g. 1.1, 1.2"
-            },
-            "repeatLastN": {
-                "label": "Repeat Last N",
-                "placeholder": "e.g. 64, 128"
-            },
-            "numGpu": {
-                "label": "Num GPU",
-                "placeholder": "Enter number of layers to send to GPU(s)"
-            },
-            "systemPrompt": {
-                "label": "Temporary System Prompt",
-                "placeholder": "Enter System Prompt",
-                "help": "This is a quick way to set the system prompt in the current chat, which will override the selected system prompt if it exists."
-            }
-        },
-        "advanced": "More Model Settings"
-    },
-    "copilot": {
-        "summary": "Summarize",
-        "explain": "Explain",
-        "rephrase": "Rephrase",
-        "translate": "Translate",
-        "custom": "Custom"
-    },
-    "citations": "Citations",
-    "segmented": {
-        "available": "Server Models",
-        "custom": "Custom Models"
-    },
-    "downloadCode": "Download Code",
-    "success": "Success",
-    "created": "Created",
-    "updated": "Updated",
-    "deleted": "Deleted",
-    "create": "Create",
-    "reset": "Reset",
-    "serverOffline": "Server offline or not configured",
-    "date": {
-        "pinned": "Pinned",
-        "today": "Today",
-        "yesterday": "Yesterday",
-        "last7Days": "Last 7 Days",
-        "older": "Older"
-    },
-    "range": {
-        "deleteConfirm": {
-            "pinned": "Are you sure you want to delete all pinned messages?",
-            "today": "Are you sure you want to delete all messages from today?",
-            "yesterday": "Are you sure you want to delete all messages from yesterday?",
-            "last7Days": "Are you sure you want to delete all messages from the last 7 days?",
-            "older": "Are you sure you want to delete all older messages?"
-        },
-        "tooltip": {
-            "pinned": "Delete all pinned messages",
-            "today": "Delete all messages from today",
-            "yesterday": "Delete all messages from yesterday",
-            "last7Days": "Delete all messages from the last 7 days",
-            "older": "Delete all older messages"
-        }
-    },
-    "historiesDeleted": "{{count}} Histories Deleted",
-    "deleteHistoriesError": "Error deleting histories",
-    "pin": "Pin",
-    "unpin": "Unpin",
-    "generationInfo": "Generation Info",
-    "sidebarChat": "Sidebar Chat",
-    "reasoning": {
-        "thinking": "Thinking…",
-        "thought": "Model’s reasoning (optional)"
-    },
-    "mermaid": "Mermaid",
-    "search": "Search",
-    "searchResults": "Search Results",
-    "embeddingGen": "Creating embeddings, this may take a while",
-    "semanticSearch": "Performing semantic search",
-    "newBranch": "New Branch",
-    "downloading": "Downloading",
-    "cancelPullingModel": {
-        "confirm": "Are you sure you want to cancel the download? This will stop the download process. If supported by the provider, you can resume later."
+    "notification": {
+      "successGenerate": "Link copied to clipboard",
+      "failGenerate": "Failed to generate link"
     }
+  },
+  "copyToClipboard": "Copy to clipboard",
+  "table": {
+    "copyCsv": "Copy as CSV",
+    "downloadCsv": "Download CSV"
+  },
+  "webSearch": "Searching the web",
+  "regenerate": "Regenerate",
+  "edit": "Edit",
+  "delete": "Delete",
+  "continue": "Continue Response",
+  "saveAndSubmit": "Save & Send",
+  "editMessage": {
+    "placeholder": "Type a message..."
+  },
+  "submit": "Submit",
+  "send": "Send",
+  "startChat": "Start chatting",
+  "connectToServer": "Connect to server",
+  "previous": "Previous",
+  "next": "Next",
+  "noData": "No data",
+  "noHistory": "No chat history",
+  "chatWithCurrentPage": "Chat with current page",
+  "chatWithCharacter": "Chat with character",
+  "beta": "Beta",
+  "tts": "Read aloud",
+  "ttsShort": "TTS",
+  "copyShort": "Copy",
+  "branchShort": "Branch",
+  "currentChatModelSettings": "Current Chat Model Settings",
+  "modelSettings": {
+    "label": "Model Settings",
+    "description": "Set the model options globally for all chats",
+    "form": {
+      "keepAlive": {
+        "label": "Keep Alive",
+        "help": "controls how long the model will stay loaded into memory following the request (default: 5m)",
+        "placeholder": "e.g. 5m, 10m, 1h"
+      },
+      "temperature": {
+        "label": "Temperature",
+        "placeholder": "e.g. 0.7, 1.0"
+      },
+      "numCtx": {
+        "label": "Context Window Size (num_ctx)",
+        "placeholder": "Enter Context Window Size value (default: 2048)"
+      },
+      "numPredict": {
+        "label": "Max Tokens (num_predict)",
+        "placeholder": "e.g. 2048, 4096"
+      },
+      "thinking": {
+        "label": "Thinking Mode"
+      },
+      "seed": {
+        "label": "Seed",
+        "placeholder": "e.g. 1234",
+        "help": "Reproducibility of the model output"
+      },
+      "topK": {
+        "label": "Top K",
+        "placeholder": "e.g. 40, 100"
+      },
+      "topP": {
+        "label": "Top P",
+        "placeholder": "e.g. 0.9, 0.95"
+      },
+      "useMMap": {
+        "label": "useMmap"
+      },
+      "tfsZ": {
+        "label": "TFS-Z",
+        "placeholder": "e.g. 1.0, 1.1"
+      },
+      "numKeep": {
+        "label": "Num Keep",
+        "placeholder": "e.g. 256, 512"
+      },
+      "numThread": {
+        "label": "Num Thread",
+        "placeholder": "e.g. 8, 16"
+      },
+      "useMlock": {
+        "label": "useMlock"
+      },
+      "reasoningEffort": {
+        "label": "Reasoning Effort",
+        "placeholder": "low, medium, high"
+      },
+      "minP": {
+        "label": "Min P",
+        "placeholder": "e.g. 0.05"
+      },
+      "repeatPenalty": {
+        "label": "Repeat Penalty",
+        "placeholder": "e.g. 1.1, 1.2"
+      },
+      "repeatLastN": {
+        "label": "Repeat Last N",
+        "placeholder": "e.g. 64, 128"
+      },
+      "numGpu": {
+        "label": "Num GPU",
+        "placeholder": "Enter number of layers to send to GPU(s)"
+      },
+      "systemPrompt": {
+        "label": "Temporary System Prompt",
+        "placeholder": "Enter System Prompt",
+        "help": "This is a quick way to set the system prompt in the current chat, which will override the selected system prompt if it exists."
+      }
+    },
+    "advanced": "More Model Settings"
+  },
+  "copilot": {
+    "summary": "Summarize",
+    "explain": "Explain",
+    "rephrase": "Rephrase",
+    "translate": "Translate",
+    "custom": "Custom"
+  },
+  "citations": "Citations",
+  "segmented": {
+    "available": "Server Models",
+    "custom": "Custom Models"
+  },
+  "downloadCode": "Download Code",
+  "success": "Success",
+  "created": "Created",
+  "updated": "Updated",
+  "deleted": "Deleted",
+  "create": "Create",
+  "reset": "Reset",
+  "serverOffline": "Server offline or not configured",
+  "date": {
+    "pinned": "Pinned",
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "last7Days": "Last 7 Days",
+    "older": "Older"
+  },
+  "range": {
+    "deleteConfirm": {
+      "pinned": "Are you sure you want to delete all pinned messages?",
+      "today": "Are you sure you want to delete all messages from today?",
+      "yesterday": "Are you sure you want to delete all messages from yesterday?",
+      "last7Days": "Are you sure you want to delete all messages from the last 7 days?",
+      "older": "Are you sure you want to delete all older messages?"
+    },
+    "tooltip": {
+      "pinned": "Delete all pinned messages",
+      "today": "Delete all messages from today",
+      "yesterday": "Delete all messages from yesterday",
+      "last7Days": "Delete all messages from the last 7 days",
+      "older": "Delete all older messages"
+    }
+  },
+  "historiesDeleted": "{{count}} Histories Deleted",
+  "deleteHistoriesError": "Error deleting histories",
+  "pin": "Pin",
+  "unpin": "Unpin",
+  "generationInfo": "Generation Info",
+  "sidebarChat": "Sidebar Chat",
+  "reasoning": {
+    "thinking": "Thinking…",
+    "loading": "Loading reasoning…",
+    "thought": "Model’s reasoning (optional)"
+  },
+  "mermaid": "Mermaid",
+  "search": "Search",
+  "searchResults": "Search Results",
+  "embeddingGen": "Creating embeddings, this may take a while",
+  "semanticSearch": "Performing semantic search",
+  "newBranch": "New Branch",
+  "downloading": "Downloading",
+  "cancelPullingModel": {
+    "confirm": "Are you sure you want to cancel the download? This will stop the download process. If supported by the provider, you can resume later."
+  }
 }

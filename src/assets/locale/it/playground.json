@@ -1,40 +1,43 @@
 {
-    "ollamaState": {
-        "searching": "Sto cercando il tuo tldw server",
-        "running": "tldw è attivo",
-        "notRunning": "Impossibile connettersi a tldw server",
-        "connectionError": "C'è stato un problema di connessione. Controlla la <anchor>documentazione</anchor> per investigare.",
-        "openTldwSettings": "Open tldw Settings",
-        "cancelSearch": "Cancel search"
+  "formError": {
+    "noModel": "Seleziona un modello",
+    "noEmbeddingModel": "Imposta un modello di embedding da Impostazioni > RAG"
+  },
+  "form": {
+    "textarea": {
+      "placeholder": "Scrivi un messaggio..."
     },
-    "formError": {
-        "noModel": "Seleziona un modello",
-        "noEmbeddingModel": "Imposta un modello di embedding da Impostazioni > RAG"
-    },
-    "form": {
-        "textarea": {
-            "placeholder": "Scrivi un messaggio..."
-        },
-        "webSearch": {
-            "on": "Attivo",
-            "off": "Disattivato"
-        }
-    },
-    "tooltip": {
-        "searchInternet": "Cerca su Internet",
-        "speechToText": "Speech to Text",
-        "uploadImage": "Carica immagine",
-        "stopStreaming": "Ferma lo Streaming",
-        "knowledge": "Conoscenza",
-        "clearContext": "Cancella Contesto"
-    },
-    "sendWhenEnter": "Invia subito dopo Enter",
-    "welcome": "Ciao! Come posso aiutarti oggi?",
-    "useOCR": "Estrai testo dall'immagine (OCR)",
-    "tips": {
-        "title": "Tips",
-        "quickIngest": "Use Quick ingest to add documents and web pages.",
-        "pickModelPrompt": "Pick a Model and a Prompt from the header.",
-        "startChatFocus": "When connected, \u201cStart chatting\u201d focuses the composer."
+    "webSearch": {
+      "on": "Attivo",
+      "off": "Disattivato"
     }
+  },
+  "tooltip": {
+    "searchInternet": "Cerca su Internet",
+    "speechToText": "Speech to Text",
+    "uploadImage": "Carica immagine",
+    "stopStreaming": "Ferma lo Streaming",
+    "knowledge": "Conoscenza",
+    "clearContext": "Cancella Contesto"
+  },
+  "sendWhenEnter": "Invia subito dopo Enter",
+  "welcome": "Ciao! Come posso aiutarti oggi?",
+  "useOCR": "Estrai testo dall'immagine (OCR)",
+  "tips": {
+    "title": "Tips",
+    "quickIngest": "Use Quick ingest to add documents and web pages.",
+    "pickModelPrompt": "Pick a Model and a Prompt from the header.",
+    "startChatFocus": "When connected, “Start chatting” focuses the composer."
+  },
+  "tldwState": {
+    "searching": "Sto cercando il tuo tldw server",
+    "running": "tldw è attivo",
+    "notRunning": "Impossibile connettersi a tldw server",
+    "connectionError": "C'è stato un problema di connessione. Controlla la <anchor>documentazione</anchor> per investigare.",
+    "openTldwSettings": "Open tldw Settings",
+    "cancelSearch": "Cancel search",
+    "connectionFailedWithCode": "Connection failed (HTTP {{code}})",
+    "connectionFailed": "Connection failed",
+    "errorDetailsLabel": "Details:"
+  }
 }

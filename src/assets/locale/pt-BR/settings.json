@@ -411,105 +411,105 @@
   "saveFailed": "Failed to save settings",
   "siteAccessGranted": "Host permission granted for {{origin}}",
   "tldw": {
-    "advancedTimeouts": "Advanced Timeouts",
-    "requestTimeout": "Request Timeout (seconds)",
-    "streamingIdle": "Streaming Idle Timeout (seconds)",
-    "chatRequest": "Chat Request Timeout",
-    "chatStreamIdle": "Chat Stream Idle",
-    "ragRequest": "RAG Request Timeout",
-    "mediaRequest": "Media Request Timeout",
-    "uploadRequest": "Upload Request Timeout",
-    "timeoutPresetLabel": "Timeout profile",
-    "timeoutPresetBalanced": "Balanced",
-    "timeoutPresetExtended": "Extended",
-    "timeoutPresetCustom": "Custom",
-    "timeoutPresetHint": "Balanced works well for most setups. Extended adds extra headroom for slower networks or long-running jobs.",
-    "reset": "Reset to recommended",
-    "resetDone": "Reset to recommended defaults",
-    "serverNav": "tldw Server",
-    "serverConfigTitle": "tldw Server Configuration",
-    "serverLabel": "Server:",
-    "notConfigured": "Not configured",
+    "advancedTimeouts": "Tempos limite avançados",
+    "requestTimeout": "Tempo limite da requisição (segundos)",
+    "streamingIdle": "Tempo limite de inatividade do streaming (segundos)",
+    "chatRequest": "Tempo limite da requisição de chat",
+    "chatStreamIdle": "Inatividade do streaming de chat",
+    "ragRequest": "Tempo limite da requisição RAG",
+    "mediaRequest": "Tempo limite da requisição de mídia",
+    "uploadRequest": "Tempo limite da requisição de upload",
+    "timeoutPresetLabel": "Perfil de tempo limite",
+    "timeoutPresetBalanced": "Balanceado",
+    "timeoutPresetExtended": "Estendido",
+    "timeoutPresetCustom": "Personalizado",
+    "timeoutPresetHint": "Balanceado funciona bem para a maioria das configurações. Estendido adiciona mais folga para redes lentas ou tarefas longas.",
+    "reset": "Restaurar para recomendado",
+    "resetDone": "Restaurado para os padrões recomendados",
+    "serverNav": "Servidor tldw",
+    "serverConfigTitle": "Configuração do servidor tldw",
+    "serverLabel": "Servidor:",
+    "notConfigured": "Não configurado",
     "buttons": {
-      "health": "Health",
-      "recheck": "Recheck",
-      "testConnection": "Test Connection",
-      "grantSiteAccess": "Grant Site Access",
-      "login": "Login",
-      "logout": "Logout"
+      "health": "Status",
+      "recheck": "Verificar novamente",
+      "testConnection": "Testar conexão",
+      "grantSiteAccess": "Conceder acesso ao site",
+      "login": "Entrar",
+      "logout": "Sair"
     },
     "loginRequired": {
-      "title": "Login Required",
-      "description": "Please login with your tldw_server credentials"
+      "title": "Login necessário",
+      "description": "Faça login com suas credenciais do tldw_server"
     },
     "loggedIn": {
-      "title": "Logged In",
-      "description": "You are currently logged in to tldw_server"
+      "title": "Conectado",
+      "description": "Você está conectado ao tldw_server"
     },
     "connection": {
-      "success": "Connection successful!",
-      "failed": "Connection failed. Please check your settings.",
-      "failedDetailed": "Connection failed. Please check your server URL and API key."
+      "success": "Conexão bem-sucedida!",
+      "failed": "Falha na conexão. Verifique suas configurações.",
+      "failedDetailed": "Falha na conexão. Verifique a URL do servidor e a chave API."
     },
     "authMode": {
-      "label": "Authentication Mode",
-      "single": "Single User (API Key)",
-      "multi": "Multi User (Login)"
+      "label": "Modo de autenticação",
+      "single": "Usuário único (chave API)",
+      "multi": "Multiusuário (login)"
     },
     "hints": {
-      "requestTimeout": "Abort initial requests if no response within this time. Default: {{seconds}}s.",
-      "streamingIdle": "Abort streaming if no updates received within this time. Default: {{seconds}}s."
+      "requestTimeout": "Interrompa as requisições iniciais se não houver resposta nesse tempo. Padrão: {{seconds}}s.",
+      "streamingIdle": "Interrompa o streaming se não houver atualizações nesse tempo. Padrão: {{seconds}}s."
     },
     "login": {
-      "success": "Login successful!",
-      "failed": "Login failed"
+      "success": "Login bem-sucedido!",
+      "failed": "Falha no login"
     },
     "logout": {
-      "success": "Logged out successfully",
-      "failed": "Logout failed"
+      "success": "Logout realizado com sucesso",
+      "failed": "Falha no logout"
     },
-    "setupLink": "Set up server",
-    "loadError": "Unable to load tldw server settings. Check your connection and try again.",
+    "setupLink": "Configurar servidor",
+    "loadError": "Não foi possível carregar as configurações do servidor tldw. Verifique sua conexão e tente novamente.",
     "fields": {
       "apiKey": {
-        "label": "API Key",
-        "placeholder": "Enter your API key",
-        "required": "Please enter your API key",
-        "extra": "Your tldw_server API key for authentication"
+        "label": "Chave API",
+        "placeholder": "Insira sua chave API",
+        "required": "Insira sua chave API",
+        "extra": "Sua chave API do tldw_server para autenticação"
       },
       "username": {
-        "label": "Username",
-        "placeholder": "Enter username",
-        "required": "Please enter your username"
+        "label": "Nome de usuário",
+        "placeholder": "Insira o nome de usuário",
+        "required": "Insira seu nome de usuário"
       },
       "password": {
-        "label": "Password",
-        "placeholder": "Enter password",
-        "required": "Please enter your password"
+        "label": "Senha",
+        "placeholder": "Insira a senha",
+        "required": "Insira sua senha"
       },
       "serverUrl": {
-        "label": "Server URL",
+        "label": "URL do servidor",
         "placeholder": "http://localhost:8000",
-        "required": "Please enter the server URL",
-        "invalid": "Please enter a valid URL",
-        "extra": "The URL of your tldw_server instance (e.g., http://localhost:8000)"
+        "required": "Insira a URL do servidor",
+        "invalid": "Insira uma URL válida",
+        "extra": "A URL da sua instância tldw_server (ex.: http://localhost:8000)"
       }
     },
     "errors": {
-      "invalidApiKey": "Invalid API key",
-      "forbidden": "Forbidden (check permissions)",
-      "apiKeyValidationFailed": "API key validation failed",
-      "serverUnreachable": "Server unreachable"
+      "invalidApiKey": "Chave API inválida",
+      "forbidden": "Proibido (verifique as permissões)",
+      "apiKeyValidationFailed": "Falha na validação da chave API",
+      "serverUnreachable": "Servidor inacessível"
     },
     "about": {
-      "title": "About tldw_server Integration",
-      "description": "This extension connects to your tldw_server instance, providing access to:",
+      "title": "Sobre a integração com tldw_server",
+      "description": "Esta extensão se conecta à sua instância do tldw_server, permitindo acesso a:",
       "points": {
-        "providers": "Multiple LLM providers through a unified API",
-        "rag": "RAG (Retrieval-Augmented Generation) search",
-        "media": "Media ingestion and processing",
-        "notes": "Notes and prompts management",
-        "stt": "Speech-to-text transcription"
+        "providers": "Vários provedores de LLM por meio de uma API unificada",
+        "rag": "Busca RAG (geração aumentada por recuperação)",
+        "media": "Ingestão e processamento de mídia",
+        "notes": "Gerenciamento de notas e prompts",
+        "stt": "Transcrição de voz para texto"
       }
     }
   },

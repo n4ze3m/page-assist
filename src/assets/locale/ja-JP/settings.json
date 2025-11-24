@@ -410,105 +410,105 @@
   "saveFailed": "Failed to save settings",
   "siteAccessGranted": "Host permission granted for {{origin}}",
   "tldw": {
-    "advancedTimeouts": "Advanced Timeouts",
-    "requestTimeout": "Request Timeout (seconds)",
-    "streamingIdle": "Streaming Idle Timeout (seconds)",
-    "chatRequest": "Chat Request Timeout",
-    "chatStreamIdle": "Chat Stream Idle",
-    "ragRequest": "RAG Request Timeout",
-    "mediaRequest": "Media Request Timeout",
-    "uploadRequest": "Upload Request Timeout",
-    "timeoutPresetLabel": "Timeout profile",
-    "timeoutPresetBalanced": "Balanced",
-    "timeoutPresetExtended": "Extended",
-    "timeoutPresetCustom": "Custom",
-    "timeoutPresetHint": "Balanced works well for most setups. Extended adds extra headroom for slower networks or long-running jobs.",
-    "reset": "Reset to recommended",
-    "resetDone": "Reset to recommended defaults",
-    "serverNav": "tldw Server",
-    "serverConfigTitle": "tldw Server Configuration",
-    "serverLabel": "Server:",
-    "notConfigured": "Not configured",
+    "advancedTimeouts": "高度なタイムアウト",
+    "requestTimeout": "リクエストのタイムアウト（秒）",
+    "streamingIdle": "ストリーミング待機タイムアウト（秒）",
+    "chatRequest": "チャットリクエストのタイムアウト",
+    "chatStreamIdle": "チャットストリームのアイドル",
+    "ragRequest": "RAGリクエストのタイムアウト",
+    "mediaRequest": "メディアリクエストのタイムアウト",
+    "uploadRequest": "アップロードリクエストのタイムアウト",
+    "timeoutPresetLabel": "タイムアウトプロファイル",
+    "timeoutPresetBalanced": "バランス",
+    "timeoutPresetExtended": "拡張",
+    "timeoutPresetCustom": "カスタム",
+    "timeoutPresetHint": "バランスはほとんどの環境で機能します。拡張は遅いネットワークや長時間のジョブに余裕を持たせます。",
+    "reset": "推奨値にリセット",
+    "resetDone": "推奨のデフォルトにリセットしました",
+    "serverNav": "tldwサーバー",
+    "serverConfigTitle": "tldwサーバー設定",
+    "serverLabel": "サーバー:",
+    "notConfigured": "未設定",
     "buttons": {
-      "health": "Health",
-      "recheck": "Recheck",
-      "testConnection": "Test Connection",
-      "grantSiteAccess": "Grant Site Access",
-      "login": "Login",
-      "logout": "Logout"
+      "health": "状態",
+      "recheck": "再チェック",
+      "testConnection": "接続テスト",
+      "grantSiteAccess": "サイトアクセスを許可",
+      "login": "ログイン",
+      "logout": "ログアウト"
     },
     "loginRequired": {
-      "title": "Login Required",
-      "description": "Please login with your tldw_server credentials"
+      "title": "ログインが必要です",
+      "description": "tldw_serverの認証情報でログインしてください"
     },
     "loggedIn": {
-      "title": "Logged In",
-      "description": "You are currently logged in to tldw_server"
+      "title": "ログイン済み",
+      "description": "現在 tldw_server にログインしています"
     },
     "connection": {
-      "success": "Connection successful!",
-      "failed": "Connection failed. Please check your settings.",
-      "failedDetailed": "Connection failed. Please check your server URL and API key."
+      "success": "接続に成功しました！",
+      "failed": "接続に失敗しました。設定を確認してください。",
+      "failedDetailed": "接続に失敗しました。サーバーURLとAPIキーを確認してください。"
     },
     "authMode": {
-      "label": "Authentication Mode",
-      "single": "Single User (API Key)",
-      "multi": "Multi User (Login)"
+      "label": "認証モード",
+      "single": "単一ユーザー（APIキー）",
+      "multi": "マルチユーザー（ログイン）"
     },
     "hints": {
-      "requestTimeout": "Abort initial requests if no response within this time. Default: {{seconds}}s.",
-      "streamingIdle": "Abort streaming if no updates received within this time. Default: {{seconds}}s."
+      "requestTimeout": "この時間内に応答がない場合、初期リクエストを中断します。既定: {{seconds}}s。",
+      "streamingIdle": "この時間内に更新がない場合、ストリーミングを中断します。既定: {{seconds}}s。"
     },
     "login": {
-      "success": "Login successful!",
-      "failed": "Login failed"
+      "success": "ログインに成功しました！",
+      "failed": "ログインに失敗しました"
     },
     "logout": {
-      "success": "Logged out successfully",
-      "failed": "Logout failed"
+      "success": "正常にログアウトしました",
+      "failed": "ログアウトに失敗しました"
     },
-    "setupLink": "Set up server",
-    "loadError": "Unable to load tldw server settings. Check your connection and try again.",
+    "setupLink": "サーバーを設定",
+    "loadError": "tldw サーバー設定を読み込めません。接続を確認して再試行してください。",
     "fields": {
       "apiKey": {
-        "label": "API Key",
-        "placeholder": "Enter your API key",
-        "required": "Please enter your API key",
-        "extra": "Your tldw_server API key for authentication"
+        "label": "APIキー",
+        "placeholder": "APIキーを入力",
+        "required": "APIキーを入力してください",
+        "extra": "認証用の tldw_server の APIキー"
       },
       "username": {
-        "label": "Username",
-        "placeholder": "Enter username",
-        "required": "Please enter your username"
+        "label": "ユーザー名",
+        "placeholder": "ユーザー名を入力",
+        "required": "ユーザー名を入力してください"
       },
       "password": {
-        "label": "Password",
-        "placeholder": "Enter password",
-        "required": "Please enter your password"
+        "label": "パスワード",
+        "placeholder": "パスワードを入力",
+        "required": "パスワードを入力してください"
       },
       "serverUrl": {
-        "label": "Server URL",
+        "label": "サーバーURL",
         "placeholder": "http://localhost:8000",
-        "required": "Please enter the server URL",
-        "invalid": "Please enter a valid URL",
-        "extra": "The URL of your tldw_server instance (e.g., http://localhost:8000)"
+        "required": "サーバーURLを入力してください",
+        "invalid": "有効なURLを入力してください",
+        "extra": "tldw_server インスタンスのURL（例: http://localhost:8000）"
       }
     },
     "errors": {
-      "invalidApiKey": "Invalid API key",
-      "forbidden": "Forbidden (check permissions)",
-      "apiKeyValidationFailed": "API key validation failed",
-      "serverUnreachable": "Server unreachable"
+      "invalidApiKey": "無効な API キーです",
+      "forbidden": "禁止されています（権限を確認してください）",
+      "apiKeyValidationFailed": "APIキーの検証に失敗しました",
+      "serverUnreachable": "サーバーに到達できません"
     },
     "about": {
-      "title": "About tldw_server Integration",
-      "description": "This extension connects to your tldw_server instance, providing access to:",
+      "title": "tldw_server 連携について",
+      "description": "この拡張機能は tldw_server インスタンスに接続し、次の機能を提供します:",
       "points": {
-        "providers": "Multiple LLM providers through a unified API",
-        "rag": "RAG (Retrieval-Augmented Generation) search",
-        "media": "Media ingestion and processing",
-        "notes": "Notes and prompts management",
-        "stt": "Speech-to-text transcription"
+        "providers": "統一APIを通じた複数のLLMプロバイダー",
+        "rag": "RAG（検索拡張生成）検索",
+        "media": "メディアの取り込みと処理",
+        "notes": "ノートとプロンプトの管理",
+        "stt": "音声からテキストへの文字起こし"
       }
     }
   },

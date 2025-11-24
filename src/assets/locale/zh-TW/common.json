@@ -10,7 +10,8 @@
   },
   "loading": {
     "title": "Loading…",
-    "description": "Please wait while we get things ready."
+    "description": "Please wait while we get things ready.",
+    "content": "Loading content…"
   },
   "selectAModel": "選擇一個模型",
   "save": "儲存",
@@ -196,6 +197,7 @@
   "sidebarChat": "側邊面板聊天",
   "reasoning": {
     "thinking": "思考中....",
+    "loading": "正在載入推理....",
     "thought": "思考了 {{time}}"
   },
   "embeddingGen": "正在建立嵌入向量，這可能需要一些時間",

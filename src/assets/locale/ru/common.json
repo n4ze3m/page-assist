@@ -10,7 +10,8 @@
   },
   "loading": {
     "title": "Loading…",
-    "description": "Please wait while we get things ready."
+    "description": "Please wait while we get things ready.",
+    "content": "Loading content…"
   },
   "selectAModel": "Выберите модель",
   "save": "Сохранить",
@@ -151,6 +152,7 @@
   "sidebarChat": "Боковой чат",
   "reasoning": {
     "thinking": "Размышляю...",
+    "loading": "Загружаю рассуждение...",
     "thought": "Размышлял {{time}}"
   },
   "embeddingGen": "Создание вложений, это может занять некоторое время",

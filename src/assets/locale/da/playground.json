@@ -1,40 +1,43 @@
 {
-    "ollamaState": {
-        "searching": "Søger efter din tldw server",
-        "running": "tldw kører",
-        "notRunning": "Kan ikke oprette forbindelse til tldw server",
-        "connectionError": "Det lader til, at du har en forbindelsesfejl. Se venligst denne <anchor>dokumentation</anchor> for fejlfinding.",
-        "openTldwSettings": "Open tldw Settings",
-        "cancelSearch": "Cancel search"
+  "formError": {
+    "noModel": "Vælg venligst en model",
+    "noEmbeddingModel": "Vælg venligst en embedding model under indstillinger > RAG side"
+  },
+  "form": {
+    "textarea": {
+      "placeholder": "Skriv en besked..."
     },
-    "formError": {
-        "noModel": "Vælg venligst en model",
-        "noEmbeddingModel": "Vælg venligst en embedding model under indstillinger > RAG side"
-    },
-    "form": {
-        "textarea": {
-            "placeholder": "Skriv en besked..."
-        },
-        "webSearch": {
-            "on": "Til",
-            "off": "Fra"
-        }
-    },
-    "tooltip": {
-        "searchInternet": "Søg Internettet",
-        "speechToText": "Tal til Tekst",
-        "uploadImage": "Upload Billed",
-        "stopStreaming": "Stop Streaming",
-        "knowledge": "Viden",
-        "clearContext": "Ryd Kontekst"
-    },
-    "sendWhenEnter": "Søg, når Indtast trykkes",
-    "welcome": "Hej! Hvordan kan jeg hjælpe dig i dag?",
-    "useOCR": "Udtræk tekst fra billede (OCR)",
-    "tips": {
-        "title": "Tips",
-        "quickIngest": "Use Quick ingest to add documents and web pages.",
-        "pickModelPrompt": "Pick a Model and a Prompt from the header.",
-        "startChatFocus": "When connected, \u201cStart chatting\u201d focuses the composer."
+    "webSearch": {
+      "on": "Til",
+      "off": "Fra"
     }
+  },
+  "tooltip": {
+    "searchInternet": "Søg Internettet",
+    "speechToText": "Tal til Tekst",
+    "uploadImage": "Upload Billed",
+    "stopStreaming": "Stop Streaming",
+    "knowledge": "Viden",
+    "clearContext": "Ryd Kontekst"
+  },
+  "sendWhenEnter": "Søg, når Indtast trykkes",
+  "welcome": "Hej! Hvordan kan jeg hjælpe dig i dag?",
+  "useOCR": "Udtræk tekst fra billede (OCR)",
+  "tips": {
+    "title": "Tips",
+    "quickIngest": "Use Quick ingest to add documents and web pages.",
+    "pickModelPrompt": "Pick a Model and a Prompt from the header.",
+    "startChatFocus": "When connected, “Start chatting” focuses the composer."
+  },
+  "tldwState": {
+    "searching": "Søger efter din tldw server",
+    "running": "tldw kører",
+    "notRunning": "Kan ikke oprette forbindelse til tldw server",
+    "connectionError": "Det lader til, at du har en forbindelsesfejl. Se venligst denne <anchor>dokumentation</anchor> for fejlfinding.",
+    "openTldwSettings": "Open tldw Settings",
+    "cancelSearch": "Cancel search",
+    "connectionFailedWithCode": "Connection failed (HTTP {{code}})",
+    "connectionFailed": "Connection failed",
+    "errorDetailsLabel": "Details:"
+  }
 }

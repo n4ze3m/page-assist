@@ -1,42 +1,45 @@
 {
-    "ollamaState": {
-        "searching": "正在搜尋您的 tldw server",
-        "running": "tldw 正在運行",
-        "notRunning": "無法連接到 tldw server",
-        "connectionError": "看起來您遇到了連線錯誤，請參閱此<anchor>文件</anchor>進行故障排除。",
-        "openTldwSettings": "Open tldw Settings",
-        "cancelSearch": "Cancel search"
+  "formError": {
+    "noModel": "請選擇一個模型",
+    "noEmbeddingModel": "請在設定 > RAG 頁面設定一個嵌入模型"
+  },
+  "form": {
+    "textarea": {
+      "placeholder": "輸入一則訊息..."
     },
-    "formError": {
-        "noModel": "請選擇一個模型",
-        "noEmbeddingModel": "請在設定 > RAG 頁面設定一個嵌入模型"
-    },
-    "form": {
-        "textarea": {
-            "placeholder": "輸入一則訊息..."
-        },
-        "webSearch": {
-            "on": "開",
-            "off": "關"
-        }
-    },
-    "tooltip": {
-        "searchInternet": "搜尋網路",
-        "speechToText": "語音轉文字",
-        "uploadImage": "上傳圖片",
-        "stopStreaming": "停止串流",
-        "knowledge": "知識",
-        "vision": "[實驗]視覺聊天",
-        "clearContext": "清除對話上下文",
-        "uploadDocuments": "上傳文件 (beta)"
-    },
-    "sendWhenEnter": "按 Enter 送出",
-    "welcome": "你好！今天我能幫你什麼？",
-    "useOCR": "從圖片中擷取文字（OCR）",
-    "tips": {
-        "title": "Tips",
-        "quickIngest": "Use Quick ingest to add documents and web pages.",
-        "pickModelPrompt": "Pick a Model and a Prompt from the header.",
-        "startChatFocus": "When connected, \u201cStart chatting\u201d focuses the composer."
+    "webSearch": {
+      "on": "開",
+      "off": "關"
     }
+  },
+  "tooltip": {
+    "searchInternet": "搜尋網路",
+    "speechToText": "語音轉文字",
+    "uploadImage": "上傳圖片",
+    "stopStreaming": "停止串流",
+    "knowledge": "知識",
+    "vision": "[實驗]視覺聊天",
+    "clearContext": "清除對話上下文",
+    "uploadDocuments": "上傳文件 (beta)"
+  },
+  "sendWhenEnter": "按 Enter 送出",
+  "welcome": "你好！今天我能幫你什麼？",
+  "useOCR": "從圖片中擷取文字（OCR）",
+  "tips": {
+    "title": "Tips",
+    "quickIngest": "Use Quick ingest to add documents and web pages.",
+    "pickModelPrompt": "Pick a Model and a Prompt from the header.",
+    "startChatFocus": "When connected, “Start chatting” focuses the composer."
+  },
+  "tldwState": {
+    "searching": "正在搜尋您的 tldw server",
+    "running": "tldw 正在運行",
+    "notRunning": "無法連接到 tldw server",
+    "connectionError": "看起來您遇到了連線錯誤，請參閱此<anchor>文件</anchor>進行故障排除。",
+    "openTldwSettings": "Open tldw Settings",
+    "cancelSearch": "Cancel search",
+    "connectionFailedWithCode": "Connection failed (HTTP {{code}})",
+    "connectionFailed": "Connection failed",
+    "errorDetailsLabel": "Details:"
+  }
 }

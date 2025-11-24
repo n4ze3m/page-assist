@@ -1,6 +1,6 @@
 import { useEffect } from "react"
 import { useMutation } from "@tanstack/react-query"
-import { runAllMigrations } from "~/db/dexie/migration"
+import { hasLegacyData, runAllMigrations } from "~/db/dexie/migration"
 import { Storage } from "@plasmohq/storage"
 import { message } from "antd"
 
@@ -21,6 +21,7 @@ export const setIsMigrated = async (isMigrated: boolean) => {
 
 interface MigrationResult {
   success: boolean
+  needsReload: boolean
   error?: string
 }
 
@@ -30,8 +31,18 @@ export const useMigration = () => {
       try {
         const isMigrated = await getIsMigrated()
         if (isMigrated) {
-          return { success: false }
+          return { success: false, needsReload: false }
         }
+
+        const legacyExists = await hasLegacyData()
+
+        if (!legacyExists) {
+          console.info(
+            "[migration] No legacy data found; marking as migrated without reload"
+          )
+          return { success: true, needsReload: false }
+        }
+
         message.open({
           key: MIGRATION_MESSAGE_KEY,
           type: "loading",
@@ -47,28 +58,34 @@ export const useMigration = () => {
           content: "Chat history is up to date."
         })
         console.info("[migration] Background migration completed successfully")
-        return { success: true }
+        return { success: true, needsReload: true }
       } catch (error) {
         console.error("Background migration failed:", error)
         message.open({
           key: MIGRATION_MESSAGE_KEY,
           type: "error",
           duration: 4,
-          content: "We couldn't refresh your chat history. You can retry from Settings.",
+          content:
+            "We couldn't refresh your chat history. You can retry from Settings.",
           className: "max-w-sm"
         })
         return {
           success: false,
+          needsReload: false,
           error: error instanceof Error ? error.message : "Unknown error"
         }
       }
-  },
+    },
     onSuccess: async (result) => {
       if (result.success) {
         await setIsMigrated(true)
-        if (!isHarnessEnvironment) {
+        if (result.needsReload && !isHarnessEnvironment) {
           console.info("[migration] Reloading extension to apply updates")
           window.setTimeout(() => window.location.reload(), 250)
+        } else if (!result.needsReload) {
+          console.info(
+            "[migration] Migration not required; skipping reload for new install"
+          )
         } else {
           console.info("[migration] Skipping reload in harness environment")
         }

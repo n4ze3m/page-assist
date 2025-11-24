@@ -59,7 +59,8 @@ const replacements = [
   {
     search:
       'return this.compiledGlyphs[c]=new Function("c","size",d.join(""))}',
-    replace: '/* stripped dynamic Function for compiledGlyphs */'
+    replace:
+      'return this.compiledGlyphs[c]=function(c,size){for(const cmd of u){if(cmd.cmd==="scale")cmd.args=[size,-size];c[cmd.cmd].apply(c,cmd.args)}}'
   }
 ]
 

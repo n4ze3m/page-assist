@@ -1,40 +1,43 @@
 {
-    "ollamaState": {
-        "searching": "Söker efter din tldw server",
-        "running": "tldw körs",
-        "notRunning": "Kan inte ansluta till tldw server",
-        "connectionError": "Det verkar som att du har ett anslutningsfel. Vänligen se denna <anchor>dokumentation</anchor> för felsökning.",
-        "openTldwSettings": "Open tldw Settings",
-        "cancelSearch": "Cancel search"
+  "formError": {
+    "noModel": "Vänligen välj en modell",
+    "noEmbeddingModel": "Vänligen ställ in en inbäddningsmodell på sidan Inställningar > RAG"
+  },
+  "form": {
+    "textarea": {
+      "placeholder": "Skriv ett meddelande..."
     },
-    "formError": {
-        "noModel": "Vänligen välj en modell",
-        "noEmbeddingModel": "Vänligen ställ in en inbäddningsmodell på sidan Inställningar > RAG"
-    },
-    "form": {
-        "textarea": {
-            "placeholder": "Skriv ett meddelande..."
-        },
-        "webSearch": {
-            "on": "På",
-            "off": "Av"
-        }
-    },
-    "tooltip": {
-        "searchInternet": "Sök på Internet",
-        "speechToText": "Tal till text",
-        "uploadImage": "Ladda upp bild",
-        "stopStreaming": "Stoppa strömning",
-        "knowledge": "Kunskap",
-        "clearContext": "Rensa kontext"
-    },
-    "sendWhenEnter": "Skicka när Enter trycks",
-    "welcome": "Hej! Hur kan jag hjälpa dig idag?",
-    "useOCR": "Extrahera text från bild (OCR)",
-    "tips": {
-        "title": "Tips",
-        "quickIngest": "Use Quick ingest to add documents and web pages.",
-        "pickModelPrompt": "Pick a Model and a Prompt from the header.",
-        "startChatFocus": "When connected, \u201cStart chatting\u201d focuses the composer."
+    "webSearch": {
+      "on": "På",
+      "off": "Av"
     }
+  },
+  "tooltip": {
+    "searchInternet": "Sök på Internet",
+    "speechToText": "Tal till text",
+    "uploadImage": "Ladda upp bild",
+    "stopStreaming": "Stoppa strömning",
+    "knowledge": "Kunskap",
+    "clearContext": "Rensa kontext"
+  },
+  "sendWhenEnter": "Skicka när Enter trycks",
+  "welcome": "Hej! Hur kan jag hjälpa dig idag?",
+  "useOCR": "Extrahera text från bild (OCR)",
+  "tips": {
+    "title": "Tips",
+    "quickIngest": "Use Quick ingest to add documents and web pages.",
+    "pickModelPrompt": "Pick a Model and a Prompt from the header.",
+    "startChatFocus": "When connected, “Start chatting” focuses the composer."
+  },
+  "tldwState": {
+    "searching": "Söker efter din tldw server",
+    "running": "tldw körs",
+    "notRunning": "Kan inte ansluta till tldw server",
+    "connectionError": "Det verkar som att du har ett anslutningsfel. Vänligen se denna <anchor>dokumentation</anchor> för felsökning.",
+    "openTldwSettings": "Open tldw Settings",
+    "cancelSearch": "Cancel search",
+    "connectionFailedWithCode": "Connection failed (HTTP {{code}})",
+    "connectionFailed": "Connection failed",
+    "errorDetailsLabel": "Details:"
+  }
 }

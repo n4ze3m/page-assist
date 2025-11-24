@@ -410,105 +410,105 @@
   "saveFailed": "Failed to save settings",
   "siteAccessGranted": "Host permission granted for {{origin}}",
   "tldw": {
-    "advancedTimeouts": "Advanced Timeouts",
-    "requestTimeout": "Request Timeout (seconds)",
-    "streamingIdle": "Streaming Idle Timeout (seconds)",
-    "chatRequest": "Chat Request Timeout",
-    "chatStreamIdle": "Chat Stream Idle",
-    "ragRequest": "RAG Request Timeout",
-    "mediaRequest": "Media Request Timeout",
-    "uploadRequest": "Upload Request Timeout",
-    "timeoutPresetLabel": "Timeout profile",
-    "timeoutPresetBalanced": "Balanced",
-    "timeoutPresetExtended": "Extended",
-    "timeoutPresetCustom": "Custom",
-    "timeoutPresetHint": "Balanced works well for most setups. Extended adds extra headroom for slower networks or long-running jobs.",
-    "reset": "Reset to recommended",
-    "resetDone": "Reset to recommended defaults",
-    "serverNav": "tldw Server",
-    "serverConfigTitle": "tldw Server Configuration",
-    "serverLabel": "Server:",
-    "notConfigured": "Not configured",
+    "advancedTimeouts": "مهلات متقدمة",
+    "requestTimeout": "مهلة الطلب (ثوانٍ)",
+    "streamingIdle": "مهلة خمول البث (ثوانٍ)",
+    "chatRequest": "مهلة طلب الدردشة",
+    "chatStreamIdle": "خمول بث الدردشة",
+    "ragRequest": "مهلة طلب RAG",
+    "mediaRequest": "مهلة طلب الوسائط",
+    "uploadRequest": "مهلة طلب الرفع",
+    "timeoutPresetLabel": "ملف تعريف المهلة",
+    "timeoutPresetBalanced": "متوازن",
+    "timeoutPresetExtended": "ممتد",
+    "timeoutPresetCustom": "مخصص",
+    "timeoutPresetHint": "الوضع المتوازن يناسب معظم الإعدادات. الوضع الممتد يضيف هامشًا إضافيًا للشبكات البطيئة أو المهام طويلة الأمد.",
+    "reset": "إعادة الضبط للقيم الموصى بها",
+    "resetDone": "أعيد الضبط إلى القيم الموصى بها",
+    "serverNav": "خادم tldw",
+    "serverConfigTitle": "تهيئة خادم tldw",
+    "serverLabel": "الخادم:",
+    "notConfigured": "غير مُهيأ",
     "buttons": {
-      "health": "Health",
-      "recheck": "Recheck",
-      "testConnection": "Test Connection",
-      "grantSiteAccess": "Grant Site Access",
-      "login": "Login",
-      "logout": "Logout"
+      "health": "الحالة",
+      "recheck": "إعادة الفحص",
+      "testConnection": "اختبار الاتصال",
+      "grantSiteAccess": "منح صلاحية الموقع",
+      "login": "تسجيل الدخول",
+      "logout": "تسجيل الخروج"
     },
     "loginRequired": {
-      "title": "Login Required",
-      "description": "Please login with your tldw_server credentials"
+      "title": "يتطلب تسجيل الدخول",
+      "description": "يرجى تسجيل الدخول ببيانات tldw_server"
     },
     "loggedIn": {
-      "title": "Logged In",
-      "description": "You are currently logged in to tldw_server"
+      "title": "تم تسجيل الدخول",
+      "description": "أنت مسجل الدخول حاليًا إلى tldw_server"
     },
     "connection": {
-      "success": "Connection successful!",
-      "failed": "Connection failed. Please check your settings.",
-      "failedDetailed": "Connection failed. Please check your server URL and API key."
+      "success": "تم الاتصال بنجاح!",
+      "failed": "فشل الاتصال. يرجى التحقق من إعداداتك.",
+      "failedDetailed": "فشل الاتصال. يرجى التحقق من عنوان الخادم ومفتاح API."
     },
     "authMode": {
-      "label": "Authentication Mode",
-      "single": "Single User (API Key)",
-      "multi": "Multi User (Login)"
+      "label": "وضع المصادقة",
+      "single": "مستخدم واحد (مفتاح API)",
+      "multi": "متعدد المستخدمين (تسجيل الدخول)"
     },
     "hints": {
-      "requestTimeout": "Abort initial requests if no response within this time. Default: {{seconds}}s.",
-      "streamingIdle": "Abort streaming if no updates received within this time. Default: {{seconds}}s."
+      "requestTimeout": "إلغاء الطلبات الأولية إذا لم يصل رد خلال هذه المدة. الافتراضي: {{seconds}}s.",
+      "streamingIdle": "إيقاف البث إذا لم تصل تحديثات خلال هذه المدة. الافتراضي: {{seconds}}s."
     },
     "login": {
-      "success": "Login successful!",
-      "failed": "Login failed"
+      "success": "تم تسجيل الدخول بنجاح!",
+      "failed": "فشل تسجيل الدخول"
     },
     "logout": {
-      "success": "Logged out successfully",
-      "failed": "Logout failed"
+      "success": "تم تسجيل الخروج بنجاح",
+      "failed": "فشل تسجيل الخروج"
     },
-    "setupLink": "Set up server",
-    "loadError": "Unable to load tldw server settings. Check your connection and try again.",
+    "setupLink": "إعداد الخادم",
+    "loadError": "تعذر تحميل إعدادات خادم tldw. تحقق من الاتصال وحاول مرة أخرى.",
     "fields": {
       "apiKey": {
-        "label": "API Key",
-        "placeholder": "Enter your API key",
-        "required": "Please enter your API key",
-        "extra": "Your tldw_server API key for authentication"
+        "label": "مفتاح API",
+        "placeholder": "أدخل مفتاح API الخاص بك",
+        "required": "يرجى إدخال مفتاح API الخاص بك",
+        "extra": "مفتاح API الخاص بـ tldw_server للمصادقة"
       },
       "username": {
-        "label": "Username",
-        "placeholder": "Enter username",
-        "required": "Please enter your username"
+        "label": "اسم المستخدم",
+        "placeholder": "أدخل اسم المستخدم",
+        "required": "يرجى إدخال اسم المستخدم"
       },
       "password": {
-        "label": "Password",
-        "placeholder": "Enter password",
-        "required": "Please enter your password"
+        "label": "كلمة المرور",
+        "placeholder": "أدخل كلمة المرور",
+        "required": "يرجى إدخال كلمة المرور"
       },
       "serverUrl": {
-        "label": "Server URL",
+        "label": "عنوان الخادم",
         "placeholder": "http://localhost:8000",
-        "required": "Please enter the server URL",
-        "invalid": "Please enter a valid URL",
-        "extra": "The URL of your tldw_server instance (e.g., http://localhost:8000)"
+        "required": "يرجى إدخال عنوان الخادم",
+        "invalid": "يرجى إدخال عنوان صالح",
+        "extra": "عنوان مثيل tldw_server الخاص بك (مثل http://localhost:8000)"
       }
     },
     "errors": {
-      "invalidApiKey": "Invalid API key",
-      "forbidden": "Forbidden (check permissions)",
-      "apiKeyValidationFailed": "API key validation failed",
-      "serverUnreachable": "Server unreachable"
+      "invalidApiKey": "مفتاح API غير صالح",
+      "forbidden": "ممنوع (تحقق من الصلاحيات)",
+      "apiKeyValidationFailed": "فشل التحقق من مفتاح API",
+      "serverUnreachable": "الخادم غير متاح"
     },
     "about": {
-      "title": "About tldw_server Integration",
-      "description": "This extension connects to your tldw_server instance, providing access to:",
+      "title": "حول تكامل tldw_server",
+      "description": "يَتصل هذا الامتداد بمثيل tldw_server الخاص بك لتوفير الوصول إلى:",
       "points": {
-        "providers": "Multiple LLM providers through a unified API",
-        "rag": "RAG (Retrieval-Augmented Generation) search",
-        "media": "Media ingestion and processing",
-        "notes": "Notes and prompts management",
-        "stt": "Speech-to-text transcription"
+        "providers": "عدة مزودي نماذج LLM عبر واجهة موحدة",
+        "rag": "بحث RAG (توليد مدعوم بالاسترجاع)",
+        "media": "استيعاب الوسائط ومعالجتها",
+        "notes": "إدارة الملاحظات والمحفزات",
+        "stt": "تحويل الكلام إلى نص"
       }
     }
   },

@@ -18,6 +18,10 @@ export default defineBackground({
       webui: "open-web-ui-pa",
       sidePanel: "open-side-panel-pa"
     }
+    const transcribeMenuId = {
+      transcribe: "transcribe-media-pa",
+      transcribeAndSummarize: "transcribe-and-summarize-media-pa"
+    }
     const initialize = async () => {
       try {
         storage.watch({
@@ -90,6 +94,18 @@ export default defineBackground({
         browser.contextMenus.create({
           id: "process-local-tldw",
           title: browser.i18n.getMessage("contextProcessLocalTldw"),
+          contexts: ["page", "link"]
+        })
+
+        browser.contextMenus.create({
+          id: transcribeMenuId.transcribe,
+          title: browser.i18n.getMessage("contextTranscribeMedia"),
+          contexts: ["page", "link"]
+        })
+
+        browser.contextMenus.create({
+          id: transcribeMenuId.transcribeAndSummarize,
+          title: browser.i18n.getMessage("contextTranscribeAndSummarizeMedia"),
           contexts: ["page", "link"]
         })
 
@@ -170,6 +186,149 @@ export default defineBackground({
       if (endsWith(['.epub', '.mobi'])) return '/api/v1/media/process-ebooks'
       if (endsWith(['.doc', '.docx', '.rtf', '.odt', '.txt', '.md'])) return '/api/v1/media/process-documents'
       return '/api/v1/media/process-web-scraping'
+    }
+
+    const ensureSidepanelOpen = (tabId?: number) => {
+      try {
+        if (chrome?.sidePanel?.open && tabId) {
+          chrome.sidePanel.open({ tabId })
+          return
+        }
+        if (browser?.sidebarAction?.open) {
+          // @ts-ignore Firefox open API
+          browser.sidebarAction.open()
+          return
+        }
+      } catch {}
+    }
+
+    const pickFirstString = (value: any, keys: string[]): string | null => {
+      if (!value) return null
+      if (typeof value === 'string' && value.trim().length > 0) return value.trim()
+      if (Array.isArray(value)) {
+        for (const item of value) {
+          const found = pickFirstString(item, keys)
+          if (found) return found
+        }
+        return null
+      }
+      if (typeof value === 'object') {
+        for (const key of keys) {
+          const maybe = (value as any)[key]
+          if (typeof maybe === 'string' && maybe.trim().length > 0) {
+            return maybe.trim()
+          }
+        }
+        for (const v of Object.values(value)) {
+          const found = pickFirstString(v, keys)
+          if (found) return found
+        }
+      }
+      return null
+    }
+
+    const extractTranscriptionPieces = (data: any): { transcript: string | null; summary: string | null } => {
+      const transcript = pickFirstString(data, ['transcript', 'transcription', 'text', 'raw_text', 'content'])
+      const summary = pickFirstString(data, ['summary', 'analysis', 'overview', 'abstract'])
+      return { transcript, summary }
+    }
+
+    const clampText = (value: string | null, max = 8000): string | null => {
+      if (!value) return null
+      const trimmed = value.trim()
+      if (!trimmed) return null
+      return trimmed.length > max ? `${trimmed.slice(0, max)}…` : trimmed
+    }
+
+    const notify = (title: string, message: string) => {
+      try {
+        chrome.notifications?.create?.({
+          type: 'basic',
+          iconUrl: '/icon.png',
+          title,
+          message
+        })
+      } catch {}
+    }
+
+    const handleTranscribeClick = async (
+      info: any,
+      tab: any,
+      mode: 'transcribe' | 'transcribe+summary'
+    ) => {
+      const pageUrl = info.pageUrl || (tab && tab.url) || ''
+      const targetUrl = (info.linkUrl && /^https?:/i.test(info.linkUrl)) ? info.linkUrl : pageUrl
+      if (!targetUrl) {
+        notify('tldw_server', 'No URL found to transcribe.')
+        return
+      }
+      const path = getProcessPathForUrl(targetUrl)
+      if (path !== '/api/v1/media/process-audios' && path !== '/api/v1/media/process-videos') {
+        notify('tldw_server', 'Transcription is available for audio or video URLs only.')
+        return
+      }
+
+      try {
+        const resp = await apiSend({
+          path,
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: {
+            urls: [targetUrl],
+            perform_analysis: mode === 'transcribe+summary',
+            perform_chunking: false,
+            summarize_recursively: mode === 'transcribe+summary',
+            timestamp_option: true
+          },
+          timeoutMs: 180000
+        })
+        if (!resp?.ok) {
+          notify('tldw_server', resp?.error || 'Transcription failed. Check your connection and server config.')
+          return
+        }
+        const { transcript, summary } = extractTranscriptionPieces(resp.data)
+        const safeTranscript = clampText(transcript)
+        const safeSummary = clampText(summary)
+        const label = mode === 'transcribe+summary' ? 'Transcription + summary' : 'Transcription'
+        const bodyParts = []
+        if (safeTranscript) bodyParts.push(`Transcript:\n${safeTranscript}`)
+        if (safeSummary) bodyParts.push(`Summary:\n${safeSummary}`)
+        const combinedText = bodyParts.join('\n\n') || 'Request completed. Open Media or the sidebar to view results.'
+
+        ensureSidepanelOpen(tab?.id)
+        try {
+          await browser.runtime.sendMessage({
+            from: 'background',
+            type: mode === 'transcribe+summary' ? 'transcription+summary' : 'transcription',
+            text: combinedText,
+            payload: {
+              url: targetUrl,
+              transcript: safeTranscript,
+              summary: safeSummary,
+              mode
+            }
+          })
+        } catch {
+          setTimeout(() => {
+            try {
+              browser.runtime.sendMessage({
+                from: 'background',
+                type: mode === 'transcribe+summary' ? 'transcription+summary' : 'transcription',
+                text: combinedText,
+                payload: {
+                  url: targetUrl,
+                  transcript,
+                  summary,
+                  mode
+                }
+              })
+            } catch {}
+          }, 500)
+        }
+        notify('tldw_server', `${label} sent to sidebar. You can also review it under Media in the Web UI.`)
+      } catch (e: any) {
+        notify('tldw_server', e?.message || 'Transcription request failed.')
+      }
     }
 
     const deriveRequestTimeout = (cfg: any, path: string, override?: number) => {
@@ -476,6 +635,10 @@ export default defineBackground({
         browser.tabs.create({
           url: browser.runtime.getURL("/options.html")
         })
+      } else if (info.menuItemId === transcribeMenuId.transcribe) {
+        await handleTranscribeClick(info, tab, 'transcribe')
+      } else if (info.menuItemId === transcribeMenuId.transcribeAndSummarize) {
+        await handleTranscribeClick(info, tab, 'transcribe+summary')
       } else if (info.menuItemId === "send-to-tldw") {
         try {
           const pageUrl = info.pageUrl || (tab && tab.url) || ''

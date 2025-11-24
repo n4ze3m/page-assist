@@ -407,105 +407,105 @@
   "saveFailed": "Failed to save settings",
   "siteAccessGranted": "Host permission granted for {{origin}}",
   "tldw": {
-    "advancedTimeouts": "Advanced Timeouts",
-    "requestTimeout": "Request Timeout (seconds)",
-    "streamingIdle": "Streaming Idle Timeout (seconds)",
-    "chatRequest": "Chat Request Timeout",
-    "chatStreamIdle": "Chat Stream Idle",
-    "ragRequest": "RAG Request Timeout",
-    "mediaRequest": "Media Request Timeout",
-    "uploadRequest": "Upload Request Timeout",
-    "timeoutPresetLabel": "Timeout profile",
-    "timeoutPresetBalanced": "Balanced",
-    "timeoutPresetExtended": "Extended",
-    "timeoutPresetCustom": "Custom",
-    "timeoutPresetHint": "Balanced works well for most setups. Extended adds extra headroom for slower networks or long-running jobs.",
-    "reset": "Reset to recommended",
-    "resetDone": "Reset to recommended defaults",
-    "serverNav": "tldw Server",
-    "serverConfigTitle": "tldw Server Configuration",
+    "advancedTimeouts": "Avancerade tidsgränser",
+    "requestTimeout": "Begärans timeout (sekunder)",
+    "streamingIdle": "Timeout för inaktiv streaming (sekunder)",
+    "chatRequest": "Timeout för chattbegäran",
+    "chatStreamIdle": "Chattström inaktivitet",
+    "ragRequest": "Timeout för RAG-begäran",
+    "mediaRequest": "Timeout för mediabegäran",
+    "uploadRequest": "Timeout för uppladdningsbegäran",
+    "timeoutPresetLabel": "Timeout-profil",
+    "timeoutPresetBalanced": "Balanserad",
+    "timeoutPresetExtended": "Utökad",
+    "timeoutPresetCustom": "Anpassad",
+    "timeoutPresetHint": "Balanserad fungerar bra för de flesta inställningar. Utökad ger mer utrymme för långsamma nätverk eller långvariga jobb.",
+    "reset": "Återställ till rekommenderat",
+    "resetDone": "Återställt till rekommenderade standarder",
+    "serverNav": "tldw-server",
+    "serverConfigTitle": "Konfiguration av tldw-server",
     "serverLabel": "Server:",
-    "notConfigured": "Not configured",
+    "notConfigured": "Inte konfigurerad",
     "buttons": {
-      "health": "Health",
-      "recheck": "Recheck",
-      "testConnection": "Test Connection",
-      "grantSiteAccess": "Grant Site Access",
-      "login": "Login",
-      "logout": "Logout"
+      "health": "Status",
+      "recheck": "Kontrollera igen",
+      "testConnection": "Testa anslutning",
+      "grantSiteAccess": "Bevilja webbplatsåtkomst",
+      "login": "Logga in",
+      "logout": "Logga ut"
     },
     "loginRequired": {
-      "title": "Login Required",
-      "description": "Please login with your tldw_server credentials"
+      "title": "Inloggning krävs",
+      "description": "Logga in med dina tldw_server-uppgifter"
     },
     "loggedIn": {
-      "title": "Logged In",
-      "description": "You are currently logged in to tldw_server"
+      "title": "Inloggad",
+      "description": "Du är inloggad på tldw_server"
     },
     "connection": {
-      "success": "Connection successful!",
-      "failed": "Connection failed. Please check your settings.",
-      "failedDetailed": "Connection failed. Please check your server URL and API key."
+      "success": "Anslutningen lyckades!",
+      "failed": "Anslutningen misslyckades. Kontrollera dina inställningar.",
+      "failedDetailed": "Anslutningen misslyckades. Kontrollera server-URL och API-nyckel."
     },
     "authMode": {
-      "label": "Authentication Mode",
-      "single": "Single User (API Key)",
-      "multi": "Multi User (Login)"
+      "label": "Autentiseringsläge",
+      "single": "En användare (API-nyckel)",
+      "multi": "Flera användare (inloggning)"
     },
     "hints": {
-      "requestTimeout": "Abort initial requests if no response within this time. Default: {{seconds}}s.",
-      "streamingIdle": "Abort streaming if no updates received within this time. Default: {{seconds}}s."
+      "requestTimeout": "Avbryt initiala förfrågningar om inget svar inom denna tid. Standard: {{seconds}}s.",
+      "streamingIdle": "Avbryt streaming om inga uppdateringar tas emot inom denna tid. Standard: {{seconds}}s."
     },
     "login": {
-      "success": "Login successful!",
-      "failed": "Login failed"
+      "success": "Inloggning lyckades!",
+      "failed": "Inloggningen misslyckades"
     },
     "logout": {
-      "success": "Logged out successfully",
-      "failed": "Logout failed"
+      "success": "Utloggning lyckades",
+      "failed": "Utloggningen misslyckades"
     },
-    "setupLink": "Set up server",
-    "loadError": "Unable to load tldw server settings. Check your connection and try again.",
+    "setupLink": "Ställ in server",
+    "loadError": "Det gick inte att ladda tldw-serverinställningar. Kontrollera anslutningen och försök igen.",
     "fields": {
       "apiKey": {
-        "label": "API Key",
-        "placeholder": "Enter your API key",
-        "required": "Please enter your API key",
-        "extra": "Your tldw_server API key for authentication"
+        "label": "API-nyckel",
+        "placeholder": "Ange din API-nyckel",
+        "required": "Ange din API-nyckel",
+        "extra": "Din tldw_server API-nyckel för autentisering"
       },
       "username": {
-        "label": "Username",
-        "placeholder": "Enter username",
-        "required": "Please enter your username"
+        "label": "Användarnamn",
+        "placeholder": "Ange användarnamn",
+        "required": "Ange ditt användarnamn"
       },
       "password": {
-        "label": "Password",
-        "placeholder": "Enter password",
-        "required": "Please enter your password"
+        "label": "Lösenord",
+        "placeholder": "Ange lösenord",
+        "required": "Ange ditt lösenord"
       },
       "serverUrl": {
-        "label": "Server URL",
+        "label": "Server-URL",
         "placeholder": "http://localhost:8000",
-        "required": "Please enter the server URL",
-        "invalid": "Please enter a valid URL",
-        "extra": "The URL of your tldw_server instance (e.g., http://localhost:8000)"
+        "required": "Ange server-URL",
+        "invalid": "Ange en giltig URL",
+        "extra": "URL:en till din tldw_server-instans (t.ex. http://localhost:8000)"
       }
     },
     "errors": {
-      "invalidApiKey": "Invalid API key",
-      "forbidden": "Forbidden (check permissions)",
-      "apiKeyValidationFailed": "API key validation failed",
-      "serverUnreachable": "Server unreachable"
+      "invalidApiKey": "Ogiltig API-nyckel",
+      "forbidden": "Förbjudet (kontrollera behörigheter)",
+      "apiKeyValidationFailed": "Validering av API-nyckel misslyckades",
+      "serverUnreachable": "Servern kan inte nås"
     },
     "about": {
-      "title": "About tldw_server Integration",
-      "description": "This extension connects to your tldw_server instance, providing access to:",
+      "title": "Om tldw_server-integrationen",
+      "description": "Detta tillägg ansluter till din tldw_server-instans och ger tillgång till:",
       "points": {
-        "providers": "Multiple LLM providers through a unified API",
-        "rag": "RAG (Retrieval-Augmented Generation) search",
-        "media": "Media ingestion and processing",
-        "notes": "Notes and prompts management",
-        "stt": "Speech-to-text transcription"
+        "providers": "Flera LLM-leverantörer via ett enhetligt API",
+        "rag": "RAG-sökning (Retrieval-Augmented Generation)",
+        "media": "Inläsning och bearbetning av media",
+        "notes": "Hantering av anteckningar och prompts",
+        "stt": "Tal-till-text-transkribering"
       }
     }
   },

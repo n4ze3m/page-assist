@@ -1,7 +1,8 @@
 import {
   formatToChatHistory,
   formatToMessage,
-  getRecentChatFromCopilot
+  getRecentChatFromCopilot,
+  generateID
 } from "@/db/dexie/helpers"
 import useBackgroundMessage from "@/hooks/useBackgroundMessage"
 import { useMigration } from "@/hooks/useMigration"
@@ -28,7 +29,7 @@ const SidepanelChat = () => {
   const drop = React.useRef<HTMLDivElement>(null)
   const [dropedFile, setDropedFile] = React.useState<File | undefined>()
   const [sidebarOpen, setSidebarOpen] = React.useState(false)
-  const { t } = useTranslation(["playground"])
+  const { t } = useTranslation(["playground", "sidepanel", "common"])
   const [dropState, setDropState] = React.useState<
     "idle" | "dragging" | "error"
   >("idle")
@@ -56,6 +57,7 @@ const SidepanelChat = () => {
     streaming,
     onSubmit,
     messages,
+    history,
     setHistory,
     setHistoryId,
     setMessages,
@@ -208,20 +210,53 @@ const SidepanelChat = () => {
   }, [defaultChatWithWebsite, sidepanelTemporaryChat])
 
   React.useEffect(() => {
-    if (bgMsg && !streaming) {
-      if (selectedModel) {
-        onSubmit({
-          message: bgMsg.text,
-          messageType: bgMsg.type,
-          image: ""
-        })
-      } else {
-        notification.error({
-          message: t("formError.noModel")
-        })
+    if (!bgMsg || streaming) return
+
+    if (bgMsg.type === "transcription" || bgMsg.type === "transcription+summary") {
+      const transcript = (bgMsg.payload?.transcript || bgMsg.text || "").trim()
+      const summaryText = (bgMsg.payload?.summary || "").trim()
+      const url = (bgMsg.payload?.url as string | undefined) || ""
+      const label =
+        bgMsg.type === "transcription+summary"
+          ? t("sidepanel:notification.transcriptionSummaryTitle", "Transcription + summary")
+          : t("sidepanel:notification.transcriptionTitle", "Transcription")
+      const parts: string[] = []
+      if (url) {
+        parts.push(`${t("sidepanel:notification.sourceLabel", "Source")}: ${url}`)
       }
+      if (transcript) {
+        parts.push(`${t("sidepanel:notification.transcriptLabel", "Transcript")}:\n${transcript}`)
+      }
+      if (summaryText) {
+        parts.push(`${t("sidepanel:notification.summaryLabel", "Summary")}:\n${summaryText}`)
+      }
+      const messageBody =
+        parts.filter(Boolean).join("\n\n") ||
+        t(
+          "sidepanel:notification.transcriptionFallback",
+          "Transcription completed. Open Media in the Web UI to view it."
+        )
+      const id = generateID()
+      setMessages((prev) => [
+        ...prev,
+        { isBot: true, name: label, message: messageBody, sources: [], id }
+      ])
+      setHistory([...history, { role: "assistant", content: messageBody }])
+      return
     }
-  }, [bgMsg])
+
+    if (selectedModel) {
+      onSubmit({
+        message: bgMsg.text,
+        messageType: bgMsg.type,
+        image: ""
+      })
+    } else {
+      notification.error({
+        message: t("formError.noModel")
+      })
+    }
+  }, [bgMsg, streaming, selectedModel, onSubmit, notification, t, setMessages, setHistory])
 
   return (
     <div className="flex h-full w-full">

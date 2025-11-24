@@ -44,7 +44,13 @@
         "ingestSent": "Sent to tldw server",
         "ingestSentDesc": "Current page has been submitted for ingestion.",
         "processedLocal": "Processed locally",
-        "processedLocalDesc": "Processed content stored locally under Settings > Processed."
+        "processedLocalDesc": "Processed content stored locally under Settings > Processed.",
+        "transcriptionTitle": "Transcription",
+        "transcriptionSummaryTitle": "Transcription + summary",
+        "transcriptionFallback": "Transcription completed. Open Media in the Web UI to view it.",
+        "sourceLabel": "Source",
+        "transcriptLabel": "Transcript",
+        "summaryLabel": "Summary"
     },
     "rag": {
         "searchPlaceholder": "Search your knowledge…",

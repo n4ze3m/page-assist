@@ -17,6 +17,7 @@ const MAX_TAG_LENGTH = 20
 const MAX_TAGS_DISPLAYED = 6
 const BASE64_IMAGE_PATTERN =
   /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/
+const ALLOWED_IMAGE_MIME_TYPES = new Set(["image/png", "image/jpeg", "image/gif"])
 
 const truncateText = (value?: string, max?: number) => {
   if (!value) return ""
@@ -53,39 +54,38 @@ const detectImageMime = (bytes: Uint8Array): string | null => {
   return null
 }
 
+const decodeBase64Header = (value: string): Uint8Array | null => {
+  if (typeof atob !== "function") return null
+
+  try {
+    const decoded = atob(value.slice(0, Math.min(value.length, 128)))
+    const headerBytes = new Uint8Array(Math.min(decoded.length, 32))
+    for (let i = 0; i < headerBytes.length; i += 1) {
+      headerBytes[i] = decoded.charCodeAt(i)
+    }
+    return headerBytes
+  } catch {
+    return null
+  }
+}
+
+/**
+ * Lightweight client-side guard: only allows rendering known raster formats.
+ * Server-side validation should enforce allowable avatar uploads.
+ */
 const validateAndCreateImageDataUrl = (value: unknown): string => {
   if (typeof value !== "string") return ""
   const trimmed = value.trim()
   if (!trimmed || trimmed.toLowerCase().startsWith("data:")) return ""
   if (!BASE64_IMAGE_PATTERN.test(trimmed)) return ""
 
-  const chunk = trimmed.slice(0, Math.min(trimmed.length, 512))
+  const headerBytes = decodeBase64Header(trimmed)
+  if (!headerBytes) return ""
 
-  try {
-    if (typeof atob !== "function") return ""
-    const decoded = atob(chunk)
-    const snippet = decoded.slice(0, 256).toLowerCase()
-    if (
-      snippet.includes("svg") ||
-      snippet.includes("<svg") ||
-      snippet.includes("xml") ||
-      snippet.includes("text/")
-    ) {
-      return ""
-    }
+  const mime = detectImageMime(headerBytes)
+  if (!mime || !ALLOWED_IMAGE_MIME_TYPES.has(mime)) return ""
 
-    const headerBytes = new Uint8Array(Math.min(decoded.length, 16))
-    for (let i = 0; i < headerBytes.length; i += 1) {
-      headerBytes[i] = decoded.charCodeAt(i)
-    }
-
-    const mime = detectImageMime(headerBytes)
-    if (!mime) return ""
-
-    return `data:${mime};base64,${trimmed}`
-  } catch (err) {
-    return ""
-  }
+  return `data:${mime};base64,${trimmed}`
 }
 
 export const CharactersManager: React.FC = () => {
@@ -301,7 +301,15 @@ export const CharactersManager: React.FC = () => {
               width: 48,
               render: (_: any, record: any) =>
                 record?.avatar_url ? (
-                  <img src={record.avatar_url} className="w-6 h-6 rounded-full" />
+                  <img
+                    src={record.avatar_url}
+                    className="w-6 h-6 rounded-full"
+                    alt={
+                      record?.name
+                        ? `Avatar of ${record.name}`
+                        : "User avatar"
+                    }
+                  />
                 ) : (
                   <UserCircle2 className="w-5 h-5" />
                 )

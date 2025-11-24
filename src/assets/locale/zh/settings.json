@@ -411,105 +411,105 @@
   "saveFailed": "Failed to save settings",
   "siteAccessGranted": "Host permission granted for {{origin}}",
   "tldw": {
-    "advancedTimeouts": "Advanced Timeouts",
-    "requestTimeout": "Request Timeout (seconds)",
-    "streamingIdle": "Streaming Idle Timeout (seconds)",
-    "chatRequest": "Chat Request Timeout",
-    "chatStreamIdle": "Chat Stream Idle",
-    "ragRequest": "RAG Request Timeout",
-    "mediaRequest": "Media Request Timeout",
-    "uploadRequest": "Upload Request Timeout",
-    "timeoutPresetLabel": "Timeout profile",
-    "timeoutPresetBalanced": "Balanced",
-    "timeoutPresetExtended": "Extended",
-    "timeoutPresetCustom": "Custom",
-    "timeoutPresetHint": "Balanced works well for most setups. Extended adds extra headroom for slower networks or long-running jobs.",
-    "reset": "Reset to recommended",
-    "resetDone": "Reset to recommended defaults",
-    "serverNav": "tldw Server",
-    "serverConfigTitle": "tldw Server Configuration",
-    "serverLabel": "Server:",
-    "notConfigured": "Not configured",
+    "advancedTimeouts": "高级超时时间",
+    "requestTimeout": "请求超时时间（秒）",
+    "streamingIdle": "流式空闲超时（秒）",
+    "chatRequest": "聊天请求超时",
+    "chatStreamIdle": "聊天流空闲",
+    "ragRequest": "RAG 请求超时",
+    "mediaRequest": "媒体请求超时",
+    "uploadRequest": "上传请求超时",
+    "timeoutPresetLabel": "超时配置",
+    "timeoutPresetBalanced": "平衡",
+    "timeoutPresetExtended": "扩展",
+    "timeoutPresetCustom": "自定义",
+    "timeoutPresetHint": "平衡适用于大多数设置。扩展为较慢网络或长任务提供更多余量。",
+    "reset": "重置为推荐值",
+    "resetDone": "已重置为推荐默认值",
+    "serverNav": "tldw 服务器",
+    "serverConfigTitle": "tldw 服务器配置",
+    "serverLabel": "服务器：",
+    "notConfigured": "未配置",
     "buttons": {
-      "health": "Health",
-      "recheck": "Recheck",
-      "testConnection": "Test Connection",
-      "grantSiteAccess": "Grant Site Access",
-      "login": "Login",
-      "logout": "Logout"
+      "health": "状态",
+      "recheck": "重新检查",
+      "testConnection": "测试连接",
+      "grantSiteAccess": "授予站点访问",
+      "login": "登录",
+      "logout": "登出"
     },
     "loginRequired": {
-      "title": "Login Required",
-      "description": "Please login with your tldw_server credentials"
+      "title": "需要登录",
+      "description": "请使用 tldw_server 凭据登录"
     },
     "loggedIn": {
-      "title": "Logged In",
-      "description": "You are currently logged in to tldw_server"
+      "title": "已登录",
+      "description": "您当前已登录 tldw_server"
     },
     "connection": {
-      "success": "Connection successful!",
-      "failed": "Connection failed. Please check your settings.",
-      "failedDetailed": "Connection failed. Please check your server URL and API key."
+      "success": "连接成功！",
+      "failed": "连接失败。请检查设置。",
+      "failedDetailed": "连接失败。请检查服务器 URL 和 API 密钥。"
     },
     "authMode": {
-      "label": "Authentication Mode",
-      "single": "Single User (API Key)",
-      "multi": "Multi User (Login)"
+      "label": "认证模式",
+      "single": "单用户（API 密钥）",
+      "multi": "多用户（登录）"
     },
     "hints": {
-      "requestTimeout": "Abort initial requests if no response within this time. Default: {{seconds}}s.",
-      "streamingIdle": "Abort streaming if no updates received within this time. Default: {{seconds}}s."
+      "requestTimeout": "在此时间内无响应则中止初始请求。默认：{{seconds}}s。",
+      "streamingIdle": "在此时间内无更新则停止流式传输。默认：{{seconds}}s。"
     },
     "login": {
-      "success": "Login successful!",
-      "failed": "Login failed"
+      "success": "登录成功！",
+      "failed": "登录失败"
     },
     "logout": {
-      "success": "Logged out successfully",
-      "failed": "Logout failed"
+      "success": "已成功登出",
+      "failed": "登出失败"
     },
-    "setupLink": "Set up server",
-    "loadError": "Unable to load tldw server settings. Check your connection and try again.",
+    "setupLink": "设置服务器",
+    "loadError": "无法加载 tldw 服务器设置。请检查连接后再试。",
     "fields": {
       "apiKey": {
-        "label": "API Key",
-        "placeholder": "Enter your API key",
-        "required": "Please enter your API key",
-        "extra": "Your tldw_server API key for authentication"
+        "label": "API 密钥",
+        "placeholder": "输入您的 API 密钥",
+        "required": "请输入您的 API 密钥",
+        "extra": "用于认证的 tldw_server API 密钥"
       },
       "username": {
-        "label": "Username",
-        "placeholder": "Enter username",
-        "required": "Please enter your username"
+        "label": "用户名",
+        "placeholder": "输入用户名",
+        "required": "请输入用户名"
       },
       "password": {
-        "label": "Password",
-        "placeholder": "Enter password",
-        "required": "Please enter your password"
+        "label": "密码",
+        "placeholder": "输入密码",
+        "required": "请输入密码"
       },
       "serverUrl": {
-        "label": "Server URL",
+        "label": "服务器 URL",
         "placeholder": "http://localhost:8000",
-        "required": "Please enter the server URL",
-        "invalid": "Please enter a valid URL",
-        "extra": "The URL of your tldw_server instance (e.g., http://localhost:8000)"
+        "required": "请输入服务器 URL",
+        "invalid": "请输入有效的 URL",
+        "extra": "您的 tldw_server 实例的 URL（如 http://localhost:8000）"
       }
     },
     "errors": {
-      "invalidApiKey": "Invalid API key",
-      "forbidden": "Forbidden (check permissions)",
-      "apiKeyValidationFailed": "API key validation failed",
-      "serverUnreachable": "Server unreachable"
+      "invalidApiKey": "无效的 API 密钥",
+      "forbidden": "已禁止（请检查权限）",
+      "apiKeyValidationFailed": "API 密钥验证失败",
+      "serverUnreachable": "无法访问服务器"
     },
     "about": {
-      "title": "About tldw_server Integration",
-      "description": "This extension connects to your tldw_server instance, providing access to:",
+      "title": "关于 tldw_server 集成",
+      "description": "此扩展连接到您的 tldw_server 实例，提供以下功能：",
       "points": {
-        "providers": "Multiple LLM providers through a unified API",
-        "rag": "RAG (Retrieval-Augmented Generation) search",
-        "media": "Media ingestion and processing",
-        "notes": "Notes and prompts management",
-        "stt": "Speech-to-text transcription"
+        "providers": "通过统一 API 访问多个 LLM 提供商",
+        "rag": "RAG（检索增强生成）搜索",
+        "media": "媒体摄取和处理",
+        "notes": "笔记和提示管理",
+        "stt": "语音转文本"
       }
     }
   },

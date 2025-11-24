@@ -1,140 +1,143 @@
 {
-    "ollamaState": {
-        "title": "Waiting for your tldw server",
-        "subtitle": "We’re pinging {{host}} to verify the connection.",
-        "searching": "Searching for your tldw server",
-        "running": "tldw is running ✅",
-        "notRunning": "Unable to connect to tldw server 🚨",
-        "missing": "Server URL not configured",
-        "noServer": "Add your tldw server to start chatting.",
-        "connectedSubtitle": "Connected to {{host}}. Start chatting when you’re ready.",
-        "errorSubtitle": "We couldn’t reach {{host}} yet. Retry or update your server settings.",
-        "openSettings": "Open settings",
-        "openTldwSettings": "Open tldw Settings",
-        "changeServer": "Change server",
-        "elapsed": "Checking… {{seconds}}s",
-        "connectedHint": "Connected to {{host}}.",
-        "lastChecked": "Checked {{seconds}}s ago",
-        "recheck": "Check again",
-        "connectionError": "Troubleshooting guide",
-        "errorToast": "We couldn’t reach {{host}}",
-        "missingHelp": "Open Settings → tldw Server to add your URL or connect to the Options page.",
-        "troubleshoot": "Confirm your server is running and that the browser is allowed to reach it, then retry from the Options page.",
-        "cancelSearch": "Cancel search"
+  "tips": {
+    "title": "Tips",
+    "quickIngest": "Use Quick ingest to add documents and web pages.",
+    "pickModelPrompt": "Pick a Model and a Prompt from the header.",
+    "startChatFocus": "When connected, “Start chatting” focuses the composer."
+  },
+  "empty": {
+    "title": "Start a new chat",
+    "description": "Experiment with different models, prompts, and knowledge sources here.",
+    "demoDescription": "You’re in demo mode — try asking a question to see how the assistant responds. You can connect your own tldw server later.",
+    "example1": "Ask a question, then drag in documents or web pages you want to discuss.",
+    "example2": "Use Quick ingest to add transcripts or notes, then reference them in chat.",
+    "example3": "Try different prompts or models from the header to compare answers.",
+    "primaryCta": "Start chatting",
+    "secondaryCta": "Open server settings"
+  },
+  "formError": {
+    "noModel": "Please select a model",
+    "noEmbeddingModel": "Please set an embedding model on the Settings > RAG page"
+  },
+  "form": {
+    "textarea": {
+      "placeholder": "Type a message..."
     },
-    "tips": {
-        "title": "Tips",
-        "quickIngest": "Use Quick ingest to add documents and web pages.",
-        "pickModelPrompt": "Pick a Model and a Prompt from the header.",
-        "startChatFocus": "When connected, \u201cStart chatting\u201d focuses the composer."
-    },
-    "empty": {
-        "title": "Start a new chat",
-        "description": "Experiment with different models, prompts, and knowledge sources here.",
-        "demoDescription": "You’re in demo mode — try asking a question to see how the assistant responds. You can connect your own tldw server later.",
-        "example1": "Ask a question, then drag in documents or web pages you want to discuss.",
-        "example2": "Use Quick ingest to add transcripts or notes, then reference them in chat.",
-        "example3": "Try different prompts or models from the header to compare answers.",
-        "primaryCta": "Start chatting",
-        "secondaryCta": "Open server settings"
-    },
-    "formError": {
-        "noModel": "Please select a model",
-        "noEmbeddingModel": "Please set an embedding model on the Settings > RAG page"
-    },
-    "form": {
-        "textarea": {
-            "placeholder": "Type a message..."
-        },
-        "webSearch": {
-            "on": "On",
-            "off": "Off"
-        }
-    },
-    "drop": {
-        "hint": "Drop files to attach them to your message",
-        "readySingle": "{{name}} ready to send",
-        "readyMultiple": "{{count}} files ready to send",
-        "unsupported": "That file type isn’t supported. Try images or text-based files.",
-        "defaultFileName": "File",
-        "imageOnly": "Only images can be dropped here right now.",
-        "imageHint": "Drop an image to include it in your message",
-        "overlayInstruction": "Drop the image to attach it to your next reply"
-    },
-    "tooltip": {
-        "searchInternet": "Search Internet",
-        "speechToText": "Speech to Text",
-        "uploadImage": "Upload Image",
-        "stopStreaming": "Stop Streaming",
-        "knowledge": "Knowledge",
-        "vision": "[Experimental] Vision Chat",
-        "clearContext": "Clear Context",
-        "uploadDocuments": "Upload Documents (beta)"
-    },
-    "sendWhenEnter": "Send when Enter pressed",
-    "welcome": "Hello! How can I help you today?",
-    "useOCR": "Extract text from image (OCR)",
-    "fileRetrievalEnabled": "Enable RAG for Documents",
-    "actions": {
-        "temporaryOn": "Temporary chat",
-        "temporaryOff": "Save chat",
-        "webSearchOn": "Web search on",
-        "webSearchOff": "Web search off",
-        "speechStart": "Start dictation",
-        "speechStop": "Stop dictation",
-        "streamStart": "Live captions",
-        "streamStop": "Stop captions",
-        "visionOn": "Vision on",
-        "visionOff": "Vision off",
-        "upload": "Attach image",
-        "ingest": "Quick ingest",
-        "streamErrorTitle": "Live captions unavailable"
-    },
-    "composer": {
-        "toolsButton": "+Tools",
-        "queuedBanner": {
-            "title": "Queued while offline",
-            "body": "We’ll hold these messages and send them once your tldw server is connected.",
-            "sendNow": "Send queued messages",
-            "clear": "Clear queue"
-        },
-        "coreTools": "Conversation options",
-        "captureTools": "Capture and assist tools",
-        "actions": "Send options",
-        "moreTools": "More tools",
-        "submitAria": "Send message",
-        "openModelSettings": "Open current chat settings",
-        "stopStreaming": "Stop streaming response",
-        "connectionPlaceholder": "Waiting for your server — set it up in Settings.",
-        "connectNotice": "Connect to your tldw server in Settings to send messages.",
-        "connectionChipDisconnected": "Server: Not connected",
-        "contextLabel": "Context:",
-        "contextKnowledgeEmpty": "No knowledge selected",
-        "contextTabs": "{{count}} tabs",
-        "contextFiles": "{{count}} files",
-        "connectToSend": "Connect to your tldw server to start chatting."
-    },
-    "tts": {
-        "title": "TTS Playground",
-        "subtitle": "Try out text-to-speech and tweak providers, models, and voices.",
-        "currentProvider": "Current provider",
-        "settingsIntro": "Adjust your TTS provider, model, and voice. These settings are reused when you play audio from chat or media.",
-        "providerCapabilities": "Provider capabilities",
-        "voicesPreview": "Server voices",
-        "providerDetails": "View raw provider config",
-        "providerDetailsTitle": "Provider details",
-        "inputLabel": "Enter some text to hear it spoken.",
-        "inputPlaceholder": "Type or paste text here, then use Play to listen.",
-        "play": "Play",
-        "playing": "Playing…",
-        "stop": "Stop",
-        "tldwStatusOnline": "tldw server audio API detected (audio/speech)",
-        "tldwStatusOffline": "Audio API not detected; check your tldw server version.",
-        "tldwWarningTitle": "tldw audio/speech API not detected",
-        "tldwWarningBody": "Ensure your tldw_server version includes /api/v1/audio/speech and that your extension is connected with a valid API key.",
-        "speechErrorTitle": "Dictation failed",
-        "speechErrorBody": "Transcription request failed. Check tldw server health.",
-        "speechNoText": "The transcription did not return any text.",
-        "speechMicError": "Unable to access your microphone. Check browser permissions and try again."
+    "webSearch": {
+      "on": "On",
+      "off": "Off"
     }
+  },
+  "drop": {
+    "hint": "Drop files to attach them to your message",
+    "readySingle": "{{name}} ready to send",
+    "readyMultiple": "{{count}} files ready to send",
+    "unsupported": "That file type isn’t supported. Try images or text-based files.",
+    "defaultFileName": "File",
+    "imageOnly": "Only images can be dropped here right now.",
+    "imageHint": "Drop an image to include it in your message",
+    "overlayInstruction": "Drop the image to attach it to your next reply"
+  },
+  "tooltip": {
+    "searchInternet": "Search Internet",
+    "speechToText": "Speech to Text",
+    "uploadImage": "Upload Image",
+    "stopStreaming": "Stop Streaming",
+    "knowledge": "Knowledge",
+    "vision": "[Experimental] Vision Chat",
+    "clearContext": "Clear Context",
+    "uploadDocuments": "Upload Documents (beta)"
+  },
+  "sendWhenEnter": "Send when Enter pressed",
+  "welcome": "Hello! How can I help you today?",
+  "useOCR": "Extract text from image (OCR)",
+  "fileRetrievalEnabled": "Enable RAG for Documents",
+  "actions": {
+    "temporaryOn": "Temporary chat",
+    "temporaryOff": "Save chat",
+    "webSearchOn": "Web search on",
+    "webSearchOff": "Web search off",
+    "speechStart": "Start dictation",
+    "speechStop": "Stop dictation",
+    "streamStart": "Live captions",
+    "streamStop": "Stop captions",
+    "visionOn": "Vision on",
+    "visionOff": "Vision off",
+    "upload": "Attach image",
+    "ingest": "Quick ingest",
+    "streamErrorTitle": "Live captions unavailable"
+  },
+  "composer": {
+    "toolsButton": "+Tools",
+    "queuedBanner": {
+      "title": "Queued while offline",
+      "body": "We’ll hold these messages and send them once your tldw server is connected.",
+      "sendNow": "Send queued messages",
+      "clear": "Clear queue"
+    },
+    "coreTools": "Conversation options",
+    "captureTools": "Capture and assist tools",
+    "actions": "Send options",
+    "moreTools": "More tools",
+    "submitAria": "Send message",
+    "openModelSettings": "Open current chat settings",
+    "stopStreaming": "Stop streaming response",
+    "connectionPlaceholder": "Waiting for your server — set it up in Settings.",
+    "connectNotice": "Connect to your tldw server in Settings to send messages.",
+    "connectionChipDisconnected": "Server: Not connected",
+    "contextLabel": "Context:",
+    "contextKnowledgeEmpty": "No knowledge selected",
+    "contextTabs": "{{count}} tabs",
+    "contextFiles": "{{count}} files",
+    "connectToSend": "Connect to your tldw server to start chatting."
+  },
+  "tts": {
+    "title": "TTS Playground",
+    "subtitle": "Try out text-to-speech and tweak providers, models, and voices.",
+    "currentProvider": "Current provider",
+    "settingsIntro": "Adjust your TTS provider, model, and voice. These settings are reused when you play audio from chat or media.",
+    "providerCapabilities": "Provider capabilities",
+    "voicesPreview": "Server voices",
+    "providerDetails": "View raw provider config",
+    "providerDetailsTitle": "Provider details",
+    "inputLabel": "Enter some text to hear it spoken.",
+    "inputPlaceholder": "Type or paste text here, then use Play to listen.",
+    "play": "Play",
+    "playing": "Playing…",
+    "stop": "Stop",
+    "tldwStatusOnline": "tldw server audio API detected (audio/speech)",
+    "tldwStatusOffline": "Audio API not detected; check your tldw server version.",
+    "tldwWarningTitle": "tldw audio/speech API not detected",
+    "tldwWarningBody": "Ensure your tldw_server version includes /api/v1/audio/speech and that your extension is connected with a valid API key.",
+    "speechErrorTitle": "Dictation failed",
+    "speechErrorBody": "Transcription request failed. Check tldw server health.",
+    "speechNoText": "The transcription did not return any text.",
+    "speechMicError": "Unable to access your microphone. Check browser permissions and try again."
+  },
+  "tldwState": {
+    "title": "Waiting for your tldw server",
+    "subtitle": "We’re pinging {{host}} to verify the connection.",
+    "searching": "Searching for your tldw server",
+    "running": "tldw is running ✅",
+    "notRunning": "Unable to connect to tldw server 🚨",
+    "missing": "Server URL not configured",
+    "noServer": "Add your tldw server to start chatting.",
+    "connectedSubtitle": "Connected to {{host}}. Start chatting when you’re ready.",
+    "errorSubtitle": "We couldn’t reach {{host}} yet. Retry or update your server settings.",
+    "openSettings": "Open settings",
+    "openTldwSettings": "Open tldw Settings",
+    "changeServer": "Change server",
+    "elapsed": "Checking… {{seconds}}s",
+    "connectedHint": "Connected to {{host}}.",
+    "lastChecked": "Checked {{seconds}}s ago",
+    "recheck": "Check again",
+    "connectionError": "Troubleshooting guide",
+    "errorToast": "We couldn’t reach {{host}}",
+    "missingHelp": "Open Settings → tldw Server to add your URL or connect to the Options page.",
+    "troubleshoot": "Confirm your server is running and that the browser is allowed to reach it, then retry from the Options page.",
+    "cancelSearch": "Cancel search",
+    "connectionFailedWithCode": "Connection failed (HTTP {{code}})",
+    "connectionFailed": "Connection failed",
+    "errorDetailsLabel": "Details:"
+  }
 }

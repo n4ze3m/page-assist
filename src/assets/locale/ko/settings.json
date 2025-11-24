@@ -410,105 +410,105 @@
   "saveFailed": "Failed to save settings",
   "siteAccessGranted": "Host permission granted for {{origin}}",
   "tldw": {
-    "advancedTimeouts": "Advanced Timeouts",
-    "requestTimeout": "Request Timeout (seconds)",
-    "streamingIdle": "Streaming Idle Timeout (seconds)",
-    "chatRequest": "Chat Request Timeout",
-    "chatStreamIdle": "Chat Stream Idle",
-    "ragRequest": "RAG Request Timeout",
-    "mediaRequest": "Media Request Timeout",
-    "uploadRequest": "Upload Request Timeout",
-    "timeoutPresetLabel": "Timeout profile",
-    "timeoutPresetBalanced": "Balanced",
-    "timeoutPresetExtended": "Extended",
-    "timeoutPresetCustom": "Custom",
-    "timeoutPresetHint": "Balanced works well for most setups. Extended adds extra headroom for slower networks or long-running jobs.",
-    "reset": "Reset to recommended",
-    "resetDone": "Reset to recommended defaults",
-    "serverNav": "tldw Server",
-    "serverConfigTitle": "tldw Server Configuration",
-    "serverLabel": "Server:",
-    "notConfigured": "Not configured",
+    "advancedTimeouts": "고급 타임아웃",
+    "requestTimeout": "요청 타임아웃(초)",
+    "streamingIdle": "스트리밍 유휴 타임아웃(초)",
+    "chatRequest": "채팅 요청 타임아웃",
+    "chatStreamIdle": "채팅 스트림 유휴",
+    "ragRequest": "RAG 요청 타임아웃",
+    "mediaRequest": "미디어 요청 타임아웃",
+    "uploadRequest": "업로드 요청 타임아웃",
+    "timeoutPresetLabel": "타임아웃 프로필",
+    "timeoutPresetBalanced": "균형",
+    "timeoutPresetExtended": "확장",
+    "timeoutPresetCustom": "사용자 정의",
+    "timeoutPresetHint": "균형 모드는 대부분의 설정에서 잘 작동합니다. 확장 모드는 느린 네트워크나 장기 작업을 위한 여유를 더 제공합니다.",
+    "reset": "권장값으로 재설정",
+    "resetDone": "권장 기본값으로 재설정됨",
+    "serverNav": "tldw 서버",
+    "serverConfigTitle": "tldw 서버 설정",
+    "serverLabel": "서버:",
+    "notConfigured": "구성되지 않음",
     "buttons": {
-      "health": "Health",
-      "recheck": "Recheck",
-      "testConnection": "Test Connection",
-      "grantSiteAccess": "Grant Site Access",
-      "login": "Login",
-      "logout": "Logout"
+      "health": "상태",
+      "recheck": "다시 확인",
+      "testConnection": "연결 테스트",
+      "grantSiteAccess": "사이트 접근 허용",
+      "login": "로그인",
+      "logout": "로그아웃"
     },
     "loginRequired": {
-      "title": "Login Required",
-      "description": "Please login with your tldw_server credentials"
+      "title": "로그인이 필요합니다",
+      "description": "tldw_server 자격 증명으로 로그인하세요"
     },
     "loggedIn": {
-      "title": "Logged In",
-      "description": "You are currently logged in to tldw_server"
+      "title": "로그인됨",
+      "description": "현재 tldw_server에 로그인되어 있습니다"
     },
     "connection": {
-      "success": "Connection successful!",
-      "failed": "Connection failed. Please check your settings.",
-      "failedDetailed": "Connection failed. Please check your server URL and API key."
+      "success": "연결에 성공했습니다!",
+      "failed": "연결에 실패했습니다. 설정을 확인하세요.",
+      "failedDetailed": "연결에 실패했습니다. 서버 URL과 API 키를 확인하세요."
     },
     "authMode": {
-      "label": "Authentication Mode",
-      "single": "Single User (API Key)",
-      "multi": "Multi User (Login)"
+      "label": "인증 모드",
+      "single": "단일 사용자(API 키)",
+      "multi": "다중 사용자(로그인)"
     },
     "hints": {
-      "requestTimeout": "Abort initial requests if no response within this time. Default: {{seconds}}s.",
-      "streamingIdle": "Abort streaming if no updates received within this time. Default: {{seconds}}s."
+      "requestTimeout": "이 시간 안에 응답이 없으면 초기 요청을 중단합니다. 기본값: {{seconds}}s.",
+      "streamingIdle": "이 시간 동안 업데이트가 없으면 스트리밍을 중단합니다. 기본값: {{seconds}}s."
     },
     "login": {
-      "success": "Login successful!",
-      "failed": "Login failed"
+      "success": "로그인 성공!",
+      "failed": "로그인 실패"
     },
     "logout": {
-      "success": "Logged out successfully",
-      "failed": "Logout failed"
+      "success": "성공적으로 로그아웃했습니다",
+      "failed": "로그아웃 실패"
     },
-    "setupLink": "Set up server",
-    "loadError": "Unable to load tldw server settings. Check your connection and try again.",
+    "setupLink": "서버 설정",
+    "loadError": "tldw 서버 설정을 불러올 수 없습니다. 연결을 확인하고 다시 시도하세요.",
     "fields": {
       "apiKey": {
-        "label": "API Key",
-        "placeholder": "Enter your API key",
-        "required": "Please enter your API key",
-        "extra": "Your tldw_server API key for authentication"
+        "label": "API 키",
+        "placeholder": "API 키를 입력하세요",
+        "required": "API 키를 입력하세요",
+        "extra": "인증을 위한 tldw_server API 키"
       },
       "username": {
-        "label": "Username",
-        "placeholder": "Enter username",
-        "required": "Please enter your username"
+        "label": "사용자 이름",
+        "placeholder": "사용자 이름을 입력하세요",
+        "required": "사용자 이름을 입력하세요"
       },
       "password": {
-        "label": "Password",
-        "placeholder": "Enter password",
-        "required": "Please enter your password"
+        "label": "비밀번호",
+        "placeholder": "비밀번호를 입력하세요",
+        "required": "비밀번호를 입력하세요"
       },
       "serverUrl": {
-        "label": "Server URL",
+        "label": "서버 URL",
         "placeholder": "http://localhost:8000",
-        "required": "Please enter the server URL",
-        "invalid": "Please enter a valid URL",
-        "extra": "The URL of your tldw_server instance (e.g., http://localhost:8000)"
+        "required": "서버 URL을 입력하세요",
+        "invalid": "유효한 URL을 입력하세요",
+        "extra": "tldw_server 인스턴스의 URL (예: http://localhost:8000)"
       }
     },
     "errors": {
-      "invalidApiKey": "Invalid API key",
-      "forbidden": "Forbidden (check permissions)",
-      "apiKeyValidationFailed": "API key validation failed",
-      "serverUnreachable": "Server unreachable"
+      "invalidApiKey": "잘못된 API 키",
+      "forbidden": "금지됨(권한을 확인하세요)",
+      "apiKeyValidationFailed": "API 키 검증 실패",
+      "serverUnreachable": "서버에 연결할 수 없습니다"
     },
     "about": {
-      "title": "About tldw_server Integration",
-      "description": "This extension connects to your tldw_server instance, providing access to:",
+      "title": "tldw_server 통합 정보",
+      "description": "이 확장 프로그램은 tldw_server 인스턴스에 연결하여 다음에 접근할 수 있게 합니다:",
       "points": {
-        "providers": "Multiple LLM providers through a unified API",
-        "rag": "RAG (Retrieval-Augmented Generation) search",
-        "media": "Media ingestion and processing",
-        "notes": "Notes and prompts management",
-        "stt": "Speech-to-text transcription"
+        "providers": "단일 API로 여러 LLM 제공자",
+        "rag": "RAG 검색(검색 증강 생성)",
+        "media": "미디어 수집 및 처리",
+        "notes": "노트 및 프롬프트 관리",
+        "stt": "음성-텍스트 변환"
       }
     }
   },

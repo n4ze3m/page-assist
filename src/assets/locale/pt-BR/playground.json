@@ -1,43 +1,46 @@
 {
-    "ollamaState": {
-        "searching": "Procurando por seu tldw server",
-        "running": "tldw está em execução",
-        "notRunning": "Não foi possível conectar ao tldw server",
-        "connectionError": "Parece que você está tendo um erro de conexão. Consulte esta <anchor>documentação</anchor> para solucionar o problema.",
-        "errorToast": "We couldn’t reach {{host}}",
-        "missingHelp": "Open Settings → tldw Server to add your URL or connect to the Options page.",
-        "troubleshoot": "Confirm your server is running and that the browser is allowed to reach it, then retry from the Options page.",
-        "openTldwSettings": "Open tldw Settings",
-        "cancelSearch": "Cancel search"
+  "formError": {
+    "noModel": "Por favor, selecione um modelo",
+    "noEmbeddingModel": "Por favor, configure um modelo de incorporação na página Configurações > RAG"
+  },
+  "form": {
+    "textarea": {
+      "placeholder": "Digite uma mensagem..."
     },
-    "formError": {
-        "noModel": "Por favor, selecione um modelo",
-        "noEmbeddingModel": "Por favor, configure um modelo de incorporação na página Configurações > RAG"
-    },
-    "form": {
-        "textarea": {
-            "placeholder": "Digite uma mensagem..."
-        },
-        "webSearch": {
-            "on": "Ligado",
-            "off": "Desligado"
-        }
-    },
-    "tooltip": {
-        "searchInternet": "Pesquisar na Internet",
-        "speechToText": "Fala para Texto",
-        "uploadImage": "Carregar Imagem",
-        "stopStreaming": "Parar Streaming",
-        "knowledge": "Conhecimento",
-        "clearContext": "Limpar Contexto"
-    },
-    "sendWhenEnter": "Enviar ao pressionar Enter",
-    "welcome": "Olá! Como posso ajudar você hoje?",
-    "useOCR": "Extrair texto da imagem (OCR)",
-    "tips": {
-        "title": "Tips",
-        "quickIngest": "Use Quick ingest to add documents and web pages.",
-        "pickModelPrompt": "Pick a Model and a Prompt from the header.",
-        "startChatFocus": "When connected, \u201cStart chatting\u201d focuses the composer."
+    "webSearch": {
+      "on": "Ligado",
+      "off": "Desligado"
     }
+  },
+  "tooltip": {
+    "searchInternet": "Pesquisar na Internet",
+    "speechToText": "Fala para Texto",
+    "uploadImage": "Carregar Imagem",
+    "stopStreaming": "Parar Streaming",
+    "knowledge": "Conhecimento",
+    "clearContext": "Limpar Contexto"
+  },
+  "sendWhenEnter": "Enviar ao pressionar Enter",
+  "welcome": "Olá! Como posso ajudar você hoje?",
+  "useOCR": "Extrair texto da imagem (OCR)",
+  "tips": {
+    "title": "Tips",
+    "quickIngest": "Use Quick ingest to add documents and web pages.",
+    "pickModelPrompt": "Pick a Model and a Prompt from the header.",
+    "startChatFocus": "When connected, “Start chatting” focuses the composer."
+  },
+  "tldwState": {
+    "searching": "Procurando por seu tldw server",
+    "running": "tldw está em execução",
+    "notRunning": "Não foi possível conectar ao tldw server",
+    "connectionError": "Parece que você está tendo um erro de conexão. Consulte esta <anchor>documentação</anchor> para solucionar o problema.",
+    "errorToast": "We couldn’t reach {{host}}",
+    "missingHelp": "Open Settings → tldw Server to add your URL or connect to the Options page.",
+    "troubleshoot": "Confirm your server is running and that the browser is allowed to reach it, then retry from the Options page.",
+    "openTldwSettings": "Open tldw Settings",
+    "cancelSearch": "Cancel search",
+    "connectionFailedWithCode": "Connection failed (HTTP {{code}})",
+    "connectionFailed": "Connection failed",
+    "errorDetailsLabel": "Details:"
+  }
 }

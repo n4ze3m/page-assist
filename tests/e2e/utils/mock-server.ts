@@ -65,12 +65,13 @@ export class MockTldwServer {
     this.server = http.createServer(this.route.bind(this))
   }
 
-  async start(port = 0) {
+  async start(port = 0): Promise<number> {
     await new Promise<void>((resolve) =>
       this.server.listen(port, '127.0.0.1', resolve)
     )
     const addr = this.server.address() as AddressInfo
     this.url = `http://127.0.0.1:${addr.port}`
+    return addr.port
   }
 
   async stop() {

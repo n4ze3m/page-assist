@@ -1,12 +1,15 @@
-import { getLastUsedChatModel, getLastUsedChatSystemPrompt } from "@/services/model-settings"
+import {
+  getLastUsedChatModel,
+  getLastUsedChatSystemPrompt
+} from "@/services/model-settings"
 import { PageAssitDatabase as ChromeDB } from "../index"
 import { getAllKnowledge } from "../knowledge"
-import { getAllVector,  } from "../vector"
-import { PageAssistDatabase as DexieDB, } from "./chat"
+import { getAllVector } from "../vector"
+import { PageAssistDatabase as DexieDB } from "./chat"
 import { PageAssistKnowledge as DexieDBK } from "./knowledge"
 import { PageAssistVectorDb as DexieDBV } from "./vector"
 import { OpenAIModelDb as DexieDBOAI } from "./openai"
-import {ModelNickname as DexieDBNick} from "./nickname"
+import { ModelNickname as DexieDBNick } from "./nickname"
 import { ModelDb as DexieDBM } from "./models"
 import { getAllOpenAIConfig } from "../openai"
 import { getAllModelsExT } from "../models"
@@ -329,6 +332,35 @@ export class DatabaseMigration {
 
   async clearDexieDatabase(): Promise<void> {
     await this.dexieDB.clear()
+  }
+}
+
+/**
+ * Detect whether there is any legacy data in the old Chrome storage
+ * that would require running the migration.
+ */
+export const hasLegacyData = async (): Promise<boolean> => {
+  const chromeDB = new ChromeDB()
+
+  try {
+    const [chatHistories, prompts, webshares] = await Promise.all([
+      chromeDB.getChatHistories(),
+      chromeDB.getAllPrompts(),
+      chromeDB.getAllWebshares()
+    ])
+
+    const sessionIds = await getAllSessionIds()
+
+    return (
+      chatHistories.length > 0 ||
+      prompts.length > 0 ||
+      webshares.length > 0 ||
+      sessionIds.length > 0
+    )
+  } catch (error) {
+    console.warn("[migration] Failed to check legacy data presence:", error)
+    // In doubt, err on the side of running the migration.
+    return true
   }
 }
 

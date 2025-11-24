@@ -48,13 +48,13 @@ test.describe('Options first-run and connection panel', () => {
   test('Start chatting focuses the composer when connected', async () => {
     const server = new MockTldwServer()
     server.setApiKey('THIS-IS-A-SECURE-KEY-123-REPLACE-ME')
-    const serverPort = 3005
-    await server.start(serverPort)
+    const serverPort = await server.start(0)
+    const serverBaseUrl = `http://127.0.0.1:${serverPort}`
 
     const extPath = path.resolve('.output/chrome-mv3')
     const seed = {
       tldwConfig: {
-        serverUrl: `http://127.0.0.1:${serverPort}`,
+        serverUrl: serverBaseUrl,
         authMode: 'single-user',
         apiKey: 'THIS-IS-A-SECURE-KEY-123-REPLACE-ME'
       }
@@ -64,16 +64,16 @@ test.describe('Options first-run and connection panel', () => {
     const optionsUrl = `chrome-extension://${extensionId}/options.html`
 
     // Ensure host permission for the mock server is granted
-    const granted = await grantHostPermission(context, extensionId, 'http://127.0.0.1:3005/*')
+    const granted = await grantHostPermission(context, extensionId, `${serverBaseUrl}/*`)
     if (!granted) {
-      test.skip(true, 'Host permission not granted for http://127.0.0.1:3005/*; allow it in chrome://extensions > tldw Assistant > Site access, then re-run')
+      test.skip(true, `Host permission not granted for ${serverBaseUrl}/*; allow it in chrome://extensions > tldw Assistant > Site access, then re-run`)
     }
 
     // Seed valid config so the card shows connected state
     await page.evaluate((cfg) => new Promise<void>((resolve) => {
       // @ts-ignore
       chrome.storage.local.set({ tldwConfig: cfg }, () => resolve())
-    }), { serverUrl: `http://127.0.0.1:${serverPort}`, authMode: 'single-user', apiKey: 'THIS-IS-A-SECURE-KEY-123-REPLACE-ME' })
+    }), { serverUrl: serverBaseUrl, authMode: 'single-user', apiKey: 'THIS-IS-A-SECURE-KEY-123-REPLACE-ME' })
     await page.reload()
     page = await context.newPage()
     page.on('console', (msg) => console.log('console', msg.type(), msg.text()))
@@ -85,7 +85,7 @@ test.describe('Options first-run and connection panel', () => {
     await expect(cardHeadline).toBeVisible()
 
     // Force connected state via test hook to avoid network flakiness
-    await page.evaluate(() => {
+    await page.evaluate((url) => {
       // @ts-ignore
       const store = window.__tldw_useConnectionStore
       if (store?.setState) {
@@ -93,7 +93,7 @@ test.describe('Options first-run and connection panel', () => {
         store.setState({
           state: {
             phase: 'connected',
-            serverUrl: 'http://127.0.0.1:3005',
+            serverUrl: url,
             lastCheckedAt: now,
             lastError: null,
             lastStatusCode: null,
@@ -106,7 +106,7 @@ test.describe('Options first-run and connection panel', () => {
           checkOnce: async () => {}
         })
       }
-    })
+    }, serverBaseUrl)
 
     // Connected card shows Start chatting; clicking focuses the composer
     await expect(page.getByRole('button', { name: /Start chatting/i })).toBeVisible()

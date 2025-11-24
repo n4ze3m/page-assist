@@ -10,7 +10,8 @@
   },
   "loading": {
     "title": "Loading…",
-    "description": "Please wait while we get things ready."
+    "description": "Please wait while we get things ready.",
+    "content": "Loading content…"
   },
   "selectAModel": "选择一个模型",
   "save": "保存",
@@ -186,6 +187,7 @@
   "sidebarChat": "侧边栏聊天",
   "reasoning": {
     "thinking": "思考中....",
+    "loading": "正在加载推理....",
     "thought": "思考了 {{time}}"
   },
   "mermaid": "Mermaid",

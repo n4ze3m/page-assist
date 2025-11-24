@@ -10,7 +10,8 @@
   },
   "loading": {
     "title": "Loading…",
-    "description": "Please wait while we get things ready."
+    "description": "Please wait while we get things ready.",
+    "content": "Loading content…"
   },
   "selectAModel": "Velg en modell",
   "save": "Lagre",
@@ -152,6 +153,7 @@
   "sidebarChat": "Sidepanel-chat",
   "reasoning": {
     "thinking": "Tenker....",
+    "loading": "Laster resonnement....",
     "thought": "Tenkte i {{time}}"
   },
   "embeddingGen": "Oppretter embeddings, dette kan ta litt tid",

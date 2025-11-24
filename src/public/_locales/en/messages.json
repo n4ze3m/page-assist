@@ -31,5 +31,11 @@
     },
     "contextProcessLocalTldw": {
         "message": "Process with tldw_server (don’t store)"
+    },
+    "contextTranscribeMedia": {
+        "message": "Transcribe Video/Audio"
+    },
+    "contextTranscribeAndSummarizeMedia": {
+        "message": "Transcribe + Summarize Video/Audio"
     }
 }

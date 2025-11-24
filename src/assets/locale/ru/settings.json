@@ -407,105 +407,105 @@
   "saveFailed": "Failed to save settings",
   "siteAccessGranted": "Host permission granted for {{origin}}",
   "tldw": {
-    "advancedTimeouts": "Advanced Timeouts",
-    "requestTimeout": "Request Timeout (seconds)",
-    "streamingIdle": "Streaming Idle Timeout (seconds)",
-    "chatRequest": "Chat Request Timeout",
-    "chatStreamIdle": "Chat Stream Idle",
-    "ragRequest": "RAG Request Timeout",
-    "mediaRequest": "Media Request Timeout",
-    "uploadRequest": "Upload Request Timeout",
-    "timeoutPresetLabel": "Timeout profile",
-    "timeoutPresetBalanced": "Balanced",
-    "timeoutPresetExtended": "Extended",
-    "timeoutPresetCustom": "Custom",
-    "timeoutPresetHint": "Balanced works well for most setups. Extended adds extra headroom for slower networks or long-running jobs.",
-    "reset": "Reset to recommended",
-    "resetDone": "Reset to recommended defaults",
-    "serverNav": "tldw Server",
-    "serverConfigTitle": "tldw Server Configuration",
-    "serverLabel": "Server:",
-    "notConfigured": "Not configured",
+    "advancedTimeouts": "Расширенные тайм-ауты",
+    "requestTimeout": "Тайм-аут запроса (секунды)",
+    "streamingIdle": "Тайм-аут бездействия стрима (секунды)",
+    "chatRequest": "Тайм-аут запроса чата",
+    "chatStreamIdle": "Бездействие стрима чата",
+    "ragRequest": "Тайм-аут запроса RAG",
+    "mediaRequest": "Тайм-аут запроса медиа",
+    "uploadRequest": "Тайм-аут запроса загрузки",
+    "timeoutPresetLabel": "Профиль тайм-аутов",
+    "timeoutPresetBalanced": "Сбалансированный",
+    "timeoutPresetExtended": "Расширенный",
+    "timeoutPresetCustom": "Пользовательский",
+    "timeoutPresetHint": "«Сбалансированный» подходит для большинства случаев. «Расширенный» даёт больше запаса для медленных сетей или длительных задач.",
+    "reset": "Сбросить к рекомендуемым",
+    "resetDone": "Сброшено к рекомендуемым значениям",
+    "serverNav": "Сервер tldw",
+    "serverConfigTitle": "Конфигурация сервера tldw",
+    "serverLabel": "Сервер:",
+    "notConfigured": "Не настроено",
     "buttons": {
-      "health": "Health",
-      "recheck": "Recheck",
-      "testConnection": "Test Connection",
-      "grantSiteAccess": "Grant Site Access",
-      "login": "Login",
-      "logout": "Logout"
+      "health": "Состояние",
+      "recheck": "Проверить снова",
+      "testConnection": "Проверить соединение",
+      "grantSiteAccess": "Выдать доступ к сайту",
+      "login": "Войти",
+      "logout": "Выйти"
     },
     "loginRequired": {
-      "title": "Login Required",
-      "description": "Please login with your tldw_server credentials"
+      "title": "Требуется вход",
+      "description": "Пожалуйста, войдите с учётными данными tldw_server"
     },
     "loggedIn": {
-      "title": "Logged In",
-      "description": "You are currently logged in to tldw_server"
+      "title": "Выполнен вход",
+      "description": "Вы сейчас вошли в tldw_server"
     },
     "connection": {
-      "success": "Connection successful!",
-      "failed": "Connection failed. Please check your settings.",
-      "failedDetailed": "Connection failed. Please check your server URL and API key."
+      "success": "Соединение успешно!",
+      "failed": "Не удалось подключиться. Проверьте настройки.",
+      "failedDetailed": "Не удалось подключиться. Проверьте URL сервера и ключ API."
     },
     "authMode": {
-      "label": "Authentication Mode",
-      "single": "Single User (API Key)",
-      "multi": "Multi User (Login)"
+      "label": "Режим аутентификации",
+      "single": "Один пользователь (API-ключ)",
+      "multi": "Многопользовательский (логин)"
     },
     "hints": {
-      "requestTimeout": "Abort initial requests if no response within this time. Default: {{seconds}}s.",
-      "streamingIdle": "Abort streaming if no updates received within this time. Default: {{seconds}}s."
+      "requestTimeout": "Прерывать начальные запросы, если нет ответа за это время. По умолчанию: {{seconds}}s.",
+      "streamingIdle": "Прерывать стрим, если за это время нет обновлений. По умолчанию: {{seconds}}s."
     },
     "login": {
-      "success": "Login successful!",
-      "failed": "Login failed"
+      "success": "Вход выполнен успешно!",
+      "failed": "Не удалось войти"
     },
     "logout": {
-      "success": "Logged out successfully",
-      "failed": "Logout failed"
+      "success": "Вы успешно вышли",
+      "failed": "Не удалось выйти"
     },
-    "setupLink": "Set up server",
-    "loadError": "Unable to load tldw server settings. Check your connection and try again.",
+    "setupLink": "Настроить сервер",
+    "loadError": "Не удалось загрузить настройки сервера tldw. Проверьте соединение и попробуйте снова.",
     "fields": {
       "apiKey": {
-        "label": "API Key",
-        "placeholder": "Enter your API key",
-        "required": "Please enter your API key",
-        "extra": "Your tldw_server API key for authentication"
+        "label": "API-ключ",
+        "placeholder": "Введите свой API-ключ",
+        "required": "Пожалуйста, введите свой API-ключ",
+        "extra": "Ваш API-ключ tldw_server для аутентификации"
       },
       "username": {
-        "label": "Username",
-        "placeholder": "Enter username",
-        "required": "Please enter your username"
+        "label": "Имя пользователя",
+        "placeholder": "Введите имя пользователя",
+        "required": "Пожалуйста, введите имя пользователя"
       },
       "password": {
-        "label": "Password",
-        "placeholder": "Enter password",
-        "required": "Please enter your password"
+        "label": "Пароль",
+        "placeholder": "Введите пароль",
+        "required": "Пожалуйста, введите пароль"
       },
       "serverUrl": {
-        "label": "Server URL",
+        "label": "URL сервера",
         "placeholder": "http://localhost:8000",
-        "required": "Please enter the server URL",
-        "invalid": "Please enter a valid URL",
-        "extra": "The URL of your tldw_server instance (e.g., http://localhost:8000)"
+        "required": "Пожалуйста, укажите URL сервера",
+        "invalid": "Пожалуйста, введите корректный URL",
+        "extra": "URL вашей инстанции tldw_server (например, http://localhost:8000)"
       }
     },
     "errors": {
-      "invalidApiKey": "Invalid API key",
-      "forbidden": "Forbidden (check permissions)",
-      "apiKeyValidationFailed": "API key validation failed",
-      "serverUnreachable": "Server unreachable"
+      "invalidApiKey": "Неверный API-ключ",
+      "forbidden": "Запрещено (проверьте права)",
+      "apiKeyValidationFailed": "Не удалось проверить API-ключ",
+      "serverUnreachable": "Сервер недоступен"
     },
     "about": {
-      "title": "About tldw_server Integration",
-      "description": "This extension connects to your tldw_server instance, providing access to:",
+      "title": "Об интеграции tldw_server",
+      "description": "Это расширение подключается к вашей инстанции tldw_server и предоставляет доступ к:",
       "points": {
-        "providers": "Multiple LLM providers through a unified API",
-        "rag": "RAG (Retrieval-Augmented Generation) search",
-        "media": "Media ingestion and processing",
-        "notes": "Notes and prompts management",
-        "stt": "Speech-to-text transcription"
+        "providers": "Нескольким LLM-провайдерам через единый API",
+        "rag": "Поиск RAG (Retrieval-Augmented Generation)",
+        "media": "Приём и обработка медиа",
+        "notes": "Управление заметками и подсказками",
+        "stt": "Распознавание речи в текст"
       }
     }
   },
