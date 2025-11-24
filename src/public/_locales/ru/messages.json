@@ -1,32 +1,38 @@
 {
-    "extName": {
-        "message": "tldw Assistant"
-    },
-    "extDescription": {
-        "message": "Используйте запущенные локально модели искусственного интеллекта для помощи в веб-просмотре."
-    },
-    "openSidePanelToChat": {
-        "message": "Open Sidebar to chat"
-    },
-    "contextSummarize": {
-        "message": "Обобщить"
-    },
-    "contextExplain": {
-        "message": "Объяснить"
-    },
-    "contextRephrase": {
-        "message": "Перефразировать"
-    },
-    "contextTranslate": {
-        "message": "Перевести"
-    },
-    "contextCustom": {
-        "message": "Пользовательский"
-    },
-    "contextSendToTldw": {
-        "message": "Send to tldw_server"
-    },
-    "contextProcessLocalTldw": {
-        "message": "Process with tldw_server (don’t store)"
-    }
+  "extName": {
+    "message": "tldw Assistant"
+  },
+  "extDescription": {
+    "message": "Используйте запущенные локально модели искусственного интеллекта для помощи в веб-просмотре."
+  },
+  "openSidePanelToChat": {
+    "message": "Open Sidebar to chat"
+  },
+  "contextSummarize": {
+    "message": "Обобщить"
+  },
+  "contextExplain": {
+    "message": "Объяснить"
+  },
+  "contextRephrase": {
+    "message": "Перефразировать"
+  },
+  "contextTranslate": {
+    "message": "Перевести"
+  },
+  "contextCustom": {
+    "message": "Пользовательский"
+  },
+  "contextSendToTldw": {
+    "message": "Send to tldw_server"
+  },
+  "contextProcessLocalTldw": {
+    "message": "Process with tldw_server (don’t store)"
+  },
+  "contextSidebarOpening": {
+    "message": "Opening sidebar..."
+  },
+  "contextSaveToNotesOpeningSidebar": {
+    "message": "Opening sidebar to save note..."
+  }
 }

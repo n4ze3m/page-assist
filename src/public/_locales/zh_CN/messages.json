@@ -1,32 +1,38 @@
 {
-    "extName": {
-        "message": "tldw Assistant"
-    },
-    "extDescription": {
-        "message": "使用本地运行的 AI 模型来辅助您的网络浏览。"
-    },
-    "openSidePanelToChat": {
-        "message": "Open Sidebar to chat"
-    },
-    "contextSummarize": {
-        "message": "总结"
-    },
-    "contextExplain": {
-        "message": "解释"
-    },
-    "contextRephrase": {
-        "message": "改述"
-    },
-    "contextTranslate": {
-        "message": "翻译"
-    },
-    "contextCustom": {
-        "message": "自定义"
-    },
-    "contextSendToTldw": {
-        "message": "Send to tldw_server"
-    },
-    "contextProcessLocalTldw": {
-        "message": "Process with tldw_server (don’t store)"
-    }
+  "extName": {
+    "message": "tldw Assistant"
+  },
+  "extDescription": {
+    "message": "使用本地运行的 AI 模型来辅助您的网络浏览。"
+  },
+  "openSidePanelToChat": {
+    "message": "Open Sidebar to chat"
+  },
+  "contextSummarize": {
+    "message": "总结"
+  },
+  "contextExplain": {
+    "message": "解释"
+  },
+  "contextRephrase": {
+    "message": "改述"
+  },
+  "contextTranslate": {
+    "message": "翻译"
+  },
+  "contextCustom": {
+    "message": "自定义"
+  },
+  "contextSendToTldw": {
+    "message": "Send to tldw_server"
+  },
+  "contextProcessLocalTldw": {
+    "message": "Process with tldw_server (don’t store)"
+  },
+  "contextSidebarOpening": {
+    "message": "Opening sidebar..."
+  },
+  "contextSaveToNotesOpeningSidebar": {
+    "message": "Opening sidebar to save note..."
+  }
 }

@@ -5,6 +5,13 @@ import { getInitialConfig } from "@/services/action"
 import { tldwClient } from "@/services/tldw/TldwApiClient"
 import { tldwAuth } from "@/services/tldw/TldwAuth"
 import { apiSend } from "@/services/api-send"
+import {
+  ensureSidepanelOpen,
+  pickFirstString,
+  extractTranscriptionPieces,
+  clampText,
+  notify
+} from "@/services/background-helpers"
 
 export default defineBackground({
   main() {
@@ -101,77 +108,6 @@ export default defineBackground({
       if (endsWith(['.epub', '.mobi'])) return '/api/v1/media/process-ebooks'
       if (endsWith(['.doc', '.docx', '.rtf', '.odt', '.txt', '.md'])) return '/api/v1/media/process-documents'
       return '/api/v1/media/process-web-scraping'
-    }
-
-    const ensureSidepanelOpen = () => {
-      const sidebar: any = (browser as any)?.sidebarAction
-      if (!sidebar) return
-
-      try {
-        if (typeof sidebar.open === "function") {
-          sidebar.open()
-          return
-        }
-      } catch {
-        // fall through to toggle
-      }
-
-      try {
-        if (typeof sidebar.toggle === "function") {
-          sidebar.toggle()
-        }
-      } catch {
-        // swallow any sidebar errors
-      }
-    }
-
-    const pickFirstString = (value: any, keys: string[]): string | null => {
-      if (!value) return null
-      if (typeof value === 'string' && value.trim().length > 0) return value.trim()
-      if (Array.isArray(value)) {
-        for (const item of value) {
-          const found = pickFirstString(item, keys)
-          if (found) return found
-        }
-        return null
-      }
-      if (typeof value === 'object') {
-        for (const key of keys) {
-          const maybe = (value as any)[key]
-          if (typeof maybe === 'string' && maybe.trim().length > 0) {
-            return maybe.trim()
-          }
-        }
-        for (const v of Object.values(value)) {
-          const found = pickFirstString(v, keys)
-          if (found) return found
-        }
-      }
-      return null
-    }
-
-    const extractTranscriptionPieces = (data: any): { transcript: string | null; summary: string | null } => {
-      const transcript = pickFirstString(data, ['transcript', 'transcription', 'text', 'raw_text', 'content'])
-      const summary = pickFirstString(data, ['summary', 'analysis', 'overview', 'abstract'])
-      return { transcript, summary }
-    }
-
-    const clampText = (value: string | null, max = 8000): string | null => {
-      if (!value) return null
-      const trimmed = value.trim()
-      if (!trimmed) return null
-      return trimmed.length > max ? `${trimmed.slice(0, max)}…` : trimmed
-    }
-
-    const notify = (title: string, message: string) => {
-      try {
-        browser.notifications?.create?.({
-          type: 'basic',
-          iconUrl: '/icon.png',
-          title,
-          message
-        })
-      } catch {}
     }
 
     const handleTranscribeClick = async (

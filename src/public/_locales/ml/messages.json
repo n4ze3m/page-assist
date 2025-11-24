@@ -1,32 +1,38 @@
 {
-    "extName": {
-        "message": "tldw Assistant"
-    },
-    "extDescription": {
-        "message": "ഇന്റർനെറ്റ് ബ്രൌസ് ചെയ്യുമ്പോൾ സ്ഥലിപ്പായി പ്രവർത്തിക്കുന്ന എയ്‌ മോഡൽ ഉപയോഗിക്കുക."
-    },
-    "openSidePanelToChat": {
-        "message": "Open Sidebar to chat"
-    },
-    "contextSummarize": {
-        "message": "സംഗ്രഹിക്കുക"
-    },
-    "contextExplain": {
-        "message": "വിശദീകരിക്കുക"
-    },
-    "contextRephrase": {
-        "message": "പുനഃരൂപീകരിക്കുക"
-    },
-    "contextTranslate": {
-        "message": "വിവർത്തനം ചെയ്യുക"
-    },
-    "contextCustom": {
-        "message": "ഇഷ്ടാനുസൃതം"
-    },
-    "contextSendToTldw": {
-        "message": "Send to tldw_server"
-    },
-    "contextProcessLocalTldw": {
-        "message": "Process with tldw_server (don’t store)"
-    }
+  "extName": {
+    "message": "tldw Assistant"
+  },
+  "extDescription": {
+    "message": "ഇന്റർനെറ്റ് ബ്രൌസ് ചെയ്യുമ്പോൾ സ്ഥലിപ്പായി പ്രവർത്തിക്കുന്ന എയ്‌ മോഡൽ ഉപയോഗിക്കുക."
+  },
+  "openSidePanelToChat": {
+    "message": "Open Sidebar to chat"
+  },
+  "contextSummarize": {
+    "message": "സംഗ്രഹിക്കുക"
+  },
+  "contextExplain": {
+    "message": "വിശദീകരിക്കുക"
+  },
+  "contextRephrase": {
+    "message": "പുനഃരൂപീകരിക്കുക"
+  },
+  "contextTranslate": {
+    "message": "വിവർത്തനം ചെയ്യുക"
+  },
+  "contextCustom": {
+    "message": "ഇഷ്ടാനുസൃതം"
+  },
+  "contextSendToTldw": {
+    "message": "Send to tldw_server"
+  },
+  "contextProcessLocalTldw": {
+    "message": "Process with tldw_server (don’t store)"
+  },
+  "contextSidebarOpening": {
+    "message": "Opening sidebar..."
+  },
+  "contextSaveToNotesOpeningSidebar": {
+    "message": "Opening sidebar to save note..."
+  }
 }

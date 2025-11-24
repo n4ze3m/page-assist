@@ -186,6 +186,7 @@ const SidepanelChat = () => {
     })
   })
   const bgMsg = useBackgroundMessage()
+  const lastBgMsgRef = React.useRef<typeof bgMsg | null>(null)
 
   const setRecentMessagesOnLoad = async () => {
     const isEnabled = await copilotResumeLastChat()
@@ -304,8 +305,10 @@ const SidepanelChat = () => {
 
   React.useEffect(() => {
     if (!bgMsg) return
+    if (lastBgMsgRef.current === bgMsg) return
 
     if (bgMsg.type === "save-to-notes") {
+      lastBgMsgRef.current = bgMsg
       const selected = (bgMsg.text || bgMsg.payload?.selectionText || "").trim()
       if (!selected) {
         notification.warning({
@@ -328,11 +331,13 @@ const SidepanelChat = () => {
       setNoteSourceUrl(sourceUrl)
       setNoteSaving(false)
       setNoteError(null)
-      setNoteModalOpen(true)
+        setNoteModalOpen(true)
       return
     }
 
     if (streaming) return
+
+    lastBgMsgRef.current = bgMsg
 
     if (bgMsg.type === "transcription" || bgMsg.type === "transcription+summary") {
       const transcript = (bgMsg.payload?.transcript || bgMsg.text || "").trim()
@@ -363,7 +368,7 @@ const SidepanelChat = () => {
         ...prev,
         { isBot: true, name: label, message: messageBody, sources: [], id }
       ])
-      setHistory((prev) => [...prev, { role: "assistant", content: messageBody }])
+      setHistory([...history, { role: "assistant", content: messageBody }])
       return
     }
 
@@ -387,6 +392,7 @@ const SidepanelChat = () => {
     t,
     setMessages,
     setHistory,
+    history,
     setNoteDraftContent,
     setNoteSuggestedTitle,
     setNoteDraftTitle,

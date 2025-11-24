@@ -1,35 +1,41 @@
 {
-    "extName": {
-        "message": "tldw Assistant"
-    },
-    "extDescription": {
-        "message": "Bruk dine lokalt kjørende AI-modeller til at hjælpe dig med at surfe på nettet."
-    },
-    "openSidePanelToChat": {
-        "message": "Open Sidebar to chat"
-    },
-    "openOptionToChat": {
-        "message": "Åben Web UI for at Chatte"
-    },
-    "contextSummarize": {
-        "message": "Oppsummer"
-    },
-    "contextExplain": {
-        "message": "Forklar"
-    },
-    "contextRephrase": {
-        "message": "Omskrive"
-    },
-    "contextTranslate": {
-        "message": "Oversett"
-    },
-    "contextCustom": {
-        "message": "Tilpasset"
-    },
-    "contextSendToTldw": {
-        "message": "Send to tldw_server"
-    },
-    "contextProcessLocalTldw": {
-        "message": "Process with tldw_server (don’t store)"
-    }
+  "extName": {
+    "message": "tldw Assistant"
+  },
+  "extDescription": {
+    "message": "Bruk dine lokalt kjørende AI-modeller til at hjælpe dig med at surfe på nettet."
+  },
+  "openSidePanelToChat": {
+    "message": "Open Sidebar to chat"
+  },
+  "openOptionToChat": {
+    "message": "Åben Web UI for at Chatte"
+  },
+  "contextSummarize": {
+    "message": "Oppsummer"
+  },
+  "contextExplain": {
+    "message": "Forklar"
+  },
+  "contextRephrase": {
+    "message": "Omskrive"
+  },
+  "contextTranslate": {
+    "message": "Oversett"
+  },
+  "contextCustom": {
+    "message": "Tilpasset"
+  },
+  "contextSendToTldw": {
+    "message": "Send to tldw_server"
+  },
+  "contextProcessLocalTldw": {
+    "message": "Process with tldw_server (don’t store)"
+  },
+  "contextSidebarOpening": {
+    "message": "Opening sidebar..."
+  },
+  "contextSaveToNotesOpeningSidebar": {
+    "message": "Opening sidebar to save note..."
+  }
 }

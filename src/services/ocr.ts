@@ -4,6 +4,10 @@ import { Storage } from "@plasmohq/storage"
 
 const storage = new Storage()
 
+export const isOcrEnabled = async (): Promise<boolean> => {
+  const value = await storage.get<boolean | undefined>("enableOcrAssets")
+  return Boolean(value)
+}
 
 export const getOCRLanguage = async () => {
     const data = await storage.get<string | undefined | null>("defaultOCRLanguage")

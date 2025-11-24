@@ -36,6 +36,43 @@ const defaultCapabilities: ServerCapabilities = {
   specVersion: null
 }
 
+const fallbackSpec = {
+  info: { version: "local-fallback" },
+  paths: Object.fromEntries(
+    [
+      "/api/v1/chat/completions",
+      "/api/v1/rag/search",
+      "/api/v1/rag/health",
+      "/api/v1/rag/",
+      "/api/v1/media/add",
+      "/api/v1/media/",
+      "/api/v1/media/process-videos",
+      "/api/v1/media/process-documents",
+      "/api/v1/media/process-pdfs",
+      "/api/v1/media/process-ebooks",
+      "/api/v1/media/process-audios",
+      "/api/v1/notes/",
+      "/api/v1/prompts",
+      "/api/v1/flashcards",
+      "/api/v1/flashcards/decks",
+      "/api/v1/characters",
+      "/api/v1/characters/world-books",
+      "/api/v1/chat/dictionaries",
+      "/api/v1/audio/transcriptions",
+      "/api/v1/audio/speech",
+      "/api/v1/audio/health",
+      "/api/v1/embeddings/models",
+      "/api/v1/embeddings/providers-config",
+      "/api/v1/embeddings/health",
+      "/api/v1/metrics/health",
+      "/api/v1/metrics",
+      "/api/v1/mcp/health",
+      "/api/v1/reading/save",
+      "/api/v1/reading/items"
+    ].map((p) => [p, {}])
+  )
+}
+
 const normalizePaths = (raw: any): Record<string, any> => {
   const out: Record<string, any> = {}
   if (!raw || typeof raw !== "object") return out
@@ -103,18 +140,10 @@ export const getServerCapabilities = async (): Promise<ServerCapabilities> => {
         // ignore, fall back to bundled spec
       }
       if (!spec) {
-        try {
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          const localSpec = await import("../../../openapi.json")
-          spec = localSpec?.default ?? localSpec
-        } catch {
-          spec = null
-        }
+        spec = fallbackSpec
       }
       return computeCapabilities(spec)
     })()
   }
   return capabilitiesPromise
 }
-

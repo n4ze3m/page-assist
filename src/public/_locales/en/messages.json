@@ -1,47 +1,53 @@
 {
-    "extName": {
-        "message": "tldw Assistant"
-    },
-    "extDescription": {
-        "message": "Browser extension for tldw_server - your unified AI assistant with RAG, media processing, and more."
-    },
-    "openSidePanelToChat": {
-        "message": "Open Sidebar to chat"
-    },
-    "openOptionToChat": {
-        "message": "Open Web UI to Chat"
-    },
-    "contextSummarize": {
-        "message": "Summarize"
-    },
-    "contextExplain": {
-        "message": "Explain"
-    },
-    "contextRephrase": {
-        "message": "Rephrase"
-    },
-    "contextTranslate": {
-        "message": "Translate"
-    },
-    "contextCustom": {
-        "message": "Custom"
-    },
-    "contextSendToTldw": {
-        "message": "Send to tldw_server"
-    },
-    "contextProcessLocalTldw": {
-        "message": "Process with tldw_server (don’t store)"
-    },
-    "contextTranscribeMedia": {
-        "message": "Transcribe Video/Audio"
-    },
-    "contextTranscribeAndSummarizeMedia": {
-        "message": "Transcribe + Summarize Video/Audio"
-    },
-    "contextSaveToNotes": {
-        "message": "Save to Notes"
-    },
-    "contextSaveToNotesNoSelection": {
-        "message": "Select text first to save to Notes."
-    }
+  "extName": {
+    "message": "tldw Assistant"
+  },
+  "extDescription": {
+    "message": "Browser extension for tldw_server - your unified AI assistant with RAG, media processing, and more."
+  },
+  "openSidePanelToChat": {
+    "message": "Open Sidebar to chat"
+  },
+  "openOptionToChat": {
+    "message": "Open Web UI to Chat"
+  },
+  "contextSummarize": {
+    "message": "Summarize"
+  },
+  "contextExplain": {
+    "message": "Explain"
+  },
+  "contextRephrase": {
+    "message": "Rephrase"
+  },
+  "contextTranslate": {
+    "message": "Translate"
+  },
+  "contextCustom": {
+    "message": "Custom"
+  },
+  "contextSendToTldw": {
+    "message": "Send to tldw_server"
+  },
+  "contextProcessLocalTldw": {
+    "message": "Process with tldw_server (don’t store)"
+  },
+  "contextTranscribeMedia": {
+    "message": "Transcribe Video/Audio"
+  },
+  "contextTranscribeAndSummarizeMedia": {
+    "message": "Transcribe + Summarize Video/Audio"
+  },
+  "contextSaveToNotes": {
+    "message": "Save to Notes"
+  },
+  "contextSaveToNotesNoSelection": {
+    "message": "Select text first to save to Notes."
+  },
+  "contextSidebarOpening": {
+    "message": "Opening sidebar..."
+  },
+  "contextSaveToNotesOpeningSidebar": {
+    "message": "Opening sidebar to save note..."
+  }
 }

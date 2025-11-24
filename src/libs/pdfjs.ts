@@ -1,10 +1,7 @@
 import type * as PdfJsType from "pdfjs-dist"
-// Let Vite/WXT emit the worker script as an asset and use its URL.
-// This avoids assigning the module object itself to workerSrc, which must be a string.
-// eslint-disable-next-line import/no-unresolved
-import workerSrc from "pdfjs-dist/build/pdf.worker.mjs?url"
 
 let cachedPdfDist: typeof PdfJsType | null = null
+const PDF_WORKER_CDN = "https://cdn.jsdelivr.net/npm/pdfjs-dist@4.0.379/build/pdf.worker.min.js"
 
 export const getPdfDist = async (): Promise<typeof PdfJsType> => {
   if (cachedPdfDist) {
@@ -14,8 +11,10 @@ export const getPdfDist = async (): Promise<typeof PdfJsType> => {
   const pdfDistModule = await import("pdfjs-dist")
   const pdfDist = pdfDistModule as unknown as typeof PdfJsType
 
-  // Configure the worker script once with the emitted URL string.
-  ;(pdfDist as any).GlobalWorkerOptions.workerSrc = workerSrc
+  if (!(pdfDist as any).GlobalWorkerOptions.workerSrc) {
+    // Configure the worker script once with the CDN URL to avoid bundling the worker asset.
+    ;(pdfDist as any).GlobalWorkerOptions.workerSrc = PDF_WORKER_CDN
+  }
 
   cachedPdfDist = pdfDist
   return pdfDist

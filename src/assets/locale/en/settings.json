@@ -106,6 +106,9 @@
       "pasteLargeTextAsFile": {
         "label": "Paste Large Text as File"
       },
+      "enableOcrAssets": {
+        "label": "Enable OCR (downloads ~5MB on first use)"
+      },
       "ocrLanguage": {
         "label": "Default OCR Language",
         "placeholder": "Select an OCR language"

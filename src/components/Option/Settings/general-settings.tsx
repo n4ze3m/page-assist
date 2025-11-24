@@ -89,6 +89,10 @@ export const GeneralSettings = () => {
     "defaultOCRLanguage",
     getDefaultOcrLanguage()
   )
+  const [enableOcrAssets, setEnableOcrAssets] = useStorage(
+    "enableOcrAssets",
+    false
+  )
 
   const [sidepanelTemporaryChat, setSidepanelTemporaryChat] = useStorage(
     "sidepanelTemporaryChat",
@@ -432,6 +436,17 @@ export const GeneralSettings = () => {
         <Switch
           checked={pasteLargeTextAsFile}
           onChange={(checked) => setPasteLargeTextAsFile(checked)}
+        />
+      </div>
+
+      <div className="flex flex-row justify-between">
+        <span className="text-gray-700   dark:text-neutral-50">
+          {t("generalSettings.settings.enableOcrAssets.label", "Enable OCR (downloads ~5MB on first use)")}
+        </span>
+
+        <Switch
+          checked={enableOcrAssets}
+          onChange={(checked) => setEnableOcrAssets(checked)}
         />
       </div>
 

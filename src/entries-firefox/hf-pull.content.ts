@@ -18,7 +18,9 @@ export default defineContentScript({
       if (!line) return null
       const [, , ...rest] = line.trim().split(/\s+/)
       if (!rest.length) return null
-      return rest[0]
+      // Ignore flags and grab the first non-flag token as the model name
+      const modelToken = rest.find((token) => !token.startsWith("-"))
+      return modelToken || null
     }
 
     const downloadModel = async (modelName: string) => {

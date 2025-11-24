@@ -5,6 +5,13 @@ import { getInitialConfig } from "@/services/action"
 import { tldwClient } from "@/services/tldw/TldwApiClient"
 import { tldwAuth } from "@/services/tldw/TldwAuth"
 import { apiSend } from "@/services/api-send"
+import {
+  ensureSidepanelOpen,
+  pickFirstString,
+  extractTranscriptionPieces,
+  clampText,
+  notify
+} from "@/services/background-helpers"
 
 export default defineBackground({
   main() {
@@ -195,69 +202,6 @@ export default defineBackground({
       return '/api/v1/media/process-web-scraping'
     }
 
-    const ensureSidepanelOpen = (tabId?: number) => {
-      try {
-        if (chrome?.sidePanel?.open && tabId) {
-          chrome.sidePanel.open({ tabId })
-          return
-        }
-        if (browser?.sidebarAction?.open) {
-          // @ts-ignore Firefox open API
-          browser.sidebarAction.open()
-          return
-        }
-      } catch {}
-    }
-
-    const pickFirstString = (value: any, keys: string[]): string | null => {
-      if (!value) return null
-      if (typeof value === 'string' && value.trim().length > 0) return value.trim()
-      if (Array.isArray(value)) {
-        for (const item of value) {
-          const found = pickFirstString(item, keys)
-          if (found) return found
-        }
-        return null
-      }
-      if (typeof value === 'object') {
-        for (const key of keys) {
-          const maybe = (value as any)[key]
-          if (typeof maybe === 'string' && maybe.trim().length > 0) {
-            return maybe.trim()
-          }
-        }
-        for (const v of Object.values(value)) {
-          const found = pickFirstString(v, keys)
-          if (found) return found
-        }
-      }
-      return null
-    }
-
-    const extractTranscriptionPieces = (data: any): { transcript: string | null; summary: string | null } => {
-      const transcript = pickFirstString(data, ['transcript', 'transcription', 'text', 'raw_text', 'content'])
-      const summary = pickFirstString(data, ['summary', 'analysis', 'overview', 'abstract'])
-      return { transcript, summary }
-    }
-
-    const clampText = (value: string | null, max = 8000): string | null => {
-      if (!value) return null
-      const trimmed = value.trim()
-      if (!trimmed) return null
-      return trimmed.length > max ? `${trimmed.slice(0, max)}…` : trimmed
-    }
-
-    const notify = (title: string, message: string) => {
-      try {
-        chrome.notifications?.create?.({
-          type: 'basic',
-          iconUrl: '/icon.png',
-          title,
-          message
-        })
-      } catch {}
-    }
-
     const handleTranscribeClick = async (
       info: any,
       tab: any,
@@ -324,8 +268,8 @@ export default defineBackground({
                 text: combinedText,
                 payload: {
                   url: targetUrl,
-                  transcript,
-                  summary,
+                  transcript: safeTranscript,
+                  summary: safeSummary,
                   mode
                 }
               })
