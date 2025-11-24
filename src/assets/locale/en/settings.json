@@ -180,6 +180,9 @@
       },
       "chatBackgroundImage": {
         "label": "Chat Background Image"
+      },
+      "storageSyncEnabled": {
+        "label": "Enable Browser Storage Sync (Sync settings across devices)"
       }
     },
     "tts": {

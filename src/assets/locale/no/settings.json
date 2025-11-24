@@ -111,6 +111,9 @@
     },
     "system": {
       "heading": "Systeminnstillinger",
+      "storageSyncEnabled": {
+        "label": "Aktiver nettleser lagringssynkronisering (synkroniser innstillinger på tvers av enheter)"
+      },
       "deleteChatHistory": {
         "label": "System Tilbakestilling",
         "button": "Tilbakestill Alt",

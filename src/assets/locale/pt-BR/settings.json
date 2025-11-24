@@ -115,6 +115,9 @@
     },
     "system": {
       "heading": "Configurações do Sistema",
+      "storageSyncEnabled": {
+        "label": "Ativar sincronização de armazenamento do navegador (sincronizar configurações entre dispositivos)"
+      },
       "deleteChatHistory": {
         "label": "Reiniciar Sistema",
         "button": "Reiniciar Tudo",

@@ -111,6 +111,9 @@
     },
     "system": {
       "heading": "Systeminställningar",
+      "storageSyncEnabled": {
+        "label": "Aktivera synkronisering av webbläsarlagring (synkronisera inställningar mellan enheter)"
+      },
       "deleteChatHistory": {
         "label": "Systemåterställning",
         "button": "Återställ Allt",

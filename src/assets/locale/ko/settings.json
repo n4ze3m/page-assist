@@ -114,6 +114,9 @@
     },
     "system": {
       "heading": "시스템 설정",
+      "storageSyncEnabled": {
+        "label": "브라우저 저장소 동기화 활성화 (기기 간 설정 동기화)"
+      },
       "deleteChatHistory": {
         "label": "시스템 초기화",
         "button": "전체 초기화",
