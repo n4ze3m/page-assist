@@ -549,6 +549,17 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
           </span>
           <BsIncognito className="h-4 w-4" />
         </button>
+        <p className="text-[11px] text-gray-500 dark:text-gray-400">
+          {temporaryChat
+            ? t(
+                "playground:composer.persistence.ephemeral",
+                "Not saved in history; clears when you close this tab."
+              )
+            : t(
+                "playground:composer.persistence.local",
+                "Saved in this browser only."
+              )}
+        </p>
       </div>
 
       <div className="space-y-2">

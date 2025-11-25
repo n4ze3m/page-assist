@@ -92,7 +92,11 @@
     "persistence": {
       "ephemeral": "Not saved in history; clears when you close this tab.",
       "local": "Saved in this browser only.",
-      "server": "Saved in this browser and on your tldw server."
+      "server": "Saved in this browser and on your tldw server.",
+      "saveToServer": "Also save this chat to server",
+      "serverDefaultTitle": "Extension chat",
+      "serverSavedTitle": "Chat now saved on server",
+      "serverSaved": "Future messages in this chat will sync to your tldw server."
     },
     "connectToSend": "Connect to your tldw server to start chatting."
   },

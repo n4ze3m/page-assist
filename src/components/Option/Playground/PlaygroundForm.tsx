@@ -95,7 +95,8 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
     queuedMessages,
     addQueuedMessage,
     clearQueuedMessages,
-    serverChatId
+    serverChatId,
+    setServerChatId
   } = useMessageOption()
 
   const [autoSubmitVoiceMessage] = useStorage("autoSubmitVoiceMessage", false)
@@ -592,6 +593,68 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
     },
     [clearChat, history.length]
   )
+
+  const handleSaveChatToServer = React.useCallback(async () => {
+    if (!isConnectionReady || temporaryChat || serverChatId) {
+      return
+    }
+    try {
+      await tldwClient.initialize()
+
+      const snapshot = [...history]
+      const firstUser = snapshot.find((m) => m.role === "user")
+      const fallbackTitle = t(
+        "playground:composer.persistence.serverDefaultTitle",
+        "Extension chat"
+      )
+      const titleSource =
+        typeof firstUser?.content === "string" &&
+        firstUser.content.trim().length > 0
+          ? firstUser.content.trim()
+          : fallbackTitle
+      const title =
+        titleSource.length > 80 ? `${titleSource.slice(0, 77)}…` : titleSource
+
+      const created = await tldwClient.createChat({ title })
+      const rawId = (created as any)?.id ?? (created as any)?.chat_id ?? created
+      const cid = rawId != null ? String(rawId) : ""
+      if (!cid) {
+        throw new Error("Failed to create server chat")
+      }
+
+      for (const msg of snapshot) {
+        const content = (msg.content || "").trim()
+        if (!content) continue
+        const role =
+          msg.role === "system" ||
+          msg.role === "assistant" ||
+          msg.role === "user"
+            ? msg.role
+            : "user"
+        await tldwClient.addChatMessage(cid, {
+          role,
+          content
+        })
+      }
+
+      setServerChatId(cid)
+      notification.success({
+        message: t(
+          "playground:composer.persistence.serverSavedTitle",
+          "Chat now saved on server"
+        ),
+        description: t(
+          "playground:composer.persistence.serverSaved",
+          "Future messages in this chat will sync to your tldw server."
+        )
+      })
+    } catch (e: any) {
+      notification.error({
+        message: t("error"),
+        description: e?.message || t("somethingWentWrong")
+      })
+    }
+  }, [history, isConnectionReady, temporaryChat, serverChatId, setServerChatId, t])
 
   const handleClearContext = React.useCallback(() => {
     setHistory([])
@@ -1221,7 +1284,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                               <span>
                                 {temporaryChat
                                   ? t("playground:actions.temporaryOn", "Temporary chat")
-                                  : t("playground:actions.temporaryOff", "Save chat")}
+                                : t("playground:actions.temporaryOff", "Save chat")}
                               </span>
                             </div>
                             <p className="text-[11px] text-gray-500 dark:text-gray-400">
@@ -1240,6 +1303,17 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                                       "Saved in this browser only."
                                     )}
                             </p>
+                            {!temporaryChat && isConnectionReady && !serverChatId && (
+                              <button
+                                type="button"
+                                onClick={handleSaveChatToServer}
+                                className="inline-flex w-fit items-center gap-1 text-[11px] font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300">
+                                {t(
+                                  "playground:composer.persistence.saveToServer",
+                                  "Also save this chat to server"
+                                )}
+                              </button>
+                            )}
                           </div>
                           <KnowledgeSelect />
                         </div>
