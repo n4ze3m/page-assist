@@ -597,7 +597,8 @@
     "columns": {
       "name": "Имя",
       "description": "Описание",
-      "actions": "Действия"
+      "actions": "Действия",
+      "avatar": "Avatar"
     },
     "actions": {
       "chat": "Чат",
@@ -667,7 +668,9 @@
     "emptyDescription": "Создайте повторно используемого персонажа с именем, описанием и системным промптом для общения.",
     "emptyExample1": "Определите наставника по письму, эксперта по лору или помощника по коду для повторного использования.",
     "emptyExample2": "Дайте каждому персонажу четкое описание и поведение для стабильных ответов.",
-    "emptyPrimaryCta": "Создать персонажа"
+    "emptyPrimaryCta": "Создать персонажа",
+    "avatarAltWithName": "Avatar of {{name}}",
+    "avatarAlt": "User avatar"
   },
   "systemNotifications": {
     "importSuccess": "Данные успешно импортированы",

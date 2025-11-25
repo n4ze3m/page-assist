@@ -597,7 +597,8 @@
     "columns": {
       "name": "Nombre",
       "description": "Descripción",
-      "actions": "Acciones"
+      "actions": "Acciones",
+      "avatar": "Avatar"
     },
     "actions": {
       "chat": "Chatear",
@@ -667,7 +668,9 @@
     "emptyDescription": "Crea un personaje reutilizable con nombre, descripción y prompt del sistema para chatear.",
     "emptyExample1": "Define un entrenador de escritura, experto en historia o asistente de código reutilizable.",
     "emptyExample2": "Dale a cada personaje una descripción y comportamiento claros para mantener respuestas coherentes.",
-    "emptyPrimaryCta": "Crear personaje"
+    "emptyPrimaryCta": "Crear personaje",
+    "avatarAltWithName": "Avatar of {{name}}",
+    "avatarAlt": "User avatar"
   },
   "systemNotifications": {
     "importSuccess": "Datos importados correctamente",

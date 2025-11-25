@@ -11,7 +11,7 @@ test.describe('Options first-run and connection panel', () => {
     const { context, page } = await launchWithExtension(extPath)
 
     // Seed default config so the card deterministically shows the connection error state.
-    await page.evaluate(async () => {
+    await page.evaluate(async (apiKey) => {
       await new Promise<void>((resolve) => {
         // @ts-ignore
         chrome.storage.local.clear(() => resolve())
@@ -23,13 +23,13 @@ test.describe('Options first-run and connection panel', () => {
             tldwConfig: {
               serverUrl: 'http://127.0.0.1:8000',
               authMode: 'single-user',
-              apiKey: DEFAULT_TLDW_API_KEY
+              apiKey
             }
           },
           () => resolve()
         )
       })
-    })
+    }, DEFAULT_TLDW_API_KEY)
     await page.reload()
 
     // Expect deterministic error card copy

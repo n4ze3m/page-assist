@@ -600,7 +600,8 @@
     "columns": {
       "name": "Name",
       "description": "Description",
-      "actions": "Actions"
+      "actions": "Actions",
+      "avatar": "Avatar"
     },
     "actions": {
       "chat": "Chat",
@@ -670,7 +671,9 @@
     "emptyDescription": "Create a reusable character with a name, description, and system prompt you can chat with.",
     "emptyExample1": "Define a writing coach, lore expert, or coding assistant you can reuse across chats.",
     "emptyExample2": "Give each character a clear description and behavior so their responses stay consistent.",
-    "emptyPrimaryCta": "Create character"
+    "emptyPrimaryCta": "Create character",
+    "avatarAltWithName": "Avatar of {{name}}",
+    "avatarAlt": "User avatar"
   },
   "systemNotifications": {
     "importSuccess": "데이터를 성공적으로 가져왔습니다",

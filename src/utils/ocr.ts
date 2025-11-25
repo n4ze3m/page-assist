@@ -23,7 +23,7 @@ export async function processImageForOCR(imageData: string): Promise<string> {
             workerBlobURL: false,
             corePath,
             errorHandler: (e) => console.error(e),
-            langPath: !isOCROffline ? langPath : undefined
+            langPath: isOCROffline ? langPath : undefined
         })
 
         const result = await worker.recognize(imageData)

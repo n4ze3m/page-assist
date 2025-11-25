@@ -636,7 +636,8 @@
     "columns": {
       "name": "名稱",
       "description": "描述",
-      "actions": "操作"
+      "actions": "操作",
+      "avatar": "Avatar"
     },
     "actions": {
       "chat": "聊天",
@@ -706,7 +707,9 @@
     "emptyDescription": "建立具備名稱、描述與系統提示的可重複使用角色，方便聊天。",
     "emptyExample1": "定義可重複使用的寫作教練、背景專家或程式助理。",
     "emptyExample2": "為每個角色提供清楚的描述與行為，使回應保持一致。",
-    "emptyPrimaryCta": "建立角色"
+    "emptyPrimaryCta": "建立角色",
+    "avatarAltWithName": "Avatar of {{name}}",
+    "avatarAlt": "User avatar"
   },
   "systemNotifications": {
     "importSuccess": "資料匯入成功",

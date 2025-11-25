@@ -11,8 +11,7 @@
     "name": "Name"
   },
   "confirm": {
-    "delete": "Are you sure you want to delete this knowledge?",
-    "deleteSource": "Are you sure you want to delete this source?"
+    "delete": "Are you sure you want to delete this knowledge?"
   },
   "deleteSuccess": "Knowledge deleted successfully",
   "status": {
@@ -22,57 +21,22 @@
     "failed": "Failed"
   },
   "addKnowledge": "Add Knowledge",
-  "updateKnowledge": "Add Source",
+  "updateKnowledge": "Update Knowledge",
   "form": {
-    "tabs": {
-      "upload": "Upload File",
-      "text": "Text Input"
-    },
     "title": {
-      "label": "Knowledge Title (optional)",
+      "label": "Knowledge Title",
       "placeholder": "Enter knowledge title",
-      "placeholderOptional": "Optional title (defaults to first 50 characters)",
       "required": "Knowledge title is required"
     },
     "uploadFile": {
       "label": "Upload File",
       "uploadText": "Drag and drop a file here or click to upload",
       "uploadHint": "Supported file types: .pdf, .csv, .txt, .md, .docx",
-      "required": "File is required",
-      "uploadError": "Unsupported file type"
-    },
-    "textInput": {
-      "typeLabel": "Type",
-      "type": {
-        "plain": "Plain Text",
-        "markdown": "Markdown",
-        "code": "Code"
-      },
-      "contentLabel": "Content",
-      "placeholder": "Paste or type your text here...",
-      "required": "Text content is required",
-      "tooLarge": "Content is too large. Please keep it under 500k characters.",
-      "defaultTitle": "Untitled Text"
+      "required": "File is required"
     },
     "submit": "Submit",
     "success": "Knowledge added successfully"
   },
   "noEmbeddingModel": "Please add an embedding model from the RAG settings page first",
-  "newSource": "New Source",
-  "empty": {
-    "connectTitle": "Connect to use Knowledge",
-    "connectDescription": "To use Knowledge, first connect to your tldw server so new sources can be indexed.",
-    "connectExample1": "Open Settings → tldw server to add your server URL.",
-    "connectExample2": "Use Diagnostics if your server is running but not reachable.",
-    "demoTitle": "Explore Knowledge in demo mode",
-    "demoDescription": "This demo shows how Knowledge can organize your sources for better search. Connect your own server later to index your real documents and transcripts.",
-    "demoExample1": "See how knowledge bases and sources appear in this table.",
-    "demoExample2": "When you connect, you’ll be able to upload files and text that tldw can search across.",
-    "title": "No knowledge sources yet",
-    "description": "Add knowledge bases so tldw can ground answers in your own documents, transcripts, and files.",
-    "example1": "Upload PDFs, transcripts, or notes that you frequently reference in chat.",
-    "example2": "Organize related documents into a single knowledge base to reuse across chats.",
-    "primaryCta": "Add knowledge"
-  },
   "privateModeDescription": "Firefox Private Mode does not support saving data to IndexedDB. Please add knowledge base from a normal window."
 }

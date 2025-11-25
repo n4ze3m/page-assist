@@ -150,6 +150,12 @@ export class TldwApiClient {
       console.warn(msg)
       throw new Error(msg)
     }
+    if (isPlaceholderApiKey(key)) {
+      const msg = this.getPlaceholderApiKeyMessage()
+      // eslint-disable-next-line no-console
+      console.warn(msg)
+      throw new Error(msg)
+    }
     return cfg
   }
 

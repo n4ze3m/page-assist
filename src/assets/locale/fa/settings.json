@@ -574,7 +574,8 @@
     "columns": {
       "name": "نام",
       "description": "توضیحات",
-      "actions": "اقدامات"
+      "actions": "اقدامات",
+      "avatar": "Avatar"
     },
     "actions": {
       "chat": "گفتگو",
@@ -644,7 +645,9 @@
     "emptyDescription": "یک شخصیت قابل استفاده مجدد با نام، توضیح و پرامپت سیستم بسازید تا با آن گفتگو کنید.",
     "emptyExample1": "یک مربی نوشتن، کارشناس داستان یا دستیار کدنویسی تعریف کنید که بتوانید در چت‌ها دوباره استفاده کنید.",
     "emptyExample2": "به هر شخصیت توضیح و رفتار واضحی بدهید تا پاسخ‌هایش منسجم بماند.",
-    "emptyPrimaryCta": "ایجاد شخصیت"
+    "emptyPrimaryCta": "ایجاد شخصیت",
+    "avatarAltWithName": "Avatar of {{name}}",
+    "avatarAlt": "User avatar"
   },
   "systemNotifications": {
     "importSuccess": "داده‌ها با موفقیت وارد شدند",

@@ -606,7 +606,8 @@
     "columns": {
       "name": "Nom",
       "description": "Description",
-      "actions": "Actions"
+      "actions": "Actions",
+      "avatar": "Avatar"
     },
     "actions": {
       "chat": "Discuter",
@@ -676,7 +677,9 @@
     "emptyDescription": "Crée un personnage réutilisable avec nom, description et prompt système pour discuter.",
     "emptyExample1": "Définis un coach en écriture, un expert en lore ou un assistant de code réutilisable.",
     "emptyExample2": "Donne à chaque personnage une description et un comportement clairs pour des réponses cohérentes.",
-    "emptyPrimaryCta": "Créer un personnage"
+    "emptyPrimaryCta": "Créer un personnage",
+    "avatarAltWithName": "Avatar of {{name}}",
+    "avatarAlt": "User avatar"
   },
   "systemNotifications": {
     "importSuccess": "Importation des données réussie",

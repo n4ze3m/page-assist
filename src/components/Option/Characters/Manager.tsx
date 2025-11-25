@@ -527,7 +527,13 @@ export const CharactersManager: React.FC = () => {
           dataSource={data}
           columns={[
             {
-              title: "",
+              title: (
+                <span className="sr-only">
+                  {t("settings:manageCharacters.columns.avatar", {
+                    defaultValue: "Avatar"
+                  })}
+                </span>
+              ),
               key: "avatar",
               width: 48,
               render: (_: any, record: any) =>
@@ -537,8 +543,13 @@ export const CharactersManager: React.FC = () => {
                     className="w-6 h-6 rounded-full"
                     alt={
                       record?.name
-                        ? `Avatar of ${record.name}`
-                        : "User avatar"
+                        ? t("settings:manageCharacters.avatarAltWithName", {
+                            defaultValue: "Avatar of {{name}}",
+                            name: record.name
+                          })
+                        : t("settings:manageCharacters.avatarAlt", {
+                            defaultValue: "User avatar"
+                          })
                     }
                   />
                 ) : (
