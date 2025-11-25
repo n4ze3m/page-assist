@@ -1,41 +1,42 @@
 {
-    "addBtn": "Aggiungi nuova Knowledge Base",
-    "columns": {
-        "title": "Titolo",
-        "status": "Stato",
-        "embeddings": "Modello di Embedding",
-        "createdAt": "Creato da",
-        "action": "Azioni"
+  "addBtn": "Aggiungi nuova Knowledge Base",
+  "columns": {
+    "title": "Titolo",
+    "status": "Stato",
+    "embeddings": "Modello di Embedding",
+    "createdAt": "Creato da",
+    "action": "Azioni"
+  },
+  "expandedColumns": {
+    "name": "Nome"
+  },
+  "confirm": {
+    "delete": "Sei sicuro di voler eliminare questa Knowledge Base?"
+  },
+  "deleteSuccess": "Knowledge Base eliminata correttamente",
+  "status": {
+    "pending": "In attesa",
+    "finished": "Completato",
+    "processing": "In corso",
+    "failed": "Fallito"
+  },
+  "addKnowledge": "Aggiungi Knowledge Base",
+  "updateKnowledge": "Aggiungi Fonte",
+  "form": {
+    "title": {
+      "label": "Titolo Knowledge Base",
+      "placeholder": "Inserisci il titolo della Knowledge Base",
+      "required": "Il Titolo è obbligatorio"
     },
-    "expandedColumns": {
-        "name": "Nome"
+    "uploadFile": {
+      "label": "Carica File",
+      "uploadText": "Trascina un file qui or scegli upload",
+      "uploadHint": "Tipi di file supportati: .pdf, .csv, .txt, .md, .docx",
+      "required": "File è obbligatorio"
     },
-    "confirm": {
-        "delete": "Sei sicuro di voler eliminare questa Knowledge Base?"
-    },
-    "deleteSuccess": "Knowledge Base eliminata correttamente",
-    "status": {
-        "pending": "In attesa",
-        "finished": "Completato",
-        "processing": "In corso",
-        "failed": "Fallito"
-    },
-    "addKnowledge": "Aggiungi Knowledge Base",
-    "updateKnowledge": "Aggiungi Fonte",
-    "form": {
-        "title": {
-            "label": "Titolo Knowledge Base",
-            "placeholder": "Inserisci il titolo della Knowledge Base",
-            "required": "Il Titolo è obbligatorio"
-        },
-        "uploadFile": {
-            "label": "Carica File",
-            "uploadText": "Trascina un file qui or scegli upload",
-            "uploadHint": "Tipi di file supportati: .pdf, .csv, .txt, .md, .docx",
-            "required": "File è obbligatorio"
-        },
-        "submit": "Invia",
-        "success": "Knowledge Base aggiunta correttamente"
-    },
-    "noEmbeddingModel": "Aggiungi prima un modello dalla pagina di impostazione di RAG"
+    "submit": "Invia",
+    "success": "Knowledge Base aggiunta correttamente"
+  },
+  "noEmbeddingModel": "Aggiungi prima un modello dalla pagina di impostazione di RAG",
+  "privateModeDescription": "La modalità privata di Firefox non supporta il salvataggio in IndexedDB. Aggiungi una base di conoscenza da una finestra normale."
 }

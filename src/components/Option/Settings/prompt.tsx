@@ -86,13 +86,16 @@ export const SettingPrompt = () => {
                 rules={[
                   {
                     required: true,
-                    message: "Enter a prompt."
+                    message: t("settings:prompts.enterPrompt", "Enter a prompt.")
                   }
                 ]}>
                 <Input.TextArea
                   value={data.webSearchPrompt}
                   rows={5}
-                  placeholder="Enter a prompt."
+                  placeholder={t(
+                    "settings:prompts.enterPromptPlaceholder",
+                    "Enter a prompt."
+                  )}
                 />
               </Form.Item>
               <Form.Item
@@ -101,14 +104,18 @@ export const SettingPrompt = () => {
                 rules={[
                   {
                     required: true,
-                    message: "Enter a follow up prompt."
+                    message: t(
+                      "settings:prompts.enterFollowUpPrompt",
+                      "Enter a follow up prompt."
+                    )
                   }
                 ]}>
                 <Input.TextArea
                   value={data.webSearchFollowUpPrompt}
                   rows={5}
                   placeholder={t(
-                    "rag.prompt.webSearchFollowUpPromptPlaceholder"
+                    "settings:prompts.enterFollowUpPromptPlaceholder",
+                    "Enter a follow up prompt."
                   )}
                 />
               </Form.Item>

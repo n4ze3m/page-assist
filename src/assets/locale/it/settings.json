@@ -668,5 +668,22 @@
     "emptyExample1": "Define a writing coach, lore expert, or coding assistant you can reuse across chats.",
     "emptyExample2": "Give each character a clear description and behavior so their responses stay consistent.",
     "emptyPrimaryCta": "Create character"
+  },
+  "systemNotifications": {
+    "importSuccess": "Dati importati correttamente",
+    "importError": "Errore di importazione",
+    "syncSuccess": "Dati di Firefox sincronizzati, non serve ripetere",
+    "syncError": "Sincronizzazione dei dati di Firefox non riuscita",
+    "invalidImage": "Seleziona un file immagine valido"
+  },
+  "prompts": {
+    "enterPrompt": "Inserisci un prompt.",
+    "enterPromptPlaceholder": "Inserisci un prompt.",
+    "enterFollowUpPrompt": "Inserisci un prompt di follow-up.",
+    "enterFollowUpPromptPlaceholder": "Inserisci un prompt di follow-up.",
+    "privateModeDescription": "La modalità privata di Firefox non supporta il salvataggio in IndexedDB. Aggiungi i prompt da una finestra normale."
+  },
+  "models": {
+    "privateModeDescription": "La modalità privata di Firefox non supporta il salvataggio in IndexedDB. Aggiungi un modello personalizzato da una finestra normale."
   }
 }

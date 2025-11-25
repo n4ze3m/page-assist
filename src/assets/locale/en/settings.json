@@ -117,7 +117,7 @@
         "label": "Enable Temporary Chat in Sidebar by default"
       },
       "removeReasoningTagFromCopy": {
-        "label": "Remove Reasoning Tag from Copied Text" 
+        "label": "Remove Reasoning Tag from Copied Text"
       },
       "promptSearchIncludeServer": {
         "label": "Include server prompts in prompt search"
@@ -132,17 +132,28 @@
           "sidePanel": "Sidebar"
         }
       },
-      "actionIcon": { "label": "Browser Action Button" },
-      "contextMenu": { "label": "Context Menu Action" },
-      "webuiBtnSidePanel": { "label": "Show Web UI button in Sidebar" },
-      "chatBackgroundImage": { "label": "Chat Background Image" },
+      "actionIcon": {
+        "label": "Browser Action Button"
+      },
+      "contextMenu": {
+        "label": "Context Menu Action"
+      },
+      "webuiBtnSidePanel": {
+        "label": "Show Web UI button in Sidebar"
+      },
+      "chatBackgroundImage": {
+        "label": "Chat Background Image"
+      },
       "fontSize": {
         "label": "Font Size"
       }
     },
     "systemData": {
       "heading": "Data",
-      "firefoxPrivateModeSync": { "label": "Firefox Private Mode Sync", "button": "Sync Data" },
+      "firefoxPrivateModeSync": {
+        "label": "Firefox Private Mode Sync",
+        "button": "Sync Data"
+      },
       "deleteChatHistory": {
         "label": "System Reset",
         "button": "Reset All",
@@ -214,7 +225,6 @@
         "placeholder": "Enter your Firecrawl API key"
       }
     },
-    
     "tts": {
       "heading": "Text-to-Speech Settings",
       "ttsEnabled": {
@@ -254,7 +264,7 @@
     "empty": {
       "connectTitle": "Connect tldw Assistant to your server",
       "connectDescription": "Some settings only take effect when your tldw server is reachable. Connect your server to get the full experience.",
-      "connectExample1": "Open Settings \u2192 tldw server to add your server URL and API key.",
+      "connectExample1": "Open Settings → tldw server to add your server URL and API key.",
       "connectExample2": "Use Diagnostics to confirm your server is healthy before trying advanced tools.",
       "title": "Tune how tldw Assistant behaves",
       "description": "Adjust defaults for the Web UI, sidepanel, speech, search, and data handling from one place.",
@@ -306,7 +316,7 @@
       "successDescription": "Successfully pulled the model",
       "successDeleteDescription": "Successfully deleted the model",
       "someError": "Something went wrong. Please try again later"
-    } 
+    }
   },
   "managePrompts": {
     "title": "Manage Prompts",
@@ -400,7 +410,7 @@
     "loadErrorHelp": "Check your server connection and refresh to try again.",
     "emptyConnectTitle": "Connect to use Prompts",
     "emptyConnectDescription": "To manage reusable prompts, first connect to your tldw server.",
-    "emptyConnectExample1": "Open Settings \u2192 tldw server to add your server URL.",
+    "emptyConnectExample1": "Open Settings → tldw server to add your server URL.",
     "emptyConnectExample2": "Once connected, create custom prompts you can reuse across chats.",
     "emptyTitle": "No custom prompts yet",
     "emptyDescription": "Create reusable prompts for recurring tasks, workflows, and team conventions.",
@@ -550,10 +560,7 @@
         "placeholder": "e.g. Writing coach",
         "required": "Please enter a name"
       },
-      "description": {
-        "label": "Description",
-        "placeholder": "Short description"
-      },
+      "description": "Define a reusable character you can chat with in the sidebar.",
       "systemPrompt": {
         "label": "Behavior / instructions",
         "placeholder": "E.g., You are a patient math teacher who explains concepts step by step and checks understanding with short examples.",
@@ -576,8 +583,7 @@
       "btnEdit": {
         "saving": "Saving changes...",
         "save": "Save changes"
-      },
-      "description": "Define a reusable character you can chat with in the sidebar."
+      }
     },
     "notification": {
       "addSuccess": "Character created",
@@ -710,6 +716,12 @@
     "ragChecking": "Knowledge: Checking…",
     "footerInfo": "These checks summarize the last successful ping to your tldw server and knowledge index."
   },
+  "storage": {
+    "quotaFriendlyMessage": "Too many settings writes in a short period; please wait a few seconds and try again.",
+    "quotaTitle": "Storage limit reached",
+    "writeError": "Could not save settings",
+    "writeErrorDescription": "We couldn't save your settings. Please try again shortly."
+  },
   "savedSuccessfully": "Settings saved",
   "saveFailed": "Failed to save settings",
   "siteAccessGranted": "Host permission granted for {{origin}}",
@@ -737,8 +749,14 @@
       "label": "API Key",
       "placeholder": "Enter your API key (or use the default demo key THIS-IS-A-SECURE-KEY-123-REPLACE-ME for local single-user setups)"
     },
-    "username": { "label": "Username", "placeholder": "Username" },
-    "password": { "label": "Password", "placeholder": "Password" },
+    "username": {
+      "label": "Username",
+      "placeholder": "Username"
+    },
+    "password": {
+      "label": "Password",
+      "placeholder": "Password"
+    },
     "buttons": {
       "next": "Next",
       "back": "Back",
@@ -995,5 +1013,22 @@
     "testCta": "Test Evaluations API",
     "testOk": "Evaluations API reachable",
     "testFail": "Unable to reach Evaluations API"
+  },
+  "systemNotifications": {
+    "importSuccess": "Imported data successfully",
+    "importError": "Import error",
+    "syncSuccess": "Firefox data synced successfully, You don't need to do this again",
+    "syncError": "Firefox data sync failed",
+    "invalidImage": "Please select a valid image file"
+  },
+  "prompts": {
+    "enterPrompt": "Enter a prompt.",
+    "enterPromptPlaceholder": "Enter a prompt.",
+    "enterFollowUpPrompt": "Enter a follow up prompt.",
+    "enterFollowUpPromptPlaceholder": "Enter a follow up prompt.",
+    "privateModeDescription": "Firefox Private Mode does not support saving data to IndexedDB. Please add prompts from a normal window."
+  },
+  "models": {
+    "privateModeDescription": "Firefox Private Mode does not support saving data to IndexedDB. Please add custom model from a normal window."
   }
 }

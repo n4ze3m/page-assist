@@ -5,5 +5,9 @@
   },
   "toolbar": {
     "ragSearch": "RAG Search"
+  },
+  "errors": {
+    "privateModeTitle": "tldw Assistant はデータを保存できません",
+    "privateModeDescription": "Firefox のプライベートモードではチャット履歴を保存できません。デフォルトで一時チャットが有効です。今後改善予定です。"
   }
 }

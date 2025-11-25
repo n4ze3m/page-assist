@@ -29,9 +29,14 @@ export const ModelsBody = () => {
                 onClick={() => {
                   if (isFireFoxPrivateMode) {
                     notification.error({
-                      message: "tldw Assistant can't save data",
-                      description:
+                      message: t(
+                        "common:privateModeSaveErrorTitle",
+                        "tldw Assistant can't save data"
+                      ),
+                      description: t(
+                        "settings:models.privateModeDescription",
                         "Firefox Private Mode does not support saving data to IndexedDB. Please add custom model from a normal window."
+                      )
                     })
                     return
                   }

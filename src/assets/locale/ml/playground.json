@@ -39,5 +39,23 @@
     "connectionFailedWithCode": "Connection failed (HTTP {{code}})",
     "connectionFailed": "Connection failed",
     "errorDetailsLabel": "Details:"
+  },
+  "errors": {
+    "privateModeDescription": "Firefox സ്വകാര്യ മോഡിൽ ചാറ്റ് സംരക്ഷണം പിന്തുണയ്ക്കുന്നില്ല. താൽക്കാലിക ചാറ്റ് സ്ഥിരമായി ഓണാണ്. കൂടുതൽ മെച്ചപ്പെടുത്തലുകൾ വരുന്നു."
+  },
+  "tts": {
+    "playErrorTitle": "പിശക്",
+    "playErrorDescription": "ഓഡിയോ പ്ലേ ചെയ്യുമ്പോൾ എന്തോ പിശക് സംഭവിച്ചു",
+    "browserInfoTitle": "ബ്രൗസർ TTS സിസ്റ്റം ഓഡിയോയാണ് ഉപയോഗിക്കുന്നത്",
+    "browserInfoDescription": "ബ്രൗസർ TTS സിസ്റ്റം സിന്തസൈസർ ഉപയോഗിക്കുന്നതിനാൽ ഓഡിയോ ഫയൽ ലഭ്യമാകില്ല. ട്രാക്ക് ലിസ്റ്റും പ്ലെയറും കാണാൻ ElevenLabs, OpenAI TTS, അല്ലെങ്കിൽ tldw ഉപയോഗിക്കുക.",
+    "unsupportedProviderTitle": "പിന്തുണയില്ലാത്ത TTS പ്രൊവൈഡർ",
+    "unsupportedProviderDescription": "\"{{provider}}\" പ്രൊവൈഡർ ഇപ്പോഴും പ്ലേയ്ഗ്രൗണ്ട് പ്ലെയറിൽ പിന്തുണയില്ല.",
+    "generateErrorTitle": "ഓഡിയോ സൃഷ്ടിക്കൽ പിശക്",
+    "generateErrorDescription": "TTS ഓഡിയോ സൃഷ്ടിക്കുമ്പോൾ പിശക് സംഭവിച്ചു.",
+    "sampleText": "Insert sample text",
+    "playHelper": "Play uses your selected provider, voice, and speed.",
+    "playDisabledNoText": "Enter text to enable Play.",
+    "playDisabledTtsOff": "Enable text-to-speech above to play audio.",
+    "stopDisabled": "Stop activates after audio starts."
   }
 }

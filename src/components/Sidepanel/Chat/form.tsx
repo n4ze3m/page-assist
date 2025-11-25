@@ -47,6 +47,7 @@ import { ConnectionPhase } from "@/types/connection"
 import { useServerCapabilities } from "@/hooks/useServerCapabilities"
 import { tldwClient } from "@/services/tldw/TldwApiClient"
 import { useAntdNotification } from "@/hooks/useAntdNotification"
+import { useFocusComposerOnConnect, focusComposer } from "@/hooks/useComposerFocus"
 
 type Props = {
   dropedFile: File | undefined
@@ -132,18 +133,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
   }
 
   // When sidepanel connection transitions to CONNECTED, focus the composer
-  const previousPhaseRef = React.useRef<ConnectionPhase | null>(null)
-  React.useEffect(() => {
-    if (
-      previousPhaseRef.current !== ConnectionPhase.CONNECTED &&
-      phase === ConnectionPhase.CONNECTED
-    ) {
-      setTimeout(() => {
-        window.dispatchEvent(new CustomEvent("tldw:focus-composer"))
-      }, 0)
-    }
-    previousPhaseRef.current = phase
-  }, [phase])
+  useFocusComposerOnConnect(phase)
 
   // Allow other components (e.g., connection card) to request focus
   React.useEffect(() => {
@@ -220,7 +210,10 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
   }
 
   const handleDisconnectedFocus = () => {
-    if (!isConnectionReady && !hasShownConnectBanner) {
+    // When there are no messages, the shared connection card in the body
+    // provides the primary CTA. Only show the inline banner when there is
+    // existing history and the connection drops.
+    if (!isConnectionReady && messages.length > 0 && !hasShownConnectBanner) {
       setShowConnectBanner(true)
       setHasShownConnectBanner(true)
     }
@@ -280,9 +273,14 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
   const handleToggleTemporaryChat = React.useCallback(() => {
     if (isFireFoxPrivateMode) {
       notification.error({
-        message: "Error",
-        description:
-          "tldw Assistant can't save chat in Firefox Private Mode. Temporary chat is enabled by default. More fixes coming soon."
+        message: t(
+          "sidepanel:errors.privateModeTitle",
+          "tldw Assistant can't save data"
+        ),
+        description: t(
+          "sidepanel:errors.privateModeDescription",
+          "Firefox Private Mode does not support saving chat history. Temporary chat is enabled by default. More fixes coming soon."
+        )
       })
       return
     }
@@ -908,7 +906,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                           ? t("form.textarea.placeholder")
                           : t(
                               "playground:composer.connectionPlaceholder",
-                              "Connect your server in Settings to send messages."
+                              "Connect to tldw to start chatting."
                             )
                       }
                       {...form.getInputProps("message")}
@@ -1140,7 +1138,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                         </div>
                       </div>
                     )}
-                    {isConnectionReady && queuedMessages.length > 0 && (
+                    {queuedMessages.length > 0 && (
                       <div className="mt-2 flex flex-wrap items-center justify-between gap-2 rounded-md border border-green-300 bg-green-50 px-3 py-2 text-xs text-green-900 dark:border-green-500 dark:bg-[#102a10] dark:text-green-100">
                         <p className="max-w-xs text-left">
                           <span className="block font-medium">
@@ -1154,21 +1152,25 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                             "We’ll hold these messages and send them once your tldw server is connected."
                           )}
                         </p>
-                        <div className="flex flex-wrap items-center gap-2">
-                          <button
-                            type="button"
-                            onClick={async () => {
-                              for (const item of queuedMessages) {
-                                await submitQueuedInSidepanel(item.message, item.image)
-                              }
-                              clearQueuedMessages()
-                            }}
-                            className="rounded-md border border-green-300 bg-white px-2 py-1 text-xs font-medium text-green-900 hover:bg-green-100 dark:bg-[#163816] dark:text-green-50 dark:hover:bg-[#194419]"
-                          >
-                            {t(
-                              "playground:composer.queuedBanner.sendNow",
-                              "Send queued messages"
-                            )}
+                          <div className="flex flex-wrap items-center gap-2">
+                            <button
+                              type="button"
+                              onClick={async () => {
+                                if (!isConnectionReady) return
+                                for (const item of queuedMessages) {
+                                  await submitQueuedInSidepanel(item.message, item.image)
+                                }
+                                clearQueuedMessages()
+                              }}
+                              disabled={!isConnectionReady}
+                              className={`rounded-md border border-green-300 bg-white px-2 py-1 text-xs font-medium text-green-900 hover:bg-green-100 dark:bg-[#163816] dark:text-green-50 dark:hover:bg-[#194419] ${
+                                !isConnectionReady ? "cursor-not-allowed opacity-60" : ""
+                              }`}
+                            >
+                              {t(
+                                "playground:composer.queuedBanner.sendNow",
+                                "Send queued messages"
+                              )}
                           </button>
                           <button
                             type="button"

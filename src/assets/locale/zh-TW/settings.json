@@ -707,5 +707,22 @@
     "emptyExample1": "定義可重複使用的寫作教練、背景專家或程式助理。",
     "emptyExample2": "為每個角色提供清楚的描述與行為，使回應保持一致。",
     "emptyPrimaryCta": "建立角色"
+  },
+  "systemNotifications": {
+    "importSuccess": "資料匯入成功",
+    "importError": "匯入錯誤",
+    "syncSuccess": "Firefox 資料已同步，無需再次執行",
+    "syncError": "Firefox 資料同步失敗",
+    "invalidImage": "請選擇有效的圖片檔"
+  },
+  "prompts": {
+    "enterPrompt": "請輸入提示。",
+    "enterPromptPlaceholder": "請輸入提示。",
+    "enterFollowUpPrompt": "請輸入後續提示。",
+    "enterFollowUpPromptPlaceholder": "請輸入後續提示。",
+    "privateModeDescription": "Firefox 隱私模式不支援將資料儲存到 IndexedDB。請在一般視窗中新增提示。"
+  },
+  "models": {
+    "privateModeDescription": "Firefox 隱私模式不支援將資料儲存到 IndexedDB。請在一般視窗中新增自訂模型。"
   }
 }

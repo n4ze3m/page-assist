@@ -33,9 +33,9 @@
     "message": "Process with tldw_server (don’t store)"
   },
   "contextSidebarOpening": {
-    "message": "Opening sidebar..."
+    "message": "Seitenleiste wird geöffnet..."
   },
   "contextSaveToNotesOpeningSidebar": {
-    "message": "Opening sidebar to save note..."
+    "message": "Seitenleiste wird zum Speichern der Notiz geöffnet..."
   }
 }

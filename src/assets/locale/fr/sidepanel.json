@@ -1,11 +1,15 @@
 {
-    "tooltip": {
-        "embed": "L'intégration de la page peut prendre quelques minutes. Veuillez patienter...",
-        "clear": "Effacer l'historique du chat",
-        "history": "Historique du chat",
-        "openwebui": "Ouvrir WebUI"
-    },
-    "toolbar": {
-        "ragSearch": "RAG Search"
-    }
+  "tooltip": {
+    "embed": "L'intégration de la page peut prendre quelques minutes. Veuillez patienter...",
+    "clear": "Effacer l'historique du chat",
+    "history": "Historique du chat",
+    "openwebui": "Ouvrir WebUI"
+  },
+  "toolbar": {
+    "ragSearch": "RAG Search"
+  },
+  "errors": {
+    "privateModeTitle": "tldw Assistant ne peut pas enregistrer les données",
+    "privateModeDescription": "Le mode privé de Firefox ne permet pas d’enregistrer l’historique des discussions. Le chat temporaire est activé par défaut. D’autres améliorations arrivent bientôt."
+  }
 }

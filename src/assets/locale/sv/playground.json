@@ -39,5 +39,23 @@
     "connectionFailedWithCode": "Connection failed (HTTP {{code}})",
     "connectionFailed": "Connection failed",
     "errorDetailsLabel": "Details:"
+  },
+  "errors": {
+    "privateModeDescription": "Firefox privat läge stöder inte att spara chatt. Tillfällig chatt är aktiverat som standard. Fler förbättringar kommer."
+  },
+  "tts": {
+    "playErrorTitle": "Fel",
+    "playErrorDescription": "Ett fel uppstod när ljudet spelades upp",
+    "browserInfoTitle": "Webbläsarens TTS använder systemljud",
+    "browserInfoDescription": "Webbläsarens TTS använder systemets talsyntes och skapar ingen ljudfil. Använd ElevenLabs, OpenAI TTS eller tldw för att se spellista och spelare.",
+    "unsupportedProviderTitle": "Ej stödd TTS-leverantör",
+    "unsupportedProviderDescription": "Leverantören \"{{provider}}\" stöds ännu inte i playground-spelaren.",
+    "generateErrorTitle": "Fel vid generering av ljud",
+    "generateErrorDescription": "Något gick fel när TTS-ljudet genererades.",
+    "sampleText": "Insert sample text",
+    "playHelper": "Play uses your selected provider, voice, and speed.",
+    "playDisabledNoText": "Enter text to enable Play.",
+    "playDisabledTtsOff": "Enable text-to-speech above to play audio.",
+    "stopDisabled": "Stop activates after audio starts."
   }
 }

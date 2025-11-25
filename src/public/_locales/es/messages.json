@@ -33,9 +33,9 @@
     "message": "Process with tldw_server (don’t store)"
   },
   "contextSidebarOpening": {
-    "message": "Opening sidebar..."
+    "message": "Abriendo la barra lateral..."
   },
   "contextSaveToNotesOpeningSidebar": {
-    "message": "Opening sidebar to save note..."
+    "message": "Abriendo la barra lateral para guardar la nota..."
   }
 }

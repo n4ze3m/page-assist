@@ -165,5 +165,6 @@
     "copyCsv": "Copy as CSV",
     "downloadCsv": "Download CSV"
   },
-  "dismiss": "Dismiss"
+  "dismiss": "Dismiss",
+  "privateModeSaveErrorTitle": "tldw Assistant에서 데이터를 저장할 수 없습니다"
 }

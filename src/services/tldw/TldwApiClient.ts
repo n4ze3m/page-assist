@@ -748,6 +748,42 @@ export class TldwApiClient {
     }
   }
 
+   async searchCharacters(query: string, params?: Record<string, any>): Promise<any[]> {
+    const qp = this.buildQuery({ query, ...(params || {}) })
+    try {
+      return await bgRequest<any[]>({
+        path: `/api/v1/characters/search${qp}`,
+        method: 'GET'
+      })
+    } catch {
+      return await bgRequest<any[]>({
+        path: `/api/v1/characters/search/${qp}`,
+        method: 'GET'
+      })
+    }
+  }
+
+  async filterCharactersByTags(
+    tags: string[],
+    options?: { match_all?: boolean; limit?: number; offset?: number }
+  ): Promise<any[]> {
+    const qp = this.buildQuery({
+      tags,
+      ...(options || {})
+    })
+    try {
+      return await bgRequest<any[]>({
+        path: `/api/v1/characters/filter${qp}`,
+        method: 'GET'
+      })
+    } catch {
+      return await bgRequest<any[]>({
+        path: `/api/v1/characters/filter/${qp}`,
+        method: 'GET'
+      })
+    }
+  }
+
   async getCharacter(id: string | number): Promise<any> {
     const cid = String(id)
     try {

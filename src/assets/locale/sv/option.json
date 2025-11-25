@@ -1,52 +1,58 @@
 {
-    "newChat": "Ny chatt",
-    "selectAPrompt": "Välj en fråga",
-    "githubRepository": "GitHu repository",
-    "settings": "Inställningar",
-    "connectionCard": {
-      "headlineMissing": "Connect tldw Assistant to your server",
-      "headlineSearching": "Searching for your tldw server…",
-      "headlineConnected": "Connected to your tldw server",
-      "headlineError": "Can’t reach your tldw server",
-      "descriptionMissing": "tldw_server is the backend that powers chat, knowledge search, and media processing. Connect your own tldw server URL to start using the assistant.",
-      "descriptionSearching": "We’re checking {{host}} to see if your tldw server is reachable. This may take a moment while we wait for a response.",
-      "descriptionConnected": "Connected to your tldw server at {{host}}. You can start chatting or use Review, Knowledge, and other tools.",
-      "descriptionError": "We couldn’t reach your tldw server at {{host}}. Make sure the server is running, the URL is correct, and your browser can reach it over the network.",
-      "buttonStartChat": "Start chatting",
-      "buttonRetry": "Retry connection",
-      "buttonChangeServer": "Change server",
-      "buttonOpenDiagnostics": "Open diagnostics",
-      "buttonViewDiagnostics": "View diagnostics"
+  "newChat": "Ny chatt",
+  "selectAPrompt": "Välj en fråga",
+  "githubRepository": "GitHu repository",
+  "settings": "Inställningar",
+  "connectionCard": {
+    "headlineMissing": "Connect tldw Assistant to your server",
+    "headlineSearching": "Searching for your tldw server…",
+    "headlineConnected": "Connected to your tldw server",
+    "headlineError": "Can’t reach your tldw server",
+    "descriptionMissing": "tldw_server is the backend that powers chat, knowledge search, and media processing. Connect your own tldw server URL to start using the assistant.",
+    "descriptionSearching": "We’re checking {{host}} to see if your tldw server is reachable. This may take a moment while we wait for a response.",
+    "descriptionConnected": "Connected to your tldw server at {{host}}. You can start chatting or use Review, Knowledge, and other tools.",
+    "descriptionError": "We couldn’t reach your tldw server at {{host}}. Make sure the server is running, the URL is correct, and your browser can reach it over the network.",
+    "buttonStartChat": "Start chatting",
+    "buttonRetry": "Retry connection",
+    "buttonChangeServer": "Change server",
+    "buttonOpenDiagnostics": "Open diagnostics",
+    "buttonViewDiagnostics": "View diagnostics"
+  },
+  "header": {
+    "showShortcuts": "Visa genvägar",
+    "hideShortcuts": "Dölj genvägar",
+    "groupWorkspace": "Arbetsyta",
+    "groupKnowledge": "Kunskap",
+    "groupSettings": "Inställningsgenvägar"
+  },
+  "sidebarTitle": "Chatthistorik",
+  "error": "Fel",
+  "somethingWentWrong": "Något gick fel",
+  "validationSelectModel": "Vänligen välj en modell för att fortsätta",
+  "deleteHistoryConfirmation": "Är du säker på att du vill radera denna historik?",
+  "editHistoryTitle": "Ange en ny titel",
+  "temporaryChat": "Tillfällig chatt",
+  "more": {
+    "copy": {
+      "group": "Kopiera",
+      "asText": "Kopiera som text",
+      "asMarkdown": "Kopiera som Markdown",
+      "success": "Kopierat till urklipp!"
     },
-    "header": {
-      "showShortcuts": "Visa genvägar",
-      "hideShortcuts": "Dölj genvägar",
-      "groupWorkspace": "Arbetsyta",
-      "groupKnowledge": "Kunskap",
-      "groupSettings": "Inställningsgenvägar"
+    "download": {
+      "group": "Ladda ner",
+      "text": "Textfil (.txt)",
+      "markdown": "Markdown (.md)",
+      "json": "JSON-fil (.json)"
     },
-    "sidebarTitle": "Chatthistorik",
-    "error": "Fel",
-    "somethingWentWrong": "Något gick fel",
-    "validationSelectModel": "Vänligen välj en modell för att fortsätta",
-    "deleteHistoryConfirmation": "Är du säker på att du vill radera denna historik?",
-    "editHistoryTitle": "Ange en ny titel",
-    "temporaryChat": "Tillfällig chatt", 
-    "more": {
-        "copy": {
-            "group": "Kopiera",
-            "asText": "Kopiera som text",
-            "asMarkdown": "Kopiera som Markdown",
-            "success": "Kopierat till urklipp!"
-        },
-        "download": {
-            "group": "Ladda ner",
-            "text": "Textfil (.txt)",
-            "markdown": "Markdown (.md)",
-            "json": "JSON-fil (.json)"
-        },
-        "share": "Dela"
-    },
-    "libraryView": "Library View",
-    "notes": "Notes"
+    "share": "Dela"
+  },
+  "libraryView": "Library View",
+  "notes": "Notes",
+  "upload": {
+    "fileTooLargeTitle": "Filen är för stor",
+    "fileTooLargeDescription": "Filstorleken måste vara under 10 MB",
+    "uploadFailedTitle": "Uppladdning misslyckades",
+    "uploadFailedDescription": "Det gick inte att ladda upp filen. Försök igen."
+  }
 }

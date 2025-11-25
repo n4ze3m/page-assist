@@ -231,5 +231,6 @@
   "downloading": "Downloading",
   "cancelPullingModel": {
     "confirm": "Are you sure you want to cancel the download? This will stop the download process. If supported by the provider, you can resume later."
-  }
+  },
+  "privateModeSaveErrorTitle": "tldw Assistant can't save data"
 }

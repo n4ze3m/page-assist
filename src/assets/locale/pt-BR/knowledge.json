@@ -1,41 +1,42 @@
 {
-    "addBtn": "Adicionar Novo Conhecimento",
-    "columns": {
-        "title": "Título",
-        "status": "Status",
-        "embeddings": "Modelo de Incorporação",
-        "createdAt": "Criado Em",
-        "action": "Ações"
+  "addBtn": "Adicionar Novo Conhecimento",
+  "columns": {
+    "title": "Título",
+    "status": "Status",
+    "embeddings": "Modelo de Incorporação",
+    "createdAt": "Criado Em",
+    "action": "Ações"
+  },
+  "expandedColumns": {
+    "name": "Nome"
+  },
+  "confirm": {
+    "delete": "Tem certeza de que deseja excluir este conhecimento?"
+  },
+  "deleteSuccess": "Conhecimento excluído com sucesso",
+  "status": {
+    "pending": "Pendente",
+    "finished": "Concluído",
+    "processing": "Processando",
+    "failed": "Falhou"
+  },
+  "addKnowledge": "Adicionar Conhecimento",
+  "updateKnowledge": "Adicionar Fonte",
+  "form": {
+    "title": {
+      "label": "Título do Conhecimento",
+      "placeholder": "Digite o título do conhecimento",
+      "required": "O título do conhecimento é obrigatório"
     },
-    "expandedColumns": {
-        "name": "Nome"
+    "uploadFile": {
+      "label": "Carregar Arquivo",
+      "uploadText": "Arraste e solte um arquivo aqui ou clique para carregar",
+      "uploadHint": "Tipos de arquivo suportados: .pdf, .csv, .txt, .md, .docx",
+      "required": "O arquivo é obrigatório"
     },
-    "confirm": {
-        "delete": "Tem certeza de que deseja excluir este conhecimento?"
-    },
-    "deleteSuccess": "Conhecimento excluído com sucesso",
-    "status": {
-        "pending": "Pendente",
-        "finished": "Concluído",
-        "processing": "Processando",
-        "failed": "Falhou"
-    },
-    "addKnowledge": "Adicionar Conhecimento",
-    "updateKnowledge": "Adicionar Fonte",
-    "form": {
-        "title": {
-            "label": "Título do Conhecimento",
-            "placeholder": "Digite o título do conhecimento",
-            "required": "O título do conhecimento é obrigatório"
-        },
-        "uploadFile": {
-            "label": "Carregar Arquivo",
-            "uploadText": "Arraste e solte um arquivo aqui ou clique para carregar",
-            "uploadHint": "Tipos de arquivo suportados: .pdf, .csv, .txt, .md, .docx",
-            "required": "O arquivo é obrigatório"
-        },
-        "submit": "Enviar",
-        "success": "Conhecimento adicionado com sucesso"
-    },
-    "noEmbeddingModel": "Por favor, adicione um modelo de incorporação na página de configurações RAG primeiro"
+    "submit": "Enviar",
+    "success": "Conhecimento adicionado com sucesso"
+  },
+  "noEmbeddingModel": "Por favor, adicione um modelo de incorporação na página de configurações RAG primeiro",
+  "privateModeDescription": "O modo privativo do Firefox não suporta salvar no IndexedDB. Adicione uma base de conhecimento em uma janela normal."
 }

@@ -668,5 +668,22 @@
     "emptyExample1": "Define un entrenador de escritura, experto en historia o asistente de código reutilizable.",
     "emptyExample2": "Dale a cada personaje una descripción y comportamiento claros para mantener respuestas coherentes.",
     "emptyPrimaryCta": "Crear personaje"
+  },
+  "systemNotifications": {
+    "importSuccess": "Datos importados correctamente",
+    "importError": "Error al importar",
+    "syncSuccess": "Datos de Firefox sincronizados, no necesitas hacerlo de nuevo",
+    "syncError": "Error al sincronizar datos de Firefox",
+    "invalidImage": "Selecciona un archivo de imagen válido"
+  },
+  "prompts": {
+    "enterPrompt": "Ingresa un prompt.",
+    "enterPromptPlaceholder": "Ingresa un prompt.",
+    "enterFollowUpPrompt": "Ingresa un prompt de seguimiento.",
+    "enterFollowUpPromptPlaceholder": "Ingresa un prompt de seguimiento.",
+    "privateModeDescription": "El modo privado de Firefox no admite guardar datos en IndexedDB. Añade los prompts desde una ventana normal."
+  },
+  "models": {
+    "privateModeDescription": "El modo privado de Firefox no admite guardar datos en IndexedDB. Añade un modelo personalizado desde una ventana normal."
   }
 }

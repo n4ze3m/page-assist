@@ -1,11 +1,15 @@
 {
-    "tooltip": {
-        "embed": "可能需要几分钟才能嵌入搜索结果。请稍候...",
-        "clear": "清除对话历史",
-        "history": "对话历史",
-        "openwebui": "打开网页界面"
-    },
-    "toolbar": {
-        "ragSearch": "RAG Search"
-    }
+  "tooltip": {
+    "embed": "可能需要几分钟才能嵌入搜索结果。请稍候...",
+    "clear": "清除对话历史",
+    "history": "对话历史",
+    "openwebui": "打开网页界面"
+  },
+  "toolbar": {
+    "ragSearch": "RAG Search"
+  },
+  "errors": {
+    "privateModeTitle": "tldw Assistant 无法保存数据",
+    "privateModeDescription": "Firefox 隐私模式不支持保存聊天记录。临时聊天默认开启。后续会改进。"
+  }
 }

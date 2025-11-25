@@ -39,5 +39,23 @@
     "connectionFailedWithCode": "Connection failed (HTTP {{code}})",
     "connectionFailed": "Connection failed",
     "errorDetailsLabel": "Details:"
+  },
+  "errors": {
+    "privateModeDescription": "Firefox のプライベートモードではチャットの保存はできません。デフォルトで一時チャットが有効です。今後改善予定です。"
+  },
+  "tts": {
+    "playErrorTitle": "エラー",
+    "playErrorDescription": "音声の再生中にエラーが発生しました",
+    "browserInfoTitle": "ブラウザーTTSはシステム音声を使用します",
+    "browserInfoDescription": "ブラウザーTTSはシステムの音声合成を使うため音声ファイルは生成されません。ElevenLabs、OpenAI TTS、tldw を使うとトラック一覧とプレーヤーが利用できます。",
+    "unsupportedProviderTitle": "未対応のTTSプロバイダー",
+    "unsupportedProviderDescription": "プロバイダー \"{{provider}}\" はまだプレイグラウンドのプレーヤーでサポートされていません。",
+    "generateErrorTitle": "音声生成エラー",
+    "generateErrorDescription": "TTS音声の生成中に問題が発生しました。",
+    "sampleText": "Insert sample text",
+    "playHelper": "Play uses your selected provider, voice, and speed.",
+    "playDisabledNoText": "Enter text to enable Play.",
+    "playDisabledTtsOff": "Enable text-to-speech above to play audio.",
+    "stopDisabled": "Stop activates after audio starts."
   }
 }

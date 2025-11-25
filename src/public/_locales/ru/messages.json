@@ -30,9 +30,9 @@
     "message": "Process with tldw_server (don’t store)"
   },
   "contextSidebarOpening": {
-    "message": "Opening sidebar..."
+    "message": "Открываем боковую панель..."
   },
   "contextSaveToNotesOpeningSidebar": {
-    "message": "Opening sidebar to save note..."
+    "message": "Открываем боковую панель, чтобы сохранить заметку..."
   }
 }

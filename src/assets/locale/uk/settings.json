@@ -668,5 +668,22 @@
     "emptyExample1": "Define a writing coach, lore expert, or coding assistant you can reuse across chats.",
     "emptyExample2": "Give each character a clear description and behavior so their responses stay consistent.",
     "emptyPrimaryCta": "Create character"
+  },
+  "systemNotifications": {
+    "importSuccess": "Дані успішно імпортовано",
+    "importError": "Помилка імпорту",
+    "syncSuccess": "Дані Firefox синхронізовано, повторювати не потрібно",
+    "syncError": "Не вдалося синхронізувати дані Firefox",
+    "invalidImage": "Будь ласка, виберіть коректний файл зображення"
+  },
+  "prompts": {
+    "enterPrompt": "Введіть підказку.",
+    "enterPromptPlaceholder": "Введіть підказку.",
+    "enterFollowUpPrompt": "Введіть наступну підказку.",
+    "enterFollowUpPromptPlaceholder": "Введіть наступну підказку.",
+    "privateModeDescription": "Приватний режим Firefox не підтримує збереження в IndexedDB. Додайте підказки у звичайному вікні."
+  },
+  "models": {
+    "privateModeDescription": "Приватний режим Firefox не підтримує збереження в IndexedDB. Додайте власну модель у звичайному вікні."
   }
 }

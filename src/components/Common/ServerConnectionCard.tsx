@@ -10,6 +10,7 @@ import {
 } from "@/hooks/useConnectionState"
 import { ConnectionPhase } from "@/types/connection"
 import { useAntdNotification } from "@/hooks/useAntdNotification"
+import { focusComposer } from "@/hooks/useComposerFocus"
 
 type Props = {
   onOpenSettings?: () => void
@@ -237,11 +238,17 @@ export const ServerConnectionCard: React.FC<Props> = ({
             { host: serverHost ?? "tldw_server" }
           )
         : statusVariant === "ok"
-          ? t(
-              "option:connectionCard.descriptionConnected",
-              "Connected to {{host}}. Start chatting in the main view or sidebar.",
-              { host: serverHost ?? "tldw_server" }
-            )
+          ? isCompact
+            ? t(
+                "option:connectionCard.descriptionConnectedCompact",
+                "Connected to {{host}}.",
+                { host: serverHost ?? "tldw_server" }
+              )
+            : t(
+                "option:connectionCard.descriptionConnected",
+                "Connected to {{host}}. Start chatting in the main view or sidebar.",
+                { host: serverHost ?? "tldw_server" }
+              )
           : t(
               "option:connectionCard.descriptionError",
               "Add or update your API key in Settings → tldw server, then retry. Double-check the server URL and that your browser can reach it.",
@@ -284,13 +291,10 @@ export const ServerConnectionCard: React.FC<Props> = ({
           onStartChat()
         } finally {
           // Also try to focus once the chat is visible
-          setTimeout(
-            () => window.dispatchEvent(new CustomEvent("tldw:focus-composer")),
-            0
-          )
+          setTimeout(() => focusComposer(), 0)
         }
       } else {
-        window.dispatchEvent(new CustomEvent("tldw:focus-composer"))
+        focusComposer()
       }
     } else if (statusVariant === "error") {
       handleOpenSettings()

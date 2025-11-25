@@ -142,8 +142,11 @@ export const useMessageOption = () => {
       const maxSize = 10 * 1024 * 1024
       if (file.size > maxSize) {
         notification.error({
-          message: "File Too Large",
-          description: "File size must be less than 10MB"
+          message: t("upload.fileTooLargeTitle", "File Too Large"),
+          description: t(
+            "upload.fileTooLargeDescription",
+            "File size must be less than 10MB"
+          )
         })
         return
       }
@@ -170,8 +173,11 @@ export const useMessageOption = () => {
     } catch (error) {
       console.error("Error uploading file:", error)
       notification.error({
-        message: "Upload Failed",
-        description: "Failed to upload file. Please try again."
+        message: t("upload.uploadFailedTitle", "Upload Failed"),
+        description: t(
+          "upload.uploadFailedDescription",
+          "Failed to upload file. Please try again."
+        )
       })
       throw error
     }

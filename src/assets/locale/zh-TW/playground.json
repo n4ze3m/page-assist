@@ -41,5 +41,23 @@
     "connectionFailedWithCode": "Connection failed (HTTP {{code}})",
     "connectionFailed": "Connection failed",
     "errorDetailsLabel": "Details:"
+  },
+  "errors": {
+    "privateModeDescription": "Firefox 隱私模式不支援儲存聊天。暫存聊天預設為開啟。後續會改進。"
+  },
+  "tts": {
+    "playErrorTitle": "錯誤",
+    "playErrorDescription": "播放音訊時發生錯誤",
+    "browserInfoTitle": "瀏覽器 TTS 使用系統音訊",
+    "browserInfoDescription": "瀏覽器 TTS 使用系統語音合成，不會產生音訊檔。請使用 ElevenLabs、OpenAI TTS 或 tldw 以查看曲目清單與播放器。",
+    "unsupportedProviderTitle": "不支援的 TTS 提供者",
+    "unsupportedProviderDescription": "提供者「{{provider}}」尚未在 Playground 播放器中支援。",
+    "generateErrorTitle": "產生音訊時出錯",
+    "generateErrorDescription": "產生 TTS 音訊時發生問題。",
+    "sampleText": "Insert sample text",
+    "playHelper": "Play uses your selected provider, voice, and speed.",
+    "playDisabledNoText": "Enter text to enable Play.",
+    "playDisabledTtsOff": "Enable text-to-speech above to play audio.",
+    "stopDisabled": "Stop activates after audio starts."
   }
 }

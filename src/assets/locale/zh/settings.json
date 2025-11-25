@@ -672,5 +672,22 @@
     "emptyExample1": "Define a writing coach, lore expert, or coding assistant you can reuse across chats.",
     "emptyExample2": "Give each character a clear description and behavior so their responses stay consistent.",
     "emptyPrimaryCta": "Create character"
+  },
+  "systemNotifications": {
+    "importSuccess": "数据导入成功",
+    "importError": "导入出错",
+    "syncSuccess": "Firefox 数据已同步，无需再次执行",
+    "syncError": "Firefox 数据同步失败",
+    "invalidImage": "请选择有效的图片文件"
+  },
+  "prompts": {
+    "enterPrompt": "请输入提示词。",
+    "enterPromptPlaceholder": "请输入提示词。",
+    "enterFollowUpPrompt": "请输入后续提示。",
+    "enterFollowUpPromptPlaceholder": "请输入后续提示。",
+    "privateModeDescription": "Firefox 隐私模式不支持将数据保存到 IndexedDB。请在普通窗口添加提示词。"
+  },
+  "models": {
+    "privateModeDescription": "Firefox 隐私模式不支持将数据保存到 IndexedDB。请在普通窗口添加自定义模型。"
   }
 }

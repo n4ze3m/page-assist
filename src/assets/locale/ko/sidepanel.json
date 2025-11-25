@@ -5,5 +5,9 @@
   },
   "toolbar": {
     "ragSearch": "RAG Search"
+  },
+  "errors": {
+    "privateModeTitle": "tldw Assistant에서 데이터를 저장할 수 없습니다",
+    "privateModeDescription": "Firefox 사생활 모드에서는 채팅 기록을 저장할 수 없습니다. 기본적으로 임시 채팅이 활성화되어 있습니다. 곧 개선될 예정입니다."
   }
 }

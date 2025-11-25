@@ -24,6 +24,31 @@ export const SystemSettings = () => {
   const { clearChat } = useMessageOption()
   const { increase, decrease, scale } = useFontSize()
   const notification = useAntdNotification()
+  const quotaFriendlyMessage = t(
+    "settings:storage.quotaFriendlyMessage",
+    "Too many settings writes in a short period; please wait a few seconds and try again."
+  )
+
+  const showStorageError = (error: unknown) => {
+    const msg =
+      error instanceof Error ? error.message : typeof error === "string" ? error : ""
+    const quotaHit =
+      msg?.includes("MAX_WRITE_OPERATIONS_PER_MINUTE") ||
+      msg?.includes("QUOTA_BYTES_PER_ITEM") ||
+      msg?.includes("QUOTA_BYTES")
+
+    notification.error({
+      message: quotaHit
+        ? t("settings:storage.quotaTitle", "Storage limit reached")
+        : t("settings:storage.writeError", "Could not save settings"),
+      description: quotaHit
+        ? quotaFriendlyMessage
+        : t(
+            "settings:storage.writeErrorDescription",
+            "We couldn't save your settings. Please try again shortly."
+          )
+    })
+  }
 
   const [webuiBtnSidePanel, setWebuiBtnSidePanel] = useStorage(
     "webuiBtnSidePanel",
@@ -75,7 +100,10 @@ export const SystemSettings = () => {
       })
 
       notification.success({
-        message: "Imported data successfully"
+        message: t(
+          "settings:systemNotifications.importSuccess",
+          "Imported data successfully"
+        )
       })
 
       setTimeout(() => { 
@@ -85,7 +113,10 @@ export const SystemSettings = () => {
     onError: (error) => {
       console.error("Import error:", error)
       notification.error({
-        message: "Import error"
+        message: t(
+          "settings:systemNotifications.importError",
+          "Import error"
+        )
       })
     }
   })
@@ -94,14 +125,19 @@ export const SystemSettings = () => {
     mutationFn: firefoxSyncDataForPrivateMode,
     onSuccess: () => {
       notification.success({
-        message:
+        message: t(
+          "settings:systemNotifications.syncSuccess",
           "Firefox data synced successfully, You don't need to do this again"
+        )
       })
     },
     onError: (error) => {
       console.log(error)
       notification.error({
-        message: "Firefox data sync failed"
+        message: t(
+          "settings:systemNotifications.syncError",
+          "Firefox data sync failed"
+        )
       })
     }
   })
@@ -114,7 +150,10 @@ export const SystemSettings = () => {
       try {
         if (!file.type.startsWith("image/")) {
           notification.error({
-            message: "Please select a valid image file"
+            message: t(
+              "settings:systemNotifications.invalidImage",
+              "Please select a valid image file"
+            )
           })
           return
         }
@@ -129,18 +168,21 @@ export const SystemSettings = () => {
             message: t("settings:chatBackground.tooLargeTitle", "Image too large"),
             description: t(
               "settings:chatBackground.tooLargeDescription",
-              "Please choose a smaller image (under 3 MB) for the chat background."
+              "Please choose a smaller image (around 3 MB or less) for the chat background. Try compressing or resizing it and upload again."
             )
           })
           return
         }
 
-        setChatBackgroundImage(base64String)
+        try {
+          await Promise.resolve(setChatBackgroundImage(base64String))
+        } catch (err) {
+          console.error("Storage error while saving background image:", err)
+          showStorageError(err)
+        }
       } catch (error) {
         console.error("Error uploading image:", error)
-        notification.error({
-          message: "Failed to upload image"
-        })
+        showStorageError(error)
       }
     }
   }

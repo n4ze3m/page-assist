@@ -102,6 +102,11 @@
     "providerDetailsTitle": "Provider details",
     "inputLabel": "Enter some text to hear it spoken.",
     "inputPlaceholder": "Type or paste text here, then use Play to listen.",
+    "sampleText": "Insert sample text",
+    "playHelper": "Play uses your selected provider, voice, and speed.",
+    "playDisabledNoText": "Enter text to enable Play.",
+    "playDisabledTtsOff": "Enable text-to-speech above to play audio.",
+    "stopDisabled": "Stop activates after audio starts.",
     "play": "Play",
     "playing": "Playing…",
     "stop": "Stop",
@@ -112,7 +117,15 @@
     "speechErrorTitle": "Dictation failed",
     "speechErrorBody": "Transcription request failed. Check tldw server health.",
     "speechNoText": "The transcription did not return any text.",
-    "speechMicError": "Unable to access your microphone. Check browser permissions and try again."
+    "speechMicError": "Unable to access your microphone. Check browser permissions and try again.",
+    "playErrorTitle": "Error",
+    "playErrorDescription": "Something went wrong while trying to play the audio",
+    "browserInfoTitle": "Browser TTS uses system audio",
+    "browserInfoDescription": "Browser TTS plays using your system synthesizer and does not expose an audio file. Use ElevenLabs, OpenAI TTS, or tldw to see a track list and player.",
+    "unsupportedProviderTitle": "Unsupported TTS provider",
+    "unsupportedProviderDescription": "The provider \"{{provider}}\" is not yet supported in the playground player.",
+    "generateErrorTitle": "Error generating audio",
+    "generateErrorDescription": "Something went wrong while generating TTS audio."
   },
   "tldwState": {
     "title": "Waiting for your tldw server",
@@ -139,5 +152,8 @@
     "connectionFailedWithCode": "Connection failed (HTTP {{code}})",
     "connectionFailed": "Connection failed",
     "errorDetailsLabel": "Details:"
+  },
+  "errors": {
+    "privateModeDescription": "Firefox Private Mode does not support saving chat. Temporary chat is enabled by default. More fixes coming soon."
   }
 }

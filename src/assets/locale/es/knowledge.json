@@ -1,41 +1,42 @@
 {
-    "addBtn": "Agregar Nuevo Conocimiento",
-    "columns": {
-        "title": "Título",
-        "status": "Estado",
-        "embeddings": "Modelo de Embedding",
-        "createdAt": "Creado",
-        "action": "Acciones"
+  "addBtn": "Agregar Nuevo Conocimiento",
+  "columns": {
+    "title": "Título",
+    "status": "Estado",
+    "embeddings": "Modelo de Embedding",
+    "createdAt": "Creado",
+    "action": "Acciones"
+  },
+  "expandedColumns": {
+    "name": "Nombre"
+  },
+  "confirm": {
+    "delete": "¿Esta seguro que desea borrar este conocimiento?"
+  },
+  "deleteSuccess": "Conocimiento borrado",
+  "status": {
+    "pending": "Pendiente",
+    "finished": "Finalizado",
+    "processing": "Procesando",
+    "failed": "Fallido"
+  },
+  "addKnowledge": "Agregar Conocimiento",
+  "updateKnowledge": "Actualizar Conocimiento",
+  "form": {
+    "title": {
+      "label": "Título del Conocimiento",
+      "placeholder": "Ingresar un título de conocimiento",
+      "required": "El Título de conocimiento es obligatorio"
     },
-    "expandedColumns": {
-        "name": "Nombre"
+    "uploadFile": {
+      "label": "Subir un Archivo",
+      "uploadText": "Arraste y suelte un archivo aquí o haga click para subirlo",
+      "uploadHint": "Tipos de archivo soportados: .pdf, .csv, .txt, .md, .docx",
+      "required": "El archivo es obligatorio"
     },
-    "confirm": {
-        "delete": "¿Esta seguro que desea borrar este conocimiento?"
-    },
-    "deleteSuccess": "Conocimiento borrado",
-    "status": {
-        "pending": "Pendiente",
-        "finished": "Finalizado",
-        "processing": "Procesando",
-        "failed": "Fallido"
-    },
-    "addKnowledge": "Agregar Conocimiento",
-    "updateKnowledge": "Actualizar Conocimiento",
-    "form": {
-        "title": {
-            "label": "Título del Conocimiento",
-            "placeholder": "Ingresar un título de conocimiento",
-            "required": "El Título de conocimiento es obligatorio"
-        },
-        "uploadFile": {
-            "label": "Subir un Archivo",
-            "uploadText": "Arraste y suelte un archivo aquí o haga click para subirlo",
-            "uploadHint": "Tipos de archivo soportados: .pdf, .csv, .txt, .md, .docx",
-            "required": "El archivo es obligatorio"
-        },
-        "submit": "Enviar",
-        "success": "Conocimiento agregado exitosamente"
-    },
-    "noEmbeddingModel": "Por favor, agregue un modelo de embedding de la página de configuraciones de RAG primero"
+    "submit": "Enviar",
+    "success": "Conocimiento agregado exitosamente"
+  },
+  "noEmbeddingModel": "Por favor, agregue un modelo de embedding de la página de configuraciones de RAG primero",
+  "privateModeDescription": "El modo privado de Firefox no admite guardar datos en IndexedDB. Añade una base de conocimiento desde una ventana normal."
 }

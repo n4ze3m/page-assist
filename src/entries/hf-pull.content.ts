@@ -20,11 +20,11 @@ export default defineContentScript({
             "[tldw] Page send request rejected by tldw_server",
             resp
           )
-          alert(
-            `[tldw] Failed to send this page to tldw_server: ${
-              resp.error || `status ${resp.status ?? "unknown"}`
-            }. Check Settings → tldw server and try again.`
-          )
+          const msg =
+            resp.error && resp.error.length <= 140
+              ? `[tldw] Failed to send this page to tldw_server: ${resp.error}. Check Settings → tldw server and try again.`
+              : "[tldw] Failed to send this page to tldw_server. Check Settings → tldw server and try again."
+          alert(msg)
           return
         }
 

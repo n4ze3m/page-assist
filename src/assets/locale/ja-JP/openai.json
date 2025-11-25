@@ -1,106 +1,107 @@
 {
-    "settings": "OpenAI互換API",
-    "heading": "OpenAI互換API",
-    "subheading": "OpenAI API互換プロバイダーの管理と設定はこちらで行います。",
-    "addBtn": "プロバイダーを追加",
-    "table": {
-        "name": "プロバイダー名",
-        "baseUrl": "ベースURL",
-        "actions": "アクション"
+  "settings": "OpenAI互換API",
+  "heading": "OpenAI互換API",
+  "subheading": "OpenAI API互換プロバイダーの管理と設定はこちらで行います。",
+  "addBtn": "プロバイダーを追加",
+  "table": {
+    "name": "プロバイダー名",
+    "baseUrl": "ベースURL",
+    "actions": "アクション"
+  },
+  "modal": {
+    "titleAdd": "新規プロバイダーを追加",
+    "name": {
+      "label": "プロバイダー名",
+      "required": "プロバイダー名は必須です。",
+      "placeholder": "プロバイダー名を入力"
+    },
+    "baseUrl": {
+      "label": "ベースURL",
+      "help": "OpenAI APIプロバイダーのベースURL。例：(http://localhost:1234/v1)",
+      "required": "ベースURLは必須です。",
+      "placeholder": "ベースURLを入力"
+    },
+    "apiKey": {
+      "label": "APIキー",
+      "required": "APIキーは必須です。",
+      "placeholder": "APIキーを入力"
+    },
+    "submit": "保存",
+    "update": "更新",
+    "deleteConfirm": "このプロバイダーを削除してもよろしいですか？",
+    "model": {
+      "title": "モデルリスト",
+      "subheading": "このプロバイダーで使用したいチャットモデルを選択してください。",
+      "success": "新しいモデルが正常に追加されました。"
+    },
+    "tipLMStudio": "tldw Browser_AssistantはLM Studioにロードしたモデルを自動的に取得します。手動で追加する必要はありません。"
+  },
+  "addSuccess": "プロバイダーが正常に追加されました。",
+  "deleteSuccess": "プロバイダーが正常に削除されました。",
+  "updateSuccess": "プロバイダーが正常に更新されました。",
+  "delete": "削除",
+  "edit": "編集",
+  "newModel": "プロバイダーにモデルを追加",
+  "noNewModel": "LMStudio, Ollama, Llamafile,の場合、動的に取得します。手動での追加は不要です。",
+  "searchModel": "モデルを検索",
+  "selectAll": "すべて選択",
+  "save": "保存",
+  "saving": "保存中...",
+  "manageModels": {
+    "columns": {
+      "name": "モデル名",
+      "model_type": "モデルタイプ",
+      "model_id": "モデルID",
+      "provider": "プロバイダー名",
+      "actions": "アクション",
+      "nickname": "モデルのニックネーム"
+    },
+    "tooltip": {
+      "delete": "削除"
+    },
+    "confirm": {
+      "delete": "このモデルを削除してもよろしいですか？"
     },
     "modal": {
-        "titleAdd": "新規プロバイダーを追加",
+      "title": "カスタムモデルを追加",
+      "form": {
         "name": {
-            "label": "プロバイダー名",
-            "required": "プロバイダー名は必須です。",
-            "placeholder": "プロバイダー名を入力"
+          "label": "モデルID",
+          "placeholder": "llama3.2",
+          "required": "モデルIDは必須です。"
         },
-        "baseUrl": {
-            "label": "ベースURL",
-            "help": "OpenAI APIプロバイダーのベースURL。例：(http://localhost:1234/v1)",
-            "required": "ベースURLは必須です。",
-            "placeholder": "ベースURLを入力"
+        "provider": {
+          "label": "プロバイダー",
+          "placeholder": "プロバイダーを選択",
+          "required": "プロバイダーは必須です。"
         },
-        "apiKey": {
-            "label": "APIキー",
-            "required": "APIキーは必須です。",
-            "placeholder": "APIキーを入力"
-        },
-        "submit": "保存",
-        "update": "更新",
-        "deleteConfirm": "このプロバイダーを削除してもよろしいですか？",
-        "model": {
-            "title": "モデルリスト",
-            "subheading": "このプロバイダーで使用したいチャットモデルを選択してください。",
-            "success": "新しいモデルが正常に追加されました。"
-        },
-        "tipLMStudio": "tldw Browser_AssistantはLM Studioにロードしたモデルを自動的に取得します。手動で追加する必要はありません。"
-    },
-    "addSuccess": "プロバイダーが正常に追加されました。",
-    "deleteSuccess": "プロバイダーが正常に削除されました。",
-    "updateSuccess": "プロバイダーが正常に更新されました。",
-    "delete": "削除",
-    "edit": "編集",
-    "newModel": "プロバイダーにモデルを追加",
-    "noNewModel": "LMStudio, Ollama, Llamafile,の場合、動的に取得します。手動での追加は不要です。",
-    "searchModel": "モデルを検索",
-    "selectAll": "すべて選択",
-    "save": "保存",
-    "saving": "保存中...",
-    "manageModels": {
-        "columns": {
-            "name": "モデル名",
-            "model_type": "モデルタイプ",
-            "model_id": "モデルID",
-            "provider": "プロバイダー名",
-            "actions": "アクション",
-            "nickname": "モデルのニックネーム"
-        },
-        "tooltip": {
-            "delete": "削除"
-        },
-        "confirm": {
-            "delete": "このモデルを削除してもよろしいですか？"
-        },
-        "modal": {
-            "title": "カスタムモデルを追加",
-            "form": {
-                "name": {
-                    "label": "モデルID",
-                    "placeholder": "llama3.2",
-                    "required": "モデルIDは必須です。"
-                },
-                "provider": {
-                    "label": "プロバイダー",
-                    "placeholder": "プロバイダーを選択",
-                    "required": "プロバイダーは必須です。"
-                },
-                "type": {
-                    "label": "モデルタイプ"
-                }
-            }
+        "type": {
+          "label": "モデルタイプ"
         }
-    },
-    "noModelFound": "モデルが見つかりません。正しいベースURLとAPIキーを持つプロバイダーを追加したことを確認してください。",
-    "radio": {
-        "chat": "チャットモデル",
-        "embedding": "埋め込みモデル",
-        "chatInfo": "はチャット完了と会話生成に使用されます",
-        "embeddingInfo": "はRAGやその他の意味検索関連タスクに使用されます。"
-    },
-    "nicknameModal": {
-        "title": "モデルのニックネームを追加/編集",
-        "form": {
-            "modelName": {
-                "label": "モデル名",
-                "placeholder": "モデル名を入力",
-                "required": "モデル名は必須です。"
-            },
-            "modelAvatar": {
-                "label": "モデルのアバター",
-                "placeholder": "モデルのアバターを入力",
-                "help": "モデルのアバターのURLを入力してください。この画像はチャットウィンドウに表示されます。"
-            }
-        }
+      }
     }
+  },
+  "noModelFound": "モデルが見つかりません。正しいベースURLとAPIキーを持つプロバイダーを追加したことを確認してください。",
+  "radio": {
+    "chat": "チャットモデル",
+    "embedding": "埋め込みモデル",
+    "chatInfo": "はチャット完了と会話生成に使用されます",
+    "embeddingInfo": "はRAGやその他の意味検索関連タスクに使用されます。"
+  },
+  "nicknameModal": {
+    "title": "モデルのニックネームを追加/編集",
+    "form": {
+      "modelName": {
+        "label": "モデル名",
+        "placeholder": "モデル名を入力",
+        "required": "モデル名は必須です。"
+      },
+      "modelAvatar": {
+        "label": "モデルのアバター",
+        "placeholder": "モデルのアバターを入力",
+        "help": "モデルのアバターのURLを入力してください。この画像はチャットウィンドウに表示されます。"
+      }
+    }
+  },
+  "privateModeDescription": "Firefox のプライベートモードは IndexedDB への保存をサポートしません。通常ウィンドウで OpenAI 設定を追加してください。"
 }

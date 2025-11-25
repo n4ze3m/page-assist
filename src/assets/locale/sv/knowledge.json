@@ -1,41 +1,42 @@
 {
-    "addBtn": "Lägg till ny kunskap",
-    "columns": {
-        "title": "Titel",
-        "status": "Status",
-        "embeddings": "Inbäddningsmodell",
-        "createdAt": "Skapad den",
-        "action": "Åtgärder"
+  "addBtn": "Lägg till ny kunskap",
+  "columns": {
+    "title": "Titel",
+    "status": "Status",
+    "embeddings": "Inbäddningsmodell",
+    "createdAt": "Skapad den",
+    "action": "Åtgärder"
+  },
+  "expandedColumns": {
+    "name": "Namn"
+  },
+  "confirm": {
+    "delete": "Är du säker på att du vill ta bort denna kunskap?"
+  },
+  "deleteSuccess": "Kunskap raderades framgångsrikt",
+  "status": {
+    "pending": "Väntar",
+    "finished": "Klar",
+    "processing": "Bearbetar",
+    "failed": "Misslyckades"
+  },
+  "addKnowledge": "Lägg till kunskap",
+  "updateKnowledge": "Lägg till källa",
+  "form": {
+    "title": {
+      "label": "Kunskapstitel",
+      "placeholder": "Ange kunskapstitel",
+      "required": "Kunskapstitel är obligatorisk"
     },
-    "expandedColumns": {
-        "name": "Namn"
+    "uploadFile": {
+      "label": "Ladda upp fil",
+      "uploadText": "Dra och släpp en fil här eller klicka för att ladda upp",
+      "uploadHint": "Stödda filtyper: .pdf, .csv, .txt, .md, .docx",
+      "required": "Fil är obligatorisk"
     },
-    "confirm": {
-        "delete": "Är du säker på att du vill ta bort denna kunskap?"
-    },
-    "deleteSuccess": "Kunskap raderades framgångsrikt",
-    "status": {
-        "pending": "Väntar",
-        "finished": "Klar",
-        "processing": "Bearbetar",
-        "failed": "Misslyckades"
-    },
-    "addKnowledge": "Lägg till kunskap",
-    "updateKnowledge": "Lägg till källa",
-    "form": {
-        "title": {
-            "label": "Kunskapstitel",
-            "placeholder": "Ange kunskapstitel",
-            "required": "Kunskapstitel är obligatorisk"
-        },
-        "uploadFile": {
-            "label": "Ladda upp fil",
-            "uploadText": "Dra och släpp en fil här eller klicka för att ladda upp",
-            "uploadHint": "Stödda filtyper: .pdf, .csv, .txt, .md, .docx",
-            "required": "Fil är obligatorisk"
-        },
-        "submit": "Skicka in",
-        "success": "Kunskap tillagd framgångsrikt"
-    },
-    "noEmbeddingModel": "Vänligen lägg till en inbäddningsmodell från sidan för RAG-inställningar först"
+    "submit": "Skicka in",
+    "success": "Kunskap tillagd framgångsrikt"
+  },
+  "noEmbeddingModel": "Vänligen lägg till en inbäddningsmodell från sidan för RAG-inställningar först",
+  "privateModeDescription": "Firefox privat läge stöder inte lagring i IndexedDB. Lägg till en kunskapsbas från ett vanligt fönster."
 }

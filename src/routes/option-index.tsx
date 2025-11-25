@@ -8,6 +8,7 @@ import {
   useConnectionState
 } from "@/hooks/useConnectionState"
 import { ConnectionPhase } from "@/types/connection"
+import { useFocusComposerOnConnect } from "@/hooks/useComposerFocus"
 import OptionLayout from "~/components/Layouts/Layout"
 import { Playground } from "~/components/Option/Playground/Playground"
 
@@ -22,19 +23,7 @@ const OptionIndex = () => {
     void checkOnce()
   }, [checkOnce])
 
-  const previousPhaseRef = React.useRef<ConnectionPhase | null>(null)
-
-  React.useEffect(() => {
-    if (
-      previousPhaseRef.current !== ConnectionPhase.CONNECTED &&
-      phase === ConnectionPhase.CONNECTED
-    ) {
-      setTimeout(() => {
-        window.dispatchEvent(new CustomEvent("tldw:focus-composer"))
-      }, 0)
-    }
-    previousPhaseRef.current = phase
-  }, [phase])
+  useFocusComposerOnConnect(phase as ConnectionPhase | null)
 
   const showOnboarding = phase !== ConnectionPhase.CONNECTED
 

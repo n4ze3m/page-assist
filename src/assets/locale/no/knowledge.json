@@ -1,41 +1,42 @@
 {
-    "addBtn": "Legg Til Ny Kunnskap",
-    "columns": {
-        "title": "Tittel",
-        "status": "Status",
-        "embeddings": "Embedding Modell",
-        "createdAt": "Opprettet På",
-        "action": "Handlinger"
+  "addBtn": "Legg Til Ny Kunnskap",
+  "columns": {
+    "title": "Tittel",
+    "status": "Status",
+    "embeddings": "Embedding Modell",
+    "createdAt": "Opprettet På",
+    "action": "Handlinger"
+  },
+  "expandedColumns": {
+    "name": "Navn"
+  },
+  "confirm": {
+    "delete": "Er du sikker på at du vil slette denne kunnskapen?"
+  },
+  "deleteSuccess": "Kunnskap slettet med suksess",
+  "status": {
+    "pending": "Venter",
+    "finished": "Ferdig",
+    "processing": "Behandler",
+    "failed": "Mislyktes"
+  },
+  "addKnowledge": "Legg Til Kunnskap",
+  "updateKnowledge": "Legg Til Kilde",
+  "form": {
+    "title": {
+      "label": "Kunnskapstittel",
+      "placeholder": "Skriv inn kunnskapstittel",
+      "required": "Kunnskapstittel er nødvendig"
     },
-    "expandedColumns": {
-        "name": "Navn"
+    "uploadFile": {
+      "label": "Last Opp Filer",
+      "uploadText": "Dra og slipp filen her og klikk for å laste opp",
+      "uploadHint": "Støttede filtyper: .pdf, .csv, .txt, .md, .docx",
+      "required": "En fil er nødvendig"
     },
-    "confirm": {
-        "delete": "Er du sikker på at du vil slette denne kunnskapen?"
-    },
-    "deleteSuccess": "Kunnskap slettet med suksess",
-    "status": {
-        "pending": "Venter",
-        "finished": "Ferdig",
-        "processing": "Behandler",
-        "failed": "Mislyktes"
-    },
-    "addKnowledge": "Legg Til Kunnskap",
-    "updateKnowledge": "Legg Til Kilde",
-    "form": {
-        "title": {
-            "label": "Kunnskapstittel",
-            "placeholder": "Skriv inn kunnskapstittel",
-            "required": "Kunnskapstittel er nødvendig"
-        },
-        "uploadFile": {
-            "label": "Last Opp Filer",
-            "uploadText": "Dra og slipp filen her og klikk for å laste opp",
-            "uploadHint": "Støttede filtyper: .pdf, .csv, .txt, .md, .docx",
-            "required": "En fil er nødvendig"
-        },
-        "submit": "Send Inn",
-        "success": "Kunnskap lagt til med suksess"
-    },
-    "noEmbeddingModel": "Vennligst legg til en embedding-modell fra RAG-innstillingene først"
+    "submit": "Send Inn",
+    "success": "Kunnskap lagt til med suksess"
+  },
+  "noEmbeddingModel": "Vennligst legg til en embedding-modell fra RAG-innstillingene først",
+  "privateModeDescription": "Firefox privatmodus støtter ikke lagring i IndexedDB. Legg til en kunnskapsbase fra et vanlig vindu."
 }

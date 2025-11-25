@@ -39,5 +39,23 @@
     "connectionFailedWithCode": "Connection failed (HTTP {{code}})",
     "connectionFailed": "Connection failed",
     "errorDetailsLabel": "Details:"
+  },
+  "errors": {
+    "privateModeDescription": "Режим приватного просмотра Firefox не поддерживает сохранение чатов. Временный чат включен по умолчанию. Скоро будут улучшения."
+  },
+  "tts": {
+    "playErrorTitle": "Ошибка",
+    "playErrorDescription": "Произошла ошибка при воспроизведении аудио",
+    "browserInfoTitle": "Браузерный TTS использует системный звук",
+    "browserInfoDescription": "Браузерный TTS использует системный синтезатор и не создаёт аудиофайл. Используйте ElevenLabs, OpenAI TTS или tldw, чтобы увидеть список треков и плеер.",
+    "unsupportedProviderTitle": "Неподдерживаемый TTS-провайдер",
+    "unsupportedProviderDescription": "Провайдер \"{{provider}}\" пока не поддерживается в плеере песочницы.",
+    "generateErrorTitle": "Ошибка генерации аудио",
+    "generateErrorDescription": "Произошла ошибка при генерации TTS-аудио.",
+    "sampleText": "Insert sample text",
+    "playHelper": "Play uses your selected provider, voice, and speed.",
+    "playDisabledNoText": "Enter text to enable Play.",
+    "playDisabledTtsOff": "Enable text-to-speech above to play audio.",
+    "stopDisabled": "Stop activates after audio starts."
   }
 }

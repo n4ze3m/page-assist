@@ -42,5 +42,23 @@
     "connectionFailedWithCode": "Connection failed (HTTP {{code}})",
     "connectionFailed": "Connection failed",
     "errorDetailsLabel": "Details:"
+  },
+  "errors": {
+    "privateModeDescription": "Firefox 사생활 모드에서는 채팅을 저장할 수 없습니다. 기본적으로 임시 채팅이 활성화되어 있습니다. 곧 개선될 예정입니다."
+  },
+  "tts": {
+    "playErrorTitle": "오류",
+    "playErrorDescription": "오디오를 재생하는 중 오류가 발생했습니다",
+    "browserInfoTitle": "브라우저 TTS는 시스템 오디오를 사용합니다",
+    "browserInfoDescription": "브라우저 TTS는 시스템 합성을 사용하므로 오디오 파일이 생성되지 않습니다. ElevenLabs, OpenAI TTS 또는 tldw를 사용해 트랙 목록과 플레이어를 확인하세요.",
+    "unsupportedProviderTitle": "지원되지 않는 TTS 제공자",
+    "unsupportedProviderDescription": "\"{{provider}}\" 제공자는 아직 플레이그라운드 플레이어에서 지원되지 않습니다.",
+    "generateErrorTitle": "오디오 생성 오류",
+    "generateErrorDescription": "TTS 오디오 생성 중 문제가 발생했습니다.",
+    "sampleText": "Insert sample text",
+    "playHelper": "Play uses your selected provider, voice, and speed.",
+    "playDisabledNoText": "Enter text to enable Play.",
+    "playDisabledTtsOff": "Enable text-to-speech above to play audio.",
+    "stopDisabled": "Stop activates after audio starts."
   }
 }

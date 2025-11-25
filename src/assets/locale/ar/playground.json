@@ -40,5 +40,23 @@
     "connectionFailedWithCode": "Connection failed (HTTP {{code}})",
     "connectionFailed": "Connection failed",
     "errorDetailsLabel": "Details:"
+  },
+  "errors": {
+    "privateModeDescription": "لا يدعم وضع التصفح الخاص في فايرفوكس حفظ الدردشة. يتم تفعيل الدردشة المؤقتة افتراضيًا. تحسينات قادمة قريبًا."
+  },
+  "tts": {
+    "playErrorTitle": "خطأ",
+    "playErrorDescription": "حدث خطأ أثناء تشغيل الصوت",
+    "browserInfoTitle": "تحويل النص إلى كلام في المتصفح يستخدم صوت النظام",
+    "browserInfoDescription": "تحويل النص إلى كلام في المتصفح يشغَّل عبر مُركّب الصوت في النظام ولا يوفّر ملفًا صوتيًا. استخدم ElevenLabs أو OpenAI TTS أو tldw لعرض قائمة المقاطع ومشغّل.",
+    "unsupportedProviderTitle": "موفّر TTS غير مدعوم",
+    "unsupportedProviderDescription": "الموفّر \"{{provider}}\" غير مدعوم بعد في مشغل ساحة اللعب.",
+    "generateErrorTitle": "خطأ في إنشاء الصوت",
+    "generateErrorDescription": "حدث خطأ أثناء إنشاء صوت TTS.",
+    "sampleText": "Insert sample text",
+    "playHelper": "Play uses your selected provider, voice, and speed.",
+    "playDisabledNoText": "Enter text to enable Play.",
+    "playDisabledTtsOff": "Enable text-to-speech above to play audio.",
+    "stopDisabled": "Stop activates after audio starts."
   }
 }

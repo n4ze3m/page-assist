@@ -1,41 +1,42 @@
 {
-    "addBtn": "Neues Wissen hinzufügen",
-    "columns": {
-        "title": "Titel",
-        "status": "Status",
-        "embeddings": "Einbettungsmodell",
-        "createdAt": "Erstellt am",
-        "action": "Aktionen"
+  "addBtn": "Neues Wissen hinzufügen",
+  "columns": {
+    "title": "Titel",
+    "status": "Status",
+    "embeddings": "Einbettungsmodell",
+    "createdAt": "Erstellt am",
+    "action": "Aktionen"
+  },
+  "expandedColumns": {
+    "name": "Name"
+  },
+  "confirm": {
+    "delete": "Sind Sie sicher, dass Sie dieses Wissen löschen möchten?"
+  },
+  "deleteSuccess": "Wissen erfolgreich gelöscht",
+  "status": {
+    "pending": "Ausstehend",
+    "finished": "Abgeschlossen",
+    "processing": "In Bearbeitung",
+    "failed": "Fehlgeschlagen"
+  },
+  "addKnowledge": "Wissen hinzufügen",
+  "updateKnowledge": "Quelle hinzufügen",
+  "form": {
+    "title": {
+      "label": "Wissenstitel",
+      "placeholder": "Wissenstitel eingeben",
+      "required": "Wissenstitel ist erforderlich"
     },
-    "expandedColumns": {
-        "name": "Name"
+    "uploadFile": {
+      "label": "Datei hochladen",
+      "uploadText": "Ziehen Sie eine Datei hierher oder klicken Sie zum Hochladen",
+      "uploadHint": "Unterstützte Dateitypen: .pdf, .csv, .txt, .md, .docx",
+      "required": "Datei ist erforderlich"
     },
-    "confirm": {
-        "delete": "Sind Sie sicher, dass Sie dieses Wissen löschen möchten?"
-    },
-    "deleteSuccess": "Wissen erfolgreich gelöscht",
-    "status": {
-        "pending": "Ausstehend",
-        "finished": "Abgeschlossen",
-        "processing": "In Bearbeitung",
-        "failed": "Fehlgeschlagen"
-    },
-    "addKnowledge": "Wissen hinzufügen",
-    "updateKnowledge": "Quelle hinzufügen",
-    "form": {
-        "title": {
-            "label": "Wissenstitel",
-            "placeholder": "Wissenstitel eingeben",
-            "required": "Wissenstitel ist erforderlich"
-        },
-        "uploadFile": {
-            "label": "Datei hochladen",
-            "uploadText": "Ziehen Sie eine Datei hierher oder klicken Sie zum Hochladen",
-            "uploadHint": "Unterstützte Dateitypen: .pdf, .csv, .txt, .md, .docx",
-            "required": "Datei ist erforderlich"
-        },
-        "submit": "Absenden",
-        "success": "Wissen erfolgreich hinzugefügt"
-    },
-    "noEmbeddingModel": "Bitte fügen Sie zuerst ein Einbettungsmodell von der RAG-Einstellungsseite hinzu"
+    "submit": "Absenden",
+    "success": "Wissen erfolgreich hinzugefügt"
+  },
+  "noEmbeddingModel": "Bitte fügen Sie zuerst ein Einbettungsmodell von der RAG-Einstellungsseite hinzu",
+  "privateModeDescription": "Der Firefox-Privatmodus unterstützt kein Speichern in IndexedDB. Bitte fügen Sie eine Wissensbasis in einem normalen Fenster hinzu."
 }

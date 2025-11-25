@@ -116,6 +116,23 @@
   color: #9ca3af;
 }
 
+.focus-ring:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+
+.focus-ring.ant-switch:focus-visible {
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.35);
+}
+
+.focus-ring.ant-select-focused .ant-select-selector,
+.focus-ring .ant-select-selector:focus-visible {
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.35) !important;
+  border-color: #2563eb !important;
+  border-radius: 8px !important;
+}
+
 /* Hide scrollbar for Chrome, Safari and Opera */
 .no-scrollbar::-webkit-scrollbar {
   display: none;

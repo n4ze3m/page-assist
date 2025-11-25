@@ -1,5 +1,17 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { Button, Form, Input, Modal, Skeleton, Table, Tag, Tooltip, Select, Alert } from "antd"
+import {
+  Button,
+  Form,
+  Input,
+  Modal,
+  Skeleton,
+  Table,
+  Tag,
+  Tooltip,
+  Select,
+  Alert,
+  Checkbox
+} from "antd"
 import type { InputRef } from "antd"
 import React from "react"
 import { tldwClient } from "@/services/tldw/TldwApiClient"
@@ -10,6 +22,7 @@ import { useNavigate } from "react-router-dom"
 import { useStorage } from "@plasmohq/storage/hook"
 import FeatureEmptyState from "@/components/Common/FeatureEmptyState"
 import { useAntdNotification } from "@/hooks/useAntdNotification"
+import { focusComposer } from "@/hooks/useComposerFocus"
 
 const MAX_NAME_LENGTH = 75
 const MAX_DESCRIPTION_LENGTH = 65
@@ -88,6 +101,83 @@ const validateAndCreateImageDataUrl = (value: unknown): string => {
   return `data:${mime};base64,${trimmed}`
 }
 
+const normalizeAlternateGreetings = (value: any): string[] => {
+  if (!value) return []
+  if (Array.isArray(value)) {
+    return value.map((v) => String(v)).filter((v) => v.trim().length > 0)
+  }
+  if (typeof value === "string") {
+    try {
+      const parsed = JSON.parse(value)
+      if (Array.isArray(parsed)) {
+        return parsed.map((v) => String(v)).filter((v) => v.trim().length > 0)
+      }
+    } catch {
+      // fall through to newline splitting
+    }
+    return value
+      .split(/\r?\n|;/)
+      .map((v) => v.trim())
+      .filter((v) => v.length > 0)
+  }
+  return []
+}
+
+const buildCharacterPayload = (values: any): Record<string, any> => {
+  const payload: Record<string, any> = {
+    name: values.name,
+    description: values.description,
+    personality: values.personality,
+    scenario: values.scenario,
+    system_prompt: values.system_prompt,
+    post_history_instructions: values.post_history_instructions,
+    first_message: values.greeting || values.first_message,
+    message_example: values.message_example,
+    creator_notes: values.creator_notes,
+    tags: Array.isArray(values.tags)
+      ? values.tags.filter((tag: string) => tag && tag.trim().length > 0)
+      : values.tags,
+    alternate_greetings: Array.isArray(values.alternate_greetings)
+      ? values.alternate_greetings.filter((g: string) => g && g.trim().length > 0)
+      : values.alternate_greetings,
+    creator: values.creator,
+    character_version: values.character_version,
+    extensions: values.extensions,
+    image_base64: values.image_base64
+  }
+
+  // Keep compatibility with mock server / older deployments
+  if (values.greeting) {
+    payload.greeting = values.greeting
+  }
+  if (values.avatar_url) {
+    payload.avatar_url = values.avatar_url
+  }
+
+  Object.keys(payload).forEach((key) => {
+    const v = payload[key]
+    if (
+      typeof v === "undefined" ||
+      v === null ||
+      (typeof v === "string" && v.trim().length === 0) ||
+      (Array.isArray(v) && v.length === 0)
+    ) {
+      delete payload[key]
+    }
+  })
+
+  // Parse extensions JSON when user provides structured data
+  if (typeof values.extensions === "string" && values.extensions.trim().length > 0) {
+    try {
+      payload.extensions = JSON.parse(values.extensions)
+    } catch {
+      payload.extensions = values.extensions
+    }
+  }
+
+  return payload
+}
+
 export const CharactersManager: React.FC = () => {
   const { t } = useTranslation(["settings", "common"])
   const qc = useQueryClient()
@@ -104,6 +194,13 @@ export const CharactersManager: React.FC = () => {
   const lastEditTriggerRef = React.useRef<HTMLButtonElement | null>(null)
   const createNameRef = React.useRef<InputRef>(null)
   const editNameRef = React.useRef<InputRef>(null)
+  const [searchTerm, setSearchTerm] = React.useState("")
+  const [filterTags, setFilterTags] = React.useState<string[]>([])
+  const [matchAllTags, setMatchAllTags] = React.useState(false)
+  const [showEditAdvanced, setShowEditAdvanced] = React.useState(false)
+
+  const hasFilters =
+    searchTerm.trim().length > 0 || (filterTags && filterTags.length > 0)
 
   const {
     data,
@@ -111,12 +208,55 @@ export const CharactersManager: React.FC = () => {
     error,
     refetch
   } = useQuery({
-    queryKey: ["tldw:listCharacters"],
+    queryKey: [
+      "tldw:listCharacters",
+      {
+        search: searchTerm.trim() || "",
+        tags: filterTags.slice().sort(),
+        matchAll: matchAllTags
+      }
+    ],
     queryFn: async () => {
       try {
         await tldwClient.initialize()
-        const list = await tldwClient.listCharacters()
-        return Array.isArray(list) ? list : []
+        const query = searchTerm.trim()
+        const tags = filterTags.filter((t) => t.trim().length > 0)
+        const hasSearch = query.length > 0
+        const hasTags = tags.length > 0
+
+        if (!hasSearch && !hasTags) {
+          const list = await tldwClient.listCharacters()
+          return Array.isArray(list) ? list : []
+        }
+
+        if (hasSearch && !hasTags) {
+          const list = await tldwClient.searchCharacters(query)
+          return Array.isArray(list) ? list : []
+        }
+
+        if (!hasSearch && hasTags) {
+          const list = await tldwClient.filterCharactersByTags(tags, {
+            match_all: matchAllTags
+          })
+          return Array.isArray(list) ? list : []
+        }
+
+        // When both search and tags are active, use server search then filter client-side by tags
+        const searched = await tldwClient.searchCharacters(query)
+        const normalized = Array.isArray(searched) ? searched : []
+        const filtered = normalized.filter((c: any) => {
+          const ct: string[] = Array.isArray(c?.tags)
+            ? c.tags
+            : typeof c?.tags === "string"
+              ? [c.tags]
+              : []
+          if (ct.length === 0) return false
+          if (matchAllTags) {
+            return tags.every((tag) => ct.includes(tag))
+          }
+          return tags.some((tag) => ct.includes(tag))
+        })
+        return filtered
       } catch (e: any) {
         notification.error({
           message: t("settings:manageCharacters.notification.error", {
@@ -141,8 +281,17 @@ export const CharactersManager: React.FC = () => {
     return Array.from(set.values())
   }, [data])
 
+  const tagFilterOptions = React.useMemo(
+    () =>
+      Array.from(
+        new Set([...(allTags || []), ...(filterTags || [])].filter(Boolean))
+      ).map((tag) => ({ label: tag, value: tag })),
+    [allTags, filterTags]
+  )
+
   const { mutate: createCharacter, isPending: creating } = useMutation({
-    mutationFn: async (values: any) => tldwClient.createCharacter(values),
+    mutationFn: async (values: any) =>
+      tldwClient.createCharacter(buildCharacterPayload(values)),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["tldw:listCharacters"] })
       setOpen(false)
@@ -187,7 +336,11 @@ export const CharactersManager: React.FC = () => {
   const { mutate: updateCharacter, isPending: updating } = useMutation({
     mutationFn: async (values: any) => {
       if (!editId) return
-      return await tldwClient.updateCharacter(editId, values, editVersion ?? undefined)
+      return await tldwClient.updateCharacter(
+        editId,
+        buildCharacterPayload(values),
+        editVersion ?? undefined
+      )
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["tldw:listCharacters"] })
@@ -241,13 +394,59 @@ export const CharactersManager: React.FC = () => {
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-end">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <Button
           type="primary"
           ref={newButtonRef}
           onClick={() => setOpen(true)}>
-          {t("settings:manageCharacters.addBtn", { defaultValue: "New character" })}
+          {t("settings:manageCharacters.addBtn", {
+            defaultValue: "New character"
+          })}
         </Button>
+        <div className="flex flex-1 flex-col gap-2 sm:flex-row sm:items-center sm:justify-end">
+          <Input
+            allowClear
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder={t(
+              "settings:manageCharacters.search.placeholder",
+              {
+                defaultValue: "Search characters"
+              }
+            )}
+            aria-label={t("settings:manageCharacters.search.label", {
+              defaultValue: "Search characters"
+            })}
+            className="sm:max-w-xs"
+          />
+          <div className="flex flex-col gap-1 sm:flex-row sm:items-center">
+            <Select
+              mode="multiple"
+              allowClear
+              className="min-w-[12rem]"
+              placeholder={t(
+                "settings:manageCharacters.filter.tagsPlaceholder",
+                {
+                  defaultValue: "Filter by tags"
+                }
+              )}
+              value={filterTags}
+              options={tagFilterOptions}
+              onChange={(value) =>
+                setFilterTags(
+                  (value as string[]).filter((v) => v && v.trim().length > 0)
+                )
+              }
+            />
+            <Checkbox
+              checked={matchAllTags}
+              onChange={(e) => setMatchAllTags(e.target.checked)}>
+              {t("settings:manageCharacters.filter.matchAll", {
+                defaultValue: "Match all tags"
+              })}
+            </Checkbox>
+          </div>
+        </div>
       </div>
       {status === "error" && (
         <div className="rounded-lg border border-red-100 bg-red-50 p-4 dark:border-red-400/40 dark:bg-red-500/10">
@@ -275,21 +474,53 @@ export const CharactersManager: React.FC = () => {
         </div>
       )}
       {status === "pending" && <Skeleton active paragraph={{ rows: 6 }} />}
-      {status === "success" && Array.isArray(data) && data.length === 0 && (
-        <FeatureEmptyState
-          title={t("settings:manageCharacters.emptyTitle", {
-            defaultValue: "No characters yet"
-          })}
-          description={t("settings:manageCharacters.emptyDescription", {
-            defaultValue:
-              "Create a reusable character with a name, description, and system prompt you can chat with."
-          })}
-          primaryActionLabel={t("settings:manageCharacters.emptyPrimaryCta", {
-            defaultValue: "Create character"
-          })}
-          onPrimaryAction={() => setOpen(true)}
-        />
-      )}
+      {status === "success" &&
+        Array.isArray(data) &&
+        data.length === 0 &&
+        !hasFilters && (
+          <FeatureEmptyState
+            title={t("settings:manageCharacters.emptyTitle", {
+              defaultValue: "No characters yet"
+            })}
+            description={t("settings:manageCharacters.emptyDescription", {
+              defaultValue:
+                "Create a reusable character with a name, description, and system prompt you can chat with."
+            })}
+            primaryActionLabel={t(
+              "settings:manageCharacters.emptyPrimaryCta",
+              {
+                defaultValue: "Create character"
+              }
+            )}
+            onPrimaryAction={() => setOpen(true)}
+          />
+        )}
+      {status === "success" &&
+        Array.isArray(data) &&
+        data.length === 0 &&
+        hasFilters && (
+          <div className="rounded-lg border border-dashed border-gray-300 bg-white p-4 text-sm text-gray-700 dark:border-gray-700 dark:bg-[#0f1115] dark:text-gray-200">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <span>
+                {t("settings:manageCharacters.filteredEmptyTitle", {
+                  defaultValue: "No characters match your filters"
+                })}
+              </span>
+              <Button
+                size="small"
+                onClick={() => {
+                  setSearchTerm("")
+                  setFilterTags([])
+                  setMatchAllTags(false)
+                  refetch()
+                }}>
+                {t("settings:manageCharacters.filter.clear", {
+                  defaultValue: "Clear filters"
+                })}
+              </Button>
+            </div>
+          </div>
+        )}
       {status === "success" && Array.isArray(data) && data.length > 0 && (
         <Table
           rowKey={(r: any) => r.id || r.slug || r.name}
@@ -393,28 +624,31 @@ export const CharactersManager: React.FC = () => {
                           defaultValue: "Chat as {{name}}",
                           name
                         })}
-                        onClick={() => {
-                          const id = record.id || record.slug || record.name
-                          setSelectedCharacter({
-                            id,
-                            name: record.name || record.title || record.slug,
-                            system_prompt:
-                              record.system_prompt ||
-                              record.systemPrompt ||
-                              record.instructions ||
-                              "",
-                            greeting:
-                            record.greeting ||
-                            record.first_message ||
-                            record.greet ||
-                            "",
-                            avatar_url:
-                              record.avatar_url ||
-                              validateAndCreateImageDataUrl(record.image_base64) ||
-                              ""
-                          })
-                          navigate("/")
-                        }}>
+	                        onClick={() => {
+	                          const id = record.id || record.slug || record.name
+	                          setSelectedCharacter({
+	                            id,
+	                            name: record.name || record.title || record.slug,
+	                            system_prompt:
+	                              record.system_prompt ||
+	                              record.systemPrompt ||
+	                              record.instructions ||
+	                              "",
+	                            greeting:
+	                              record.greeting ||
+	                              record.first_message ||
+	                              record.greet ||
+	                              "",
+	                            avatar_url:
+	                              record.avatar_url ||
+	                              validateAndCreateImageDataUrl(record.image_base64) ||
+	                              ""
+	                          })
+	                          navigate("/")
+	                          setTimeout(() => {
+	                            focusComposer()
+	                          }, 0)
+	                        }}>
                         <MessageCircle className="w-4 h-4" />
                         <span className="hidden sm:inline text-xs font-medium">
                           {chatLabel}
@@ -434,16 +668,39 @@ export const CharactersManager: React.FC = () => {
                           lastEditTriggerRef.current = e.currentTarget
                           setEditId(record.id || record.slug || record.name)
                           setEditVersion(record?.version ?? null)
+                          const ex = record.extensions
+                          const extensionsValue =
+                            ex && typeof ex === "object" && !Array.isArray(ex)
+                              ? JSON.stringify(ex, null, 2)
+                              : typeof ex === "string"
+                                ? ex
+                                : ""
                           editForm.setFieldsValue({
                             name: record.name,
                             description: record.description,
                             avatar_url: record.avatar_url,
-                          tags: record.tags,
-                          greeting: record.greeting || record.first_message || record.greet,
-                          system_prompt: record.system_prompt
-                        })
-                        setOpenEdit(true)
-                      }}>
+                            tags: record.tags,
+                            greeting:
+                              record.greeting ||
+                              record.first_message ||
+                              record.greet,
+                            system_prompt: record.system_prompt,
+                            personality: record.personality,
+                            scenario: record.scenario,
+                            post_history_instructions:
+                              record.post_history_instructions,
+                            message_example: record.message_example,
+                            creator_notes: record.creator_notes,
+                            alternate_greetings: normalizeAlternateGreetings(
+                              record.alternate_greetings
+                            ),
+                            creator: record.creator,
+                            character_version: record.character_version,
+                            extensions: extensionsValue,
+                            image_base64: record.image_base64
+                          })
+                          setOpenEdit(true)
+                        }}>
                         <Pen className="w-4 h-4" />
                         <span className="hidden sm:inline text-xs font-medium">
                           {editLabel}
@@ -645,6 +902,123 @@ export const CharactersManager: React.FC = () => {
               )}
             />
           </Form.Item>
+          <div className="space-y-3 rounded-md border border-dashed border-gray-300 p-3 dark:border-gray-700">
+            <Form.Item
+              name="personality"
+              label={t("settings:manageCharacters.form.personality.label", {
+                defaultValue: "Personality"
+              })}>
+              <Input.TextArea autoSize={{ minRows: 2, maxRows: 6 }} />
+            </Form.Item>
+            <Form.Item
+              name="scenario"
+              label={t("settings:manageCharacters.form.scenario.label", {
+                defaultValue: "Scenario"
+              })}>
+              <Input.TextArea autoSize={{ minRows: 2, maxRows: 6 }} />
+            </Form.Item>
+            <Form.Item
+              name="post_history_instructions"
+              label={t("settings:manageCharacters.form.postHistory.label", {
+                defaultValue: "Post-history instructions"
+              })}>
+              <Input.TextArea autoSize={{ minRows: 2, maxRows: 6 }} />
+            </Form.Item>
+            <Form.Item
+              name="message_example"
+              label={t(
+                "settings:manageCharacters.form.messageExample.label",
+                {
+                  defaultValue: "Message example"
+                }
+              )}>
+              <Input.TextArea autoSize={{ minRows: 2, maxRows: 6 }} />
+            </Form.Item>
+            <Form.Item
+              name="creator_notes"
+              label={t(
+                "settings:manageCharacters.form.creatorNotes.label",
+                {
+                  defaultValue: "Creator notes"
+                }
+              )}>
+              <Input.TextArea autoSize={{ minRows: 2, maxRows: 6 }} />
+            </Form.Item>
+            <Form.Item
+              name="alternate_greetings"
+              label={t(
+                "settings:manageCharacters.form.alternateGreetings.label",
+                {
+                  defaultValue: "Alternate greetings"
+                }
+              )}
+              help={t(
+                "settings:manageCharacters.form.alternateGreetings.help",
+                {
+                  defaultValue:
+                    "Optional alternate greetings to rotate between when starting chats."
+                }
+              )}>
+              <Select
+                mode="tags"
+                allowClear
+                placeholder={t(
+                  "settings:manageCharacters.form.alternateGreetings.placeholder",
+                  {
+                    defaultValue: "Add alternate greetings"
+                  }
+                )}
+              />
+            </Form.Item>
+            <Form.Item
+              name="creator"
+              label={t("settings:manageCharacters.form.creator.label", {
+                defaultValue: "Creator"
+              })}>
+              <Input />
+            </Form.Item>
+            <Form.Item
+              name="character_version"
+              label={t(
+                "settings:manageCharacters.form.characterVersion.label",
+                {
+                  defaultValue: "Character version"
+                }
+              )}>
+              <Input />
+            </Form.Item>
+            <Form.Item
+              name="extensions"
+              label={t("settings:manageCharacters.form.extensions.label", {
+                defaultValue: "Extensions (JSON)"
+              })}
+              help={t(
+                "settings:manageCharacters.form.extensions.help",
+                {
+                  defaultValue:
+                    "Optional JSON object with additional metadata; invalid JSON will be sent as raw text."
+                }
+              )}>
+              <Input.TextArea autoSize={{ minRows: 2, maxRows: 8 }} />
+            </Form.Item>
+            <Form.Item
+              name="image_base64"
+              label={t(
+                "settings:manageCharacters.form.imageBase64.label",
+                {
+                  defaultValue: "Avatar image (base64)"
+                }
+              )}
+              help={t(
+                "settings:manageCharacters.form.imageBase64.help",
+                {
+                  defaultValue:
+                    "Base64-encoded PNG/JPEG/GIF without the data:image/...;base64, prefix."
+                }
+              )}>
+              <Input.TextArea autoSize={{ minRows: 2, maxRows: 6 }} />
+            </Form.Item>
+          </div>
           <Button
             type="primary"
             htmlType="submit"
@@ -813,6 +1187,140 @@ export const CharactersManager: React.FC = () => {
               )}
             />
           </Form.Item>
+          <button
+            type="button"
+            className="mb-2 text-xs font-medium text-blue-600 underline-offset-2 hover:underline dark:text-blue-400"
+            onClick={() => setShowEditAdvanced((v) => !v)}>
+            {showEditAdvanced
+              ? t("settings:manageCharacters.advanced.hide", {
+                  defaultValue: "Hide advanced fields"
+                })
+              : t("settings:manageCharacters.advanced.show", {
+                  defaultValue: "Show advanced fields"
+                })}
+          </button>
+          {showEditAdvanced && (
+            <div className="space-y-3 rounded-md border border-dashed border-gray-300 p-3 dark:border-gray-700">
+              <Form.Item
+                name="personality"
+                label={t("settings:manageCharacters.form.personality.label", {
+                  defaultValue: "Personality"
+                })}>
+                <Input.TextArea autoSize={{ minRows: 2, maxRows: 6 }} />
+              </Form.Item>
+              <Form.Item
+                name="scenario"
+                label={t("settings:manageCharacters.form.scenario.label", {
+                  defaultValue: "Scenario"
+                })}>
+                <Input.TextArea autoSize={{ minRows: 2, maxRows: 6 }} />
+              </Form.Item>
+              <Form.Item
+                name="post_history_instructions"
+                label={t(
+                  "settings:manageCharacters.form.postHistory.label",
+                  {
+                    defaultValue: "Post-history instructions"
+                  }
+                )}>
+                <Input.TextArea autoSize={{ minRows: 2, maxRows: 6 }} />
+              </Form.Item>
+              <Form.Item
+                name="message_example"
+                label={t(
+                  "settings:manageCharacters.form.messageExample.label",
+                  {
+                    defaultValue: "Message example"
+                  }
+                )}>
+                <Input.TextArea autoSize={{ minRows: 2, maxRows: 6 }} />
+              </Form.Item>
+              <Form.Item
+                name="creator_notes"
+                label={t(
+                  "settings:manageCharacters.form.creatorNotes.label",
+                  {
+                    defaultValue: "Creator notes"
+                  }
+                )}>
+                <Input.TextArea autoSize={{ minRows: 2, maxRows: 6 }} />
+              </Form.Item>
+              <Form.Item
+                name="alternate_greetings"
+                label={t(
+                  "settings:manageCharacters.form.alternateGreetings.label",
+                  {
+                    defaultValue: "Alternate greetings"
+                  }
+                )}
+                help={t(
+                  "settings:manageCharacters.form.alternateGreetings.help",
+                  {
+                    defaultValue:
+                      "Optional alternate greetings to rotate between when starting chats."
+                  }
+                )}>
+                <Select
+                  mode="tags"
+                  allowClear
+                  placeholder={t(
+                    "settings:manageCharacters.form.alternateGreetings.placeholder",
+                    {
+                      defaultValue: "Add alternate greetings"
+                    }
+                  )}
+                />
+              </Form.Item>
+              <Form.Item
+                name="creator"
+                label={t("settings:manageCharacters.form.creator.label", {
+                  defaultValue: "Creator"
+                })}>
+                <Input />
+              </Form.Item>
+              <Form.Item
+                name="character_version"
+                label={t(
+                  "settings:manageCharacters.form.characterVersion.label",
+                  {
+                    defaultValue: "Character version"
+                  }
+                )}>
+                <Input />
+              </Form.Item>
+              <Form.Item
+                name="extensions"
+                label={t("settings:manageCharacters.form.extensions.label", {
+                  defaultValue: "Extensions (JSON)"
+                })}
+                help={t(
+                  "settings:manageCharacters.form.extensions.help",
+                  {
+                    defaultValue:
+                      "Optional JSON object with additional metadata; invalid JSON will be sent as raw text."
+                  }
+                )}>
+                <Input.TextArea autoSize={{ minRows: 2, maxRows: 8 }} />
+              </Form.Item>
+              <Form.Item
+                name="image_base64"
+                label={t(
+                  "settings:manageCharacters.form.imageBase64.label",
+                  {
+                    defaultValue: "Avatar image (base64)"
+                  }
+                )}
+                help={t(
+                  "settings:manageCharacters.form.imageBase64.help",
+                  {
+                    defaultValue:
+                      "Base64-encoded PNG/JPEG/GIF without the data:image/...;base64, prefix."
+                  }
+                )}>
+                <Input.TextArea autoSize={{ minRows: 2, maxRows: 6 }} />
+              </Form.Item>
+            </div>
+          )}
           <Button
             type="primary"
             htmlType="submit"

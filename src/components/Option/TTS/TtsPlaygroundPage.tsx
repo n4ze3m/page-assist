@@ -32,6 +32,8 @@ import { useTtsPlayground } from "@/hooks/useTtsPlayground"
 import { getModels, getVoices } from "@/services/elevenlabs"
 
 const { Text, Title, Paragraph } = Typography
+const SAMPLE_TEXT =
+  "Sample: Hi there, this is the TTS playground reading a short passage so you can preview voice and speed.";
 
 const OPENAI_TTS_MODELS = [
   { label: "tts-1", value: "tts-1" },
@@ -153,6 +155,15 @@ const TtsPlaygroundPage: React.FC = () => {
   const [openAiVoice, setOpenAiVoice] = React.useState<string | undefined>(
     undefined
   )
+  const controlIds = {
+    textInput: "tts-playground-input",
+    elevenVoice: "tts-playground-eleven-voice",
+    elevenModel: "tts-playground-eleven-model",
+    tldwVoice: "tts-playground-tldw-voice",
+    tldwModel: "tts-playground-tldw-model",
+    openAiModel: "tts-playground-openai-model",
+    openAiVoice: "tts-playground-openai-voice"
+  }
 
   React.useEffect(() => {
     if (!ttsSettings) return
@@ -177,8 +188,9 @@ const TtsPlaygroundPage: React.FC = () => {
     setDuration(0)
   }
 
+  const isTtsDisabled = ttsSettings?.ttsEnabled === false
   const handlePlay = async () => {
-    if (!text.trim()) return
+    if (!text.trim() || isTtsDisabled) return
     clearSegments()
     setActiveSegmentIndex(null)
     setCurrentTime(0)
@@ -334,6 +346,23 @@ const TtsPlaygroundPage: React.FC = () => {
     }
     return OPENAI_TTS_VOICES[openAiModel] || []
   }, [openAiModel])
+
+  const playDisabledReason = isTtsDisabled
+    ? t(
+        "playground:tts.playDisabledTtsOff",
+        "Enable text-to-speech above to play audio."
+      )
+    : !text.trim()
+      ? t("playground:tts.playDisabledNoText", "Enter text to enable Play.")
+      : null
+  const isPlayDisabled = isGenerating || Boolean(playDisabledReason)
+  const canStop = Boolean(segments.length || audioRef.current)
+  const stopDisabledReason =
+    !canStop &&
+    t(
+      "playground:tts.stopDisabled",
+      "Stop activates after audio starts."
+    )
 
   return (
     <div className="max-w-3xl mx-auto py-6">
@@ -509,13 +538,30 @@ const TtsPlaygroundPage: React.FC = () => {
         <Card>
           <Space direction="vertical" className="w-full" size="middle">
             <div>
-              <Paragraph className="!mb-2">
-                {t(
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <Paragraph className="!mb-2 !mr-2">
+                  {t(
+                    "playground:tts.inputLabel",
+                    "Enter some text to hear it spoken."
+                  )}
+                </Paragraph>
+                <Button
+                  size="small"
+                  onClick={() => setText(SAMPLE_TEXT)}
+                  aria-label={t(
+                    "playground:tts.sampleText",
+                    "Insert sample text"
+                  ) as string}
+                >
+                  {t("playground:tts.sampleText", "Insert sample text")}
+                </Button>
+              </div>
+              <Input.TextArea
+                id={controlIds.textInput}
+                aria-label={t(
                   "playground:tts.inputLabel",
                   "Enter some text to hear it spoken."
-                )}
-              </Paragraph>
-              <Input.TextArea
+                ) as string}
                 value={text}
                 onChange={(e) => setText(e.target.value)}
                 autoSize={{ minRows: 4, maxRows: 10 }}
@@ -536,10 +582,17 @@ const TtsPlaygroundPage: React.FC = () => {
                 </Text>
                 <Space className="flex flex-wrap" size="middle">
                   <div>
-                    <Text className="block text-xs mb-1">Voice</Text>
+                    <label
+                      className="block text-xs mb-1 text-gray-700 dark:text-gray-200"
+                      htmlFor={controlIds.elevenVoice}>
+                      Voice
+                    </label>
                     <Select
+                      id={controlIds.elevenVoice}
+                      aria-label="ElevenLabs voice"
                       style={{ minWidth: 160 }}
                       placeholder="Select voice"
+                      className="focus-ring"
                       options={elevenLabsData.voices.map((v: any) => ({
                         label: v.name,
                         value: v.voice_id
@@ -549,10 +602,17 @@ const TtsPlaygroundPage: React.FC = () => {
                     />
                   </div>
                   <div>
-                    <Text className="block text-xs mb-1">Model</Text>
+                    <label
+                      className="block text-xs mb-1 text-gray-700 dark:text-gray-200"
+                      htmlFor={controlIds.elevenModel}>
+                      Model
+                    </label>
                     <Select
+                      id={controlIds.elevenModel}
+                      aria-label="ElevenLabs model"
                       style={{ minWidth: 160 }}
                       placeholder="Select model"
+                      className="focus-ring"
                       options={elevenLabsData.models.map((m: any) => ({
                         label: m.name,
                         value: m.model_id
@@ -575,10 +635,17 @@ const TtsPlaygroundPage: React.FC = () => {
                 </Text>
                 <Space className="flex flex-wrap" size="middle">
                   <div>
-                    <Text className="block text-xs mb-1">Voice</Text>
+                    <label
+                      className="block text-xs mb-1 text-gray-700 dark:text-gray-200"
+                      htmlFor={controlIds.tldwVoice}>
+                      Voice
+                    </label>
                     <Select
+                      id={controlIds.tldwVoice}
+                      aria-label="tldw server voice"
                       style={{ minWidth: 200 }}
                       placeholder="Select voice"
+                      className="focus-ring"
                       options={providerVoices.map((v, idx) => ({
                         label: `${v.name || v.id || `Voice ${idx + 1}`}${
                           v.language ? ` (${v.language})` : ""
@@ -590,13 +657,20 @@ const TtsPlaygroundPage: React.FC = () => {
                     />
                   </div>
                   <div>
-                    <Text className="block text-xs mb-1">Model</Text>
+                    <label
+                      className="block text-xs mb-1 text-gray-700 dark:text-gray-200"
+                      htmlFor={controlIds.tldwModel}>
+                      Model
+                    </label>
                     {tldwTtsModels && tldwTtsModels.length > 0 ? (
                       <Select
+                        id={controlIds.tldwModel}
+                        aria-label="tldw server model"
                         style={{ minWidth: 160 }}
                         placeholder="Select model"
                         showSearch
                         optionFilterProp="label"
+                        className="focus-ring"
                         options={tldwTtsModels.map((m) => ({
                           label: m.label,
                           value: m.id
@@ -606,6 +680,7 @@ const TtsPlaygroundPage: React.FC = () => {
                       />
                     ) : (
                       <Input
+                        aria-label="tldw server model"
                         style={{ minWidth: 160 }}
                         value={tldwModel || ""}
                         onChange={(e) => setTldwModel(e.target.value)}
@@ -627,10 +702,17 @@ const TtsPlaygroundPage: React.FC = () => {
                 </Text>
                 <Space className="flex flex-wrap" size="middle">
                   <div>
-                    <Text className="block text-xs mb-1">Model</Text>
+                    <label
+                      className="block text-xs mb-1 text-gray-700 dark:text-gray-200"
+                      htmlFor={controlIds.openAiModel}>
+                      Model
+                    </label>
                     <Select
+                      id={controlIds.openAiModel}
+                      aria-label="OpenAI TTS model"
                       style={{ minWidth: 160 }}
                       placeholder="Select model"
+                      className="focus-ring"
                       options={OPENAI_TTS_MODELS}
                       value={openAiModel}
                       onChange={(val) => {
@@ -647,10 +729,17 @@ const TtsPlaygroundPage: React.FC = () => {
                     />
                   </div>
                   <div>
-                    <Text className="block text-xs mb-1">Voice</Text>
+                    <label
+                      className="block text-xs mb-1 text-gray-700 dark:text-gray-200"
+                      htmlFor={controlIds.openAiVoice}>
+                      Voice
+                    </label>
                     <Select
+                      id={controlIds.openAiVoice}
+                      aria-label="OpenAI TTS voice"
                       style={{ minWidth: 160 }}
                       placeholder="Select voice"
+                      className="focus-ring"
                       options={openAiVoiceOptions}
                       value={openAiVoice}
                       onChange={(val) => setOpenAiVoice(val)}
@@ -664,7 +753,7 @@ const TtsPlaygroundPage: React.FC = () => {
               <Button
                 type="primary"
                 onClick={handlePlay}
-                disabled={!text.trim()}
+                disabled={isPlayDisabled}
                 loading={isGenerating}
               >
                 {isGenerating
@@ -673,11 +762,19 @@ const TtsPlaygroundPage: React.FC = () => {
               </Button>
               <Button
                 onClick={handleStop}
-                disabled={!segments.length && !audioRef.current}
+                disabled={!canStop}
               >
                 {t("playground:tts.stop", "Stop")}
               </Button>
             </Space>
+            <Text type="secondary" className="text-xs">
+              {playDisabledReason ||
+                t(
+                  "playground:tts.playHelper",
+                  "Play uses your selected provider, voice, and speed."
+                )}
+              {!canStop && stopDisabledReason ? ` ${stopDisabledReason}` : ""}
+            </Text>
 
             {segments.length > 0 && (
               <div className="mt-4 space-y-2 w-full">

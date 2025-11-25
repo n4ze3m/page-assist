@@ -42,5 +42,23 @@
     "connectionFailedWithCode": "Connection failed (HTTP {{code}})",
     "connectionFailed": "Connection failed",
     "errorDetailsLabel": "Details:"
+  },
+  "errors": {
+    "privateModeDescription": "حالت خصوصی فایرفاکس از ذخیره چت پشتیبانی نمی‌کند. چت موقت به‌صورت پیش‌فرض فعال است. به‌زودی بهبود می‌یابد."
+  },
+  "tts": {
+    "playErrorTitle": "خطا",
+    "playErrorDescription": "در پخش صدا خطایی رخ داد",
+    "browserInfoTitle": "TTS مرورگر از صدای سیستم استفاده می‌کند",
+    "browserInfoDescription": "TTS مرورگر از موتور گفتار سیستم استفاده می‌کند و فایل صوتی ایجاد نمی‌کند. برای دیدن فهرست ترک‌ها و پخش‌کننده از ElevenLabs، OpenAI TTS یا tldw استفاده کنید.",
+    "unsupportedProviderTitle": "ارائه‌دهنده TTS پشتیبانی نمی‌شود",
+    "unsupportedProviderDescription": "ارائه‌دهنده \"{{provider}}\" هنوز در پخش‌کننده زمین بازی پشتیبانی نمی‌شود.",
+    "generateErrorTitle": "خطا در تولید صدا",
+    "generateErrorDescription": "در تولید صدای TTS مشکلی پیش آمد.",
+    "sampleText": "Insert sample text",
+    "playHelper": "Play uses your selected provider, voice, and speed.",
+    "playDisabledNoText": "Enter text to enable Play.",
+    "playDisabledTtsOff": "Enable text-to-speech above to play audio.",
+    "stopDisabled": "Stop activates after audio starts."
   }
 }

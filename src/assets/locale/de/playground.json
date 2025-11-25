@@ -42,5 +42,23 @@
     "connectionFailedWithCode": "Connection failed (HTTP {{code}})",
     "connectionFailed": "Connection failed",
     "errorDetailsLabel": "Details:"
+  },
+  "errors": {
+    "privateModeDescription": "Der Firefox-Privatmodus unterstützt kein Speichern von Chats. Temporärer Chat ist standardmäßig aktiviert. Weitere Verbesserungen folgen."
+  },
+  "tts": {
+    "playErrorTitle": "Fehler",
+    "playErrorDescription": "Beim Abspielen der Audio-Datei ist ein Fehler aufgetreten",
+    "browserInfoTitle": "Browser-TTS verwendet das Systemaudio",
+    "browserInfoDescription": "Browser-TTS nutzt die Systemsynthese und erzeugt keine Audiodatei. Verwenden Sie ElevenLabs, OpenAI TTS oder tldw, um eine Trackliste und einen Player zu sehen.",
+    "unsupportedProviderTitle": "Nicht unterstützter TTS-Anbieter",
+    "unsupportedProviderDescription": "Der Anbieter \"{{provider}}\" wird im Playground-Player noch nicht unterstützt.",
+    "generateErrorTitle": "Fehler bei der Audioerzeugung",
+    "generateErrorDescription": "Beim Erzeugen der TTS-Audioausgabe ist ein Fehler aufgetreten.",
+    "sampleText": "Insert sample text",
+    "playHelper": "Play uses your selected provider, voice, and speed.",
+    "playDisabledNoText": "Enter text to enable Play.",
+    "playDisabledTtsOff": "Enable text-to-speech above to play audio.",
+    "stopDisabled": "Stop activates after audio starts."
   }
 }

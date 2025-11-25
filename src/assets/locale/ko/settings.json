@@ -671,5 +671,22 @@
     "emptyExample1": "Define a writing coach, lore expert, or coding assistant you can reuse across chats.",
     "emptyExample2": "Give each character a clear description and behavior so their responses stay consistent.",
     "emptyPrimaryCta": "Create character"
+  },
+  "systemNotifications": {
+    "importSuccess": "데이터를 성공적으로 가져왔습니다",
+    "importError": "가져오기 오류",
+    "syncSuccess": "Firefox 데이터가 동기화되었습니다. 다시 실행할 필요 없습니다",
+    "syncError": "Firefox 데이터 동기화 실패",
+    "invalidImage": "유효한 이미지 파일을 선택하세요"
+  },
+  "prompts": {
+    "enterPrompt": "프롬프트를 입력하세요.",
+    "enterPromptPlaceholder": "프롬프트를 입력하세요.",
+    "enterFollowUpPrompt": "후속 프롬프트를 입력하세요.",
+    "enterFollowUpPromptPlaceholder": "후속 프롬프트를 입력하세요.",
+    "privateModeDescription": "Firefox 사생활 모드는 IndexedDB 저장을 지원하지 않습니다. 일반 창에서 프롬프트를 추가하세요."
+  },
+  "models": {
+    "privateModeDescription": "Firefox 사생활 모드는 IndexedDB 저장을 지원하지 않습니다. 일반 창에서 사용자 지정 모델을 추가하세요."
   }
 }

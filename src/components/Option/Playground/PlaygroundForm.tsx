@@ -666,9 +666,14 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
     (next: boolean) => {
       if (isFireFoxPrivateMode) {
         notification.error({
-          message: "Error",
-          description:
-            "tldw Assistant can't save chat in Firefox Private Mode. Temporary chat is enabled by default. More fixes coming soon."
+          message: t(
+            "common:privateModeSaveErrorTitle",
+            "tldw Assistant can't save data"
+          ),
+          description: t(
+            "playground:errors.privateModeDescription",
+            "Firefox Private Mode does not support saving chat. Temporary chat is enabled by default. More fixes coming soon."
+          )
         })
         return
       }
@@ -1178,7 +1183,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                             ? t("form.textarea.placeholder")
                             : t(
                                 "playground:composer.connectionPlaceholder",
-                                "Connect your server in Settings to send messages."
+                                "Connect to tldw to start chatting."
                               )
                         }
                         {...form.getInputProps("message")}
@@ -1488,7 +1493,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                         </div>
                       </div>
                     )}
-                    {isConnectionReady && queuedMessages.length > 0 && showQueuedBanner && (
+                    {queuedMessages.length > 0 && showQueuedBanner && (
                       <div className="mt-2 flex flex-wrap items-center justify-between gap-2 rounded-md border border-green-300 bg-green-50 px-3 py-2 text-xs text-green-900 dark:border-green-500 dark:bg-[#102a10] dark:text-green-100">
                         <p className="max-w-xs text-left">
                           <span className="block font-medium">
@@ -1505,8 +1510,12 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                         <div className="flex flex-wrap items-center gap-2">
                           <button
                             type="button"
-                            className="rounded-md border border-green-300 bg-white px-2 py-1 text-xs font-medium text-green-900 hover:bg-green-100 dark:bg-[#163816] dark:text-green-50 dark:hover:bg-[#194419]"
+                            className={`rounded-md border border-green-300 bg-white px-2 py-1 text-xs font-medium text-green-900 hover:bg-green-100 dark:bg-[#163816] dark:text-green-50 dark:hover:bg-[#194419] ${
+                              !isConnectionReady ? "cursor-not-allowed opacity-60" : ""
+                            }`}
+                            disabled={!isConnectionReady}
                             onClick={async () => {
+                              if (!isConnectionReady) return
                               for (const item of queuedMessages) {
                                 await submitFormFromQueued(item.message, item.image)
                               }

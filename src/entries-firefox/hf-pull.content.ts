@@ -54,11 +54,11 @@ export default defineContentScript({
               "[tldw Assistant] Model pull request rejected by tldw_server",
               resp
             )
-            alert(
-              `[tldw Assistant] Failed to send a pull request for "${modelName}": ${
-                resp.error || `status ${resp.status ?? "unknown"}`
-              }. Check Settings → tldw server and try again.`
-            )
+            const msg =
+              resp.error && resp.error.length <= 140
+                ? `[tldw Assistant] Failed to send a pull request for "${modelName}": ${resp.error}. Check Settings → tldw server and try again.`
+                : `[tldw Assistant] Failed to send a pull request for "${modelName}". Check Settings → tldw server and try again.`
+            alert(msg)
             return false
           }
           alert(

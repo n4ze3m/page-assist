@@ -1,11 +1,15 @@
 {
-    "tooltip": {
-        "embed": "A incorporação da página pode levar alguns minutos. Por favor, aguarde...",
-        "clear": "Apagar histórico de chat",
-        "history": "Histórico de chat",
-        "openwebui": "Abrir WebUI"
-    },
-    "toolbar": {
-        "ragSearch": "RAG Search"
-    }
+  "tooltip": {
+    "embed": "A incorporação da página pode levar alguns minutos. Por favor, aguarde...",
+    "clear": "Apagar histórico de chat",
+    "history": "Histórico de chat",
+    "openwebui": "Abrir WebUI"
+  },
+  "toolbar": {
+    "ragSearch": "RAG Search"
+  },
+  "errors": {
+    "privateModeTitle": "tldw Assistant não pode salvar dados",
+    "privateModeDescription": "O modo privativo do Firefox não permite salvar o histórico do chat. O chat temporário fica ativado por padrão. Mais melhorias em breve."
+  }
 }

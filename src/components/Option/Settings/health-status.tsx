@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Tag, Card, Space, Typography, Button, Alert } from 'antd'
+import { Tag, Card, Space, Typography, Button, Alert, Tooltip } from 'antd'
 import { browser } from 'wxt/browser'
 import { Link, useNavigate } from 'react-router-dom'
 import { tldwClient } from '@/services/tldw/TldwApiClient'
@@ -181,23 +181,24 @@ export default function HealthStatus() {
           >
             {t('healthPage.recheckAll', 'Recheck All')}
           </Button>
-          <Button
-            onClick={() => {
-              try {
-                const payload = {
-                  serverUrl,
-                  coreStatus,
-                  timestamp: new Date().toISOString(),
-                  results
-                }
-                const text = JSON.stringify(payload, null, 2)
-                void navigator.clipboard.writeText(text)
-              } catch {}
-            }}
-            title={t('healthPage.copyDiagnosticsHelp', 'Copies JSON diagnostics to clipboard') as string}
-          >
-            {t('healthPage.copyDiagnostics', 'Copy diagnostics')}
-          </Button>
+          <Tooltip title={t('healthPage.copyDiagnosticsHelp', 'Copies JSON diagnostics to clipboard') as string}>
+            <Button
+              onClick={() => {
+                try {
+                  const payload = {
+                    serverUrl,
+                    coreStatus,
+                    timestamp: new Date().toISOString(),
+                    results
+                  }
+                  const text = JSON.stringify(payload, null, 2)
+                  void navigator.clipboard.writeText(text)
+                } catch {}
+              }}
+            >
+              {t('healthPage.copyDiagnostics', 'Copy diagnostics')}
+            </Button>
+          </Tooltip>
           <Button onClick={() => navigate(-1)}>
             ← {t('healthPage.backToChat', 'Back to chat')}
           </Button>

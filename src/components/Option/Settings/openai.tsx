@@ -33,7 +33,7 @@ import { isFireFoxPrivateMode } from "@/utils/is-private-mode"
 import { confirmDanger } from "@/components/Common/confirm-danger"
 
 export const OpenAIApp = () => {
-  const { t } = useTranslation(["openai", "settings"])
+  const { t } = useTranslation(["openai", "settings", "common"])
   const [open, setOpen] = useState(false)
   const [editingConfig, setEditingConfig] = useState(null)
   const queryClient = useQueryClient()
@@ -144,9 +144,14 @@ export const OpenAIApp = () => {
                 onClick={() => {
                   if (isFireFoxPrivateMode) {
                     notification.error({
-                      message: "tldw Assistant can't save data",
-                      description:
+                      message: t(
+                        "common:privateModeSaveErrorTitle",
+                        "tldw Assistant can't save data"
+                      ),
+                      description: t(
+                        "openai:privateModeDescription",
                         "Firefox Private Mode does not support saving data to IndexedDB. Please add OpenAI configurations from a normal window."
+                      )
                     })
                     return
                   }

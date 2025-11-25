@@ -1,52 +1,58 @@
 {
-    "newChat": "പുതിയ ചാറ്റ്",
-    "selectAPrompt": "ഒരു പ്രോംപ്റ്റ് തിരഞ്ഞെടുക്കുക",
-    "githubRepository": "ഗിറ്റ്ഹബ് റെപ്പോസിറ്ററി",
-    "settings": "സെറ്റിംഗുകൾ",
-    "connectionCard": {
-      "headlineMissing": "Connect tldw Assistant to your server",
-      "headlineSearching": "Searching for your tldw server…",
-      "headlineConnected": "Connected to your tldw server",
-      "headlineError": "Can’t reach your tldw server",
-      "descriptionMissing": "tldw_server is the backend that powers chat, knowledge search, and media processing. Connect your own tldw server URL to start using the assistant.",
-      "descriptionSearching": "We’re checking {{host}} to see if your tldw server is reachable. This may take a moment while we wait for a response.",
-      "descriptionConnected": "Connected to your tldw server at {{host}}. You can start chatting or use Review, Knowledge, and other tools.",
-      "descriptionError": "We couldn’t reach your tldw server at {{host}}. Make sure the server is running, the URL is correct, and your browser can reach it over the network.",
-      "buttonStartChat": "Start chatting",
-      "buttonRetry": "Retry connection",
-      "buttonChangeServer": "Change server",
-      "buttonOpenDiagnostics": "Open diagnostics",
-      "buttonViewDiagnostics": "View diagnostics"
+  "newChat": "പുതിയ ചാറ്റ്",
+  "selectAPrompt": "ഒരു പ്രോംപ്റ്റ് തിരഞ്ഞെടുക്കുക",
+  "githubRepository": "ഗിറ്റ്ഹബ് റെപ്പോസിറ്ററി",
+  "settings": "സെറ്റിംഗുകൾ",
+  "connectionCard": {
+    "headlineMissing": "Connect tldw Assistant to your server",
+    "headlineSearching": "Searching for your tldw server…",
+    "headlineConnected": "Connected to your tldw server",
+    "headlineError": "Can’t reach your tldw server",
+    "descriptionMissing": "tldw_server is the backend that powers chat, knowledge search, and media processing. Connect your own tldw server URL to start using the assistant.",
+    "descriptionSearching": "We’re checking {{host}} to see if your tldw server is reachable. This may take a moment while we wait for a response.",
+    "descriptionConnected": "Connected to your tldw server at {{host}}. You can start chatting or use Review, Knowledge, and other tools.",
+    "descriptionError": "We couldn’t reach your tldw server at {{host}}. Make sure the server is running, the URL is correct, and your browser can reach it over the network.",
+    "buttonStartChat": "Start chatting",
+    "buttonRetry": "Retry connection",
+    "buttonChangeServer": "Change server",
+    "buttonOpenDiagnostics": "Open diagnostics",
+    "buttonViewDiagnostics": "View diagnostics"
+  },
+  "header": {
+    "showShortcuts": "ഷോർട്ട്കട്ടുകൾ കാണിക്കുക",
+    "hideShortcuts": "ഷോർട്ട്കട്ടുകൾ മറയ്ക്കുക",
+    "groupWorkspace": "വർക്ക്സ്പേസ്",
+    "groupKnowledge": "നോളജ്",
+    "groupSettings": "സജ്ജീകരണ ഷോർട്ട്കട്ടുകൾ"
+  },
+  "sidebarTitle": "ചാറ്റ് ചരിത്രം",
+  "error": "പിശക്",
+  "somethingWentWrong": "എന്തോ തെറ്റായി",
+  "deleteHistoryConfirmation": "നിങ്ങളുടെ ചാറ്റ് ചരിത്രം ഇല്ലാതാക്കണമെന്ന് തീർച്ചയാണോ?",
+  "editHistoryTitle": "ചാറ്റ് title എഡിറ്റുചെയ്യുക",
+  "validationSelectModel": "തുടരുന്നതിന് ഒരു മോഡല്‍ തിരഞ്ഞെടുക്കുക",
+  "temporaryChat": "താൽക്കാലിക ചാറ്റ്",
+  "more": {
+    "copy": {
+      "group": "പകർത്തുക",
+      "asText": "ടെക്സ്റ്റായി പകർത്തുക",
+      "asMarkdown": "മാർക്ക്ഡൗൺ ആയി പകർത്തുക",
+      "success": "ക്ലിപ്പ്ബോർഡിലേക്ക് പകർത്തി!"
     },
-    "header": {
-      "showShortcuts": "ഷോർട്ട്കട്ടുകൾ കാണിക്കുക",
-      "hideShortcuts": "ഷോർട്ട്കട്ടുകൾ മറയ്ക്കുക",
-      "groupWorkspace": "വർക്ക്സ്പേസ്",
-      "groupKnowledge": "നോളജ്",
-      "groupSettings": "സജ്ജീകരണ ഷോർട്ട്കട്ടുകൾ"
+    "download": {
+      "group": "ഡൗൺലോഡ്",
+      "text": "ടെക്സ്റ്റ് ഫയൽ (.txt)",
+      "markdown": "മാർക്ക്ഡൗൺ (.md)",
+      "json": "JSON ഫയൽ (.json)"
     },
-    "sidebarTitle": "ചാറ്റ് ചരിത്രം",
-    "error": "പിശക്",
-    "somethingWentWrong": "എന്തോ തെറ്റായി",
-    "deleteHistoryConfirmation": "നിങ്ങളുടെ ചാറ്റ് ചരിത്രം ഇല്ലാതാക്കണമെന്ന് തീർച്ചയാണോ?",
-    "editHistoryTitle": "ചാറ്റ് title എഡിറ്റുചെയ്യുക",
-    "validationSelectModel": "തുടരുന്നതിന് ഒരു മോഡല്‍ തിരഞ്ഞെടുക്കുക",
-    "temporaryChat": "താൽക്കാലിക ചാറ്റ്",
-    "more": {
-        "copy": {
-            "group": "പകർത്തുക",
-            "asText": "ടെക്സ്റ്റായി പകർത്തുക",
-            "asMarkdown": "മാർക്ക്ഡൗൺ ആയി പകർത്തുക",
-            "success": "ക്ലിപ്പ്ബോർഡിലേക്ക് പകർത്തി!"
-        },
-        "download": {
-            "group": "ഡൗൺലോഡ്",
-            "text": "ടെക്സ്റ്റ് ഫയൽ (.txt)",
-            "markdown": "മാർക്ക്ഡൗൺ (.md)",
-            "json": "JSON ഫയൽ (.json)"
-        },
-        "share": "പങ്കുവയ്ക്കുക"
-    },
-    "libraryView": "Library View",
-    "notes": "Notes"
+    "share": "പങ്കുവയ്ക്കുക"
+  },
+  "libraryView": "Library View",
+  "notes": "Notes",
+  "upload": {
+    "fileTooLargeTitle": "ഫയൽ വളരെ വലുതാണ്",
+    "fileTooLargeDescription": "ഫയൽ വലുപ്പം 10MB ൽ താഴെയായിരിക്കണം",
+    "uploadFailedTitle": "അപ്‌ലോഡ് പരാജയപ്പെട്ടു",
+    "uploadFailedDescription": "ഫയൽ അപ്‌ലോഡ് ചെയ്യാനായില്ല. ദയവായി വീണ്ടും ശ്രമിക്കുക."
+  }
 }

@@ -17,6 +17,23 @@ export const TTSModeSettings = ({ hideBorder }: { hideBorder?: boolean }) => {
   const { t } = useTranslation("settings")
   const { setTTSEnabled } = useWebUI()
   const queryClient = useQueryClient()
+  const ids = {
+    ttsEnabled: "tts-enabled-toggle",
+    ttsAutoPlay: "tts-auto-play-toggle",
+    ttsProvider: "tts-provider-select",
+    browserVoice: "browser-voice-select",
+    elevenVoice: "elevenlabs-voice-select",
+    elevenModel: "elevenlabs-model-select",
+    tldwModel: "tldw-model-select",
+    tldwVoice: "tldw-voice-select",
+    tldwResponseFormat: "tldw-response-format",
+    tldwSpeed: "tldw-speed-input",
+    ssmlEnabled: "tts-ssml-toggle",
+    removeReasoning: "tts-remove-reasoning-toggle",
+    playbackSpeed: "tts-playback-speed-input",
+    openAiModel: "openai-model-select",
+    openAiVoice: "openai-voice-select"
+  }
 
   const form = useForm({
     initialValues: {
@@ -110,12 +127,16 @@ export const TTSModeSettings = ({ hideBorder }: { hideBorder?: boolean }) => {
         })}
         className="space-y-4">
         <div className="flex sm:flex-row flex-col space-y-4 sm:space-y-0 sm:justify-between">
-          <span className="text-gray-700 dark:text-neutral-50 ">
+          <label
+            className="text-gray-700 dark:text-neutral-50 "
+            htmlFor={ids.ttsEnabled}>
             {t("generalSettings.tts.ttsEnabled.label")}
-          </span>
+          </label>
           <div>
             <Switch
-              className="mt-4 sm:mt-0"
+              id={ids.ttsEnabled}
+              aria-label={t("generalSettings.tts.ttsEnabled.label") as string}
+              className="mt-4 sm:mt-0 focus-ring"
               {...form.getInputProps("ttsEnabled", {
                 type: "checkbox"
               })}
@@ -123,12 +144,16 @@ export const TTSModeSettings = ({ hideBorder }: { hideBorder?: boolean }) => {
           </div>
         </div>
         <div className="flex sm:flex-row flex-col space-y-4 sm:space-y-0 sm:justify-between">
-          <span className="text-gray-700 dark:text-neutral-50 ">
+          <label
+            className="text-gray-700 dark:text-neutral-50 "
+            htmlFor={ids.ttsAutoPlay}>
             {t("generalSettings.tts.ttsAutoPlay.label")}
-          </span>
+          </label>
           <div>
             <Switch
-              className="mt-4 sm:mt-0"
+              id={ids.ttsAutoPlay}
+              aria-label={t("generalSettings.tts.ttsAutoPlay.label") as string}
+              className="mt-4 sm:mt-0 focus-ring"
               {...form.getInputProps("ttsAutoPlay", {
                 type: "checkbox"
               })}
@@ -136,13 +161,17 @@ export const TTSModeSettings = ({ hideBorder }: { hideBorder?: boolean }) => {
           </div>
         </div>
         <div className="flex sm:flex-row flex-col space-y-4 sm:space-y-0 sm:justify-between">
-          <span className="text-gray-700 dark:text-neutral-50 ">
+          <label
+            className="text-gray-700 dark:text-neutral-50 "
+            htmlFor={ids.ttsProvider}>
             {t("generalSettings.tts.ttsProvider.label")}
-          </span>
+          </label>
           <div>
             <Select
+              id={ids.ttsProvider}
+              aria-label={t("generalSettings.tts.ttsProvider.label") as string}
               placeholder={t("generalSettings.tts.ttsProvider.placeholder")}
-              className="w-full mt-4 sm:mt-0 sm:w-[200px]"
+              className="w-full mt-4 sm:mt-0 sm:w-[200px] focus-ring"
               options={[
                 { label: "Browser TTS", value: "browser" },
                 {
@@ -169,8 +198,10 @@ export const TTSModeSettings = ({ hideBorder }: { hideBorder?: boolean }) => {
             </span>
             <div>
               <Select
+                id={ids.browserVoice}
+                aria-label={t("generalSettings.tts.ttsVoice.label") as string}
                 placeholder={t("generalSettings.tts.ttsVoice.placeholder")}
-                className="w-full mt-4 sm:mt-0 sm:w-[200px]"
+                className="w-full mt-4 sm:mt-0 sm:w-[200px] focus-ring"
                 options={data?.browserTTSVoices?.map((voice) => ({
                   label: `${voice.voiceName} - ${voice.lang}`.trim(),
                   value: voice.voiceName
@@ -201,11 +232,13 @@ export const TTSModeSettings = ({ hideBorder }: { hideBorder?: boolean }) => {
                     TTS Voice
                   </span>
                   <Select
+                    id={ids.elevenVoice}
+                    aria-label="ElevenLabs voice"
                     options={elevenLabsData.voices.map((v) => ({
                       label: v.name,
                       value: v.voice_id
                     }))}
-                    className="w-full mt-4 sm:mt-0 sm:w-[200px]"
+                    className="w-full mt-4 sm:mt-0 sm:w-[200px] focus-ring"
                     placeholder="Select a voice"
                     {...form.getInputProps("elevenLabsVoiceId")}
                   />
@@ -216,7 +249,9 @@ export const TTSModeSettings = ({ hideBorder }: { hideBorder?: boolean }) => {
                     TTS Model
                   </span>
                   <Select
-                    className="w-full mt-4 sm:mt-0 sm:w-[200px]"
+                    id={ids.elevenModel}
+                    aria-label="ElevenLabs model"
+                    className="w-full mt-4 sm:mt-0 sm:w-[200px] focus-ring"
                     placeholder="Select a model"
                     options={elevenLabsData.models.map((m) => ({
                       label: m.name,
@@ -278,7 +313,9 @@ export const TTSModeSettings = ({ hideBorder }: { hideBorder?: boolean }) => {
                 TTS Voice
               </span>
               <Select
-                className=" mt-4 sm:mt-0 !w-[300px] sm:w-[200px]"
+                id={ids.openAiVoice}
+                aria-label="OpenAI TTS voice"
+                className=" mt-4 sm:mt-0 !w-[300px] sm:w-[200px] focus-ring"
                 placeholder="Select a voice"
                 options={[
                   { label: "alloy", value: "alloy" },
@@ -297,7 +334,9 @@ export const TTSModeSettings = ({ hideBorder }: { hideBorder?: boolean }) => {
                 TTS Model
               </span>
               <Select
-                className=" mt-4 sm:mt-0 !w-[300px] sm:w-[200px]"
+                id={ids.openAiModel}
+                aria-label="OpenAI TTS model"
+                className=" mt-4 sm:mt-0 !w-[300px] sm:w-[200px] focus-ring"
                 placeholder="Select a model"
                 options={[
                   { label: "tts-1", value: "tts-1" },
@@ -316,7 +355,9 @@ export const TTSModeSettings = ({ hideBorder }: { hideBorder?: boolean }) => {
               </span>
               {tldwModels && tldwModels.length > 0 ? (
                 <Select
-                  className=" mt-4 sm:mt-0 !w-[300px] sm:w-[200px]"
+                  id={ids.tldwModel}
+                  aria-label="tldw TTS model"
+                  className=" mt-4 sm:mt-0 !w-[300px] sm:w-[200px] focus-ring"
                   placeholder="Select a model"
                   options={tldwModels.map((m: TldwTtsModel) => ({
                     label: m.label,
@@ -338,7 +379,9 @@ export const TTSModeSettings = ({ hideBorder }: { hideBorder?: boolean }) => {
               </span>
               {tldwVoices && tldwVoices.length > 0 ? (
                 <Select
-                  className="w-full mt-4 sm:mt-0 sm:w-[200px]"
+                  id={ids.tldwVoice}
+                  aria-label="tldw TTS voice"
+                  className="w-full mt-4 sm:mt-0 sm:w-[200px] focus-ring"
                   placeholder="Select a voice"
                   options={tldwVoices.map((v: TldwVoice) => ({
                     label: v.name || v.voice_id || v.id || "Voice",
@@ -359,7 +402,9 @@ export const TTSModeSettings = ({ hideBorder }: { hideBorder?: boolean }) => {
                 Response format
               </span>
               <Select
-                className="w-full mt-4 sm:mt-0 sm:w-[200px]"
+                id={ids.tldwResponseFormat}
+                aria-label="tldw response format"
+                className="w-full mt-4 sm:mt-0 sm:w-[200px] focus-ring"
                 options={[
                   { label: "mp3", value: "mp3" },
                   { label: "opus", value: "opus" },
@@ -375,6 +420,8 @@ export const TTSModeSettings = ({ hideBorder }: { hideBorder?: boolean }) => {
                 Synthesis speed
               </span>
               <InputNumber
+                id={ids.tldwSpeed}
+                aria-label="tldw synthesis speed"
                 placeholder="1"
                 min={0.25}
                 max={4}
@@ -386,12 +433,16 @@ export const TTSModeSettings = ({ hideBorder }: { hideBorder?: boolean }) => {
           </>
         )}
         <div className="flex sm:flex-row flex-col space-y-4 sm:space-y-0 sm:justify-between">
-          <span className="text-gray-700 dark:text-neutral-50 ">
+          <label
+            className="text-gray-700 dark:text-neutral-50 "
+            htmlFor={ids.ssmlEnabled}>
             {t("generalSettings.tts.ssmlEnabled.label")}
-          </span>
+          </label>
           <div>
             <Switch
-              className="mt-4 sm:mt-0"
+              id={ids.ssmlEnabled}
+              aria-label={t("generalSettings.tts.ssmlEnabled.label") as string}
+              className="mt-4 sm:mt-0 focus-ring"
               {...form.getInputProps("ssmlEnabled", {
                 type: "checkbox"
               })}
@@ -400,12 +451,18 @@ export const TTSModeSettings = ({ hideBorder }: { hideBorder?: boolean }) => {
         </div>
 
         <div className="flex sm:flex-row flex-col space-y-4 sm:space-y-0 sm:justify-between">
-          <span className="text-gray-700 dark:text-neutral-50 ">
+          <label
+            className="text-gray-700 dark:text-neutral-50 "
+            htmlFor={ids.removeReasoning}>
             {t("generalSettings.tts.removeReasoningTagTTS.label")}
-          </span>
+          </label>
           <div>
             <Switch
-              className="mt-4 sm:mt-0"
+              id={ids.removeReasoning}
+              aria-label={
+                t("generalSettings.tts.removeReasoningTagTTS.label") as string
+              }
+              className="mt-4 sm:mt-0 focus-ring"
               {...form.getInputProps("removeReasoningTagTTS", {
                 type: "checkbox"
               })}
@@ -414,10 +471,14 @@ export const TTSModeSettings = ({ hideBorder }: { hideBorder?: boolean }) => {
         </div>
 
         <div className="flex sm:flex-row flex-col space-y-4 sm:space-y-0 sm:justify-between">
-          <span className="text-gray-700 dark:text-neutral-50">
+          <label
+            className="text-gray-700 dark:text-neutral-50"
+            htmlFor={ids.playbackSpeed}>
             Playback Speed
-          </span>
+          </label>
           <InputNumber
+            id={ids.playbackSpeed}
+            aria-label="Playback speed"
             placeholder="1"
             className=" mt-4 sm:mt-0 !w-[300px] sm:w-[200px]"
             required

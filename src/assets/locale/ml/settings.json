@@ -671,5 +671,22 @@
     "emptyExample1": "Define a writing coach, lore expert, or coding assistant you can reuse across chats.",
     "emptyExample2": "Give each character a clear description and behavior so their responses stay consistent.",
     "emptyPrimaryCta": "Create character"
+  },
+  "systemNotifications": {
+    "importSuccess": "ഡാറ്റ വിജയകരമായി ഇറക്കുമതി ചെയ്തു",
+    "importError": "ഇറക്കുമതി പിശക്",
+    "syncSuccess": "Firefox ഡാറ്റ വിജയകരമായി സിങ്ക് ചെയ്തു, വീണ്ടും ചെയ്യേണ്ടതില്ല",
+    "syncError": "Firefox ഡാറ്റ സിങ്ക് പരാജയപ്പെട്ടു",
+    "invalidImage": "സാധുവായ ഇമേജ് ഫയൽ തിരഞ്ഞെടുക്കുക"
+  },
+  "prompts": {
+    "enterPrompt": "ഒരു പ്രോംപ്റ്റ് നൽകുക.",
+    "enterPromptPlaceholder": "ഒരു പ്രോംപ്റ്റ് നൽകുക.",
+    "enterFollowUpPrompt": "ഫോളോ-അപ്പ് പ്രോംപ്റ്റ് നൽകുക.",
+    "enterFollowUpPromptPlaceholder": "ഫോളോ-അപ്പ് പ്രോംപ്റ്റ് നൽകുക.",
+    "privateModeDescription": "Firefox സ്വകാര്യ മോഡ് IndexedDB-ൽ സംരക്ഷണം പിന്തുണയ്ക്കുന്നില്ല. സാധാരണ വിൻഡോയിലൂടെ പ്രോംപ്റ്റുകൾ ചേർക്കുക."
+  },
+  "models": {
+    "privateModeDescription": "Firefox സ്വകാര്യ മോഡ് IndexedDB-ൽ സംരക്ഷണം പിന്തുണയ്ക്കുന്നില്ല. സാധാരണ വിൻഡോയിലൂടെ കസ്റ്റം മോഡൽ ചേർക്കുക."
   }
 }

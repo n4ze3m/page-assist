@@ -1,108 +1,109 @@
 {
-    "settings": "OpenAI 兼容 API",
-    "heading": "OpenAI 兼容 API",
-    "subheading": "在此管理和配置您的 OpenAI API 兼容提供商。",
-    "addBtn": "添加提供商",
-    "table": {
-        "name": "提供商名称",
-        "baseUrl": "基础 URL",
-        "actions": "操作"
+  "settings": "OpenAI 兼容 API",
+  "heading": "OpenAI 兼容 API",
+  "subheading": "在此管理和配置您的 OpenAI API 兼容提供商。",
+  "addBtn": "添加提供商",
+  "table": {
+    "name": "提供商名称",
+    "baseUrl": "基础 URL",
+    "actions": "操作"
+  },
+  "modal": {
+    "titleAdd": "添加新提供商",
+    "titleEdit": "编辑提供商",
+    "name": {
+      "label": "提供商名称",
+      "required": "提供商名称为必填项。",
+      "placeholder": "输入提供商名称"
+    },
+    "baseUrl": {
+      "label": "基础 URL",
+      "help": "OpenAI API 提供商的基础 URL。例如 (http://localhost:1234/v1)",
+      "required": "基础 URL 为必填项。",
+      "placeholder": "输入基础 URL"
+    },
+    "apiKey": {
+      "label": "API 密钥",
+      "required": "API 密钥为必填项。",
+      "placeholder": "输入 API 密钥"
+    },
+    "submit": "保存",
+    "update": "更新",
+    "deleteConfirm": "您确定要删除此提供商吗？",
+    "model": {
+      "title": "模型列表",
+      "subheading": "请选择您想要与此提供商一起使用的聊天模型。",
+      "success": "成功添加新模型。"
+    },
+    "tipLMStudio": "tldw Browser_Assistant 将自动获取您在 LM Studio 中加载的模型。您无需手动添加它们。"
+  },
+  "addSuccess": "提供商添加成功。",
+  "deleteSuccess": "提供商删除成功。",
+  "updateSuccess": "提供商更新成功。",
+  "delete": "删除",
+  "edit": "编辑",
+  "newModel": "向提供商添加模型",
+  "noNewModel": "对于 LMStudio, Ollama, Llamafile，我们动态获取。无需手动添加。",
+  "searchModel": "搜索模型",
+  "selectAll": "全选",
+  "save": "保存",
+  "saving": "保存中...",
+  "manageModels": {
+    "columns": {
+      "name": "模型名称",
+      "model_type": "模型类型",
+      "model_id": "模型 ID",
+      "provider": "提供商名称",
+      "actions": "操作",
+      "nickname": "模型昵称"
+    },
+    "tooltip": {
+      "delete": "删除"
+    },
+    "confirm": {
+      "delete": "您确定要删除此模型吗？"
     },
     "modal": {
-        "titleAdd": "添加新提供商",
-        "titleEdit": "编辑提供商",
+      "title": "添加自定义模型",
+      "titleEdit": "编辑自定义模型",
+      "form": {
         "name": {
-            "label": "提供商名称",
-            "required": "提供商名称为必填项。",
-            "placeholder": "输入提供商名称"
+          "label": "模型 ID",
+          "placeholder": "llama3.2",
+          "required": "模型 ID 为必填项。"
         },
-        "baseUrl": {
-            "label": "基础 URL",
-            "help": "OpenAI API 提供商的基础 URL。例如 (http://localhost:1234/v1)",
-            "required": "基础 URL 为必填项。",
-            "placeholder": "输入基础 URL"
+        "provider": {
+          "label": "提供商",
+          "placeholder": "选择提供商",
+          "required": "提供商为必填项。"
         },
-        "apiKey": {
-            "label": "API 密钥",
-            "required": "API 密钥为必填项。",
-            "placeholder": "输入 API 密钥"
-        },
-        "submit": "保存",
-        "update": "更新",
-        "deleteConfirm": "您确定要删除此提供商吗？",
-        "model": {
-            "title": "模型列表",
-            "subheading": "请选择您想要与此提供商一起使用的聊天模型。",
-            "success": "成功添加新模型。"
-        },
-        "tipLMStudio": "tldw Browser_Assistant 将自动获取您在 LM Studio 中加载的模型。您无需手动添加它们。"
-    },
-    "addSuccess": "提供商添加成功。",
-    "deleteSuccess": "提供商删除成功。",
-    "updateSuccess": "提供商更新成功。",
-    "delete": "删除",
-    "edit": "编辑",
-    "newModel": "向提供商添加模型",
-    "noNewModel": "对于 LMStudio, Ollama, Llamafile，我们动态获取。无需手动添加。",
-    "searchModel": "搜索模型",
-    "selectAll": "全选",
-    "save": "保存",
-    "saving": "保存中...",
-    "manageModels": {
-        "columns": {
-            "name": "模型名称",
-            "model_type": "模型类型",
-            "model_id": "模型 ID",
-            "provider": "提供商名称",
-            "actions": "操作",
-            "nickname": "模型昵称"
-        },
-        "tooltip": {
-            "delete": "删除"
-        },
-        "confirm": {
-            "delete": "您确定要删除此模型吗？"
-        },
-        "modal": {
-            "title": "添加自定义模型",
-            "titleEdit": "编辑自定义模型",
-            "form": {
-                "name": {
-                    "label": "模型 ID",
-                    "placeholder": "llama3.2",
-                    "required": "模型 ID 为必填项。"
-                },
-                "provider": {
-                    "label": "提供商",
-                    "placeholder": "选择提供商",
-                    "required": "提供商为必填项。"
-                },
-                "type": {
-                    "label": "模型类型"
-                }
-            }
+        "type": {
+          "label": "模型类型"
         }
-    },
-    "noModelFound": "未找到模型。请确保您已添加正确的提供商，包括基础 URL 和 API 密钥。",
-    "radio": {
-        "chat": "聊天模型",
-        "embedding": "嵌入模型",
-        "chatInfo": "用于聊天补全和对话生成",
-        "embeddingInfo": "用于 RAG 和其他语义搜索相关任务。"
-    },
-    "nicknameModal": {
-        "title": "添加/编辑模型昵称",
-        "form": {
-            "modelName": {
-                "label": "模型名称",
-                "placeholder": "请输入模型名称",
-                "required": "模型名称为必填项。"
-            },
-            "modelAvatar": {
-                "label": "模型头像",
-                "placeholder": "请输入模型头像",
-                "help": "请输入模型头像的URL地址。此图像将显示在聊天窗口中。"
-            }
-        }
+      }
     }
+  },
+  "noModelFound": "未找到模型。请确保您已添加正确的提供商，包括基础 URL 和 API 密钥。",
+  "radio": {
+    "chat": "聊天模型",
+    "embedding": "嵌入模型",
+    "chatInfo": "用于聊天补全和对话生成",
+    "embeddingInfo": "用于 RAG 和其他语义搜索相关任务。"
+  },
+  "nicknameModal": {
+    "title": "添加/编辑模型昵称",
+    "form": {
+      "modelName": {
+        "label": "模型名称",
+        "placeholder": "请输入模型名称",
+        "required": "模型名称为必填项。"
+      },
+      "modelAvatar": {
+        "label": "模型头像",
+        "placeholder": "请输入模型头像",
+        "help": "请输入模型头像的URL地址。此图像将显示在聊天窗口中。"
+      }
+    }
+  },
+  "privateModeDescription": "Firefox 隐私模式不支持将数据保存到 IndexedDB。请在普通窗口添加 OpenAI 配置。"
 }

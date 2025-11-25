@@ -1,11 +1,15 @@
 {
-    "tooltip": {
-        "embed": "Det kan ta noen minutter å bygge din siden. Vennligst vent...",
-        "clear": "Slett chathistorikken",
-        "history": "Chathistorikk",
-        "openwebui": "Åpne WebUI"
-    },
-    "toolbar": {
-        "ragSearch": "RAG Search"
-    }
+  "tooltip": {
+    "embed": "Det kan ta noen minutter å bygge din siden. Vennligst vent...",
+    "clear": "Slett chathistorikken",
+    "history": "Chathistorikk",
+    "openwebui": "Åpne WebUI"
+  },
+  "toolbar": {
+    "ragSearch": "RAG Search"
+  },
+  "errors": {
+    "privateModeTitle": "tldw Assistant kan ikke lagre data",
+    "privateModeDescription": "Firefox privatmodus støtter ikke lagring av chathistorikk. Midlertidig chat er aktivert som standard. Flere forbedringer kommer snart."
+  }
 }

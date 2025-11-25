@@ -39,5 +39,23 @@
     "connectionFailedWithCode": "Tilkobling mislyktes (HTTP {{code}})",
     "connectionFailed": "Tilkobling mislyktes",
     "errorDetailsLabel": "Detaljer:"
+  },
+  "errors": {
+    "privateModeDescription": "Firefox privatmodus støtter ikke lagring av chat. Midlertidig chat er aktivert som standard. Flere forbedringer kommer."
+  },
+  "tts": {
+    "playErrorTitle": "Feil",
+    "playErrorDescription": "Det oppsto en feil under avspilling av lyd",
+    "browserInfoTitle": "Nettleser-TTS bruker systemlyd",
+    "browserInfoDescription": "Nettleser-TTS bruker systemets talesyntese og gir ingen lydfil. Bruk ElevenLabs, OpenAI TTS eller tldw for å se sporlisten og spilleren.",
+    "unsupportedProviderTitle": "TTS-leverandør støttes ikke",
+    "unsupportedProviderDescription": "Leverandøren \"{{provider}}\" støttes ikke ennå i playground-spilleren.",
+    "generateErrorTitle": "Feil ved generering av lyd",
+    "generateErrorDescription": "Noe gikk galt under generering av TTS-lyd.",
+    "sampleText": "Insert sample text",
+    "playHelper": "Play uses your selected provider, voice, and speed.",
+    "playDisabledNoText": "Enter text to enable Play.",
+    "playDisabledTtsOff": "Enable text-to-speech above to play audio.",
+    "stopDisabled": "Stop activates after audio starts."
   }
 }

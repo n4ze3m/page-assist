@@ -671,5 +671,22 @@
     "emptyExample1": "Define a writing coach, lore expert, or coding assistant you can reuse across chats.",
     "emptyExample2": "Give each character a clear description and behavior so their responses stay consistent.",
     "emptyPrimaryCta": "Create character"
+  },
+  "systemNotifications": {
+    "importSuccess": "データを正常にインポートしました",
+    "importError": "インポートエラー",
+    "syncSuccess": "Firefox のデータを同期しました。再実行は不要です",
+    "syncError": "Firefox データの同期に失敗しました",
+    "invalidImage": "有効な画像ファイルを選択してください"
+  },
+  "prompts": {
+    "enterPrompt": "プロンプトを入力してください。",
+    "enterPromptPlaceholder": "プロンプトを入力してください。",
+    "enterFollowUpPrompt": "フォローアップのプロンプトを入力してください。",
+    "enterFollowUpPromptPlaceholder": "フォローアップのプロンプトを入力してください。",
+    "privateModeDescription": "Firefox のプライベートモードは IndexedDB への保存をサポートしません。通常ウィンドウでプロンプトを追加してください。"
+  },
+  "models": {
+    "privateModeDescription": "Firefox のプライベートモードは IndexedDB への保存をサポートしません。通常ウィンドウでカスタムモデルを追加してください。"
   }
 }

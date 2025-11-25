@@ -677,5 +677,22 @@
     "emptyExample1": "Définis un coach en écriture, un expert en lore ou un assistant de code réutilisable.",
     "emptyExample2": "Donne à chaque personnage une description et un comportement clairs pour des réponses cohérentes.",
     "emptyPrimaryCta": "Créer un personnage"
+  },
+  "systemNotifications": {
+    "importSuccess": "Importation des données réussie",
+    "importError": "Erreur d’importation",
+    "syncSuccess": "Données Firefox synchronisées, inutile de le refaire",
+    "syncError": "Échec de la synchronisation des données Firefox",
+    "invalidImage": "Veuillez sélectionner un fichier image valide"
+  },
+  "prompts": {
+    "enterPrompt": "Saisissez une invite.",
+    "enterPromptPlaceholder": "Saisissez une invite.",
+    "enterFollowUpPrompt": "Saisissez une invite de suivi.",
+    "enterFollowUpPromptPlaceholder": "Saisissez une invite de suivi.",
+    "privateModeDescription": "Le mode privé de Firefox ne permet pas d’enregistrer dans IndexedDB. Ajoutez des invites depuis une fenêtre normale."
+  },
+  "models": {
+    "privateModeDescription": "Le mode privé de Firefox ne permet pas d’enregistrer dans IndexedDB. Ajoutez un modèle personnalisé depuis une fenêtre normale."
   }
 }

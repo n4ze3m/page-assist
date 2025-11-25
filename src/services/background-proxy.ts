@@ -1,6 +1,7 @@
 import { browser } from "wxt/browser"
 import { Storage } from "@plasmohq/storage"
 import type { AllowedMethodFor, AllowedPath, PathOrUrl, UpperLower } from "@/services/tldw/openapi-guard"
+import { isPlaceholderApiKey } from "@/utils/api-key"
 
 export interface BgRequestInit<P extends PathOrUrl = AllowedPath, M extends AllowedMethodFor<P> = AllowedMethodFor<P>> {
   path: P
@@ -51,11 +52,13 @@ export async function bgRequest<T = any, P extends PathOrUrl = AllowedPath, M ex
     }
     if (cfg?.authMode === 'single-user') {
       const key = String(cfg?.apiKey || '').trim()
-      if (key) {
-        h['X-API-KEY'] = key
-      } else {
+      if (!key) {
         throw new Error('Add or update your API key in Settings → tldw server, then try again.')
       }
+      if (isPlaceholderApiKey(key)) {
+        throw new Error('tldw server API key is still set to the default demo value. Replace it with your real API key in Settings → tldw server before continuing.')
+      }
+      h['X-API-KEY'] = key
     } else if (cfg?.authMode === 'multi-user') {
       const token = String(cfg?.accessToken || '').trim()
       if (token) {

@@ -20,6 +20,7 @@ import { generateSpeech } from "@/services/elevenlabs"
 import { generateOpenAITTS } from "@/services/openai-tts"
 import { tldwClient } from "@/services/tldw/TldwApiClient"
 import { useAntdNotification } from "./useAntdNotification"
+import { useTranslation } from "react-i18next"
 
 export type TtsPlaygroundSegment = {
   id: string
@@ -49,6 +50,7 @@ export const useTtsPlayground = () => {
   const [segments, setSegments] = useState<TtsPlaygroundSegment[]>([])
   const [isGenerating, setIsGenerating] = useState(false)
   const notification = useAntdNotification()
+  const { t } = useTranslation("playground")
 
   const revokeAll = (urls: string[]) => {
     urls.forEach((u) => {
@@ -95,9 +97,14 @@ export const useTtsPlayground = () => {
 
       if (provider === "browser") {
         notification.info({
-          message: "Browser TTS uses system audio",
-          description:
+          message: t(
+            "tts.browserInfoTitle",
+            "Browser TTS uses system audio"
+          ),
+          description: t(
+            "tts.browserInfoDescription",
             "Browser TTS plays using your system synthesizer and does not expose an audio file. Use ElevenLabs, OpenAI TTS, or tldw to see a track list and player."
+          )
         })
         setSegments([])
         return
@@ -171,8 +178,15 @@ export const useTtsPlayground = () => {
         }
       } else {
         notification.warning({
-          message: "Unsupported TTS provider",
-          description: `The provider "${provider}" is not yet supported in the playground player.`
+          message: t(
+            "tts.unsupportedProviderTitle",
+            "Unsupported TTS provider"
+          ),
+          description: t(
+            "tts.unsupportedProviderDescription",
+            'The provider "{{provider}}" is not yet supported in the playground player.',
+            { provider }
+          )
         })
         setSegments([])
         return
@@ -184,11 +198,14 @@ export const useTtsPlayground = () => {
       revokeAll(createdUrls)
       setSegments([])
       notification.error({
-        message: "Error generating audio",
+        message: t("tts.generateErrorTitle", "Error generating audio"),
         description:
           error instanceof Error
             ? error.message
-            : "Something went wrong while generating TTS audio."
+            : t(
+                "tts.generateErrorDescription",
+                "Something went wrong while generating TTS audio."
+              )
       })
     } finally {
       setIsGenerating(false)

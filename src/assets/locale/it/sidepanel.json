@@ -1,11 +1,15 @@
 {
-    "tooltip": {
-        "embed": "L'inserimento della pagina potrebbe richiedere alcuni minuti. Attendere prego...",
-        "clear": "Cancella la cronologia della chat",
-        "history": "Cronologia della chat",
-        "openwebui": "Apri WebUI"
-    },
-    "toolbar": {
-        "ragSearch": "RAG Search"
-    }
+  "tooltip": {
+    "embed": "L'inserimento della pagina potrebbe richiedere alcuni minuti. Attendere prego...",
+    "clear": "Cancella la cronologia della chat",
+    "history": "Cronologia della chat",
+    "openwebui": "Apri WebUI"
+  },
+  "toolbar": {
+    "ragSearch": "RAG Search"
+  },
+  "errors": {
+    "privateModeTitle": "tldw Assistant non può salvare i dati",
+    "privateModeDescription": "La modalità privata di Firefox non consente di salvare la cronologia della chat. La chat temporanea è attiva per impostazione predefinita. Altri miglioramenti arriveranno presto."
+  }
 }

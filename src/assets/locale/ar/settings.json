@@ -671,5 +671,22 @@
     "emptyExample1": "عرّف مدرب كتابة أو خبير قصص أو مساعد برمجة يمكن إعادة استخدامه عبر الدردشات.",
     "emptyExample2": "امنح كل شخصية وصفًا وسلوكًا واضحين لتحافظ على استجابات متسقة.",
     "emptyPrimaryCta": "إنشاء شخصية"
+  },
+  "systemNotifications": {
+    "importSuccess": "تم استيراد البيانات بنجاح",
+    "importError": "خطأ في الاستيراد",
+    "syncSuccess": "تمت مزامنة بيانات فايرفوكس بنجاح، لست بحاجة لإعادة ذلك",
+    "syncError": "فشلت مزامنة بيانات فايرفوكس",
+    "invalidImage": "يرجى اختيار ملف صورة صالح"
+  },
+  "prompts": {
+    "enterPrompt": "أدخل مطالبة.",
+    "enterPromptPlaceholder": "أدخل مطالبة.",
+    "enterFollowUpPrompt": "أدخل مطالبة متابعة.",
+    "enterFollowUpPromptPlaceholder": "أدخل مطالبة متابعة.",
+    "privateModeDescription": "وضع التصفح الخاص في فايرفوكس لا يدعم حفظ البيانات في IndexedDB. الرجاء إضافة المطالبات من نافذة عادية."
+  },
+  "models": {
+    "privateModeDescription": "وضع التصفح الخاص في فايرفوكس لا يدعم حفظ البيانات في IndexedDB. الرجاء إضافة نموذج مخصص من نافذة عادية."
   }
 }

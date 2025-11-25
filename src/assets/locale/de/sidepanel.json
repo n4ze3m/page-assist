@@ -1,11 +1,15 @@
 {
-    "tooltip": {
-        "embed": "Es kann einige Minuten dauern, die Seite einzubetten. Bitte warten Sie...",
-        "clear": "Chatverlauf löschen",
-        "history": "Chatverlauf",
-        "openwebui": "WebUI öffnen"
-    },
-    "toolbar": {
-        "ragSearch": "RAG Search"
-    }
+  "tooltip": {
+    "embed": "Es kann einige Minuten dauern, die Seite einzubetten. Bitte warten Sie...",
+    "clear": "Chatverlauf löschen",
+    "history": "Chatverlauf",
+    "openwebui": "WebUI öffnen"
+  },
+  "toolbar": {
+    "ragSearch": "RAG Search"
+  },
+  "errors": {
+    "privateModeTitle": "tldw Assistant kann keine Daten speichern",
+    "privateModeDescription": "Der Firefox-Privatmodus unterstützt kein Speichern des Chatverlaufs. Temporärer Chat ist standardmäßig aktiviert. Weitere Verbesserungen folgen."
+  }
 }

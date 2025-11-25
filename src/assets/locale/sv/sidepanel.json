@@ -1,11 +1,15 @@
 {
-    "tooltip": {
-        "embed": "Det kan ta några minuter att bädda in sidan. Vänta...",
-        "clear": "Radera chatthistorik",
-        "history": "Chatthistorik",
-        "openwebui": "Öppna WebUI"
-    },
-    "toolbar": {
-        "ragSearch": "RAG Search"
-    }
+  "tooltip": {
+    "embed": "Det kan ta några minuter att bädda in sidan. Vänta...",
+    "clear": "Radera chatthistorik",
+    "history": "Chatthistorik",
+    "openwebui": "Öppna WebUI"
+  },
+  "toolbar": {
+    "ragSearch": "RAG Search"
+  },
+  "errors": {
+    "privateModeTitle": "tldw Assistant kan inte spara data",
+    "privateModeDescription": "Firefox privat läge stöder inte att spara chatt-historik. Tillfällig chatt är aktiverat som standard. Fler förbättringar kommer snart."
+  }
 }

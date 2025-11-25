@@ -21,6 +21,7 @@ import { markdownToText } from "@/utils/markdown-to-text"
 import { generateOpenAITTS } from "@/services/openai-tts"
 import { tldwClient } from "@/services/tldw/TldwApiClient"
 import { useAntdNotification } from "./useAntdNotification"
+import { useTranslation } from "react-i18next"
 
 export interface VoiceOptions {
   utterance: string
@@ -32,6 +33,7 @@ export const useTTS = () => {
     null
   )
   const notification = useAntdNotification()
+  const { t } = useTranslation("playground")
 
   const speak = async ({ utterance }: VoiceOptions) => {
     try {
@@ -249,8 +251,11 @@ export const useTTS = () => {
       setIsSpeaking(false)
       setAudioElement(null)
       notification.error({
-        message: "Error",
-        description: "Something went wrong while trying to play the audio"
+        message: t("tts.playErrorTitle", "Error"),
+        description: t(
+          "tts.playErrorDescription",
+          "Something went wrong while trying to play the audio"
+        )
       })
     }
   }
