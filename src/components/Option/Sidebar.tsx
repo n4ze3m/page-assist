@@ -46,8 +46,12 @@ import { UploadedFile } from "@/db/dexie/types"
 import { isDatabaseClosedError } from "@/utils/ff-error"
 import { updatePageTitle } from "@/utils/update-page-title"
 import { promptInput } from "@/components/Common/prompt-input"
-import { confirmDanger } from "@/components/Common/confirm-danger"
+import { useConfirmDanger } from "@/components/Common/confirm-danger"
 import { IconButton } from "../Common/IconButton"
+import { useServerChatHistory } from "@/hooks/useServerChatHistory"
+import { useConnectionState } from "@/hooks/useConnectionState"
+import { useStoreMessageOption } from "@/store/option"
+import { tldwClient } from "@/services/tldw/TldwApiClient"
 
 type Props = {
   onClose: () => void
@@ -87,6 +91,15 @@ export const Sidebar = ({
   const [deleteGroup, setDeleteGroup] = useState<string | null>(null)
   const [dexiePrivateWindowError, setDexiePrivateWindowError] = useState(false)
   const [openMenuFor, setOpenMenuFor] = useState<string | null>(null)
+  const confirmDanger = useConfirmDanger()
+  const { isConnected } = useConnectionState()
+  const { serverChatId, setServerChatId } = useStoreMessageOption()
+  const {
+    data: serverChatData,
+    status: serverStatus,
+    isLoading: isServerLoading
+  } = useServerChatHistory(debouncedSearchQuery)
+  const serverChats = serverChatData || []
 
   // Using infinite query for pagination
   const {
@@ -315,6 +328,8 @@ export const Sidebar = ({
 
       {status === "success" &&
         chatHistories.length === 0 &&
+        serverStatus === "success" &&
+        serverChats.length === 0 &&
         !dexiePrivateWindowError && (
           <div className="flex justify-center items-center mt-20 overflow-hidden">
             <Empty description={t("common:noHistory")} />
@@ -335,6 +350,24 @@ export const Sidebar = ({
       {(status === "pending" || isLoading) && (
         <div className="flex justify-center items-center mt-5">
           <Skeleton active paragraph={{ rows: 8 }} />
+        </div>
+      )}
+
+      {serverStatus === "pending" && (
+        <div className="flex justify-center items-center mt-2">
+          <Skeleton active paragraph={{ rows: 2 }} />
+        </div>
+      )}
+
+      {serverStatus === "error" && (
+        <div className="flex justify-center items-center mt-2 px-2">
+          <span className="text-xs text-gray-500 dark:text-gray-400">
+            {t("common:serverChatsUnavailable", {
+              defaultValue: isConnected
+                ? "Server chats unavailable right now. Check your server logs or try again."
+                : "Server chats are available once you connect to your tldw server."
+            })}
+          </span>
         </div>
       )}
 
@@ -390,6 +423,8 @@ export const Sidebar = ({
                         const db = new PageAssistDatabase()
                         const history = await db.getChatHistory(chat.id)
                         const historyDetails = await db.getHistoryInfo(chat.id)
+                        // Switch to a local Dexie-backed chat; clear any active server-backed session id.
+                        setServerChatId(null)
                         setHistoryId(chat.id)
                         setHistory(formatToChatHistory(history))
                         setMessages(formatToMessage(history))
@@ -527,6 +562,98 @@ export const Sidebar = ({
               </Button>
             </div>
           )}
+        </div>
+      )}
+
+      {serverStatus === "success" && serverChats.length > 0 && (
+        <div className="mt-4 flex flex-col gap-2 border-t border-gray-200 dark:border-gray-800 pt-3">
+          <div className="flex items-center justify-between mt-1">
+            <h3 className="px-2 text-sm font-medium text-gray-500">
+              {t("common:serverChats", { defaultValue: "Server chats" })}
+            </h3>
+          </div>
+          <div className="flex flex-col gap-2 mt-1">
+            {serverChats.map((chat) => (
+              <button
+                key={chat.id}
+                className={`flex py-2 px-2 items-center gap-3 relative rounded-md truncate hover:pr-4 group transition-opacity duration-300 ease-in-out border text-left ${
+                  serverChatId === chat.id
+                    ? "bg-gray-200 dark:bg-[#454242] border-gray-400 dark:border-gray-600 text-gray-900 dark:text-gray-100"
+                    : "bg-gray-50 dark:bg-[#232222] dark:text-gray-100 text-gray-800 border-gray-300 dark:border-gray-800 hover:bg-gray-200 dark:hover:bg-[#2d2d2d]"
+                }`}
+                onClick={async () => {
+                  try {
+                    // Clear local selection; this chat is backed by the server
+                    setHistoryId(null)
+                    setServerChatId(chat.id)
+                    // Try to resolve a friendly assistant name from the character, if any.
+                    let assistantName = "Assistant"
+                    if (chat.character_id != null) {
+                      try {
+                        const character = await tldwClient.getCharacter(
+                          chat.character_id
+                        )
+                        if (character) {
+                          assistantName =
+                            character.name ||
+                            character.title ||
+                            assistantName
+                        }
+                      } catch {
+                        // Fallback to generic label if character lookup fails.
+                      }
+                    }
+
+                    const messages = await tldwClient.listChatMessages(
+                      chat.id,
+                      {
+                        include_deleted: "false"
+                      } as any
+                    )
+                    const history = messages.map((m) => ({
+                      role: m.role,
+                      content: m.content
+                    }))
+                    const mappedMessages = messages.map((m) => ({
+                      isBot: m.role === "assistant",
+                      name:
+                        m.role === "assistant"
+                          ? assistantName
+                          : m.role === "system"
+                            ? "System"
+                            : "You",
+                      message: m.content,
+                      sources: [],
+                      images: [],
+                      serverMessageId: m.id,
+                      serverMessageVersion: m.version
+                    }))
+                    setHistory(history)
+                    setMessages(mappedMessages)
+                    updatePageTitle(chat.title)
+                    navigate("/")
+                    onClose()
+                  } catch (e) {
+                    console.error("Failed to load server chat", e)
+                    message.error(
+                      t("common:serverChatLoadError", {
+                        defaultValue:
+                          "Failed to load server chat. Check your connection and try again."
+                      })
+                    )
+                  }
+                }}>
+                <div className="flex flex-col overflow-hidden flex-1">
+                  <span className="truncate text-sm">{chat.title}</span>
+                  <span className="text-xs text-gray-500 dark:text-gray-400">
+                    {t("common:serverChatSourceLabel", {
+                      defaultValue: "Server"
+                    })}
+                  </span>
+                </div>
+              </button>
+            ))}
+          </div>
         </div>
       )}
     </div>

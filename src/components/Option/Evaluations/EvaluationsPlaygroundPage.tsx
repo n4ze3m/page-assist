@@ -1582,26 +1582,30 @@ export const EvaluationsPlaygroundPage = () => {
                     })}
                     name="idempotencyKey"
                     initialValue={runIdempotencyKey}>
-                    <Input
-                      addonAfter={
-                        <Button
-                          size="small"
-                          onClick={() => {
-                            const next =
-                              (crypto as any)?.randomUUID?.() ||
-                              Math.random().toString(36).slice(2)
-                            setRunIdempotencyKey(next)
-                            runForm.setFieldsValue({ idempotencyKey: next })
-                          }}>
-                          {t("common:regenerate", {
-                            defaultValue: "Regenerate"
-                          })}
-                        </Button>
-                      }
-                      placeholder={t("settings:evaluations.idempotencyKeyPlaceholder", {
-                        defaultValue: "Use to avoid duplicate runs when retrying"
-                      }) as string}
-                    />
+                    <Space.Compact className="w-full">
+                      <Input
+                        placeholder={t(
+                          "settings:evaluations.idempotencyKeyPlaceholder",
+                          {
+                            defaultValue:
+                              "Use to avoid duplicate runs when retrying"
+                          }
+                        ) as string}
+                      />
+                      <Button
+                        size="small"
+                        onClick={() => {
+                          const next =
+                            (crypto as any)?.randomUUID?.() ||
+                            Math.random().toString(36).slice(2)
+                          setRunIdempotencyKey(next)
+                          runForm.setFieldsValue({ idempotencyKey: next })
+                        }}>
+                        {t("common:regenerate", {
+                          defaultValue: "Regenerate"
+                        })}
+                      </Button>
+                    </Space.Compact>
                   </Form.Item>
                   <Space>
                     <Button
@@ -2292,26 +2296,29 @@ export const EvaluationsPlaygroundPage = () => {
               })}
               name="idempotencyKey"
               initialValue={evalIdempotencyKey}>
-              <Input
-                addonAfter={
-                  <Button
-                    size="small"
-                    onClick={() => {
-                      const next =
-                        (crypto as any)?.randomUUID?.() ||
-                        Math.random().toString(36).slice(2)
-                      setEvalIdempotencyKey(next)
-                      createEvalForm.setFieldsValue({
-                        idempotencyKey: next
-                      })
-                    }}>
-                    {t("common:regenerate", { defaultValue: "Regenerate" })}
-                  </Button>
-                }
-                placeholder={t("settings:evaluations.idempotencyKeyPlaceholder", {
-                  defaultValue: "Prevents duplicate create on retry"
-                }) as string}
-              />
+              <Space.Compact className="w-full">
+                <Input
+                  placeholder={t(
+                    "settings:evaluations.idempotencyKeyPlaceholder",
+                    {
+                      defaultValue: "Prevents duplicate create on retry"
+                    }
+                  ) as string}
+                />
+                <Button
+                  size="small"
+                  onClick={() => {
+                    const next =
+                      (crypto as any)?.randomUUID?.() ||
+                      Math.random().toString(36).slice(2)
+                    setEvalIdempotencyKey(next)
+                    createEvalForm.setFieldsValue({
+                      idempotencyKey: next
+                    })
+                  }}>
+                  {t("common:regenerate", { defaultValue: "Regenerate" })}
+                </Button>
+              </Space.Compact>
             </Form.Item>
           )}
         </Form>

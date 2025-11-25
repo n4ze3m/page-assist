@@ -6,7 +6,7 @@ import {
   FileCode,
   ImageIcon
 } from "lucide-react"
-import { Dropdown, MenuProps, message } from "antd"
+import { Dropdown, MenuProps } from "antd"
 import { IconButton } from "../Common/IconButton"
 import { Message } from "@/types/message"
 import { useState } from "react"
@@ -17,6 +17,7 @@ import { copyToClipboard } from "@/utils/clipboard"
 import ReactDOM from "react-dom"
 import html2canvas from "html2canvas"
 import { ImageExportWrapper } from "../Common/ImageExport"
+import { useAntdMessage } from "@/hooks/useAntdMessage"
 interface MoreOptionsProps {
   messages: Message[]
   historyId: string
@@ -89,6 +90,7 @@ export const MoreOptions = ({
   const { t } = useTranslation(["option", "settings"])
   const [onShareOpen, setOnShareOpen] = useState(false)
   const [open, setOpen] = useState(false)
+  const message = useAntdMessage()
   const baseItems: MenuProps["items"] = [
     {
       type: "group",

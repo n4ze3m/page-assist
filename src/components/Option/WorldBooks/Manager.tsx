@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Button, Form, Input, InputNumber, Modal, Skeleton, Switch, Table, Tooltip, Tag, Select, Descriptions } from "antd"
 import React from "react"
-import { confirmDanger } from "@/components/Common/confirm-danger"
+import { useConfirmDanger } from "@/components/Common/confirm-danger"
 import { tldwClient } from "@/services/tldw/TldwApiClient"
 import { Pen, Trash2, BookOpen } from "lucide-react"
 import { useServerOnline } from "@/hooks/useServerOnline"
@@ -26,6 +26,7 @@ export const WorldBooksManager: React.FC = () => {
   const [editForm] = Form.useForm()
   const [entryForm] = Form.useForm()
   const [attachForm] = Form.useForm()
+  const confirmDanger = useConfirmDanger()
 
   const { data, status } = useQuery({
     queryKey: ['tldw:listWorldBooks'],
@@ -223,6 +224,7 @@ export const WorldBooksManager: React.FC = () => {
 const EntryManager: React.FC<{ worldBookId: number; form: any }> = ({ worldBookId, form }) => {
   const qc = useQueryClient()
   const notification = useAntdNotification()
+  const confirmDanger = useConfirmDanger()
   const { data, status } = useQuery({
     queryKey: ['tldw:listWorldBookEntries', worldBookId],
     queryFn: async () => {

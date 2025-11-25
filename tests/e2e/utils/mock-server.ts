@@ -49,6 +49,25 @@ type MockCharacter = {
   version: number
 }
 
+type MockChatMessage = {
+  id: string
+  role: 'system' | 'user' | 'assistant'
+  content: string
+  created_at: string
+  version: number
+}
+
+type MockChat = {
+  id: string
+  character_id?: string | number | null
+  title: string
+  rating?: number | null
+  created_at: string
+  last_modified: string
+  message_count: number
+  version: number
+}
+
 export class MockTldwServer {
   private server: http.Server
   public url!: string
@@ -58,6 +77,8 @@ export class MockTldwServer {
   private decks: MockDeck[] = []
   private cards: MockFlashcard[] = []
   private characters: MockCharacter[] = []
+  private chats: MockChat[] = []
+  private chatMessages: Record<string, MockChatMessage[]> = {}
   private nextDeckId = 1
   private nextCharacterId = 1
 
@@ -80,6 +101,21 @@ export class MockTldwServer {
 
   setApiKey(key: string) {
     this.apiKey = key
+  }
+
+  /**
+   * Seed simple chat + message fixtures for UX tests.
+   */
+  setChatFixtures(payload: {
+    chats: MockChat[]
+    characters?: MockCharacter[]
+    messagesByChat?: Record<string, MockChatMessage[]>
+  }) {
+    this.chats = payload.chats || []
+    if (payload.characters) {
+      this.characters = payload.characters
+    }
+    this.chatMessages = payload.messagesByChat || {}
   }
 
   private unauthorized(res: http.ServerResponse, msg = 'Invalid X-API-KEY') {
@@ -404,6 +440,23 @@ export class MockTldwServer {
         res.end()
         return
       }
+    }
+
+    // Chats collection
+    if (pathname === '/api/v1/chats/' || pathname === '/api/v1/chats') {
+      if (!requireApiKey()) return
+      if (method === 'GET') {
+        const items = this.chats || []
+        return this.ok(res, { chats: items, total: items.length, limit: 100, offset: 0 })
+      }
+    }
+
+    // Chat messages
+    if (pathname.startsWith('/api/v1/chats/') && pathname.endsWith('/messages')) {
+      if (!requireApiKey()) return
+      const cid = pathname.replace('/api/v1/chats/', '').replace('/messages', '').replace(/\/$/, '')
+      const items = this.chatMessages[cid] || []
+      return this.ok(res, { messages: items, total: items.length, limit: 50, offset: 0 })
     }
 
     // Flashcards: decks

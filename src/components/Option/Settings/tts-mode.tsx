@@ -10,11 +10,13 @@ import {
 import { useWebUI } from "@/store/webui"
 import { useForm } from "@mantine/form"
 import { useQuery } from "@tanstack/react-query"
-import { Input, InputNumber, message, Select, Skeleton, Switch } from "antd"
+import { Input, InputNumber, Select, Skeleton, Switch } from "antd"
 import { useTranslation } from "react-i18next"
+import { useAntdMessage } from "@/hooks/useAntdMessage"
 
 export const TTSModeSettings = ({ hideBorder }: { hideBorder?: boolean }) => {
   const { t } = useTranslation("settings")
+  const message = useAntdMessage()
   const { setTTSEnabled } = useWebUI()
   const queryClient = useQueryClient()
   const ids = {

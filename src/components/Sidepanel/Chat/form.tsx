@@ -64,6 +64,25 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
     "chatWithWebsiteEmbedding",
     false
   )
+  const [sttModel] = useStorage("sttModel", "whisper-1")
+  const [sttUseSegmentation] = useStorage("sttUseSegmentation", false)
+  const [sttTimestampGranularities] = useStorage(
+    "sttTimestampGranularities",
+    "segment"
+  )
+  const [sttPrompt] = useStorage("sttPrompt", "")
+  const [sttTask] = useStorage("sttTask", "transcribe")
+  const [sttResponseFormat] = useStorage("sttResponseFormat", "json")
+  const [sttTemperature] = useStorage("sttTemperature", 0)
+  const [sttSegK] = useStorage("sttSegK", 6)
+  const [sttSegMinSegmentSize] = useStorage("sttSegMinSegmentSize", 5)
+  const [sttSegLambdaBalance] = useStorage("sttSegLambdaBalance", 0.01)
+  const [sttSegUtteranceExpansionWidth] = useStorage(
+    "sttSegUtteranceExpansionWidth",
+    2
+  )
+  const [sttSegEmbeddingsProvider] = useStorage("sttSegEmbeddingsProvider", "")
+  const [sttSegEmbeddingsModel] = useStorage("sttSegEmbeddingsModel", "")
   const form = useForm({
     initialValues: {
       message: "",
@@ -348,9 +367,51 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
           if (blob.size === 0) {
             return
           }
-          const res = await tldwClient.transcribeAudio(blob, {
+          const sttOptions: Record<string, any> = {
             language: speechToTextLanguage
-          })
+          }
+          if (sttModel && sttModel.trim().length > 0) {
+            sttOptions.model = sttModel.trim()
+          }
+          if (sttTimestampGranularities) {
+            sttOptions.timestamp_granularities = sttTimestampGranularities
+          }
+          if (sttPrompt && sttPrompt.trim().length > 0) {
+            sttOptions.prompt = sttPrompt.trim()
+          }
+          if (sttTask) {
+            sttOptions.task = sttTask
+          }
+          if (sttResponseFormat) {
+            sttOptions.response_format = sttResponseFormat
+          }
+          if (typeof sttTemperature === "number") {
+            sttOptions.temperature = sttTemperature
+          }
+          if (sttUseSegmentation) {
+            sttOptions.segment = true
+            if (typeof sttSegK === "number") {
+              sttOptions.seg_K = sttSegK
+            }
+            if (typeof sttSegMinSegmentSize === "number") {
+              sttOptions.seg_min_segment_size = sttSegMinSegmentSize
+            }
+            if (typeof sttSegLambdaBalance === "number") {
+              sttOptions.seg_lambda_balance = sttSegLambdaBalance
+            }
+            if (typeof sttSegUtteranceExpansionWidth === "number") {
+              sttOptions.seg_utterance_expansion_width =
+                sttSegUtteranceExpansionWidth
+            }
+            if (sttSegEmbeddingsProvider?.trim()) {
+              sttOptions.seg_embeddings_provider =
+                sttSegEmbeddingsProvider.trim()
+            }
+            if (sttSegEmbeddingsModel?.trim()) {
+              sttOptions.seg_embeddings_model = sttSegEmbeddingsModel.trim()
+            }
+          }
+          const res = await tldwClient.transcribeAudio(blob, sttOptions)
           let text = ""
           if (res) {
             if (typeof res === "string") {
@@ -405,7 +466,17 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
         )
       })
     }
-  }, [hasServerAudio, isServerDictating, speechToTextLanguage, stopServerDictation, t, form])
+  }, [
+    hasServerAudio,
+    isServerDictating,
+    speechToTextLanguage,
+    sttModel,
+    sttTimestampGranularities,
+    sttUseSegmentation,
+    stopServerDictation,
+    t,
+    form
+  ])
 
   const handleLiveCaptionsToggle = React.useCallback(async () => {
     if (wsSttActive) {

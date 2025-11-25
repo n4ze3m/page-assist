@@ -40,6 +40,23 @@ export interface ChatCompletionRequest {
   presence_penalty?: number
 }
 
+export interface ServerChatSummary {
+  id: string
+  title: string
+  created_at: string
+  updated_at?: string | null
+  source?: string | null
+  character_id?: string | number | null
+}
+
+export interface ServerChatMessage {
+  id: string
+  role: "system" | "user" | "assistant"
+  content: string
+  created_at: string
+  version?: number
+}
+
 type PromptPayload = {
   name?: string
   title?: string
@@ -307,229 +324,44 @@ export class TldwApiClient {
   }
 
   async getModels(): Promise<TldwModel[]> {
-    // Prefer flattened metadata endpoint when available
-    try {
-      const meta = await this.getModelsMetadata().catch(() => null)
-      const list =
-        Array.isArray(meta) && meta.length > 0
-          ? meta
-          : meta && typeof meta === "object" && Array.isArray((meta as any).models)
-            ? (meta as any).models
-            : null
+    const meta = await this.getModelsMetadata()
+    const list =
+      Array.isArray(meta) && meta.length > 0
+        ? meta
+        : meta && typeof meta === "object" && Array.isArray((meta as any).models)
+          ? (meta as any).models
+          : []
 
-      if (list && list.length > 0) {
-        // Normalize fields to TldwModel
-        return list.map((m: any) => ({
-          id: String(m.id || m.model || m.name),
-          name: String(m.name || m.id || m.model),
-          provider: String(m.provider || "unknown"),
-          description: m.description,
-          capabilities: Array.isArray(m.capabilities)
-            ? m.capabilities
-            : Array.isArray(m.features)
-              ? m.features
+    return list.map((m: any) => ({
+      id: String(m.id || m.model || m.name),
+      name: String(m.name || m.id || m.model),
+      provider: String(m.provider || "default"),
+      description: m.description,
+      capabilities: Array.isArray(m.capabilities)
+        ? m.capabilities
+        : Array.isArray(m.features)
+          ? m.features
+          : undefined,
+      context_length:
+        typeof m.context_length === "number"
+          ? m.context_length
+          : typeof m.context_window === "number"
+            ? m.context_window
+            : typeof m.contextLength === "number"
+              ? m.contextLength
               : undefined,
-          context_length:
-            typeof m.context_length === "number"
-              ? m.context_length
-              : typeof m.context_window === "number"
-                ? m.context_window
-                : typeof m.contextLength === "number"
-                  ? m.contextLength
-                  : undefined,
-          vision: Boolean(
-            (m.capabilities && m.capabilities.vision) ?? m.vision
-          ),
-          function_calling: Boolean(
-            (m.capabilities &&
-              (m.capabilities.function_calling || m.capabilities.tool_use)) ??
-              m.function_calling
-          ),
-          json_output: Boolean(
-            (m.capabilities && m.capabilities.json_mode) ?? m.json_output
-          )
-        }))
-      }
-    } catch {}
-
-    // Next: use providers endpoint for richer info when available
-    try {
-      const providers = await this.getProviders().catch(() => null)
-      if (providers && typeof providers === "object") {
-        // Newer tldw_server builds return { providers: [...], ... }.
-        // Older builds may return a plain array or other shapes. Prefer the
-        // documented shape first and fall back to a legacy extractor.
-        const providerList = Array.isArray((providers as any).providers)
-          ? (providers as any).providers
-          : Array.isArray(providers)
-            ? (providers as any)
-            : null
-
-        if (providerList && providerList.length > 0) {
-          const models: TldwModel[] = []
-
-          for (const p of providerList as any[]) {
-            const providerName = String(p.name || p.provider || "unknown")
-
-            const modelsInfo = Array.isArray(p.models_info) ? p.models_info : []
-            const simpleModels = Array.isArray(p.models) ? p.models : []
-
-            if (modelsInfo.length > 0) {
-              for (const mi of modelsInfo) {
-                const id = String(mi.id || mi.name || mi.model)
-                const name = String(mi.name || id)
-                const caps = mi.capabilities || {}
-                models.push({
-                  id,
-                  name,
-                  provider: providerName,
-                  description: mi.notes || mi.description,
-                  capabilities: Array.isArray(caps) ? caps : undefined,
-                  context_length:
-                    typeof mi.context_length === "number"
-                      ? mi.context_length
-                      : typeof mi.context_window === "number"
-                        ? mi.context_window
-                        : typeof mi.contextLength === "number"
-                          ? mi.contextLength
-                          : undefined,
-                  vision: Boolean(caps.vision),
-                  function_calling: Boolean(
-                    caps.function_calling ?? caps.tool_use
-                  ),
-                  json_output: Boolean(caps.json_mode)
-                })
-              }
-            } else {
-              for (const m of simpleModels) {
-                const id = String(m)
-                models.push({
-                  id,
-                  name: id,
-                  provider: providerName
-                })
-              }
-            }
-          }
-
-          const uniq = new Map<string, TldwModel>()
-          for (const m of models) {
-            uniq.set(`${m.provider}:${m.id}`, m)
-          }
-          const list = Array.from(uniq.values())
-          if (list.length > 0) return list
-        }
-
-        // Legacy fallback: tolerate older/non-standard shapes by walking
-        // arbitrary object structures looking for model-like values.
-        const models: TldwModel[] = []
-
-        const pushModel = (providerName: string, id: any, value?: any) => {
-          const modelId =
-            typeof id === "string" ? id : id?.id || id?.name || id?.model
-          if (!modelId) return
-          const name =
-            typeof id === "string" ? id : id?.name || modelId
-          const meta =
-            typeof id === "object"
-              ? id
-              : typeof value === "object"
-                ? value
-                : {}
-          models.push({
-            id: String(modelId),
-            name: String(name),
-            provider: providerName,
-            description: meta?.description,
-            capabilities: Array.isArray(meta?.capabilities)
-              ? meta.capabilities
-              : undefined,
-            context_length:
-              typeof meta?.context_length === "number"
-                ? meta.context_length
-                : typeof meta?.contextLength === "number"
-                  ? meta.contextLength
-                  : undefined,
-            vision: Boolean(meta?.vision),
-            function_calling: Boolean(meta?.function_calling),
-            json_output: Boolean(meta?.json_output)
-          })
-        }
-
-        const extract = (providerName: string, info: any) => {
-          if (!info) return
-          if (Array.isArray(info)) {
-            for (const item of info) pushModel(providerName, item)
-            return
-          }
-          if (Array.isArray(info?.models)) {
-            for (const item of info.models) pushModel(providerName, item)
-          }
-          if (info && typeof info === "object") {
-            for (const [k, v] of Object.entries(info)) {
-              if (k === "models") continue
-              if (Array.isArray(v)) {
-                for (const item of v) pushModel(providerName, item)
-              } else if (v && typeof v === "object") {
-                for (const [mk, mv] of Object.entries<any>(v)) {
-                  if (typeof mv === "object") pushModel(providerName, mk, mv)
-                  else pushModel(providerName, mk)
-                }
-              } else if (typeof v === "string") {
-                pushModel(providerName, v)
-              }
-            }
-          }
-        }
-
-        for (const [providerName, info] of Object.entries<any>(providers)) {
-          extract(String(providerName), info)
-        }
-
-        const uniq = new Map<string, TldwModel>()
-        for (const m of models) {
-          uniq.set(`${m.provider}:${m.id}`, m)
-        }
-        const list = Array.from(uniq.values())
-        if (list.length > 0) return list
-      }
-    } catch {}
-
-    // Fallback to flat list of model IDs
-    const data = await bgRequest<any>({ path: '/api/v1/llm/models', method: 'GET' })
-    let list: { id: string; provider: string; name?: string }[] = []
-    if (Array.isArray(data)) {
-      // Assume plain model ids, possibly prefixed like "provider/model" or "provider/a/b"
-      list = data.map((m: any) => {
-        const s = String(m)
-        const parts = s.split('/')
-        const provider = parts.length > 1 ? parts[0] : 'unknown'
-        const rest = parts.length > 1 ? parts.slice(1).join('/') : s
-        return { id: s, provider, name: rest }
-      }) as any
-    } else if (data && typeof data === 'object') {
-      // Maybe { provider: [models...] }
-      for (const [providerName, arr] of Object.entries<any>(data)) {
-        if (Array.isArray(arr)) {
-          for (const item of arr) {
-            const s = String(item)
-            const parts = s.split('/')
-            const rest = parts.length > 1 ? parts.slice(1).join('/') : s
-            list.push({ id: s, provider: String(providerName), name: rest })
-          }
-        }
-      }
-      if (list.length === 0 && Array.isArray((data as any).models)) {
-        list = (data as any).models.map((m: any) => {
-          const s = String(m)
-          const parts = s.split('/')
-          const provider = parts.length > 1 ? parts[0] : 'unknown'
-          const rest = parts.length > 1 ? parts.slice(1).join('/') : s
-          return { id: s, provider, name: rest }
-        })
-      }
-    }
-    return list.map((m: any) => ({ id: String(m.id), name: String(m.name || m.id), provider: String(m.provider) }))
+      vision: Boolean(
+        (m.capabilities && m.capabilities.vision) ?? m.vision
+      ),
+      function_calling: Boolean(
+        (m.capabilities &&
+          (m.capabilities.function_calling || m.capabilities.tool_use)) ??
+          m.function_calling
+      ),
+      json_output: Boolean(
+        (m.capabilities && m.capabilities.json_mode) ?? m.json_output
+      )
+    }))
   }
 
   async getProviders(): Promise<any> {
@@ -905,23 +737,78 @@ export class TldwApiClient {
   }
 
   // Chats API (resource-based)
-  async listChats(params?: Record<string, any>): Promise<any[]> {
+  async listChats(params?: Record<string, any>): Promise<ServerChatSummary[]> {
     const query = this.buildQuery(params)
-    return await bgRequest<any[]>({ path: `/api/v1/chats/${query}`, method: 'GET' })
+    const data = await bgRequest<any>({
+      path: `/api/v1/chats/${query}`,
+      method: "GET"
+    })
+
+    let list: any[] = []
+
+    if (Array.isArray(data)) {
+      list = data
+    } else if (data && typeof data === "object") {
+      const obj: any = data
+      if (Array.isArray(obj.chats)) {
+        list = obj.chats
+      } else if (Array.isArray(obj.items)) {
+        list = obj.items
+      } else if (Array.isArray(obj.results)) {
+        list = obj.results
+      } else if (Array.isArray(obj.data)) {
+        list = obj.data
+      }
+    }
+
+    return list.map((c) => {
+      const created_at = String(c.created_at || c.createdAt || "")
+      const updated_at =
+        c.updated_at ??
+        c.updatedAt ??
+        c.last_modified ??
+        c.lastModified ??
+        null
+      return {
+        id: String(c.id),
+        title: String(c.title || ""),
+        created_at,
+        updated_at: updated_at ? String(updated_at) : null,
+        source: c.source ?? null,
+        character_id:
+          c.character_id ?? c.characterId ?? null
+      } as ServerChatSummary
+    })
   }
 
-  async createChat(payload: Record<string, any>): Promise<any> {
-    return await bgRequest<any>({ path: '/api/v1/chats/', method: 'POST', headers: { 'Content-Type': 'application/json' }, body: payload })
+  async createChat(payload: Record<string, any>): Promise<ServerChatSummary> {
+    return await bgRequest<ServerChatSummary>({
+      path: "/api/v1/chats/",
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: payload
+    })
   }
 
-  async getChat(chat_id: string | number): Promise<any> {
+  async getChat(chat_id: string | number): Promise<ServerChatSummary> {
     const cid = String(chat_id)
-    return await bgRequest<any>({ path: `/api/v1/chats/${cid}`, method: 'GET' })
+    return await bgRequest<ServerChatSummary>({
+      path: `/api/v1/chats/${cid}`,
+      method: "GET"
+    })
   }
 
-  async updateChat(chat_id: string | number, payload: Record<string, any>): Promise<any> {
+  async updateChat(
+    chat_id: string | number,
+    payload: Record<string, any>
+  ): Promise<ServerChatSummary> {
     const cid = String(chat_id)
-    return await bgRequest<any>({ path: `/api/v1/chats/${cid}`, method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: payload })
+    return await bgRequest<ServerChatSummary>({
+      path: `/api/v1/chats/${cid}`,
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: payload
+    })
   }
 
   async deleteChat(chat_id: string | number): Promise<void> {
@@ -929,15 +816,62 @@ export class TldwApiClient {
     await bgRequest<void>({ path: `/api/v1/chats/${cid}`, method: 'DELETE' })
   }
 
-  async listChatMessages(chat_id: string | number, params?: Record<string, any>): Promise<any[]> {
+  async listChatMessages(
+    chat_id: string | number,
+    params?: Record<string, any>
+  ): Promise<ServerChatMessage[]> {
     const cid = String(chat_id)
     const query = this.buildQuery(params)
-    return await bgRequest<any[]>({ path: `/api/v1/chats/${cid}/messages${query}`, method: 'GET' })
+    const data = await bgRequest<any>({
+      path: `/api/v1/chats/${cid}/messages${query}`,
+      method: "GET"
+    })
+
+    let list: any[] = []
+
+    if (Array.isArray(data)) {
+      list = data
+    } else if (data && typeof data === "object") {
+      const obj: any = data
+      if (Array.isArray(obj.messages)) {
+        list = obj.messages
+      } else if (Array.isArray(obj.items)) {
+        list = obj.items
+      } else if (Array.isArray(obj.results)) {
+        list = obj.results
+      } else if (Array.isArray(obj.data)) {
+        list = obj.data
+      }
+    }
+
+    return list.map((m) => {
+      const created_at = String(m.created_at || m.createdAt || "")
+      return {
+        id: String(m.id),
+        role: m.role,
+        content: String(m.content ?? ""),
+        created_at,
+        version:
+          typeof m.version === "number"
+            ? m.version
+            : typeof m.expected_version === "number"
+              ? m.expected_version
+              : undefined
+      } as ServerChatMessage
+    })
   }
 
-  async addChatMessage(chat_id: string | number, payload: Record<string, any>): Promise<any> {
+  async addChatMessage(
+    chat_id: string | number,
+    payload: Record<string, any>
+  ): Promise<ServerChatMessage> {
     const cid = String(chat_id)
-    return await bgRequest<any>({ path: `/api/v1/chats/${cid}/messages`, method: 'POST', headers: { 'Content-Type': 'application/json' }, body: payload })
+    return await bgRequest<ServerChatMessage>({
+      path: `/api/v1/chats/${cid}/messages`,
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: payload
+    })
   }
 
   async searchChatMessages(chat_id: string | number, query: string, limit?: number): Promise<any> {
@@ -1117,8 +1051,34 @@ export class TldwApiClient {
   async transcribeAudio(audioFile: File | Blob, options?: any): Promise<any> {
     await this.ensureConfigForRequest(true)
     const fields: Record<string, any> = {}
-    if (options?.model) fields.model = options.model
-    if (options?.language) fields.language = options.language
+    if (options) {
+      if (options.model != null) fields.model = options.model
+      if (options.language != null) fields.language = options.language
+      if (options.prompt != null) fields.prompt = options.prompt
+      if (options.response_format != null) fields.response_format = options.response_format
+      if (options.temperature != null) fields.temperature = options.temperature
+      if (options.task != null) fields.task = options.task
+      if (options.timestamp_granularities != null) {
+        fields.timestamp_granularities = options.timestamp_granularities
+      }
+      if (options.segment != null) fields.segment = options.segment
+      if (options.seg_K != null) fields.seg_K = options.seg_K
+      if (options.seg_min_segment_size != null) {
+        fields.seg_min_segment_size = options.seg_min_segment_size
+      }
+      if (options.seg_lambda_balance != null) {
+        fields.seg_lambda_balance = options.seg_lambda_balance
+      }
+      if (options.seg_utterance_expansion_width != null) {
+        fields.seg_utterance_expansion_width = options.seg_utterance_expansion_width
+      }
+      if (options.seg_embeddings_provider != null) {
+        fields.seg_embeddings_provider = options.seg_embeddings_provider
+      }
+      if (options.seg_embeddings_model != null) {
+        fields.seg_embeddings_model = options.seg_embeddings_model
+      }
+    }
     const data = await audioFile.arrayBuffer()
     const name = (typeof File !== 'undefined' && audioFile instanceof File && (audioFile as File).name) ? (audioFile as File).name : 'audio'
     const type = (audioFile as any)?.type || 'application/octet-stream'

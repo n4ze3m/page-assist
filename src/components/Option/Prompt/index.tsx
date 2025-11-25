@@ -31,7 +31,7 @@ import {
 } from "@/services/application"
 import { tagColors } from "@/utils/color"
 import { isFireFoxPrivateMode } from "@/utils/is-private-mode"
-import { confirmDanger } from "@/components/Common/confirm-danger"
+import { useConfirmDanger } from "@/components/Common/confirm-danger"
 import { useServerOnline } from "@/hooks/useServerOnline"
 import FeatureEmptyState from "@/components/Common/FeatureEmptyState"
 import { useMessageOption } from "@/hooks/useMessageOption"
@@ -56,6 +56,7 @@ export const PromptBody = () => {
   const [tagFilter, setTagFilter] = useState<string[]>([])
   const fileInputRef = useRef<HTMLInputElement | null>(null)
   const [importMode, setImportMode] = useState<"merge" | "replace">("merge")
+  const confirmDanger = useConfirmDanger()
 
   const [openCopilotEdit, setOpenCopilotEdit] = useState(false)
   const [editCopilotId, setEditCopilotId] = useState("")

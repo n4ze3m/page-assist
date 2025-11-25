@@ -2,11 +2,12 @@ import { getOpenAIConfigById } from "@/db/dexie/openai"
 import { getAllOpenAIModels } from "@/libs/openai"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useTranslation } from "react-i18next"
-import { Checkbox, Input, Spin, message, Radio } from "antd"
+import { Checkbox, Input, Spin, Radio } from "antd"
 import { useState, useMemo } from "react"
 import { createManyModels } from "@/db/dexie/models"
 import { Popover } from "antd"
 import { InfoIcon } from "lucide-react"
+import { useAntdMessage } from "@/hooks/useAntdMessage"
 
 type Props = {
   openaiId: string
@@ -15,6 +16,7 @@ type Props = {
 
 export const OpenAIFetchModel = ({ openaiId, setOpenModelModal }: Props) => {
   const { t } = useTranslation(["openai"])
+  const message = useAntdMessage()
   const [selectedModels, setSelectedModels] = useState<string[]>([])
   const [searchTerm, setSearchTerm] = useState("")
   const [modelType, setModelType] = useState("chat")

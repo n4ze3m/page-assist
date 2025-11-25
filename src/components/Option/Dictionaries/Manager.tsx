@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next"
 import React from "react"
 import { tldwClient } from "@/services/tldw/TldwApiClient"
 import { Pen, Trash2, Book } from "lucide-react"
-import { confirmDanger } from "@/components/Common/confirm-danger"
+import { useConfirmDanger } from "@/components/Common/confirm-danger"
 import { useServerOnline } from "@/hooks/useServerOnline"
 import FeatureEmptyState from "@/components/Common/FeatureEmptyState"
 import { useServerCapabilities } from "@/hooks/useServerCapabilities"
@@ -26,6 +26,7 @@ export const DictionariesManager: React.FC = () => {
   const [activateOnImport, setActivateOnImport] = React.useState(false)
   const [statsFor, setStatsFor] = React.useState<any | null>(null)
   const { capabilities, loading: capsLoading } = useServerCapabilities()
+  const confirmDanger = useConfirmDanger()
 
   const { data, status } = useQuery({
     queryKey: ['tldw:listDictionaries'],
@@ -167,6 +168,7 @@ export const DictionariesManager: React.FC = () => {
 const DictionaryEntryManager: React.FC<{ dictionaryId: number; form: any }> = ({ dictionaryId, form }) => {
   const { t } = useTranslation(["common"]) 
   const qc = useQueryClient()
+  const confirmDanger = useConfirmDanger()
   const { data, status } = useQuery({
     queryKey: ['tldw:listDictionaryEntries', dictionaryId],
     queryFn: async () => {

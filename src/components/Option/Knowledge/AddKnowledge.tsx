@@ -3,7 +3,7 @@ import { Source } from "@/db/knowledge"
 import { defaultEmbeddingModelForRag } from "@/services/ollama"
 import { convertTextToSource, convertToSource } from "@/utils/to-source"
 import { useMutation } from "@tanstack/react-query"
-import { Modal, Form, Input, Upload, message, Tabs, Select } from "antd"
+import { Modal, Form, Input, Upload, Tabs, Select } from "antd"
 import { InboxIcon } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import PubSub from "pubsub-js"
@@ -11,6 +11,7 @@ import { KNOWLEDGE_QUEUE } from "@/queue"
 import { useStorage } from "@plasmohq/storage/hook"
 import { unsupportedTypes } from "./utils/unsupported-types"
 import React from "react"
+import { useAntdMessage } from "@/hooks/useAntdMessage"
 
 type Props = {
   open: boolean
@@ -19,6 +20,7 @@ type Props = {
 
 export const AddKnowledge = ({ open, setOpen }: Props) => {
   const { t } = useTranslation(["knowledge", "common"])
+  const message = useAntdMessage()
   const [form] = Form.useForm()
   const [totalFilePerKB] = useStorage("totalFilePerKB", 5)
   const [mode, setMode] = React.useState<"upload" | "text">("upload")

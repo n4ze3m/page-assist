@@ -31,6 +31,7 @@ import { generateID } from "@/db/dexie/helpers"
 import { UploadedFile } from "@/db/dexie/types"
 import { updatePageTitle } from "@/utils/update-page-title"
 import { useAntdNotification } from "./useAntdNotification"
+import { tldwClient } from "@/services/tldw/TldwApiClient"
 
 export const useMessageOption = () => {
   const {
@@ -79,7 +80,9 @@ export const useMessageOption = () => {
     actionInfo,
     setActionInfo,
     setFileRetrievalEnabled,
-    fileRetrievalEnabled
+    fileRetrievalEnabled,
+    serverChatId,
+    setServerChatId
   } = useStoreMessageOption()
 
   const currentChatModelSettings = useStoreChatModelSettings()
@@ -219,9 +222,10 @@ export const useMessageOption = () => {
     setFileRetrievalEnabled(false)
     setActionInfo(null)
     storeClearQueuedMessages()
+    setServerChatId(null)
   }
 
-  const saveMessageOnSuccess = createSaveMessageOnSuccess(
+  const baseSaveMessageOnSuccess = createSaveMessageOnSuccess(
     temporaryChat,
     setHistoryId as (id: string) => void
   )
@@ -231,6 +235,43 @@ export const useMessageOption = () => {
     setHistory,
     setHistoryId as (id: string) => void
   )
+
+  const saveMessageOnSuccess = async (payload: any): Promise<string | null> => {
+    const historyKey = await baseSaveMessageOnSuccess(payload)
+
+    // When resuming a server-backed chat, mirror new turns to /api/v1/chats.
+    if (
+      serverChatId &&
+      !payload?.isRegenerate &&
+      !payload?.isContinue &&
+      typeof payload?.message === "string" &&
+      typeof payload?.fullText === "string"
+    ) {
+      try {
+        const cid = serverChatId
+        const userContent = payload.message.trim()
+        const assistantContent = payload.fullText.trim()
+
+        if (userContent.length > 0) {
+          await tldwClient.addChatMessage(cid, {
+            role: "user",
+            content: userContent
+          })
+        }
+
+        if (assistantContent.length > 0) {
+          await tldwClient.addChatMessage(cid, {
+            role: "assistant",
+            content: assistantContent
+          })
+        }
+      } catch {
+        // Ignore sync errors; local history is still saved.
+      }
+    }
+
+    return historyKey
+  }
 
   const validateBeforeSubmitFn = () =>
     validateBeforeSubmit(selectedModel, t, notification)
@@ -471,6 +512,8 @@ export const useMessageOption = () => {
     createChatBranch,
     queuedMessages: storeQueuedMessages,
     addQueuedMessage: storeAddQueuedMessage,
-    clearQueuedMessages: storeClearQueuedMessages
+    clearQueuedMessages: storeClearQueuedMessages,
+    serverChatId,
+    setServerChatId
   }
 }

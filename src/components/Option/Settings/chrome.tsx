@@ -1,14 +1,16 @@
 import { useStorage } from "@plasmohq/storage/hook"
 import { useQuery } from "@tanstack/react-query"
-import { Alert, Skeleton, Switch, Modal, Progress, message } from "antd"
+import { Alert, Skeleton, Switch, Modal, Progress } from "antd"
 import { useTranslation } from "react-i18next"
 import { getChromeAISupported } from "@/utils/chrome"
 import Markdown from "@/components/Common/Markdown"
 import { downloadChromeAIModel } from "@/utils/chrome-download"
 import { useState } from "react"
+import { useAntdMessage } from "@/hooks/useAntdMessage"
 
 export const ChromeApp = () => {
   const { t } = useTranslation("chrome")
+  const message = useAntdMessage()
   const [chromeAIStatus, setChromeAIStatus] = useStorage(
     "chromeAIStatus",
     false

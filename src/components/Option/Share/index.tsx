@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { Form, Input, Skeleton, Switch, Table, Tooltip, message } from "antd"
+import { Form, Input, Skeleton, Switch, Table, Tooltip } from "antd"
 import { Trash2 } from "lucide-react"
 import { Trans, useTranslation } from "react-i18next"
 import { SaveButton } from "~/components/Common/SaveButton"
@@ -8,7 +8,8 @@ import { getPageShareUrl, setPageShareUrl } from "~/services/ollama"
 import { verifyPageShareURL } from "~/utils/verify-page-share"
 import { useStorage } from "@plasmohq/storage/hook"
 import fetcher from "@/libs/fetcher"
-import { confirmDanger } from "@/components/Common/confirm-danger"
+import { useConfirmDanger } from "@/components/Common/confirm-danger"
+import { useAntdMessage } from "@/hooks/useAntdMessage"
 
 export const OptionShareBody = () => {
   const queryClient = useQueryClient()
@@ -17,6 +18,8 @@ export const OptionShareBody = () => {
     "shareMode",
     false
   )
+  const message = useAntdMessage()
+  const confirmDanger = useConfirmDanger()
 
   const { status, data } = useQuery({
     queryKey: ["fetchShareInfo"],

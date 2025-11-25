@@ -1,5 +1,5 @@
 import React from "react"
-import { Input, Button, Spin, Tag, Tooltip, Radio, Pagination, Empty, Select, Checkbox, Typography, message, Skeleton, Switch } from "antd"
+import { Input, Button, Spin, Tag, Tooltip, Radio, Pagination, Empty, Select, Checkbox, Typography, Skeleton, Switch } from "antd"
 import { useTranslation } from "react-i18next"
 import { bgRequest } from "@/services/background-proxy"
 import { useQuery, keepPreviousData } from "@tanstack/react-query"
@@ -8,6 +8,7 @@ import { CopyIcon } from "lucide-react"
 import { tldwClient } from "@/services/tldw/TldwApiClient"
 import { useVirtualizer, type VirtualItem } from "@tanstack/react-virtual"
 import { ChevronDown, ChevronUp } from "lucide-react"
+import { useAntdMessage } from "@/hooks/useAntdMessage"
 
 type MediaItem = {
   id: string | number
@@ -55,6 +56,7 @@ const getContent = (d: MediaDetail): string => {
 
 export const MediaReviewPage: React.FC = () => {
   const { t } = useTranslation(['review'])
+  const message = useAntdMessage()
   const [query, setQuery] = React.useState("")
   const [page, setPage] = React.useState(1)
   const [pageSize, setPageSize] = React.useState(20)

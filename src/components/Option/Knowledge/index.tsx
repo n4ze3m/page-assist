@@ -11,7 +11,6 @@ import {
   Table,
   Tag,
   Tooltip,
-  message,
   notification,
   Input,
   Button,
@@ -27,7 +26,7 @@ import { useNavigate } from "react-router-dom"
 import { AddKnowledge } from "./AddKnowledge"
 import { UpdateKnowledge } from "./UpdateKnowledge"
 import { isFireFoxPrivateMode } from "@/utils/is-private-mode"
-import { confirmDanger } from "@/components/Common/confirm-danger"
+import { useConfirmDanger } from "@/components/Common/confirm-danger"
 import { useServerOnline } from "@/hooks/useServerOnline"
 import FeatureEmptyState from "@/components/Common/FeatureEmptyState"
 import { useDemoMode } from "@/context/demo-mode"
@@ -35,6 +34,7 @@ import { useServerCapabilities } from "@/hooks/useServerCapabilities"
 import { tldwClient } from "@/services/tldw/TldwApiClient"
 import { getNoOfRetrievedDocs } from "@/services/app"
 import { RagDocsPerReplyHint } from "./RagDocsPerReplyHint"
+import { useAntdMessage } from "@/hooks/useAntdMessage"
 
 export const KnowledgeSettings = () => {
   const { t } = useTranslation(["knowledge", "common"])
@@ -56,6 +56,8 @@ export const KnowledgeSettings = () => {
   const [ragLoading, setRagLoading] = useState(false)
   const [ragResults, setRagResults] = useState<any[]>([])
   const [ragError, setRagError] = useState<string | null>(null)
+  const message = useAntdMessage()
+  const confirmDanger = useConfirmDanger()
 
   const { data, status } = useQuery({
     queryKey: ["fetchAllKnowledge"],

@@ -1,4 +1,4 @@
-import { Form, Image, Input, Modal, Tooltip, message } from "antd"
+import { Form, Image, Input, Modal, Tooltip } from "antd"
 import { Share } from "lucide-react"
 import { useState } from "react"
 import type { Message } from "~/store/option"
@@ -11,6 +11,7 @@ import { getTitleById, getUserId, saveWebshare } from "@/db/dexie/helpers"
 import { useTranslation } from "react-i18next"
 import fetcher from "@/libs/fetcher"
 import { removeModelSuffix } from "@/db/dexie/models"
+import { useAntdMessage } from "@/hooks/useAntdMessage"
 
 type Props = {
   messages: Message[]
@@ -101,6 +102,7 @@ export const ShareModal: React.FC<Props> = ({
   setOpen
 }) => {
   const { t } = useTranslation("common")
+  const message = useAntdMessage()
   const [form] = Form.useForm()
   const name = Form.useWatch("name", form)
 

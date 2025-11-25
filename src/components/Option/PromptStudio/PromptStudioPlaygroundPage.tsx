@@ -1223,7 +1223,7 @@ export const PromptStudioPlaygroundPage: React.FC = () => {
         open={projectModalOpen}
         onCancel={() => setProjectModalOpen(false)}
         footer={null}
-        destroyOnClose>
+        destroyOnHidden>
         <Form layout="vertical" onFinish={(vals) => createProjectMutation.mutate(vals)}>
           <Form.Item
             name="name"
@@ -1250,7 +1250,7 @@ export const PromptStudioPlaygroundPage: React.FC = () => {
         open={promptModalOpen}
         onCancel={() => setPromptModalOpen(false)}
         footer={null}
-        destroyOnClose>
+        destroyOnHidden>
         <Form
           layout="vertical"
           form={createPromptForm}
@@ -1283,7 +1283,7 @@ export const PromptStudioPlaygroundPage: React.FC = () => {
         open={testCaseModalOpen}
         onCancel={() => setTestCaseModalOpen(false)}
         footer={null}
-        destroyOnClose>
+        destroyOnHidden>
         <Form
           layout="vertical"
           form={testCaseForm}
@@ -1335,7 +1335,7 @@ export const PromptStudioPlaygroundPage: React.FC = () => {
         open={bulkTestCaseModalOpen}
         onCancel={() => setBulkTestCaseModalOpen(false)}
         footer={null}
-        destroyOnClose>
+        destroyOnHidden>
         <Form
           layout="vertical"
           form={bulkTestCaseForm}

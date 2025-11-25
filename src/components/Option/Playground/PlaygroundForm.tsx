@@ -11,8 +11,7 @@ import {
   Tooltip,
   notification,
   Popover,
-  Modal,
-  Select
+  Modal
 } from "antd"
 import { Image } from "antd"
 import { useWebUI } from "~/store/webui"
@@ -66,7 +65,6 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
   const {
     onSubmit,
     selectedModel,
-    setSelectedModel,
     chatMode,
     speechToTextLanguage,
     stopStreamingRequest,
@@ -96,7 +94,8 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
     clearUploadedFiles,
     queuedMessages,
     addQueuedMessage,
-    clearQueuedMessages
+    clearQueuedMessages,
+    serverChatId
   } = useMessageOption()
 
   const [autoSubmitVoiceMessage] = useStorage("autoSubmitVoiceMessage", false)
@@ -106,11 +105,31 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
   const { phase, isConnected } = useConnectionState()
   const isConnectionReady = isConnected && phase === ConnectionPhase.CONNECTED
   const { capabilities, loading: capsLoading } = useServerCapabilities()
-  const hasServerAudio = isConnectionReady && !capsLoading && capabilities?.hasAudio
+  const hasServerAudio =
+    isConnectionReady && !capsLoading && capabilities?.hasAudio
   const [hasShownConnectBanner, setHasShownConnectBanner] = React.useState(false)
   const [showConnectBanner, setShowConnectBanner] = React.useState(false)
   const [showQueuedBanner, setShowQueuedBanner] = React.useState(true)
   const [autoStopTimeout] = useStorage("autoStopTimeout", 2000)
+  const [sttModel] = useStorage("sttModel", "whisper-1")
+  const [sttUseSegmentation] = useStorage("sttUseSegmentation", false)
+  const [sttTimestampGranularities] = useStorage(
+    "sttTimestampGranularities",
+    "segment"
+  )
+  const [sttPrompt] = useStorage("sttPrompt", "")
+  const [sttTask] = useStorage("sttTask", "transcribe")
+  const [sttResponseFormat] = useStorage("sttResponseFormat", "json")
+  const [sttTemperature] = useStorage("sttTemperature", 0)
+  const [sttSegK] = useStorage("sttSegK", 6)
+  const [sttSegMinSegmentSize] = useStorage("sttSegMinSegmentSize", 5)
+  const [sttSegLambdaBalance] = useStorage("sttSegLambdaBalance", 0.01)
+  const [sttSegUtteranceExpansionWidth] = useStorage(
+    "sttSegUtteranceExpansionWidth",
+    2
+  )
+  const [sttSegEmbeddingsProvider] = useStorage("sttSegEmbeddingsProvider", "")
+  const [sttSegEmbeddingsModel] = useStorage("sttSegEmbeddingsModel", "")
 
   const {
     tabMentionsEnabled,
@@ -129,122 +148,11 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
     handleMentionsOpen
   } = useTabMentions(textareaRef)
 
-  const { data: composerModels, isLoading: isComposerModelsLoading } = useQuery({
+  const { data: composerModels } = useQuery({
     queryKey: ["playground:chatModels"],
     queryFn: () => fetchChatModels({ returnEmpty: true }),
     enabled: true
   })
-
-  const modelSelectOptions = React.useMemo(() => {
-    const providerDisplayName = (provider?: string) => {
-      const key = String(provider || "unknown").toLowerCase()
-      if (key === "openai") return "OpenAI"
-      if (key === "anthropic") return "Anthropic"
-      if (key === "google") return "Google"
-      if (key === "mistral") return "Mistral"
-      if (key === "cohere") return "Cohere"
-      if (key === "groq") return "Groq"
-      if (key === "huggingface") return "HuggingFace"
-      if (key === "openrouter") return "OpenRouter"
-      if (key === "ollama") return "Ollama"
-      if (key === "llama") return "Llama.cpp"
-      if (key === "kobold") return "Kobold.cpp"
-      if (key === "ooba") return "Oobabooga"
-      if (key === "tabby") return "TabbyAPI"
-      if (key === "vllm") return "vLLM"
-      if (key === "aphrodite") return "Aphrodite"
-      if (key === "zai") return "Z.AI"
-      if (key === "custom_openai_api") return "Custom OpenAI API"
-      return provider || "API"
-    }
-
-    const models = (composerModels as any[]) || []
-    if (!models.length) {
-      if (selectedModel) {
-        return [
-          {
-            label: (
-              <span className="truncate">
-                Custom - {selectedModel}
-              </span>
-            ),
-            value: selectedModel,
-            searchText: selectedModel
-          }
-        ]
-      }
-      return []
-    }
-
-    return models.map((m: any) => {
-      const rawProvider = (m.details && m.details.provider) || m.provider
-      const providerLabel = providerDisplayName(rawProvider)
-      const providerKey = String(rawProvider || "unknown").toLowerCase()
-      const modelLabel = m.nickname || m.model
-      const caps: string[] = Array.isArray(m.details?.capabilities)
-        ? m.details.capabilities
-        : []
-      const hasVision = caps.includes("vision")
-      const hasTools = caps.includes("tools")
-      const hasFast = caps.includes("fast")
-      const providerBadge = (() => {
-        if (providerKey === "anthropic") {
-          return (
-            <span className="rounded-full bg-orange-50 px-1.5 py-0.5 text-orange-700 dark:bg-orange-900/30 dark:text-orange-100">
-              Anthropic
-            </span>
-          )
-        }
-        if (providerKey === "zai" || providerKey === "z.ai") {
-          return (
-            <span className="rounded-full bg-indigo-50 px-1.5 py-0.5 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-100">
-              Z.ai
-            </span>
-          )
-        }
-        return null
-      })()
-
-      return {
-        value: m.model,
-        searchText: `${providerLabel} ${modelLabel} ${m.model}`,
-        label: (
-          <div className="flex items-start gap-2 min-w-0">
-            <ProviderIcons provider={rawProvider} className="h-4 w-4 shrink-0 mt-0.5" />
-            <div className="flex flex-col min-w-0">
-              <span className="truncate text-sm">
-                {providerLabel} - {modelLabel}
-              </span>
-              {(hasVision || hasTools || hasFast || providerBadge) && (
-                <div className="mt-0.5 flex flex-wrap gap-1 text-[10px]">
-                  {providerBadge && (
-                    <span className="rounded-full bg-slate-100 px-1.5 py-0.5 text-slate-700 dark:bg-slate-800/60 dark:text-slate-100">
-                      {providerBadge}
-                    </span>
-                  )}
-                  {hasVision && (
-                    <span className="rounded-full bg-blue-50 px-1.5 py-0.5 text-blue-700 dark:bg-blue-900/30 dark:text-blue-100">
-                      Vision
-                    </span>
-                  )}
-                  {hasTools && (
-                    <span className="rounded-full bg-purple-50 px-1.5 py-0.5 text-purple-700 dark:bg-purple-900/30 dark:text-purple-100">
-                      Tools
-                    </span>
-                  )}
-                  {hasFast && (
-                    <span className="rounded-full bg-emerald-50 px-1.5 py-0.5 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-100">
-                      Fast
-                    </span>
-                  )}
-                </div>
-              )}
-            </div>
-          </div>
-        )
-      }
-    })
-  }, [composerModels, selectedModel])
 
   const modelSummaryLabel = React.useMemo(() => {
     if (!selectedModel) {
@@ -764,9 +672,51 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
           if (blob.size === 0) {
             return
           }
-          const res = await tldwClient.transcribeAudio(blob, {
+          const sttOptions: Record<string, any> = {
             language: speechToTextLanguage
-          })
+          }
+          if (sttModel && sttModel.trim().length > 0) {
+            sttOptions.model = sttModel.trim()
+          }
+          if (sttTimestampGranularities) {
+            sttOptions.timestamp_granularities = sttTimestampGranularities
+          }
+          if (sttPrompt && sttPrompt.trim().length > 0) {
+            sttOptions.prompt = sttPrompt.trim()
+          }
+          if (sttTask) {
+            sttOptions.task = sttTask
+          }
+          if (sttResponseFormat) {
+            sttOptions.response_format = sttResponseFormat
+          }
+          if (typeof sttTemperature === "number") {
+            sttOptions.temperature = sttTemperature
+          }
+          if (sttUseSegmentation) {
+            sttOptions.segment = true
+            if (typeof sttSegK === "number") {
+              sttOptions.seg_K = sttSegK
+            }
+            if (typeof sttSegMinSegmentSize === "number") {
+              sttOptions.seg_min_segment_size = sttSegMinSegmentSize
+            }
+            if (typeof sttSegLambdaBalance === "number") {
+              sttOptions.seg_lambda_balance = sttSegLambdaBalance
+            }
+            if (typeof sttSegUtteranceExpansionWidth === "number") {
+              sttOptions.seg_utterance_expansion_width =
+                sttSegUtteranceExpansionWidth
+            }
+            if (sttSegEmbeddingsProvider?.trim()) {
+              sttOptions.seg_embeddings_provider =
+                sttSegEmbeddingsProvider.trim()
+            }
+            if (sttSegEmbeddingsModel?.trim()) {
+              sttOptions.seg_embeddings_model = sttSegEmbeddingsModel.trim()
+            }
+          }
+          const res = await tldwClient.transcribeAudio(blob, sttOptions)
           let text = ""
           if (res) {
             if (typeof res === "string") {
@@ -821,7 +771,17 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
         )
       })
     }
-  }, [hasServerAudio, isServerDictating, speechToTextLanguage, stopServerDictation, t, form])
+  }, [
+    hasServerAudio,
+    isServerDictating,
+    speechToTextLanguage,
+    sttModel,
+    sttTimestampGranularities,
+    sttUseSegmentation,
+    stopServerDictation,
+    t,
+    form
+  ])
 
   React.useEffect(() => {
     if (isContextModalOpen) {
@@ -831,18 +791,6 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
 
   const moreToolsContent = React.useMemo(() => (
     <div className="flex w-64 flex-col gap-3">
-      <div className="flex items-center justify-between">
-        <span className="text-sm font-medium text-gray-700 dark:text-gray-200">
-          {temporaryChat
-            ? t("playground:actions.temporaryOn")
-            : t("playground:actions.temporaryOff")}
-        </span>
-        <Switch
-          size="small"
-          checked={temporaryChat}
-          onChange={handleToggleTemporaryChat}
-        />
-      </div>
       {!selectedKnowledge && (
         <div className="flex items-center justify-between">
           <span className="text-sm text-gray-700 dark:text-gray-200">
@@ -858,33 +806,6 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
             unCheckedChildren={t("form.webSearch.off")}
           />
         </div>
-      )}
-      {browserSupportsSpeechRecognition ? (
-        <button
-          type="button"
-          onClick={handleSpeechToggle}
-          className="flex w-full items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 transition hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-[#2a2a2a]"
-        >
-          <span>
-            {isListening
-              ? t("playground:actions.speechStop")
-              : t("playground:actions.speechStart")}
-          </span>
-          <MicIcon className="h-4 w-4" />
-        </button>
-      ) : hasServerAudio && (
-        <button
-          type="button"
-          onClick={handleServerDictationToggle}
-          className="flex w-full items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 transition hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-[#2a2a2a]"
-        >
-          <span>
-            {isServerDictating
-              ? t("playground:actions.speechStop", "Stop dictation")
-              : t("playground:actions.speechStart", "Start dictation")}
-          </span>
-          <MicIcon className="h-4 w-4" />
-        </button>
       )}
       {!selectedKnowledge && (
         <button
@@ -916,22 +837,14 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
       </button>
     </div>
   ), [
-    browserSupportsSpeechRecognition,
     chatMode,
     handleClearContext,
     handleDocumentUpload,
     handleImageUpload,
-    handleServerDictationToggle,
-    handleSpeechToggle,
-    handleToggleTemporaryChat,
     history.length,
-    hasServerAudio,
-    isListening,
-    isServerDictating,
     selectedKnowledge,
     setWebSearch,
     t,
-    temporaryChat,
     webSearch
   ])
 
@@ -1225,28 +1138,6 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                     </div>
                     <div className="mt-2 flex flex-col gap-1">
                       <div className="flex flex-wrap items-center gap-2 text-[11px] text-gray-600 dark:text-gray-300">
-                        <Select
-                          className="min-w-[220px] max-w-[300px]"
-                          placeholder={t("playground:composer.modelPlaceholder", "API / model")}
-                          aria-label={t("playground:composer.modelPlaceholder", "API / model") as string}
-                          value={selectedModel || undefined}
-                          onChange={(value) => setSelectedModel(value)}
-                          loading={isComposerModelsLoading}
-                          options={modelSelectOptions as any}
-                          optionLabelProp="label"
-                          dropdownMatchSelectWidth={false}
-                          allowClear
-                          showSearch
-                          filterOption={(input, option) =>
-                            ((option as any)?.searchText || "")
-                              .toLowerCase()
-                              .includes(input.toLowerCase()) ||
-                            ((option as any)?.value || "")
-                              .toString()
-                              .toLowerCase()
-                              .includes(input.toLowerCase())
-                          }
-                        />
                         <span className="font-semibold uppercase tracking-wide">
                           {t("playground:composer.contextLabel", "Context:")}
                         </span>
@@ -1310,19 +1201,73 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                             } as any) as string}
                           </span>
                         </button>
+                        <button
+                          type="button"
+                          onClick={() => setIsContextModalOpen(true)}
+                          className="inline-flex items-center gap-1 rounded-full border border-gray-200 px-2 py-0.5 text-[11px] font-medium text-gray-700 transition hover:bg-gray-100 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-[#2a2a2a]">
+                          {t("playground:composer.contextManager", "Context Management")}
+                        </button>
                       </div>
                       <div className="mt-1 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-                        <div className="flex flex-wrap items-center gap-3">
+                        <div className="flex flex-wrap items-start gap-3">
+                          <div className="flex flex-col gap-0.5 text-xs text-gray-700 dark:text-gray-200">
+                            <div className="flex items-center gap-1">
+                              <Switch
+                                size="small"
+                                checked={temporaryChat}
+                                onChange={handleToggleTemporaryChat}
+                                aria-label={t("playground:actions.temporaryOff", "Save chat") as string}
+                              />
+                              <span>
+                                {temporaryChat
+                                  ? t("playground:actions.temporaryOn", "Temporary chat")
+                                  : t("playground:actions.temporaryOff", "Save chat")}
+                              </span>
+                            </div>
+                            <p className="text-[11px] text-gray-500 dark:text-gray-400">
+                              {temporaryChat
+                                ? t(
+                                    "playground:composer.persistence.ephemeral",
+                                    "Not saved in history; clears when you close this tab."
+                                  )
+                                : serverChatId
+                                  ? t(
+                                      "playground:composer.persistence.server",
+                                      "Saved in this browser and on your tldw server."
+                                    )
+                                  : t(
+                                      "playground:composer.persistence.local",
+                                      "Saved in this browser only."
+                                    )}
+                            </p>
+                          </div>
                           <KnowledgeSelect />
                         </div>
                         <div className="flex items-center justify-end gap-3 flex-wrap">
                           <CharacterSelect className="text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100" iconClassName="size-5" />
-                          <button
-                            type="button"
-                            onClick={() => setIsContextModalOpen(true)}
-                            className="inline-flex items-center gap-2 rounded-md border border-gray-200 px-3 py-1.5 text-sm text-gray-700 transition hover:bg-gray-100 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-[#2a2a2a]">
-                            {t("playground:composer.contextManager", "Context Management")}
-                          </button>
+                          {(browserSupportsSpeechRecognition || hasServerAudio) && (
+                            <Tooltip title={t("playground:tooltip.speechToText", "Speech to Text") as string}>
+                              <button
+                                type="button"
+                                onClick={hasServerAudio ? handleServerDictationToggle : handleSpeechToggle}
+                                className={`inline-flex items-center justify-center rounded-full border px-2 py-1 text-xs transition hover:bg-gray-100 dark:hover:bg-[#2a2a2a] ${
+                                  (hasServerAudio && isServerDictating) || (!hasServerAudio && isListening)
+                                    ? "border-blue-500 text-blue-600 dark:border-blue-400 dark:text-blue-300"
+                                    : "border-gray-200 text-gray-700 dark:border-gray-600 dark:text-gray-200"
+                                }`}
+                                aria-label={
+                                  hasServerAudio
+                                    ? (isServerDictating
+                                        ? (t("playground:actions.speechStop", "Stop dictation") as string)
+                                        : (t("playground:actions.speechStart", "Start dictation") as string))
+                                    : (isListening
+                                        ? (t("playground:actions.speechStop", "Stop dictation") as string)
+                                        : (t("playground:actions.speechStart", "Start dictation") as string))
+                                }>
+                                <MicIcon className="h-4 w-4" />
+                              </button>
+                            </Tooltip>
+                          )}
                           <Tooltip
                             title={
                               t(
@@ -1572,7 +1517,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
         onCancel={() => setIsContextModalOpen(false)}
         footer={null}
         width={760}
-        destroyOnClose>
+        destroyOnHidden>
         <div className="flex flex-col gap-5">
           <div className="flex items-start justify-between gap-3">
             <div>

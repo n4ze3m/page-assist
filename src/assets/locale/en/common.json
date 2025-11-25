@@ -188,6 +188,10 @@
   "create": "Create",
   "reset": "Reset",
   "serverOffline": "Server offline or not configured",
+  "serverChats": "Server chats",
+  "serverChatLoadError": "Failed to load server chat. Check your connection and try again.",
+  "serverChatSourceLabel": "Server",
+  "serverChatsUnavailable": "Server chats unavailable. Check your server connection.",
   "date": {
     "pinned": "Pinned",
     "today": "Today",

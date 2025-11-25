@@ -259,6 +259,56 @@
       },
       "autoSubmitVoiceMessage": {
         "label": "Auto Submit Voice Message"
+      },
+      "model": {
+        "label": "Transcription model (tldw_server)"
+      },
+      "useSegmentation": {
+        "label": "Run segmentation for transcripts (TreeSeg)"
+      },
+      "timestampGranularities": {
+        "label": "Timestamp granularity",
+        "segment": "Per segment",
+        "word": "Per word",
+        "segmentWord": "Segment + word"
+      },
+      "task": {
+        "label": "Transcription task",
+        "transcribe": "Transcribe (same language)",
+        "translate": "Translate to English"
+      },
+      "responseFormat": {
+        "label": "Response format",
+        "json": "JSON (text + segments)",
+        "verboseJson": "Verbose JSON",
+        "text": "Plain text",
+        "srt": "SRT subtitles",
+        "vtt": "VTT subtitles"
+      },
+      "temperature": {
+        "label": "Sampling temperature"
+      },
+      "prompt": {
+        "label": "Default transcription prompt",
+        "placeholder": "Optional text to guide style"
+      },
+      "segK": {
+        "label": "Max segments (TreeSeg K)"
+      },
+      "segMinSegmentSize": {
+        "label": "Minimum items per segment"
+      },
+      "segLambdaBalance": {
+        "label": "Balance penalty (TreeSeg λ)"
+      },
+      "segUtteranceExpansionWidth": {
+        "label": "Utterance expansion width"
+      },
+      "segEmbeddingsProvider": {
+        "label": "Segmentation embeddings provider"
+      },
+      "segEmbeddingsModel": {
+        "label": "Segmentation embeddings model"
       }
     },
     "empty": {

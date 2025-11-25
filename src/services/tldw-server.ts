@@ -53,48 +53,7 @@ export const getAllModels = async ({ returnEmpty = false }: { returnEmpty?: bool
     } catch {
       if (returnEmpty) return []
     }
-    // Prefer raw list from server for the landing dropdown so models, not providers, are shown
-    try {
-      const raw = await bgRequest<any>({ path: '/api/v1/llm/models', method: 'GET' })
-      if (Array.isArray(raw)) {
-        const models = raw.map((s: any) => {
-          const str = String(s)
-          const parts = str.split('/')
-          const provider = parts.length > 1 ? parts[0] : 'unknown'
-          const name = parts.length > 1 ? parts.slice(1).join('/') : str
-        
-          return {
-            id: str,
-            name,
-            provider
-          }
-        }) as any[]
-        return models.map((model: any) => ({
-          name: `tldw:${model.id}`,
-          model: `tldw:${model.id}`,
-          provider: String(model.provider || 'unknown').toLowerCase(),
-          nickname: model.name || model.id,
-          avatar: undefined,
-          modified_at: new Date().toISOString(),
-          size: 0,
-          digest: "",
-          details: {
-            provider: model.provider,
-            context_length: undefined,
-            vision: undefined,
-            function_calling: undefined,
-            json_output: undefined
-          }
-        }))
-      }
-    } catch (e) {
-      // In dev builds it's helpful to know why the flat models list failed.
-      if (!returnEmpty && import.meta.env?.DEV) {
-        console.warn("tldw_server: GET /api/v1/llm/models failed, falling back to metadata/providers", e)
-      }
-    }
-
-    // Fallback to the richer tldwModels API if raw list fails
+    // Use the richer tldwModels API (backed by /api/v1/llm/models/metadata)
     const models = await tldwModels.getModels(true)
     return models.map(model => ({
       name: `tldw:${model.id}`,

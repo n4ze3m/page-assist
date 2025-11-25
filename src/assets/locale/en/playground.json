@@ -53,8 +53,8 @@
   "useOCR": "Extract text from image (OCR)",
   "fileRetrievalEnabled": "Enable RAG for Documents",
   "actions": {
-    "temporaryOn": "Temporary chat",
-    "temporaryOff": "Save chat",
+    "temporaryOn": "Temporary (not saved)",
+    "temporaryOff": "Save to history",
     "webSearchOn": "Web search on",
     "webSearchOff": "Web search off",
     "speechStart": "Start dictation",
@@ -89,6 +89,11 @@
     "contextKnowledgeEmpty": "No knowledge selected",
     "contextTabs": "{{count}} tabs",
     "contextFiles": "{{count}} files",
+    "persistence": {
+      "ephemeral": "Not saved in history; clears when you close this tab.",
+      "local": "Saved in this browser only.",
+      "server": "Saved in this browser and on your tldw server."
+    },
     "connectToSend": "Connect to your tldw server to start chatting."
   },
   "tts": {

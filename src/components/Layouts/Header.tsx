@@ -106,7 +106,8 @@ export const Header: React.FC<Props> = ({
     messages,
     streaming,
     historyId,
-    temporaryChat
+    temporaryChat,
+    serverChatId
   } = useMessageOption()
   const isOnline = useServerOnline()
   const {
@@ -565,6 +566,17 @@ export const Header: React.FC<Props> = ({
                   </button>
                 )}
               </div>
+            )}
+            {serverChatId && (
+              <span
+                className="hidden md:inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-xs text-emerald-700 shadow-sm dark:border-emerald-500/50 dark:bg-emerald-500/10 dark:text-emerald-100"
+                title={t(
+                  "option:header.serverBackedTooltip",
+                  "Messages in this chat are also saved on your tldw server."
+                )}>
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 dark:bg-emerald-300" />
+                {t("option:header.serverBackedLabel", "Server-backed chat")}
+              </span>
             )}
             {/* Status chips for current selections */}
             <div className="hidden md:flex items-center gap-2">

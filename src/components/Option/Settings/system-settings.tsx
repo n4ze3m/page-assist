@@ -15,7 +15,7 @@ import { toBase64 } from "@/libs/to-base64"
 import { PageAssistDatabase } from "@/db/dexie/chat"
 import { isFireFox, isFireFoxPrivateMode } from "@/utils/is-private-mode"
 import { firefoxSyncDataForPrivateMode } from "@/db/dexie/firefox-sync"
-import { confirmDanger } from "@/components/Common/confirm-danger"
+import { useConfirmDanger } from "@/components/Common/confirm-danger"
 import { useAntdNotification } from "@/hooks/useAntdNotification"
 
 export const SystemSettings = () => {
@@ -24,6 +24,7 @@ export const SystemSettings = () => {
   const { clearChat } = useMessageOption()
   const { increase, decrease, scale } = useFontSize()
   const notification = useAntdNotification()
+  const confirmDanger = useConfirmDanger()
   const quotaFriendlyMessage = t(
     "settings:storage.quotaFriendlyMessage",
     "Too many settings writes in a short period; please wait a few seconds and try again."

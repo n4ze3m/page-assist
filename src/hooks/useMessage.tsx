@@ -1041,9 +1041,16 @@ export const useMessage = () => {
       let chatId = serverChatId
       if (!chatId) {
         const created = await tldwClient.createChat({ character_id: selectedCharacter.id })
-        chatId = created?.id || created?.chat_id || created
-        if (!chatId) throw new Error('Failed to create character chat session')
-        setServerChatId(chatId)
+        const rawId =
+          (created as any)?.id ??
+          (created as any)?.chat_id ??
+          created
+        const normalizedId = rawId != null ? String(rawId) : ""
+        if (!normalizedId) {
+          throw new Error('Failed to create character chat session')
+        }
+        chatId = normalizedId
+        setServerChatId(normalizedId)
       }
 
       // Add user message to server (only if not regenerate)

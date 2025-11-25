@@ -153,7 +153,7 @@ export const PromptSearch: React.FC<Props> = ({ onInsertMessage, onInsertSystem,
         open={editorOpen}
         onCancel={() => setEditorOpen(false)}
         footer={null}
-        destroyOnClose
+        destroyOnHidden
         centered
       >
         <Space direction="vertical" className="w-full" onKeyDown={(e) => { if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); handleInsert() } }}>

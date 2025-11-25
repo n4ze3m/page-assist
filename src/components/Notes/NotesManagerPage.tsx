@@ -1,17 +1,18 @@
 import React from 'react'
 import type { InputRef } from 'antd'
-import { Button, Input, List, Pagination, Space, Spin, Tooltip, Typography, message, Select, Dropdown } from 'antd'
+import { Button, Input, List, Pagination, Space, Spin, Tooltip, Typography, Select, Dropdown } from 'antd'
 import { bgRequest } from '@/services/background-proxy'
 import { useQuery, keepPreviousData, useQueryClient } from '@tanstack/react-query'
 import { useServerOnline } from '@/hooks/useServerOnline'
 import { Copy as CopyIcon, Save as SaveIcon, Trash2 as TrashIcon, FileDown as FileDownIcon, Plus as PlusIcon, Search as SearchIcon } from 'lucide-react'
-import { confirmDanger } from '@/components/Common/confirm-danger'
+import { useConfirmDanger } from '@/components/Common/confirm-danger'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import FeatureEmptyState from '@/components/Common/FeatureEmptyState'
 import { useDemoMode } from '@/context/demo-mode'
 import { useServerCapabilities } from '@/hooks/useServerCapabilities'
 import { tldwClient } from '@/services/tldw/TldwApiClient'
+import { useAntdMessage } from '@/hooks/useAntdMessage'
 
 type NoteListItem = {
   id: string | number
@@ -50,6 +51,8 @@ const NotesManagerPage: React.FC = () => {
   const navigate = useNavigate()
   const { capabilities, loading: capsLoading } = useServerCapabilities()
   const titleInputRef = React.useRef<InputRef | null>(null)
+  const message = useAntdMessage()
+  const confirmDanger = useConfirmDanger()
 
   const editorDisabled = !isOnline || (!capsLoading && capabilities && !capabilities.hasNotes)
 

@@ -5,7 +5,6 @@ import {
   Input,
   Alert,
   Form,
-  message,
   Spin,
   Button,
   Collapse,
@@ -20,6 +19,7 @@ import { tldwAuth } from "@/services/tldw/TldwAuth"
 import { SettingsSkeleton } from "@/components/Common/Settings/SettingsSkeleton"
 import { DEFAULT_TLDW_API_KEY } from "@/services/tldw-server"
 import { apiSend } from "@/services/api-send"
+import { useAntdMessage } from "@/hooks/useAntdMessage"
 import { useConnectionStore } from "@/store/connection"
 
 type TimeoutPresetKey = 'balanced' | 'extended'
@@ -57,6 +57,7 @@ const TIMEOUT_PRESETS: Record<TimeoutPresetKey, TimeoutValues> = {
 
 export const TldwSettings = () => {
   const { t } = useTranslation(["settings", "common"])
+  const message = useAntdMessage()
   const [form] = Form.useForm()
   const [loading, setLoading] = useState(false)
   const [initializing, setInitializing] = useState(true)
@@ -502,7 +503,7 @@ export const TldwSettings = () => {
                         setTimeoutPreset('custom')
                       }}
                       placeholder="10"
-                      addonAfter="s"
+                      suffix="s"
                     />
                     <div className="text-xs text-gray-500 mt-1">
                       {t('settings:tldw.hints.requestTimeout', {
@@ -523,7 +524,7 @@ export const TldwSettings = () => {
                         setTimeoutPreset('custom')
                       }}
                       placeholder="15"
-                      addonAfter="s"
+                      suffix="s"
                     />
                     <div className="text-xs text-gray-500 mt-1">
                       {t('settings:tldw.hints.streamingIdle', {
@@ -545,7 +546,7 @@ export const TldwSettings = () => {
                         setChatRequestTimeoutSec(parseSeconds(e.target.value, TIMEOUT_PRESETS.balanced.chatRequest))
                         setTimeoutPreset('custom')
                       }}
-                      addonAfter="s"
+                      suffix="s"
                     />
                   </div>
                   <div>
@@ -558,7 +559,7 @@ export const TldwSettings = () => {
                         setChatStreamIdleTimeoutSec(parseSeconds(e.target.value, TIMEOUT_PRESETS.balanced.chatStream))
                         setTimeoutPreset('custom')
                       }}
-                      addonAfter="s"
+                      suffix="s"
                     />
                   </div>
                   <div>
@@ -571,7 +572,7 @@ export const TldwSettings = () => {
                         setRagRequestTimeoutSec(parseSeconds(e.target.value, TIMEOUT_PRESETS.balanced.ragRequest))
                         setTimeoutPreset('custom')
                       }}
-                      addonAfter="s"
+                      suffix="s"
                     />
                   </div>
                   <div>
@@ -584,7 +585,7 @@ export const TldwSettings = () => {
                         setMediaRequestTimeoutSec(parseSeconds(e.target.value, TIMEOUT_PRESETS.balanced.media))
                         setTimeoutPreset('custom')
                       }}
-                      addonAfter="s"
+                      suffix="s"
                     />
                   </div>
                   <div>
@@ -597,7 +598,7 @@ export const TldwSettings = () => {
                         setUploadRequestTimeoutSec(parseSeconds(e.target.value, TIMEOUT_PRESETS.balanced.upload))
                         setTimeoutPreset('custom')
                       }}
-                      addonAfter="s"
+                      suffix="s"
                     />
                   </div>
                 </div>

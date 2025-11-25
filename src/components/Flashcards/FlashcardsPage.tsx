@@ -18,14 +18,13 @@ import {
   Tabs,
   Tag,
   Tooltip,
-  Typography,
-  message
+  Typography
 } from "antd"
 import { Checkbox } from "antd"
 import dayjs from "dayjs"
 import relativeTime from "dayjs/plugin/relativeTime"
 import { useTranslation } from "react-i18next"
-import { confirmDanger } from "@/components/Common/confirm-danger"
+import { useConfirmDanger } from "@/components/Common/confirm-danger"
 import { useServerOnline } from "@/hooks/useServerOnline"
 import {
   createDeck,
@@ -49,6 +48,7 @@ import FeatureEmptyState from "@/components/Common/FeatureEmptyState"
 import { useNavigate } from "react-router-dom"
 import { useDemoMode } from "@/context/demo-mode"
 import { useServerCapabilities } from "@/hooks/useServerCapabilities"
+import { useAntdMessage } from "@/hooks/useAntdMessage"
 
 dayjs.extend(relativeTime)
 
@@ -64,6 +64,8 @@ export const FlashcardsPage: React.FC = () => {
   const { demoEnabled } = useDemoMode()
   const { capabilities, loading: capsLoading } = useServerCapabilities()
   const [activeTab, setActiveTab] = React.useState<string>("review")
+  const message = useAntdMessage()
+  const confirmDanger = useConfirmDanger()
 
   if (!isOnline) {
     return demoEnabled ? (
@@ -1148,6 +1150,7 @@ export default FlashcardsPage
 
 // --- Import Panel ---
 const ImportPanel: React.FC = () => {
+  const message = useAntdMessage()
   const { t } = useTranslation(["option", "common"]) 
   const isOnline = useServerOnline()
   const [content, setContent] = React.useState("")
@@ -1326,7 +1329,8 @@ My deck	What is a closure?	A function with preserved outer scope.	javascript; fu
 
 // --- Export Panel ---
 const ExportPanel: React.FC = () => {
-  const { t } = useTranslation(["option", "common"]) 
+  const { t } = useTranslation(["option", "common"])
+  const message = useAntdMessage()
   const isOnline = useServerOnline()
   const { data: decks, isLoading: decksLoading } = useQuery({
     queryKey: ["flashcards:decks"],

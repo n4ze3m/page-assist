@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next"
 import { ModelNickModelNicknameModal } from "./ModelNicknameModal"
 import { AddUpdateOAIModelSettings } from "./AddUpdateOAIModelSettings"
 import { isFireFoxPrivateMode } from "@/utils/is-private-mode"
-import { confirmDanger } from "@/components/Common/confirm-danger"
+import { useConfirmDanger } from "@/components/Common/confirm-danger"
 
 export const CustomModelsTable = () => {
   const [selectedModel, setSelectedModel] = useStorage("selectedModel")
@@ -25,6 +25,7 @@ export const CustomModelsTable = () => {
   const { t } = useTranslation(["openai", "common"])
   const [openSettingsModal, setOpenSettingsModal] = useState(false)
   const queryClient = useQueryClient()
+  const confirmDanger = useConfirmDanger()
 
   const { data, status } = useQuery({
     queryKey: ["fetchCustomModels"],

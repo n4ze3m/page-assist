@@ -6,7 +6,6 @@ import {
   Empty,
   Input,
   List,
-  message,
   Space,
   Spin,
   Tag,
@@ -35,10 +34,11 @@ import { ChevronDown, CopyIcon, SendIcon } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { Storage } from "@plasmohq/storage"
 import { getAllPrompts } from "@/db/dexie/helpers"
-import { confirmDanger } from "@/components/Common/confirm-danger"
+import { useConfirmDanger } from "@/components/Common/confirm-danger"
 import FeatureEmptyState from "@/components/Common/FeatureEmptyState"
 import { useAntdNotification } from "@/hooks/useAntdNotification"
 import { useDemoMode } from "@/context/demo-mode"
+import { useAntdMessage } from "@/hooks/useAntdMessage"
 
 type MediaItem = any
 type NoteItem = any
@@ -57,6 +57,8 @@ type ReviewPageProps = { allowGeneration?: boolean; forceOffline?: boolean }
 export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true, forceOffline = false }) => {
   const { t } = useTranslation(["option", "review"])
   const notification = useAntdNotification()
+  const message = useAntdMessage()
+  const confirmDanger = useConfirmDanger()
   const isViewMediaMode = !allowGeneration
   const [query, setQuery] = React.useState<string>("")
   const [kinds, setKinds] = React.useState<{ media: boolean; notes: boolean }>(() => ({

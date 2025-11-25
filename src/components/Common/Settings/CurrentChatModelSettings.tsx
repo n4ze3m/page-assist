@@ -320,7 +320,7 @@ export const CurrentChatModelSettings = ({
                 loading={modelsLoading}
                 allowClear
                 optionLabelProp="label"
-                dropdownMatchSelectWidth={false}
+                popupMatchSelectWidth={false}
                 dropdownStyle={{
                   maxHeight: "calc(100vh - 220px)",
                   overflowY: "auto"

@@ -1,6 +1,6 @@
 import { Loader2 } from "lucide-react"
 import { useTranslation } from "react-i18next"
-import { confirmDanger } from "@/components/Common/confirm-danger"
+import { useConfirmDanger } from "@/components/Common/confirm-danger"
 
 type Props = {
   modelName: string
@@ -12,6 +12,7 @@ export const CancelPullingModel = ({
   cancelDownloadModel
 }: Props) => {
   const { t } = useTranslation("common")
+  const confirmDanger = useConfirmDanger()
   return (
     <div className="mb-4 p-3  bg-neutral-50  dark:bg-[#2D2D2D] border border-neutral-200 dark:border-neutral-700 rounded-lg">
       <div className="flex items-center justify-between">

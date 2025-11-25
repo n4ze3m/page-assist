@@ -115,7 +115,12 @@ export const useStoreMessageOption = create<State>((set) => ({
   isFirstMessage: true,
   setIsFirstMessage: (isFirstMessage) => set({ isFirstMessage }),
   historyId: null,
-  setHistoryId: (historyId) => set({ historyId }),
+  setHistoryId: (historyId) =>
+    set((state) => ({
+      historyId,
+      // When switching to a local Dexie-backed chat, clear any active server-backed session id.
+      serverChatId: historyId ? null : state.serverChatId
+    })),
   isLoading: false,
   setIsLoading: (isLoading) => set({ isLoading }),
   isProcessing: false,

@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { tldwClient } from '@/services/tldw/TldwApiClient'
 import { HelpCircle, Headphones, Layers, Database, FileText, Film, Cookie, Info, Clock, Grid, BookText } from 'lucide-react'
 import { useStorage } from '@plasmohq/storage/hook'
-import { confirmDanger } from '@/components/Common/confirm-danger'
+import { useConfirmDanger } from '@/components/Common/confirm-danger'
 import { defaultEmbeddingModelForRag } from '@/services/ollama'
 import { tldwModels } from '@/services/tldw'
 
@@ -111,6 +111,7 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
   const specPrefsCacheRef = React.useRef<string | null>(null)
   const [totalPlanned, setTotalPlanned] = React.useState<number>(0)
   const [ragEmbeddingLabel, setRagEmbeddingLabel] = React.useState<string | null>(null)
+  const confirmDanger = useConfirmDanger()
 
   const persistSpecPrefs = React.useCallback(
     (next: { preferServer?: boolean; lastRemote?: { version?: string; cachedAt?: number } }) => {
@@ -725,7 +726,7 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
       onCancel={onClose}
       footer={null}
       width={760}
-      destroyOnClose
+      destroyOnHidden
       rootClassName="quick-ingest-modal"
       maskClosable={!running}
     >

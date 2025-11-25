@@ -58,7 +58,9 @@
       "tooltip": "Advanced tools like sidebar, repository, and debug options"
     },
     "moreActions": "More actions",
-    "toolsMenu": "Chat tools"
+    "toolsMenu": "Chat tools",
+    "serverBackedLabel": "Server-backed chat",
+    "serverBackedTooltip": "Messages in this chat are also saved on your tldw server."
   },
   "promptStudio": {
     "title": "Prompt Studio Playground",

@@ -2,7 +2,7 @@ import { useEffect } from "react"
 import { useMutation } from "@tanstack/react-query"
 import { hasLegacyData, runAllMigrations } from "~/db/dexie/migration"
 import { Storage } from "@plasmohq/storage"
-import { message } from "antd"
+import { useAntdMessage } from "./useAntdMessage"
 
 const MIGRATION_MESSAGE_KEY = "migration-status"
 const isHarnessEnvironment =
@@ -26,6 +26,7 @@ interface MigrationResult {
 }
 
 export const useMigration = () => {
+  const message = useAntdMessage()
   const migrationMutation = useMutation<MigrationResult, Error>({
     mutationFn: async () => {
       try {

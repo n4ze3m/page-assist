@@ -17,7 +17,7 @@ import React from "react"
 import { tldwClient } from "@/services/tldw/TldwApiClient"
 import { Pen, Trash2, UserCircle2, MessageCircle } from "lucide-react"
 import { useTranslation } from "react-i18next"
-import { confirmDanger } from "@/components/Common/confirm-danger"
+import { useConfirmDanger } from "@/components/Common/confirm-danger"
 import { useNavigate } from "react-router-dom"
 import { useStorage } from "@plasmohq/storage/hook"
 import FeatureEmptyState from "@/components/Common/FeatureEmptyState"
@@ -183,6 +183,7 @@ export const CharactersManager: React.FC = () => {
   const qc = useQueryClient()
   const navigate = useNavigate()
   const notification = useAntdNotification()
+  const confirmDanger = useConfirmDanger()
   const [open, setOpen] = React.useState(false)
   const [openEdit, setOpenEdit] = React.useState(false)
   const [editId, setEditId] = React.useState<string | null>(null)
