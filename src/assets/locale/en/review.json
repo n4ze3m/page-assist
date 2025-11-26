@@ -56,6 +56,7 @@
     "noResults": "No results",
     "showSidebar": "Show results sidebar",
     "hideSidebar": "Hide results sidebar",
+    "selectedBadge": "Selected",
     "resultsHint": "Click a result to load its content and analyses on the right.",
     "paginationHint": "Use filters or pagination to refine the results if many items are loaded.",
     "offlineHint": "Connect to your tldw server in Settings to send messages and view media. Then you can search media from this page.",
@@ -106,6 +107,8 @@
     "media": "Media",
     "searchingBanner": "Searching media…",
     "filterHelp": "Search matches title and content; Types and Keywords further narrow the results.",
-    "noResults": "No media found. Use Quick ingest in the header to add media from your recordings and files."
+    "noResults": "No media found. Use Quick ingest in the header to add media from your recordings and files.",
+    "resultsCount": "{{selected}} selected · {{open}} open",
+    "clearSelection": "Deselect all"
   }
 }

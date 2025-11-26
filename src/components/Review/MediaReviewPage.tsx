@@ -631,7 +631,27 @@ export const MediaReviewPage: React.FC = () => {
                 {t("mediaPage.results", "Results")}{" "}
                 {hasResults ? `(${allResults.length})` : ""}
               </div>
-              <span className="text-[11px] text-gray-500 dark:text-gray-400">{t("mediaPage.resultsHint", "Click to stack items into the viewer")}</span>
+              <div className="flex items-center gap-2 text-[11px] text-gray-500 dark:text-gray-400">
+                {hasResults && (
+                  <span>
+                    {t('mediaPage.resultsCount', '{{selected}} selected · {{open}} open', {
+                      selected: selectedIds.length,
+                      open: viewerItems.length
+                    })}
+                  </span>
+                )}
+                <span>{t("mediaPage.resultsHint", "Click to stack items into the viewer")}</span>
+                {selectedIds.length > 0 && (
+                  <Button
+                    size="small"
+                    type="link"
+                    className="!px-1"
+                    onClick={() => setSelectedIds([])}
+                  >
+                    {t('mediaPage.clearSelection', 'Deselect all')}
+                  </Button>
+                )}
+              </div>
             </div>
             {isFetching && (
               <div
@@ -873,7 +893,7 @@ export const MediaReviewPage: React.FC = () => {
                 <>
                   {viewMode === "spread" && (
                     <div className="sticky top-[3.5rem] z-10 bg-white dark:bg-[#171717] py-1 flex gap-2 overflow-x-auto border-b dark:border-gray-800">
-                      {selectedIds.map((id) => {
+                      {selectedIds.map((id, idx) => {
                         const d = details[id]
                         return (
                           <Button
@@ -882,7 +902,7 @@ export const MediaReviewPage: React.FC = () => {
                             type="default"
                             onClick={() => scrollToCard(id)}
                           >
-                            {d?.title || `${t('mediaPage.media', 'Media')} ${id}`}
+                            {idx + 1}. {d?.title || `${t('mediaPage.media', 'Media')} ${id}`}
                           </Button>
                         )
                       })}

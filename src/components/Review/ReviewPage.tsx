@@ -981,6 +981,19 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true, 
     return displayedResults.findIndex((r) => r.id === selected.id && r.kind === selected.kind)
   }, [displayedResults, selected])
 
+  // If the currently selected item drops out of the visible results (after filters/search),
+  // clear the selection to avoid confusing "stale" details.
+  React.useEffect(() => {
+    if (!selected) return
+    const stillVisible = displayedResults.some(
+      (r) => r.id === selected.id && r.kind === selected.kind
+    )
+    if (!stillVisible) {
+      setSelected(null)
+      setAnalysis("")
+    }
+  }, [displayedResults, selected])
+
   const { demoEnabled } = useDemoMode()
   const [previewExpanded, setPreviewExpanded] = React.useState<{ content: boolean; analysis: boolean }>({ content: false, analysis: false })
   const previewCards = React.useMemo(() => ([
@@ -1431,8 +1444,10 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true, 
                         loadExistingAnalyses(item)
                       }
                     }}
-                    className={`cursor-pointer hover:bg-gray-50 dark:hover:bg-[#262626] rounded px-2 result-fade-in ${
-                      isSelected ? '!bg-gray-100 dark:!bg-gray-800' : ''
+                    className={`cursor-pointer hover:bg-gray-50 dark:hover:bg-[#262626] rounded px-2 result-fade-in border-l-2 ${
+                      isSelected
+                        ? 'border-l-blue-500 !bg-gray-100 dark:!bg-gray-800'
+                        : 'border-l-transparent'
                     }`}>
                     <div className="w-full">
                       <div className="flex items-center gap-2">
@@ -1445,6 +1460,11 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true, 
                           className="max-w-[18rem]">
                           {item.title || String(item.id)}
                         </Typography.Text>
+                        {isSelected && (
+                          <Tag color="green" className="text-[10px]">
+                            {t('review:reviewPage.selectedBadge', 'Selected')}
+                          </Tag>
+                        )}
                       </div>
                       {item.snippet && (
                         <div className="text-xs text-gray-500 truncate mt-0.5">
