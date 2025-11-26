@@ -3,6 +3,7 @@ import { Skeleton } from "antd"
 import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
 import FeatureEmptyState from "@/components/Common/FeatureEmptyState"
+import { PageShell } from "@/components/Common/PageShell"
 import { useServerOnline } from "@/hooks/useServerOnline"
 import { useDemoMode } from "@/context/demo-mode"
 import { CharactersManager } from "./Manager"
@@ -97,7 +98,7 @@ export const CharactersWorkspace: React.FC = () => {
   }
 
   return (
-    <div className="w-full max-w-5xl mx-auto space-y-4">
+    <PageShell className="space-y-4">
       <div className="space-y-1">
         <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-50">
           {t("option:header.modeCharacters", "Characters")}
@@ -115,6 +116,6 @@ export const CharactersWorkspace: React.FC = () => {
         </div>
       )}
       {!capsLoading && hasCharacters && <CharactersManager />}
-    </div>
+    </PageShell>
   )
 }

@@ -7,7 +7,6 @@ export interface ShortcutConfig {
   toggleSidebar: KeyboardShortcut
   toggleChatMode: KeyboardShortcut
   modePlayground: KeyboardShortcut
-  modeReview: KeyboardShortcut
   modeMedia: KeyboardShortcut
   modeKnowledge: KeyboardShortcut
   modeNotes: KeyboardShortcut
@@ -46,12 +45,6 @@ export const defaultShortcuts: ShortcutConfig = {
   },
   modePlayground: {
     key: "1",
-    altKey: true,
-    preventDefault: true,
-    stopPropagation: true
-  },
-  modeReview: {
-    key: "2",
     altKey: true,
     preventDefault: true,
     stopPropagation: true

@@ -25,10 +25,12 @@ import {
   NotebookPen,
   BookMarked,
   BookOpen,
-  ChevronDown
+  ChevronDown,
+  Github
 } from "lucide-react"
 import { getAllPrompts } from "@/db/dexie/helpers"
 import { ProviderIcons } from "../Common/ProviderIcon"
+import logoImage from "~/assets/icon.png"
 import { NewChat } from "./NewChat"
 import { MoreOptions } from "./MoreOptions"
 import { browser } from "wxt/browser"
@@ -66,11 +68,12 @@ type NavigationItem =
 
 type CoreMode =
   | "playground"
-  | "review"
   | "media"
+  | "mediaMulti"
   | "knowledge"
   | "notes"
   | "prompts"
+  | "stt"
   | "promptStudio"
   | "flashcards"
   | "worldBooks"
@@ -167,8 +170,9 @@ export const Header: React.FC<Props> = ({
   }, [ingestDisabled])
 
   const currentCoreMode: CoreMode = React.useMemo(() => {
-    if (pathname.startsWith("/review")) return "media"
-    if (pathname.startsWith("/media-multi") || pathname.startsWith("/media"))
+    if (pathname.startsWith("/review") || pathname.startsWith("/media-multi"))
+      return "mediaMulti"
+    if (pathname.startsWith("/media"))
       return "media"
     if (pathname.startsWith("/settings/knowledge")) return "knowledge"
     if (pathname.startsWith("/notes")) return "notes"
@@ -195,6 +199,7 @@ export const Header: React.FC<Props> = ({
     )
       return "characters"
     if (pathname.startsWith("/flashcards")) return "flashcards"
+    if (pathname.startsWith("/stt")) return "stt"
     if (pathname.startsWith("/tts")) return "tts"
     return "playground"
   }, [pathname])
@@ -220,11 +225,11 @@ export const Header: React.FC<Props> = ({
       case "playground":
         navigate("/")
         break
-      case "review":
-        navigate("/media-multi")
-        break
       case "media":
         navigate("/media")
+        break
+      case "mediaMulti":
+        navigate("/media-multi")
         break
       case "knowledge":
         navigate("/knowledge")
@@ -252,6 +257,9 @@ export const Header: React.FC<Props> = ({
         break
       case "tts":
         navigate("/tts")
+        break
+      case "stt":
+        navigate("/stt")
         break
     }
   }
@@ -312,37 +320,37 @@ export const Header: React.FC<Props> = ({
   const navigationGroups = React.useMemo(
     (): Array<{ title: string; items: NavigationItem[] }> => [
       {
-        title: t("option:header.groupWorkspace", "Workspace"),
+        title: t("option:header.groupChatting", "Chatting"),
         items: [
           {
             type: "link" as const,
-            to: "/media-multi",
-            icon: Microscope,
-            label: t("option:header.review", "Review")
-          },
-          {
-            type: "link" as const,
-            to: "/flashcards",
+            to: "/",
             icon: Layers,
-            label: t("option:header.flashcards", "Flashcards")
+            label: t("option:header.modePlayground", "Chat")
           },
           {
             type: "link" as const,
-            to: "/evaluations",
-            icon: Microscope,
-            label: t("option:header.evaluations", "Evaluations")
+            to: "/prompts",
+            icon: NotebookPen,
+            label: t("option:header.modePromptsPlayground", "Prompts")
           },
           {
             type: "link" as const,
-            to: "/tts",
-            icon: Gauge,
-            label: t("option:tts.playground", "TTS Playground")
+            to: "/characters",
+            icon: UserCircle2,
+            label: t("option:header.modeCharacters", "Characters")
           },
           {
             type: "link" as const,
-            to: "/notes",
-            icon: StickyNote,
-            label: t("option:header.notes", "Notes")
+            to: "/dictionaries",
+            icon: BookMarked,
+            label: t("option:header.modeDictionaries", "Chat dictionaries")
+          },
+          {
+            type: "link" as const,
+            to: "/world-books",
+            icon: BookOpen,
+            label: t("option:header.modeWorldBooks", "World Books")
           }
         ]
       },
@@ -365,6 +373,41 @@ export const Header: React.FC<Props> = ({
             to: "/media-multi",
             icon: LayoutGrid,
             label: t("option:header.libraryView", "Multi-Item Review")
+          },
+          {
+            type: "link" as const,
+            to: "/flashcards",
+            icon: Layers,
+            label: t("option:header.flashcards", "Flashcards")
+          },
+          {
+            type: "link" as const,
+            to: "/notes",
+            icon: StickyNote,
+            label: t("option:header.notes", "Notes")
+          }
+        ]
+      },
+      {
+        title: t("option:header.groupWorkspace", "Workspace"),
+        items: [
+          {
+            type: "link" as const,
+            to: "/evaluations",
+            icon: Microscope,
+            label: t("option:header.evaluations", "Evaluations")
+          },
+          {
+            type: "link" as const,
+            to: "/tts",
+            icon: Gauge,
+            label: t("option:tts.playground", "TTS Playground")
+          },
+          {
+            type: "link" as const,
+            to: "/prompt-studio",
+            icon: NotebookPen,
+            label: t("option:header.modePromptStudio", "Prompt Studio")
           }
         ]
       },
@@ -376,30 +419,6 @@ export const Header: React.FC<Props> = ({
             to: "/settings",
             icon: CogIcon,
             label: t("settings")
-          },
-          {
-            type: "link" as const,
-            to: "/settings/prompt",
-            icon: NotebookPen,
-            label: t("settings:managePrompts.title")
-          },
-          {
-            type: "link" as const,
-            to: "/settings/world-books",
-            icon: BookOpen,
-            label: t("settings:manageKnowledge.worldBooks", "World Books")
-          },
-          {
-            type: "link" as const,
-            to: "/settings/chat-dictionaries",
-            icon: BookMarked,
-            label: t("settings:manageKnowledge.chatDictionaries", "Chat dictionaries")
-          },
-          {
-            type: "link" as const,
-            to: "/settings/characters",
-            icon: UserCircle2,
-            label: t("settings:charactersNav", "Characters")
           }
         ]
       }
@@ -509,35 +528,34 @@ export const Header: React.FC<Props> = ({
           onToggleSidebar={() => setSidebarOpen(true)}
           showBack={pathname !== "/"}
           isRTL={isRTL}>
-          <div className="flex items-center gap-3 min-w-0">
-            <NewChat clearChat={clearChat} />
-            <button
-              type="button"
-              onClick={() => navigate("/settings/tldw")}
-              className="inline-flex items-center gap-1 rounded-md border border-transparent px-2 py-1 text-xs text-gray-600 transition hover:border-gray-300 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-amber-500 dark:text-gray-200 dark:hover:border-gray-500 dark:hover:bg-[#1f1f1f]"
-            >
-              <CogIcon className="h-4 w-4" aria-hidden="true" />
-              <span className="hidden sm:inline">
-                {t("option:header.serverSettings", "Server settings")}
-              </span>
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                try {
-                  window.open(
-                    "https://github.com/rmusser01/tldw_browser_assistant",
-                    "_blank",
-                    "noopener"
-                  )
-                } catch {}
-              }}
-              className="inline-flex items-center gap-1 rounded-md border border-transparent px-2 py-1 text-xs text-gray-600 transition hover:border-gray-300 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-amber-500 dark:text-gray-200 dark:hover:border-gray-500 dark:hover:bg-[#1f1f1f]"
-            >
-              <span className="hidden sm:inline">
-                {t("option:githubRepository", "GitHub Repository")}
-              </span>
-            </button>
+          <div className="flex w-full items-center justify-between gap-3 min-w-0">
+            <div className="flex items-center gap-3 min-w-0">
+              <NewChat clearChat={clearChat} />
+            {isChatRoute && (
+              <>
+                <button
+                  type="button"
+                  onClick={() => setOpenModelSettings(true)}
+                  className="inline-flex items-center gap-1 rounded-md border border-transparent px-2 py-1 text-xs text-gray-600 transition hover:border-gray-300 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-amber-500 dark:text-gray-200 dark:hover:border-gray-500 dark:hover:bg-[#1f1f1f]"
+                >
+                  <Gauge className="h-4 w-4" aria-hidden="true" />
+                  <span className="hidden sm:inline">
+                    {t("option:header.modelSettings", "Model settings")}
+                  </span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => navigate("/settings/health")}
+                  className="inline-flex items-center gap-1 rounded-md border border-transparent px-2 py-1 text-xs text-gray-600 transition hover:border-gray-300 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-amber-500 dark:text-gray-200 dark:hover:border-gray-500 dark:hover:bg-[#1f1f1f]"
+                >
+                  <Microscope className="h-4 w-4" aria-hidden="true" />
+                  <span className="hidden sm:inline">
+                    {t("settings:healthSummary.diagnostics", "Diagnostics")}
+                  </span>
+                </button>
+              </>
+            )}
+            {/* GitHub link moved to right-side cluster */}
             {!temporaryChat && historyId && historyId !== "temp" && (
               <div className="hidden min-w-[160px] max-w-[280px] lg:block">
                 {isEditingTitle ? (
@@ -595,6 +613,29 @@ export const Header: React.FC<Props> = ({
                   </span>
                 </span>
               )}
+              {(selectedSystemPrompt || selectedQuickPrompt) && (
+                <span className="inline-flex items-center gap-1 rounded-full border border-gray-200 bg-white px-2 py-0.5 text-xs text-gray-700 shadow-sm dark:border-gray-700 dark:bg-[#1f1f1f] dark:text-gray-300">
+                  {t("option:header.promptLabel", "Prompt")}:
+                  <span className="max-w-[140px] truncate">
+                    {selectedSystemPrompt
+                      ? (getPromptInfoById(selectedSystemPrompt)?.title || t("option:header.systemPrompt", "System prompt"))
+                      : t("option:header.customPrompt", "Custom")}
+                  </span>
+                </span>
+              )}
+            </div>
+            </div>
+            <div className="hidden sm:flex items-center gap-3">
+              <div className="flex items-center gap-2">
+                <img
+                  src={logoImage}
+                  alt={t("common:pageAssist", "tldw Assistant")}
+                  className="h-6 w-auto"
+                />
+                <span className="text-sm font-medium text-gray-800 dark:text-gray-100">
+                  {t("common:pageAssist", "tldw Assistant")}
+                </span>
+              </div>
               {selectedModel && (
                 <span className="inline-flex items-center gap-1 rounded-full border border-gray-200 bg-white px-2 py-0.5 text-xs text-gray-700 shadow-sm dark:border-gray-700 dark:bg-[#1f1f1f] dark:text-gray-300">
                   {t("option:header.modelLabel", "Model")}:
@@ -606,16 +647,30 @@ export const Header: React.FC<Props> = ({
                   </span>
                 </span>
               )}
-              {(selectedSystemPrompt || selectedQuickPrompt) && (
-                <span className="inline-flex items-center gap-1 rounded-full border border-gray-200 bg-white px-2 py-0.5 text-xs text-gray-700 shadow-sm dark:border-gray-700 dark:bg-[#1f1f1f] dark:text-gray-300">
-                  {t("option:header.promptLabel", "Prompt")}:
-                  <span className="max-w-[140px] truncate">
-                    {selectedSystemPrompt
-                      ? (getPromptInfoById(selectedSystemPrompt)?.title || t("option:header.systemPrompt", "System prompt"))
-                      : t("option:header.customPrompt", "Custom")}
-                  </span>
+              <button
+                type="button"
+                onClick={() => {
+                  try {
+                    window.open(
+                      "https://github.com/rmusser01/tldw_browser_assistant",
+                      "_blank",
+                      "noopener"
+                    )
+                  } catch {}
+                }}
+                className="inline-flex items-center justify-center rounded-md border border-transparent p-1 text-gray-600 transition hover:border-gray-300 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-amber-500 dark:text-gray-200 dark:hover:border-gray-500 dark:hover:bg-[#1f1f1f]"
+                aria-label={t("option:githubRepository", "GitHub Repository") as string}>
+                <Github className="h-4 w-4" aria-hidden="true" />
+              </button>
+              <button
+                type="button"
+                onClick={() => navigate("/settings/tldw")}
+                className="inline-flex items-center gap-1 rounded-md border border-transparent px-2 py-1 text-xs text-gray-600 transition hover:border-gray-300 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-amber-500 dark:text-gray-200 dark:hover:border-gray-500 dark:hover:bg-[#1f1f1f]">
+                <CogIcon className="h-4 w-4" aria-hidden="true" />
+                <span className="hidden sm:inline">
+                  {t("option:header.serverSettings", "Server settings")}
                 </span>
-              )}
+              </button>
             </div>
           </div>
         </PrimaryToolbar>
@@ -727,6 +782,29 @@ export const Header: React.FC<Props> = ({
           <div className="flex items-center gap-3 text-xs text-gray-600 dark:text-gray-300">
             <button
               type="button"
+              ref={quickIngestBtnRef}
+              onClick={() => setQuickIngestOpen(true)}
+              disabled={ingestDisabled}
+              title={
+                ingestDisabled
+                  ? t("option:header.connectToIngest", "Connect to your server to ingest.")
+                  : t(
+                      "option:header.quickIngestHelp",
+                      "Upload URLs/files with analysis and advanced options."
+                    )
+              }
+              className={classNames(
+                "inline-flex items-center gap-1 rounded-full border border-transparent px-2 py-1 text-xs transition hover:border-gray-300 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500 dark:hover:border-gray-500 dark:hover:bg-[#1f1f1f]",
+                ingestDisabled
+                  ? "cursor-not-allowed text-gray-400 dark:text-gray-600"
+                  : "text-gray-600 dark:text-gray-200"
+              )}
+              aria-disabled={ingestDisabled}>
+              <UploadCloud className="h-3 w-3" aria-hidden="true" />
+              <span>{t("option:header.quickIngest", "Quick ingest")}</span>
+            </button>
+            <button
+              type="button"
               onClick={() => navigate("/settings/health")}
               className="inline-flex items-center gap-1 rounded-full border border-transparent px-2 py-1 text-xs transition hover:border-gray-300 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500 dark:hover:border-gray-500 dark:hover:bg-[#1f1f1f]"
               title={t(
@@ -781,28 +859,6 @@ export const Header: React.FC<Props> = ({
                 <span>{t("option:header.modelSettings", "Model settings")}</span>
               </button>
 
-              <button
-                type="button"
-                ref={quickIngestBtnRef}
-                onClick={() => setQuickIngestOpen(true)}
-                disabled={ingestDisabled}
-                title={
-                  ingestDisabled
-                    ? t("option:header.connectToIngest", "Connect to your server to ingest.")
-                    : t("option:header.quickIngestHelp", "Upload URLs/files with analysis and advanced options.")
-                }
-                className={classNames(
-                  "flex w-full items-center gap-2 rounded-md border border-transparent px-3 py-2 text-sm transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500 sm:w-auto",
-                  ingestDisabled
-                    ? "cursor-not-allowed text-gray-400 dark:text-gray-600"
-                    : "text-gray-600 hover:border-gray-300 hover:bg-white dark:text-gray-200 dark:hover:border-gray-500 dark:hover:bg-[#1f1f1f]"
-                )}
-                aria-disabled={ingestDisabled}
-              >
-                <UploadCloud className="h-4 w-4" aria-hidden="true" />
-                <span>{t("option:header.quickIngest", "Quick ingest")}</span>
-              </button>
-
               {messages.length > 0 && !streaming && (
                 <div className="flex items-center gap-1">
                   <MoreOptions
@@ -826,61 +882,27 @@ export const Header: React.FC<Props> = ({
           )}
 
           {isChatRoute && (
-            <Dropdown
-              trigger={["click"]}
-              menu={{
-                items: [
-                  {
-                    key: "modelSettings",
-                    label: (
-                      <span className="inline-flex items-center gap-2">
-                        <Gauge className="h-4 w-4" aria-hidden="true" />
-                        <span>{t("option:header.modelSettings", "Model settings")}</span>
-                      </span>
-                    ),
-                    onClick: () => setOpenModelSettings(true)
-                  },
-                  {
-                    key: "quickIngest",
-                    label: (
-                      <span className="inline-flex items-center gap-2">
-                        <UploadCloud className="h-4 w-4" aria-hidden="true" />
-                        <span>{t("option:header.quickIngest", "Quick ingest")}</span>
-                      </span>
-                    ),
-                    onClick: () => setQuickIngestOpen(true)
-                  },
-                  {
-                    key: "diagnostics",
-                    label: (
-                      <span className="inline-flex items-center gap-2">
-                        <Microscope className="h-4 w-4" aria-hidden="true" />
-                        <span>{t("settings:healthSummary.diagnostics", "Diagnostics")}</span>
-                      </span>
-                    ),
-                    onClick: () => navigate("/settings/health")
-                  },
-                  {
-                    key: "openSidebar",
-                    label: (
-                      <span className="inline-flex items-center gap-2">
-                        <LayoutGrid className="h-4 w-4" aria-hidden="true" />
-                        <span>{t("option:header.openSidebar", "Open sidebar")}</span>
-                      </span>
-                    ),
-                    onClick: () => { void openSidebar() }
-                  }
-                ]
-              }}
-            >
+            <>
+              {messages.length > 0 && !streaming && (
+                <div className="flex items-center gap-1">
+                  <MoreOptions
+                    shareModeEnabled={shareModeEnabled}
+                    historyId={historyId}
+                    messages={messages}
+                  />
+                  <span className="sr-only">{t("option:header.moreActions", "More actions")}</span>
+                </div>
+              )}
+
               <button
                 type="button"
-                className="flex w-full items-center gap-2 rounded-md border border-gray-200 px-3 py-2 text-sm text-gray-700 transition hover:bg-white dark:border-gray-600 dark:text-gray-200 dark:hover:bg-[#1f1f1f] sm:w-auto"
+                onClick={() => { void openSidebar() }}
+                className="flex w-full items-center gap-2 rounded-md border border-transparent px-3 py-2 text-sm text-gray-600 transition hover:border-gray-300 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500 dark:text-gray-200 dark:hover:border-gray-500 dark:hover:bg-[#1f1f1f] sm:w-auto"
               >
                 <LayoutGrid className="h-4 w-4" aria-hidden="true" />
-                <span>{t("option:header.toolsMenu", "Chat tools")}</span>
+                <span>{t("option:header.openSidebar", "Open sidebar")}</span>
               </button>
-            </Dropdown>
+            </>
           )}
         </div>
 
@@ -906,24 +928,24 @@ export const Header: React.FC<Props> = ({
                     shortcut: shortcutConfig.modePlayground
                   },
                   {
-                    key: "review",
-                    label: t("option:header.modeReview", "Review"),
-                    shortcut: shortcutConfig.modeReview
-                  },
-                  {
                     key: "media",
                     label: t("option:header.modeMedia", "Media"),
                     shortcut: shortcutConfig.modeMedia
                   },
                   {
                     key: "knowledge",
-                    label: t("option:header.modeKnowledge", "Knowledge"),
+                    label: t("option:header.modeKnowledge", "Knowledge QA"),
                     shortcut: shortcutConfig.modeKnowledge
                   },
                   {
                     key: "notes",
                     label: t("option:header.modeNotes", "Notes"),
                     shortcut: shortcutConfig.modeNotes
+                  },
+                  {
+                    key: "flashcards",
+                    label: t("option:header.modeFlashcards", "Flashcards"),
+                    shortcut: shortcutConfig.modeFlashcards
                   }
                 ]
                 const secondaryModes: Array<{
@@ -932,19 +954,24 @@ export const Header: React.FC<Props> = ({
                   shortcut?: import("@/hooks/keyboard/useKeyboardShortcuts").KeyboardShortcut
                 }> = [
                   {
+                    key: "mediaMulti",
+                    label: t("option:header.libraryView", "Multi-Item Review"),
+                    shortcut: undefined
+                  },
+                  {
+                    key: "stt",
+                    label: t("option:header.modeStt", "STT Playground"),
+                    shortcut: undefined
+                  },
+                  {
                     key: "prompts",
-                    label: t("option:header.modePromptsPlayground", "Prompts Playground"),
+                    label: t("option:header.modePromptsPlayground", "Prompts"),
                     shortcut: shortcutConfig.modePrompts
                   },
                   {
                     key: "promptStudio",
                     label: t("option:header.modePromptStudio", "Prompt Studio"),
                     shortcut: undefined
-                  },
-                  {
-                    key: "flashcards",
-                    label: t("option:header.modeFlashcards", "Flashcards"),
-                    shortcut: shortcutConfig.modeFlashcards
                   },
                   {
                     key: "worldBooks",
@@ -996,7 +1023,6 @@ export const Header: React.FC<Props> = ({
                     </button>
                   )
                 }
-                const isSecondaryActive = secondaryModes.some(m => m.key === currentCoreMode)
                 return (
                   <>
                     {primaryModes.map(renderModeButton)}
@@ -1014,14 +1040,10 @@ export const Header: React.FC<Props> = ({
                         type="button"
                         className={classNames(
                           "rounded-full px-3 py-1 text-xs font-medium transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500",
-                          isSecondaryActive
-                            ? "bg-amber-500 text-gray-900 shadow-sm dark:bg-amber-400 dark:text-gray-900"
-                            : "bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-[#262626] dark:text-gray-200 dark:hover:bg-[#333333]"
+                          "bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-[#262626] dark:text-gray-200 dark:hover:bg-[#333333]"
                         )}
                       >
-                        {isSecondaryActive
-                          ? secondaryModes.find(m => m.key === currentCoreMode)?.label
-                          : t("option:header.moreTools", "More...")}
+                        {t("option:header.moreTools", "More...")}
                       </button>
                     </Dropdown>
                   </>

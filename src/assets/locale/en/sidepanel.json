@@ -27,7 +27,7 @@
     "tempPill": "Temp",
     "modesLabel": "Open modes in Web UI",
     "modePlayground": "Chat",
-    "modeReview": "Review",
+    "modeReview": "Multi-Item Review",
     "modeMedia": "Media",
     "modeKnowledge": "Knowledge",
     "modeNotes": "Notes",
@@ -38,7 +38,7 @@
     "ragSearch": "RAG Search"
   },
   "composer": {
-    "connectHint": "Connect your server to chat."
+    "connectHint": "Connect to your tldw server in Settings to send messages."
   },
   "notification": {
     "ingestSent": "Sent to tldw server",

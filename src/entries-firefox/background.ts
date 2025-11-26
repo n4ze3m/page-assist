@@ -24,6 +24,16 @@ export default defineBackground({
 
     const initialize = async () => {
       try {
+        // Clear any existing context menus to avoid duplicate-id errors
+        try {
+          await browser.contextMenus.removeAll()
+        } catch (e) {
+          console.debug(
+            "[tldw] (firefox) contextMenus.removeAll failed:",
+            (e as any)?.message || e
+          )
+        }
+
         storage.watch({
           "actionIconClick": (value) => {
             const oldValue = value?.oldValue || "webui"

@@ -566,6 +566,12 @@ export const MediaReviewPage: React.FC = () => {
           <div className="flex items-center gap-2 w-full">
             <Input
               placeholder={t('mediaPage.searchPlaceholder', 'Search media (title/content)')}
+              aria-label={
+                t(
+                  'mediaPage.searchPlaceholder',
+                  'Search media (title/content)'
+                ) as string
+              }
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               onPressEnter={() => { setPage(1); refetch() }}
@@ -575,24 +581,30 @@ export const MediaReviewPage: React.FC = () => {
             <Button type="primary" onClick={() => { setPage(1); refetch() }}>{t('mediaPage.search', 'Search')}</Button>
             <Button onClick={() => { setQuery(""); setPage(1); refetch() }}>{t('mediaPage.clear', 'Clear')}</Button>
             <Select
-            mode="multiple"
-            allowClear
-            placeholder={t('mediaPage.types', 'Types')}
-            className="min-w-[12rem]"
-            value={types}
-            onChange={(vals) => { setTypes(vals as string[]); setPage(1); refetch() }}
-            options={availableTypes.map((t) => ({ label: t, value: t }))}
+              mode="multiple"
+              allowClear
+              placeholder={t('mediaPage.types', 'Types')}
+              aria-label={
+                t('mediaPage.types', 'Types') as string
+              }
+              className="min-w-[12rem]"
+              value={types}
+              onChange={(vals) => { setTypes(vals as string[]); setPage(1); refetch() }}
+              options={availableTypes.map((t) => ({ label: t, value: t }))}
             />
             <Select
-            mode="tags"
-            allowClear
-            showSearch
-            placeholder={t('mediaPage.keywords', 'Keywords')}
-            className="min-w-[12rem]"
-            value={keywordTokens}
-            onSearch={(txt) => loadKeywordSuggestions(txt)}
-            onChange={(vals) => { setKeywordTokens(vals as string[]); setPage(1); refetch() }}
-            options={keywordOptions.map((k) => ({ label: k, value: k }))}
+              mode="tags"
+              allowClear
+              showSearch
+              placeholder={t('mediaPage.keywords', 'Keywords')}
+              aria-label={
+                t('mediaPage.keywords', 'Keywords') as string
+              }
+              className="min-w-[12rem]"
+              value={keywordTokens}
+              onSearch={(txt) => loadKeywordSuggestions(txt)}
+              onChange={(vals) => { setKeywordTokens(vals as string[]); setPage(1); refetch() }}
+              options={keywordOptions.map((k) => ({ label: k, value: k }))}
             />
             <Button onClick={() => { setTypes([]); setKeywordTokens([]); setPage(1); refetch() }}>{t('mediaPage.resetFilters', 'Reset Filters')}</Button>
             <Checkbox checked={includeContent} onChange={(e) => { setIncludeContent(e.target.checked); setPage(1); refetch() }}>{t('mediaPage.content', 'Content')} {contentLoading && (<Spin size="small" className="ml-1" />)}</Checkbox>
@@ -716,6 +728,11 @@ export const MediaReviewPage: React.FC = () => {
         <div className="w-6 flex-shrink-0 h-full flex items-center">
           <button
             title={sidebarHidden ? t('mediaPage.showSidebar', 'Show sidebar') : t('mediaPage.hideSidebar', 'Hide sidebar')}
+            aria-label={
+              sidebarHidden
+                ? (t('mediaPage.showSidebar', 'Show sidebar') as string)
+                : (t('mediaPage.hideSidebar', 'Hide sidebar') as string)
+            }
             onClick={() => setSidebarHidden((v) => !v)}
             className="h-full w-6 rounded bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 flex items-center justify-center text-xs font-semibold text-gray-600 dark:text-gray-300"
           >

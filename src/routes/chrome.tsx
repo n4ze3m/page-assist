@@ -28,6 +28,7 @@ import OptionKnowledgeWorkspace from "./option-knowledge"
 import OptionFlashcards from "./option-flashcards"
 import OptionTts from "./option-tts"
 import OptionEvaluations from "./option-evaluations"
+import OptionStt from "./option-stt"
 import OptionSettingsEvaluations from "./option-settings-evaluations"
 import OptionPromptStudio from "./option-prompt-studio"
 import OptionSettingsPromptStudio from "./option-settings-prompt-studio"
@@ -66,6 +67,7 @@ export const OptionRoutingChrome = () => {
       <Route path="/prompts" element={<OptionPromptsWorkspace />} />
       <Route path="/prompt-studio" element={<OptionPromptStudio />} />
       <Route path="/tts" element={<OptionTts />} />
+      <Route path="/stt" element={<OptionStt />} />
       <Route path="/evaluations" element={<OptionEvaluations />} />
     </Routes>
   )

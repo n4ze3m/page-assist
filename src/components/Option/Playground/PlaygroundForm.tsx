@@ -51,6 +51,7 @@ import { useServerCapabilities } from "@/hooks/useServerCapabilities"
 import { tldwClient } from "@/services/tldw/TldwApiClient"
 import { CharacterSelect } from "@/components/Common/CharacterSelect"
 import { ProviderIcons } from "@/components/Common/ProviderIcon"
+import type { Character } from "@/types/character"
 type Props = {
   dropedFile: File | undefined
 }
@@ -131,6 +132,10 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
   )
   const [sttSegEmbeddingsProvider] = useStorage("sttSegEmbeddingsProvider", "")
   const [sttSegEmbeddingsModel] = useStorage("sttSegEmbeddingsModel", "")
+  const [selectedCharacter] = useStorage<Character | null>(
+    "selectedCharacter",
+    null
+  )
 
   const {
     tabMentionsEnabled,
@@ -615,7 +620,45 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
       const title =
         titleSource.length > 80 ? `${titleSource.slice(0, 77)}…` : titleSource
 
-      const created = await tldwClient.createChat({ title })
+      let characterId: string | number | null =
+        (selectedCharacter as any)?.id ?? null
+
+      if (!characterId) {
+        const DEFAULT_NAME = "Helpful AI Assistant"
+        try {
+          const characters = await tldwClient.listCharacters()
+          const existing = (characters || []).find((c: any) => {
+            const name = String(c?.name || "").trim().toLowerCase()
+            return name === DEFAULT_NAME.toLowerCase()
+          })
+          let target = existing
+          if (!target) {
+            target = await tldwClient.createCharacter({
+              name: DEFAULT_NAME
+            })
+          }
+          characterId =
+            target && typeof target.id !== "undefined" ? target.id : null
+        } catch {
+          characterId = null
+        }
+      }
+
+      if (characterId == null) {
+        notification.error({
+          message: t("error"),
+          description: t(
+            "playground:composer.persistence.serverCharacterRequired",
+            "Unable to find or create a default assistant character on the server. Try again from the Characters page."
+          )
+        })
+        return
+      }
+
+      const created = await tldwClient.createChat({
+        title,
+        character_id: characterId
+      })
       const rawId = (created as any)?.id ?? (created as any)?.chat_id ?? created
       const cid = rawId != null ? String(rawId) : ""
       if (!cid) {
@@ -654,7 +697,14 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
         description: e?.message || t("somethingWentWrong")
       })
     }
-  }, [history, isConnectionReady, temporaryChat, serverChatId, setServerChatId, t])
+  }, [
+    history,
+    isConnectionReady,
+    temporaryChat,
+    serverChatId,
+    setServerChatId,
+    t
+  ])
 
   const handleClearContext = React.useCallback(() => {
     setHistory([])
@@ -949,7 +999,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
   return (
     <div className="flex w-full flex-col items-center px-2">
       <div className="relative z-10 flex w-full flex-col items-center justify-center gap-2 text-base">
-        <div className="relative flex w-full flex-row justify-center gap-2 lg:w-3/5">
+        <div className="relative flex w-full flex-row justify-center gap-2">
           <div
             data-istemporary-chat={temporaryChat}
             data-checkwidemode={checkWideMode}
@@ -1005,6 +1055,12 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                           size="small"
                           checked={fileRetrievalEnabled}
                           onChange={setFileRetrievalEnabled}
+                          aria-label={
+                            t(
+                              "fileRetrievalEnabled",
+                              "Enable RAG for Documents"
+                            ) as string
+                          }
                         />
                       </div>
                     </Tooltip>
@@ -1279,12 +1335,28 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                                 size="small"
                                 checked={temporaryChat}
                                 onChange={handleToggleTemporaryChat}
-                                aria-label={t("playground:actions.temporaryOff", "Save chat") as string}
+                                aria-label={
+                                  temporaryChat
+                                    ? (t(
+                                        "playground:actions.temporaryOn",
+                                        "Temporary chat (not saved)"
+                                      ) as string)
+                                    : (t(
+                                        "playground:actions.temporaryOff",
+                                        "Save chat to history"
+                                      ) as string)
+                                }
                               />
                               <span>
                                 {temporaryChat
-                                  ? t("playground:actions.temporaryOn", "Temporary chat")
-                                : t("playground:actions.temporaryOff", "Save chat")}
+                                  ? t(
+                                      "playground:actions.temporaryOn",
+                                      "Temporary chat (not saved)"
+                                    )
+                                  : t(
+                                      "playground:actions.temporaryOff",
+                                      "Save chat to history"
+                                    )}
                               </span>
                             </div>
                             <p className="text-[11px] text-gray-500 dark:text-gray-400">
@@ -1296,7 +1368,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                                 : serverChatId
                                   ? t(
                                       "playground:composer.persistence.server",
-                                      "Saved in this browser and on your tldw server."
+                                      "Saved Locally+Server"
                                     )
                                   : t(
                                       "playground:composer.persistence.local",
@@ -1320,27 +1392,53 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                         <div className="flex items-center justify-end gap-3 flex-wrap">
                           <CharacterSelect className="text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100" iconClassName="size-5" />
                           {(browserSupportsSpeechRecognition || hasServerAudio) && (
-                            <Tooltip title={t("playground:tooltip.speechToText", "Speech to Text") as string}>
-                              <button
-                                type="button"
-                                onClick={hasServerAudio ? handleServerDictationToggle : handleSpeechToggle}
-                                className={`inline-flex items-center justify-center rounded-full border px-2 py-1 text-xs transition hover:bg-gray-100 dark:hover:bg-[#2a2a2a] ${
-                                  (hasServerAudio && isServerDictating) || (!hasServerAudio && isListening)
-                                    ? "border-blue-500 text-blue-600 dark:border-blue-400 dark:text-blue-300"
-                                    : "border-gray-200 text-gray-700 dark:border-gray-600 dark:text-gray-200"
-                                }`}
-                                aria-label={
+                            <>
+                              <Tooltip
+                                title={
                                   hasServerAudio
-                                    ? (isServerDictating
-                                        ? (t("playground:actions.speechStop", "Stop dictation") as string)
-                                        : (t("playground:actions.speechStart", "Start dictation") as string))
-                                    : (isListening
-                                        ? (t("playground:actions.speechStop", "Stop dictation") as string)
-                                        : (t("playground:actions.speechStart", "Start dictation") as string))
+                                    ? t(
+                                        "playground:tooltip.speechToTextServer",
+                                        "Dictation via your tldw server"
+                                      ) +
+                                      " " +
+                                      t(
+                                        "playground:tooltip.speechToTextDetails",
+                                        "Uses {{model}} · {{task}} · {{format}}. Configure in Settings → General → Speech-to-Text.",
+                                        {
+                                          model: sttModel || "whisper-1",
+                                          task:
+                                            sttTask === "translate"
+                                              ? "translate"
+                                              : "transcribe",
+                                          format: (sttResponseFormat || "json").toUpperCase()
+                                        } as any
+                                      )
+                                    : t(
+                                        "playground:tooltip.speechToTextBrowser",
+                                        "Dictation via browser speech recognition"
+                                      )
                                 }>
-                                <MicIcon className="h-4 w-4" />
-                              </button>
-                            </Tooltip>
+                                <button
+                                  type="button"
+                                  onClick={hasServerAudio ? handleServerDictationToggle : handleSpeechToggle}
+                                  className={`inline-flex items-center justify-center rounded-full border px-2 py-1 text-xs transition hover:bg-gray-100 dark:hover:bg-[#2a2a2a] ${
+                                    (hasServerAudio && isServerDictating) || (!hasServerAudio && isListening)
+                                      ? "border-blue-500 text-blue-600 dark:border-blue-400 dark:text-blue-300"
+                                      : "border-gray-200 text-gray-700 dark:border-gray-600 dark:text-gray-200"
+                                  }`}
+                                  aria-label={
+                                    hasServerAudio
+                                      ? (isServerDictating
+                                          ? (t("playground:actions.speechStop", "Stop dictation") as string)
+                                          : (t("playground:actions.speechStart", "Start dictation") as string))
+                                      : (isListening
+                                          ? (t("playground:actions.speechStop", "Stop dictation") as string)
+                                          : (t("playground:actions.speechStart", "Start dictation") as string))
+                                  }>
+                                  <MicIcon className="h-4 w-4" />
+                                </button>
+                              </Tooltip>
+                            </>
                           )}
                           <Tooltip
                             title={

@@ -147,7 +147,7 @@ export const PlaygroundMessage = (props: Props) => {
 
   return (
     <div
-      className={`group relative flex w-full max-w-3xl flex-col items-end justify-center pb-2 md:px-4 lg:w-4/5 text-gray-800 dark:text-gray-100 ${checkWideMode ? "max-w-none" : ""}`}>
+      className={`group relative flex w-full max-w-3xl flex-col items-end justify-center pb-2 md:px-4 text-gray-800 dark:text-gray-100 ${checkWideMode ? "max-w-none" : ""}`}>
       {/* Inline stop button while streaming on the latest assistant message */}
       {props.isBot && (props.isStreaming || props.isProcessing) && isLastMessage && props.onStopStreaming && (
         <div className="absolute right-2 top-0 z-10">

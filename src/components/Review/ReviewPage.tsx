@@ -1198,6 +1198,17 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true, 
                   ? t('review:reviewPage.mediaOnlySearchPlaceholder', 'Search media (title/content)')
                   : t('review:reviewPage.searchPlaceholder', 'Search media, notes...')
               }
+              aria-label={
+                isViewMediaMode
+                  ? (t(
+                      'review:reviewPage.mediaOnlySearchPlaceholder',
+                      'Search media (title/content)'
+                    ) as string)
+                  : (t(
+                      'review:reviewPage.searchPlaceholder',
+                      'Search media, notes...'
+                    ) as string)
+              }
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               onPressEnter={() => refetch()}
@@ -1270,6 +1281,9 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true, 
                 mode="tags"
                 allowClear
                 placeholder={t('review:reviewPage.mediaTypes', 'Media types')}
+                aria-label={
+                  t('review:reviewPage.mediaTypes', 'Media types') as string
+                }
                 className="min-w-[12rem] flex-1"
                 value={mediaTypes}
                 onChange={(vals) => {
@@ -1285,6 +1299,9 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true, 
                 mode="tags"
                 allowClear
                 placeholder={t('review:reviewPage.keywords', 'Keywords')}
+                aria-label={
+                  t('review:reviewPage.keywords', 'Keywords') as string
+                }
                 className="min-w-[12rem] flex-1"
                 value={keywordTokens}
                 onSearch={(txt) => loadKeywordSuggestions(txt)}

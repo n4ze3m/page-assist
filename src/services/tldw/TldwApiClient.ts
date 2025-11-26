@@ -1048,6 +1048,23 @@ export class TldwApiClient {
   }
 
   // STT Methods
+  async getTranscriptionModels(): Promise<any> {
+    await this.ensureConfigForRequest(true)
+    return await bgRequest<any>({
+      path: "/api/v1/media/transcription-models",
+      method: "GET"
+    })
+  }
+
+  async getTranscriptionModelHealth(model: string): Promise<any> {
+    await this.ensureConfigForRequest(true)
+    const query = this.buildQuery({ model })
+    return await bgRequest<any>({
+      path: `/api/v1/audio/transcriptions/health${query}`,
+      method: "GET"
+    })
+  }
+
   async transcribeAudio(audioFile: File | Blob, options?: any): Promise<any> {
     await this.ensureConfigForRequest(true)
     const fields: Record<string, any> = {}

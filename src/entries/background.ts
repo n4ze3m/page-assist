@@ -32,6 +32,13 @@ export default defineBackground({
     const saveToNotesMenuId = "save-to-notes-pa"
     const initialize = async () => {
       try {
+        // Clear any existing menu items to avoid duplicate-id errors
+        try {
+          await browser.contextMenus.removeAll()
+        } catch (e) {
+          console.debug("[tldw] contextMenus.removeAll failed:", (e as any)?.message || e)
+        }
+
         storage.watch({
           actionIconClick: (value) => {
             const oldValue = value?.oldValue || "webui"

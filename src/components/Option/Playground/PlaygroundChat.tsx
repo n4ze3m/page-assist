@@ -76,8 +76,6 @@ export const PlaygroundChat = () => {
           />
         ))}
       </div>
-      <div className="w-full pb-[157px]"></div>
-
       <MessageSourcePopup
         open={isSourceOpen}
         setOpen={setIsSourceOpen}

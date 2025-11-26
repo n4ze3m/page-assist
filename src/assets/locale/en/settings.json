@@ -253,6 +253,7 @@
     },
     "stt": {
       "heading": "Speech-to-Text Settings",
+      "usedByChat": "These Speech-to-Text defaults are used by the chat dictation button in the Playground and Sidebar.",
       "autoStopTimeout": {
         "label": "Auto Stop Timeout (ms)",
         "placeholder": "Enter auto-stop timeout in milliseconds"

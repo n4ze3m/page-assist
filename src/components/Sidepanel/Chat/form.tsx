@@ -7,6 +7,7 @@ import { toBase64 } from "~/libs/to-base64"
 import {
   Checkbox,
   Dropdown,
+  Switch,
   Image,
   Tooltip,
   Popover
@@ -535,20 +536,8 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
     <div className="flex w-72 flex-col gap-4">
       <div className="space-y-2">
         <p className="text-[11px] font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
-          {t("playground:more.history", "History & saving")}
+          {t("playground:more.history", "Chat saving")}
         </p>
-        <button
-          type="button"
-          onClick={handleToggleTemporaryChat}
-          className="flex w-full items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 transition hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-[#2a2a2a]"
-        >
-          <span>
-            {temporaryChat
-              ? t("playground:actions.temporaryOn", "Temporary chat")
-              : t("playground:actions.temporaryOff", "Save chat")}
-          </span>
-          <BsIncognito className="h-4 w-4" />
-        </button>
         <p className="text-[11px] text-gray-500 dark:text-gray-400">
           {temporaryChat
             ? t(
@@ -606,35 +595,8 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
 
       <div className="space-y-2">
         <p className="text-[11px] font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
-          {t("playground:more.voice", "Voice & captions")}
+          {t("playground:more.voice", "More voice options")}
         </p>
-        {browserSupportsSpeechRecognition ? (
-          <button
-            type="button"
-            onClick={handleSpeechToggle}
-            className="flex w-full items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 transition hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-[#2a2a2a]"
-          >
-            <span>
-              {isListening
-                ? t("playground:actions.speechStop", "Stop dictation")
-                : t("playground:actions.speechStart", "Start dictation")}
-            </span>
-            <MicIcon className="h-4 w-4" />
-          </button>
-        ) : hasServerAudio && (
-          <button
-            type="button"
-            onClick={handleServerDictationToggle}
-            className="flex w-full items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 transition hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-[#2a2a2a]"
-          >
-            <span>
-              {isServerDictating
-                ? t("playground:actions.speechStop", "Stop dictation")
-                : t("playground:actions.speechStart", "Start dictation")}
-            </span>
-            <MicIcon className="h-4 w-4" />
-          </button>
-        )}
         <button
           type="button"
           onClick={handleLiveCaptionsToggle}
@@ -822,7 +784,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
   return (
     <div className="flex w-full flex-col items-center px-2">
       <div className="relative z-10 flex w-full flex-col items-center justify-center gap-2 text-base">
-        <div className="relative flex w-full flex-row justify-center gap-2 lg:w-4/5">
+        <div className="relative flex w-full flex-row justify-center gap-2">
           <div
             data-istemporary-chat={temporaryChat}
             aria-disabled={!isConnectionReady}
@@ -994,14 +956,58 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                       {...form.getInputProps("message")}
                     />
                     <div className="mt-4 flex w-full flex-col gap-3 md:flex-row md:items-center md:justify-between">
-                      <div className="flex flex-wrap items-center gap-2" />
+                      <div className="flex flex-wrap items-start gap-2 text-xs text-gray-700 dark:text-gray-200">
+                        <div className="flex flex-col gap-0.5">
+                          <div className="flex items-center gap-1">
+                            <Switch
+                              size="small"
+                              checked={temporaryChat}
+                              onChange={handleToggleTemporaryChat}
+                              aria-label={
+                                temporaryChat
+                                  ? (t(
+                                      "playground:actions.temporaryOn",
+                                      "Temporary chat (not saved)"
+                                    ) as string)
+                                  : (t(
+                                      "playground:actions.temporaryOff",
+                                      "Save chat to history"
+                                    ) as string)
+                              }
+                            />
+                            <span>
+                              {temporaryChat
+                                ? t(
+                                    "playground:actions.temporaryOn",
+                                    "Temporary chat (not saved)"
+                                  )
+                                : t(
+                                    "playground:actions.temporaryOff",
+                                    "Save chat to history"
+                                  )}
+                            </span>
+                          </div>
+                          <p className="text-[11px] text-gray-500 dark:text-gray-400">
+                            {temporaryChat
+                              ? t(
+                                  "playground:composer.persistence.ephemeral",
+                                  "Not saved in history; clears when you close this tab."
+                                )
+                              : t(
+                                  "playground:composer.persistence.local",
+                                  "Saved in this browser only."
+                                )}
+                          </p>
+                        </div>
+                      </div>
                       <div className="flex flex-wrap items-center justify-end gap-2">
                         {/* RAG toggle for better discoverability */}
                         <button
                           type="button"
                           onClick={() => window.dispatchEvent(new CustomEvent('tldw:toggle-rag'))}
                           className="inline-flex items-center gap-2 rounded-md border border-gray-200 px-3 py-1.5 text-xs font-semibold text-gray-700 transition hover:bg-gray-100 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-[#2a2a2a]"
-                          title={t('sidepanel:toolbar.ragSearch', 'RAG Search') as string}>
+                          title={t('sidepanel:toolbar.ragSearch', 'RAG Search') as string}
+                          aria-label={t('sidepanel:toolbar.ragSearch', 'RAG Search') as string}>
                           <Search className="h-4 w-4" />
                           <span className="hidden sm:inline">{t('sidepanel:toolbar.ragSearch', 'RAG Search')}</span>
                         </button>
@@ -1191,7 +1197,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                         <p className="max-w-xs text-left">
                           {t(
                             "sidepanel:composer.connectHint",
-                            "Connect your server to chat."
+                            "Connect to your tldw server in Settings to send messages."
                           )}
                         </p>
                         <div className="flex flex-wrap items-center gap-2">

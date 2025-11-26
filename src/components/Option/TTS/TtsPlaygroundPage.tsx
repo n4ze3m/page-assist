@@ -29,6 +29,7 @@ import {
   type TldwTtsProvidersInfo
 } from "@/services/tldw/audio-providers"
 import { useTtsPlayground } from "@/hooks/useTtsPlayground"
+import { PageShell } from "@/components/Common/PageShell"
 import { getModels, getVoices } from "@/services/elevenlabs"
 
 const { Text, Title, Paragraph } = Typography
@@ -365,7 +366,7 @@ const TtsPlaygroundPage: React.FC = () => {
     )
 
   return (
-    <div className="max-w-3xl mx-auto py-6">
+    <PageShell maxWidthClassName="max-w-3xl" className="py-6">
       <Title level={3} className="!mb-1">
         {t("playground:tts.title", "TTS Playground")}
       </Title>
@@ -861,7 +862,7 @@ const TtsPlaygroundPage: React.FC = () => {
           />
         )}
       </div>
-    </div>
+    </PageShell>
   )
 }
 

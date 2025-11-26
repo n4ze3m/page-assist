@@ -2,6 +2,7 @@ import React from "react"
 import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
 import FeatureEmptyState from "@/components/Common/FeatureEmptyState"
+import { PageShell } from "@/components/Common/PageShell"
 import { useServerOnline } from "@/hooks/useServerOnline"
 import { useDemoMode } from "@/context/demo-mode"
 import { DictionariesManager } from "./Manager"
@@ -65,7 +66,7 @@ export const DictionariesWorkspace: React.FC = () => {
   }
 
   return (
-    <div className="w-full max-w-5xl mx-auto space-y-4">
+    <PageShell className="space-y-4">
       <div className="space-y-1">
         <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-50">
           {t("option:header.modeDictionaries", "Chat dictionaries")}
@@ -78,7 +79,6 @@ export const DictionariesWorkspace: React.FC = () => {
         </p>
       </div>
       <DictionariesManager />
-    </div>
+    </PageShell>
   )
 }
-

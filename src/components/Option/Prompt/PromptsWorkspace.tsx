@@ -1,6 +1,7 @@
 import React from "react"
 import { useTranslation } from "react-i18next"
 import FeatureEmptyState from "@/components/Common/FeatureEmptyState"
+import { PageShell } from "@/components/Common/PageShell"
 import { useServerOnline } from "@/hooks/useServerOnline"
 import { useNavigate } from "react-router-dom"
 import { PromptBody } from "."
@@ -39,10 +40,10 @@ export const PromptsWorkspace: React.FC = () => {
   }
 
   return (
-    <div className="w-full max-w-5xl mx-auto space-y-4">
+    <PageShell className="space-y-4">
       <div className="space-y-1">
         <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-50">
-          {t("option:header.modePromptsPlayground", "Prompts Playground")}
+          {t("option:header.modePromptsPlayground", "Prompts")}
         </h1>
         <p className="text-xs text-gray-600 dark:text-gray-300">
           {t("settings:managePrompts.emptyDescription", {
@@ -52,6 +53,6 @@ export const PromptsWorkspace: React.FC = () => {
         </p>
       </div>
       <PromptBody />
-    </div>
+    </PageShell>
   )
 }

@@ -241,28 +241,30 @@ export const Playground = () => {
         </div>
       )}
 
-      <div
-        ref={containerRef}
-        role="log"
-        aria-live="polite"
-        aria-relevant="additions"
-        aria-label={t("playground:aria.chatTranscript", "Chat messages")}
-        className="custom-scrollbar relative z-10 flex h-full w-full flex-col items-center overflow-x-hidden overflow-y-auto px-5">
-        <PlaygroundChat />
-      </div>
-      <div className="absolute bottom-0 w-full z-10">
-        {!isAutoScrollToBottom && (
-          <div className="fixed bottom-28 z-10 left-0 right-0 flex justify-center pointer-events-none">
-            <button
-              onClick={() => autoScrollToBottom()}
-              aria-label={t("playground:composer.scrollToLatest", "Scroll to latest messages")}
-              title={t("playground:composer.scrollToLatest", "Scroll to latest messages") as string}
-              className="bg-gray-50 shadow border border-gray-200 dark:border-none dark:bg-white/20 p-1.5 rounded-full pointer-events-auto hover:bg-gray-100 dark:hover:bg-white/30 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500">
-              <ChevronDown className="size-4 text-gray-600 dark:text-gray-300" aria-hidden="true" />
-            </button>
-          </div>
-        )}
-        <PlaygroundForm dropedFile={dropedFile} />
+      <div className="relative z-10 flex h-full w-full flex-col">
+        <div
+          ref={containerRef}
+          role="log"
+          aria-live="polite"
+          aria-relevant="additions"
+          aria-label={t("playground:aria.chatTranscript", "Chat messages")}
+          className="custom-scrollbar flex-1 min-h-0 w-full overflow-x-hidden overflow-y-auto px-5">
+          <PlaygroundChat />
+        </div>
+        <div className="relative w-full">
+          {!isAutoScrollToBottom && (
+            <div className="pointer-events-none absolute -top-10 left-0 right-0 flex justify-center">
+              <button
+                onClick={() => autoScrollToBottom()}
+                aria-label={t("playground:composer.scrollToLatest", "Scroll to latest messages")}
+                title={t("playground:composer.scrollToLatest", "Scroll to latest messages") as string}
+                className="bg-gray-50 shadow border border-gray-200 dark:border-none dark:bg-white/20 p-1.5 rounded-full pointer-events-auto hover:bg-gray-100 dark:hover:bg-white/30 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500">
+                <ChevronDown className="size-4 text-gray-600 dark:text-gray-300" aria-hidden="true" />
+              </button>
+            </div>
+          )}
+          <PlaygroundForm dropedFile={dropedFile} />
+        </div>
       </div>
     </div>
   )

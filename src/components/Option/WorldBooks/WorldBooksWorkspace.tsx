@@ -2,6 +2,7 @@ import React from "react"
 import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
 import FeatureEmptyState from "@/components/Common/FeatureEmptyState"
+import { PageShell } from "@/components/Common/PageShell"
 import { useServerOnline } from "@/hooks/useServerOnline"
 import { useDemoMode } from "@/context/demo-mode"
 import { WorldBooksManager } from "./Manager"
@@ -98,7 +99,7 @@ export const WorldBooksWorkspace: React.FC = () => {
   }
 
   return (
-    <div className="w-full max-w-5xl mx-auto space-y-4">
+    <PageShell className="space-y-4">
       <div className="space-y-1">
         <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-50">
           {t("option:header.modeWorldBooks", "World Books")}
@@ -111,6 +112,6 @@ export const WorldBooksWorkspace: React.FC = () => {
         </p>
       </div>
       <WorldBooksManager />
-    </div>
+    </PageShell>
   )
 }

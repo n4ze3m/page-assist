@@ -1,7 +1,7 @@
 {
   "empty": {
     "connectTitle": "Connect to use Review",
-    "connectDescription": "To review media and notes, first connect to your tldw server.",
+    "connectDescription": "Connect to your tldw server in Settings to send messages and view media. After connecting, you can review media and notes here.",
     "connectExample1": "Open Settings \u2192 tldw server to add your server URL.",
     "connectExample2": "Once connected, browse media and notes, then generate structured reviews and summaries.",
     "demoTitle": "Explore Review in demo mode",
@@ -68,7 +68,7 @@
     "demoExample1": "See how processed media items appear in the Media viewer.",
     "demoExample2": "When you connect, you’ll be able to browse and inspect media ingested from your own recordings and files.",
     "connectTitle": "Connect to use Media",
-    "connectDescription": "To view processed media, first connect to your tldw server so recordings and documents can be listed here.",
+    "connectDescription": "Connect to your tldw server in Settings to send messages and view media. After connecting, processed recordings and documents will be listed here.",
     "connectExample1": "Open Settings \u2192 tldw server to add your server URL.",
     "connectExample2": "Once connected, use Quick ingest in the header to add media from your own recordings and files.",
     "offlineTitle": "Media API not available on this server",
