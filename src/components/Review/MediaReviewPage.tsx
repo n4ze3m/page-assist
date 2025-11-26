@@ -583,9 +583,9 @@ export const MediaReviewPage: React.FC = () => {
             <Select
               mode="multiple"
               allowClear
-              placeholder={t('mediaPage.types', 'Types')}
+              placeholder={t('mediaPage.types', 'Media types')}
               aria-label={
-                t('mediaPage.types', 'Types') as string
+                t('mediaPage.types', 'Media types') as string
               }
               className="min-w-[12rem]"
               value={types}
@@ -606,7 +606,7 @@ export const MediaReviewPage: React.FC = () => {
               onChange={(vals) => { setKeywordTokens(vals as string[]); setPage(1); refetch() }}
               options={keywordOptions.map((k) => ({ label: k, value: k }))}
             />
-            <Button onClick={() => { setTypes([]); setKeywordTokens([]); setPage(1); refetch() }}>{t('mediaPage.resetFilters', 'Reset Filters')}</Button>
+            <Button onClick={() => { setTypes([]); setKeywordTokens([]); setPage(1); refetch() }}>{t('mediaPage.resetFilters', 'Clear filters')}</Button>
             <Checkbox checked={includeContent} onChange={(e) => { setIncludeContent(e.target.checked); setPage(1); refetch() }}>{t('mediaPage.content', 'Content')} {contentLoading && (<Spin size="small" className="ml-1" />)}</Checkbox>
           </div>
           <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
@@ -622,7 +622,12 @@ export const MediaReviewPage: React.FC = () => {
         {!sidebarHidden && (
           <div className="w-full lg:w-1/3 border rounded p-2 bg-white dark:bg-[#171717] h-full flex flex-col">
             <div className="flex items-center justify-between mb-1">
-              <div className="text-sm text-gray-600 dark:text-gray-300">
+              <div
+                className="text-sm text-gray-600 dark:text-gray-300"
+                role="heading"
+                aria-level={2}
+                data-testid="media-review-results-header"
+              >
                 {t("mediaPage.results", "Results")}{" "}
                 {hasResults ? `(${allResults.length})` : ""}
               </div>

@@ -1217,7 +1217,10 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true, 
           </div>
           {!isOnline && (
             <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
-              {t('review:reviewPage.offlineHint', 'Connect your server to search media.')}
+              {t(
+                'review:reviewPage.offlineHint',
+                'Connect to your tldw server in Settings to send messages and view media. Then you can search media from this page.'
+              )}
             </p>
           )}
           <div className="mt-2">
@@ -1348,6 +1351,12 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true, 
               </div>
             )}
           </div>
+          <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+            {t(
+              'review:mediaPage.filterHelp',
+              'Search matches title and content; Media types and Keywords further narrow the results.'
+            )}
+          </p>
         </div>
         <div className="mt-3 p-3 rounded-lg border dark:border-gray-700 bg-white dark:bg-[#171717] max-h-[50vh] md:max-h-[60vh] lg:max-h-[calc(100dvh-18rem)] overflow-auto">
           <div
@@ -1366,9 +1375,22 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true, 
               {`${displayedResults.length} item${displayedResults.length === 1 ? '' : 's'}`}
             </span>
           </div>
+          <p className="mb-2 text-xs text-gray-500 dark:text-gray-400">
+            {t(
+              'review:reviewPage.resultsHint',
+              'Click a result to load its content and analyses on the right.'
+            )}
+          </p>
           {isFetching ? (
-            <div className="flex items-center justify-center py-10">
+            <div
+              className="flex flex-col items-center justify-center py-10"
+              role="status"
+              aria-live="polite"
+            >
               <Spin />
+              <div className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+                {t('review:mediaPage.searchingBanner', 'Searching media…')}
+              </div>
             </div>
           ) : (
             <List
@@ -1442,7 +1464,7 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true, 
             />
           )}
           {kinds.media && mediaTotal > 0 && (
-            <div className="mt-3 flex justify-center">
+            <div className="mt-3 flex flex-col items-center gap-1">
               <Pagination
                 size="small"
                 current={page}
@@ -1455,6 +1477,12 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true, 
                   setPageSize(ps)
                 }}
               />
+              <p className="text-[11px] text-gray-500 dark:text-gray-400">
+                {t(
+                  'review:reviewPage.paginationHint',
+                  'Use filters or pagination to refine the results if many items are loaded.'
+                )}
+              </p>
             </div>
           )}
         </div>
@@ -1462,23 +1490,29 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true, 
       )}
       {/* Vertical toggle bar */}
       <div className="w-6 flex-shrink-0 h-full flex items-center">
+        {/*
+          Align with Multi-Item Review: state-aware accessible label.
+        */}
+        {(() => {
+          const sidebarLabel = sidebarHidden
+            ? t('review:reviewPage.showSidebar', 'Show results sidebar')
+            : t('review:reviewPage.hideSidebar', 'Hide results sidebar')
+          return (
         <button
-          title={
-            sidebarHidden
-              ? t('review:reviewPage.showSidebar', 'Show results sidebar')
-              : t('review:reviewPage.hideSidebar', 'Hide results sidebar')
-          }
-          aria-label={t('review:reviewPage.toggleSidebar', 'Toggle results sidebar')}
+          title={sidebarLabel}
+          aria-label={sidebarLabel}
           onClick={() => setSidebarHidden((v) => !v)}
           className="h-full w-6 rounded bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 flex items-center justify-center text-xs font-semibold text-gray-600 dark:text-gray-300"
         >
           <span className="sr-only">
-            {t('review:reviewPage.toggleSidebar', 'Toggle results sidebar')}
+            {sidebarLabel}
           </span>
           <span aria-hidden="true">
             {sidebarHidden ? '>>' : '<<'}
           </span>
         </button>
+          )
+        })()}
       </div>
 
       {/* Right/center: analysis panel */}
@@ -1491,6 +1525,20 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true, 
               {mediaTotal > 0 ? ` / ${mediaTotal}` : ""}
             </span>
           </div>
+          {isViewMediaMode && selected && selected.kind === 'media' && (
+            <Button
+              size="small"
+              type="link"
+              onClick={() => {
+                try {
+                  localStorage.setItem('tldw:lastMediaId', String(selected.id))
+                } catch {}
+                navigate('/media-multi')
+              }}
+            >
+              {t('review:reviewPage.openInMulti', 'Open in Multi-Item Review')}
+            </Button>
+          )}
           <div className="flex flex-wrap items-center gap-2 ml-auto">
             <Button size="small" onClick={() => { setContentCollapsed(false); setAnalysisCollapsed(false) }}>
               {t('review:reviewPage.expandAllContent', 'Expand all')}
