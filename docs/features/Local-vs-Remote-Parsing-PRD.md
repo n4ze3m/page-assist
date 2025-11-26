@@ -34,7 +34,7 @@
 - Settings → System (or a new “Parsing mode”) toggle: `Light (Server parsing)` / `Heavy (Local parsing)`.
 - Surface current mode in sidebar header and Quick Ingest dialogs (badge + tooltip).
 - When a feature is unavailable in Light mode, show inline hint + “Enable local parsing” button that flips the setting (confirmation required).
-- Install/first-run: default to Light; prompt to enable Heavy if offline parsing is desired.
+- Install/first-run: default to Light for new installs; prompt to enable Heavy if offline parsing is desired.
 
 ## Functional Requirements
 - Config key persisted (storage) and respected across entries (sidebar, options, background).
@@ -42,11 +42,14 @@
   - Context menu “Send/Process” routes to server endpoints; no local DOM scraping.
   - Selection helpers send raw text to server; no local PageAssist extraction.
   - Disable or replace local vector store operations with server RAG where possible.
+  - Offline/timeout behavior: block most ingest/selection actions; queue chat requests until connectivity returns.
 - Heavy mode:
   - Enable local parsing pipeline (HTML/PDF loaders, text splitter, local vector store, screenshot capture).
   - Preserve offline behavior for selection helpers and ingest where supported today.
 - Telemetry/logging hook: record mode selection (if allowed) to assess adoption (no PII).
-- Backward compatibility: default behavior matches current (Heavy) until rollout plan decides otherwise.
+- Backward compatibility: Light is the default profile; Heavy is opt-in (dev-only for now).
+- Data/telemetry for remote parsing: opt-in; capture mode selection, endpoint success/failure, and payload sizes only; exclude raw content/PII; document retention window and redaction for error logs.
+- Mode switching: no migration/cleanup of local caches/DBs (dev-only assumption; revisit before production rollout).
 
 ## Technical Approach (proposed)
 - **Build split**: introduce two build targets or a build flag to exclude heavy deps from Light bundles (tree-shake PageAssist parsing, html2canvas, Cheerio/Readability, Dexie DB, OCR assets, PDF worker).
@@ -57,13 +60,12 @@
   - Ensure server endpoints can accept raw HTML/URL for processing when local parsing is off.
   - Add capability check; if server lacks required endpoints, surface warning when in Light mode.
 - **Packaging**:
-  - Option A: Two zipped artifacts (light/heavy).
-  - Option B: Single artifact with lazy heavy modules + Settings toggle (keeps store distribution simpler).
+  - Two zipped artifacts/manifests (Light vs Heavy); no single-binary fallback.
 - **Cache**: For Heavy mode, cache downloaded assets (OCR lang, PDF worker if CDN) per current approach.
 
 ## Dependencies
 - tldw_server must support remote parsing endpoints for parity (URLs, file uploads).
-- Distribution pipeline needs to accommodate dual artifacts if we choose split builds.
+- Distribution pipeline must accommodate dual artifacts/manifests.
 
 ## Risks / Mitigations
 - Feature drift between modes → shared capability map and UI hints.

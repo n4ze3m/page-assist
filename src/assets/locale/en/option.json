@@ -34,6 +34,7 @@
     "hideShortcuts": "Hide shortcuts",
     "groupWorkspace": "Workspace",
     "groupKnowledge": "Knowledge",
+    "groupAdministration": "Administration",
     "groupSettings": "Settings shortcuts",
     "modesLabel": "Modes",
     "modePlayground": "Chat",
@@ -59,6 +60,9 @@
       "tooltip": "Advanced tools like sidebar, repository, and debug options"
     },
     "moreActions": "More actions",
+    "adminServer": "Server Admin",
+    "adminLlamacpp": "Llama.cpp Admin",
+    "adminMlx": "MLX LM Admin",
     "toolsMenu": "Chat tools",
     "serverBackedLabel": "Server-backed chat",
     "serverBackedTooltip": "Messages in this chat are also saved on your tldw server."

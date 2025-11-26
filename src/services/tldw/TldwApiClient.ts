@@ -425,6 +425,64 @@ export class TldwApiClient {
     }
   }
 
+  // Admin / diagnostics helpers
+  async getSystemStats(): Promise<any> {
+    return await bgRequest<any>({
+      path: "/api/v1/admin/stats",
+      method: "GET"
+    })
+  }
+
+  async getLlamacppStatus(): Promise<any> {
+    return await bgRequest<any>({
+      path: "/api/v1/llamacpp/status",
+      method: "GET"
+    })
+  }
+
+  async listLlamacppModels(): Promise<any> {
+    return await bgRequest<any>({
+      path: "/api/v1/llamacpp/models",
+      method: "GET"
+    })
+  }
+
+  async startLlamacppServer(
+    modelFilename: string,
+    serverArgs?: Record<string, any>
+  ): Promise<any> {
+    return await bgRequest<any>({
+      path: "/api/v1/llamacpp/start_server",
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: {
+        model_filename: modelFilename,
+        server_args: serverArgs || {}
+      }
+    })
+  }
+
+  async stopLlamacppServer(): Promise<any> {
+    return await bgRequest<any>({
+      path: "/api/v1/llamacpp/stop_server",
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: {}
+    })
+  }
+
+  async getLlmProviders(
+    includeDeprecated = false
+  ): Promise<any> {
+    const query = this.buildQuery(
+      includeDeprecated ? { include_deprecated: true } : {}
+    )
+    return await bgRequest<any>({
+      path: `/api/v1/llm/providers${query}`,
+      method: "GET"
+    })
+  }
+
   async createChatCompletion(request: ChatCompletionRequest): Promise<Response> {
     // Non-stream request via background
     const res = await bgRequest<Response>({ path: '/api/v1/chat/completions', method: 'POST', headers: { 'Content-Type': 'application/json' }, body: request })

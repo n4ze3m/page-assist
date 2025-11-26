@@ -29,7 +29,6 @@ import {
 } from "lucide-react"
 import { getVariable } from "@/utils/select-variable"
 import { useTranslation } from "react-i18next"
-import { KnowledgeSelect } from "../Knowledge/KnowledgeSelect"
 import { useSpeechRecognition } from "@/hooks/useSpeechRecognition"
 import { handleChatInputKeyDown } from "@/utils/key-down"
 import { getIsSimpleInternetSearch } from "@/services/search"
@@ -77,8 +76,6 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
     setSelectedQuickPrompt,
     selectedSystemPrompt,
     setSelectedSystemPrompt,
-    setSelectedKnowledge,
-    selectedKnowledge,
     temporaryChat,
     setTemporaryChat,
     clearChat,
@@ -922,33 +919,29 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
 
   const moreToolsContent = React.useMemo(() => (
     <div className="flex w-64 flex-col gap-3">
-      {!selectedKnowledge && (
-        <div className="flex items-center justify-between">
-          <span className="text-sm text-gray-700 dark:text-gray-200">
-            {webSearch
-              ? t("playground:actions.webSearchOn")
-              : t("playground:actions.webSearchOff")}
-          </span>
-          <Switch
-            size="small"
-            checked={webSearch}
-            onChange={(value) => setWebSearch(value)}
-            checkedChildren={t("form.webSearch.on")}
-            unCheckedChildren={t("form.webSearch.off")}
-          />
-        </div>
-      )}
-      {!selectedKnowledge && (
-        <button
-          type="button"
-          onClick={handleImageUpload}
-          disabled={chatMode === "rag"}
-          className="flex w-full items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-40 dark:text-gray-200 dark:hover:bg-[#2a2a2a]"
-        >
-          <span>{t("playground:actions.upload", "Attach image")}</span>
-          <ImageIcon className="h-4 w-4" />
-        </button>
-      )}
+      <div className="flex items-center justify-between">
+        <span className="text-sm text-gray-700 dark:text-gray-200">
+          {webSearch
+            ? t("playground:actions.webSearchOn")
+            : t("playground:actions.webSearchOff")}
+        </span>
+        <Switch
+          size="small"
+          checked={webSearch}
+          onChange={(value) => setWebSearch(value)}
+          checkedChildren={t("form.webSearch.on")}
+          unCheckedChildren={t("form.webSearch.off")}
+        />
+      </div>
+      <button
+        type="button"
+        onClick={handleImageUpload}
+        disabled={chatMode === "rag"}
+        className="flex w-full items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-40 dark:text-gray-200 dark:hover:bg-[#2a2a2a]"
+      >
+        <span>{t("playground:actions.upload", "Attach image")}</span>
+        <ImageIcon className="h-4 w-4" />
+      </button>
       <button
         type="button"
         onClick={handleDocumentUpload}
@@ -967,17 +960,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
         <EraserIcon className="h-4 w-4" />
       </button>
     </div>
-  ), [
-    chatMode,
-    handleClearContext,
-    handleDocumentUpload,
-    handleImageUpload,
-    history.length,
-    selectedKnowledge,
-    setWebSearch,
-    t,
-    webSearch
-  ])
+  ), [chatMode, handleClearContext, handleDocumentUpload, handleImageUpload, history.length, setWebSearch, t, webSearch])
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (import.meta.env.BROWSER !== "firefox") {
@@ -1281,29 +1264,6 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                         <button
                           type="button"
                           onClick={() => {
-                            const trigger =
-                              document.querySelector<HTMLElement>(
-                                "[data-playground-knowledge-trigger='true']"
-                              )
-                            if (trigger) {
-                              trigger.focus()
-                              if (trigger instanceof HTMLButtonElement) {
-                                trigger.click()
-                              }
-                            }
-                          }}
-                          className="inline-flex items-center gap-1 rounded-full border border-transparent px-2 py-0.5 hover:border-gray-300 hover:bg-gray-50 dark:hover:border-gray-600 dark:hover:bg-[#262626]">
-                          <span className="font-medium">
-                            {selectedKnowledge?.title ||
-                              t(
-                                "playground:composer.contextKnowledgeEmpty",
-                                "No knowledge selected"
-                              )}
-                          </span>
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => {
                             const chips =
                               document.querySelector<HTMLElement>(
                                 "[data-playground-tabs='true']"
@@ -1405,7 +1365,6 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                               </button>
                             )}
                           </div>
-                          <KnowledgeSelect />
                         </div>
                         <div className="flex items-center justify-end gap-3 flex-wrap">
                           <CharacterSelect className="text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100" iconClassName="size-5" />
@@ -1709,66 +1668,6 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
         width={760}
         destroyOnHidden>
         <div className="flex flex-col gap-5">
-          <div className="flex items-start justify-between gap-3">
-            <div>
-              <div className="text-sm font-semibold text-gray-800 dark:text-gray-100">
-                {t("playground:composer.contextMedia", "Media / Notes")}
-              </div>
-              <p className="text-xs text-gray-500 dark:text-gray-400">
-                {t("playground:composer.contextMediaHint", "Attach knowledge or notes that should steer the response.")}
-              </p>
-            </div>
-            <div className="flex flex-wrap items-center gap-2">
-              <button
-                type="button"
-                onClick={() => {
-                  const trigger =
-                    document.querySelector<HTMLElement>(
-                      "[data-playground-knowledge-trigger='true']"
-                    )
-                  if (trigger) {
-                    trigger.click()
-                  }
-                  setIsContextModalOpen(false)
-                }}
-                className="rounded-md border border-gray-200 px-2.5 py-1 text-xs font-medium text-gray-700 hover:bg-gray-100 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-[#2a2a2a]">
-                {t("playground:composer.addKnowledge", "Add media / notes")}
-              </button>
-              {selectedKnowledge && (
-                <button
-                  type="button"
-                  onClick={() => setSelectedKnowledge(null)}
-                  className="rounded-md border border-gray-200 px-2.5 py-1 text-xs font-medium text-gray-700 hover:bg-gray-100 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-[#2a2a2a]">
-                  {t("common:remove", "Remove")}
-                </button>
-              )}
-            </div>
-          </div>
-          <div className="rounded-lg border border-gray-200 bg-white p-3 dark:border-gray-700 dark:bg-[#1a1a1a]">
-            {selectedKnowledge ? (
-              <div className="flex items-center justify-between gap-3">
-                <div className="min-w-0">
-                  <div className="text-sm font-medium text-gray-800 dark:text-gray-100 truncate">
-                    {selectedKnowledge.title}
-                  </div>
-                  <div className="text-xs text-gray-500 dark:text-gray-400">
-                    {selectedKnowledge?.db_type || t("playground:composer.contextMediaSelected", "Knowledge item")}
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setSelectedKnowledge(null)}
-                  className="rounded-full border border-gray-200 p-1 text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-[#2a2a2a]">
-                  <X className="h-4 w-4" />
-                </button>
-              </div>
-            ) : (
-              <div className="text-sm text-gray-500 dark:text-gray-400">
-                {t("playground:composer.contextMediaEmpty", "No media or notes selected yet.")}
-              </div>
-            )}
-          </div>
-
           <div className="flex items-start justify-between gap-3">
             <div>
               <div className="text-sm font-semibold text-gray-800 dark:text-gray-100">

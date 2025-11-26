@@ -28,7 +28,6 @@ export const Playground = () => {
   })
 
   const {
-    selectedKnowledge,
     messages,
     setHistoryId,
     setHistory,
@@ -65,10 +64,6 @@ export const Playground = () => {
   )
 
   React.useEffect(() => {
-    if (selectedKnowledge) {
-      return
-    }
-
     if (!drop.current) {
       return
     }
@@ -153,7 +148,7 @@ export const Playground = () => {
         drop.current.removeEventListener("dragleave", handleDragLeave)
       }
     }
-  }, [selectedKnowledge])
+  }, [])
 
   React.useEffect(() => {
     return () => {

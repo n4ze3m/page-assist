@@ -93,6 +93,8 @@ export const useMessageOption = () => {
     setRagEnableCitations,
     ragSources,
     setRagSources,
+    ragAdvancedOptions,
+    setRagAdvancedOptions,
     serverChatId,
     setServerChatId
   } = useStoreMessageOption()
@@ -347,6 +349,7 @@ export const useMessageOption = () => {
       ragEnableGeneration,
       ragEnableCitations,
       ragSources,
+      ragAdvancedOptions,
       setActionInfo,
       webSearch
     }

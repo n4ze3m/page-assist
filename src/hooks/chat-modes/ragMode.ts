@@ -16,6 +16,28 @@ import { formatDocs } from "@/chain/chat-with-x"
 import { getNoOfRetrievedDocs } from "@/services/app"
 import { tldwClient } from "@/services/tldw/TldwApiClient"
 
+type RagModeParams = {
+  selectedModel: string
+  useOCR: boolean
+  selectedKnowledge: any
+  currentChatModelSettings: any
+  setMessages: (messages: Message[] | ((prev: Message[]) => Message[])) => void
+  saveMessageOnSuccess: (data: any) => Promise<string | null>
+  saveMessageOnError: (data: any) => Promise<string | null>
+  setHistory: (history: ChatHistory) => void
+  setIsProcessing: (value: boolean) => void
+  setStreaming: (value: boolean) => void
+  setAbortController: (controller: AbortController | null) => void
+  historyId: string | null
+  setHistoryId: (id: string) => void
+  ragMediaIds: number[] | null
+  ragSearchMode: "hybrid" | "vector" | "fts"
+  ragTopK: number | null
+  ragEnableGeneration: boolean
+  ragEnableCitations: boolean
+  ragSources: string[]
+}
+
 export const ragMode = async (
   message: string,
   image: string,
@@ -43,27 +65,7 @@ export const ragMode = async (
     ragEnableGeneration,
     ragEnableCitations,
     ragSources
-  }: {
-    selectedModel: string
-    useOCR: boolean
-    selectedKnowledge: any
-    currentChatModelSettings: any
-    setMessages: (messages: Message[] | ((prev: Message[]) => Message[])) => void
-    saveMessageOnSuccess: (data: any) => Promise<string | null>
-    saveMessageOnError: (data: any) => Promise<string | null>
-    setHistory: (history: ChatHistory) => void
-    setIsProcessing: (value: boolean) => void
-    setStreaming: (value: boolean) => void
-    setAbortController: (controller: AbortController | null) => void
-    historyId: string | null
-    setHistoryId: (id: string) => void
-    ragMediaIds: number[] | null
-    ragSearchMode: "hybrid" | "vector" | "fts"
-    ragTopK: number | null
-    ragEnableGeneration: boolean
-    ragEnableCitations: boolean
-    ragSources: string[]
-  }
+  }: RagModeParams
 ) => {
   console.log("Using ragMode")
   const url = cleanUrl((await (await new (await import("@plasmohq/storage")).Storage({ area: 'local' })).get("tldwConfig") as any)?.serverUrl || "")
@@ -158,9 +160,6 @@ export const ragMode = async (
       }
       if (Array.isArray(ragSources) && ragSources.length > 0) {
         ragOptions.sources = ragSources
-      }
-      if (selectedKnowledge?.id) {
-        ragOptions.knowledge_id = selectedKnowledge.id
       }
       if (Array.isArray(ragMediaIds) && ragMediaIds.length > 0) {
         ragOptions.include_media_ids = ragMediaIds

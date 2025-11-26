@@ -116,6 +116,10 @@ type State = {
   ragSources: string[]
   setRagSources: (sources: string[]) => void
 
+  // Advanced RAG options (free-form UnifiedRAGRequest fields)
+  ragAdvancedOptions: Record<string, any>
+  setRagAdvancedOptions: (opts: Record<string, any>) => void
+
   // Server-backed character chat id
   serverChatId: string | null
   setServerChatId: (id: string | null) => void
@@ -206,6 +210,9 @@ export const useStoreMessageOption = create<State>((set) => ({
     set({ ragEnableCitations }),
   ragSources: [],
   setRagSources: (ragSources) => set({ ragSources }),
+
+  ragAdvancedOptions: {},
+  setRagAdvancedOptions: (ragAdvancedOptions) => set({ ragAdvancedOptions }),
 
   serverChatId: null,
   setServerChatId: (id) => set({ serverChatId: id })

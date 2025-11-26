@@ -3,7 +3,6 @@ import { useStorage } from "@plasmohq/storage/hook"
 import { CogIcon, Gauge, UserCircle2 } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useLocation, NavLink, useNavigate } from "react-router-dom"
-import { SelectedKnowledge } from "../Option/Knowledge/SelectedKnowledge"
 import { ModelSelect } from "../Common/ModelSelect"
 import { PromptSelect } from "../Common/PromptSelect"
 import PromptSearch from "../Common/PromptSearch"
@@ -174,7 +173,11 @@ export const Header: React.FC<Props> = ({
       return "mediaMulti"
     if (pathname.startsWith("/media"))
       return "media"
-    if (pathname.startsWith("/settings/knowledge")) return "knowledge"
+    if (
+      pathname.startsWith("/settings/knowledge") ||
+      pathname.startsWith("/knowledge")
+    )
+      return "knowledge"
     if (pathname.startsWith("/notes")) return "notes"
     if (pathname.startsWith("/prompts") || pathname.startsWith("/settings/prompt"))
       return "prompts"
@@ -358,11 +361,6 @@ export const Header: React.FC<Props> = ({
         title: t("option:header.groupKnowledge", "Knowledge"),
         items: [
           {
-            type: "component" as const,
-            key: "selected-knowledge",
-            node: <SelectedKnowledge />
-          },
-          {
             type: "link" as const,
             to: "/media",
             icon: BookText,
@@ -408,6 +406,29 @@ export const Header: React.FC<Props> = ({
             to: "/prompt-studio",
             icon: NotebookPen,
             label: t("option:header.modePromptStudio", "Prompt Studio")
+          }
+        ]
+      },
+      {
+        title: t("option:header.groupAdministration", "Administration"),
+        items: [
+          {
+            type: "link" as const,
+            to: "/admin/server",
+            icon: CogIcon,
+            label: t("option:header.adminServer", "Server Admin")
+          },
+          {
+            type: "link" as const,
+            to: "/admin/llamacpp",
+            icon: Microscope,
+            label: t("option:header.adminLlamacpp", "Llama.cpp Admin")
+          },
+          {
+            type: "link" as const,
+            to: "/admin/mlx",
+            icon: Gauge,
+            label: t("option:header.adminMlx", "MLX LM Admin")
           }
         ]
       },
