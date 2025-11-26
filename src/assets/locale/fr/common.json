@@ -141,6 +141,13 @@
         "label": "Prompt système temporaire",
         "placeholder": "Entrer le prompt système",
         "help": "C'est un moyen rapide de définir le prompt système dans le chat actuel, qui remplacera le prompt système sélectionné si il existe."
+      },
+      "thinking": {
+        "label": "Thinking Mode"
+      },
+      "reasoningEffort": {
+        "label": "Reasoning Effort",
+        "placeholder": "low, medium, high"
       }
     },
     "advanced": "Plus de paramètres du modèle"
@@ -202,5 +209,32 @@
     "downloadCsv": "Download CSV"
   },
   "dismiss": "Dismiss",
-  "privateModeSaveErrorTitle": "tldw Assistant ne peut pas enregistrer les données"
+  "privateModeSaveErrorTitle": "tldw Assistant ne peut pas enregistrer les données",
+  "confirmTitle": "Please confirm",
+  "saving": "Saving...",
+  "close": "Close",
+  "loadMore": "Load More...",
+  "startChat": "Start chatting",
+  "previous": "Previous",
+  "next": "Next",
+  "chatWithCharacter": "Chat with character",
+  "ttsShort": "TTS",
+  "copyShort": "Copy",
+  "branchShort": "Branch",
+  "success": "Success",
+  "created": "Created",
+  "updated": "Updated",
+  "deleted": "Deleted",
+  "create": "Create",
+  "reset": "Reset",
+  "serverOffline": "Server offline or not configured",
+  "serverChats": "Server chats",
+  "serverChatLoadError": "Failed to load server chat. Check your connection and try again.",
+  "serverChatSourceLabel": "Server",
+  "serverChatsUnavailable": "Server chats unavailable. Check your server connection.",
+  "historiesDeleted": "{{count}} Histories Deleted",
+  "deleteHistoriesError": "Error deleting histories",
+  "search": "Search",
+  "searchResults": "Search Results",
+  "newBranch": "New Branch"
 }

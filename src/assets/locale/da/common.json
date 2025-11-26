@@ -5,13 +5,13 @@
     "sidepanel": "tldw Assistant — Sidepanel"
   },
   "pdf": {
-    "passwordTitle": "Enter the PDF password",
-    "unlock": "Unlock"
+    "passwordTitle": "Indtast PDF-adgangskode",
+    "unlock": "Lås op"
   },
   "loading": {
-    "title": "Loading…",
-    "description": "Please wait while we get things ready.",
-    "content": "Loading content…"
+    "title": "Indlæser…",
+    "description": "Vent venligst, mens vi gør alting klar.",
+    "content": "Indlæser indhold…"
   },
   "selectAModel": "Vælg en Model",
   "save": "Gem",
@@ -62,58 +62,95 @@
   },
   "submit": "Indsend",
   "send": "Indsend",
-  "connectToServer": "Connect to server",
-  "noData": "Igen data",
-  "noHistory": "Igen chat history",
+  "connectToServer": "Opret forbindelse til server",
+  "noData": "Ingen data",
+  "noHistory": "Ingen chat-historik",
   "chatWithCurrentPage": "Chat med nuværende side",
   "beta": "Beta",
   "tts": "Læs op",
   "currentChatModelSettings": "Nuværende chat model indstillinger",
   "modelSettings": {
-    "label": "Model Indstillinger",
-    "description": "Konfigurer model indstillingerne alle chats",
+    "label": "Modelindstillinger",
+    "description": "Sæt modelindstillinger globalt for alle chats",
     "form": {
       "keepAlive": {
         "label": "Hold i live",
-        "help": "controls how long the model will stay loaded into memory following the request (standard: 5m)",
-        "placeholder": "Indtast længden af sessionen (fx. 5m, 10m, 1t)"
+        "help": "styrer hvor længe modellen forbliver i hukommelsen efter en forespørgsel (standard: 5m)",
+        "placeholder": "f.eks. 5m, 10m, 1t"
       },
       "temperature": {
         "label": "Temperatur",
-        "placeholder": "Indtast Temperatur værdi (fx. 0.7, 1.0)"
+        "placeholder": "f.eks. 0.7, 1.0"
       },
       "numCtx": {
-        "label": "Kontekst Vindue Størrelse (num_ctx)",
-        "placeholder": "Indtast Kontekst Vindue Størrelse værdi (standard: 2048)"
+        "label": "Kontekstvinduesstørrelse (num_ctx)",
+        "placeholder": "Angiv værdi for kontekstvindue (standard: 2048)"
       },
       "numPredict": {
-        "label": "Maks Tokens (num_predict)",
-        "placeholder": "Indtast Maks Tokens værdi (fx. 2048, 4096)"
+        "label": "Maks tokens (num_predict)",
+        "placeholder": "f.eks. 2048, 4096"
       },
       "seed": {
         "label": "Seed",
-        "placeholder": "Indtast Seed værdi (fx. 1234)",
+        "placeholder": "f.eks. 1234",
         "help": "Reproducerbarhed af modeloutput"
       },
       "topK": {
         "label": "Top K",
-        "placeholder": "Indtast Top K værdi (fx. 40, 100)"
+        "placeholder": "f.eks. 40, 100"
       },
       "topP": {
         "label": "Top P",
-        "placeholder": "Indtast Top P value (fx. 0.9, 0.95)"
+        "placeholder": "f.eks. 0.9, 0.95"
       },
       "numGpu": {
         "label": "Antal GPU'er",
-        "placeholder": "Indtast antallet af lag, som sendes til GPU('er)"
+        "placeholder": "Angiv antal lag, der skal sendes til GPU"
       },
       "systemPrompt": {
-        "label": "Midlertidige System Prompt",
-        "placeholder": "Indtast System Prompt",
-        "help": "Dette er en hurtig måde at indstille systemprompten i den aktuelle chat, som vil tilsidesætte den valgte systemprompt, hvis den findes."
+        "label": "Midlertidig systemprompt",
+        "placeholder": "Indtast systemprompt",
+        "help": "En hurtig måde at sætte systemprompten i den aktuelle chat, som tilsidesætter den valgte systemprompt, hvis den findes."
+      },
+      "thinking": {
+        "label": "Thinking-tilstand"
+      },
+      "useMMap": {
+        "label": "useMmap"
+      },
+      "tfsZ": {
+        "label": "TFS-Z",
+        "placeholder": "f.eks. 1.0, 1.1"
+      },
+      "numKeep": {
+        "label": "Num Keep",
+        "placeholder": "f.eks. 256, 512"
+      },
+      "numThread": {
+        "label": "Antal tråde",
+        "placeholder": "f.eks. 8, 16"
+      },
+      "useMlock": {
+        "label": "useMlock"
+      },
+      "reasoningEffort": {
+        "label": "Reasoning-effort",
+        "placeholder": "low, medium, high"
+      },
+      "minP": {
+        "label": "Min P",
+        "placeholder": "f.eks. 0.05"
+      },
+      "repeatPenalty": {
+        "label": "Repeat-penalty",
+        "placeholder": "f.eks. 1.1, 1.2"
+      },
+      "repeatLastN": {
+        "label": "Repeat Last N",
+        "placeholder": "f.eks. 64, 128"
       }
     },
-    "advanced": "Flere Model Indstillinger"
+    "advanced": "Flere modelindstillinger"
   },
   "copilot": {
     "summary": "Opsummer",
@@ -123,7 +160,7 @@
     "custom": "Brugerdefineret"
   },
   "citations": "Citater",
-  "downloadCode": "Download Kode",
+  "downloadCode": "Download kode",
   "date": {
     "pinned": "Fastgjort",
     "today": "I dag",
@@ -149,23 +186,55 @@
   },
   "pin": "Fastgør",
   "unpin": "Frigør",
-  "generationInfo": "Genererings Info",
-  "sidebarChat": "Sidepanel Chat",
+  "generationInfo": "Genereringsinfo",
+  "sidebarChat": "Sidepanelchat",
   "reasoning": {
-    "thinking": "Tænker....",
-    "loading": "Indlæser ræsonnement....",
-    "thought": "Tænkte i {{time}}"
+    "thinking": "Tænker…",
+    "loading": "Indlæser ræsonnement…",
+    "thought": "Modellens ræsonnement (valgfrit)"
   },
-  "embeddingGen": "Opretter embeddings, dette kan tage en stund",
+  "embeddingGen": "Opretter embeddings; dette kan tage lidt tid",
   "semanticSearch": "Udfører semantisk søgning",
   "downloading": "Downloader",
   "cancelPullingModel": {
     "confirm": "Er du sikker på, at du vil annullere downloadet? Dette stopper downloadprocessen. Ifølge Ollama-dokumentationen kan du genoptage, hvor du slap."
   },
   "table": {
-    "copyCsv": "Copy as CSV",
+    "copyCsv": "Kopiér som CSV",
     "downloadCsv": "Download CSV"
   },
-  "dismiss": "Dismiss",
-  "privateModeSaveErrorTitle": "tldw Assistant kan ikke gemme data"
+  "dismiss": "Afvis",
+  "privateModeSaveErrorTitle": "tldw Assistant kan ikke gemme data",
+  "confirmTitle": "Bekræft venligst",
+  "saving": "Gemmer…",
+  "close": "Luk",
+  "loadMore": "Indlæs flere…",
+  "startChat": "Start chat",
+  "previous": "Forrige",
+  "next": "Næste",
+  "chatWithCharacter": "Chat med figur",
+  "ttsShort": "TTS",
+  "copyShort": "Kopiér",
+  "branchShort": "Gren",
+  "segmented": {
+    "available": "Servermodeller",
+    "custom": "Brugertilpassede modeller"
+  },
+  "success": "Succes",
+  "created": "Oprettet",
+  "updated": "Opdateret",
+  "deleted": "Slettet",
+  "create": "Opret",
+  "reset": "Nulstil",
+  "serverOffline": "Server offline eller ikke konfigureret",
+  "serverChats": "Serverchats",
+  "serverChatLoadError": "Kunne ikke indlæse serverchat. Kontroller din forbindelse og prøv igen.",
+  "serverChatSourceLabel": "Server",
+  "serverChatsUnavailable": "Serverchats er ikke tilgængelige. Kontroller serverforbindelsen.",
+  "historiesDeleted": "{{count}} historikker slettet",
+  "deleteHistoriesError": "Fejl ved sletning af historik",
+  "mermaid": "Mermaid",
+  "search": "Søg",
+  "searchResults": "Søgeresultater",
+  "newBranch": "Ny gren"
 }

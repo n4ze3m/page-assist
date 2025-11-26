@@ -81,6 +81,18 @@ export const useMessageOption = () => {
     setActionInfo,
     setFileRetrievalEnabled,
     fileRetrievalEnabled,
+    ragMediaIds,
+    setRagMediaIds,
+    ragSearchMode,
+    setRagSearchMode,
+    ragTopK,
+    setRagTopK,
+    ragEnableGeneration,
+    setRagEnableGeneration,
+    ragEnableCitations,
+    setRagEnableCitations,
+    ragSources,
+    setRagSources,
     serverChatId,
     setServerChatId
   } = useStoreMessageOption()
@@ -221,6 +233,12 @@ export const useMessageOption = () => {
     setUploadedFiles([])
     setFileRetrievalEnabled(false)
     setActionInfo(null)
+    setRagMediaIds(null)
+    setRagSearchMode("hybrid")
+    setRagTopK(null)
+    setRagEnableGeneration(false)
+    setRagEnableCitations(false)
+    setRagSources([])
     storeClearQueuedMessages()
     setServerChatId(null)
   }
@@ -323,6 +341,12 @@ export const useMessageOption = () => {
       historyId,
       setHistoryId,
       fileRetrievalEnabled,
+      ragMediaIds,
+      ragSearchMode,
+      ragTopK,
+      ragEnableGeneration,
+      ragEnableCitations,
+      ragSources,
       setActionInfo,
       webSearch
     }
@@ -514,6 +538,18 @@ export const useMessageOption = () => {
     addQueuedMessage: storeAddQueuedMessage,
     clearQueuedMessages: storeClearQueuedMessages,
     serverChatId,
-    setServerChatId
+    setServerChatId,
+    ragMediaIds,
+    setRagMediaIds,
+    ragSearchMode,
+    setRagSearchMode,
+    ragTopK,
+    setRagTopK,
+    ragEnableGeneration,
+    setRagEnableGeneration,
+    ragEnableCitations,
+    setRagEnableCitations,
+    ragSources,
+    setRagSources
   }
 }

@@ -34,7 +34,8 @@
       "subheading": "Vennligst velg chatmodellene du ønsker å bruke med denne leverandøren.",
       "success": "Nye modeller ble lagt til."
     },
-    "tipLMStudio": "tldw Browser_Assistant vil automatisk hente modellene du lastet inn i LM Studio. Du trenger ikke å legge dem til manuelt."
+    "tipLMStudio": "tldw Browser_Assistant vil automatisk hente modellene du lastet inn i LM Studio. Du trenger ikke å legge dem til manuelt.",
+    "titleEdit": "Edit Provider"
   },
   "addSuccess": "Leverandør ble lagt til.",
   "deleteSuccess": "Leverandør ble slettet.",
@@ -78,7 +79,8 @@
         "type": {
           "label": "Modelltype"
         }
-      }
+      },
+      "titleEdit": "Edit Custom Model"
     }
   },
   "noModelFound": "Ingen modell funnet. Sørg for at du har lagt til riktig leverandør med base-URL og API-nøkkel.",

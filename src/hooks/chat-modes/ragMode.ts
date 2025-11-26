@@ -36,7 +36,13 @@ export const ragMode = async (
     setStreaming,
     setAbortController,
     historyId,
-    setHistoryId
+    setHistoryId,
+    ragMediaIds,
+    ragSearchMode,
+    ragTopK,
+    ragEnableGeneration,
+    ragEnableCitations,
+    ragSources
   }: {
     selectedModel: string
     useOCR: boolean
@@ -51,6 +57,12 @@ export const ragMode = async (
     setAbortController: (controller: AbortController | null) => void
     historyId: string | null
     setHistoryId: (id: string) => void
+    ragMediaIds: number[] | null
+    ragSearchMode: "hybrid" | "vector" | "fts"
+    ragTopK: number | null
+    ragEnableGeneration: boolean
+    ragEnableCitations: boolean
+    ragSources: string[]
   }
 ) => {
   console.log("Using ragMode")
@@ -127,15 +139,35 @@ export const ragMode = async (
       query = response.content.toString()
       query = removeReasoning(query)
     }
-    const docSize = await getNoOfRetrievedDocs()
+    const defaultTopK = await getNoOfRetrievedDocs()
     let context: string = ""
     let source: any[] = []
     try {
       await tldwClient.initialize()
-      const ragRes = await tldwClient.ragSearch(query, {
-        top_k: docSize,
-        knowledge_id: selectedKnowledge?.id
-      })
+      const top_k =
+        typeof ragTopK === "number" && ragTopK > 0 ? ragTopK : defaultTopK
+      const ragOptions: any = {
+        top_k,
+        search_mode: ragSearchMode
+      }
+      if (ragEnableGeneration) {
+        ragOptions.enable_generation = true
+      }
+      if (ragEnableCitations) {
+        ragOptions.enable_citations = true
+      }
+      if (Array.isArray(ragSources) && ragSources.length > 0) {
+        ragOptions.sources = ragSources
+      }
+      if (selectedKnowledge?.id) {
+        ragOptions.knowledge_id = selectedKnowledge.id
+      }
+      if (Array.isArray(ragMediaIds) && ragMediaIds.length > 0) {
+        ragOptions.include_media_ids = ragMediaIds
+        // When a specific media list is provided, ensure we query the media DB
+        ragOptions.sources = ["media_db"]
+      }
+      const ragRes = await tldwClient.ragSearch(query, ragOptions)
       const docs = ragRes?.results || ragRes?.documents || ragRes?.docs || []
       context = formatDocs(
         docs.map((d: any) => ({ pageContent: d.content || d.text || d.chunk || "", metadata: d.metadata || {} }))

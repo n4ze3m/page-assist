@@ -1,12 +1,12 @@
 {
   "extName": {
-    "message": "tldw Assistant"
+    "message": "tldw അസിസ്റ്റന്റ്"
   },
   "extDescription": {
     "message": "ഇന്റർനെറ്റ് ബ്രൌസ് ചെയ്യുമ്പോൾ സ്ഥലിപ്പായി പ്രവർത്തിക്കുന്ന എയ്‌ മോഡൽ ഉപയോഗിക്കുക."
   },
   "openSidePanelToChat": {
-    "message": "Open Sidebar to chat"
+    "message": "ചാറ്റ് ചെയ്യാൻ സൈഡ് പാനൽ തുറക്കുക"
   },
   "contextSummarize": {
     "message": "സംഗ്രഹിക്കുക"
@@ -24,15 +24,66 @@
     "message": "ഇഷ്ടാനുസൃതം"
   },
   "contextSendToTldw": {
-    "message": "Send to tldw_server"
+    "message": "tldw_server-ലേക്ക് അയയ്ക്കുക"
   },
   "contextProcessLocalTldw": {
-    "message": "Process with tldw_server (don’t store)"
+    "message": "tldw_server ഉപയോഗിച്ച് പ്രോസസ്സ് ചെയ്യുക (സംഭരിക്കരുത്)"
   },
   "contextSidebarOpening": {
     "message": "സൈഡ്ബാർ തുറക്കുന്നു..."
   },
   "contextSaveToNotesOpeningSidebar": {
     "message": "കുറിപ്പ് സംരക്ഷിക്കാന്‍ സൈഡ്ബാർ തുറക്കുന്നു..."
+  },
+  "openOptionToChat": {
+    "message": "ചാറ്റ് ചെയ്യാൻ Web UI തുറക്കുക"
+  },
+  "contextTranscribeMedia": {
+    "message": "വീഡിയോ/ഓഡിയോ ട്രാൻസ്ക്രൈബ് ചെയ്യുക"
+  },
+  "contextTranscribeAndSummarizeMedia": {
+    "message": "വീഡിയോ/ഓഡിയോ ട്രാൻസ്ക്രൈബ് ചെയ്ത് സംക്ഷിപ്തമാക്കുക"
+  },
+  "contextSaveToNotes": {
+    "message": "കുറിപ്പുകളിൽ സേവ് ചെയ്യുക"
+  },
+  "contextSaveToNotesNoSelection": {
+    "message": "കുറിപ്പുകളിൽ സേവ് ചെയ്യാൻ ആദ്യം ടെക്സ്റ്റ് തിരഞ്ഞെടുക്കുക."
+  },
+  "hfSendPageRejected": {
+    "message": "[tldw] ഈ പേജ് tldw_server-ലേക്ക് അയക്കാനുള്ള അഭ്യർത്ഥന നിരസിക്കപ്പെട്ടു."
+  },
+  "hfSendPageErrorWithDetail": {
+    "message": "[tldw] ഈ പേജ് tldw_server-ലേക്ക് അയയ്ക്കാൻ കഴിഞ്ഞില്ല: $1. Settings → tldw server പരിശോധിച്ച് വീണ്ടും ശ്രമിക്കുക."
+  },
+  "hfSendPageError": {
+    "message": "[tldw] ഈ പേജ് tldw_server-ലേക്ക് അയയ്ക്കാൻ കഴിഞ്ഞില്ല. Settings → tldw server പരിശോധിച്ച് വീണ്ടും ശ്രമിക്കുക."
+  },
+  "hfSendPageSuccess": {
+    "message": "[tldw] ഈ പേജ് പ്രോസസ്സിംഗിന് tldw_server-ലേക്ക് അയച്ചു."
+  },
+  "hfSendPageException": {
+    "message": "[tldw] ഈ പേജ് tldw_server-ലേക്ക് അയയ്ക്കുമ്പോൾ എന്തോ പിഴവ് സംഭവിച്ചു. tldw_serverയും എക്‌സ്റ്റൻഷനും പ്രവർത്തിക്കുന്നുണ്ടോ എന്ന് പരിശോധിച്ച് വീണ്ടും ശ്രമിക്കുക."
+  },
+  "hfPullInProgress": {
+    "message": "[tldw Assistant] ഒരു മോഡൽ പുൾ അഭ്യർത്ഥന ഇതിനകം നടന്നു കൊണ്ടിരിക്കുന്നു. മറ്റൊന്ന് തുടങ്ങുന്നതിനുമുമ്പ് അത് പൂർത്തിയാകുന്നത് വരെ കാത്തിരിക്കുക."
+  },
+  "hfPullConfirm": {
+    "message": "[tldw Assistant] \"$1\" മോഡൽ പുൾ ചെയ്യാൻ നിങ്ങളുടെ tldw_server-ലേക്ക് അഭ്യർത്ഥന അയക്കണമോ? ഇത് huggingface.co വെബ്‌സൈറ്റിൽ നിന്ന് സ്വതന്ത്രമായ പ്രക്രിയയാണ്. നിങ്ങൾ സ്ഥിരീകരിച്ച ശേഷം സർവർ മോഡൽ ഡൗൺലോഡ് ചെയ്യാൻ തുടങ്ങും."
+  },
+  "hfPullSending": {
+    "message": "[tldw Assistant] \"$1\" മോഡൽ പുൾ ചെയ്യാൻ tldw_server-ലേക്ക് അഭ്യർത്ഥന അയയ്ക്കുന്നു. പുരോഗതി എക്‌സ്റ്റൻഷൻ ഐക്കണിലോ tldw_server ലോഗുകളിലോ പരിശോധിക്കാം."
+  },
+  "hfPullErrorWithDetail": {
+    "message": "[tldw Assistant] \"$1\" മോഡലിന് പുൾ അഭ്യർത്ഥന അയയ്ക്കാൻ കഴിഞ്ഞില്ല: $2. Settings → tldw server പരിശോധിച്ച് വീണ്ടും ശ്രമിക്കുക."
+  },
+  "hfPullError": {
+    "message": "[tldw Assistant] \"$1\" മോഡലിന് പുൾ അഭ്യർത്ഥന അയയ്ക്കാൻ കഴിഞ്ഞില്ല. Settings → tldw server പരിശോധിച്ച് വീണ്ടും ശ്രമിക്കുക."
+  },
+  "hfPullSuccess": {
+    "message": "[tldw Assistant] \"$1\" മോഡൽ പുൾ ചെയ്യാൻ tldw_server-ലേക്ക് അഭ്യർത്ഥന അയച്ചു. നില എക്‌സ്റ്റൻഷൻ ഐക്കണിലോ tldw_server ലോഗുകളിലോ പരിശോധിക്കുക."
+  },
+  "hfPullException": {
+    "message": "[tldw Assistant] \"$1\" മോഡലിന്റെ പുൾ അഭ്യർത്ഥന tldw_server-ലേക്ക് അയയ്ക്കുമ്പോൾ പ്രശ്നം സംഭവിച്ചു. tldw_serverയും എക്‌സ്റ്റൻഷനും പ്രവർത്തിക്കുന്നുണ്ടോ എന്ന് ഉറപ്പാക്കി വീണ്ടും ശ്രമിക്കുക."
   }
 }

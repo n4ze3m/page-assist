@@ -11,5 +11,69 @@
   "errors": {
     "privateModeTitle": "tldw Assistant kan inte spara data",
     "privateModeDescription": "Firefox privat läge stöder inte att spara chatt-historik. Tillfällig chatt är aktiverat som standard. Fler förbättringar kommer snart."
+  },
+  "header": {
+    "ingest": "Ingest",
+    "saveCurrent": "Save current page on server",
+    "processLocal": "Process current page locally",
+    "viewProcessed": "View processed",
+    "timeoutLabel": "Timeout (s)",
+    "toggleSidebar": "Toggle Sidebar / Full Screen",
+    "shortcuts": "Shortcuts",
+    "showDebug": "Show Stream Debug",
+    "hideDebug": "Hide Stream Debug",
+    "moreOptionsAria": "More options",
+    "moreOptionsTitle": "Ingest and more",
+    "openWebuiAria": "Open Web UI",
+    "newChatAria": "New chat",
+    "tempChatAria": "Toggle temporary chat",
+    "clearHistoryAria": "Clear history",
+    "openHistoryAria": "Open history",
+    "openModelSettingsAria": "Open model settings",
+    "openSettingsAria": "Open settings",
+    "tempPill": "Temp",
+    "modesLabel": "Open modes in Web UI",
+    "modePlayground": "Chat",
+    "modeReview": "Multi-Item Review",
+    "modeMedia": "Media",
+    "modeKnowledge": "Knowledge",
+    "modeNotes": "Notes",
+    "modePrompts": "Prompts",
+    "modeFlashcards": "Flashcards"
+  },
+  "composer": {
+    "connectHint": "Connect to your tldw server in Settings to send messages."
+  },
+  "notification": {
+    "ingestSent": "Sent to tldw server",
+    "ingestSentDesc": "Current page has been submitted for ingestion.",
+    "processedLocal": "Processed locally",
+    "processedLocalDesc": "Processed content stored locally under Settings > Processed.",
+    "transcriptionTitle": "Transcription",
+    "transcriptionSummaryTitle": "Transcription + summary",
+    "transcriptionFallback": "Transcription completed. Open Media in the Web UI to view it.",
+    "sourceLabel": "Source",
+    "transcriptLabel": "Transcript",
+    "summaryLabel": "Summary"
+  },
+  "rag": {
+    "searchPlaceholder": "Search your knowledge…",
+    "search": "Search",
+    "show": "Show RAG search",
+    "hide": "Hide RAG search",
+    "addTagPlaceholder": "Add tag (Enter)",
+    "add": "Add",
+    "noResults": "No results",
+    "timeout": {
+      "message": "Request timed out.",
+      "increase": "Increase timeout",
+      "checkHealth": "Check server health"
+    },
+    "actions": {
+      "insert": "Insert",
+      "ask": "Ask",
+      "open": "Open",
+      "copy": "Copy"
+    }
   }
 }

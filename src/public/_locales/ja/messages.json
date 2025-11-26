@@ -1,12 +1,12 @@
 {
   "extName": {
-    "message": "tldw Assistant"
+    "message": "tldw アシスタント"
   },
   "extDescription": {
     "message": "ローカルで実行中のAIモデルを使って、Webブラウジングをアシストします。"
   },
   "openSidePanelToChat": {
-    "message": "Open Sidebar to chat"
+    "message": "チャット用サイドバーを開く"
   },
   "contextSummarize": {
     "message": "要約"
@@ -24,15 +24,66 @@
     "message": "カスタム"
   },
   "contextSendToTldw": {
-    "message": "Send to tldw_server"
+    "message": "tldw_server に送信"
   },
   "contextProcessLocalTldw": {
-    "message": "Process with tldw_server (don’t store)"
+    "message": "tldw_server で処理（保存しない）"
   },
   "contextSidebarOpening": {
     "message": "サイドバーを開いています..."
   },
   "contextSaveToNotesOpeningSidebar": {
     "message": "ノートを保存するためにサイドバーを開いています..."
+  },
+  "openOptionToChat": {
+    "message": "チャット用 Web UI を開く"
+  },
+  "contextTranscribeMedia": {
+    "message": "動画/音声を書き起こす"
+  },
+  "contextTranscribeAndSummarizeMedia": {
+    "message": "動画/音声を書き起こして要約する"
+  },
+  "contextSaveToNotes": {
+    "message": "ノートに保存"
+  },
+  "contextSaveToNotesNoSelection": {
+    "message": "ノートに保存するには、まずテキストを選択してください。"
+  },
+  "hfSendPageRejected": {
+    "message": "[tldw] ページを tldw_server に送信する要求が拒否されました。"
+  },
+  "hfSendPageErrorWithDetail": {
+    "message": "[tldw] このページを tldw_server に送信できませんでした: $1。Settings → tldw server を確認して、もう一度お試しください。"
+  },
+  "hfSendPageError": {
+    "message": "[tldw] このページを tldw_server に送信できませんでした。Settings → tldw server を確認して、もう一度お試しください。"
+  },
+  "hfSendPageSuccess": {
+    "message": "[tldw] このページを tldw_server に送信して処理を開始しました。"
+  },
+  "hfSendPageException": {
+    "message": "[tldw] このページを tldw_server に送信中に問題が発生しました。tldw_server と拡張機能が実行中であることを確認し、もう一度お試しください。"
+  },
+  "hfPullInProgress": {
+    "message": "[tldw Assistant] モデルのプルリクエストがすでに実行中です。完了するまでお待ちいただいてから、もう一度お試しください。"
+  },
+  "hfPullConfirm": {
+    "message": "[tldw Assistant] tldw_server に「$1」モデルのプルをリクエストしますか？これは huggingface.co の Web サイトとは独立した処理です。確認すると、サーバー側でモデルの取得が開始されます。"
+  },
+  "hfPullSending": {
+    "message": "[tldw Assistant] tldw_server に「$1」モデルのプルをリクエストしています。進捗は拡張機能のアイコンまたは tldw_server のログで確認できます。"
+  },
+  "hfPullErrorWithDetail": {
+    "message": "[tldw Assistant] 「$1」モデルのプルリクエストを送信できませんでした: $2。Settings → tldw server を確認して、もう一度お試しください。"
+  },
+  "hfPullError": {
+    "message": "[tldw Assistant] 「$1」モデルのプルリクエストを送信できませんでした。Settings → tldw server を確認して、もう一度お試しください。"
+  },
+  "hfPullSuccess": {
+    "message": "[tldw Assistant] 「$1」モデルのプルを tldw_server にリクエストしました。拡張機能のアイコンまたは tldw_server のログで状態を確認してください。"
+  },
+  "hfPullException": {
+    "message": "[tldw Assistant] 「$1」モデルのプルリクエストを tldw_server に送信中に問題が発生しました。tldw_server と拡張機能が実行中であることを確認し、もう一度お試しください。"
   }
 }

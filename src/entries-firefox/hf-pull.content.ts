@@ -1,5 +1,16 @@
 import { apiSend } from "@/services/api-send"
 import type { AllowedPath } from "@/services/tldw/openapi-guard"
+import { browser } from "wxt/browser"
+
+const getMessage = (key: string, fallback: string, substitutions?: string | string[]) => {
+  try {
+    const msg = browser.i18n?.getMessage(key as any, substitutions as any)
+    if (msg && msg.length > 0) return msg
+  } catch {
+    // ignore
+  }
+  return fallback
+}
 
 export default defineContentScript({
   main(ctx) {
@@ -26,18 +37,29 @@ export default defineContentScript({
     const downloadModel = async (modelName: string) => {
       if (isPulling) {
         alert(
-          `[tldw Assistant] A model pull request is already in progress. Please wait for it to finish before starting another one.`
+          getMessage(
+            "hfPullInProgress",
+            "[tldw Assistant] A model pull request is already in progress. Please wait for it to finish before starting another one."
+          )
         )
         return false
       }
 
       const ok = confirm(
-        `[tldw Assistant] Do you want to send a request to your tldw_server to pull the "${modelName}" model? This is independent of the huggingface.co website. Your server will start pulling the model after you confirm.`
+        getMessage(
+          "hfPullConfirm",
+          `[tldw Assistant] Do you want to send a request to your tldw_server to pull the "${modelName}" model? This is independent of the huggingface.co website. Your server will start pulling the model after you confirm.`,
+          [modelName]
+        )
       )
       if (ok) {
         isPulling = true
         alert(
-          `[tldw Assistant] Sending a request to your tldw_server to pull "${modelName}". Check the extension icon or your tldw_server logs for progress.`
+          getMessage(
+            "hfPullSending",
+            `[tldw Assistant] Sending a request to your tldw_server to pull "${modelName}". Check the extension icon or your tldw_server logs for progress.`,
+            [modelName]
+          )
         )
 
         // Path is declared in OpenAPI; annotate for compile-time safety
@@ -56,13 +78,25 @@ export default defineContentScript({
             )
             const msg =
               resp.error && resp.error.length <= 140
-                ? `[tldw Assistant] Failed to send a pull request for "${modelName}": ${resp.error}. Check Settings → tldw server and try again.`
-                : `[tldw Assistant] Failed to send a pull request for "${modelName}". Check Settings → tldw server and try again.`
+                ? getMessage(
+                    "hfPullErrorWithDetail",
+                    `[tldw Assistant] Failed to send a pull request for "${modelName}": ${resp.error}. Check Settings → tldw server and try again.`,
+                    [modelName, resp.error]
+                  )
+                : getMessage(
+                    "hfPullError",
+                    `[tldw Assistant] Failed to send a pull request for "${modelName}". Check Settings → tldw server and try again.`,
+                    [modelName]
+                  )
             alert(msg)
             return false
           }
           alert(
-            `[tldw Assistant] Request sent to your tldw_server to pull "${modelName}". Monitor the extension icon or tldw_server logs for status.`
+            getMessage(
+              "hfPullSuccess",
+              `[tldw Assistant] Request sent to your tldw_server to pull "${modelName}". Monitor the extension icon or tldw_server logs for status.`,
+              [modelName]
+            )
           )
           return true
         } catch (error) {
@@ -71,7 +105,11 @@ export default defineContentScript({
             error
           )
           alert(
-            `[tldw Assistant] Something went wrong while sending a pull request for "${modelName}" to your tldw_server. Check that your tldw_server and the extension are running, then try again.`
+            getMessage(
+              "hfPullException",
+              `[tldw Assistant] Something went wrong while sending a pull request for "${modelName}" to your tldw_server. Check that your tldw_server and the extension are running, then try again.`,
+              [modelName]
+            )
           )
           return false
         } finally {
@@ -106,11 +144,12 @@ export default defineContentScript({
       if (!copyButton && !modal.querySelector(".pageassist-download-button")) {
         const downloadButton = document.createElement("button")
         downloadButton.classList.add("pageassist-download-button", "focus:outline-hidden", "inline-flex", "cursor-pointer", "items-center", "text-sm", "bg-white", "shadow-xs", "rounded-md", "border", "px-2", "py-1", "text-gray-600")
-        downloadButton.title = "Send to tldw_server"
+        const sendLabel = getMessage("contextSendToTldw", "Send to tldw_server")
+        downloadButton.title = sendLabel
         const icon = createDownloadIcon()
         const label = document.createElement("span")
         label.classList.add("ml-1.5")
-        label.textContent = "Send to tldw_server"
+        label.textContent = sendLabel
         downloadButton.append(icon, label)
         
         downloadButton.addEventListener("click", async () => {
@@ -136,8 +175,8 @@ export default defineContentScript({
         if (existingIcon) {
           existingIcon.replaceWith(createDownloadIcon())
         }
-        downloadButton.querySelector("span")!.textContent =
-          "Send to tldw_server"
+        const sendLabel = getMessage("contextSendToTldw", "Send to tldw_server")
+        downloadButton.querySelector("span")!.textContent = sendLabel
         downloadButton.addEventListener("click", async () => {
           const preElement = modal.querySelector("pre")
           if (!preElement) return

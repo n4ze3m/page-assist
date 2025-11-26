@@ -1,15 +1,27 @@
 {
-    "heading": "Chrome AI konfigurieren",
-    "status": {
-        "label": "Chrome AI-Unterstützung für tldw Assistant aktivieren oder deaktivieren"
-    },
-    "error": {
-        "browser_not_supported": "Diese Version von Chrome wird vom Gemini Nano-Modell nicht unterstützt. Bitte aktualisieren Sie auf Version 127 oder höher",
-        "ai_not_supported": "Die Einstellung chrome://flags/#prompt-api-for-gemini-nano ist nicht aktiviert. Bitte aktivieren Sie sie.",
-        "ai_not_ready": "Gemini Nano ist noch nicht bereit; Sie müssen die Chrome-Einstellungen überprüfen.",
-        "internal_error": "Ein interner Fehler ist aufgetreten. Bitte versuchen Sie es später erneut."
-    },
-    "errorDescription": "Um Chrome AI zu verwenden, benötigen Sie Chrome Version 138 oder höher. Befolgen Sie diese Schritte:\n\n1. Gehen Sie zu `chrome://flags/#prompt-api-for-gemini-nano` und aktivieren Sie \"Prompt API for Gemini Nano\".\n2. Starten Sie Chrome neu, um das Flag zu übernehmen.\n3. Kehren Sie zu dieser Seite zurück und klicken Sie auf \"Modell herunterladen\" — dies lädt beim ersten Mal ein 4-GB-Modell herunter.\n4. Sobald das Modell heruntergeladen wurde, kann Gemini Nano über tldw Assistant aktiviert werden.",
-    "downloadModel": "Modell herunterladen",
-    "modelDownloadWarning": "Dies wird ein Modell mit einer ungefähren Downloadgröße von 1,5 GB bis 2,4 GB herunterladen. Stellen Sie sicher, dass Sie über ausreichend Speicherplatz verfügen."
+  "heading": "Chrome AI konfigurieren",
+  "status": {
+    "label": "Chrome AI-Unterstützung für tldw Assistant aktivieren oder deaktivieren"
+  },
+  "error": {
+    "browser_not_supported": "Diese Version von Chrome wird vom Gemini Nano-Modell nicht unterstützt. Bitte aktualisieren Sie auf Version 127 oder höher",
+    "ai_not_supported": "Die Einstellung chrome://flags/#prompt-api-for-gemini-nano ist nicht aktiviert. Bitte aktivieren Sie sie.",
+    "ai_not_ready": "Gemini Nano ist noch nicht bereit; Sie müssen die Chrome-Einstellungen überprüfen.",
+    "internal_error": "Ein interner Fehler ist aufgetreten. Bitte versuchen Sie es später erneut."
+  },
+  "errorDescription": "Um Chrome AI zu verwenden, benötigen Sie Chrome Version 138 oder höher. Befolgen Sie diese Schritte:\n\n1. Gehen Sie zu `chrome://flags/#prompt-api-for-gemini-nano` und aktivieren Sie \"Prompt API for Gemini Nano\".\n2. Starten Sie Chrome neu, um das Flag zu übernehmen.\n3. Kehren Sie zu dieser Seite zurück und klicken Sie auf \"Modell herunterladen\" — dies lädt beim ersten Mal ein 4-GB-Modell herunter.\n4. Sobald das Modell heruntergeladen wurde, kann Gemini Nano über tldw Assistant aktiviert werden.",
+  "downloadModel": "Modell herunterladen",
+  "modelDownloadWarning": "Dies wird ein Modell mit einer ungefähren Downloadgröße von 1,5 GB bis 2,4 GB herunterladen. Stellen Sie sicher, dass Sie über ausreichend Speicherplatz verfügen.",
+  "downloadModal": {
+    "title": "Gemini Nano-Modell herunterladen",
+    "warning": "Großer Download erforderlich",
+    "warningDescription": "Es werden ungefähr 4 GB Daten heruntergeladen. Stellen Sie sicher, dass Sie genügend Speicherplatz und eine stabile Internetverbindung haben.",
+    "confirm": "Jetzt herunterladen",
+    "cancel": "Abbrechen",
+    "downloading": "Modell wird heruntergeladen",
+    "downloadingDescription": "Das Gemini Nano-Modell wird heruntergeladen. Dies kann je nach Internetverbindung mehrere Minuten dauern.",
+    "pleaseWait": "Bitte schließen Sie dieses Fenster nicht, während der Download läuft..."
+  },
+  "downloadSuccess": "Modell wurde erfolgreich heruntergeladen!",
+  "downloadError": "Das Modell konnte nicht heruntergeladen werden. Bitte versuchen Sie es erneut."
 }

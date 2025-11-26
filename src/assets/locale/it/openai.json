@@ -34,7 +34,8 @@
       "subheading": "Seleziona i modelli di chat che desideri utilizzare con questo provider.",
       "success": "Nuovi modelli aggiunti con successo."
     },
-    "tipLMStudio": "tldw Browser_Assistant recupererà automaticamente i modelli caricati su LM Studio. Non è necessario aggiungerli manualmente."
+    "tipLMStudio": "tldw Browser_Assistant recupererà automaticamente i modelli caricati su LM Studio. Non è necessario aggiungerli manualmente.",
+    "titleEdit": "Edit Provider"
   },
   "addSuccess": "Provider aggiunto con successo.",
   "deleteSuccess": "Provider eliminato con successo.",
@@ -78,7 +79,8 @@
         "type": {
           "label": "Tipo di Modello"
         }
-      }
+      },
+      "titleEdit": "Edit Custom Model"
     }
   },
   "noModelFound": "Nessun modello trovato. Assicurati di aver aggiunto il provider corretto con l'URL di base e la chiave API.",

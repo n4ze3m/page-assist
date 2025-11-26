@@ -1,12 +1,12 @@
 {
   "extName": {
-    "message": "tldw Assistant"
+    "message": "tldw-assistenten"
   },
   "extDescription": {
     "message": "Bruk dine lokalt kjørende AI-modeller til at hjælpe dig med at surfe på nettet."
   },
   "openSidePanelToChat": {
-    "message": "Open Sidebar to chat"
+    "message": "Åpne sidepanelet for å chatte"
   },
   "openOptionToChat": {
     "message": "Åben Web UI for at Chatte"
@@ -27,15 +27,63 @@
     "message": "Tilpasset"
   },
   "contextSendToTldw": {
-    "message": "Send to tldw_server"
+    "message": "Send til tldw_server"
   },
   "contextProcessLocalTldw": {
-    "message": "Process with tldw_server (don’t store)"
+    "message": "Behandle med tldw_server (ikke lagre)"
   },
   "contextSidebarOpening": {
     "message": "Åpner sidepanelet..."
   },
   "contextSaveToNotesOpeningSidebar": {
     "message": "Åpner sidepanelet for å lagre notatet..."
+  },
+  "contextTranscribeMedia": {
+    "message": "Transkriber video/lyd"
+  },
+  "contextTranscribeAndSummarizeMedia": {
+    "message": "Transkriber + oppsummer video/lyd"
+  },
+  "contextSaveToNotes": {
+    "message": "Lagre i Notater"
+  },
+  "contextSaveToNotesNoSelection": {
+    "message": "Velg tekst først for å lagre i Notater."
+  },
+  "hfSendPageRejected": {
+    "message": "[tldw] Forespørselen om å sende siden til tldw_server ble avvist."
+  },
+  "hfSendPageErrorWithDetail": {
+    "message": "[tldw] Klarte ikke å sende denne siden til tldw_server: $1. Sjekk Innstillinger → tldw server og prøv igjen."
+  },
+  "hfSendPageError": {
+    "message": "[tldw] Klarte ikke å sende denne siden til tldw_server. Sjekk Innstillinger → tldw server og prøv igjen."
+  },
+  "hfSendPageSuccess": {
+    "message": "[tldw] Sendte siden til tldw_server for behandling."
+  },
+  "hfSendPageException": {
+    "message": "[tldw] Noe gikk galt under sending av denne siden til tldw_server. Kontroller at tldw_server og utvidelsen kjører, og prøv igjen."
+  },
+  "hfPullInProgress": {
+    "message": "[tldw Assistant] En modell-pull-forespørsel pågår allerede. Vent til den er ferdig før du starter en ny."
+  },
+  "hfPullConfirm": {
+    "message": "[tldw Assistant] Vil du sende en forespørsel til tldw_server om å hente modellen «$1»? Dette er uavhengig av nettsiden huggingface.co. Serveren begynner å hente modellen når du bekrefter."
+  },
+  "hfPullSending": {
+    "message": "[tldw Assistant] Sender en forespørsel til tldw_server om å hente «$1». Sjekk utvidelsesikonet eller loggene til tldw_server for fremdrift."
+  },
+  "hfPullErrorWithDetail": {
+    "message": "[tldw Assistant] Klarte ikke å sende en pull-forespørsel for «$1»: $2. Sjekk Innstillinger → tldw server og prøv igjen."
+  },
+  "hfPullError": {
+    "message": "[tldw Assistant] Klarte ikke å sende en pull-forespørsel for «$1». Sjekk Innstillinger → tldw server og prøv igjen."
+  },
+  "hfPullSuccess": {
+    "message": "[tldw Assistant] Sendte en forespørsel til tldw_server om å hente «$1». Overvåk status via utvidelsesikonet eller tldw_server-loggene."
+  },
+  "hfPullException": {
+    "message": "[tldw Assistant] Noe gikk galt da vi sendte en pull-forespørsel for «$1» til tldw_server. Kontroller at tldw_server og utvidelsen kjører, og prøv igjen."
   }
 }

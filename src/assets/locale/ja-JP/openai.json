@@ -34,7 +34,8 @@
       "subheading": "このプロバイダーで使用したいチャットモデルを選択してください。",
       "success": "新しいモデルが正常に追加されました。"
     },
-    "tipLMStudio": "tldw Browser_AssistantはLM Studioにロードしたモデルを自動的に取得します。手動で追加する必要はありません。"
+    "tipLMStudio": "tldw Browser_AssistantはLM Studioにロードしたモデルを自動的に取得します。手動で追加する必要はありません。",
+    "titleEdit": "Edit Provider"
   },
   "addSuccess": "プロバイダーが正常に追加されました。",
   "deleteSuccess": "プロバイダーが正常に削除されました。",
@@ -78,7 +79,8 @@
         "type": {
           "label": "モデルタイプ"
         }
-      }
+      },
+      "titleEdit": "Edit Custom Model"
     }
   },
   "noModelFound": "モデルが見つかりません。正しいベースURLとAPIキーを持つプロバイダーを追加したことを確認してください。",

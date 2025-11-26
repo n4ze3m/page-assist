@@ -111,6 +111,43 @@
         "label": "پرامپت سیستم موقت",
         "placeholder": "پرامپت سیستم را وارد کنید",
         "help": "این یک روش سریع برای تنظیم پرامپت سیستم در گفتگوی فعلی است که در صورت وجود، پرامپت سیستم انتخاب شده را لغو خواهد کرد."
+      },
+      "thinking": {
+        "label": "Thinking Mode"
+      },
+      "useMMap": {
+        "label": "useMmap"
+      },
+      "tfsZ": {
+        "label": "TFS-Z",
+        "placeholder": "e.g. 1.0, 1.1"
+      },
+      "numKeep": {
+        "label": "Num Keep",
+        "placeholder": "e.g. 256, 512"
+      },
+      "numThread": {
+        "label": "Num Thread",
+        "placeholder": "e.g. 8, 16"
+      },
+      "useMlock": {
+        "label": "useMlock"
+      },
+      "reasoningEffort": {
+        "label": "Reasoning Effort",
+        "placeholder": "low, medium, high"
+      },
+      "minP": {
+        "label": "Min P",
+        "placeholder": "e.g. 0.05"
+      },
+      "repeatPenalty": {
+        "label": "Repeat Penalty",
+        "placeholder": "e.g. 1.1, 1.2"
+      },
+      "repeatLastN": {
+        "label": "Repeat Last N",
+        "placeholder": "e.g. 64, 128"
       }
     },
     "advanced": "تنظیمات بیشتر مدل"
@@ -160,5 +197,44 @@
     "downloadCsv": "Download CSV"
   },
   "dismiss": "بستن",
-  "privateModeSaveErrorTitle": "tldw Assistant نمی‌تواند داده‌ها را ذخیره کند"
+  "privateModeSaveErrorTitle": "tldw Assistant نمی‌تواند داده‌ها را ذخیره کند",
+  "confirmTitle": "Please confirm",
+  "saving": "Saving...",
+  "close": "Close",
+  "loadMore": "Load More...",
+  "startChat": "Start chatting",
+  "previous": "Previous",
+  "next": "Next",
+  "chatWithCharacter": "Chat with character",
+  "ttsShort": "TTS",
+  "copyShort": "Copy",
+  "branchShort": "Branch",
+  "copilot": {
+    "summary": "Summarize",
+    "explain": "Explain",
+    "rephrase": "Rephrase",
+    "translate": "Translate",
+    "custom": "Custom"
+  },
+  "segmented": {
+    "available": "Server Models",
+    "custom": "Custom Models"
+  },
+  "success": "Success",
+  "created": "Created",
+  "updated": "Updated",
+  "deleted": "Deleted",
+  "create": "Create",
+  "reset": "Reset",
+  "serverOffline": "Server offline or not configured",
+  "serverChats": "Server chats",
+  "serverChatLoadError": "Failed to load server chat. Check your connection and try again.",
+  "serverChatSourceLabel": "Server",
+  "serverChatsUnavailable": "Server chats unavailable. Check your server connection.",
+  "historiesDeleted": "{{count}} Histories Deleted",
+  "deleteHistoriesError": "Error deleting histories",
+  "mermaid": "Mermaid",
+  "search": "Search",
+  "searchResults": "Search Results",
+  "newBranch": "New Branch"
 }

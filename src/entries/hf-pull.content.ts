@@ -1,5 +1,16 @@
 import { apiSend } from "@/services/api-send"
 import type { AllowedPath } from "@/services/tldw/openapi-guard"
+import { browser } from "wxt/browser"
+
+const getMessage = (key: string, fallback: string, substitutions?: string | string[]) => {
+  try {
+    const msg = browser.i18n?.getMessage(key as any, substitutions as any)
+    if (msg && msg.length > 0) return msg
+  } catch {
+    // ignore
+  }
+  return fallback
+}
 
 export default defineContentScript({
   main() {
@@ -21,21 +32,36 @@ export default defineContentScript({
             resp
           )
           const msg =
-            resp.error && resp.error.length <= 140
-              ? `[tldw] Failed to send this page to tldw_server: ${resp.error}. Check Settings → tldw server and try again.`
-              : "[tldw] Failed to send this page to tldw_server. Check Settings → tldw server and try again."
+            resp?.error && resp.error.length <= 140
+              ? getMessage(
+                  "hfSendPageErrorWithDetail",
+                  `[tldw] Failed to send this page to tldw_server: ${resp.error}. Check Settings → tldw server and try again.`,
+                  [resp.error]
+                )
+              : getMessage(
+                  "hfSendPageError",
+                  "[tldw] Failed to send this page to tldw_server. Check Settings → tldw server and try again."
+                )
           alert(msg)
           return
         }
 
-        alert("[tldw] Sent page to tldw_server for processing")
+        alert(
+          getMessage(
+            "hfSendPageSuccess",
+            "[tldw] Sent page to tldw_server for processing"
+          )
+        )
       } catch (error) {
         console.error(
           "[tldw] Failed to send page to tldw_server for processing",
           error
         )
         alert(
-          "[tldw] Something went wrong while sending this page to tldw_server. Check that your tldw_server and the extension are running, then try again."
+          getMessage(
+            "hfSendPageException",
+            "[tldw] Something went wrong while sending this page to tldw_server. Check that your tldw_server and the extension are running, then try again."
+          )
         )
       }
     }
@@ -68,11 +94,12 @@ export default defineContentScript({
       if (document.querySelector('.tldw-send-button')) return
       const btn = document.createElement('button')
       btn.className = 'tldw-send-button focus:outline-hidden inline-flex cursor-pointer items-center text-sm bg-white shadow-xs rounded-md border px-2 py-1 text-gray-600'
-      btn.title = 'Send to tldw_server'
+      const sendLabel = getMessage("contextSendToTldw", "Send to tldw_server")
+      btn.title = sendLabel
       const icon = createDownloadIcon()
       const label = document.createElement("span")
       label.classList.add("ml-1.5")
-      label.textContent = "Send to tldw_server"
+      label.textContent = sendLabel
       btn.append(icon, label)
       btn.style.position = 'fixed'
       btn.style.bottom = '60px'

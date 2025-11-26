@@ -1,7 +1,9 @@
 {
   "tooltip": {
     "embed": "페이지를 임베드하는 데 몇 분이 걸릴 수 있습니다. 잠시만 기다려 주세요...",
-    "openwebui": "웹 UI 열기"
+    "openwebui": "웹 UI 열기",
+    "clear": "Erase chat history",
+    "history": "Chat history"
   },
   "toolbar": {
     "ragSearch": "RAG Search"
@@ -9,5 +11,69 @@
   "errors": {
     "privateModeTitle": "tldw Assistant에서 데이터를 저장할 수 없습니다",
     "privateModeDescription": "Firefox 사생활 모드에서는 채팅 기록을 저장할 수 없습니다. 기본적으로 임시 채팅이 활성화되어 있습니다. 곧 개선될 예정입니다."
+  },
+  "header": {
+    "ingest": "Ingest",
+    "saveCurrent": "Save current page on server",
+    "processLocal": "Process current page locally",
+    "viewProcessed": "View processed",
+    "timeoutLabel": "Timeout (s)",
+    "toggleSidebar": "Toggle Sidebar / Full Screen",
+    "shortcuts": "Shortcuts",
+    "showDebug": "Show Stream Debug",
+    "hideDebug": "Hide Stream Debug",
+    "moreOptionsAria": "More options",
+    "moreOptionsTitle": "Ingest and more",
+    "openWebuiAria": "Open Web UI",
+    "newChatAria": "New chat",
+    "tempChatAria": "Toggle temporary chat",
+    "clearHistoryAria": "Clear history",
+    "openHistoryAria": "Open history",
+    "openModelSettingsAria": "Open model settings",
+    "openSettingsAria": "Open settings",
+    "tempPill": "Temp",
+    "modesLabel": "Open modes in Web UI",
+    "modePlayground": "Chat",
+    "modeReview": "Multi-Item Review",
+    "modeMedia": "Media",
+    "modeKnowledge": "Knowledge",
+    "modeNotes": "Notes",
+    "modePrompts": "Prompts",
+    "modeFlashcards": "Flashcards"
+  },
+  "composer": {
+    "connectHint": "Connect to your tldw server in Settings to send messages."
+  },
+  "notification": {
+    "ingestSent": "Sent to tldw server",
+    "ingestSentDesc": "Current page has been submitted for ingestion.",
+    "processedLocal": "Processed locally",
+    "processedLocalDesc": "Processed content stored locally under Settings > Processed.",
+    "transcriptionTitle": "Transcription",
+    "transcriptionSummaryTitle": "Transcription + summary",
+    "transcriptionFallback": "Transcription completed. Open Media in the Web UI to view it.",
+    "sourceLabel": "Source",
+    "transcriptLabel": "Transcript",
+    "summaryLabel": "Summary"
+  },
+  "rag": {
+    "searchPlaceholder": "Search your knowledge…",
+    "search": "Search",
+    "show": "Show RAG search",
+    "hide": "Hide RAG search",
+    "addTagPlaceholder": "Add tag (Enter)",
+    "add": "Add",
+    "noResults": "No results",
+    "timeout": {
+      "message": "Request timed out.",
+      "increase": "Increase timeout",
+      "checkHealth": "Check server health"
+    },
+    "actions": {
+      "insert": "Insert",
+      "ask": "Ask",
+      "open": "Open",
+      "copy": "Copy"
+    }
   }
 }

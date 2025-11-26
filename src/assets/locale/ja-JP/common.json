@@ -111,6 +111,43 @@
         "label": "一時的なシステムプロンプト",
         "placeholder": "システムプロンプトを入力",
         "help": "これは現在のチャットでシステムプロンプトを素早く設定する方法で、選択されたシステムプロンプトが存在する場合はそれを上書きします。"
+      },
+      "thinking": {
+        "label": "Thinking Mode"
+      },
+      "useMMap": {
+        "label": "useMmap"
+      },
+      "tfsZ": {
+        "label": "TFS-Z",
+        "placeholder": "e.g. 1.0, 1.1"
+      },
+      "numKeep": {
+        "label": "Num Keep",
+        "placeholder": "e.g. 256, 512"
+      },
+      "numThread": {
+        "label": "Num Thread",
+        "placeholder": "e.g. 8, 16"
+      },
+      "useMlock": {
+        "label": "useMlock"
+      },
+      "reasoningEffort": {
+        "label": "Reasoning Effort",
+        "placeholder": "low, medium, high"
+      },
+      "minP": {
+        "label": "Min P",
+        "placeholder": "e.g. 0.05"
+      },
+      "repeatPenalty": {
+        "label": "Repeat Penalty",
+        "placeholder": "e.g. 1.1, 1.2"
+      },
+      "repeatLastN": {
+        "label": "Repeat Last N",
+        "placeholder": "e.g. 64, 128"
       }
     },
     "advanced": "その他のモデル設定"
@@ -119,7 +156,8 @@
     "summary": "要約",
     "explain": "説明",
     "rephrase": "言い換え",
-    "translate": "翻訳"
+    "translate": "翻訳",
+    "custom": "Custom"
   },
   "citations": "引用",
   "downloadCode": "コードをダウンロード",
@@ -166,5 +204,37 @@
     "downloadCsv": "Download CSV"
   },
   "dismiss": "Dismiss",
-  "privateModeSaveErrorTitle": "tldw Assistant はデータを保存できません"
+  "privateModeSaveErrorTitle": "tldw Assistant はデータを保存できません",
+  "confirmTitle": "Please confirm",
+  "saving": "Saving...",
+  "close": "Close",
+  "loadMore": "Load More...",
+  "startChat": "Start chatting",
+  "previous": "Previous",
+  "next": "Next",
+  "chatWithCharacter": "Chat with character",
+  "ttsShort": "TTS",
+  "copyShort": "Copy",
+  "branchShort": "Branch",
+  "segmented": {
+    "available": "Server Models",
+    "custom": "Custom Models"
+  },
+  "success": "Success",
+  "created": "Created",
+  "updated": "Updated",
+  "deleted": "Deleted",
+  "create": "Create",
+  "reset": "Reset",
+  "serverOffline": "Server offline or not configured",
+  "serverChats": "Server chats",
+  "serverChatLoadError": "Failed to load server chat. Check your connection and try again.",
+  "serverChatSourceLabel": "Server",
+  "serverChatsUnavailable": "Server chats unavailable. Check your server connection.",
+  "historiesDeleted": "{{count}} Histories Deleted",
+  "deleteHistoriesError": "Error deleting histories",
+  "mermaid": "Mermaid",
+  "search": "Search",
+  "searchResults": "Search Results",
+  "newBranch": "New Branch"
 }

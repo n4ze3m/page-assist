@@ -1,12 +1,12 @@
 {
   "extName": {
-    "message": "tldw Assistant"
+    "message": "tldw 助手"
   },
   "extDescription": {
     "message": "使用本地运行的 AI 模型来辅助您的网络浏览。"
   },
   "openSidePanelToChat": {
-    "message": "Open Sidebar to chat"
+    "message": "打开侧边栏聊天"
   },
   "contextSummarize": {
     "message": "总结"
@@ -24,15 +24,66 @@
     "message": "自定义"
   },
   "contextSendToTldw": {
-    "message": "Send to tldw_server"
+    "message": "发送到 tldw_server"
   },
   "contextProcessLocalTldw": {
-    "message": "Process with tldw_server (don’t store)"
+    "message": "使用 tldw_server 处理（不保存）"
   },
   "contextSidebarOpening": {
     "message": "正在打开侧边栏..."
   },
   "contextSaveToNotesOpeningSidebar": {
     "message": "正在打开侧边栏以保存笔记..."
+  },
+  "openOptionToChat": {
+    "message": "打开 Web 界面进行聊天"
+  },
+  "contextTranscribeMedia": {
+    "message": "转录视频/音频"
+  },
+  "contextTranscribeAndSummarizeMedia": {
+    "message": "转录并总结视频/音频"
+  },
+  "contextSaveToNotes": {
+    "message": "保存到笔记"
+  },
+  "contextSaveToNotesNoSelection": {
+    "message": "请先选择文本以保存到笔记。"
+  },
+  "hfSendPageRejected": {
+    "message": "[tldw] 发送页面的请求被 tldw_server 拒绝。"
+  },
+  "hfSendPageErrorWithDetail": {
+    "message": "[tldw] 将此页面发送到 tldw_server 失败：$1。请检查“Settings → tldw server”，然后重试。"
+  },
+  "hfSendPageError": {
+    "message": "[tldw] 将此页面发送到 tldw_server 失败。请检查“Settings → tldw server”，然后重试。"
+  },
+  "hfSendPageSuccess": {
+    "message": "[tldw] 已将页面发送到 tldw_server 进行处理。"
+  },
+  "hfSendPageException": {
+    "message": "[tldw] 在将此页面发送到 tldw_server 时出现问题。请检查 tldw_server 和扩展是否正在运行，然后重试。"
+  },
+  "hfPullInProgress": {
+    "message": "[tldw Assistant] 已有一个模型拉取请求在进行中。请等待其完成后再发起新的请求。"
+  },
+  "hfPullConfirm": {
+    "message": "[tldw Assistant] 是否要向您的 tldw_server 发送请求以拉取模型 \"$1\"？这与 huggingface.co 网站无关。确认后，您的服务器将开始拉取该模型。"
+  },
+  "hfPullSending": {
+    "message": "[tldw Assistant] 正在向您的 tldw_server 发送请求以拉取 \"$1\"。请查看扩展图标或 tldw_server 日志以了解进度。"
+  },
+  "hfPullErrorWithDetail": {
+    "message": "[tldw Assistant] 发送拉取 \"$1\" 的请求失败：$2。请检查“Settings → tldw server”，然后重试。"
+  },
+  "hfPullError": {
+    "message": "[tldw Assistant] 发送拉取 \"$1\" 的请求失败。请检查“Settings → tldw server”，然后重试。"
+  },
+  "hfPullSuccess": {
+    "message": "[tldw Assistant] 已向您的 tldw_server 发送拉取 \"$1\" 的请求。请通过扩展图标或 tldw_server 日志查看状态。"
+  },
+  "hfPullException": {
+    "message": "[tldw Assistant] 在向您的 tldw_server 发送拉取 \"$1\" 的请求时出现问题。请检查 tldw_server 和扩展是否正在运行，然后重试。"
   }
 }

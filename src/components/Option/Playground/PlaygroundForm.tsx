@@ -237,19 +237,41 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
     return () => window.removeEventListener('tldw:focus-composer', handler)
   }, [textAreaFocus])
 
-  // Seed composer when a media item requests discussion (e.g., from Quick ingest)
+  const buildDiscussMediaHint = (payload: {
+    mediaId?: string
+    url?: string
+    title?: string
+    content?: string
+  }): string => {
+    if (payload?.content && (payload.title || payload.mediaId)) {
+      const header = `Chat with this media: ${
+        payload.title || payload.mediaId
+      }`.trim()
+      return `${header}\n\n${payload.content}`.trim()
+    }
+    if (payload?.url) {
+      return `Let's talk about the media I just ingested: ${payload.url}`
+    }
+    if (payload?.mediaId) {
+      return `Let's talk about media ${payload.mediaId}.`
+    }
+    return ""
+  }
+
+  // Seed composer when a media item requests discussion (e.g., from Quick ingest or Review page)
   React.useEffect(() => {
     try {
       if (typeof window === "undefined") return
       const raw = localStorage.getItem("tldw:discussMediaPrompt")
       if (!raw) return
       localStorage.removeItem("tldw:discussMediaPrompt")
-      const payload = JSON.parse(raw) as { mediaId?: string; url?: string }
-      const hint = payload?.url
-        ? `Let's talk about the media I just ingested: ${payload.url}`
-        : payload?.mediaId
-          ? `Let's talk about media ${payload.mediaId}.`
-          : ""
+      const payload = JSON.parse(raw) as {
+        mediaId?: string
+        url?: string
+        title?: string
+        content?: string
+      }
+      const hint = buildDiscussMediaHint(payload)
       if (!hint) return
       form.setFieldValue("message", hint)
       textAreaFocus()
@@ -262,11 +284,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
     const handler = (event: Event) => {
       const detail = (event as CustomEvent).detail as any
       if (!detail) return
-      const hint = detail.url
-        ? `Let's talk about the media I just ingested: ${detail.url}`
-        : detail.mediaId
-          ? `Let's talk about media ${detail.mediaId}.`
-          : ""
+      const hint = buildDiscussMediaHint(detail || {})
       if (!hint) return
       form.setFieldValue("message", hint)
       textAreaFocus()

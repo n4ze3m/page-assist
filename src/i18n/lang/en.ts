@@ -6,6 +6,7 @@ import settings from "@/assets/locale/en/settings.json";
 import knowledge from "@/assets/locale/en/knowledge.json";
 import chrome from "@/assets/locale/en/chrome.json";
 import openai from "@/assets/locale/en/openai.json";
+import review from "@/assets/locale/en/review.json";
 
 export const en = {
     option,
@@ -15,5 +16,6 @@ export const en = {
     settings,
     knowledge,
     chrome,
-    openai
+    openai,
+    review
 }

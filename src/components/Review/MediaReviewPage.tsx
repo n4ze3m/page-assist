@@ -843,35 +843,72 @@ export const MediaReviewPage: React.FC = () => {
                   <Switch size="small" checked={collapseOthers} onChange={setCollapseOthers} />
                 </div>
               </div>
-              <div className="flex flex-wrap items-center gap-2">
-                {viewMode === "spread" && (
-                  <Button size="small" onClick={openAllCurrent}>
-                    {t("mediaPage.openAll", "Review all on page")} ({Math.min(allResults.length, openAllLimit)})
+              <div className="flex flex-wrap items-center gap-3">
+                <div className="flex items-center gap-1">
+                  <span className="text-[11px] text-gray-500 dark:text-gray-400">
+                    {t("mediaPage.itemsLabel", "Items")}
+                  </span>
+                  {viewMode === "spread" && (
+                    <Button size="small" onClick={openAllCurrent}>
+                      {t("mediaPage.openAll", "Review all on page")} (
+                      {Math.min(allResults.length, openAllLimit)})
+                    </Button>
+                  )}
+                  <Button
+                    size="small"
+                    onClick={() => goRelative(-1)}
+                    disabled={focusIndex <= 0}
+                  >
+                    {t("mediaPage.prevItem", "Prev item")}
                   </Button>
-                )}
-                <Button size="small" onClick={() => goRelative(-1)} disabled={focusIndex <= 0}>
-                  {t("mediaPage.prevItem", "Prev item")}
-                </Button>
-                <Button size="small" onClick={() => goRelative(1)} disabled={focusIndex < 0 || focusIndex >= allResults.length - 1}>
-                  {t("mediaPage.nextItem", "Next item")}
-                </Button>
-                <Button size="small" onClick={expandAllContent} type="default">
-                  {t("mediaPage.expandAllContent", "Expand all content")}
-                </Button>
-                <Button size="small" onClick={collapseAllContent} type="text">
-                  {t("mediaPage.collapseAllContent", "Collapse content")}
-                </Button>
-                <Button size="small" onClick={expandAllAnalysis} type="default">
-                  {t("mediaPage.expandAllAnalysis", "Expand all analysis")}
-                </Button>
-                <Button size="small" onClick={collapseAllAnalysis} type="text">
-                  {t("mediaPage.collapseAllAnalysis", "Collapse analysis")}
-                </Button>
+                  <Button
+                    size="small"
+                    onClick={() => goRelative(1)}
+                    disabled={
+                      focusIndex < 0 || focusIndex >= allResults.length - 1
+                    }
+                  >
+                    {t("mediaPage.nextItem", "Next item")}
+                  </Button>
+                </div>
+                <div className="flex items-center gap-1">
+                  <span className="text-[11px] text-gray-500 dark:text-gray-400">
+                    {t("mediaPage.contentLabel", "Content view")}
+                  </span>
+                  <Button
+                    size="small"
+                    onClick={expandAllContent}
+                    type="default"
+                  >
+                    {t("mediaPage.expandAllContent", "Expand all content")}
+                  </Button>
+                  <Button
+                    size="small"
+                    onClick={collapseAllContent}
+                    type="text"
+                  >
+                    {t("mediaPage.collapseAllContent", "Collapse content")}
+                  </Button>
+                  <Button
+                    size="small"
+                    onClick={expandAllAnalysis}
+                    type="default"
+                  >
+                    {t("mediaPage.expandAllAnalysis", "Expand all analysis")}
+                  </Button>
+                  <Button
+                    size="small"
+                    onClick={collapseAllAnalysis}
+                    type="text"
+                  >
+                    {t("mediaPage.collapseAllAnalysis", "Collapse analysis")}
+                  </Button>
+                </div>
                 <Tooltip
                   title={
                     t(
-                      'mediaPage.viewerHelp',
-                      'Keyboard: Tab into the results list, use Enter or Space to stack or unstack a media item, then use Prev/Next and layout controls to move through items in the viewer.'
+                      "mediaPage.viewerHelp",
+                      "Keyboard: Tab into the results list, use Enter or Space to stack or unstack a media item, then use Prev/Next and layout controls to move through items in the viewer."
                     ) as string
                   }
                 >
@@ -879,10 +916,12 @@ export const MediaReviewPage: React.FC = () => {
                     size="small"
                     shape="circle"
                     type="text"
-                    aria-label={t(
-                      'mediaPage.viewerHelpLabel',
-                      'Multi-Item Review keyboard shortcuts'
-                    ) as string}
+                    aria-label={
+                      t(
+                        "mediaPage.viewerHelpLabel",
+                        "Multi-Item Review keyboard shortcuts"
+                      ) as string
+                    }
                     className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
                   >
                     ?

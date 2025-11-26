@@ -111,6 +111,43 @@
         "label": "임시 시스템 프롬프트",
         "placeholder": "시스템 프롬프트를 입력하세요",
         "help": "현재 채팅에서 시스템 프롬프트를 빠르게 설정하는 방법이며, 선택된 시스템 프롬프트가 있을 경우 이를 덮어씁니다."
+      },
+      "thinking": {
+        "label": "Thinking Mode"
+      },
+      "useMMap": {
+        "label": "useMmap"
+      },
+      "tfsZ": {
+        "label": "TFS-Z",
+        "placeholder": "e.g. 1.0, 1.1"
+      },
+      "numKeep": {
+        "label": "Num Keep",
+        "placeholder": "e.g. 256, 512"
+      },
+      "numThread": {
+        "label": "Num Thread",
+        "placeholder": "e.g. 8, 16"
+      },
+      "useMlock": {
+        "label": "useMlock"
+      },
+      "reasoningEffort": {
+        "label": "Reasoning Effort",
+        "placeholder": "low, medium, high"
+      },
+      "minP": {
+        "label": "Min P",
+        "placeholder": "e.g. 0.05"
+      },
+      "repeatPenalty": {
+        "label": "Repeat Penalty",
+        "placeholder": "e.g. 1.1, 1.2"
+      },
+      "repeatLastN": {
+        "label": "Repeat Last N",
+        "placeholder": "e.g. 64, 128"
       }
     },
     "advanced": "기타 모델 설정"
@@ -119,7 +156,8 @@
     "summary": "요약",
     "explain": "설명",
     "rephrase": "다르게 표현",
-    "translate": "번역"
+    "translate": "번역",
+    "custom": "Custom"
   },
   "citations": "인용",
   "downloadCode": "코드 다운로드",
@@ -166,5 +204,37 @@
     "downloadCsv": "Download CSV"
   },
   "dismiss": "Dismiss",
-  "privateModeSaveErrorTitle": "tldw Assistant에서 데이터를 저장할 수 없습니다"
+  "privateModeSaveErrorTitle": "tldw Assistant에서 데이터를 저장할 수 없습니다",
+  "confirmTitle": "Please confirm",
+  "saving": "Saving...",
+  "close": "Close",
+  "loadMore": "Load More...",
+  "startChat": "Start chatting",
+  "previous": "Previous",
+  "next": "Next",
+  "chatWithCharacter": "Chat with character",
+  "ttsShort": "TTS",
+  "copyShort": "Copy",
+  "branchShort": "Branch",
+  "segmented": {
+    "available": "Server Models",
+    "custom": "Custom Models"
+  },
+  "success": "Success",
+  "created": "Created",
+  "updated": "Updated",
+  "deleted": "Deleted",
+  "create": "Create",
+  "reset": "Reset",
+  "serverOffline": "Server offline or not configured",
+  "serverChats": "Server chats",
+  "serverChatLoadError": "Failed to load server chat. Check your connection and try again.",
+  "serverChatSourceLabel": "Server",
+  "serverChatsUnavailable": "Server chats unavailable. Check your server connection.",
+  "historiesDeleted": "{{count}} Histories Deleted",
+  "deleteHistoriesError": "Error deleting histories",
+  "mermaid": "Mermaid",
+  "search": "Search",
+  "searchResults": "Search Results",
+  "newBranch": "New Branch"
 }

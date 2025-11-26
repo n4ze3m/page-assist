@@ -17,7 +17,8 @@ import {
   List,
   Switch,
   Spin,
-  Select
+  Select,
+  Checkbox
 } from "antd"
 import { FileUpIcon, Trash2 } from "lucide-react"
 import { useMessageOption } from "@/hooks/useMessageOption"
@@ -45,7 +46,18 @@ export const KnowledgeSettings = () => {
     selectedKnowledge,
     setSelectedKnowledge,
     chatMode,
-    setChatMode
+    setChatMode,
+    ragMediaIds,
+    ragSearchMode,
+    setRagSearchMode,
+    ragTopK,
+    setRagTopK,
+    ragEnableGeneration,
+    setRagEnableGeneration,
+    ragEnableCitations,
+    setRagEnableCitations,
+    ragSources,
+    setRagSources
   } = useMessageOption()
   const [openUpdate, setOpenUpdate] = useState(false)
   const [updateKnowledgeId, setUpdateKnowledgeId] = useState("")
@@ -56,6 +68,8 @@ export const KnowledgeSettings = () => {
   const [ragLoading, setRagLoading] = useState(false)
   const [ragResults, setRagResults] = useState<any[]>([])
   const [ragError, setRagError] = useState<string | null>(null)
+  const [ragAnswer, setRagAnswer] = useState<string | null>(null)
+  const [ragCitations, setRagCitations] = useState<any[]>([])
   const message = useAntdMessage()
   const confirmDanger = useConfirmDanger()
 
@@ -107,16 +121,46 @@ export const KnowledgeSettings = () => {
     setRagLoading(true)
     setRagError(null)
     setRagResults([])
+    setRagAnswer(null)
+    setRagCitations([])
     try {
       await tldwClient.initialize()
-      const top_k = await getNoOfRetrievedDocs()
-      const ragRes = await tldwClient.ragSearch(q, {
+      const defaultTopK = await getNoOfRetrievedDocs()
+      const top_k =
+        typeof ragTopK === "number" && ragTopK > 0 ? ragTopK : defaultTopK
+      const options: any = {
         knowledge_id: selectedKnowledge.id,
-        top_k
-      })
-      const docs =
-        ragRes?.results || ragRes?.documents || ragRes?.docs || []
+        top_k,
+        search_mode: ragSearchMode
+      }
+      if (ragEnableGeneration) {
+        options.enable_generation = true
+      }
+      if (ragEnableCitations) {
+        options.enable_citations = true
+      }
+      if (Array.isArray(ragSources) && ragSources.length > 0) {
+        options.sources = ragSources
+      }
+      const ragRes = await tldwClient.ragSearch(q, options)
+      const docs = ragRes?.results || ragRes?.documents || ragRes?.docs || []
       setRagResults(Array.isArray(docs) ? docs : [])
+      const answer =
+        ragRes?.generated_answer ||
+        ragRes?.answer ||
+        ragRes?.response ||
+        ""
+      setRagAnswer(
+        typeof answer === "string" && answer.trim().length > 0
+          ? answer
+          : null
+      )
+      const citations: any[] =
+        ragRes?.citations ||
+        ragRes?.chunk_citations ||
+        ragRes?.academic_citations ||
+        []
+      setRagCitations(Array.isArray(citations) ? citations : [])
     } catch (e: any) {
       setRagResults([])
       setRagError(
@@ -188,6 +232,22 @@ export const KnowledgeSettings = () => {
       ? data.filter((k: any) => k.status === "finished")
       : []
   const hasFinishedKnowledge = finishedKnowledge.length > 0
+
+  const ragScopeText = (() => {
+    if (Array.isArray(ragMediaIds) && ragMediaIds.length > 0) {
+      return t("knowledge:ragWorkspace.scopeMediaOnly", {
+        defaultValue: "RAG scope: This media only"
+      })
+    }
+    if (selectedKnowledge) {
+      return t("knowledge:ragWorkspace.scopeKnowledgeOnly", {
+        defaultValue: "RAG scope: Selected knowledge base only"
+      })
+    }
+    return t("knowledge:ragWorkspace.scopeDefault", {
+      defaultValue: "RAG scope: Default server configuration"
+    })
+  })()
 
   return (
     <div className="space-y-8">
@@ -331,6 +391,9 @@ export const KnowledgeSettings = () => {
                       "This setting applies to replies in the main Chat view and sidepanel."
                   })}
                 </p>
+                <p className="text-[11px] text-gray-500 dark:text-gray-400">
+                  {ragScopeText}
+                </p>
                 <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
                   <span className="text-[11px] text-gray-500 dark:text-gray-400">
                     {t("knowledge:ragWorkspace.docsPerReply.label", {
@@ -427,6 +490,168 @@ export const KnowledgeSettings = () => {
                   })}
                 </Button>
               </div>
+              {!isRagSearchBlocked && (
+                <div className="mt-2 space-y-2 rounded-md bg-gray-50 p-2 text-[11px] text-gray-700 dark:bg-[#111111] dark:text-gray-200">
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <div className="flex flex-wrap items-center gap-3">
+                      <span className="font-medium">
+                        {t("knowledge:ragWorkspace.optionsLabel", {
+                          defaultValue: "RAG options"
+                        })}
+                      </span>
+                    </div>
+                    <Button
+                      size="small"
+                      type="default"
+                      onClick={() => {
+                        setRagSearchMode("hybrid")
+                        setRagTopK(null)
+                        setRagEnableGeneration(false)
+                        setRagEnableCitations(false)
+                        setRagSources([])
+                      }}
+                    >
+                      {t("knowledge:ragWorkspace.resetOptions", {
+                        defaultValue: "Reset to defaults"
+                      })}
+                    </Button>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-3">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span>
+                        {t("knowledge:ragWorkspace.searchModeLabel", {
+                          defaultValue: "Search mode"
+                        })}
+                      </span>
+                      <Select
+                        size="small"
+                        value={ragSearchMode}
+                        onChange={(val) =>
+                          setRagSearchMode(val as "hybrid" | "vector" | "fts")
+                        }
+                        style={{ minWidth: 120 }}
+                        options={[
+                          {
+                            value: "hybrid",
+                            label: t(
+                              "knowledge:ragWorkspace.searchModeHybrid",
+                              { defaultValue: "Hybrid" }
+                            )
+                          },
+                          {
+                            value: "vector",
+                            label: t(
+                              "knowledge:ragWorkspace.searchModeVector",
+                              { defaultValue: "Vector" }
+                            )
+                          },
+                          {
+                            value: "fts",
+                            label: t(
+                              "knowledge:ragWorkspace.searchModeFts",
+                              { defaultValue: "Full-text" }
+                            )
+                          }
+                        ]}
+                      />
+                    </div>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span>
+                        {t("knowledge:ragWorkspace.topKLabel", {
+                          defaultValue: "Top-k"
+                        })}
+                      </span>
+                      <Input
+                        size="small"
+                        type="number"
+                        className="w-20"
+                        min={1}
+                        max={50}
+                        value={
+                          typeof ragTopK === "number" && ragTopK > 0
+                            ? String(ragTopK)
+                            : ""
+                        }
+                        onChange={(e) => {
+                          const v = e.target.value
+                          if (!v) {
+                            setRagTopK(undefined)
+                            return
+                          }
+                          const n = Number(v)
+                          if (Number.isNaN(n)) return
+                          setRagTopK(n)
+                        }}
+                      />
+                    </div>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-4">
+                    <Checkbox
+                      checked={ragEnableGeneration}
+                      onChange={(e) =>
+                        setRagEnableGeneration(e.target.checked)
+                      }
+                    >
+                      {t("knowledge:ragWorkspace.enableGeneration", {
+                        defaultValue: "Enable answer generation"
+                      })}
+                    </Checkbox>
+                    <Checkbox
+                      checked={ragEnableCitations}
+                      onChange={(e) =>
+                        setRagEnableCitations(e.target.checked)
+                      }
+                    >
+                      {t("knowledge:ragWorkspace.enableCitations", {
+                        defaultValue: "Enable citations"
+                      })}
+                    </Checkbox>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span>
+                      {t("knowledge:ragWorkspace.sourcesLabel", {
+                        defaultValue: "Sources"
+                      })}
+                    </span>
+                    <Checkbox.Group
+                      options={[
+                        {
+                          label: t(
+                            "knowledge:ragWorkspace.sourceMedia",
+                            { defaultValue: "Media" }
+                          ),
+                          value: "media_db"
+                        },
+                        {
+                          label: t(
+                            "knowledge:ragWorkspace.sourceNotes",
+                            { defaultValue: "Notes" }
+                          ),
+                          value: "notes"
+                        },
+                        {
+                          label: t(
+                            "knowledge:ragWorkspace.sourceCharacters",
+                            { defaultValue: "Characters" }
+                          ),
+                          value: "characters"
+                        },
+                        {
+                          label: t(
+                            "knowledge:ragWorkspace.sourceChats",
+                            { defaultValue: "Chats" }
+                          ),
+                          value: "chats"
+                        }
+                      ]}
+                      value={ragSources}
+                      onChange={(vals) =>
+                        setRagSources(vals as string[])
+                      }
+                    />
+                  </div>
+                </div>
+              )}
               <p className="mt-1 text-[11px] text-gray-500 dark:text-gray-400">
                 {isRagSearchBlocked
                   ? t("knowledge:ragWorkspace.searchInactiveHelp", {
@@ -463,7 +688,7 @@ export const KnowledgeSettings = () => {
                       </Button>
                     </div>
                   </div>
-                ) : ragResults.length === 0 ? (
+                ) : !ragAnswer && ragResults.length === 0 ? (
                   <div className="text-[11px] text-gray-500 dark:text-gray-400">
                     {t("knowledge:ragWorkspace.noResults", {
                       defaultValue:
@@ -471,72 +696,130 @@ export const KnowledgeSettings = () => {
                     })}
                   </div>
                 ) : (
-                  <List
-                    size="small"
-                    dataSource={ragResults}
-                    renderItem={(item: any) => {
-                      const content =
-                        item?.content || item?.text || item?.chunk || ""
-                      const meta = item?.metadata || {}
-                      const title =
-                        meta?.title ||
-                        meta?.source ||
-                        meta?.url ||
-                        t("knowledge:ragWorkspace.untitled", {
-                          defaultValue: "Untitled snippet"
-                        })
-                      const url = meta?.url || meta?.source || ""
-                      const snippet = String(content || "").slice(0, 260)
-                      const insertText = `${snippet}${
-                        url ? `\n\nSource: ${url}` : ""
-                      }`
-                      return (
-                        <List.Item
-                          actions={[
-                            <Button
-                              key="copy"
-                              type="link"
-                              size="small"
-                              onClick={() =>
-                                navigator.clipboard.writeText(insertText)
-                              }
-                            >
-                              {t("knowledge:ragWorkspace.copySnippet", {
-                                defaultValue: "Copy snippet"
-                              })}
-                            </Button>,
-                            url ? (
-                              <Button
-                                key="open"
-                                type="link"
-                                size="small"
-                                onClick={() =>
-                                  window.open(String(url), "_blank")
-                                }
-                              >
-                                {t("knowledge:ragWorkspace.openSource", {
-                                  defaultValue: "Open source"
+                  <div className="space-y-2">
+                    {ragAnswer && (
+                      <div className="rounded-md border border-blue-200 bg-blue-50 px-3 py-2 text-[11px] text-blue-900 dark:border-blue-700 dark:bg-[#102a43] dark:text-blue-50">
+                        <div className="font-semibold">
+                          {t("knowledge:ragWorkspace.answerTitle", {
+                            defaultValue: "RAG answer"
+                          })}
+                        </div>
+                        <p className="mt-1 whitespace-pre-wrap">
+                          {ragAnswer}
+                        </p>
+                        {ragEnableCitations &&
+                          Array.isArray(ragCitations) &&
+                          ragCitations.length > 0 && (
+                            <div className="mt-2">
+                              <div className="font-medium">
+                                {t("knowledge:ragWorkspace.citationsTitle", {
+                                  defaultValue: "Citations"
                                 })}
-                              </Button>
-                            ) : null
-                          ].filter(Boolean as any)}
-                        >
-                          <List.Item.Meta
-                            title={
-                              <span className="text-xs font-medium">
-                                {title}
-                              </span>
-                            }
-                            description={
-                              <div className="text-[11px] text-gray-600 dark:text-gray-300 line-clamp-3">
-                                {snippet}
                               </div>
-                            }
-                          />
-                        </List.Item>
-                      )
-                    }}
-                  />
+                              <ul className="mt-1 list-disc pl-4 space-y-0.5">
+                                {ragCitations.slice(0, 6).map((c, idx) => {
+                                  const meta = (c && (c.metadata || c)) || {}
+                                  const title =
+                                    meta.title ||
+                                    meta.source ||
+                                    meta.url ||
+                                    meta.id ||
+                                    t("knowledge:ragWorkspace.untitled", {
+                                      defaultValue: "Untitled snippet"
+                                    })
+                                  const url = meta.url || ""
+                                  return (
+                                    <li key={idx}>
+                                      {url ? (
+                                        <button
+                                          type="button"
+                                          className="underline"
+                                          onClick={() =>
+                                            window.open(String(url), "_blank")
+                                          }
+                                        >
+                                          {String(title)}
+                                        </button>
+                                      ) : (
+                                        <span>{String(title)}</span>
+                                      )}
+                                    </li>
+                                  )
+                                })}
+                              </ul>
+                            </div>
+                          )}
+                      </div>
+                    )}
+                    {ragResults.length > 0 && (
+                      <List
+                        size="small"
+                        dataSource={ragResults}
+                        renderItem={(item: any) => {
+                          const content =
+                            item?.content || item?.text || item?.chunk || ""
+                          const meta = item?.metadata || {}
+                          const title =
+                            meta?.title ||
+                            meta?.source ||
+                            meta?.url ||
+                            t("knowledge:ragWorkspace.untitled", {
+                              defaultValue: "Untitled snippet"
+                            })
+                          const url = meta?.url || meta?.source || ""
+                          const snippet = String(content || "").slice(0, 260)
+                          const insertText = `${snippet}${
+                            url ? `\n\nSource: ${url}` : ""
+                          }`
+                          return (
+                            <List.Item
+                              actions={[
+                                <Button
+                                  key="copy"
+                                  type="link"
+                                  size="small"
+                                  onClick={() =>
+                                    navigator.clipboard.writeText(insertText)
+                                  }
+                                >
+                                  {t("knowledge:ragWorkspace.copySnippet", {
+                                    defaultValue: "Copy snippet"
+                                  })}
+                                </Button>,
+                                url ? (
+                                  <Button
+                                    key="open"
+                                    type="link"
+                                    size="small"
+                                    onClick={() =>
+                                      window.open(String(url), "_blank")
+                                    }
+                                  >
+                                    {t("knowledge:ragWorkspace.openSource", {
+                                      defaultValue: "Open source"
+                                    })}
+                                  </Button>
+                                ) : null
+                              ].filter(Boolean as any)}
+                            >
+                              <List.Item.Meta
+                                title={
+                                  <span className="text-xs font-medium">
+                                    {title}
+                                  </span>
+                                }
+                                description={
+                                  <div className="text-[11px] text-gray-600 dark:text-gray-300 line-clamp-3">
+                                    {snippet}
+                                  </div>
+                                }
+                              />
+                            </List.Item>
+                          )
+                        }}
+                      />
+                    )}
+                  </div>
                 )}
               </div>
             </div>

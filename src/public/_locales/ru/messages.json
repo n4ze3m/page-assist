@@ -1,12 +1,12 @@
 {
   "extName": {
-    "message": "tldw Assistant"
+    "message": "Ассистент tldw"
   },
   "extDescription": {
     "message": "Используйте запущенные локально модели искусственного интеллекта для помощи в веб-просмотре."
   },
   "openSidePanelToChat": {
-    "message": "Open Sidebar to chat"
+    "message": "Открыть боковую панель для чата"
   },
   "contextSummarize": {
     "message": "Обобщить"
@@ -24,15 +24,66 @@
     "message": "Пользовательский"
   },
   "contextSendToTldw": {
-    "message": "Send to tldw_server"
+    "message": "Отправить в tldw_server"
   },
   "contextProcessLocalTldw": {
-    "message": "Process with tldw_server (don’t store)"
+    "message": "Обработать с помощью tldw_server (не сохранять)"
   },
   "contextSidebarOpening": {
     "message": "Открываем боковую панель..."
   },
   "contextSaveToNotesOpeningSidebar": {
     "message": "Открываем боковую панель, чтобы сохранить заметку..."
+  },
+  "openOptionToChat": {
+    "message": "Открыть веб-интерфейс для чата"
+  },
+  "contextTranscribeMedia": {
+    "message": "Транскрибировать видео/аудио"
+  },
+  "contextTranscribeAndSummarizeMedia": {
+    "message": "Транскрибировать и обобщить видео/аудио"
+  },
+  "contextSaveToNotes": {
+    "message": "Сохранить в заметки"
+  },
+  "contextSaveToNotesNoSelection": {
+    "message": "Сначала выделите текст, чтобы сохранить его в заметки."
+  },
+  "hfSendPageRejected": {
+    "message": "[tldw] Запрос на отправку страницы отклонён tldw_server"
+  },
+  "hfSendPageErrorWithDetail": {
+    "message": "[tldw] Не удалось отправить эту страницу в tldw_server: $1. Проверьте «Settings → tldw server» и повторите попытку."
+  },
+  "hfSendPageError": {
+    "message": "[tldw] Не удалось отправить эту страницу в tldw_server. Проверьте «Settings → tldw server» и повторите попытку."
+  },
+  "hfSendPageSuccess": {
+    "message": "[tldw] Страница отправлена в tldw_server для обработки"
+  },
+  "hfSendPageException": {
+    "message": "[tldw] При отправке этой страницы в tldw_server что-то пошло не так. Убедитесь, что ваш tldw_server и расширение запущены, затем повторите попытку."
+  },
+  "hfPullInProgress": {
+    "message": "[tldw Assistant] Запрос на загрузку модели уже выполняется. Пожалуйста, дождитесь его завершения, прежде чем запускать новый."
+  },
+  "hfPullConfirm": {
+    "message": "[tldw Assistant] Отправить запрос на ваш tldw_server, чтобы загрузить модель \"$1\"? Это не связано с сайтом huggingface.co. Ваш сервер начнёт загрузку модели после подтверждения."
+  },
+  "hfPullSending": {
+    "message": "[tldw Assistant] Отправляется запрос на ваш tldw_server для загрузки \"$1\". Следите за значком расширения или журналами tldw_server, чтобы отслеживать прогресс."
+  },
+  "hfPullErrorWithDetail": {
+    "message": "[tldw Assistant] Не удалось отправить запрос на загрузку \"$1\": $2. Проверьте «Settings → tldw server» и повторите попытку."
+  },
+  "hfPullError": {
+    "message": "[tldw Assistant] Не удалось отправить запрос на загрузку \"$1\". Проверьте «Settings → tldw server» и повторите попытку."
+  },
+  "hfPullSuccess": {
+    "message": "[tldw Assistant] Запрос на загрузку \"$1\" отправлен на ваш tldw_server. Отслеживайте статус по значку расширения или журналам tldw_server."
+  },
+  "hfPullException": {
+    "message": "[tldw Assistant] При отправке запроса на загрузку \"$1\" на ваш tldw_server что-то пошло не так. Убедитесь, что ваш tldw_server и расширение запущены, затем повторите попытку."
   }
 }

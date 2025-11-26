@@ -100,6 +100,22 @@ type State = {
   fileRetrievalEnabled: boolean
   setFileRetrievalEnabled: (fileRetrievalEnabled: boolean) => void
 
+  // RAG media-scoped filters (e.g., "chat about this media")
+  ragMediaIds: number[] | null
+  setRagMediaIds: (ids: number[] | null) => void
+
+  // Unified RAG configuration (shared between Chat and Knowledge views)
+  ragSearchMode: "hybrid" | "vector" | "fts"
+  setRagSearchMode: (mode: "hybrid" | "vector" | "fts") => void
+  ragTopK: number | null
+  setRagTopK: (value: number | null) => void
+  ragEnableGeneration: boolean
+  setRagEnableGeneration: (value: boolean) => void
+  ragEnableCitations: boolean
+  setRagEnableCitations: (value: boolean) => void
+  ragSources: string[]
+  setRagSources: (sources: string[]) => void
+
   // Server-backed character chat id
   serverChatId: string | null
   setServerChatId: (id: string | null) => void
@@ -174,6 +190,23 @@ export const useStoreMessageOption = create<State>((set) => ({
   fileRetrievalEnabled: false,
   setFileRetrievalEnabled: (fileRetrievalEnabled) =>
     set({ fileRetrievalEnabled }),
+
+  ragMediaIds: null,
+  setRagMediaIds: (ragMediaIds) => set({ ragMediaIds }),
+
+  ragSearchMode: "hybrid",
+  setRagSearchMode: (ragSearchMode) => set({ ragSearchMode }),
+  ragTopK: null,
+  setRagTopK: (ragTopK) => set({ ragTopK }),
+  ragEnableGeneration: false,
+  setRagEnableGeneration: (ragEnableGeneration) =>
+    set({ ragEnableGeneration }),
+  ragEnableCitations: false,
+  setRagEnableCitations: (ragEnableCitations) =>
+    set({ ragEnableCitations }),
+  ragSources: [],
+  setRagSources: (ragSources) => set({ ragSources }),
+
   serverChatId: null,
   setServerChatId: (id) => set({ serverChatId: id })
 }))

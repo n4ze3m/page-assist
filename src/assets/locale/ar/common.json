@@ -1,17 +1,17 @@
 {
-  "pageAssist": "tldw Assistant",
+  "pageAssist": "مساعد tldw",
   "titles": {
     "options": "tldw Assistant — Options",
     "sidepanel": "tldw Assistant — Sidepanel"
   },
   "pdf": {
-    "passwordTitle": "Enter the PDF password",
-    "unlock": "Unlock"
+    "passwordTitle": "أدخل كلمة مرور ملف PDF",
+    "unlock": "فتح القفل"
   },
   "loading": {
-    "title": "Loading…",
-    "description": "Please wait while we get things ready.",
-    "content": "Loading content…"
+    "title": "جاري التحميل…",
+    "description": "يرجى الانتظار ريثما نُجهز كل شيء.",
+    "content": "جاري تحميل المحتوى…"
   },
   "selectAModel": "اختر نموذجًا",
   "save": "حفظ",
@@ -62,7 +62,7 @@
   },
   "submit": "إرسال",
   "send": "إرسال",
-  "connectToServer": "Connect to server",
+  "connectToServer": "الاتصال بالخادم",
   "noData": "لا توجد بيانات",
   "noHistory": "لا يوجد سجل محادثات",
   "chatWithCurrentPage": "الدردشة مع الصفحة الحالية",
@@ -114,6 +114,40 @@
         "label": "موجه النظام المؤقت",
         "placeholder": "أدخل موجه النظام",
         "help": "هذه طريقة سريعة لتعيين موجه النظام في المحادثة الحالية، والذي سيتجاوز موجه النظام المحدد إذا كان موجوداً."
+      },
+      "thinking": {
+        "label": "وضع التفكير"
+      },
+      "tfsZ": {
+        "label": "TFS-Z",
+        "placeholder": "مثال: 1.0، 1.1"
+      },
+      "numKeep": {
+        "label": "عدد الإبقاء (Num Keep)",
+        "placeholder": "مثال: 256، 512"
+      },
+      "numThread": {
+        "label": "عدد مؤشرات التنفيذ (Num Thread)",
+        "placeholder": "مثال: 8، 16"
+      },
+      "useMlock": {
+        "label": "استخدام Mlock"
+      },
+      "reasoningEffort": {
+        "label": "جهد الاستدلال",
+        "placeholder": "منخفض، متوسط، مرتفع"
+      },
+      "minP": {
+        "label": "Min P",
+        "placeholder": "مثال: 0.05"
+      },
+      "repeatPenalty": {
+        "label": "عقوبة التكرار",
+        "placeholder": "مثال: 1.1، 1.2"
+      },
+      "repeatLastN": {
+        "label": "تكرار آخر N",
+        "placeholder": "مثال: 64، 128"
       }
     },
     "advanced": "المزيد من إعدادات النموذج"
@@ -170,9 +204,37 @@
     "confirm": "هل أنت متأكد أنك تريد إلغاء التنزيل؟ سيؤدي ذلك إلى إيقاف عملية التنزيل. وفقًا لتوثيق Ollama، يمكنك المتابعة من حيث توقفت."
   },
   "table": {
-    "copyCsv": "Copy as CSV",
-    "downloadCsv": "Download CSV"
+    "copyCsv": "نسخ كملف CSV",
+    "downloadCsv": "تنزيل CSV"
   },
-  "dismiss": "Dismiss",
-  "privateModeSaveErrorTitle": "يتعذر على tldw Assistant حفظ البيانات"
+  "dismiss": "تجاهل",
+  "privateModeSaveErrorTitle": "يتعذر على tldw Assistant حفظ البيانات",
+  "confirmTitle": "يرجى التأكيد",
+  "saving": "جاري الحفظ...",
+  "close": "إغلاق",
+  "loadMore": "تحميل المزيد...",
+  "startChat": "بدء المحادثة",
+  "previous": "السابق",
+  "next": "التالي",
+  "chatWithCharacter": "الدردشة مع شخصية",
+  "ttsShort": "صوت",
+  "copyShort": "نسخ",
+  "branchShort": "فرع",
+  "success": "تم بنجاح",
+  "created": "تم الإنشاء",
+  "updated": "تم التحديث",
+  "deleted": "تم الحذف",
+  "create": "إنشاء",
+  "reset": "إعادة تعيين",
+  "serverOffline": "الخادم غير متصل أو غير مُعد",
+  "serverChats": "محادثات الخادم",
+  "serverChatLoadError": "فشل تحميل محادثة الخادم. تحقق من الاتصال وحاول مرة أخرى.",
+  "serverChatSourceLabel": "الخادم",
+  "serverChatsUnavailable": "محادثات الخادم غير متاحة. تحقّق من اتصال الخادم.",
+  "historiesDeleted": "تم حذف {{count}} من السجلات",
+  "deleteHistoriesError": "حدث خطأ أثناء حذف السجلات",
+  "mermaid": "Mermaid (مخططات)",
+  "search": "بحث",
+  "searchResults": "نتائج البحث",
+  "newBranch": "فرع جديد"
 }

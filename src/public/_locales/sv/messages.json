@@ -1,12 +1,12 @@
 {
   "extName": {
-    "message": "tldw Assistant"
+    "message": "tldw-assistenten"
   },
   "extDescription": {
     "message": "Använd dina lokalt körande AI-modeller för att hjälpa dig i din webbsurfning."
   },
   "openSidePanelToChat": {
-    "message": "Open Sidebar to chat"
+    "message": "Öppna sidopanelen för att chatta"
   },
   "openOptionToChat": {
     "message": "Öppna Web UI för att chatta"
@@ -24,18 +24,66 @@
     "message": "Översätt"
   },
   "contextCustom": {
-    "message": "Custom"
+    "message": "Anpassad"
   },
   "contextSendToTldw": {
-    "message": "Send to tldw_server"
+    "message": "Skicka till tldw_server"
   },
   "contextProcessLocalTldw": {
-    "message": "Process with tldw_server (don’t store)"
+    "message": "Bearbeta med tldw_server (spara inte)"
   },
   "contextSidebarOpening": {
     "message": "Öppnar sidopanelen..."
   },
   "contextSaveToNotesOpeningSidebar": {
     "message": "Öppnar sidopanelen för att spara anteckningen..."
+  },
+  "contextTranscribeMedia": {
+    "message": "Transkribera video/ljud"
+  },
+  "contextTranscribeAndSummarizeMedia": {
+    "message": "Transkribera + sammanfatta video/ljud"
+  },
+  "contextSaveToNotes": {
+    "message": "Spara i anteckningar"
+  },
+  "contextSaveToNotesNoSelection": {
+    "message": "Markera text först för att spara i anteckningar."
+  },
+  "hfSendPageRejected": {
+    "message": "[tldw] Begäran om att skicka sidan avvisades av tldw_server"
+  },
+  "hfSendPageErrorWithDetail": {
+    "message": "[tldw] Det gick inte att skicka den här sidan till tldw_server: $1. Kontrollera \"Settings → tldw server\" och försök igen."
+  },
+  "hfSendPageError": {
+    "message": "[tldw] Det gick inte att skicka den här sidan till tldw_server. Kontrollera \"Settings → tldw server\" och försök igen."
+  },
+  "hfSendPageSuccess": {
+    "message": "[tldw] Sidan skickades till tldw_server för bearbetning"
+  },
+  "hfSendPageException": {
+    "message": "[tldw] Något gick fel när sidan skickades till tldw_server. Kontrollera att din tldw_server och tillägget körs och försök igen."
+  },
+  "hfPullInProgress": {
+    "message": "[tldw Assistant] En hämtbegäran för modellen pågår redan. Vänta tills den är klar innan du startar en ny."
+  },
+  "hfPullConfirm": {
+    "message": "[tldw Assistant] Vill du skicka en begäran till din tldw_server för att hämta modellen \"$1\"? Detta är fristående från webbplatsen huggingface.co. Din server börjar hämta modellen efter att du har bekräftat."
+  },
+  "hfPullSending": {
+    "message": "[tldw Assistant] Skickar en begäran till din tldw_server för att hämta \"$1\". Kontrollera tilläggsikonen eller loggarna för tldw_server för att se förloppet."
+  },
+  "hfPullErrorWithDetail": {
+    "message": "[tldw Assistant] Det gick inte att skicka en hämtbegäran för \"$1\": $2. Kontrollera \"Settings → tldw server\" och försök igen."
+  },
+  "hfPullError": {
+    "message": "[tldw Assistant] Det gick inte att skicka en hämtbegäran för \"$1\". Kontrollera \"Settings → tldw server\" och försök igen."
+  },
+  "hfPullSuccess": {
+    "message": "[tldw Assistant] Begäran har skickats till din tldw_server för att hämta \"$1\". Följ status via tilläggsikonen eller loggarna för tldw_server."
+  },
+  "hfPullException": {
+    "message": "[tldw Assistant] Något gick fel när en hämtbegäran för \"$1\" skickades till din tldw_server. Kontrollera att din tldw_server och tillägget körs och försök igen."
   }
 }

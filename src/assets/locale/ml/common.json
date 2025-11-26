@@ -110,6 +110,43 @@
         "label": "താൽക്കാലിക സിസ്റ്റം പ്രോംപ്റ്റ്",
         "placeholder": "സിസ്റ്റം പ്രോംപ്റ്റ് നൽകുക",
         "help": "നിലവിലുള്ള ചാറ്റിൽ സിസ്റ്റം പ്രോംപ്റ്റ് സെറ്റ് ചെയ്യാനുള്ള വേഗത്തിലുള്ള മാർഗമാണിത്, ഇത് തിരഞ്ഞെടുത്ത സിസ്റ്റം പ്രോംപ്റ്റ് നിലവിലുണ്ടെങ്കിൽ അതിനെ മറികടക്കും."
+      },
+      "thinking": {
+        "label": "Thinking Mode"
+      },
+      "useMMap": {
+        "label": "useMmap"
+      },
+      "tfsZ": {
+        "label": "TFS-Z",
+        "placeholder": "e.g. 1.0, 1.1"
+      },
+      "numKeep": {
+        "label": "Num Keep",
+        "placeholder": "e.g. 256, 512"
+      },
+      "numThread": {
+        "label": "Num Thread",
+        "placeholder": "e.g. 8, 16"
+      },
+      "useMlock": {
+        "label": "useMlock"
+      },
+      "reasoningEffort": {
+        "label": "Reasoning Effort",
+        "placeholder": "low, medium, high"
+      },
+      "minP": {
+        "label": "Min P",
+        "placeholder": "e.g. 0.05"
+      },
+      "repeatPenalty": {
+        "label": "Repeat Penalty",
+        "placeholder": "e.g. 1.1, 1.2"
+      },
+      "repeatLastN": {
+        "label": "Repeat Last N",
+        "placeholder": "e.g. 64, 128"
       }
     },
     "advanced": "കൂടുതൽ മോഡൽ ക്രമീകരണങ്ങൾ"
@@ -118,7 +155,8 @@
     "summary": "സംഗ്രഹിക്കുക",
     "explain": "വിശദീകരിക്കുക",
     "rephrase": "പുനഃരൂപീകരിക്കുക",
-    "translate": "വിവർത്തനം ചെയ്യുക"
+    "translate": "വിവർത്തനം ചെയ്യുക",
+    "custom": "Custom"
   },
   "citations": "ഉദ്ധരണികൾ",
   "downloadCode": "കോഡ് ഡൗൺലോഡ് ചെയ്യുക",
@@ -165,5 +203,38 @@
     "downloadCsv": "Download CSV"
   },
   "dismiss": "Dismiss",
-  "privateModeSaveErrorTitle": "tldw Assistant ന് ഡാറ്റ സംരക്ഷിക്കാൻ സാധിക്കുന്നില്ല"
+  "privateModeSaveErrorTitle": "tldw Assistant ന് ഡാറ്റ സംരക്ഷിക്കാൻ സാധിക്കുന്നില്ല",
+  "confirmTitle": "Please confirm",
+  "saving": "Saving...",
+  "close": "Close",
+  "loadMore": "Load More...",
+  "startChat": "Start chatting",
+  "previous": "Previous",
+  "next": "Next",
+  "chatWithCharacter": "Chat with character",
+  "tts": "Read aloud",
+  "ttsShort": "TTS",
+  "copyShort": "Copy",
+  "branchShort": "Branch",
+  "segmented": {
+    "available": "Server Models",
+    "custom": "Custom Models"
+  },
+  "success": "Success",
+  "created": "Created",
+  "updated": "Updated",
+  "deleted": "Deleted",
+  "create": "Create",
+  "reset": "Reset",
+  "serverOffline": "Server offline or not configured",
+  "serverChats": "Server chats",
+  "serverChatLoadError": "Failed to load server chat. Check your connection and try again.",
+  "serverChatSourceLabel": "Server",
+  "serverChatsUnavailable": "Server chats unavailable. Check your server connection.",
+  "historiesDeleted": "{{count}} Histories Deleted",
+  "deleteHistoriesError": "Error deleting histories",
+  "mermaid": "Mermaid",
+  "search": "Search",
+  "searchResults": "Search Results",
+  "newBranch": "New Branch"
 }

@@ -1,7 +1,9 @@
 {
   "tooltip": {
     "embed": "പേജ് പ്രോസസ്സ് ചെയ്യുന്നതിന് കുറച്ച് മിനിറ്റുകൾ എടുത്തേക്കാം. കാത്തിരിക്കൂ..",
-    "openwebui": "വെബ് യുഐ തുറക്കുക"
+    "openwebui": "വെബ് യുഐ തുറക്കുക",
+    "clear": "Erase chat history",
+    "history": "Chat history"
   },
   "toolbar": {
     "ragSearch": "RAG Search"
@@ -9,5 +11,69 @@
   "errors": {
     "privateModeTitle": "tldw Assistant ന് ഡാറ്റ സംരക്ഷിക്കാൻ സാധിക്കുന്നില്ല",
     "privateModeDescription": "Firefox സ്വകാര്യ മോഡിൽ ചാറ്റ് ചരിത്രം സംരക്ഷിക്കാൻ കഴിയില്ല. താൽക്കാലിക ചാറ്റ് സ്വതവേ ഓണാണ്. കൂടുതൽ പരിഹാരങ്ങൾ ഉടൻ വരുന്നു."
+  },
+  "header": {
+    "ingest": "Ingest",
+    "saveCurrent": "Save current page on server",
+    "processLocal": "Process current page locally",
+    "viewProcessed": "View processed",
+    "timeoutLabel": "Timeout (s)",
+    "toggleSidebar": "Toggle Sidebar / Full Screen",
+    "shortcuts": "Shortcuts",
+    "showDebug": "Show Stream Debug",
+    "hideDebug": "Hide Stream Debug",
+    "moreOptionsAria": "More options",
+    "moreOptionsTitle": "Ingest and more",
+    "openWebuiAria": "Open Web UI",
+    "newChatAria": "New chat",
+    "tempChatAria": "Toggle temporary chat",
+    "clearHistoryAria": "Clear history",
+    "openHistoryAria": "Open history",
+    "openModelSettingsAria": "Open model settings",
+    "openSettingsAria": "Open settings",
+    "tempPill": "Temp",
+    "modesLabel": "Open modes in Web UI",
+    "modePlayground": "Chat",
+    "modeReview": "Multi-Item Review",
+    "modeMedia": "Media",
+    "modeKnowledge": "Knowledge",
+    "modeNotes": "Notes",
+    "modePrompts": "Prompts",
+    "modeFlashcards": "Flashcards"
+  },
+  "composer": {
+    "connectHint": "Connect to your tldw server in Settings to send messages."
+  },
+  "notification": {
+    "ingestSent": "Sent to tldw server",
+    "ingestSentDesc": "Current page has been submitted for ingestion.",
+    "processedLocal": "Processed locally",
+    "processedLocalDesc": "Processed content stored locally under Settings > Processed.",
+    "transcriptionTitle": "Transcription",
+    "transcriptionSummaryTitle": "Transcription + summary",
+    "transcriptionFallback": "Transcription completed. Open Media in the Web UI to view it.",
+    "sourceLabel": "Source",
+    "transcriptLabel": "Transcript",
+    "summaryLabel": "Summary"
+  },
+  "rag": {
+    "searchPlaceholder": "Search your knowledge…",
+    "search": "Search",
+    "show": "Show RAG search",
+    "hide": "Hide RAG search",
+    "addTagPlaceholder": "Add tag (Enter)",
+    "add": "Add",
+    "noResults": "No results",
+    "timeout": {
+      "message": "Request timed out.",
+      "increase": "Increase timeout",
+      "checkHealth": "Check server health"
+    },
+    "actions": {
+      "insert": "Insert",
+      "ask": "Ask",
+      "open": "Open",
+      "copy": "Copy"
+    }
   }
 }
