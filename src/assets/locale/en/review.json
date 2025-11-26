@@ -57,6 +57,9 @@
     "showSidebar": "Show results sidebar",
     "hideSidebar": "Hide results sidebar",
     "selectedBadge": "Selected",
+    "mediaModeHint": "Search and inspect one media item at a time. Select a result to view its content and analyses on the right.",
+    "resultsHelp": "Keyboard: Tab into the results list, use Enter or Space to select the focused row, then use the Prev/Next buttons in the analysis toolbar to move between items.",
+    "resultsHelpLabel": "Review results keyboard shortcuts",
     "resultsHint": "Click a result to load its content and analyses on the right.",
     "paginationHint": "Use filters or pagination to refine the results if many items are loaded.",
     "offlineHint": "Connect to your tldw server in Settings to send messages and view media. Then you can search media from this page.",
@@ -109,6 +112,9 @@
     "filterHelp": "Search matches title and content; Types and Keywords further narrow the results.",
     "noResults": "No media found. Use Quick ingest in the header to add media from your recordings and files.",
     "resultsCount": "{{selected}} selected · {{open}} open",
-    "clearSelection": "Deselect all"
+    "clearSelection": "Deselect all",
+    "modeHint": "Search and stack multiple media items to compare them in the viewer on the right.",
+    "viewerHelp": "Keyboard: Tab into the results list, use Enter or Space to stack or unstack a media item, then use Prev/Next and layout controls to move through items in the viewer.",
+    "viewerHelpLabel": "Multi-Item Review keyboard shortcuts"
   }
 }

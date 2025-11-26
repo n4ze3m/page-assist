@@ -1202,6 +1202,14 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true, 
       {!sidebarHidden && (
       <div className="w-full lg:w-1/3 min-w-0 lg:sticky lg:top-16 lg:self-start">
         <div className="p-3 rounded-lg border dark:border-gray-700 bg-white dark:bg-[#171717]">
+          {isViewMediaMode && (
+            <p className="mb-2 text-xs text-gray-500 dark:text-gray-400">
+              {t(
+                'review:reviewPage.mediaModeHint',
+                'Search and inspect one media item at a time. Select a result to view its content and analyses on the right.'
+              )}
+            </p>
+          )}
           <div className="flex flex-wrap items-center gap-2">
             <Input
               allowClear
@@ -1384,9 +1392,32 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true, 
                 {t('review:reviewPage.loadedOf', '{{count}} loaded', { count: displayedResults.length })}{mediaTotal ? ` · ${mediaTotal} total` : ''}
               </span>
             </div>
-            <span className="text-xs text-gray-400">
-              {`${displayedResults.length} item${displayedResults.length === 1 ? '' : 's'}`}
-            </span>
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-gray-400">
+                {`${displayedResults.length} item${displayedResults.length === 1 ? '' : 's'}`}
+              </span>
+              <Tooltip
+                title={
+                  t(
+                    'review:reviewPage.resultsHelp',
+                    'Keyboard: Tab into the results list, use Enter or Space to select the focused row, then use the Prev/Next buttons in the analysis toolbar to move between items.'
+                  ) as string
+                }
+              >
+                <Button
+                  size="small"
+                  shape="circle"
+                  type="text"
+                  aria-label={t(
+                    'review:reviewPage.resultsHelpLabel',
+                    'Review results keyboard shortcuts'
+                  ) as string}
+                  className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+                >
+                  ?
+                </Button>
+              </Tooltip>
+            </div>
           </div>
           <p className="mb-2 text-xs text-gray-500 dark:text-gray-400">
             {t(

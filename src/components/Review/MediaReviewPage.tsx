@@ -563,6 +563,12 @@ export const MediaReviewPage: React.FC = () => {
     <div className="w-full h-[calc(100dvh-4rem)] mt-16 flex flex-col">
       <div className="shrink-0 mb-3 flex items-center justify-between gap-3">
         <div className="w-full">
+          <p className="mb-1 text-xs text-gray-500 dark:text-gray-400">
+            {t(
+              'mediaPage.modeHint',
+              'Search and stack multiple media items to compare them in the viewer on the right.'
+            )}
+          </p>
           <div className="flex items-center gap-2 w-full">
             <Input
               placeholder={t('mediaPage.searchPlaceholder', 'Search media (title/content)')}
@@ -861,6 +867,27 @@ export const MediaReviewPage: React.FC = () => {
                 <Button size="small" onClick={collapseAllAnalysis} type="text">
                   {t("mediaPage.collapseAllAnalysis", "Collapse analysis")}
                 </Button>
+                <Tooltip
+                  title={
+                    t(
+                      'mediaPage.viewerHelp',
+                      'Keyboard: Tab into the results list, use Enter or Space to stack or unstack a media item, then use Prev/Next and layout controls to move through items in the viewer.'
+                    ) as string
+                  }
+                >
+                  <Button
+                    size="small"
+                    shape="circle"
+                    type="text"
+                    aria-label={t(
+                      'mediaPage.viewerHelpLabel',
+                      'Multi-Item Review keyboard shortcuts'
+                    ) as string}
+                    className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+                  >
+                    ?
+                  </Button>
+                </Tooltip>
               </div>
             </div>
             {selectedIds.length > 0 && (
