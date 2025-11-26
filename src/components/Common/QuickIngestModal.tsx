@@ -1,6 +1,7 @@
 import React from 'react'
 import { Modal, Button, Input, Select, Space, Switch, Typography, Divider, List, Tag, message, Collapse, InputNumber, Tooltip as AntTooltip, Spin } from 'antd'
 import { useTranslation } from 'react-i18next'
+import { browser } from "wxt/browser"
 import { tldwClient } from '@/services/tldw/TldwApiClient'
 import { HelpCircle, Headphones, Layers, Database, FileText, Film, Cookie, Info, Clock, Grid, BookText } from 'lucide-react'
 import { useStorage } from '@plasmohq/storage/hook'
@@ -110,6 +111,8 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
   const lastSavedUiPrefsRef = React.useRef<string | null>(null)
   const specPrefsCacheRef = React.useRef<string | null>(null)
   const [totalPlanned, setTotalPlanned] = React.useState<number>(0)
+  const [processedCount, setProcessedCount] = React.useState<number>(0)
+  const [liveTotalCount, setLiveTotalCount] = React.useState<number>(0)
   const [ragEmbeddingLabel, setRagEmbeddingLabel] = React.useState<string | null>(null)
   const confirmDanger = useConfirmDanger()
 
@@ -182,146 +185,73 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
     }
     const total = valid.length + localFiles.length
     setTotalPlanned(total)
+    setProcessedCount(0)
+    setLiveTotalCount(total)
     setRunning(true)
     setResults([])
     try {
-      await tldwClient.initialize()
-    } catch {}
-    const out: ResultItem[] = []
-    for (const r of valid) {
-      const t = r.type === 'auto' ? detectTypeFromUrl(r.url) : r.type
+      // Ensure tldwConfig is hydrated for background requests
       try {
-        let data: any
-        if (storeRemote) {
-          // Ingest & store via multipart form
-          const fields: Record<string, any> = {
-            urls: r.url,
-            media_type: t,
-            perform_analysis: common.perform_analysis,
-            perform_chunking: common.perform_chunking,
-            overwrite_existing: common.overwrite_existing
+        await tldwClient.initialize()
+      } catch {}
+
+      // Prepare entries payload (URLs + simple options)
+      const entries = valid.map((r) => ({
+        id: r.id,
+        url: r.url,
+        type: r.type,
+        audio: r.audio,
+        document: r.document,
+        video: r.video
+      }))
+
+      // Convert local files to transferable payloads (ArrayBuffer)
+      const filesPayload = await Promise.all(
+        localFiles.map(async (f) => {
+          const data = await f.arrayBuffer()
+          return {
+            id: crypto.randomUUID(),
+            name: f.name,
+            type: f.type,
+            data
           }
-          // Merge advanced values; rebuild nested structure for dot-notation keys
-          const nested: Record<string, any> = {}
-          const assignPath = (obj: any, path: string[], val: any) => {
-            let cur = obj
-            for (let i = 0; i < path.length; i++) {
-              const seg = path[i]
-              if (i === path.length - 1) cur[seg] = val
-              else cur = (cur[seg] = cur[seg] || {})
-            }
-          }
-          for (const [k, v] of Object.entries(advancedValues)) {
-            if (k.includes('.')) assignPath(nested, k.split('.'), v)
-            else fields[k] = v
-          }
-          for (const [k, v] of Object.entries(nested)) fields[k] = v
-          if (r.audio?.language) fields['transcription_language'] = r.audio.language
-          if (typeof r.audio?.diarize === 'boolean') fields['diarize'] = r.audio.diarize
-          if (typeof r.video?.captions === 'boolean') fields['timestamp_option'] = r.video.captions
-          // Document/PDF OCR hint (best-effort)
-          if (typeof r.document?.ocr === 'boolean') fields['pdf_parsing_engine'] = r.document.ocr ? 'pymupdf4llm' : ''
-          data = await tldwClient.addMediaForm(fields)
-        } else {
-          // Process only (no store)
-          const nestedBody: Record<string, any> = {}
-          const assignPath = (obj: any, path: string[], val: any) => {
-            let cur = obj
-            for (let i = 0; i < path.length; i++) {
-              const seg = path[i]
-              if (i === path.length - 1) cur[seg] = val
-              else cur = (cur[seg] = cur[seg] || {})
-            }
-          }
-          for (const [k, v] of Object.entries(advancedValues)) {
-            if (k.includes('.')) assignPath(nestedBody, k.split('.'), v)
-            else nestedBody[k] = v
-          }
-          // Use addMedia with flags to request processing for remote URL
-          data = await tldwClient.addMedia(r.url, { type: t, audio: r.audio, document: r.document, video: r.video, ...common, ...nestedBody })
+        })
+      )
+
+      const resp = (await browser.runtime.sendMessage({
+        type: "tldw:quick-ingest-batch",
+        payload: {
+          entries,
+          files: filesPayload,
+          storeRemote,
+          common,
+          advancedValues
         }
-        out.push({ id: r.id, status: 'ok', url: r.url, type: t, data })
-        setResults([...out])
-      } catch (e: any) {
-        out.push({ id: r.id, status: 'error', url: r.url, type: t, error: e?.message || 'Request failed' })
-        setResults([...out])
+      })) as { ok: boolean; error?: string; results?: ResultItem[] } | undefined
+
+      if (!resp?.ok) {
+        const msg = resp?.error || "Quick ingest failed. Check tldw server settings and try again."
+        messageApi.error(msg)
+        setRunning(false)
+        return
       }
-    }
-    // Process local files (upload or process)
-    for (const f of localFiles) {
-      const id = crypto.randomUUID()
-      try {
-        let data: any
-        const ft = (f.type || '').toLowerCase()
-        const mediaType: Entry['type'] = ft.startsWith('audio/') ? 'audio' : ft.startsWith('video/') ? 'video' : ft.includes('pdf') ? 'pdf' : 'document'
-        if (storeRemote) {
-          const fields: Record<string, any> = {
-            media_type: mediaType,
-            perform_analysis: common.perform_analysis,
-            perform_chunking: common.perform_chunking,
-            overwrite_existing: common.overwrite_existing
-          }
-          // Merge advanced values (respect dot notation like above)
-          const nested: Record<string, any> = {}
-          const assignPath = (obj: any, path: string[], val: any) => {
-            let cur = obj
-            for (let i = 0; i < path.length; i++) {
-              const seg = path[i]
-              if (i === path.length - 1) cur[seg] = val
-              else cur = (cur[seg] = cur[seg] || {})
-            }
-          }
-          for (const [k, v] of Object.entries(advancedValues)) {
-            if (k.includes('.')) assignPath(nested, k.split('.'), v)
-            else fields[k] = v
-          }
-          for (const [k, v] of Object.entries(nested)) fields[k] = v
-          data = await tldwClient.uploadMedia(f, fields)
-        } else {
-          // Process without storing
-          if (ft.startsWith('audio/')) {
-            data = await tldwClient.transcribeAudio(f)
-          } else {
-            // Best-effort: Some servers allow process-only via flags on add endpoint
-            const fields: Record<string, any> = {
-              media_type: mediaType,
-              perform_analysis: common.perform_analysis,
-              perform_chunking: common.perform_chunking,
-              overwrite_existing: false,
-              process_only: true
-            }
-            const nested: Record<string, any> = {}
-            const assignPath = (obj: any, path: string[], val: any) => {
-              let cur = obj
-              for (let i = 0; i < path.length; i++) {
-                const seg = path[i]
-                if (i === path.length - 1) cur[seg] = val
-                else cur = (cur[seg] = cur[seg] || {})
-              }
-            }
-            for (const [k, v] of Object.entries(advancedValues)) {
-              if (k.includes('.')) assignPath(nested, k.split('.'), v)
-              else fields[k] = v
-            }
-            for (const [k, v] of Object.entries(nested)) fields[k] = v
-            data = await tldwClient.uploadMedia(f, fields)
-          }
-        }
-        out.push({ id, status: 'ok', fileName: f.name, type: mediaType, data })
-        setResults([...out])
-      } catch (e: any) {
-        out.push({ id, status: 'error', fileName: f.name, type: 'file', error: e?.message || 'Upload failed' })
-        setResults([...out])
+
+      const out = resp.results || []
+      setResults(out)
+      setRunning(false)
+      if (!storeRemote && out.length > 0) {
+        messageApi.info('Processing complete. You can download results as JSON.')
       }
-    }
-    setRunning(false)
-    if (!storeRemote && out.length > 0) messageApi.info('Processing complete. You can download results as JSON.')
-    if (out.length > 0) {
-      const successCount = out.filter((r) => r.status === 'ok').length
-      const failCount = out.length - successCount
-      const summary = `${successCount} succeeded · ${failCount} failed`
-      if (failCount > 0) messageApi.warning(summary)
-      else messageApi.success(summary)
+      if (out.length > 0) {
+        const successCount = out.filter((r) => r.status === 'ok').length
+        const failCount = out.length - successCount
+        const summary = `${successCount} succeeded · ${failCount} failed`
+        if (failCount > 0) messageApi.warning(summary)
+        else messageApi.success(summary)
+      }
+    } catch (e: any) {
+      setRunning(false)
+      messageApi.error(e?.message || 'Quick ingest failed.')
     }
   }
 
@@ -719,6 +649,45 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
     })
   }, [])
 
+  // Live progress updates from background batch processor
+  React.useEffect(() => {
+    const handler = (message: any) => {
+      if (!message || message.type !== "tldw:quick-ingest-progress") return
+      const payload = message.payload || {}
+      const result = payload.result as ResultItem | undefined
+      if (typeof payload.processedCount === "number") {
+        setProcessedCount(payload.processedCount)
+      }
+      if (typeof payload.totalCount === "number") {
+        setLiveTotalCount(payload.totalCount)
+        setTotalPlanned(payload.totalCount)
+      }
+      if (!result || !result.id) return
+
+      setResults((prev) => {
+        const map = new Map<string, ResultItem>()
+        for (const r of prev) {
+          if (r.id) map.set(r.id, r)
+        }
+        const existing = map.get(result.id)
+        map.set(result.id, { ...(existing || {}), ...result })
+        return Array.from(map.values())
+      })
+    }
+
+    try {
+      // @ts-ignore
+      browser?.runtime?.onMessage?.addListener(handler)
+    } catch {}
+
+    return () => {
+      try {
+        // @ts-ignore
+        browser?.runtime?.onMessage?.removeListener(handler)
+      } catch {}
+    }
+  }, [])
+
   return (
     <Modal
       title={t('quickIngest.title') || 'Quick Ingest Media'}
@@ -996,15 +965,21 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
         )}
 
         <div className="sticky bottom-0 z-10 mt-3 bg-white/90 dark:bg-[#111111]/90 backdrop-blur pt-2 pb-2 border-t border-gray-200 dark:border-gray-700">
-              <div className="flex flex-col gap-2">
-            <div className="sr-only" aria-live="polite" role="status">
-              {running && totalPlanned > 0
-                ? t('quickIngest.progress', 'Processing {{done}} / {{total}} items…', {
-                    done: results.length,
-                    total: totalPlanned
-                  })
-                : `${plannedCount || 0} ${plannedCount === 1 ? 'item' : 'items'} ready`}
-            </div>
+          <div className="flex flex-col gap-2">
+            {(() => {
+              const done = processedCount || results.length
+              const total = liveTotalCount || totalPlanned
+              return (
+                <div className="sr-only" aria-live="polite" role="status">
+                  {running && total > 0
+                    ? t('quickIngest.progress', 'Processing {{done}} / {{total}} items…', {
+                        done,
+                        total
+                      })
+                    : `${plannedCount || 0} ${plannedCount === 1 ? 'item' : 'items'} ready`}
+                </div>
+              )
+            })()}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-sm text-gray-700 dark:text-gray-200">
               <div className="flex items-start gap-3">
                 <Space align="center">
@@ -1025,12 +1000,17 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
                 </Space>
               </div>
               <span className="text-xs text-gray-500 dark:text-gray-400">
-                {running && totalPlanned > 0
-                  ? t('quickIngest.progress', 'Processing {{done}} / {{total}} items…', {
-                      done: results.length,
-                      total: totalPlanned
+                {(() => {
+                  const done = processedCount || results.length
+                  const total = liveTotalCount || totalPlanned
+                  if (running && total > 0) {
+                    return t('quickIngest.progress', 'Processing {{done}} / {{total}} items…', {
+                      done,
+                      total
                     })
-                  : `${plannedCount || 0} ${plannedCount === 1 ? 'item' : 'items'} ready`}
+                  }
+                  return `${plannedCount || 0} ${plannedCount === 1 ? 'item' : 'items'} ready`
+                })()}
               </span>
             </div>
             <Typography.Text type="secondary" className="text-xs">

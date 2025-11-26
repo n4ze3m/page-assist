@@ -26,6 +26,7 @@ import { SidepanelForm } from "~/components/Sidepanel/Chat/form"
 import { SidepanelHeader } from "~/components/Sidepanel/Chat/header"
 import NoteQuickSaveModal from "~/components/Sidepanel/Notes/NoteQuickSaveModal"
 import { useMessage } from "~/hooks/useMessage"
+import type { ChatHistory, Message as ChatMessage } from "~/store/option"
 
 const deriveNoteTitle = (
   content: string,
@@ -54,6 +55,14 @@ const SidepanelChat = () => {
   const [dropedFile, setDropedFile] = React.useState<File | undefined>()
   const [sidebarOpen, setSidebarOpen] = React.useState(false)
   const { t } = useTranslation(["playground", "sidepanel", "common"])
+  // Per-tab storage (Chrome side panel) or per-window/global (Firefox sidebar).
+  // tabId: undefined = not resolved yet, null = resolved but unavailable.
+  const [tabId, setTabId] = React.useState<number | null | undefined>(undefined)
+  const storageRef = React.useRef(
+    new Storage({
+      area: "local"
+    })
+  )
   const [dropState, setDropState] = React.useState<
     "idle" | "dragging" | "error"
   >("idle")
@@ -83,6 +92,7 @@ const SidepanelChat = () => {
     messages,
     history,
     setHistory,
+    historyId,
     setHistoryId,
     setMessages,
     selectedModel,
@@ -188,7 +198,57 @@ const SidepanelChat = () => {
   const bgMsg = useBackgroundMessage()
   const lastBgMsgRef = React.useRef<typeof bgMsg | null>(null)
 
-  const setRecentMessagesOnLoad = async () => {
+  const getStorageKey = (id: number | null | undefined) =>
+    id != null ? `sidepanelChatState:tab-${id}` : "sidepanelChatState"
+
+  type SidepanelChatSnapshot = {
+    history: ChatHistory
+    messages: ChatMessage[]
+    chatMode: typeof chatMode
+    historyId: string | null
+  }
+
+  const restoreSidepanelState = async () => {
+    // Wait until we've attempted to resolve tab id so we don't
+    // accidentally attach a tab-specific snapshot to the wrong key.
+    if (tabId === undefined) {
+      return
+    }
+
+    const storage = storageRef.current
+    try {
+      // Prefer a tab-specific snapshot; fall back to the legacy/global key
+      // so existing users don't lose their last session.
+      const keysToTry: string[] = [getStorageKey(tabId)]
+      if (tabId != null) {
+        keysToTry.push(getStorageKey(null))
+      }
+
+      let snapshot: SidepanelChatSnapshot | null = null
+      for (const key of keysToTry) {
+        // eslint-disable-next-line no-await-in-loop
+        const candidate = (await storage.get(key)) as SidepanelChatSnapshot | null
+        if (candidate && Array.isArray(candidate.messages)) {
+          snapshot = candidate
+          break
+        }
+      }
+
+      if (snapshot && Array.isArray(snapshot.messages)) {
+        setHistory(snapshot.history || [])
+        setMessages(snapshot.messages || [])
+        if (snapshot.historyId) {
+          setHistoryId(snapshot.historyId)
+        }
+        if (snapshot.chatMode) {
+          setChatMode(snapshot.chatMode)
+        }
+        return
+      }
+    } catch {
+      // fall through to recent chat resume
+    }
+
     const isEnabled = await copilotResumeLastChat()
     if (!isEnabled) {
       return
@@ -203,9 +263,68 @@ const SidepanelChat = () => {
     }
   }
 
+  const persistSidepanelState = React.useCallback(() => {
+    const storage = storageRef.current
+    const key = getStorageKey(tabId)
+    const snapshot: SidepanelChatSnapshot = {
+      history,
+      messages,
+      chatMode,
+      historyId
+    }
+    void storage.set(key, snapshot).catch(() => {
+      // ignore persistence errors in sidepanel
+    })
+  }, [history, messages, chatMode, historyId, tabId])
+
   React.useEffect(() => {
     void checkOnce()
   }, [checkOnce])
+
+  React.useEffect(() => {
+    // Resolve the tab id associated with this sidepanel instance.
+    const fetchTabId = async () => {
+      try {
+        // browser is provided by the extension runtime (see wxt config).
+        const resp: any = await browser.runtime.sendMessage({
+          type: "tldw:get-tab-id"
+        })
+        if (resp && typeof resp.tabId === "number") {
+          setTabId(resp.tabId)
+        } else {
+          setTabId(null)
+        }
+      } catch {
+        setTabId(null)
+      }
+    }
+    fetchTabId()
+  }, [])
+
+  React.useEffect(() => {
+    void restoreSidepanelState()
+  }, [tabId])
+
+  React.useEffect(() => {
+    const handleBeforeUnload = () => {
+      persistSidepanelState()
+    }
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "hidden") {
+        persistSidepanelState()
+      }
+    }
+
+    window.addEventListener("beforeunload", handleBeforeUnload)
+    document.addEventListener("visibilitychange", handleVisibilityChange)
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload)
+      document.removeEventListener("visibilitychange", handleVisibilityChange)
+      persistSidepanelState()
+    }
+  }, [persistSidepanelState])
 
   React.useEffect(() => {
     if (!drop.current) {
@@ -288,10 +407,6 @@ const SidepanelChat = () => {
         clearTimeout(feedbackTimerRef.current)
       }
     }
-  }, [])
-
-  React.useEffect(() => {
-    setRecentMessagesOnLoad()
   }, [])
 
   React.useEffect(() => {

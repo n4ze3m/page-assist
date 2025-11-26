@@ -1,6 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { MemoryRouter } from "react-router-dom"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { SidepanelRouting } from "@/routes/chrome-route"
 const queryClient = new QueryClient()
 import { App as AntdApp, ConfigProvider, Empty, theme } from "antd"
@@ -14,6 +14,11 @@ import { FontSizeProvider } from "@/context/FontSizeProvider"
 function IndexSidepanel() {
   const { mode } = useDarkMode()
   const { t, i18n } = useTranslation()
+  const [isVisible, setIsVisible] = useState(
+    typeof document !== "undefined"
+      ? document.visibilityState === "visible"
+      : true
+  )
 
   useEffect(() => {
     if (i18n.resolvedLanguage) {
@@ -25,6 +30,17 @@ function IndexSidepanel() {
   useEffect(() => {
     document.title = t('common:titles.sidepanel', { defaultValue: 'tldw Assistant — Sidebar' })
   }, [t])
+
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      setIsVisible(document.visibilityState === "visible")
+    }
+
+    document.addEventListener("visibilitychange", handleVisibilityChange)
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange)
+    }
+  }, [])
 
   return (
     <MemoryRouter>
@@ -49,7 +65,7 @@ function IndexSidepanel() {
             <QueryClientProvider client={queryClient}>
               <PageAssistProvider>
                 <FontSizeProvider>
-                  <SidepanelRouting />
+                  {isVisible ? <SidepanelRouting /> : null}
                 </FontSizeProvider>
               </PageAssistProvider>
             </QueryClientProvider>

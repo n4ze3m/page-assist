@@ -329,10 +329,287 @@ export default defineBackground({
       return null
     }
 
-    browser.runtime.onMessage.addListener(async (message) => {
+    browser.runtime.onMessage.addListener(async (message, sender) => {
       if (message.type === 'tldw:debug') {
         streamDebugEnabled = Boolean(message?.enable)
         return { ok: true }
+      }
+      if (message.type === 'tldw:get-tab-id') {
+        const tabId = sender?.tab?.id ?? null
+        return { ok: tabId != null, tabId }
+      }
+      if (message.type === 'tldw:quick-ingest-batch') {
+        const payload = message.payload || {}
+        const entries = Array.isArray(payload.entries) ? payload.entries : []
+        const files = Array.isArray(payload.files) ? payload.files : []
+        const storeRemote = Boolean(payload.storeRemote)
+        const common = payload.common || {}
+        const advancedValues = payload.advancedValues && typeof payload.advancedValues === 'object'
+          ? payload.advancedValues
+          : {}
+
+        const totalCount = entries.length + files.length
+        let processedCount = 0
+
+        const detectTypeFromUrl = (raw: string): string => {
+          try {
+            const u = new URL(raw)
+            const p = (u.pathname || '').toLowerCase()
+            if (p.match(/\.(mp3|wav|flac|m4a|aac)$/)) return 'audio'
+            if (p.match(/\.(mp4|mov|mkv|webm)$/)) return 'video'
+            if (p.match(/\.(pdf)$/)) return 'pdf'
+            if (p.match(/\.(doc|docx|txt|rtf|md)$/)) return 'document'
+            return 'html'
+          } catch {
+            return 'auto'
+          }
+        }
+
+        const assignPath = (obj: any, path: string[], val: any) => {
+          let cur = obj
+          for (let i = 0; i < path.length; i++) {
+            const seg = path[i]
+            if (i === path.length - 1) cur[seg] = val
+            else cur = (cur[seg] = cur[seg] || {})
+          }
+        }
+
+        const out: any[] = []
+
+        const emitProgress = (result: any) => {
+          processedCount += 1
+          // Best-effort OS notification
+          try {
+            const label =
+              result?.url ||
+              result?.fileName ||
+              (result?.type === 'file' ? 'File' : 'Item')
+            const statusLabel =
+              result?.status === 'ok'
+                ? 'Completed'
+                : result?.status === 'error'
+                  ? 'Failed'
+                  : 'Processed'
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            chrome?.notifications?.create?.({
+              type: 'basic',
+              iconUrl: '/icon.png',
+              title: 'Quick Ingest',
+              message: `${processedCount}/${totalCount}: ${label} – ${statusLabel}`
+            })
+          } catch {}
+
+          // In-app progress event for any open UI
+          try {
+            void browser.runtime
+              .sendMessage({
+                type: 'tldw:quick-ingest-progress',
+                payload: {
+                  result,
+                  processedCount,
+                  totalCount
+                }
+              })
+              .catch(() => {})
+          } catch {}
+        }
+
+        // Process URL entries
+        for (const r of entries) {
+          const url = String(r?.url || '').trim()
+          if (!url) continue
+          const explicitType = r?.type && typeof r.type === 'string' ? r.type : 'auto'
+          const t = explicitType === 'auto' ? detectTypeFromUrl(url) : explicitType
+          try {
+            let data: any
+            if (storeRemote) {
+              // Ingest & store via multipart form
+              const fields: Record<string, any> = {
+                urls: url,
+                media_type: t,
+                perform_analysis: Boolean(common.perform_analysis),
+                perform_chunking: Boolean(common.perform_chunking),
+                overwrite_existing: Boolean(common.overwrite_existing)
+              }
+              // Merge advanced values; rebuild nested structure for dot-notation keys
+              const nested: Record<string, any> = {}
+              for (const [k, v] of Object.entries(advancedValues as Record<string, any>)) {
+                if (k.includes('.')) assignPath(nested, k.split('.'), v)
+                else fields[k] = v
+              }
+              for (const [k, v] of Object.entries(nested)) fields[k] = v
+              if (r?.audio?.language) fields['transcription_language'] = r.audio.language
+              if (typeof r?.audio?.diarize === 'boolean') fields['diarize'] = r.audio.diarize
+              if (typeof r?.video?.captions === 'boolean') fields['timestamp_option'] = r.video.captions
+              if (typeof r?.document?.ocr === 'boolean') {
+                fields['pdf_parsing_engine'] = r.document.ocr ? 'pymupdf4llm' : ''
+              }
+              const resp = await browser.runtime.sendMessage({
+                type: 'tldw:upload',
+                payload: { path: '/api/v1/media/add', method: 'POST', fields }
+              }) as { ok: boolean; error?: string; status?: number; data?: any } | undefined
+              if (!resp?.ok) {
+                const msg = resp?.error || `Upload failed: ${resp?.status}`
+                throw new Error(msg)
+              }
+              data = resp.data
+            } else {
+              // Process only (no store)
+              const nestedBody: Record<string, any> = {}
+              for (const [k, v] of Object.entries(advancedValues as Record<string, any>)) {
+                if (k.includes('.')) assignPath(nestedBody, k.split('.'), v)
+                else nestedBody[k] = v
+              }
+              const body: any = {
+                url,
+                type: t,
+                audio: r?.audio,
+                document: r?.document,
+                video: r?.video,
+                perform_analysis: Boolean(common.perform_analysis),
+                perform_chunking: Boolean(common.perform_chunking),
+                overwrite_existing: Boolean(common.overwrite_existing),
+                ...nestedBody
+              }
+              const resp = await browser.runtime.sendMessage({
+                type: 'tldw:request',
+                payload: {
+                  path: '/api/v1/media/add',
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body
+                }
+              }) as { ok: boolean; error?: string; status?: number; data?: any } | undefined
+              if (!resp?.ok) {
+                const msg = resp?.error || `Request failed: ${resp?.status}`
+                throw new Error(msg)
+              }
+              data = resp.data
+            }
+            const result = { id: r.id, status: 'ok', url, type: t, data }
+            out.push(result)
+            emitProgress(result)
+          } catch (e: any) {
+            const result = {
+              id: r.id,
+              status: 'error',
+              url,
+              type: t,
+              error: e?.message || 'Request failed'
+            }
+            out.push(result)
+            emitProgress(result)
+          }
+        }
+
+        // Process local files (upload or process)
+        for (const f of files) {
+          const id = f?.id || crypto.randomUUID()
+          const name = f?.name || 'upload'
+          const fileType = String(f?.type || '').toLowerCase()
+          const mediaType: 'audio' | 'video' | 'pdf' | 'document' =
+            fileType.startsWith('audio/')
+              ? 'audio'
+              : fileType.startsWith('video/')
+                ? 'video'
+                : fileType.includes('pdf')
+                  ? 'pdf'
+                  : 'document'
+          try {
+            let data: any
+            if (storeRemote) {
+              const fields: Record<string, any> = {
+                media_type: mediaType,
+                perform_analysis: Boolean(common.perform_analysis),
+                perform_chunking: Boolean(common.perform_chunking),
+                overwrite_existing: Boolean(common.overwrite_existing)
+              }
+              const nested: Record<string, any> = {}
+              for (const [k, v] of Object.entries(advancedValues as Record<string, any>)) {
+                if (k.includes('.')) assignPath(nested, k.split('.'), v)
+                else fields[k] = v
+              }
+              for (const [k, v] of Object.entries(nested)) fields[k] = v
+              const resp = await browser.runtime.sendMessage({
+                type: 'tldw:upload',
+                payload: {
+                  path: '/api/v1/media/add',
+                  method: 'POST',
+                  fields,
+                  file: { name, type: f?.type || 'application/octet-stream', data: f?.data }
+                }
+              }) as { ok: boolean; error?: string; status?: number; data?: any } | undefined
+              if (!resp?.ok) {
+                const msg = resp?.error || `Upload failed: ${resp?.status}`
+                throw new Error(msg)
+              }
+              data = resp.data
+            } else {
+              if (fileType.startsWith('audio/')) {
+                // Process-only audio: call audio transcription endpoint
+                const resp = await browser.runtime.sendMessage({
+                  type: 'tldw:upload',
+                  payload: {
+                    path: '/api/v1/audio/transcriptions',
+                    method: 'POST',
+                    fields: {},
+                    file: { name, type: f?.type || 'application/octet-stream', data: f?.data }
+                  }
+                }) as { ok: boolean; error?: string; status?: number; data?: any } | undefined
+                if (!resp?.ok) {
+                  const msg = resp?.error || `Upload failed: ${resp?.status}`
+                  throw new Error(msg)
+                }
+                data = resp.data
+              } else {
+                // Process-only (non-audio) via media add with process_only flag
+                const fields: Record<string, any> = {
+                  media_type: mediaType,
+                  perform_analysis: Boolean(common.perform_analysis),
+                  perform_chunking: Boolean(common.perform_chunking),
+                  overwrite_existing: false,
+                  process_only: true
+                }
+                const nested: Record<string, any> = {}
+                for (const [k, v] of Object.entries(advancedValues as Record<string, any>)) {
+                  if (k.includes('.')) assignPath(nested, k.split('.'), v)
+                  else fields[k] = v
+                }
+                for (const [k, v] of Object.entries(nested)) fields[k] = v
+                const resp = await browser.runtime.sendMessage({
+                  type: 'tldw:upload',
+                  payload: {
+                    path: '/api/v1/media/add',
+                    method: 'POST',
+                    fields,
+                    file: { name, type: f?.type || 'application/octet-stream', data: f?.data }
+                  }
+                }) as { ok: boolean; error?: string; status?: number; data?: any } | undefined
+                if (!resp?.ok) {
+                  const msg = resp?.error || `Upload failed: ${resp?.status}`
+                  throw new Error(msg)
+                }
+                data = resp.data
+              }
+            }
+            const result = { id, status: 'ok', fileName: name, type: mediaType, data }
+            out.push(result)
+            emitProgress(result)
+          } catch (e: any) {
+            const result = {
+              id,
+              status: 'error',
+              fileName: name,
+              type: 'file',
+              error: e?.message || 'Upload failed'
+            }
+            out.push(result)
+            emitProgress(result)
+          }
+        }
+
+        return { ok: true, results: out }
       }
       if (message.type === "sidepanel") {
         await browser.sidebarAction.open()

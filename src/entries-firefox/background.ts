@@ -213,10 +213,14 @@ export default defineBackground({
       return null
     }
 
-    browser.runtime.onMessage.addListener(async (message) => {
+    browser.runtime.onMessage.addListener(async (message, sender) => {
       if (message.type === 'tldw:debug') {
         streamDebugEnabled = Boolean(message?.enable)
         return { ok: true }
+      }
+      if (message.type === 'tldw:get-tab-id') {
+        const tabId = sender?.tab?.id ?? null
+        return { ok: tabId != null, tabId }
       }
       if (message.type === "sidepanel") {
         await browser.sidebarAction.open()

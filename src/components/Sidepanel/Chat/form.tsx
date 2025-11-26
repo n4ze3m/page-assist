@@ -105,6 +105,36 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
     }
   }
 
+  // Restore unsent draft on mount
+  React.useEffect(() => {
+    try {
+      if (typeof window === "undefined") return
+      const draft = window.localStorage.getItem("tldw:sidepanelChatDraft")
+      if (draft && draft.length > 0) {
+        form.setFieldValue("message", draft)
+      }
+    } catch {
+      // ignore draft restore errors
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  // Persist draft whenever the message changes
+  React.useEffect(() => {
+    try {
+      if (typeof window === "undefined") return
+      const value = form.values.message
+      if (typeof value !== "string") return
+      if (value.trim().length === 0) {
+        window.localStorage.removeItem("tldw:sidepanelChatDraft")
+      } else {
+        window.localStorage.setItem("tldw:sidepanelChatDraft", value)
+      }
+    } catch {
+      // ignore persistence errors
+    }
+  }, [form.values.message])
+
   const serverRecorderRef = React.useRef<MediaRecorder | null>(null)
   const serverChunksRef = React.useRef<BlobPart[]>([])
   const [isServerDictating, setIsServerDictating] = React.useState(false)
