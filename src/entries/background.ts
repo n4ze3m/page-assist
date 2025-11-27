@@ -329,11 +329,34 @@ export default defineBackground({
       return null
     }
 
+    const normalizeFileData = (input: any): Uint8Array | null => {
+      if (!input) return null
+      if (input instanceof ArrayBuffer) return new Uint8Array(input)
+      if (ArrayBuffer.isView(input)) {
+        return new Uint8Array(input.buffer, input.byteOffset, input.byteLength)
+      }
+      // Accept common structured-clone shapes (e.g., { data: [...] })
+      if (Array.isArray((input as any)?.data)) return new Uint8Array((input as any).data)
+      if (Array.isArray(input)) return new Uint8Array(input)
+      if (typeof input === 'string' && input.startsWith('data:')) {
+        try {
+          const base64 = input.split(',', 2)[1] || ''
+          const binary = atob(base64)
+          const out = new Uint8Array(binary.length)
+          for (let i = 0; i < binary.length; i += 1) out[i] = binary.charCodeAt(i)
+          return out
+        } catch {
+          return null
+        }
+      }
+      return null
+    }
+
     const handleUpload = async (payload: {
       path?: string
       method?: string
       fields?: Record<string, any>
-      file?: { name?: string; type?: string; data?: ArrayBuffer | Uint8Array }
+      file?: { name?: string; type?: string; data?: ArrayBuffer | Uint8Array | { data?: number[] } | number[] | string }
     }) => {
       const { path, method = 'POST', fields = {}, file } = payload || {}
       const storage = new Storage({ area: 'local' })
@@ -354,8 +377,12 @@ export default defineBackground({
             form.append(k, typeof v === 'string' ? v : JSON.stringify(v))
           }
         }
-        if (file?.data) {
-          const blob = new Blob([file.data], {
+        if (file?.data !== undefined && file?.data !== null) {
+          const bytes = normalizeFileData(file.data)
+          if (!bytes || bytes.byteLength === 0) {
+            return { ok: false, status: 400, error: 'File data missing or unreadable. Please re-select the file and try again.' }
+          }
+          const blob = new Blob([bytes], {
             type: file.type || 'application/octet-stream'
           })
           const filename = file.name || 'file'

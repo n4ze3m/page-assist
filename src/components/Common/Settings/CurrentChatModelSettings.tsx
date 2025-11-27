@@ -250,6 +250,35 @@ export const CurrentChatModelSettings = ({
     }
 
     const groupedOptions: GroupOption[] = Array.from(groups.values())
+
+    if (selectedModel) {
+      const hasSelected = groupedOptions.some((group) =>
+        group.options.some((option) => option.value === selectedModel)
+      )
+
+      if (!hasSelected) {
+        const displayText = `Custom - ${selectedModel}`
+        groupedOptions.push({
+          label: (
+            <span className="truncate">
+              Custom
+            </span>
+          ),
+          options: [
+            {
+              label: (
+                <span className="truncate">
+                  {displayText}
+                </span>
+              ),
+              value: selectedModel,
+              searchLabel: displayText.toLowerCase()
+            }
+          ]
+        })
+      }
+    }
+
     return groupedOptions
   }, [composerModels, selectedModel])
 

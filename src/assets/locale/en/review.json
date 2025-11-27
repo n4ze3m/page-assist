@@ -88,8 +88,6 @@
     "resultsHint": "Click a result to load its content and analyses on the right.",
     "paginationHint": "Use filters or pagination to refine the results if many items are loaded.",
     "offlineHint": "Connect to your tldw server in Settings to send messages and view media. Then you can search media from this page.",
-    "bulkToolbar": "Bulk view toolbar",
-    "loadedCount": "{{count}} loaded",
     "chatWithMedia": "Chat with this media",
     "chatWithMediaHint": "Open Chat and prefill the composer with this media’s content.",
     "chatPrepared": "Prepared chat with this media in the composer.",

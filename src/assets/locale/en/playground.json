@@ -38,6 +38,15 @@
     "imageHint": "Drop an image to include it in your message",
     "overlayInstruction": "Drop the image to attach it to your next reply"
   },
+  "aria": {
+    "chatTranscript": "Chat messages"
+  },
+  "more": {
+    "history": "Chat saving",
+    "searchRag": "Search & RAG",
+    "voice": "More voice options",
+    "uploads": "Uploads & ingest"
+  },
   "tooltip": {
     "searchInternet": "Search Internet",
     "speechToText": "Speech to Text",
@@ -52,7 +61,7 @@
     "uploadDocuments": "Upload Documents (beta)"
   },
   "sendWhenEnter": "Send when Enter pressed",
-  "welcome": "Hello! How can I help you today?",
+    "welcome": "Hello! How can I help you today?",
   "useOCR": "Extract text from image (OCR)",
   "fileRetrievalEnabled": "Enable RAG for Documents",
   "stt": {
@@ -95,6 +104,9 @@
     "visionOff": "Vision off",
     "upload": "Attach image",
     "ingest": "Quick ingest",
+    "ingestDisabled": "Connect to your tldw server to ingest.",
+    "ingestHint": "Upload URLs or files with advanced options.",
+    "ingestSub": "Use URLs/files; download or store.",
     "streamErrorTitle": "Live captions unavailable"
   },
   "composer": {
@@ -109,6 +121,7 @@
     "captureTools": "Capture and assist tools",
     "actions": "Send options",
     "moreTools": "More tools",
+    "scrollToLatest": "Scroll to latest messages",
     "submitAria": "Send message",
     "openModelSettings": "Open current chat settings",
     "stopStreaming": "Stop streaming response",
@@ -198,7 +211,8 @@
     "unsupportedProviderTitle": "Unsupported TTS provider",
     "unsupportedProviderDescription": "The provider \"{{provider}}\" is not yet supported in the playground player.",
     "generateErrorTitle": "Error generating audio",
-    "generateErrorDescription": "Something went wrong while generating TTS audio."
+    "generateErrorDescription": "Something went wrong while generating TTS audio.",
+    "savedToNotes": "Transcription saved as a note."
   },
   "tldwState": {
     "title": "Waiting for your tldw server",
