@@ -7,6 +7,8 @@ import { useMessageOption } from "~/hooks/useMessageOption"
 import {
   Checkbox,
   Dropdown,
+  Input,
+  Select,
   Switch,
   Tooltip,
   notification,
@@ -47,7 +49,7 @@ import { ConnectionPhase } from "@/types/connection"
 import { Link } from "react-router-dom"
 import { fetchChatModels } from "@/services/tldw-server"
 import { useServerCapabilities } from "@/hooks/useServerCapabilities"
-import { tldwClient } from "@/services/tldw/TldwApiClient"
+import { tldwClient, type ConversationState } from "@/services/tldw/TldwApiClient"
 import { CharacterSelect } from "@/components/Common/CharacterSelect"
 import { ProviderIcons } from "@/components/Common/ProviderIcon"
 import type { Character } from "@/types/character"
@@ -94,7 +96,17 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
     addQueuedMessage,
     clearQueuedMessages,
     serverChatId,
-    setServerChatId
+    setServerChatId,
+    serverChatState,
+    setServerChatState,
+    serverChatTopic,
+    setServerChatTopic,
+    serverChatClusterId,
+    setServerChatClusterId,
+    serverChatSource,
+    setServerChatSource,
+    serverChatExternalRef,
+    setServerChatExternalRef
   } = useMessageOption()
 
   const [autoSubmitVoiceMessage] = useStorage("autoSubmitVoiceMessage", false)
@@ -672,13 +684,44 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
 
       const created = await tldwClient.createChat({
         title,
-        character_id: characterId
+        character_id: characterId,
+        state: serverChatState || "in-progress",
+        topic_label:
+          serverChatTopic && serverChatTopic.trim().length > 0
+            ? serverChatTopic.trim()
+            : undefined,
+        cluster_id:
+          serverChatClusterId && serverChatClusterId.trim().length > 0
+            ? serverChatClusterId.trim()
+            : undefined,
+        source:
+          serverChatSource && serverChatSource.trim().length > 0
+            ? serverChatSource.trim()
+            : undefined,
+        external_ref:
+          serverChatExternalRef && serverChatExternalRef.trim().length > 0
+            ? serverChatExternalRef.trim()
+            : undefined
       })
       const rawId = (created as any)?.id ?? (created as any)?.chat_id ?? created
       const cid = rawId != null ? String(rawId) : ""
       if (!cid) {
         throw new Error("Failed to create server chat")
       }
+      setServerChatState(
+        (created as any)?.state ??
+          (created as any)?.conversation_state ??
+          serverChatState ??
+          "in-progress"
+      )
+      setServerChatTopic((created as any)?.topic_label ?? serverChatTopic ?? null)
+      setServerChatClusterId(
+        (created as any)?.cluster_id ?? serverChatClusterId ?? null
+      )
+      setServerChatSource((created as any)?.source ?? serverChatSource ?? null)
+      setServerChatExternalRef(
+        (created as any)?.external_ref ?? serverChatExternalRef ?? null
+      )
 
       for (const msg of snapshot) {
         const content = (msg.content || "").trim()
@@ -757,6 +800,107 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
       })
     }
   }, [isListening, resetTranscript, speechToTextLanguage, startListening, stopSpeechRecognition])
+
+  const conversationStateOptions: { value: ConversationState; label: string }[] =
+    React.useMemo(
+      () => [
+        {
+          value: "in-progress",
+          label: t(
+            "playground:composer.state.inProgress",
+            "in-progress"
+          ) as string
+        },
+        {
+          value: "resolved",
+          label: t("playground:composer.state.resolved", "resolved") as string
+        },
+        {
+          value: "backlog",
+          label: t("playground:composer.state.backlog", "backlog") as string
+        },
+        {
+          value: "non-viable",
+          label: t(
+            "playground:composer.state.nonViable",
+            "non-viable"
+          ) as string
+        }
+      ],
+      [t]
+    )
+
+  const persistChatMetadata = React.useCallback(
+    async (patch: Record<string, any>) => {
+      if (!serverChatId) return
+      try {
+        const updated = await tldwClient.updateChat(serverChatId, patch)
+        setServerChatState(
+          (updated as any)?.state ??
+            (updated as any)?.conversation_state ??
+            "in-progress"
+        )
+        setServerChatTopic((updated as any)?.topic_label ?? null)
+        setServerChatClusterId((updated as any)?.cluster_id ?? null)
+        setServerChatSource((updated as any)?.source ?? null)
+        setServerChatExternalRef((updated as any)?.external_ref ?? null)
+      } catch (e: any) {
+        notification.error({
+          message: t("error", { defaultValue: "Error" }),
+          description:
+            e?.message ||
+            t("somethingWentWrong", { defaultValue: "Something went wrong" })
+        })
+      }
+    },
+    [
+      serverChatId,
+      setServerChatClusterId,
+      setServerChatExternalRef,
+      setServerChatSource,
+      setServerChatState,
+      setServerChatTopic,
+      t
+    ]
+  )
+
+  const handleStateChange = React.useCallback(
+    async (value: ConversationState) => {
+      setServerChatState(value)
+      await persistChatMetadata({ state: value })
+    },
+    [persistChatMetadata, setServerChatState]
+  )
+
+  const handleTopicCommit = React.useCallback(
+    async (value: string) => {
+      const normalized = value.trim()
+      const topicValue = normalized.length > 0 ? normalized : null
+      setServerChatTopic(topicValue)
+      await persistChatMetadata({ topic_label: topicValue })
+    },
+    [persistChatMetadata, setServerChatTopic]
+  )
+
+  const handleClusterCommit = React.useCallback(
+    async (value: string) => {
+      const normalized = value.trim()
+      const clusterValue = normalized.length > 0 ? normalized : null
+      setServerChatClusterId(clusterValue)
+      await persistChatMetadata({ cluster_id: clusterValue })
+    },
+    [persistChatMetadata, setServerChatClusterId]
+  )
+
+  const handleExternalRefCommit = React.useCallback(
+    async (value: string) => {
+      const normalized = value.trim()
+      const refValue = normalized.length > 0 ? normalized : null
+      setServerChatExternalRef(refValue)
+      await persistChatMetadata({ external_ref: refValue })
+    },
+    [persistChatMetadata, setServerChatExternalRef]
+  )
 
   const handleServerDictationToggle = React.useCallback(async () => {
     if (isServerDictating) {
@@ -1353,6 +1497,106 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                                       "Saved in this browser only."
                                     )}
                             </p>
+                            <div className="mt-1 flex flex-col gap-1 text-[11px] text-gray-600 dark:text-gray-300">
+                              <span className="font-semibold uppercase tracking-wide">
+                                {t(
+                                  "playground:composer.conversationTags",
+                                  "Conversation tags"
+                                )}
+                              </span>
+                              <div className="flex flex-wrap items-center gap-2">
+                                <Select
+                                  size="small"
+                                  className="min-w-[140px]"
+                                  value={serverChatState || "in-progress"}
+                                  onChange={(val) =>
+                                    void handleStateChange(
+                                      val as ConversationState
+                                    )
+                                  }
+                                  options={conversationStateOptions}
+                                />
+                                <Input
+                                  size="small"
+                                  className="min-w-[180px]"
+                                  placeholder={t(
+                                    "playground:composer.topicPlaceholder",
+                                    "Topic label (optional)"
+                                  )}
+                                  value={serverChatTopic || ""}
+                                  onChange={(e) =>
+                                    setServerChatTopic(
+                                      e.target.value || null
+                                    )
+                                  }
+                                  onBlur={(e) =>
+                                    void handleTopicCommit(e.target.value)
+                                  }
+                                  onPressEnter={(e) => {
+                                    e.preventDefault()
+                                    void handleTopicCommit(
+                                      (e.target as HTMLInputElement).value
+                                    )
+                                  }}
+                                />
+                              </div>
+                              <div className="flex flex-wrap items-center gap-2">
+                                <Input
+                                  size="small"
+                                  className="min-w-[180px]"
+                                  placeholder={t(
+                                    "playground:composer.clusterPlaceholder",
+                                    "Cluster ID (optional)"
+                                  )}
+                                  value={serverChatClusterId || ""}
+                                  onChange={(e) =>
+                                    setServerChatClusterId(
+                                      e.target.value || null
+                                    )
+                                  }
+                                  onBlur={(e) =>
+                                    void handleClusterCommit(e.target.value)
+                                  }
+                                  onPressEnter={(e) => {
+                                    e.preventDefault()
+                                    void handleClusterCommit(
+                                      (e.target as HTMLInputElement).value
+                                    )
+                                  }}
+                                />
+                                <Input
+                                  size="small"
+                                  className="min-w-[180px]"
+                                  placeholder={t(
+                                    "playground:composer.externalRefPlaceholder",
+                                    "External reference (optional)"
+                                  )}
+                                  value={serverChatExternalRef || ""}
+                                  onChange={(e) =>
+                                    setServerChatExternalRef(
+                                      e.target.value || null
+                                    )
+                                  }
+                                  onBlur={(e) =>
+                                    void handleExternalRefCommit(
+                                      e.target.value
+                                    )
+                                  }
+                                  onPressEnter={(e) => {
+                                    e.preventDefault()
+                                    void handleExternalRefCommit(
+                                      (e.target as HTMLInputElement).value
+                                    )
+                                  }}
+                                />
+                              </div>
+                              <p className="text-[10px] text-gray-500 dark:text-gray-400">
+                                {t(
+                                  "playground:composer.stateHelp",
+                                  "Default state is “in-progress.” Update it as the conversation progresses."
+                                )}
+                              </p>
+                            </div>
                             {!temporaryChat && isConnectionReady && !serverChatId && (
                               <button
                                 type="button"

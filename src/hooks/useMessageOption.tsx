@@ -96,7 +96,17 @@ export const useMessageOption = () => {
     ragAdvancedOptions,
     setRagAdvancedOptions,
     serverChatId,
-    setServerChatId
+    setServerChatId,
+    serverChatState,
+    setServerChatState,
+    serverChatTopic,
+    setServerChatTopic,
+    serverChatClusterId,
+    setServerChatClusterId,
+    serverChatSource,
+    setServerChatSource,
+    serverChatExternalRef,
+    setServerChatExternalRef
   } = useStoreMessageOption()
 
   const currentChatModelSettings = useStoreChatModelSettings()
@@ -113,6 +123,35 @@ export const useMessageOption = () => {
 
   const navigate = useNavigate()
   const textareaRef = React.useRef<HTMLTextAreaElement>(null)
+
+  React.useEffect(() => {
+    if (!serverChatId) return
+    const loadChatMeta = async () => {
+      try {
+        await tldwClient.initialize().catch(() => null)
+        const chat = await tldwClient.getChat(serverChatId)
+        setServerChatState(
+          (chat as any)?.state ??
+            (chat as any)?.conversation_state ??
+            "in-progress"
+        )
+        setServerChatTopic((chat as any)?.topic_label ?? null)
+        setServerChatClusterId((chat as any)?.cluster_id ?? null)
+        setServerChatSource((chat as any)?.source ?? null)
+        setServerChatExternalRef((chat as any)?.external_ref ?? null)
+      } catch {
+        // ignore metadata hydration failures
+      }
+    }
+    void loadChatMeta()
+  }, [
+    serverChatId,
+    setServerChatClusterId,
+    setServerChatExternalRef,
+    setServerChatSource,
+    setServerChatState,
+    setServerChatTopic
+  ])
 
   // Persist prompt selections across views/contexts
   const [storedSystemPrompt, setStoredSystemPrompt] = useStorage<string | null>(
@@ -218,6 +257,7 @@ export const useMessageOption = () => {
     setMessages([])
     setHistory([])
     setHistoryId(null)
+    setServerChatId(null)
     setIsFirstMessage(true)
     setIsLoading(false)
     setIsProcessing(false)
@@ -486,6 +526,16 @@ export const useMessageOption = () => {
     setSystemPrompt: currentChatModelSettings.setSystemPrompt,
     serverChatId,
     setServerChatId,
+    serverChatState,
+    setServerChatState,
+    serverChatTopic,
+    setServerChatTopic,
+    serverChatClusterId,
+    setServerChatClusterId,
+    serverChatSource,
+    setServerChatSource,
+    serverChatExternalRef,
+    setServerChatExternalRef,
     messages,
     history
   })
@@ -546,6 +596,16 @@ export const useMessageOption = () => {
     clearQueuedMessages: storeClearQueuedMessages,
     serverChatId,
     setServerChatId,
+    serverChatState,
+    setServerChatState,
+    serverChatTopic,
+    setServerChatTopic,
+    serverChatClusterId,
+    setServerChatClusterId,
+    serverChatSource,
+    setServerChatSource,
+    serverChatExternalRef,
+    setServerChatExternalRef,
     ragMediaIds,
     setRagMediaIds,
     ragSearchMode,

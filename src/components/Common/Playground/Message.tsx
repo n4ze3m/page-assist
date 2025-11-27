@@ -64,6 +64,8 @@ type Props = {
   onNewBranch?: () => void
   temporaryChat?: boolean
   onStopStreaming?: () => void
+  serverChatId?: string | null
+  serverMessageId?: string | null
 }
 
 export const PlaygroundMessage = (props: Props) => {

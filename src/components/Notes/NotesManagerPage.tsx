@@ -4,7 +4,7 @@ import { Button, Input, List, Pagination, Space, Spin, Tooltip, Typography, Sele
 import { bgRequest } from '@/services/background-proxy'
 import { useQuery, keepPreviousData, useQueryClient } from '@tanstack/react-query'
 import { useServerOnline } from '@/hooks/useServerOnline'
-import { Copy as CopyIcon, Save as SaveIcon, Trash2 as TrashIcon, FileDown as FileDownIcon, Plus as PlusIcon, Search as SearchIcon } from 'lucide-react'
+import { Copy as CopyIcon, Save as SaveIcon, Trash2 as TrashIcon, FileDown as FileDownIcon, Plus as PlusIcon, Search as SearchIcon, Link2 as LinkIcon } from 'lucide-react'
 import { useConfirmDanger } from '@/components/Common/confirm-danger'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
@@ -13,16 +13,41 @@ import { useDemoMode } from '@/context/demo-mode'
 import { useServerCapabilities } from '@/hooks/useServerCapabilities'
 import { tldwClient } from '@/services/tldw/TldwApiClient'
 import { useAntdMessage } from '@/hooks/useAntdMessage'
+import { useStoreMessageOption } from "@/store/option"
+import { updatePageTitle } from "@/utils/update-page-title"
 
 type NoteListItem = {
   id: string | number
   title?: string
   content?: string
   updated_at?: string
+  conversation_id?: string | null
+  message_id?: string | null
 }
 
 const MAX_TITLE_LENGTH = 80
 const MAX_PREVIEW_LENGTH = 100
+
+const extractBacklink = (note: any) => {
+  const meta = note?.metadata || {}
+  const backlinks = meta?.backlinks || meta || {}
+  const conversation =
+    note?.conversation_id ??
+    backlinks?.conversation_id ??
+    backlinks?.conversationId ??
+    meta?.conversation_id ??
+    null
+  const message =
+    note?.message_id ??
+    backlinks?.message_id ??
+    backlinks?.messageId ??
+    meta?.message_id ??
+    null
+  return {
+    conversation_id: conversation != null ? String(conversation) : null,
+    message_id: message != null ? String(message) : null
+  }
+}
 
 const truncateText = (value?: string | null, max?: number) => {
   if (!value) return ""
@@ -45,6 +70,9 @@ const NotesManagerPage: React.FC = () => {
   const [keywordOptions, setKeywordOptions] = React.useState<string[]>([])
   const [editorKeywords, setEditorKeywords] = React.useState<string[]>([])
   const [isDirty, setIsDirty] = React.useState(false)
+  const [backlinkConversationId, setBacklinkConversationId] = React.useState<string | null>(null)
+  const [backlinkMessageId, setBacklinkMessageId] = React.useState<string | null>(null)
+  const [openingLinkedChat, setOpeningLinkedChat] = React.useState(false)
   const isOnline = useServerOnline()
   const { demoEnabled } = useDemoMode()
   const queryClient = useQueryClient()
@@ -53,6 +81,17 @@ const NotesManagerPage: React.FC = () => {
   const titleInputRef = React.useRef<InputRef | null>(null)
   const message = useAntdMessage()
   const confirmDanger = useConfirmDanger()
+  const {
+    setHistory,
+    setMessages,
+    setHistoryId,
+    setServerChatId,
+    setServerChatState,
+    setServerChatTopic,
+    setServerChatClusterId,
+    setServerChatSource,
+    setServerChatExternalRef
+  } = useStoreMessageOption()
 
   const editorDisabled = !isOnline || (!capsLoading && capabilities && !capabilities.hasNotes)
 
@@ -79,14 +118,36 @@ const NotesManagerPage: React.FC = () => {
         arr = arr.filter((n) => (`${n?.title || ''} ${n?.content || ''}`.toLowerCase()).includes(ql))
       }
       setTotal(arr.length)
-      return arr.slice((page - 1) * pageSize, (page - 1) * pageSize + pageSize).map((n: any) => ({ id: n?.id, title: n?.title, content: n?.content, updated_at: n?.updated_at }))
+      return arr
+        .slice((page - 1) * pageSize, (page - 1) * pageSize + pageSize)
+        .map((n: any) => {
+          const links = extractBacklink(n)
+          return {
+            id: n?.id,
+            title: n?.title,
+            content: n?.content,
+            updated_at: n?.updated_at,
+            conversation_id: links.conversation_id,
+            message_id: links.message_id
+          }
+        })
     }
     // Browse list with pagination when no filters
     const res = await bgRequest<any>({ path: `/api/v1/notes/?page=${page}&results_per_page=${pageSize}` as any, method: 'GET' as any })
     const items = Array.isArray(res?.items) ? res.items : (Array.isArray(res) ? res : [])
     const pagination = res?.pagination
     setTotal(Number(pagination?.total_items || items.length || 0))
-    return items.map((n: any) => ({ id: n?.id, title: n?.title, content: n?.content, updated_at: n?.updated_at }))
+    return items.map((n: any) => {
+      const links = extractBacklink(n)
+      return {
+        id: n?.id,
+        title: n?.title,
+        content: n?.content,
+        updated_at: n?.updated_at,
+        conversation_id: links.conversation_id,
+        message_id: links.message_id
+      }
+    })
   }
 
   const { data, isFetching, refetch } = useQuery({
@@ -108,6 +169,9 @@ const NotesManagerPage: React.FC = () => {
         String(item?.keyword || item?.keyword_text || item?.text || item)
       ).filter((s) => s && s.trim().length > 0)
       setEditorKeywords(normalizedKeywords)
+      const links = extractBacklink(d)
+      setBacklinkConversationId(links.conversation_id)
+      setBacklinkMessageId(links.message_id)
       setIsDirty(false)
     } catch {
       message.error('Failed to load note')
@@ -119,6 +183,8 @@ const NotesManagerPage: React.FC = () => {
     setTitle('')
     setContent('')
     setEditorKeywords([])
+    setBacklinkConversationId(null)
+    setBacklinkMessageId(null)
     setIsDirty(false)
   }
 
@@ -155,15 +221,18 @@ const NotesManagerPage: React.FC = () => {
     if (!content.trim() && !title.trim()) { message.warning('Nothing to save'); return }
     setSaving(true)
     try {
+      const metadata: Record<string, any> = { keywords: editorKeywords }
+      if (backlinkConversationId) metadata.conversation_id = backlinkConversationId
+      if (backlinkMessageId) metadata.message_id = backlinkMessageId
       if (selectedId == null) {
-        const payload = { title: title || undefined, content, metadata: { keywords: editorKeywords } }
+        const payload = { title: title || undefined, content, metadata }
         const created = await bgRequest<any>({ path: '/api/v1/notes/' as any, method: 'POST' as any, headers: { 'Content-Type': 'application/json' }, body: payload })
         message.success('Note created')
         setIsDirty(false)
         await refetch()
         if (created?.id != null) await loadDetail(created.id)
       } else {
-        const payload = { title: title || undefined, content, metadata: { keywords: editorKeywords } }
+        const payload = { title: title || undefined, content, metadata }
         await bgRequest<any>({ path: `/api/v1/notes/${selectedId}` as any, method: 'PUT' as any, headers: { 'Content-Type': 'application/json' }, body: payload })
         message.success('Note updated')
         setIsDirty(false)
@@ -186,6 +255,82 @@ const NotesManagerPage: React.FC = () => {
       await refetch()
     } catch (e: any) {
       message.error(e?.message || 'Delete failed')
+    }
+  }
+
+  const openLinkedConversation = async () => {
+    if (!backlinkConversationId) {
+      message.warning(
+        t("option:notesSearch.noLinkedConversation", {
+          defaultValue: "No linked conversation to open."
+        })
+      )
+      return
+    }
+    try {
+      setOpeningLinkedChat(true)
+      await tldwClient.initialize().catch(() => null)
+      const chat = await tldwClient.getChat(backlinkConversationId)
+      setHistoryId(null)
+      setServerChatId(String(backlinkConversationId))
+      setServerChatState(
+        (chat as any)?.state ??
+          (chat as any)?.conversation_state ??
+          "in-progress"
+      )
+      setServerChatTopic((chat as any)?.topic_label ?? null)
+      setServerChatClusterId((chat as any)?.cluster_id ?? null)
+      setServerChatSource((chat as any)?.source ?? null)
+      setServerChatExternalRef((chat as any)?.external_ref ?? null)
+      let assistantName = "Assistant"
+      if ((chat as any)?.character_id != null) {
+        try {
+          const c = await tldwClient.getCharacter((chat as any)?.character_id)
+          assistantName =
+            c?.name || c?.title || c?.slug || assistantName
+        } catch {}
+      }
+
+      const messages = await tldwClient.listChatMessages(
+        backlinkConversationId,
+        { include_deleted: "false" } as any
+      )
+      const historyArr = messages.map((m) => ({
+        role: m.role,
+        content: m.content
+      }))
+      const mappedMessages = messages.map((m) => ({
+        isBot: m.role === "assistant",
+        name:
+          m.role === "assistant"
+            ? assistantName
+            : m.role === "system"
+              ? "System"
+              : "You",
+        message: m.content,
+        sources: [],
+        images: [],
+        serverMessageId: m.id,
+        serverMessageVersion: m.version
+      }))
+      setHistory(historyArr)
+      setMessages(mappedMessages)
+      updatePageTitle((chat as any)?.title || "")
+      navigate("/")
+      setTimeout(() => {
+        try {
+          window.dispatchEvent(new CustomEvent("tldw:focus-composer"))
+        } catch {}
+      }, 0)
+    } catch (e: any) {
+      message.error(
+        e?.message ||
+          t("option:notesSearch.openConversationError", {
+            defaultValue: "Failed to open linked conversation."
+          })
+      )
+    } finally {
+      setOpeningLinkedChat(false)
     }
   }
 
@@ -590,6 +735,18 @@ const NotesManagerPage: React.FC = () => {
                           {truncateText(String(item.content), MAX_PREVIEW_LENGTH)}
                         </div>
                       )}
+                      {item.conversation_id && (
+                        <div className="text-[11px] text-blue-600 dark:text-blue-300 mt-0.5">
+                          {t("option:notesSearch.linkedConversation", {
+                            defaultValue: "Linked to conversation"
+                          })}
+                          {": "}
+                          {String(item.conversation_id)}
+                          {item.message_id
+                            ? ` · msg ${String(item.message_id)}`
+                            : ""}
+                        </div>
+                      )}
                       <div className="text-[10px] text-gray-400 mt-0.5">{item.updated_at ? new Date(item.updated_at).toLocaleString() : ''}</div>
                     </div>
                   </List.Item>
@@ -626,20 +783,52 @@ const NotesManagerPage: React.FC = () => {
           aria-disabled={editorDisabled}
         >
             <div className="flex items-center justify-between">
-            <Typography.Title level={5} className="!mb-0">{selectedId == null ? 'New Note' : (title || `Note ${selectedId}`)}</Typography.Title>
-            {!editorDisabled && (
-              <Space>
-              <Tooltip title={t('option:notesSearch.newTooltip', {
-                defaultValue: 'Create a new note'
-              })}>
-                <Button
-                  size="small"
-                  onClick={() => { void handleNewNote() }}
-                  icon={(<PlusIcon className="w-4 h-4" />) as any}
-                >
-                  {t('option:notesSearch.new', { defaultValue: 'New note' })}
-                </Button>
-              </Tooltip>
+              <div className="flex flex-col gap-0.5">
+                <Typography.Title level={5} className="!mb-0">
+                  {selectedId == null ? "New Note" : title || `Note ${selectedId}`}
+                </Typography.Title>
+                {backlinkConversationId && (
+                  <div className="text-xs text-blue-600 dark:text-blue-300">
+                    {t("option:notesSearch.linkedConversation", {
+                      defaultValue: "Linked to conversation"
+                    })}{" "}
+                    {backlinkConversationId}
+                    {backlinkMessageId ? ` · msg ${backlinkMessageId}` : ""}
+                  </div>
+                )}
+              </div>
+              {!editorDisabled && (
+                <Space>
+                  {backlinkConversationId && (
+                    <Tooltip
+                      title={t("option:notesSearch.openConversationTooltip", {
+                        defaultValue: "Open linked conversation"
+                      })}>
+                      <Button
+                        size="small"
+                        loading={openingLinkedChat}
+                        onClick={() => {
+                          void openLinkedConversation()
+                        }}
+                        icon={(<LinkIcon className="w-4 h-4" />) as any}
+                      >
+                        {t("option:notesSearch.openConversation", {
+                          defaultValue: "Open conversation"
+                        })}
+                      </Button>
+                    </Tooltip>
+                  )}
+                  <Tooltip title={t('option:notesSearch.newTooltip', {
+                    defaultValue: 'Create a new note'
+                  })}>
+                    <Button
+                      size="small"
+                      onClick={() => { void handleNewNote() }}
+                      icon={(<PlusIcon className="w-4 h-4" />) as any}
+                    >
+                      {t('option:notesSearch.new', { defaultValue: 'New note' })}
+                    </Button>
+                  </Tooltip>
               <Tooltip
                 title={t('option:notesSearch.toolbarCopyTooltip', {
                   defaultValue: 'Copy note content'

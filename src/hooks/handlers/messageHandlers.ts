@@ -7,7 +7,7 @@ import {
 } from "@/db/dexie/helpers"
 import { generateBranchMessage } from "@/db/dexie/branch"
 import { getPromptById, getSessionFiles, UploadedFile } from "@/db"
-import { tldwClient } from "@/services/tldw/TldwApiClient"
+import { tldwClient, type ConversationState } from "@/services/tldw/TldwApiClient"
 import { notification } from "antd"
 
 export const createRegenerateLastMessage = ({
@@ -128,6 +128,16 @@ export const createBranchMessage = ({
   setSystemPrompt,
   serverChatId,
   setServerChatId,
+  setServerChatState,
+  setServerChatTopic,
+  setServerChatClusterId,
+  setServerChatSource,
+  setServerChatExternalRef,
+  serverChatState,
+  serverChatTopic,
+  serverChatClusterId,
+  serverChatSource,
+  serverChatExternalRef,
   messages,
   history
 }: {
@@ -140,6 +150,16 @@ export const createBranchMessage = ({
   setContext?: (context: UploadedFile[]) => void
   serverChatId?: string | null
   setServerChatId?: (id: string | null) => void
+  setServerChatState?: (state: ConversationState | null) => void
+  setServerChatTopic?: (topic: string | null) => void
+  setServerChatClusterId?: (clusterId: string | null) => void
+  setServerChatSource?: (source: string | null) => void
+  setServerChatExternalRef?: (ref: string | null) => void
+  serverChatState?: ConversationState | null
+  serverChatTopic?: string | null
+  serverChatClusterId?: string | null
+  serverChatSource?: string | null
+  serverChatExternalRef?: string | null
   messages?: Message[]
   history?: ChatHistory
 }) => {
@@ -173,7 +193,12 @@ export const createBranchMessage = ({
         const created = await tldwClient.createChat({
           title: branchTitle,
           character_id: characterId,
-          parent_conversation_id: serverChatId
+          parent_conversation_id: serverChatId,
+          state: serverChatState || "in-progress",
+          topic_label: serverChatTopic || undefined,
+          cluster_id: serverChatClusterId || undefined,
+          source: serverChatSource || undefined,
+          external_ref: serverChatExternalRef || undefined
         })
         const rawId =
           (created as any)?.id ?? (created as any)?.chat_id ?? created
@@ -205,6 +230,25 @@ export const createBranchMessage = ({
 
         if (setServerChatId) {
           setServerChatId(newChatId)
+        }
+        if (setServerChatState) {
+          setServerChatState(
+            (created as any)?.state ??
+              (created as any)?.conversation_state ??
+              "in-progress"
+          )
+        }
+        if (setServerChatTopic) {
+          setServerChatTopic((created as any)?.topic_label ?? null)
+        }
+        if (setServerChatClusterId) {
+          setServerChatClusterId((created as any)?.cluster_id ?? null)
+        }
+        if (setServerChatSource) {
+          setServerChatSource((created as any)?.source ?? null)
+        }
+        if (setServerChatExternalRef) {
+          setServerChatExternalRef((created as any)?.external_ref ?? null)
         }
 
         if (messages && messages.length > 0) {

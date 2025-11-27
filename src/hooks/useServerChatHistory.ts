@@ -32,11 +32,10 @@ export const useServerChatHistory = (searchQuery: string) => {
           return mapped
         }
 
-        return mapped.filter((item) =>
-          (item.title || "")
-            .toLowerCase()
-            .includes(normalizedQuery)
-        )
+        return mapped.filter((item) => {
+          const haystack = `${item.title || ""} ${item.topic_label || ""} ${item.state || ""}`.toLowerCase()
+          return haystack.includes(normalizedQuery)
+        })
       } catch (e) {
         // eslint-disable-next-line no-console
         console.error(

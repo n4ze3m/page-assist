@@ -46,10 +46,21 @@ export interface ServerChatSummary {
   created_at: string
   updated_at?: string | null
   source?: string | null
+  state?: ConversationState | string | null
+  topic_label?: string | null
+  cluster_id?: string | null
+  external_ref?: string | null
+  bm25_norm?: number | null
   character_id?: string | number | null
   parent_conversation_id?: string | null
   root_id?: string | null
 }
+
+export type ConversationState =
+  | "in-progress"
+  | "resolved"
+  | "backlog"
+  | "non-viable"
 
 export interface ServerChatMessage {
   id: string
@@ -954,6 +965,38 @@ export class TldwApiClient {
     }
   }
 
+  private normalizeChatSummary(input: any): ServerChatSummary {
+    const created_at = String(input?.created_at || input?.createdAt || "")
+    const updated_at =
+      input?.updated_at ??
+      input?.updatedAt ??
+      input?.last_modified ??
+      input?.lastModified ??
+      null
+    const state = input?.state ?? input?.conversation_state ?? null
+    return {
+      id: String(input?.id ?? ""),
+      title: String(input?.title || ""),
+      created_at,
+      updated_at: updated_at ? String(updated_at) : null,
+      source: input?.source ?? null,
+      state: state ? String(state) : null,
+      topic_label: input?.topic_label ?? input?.topicLabel ?? null,
+      cluster_id: input?.cluster_id ?? input?.clusterId ?? null,
+      external_ref: input?.external_ref ?? input?.externalRef ?? null,
+      bm25_norm:
+        typeof input?.bm25_norm === "number"
+          ? input?.bm25_norm
+          : typeof input?.relevance === "number"
+            ? input?.relevance
+            : null,
+      character_id: input?.character_id ?? input?.characterId ?? null,
+      parent_conversation_id:
+        input?.parent_conversation_id ?? input?.parentConversationId ?? null,
+      root_id: input?.root_id ?? input?.rootId ?? null
+    }
+  }
+
   // Chats API (resource-based)
   async listChats(params?: Record<string, any>): Promise<ServerChatSummary[]> {
     const query = this.buildQuery(params)
@@ -979,44 +1022,26 @@ export class TldwApiClient {
       }
     }
 
-    return list.map((c) => {
-      const created_at = String(c.created_at || c.createdAt || "")
-      const updated_at =
-        c.updated_at ??
-        c.updatedAt ??
-        c.last_modified ??
-        c.lastModified ??
-        null
-      return {
-        id: String(c.id),
-        title: String(c.title || ""),
-        created_at,
-        updated_at: updated_at ? String(updated_at) : null,
-        source: c.source ?? null,
-        character_id:
-          c.character_id ?? c.characterId ?? null,
-        parent_conversation_id:
-          c.parent_conversation_id ?? c.parentConversationId ?? null,
-        root_id: c.root_id ?? c.rootId ?? null
-      } as ServerChatSummary
-    })
+    return list.map((c) => this.normalizeChatSummary(c))
   }
 
   async createChat(payload: Record<string, any>): Promise<ServerChatSummary> {
-    return await bgRequest<ServerChatSummary>({
+    const res = await bgRequest<any>({
       path: "/api/v1/chats/",
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: payload
     })
+    return this.normalizeChatSummary(res)
   }
 
   async getChat(chat_id: string | number): Promise<ServerChatSummary> {
     const cid = String(chat_id)
-    return await bgRequest<ServerChatSummary>({
+    const res = await bgRequest<any>({
       path: `/api/v1/chats/${cid}`,
       method: "GET"
     })
+    return this.normalizeChatSummary(res)
   }
 
   async updateChat(
@@ -1024,12 +1049,13 @@ export class TldwApiClient {
     payload: Record<string, any>
   ): Promise<ServerChatSummary> {
     const cid = String(chat_id)
-    return await bgRequest<ServerChatSummary>({
+    const res = await bgRequest<any>({
       path: `/api/v1/chats/${cid}`,
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: payload
     })
+    return this.normalizeChatSummary(res)
   }
 
   async deleteChat(chat_id: string | number): Promise<void> {
@@ -1129,6 +1155,26 @@ export class TldwApiClient {
     const mid = String(message_id)
     const qp = `?expected_version=${encodeURIComponent(String(expectedVersion))}`
     await bgRequest<void>({ path: `/api/v1/messages/${mid}${qp}`, method: 'DELETE' })
+  }
+
+  async saveChatKnowledge(payload: {
+    conversation_id: string | number
+    message_id: string | number
+    snippet: string
+    tags?: string[]
+    make_flashcard?: boolean
+  }): Promise<any> {
+    const body = {
+      ...payload,
+      conversation_id: String(payload.conversation_id),
+      message_id: String(payload.message_id)
+    }
+    return await bgRequest<any>({
+      path: "/api/v1/chat/knowledge/save",
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body
+    })
   }
 
   // World Books

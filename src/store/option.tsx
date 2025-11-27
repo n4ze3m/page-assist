@@ -3,6 +3,7 @@ import { ChatDocuments } from "@/models/ChatTypes"
 import { create } from "zustand"
 import { type UploadedFile } from "@/db/dexie/types"
 import { isFireFoxPrivateMode } from "@/utils/is-private-mode"
+import { type ConversationState } from "@/services/tldw/TldwApiClient"
 
 type WebSearch = {
   search_engine: string
@@ -123,6 +124,16 @@ type State = {
   // Server-backed character chat id
   serverChatId: string | null
   setServerChatId: (id: string | null) => void
+  serverChatState: ConversationState | null
+  setServerChatState: (state: ConversationState | null) => void
+  serverChatTopic: string | null
+  setServerChatTopic: (topic: string | null) => void
+  serverChatClusterId: string | null
+  setServerChatClusterId: (clusterId: string | null) => void
+  serverChatSource: string | null
+  setServerChatSource: (source: string | null) => void
+  serverChatExternalRef: string | null
+  setServerChatExternalRef: (ref: string | null) => void
 }
 
 export const useStoreMessageOption = create<State>((set) => ({
@@ -139,7 +150,12 @@ export const useStoreMessageOption = create<State>((set) => ({
     set((state) => ({
       historyId,
       // When switching to a local Dexie-backed chat, clear any active server-backed session id.
-      serverChatId: historyId ? null : state.serverChatId
+      serverChatId: historyId ? null : state.serverChatId,
+      serverChatState: historyId ? "in-progress" : state.serverChatState,
+      serverChatTopic: historyId ? null : state.serverChatTopic,
+      serverChatClusterId: historyId ? null : state.serverChatClusterId,
+      serverChatSource: historyId ? null : state.serverChatSource,
+      serverChatExternalRef: historyId ? null : state.serverChatExternalRef
     })),
   isLoading: false,
   setIsLoading: (isLoading) => set({ isLoading }),
@@ -215,7 +231,30 @@ export const useStoreMessageOption = create<State>((set) => ({
   setRagAdvancedOptions: (ragAdvancedOptions) => set({ ragAdvancedOptions }),
 
   serverChatId: null,
-  setServerChatId: (id) => set({ serverChatId: id })
+  setServerChatId: (id) =>
+    set(() => ({
+      serverChatId: id,
+      serverChatState: id ? "in-progress" : "in-progress",
+      serverChatTopic: id ? null : null,
+      serverChatClusterId: id ? null : null,
+      serverChatSource: id ? null : null,
+      serverChatExternalRef: id ? null : null
+    })),
+  serverChatState: "in-progress",
+  setServerChatState: (state) =>
+    set({ serverChatState: state ?? "in-progress" }),
+  serverChatTopic: null,
+  setServerChatTopic: (topic) =>
+    set({ serverChatTopic: topic != null ? topic : null }),
+  serverChatClusterId: null,
+  setServerChatClusterId: (clusterId) =>
+    set({ serverChatClusterId: clusterId != null ? clusterId : null }),
+  serverChatSource: null,
+  setServerChatSource: (source) =>
+    set({ serverChatSource: source != null ? source : null }),
+  serverChatExternalRef: null,
+  setServerChatExternalRef: (ref) =>
+    set({ serverChatExternalRef: ref != null ? ref : null })
 }))
 
 if (typeof window !== "undefined") {

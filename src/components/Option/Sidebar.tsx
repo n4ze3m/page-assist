@@ -93,7 +93,15 @@ export const Sidebar = ({
   const [openMenuFor, setOpenMenuFor] = useState<string | null>(null)
   const confirmDanger = useConfirmDanger()
   const { isConnected } = useConnectionState()
-  const { serverChatId, setServerChatId } = useStoreMessageOption()
+  const {
+    serverChatId,
+    setServerChatId,
+    setServerChatState,
+    setServerChatTopic,
+    setServerChatClusterId,
+    setServerChatSource,
+    setServerChatExternalRef
+  } = useStoreMessageOption()
   const {
     data: serverChatData,
     status: serverStatus,
@@ -586,6 +594,19 @@ export const Sidebar = ({
                     // Clear local selection; this chat is backed by the server
                     setHistoryId(null)
                     setServerChatId(chat.id)
+                    setServerChatState(
+                      (chat as any)?.state ??
+                        (chat as any)?.conversation_state ??
+                        "in-progress"
+                    )
+                    setServerChatTopic((chat as any)?.topic_label ?? null)
+                    setServerChatClusterId(
+                      (chat as any)?.cluster_id ?? null
+                    )
+                    setServerChatSource((chat as any)?.source ?? null)
+                    setServerChatExternalRef(
+                      (chat as any)?.external_ref ?? null
+                    )
                     // Try to resolve a friendly assistant name from the character, if any.
                     let assistantName = "Assistant"
                     if (chat.character_id != null) {
@@ -645,6 +666,19 @@ export const Sidebar = ({
                 }}>
                 <div className="flex flex-col overflow-hidden flex-1">
                   <span className="truncate text-sm">{chat.title}</span>
+                  <div className="flex flex-wrap items-center gap-2 text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                    <span className="inline-flex items-center rounded-full bg-gray-200 px-2 py-0.5 text-[11px] font-medium lowercase text-gray-700 dark:bg-gray-700 dark:text-gray-100">
+                      {(chat.state as string) || "in-progress"}
+                    </span>
+                    {chat.topic_label && (
+                      <span
+                        className="truncate max-w-[12rem]"
+                        title={String(chat.topic_label)}
+                      >
+                        {String(chat.topic_label)}
+                      </span>
+                    )}
+                  </div>
                   <span className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
                     {chat.parent_conversation_id ? (
                       <Tooltip

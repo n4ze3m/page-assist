@@ -211,8 +211,17 @@ export const CharactersManager: React.FC = () => {
   const hasFilters =
     searchTerm.trim().length > 0 || (filterTags && filterTags.length > 0)
 
-  const { setHistory, setMessages, setHistoryId, setServerChatId } =
-    useStoreMessageOption()
+  const {
+    setHistory,
+    setMessages,
+    setHistoryId,
+    setServerChatId,
+    setServerChatState,
+    setServerChatTopic,
+    setServerChatClusterId,
+    setServerChatSource,
+    setServerChatExternalRef
+  } = useStoreMessageOption()
 
   const characterIdentifier = (record: any): string =>
     String(record?.id ?? record?.slug ?? record?.name ?? "")
@@ -927,6 +936,19 @@ export const CharactersManager: React.FC = () => {
                         <div className="text-xs text-gray-500 dark:text-gray-400">
                           {formatUpdatedLabel(chat.updated_at || chat.created_at)}
                         </div>
+                        <div className="flex flex-wrap items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+                          <span className="inline-flex items-center rounded-full bg-gray-100 px-2 py-0.5 lowercase text-gray-700 dark:bg-gray-800 dark:text-gray-200">
+                            {(chat.state as string) || "in-progress"}
+                          </span>
+                          {chat.topic_label && (
+                            <span
+                              className="truncate max-w-[14rem]"
+                              title={String(chat.topic_label)}
+                            >
+                              {String(chat.topic_label)}
+                            </span>
+                          )}
+                        </div>
                       </div>
                       <Button
                         type="primary"
@@ -996,6 +1018,23 @@ export const CharactersManager: React.FC = () => {
 
                             setHistoryId(null)
                             setServerChatId(chat.id)
+                            setServerChatState(
+                              (chat as any)?.state ??
+                                (chat as any)?.conversation_state ??
+                                "in-progress"
+                            )
+                            setServerChatTopic(
+                              (chat as any)?.topic_label ?? null
+                            )
+                            setServerChatClusterId(
+                              (chat as any)?.cluster_id ?? null
+                            )
+                            setServerChatSource(
+                              (chat as any)?.source ?? null
+                            )
+                            setServerChatExternalRef(
+                              (chat as any)?.external_ref ?? null
+                            )
                             setHistory(history)
                             setMessages(mappedMessages)
                             updatePageTitle(chat.title)

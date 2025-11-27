@@ -138,6 +138,28 @@
       "serverSaved": "Future messages in this chat will sync to your tldw server.",
       "serverCharacterRequired": "Unable to find or create a default assistant character on the server. Try again from the Characters page."
     },
+    "conversationTags": "Conversation tags",
+    "stateHelp": "Default state is “in-progress.” Update it as the conversation progresses.",
+    "topicPlaceholder": "Topic label (optional)",
+    "clusterPlaceholder": "Cluster ID (optional)",
+    "externalRefPlaceholder": "External reference (optional)",
+    "state": {
+      "inProgress": "in-progress",
+      "resolved": "resolved",
+      "backlog": "backlog",
+      "nonViable": "non-viable"
+    },
+    "saveSnippet": "Save snippet to knowledge",
+    "saveShort": "Save",
+    "saveSnippetTitle": "Save snippet to knowledge",
+    "saveSnippetCta": "Save snippet",
+    "saveSnippetHelp": "Store this message as a knowledge snippet with a backlink to this conversation.",
+    "tagsLabel": "Tags (comma separated)",
+    "tagsPlaceholder": "Example: meeting, follow-up",
+    "makeFlashcard": "Also create a flashcard",
+    "saveSnippetSuccess": "Saved to knowledge with backlink",
+    "saveSnippetError": "Failed to save snippet. Check your connection and try again.",
+    "saveSnippetEmpty": "Snippet cannot be empty",
     "connectToSend": "Connect to your tldw server in Settings to send messages and view media."
   },
   "tts": {

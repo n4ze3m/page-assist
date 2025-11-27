@@ -20,7 +20,8 @@ export const ensureSidepanelOpen = (tabId?: number) => {
           if (id) {
             chrome.sidePanel.open({ tabId: id })
           } else {
-            chrome.sidePanel.open({})
+            // Types require OpenOptions; fallback cast covers the no-tab case
+            chrome.sidePanel.open({} as chrome.sidePanel.OpenOptions)
           }
         } catch {
           // no-op

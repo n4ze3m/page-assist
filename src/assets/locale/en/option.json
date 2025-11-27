@@ -197,6 +197,12 @@
     "toolbarSaveTooltip": "Save note",
     "toolbarCopyTooltip": "Copy note content",
     "toolbarDeleteTooltip": "Delete note",
+    "toolbarSave": "Save",
+    "linkedConversation": "Linked to conversation",
+    "openConversation": "Open conversation",
+    "openConversationTooltip": "Open linked conversation",
+    "openConversationError": "Failed to open linked conversation.",
+    "noLinkedConversation": "No linked conversation to open.",
     "exportMenuTrigger": "Export",
     "tagsHelp": "Keywords help you find this note using the keyword filter on the left."
   },

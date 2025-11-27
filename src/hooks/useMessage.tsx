@@ -105,7 +105,20 @@ export const useMessage = () => {
     useOCR,
     setUseOCR
   } = useStoreMessage()
-  const { serverChatId, setServerChatId } = useStoreMessageOption()
+  const {
+    serverChatId,
+    setServerChatId,
+    serverChatState,
+    setServerChatState,
+    serverChatTopic,
+    setServerChatTopic,
+    serverChatClusterId,
+    setServerChatClusterId,
+    serverChatSource,
+    setServerChatSource,
+    serverChatExternalRef,
+    setServerChatExternalRef
+  } = useStoreMessageOption()
   const notification = useAntdNotification()
  const [sidepanelTemporaryChat, ] = useStorage(
     "sidepanelTemporaryChat",
@@ -115,6 +128,35 @@ export const useMessage = () => {
     "speechToTextLanguage",
     "en-US"
   )
+
+  React.useEffect(() => {
+    if (!serverChatId) return
+    const loadChatMeta = async () => {
+      try {
+        await tldwClient.initialize().catch(() => null)
+        const chat = await tldwClient.getChat(serverChatId)
+        setServerChatState(
+          (chat as any)?.state ??
+            (chat as any)?.conversation_state ??
+            "in-progress"
+        )
+        setServerChatTopic((chat as any)?.topic_label ?? null)
+        setServerChatClusterId((chat as any)?.cluster_id ?? null)
+        setServerChatSource((chat as any)?.source ?? null)
+        setServerChatExternalRef((chat as any)?.external_ref ?? null)
+      } catch {
+        // ignore metadata hydration failures
+      }
+    }
+    void loadChatMeta()
+  }, [
+    serverChatId,
+    setServerChatClusterId,
+    setServerChatExternalRef,
+    setServerChatSource,
+    setServerChatState,
+    setServerChatTopic
+  ])
 
   React.useEffect(() => {
     // Reset server chat when character changes
@@ -1040,7 +1082,14 @@ export const useMessage = () => {
       // Ensure server chat session exists
       let chatId = serverChatId
       if (!chatId) {
-        const created = await tldwClient.createChat({ character_id: selectedCharacter.id })
+        const created = await tldwClient.createChat({
+          character_id: selectedCharacter.id,
+          state: serverChatState || "in-progress",
+          topic_label: serverChatTopic || undefined,
+          cluster_id: serverChatClusterId || undefined,
+          source: serverChatSource || undefined,
+          external_ref: serverChatExternalRef || undefined
+        })
         const rawId =
           (created as any)?.id ??
           (created as any)?.chat_id ??
@@ -1051,6 +1100,13 @@ export const useMessage = () => {
         }
         chatId = normalizedId
         setServerChatId(normalizedId)
+        setServerChatState(
+          (created as any)?.state ?? (created as any)?.conversation_state ?? "in-progress"
+        )
+        setServerChatTopic((created as any)?.topic_label ?? null)
+        setServerChatClusterId((created as any)?.cluster_id ?? null)
+        setServerChatSource((created as any)?.source ?? null)
+        setServerChatExternalRef((created as any)?.external_ref ?? null)
       }
 
       // Add user message to server (only if not regenerate)
@@ -1888,6 +1944,16 @@ export const useMessage = () => {
     setSystemPrompt: currentChatModelSettings.setSystemPrompt,
     serverChatId,
     setServerChatId,
+    serverChatState,
+    setServerChatState,
+    serverChatTopic,
+    setServerChatTopic,
+    serverChatClusterId,
+    setServerChatClusterId,
+    serverChatSource,
+    setServerChatSource,
+    serverChatExternalRef,
+    setServerChatExternalRef,
     messages,
     history
   })
@@ -1926,6 +1992,18 @@ export const useMessage = () => {
     setUseOCR,
     defaultInternetSearchOn,
     defaultChatWithWebsite,
+    serverChatId,
+    setServerChatId,
+    serverChatState,
+    setServerChatState,
+    serverChatTopic,
+    setServerChatTopic,
+    serverChatClusterId,
+    setServerChatClusterId,
+    serverChatSource,
+    setServerChatSource,
+    serverChatExternalRef,
+    setServerChatExternalRef,
     history,
     createChatBranch,
     temporaryChat,

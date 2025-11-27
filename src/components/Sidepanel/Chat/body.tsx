@@ -18,7 +18,8 @@ export const SidePanelBody = ({ scrollParentRef }: Props) => {
     isSearchingInternet, 
     createChatBranch,
     temporaryChat,
-    stopStreamingRequest
+    stopStreamingRequest,
+    serverChatId
   } = useMessage()
   const [isSourceOpen, setIsSourceOpen] = React.useState(false)
   const [source, setSource] = React.useState<any>(null)
@@ -66,6 +67,8 @@ export const SidePanelBody = ({ scrollParentRef }: Props) => {
                   modelName={message?.modelName}
                   temporaryChat={temporaryChat}
                   onStopStreaming={stopStreamingRequest}
+                  serverChatId={serverChatId}
+                  serverMessageId={message.serverMessageId}
                 />
               </div>
             )

@@ -329,6 +329,82 @@ export default defineBackground({
       return null
     }
 
+    const handleUpload = async (payload: {
+      path?: string
+      method?: string
+      fields?: Record<string, any>
+      file?: { name?: string; type?: string; data?: ArrayBuffer | Uint8Array }
+    }) => {
+      const { path, method = 'POST', fields = {}, file } = payload || {}
+      const storage = new Storage({ area: 'local' })
+      const cfg = await storage.get<any>('tldwConfig')
+      const isAbsolute = typeof path === 'string' && /^https?:/i.test(path)
+      if (!cfg?.serverUrl && !isAbsolute) {
+        return { ok: false, status: 400, error: 'tldw server not configured' }
+      }
+      const baseUrl = cfg?.serverUrl ? String(cfg.serverUrl).replace(/\/$/, '') : ''
+      const url = isAbsolute ? path : `${baseUrl}${path?.startsWith('/') ? '' : '/'}${path}`
+      try {
+        const form = new FormData()
+        for (const [k, v] of Object.entries(fields || {})) {
+          // Preserve arrays (e.g., urls) instead of stringifying them into JSON blobs
+          if (Array.isArray(v)) {
+            v.forEach((item) => form.append(k, typeof item === 'string' ? item : JSON.stringify(item)))
+          } else {
+            form.append(k, typeof v === 'string' ? v : JSON.stringify(v))
+          }
+        }
+        if (file?.data) {
+          const blob = new Blob([file.data], {
+            type: file.type || 'application/octet-stream'
+          })
+          const filename = file.name || 'file'
+          // @ts-ignore File may not exist in some workers; Blob is accepted by FormData
+          try {
+            form.append('files', new File([blob], filename, { type: blob.type }))
+          } catch {
+            form.append('files', blob, filename)
+          }
+          // Backward-compat: also include singular key some servers accept
+          form.append('file', blob, filename)
+        }
+        const headers: Record<string, string> = {}
+        if (cfg?.authMode === 'single-user') {
+          const key = (cfg?.apiKey || '').trim()
+          if (!key) {
+            return {
+              ok: false,
+              status: 401,
+              error: 'Add or update your API key in Settings → tldw server, then try again.'
+            }
+          }
+          headers['X-API-KEY'] = key
+        }
+        if (cfg?.authMode === 'multi-user') {
+          const token = (cfg?.accessToken || '').trim()
+          if (!token) return { ok: false, status: 401, error: 'Not authenticated. Please login under Settings > tldw.' }
+          headers['Authorization'] = `Bearer ${token}`
+        }
+        const controller = new AbortController()
+        const timeoutMs =
+          Number(cfg?.uploadRequestTimeoutMs) > 0
+            ? Number(cfg.uploadRequestTimeoutMs)
+            : Number(cfg?.requestTimeoutMs) > 0
+              ? Number(cfg.requestTimeoutMs)
+              : 10000
+        const timeout = setTimeout(() => controller.abort(), timeoutMs)
+        const resp = await fetch(url, { method, headers, body: form, signal: controller.signal })
+        clearTimeout(timeout)
+        const contentType = resp.headers.get('content-type') || ''
+        let data: any = null
+        if (contentType.includes('application/json')) data = await resp.json().catch(() => null)
+        else data = await resp.text().catch(() => null)
+        return { ok: resp.ok, status: resp.status, data }
+      } catch (e: any) {
+        return { ok: false, status: 0, error: e?.message || 'Upload failed' }
+      }
+    }
+
     browser.runtime.onMessage.addListener(async (message, sender) => {
       if (message.type === 'tldw:debug') {
         streamDebugEnabled = Boolean(message?.enable)
@@ -426,7 +502,7 @@ export default defineBackground({
             if (storeRemote) {
               // Ingest & store via multipart form
               const fields: Record<string, any> = {
-                urls: url,
+                urls: [url],
                 media_type: t,
                 perform_analysis: Boolean(common.perform_analysis),
                 perform_chunking: Boolean(common.perform_chunking),
@@ -445,10 +521,7 @@ export default defineBackground({
               if (typeof r?.document?.ocr === 'boolean') {
                 fields['pdf_parsing_engine'] = r.document.ocr ? 'pymupdf4llm' : ''
               }
-              const resp = await browser.runtime.sendMessage({
-                type: 'tldw:upload',
-                payload: { path: '/api/v1/media/add', method: 'POST', fields }
-              }) as { ok: boolean; error?: string; status?: number; data?: any } | undefined
+              const resp = await handleUpload({ path: '/api/v1/media/add', method: 'POST', fields })
               if (!resp?.ok) {
                 const msg = resp?.error || `Upload failed: ${resp?.status}`
                 throw new Error(msg)
@@ -531,15 +604,12 @@ export default defineBackground({
                 else fields[k] = v
               }
               for (const [k, v] of Object.entries(nested)) fields[k] = v
-              const resp = await browser.runtime.sendMessage({
-                type: 'tldw:upload',
-                payload: {
-                  path: '/api/v1/media/add',
-                  method: 'POST',
-                  fields,
-                  file: { name, type: f?.type || 'application/octet-stream', data: f?.data }
-                }
-              }) as { ok: boolean; error?: string; status?: number; data?: any } | undefined
+              const resp = await handleUpload({
+                path: '/api/v1/media/add',
+                method: 'POST',
+                fields,
+                file: { name, type: f?.type || 'application/octet-stream', data: f?.data }
+              })
               if (!resp?.ok) {
                 const msg = resp?.error || `Upload failed: ${resp?.status}`
                 throw new Error(msg)
@@ -548,15 +618,12 @@ export default defineBackground({
             } else {
               if (fileType.startsWith('audio/')) {
                 // Process-only audio: call audio transcription endpoint
-                const resp = await browser.runtime.sendMessage({
-                  type: 'tldw:upload',
-                  payload: {
-                    path: '/api/v1/audio/transcriptions',
-                    method: 'POST',
-                    fields: {},
-                    file: { name, type: f?.type || 'application/octet-stream', data: f?.data }
-                  }
-                }) as { ok: boolean; error?: string; status?: number; data?: any } | undefined
+                const resp = await handleUpload({
+                  path: '/api/v1/audio/transcriptions',
+                  method: 'POST',
+                  fields: {},
+                  file: { name, type: f?.type || 'application/octet-stream', data: f?.data }
+                })
                 if (!resp?.ok) {
                   const msg = resp?.error || `Upload failed: ${resp?.status}`
                   throw new Error(msg)
@@ -577,15 +644,12 @@ export default defineBackground({
                   else fields[k] = v
                 }
                 for (const [k, v] of Object.entries(nested)) fields[k] = v
-                const resp = await browser.runtime.sendMessage({
-                  type: 'tldw:upload',
-                  payload: {
-                    path: '/api/v1/media/add',
-                    method: 'POST',
-                    fields,
-                    file: { name, type: f?.type || 'application/octet-stream', data: f?.data }
-                  }
-                }) as { ok: boolean; error?: string; status?: number; data?: any } | undefined
+                const resp = await handleUpload({
+                  path: '/api/v1/media/add',
+                  method: 'POST',
+                  fields,
+                  file: { name, type: f?.type || 'application/octet-stream', data: f?.data }
+                })
                 if (!resp?.ok) {
                   const msg = resp?.error || `Upload failed: ${resp?.status}`
                   throw new Error(msg)
@@ -623,58 +687,7 @@ export default defineBackground({
           // no-op: opening the sidepanel is best-effort
         }
       } else if (message.type === 'tldw:upload') {
-        const { path, method = 'POST', fields = {}, file } = message.payload || {}
-        const storage = new Storage({ area: 'local' })
-        const cfg = await storage.get<any>('tldwConfig')
-        const isAbsolute = typeof path === 'string' && /^https?:/i.test(path)
-        if (!cfg?.serverUrl && !isAbsolute) {
-          return { ok: false, status: 400, error: 'tldw server not configured' }
-        }
-        const baseUrl = cfg?.serverUrl ? String(cfg.serverUrl).replace(/\/$/, '') : ''
-        const url = isAbsolute ? path : `${baseUrl}${path.startsWith('/') ? '' : '/'}${path}`
-        try {
-          const form = new FormData()
-          // append fields
-          for (const [k, v] of Object.entries(fields || {})) {
-            form.append(k, typeof v === 'string' ? v : JSON.stringify(v))
-          }
-          if (file?.data) {
-            const blob = new Blob([file.data], { type: file.type || 'application/octet-stream' })
-            const filename = file.name || 'file'
-            // @ts-ignore File may not exist in some workers; Blob is accepted by FormData
-            try { form.append('file', new File([blob], filename, { type: blob.type })) } catch { form.append('file', blob, filename) }
-          }
-          const headers: Record<string, string> = {}
-          if (cfg?.authMode === 'single-user') {
-            const key = (cfg?.apiKey || '').trim()
-            if (!key) {
-              return {
-                ok: false,
-                status: 401,
-                error:
-                  'Add or update your API key in Settings → tldw server, then try again.'
-              }
-            }
-            headers['X-API-KEY'] = key
-          }
-          if (cfg?.authMode === 'multi-user') {
-            const token = (cfg?.accessToken || '').trim()
-            if (!token) return { ok: false, status: 401, error: 'Not authenticated. Please login under Settings > tldw.' }
-            headers['Authorization'] = `Bearer ${token}`
-          }
-          const controller = new AbortController()
-          const timeoutMs = Number(cfg?.uploadRequestTimeoutMs) > 0 ? Number(cfg.uploadRequestTimeoutMs) : (Number(cfg?.requestTimeoutMs) > 0 ? Number(cfg.requestTimeoutMs) : 10000)
-          const timeout = setTimeout(() => controller.abort(), timeoutMs)
-          const resp = await fetch(url, { method, headers, body: form, signal: controller.signal })
-          clearTimeout(timeout)
-          const contentType = resp.headers.get('content-type') || ''
-          let data: any = null
-          if (contentType.includes('application/json')) data = await resp.json().catch(() => null)
-          else data = await resp.text().catch(() => null)
-          return { ok: resp.ok, status: resp.status, data }
-        } catch (e: any) {
-          return { ok: false, status: 0, error: e?.message || 'Upload failed' }
-        }
+        return handleUpload(message.payload || {})
       } else if (message.type === 'tldw:request') {
         const { path, method = 'GET', headers = {}, body, noAuth = false, timeoutMs: overrideTimeoutMs } = message.payload || {}
         const storage = new Storage({ area: 'local' })

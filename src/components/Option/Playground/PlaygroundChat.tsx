@@ -18,6 +18,7 @@ export const PlaygroundChat = () => {
     actionInfo,
     createChatBranch,
     temporaryChat,
+    serverChatId,
     stopStreamingRequest
   } = useMessageOption()
   const [isSourceOpen, setIsSourceOpen] = React.useState(false)
@@ -73,6 +74,8 @@ export const PlaygroundChat = () => {
             }}
             documents={message?.documents}
             actionInfo={actionInfo}
+            serverChatId={serverChatId}
+            serverMessageId={message.serverMessageId}
           />
         ))}
       </div>
