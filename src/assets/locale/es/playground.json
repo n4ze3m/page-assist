@@ -99,7 +99,8 @@
     "speechErrorTitle": "Dictation failed",
     "speechErrorBody": "Transcription request failed. Check tldw server health.",
     "speechNoText": "The transcription did not return any text.",
-    "speechMicError": "Unable to access your microphone. Check browser permissions and try again."
+    "speechMicError": "Unable to access your microphone. Check browser permissions and try again.",
+    "savedToNotes": "Transcription saved as a note."
   },
   "empty": {
     "title": "Start a new chat",
@@ -120,6 +121,15 @@
     "imageOnly": "Only images can be dropped here right now.",
     "imageHint": "Drop an image to include it in your message",
     "overlayInstruction": "Drop the image to attach it to your next reply"
+  },
+  "aria": {
+    "chatTranscript": "Chat messages"
+  },
+  "more": {
+    "history": "Chat saving",
+    "searchRag": "Search & RAG",
+    "voice": "More voice options",
+    "uploads": "Uploads & ingest"
   },
   "fileRetrievalEnabled": "Enable RAG for Documents",
   "stt": {
@@ -162,6 +172,9 @@
     "visionOff": "Vision off",
     "upload": "Attach image",
     "ingest": "Quick ingest",
+    "ingestDisabled": "Connect to your tldw server to ingest.",
+    "ingestHint": "Upload URLs or files with advanced options.",
+    "ingestSub": "Use URLs/files; download or store.",
     "streamErrorTitle": "Live captions unavailable"
   },
   "composer": {
@@ -176,6 +189,7 @@
     "captureTools": "Capture and assist tools",
     "actions": "Send options",
     "moreTools": "More tools",
+    "scrollToLatest": "Scroll to latest messages",
     "submitAria": "Send message",
     "openModelSettings": "Open current chat settings",
     "stopStreaming": "Stop streaming response",
