@@ -19,7 +19,7 @@ test.describe('Chat streaming', () => {
     await page.getByLabel('Server URL').fill(server.url)
     await page.getByText('Authentication Mode').scrollIntoViewIfNeeded()
     await page.getByText('Single User (API Key)').click()
-    await page.getByLabel('API Key').fill('test-valid-key')
+    await page.getByLabel('API Key').fill('THIS-IS-A-SECURE-KEY-123-FAKE-KEY')
     await page.getByRole('button', { name: 'Save' }).click()
 
     // Open the chat (already on options page with chat input)
@@ -33,4 +33,3 @@ test.describe('Chat streaming', () => {
     await context.close()
   })
 })
-

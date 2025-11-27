@@ -483,7 +483,11 @@ export const useMessageOption = () => {
     setMessages,
     setContext: setContextFiles,
     setSelectedSystemPrompt,
-    setSystemPrompt: currentChatModelSettings.setSystemPrompt
+    setSystemPrompt: currentChatModelSettings.setSystemPrompt,
+    serverChatId,
+    setServerChatId,
+    messages,
+    history
   })
 
   return {

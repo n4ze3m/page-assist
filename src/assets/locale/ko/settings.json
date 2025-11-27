@@ -706,8 +706,8 @@
     }
   },
   "manageKnowledge": {
-    "title": "지식 관리",
-    "heading": "지식 베이스 구성하기",
+    "title": "Knowledge QA",
+    "heading": "Knowledge QA",
     "worldBooksSettingsTitle": "World Books workspace",
     "worldBooksSettingsDescription": "World Books are managed from the World Books workspace. Use the button below to open it.",
     "worldBooksOpenWorkspace": "Open World Books workspace",

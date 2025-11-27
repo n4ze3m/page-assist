@@ -321,9 +321,13 @@ export const CurrentChatModelSettings = ({
                 allowClear
                 optionLabelProp="label"
                 popupMatchSelectWidth={false}
-                dropdownStyle={{
-                  maxHeight: "calc(100vh - 220px)",
-                  overflowY: "auto"
+                styles={{
+                  popup: {
+                    root: {
+                      maxHeight: "calc(100vh - 220px)",
+                      overflowY: "auto"
+                    }
+                  }
                 }}
                 listHeight={560}
                 filterOption={(input, option) => {

@@ -40,5 +40,18 @@
     "success": "知識新增成功"
   },
   "noEmbeddingModel": "請先從 RAG 設定頁面新增一個嵌入模型",
-  "privateModeDescription": "Firefox 隱私模式不支援將資料儲存到 IndexedDB。請在一般視窗中新增知識庫。"
+  "privateModeDescription": "Firefox 隱私模式不支援將資料儲存到 IndexedDB。請在一般視窗中新增知識庫。",
+  "rag": {
+    "searchFailed": "RAG search failed. Try again or check Diagnostics."
+  },
+  "empty": {
+    "demoTitle": "Explore Knowledge QA in demo mode",
+    "demoDescription": "This demo shows how Knowledge QA can run RAG searches over sample content. Connect your own server later to search your own transcripts and documents.",
+    "demoExample1": "Try quick RAG searches and inspect results and citations.",
+    "demoExample2": "Connect your own server to enable Knowledge QA over your real media and notes.",
+    "connectTitle": "Connect to use Knowledge QA",
+    "connectDescription": "To use Knowledge QA and RAG search, first connect to your tldw server.",
+    "connectExample1": "Open Settings → tldw server to add your server URL.",
+    "connectExample2": "Use Diagnostics if your server is running but not reachable."
+  }
 }

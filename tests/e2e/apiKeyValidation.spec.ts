@@ -29,11 +29,10 @@ test.describe('API Key validation', () => {
     await expect(page.getByText('Connection failed')).toBeVisible()
 
     // Valid key
-    await page.getByLabel('API Key').fill('test-valid-key')
+    await page.getByLabel('API Key').fill('THIS-IS-A-SECURE-KEY-123-FAKE-KEY')
     await page.getByRole('button', { name: 'Test Connection' }).click()
     await expect(page.getByText('Connected')).toBeVisible()
 
     await context.close()
   })
 })
-

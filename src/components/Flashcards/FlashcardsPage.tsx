@@ -545,6 +545,47 @@ export const FlashcardsPage: React.FC = () => {
     [t]
   )
 
+  // Deep-link support: if tldw:lastDeckId is set (e.g., from omni-search),
+  // select that deck in both Review and Manage views once decks are loaded.
+  const [pendingDeckId, setPendingDeckId] = React.useState<number | null>(() => {
+    try {
+      if (typeof window === "undefined") return null
+      const raw = window.localStorage.getItem("tldw:lastDeckId")
+      if (!raw) return null
+      const num = Number(raw)
+      return Number.isFinite(num) ? num : null
+    } catch {
+      return null
+    }
+  })
+
+  React.useEffect(() => {
+    if (!isOnline) return
+    if (pendingDeckId == null) return
+    const decks = decksQuery.data
+    if (!Array.isArray(decks) || decks.length === 0) return
+    const match = decks.find((d) => d.id === pendingDeckId)
+    if (!match) {
+      // Deck no longer exists; clear marker.
+      setPendingDeckId(null)
+      try {
+        window.localStorage.removeItem("tldw:lastDeckId")
+      } catch {
+        // ignore storage errors
+      }
+      return
+    }
+    setReviewDeckId(pendingDeckId)
+    setMDeckId(pendingDeckId)
+    setActiveTab("review")
+    setPendingDeckId(null)
+    try {
+      window.localStorage.removeItem("tldw:lastDeckId")
+    } catch {
+      // ignore storage errors
+    }
+  }, [decksQuery.data, isOnline, pendingDeckId])
+
   return (
     <div className="mx-auto max-w-6xl p-4">
       {!isOnline && (

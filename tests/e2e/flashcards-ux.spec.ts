@@ -50,7 +50,7 @@ test.describe('Flashcards workspace UX', () => {
     await page.evaluate((cfg) => new Promise<void>((resolve) => {
       // @ts-ignore
       chrome.storage.local.set({ tldwConfig: cfg }, () => resolve())
-    }), { serverUrl: server.url, authMode: 'single-user', apiKey: 'test-valid-key' })
+    }), { serverUrl: server.url, authMode: 'single-user', apiKey: 'THIS-IS-A-SECURE-KEY-123-FAKE-KEY' })
 
     // Navigate directly to Flashcards workspace
     await page.goto(`${optionsUrl}#/flashcards`)

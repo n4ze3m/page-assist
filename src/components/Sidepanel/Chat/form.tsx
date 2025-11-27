@@ -1330,13 +1330,15 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
         isOCREnabled={useOCR}
       />
       {/* Quick ingest modal */}
-      <QuickIngestModal
-        open={ingestOpen}
-        onClose={() => {
-          setIngestOpen(false)
-          requestAnimationFrame(() => quickIngestBtnRef.current?.focus())
-        }}
-      />
+      {ingestOpen && (
+        <QuickIngestModal
+          open={ingestOpen}
+          onClose={() => {
+            setIngestOpen(false)
+            requestAnimationFrame(() => quickIngestBtnRef.current?.focus())
+          }}
+        />
+      )}
     </div>
   )
 }

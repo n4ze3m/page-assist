@@ -1885,7 +1885,11 @@ export const useMessage = () => {
     setHistoryId,
     setMessages,
     setSelectedSystemPrompt,
-    setSystemPrompt: currentChatModelSettings.setSystemPrompt
+    setSystemPrompt: currentChatModelSettings.setSystemPrompt,
+    serverChatId,
+    setServerChatId,
+    messages,
+    history
   })
   return {
     messages,

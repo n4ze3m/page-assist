@@ -24,6 +24,17 @@ export const LlamacppAdminPage: React.FC = () => {
   const [actionLoading, setActionLoading] = React.useState(false)
   const [error, setError] = React.useState<string | null>(null)
 
+  const [adminGuard, setAdminGuard] = React.useState<"forbidden" | "notFound" | null>(null)
+
+  const markAdminGuardFromError = (err: any) => {
+    const msg = String(err?.message || "")
+    if (msg.includes("Request failed: 403")) {
+      setAdminGuard("forbidden")
+    } else if (msg.includes("Request failed: 404")) {
+      setAdminGuard("notFound")
+    }
+  }
+
   const loadStatus = React.useCallback(async () => {
     try {
       setLoadingStatus(true)
@@ -32,6 +43,7 @@ export const LlamacppAdminPage: React.FC = () => {
       setError(null)
     } catch (e: any) {
       setError(e?.message || "Failed to load Llama.cpp status.")
+      markAdminGuardFromError(e)
     } finally {
       setLoadingStatus(false)
     }
@@ -51,6 +63,7 @@ export const LlamacppAdminPage: React.FC = () => {
       setError(null)
     } catch (e: any) {
       setError(e?.message || "Failed to list Llama.cpp models.")
+      markAdminGuardFromError(e)
     } finally {
       setLoadingModels(false)
     }
@@ -76,6 +89,7 @@ export const LlamacppAdminPage: React.FC = () => {
       await loadStatus()
     } catch (e: any) {
       setError(e?.message || "Failed to start Llama.cpp server.")
+      markAdminGuardFromError(e)
     } finally {
       setActionLoading(false)
     }
@@ -88,6 +102,7 @@ export const LlamacppAdminPage: React.FC = () => {
       await loadStatus()
     } catch (e: any) {
       setError(e?.message || "Failed to stop Llama.cpp server.")
+      markAdminGuardFromError(e)
     } finally {
       setActionLoading(false)
     }
@@ -105,6 +120,46 @@ export const LlamacppAdminPage: React.FC = () => {
   return (
     <PageShell>
       <Space direction="vertical" size="large" className="w-full py-6">
+        {adminGuard && (
+          <Alert
+            type="warning"
+            showIcon
+            className="mb-4"
+            message={
+              adminGuard === "forbidden"
+                ? t(
+                    "settings:admin.adminGuardForbiddenTitle",
+                    "Admin access required for these controls"
+                  )
+                : t(
+                    "settings:admin.adminGuardNotFoundTitle",
+                    "Admin APIs are not available on this server"
+                  )
+            }
+            description={
+              <span>
+                {adminGuard === "forbidden"
+                  ? t(
+                      "settings:admin.adminGuardForbiddenBody",
+                      "Sign in as an admin user on your tldw server to view and manage users, roles, and system statistics."
+                    )
+                  : t(
+                      "settings:admin.adminGuardNotFoundBody",
+                      "This tldw server does not expose the /admin endpoints, or they are disabled. Upgrade or reconfigure the server to enable these views."
+                    )}{" "}
+                <a
+                  href="https://github.com/rmusser01/tldw_server#documentation--resources"
+                  target="_blank"
+                  rel="noreferrer">
+                  {t(
+                    "settings:admin.adminGuardLearnMore",
+                    "Learn more in the tldw server documentation."
+                  )}
+                </a>
+              </span>
+            }
+          />
+        )}
         <div>
           <Title level={2}>{t("option:header.adminLlamacpp", "Llama.cpp Admin")}</Title>
           <Text type="secondary">
@@ -115,105 +170,131 @@ export const LlamacppAdminPage: React.FC = () => {
           </Text>
         </div>
 
-        <Card
-          title={t("settings:admin.llamacppStatusTitle", "Llama.cpp status")}
-          loading={loadingStatus}
-          extra={
-            <Button size="small" onClick={loadStatus} disabled={loadingStatus || actionLoading}>
-              {t("common:refresh", "Refresh")}
-            </Button>
-          }>
-          {error && (
-            <Alert
-              type="error"
-              message={t("settings:admin.llamacppStatusError", "Unable to load Llama.cpp status")}
-              description={error}
-              showIcon
-              className="mb-3"
-            />
-          )}
-          {status ? (
-            <Space direction="vertical" size="small">
-              <Space align="center" size="small">
-                <Text strong>{t("settings:admin.llamacppState", "State")}:</Text>
-                <Tag color={stateColor}>{String(effectiveState)}</Tag>
-              </Space>
-              {status.model && (
-                <Space align="center" size="small">
-                  <Text strong>{t("settings:admin.llamacppActiveModel", "Active model")}:</Text>
-                  <Text code>{status.model}</Text>
-                </Space>
-              )}
-              {status.port && (
-                <Space align="center" size="small">
-                  <Text strong>{t("settings:admin.llamacppPort", "Port")}:</Text>
-                  <Text code>{String(status.port)}</Text>
-                </Space>
-              )}
-            </Space>
-          ) : !loadingStatus ? (
-            <Text type="secondary">
-              {t(
-                "settings:admin.llamacppStatusEmpty",
-                "No status information available yet. Try refreshing or starting the server."
-              )}
-            </Text>
-          ) : null}
+        {adminGuard && (
+          <Text type="secondary">
+            {t(
+              "settings:admin.adminGuardLimitedInfo",
+              "Admin-level details and controls are hidden until admin APIs are available."
+            )}
+          </Text>
+        )}
 
-          <div className="mt-4 flex flex-wrap gap-2">
-            <Button
-              type="primary"
-              onClick={handleStart}
-              loading={actionLoading}
-              disabled={!selectedModel}>
-              {t("settings:admin.llamacppStart", "Start with selected model")}
-            </Button>
-            <Button onClick={handleStop} loading={actionLoading}>
-              {t("settings:admin.llamacppStop", "Stop server")}
-            </Button>
-          </div>
-        </Card>
-
-        <Card
-          title={t("settings:admin.llamacppModelsTitle", "Available Llama.cpp models")}
-          loading={loadingModels}
-          extra={
-            <Button size="small" onClick={loadModels} disabled={loadingModels || actionLoading}>
-              {t("common:refresh", "Refresh")}
-            </Button>
-          }>
-          {models.length > 0 ? (
-            <Space direction="vertical" size="small" className="w-full">
-              <Space align="center" className="w-full">
-                <Text strong>{t("settings:admin.llamacppSelectModel", "Select model")}:</Text>
-                <Select
+        {!adminGuard && (
+          <>
+            <Card
+              title={t("settings:admin.llamacppStatusTitle", "Llama.cpp status")}
+              loading={loadingStatus}
+              extra={
+                <Button
                   size="small"
-                  value={selectedModel}
-                  onChange={(v) => setSelectedModel(v)}
-                  options={models.map((m) => ({ label: m, value: m }))}
-                  style={{ minWidth: 260 }}
+                  onClick={loadStatus}
+                  disabled={loadingStatus || actionLoading}>
+                  {t("common:refresh", "Refresh")}
+                </Button>
+              }>
+              {error && (
+                <Alert
+                  type="error"
+                  message={t(
+                    "settings:admin.llamacppStatusError",
+                    "Unable to load Llama.cpp status"
+                  )}
+                  description={error}
+                  showIcon
+                  className="mb-3"
                 />
-              </Space>
-              <List
-                size="small"
-                bordered
-                dataSource={models}
-                renderItem={(m) => (
-                  <List.Item>
-                    <Text code>{m}</Text>
-                  </List.Item>
-                )}
-              />
-            </Space>
-          ) : !loadingModels ? (
-            <Text type="secondary">
-              {t(
-                "settings:admin.llamacppModelsEmpty",
-                "No local GGUF models detected. Configure your Llama.cpp models directory on the server to see them here."
               )}
-            </Text>
-          ) : null}
-        </Card>
+              {status ? (
+                <Space direction="vertical" size="small">
+                  <Space align="center" size="small">
+                    <Text strong>{t("settings:admin.llamacppState", "State")}:</Text>
+                    <Tag color={stateColor}>{String(effectiveState)}</Tag>
+                  </Space>
+                  {status.model && (
+                    <Space align="center" size="small">
+                      <Text strong>
+                        {t("settings:admin.llamacppActiveModel", "Active model")}:
+                      </Text>
+                      <Text code>{status.model}</Text>
+                    </Space>
+                  )}
+                  {status.port && (
+                    <Space align="center" size="small">
+                      <Text strong>{t("settings:admin.llamacppPort", "Port")}:</Text>
+                      <Text code>{String(status.port)}</Text>
+                    </Space>
+                  )}
+                </Space>
+              ) : !loadingStatus ? (
+                <Text type="secondary">
+                  {t(
+                    "settings:admin.llamacppStatusEmpty",
+                    "No status information available yet. Try refreshing or starting the server."
+                  )}
+                </Text>
+              ) : null}
+
+              <div className="mt-4 flex flex-wrap gap-2">
+                <Button
+                  type="primary"
+                  onClick={handleStart}
+                  loading={actionLoading}
+                  disabled={!selectedModel}>
+                  {t("settings:admin.llamacppStart", "Start with selected model")}
+                </Button>
+                <Button onClick={handleStop} loading={actionLoading}>
+                  {t("settings:admin.llamacppStop", "Stop server")}
+                </Button>
+              </div>
+            </Card>
+
+            <Card
+              title={t("settings:admin.llamacppModelsTitle", "Available Llama.cpp models")}
+              loading={loadingModels}
+              extra={
+                <Button
+                  size="small"
+                  onClick={loadModels}
+                  disabled={loadingModels || actionLoading}>
+                  {t("common:refresh", "Refresh")}
+                </Button>
+              }>
+              {models.length > 0 ? (
+                <Space direction="vertical" size="small" className="w-full">
+                  <Space align="center" className="w-full">
+                    <Text strong>
+                      {t("settings:admin.llamacppSelectModel", "Select model")}:
+                    </Text>
+                    <Select
+                      size="small"
+                      value={selectedModel}
+                      onChange={(v) => setSelectedModel(v)}
+                      options={models.map((m) => ({ label: m, value: m }))}
+                      style={{ minWidth: 260 }}
+                    />
+                  </Space>
+                  <List
+                    size="small"
+                    bordered
+                    dataSource={models}
+                    renderItem={(m) => (
+                      <List.Item>
+                        <Text code>{m}</Text>
+                      </List.Item>
+                    )}
+                  />
+                </Space>
+              ) : !loadingModels ? (
+                <Text type="secondary">
+                  {t(
+                    "settings:admin.llamacppModelsEmpty",
+                    "No local GGUF models detected. Configure your Llama.cpp models directory on the server to see them here."
+                  )}
+                </Text>
+              ) : null}
+            </Card>
+          </>
+        )}
       </Space>
     </PageShell>
   )

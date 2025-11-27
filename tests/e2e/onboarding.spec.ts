@@ -25,7 +25,7 @@ test.describe('Onboarding wizard', () => {
 
     // Step 2: Single user + API key
     await page.getByText('Single User (API Key)').click()
-    await page.getByPlaceholder('Enter your API key').fill('test-valid-key')
+    await page.getByPlaceholder('Enter your API key').fill('THIS-IS-A-SECURE-KEY-123-FAKE-KEY')
     await page.getByRole('button', { name: /Continue/i }).click()
 
     // Step 3: Connection shows Connected

@@ -8,8 +8,10 @@ test.describe('ServerConnectionCard states', () => {
     const extPath = path.resolve('.output/chrome-mv3')
     const { context, page } = await launchWithExtension(extPath)
 
-    // Card visible with missing-config state
-    await expect(page.getByText(/Waiting for your tldw server/i)).toBeVisible()
+    // Card visible with missing-config state (headline + primary CTA)
+    await expect(
+      page.getByText(/Connect tldw Assistant to your server/i)
+    ).toBeVisible()
     // Primary CTA should clearly guide users to configure the server
     await expect(page.getByRole('button', { name: /Set up server/i })).toBeVisible()
 
@@ -31,7 +33,7 @@ test.describe('ServerConnectionCard states', () => {
     await page.evaluate((cfg) => new Promise<void>((resolve) => {
       // @ts-ignore
       chrome.storage.local.set({ tldwConfig: cfg }, () => resolve())
-    }), { serverUrl: server.url, authMode: 'single-user', apiKey: 'test-valid-key' })
+    }), { serverUrl: server.url, authMode: 'single-user', apiKey: 'THIS-IS-A-SECURE-KEY-123-FAKE-KEY' })
 
     await page.reload()
 
@@ -66,7 +68,9 @@ test.describe('ServerConnectionCard states', () => {
     const { context, page } = await launchWithExtension(extPath)
 
     // First-run: connection card should be visible with diagnostics entry point
-    await expect(page.getByText(/Waiting for your tldw server/i)).toBeVisible()
+    await expect(
+      page.getByText(/Connect tldw Assistant to your server/i)
+    ).toBeVisible()
 
     const [healthPage] = await Promise.all([
       context.waitForEvent('page'),

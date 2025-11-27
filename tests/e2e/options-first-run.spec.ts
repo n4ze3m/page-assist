@@ -3,7 +3,7 @@ import path from 'path'
 import { launchWithExtension } from './utils/extension'
 import { grantHostPermission } from './utils/permissions'
 import { MockTldwServer } from './utils/mock-server'
-const DEFAULT_TLDW_API_KEY = 'THIS-IS-A-SECURE-KEY-123-REPLACE-ME'
+const DEFAULT_TLDW_API_KEY = 'THIS-IS-A-SECURE-KEY-123-FAKE-KEY'
 
 test.describe('Options first-run and connection panel', () => {
   test('shows connection card and inline Set up server link navigates to tldw settings', async () => {

@@ -706,8 +706,8 @@
     }
   },
   "manageKnowledge": {
-    "title": "知識を管理する",
-    "heading": "知識ベースを構成する",
+    "title": "Knowledge QA",
+    "heading": "Knowledge QA",
     "worldBooksSettingsTitle": "World Books workspace",
     "worldBooksSettingsDescription": "World Books are managed from the World Books workspace. Use the button below to open it.",
     "worldBooksOpenWorkspace": "Open World Books workspace",

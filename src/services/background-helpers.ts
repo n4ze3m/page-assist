@@ -2,9 +2,44 @@ import { browser } from "wxt/browser"
 
 export const ensureSidepanelOpen = (tabId?: number) => {
   try {
-    if (typeof chrome !== "undefined" && chrome?.sidePanel?.open && tabId) {
-      chrome.sidePanel.open({ tabId })
-      return
+    if (typeof chrome !== "undefined" && chrome?.sidePanel?.open) {
+      const enableAndOpen = (id?: number) => {
+        try {
+          // Ensure the panel is enabled for this tab before opening.
+          if (chrome.sidePanel.setOptions) {
+            try {
+              chrome.sidePanel.setOptions({
+                tabId: id,
+                path: "sidepanel.html",
+                enabled: true
+              })
+            } catch {
+              // ignore setOptions failures; we'll still try to open
+            }
+          }
+          if (id) {
+            chrome.sidePanel.open({ tabId: id })
+          } else {
+            chrome.sidePanel.open({})
+          }
+        } catch {
+          // no-op
+        }
+      }
+      if (tabId) {
+        enableAndOpen(tabId)
+        return
+      }
+      // Fallback: resolve active tab if caller did not supply one
+      try {
+        chrome.tabs?.query?.({ active: true, currentWindow: true }, (tabs) => {
+          const activeTabId = tabs?.[0]?.id
+          enableAndOpen(activeTabId)
+        })
+        return
+      } catch {
+        // ignore tab query failures
+      }
     }
     const sidebar: any = (browser as any)?.sidebarAction
     if (sidebar?.open) {

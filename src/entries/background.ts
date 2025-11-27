@@ -612,7 +612,16 @@ export default defineBackground({
         return { ok: true, results: out }
       }
       if (message.type === "sidepanel") {
-        await browser.sidebarAction.open()
+        try {
+          if (import.meta.env.BROWSER === "firefox") {
+            await browser.sidebarAction.open()
+          } else {
+            const tabId = sender?.tab?.id ?? undefined
+            ensureSidepanelOpen(tabId)
+          }
+        } catch {
+          // no-op: opening the sidepanel is best-effort
+        }
       } else if (message.type === 'tldw:upload') {
         const { path, method = 'POST', fields = {}, file } = message.payload || {}
         const storage = new Storage({ area: 'local' })

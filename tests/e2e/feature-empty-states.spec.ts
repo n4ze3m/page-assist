@@ -61,7 +61,7 @@ test.describe('Feature empty states (connected vs not connected)', () => {
     await page.evaluate((cfg) => new Promise<void>((resolve) => {
       // @ts-ignore
       chrome.storage.local.set({ tldwConfig: cfg }, () => resolve())
-    }), { serverUrl: server.url, authMode: 'single-user', apiKey: 'test-valid-key' })
+    }), { serverUrl: server.url, authMode: 'single-user', apiKey: 'THIS-IS-A-SECURE-KEY-123-FAKE-KEY' })
 
     // Navigate directly to Knowledge settings; once connected and with an empty DB,
     // the per-feature empty state should be visible.
@@ -78,4 +78,3 @@ test.describe('Feature empty states (connected vs not connected)', () => {
     await server.stop()
   })
 })
-

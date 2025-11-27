@@ -57,7 +57,7 @@ test.describe('Server-backed chats UX', () => {
         tldwConfig: {
           serverUrl: serverBaseUrl,
           authMode: 'single-user',
-          apiKey: 'test-valid-key'
+          apiKey: 'THIS-IS-A-SECURE-KEY-123-FAKE-KEY'
         }
       }
     })) as any

@@ -645,10 +645,30 @@ export const Sidebar = ({
                 }}>
                 <div className="flex flex-col overflow-hidden flex-1">
                   <span className="truncate text-sm">{chat.title}</span>
-                  <span className="text-xs text-gray-500 dark:text-gray-400">
-                    {t("common:serverChatSourceLabel", {
-                      defaultValue: "Server"
-                    })}
+                  <span className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
+                    {chat.parent_conversation_id ? (
+                      <Tooltip
+                        title={t("common:serverChatForkedTooltip", {
+                          defaultValue: `Forked from chat ${String(
+                            chat.parent_conversation_id
+                          ).slice(0, 8)}`
+                        })}>
+                        <span className="inline-flex items-center gap-1">
+                          <GitBranch className="size-3" />
+                          <span>
+                            {t("common:serverChatForkedLabel", {
+                              defaultValue: "Forked chat"
+                            })}
+                          </span>
+                        </span>
+                      </Tooltip>
+                    ) : (
+                      <span>
+                        {t("common:serverChatSourceLabel", {
+                          defaultValue: "Server"
+                        })}
+                      </span>
+                    )}
                   </span>
                 </div>
               </button>

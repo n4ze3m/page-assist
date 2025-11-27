@@ -9,7 +9,8 @@ import {
   Divider,
   Tag,
   Popover,
-  Select
+  Select,
+  Tooltip
 } from "antd"
 import { useTranslation } from "react-i18next"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
@@ -34,7 +35,7 @@ import { getModels, getVoices } from "@/services/elevenlabs"
 
 const { Text, Title, Paragraph } = Typography
 const SAMPLE_TEXT =
-  "Sample: Hi there, this is the TTS playground reading a short passage so you can preview voice and speed.";
+  "Sample: Hi there, this is the TTS playground reading a short passage so you can preview voice and speed."
 
 const OPENAI_TTS_MODELS = [
   { label: "tts-1", value: "tts-1" },
@@ -386,6 +387,28 @@ const TtsPlaygroundPage: React.FC = () => {
                   {t("playground:tts.currentProvider", "Current provider")}:{" "}
                   {providerLabel}
                 </Text>
+                <div>
+                  <Tooltip
+                    title={t(
+                      "playground:tts.providerChangeHelper",
+                      "Open the provider selector above to switch between Browser, tldw, OpenAI, or Supersonic."
+                    ) as string}
+                  >
+                    <Button
+                      size="small"
+                      type="link"
+                      onClick={() => {
+                        const el = document.getElementById("tts-provider-select")
+                        if (el) {
+                          ;(el as HTMLElement).focus()
+                          ;(el as HTMLElement).click()
+                        }
+                      }}
+                    >
+                      {t("playground:tts.changeProvider", "Change provider")}
+                    </Button>
+                  </Tooltip>
+                </div>
                 {isTldw && ttsSettings && (
                   <div className="text-xs text-gray-500 dark:text-gray-400 space-y-0.5">
                     <div>
@@ -531,6 +554,14 @@ const TtsPlaygroundPage: React.FC = () => {
                   "Adjust your TTS provider, model, and voice. These settings are reused when you play audio from chat or media."
                 )}
               </Paragraph>
+              {provider === "browser" && (
+                <Text type="secondary" className="text-xs block">
+                  {t(
+                    "playground:tts.browserInfoDescription",
+                    "Browser TTS plays using your system synthesizer and does not expose an audio file. Use another provider to choose voices and see segments."
+                  )}
+                </Text>
+              )}
               <TTSModeSettings hideBorder />
             </div>
           </Space>

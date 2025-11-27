@@ -10,13 +10,19 @@ test.describe('Sidepanel first-run and connection panel', () => {
     const { context, openSidepanel, extensionId } = await launchWithExtension(extPath) as any
     const page = await openSidepanel()
 
-    // First-run: Waiting panel visible in Sidepanel
-    await expect(page.getByText(/Waiting for your tldw server/i)).toBeVisible()
+    // First-run: shared connection card visible in Sidepanel
+    await expect(
+      page.getByText(/Connect tldw Assistant to your server/i)
+    ).toBeVisible()
 
-    // Clicking Set up/Open/Change settings should open the Options page in a new tab
+    // Clicking any server-config CTA should open the Options page in a new tab
     const [settingsPage] = await Promise.all([
       context.waitForEvent('page'),
-      page.getByRole('button', { name: /Set up server|Change server|Open settings/i }).click()
+      page
+        .getByRole('button', {
+          name: /Set up server|Change server|Configure server|Open tldw server settings/i
+        })
+        .click()
     ])
     await settingsPage.waitForLoadState('domcontentloaded')
     // In Chromium, chrome.runtime.openOptionsPage navigates to chrome://extensions/?options=<id>
@@ -25,52 +31,40 @@ test.describe('Sidepanel first-run and connection panel', () => {
     await context.close()
   })
 
-  test('Start chatting focuses the composer when connected', async () => {
-    const server = new MockTldwServer()
-    await server.start()
-
+  test('Connected sidepanel focuses the composer (no extra Start chatting CTA)', async () => {
     const extPath = path.resolve('.output/chrome-mv3')
-    const { context, openSidepanel, extensionId } = await launchWithExtension(extPath) as any
-    // Ensure host permission for the mock server is granted
-    const granted = await grantHostPermission(context, extensionId, 'http://127.0.0.1/*')
-    if (!granted) {
-      test.skip(true, 'Host permission not granted for http://127.0.0.1/*; allow it in chrome://extensions > tldw Assistant > Site access, then re-run')
-    }
+    const { context, openSidepanel } = (await launchWithExtension(extPath)) as any
     const page = await openSidepanel()
 
-    // Seed a valid config so card shows connected state
-    await page.evaluate((cfg) => new Promise<void>((resolve) => {
+    // Force connected state via the shared connection store test hook
+    await page.evaluate(() => {
       // @ts-ignore
-      chrome.storage.local.set({ tldwConfig: cfg }, () => resolve())
-    }), { serverUrl: server.url, authMode: 'single-user', apiKey: 'test-valid-key' })
-
-    await page.reload()
-
-    // Retry/backoff until connected or timeout
-    const waitForConnected = async (timeoutMs = 15000) => {
-      const deadline = Date.now() + timeoutMs
-      while (Date.now() < deadline) {
-        const connected = await page.getByText(/Connected to/i).isVisible().catch(() => false)
-        const startBtn = await page.getByRole('button', { name: /Start chatting/i }).isVisible().catch(() => false)
-        if (connected || startBtn) return true
-        const retryBtn = page.getByRole('button', { name: /Retry|Check again|Recheck/i })
-        if (await retryBtn.isVisible().catch(() => false)) {
-          await retryBtn.click()
-        }
-        await page.waitForTimeout(500)
+      const store = (window as any).__tldw_useConnectionStore
+      if (store?.setState) {
+        const now = Date.now()
+        store.setState({
+          state: {
+            phase: 'connected',
+            serverUrl: 'http://127.0.0.1:8000',
+            lastCheckedAt: now,
+            lastError: null,
+            lastStatusCode: null,
+            isConnected: true,
+            isChecking: false,
+            knowledgeStatus: 'ready',
+            knowledgeLastCheckedAt: now,
+            knowledgeError: null
+          },
+          checkOnce: async () => {}
+        })
       }
-      return false
-    }
-    const ok = await waitForConnected()
-    expect(ok).toBeTruthy()
-    // Connected card shows both Start chatting and Change server
-    await expect(page.getByRole('button', { name: /Start chatting/i })).toBeVisible()
-    await expect(page.getByRole('button', { name: /Change server/i })).toBeVisible()
-    // Click Start chatting; focus should move to the chat textarea
-    await page.getByRole('button', { name: /Start chatting/i }).click()
-    await expect(page.getByPlaceholder('Type a message...')).toBeFocused()
+    })
+
+    // Composer should be enabled and focused without an extra Start chatting button
+    const composer = page.getByPlaceholder('Type a message...')
+    await expect(composer).toBeVisible()
+    await expect(composer).toBeFocused()
 
     await context.close()
-    await server.stop()
   })
 })

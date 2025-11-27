@@ -398,10 +398,26 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
       used = 'server'
       try {
         const rVer = remote?.info?.version
+        const prevVersion = specPrefs?.lastRemote?.version
+        const prevCachedAt = specPrefs?.lastRemote?.cachedAt
+        const now = Date.now()
+        const shouldReuseCachedAt =
+          prevVersion && prevVersion === rVer && typeof prevCachedAt === 'number'
+
+        // For background auto-loads (reportDiff === false), skip writing to
+        // extension storage entirely to avoid hitting MAX_WRITE_OPERATIONS_PER_MINUTE.
+        // We only persist when the user explicitly reloads or toggles settings.
+        if (!reportDiff) {
+          return
+        }
+
         const payload = {
           ...(specPrefs || {}),
           preferServer: true,
-          lastRemote: { version: rVer, cachedAt: Date.now() }
+          lastRemote: {
+            version: rVer,
+            cachedAt: shouldReuseCachedAt ? prevCachedAt : now
+          }
         }
         // Log approximate size of what we persist for debugging quota issues
         try {
@@ -469,7 +485,8 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
   }, [specPrefs])
 
   React.useEffect(() => {
-    (async () => {
+    if (!open) return
+    ;(async () => {
       // Load bundled once for diffing later
       try {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -478,12 +495,13 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
         setBundledSpec(localSpec)
       } catch {}
       // Prefer server
-      const prefer = typeof specPrefs?.preferServer === 'boolean' ? specPrefs.preferServer : true
+      const prefer =
+        typeof specPrefs?.preferServer === 'boolean' ? specPrefs.preferServer : true
       await loadSpec(prefer)
       if (specSource === 'none') await loadSpec(false)
     })()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [open])
 
   React.useEffect(() => {
     lastSavedAdvValuesRef.current = JSON.stringify(savedAdvValues || {})

@@ -71,7 +71,7 @@ type MockChat = {
 export class MockTldwServer {
   private server: http.Server
   public url!: string
-  private apiKey = 'test-valid-key'
+  private apiKey = 'THIS-IS-A-SECURE-KEY-123-FAKE-KEY'
 
   // Minimal in-memory flashcards/decks for UX tests
   private decks: MockDeck[] = []

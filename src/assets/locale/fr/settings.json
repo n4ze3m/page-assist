@@ -703,8 +703,8 @@
     }
   },
   "manageKnowledge": {
-    "title": "Gérer les connaissances",
-    "heading": "Configurer la base de connaissances",
+    "title": "Knowledge QA",
+    "heading": "Knowledge QA",
     "worldBooksSettingsTitle": "World Books workspace",
     "worldBooksSettingsDescription": "World Books are managed from the World Books workspace. Use the button below to open it.",
     "worldBooksOpenWorkspace": "Open World Books workspace",

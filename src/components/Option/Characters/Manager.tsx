@@ -14,8 +14,8 @@ import {
 } from "antd"
 import type { InputRef } from "antd"
 import React from "react"
-import { tldwClient } from "@/services/tldw/TldwApiClient"
-import { Pen, Trash2, UserCircle2, MessageCircle } from "lucide-react"
+import { tldwClient, type ServerChatSummary } from "@/services/tldw/TldwApiClient"
+import { History, Pen, Trash2, UserCircle2, MessageCircle } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useConfirmDanger } from "@/components/Common/confirm-danger"
 import { useNavigate } from "react-router-dom"
@@ -23,6 +23,8 @@ import { useStorage } from "@plasmohq/storage/hook"
 import FeatureEmptyState from "@/components/Common/FeatureEmptyState"
 import { useAntdNotification } from "@/hooks/useAntdNotification"
 import { focusComposer } from "@/hooks/useComposerFocus"
+import { useStoreMessageOption } from "@/store/option"
+import { updatePageTitle } from "@/utils/update-page-title"
 
 const MAX_NAME_LENGTH = 75
 const MAX_DESCRIPTION_LENGTH = 65
@@ -199,9 +201,39 @@ export const CharactersManager: React.FC = () => {
   const [filterTags, setFilterTags] = React.useState<string[]>([])
   const [matchAllTags, setMatchAllTags] = React.useState(false)
   const [showEditAdvanced, setShowEditAdvanced] = React.useState(false)
+  const [conversationsOpen, setConversationsOpen] = React.useState(false)
+  const [conversationCharacter, setConversationCharacter] = React.useState<any | null>(null)
+  const [characterChats, setCharacterChats] = React.useState<ServerChatSummary[]>([])
+  const [chatsError, setChatsError] = React.useState<string | null>(null)
+  const [loadingChats, setLoadingChats] = React.useState(false)
+  const [resumingChatId, setResumingChatId] = React.useState<string | null>(null)
 
   const hasFilters =
     searchTerm.trim().length > 0 || (filterTags && filterTags.length > 0)
+
+  const { setHistory, setMessages, setHistoryId, setServerChatId } =
+    useStoreMessageOption()
+
+  const characterIdentifier = (record: any): string =>
+    String(record?.id ?? record?.slug ?? record?.name ?? "")
+
+  const formatUpdatedLabel = (value?: string | null) => {
+    const fallback = t("settings:manageCharacters.conversations.unknownTime", {
+      defaultValue: "Unknown"
+    })
+    let formatted = fallback
+    if (value) {
+      try {
+        formatted = new Date(value).toLocaleString()
+      } catch {
+        formatted = String(value)
+      }
+    }
+    return t("settings:manageCharacters.conversations.updated", {
+      defaultValue: "Updated {{time}}",
+      time: formatted
+    })
+  }
 
   const {
     data,
@@ -333,6 +365,52 @@ export const CharactersManager: React.FC = () => {
       }, 0)
     }
   }, [openEdit])
+
+  React.useEffect(() => {
+    if (!conversationsOpen || !conversationCharacter) return
+    let cancelled = false
+    const load = async () => {
+      setLoadingChats(true)
+      setChatsError(null)
+      setCharacterChats([])
+      try {
+        await tldwClient.initialize()
+        const characterId = characterIdentifier(conversationCharacter)
+        const chats = await tldwClient.listChats({
+          character_id: characterId || undefined,
+          limit: 100,
+          ordering: "-updated_at"
+        })
+        if (!cancelled) {
+          const filtered = Array.isArray(chats)
+            ? chats.filter(
+                (c) =>
+                  characterId &&
+                  String(c.character_id ?? "") === String(characterId)
+              )
+            : []
+          setCharacterChats(filtered)
+        }
+      } catch {
+        if (!cancelled) {
+          setChatsError(
+            t("settings:manageCharacters.conversations.error", {
+              defaultValue:
+                "Unable to load conversations for this character."
+            })
+          )
+        }
+      } finally {
+        if (!cancelled) {
+          setLoadingChats(false)
+        }
+      }
+    }
+    load()
+    return () => {
+      cancelled = true
+    }
+  }, [conversationsOpen, conversationCharacter, t])
 
   const { mutate: updateCharacter, isPending: updating } = useMutation({
     mutationFn: async (values: any) => {
@@ -636,34 +714,59 @@ export const CharactersManager: React.FC = () => {
                           defaultValue: "Chat as {{name}}",
                           name
                         })}
-	                        onClick={() => {
-	                          const id = record.id || record.slug || record.name
-	                          setSelectedCharacter({
-	                            id,
-	                            name: record.name || record.title || record.slug,
-	                            system_prompt:
-	                              record.system_prompt ||
-	                              record.systemPrompt ||
-	                              record.instructions ||
-	                              "",
-	                            greeting:
-	                              record.greeting ||
-	                              record.first_message ||
-	                              record.greet ||
-	                              "",
-	                            avatar_url:
-	                              record.avatar_url ||
-	                              validateAndCreateImageDataUrl(record.image_base64) ||
-	                              ""
-	                          })
-	                          navigate("/")
-	                          setTimeout(() => {
-	                            focusComposer()
-	                          }, 0)
-	                        }}>
+                        onClick={() => {
+                          const id = record.id || record.slug || record.name
+                          setSelectedCharacter({
+                            id,
+                            name: record.name || record.title || record.slug,
+                            system_prompt:
+                              record.system_prompt ||
+                              record.systemPrompt ||
+                              record.instructions ||
+                              "",
+                            greeting:
+                              record.greeting ||
+                              record.first_message ||
+                              record.greet ||
+                              "",
+                            avatar_url:
+                              record.avatar_url ||
+                              validateAndCreateImageDataUrl(record.image_base64) ||
+                              ""
+                          })
+                          navigate("/")
+                          setTimeout(() => {
+                            focusComposer()
+                          }, 0)
+                        }}>
                         <MessageCircle className="w-4 h-4" />
                         <span className="hidden sm:inline text-xs font-medium">
                           {chatLabel}
+                        </span>
+                      </button>
+                    </Tooltip>
+                    <Tooltip
+                      title={t("settings:manageCharacters.actions.viewConversations", {
+                        defaultValue: "View conversations"
+                      })}>
+                      <button
+                        type="button"
+                        className="inline-flex items-center gap-1 rounded-md border border-transparent px-2 py-1 text-gray-600 transition hover:border-gray-200 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500 dark:text-gray-200 dark:hover:border-gray-500 dark:hover:bg-[#1f1f1f]"
+                        aria-label={t("settings:manageCharacters.aria.viewConversations", {
+                          defaultValue: "View conversations for {{name}}",
+                          name
+                        })}
+                        onClick={() => {
+                          setConversationCharacter(record)
+                          setCharacterChats([])
+                          setChatsError(null)
+                          setConversationsOpen(true)
+                        }}>
+                        <History className="w-4 h-4" />
+                        <span className="hidden sm:inline text-xs font-medium">
+                          {t("settings:manageCharacters.actions.viewConversations", {
+                            defaultValue: "View conversations"
+                          })}
                         </span>
                       </button>
                     </Tooltip>
@@ -763,6 +866,168 @@ export const CharactersManager: React.FC = () => {
           ]}
         />
       )}
+
+      <Modal
+        title={
+          conversationCharacter
+            ? t("settings:manageCharacters.conversations.title", {
+                defaultValue: "Conversations for {{name}}",
+                name:
+                  conversationCharacter.name ||
+                  conversationCharacter.title ||
+                  conversationCharacter.slug ||
+                  ""
+              })
+            : t("settings:manageCharacters.conversations.titleGeneric", {
+                defaultValue: "Character conversations"
+              })
+        }
+        open={conversationsOpen}
+        onCancel={() => {
+          setConversationsOpen(false)
+          setConversationCharacter(null)
+          setCharacterChats([])
+          setChatsError(null)
+          setResumingChatId(null)
+        }}
+        footer={null}
+        destroyOnClose>
+        <div className="space-y-3">
+          <p className="text-sm text-gray-600 dark:text-gray-300">
+            {t("settings:manageCharacters.conversations.subtitle", {
+              defaultValue:
+                "Select a conversation to continue as this character."
+            })}
+          </p>
+          {chatsError && (
+            <Alert type="error" showIcon message={chatsError} />
+          )}
+          {loadingChats && <Skeleton active title paragraph={{ rows: 4 }} />}
+          {!loadingChats && !chatsError && (
+            <>
+              {characterChats.length === 0 ? (
+                <div className="rounded-md border border-dashed border-gray-200 bg-gray-50 p-3 text-sm text-gray-600 dark:border-gray-800 dark:bg-[#0f1115] dark:text-gray-300">
+                  {t("settings:manageCharacters.conversations.empty", {
+                    defaultValue: "No conversations found for this character yet."
+                  })}
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  {characterChats.map((chat) => (
+                    <div
+                      key={chat.id}
+                      className="flex items-start justify-between gap-3 rounded-md border border-gray-200 bg-white p-3 shadow-sm dark:border-gray-700 dark:bg-[#0f1115]">
+                      <div className="min-w-0 space-y-1">
+                        <div className="font-medium text-gray-900 dark:text-gray-100 truncate">
+                          {chat.title ||
+                            t("settings:manageCharacters.conversations.untitled", {
+                              defaultValue: "Untitled"
+                            })}
+                        </div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400">
+                          {formatUpdatedLabel(chat.updated_at || chat.created_at)}
+                        </div>
+                      </div>
+                      <Button
+                        type="primary"
+                        size="small"
+                        loading={resumingChatId === chat.id}
+                        onClick={async () => {
+                          if (!conversationCharacter) return
+                          setResumingChatId(chat.id)
+                          try {
+                            await tldwClient.initialize()
+
+                            const assistantName =
+                              conversationCharacter.name ||
+                              conversationCharacter.title ||
+                              conversationCharacter.slug ||
+                              t("common:assistant", {
+                                defaultValue: "Assistant"
+                              })
+
+                            const messages = await tldwClient.listChatMessages(
+                              chat.id,
+                              { include_deleted: "false" } as any
+                            )
+                            const history = messages.map((m) => ({
+                              role: m.role,
+                              content: m.content
+                            }))
+                            const mappedMessages = messages.map((m) => ({
+                              isBot: m.role === "assistant",
+                              name:
+                                m.role === "assistant"
+                                  ? assistantName
+                                  : m.role === "system"
+                                    ? "System"
+                                    : "You",
+                              message: m.content,
+                              sources: [],
+                              images: [],
+                              serverMessageId: m.id,
+                              serverMessageVersion: m.version
+                            }))
+
+                            const id = characterIdentifier(conversationCharacter)
+                            setSelectedCharacter({
+                              id,
+                              name:
+                                conversationCharacter.name ||
+                                conversationCharacter.title ||
+                                conversationCharacter.slug,
+                              system_prompt:
+                                conversationCharacter.system_prompt ||
+                                conversationCharacter.systemPrompt ||
+                                conversationCharacter.instructions ||
+                                "",
+                              greeting:
+                                conversationCharacter.greeting ||
+                                conversationCharacter.first_message ||
+                                conversationCharacter.greet ||
+                                "",
+                              avatar_url:
+                                conversationCharacter.avatar_url ||
+                                validateAndCreateImageDataUrl(
+                                  conversationCharacter.image_base64
+                                ) ||
+                                ""
+                            })
+
+                            setHistoryId(null)
+                            setServerChatId(chat.id)
+                            setHistory(history)
+                            setMessages(mappedMessages)
+                            updatePageTitle(chat.title)
+                            setConversationsOpen(false)
+                            setConversationCharacter(null)
+                            navigate("/")
+                            setTimeout(() => {
+                              focusComposer()
+                            }, 0)
+                          } catch (e) {
+                            setChatsError(
+                              t("settings:manageCharacters.conversations.error", {
+                                defaultValue:
+                                  "Unable to load conversations for this character."
+                              })
+                            )
+                          } finally {
+                            setResumingChatId(null)
+                          }
+                        }}>
+                        {t("settings:manageCharacters.conversations.resume", {
+                          defaultValue: "Continue chat"
+                        })}
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      </Modal>
 
       <Modal
         title={t("settings:manageCharacters.modal.addTitle", {

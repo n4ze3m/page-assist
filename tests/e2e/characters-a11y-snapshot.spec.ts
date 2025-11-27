@@ -13,7 +13,7 @@ const seedConfig = (page: any, serverUrl: string) =>
         // @ts-ignore
         chrome.storage.local.set({ tldwConfig: cfg }, () => resolve())
       }),
-    { serverUrl, authMode: 'single-user', apiKey: 'test-valid-key' }
+    { serverUrl, authMode: 'single-user', apiKey: 'THIS-IS-A-SECURE-KEY-123-FAKE-KEY' }
   )
 
 test.describe('Characters workspace snapshots', () => {
@@ -74,4 +74,3 @@ test.describe('Characters workspace snapshots', () => {
     await server.stop()
   })
 })
-

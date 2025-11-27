@@ -47,6 +47,8 @@ export interface ServerChatSummary {
   updated_at?: string | null
   source?: string | null
   character_id?: string | number | null
+  parent_conversation_id?: string | null
+  root_id?: string | null
 }
 
 export interface ServerChatMessage {
@@ -89,6 +91,88 @@ export interface TldwEmbeddingProvidersConfig {
     name: string
     models: string[]
   }[]
+}
+
+// Admin / RBAC types
+export interface AdminUserSummary {
+  id: number
+  uuid: string
+  username: string
+  email: string
+  role: string
+  is_active: boolean
+  is_verified: boolean
+  created_at: string
+  last_login?: string | null
+  storage_quota_mb: number
+  storage_used_mb: number
+}
+
+export interface AdminUserListResponse {
+  users: AdminUserSummary[]
+  total: number
+  page: number
+  limit: number
+  pages: number
+}
+
+export interface AdminUserUpdateRequest {
+  email?: string
+  role?: string
+  is_active?: boolean
+  is_verified?: boolean
+  is_locked?: boolean
+  storage_quota_mb?: number
+}
+
+export interface AdminRole {
+  id: number
+  name: string
+  description?: string | null
+  is_system?: boolean
+}
+
+// MLX admin types
+export interface MlxStatusConfig {
+  device?: string | null
+  dtype?: string | null
+  compile?: boolean
+  warmup?: boolean
+  max_seq_len?: number | null
+  max_batch_size?: number | null
+}
+
+export interface MlxStatus {
+  active: boolean
+  model: string | null
+  loaded_at: number | string | null
+  supports_embeddings: boolean
+  warmup_completed: boolean
+  max_concurrent: number
+  config?: MlxStatusConfig
+}
+
+export interface MlxLoadRequest {
+  model_path?: string
+  max_seq_len?: number
+  max_batch_size?: number
+  device?: string
+  dtype?: string
+  quantization?: string
+  compile?: boolean
+  warmup?: boolean
+  prompt_template?: string
+  revision?: string
+  trust_remote_code?: boolean
+  tokenizer?: string
+  adapter?: string
+  adapter_weights?: string
+  max_kv_cache_size?: number
+  max_concurrent?: number
+}
+
+export interface MlxUnloadRequest {
+  reason?: string
 }
 
 export class TldwApiClient {
@@ -474,12 +558,88 @@ export class TldwApiClient {
   async getLlmProviders(
     includeDeprecated = false
   ): Promise<any> {
-    const query = this.buildQuery(
-      includeDeprecated ? { include_deprecated: true } : {}
-    )
+    const query = this.buildQuery(includeDeprecated ? { include_deprecated: true } : {})
     return await bgRequest<any>({
       path: `/api/v1/llm/providers${query}`,
       method: "GET"
+    })
+  }
+
+  // MLX admin helpers
+  async getMlxStatus(): Promise<MlxStatus> {
+    return await bgRequest<MlxStatus>({
+      path: "/api/v1/llm/providers/mlx/status",
+      method: "GET"
+    })
+  }
+
+  async loadMlxModel(payload: MlxLoadRequest): Promise<MlxStatus> {
+    return await bgRequest<MlxStatus>({
+      path: "/api/v1/llm/providers/mlx/load",
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: payload
+    })
+  }
+
+  async unloadMlxModel(payload?: MlxUnloadRequest): Promise<{ message?: string }> {
+    return await bgRequest<{ message?: string }>({
+      path: "/api/v1/llm/providers/mlx/unload",
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: payload || {}
+    })
+  }
+
+  async listAdminUsers(params?: {
+    page?: number
+    limit?: number
+    role?: string
+    is_active?: boolean
+    search?: string
+  }): Promise<AdminUserListResponse> {
+    const query = this.buildQuery(params as Record<string, any>)
+    return await bgRequest<AdminUserListResponse>({
+      path: `/api/v1/admin/users${query}`,
+      method: "GET"
+    })
+  }
+
+  async updateAdminUser(
+    userId: number,
+    payload: AdminUserUpdateRequest
+  ): Promise<{ message: string }> {
+    return await bgRequest<{ message: string }>({
+      path: `/api/v1/admin/users/${userId}`,
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: payload
+    })
+  }
+
+  async listAdminRoles(): Promise<AdminRole[]> {
+    return await bgRequest<AdminRole[]>({
+      path: "/api/v1/admin/roles",
+      method: "GET"
+    })
+  }
+
+  async createAdminRole(
+    name: string,
+    description?: string
+  ): Promise<AdminRole> {
+    return await bgRequest<AdminRole>({
+      path: "/api/v1/admin/roles",
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: { name, description }
+    })
+  }
+
+  async deleteAdminRole(roleId: number): Promise<{ message: string }> {
+    return await bgRequest<{ message: string }>({
+      path: `/api/v1/admin/roles/${roleId}`,
+      method: "DELETE"
     })
   }
 
@@ -834,7 +994,10 @@ export class TldwApiClient {
         updated_at: updated_at ? String(updated_at) : null,
         source: c.source ?? null,
         character_id:
-          c.character_id ?? c.characterId ?? null
+          c.character_id ?? c.characterId ?? null,
+        parent_conversation_id:
+          c.parent_conversation_id ?? c.parentConversationId ?? null,
+        root_id: c.root_id ?? c.rootId ?? null
       } as ServerChatSummary
     })
   }

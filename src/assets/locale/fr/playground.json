@@ -77,6 +77,8 @@
     "playDisabledNoText": "Enter text to enable Play.",
     "playDisabledTtsOff": "Enable text-to-speech above to play audio.",
     "stopDisabled": "Stop activates after audio starts.",
+    "providerChangeHelper": "Open the provider selector above to switch between Browser, tldw, OpenAI, or Supersonic.",
+    "changeProvider": "Change provider",
     "title": "TTS Playground",
     "subtitle": "Try out text-to-speech and tweak providers, models, and voices.",
     "currentProvider": "Current provider",

@@ -20,6 +20,7 @@ function Markdown({
   className?: string
 }) {
   const [checkWideMode] = useStorage("checkWideMode", false)
+  const blockIndexRef = React.useRef(0)
   if (checkWideMode) {
     className += " max-w-none"
   }
@@ -36,10 +37,12 @@ function Markdown({
           },
           code({ node, inline, className, children, ...props }) {
             const match = /language-(\w+)/.exec(className || "")
+             const blockIndex = blockIndexRef.current++
             return !inline ? (
               <CodeBlock
                 language={match ? match[1] : ""}
                 value={String(children).replace(/\n$/, "")}
+                blockIndex={blockIndex}
               />
             ) : (
               <code className={`${className} font-semibold`} {...props}>

@@ -1,6 +1,6 @@
 import React from "react"
 import { useStorage } from "@plasmohq/storage/hook"
-import { CogIcon, Gauge, UserCircle2 } from "lucide-react"
+import { CogIcon, Gauge, Mic, UserCircle2 } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useLocation, NavLink, useNavigate } from "react-router-dom"
 import { ModelSelect } from "../Common/ModelSelect"
@@ -42,6 +42,8 @@ import type { Character } from "@/types/character"
 import type { TFunction } from "i18next"
 import { Link } from "react-router-dom"
 import { hasPromptStudio } from "@/services/prompt-studio"
+import OmniSearchBar from "../Common/OmniSearchBar"
+import { useOmniSearchDeps } from "@/hooks/useOmniSearchDeps"
 
 const classNames = (...classes: (string | false | null | undefined)[]) =>
   classes.filter(Boolean).join(" ")
@@ -111,6 +113,7 @@ export const Header: React.FC<Props> = ({
     temporaryChat,
     serverChatId
   } = useMessageOption()
+  const omniDeps = useOmniSearchDeps()
   const isOnline = useServerOnline()
   const {
     data: models,
@@ -386,20 +389,26 @@ export const Header: React.FC<Props> = ({
           }
         ]
       },
+  {
+    title: t("option:header.groupWorkspace", "Workspace"),
+    items: [
       {
-        title: t("option:header.groupWorkspace", "Workspace"),
-        items: [
-          {
-            type: "link" as const,
-            to: "/evaluations",
-            icon: Microscope,
-            label: t("option:header.evaluations", "Evaluations")
-          },
-          {
-            type: "link" as const,
-            to: "/tts",
-            icon: Gauge,
-            label: t("option:tts.playground", "TTS Playground")
+        type: "link" as const,
+        to: "/evaluations",
+        icon: Microscope,
+        label: t("option:header.evaluations", "Evaluations")
+      },
+      {
+        type: "link" as const,
+        to: "/stt",
+        icon: Mic,
+        label: t("option:header.modeStt", "STT Playground")
+      },
+      {
+        type: "link" as const,
+        to: "/tts",
+        icon: Gauge,
+        label: t("option:tts.playground", "TTS Playground")
           },
           {
             type: "link" as const,
@@ -549,104 +558,116 @@ export const Header: React.FC<Props> = ({
           onToggleSidebar={() => setSidebarOpen(true)}
           showBack={pathname !== "/"}
           isRTL={isRTL}>
-          <div className="flex w-full items-center justify-between gap-3 min-w-0">
-            <div className="flex items-center gap-3 min-w-0">
+          <div className="flex w-full items-center gap-3 min-w-0">
+            <div className="flex items-center gap-3 min-w-0 flex-shrink-0">
               <NewChat clearChat={clearChat} />
-            {isChatRoute && (
-              <>
-                <button
-                  type="button"
-                  onClick={() => setOpenModelSettings(true)}
-                  className="inline-flex items-center gap-1 rounded-md border border-transparent px-2 py-1 text-xs text-gray-600 transition hover:border-gray-300 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-amber-500 dark:text-gray-200 dark:hover:border-gray-500 dark:hover:bg-[#1f1f1f]"
-                >
-                  <Gauge className="h-4 w-4" aria-hidden="true" />
-                  <span className="hidden sm:inline">
-                    {t("option:header.modelSettings", "Model settings")}
-                  </span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => navigate("/settings/health")}
-                  className="inline-flex items-center gap-1 rounded-md border border-transparent px-2 py-1 text-xs text-gray-600 transition hover:border-gray-300 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-amber-500 dark:text-gray-200 dark:hover:border-gray-500 dark:hover:bg-[#1f1f1f]"
-                >
-                  <Microscope className="h-4 w-4" aria-hidden="true" />
-                  <span className="hidden sm:inline">
-                    {t("settings:healthSummary.diagnostics", "Diagnostics")}
-                  </span>
-                </button>
-              </>
-            )}
-            {/* GitHub link moved to right-side cluster */}
-            {!temporaryChat && historyId && historyId !== "temp" && (
-              <div className="hidden min-w-[160px] max-w-[280px] lg:block">
-                {isEditingTitle ? (
-                  <Input
-                    size="small"
-                    autoFocus
-                    value={chatTitle}
-                    onChange={(e) => setChatTitle(e.target.value)}
-                    onPressEnter={async () => {
-                      setIsEditingTitle(false)
-                      await saveTitle(chatTitle)
-                    }}
-                    onBlur={async () => {
-                      setIsEditingTitle(false)
-                      await saveTitle(chatTitle)
-                    }}
-                  />
-                ) : (
+              {isChatRoute && (
+                <>
                   <button
                     type="button"
-                    onClick={() => setIsEditingTitle(true)}
-                    className="truncate text-left text-sm text-gray-700 hover:underline dark:text-gray-200"
-                    title={chatTitle || "Untitled"}
+                    onClick={() => setOpenModelSettings(true)}
+                    className="inline-flex items-center gap-1 rounded-md border border-transparent px-2 py-1 text-xs text-gray-600 transition hover:border-gray-300 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-amber-500 dark:text-gray-200 dark:hover:border-gray-500 dark:hover:bg-[#1f1f1f]"
                   >
-                    {chatTitle || t("option:header.untitledChat", "Untitled")}
+                    <Gauge className="h-4 w-4" aria-hidden="true" />
+                    <span className="hidden sm:inline">
+                      {t("option:header.modelSettings", "Model settings")}
+                    </span>
                   </button>
-                )}
-              </div>
-            )}
-            {serverChatId && (
-              <span
-                className="hidden md:inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-xs text-emerald-700 shadow-sm dark:border-emerald-500/50 dark:bg-emerald-500/10 dark:text-emerald-100"
-                title={t(
-                  "option:header.serverBackedTooltip",
-                  "Messages in this chat are also saved on your tldw server."
-                )}>
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 dark:bg-emerald-300" />
-                {t("option:header.serverBackedLabel", "Server-backed chat")}
-              </span>
-            )}
-            {/* Status chips for current selections */}
-            <div className="hidden md:flex items-center gap-2">
-              {selectedCharacter?.name && (
-                <span className="inline-flex items-center gap-2 rounded-full border border-blue-100 bg-blue-50 px-2 py-0.5 text-xs text-blue-700 shadow-sm dark:border-blue-400/40 dark:bg-blue-500/10 dark:text-blue-100">
-                  {selectedCharacter?.avatar_url ? (
-                    <img
-                      src={selectedCharacter.avatar_url}
-                      className="h-4 w-4 rounded-full"
+                  <button
+                    type="button"
+                    onClick={() => navigate("/settings/health")}
+                    className="inline-flex items-center gap-1 rounded-md border border-transparent px-2 py-1 text-xs text-gray-600 transition hover:border-gray-300 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-amber-500 dark:text-gray-200 dark:hover:border-gray-500 dark:hover:bg-[#1f1f1f]"
+                  >
+                    <Microscope className="h-4 w-4" aria-hidden="true" />
+                    <span className="hidden sm:inline">
+                      {t("settings:healthSummary.diagnostics", "Diagnostics")}
+                    </span>
+                  </button>
+                </>
+              )}
+              {/* GitHub link moved to right-side cluster */}
+              {!temporaryChat && historyId && historyId !== "temp" && (
+                <div className="hidden min-w-[160px] max-w-[280px] lg:block">
+                  {isEditingTitle ? (
+                    <Input
+                      size="small"
+                      autoFocus
+                      value={chatTitle}
+                      onChange={(e) => setChatTitle(e.target.value)}
+                      onPressEnter={async () => {
+                        setIsEditingTitle(false)
+                        await saveTitle(chatTitle)
+                      }}
+                      onBlur={async () => {
+                        setIsEditingTitle(false)
+                        await saveTitle(chatTitle)
+                      }}
                     />
                   ) : (
-                    <UserCircle2 className="h-4 w-4" />
+                    <button
+                      type="button"
+                      onClick={() => setIsEditingTitle(true)}
+                      className="truncate text-left text-sm text-gray-700 hover:underline dark:text-gray-200"
+                      title={chatTitle || "Untitled"}
+                    >
+                      {chatTitle || t("option:header.untitledChat", "Untitled")}
+                    </button>
                   )}
-                  <span className="max-w-[140px] truncate">
-                    {selectedCharacter.name}
-                  </span>
+                </div>
+              )}
+              {serverChatId && (
+                <span
+                  className="hidden md:inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-xs text-emerald-700 shadow-sm dark:border-emerald-500/50 dark:bg-emerald-500/10 dark:text-emerald-100"
+                  title={t(
+                    "option:header.serverBackedTooltip",
+                    "Messages in this chat are also saved on your tldw server."
+                  )}>
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 dark:bg-emerald-300" />
+                  {t("option:header.serverBackedLabel", "Server-backed chat")}
                 </span>
               )}
-              {(selectedSystemPrompt || selectedQuickPrompt) && (
-                <span className="inline-flex items-center gap-1 rounded-full border border-gray-200 bg-white px-2 py-0.5 text-xs text-gray-700 shadow-sm dark:border-gray-700 dark:bg-[#1f1f1f] dark:text-gray-300">
-                  {t("option:header.promptLabel", "Prompt")}:
-                  <span className="max-w-[140px] truncate">
-                    {selectedSystemPrompt
-                      ? (getPromptInfoById(selectedSystemPrompt)?.title || t("option:header.systemPrompt", "System prompt"))
-                      : t("option:header.customPrompt", "Custom")}
+              {/* Status chips for current selections */}
+              <div className="hidden md:flex items-center gap-2">
+                {selectedCharacter?.name && (
+                  <span className="inline-flex items-center gap-2 rounded-full border border-blue-100 bg-blue-50 px-2 py-0.5 text-xs text-blue-700 shadow-sm dark:border-blue-400/40 dark:bg-blue-500/10 dark:text-blue-100">
+                    {selectedCharacter?.avatar_url ? (
+                      <img
+                        src={selectedCharacter.avatar_url}
+                        className="h-4 w-4 rounded-full"
+                      />
+                    ) : (
+                      <UserCircle2 className="h-4 w-4" />
+                    )}
+                    <span className="max-w-[140px] truncate">
+                      {selectedCharacter.name}
+                    </span>
                   </span>
+                )}
+                {(selectedSystemPrompt || selectedQuickPrompt) && (
+                  <span className="inline-flex items-center gap-1 rounded-full border border-gray-200 bg-white px-2 py-0.5 text-xs text-gray-700 shadow-sm dark:border-gray-700 dark:bg-[#1f1f1f] dark:text-gray-300">
+                    {t("option:header.promptLabel", "Prompt")}:
+                    <span className="max-w-[140px] truncate">
+                      {selectedSystemPrompt
+                        ? (getPromptInfoById(selectedSystemPrompt)?.title || t("option:header.systemPrompt", "System prompt"))
+                        : t("option:header.customPrompt", "Custom")}
+                    </span>
+                  </span>
+                )}
+              </div>
+            </div>
+            <div className="flex-1 min-w-[160px] flex justify-center">
+              <OmniSearchBar deps={omniDeps} />
+            </div>
+            <div className="hidden sm:flex items-center gap-3 flex-shrink-0">
+              <button
+                type="button"
+                onClick={() => navigate("/settings/tldw")}
+                className="inline-flex items-center gap-1 rounded-md border border-transparent px-2 py-1 text-xs text-gray-600 transition hover:border-gray-300 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-amber-500 dark:text-gray-200 dark:hover:border-gray-500 dark:hover:bg-[#1f1f1f]">
+                <CogIcon className="h-4 w-4" aria-hidden="true" />
+                <span className="hidden sm:inline">
+                  {t("option:header.serverSettings", "Settings")}
                 </span>
-              )}
-            </div>
-            </div>
-            <div className="hidden sm:flex items-center gap-3">
+              </button>
               <div className="flex items-center gap-2">
                 <img
                   src={logoImage}
@@ -657,17 +678,6 @@ export const Header: React.FC<Props> = ({
                   {t("common:pageAssist", "tldw Assistant")}
                 </span>
               </div>
-              {selectedModel && (
-                <span className="inline-flex items-center gap-1 rounded-full border border-gray-200 bg-white px-2 py-0.5 text-xs text-gray-700 shadow-sm dark:border-gray-700 dark:bg-[#1f1f1f] dark:text-gray-300">
-                  {t("option:header.modelLabel", "Model")}:
-                  <span className="max-w-[140px] truncate">
-                    {(() => {
-                      const m = models?.find((m) => m.model === selectedModel)
-                      return m?.nickname || m?.model || selectedModel
-                    })()}
-                  </span>
-                </span>
-              )}
               <button
                 type="button"
                 onClick={() => {
@@ -683,15 +693,17 @@ export const Header: React.FC<Props> = ({
                 aria-label={t("option:githubRepository", "GitHub Repository") as string}>
                 <Github className="h-4 w-4" aria-hidden="true" />
               </button>
-              <button
-                type="button"
-                onClick={() => navigate("/settings/tldw")}
-                className="inline-flex items-center gap-1 rounded-md border border-transparent px-2 py-1 text-xs text-gray-600 transition hover:border-gray-300 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-amber-500 dark:text-gray-200 dark:hover:border-gray-500 dark:hover:bg-[#1f1f1f]">
-                <CogIcon className="h-4 w-4" aria-hidden="true" />
-                <span className="hidden sm:inline">
-                  {t("option:header.serverSettings", "Server settings")}
+              {selectedModel && (
+                <span className="inline-flex items-center gap-1 rounded-full border border-gray-200 bg-white px-2 py-0.5 text-xs text-gray-700 shadow-sm dark:border-gray-700 dark:bg-[#1f1f1f] dark:text-gray-300">
+                  {t("option:header.modelLabel", "Model")}:
+                  <span className="max-w-[140px] truncate">
+                    {(() => {
+                      const m = models?.find((m) => m.model === selectedModel)
+                      return m?.nickname || m?.model || selectedModel
+                    })()}
+                  </span>
                 </span>
-              </button>
+              )}
             </div>
           </div>
         </PrimaryToolbar>
@@ -1164,13 +1176,15 @@ export const Header: React.FC<Props> = ({
         </div>
       </div>
 
-      <QuickIngestModal
-        open={quickIngestOpen}
-        onClose={() => {
-          setQuickIngestOpen(false)
-          requestAnimationFrame(() => quickIngestBtnRef.current?.focus())
-        }}
-      />
+      {quickIngestOpen && (
+        <QuickIngestModal
+          open={quickIngestOpen}
+          onClose={() => {
+            setQuickIngestOpen(false)
+            requestAnimationFrame(() => quickIngestBtnRef.current?.focus())
+          }}
+        />
+      )}
     </header>
   )
 }

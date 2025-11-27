@@ -489,7 +489,13 @@ export const TTSModeSettings = ({ hideBorder }: { hideBorder?: boolean }) => {
         </div>
 
         <div className="flex justify-end">
-          <SaveButton btnType="submit" />
+          <SaveButton
+            btnType="submit"
+            disabled={!form.isDirty()}
+            className="disabled:cursor-not-allowed"
+            text={form.isDirty() ? "save" : "saved"}
+            textOnSave="saved"
+          />
         </div>
       </form>
     </div>

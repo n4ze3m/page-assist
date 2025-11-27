@@ -53,7 +53,7 @@
     "modeShortcutHint": "{{shortcut}} to switch",
     "quickIngest": "Quick ingest",
     "modelSettings": "Model settings",
-    "serverSettings": "Server settings",
+    "serverSettings": "Settings",
     "more": "AI tools",
     "moreMenu": {
       "title": "Advanced tools",
@@ -65,7 +65,8 @@
     "adminMlx": "MLX LM Admin",
     "toolsMenu": "Chat tools",
     "serverBackedLabel": "Server-backed chat",
-    "serverBackedTooltip": "Messages in this chat are also saved on your tldw server."
+    "serverBackedTooltip": "Messages in this chat are also saved on your tldw server.",
+    "omniSearchPlaceholder": "Search screens, chats, media, notes…"
   },
   "promptStudio": {
     "title": "Prompt Studio Playground",

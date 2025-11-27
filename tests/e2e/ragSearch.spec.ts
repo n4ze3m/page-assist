@@ -16,7 +16,7 @@ test.describe('RAG search in sidepanel', () => {
     await page.getByLabel('Server URL').fill(server.url)
     await page.getByText('Authentication Mode').scrollIntoViewIfNeeded()
     await page.getByText('Single User (API Key)').click()
-    await page.getByLabel('API Key').fill('test-valid-key')
+    await page.getByLabel('API Key').fill('THIS-IS-A-SECURE-KEY-123-FAKE-KEY')
     await page.getByRole('button', { name: 'Save' }).click()
 
     // Open sidepanel UI

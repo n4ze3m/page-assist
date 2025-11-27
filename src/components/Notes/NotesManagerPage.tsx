@@ -360,6 +360,35 @@ const NotesManagerPage: React.FC = () => {
     return () => window.removeEventListener('beforeunload', handler)
   }, [isDirty])
 
+  // Deep-link support: if tldw:lastNoteId is set (e.g., from omni-search),
+  // automatically load that note once when the list is available.
+  const [pendingNoteId, setPendingNoteId] = React.useState<string | null>(() => {
+    try {
+      if (typeof window === "undefined") return null
+      const raw = window.localStorage.getItem("tldw:lastNoteId")
+      return raw || null
+    } catch {
+      return null
+    }
+  })
+
+  React.useEffect(() => {
+    if (!isOnline) return
+    if (!pendingNoteId) return
+    if (!Array.isArray(data)) return
+    if (selectedId != null) return
+
+    ;(async () => {
+      await handleSelectNote(pendingNoteId)
+      setPendingNoteId(null)
+      try {
+        window.localStorage.removeItem("tldw:lastNoteId")
+      } catch {
+        // ignore storage errors
+      }
+    })()
+  }, [data, handleSelectNote, isOnline, pendingNoteId, selectedId])
+
   return (
     <div className="w-full h-full flex flex-col lg:flex-row gap-4 mt-16">
       {/* Left: search + list */}
