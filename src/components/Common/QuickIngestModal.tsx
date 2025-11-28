@@ -1,9 +1,9 @@
 import React from 'react'
-import { Modal, Button, Input, Select, Space, Switch, Typography, Divider, List, Tag, message, Collapse, InputNumber, Tooltip as AntTooltip, Spin } from 'antd'
+import { Modal, Button, Input, Select, Space, Switch, Typography, List, Tag, message, Collapse, InputNumber, Tooltip as AntTooltip, Spin, Progress, Drawer } from 'antd'
 import { useTranslation } from 'react-i18next'
 import { browser } from "wxt/browser"
 import { tldwClient } from '@/services/tldw/TldwApiClient'
-import { HelpCircle, Headphones, Layers, Database, FileText, Film, Cookie, Info, Clock, Grid, BookText } from 'lucide-react'
+import { HelpCircle, Headphones, Layers, Database, FileText, Film, Cookie, Info, Clock, Grid, BookText, Link2, File as FileIcon, AlertTriangle } from 'lucide-react'
 import { useStorage } from '@plasmohq/storage/hook'
 import { useConfirmDanger } from '@/components/Common/confirm-danger'
 import { defaultEmbeddingModelForRag } from '@/services/ollama'
@@ -24,6 +24,18 @@ type ResultItem = { id: string; status: 'ok' | 'error'; url?: string; fileName?:
 type Props = {
   open: boolean
   onClose: () => void
+}
+
+const isLikelyUrl = (raw: string) => {
+  const val = (raw || '').trim()
+  if (!val) return false
+  try {
+    // eslint-disable-next-line no-new
+    new URL(val)
+    return true
+  } catch {
+    return false
+  }
 }
 
 function detectTypeFromUrl(url: string): Entry['type'] {
@@ -114,7 +126,117 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
   const [processedCount, setProcessedCount] = React.useState<number>(0)
   const [liveTotalCount, setLiveTotalCount] = React.useState<number>(0)
   const [ragEmbeddingLabel, setRagEmbeddingLabel] = React.useState<string | null>(null)
+  const [runStartedAt, setRunStartedAt] = React.useState<number | null>(null)
+  const [pendingUrlInput, setPendingUrlInput] = React.useState<string>('')
+  const [selectedRowId, setSelectedRowId] = React.useState<string | null>(null)
+  const [selectedFileIndex, setSelectedFileIndex] = React.useState<number | null>(null)
+  const [inspectorOpen, setInspectorOpen] = React.useState<boolean>(false)
   const confirmDanger = useConfirmDanger()
+
+  const formatBytes = React.useCallback((bytes?: number) => {
+    if (!bytes || Number.isNaN(bytes)) return ''
+    const units = ['B', 'KB', 'MB', 'GB']
+    let v = bytes
+    let u = 0
+    while (v >= 1024 && u < units.length - 1) {
+      v /= 1024
+      u += 1
+    }
+    return `${v.toFixed(v >= 10 ? 0 : 1)} ${units[u]}`
+  }, [])
+
+  const fileTypeFromName = React.useCallback((f: File): Entry['type'] => {
+    const name = (f.name || '').toLowerCase()
+    if (name.match(/\.(mp3|wav|flac|m4a|aac)$/)) return 'audio'
+    if (name.match(/\.(mp4|mov|mkv|webm)$/)) return 'video'
+    if (name.match(/\.(pdf)$/)) return 'pdf'
+    if (name.match(/\.(doc|docx|txt|rtf|md|epub)$/)) return 'document'
+    return 'auto'
+  }, [])
+
+  const typeIcon = React.useCallback((type: Entry['type']) => {
+    const cls = 'w-4 h-4 text-gray-500'
+    switch (type) {
+      case 'audio':
+        return <Headphones className={cls} />
+      case 'video':
+        return <Film className={cls} />
+      case 'pdf':
+      case 'document':
+        return <FileText className={cls} />
+      case 'html':
+        return <Link2 className={cls} />
+      default:
+        return <FileIcon className={cls} />
+    }
+  }, [])
+
+  const statusForUrlRow = React.useCallback((row: Entry) => {
+    const raw = (row.url || '').trim()
+    if (raw && !isLikelyUrl(raw)) {
+      return { label: 'Needs review', color: 'orange', reason: 'Invalid URL format' }
+    }
+    const custom =
+      row.type !== 'auto' ||
+      (row.audio && Object.keys(row.audio).length > 0) ||
+      (row.document && Object.keys(row.document).length > 0) ||
+      (row.video && Object.keys(row.video).length > 0)
+    return {
+      label: custom ? 'Custom' : 'Default',
+      color: custom ? 'blue' : 'default' as const,
+      reason: custom ? 'Custom type or options' : undefined
+    }
+  }, [])
+
+  const statusForFile = React.useCallback((file: File) => {
+    const sizeCap = 500 * 1024 * 1024 // 500MB soft guidance
+    if (file.size && file.size > sizeCap) {
+      return { label: 'Needs review', color: 'orange', reason: 'File is over 500MB' }
+    }
+    return { label: 'Default', color: 'default' as const }
+  }, [])
+
+  const addUrlsFromInput = React.useCallback(
+    (text: string) => {
+      const parts = text
+        .split(/[\n,]+/)
+        .map((s) => s.trim())
+        .filter(Boolean)
+      if (parts.length === 0) return
+      const entries = parts.map((u) => ({
+        id: crypto.randomUUID(),
+        url: u,
+        type: detectTypeFromUrl(u)
+      }))
+      setRows((prev) => [...prev, ...entries])
+      setPendingUrlInput('')
+      setSelectedRowId(entries[0].id)
+      setSelectedFileIndex(null)
+      messageApi.success(`Added ${entries.length} URL${entries.length === 1 ? '' : 's'} to the queue.`)
+    },
+    [messageApi]
+  )
+
+  const clearAllQueues = React.useCallback(() => {
+    setRows([{ id: crypto.randomUUID(), url: '', type: 'auto' }])
+    setLocalFiles([])
+    setSelectedRowId(null)
+    setSelectedFileIndex(null)
+    setPendingUrlInput('')
+  }, [])
+
+  const pasteFromClipboard = React.useCallback(async () => {
+    try {
+      const text = await navigator.clipboard.readText()
+      if (!text) {
+        messageApi.info('Clipboard is empty.')
+        return
+      }
+      addUrlsFromInput(text)
+    } catch {
+      messageApi.error('Unable to read from clipboard. Check browser permissions.')
+    }
+  }, [addUrlsFromInput, messageApi])
 
   const persistSpecPrefs = React.useCallback(
     (next: { preferServer?: boolean; lastRemote?: { version?: string; cachedAt?: number } }) => {
@@ -127,7 +249,12 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
   )
 
   const addRow = () => setRows((r) => [...r, { id: crypto.randomUUID(), url: '', type: 'auto' }])
-  const removeRow = (id: string) => setRows((r) => r.filter((x) => x.id !== id))
+  const removeRow = (id: string) => {
+    setRows((r) => r.filter((x) => x.id !== id))
+    if (selectedRowId === id) {
+      setSelectedRowId(null)
+    }
+  }
   const updateRow = (id: string, patch: Partial<Entry>) => setRows((r) => r.map((x) => (x.id === id ? { ...x, ...patch } : x)))
 
   // Default OCR to on for document/PDF rows so users get best extraction without extra clicks
@@ -143,13 +270,6 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
     })
     if (changed) setRows(next)
   }, [rows])
-
-  const bulkPaste = (text: string) => {
-    const lines = text.split(/\r?\n/).map((s) => s.trim()).filter(Boolean)
-    if (lines.length === 0) return
-    const next: Entry[] = lines.map((u) => ({ id: crypto.randomUUID(), url: u, type: detectTypeFromUrl(u) }))
-    setRows(next)
-  }
 
   // Resolve current RAG embedding model for display in Advanced section
   React.useEffect(() => {
@@ -187,6 +307,7 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
     setTotalPlanned(total)
     setProcessedCount(0)
     setLiveTotalCount(total)
+    setRunStartedAt(Date.now())
     setRunning(true)
     setResults([])
     try {
@@ -234,12 +355,14 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
         const msg = resp?.error || "Quick ingest failed. Check tldw server settings and try again."
         messageApi.error(msg)
         setRunning(false)
+        setRunStartedAt(null)
         return
       }
 
       const out = resp.results || []
       setResults(out)
       setRunning(false)
+      setRunStartedAt(null)
       if (!storeRemote && out.length > 0) {
         messageApi.info('Processing complete. You can download results as JSON.')
       }
@@ -252,6 +375,7 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
       }
     } catch (e: any) {
       setRunning(false)
+      setRunStartedAt(null)
       messageApi.error(e?.message || 'Quick ingest failed.')
     }
   }
@@ -639,6 +763,42 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
     return map
   }, [results])
 
+  const selectedRow = React.useMemo(
+    () => rows.find((r) => r.id === selectedRowId) || null,
+    [rows, selectedRowId]
+  )
+
+  const selectedFile = React.useMemo(() => {
+    if (selectedFileIndex == null || selectedFileIndex < 0) return null
+    return localFiles[selectedFileIndex] || null
+  }, [localFiles, selectedFileIndex])
+
+  React.useEffect(() => {
+    if (selectedRowId && rows.some((r) => r.id === selectedRowId)) {
+      return
+    }
+    if (rows.length > 0) {
+      setSelectedRowId(rows[0].id)
+      setSelectedFileIndex(null)
+      return
+    }
+    if (localFiles.length > 0 && selectedFileIndex == null) {
+      setSelectedFileIndex(0)
+    }
+  }, [localFiles.length, rows, selectedFileIndex, selectedRowId])
+
+  const progressMeta = React.useMemo(() => {
+    const total = liveTotalCount || totalPlanned || 0
+    const done = processedCount || results.length || 0
+    const pct = total > 0 ? Math.min(100, Math.round((done / total) * 100)) : 0
+    const elapsedMs = runStartedAt ? Date.now() - runStartedAt : 0
+    const elapsedLabel =
+      elapsedMs > 0
+        ? `${Math.floor(elapsedMs / 60000)}:${String(Math.floor((elapsedMs % 60000) / 1000)).padStart(2, '0')}`
+        : null
+    return { total, done, pct, elapsedLabel }
+  }, [liveTotalCount, processedCount, results.length, runStartedAt, totalPlanned])
+
   const modifiedAdvancedCount = React.useMemo(
     () => Object.keys(advancedValues || {}).length,
     [advancedValues]
@@ -667,6 +827,42 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
       return next
     })
   }, [])
+
+  const handleFileDrop = React.useCallback(
+    (ev: React.DragEvent<HTMLDivElement>) => {
+      ev.preventDefault()
+      ev.stopPropagation()
+      const files = Array.from(ev.dataTransfer?.files || [])
+      if (files.length > 0) {
+        setLocalFiles((prev) => [...prev, ...files])
+        setSelectedFileIndex((prev) => (prev == null ? 0 : prev))
+        setSelectedRowId(null)
+      }
+    },
+    []
+  )
+
+  const retryFailedUrls = React.useCallback(() => {
+    const failedUrls = results
+      .filter((r) => r.status === 'error' && r.url)
+      .map((r) => ({
+        id: crypto.randomUUID(),
+        url: r.url || '',
+        type: 'auto' as Entry['type']
+      }))
+    if (failedUrls.length === 0) {
+      messageApi.info('No failed URL items to retry.')
+      return
+    }
+    setRows(failedUrls)
+    setLocalFiles([])
+    setResults([])
+    setProcessedCount(0)
+    setTotalPlanned(failedUrls.length)
+    setLiveTotalCount(failedUrls.length)
+    setRunStartedAt(null)
+    messageApi.info(`Queued ${failedUrls.length} failed URL${failedUrls.length === 1 ? '' : 's'} to retry.`)
+  }, [messageApi, results])
 
   // Live progress updates from background batch processor
   React.useEffect(() => {
@@ -729,331 +925,529 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
             )}
           </Typography.Paragraph>
         </div>
-        {/* Source URLs / files */}
-        <div className="space-y-2 pb-2">
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between sm:gap-3">
-            <div>
-              <Typography.Title level={5} className="!mb-1">
-                {t('quickIngest.sourceHeading') || 'Source URLs or files'}
-              </Typography.Title>
-              <Typography.Text>
-                {t('quickIngest.subtitle') || 'Enter one or more URLs. Force type per row if needed.'}
-              </Typography.Text>
-              <div className="text-xs text-gray-500 mt-1">
-                Choose how to process in the footer — the toggle sits next to the primary action for clarity.
+        <div className="rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-xs text-gray-700 dark:border-gray-700 dark:bg-[#161616] dark:text-gray-200">
+          <div className="font-medium mb-1">Tips</div>
+          <ul className="list-disc list-inside space-y-1">
+            <li>Hybrid input: drop files or paste URLs (comma/newline separated) to build the queue.</li>
+            <li>Per-type settings (Audio/PDF/Video) apply to all items of that type.</li>
+            <li>Use the Inspector to see status, type, and quick checks before ingesting.</li>
+          </ul>
+        </div>
+        <div className="space-y-3">
+          <div className="rounded-md border border-gray-200 bg-white p-3 dark:border-gray-700 dark:bg-[#121212]">
+            <div className="flex items-start justify-between gap-2">
+              <div>
+                <Typography.Title level={5} className="!mb-1">
+                  {t('quickIngest.sourceHeading') || 'Input'}
+                </Typography.Title>
+                <Typography.Text>
+                  {t('quickIngest.subtitle') || 'Drop files or paste URLs; items immediately join the queue.'}
+                </Typography.Text>
+                <div className="text-xs text-gray-500 mt-1">
+                  Supported: docs, PDFs, audio, video, and web URLs.
+                </div>
               </div>
-            </div>
-            <div className="flex items-center gap-2">
               <Tag color="blue">
                 {plannedCount || 0} {plannedCount === 1 ? 'item ready' : 'items ready'}
               </Tag>
             </div>
-          </div>
-
-          <Input.TextArea
-            placeholder={t('quickIngest.bulkPlaceholder') || 'Paste URLs (one per line)'}
-            onPressEnter={(e) => e.stopPropagation()}
-            autoSize={{ minRows: 2 }}
-            onBlur={(e) => bulkPaste(e.target.value)}
-            disabled={running}
-          />
-          <Divider plain>{t('quickIngest.or') || 'or'}</Divider>
-
-          <Space direction="vertical" className="w-full">
-            {rows.map((row) => (
-              <div key={row.id} className="flex items-start gap-2">
-                <div className="flex flex-col gap-1 flex-1">
-                  <Input
-                    placeholder="https://..."
-                    value={row.url}
-                    onChange={(e) => updateRow(row.id, { url: e.target.value })}
-                    disabled={running}
-                  />
-                  {(() => {
-                    const res = resultById.get(row.id)
-                    if (!res && !running) return null
-                    if (res?.status === 'ok') return <Tag color="green">Done</Tag>
-                    if (res?.status === 'error') {
-                      return (
-                        <AntTooltip title={res.error || 'Failed'}>
-                          <Tag color="red">Failed</Tag>
-                        </AntTooltip>
-                      )
-                    }
-                    return running ? <Tag icon={<Spin size="small" />} color="blue">Running</Tag> : null
-                  })()}
+            <input
+              type="file"
+              multiple
+              style={{ display: 'none' }}
+              id="qi-file-input"
+              onChange={(e) => {
+                const files = Array.from(e.target.files || [])
+                if (files.length > 0) {
+                  setLocalFiles((prev) => [...prev, ...files])
+                  setSelectedFileIndex((prev) => (prev == null ? 0 : prev))
+                  setSelectedRowId(null)
+                }
+                e.currentTarget.value = ''
+              }}
+              accept=".pdf,.txt,.rtf,.doc,.docx,.md,.epub,application/pdf,text/plain,application/rtf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/epub+zip,audio/*,video/*"
+            />
+            <div
+              className="mt-3 w-full rounded-md border border-dashed border-gray-300 bg-gray-50 px-4 py-4 text-center dark:border-gray-700 dark:bg-[#1a1a1a]"
+              onDragOver={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+              }}
+              onDrop={handleFileDrop}
+            >
+              <div className="flex flex-col gap-2 items-center justify-center">
+                <Typography.Text className="text-base font-medium">
+                  Drag and drop files
+                </Typography.Text>
+                <Typography.Text type="secondary" className="text-xs">
+                  Docs, PDFs, audio, and video are all welcome.
+                </Typography.Text>
+                <div className="flex items-center gap-2">
+                  <Button onClick={() => document.getElementById('qi-file-input')?.click()} disabled={running}>
+                    {t('quickIngest.addFiles') || 'Browse files'}
+                  </Button>
+                  <Button onClick={pasteFromClipboard} disabled={running}>
+                    Paste from clipboard
+                  </Button>
                 </div>
-                <Select
-                  className="min-w-32"
-                  value={row.type}
-                  onChange={(v) => updateRow(row.id, { type: v as Entry['type'] })}
-                  options={[
-                    { label: 'Auto', value: 'auto' },
-                    { label: 'HTML', value: 'html' },
-                    { label: 'PDF', value: 'pdf' },
-                    { label: 'Document', value: 'document' },
-                    { label: 'Audio', value: 'audio' },
-                    { label: 'Video', value: 'video' }
-                  ]}
+              </div>
+            </div>
+            <div className="mt-3 space-y-2">
+              <div className="flex items-center justify-between">
+                <Typography.Text strong>Paste URLs</Typography.Text>
+                <Typography.Text className="text-xs text-gray-500">
+                  Separate with commas or new lines
+                </Typography.Text>
+              </div>
+              <Space.Compact className="w-full">
+                <Input
+                  placeholder="https://example.com, https://..."
+                  value={pendingUrlInput}
+                  onChange={(e) => setPendingUrlInput(e.target.value)}
+                  onPressEnter={(e) => {
+                    e.preventDefault()
+                    addUrlsFromInput(pendingUrlInput)
+                  }}
                   disabled={running}
                 />
-                <Button onClick={() => removeRow(row.id)} danger disabled={rows.length === 1 || running}>
-                  {t('quickIngest.remove') || 'Remove'}
+                <Button type="primary" onClick={() => addUrlsFromInput(pendingUrlInput)} disabled={running}>
+                  Add URLs
+                </Button>
+              </Space.Compact>
+              <div className="flex items-center gap-2 text-xs text-gray-600">
+                <AlertTriangle className="w-4 h-4 text-gray-400" />
+                <span>Authentication-required pages may need cookies set in Advanced.</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="rounded-md border border-gray-200 bg-white p-3 dark:border-gray-700 dark:bg-[#121212]">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <Typography.Title level={5} className="!mb-0">Queue</Typography.Title>
+              <div className="flex items-center gap-2">
+                <Button size="small" onClick={clearAllQueues} disabled={running && plannedCount > 0}>
+                  Clear all
+                </Button>
+                <Button size="small" onClick={addRow} disabled={running}>
+                  Add blank row
+                </Button>
+                <Button size="small" onClick={() => setInspectorOpen(true)} disabled={!(selectedRow || selectedFile)}>
+                  Open Inspector
                 </Button>
               </div>
-            ))}
-            <Button onClick={addRow} disabled={running}>
-              {t('quickIngest.add') || 'Add URL'}
-            </Button>
-          </Space>
+            </div>
+            <div className="text-xs text-gray-500 mb-2">
+              Staged items appear here. Click a row to open the Inspector; badges show defaults, custom edits, or items needing attention.
+            </div>
+            <div className="max-h-[360px] space-y-2 overflow-auto pr-1">
+              {rows.map((row) => {
+                const status = statusForUrlRow(row)
+                const isSelected = selectedRowId === row.id
+                const detected = row.type === 'auto' ? detectTypeFromUrl(row.url) : row.type
+                const res = resultById.get(row.id)
+                let runTag: React.ReactNode = null
+                if (res?.status === 'ok') runTag = <Tag color="green">Done</Tag>
+                else if (res?.status === 'error') runTag = (
+                  <AntTooltip title={res.error || 'Failed'}>
+                    <Tag color="red">Failed</Tag>
+                  </AntTooltip>
+                )
+                else if (running) runTag = <Tag icon={<Spin size="small" />} color="blue">Running</Tag>
 
-          <Divider plain>{t('quickIngest.or') || 'or'}</Divider>
-        </div>
-
-        {/* Local file upload */}
-        <Space direction="vertical" className="w-full">
-          <input
-            type="file"
-            multiple
-            style={{ display: 'none' }}
-            id="qi-file-input"
-            onChange={(e) => {
-              const files = Array.from(e.target.files || [])
-              if (files.length > 0) setLocalFiles((prev) => [...prev, ...files])
-              e.currentTarget.value = ''
-            }}
-            accept=".pdf,.txt,.rtf,.doc,.docx,.md,.epub,application/pdf,text/plain,application/rtf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/epub+zip,audio/*,video/*"
-          />
-          <Button onClick={() => document.getElementById('qi-file-input')?.click()} disabled={running}>
-            {t('quickIngest.addFiles') || 'Add Files'}
-          </Button>
-          {localFiles.length > 0 && (
-            <List
-              size="small"
-              bordered
-              dataSource={localFiles}
-              renderItem={(f, idx) => (
-                <List.Item
-                  actions={[
-                    <button
-                    key="remove"
-                    type="button"
-                    onClick={() => setLocalFiles((prev) => prev.filter((_, i) => i !== idx))}
-                    disabled={running}
-                    aria-disabled={running}
-                    aria-label={`Remove file ${f.name}`}
-                    className={`text-blue-600 hover:underline ${running ? 'pointer-events-none text-gray-400' : ''}`}>
-                    {t('quickIngest.remove') || 'Remove'}
-                  </button>
-                ]}
-                >
-                  <div className="flex items-center gap-2">
-                    <span className="truncate">{f.name}</span>
-                    {(() => {
-                      const match = results.find((r) => r.fileName === f.name)
-                      const status = match?.status
-                      if (!status && !running) return null
-                      if (status === 'ok') return <Tag color="green">Done</Tag>
-                      if (status === 'error') {
-                        return (
-                          <AntTooltip title={match?.error || 'Failed'}>
-                            <Tag color="red">Failed</Tag>
-                          </AntTooltip>
-                        )
-                      }
-                      return running ? <Tag icon={<Spin size="small" />} color="blue">Running</Tag> : null
-                    })()}
+                return (
+                  <div
+                    key={row.id}
+                    className={`rounded-md border px-3 py-2 transition hover:border-blue-400 ${isSelected ? 'border-blue-500 shadow-sm' : 'border-gray-200 dark:border-gray-700'}`}
+                    onClick={() => {
+                      setSelectedRowId(row.id)
+                      setSelectedFileIndex(null)
+                      setInspectorOpen(true)
+                    }}
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex items-center gap-2">
+                        {typeIcon(detected)}
+                        <div className="flex flex-col">
+                          <Typography.Text className="text-sm font-medium">
+                            {row.url ? row.url : 'Untitled URL'}
+                          </Typography.Text>
+                          <div className="flex items-center gap-2 text-[11px] text-gray-500">
+                            <Tag color="geekblue">{detected.toUpperCase()}</Tag>
+                            {status.reason ? <span className="text-orange-600">{status.reason}</span> : <span>Defaults will be applied.</span>}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Tag color={status.color === 'default' ? undefined : status.color}>{status.label}</Tag>
+                        {runTag}
+                      </div>
+                    </div>
+                    <div className="mt-2 flex flex-col gap-2">
+                      <Input
+                        placeholder="https://..."
+                        value={row.url}
+                        onClick={(e) => e.stopPropagation()}
+                        onChange={(e) => updateRow(row.id, { url: e.target.value })}
+                        disabled={running}
+                      />
+                      <div className="flex flex-wrap items-center gap-2 text-xs text-gray-500">
+                        <Select
+                          className="min-w-32"
+                          value={row.type}
+                          onClick={(e) => e.stopPropagation()}
+                          onChange={(v) => updateRow(row.id, { type: v as Entry['type'] })}
+                          options={[
+                            { label: 'Auto', value: 'auto' },
+                            { label: 'HTML', value: 'html' },
+                            { label: 'PDF', value: 'pdf' },
+                            { label: 'Document', value: 'document' },
+                            { label: 'Audio', value: 'audio' },
+                            { label: 'Video', value: 'video' }
+                          ]}
+                          disabled={running}
+                        />
+                        <Button size="small" danger onClick={(e) => { e.stopPropagation(); removeRow(row.id) }} disabled={rows.length === 1 || running}>
+                          {t('quickIngest.remove') || 'Remove'}
+                        </Button>
+                      </div>
+                    </div>
                   </div>
-                </List.Item>
-              )}
-            />
-          )}
-        </Space>
+                )
+              })}
 
-        {/* Common ingestion options */}
-        <div className="mt-3 space-y-2">
-          <Typography.Title level={5}>{t('quickIngest.commonOptions') || 'Ingestion options'}</Typography.Title>
-          <Space wrap size="middle" align="center">
-            <Space align="center">
-              <span>Analysis</span>
-              <Switch
-                aria-label="Ingestion options \u2013 analysis"
-                checked={common.perform_analysis}
-                onChange={(v) =>
-                  setCommon((c) => ({ ...c, perform_analysis: v }))
-                }
-                disabled={running}
-              />
-            </Space>
-            <Space align="center">
-              <span>Chunking</span>
-              <Switch
-                aria-label="Ingestion options \u2013 chunking"
-                checked={common.perform_chunking}
-                onChange={(v) =>
-                  setCommon((c) => ({ ...c, perform_chunking: v }))
-                }
-                disabled={running}
-              />
-            </Space>
-            <Space align="center">
-              <span>Overwrite existing</span>
-              <Switch
-                aria-label="Ingestion options \u2013 overwrite existing"
-                checked={common.overwrite_existing}
-                onChange={(v) =>
-                  setCommon((c) => ({ ...c, overwrite_existing: v }))
-                }
-                disabled={running}
-              />
-            </Space>
-          </Space>
-        </div>
+              {localFiles.map((f, idx) => {
+                const status = statusForFile(f)
+                const isSelected = selectedFileIndex === idx
+                const type = fileTypeFromName(f)
+                const match = results.find((r) => r.fileName === f.name)
+                const runStatus = match?.status
+                let runTag: React.ReactNode = null
+                if (runStatus === 'ok') runTag = <Tag color="green">Done</Tag>
+                else if (runStatus === 'error') {
+                  runTag = (
+                    <AntTooltip title={match?.error || 'Failed'}>
+                      <Tag color="red">Failed</Tag>
+                    </AntTooltip>
+                  )
+                } else if (running) runTag = <Tag icon={<Spin size="small" />} color="blue">Running</Tag>
 
-        {/* Per-type options: show union of all detected types */}
-        {rows.some((r) => (r.type === 'audio' || (r.type === 'auto' && detectTypeFromUrl(r.url) === 'audio'))) && (
-          <div className="mt-2">
-            <Typography.Title level={5}>{t('quickIngest.audioOptions') || 'Audio options'}</Typography.Title>
-            <Space className="w-full">
-              <Input
-                placeholder={t('quickIngest.audioLanguage') || 'Language (e.g., en)'}
-                value={firstAudioRow?.audio?.language || ''}
-                onChange={(e) => setRows((rs) => rs.map((x) => {
-                  const isAudio = x.type === 'audio' || (x.type === 'auto' && detectTypeFromUrl(x.url) === 'audio')
-                  if (!isAudio) return x
-                  return { ...x, audio: { ...(x.audio || {}), language: e.target.value } }
-                }))}
-                disabled={running}
-              />
-              <Select
-                className="min-w-40"
-                value={firstAudioRow?.audio?.diarize ?? false}
-                onChange={(v) => setRows((rs) => rs.map((x) => {
-                  const isAudio = x.type === 'audio' || (x.type === 'auto' && detectTypeFromUrl(x.url) === 'audio')
-                  if (!isAudio) return x
-                  return { ...x, audio: { ...(x.audio || {}), diarize: Boolean(v) } }
-                }))}
-                options={[{ label: 'Diarization: Off', value: false }, { label: 'Diarization: On', value: true }]}
-                disabled={running}
-              />
-            </Space>
-            <Typography.Text type="secondary" className="text-xs">
-              {t('quickIngest.audioDiarizationHelp') || 'Turn on to separate speakers in transcripts; applies to all audio rows in this batch.'}
-            </Typography.Text>
-          </div>
-        )}
+                return (
+                  <div
+                    key={`${f.name}-${idx}`}
+                    className={`rounded-md border px-3 py-2 transition hover:border-blue-400 ${isSelected ? 'border-blue-500 shadow-sm' : 'border-gray-200 dark:border-gray-700'}`}
+                    onClick={() => {
+                      setSelectedFileIndex(idx)
+                      setSelectedRowId(null)
+                      setInspectorOpen(true)
+                    }}
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex items-center gap-2">
+                        {typeIcon(type)}
+                        <div className="flex flex-col">
+                          <Typography.Text className="text-sm font-medium truncate max-w-[360px]">
+                            {f.name}
+                          </Typography.Text>
+                          <div className="flex items-center gap-2 text-[11px] text-gray-500">
+                            <Tag color="geekblue">{type.toUpperCase()}</Tag>
+                            <span>{formatBytes((f as any)?.size)} {f.type ? `· ${f.type}` : ''}</span>
+                            {status.reason ? <span className="text-orange-600">{status.reason}</span> : null}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Tag color={status.color === 'default' ? undefined : status.color}>{status.label}</Tag>
+                        {runTag}
+                      </div>
+                    </div>
+                    <div className="mt-2 flex items-center gap-2 text-xs text-gray-600">
+                      <Button
+                        size="small"
+                        danger
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          setLocalFiles((prev) => {
+                            const next = prev.filter((_, i) => i !== idx)
+                            if (selectedFileIndex === idx) {
+                              setSelectedFileIndex(null)
+                            }
+                            return next
+                          })
+                        }}
+                        disabled={running}
+                      >
+                        {t('quickIngest.remove') || 'Remove'}
+                      </Button>
+                    </div>
+                  </div>
+                )
+              })}
 
-        {rows.some((r) => (r.type === 'document' || r.type === 'pdf' || (r.type === 'auto' && ['document', 'pdf'].includes(detectTypeFromUrl(r.url))))) && (
-          <div className="mt-2">
-            <Typography.Title level={5}>{t('quickIngest.documentOptions') || 'Document options'}</Typography.Title>
-            <Select
-              className="min-w-40"
-              value={firstDocumentRow?.document?.ocr ?? true}
-              onChange={(v) => setRows((rs) => rs.map((x) => {
-                const isDoc = x.type === 'document' || x.type === 'pdf' || (x.type === 'auto' && ['document', 'pdf'].includes(detectTypeFromUrl(x.url)))
-                if (!isDoc) return x
-                return { ...x, document: { ...(x.document || {}), ocr: Boolean(v) } }
-              }))}
-              options={[{ label: 'OCR: Off', value: false }, { label: 'OCR: On', value: true }]}
-              disabled={running}
-            />
-            <Typography.Text type="secondary" className="text-xs">
-              {t('quickIngest.ocrHelp') || 'OCR helps extract text from scanned PDFs or images; applies to all document/PDF rows.'}
-            </Typography.Text>
-          </div>
-        )}
-
-        {rows.some((r) => (r.type === 'video' || (r.type === 'auto' && detectTypeFromUrl(r.url) === 'video'))) && (
-          <div className="mt-2">
-            <Typography.Title level={5}>{t('quickIngest.videoOptions') || 'Video options'}</Typography.Title>
-            <Select
-              className="min-w-40"
-              value={firstVideoRow?.video?.captions ?? false}
-              onChange={(v) => setRows((rs) => rs.map((x) => {
-                const isVideo = x.type === 'video' || (x.type === 'auto' && detectTypeFromUrl(x.url) === 'video')
-                if (!isVideo) return x
-                return { ...x, video: { ...(x.video || {}), captions: Boolean(v) } }
-              }))}
-              options={[{ label: 'Captions: Off', value: false }, { label: 'Captions: On', value: true }]}
-              disabled={running}
-            />
-            <Typography.Text type="secondary" className="text-xs">
-              {t('quickIngest.captionsHelp') || 'Include timestamps/captions for all video rows; helpful for search and summaries.'}
-            </Typography.Text>
-          </div>
-        )}
-
-        <div className="sticky bottom-0 z-10 mt-3 bg-white/90 dark:bg-[#111111]/90 backdrop-blur pt-2 pb-2 border-t border-gray-200 dark:border-gray-700">
-          <div className="flex flex-col gap-2">
-            {(() => {
-              const done = processedCount || results.length
-              const total = liveTotalCount || totalPlanned
-              return (
-                <div className="sr-only" aria-live="polite" role="status">
-                  {running && total > 0
-                    ? t('quickIngest.progress', 'Processing {{done}} / {{total}} items…', {
-                        done,
-                        total
-                      })
-                    : `${plannedCount || 0} ${plannedCount === 1 ? 'item' : 'items'} ready`}
+              {rows.length === 0 && localFiles.length === 0 && (
+                <div className="rounded-md border border-dashed border-gray-300 p-4 text-center text-sm text-gray-600 dark:border-gray-700 dark:text-gray-300">
+                  No items queued yet. Drop files or add URLs to start.
                 </div>
-              )
-            })()}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-sm text-gray-700 dark:text-gray-200">
-              <div className="flex items-start gap-3">
-                <Space align="center">
-                  <Typography.Text strong>Processing mode</Typography.Text>
-                  <Switch
-                    aria-label={
-                      storeRemote
-                        ? "Processing mode \u2013 store to remote DB"
-                        : "Processing mode \u2013 process locally"
-                    }
-                    checked={storeRemote}
-                    onChange={setStoreRemote}
+              )}
+            </div>
+          </div>
+
+          <div className="rounded-md border border-gray-200 bg-white p-3 space-y-3 dark:border-gray-700 dark:bg-[#121212]">
+            <Typography.Title level={5} className="!mb-2">{t('quickIngest.commonOptions') || 'Ingestion options'}</Typography.Title>
+            <Space wrap size="middle" align="center">
+              <Space align="center">
+                <span>Analysis</span>
+                <Switch
+                  aria-label="Ingestion options \u2013 analysis"
+                  checked={common.perform_analysis}
+                  onChange={(v) =>
+                    setCommon((c) => ({ ...c, perform_analysis: v }))
+                  }
+                  disabled={running}
+                />
+              </Space>
+              <Space align="center">
+                <span>Chunking</span>
+                <Switch
+                  aria-label="Ingestion options \u2013 chunking"
+                  checked={common.perform_chunking}
+                  onChange={(v) =>
+                    setCommon((c) => ({ ...c, perform_chunking: v }))
+                  }
+                  disabled={running}
+                />
+              </Space>
+              <Space align="center">
+                <span>Overwrite existing</span>
+                <Switch
+                  aria-label="Ingestion options \u2013 overwrite existing"
+                  checked={common.overwrite_existing}
+                  onChange={(v) =>
+                    setCommon((c) => ({ ...c, overwrite_existing: v }))
+                  }
+                  disabled={running}
+                />
+              </Space>
+            </Space>
+
+            {rows.some((r) => (r.type === 'audio' || (r.type === 'auto' && detectTypeFromUrl(r.url) === 'audio'))) && (
+              <div className="space-y-1">
+                <Typography.Title level={5} className="!mb-1">{t('quickIngest.audioOptions') || 'Audio options'}</Typography.Title>
+                <Space className="w-full">
+                  <Input
+                    placeholder={t('quickIngest.audioLanguage') || 'Language (e.g., en)'}
+                    value={firstAudioRow?.audio?.language || ''}
+                    onChange={(e) => setRows((rs) => rs.map((x) => {
+                      const isAudio = x.type === 'audio' || (x.type === 'auto' && detectTypeFromUrl(x.url) === 'audio')
+                      if (!isAudio) return x
+                      return { ...x, audio: { ...(x.audio || {}), language: e.target.value } }
+                    }))}
                     disabled={running}
                   />
-                  <Typography.Text>
-                    {storeRemote ? (t('quickIngest.storeRemote') || 'Store to remote DB') : (t('quickIngest.process') || 'Process locally')}
-                  </Typography.Text>
+                  <Select
+                    className="min-w-40"
+                    value={firstAudioRow?.audio?.diarize ?? false}
+                    onChange={(v) => setRows((rs) => rs.map((x) => {
+                      const isAudio = x.type === 'audio' || (x.type === 'auto' && detectTypeFromUrl(x.url) === 'audio')
+                      if (!isAudio) return x
+                      return { ...x, audio: { ...(x.audio || {}), diarize: Boolean(v) } }
+                    }))}
+                    options={[{ label: 'Diarization: Off', value: false }, { label: 'Diarization: On', value: true }]}
+                    disabled={running}
+                  />
                 </Space>
+                <Typography.Text type="secondary" className="text-xs">
+                  {t('quickIngest.audioDiarizationHelp') || 'Turn on to separate speakers in transcripts; applies to all audio rows in this batch.'}
+                </Typography.Text>
+                <Typography.Text className="text-[11px] text-gray-500 block">
+                  These settings apply to every audio item in this run.
+                </Typography.Text>
               </div>
-              <span className="text-xs text-gray-500 dark:text-gray-400">
+            )}
+
+            {rows.some((r) => (r.type === 'document' || r.type === 'pdf' || (r.type === 'auto' && ['document', 'pdf'].includes(detectTypeFromUrl(r.url))))) && (
+              <div className="space-y-1">
+                <Typography.Title level={5} className="!mb-1">{t('quickIngest.documentOptions') || 'Document options'}</Typography.Title>
+                <Select
+                  className="min-w-40"
+                  value={firstDocumentRow?.document?.ocr ?? true}
+                  onChange={(v) => setRows((rs) => rs.map((x) => {
+                    const isDoc = x.type === 'document' || x.type === 'pdf' || (x.type === 'auto' && ['document', 'pdf'].includes(detectTypeFromUrl(x.url)))
+                    if (!isDoc) return x
+                    return { ...x, document: { ...(x.document || {}), ocr: Boolean(v) } }
+                  }))}
+                  options={[{ label: 'OCR: Off', value: false }, { label: 'OCR: On', value: true }]}
+                  disabled={running}
+                />
+                <Typography.Text type="secondary" className="text-xs">
+                  {t('quickIngest.ocrHelp') || 'OCR helps extract text from scanned PDFs or images; applies to all document/PDF rows.'}
+                </Typography.Text>
+                <Typography.Text className="text-[11px] text-gray-500 block">
+                  Applies to all document/PDF items in this batch.
+                </Typography.Text>
+              </div>
+            )}
+
+            {rows.some((r) => (r.type === 'video' || (r.type === 'auto' && detectTypeFromUrl(r.url) === 'video'))) && (
+              <div className="space-y-1">
+                <Typography.Title level={5} className="!mb-1">{t('quickIngest.videoOptions') || 'Video options'}</Typography.Title>
+                <Select
+                  className="min-w-40"
+                  value={firstVideoRow?.video?.captions ?? false}
+                  onChange={(v) => setRows((rs) => rs.map((x) => {
+                    const isVideo = x.type === 'video' || (x.type === 'auto' && detectTypeFromUrl(x.url) === 'video')
+                    if (!isVideo) return x
+                    return { ...x, video: { ...(x.video || {}), captions: Boolean(v) } }
+                  }))}
+                  options={[{ label: 'Captions: Off', value: false }, { label: 'Captions: On', value: true }]}
+                  disabled={running}
+                />
+                <Typography.Text type="secondary" className="text-xs">
+                  {t('quickIngest.captionsHelp') || 'Include timestamps/captions for all video rows; helpful for search and summaries.'}
+                </Typography.Text>
+                <Typography.Text className="text-[11px] text-gray-500 block">
+                  Applies to all video items in this batch.
+                </Typography.Text>
+              </div>
+            )}
+
+            <div className="rounded-md border border-gray-200 bg-gray-50 p-3 dark:border-gray-700 dark:bg-[#0f0f0f]">
+              <div className="flex flex-col gap-2">
                 {(() => {
                   const done = processedCount || results.length
                   const total = liveTotalCount || totalPlanned
-                  if (running && total > 0) {
-                    return t('quickIngest.progress', 'Processing {{done}} / {{total}} items…', {
-                      done,
-                      total
-                    })
-                  }
-                  return `${plannedCount || 0} ${plannedCount === 1 ? 'item' : 'items'} ready`
+                  return (
+                    <div className="sr-only" aria-live="polite" role="status">
+                      {running && total > 0
+                        ? t('quickIngest.progress', 'Processing {{done}} / {{total}} items…', {
+                            done,
+                            total
+                          })
+                        : `${plannedCount || 0} ${plannedCount === 1 ? 'item' : 'items'} ready`}
+                    </div>
+                  )
                 })()}
-              </span>
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-sm text-gray-700 dark:text-gray-200">
+                  <div className="flex items-start gap-3">
+                    <Space align="center">
+                      <Typography.Text strong>Processing mode</Typography.Text>
+                      <Switch
+                        aria-label={
+                          storeRemote
+                            ? "Processing mode \u2013 store to remote DB"
+                            : "Processing mode \u2013 process locally"
+                        }
+                        checked={storeRemote}
+                        onChange={setStoreRemote}
+                        disabled={running}
+                      />
+                      <Typography.Text>
+                        {storeRemote ? (t('quickIngest.storeRemote') || 'Store to remote DB') : (t('quickIngest.process') || 'Process locally')}
+                      </Typography.Text>
+                    </Space>
+                  </div>
+                  <span className="text-xs text-gray-500 dark:text-gray-400">
+                    {(() => {
+                      const done = processedCount || results.length
+                      const total = liveTotalCount || totalPlanned
+                      if (running && total > 0) {
+                        return t('quickIngest.progress', 'Processing {{done}} / {{total}} items…', {
+                          done,
+                          total
+                        })
+                      }
+                      return `${plannedCount || 0} ${plannedCount === 1 ? 'item' : 'items'} ready`
+                    })()}
+                  </span>
+                </div>
+                <Typography.Text type="secondary" className="text-xs">
+                  {storeRemote
+                    ? (t('quickIngest.storeRemoteHelp') || 'Uploads to your tldw server for indexing.')
+                    : (t('quickIngest.processOnlyHelp') || 'Process only and keep results local (download JSON).')}
+                </Typography.Text>
+              </div>
+              <div className="flex justify-end gap-2 mt-2">
+                <Button
+                  type="primary"
+                  loading={running}
+                  onClick={run}
+                  disabled={plannedCount === 0}
+                >
+                  {storeRemote
+                    ? (t('quickIngest.ingest') || 'Ingest')
+                    : (t('quickIngest.process') || 'Process')}
+                </Button>
+                <Button onClick={onClose} disabled={running}>
+                  {t('quickIngest.cancel') || 'Cancel'}
+                </Button>
+              </div>
+              {progressMeta.total > 0 && (
+                <div className="mt-2">
+                  <Progress percent={progressMeta.pct} showInfo={false} size="small" />
+                  <div className="flex justify-between text-xs text-gray-600 dark:text-gray-400 mt-1">
+                    <span>{`${progressMeta.done}/${progressMeta.total} processed`}</span>
+                    {progressMeta.elapsedLabel ? <span>Elapsed {progressMeta.elapsedLabel}</span> : null}
+                  </div>
+                </div>
+              )}
             </div>
-            <Typography.Text type="secondary" className="text-xs">
-              {storeRemote
-                ? (t('quickIngest.storeRemoteHelp') || 'Uploads to your tldw server for indexing.')
-                : (t('quickIngest.processOnlyHelp') || 'Process only and keep results local (download JSON).')}
-            </Typography.Text>
-          </div>
-          <div className="flex justify-end gap-2">
-            <Button
-              type="primary"
-              loading={running}
-              onClick={run}
-              disabled={plannedCount === 0}
-            >
-              {storeRemote
-                ? (t('quickIngest.ingest') || 'Ingest')
-                : (t('quickIngest.process') || 'Process')}
-            </Button>
-            <Button onClick={onClose} disabled={running}>
-              {t('quickIngest.cancel') || 'Cancel'}
-            </Button>
           </div>
         </div>
+
+        <Drawer
+          title="Inspector"
+          placement="right"
+          onClose={() => setInspectorOpen(false)}
+          open={inspectorOpen && (!!selectedRow || !!selectedFile)}
+          destroyOnClose
+          width={380}
+        >
+          {selectedRow || selectedFile ? (
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                {typeIcon(selectedRow ? (selectedRow.type === 'auto' ? detectTypeFromUrl(selectedRow.url) : selectedRow.type) : fileTypeFromName(selectedFile!))}
+                <Typography.Text strong>
+                  {selectedRow ? (selectedRow.url || 'Untitled URL') : selectedFile?.name}
+                </Typography.Text>
+              </div>
+              <div className="flex flex-wrap items-center gap-2 text-xs text-gray-600">
+                {selectedRow ? (
+                  <>
+                    <Tag color={statusForUrlRow(selectedRow).color === 'default' ? undefined : statusForUrlRow(selectedRow).color}>{statusForUrlRow(selectedRow).label}</Tag>
+                    <Tag color="geekblue">
+                      {(selectedRow.type === 'auto' ? detectTypeFromUrl(selectedRow.url) : selectedRow.type).toUpperCase()}
+                    </Tag>
+                    {statusForUrlRow(selectedRow).reason ? <span className="text-orange-600">{statusForUrlRow(selectedRow).reason}</span> : <span>Default settings will apply.</span>}
+                  </>
+                ) : null}
+                {selectedFile ? (
+                  <>
+                    <Tag color={statusForFile(selectedFile).color === 'default' ? undefined : statusForFile(selectedFile).color}>{statusForFile(selectedFile).label}</Tag>
+                    <Tag color="geekblue">{fileTypeFromName(selectedFile).toUpperCase()}</Tag>
+                    <span>{formatBytes((selectedFile as any)?.size)} {selectedFile.type ? `· ${selectedFile.type}` : ''}</span>
+                    {statusForFile(selectedFile).reason ? <span className="text-orange-600">{statusForFile(selectedFile).reason}</span> : null}
+                  </>
+                ) : null}
+              </div>
+              {selectedRow ? (
+                <div className="text-xs text-gray-600">
+                  Editing the URL or forcing a type marks this item as <strong>Custom</strong>.
+                </div>
+              ) : null}
+              {selectedFile ? (
+                <div className="text-xs text-gray-600">
+                  File settings follow the per-type controls on the main panel.
+                </div>
+              ) : null}
+              <div className="text-xs text-gray-500">
+                Use Advanced options to set cookies/auth if required. Errors or warnings appear on each row.
+              </div>
+            </div>
+          ) : (
+            <div className="text-sm text-gray-600">
+              Select a queued item to view details.
+            </div>
+          )}
+        </Drawer>
 
         <Collapse
           className="mt-3"
@@ -1295,7 +1689,15 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
 
         {results.length > 0 && (
           <div className="mt-4">
-            <Typography.Title level={5}>{t('quickIngest.results') || 'Results'}</Typography.Title>
+            <div className="flex items-center justify-between">
+              <Typography.Title level={5} className="!mb-0">{t('quickIngest.results') || 'Results'}</Typography.Title>
+              <div className="flex items-center gap-2 text-xs">
+                <Tag color="blue">{results.length} item{results.length === 1 ? '' : 's'}</Tag>
+                <Button size="small" onClick={retryFailedUrls} disabled={!results.some((r) => r.status === 'error')}>
+                  Retry failed URLs
+                </Button>
+              </div>
+            </div>
             <List
               size="small"
               dataSource={results}
