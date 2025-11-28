@@ -40,16 +40,16 @@
   "noEmbeddingModel": "Пожалуйста, сначала добавьте модель вложения на странице настроек RAG",
   "privateModeDescription": "Режим приватного просмотра Firefox не поддерживает сохранение в IndexedDB. Добавьте базу знаний в обычном окне.",
   "rag": {
-    "searchFailed": "RAG search failed. Try again or check Diagnostics."
+    "searchFailed": "Поиск RAG не удался. Попробуйте ещё раз или проверьте раздел Diagnostics."
   },
   "empty": {
-    "demoTitle": "Explore Knowledge QA in demo mode",
-    "demoDescription": "This demo shows how Knowledge QA can run RAG searches over sample content. Connect your own server later to search your own transcripts and documents.",
-    "demoExample1": "Try quick RAG searches and inspect results and citations.",
-    "demoExample2": "Connect your own server to enable Knowledge QA over your real media and notes.",
-    "connectTitle": "Connect to use Knowledge QA",
-    "connectDescription": "To use Knowledge QA and RAG search, first connect to your tldw server.",
-    "connectExample1": "Open Settings → tldw server to add your server URL.",
-    "connectExample2": "Use Diagnostics if your server is running but not reachable."
+    "demoTitle": "Изучите Knowledge QA в демо-режиме",
+    "demoDescription": "Эта демоверсия показывает, как Knowledge QA выполняет RAG-поиск по примерному содержимому. Позже вы сможете подключить свой сервер, чтобы искать по собственным транскриптам и документам.",
+    "demoExample1": "Попробуйте быстрые RAG-запросы и изучите результаты и ссылки.",
+    "demoExample2": "Подключите свой сервер, чтобы включить Knowledge QA для ваших реальных медиа и заметок.",
+    "connectTitle": "Подключитесь, чтобы использовать Knowledge QA",
+    "connectDescription": "Чтобы использовать Knowledge QA и поиск RAG, сначала подключитесь к своему tldw-серверу.",
+    "connectExample1": "Откройте Настройки → tldw server, чтобы добавить URL своего сервера.",
+    "connectExample2": "Используйте Diagnostics, если сервер запущен, но недоступен."
   }
 }

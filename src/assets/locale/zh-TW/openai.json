@@ -5,7 +5,7 @@
   "addBtn": "新增提供商",
   "table": {
     "name": "提供商名稱",
-    "baseUrl": "Base URL",
+    "baseUrl": "基礎 URL",
     "actions": "操作"
   },
   "modal": {
@@ -17,10 +17,10 @@
       "placeholder": "輸入提供商名稱"
     },
     "baseUrl": {
-      "label": "Base URL",
-      "help": "OpenAI API 提供商的 Base URL。例如：http://localhost:1234/v1",
-      "required": "Base URL 為必填項。",
-      "placeholder": "輸入 Base URL"
+      "label": "基礎 URL",
+      "help": "OpenAI API 提供商的基礎 URL，例如：http://localhost:1234/v1",
+      "required": "基礎 URL 為必填項。",
+      "placeholder": "輸入基礎 URL"
     },
     "apiKey": {
       "label": "API 金鑰",

@@ -1,17 +1,17 @@
 {
-  "pageAssist": "tldw Assistant",
+  "pageAssist": "tldw-assistenten",
   "titles": {
     "options": "tldw Assistant — Options",
     "sidepanel": "tldw Assistant — Sidepanel"
   },
   "pdf": {
-    "passwordTitle": "Enter the PDF password",
-    "unlock": "Unlock"
+    "passwordTitle": "Skriv inn PDF-passordet",
+    "unlock": "Lås opp"
   },
   "loading": {
-    "title": "Loading…",
-    "description": "Please wait while we get things ready.",
-    "content": "Loading content…"
+    "title": "Laster…",
+    "description": "Vennligst vent mens vi gjør klart.",
+    "content": "Laster innhold…"
   },
   "selectAModel": "Velg en modell",
   "save": "Lagre",
@@ -53,7 +53,7 @@
   "copyToClipboard": "Kopier til utklippstavle",
   "webSearch": "Søker på internett",
   "regenerate": "Regenerer",
-  "continue": "Continue Response",
+  "continue": "Fortsett svar",
   "edit": "Endre",
   "delete": "Slett",
   "saveAndSubmit": "Lagre & Send inn",
@@ -62,11 +62,11 @@
   },
   "submit": "Send inn",
   "send": "Send inn",
-  "connectToServer": "Connect to server",
+  "connectToServer": "Koble til server",
   "noData": "Ingen data",
   "noHistory": "Ingen chathistorikk",
   "chatWithCurrentPage": "Chat med nåværende side",
-  "beta": "Beta",
+  "beta": "Beta-versjon",
   "tts": "Les opp",
   "currentChatModelSettings": "Nåværende chatmodellinnstillinger",
   "modelSettings": {
@@ -91,7 +91,7 @@
         "placeholder": "Skriv inn Maks Tokens-verdi (f.eks. 2048, 4096)"
       },
       "seed": {
-        "label": "Seed",
+        "label": "Seed (startverdi)",
         "placeholder": "Skriv inn seedverdi (f.eks. 1234)",
         "help": "Reproduserbarhet av modellutdata"
       },
@@ -113,41 +113,41 @@
         "help": "Dette er en rask måte å sette systemprompt i den nåværende chatten, som vil overstyre den valgte systemprompt hvis den finnes."
       },
       "thinking": {
-        "label": "Thinking Mode"
+        "label": "Tenkemodus"
       },
       "useMMap": {
-        "label": "useMmap"
+        "label": "useMmap (minneavbildning)"
       },
       "tfsZ": {
-        "label": "TFS-Z",
-        "placeholder": "e.g. 1.0, 1.1"
+        "label": "TFS-Z (TFS-parameter)",
+        "placeholder": "f.eks. 1.0, 1.1"
       },
       "numKeep": {
-        "label": "Num Keep",
-        "placeholder": "e.g. 256, 512"
+        "label": "Antall beholdte (Num Keep)",
+        "placeholder": "f.eks. 256, 512"
       },
       "numThread": {
-        "label": "Num Thread",
-        "placeholder": "e.g. 8, 16"
+        "label": "Antall tråder (Num Thread)",
+        "placeholder": "f.eks. 8, 16"
       },
       "useMlock": {
-        "label": "useMlock"
+        "label": "useMlock (låse minne)"
       },
       "reasoningEffort": {
-        "label": "Reasoning Effort",
-        "placeholder": "low, medium, high"
+        "label": "Resonneringsinnsats",
+        "placeholder": "lav, middels, høy"
       },
       "minP": {
-        "label": "Min P",
-        "placeholder": "e.g. 0.05"
+        "label": "Min P (minimum P)",
+        "placeholder": "f.eks. 0.05"
       },
       "repeatPenalty": {
-        "label": "Repeat Penalty",
-        "placeholder": "e.g. 1.1, 1.2"
+        "label": "Straff for gjentakelse",
+        "placeholder": "f.eks. 1.1, 1.2"
       },
       "repeatLastN": {
-        "label": "Repeat Last N",
-        "placeholder": "e.g. 64, 128"
+        "label": "Gjenta siste N",
+        "placeholder": "f.eks. 64, 128"
       }
     },
     "advanced": "Flere modellinnstillinger"
@@ -200,41 +200,41 @@
     "confirm": "Er du sikker på at du vil avbryte nedlastingen? Dette vil stoppe nedlastingsprosessen. Ifølge Ollama-dokumentasjonen kan du starte på nytt fra der du slapp."
   },
   "table": {
-    "copyCsv": "Copy as CSV",
-    "downloadCsv": "Download CSV"
+    "copyCsv": "Kopier som CSV",
+    "downloadCsv": "Last ned CSV"
   },
-  "dismiss": "Dismiss",
+  "dismiss": "Avvis",
   "privateModeSaveErrorTitle": "tldw Assistant kan ikke lagre data",
-  "confirmTitle": "Please confirm",
-  "saving": "Saving...",
-  "close": "Close",
-  "loadMore": "Load More...",
-  "startChat": "Start chatting",
-  "previous": "Previous",
-  "next": "Next",
-  "chatWithCharacter": "Chat with character",
-  "ttsShort": "TTS",
-  "copyShort": "Copy",
-  "branchShort": "Branch",
+  "confirmTitle": "Vennligst bekreft",
+  "saving": "Lagrer...",
+  "close": "Lukk",
+  "loadMore": "Last inn mer...",
+  "startChat": "Start chat",
+  "previous": "Forrige",
+  "next": "Neste",
+  "chatWithCharacter": "Chat med karakter",
+  "ttsShort": "Tale",
+  "copyShort": "Kopier",
+  "branchShort": "Gren",
   "segmented": {
-    "available": "Server Models",
-    "custom": "Custom Models"
+    "available": "Servermodeller",
+    "custom": "Egendefinerte modeller"
   },
-  "success": "Success",
-  "created": "Created",
-  "updated": "Updated",
-  "deleted": "Deleted",
-  "create": "Create",
-  "reset": "Reset",
-  "serverOffline": "Server offline or not configured",
-  "serverChats": "Server chats",
-  "serverChatLoadError": "Failed to load server chat. Check your connection and try again.",
-  "serverChatSourceLabel": "Server",
-  "serverChatsUnavailable": "Server chats unavailable. Check your server connection.",
-  "historiesDeleted": "{{count}} Histories Deleted",
-  "deleteHistoriesError": "Error deleting histories",
-  "mermaid": "Mermaid",
-  "search": "Search",
-  "searchResults": "Search Results",
-  "newBranch": "New Branch"
+  "success": "Vellykket",
+  "created": "Opprettet",
+  "updated": "Oppdatert",
+  "deleted": "Slettet",
+  "create": "Opprett",
+  "reset": "Tilbakestill",
+  "serverOffline": "Server frakoblet eller ikke konfigurert",
+  "serverChats": "Serverchatter",
+  "serverChatLoadError": "Kunne ikke laste server-chat. Kontroller tilkoblingen og prøv igjen.",
+  "serverChatSourceLabel": "Serverkilde",
+  "serverChatsUnavailable": "Serverchatter utilgjengelige. Kontroller servertilkoblingen.",
+  "historiesDeleted": "{{count}} historikker slettet",
+  "deleteHistoriesError": "Feil ved sletting av historikk",
+  "mermaid": "Mermaid-diagrammer",
+  "search": "Søk",
+  "searchResults": "Søkeresultater",
+  "newBranch": "Ny gren"
 }

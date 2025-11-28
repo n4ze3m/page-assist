@@ -1,17 +1,17 @@
 {
-  "pageAssist": "tldw Assistant",
+  "pageAssist": "دستیار tldw",
   "titles": {
-    "options": "tldw Assistant — Options",
-    "sidepanel": "tldw Assistant — Sidepanel"
+    "options": "تنظیمات دستیار tldw",
+    "sidepanel": "پنل کناری دستیار tldw"
   },
   "pdf": {
-    "passwordTitle": "Enter the PDF password",
-    "unlock": "Unlock"
+    "passwordTitle": "رمز عبور PDF را وارد کنید",
+    "unlock": "باز کردن"
   },
   "loading": {
-    "title": "Loading…",
-    "description": "Please wait while we get things ready.",
-    "content": "Loading content…"
+    "title": "در حال بارگذاری…",
+    "description": "لطفاً صبر کنید تا همه‌چیز آماده شود.",
+    "content": "در حال بارگذاری محتوا…"
   },
   "selectAModel": "یک مدل انتخاب کنید",
   "save": "ذخیره",
@@ -74,13 +74,13 @@
     "description": "گزینه های مدل را به صورت کلی برای همه گپ ها تنظیم کنید",
     "form": {
       "keepAlive": {
-        "label": "Keep Alive",
-        "help": "کنترل می کند که چه مدت مدل پس از درخواست در حافظه باقی می ماند (پیش فرض: 5 دقیقه)",
-        "placeholder": "مدت زمان Keep Alive را وارد کنید (مثلا 5m, 10m, 1h)"
+        "label": "Keep Alive (زنده نگه‌داشتن)",
+        "help": "کنترل می‌کند مدل پس از هر درخواست چه مدت در حافظه بماند (پیش‌فرض: ۵ دقیقه)",
+        "placeholder": "مدت Keep Alive را وارد کنید (مثلاً 5m, 10m, 1h)"
       },
       "temperature": {
-        "label": "Temperature",
-        "placeholder": "مقدار Temperature را وارد کنید (مثلا 0.7, 1.0)"
+        "label": "Temperature (دما)",
+        "placeholder": "مقدار Temperature را وارد کنید (مثلاً 0.7, 1.0)"
       },
       "numCtx": {
         "label": "اندازه پنجره متن (num_ctx)",
@@ -91,20 +91,20 @@
         "placeholder": "مقدار حداکثر توکن‌ها را وارد کنید (مثلا 2048، 4096)"
       },
       "seed": {
-        "label": "Seed",
-        "placeholder": "مقدار Seed را وارد کنید (e.g. 1234)",
-        "help": "تکرارپذیری خروجی مدل"
+        "label": "Seed (بذر تصادفی)",
+        "placeholder": "مقدار Seed را وارد کنید (مثلاً 1234)",
+        "help": "برای قابل‌تکرار بودن خروجی مدل"
       },
       "topK": {
-        "label": "Top K",
-        "placeholder": "مقدار Top K را وارد کنید (مثلا 40, 100)"
+        "label": "Top K (بالاترین K)",
+        "placeholder": "مقدار Top K را وارد کنید (مثلاً 40, 100)"
       },
       "topP": {
-        "label": "Top P",
-        "placeholder": "مقدار Top P را وارد کنید (مثلا 0.9, 0.95)"
+        "label": "Top P (بالاترین P)",
+        "placeholder": "مقدار Top P را وارد کنید (مثلاً 0.9, 0.95)"
       },
       "numGpu": {
-        "label": "Num GPU",
+        "label": "Num GPU (تعداد GPU)",
         "placeholder": "تعداد لایه‌هایی که به GPU(ها) ارسال می‌شود را وارد کنید"
       },
       "systemPrompt": {
@@ -113,46 +113,46 @@
         "help": "این یک روش سریع برای تنظیم پرامپت سیستم در گفتگوی فعلی است که در صورت وجود، پرامپت سیستم انتخاب شده را لغو خواهد کرد."
       },
       "thinking": {
-        "label": "Thinking Mode"
+        "label": "حالت فکر کردن"
       },
       "useMMap": {
-        "label": "useMmap"
+        "label": "useMmap (نگاشت در حافظه)"
       },
       "tfsZ": {
-        "label": "TFS-Z",
-        "placeholder": "e.g. 1.0, 1.1"
+        "label": "TFS-Z (پارامتر TFS)",
+        "placeholder": "مثلاً 1.0، 1.1"
       },
       "numKeep": {
-        "label": "Num Keep",
-        "placeholder": "e.g. 256, 512"
+        "label": "Num Keep (تعداد حفظ‌شده‌ها)",
+        "placeholder": "مثلاً 256، 512"
       },
       "numThread": {
-        "label": "Num Thread",
-        "placeholder": "e.g. 8, 16"
+        "label": "Num Thread (تعداد رشته‌ها)",
+        "placeholder": "مثلاً 8، 16"
       },
       "useMlock": {
-        "label": "useMlock"
+        "label": "useMlock (قفل‌کردن در حافظه)"
       },
       "reasoningEffort": {
-        "label": "Reasoning Effort",
-        "placeholder": "low, medium, high"
+        "label": "میزان تلاش استدلال",
+        "placeholder": "کم، متوسط، زیاد"
       },
       "minP": {
-        "label": "Min P",
-        "placeholder": "e.g. 0.05"
+        "label": "Min P (حداقل P)",
+        "placeholder": "مثلاً 0.05"
       },
       "repeatPenalty": {
-        "label": "Repeat Penalty",
-        "placeholder": "e.g. 1.1, 1.2"
+        "label": "جریمه تکرار",
+        "placeholder": "مثلاً 1.1، 1.2"
       },
       "repeatLastN": {
-        "label": "Repeat Last N",
-        "placeholder": "e.g. 64, 128"
+        "label": "تکرار آخرین N",
+        "placeholder": "مثلاً 64، 128"
       }
     },
     "advanced": "تنظیمات بیشتر مدل"
   },
-  "citations": "منابع",
+  "citations": "ارجاعات",
   "downloadCode": "دانلود کد",
   "date": {
     "pinned": "پین شده",
@@ -193,48 +193,48 @@
     "confirm": "آیا مطمئن هستید که می‌خواهید دانلود را لغو کنید؟ این کار فرآیند دانلود را متوقف می‌کند. طبق مستندات Ollama، می‌توانید دانلود را از همان جایی که متوقف شده ادامه دهید."
   },
   "table": {
-    "copyCsv": "Copy as CSV",
-    "downloadCsv": "Download CSV"
+    "copyCsv": "کپی به‌صورت CSV",
+    "downloadCsv": "دانلود CSV"
   },
   "dismiss": "بستن",
   "privateModeSaveErrorTitle": "tldw Assistant نمی‌تواند داده‌ها را ذخیره کند",
-  "confirmTitle": "Please confirm",
-  "saving": "Saving...",
-  "close": "Close",
-  "loadMore": "Load More...",
-  "startChat": "Start chatting",
-  "previous": "Previous",
-  "next": "Next",
-  "chatWithCharacter": "Chat with character",
-  "ttsShort": "TTS",
-  "copyShort": "Copy",
-  "branchShort": "Branch",
+  "confirmTitle": "لطفاً تأیید کنید",
+  "saving": "در حال ذخیره...",
+  "close": "بستن",
+  "loadMore": "نمایش موارد بیشتر...",
+  "startChat": "شروع گپ",
+  "previous": "قبلی",
+  "next": "بعدی",
+  "chatWithCharacter": "گپ با شخصیت",
+  "ttsShort": "صدا",
+  "copyShort": "کپی",
+  "branchShort": "شاخه",
   "copilot": {
-    "summary": "Summarize",
-    "explain": "Explain",
-    "rephrase": "Rephrase",
-    "translate": "Translate",
-    "custom": "Custom"
+    "summary": "خلاصه کردن",
+    "explain": "توضیح دادن",
+    "rephrase": "بازنویسی",
+    "translate": "ترجمه",
+    "custom": "سفارشی"
   },
   "segmented": {
-    "available": "Server Models",
-    "custom": "Custom Models"
+    "available": "مدل‌های سرور",
+    "custom": "مدل‌های سفارشی"
   },
-  "success": "Success",
-  "created": "Created",
-  "updated": "Updated",
-  "deleted": "Deleted",
-  "create": "Create",
-  "reset": "Reset",
-  "serverOffline": "Server offline or not configured",
-  "serverChats": "Server chats",
-  "serverChatLoadError": "Failed to load server chat. Check your connection and try again.",
-  "serverChatSourceLabel": "Server",
-  "serverChatsUnavailable": "Server chats unavailable. Check your server connection.",
-  "historiesDeleted": "{{count}} Histories Deleted",
-  "deleteHistoriesError": "Error deleting histories",
-  "mermaid": "Mermaid",
-  "search": "Search",
-  "searchResults": "Search Results",
-  "newBranch": "New Branch"
+  "success": "موفقیت‌آمیز",
+  "created": "ایجاد شد",
+  "updated": "به‌روزرسانی شد",
+  "deleted": "حذف شد",
+  "create": "ایجاد",
+  "reset": "بازنشانی",
+  "serverOffline": "سرور آفلاین است یا پیکربندی نشده است",
+  "serverChats": "گپ‌های سرور",
+  "serverChatLoadError": "بارگذاری گپ سرور ناموفق بود. اتصال خود را بررسی کرده و دوباره تلاش کنید.",
+  "serverChatSourceLabel": "سرور",
+  "serverChatsUnavailable": "گپ‌های سرور در دسترس نیستند. اتصال سرور را بررسی کنید.",
+  "historiesDeleted": "{{count}} تاریخچه حذف شد",
+  "deleteHistoriesError": "خطا در حذف تاریخچه‌ها",
+  "mermaid": "نمودارهای Mermaid",
+  "search": "جستجو",
+  "searchResults": "نتایج جستجو",
+  "newBranch": "شاخه جدید"
 }

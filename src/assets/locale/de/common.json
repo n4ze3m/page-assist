@@ -1,17 +1,17 @@
 {
-  "pageAssist": "tldw Assistant",
+  "pageAssist": "tldw-Assistent",
   "titles": {
     "options": "tldw Assistant — Options",
     "sidepanel": "tldw Assistant — Sidepanel"
   },
   "pdf": {
-    "passwordTitle": "Enter the PDF password",
-    "unlock": "Unlock"
+    "passwordTitle": "PDF-Passwort eingeben",
+    "unlock": "Entsperren"
   },
   "loading": {
-    "title": "Loading…",
-    "description": "Please wait while we get things ready.",
-    "content": "Loading content…"
+    "title": "Wird geladen…",
+    "description": "Bitte warten Sie, während wir alles vorbereiten.",
+    "content": "Inhalt wird geladen…"
   },
   "selectAModel": "Modell auswählen",
   "save": "Speichern",
@@ -62,11 +62,11 @@
   },
   "submit": "Absenden",
   "send": "Absenden",
-  "connectToServer": "Connect to server",
+  "connectToServer": "Mit Server verbinden",
   "noData": "Keine Daten",
   "noHistory": "Kein Chat-Verlauf",
   "chatWithCurrentPage": "Mit aktueller Seite chatten",
-  "beta": "Beta",
+  "beta": "Beta-Version",
   "tts": "Vorlesen",
   "currentChatModelSettings": "Aktuelle Chat-Modell-Einstellungen",
   "modelSettings": {
@@ -87,20 +87,20 @@
         "placeholder": "Geben Sie die Kontextfenstergröße ein (Standard: 2048)"
       },
       "numPredict": {
-        "label": "Max Tokens (num_predict)",
+        "label": "Maximale Tokens (num_predict)",
         "placeholder": "Geben Sie den Max-Tokens-Wert ein (z.B. 2048, 4096)"
       },
       "seed": {
-        "label": "Seed",
+        "label": "Seed (Startwert)",
         "placeholder": "Geben Sie den Seed-Wert ein (z.B. 1234)",
         "help": "Reproduzierbarkeit der Modellausgabe"
       },
       "topK": {
-        "label": "Top K",
+        "label": "Top K (oberste K)",
         "placeholder": "Geben Sie den Top-K-Wert ein (z.B. 40, 100)"
       },
       "topP": {
-        "label": "Top P",
+        "label": "Top P (oberste P)",
         "placeholder": "Geben Sie den Top-P-Wert ein (z.B. 0.9, 0.95)"
       },
       "numGpu": {
@@ -113,41 +113,41 @@
         "help": "Dies ist eine schnelle Möglichkeit, den System-Prompt im aktuellen Chat festzulegen, der den ausgewählten System-Prompt überschreibt, falls vorhanden."
       },
       "thinking": {
-        "label": "Thinking Mode"
+        "label": "Denkmodus"
       },
       "useMMap": {
-        "label": "useMmap"
+        "label": "useMmap (Speicherabbildung)"
       },
       "tfsZ": {
-        "label": "TFS-Z",
-        "placeholder": "e.g. 1.0, 1.1"
+        "label": "TFS-Z (TFS-Parameter)",
+        "placeholder": "z.B. 1.0, 1.1"
       },
       "numKeep": {
-        "label": "Num Keep",
-        "placeholder": "e.g. 256, 512"
+        "label": "Anzahl beibehalten (Num Keep)",
+        "placeholder": "z.B. 256, 512"
       },
       "numThread": {
-        "label": "Num Thread",
-        "placeholder": "e.g. 8, 16"
+        "label": "Anzahl Threads (Num Thread)",
+        "placeholder": "z.B. 8, 16"
       },
       "useMlock": {
-        "label": "useMlock"
+        "label": "useMlock (Speicher sperren)"
       },
       "reasoningEffort": {
-        "label": "Reasoning Effort",
-        "placeholder": "low, medium, high"
+        "label": "Reasoning-Aufwand",
+        "placeholder": "niedrig, mittel, hoch"
       },
       "minP": {
-        "label": "Min P",
-        "placeholder": "e.g. 0.05"
+        "label": "Min P (minimales P)",
+        "placeholder": "z.B. 0.05"
       },
       "repeatPenalty": {
-        "label": "Repeat Penalty",
-        "placeholder": "e.g. 1.1, 1.2"
+        "label": "Wiederholungsstrafe",
+        "placeholder": "z.B. 1.1, 1.2"
       },
       "repeatLastN": {
-        "label": "Repeat Last N",
-        "placeholder": "e.g. 64, 128"
+        "label": "Letzte N wiederholen",
+        "placeholder": "z.B. 64, 128"
       }
     },
     "advanced": "Weitere Modell-Einstellungen"
@@ -200,41 +200,41 @@
     "confirm": "Sind Sie sicher, dass Sie den Download abbrechen möchten? Dadurch wird der Downloadvorgang gestoppt. Laut der Ollama-Dokumentation können Sie dort weitermachen, wo Sie aufgehört haben."
   },
   "table": {
-    "copyCsv": "Copy as CSV",
-    "downloadCsv": "Download CSV"
+    "copyCsv": "Als CSV kopieren",
+    "downloadCsv": "CSV herunterladen"
   },
-  "dismiss": "Dismiss",
+  "dismiss": "Ausblenden",
   "privateModeSaveErrorTitle": "tldw Assistant kann keine Daten speichern",
-  "confirmTitle": "Please confirm",
-  "saving": "Saving...",
-  "close": "Close",
-  "loadMore": "Load More...",
-  "startChat": "Start chatting",
-  "previous": "Previous",
-  "next": "Next",
-  "chatWithCharacter": "Chat with character",
-  "ttsShort": "TTS",
-  "copyShort": "Copy",
-  "branchShort": "Branch",
+  "confirmTitle": "Bitte bestätigen",
+  "saving": "Speichern...",
+  "close": "Schließen",
+  "loadMore": "Mehr laden...",
+  "startChat": "Chat starten",
+  "previous": "Zurück",
+  "next": "Weiter",
+  "chatWithCharacter": "Mit Charakter chatten",
+  "ttsShort": "Ton",
+  "copyShort": "Kopieren",
+  "branchShort": "Zweig",
   "segmented": {
-    "available": "Server Models",
-    "custom": "Custom Models"
+    "available": "Server-Modelle",
+    "custom": "Benutzerdefinierte Modelle"
   },
-  "success": "Success",
-  "created": "Created",
-  "updated": "Updated",
-  "deleted": "Deleted",
-  "create": "Create",
-  "reset": "Reset",
-  "serverOffline": "Server offline or not configured",
-  "serverChats": "Server chats",
-  "serverChatLoadError": "Failed to load server chat. Check your connection and try again.",
-  "serverChatSourceLabel": "Server",
-  "serverChatsUnavailable": "Server chats unavailable. Check your server connection.",
-  "historiesDeleted": "{{count}} Histories Deleted",
-  "deleteHistoriesError": "Error deleting histories",
-  "mermaid": "Mermaid",
-  "search": "Search",
-  "searchResults": "Search Results",
-  "newBranch": "New Branch"
+  "success": "Erfolg",
+  "created": "Erstellt",
+  "updated": "Aktualisiert",
+  "deleted": "Gelöscht",
+  "create": "Erstellen",
+  "reset": "Zurücksetzen",
+  "serverOffline": "Server offline oder nicht konfiguriert",
+  "serverChats": "Server-Chats",
+  "serverChatLoadError": "Server-Chat konnte nicht geladen werden. Überprüfen Sie Ihre Verbindung und versuchen Sie es erneut.",
+  "serverChatSourceLabel": "Serverquelle",
+  "serverChatsUnavailable": "Server-Chats nicht verfügbar. Überprüfen Sie Ihre Serververbindung.",
+  "historiesDeleted": "{{count}} Verläufe gelöscht",
+  "deleteHistoriesError": "Fehler beim Löschen der Verläufe",
+  "mermaid": "Mermaid-Diagramme",
+  "search": "Suchen",
+  "searchResults": "Suchergebnisse",
+  "newBranch": "Neuer Zweig"
 }

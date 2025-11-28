@@ -1,17 +1,17 @@
 {
-  "pageAssist": "tldw Assistant",
+  "pageAssist": "tldw 어시스턴트",
   "titles": {
     "options": "tldw Assistant — Options",
     "sidepanel": "tldw Assistant — Sidepanel"
   },
   "pdf": {
-    "passwordTitle": "Enter the PDF password",
-    "unlock": "Unlock"
+    "passwordTitle": "PDF 비밀번호를 입력하세요",
+    "unlock": "잠금 해제"
   },
   "loading": {
-    "title": "Loading…",
-    "description": "Please wait while we get things ready.",
-    "content": "Loading content…"
+    "title": "로딩 중…",
+    "description": "준비가 완료될 때까지 잠시만 기다려 주세요.",
+    "content": "콘텐츠를 불러오는 중…"
   },
   "selectAModel": "모델 선택",
   "save": "저장",
@@ -62,7 +62,7 @@
   },
   "submit": "제출",
   "send": "제출",
-  "connectToServer": "Connect to server",
+  "connectToServer": "서버에 연결",
   "noData": "데이터가 없습니다",
   "noHistory": "채팅 기록이 없습니다",
   "chatWithCurrentPage": "현재 페이지에서 채팅",
@@ -74,9 +74,9 @@
     "description": "모든 채팅에 대해 글로벌 모델 옵션을 설정합니다",
     "form": {
       "keepAlive": {
-        "label": "Keep Alive",
-        "help": "요청 후 모델이 메모리에 유지되는 시간을 설정합니다 (기본값: 5분)",
-        "placeholder": "Keep Alive 기간을 입력하세요 (예: 5분, 10분, 1시간)"
+        "label": "Keep Alive (유지 시간)",
+        "help": "요청 후 모델이 메모리에 얼마나 오래 유지될지 설정합니다 (기본값: 5분).",
+        "placeholder": "Keep Alive 기간을 입력하세요 (예: 5m, 10m, 1h)"
       },
       "temperature": {
         "label": "온도",
@@ -96,11 +96,11 @@
         "help": "모델 출력의 재현성"
       },
       "topK": {
-        "label": "Top K",
+        "label": "Top K (상위 K)",
         "placeholder": "Top K 값을 입력하세요 (예: 40, 100)"
       },
       "topP": {
-        "label": "Top P",
+        "label": "Top P (상위 P)",
         "placeholder": "Top P 값을 입력하세요 (예: 0.9, 0.95)"
       },
       "numGpu": {
@@ -113,41 +113,41 @@
         "help": "현재 채팅에서 시스템 프롬프트를 빠르게 설정하는 방법이며, 선택된 시스템 프롬프트가 있을 경우 이를 덮어씁니다."
       },
       "thinking": {
-        "label": "Thinking Mode"
+        "label": "생각 모드"
       },
       "useMMap": {
-        "label": "useMmap"
+        "label": "useMmap (메모리 매핑)"
       },
       "tfsZ": {
-        "label": "TFS-Z",
-        "placeholder": "e.g. 1.0, 1.1"
+        "label": "TFS-Z (TFS 매개변수)",
+        "placeholder": "예: 1.0, 1.1"
       },
       "numKeep": {
-        "label": "Num Keep",
-        "placeholder": "e.g. 256, 512"
+        "label": "Num Keep (유지할 수)",
+        "placeholder": "예: 256, 512"
       },
       "numThread": {
-        "label": "Num Thread",
-        "placeholder": "e.g. 8, 16"
+        "label": "Num Thread (스레드 수)",
+        "placeholder": "예: 8, 16"
       },
       "useMlock": {
-        "label": "useMlock"
+        "label": "useMlock (메모리 잠금)"
       },
       "reasoningEffort": {
-        "label": "Reasoning Effort",
-        "placeholder": "low, medium, high"
+        "label": "추론 강도",
+        "placeholder": "low(낮음), medium(중간), high(높음)"
       },
       "minP": {
-        "label": "Min P",
-        "placeholder": "e.g. 0.05"
+        "label": "Min P (최소 P)",
+        "placeholder": "예: 0.05"
       },
       "repeatPenalty": {
-        "label": "Repeat Penalty",
-        "placeholder": "e.g. 1.1, 1.2"
+        "label": "반복 패널티",
+        "placeholder": "예: 1.1, 1.2"
       },
       "repeatLastN": {
-        "label": "Repeat Last N",
-        "placeholder": "e.g. 64, 128"
+        "label": "마지막 N 토큰 반복",
+        "placeholder": "예: 64, 128"
       }
     },
     "advanced": "기타 모델 설정"
@@ -157,7 +157,7 @@
     "explain": "설명",
     "rephrase": "다르게 표현",
     "translate": "번역",
-    "custom": "Custom"
+    "custom": "사용자 정의"
   },
   "citations": "인용",
   "downloadCode": "코드 다운로드",
@@ -200,41 +200,41 @@
     "confirm": "다운로드를 취소하시겠습니까? 이 작업은 다운로드 과정을 중단합니다. Ollama 문서에 따르면, 중단된 위치에서 다시 시작할 수 있습니다."
   },
   "table": {
-    "copyCsv": "Copy as CSV",
-    "downloadCsv": "Download CSV"
+    "copyCsv": "CSV로 복사",
+    "downloadCsv": "CSV 다운로드"
   },
-  "dismiss": "Dismiss",
+  "dismiss": "닫기",
   "privateModeSaveErrorTitle": "tldw Assistant에서 데이터를 저장할 수 없습니다",
-  "confirmTitle": "Please confirm",
-  "saving": "Saving...",
-  "close": "Close",
-  "loadMore": "Load More...",
-  "startChat": "Start chatting",
-  "previous": "Previous",
-  "next": "Next",
-  "chatWithCharacter": "Chat with character",
-  "ttsShort": "TTS",
-  "copyShort": "Copy",
-  "branchShort": "Branch",
+  "confirmTitle": "확인해 주세요",
+  "saving": "저장 중...",
+  "close": "닫기",
+  "loadMore": "더 불러오기...",
+  "startChat": "채팅 시작",
+  "previous": "이전",
+  "next": "다음",
+  "chatWithCharacter": "캐릭터와 채팅",
+  "ttsShort": "음성",
+  "copyShort": "복사",
+  "branchShort": "브랜치",
   "segmented": {
-    "available": "Server Models",
-    "custom": "Custom Models"
+    "available": "서버 모델",
+    "custom": "사용자 정의 모델"
   },
-  "success": "Success",
-  "created": "Created",
-  "updated": "Updated",
-  "deleted": "Deleted",
-  "create": "Create",
-  "reset": "Reset",
-  "serverOffline": "Server offline or not configured",
-  "serverChats": "Server chats",
-  "serverChatLoadError": "Failed to load server chat. Check your connection and try again.",
-  "serverChatSourceLabel": "Server",
-  "serverChatsUnavailable": "Server chats unavailable. Check your server connection.",
-  "historiesDeleted": "{{count}} Histories Deleted",
-  "deleteHistoriesError": "Error deleting histories",
-  "mermaid": "Mermaid",
-  "search": "Search",
-  "searchResults": "Search Results",
-  "newBranch": "New Branch"
+  "success": "성공",
+  "created": "생성됨",
+  "updated": "업데이트됨",
+  "deleted": "삭제됨",
+  "create": "생성",
+  "reset": "초기화",
+  "serverOffline": "서버가 오프라인이거나 구성되지 않았습니다",
+  "serverChats": "서버 채팅",
+  "serverChatLoadError": "서버 채팅을 불러오지 못했습니다. 연결을 확인하고 다시 시도하세요.",
+  "serverChatSourceLabel": "서버",
+  "serverChatsUnavailable": "서버 채팅을 사용할 수 없습니다. 서버 연결을 확인하세요.",
+  "historiesDeleted": "{{count}}개의 기록이 삭제되었습니다",
+  "deleteHistoriesError": "기록 삭제 중 오류가 발생했습니다",
+  "mermaid": "Mermaid 다이어그램",
+  "search": "검색",
+  "searchResults": "검색 결과",
+  "newBranch": "새 브랜치"
 }

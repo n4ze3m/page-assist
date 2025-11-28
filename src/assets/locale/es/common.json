@@ -1,17 +1,17 @@
 {
-  "pageAssist": "tldw Assistant",
+  "pageAssist": "Asistente tldw",
   "titles": {
     "options": "tldw Assistant — Options",
     "sidepanel": "tldw Assistant — Sidepanel"
   },
   "pdf": {
-    "passwordTitle": "Enter the PDF password",
-    "unlock": "Unlock"
+    "passwordTitle": "Introduce la contraseña del PDF",
+    "unlock": "Desbloquear"
   },
   "loading": {
-    "title": "Loading…",
-    "description": "Please wait while we get things ready.",
-    "content": "Loading content…"
+    "title": "Cargando…",
+    "description": "Espera mientras preparamos todo.",
+    "content": "Cargando contenido…"
   },
   "selectAModel": "Selecione un Modelo",
   "save": "Guardar",
@@ -62,11 +62,11 @@
   },
   "submit": "Enviar",
   "send": "Enviar",
-  "connectToServer": "Connect to server",
+  "connectToServer": "Conectar con el servidor",
   "noData": "Sin datos",
   "noHistory": "Chat sin histórico",
   "chatWithCurrentPage": "Conversar con la página actual",
-  "beta": "Beta",
+  "beta": "Versión beta",
   "tts": "Leer en voz alta",
   "currentChatModelSettings": "Configuraciones del Modelo de Chat Actual",
   "modelSettings": {
@@ -96,15 +96,15 @@
         "help": "Reproductibilidad de la salida del modelo"
       },
       "topK": {
-        "label": "Top K",
+        "label": "Top K (superior K)",
         "placeholder": "Ingresar el valor de Top K (ej: 40, 100)"
       },
       "topP": {
-        "label": "Top P",
+        "label": "Top P (superior P)",
         "placeholder": "Ingresar el valor de Top P (ej: 0.9, 0.95)"
       },
       "numGpu": {
-        "label": "Num GPU",
+        "label": "N.º de GPU",
         "placeholder": "Ingrese el número de capas para enviar a la(s) GPU(s)"
       },
       "systemPrompt": {
@@ -113,41 +113,41 @@
         "help": "Esta es una forma rápida de establecer el prompt de sistema en el chat actual, que anulará el prompt de sistema seleccionado si existe."
       },
       "thinking": {
-        "label": "Thinking Mode"
+        "label": "Modo de razonamiento"
       },
       "useMMap": {
-        "label": "useMmap"
+        "label": "useMmap (mapear en memoria)"
       },
       "tfsZ": {
-        "label": "TFS-Z",
-        "placeholder": "e.g. 1.0, 1.1"
+        "label": "TFS-Z (parámetro TFS)",
+        "placeholder": "p. ej.: 1.0, 1.1"
       },
       "numKeep": {
-        "label": "Num Keep",
-        "placeholder": "e.g. 256, 512"
+        "label": "Num Keep (n.º a mantener)",
+        "placeholder": "p. ej.: 256, 512"
       },
       "numThread": {
-        "label": "Num Thread",
-        "placeholder": "e.g. 8, 16"
+        "label": "Num Thread (n.º de hilos)",
+        "placeholder": "p. ej.: 8, 16"
       },
       "useMlock": {
-        "label": "useMlock"
+        "label": "useMlock (bloquear en memoria)"
       },
       "reasoningEffort": {
-        "label": "Reasoning Effort",
-        "placeholder": "low, medium, high"
+        "label": "Esfuerzo de razonamiento",
+        "placeholder": "bajo, medio, alto"
       },
       "minP": {
-        "label": "Min P",
-        "placeholder": "e.g. 0.05"
+        "label": "Min P (P mínima)",
+        "placeholder": "p. ej.: 0.05"
       },
       "repeatPenalty": {
-        "label": "Repeat Penalty",
-        "placeholder": "e.g. 1.1, 1.2"
+        "label": "Penalización por repetición",
+        "placeholder": "p. ej.: 1.1, 1.2"
       },
       "repeatLastN": {
-        "label": "Repeat Last N",
-        "placeholder": "e.g. 64, 128"
+        "label": "Repetir últimos N",
+        "placeholder": "p. ej.: 64, 128"
       }
     },
     "advanced": "Más Configuraciones del Modelo"
@@ -157,7 +157,7 @@
     "explain": "Explicar",
     "rephrase": "Reformular",
     "translate": "Traducir",
-    "custom": "Custom"
+    "custom": "Personalizado"
   },
   "citations": "Citas",
   "downloadCode": "Descargar Código",
@@ -200,41 +200,41 @@
     "confirm": "¿Está seguro de que desea cancelar la descarga? Esto detendrá el proceso de descarga. Según la documentación de Ollama, puede reiniciar desde donde lo dejó."
   },
   "table": {
-    "copyCsv": "Copy as CSV",
-    "downloadCsv": "Download CSV"
+    "copyCsv": "Copiar como CSV",
+    "downloadCsv": "Descargar CSV"
   },
-  "dismiss": "Dismiss",
+  "dismiss": "Descartar",
   "privateModeSaveErrorTitle": "tldw Assistant no puede guardar datos",
-  "confirmTitle": "Please confirm",
-  "saving": "Saving...",
-  "close": "Close",
-  "loadMore": "Load More...",
-  "startChat": "Start chatting",
-  "previous": "Previous",
-  "next": "Next",
-  "chatWithCharacter": "Chat with character",
-  "ttsShort": "TTS",
-  "copyShort": "Copy",
-  "branchShort": "Branch",
+  "confirmTitle": "Confirma la acción",
+  "saving": "Guardando...",
+  "close": "Cerrar",
+  "loadMore": "Cargar más...",
+  "startChat": "Iniciar chat",
+  "previous": "Anterior",
+  "next": "Siguiente",
+  "chatWithCharacter": "Chatear con personaje",
+  "ttsShort": "Voz",
+  "copyShort": "Copiar",
+  "branchShort": "Rama",
   "segmented": {
-    "available": "Server Models",
-    "custom": "Custom Models"
+    "available": "Modelos del servidor",
+    "custom": "Modelos personalizados"
   },
-  "success": "Success",
-  "created": "Created",
-  "updated": "Updated",
-  "deleted": "Deleted",
-  "create": "Create",
-  "reset": "Reset",
-  "serverOffline": "Server offline or not configured",
-  "serverChats": "Server chats",
-  "serverChatLoadError": "Failed to load server chat. Check your connection and try again.",
-  "serverChatSourceLabel": "Server",
-  "serverChatsUnavailable": "Server chats unavailable. Check your server connection.",
-  "historiesDeleted": "{{count}} Histories Deleted",
-  "deleteHistoriesError": "Error deleting histories",
-  "mermaid": "Mermaid",
-  "search": "Search",
-  "searchResults": "Search Results",
-  "newBranch": "New Branch"
+  "success": "Éxito",
+  "created": "Creado",
+  "updated": "Actualizado",
+  "deleted": "Eliminado",
+  "create": "Crear",
+  "reset": "Restablecer",
+  "serverOffline": "Servidor sin conexión o no configurado",
+  "serverChats": "Chats del servidor",
+  "serverChatLoadError": "No se pudo cargar el chat del servidor. Comprueba la conexión e inténtalo de nuevo.",
+  "serverChatSourceLabel": "Servidor",
+  "serverChatsUnavailable": "Chats del servidor no disponibles. Comprueba la conexión con el servidor.",
+  "historiesDeleted": "{{count}} historiales eliminados",
+  "deleteHistoriesError": "Error al eliminar historiales",
+  "mermaid": "Diagramas Mermaid",
+  "search": "Buscar",
+  "searchResults": "Resultados de la búsqueda",
+  "newBranch": "Nueva rama"
 }

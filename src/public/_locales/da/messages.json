@@ -1,12 +1,12 @@
 {
   "extName": {
-    "message": "tldw Assistant"
+    "message": "tldw-assistenten"
   },
   "extDescription": {
     "message": "Brug dine lokalt kørende AI-modeller til at hjælpe dig med at surfe på nettet."
   },
   "openSidePanelToChat": {
-    "message": "Open Sidebar to chat"
+    "message": "Åbn sidepanel for at chatte"
   },
   "openOptionToChat": {
     "message": "Åben Web UI for at Chatte"
@@ -27,10 +27,10 @@
     "message": "Tilpasset"
   },
   "contextSendToTldw": {
-    "message": "Send to tldw_server"
+    "message": "Send til tldw_server"
   },
   "contextProcessLocalTldw": {
-    "message": "Process with tldw_server (don’t store)"
+    "message": "Behandl med tldw_server (gem ikke)"
   },
   "contextSidebarOpening": {
     "message": "Åbner sidepanel..."
@@ -39,51 +39,51 @@
     "message": "Åbner sidepanel for at gemme noten..."
   },
   "contextTranscribeMedia": {
-    "message": "Transcribe Video/Audio"
+    "message": "Transskriber video/lyd"
   },
   "contextTranscribeAndSummarizeMedia": {
-    "message": "Transcribe + Summarize Video/Audio"
+    "message": "Transskriber + opsummer video/lyd"
   },
   "contextSaveToNotes": {
-    "message": "Save to Notes"
+    "message": "Gem i noter"
   },
   "contextSaveToNotesNoSelection": {
-    "message": "Select text first to save to Notes."
+    "message": "Markér tekst først for at gemme i noter."
   },
   "hfSendPageRejected": {
-    "message": "[tldw] Page send request rejected by tldw_server"
+    "message": "[tldw] Anmodning om at sende siden blev afvist af tldw_server"
   },
   "hfSendPageErrorWithDetail": {
-    "message": "[tldw] Failed to send this page to tldw_server: $1. Check Settings → tldw server and try again."
+    "message": "[tldw] Det lykkedes ikke at sende denne side til tldw_server: $1. Tjek \"Settings → tldw server\" og prøv igen."
   },
   "hfSendPageError": {
-    "message": "[tldw] Failed to send this page to tldw_server. Check Settings → tldw server and try again."
+    "message": "[tldw] Det lykkedes ikke at sende denne side til tldw_server. Tjek \"Settings → tldw server\" og prøv igen."
   },
   "hfSendPageSuccess": {
-    "message": "[tldw] Sent page to tldw_server for processing"
+    "message": "[tldw] Siden blev sendt til tldw_server til behandling"
   },
   "hfSendPageException": {
-    "message": "[tldw] Something went wrong while sending this page to tldw_server. Check that your tldw_server and the extension are running, then try again."
+    "message": "[tldw] Noget gik galt, da siden skulle sendes til tldw_server. Kontrollér, at din tldw_server og udvidelse kører, og prøv igen."
   },
   "hfPullInProgress": {
-    "message": "[tldw Assistant] A model pull request is already in progress. Please wait for it to finish before starting another one."
+    "message": "[tldw Assistant] En model-download er allerede i gang. Vent venligst, til den er færdig, før du starter en ny."
   },
   "hfPullConfirm": {
-    "message": "[tldw Assistant] Do you want to send a request to your tldw_server to pull the \"$1\" model? This is independent of the huggingface.co website. Your server will start pulling the model after you confirm."
+    "message": "[tldw Assistant] Vil du sende en anmodning til din tldw_server om at hente modellen \"$1\"? Dette er uafhængigt af websitet huggingface.co. Din server begynder at hente modellen, når du bekræfter."
   },
   "hfPullSending": {
-    "message": "[tldw Assistant] Sending a request to your tldw_server to pull \"$1\". Check the extension icon or your tldw_server logs for progress."
+    "message": "[tldw Assistant] Sender en anmodning til din tldw_server om at hente \"$1\". Tjek udvidelsesikonet eller loggene fra tldw_server for at se status."
   },
   "hfPullErrorWithDetail": {
-    "message": "[tldw Assistant] Failed to send a pull request for \"$1\": $2. Check Settings → tldw server and try again."
+    "message": "[tldw Assistant] Det lykkedes ikke at sende en henteanmodning for \"$1\": $2. Tjek \"Settings → tldw server\" og prøv igen."
   },
   "hfPullError": {
-    "message": "[tldw Assistant] Failed to send a pull request for \"$1\". Check Settings → tldw server and try again."
+    "message": "[tldw Assistant] Det lykkedes ikke at sende en henteanmodning for \"$1\". Tjek \"Settings → tldw server\" og prøv igen."
   },
   "hfPullSuccess": {
-    "message": "[tldw Assistant] Request sent to your tldw_server to pull \"$1\". Monitor the extension icon or tldw_server logs for status."
+    "message": "[tldw Assistant] Anmodning om at hente \"$1\" er sendt til din tldw_server. Følg status via udvidelsesikonet eller loggene fra tldw_server."
   },
   "hfPullException": {
-    "message": "[tldw Assistant] Something went wrong while sending a pull request for \"$1\" to your tldw_server. Check that your tldw_server and the extension are running, then try again."
+    "message": "[tldw Assistant] Noget gik galt, da en henteanmodning for \"$1\" blev sendt til din tldw_server. Kontrollér, at din tldw_server og udvidelsen kører, og prøv igen."
   }
 }

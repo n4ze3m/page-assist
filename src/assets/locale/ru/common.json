@@ -1,17 +1,17 @@
 {
-  "pageAssist": "tldw Assistant",
+  "pageAssist": "Ассистент tldw",
   "titles": {
     "options": "tldw Assistant — Options",
     "sidepanel": "tldw Assistant — Sidepanel"
   },
   "pdf": {
-    "passwordTitle": "Enter the PDF password",
-    "unlock": "Unlock"
+    "passwordTitle": "Введите пароль PDF",
+    "unlock": "Разблокировать"
   },
   "loading": {
-    "title": "Loading…",
-    "description": "Please wait while we get things ready.",
-    "content": "Loading content…"
+    "title": "Загрузка…",
+    "description": "Пожалуйста, подождите, мы все подготавливаем.",
+    "content": "Загрузка содержимого…"
   },
   "selectAModel": "Выберите модель",
   "save": "Сохранить",
@@ -62,11 +62,11 @@
   },
   "submit": "Отправить",
   "send": "Отправить",
-  "connectToServer": "Connect to server",
+  "connectToServer": "Подключиться к серверу",
   "noData": "Нет данных",
   "noHistory": "Нет истории чата",
   "chatWithCurrentPage": "Чат с текущей страницей",
-  "beta": "Бета",
+  "beta": "Бета-версия",
   "tts": "Прочитать вслух",
   "currentChatModelSettings": "Текущие настройки модели чата",
   "modelSettings": {
@@ -96,15 +96,15 @@
         "help": "Воспроизводимость вывода модели"
       },
       "topK": {
-        "label": "Top K",
+        "label": "Top K (верхние K)",
         "placeholder": "Введите значение Top K (например, 40, 100)"
       },
       "topP": {
-        "label": "Top P",
+        "label": "Top P (верхнее P)",
         "placeholder": "Введите значение Top P (например, 0.9, 0.95)"
       },
       "numGpu": {
-        "label": "Num GPU",
+        "label": "Количество GPU (Num GPU)",
         "placeholder": "Введите количество слоев для отправки на GPU"
       },
       "systemPrompt": {
@@ -113,41 +113,41 @@
         "help": "Это быстрый способ установить системный запрос в текущем чате, который переопределит выбранный системный запрос, если он существует."
       },
       "thinking": {
-        "label": "Thinking Mode"
+        "label": "Режим размышления"
       },
       "useMMap": {
-        "label": "useMmap"
+        "label": "useMmap (отображение памяти)"
       },
       "tfsZ": {
-        "label": "TFS-Z",
-        "placeholder": "e.g. 1.0, 1.1"
+        "label": "TFS-Z (параметр TFS)",
+        "placeholder": "например, 1.0, 1.1"
       },
       "numKeep": {
-        "label": "Num Keep",
-        "placeholder": "e.g. 256, 512"
+        "label": "Num Keep (количество сохраняемых)",
+        "placeholder": "например, 256, 512"
       },
       "numThread": {
-        "label": "Num Thread",
-        "placeholder": "e.g. 8, 16"
+        "label": "Num Thread (количество потоков)",
+        "placeholder": "например, 8, 16"
       },
       "useMlock": {
-        "label": "useMlock"
+        "label": "useMlock (блокировка памяти)"
       },
       "reasoningEffort": {
-        "label": "Reasoning Effort",
-        "placeholder": "low, medium, high"
+        "label": "Усилия на рассуждение",
+        "placeholder": "низкие, средние, высокие"
       },
       "minP": {
-        "label": "Min P",
-        "placeholder": "e.g. 0.05"
+        "label": "Min P (минимальное P)",
+        "placeholder": "например, 0.05"
       },
       "repeatPenalty": {
-        "label": "Repeat Penalty",
-        "placeholder": "e.g. 1.1, 1.2"
+        "label": "Штраф за повторения",
+        "placeholder": "например, 1.1, 1.2"
       },
       "repeatLastN": {
-        "label": "Repeat Last N",
-        "placeholder": "e.g. 64, 128"
+        "label": "Повторять последние N",
+        "placeholder": "например, 64, 128"
       }
     },
     "advanced": "Больше настроек модели"
@@ -157,7 +157,7 @@
     "explain": "Объяснить",
     "rephrase": "Перефразировать",
     "translate": "Перевести",
-    "custom": "Custom"
+    "custom": "Пользовательский"
   },
   "citations": "Цитаты",
   "downloadCode": "Скачать код",
@@ -193,48 +193,48 @@
     "loading": "Загружаю рассуждение...",
     "thought": "Размышлял {{time}}"
   },
-  "embeddingGen": "Создание вложений, это может занять некоторое время",
+  "embeddingGen": "Создание embeddings, это может занять некоторое время",
   "semanticSearch": "Выполнение семантического поиска",
   "downloading": "Загрузка",
   "cancelPullingModel": {
     "confirm": "Вы уверены, что хотите отменить загрузку? Это остановит процесс загрузки. Согласно документации Ollama, вы можете возобновить загрузку с того места, на котором остановились."
   },
   "table": {
-    "copyCsv": "Copy as CSV",
-    "downloadCsv": "Download CSV"
+    "copyCsv": "Копировать как CSV",
+    "downloadCsv": "Скачать CSV"
   },
-  "dismiss": "Dismiss",
+  "dismiss": "Скрыть",
   "privateModeSaveErrorTitle": "tldw Assistant не может сохранить данные",
-  "confirmTitle": "Please confirm",
-  "saving": "Saving...",
-  "close": "Close",
-  "loadMore": "Load More...",
-  "startChat": "Start chatting",
-  "previous": "Previous",
-  "next": "Next",
-  "chatWithCharacter": "Chat with character",
-  "ttsShort": "TTS",
-  "copyShort": "Copy",
-  "branchShort": "Branch",
+  "confirmTitle": "Пожалуйста, подтвердите",
+  "saving": "Сохранение...",
+  "close": "Закрыть",
+  "loadMore": "Загрузить ещё...",
+  "startChat": "Начать чат",
+  "previous": "Назад",
+  "next": "Далее",
+  "chatWithCharacter": "Чат с персонажем",
+  "ttsShort": "Голос",
+  "copyShort": "Копировать",
+  "branchShort": "Ветка",
   "segmented": {
-    "available": "Server Models",
-    "custom": "Custom Models"
+    "available": "Серверные модели",
+    "custom": "Пользовательские модели"
   },
-  "success": "Success",
-  "created": "Created",
-  "updated": "Updated",
-  "deleted": "Deleted",
-  "create": "Create",
-  "reset": "Reset",
-  "serverOffline": "Server offline or not configured",
-  "serverChats": "Server chats",
-  "serverChatLoadError": "Failed to load server chat. Check your connection and try again.",
-  "serverChatSourceLabel": "Server",
-  "serverChatsUnavailable": "Server chats unavailable. Check your server connection.",
-  "historiesDeleted": "{{count}} Histories Deleted",
-  "deleteHistoriesError": "Error deleting histories",
-  "mermaid": "Mermaid",
-  "search": "Search",
-  "searchResults": "Search Results",
-  "newBranch": "New Branch"
+  "success": "Успешно",
+  "created": "Создано",
+  "updated": "Обновлено",
+  "deleted": "Удалено",
+  "create": "Создать",
+  "reset": "Сбросить",
+  "serverOffline": "Сервер не работает или не настроен",
+  "serverChats": "Серверные чаты",
+  "serverChatLoadError": "Не удалось загрузить серверный чат. Проверьте соединение и попробуйте снова.",
+  "serverChatSourceLabel": "Источник сервера",
+  "serverChatsUnavailable": "Серверные чаты недоступны. Проверьте подключение к серверу.",
+  "historiesDeleted": "{{count}} историй чата удалено",
+  "deleteHistoriesError": "Ошибка при удалении историй",
+  "mermaid": "Диаграммы Mermaid",
+  "search": "Поиск",
+  "searchResults": "Результаты поиска",
+  "newBranch": "Новая ветка"
 }

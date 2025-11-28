@@ -10,6 +10,7 @@
   },
   "modal": {
     "titleAdd": "Añadir Nuevo Proveedor",
+    "titleEdit": "Editar proveedor",
     "name": {
       "label": "Nombre del Proveedor",
       "required": "El nombre del proveedor es obligatorio.",
@@ -34,8 +35,7 @@
       "subheading": "Por favor, selecciona los modelos de chat que quieres usar con este proveedor.",
       "success": "Nuevos modelos añadidos con éxito."
     },
-    "tipLMStudio": "tldw Browser_Assistant obtendrá automáticamente los modelos que hayas cargado en LM Studio. No necesitas añadirlos manualmente.",
-    "titleEdit": "Edit Provider"
+    "tipLMStudio": "tldw Browser_Assistant obtendrá automáticamente los modelos que hayas cargado en LM Studio. No necesitas añadirlos manualmente."
   },
   "addSuccess": "Proveedor añadido con éxito.",
   "deleteSuccess": "Proveedor eliminado con éxito.",
@@ -80,7 +80,7 @@
           "label": "Tipo de Modelo"
         }
       },
-      "titleEdit": "Edit Custom Model"
+      "titleEdit": "Editar modelo personalizado"
     }
   },
   "noModelFound": "No se encontró ningún modelo. Asegúrate de haber añadido el proveedor correcto con la URL base y la clave API.",

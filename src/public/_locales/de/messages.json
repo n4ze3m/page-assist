@@ -1,15 +1,15 @@
 {
   "extName": {
-    "message": "tldw Assistant"
+    "message": "tldw-Assistent"
   },
   "extDescription": {
     "message": "Nutzen Sie Ihre lokal laufenden KI-Modelle, um Sie beim Surfen im Web zu unterstützen."
   },
   "openSidePanelToChat": {
-    "message": "Open Sidebar to chat"
+    "message": "Seitenleiste zum Chatten öffnen"
   },
   "openOptionToChat": {
-    "message": "Web-Benutzeroberfläche zum Chatten öffnen"
+    "message": "Weboberfläche zum Chatten öffnen"
   },
   "contextSummarize": {
     "message": "Zusammenfassen"
@@ -27,10 +27,10 @@
     "message": "Benutzerdefiniert"
   },
   "contextSendToTldw": {
-    "message": "Send to tldw_server"
+    "message": "An tldw_server senden"
   },
   "contextProcessLocalTldw": {
-    "message": "Process with tldw_server (don’t store)"
+    "message": "Mit tldw_server verarbeiten (nicht speichern)"
   },
   "contextSidebarOpening": {
     "message": "Seitenleiste wird geöffnet..."
@@ -39,51 +39,51 @@
     "message": "Seitenleiste wird zum Speichern der Notiz geöffnet..."
   },
   "contextTranscribeMedia": {
-    "message": "Transcribe Video/Audio"
+    "message": "Video/Audio transkribieren"
   },
   "contextTranscribeAndSummarizeMedia": {
-    "message": "Transcribe + Summarize Video/Audio"
+    "message": "Video/Audio transkribieren und zusammenfassen"
   },
   "contextSaveToNotes": {
-    "message": "Save to Notes"
+    "message": "In Notizen speichern"
   },
   "contextSaveToNotesNoSelection": {
-    "message": "Select text first to save to Notes."
+    "message": "Markieren Sie zuerst Text, um ihn in Notizen zu speichern."
   },
   "hfSendPageRejected": {
-    "message": "[tldw] Page send request rejected by tldw_server"
+    "message": "[tldw] Seiten-Sendeanforderung wurde von tldw_server abgelehnt"
   },
   "hfSendPageErrorWithDetail": {
-    "message": "[tldw] Failed to send this page to tldw_server: $1. Check Settings → tldw server and try again."
+    "message": "[tldw] Diese Seite konnte nicht an tldw_server gesendet werden: $1. Prüfen Sie unter \"Settings → tldw server\" und versuchen Sie es erneut."
   },
   "hfSendPageError": {
-    "message": "[tldw] Failed to send this page to tldw_server. Check Settings → tldw server and try again."
+    "message": "[tldw] Diese Seite konnte nicht an tldw_server gesendet werden. Prüfen Sie unter \"Settings → tldw server\" und versuchen Sie es erneut."
   },
   "hfSendPageSuccess": {
-    "message": "[tldw] Sent page to tldw_server for processing"
+    "message": "[tldw] Seite zur Verarbeitung an tldw_server gesendet"
   },
   "hfSendPageException": {
-    "message": "[tldw] Something went wrong while sending this page to tldw_server. Check that your tldw_server and the extension are running, then try again."
+    "message": "[tldw] Beim Senden dieser Seite an tldw_server ist ein Fehler aufgetreten. Stellen Sie sicher, dass Ihr tldw_server und die Erweiterung ausgeführt werden, und versuchen Sie es erneut."
   },
   "hfPullInProgress": {
-    "message": "[tldw Assistant] A model pull request is already in progress. Please wait for it to finish before starting another one."
+    "message": "[tldw Assistant] Eine Modell-Abrufanforderung läuft bereits. Bitte warten Sie, bis sie abgeschlossen ist, bevor Sie eine weitere starten."
   },
   "hfPullConfirm": {
-    "message": "[tldw Assistant] Do you want to send a request to your tldw_server to pull the \"$1\" model? This is independent of the huggingface.co website. Your server will start pulling the model after you confirm."
+    "message": "[tldw Assistant] Möchten Sie eine Anfrage an Ihren tldw_server senden, um das Modell \"$1\" abzurufen? Dies ist unabhängig von der Website huggingface.co. Ihr Server beginnt mit dem Abruf des Modells, nachdem Sie bestätigt haben."
   },
   "hfPullSending": {
-    "message": "[tldw Assistant] Sending a request to your tldw_server to pull \"$1\". Check the extension icon or your tldw_server logs for progress."
+    "message": "[tldw Assistant] Anfrage an Ihren tldw_server zum Abruf von \"$1\" wird gesendet. Überprüfen Sie das Erweiterungssymbol oder die Protokolle Ihres tldw_server, um den Fortschritt zu sehen."
   },
   "hfPullErrorWithDetail": {
-    "message": "[tldw Assistant] Failed to send a pull request for \"$1\": $2. Check Settings → tldw server and try again."
+    "message": "[tldw Assistant] Senden der Abrufanforderung für \"$1\" ist fehlgeschlagen: $2. Prüfen Sie unter \"Settings → tldw server\" und versuchen Sie es erneut."
   },
   "hfPullError": {
-    "message": "[tldw Assistant] Failed to send a pull request for \"$1\". Check Settings → tldw server and try again."
+    "message": "[tldw Assistant] Senden der Abrufanforderung für \"$1\" ist fehlgeschlagen. Prüfen Sie unter \"Settings → tldw server\" und versuchen Sie es erneut."
   },
   "hfPullSuccess": {
-    "message": "[tldw Assistant] Request sent to your tldw_server to pull \"$1\". Monitor the extension icon or tldw_server logs for status."
+    "message": "[tldw Assistant] Anfrage an Ihren tldw_server zum Abruf von \"$1\" wurde gesendet. Überwachen Sie das Erweiterungssymbol oder die Protokolle von tldw_server, um den Status zu verfolgen."
   },
   "hfPullException": {
-    "message": "[tldw Assistant] Something went wrong while sending a pull request for \"$1\" to your tldw_server. Check that your tldw_server and the extension are running, then try again."
+    "message": "[tldw Assistant] Beim Senden einer Abrufanforderung für \"$1\" an Ihren tldw_server ist ein Fehler aufgetreten. Stellen Sie sicher, dass Ihr tldw_server und die Erweiterung ausgeführt werden, und versuchen Sie es erneut."
   }
 }

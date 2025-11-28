@@ -10,6 +10,7 @@
   },
   "modal": {
     "titleAdd": "Legg til ny leverandør",
+    "titleEdit": "Rediger leverandør",
     "name": {
       "label": "Leverandørnavn",
       "required": "Leverandørnavn er påkrevd.",
@@ -35,7 +36,7 @@
       "success": "Nye modeller ble lagt til."
     },
     "tipLMStudio": "tldw Browser_Assistant vil automatisk hente modellene du lastet inn i LM Studio. Du trenger ikke å legge dem til manuelt.",
-    "titleEdit": "Edit Provider"
+    "titleEdit": "Rediger leverandør"
   },
   "addSuccess": "Leverandør ble lagt til.",
   "deleteSuccess": "Leverandør ble slettet.",
@@ -80,7 +81,7 @@
           "label": "Modelltype"
         }
       },
-      "titleEdit": "Edit Custom Model"
+      "titleEdit": "Rediger tilpasset modell"
     }
   },
   "noModelFound": "Ingen modell funnet. Sørg for at du har lagt til riktig leverandør med base-URL og API-nøkkel.",

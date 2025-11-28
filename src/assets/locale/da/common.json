@@ -1,5 +1,5 @@
 {
-  "pageAssist": "tldw Assistant",
+  "pageAssist": "tldw-assistenten",
   "titles": {
     "options": "tldw Assistant — Options",
     "sidepanel": "tldw Assistant — Sidepanel"
@@ -66,7 +66,7 @@
   "noData": "Ingen data",
   "noHistory": "Ingen chat-historik",
   "chatWithCurrentPage": "Chat med nuværende side",
-  "beta": "Beta",
+  "beta": "Beta-version",
   "tts": "Læs op",
   "currentChatModelSettings": "Nuværende chat model indstillinger",
   "modelSettings": {
@@ -91,16 +91,16 @@
         "placeholder": "f.eks. 2048, 4096"
       },
       "seed": {
-        "label": "Seed",
+        "label": "Seed (frø)",
         "placeholder": "f.eks. 1234",
         "help": "Reproducerbarhed af modeloutput"
       },
       "topK": {
-        "label": "Top K",
+        "label": "Top K (øverste K)",
         "placeholder": "f.eks. 40, 100"
       },
       "topP": {
-        "label": "Top P",
+        "label": "Top P (øverste P)",
         "placeholder": "f.eks. 0.9, 0.95"
       },
       "numGpu": {
@@ -113,17 +113,17 @@
         "help": "En hurtig måde at sætte systemprompten i den aktuelle chat, som tilsidesætter den valgte systemprompt, hvis den findes."
       },
       "thinking": {
-        "label": "Thinking-tilstand"
+        "label": "Tænke-tilstand"
       },
       "useMMap": {
-        "label": "useMmap"
+        "label": "Brug mmap"
       },
       "tfsZ": {
-        "label": "TFS-Z",
+        "label": "TFS-Z (TFS-parameter)",
         "placeholder": "f.eks. 1.0, 1.1"
       },
       "numKeep": {
-        "label": "Num Keep",
+        "label": "Antal bevarede (Num Keep)",
         "placeholder": "f.eks. 256, 512"
       },
       "numThread": {
@@ -131,14 +131,14 @@
         "placeholder": "f.eks. 8, 16"
       },
       "useMlock": {
-        "label": "useMlock"
+        "label": "Brug mlock"
       },
       "reasoningEffort": {
-        "label": "Reasoning-effort",
-        "placeholder": "low, medium, high"
+        "label": "Ræsonnementsindsats",
+        "placeholder": "lav, medium, høj"
       },
       "minP": {
-        "label": "Min P",
+        "label": "Min P (minimum P)",
         "placeholder": "f.eks. 0.05"
       },
       "repeatPenalty": {
@@ -146,7 +146,7 @@
         "placeholder": "f.eks. 1.1, 1.2"
       },
       "repeatLastN": {
-        "label": "Repeat Last N",
+        "label": "Gentag sidste N",
         "placeholder": "f.eks. 64, 128"
       }
     },
@@ -201,7 +201,7 @@
   },
   "table": {
     "copyCsv": "Kopiér som CSV",
-    "downloadCsv": "Download CSV"
+    "downloadCsv": "Download CSV-fil"
   },
   "dismiss": "Afvis",
   "privateModeSaveErrorTitle": "tldw Assistant kan ikke gemme data",
@@ -213,7 +213,7 @@
   "previous": "Forrige",
   "next": "Næste",
   "chatWithCharacter": "Chat med figur",
-  "ttsShort": "TTS",
+  "ttsShort": "Tale",
   "copyShort": "Kopiér",
   "branchShort": "Gren",
   "segmented": {
@@ -229,11 +229,11 @@
   "serverOffline": "Server offline eller ikke konfigureret",
   "serverChats": "Serverchats",
   "serverChatLoadError": "Kunne ikke indlæse serverchat. Kontroller din forbindelse og prøv igen.",
-  "serverChatSourceLabel": "Server",
+  "serverChatSourceLabel": "Serverkilde",
   "serverChatsUnavailable": "Serverchats er ikke tilgængelige. Kontroller serverforbindelsen.",
   "historiesDeleted": "{{count}} historikker slettet",
   "deleteHistoriesError": "Fejl ved sletning af historik",
-  "mermaid": "Mermaid",
+  "mermaid": "Mermaid-diagrammer",
   "search": "Søg",
   "searchResults": "Søgeresultater",
   "newBranch": "Ny gren"

@@ -10,6 +10,7 @@
   },
   "modal": {
     "titleAdd": "Adicionar Novo Provedor",
+    "titleEdit": "Editar provedor",
     "name": {
       "label": "Nome do Provedor",
       "required": "O nome do provedor é obrigatório.",
@@ -35,7 +36,7 @@
       "success": "Novos modelos adicionados com sucesso."
     },
     "tipLMStudio": "O tldw Browser_Assistant buscará automaticamente os modelos que você carregou no LM Studio. Você não precisa adicioná-los manualmente.",
-    "titleEdit": "Edit Provider"
+    "titleEdit": "Editar provedor"
   },
   "addSuccess": "Provedor adicionado com sucesso.",
   "deleteSuccess": "Provedor excluído com sucesso.",
@@ -80,7 +81,7 @@
           "label": "Tipo de Modelo"
         }
       },
-      "titleEdit": "Edit Custom Model"
+      "titleEdit": "Editar modelo personalizado"
     }
   },
   "noModelFound": "Nenhum modelo encontrado. Certifique-se de ter adicionado o provedor correto com URL base e chave da API.",

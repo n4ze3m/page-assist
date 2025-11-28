@@ -1,17 +1,17 @@
 {
-  "pageAssist": "tldw Assistant",
+  "pageAssist": "Assistente tldw",
   "titles": {
     "options": "tldw Assistant — Options",
     "sidepanel": "tldw Assistant — Sidepanel"
   },
   "pdf": {
-    "passwordTitle": "Enter the PDF password",
-    "unlock": "Unlock"
+    "passwordTitle": "Inserisci la password del PDF",
+    "unlock": "Sblocca"
   },
   "loading": {
-    "title": "Loading…",
-    "description": "Please wait while we get things ready.",
-    "content": "Loading content…"
+    "title": "Caricamento…",
+    "description": "Attendi mentre prepariamo tutto.",
+    "content": "Caricamento del contenuto…"
   },
   "selectAModel": "Seleziona un Modello",
   "save": "Salva",
@@ -62,11 +62,11 @@
   },
   "submit": "Invia",
   "send": "Invia",
-  "connectToServer": "Connect to server",
+  "connectToServer": "Connetti al server",
   "noData": "Nessun Dato",
   "noHistory": "Nessuna Cronologia Chat",
   "chatWithCurrentPage": "Chatta con la Pagina Corrente",
-  "beta": "Beta",
+  "beta": "Versione beta",
   "tts": "Leggi ad Alta Voce",
   "currentChatModelSettings": "Impostazioni del Modello Corrente",
   "modelSettings": {
@@ -74,9 +74,9 @@
     "description": "Imposta le opzioni del modello globalmente per tutte le chat",
     "form": {
       "keepAlive": {
-        "label": "Keep Alive",
-        "help": "Imposta il tempo per cui il modello deve rimanere caricato in memoria (default: 5m)",
-        "placeholder": "Inserisci la durata del Keep Alive (e.g. 5m, 10m, 1h)"
+        "label": "Keep Alive (mantieni attivo)",
+        "help": "Controlla per quanto tempo il modello rimane in memoria dopo la richiesta (predefinito: 5m)",
+        "placeholder": "Inserisci la durata del Keep Alive (es. 5m, 10m, 1h)"
       },
       "temperature": {
         "label": "Temperatura",
@@ -91,20 +91,20 @@
         "placeholder": "Inserisci il valore dei Token Massimi (es. 2048, 4096)"
       },
       "seed": {
-        "label": "Seed",
-        "placeholder": "Inserisci il Valore Seed (e.g. 1234)",
-        "help": "Riproducibilità dell'output del modello"
+        "label": "Seed (seme casuale)",
+        "placeholder": "Inserisci il valore Seed (es. 1234)",
+        "help": "Per rendere l’output del modello riproducibile"
       },
       "topK": {
-        "label": "Top K",
-        "placeholder": "Inserisci il Valore Top K (e.g. 40, 100)"
+        "label": "Top K (K più probabili)",
+        "placeholder": "Inserisci il valore Top K (es. 40, 100)"
       },
       "topP": {
-        "label": "Top P",
-        "placeholder": "Inserisci il Valore Top P (e.g. 0.9, 0.95)"
+        "label": "Top P (P più probabili)",
+        "placeholder": "Inserisci il valore Top P (es. 0.9, 0.95)"
       },
       "numGpu": {
-        "label": "Num GPU",
+        "label": "Num GPU (numero di GPU)",
         "placeholder": "Inserisci il numero di layer da inviare alla/e GPU"
       },
       "systemPrompt": {
@@ -113,41 +113,41 @@
         "help": "Questo è un modo rapido per impostare il prompt di sistema nella chat corrente, che sovrascriverà il prompt di sistema selezionato se esiste."
       },
       "thinking": {
-        "label": "Thinking Mode"
+        "label": "Modalità di ragionamento"
       },
       "useMMap": {
-        "label": "useMmap"
+        "label": "useMmap (mappa in memoria)"
       },
       "tfsZ": {
-        "label": "TFS-Z",
-        "placeholder": "e.g. 1.0, 1.1"
+        "label": "TFS-Z (parametro TFS)",
+        "placeholder": "es. 1.0, 1.1"
       },
       "numKeep": {
-        "label": "Num Keep",
-        "placeholder": "e.g. 256, 512"
+        "label": "Num Keep (numero da mantenere)",
+        "placeholder": "es. 256, 512"
       },
       "numThread": {
-        "label": "Num Thread",
-        "placeholder": "e.g. 8, 16"
+        "label": "Num Thread (numero di thread)",
+        "placeholder": "es. 8, 16"
       },
       "useMlock": {
-        "label": "useMlock"
+        "label": "useMlock (blocca in memoria)"
       },
       "reasoningEffort": {
-        "label": "Reasoning Effort",
-        "placeholder": "low, medium, high"
+        "label": "Sforzo di ragionamento",
+        "placeholder": "basso, medio, alto"
       },
       "minP": {
-        "label": "Min P",
-        "placeholder": "e.g. 0.05"
+        "label": "Min P (P minima)",
+        "placeholder": "es. 0.05"
       },
       "repeatPenalty": {
-        "label": "Repeat Penalty",
-        "placeholder": "e.g. 1.1, 1.2"
+        "label": "Penalità di ripetizione",
+        "placeholder": "es. 1.1, 1.2"
       },
       "repeatLastN": {
-        "label": "Repeat Last N",
-        "placeholder": "e.g. 64, 128"
+        "label": "Ripeti ultimi N",
+        "placeholder": "es. 64, 128"
       }
     },
     "advanced": "Altre Impostazioni del Modello"
@@ -157,7 +157,7 @@
     "explain": "Spiegare",
     "rephrase": "Riformulare",
     "translate": "Tradurre",
-    "custom": "Custom"
+    "custom": "Personalizzato"
   },
   "citations": "Citazioni",
   "downloadCode": "Scarica Codice",
@@ -193,7 +193,7 @@
     "loading": "Caricamento del ragionamento....",
     "thought": "Pensato per {{time}}"
   },
-  "mermaid": "Mermaid",
+  "mermaid": "Diagrammi Mermaid",
   "embeddingGen": "Creazione di embeddings, questo può richiedere un po' di tempo",
   "semanticSearch": "Ricerca semantica in corso",
   "downloading": "Download in corso",
@@ -201,40 +201,40 @@
     "confirm": "Sei sicuro di voler annullare il download? Questo interromperà il processo di download. Secondo la documentazione di Ollama, puoi riprendere da dove hai interrotto."
   },
   "table": {
-    "copyCsv": "Copy as CSV",
-    "downloadCsv": "Download CSV"
+    "copyCsv": "Copia come CSV",
+    "downloadCsv": "Scarica CSV"
   },
-  "dismiss": "Dismiss",
+  "dismiss": "Ignora",
   "privateModeSaveErrorTitle": "tldw Assistant non può salvare i dati",
-  "confirmTitle": "Please confirm",
-  "saving": "Saving...",
-  "close": "Close",
-  "loadMore": "Load More...",
-  "startChat": "Start chatting",
-  "previous": "Previous",
-  "next": "Next",
-  "chatWithCharacter": "Chat with character",
-  "ttsShort": "TTS",
-  "copyShort": "Copy",
-  "branchShort": "Branch",
+  "confirmTitle": "Conferma l’azione",
+  "saving": "Salvataggio...",
+  "close": "Chiudi",
+  "loadMore": "Carica altri...",
+  "startChat": "Inizia una chat",
+  "previous": "Precedente",
+  "next": "Successivo",
+  "chatWithCharacter": "Chatta con un personaggio",
+  "ttsShort": "Voce",
+  "copyShort": "Copia",
+  "branchShort": "Ramo",
   "segmented": {
-    "available": "Server Models",
-    "custom": "Custom Models"
+    "available": "Modelli del server",
+    "custom": "Modelli personalizzati"
   },
-  "success": "Success",
-  "created": "Created",
-  "updated": "Updated",
-  "deleted": "Deleted",
-  "create": "Create",
-  "reset": "Reset",
-  "serverOffline": "Server offline or not configured",
-  "serverChats": "Server chats",
-  "serverChatLoadError": "Failed to load server chat. Check your connection and try again.",
-  "serverChatSourceLabel": "Server",
-  "serverChatsUnavailable": "Server chats unavailable. Check your server connection.",
-  "historiesDeleted": "{{count}} Histories Deleted",
-  "deleteHistoriesError": "Error deleting histories",
-  "search": "Search",
-  "searchResults": "Search Results",
-  "newBranch": "New Branch"
+  "success": "Operazione riuscita",
+  "created": "Creato",
+  "updated": "Aggiornato",
+  "deleted": "Eliminato",
+  "create": "Crea",
+  "reset": "Reimposta",
+  "serverOffline": "Server offline o non configurato",
+  "serverChats": "Chat del server",
+  "serverChatLoadError": "Impossibile caricare la chat del server. Controlla la connessione e riprova.",
+  "serverChatSourceLabel": "Origine server",
+  "serverChatsUnavailable": "Chat del server non disponibili. Controlla la connessione al server.",
+  "historiesDeleted": "{{count}} cronologie eliminate",
+  "deleteHistoriesError": "Errore durante l’eliminazione delle cronologie",
+  "search": "Cerca",
+  "searchResults": "Risultati della ricerca",
+  "newBranch": "Nuovo ramo"
 }

@@ -40,16 +40,16 @@
   "noEmbeddingModel": "Будь ласка, додайте модель вкладень з сторінки налаштувань RAG спочатку",
   "privateModeDescription": "Приватний режим Firefox не підтримує збереження в IndexedDB. Додайте базу знань у звичайному вікні.",
   "rag": {
-    "searchFailed": "RAG search failed. Try again or check Diagnostics."
+    "searchFailed": "Пошук RAG не вдався. Спробуйте ще раз або перевірте розділ Diagnostics."
   },
   "empty": {
-    "demoTitle": "Explore Knowledge QA in demo mode",
-    "demoDescription": "This demo shows how Knowledge QA can run RAG searches over sample content. Connect your own server later to search your own transcripts and documents.",
-    "demoExample1": "Try quick RAG searches and inspect results and citations.",
-    "demoExample2": "Connect your own server to enable Knowledge QA over your real media and notes.",
-    "connectTitle": "Connect to use Knowledge QA",
-    "connectDescription": "To use Knowledge QA and RAG search, first connect to your tldw server.",
-    "connectExample1": "Open Settings → tldw server to add your server URL.",
-    "connectExample2": "Use Diagnostics if your server is running but not reachable."
+    "demoTitle": "Дослідіть Knowledge QA у демо-режимі",
+    "demoDescription": "Ця демо-версія показує, як Knowledge QA може виконувати RAG-пошук по прикладному вмісту. Пізніше ви зможете підключити власний сервер, щоб шукати у своїх транскриптах і документах.",
+    "demoExample1": "Спробуйте швидкі RAG-пошуки та перегляньте результати й посилання.",
+    "demoExample2": "Підключіть власний сервер, щоб увімкнути Knowledge QA для ваших реальних медіа та нотаток.",
+    "connectTitle": "Підключіться, щоб використовувати Knowledge QA",
+    "connectDescription": "Щоб користуватися Knowledge QA та RAG-пошуком, спочатку підключіться до свого tldw-сервера.",
+    "connectExample1": "Відкрийте Налаштування → tldw server, щоб додати URL свого сервера.",
+    "connectExample2": "Скористайтеся Diagnostics, якщо сервер запущений, але недоступний."
   }
 }

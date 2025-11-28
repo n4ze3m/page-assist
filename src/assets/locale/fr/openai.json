@@ -54,7 +54,7 @@
       "model_type": "Type de modèle",
       "model_id": "ID du modèle",
       "provider": "Nom du fournisseur",
-      "actions": "Action",
+      "actions": "Actions",
       "nickname": "Alias du modèle"
     },
     "tooltip": {

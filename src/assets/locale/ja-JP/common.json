@@ -1,17 +1,17 @@
 {
-  "pageAssist": "tldw Assistant",
+  "pageAssist": "tldw アシスタント",
   "titles": {
     "options": "tldw Assistant — Options",
     "sidepanel": "tldw Assistant — Sidepanel"
   },
   "pdf": {
-    "passwordTitle": "Enter the PDF password",
-    "unlock": "Unlock"
+    "passwordTitle": "PDF のパスワードを入力してください",
+    "unlock": "ロック解除"
   },
   "loading": {
-    "title": "Loading…",
-    "description": "Please wait while we get things ready.",
-    "content": "Loading content…"
+    "title": "読み込み中…",
+    "description": "準備が整うまでお待ちください。",
+    "content": "コンテンツを読み込み中…"
   },
   "selectAModel": "モデルを選択",
   "save": "保存",
@@ -62,7 +62,7 @@
   },
   "submit": "送信",
   "send": "送信",
-  "connectToServer": "Connect to server",
+  "connectToServer": "サーバーに接続",
   "noData": "データがありません",
   "noHistory": "チャット履歴がありません",
   "chatWithCurrentPage": "現在のページでチャット",
@@ -96,16 +96,16 @@
         "help": "モデル出力の再現性"
       },
       "topK": {
-        "label": "Top K",
-        "placeholder": "Top K値を入力してください（例：40、100）"
+        "label": "Top K（上位 K）",
+        "placeholder": "Top K 値を入力してください（例：40、100）"
       },
       "topP": {
-        "label": "Top P",
-        "placeholder": "Top P値を入力してください（例：0.9、0.95）"
+        "label": "Top P（上位 P）",
+        "placeholder": "Top P 値を入力してください（例：0.9、0.95）"
       },
       "numGpu": {
-        "label": "Num GPU",
-        "placeholder": "GPU(s)に送信するレイヤー数を入力してください"
+        "label": "Num GPU（GPU 数）",
+        "placeholder": "GPU に送信するレイヤー数を入力してください"
       },
       "systemPrompt": {
         "label": "一時的なシステムプロンプト",
@@ -113,41 +113,41 @@
         "help": "これは現在のチャットでシステムプロンプトを素早く設定する方法で、選択されたシステムプロンプトが存在する場合はそれを上書きします。"
       },
       "thinking": {
-        "label": "Thinking Mode"
+        "label": "思考モード"
       },
       "useMMap": {
-        "label": "useMmap"
+        "label": "useMmap（メモリマップ）"
       },
       "tfsZ": {
-        "label": "TFS-Z",
-        "placeholder": "e.g. 1.0, 1.1"
+        "label": "TFS-Z（TFS パラメータ）",
+        "placeholder": "例: 1.0, 1.1"
       },
       "numKeep": {
-        "label": "Num Keep",
-        "placeholder": "e.g. 256, 512"
+        "label": "Num Keep（保持する数）",
+        "placeholder": "例: 256, 512"
       },
       "numThread": {
-        "label": "Num Thread",
-        "placeholder": "e.g. 8, 16"
+        "label": "Num Thread（スレッド数）",
+        "placeholder": "例: 8, 16"
       },
       "useMlock": {
-        "label": "useMlock"
+        "label": "useMlock（メモリをロック）"
       },
       "reasoningEffort": {
-        "label": "Reasoning Effort",
-        "placeholder": "low, medium, high"
+        "label": "推論の強さ",
+        "placeholder": "low（低）、medium（中）、high（高）"
       },
       "minP": {
-        "label": "Min P",
-        "placeholder": "e.g. 0.05"
+        "label": "Min P（最小 P）",
+        "placeholder": "例: 0.05"
       },
       "repeatPenalty": {
-        "label": "Repeat Penalty",
-        "placeholder": "e.g. 1.1, 1.2"
+        "label": "反復ペナルティ",
+        "placeholder": "例: 1.1, 1.2"
       },
       "repeatLastN": {
-        "label": "Repeat Last N",
-        "placeholder": "e.g. 64, 128"
+        "label": "直近 N トークンの反復",
+        "placeholder": "例: 64, 128"
       }
     },
     "advanced": "その他のモデル設定"
@@ -157,7 +157,7 @@
     "explain": "説明",
     "rephrase": "言い換え",
     "translate": "翻訳",
-    "custom": "Custom"
+    "custom": "カスタム"
   },
   "citations": "引用",
   "downloadCode": "コードをダウンロード",
@@ -200,41 +200,41 @@
     "confirm": "ダウンロードをキャンセルしてもよろしいですか？これによりダウンロードプロセスが停止します。Ollamaのドキュメントによると、中断した場所から再開できます。"
   },
   "table": {
-    "copyCsv": "Copy as CSV",
-    "downloadCsv": "Download CSV"
+    "copyCsv": "CSV としてコピー",
+    "downloadCsv": "CSV をダウンロード"
   },
-  "dismiss": "Dismiss",
+  "dismiss": "閉じる",
   "privateModeSaveErrorTitle": "tldw Assistant はデータを保存できません",
-  "confirmTitle": "Please confirm",
-  "saving": "Saving...",
-  "close": "Close",
-  "loadMore": "Load More...",
-  "startChat": "Start chatting",
-  "previous": "Previous",
-  "next": "Next",
-  "chatWithCharacter": "Chat with character",
-  "ttsShort": "TTS",
-  "copyShort": "Copy",
-  "branchShort": "Branch",
+  "confirmTitle": "確認してください",
+  "saving": "保存中...",
+  "close": "閉じる",
+  "loadMore": "さらに読み込む...",
+  "startChat": "チャットを開始",
+  "previous": "前へ",
+  "next": "次へ",
+  "chatWithCharacter": "キャラクターとチャット",
+  "ttsShort": "音声",
+  "copyShort": "コピー",
+  "branchShort": "ブランチ",
   "segmented": {
-    "available": "Server Models",
-    "custom": "Custom Models"
+    "available": "サーバーモデル",
+    "custom": "カスタムモデル"
   },
-  "success": "Success",
-  "created": "Created",
-  "updated": "Updated",
-  "deleted": "Deleted",
-  "create": "Create",
-  "reset": "Reset",
-  "serverOffline": "Server offline or not configured",
-  "serverChats": "Server chats",
-  "serverChatLoadError": "Failed to load server chat. Check your connection and try again.",
-  "serverChatSourceLabel": "Server",
-  "serverChatsUnavailable": "Server chats unavailable. Check your server connection.",
-  "historiesDeleted": "{{count}} Histories Deleted",
-  "deleteHistoriesError": "Error deleting histories",
-  "mermaid": "Mermaid",
-  "search": "Search",
-  "searchResults": "Search Results",
-  "newBranch": "New Branch"
+  "success": "成功しました",
+  "created": "作成済み",
+  "updated": "更新済み",
+  "deleted": "削除済み",
+  "create": "作成",
+  "reset": "リセット",
+  "serverOffline": "サーバーがオフラインか、設定されていません",
+  "serverChats": "サーバーチャット",
+  "serverChatLoadError": "サーバーチャットの読み込みに失敗しました。接続を確認して再試行してください。",
+  "serverChatSourceLabel": "サーバー",
+  "serverChatsUnavailable": "サーバーチャットを利用できません。サーバー接続を確認してください。",
+  "historiesDeleted": "{{count}} 件の履歴を削除しました",
+  "deleteHistoriesError": "履歴の削除中にエラーが発生しました",
+  "mermaid": "Mermaid ダイアグラム",
+  "search": "検索",
+  "searchResults": "検索結果",
+  "newBranch": "新しいブランチ"
 }

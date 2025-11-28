@@ -40,16 +40,16 @@
   "noEmbeddingModel": "Por favor, agregue un modelo de embedding de la página de configuraciones de RAG primero",
   "privateModeDescription": "El modo privado de Firefox no admite guardar datos en IndexedDB. Añade una base de conocimiento desde una ventana normal.",
   "rag": {
-    "searchFailed": "RAG search failed. Try again or check Diagnostics."
+    "searchFailed": "La búsqueda RAG ha fallado. Intenta de nuevo o revisa Diagnóstico."
   },
   "empty": {
-    "demoTitle": "Explore Knowledge QA in demo mode",
-    "demoDescription": "This demo shows how Knowledge QA can run RAG searches over sample content. Connect your own server later to search your own transcripts and documents.",
-    "demoExample1": "Try quick RAG searches and inspect results and citations.",
-    "demoExample2": "Connect your own server to enable Knowledge QA over your real media and notes.",
-    "connectTitle": "Connect to use Knowledge QA",
-    "connectDescription": "To use Knowledge QA and RAG search, first connect to your tldw server.",
-    "connectExample1": "Open Settings → tldw server to add your server URL.",
-    "connectExample2": "Use Diagnostics if your server is running but not reachable."
+    "demoTitle": "Explora Knowledge QA en modo demo",
+    "demoDescription": "Esta demo muestra cómo Knowledge QA puede ejecutar búsquedas RAG sobre contenido de ejemplo. Luego puedes conectar tu propio servidor para buscar en tus transcripciones y documentos.",
+    "demoExample1": "Prueba búsquedas RAG rápidas e inspecciona resultados y citas.",
+    "demoExample2": "Conecta tu propio servidor para habilitar Knowledge QA sobre tus medios y notas reales.",
+    "connectTitle": "Conéctate para usar Knowledge QA",
+    "connectDescription": "Para usar Knowledge QA y la búsqueda RAG, primero conéctate a tu servidor tldw.",
+    "connectExample1": "Abre Configuración → tldw server para agregar la URL de tu servidor.",
+    "connectExample2": "Usa Diagnóstico si tu servidor está en ejecución pero no es accesible."
   }
 }

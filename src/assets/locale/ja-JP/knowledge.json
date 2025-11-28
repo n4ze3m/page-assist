@@ -40,16 +40,16 @@
   "noEmbeddingModel": "最初にRAGの設定ページから埋め込みモデルを追加してください",
   "privateModeDescription": "Firefox のプライベートモードは IndexedDB への保存をサポートしません。通常ウィンドウでナレッジベースを追加してください。",
   "rag": {
-    "searchFailed": "RAG search failed. Try again or check Diagnostics."
+    "searchFailed": "RAG 検索に失敗しました。もう一度お試しください、または診断画面を確認してください。"
   },
   "empty": {
-    "demoTitle": "Explore Knowledge QA in demo mode",
-    "demoDescription": "This demo shows how Knowledge QA can run RAG searches over sample content. Connect your own server later to search your own transcripts and documents.",
-    "demoExample1": "Try quick RAG searches and inspect results and citations.",
-    "demoExample2": "Connect your own server to enable Knowledge QA over your real media and notes.",
-    "connectTitle": "Connect to use Knowledge QA",
-    "connectDescription": "To use Knowledge QA and RAG search, first connect to your tldw server.",
-    "connectExample1": "Open Settings → tldw server to add your server URL.",
-    "connectExample2": "Use Diagnostics if your server is running but not reachable."
+    "demoTitle": "デモモードで Knowledge QA を試す",
+    "demoDescription": "このデモでは、Knowledge QA がサンプルコンテンツに対して RAG 検索を実行する方法を確認できます。後で自分のサーバーを接続して、自分の書き起こしやドキュメントを検索できます。",
+    "demoExample1": "RAG のクイック検索を試して、結果と出典を確認してみてください。",
+    "demoExample2": "自分のサーバーを接続して、実際のメディアやノートに対して Knowledge QA を有効にしましょう。",
+    "connectTitle": "Knowledge QA を使うには接続してください",
+    "connectDescription": "Knowledge QA と RAG 検索を使うには、まず tldw サーバーに接続する必要があります。",
+    "connectExample1": "設定 → tldw server を開き、サーバー URL を追加してください。",
+    "connectExample2": "サーバーが起動しているのに接続できない場合は、Diagnostics を確認してください。"
   }
 }

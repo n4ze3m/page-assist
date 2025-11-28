@@ -40,16 +40,16 @@
   "noEmbeddingModel": "يرجى إضافة نموذج تضمين من صفحة إعدادات RAG أولاً",
   "privateModeDescription": "وضع التصفح الخاص في فايرفوكس لا يدعم حفظ البيانات في IndexedDB. الرجاء إضافة قاعدة معرفة من نافذة عادية.",
   "rag": {
-    "searchFailed": "RAG search failed. Try again or check Diagnostics."
+    "searchFailed": "فشل بحث RAG. حاول مرة أخرى أو تحقق من صفحة التشخيص."
   },
   "empty": {
-    "demoTitle": "Explore Knowledge QA in demo mode",
-    "demoDescription": "This demo shows how Knowledge QA can run RAG searches over sample content. Connect your own server later to search your own transcripts and documents.",
-    "demoExample1": "Try quick RAG searches and inspect results and citations.",
-    "demoExample2": "Connect your own server to enable Knowledge QA over your real media and notes.",
-    "connectTitle": "Connect to use Knowledge QA",
-    "connectDescription": "To use Knowledge QA and RAG search, first connect to your tldw server.",
-    "connectExample1": "Open Settings → tldw server to add your server URL.",
-    "connectExample2": "Use Diagnostics if your server is running but not reachable."
+    "demoTitle": "استكشف Knowledge QA في وضع العرض التجريبي",
+    "demoDescription": "يوضح لك هذا العرض كيف يمكن لـ Knowledge QA تشغيل عمليات بحث RAG على محتوى تجريبي. يمكنك لاحقًا توصيل خادومك الخاص للبحث في التسجيلات والمستندات الخاصة بك.",
+    "demoExample1": "جرّب عمليات بحث RAG سريعة واطلع على النتائج والمراجع.",
+    "demoExample2": "وصّل خادومك الخاص لتمكين Knowledge QA على الوسائط والملاحظات الحقيقية لديك.",
+    "connectTitle": "اتصل لاستخدام Knowledge QA",
+    "connectDescription": "لاستخدام Knowledge QA وبحث RAG، يجب أولًا الاتصال بخادوم tldw الخاص بك.",
+    "connectExample1": "افتح الإعدادات → tldw server لإضافة رابط خادومك.",
+    "connectExample2": "استخدم صفحة التشخيص Diagnostics إذا كان الخادوم يعمل لكنه غير متاح."
   }
 }

@@ -1,17 +1,17 @@
 {
-  "pageAssist": "tldw Assistant",
+  "pageAssist": "Assistant tldw",
   "titles": {
     "options": "tldw Assistant — Options",
     "sidepanel": "tldw Assistant — Sidepanel"
   },
   "pdf": {
-    "passwordTitle": "Enter the PDF password",
-    "unlock": "Unlock"
+    "passwordTitle": "Saisissez le mot de passe du PDF",
+    "unlock": "Déverrouiller"
   },
   "loading": {
-    "title": "Loading…",
-    "description": "Please wait while we get things ready.",
-    "content": "Loading content…"
+    "title": "Chargement…",
+    "description": "Veuillez patienter pendant la préparation.",
+    "content": "Chargement du contenu…"
   },
   "selectAModel": "Sélectionner un modèle",
   "save": "Enregistrer",
@@ -62,7 +62,7 @@
   },
   "submit": "Soumettre",
   "send": "Soumettre",
-  "connectToServer": "Connect to server",
+  "connectToServer": "Se connecter au serveur",
   "noData": "Aucune donnée",
   "noHistory": "Pas d'historique de chat",
   "chatWithCurrentPage": "Discuter avec la page actuelle",
@@ -96,18 +96,18 @@
         "help": "Reproductibilité de la sortie du modèle"
       },
       "topK": {
-        "label": "Top K",
+        "label": "Top K (K les plus probables)",
         "placeholder": "Par exemple : 40, 100"
       },
       "topP": {
-        "label": "Top P",
+        "label": "Top P (P la plus probable)",
         "placeholder": "Par exemple : 0.9, 0.95"
       },
       "useMMap": {
         "label": "Utiliser MMap"
       },
       "tfsZ": {
-        "label": "TFS-Z",
+        "label": "TFS-Z (paramètre TFS)",
         "placeholder": "Par exemple : 1.0, 1.1"
       },
       "numKeep": {
@@ -122,7 +122,7 @@
         "label": "Utiliser Mlock"
       },
       "minP": {
-        "label": "Min P",
+        "label": "Min P (P minimale)",
         "placeholder": "Par exemple : 0.05"
       },
       "repeatPenalty": {
@@ -143,11 +143,11 @@
         "help": "C'est un moyen rapide de définir le prompt système dans le chat actuel, qui remplacera le prompt système sélectionné si il existe."
       },
       "thinking": {
-        "label": "Thinking Mode"
+        "label": "Mode raisonnement"
       },
       "reasoningEffort": {
-        "label": "Reasoning Effort",
-        "placeholder": "low, medium, high"
+        "label": "Effort de raisonnement",
+        "placeholder": "faible, moyen, élevé"
       }
     },
     "advanced": "Plus de paramètres du modèle"
@@ -159,7 +159,7 @@
     "translate": "Traduire",
     "custom": "Personnalisé"
   },
-  "citations": "Citations",
+  "citations": "Références",
   "segmented": {
     "available": "Modèles serveur",
     "custom": "Modèles personnalisés"
@@ -197,7 +197,7 @@
     "loading": "Chargement du raisonnement....",
     "thought": "Réflexion pendant {{time}}"
   },
-  "mermaid": "Mermaid",
+  "mermaid": "Diagrammes Mermaid",
   "embeddingGen": "Création d'embeddings, cela peut prendre un certain temps",
   "semanticSearch": "Recherche sémantique en cours",
   "downloading": "Téléchargement en cours",
@@ -205,36 +205,36 @@
     "confirm": "Êtes-vous sûr de vouloir annuler le téléchargement ? Cela arrêtera le processus de téléchargement. Selon la documentation Ollama, vous pouvez reprendre là où vous vous êtes arrêté."
   },
   "table": {
-    "copyCsv": "Copy as CSV",
-    "downloadCsv": "Download CSV"
+    "copyCsv": "Copier en CSV",
+    "downloadCsv": "Télécharger en CSV"
   },
-  "dismiss": "Dismiss",
+  "dismiss": "Ignorer",
   "privateModeSaveErrorTitle": "tldw Assistant ne peut pas enregistrer les données",
-  "confirmTitle": "Please confirm",
-  "saving": "Saving...",
-  "close": "Close",
-  "loadMore": "Load More...",
-  "startChat": "Start chatting",
-  "previous": "Previous",
-  "next": "Next",
-  "chatWithCharacter": "Chat with character",
-  "ttsShort": "TTS",
-  "copyShort": "Copy",
-  "branchShort": "Branch",
-  "success": "Success",
-  "created": "Created",
-  "updated": "Updated",
-  "deleted": "Deleted",
-  "create": "Create",
-  "reset": "Reset",
-  "serverOffline": "Server offline or not configured",
-  "serverChats": "Server chats",
-  "serverChatLoadError": "Failed to load server chat. Check your connection and try again.",
-  "serverChatSourceLabel": "Server",
-  "serverChatsUnavailable": "Server chats unavailable. Check your server connection.",
-  "historiesDeleted": "{{count}} Histories Deleted",
-  "deleteHistoriesError": "Error deleting histories",
-  "search": "Search",
-  "searchResults": "Search Results",
-  "newBranch": "New Branch"
+  "confirmTitle": "Veuillez confirmer",
+  "saving": "Enregistrement...",
+  "close": "Fermer",
+  "loadMore": "Charger plus...",
+  "startChat": "Commencer le chat",
+  "previous": "Précédent",
+  "next": "Suivant",
+  "chatWithCharacter": "Discuter avec un personnage",
+  "ttsShort": "Voix",
+  "copyShort": "Copier",
+  "branchShort": "Branche",
+  "success": "Succès",
+  "created": "Créé",
+  "updated": "Mis à jour",
+  "deleted": "Supprimé",
+  "create": "Créer",
+  "reset": "Réinitialiser",
+  "serverOffline": "Serveur hors ligne ou non configuré",
+  "serverChats": "Chats serveur",
+  "serverChatLoadError": "Échec du chargement du chat serveur. Vérifiez votre connexion et réessayez.",
+  "serverChatSourceLabel": "Serveur",
+  "serverChatsUnavailable": "Chats serveur indisponibles. Vérifiez la connexion au serveur.",
+  "historiesDeleted": "{{count}} historiques supprimés",
+  "deleteHistoriesError": "Erreur lors de la suppression des historiques",
+  "search": "Rechercher",
+  "searchResults": "Résultats de recherche",
+  "newBranch": "Nouvelle branche"
 }

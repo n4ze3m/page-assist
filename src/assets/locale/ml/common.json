@@ -1,17 +1,17 @@
 {
-  "pageAssist": "tldw Assistant",
+  "pageAssist": "tldw അസിസ്റ്റന്റ്",
   "titles": {
     "options": "tldw Assistant — Options",
     "sidepanel": "tldw Assistant — Sidepanel"
   },
   "pdf": {
-    "passwordTitle": "Enter the PDF password",
-    "unlock": "Unlock"
+    "passwordTitle": "PDF പാസ്‌വേഡ് നൽകുക",
+    "unlock": "തുറക്കുക"
   },
   "loading": {
-    "title": "Loading…",
-    "description": "Please wait while we get things ready.",
-    "content": "Loading content…"
+    "title": "ലോഡുചെയ്യുന്നു…",
+    "description": "എല്ലാം തയ്യാറാക്കുന്നുവരികയാണ്, ദയവായി കാത്തിരിക്കുക.",
+    "content": "ഉള്ളടക്കം ലോഡുചെയ്യുന്നു…"
   },
   "selectAModel": "ഒരു മോഡല്‍ തിരഞ്ഞെടുക്കുക",
   "save": "സേവ് ചെയ്യുക",
@@ -62,7 +62,7 @@
   },
   "submit": "സമർപ്പിക്കുക",
   "send": "സമർപ്പിക്കുക",
-  "connectToServer": "Connect to server",
+  "connectToServer": "സെർവറുമായി ബന്ധിപ്പിക്കുക",
   "noData": "ഡാറ്റ ലഭ്യമല്ല",
   "noHistory": "ചാറ്റ് ചരിത്രം ലഭ്യമല്ല",
   "chatWithCurrentPage": "നിലവിലെ പേജിനുമായി ചാറ്റ് ചെയ്യുക",
@@ -112,41 +112,41 @@
         "help": "നിലവിലുള്ള ചാറ്റിൽ സിസ്റ്റം പ്രോംപ്റ്റ് സെറ്റ് ചെയ്യാനുള്ള വേഗത്തിലുള്ള മാർഗമാണിത്, ഇത് തിരഞ്ഞെടുത്ത സിസ്റ്റം പ്രോംപ്റ്റ് നിലവിലുണ്ടെങ്കിൽ അതിനെ മറികടക്കും."
       },
       "thinking": {
-        "label": "Thinking Mode"
+        "label": "ചിന്താ മോഡ്"
       },
       "useMMap": {
-        "label": "useMmap"
+        "label": "useMmap (മെമ്മറി മാപ്പിംഗ്)"
       },
       "tfsZ": {
-        "label": "TFS-Z",
-        "placeholder": "e.g. 1.0, 1.1"
+        "label": "TFS-Z (TFS പരാമീറ്റർ)",
+        "placeholder": "ഉദാ: 1.0, 1.1"
       },
       "numKeep": {
-        "label": "Num Keep",
-        "placeholder": "e.g. 256, 512"
+        "label": "Num Keep (നിലനിർത്തേണ്ട എണ്ണം)",
+        "placeholder": "ഉദാ: 256, 512"
       },
       "numThread": {
-        "label": "Num Thread",
-        "placeholder": "e.g. 8, 16"
+        "label": "Num Thread (ത്രെഡ് എണ്ണം)",
+        "placeholder": "ഉദാ: 8, 16"
       },
       "useMlock": {
-        "label": "useMlock"
+        "label": "useMlock (മെമ്മറി ലോക്ക് ചെയ്യുക)"
       },
       "reasoningEffort": {
-        "label": "Reasoning Effort",
-        "placeholder": "low, medium, high"
+        "label": "താർക്കിക പരിശ്രമം",
+        "placeholder": "low (കുറവ്), medium (ഇടത്തരം), high (കൂടുതൽ)"
       },
       "minP": {
-        "label": "Min P",
-        "placeholder": "e.g. 0.05"
+        "label": "Min P (കുറഞ്ഞ P)",
+        "placeholder": "ഉദാ: 0.05"
       },
       "repeatPenalty": {
-        "label": "Repeat Penalty",
-        "placeholder": "e.g. 1.1, 1.2"
+        "label": "പുനരാവർത്തന ശിക്ഷ",
+        "placeholder": "ഉദാ: 1.1, 1.2"
       },
       "repeatLastN": {
-        "label": "Repeat Last N",
-        "placeholder": "e.g. 64, 128"
+        "label": "അവസാന N പുനരാവർത്തിക്കുക",
+        "placeholder": "ഉദാ: 64, 128"
       }
     },
     "advanced": "കൂടുതൽ മോഡൽ ക്രമീകരണങ്ങൾ"
@@ -156,7 +156,7 @@
     "explain": "വിശദീകരിക്കുക",
     "rephrase": "പുനഃരൂപീകരിക്കുക",
     "translate": "വിവർത്തനം ചെയ്യുക",
-    "custom": "Custom"
+    "custom": "ഇഷ്ടാനുസൃതം"
   },
   "citations": "ഉദ്ധരണികൾ",
   "downloadCode": "കോഡ് ഡൗൺലോഡ് ചെയ്യുക",
@@ -199,42 +199,42 @@
     "confirm": "ഡൗൺലോഡ് റദ്ദാക്കണമെന്നുറപ്പാണോ? ഇത് ഡൗൺലോഡ് പ്രക്രിയ നിർത്തും. ഒല്ലാമ ഡോക്യുമെന്റേഷൻ പ്രകാരം, നിങ്ങൾ തുടർന്നിടത്തുനിന്ന് വീണ്ടും ആരംഭിക്കാം."
   },
   "table": {
-    "copyCsv": "Copy as CSV",
-    "downloadCsv": "Download CSV"
+    "copyCsv": "CSV ആയി പകർത്തുക",
+    "downloadCsv": "CSV ഡൗൺലോഡ് ചെയ്യുക"
   },
-  "dismiss": "Dismiss",
+  "dismiss": "അടയ്ക്കുക",
   "privateModeSaveErrorTitle": "tldw Assistant ന് ഡാറ്റ സംരക്ഷിക്കാൻ സാധിക്കുന്നില്ല",
-  "confirmTitle": "Please confirm",
-  "saving": "Saving...",
-  "close": "Close",
-  "loadMore": "Load More...",
-  "startChat": "Start chatting",
-  "previous": "Previous",
-  "next": "Next",
-  "chatWithCharacter": "Chat with character",
-  "tts": "Read aloud",
-  "ttsShort": "TTS",
-  "copyShort": "Copy",
-  "branchShort": "Branch",
+  "confirmTitle": "ദയവായി സ്ഥിരീകരിക്കുക",
+  "saving": "സേവ് ചെയ്യുന്നു...",
+  "close": "അടയ്ക്കുക",
+  "loadMore": "കൂടുതൽ ലോഡ് ചെയ്യുക...",
+  "startChat": "ചാറ്റ് ആരംഭിക്കുക",
+  "previous": "മുൻപത്തെത്",
+  "next": "അടുത്തത്",
+  "chatWithCharacter": "കഥാപാത്രവുമായി ചാറ്റ് ചെയ്യുക",
+  "tts": "ശബ്ദമായി വായിക്കുക",
+  "ttsShort": "ശബ്ദം",
+  "copyShort": "പകർത്തുക",
+  "branchShort": "ബ്രാഞ്ച്",
   "segmented": {
-    "available": "Server Models",
-    "custom": "Custom Models"
+    "available": "സെർവർ മോഡലുകൾ",
+    "custom": "കസ്റ്റം മോഡലുകൾ"
   },
-  "success": "Success",
-  "created": "Created",
-  "updated": "Updated",
-  "deleted": "Deleted",
-  "create": "Create",
-  "reset": "Reset",
-  "serverOffline": "Server offline or not configured",
-  "serverChats": "Server chats",
-  "serverChatLoadError": "Failed to load server chat. Check your connection and try again.",
-  "serverChatSourceLabel": "Server",
-  "serverChatsUnavailable": "Server chats unavailable. Check your server connection.",
-  "historiesDeleted": "{{count}} Histories Deleted",
-  "deleteHistoriesError": "Error deleting histories",
-  "mermaid": "Mermaid",
-  "search": "Search",
-  "searchResults": "Search Results",
-  "newBranch": "New Branch"
+  "success": "വിജയകരം",
+  "created": "സൃഷ്‌ടിച്ചു",
+  "updated": "അപ്ഡേറ്റ് ചെയ്തു",
+  "deleted": "ഇല്ലാതാക്കി",
+  "create": "സൃഷ്‌ടിക്കുക",
+  "reset": "റീസെറ്റ് ചെയ്യുക",
+  "serverOffline": "സെർവർ ഓഫ്ലൈനിലോ കോൺഫിഗർ ചെയ്തിട്ടില്ലയോ ആണ്",
+  "serverChats": "സെർവർ ചാറ്റുകൾ",
+  "serverChatLoadError": "സെർവർ ചാറ്റ് ലോഡ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു. നിങ്ങളുടെ കണക്ഷൻ പരിശോധന ചെയ്ത് വീണ്ടും ശ്രമിക്കുക.",
+  "serverChatSourceLabel": "സെർവർ",
+  "serverChatsUnavailable": "സെർവർ ചാറ്റുകൾ ലഭ്യമല്ല. സെർവർ കണക്ഷൻ പരിശോധിക്കുക.",
+  "historiesDeleted": "{{count}} ചരിത്രങ്ങൾ ഇല്ലാതാക്കി",
+  "deleteHistoriesError": "ചരിത്രങ്ങൾ ഇല്ലാതാക്കുന്നതിനിടെ പിശക് സംഭവിച്ചു",
+  "mermaid": "Mermaid ഡയറഗ്രാം",
+  "search": "തിരയുക",
+  "searchResults": "തിരച്ചിൽ ഫലങ്ങൾ",
+  "newBranch": "പുതിയ ബ്രാഞ്ച്"
 }

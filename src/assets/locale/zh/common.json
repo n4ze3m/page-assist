@@ -1,17 +1,17 @@
 {
-  "pageAssist": "tldw Assistant",
+  "pageAssist": "tldw 助手",
   "titles": {
     "options": "tldw Assistant — Options",
     "sidepanel": "tldw Assistant — Sidepanel"
   },
   "pdf": {
-    "passwordTitle": "Enter the PDF password",
-    "unlock": "Unlock"
+    "passwordTitle": "输入 PDF 密码",
+    "unlock": "解锁"
   },
   "loading": {
-    "title": "Loading…",
-    "description": "Please wait while we get things ready.",
-    "content": "Loading content…"
+    "title": "正在加载…",
+    "description": "请稍候，我们正在为您准备。",
+    "content": "正在加载内容…"
   },
   "selectAModel": "选择一个模型",
   "save": "保存",
@@ -62,11 +62,11 @@
   },
   "submit": "提交",
   "send": "提交",
-  "connectToServer": "Connect to server",
+  "connectToServer": "连接到服务器",
   "noData": "无数据",
   "noHistory": "无聊天记录",
   "chatWithCurrentPage": "与当前页面聊天",
-  "beta": "Beta",
+  "beta": "测试版",
   "tts": "朗读",
   "currentChatModelSettings": "当前聊天模型设置",
   "modelSettings": {
@@ -96,45 +96,45 @@
         "help": "模型输出的可重复性"
       },
       "topK": {
-        "label": "Top K",
-        "placeholder": "输入Top K值（例如：40、100）"
+        "label": "Top K（前 K 个）",
+        "placeholder": "输入 Top K 值（例如：40、100）"
       },
       "topP": {
-        "label": "Top P",
-        "placeholder": "输入Top P值（例如：0.9、0.95）"
+        "label": "Top P（累计概率）",
+        "placeholder": "输入 Top P 值（例如：0.9、0.95）"
       },
       "useMMap": {
-        "label": "使用 mmap"
+        "label": "useMmap（内存映射）"
       },
       "tfsZ": {
-        "label": "TFS-Z",
-        "placeholder": "例如：1.0, 1.1"
+        "label": "TFS-Z（TFS 参数）",
+        "placeholder": "例如：1.0、1.1"
       },
       "numKeep": {
-        "label": "Num Keep",
-        "placeholder": "例如：256, 512"
+        "label": "Num Keep（保留数量）",
+        "placeholder": "例如：256、512"
       },
       "numThread": {
-        "label": "Num Thread",
-        "placeholder": "例如：8, 16"
+        "label": "Num Thread（线程数）",
+        "placeholder": "例如：8、16"
       },
       "useMlock": {
-        "label": "使用 mlock"
+        "label": "useMlock（锁定内存）"
       },
       "minP": {
-        "label": "Min P",
+        "label": "Min P（最小 P）",
         "placeholder": "例如：0.05"
       },
       "repeatPenalty": {
-        "label": "Repeat Penalty",
-        "placeholder": "例如：1.1, 1.2"
+        "label": "重复惩罚",
+        "placeholder": "例如：1.1、1.2"
       },
       "repeatLastN": {
-        "label": "Repeat Last N",
-        "placeholder": "例如：64, 128"
+        "label": "重复最近 N",
+        "placeholder": "例如：64、128"
       },
       "numGpu": {
-        "label": "Num GPU",
+        "label": "Num GPU（GPU 数量）",
         "placeholder": "输入要发送到 GPU 的层数"
       },
       "systemPrompt": {
@@ -143,11 +143,11 @@
         "help": "这是一种在当前聊天中快速设置系统提示的方法，如果存在已选择的系统提示，它将覆盖该提示。"
       },
       "thinking": {
-        "label": "Thinking Mode"
+        "label": "思考模式"
       },
       "reasoningEffort": {
-        "label": "Reasoning Effort",
-        "placeholder": "low, medium, high"
+        "label": "推理强度",
+        "placeholder": "低、中、高"
       }
     },
     "advanced": "更多模型设置"
@@ -197,7 +197,7 @@
     "loading": "正在加载推理....",
     "thought": "思考了 {{time}}"
   },
-  "mermaid": "Mermaid",
+  "mermaid": "Mermaid 图表",
   "embeddingGen": "正在创建嵌入向量，这可能需要一些时间",
   "semanticSearch": "正在执行语义搜索",
   "downloading": "正在下载",
@@ -205,36 +205,36 @@
     "confirm": "确定要取消下载吗？这将停止下载过程。根据 Ollama 文档，您可以从中断处重新开始下载。"
   },
   "table": {
-    "copyCsv": "Copy as CSV",
-    "downloadCsv": "Download CSV"
+    "copyCsv": "复制为 CSV",
+    "downloadCsv": "下载 CSV"
   },
-  "dismiss": "Dismiss",
+  "dismiss": "关闭",
   "privateModeSaveErrorTitle": "tldw Assistant 无法保存数据",
-  "confirmTitle": "Please confirm",
-  "saving": "Saving...",
-  "close": "Close",
-  "loadMore": "Load More...",
-  "startChat": "Start chatting",
-  "previous": "Previous",
-  "next": "Next",
-  "chatWithCharacter": "Chat with character",
-  "ttsShort": "TTS",
-  "copyShort": "Copy",
-  "branchShort": "Branch",
-  "success": "Success",
-  "created": "Created",
-  "updated": "Updated",
-  "deleted": "Deleted",
-  "create": "Create",
-  "reset": "Reset",
-  "serverOffline": "Server offline or not configured",
-  "serverChats": "Server chats",
-  "serverChatLoadError": "Failed to load server chat. Check your connection and try again.",
-  "serverChatSourceLabel": "Server",
-  "serverChatsUnavailable": "Server chats unavailable. Check your server connection.",
-  "historiesDeleted": "{{count}} Histories Deleted",
-  "deleteHistoriesError": "Error deleting histories",
-  "search": "Search",
-  "searchResults": "Search Results",
-  "newBranch": "New Branch"
+  "confirmTitle": "请确认",
+  "saving": "正在保存...",
+  "close": "关闭",
+  "loadMore": "加载更多...",
+  "startChat": "开始聊天",
+  "previous": "上一页",
+  "next": "下一页",
+  "chatWithCharacter": "与角色聊天",
+  "ttsShort": "语音",
+  "copyShort": "复制",
+  "branchShort": "分支",
+  "success": "成功",
+  "created": "已创建",
+  "updated": "已更新",
+  "deleted": "已删除",
+  "create": "创建",
+  "reset": "重置",
+  "serverOffline": "服务器离线或未配置",
+  "serverChats": "服务器聊天",
+  "serverChatLoadError": "无法加载服务器聊天。请检查连接后重试。",
+  "serverChatSourceLabel": "服务器来源",
+  "serverChatsUnavailable": "服务器聊天不可用。请检查服务器连接。",
+  "historiesDeleted": "{{count}} 条历史记录已删除",
+  "deleteHistoriesError": "删除历史记录时出错",
+  "search": "搜索",
+  "searchResults": "搜索结果",
+  "newBranch": "新分支"
 }

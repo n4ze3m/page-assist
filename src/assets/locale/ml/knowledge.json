@@ -40,16 +40,16 @@
   "noEmbeddingModel": "ദയവായി ആദ്യം RAG ക്രമീകരണ പേജില്‍ നിന്ന് ഒരു എംബെഡിംഗ് മോഡല്‍ ചേര്‍ക്കുക",
   "privateModeDescription": "Firefox സ്വകാര്യ മോഡ് IndexedDB-ൽ സംരക്ഷണം പിന്തുണയ്ക്കുന്നില്ല. സാധാരണ വിൻഡോയിലൂടെ നോളജ് ബേസ് ചേർക്കുക.",
   "rag": {
-    "searchFailed": "RAG search failed. Try again or check Diagnostics."
+    "searchFailed": "RAG തിരച്ചിൽ പരാജയപ്പെട്ടു. ദയവായി വീണ്ടും ശ്രമിക്കുകയോ Diagnostics പരിശോധിക്കുകയോ ചെയ്യുക."
   },
   "empty": {
-    "demoTitle": "Explore Knowledge QA in demo mode",
-    "demoDescription": "This demo shows how Knowledge QA can run RAG searches over sample content. Connect your own server later to search your own transcripts and documents.",
-    "demoExample1": "Try quick RAG searches and inspect results and citations.",
-    "demoExample2": "Connect your own server to enable Knowledge QA over your real media and notes.",
-    "connectTitle": "Connect to use Knowledge QA",
-    "connectDescription": "To use Knowledge QA and RAG search, first connect to your tldw server.",
-    "connectExample1": "Open Settings → tldw server to add your server URL.",
-    "connectExample2": "Use Diagnostics if your server is running but not reachable."
+    "demoTitle": "ഡെമോ മോഡിൽ Knowledge QA പരിശോധിക്കുക",
+    "demoDescription": "ഈ ഡെമോ Knowledge QA എങ്ങനെ ഉദാഹരണ ഉള്ളടക്കത്തിൽ RAG തിരച്ചിലുകൾ നടത്തുന്നു എന്ന് കാണിക്കുന്നു. പിന്നീട്, താങ്കളുടെ സ്വന്തം സർവർ കണക്റ്റ് ചെയ്ത് താങ്കളുടെ ട്രാൻസ്‌ക്രിപ്റ്റുകളും ഡോക്യൂമെന്റുകളും തിരയാം.",
+    "demoExample1": "വേഗത്തിലുള്ള RAG തിരച്ചിലുകൾ പരീക്ഷിച്ച് ഫലങ്ങളും റഫറൻസും പരിശോധിക്കുക.",
+    "demoExample2": "താങ്കളുടെ യഥാർത്ഥ മീഡിയയിലും കുറിപ്പുകളിലും Knowledge QA ഉപയോഗിക്കാൻ താങ്കളുടെ സ്വന്തം സർവർ കണക്റ്റ് ചെയ്യുക.",
+    "connectTitle": "Knowledge QA ഉപയോഗിക്കാൻ കണക്റ്റ് ചെയ്യുക",
+    "connectDescription": "Knowledge QAയും RAG തിരച്ചിലും ഉപയോഗിക്കാൻ ആദ്യം താങ്കളുടെ tldw സർവറിലേക്ക് കണക്റ്റ് ചെയ്യണം.",
+    "connectExample1": "സെറ്റിംഗ്സ് → tldw server തുറന്ന് താങ്കളുടെ സർവർ URL ചേർക്കുക.",
+    "connectExample2": "സർവർ പ്രവർത്തിക്കുന്നുണ്ടെങ്കിലും എത്തിച്ചേരാനാവുന്നില്ലെങ്കിൽ Diagnostics ഉപയോഗിക്കുക."
   }
 }

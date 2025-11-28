@@ -10,6 +10,7 @@
   },
   "modal": {
     "titleAdd": "Tilføj Ny Udbyder",
+    "titleEdit": "Rediger udbyder",
     "name": {
       "label": "Udbyders Navn",
       "required": "Udbyders navn er påkrævet.",
@@ -34,8 +35,7 @@
       "subheading": "Vælg venligst de chatmodeller, du ønsker at bruge med denne udbyder.",
       "success": "Nye modeller tilføjet med succes."
     },
-    "tipLMStudio": "tldw Browser_Assistant vil automatisk hente de modeller, du har indlæst på LM Studio. Du behøver ikke at tilføje dem manuelt.",
-    "titleEdit": "Edit Provider"
+    "tipLMStudio": "tldw Browser_Assistant vil automatisk hente de modeller, du har indlæst på LM Studio. Du behøver ikke at tilføje dem manuelt."
   },
   "addSuccess": "Udbyder tilføjet med succes.",
   "deleteSuccess": "Udbyder slettet med succes.",
@@ -80,7 +80,7 @@
           "label": "Modeltype"
         }
       },
-      "titleEdit": "Edit Custom Model"
+      "titleEdit": "Rediger brugerdefineret model"
     }
   },
   "noModelFound": "Ingen model fundet. Sørg for, at du har tilføjet korrekt udbyder med basis URL og API-nøgle.",
@@ -99,9 +99,9 @@
         "required": "Modelnavn er påkrævet."
       },
       "modelAvatar": {
-        "label": "Model Avatar",
-        "placeholder": "Indtast model avatar",
-        "help": "Indtast venligst URL'en til model avataren. Dette billede vil blive vist i chatvinduet."
+        "label": "Modelavatar",
+        "placeholder": "Indtast modelavatar",
+        "help": "Indtast venligst URL'en til modelavataren. Dette billede vil blive vist i chatvinduet."
       }
     }
   },

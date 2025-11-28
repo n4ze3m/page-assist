@@ -10,6 +10,7 @@
   },
   "modal": {
     "titleAdd": "Lägg till ny leverantör",
+    "titleEdit": "Redigera leverantör",
     "name": {
       "label": "Leverantörsnamn",
       "required": "Leverantörsnamn krävs.",
@@ -35,7 +36,7 @@
       "success": "Nya modeller har lagts till framgångsrikt."
     },
     "tipLMStudio": "tldw Browser_Assistant hämtar automatiskt modellerna du laddat i LM Studio. Ingen manuell tilläggning behövs.",
-    "titleEdit": "Edit Provider"
+    "titleEdit": "Redigera leverantör"
   },
   "addSuccess": "Leverantör tillagd framgångsrikt.",
   "deleteSuccess": "Leverantör raderad framgångsrikt.",
@@ -80,7 +81,7 @@
           "label": "Modelltyp"
         }
       },
-      "titleEdit": "Edit Custom Model"
+      "titleEdit": "Redigera anpassad modell"
     }
   },
   "noModelFound": "Ingen modell hittades. Se till att du har lagt till korrekt leverantör med bas-URL och API-nyckel.",

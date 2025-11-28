@@ -2,13 +2,13 @@
   "addBtn": "Neues Wissen hinzufügen",
   "columns": {
     "title": "Titel",
-    "status": "Status",
+    "status": "Status (Fortschritt)",
     "embeddings": "Einbettungsmodell",
     "createdAt": "Erstellt am",
     "action": "Aktionen"
   },
   "expandedColumns": {
-    "name": "Name"
+    "name": "Name (Quelle)"
   },
   "confirm": {
     "delete": "Sind Sie sicher, dass Sie dieses Wissen löschen möchten?"
@@ -40,16 +40,16 @@
   "noEmbeddingModel": "Bitte fügen Sie zuerst ein Einbettungsmodell von der RAG-Einstellungsseite hinzu",
   "privateModeDescription": "Der Firefox-Privatmodus unterstützt kein Speichern in IndexedDB. Bitte fügen Sie eine Wissensbasis in einem normalen Fenster hinzu.",
   "rag": {
-    "searchFailed": "RAG search failed. Try again or check Diagnostics."
+    "searchFailed": "RAG-Suche fehlgeschlagen. Versuchen Sie es erneut oder prüfen Sie die Diagnosen."
   },
   "empty": {
-    "demoTitle": "Explore Knowledge QA in demo mode",
-    "demoDescription": "This demo shows how Knowledge QA can run RAG searches over sample content. Connect your own server later to search your own transcripts and documents.",
-    "demoExample1": "Try quick RAG searches and inspect results and citations.",
-    "demoExample2": "Connect your own server to enable Knowledge QA over your real media and notes.",
-    "connectTitle": "Connect to use Knowledge QA",
-    "connectDescription": "To use Knowledge QA and RAG search, first connect to your tldw server.",
-    "connectExample1": "Open Settings → tldw server to add your server URL.",
-    "connectExample2": "Use Diagnostics if your server is running but not reachable."
+    "demoTitle": "Knowledge QA im Demomodus erkunden",
+    "demoDescription": "Diese Demo zeigt, wie Knowledge QA RAG-Suchen über Beispielinhalte ausführen kann. Verbinden Sie später Ihren eigenen Server, um Ihre eigenen Transkripte und Dokumente zu durchsuchen.",
+    "demoExample1": "Probieren Sie schnelle RAG-Suchen aus und prüfen Sie Ergebnisse und Quellenangaben.",
+    "demoExample2": "Verbinden Sie Ihren eigenen Server, um Knowledge QA für Ihre echten Medien und Notizen zu aktivieren.",
+    "connectTitle": "Verbinden, um Knowledge QA zu nutzen",
+    "connectDescription": "Um Knowledge QA und RAG-Suche zu verwenden, verbinden Sie sich zuerst mit Ihrem tldw-Server.",
+    "connectExample1": "Öffnen Sie Einstellungen → tldw server, um Ihre Server-URL hinzuzufügen.",
+    "connectExample2": "Verwenden Sie Diagnosen, wenn Ihr Server läuft, aber nicht erreichbar ist."
   }
 }

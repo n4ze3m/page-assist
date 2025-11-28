@@ -2,7 +2,7 @@
   "addBtn": "Legg Til Ny Kunnskap",
   "columns": {
     "title": "Tittel",
-    "status": "Status",
+    "status": "Status (fremdrift)",
     "embeddings": "Embedding Modell",
     "createdAt": "Opprettet På",
     "action": "Handlinger"
@@ -40,16 +40,16 @@
   "noEmbeddingModel": "Vennligst legg til en embedding-modell fra RAG-innstillingene først",
   "privateModeDescription": "Firefox privatmodus støtter ikke lagring i IndexedDB. Legg til en kunnskapsbase fra et vanlig vindu.",
   "rag": {
-    "searchFailed": "RAG search failed. Try again or check Diagnostics."
+    "searchFailed": "RAG-søk mislyktes. Prøv igjen eller sjekk Diagnostikk."
   },
   "empty": {
-    "demoTitle": "Explore Knowledge QA in demo mode",
-    "demoDescription": "This demo shows how Knowledge QA can run RAG searches over sample content. Connect your own server later to search your own transcripts and documents.",
-    "demoExample1": "Try quick RAG searches and inspect results and citations.",
-    "demoExample2": "Connect your own server to enable Knowledge QA over your real media and notes.",
-    "connectTitle": "Connect to use Knowledge QA",
-    "connectDescription": "To use Knowledge QA and RAG search, first connect to your tldw server.",
-    "connectExample1": "Open Settings → tldw server to add your server URL.",
-    "connectExample2": "Use Diagnostics if your server is running but not reachable."
+    "demoTitle": "Utforsk Knowledge QA i demomodus",
+    "demoDescription": "Denne demoen viser hvordan Knowledge QA kan kjøre RAG-søk på eksempelinnhold. Senere kan du koble til din egen server for å søke i dine egne transkripsjoner og dokumenter.",
+    "demoExample1": "Prøv raske RAG-søk og se gjennom resultater og referanser.",
+    "demoExample2": "Koble til din egen server for å aktivere Knowledge QA på faktisk medieinnhold og notater.",
+    "connectTitle": "Koble til for å bruke Knowledge QA",
+    "connectDescription": "For å bruke Knowledge QA og RAG-søk må du først koble til tldw-serveren din.",
+    "connectExample1": "Åpne Innstillinger → tldw server for å legge til server-URL-en din.",
+    "connectExample2": "Bruk Diagnostikk hvis serveren kjører men ikke er tilgjengelig."
   }
 }

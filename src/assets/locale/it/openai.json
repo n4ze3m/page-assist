@@ -10,6 +10,7 @@
   },
   "modal": {
     "titleAdd": "Aggiungi Nuovo Provider",
+    "titleEdit": "Modifica provider",
     "name": {
       "label": "Nome Provider",
       "required": "Il nome del provider è obbligatorio.",
@@ -34,8 +35,7 @@
       "subheading": "Seleziona i modelli di chat che desideri utilizzare con questo provider.",
       "success": "Nuovi modelli aggiunti con successo."
     },
-    "tipLMStudio": "tldw Browser_Assistant recupererà automaticamente i modelli caricati su LM Studio. Non è necessario aggiungerli manualmente.",
-    "titleEdit": "Edit Provider"
+    "tipLMStudio": "tldw Browser_Assistant recupererà automaticamente i modelli caricati su LM Studio. Non è necessario aggiungerli manualmente."
   },
   "addSuccess": "Provider aggiunto con successo.",
   "deleteSuccess": "Provider eliminato con successo.",
@@ -72,15 +72,15 @@
           "required": "L'ID del modello è obbligatorio."
         },
         "provider": {
-          "label": "Provider",
+          "label": "Fornitore",
           "placeholder": "Seleziona provider",
-          "required": "Il provider è obbligatorio."
+          "required": "Il fornitore è obbligatorio."
         },
         "type": {
           "label": "Tipo di Modello"
         }
       },
-      "titleEdit": "Edit Custom Model"
+      "titleEdit": "Modifica modello personalizzato"
     }
   },
   "noModelFound": "Nessun modello trovato. Assicurati di aver aggiunto il provider corretto con l'URL di base e la chiave API.",

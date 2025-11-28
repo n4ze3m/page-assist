@@ -1,17 +1,17 @@
 {
-  "pageAssist": "tldw Assistant",
+  "pageAssist": "Помічник tldw",
   "titles": {
     "options": "tldw Assistant — Options",
     "sidepanel": "tldw Assistant — Sidepanel"
   },
   "pdf": {
-    "passwordTitle": "Enter the PDF password",
-    "unlock": "Unlock"
+    "passwordTitle": "Введіть пароль PDF",
+    "unlock": "Розблокувати"
   },
   "loading": {
-    "title": "Loading…",
-    "description": "Please wait while we get things ready.",
-    "content": "Loading content…"
+    "title": "Завантаження…",
+    "description": "Будь ласка, зачекайте, поки ми все підготуємо.",
+    "content": "Завантаження вмісту…"
   },
   "selectAModel": "Виберіть модель",
   "save": "Зберегти",
@@ -62,11 +62,11 @@
   },
   "submit": "Надіслати",
   "send": "Надіслати",
-  "connectToServer": "Connect to server",
+  "connectToServer": "Підключитися до сервера",
   "noData": "Немає даних",
   "noHistory": "Немає історії чату",
   "chatWithCurrentPage": "Чат з поточної сторінки",
-  "beta": "Бета",
+  "beta": "Бета-версія",
   "tts": "Читання вголос",
   "currentChatModelSettings": "Налаштування поточної моделі чату",
   "modelSettings": {
@@ -96,11 +96,11 @@
         "help": "Повторюваність виводу моделі"
       },
       "topK": {
-        "label": "Top K",
+        "label": "Top K (верхні K)",
         "placeholder": "Введіть значення для Верхніх K (наприклад, 40, 100)"
       },
       "topP": {
-        "label": "Top P",
+        "label": "Top P (верхнє P)",
         "placeholder": "Введіть значення для Верхнього P (наприклад, 0.9, 0.95)"
       },
       "numGpu": {
@@ -113,41 +113,41 @@
         "help": "Швидкий спосіб встановити системний запит для поточного чату, який замінить вибраний системний запит, якщо він існує."
       },
       "thinking": {
-        "label": "Thinking Mode"
+        "label": "Режим мислення"
       },
       "useMMap": {
-        "label": "useMmap"
+        "label": "useMmap (відображення памʼяті)"
       },
       "tfsZ": {
-        "label": "TFS-Z",
-        "placeholder": "e.g. 1.0, 1.1"
+        "label": "TFS-Z (параметр TFS)",
+        "placeholder": "напр., 1.0, 1.1"
       },
       "numKeep": {
-        "label": "Num Keep",
-        "placeholder": "e.g. 256, 512"
+        "label": "Num Keep (кількість, що зберігається)",
+        "placeholder": "напр., 256, 512"
       },
       "numThread": {
-        "label": "Num Thread",
-        "placeholder": "e.g. 8, 16"
+        "label": "Num Thread (кількість потоків)",
+        "placeholder": "напр., 8, 16"
       },
       "useMlock": {
-        "label": "useMlock"
+        "label": "useMlock (блокування памʼяті)"
       },
       "reasoningEffort": {
-        "label": "Reasoning Effort",
-        "placeholder": "low, medium, high"
+        "label": "Зусилля для міркувань",
+        "placeholder": "низькі, середні, високі"
       },
       "minP": {
-        "label": "Min P",
-        "placeholder": "e.g. 0.05"
+        "label": "Min P (мінімальне P)",
+        "placeholder": "напр., 0.05"
       },
       "repeatPenalty": {
-        "label": "Repeat Penalty",
-        "placeholder": "e.g. 1.1, 1.2"
+        "label": "Штраф за повторення",
+        "placeholder": "напр., 1.1, 1.2"
       },
       "repeatLastN": {
-        "label": "Repeat Last N",
-        "placeholder": "e.g. 64, 128"
+        "label": "Повторювати останні N",
+        "placeholder": "напр., 64, 128"
       }
     },
     "advanced": "Додаткові налаштування моделі"
@@ -204,37 +204,37 @@
     "confirm": "Ви впевнені, що хочете скасувати завантаження? Це зупинить процес завантаження. Згідно з документацією Ollama, ви можете відновити завантаження з того місця, де зупинилися."
   },
   "table": {
-    "copyCsv": "Copy as CSV",
-    "downloadCsv": "Download CSV"
+    "copyCsv": "Копіювати як CSV",
+    "downloadCsv": "Завантажити CSV"
   },
-  "dismiss": "Dismiss",
+  "dismiss": "Сховати",
   "privateModeSaveErrorTitle": "tldw Assistant не може зберегти дані",
-  "confirmTitle": "Please confirm",
-  "saving": "Saving...",
-  "close": "Close",
-  "loadMore": "Load More...",
-  "startChat": "Start chatting",
-  "previous": "Previous",
-  "next": "Next",
-  "chatWithCharacter": "Chat with character",
-  "ttsShort": "TTS",
-  "copyShort": "Copy",
-  "branchShort": "Branch",
-  "success": "Success",
-  "created": "Created",
-  "updated": "Updated",
-  "deleted": "Deleted",
-  "create": "Create",
-  "reset": "Reset",
-  "serverOffline": "Server offline or not configured",
-  "serverChats": "Server chats",
-  "serverChatLoadError": "Failed to load server chat. Check your connection and try again.",
-  "serverChatSourceLabel": "Server",
-  "serverChatsUnavailable": "Server chats unavailable. Check your server connection.",
-  "historiesDeleted": "{{count}} Histories Deleted",
-  "deleteHistoriesError": "Error deleting histories",
-  "mermaid": "Mermaid",
-  "search": "Search",
-  "searchResults": "Search Results",
-  "newBranch": "New Branch"
+  "confirmTitle": "Будь ласка, підтвердіть",
+  "saving": "Збереження...",
+  "close": "Закрити",
+  "loadMore": "Завантажити ще...",
+  "startChat": "Почати чат",
+  "previous": "Назад",
+  "next": "Далі",
+  "chatWithCharacter": "Чат із персонажем",
+  "ttsShort": "Голос",
+  "copyShort": "Копіювати",
+  "branchShort": "Гілка",
+  "success": "Успішно",
+  "created": "Створено",
+  "updated": "Оновлено",
+  "deleted": "Видалено",
+  "create": "Створити",
+  "reset": "Скинути",
+  "serverOffline": "Сервер вимкнений або не налаштований",
+  "serverChats": "Серверні чати",
+  "serverChatLoadError": "Не вдалося завантажити серверний чат. Перевірте підключення та спробуйте ще раз.",
+  "serverChatSourceLabel": "Джерело сервера",
+  "serverChatsUnavailable": "Серверні чати недоступні. Перевірте підключення до сервера.",
+  "historiesDeleted": "{{count}} історій чату видалено",
+  "deleteHistoriesError": "Помилка під час видалення історій",
+  "mermaid": "Діаграми Mermaid",
+  "search": "Пошук",
+  "searchResults": "Результати пошуку",
+  "newBranch": "Нова гілка"
 }

@@ -2,7 +2,7 @@
   "addBtn": "Lägg till ny kunskap",
   "columns": {
     "title": "Titel",
-    "status": "Status",
+    "status": "Status (läge)",
     "embeddings": "Inbäddningsmodell",
     "createdAt": "Skapad den",
     "action": "Åtgärder"
@@ -40,16 +40,16 @@
   "noEmbeddingModel": "Vänligen lägg till en inbäddningsmodell från sidan för RAG-inställningar först",
   "privateModeDescription": "Firefox privat läge stöder inte lagring i IndexedDB. Lägg till en kunskapsbas från ett vanligt fönster.",
   "rag": {
-    "searchFailed": "RAG search failed. Try again or check Diagnostics."
+    "searchFailed": "RAG-sökning misslyckades. Försök igen eller kontrollera Diagnostics."
   },
   "empty": {
-    "demoTitle": "Explore Knowledge QA in demo mode",
-    "demoDescription": "This demo shows how Knowledge QA can run RAG searches over sample content. Connect your own server later to search your own transcripts and documents.",
-    "demoExample1": "Try quick RAG searches and inspect results and citations.",
-    "demoExample2": "Connect your own server to enable Knowledge QA over your real media and notes.",
-    "connectTitle": "Connect to use Knowledge QA",
-    "connectDescription": "To use Knowledge QA and RAG search, first connect to your tldw server.",
-    "connectExample1": "Open Settings → tldw server to add your server URL.",
-    "connectExample2": "Use Diagnostics if your server is running but not reachable."
+    "demoTitle": "Utforska Knowledge QA i demoläge",
+    "demoDescription": "Denna demo visar hur Knowledge QA kan köra RAG-sökningar på exempeldata. Senare kan du koppla din egen server för att söka i dina egna transkriptioner och dokument.",
+    "demoExample1": "Prova snabba RAG-sökningar och granska resultat och källhänvisningar.",
+    "demoExample2": "Koppla din egen server för att aktivera Knowledge QA för ditt riktiga media och dina anteckningar.",
+    "connectTitle": "Anslut för att använda Knowledge QA",
+    "connectDescription": "För att använda Knowledge QA och RAG-sökning måste du först ansluta till din tldw-server.",
+    "connectExample1": "Öppna Inställningar → tldw server för att lägga till din server-URL.",
+    "connectExample2": "Använd Diagnostics om servern körs men inte går att nå."
   }
 }

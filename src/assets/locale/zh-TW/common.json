@@ -1,17 +1,17 @@
 {
-  "pageAssist": "tldw Assistant",
+  "pageAssist": "tldw 小幫手",
   "titles": {
     "options": "tldw Assistant — Options",
     "sidepanel": "tldw Assistant — Sidepanel"
   },
   "pdf": {
-    "passwordTitle": "Enter the PDF password",
-    "unlock": "Unlock"
+    "passwordTitle": "輸入 PDF 密碼",
+    "unlock": "解鎖"
   },
   "loading": {
-    "title": "Loading…",
-    "description": "Please wait while we get things ready.",
-    "content": "Loading content…"
+    "title": "正在載入…",
+    "description": "請稍候，我們正在為您準備。",
+    "content": "正在載入內容…"
   },
   "selectAModel": "選擇一個模型",
   "save": "儲存",
@@ -63,11 +63,11 @@
   },
   "submit": "送出",
   "send": "送出",
-  "connectToServer": "Connect to server",
+  "connectToServer": "連線到伺服器",
   "noData": "沒有資料",
   "noHistory": "無聊天記錄",
   "chatWithCurrentPage": "與目前頁面聊天",
-  "beta": "Beta",
+  "beta": "測試版",
   "tts": "朗讀",
   "currentChatModelSettings": "目前聊天模型設定",
   "modelSettings": {
@@ -91,58 +91,55 @@
         "label": "最大 Token 數 (num_predict)",
         "placeholder": "例如：2048、4096"
       },
-      "thinking": {
-        "label": "思考模式 (Ollama)"
-      },
       "seed": {
         "label": "隨機種子",
         "placeholder": "例如：1234",
         "help": "模型輸出的可重複性"
       },
       "topK": {
-        "label": "Top K",
+        "label": "Top K（前 K 個）",
         "placeholder": "例如：40、100"
       },
       "topP": {
-        "label": "Top P",
+        "label": "Top P（累計機率）",
         "placeholder": "例如：0.9、0.95"
       },
       "useMMap": {
-        "label": "useMmap"
+        "label": "useMmap（記憶體對映）"
       },
       "tfsZ": {
-        "label": "TFS-Z",
+        "label": "TFS-Z（TFS 參數）",
         "placeholder": "例如：1.0、1.1"
       },
       "numKeep": {
-        "label": "Num Keep",
+        "label": "Num Keep（保留數量）",
         "placeholder": "例如：256、512"
       },
       "numThread": {
-        "label": "Num Thread",
+        "label": "Num Thread（執行緒數）",
         "placeholder": "例如：8、16"
       },
       "useMlock": {
-        "label": "useMlock"
+        "label": "useMlock（鎖定記憶體）"
       },
       "reasoningEffort": {
-        "label": "Reasoning Effort",
-        "placeholder": "low, medium, high"
+        "label": "推理強度",
+        "placeholder": "低、中、高"
       },
       "minP": {
-        "label": "Min P",
+        "label": "Min P（最小 P）",
         "placeholder": "例如：0.05"
       },
       "repeatPenalty": {
-        "label": "Repeat Penalty",
+        "label": "重複懲罰",
         "placeholder": "例如：1.1、1.2"
       },
       "repeatLastN": {
-        "label": "Repeat Last N",
+        "label": "重複最近 N",
         "placeholder": "例如：64、128"
       },
       "numGpu": {
-        "label": "Num GPU",
+        "label": "Num GPU（GPU 數量）",
         "placeholder": "輸入要傳送到 GPU 的層數"
       },
       "systemPrompt": {
@@ -208,33 +205,33 @@
     "confirm": "確定要取消下載嗎？這將會停止下載過程。根據 Ollama 說明文件，您可以從中斷處重新開始下載。"
   },
   "table": {
-    "copyCsv": "Copy as CSV",
-    "downloadCsv": "Download CSV"
+    "copyCsv": "複製為 CSV",
+    "downloadCsv": "下載 CSV"
   },
-  "dismiss": "Dismiss",
+  "dismiss": "關閉",
   "privateModeSaveErrorTitle": "tldw Assistant 無法儲存資料",
-  "confirmTitle": "Please confirm",
-  "saving": "Saving...",
-  "close": "Close",
-  "startChat": "Start chatting",
-  "previous": "Previous",
-  "next": "Next",
-  "chatWithCharacter": "Chat with character",
-  "ttsShort": "TTS",
-  "copyShort": "Copy",
-  "branchShort": "Branch",
-  "success": "Success",
-  "created": "Created",
-  "updated": "Updated",
-  "deleted": "Deleted",
-  "create": "Create",
-  "reset": "Reset",
-  "serverOffline": "Server offline or not configured",
-  "serverChats": "Server chats",
-  "serverChatLoadError": "Failed to load server chat. Check your connection and try again.",
-  "serverChatSourceLabel": "Server",
-  "serverChatsUnavailable": "Server chats unavailable. Check your server connection.",
-  "mermaid": "Mermaid",
-  "search": "Search",
-  "searchResults": "Search Results"
+  "confirmTitle": "請確認",
+  "saving": "正在儲存...",
+  "close": "關閉",
+  "startChat": "開始聊天",
+  "previous": "上一頁",
+  "next": "下一頁",
+  "chatWithCharacter": "與角色聊天",
+  "ttsShort": "語音",
+  "copyShort": "複製",
+  "branchShort": "分支",
+  "success": "成功",
+  "created": "已建立",
+  "updated": "已更新",
+  "deleted": "已刪除",
+  "create": "建立",
+  "reset": "重設",
+  "serverOffline": "伺服器離線或尚未設定",
+  "serverChats": "伺服器聊天",
+  "serverChatLoadError": "無法載入伺服器聊天。請檢查連線後再試一次。",
+  "serverChatSourceLabel": "伺服器來源",
+  "serverChatsUnavailable": "伺服器聊天不可用。請檢查伺服器連線。",
+  "mermaid": "Mermaid 圖表",
+  "search": "搜尋",
+  "searchResults": "搜尋結果"
 }

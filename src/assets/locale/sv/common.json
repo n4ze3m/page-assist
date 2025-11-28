@@ -1,17 +1,17 @@
 {
-  "pageAssist": "tldw Assistant",
+  "pageAssist": "tldw-assistenten",
   "titles": {
     "options": "tldw Assistant — Options",
     "sidepanel": "tldw Assistant — Sidepanel"
   },
   "pdf": {
-    "passwordTitle": "Enter the PDF password",
-    "unlock": "Unlock"
+    "passwordTitle": "Ange PDF-lösenordet",
+    "unlock": "Lås upp"
   },
   "loading": {
-    "title": "Loading…",
-    "description": "Please wait while we get things ready.",
-    "content": "Loading content…"
+    "title": "Läser in…",
+    "description": "Vänta medan vi förbereder allt.",
+    "content": "Läser in innehåll…"
   },
   "selectAModel": "Välj en modell",
   "save": "Spara",
@@ -62,11 +62,11 @@
   },
   "submit": "Skicka",
   "send": "Skicka",
-  "connectToServer": "Connect to server",
+  "connectToServer": "Anslut till servern",
   "noData": "Inga data",
   "noHistory": "Ingen chattlogg",
   "chatWithCurrentPage": "Chatta med nuvarande sidan",
-  "beta": "Beta",
+  "beta": "Betaversion",
   "tts": "Läs högt",
   "currentChatModelSettings": "Nuvarande chattmodellinställningar",
   "modelSettings": {
@@ -74,7 +74,7 @@
     "description": "Ställ in modellalternativen globalt för alla chatter",
     "form": {
       "keepAlive": {
-        "label": "Keep Alive",
+        "label": "Håll aktiv",
         "help": "kontrollerar hur länge modellen kommer att vara laddad i minnet efter förfrågan (standard: 5 min)",
         "placeholder": "Ange Keep Alive varaktighet (t.ex. 5m, 10m, 1h)"
       },
@@ -113,41 +113,41 @@
         "help": "Detta är ett snabbt sätt att ställa in systemprompten i den nuvarande chatten, vilket kommer att åsidosätta den valda systemprompten om den finns."
       },
       "thinking": {
-        "label": "Thinking Mode"
+        "label": "Tänkeläge"
       },
       "useMMap": {
-        "label": "useMmap"
+        "label": "useMmap (minnesmappning)"
       },
       "tfsZ": {
-        "label": "TFS-Z",
-        "placeholder": "e.g. 1.0, 1.1"
+        "label": "TFS-Z (TFS-parameter)",
+        "placeholder": "t.ex. 1.0, 1.1"
       },
       "numKeep": {
-        "label": "Num Keep",
-        "placeholder": "e.g. 256, 512"
+        "label": "Num Keep (antal att behålla)",
+        "placeholder": "t.ex. 256, 512"
       },
       "numThread": {
-        "label": "Num Thread",
-        "placeholder": "e.g. 8, 16"
+        "label": "Num Thread (antal trådar)",
+        "placeholder": "t.ex. 8, 16"
       },
       "useMlock": {
-        "label": "useMlock"
+        "label": "useMlock (låsa i minnet)"
       },
       "reasoningEffort": {
-        "label": "Reasoning Effort",
-        "placeholder": "low, medium, high"
+        "label": "Resonemangsinsats",
+        "placeholder": "låg, medel, hög"
       },
       "minP": {
-        "label": "Min P",
-        "placeholder": "e.g. 0.05"
+        "label": "Min P (minsta P)",
+        "placeholder": "t.ex. 0.05"
       },
       "repeatPenalty": {
-        "label": "Repeat Penalty",
-        "placeholder": "e.g. 1.1, 1.2"
+        "label": "Repetitionsstraff",
+        "placeholder": "t.ex. 1.1, 1.2"
       },
       "repeatLastN": {
-        "label": "Repeat Last N",
-        "placeholder": "e.g. 64, 128"
+        "label": "Upprepa senaste N",
+        "placeholder": "t.ex. 64, 128"
       }
     },
     "advanced": "Fler modellinställningar"
@@ -157,12 +157,12 @@
     "explain": "Förklara",
     "rephrase": "Formulera om",
     "translate": "Översätt",
-    "custom": "Custom"
+    "custom": "Anpassad"
   },
   "citations": "Citat",
   "segmented": {
     "available": "Servermodeller",
-    "custom": "Custom modeller"
+    "custom": "Anpassade modeller"
   },
   "downloadCode": "Ladda ner kod",
   "date": {
@@ -204,37 +204,37 @@
     "confirm": "Är du säker på att du vill avbryta nedladdningen? Detta kommer att stoppa nedladdningsprocessen. Enligt Ollama-dokumentationen kan du återuppta från där du slutade."
   },
   "table": {
-    "copyCsv": "Copy as CSV",
-    "downloadCsv": "Download CSV"
+    "copyCsv": "Kopiera som CSV",
+    "downloadCsv": "Ladda ner CSV"
   },
-  "dismiss": "Dismiss",
+  "dismiss": "Avfärda",
   "privateModeSaveErrorTitle": "tldw Assistant kan inte spara data",
-  "confirmTitle": "Please confirm",
-  "saving": "Saving...",
-  "close": "Close",
-  "loadMore": "Load More...",
-  "startChat": "Start chatting",
-  "previous": "Previous",
-  "next": "Next",
-  "chatWithCharacter": "Chat with character",
-  "ttsShort": "TTS",
-  "copyShort": "Copy",
-  "branchShort": "Branch",
-  "success": "Success",
-  "created": "Created",
-  "updated": "Updated",
-  "deleted": "Deleted",
-  "create": "Create",
-  "reset": "Reset",
-  "serverOffline": "Server offline or not configured",
-  "serverChats": "Server chats",
-  "serverChatLoadError": "Failed to load server chat. Check your connection and try again.",
-  "serverChatSourceLabel": "Server",
-  "serverChatsUnavailable": "Server chats unavailable. Check your server connection.",
-  "historiesDeleted": "{{count}} Histories Deleted",
-  "deleteHistoriesError": "Error deleting histories",
-  "mermaid": "Mermaid",
-  "search": "Search",
-  "searchResults": "Search Results",
-  "newBranch": "New Branch"
+  "confirmTitle": "Vänligen bekräfta",
+  "saving": "Sparar...",
+  "close": "Stäng",
+  "loadMore": "Ladda mer...",
+  "startChat": "Starta chatt",
+  "previous": "Föregående",
+  "next": "Nästa",
+  "chatWithCharacter": "Chatta med en karaktär",
+  "ttsShort": "Röst",
+  "copyShort": "Kopiera",
+  "branchShort": "Gren",
+  "success": "Lyckades",
+  "created": "Skapad",
+  "updated": "Uppdaterad",
+  "deleted": "Raderad",
+  "create": "Skapa",
+  "reset": "Återställ",
+  "serverOffline": "Servern är offline eller inte konfigurerad",
+  "serverChats": "Serverchattar",
+  "serverChatLoadError": "Det gick inte att läsa in serverchatt. Kontrollera anslutningen och försök igen.",
+  "serverChatSourceLabel": "Serverkälla",
+  "serverChatsUnavailable": "Serverchattar är inte tillgängliga. Kontrollera serveranslutningen.",
+  "historiesDeleted": "{{count}} historiker borttagna",
+  "deleteHistoriesError": "Fel vid borttagning av historiker",
+  "mermaid": "Mermaid-diagram",
+  "search": "Sök",
+  "searchResults": "Sökresultat",
+  "newBranch": "Ny gren"
 }

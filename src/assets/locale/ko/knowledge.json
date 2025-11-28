@@ -40,16 +40,16 @@
   "noEmbeddingModel": "먼저 RAG 설정 페이지에서 임베딩 모델을 추가해 주세요",
   "privateModeDescription": "Firefox 사생활 모드는 IndexedDB 저장을 지원하지 않습니다. 일반 창에서 지식 베이스를 추가하세요.",
   "rag": {
-    "searchFailed": "RAG search failed. Try again or check Diagnostics."
+    "searchFailed": "RAG 검색에 실패했습니다. 다시 시도하거나 Diagnostics를 확인하세요."
   },
   "empty": {
-    "demoTitle": "Explore Knowledge QA in demo mode",
-    "demoDescription": "This demo shows how Knowledge QA can run RAG searches over sample content. Connect your own server later to search your own transcripts and documents.",
-    "demoExample1": "Try quick RAG searches and inspect results and citations.",
-    "demoExample2": "Connect your own server to enable Knowledge QA over your real media and notes.",
-    "connectTitle": "Connect to use Knowledge QA",
-    "connectDescription": "To use Knowledge QA and RAG search, first connect to your tldw server.",
-    "connectExample1": "Open Settings → tldw server to add your server URL.",
-    "connectExample2": "Use Diagnostics if your server is running but not reachable."
+    "demoTitle": "데모 모드에서 Knowledge QA 살펴보기",
+    "demoDescription": "이 데모는 Knowledge QA가 샘플 콘텐츠에 대해 RAG 검색을 수행하는 방법을 보여줍니다. 나중에 자신의 서버를 연결하여 실제 기록과 문서를 검색할 수 있습니다.",
+    "demoExample1": "빠른 RAG 검색을 실행하고 결과와 출처를 확인해 보세요.",
+    "demoExample2": "자신의 서버를 연결하여 실제 미디어와 노트에 대해 Knowledge QA를 활성화하세요.",
+    "connectTitle": "Knowledge QA를 사용하려면 연결하세요",
+    "connectDescription": "Knowledge QA와 RAG 검색을 사용하려면 먼저 tldw 서버에 연결해야 합니다.",
+    "connectExample1": "설정 → tldw server를 열어 서버 URL을 추가하세요.",
+    "connectExample2": "서버가 실행 중인데 연결되지 않으면 Diagnostics를 확인하세요."
   }
 }
