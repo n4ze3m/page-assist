@@ -11,6 +11,7 @@ import {
   Form,
   Input,
   InputNumber,
+  notification,
   Modal,
   Select,
   Skeleton,
@@ -23,6 +24,7 @@ import { getOCRLanguage } from "@/services/ocr"
 import { ocrLanguages } from "@/data/ocr-language"
 import { fetchChatModels } from "@/services/tldw-server"
 import { ProviderIcons } from "@/components/Common/ProviderIcon"
+import { tldwClient } from "@/services/tldw/TldwApiClient"
 
 type Props = {
   open: boolean
@@ -47,8 +49,35 @@ export const CurrentChatModelSettings = ({
     selectedModel,
     setSelectedModel,
     fileRetrievalEnabled,
-    setFileRetrievalEnabled
+    setFileRetrievalEnabled,
+    serverChatId,
+    serverChatTopic,
+    setServerChatTopic,
+    serverChatState,
+    setServerChatState
   } = useMessageOption()
+
+  const conversationStateOptions: { value: string; label: string }[] = useMemo(
+    () => [
+      {
+        value: "in-progress",
+        label: t("playground:composer.state.inProgress", "in-progress") as string
+      },
+      {
+        value: "resolved",
+        label: t("playground:composer.state.resolved", "resolved") as string
+      },
+      {
+        value: "backlog",
+        label: t("playground:composer.state.backlog", "backlog") as string
+      },
+      {
+        value: "non-viable",
+        label: t("playground:composer.state.nonViable", "non-viable") as string
+      }
+    ],
+    [t]
+  )
 
   const savePrompt = useCallback(
     (value: string) => {
@@ -416,12 +445,6 @@ export const CurrentChatModelSettings = ({
               />
             </Form.Item>
 
-            <Form.Item
-              name="thinking"
-              label={t("modelSettings.form.thinking.label")}>
-              <Switch />
-            </Form.Item>
-
             {uploadedFiles.length > 0 && (
               <>
                 <Divider />
@@ -604,6 +627,71 @@ export const CurrentChatModelSettings = ({
                 }
               ]}
             />
+            <Form.Item
+              label={t("playground:composer.conversationTags", "Conversation state")}
+              help={t(
+                "playground:composer.stateHelp",
+                "Default state is “in-progress.” Update it as the conversation progresses."
+              )}>
+              <Select
+                value={serverChatState || "in-progress"}
+                options={conversationStateOptions}
+                onChange={async (val) => {
+                  const next = val || "in-progress"
+                  setServerChatState(next as any)
+                  if (!serverChatId) return
+                  try {
+                    await tldwClient.updateChat(serverChatId, { state: next })
+                  } catch (error: any) {
+                    notification.error({
+                      message: t("error", { defaultValue: "Error" }),
+                      description:
+                        error?.message ||
+                        t("somethingWentWrong", {
+                          defaultValue: "Something went wrong"
+                        })
+                    })
+                  }
+                }}
+              />
+            </Form.Item>
+
+            <Form.Item
+              label={t("playground:composer.topicPlaceholder", "Conversation tag")}
+              help={t(
+                "playground:composer.persistence.topicHelp",
+                "Optional label for this chat; saved to the server when available."
+              )}>
+              <Input
+                value={serverChatTopic || ""}
+                onChange={(e) => setServerChatTopic(e.target.value || null)}
+                onBlur={async (e) => {
+                  const normalized = e.target.value.trim()
+                  const topicValue = normalized.length > 0 ? normalized : null
+                  setServerChatTopic(topicValue)
+                  if (!serverChatId) return
+                  try {
+                    await tldwClient.updateChat(serverChatId, {
+                      topic_label: topicValue || undefined
+                    })
+                  } catch (error: any) {
+                    notification.error({
+                      message: t("error", { defaultValue: "Error" }),
+                      description:
+                        error?.message ||
+                        t("somethingWentWrong", {
+                          defaultValue: "Something went wrong"
+                        })
+                    })
+                  }
+                }}
+                placeholder={t(
+                  "playground:composer.topicPlaceholder",
+                  "Conversation tag (optional)"
+                )}
+              />
+            </Form.Item>
+
             <SaveButton
               className="w-full text-center inline-flex items-center justify-center"
               btnType="submit"

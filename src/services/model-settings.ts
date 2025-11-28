@@ -37,7 +37,6 @@ type ModelSettings = {
   minP?: number
   useMlock?: boolean
   reasoningEffort?: any
-  thinking?: boolean
 }
 
 const keys = [

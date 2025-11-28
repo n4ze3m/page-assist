@@ -191,8 +191,7 @@ export const pageAssistModel = async ({
     tfsZ: modelSettings?.tfsZ || tfsZ,
     numKeep: modelSettings?.numKeep || numKeep,
     numThread: modelSettings?.numThread || numThread,
-    useMlock: modelSettings?.useMLock || useMlock,
-    thinking: currentChatModelSettings?.thinking || modelSettings?.thinking
+    useMlock: modelSettings?.useMLock || useMlock
   }
 
   // Default to tldw_server chat model

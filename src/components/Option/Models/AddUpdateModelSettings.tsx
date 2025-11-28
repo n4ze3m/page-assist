@@ -32,10 +32,7 @@ export const AddUpdateModelSettings: React.FC<Props> = ({
     queryKey: ["fetchModelSettings", model_id],
     queryFn: async () => {
       const data = await getModelSettings(model_id)
-      form.setFieldsValue({
-        ...data,
-        thinking: data?.thinking || false
-      })
+      form.setFieldsValue(data)
       return data
     },
     staleTime: 0
@@ -110,12 +107,6 @@ export const AddUpdateModelSettings: React.FC<Props> = ({
               style={{ width: "100%" }}
               placeholder={t("modelSettings.form.numPredict.placeholder")}
             />
-          </Form.Item>
-
-          <Form.Item
-            name="thinking"
-            label={t("modelSettings.form.thinking.label")}>
-            <Switch />
           </Form.Item>
 
           <Collapse
