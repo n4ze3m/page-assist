@@ -208,8 +208,8 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
       // Convert local files to transferable payloads (ArrayBuffer)
       const filesPayload = await Promise.all(
         localFiles.map(async (f) => {
-          // Use a typed array to avoid any serialization quirks when passing to the background worker
-          const data = new Uint8Array(await f.arrayBuffer())
+          // Use a plain array so runtime message cloning (MV3 SW) preserves bytes
+          const data = Array.from(new Uint8Array(await f.arrayBuffer()))
           return {
             id: crypto.randomUUID(),
             name: f.name,
