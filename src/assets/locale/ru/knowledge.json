@@ -31,7 +31,7 @@
     "uploadFile": {
       "label": "Загрузить файл",
       "uploadText": "Перетащите файл сюда или нажмите, чтобы загрузить",
-      "uploadHint": "Поддерживаемые типы файлов: .pdf, .csv, .txt, .md,.docx",
+      "uploadHint": "Поддерживаемые типы файлов: .pdf, .csv, .txt, .md, .docx",
       "required": "Файл обязателен"
     },
     "submit": "Отправить",

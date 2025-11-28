@@ -31,7 +31,7 @@
     "uploadFile": {
       "label": "ファイルをアップロード",
       "uploadText": "ファイルをここにドラッグアンドドロップするか、クリックしてアップロード",
-      "uploadHint": "サポートされているファイルタイプ: .pdf、.csv、.txt",
+      "uploadHint": "サポートされているファイルタイプ: .pdf、.csv、.txt、.md、.docx",
       "required": "ファイルは必須です"
     },
     "submit": "送信",

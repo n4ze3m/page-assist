@@ -31,7 +31,7 @@
     "uploadFile": {
       "label": "파일 업로드",
       "uploadText": "파일을 여기에 드래그 앤 드롭하거나 클릭하여 업로드하세요",
-      "uploadHint": "지원되는 파일 형식: .pdf, .csv, .txt",
+      "uploadHint": "지원되는 파일 형식: .pdf, .csv, .txt, .md, .docx",
       "required": "파일은 필수 항목입니다"
     },
     "submit": "제출",
