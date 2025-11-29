@@ -114,6 +114,9 @@
     },
     "system": {
       "heading": "Paramètres système",
+      "storageSyncEnabled": {
+        "label": "Activer la synchronisation du stockage du navigateur (synchroniser les paramètres entre les appareils)"
+      },
       "deleteChatHistory": {
         "label": "Réinitialisation du système",
         "button": "Tout réinitialiser",

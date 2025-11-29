@@ -114,6 +114,9 @@
     },
     "system": {
       "heading": "システム設定",
+      "storageSyncEnabled": {
+        "label": "ブラウザストレージ同期を有効にする（デバイス間で設定を同期）"
+      },
       "deleteChatHistory": {
         "label": "システムリセット",
         "button": "すべてリセット",

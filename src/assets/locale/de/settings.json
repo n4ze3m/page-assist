@@ -101,6 +101,9 @@
     },
     "system": {
       "heading": "Systemeinstellungen",
+      "storageSyncEnabled": {
+        "label": "Browser-Speichersynchronisierung aktivieren (Einstellungen geräteübergreifend synchronisieren)"
+      },
       "deleteChatHistory": {
         "label": "System zurücksetzen",
         "button": "Alles zurücksetzen",
