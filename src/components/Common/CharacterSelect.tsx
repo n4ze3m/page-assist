@@ -26,7 +26,7 @@ export const CharacterSelect: React.FC<Props> = ({
   const previousCharacterId = React.useRef<string | null>(null)
   const initialized = React.useRef(false)
 
-  const { data } = useQuery({
+  const { data, refetch, isFetching } = useQuery({
     queryKey: ["tldw:listCharacters"],
     queryFn: async () => {
       try {
@@ -36,7 +36,12 @@ export const CharacterSelect: React.FC<Props> = ({
       } catch {
         return []
       }
-    }
+    },
+    // Cache characters so we don't refetch on every open.
+    staleTime: 1000 * 60 * 10,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    refetchOnMount: false
   })
 
   const [menuDensity] = useStorage("menuDensity", "comfortable")
@@ -67,34 +72,100 @@ export const CharacterSelect: React.FC<Props> = ({
     previousCharacterId.current = selectedCharacter?.id ?? null
   }, [notification, selectedCharacter?.id, selectedCharacter?.name, t])
 
-  const items = (data || []).map((c: any) => ({
-    key: c.id || c.slug || c.name,
+  const items =
+    (data || []).map((c: any) => ({
+      key: c.id || c.slug || c.name,
+      label: (
+        <div className="w-56 gap-2 text-sm truncate inline-flex items-center leading-5 dark:border-gray-700">
+          {c.avatar_url || c.image_base64 ? (
+            <img
+              src={
+                c.avatar_url ||
+                (c.image_base64
+                  ? `data:image/png;base64,${c.image_base64}`
+                  : "")
+              }
+              className="w-4 h-4 rounded-full"
+            />
+          ) : (
+            <UserCircle2 className="w-4 h-4" />
+          )}
+          <span className="truncate">{c.name || c.title || c.slug}</span>
+        </div>
+      ),
+      onClick: () => {
+        setSelectedCharacter({
+          id: c.id || c.slug || c.name,
+          name: c.name || c.title || c.slug,
+          system_prompt:
+            c.system_prompt || c.systemPrompt || c.instructions || "",
+          greeting: c.greeting || c.first_message || c.greet || "",
+          avatar_url:
+            c.avatar_url ||
+            (c.image_base64
+              ? `data:image/png;base64,${c.image_base64}`
+              : "")
+        })
+      }
+    })) || []
+
+  const clearItem =
+    selectedCharacter && (items.length > 0 || data?.length === 0)
+      ? {
+          key: "__clear__",
+          label: (
+            <button
+              type="button"
+              className="w-full text-left text-xs font-medium text-gray-700 hover:text-gray-900 dark:text-gray-200 dark:hover:text-gray-50"
+            >
+              {t(
+                "option:characters.clearCharacter",
+                "Clear character"
+              ) as string}
+            </button>
+          ),
+          onClick: () => {
+            setSelectedCharacter(null)
+          }
+        }
+      : null
+
+  const refreshItem = {
+    key: "__refresh__",
     label: (
-      <div className="w-56 gap-2 text-sm truncate inline-flex items-center leading-5 dark:border-gray-700">
-        {c.avatar_url || c.image_base64 ? (
-          <img src={(c.avatar_url) || (c.image_base64 ? `data:image/png;base64,${c.image_base64}` : '')} className="w-4 h-4 rounded-full" />
-        ) : (
-          <UserCircle2 className="w-4 h-4" />
-        )}
-        <span className="truncate">{c.name || c.title || c.slug}</span>
-      </div>
+      <button
+        type="button"
+        className="w-full text-left text-xs font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+      >
+        {isFetching
+          ? t("option:characters.refreshing", "Refreshing characters…")
+          : t("option:characters.refresh", "Refresh characters")}
+      </button>
     ),
     onClick: () => {
-      setSelectedCharacter({
-        id: c.id || c.slug || c.name,
-        name: c.name || c.title || c.slug,
-        system_prompt: c.system_prompt || c.systemPrompt || c.instructions || "",
-        greeting: c.greeting || c.first_message || c.greet || "",
-        avatar_url: c.avatar_url || (c.image_base64 ? `data:image/png;base64,${c.image_base64}` : '')
-      })
+      refetch({ cancelRefetch: true })
     }
-  }))
+  } as const
+
+  const menuItems: any[] = []
+
+  if (items.length > 0) {
+    menuItems.push(...items)
+  } else {
+    menuItems.push({ key: "empty", label: <Empty /> })
+  }
+
+  if (clearItem) {
+    menuItems.push({ type: "divider", key: "__divider_clear__" } as any, clearItem)
+  }
+
+  menuItems.push({ type: "divider", key: "__divider_refresh__" } as any, refreshItem)
 
   return (
     <div className="flex items-center gap-2">
       <Dropdown
         menu={{
-          items: items.length > 0 ? items : [{ key: "empty", label: <Empty /> }],
+          items: menuItems,
           activeKey: selectedCharacter?.id,
           style: { maxHeight: 500, overflowY: "auto" },
           className: `no-scrollbar ${menuDensity === 'compact' ? 'menu-density-compact' : 'menu-density-comfortable'}`

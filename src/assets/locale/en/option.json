@@ -286,7 +286,10 @@
   },
   "characters": {
     "selectCharacter": "Select character",
-    "chattingAs": "You're now chatting as {{name}}."
+    "chattingAs": "You're now chatting as {{name}}.",
+    "clearCharacter": "Clear character",
+    "refresh": "Refresh characters",
+    "refreshing": "Refreshing characters…"
   },
   "promptInsert": {
     "useInChat": "Use in chat",
