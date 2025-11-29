@@ -17,7 +17,7 @@
     "buttonChangeServer": "Change server",
     "buttonOpenDiagnostics": "Open diagnostics",
     "buttonViewDiagnostics": "View diagnostics",
-    "buttonOpenQuickIngest": "Open Quick Ingest",
+    "buttonOpenQuickIngest": "打开快速导入",
     "buttonTryDemo": "Try a demo"
   },
   "header": {

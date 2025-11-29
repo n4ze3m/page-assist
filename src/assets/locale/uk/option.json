@@ -17,7 +17,7 @@
     "buttonChangeServer": "Change server",
     "buttonOpenDiagnostics": "Open diagnostics",
     "buttonViewDiagnostics": "View diagnostics",
-    "buttonOpenQuickIngest": "Open Quick Ingest",
+    "buttonOpenQuickIngest": "Відкрити швидке імпортування",
     "buttonTryDemo": "Try a demo"
   },
   "header": {
