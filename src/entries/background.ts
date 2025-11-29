@@ -952,21 +952,31 @@ export default defineBackground({
           notify(browser.i18n.getMessage("contextSaveToNotes"), browser.i18n.getMessage("contextSaveToNotesNoSelection"))
           return
         }
-        chrome.sidePanel.open({
-          tabId: tab.id!
-        })
+        const title = browser.i18n.getMessage("contextSaveToNotes") || "Save to Notes"
+        const openingMessage =
+          browser.i18n.getMessage("contextSaveToNotesOpeningSidebar") ||
+          "Opening sidebar to save note…"
+        notify(title, openingMessage)
+          ensureSidepanelOpen(tab.id!)
         setTimeout(
           async () => {
-            await browser.runtime.sendMessage({
-              from: "background",
-              type: "save-to-notes",
-              text: selection,
-              payload: {
-                selectionText: selection,
-                pageUrl: info.pageUrl || (tab && tab.url) || "",
-                pageTitle: tab?.title || ""
-              }
-            })
+            try {
+              await browser.runtime.sendMessage({
+                from: "background",
+                type: "save-to-notes",
+                text: selection,
+                payload: {
+                  selectionText: selection,
+                  pageUrl: info.pageUrl || (tab && tab.url) || "",
+                  pageTitle: tab?.title || ""
+                }
+              })
+            } catch (e: any) {
+              const failureMessage =
+                browser.i18n.getMessage("contextSaveToNotesDeliveryFailed") ||
+                "Could not open the sidebar to save this note. Check that the tldw Assistant sidepanel is allowed on this site and try again."
+              notify(title, failureMessage)
+            }
           },
           isCopilotRunning ? 0 : 5000
         )

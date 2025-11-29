@@ -38,6 +38,9 @@
   "contextSaveToNotesOpeningSidebar": {
     "message": "正在打开侧边栏以保存笔记..."
   },
+  "contextSaveToNotesDeliveryFailed": {
+    "message": "Could not open the sidebar to save this note. Check that the tldw Assistant sidebar is allowed on this site and try again."
+  },
   "openOptionToChat": {
     "message": "打开 Web 界面进行聊天"
   },

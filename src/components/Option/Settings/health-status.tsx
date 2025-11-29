@@ -41,17 +41,41 @@ export default function HealthStatus() {
   const [lastUpdatedAt, setLastUpdatedAt] = useState<number | null>(null)
   const [secondsSinceUpdate, setSecondsSinceUpdate] = useState<number | null>(null)
   const navigate = useNavigate()
+  const MIN_INTERVAL_SEC = 5
+  const SAFE_FLOOR_SEC = 15
 
   const runSingle = async (c: Check): Promise<boolean> => {
     const t0 = performance.now()
     try {
       const resp = await apiSend({ path: c.path, method: 'GET' })
       const t1 = performance.now()
-      setResults(prev => ({ ...prev, [c.key]: { status: resp?.ok ? 'healthy' : 'unhealthy', detail: resp?.data, statusCode: resp?.status, durationMs: Math.round(t1 - t0) } }))
+      const statusCode =
+        typeof resp?.status === 'number' && !Number.isNaN(resp.status)
+          ? resp.status
+          : undefined
+      const detail = resp?.ok ? resp?.data : resp?.error || resp?.data
+      setResults((prev) => ({
+        ...prev,
+        [c.key]: {
+          status: resp?.ok ? 'healthy' : 'unhealthy',
+          detail,
+          statusCode,
+          durationMs: Math.round(t1 - t0)
+        }
+      }))
       return !!resp?.ok
     } catch (e) {
       const t1 = performance.now()
-      setResults(prev => ({ ...prev, [c.key]: { status: 'unhealthy', durationMs: Math.round(t1 - t0) } }))
+      const message = (e as any)?.message || 'Network error'
+      setResults((prev) => ({
+        ...prev,
+        [c.key]: {
+          status: 'unhealthy',
+          detail: message,
+          statusCode: 0,
+          durationMs: Math.round(t1 - t0)
+        }
+      }))
       return false
     }
   }
@@ -138,7 +162,9 @@ export default function HealthStatus() {
 
   useEffect(() => {
     if (!autoRefresh) return
-    const id = setInterval(() => { runChecks() }, Math.max(5, intervalSec) * 1000)
+    const id = setInterval(() => {
+      void runChecks()
+    }, Math.max(MIN_INTERVAL_SEC, intervalSec) * 1000)
     return () => clearInterval(id)
   }, [autoRefresh, intervalSec])
 
@@ -156,6 +182,14 @@ export default function HealthStatus() {
     return () => clearInterval(id)
   }, [lastUpdatedAt])
 
+  const intervalSecClamped = Math.max(MIN_INTERVAL_SEC, intervalSec)
+  const secondsUntilNext =
+    autoRefresh && secondsSinceUpdate != null
+      ? Math.max(0, intervalSecClamped - secondsSinceUpdate)
+      : null
+  const showIntervalWarning =
+    autoRefresh && intervalSecClamped < SAFE_FLOOR_SEC
+
   const describeStatus = (status: Result['status']): string => {
     if (status === 'healthy') {
       return t('healthPage.statusHealthy', 'Healthy')
@@ -170,8 +204,18 @@ export default function HealthStatus() {
     <Space direction="vertical" size="large" className="w-full">
       <div className="flex items-center justify-between">
         <div>
-          <Typography.Title level={4} className="!mb-0">{t('healthPage.title', 'Health Status')}</Typography.Title>
-          <Typography.Paragraph type="secondary" className="!mb-0">{t('healthPage.subtitle', 'Quick overview of subsystem health endpoints exposed by the server.')}</Typography.Paragraph>
+          <Typography.Title level={4} className="!mb-0">
+            {t(
+              "healthPage.title",
+              "Health & diagnostics"
+            )}
+          </Typography.Title>
+          <Typography.Paragraph type="secondary" className="!mb-0">
+            {t(
+              "healthPage.subtitle",
+              "Quick overview of subsystem health endpoints exposed by the server."
+            )}
+          </Typography.Paragraph>
         </div>
         <Space>
           <Button
@@ -226,13 +270,37 @@ export default function HealthStatus() {
         </label>
         <label className="text-sm flex items-center gap-2">
           {t('healthPage.intervalLabel', 'Interval (s):')}
-          <input type="number" min={5} className="w-20 px-2 py-1 rounded border dark:bg-[#262626]" value={intervalSec} onChange={(e) => setIntervalSec(parseInt(e.target.value || '30'))} />
+          <input
+            type="number"
+            min={MIN_INTERVAL_SEC}
+            className="w-20 px-2 py-1 rounded border dark:bg-[#262626]"
+            value={intervalSec}
+            onChange={(e) =>
+              setIntervalSec(parseInt(e.target.value || '30'))
+            }
+          />
         </label>
         {secondsSinceUpdate != null && (
           <span className="text-xs text-gray-500 dark:text-gray-400">
             {secondsSinceUpdate <= 5
               ? t('healthPage.updatedJustNow', 'Updated just now')
               : t('healthPage.updatedSecondsAgo', 'Updated {{seconds}}s ago', { seconds: secondsSinceUpdate })}
+          </span>
+        )}
+        {autoRefresh && secondsUntilNext != null && (
+          <span className="text-xs text-gray-500 dark:text-gray-400">
+            {t('healthPage.nextRefreshIn', 'Next auto-refresh in {{seconds}}s', {
+              seconds: secondsUntilNext
+            })}
+          </span>
+        )}
+        {showIntervalWarning && (
+          <span className="text-xs text-amber-600 dark:text-amber-400">
+            {t(
+              'healthPage.intervalWarning',
+              'Short intervals can put load on your server. Consider using at least {{seconds}}s.',
+              { seconds: SAFE_FLOOR_SEC }
+            )}
           </span>
         )}
       </div>
@@ -262,16 +330,50 @@ export default function HealthStatus() {
                   )}
                   <Typography.Text type="secondary">{c.path}</Typography.Text>
                   {typeof r.statusCode !== 'undefined' && (
-                    <Tag>HTTP {r.statusCode}</Tag>
+                    <Tag>
+                      {r.statusCode && r.statusCode > 0
+                        ? t('healthPage.statusCodeTag', 'HTTP {{code}}', {
+                            code: r.statusCode
+                          })
+                        : t('healthPage.statusCodeNetwork', 'Network/timeout')}
+                    </Tag>
                   )}
                   {typeof r.durationMs !== 'undefined' && (
                     <Tag>{r.durationMs} ms</Tag>
                   )}
                 </Space>
                 {r.detail && (
-                  <pre className="mt-3 p-2 bg-gray-50 dark:bg-[#262626] rounded text-xs overflow-auto max-h-40">
-                    {JSON.stringify(r.detail, null, 2)}
-                  </pre>
+                  <>
+                    <div className="mt-3 flex items-center justify-between">
+                      <Typography.Text
+                        type="secondary"
+                        className="text-xs">
+                        {t('healthPage.errorDetailsLabel', 'Details')}
+                      </Typography.Text>
+                      <Button
+                        size="small"
+                        type="link"
+                        onClick={() => {
+                          try {
+                            const payload = {
+                              check: c.key,
+                              path: c.path,
+                              status: r.status,
+                              statusCode: r.statusCode,
+                              durationMs: r.durationMs,
+                              detail: r.detail
+                            }
+                            const text = JSON.stringify(payload, null, 2)
+                            void navigator.clipboard.writeText(text)
+                          } catch {}
+                        }}>
+                        {t('healthPage.copyError', 'Copy error')}
+                      </Button>
+                    </div>
+                    <pre className="mt-1 p-2 bg-gray-50 dark:bg-[#262626] rounded text-xs overflow-auto max-h-40">
+                      {JSON.stringify(r.detail, null, 2)}
+                    </pre>
+                  </>
                 )}
               </Card>
             )

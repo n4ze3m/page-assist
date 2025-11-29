@@ -34,7 +34,11 @@ test.describe('Options first-run and connection panel', () => {
 
     // Expect deterministic error card copy
     await expect(page.getByText(/Can.?t reach your tldw server/i)).toBeVisible()
-    await expect(page.getByRole('button', { name: /Open tldw server settings/i })).toBeVisible()
+    await expect(
+      page.getByRole('button', {
+        name: /Troubleshoot connection|Retry connection/i
+      })
+    ).toBeVisible()
     await expect(page.getByRole('button', { name: /Change server/i })).toBeVisible()
 
     // Inline link button: "Set up server" should navigate to Settings → tldw

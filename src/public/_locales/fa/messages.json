@@ -41,6 +41,9 @@
   "contextSaveToNotesOpeningSidebar": {
     "message": "در حال باز کردن نوار کناری برای ذخیره یادداشت..."
   },
+  "contextSaveToNotesDeliveryFailed": {
+    "message": "Could not open the sidebar to save this note. Check that the tldw Assistant sidebar is allowed on this site and try again."
+  },
   "contextTranscribeMedia": {
     "message": "رونویسی ویدیو/صدا"
   },

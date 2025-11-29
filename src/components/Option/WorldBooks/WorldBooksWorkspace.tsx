@@ -91,7 +91,7 @@ export const WorldBooksWorkspace: React.FC = () => {
           })
         ]}
         primaryActionLabel={t("settings:healthSummary.diagnostics", {
-          defaultValue: "Open Diagnostics"
+          defaultValue: "Health & diagnostics"
         })}
         onPrimaryAction={() => navigate("/settings/health")}
       />

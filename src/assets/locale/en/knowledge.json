@@ -54,7 +54,7 @@
     "openChatCta": "Open Chat with RAG",
     "openRagSettings": "RAG settings",
     "ragUnsupportedTitle": "RAG search is not available on this server",
-    "ragUnsupportedDescription": "This tldw server does not advertise the RAG endpoints. Open Diagnostics to inspect available APIs or upgrade your server.",
+    "ragUnsupportedDescription": "This tldw server does not advertise the RAG endpoints. Open Diagnostics to see which APIs are available, then upgrade or reconfigure your server to enable RAG search.",
     "searchTitle": "Quick RAG search",
     "searchPlaceholder": "Search across configured RAG sources",
     "searchButton": "Search",

@@ -126,11 +126,11 @@ export default function HealthSummary() {
           aria-expanded={open}
           aria-controls={diagnosticsPanelId}
         >
-          {t('healthSummary.diagnostics', 'Diagnostics')}
+          {t('healthSummary.diagnostics', 'Health & diagnostics')}
         </Button>
       </Tooltip>
       <Drawer
-        title={t("healthSummary.diagnostics", "Diagnostics")}
+        title={t("healthSummary.diagnostics", "Health & diagnostics")}
         placement="right"
         width={360}
         onClose={() => setOpen(false)}

@@ -65,7 +65,8 @@ export const TldwSettings = () => {
   const [testingConnection, setTestingConnection] = useState(false)
   const [connectionStatus, setConnectionStatus] = useState<'success' | 'error' | null>(null)
   const [connectionDetail, setConnectionDetail] = useState<string>("")
-  const [ragStatus, setRagStatus] = useState<'healthy' | 'unhealthy' | 'unknown'>("unknown")
+  const [coreStatus, setCoreStatus] = useState<'unknown' | 'checking' | 'connected' | 'failed'>("unknown")
+  const [ragStatus, setRagStatus] = useState<'healthy' | 'unhealthy' | 'unknown' | 'checking'>("unknown")
   const [authMode, setAuthMode] = useState<'single-user' | 'multi-user'>('single-user')
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [serverUrl, setServerUrl] = useState("")
@@ -231,6 +232,8 @@ export const TldwSettings = () => {
     setTestingConnection(true)
     setConnectionStatus(null)
     setConnectionDetail("")
+    setCoreStatus("checking")
+    setRagStatus("unknown")
     
     try {
       const values = form.getFieldsValue()
@@ -246,8 +249,9 @@ export const TldwSettings = () => {
           body: { model: '__validation__', messages: [{ role: 'user', content: 'ping' }], stream: false },
           noAuth: true
         })
-        // Treat any non-401 as valid auth; 401/403 invalid/forbidden
-        success = resp?.status !== 401 && resp?.status !== 403
+        // Treat a positive response as valid auth; 401/403 mean invalid/forbidden.
+        success = !!resp?.ok && resp?.status !== 401 && resp?.status !== 403
+        setCoreStatus(success ? "connected" : "failed")
         if (!success) {
           const code = resp?.status
           const hint = code === 401
@@ -264,12 +268,21 @@ export const TldwSettings = () => {
           method: 'GET'
         })
         success = !!resp?.ok
-        if (!success) setConnectionDetail(`${t('settings:tldw.errors.serverUnreachable', 'Server unreachable')}${resp?.status ? ` — HTTP ${resp.status}` : ''}`)
+        setCoreStatus(success ? "connected" : "failed")
+        if (!success) {
+          const base = t('settings:tldw.errors.serverUnreachable', 'Server unreachable')
+          const detail = resp?.error || ''
+          const code = resp?.status
+          const suffix = code ? ` — HTTP ${code}` : ''
+          const extra = detail ? ` (${detail})` : ''
+          setConnectionDetail(`${base}${suffix}${extra}`)
+        }
       }
 
       setConnectionStatus(success ? 'success' : 'error')
       // Probe RAG health after core connection test when server URL is present
       try {
+        setRagStatus("checking")
         await tldwClient.initialize()
         const rag = await tldwClient.ragHealth()
         setRagStatus('healthy')
@@ -302,9 +315,20 @@ export const TldwSettings = () => {
       }
     } catch (error) {
       setConnectionStatus('error')
-      const detail = (error as any)?.message || t('settings:tldw.connection.failedDetailed', 'Connection failed. Please check your server URL and API key.')
-      setConnectionDetail(detail)
-      message.error(detail)
+      setCoreStatus("failed")
+      const raw = (error as any)?.message || ''
+      const friendly =
+        raw && /network|timeout|failed to fetch/i.test(raw)
+          ? t(
+              'settings:tldw.errors.serverUnreachableDetailed',
+              'Server not reachable. Check that your tldw_server is running and that your browser can reach it, then try again.'
+            )
+          : raw || t(
+              'settings:tldw.connection.failedDetailed',
+              'Connection failed. Please check your server URL and API key.'
+            )
+      setConnectionDetail(friendly)
+      message.error(friendly)
       console.error('Connection test failed:', error)
     } finally {
       setTestingConnection(false)
@@ -590,26 +614,100 @@ export const TldwSettings = () => {
               )}
             </Space>
 
-            {connectionStatus && (
-              <span className={`text-sm ${connectionStatus === 'success' ? 'text-green-500' : 'text-red-500'}`}>
-                {connectionStatus === 'success' ? t('settings:tldw.connection.success', 'Connection successful!') : t('settings:tldw.connection.failed', 'Connection failed. Please check your settings.')}
-              </span>
-            )}
-            {connectionDetail && connectionStatus !== 'success' && (
-              <span className="text-xs text-gray-500">{connectionDetail}</span>
-            )}
-            {connectionStatus === 'success' && (
-              <div className="ml-4">
-                <span className="text-sm mr-2">{t('settings:onboarding.rag.label', 'RAG:')}</span>
-                {ragStatus === 'healthy' ? (
-                  <Tag color="green">{t('settings:healthPage.healthy', 'Healthy')}</Tag>
-                ) : ragStatus === 'unhealthy' ? (
-                  <Tag color="red">{t('settings:healthPage.unhealthy', 'Unhealthy')}</Tag>
-                ) : (
-                  <Tag>{t('settings:healthPage.unknown', 'Unknown')}</Tag>
-                )}
+            <div className="flex flex-col items-start gap-1 ml-4">
+              {testingConnection && (
+                <span className="text-xs text-gray-500">
+                  {t(
+                    "settings:tldw.connection.checking",
+                    "Checking connection and RAG health…"
+                  )}
+                </span>
+              )}
+              {connectionStatus && !testingConnection && (
+                <span
+                  className={`text-sm ${
+                    connectionStatus === "success"
+                      ? "text-green-500"
+                      : "text-red-500"
+                  }`}>
+                  {connectionStatus === "success"
+                    ? t(
+                        "settings:tldw.connection.success",
+                        "Connection successful!"
+                      )
+                    : t(
+                        "settings:tldw.connection.failed",
+                        "Connection failed. Please check your settings."
+                      )}
+                </span>
+              )}
+              {connectionDetail && connectionStatus !== "success" && (
+                <span className="text-xs text-gray-500">
+                  {connectionDetail}
+                </span>
+              )}
+              <div className="flex flex-wrap items-center gap-2 text-xs text-gray-600 dark:text-gray-300">
+                <span className="font-medium">
+                  {t("settings:tldw.connection.checksLabel", "Checks")}
+                </span>
+                <Tag
+                  color={
+                    coreStatus === "connected"
+                      ? "green"
+                      : coreStatus === "failed"
+                        ? "red"
+                        : "default"
+                  }>
+                  {coreStatus === "checking"
+                    ? t(
+                        "settings:tldw.connection.coreChecking",
+                        "Core: checking…"
+                      )
+                    : coreStatus === "connected"
+                      ? t(
+                          "settings:tldw.connection.coreOk",
+                          "Core: reachable"
+                        )
+                      : coreStatus === "failed"
+                        ? t(
+                            "settings:tldw.connection.coreFailed",
+                            "Core: unreachable"
+                          )
+                        : t(
+                            "settings:tldw.connection.coreUnknown",
+                            "Core: waiting"
+                          )}
+                </Tag>
+                <Tag
+                  color={
+                    ragStatus === "healthy"
+                      ? "green"
+                      : ragStatus === "unhealthy"
+                        ? "red"
+                        : "default"
+                  }>
+                  {ragStatus === "checking"
+                    ? t(
+                        "settings:tldw.connection.ragChecking",
+                        "RAG: checking…"
+                      )
+                    : ragStatus === "healthy"
+                      ? t(
+                          "settings:tldw.connection.ragHealthy",
+                          "RAG: healthy"
+                        )
+                      : ragStatus === "unhealthy"
+                        ? t(
+                            "settings:tldw.connection.ragUnhealthy",
+                            "RAG: needs attention"
+                          )
+                        : t(
+                            "settings:tldw.connection.ragUnknown",
+                            "RAG: waiting"
+                          )}
+                </Tag>
               </div>
-            )}
+            </div>
           </Space>
           <Collapse
             className="mt-4"

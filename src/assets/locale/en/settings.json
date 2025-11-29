@@ -748,7 +748,7 @@
     "openSettings": "Open tldw Settings",
     "recheckAll": "Recheck All",
     "copyDiagnostics": "Copy diagnostics",
-    "copyDiagnosticsHelp": "Copies JSON diagnostics to clipboard",
+    "copyDiagnosticsHelp": "Copies JSON diagnostics (server URL, status codes, and anonymized environment info) to your clipboard. API keys and message content are not included.",
     "serverNotConfigured": "Server is not configured.",
     "unableToReachCore": "Unable to reach server core health endpoint.",
     "triedGet": "Tried GET {{url}}",
@@ -778,7 +778,7 @@
     }
   },
   "healthSummary": {
-    "diagnostics": "Diagnostics",
+    "diagnostics": "Health & diagnostics",
     "diagnosticsTooltip": "Open detailed diagnostics to troubleshoot or inspect health checks.",
     "core": "Server",
     "rag": "Knowledge",
@@ -803,7 +803,7 @@
   "siteAccessGranted": "Host permission granted for {{origin}}",
   "onboarding": {
     "title": "Welcome — Let’s get you connected",
-    "description": "Configure your server and authentication. We’ll verify the connection and RAG health inline.",
+    "description": "Connect this extension to your tldw server (a separate app running on your machine or server). We’ll walk through adding the URL, API key, and checking that everything is reachable.",
     "serverUrl": {
       "label": "Server URL",
       "placeholder": "http://127.0.0.1:8000",
@@ -847,7 +847,7 @@
       "unknown": "Unknown",
       "connected": "Connected",
       "failed": "Failed",
-      "continueAnyway": "You can continue and complete setup now. You’ll be able to verify the connection later from Settings."
+      "continueAnyway": "You can finish setup now, but some features may not work until we can reach your tldw server. You can recheck the connection anytime from Settings → tldw server."
     },
     "rag": {
       "label": "RAG:",

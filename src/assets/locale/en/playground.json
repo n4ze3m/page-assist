@@ -142,8 +142,8 @@
     "contextManager": "Context Management",
     "contextManagerTitle": "Context Management",
     "persistence": {
-      "ephemeral": "Not saved in history; clears when you close this tab.",
-      "local": "Saved in this browser only.",
+      "ephemeral": "Temporary chat: not saved in history and cleared when you close this window.",
+      "local": "Saved locally in this browser only (not synced to your tldw server).",
       "server": "Saved Locally+Server",
       "saveToServer": "Also save this chat to server",
       "serverDefaultTitle": "Extension chat",

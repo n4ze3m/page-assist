@@ -1243,7 +1243,10 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                             onClick={openDiagnostics}
                             className="text-xs font-medium text-amber-900 underline hover:text-amber-700 dark:text-amber-100 dark:hover:text-amber-300"
                           >
-                            {t("settings:healthSummary.diagnostics", "Diagnostics")}
+                            {t(
+                              "settings:healthSummary.diagnostics",
+                              "Health & diagnostics"
+                            )}
                           </button>
                           <button
                             type="button"
@@ -1305,7 +1308,10 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                             onClick={openDiagnostics}
                             className="text-xs font-medium text-green-900 underline hover:text-green-700 dark:text-green-100 dark:hover:text-green-300"
                           >
-                            {t("settings:healthSummary.diagnostics", "Diagnostics")}
+                            {t(
+                              "settings:healthSummary.diagnostics",
+                              "Health & diagnostics"
+                            )}
                           </button>
                         </div>
                       </div>

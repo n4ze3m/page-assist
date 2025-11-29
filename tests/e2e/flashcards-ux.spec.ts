@@ -21,9 +21,14 @@ test.describe('Flashcards workspace UX', () => {
     await expect(headline).toBeVisible()
 
     const actionButton = page.getByRole('button', {
-      name: /Connect to server|Retry connection|Set up server/i
+      name: /Go to server card|Retry connection|Set up server/i
     })
     await expect(actionButton).toBeVisible()
+
+    // Clicking the workspace CTA should bring the server connection card into view.
+    await actionButton.click()
+    const card = page.locator('#server-connection-card')
+    await expect(card).toBeVisible()
 
     await context.close()
   })

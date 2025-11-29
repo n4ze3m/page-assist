@@ -79,10 +79,11 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
   React.useEffect(() => {
     const trimmed = serverUrl.trim()
 
-    // Run reachability checks whenever a valid URL is present,
-    // even if the user hasn't focused/edited the field yet. This
-    // enables first-run auto advance when a default URL is prefilled.
-    if (!urlState.valid || !trimmed) {
+    // Run reachability checks only once the user has interacted with
+    // the field or a real config URL is present. This avoids treating
+    // the default http://127.0.0.1:8000 as "reachable" before a real
+    // response comes back.
+    if (!urlState.valid || !trimmed || !serverTouched) {
       setReachability('idle')
       if (reachabilityDebounceRef.current) {
         clearTimeout(reachabilityDebounceRef.current)
@@ -192,8 +193,19 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
       return { connected: !!ok, rag: 'healthy' }
     } catch (e: any) {
       setConnected(false)
-      const msg = e?.message || 'Connection failed. Please check your server URL and credentials.'
-      setErrorDetail(msg)
+      const raw = e?.message || ''
+      const friendly =
+        raw && /network|timeout|failed to fetch/i.test(raw)
+          ? t(
+              'settings:onboarding.errors.serverUnreachable',
+              'Server not reachable. Check that your tldw_server is running and that your browser can reach it, then try again.'
+            )
+          : raw ||
+            t(
+              'settings:onboarding.connectionFailedDetailed',
+              'Connection failed. Please check your server URL and credentials.'
+            )
+      setErrorDetail(friendly)
       return { connected: false, rag: 'unknown' }
     } finally {
       setTesting(false)
@@ -291,8 +303,14 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
 
       {step === 1 && (
         <div className="space-y-3">
-          <label className="block text-sm font-medium text-gray-800 dark:text-gray-100">{t('settings:onboarding.serverUrl.label')}</label>
+          <label
+            htmlFor="onboarding-server-url"
+            className="block text-sm font-medium text-gray-800 dark:text-gray-100"
+          >
+            {t('settings:onboarding.serverUrl.label')}
+          </label>
           <Input
+            id="onboarding-server-url"
             placeholder={t('settings:onboarding.serverUrl.placeholder')}
             value={serverUrl}
             onChange={(e) => {
@@ -362,9 +380,18 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-800 dark:text-gray-100">{t('settings:onboarding.password.label')}</label>
-                <Input.Password placeholder={t('settings:onboarding.password.placeholder')} value={password} onChange={(e) => setPassword(e.target.value)} />
+              <Input.Password placeholder={t('settings:onboarding.password.placeholder')} value={password} onChange={(e) => setPassword(e.target.value)} />
               </div>
             </div>
+          )}
+          {errorDetail && (
+            <Alert
+              className="mt-2"
+              type="error"
+              showIcon
+              message={t('settings:onboarding.connectionFailed')}
+              description={errorDetail}
+            />
           )}
           <div>
             <Checkbox

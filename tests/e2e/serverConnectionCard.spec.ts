@@ -50,6 +50,14 @@ test.describe('ServerConnectionCard states', () => {
     const extPath = path.resolve('.output/chrome-mv3')
     const { context, page } = await launchWithExtension(extPath)
 
+    // Unreachable URL (ensure any existing config is cleared first)
+    await page.evaluate(async () => {
+      await new Promise<void>((resolve) => {
+        // @ts-ignore
+        chrome.storage.local.clear(() => resolve())
+      })
+    })
+
     // Unreachable URL
     await page.evaluate((cfg) => new Promise<void>((resolve) => {
       // @ts-ignore
@@ -57,34 +65,97 @@ test.describe('ServerConnectionCard states', () => {
     }), { serverUrl: 'http://127.0.0.1:65535', authMode: 'single-user' })
 
     await page.reload()
-    await expect(page.getByRole('button', { name: /Retry/i })).toBeVisible()
-    await expect(page.getByText(/Troubleshooting guide/i)).toBeVisible()
+
+    // Primary CTA now focuses troubleshooting rather than a generic retry.
+    const primaryCta = page.getByRole('button', {
+      name: /Troubleshoot connection|Retry connection/i
+    })
+    await expect(primaryCta).toBeVisible()
+
+    // Advanced troubleshooting options are hidden behind a toggle by default.
+    const advancedToggle = page.getByRole('button', {
+      name: /More troubleshooting options/i
+    })
+    await expect(advancedToggle).toBeVisible()
+    await advancedToggle.click()
+
+    // Advanced panel exposes offline + Quick Ingest paths and docs.
+    await expect(
+      page.getByRole('button', { name: /Continue offline/i })
+    ).toBeVisible()
+    await expect(
+      page.getByRole('button', { name: /Open Quick Ingest intro/i })
+    ).toBeVisible()
+    await expect(
+      page.getByRole('button', { name: /Open Quick Ingest/i })
+    ).toBeVisible()
+    await expect(
+      page.getByRole('button', { name: /Help docs/i })
+    ).toBeVisible()
+    await expect(
+      page.getByRole('button', { name: /Health & diagnostics/i })
+    ).toBeVisible()
+
+    // Enabling offline mode should surface a clear hint about staging.
+    await page.getByRole('button', { name: /Continue offline/i }).click()
+    await expect(
+      page.getByText(/Quick Ingest works as a staging area/i)
+    ).toBeVisible()
+
+    // Offline mode badge is visible on the card.
+    await expect(
+      page.getByText(/Offline mode \u2014 staging only/i)
+    ).toBeVisible()
+
+    // Advanced panel now offers a reversible toggle.
+    const disableOffline = page.getByRole('button', {
+      name: /Disable offline mode/i
+    })
+    await expect(disableOffline).toBeVisible()
+    await disableOffline.click()
+
+    // Once disabled, we fall back to the regular error state.
+    await expect(
+      page.getByRole('button', { name: /Continue offline/i })
+    ).toBeVisible()
+
+    const offlineBadgeVisible = await page
+      .getByText(/Offline mode \u2014 staging only/i)
+      .isVisible()
+      .catch(() => false)
+    expect(offlineBadgeVisible).toBeFalsy()
 
     await context.close()
   })
 
-  test('diagnostics link from connection card opens Health Status in a new tab', async () => {
+  test('diagnostics link from connection card opens Health & diagnostics in a new tab', async () => {
     const extPath = path.resolve('.output/chrome-mv3')
     const { context, page } = await launchWithExtension(extPath)
 
     // First-run: connection card should be visible with diagnostics entry point
     await expect(
-      page.getByText(/Connect tldw Assistant to your server/i)
+      page.getByText(/Can.?t reach your tldw server|Connect tldw Assistant to your server/i)
     ).toBeVisible()
 
     const [healthPage] = await Promise.all([
       context.waitForEvent('page'),
-      page.getByRole('button', { name: /Open diagnostics|View diagnostics/i }).click()
+      page
+        .getByRole('button', {
+          name: /Health & diagnostics|Open diagnostics|View diagnostics/i
+        })
+        .click()
     ])
 
     await healthPage.waitForLoadState('domcontentloaded')
     await expect(healthPage).toHaveURL(/options\.html#\/settings\/health/i)
-    await expect(healthPage.getByText(/Health Status/i)).toBeVisible()
+    await expect(
+      healthPage.getByText(/Health & diagnostics|Health Status/i)
+    ).toBeVisible()
 
     await context.close()
   })
 
-  test('header status chips and Diagnostics link navigate to Health Status', async () => {
+  test('header status chips and Diagnostics link navigate to Health & diagnostics', async () => {
     const extPath = path.resolve('.output/chrome-mv3')
     const { context, page, extensionId } = (await launchWithExtension(extPath)) as any
     const optionsUrl = `chrome-extension://${extensionId}/options.html`
@@ -107,10 +178,10 @@ test.describe('ServerConnectionCard states', () => {
       .catch(() => false)
     expect(coreLabelVisible || ragLabelVisible).toBeFalsy()
 
-    // Server status pill opens Health Status
+    // Server status pill opens Health & diagnostics
     await page.getByRole('button', { name: /Server:/i }).click()
     await expect(page).toHaveURL(/options\.html#\/settings\/health/i)
-    await expect(page.getByText(/Health Status/i)).toBeVisible()
+    await expect(page.getByText(/Health & diagnostics/i)).toBeVisible()
 
     // Navigate back to a content route and verify Knowledge pill
     await page.goto(`${optionsUrl}#/media`)
@@ -119,7 +190,7 @@ test.describe('ServerConnectionCard states', () => {
 
     // Navigate back again and verify the header Diagnostics link
     await page.goto(`${optionsUrl}#/media`)
-    await page.getByRole('link', { name: /Diagnostics/i }).click()
+    await page.getByRole('link', { name: /Health & diagnostics/i }).click()
     await expect(page).toHaveURL(/options\.html#\/settings\/health/i)
 
     await context.close()

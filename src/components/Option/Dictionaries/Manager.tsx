@@ -96,7 +96,7 @@ export const DictionariesManager: React.FC = () => {
               "This tldw server does not advertise the /api/v1/chat/dictionaries endpoints. Upgrade your server to a version that includes chat dictionaries to use this workspace."
           })}
           primaryActionLabel={t("settings:healthSummary.diagnostics", {
-            defaultValue: "Open Diagnostics"
+            defaultValue: "Health & diagnostics"
           })}
           onPrimaryAction={() => {
             try {

@@ -499,16 +499,24 @@ export default defineBackground({
           )
         }
         setTimeout(async () => {
-          await browser.runtime.sendMessage({
-            from: "background",
-            type: "save-to-notes",
-            text: selection,
-            payload: {
-              selectionText: selection,
-              pageUrl: info.pageUrl || (tab && tab.url) || "",
-              pageTitle: tab?.title || ""
-            }
-          })
+          try {
+            await browser.runtime.sendMessage({
+              from: "background",
+              type: "save-to-notes",
+              text: selection,
+              payload: {
+                selectionText: selection,
+                pageUrl: info.pageUrl || (tab && tab.url) || "",
+                pageTitle: tab?.title || ""
+              }
+            })
+          } catch (e: any) {
+            notify(
+              browser.i18n.getMessage("contextSaveToNotes") || "Save to Notes",
+              browser.i18n.getMessage("contextSaveToNotesDeliveryFailed") ||
+                "Could not open the sidebar to save this note. Check that the tldw Assistant sidebar is allowed on this site and try again."
+            )
+          }
         }, isCopilotRunning ? 0 : 1000)
       } else if (info.menuItemId === 'send-to-tldw') {
         const pageUrl = info.pageUrl || (tab && tab.url) || ''

@@ -41,6 +41,9 @@
   "contextSaveToNotesOpeningSidebar": {
     "message": "Öppnar sidopanelen för att spara anteckningen..."
   },
+  "contextSaveToNotesDeliveryFailed": {
+    "message": "Could not open the sidebar to save this note. Check that the tldw Assistant sidebar is allowed on this site and try again."
+  },
   "contextTranscribeMedia": {
     "message": "Transkribera video/ljud"
   },

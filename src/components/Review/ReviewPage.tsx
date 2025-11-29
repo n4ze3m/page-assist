@@ -1017,6 +1017,20 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true, 
     { title: 'Sample media item 3', meta: 'PDF · 4 pages', status: 'Ready' }
   ]), [])
 
+  const scrollToServerCard = React.useCallback(() => {
+    try {
+      const el = document.getElementById("server-connection-card")
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "start" })
+        ;(el as HTMLElement).focus?.()
+        return
+      }
+    } catch {
+      // ignore and fall through
+    }
+    navigate("/settings/tldw")
+  }, [navigate])
+
   if (!isOnline) {
     const baseEmpty = demoEnabled ? (
       <FeatureEmptyState
@@ -1063,10 +1077,10 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true, 
                 })
               ]
         }
-        primaryActionLabel={t('common:connectToServer', {
-          defaultValue: 'Connect to server'
+        primaryActionLabel={t("option:connectionCard.buttonGoToServerCard", {
+          defaultValue: "Go to server card"
         })}
-        onPrimaryAction={() => navigate('/settings/tldw')}
+        onPrimaryAction={scrollToServerCard}
         secondaryActionLabel={t('option:header.quickIngest', 'Quick ingest')}
         onSecondaryAction={() =>
           window.dispatchEvent(new CustomEvent("tldw:open-quick-ingest"))
@@ -1088,11 +1102,11 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true, 
           isViewMediaMode
             ? t('review:mediaEmpty.connectDescription', {
               defaultValue:
-                'To view processed media, first connect to your tldw server so recordings and documents can be listed here.'
+                'This view needs a connected server. Use the server connection card above to fix your connection, then return here to browse your processed media.'
             })
             : t('review:empty.connectDescription', {
               defaultValue:
-                'To review media and notes, first connect to your tldw server.'
+                'This view needs a connected server. Use the server connection card above to fix your connection, then return here to review media and notes.'
             })
         }
         examples={
@@ -1100,28 +1114,20 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true, 
             ? [
                 t('review:mediaEmpty.connectExample1', {
                   defaultValue:
-                    'Open Settings → tldw server to add your server URL.'
-                }),
-                t('review:mediaEmpty.connectExample2', {
-                  defaultValue:
-                    'Once connected, use Quick ingest in the header to add media from your recordings and files.'
+                    'Use the connection card at the top of this page to add your server URL and API key.'
                 })
               ]
             : [
                 t('review:empty.connectExample1', {
                   defaultValue:
-                    'Open Settings → tldw server to add your server URL.'
-                }),
-                t('review:empty.connectExample2', {
-                  defaultValue:
-                    'Once connected, browse media and notes, then generate structured reviews and summaries.'
+                    'Use the connection card at the top of this page to add your server URL and API key.'
                 })
               ]
         }
-        primaryActionLabel={t('common:connectToServer', {
-          defaultValue: 'Connect to server'
+        primaryActionLabel={t("option:connectionCard.buttonGoToServerCard", {
+          defaultValue: "Go to server card"
         })}
-        onPrimaryAction={() => navigate('/settings/tldw')}
+        onPrimaryAction={scrollToServerCard}
         secondaryActionLabel={t('option:header.quickIngest', 'Quick ingest')}
         onSecondaryAction={() =>
           window.dispatchEvent(new CustomEvent("tldw:open-quick-ingest"))

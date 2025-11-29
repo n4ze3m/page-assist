@@ -5,7 +5,9 @@ export const useConnectionState = () => useConnectionStore((s) => s.state)
 export const useConnectionActions = () =>
   useConnectionStore((s) => ({
     checkOnce: s.checkOnce,
-    setServerUrl: s.setServerUrl
+    setServerUrl: s.setServerUrl,
+    enableOfflineBypass: s.enableOfflineBypass,
+    disableOfflineBypass: s.disableOfflineBypass
   }))
 
 export const useKnowledgeStatus = () =>
@@ -14,4 +16,3 @@ export const useKnowledgeStatus = () =>
     knowledgeLastCheckedAt: s.state.knowledgeLastCheckedAt,
     knowledgeError: s.state.knowledgeError
   }))
-

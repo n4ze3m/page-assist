@@ -87,11 +87,19 @@ test.describe('Review page UX', () => {
     await page.waitForLoadState('networkidle')
 
     // Offline/unauthenticated: show the inline connect prompt.
-    const headline = page.getByText(/Connect to use Media|Connect to use Review/i)
+    const headline = page.getByText(
+      /Connect to use Media|Connect to use Review/i
+    )
     await expect(headline).toBeVisible()
 
-    const connectCta = page.getByRole('button', { name: /Connect to server/i })
+    const connectCta = page.getByRole('button', {
+      name: /Go to server card/i
+    })
     await expect(connectCta).toBeVisible()
+
+    await connectCta.click()
+    const card = page.locator('#server-connection-card')
+    await expect(card).toBeVisible()
 
     await context.close()
   })

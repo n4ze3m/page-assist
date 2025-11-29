@@ -19,8 +19,10 @@ test.describe('Onboarding wizard', () => {
     // Wizard visible
     await expect(page.getByText(/Let’s get you connected/i)).toBeVisible()
 
-    // Step 1: server URL
-    await page.getByPlaceholder('http://localhost:8000').fill(server.url)
+    // Step 1: server URL – scroll wizard into view first
+    const urlInput = page.getByLabel(/Server URL/i)
+    await urlInput.scrollIntoViewIfNeeded()
+    await urlInput.fill(server.url)
     await page.getByRole('button', { name: /Next/i }).click()
 
     // Step 2: Single user + API key

@@ -589,7 +589,10 @@ export const Header: React.FC<Props> = ({
                   >
                     <Microscope className="h-4 w-4" aria-hidden="true" />
                     <span className="hidden sm:inline">
-                      {t("settings:healthSummary.diagnostics", "Diagnostics")}
+                      {t(
+                        "settings:healthSummary.diagnostics",
+                        "Health & diagnostics"
+                      )}
                     </span>
                   </button>
                 </>
@@ -883,7 +886,10 @@ export const Header: React.FC<Props> = ({
             <Link
               to="/settings/health"
               className="text-xs font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400">
-              {t("settings:healthSummary.diagnostics", "Diagnostics")}
+              {t(
+                "settings:healthSummary.diagnostics",
+                "Health & diagnostics"
+              )}
             </Link>
           </div>
 

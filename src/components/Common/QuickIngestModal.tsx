@@ -139,6 +139,8 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
   const introToast = React.useRef(false)
   const { isConnected, offlineBypass } = useConnectionState()
   const ingestBlocked = !isConnected || Boolean(offlineBypass)
+  const ingestBlockedPrevRef = React.useRef(ingestBlocked)
+  const hadOfflineQueuedRef = React.useRef(false)
 
   const formatBytes = React.useCallback((bytes?: number) => {
     if (!bytes || Number.isNaN(bytes)) return ''
@@ -304,9 +306,36 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
     })()
   }, [])
 
+  React.useEffect(() => {
+    if (ingestBlocked && stagedCount > 0) {
+      hadOfflineQueuedRef.current = true
+    }
+    if (ingestBlockedPrevRef.current && !ingestBlocked && stagedCount > 0) {
+      messageApi.info(
+        t(
+          "quickIngest.readyToast",
+          "Server back online — ready to process {{count}} queued items.",
+          { count: stagedCount }
+        )
+      )
+    }
+    if (!ingestBlocked && stagedCount === 0) {
+      hadOfflineQueuedRef.current = false
+    }
+    ingestBlockedPrevRef.current = ingestBlocked
+  }, [ingestBlocked, stagedCount, messageApi, t])
+
+  const showProcessQueuedButton =
+    !ingestBlocked && stagedCount > 0 && hadOfflineQueuedRef.current
+
   const run = async () => {
     if (ingestBlocked) {
-      messageApi.warning('Offline: uploads are paused until connection is restored.')
+      messageApi.warning(
+        t(
+          "quickIngest.offlineQueueToast",
+          "Offline mode: items are queued here until your server is back online."
+        )
+      )
       return
     }
     const valid = rows.filter((r) => r.url.trim().length > 0)
@@ -753,26 +782,61 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
     return valid.length + localFiles.length
   }, [rows, localFiles])
 
-  const firstAudioRow = React.useMemo(
-    () => rows.find((r) => r.type === 'audio' || (r.type === 'auto' && detectTypeFromUrl(r.url) === 'audio')),
-    [rows]
-  )
-
-  const firstDocumentRow = React.useMemo(
-    () => rows.find((r) => r.type === 'document' || r.type === 'pdf' || (r.type === 'auto' && ['document', 'pdf'].includes(detectTypeFromUrl(r.url)))),
-    [rows]
-  )
-
-  const firstVideoRow = React.useMemo(
-    () => rows.find((r) => r.type === 'video' || (r.type === 'auto' && detectTypeFromUrl(r.url) === 'video')),
-    [rows]
-  )
-
   const resultById = React.useMemo(() => {
     const map = new Map<string, ResultItem>()
     for (const r of results) map.set(r.id, r)
     return map
   }, [results])
+
+  const stagedCount = React.useMemo(() => {
+    let count = 0
+    const trimmedRows = rows.filter((r) => r.url.trim().length > 0)
+    for (const row of trimmedRows) {
+      const res = resultById.get(row.id)
+      if (!res || !res.status) {
+        count += 1
+      }
+    }
+    for (const file of localFiles) {
+      const match = results.find((r) => r.fileName === file.name)
+      if (!match || !match.status) {
+        count += 1
+      }
+    }
+    return count
+  }, [rows, localFiles, resultById, results])
+
+  const firstAudioRow = React.useMemo(
+    () =>
+      rows.find(
+        (r) =>
+          r.type === "audio" ||
+          (r.type === "auto" && detectTypeFromUrl(r.url) === "audio")
+      ),
+    [rows]
+  )
+
+  const firstDocumentRow = React.useMemo(
+    () =>
+      rows.find(
+        (r) =>
+          r.type === "document" ||
+          r.type === "pdf" ||
+          (r.type === "auto" &&
+            ["document", "pdf"].includes(detectTypeFromUrl(r.url)))
+      ),
+    [rows]
+  )
+
+  const firstVideoRow = React.useMemo(
+    () =>
+      rows.find(
+        (r) =>
+          r.type === "video" ||
+          (r.type === "auto" && detectTypeFromUrl(r.url) === "video")
+      ),
+    [rows]
+  )
 
   const selectedRow = React.useMemo(
     () => rows.find((r) => r.id === selectedRowId) || null,
@@ -990,7 +1054,15 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
         </div>
         {ingestBlocked && (
           <div className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800 dark:border-amber-600 dark:bg-amber-900/20 dark:text-amber-100">
-            Offline mode: you can add URLs and files to the queue, but ingestion is paused until the server reconnects. Nothing will upload until connection is restored.
+            <div className="font-medium">
+              {t("quickIngest.offlineTitle", "Server offline — staging only")}
+            </div>
+            <div>
+              {t(
+                "quickIngest.offlineDescription",
+                "You can queue URLs and files here and inspect fields, but ingestion will not run until your tldw server is online. Reconnect to process pending items."
+              )}
+            </div>
           </div>
         )}
         <div className="space-y-3">
@@ -1150,6 +1222,17 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
                   </AntTooltip>
                 )
                 else if (running) runTag = <Tag icon={<Spin size="small" />} color="blue">Running</Tag>
+                const pendingTag =
+                  ingestBlocked && !running && (!res || !res.status)
+                    ? (
+                      <Tag>
+                        {t(
+                          "quickIngest.pendingLabel",
+                          "Pending — will run when connected"
+                        )}
+                      </Tag>
+                    )
+                    : null
 
                 return (
                   <div
@@ -1191,6 +1274,7 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
                       <div className="flex items-center gap-2">
                         <Tag color={status.color === 'default' ? undefined : status.color}>{status.label}</Tag>
                         {runTag}
+                        {pendingTag}
                       </div>
                     </div>
                     <div className="mt-2 flex flex-col gap-2">
@@ -1252,6 +1336,17 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
                     </AntTooltip>
                   )
                 } else if (running) runTag = <Tag icon={<Spin size="small" />} color="blue">Running</Tag>
+                const pendingTag =
+                  ingestBlocked && !running && !runStatus
+                    ? (
+                      <Tag>
+                        {t(
+                          "quickIngest.pendingLabel",
+                          "Pending — will run when connected"
+                        )}
+                      </Tag>
+                    )
+                    : null
 
                 return (
                   <div
@@ -1294,6 +1389,7 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
                       <div className="flex items-center gap-2">
                         <Tag color={status.color === 'default' ? undefined : status.color}>{status.label}</Tag>
                         {runTag}
+                        {pendingTag}
                       </div>
                     </div>
                     <div className="mt-2 flex items-center gap-2 text-xs text-gray-600">
@@ -1519,25 +1615,68 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
                 </Typography.Text>
               </div>
               <div className="flex justify-end gap-2 mt-2">
+                {showProcessQueuedButton && (
+                  <Button
+                    onClick={run}
+                    disabled={running || plannedCount === 0}
+                    aria-label={t(
+                      "quickIngest.processQueuedItemsAria",
+                      "Process queued Quick Ingest items"
+                    )}
+                    title={t(
+                      "quickIngest.processQueuedItems",
+                      "Process queued items"
+                    )}>
+                    {t(
+                      "quickIngest.processQueuedItems",
+                      "Process queued items"
+                    )}
+                  </Button>
+                )}
                 <Button
                   type="primary"
                   loading={running}
                   onClick={run}
-                  disabled={plannedCount === 0 || ingestBlocked}
-                  aria-label={ingestBlocked ? "Offline \u2013 ingestion paused" : "Run quick ingest"}
-                  title={ingestBlocked ? "Offline \u2013 ingestion paused until server is back" : "Run quick ingest"}
-                >
-                  {storeRemote
-                    ? (t('quickIngest.ingest') || 'Ingest')
-                    : (t('quickIngest.process') || 'Process')}
+                  disabled={plannedCount === 0 || running}
+                  aria-label={
+                    ingestBlocked
+                      ? t(
+                          "quickIngest.queueOnlyOfflineAria",
+                          "Offline \u2014 queue items to process later"
+                        )
+                      : t("quickIngest.runAria", "Run quick ingest")
+                  }
+                  title={
+                    ingestBlocked
+                      ? t(
+                          "quickIngest.queueOnlyOffline",
+                          "Queue only \u2014 server offline"
+                        )
+                      : t("quickIngest.runLabel", "Run quick ingest")
+                  }>
+                  {ingestBlocked
+                    ? t(
+                        "quickIngest.queueOnlyOffline",
+                        "Queue only \u2014 server offline"
+                      )
+                    : storeRemote
+                      ? t("quickIngest.ingest", "Ingest")
+                      : t("quickIngest.process", "Process")}
                 </Button>
-                <Button onClick={onClose} disabled={running} aria-label="Close quick ingest" title="Close quick ingest">
+                <Button
+                  onClick={onClose}
+                  disabled={running}
+                  aria-label="Close quick ingest"
+                  title="Close quick ingest">
                   {t('quickIngest.cancel') || 'Cancel'}
                 </Button>
               </div>
               {ingestBlocked && (
                 <div className="mt-1 text-xs text-amber-700 dark:text-amber-200">
-                  Offline: staging is allowed, but uploads will wait until the server reconnects.
+                  {t(
+                    "quickIngest.offlineFooter",
+                    "Offline mode: items are staged here and will process once your server reconnects."
+                  )}
                 </div>
               )}
               {progressMeta.total > 0 && (

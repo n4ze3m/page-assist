@@ -67,6 +67,20 @@ export const FlashcardsPage: React.FC = () => {
   const message = useAntdMessage()
   const confirmDanger = useConfirmDanger()
 
+  const scrollToServerCard = React.useCallback(() => {
+    try {
+      const el = document.getElementById("server-connection-card")
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "start" })
+        ;(el as HTMLElement).focus?.()
+        return
+      }
+    } catch {
+      // ignore and fall through
+    }
+    navigate("/settings/tldw")
+  }, [navigate])
+
   if (!isOnline) {
     return demoEnabled ? (
       <FeatureEmptyState
@@ -87,10 +101,10 @@ export const FlashcardsPage: React.FC = () => {
               "When you connect, you’ll be able to generate cards from lectures, meetings, or notes and review them on a schedule."
           })
         ]}
-        primaryActionLabel={t("common:connectToServer", {
-          defaultValue: "Connect to server"
+        primaryActionLabel={t("option:connectionCard.buttonGoToServerCard", {
+          defaultValue: "Go to server card"
         })}
-        onPrimaryAction={() => navigate("/settings/tldw")}
+        onPrimaryAction={scrollToServerCard}
       />
     ) : (
       <FeatureEmptyState
@@ -99,22 +113,18 @@ export const FlashcardsPage: React.FC = () => {
         })}
         description={t("option:flashcards.emptyConnectDescription", {
           defaultValue:
-            "To review or generate flashcards, first connect to your tldw server."
+            "This view needs a connected server. Use the server connection card above to fix your connection, then return here to review and generate flashcards."
         })}
         examples={[
           t("option:flashcards.emptyConnectExample1", {
             defaultValue:
-              "Go to Settings → tldw server to add your server URL."
-          }),
-          t("option:flashcards.emptyConnectExample2", {
-            defaultValue:
-              "Once connected, review due cards or create new decks from your notes and media."
+              "Use the connection card at the top of this page to add your server URL and API key."
           })
         ]}
-        primaryActionLabel={t("common:connectToServer", {
-          defaultValue: "Connect to server"
+        primaryActionLabel={t("option:connectionCard.buttonGoToServerCard", {
+          defaultValue: "Go to server card"
         })}
-        onPrimaryAction={() => navigate("/settings/tldw")}
+        onPrimaryAction={scrollToServerCard}
       />
     )
   }
@@ -143,7 +153,7 @@ export const FlashcardsPage: React.FC = () => {
           })
         ]}
         primaryActionLabel={t("settings:healthSummary.diagnostics", {
-          defaultValue: "Open Diagnostics"
+          defaultValue: "Health & diagnostics"
         })}
         onPrimaryAction={() => navigate("/settings/health")}
       />

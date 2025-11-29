@@ -38,7 +38,7 @@ import { Sidebar } from "@/components/Option/Sidebar"
 // import { BsIncognito } from "react-icons/bs"
 import { isFireFoxPrivateMode } from "@/utils/is-private-mode"
 import { useAntdNotification } from "@/hooks/useAntdNotification"
-import { useConnectionState } from "@/hooks/useConnectionState"
+import { useConnectionActions, useConnectionState } from "@/hooks/useConnectionState"
 import { ConnectionPhase } from "@/types/connection"
 import { Storage } from "@plasmohq/storage"
 
@@ -176,6 +176,7 @@ export const SidepanelHeader = ({
     [sendQuickIngest, t]
   )
   const { isConnected, phase } = useConnectionState()
+  const { checkOnce } = useConnectionActions()
   const ingestDisabled = phase === ConnectionPhase.UNCONFIGURED
 
   return (
@@ -192,6 +193,76 @@ export const SidepanelHeader = ({
       </div>
 
       <div className="flex items-center space-x-3">
+        <Tooltip
+          title={
+            isConnected
+              ? t(
+                  "sidepanel:header.connection.ok",
+                  "Connected to your tldw server"
+                )
+              : phase === ConnectionPhase.UNCONFIGURED
+                ? t(
+                    "sidepanel:header.connection.unconfigured",
+                    "Open Settings to configure your tldw server."
+                  )
+                : t(
+                    "sidepanel:header.connection.failed",
+                    "We couldn’t reach your tldw server. Retry or open Settings."
+                  )
+          }>
+          <button
+            type="button"
+            onClick={() => {
+              if (phase === ConnectionPhase.UNCONFIGURED) {
+                openOptionsPage("#/settings/tldw")
+              } else if (phase !== ConnectionPhase.SEARCHING) {
+                void checkOnce()
+              }
+            }}
+            disabled={phase === ConnectionPhase.SEARCHING}
+            className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-xs font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-700 ${
+              isConnected
+                ? "border-emerald-500/60 bg-emerald-50 text-emerald-700 dark:border-emerald-400/60 dark:bg-emerald-900/40 dark:text-emerald-100"
+                : phase === ConnectionPhase.SEARCHING
+                  ? "border-blue-400/60 bg-blue-50 text-blue-700 dark:border-blue-300/60 dark:bg-blue-900/40 dark:text-blue-100"
+                  : "border-amber-500/60 bg-amber-50 text-amber-700 dark:border-amber-400/60 dark:bg-amber-900/40 dark:text-amber-100"
+            }`}
+            aria-label={t(
+              "sidepanel:header.connection.label",
+              "Server connection status"
+            ) as string}>
+            <span
+              className={`h-2 w-2 rounded-full ${
+                isConnected
+                  ? "bg-emerald-500"
+                  : phase === ConnectionPhase.SEARCHING
+                    ? "bg-blue-500"
+                    : "bg-amber-500"
+              }`}
+            />
+            <span>
+              {phase === ConnectionPhase.SEARCHING
+                ? t(
+                    "sidepanel:header.connection.checking",
+                    "Checking…"
+                  )
+                : isConnected
+                  ? t(
+                      "sidepanel:header.connection.connected",
+                      "Connected"
+                    )
+                  : phase === ConnectionPhase.UNCONFIGURED
+                    ? t(
+                        "sidepanel:header.connection.configure",
+                        "Connect"
+                      )
+                    : t(
+                        "sidepanel:header.connection.retry",
+                        "Retry"
+                      )}
+            </span>
+          </button>
+        </Tooltip>
         <Popover
           trigger="click"
           open={modeOpen}

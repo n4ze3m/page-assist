@@ -38,6 +38,9 @@
   "contextSaveToNotesOpeningSidebar": {
     "message": "ノートを保存するためにサイドバーを開いています..."
   },
+  "contextSaveToNotesDeliveryFailed": {
+    "message": "Could not open the sidebar to save this note. Check that the tldw Assistant sidebar is allowed on this site and try again."
+  },
   "openOptionToChat": {
     "message": "チャット用 Web UI を開く"
   },

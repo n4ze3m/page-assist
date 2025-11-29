@@ -90,7 +90,7 @@ export const CharactersWorkspace: React.FC = () => {
           })
         ]}
         primaryActionLabel={t("settings:healthSummary.diagnostics", {
-          defaultValue: "Open Diagnostics"
+          defaultValue: "Health & diagnostics"
         })}
         onPrimaryAction={() => navigate("/settings/health")}
       />

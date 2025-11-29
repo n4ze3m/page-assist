@@ -15,9 +15,13 @@ test.describe('Feature empty states (connected vs not connected)', () => {
     await expect(
       page.getByText(/Connect to use Notes/i)
     ).toBeVisible()
-    await expect(
-      page.getByRole('button', { name: /Connect to server/i })
-    ).toBeVisible()
+    const cta = page.getByRole('button', {
+      name: /Go to server card/i
+    })
+    await expect(cta).toBeVisible()
+
+    await cta.click()
+    await expect(page.locator('#server-connection-card')).toBeVisible()
 
     await context.close()
   })

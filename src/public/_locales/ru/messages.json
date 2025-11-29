@@ -38,6 +38,9 @@
   "contextSaveToNotesOpeningSidebar": {
     "message": "Открываем боковую панель, чтобы сохранить заметку..."
   },
+  "contextSaveToNotesDeliveryFailed": {
+    "message": "Could not open the sidebar to save this note. Check that the tldw Assistant sidebar is allowed on this site and try again."
+  },
   "openOptionToChat": {
     "message": "Открыть веб-интерфейс для чата"
   },

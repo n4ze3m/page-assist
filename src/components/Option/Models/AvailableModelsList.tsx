@@ -1,13 +1,15 @@
 import React from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { Card, Skeleton, Tag } from 'antd'
+import { Alert, Button, Card, Skeleton, Tag } from 'antd'
+import { useTranslation } from 'react-i18next'
 import { tldwClient } from '@/services/tldw/TldwApiClient'
 import { ProviderIcons } from '@/components/Common/ProviderIcon'
 
 type ProviderMap = Record<string, Array<{ id: string, context_length?: number, capabilities?: string[] }>>
 
 export const AvailableModelsList: React.FC = () => {
-  const { data, status } = useQuery({
+  const { t } = useTranslation(['settings', 'common'])
+  const { data, status, error, refetch, isFetching } = useQuery({
     queryKey: ['tldw-providers-models'],
     queryFn: async () => {
       await tldwClient.initialize()
@@ -33,9 +35,35 @@ export const AvailableModelsList: React.FC = () => {
     }
   })
 
-  if (status === 'pending') {
+  if (status === 'pending' && !data) {
     return <Skeleton paragraph={{ rows: 6 }} />
   }
+
+  if (status === 'error') {
+    return (
+      <Alert
+        type="error"
+        showIcon
+        message={t('settings:models.loadErrorTitle', 'Unable to load models from server')}
+        description={
+          <div className="flex flex-col gap-1 text-xs">
+            <span>
+              {(error as any)?.message ||
+                t(
+                  'settings:models.loadErrorBody',
+                  'The models endpoint returned an error. Check your server URL and API key, then try again.'
+                )}
+            </span>
+            <Button size="small" onClick={() => refetch()} loading={isFetching}>
+              {t('common:retry', 'Retry')}
+            </Button>
+          </div>
+        }
+      />
+    )
+  }
+
+  const isEmpty = !data || Object.keys(data || {}).length === 0
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -65,8 +93,25 @@ export const AvailableModelsList: React.FC = () => {
           </div>
         </Card>
       ))}
-      {Object.keys(data || {}).length === 0 && (
-        <div className="text-sm text-gray-600 dark:text-gray-300">No providers available.</div>
+      {isEmpty && (
+        <div className="text-sm text-gray-600 dark:text-gray-300">
+          <div className="mb-1 font-medium">
+            {t('settings:models.noProvidersTitle', 'No providers available.')}
+          </div>
+          <div className="text-xs">
+            {t(
+              'settings:models.noProvidersBody',
+              'The extension could not load providers from your tldw_server. Check your server URL and API key in Settings, ensure the server is running, then use Refresh to try again.'
+            )}
+          </div>
+          <Button
+            size="small"
+            className="mt-2"
+            onClick={() => refetch()}
+            loading={isFetching}>
+            {t('common:retry', 'Retry')}
+          </Button>
+        </div>
       )}
     </div>
   )}

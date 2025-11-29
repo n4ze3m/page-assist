@@ -38,6 +38,9 @@
   "contextSaveToNotesOpeningSidebar": {
     "message": "കുറിപ്പ് സംരക്ഷിക്കാന്‍ സൈഡ്ബാർ തുറക്കുന്നു..."
   },
+  "contextSaveToNotesDeliveryFailed": {
+    "message": "Could not open the sidebar to save this note. Check that the tldw Assistant sidebar is allowed on this site and try again."
+  },
   "openOptionToChat": {
     "message": "ചാറ്റ് ചെയ്യാൻ Web UI തുറക്കുക"
   },

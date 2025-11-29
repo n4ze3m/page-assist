@@ -289,56 +289,49 @@ export class TldwApiClient {
   }
 
   async initialize(): Promise<void> {
-    const stored = await this.storage.get<TldwConfig>('tldwConfig')
+    const stored = await this.storage.get<TldwConfig>("tldwConfig")
     const envApiKey = this.getEnvApiKey()
 
-    // Seed a default local single-user config so first-run prefers the real server
-    // before falling back to mocked/placeholder flows. API keys are never auto-filled;
-    // users must explicitly configure credentials in Settings/Onboarding.
     if (!stored) {
-      const seeded: TldwConfig = {
-        serverUrl: DEFAULT_SERVER_URL,
-        authMode: 'single-user'
-      }
-      if (envApiKey) {
-        seeded.apiKey = envApiKey
-      }
-      await this.storage.set('tldwConfig', seeded)
-      this.config = seeded
+      // True first-run: leave config null so callers (like the connection
+      // store) can distinguish an unconfigured state from a misconfigured
+      // or unreachable server.
+      this.config = null
     } else {
       const hydrated: TldwConfig = {
         ...stored,
-        serverUrl: stored.serverUrl || DEFAULT_SERVER_URL,
-        authMode: stored.authMode || 'single-user'
+        // Default authMode but do not silently inject a server URL if none
+        // has been configured yet.
+        authMode: stored.authMode || "single-user",
+        serverUrl: stored.serverUrl || ""
       }
       if (!hydrated.apiKey && envApiKey) {
         hydrated.apiKey = envApiKey
       }
       this.config = hydrated
-      // Persist any hydrated defaults for later reads (e.g., background proxy)
-      await this.storage.set('tldwConfig', hydrated)
+      await this.storage.set("tldwConfig", hydrated)
     }
 
-    const config = this.config!
-    this.baseUrl = (config.serverUrl || DEFAULT_SERVER_URL).replace(/\/$/, '') // Remove trailing slash
+    const config = this.config
+    this.baseUrl = (config?.serverUrl || DEFAULT_SERVER_URL).replace(/\/$/, "")
 
     // Set up headers based on auth mode
     this.headers = {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json"
     }
 
-    if (config.authMode === 'single-user' && config.apiKey) {
-      const key = String(config.apiKey || '').trim()
+    if (config?.authMode === "single-user" && config.apiKey) {
+      const key = String(config.apiKey || "").trim()
       if (key) {
-        this.headers['X-API-KEY'] = key
+        this.headers["X-API-KEY"] = key
       }
-    } else if (config.authMode === 'multi-user' && config.accessToken) {
-      this.headers['Authorization'] = `Bearer ${config.accessToken}`
+    } else if (config?.authMode === "multi-user" && config.accessToken) {
+      this.headers["Authorization"] = `Bearer ${config.accessToken}`
     }
   }
 
   async getConfig(): Promise<TldwConfig | null> {
-    if (!this.config) {
+    if (this.config === null) {
       await this.initialize().catch(() => null)
     }
     return this.config
