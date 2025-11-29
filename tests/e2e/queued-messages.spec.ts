@@ -50,7 +50,9 @@ test.describe('Queued messages banners', () => {
     ).toBeVisible()
 
     // Diagnostics link provides a clear fix path
-    const diagnosticsLink = page.getByRole('link', { name: /Diagnostics/i })
+    const diagnosticsLink = page.getByRole('link', {
+      name: /Health & diagnostics/i
+    })
     await expect(diagnosticsLink).toBeVisible()
     await diagnosticsLink.click()
     await expect(page).toHaveURL(/options\.html#\/settings\/health/i)
@@ -154,7 +156,7 @@ test.describe('Queued messages banners', () => {
     const sendQueued = page.getByRole('button', { name: /Send queued messages/i })
     await expect(sendQueued).toBeVisible()
     await expect(
-      page.getByRole('button', { name: /Diagnostics/i })
+      page.getByRole('button', { name: /Health & diagnostics/i })
     ).toBeVisible()
 
     // Click Send queued messages and ensure the queue is cleared

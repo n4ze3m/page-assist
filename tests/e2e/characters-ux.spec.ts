@@ -139,7 +139,7 @@ test.describe('Characters workspace UX', () => {
       page.getByText(/Characters API not available on this server/i)
     ).toBeVisible({ timeout: 15_000 })
     await expect(
-      page.getByRole('button', { name: /Open Diagnostics/i })
+      page.getByRole('button', { name: /Health & diagnostics/i })
     ).toBeVisible()
 
     await context.close()

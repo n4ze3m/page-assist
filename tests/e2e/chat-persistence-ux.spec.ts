@@ -13,19 +13,20 @@ test.describe('Chat persistence UX', () => {
 
     // By default, chats should be saved locally only.
     await expect(
-      page.getByText(/Saved in this browser only/i)
+      page.getByText(/Saved locally in this browser only/i)
     ).toBeVisible()
 
     // Toggling the switch enables a temporary (not saved) chat.
-    const persistenceSwitch = page.getByRole('switch', { name: /Save chat|Save to history/i })
+    const persistenceSwitch = page.getByRole('switch', {
+      name: /Save chat|Save to history|Temporary chat/i
+    })
     await expect(persistenceSwitch).toBeVisible()
     await persistenceSwitch.click()
 
     await expect(
-      page.getByText(/Not saved in history; clears when you close this tab\./i)
+      page.getByText(/Temporary chat: not saved in history/i)
     ).toBeVisible()
 
     await context.close()
   })
 })
-

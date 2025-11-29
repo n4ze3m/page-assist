@@ -627,7 +627,7 @@ export const Header: React.FC<Props> = ({
                   )}
                 </div>
               )}
-              {serverChatId && (
+              {!temporaryChat && serverChatId && (
                 <span
                   className="hidden md:inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-xs text-emerald-700 shadow-sm dark:border-emerald-500/50 dark:bg-emerald-500/10 dark:text-emerald-100"
                   title={t(

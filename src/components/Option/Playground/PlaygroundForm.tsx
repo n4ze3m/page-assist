@@ -615,8 +615,29 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
       if (history.length > 0) {
         clearChat()
       }
+
+      const modeLabel = next
+        ? t(
+            "playground:composer.persistence.ephemeral",
+            "Temporary chat: not saved in history and cleared when you close this window."
+          )
+        : serverChatId
+          ? t(
+              "playground:composer.persistence.server",
+              "Saved Locally+Server"
+            )
+          : t(
+              "playground:composer.persistence.local",
+              "Saved in this browser only."
+            )
+
+      notification.info({
+        message: modeLabel,
+        placement: "bottomRight",
+        duration: 2.5
+      })
     },
-    [clearChat, history.length]
+    [clearChat, history.length, serverChatId, setTemporaryChat, t]
   )
 
   const handleSaveChatToServer = React.useCallback(async () => {
@@ -1042,6 +1063,25 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
     }
   }
 
+  const persistenceModeLabel = React.useMemo(() => {
+    if (temporaryChat) {
+      return t(
+        "playground:composer.persistence.ephemeral",
+        "Temporary chat: not saved in history and cleared when you close this window."
+      )
+    }
+    if (serverChatId) {
+      return t(
+        "playground:composer.persistence.server",
+        "Saved Locally+Server"
+      )
+    }
+    return t(
+      "playground:composer.persistence.local",
+      "Saved in this browser only."
+    )
+  }, [serverChatId, temporaryChat, t])
+
   return (
     <div className="flex w-full flex-col items-center px-2">
       <div className="relative z-10 flex w-full flex-col items-center justify-center gap-2 text-base">
@@ -1381,22 +1421,12 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                                       "Save chat to history"
                                     )}
                               </span>
+                              <span className="inline-flex items-center rounded-full border border-gray-200 bg-white px-2 py-0.5 text-[11px] font-medium text-gray-700 shadow-sm dark:border-gray-700 dark:bg-[#1f1f1f] dark:text-gray-200">
+                                {persistenceModeLabel}
+                              </span>
                             </div>
                             <p className="text-[11px] text-gray-500 dark:text-gray-400">
-                              {temporaryChat
-                                ? t(
-                                    "playground:composer.persistence.ephemeral",
-                                    "Not saved in history; clears when you close this tab."
-                                  )
-                                : serverChatId
-                                  ? t(
-                                      "playground:composer.persistence.server",
-                                      "Saved Locally+Server"
-                                    )
-                                  : t(
-                                      "playground:composer.persistence.local",
-                                      "Saved in this browser only."
-                                    )}
+                              {persistenceModeLabel}
                             </p>
                             {!temporaryChat && isConnectionReady && !serverChatId && (
                               <button

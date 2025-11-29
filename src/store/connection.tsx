@@ -49,14 +49,14 @@ const getOfflineBypassFlag = async (): Promise<boolean> => {
 const setOfflineBypassFlag = async (enabled: boolean): Promise<void> => {
   try {
     if (typeof chrome !== "undefined" && chrome?.storage?.local) {
-      await new Promise<void>((resolve) =>
-        chrome.storage.local[
-          enabled ? "set" : "remove"
-        ](
-          enabled ? { [TEST_BYPASS_KEY]: true } : TEST_BYPASS_KEY,
-          () => resolve()
-        )
-      )
+      await new Promise<void>((resolve) => {
+        const storage = chrome.storage.local
+        if (enabled) {
+          storage.set({ [TEST_BYPASS_KEY]: true }, () => resolve())
+        } else {
+          storage.remove(TEST_BYPASS_KEY, () => resolve())
+        }
+      })
       return
     }
   } catch {

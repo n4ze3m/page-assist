@@ -90,10 +90,13 @@ test.describe('Server-backed chats UX', () => {
     const assistantLabel = await page.getByText(/Test Character/).first()
     await expect(assistantLabel).toBeVisible()
 
-    // Persistence helper text should make it clear that this chat
-    // is saved both locally and on the server.
+    // Persistence helper text and header pill should make it clear that this
+    // chat is saved both locally and on the server.
     await expect(
-      page.getByText(/Saved in this browser and on your tldw server/i)
+      page.getByText(/Saved Locally\+Server/i)
+    ).toBeVisible()
+    await expect(
+      page.getByText(/Server-backed chat/i)
     ).toBeVisible()
 
     await context.close()

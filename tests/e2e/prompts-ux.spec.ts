@@ -25,7 +25,7 @@ test.describe('Prompts workspace UX', () => {
     if (await copilotEmptyHeading.isVisible({ timeout: 2000 }).catch(() => false)) {
       await expect(page.getByText(/predefined templates provided by your tldw server/i)).toBeVisible()
       await expect(
-        page.getByRole('button', { name: /Diagnostics/i })
+        page.getByRole('button', { name: /Health & diagnostics/i })
       ).toBeVisible()
     }
 

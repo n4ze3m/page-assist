@@ -320,25 +320,44 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
     window.open("/options.html#/settings/health", "_blank")
   }, [])
 
-  const handleToggleTemporaryChat = React.useCallback(() => {
-    if (isFireFoxPrivateMode) {
-      notification.error({
-        message: t(
-          "sidepanel:errors.privateModeTitle",
-          "tldw Assistant can't save data"
-        ),
-        description: t(
-          "sidepanel:errors.privateModeDescription",
-          "Firefox Private Mode does not support saving chat history. Temporary chat is enabled by default. More fixes coming soon."
-        )
+  const handleToggleTemporaryChat = React.useCallback(
+    (next: boolean) => {
+      if (isFireFoxPrivateMode) {
+        notification.error({
+          message: t(
+            "sidepanel:errors.privateModeTitle",
+            "tldw Assistant can't save data"
+          ),
+          description: t(
+            "sidepanel:errors.privateModeDescription",
+            "Firefox Private Mode does not support saving chat history. Temporary chat is enabled by default. More fixes coming soon."
+          )
+        })
+        return
+      }
+      setTemporaryChat(next)
+      if (messages.length > 0) {
+        clearChat()
+      }
+
+      const modeLabel = next
+        ? t(
+            "playground:composer.persistence.ephemeral",
+            "Temporary chat: not saved in history and cleared when you close this window."
+          )
+        : t(
+            "playground:composer.persistence.local",
+            "Saved in this browser only."
+          )
+
+      notification.info({
+        message: modeLabel,
+        placement: "bottomRight",
+        duration: 2.5
       })
-      return
-    }
-    setTemporaryChat(!temporaryChat)
-    if (messages.length > 0) {
-      clearChat()
-    }
-  }, [clearChat, messages.length, temporaryChat])
+    },
+    [clearChat, messages.length, notification, setTemporaryChat, t]
+  )
 
   const handleWebSearchToggle = React.useCallback(() => {
     setWebSearch(!webSearch)
@@ -562,6 +581,19 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
     }
   }, [sttError, t])
 
+  const persistenceModeLabel = React.useMemo(() => {
+    if (temporaryChat) {
+      return t(
+        "playground:composer.persistence.ephemeral",
+        "Temporary chat: not saved in history and cleared when you close this window."
+      )
+    }
+    return t(
+      "playground:composer.persistence.local",
+      "Saved in this browser only."
+    )
+  }, [temporaryChat, t])
+
   const moreToolsContent = React.useMemo(() => (
     <div className="flex w-72 flex-col gap-4">
       <div className="space-y-2">
@@ -569,15 +601,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
           {t("playground:more.history", "Chat saving")}
         </p>
         <p className="text-[11px] text-gray-500 dark:text-gray-400">
-          {temporaryChat
-            ? t(
-                "playground:composer.persistence.ephemeral",
-                "Not saved in history; clears when you close this tab."
-              )
-            : t(
-                "playground:composer.persistence.local",
-                "Saved in this browser only."
-              )}
+          {persistenceModeLabel}
         </p>
       </div>
 
@@ -1011,22 +1035,17 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                                     "playground:actions.temporaryOn",
                                     "Temporary chat (not saved)"
                                   )
-                                : t(
-                                    "playground:actions.temporaryOff",
-                                    "Save chat to history"
-                                  )}
+                                    : t(
+                                        "playground:actions.temporaryOff",
+                                        "Save chat to history"
+                                      )}
+                            </span>
+                            <span className="inline-flex items-center rounded-full border border-gray-200 bg-white px-2 py-0.5 text-[11px] font-medium text-gray-700 shadow-sm dark:border-gray-700 dark:bg-[#1f1f1f] dark:text-gray-200">
+                              {persistenceModeLabel}
                             </span>
                           </div>
                           <p className="text-[11px] text-gray-500 dark:text-gray-400">
-                            {temporaryChat
-                              ? t(
-                                  "playground:composer.persistence.ephemeral",
-                                  "Not saved in history; clears when you close this tab."
-                                )
-                              : t(
-                                  "playground:composer.persistence.local",
-                                  "Saved in this browser only."
-                                )}
+                            {persistenceModeLabel}
                           </p>
                         </div>
                       </div>

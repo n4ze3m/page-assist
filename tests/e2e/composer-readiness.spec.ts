@@ -37,7 +37,7 @@ test.describe('Composer readiness based on connection state', () => {
       page.getByRole('button', { name: /Set up server/i })
     ).toBeVisible()
     await expect(
-      page.getByRole('button', { name: /Diagnostics/i })
+      page.getByRole('button', { name: /Health & diagnostics/i })
     ).toBeVisible()
 
     await context.close()

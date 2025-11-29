@@ -67,4 +67,32 @@ test.describe('Sidepanel first-run and connection panel', () => {
 
     await context.close()
   })
+
+  test('sidepanel shows the same persistence mode labels as the playground', async () => {
+    const extPath = path.resolve('.output/chrome-mv3')
+    const { context, openSidepanel } = (await launchWithExtension(extPath)) as any
+    const page = await openSidepanel()
+
+    // Composer should be visible even before the server is connected.
+    const textarea = page.getByPlaceholder(/Type a message|Connect to tldw/i)
+    await expect(textarea).toBeVisible()
+
+    // Default state: local-only persistence.
+    await expect(
+      page.getByText(/Saved locally in this browser only/i)
+    ).toBeVisible()
+
+    // Toggle to temporary chat and confirm the label updates.
+    const persistenceSwitch = page.getByRole('switch', {
+      name: /Save chat|Save to history|Temporary chat/i
+    })
+    await expect(persistenceSwitch).toBeVisible()
+    await persistenceSwitch.click()
+
+    await expect(
+      page.getByText(/Temporary chat: not saved in history/i)
+    ).toBeVisible()
+
+    await context.close()
+  })
 })

@@ -74,11 +74,10 @@ test.describe('Knowledge RAG workspace UX', () => {
     } else {
       // When RAG is unsupported, we at least show a Diagnostics CTA
       await expect(
-        page.getByRole('button', { name: /Open Diagnostics/i })
+        page.getByRole('button', { name: /Health & diagnostics/i })
       ).toBeVisible()
     }
 
     await context.close()
   })
 })
-

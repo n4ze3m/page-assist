@@ -23,8 +23,6 @@
     "buttonDisableOffline": "Disable offline mode",
     "offlineModeBadge": "Offline mode — staging only",
     "buttonGoToServerCard": "Go to server card",
-    "buttonDisableOffline": "Disable offline mode",
-    "offlineModeBadge": "Offline mode — staging only",
     "tipQuickIngest": "Tip: Need ingest help while you’re offline?",
     "quickIngestHint": "When your server is offline, Quick Ingest works as a staging area. You can queue URLs and files now and process them once you reconnect."
   },

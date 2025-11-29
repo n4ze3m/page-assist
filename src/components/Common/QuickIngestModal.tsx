@@ -306,6 +306,35 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
     })()
   }, [])
 
+  const plannedCount = React.useMemo(() => {
+    const valid = rows.filter((r) => r.url.trim().length > 0)
+    return valid.length + localFiles.length
+  }, [rows, localFiles])
+
+  const resultById = React.useMemo(() => {
+    const map = new Map<string, ResultItem>()
+    for (const r of results) map.set(r.id, r)
+    return map
+  }, [results])
+
+  const stagedCount = React.useMemo(() => {
+    let count = 0
+    const trimmedRows = rows.filter((r) => r.url.trim().length > 0)
+    for (const row of trimmedRows) {
+      const res = resultById.get(row.id)
+      if (!res || !res.status) {
+        count += 1
+      }
+    }
+    for (const file of localFiles) {
+      const match = results.find((r) => r.fileName === file.name)
+      if (!match || !match.status) {
+        count += 1
+      }
+    }
+    return count
+  }, [rows, localFiles, resultById, results])
+
   React.useEffect(() => {
     if (ingestBlocked && stagedCount > 0) {
       hadOfflineQueuedRef.current = true
@@ -776,35 +805,6 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
       // swallow errors; logging not needed here
     }
   }
-
-  const plannedCount = React.useMemo(() => {
-    const valid = rows.filter((r) => r.url.trim().length > 0)
-    return valid.length + localFiles.length
-  }, [rows, localFiles])
-
-  const resultById = React.useMemo(() => {
-    const map = new Map<string, ResultItem>()
-    for (const r of results) map.set(r.id, r)
-    return map
-  }, [results])
-
-  const stagedCount = React.useMemo(() => {
-    let count = 0
-    const trimmedRows = rows.filter((r) => r.url.trim().length > 0)
-    for (const row of trimmedRows) {
-      const res = resultById.get(row.id)
-      if (!res || !res.status) {
-        count += 1
-      }
-    }
-    for (const file of localFiles) {
-      const match = results.find((r) => r.fileName === file.name)
-      if (!match || !match.status) {
-        count += 1
-      }
-    }
-    return count
-  }, [rows, localFiles, resultById, results])
 
   const firstAudioRow = React.useMemo(
     () =>
