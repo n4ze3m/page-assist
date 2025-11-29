@@ -8,6 +8,9 @@
   "openSidePanelToChat": {
     "message": "打开侧边栏聊天"
   },
+  "openQuickIngest": {
+    "message": "Open Quick Ingest"
+  },
   "contextSummarize": {
     "message": "总结"
   },

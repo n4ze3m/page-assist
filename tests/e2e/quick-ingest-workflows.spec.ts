@@ -1,5 +1,6 @@
-import path from 'path'
 import { expect, test } from '@playwright/test'
+import os from 'os'
+import path from 'path'
 import { launchWithBuiltExtension } from './utils/extension-build'
 
 const API_KEY = 'THIS-IS-A-SECURE-KEY-123-FAKE-KEY'
@@ -77,7 +78,8 @@ test.describe('Quick Ingest workflows and UX', () => {
     await chunkingToggle.click()
 
     // Snapshot for UX review
-    await page.screenshot({ path: '/tmp/quick-ingest-workflows.png', fullPage: true })
+    const screenshotPath = path.join(os.tmpdir(), 'quick-ingest-workflows.png')
+    await page.screenshot({ path: screenshotPath, fullPage: true })
     await context.close()
   })
 })

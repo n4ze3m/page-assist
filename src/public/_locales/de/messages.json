@@ -11,6 +11,9 @@
   "openOptionToChat": {
     "message": "Weboberfläche zum Chatten öffnen"
   },
+  "openQuickIngest": {
+    "message": "Open Quick Ingest"
+  },
   "contextSummarize": {
     "message": "Zusammenfassen"
   },

@@ -17,6 +17,7 @@
     "buttonChangeServer": "Skift server",
     "buttonOpenDiagnostics": "Åbn diagnosticering",
     "buttonViewDiagnostics": "Vis diagnosticering",
+    "buttonOpenQuickIngest": "Open Quick Ingest",
     "buttonTryDemo": "Prøv en demo"
   },
   "header": {

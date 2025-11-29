@@ -11,6 +11,9 @@
   "openOptionToChat": {
     "message": "Öppna Web UI för att chatta"
   },
+  "openQuickIngest": {
+    "message": "Open Quick Ingest"
+  },
   "contextSummarize": {
     "message": "Sammanfatta"
   },

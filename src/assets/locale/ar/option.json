@@ -17,6 +17,7 @@
     "buttonChangeServer": "تغيير الخادم",
     "buttonOpenDiagnostics": "فتح صفحة التشخيص",
     "buttonViewDiagnostics": "عرض التشخيص",
+    "buttonOpenQuickIngest": "Open Quick Ingest",
     "buttonTryDemo": "تجربة العرض التوضيحي"
   },
   "header": {

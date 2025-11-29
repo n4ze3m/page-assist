@@ -8,6 +8,9 @@
   "openSidePanelToChat": {
     "message": "チャット用サイドバーを開く"
   },
+  "openQuickIngest": {
+    "message": "Open Quick Ingest"
+  },
   "contextSummarize": {
     "message": "要約"
   },

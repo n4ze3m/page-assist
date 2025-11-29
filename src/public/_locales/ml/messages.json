@@ -8,6 +8,9 @@
   "openSidePanelToChat": {
     "message": "ചാറ്റ് ചെയ്യാൻ സൈഡ് പാനൽ തുറക്കുക"
   },
+  "openQuickIngest": {
+    "message": "Open Quick Ingest"
+  },
   "contextSummarize": {
     "message": "സംഗ്രഹിക്കുക"
   },

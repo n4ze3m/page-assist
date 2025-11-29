@@ -8,6 +8,9 @@
   "openSidePanelToChat": {
     "message": "Ouvrir le panneau latéral pour discuter"
   },
+  "openQuickIngest": {
+    "message": "Open Quick Ingest"
+  },
   "contextSummarize": {
     "message": "Résumer"
   },

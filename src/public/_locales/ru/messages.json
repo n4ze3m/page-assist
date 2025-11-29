@@ -8,6 +8,9 @@
   "openSidePanelToChat": {
     "message": "Открыть боковую панель для чата"
   },
+  "openQuickIngest": {
+    "message": "Open Quick Ingest"
+  },
   "contextSummarize": {
     "message": "Обобщить"
   },

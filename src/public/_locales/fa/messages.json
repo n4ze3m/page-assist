@@ -11,6 +11,9 @@
   "openOptionToChat": {
     "message": "باز کردن رابط کاربری وب برای گفتگو"
   },
+  "openQuickIngest": {
+    "message": "Open Quick Ingest"
+  },
   "contextSummarize": {
     "message": "خلاصه کردن"
   },

@@ -17,6 +17,7 @@
     "buttonChangeServer": "Change server",
     "buttonOpenDiagnostics": "Open diagnostics",
     "buttonViewDiagnostics": "View diagnostics",
+    "buttonOpenQuickIngest": "Open Quick Ingest",
     "buttonTryDemo": "Try a demo"
   },
   "header": {
