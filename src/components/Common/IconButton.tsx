@@ -30,7 +30,7 @@ export const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(
     ref
   ) => {
     const baseClasses =
-      "inline-flex items-center justify-center rounded-md min-w-[44px] min-h-[44px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 dark:focus-visible:outline-blue-400"
+      "inline-flex items-center justify-center rounded-md min-w-[44px] min-h-[44px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--color-focus)]"
     return (
       <button
         ref={ref}

@@ -15,6 +15,7 @@ export type ConnectionState = {
   lastStatusCode: number | null
   isConnected: boolean
   isChecking: boolean
+  offlineBypass?: boolean
   knowledgeStatus: KnowledgeStatus
   knowledgeLastCheckedAt: number | null
   knowledgeError: string | null

@@ -1,0 +1,33 @@
+  <!DOCTYPE html>
+  <html>
+  <head>
+  <style>
+  :root { /* paste the dark vars */ }
+  .light { /* paste the light vars */ }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(120px,1fr)); gap:12px; }
+  .swatch { border-radius:8px; padding:12px; color:#fff; font:12px/1.4 Inter,sans-serif; }
+  </style>
+  </head>
+  <body style="background:#0f1117;padding:20px;font-family:Inter,sans-serif;color:#e6e8ef">
+  <h3>Dark</h3>
+  <div class="grid">
+    <div class="swatch" style="background:var(--color-primary)">primary</div>
+    <div class="swatch" style="background:var(--color-primary-strong)">primary-strong</div>
+    <div class="swatch" style="background:var(--color-accent);color:#0f1117">accent</div>
+    <div class="swatch" style="background:var(--color-success)">success</div>
+    <div class="swatch" style="background:var(--color-warn);color:#0f1117">warn</div>
+    <div class="swatch" style="background:var(--color-danger)">danger</div>
+    <div class="swatch" style="background:var(--color-surface);color:#e6e8ef;border:1px solid var(--color-border)">surface</div>
+  </div>
+  <h3 style="margin-top:32px;">Light</h3>
+  <div class="grid light" style="background:#f7f8fb;padding:12px;border-radius:12px;">
+    <div class="swatch" style="background:var(--color-primary);color:#fff">primary</div>
+    <div class="swatch" style="background:var(--color-primary-strong);color:#fff">primary-strong</div>
+    <div class="swatch" style="background:var(--color-accent);color:#0f1117">accent</div>
+    <div class="swatch" style="background:var(--color-success);color:#fff">success</div>
+    <div class="swatch" style="background:var(--color-warn);color:#0f1117">warn</div>
+    <div class="swatch" style="background:var(--color-danger);color:#fff">danger</div>
+    <div class="swatch" style="background:var(--color-surface);color:#0f1117;border:1px solid var(--color-border)">surface</div>
+  </div>
+  </body>
+  </html>

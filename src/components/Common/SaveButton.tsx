@@ -33,8 +33,8 @@ export const SaveButton = ({
         }, 1000)
       }}
       disabled={disabled}
-      className={`inline-flex mt-4 items-center rounded-md border border-transparent bg-black px-2 py-2 text-sm font-medium leading-4 text-white shadow-sm dark:bg-white dark:text-gray-800 disabled:opacity-50 ${className}`}>
-      {clickedSave ? <CheckIcon className="w-4 h-4 mr-2" /> : null}
+      className={`inline-flex mt-4 items-center rounded-md border border-transparent bg-primary px-3 py-2 min-h-[40px] text-sm font-medium leading-4 text-surface shadow-sm transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--color-focus)] disabled:opacity-50 ${className}`}>
+      {clickedSave ? <CheckIcon className="icon mr-2" /> : null}
       {clickedSave ? t(textOnSave) : t(text)}
     </button>
   )

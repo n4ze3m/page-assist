@@ -8,6 +8,7 @@ import { useStorage } from '@plasmohq/storage/hook'
 import { useConfirmDanger } from '@/components/Common/confirm-danger'
 import { defaultEmbeddingModelForRag } from '@/services/ollama'
 import { tldwModels } from '@/services/tldw'
+import { useConnectionState } from '@/hooks/useConnectionState'
 
 type Entry = {
   id: string
@@ -131,7 +132,13 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
   const [selectedRowId, setSelectedRowId] = React.useState<string | null>(null)
   const [selectedFileIndex, setSelectedFileIndex] = React.useState<number | null>(null)
   const [inspectorOpen, setInspectorOpen] = React.useState<boolean>(false)
+  const [hasOpenedInspector, setHasOpenedInspector] = React.useState<boolean>(false)
+  const [showInspectorIntro, setShowInspectorIntro] = React.useState<boolean>(true)
+  const [inspectorIntroDismissed, setInspectorIntroDismissed] = useStorage<boolean>('quickIngestInspectorIntroDismissed', false)
   const confirmDanger = useConfirmDanger()
+  const introToast = React.useRef(false)
+  const { isConnected, offlineBypass } = useConnectionState()
+  const ingestBlocked = !isConnected || Boolean(offlineBypass)
 
   const formatBytes = React.useCallback((bytes?: number) => {
     if (!bytes || Number.isNaN(bytes)) return ''
@@ -298,6 +305,10 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
   }, [])
 
   const run = async () => {
+    if (ingestBlocked) {
+      messageApi.warning('Offline: uploads are paused until connection is restored.')
+      return
+    }
     const valid = rows.filter((r) => r.url.trim().length > 0)
     if (valid.length === 0 && localFiles.length === 0) {
       messageApi.error('Please add at least one URL or file')
@@ -773,6 +784,21 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
     return localFiles[selectedFileIndex] || null
   }, [localFiles, selectedFileIndex])
 
+  // Keep intro hidden if user dismissed previously
+  React.useEffect(() => {
+    if (inspectorIntroDismissed) {
+      setShowInspectorIntro(false)
+    }
+  }, [inspectorIntroDismissed])
+
+  // Auto-open inspector on first meaningful selection to guide users
+  React.useEffect(() => {
+    if ((selectedRow || selectedFile) && !hasOpenedInspector) {
+      setInspectorOpen(true)
+      setHasOpenedInspector(true)
+    }
+  }, [hasOpenedInspector, selectedFile, selectedRow])
+
   React.useEffect(() => {
     if (selectedRowId && rows.some((r) => r.id === selectedRowId)) {
       return
@@ -903,9 +929,37 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
     }
   }, [])
 
+  React.useEffect(() => {
+    const forceIntro = () => {
+      setShowInspectorIntro(true)
+      setInspectorOpen(true)
+      try {
+        setInspectorIntroDismissed(false)
+      } catch {}
+    }
+    window.addEventListener('quick-ingest:force-intro', forceIntro)
+    return () => window.removeEventListener('quick-ingest:force-intro', forceIntro)
+  }, [setInspectorIntroDismissed])
+
   return (
     <Modal
-      title={t('quickIngest.title') || 'Quick Ingest Media'}
+      title={
+        <div className="flex items-center gap-2">
+          <span>{t('quickIngest.title') || 'Quick Ingest Media'}</span>
+          <Button
+            size="small"
+            type="text"
+            icon={<HelpCircle className="w-4 h-4" />}
+            aria-label="Open Inspector intro"
+            title="Open Inspector intro"
+            onClick={() => {
+              setShowInspectorIntro(true)
+              try { setInspectorIntroDismissed(false) } catch {}
+              setInspectorOpen(true)
+            }}
+          />
+        </div>
+      }
       open={open}
       onCancel={onClose}
       footer={null}
@@ -915,6 +969,7 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
       maskClosable={!running}
     >
       {contextHolder}
+      <div className="relative">
       <Space direction="vertical" className="w-full">
         <div className="flex flex-col gap-1">
           <Typography.Text strong>{t('quickIngest.howItWorks', 'How this works')}</Typography.Text>
@@ -933,6 +988,11 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
             <li>Use the Inspector to see status, type, and quick checks before ingesting.</li>
           </ul>
         </div>
+        {ingestBlocked && (
+          <div className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800 dark:border-amber-600 dark:bg-amber-900/20 dark:text-amber-100">
+            Offline mode: you can add URLs and files to the queue, but ingestion is paused until the server reconnects. Nothing will upload until connection is restored.
+          </div>
+        )}
         <div className="space-y-3">
           <div className="rounded-md border border-gray-200 bg-white p-3 dark:border-gray-700 dark:bg-[#121212]">
             <div className="flex items-start justify-between gap-2">
@@ -986,7 +1046,12 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
                   <Button onClick={() => document.getElementById('qi-file-input')?.click()} disabled={running}>
                     {t('quickIngest.addFiles') || 'Browse files'}
                   </Button>
-                  <Button onClick={pasteFromClipboard} disabled={running}>
+                  <Button
+                    onClick={pasteFromClipboard}
+                    disabled={running}
+                    aria-label="Paste URLs from clipboard"
+                    title="Paste URLs from clipboard"
+                  >
                     Paste from clipboard
                   </Button>
                 </div>
@@ -999,8 +1064,15 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
                   Separate with commas or new lines
                 </Typography.Text>
               </div>
+              <label
+                htmlFor="quick-ingest-url-input"
+                className="text-xs font-medium text-gray-700 dark:text-gray-200"
+              >
+                URLs to ingest
+              </label>
               <Space.Compact className="w-full">
                 <Input
+                  id="quick-ingest-url-input"
                   placeholder="https://example.com, https://..."
                   value={pendingUrlInput}
                   onChange={(e) => setPendingUrlInput(e.target.value)}
@@ -1009,11 +1081,19 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
                     addUrlsFromInput(pendingUrlInput)
                   }}
                   disabled={running}
+                  aria-label="Paste URLs input"
+                  title="Paste URLs input"
                 />
-                <Button type="primary" onClick={() => addUrlsFromInput(pendingUrlInput)} disabled={running}>
-                  Add URLs
-                </Button>
-              </Space.Compact>
+                  <Button
+                    type="primary"
+                    onClick={() => addUrlsFromInput(pendingUrlInput)}
+                    disabled={running}
+                    aria-label="Add URLs to queue"
+                    title="Add URLs to queue"
+                  >
+                    Add URLs
+                  </Button>
+                </Space.Compact>
               <div className="flex items-center gap-2 text-xs text-gray-600">
                 <AlertTriangle className="w-4 h-4 text-gray-400" />
                 <span>Authentication-required pages may need cookies set in Advanced.</span>
@@ -1024,18 +1104,35 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
           <div className="rounded-md border border-gray-200 bg-white p-3 dark:border-gray-700 dark:bg-[#121212]">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <Typography.Title level={5} className="!mb-0">Queue</Typography.Title>
-              <div className="flex items-center gap-2">
-                <Button size="small" onClick={clearAllQueues} disabled={running && plannedCount > 0}>
+                <div className="flex items-center gap-2">
+                <Button
+                  size="small"
+                  onClick={clearAllQueues}
+                  disabled={running && plannedCount > 0}
+                  aria-label="Clear all queued items"
+                  title="Clear all queued items"
+                >
                   Clear all
                 </Button>
-                <Button size="small" onClick={addRow} disabled={running}>
+                <Button
+                  size="small"
+                  onClick={addRow}
+                  disabled={running}
+                  aria-label="Add blank URL row"
+                  title="Add blank URL row"
+                >
                   Add blank row
                 </Button>
-                <Button size="small" onClick={() => setInspectorOpen(true)} disabled={!(selectedRow || selectedFile)}>
-                  Open Inspector
-                </Button>
+                  <Button
+                    size="small"
+                    aria-label="Open Inspector"
+                    title="Open Inspector"
+                    onClick={() => setInspectorOpen(true)}
+                    disabled={!(selectedRow || selectedFile)}>
+                    Open Inspector
+                  </Button>
+                </div>
               </div>
-            </div>
             <div className="text-xs text-gray-500 mb-2">
               Staged items appear here. Click a row to open the Inspector; badges show defaults, custom edits, or items needing attention.
             </div>
@@ -1057,16 +1154,30 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
                 return (
                   <div
                     key={row.id}
-                    className={`rounded-md border px-3 py-2 transition hover:border-blue-400 ${isSelected ? 'border-blue-500 shadow-sm' : 'border-gray-200 dark:border-gray-700'}`}
-                    onClick={() => {
-                      setSelectedRowId(row.id)
-                      setSelectedFileIndex(null)
-                      setInspectorOpen(true)
-                    }}
-                  >
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="flex items-center gap-2">
-                        {typeIcon(detected)}
+                  className={`group relative rounded-md border px-3 py-2 transition hover:border-blue-400 ${isSelected ? 'border-blue-500 shadow-sm' : 'border-gray-200 dark:border-gray-700'}`}
+                  onClick={() => {
+                    setSelectedRowId(row.id)
+                    setSelectedFileIndex(null)
+                    setInspectorOpen(true)
+                  }}
+                >
+                    <Button
+                      size="small"
+                      type="text"
+                      className={`absolute right-2 top-2 opacity-0 transition focus:opacity-100 group-hover:opacity-100 ${isSelected ? 'opacity-100' : ''}`}
+                      aria-label="Open Inspector for this item"
+                      title="Open Inspector for this item"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        setSelectedRowId(row.id)
+                        setSelectedFileIndex(null)
+                        setInspectorOpen(true)
+                      }}>
+                      <Info className="w-4 h-4 text-gray-500" />
+                    </Button>
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex items-center gap-2">
+                      {typeIcon(detected)}
                         <div className="flex flex-col">
                           <Typography.Text className="text-sm font-medium">
                             {row.url ? row.url : 'Untitled URL'}
@@ -1089,6 +1200,8 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
                         onClick={(e) => e.stopPropagation()}
                         onChange={(e) => updateRow(row.id, { url: e.target.value })}
                         disabled={running}
+                        aria-label="Source URL"
+                        title="Source URL"
                       />
                       <div className="flex flex-wrap items-center gap-2 text-xs text-gray-500">
                         <Select
@@ -1096,6 +1209,8 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
                           value={row.type}
                           onClick={(e) => e.stopPropagation()}
                           onChange={(v) => updateRow(row.id, { type: v as Entry['type'] })}
+                          aria-label="Force media type"
+                          title="Force media type"
                           options={[
                             { label: 'Auto', value: 'auto' },
                             { label: 'HTML', value: 'html' },
@@ -1106,9 +1221,16 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
                           ]}
                           disabled={running}
                         />
-                        <Button size="small" danger onClick={(e) => { e.stopPropagation(); removeRow(row.id) }} disabled={rows.length === 1 || running}>
-                          {t('quickIngest.remove') || 'Remove'}
-                        </Button>
+                          <Button
+                            size="small"
+                            danger
+                            onClick={(e) => { e.stopPropagation(); removeRow(row.id) }}
+                            disabled={rows.length === 1 || running}
+                            aria-label="Remove this row from queue"
+                            title="Remove this row from queue"
+                          >
+                            {t('quickIngest.remove') || 'Remove'}
+                          </Button>
                       </div>
                     </div>
                   </div>
@@ -1134,16 +1256,30 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
                 return (
                   <div
                     key={`${f.name}-${idx}`}
-                    className={`rounded-md border px-3 py-2 transition hover:border-blue-400 ${isSelected ? 'border-blue-500 shadow-sm' : 'border-gray-200 dark:border-gray-700'}`}
-                    onClick={() => {
-                      setSelectedFileIndex(idx)
-                      setSelectedRowId(null)
-                      setInspectorOpen(true)
-                    }}
-                  >
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="flex items-center gap-2">
-                        {typeIcon(type)}
+                  className={`group relative rounded-md border px-3 py-2 transition hover:border-blue-400 ${isSelected ? 'border-blue-500 shadow-sm' : 'border-gray-200 dark:border-gray-700'}`}
+                  onClick={() => {
+                    setSelectedFileIndex(idx)
+                    setSelectedRowId(null)
+                    setInspectorOpen(true)
+                  }}
+                >
+                    <Button
+                      size="small"
+                      type="text"
+                      className={`absolute right-2 top-2 opacity-0 transition focus:opacity-100 group-hover:opacity-100 ${isSelected ? 'opacity-100' : ''}`}
+                      aria-label="Open Inspector for this file"
+                      title="Open Inspector for this file"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        setSelectedFileIndex(idx)
+                        setSelectedRowId(null)
+                        setInspectorOpen(true)
+                      }}>
+                      <Info className="w-4 h-4 text-gray-500" />
+                    </Button>
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex items-center gap-2">
+                      {typeIcon(type)}
                         <div className="flex flex-col">
                           <Typography.Text className="text-sm font-medium truncate max-w-[360px]">
                             {f.name}
@@ -1161,27 +1297,29 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
                       </div>
                     </div>
                     <div className="mt-2 flex items-center gap-2 text-xs text-gray-600">
-                      <Button
-                        size="small"
-                        danger
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          setLocalFiles((prev) => {
-                            const next = prev.filter((_, i) => i !== idx)
-                            if (selectedFileIndex === idx) {
-                              setSelectedFileIndex(null)
-                            }
-                            return next
-                          })
-                        }}
-                        disabled={running}
-                      >
-                        {t('quickIngest.remove') || 'Remove'}
-                      </Button>
+                        <Button
+                          size="small"
+                          danger
+                          aria-label="Remove this file from queue"
+                          title="Remove this file from queue"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            setLocalFiles((prev) => {
+                              const next = prev.filter((_, i) => i !== idx)
+                              if (selectedFileIndex === idx) {
+                                setSelectedFileIndex(null)
+                              }
+                              return next
+                            })
+                          }}
+                          disabled={running}
+                        >
+                          {t('quickIngest.remove') || 'Remove'}
+                        </Button>
+                      </div>
                     </div>
-                  </div>
-                )
-              })}
+                  )
+                })}
 
               {rows.length === 0 && localFiles.length === 0 && (
                 <div className="rounded-md border border-dashed border-gray-300 p-4 text-center text-sm text-gray-600 dark:border-gray-700 dark:text-gray-300">
@@ -1194,37 +1332,40 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
           <div className="rounded-md border border-gray-200 bg-white p-3 space-y-3 dark:border-gray-700 dark:bg-[#121212]">
             <Typography.Title level={5} className="!mb-2">{t('quickIngest.commonOptions') || 'Ingestion options'}</Typography.Title>
             <Space wrap size="middle" align="center">
-              <Space align="center">
-                <span>Analysis</span>
-                <Switch
-                  aria-label="Ingestion options \u2013 analysis"
-                  checked={common.perform_analysis}
-                  onChange={(v) =>
-                    setCommon((c) => ({ ...c, perform_analysis: v }))
-                  }
-                  disabled={running}
+                <Space align="center">
+                  <span>Analysis</span>
+                  <Switch
+                    aria-label="Ingestion options \u2013 analysis"
+                    title="Toggle analysis"
+                    checked={common.perform_analysis}
+                    onChange={(v) =>
+                      setCommon((c) => ({ ...c, perform_analysis: v }))
+                    }
+                    disabled={running}
                 />
               </Space>
-              <Space align="center">
-                <span>Chunking</span>
-                <Switch
-                  aria-label="Ingestion options \u2013 chunking"
-                  checked={common.perform_chunking}
-                  onChange={(v) =>
-                    setCommon((c) => ({ ...c, perform_chunking: v }))
-                  }
-                  disabled={running}
+                <Space align="center">
+                  <span>Chunking</span>
+                  <Switch
+                    aria-label="Ingestion options \u2013 chunking"
+                    title="Toggle chunking"
+                    checked={common.perform_chunking}
+                    onChange={(v) =>
+                      setCommon((c) => ({ ...c, perform_chunking: v }))
+                    }
+                    disabled={running}
                 />
               </Space>
-              <Space align="center">
-                <span>Overwrite existing</span>
-                <Switch
-                  aria-label="Ingestion options \u2013 overwrite existing"
-                  checked={common.overwrite_existing}
-                  onChange={(v) =>
-                    setCommon((c) => ({ ...c, overwrite_existing: v }))
-                  }
-                  disabled={running}
+                <Space align="center">
+                  <span>Overwrite existing</span>
+                  <Switch
+                    aria-label="Ingestion options \u2013 overwrite existing"
+                    title="Toggle overwrite existing"
+                    checked={common.overwrite_existing}
+                    onChange={(v) =>
+                      setCommon((c) => ({ ...c, overwrite_existing: v }))
+                    }
+                    disabled={running}
                 />
               </Space>
             </Space>
@@ -1242,23 +1383,27 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
                       return { ...x, audio: { ...(x.audio || {}), language: e.target.value } }
                     }))}
                     disabled={running}
+                    aria-label="Audio language"
+                    title="Audio language"
                   />
-                  <Select
-                    className="min-w-40"
-                    value={firstAudioRow?.audio?.diarize ?? false}
-                    onChange={(v) => setRows((rs) => rs.map((x) => {
-                      const isAudio = x.type === 'audio' || (x.type === 'auto' && detectTypeFromUrl(x.url) === 'audio')
-                      if (!isAudio) return x
-                      return { ...x, audio: { ...(x.audio || {}), diarize: Boolean(v) } }
-                    }))}
-                    options={[{ label: 'Diarization: Off', value: false }, { label: 'Diarization: On', value: true }]}
-                    disabled={running}
-                  />
+                    <Select
+                      className="min-w-40"
+                      value={firstAudioRow?.audio?.diarize ?? false}
+                      onChange={(v) => setRows((rs) => rs.map((x) => {
+                        const isAudio = x.type === 'audio' || (x.type === 'auto' && detectTypeFromUrl(x.url) === 'audio')
+                        if (!isAudio) return x
+                        return { ...x, audio: { ...(x.audio || {}), diarize: Boolean(v) } }
+                      }))}
+                      aria-label="Audio diarization toggle"
+                      title="Audio diarization toggle"
+                      options={[{ label: 'Diarization: Off', value: false }, { label: 'Diarization: On', value: true }]}
+                      disabled={running}
+                    />
                 </Space>
                 <Typography.Text type="secondary" className="text-xs">
                   {t('quickIngest.audioDiarizationHelp') || 'Turn on to separate speakers in transcripts; applies to all audio rows in this batch.'}
                 </Typography.Text>
-                <Typography.Text className="text-[11px] text-gray-500 block">
+                <Typography.Text className="text-[11px] text-gray-500 block" title="These audio settings apply to every audio item in this run.">
                   These settings apply to every audio item in this run.
                 </Typography.Text>
               </div>
@@ -1267,21 +1412,23 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
             {rows.some((r) => (r.type === 'document' || r.type === 'pdf' || (r.type === 'auto' && ['document', 'pdf'].includes(detectTypeFromUrl(r.url))))) && (
               <div className="space-y-1">
                 <Typography.Title level={5} className="!mb-1">{t('quickIngest.documentOptions') || 'Document options'}</Typography.Title>
-                <Select
-                  className="min-w-40"
-                  value={firstDocumentRow?.document?.ocr ?? true}
-                  onChange={(v) => setRows((rs) => rs.map((x) => {
-                    const isDoc = x.type === 'document' || x.type === 'pdf' || (x.type === 'auto' && ['document', 'pdf'].includes(detectTypeFromUrl(x.url)))
-                    if (!isDoc) return x
-                    return { ...x, document: { ...(x.document || {}), ocr: Boolean(v) } }
-                  }))}
-                  options={[{ label: 'OCR: Off', value: false }, { label: 'OCR: On', value: true }]}
-                  disabled={running}
-                />
+                  <Select
+                    className="min-w-40"
+                    value={firstDocumentRow?.document?.ocr ?? true}
+                    onChange={(v) => setRows((rs) => rs.map((x) => {
+                      const isDoc = x.type === 'document' || x.type === 'pdf' || (x.type === 'auto' && ['document', 'pdf'].includes(detectTypeFromUrl(x.url)))
+                      if (!isDoc) return x
+                      return { ...x, document: { ...(x.document || {}), ocr: Boolean(v) } }
+                    }))}
+                    aria-label="OCR toggle"
+                    title="OCR toggle"
+                    options={[{ label: 'OCR: Off', value: false }, { label: 'OCR: On', value: true }]}
+                    disabled={running}
+                  />
                 <Typography.Text type="secondary" className="text-xs">
                   {t('quickIngest.ocrHelp') || 'OCR helps extract text from scanned PDFs or images; applies to all document/PDF rows.'}
                 </Typography.Text>
-                <Typography.Text className="text-[11px] text-gray-500 block">
+                <Typography.Text className="text-[11px] text-gray-500 block" title="These document settings apply to every document/PDF in this run.">
                   Applies to all document/PDF items in this batch.
                 </Typography.Text>
               </div>
@@ -1298,13 +1445,15 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
                     if (!isVideo) return x
                     return { ...x, video: { ...(x.video || {}), captions: Boolean(v) } }
                   }))}
+                  aria-label="Captions toggle"
+                  title="Captions toggle"
                   options={[{ label: 'Captions: Off', value: false }, { label: 'Captions: On', value: true }]}
                   disabled={running}
                 />
                 <Typography.Text type="secondary" className="text-xs">
                   {t('quickIngest.captionsHelp') || 'Include timestamps/captions for all video rows; helpful for search and summaries.'}
                 </Typography.Text>
-                <Typography.Text className="text-[11px] text-gray-500 block">
+                <Typography.Text className="text-[11px] text-gray-500 block" title="These video settings apply to every video in this run.">
                   Applies to all video items in this batch.
                 </Typography.Text>
               </div>
@@ -1336,6 +1485,7 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
                             ? "Processing mode \u2013 store to remote DB"
                             : "Processing mode \u2013 process locally"
                         }
+                        title={storeRemote ? 'Store to remote DB' : 'Process locally'}
                         checked={storeRemote}
                         onChange={setStoreRemote}
                         disabled={running}
@@ -1345,7 +1495,10 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
                       </Typography.Text>
                     </Space>
                   </div>
-                  <span className="text-xs text-gray-500 dark:text-gray-400">
+                  <span
+                    className="text-xs text-gray-500 dark:text-gray-400"
+                    title={running && (liveTotalCount || totalPlanned) > 0 ? 'Current ingest progress' : 'Items ready to ingest'}
+                  >
                     {(() => {
                       const done = processedCount || results.length
                       const total = liveTotalCount || totalPlanned
@@ -1370,16 +1523,23 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
                   type="primary"
                   loading={running}
                   onClick={run}
-                  disabled={plannedCount === 0}
+                  disabled={plannedCount === 0 || ingestBlocked}
+                  aria-label={ingestBlocked ? "Offline \u2013 ingestion paused" : "Run quick ingest"}
+                  title={ingestBlocked ? "Offline \u2013 ingestion paused until server is back" : "Run quick ingest"}
                 >
                   {storeRemote
                     ? (t('quickIngest.ingest') || 'Ingest')
                     : (t('quickIngest.process') || 'Process')}
                 </Button>
-                <Button onClick={onClose} disabled={running}>
+                <Button onClick={onClose} disabled={running} aria-label="Close quick ingest" title="Close quick ingest">
                   {t('quickIngest.cancel') || 'Cancel'}
                 </Button>
               </div>
+              {ingestBlocked && (
+                <div className="mt-1 text-xs text-amber-700 dark:text-amber-200">
+                  Offline: staging is allowed, but uploads will wait until the server reconnects.
+                </div>
+              )}
               {progressMeta.total > 0 && (
                 <div className="mt-2">
                   <Progress percent={progressMeta.pct} showInfo={false} size="small" />
@@ -1393,6 +1553,13 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
           </div>
         </div>
 
+        <div
+          aria-hidden
+          className={`pointer-events-none absolute inset-0 transition-opacity duration-300 ease-out ${inspectorOpen && (selectedRow || selectedFile) ? 'opacity-100' : 'opacity-0'}`}
+        >
+          <div className="absolute right-0 top-0 h-full w-40 bg-gradient-to-l from-blue-300/40 via-blue-200/20 to-transparent blur-md" />
+        </div>
+
         <Drawer
           title="Inspector"
           placement="right"
@@ -1401,52 +1568,80 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
           destroyOnClose
           width={380}
         >
-          {selectedRow || selectedFile ? (
-            <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                {typeIcon(selectedRow ? (selectedRow.type === 'auto' ? detectTypeFromUrl(selectedRow.url) : selectedRow.type) : fileTypeFromName(selectedFile!))}
-                <Typography.Text strong>
-                  {selectedRow ? (selectedRow.url || 'Untitled URL') : selectedFile?.name}
-                </Typography.Text>
+          <div className="space-y-3">
+            {showInspectorIntro && (
+              <div className="rounded-md border border-blue-100 bg-blue-50 p-3 text-sm text-gray-700">
+                <Typography.Text strong className="block mb-1">How to use the Inspector</Typography.Text>
+                <ul className="list-disc list-inside space-y-1 text-xs">
+                  <li>Click a queued item to see its detected type, status, and warnings.</li>
+                  <li>Use per-type controls on the main panel to set defaults; any per-row override marks it Custom.</li>
+                  <li>For auth-required URLs, add cookies/headers in Advanced before ingesting.</li>
+                </ul>
+                <Button
+                  size="small"
+                  className="mt-2"
+                  aria-label="Dismiss Inspector intro and close"
+                  title="Dismiss Inspector intro and close"
+                  onClick={() => {
+                    setShowInspectorIntro(false)
+                    try { setInspectorIntroDismissed(true) } catch {}
+                    setInspectorOpen(false)
+                    if (!introToast.current) {
+                      messageApi.success('Intro dismissed. Reset anytime with “Reset Inspector Intro.”')
+                      introToast.current = true
+                    }
+                  }}>
+                  Got it
+                </Button>
               </div>
-              <div className="flex flex-wrap items-center gap-2 text-xs text-gray-600">
+            )}
+            {selectedRow || selectedFile ? (
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  {typeIcon(selectedRow ? (selectedRow.type === 'auto' ? detectTypeFromUrl(selectedRow.url) : selectedRow.type) : fileTypeFromName(selectedFile!))}
+                  <Typography.Text strong>
+                    {selectedRow ? (selectedRow.url || 'Untitled URL') : selectedFile?.name}
+                  </Typography.Text>
+                </div>
+                <div className="flex flex-wrap items-center gap-2 text-xs text-gray-600">
+                  {selectedRow ? (
+                    <>
+                      <Tag color={statusForUrlRow(selectedRow).color === 'default' ? undefined : statusForUrlRow(selectedRow).color}>{statusForUrlRow(selectedRow).label}</Tag>
+                      <Tag color="geekblue">
+                        {(selectedRow.type === 'auto' ? detectTypeFromUrl(selectedRow.url) : selectedRow.type).toUpperCase()}
+                      </Tag>
+                      {statusForUrlRow(selectedRow).reason ? <span className="text-orange-600">{statusForUrlRow(selectedRow).reason}</span> : <span>Default settings will apply.</span>}
+                    </>
+                  ) : null}
+                  {selectedFile ? (
+                    <>
+                      <Tag color={statusForFile(selectedFile).color === 'default' ? undefined : statusForFile(selectedFile).color}>{statusForFile(selectedFile).label}</Tag>
+                      <Tag color="geekblue">{fileTypeFromName(selectedFile).toUpperCase()}</Tag>
+                      <span>{formatBytes((selectedFile as any)?.size)} {selectedFile.type ? `· ${selectedFile.type}` : ''}</span>
+                      {statusForFile(selectedFile).reason ? <span className="text-orange-600">{statusForFile(selectedFile).reason}</span> : null}
+                    </>
+                  ) : null}
+                </div>
                 {selectedRow ? (
-                  <>
-                    <Tag color={statusForUrlRow(selectedRow).color === 'default' ? undefined : statusForUrlRow(selectedRow).color}>{statusForUrlRow(selectedRow).label}</Tag>
-                    <Tag color="geekblue">
-                      {(selectedRow.type === 'auto' ? detectTypeFromUrl(selectedRow.url) : selectedRow.type).toUpperCase()}
-                    </Tag>
-                    {statusForUrlRow(selectedRow).reason ? <span className="text-orange-600">{statusForUrlRow(selectedRow).reason}</span> : <span>Default settings will apply.</span>}
-                  </>
+                  <div className="text-xs text-gray-600">
+                    Editing the URL or forcing a type marks this item as <strong>Custom</strong>.
+                  </div>
                 ) : null}
                 {selectedFile ? (
-                  <>
-                    <Tag color={statusForFile(selectedFile).color === 'default' ? undefined : statusForFile(selectedFile).color}>{statusForFile(selectedFile).label}</Tag>
-                    <Tag color="geekblue">{fileTypeFromName(selectedFile).toUpperCase()}</Tag>
-                    <span>{formatBytes((selectedFile as any)?.size)} {selectedFile.type ? `· ${selectedFile.type}` : ''}</span>
-                    {statusForFile(selectedFile).reason ? <span className="text-orange-600">{statusForFile(selectedFile).reason}</span> : null}
-                  </>
+                  <div className="text-xs text-gray-600">
+                    File settings follow the per-type controls on the main panel.
+                  </div>
                 ) : null}
-              </div>
-              {selectedRow ? (
-                <div className="text-xs text-gray-600">
-                  Editing the URL or forcing a type marks this item as <strong>Custom</strong>.
+                <div className="text-xs text-gray-500">
+                  Use Advanced options to set cookies/auth if required. Errors or warnings appear on each row.
                 </div>
-              ) : null}
-              {selectedFile ? (
-                <div className="text-xs text-gray-600">
-                  File settings follow the per-type controls on the main panel.
-                </div>
-              ) : null}
-              <div className="text-xs text-gray-500">
-                Use Advanced options to set cookies/auth if required. Errors or warnings appear on each row.
               </div>
-            </div>
-          ) : (
-            <div className="text-sm text-gray-600">
-              Select a queued item to view details.
-            </div>
-          )}
+            ) : (
+              <div className="text-sm text-gray-600">
+                Select a queued item to view details.
+              </div>
+            )}
+          </div>
         </Drawer>
 
         <Collapse
@@ -1493,11 +1688,25 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
                     )}
                   </Typography.Text>
                 )}
+                <Button
+                  size="small"
+                  type="default"
+                  aria-label="Reset Inspector intro helper"
+                  title="Reset Inspector intro helper"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    setInspectorIntroDismissed(false)
+                    setShowInspectorIntro(true)
+                    setInspectorOpen(true)
+                  }}>
+                  Reset Inspector Intro
+                </Button>
                 <Space size="small" align="center">
                   <span className="text-xs text-gray-500">Prefer server</span>
                   <Switch
                     size="small"
                     aria-label="Advanced options \u2013 prefer server OpenAPI spec"
+                    title="Prefer server OpenAPI spec"
                     checked={!!specPrefs?.preferServer}
                     onChange={async (v) => {
                       persistSpecPrefs({ ...(specPrefs || {}), preferServer: v })
@@ -1507,6 +1716,8 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
                 </Space>
                 <Button
                   size="small"
+                  aria-label="Reload advanced spec from server"
+                  title="Reload advanced spec from server"
                   onClick={(e) => {
                     e.stopPropagation()
                     void loadSpec(true, true)
@@ -1517,6 +1728,8 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
                 <Button
                   size="small"
                   danger
+                  aria-label="Reset advanced options and UI state"
+                  title="Reset advanced options and UI state"
                   onClick={async (e) => {
                     e.stopPropagation()
                     const ok = await confirmDanger({
@@ -1552,6 +1765,8 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
                   value={advSearch}
                   onChange={(e) => setAdvSearch(e.target.value)}
                   className="max-w-80"
+                  aria-label="Search advanced fields"
+                  title="Search advanced fields"
                 />
                 {modifiedAdvancedCount > 0 && (
                   <Tag color="gold">{t('quickIngest.modifiedCount', '{{count}} modified', { count: modifiedAdvancedCount })}</Tag>
@@ -1770,6 +1985,7 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
           </div>
         )}
       </Space>
+      </div>
     </Modal>
   )
 }

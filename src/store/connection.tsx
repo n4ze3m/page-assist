@@ -105,6 +105,7 @@ const initialState: ConnectionState = {
   lastStatusCode: null,
   isConnected: false,
   isChecking: false,
+  offlineBypass: false,
   knowledgeStatus: "unknown",
   knowledgeLastCheckedAt: null,
   knowledgeError: null
@@ -121,6 +122,27 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
       return
     }
 
+    let persistedServerUrl: string | null = null
+    try {
+      const cfg = await tldwClient.getConfig()
+      if (cfg?.serverUrl) persistedServerUrl = cfg.serverUrl
+    } catch {
+      // ignore config read errors
+    }
+    try {
+      if (!persistedServerUrl && typeof chrome !== "undefined" && chrome?.storage?.local) {
+        await new Promise<void>((resolve) =>
+          chrome.storage.local.get("tldwConfig", (res) => {
+            const url = res?.tldwConfig?.serverUrl
+            if (url) persistedServerUrl = url
+            resolve()
+          })
+        )
+      }
+    } catch {
+      // ignore storage read errors
+    }
+
     // Test-only hook: force a missing/unconfigured state without network calls.
     const forceUnconfigured = await getForceUnconfiguredFlag()
     if (forceUnconfigured) {
@@ -128,9 +150,10 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
         state: {
           ...prev,
           phase: ConnectionPhase.UNCONFIGURED,
-          serverUrl: null,
+          serverUrl: persistedServerUrl,
           isConnected: false,
           isChecking: false,
+          offlineBypass: false,
           lastCheckedAt: Date.now(),
           lastError: null,
           lastStatusCode: null,
@@ -147,7 +170,11 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
     // or chrome.storage.local[__tldw_allow_offline].
     const bypass = await getOfflineBypassFlag()
     if (bypass) {
-      const serverUrl = (await ensurePlaceholderConfig()) ?? prev.serverUrl ?? "offline://local"
+      const serverUrl =
+        persistedServerUrl ??
+        (await ensurePlaceholderConfig()) ??
+        prev.serverUrl ??
+        "offline://local"
       set({
         state: {
           ...prev,
@@ -155,6 +182,7 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
           serverUrl,
           isConnected: true,
           isChecking: false,
+          offlineBypass: true,
           lastCheckedAt: Date.now(),
           lastError: null,
           lastStatusCode: null,
@@ -182,7 +210,9 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
       state: {
         ...prev,
         phase: ConnectionPhase.SEARCHING,
+        serverUrl: persistedServerUrl ?? prev.serverUrl,
         isChecking: true,
+        offlineBypass: false,
         lastError: null
       }
     })
@@ -280,6 +310,7 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
           serverUrl,
           isConnected: ok,
           isChecking: false,
+          offlineBypass: false,
           lastCheckedAt: Date.now(),
           lastError: ok ? null : (raced.error || 'timeout-or-offline'),
           lastStatusCode: ok ? null : raced.status,
@@ -295,6 +326,7 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
           phase: ConnectionPhase.ERROR,
           isConnected: false,
           isChecking: false,
+          offlineBypass: false,
           lastCheckedAt: Date.now(),
           lastError: (error as Error)?.message ?? "unknown-error",
           lastStatusCode: 0,

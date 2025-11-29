@@ -1,0 +1,745 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Design Guide Swatches</title>
+    <style>
+      @font-face {
+        font-family: "Inter";
+        src: url("../src/assets/fonts/Inter-Regular.ttf") format("truetype");
+        font-style: normal;
+        font-weight: 400;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: "Inter";
+        src: url("../src/assets/fonts/Inter-Medium.ttf") format("truetype");
+        font-style: normal;
+        font-weight: 500;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: "Inter";
+        src: url("../src/assets/fonts/Inter-SemiBold.ttf") format("truetype");
+        font-style: normal;
+        font-weight: 600;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: "Space Grotesk";
+        src: url("../src/assets/fonts/SpaceGrotesk-Medium.ttf") format("truetype");
+        font-style: normal;
+        font-weight: 500;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: "Space Grotesk";
+        src: url("../src/assets/fonts/SpaceGrotesk-SemiBold.ttf") format("truetype");
+        font-style: normal;
+        font-weight: 600;
+        font-display: swap;
+      }
+      :root {
+        --color-bg: #0f1117;
+        --color-surface: #161925;
+        --color-surface-2: #1d2130;
+        --color-primary: #7c5dff;
+        --color-primary-strong: #5a3df0;
+        --color-accent: #5ef5d8;
+        --color-success: #3dd598;
+        --color-warn: #ffb547;
+        --color-danger: #ff5c8d;
+        --color-muted: #94a3b8;
+        --color-border: #2a3042;
+        --color-text: #e6e8ef;
+        --color-text-muted: #b6bed1;
+        --color-focus: #5ef5d8;
+      }
+      .light {
+        --color-bg: #f7f8fb;
+        --color-surface: #ffffff;
+        --color-surface-2: #f0f2f9;
+        --color-primary: #5a3df0;
+        --color-primary-strong: #442ac7;
+        --color-accent: #15d1b1;
+        --color-success: #1f9c73;
+        --color-warn: #d98c1f;
+        --color-danger: #d63964;
+        --color-muted: #60708f;
+        --color-border: #d9deea;
+        --color-text: #0f1117;
+        --color-text-muted: #475168;
+        --color-focus: #15d1b1;
+      }
+      body {
+        margin: 0;
+        padding: 24px;
+        background: var(--color-bg);
+        color: var(--color-text);
+        font: 14px/1.6 Inter, system-ui, -apple-system, sans-serif;
+      }
+      h2, h3 {
+        margin: 0 0 12px;
+        font-size: 18px;
+        font-family: "Space Grotesk", "Inter", system-ui, -apple-system, sans-serif;
+      }
+      h3 {
+        font-size: 16px;
+      }
+      .panel {
+        padding: 16px;
+        border-radius: 12px;
+        background: var(--color-surface);
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.16);
+        border: 1px solid var(--color-border);
+        margin-bottom: 20px;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 12px;
+      }
+      .swatch {
+        border-radius: 10px;
+        padding: 12px;
+        min-height: 64px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+        border: 1px solid rgba(255, 255, 255, 0.04);
+      }
+      .label {
+        font-weight: 600;
+        font-size: 13px;
+      }
+      .code {
+        opacity: 0.8;
+        font-size: 12px;
+      }
+      .divider {
+        height: 1px;
+        margin: 24px 0;
+        background: var(--color-border);
+      }
+      .demo-block {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        align-items: center;
+      }
+      .btn {
+        border: none;
+        cursor: pointer;
+        padding: 10px 16px;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 14px;
+        transition: transform 120ms ease, box-shadow 160ms ease, background 160ms ease;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+      }
+      .btn:focus-visible {
+        outline: 2px solid var(--color-focus);
+        outline-offset: 2px;
+      }
+      .btn.primary { background: var(--color-primary); color: var(--color-surface); }
+      .btn.secondary { background: var(--color-surface-2); color: var(--color-text); border: 1px solid var(--color-border); }
+      .btn.tertiary { background: transparent; color: var(--color-text); border: 1px solid var(--color-border); box-shadow: none; }
+      .btn.destructive { background: var(--color-danger); color: #fff; }
+      .btn.disabled { opacity: 0.6; cursor: not-allowed; box-shadow: none; }
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        border-radius: 999px;
+        padding: 6px 10px;
+        font-weight: 600;
+        font-size: 12px;
+        background: var(--color-surface-2);
+        color: var(--color-text);
+        border: 1px solid var(--color-border);
+      }
+      .dot {
+        width: 8px; height: 8px; border-radius: 50%;
+      }
+      .input {
+        width: 260px;
+        padding: 10px 12px;
+        border-radius: 10px;
+        border: 1px solid var(--color-border);
+        background: var(--color-surface-2);
+        color: var(--color-text);
+        font-size: 14px;
+      }
+      .input:focus {
+        border-color: var(--color-primary);
+        outline: 2px solid var(--color-focus);
+        outline-offset: 2px;
+      }
+      .field {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        color: var(--color-text);
+      }
+      .helper { color: var(--color-text-muted); font-size: 12px; }
+      .error { color: var(--color-danger); font-size: 12px; }
+      .card {
+        background: var(--color-surface-2);
+        border: 1px solid var(--color-border);
+        border-radius: 12px;
+        padding: 16px;
+        color: var(--color-text);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+        max-width: 340px;
+      }
+      .card h4 { margin: 0 0 8px; font-size: 15px; }
+      .card p { margin: 0 0 12px; color: var(--color-text-muted); }
+      .alert {
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
+        padding: 12px;
+        border-radius: 10px;
+        border: 1px solid;
+        font-size: 13px;
+      }
+      .alert.warn { border-color: var(--color-warn); background: color-mix(in srgb, var(--color-warn) 12%, transparent); color: var(--color-text); }
+      .alert.danger { border-color: var(--color-danger); background: color-mix(in srgb, var(--color-danger) 12%, transparent); color: var(--color-text); }
+      .toast {
+        display: inline-flex;
+        gap: 8px;
+        align-items: center;
+        padding: 10px 12px;
+        border-radius: 12px;
+        background: var(--color-surface-2);
+        border: 1px solid var(--color-border);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+        color: var(--color-text);
+      }
+      .tooltip {
+        display: inline-block;
+        background: var(--color-surface-2);
+        color: var(--color-text);
+        padding: 8px 10px;
+        border-radius: 8px;
+        border: 1px solid var(--color-border);
+        font-size: 12px;
+        max-width: 240px;
+      }
+      .section {
+        margin-top: 16px;
+      }
+      .example-box {
+        border-radius: 12px;
+        border: 1px solid var(--color-border);
+        background: var(--color-surface-2);
+        padding: 14px;
+        color: var(--color-text);
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+        max-width: 520px;
+      }
+      .example-label {
+        display: inline-block;
+        font-weight: 700;
+        font-size: 12px;
+        padding: 4px 8px;
+        border-radius: 999px;
+        margin-bottom: 8px;
+      }
+      .example-label.do { background: color-mix(in srgb, var(--color-success) 18%, transparent); color: var(--color-text); border: 1px solid color-mix(in srgb, var(--color-success) 30%, transparent); }
+      .example-label.dont { background: color-mix(in srgb, var(--color-danger) 14%, transparent); color: var(--color-text); border: 1px solid color-mix(in srgb, var(--color-danger) 30%, transparent); }
+      .toggle {
+        position: relative;
+        inline-size: 44px;
+        block-size: 24px;
+        border-radius: 999px;
+        background: var(--color-surface-2);
+        border: 1px solid var(--color-border);
+        transition: all 180ms ease;
+      }
+      .toggle::after {
+        content: "";
+        position: absolute;
+        inset-block: 3px;
+        inset-inline-start: 3px;
+        block-size: 16px;
+        inline-size: 16px;
+        border-radius: 50%;
+        background: var(--color-muted);
+        transition: all 180ms ease;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+      }
+      .toggle[data-on="true"] {
+        background: var(--color-primary);
+        border-color: var(--color-primary-strong);
+      }
+      .toggle[data-on="true"]::after {
+        inset-inline-start: 23px;
+        background: var(--color-surface);
+      }
+      .toggle-label {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--color-text);
+      }
+      .select {
+        padding: 10px 12px;
+        border-radius: 10px;
+        border: 1px solid var(--color-border);
+        background: var(--color-surface-2);
+        color: var(--color-text);
+        font-size: 14px;
+        min-width: 220px;
+        appearance: none;
+        background-image: linear-gradient(45deg, transparent 50%, var(--color-text) 50%), linear-gradient(135deg, var(--color-text) 50%, transparent 50%);
+        background-position: calc(100% - 18px) calc(50% - 3px), calc(100% - 12px) calc(50% - 3px);
+        background-size: 6px 6px, 6px 6px;
+        background-repeat: no-repeat;
+      }
+      .table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+      }
+      .table th, .table td {
+        text-align: left;
+        padding: 10px 12px;
+        border-bottom: 1px solid var(--color-border);
+        color: var(--color-text);
+      }
+      .table th {
+        color: var(--color-text-muted);
+        font-weight: 600;
+      }
+      .table tr:hover td {
+        background: color-mix(in srgb, var(--color-primary) 8%, transparent);
+      }
+      .checklist {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .checklist label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--color-text);
+      }
+      input[type="checkbox"], input[type="radio"] {
+        accent-color: var(--color-primary);
+        width: 16px;
+        height: 16px;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Dark</h2>
+    <div class="panel">
+      <div class="grid">
+        <div class="swatch" style="background: var(--color-primary); color: #fff;">
+          <span class="label">Primary</span>
+          <span class="code">#7c5dff</span>
+        </div>
+        <div class="swatch" style="background: var(--color-primary-strong); color: #fff;">
+          <span class="label">Primary Strong</span>
+          <span class="code">#5a3df0</span>
+        </div>
+        <div class="swatch" style="background: var(--color-accent); color: #0f1117;">
+          <span class="label">Accent</span>
+          <span class="code">#5ef5d8</span>
+        </div>
+        <div class="swatch" style="background: var(--color-success); color: #0f1117;">
+          <span class="label">Success</span>
+          <span class="code">#3dd598</span>
+        </div>
+        <div class="swatch" style="background: var(--color-warn); color: #0f1117;">
+          <span class="label">Warn</span>
+          <span class="code">#ffb547</span>
+        </div>
+        <div class="swatch" style="background: var(--color-danger); color: #fff;">
+          <span class="label">Danger</span>
+          <span class="code">#ff5c8d</span>
+        </div>
+        <div class="swatch" style="background: var(--color-surface); color: var(--color-text); border: 1px solid var(--color-border);">
+          <span class="label">Surface</span>
+          <span class="code">#161925</span>
+        </div>
+        <div class="swatch" style="background: var(--color-surface-2); color: var(--color-text); border: 1px solid var(--color-border); box-shadow: none;">
+          <span class="label">Surface 2</span>
+          <span class="code">#1d2130</span>
+        </div>
+        <div class="swatch" style="background: var(--color-muted); color: #0f1117;">
+          <span class="label">Muted</span>
+          <span class="code">#94a3b8</span>
+        </div>
+        <div class="swatch" style="background: var(--color-border); color: #fff;">
+          <span class="label">Border</span>
+          <span class="code">#2a3042</span>
+        </div>
+        <div class="swatch" style="background: var(--color-text); color: #0f1117;">
+          <span class="label">Text</span>
+          <span class="code">#e6e8ef</span>
+        </div>
+        <div class="swatch" style="background: var(--color-text-muted); color: #0f1117;">
+          <span class="label">Text Muted</span>
+          <span class="code">#b6bed1</span>
+        </div>
+        <div class="swatch" style="background: var(--color-focus); color: #0f1117;">
+          <span class="label">Focus</span>
+          <span class="code">#5ef5d8</span>
+        </div>
+        <div class="swatch" style="background: var(--color-bg); color: var(--color-text); border: 1px dashed var(--color-border);">
+          <span class="label">Background</span>
+          <span class="code">#0f1117</span>
+        </div>
+      </div>
+      <div class="section">
+        <h3>Buttons</h3>
+        <div class="demo-block">
+          <button class="btn primary">Primary</button>
+          <button class="btn secondary">Secondary</button>
+          <button class="btn tertiary">Tertiary</button>
+          <button class="btn destructive">Destructive</button>
+          <button class="btn primary disabled" disabled>Disabled</button>
+        </div>
+      </div>
+      <div class="section">
+        <h3>Badges</h3>
+        <div class="demo-block">
+          <span class="badge"><span class="dot" style="background: var(--color-accent);"></span>Light mode</span>
+          <span class="badge" style="background: var(--color-primary); color: #fff; border-color: transparent;"><span class="dot" style="background: #fff;"></span>Heavy mode</span>
+          <span class="badge"><span class="dot" style="background: var(--color-warn);"></span>Queued</span>
+        </div>
+      </div>
+      <div class="section">
+        <h3>Inputs</h3>
+        <div class="demo-block" style="flex-direction: column; align-items: flex-start;">
+          <label class="field">
+            <span>Server URL</span>
+            <input class="input" placeholder="https://tldw.example.com" />
+            <span class="helper">Used for Light mode processing</span>
+          </label>
+          <label class="field">
+            <span>API Key</span>
+            <input class="input" placeholder="••••••••••" />
+            <span class="error">Key required to process remotely</span>
+          </label>
+        </div>
+      </div>
+      <div class="section">
+        <h3>Toggles & selections</h3>
+        <div class="demo-block" style="flex-direction: column; align-items: flex-start;">
+          <label class="toggle-label">
+            <span>Local parsing</span>
+            <span class="toggle" data-on="true"></span>
+          </label>
+          <label class="toggle-label">
+            <span>Queue chats when offline</span>
+            <span class="toggle" data-on="false"></span>
+          </label>
+          <div class="checklist">
+            <label><input type="checkbox" checked />Enable offline cache</label>
+            <label><input type="checkbox" />Send telemetry</label>
+            <label><input type="radio" name="ingest" checked />Process on server</label>
+            <label><input type="radio" name="ingest" />Process locally</label>
+          </div>
+          <select class="select">
+            <option>Server region: Auto</option>
+            <option>Server region: US-East</option>
+            <option>Server region: EU-West</option>
+          </select>
+        </div>
+      </div>
+      <div class="section">
+        <h3>Table & list</h3>
+        <div class="demo-block" style="flex-direction: column; align-items: flex-start; width: 100%;">
+          <table class="table" style="max-width: 520px;">
+            <thead>
+              <tr>
+                <th>Source</th>
+                <th>Status</th>
+                <th style="text-align:right;">Latency</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Current tab</td>
+                <td><span class="badge"><span class="dot" style="background: var(--color-accent);"></span>Server</span></td>
+                <td style="text-align:right;">620 ms</td>
+              </tr>
+              <tr>
+                <td>PDF import</td>
+                <td><span class="badge" style="background: var(--color-primary); color: #fff; border-color: transparent;"><span class="dot" style="background: #fff;"></span>Local</span></td>
+                <td style="text-align:right;">140 ms</td>
+              </tr>
+              <tr>
+                <td>Selection helper</td>
+                <td><span class="badge"><span class="dot" style="background: var(--color-warn);"></span>Queued</span></td>
+                <td style="text-align:right;">—</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="section">
+        <h3>Card & Alert</h3>
+        <div class="demo-block">
+          <div class="card">
+            <h4>Parsing Mode</h4>
+            <p>Light mode sends page data to the server. Switch to Heavy for offline parsing.</p>
+            <div class="demo-block">
+              <button class="btn secondary">Light</button>
+              <button class="btn primary">Switch to Heavy</button>
+            </div>
+          </div>
+          <div class="alert warn">
+            <strong>Offline</strong> — parsing paused in Light mode. Chats will queue until you’re online.
+          </div>
+        </div>
+      </div>
+      <div class="section">
+        <h3>Toast & Tooltip</h3>
+        <div class="demo-block">
+          <div class="toast">
+            <span class="dot" style="background: var(--color-success);"></span>
+            <span>Processed on server</span>
+          </div>
+          <div class="tooltip">Heavy mode keeps data local and works offline.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="light panel">
+      <h2 style="color: var(--color-text); margin-top: 0;">Light</h2>
+      <div class="grid">
+        <div class="swatch" style="background: var(--color-primary); color: #fff;">
+          <span class="label">Primary</span>
+          <span class="code">#5a3df0</span>
+        </div>
+        <div class="swatch" style="background: var(--color-primary-strong); color: #fff;">
+          <span class="label">Primary Strong</span>
+          <span class="code">#442ac7</span>
+        </div>
+        <div class="swatch" style="background: var(--color-accent); color: #0f1117;">
+          <span class="label">Accent</span>
+          <span class="code">#15d1b1</span>
+        </div>
+        <div class="swatch" style="background: var(--color-success); color: #fff;">
+          <span class="label">Success</span>
+          <span class="code">#1f9c73</span>
+        </div>
+        <div class="swatch" style="background: var(--color-warn); color: #0f1117;">
+          <span class="label">Warn</span>
+          <span class="code">#d98c1f</span>
+        </div>
+        <div class="swatch" style="background: var(--color-danger); color: #fff;">
+          <span class="label">Danger</span>
+          <span class="code">#d63964</span>
+        </div>
+        <div class="swatch" style="background: var(--color-surface); color: var(--color-text); border: 1px solid var(--color-border);">
+          <span class="label">Surface</span>
+          <span class="code">#ffffff</span>
+        </div>
+        <div class="swatch" style="background: var(--color-surface-2); color: var(--color-text); border: 1px solid var(--color-border); box-shadow: none;">
+          <span class="label">Surface 2</span>
+          <span class="code">#f0f2f9</span>
+        </div>
+        <div class="swatch" style="background: var(--color-muted); color: #ffffff;">
+          <span class="label">Muted</span>
+          <span class="code">#60708f</span>
+        </div>
+        <div class="swatch" style="background: var(--color-border); color: #0f1117;">
+          <span class="label">Border</span>
+          <span class="code">#d9deea</span>
+        </div>
+        <div class="swatch" style="background: var(--color-text); color: #ffffff;">
+          <span class="label">Text</span>
+          <span class="code">#0f1117</span>
+        </div>
+        <div class="swatch" style="background: var(--color-text-muted); color: #ffffff;">
+          <span class="label">Text Muted</span>
+          <span class="code">#475168</span>
+        </div>
+        <div class="swatch" style="background: var(--color-focus); color: #0f1117;">
+          <span class="label">Focus</span>
+          <span class="code">#15d1b1</span>
+        </div>
+        <div class="swatch" style="background: var(--color-bg); color: var(--color-text); border: 1px dashed var(--color-border);">
+          <span class="label">Background</span>
+          <span class="code">#f7f8fb</span>
+        </div>
+      </div>
+      <div class="section">
+        <h3 style="color: var(--color-text);">Buttons</h3>
+        <div class="demo-block">
+          <button class="btn primary">Primary</button>
+          <button class="btn secondary">Secondary</button>
+          <button class="btn tertiary">Tertiary</button>
+          <button class="btn destructive">Destructive</button>
+          <button class="btn primary disabled" disabled>Disabled</button>
+        </div>
+      </div>
+      <div class="section">
+        <h3 style="color: var(--color-text);">Badges</h3>
+        <div class="demo-block">
+          <span class="badge" style="color: var(--color-text); border-color: var(--color-accent);"><span class="dot" style="background: var(--color-accent);"></span>Light mode</span>
+          <span class="badge" style="background: var(--color-primary); color: #fff; border-color: transparent;"><span class="dot" style="background: #fff;"></span>Heavy mode</span>
+          <span class="badge"><span class="dot" style="background: var(--color-warn);"></span>Queued</span>
+        </div>
+      </div>
+      <div class="section">
+        <h3 style="color: var(--color-text);">Inputs</h3>
+        <div class="demo-block" style="flex-direction: column; align-items: flex-start;">
+          <label class="field">
+            <span>Server URL</span>
+            <input class="input" placeholder="https://tldw.example.com" />
+            <span class="helper">Used for Light mode processing</span>
+          </label>
+          <label class="field">
+            <span>API Key</span>
+            <input class="input" placeholder="••••••••••" />
+            <span class="error">Key required to process remotely</span>
+          </label>
+        </div>
+      </div>
+      <div class="section">
+        <h3 style="color: var(--color-text);">Toggles & selections</h3>
+        <div class="demo-block" style="flex-direction: column; align-items: flex-start;">
+          <label class="toggle-label">
+            <span>Local parsing</span>
+            <span class="toggle" data-on="true"></span>
+          </label>
+          <label class="toggle-label">
+            <span>Queue chats when offline</span>
+            <span class="toggle" data-on="false"></span>
+          </label>
+          <div class="checklist">
+            <label><input type="checkbox" checked />Enable offline cache</label>
+            <label><input type="checkbox" />Send telemetry</label>
+            <label><input type="radio" name="ingest-light" checked />Process on server</label>
+            <label><input type="radio" name="ingest-light" />Process locally</label>
+          </div>
+          <select class="select">
+            <option>Server region: Auto</option>
+            <option>Server region: US-East</option>
+            <option>Server region: EU-West</option>
+          </select>
+        </div>
+      </div>
+      <div class="section">
+        <h3 style="color: var(--color-text);">Table & list</h3>
+        <div class="demo-block" style="flex-direction: column; align-items: flex-start; width: 100%;">
+          <table class="table" style="max-width: 520px;">
+            <thead>
+              <tr>
+                <th>Source</th>
+                <th>Status</th>
+                <th style="text-align:right;">Latency</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Current tab</td>
+                <td><span class="badge" style="color: var(--color-text); border-color: var(--color-accent);"><span class="dot" style="background: var(--color-accent);"></span>Server</span></td>
+                <td style="text-align:right;">620 ms</td>
+              </tr>
+              <tr>
+                <td>PDF import</td>
+                <td><span class="badge" style="background: var(--color-primary); color: #fff; border-color: transparent;"><span class="dot" style="background: #fff;"></span>Local</span></td>
+                <td style="text-align:right;">140 ms</td>
+              </tr>
+              <tr>
+                <td>Selection helper</td>
+                <td><span class="badge"><span class="dot" style="background: var(--color-warn);"></span>Queued</span></td>
+                <td style="text-align:right;">—</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="section">
+        <h3 style="color: var(--color-text);">Card & Alert</h3>
+        <div class="demo-block">
+          <div class="card">
+            <h4>Parsing Mode</h4>
+            <p>Light mode sends page data to the server. Switch to Heavy for offline parsing.</p>
+            <div class="demo-block">
+              <button class="btn secondary">Light</button>
+              <button class="btn primary">Switch to Heavy</button>
+            </div>
+          </div>
+          <div class="alert warn">
+            <strong>Offline</strong> — parsing paused in Light mode. Chats will queue until you’re online.
+          </div>
+        </div>
+      </div>
+      <div class="section">
+        <h3 style="color: var(--color-text);">Toast & Tooltip</h3>
+        <div class="demo-block">
+          <div class="toast">
+            <span class="dot" style="background: var(--color-success);"></span>
+            <span>Processed on server</span>
+          </div>
+          <div class="tooltip">Heavy mode keeps data local and works offline.</div>
+        </div>
+      </div>
+      <div class="section" id="mode-toggle-examples">
+        <h3 style="color: var(--color-text);">Mode toggle (Do / Don’t)</h3>
+        <div class="demo-block" style="flex-direction: column; align-items: flex-start;">
+          <div class="example-box">
+            <span class="example-label do">Do</span>
+            <p style="margin: 0 0 8px;">Show mode next to action with helper text.</p>
+            <label class="toggle-label">
+              <span>Processing mode</span>
+              <span class="toggle" data-on="false"></span>
+            </label>
+            <span class="helper">Light sends data to server. Switch to Heavy for offline.</span>
+          </div>
+          <div class="example-box">
+            <span class="example-label dont">Don’t</span>
+            <p style="margin: 0 0 8px;">Hide mode in a submenu with no explanation.</p>
+            <div class="demo-block" style="justify-content: space-between; width: 100%; color: var(--color-text-muted);"><span>Mode</span><span>Light</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="section" id="offline-alert-examples">
+        <h3 style="color: var(--color-text);">Offline alert (Do / Don’t)</h3>
+        <div class="demo-block">
+          <div class="example-box">
+            <span class="example-label do">Do</span>
+            <div class="alert warn">
+              <strong>Offline</strong> — parsing paused in Light mode. Chats will queue until you’re online.
+            </div>
+          </div>
+          <div class="example-box">
+            <span class="example-label dont">Don’t</span>
+            <p style="margin: 0; color: var(--color-text-muted);">Silent failure with no retry hint.</p>
+          </div>
+        </div>
+      </div>
+      <div class="section" id="empty-loading-examples">
+        <h3 style="color: var(--color-text);">Empty vs Loading</h3>
+        <div class="demo-block">
+          <div class="example-box">
+            <span class="example-label do">Empty</span>
+            <p style="margin: 0 0 6px;">No ingests yet.</p>
+            <p style="margin: 0 0 10px; color: var(--color-text-muted);">Upload a PDF or switch to Heavy to parse locally.</p>
+            <button class="btn primary">Add source</button>
+          </div>
+          <div class="example-box">
+            <span class="example-label do">Loading</span>
+            <div class="demo-block">
+              <div class="swatch" style="flex:1; min-width: 180px; background: var(--color-surface); color: var(--color-text-muted); border: 1px solid var(--color-border); box-shadow: none;">████████</div>
+              <div class="swatch" style="flex:1; min-width: 180px; background: var(--color-surface); color: var(--color-text-muted); border: 1px solid var(--color-border); box-shadow: none;">██████████</div>
+            </div>
+            <p style="margin: 8px 0 0; color: var(--color-text-muted);">Use skeleton shimmer; avoid spinner for long fetches.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

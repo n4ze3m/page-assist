@@ -117,8 +117,23 @@ export const ServerConnectionCard: React.FC<Props> = ({
     useConnectionState()
   const { checkOnce } = useConnectionActions()
   const notification = useAntdNotification()
+  const [knownServerUrl, setKnownServerUrl] = React.useState<string | null>(null)
 
-  const serverHost = serverUrl ? cleanUrl(serverUrl) : null
+  React.useEffect(() => {
+    try {
+      if (typeof chrome !== "undefined" && chrome?.storage?.local) {
+        chrome.storage.local.get("tldwConfig", (res) => {
+          const url = res?.tldwConfig?.serverUrl
+          if (url) setKnownServerUrl(url)
+        })
+      }
+    } catch {
+      // ignore storage read issues
+    }
+  }, [])
+
+  const displayServerUrl = serverUrl || knownServerUrl
+  const serverHost = displayServerUrl ? cleanUrl(displayServerUrl) : null
 
   const isSearching = phase === ConnectionPhase.SEARCHING && isChecking
   const elapsed = useElapsedTimer(isSearching)
@@ -333,6 +348,26 @@ export const ServerConnectionCard: React.FC<Props> = ({
     )
   }
 
+  const handleOpenQuickIngestIntro = () => {
+    window.dispatchEvent(new CustomEvent("quick-ingest:open-intro"))
+  }
+
+  const handleOfflineBypass = async () => {
+    try {
+      if (typeof chrome !== "undefined" && chrome?.storage?.local) {
+        await new Promise<void>((resolve) =>
+          chrome.storage.local.set({ __tldw_allow_offline: true }, () => resolve())
+        )
+      } else if (typeof localStorage !== "undefined") {
+        localStorage.setItem("__tldw_allow_offline", "true")
+      }
+    } catch {
+      // ignore storage errors
+    }
+    await checkOnce()
+    window.dispatchEvent(new CustomEvent("tldw:open-quick-ingest"))
+  }
+
   return (
     <div
       className={`mx-auto w-full ${
@@ -519,6 +554,29 @@ export const ServerConnectionCard: React.FC<Props> = ({
                 "Help docs"
               )}
             </Button>
+          </div>
+        )}
+
+        {statusVariant === "error" && (
+          <div className="flex w-full flex-col gap-2 text-xs text-gray-600 dark:text-gray-300">
+            <div className="flex flex-wrap items-center gap-2">
+              <span>Tip: Need to review ingest help?</span>
+              <Button size="small" onClick={handleOpenQuickIngestIntro}>
+                Open Quick Ingest intro
+              </Button>
+              <Button size="small" onClick={handleOfflineBypass}>
+                Continue offline
+              </Button>
+              <Button
+                size="small"
+                data-testid="open-quick-ingest"
+                onClick={handleOfflineBypass}>
+                Open Quick Ingest
+              </Button>
+            </div>
+            <span className="text-[11px] text-gray-500 dark:text-gray-400">
+              The “?” in Quick Ingest reopens the Inspector explainer. Offline mode keeps the UI usable while you fix credentials.
+            </span>
           </div>
         )}
 

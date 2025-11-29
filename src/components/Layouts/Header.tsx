@@ -151,15 +151,13 @@ export const Header: React.FC<Props> = ({
     isConnected,
     knowledgeStatus
   } = useConnectionState()
-  const ingestDisabled = phase === ConnectionPhase.UNCONFIGURED
+  // Allow opening Quick Ingest even when unconfigured so users can stage items/offline preview.
+  const ingestDisabled = false
   const { shortcuts: shortcutConfig } = useShortcutConfig()
   const quickIngestBtnRef = React.useRef<HTMLButtonElement>(null)
 
   React.useEffect(() => {
     const handler = () => {
-      if (ingestDisabled) {
-        return
-      }
       setQuickIngestOpen(true)
       requestAnimationFrame(() => {
         quickIngestBtnRef.current?.focus()
@@ -170,6 +168,20 @@ export const Header: React.FC<Props> = ({
       window.removeEventListener("tldw:open-quick-ingest", handler)
     }
   }, [ingestDisabled])
+
+  React.useEffect(() => {
+    const handler = () => {
+      setQuickIngestOpen(true)
+      // Nudge the modal to show the intro drawer once mounted
+      window.setTimeout(() => {
+        window.dispatchEvent(new CustomEvent("quick-ingest:force-intro"))
+      }, 150)
+    }
+    window.addEventListener("quick-ingest:open-intro", handler)
+    return () => {
+      window.removeEventListener("quick-ingest:open-intro", handler)
+    }
+  }, [])
 
   const currentCoreMode: CoreMode = React.useMemo(() => {
     if (pathname.startsWith("/review") || pathname.startsWith("/media-multi"))
@@ -456,11 +468,8 @@ export const Header: React.FC<Props> = ({
     [t]
   )
 
-  // Persist the shortcuts collapse state so the header doesn't reset
-  const [shortcutsExpanded, setShortcutsExpanded] = useStorage(
-    "headerShortcutsExpanded",
-    false
-  )
+  // Track the shortcuts collapse state locally to avoid storage write quotas
+  const [shortcutsExpanded, setShortcutsExpanded] = React.useState(false)
   const shortcutsToggleRef = React.useRef<HTMLButtonElement>(null)
   const shortcutsContainerRef = React.useRef<HTMLDivElement>(null)
   const shortcutsSectionId = "header-shortcuts-section"
@@ -817,22 +826,19 @@ export const Header: React.FC<Props> = ({
               type="button"
               ref={quickIngestBtnRef}
               onClick={() => setQuickIngestOpen(true)}
-              disabled={ingestDisabled}
+              data-testid="open-quick-ingest"
+              aria-label={t("option:header.quickIngest", "Quick ingest")}
               title={
-                ingestDisabled
-                  ? t("option:header.connectToIngest", "Connect to your server to ingest.")
-                  : t(
-                      "option:header.quickIngestHelp",
-                      "Upload URLs/files with analysis and advanced options."
-                    )
+                t(
+                    "option:header.quickIngestHelp",
+                    "Upload URLs/files with analysis and advanced options."
+                  )
               }
               className={classNames(
                 "inline-flex items-center gap-1 rounded-full border border-transparent px-2 py-1 text-xs transition hover:border-gray-300 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500 dark:hover:border-gray-500 dark:hover:bg-[#1f1f1f]",
-                ingestDisabled
-                  ? "cursor-not-allowed text-gray-400 dark:text-gray-600"
-                  : "text-gray-600 dark:text-gray-200"
+                "text-gray-600 dark:text-gray-200"
               )}
-              aria-disabled={ingestDisabled}>
+              aria-disabled={false}>
               <UploadCloud className="h-3 w-3" aria-hidden="true" />
               <span>{t("option:header.quickIngest", "Quick ingest")}</span>
             </button>

@@ -1,3 +1,4 @@
+import { Storage } from "@plasmohq/storage"
 import { tldwClient, TldwModel } from "./TldwApiClient"
 
 export interface ModelInfo {
@@ -13,13 +14,49 @@ export interface ModelInfo {
 export class TldwModelsService {
   private cachedModels: ModelInfo[] | null = null
   private lastFetchTime: number = 0
-  private readonly CACHE_DURATION = 5 * 60 * 1000 // 5 minutes
+  private readonly CACHE_DURATION = 15 * 60 * 1000 // 15 minutes
+  private readonly CACHE_KEY = "tldwModelsCache"
+  private storage = new Storage({ area: "local" })
+  private storageLoaded = false
+  private storageInitPromise: Promise<void> | null = null
+
+  private async ensureStorageLoaded() {
+    if (this.storageLoaded) return
+    if (!this.storageInitPromise) {
+      this.storageInitPromise = (async () => {
+        try {
+          const cached = (await this.storage.get<any>(this.CACHE_KEY)) || null
+          if (cached?.models && Array.isArray(cached.models)) {
+            this.cachedModels = cached.models as ModelInfo[]
+            this.lastFetchTime = Number(cached.timestamp || 0)
+          }
+        } catch {
+          // ignore storage read failures
+        } finally {
+          this.storageLoaded = true
+        }
+      })()
+    }
+    await this.storageInitPromise
+  }
+
+  private async persistCache() {
+    try {
+      await this.storage.set(this.CACHE_KEY, {
+        models: this.cachedModels,
+        timestamp: this.lastFetchTime
+      })
+    } catch {
+      // Best-effort persistence; ignore errors
+    }
+  }
 
   /**
    * Get available models from tldw server
    * Uses cache to avoid frequent API calls
    */
   async getModels(forceRefresh: boolean = false): Promise<ModelInfo[]> {
+    await this.ensureStorageLoaded()
     const now = Date.now()
     
     // Return cached models if available and not expired
@@ -34,6 +71,7 @@ export class TldwModelsService {
       // Transform tldw models to our format
       this.cachedModels = models.map(model => this.transformModel(model))
       this.lastFetchTime = now
+      await this.persistCache()
       
       return this.cachedModels
     } catch (error) {
@@ -159,6 +197,7 @@ export class TldwModelsService {
   clearCache(): void {
     this.cachedModels = null
     this.lastFetchTime = 0
+    void this.persistCache()
   }
 
   /**
@@ -197,6 +236,13 @@ export class TldwModelsService {
     }
     
     return names[provider.toLowerCase()] || provider
+  }
+
+  /**
+   * Warm the cache and return the latest models.
+   */
+  async warmCache(force: boolean = false): Promise<ModelInfo[]> {
+    return await this.getModels(force)
   }
 }
 

@@ -4,6 +4,7 @@ import type { AllowedPath } from "@/services/tldw/openapi-guard"
 import { getInitialConfig } from "@/services/action"
 import { tldwClient } from "@/services/tldw/TldwApiClient"
 import { tldwAuth } from "@/services/tldw/TldwAuth"
+import { tldwModels } from "@/services/tldw"
 import { apiSend } from "@/services/api-send"
 import {
   ensureSidepanelOpen,
@@ -21,6 +22,7 @@ export default defineBackground({
     let isCopilotRunning: boolean = false
     let actionIconClick: string = "webui"
     let contextMenuClick: string = "sidePanel"
+    let modelWarmTimer: ReturnType<typeof setInterval> | null = null
 
     const initialize = async () => {
       try {
@@ -99,6 +101,19 @@ export default defineBackground({
           title: browser.i18n.getMessage("contextSaveToNotes"),
           contexts: ["selection"]
         })
+
+        const warmModels = async (force?: boolean) => {
+          try {
+            await tldwModels.warmCache(Boolean(force))
+          } catch (e) {
+            console.debug("[tldw] model warmup failed", e)
+          }
+        }
+        await warmModels(true)
+        if (modelWarmTimer) clearInterval(modelWarmTimer)
+        modelWarmTimer = setInterval(() => {
+          void warmModels(true)
+        }, 15 * 60 * 1000)
     
       } catch (error) {
         console.error("Error in initLogic:", error)
@@ -217,6 +232,14 @@ export default defineBackground({
       if (message.type === 'tldw:debug') {
         streamDebugEnabled = Boolean(message?.enable)
         return { ok: true }
+      }
+      if (message.type === 'tldw:models:refresh') {
+        try {
+          const models = await tldwModels.warmCache(true)
+          return { ok: true, count: Array.isArray(models) ? models.length : 0 }
+        } catch (e: any) {
+          return { ok: false, error: e?.message || 'Model refresh failed' }
+        }
       }
       if (message.type === 'tldw:get-tab-id') {
         const tabId = sender?.tab?.id ?? null
