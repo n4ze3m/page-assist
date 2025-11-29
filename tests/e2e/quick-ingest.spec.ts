@@ -33,9 +33,9 @@ test.describe('Quick Ingest UX smoke (extension context)', () => {
     expect(extId, 'extension id resolved').not.toEqual('')
 
     const page = await context.newPage()
-    // Go to a route that renders the header + ingest trigger
-    await page.goto(`chrome-extension://${extId}/options.html#/media`, { waitUntil: 'domcontentloaded' })
-    await page.waitForTimeout(1500)
+    // Try playground first; if the header trigger is missing, fall back to media route
+    await page.goto(`chrome-extension://${extId}/options.html#/playground`, { waitUntil: 'domcontentloaded' })
+    await page.waitForTimeout(1200)
     await page.evaluate(
       (key) =>
         new Promise<void>((resolve) => {
@@ -43,11 +43,11 @@ test.describe('Quick Ingest UX smoke (extension context)', () => {
           chrome.storage?.local?.set(
             {
               tldwConfig: {
-                serverUrl: 'http://127.0.0.1:62731',
+                serverUrl: 'http://127.0.0.1:8000',
                 authMode: 'single-user',
                 apiKey: key
               },
-              __tldw_allow_offline: true
+              __tldw_allow_offline: false
             },
             () => resolve()
           )
@@ -62,29 +62,32 @@ test.describe('Quick Ingest UX smoke (extension context)', () => {
       .or(page.getByRole('button', { name: /open quick ingest/i }))
       .or(page.getByRole('button', { name: /quick ingest/i }))
       .first()
-    if (await trigger.count()) {
-      await trigger.click()
-    } else {
-      const offline = page.getByRole('button', { name: /continue offline/i }).first()
-      if (await offline.count()) await offline.click()
-      const fallback = page.getByText(/open quick ingest/i, { exact: false }).first()
-      if (await fallback.count()) await fallback.click()
+    if (!(await trigger.count())) {
+      await page.goto(`chrome-extension://${extId}/options.html#/media`, { waitUntil: 'domcontentloaded' })
+      await page.waitForTimeout(1200)
     }
+    const finalTrigger = page
+      .getByTestId('open-quick-ingest')
+      .or(page.getByRole('button', { name: /open quick ingest/i }))
+      .or(page.getByRole('button', { name: /quick ingest/i }))
+      .first()
+    await expect(finalTrigger).toBeVisible({ timeout: 5000 })
+    await finalTrigger.click()
 
     // Force-open via event dispatch if needed (after offline bypass)
     await page.evaluate(() => {
       window.dispatchEvent(new CustomEvent('tldw:open-quick-ingest'))
     })
 
-    let modalOpened = false
     try {
-    await expect(page.locator('.quick-ingest-modal')).toBeVisible({ timeout: 8000 })
-      modalOpened = true
+      // Wait for modal content (root may briefly stay hidden)
+      await expect(page.locator('.quick-ingest-modal')).not.toHaveAttribute('hidden', 'true', { timeout: 10_000 })
+      await expect(page.locator('.quick-ingest-modal .ant-modal-content')).toBeVisible({ timeout: 10_000 })
     } catch {
       // allow skip when the trigger selector is missing in this view
       test.skip(true, 'Quick Ingest trigger not found on options page; adjust selector or open manually.')
+      return
     }
-    expect(modalOpened).toBeTruthy()
 
     // Add a couple of URLs via paste + Add URLs
     const urlInput = page.getByPlaceholder(/Paste URLs/i).first()

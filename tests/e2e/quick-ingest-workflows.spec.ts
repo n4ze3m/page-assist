@@ -8,34 +8,35 @@ test.describe('Quick Ingest workflows and UX', () => {
   test('URLs, files, inspector intro, and help flows', async () => {
     const { context, page, optionsUrl } = await launchWithBuiltExtension({
       seedConfig: {
-        serverUrl: 'http://127.0.0.1:62731',
+        serverUrl: 'http://127.0.0.1:8000',
         authMode: 'single-user',
         apiKey: API_KEY
       },
-      allowOffline: true
+      allowOffline: false
     })
 
-    await page.goto(optionsUrl + '#/media', { waitUntil: 'domcontentloaded' })
+    await page.goto(optionsUrl + '#/playground', { waitUntil: 'domcontentloaded' })
+    await page.waitForTimeout(1200)
 
-    // Prefer the connection-card CTA (also enables offline bypass)
-    const trigger = page
+    // Click header trigger directly (online path), fallback to media route if missing
+    let trigger = page
       .getByTestId('open-quick-ingest')
-      .or(page.getByRole('button', { name: /open quick ingest/i }))
       .or(page.getByRole('button', { name: /quick ingest/i }))
       .first()
-    if (await trigger.count()) {
-      await trigger.click()
-    } else {
-      const offline = page.getByRole('button', { name: /continue offline/i }).first()
-      if (await offline.count()) await offline.click()
-      await page.getByRole('button', { name: /open quick ingest/i }).first().click()
+    if (!(await trigger.count())) {
+      await page.goto(optionsUrl + '#/media', { waitUntil: 'domcontentloaded' })
+      await page.waitForTimeout(1200)
+      trigger = page
+        .getByTestId('open-quick-ingest')
+        .or(page.getByRole('button', { name: /quick ingest/i }))
+        .first()
     }
+    await expect(trigger).toBeVisible({ timeout: 5000 })
+    await trigger.click()
 
-    await page.evaluate(() => {
-      window.dispatchEvent(new CustomEvent('tldw:open-quick-ingest'))
-    })
-
-    await expect(page.locator('.quick-ingest-modal')).toBeVisible({ timeout: 8000 })
+    // Wait for modal content (root may briefly stay hidden)
+    await expect(page.locator('.quick-ingest-modal')).not.toHaveAttribute('hidden', 'true', { timeout: 10_000 })
+    await expect(page.locator('.quick-ingest-modal .ant-modal-content')).toBeVisible({ timeout: 10_000 })
 
     // Workflow 1: add URLs and see queue + Inspector intro
     const urlInput = page

@@ -571,7 +571,10 @@ export const ServerConnectionCard: React.FC<Props> = ({
                 size="small"
                 data-testid="open-quick-ingest"
                 onClick={handleOfflineBypass}>
-                Open Quick Ingest
+                {t(
+                  "option:connectionCard.buttonOpenQuickIngest",
+                  "Open Quick Ingest"
+                )}
               </Button>
             </div>
             <span className="text-[11px] text-gray-500 dark:text-gray-400">
