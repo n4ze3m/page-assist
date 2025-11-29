@@ -560,12 +560,12 @@ export const ServerConnectionCard: React.FC<Props> = ({
         {statusVariant === "error" && (
           <div className="flex w-full flex-col gap-2 text-xs text-gray-600 dark:text-gray-300">
             <div className="flex flex-wrap items-center gap-2">
-              <span>Tip: Need to review ingest help?</span>
+              <span>{t("option:connectionCard.tipQuickIngest", "Tip: Need to review ingest help?")}</span>
               <Button size="small" onClick={handleOpenQuickIngestIntro}>
-                Open Quick Ingest intro
+                {t("option:connectionCard.buttonOpenQuickIngestIntro", "Open Quick Ingest intro")}
               </Button>
               <Button size="small" onClick={handleOfflineBypass}>
-                Continue offline
+                {t("option:connectionCard.buttonContinueOffline", "Continue offline")}
               </Button>
               <Button
                 size="small"
@@ -578,7 +578,7 @@ export const ServerConnectionCard: React.FC<Props> = ({
               </Button>
             </div>
             <span className="text-[11px] text-gray-500 dark:text-gray-400">
-              The “?” in Quick Ingest reopens the Inspector explainer. Offline mode keeps the UI usable while you fix credentials.
+              {t("option:connectionCard.quickIngestHint", "The \"?\" in Quick Ingest reopens the Inspector explainer. Offline mode keeps the UI usable while you fix credentials.")}
             </span>
           </div>
         )}
