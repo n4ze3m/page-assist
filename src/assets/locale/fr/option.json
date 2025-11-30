@@ -392,8 +392,8 @@
     "chattingAs": "Vous discutez maintenant en tant que {{name}}.",
     "clearCharacter": "Effacer le personnage",
     "none": "Aucun (pas de personnage)",
-    "searchPlaceholder": "Rechercher des personnages par nom",
-    "noMatches": "Aucun personnage ne correspond encore à votre recherche.",
+    "searchPlaceholder": "Rechercher les personnages par nom",
+    "noMatches": "Aucun personnage ne correspond à votre recherche pour l'instant.",
     "refresh": "Actualiser les personnages",
     "refreshing": "Actualisation des personnages…"
   },

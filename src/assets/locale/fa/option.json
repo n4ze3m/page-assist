@@ -284,13 +284,13 @@
   },
   "characters": {
     "selectCharacter": "انتخاب شخصیت",
-    "chattingAs": "شما اکنون در نقش {{name}} چت می‌کنید.",
-    "clearCharacter": "حذف شخصیت",
+    "chattingAs": "چت به‌عنوان {{name}}",
+    "clearCharacter": "پاک‌کردن شخصیت",
     "none": "هیچ‌کدام (بدون شخصیت)",
-    "searchPlaceholder": "جست‌وجوی شخصیت‌ها براساس نام",
-    "noMatches": "هنوز هیچ شخصیتی با جست‌وجوی شما مطابقت ندارد.",
-    "refresh": "به‌روزرسانی فهرست شخصیت‌ها",
-    "refreshing": "در حال به‌روزرسانی فهرست شخصیت‌ها…"
+    "searchPlaceholder": "جستجو بر اساس نام شخصیت",
+    "noMatches": "هنوز شخصیتی با این جستجو مطابقت ندارد.",
+    "refresh": "بارگذاری مجدد شخصیت‌ها",
+    "refreshing": "در حال بارگذاری مجدد شخصیت‌ها…"
   },
   "promptInsert": {
     "useInChat": "Use in chat",

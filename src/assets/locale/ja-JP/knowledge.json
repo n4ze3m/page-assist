@@ -40,7 +40,7 @@
   "noEmbeddingModel": "最初にRAGの設定ページから埋め込みモデルを追加してください",
   "privateModeDescription": "Firefox のプライベートモードは IndexedDB への保存をサポートしません。通常ウィンドウでナレッジベースを追加してください。",
   "ragWorkspace": {
-    "subtitleRag": "Retrieval-augmented generation (RAG) lets the assistant ground answers in your media, notes, and other indexed knowledge sources."
+    "subtitleRag": "検索拡張生成（RAG）により、アシスタントはあなたのメディアやノートなどのインデックス化されたナレッジを根拠に回答できます。"
   },
   "rag": {
     "searchFailed": "RAG 検索に失敗しました。もう一度お試しください、または診断画面を確認してください。"

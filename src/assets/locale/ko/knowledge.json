@@ -40,7 +40,16 @@
   "noEmbeddingModel": "먼저 RAG 설정 페이지에서 임베딩 모델을 추가해 주세요",
   "privateModeDescription": "Firefox 사생활 모드는 IndexedDB 저장을 지원하지 않습니다. 일반 창에서 지식 베이스를 추가하세요.",
   "ragWorkspace": {
-    "subtitleRag": "Retrieval-augmented generation (RAG) lets the assistant ground answers in your media, notes, and other indexed knowledge sources."
+    "title": "지식 검색 및 채팅",
+    "description": "지식 검색(RAG) 옵션을 설정하고 빠른 검색을 실행하며 근거 있는 답변으로 채팅을 사용하세요.",
+    "subtitleRag": "검색 증강 생성(RAG)을 사용하면 어시스턴트가 미디어, 노트 등 인덱싱된 지식 소스를 근거로 답변합니다.",
+    "autoRagLabel": "모든 답변에 RAG 사용",
+    "autoRagHelp": "활성화하면 채팅 워크스페이스가 각 메시지에 답변하기 전에 지식(RAG) 검색을 실행합니다.",
+    "autoRagScopeHelp": "이 설정은 기본 채팅 화면과 사이드패널의 답변에 적용됩니다.",
+    "docsPerReply": {
+      "label": "답변당 문서 수 (top-k)",
+      "current": "답변당 {{count}}개 문서"
+    }
   },
   "rag": {
     "searchFailed": "RAG 검색에 실패했습니다. 다시 시도하거나 Diagnostics를 확인하세요."

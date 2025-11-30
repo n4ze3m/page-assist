@@ -40,7 +40,7 @@
   "noEmbeddingModel": "Vänligen lägg till en inbäddningsmodell från sidan för RAG-inställningar först",
   "privateModeDescription": "Firefox privat läge stöder inte lagring i IndexedDB. Lägg till en kunskapsbas från ett vanligt fönster.",
   "ragWorkspace": {
-    "subtitleRag": "Retrieval-augmented generation (RAG) lets the assistant ground answers in your media, notes, and other indexed knowledge sources."
+    "subtitleRag": "Retrieval-augmented generation (RAG) gör att assistenten kan grunda svar i dina medier, anteckningar och andra indexerade kunskapskällor."
   },
   "rag": {
     "searchFailed": "RAG-sökning misslyckades. Försök igen eller kontrollera Diagnostics."

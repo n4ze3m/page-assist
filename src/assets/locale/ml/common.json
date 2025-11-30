@@ -66,6 +66,7 @@
   "noData": "ഡാറ്റ ലഭ്യമല്ല",
   "noHistory": "ചാറ്റ് ചരിത്രം ലഭ്യമല്ല",
   "chatWithCurrentPage": "നിലവിലെ പേജിനുമായി ചാറ്റ് ചെയ്യുക",
+  "openQuickIngest": "ക്വിക് ഇൻജെസ്റ്റ് തുറക്കുക",
   "beta": "ബീറ്റ",
   "currentChatModelSettings": "നിലവിലെ ചാറ്റ് മോഡൽ ക്രമീകരണങ്ങൾ",
   "modelSettings": {
@@ -204,6 +205,7 @@
   },
   "dismiss": "അടയ്ക്കുക",
   "privateModeSaveErrorTitle": "tldw Assistant ന് ഡാറ്റ സംരക്ഷിക്കാൻ സാധിക്കുന്നില്ല",
+  "contextSaveToNotesDeliveryFailed": "ഈ കുറിപ്പ് സംരക്ഷിക്കാൻ സൈഡ്ബാർ തുറക്കാനായില്ല. tldw Assistant സൈഡ്ബാർ ഈ സൈറ്റിൽ അനുവദിച്ചിട്ടുണ്ടെന്ന് ഉറപ്പാക്കി വീണ്ടും ശ്രമിക്കുക.",
   "confirmTitle": "ദയവായി സ്ഥിരീകരിക്കുക",
   "saving": "സേവ് ചെയ്യുന്നു...",
   "close": "അടയ്ക്കുക",

@@ -14,6 +14,9 @@
   "openQuickIngest": {
     "message": "Åbn hurtigimport"
   },
+  "learnMoreTldw": {
+    "message": "Lær hvordan tldw-serveren fungerer"
+  },
   "contextSummarize": {
     "message": "Opsummer"
   },
@@ -91,31 +94,5 @@
   },
   "hfPullException": {
     "message": "[tldw Assistant] Noget gik galt, da en henteanmodning for \"$1\" blev sendt til din tldw_server. Kontrollér, at din tldw_server og udvidelsen kører, og prøv igen."
-  },
-  "error": {
-    "friendlyApiKeySummary": {
-      "message": "Vi kunne ikke nå din tldw-server."
-    },
-    "friendlyApiKeyHint": {
-      "message": "Din API-nøgle er muligvis ugyldig. Åbn Indstillinger → tldw-server for at tjekke din URL og API-nøgle, og prøv igen."
-    },
-    "friendlyTimeoutSummary": {
-      "message": "Din chat fik timeout."
-    },
-    "friendlyTimeoutHint": {
-      "message": "Serveren stoppede med at sende svar. Prøv igen, eller åbn Sundhed og diagnostik for at tjekke serverstatus."
-    },
-    "friendlyGenericSummary": {
-      "message": "Noget gik galt under kommunikationen med din tldw-server."
-    },
-    "friendlyGenericHint": {
-      "message": "Prøv igen om lidt, eller åbn Sundhed og diagnostik for at kontrollere serverens status."
-    },
-    "showDetails": {
-      "message": "Vis tekniske detaljer"
-    },
-    "hideDetails": {
-      "message": "Skjul tekniske detaljer"
-    }
   }
 }

@@ -14,6 +14,9 @@
   "openQuickIngest": {
     "message": "Öppna snabbimport"
   },
+  "learnMoreTldw": {
+    "message": "Lär dig hur tldw-servern fungerar"
+  },
   "contextSummarize": {
     "message": "Sammanfatta"
   },
@@ -91,31 +94,5 @@
   },
   "hfPullException": {
     "message": "[tldw Assistant] Något gick fel när en hämtbegäran för \"$1\" skickades till din tldw_server. Kontrollera att din tldw_server och tillägget körs och försök igen."
-  },
-  "error": {
-    "friendlyApiKeySummary": {
-      "message": "Vi kunde inte nå din tldw-server."
-    },
-    "friendlyApiKeyHint": {
-      "message": "Din API-nyckel kan vara ogiltig. Öppna Inställningar → tldw-server för att kontrollera URL och API-nyckel och försök igen."
-    },
-    "friendlyTimeoutSummary": {
-      "message": "Din chatt översteg tidsgränsen."
-    },
-    "friendlyTimeoutHint": {
-      "message": "Servern slutade strömma svar. Försök igen eller öppna Hälsa och diagnostik för att kontrollera serverstatus."
-    },
-    "friendlyGenericSummary": {
-      "message": "Något gick fel när vi kommunicerade med din tldw-server."
-    },
-    "friendlyGenericHint": {
-      "message": "Försök igen om en stund eller öppna Hälsa och diagnostik för att kontrollera serverstatus."
-    },
-    "showDetails": {
-      "message": "Visa tekniska detaljer"
-    },
-    "hideDetails": {
-      "message": "Dölj tekniska detaljer"
-    }
   }
 }

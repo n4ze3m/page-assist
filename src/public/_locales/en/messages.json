@@ -14,6 +14,9 @@
   "openQuickIngest": {
     "message": "Open Quick Ingest"
   },
+  "learnMoreTldw": {
+    "message": "Learn how tldw server works"
+  },
   "contextSummarize": {
     "message": "Summarize"
   },
@@ -91,31 +94,5 @@
   },
   "hfPullException": {
     "message": "[tldw Assistant] Something went wrong while sending a pull request for \"$1\" to your tldw_server. Check that your tldw_server and the extension are running, then try again."
-  },
-  "error": {
-    "friendlyApiKeySummary": {
-      "message": "We couldn’t reach your tldw server."
-    },
-    "friendlyApiKeyHint": {
-      "message": "Your API key may be invalid. Open Settings → tldw server to check your URL and API key, then try again."
-    },
-    "friendlyTimeoutSummary": {
-      "message": "Your chat timed out."
-    },
-    "friendlyTimeoutHint": {
-      "message": "The server stopped streaming responses. Try again, or open Health & diagnostics to check server status."
-    },
-    "friendlyGenericSummary": {
-      "message": "Something went wrong while talking to your tldw server."
-    },
-    "friendlyGenericHint": {
-      "message": "Try again in a moment, or open Health & diagnostics to inspect server health."
-    },
-    "showDetails": {
-      "message": "Show technical details"
-    },
-    "hideDetails": {
-      "message": "Hide technical details"
-    }
   }
 }

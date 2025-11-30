@@ -42,7 +42,7 @@
   "noEmbeddingModel": "請先從 RAG 設定頁面新增一個嵌入模型",
   "privateModeDescription": "Firefox 隱私模式不支援將資料儲存到 IndexedDB。請在一般視窗中新增知識庫。",
   "ragWorkspace": {
-    "subtitleRag": "Retrieval-augmented generation (RAG) lets the assistant ground answers in your media, notes, and other indexed knowledge sources."
+    "subtitleRag": "檢索增強生成（RAG）可讓助理根據你的媒體、筆記及其他已索引的知識來源給出回覆。"
   },
   "rag": {
     "searchFailed": "RAG 搜尋失敗。請再試一次或查看 Diagnostics。"

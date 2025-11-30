@@ -19,15 +19,15 @@
     "buttonViewDiagnostics": "View diagnostics",
     "buttonOpenQuickIngest": "퀵 인제스트 열기",
     "buttonTryDemo": "Try a demo",
-    "buttonContinueOffline": "Continue offline",
-    "buttonDisableOffline": "Disable offline mode",
-    "offlineModeBadge": "Offline mode — staging only",
+    "buttonContinueOffline": "오프라인으로 계속하기",
+    "buttonDisableOffline": "오프라인 모드 끄기",
+    "offlineModeBadge": "오프라인 모드 — 스테이징 전용",
     "buttonGoToServerCard": "서버 카드로 이동",
-    "tipQuickIngest": "Tip: Need ingest help while you’re offline?",
-    "quickIngestHint": "When your server is offline, Quick Ingest works as a staging area. You can queue URLs and files now and process them once you reconnect.",
-    "backToWorkspace": "Back to workspace",
-    "sidepanelOpenSettingsHint": "Settings open in a new browser tab so you can configure your tldw server.",
-    "quickIngestInlineHint": "Quick Ingest can queue URLs and files while your server is offline so you can process them once you reconnect."
+    "tipQuickIngest": "팁: 오프라인일 때 인제스트가 필요하신가요?",
+    "quickIngestHint": "서버가 오프라인일 때 Quick Ingest는 스테이징 영역으로 동작합니다. URL과 파일을 지금 큐에 넣어 재연결 시 처리할 수 있습니다.",
+    "backToWorkspace": "작업공간으로 돌아가기",
+    "sidepanelOpenSettingsHint": "설정은 새 브라우저 탭에서 열리며 tldw 서버를 구성할 수 있습니다.",
+    "quickIngestInlineHint": "Quick Ingest는 서버가 오프라인일 때 URL과 파일을 큐에 넣어 재연결 시 처리할 수 있게 합니다."
   },
   "header": {
     "showShortcuts": "바로가기 표시",

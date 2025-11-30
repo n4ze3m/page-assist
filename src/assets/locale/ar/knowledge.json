@@ -40,7 +40,7 @@
   "noEmbeddingModel": "يرجى إضافة نموذج تضمين من صفحة إعدادات RAG أولاً",
   "privateModeDescription": "وضع التصفح الخاص في فايرفوكس لا يدعم حفظ البيانات في IndexedDB. الرجاء إضافة قاعدة معرفة من نافذة عادية.",
   "ragWorkspace": {
-    "subtitleRag": "Retrieval-augmented generation (RAG) lets the assistant ground answers in your media, notes, and other indexed knowledge sources."
+    "subtitleRag": "التوليد المعزز بالاسترجاع (RAG) يُمكّن المساعد من تأصيل الإجابات في وسائطك وملاحظاتك ومصادر المعرفة المفهرَسة الأخرى."
   },
   "rag": {
     "searchFailed": "فشل بحث RAG. حاول مرة أخرى أو تحقق من صفحة التشخيص."

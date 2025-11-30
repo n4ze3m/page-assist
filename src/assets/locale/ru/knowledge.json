@@ -40,7 +40,7 @@
   "noEmbeddingModel": "Пожалуйста, сначала добавьте модель вложения на странице настроек RAG",
   "privateModeDescription": "Режим приватного просмотра Firefox не поддерживает сохранение в IndexedDB. Добавьте базу знаний в обычном окне.",
   "ragWorkspace": {
-    "subtitleRag": "Retrieval-augmented generation (RAG) lets the assistant ground answers in your media, notes, and other indexed knowledge sources."
+    "subtitleRag": "Генерация с дополнением поиском (RAG) позволяет ассистенту опираться на ваши медиа, заметки и другие индексированные источники знаний при формировании ответов."
   },
   "rag": {
     "searchFailed": "Поиск RAG не удался. Попробуйте ещё раз или проверьте раздел Diagnostics."

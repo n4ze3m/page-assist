@@ -29,6 +29,8 @@ type Props = {
   autoProcessQueued?: boolean
 }
 
+const MAX_LOCAL_FILE_BYTES = 500 * 1024 * 1024 // 500MB soft cap for local file ingest
+
 const isLikelyUrl = (raw: string) => {
   const val = (raw || '').trim()
   if (!val) return false
@@ -213,8 +215,7 @@ export const QuickIngestModal: React.FC<Props> = ({
   }, [])
 
   const statusForFile = React.useCallback((file: File) => {
-    const sizeCap = 500 * 1024 * 1024 // 500MB soft guidance
-    if (file.size && file.size > sizeCap) {
+    if (file.size && file.size > MAX_LOCAL_FILE_BYTES) {
       return { label: 'Needs review', color: 'orange', reason: 'File is over 500MB' }
     }
     return { label: 'Default', color: 'default' as const }
@@ -407,6 +408,20 @@ export const QuickIngestModal: React.FC<Props> = ({
       messageApi.error('Please add at least one URL or file')
       return
     }
+    const oversizedFiles = localFiles.filter(
+      (f) => f.size && f.size > MAX_LOCAL_FILE_BYTES
+    )
+    if (oversizedFiles.length > 0) {
+      const maxLabel = formatBytes(MAX_LOCAL_FILE_BYTES)
+      const names = oversizedFiles.map((f) => f.name).slice(0, 3).join(', ')
+      const suffix = oversizedFiles.length > 3 ? '…' : ''
+      const msg = names
+        ? `File too large: ${names}${suffix}. Each file must be smaller than ${maxLabel}.`
+        : `One or more files are too large. Each file must be smaller than ${maxLabel}.`
+      messageApi.error(msg)
+      setLastRunError(msg)
+      return
+    }
     const total = valid.length + localFiles.length
     setTotalPlanned(total)
     setProcessedCount(0)
@@ -433,6 +448,12 @@ export const QuickIngestModal: React.FC<Props> = ({
       // Convert local files to transferable payloads (ArrayBuffer)
       const filesPayload = await Promise.all(
         localFiles.map(async (f) => {
+          // Guard again at runtime; oversized files should never be read into memory.
+          if (f.size && f.size > MAX_LOCAL_FILE_BYTES) {
+            throw new Error(
+              `File "${f.name}" is too large to ingest (over ${formatBytes(MAX_LOCAL_FILE_BYTES)}).`
+            )
+          }
           // Use a plain array so runtime message cloning (MV3 SW) preserves bytes
           const data = Array.from(new Uint8Array(await f.arrayBuffer()))
           return {
@@ -496,6 +517,7 @@ export const QuickIngestModal: React.FC<Props> = ({
     common,
     ingestBlocked,
     localFiles,
+    formatBytes,
     messageApi,
     rows,
     storeRemote,

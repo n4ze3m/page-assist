@@ -11,6 +11,9 @@
   "openQuickIngest": {
     "message": "打开快速导入"
   },
+  "learnMoreTldw": {
+    "message": "了解 tldw 服务器的工作方式"
+  },
   "contextSummarize": {
     "message": "总结"
   },
@@ -91,31 +94,5 @@
   },
   "hfPullException": {
     "message": "[tldw Assistant] 在向您的 tldw_server 发送拉取 \"$1\" 的请求时出现问题。请检查 tldw_server 和扩展是否正在运行，然后重试。"
-  },
-  "error": {
-    "friendlyApiKeySummary": {
-      "message": "无法连接到您的 tldw 服务器。"
-    },
-    "friendlyApiKeyHint": {
-      "message": "您的 API 密钥可能无效。打开“设置”→“tldw 服务器”检查 URL 和 API 密钥，然后重试。"
-    },
-    "friendlyTimeoutSummary": {
-      "message": "聊天已超时。"
-    },
-    "friendlyTimeoutHint": {
-      "message": "服务器停止了响应流。请重试，或打开“健康状况和诊断”查看服务器状态。"
-    },
-    "friendlyGenericSummary": {
-      "message": "与您的 tldw 服务器通信时出现问题。"
-    },
-    "friendlyGenericHint": {
-      "message": "请稍后再试，或打开“健康状况和诊断”检查服务器健康状态。"
-    },
-    "showDetails": {
-      "message": "显示技术详细信息"
-    },
-    "hideDetails": {
-      "message": "隐藏技术详细信息"
-    }
   }
 }

@@ -14,6 +14,9 @@
   "openQuickIngest": {
     "message": "Åpne hurtigimport"
   },
+  "learnMoreTldw": {
+    "message": "Lær hvordan tldw-serveren fungerer"
+  },
   "contextSummarize": {
     "message": "Oppsummer"
   },
@@ -91,31 +94,5 @@
   },
   "hfPullException": {
     "message": "[tldw Assistant] Noe gikk galt da vi sendte en pull-forespørsel for «$1» til tldw_server. Kontroller at tldw_server og utvidelsen kjører, og prøv igjen."
-  },
-  "error": {
-    "friendlyApiKeySummary": {
-      "message": "Vi fikk ikke kontakt med tldw-serveren din."
-    },
-    "friendlyApiKeyHint": {
-      "message": "API-nøkkelen din kan være ugyldig. Åpne Innstillinger → tldw-server for å sjekke URL-en og API-nøkkelen din, og prøv igjen."
-    },
-    "friendlyTimeoutSummary": {
-      "message": "Samtalen din ble tidsavbrutt."
-    },
-    "friendlyTimeoutHint": {
-      "message": "Serveren sluttet å sende svar. Prøv igjen, eller åpne Helse og diagnostikk for å sjekke serverstatus."
-    },
-    "friendlyGenericSummary": {
-      "message": "Noe gikk galt under kommunikasjonen med tldw-serveren din."
-    },
-    "friendlyGenericHint": {
-      "message": "Prøv igjen om litt, eller åpne Helse og diagnostikk for å kontrollere serverstatus."
-    },
-    "showDetails": {
-      "message": "Vis tekniske detaljer"
-    },
-    "hideDetails": {
-      "message": "Skjul tekniske detaljer"
-    }
   }
 }

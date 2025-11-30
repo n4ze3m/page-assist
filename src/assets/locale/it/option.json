@@ -18,7 +18,7 @@
     "buttonOpenDiagnostics": "Open diagnostics",
     "buttonViewDiagnostics": "View diagnostics",
     "buttonOpenQuickIngest": "Apri ingestione rapida",
-    "buttonTryDemo": "Try a demo",
+    "buttonTryDemo": "Prova una demo",
     "buttonContinueOffline": "Continua offline",
     "buttonDisableOffline": "Disattiva modalità offline",
     "offlineModeBadge": "Modalità offline — solo staging",
@@ -291,7 +291,7 @@
     "advancedSummary": "{{count}} advanced fields loaded",
     "advancedEmpty": "No advanced options detected — try reloading the spec.",
     "modifiedCount": "{{count}} modified",
-    "progress": "Processing {{done}} / {{total}} items…",
+    "progress": "Elaborazione {{done}} / {{total}} elementi…",
     "errorSummary": "Al momento non siamo riusciti a elaborare gli elementi di ingest.",
     "errorHint": "Riprova dopo aver controllato il tuo server tldw. La sezione Health & diagnostics può aiutarti a risolvere i problemi di ingest.",
     "checkHealthLink": "Controlla lo stato del server in Health & diagnostics",
@@ -368,7 +368,7 @@
     "connectExample1": "Open Settings → tldw server to add your server URL.",
     "connectExample2": "Use Diagnostics if your server is running but not reachable.",
     "headerDescription": "Create reusable characters you can pick from the chat header and reuse across conversations.",
-    "headerSelectHint": "Crea un personaggio per riutilizzare la sua personalità in più chat. Usa «Nuovo personaggio» per iniziare.",
+    "headerSelectHint": "Crea un personaggio per riutilizzare la sua personalità tra le chat. Usa \"Nuovo personaggio\" per iniziare.",
     "offlineTitle": "Characters API not available on this server",
     "offlineDescription": "This server does not advertise /api/v1/characters.",
     "offlineExample1": "Open Diagnostics to confirm your server version and available APIs for Characters.",
@@ -377,12 +377,12 @@
   "characters": {
     "selectCharacter": "Seleziona personaggio",
     "chattingAs": "Ora stai chattando come {{name}}.",
-    "clearCharacter": "Rimuovi personaggio",
+    "clearCharacter": "Cancella personaggio",
     "none": "Nessuno (nessun personaggio)",
     "searchPlaceholder": "Cerca personaggi per nome",
-    "noMatches": "Non ci sono ancora personaggi che corrispondono alla tua ricerca.",
+    "noMatches": "Nessun personaggio corrisponde alla tua ricerca.",
     "refresh": "Aggiorna personaggi",
-    "refreshing": "Aggiornamento dei personaggi…"
+    "refreshing": "Aggiornamento personaggi…"
   },
   "promptInsert": {
     "useInChat": "Use in chat",

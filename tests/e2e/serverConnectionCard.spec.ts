@@ -132,11 +132,9 @@ test.describe('ServerConnectionCard states', () => {
       page.getByRole('button', { name: /Continue offline/i })
     ).toBeVisible()
 
-    const offlineBadgeVisible = await page
-      .getByText(/Offline mode \u2014 staging only/i)
-      .isVisible()
-      .catch(() => false)
-    expect(offlineBadgeVisible).toBeFalsy()
+    await expect(
+      page.getByText(/Offline mode \u2014 staging only/i)
+    ).toBeHidden()
 
     await context.close()
   })
@@ -181,15 +179,8 @@ test.describe('ServerConnectionCard states', () => {
     await expect(page.getByText(/Knowledge: /i)).toBeVisible()
 
     // Old "Core"/"RAG" labels should not appear in the header
-    const coreLabelVisible = await page
-      .getByText(/Core:/i)
-      .isVisible()
-      .catch(() => false)
-    const ragLabelVisible = await page
-      .getByText(/RAG/i)
-      .isVisible()
-      .catch(() => false)
-    expect(coreLabelVisible || ragLabelVisible).toBeFalsy()
+    await expect(page.getByText(/Core:/i)).toBeHidden()
+    await expect(page.getByText(/RAG/i)).toBeHidden()
 
     // Server status pill opens Health & diagnostics
     await page.getByRole('button', { name: /Server:/i }).click()

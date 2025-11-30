@@ -382,10 +382,10 @@
     "connectExample2": "Use Diagnostics if your server is running but not reachable.",
     "headerDescription": "Create reusable characters you can pick from the chat header and reuse across conversations.",
     "headerSelectHint": "Crea un personaje para reutilizar su personalidad en distintos chats. Usa “Nuevo personaje” para empezar.",
-    "offlineTitle": "Characters API not available on this server",
-    "offlineDescription": "This server does not advertise /api/v1/characters.",
-    "offlineExample1": "Open Diagnostics to confirm your server version and available APIs for Characters.",
-    "offlineExample2": "If you upgrade your server, reload the extension and return to Characters."
+    "offlineTitle": "La API de personajes no está disponible en este servidor",
+    "offlineDescription": "Este servidor no expone /api/v1/characters.",
+    "offlineExample1": "Abre Diagnóstico para comprobar la versión de tu servidor y las API disponibles para Personajes.",
+    "offlineExample2": "Si actualizas tu servidor, vuelve a cargar la extensión y regresa a Personajes."
   },
   "characters": {
     "selectCharacter": "Seleccionar personaje",

@@ -14,6 +14,9 @@
   "openQuickIngest": {
     "message": "Schnelle Eingabe öffnen"
   },
+  "learnMoreTldw": {
+    "message": "Erfahren Sie, wie der tldw-Server funktioniert"
+  },
   "contextSummarize": {
     "message": "Zusammenfassen"
   },
@@ -91,31 +94,5 @@
   },
   "hfPullException": {
     "message": "[tldw Assistant] Beim Senden einer Abrufanforderung für \"$1\" an Ihren tldw_server ist ein Fehler aufgetreten. Stellen Sie sicher, dass Ihr tldw_server und die Erweiterung ausgeführt werden, und versuchen Sie es erneut."
-  },
-  "error": {
-    "friendlyApiKeySummary": {
-      "message": "Wir konnten Ihren tldw-Server nicht erreichen."
-    },
-    "friendlyApiKeyHint": {
-      "message": "Ihr API-Schlüssel ist möglicherweise ungültig. Öffnen Sie Einstellungen → tldw-Server, um URL und API-Schlüssel zu prüfen, und versuchen Sie es erneut."
-    },
-    "friendlyTimeoutSummary": {
-      "message": "Ihr Chat hat das Zeitlimit überschritten."
-    },
-    "friendlyTimeoutHint": {
-      "message": "Der Server hat aufgehört, Antworten zu senden. Versuchen Sie es erneut oder öffnen Sie Status & Diagnose, um den Serverstatus zu prüfen."
-    },
-    "friendlyGenericSummary": {
-      "message": "Beim Kontakt mit Ihrem tldw-Server ist ein Fehler aufgetreten."
-    },
-    "friendlyGenericHint": {
-      "message": "Versuchen Sie es in einem Moment erneut oder öffnen Sie Status & Diagnose, um den Serverzustand zu prüfen."
-    },
-    "showDetails": {
-      "message": "Technische Details anzeigen"
-    },
-    "hideDetails": {
-      "message": "Technische Details ausblenden"
-    }
   }
 }

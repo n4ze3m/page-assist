@@ -14,6 +14,9 @@
   "openQuickIngest": {
     "message": "باز کردن درون‌ریزی سریع"
   },
+  "learnMoreTldw": {
+    "message": "درباره نحوه کار سرور tldw بیشتر بدانید"
+  },
   "contextSummarize": {
     "message": "خلاصه کردن"
   },
@@ -91,31 +94,5 @@
   },
   "hfPullException": {
     "message": "[tldw Assistant] هنگام ارسال درخواست دریافت \"$1\" به tldw_server شما خطایی رخ داد. مطمئن شوید tldw_server و افزونه فعال هستند و دوباره تلاش کنید."
-  },
-  "error": {
-    "friendlyApiKeySummary": {
-      "message": "نتوانستیم به سرور tldw شما متصل شویم."
-    },
-    "friendlyApiKeyHint": {
-      "message": "ممکن است کلید API شما نامعتبر باشد. تنظیمات → سرور tldw را باز کنید تا آدرس URL و کلید API را بررسی کنید و دوباره تلاش کنید."
-    },
-    "friendlyTimeoutSummary": {
-      "message": "گفتگوی شما منقضی شد."
-    },
-    "friendlyTimeoutHint": {
-      "message": "سرور ارسال پاسخ‌ها را متوقف کرد. دوباره تلاش کنید یا وضعیت سرور را در سلامت و عیب‌یابی بررسی کنید."
-    },
-    "friendlyGenericSummary": {
-      "message": "در برقراری ارتباط با سرور tldw شما مشکلی پیش آمد."
-    },
-    "friendlyGenericHint": {
-      "message": "بعداً دوباره تلاش کنید یا سلامت و عیب‌یابی را برای بررسی وضعیت سرور باز کنید."
-    },
-    "showDetails": {
-      "message": "نمایش جزئیات فنی"
-    },
-    "hideDetails": {
-      "message": "پنهان کردن جزئیات فنی"
-    }
   }
 }

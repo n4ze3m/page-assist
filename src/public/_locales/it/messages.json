@@ -11,6 +11,9 @@
   "openQuickIngest": {
     "message": "Apri ingestione rapida"
   },
+  "learnMoreTldw": {
+    "message": "Scopri come funziona il server tldw"
+  },
   "contextSummarize": {
     "message": "Riassumi"
   },
@@ -91,31 +94,5 @@
   },
   "hfPullException": {
     "message": "[tldw Assistant] Si è verificato un problema durante l’invio di una richiesta di download per \"$1\" al tuo tldw_server. Assicurati che tldw_server e l’estensione siano in esecuzione، quindi riprova."
-  },
-  "error": {
-    "friendlyApiKeySummary": {
-      "message": "Non siamo riusciti a raggiungere il tuo server tldw."
-    },
-    "friendlyApiKeyHint": {
-      "message": "La tua chiave API potrebbe non essere valida. Apri Impostazioni → server tldw per controllare l'URL e la chiave API, quindi riprova."
-    },
-    "friendlyTimeoutSummary": {
-      "message": "La tua chat ha superato il tempo limite."
-    },
-    "friendlyTimeoutHint": {
-      "message": "Il server ha smesso di trasmettere risposte. Riprova oppure apri Stato e diagnostica per controllare lo stato del server."
-    },
-    "friendlyGenericSummary": {
-      "message": "Qualcosa è andato storto durante la comunicazione con il tuo server tldw."
-    },
-    "friendlyGenericHint": {
-      "message": "Riprova tra un momento oppure apri Stato e diagnostica per verificare lo stato del server."
-    },
-    "showDetails": {
-      "message": "Mostra dettagli tecnici"
-    },
-    "hideDetails": {
-      "message": "Nascondi dettagli tecnici"
-    }
   }
 }
