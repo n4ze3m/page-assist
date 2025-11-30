@@ -5,7 +5,7 @@ import { launchWithBuiltExtension } from './utils/extension-build'
 const API_KEY = 'THIS-IS-A-SECURE-KEY-123-FAKE-KEY'
 
 test.describe('Quick Ingest workflows and UX', () => {
-  test('URLs, files, inspector intro, and help flows', async ({}, testInfo) => {
+  test('URLs, files, inspector intro, and help flows', async (_fixtures, testInfo) => {
     let context: BrowserContext | null = null
 
     try {

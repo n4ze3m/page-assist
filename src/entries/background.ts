@@ -201,6 +201,13 @@ export default defineBackground({
           console.debug('[tldw] OpenAPI check skipped:', (e as any)?.message || e)
         }
 
+        // Clear timer if the background is torn down (service worker termination)
+        if (typeof self !== 'undefined' && 'addEventListener' in self) {
+          self.addEventListener('unload', () => {
+            if (modelWarmTimer) clearInterval(modelWarmTimer)
+          })
+        }
+
         await warmModels(true)
         if (modelWarmTimer) clearInterval(modelWarmTimer)
         modelWarmTimer = setInterval(() => {
@@ -960,10 +967,10 @@ export default defineBackground({
           browser.i18n.getMessage("contextSaveToNotesOpeningSidebar") ||
           "Opening sidebar to save note…"
         notify(title, openingMessage)
-          ensureSidepanelOpen(tab.id!)
         setTimeout(
           async () => {
             try {
+              await ensureSidepanelOpen(tab.id!)
               await browser.runtime.sendMessage({
                 from: "background",
                 type: "save-to-notes",

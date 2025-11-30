@@ -7,7 +7,7 @@ const EXT_REL_PATH = ['build', 'chrome-mv3']
 const API_KEY = 'THIS-IS-A-SECURE-KEY-123-FAKE-KEY'
 
 test.describe('Quick Ingest UX smoke (extension context)', () => {
-  test('open modal, add URLs, attach a file, view inspector', async ({}, testInfo) => {
+  test('open modal, add URLs, attach a file, view inspector', async (_ctx, testInfo) => {
     const extPath = path.resolve(__dirname, '..', '..', ...EXT_REL_PATH)
     test.skip(!fs.existsSync(extPath), 'Build the extension first: npm run build:chrome')
 

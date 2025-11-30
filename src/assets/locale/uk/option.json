@@ -199,7 +199,7 @@
     "advancedSummary": "{{count}} advanced fields loaded",
     "advancedEmpty": "No advanced options detected — try reloading the spec.",
     "modifiedCount": "{{count}} modified",
-    "progress": "Processing {{done}} / {{total}} items…",
+    "progress": "Оброблено {{done}} з {{total}} елементів…",
     "errorSummary": "Зараз нам не вдалося обробити елементи інжесту.",
     "errorHint": "Спробуйте ще раз після перевірки свого сервера tldw. Розділ Health & diagnostics може допомогти усунути проблеми з інжестом.",
     "checkHealthLink": "Перевірте стан сервера в Health & diagnostics",

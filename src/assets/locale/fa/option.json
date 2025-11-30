@@ -199,7 +199,7 @@
     "advancedSummary": "{{count}} advanced fields loaded",
     "advancedEmpty": "No advanced options detected — try reloading the spec.",
     "modifiedCount": "{{count}} modified",
-    "progress": "Processing {{done}} / {{total}} items…",
+    "progress": "در حال پردازش {{done}} / {{total}} مورد…",
     "errorSummary": "در حال حاضر نتوانستیم موارد اینجست را پردازش کنیم.",
     "errorHint": "پس از بررسی سرور tldw خود دوباره تلاش کنید. بخش Health & diagnostics می‌تواند در برطرف کردن مشکلات اینجست کمک کند.",
     "checkHealthLink": "سلامت سرور را در Health & diagnostics بررسی کنید",

@@ -23,13 +23,14 @@ const setupExtensionForServer = async (server: MockTldwServer) => {
     `${server.url}/*`
   )
   if (!granted) {
-    test.skip(true, 'Host permission not granted for mock server')
+    await context.close()
+    return { granted, context: undefined, page: undefined, extensionId, optionsUrl }
   }
 
   await page.goto(optionsUrl)
   await seedConfig(page, server.url)
 
-  return { context, page, extensionId, optionsUrl }
+  return { granted, context, page, extensionId, optionsUrl }
 }
 
 test.describe('Characters workspace UX', () => {
@@ -37,7 +38,13 @@ test.describe('Characters workspace UX', () => {
     const server = new MockTldwServer()
     await server.start()
 
-    const { context, page, optionsUrl } = await setupExtensionForServer(server)
+    const setup = await setupExtensionForServer(server)
+    if (!setup.granted || !setup.context || !setup.page || !setup.optionsUrl) {
+      await server.stop()
+      test.skip(true, 'Host permission not granted for mock server')
+      return
+    }
+    const { context, page, optionsUrl } = setup
 
     await page.goto(`${optionsUrl}#/characters`)
 
@@ -124,7 +131,13 @@ test.describe('Characters workspace UX', () => {
     })
     await server.start()
 
-    const { context, page, optionsUrl } = await setupExtensionForServer(server)
+    const setup = await setupExtensionForServer(server)
+    if (!setup.granted || !setup.context || !setup.page || !setup.optionsUrl) {
+      await server.stop()
+      test.skip(true, 'Host permission not granted for mock server')
+      return
+    }
+    const { context, page, optionsUrl } = setup
 
     await page.goto(`${optionsUrl}#/characters`)
 
@@ -160,7 +173,13 @@ test.describe('Characters workspace UX', () => {
       ]
     })
 
-    const { context, page, optionsUrl } = await setupExtensionForServer(server)
+    const setup = await setupExtensionForServer(server)
+    if (!setup.granted || !setup.context || !setup.page || !setup.optionsUrl) {
+      await server.stop()
+      test.skip(true, 'Host permission not granted for mock server')
+      return
+    }
+    const { context, page, optionsUrl } = setup
 
     await page.goto(`${optionsUrl}#/playground`)
 

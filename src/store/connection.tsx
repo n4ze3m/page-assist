@@ -143,6 +143,30 @@ const initialState: ConnectionState = {
   knowledgeError: null
 }
 
+const getPersistedServerUrl = async (): Promise<string | null> => {
+  try {
+    const cfg = await tldwClient.getConfig()
+    if (cfg?.serverUrl) return cfg.serverUrl
+  } catch {
+    // ignore config read errors
+  }
+
+  try {
+    if (typeof chrome !== "undefined" && chrome?.storage?.local) {
+      const url = await new Promise<string | null>((resolve) =>
+        chrome.storage.local.get("tldwConfig", (res) =>
+          resolve(res?.tldwConfig?.serverUrl ?? null)
+        )
+      )
+      if (url) return url
+    }
+  } catch {
+    // ignore storage read errors
+  }
+
+  return null
+}
+
 export const useConnectionStore = create<ConnectionStore>((set, get) => ({
   state: initialState,
 
@@ -154,26 +178,7 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
       return
     }
 
-    let persistedServerUrl: string | null = null
-    try {
-      const cfg = await tldwClient.getConfig()
-      if (cfg?.serverUrl) persistedServerUrl = cfg.serverUrl
-    } catch {
-      // ignore config read errors
-    }
-    try {
-      if (!persistedServerUrl && typeof chrome !== "undefined" && chrome?.storage?.local) {
-        await new Promise<void>((resolve) =>
-          chrome.storage.local.get("tldwConfig", (res) => {
-            const url = res?.tldwConfig?.serverUrl
-            if (url) persistedServerUrl = url
-            resolve()
-          })
-        )
-      }
-    } catch {
-      // ignore storage read errors
-    }
+    const persistedServerUrl = await getPersistedServerUrl()
 
     // Test-only hook: force a missing/unconfigured state without network calls.
     const forceUnconfigured = await getForceUnconfiguredFlag()

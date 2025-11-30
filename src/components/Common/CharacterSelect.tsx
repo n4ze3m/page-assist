@@ -217,6 +217,7 @@ export const CharacterSelect: React.FC<Props> = ({
             {normalized.avatar_url ? (
               <img
                 src={normalized.avatar_url}
+                alt={displayName || normalized.id || ""}
                 className="w-4 h-4 rounded-full"
               />
             ) : (
@@ -360,8 +361,9 @@ export const CharacterSelect: React.FC<Props> = ({
   const renderMenuWithRef = React.useCallback(
     (menuNode: React.ReactNode) => {
       if (!React.isValidElement(menuNode)) return menuNode
-      const originalRef = (menuNode as any).ref as React.Ref<HTMLUListElement> | undefined
-      return React.cloneElement(menuNode, {
+      const menuElement = menuNode as React.ReactElement<HTMLUListElement>
+      const originalRef = menuElement.ref as React.Ref<HTMLUListElement> | undefined
+      return React.cloneElement(menuElement, {
         ref: (node: HTMLUListElement | null) => attachMenuRef(node, originalRef)
       })
     },
@@ -430,6 +432,7 @@ export const CharacterSelect: React.FC<Props> = ({
               {selectedCharacter?.avatar_url ? (
                 <img
                   src={selectedCharacter.avatar_url}
+                  alt={selectedCharacter?.name || "Character avatar"}
                   className={"rounded-full " + iconClassName}
                 />
               ) : (

@@ -291,7 +291,7 @@
     "advancedSummary": "{{count}} advanced fields loaded",
     "advancedEmpty": "No advanced options detected — try reloading the spec.",
     "modifiedCount": "{{count}} modified",
-    "progress": "Processing {{done}} / {{total}} items…",
+    "progress": "正在處理 {{done}} / {{total}} 項目…",
     "errorSummary": "目前無法處理這些匯入項目。",
     "errorHint": "請先檢查你的 tldw 伺服器，然後再試一次。Health & diagnostics 可以協助排除匯入相關的問題。",
     "checkHealthLink": "在 Health & diagnostics 中檢查伺服器健康狀態",

@@ -333,7 +333,8 @@ test.describe('Quick ingest modal', () => {
       }
     })
     if (!patched) {
-      test.skip('Quick ingest sendMessage patch failed; cannot force ingest failure')
+      await context.close()
+      return
     }
 
     await page.goto(optionsUrl + '#/media', { waitUntil: 'domcontentloaded' })

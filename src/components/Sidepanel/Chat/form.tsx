@@ -339,6 +339,20 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
     [t]
   )
 
+  const getPersistenceModeChipLabel = React.useCallback(
+    (isTemporary: boolean) =>
+      isTemporary
+        ? t(
+            "playground:composer.persistence.ephemeralShort",
+            "Temporary (not saved)"
+          )
+        : t(
+            "playground:composer.persistence.localShort",
+            "Saved locally"
+          ),
+    [t]
+  )
+
   const handleToggleTemporaryChat = React.useCallback(
     (next: boolean) => {
       if (isFireFoxPrivateMode) {
@@ -605,9 +619,14 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
     }
   }, [sttError, t])
 
-  const persistenceModeLabel = React.useMemo(() => {
-    return getPersistenceModeLabel(temporaryChat)
-  }, [getPersistenceModeLabel, temporaryChat])
+  const persistenceModeLabel = React.useMemo(
+    () => getPersistenceModeLabel(temporaryChat),
+    [getPersistenceModeLabel, temporaryChat]
+  )
+  const persistenceModeChipLabel = React.useMemo(
+    () => getPersistenceModeChipLabel(temporaryChat),
+    [getPersistenceModeChipLabel, temporaryChat]
+  )
 
   const moreToolsContent = React.useMemo(() => (
     <div className="flex w-72 flex-col gap-4">
@@ -757,6 +776,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
     isConnectionReady,
     handleImageUpload,
     handleLiveCaptionsToggle,
+    handleProcessQueuedIngest,
     handleQuickIngestOpen,
     handleServerDictationToggle,
     handleSpeechToggle,
@@ -1095,7 +1115,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                                       )}
                             </span>
                             <span className="inline-flex items-center rounded-full border border-gray-200 bg-white px-2 py-0.5 text-[11px] font-medium text-gray-700 shadow-sm dark:border-gray-700 dark:bg-[#1f1f1f] dark:text-gray-200">
-                              {persistenceModeLabel}
+                              {persistenceModeChipLabel}
                             </span>
                           </div>
                           <p className="text-[11px] text-gray-500 dark:text-gray-400">
