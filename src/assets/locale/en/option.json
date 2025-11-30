@@ -25,7 +25,9 @@
     "buttonGoToServerCard": "Go to server card",
     "tipQuickIngest": "Tip: Need ingest help while you’re offline?",
     "quickIngestHint": "When your server is offline, Quick Ingest works as a staging area. You can queue URLs and files now and process them once you reconnect.",
-    "backToWorkspace": "Back to workspace"
+    "backToWorkspace": "Back to workspace",
+    "sidepanelOpenSettingsHint": "Settings open in a new browser tab so you can configure your tldw server.",
+    "quickIngestInlineHint": "Quick Ingest can queue URLs and files while your server is offline so you can process them once you reconnect."
   },
   "header": {
     "backToHome": "Back to home",
@@ -289,6 +291,7 @@
     "selectCharacter": "Select character",
     "chattingAs": "You're now chatting as {{name}}.",
     "clearCharacter": "Clear character",
+    "none": "None (no character)",
     "refresh": "Refresh characters",
     "refreshing": "Refreshing characters…"
   },

@@ -33,6 +33,10 @@ test.describe('Quick Ingest workflows and UX', () => {
         .first()
     }
     await expect(trigger).toBeVisible({ timeout: 5000 })
+    await expect(trigger).toHaveAttribute(
+      'title',
+      /Stage URLs and files for processing, even while your server is offline\./i
+    )
     await trigger.click()
 
     // Wait for modal content (root may briefly stay hidden)

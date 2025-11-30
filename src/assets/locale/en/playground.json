@@ -58,7 +58,8 @@
     "knowledge": "Knowledge",
     "vision": "[Experimental] Vision Chat",
     "clearContext": "Clear Context",
-    "uploadDocuments": "Upload Documents (beta)"
+    "uploadDocuments": "Upload Documents (beta)",
+    "quickIngest": "Stage URLs and files for processing, even while your server is offline."
   },
   "sendWhenEnter": "Send when Enter pressed",
     "welcome": "Hello! How can I help you today?",
@@ -153,7 +154,13 @@
       "serverDefaultTitle": "Extension chat",
       "serverSavedTitle": "Chat now saved on server",
       "serverSaved": "Future messages in this chat will sync to your tldw server.",
-      "serverCharacterRequired": "Unable to find or create a default assistant character on the server. Try again from the Characters page."
+      "serverBenefits": "This keeps a durable record in server history so you can reopen the conversation later, access it from other browsers, and run server-side analytics over your chats.",
+      "serverCharacterRequired": "Unable to find or create a default assistant character on the server. Try again from the Characters page.",
+      "serverCharacterCta": "Open Characters workspace",
+      "serverCharacterHintTitle": "Create a default assistant character",
+      "serverCharacterHintBody": "Create a simple assistant persona (name and a short description are enough). Once it exists, the extension can reuse it when saving chats to your server.",
+      "serverInlineTitle": "Saved locally + on your server",
+      "serverInlineBody": "This chat is stored both in this browser and on your tldw server, so you can reopen it from server history, keep a long-term record, and analyze it alongside other conversations."
     },
     "conversationTags": "Conversation tags",
     "stateHelp": "Default state is “in-progress.” Update it as the conversation progresses.",

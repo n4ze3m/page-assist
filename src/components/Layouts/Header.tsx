@@ -88,7 +88,7 @@ export const Header: React.FC<Props> = ({
   setSidebarOpen,
   showSelectors = true
 }) => {
-  const { t, i18n } = useTranslation(["option", "common", "settings"])
+  const { t, i18n } = useTranslation(["option", "common", "settings", "playground"])
   const isRTL = i18n?.dir() === "rtl"
 
   const [shareModeEnabled] = useStorage("shareMode", false)
@@ -846,9 +846,12 @@ export const Header: React.FC<Props> = ({
               }
               title={
                 t(
+                  "playground:tooltip.quickIngest",
+                  t(
                     "option:header.quickIngestHelp",
-                    "Upload URLs/files with analysis and advanced options."
+                    "Stage URLs and files for processing, even while your server is offline."
                   )
+                ) as string
               }
               className={classNames(
                 "relative inline-flex items-center gap-1 rounded-full border border-transparent px-2 py-1 text-xs transition hover:border-gray-300 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500 dark:hover:border-gray-500 dark:hover:bg-[#1f1f1f]",

@@ -15,6 +15,11 @@ test.describe('Sidepanel first-run and connection panel', () => {
       page.getByText(/Connect tldw Assistant to your server/i)
     ).toBeVisible()
 
+    // Helper microcopy should set expectations about where Settings opens.
+    await expect(
+      page.getByText(/Settings open in a new browser tab/i)
+    ).toBeVisible()
+
     // Clicking any server-config CTA should open the Options page in a new tab
     const [settingsPage] = await Promise.all([
       context.waitForEvent('page'),
@@ -25,8 +30,11 @@ test.describe('Sidepanel first-run and connection panel', () => {
         .click()
     ])
     await settingsPage.waitForLoadState('domcontentloaded')
-    // In Chromium, chrome.runtime.openOptionsPage navigates to chrome://extensions/?options=<id>
-    await expect(settingsPage).toHaveURL(/chrome:\/\/extensions\/\?options=/i)
+    // Depending on the browser, this may be either the generic extensions manager
+    // or the extension's options.html page. Accept both forms.
+    await expect(settingsPage).toHaveURL(
+      /chrome:\/\/extensions\/\?options=|options\.html#\/settings\/tldw/i
+    )
 
     await context.close()
   })

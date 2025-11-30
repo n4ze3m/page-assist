@@ -145,4 +145,77 @@ test.describe('Characters workspace UX', () => {
     await context.close()
     await server.stop()
   })
+
+  test('header character select exposes clear affordances', async () => {
+    const server = new MockTldwServer()
+    await server.start()
+
+    // Seed a simple character so the header selector has something to show.
+    server.setChatFixtures({
+      chats: [],
+      characters: [
+        {
+          id: 'char-1',
+          name: 'Header Persona',
+          description: 'Header test persona',
+          avatar_url: null,
+          tags: [],
+          system_prompt: 'You are a helpful header persona.',
+          greeting: 'Hi from header persona.',
+          version: 1
+        }
+      ]
+    })
+
+    const { context, page, extensionId, optionsUrl } =
+      await launchWithBuiltExtension()
+
+    const granted = await grantHostPermission(
+      context,
+      extensionId,
+      `${server.url}/*`
+    )
+    if (!granted) {
+      test.skip(true, 'Host permission not granted for mock server')
+    }
+
+    await page.goto(optionsUrl)
+    await seedConfig(page, server.url)
+
+    await page.goto(`${optionsUrl}#/playground`)
+
+    // Open the header CharacterSelect and pick the seeded character.
+    const trigger = page
+      .getByRole('button', { name: /Select character/i })
+      .or(page.getByRole('button', { name: /Header Persona/i }))
+      .first()
+    await expect(trigger).toBeVisible()
+    await trigger.click()
+
+    await page.getByText('Header Persona').first().click()
+
+    // Initial selection should show a "chatting as" toast once.
+    const toast = page.getByText(/You're now chatting as Header Persona/i)
+    await expect(toast).toBeVisible({ timeout: 10_000 })
+    await expect(toast).toBeHidden({ timeout: 15_000 })
+
+    // Header chip should reflect the selected character.
+    await expect(page.getByText('Header Persona')).toBeVisible()
+
+    // Clear via the new "None" menu option at the top.
+    await trigger.click()
+    const noneOption = page.getByText(/None \(no character\)/i).first()
+    await expect(noneOption).toBeVisible()
+    await noneOption.click()
+
+    // The header chip should disappear once the character is cleared.
+    await expect(page.getByText('Header Persona')).toHaveCount(0)
+
+    // Clearing the character should not trigger a new "Chatting as…" toast.
+    await page.waitForTimeout(500)
+    await expect(page.getByText(/You're now chatting as/i)).toHaveCount(0)
+
+    await context.close()
+    await server.stop()
+  })
 })

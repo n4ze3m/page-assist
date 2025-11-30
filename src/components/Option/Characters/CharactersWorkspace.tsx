@@ -1,7 +1,7 @@
 import React from "react"
 import { Skeleton } from "antd"
 import { useTranslation } from "react-i18next"
-import { useNavigate } from "react-router-dom"
+import { useLocation, useNavigate } from "react-router-dom"
 import FeatureEmptyState from "@/components/Common/FeatureEmptyState"
 import { PageShell } from "@/components/Common/PageShell"
 import { useServerOnline } from "@/hooks/useServerOnline"
@@ -12,10 +12,16 @@ import { useServerCapabilities } from "@/hooks/useServerCapabilities"
 export const CharactersWorkspace: React.FC = () => {
   const { t } = useTranslation(["option", "common", "settings"])
   const navigate = useNavigate()
+  const location = useLocation()
   const isOnline = useServerOnline()
   const { demoEnabled } = useDemoMode()
   const { capabilities, loading: capsLoading } = useServerCapabilities()
   const hasCharacters = capabilities?.hasCharacters
+  const fromPersistenceError = React.useMemo(
+    () => location.search.includes("from=server-chat-persistence-error"),
+    [location.search]
+  )
+  const newButtonRef = React.useRef<HTMLButtonElement | null>(null)
 
   if (!isOnline) {
     return demoEnabled ? (
@@ -109,13 +115,30 @@ export const CharactersWorkspace: React.FC = () => {
               "Create reusable characters you can pick from the chat header and reuse across conversations."
           })}
         </p>
+        {fromPersistenceError && (
+          <p className="mt-1 max-w-xl text-[11px] text-blue-700 dark:text-blue-300">
+            <span className="font-semibold">
+              {t(
+                "playground:composer.persistence.serverCharacterHintTitle",
+                "Create a default assistant character"
+              )}
+              {": "}
+            </span>
+            {t(
+              "playground:composer.persistence.serverCharacterHintBody",
+              "Create a simple assistant persona (name and a short description are enough). Once it exists, the extension can reuse it when saving chats to your server."
+            )}
+          </p>
+        )}
       </div>
       {capsLoading && (
         <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-[#0f1115]">
           <Skeleton active title paragraph={{ rows: 5 }} />
         </div>
       )}
-      {!capsLoading && hasCharacters && <CharactersManager />}
+      {!capsLoading && hasCharacters && (
+        <CharactersManager forwardedNewButtonRef={newButtonRef} />
+      )}
     </PageShell>
   )
 }

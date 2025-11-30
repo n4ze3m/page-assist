@@ -48,6 +48,9 @@ export const CharacterSelect: React.FC<Props> = ({
   const selectLabel = t("option:characters.selectCharacter", {
     defaultValue: "Select character"
   }) as string
+  const clearLabel = t("option:characters.clearCharacter", {
+    defaultValue: "Clear character"
+  }) as string
 
   React.useEffect(() => {
     if (!initialized.current) {
@@ -149,10 +152,30 @@ export const CharacterSelect: React.FC<Props> = ({
 
   const menuItems: any[] = []
 
+  const noneItem = {
+    key: "__none__",
+    label: (
+      <button
+        type="button"
+        className="w-full text-left text-xs font-medium text-gray-700 hover:text-gray-900 dark:text-gray-200 dark:hover:text-gray-50"
+      >
+        {t("option:characters.none", "None (no character)") as string}
+      </button>
+    ),
+    onClick: () => {
+      setSelectedCharacter(null)
+    }
+  }
+
+  menuItems.push(noneItem)
+
   if (items.length > 0) {
-    menuItems.push(...items)
+    menuItems.push({ type: "divider", key: "__divider_items__" } as any, ...items)
   } else {
-    menuItems.push({ key: "empty", label: <Empty /> })
+    menuItems.push({ type: "divider", key: "__divider_empty__" } as any, {
+      key: "empty",
+      label: <Empty />
+    })
   }
 
   if (clearItem) {
@@ -172,20 +195,45 @@ export const CharacterSelect: React.FC<Props> = ({
         }}
         placement="topLeft"
         trigger={["click"]}>
-        <Tooltip title={selectedCharacter?.name || selectLabel}>
-          <IconButton
-            ariaLabel={(selectedCharacter?.name || selectLabel) as string}
-            hasPopup="menu"
-            className={className}>
-            {selectedCharacter?.avatar_url ? (
-              <img
-                src={selectedCharacter.avatar_url}
-                className={"rounded-full " + iconClassName}
-              />
-            ) : (
-              <UserCircle2 className={iconClassName} />
+        <Tooltip
+          title={
+            selectedCharacter?.name
+              ? `${selectedCharacter.name} — ${clearLabel}`
+              : selectLabel
+          }>
+          <div className="relative inline-flex">
+            <IconButton
+              ariaLabel={
+                (selectedCharacter?.name
+                  ? `${selectedCharacter.name} — ${clearLabel}`
+                  : selectLabel) as string
+              }
+              hasPopup="menu"
+              className={className}>
+              {selectedCharacter?.avatar_url ? (
+                <img
+                  src={selectedCharacter.avatar_url}
+                  className={"rounded-full " + iconClassName}
+                />
+              ) : (
+                <UserCircle2 className={iconClassName} />
+              )}
+            </IconButton>
+            {selectedCharacter && (
+              <button
+                type="button"
+                onClick={(event) => {
+                  event.preventDefault()
+                  event.stopPropagation()
+                  setSelectedCharacter(null)
+                }}
+                className="absolute -top-1 -right-1 flex h-3 w-3 items-center justify-center rounded-full bg-gray-900 text-[9px] font-semibold text-white shadow-sm hover:bg-gray-700 dark:bg-gray-200 dark:text-gray-900"
+                aria-label={clearLabel}
+                title={clearLabel}>
+                ×
+              </button>
             )}
-          </IconButton>
+          </div>
         </Tooltip>
       </Dropdown>
 

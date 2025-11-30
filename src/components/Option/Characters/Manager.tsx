@@ -180,7 +180,13 @@ const buildCharacterPayload = (values: any): Record<string, any> => {
   return payload
 }
 
-export const CharactersManager: React.FC = () => {
+type CharactersManagerProps = {
+  forwardedNewButtonRef?: React.RefObject<HTMLButtonElement | null>
+}
+
+export const CharactersManager: React.FC<CharactersManagerProps> = ({
+  forwardedNewButtonRef
+}) => {
   const { t } = useTranslation(["settings", "common"])
   const qc = useQueryClient()
   const navigate = useNavigate()
@@ -207,6 +213,16 @@ export const CharactersManager: React.FC = () => {
   const [chatsError, setChatsError] = React.useState<string | null>(null)
   const [loadingChats, setLoadingChats] = React.useState(false)
   const [resumingChatId, setResumingChatId] = React.useState<string | null>(null)
+
+  React.useEffect(() => {
+    if (forwardedNewButtonRef && newButtonRef.current) {
+      // Expose the "New character" button to parent workspaces that may
+      // want to focus it (e.g., when coming from a persistence error).
+      // The ref object itself is stable; assign its current value once.
+      // eslint-disable-next-line no-param-reassign
+      ;(forwardedNewButtonRef as any).current = newButtonRef.current
+    }
+  }, [forwardedNewButtonRef])
 
   const hasFilters =
     searchTerm.trim().length > 0 || (filterTags && filterTags.length > 0)

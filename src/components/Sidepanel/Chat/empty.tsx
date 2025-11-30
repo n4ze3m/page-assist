@@ -7,19 +7,50 @@ import { ConnectionPhase } from "@/types/connection"
 import { cleanUrl } from "@/libs/clean-url"
 
 export const EmptySidePanel = () => {
-  const { t } = useTranslation(["sidepanel", "settings", "option"])
+  const { t } = useTranslation(["sidepanel", "settings", "option", "playground"])
   const { phase, isConnected, serverUrl } = useConnectionState()
   const isConnectionReady = isConnected && phase === ConnectionPhase.CONNECTED
 
   const openSettings = () => {
     try {
+      // Prefer opening the extension's options.html directly so users land
+      // on the tldw settings page instead of the generic extensions manager.
+      // `browser` is provided by the WebExtension polyfill in WXT.
+      // @ts-ignore
+      if (typeof browser !== "undefined" && browser.runtime?.getURL) {
+        // @ts-ignore
+        const url = browser.runtime.getURL("/options.html#/settings/tldw")
+        // @ts-ignore
+        if (browser.tabs?.create) {
+          // @ts-ignore
+          browser.tabs.create({ url })
+        } else {
+          window.open(url, "_blank")
+        }
+        return
+      }
+    } catch {
+      // Fall through to chrome.* / window.open below.
+    }
+
+    try {
+      // @ts-ignore
+      if (chrome?.runtime?.getURL) {
+        // @ts-ignore
+        const url = chrome.runtime.getURL("/options.html#/settings/tldw")
+        window.open(url, "_blank")
+        return
+      }
       // @ts-ignore
       if (chrome?.runtime?.openOptionsPage) {
         // @ts-ignore
         chrome.runtime.openOptionsPage()
         return
       }
-    } catch {}
+    } catch {
+      // ignore and fall back to plain window.open
+    }
+
     window.open("/options.html#/settings/tldw", "_blank")
   }
 
@@ -62,8 +93,11 @@ export const EmptySidePanel = () => {
         <Tooltip
           placement="bottom"
           title={t(
-            "sidepanel:quickIngestHint",
-            "Upload URLs or files to your tldw server."
+            "playground:tooltip.quickIngest",
+            t(
+              "sidepanel:quickIngestHint",
+              "Stage URLs and files for processing, even while your server is offline."
+            )
           )}
         >
           <Button

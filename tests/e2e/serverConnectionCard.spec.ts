@@ -96,6 +96,12 @@ test.describe('ServerConnectionCard states', () => {
       page.getByRole('button', { name: /Health & diagnostics/i })
     ).toBeVisible()
 
+    // Even before enabling offline mode, users should see a short hint
+    // that Quick Ingest can queue items while offline.
+    await expect(
+      page.getByText(/Quick Ingest can queue URLs and files/i)
+    ).toBeVisible()
+
     // Enabling offline mode should surface a clear hint about staging.
     await page.getByRole('button', { name: /Continue offline/i }).click()
     await expect(

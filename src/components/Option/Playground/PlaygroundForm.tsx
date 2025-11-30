@@ -12,7 +12,8 @@ import {
   Tooltip,
   notification,
   Popover,
-  Modal
+  Modal,
+  Button
 } from "antd"
 import { Image } from "antd"
 import { useWebUI } from "~/store/webui"
@@ -45,7 +46,7 @@ import { CurrentChatModelSettings } from "@/components/Common/Settings/CurrentCh
 import { PromptSelect } from "@/components/Common/PromptSelect"
 import { useConnectionState } from "@/hooks/useConnectionState"
 import { ConnectionPhase } from "@/types/connection"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { fetchChatModels } from "@/services/tldw-server"
 import { useServerCapabilities } from "@/hooks/useServerCapabilities"
 import { tldwClient, type ConversationState } from "@/services/tldw/TldwApiClient"
@@ -60,6 +61,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
   const { t } = useTranslation(["playground", "common", "option"])
   const inputRef = React.useRef<HTMLInputElement>(null)
   const fileInputRef = React.useRef<HTMLInputElement>(null)
+  const navigate = useNavigate()
 
   const [typing, setTyping] = React.useState<boolean>(false)
   const [checkWideMode] = useStorage("checkWideMode", false)
@@ -138,6 +140,12 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
     "selectedCharacter",
     null
   )
+  const [serverPersistenceHintSeen, setServerPersistenceHintSeen] = useStorage(
+    "serverPersistenceHintSeen",
+    false
+  )
+  const [showServerPersistenceHint, setShowServerPersistenceHint] =
+    React.useState(false)
 
   const {
     tabMentionsEnabled,
@@ -691,7 +699,21 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
           description: t(
             "playground:composer.persistence.serverCharacterRequired",
             "Unable to find or create a default assistant character on the server. Try again from the Characters page."
-          )
+          ),
+          btn: (
+            <Button
+              type="primary"
+              size="small"
+              onClick={() => {
+                navigate("/characters?from=server-chat-persistence-error")
+              }}>
+              {t(
+                "playground:composer.persistence.serverCharacterCta",
+                "Open Characters workspace"
+              )}
+            </Button>
+          ),
+          duration: 6
         })
         return
       }
@@ -739,11 +761,21 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
           "playground:composer.persistence.serverSavedTitle",
           "Chat now saved on server"
         ),
-        description: t(
-          "playground:composer.persistence.serverSaved",
-          "Future messages in this chat will sync to your tldw server."
-        )
+        description:
+          t(
+            "playground:composer.persistence.serverSaved",
+            "Future messages in this chat will sync to your tldw server."
+          ) +
+          " " +
+          t(
+            "playground:composer.persistence.serverBenefits",
+            "This keeps a durable record in server history so you can reopen the conversation later, access it from other browsers, and run server-side analytics over your chats."
+          )
       })
+      if (!serverPersistenceHintSeen) {
+        setServerPersistenceHintSeen(true)
+        setShowServerPersistenceHint(true)
+      }
     } catch (e: any) {
       notification.error({
         message: t("error"),
@@ -756,6 +788,9 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
     temporaryChat,
     serverChatId,
     setServerChatId,
+    navigate,
+    serverPersistenceHintSeen,
+    setServerPersistenceHintSeen,
     t
   ])
 
@@ -1432,7 +1467,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                               <button
                                 type="button"
                                 onClick={handleSaveChatToServer}
-                                className="mt-1 inline-flex w-fit items-center gap-1 text-[11px] font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300">
+                                className="mt-1 inline-flex w-fit items-center gap-1 rounded-full border border-blue-200 bg-blue-50 px-2 py-0.5 text-[11px] font-medium text-blue-700 hover:bg-blue-100 dark:border-blue-500/60 dark:bg-blue-900/30 dark:text-blue-200 dark:hover:bg-blue-900/50">
                                 {t(
                                   "playground:composer.persistence.saveToServer",
                                   "Also save this chat to server"
@@ -1449,6 +1484,28 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                                   "Connect your server to save chats there."
                                 )}
                               </button>
+                            )}
+                            {!temporaryChat && serverChatId && showServerPersistenceHint && (
+                              <p className="mt-1 max-w-md text-[11px] text-gray-600 dark:text-gray-300">
+                                <span className="font-semibold">
+                                  {t(
+                                    "playground:composer.persistence.serverInlineTitle",
+                                    "Saved locally + on your server"
+                                  )}
+                                  {": "}
+                                </span>
+                                {t(
+                                  "playground:composer.persistence.serverInlineBody",
+                                  "This chat is stored both in this browser and on your tldw server, so you can reopen it from server history, keep a long-term record, and analyze it alongside other conversations."
+                                )}
+                                <button
+                                  type="button"
+                                  onClick={() => setShowServerPersistenceHint(false)}
+                                  className="ml-1 text-[11px] font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+                                >
+                                  {t("common:dismiss", "Dismiss")}
+                                </button>
+                              </p>
                             )}
                           </div>
                         </div>
@@ -1469,57 +1526,61 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                                 "Context Management"
                               )}
                             </button>
-                            <button
-                              type="button"
-                              onClick={() => {
-                                const chips =
-                                  document.querySelector<HTMLElement>(
-                                    "[data-playground-tabs='true']"
-                                  )
-                                chips?.focus()
-                              }}
-                              title={
-                                t(
-                                  "playground:composer.contextTabsHint",
-                                  "Review or remove referenced tabs, or add more from your open browser tabs."
-                                ) as string
-                              }
-                              className="inline-flex items-center gap-1 rounded-full border border-transparent px-2 py-0.5 hover:border-gray-300 hover:bg-gray-50 dark:hover:border-gray-600 dark:hover:bg-[#262626]">
-                              <FileText className="h-3 w-3 text-gray-500 dark:text-gray-400" />
-                              <span>
-                                {t("playground:composer.contextTabs", {
-                                  defaultValue: "{{count}} tabs",
-                                  count: selectedDocuments.length
-                                } as any) as string}
-                              </span>
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => {
-                                const files =
-                                  document.querySelector<HTMLElement>(
-                                    "[data-playground-uploads='true']"
-                                  )
-                                if (files) {
-                                  files.focus()
-                                  files.scrollIntoView({ block: "nearest" })
+                            {selectedDocuments.length > 0 && (
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const chips =
+                                    document.querySelector<HTMLElement>(
+                                      "[data-playground-tabs='true']"
+                                    )
+                                  chips?.focus()
+                                }}
+                                title={
+                                  t(
+                                    "playground:composer.contextTabsHint",
+                                    "Review or remove referenced tabs, or add more from your open browser tabs."
+                                  ) as string
                                 }
-                              }}
-                              title={
-                                t(
-                                  "playground:composer.contextFilesHint",
-                                  "Review attached files, remove them, or add more."
-                                ) as string
-                              }
-                              className="inline-flex items-center gap-1 rounded-full border border-transparent px-2 py-0.5 hover:border-gray-300 hover:bg-gray-50 dark:hover:border-gray-600 dark:hover:bg-[#262626]">
-                              <FileIcon className="h-3 w-3 text-gray-500 dark:text-gray-400" />
-                              <span>
-                                {t("playground:composer.contextFiles", {
-                                  defaultValue: "{{count}} files",
-                                  count: uploadedFiles.length
-                                } as any) as string}
-                              </span>
-                            </button>
+                                className="inline-flex items-center gap-1 rounded-full border border-transparent px-2 py-0.5 hover:border-gray-300 hover:bg-gray-50 dark:hover:border-gray-600 dark:hover:bg-[#262626]">
+                                <FileText className="h-3 w-3 text-gray-500 dark:text-gray-400" />
+                                <span>
+                                  {t("playground:composer.contextTabs", {
+                                    defaultValue: "{{count}} tabs",
+                                    count: selectedDocuments.length
+                                  } as any) as string}
+                                </span>
+                              </button>
+                            )}
+                            {uploadedFiles.length > 0 && (
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const files =
+                                    document.querySelector<HTMLElement>(
+                                      "[data-playground-uploads='true']"
+                                    )
+                                  if (files) {
+                                    files.focus()
+                                    files.scrollIntoView({ block: "nearest" })
+                                  }
+                                }}
+                                title={
+                                  t(
+                                    "playground:composer.contextFilesHint",
+                                    "Review attached files, remove them, or add more."
+                                  ) as string
+                                }
+                                className="inline-flex items-center gap-1 rounded-full border border-transparent px-2 py-0.5 hover:border-gray-300 hover:bg-gray-50 dark:hover:border-gray-600 dark:hover:bg-[#262626]">
+                                <FileIcon className="h-3 w-3 text-gray-500 dark:text-gray-400" />
+                                <span>
+                                  {t("playground:composer.contextFiles", {
+                                    defaultValue: "{{count}} files",
+                                    count: uploadedFiles.length
+                                  } as any) as string}
+                                </span>
+                              </button>
+                            )}
                           </div>
                           <div className="flex items-center justify-end gap-3 flex-wrap">
                             <CharacterSelect className="text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100" iconClassName="size-5" />

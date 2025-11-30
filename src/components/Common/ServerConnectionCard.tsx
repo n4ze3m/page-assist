@@ -335,14 +335,45 @@ export const ServerConnectionCard: React.FC<Props> = ({
   }
 
   const defaultOpenSettings = () => {
+    // Shared helper for non-sidepanel contexts (e.g., popup / background).
+    // Prefer opening the extension's options.html directly so users land on
+    // the tldw settings page instead of the generic extensions manager.
     try {
+      // @ts-ignore
+      if (typeof browser !== "undefined" && browser.runtime?.getURL) {
+        // @ts-ignore
+        const url = browser.runtime.getURL("/options.html#/settings/tldw")
+        // @ts-ignore
+        if (browser.tabs?.create) {
+          // @ts-ignore
+          browser.tabs.create({ url })
+        } else {
+          window.open(url, "_blank")
+        }
+        return
+      }
+    } catch {
+      // Fall through to chrome.* / window.open below.
+    }
+
+    try {
+      // @ts-ignore
+      if (chrome?.runtime?.getURL) {
+        // @ts-ignore
+        const url = chrome.runtime.getURL("/options.html#/settings/tldw")
+        window.open(url, "_blank")
+        return
+      }
       // @ts-ignore
       if (chrome?.runtime?.openOptionsPage) {
         // @ts-ignore
         chrome.runtime.openOptionsPage()
         return
       }
-    } catch {}
+    } catch {
+      // ignore and fall back to plain window.open
+    }
+
     window.open("/options.html#/settings/tldw", "_blank")
   }
 
@@ -578,6 +609,15 @@ export const ServerConnectionCard: React.FC<Props> = ({
           </Button>
         </div>
 
+        {isCompact && (statusVariant === "missing" || statusVariant === "error") && (
+          <p className="mt-1 text-[11px] text-gray-500 dark:text-gray-400">
+            {t(
+              "option:connectionCard.sidepanelOpenSettingsHint",
+              "Settings open in a new browser tab so you can configure your tldw server."
+            )}
+          </p>
+        )}
+
         {(statusVariant === "error" ||
           statusVariant === "missing" ||
           offlineBypass) && (
@@ -654,6 +694,12 @@ export const ServerConnectionCard: React.FC<Props> = ({
                     )}
                   </Button>
                 </div>
+                <span className="text-[11px] text-gray-500 dark:text-gray-400">
+                  {t(
+                    "option:connectionCard.quickIngestInlineHint",
+                    "Quick Ingest can queue URLs and files while your server is offline so you can process them once you reconnect."
+                  )}
+                </span>
                 {(offlineHintVisible || offlineBypass) && (
                   <span className="text-[11px] text-gray-500 dark:text-gray-400">
                     {t(
