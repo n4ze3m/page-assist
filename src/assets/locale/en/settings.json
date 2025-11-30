@@ -180,6 +180,9 @@
       },
       "chatBackgroundImage": {
         "label": "Chat Background Image"
+      },
+      "storageSyncEnabled": {
+        "label": "Enable Browser Storage Sync (Sync settings across devices)"
       }
     },
     "tts": {
@@ -420,7 +423,7 @@
     "heading": "Configure Knowledge Base"
   },
   "rag": {
-    "title": "RAG Settings",
+    "title": "Pipeline Settings",
     "ragSettings": {
       "label": "RAG Settings",
       "model": {

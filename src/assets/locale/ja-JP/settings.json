@@ -114,6 +114,9 @@
     },
     "system": {
       "heading": "システム設定",
+      "storageSyncEnabled": {
+        "label": "ブラウザストレージ同期を有効にする（デバイス間で設定を同期）"
+      },
       "deleteChatHistory": {
         "label": "システムリセット",
         "button": "すべてリセット",
@@ -362,7 +365,7 @@
     "heading": "知識ベースを構成する"
   },
   "rag": {
-    "title": "RAGの設定",
+    "title": "Pipelineの設定",
     "ragSettings": {
       "label": "RAGの設定",
       "model": {

@@ -27,6 +27,16 @@ export const SystemSettings = () => {
     false
   )
 
+  const [storageSyncEnabled, setStorageSyncEnabled] = useStorage(
+    {
+      key: "storageSyncEnabled",
+      instance: new Storage({
+        area: "local"
+      })
+    },
+    true
+  )
+
   const [actionIconClick, setActionIconClick] = useStorage(
     {
       key: "actionIconClick",
@@ -221,6 +231,20 @@ export const SystemSettings = () => {
       )}
       <div className="flex flex-col sm:flex-row mb-3 gap-3 sm:gap-0 sm:justify-between sm:items-center">
         <span className="text-gray-700 dark:text-neutral-50">
+          {t("generalSettings.system.storageSyncEnabled.label")}
+        </span>
+        <div>
+          <Switch
+            checked={storageSyncEnabled}
+            onChange={(checked) => {
+              setStorageSyncEnabled(checked)
+            }}
+          />
+        </div>
+      </div>
+
+      <div className="flex flex-col sm:flex-row mb-3 gap-3 sm:gap-0 sm:justify-between sm:items-center">
+        <span className="text-gray-700 dark:text-neutral-50">
           {t("generalSettings.system.webuiBtnSidePanel.label")}
         </span>
          <div>
@@ -322,7 +346,9 @@ export const SystemSettings = () => {
               })
               clearChat()
               try {
-                await browser.storage.sync.clear()
+                if (storageSyncEnabled) {
+                  await browser.storage.sync.clear()
+                }
                 await browser.storage.local.clear()
                 await browser.storage.session.clear()
               } catch (e) {

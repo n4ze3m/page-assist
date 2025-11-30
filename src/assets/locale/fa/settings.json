@@ -108,6 +108,9 @@
     },
     "system": {
       "heading": "تنظیمات سیستم",
+      "storageSyncEnabled": {
+        "label": "فعال کردن همگام‌سازی ذخیره‌سازی مرورگر (همگام‌سازی تنظیمات در بین دستگاه‌ها)"
+      },
       "deleteChatHistory": {
         "label": "بازنشانی سیستم",
         "button": "بازنشانی همه",
@@ -355,7 +358,7 @@
     "heading": "پیکربندی پایگاه دانش"
   },
   "rag": {
-    "title": "تنظیمات RAG",
+    "title": "تنظیمات Pipelineel",
     "ragSettings": {
       "label": "تنظیمات RAG",
       "model": {

@@ -114,6 +114,9 @@
     },
     "system": {
       "heading": "Paramètres système",
+      "storageSyncEnabled": {
+        "label": "Activer la synchronisation du stockage du navigateur (synchroniser les paramètres entre les appareils)"
+      },
       "deleteChatHistory": {
         "label": "Réinitialisation du système",
         "button": "Tout réinitialiser",
@@ -367,7 +370,7 @@
     "heading": "Configurer la base de connaissances"
   },
   "rag": {
-    "title": "Paramètres RAG",
+    "title": "Paramètres Pipeline",
     "ragSettings": {
       "label": "Paramètres RAG",
       "model": {

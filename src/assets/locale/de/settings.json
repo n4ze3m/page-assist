@@ -101,6 +101,9 @@
     },
     "system": {
       "heading": "Systemeinstellungen",
+      "storageSyncEnabled": {
+        "label": "Browser-Speichersynchronisierung aktivieren (Einstellungen geräteübergreifend synchronisieren)"
+      },
       "deleteChatHistory": {
         "label": "System zurücksetzen",
         "button": "Alles zurücksetzen",
@@ -349,7 +352,7 @@
     "heading": "Wissensbasis konfigurieren"
   },
   "rag": {
-    "title": "RAG-Einstellungen",
+    "title": "Pipeline-Einstellungen",
     "ragSettings": {
       "label": "RAG-Einstellungen",
       "model": {

@@ -111,6 +111,9 @@
     },
     "system": {
       "heading": "Impostazioni di Sistema",
+      "storageSyncEnabled": {
+        "label": "Abilita sincronizzazione archiviazione browser (sincronizza impostazioni tra dispositivi)"
+      },
       "deleteChatHistory": {
         "label": "Reset del Sistema",
         "button": "Reset Totale",
@@ -359,7 +362,7 @@
     "heading": "Configura Base di Conoscenza"
   },
   "rag": {
-    "title": "Impostazioni RAG",
+    "title": "Impostazioni Pipeline",
     "ragSettings": {
       "label": "Impostazioni RAG",
       "model": {

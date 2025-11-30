@@ -168,3 +168,14 @@ export const isRemoveReasoningTagFromCopy = async (): Promise<boolean> => {
   )
   return removeReasoningTagFromCopy ?? true
 }
+
+export const getStorageSyncEnabled = async (): Promise<boolean> => {
+  const enabled = await storage2.get<boolean>("storageSyncEnabled")
+  return enabled ?? true
+}
+
+export const setStorageSyncEnabled = async (
+  enabled: boolean
+): Promise<void> => {
+  await storage2.set("storageSyncEnabled", enabled)
+}

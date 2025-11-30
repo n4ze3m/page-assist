@@ -114,6 +114,9 @@
     },
     "system": {
       "heading": "إعدادات النظام",
+      "storageSyncEnabled": {
+        "label": "تمكين مزامنة تخزين المتصفح (مزامنة الإعدادات عبر الأجهزة)"
+      },
       "deleteChatHistory": {
         "label": "إعادة تعيين النظام",
         "button": "إعادة تعيين الكل",
@@ -362,7 +365,7 @@
     "heading": "تكوين قاعدة المعرفة"
   },
   "rag": {
-    "title": "إعدادات RAG",
+    "title": "إعدادات Pipeline ",
     "ragSettings": {
       "label": "إعدادات RAG",
       "model": {

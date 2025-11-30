@@ -111,6 +111,9 @@
     },
     "system": {
       "heading": "Systeminställningar",
+      "storageSyncEnabled": {
+        "label": "Aktivera synkronisering av webbläsarlagring (synkronisera inställningar mellan enheter)"
+      },
       "deleteChatHistory": {
         "label": "Systemåterställning",
         "button": "Återställ Allt",
@@ -359,7 +362,7 @@
     "heading": "Konfigurera kunskapsbas"
   },
   "rag": {
-    "title": "RAG-inställningar",
+    "title": "Pipeline-inställningar",
     "ragSettings": {
       "label": "RAG-inställningar",
       "model": {

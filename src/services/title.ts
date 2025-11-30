@@ -40,6 +40,25 @@ export const setTitleGenEnabled = async (enabled: boolean) => {
     await storage.set("titleGenEnabled", enabled)
 }
 
+export const getTitleGenerationPrompt = async () => {
+    const title = await storage.get<string | undefined>("titleGenerationPrompt")
+    return title ?? DEFAULT_TITLE_GEN_PROMPT
+}
+
+
+export const setTitleGenerationPrompt = async (prompt: string) => {
+    await storage.set("titleGenerationPrompt", prompt)
+}
+
+
+export const titleGenerationModel = async () => {
+    const model = await storage.get<string | undefined>("titleGenerationModel")
+    return model
+}
+
+export const setTitleGenerationModel = async (model: string) => {
+    await storage.set("titleGenerationModel", model)
+}
 
 export const generateTitle = async (model: string, query: string, fallBackTitle: string) => {
 
@@ -52,12 +71,18 @@ export const generateTitle = async (model: string, query: string, fallBackTitle:
     try {
         const url = await getOllamaURL()
 
+
+        const defaultTitleModel = await titleGenerationModel();
+        const titleGenModel = defaultTitleModel || model
+
         const titleModel = await pageAssistModel({
             baseUrl: cleanUrl(url),
-            model
+            model: titleGenModel
         })
 
-        const prompt = DEFAULT_TITLE_GEN_PROMPT.replace("{{query}}", query)
+        const titlePrompt = await getTitleGenerationPrompt()
+
+        const prompt = titlePrompt.replace("{{query}}", query)
 
         const title = await titleModel.invoke([
             new HumanMessage({

@@ -147,6 +147,9 @@
     },
     "system": {
       "heading": "系統設定",
+      "storageSyncEnabled": {
+        "label": "啟用瀏覽器儲存同步（跨裝置同步設定）"
+      },
       "deleteChatHistory": {
         "label": "系統重置",
         "button": "全部重置",
@@ -415,7 +418,7 @@
     "heading": "知識庫設定"
   },
   "rag": {
-    "title": "RAG 設定",
+    "title": "Pipeline 設定",
     "ragSettings": {
       "label": "RAG 設定",
       "model": {
