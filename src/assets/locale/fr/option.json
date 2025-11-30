@@ -388,12 +388,12 @@
     "offlineExample2": "If you upgrade your server, reload the extension and return to Characters."
   },
   "characters": {
-    "selectCharacter": "Select character",
+    "selectCharacter": "Sélectionner un personnage",
     "chattingAs": "Vous discutez maintenant en tant que {{name}}.",
     "clearCharacter": "Effacer le personnage",
     "none": "Aucun (pas de personnage)",
-    "searchPlaceholder": "Search characters by name",
-    "noMatches": "No characters match your search yet.",
+    "searchPlaceholder": "Rechercher des personnages par nom",
+    "noMatches": "Aucun personnage ne correspond encore à votre recherche.",
     "refresh": "Actualiser les personnages",
     "refreshing": "Actualisation des personnages…"
   },

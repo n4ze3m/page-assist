@@ -283,14 +283,14 @@
     "offlineExample2": "If you upgrade your server, reload the extension and return to Characters."
   },
   "characters": {
-    "selectCharacter": "Select character",
-    "chattingAs": "You're now chatting as {{name}}.",
-    "clearCharacter": "Clear character",
-    "none": "None (no character)",
-    "searchPlaceholder": "Search characters by name",
-    "noMatches": "No characters match your search yet.",
-    "refresh": "Refresh characters",
-    "refreshing": "Refreshing characters…"
+    "selectCharacter": "കഥാപാത്രം തിരഞ്ഞെടുക്കുക",
+    "chattingAs": "ഇപ്പോൾ നിങ്ങൾ {{name}} ആയി സംസാരിക്കുന്നു.",
+    "clearCharacter": "കഥാപാത്രം നീക്കുക",
+    "none": "ഒന്നുമില്ല (കഥാപാത്രമില്ല)",
+    "searchPlaceholder": "പേരുപയോഗിച്ച് കഥാപാത്രങ്ങളെ തിരയുക",
+    "noMatches": "നിങ്ങളുടെ തിരച്ചിലിന് യോജിക്കുന്ന കഥാപാത്രങ്ങൾ ഇതുവരെ ഒന്നും ഇല്ല.",
+    "refresh": "കഥാപാത്രങ്ങൾ പുതുക്കുക",
+    "refreshing": "കഥാപാത്രങ്ങൾ പുതുക്കുന്നു…"
   },
   "promptInsert": {
     "useInChat": "Use in chat",

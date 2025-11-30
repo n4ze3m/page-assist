@@ -19,15 +19,15 @@
     "buttonViewDiagnostics": "View diagnostics",
     "buttonOpenQuickIngest": "Abrir ingesta rápida",
     "buttonTryDemo": "Try a demo",
-    "buttonContinueOffline": "Continue offline",
-    "buttonDisableOffline": "Disable offline mode",
-    "offlineModeBadge": "Offline mode — staging only",
+    "buttonContinueOffline": "Continuar sin conexión",
+    "buttonDisableOffline": "Desactivar el modo sin conexión",
+    "offlineModeBadge": "Modo sin conexión — solo preparación",
     "buttonGoToServerCard": "Ir a la tarjeta del servidor",
-    "tipQuickIngest": "Tip: Need ingest help while you’re offline?",
-    "quickIngestHint": "When your server is offline, Quick Ingest works as a staging area. You can queue URLs and files now and process them once you reconnect.",
-    "backToWorkspace": "Back to workspace",
-    "sidepanelOpenSettingsHint": "Settings open in a new browser tab so you can configure your tldw server.",
-    "quickIngestInlineHint": "Quick Ingest can queue URLs and files while your server is offline so you can process them once you reconnect."
+    "tipQuickIngest": "Consejo: ¿Necesitas ayuda con la ingesta cuando estás sin conexión?",
+    "quickIngestHint": "Cuando tu servidor está sin conexión, Quick Ingest funciona como área de preparación. Puedes poner en cola URL y archivos ahora y procesarlos al reconectar.",
+    "backToWorkspace": "Volver al espacio de trabajo",
+    "sidepanelOpenSettingsHint": "Los ajustes se abren en una nueva pestaña del navegador para que configures tu servidor tldw.",
+    "quickIngestInlineHint": "Quick Ingest puede poner en cola URL y archivos mientras tu servidor está sin conexión para procesarlos al reconectar."
   },
   "header": {
     "showShortcuts": "Mostrar atajos",
@@ -388,14 +388,14 @@
     "offlineExample2": "If you upgrade your server, reload the extension and return to Characters."
   },
   "characters": {
-    "selectCharacter": "Select character",
-    "chattingAs": "You're now chatting as {{name}}.",
-    "clearCharacter": "Clear character",
-    "none": "None (no character)",
-    "searchPlaceholder": "Search characters by name",
-    "noMatches": "No characters match your search yet.",
-    "refresh": "Refresh characters",
-    "refreshing": "Refreshing characters…"
+    "selectCharacter": "Seleccionar personaje",
+    "chattingAs": "Ahora estás chateando como {{name}}.",
+    "clearCharacter": "Borrar personaje",
+    "none": "Ninguno (sin personaje)",
+    "searchPlaceholder": "Buscar personajes por nombre",
+    "noMatches": "Todavía no hay personajes que coincidan con tu búsqueda.",
+    "refresh": "Actualizar personajes",
+    "refreshing": "Actualizando personajes…"
   },
   "promptInsert": {
     "useInChat": "Use in chat",

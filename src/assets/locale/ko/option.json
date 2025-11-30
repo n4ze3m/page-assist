@@ -388,14 +388,14 @@
     "offlineExample2": "If you upgrade your server, reload the extension and return to Characters."
   },
   "characters": {
-    "selectCharacter": "Select character",
-    "chattingAs": "You're now chatting as {{name}}.",
-    "clearCharacter": "Clear character",
-    "none": "None (no character)",
-    "searchPlaceholder": "Search characters by name",
-    "noMatches": "No characters match your search yet.",
-    "refresh": "Refresh characters",
-    "refreshing": "Refreshing characters…"
+    "selectCharacter": "캐릭터 선택",
+    "chattingAs": "지금 {{name}} 캐릭터로 대화 중입니다.",
+    "clearCharacter": "캐릭터 제거",
+    "none": "없음 (캐릭터 없음)",
+    "searchPlaceholder": "이름으로 캐릭터 검색",
+    "noMatches": "검색과 일치하는 캐릭터가 아직 없습니다.",
+    "refresh": "캐릭터 새로고침",
+    "refreshing": "캐릭터를 새로고치는 중…"
   },
   "promptInsert": {
     "useInChat": "Use in chat",

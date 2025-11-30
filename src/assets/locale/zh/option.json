@@ -375,14 +375,14 @@
     "offlineExample2": "If you upgrade your server, reload the extension and return to Characters."
   },
   "characters": {
-    "selectCharacter": "Select character",
-    "chattingAs": "You're now chatting as {{name}}.",
-    "clearCharacter": "Clear character",
-    "none": "None (no character)",
-    "searchPlaceholder": "Search characters by name",
-    "noMatches": "No characters match your search yet.",
-    "refresh": "Refresh characters",
-    "refreshing": "Refreshing characters…"
+    "selectCharacter": "选择角色",
+    "chattingAs": "你现在以 {{name}} 的身份聊天。",
+    "clearCharacter": "清除角色",
+    "none": "无（无角色）",
+    "searchPlaceholder": "按名称搜索角色",
+    "noMatches": "目前还没有符合你搜索条件的角色。",
+    "refresh": "刷新角色列表",
+    "refreshing": "正在刷新角色列表…"
   },
   "promptInsert": {
     "useInChat": "Use in chat",

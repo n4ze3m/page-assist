@@ -375,14 +375,14 @@
     "offlineExample2": "If you upgrade your server, reload the extension and return to Characters."
   },
   "characters": {
-    "selectCharacter": "Select character",
-    "chattingAs": "You're now chatting as {{name}}.",
-    "clearCharacter": "Clear character",
-    "none": "None (no character)",
-    "searchPlaceholder": "Search characters by name",
-    "noMatches": "No characters match your search yet.",
-    "refresh": "Refresh characters",
-    "refreshing": "Refreshing characters…"
+    "selectCharacter": "Seleziona personaggio",
+    "chattingAs": "Ora stai chattando come {{name}}.",
+    "clearCharacter": "Rimuovi personaggio",
+    "none": "Nessuno (nessun personaggio)",
+    "searchPlaceholder": "Cerca personaggi per nome",
+    "noMatches": "Non ci sono ancora personaggi che corrispondono alla tua ricerca.",
+    "refresh": "Aggiorna personaggi",
+    "refreshing": "Aggiornamento dei personaggi…"
   },
   "promptInsert": {
     "useInChat": "Use in chat",

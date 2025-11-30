@@ -19,15 +19,15 @@
     "buttonViewDiagnostics": "View diagnostics",
     "buttonOpenQuickIngest": "クイックインジェストを開く",
     "buttonTryDemo": "Try a demo",
-    "buttonContinueOffline": "Continue offline",
-    "buttonDisableOffline": "Disable offline mode",
-    "offlineModeBadge": "Offline mode — staging only",
+    "buttonContinueOffline": "オフラインのまま続行",
+    "buttonDisableOffline": "オフラインモードを無効化",
+    "offlineModeBadge": "オフラインモード — 準備のみ",
     "buttonGoToServerCard": "サーバーカードに移動",
-    "tipQuickIngest": "Tip: Need ingest help while you’re offline?",
-    "quickIngestHint": "When your server is offline, Quick Ingest works as a staging area. You can queue URLs and files now and process them once you reconnect.",
-    "backToWorkspace": "Back to workspace",
-    "sidepanelOpenSettingsHint": "Settings open in a new browser tab so you can configure your tldw server.",
-    "quickIngestInlineHint": "Quick Ingest can queue URLs and files while your server is offline so you can process them once you reconnect."
+    "tipQuickIngest": "ヒント: オフライン時のインジェストにお困りですか？",
+    "quickIngestHint": "サーバーがオフラインのときは、Quick Ingestがステージとして機能します。今URLやファイルをキューに入れておけば、再接続後に処理できます。",
+    "backToWorkspace": "ワークスペースに戻る",
+    "sidepanelOpenSettingsHint": "設定は新しいブラウザタブで開き、tldwサーバーを設定できます。",
+    "quickIngestInlineHint": "サーバーがオフラインの間にQuick IngestでURLやファイルをキューに入れておけば、再接続後に処理できます。"
   },
   "header": {
     "showShortcuts": "ショートカットを表示",
@@ -388,14 +388,14 @@
     "offlineExample2": "If you upgrade your server, reload the extension and return to Characters."
   },
   "characters": {
-    "selectCharacter": "Select character",
-    "chattingAs": "You're now chatting as {{name}}.",
-    "clearCharacter": "Clear character",
-    "none": "None (no character)",
-    "searchPlaceholder": "Search characters by name",
-    "noMatches": "No characters match your search yet.",
-    "refresh": "Refresh characters",
-    "refreshing": "Refreshing characters…"
+    "selectCharacter": "キャラクターを選択",
+    "chattingAs": "現在、{{name}} としてチャットしています。",
+    "clearCharacter": "キャラクターをクリア",
+    "none": "なし（キャラクターなし）",
+    "searchPlaceholder": "名前でキャラクターを検索",
+    "noMatches": "検索条件に一致するキャラクターはまだありません。",
+    "refresh": "キャラクターを更新",
+    "refreshing": "キャラクターを更新しています…"
   },
   "promptInsert": {
     "useInChat": "Use in chat",
