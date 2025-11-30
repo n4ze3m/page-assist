@@ -362,7 +362,7 @@
     "heading": "Konfigurera kunskapsbas"
   },
   "rag": {
-    "title": "RAG-inställningar",
+    "title": "Pipeline-inställningar",
     "ragSettings": {
       "label": "RAG-inställningar",
       "model": {

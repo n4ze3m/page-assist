@@ -358,7 +358,7 @@
     "heading": "پیکربندی پایگاه دانش"
   },
   "rag": {
-    "title": "تنظیمات RAG",
+    "title": "تنظیمات Pipelineel",
     "ragSettings": {
       "label": "تنظیمات RAG",
       "model": {

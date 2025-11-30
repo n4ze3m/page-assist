@@ -365,7 +365,7 @@
     "heading": "تكوين قاعدة المعرفة"
   },
   "rag": {
-    "title": "إعدادات RAG",
+    "title": "إعدادات Pipeline ",
     "ragSettings": {
       "label": "إعدادات RAG",
       "model": {

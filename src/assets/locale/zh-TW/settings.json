@@ -418,7 +418,7 @@
     "heading": "知識庫設定"
   },
   "rag": {
-    "title": "RAG 設定",
+    "title": "Pipeline 設定",
     "ragSettings": {
       "label": "RAG 設定",
       "model": {

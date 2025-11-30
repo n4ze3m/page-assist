@@ -423,7 +423,7 @@
     "heading": "Configure Knowledge Base"
   },
   "rag": {
-    "title": "RAG Settings",
+    "title": "Pipeline Settings",
     "ragSettings": {
       "label": "RAG Settings",
       "model": {

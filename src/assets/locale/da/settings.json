@@ -359,7 +359,7 @@
     "heading": "konfigurer Videnbase"
   },
   "rag": {
-    "title": "RAG Indstillinger",
+    "title": "Pipeline Indstillinger",
     "ragSettings": {
       "label": "RAG Indstillinger",
       "model": {

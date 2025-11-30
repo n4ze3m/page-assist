@@ -365,7 +365,7 @@
     "heading": "知識ベースを構成する"
   },
   "rag": {
-    "title": "RAGの設定",
+    "title": "Pipelineの設定",
     "ragSettings": {
       "label": "RAGの設定",
       "model": {

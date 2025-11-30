@@ -352,7 +352,7 @@
     "heading": "Wissensbasis konfigurieren"
   },
   "rag": {
-    "title": "RAG-Einstellungen",
+    "title": "Pipeline-Einstellungen",
     "ragSettings": {
       "label": "RAG-Einstellungen",
       "model": {

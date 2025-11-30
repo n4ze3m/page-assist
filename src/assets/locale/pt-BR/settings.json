@@ -366,7 +366,7 @@
     "heading": "Configurar Base de Conhecimento"
   },
   "rag": {
-    "title": "Configurações RAG",
+    "title": "Configurações Pipeline",
     "ragSettings": {
       "label": "Configurações RAG",
       "model": {

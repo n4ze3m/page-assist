@@ -365,7 +365,7 @@
     "heading": "지식 베이스 구성하기"
   },
   "rag": {
-    "title": "RAG 설정",
+    "title": "Pipeline 설정",
     "ragSettings": {
       "label": "RAG 설정",
       "model": {

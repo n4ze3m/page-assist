@@ -362,7 +362,7 @@
     "heading": "Налаштування бази знань"
   },
   "rag": {
-    "title": "Налаштування RAG",
+    "title": "Налаштування Pipeline",
     "ragSettings": {
       "label": "Налаштування RAG",
       "model": {

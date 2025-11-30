@@ -366,7 +366,7 @@
     "heading": "配置知识库"
   },
   "rag": {
-    "title": "RAG 设置",
+    "title": "Pipeline 设置",
     "ragSettings": {
       "label": "RAG 设置",
       "model": {

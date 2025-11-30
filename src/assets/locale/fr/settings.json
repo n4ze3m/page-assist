@@ -370,7 +370,7 @@
     "heading": "Configurer la base de connaissances"
   },
   "rag": {
-    "title": "Paramètres RAG",
+    "title": "Paramètres Pipeline",
     "ragSettings": {
       "label": "Paramètres RAG",
       "model": {

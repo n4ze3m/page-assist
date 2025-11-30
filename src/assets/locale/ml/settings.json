@@ -365,7 +365,7 @@
     "heading": "വിജ്ഞാനാധാരം കോണ്‍ഫിഗര്‍ ചെയ്യുക"
   },
   "rag": {
-    "title": "RAG സെറ്റിംഗുകൾ",
+    "title": "Pipeline സെറ്റിംഗുകൾ",
     "ragSettings": {
       "label": "RAG സെറ്റിംഗുകൾ",
       "model": {
