@@ -850,10 +850,11 @@
       "continueAnyway": "You can finish setup now, but some features may not work until we can reach your tldw server. You can recheck the connection anytime from Settings → tldw server."
     },
     "rag": {
-      "label": "RAG:",
+      "label": "Knowledge search & retrieval:",
       "healthy": "Healthy",
       "unhealthy": "Unhealthy",
-      "unknown": "Unknown"
+      "unknown": "Unknown",
+      "help": "Checks whether your server can search your notes, media, and other connected knowledge sources."
     },
     "connectionFailed": "Connection failed",
     "footerHelp": "Once connected, you can revisit these settings anytime from the extension menu."

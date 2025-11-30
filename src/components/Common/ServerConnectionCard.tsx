@@ -11,6 +11,8 @@ import {
 import { ConnectionPhase } from "@/types/connection"
 import { useAntdNotification } from "@/hooks/useAntdNotification"
 import { focusComposer } from "@/hooks/useComposerFocus"
+import { getReturnTo, clearReturnTo } from "@/utils/return-to"
+import { useNavigate } from "react-router-dom"
 
 type Props = {
   onOpenSettings?: () => void
@@ -113,6 +115,7 @@ export const ServerConnectionCard: React.FC<Props> = ({
   variant = "default"
 }) => {
   const { t } = useTranslation(["playground", "common", "settings", "option"])
+  const navigate = useNavigate()
   const {
     phase,
     serverUrl,
@@ -131,6 +134,14 @@ export const ServerConnectionCard: React.FC<Props> = ({
   const [knownServerUrl, setKnownServerUrl] = React.useState<string | null>(null)
   const [showAdvanced, setShowAdvanced] = React.useState(false)
   const [offlineHintVisible, setOfflineHintVisible] = React.useState(false)
+  const [returnTo, setReturnToState] = React.useState<string | null>(null)
+
+  React.useEffect(() => {
+    const target = getReturnTo()
+    if (target) {
+      setReturnToState(target)
+    }
+  }, [])
 
   React.useEffect(() => {
     try {
@@ -377,6 +388,16 @@ export const ServerConnectionCard: React.FC<Props> = ({
     setOfflineHintVisible(false)
   }
 
+  const handleReturn = () => {
+    const target = getReturnTo()
+    if (!target) {
+      navigate(-1)
+      return
+    }
+    clearReturnTo()
+    navigate(target)
+  }
+
   return (
     <div
       id="server-connection-card"
@@ -524,6 +545,15 @@ export const ServerConnectionCard: React.FC<Props> = ({
             block>
             {primaryLabel}
           </Button>
+          {returnTo && (
+            <Button
+              onClick={handleReturn}
+              block>
+              {t("option:connectionCard.backToWorkspace", {
+                defaultValue: "Back to workspace"
+              })}
+            </Button>
+          )}
           {enableDemo && statusVariant === "missing" && (
             <Button
               onClick={() =>

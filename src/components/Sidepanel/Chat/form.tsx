@@ -49,6 +49,7 @@ import { useServerCapabilities } from "@/hooks/useServerCapabilities"
 import { tldwClient } from "@/services/tldw/TldwApiClient"
 import { useAntdNotification } from "@/hooks/useAntdNotification"
 import { useFocusComposerOnConnect, focusComposer } from "@/hooks/useComposerFocus"
+import { useQuickIngestStore } from "@/store/quick-ingest"
 
 type Props = {
   dropedFile: File | undefined
@@ -84,6 +85,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
   )
   const [sttSegEmbeddingsProvider] = useStorage("sttSegEmbeddingsProvider", "")
   const [sttSegEmbeddingsModel] = useStorage("sttSegEmbeddingsModel", "")
+  const queuedQuickIngestCount = useQuickIngestStore((s) => s.queuedCount)
   const form = useForm({
     initialValues: {
       message: "",
@@ -679,7 +681,10 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
               ? t("playground:actions.ingestDisabled", "Connect to your tldw server to ingest.")
               : t("playground:actions.ingestHint", "Upload URLs or files with advanced options.")
           }
-          className="flex w-full items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50 dark:text-gray-200 dark:hover:bg-[#2a2a2a]"
+          className="relative flex w-full items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50 dark:text-gray-200 dark:hover:bg-[#2a2a2a]"
+          data-has-queued-ingest={
+            queuedQuickIngestCount > 0 ? "true" : "false"
+          }
         >
           <span className="flex flex-col items-start text-left">
             <span>{t("playground:actions.ingest", "Quick ingest")}</span>
@@ -687,7 +692,14 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
               {t("playground:actions.ingestSub", "Use URLs/files; download or store.")}
             </span>
           </span>
-          <UploadCloud className="h-4 w-4" />
+          <div className="relative">
+            <UploadCloud className="h-4 w-4" />
+            {queuedQuickIngestCount > 0 && (
+              <span className="absolute -top-1 -right-1 inline-flex h-3 min-w-3 items-center justify-center rounded-full bg-blue-600 px-1 text-[9px] font-semibold text-white">
+                {queuedQuickIngestCount > 9 ? "9+" : queuedQuickIngestCount}
+              </span>
+            )}
+          </div>
         </button>
         <button
           type="button"

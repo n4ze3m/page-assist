@@ -143,17 +143,6 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
   }, [serverUrl, serverTouched, urlState])
 
   // Auto-advance to step 2 when the URL is reachable
-  const autoAdvancedRef = React.useRef(false)
-  React.useEffect(() => {
-    if (step === 1 && reachability === 'reachable' && urlState.valid && !autoAdvancedRef.current) {
-      autoAdvancedRef.current = true
-      ;(async () => {
-        try { await savePartial() } catch {}
-        setStep(2)
-      })()
-    }
-  }, [step, reachability, urlState])
-
   // In step 3, auto-finish as soon as both checks pass, if enabled
   const autoFinishRef = React.useRef(false)
   React.useEffect(() => {
@@ -441,9 +430,29 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
             />
           )}
           {typeof ragHealthy !== 'undefined' && (
-            <div className="flex items-center gap-2">
-              <span className="text-sm font-medium">{t('settings:onboarding.rag.label')}</span>
-              {ragHealthy === 'healthy' ? <Tag color="green">{t('settings:onboarding.rag.healthy')}</Tag> : ragHealthy === 'unhealthy' ? <Tag color="red">{t('settings:onboarding.rag.unhealthy')}</Tag> : <Tag>{t('settings:onboarding.rag.unknown')}</Tag>}
+            <div className="space-y-1">
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium">
+                  {t('settings:onboarding.rag.label')}
+                </span>
+                {ragHealthy === 'healthy' ? (
+                  <Tag color="green">
+                    {t('settings:onboarding.rag.healthy')}
+                  </Tag>
+                ) : ragHealthy === 'unhealthy' ? (
+                  <Tag color="red">
+                    {t('settings:onboarding.rag.unhealthy')}
+                  </Tag>
+                ) : (
+                  <Tag>{t('settings:onboarding.rag.unknown')}</Tag>
+                )}
+              </div>
+              <p className="text-xs text-gray-500 dark:text-gray-400">
+                {t(
+                  'settings:onboarding.rag.help',
+                  'Checks whether your server can search your notes, media, and other connected knowledge sources.'
+                )}
+              </p>
             </div>
           )}
           {errorDetail && (

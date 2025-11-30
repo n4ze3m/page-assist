@@ -377,6 +377,31 @@ export const SidepanelHeader = ({
             </button>
           </Tooltip>
         </Dropdown>
+        <Tooltip
+          title={
+            t(
+              "settings:healthSummary.diagnosticsTooltip",
+              "Open detailed diagnostics to troubleshoot or inspect health checks."
+            ) as string
+          }>
+          <IconButton
+            ariaLabel={
+              t(
+                "settings:healthSummary.diagnostics",
+                "Health & diagnostics"
+              ) as string
+            }
+            title={
+              t(
+                "settings:healthSummary.diagnostics",
+                "Health & diagnostics"
+              ) as string
+            }
+            onClick={() => openOptionsPage("#/settings/health")}
+            className="flex items-center space-x-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-700">
+            <Microscope className="size-4 text-gray-500 dark:text-gray-400" />
+          </IconButton>
+        </Tooltip>
         <Tooltip title={t('settings:managePrompts.title')}>
           <button
             type="button"

@@ -40,4 +40,68 @@ test.describe('Onboarding wizard', () => {
 
     await context.close()
   })
+
+  test('does not auto-advance when URL becomes reachable', async () => {
+    const extPath = path.resolve('.output/chrome-mv3')
+    const { context, page } = await launchWithExtension(extPath)
+
+    await expect(
+      page.getByText(/Let’s get you connected/i)
+    ).toBeVisible()
+
+    const urlInput = page.getByLabel(/Server URL/i)
+    await urlInput.scrollIntoViewIfNeeded()
+    await urlInput.fill(server.url)
+
+    await expect(
+      page.getByText(/Server responded successfully\. You can continue\./i)
+    ).toBeVisible()
+
+    await expect(
+      page.getByText(/Authentication Mode/i)
+    ).toHaveCount(0)
+
+    await page.getByRole('button', { name: /Next/i }).click()
+    await expect(
+      page.getByText(/Authentication Mode/i)
+    ).toBeVisible()
+
+    await context.close()
+  })
+
+  test('explains knowledge search health in plain language', async () => {
+    const extPath = path.resolve('.output/chrome-mv3')
+    const { context, page } = await launchWithExtension(extPath)
+
+    await expect(
+      page.getByText(/Let’s get you connected/i)
+    ).toBeVisible()
+
+    const urlInput = page.getByLabel(/Server URL/i)
+    await urlInput.scrollIntoViewIfNeeded()
+    await urlInput.fill(server.url)
+    await page.getByRole('button', { name: /Next/i }).click()
+
+    await page.getByText('Single User (API Key)').click()
+    await page
+      .getByPlaceholder(/Enter your API key/i)
+      .fill('THIS-IS-A-SECURE-KEY-123-FAKE-KEY')
+    await page.getByRole('button', { name: /Continue/i }).click()
+
+    await expect(
+      page.getByText(/Connection:/i)
+    ).toBeVisible()
+
+    await expect(
+      page.getByText(/Knowledge search & retrieval:/i)
+    ).toBeVisible()
+
+    await expect(
+      page.getByText(
+        /search your notes, media, and other connected knowledge sources/i
+      )
+    ).toBeVisible()
+
+    await context.close()
+  })
 })

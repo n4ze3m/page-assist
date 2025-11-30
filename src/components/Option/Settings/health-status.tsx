@@ -8,6 +8,7 @@ import type { AllowedPath } from '@/services/tldw/openapi-guard'
 import { useTranslation } from 'react-i18next'
 import type { TFunction } from 'i18next'
 import { useAntdNotification } from '@/hooks/useAntdNotification'
+import { getReturnTo, clearReturnTo } from "@/utils/return-to"
 
 type Check = {
   key: string
@@ -243,7 +244,16 @@ export default function HealthStatus() {
               {t('healthPage.copyDiagnostics', 'Copy diagnostics')}
             </Button>
           </Tooltip>
-          <Button onClick={() => navigate(-1)}>
+          <Button
+            onClick={() => {
+              const target = getReturnTo()
+              if (target) {
+                clearReturnTo()
+                navigate(target)
+              } else {
+                navigate(-1)
+              }
+            }}>
             ← {t('healthPage.backToChat', 'Back to chat')}
           </Button>
           <Link to="/settings/tldw">

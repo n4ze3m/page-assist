@@ -29,4 +29,28 @@ test.describe('Chat persistence UX', () => {
 
     await context.close()
   })
+
+  test('shows a connect hint when server save is unavailable', async () => {
+    const extPath = path.resolve('.output/chrome-mv3')
+    const { context, page } = await launchWithExtension(extPath)
+
+    const textarea = page.getByPlaceholder(
+      /Waiting for your server|Type a message/i
+    )
+    await expect(textarea).toBeVisible()
+
+    await expect(
+      page.getByText(/Saved locally in this browser only/i)
+    ).toBeVisible()
+
+    const connectHint = page.getByRole('button', {
+      name: /Connect your server to save chats there/i
+    })
+    await expect(connectHint).toBeVisible()
+
+    await connectHint.click()
+    await expect(page.locator('#server-connection-card')).toBeVisible()
+
+    await context.close()
+  })
 })

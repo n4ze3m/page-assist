@@ -65,6 +65,11 @@ test.describe('Quick ingest modal', () => {
       modal.getByText(/Pending — will run when connected/i)
     ).toBeVisible()
 
+    // Header quick-ingest trigger should indicate queued items.
+    await expect(
+      ingestButton
+    ).toHaveAttribute("data-has-queued-ingest", "true")
+
     // Primary action switches to an explicit offline label.
     const offlineAction = modal.getByRole('button', {
       name: /Queue only \u2014 server offline/i
@@ -98,6 +103,12 @@ test.describe('Quick ingest modal', () => {
       modal.getByRole('button', { name: /Process queued items/i })
     ).toBeVisible()
     await modal.getByRole('button', { name: /Process queued items/i }).click()
+
+    // After processing queued items, the badge should clear.
+    await expect(ingestButton).toHaveAttribute(
+      "data-has-queued-ingest",
+      "false"
+    )
 
     await context.close()
   })

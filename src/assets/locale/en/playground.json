@@ -149,6 +149,7 @@
       "localPill": "Local only",
       "serverPill": "Locally + Server",
       "saveToServer": "Also save this chat to server",
+      "connectToSave": "Connect your server to save chats there.",
       "serverDefaultTitle": "Extension chat",
       "serverSavedTitle": "Chat now saved on server",
       "serverSaved": "Future messages in this chat will sync to your tldw server.",

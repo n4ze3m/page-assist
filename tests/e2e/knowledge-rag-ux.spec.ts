@@ -26,9 +26,12 @@ test.describe('Knowledge RAG workspace UX', () => {
     await page.goto(optionsUrl + '#/settings/knowledge')
     await page.waitForLoadState('networkidle')
 
-    // RAG workspace header should be present
+    // Knowledge workspace header should be present with de-jargoned title
     await expect(
-      page.getByText(/RAG search & knowledge chat/i)
+      page.getByText(/Knowledge search & chat/i)
+    ).toBeVisible()
+    await expect(
+      page.getByText(/Retrieval-augmented generation \(RAG\) lets the assistant ground answers/i)
     ).toBeVisible()
 
     // If the bundled OpenAPI spec does not advertise RAG endpoints,

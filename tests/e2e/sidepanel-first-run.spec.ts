@@ -95,4 +95,20 @@ test.describe('Sidepanel first-run and connection panel', () => {
 
     await context.close()
   })
+
+  test('sidepanel header links to Health & diagnostics', async () => {
+    const extPath = path.resolve('.output/chrome-mv3')
+    const { context, openSidepanel } = (await launchWithExtension(extPath)) as any
+    const page = await openSidepanel()
+
+    const [healthPage] = await Promise.all([
+      context.waitForEvent('page'),
+      page.getByRole('button', { name: /Health & diagnostics/i }).click()
+    ])
+
+    await healthPage.waitForLoadState('domcontentloaded')
+    await expect(healthPage).toHaveURL(/options\.html#\/settings\/health/i)
+
+    await context.close()
+  })
 })

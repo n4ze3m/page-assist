@@ -15,6 +15,7 @@ import { tldwClient } from '@/services/tldw/TldwApiClient'
 import { useAntdMessage } from '@/hooks/useAntdMessage'
 import { useStoreMessageOption } from "@/store/option"
 import { updatePageTitle } from "@/utils/update-page-title"
+import { setReturnTo } from "@/utils/return-to"
 
 type NoteListItem = {
   id: string | number
@@ -96,6 +97,7 @@ const NotesManagerPage: React.FC = () => {
   const editorDisabled = !isOnline || (!capsLoading && capabilities && !capabilities.hasNotes)
 
   const scrollToServerCard = React.useCallback(() => {
+    setReturnTo("/notes")
     try {
       const el = document.getElementById("server-connection-card")
       if (el) {

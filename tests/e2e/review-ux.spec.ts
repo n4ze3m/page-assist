@@ -100,6 +100,9 @@ test.describe('Review page UX', () => {
     await connectCta.click()
     const card = page.locator('#server-connection-card')
     await expect(card).toBeVisible()
+    await expect(
+      card.getByRole('button', { name: /Back to workspace/i })
+    ).toBeVisible()
 
     await context.close()
   })

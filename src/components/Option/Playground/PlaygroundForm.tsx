@@ -1101,6 +1101,27 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
     )
   }, [serverChatId, temporaryChat, t])
 
+  const focusConnectionCard = React.useCallback(() => {
+    try {
+      const card = document.getElementById("server-connection-card")
+      if (card) {
+        card.scrollIntoView({ block: "nearest", behavior: "smooth" })
+        ;(card as HTMLElement).focus()
+        return
+      }
+    } catch {
+      // ignore DOM errors and fall through to hash navigation
+    }
+    try {
+      const base =
+        window.location.href.replace(/#.*$/, "") || "/options.html"
+      const target = `${base}#/settings/tldw`
+      window.location.href = target
+    } catch {
+      // ignore navigation failures
+    }
+  }, [])
+
   return (
     <div className="flex w-full flex-col items-center px-2">
       <div className="relative z-10 flex w-full flex-col items-center justify-center gap-2 text-base">
@@ -1418,6 +1439,17 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                                 )}
                               </button>
                             )}
+                            {!temporaryChat && !isConnectionReady && (
+                              <button
+                                type="button"
+                                onClick={focusConnectionCard}
+                                className="mt-1 inline-flex w-fit items-center gap-1 text-[11px] font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300">
+                                {t(
+                                  "playground:composer.persistence.connectToSave",
+                                  "Connect your server to save chats there."
+                                )}
+                              </button>
+                            )}
                           </div>
                         </div>
                           <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
@@ -1432,7 +1464,10 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                                 ) as string
                               }
                               className="inline-flex items-center gap-1 rounded-full border border-gray-200 px-2 py-0.5 text-[11px] font-medium text-gray-700 transition hover:bg-gray-100 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-[#2a2a2a]">
-                              {t("playground:composer.contextManager", "Context Management")}
+                              {t(
+                                "playground:composer.contextManager",
+                                "Context Management"
+                              )}
                             </button>
                             <button
                               type="button"
@@ -1450,6 +1485,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                                 ) as string
                               }
                               className="inline-flex items-center gap-1 rounded-full border border-transparent px-2 py-0.5 hover:border-gray-300 hover:bg-gray-50 dark:hover:border-gray-600 dark:hover:bg-[#262626]">
+                              <FileText className="h-3 w-3 text-gray-500 dark:text-gray-400" />
                               <span>
                                 {t("playground:composer.contextTabs", {
                                   defaultValue: "{{count}} tabs",
@@ -1476,6 +1512,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                                 ) as string
                               }
                               className="inline-flex items-center gap-1 rounded-full border border-transparent px-2 py-0.5 hover:border-gray-300 hover:bg-gray-50 dark:hover:border-gray-600 dark:hover:bg-[#262626]">
+                              <FileIcon className="h-3 w-3 text-gray-500 dark:text-gray-400" />
                               <span>
                                 {t("playground:composer.contextFiles", {
                                   defaultValue: "{{count}} files",

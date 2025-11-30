@@ -44,6 +44,7 @@ import { Link } from "react-router-dom"
 import { hasPromptStudio } from "@/services/prompt-studio"
 import OmniSearchBar from "../Common/OmniSearchBar"
 import { useOmniSearchDeps } from "@/hooks/useOmniSearchDeps"
+import { useQuickIngestStore } from "@/store/quick-ingest"
 
 const classNames = (...classes: (string | false | null | undefined)[]) =>
   classes.filter(Boolean).join(" ")
@@ -145,6 +146,7 @@ export const Header: React.FC<Props> = ({
   const [chatTitle, setChatTitle] = React.useState("")
   const [isEditingTitle, setIsEditingTitle] = React.useState(false)
   const [quickIngestOpen, setQuickIngestOpen] = React.useState(false)
+  const queuedQuickIngestCount = useQuickIngestStore((s) => s.queuedCount)
 
   const {
     phase,
@@ -155,6 +157,7 @@ export const Header: React.FC<Props> = ({
   const ingestDisabled = false
   const { shortcuts: shortcutConfig } = useShortcutConfig()
   const quickIngestBtnRef = React.useRef<HTMLButtonElement>(null)
+  const hasQueuedQuickIngest = queuedQuickIngestCount > 0
 
   React.useEffect(() => {
     const handler = () => {
@@ -830,7 +833,17 @@ export const Header: React.FC<Props> = ({
               ref={quickIngestBtnRef}
               onClick={() => setQuickIngestOpen(true)}
               data-testid="open-quick-ingest"
-              aria-label={t("option:header.quickIngest", "Quick ingest")}
+              aria-label={
+                hasQueuedQuickIngest
+                  ? `${t(
+                      "option:header.quickIngest",
+                      "Quick ingest"
+                    )} — ${queuedQuickIngestCount} ${t(
+                      "quickIngest.pendingLabel",
+                      "Pending — will run when connected"
+                    )}`
+                  : t("option:header.quickIngest", "Quick ingest")
+              }
               title={
                 t(
                     "option:header.quickIngestHelp",
@@ -838,12 +851,20 @@ export const Header: React.FC<Props> = ({
                   )
               }
               className={classNames(
-                "inline-flex items-center gap-1 rounded-full border border-transparent px-2 py-1 text-xs transition hover:border-gray-300 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500 dark:hover:border-gray-500 dark:hover:bg-[#1f1f1f]",
+                "relative inline-flex items-center gap-1 rounded-full border border-transparent px-2 py-1 text-xs transition hover:border-gray-300 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500 dark:hover:border-gray-500 dark:hover:bg-[#1f1f1f]",
                 "text-gray-600 dark:text-gray-200"
               )}
+              data-has-queued-ingest={
+                hasQueuedQuickIngest ? "true" : "false"
+              }
               aria-disabled={false}>
               <UploadCloud className="h-3 w-3" aria-hidden="true" />
               <span>{t("option:header.quickIngest", "Quick ingest")}</span>
+              {hasQueuedQuickIngest && (
+                <span className="absolute -top-1 -right-1 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-blue-600 px-1 text-[9px] font-semibold text-white">
+                  {queuedQuickIngestCount > 9 ? "9+" : queuedQuickIngestCount}
+                </span>
+              )}
             </button>
             <button
               type="button"

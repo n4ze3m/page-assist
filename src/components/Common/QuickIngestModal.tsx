@@ -9,6 +9,7 @@ import { useConfirmDanger } from '@/components/Common/confirm-danger'
 import { defaultEmbeddingModelForRag } from '@/services/ollama'
 import { tldwModels } from '@/services/tldw'
 import { useConnectionState } from '@/hooks/useConnectionState'
+import { useQuickIngestStore } from "@/store/quick-ingest"
 
 type Entry = {
   id: string
@@ -141,6 +142,10 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
   const ingestBlocked = !isConnected || Boolean(offlineBypass)
   const ingestBlockedPrevRef = React.useRef(ingestBlocked)
   const hadOfflineQueuedRef = React.useRef(false)
+  const { setQueuedCount, clearQueued } = useQuickIngestStore((s) => ({
+    setQueuedCount: s.setQueuedCount,
+    clearQueued: s.clearQueued
+  }))
 
   const formatBytes = React.useCallback((bytes?: number) => {
     if (!bytes || Number.isNaN(bytes)) return ''
@@ -353,6 +358,20 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
     }
     ingestBlockedPrevRef.current = ingestBlocked
   }, [ingestBlocked, stagedCount, messageApi, t])
+
+  React.useEffect(() => {
+    if (hadOfflineQueuedRef.current && stagedCount > 0) {
+      setQueuedCount(stagedCount)
+    } else {
+      setQueuedCount(0)
+    }
+  }, [setQueuedCount, stagedCount])
+
+  React.useEffect(() => {
+    return () => {
+      clearQueued()
+    }
+  }, [clearQueued])
 
   const showProcessQueuedButton =
     !ingestBlocked && stagedCount > 0 && hadOfflineQueuedRef.current

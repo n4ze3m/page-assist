@@ -27,6 +27,16 @@ test.describe('Notes workspace UX', () => {
       page.getByRole('button', { name: /Delete note/i })
     ).toHaveCount(1)
 
+    const goToServerCard = page.getByRole('button', {
+      name: /Go to server card/i
+    })
+    await goToServerCard.click()
+    const card = page.locator('#server-connection-card')
+    await expect(card).toBeVisible()
+    await expect(
+      card.getByRole('button', { name: /Back to workspace/i })
+    ).toBeVisible()
+
     await context.close()
   })
 
@@ -75,4 +85,3 @@ test.describe('Notes workspace UX', () => {
     await context.close()
   })
 })
-

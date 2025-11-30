@@ -39,6 +39,7 @@ import FeatureEmptyState from "@/components/Common/FeatureEmptyState"
 import { useAntdNotification } from "@/hooks/useAntdNotification"
 import { useDemoMode } from "@/context/demo-mode"
 import { useAntdMessage } from "@/hooks/useAntdMessage"
+import { setReturnTo } from "@/utils/return-to"
 
 type MediaItem = any
 type NoteItem = any
@@ -1018,6 +1019,7 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true, 
   ]), [])
 
   const scrollToServerCard = React.useCallback(() => {
+    setReturnTo(isViewMediaMode ? "/media" : "/review")
     try {
       const el = document.getElementById("server-connection-card")
       if (el) {

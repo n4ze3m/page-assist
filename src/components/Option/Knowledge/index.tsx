@@ -221,13 +221,19 @@ export const KnowledgeSettings = () => {
         <div className="flex flex-col gap-1">
           <h2 className="text-sm font-semibold text-gray-900 dark:text-gray-50">
             {t("knowledge:ragWorkspace.title", {
-              defaultValue: "RAG search & knowledge chat"
+              defaultValue: "Knowledge search & chat"
             })}
           </h2>
           <p className="text-xs text-gray-600 dark:text-gray-300">
             {t("knowledge:ragWorkspace.description", {
               defaultValue:
-                "Configure RAG retrieval options, run quick searches, and use Chat with grounded answers."
+                "Configure knowledge search (RAG) options, run quick searches, and use Chat with grounded answers."
+            })}
+          </p>
+          <p className="text-[11px] text-gray-500 dark:text-gray-400">
+            {t("knowledge:ragWorkspace.subtitleRag", {
+              defaultValue:
+                "Retrieval-augmented generation (RAG) lets the assistant ground answers in your media, notes, and other indexed knowledge sources."
             })}
           </p>
         </div>
