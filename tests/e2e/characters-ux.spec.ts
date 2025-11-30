@@ -274,4 +274,81 @@ test.describe('Characters workspace UX', () => {
     await context.close()
     await server.stop()
   })
+
+  test('header character select scales via search/filter', async () => {
+    const server = new MockTldwServer()
+    await server.start()
+
+    // Seed many characters with distinct names.
+    const manyCharacters = Array.from({ length: 30 }).map((_, idx) => ({
+      id: `char-${idx + 1}`,
+      name: `Persona ${idx + 1}`,
+      description: `Persona ${idx + 1} description`,
+      avatar_url: null,
+      tags: [],
+      system_prompt: `You are persona ${idx + 1}.`,
+      greeting: `Hello from persona ${idx + 1}.`,
+      version: 1
+    }))
+
+    server.setChatFixtures({
+      chats: [],
+      characters: manyCharacters
+    })
+
+    const { context, page, extensionId, optionsUrl } =
+      await launchWithBuiltExtension()
+
+    const granted = await grantHostPermission(
+      context,
+      extensionId,
+      `${server.url}/*`
+    )
+    if (!granted) {
+      test.skip(true, 'Host permission not granted for mock server')
+    }
+
+    await page.goto(optionsUrl)
+    await seedConfig(page, server.url)
+
+    await page.goto(`${optionsUrl}#/playground`)
+
+    const trigger = page
+      .getByRole('button', { name: /Select character/i })
+      .or(page.getByRole('button', { name: /Persona 1/i }))
+      .first()
+    await expect(trigger).toBeVisible()
+    await trigger.click()
+
+    // Search input should be visible and focusable.
+    const searchInput = page.getByPlaceholder(/Search characters by name/i)
+    await expect(searchInput).toBeVisible()
+
+    // Type part of a name and ensure only matching entries remain.
+    await searchInput.fill('Persona 2')
+
+    await expect(
+      page.getByText('Persona 2').first()
+    ).toBeVisible()
+
+    // A non-matching persona should not be visible anymore.
+    await expect(
+      page.getByText('Persona 1').first()
+    ).toHaveCount(0)
+
+    // "None" and "Clear character" options should remain available.
+    const noneOption = page.getByText(/None \(no character\)/i).first()
+    await expect(noneOption).toBeVisible()
+
+    // Select a character so Clear becomes available.
+    await page.getByText('Persona 2').first().click()
+
+    await trigger.click()
+    const clearOption = page.getByText(/Clear character/i).first()
+    await expect(clearOption).toBeVisible()
+    await clearOption.click()
+
+    await context.close()
+    await server.stop()
+  })
 })

@@ -10,7 +10,7 @@ import {
   Collapse,
   Tag
 } from "antd"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import React, { useEffect, useState } from "react"
 import { browser } from "wxt/browser"
 import { useTranslation } from "react-i18next"
@@ -21,6 +21,7 @@ import { DEFAULT_TLDW_API_KEY } from "@/services/tldw-server"
 import { apiSend } from "@/services/api-send"
 import { useAntdMessage } from "@/hooks/useAntdMessage"
 import { useConnectionStore } from "@/store/connection"
+import { mapMultiUserLoginErrorMessage } from "@/services/auth-errors"
 
 type TimeoutPresetKey = 'balanced' | 'extended'
 
@@ -58,6 +59,7 @@ const TIMEOUT_PRESETS: Record<TimeoutPresetKey, TimeoutValues> = {
 export const TldwSettings = () => {
   const { t } = useTranslation(["settings", "common"])
   const message = useAntdMessage()
+  const navigate = useNavigate()
   const [form] = Form.useForm()
   const [loading, setLoading] = useState(false)
   const [initializing, setInitializing] = useState(true)
@@ -259,7 +261,13 @@ export const TldwSettings = () => {
             : code === 403
               ? t('settings:tldw.errors.forbidden', 'Forbidden (check permissions)')
               : (resp?.error || t('settings:tldw.errors.apiKeyValidationFailed', 'API key validation failed'))
-          setConnectionDetail(`${hint}${code ? ` — HTTP ${code}` : ''}`)
+          const healthHint = t(
+            'settings:tldw.errors.seeHealth',
+            'Open Health & diagnostics for more details.'
+          )
+          setConnectionDetail(
+            `${hint}${code ? ` — HTTP ${code}` : ''} — ${healthHint}`
+          )
         }
       } else {
         // Test basic health endpoint via background proxy
@@ -270,7 +278,10 @@ export const TldwSettings = () => {
         success = !!resp?.ok
         setCoreStatus(success ? "connected" : "failed")
         if (!success) {
-          const base = t('settings:tldw.errors.serverUnreachable', 'Server unreachable')
+          const base = t(
+            'settings:tldw.errors.serverUnreachableDetailed',
+            'Server not reachable. Check that your tldw_server is running and that your browser can reach it, then try again. Health & diagnostics can help debug connectivity issues.'
+          )
           const detail = resp?.error || ''
           const code = resp?.status
           const suffix = code ? ` — HTTP ${code}` : ''
@@ -321,11 +332,12 @@ export const TldwSettings = () => {
         raw && /network|timeout|failed to fetch/i.test(raw)
           ? t(
               'settings:tldw.errors.serverUnreachableDetailed',
-              'Server not reachable. Check that your tldw_server is running and that your browser can reach it, then try again.'
+              'Server not reachable. Check that your tldw_server is running and that your browser can reach it, then try again. Health & diagnostics can help debug connectivity issues.'
             )
-          : raw || t(
-              'settings:tldw.connection.failedDetailed',
-              'Connection failed. Please check your server URL and API key.'
+          : raw ||
+            t(
+              'settings:tldw.errors.connectionFailedDetailed',
+              'Connection failed. Please check your server URL and API key, then open Health & diagnostics for more details.'
             )
       setConnectionDetail(friendly)
       message.error(friendly)
@@ -378,7 +390,12 @@ export const TldwSettings = () => {
       // Test connection after login
       await testConnection()
     } catch (error: any) {
-      message.error(error.message || t('settings:tldw.login.failed', 'Login failed'))
+      const friendly = mapMultiUserLoginErrorMessage(
+        t,
+        error,
+        'settings'
+      )
+      message.error(friendly)
       console.error('Login failed:', error)
     } finally {
       setLoading(false)
@@ -642,8 +659,23 @@ export const TldwSettings = () => {
                 </span>
               )}
               {connectionDetail && connectionStatus !== "success" && (
-                <span className="text-xs text-gray-500">
-                  {connectionDetail}
+                <span className="flex flex-wrap items-center gap-2 text-xs text-gray-500">
+                  <span>{connectionDetail}</span>
+                  <button
+                    type="button"
+                    className="underline text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+                    onClick={() => {
+                      try {
+                        navigate("/settings/health")
+                      } catch {
+                        // ignore navigation failure
+                      }
+                    }}>
+                    {t(
+                      "settings:healthSummary.diagnostics",
+                      "Health & diagnostics"
+                    )}
+                  </button>
                 </span>
               )}
               <div className="flex flex-wrap items-center gap-2 text-xs text-gray-600 dark:text-gray-300">

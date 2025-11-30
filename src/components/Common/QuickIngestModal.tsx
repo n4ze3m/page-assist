@@ -119,6 +119,7 @@ export const QuickIngestModal: React.FC<Props> = ({
   const [savedAdvValues, setSavedAdvValues] = useStorage<Record<string, any>>('quickIngestAdvancedValues', {})
   const [uiPrefs, setUiPrefs] = useStorage<{ advancedOpen?: boolean; fieldDetailsOpen?: Record<string, boolean> }>('quickIngestAdvancedUI', {})
   const [specPrefs, setSpecPrefs] = useStorage<{ preferServer?: boolean; lastRemote?: { version?: string; cachedAt?: number } }>('quickIngestSpecPrefs', { preferServer: true })
+  const [storageHintSeen, setStorageHintSeen] = useStorage<boolean>('quickIngestStorageHintSeen', false)
   const lastRefreshedLabel = React.useMemo(() => {
     const ts = specPrefs?.lastRemote?.cachedAt
     if (!ts) return null
@@ -1697,48 +1698,141 @@ export const QuickIngestModal: React.FC<Props> = ({
                     </div>
                   )
                 })()}
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-sm text-gray-700 dark:text-gray-200">
-                  <div className="flex items-start gap-3">
-                    <Space align="center">
-                      <Typography.Text strong>Processing mode</Typography.Text>
-                      <Switch
-                        aria-label={
-                          storeRemote
-                            ? "Processing mode \u2013 store to remote DB"
-                            : "Processing mode \u2013 process locally"
-                        }
-                        title={storeRemote ? 'Store to remote DB' : 'Process locally'}
-                        checked={storeRemote}
-                        onChange={setStoreRemote}
-                        disabled={running}
-                      />
-                      <Typography.Text>
-                        {storeRemote ? (t('quickIngest.storeRemote') || 'Store to remote DB') : (t('quickIngest.process') || 'Process locally')}
-                      </Typography.Text>
-                    </Space>
+                <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between text-sm text-gray-700 dark:text-gray-200">
+                  <div className="flex-1">
+                    <div className="rounded-md border border-gray-200 bg-gray-50 p-3 dark:border-gray-700 dark:bg-[#151515]">
+                      <div className="flex flex-col gap-2">
+                        <div className="flex items-start justify-between gap-2">
+                          <Typography.Text strong>
+                            {t(
+                              'quickIngest.storageHeading',
+                              'Where ingest results are stored'
+                            )}
+                          </Typography.Text>
+                          <Space align="center" size="small">
+                            <Switch
+                              aria-label={
+                                storeRemote
+                                  ? t(
+                                      'quickIngest.storeRemoteAria',
+                                      'Store ingest results on your tldw server'
+                                    )
+                                  : t(
+                                      'quickIngest.processOnlyAria',
+                                      'Process ingest results locally only'
+                                    )
+                              }
+                              title={
+                                storeRemote
+                                  ? t(
+                                      'quickIngest.storeRemote',
+                                      'Store to remote DB'
+                                    )
+                                  : t('quickIngest.process', 'Process locally')
+                              }
+                              checked={storeRemote}
+                              onChange={setStoreRemote}
+                              disabled={running}
+                            />
+                            <Typography.Text>
+                              {storeRemote
+                                ? (t(
+                                      'quickIngest.storeRemote',
+                                      'Store to remote DB'
+                                    ) || 'Store to remote DB')
+                                : (t(
+                                      'quickIngest.process',
+                                      'Process locally'
+                                    ) || 'Process locally')}
+                            </Typography.Text>
+                          </Space>
+                        </div>
+                        <div className="mt-1 space-y-1 text-xs text-gray-600 dark:text-gray-300">
+                          <div className="flex items-start gap-2">
+                            <span className="mt-[2px]">•</span>
+                            <span>
+                              {t(
+                                'quickIngest.storageServerDescription',
+                                'Stored on your tldw server (recommended for RAG and shared workspaces).'
+                              )}
+                            </span>
+                          </div>
+                          <div className="flex items-start gap-2">
+                            <span className="mt-[2px]">•</span>
+                            <span>
+                              {t(
+                                'quickIngest.storageLocalDescription',
+                                'Kept in this browser only; no data written to your server.'
+                              )}
+                            </span>
+                          </div>
+                          {!storageHintSeen && (
+                            <div className="pt-1">
+                              <button
+                                type="button"
+                                className="text-xs underline text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+                                onClick={() => {
+                                  try {
+                                    const docsUrl =
+                                      t(
+                                        'quickIngest.storageDocsUrl',
+                                        'https://docs.tldw.app/extension/media-ingest-storage'
+                                      ) ||
+                                      'https://docs.tldw.app/extension/media-ingest-storage'
+                                    window.open(
+                                      docsUrl,
+                                      '_blank',
+                                      'noopener,noreferrer'
+                                    )
+                                  } catch {
+                                    // ignore navigation errors
+                                  } finally {
+                                    try {
+                                      setStorageHintSeen(true)
+                                    } catch {
+                                      // ignore storage errors
+                                    }
+                                  }
+                                }}
+                              >
+                                {t(
+                                  'quickIngest.storageDocsLink',
+                                  'Learn more about ingest & storage'
+                                )}
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
                   </div>
                   <span
-                    className="text-xs text-gray-500 dark:text-gray-400"
-                    title={running && (liveTotalCount || totalPlanned) > 0 ? 'Current ingest progress' : 'Items ready to ingest'}
+                    className="mt-2 text-xs text-gray-500 dark:text-gray-400 sm:mt-0"
+                    title={
+                      running && (liveTotalCount || totalPlanned) > 0
+                        ? 'Current ingest progress'
+                        : 'Items ready to ingest'
+                    }
                   >
                     {(() => {
                       const done = processedCount || results.length
                       const total = liveTotalCount || totalPlanned
                       if (running && total > 0) {
-                        return t('quickIngest.progress', 'Processing {{done}} / {{total}} items…', {
-                          done,
-                          total
-                        })
+                        return t(
+                          'quickIngest.progress',
+                          'Processing {{done}} / {{total}} items…',
+                          {
+                            done,
+                            total
+                          }
+                        )
                       }
-                      return `${plannedCount || 0} ${plannedCount === 1 ? 'item' : 'items'} ready`
+                      return `${plannedCount || 0} ${
+                        plannedCount === 1 ? 'item' : 'items'
+                      } ready`
                     })()}
                   </span>
                 </div>
-                <Typography.Text type="secondary" className="text-xs">
-                  {storeRemote
-                    ? (t('quickIngest.storeRemoteHelp') || 'Uploads to your tldw server for indexing.')
-                    : (t('quickIngest.processOnlyHelp') || 'Process only and keep results local (download JSON).')}
-                </Typography.Text>
               </div>
               <div className="flex justify-end gap-2 mt-2">
                 {showProcessQueuedButton && (

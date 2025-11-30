@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query"
-import { Dropdown, Tooltip } from "antd"
+import { Dropdown, Tooltip, Input } from "antd"
 import { UserCircle2 } from "lucide-react"
 import React from "react"
 import { useStorage } from "@plasmohq/storage/hook"
@@ -45,6 +45,7 @@ export const CharacterSelect: React.FC<Props> = ({
   })
 
   const [menuDensity] = useStorage("menuDensity", "comfortable")
+  const [searchQuery, setSearchQuery] = React.useState("")
   const selectLabel = t("option:characters.selectCharacter", {
     defaultValue: "Select character"
   }) as string
@@ -60,6 +61,9 @@ export const CharacterSelect: React.FC<Props> = ({
   }) as string
   const emptyCreateLabel = t("settings:manageCharacters.emptyPrimaryCta", {
     defaultValue: "Create character"
+  }) as string
+  const searchPlaceholder = t("option:characters.searchPlaceholder", {
+    defaultValue: "Search characters by name"
   }) as string
 
   React.useEffect(() => {
@@ -124,8 +128,23 @@ export const CharacterSelect: React.FC<Props> = ({
     }
   }, [])
 
+  const filteredCharacters = React.useMemo(() => {
+    const list = Array.isArray(data) ? data : []
+    const q = searchQuery.trim().toLowerCase()
+    if (!q) return list
+    return list.filter((c: any) => {
+      const name = (
+        c.name ||
+        c.title ||
+        c.slug ||
+        ""
+      ).toString().toLowerCase()
+      return name.includes(q)
+    })
+  }, [data, searchQuery])
+
   const items =
-    (data || []).map((c: any) => ({
+    filteredCharacters.map((c: any) => ({
       key: c.id || c.slug || c.name,
       label: (
         <div className="w-56 gap-2 text-sm truncate inline-flex items-center leading-5 dark:border-gray-700">
@@ -162,7 +181,7 @@ export const CharacterSelect: React.FC<Props> = ({
     })) || []
 
   const clearItem =
-    selectedCharacter && (items.length > 0 || data?.length === 0)
+    selectedCharacter
       ? {
           key: "__clear__",
           label: (
@@ -220,7 +239,7 @@ export const CharacterSelect: React.FC<Props> = ({
 
   if (items.length > 0) {
     menuItems.push({ type: "divider", key: "__divider_items__" } as any, ...items)
-  } else {
+  } else if (!data || (Array.isArray(data) && data.length === 0)) {
     menuItems.push(
       { type: "divider", key: "__divider_empty__" } as any,
       {
@@ -245,6 +264,18 @@ export const CharacterSelect: React.FC<Props> = ({
         }
       }
     )
+  } else {
+    menuItems.push({
+      key: "__no_matches__",
+      label: (
+        <div className="w-56 px-2 py-2 text-xs text-gray-600 dark:text-gray-300">
+          {t(
+            "option:characters.noMatches",
+            "No characters match your search yet."
+          ) as string}
+        </div>
+      )
+    })
   }
 
   if (clearItem) {
@@ -256,11 +287,43 @@ export const CharacterSelect: React.FC<Props> = ({
   return (
     <div className="flex items-center gap-2">
       <Dropdown
+        dropdownRender={(menu) => (
+          <div className="w-64">
+            <div className="px-2 py-2 border-b border-gray-100 dark:border-gray-700">
+              <Input
+                size="small"
+                placeholder={searchPlaceholder}
+                value={searchQuery}
+                autoFocus
+                allowClear
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "ArrowDown") {
+                    e.preventDefault()
+                    const root = document.querySelector(
+                      ".character-select-menu .ant-dropdown-menu"
+                    ) as HTMLElement | null
+                    const firstItem = root?.querySelector(
+                      'li[role="menuitem"]:not(.ant-dropdown-menu-item-disabled)'
+                    ) as HTMLElement | null
+                    firstItem?.focus()
+                  }
+                }}
+              />
+            </div>
+            <div className="max-h-[420px] overflow-y-auto no-scrollbar">
+              {menu}
+            </div>
+          </div>
+        )}
         menu={{
           items: menuItems,
           activeKey: selectedCharacter?.id,
-          style: { maxHeight: 500, overflowY: "auto" },
-          className: `no-scrollbar ${menuDensity === 'compact' ? 'menu-density-compact' : 'menu-density-comfortable'}`
+          className: `character-select-menu no-scrollbar ${
+            menuDensity === "compact"
+              ? "menu-density-compact"
+              : "menu-density-comfortable"
+          }`
         }}
         placement="topLeft"
         trigger={["click"]}>

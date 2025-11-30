@@ -30,6 +30,104 @@ test.describe('Quick ingest modal', () => {
     await context.close()
   })
 
+  test('clarifies where ingest results are stored and updates aria-labels', async () => {
+    const { context, page, optionsUrl } = await launchWithBuiltExtension({
+      seedConfig: {
+        serverUrl: 'http://127.0.0.1:8000',
+        authMode: 'single-user',
+        apiKey: API_KEY
+      }
+    })
+
+    await page.goto(optionsUrl + '#/media', { waitUntil: 'domcontentloaded' })
+
+    const ingestButton = page
+      .getByRole('button', { name: /Quick ingest/i })
+      .first()
+    await expect(ingestButton).toBeVisible()
+    await ingestButton.click()
+
+    const modal = page.locator('.quick-ingest-modal .ant-modal-content')
+    await expect(modal).toBeVisible()
+
+    // Storage heading and descriptions should be visible.
+    await expect(
+      modal.getByText(/Where ingest results are stored/i)
+    ).toBeVisible()
+    await expect(
+      modal.getByText(
+        /Stored on your tldw server \(recommended for RAG and shared workspaces\)\./i
+      )
+    ).toBeVisible()
+    await expect(
+      modal.getByText(
+        /Kept in this browser only; no data written to your server\./i
+      )
+    ).toBeVisible()
+
+    // Switch accessible name should change based on mode.
+    const storageToggle = modal.getByRole('switch', {
+      name: /Store ingest results on your tldw server/i
+    })
+    await expect(storageToggle).toBeVisible()
+    await expect(storageToggle).toHaveAttribute(
+      'aria-label',
+      /Store ingest results on your tldw server/i
+    )
+
+    await storageToggle.click()
+
+    await expect(storageToggle).toHaveAttribute(
+      'aria-label',
+      /Process ingest results locally only/i
+    )
+
+    await context.close()
+  })
+
+  test('shows storage docs link only on first open', async () => {
+    const { context, page, optionsUrl } = await launchWithBuiltExtension({
+      seedConfig: {
+        serverUrl: 'http://127.0.0.1:8000',
+        authMode: 'single-user',
+        apiKey: API_KEY
+      }
+    })
+
+    await page.goto(optionsUrl + '#/media', { waitUntil: 'domcontentloaded' })
+
+    const ingestButton = page
+      .getByRole('button', { name: /Quick ingest/i })
+      .first()
+    await expect(ingestButton).toBeVisible()
+    await ingestButton.click()
+
+    const modal = page.locator('.quick-ingest-modal .ant-modal-content')
+    await expect(modal).toBeVisible()
+
+    const docsLink = modal.getByRole('button', {
+      name: /Learn more about ingest & storage/i
+    })
+    await expect(docsLink).toBeVisible()
+
+    // Clicking the link marks the hint as seen.
+    await docsLink.click()
+
+    // Close and reopen the modal; the hint should no longer be visible.
+    await page.getByRole('button', { name: /Close quick ingest/i }).click()
+    await expect(modal).toBeHidden()
+
+    await ingestButton.click()
+    await expect(modal).toBeVisible()
+    await expect(
+      modal.getByRole('button', {
+        name: /Learn more about ingest & storage/i
+      })
+    ).toHaveCount(0)
+
+    await context.close()
+  })
+
   test('offline mode shows staging banner and pending tags', async () => {
     const { context, page, optionsUrl } = await launchWithBuiltExtension({
       allowOffline: true

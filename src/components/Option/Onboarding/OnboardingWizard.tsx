@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { tldwClient, TldwConfig } from '@/services/tldw/TldwApiClient'
 import { getTldwServerURL, DEFAULT_TLDW_API_KEY } from '@/services/tldw-server'
 import { tldwAuth } from '@/services/tldw/TldwAuth'
+import { mapMultiUserLoginErrorMessage } from '@/services/auth-errors'
 
 type Props = {
   onFinish?: () => void
@@ -219,7 +220,12 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
           setStep(3)
         }
       } catch (e: any) {
-        setErrorDetail(e?.message || 'Login failed')
+        const friendly = mapMultiUserLoginErrorMessage(
+          t,
+          e,
+          'onboarding'
+        )
+        setErrorDetail(friendly)
       } finally {
         setLoading(false)
       }
@@ -289,6 +295,12 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
     <div className="mx-auto w-full max-w-2xl rounded-xl border border-gray-200 bg-white px-6 py-6 text-gray-900 shadow-sm dark:border-gray-700 dark:bg-[#171717] dark:text-gray-100">
       <h2 className="text-lg font-semibold mb-2 text-gray-900 dark:text-gray-100">{t('settings:onboarding.title')}</h2>
       <p className="text-sm text-gray-700 dark:text-gray-300 mb-4">{t('settings:onboarding.description')}</p>
+      <p className="text-xs text-gray-600 dark:text-gray-400 mb-4">
+        {t(
+          'settings:onboarding.exploreWithoutServer',
+          'You can explore the UI without a server; some features (chat, media ingest, Knowledge search) will stay disabled until you connect.'
+        )}
+      </p>
 
       {step === 1 && (
         <div className="space-y-3">
@@ -325,6 +337,26 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
             </span>
           </div>
           <div className="text-xs text-gray-500">{t('settings:onboarding.serverUrl.help')}</div>
+          <div className="mt-1 text-xs text-gray-600 dark:text-gray-400">
+            <button
+              type="button"
+              className="underline text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+              onClick={() => {
+                try {
+                  const docsUrl =
+                    t('settings:onboarding.serverDocsUrl', 'https://docs.tldw.app/extension/server-setup') ||
+                    'https://docs.tldw.app/extension/server-setup'
+                  window.open(docsUrl, '_blank', 'noopener,noreferrer')
+                } catch {
+                  // ignore navigation errors
+                }
+              }}>
+              {t(
+                'settings:onboarding.serverDocsCta',
+                'Learn how tldw server works'
+              )}
+            </button>
+          </div>
           {connected === false && errorDetail && (
             <Alert
               className="mt-2"
@@ -379,7 +411,29 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
               type="error"
               showIcon
               message={t('settings:onboarding.connectionFailed')}
-              description={errorDetail}
+              description={
+                <span className="inline-flex flex-col gap-1 text-xs">
+                  <span>{errorDetail}</span>
+                  <button
+                    type="button"
+                    className="self-start underline text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+                    onClick={() => {
+                      try {
+                        const base =
+                          window.location.href.replace(/#.*$/, '') ||
+                          '/options.html'
+                        window.location.href = `${base}#/settings/health`
+                      } catch {
+                        // ignore navigation failures in onboarding context
+                      }
+                    }}>
+                    {t(
+                      'settings:healthSummary.diagnostics',
+                      'Open Health & diagnostics'
+                    )}
+                  </button>
+                </span>
+              }
             />
           )}
           <div>
@@ -425,7 +479,7 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
               message={t('settings:onboarding.connectionFailed')}
               description={t(
                 'settings:onboarding.connection.continueAnyway',
-                'You can finish setup now and connect later from Settings.'
+                'You can finish setup now and explore the UI without a server. Chat, media ingest, and Knowledge search will remain limited until you connect a tldw server from Settings → tldw Server.'
               )}
             />
           )}
@@ -466,6 +520,17 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
                 danger={connected === false}
                 onClick={finish}
                 disabled={testing}
+                title={
+                  connected === false
+                    ? t(
+                        'settings:onboarding.buttons.finishAnyway',
+                        'Finish setup for now — connect later from Settings → tldw Server.'
+                      )
+                    : t(
+                        'settings:onboarding.buttons.finish',
+                        'Finish setup'
+                      )
+                }
               >
                 {connected === false
                   ? t(

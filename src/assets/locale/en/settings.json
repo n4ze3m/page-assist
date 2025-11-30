@@ -746,6 +746,9 @@
     "subtitle": "Quick overview of subsystem health endpoints exposed by the server.",
     "backToChat": "Back to chat",
     "openSettings": "Open tldw Settings",
+    "noServerBannerTitle": "Don’t have a server yet?",
+    "noServerBannerBody": "You can explore the UI first, then connect a tldw server later to enable chat history, media ingest, and Knowledge search.",
+    "noServerBannerCta": "Learn how tldw server works",
     "recheckAll": "Recheck All",
     "copyDiagnostics": "Copy diagnostics",
     "copyDiagnosticsHelp": "Copies JSON diagnostics (server URL, status codes, and anonymized environment info) to your clipboard. API keys and message content are not included.",
@@ -821,6 +824,9 @@
   "onboarding": {
     "title": "Welcome — Let’s get you connected",
     "description": "Connect this extension to your tldw server (a separate app running on your machine or server). We’ll walk through adding the URL, API key, and checking that everything is reachable.",
+    "exploreWithoutServer": "You can explore the UI without a server; some features (chat, media ingest, Knowledge search) will stay disabled until you connect.",
+    "serverDocsUrl": "https://docs.tldw.app/extension/server-setup",
+    "serverDocsCta": "Learn how tldw server works",
     "serverUrl": {
       "label": "Server URL",
       "placeholder": "http://127.0.0.1:8000",
@@ -864,7 +870,7 @@
       "unknown": "Unknown",
       "connected": "Connected",
       "failed": "Failed",
-      "continueAnyway": "You can finish setup now, but some features may not work until we can reach your tldw server. You can recheck the connection anytime from Settings → tldw server."
+      "continueAnyway": "You can finish setup now and explore the UI without a server. Chat, media ingest, and Knowledge search will remain limited until you connect a tldw server from Settings → tldw Server."
     },
     "rag": {
       "label": "Knowledge search & retrieval:",
@@ -874,7 +880,13 @@
       "help": "Checks whether your server can search your notes, media, and other connected knowledge sources."
     },
     "connectionFailed": "Connection failed",
-    "footerHelp": "Once connected, you can revisit these settings anytime from the extension menu."
+    "footerHelp": "Once connected, you can revisit these settings anytime from the extension menu.",
+    "errors": {
+      "invalidCredentials": "Login failed. Check your username and password or confirm multi-user login is enabled on your tldw server.",
+      "forbidden": "Forbidden. Check that your user account has permission to log in.",
+      "serverUnreachable": "Couldn’t reach your tldw server. Check the server URL or open Health & diagnostics for more details.",
+      "generic": "Login failed. Open Health & diagnostics from the header to inspect server errors."
+    }
   },
   "tldw": {
     "setupLink": "Set up server",
@@ -908,7 +920,10 @@
       "invalidApiKey": "Invalid API key",
       "forbidden": "Forbidden (check permissions)",
       "apiKeyValidationFailed": "API key validation failed",
-      "serverUnreachable": "Server unreachable"
+      "serverUnreachable": "Server unreachable",
+      "serverUnreachableDetailed": "Server not reachable. Check that your tldw_server is running and that your browser can reach it, then try again. Health & diagnostics can help debug connectivity issues.",
+      "connectionFailedDetailed": "Connection failed. Please check your server URL and API key, then open Health & diagnostics for more details.",
+      "seeHealth": "Open Health & diagnostics for more details."
     },
     "about": {
       "title": "About tldw_server Integration",
@@ -971,7 +986,11 @@
     },
     "login": {
       "success": "Login successful!",
-      "failed": "Login failed"
+      "failed": "Login failed",
+      "invalidCredentials": "Login failed. Check your username/password or confirm multi-user auth is enabled on your tldw server.",
+      "forbidden": "Forbidden. Check that this user has permission to log in.",
+      "serverUnreachable": "Couldn’t reach your tldw server. Check the server URL or open Health & diagnostics for more details.",
+      "generic": "Login failed. See Health & diagnostics for server details."
     },
     "logout": {
       "success": "Logged out successfully",

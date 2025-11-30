@@ -332,6 +332,46 @@ export default function HealthStatus() {
         </Space>
       </div>
 
+      {!serverUrl && (
+        <Alert
+          type="info"
+          showIcon
+          className="mt-2"
+          message={t(
+            'healthPage.noServerBannerTitle',
+            'Don’t have a server yet?'
+          )}
+          description={
+            <span className="text-sm">
+              {t(
+                'healthPage.noServerBannerBody',
+                'You can explore the UI first, then connect a tldw server later to enable chat history, media ingest, and Knowledge search.'
+              )}{' '}
+              <button
+                type="button"
+                className="underline text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+                onClick={() => {
+                  try {
+                    const docsUrl =
+                      t(
+                        'settings:onboarding.serverDocsUrl',
+                        'https://docs.tldw.app/extension/server-setup'
+                      ) || 'https://docs.tldw.app/extension/server-setup'
+                    window.open(docsUrl, '_blank', 'noopener,noreferrer')
+                  } catch {
+                    // ignore navigation errors
+                  }
+                }}>
+                {t(
+                  'healthPage.noServerBannerCta',
+                  'Learn how tldw server works'
+                )}
+              </button>
+            </span>
+          }
+        />
+      )}
+
       {!serverUrl || coreStatus === 'failed' ? (
         <Alert
           type="warning"

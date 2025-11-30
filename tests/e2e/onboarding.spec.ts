@@ -23,6 +23,10 @@ test.describe('Onboarding wizard', () => {
     const urlInput = page.getByLabel(/Server URL/i)
     await urlInput.scrollIntoViewIfNeeded()
     await urlInput.fill(server.url)
+
+    // Docs link is visible and opens the server docs (href or target may vary by browser)
+    const docsLink = page.getByRole('button', { name: /Learn how tldw server works/i })
+    await expect(docsLink).toBeVisible()
     await page.getByRole('button', { name: /Next/i }).click()
 
     // Step 2: Single user + API key
@@ -100,6 +104,28 @@ test.describe('Onboarding wizard', () => {
       page.getByText(
         /search your notes, media, and other connected knowledge sources/i
       )
+    ).toBeVisible()
+
+    // Finish without connecting path uses friendly copy when forced failure
+    // (simulate by forcing a failed connection state in the UI)
+    await page.reload()
+    await expect(
+      page.getByText(/Let’s get you connected/i)
+    ).toBeVisible()
+
+    const urlInput2 = page.getByLabel(/Server URL/i)
+    await urlInput2.scrollIntoViewIfNeeded()
+    await urlInput2.fill('http://127.0.0.1:9999')
+    await page.getByRole('button', { name: /Next/i }).click()
+
+    await page.getByText('Single User (API Key)').click()
+    await page
+      .getByPlaceholder(/Enter your API key/i)
+      .fill('THIS-IS-A-SECURE-KEY-123-FAKE-KEY')
+    await page.getByRole('button', { name: /Continue/i }).click()
+
+    await expect(
+      page.getByText(/You can finish setup now and explore the UI without a server/i)
     ).toBeVisible()
 
     await context.close()

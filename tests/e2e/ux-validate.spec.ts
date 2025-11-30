@@ -59,6 +59,22 @@ test.describe('UX validation (connected server)', () => {
     await expect(
       page.getByText(/Knowledge search & retrieval/i)
     ).toBeVisible()
+    // When no server URL is configured, an onboarding-style banner should be visible
+    // (in connected test runs this may be configured; tolerate either state but
+    // assert that the banner text resolves when serverUrl is empty).
+    if (
+      await page
+        .getByText(/Server is not configured/i)
+        .isVisible({ timeout: 1000 })
+        .catch(() => false)
+    ) {
+      await expect(
+        page.getByText(/Don’t have a server yet\?/i)
+      ).toBeVisible()
+      await expect(
+        page.getByText(/Learn how tldw server works/i)
+      ).toBeVisible()
+    }
     await expect(page.getByRole('button', { name: /Back to chat/i })).toBeVisible()
     const copyBtn = page.getByRole('button', { name: /Copy diagnostics/i })
     await copyBtn.click()
