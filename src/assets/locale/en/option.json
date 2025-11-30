@@ -8,7 +8,7 @@
     "headlineSearching": "Searching for your tldw server…",
     "headlineConnected": "Connected to your tldw server",
     "headlineError": "Can’t reach your tldw server",
-    "descriptionMissing": "tldw_server is a separate backend app that runs on your machine or server. It powers chat, knowledge search, and media processing. Add your tldw server URL to start using the assistant.",
+    "descriptionMissing": "tldw server is an optional backend that runs on your own machine or server. It powers chat history, Knowledge search, and media processing. You can explore the extension first, then connect your own server when you’re ready.",
     "descriptionSearching": "We’re checking {{host}} to see if your tldw server is reachable. This can take a few seconds the first time or after the server restarts.",
     "descriptionConnected": "Connected to your tldw server at {{host}}. You can start chatting, search knowledge, review media, and use other tools from the header.",
     "descriptionError": "We couldn’t reach your tldw server at {{host}}. Check that the server is running, the URL matches your tldw_server, and your browser is allowed to reach it. Use Diagnostics for detailed errors and next steps.",

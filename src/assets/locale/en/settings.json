@@ -743,7 +743,7 @@
   "switchToSidebar": "Switch to Sidebar",
   "healthPage": {
     "title": "Health Status",
-    "subtitle": "Quick overview of subsystem health endpoints exposed by the server.",
+    "subtitle": "Quick overview of how your tldw server powers chat, Knowledge search, media ingest, and other tools.",
     "backToChat": "Back to chat",
     "openSettings": "Open tldw Settings",
     "noServerBannerTitle": "Don’t have a server yet?",
@@ -926,15 +926,8 @@
       "seeHealth": "Open Health & diagnostics for more details."
     },
     "about": {
-      "title": "About tldw_server Integration",
-      "description": "This extension connects to your tldw_server instance, providing access to:",
-      "points": {
-        "providers": "Multiple LLM providers through a unified API",
-        "rag": "RAG (Retrieval-Augmented Generation) search",
-        "media": "Media ingestion and processing",
-        "notes": "Notes and prompts management",
-        "stt": "Speech-to-text transcription"
-      }
+      "title": "About tldw server integration",
+      "description": "tldw server turns this extension into a full workspace for chat, Knowledge search, and media."
     },
     "advancedTimeouts": "Advanced Timeouts",
     "requestTimeout": "Request Timeout (seconds)",

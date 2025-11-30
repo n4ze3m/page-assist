@@ -12,6 +12,13 @@ test.describe('ServerConnectionCard states', () => {
     await expect(
       page.getByText(/Connect tldw Assistant to your server/i)
     ).toBeVisible()
+    // Shared server overview block and docs CTA should be present.
+    await expect(
+      page.getByText(/How tldw server fits into this extension/i)
+    ).toBeVisible()
+    await expect(
+      page.getByRole('button', { name: /View server setup guide/i })
+    ).toBeVisible()
     // Primary CTA should clearly guide users to configure the server
     await expect(page.getByRole('button', { name: /Set up server/i })).toBeVisible()
 

@@ -54,10 +54,13 @@ test.describe('UX validation (connected server)', () => {
     await sp.getByText(/Save current page on server/i).click()
     await expect(ingestBtn).toHaveAttribute('aria-expanded', 'false')
 
-    // Health Status descriptions, back button + copy diagnostics
+    // Health Status descriptions, shared server overview, back button + copy diagnostics
     await page.goto(optionsUrl + '#/settings/health')
     await expect(
       page.getByText(/Knowledge search & retrieval/i)
+    ).toBeVisible()
+    await expect(
+      page.getByText(/How tldw server fits into this extension/i)
     ).toBeVisible()
     // When no server URL is configured, an onboarding-style banner should be visible
     // (in connected test runs this may be configured; tolerate either state but
@@ -70,9 +73,6 @@ test.describe('UX validation (connected server)', () => {
     ) {
       await expect(
         page.getByText(/Don’t have a server yet\?/i)
-      ).toBeVisible()
-      await expect(
-        page.getByText(/Learn how tldw server works/i)
       ).toBeVisible()
     }
     await expect(page.getByRole('button', { name: /Back to chat/i })).toBeVisible()

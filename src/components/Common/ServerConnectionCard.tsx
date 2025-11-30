@@ -13,6 +13,7 @@ import { useAntdNotification } from "@/hooks/useAntdNotification"
 import { focusComposer } from "@/hooks/useComposerFocus"
 import { getReturnTo, clearReturnTo } from "@/utils/return-to"
 import { useNavigate } from "react-router-dom"
+import { ServerOverviewHint } from "@/components/Common/ServerOverviewHint"
 
 type Props = {
   onOpenSettings?: () => void
@@ -451,6 +452,10 @@ export const ServerConnectionCard: React.FC<Props> = ({
         <p className="text-sm text-gray-600 dark:text-gray-300 text-center">
           {descriptionCopy}
         </p>
+
+        {statusVariant === "missing" && !isCompact && (
+          <ServerOverviewHint />
+        )}
 
         {!isCompact && statusVariant === "ok" && (
           <ul className="mt-1 max-w-sm list-disc text-left text-xs text-gray-600 dark:text-gray-300">

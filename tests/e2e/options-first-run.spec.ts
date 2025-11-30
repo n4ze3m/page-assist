@@ -32,8 +32,14 @@ test.describe('Options first-run and connection panel', () => {
     }, DEFAULT_TLDW_API_KEY)
     await page.reload()
 
-    // Expect deterministic error card copy
+    // Expect deterministic error card copy and shared server overview block.
     await expect(page.getByText(/Can.?t reach your tldw server/i)).toBeVisible()
+    await expect(
+      page.getByText(/How tldw server fits into this extension/i)
+    ).toBeVisible()
+    await expect(
+      page.getByRole('button', { name: /View server setup guide/i })
+    ).toBeVisible()
     await expect(
       page.getByRole('button', {
         name: /Troubleshoot connection|Retry connection/i

@@ -363,7 +363,13 @@
   },
   "characters": {
     "selectCharacter": "Select character",
-    "chattingAs": "You're now chatting as {{name}}."
+    "chattingAs": "You're now chatting as {{name}}.",
+    "clearCharacter": "Clear character",
+    "none": "None (no character)",
+    "searchPlaceholder": "Search characters by name",
+    "noMatches": "No characters match your search yet.",
+    "refresh": "Refresh characters",
+    "refreshing": "Refreshing characters…"
   },
   "promptInsert": {
     "useInChat": "Use in chat",

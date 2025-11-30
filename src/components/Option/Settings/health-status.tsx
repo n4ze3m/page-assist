@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next'
 import type { TFunction } from 'i18next'
 import { useAntdNotification } from '@/hooks/useAntdNotification'
 import { getReturnTo, clearReturnTo } from "@/utils/return-to"
+import { ServerOverviewHint } from "@/components/Common/ServerOverviewHint"
 
 type Check = {
   key: string
@@ -284,7 +285,7 @@ export default function HealthStatus() {
           <Typography.Paragraph type="secondary" className="!mb-0">
             {t(
               "healthPage.subtitle",
-              "Quick overview of subsystem health endpoints exposed by the server."
+              "Quick overview of how your tldw server powers chat, Knowledge search, media ingest, and other tools."
             )}
           </Typography.Paragraph>
         </div>
@@ -346,27 +347,7 @@ export default function HealthStatus() {
               {t(
                 'healthPage.noServerBannerBody',
                 'You can explore the UI first, then connect a tldw server later to enable chat history, media ingest, and Knowledge search.'
-              )}{' '}
-              <button
-                type="button"
-                className="underline text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
-                onClick={() => {
-                  try {
-                    const docsUrl =
-                      t(
-                        'settings:onboarding.serverDocsUrl',
-                        'https://docs.tldw.app/extension/server-setup'
-                      ) || 'https://docs.tldw.app/extension/server-setup'
-                    window.open(docsUrl, '_blank', 'noopener,noreferrer')
-                  } catch {
-                    // ignore navigation errors
-                  }
-                }}>
-                {t(
-                  'healthPage.noServerBannerCta',
-                  'Learn how tldw server works'
-                )}
-              </button>
+              )}
             </span>
           }
         />
@@ -382,6 +363,10 @@ export default function HealthStatus() {
         />
       ) : (
         <Alert type="success" showIcon message={t('healthPage.connectedTo', 'Connected to {{host}}', { host: serverUrl })} />
+      )}
+
+      {(!serverUrl || coreStatus === 'failed') && (
+        <ServerOverviewHint />
       )}
 
       <div className="flex items-center gap-4">

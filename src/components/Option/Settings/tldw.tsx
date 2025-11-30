@@ -22,6 +22,7 @@ import { apiSend } from "@/services/api-send"
 import { useAntdMessage } from "@/hooks/useAntdMessage"
 import { useConnectionStore } from "@/store/connection"
 import { mapMultiUserLoginErrorMessage } from "@/services/auth-errors"
+import { ServerOverviewHint } from "@/components/Common/ServerOverviewHint"
 
 type TimeoutPresetKey = 'balanced' | 'extended'
 
@@ -457,45 +458,20 @@ export const TldwSettings = () => {
             onClose={() => setShowDefaultKeyWarning(false)}
           />
         )}
-        <div className="mb-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
-          <h3 className="font-semibold mb-2">
-            {t('settings:tldw.about.title', 'About tldw_server Integration')}
+        <div className="mb-4 rounded-lg bg-gray-50 p-4 dark:bg-gray-800">
+          <h3 className="mb-2 font-semibold">
+            {t(
+              "settings:tldw.about.title",
+              "About tldw server integration"
+            )}
           </h3>
           <p className="text-sm text-gray-600 dark:text-gray-400">
             {t(
-              'settings:tldw.about.description',
-              'This extension connects to your tldw_server instance, providing access to:'
+              "settings:tldw.about.description",
+              "tldw server turns this extension into a full workspace for chat, knowledge search, and media."
             )}
           </p>
-          <ul className="mt-2 text-sm text-gray-600 dark:text-gray-400 list-disc list-inside">
-            <li>
-              {t(
-                'settings:tldw.about.points.providers',
-                'Multiple LLM providers through a unified API'
-              )}
-            </li>
-            <li>
-              {t('settings:tldw.about.points.rag', 'RAG (Retrieval-Augmented Generation) search')}
-            </li>
-            <li>
-              {t(
-                'settings:tldw.about.points.media',
-                'Media ingestion and processing'
-              )}
-            </li>
-            <li>
-              {t(
-                'settings:tldw.about.points.notes',
-                'Notes and prompts management'
-              )}
-            </li>
-            <li>
-              {t(
-                'settings:tldw.about.points.stt',
-                'Speech-to-text transcription'
-              )}
-            </li>
-          </ul>
+          <ServerOverviewHint />
         </div>
         <div className="mb-4 p-2 rounded border border-transparent bg-transparent flex items-center justify-between transition-colors duration-150 hover:border-gray-200 hover:bg-gray-50 dark:border-transparent dark:hover:border-gray-700 dark:hover:bg-[#1c1c1c]">
           <div className="text-sm text-gray-800 dark:text-gray-100">

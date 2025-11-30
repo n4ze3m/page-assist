@@ -46,7 +46,8 @@ test.describe('i18n smoke test for Quick Ingest & Characters', () => {
       page.getByText(/option:connectionCard\.quickIngestInlineHint/i)
     ).toHaveCount(0)
 
-    // Open the Playground and verify the Characters selector shows a "None" option.
+    // Open the Playground and verify the Characters selector shows localized search
+    // and a "None" option without missing-key literals.
     await page.goto(`${optionsUrl}#/playground`)
 
     const trigger = page
@@ -55,6 +56,15 @@ test.describe('i18n smoke test for Quick Ingest & Characters', () => {
     await expect(trigger).toBeVisible()
     await trigger.click()
 
+    // Search input placeholder should resolve for the non-English locale.
+    const searchInput = page.getByPlaceholder(/Search characters by name/i)
+    await expect(searchInput).toBeVisible()
+
+    // Missing-key literal for search placeholder should not appear.
+    await expect(
+      page.getByText(/option:characters\.searchPlaceholder/i)
+    ).toHaveCount(0)
+
     const noneOption = page.getByText(/None \(no character\)/i).first()
     await expect(noneOption).toBeVisible()
 
@@ -62,4 +72,3 @@ test.describe('i18n smoke test for Quick Ingest & Characters', () => {
     await server.stop()
   })
 })
-

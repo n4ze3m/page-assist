@@ -368,7 +368,13 @@
   },
   "characters": {
     "selectCharacter": "اختر شخصية",
-    "chattingAs": "أنت الآن تتحدث كشخصية {{name}}."
+    "chattingAs": "أنت الآن تتحدث كشخصية {{name}}.",
+    "clearCharacter": "Clear character",
+    "none": "None (no character)",
+    "searchPlaceholder": "Search characters by name",
+    "noMatches": "No characters match your search yet.",
+    "refresh": "Refresh characters",
+    "refreshing": "Refreshing characters…"
   },
   "promptInsert": {
     "useInChat": "استخدام في الدردشة",
