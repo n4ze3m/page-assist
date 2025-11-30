@@ -48,8 +48,8 @@ import FeatureEmptyState from "@/components/Common/FeatureEmptyState"
 import { useNavigate } from "react-router-dom"
 import { useDemoMode } from "@/context/demo-mode"
 import { useServerCapabilities } from "@/hooks/useServerCapabilities"
-import { setReturnTo } from "@/utils/return-to"
 import { useAntdMessage } from "@/hooks/useAntdMessage"
+import { useScrollToServerCard } from "@/hooks/useScrollToServerCard"
 
 dayjs.extend(relativeTime)
 
@@ -67,21 +67,7 @@ export const FlashcardsPage: React.FC = () => {
   const [activeTab, setActiveTab] = React.useState<string>("review")
   const message = useAntdMessage()
   const confirmDanger = useConfirmDanger()
-
-  const scrollToServerCard = React.useCallback(() => {
-    setReturnTo("/flashcards")
-    try {
-      const el = document.getElementById("server-connection-card")
-      if (el) {
-        el.scrollIntoView({ behavior: "smooth", block: "start" })
-        ;(el as HTMLElement).focus?.()
-        return
-      }
-    } catch {
-      // ignore and fall through
-    }
-    navigate("/settings/tldw")
-  }, [navigate])
+  const scrollToServerCard = useScrollToServerCard("/flashcards")
 
   if (!isOnline) {
     return demoEnabled ? (

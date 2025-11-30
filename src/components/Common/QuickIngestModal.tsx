@@ -386,7 +386,9 @@ export const QuickIngestModal: React.FC<Props> = ({
   const showProcessQueuedButton =
     !ingestBlocked && stagedCount > 0 && hadOfflineQueuedRef.current
 
-  const run = async () => {
+  const autoProcessedRef = React.useRef(false)
+
+  const run = React.useCallback(async () => {
     // Reset any previous error state before a new attempt.
     setLastRunError(null)
     clearFailure()
@@ -407,21 +409,6 @@ export const QuickIngestModal: React.FC<Props> = ({
     }
     const total = valid.length + localFiles.length
     setTotalPlanned(total)
-
-  const autoProcessedRef = React.useRef(false)
-
-  React.useEffect(() => {
-    if (!open) {
-      autoProcessedRef.current = false
-      return
-    }
-    if (!autoProcessQueued) return
-    if (autoProcessedRef.current) return
-    if (!showProcessQueuedButton) return
-    if (running) return
-    autoProcessedRef.current = true
-    void run()
-  }, [autoProcessQueued, open, running, showProcessQueuedButton])
     setProcessedCount(0)
     setLiveTotalCount(total)
     setRunStartedAt(Date.now())
@@ -503,7 +490,30 @@ export const QuickIngestModal: React.FC<Props> = ({
       setLastRunError(msg)
       markFailure()
     }
-  }
+  }, [
+    advancedValues,
+    clearFailure,
+    common,
+    ingestBlocked,
+    localFiles,
+    messageApi,
+    rows,
+    storeRemote,
+    t
+  ])
+
+  React.useEffect(() => {
+    if (!open) {
+      autoProcessedRef.current = false
+      return
+    }
+    if (!autoProcessQueued) return
+    if (autoProcessedRef.current) return
+    if (!showProcessQueuedButton) return
+    if (running) return
+    autoProcessedRef.current = true
+    void run()
+  }, [autoProcessQueued, open, run, running, showProcessQueuedButton])
 
   // Load OpenAPI schema to build advanced fields (best-effort)
   const groupForField = (name: string): string => {
@@ -949,6 +959,13 @@ export const QuickIngestModal: React.FC<Props> = ({
   }, [hasOpenedInspector, selectedFile, selectedRow])
 
   React.useEffect(() => {
+    setSelectedFileIndex((prev) => {
+      if (localFiles.length === 0) return null
+      if (prev == null) return 0
+      if (prev >= localFiles.length) return localFiles.length - 1
+      return prev
+    })
+
     if (selectedRowId && rows.some((r) => r.id === selectedRowId)) {
       return
     }
@@ -957,10 +974,7 @@ export const QuickIngestModal: React.FC<Props> = ({
       setSelectedFileIndex(null)
       return
     }
-    if (localFiles.length > 0 && selectedFileIndex == null) {
-      setSelectedFileIndex(0)
-    }
-  }, [localFiles.length, rows, selectedFileIndex, selectedRowId])
+  }, [localFiles.length, rows, selectedRowId])
 
   const progressMeta = React.useMemo(() => {
     const total = liveTotalCount || totalPlanned || 0

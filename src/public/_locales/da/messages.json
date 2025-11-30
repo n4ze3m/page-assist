@@ -12,7 +12,7 @@
     "message": "Åben Web UI for at Chatte"
   },
   "openQuickIngest": {
-    "message": "Åbn Quick Ingest"
+    "message": "Åbn hurtigimport"
   },
   "contextSummarize": {
     "message": "Opsummer"
@@ -42,7 +42,7 @@
     "message": "Åbner sidepanel for at gemme noten..."
   },
   "contextSaveToNotesDeliveryFailed": {
-    "message": "Could not open the sidebar to save this note. Check that the tldw Assistant sidebar is allowed on this site and try again."
+    "message": "Kunne ikke åbne sidepanelet for at gemme denne note. Sørg for, at tldw Assistant-sidepanelet er tilladt på dette websted, og prøv igen."
   },
   "contextTranscribeMedia": {
     "message": "Transskriber video/lyd"

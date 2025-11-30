@@ -359,7 +359,7 @@ export const CharacterSelect: React.FC<Props> = ({
                   event.stopPropagation()
                   setSelectedCharacter(null)
                 }}
-                className="absolute -top-1 -right-1 flex h-3 w-3 items-center justify-center rounded-full bg-gray-900 text-[9px] font-semibold text-white shadow-sm hover:bg-gray-700 dark:bg-gray-200 dark:text-gray-900"
+                className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-gray-900 text-[10px] font-semibold text-white shadow-sm hover:bg-gray-700 dark:bg-gray-200 dark:text-gray-900"
                 aria-label={clearLabel}
                 title={clearLabel}>
                 ×

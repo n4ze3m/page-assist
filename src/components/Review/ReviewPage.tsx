@@ -39,7 +39,7 @@ import FeatureEmptyState from "@/components/Common/FeatureEmptyState"
 import { useAntdNotification } from "@/hooks/useAntdNotification"
 import { useDemoMode } from "@/context/demo-mode"
 import { useAntdMessage } from "@/hooks/useAntdMessage"
-import { setReturnTo } from "@/utils/return-to"
+import { useScrollToServerCard } from "@/hooks/useScrollToServerCard"
 
 type MediaItem = any
 type NoteItem = any
@@ -140,6 +140,8 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true, 
   const modeToastPrev = React.useRef<"review" | "summary" | null>(null)
   const serverOnline = useServerOnline()
   const isOnline = forceOffline ? false : serverOnline
+  const returnToPath = isViewMediaMode ? "/media" : "/review"
+  const scrollToServerCard = useScrollToServerCard(returnToPath)
 
   // Storage scoping: per server host and auth mode to avoid cross-user leakage
   const scopedKey = React.useCallback((base: string) => {
@@ -1017,21 +1019,6 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true, 
     { title: 'Sample media item 2', meta: 'Audio · 08:12', status: 'Processing' },
     { title: 'Sample media item 3', meta: 'PDF · 4 pages', status: 'Ready' }
   ]), [])
-
-  const scrollToServerCard = React.useCallback(() => {
-    setReturnTo(isViewMediaMode ? "/media" : "/review")
-    try {
-      const el = document.getElementById("server-connection-card")
-      if (el) {
-        el.scrollIntoView({ behavior: "smooth", block: "start" })
-        ;(el as HTMLElement).focus?.()
-        return
-      }
-    } catch {
-      // ignore and fall through
-    }
-    navigate("/settings/tldw")
-  }, [navigate])
 
   if (!isOnline) {
     const baseEmpty = demoEnabled ? (

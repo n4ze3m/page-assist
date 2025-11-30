@@ -18,7 +18,8 @@
     "buttonOpenDiagnostics": "Open diagnostics",
     "buttonViewDiagnostics": "View diagnostics",
     "buttonOpenQuickIngest": "ക്വിക് ഇൻജെസ്റ്റ് തുറക്കുക",
-    "buttonTryDemo": "Try a demo"
+    "buttonTryDemo": "Try a demo",
+    "buttonGoToServerCard": "സെർവർ കാർഡിലേക്ക് പോകുക"
   },
   "header": {
     "showShortcuts": "ഷോർട്ട്കട്ടുകൾ കാണിക്കുക",

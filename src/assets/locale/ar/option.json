@@ -18,7 +18,8 @@
     "buttonOpenDiagnostics": "فتح صفحة التشخيص",
     "buttonViewDiagnostics": "عرض التشخيص",
     "buttonOpenQuickIngest": "افتح الاستيعاب السريع",
-    "buttonTryDemo": "تجربة العرض التوضيحي"
+    "buttonTryDemo": "تجربة العرض التوضيحي",
+    "buttonGoToServerCard": "الانتقال إلى بطاقة الخادم"
   },
   "header": {
     "showShortcuts": "إظهار الاختصارات",

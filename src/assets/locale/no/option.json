@@ -18,7 +18,8 @@
     "buttonOpenDiagnostics": "Open diagnostics",
     "buttonViewDiagnostics": "View diagnostics",
     "buttonOpenQuickIngest": "Åpne Quick Ingest",
-    "buttonTryDemo": "Try a demo"
+    "buttonTryDemo": "Try a demo",
+    "buttonGoToServerCard": "Gå til serverkortet"
   },
   "header": {
     "showShortcuts": "Vis snarveier",

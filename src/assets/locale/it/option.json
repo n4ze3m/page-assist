@@ -18,7 +18,8 @@
     "buttonOpenDiagnostics": "Open diagnostics",
     "buttonViewDiagnostics": "View diagnostics",
     "buttonOpenQuickIngest": "Apri ingestione rapida",
-    "buttonTryDemo": "Try a demo"
+    "buttonTryDemo": "Try a demo",
+    "buttonGoToServerCard": "Vai alla scheda server"
   },
   "header": {
     "showShortcuts": "Mostra scorciatoie",

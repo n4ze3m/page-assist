@@ -19,10 +19,10 @@ test.describe('Onboarding wizard', () => {
     // Wizard visible
     await expect(page.getByText(/Let’s get you connected/i)).toBeVisible()
 
-    // Step 1: server URL – scroll wizard into view first
-    const urlInput = page.getByLabel(/Server URL/i)
-    await urlInput.scrollIntoViewIfNeeded()
-    await urlInput.fill(server.url)
+  // Step 1: server URL – scroll wizard into view first
+  const urlInput = page.getByLabel(/Server URL/i)
+  await urlInput.scrollIntoViewIfNeeded()
+  await urlInput.fill(server.url)
 
     // Docs link is visible and opens the server docs (href or target may vary by browser)
     const docsLink = page.getByRole('button', { name: /Learn how tldw server works/i })

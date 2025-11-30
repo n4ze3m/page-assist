@@ -18,7 +18,8 @@
     "buttonOpenDiagnostics": "Open diagnostics",
     "buttonViewDiagnostics": "View diagnostics",
     "buttonOpenQuickIngest": "開啟快速匯入",
-    "buttonTryDemo": "Try a demo"
+    "buttonTryDemo": "Try a demo",
+    "buttonGoToServerCard": "前往伺服器卡片"
   },
   "header": {
     "showShortcuts": "顯示快捷方式",

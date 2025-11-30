@@ -18,7 +18,8 @@
     "buttonOpenDiagnostics": "Open diagnostics",
     "buttonViewDiagnostics": "View diagnostics",
     "buttonOpenQuickIngest": "打开快速导入",
-    "buttonTryDemo": "Try a demo"
+    "buttonTryDemo": "Try a demo",
+    "buttonGoToServerCard": "前往服务器卡片"
   },
   "header": {
     "showShortcuts": "显示快捷方式",
