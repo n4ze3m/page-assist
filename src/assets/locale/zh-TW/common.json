@@ -235,13 +235,13 @@
   "search": "搜尋",
   "searchResults": "搜尋結果",
   "error": {
-    "friendlyApiKeySummary": "We couldn’t reach your tldw server.",
-    "friendlyApiKeyHint": "Your API key may be invalid. Open Settings → tldw server to check your URL and API key, then try again.",
-    "friendlyTimeoutSummary": "Your chat timed out.",
-    "friendlyTimeoutHint": "The server stopped streaming responses. Try again, or open Health & diagnostics to check server status.",
-    "friendlyGenericSummary": "Something went wrong while talking to your tldw server.",
-    "friendlyGenericHint": "Try again in a moment, or open Health & diagnostics to inspect server health.",
-    "showDetails": "Show technical details",
-    "hideDetails": "Hide technical details"
+    "friendlyApiKeySummary": "無法連線到您的 tldw 伺服器。",
+    "friendlyApiKeyHint": "您的 API 金鑰可能無效。開啟「設定」→「tldw 伺服器」檢查 URL 與 API 金鑰，然後再試一次。",
+    "friendlyTimeoutSummary": "您的聊天已逾時。",
+    "friendlyTimeoutHint": "伺服器停止串流回應。請重試，或開啟「健康與診斷」查看伺服器狀態。",
+    "friendlyGenericSummary": "與您的 tldw 伺服器通訊時發生問題。",
+    "friendlyGenericHint": "請稍後再試，或開啟「健康與診斷」檢查伺服器狀態。",
+    "showDetails": "顯示技術詳細資訊",
+    "hideDetails": "隱藏技術詳細資訊"
   }
 }

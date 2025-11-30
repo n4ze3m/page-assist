@@ -42,7 +42,7 @@
     "message": "Abriendo la barra lateral para guardar la nota..."
   },
   "contextSaveToNotesDeliveryFailed": {
-    "message": "Could not open the sidebar to save this note. Check that the tldw Assistant sidebar is allowed on this site and try again."
+    "message": "No se pudo abrir la barra lateral para guardar esta nota. Verifica que la barra lateral de tldw Assistant esté permitida en este sitio y vuelve a intentarlo."
   },
   "contextTranscribeMedia": {
     "message": "Transcribir vídeo/audio"
@@ -91,5 +91,31 @@
   },
   "hfPullException": {
     "message": "[tldw Assistant] Ocurrió un problema al enviar una solicitud de descarga de \"$1\" a tu tldw_server. Comprueba que tu tldw_server y la extensión estén en ejecución y vuelve a intentarlo."
+  },
+  "error": {
+    "friendlyApiKeySummary": {
+      "message": "No pudimos conectarnos a su servidor tldw."
+    },
+    "friendlyApiKeyHint": {
+      "message": "Su clave API puede ser inválida. Abra Ajustes → servidor tldw para comprobar la URL y la clave API, luego inténtelo de nuevo."
+    },
+    "friendlyTimeoutSummary": {
+      "message": "Su chat agotó el tiempo de espera."
+    },
+    "friendlyTimeoutHint": {
+      "message": "El servidor dejó de transmitir respuestas. Inténtelo de nuevo o abra Salud y diagnóstico para comprobar el estado del servidor."
+    },
+    "friendlyGenericSummary": {
+      "message": "Algo salió mal al comunicarse con su servidor tldw."
+    },
+    "friendlyGenericHint": {
+      "message": "Inténtelo de nuevo en un momento o abra Salud y diagnóstico para revisar el estado del servidor."
+    },
+    "showDetails": {
+      "message": "Mostrar detalles técnicos"
+    },
+    "hideDetails": {
+      "message": "Ocultar detalles técnicos"
+    }
   }
 }

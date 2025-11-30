@@ -238,13 +238,13 @@
   "searchResults": "Søgeresultater",
   "newBranch": "Ny gren",
   "error": {
-    "friendlyApiKeySummary": "We couldn’t reach your tldw server.",
-    "friendlyApiKeyHint": "Your API key may be invalid. Open Settings → tldw server to check your URL and API key, then try again.",
-    "friendlyTimeoutSummary": "Your chat timed out.",
-    "friendlyTimeoutHint": "The server stopped streaming responses. Try again, or open Health & diagnostics to check server status.",
-    "friendlyGenericSummary": "Something went wrong while talking to your tldw server.",
-    "friendlyGenericHint": "Try again in a moment, or open Health & diagnostics to inspect server health.",
-    "showDetails": "Show technical details",
-    "hideDetails": "Hide technical details"
+    "friendlyApiKeySummary": "Vi kunne ikke nå din tldw-server.",
+    "friendlyApiKeyHint": "Din API-nøgle er muligvis ugyldig. Åbn Indstillinger → tldw-server for at tjekke din URL og API-nøgle, og prøv igen.",
+    "friendlyTimeoutSummary": "Din chat fik timeout.",
+    "friendlyTimeoutHint": "Serveren stoppede med at sende svar. Prøv igen, eller åbn Sundhed og diagnostik for at tjekke serverstatus.",
+    "friendlyGenericSummary": "Noget gik galt under kommunikationen med din tldw-server.",
+    "friendlyGenericHint": "Prøv igen om lidt, eller åbn Sundhed og diagnostik for at kontrollere serverens status.",
+    "showDetails": "Vis tekniske detaljer",
+    "hideDetails": "Skjul tekniske detaljer"
   }
 }

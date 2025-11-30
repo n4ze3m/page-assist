@@ -112,6 +112,7 @@ export default function HealthStatus() {
   const [recentHealthy, setRecentHealthy] = useState<Set<string>>(new Set())
   const [lastUpdatedAt, setLastUpdatedAt] = useState<number | null>(null)
   const [secondsSinceUpdate, setSecondsSinceUpdate] = useState<number | null>(null)
+  const isRunningRef = useRef(false)
   const navigate = useNavigate()
   const MIN_INTERVAL_SEC = 5
   const SAFE_FLOOR_SEC = 15
@@ -153,37 +154,43 @@ export default function HealthStatus() {
   }
 
   const runChecks = async (userTriggered: boolean = false) => {
+    if (isRunningRef.current) return
+    isRunningRef.current = true
     setLoading(true)
     let allHealthy = true
-    for (const c of checks) {
-      // eslint-disable-next-line no-await-in-loop
-      const prev = results[c.key]?.status
-      const ok = await runSingle(c)
-      if (userTriggered && ok && prev !== 'healthy') {
-        // Mark as recently turned healthy for a subtle pulse
-        setRecentHealthy(prevSet => {
-          const next = new Set(prevSet)
-          next.add(c.key)
-          return next
-        })
-        setTimeout(() => {
+    try {
+      for (const c of checks) {
+        // eslint-disable-next-line no-await-in-loop
+        const prev = results[c.key]?.status
+        const ok = await runSingle(c)
+        if (userTriggered && ok && prev !== 'healthy') {
+          // Mark as recently turned healthy for a subtle pulse
           setRecentHealthy(prevSet => {
             const next = new Set(prevSet)
-            next.delete(c.key)
+            next.add(c.key)
             return next
           })
-        }, 1200)
+          setTimeout(() => {
+            setRecentHealthy(prevSet => {
+              const next = new Set(prevSet)
+              next.delete(c.key)
+              return next
+            })
+          }, 1200)
+        }
+        if (!ok) allHealthy = false
       }
-      if (!ok) allHealthy = false
-    }
-    setLoading(false)
-    setLastUpdatedAt(Date.now())
-    if (userTriggered && allHealthy) {
-      notification.success({
-        message: t('settings:tldw.connection.success', 'Server responded successfully. You can continue.'),
-        placement: 'bottomRight',
-        duration: 2
-      })
+      setLastUpdatedAt(Date.now())
+      if (userTriggered && allHealthy) {
+        notification.success({
+          message: t('settings:tldw.connection.success', 'Server responded successfully. You can continue.'),
+          placement: 'bottomRight',
+          duration: 2
+        })
+      }
+    } finally {
+      setLoading(false)
+      isRunningRef.current = false
     }
   }
 

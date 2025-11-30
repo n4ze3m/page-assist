@@ -42,6 +42,7 @@
   "ragWorkspace": {
     "title": "Knowledge search & chat",
     "description": "Configure knowledge search (RAG) options, run quick searches, and use Chat with grounded answers.",
+    "subtitleRag": "Retrieval-augmented generation (RAG) lets the assistant ground answers in your media, notes, and other indexed knowledge sources.",
     "autoRagLabel": "Use RAG for every reply",
     "autoRagHelp": "When enabled, the Chat workspace will run a knowledge (RAG) search before answering each message.",
     "autoRagScopeHelp": "This setting applies to replies in the main Chat view and sidepanel.",

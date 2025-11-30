@@ -238,13 +238,13 @@
   "searchResults": "検索結果",
   "newBranch": "新しいブランチ",
   "error": {
-    "friendlyApiKeySummary": "We couldn’t reach your tldw server.",
-    "friendlyApiKeyHint": "Your API key may be invalid. Open Settings → tldw server to check your URL and API key, then try again.",
-    "friendlyTimeoutSummary": "Your chat timed out.",
-    "friendlyTimeoutHint": "The server stopped streaming responses. Try again, or open Health & diagnostics to check server status.",
-    "friendlyGenericSummary": "Something went wrong while talking to your tldw server.",
-    "friendlyGenericHint": "Try again in a moment, or open Health & diagnostics to inspect server health.",
-    "showDetails": "Show technical details",
-    "hideDetails": "Hide technical details"
+    "friendlyApiKeySummary": "tldw サーバーに接続できませんでした。",
+    "friendlyApiKeyHint": "API キーが無効の可能性があります。設定 → tldw サーバーで URL と API キーを確認してから、もう一度お試しください。",
+    "friendlyTimeoutSummary": "チャットがタイムアウトしました。",
+    "friendlyTimeoutHint": "サーバーが応答の送信を停止しました。もう一度お試しになるか、「ヘルスと診断」を開いてサーバーの状態を確認してください。",
+    "friendlyGenericSummary": "tldw サーバーとの通信中に問題が発生しました。",
+    "friendlyGenericHint": "しばらくしてから再試行するか、「ヘルスと診断」を開いてサーバーの状態を確認してください。",
+    "showDetails": "技術的な詳細を表示",
+    "hideDetails": "技術的な詳細を非表示"
   }
 }

@@ -53,6 +53,30 @@ import { tldwClient, type ConversationState } from "@/services/tldw/TldwApiClien
 import { CharacterSelect } from "@/components/Common/CharacterSelect"
 import { ProviderIcons } from "@/components/Common/ProviderIcon"
 import type { Character } from "@/types/character"
+
+const getPersistenceModeLabel = (
+  t: (...args: any[]) => any,
+  temporaryChat: boolean,
+  serverChatId: string | null
+) => {
+  if (temporaryChat) {
+    return t(
+      "playground:composer.persistence.ephemeral",
+      "Temporary chat: not saved in history and cleared when you close this window."
+    )
+  }
+  if (serverChatId) {
+    return t(
+      "playground:composer.persistence.server",
+      "Saved Locally+Server"
+    )
+  }
+  return t(
+    "playground:composer.persistence.local",
+    "Saved in this browser only."
+  )
+}
+
 type Props = {
   dropedFile: File | undefined
 }
@@ -624,20 +648,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
         clearChat()
       }
 
-      const modeLabel = next
-        ? t(
-            "playground:composer.persistence.ephemeral",
-            "Temporary chat: not saved in history and cleared when you close this window."
-          )
-        : serverChatId
-          ? t(
-              "playground:composer.persistence.server",
-              "Saved Locally+Server"
-            )
-          : t(
-              "playground:composer.persistence.local",
-              "Saved in this browser only."
-            )
+      const modeLabel = getPersistenceModeLabel(t, next, serverChatId)
 
       notification.info({
         message: modeLabel,
@@ -1098,24 +1109,10 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
     }
   }
 
-  const persistenceModeLabel = React.useMemo(() => {
-    if (temporaryChat) {
-      return t(
-        "playground:composer.persistence.ephemeral",
-        "Temporary chat: not saved in history and cleared when you close this window."
-      )
-    }
-    if (serverChatId) {
-      return t(
-        "playground:composer.persistence.server",
-        "Saved Locally+Server"
-      )
-    }
-    return t(
-      "playground:composer.persistence.local",
-      "Saved in this browser only."
-    )
-  }, [serverChatId, temporaryChat, t])
+  const persistenceModeLabel = React.useMemo(
+    () => getPersistenceModeLabel(t, temporaryChat, serverChatId),
+    [serverChatId, temporaryChat, t]
+  )
 
   const persistencePillLabel = React.useMemo(() => {
     if (temporaryChat) {
@@ -1534,7 +1531,10 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                                     document.querySelector<HTMLElement>(
                                       "[data-playground-tabs='true']"
                                     )
-                                  chips?.focus()
+                                  if (chips) {
+                                    chips.focus()
+                                    chips.scrollIntoView({ block: "nearest" })
+                                  }
                                 }}
                                 title={
                                   t(

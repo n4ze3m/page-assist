@@ -238,13 +238,13 @@
   "searchResults": "搜索结果",
   "newBranch": "新分支",
   "error": {
-    "friendlyApiKeySummary": "We couldn’t reach your tldw server.",
-    "friendlyApiKeyHint": "Your API key may be invalid. Open Settings → tldw server to check your URL and API key, then try again.",
-    "friendlyTimeoutSummary": "Your chat timed out.",
-    "friendlyTimeoutHint": "The server stopped streaming responses. Try again, or open Health & diagnostics to check server status.",
-    "friendlyGenericSummary": "Something went wrong while talking to your tldw server.",
-    "friendlyGenericHint": "Try again in a moment, or open Health & diagnostics to inspect server health.",
-    "showDetails": "Show technical details",
-    "hideDetails": "Hide technical details"
+    "friendlyApiKeySummary": "无法连接到您的 tldw 服务器。",
+    "friendlyApiKeyHint": "您的 API 密钥可能无效。打开“设置”→“tldw 服务器”检查 URL 和 API 密钥，然后重试。",
+    "friendlyTimeoutSummary": "聊天超时。",
+    "friendlyTimeoutHint": "服务器停止推送响应。请重试，或打开“健康状况与诊断”检查服务器状态。",
+    "friendlyGenericSummary": "与您的 tldw 服务器通信时发生错误。",
+    "friendlyGenericHint": "请稍后重试，或打开“健康状况与诊断”检查服务器健康状况。",
+    "showDetails": "显示技术详情",
+    "hideDetails": "隐藏技术详情"
   }
 }

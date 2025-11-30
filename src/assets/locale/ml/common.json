@@ -238,13 +238,13 @@
   "searchResults": "തിരച്ചിൽ ഫലങ്ങൾ",
   "newBranch": "പുതിയ ബ്രാഞ്ച്",
   "error": {
-    "friendlyApiKeySummary": "We couldn’t reach your tldw server.",
-    "friendlyApiKeyHint": "Your API key may be invalid. Open Settings → tldw server to check your URL and API key, then try again.",
-    "friendlyTimeoutSummary": "Your chat timed out.",
-    "friendlyTimeoutHint": "The server stopped streaming responses. Try again, or open Health & diagnostics to check server status.",
-    "friendlyGenericSummary": "Something went wrong while talking to your tldw server.",
-    "friendlyGenericHint": "Try again in a moment, or open Health & diagnostics to inspect server health.",
-    "showDetails": "Show technical details",
-    "hideDetails": "Hide technical details"
+    "friendlyApiKeySummary": "നിങ്ങളുടെ tldw സർവറെ സമീപിക്കാൻ കഴിഞ്ഞില്ല.",
+    "friendlyApiKeyHint": "നിങ്ങളുടെ API കീ അസാധുവായിരിക്കാം. ക്രമീകരണങ്ങൾ → tldw സർവർ തുറന്ന് നിങ്ങളുടെ URLയും API കീയും പരിശോധിച്ച് വീണ്ടും ശ്രമിക്കുക.",
+    "friendlyTimeoutSummary": "നിങ്ങളുടെ ചാറ്റിന് സമയപരിധി കഴിഞ്ഞു.",
+    "friendlyTimeoutHint": "സർവർ പ്രതികരണങ്ങൾ അയക്കുന്നത് നിർത്തി. വീണ്ടും ശ്രമിക്കുക അല്ലെങ്കിൽ സർവർ നില പരിശോധിക്കാൻ ആരോഗ്യവും ഡയഗ്നോസ്റ്റിക്സും തുറക്കുക.",
+    "friendlyGenericSummary": "നിങ്ങളുടെ tldw സർവറുമായി ബന്ധപ്പെടുന്നതിനിടെ എന്തോ പിശക് സംഭവിച്ചു.",
+    "friendlyGenericHint": "കുറച്ച് കഴിഞ്ഞ് വീണ്ടും ശ്രമിക്കുകയോ സർവർ നില പരിശോധിക്കാൻ ആരോഗ്യവും ഡയഗ്നോസ്റ്റിക്സും തുറക്കുകയോ ചെയ്യുക.",
+    "showDetails": "സാങ്കേതിക വിശദാംശങ്ങൾ കാണിക്കുക",
+    "hideDetails": "സാങ്കേതിക വിശദാംശങ്ങൾ മറയ്ക്കുക"
   }
 }

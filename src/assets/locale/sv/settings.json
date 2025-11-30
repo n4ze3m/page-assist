@@ -776,6 +776,7 @@
   "onboarding": {
     "title": "Welcome — Let’s get you connected",
     "description": "Configure your server and authentication. We’ll verify the connection and RAG health inline.",
+    "learnMoreTldw": "Lär dig hur tldw-servern fungerar",
     "serverUrl": {
       "placeholder": "http://127.0.0.1:8000",
       "help": "Exempel: http://127.0.0.1:8000",

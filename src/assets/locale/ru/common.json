@@ -238,13 +238,13 @@
   "searchResults": "Результаты поиска",
   "newBranch": "Новая ветка",
   "error": {
-    "friendlyApiKeySummary": "We couldn’t reach your tldw server.",
-    "friendlyApiKeyHint": "Your API key may be invalid. Open Settings → tldw server to check your URL and API key, then try again.",
-    "friendlyTimeoutSummary": "Your chat timed out.",
-    "friendlyTimeoutHint": "The server stopped streaming responses. Try again, or open Health & diagnostics to check server status.",
-    "friendlyGenericSummary": "Something went wrong while talking to your tldw server.",
-    "friendlyGenericHint": "Try again in a moment, or open Health & diagnostics to inspect server health.",
-    "showDetails": "Show technical details",
-    "hideDetails": "Hide technical details"
+    "friendlyApiKeySummary": "Не удалось подключиться к вашему серверу tldw.",
+    "friendlyApiKeyHint": "Ваш API-ключ может быть недействительным. Откройте Настройки → сервер tldw, чтобы проверить URL и API-ключ, затем попробуйте снова.",
+    "friendlyTimeoutSummary": "Время ожидания чата истекло.",
+    "friendlyTimeoutHint": "Сервер перестал отправлять ответы. Попробуйте снова или откройте \"Состояние и диагностика\", чтобы проверить статус сервера.",
+    "friendlyGenericSummary": "Произошла ошибка при связи с вашим сервером tldw.",
+    "friendlyGenericHint": "Попробуйте снова через некоторое время или откройте \"Состояние и диагностика\", чтобы проверить состояние сервера.",
+    "showDetails": "Показать технические сведения",
+    "hideDetails": "Скрыть технические сведения"
   }
 }

@@ -39,7 +39,7 @@
     "message": "Ouverture du panneau latéral pour enregistrer la note..."
   },
   "contextSaveToNotesDeliveryFailed": {
-    "message": "Could not open the sidebar to save this note. Check that the tldw Assistant sidebar is allowed on this site and try again."
+    "message": "Impossible d’ouvrir le panneau latéral pour enregistrer cette note. Vérifiez que le panneau tldw Assistant est autorisé sur ce site et réessayez."
   },
   "openOptionToChat": {
     "message": "Ouvrir l’interface Web pour discuter"
@@ -91,5 +91,31 @@
   },
   "hfPullException": {
     "message": "[tldw Assistant] Une erreur s’est produite lors de l’envoi d’une requête de récupération pour « $1 » à votre tldw_server. Assurez-vous que votre tldw_server et l’extension sont en cours d’exécution, puis réessayez."
+  },
+  "error": {
+    "friendlyApiKeySummary": {
+      "message": "Nous n'avons pas pu atteindre votre serveur tldw."
+    },
+    "friendlyApiKeyHint": {
+      "message": "Votre clé API est peut-être invalide. Ouvrez Paramètres → serveur tldw pour vérifier votre URL et votre clé API, puis réessayez."
+    },
+    "friendlyTimeoutSummary": {
+      "message": "Votre discussion a expiré."
+    },
+    "friendlyTimeoutHint": {
+      "message": "Le serveur a cessé d'envoyer des réponses. Réessayez ou ouvrez État et diagnostics pour vérifier l'état du serveur."
+    },
+    "friendlyGenericSummary": {
+      "message": "Une erreur est survenue lors de la communication avec votre serveur tldw."
+    },
+    "friendlyGenericHint": {
+      "message": "Réessayez dans un instant ou ouvrez État et diagnostics pour vérifier l'état du serveur."
+    },
+    "showDetails": {
+      "message": "Afficher les détails techniques"
+    },
+    "hideDetails": {
+      "message": "Masquer les détails techniques"
+    }
   }
 }

@@ -39,6 +39,9 @@
   },
   "noEmbeddingModel": "请先从RAG设置页面添加一个嵌入模型",
   "privateModeDescription": "Firefox 隐私模式不支持将数据保存到 IndexedDB。请在普通窗口添加知识库。",
+  "ragWorkspace": {
+    "subtitleRag": "Retrieval-augmented generation (RAG) lets the assistant ground answers in your media, notes, and other indexed knowledge sources."
+  },
   "rag": {
     "searchFailed": "RAG 搜索失败。请重试或查看诊断页面。"
   },

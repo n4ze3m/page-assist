@@ -238,13 +238,13 @@
   "searchResults": "Résultats de recherche",
   "newBranch": "Nouvelle branche",
   "error": {
-    "friendlyApiKeySummary": "We couldn’t reach your tldw server.",
-    "friendlyApiKeyHint": "Your API key may be invalid. Open Settings → tldw server to check your URL and API key, then try again.",
-    "friendlyTimeoutSummary": "Your chat timed out.",
-    "friendlyTimeoutHint": "The server stopped streaming responses. Try again, or open Health & diagnostics to check server status.",
-    "friendlyGenericSummary": "Something went wrong while talking to your tldw server.",
-    "friendlyGenericHint": "Try again in a moment, or open Health & diagnostics to inspect server health.",
-    "showDetails": "Show technical details",
-    "hideDetails": "Hide technical details"
+    "friendlyApiKeySummary": "Nous n'avons pas pu atteindre votre serveur tldw.",
+    "friendlyApiKeyHint": "Votre clé API est peut-être invalide. Ouvrez Paramètres → serveur tldw pour vérifier votre URL et votre clé API, puis réessayez.",
+    "friendlyTimeoutSummary": "Votre discussion a expiré.",
+    "friendlyTimeoutHint": "Le serveur a cessé d'envoyer des réponses. Réessayez ou ouvrez État et diagnostics pour vérifier l'état du serveur.",
+    "friendlyGenericSummary": "Une erreur est survenue lors de la communication avec votre serveur tldw.",
+    "friendlyGenericHint": "Réessayez dans un instant ou ouvrez État et diagnostics pour vérifier l'état du serveur.",
+    "showDetails": "Afficher les détails techniques",
+    "hideDetails": "Masquer les détails techniques"
   }
 }

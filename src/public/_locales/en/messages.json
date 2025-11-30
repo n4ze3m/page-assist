@@ -60,10 +60,10 @@
     "message": "[tldw] Page send request rejected by tldw_server"
   },
   "hfSendPageErrorWithDetail": {
-    "message": "[tldw] Failed to send this page to tldw_server: $1. Check Settings \u2192 tldw server and try again."
+    "message": "[tldw] Failed to send this page to tldw_server: $1. Check Settings → tldw server and try again."
   },
   "hfSendPageError": {
-    "message": "[tldw] Failed to send this page to tldw_server. Check Settings \u2192 tldw server and try again."
+    "message": "[tldw] Failed to send this page to tldw_server. Check Settings → tldw server and try again."
   },
   "hfSendPageSuccess": {
     "message": "[tldw] Sent page to tldw_server for processing"
@@ -81,15 +81,41 @@
     "message": "[tldw Assistant] Sending a request to your tldw_server to pull \"$1\". Check the extension icon or your tldw_server logs for progress."
   },
   "hfPullErrorWithDetail": {
-    "message": "[tldw Assistant] Failed to send a pull request for \"$1\": $2. Check Settings \u2192 tldw server and try again."
+    "message": "[tldw Assistant] Failed to send a pull request for \"$1\": $2. Check Settings → tldw server and try again."
   },
   "hfPullError": {
-    "message": "[tldw Assistant] Failed to send a pull request for \"$1\". Check Settings \u2192 tldw server and try again."
+    "message": "[tldw Assistant] Failed to send a pull request for \"$1\". Check Settings → tldw server and try again."
   },
   "hfPullSuccess": {
     "message": "[tldw Assistant] Request sent to your tldw_server to pull \"$1\". Monitor the extension icon or tldw_server logs for status."
   },
   "hfPullException": {
     "message": "[tldw Assistant] Something went wrong while sending a pull request for \"$1\" to your tldw_server. Check that your tldw_server and the extension are running, then try again."
+  },
+  "error": {
+    "friendlyApiKeySummary": {
+      "message": "We couldn’t reach your tldw server."
+    },
+    "friendlyApiKeyHint": {
+      "message": "Your API key may be invalid. Open Settings → tldw server to check your URL and API key, then try again."
+    },
+    "friendlyTimeoutSummary": {
+      "message": "Your chat timed out."
+    },
+    "friendlyTimeoutHint": {
+      "message": "The server stopped streaming responses. Try again, or open Health & diagnostics to check server status."
+    },
+    "friendlyGenericSummary": {
+      "message": "Something went wrong while talking to your tldw server."
+    },
+    "friendlyGenericHint": {
+      "message": "Try again in a moment, or open Health & diagnostics to inspect server health."
+    },
+    "showDetails": {
+      "message": "Show technical details"
+    },
+    "hideDetails": {
+      "message": "Hide technical details"
+    }
   }
 }

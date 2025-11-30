@@ -42,7 +42,7 @@
     "message": "Öppnar sidopanelen för att spara anteckningen..."
   },
   "contextSaveToNotesDeliveryFailed": {
-    "message": "Could not open the sidebar to save this note. Check that the tldw Assistant sidebar is allowed on this site and try again."
+    "message": "Kunde inte öppna sidopanelen för att spara den här anteckningen. Kontrollera att tldw Assistant-sidopanelen är tillåten på den här sidan och försök igen."
   },
   "contextTranscribeMedia": {
     "message": "Transkribera video/ljud"
@@ -91,5 +91,31 @@
   },
   "hfPullException": {
     "message": "[tldw Assistant] Något gick fel när en hämtbegäran för \"$1\" skickades till din tldw_server. Kontrollera att din tldw_server och tillägget körs och försök igen."
+  },
+  "error": {
+    "friendlyApiKeySummary": {
+      "message": "Vi kunde inte nå din tldw-server."
+    },
+    "friendlyApiKeyHint": {
+      "message": "Din API-nyckel kan vara ogiltig. Öppna Inställningar → tldw-server för att kontrollera URL och API-nyckel och försök igen."
+    },
+    "friendlyTimeoutSummary": {
+      "message": "Din chatt översteg tidsgränsen."
+    },
+    "friendlyTimeoutHint": {
+      "message": "Servern slutade strömma svar. Försök igen eller öppna Hälsa och diagnostik för att kontrollera serverstatus."
+    },
+    "friendlyGenericSummary": {
+      "message": "Något gick fel när vi kommunicerade med din tldw-server."
+    },
+    "friendlyGenericHint": {
+      "message": "Försök igen om en stund eller öppna Hälsa och diagnostik för att kontrollera serverstatus."
+    },
+    "showDetails": {
+      "message": "Visa tekniska detaljer"
+    },
+    "hideDetails": {
+      "message": "Dölj tekniska detaljer"
+    }
   }
 }

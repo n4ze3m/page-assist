@@ -754,6 +754,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
   ), [
     browserSupportsSpeechRecognition,
     chatMode,
+    isConnectionReady,
     handleImageUpload,
     handleLiveCaptionsToggle,
     handleQuickIngestOpen,
@@ -765,6 +766,8 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
     hasServerAudio,
     isListening,
     isServerDictating,
+    queuedQuickIngestCount,
+    quickIngestHadFailure,
     temporaryChat,
     t,
     webSearch,

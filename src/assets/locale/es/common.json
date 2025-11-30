@@ -238,13 +238,13 @@
   "searchResults": "Resultados de la búsqueda",
   "newBranch": "Nueva rama",
   "error": {
-    "friendlyApiKeySummary": "We couldn’t reach your tldw server.",
-    "friendlyApiKeyHint": "Your API key may be invalid. Open Settings → tldw server to check your URL and API key, then try again.",
-    "friendlyTimeoutSummary": "Your chat timed out.",
-    "friendlyTimeoutHint": "The server stopped streaming responses. Try again, or open Health & diagnostics to check server status.",
-    "friendlyGenericSummary": "Something went wrong while talking to your tldw server.",
-    "friendlyGenericHint": "Try again in a moment, or open Health & diagnostics to inspect server health.",
-    "showDetails": "Show technical details",
-    "hideDetails": "Hide technical details"
+    "friendlyApiKeySummary": "No pudimos conectarnos a su servidor tldw.",
+    "friendlyApiKeyHint": "Su clave API puede ser inválida. Abra Ajustes → servidor tldw para comprobar la URL y la clave API, luego inténtelo de nuevo.",
+    "friendlyTimeoutSummary": "Su chat agotó el tiempo de espera.",
+    "friendlyTimeoutHint": "El servidor dejó de transmitir respuestas. Inténtelo de nuevo o abra Salud y diagnóstico para comprobar el estado del servidor.",
+    "friendlyGenericSummary": "Algo salió mal al comunicarse con su servidor tldw.",
+    "friendlyGenericHint": "Inténtelo de nuevo en un momento o abra Salud y diagnóstico para revisar el estado del servidor.",
+    "showDetails": "Mostrar detalles técnicos",
+    "hideDetails": "Ocultar detalles técnicos"
   }
 }

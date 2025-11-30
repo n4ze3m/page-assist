@@ -779,6 +779,7 @@
   "onboarding": {
     "title": "Welcome — Let’s get you connected",
     "description": "Configure your server and authentication. We’ll verify the connection and RAG health inline.",
+    "learnMoreTldw": "tldw サーバーの仕組みを学ぶ",
     "serverUrl": {
       "placeholder": "http://127.0.0.1:8000",
       "help": "例: http://127.0.0.1:8000",

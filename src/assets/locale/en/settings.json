@@ -823,11 +823,12 @@
   "siteAccessGranted": "Host permission granted for {{origin}}",
   "onboarding": {
     "title": "Welcome — Let’s get you connected",
-    "description": "Connect this extension to your tldw server (a separate app running on your machine or server). We’ll walk through adding the URL, API key, and checking that everything is reachable.",
-    "exploreWithoutServer": "You can explore the UI without a server; some features (chat, media ingest, Knowledge search) will stay disabled until you connect.",
-    "serverDocsUrl": "https://docs.tldw.app/extension/server-setup",
-    "serverDocsCta": "Learn how tldw server works",
-    "serverUrl": {
+  "description": "Connect this extension to your tldw server (a separate app running on your machine or server). We’ll walk through adding the URL, API key, and checking that everything is reachable.",
+  "exploreWithoutServer": "You can explore the UI without a server; some features (chat, media ingest, Knowledge search) will stay disabled until you connect.",
+  "serverDocsUrl": "https://docs.tldw.app/extension/server-setup",
+  "serverDocsCta": "Learn how tldw server works",
+  "learnMoreTldw": "Learn how tldw server works",
+  "serverUrl": {
       "label": "Server URL",
       "placeholder": "http://127.0.0.1:8000",
       "help": "Example: http://127.0.0.1:8000",

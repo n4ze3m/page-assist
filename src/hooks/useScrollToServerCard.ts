@@ -1,9 +1,9 @@
 import React from "react"
 import { useNavigate } from "react-router-dom"
-import { setReturnTo } from "@/utils/return-to"
+import { setReturnTo, type ReturnToTarget } from "@/utils/return-to"
 
 export const useScrollToServerCard = (
-  returnTo?: string | null
+  returnTo?: ReturnToTarget | null
 ): (() => void) => {
   const navigate = useNavigate()
 

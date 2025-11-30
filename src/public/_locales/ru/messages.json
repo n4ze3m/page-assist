@@ -39,7 +39,7 @@
     "message": "Открываем боковую панель, чтобы сохранить заметку..."
   },
   "contextSaveToNotesDeliveryFailed": {
-    "message": "Could not open the sidebar to save this note. Check that the tldw Assistant sidebar is allowed on this site and try again."
+    "message": "Не удалось открыть боковую панель для сохранения этой заметки. Проверьте, что боковая панель tldw Assistant разрешена на этом сайте, и попробуйте снова."
   },
   "openOptionToChat": {
     "message": "Открыть веб-интерфейс для чата"
@@ -91,5 +91,31 @@
   },
   "hfPullException": {
     "message": "[tldw Assistant] При отправке запроса на загрузку \"$1\" на ваш tldw_server что-то пошло не так. Убедитесь, что ваш tldw_server и расширение запущены, затем повторите попытку."
+  },
+  "error": {
+    "friendlyApiKeySummary": {
+      "message": "Не удалось подключиться к вашему серверу tldw."
+    },
+    "friendlyApiKeyHint": {
+      "message": "Ваш API-ключ может быть недействительным. Откройте Настройки → сервер tldw, чтобы проверить URL и API-ключ, затем попробуйте снова."
+    },
+    "friendlyTimeoutSummary": {
+      "message": "Время ожидания чата истекло."
+    },
+    "friendlyTimeoutHint": {
+      "message": "Сервер перестал отправлять ответы. Попробуйте снова или откройте \"Состояние и диагностика\", чтобы проверить статус сервера."
+    },
+    "friendlyGenericSummary": {
+      "message": "Произошла ошибка при связи с вашим сервером tldw."
+    },
+    "friendlyGenericHint": {
+      "message": "Попробуйте снова через некоторое время или откройте \"Состояние и диагностика\", чтобы проверить состояние сервера."
+    },
+    "showDetails": {
+      "message": "Показать технические сведения"
+    },
+    "hideDetails": {
+      "message": "Скрыть технические сведения"
+    }
   }
 }

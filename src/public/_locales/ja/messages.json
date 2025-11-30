@@ -39,7 +39,7 @@
     "message": "ノートを保存するためにサイドバーを開いています..."
   },
   "contextSaveToNotesDeliveryFailed": {
-    "message": "Could not open the sidebar to save this note. Check that the tldw Assistant sidebar is allowed on this site and try again."
+    "message": "このノートを保存するためにサイドバーを開けませんでした。tldw Assistant のサイドバーがこのサイトで許可されているか確認し、もう一度お試しください。"
   },
   "openOptionToChat": {
     "message": "チャット用 Web UI を開く"
@@ -91,5 +91,31 @@
   },
   "hfPullException": {
     "message": "[tldw Assistant] 「$1」モデルのプルリクエストを tldw_server に送信中に問題が発生しました。tldw_server と拡張機能が実行中であることを確認し、もう一度お試しください。"
+  },
+  "error": {
+    "friendlyApiKeySummary": {
+      "message": "tldw サーバーに接続できませんでした。"
+    },
+    "friendlyApiKeyHint": {
+      "message": "API キーが無効の可能性があります。設定 → tldw サーバーで URL と API キーを確認してから、もう一度お試しください。"
+    },
+    "friendlyTimeoutSummary": {
+      "message": "チャットがタイムアウトしました。"
+    },
+    "friendlyTimeoutHint": {
+      "message": "サーバーが応答の送信を停止しました。もう一度お試しになるか、「ヘルスと診断」を開いてサーバーの状態を確認してください。"
+    },
+    "friendlyGenericSummary": {
+      "message": "tldw サーバーとの通信中に問題が発生しました。"
+    },
+    "friendlyGenericHint": {
+      "message": "しばらくしてから再試行するか、「ヘルスと診断」を開いてサーバーの状態を確認してください。"
+    },
+    "showDetails": {
+      "message": "技術的な詳細を表示"
+    },
+    "hideDetails": {
+      "message": "技術的な詳細を非表示"
+    }
   }
 }

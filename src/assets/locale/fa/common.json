@@ -238,13 +238,13 @@
   "searchResults": "نتایج جستجو",
   "newBranch": "شاخه جدید",
   "error": {
-    "friendlyApiKeySummary": "We couldn’t reach your tldw server.",
-    "friendlyApiKeyHint": "Your API key may be invalid. Open Settings → tldw server to check your URL and API key, then try again.",
-    "friendlyTimeoutSummary": "Your chat timed out.",
-    "friendlyTimeoutHint": "The server stopped streaming responses. Try again, or open Health & diagnostics to check server status.",
-    "friendlyGenericSummary": "Something went wrong while talking to your tldw server.",
-    "friendlyGenericHint": "Try again in a moment, or open Health & diagnostics to inspect server health.",
-    "showDetails": "Show technical details",
-    "hideDetails": "Hide technical details"
+    "friendlyApiKeySummary": "نتوانستیم به سرور tldw شما متصل شویم.",
+    "friendlyApiKeyHint": "ممکن است کلید API شما نامعتبر باشد. تنظیمات → سرور tldw را باز کنید تا آدرس URL و کلید API را بررسی کنید و دوباره تلاش کنید.",
+    "friendlyTimeoutSummary": "گفتگوی شما منقضی شد.",
+    "friendlyTimeoutHint": "سرور ارسال پاسخ‌ها را متوقف کرد. دوباره تلاش کنید یا وضعیت سرور را در سلامت و عیب‌یابی بررسی کنید.",
+    "friendlyGenericSummary": "در برقراری ارتباط با سرور tldw شما مشکلی پیش آمد.",
+    "friendlyGenericHint": "بعداً دوباره تلاش کنید یا سلامت و عیب‌یابی را برای بررسی وضعیت سرور باز کنید.",
+    "showDetails": "نمایش جزئیات فنی",
+    "hideDetails": "پنهان کردن جزئیات فنی"
   }
 }

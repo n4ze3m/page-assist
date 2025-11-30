@@ -238,8 +238,8 @@
   },
   "privateModeSaveErrorTitle": "tldw Assistant can't save data",
   "error": {
-    "friendlyApiKeySummary": "We couldn\u2019t reach your tldw server.",
-    "friendlyApiKeyHint": "Your API key may be invalid. Open Settings \u2192 tldw server to check your URL and API key, then try again.",
+    "friendlyApiKeySummary": "We couldn’t reach your tldw server.",
+    "friendlyApiKeyHint": "Your API key may be invalid. Open Settings → tldw server to check your URL and API key, then try again.",
     "friendlyTimeoutSummary": "Your chat timed out.",
     "friendlyTimeoutHint": "The server stopped streaming responses. Try again, or open Health & diagnostics to check server status.",
     "friendlyGenericSummary": "Something went wrong while talking to your tldw server.",

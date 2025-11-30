@@ -39,6 +39,9 @@
   },
   "noEmbeddingModel": "Bitte fügen Sie zuerst ein Einbettungsmodell von der RAG-Einstellungsseite hinzu",
   "privateModeDescription": "Der Firefox-Privatmodus unterstützt kein Speichern in IndexedDB. Bitte fügen Sie eine Wissensbasis in einem normalen Fenster hinzu.",
+  "ragWorkspace": {
+    "subtitleRag": "Retrieval-augmented generation (RAG) lets the assistant ground answers in your media, notes, and other indexed knowledge sources."
+  },
   "rag": {
     "searchFailed": "RAG-Suche fehlgeschlagen. Versuchen Sie es erneut oder prüfen Sie die Diagnosen."
   },

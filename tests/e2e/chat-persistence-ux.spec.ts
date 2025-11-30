@@ -57,67 +57,79 @@ test.describe('Chat persistence UX', () => {
 
   test('explains benefits when promoting a chat to server-backed mode', async () => {
     const server = new MockTldwServer()
-    await server.start()
+    let serverStarted = false
+    let context: any = null
 
-    const extPath = path.resolve('.output/chrome-mv3')
-    const { context, page } = await launchWithExtension(extPath)
+    try {
+      await server.start()
+      serverStarted = true
 
-    // Seed a valid connection config so server save is available.
-    await page.evaluate(([serverUrl]) => new Promise<void>((resolve) => {
-      // @ts-ignore
-      chrome.storage.local.set(
-        {
-          tldwConfig: {
-            serverUrl,
-            authMode: 'single-user',
-            apiKey: 'THIS-IS-A-SECURE-KEY-123-FAKE-KEY'
-          }
-        },
-        () => resolve()
-      )
-    }), [server.url])
+      const extPath = path.resolve('.output/chrome-mv3')
+      const launched = await launchWithExtension(extPath)
+      context = launched.context
+      const { page } = launched
 
-    await page.reload()
+      // Seed a valid connection config so server save is available.
+      await page.evaluate(([serverUrl]) => new Promise<void>((resolve) => {
+        // @ts-ignore
+        chrome.storage.local.set(
+          {
+            tldwConfig: {
+              serverUrl,
+              authMode: 'single-user',
+              apiKey: 'THIS-IS-A-SECURE-KEY-123-FAKE-KEY'
+            }
+          },
+          () => resolve()
+        )
+      }), [server.url])
 
-    const textarea = page.getByPlaceholder(/Waiting for your server|Type a message/i)
-    await expect(textarea).toBeVisible()
+      await page.reload()
 
-    // Ensure we are in non-temporary (local) mode first.
-    const persistenceSwitch = page.getByRole('switch', {
-      name: /Save chat|Save to history|Temporary chat/i
-    })
-    await expect(persistenceSwitch).toBeVisible()
-    // If switch is already on temporary, click once to go back to local-only.
-    if (await page.getByText(/Temporary chat: not saved in history/i).count()) {
-      await persistenceSwitch.click()
+      const textarea = page.getByPlaceholder(/Waiting for your server|Type a message/i)
+      await expect(textarea).toBeVisible()
+
+      // Ensure we are in non-temporary (local) mode first.
+      const persistenceSwitch = page.getByRole('switch', {
+        name: /Save chat|Save to history|Temporary chat/i
+      })
+      await expect(persistenceSwitch).toBeVisible()
+      // If switch is already on temporary, click once to go back to local-only.
+      if (await page.getByText(/Temporary chat: not saved in history/i).count()) {
+        await persistenceSwitch.click()
+      }
+
+      // The local-only label should be visible.
+      await expect(
+        page.getByText(/Saved locally in this browser only/i)
+      ).toBeVisible()
+
+      // Trigger server-backed promotion.
+      const saveToServerButton = page.getByRole('button', {
+        name: /Also save this chat to server/i
+      })
+      await expect(saveToServerButton).toBeVisible()
+      await saveToServerButton.click()
+
+      // Inline explainer should appear once, describing Locally+Server.
+      await expect(
+        page.getByText(/Saved locally \+ on your server/i)
+      ).toBeVisible()
+      await expect(
+        page.getByText(/reopen it from server history/i)
+      ).toBeVisible()
+
+      // Main persistence label transitions to the server-backed wording.
+      await expect(
+        page.getByText(/Saved Locally\+Server/i)
+      ).toBeVisible()
+    } finally {
+      if (context) {
+        await context.close()
+      }
+      if (serverStarted) {
+        await server.stop()
+      }
     }
-
-    // The local-only label should be visible.
-    await expect(
-      page.getByText(/Saved locally in this browser only/i)
-    ).toBeVisible()
-
-    // Trigger server-backed promotion.
-    const saveToServerButton = page.getByRole('button', {
-      name: /Also save this chat to server/i
-    })
-    await expect(saveToServerButton).toBeVisible()
-    await saveToServerButton.click()
-
-    // Inline explainer should appear once, describing Locally+Server.
-    await expect(
-      page.getByText(/Saved locally \+ on your server/i)
-    ).toBeVisible()
-    await expect(
-      page.getByText(/reopen it from server history/i)
-    ).toBeVisible()
-
-    // Main persistence label transitions to the server-backed wording.
-    await expect(
-      page.getByText(/Saved Locally\+Server/i)
-    ).toBeVisible()
-
-    await context.close()
-    await server.stop()
   })
 })

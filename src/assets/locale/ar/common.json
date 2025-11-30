@@ -238,13 +238,13 @@
   "searchResults": "نتائج البحث",
   "newBranch": "فرع جديد",
   "error": {
-    "friendlyApiKeySummary": "We couldn’t reach your tldw server.",
-    "friendlyApiKeyHint": "Your API key may be invalid. Open Settings → tldw server to check your URL and API key, then try again.",
-    "friendlyTimeoutSummary": "Your chat timed out.",
-    "friendlyTimeoutHint": "The server stopped streaming responses. Try again, or open Health & diagnostics to check server status.",
-    "friendlyGenericSummary": "Something went wrong while talking to your tldw server.",
-    "friendlyGenericHint": "Try again in a moment, or open Health & diagnostics to inspect server health.",
-    "showDetails": "Show technical details",
-    "hideDetails": "Hide technical details"
+    "friendlyApiKeySummary": "تعذّر الوصول إلى خادم tldw الخاص بك.",
+    "friendlyApiKeyHint": "قد يكون مفتاح API الخاص بك غير صالح. افتح الإعدادات → خادم tldw للتحقق من عنوان URL ومفتاح API ثم حاول مرة أخرى.",
+    "friendlyTimeoutSummary": "انتهت مهلة محادثتك.",
+    "friendlyTimeoutHint": "توقّف الخادم عن بث الردود. حاول مرة أخرى أو افتح الصحة والتشخيص للتحقق من حالة الخادم.",
+    "friendlyGenericSummary": "حدث خطأ أثناء التواصل مع خادم tldw الخاص بك.",
+    "friendlyGenericHint": "حاول مرة أخرى بعد قليل أو افتح الصحة والتشخيص لعرض حالة الخادم.",
+    "showDetails": "إظهار التفاصيل التقنية",
+    "hideDetails": "إخفاء التفاصيل التقنية"
   }
 }

@@ -39,6 +39,9 @@
   },
   "noEmbeddingModel": "ദയവായി ആദ്യം RAG ക്രമീകരണ പേജില്‍ നിന്ന് ഒരു എംബെഡിംഗ് മോഡല്‍ ചേര്‍ക്കുക",
   "privateModeDescription": "Firefox സ്വകാര്യ മോഡ് IndexedDB-ൽ സംരക്ഷണം പിന്തുണയ്ക്കുന്നില്ല. സാധാരണ വിൻഡോയിലൂടെ നോളജ് ബേസ് ചേർക്കുക.",
+  "ragWorkspace": {
+    "subtitleRag": "Retrieval-augmented generation (RAG) lets the assistant ground answers in your media, notes, and other indexed knowledge sources."
+  },
   "rag": {
     "searchFailed": "RAG തിരച്ചിൽ പരാജയപ്പെട്ടു. ദയവായി വീണ്ടും ശ്രമിക്കുകയോ Diagnostics പരിശോധിക്കുകയോ ചെയ്യുക."
   },

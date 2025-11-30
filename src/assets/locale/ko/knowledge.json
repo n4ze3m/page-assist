@@ -39,6 +39,9 @@
   },
   "noEmbeddingModel": "먼저 RAG 설정 페이지에서 임베딩 모델을 추가해 주세요",
   "privateModeDescription": "Firefox 사생활 모드는 IndexedDB 저장을 지원하지 않습니다. 일반 창에서 지식 베이스를 추가하세요.",
+  "ragWorkspace": {
+    "subtitleRag": "Retrieval-augmented generation (RAG) lets the assistant ground answers in your media, notes, and other indexed knowledge sources."
+  },
   "rag": {
     "searchFailed": "RAG 검색에 실패했습니다. 다시 시도하거나 Diagnostics를 확인하세요."
   },

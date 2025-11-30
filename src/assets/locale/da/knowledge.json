@@ -39,6 +39,9 @@
   },
   "noEmbeddingModel": "Tilføj venligst en embedding model fra RAG indstillingerne først",
   "privateModeDescription": "Firefox privat tilstand understøtter ikke lagring i IndexedDB. Tilføj en vidensbase fra et normalt vindue.",
+  "ragWorkspace": {
+    "subtitleRag": "Retrieval-augmented generation (RAG) lets the assistant ground answers in your media, notes, and other indexed knowledge sources."
+  },
   "rag": {
     "searchFailed": "RAG-søgning mislykkedes. Prøv igen eller tjek Diagnostik."
   },

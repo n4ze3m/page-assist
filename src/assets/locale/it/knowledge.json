@@ -39,6 +39,9 @@
   },
   "noEmbeddingModel": "Aggiungi prima un modello dalla pagina di impostazione di RAG",
   "privateModeDescription": "La modalità privata di Firefox non supporta il salvataggio in IndexedDB. Aggiungi una base di conoscenza da una finestra normale.",
+  "ragWorkspace": {
+    "subtitleRag": "Retrieval-augmented generation (RAG) lets the assistant ground answers in your media, notes, and other indexed knowledge sources."
+  },
   "rag": {
     "searchFailed": "Ricerca RAG non riuscita. Riprova o controlla la pagina Diagnostica."
   },

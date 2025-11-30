@@ -39,6 +39,9 @@
   },
   "noEmbeddingModel": "لطفا ابتدا یک مدل جاسازی را از صفحه تنظیمات RAG اضافه کنید",
   "privateModeDescription": "حالت خصوصی فایرفاکس ذخیره در IndexedDB را پشتیبانی نمی‌کند. لطفاً پایگاه دانش را از یک پنجره عادی اضافه کنید.",
+  "ragWorkspace": {
+    "subtitleRag": "Retrieval-augmented generation (RAG) lets the assistant ground answers in your media, notes, and other indexed knowledge sources."
+  },
   "rag": {
     "searchFailed": "جستجوی RAG ناموفق بود. دوباره تلاش کنید یا صفحه Diagnostics را بررسی کنید."
   },

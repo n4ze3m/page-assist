@@ -238,13 +238,13 @@
   "searchResults": "검색 결과",
   "newBranch": "새 브랜치",
   "error": {
-    "friendlyApiKeySummary": "We couldn’t reach your tldw server.",
-    "friendlyApiKeyHint": "Your API key may be invalid. Open Settings → tldw server to check your URL and API key, then try again.",
-    "friendlyTimeoutSummary": "Your chat timed out.",
-    "friendlyTimeoutHint": "The server stopped streaming responses. Try again, or open Health & diagnostics to check server status.",
-    "friendlyGenericSummary": "Something went wrong while talking to your tldw server.",
-    "friendlyGenericHint": "Try again in a moment, or open Health & diagnostics to inspect server health.",
-    "showDetails": "Show technical details",
-    "hideDetails": "Hide technical details"
+    "friendlyApiKeySummary": "tldw 서버에 연결할 수 없습니다.",
+    "friendlyApiKeyHint": "API 키가 잘못되었을 수 있습니다. 설정 → tldw 서버에서 URL과 API 키를 확인한 뒤 다시 시도하세요.",
+    "friendlyTimeoutSummary": "채팅이 시간 초과되었습니다.",
+    "friendlyTimeoutHint": "서버가 응답 전송을 중단했습니다. 다시 시도하거나 상태 및 진단을 열어 서버 상태를 확인하세요.",
+    "friendlyGenericSummary": "tldw 서버와 통신하는 중 문제가 발생했습니다.",
+    "friendlyGenericHint": "잠시 후 다시 시도하거나 상태 및 진단을 열어 서버 상태를 확인하세요.",
+    "showDetails": "기술 세부정보 표시",
+    "hideDetails": "기술 세부정보 숨기기"
   }
 }
