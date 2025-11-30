@@ -72,7 +72,9 @@ test.describe('Options first-run and connection panel', () => {
         apiKey: DEFAULT_TLDW_API_KEY
       }
     }
-    const { context, page: initialPage, extensionId } = await launchWithExtension(extPath, { seedConfig: seed }) as any
+    const { context, page: initialPage, extensionId } = await launchWithExtension(extPath, {
+      seedConfig: seed
+    })
     let page = initialPage
     const optionsUrl = `chrome-extension://${extensionId}/options.html`
 

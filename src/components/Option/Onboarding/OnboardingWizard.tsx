@@ -77,6 +77,36 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
     await tldwClient.updateConfig(cfg)
   }
 
+  const resetReachabilityTimers = () => {
+    if (reachabilityDebounceRef.current) {
+      clearTimeout(reachabilityDebounceRef.current)
+      reachabilityDebounceRef.current = null
+    }
+    if (reachabilityAbortRef.current) {
+      reachabilityAbortRef.current.abort()
+      reachabilityAbortRef.current = null
+    }
+  }
+
+  const lastServerUrlRef = React.useRef(serverUrl)
+
+  // When the user edits the URL after a failure, clear stale errors so the
+  // next test reflects the new value.
+  React.useEffect(() => {
+    const prev = lastServerUrlRef.current
+    const changed = prev.trim() !== serverUrl.trim()
+    if (!changed || !serverTouched) {
+      lastServerUrlRef.current = serverUrl
+      return
+    }
+    lastServerUrlRef.current = serverUrl
+    if (connected === false || errorDetail) {
+      setConnected(null)
+      setErrorDetail('')
+      setRagHealthy('unknown')
+    }
+  }, [connected, errorDetail, serverTouched, serverUrl])
+
   React.useEffect(() => {
     const trimmed = serverUrl.trim()
 
@@ -86,25 +116,11 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
     // response comes back.
     if (!urlState.valid || !trimmed || !serverTouched) {
       setReachability('idle')
-      if (reachabilityDebounceRef.current) {
-        clearTimeout(reachabilityDebounceRef.current)
-        reachabilityDebounceRef.current = null
-      }
-      if (reachabilityAbortRef.current) {
-        reachabilityAbortRef.current.abort()
-        reachabilityAbortRef.current = null
-      }
+      resetReachabilityTimers()
       return
     }
 
-    if (reachabilityDebounceRef.current) {
-      clearTimeout(reachabilityDebounceRef.current)
-      reachabilityDebounceRef.current = null
-    }
-    if (reachabilityAbortRef.current) {
-      reachabilityAbortRef.current.abort()
-      reachabilityAbortRef.current = null
-    }
+    resetReachabilityTimers()
 
     setReachability('checking')
 
@@ -136,10 +152,7 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
     }, 400)
 
     return () => {
-      if (reachabilityDebounceRef.current) {
-        clearTimeout(reachabilityDebounceRef.current)
-        reachabilityDebounceRef.current = null
-      }
+      resetReachabilityTimers()
     }
   }, [serverUrl, serverTouched, urlState])
 
@@ -155,13 +168,7 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
 
   React.useEffect(() => {
     return () => {
-      if (reachabilityDebounceRef.current) {
-        clearTimeout(reachabilityDebounceRef.current)
-      }
-      if (reachabilityAbortRef.current) {
-        reachabilityAbortRef.current.abort()
-        reachabilityAbortRef.current = null
-      }
+      resetReachabilityTimers()
     }
   }, [])
 
@@ -483,32 +490,30 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
               )}
             />
           )}
-          {typeof ragHealthy !== 'undefined' && (
-            <div className="space-y-1">
-              <div className="flex items-center gap-2">
-                <span className="text-sm font-medium">
-                  {t('settings:onboarding.rag.label')}
-                </span>
-                {ragHealthy === 'healthy' ? (
-                  <Tag color="green">
-                    {t('settings:onboarding.rag.healthy')}
-                  </Tag>
-                ) : ragHealthy === 'unhealthy' ? (
-                  <Tag color="red">
-                    {t('settings:onboarding.rag.unhealthy')}
-                  </Tag>
-                ) : (
-                  <Tag>{t('settings:onboarding.rag.unknown')}</Tag>
-                )}
-              </div>
-              <p className="text-xs text-gray-500 dark:text-gray-400">
-                {t(
-                  'settings:onboarding.rag.help',
-                  'Checks whether your server can search your notes, media, and other connected knowledge sources.'
-                )}
-              </p>
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-medium">
+                {t('settings:onboarding.rag.label')}
+              </span>
+              {ragHealthy === 'healthy' ? (
+                <Tag color="green">
+                  {t('settings:onboarding.rag.healthy')}
+                </Tag>
+              ) : ragHealthy === 'unhealthy' ? (
+                <Tag color="red">
+                  {t('settings:onboarding.rag.unhealthy')}
+                </Tag>
+              ) : (
+                <Tag>{t('settings:onboarding.rag.unknown')}</Tag>
+              )}
             </div>
-          )}
+            <p className="text-xs text-gray-500 dark:text-gray-400">
+              {t(
+                'settings:onboarding.rag.help',
+                'Checks whether your server can search your notes, media, and other connected knowledge sources.'
+              )}
+            </p>
+          </div>
           {errorDetail && (
             <Alert type="error" showIcon message={t('settings:onboarding.connectionFailed')} description={errorDetail} />
           )}

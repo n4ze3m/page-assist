@@ -11,6 +11,9 @@
   "openQuickIngest": {
     "message": "クイックインジェストを開く"
   },
+  "buttonOpenQuickIngest": {
+    "message": "クイックインジェストを開く"
+  },
   "learnMoreTldw": {
     "message": "tldw サーバーの仕組みを学ぶ"
   },

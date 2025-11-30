@@ -1,10 +1,8 @@
 const RETURN_TO_KEY = "tldw:returnTo"
 
-export type ReturnToTarget =
-  | "/notes"
-  | "/review"
-  | "/media"
-  | "/flashcards"
+const VALID_TARGETS = ["/notes", "/review", "/media", "/flashcards"] as const
+
+export type ReturnToTarget = (typeof VALID_TARGETS)[number]
 
 export const setReturnTo = (target: ReturnToTarget) => {
   try {
@@ -20,14 +18,11 @@ export const getReturnTo = (): ReturnToTarget | null => {
     if (typeof sessionStorage === "undefined") return null
     const raw = sessionStorage.getItem(RETURN_TO_KEY)
     if (!raw) return null
-    if (
-      raw === "/notes" ||
-      raw === "/review" ||
-      raw === "/media" ||
-      raw === "/flashcards"
-    ) {
-      return raw
+    if (VALID_TARGETS.includes(raw as ReturnToTarget)) {
+      return raw as ReturnToTarget
     }
+    // Invalid/legacy value: clear and ignore.
+    sessionStorage.removeItem(RETURN_TO_KEY)
     return null
   } catch {
     return null
@@ -42,4 +37,3 @@ export const clearReturnTo = () => {
     // ignore storage errors
   }
 }
-

@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query"
-import { Dropdown, Tooltip, Input } from "antd"
+import { Dropdown, Tooltip, Input, type MenuProps } from "antd"
 import { UserCircle2 } from "lucide-react"
 import React from "react"
 import { useStorage } from "@plasmohq/storage/hook"
@@ -13,20 +13,72 @@ type Props = {
   iconClassName?: string
 }
 
+type CharacterSummary = {
+  id?: string | number
+  slug?: string
+  name?: string
+  title?: string
+  avatar_url?: string
+  image_base64?: string
+  image_mime?: string
+  system_prompt?: string
+  systemPrompt?: string
+  instructions?: string
+  greeting?: string
+  first_message?: string
+  greet?: string
+}
+
+type CharacterSelection = {
+  id: string
+  name: string
+  system_prompt: string
+  greeting: string
+  avatar_url: string
+}
+
+const normalizeCharacter = (character: CharacterSummary): CharacterSelection => {
+  const idSource =
+    character.id ?? character.slug ?? character.name ?? character.title ?? ""
+  const nameSource = character.name ?? character.title ?? character.slug ?? ""
+  const avatar =
+    character.avatar_url ||
+    (character.image_base64
+      ? `data:${character.image_mime || "image/png"};base64,${
+          character.image_base64
+        }`
+      : "")
+
+  return {
+    id: idSource ? String(idSource) : "",
+    name: nameSource ? String(nameSource) : "",
+    system_prompt:
+      character.system_prompt ||
+      character.systemPrompt ||
+      character.instructions ||
+      "",
+    greeting:
+      character.greeting || character.first_message || character.greet || "",
+    avatar_url: avatar
+  }
+}
+
 export const CharacterSelect: React.FC<Props> = ({
   className = "dark:text-gray-300",
   iconClassName = "size-5"
 }) => {
   const { t } = useTranslation(["option", "common", "settings"])
   const notification = useAntdNotification()
-  const [selectedCharacter, setSelectedCharacter] = useStorage<any>(
+  const [selectedCharacter, setSelectedCharacter] = useStorage<
+    CharacterSelection | null
+  >(
     "selectedCharacter",
     null
   )
   const previousCharacterId = React.useRef<string | null>(null)
   const initialized = React.useRef(false)
 
-  const { data, refetch, isFetching } = useQuery({
+  const { data, refetch, isFetching } = useQuery<CharacterSummary[]>({
     queryKey: ["tldw:listCharacters"],
     queryFn: async () => {
       try {
@@ -44,7 +96,10 @@ export const CharacterSelect: React.FC<Props> = ({
     refetchOnMount: false
   })
 
-  const [menuDensity] = useStorage("menuDensity", "comfortable")
+  const [menuDensity] = useStorage<"comfortable" | "compact">(
+    "menuDensity",
+    "comfortable"
+  )
   const [searchQuery, setSearchQuery] = React.useState("")
   const selectLabel = t("option:characters.selectCharacter", {
     defaultValue: "Select character"
@@ -132,7 +187,7 @@ export const CharacterSelect: React.FC<Props> = ({
     const list = Array.isArray(data) ? data : []
     const q = searchQuery.trim().toLowerCase()
     if (!q) return list
-    return list.filter((c: any) => {
+    return list.filter((c) => {
       const name = (
         c.name ||
         c.title ||
@@ -143,44 +198,43 @@ export const CharacterSelect: React.FC<Props> = ({
     })
   }, [data, searchQuery])
 
-  const items =
-    filteredCharacters.map((c: any) => ({
-      key: c.id || c.slug || c.name,
-      label: (
-        <div className="w-56 gap-2 text-sm truncate inline-flex items-center leading-5 dark:border-gray-700">
-          {c.avatar_url || c.image_base64 ? (
-            <img
-              src={
-                c.avatar_url ||
-                (c.image_base64
-                  ? `data:image/png;base64,${c.image_base64}`
-                  : "")
-              }
-              className="w-4 h-4 rounded-full"
-            />
-          ) : (
-            <UserCircle2 className="w-4 h-4" />
-          )}
-          <span className="truncate">{c.name || c.title || c.slug}</span>
-        </div>
-      ),
-      onClick: () => {
-        setSelectedCharacter({
-          id: c.id || c.slug || c.name,
-          name: c.name || c.title || c.slug,
-          system_prompt:
-            c.system_prompt || c.systemPrompt || c.instructions || "",
-          greeting: c.greeting || c.first_message || c.greet || "",
-          avatar_url:
-            c.avatar_url ||
-            (c.image_base64
-              ? `data:image/png;base64,${c.image_base64}`
-              : "")
-        })
-      }
-    })) || []
+  const characterItems = React.useMemo<MenuProps["items"]>(() => {
+    return filteredCharacters.map((character, index) => {
+      const normalized = normalizeCharacter(character)
+      const displayName =
+        normalized.name || character.slug || character.title || ""
+      const menuKey =
+        character.id ??
+        character.slug ??
+        character.name ??
+        character.title ??
+        `character-${index}`
 
-  const clearItem =
+      return {
+        key: String(menuKey),
+        label: (
+          <div className="w-56 gap-2 text-sm truncate inline-flex items-center leading-5 dark:border-gray-700">
+            {normalized.avatar_url ? (
+              <img
+                src={normalized.avatar_url}
+                className="w-4 h-4 rounded-full"
+              />
+            ) : (
+              <UserCircle2 className="w-4 h-4" />
+            )}
+            <span className="truncate">
+              {displayName || normalized.id || String(menuKey)}
+            </span>
+          </div>
+        ),
+        onClick: () => {
+          setSelectedCharacter(normalized)
+        }
+      }
+    })
+  }, [filteredCharacters, setSelectedCharacter])
+
+  const clearItem: MenuProps["items"][number] | null =
     selectedCharacter
       ? {
           key: "__clear__",
@@ -201,7 +255,7 @@ export const CharacterSelect: React.FC<Props> = ({
         }
       : null
 
-  const refreshItem = {
+  const refreshItem: MenuProps["items"][number] = {
     key: "__refresh__",
     label: (
       <button
@@ -218,9 +272,14 @@ export const CharacterSelect: React.FC<Props> = ({
     }
   } as const
 
-  const menuItems: any[] = []
+  const dividerItem = (key: string): MenuProps["items"][number] => ({
+    type: "divider",
+    key
+  })
 
-  const noneItem = {
+  const menuItems: MenuProps["items"] = []
+
+  const noneItem: MenuProps["items"][number] = {
     key: "__none__",
     label: (
       <button
@@ -237,11 +296,11 @@ export const CharacterSelect: React.FC<Props> = ({
 
   menuItems.push(noneItem)
 
-  if (items.length > 0) {
-    menuItems.push({ type: "divider", key: "__divider_items__" } as any, ...items)
+  if (characterItems && characterItems.length > 0) {
+    menuItems.push(dividerItem("__divider_items__"), ...characterItems)
   } else if (!data || (Array.isArray(data) && data.length === 0)) {
     menuItems.push(
-      { type: "divider", key: "__divider_empty__" } as any,
+      dividerItem("__divider_empty__"),
       {
         key: "empty",
         label: (
@@ -259,9 +318,7 @@ export const CharacterSelect: React.FC<Props> = ({
             </button>
           </div>
         ),
-        onClick: () => {
-          handleOpenCharacters()
-        }
+        onClick: handleOpenCharacters
       }
     )
   } else {
@@ -279,16 +336,50 @@ export const CharacterSelect: React.FC<Props> = ({
   }
 
   if (clearItem) {
-    menuItems.push({ type: "divider", key: "__divider_clear__" } as any, clearItem)
+    menuItems.push(dividerItem("__divider_clear__"), clearItem)
   }
 
-  menuItems.push({ type: "divider", key: "__divider_refresh__" } as any, refreshItem)
+  menuItems.push(dividerItem("__divider_refresh__"), refreshItem)
+
+  const menuContainerRef = React.useRef<HTMLDivElement | null>(null)
+  const menuListRef = React.useRef<HTMLUListElement | null>(null)
+
+  const attachMenuRef = React.useCallback(
+    (node: HTMLUListElement | null, ref?: React.Ref<HTMLUListElement>) => {
+      menuListRef.current = node
+      if (!ref) return
+      if (typeof ref === "function") {
+        ref(node)
+      } else if ("current" in ref) {
+        ;(ref as React.MutableRefObject<HTMLUListElement | null>).current = node
+      }
+    },
+    []
+  )
+
+  const renderMenuWithRef = React.useCallback(
+    (menuNode: React.ReactNode) => {
+      if (!React.isValidElement(menuNode)) return menuNode
+      const originalRef = (menuNode as any).ref as React.Ref<HTMLUListElement> | undefined
+      return React.cloneElement(menuNode, {
+        ref: (node: HTMLUListElement | null) => attachMenuRef(node, originalRef)
+      })
+    },
+    [attachMenuRef]
+  )
+
+  const focusFirstMenuItem = React.useCallback(() => {
+    const firstItem = menuListRef.current?.querySelector<HTMLElement>(
+      '[role="menuitem"]:not([aria-disabled="true"])'
+    )
+    firstItem?.focus()
+  }, [])
 
   return (
     <div className="flex items-center gap-2">
       <Dropdown
         dropdownRender={(menu) => (
-          <div className="w-64">
+          <div className="w-64" ref={menuContainerRef}>
             <div className="px-2 py-2 border-b border-gray-100 dark:border-gray-700">
               <Input
                 size="small"
@@ -300,19 +391,13 @@ export const CharacterSelect: React.FC<Props> = ({
                 onKeyDown={(e) => {
                   if (e.key === "ArrowDown") {
                     e.preventDefault()
-                    const root = document.querySelector(
-                      ".character-select-menu .ant-dropdown-menu"
-                    ) as HTMLElement | null
-                    const firstItem = root?.querySelector(
-                      'li[role="menuitem"]:not(.ant-dropdown-menu-item-disabled)'
-                    ) as HTMLElement | null
-                    firstItem?.focus()
+                    focusFirstMenuItem()
                   }
                 }}
               />
             </div>
             <div className="max-h-[420px] overflow-y-auto no-scrollbar">
-              {menu}
+              {renderMenuWithRef(menu)}
             </div>
           </div>
         )}

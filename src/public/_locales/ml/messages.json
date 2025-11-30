@@ -11,6 +11,9 @@
   "openQuickIngest": {
     "message": "ക്വിക് ഇൻജെസ്റ്റ് തുറക്കുക"
   },
+  "buttonOpenQuickIngest": {
+    "message": "ക്വിക് ഇൻജെസ്റ്റ് തുറക്കുക"
+  },
   "learnMoreTldw": {
     "message": "tldw സർവർ എങ്ങനെ പ്രവർത്തിക്കുന്നു എന്ന് അറിയുക"
   },

@@ -133,7 +133,7 @@ export const FlashcardsPage: React.FC = () => {
         examples={[
           t("option:flashcards.offlineExample1", {
             defaultValue:
-              "Check Diagnostics to confirm your server version and available APIs."
+              "Check Health & diagnostics to confirm your server version and available APIs."
           }),
           t("option:flashcards.offlineExample2", {
             defaultValue:

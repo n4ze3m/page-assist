@@ -85,11 +85,8 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
   )
   const [sttSegEmbeddingsProvider] = useStorage("sttSegEmbeddingsProvider", "")
   const [sttSegEmbeddingsModel] = useStorage("sttSegEmbeddingsModel", "")
-  const { queuedQuickIngestCount, quickIngestHadFailure } =
-    useQuickIngestStore((s) => ({
-      queuedQuickIngestCount: s.queuedCount,
-      quickIngestHadFailure: s.hadRecentFailure
-    }))
+  const queuedQuickIngestCount = useQuickIngestStore((s) => s.queuedCount)
+  const quickIngestHadFailure = useQuickIngestStore((s) => s.hadRecentFailure)
   const form = useForm({
     initialValues: {
       message: "",
@@ -328,6 +325,20 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
     window.open("/options.html#/settings/health", "_blank")
   }, [])
 
+  const getPersistenceModeLabel = React.useCallback(
+    (isTemporary: boolean) =>
+      isTemporary
+        ? t(
+            "playground:composer.persistence.ephemeral",
+            "Temporary chat: not saved in history and cleared when you close this window."
+          )
+        : t(
+            "playground:composer.persistence.local",
+            "Saved in this browser only."
+          ),
+    [t]
+  )
+
   const handleToggleTemporaryChat = React.useCallback(
     (next: boolean) => {
       if (isFireFoxPrivateMode) {
@@ -348,23 +359,20 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
         clearChat()
       }
 
-      const modeLabel = next
-        ? t(
-            "playground:composer.persistence.ephemeral",
-            "Temporary chat: not saved in history and cleared when you close this window."
-          )
-        : t(
-            "playground:composer.persistence.local",
-            "Saved in this browser only."
-          )
-
+      const modeLabel = getPersistenceModeLabel(next)
       notification.info({
         message: modeLabel,
         placement: "bottomRight",
         duration: 2.5
       })
     },
-    [clearChat, messages.length, notification, setTemporaryChat, t]
+    [
+      clearChat,
+      getPersistenceModeLabel,
+      messages.length,
+      notification,
+      setTemporaryChat
+    ]
   )
 
   const handleWebSearchToggle = React.useCallback(() => {
@@ -598,17 +606,8 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
   }, [sttError, t])
 
   const persistenceModeLabel = React.useMemo(() => {
-    if (temporaryChat) {
-      return t(
-        "playground:composer.persistence.ephemeral",
-        "Temporary chat: not saved in history and cleared when you close this window."
-      )
-    }
-    return t(
-      "playground:composer.persistence.local",
-      "Saved in this browser only."
-    )
-  }, [temporaryChat, t])
+    return getPersistenceModeLabel(temporaryChat)
+  }, [getPersistenceModeLabel, temporaryChat])
 
   const moreToolsContent = React.useMemo(() => (
     <div className="flex w-72 flex-col gap-4">
@@ -732,7 +731,8 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
           <button
             type="button"
             onClick={handleProcessQueuedIngest}
-            className="mt-1 text-[11px] text-blue-600 hover:text-blue-500 dark:text-blue-400"
+            disabled={!isConnectionReady}
+            className="mt-1 text-[11px] text-blue-600 hover:text-blue-500 disabled:cursor-not-allowed disabled:opacity-50 dark:text-blue-400"
           >
             {t(
               "quickIngest.processQueuedItemsShort",

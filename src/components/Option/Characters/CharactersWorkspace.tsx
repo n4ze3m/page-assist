@@ -10,7 +10,7 @@ import { CharactersManager } from "./Manager"
 import { useServerCapabilities } from "@/hooks/useServerCapabilities"
 
 export const CharactersWorkspace: React.FC = () => {
-  const { t } = useTranslation(["option", "common", "settings"])
+  const { t } = useTranslation(["option", "common", "settings", "playground"])
   const navigate = useNavigate()
   const location = useLocation()
   const isOnline = useServerOnline()

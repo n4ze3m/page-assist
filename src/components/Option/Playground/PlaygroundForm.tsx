@@ -1422,14 +1422,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                                 size="small"
                                 checked={temporaryChat}
                                 onChange={handleToggleTemporaryChat}
-                                title={
-                                  temporaryChat
-                                    ? (t(
-                                        "playground:composer.persistence.ephemeral",
-                                        "Temporary chat: not saved in history and cleared when you close this window."
-                                      ) as string)
-                                    : (persistenceModeLabel as string)
-                                }
+                                title={persistenceModeLabel as string}
                                 aria-label={
                                   temporaryChat
                                     ? (t(

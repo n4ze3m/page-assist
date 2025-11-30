@@ -57,6 +57,9 @@ const TIMEOUT_PRESETS: Record<TimeoutPresetKey, TimeoutValues> = {
   }
 }
 
+type CoreStatus = 'unknown' | 'checking' | 'connected' | 'failed'
+type RagStatus = 'healthy' | 'unhealthy' | 'unknown' | 'checking'
+
 export const TldwSettings = () => {
   const { t } = useTranslation(["settings", "common"])
   const message = useAntdMessage()
@@ -68,8 +71,8 @@ export const TldwSettings = () => {
   const [testingConnection, setTestingConnection] = useState(false)
   const [connectionStatus, setConnectionStatus] = useState<'success' | 'error' | null>(null)
   const [connectionDetail, setConnectionDetail] = useState<string>("")
-  const [coreStatus, setCoreStatus] = useState<'unknown' | 'checking' | 'connected' | 'failed'>("unknown")
-  const [ragStatus, setRagStatus] = useState<'healthy' | 'unhealthy' | 'unknown' | 'checking'>("unknown")
+  const [coreStatus, setCoreStatus] = useState<CoreStatus>("unknown")
+  const [ragStatus, setRagStatus] = useState<RagStatus>("unknown")
   const [authMode, setAuthMode] = useState<'single-user' | 'multi-user'>('single-user')
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [serverUrl, setServerUrl] = useState("")
@@ -115,6 +118,54 @@ export const TldwSettings = () => {
   const parseSeconds = (value: string, fallback: number) => {
     const parsed = parseInt(value, 10)
     return Number.isNaN(parsed) ? fallback : parsed
+  }
+
+  const coreStatusColor = (status: CoreStatus) => {
+    switch (status) {
+      case "connected":
+        return "green"
+      case "failed":
+        return "red"
+      default:
+        return "default"
+    }
+  }
+
+  const coreStatusLabel = (status: CoreStatus) => {
+    switch (status) {
+      case "checking":
+        return t("settings:tldw.connection.coreChecking", "Core: checking…")
+      case "connected":
+        return t("settings:tldw.connection.coreOk", "Core: reachable")
+      case "failed":
+        return t("settings:tldw.connection.coreFailed", "Core: unreachable")
+      default:
+        return t("settings:tldw.connection.coreUnknown", "Core: waiting")
+    }
+  }
+
+  const ragStatusColor = (status: RagStatus) => {
+    switch (status) {
+      case "healthy":
+        return "green"
+      case "unhealthy":
+        return "red"
+      default:
+        return "default"
+    }
+  }
+
+  const ragStatusLabel = (status: RagStatus) => {
+    switch (status) {
+      case "checking":
+        return t("settings:tldw.connection.ragChecking", "RAG: checking…")
+      case "healthy":
+        return t("settings:tldw.connection.ragHealthy", "RAG: healthy")
+      case "unhealthy":
+        return t("settings:tldw.connection.ragUnhealthy", "RAG: needs attention")
+      default:
+        return t("settings:tldw.connection.ragUnknown", "RAG: waiting")
+    }
   }
 
   useEffect(() => {
@@ -253,7 +304,7 @@ export const TldwSettings = () => {
           noAuth: true
         })
         // Treat a positive response as valid auth; 401/403 mean invalid/forbidden.
-        success = !!resp?.ok && resp?.status !== 401 && resp?.status !== 403
+        success = !!resp?.ok
         setCoreStatus(success ? "connected" : "failed")
         if (!success) {
           const code = resp?.status
@@ -659,60 +710,12 @@ export const TldwSettings = () => {
                   {t("settings:tldw.connection.checksLabel", "Checks")}
                 </span>
                 <Tag
-                  color={
-                    coreStatus === "connected"
-                      ? "green"
-                      : coreStatus === "failed"
-                        ? "red"
-                        : "default"
-                  }>
-                  {coreStatus === "checking"
-                    ? t(
-                        "settings:tldw.connection.coreChecking",
-                        "Core: checking…"
-                      )
-                    : coreStatus === "connected"
-                      ? t(
-                          "settings:tldw.connection.coreOk",
-                          "Core: reachable"
-                        )
-                      : coreStatus === "failed"
-                        ? t(
-                            "settings:tldw.connection.coreFailed",
-                            "Core: unreachable"
-                          )
-                        : t(
-                            "settings:tldw.connection.coreUnknown",
-                            "Core: waiting"
-                          )}
+                  color={coreStatusColor(coreStatus)}>
+                  {coreStatusLabel(coreStatus)}
                 </Tag>
                 <Tag
-                  color={
-                    ragStatus === "healthy"
-                      ? "green"
-                      : ragStatus === "unhealthy"
-                        ? "red"
-                        : "default"
-                  }>
-                  {ragStatus === "checking"
-                    ? t(
-                        "settings:tldw.connection.ragChecking",
-                        "RAG: checking…"
-                      )
-                    : ragStatus === "healthy"
-                      ? t(
-                          "settings:tldw.connection.ragHealthy",
-                          "RAG: healthy"
-                        )
-                      : ragStatus === "unhealthy"
-                        ? t(
-                            "settings:tldw.connection.ragUnhealthy",
-                            "RAG: needs attention"
-                          )
-                        : t(
-                            "settings:tldw.connection.ragUnknown",
-                            "RAG: waiting"
-                          )}
+                  color={ragStatusColor(ragStatus)}>
+                  {ragStatusLabel(ragStatus)}
                 </Tag>
               </div>
             </div>

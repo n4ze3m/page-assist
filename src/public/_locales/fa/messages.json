@@ -14,6 +14,9 @@
   "openQuickIngest": {
     "message": "باز کردن درون‌ریزی سریع"
   },
+  "buttonOpenQuickIngest": {
+    "message": "باز کردن درون‌ریزی سریع"
+  },
   "learnMoreTldw": {
     "message": "درباره نحوه کار سرور tldw بیشتر بدانید"
   },

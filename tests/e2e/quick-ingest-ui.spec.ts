@@ -308,7 +308,7 @@ test.describe('Quick ingest modal', () => {
     })
 
     // Intercept Quick Ingest batch requests so they always fail.
-    await page.evaluate(() => {
+    const patched = await page.evaluate(() => {
       try {
         // @ts-ignore
         const b = browser as any
@@ -325,10 +325,16 @@ test.describe('Quick ingest modal', () => {
           }
           return original(message)
         }
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        return typeof window.__origQuickIngestSendMessage === 'function'
       } catch {
-        // best-effort; if patching fails the test can be skipped later
+        return false
       }
     })
+    if (!patched) {
+      test.skip('Quick ingest sendMessage patch failed; cannot force ingest failure')
+    }
 
     await page.goto(optionsUrl + '#/media', { waitUntil: 'domcontentloaded' })
 

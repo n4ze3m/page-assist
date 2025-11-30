@@ -14,6 +14,9 @@
   "openQuickIngest": {
     "message": "Schnelle Eingabe öffnen"
   },
+  "buttonOpenQuickIngest": {
+    "message": "Quick Ingest öffnen"
+  },
   "learnMoreTldw": {
     "message": "Erfahren Sie, wie der tldw-Server funktioniert"
   },

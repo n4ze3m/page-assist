@@ -281,6 +281,7 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
             serverUrl: null,
             isConnected: false,
             isChecking: false,
+            offlineBypass: false,
             lastCheckedAt: Date.now(),
             lastError: null,
             lastStatusCode: null,

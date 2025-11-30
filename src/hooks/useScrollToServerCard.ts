@@ -12,11 +12,13 @@ export const useScrollToServerCard = (
       setReturnTo(returnTo)
     }
     try {
-      const el = document.getElementById("server-connection-card")
-      if (el) {
-        el.scrollIntoView({ behavior: "smooth", block: "start" })
-        ;(el as HTMLElement).focus?.()
-        return
+      if (typeof document !== "undefined") {
+        const el = document.getElementById("server-connection-card")
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth", block: "start" })
+          ;(el as HTMLElement).focus?.()
+          return
+        }
       }
     } catch {
       // ignore and fall through

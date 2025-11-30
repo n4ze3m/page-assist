@@ -14,6 +14,15 @@ import { tldwModels } from "@/services/tldw"
 
 dayjs.extend(relativeTime)
 
+interface RefreshResponse {
+  ok: boolean
+}
+
+const isRefreshResponse = (res: unknown): res is RefreshResponse =>
+  typeof res === "object" &&
+  res !== null &&
+  typeof (res as { ok?: unknown }).ok === "boolean"
+
 export const ModelsBody = () => {
   const [openAddModelModal, setOpenAddModelModal] = useState(false)
   const [segmented, setSegmented] = useState<string>("available")
@@ -27,8 +36,10 @@ export const ModelsBody = () => {
   const handleRefresh = async () => {
     setRefreshing(true)
     try {
-      const res = (await browser.runtime.sendMessage({ type: "tldw:models:refresh" }).catch(() => null)) as any
-      if (!res?.ok) {
+      const res = await browser.runtime
+        .sendMessage({ type: "tldw:models:refresh" })
+        .catch(() => null)
+      if (!isRefreshResponse(res) || !res.ok) {
         // Fallback to local warm-up if background message failed
         await tldwModels.warmCache(true)
       }

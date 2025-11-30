@@ -11,6 +11,9 @@
   "openQuickIngest": {
     "message": "打开快速导入"
   },
+  "buttonOpenQuickIngest": {
+    "message": "打开快速导入"
+  },
   "learnMoreTldw": {
     "message": "了解 tldw 服务器的工作方式"
   },

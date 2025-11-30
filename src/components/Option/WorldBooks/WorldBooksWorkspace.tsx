@@ -83,7 +83,7 @@ export const WorldBooksWorkspace: React.FC = () => {
         examples={[
           t("option:worldBooksEmpty.offlineExample1", {
             defaultValue:
-              "Open Diagnostics to confirm your server version and available APIs."
+              "Open Health & diagnostics to confirm your server version and available APIs."
           }),
           t("option:worldBooksEmpty.offlineExample2", {
             defaultValue:

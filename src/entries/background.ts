@@ -14,6 +14,15 @@ import {
   notify
 } from "@/services/background-helpers"
 
+const warmModels = async (force?: boolean) => {
+  try {
+    return await tldwModels.warmCache(Boolean(force))
+  } catch (e) {
+    console.debug("[tldw] model warmup failed", e)
+    return null
+  }
+}
+
 export default defineBackground({
   main() {
     const storage = new Storage({
@@ -192,13 +201,6 @@ export default defineBackground({
           console.debug('[tldw] OpenAPI check skipped:', (e as any)?.message || e)
         }
 
-        const warmModels = async (force?: boolean) => {
-          try {
-            await tldwModels.warmCache(Boolean(force))
-          } catch (e) {
-            console.debug("[tldw] model warmup failed", e)
-          }
-        }
         await warmModels(true)
         if (modelWarmTimer) clearInterval(modelWarmTimer)
         modelWarmTimer = setInterval(() => {
@@ -454,8 +456,9 @@ export default defineBackground({
       }
       if (message.type === 'tldw:models:refresh') {
         try {
-          const models = await tldwModels.warmCache(true)
-          return { ok: true, count: Array.isArray(models) ? models.length : 0 }
+          const models = await warmModels(true)
+          const count = Array.isArray(models) ? models.length : 0
+          return { ok: true, count }
         } catch (e: any) {
           return { ok: false, error: e?.message || 'Model refresh failed' }
         }

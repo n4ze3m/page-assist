@@ -14,6 +14,9 @@
   "openQuickIngest": {
     "message": "Öppna snabbimport"
   },
+  "buttonOpenQuickIngest": {
+    "message": "Öppna Quick Ingest"
+  },
   "learnMoreTldw": {
     "message": "Lär dig hur tldw-servern fungerar"
   },

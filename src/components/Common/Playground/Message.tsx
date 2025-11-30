@@ -122,6 +122,12 @@ export const PlaygroundMessage = (props: Props) => {
   const isLastMessage: boolean =
     props.currentMessageIndex === props.totalMessages - 1
   const errorPayload = decodeChatErrorPayload(props.message)
+  const errorFriendlyText = React.useMemo(() => {
+    if (!errorPayload) return null
+    return [errorPayload.summary, errorPayload.hint, errorPayload.detail]
+      .filter(Boolean)
+      .join("\n")
+  }, [errorPayload])
 
   const autoCopyToClipboard = async () => {
     if (
@@ -450,7 +456,7 @@ export const PlaygroundMessage = (props: Props) => {
                         cancel()
                       } else {
                         speak({
-                          utterance: props.message
+                          utterance: errorFriendlyText || props.message
                         })
                       }
                     }}
@@ -478,7 +484,7 @@ export const PlaygroundMessage = (props: Props) => {
                     ariaLabel={t("copyToClipboard") as string}
                     onClick={async () => {
                       await copyToClipboard({
-                        text: props.message,
+                        text: errorFriendlyText || props.message,
                         formatted: copyAsFormattedText
                       })
 

@@ -11,6 +11,9 @@
   "openQuickIngest": {
     "message": "Открыть быстрое добавление"
   },
+  "buttonOpenQuickIngest": {
+    "message": "Открыть быстрый импорт"
+  },
   "learnMoreTldw": {
     "message": "Узнайте, как работает сервер tldw"
   },

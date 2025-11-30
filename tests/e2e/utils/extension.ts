@@ -10,9 +10,16 @@ function makeTempProfileDirs() {
   return { homeDir, userDataDir }
 }
 
+export interface LaunchWithExtensionResult {
+  context: BrowserContext
+  page: Page
+  extensionId: string
+  openSidepanel: () => Promise<Page>
+}
+
 export async function launchWithExtension(extensionPath: string, {
   seedConfig
-}: { seedConfig?: Record<string, any> } = {}) {
+}: { seedConfig?: Record<string, any> } = {}): Promise<LaunchWithExtensionResult> {
   // Pick the first existing extension build so tests work whether dev output or prod build is present.
   const candidates = [
     extensionPath,

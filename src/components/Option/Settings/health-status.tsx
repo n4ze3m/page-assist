@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Tag, Card, Space, Typography, Button, Alert, Tooltip } from 'antd'
 import { browser } from 'wxt/browser'
 import { Link, useNavigate } from 'react-router-dom'
@@ -387,9 +387,11 @@ export default function HealthStatus() {
             min={MIN_INTERVAL_SEC}
             className="w-20 px-2 py-1 rounded border dark:bg-[#262626]"
             value={intervalSec}
-            onChange={(e) =>
-              setIntervalSec(parseInt(e.target.value || '30'))
-            }
+            onChange={(e) => {
+              const raw = parseInt(e.target.value || "30", 10)
+              const next = Number.isFinite(raw) ? Math.max(MIN_INTERVAL_SEC, raw) : MIN_INTERVAL_SEC
+              setIntervalSec(next)
+            }}
           />
         </label>
         {secondsSinceUpdate != null && (

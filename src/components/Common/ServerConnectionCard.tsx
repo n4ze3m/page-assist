@@ -8,6 +8,7 @@ import {
   useConnectionActions,
   useConnectionState
 } from "@/hooks/useConnectionState"
+import { useConnectionStore } from "@/store/connection"
 import { ConnectionPhase } from "@/types/connection"
 import { useAntdNotification } from "@/hooks/useAntdNotification"
 import { focusComposer } from "@/hooks/useComposerFocus"
@@ -145,15 +146,19 @@ export const ServerConnectionCard: React.FC<Props> = ({
   }, [])
 
   React.useEffect(() => {
+    let cancelled = false
     try {
       if (typeof chrome !== "undefined" && chrome?.storage?.local) {
         chrome.storage.local.get("tldwConfig", (res) => {
           const url = res?.tldwConfig?.serverUrl
-          if (url) setKnownServerUrl(url)
+          if (url && !cancelled) setKnownServerUrl(url)
         })
       }
     } catch {
       // ignore storage read issues
+    }
+    return () => {
+      cancelled = true
     }
   }, [])
 
@@ -397,7 +402,22 @@ export const ServerConnectionCard: React.FC<Props> = ({
   }
 
   const handleOpenQuickIngestIntro = () => {
-    window.dispatchEvent(new CustomEvent("quick-ingest:open-intro"))
+    window.dispatchEvent(new CustomEvent("tldw:open-quick-ingest-intro"))
+  }
+
+  const handleOpenQuickIngest = async () => {
+    try {
+      await checkOnce()
+    } catch {
+      // ignore check failures; we will gate on current connection state
+    }
+    const { state } = useConnectionStore.getState()
+    const canOpen = state.offlineBypass || state.isConnected
+    if (!canOpen) {
+      setOfflineHintVisible(true)
+      return
+    }
+    window.dispatchEvent(new CustomEvent("tldw:open-quick-ingest"))
   }
 
   const handleOfflineBypass = async () => {
@@ -629,6 +649,7 @@ export const ServerConnectionCard: React.FC<Props> = ({
           <>
             <button
               type="button"
+              data-testid="toggle-advanced-troubleshooting"
               onClick={() => setShowAdvanced((prev) => !prev)}
               className="mt-1 text-xs text-blue-600 hover:text-blue-500 dark:text-blue-400">
               {showAdvanced
@@ -670,11 +691,7 @@ export const ServerConnectionCard: React.FC<Props> = ({
                   <Button
                     size="small"
                     data-testid="open-quick-ingest"
-                    onClick={() =>
-                      window.dispatchEvent(
-                        new CustomEvent("tldw:open-quick-ingest")
-                      )
-                    }>
+                    onClick={handleOpenQuickIngest}>
                     {t(
                       "option:connectionCard.buttonOpenQuickIngest",
                       "Open Quick Ingest"
@@ -699,17 +716,18 @@ export const ServerConnectionCard: React.FC<Props> = ({
                     )}
                   </Button>
                 </div>
-                <span className="text-[11px] text-gray-500 dark:text-gray-400">
-                  {t(
-                    "option:connectionCard.quickIngestInlineHint",
-                    "Quick Ingest can queue URLs and files while your server is offline so you can process them once you reconnect."
-                  )}
-                </span>
-                {(offlineHintVisible || offlineBypass) && (
+                {offlineHintVisible || offlineBypass ? (
                   <span className="text-[11px] text-gray-500 dark:text-gray-400">
                     {t(
                       "option:connectionCard.quickIngestHint",
                       "When your server is offline, Quick Ingest works as a staging area. You can queue URLs and files now and process them once you reconnect."
+                    )}
+                  </span>
+                ) : (
+                  <span className="text-[11px] text-gray-500 dark:text-gray-400">
+                    {t(
+                      "option:connectionCard.quickIngestInlineHint",
+                      "Quick Ingest can queue URLs and files while your server is offline so you can process them once you reconnect."
                     )}
                   </span>
                 )}

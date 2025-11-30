@@ -11,6 +11,9 @@
   "openQuickIngest": {
     "message": "Ouvrir l'ingestion rapide"
   },
+  "buttonOpenQuickIngest": {
+    "message": "Ouvrir l'ingestion rapide"
+  },
   "learnMoreTldw": {
     "message": "Découvrir le fonctionnement du serveur tldw"
   },

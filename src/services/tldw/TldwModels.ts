@@ -194,10 +194,10 @@ export class TldwModelsService {
   /**
    * Clear the model cache
    */
-  clearCache(): void {
+  async clearCache(): Promise<void> {
     this.cachedModels = null
     this.lastFetchTime = 0
-    void this.persistCache()
+    await this.persistCache()
   }
 
   /**

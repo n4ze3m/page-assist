@@ -13,25 +13,31 @@ const seedConfig = (page: any, serverUrl: string) =>
     { serverUrl, authMode: 'single-user', apiKey: 'THIS-IS-A-SECURE-KEY-123-FAKE-KEY' }
   )
 
+const setupExtensionForServer = async (server: MockTldwServer) => {
+  const { context, page, extensionId, optionsUrl } =
+    await launchWithBuiltExtension()
+
+  const granted = await grantHostPermission(
+    context,
+    extensionId,
+    `${server.url}/*`
+  )
+  if (!granted) {
+    test.skip(true, 'Host permission not granted for mock server')
+  }
+
+  await page.goto(optionsUrl)
+  await seedConfig(page, server.url)
+
+  return { context, page, extensionId, optionsUrl }
+}
+
 test.describe('Characters workspace UX', () => {
   test('empty state, CRUD toasts, accessible actions, and focus handling', async () => {
     const server = new MockTldwServer()
     await server.start()
 
-    const { context, page, extensionId, optionsUrl } =
-      await launchWithBuiltExtension()
-
-    const granted = await grantHostPermission(
-      context,
-      extensionId,
-      `${server.url}/*`
-    )
-    if (!granted) {
-      test.skip(true, 'Host permission not granted for mock server')
-    }
-
-    await page.goto(optionsUrl)
-    await seedConfig(page, server.url)
+    const { context, page, optionsUrl } = await setupExtensionForServer(server)
 
     await page.goto(`${optionsUrl}#/characters`)
 
@@ -118,20 +124,7 @@ test.describe('Characters workspace UX', () => {
     })
     await server.start()
 
-    const { context, page, extensionId, optionsUrl } =
-      await launchWithBuiltExtension()
-
-    const granted = await grantHostPermission(
-      context,
-      extensionId,
-      `${server.url}/*`
-    )
-    if (!granted) {
-      test.skip(true, 'Host permission not granted for mock server')
-    }
-
-    await page.goto(optionsUrl)
-    await seedConfig(page, server.url)
+    const { context, page, optionsUrl } = await setupExtensionForServer(server)
 
     await page.goto(`${optionsUrl}#/characters`)
 
@@ -167,20 +160,7 @@ test.describe('Characters workspace UX', () => {
       ]
     })
 
-    const { context, page, extensionId, optionsUrl } =
-      await launchWithBuiltExtension()
-
-    const granted = await grantHostPermission(
-      context,
-      extensionId,
-      `${server.url}/*`
-    )
-    if (!granted) {
-      test.skip(true, 'Host permission not granted for mock server')
-    }
-
-    await page.goto(optionsUrl)
-    await seedConfig(page, server.url)
+    const { context, page, optionsUrl } = await setupExtensionForServer(server)
 
     await page.goto(`${optionsUrl}#/playground`)
 
@@ -223,20 +203,7 @@ test.describe('Characters workspace UX', () => {
     const server = new MockTldwServer()
     await server.start()
 
-    const { context, page, extensionId, optionsUrl } =
-      await launchWithBuiltExtension()
-
-    const granted = await grantHostPermission(
-      context,
-      extensionId,
-      `${server.url}/*`
-    )
-    if (!granted) {
-      test.skip(true, 'Host permission not granted for mock server')
-    }
-
-    await page.goto(optionsUrl)
-    await seedConfig(page, server.url)
+    const { context, page, optionsUrl } = await setupExtensionForServer(server)
 
     await page.goto(`${optionsUrl}#/playground`)
 
@@ -296,20 +263,7 @@ test.describe('Characters workspace UX', () => {
       characters: manyCharacters
     })
 
-    const { context, page, extensionId, optionsUrl } =
-      await launchWithBuiltExtension()
-
-    const granted = await grantHostPermission(
-      context,
-      extensionId,
-      `${server.url}/*`
-    )
-    if (!granted) {
-      test.skip(true, 'Host permission not granted for mock server')
-    }
-
-    await page.goto(optionsUrl)
-    await seedConfig(page, server.url)
+    const { context, page, optionsUrl } = await setupExtensionForServer(server)
 
     await page.goto(`${optionsUrl}#/playground`)
 

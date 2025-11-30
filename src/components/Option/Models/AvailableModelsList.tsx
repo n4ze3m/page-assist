@@ -14,7 +14,10 @@ export const AvailableModelsList: React.FC = () => {
     queryFn: async () => {
       await tldwClient.initialize()
       // Prefer flattened metadata; then group by provider
-      const meta = await tldwClient.getModelsMetadata().catch(() => [])
+      const meta = await tldwClient.getModelsMetadata()
+      if (!Array.isArray(meta)) {
+        throw new Error("Unexpected models metadata response")
+      }
       const normalized: ProviderMap = {}
       for (const item of (meta as any[])) {
         const provider = String(item.provider || 'unknown')
@@ -85,9 +88,16 @@ export const AvailableModelsList: React.FC = () => {
                 {typeof m.context_length === 'number' && (
                   <Tag color="blue" bordered>ctx {m.context_length}</Tag>
                 )}
-                {Array.isArray(m.capabilities) && m.capabilities.slice(0,4).map((c: string) => (
-                  <Tag key={c} color="green" bordered>{c}</Tag>
-                ))}
+                {Array.isArray(m.capabilities) && (
+                  <>
+                    {m.capabilities.slice(0, 4).map((c: string) => (
+                      <Tag key={c} color="green" bordered>{c}</Tag>
+                    ))}
+                    {m.capabilities.length > 4 && (
+                      <Tag color="default" bordered>+{m.capabilities.length - 4}</Tag>
+                    )}
+                  </>
+                )}
               </div>
             ))}
           </div>
@@ -101,7 +111,7 @@ export const AvailableModelsList: React.FC = () => {
           <div className="text-xs">
             {t(
               'settings:models.noProvidersBody',
-              'The extension could not load providers from your tldw_server. Check your server URL and API key in Settings, ensure the server is running, then use Refresh to try again.'
+              'The extension could not load providers from your tldw_server. Check your server URL and API key in Settings, ensure the server is running, then use Retry (or Refresh) to try again.'
             )}
           </div>
           <Button

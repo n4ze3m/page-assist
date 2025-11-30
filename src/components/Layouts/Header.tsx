@@ -159,40 +159,47 @@ export const Header: React.FC<Props> = ({
     isConnected,
     knowledgeStatus
   } = useConnectionState()
-  // Allow opening Quick Ingest even when unconfigured so users can stage items/offline preview.
-  const ingestDisabled = false
   const { shortcuts: shortcutConfig } = useShortcutConfig()
   const quickIngestBtnRef = React.useRef<HTMLButtonElement>(null)
   const hasQueuedQuickIngest = queuedQuickIngestCount > 0
 
+  const openQuickIngest = React.useCallback(
+    (options?: { autoProcessQueued?: boolean; focusTrigger?: boolean }) => {
+      const { autoProcessQueued = false, focusTrigger = true } = options || {}
+      setQuickIngestAutoProcessQueued(autoProcessQueued)
+      setQuickIngestOpen(true)
+      if (focusTrigger) {
+        requestAnimationFrame(() => {
+          quickIngestBtnRef.current?.focus()
+        })
+      }
+    },
+    []
+  )
+
   React.useEffect(() => {
     const handler = () => {
-      setQuickIngestAutoProcessQueued(false)
-      setQuickIngestOpen(true)
-      requestAnimationFrame(() => {
-        quickIngestBtnRef.current?.focus()
-      })
+      openQuickIngest()
     }
     window.addEventListener("tldw:open-quick-ingest", handler)
     return () => {
       window.removeEventListener("tldw:open-quick-ingest", handler)
     }
-  }, [ingestDisabled])
+  }, [openQuickIngest])
 
   React.useEffect(() => {
     const handler = () => {
-      setQuickIngestAutoProcessQueued(false)
-      setQuickIngestOpen(true)
+      openQuickIngest({ focusTrigger: false })
       // Nudge the modal to show the intro drawer once mounted
       window.setTimeout(() => {
-        window.dispatchEvent(new CustomEvent("quick-ingest:force-intro"))
+        window.dispatchEvent(new CustomEvent("tldw:quick-ingest-force-intro"))
       }, 150)
     }
-    window.addEventListener("quick-ingest:open-intro", handler)
+    window.addEventListener("tldw:open-quick-ingest-intro", handler)
     return () => {
-      window.removeEventListener("quick-ingest:open-intro", handler)
+      window.removeEventListener("tldw:open-quick-ingest-intro", handler)
     }
-  }, [])
+  }, [openQuickIngest])
 
   const currentCoreMode: CoreMode = React.useMemo(() => {
     if (pathname.startsWith("/review") || pathname.startsWith("/media-multi"))
@@ -840,8 +847,7 @@ export const Header: React.FC<Props> = ({
               type="button"
               ref={quickIngestBtnRef}
               onClick={() => {
-                setQuickIngestAutoProcessQueued(false)
-                setQuickIngestOpen(true)
+                openQuickIngest()
               }}
               data-testid="open-quick-ingest"
               aria-label={
@@ -899,8 +905,10 @@ export const Header: React.FC<Props> = ({
                 type="button"
                 data-testid="process-queued-ingest-header"
                 onClick={() => {
-                  setQuickIngestAutoProcessQueued(true)
-                  setQuickIngestOpen(true)
+                  openQuickIngest({
+                    autoProcessQueued: true,
+                    focusTrigger: false
+                  })
                 }}
                 className="inline-flex items-center rounded-full border border-transparent px-2 py-1 text-xs text-blue-600 hover:text-blue-500 dark:text-blue-400">
                 {t(

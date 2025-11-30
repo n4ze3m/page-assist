@@ -30,6 +30,7 @@ type Props = {
 }
 
 const MAX_LOCAL_FILE_BYTES = 500 * 1024 * 1024 // 500MB soft cap for local file ingest
+const INLINE_FILE_WARN_BYTES = 100 * 1024 * 1024 // warn/block before copying very large buffers in-memory
 
 const isLikelyUrl = (raw: string) => {
   const val = (raw || '').trim()
@@ -93,6 +94,13 @@ export const QuickIngestModal: React.FC<Props> = ({
   autoProcessQueued = false
 }) => {
   const { t } = useTranslation(['option', 'settings'])
+  const qi = React.useCallback(
+    (key: string, defaultValue: string, options?: Record<string, any>) =>
+      options
+        ? t(`quickIngest.${key}`, { defaultValue, ...options })
+        : t(`quickIngest.${key}`, defaultValue),
+    [t]
+  )
   const [messageApi, contextHolder] = message.useMessage({
     top: 12,
     getContainer: () =>
@@ -158,6 +166,17 @@ export const QuickIngestModal: React.FC<Props> = ({
       clearFailure: s.clearFailure
     }))
   const [lastRunError, setLastRunError] = React.useState<string | null>(null)
+  const [progressTick, setProgressTick] = React.useState<number>(0)
+  const advancedHydratedRef = React.useRef(false)
+  const uiPrefsHydratedRef = React.useRef(false)
+
+  const unmountedRef = React.useRef(false)
+
+  React.useEffect(() => {
+    return () => {
+      unmountedRef.current = true
+    }
+  }, [])
 
   const formatBytes = React.useCallback((bytes?: number) => {
     if (!bytes || Number.isNaN(bytes)) return ''
@@ -448,6 +467,11 @@ export const QuickIngestModal: React.FC<Props> = ({
       // Convert local files to transferable payloads (ArrayBuffer)
       const filesPayload = await Promise.all(
         localFiles.map(async (f) => {
+          if (f.size && f.size > INLINE_FILE_WARN_BYTES) {
+            const msg = `File "${f.name}" is too large for inline transfer (over ${formatBytes(INLINE_FILE_WARN_BYTES)}). Please upload a smaller file or process directly on the server.`
+            messageApi.error(msg)
+            throw new Error(msg)
+          }
           // Guard again at runtime; oversized files should never be read into memory.
           if (f.size && f.size > MAX_LOCAL_FILE_BYTES) {
             throw new Error(
@@ -476,9 +500,16 @@ export const QuickIngestModal: React.FC<Props> = ({
         }
       })) as { ok: boolean; error?: string; results?: ResultItem[] } | undefined
 
+      if (unmountedRef.current) {
+        return
+      }
+
       if (!resp?.ok) {
         const msg = resp?.error || "Quick ingest failed. Check tldw server settings and try again."
         messageApi.error(msg)
+        if (unmountedRef.current) {
+          return
+        }
         setLastRunError(msg)
         markFailure()
         setRunning(false)
@@ -487,6 +518,9 @@ export const QuickIngestModal: React.FC<Props> = ({
       }
 
       const out = resp.results || []
+      if (unmountedRef.current) {
+        return
+      }
       setResults(out)
       setRunning(false)
       setRunStartedAt(null)
@@ -504,10 +538,13 @@ export const QuickIngestModal: React.FC<Props> = ({
       clearFailure()
       setLastRunError(null)
     } catch (e: any) {
-      setRunning(false)
-      setRunStartedAt(null)
       const msg = e?.message || "Quick ingest failed."
       messageApi.error(msg)
+      if (unmountedRef.current) {
+        return
+      }
+      setRunning(false)
+      setRunStartedAt(null)
       setLastRunError(msg)
       markFailure()
     }
@@ -529,7 +566,6 @@ export const QuickIngestModal: React.FC<Props> = ({
       autoProcessedRef.current = false
       return
     }
-    if (!autoProcessQueued) return
     if (autoProcessedRef.current) return
     if (!showProcessQueuedButton) return
     if (running) return
@@ -540,13 +576,13 @@ export const QuickIngestModal: React.FC<Props> = ({
   // Load OpenAPI schema to build advanced fields (best-effort)
   const groupForField = (name: string): string => {
     const n = name.toLowerCase()
-    if (n.startsWith('transcription_') || ['diarize','vad_use','timestamp_option','chunk_language'].includes(n)) return 'Transcription'
+    if (n.startsWith('transcription_') || ['diarize','vad_use','chunk_language'].includes(n)) return 'Transcription'
     if (n.startsWith('chunk_') || ['use_adaptive_chunking','enable_contextual_chunking','use_multi_level_chunking','perform_chunking','contextual_llm_model'].includes(n)) return 'Chunking'
     if (n.includes('embedding')) return 'Embeddings'
     if (n.startsWith('context_') || n === 'context_strategy') return 'Context'
     if (n.includes('summarization') || n.includes('analysis') || n === 'system_prompt' || n === 'custom_prompt') return 'Analysis/Summarization'
     if (n.includes('pdf') || n.includes('ocr')) return 'Document/PDF'
-    if (n.includes('video') || n === 'timestamp_option') return 'Video'
+    if (n.includes('video')) return 'Video'
     if (n.includes('cookie')) return 'Cookies/Auth'
     if (['author','title','keywords','api_name'].includes(n)) return 'Metadata'
     if (['start_time','end_time'].includes(n)) return 'Timing'
@@ -793,13 +829,14 @@ export const QuickIngestModal: React.FC<Props> = ({
     lastSavedUiPrefsRef.current = JSON.stringify(uiPrefs || {})
   }, [uiPrefs])
 
-  // Load persisted advanced values on mount
+  // Load persisted advanced values on mount (once)
   React.useEffect(() => {
+    if (advancedHydratedRef.current) return
+    advancedHydratedRef.current = true
     if (savedAdvValues && typeof savedAdvValues === 'object') {
       setAdvancedValues((prev) => ({ ...prev, ...savedAdvValues }))
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [savedAdvValues, advancedHydratedRef])
 
   // Persist advanced values when they change (debounced to reduce storage writes)
   React.useEffect(() => {
@@ -812,12 +849,13 @@ export const QuickIngestModal: React.FC<Props> = ({
     return () => clearTimeout(id)
   }, [SAVE_DEBOUNCE_MS, advancedValues, setSavedAdvValues])
 
-  // Restore UI prefs for Advanced section and details
+  // Restore UI prefs for Advanced section and details (once)
   React.useEffect(() => {
+    if (uiPrefsHydratedRef.current) return
+    uiPrefsHydratedRef.current = true
     if (uiPrefs?.advancedOpen !== undefined) setAdvancedOpen(Boolean(uiPrefs.advancedOpen))
     if (uiPrefs?.fieldDetailsOpen && typeof uiPrefs.fieldDetailsOpen === 'object') setFieldDetailsOpen(uiPrefs.fieldDetailsOpen)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [uiPrefs])
 
   // Persist UI prefs
   React.useEffect(() => {
@@ -998,6 +1036,12 @@ export const QuickIngestModal: React.FC<Props> = ({
     }
   }, [localFiles.length, rows, selectedRowId])
 
+  React.useEffect(() => {
+    if (!running) return
+    const id = window.setInterval(() => setProgressTick((t) => t + 1), 1000)
+    return () => window.clearInterval(id)
+  }, [running])
+
   const progressMeta = React.useMemo(() => {
     const total = liveTotalCount || totalPlanned || 0
     const done = processedCount || results.length || 0
@@ -1008,7 +1052,7 @@ export const QuickIngestModal: React.FC<Props> = ({
         ? `${Math.floor(elapsedMs / 60000)}:${String(Math.floor((elapsedMs % 60000) / 1000)).padStart(2, '0')}`
         : null
     return { total, done, pct, elapsedLabel }
-  }, [liveTotalCount, processedCount, results.length, runStartedAt, totalPlanned])
+  }, [liveTotalCount, processedCount, progressTick, results.length, runStartedAt, totalPlanned])
 
   const modifiedAdvancedCount = React.useMemo(
     () => Object.keys(advancedValues || {}).length,
@@ -1017,15 +1061,15 @@ export const QuickIngestModal: React.FC<Props> = ({
   const specSourceLabel = React.useMemo(() => {
     switch (specSource) {
       case 'server':
-        return 'Live server spec'
+        return qi('specSourceLive', 'Live server spec')
       case 'server-cached':
-        return 'Cached server spec'
+        return qi('specSourceCached', 'Cached server spec')
       case 'bundled':
-        return 'Bundled spec'
+        return qi('specSourceBundled', 'Bundled spec')
       default:
-        return 'Fallback spec'
+        return qi('specSourceFallback', 'Fallback spec')
     }
-  }, [specSource])
+  }, [qi, specSource])
 
   const setAdvancedValue = React.useCallback((name: string, value: any) => {
     setAdvancedValues((prev) => {
@@ -1054,15 +1098,22 @@ export const QuickIngestModal: React.FC<Props> = ({
   )
 
   const retryFailedUrls = React.useCallback(() => {
-    const failedUrls = results
-      .filter((r) => r.status === 'error' && r.url)
-      .map((r) => ({
+    const failedByUrl = results.filter((r) => r.status === "error" && r.url)
+    const byUrl = new Map(rows.map((row) => [row.url.trim(), row]))
+    const failedUrls = failedByUrl.map((r) => {
+      const key = (r.url || "").trim()
+      const existing = byUrl.get(key)
+      if (existing) {
+        return { ...existing, id: crypto.randomUUID() }
+      }
+      return {
         id: crypto.randomUUID(),
-        url: r.url || '',
-        type: 'auto' as Entry['type']
-      }))
+        url: r.url || "",
+        type: "auto" as Entry["type"]
+      }
+    })
     if (failedUrls.length === 0) {
-      messageApi.info('No failed URL items to retry.')
+      messageApi.info(qi("noFailedUrlToRetry", "No failed URL items to retry."))
       return
     }
     setRows(failedUrls)
@@ -1072,8 +1123,14 @@ export const QuickIngestModal: React.FC<Props> = ({
     setTotalPlanned(failedUrls.length)
     setLiveTotalCount(failedUrls.length)
     setRunStartedAt(null)
-    messageApi.info(`Queued ${failedUrls.length} failed URL${failedUrls.length === 1 ? '' : 's'} to retry.`)
-  }, [messageApi, results])
+    messageApi.info(
+      qi(
+        "queuedFailedUrls",
+        "Queued {{count}} failed URL(s) to retry.",
+        { count: failedUrls.length }
+      )
+    )
+  }, [messageApi, qi, results, rows])
 
   // Live progress updates from background batch processor
   React.useEffect(() => {
@@ -1122,8 +1179,8 @@ export const QuickIngestModal: React.FC<Props> = ({
         setInspectorIntroDismissed(false)
       } catch {}
     }
-    window.addEventListener('quick-ingest:force-intro', forceIntro)
-    return () => window.removeEventListener('quick-ingest:force-intro', forceIntro)
+    window.addEventListener('tldw:quick-ingest-force-intro', forceIntro)
+    return () => window.removeEventListener('tldw:quick-ingest-force-intro', forceIntro)
   }, [setInspectorIntroDismissed])
 
   return (
@@ -1135,8 +1192,8 @@ export const QuickIngestModal: React.FC<Props> = ({
             size="small"
             type="text"
             icon={<HelpCircle className="w-4 h-4" />}
-            aria-label="Open Inspector intro"
-            title="Open Inspector intro"
+            aria-label={qi('openInspectorIntro', 'Open Inspector intro')}
+            title={qi('openInspectorIntro', 'Open Inspector intro')}
             onClick={() => {
               setShowInspectorIntro(true)
               try { setInspectorIntroDismissed(false) } catch {}
@@ -1166,11 +1223,28 @@ export const QuickIngestModal: React.FC<Props> = ({
           </Typography.Paragraph>
         </div>
         <div className="rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-xs text-gray-700 dark:border-gray-700 dark:bg-[#161616] dark:text-gray-200">
-          <div className="font-medium mb-1">Tips</div>
+          <div className="font-medium mb-1">
+            {qi('tipsTitle', 'Tips')}
+          </div>
           <ul className="list-disc list-inside space-y-1">
-            <li>Hybrid input: drop files or paste URLs (comma/newline separated) to build the queue.</li>
-            <li>Per-type settings (Audio/PDF/Video) apply to all items of that type.</li>
-            <li>Use the Inspector to see status, type, and quick checks before ingesting.</li>
+            <li>
+              {qi(
+                'tipsHybrid',
+                'Hybrid input: drop files or paste URLs (comma/newline separated) to build the queue.'
+              )}
+            </li>
+            <li>
+              {qi(
+                'tipsPerType',
+                'Per-type settings (Audio/PDF/Video) apply to all items of that type.'
+              )}
+            </li>
+            <li>
+              {qi(
+                'tipsInspector',
+                'Use the Inspector to see status, type, and quick checks before ingesting.'
+              )}
+            </li>
           </ul>
         </div>
         {lastRunError && (
@@ -1239,11 +1313,18 @@ export const QuickIngestModal: React.FC<Props> = ({
                   {t('quickIngest.subtitle') || 'Drop files or paste URLs; items immediately join the queue.'}
                 </Typography.Text>
                 <div className="text-xs text-gray-500 mt-1">
-                  Supported: docs, PDFs, audio, video, and web URLs.
+                  {qi(
+                    'supportedFormats',
+                    'Supported: docs, PDFs, audio, video, and web URLs.'
+                  )}
                 </div>
               </div>
               <Tag color="blue">
-                {plannedCount || 0} {plannedCount === 1 ? 'item ready' : 'items ready'}
+                {qi(
+                  'itemsReady',
+                  '{{count}} item(s) ready',
+                  { count: plannedCount || 0 }
+                )}
               </Tag>
             </div>
             <input
@@ -1251,6 +1332,7 @@ export const QuickIngestModal: React.FC<Props> = ({
               multiple
               style={{ display: 'none' }}
               id="qi-file-input"
+              data-testid="qi-file-input"
               onChange={(e) => {
                 const files = Array.from(e.target.files || [])
                 if (files.length > 0) {
@@ -1272,10 +1354,10 @@ export const QuickIngestModal: React.FC<Props> = ({
             >
               <div className="flex flex-col gap-2 items-center justify-center">
                 <Typography.Text className="text-base font-medium">
-                  Drag and drop files
+                  {qi('dragAndDrop', 'Drag and drop files')}
                 </Typography.Text>
                 <Typography.Text type="secondary" className="text-xs">
-                  Docs, PDFs, audio, and video are all welcome.
+                  {qi('dragAndDropHint', 'Docs, PDFs, audio, and video are all welcome.')}
                 </Typography.Text>
                 <div className="flex items-center gap-2">
                   <Button onClick={() => document.getElementById('qi-file-input')?.click()} disabled={running}>
@@ -1284,31 +1366,33 @@ export const QuickIngestModal: React.FC<Props> = ({
                   <Button
                     onClick={pasteFromClipboard}
                     disabled={running}
-                    aria-label="Paste URLs from clipboard"
-                    title="Paste URLs from clipboard"
+                    aria-label={qi('pasteFromClipboard', 'Paste URLs from clipboard')}
+                    title={qi('pasteFromClipboard', 'Paste URLs from clipboard')}
                   >
-                    Paste from clipboard
+                    {qi('pasteFromClipboard', 'Paste URLs from clipboard')}
                   </Button>
                 </div>
               </div>
             </div>
             <div className="mt-3 space-y-2">
               <div className="flex items-center justify-between">
-                <Typography.Text strong>Paste URLs</Typography.Text>
+                <Typography.Text strong>
+                  {qi('pasteUrlsTitle', 'Paste URLs')}
+                </Typography.Text>
                 <Typography.Text className="text-xs text-gray-500">
-                  Separate with commas or new lines
+                  {qi('pasteUrlsHint', 'Separate with commas or new lines')}
                 </Typography.Text>
               </div>
               <label
                 htmlFor="quick-ingest-url-input"
                 className="text-xs font-medium text-gray-700 dark:text-gray-200"
               >
-                URLs to ingest
+                {qi('urlsLabel', 'URLs to ingest')}
               </label>
               <Space.Compact className="w-full">
                 <Input
                   id="quick-ingest-url-input"
-                  placeholder="https://example.com, https://..."
+                  placeholder={qi('urlsPlaceholder', 'https://example.com, https://...')}
                   value={pendingUrlInput}
                   onChange={(e) => setPendingUrlInput(e.target.value)}
                   onPressEnter={(e) => {
@@ -1316,60 +1400,70 @@ export const QuickIngestModal: React.FC<Props> = ({
                     addUrlsFromInput(pendingUrlInput)
                   }}
                   disabled={running}
-                  aria-label="Paste URLs input"
-                  title="Paste URLs input"
+                  aria-label={qi('urlsInputAria', 'Paste URLs input')}
+                  title={qi('urlsInputAria', 'Paste URLs input')}
                 />
                   <Button
                     type="primary"
                     onClick={() => addUrlsFromInput(pendingUrlInput)}
                     disabled={running}
-                    aria-label="Add URLs to queue"
-                    title="Add URLs to queue"
+                    aria-label={qi('addUrlsAria', 'Add URLs to queue')}
+                    title={qi('addUrlsAria', 'Add URLs to queue')}
                   >
-                    Add URLs
+                    {qi('addUrls', 'Add URLs')}
                   </Button>
                 </Space.Compact>
               <div className="flex items-center gap-2 text-xs text-gray-600">
                 <AlertTriangle className="w-4 h-4 text-gray-400" />
-                <span>Authentication-required pages may need cookies set in Advanced.</span>
+                <span>
+                  {qi(
+                    'authRequiredHint',
+                    'Authentication-required pages may need cookies set in Advanced.'
+                  )}
+                </span>
               </div>
             </div>
           </div>
 
           <div className="rounded-md border border-gray-200 bg-white p-3 dark:border-gray-700 dark:bg-[#121212]">
             <div className="flex flex-wrap items-center justify-between gap-2">
-              <Typography.Title level={5} className="!mb-0">Queue</Typography.Title>
+              <Typography.Title level={5} className="!mb-0">
+                {qi('queueTitle', 'Queue')}
+              </Typography.Title>
                 <div className="flex items-center gap-2">
                 <Button
                   size="small"
                   onClick={clearAllQueues}
                   disabled={running && plannedCount > 0}
-                  aria-label="Clear all queued items"
-                  title="Clear all queued items"
+                  aria-label={qi('clearAllAria', 'Clear all queued items')}
+                  title={qi('clearAllAria', 'Clear all queued items')}
                 >
-                  Clear all
+                  {qi('clearAll', 'Clear all')}
                 </Button>
                 <Button
                   size="small"
                   onClick={addRow}
                   disabled={running}
-                  aria-label="Add blank URL row"
-                  title="Add blank URL row"
+                  aria-label={qi('addBlankRowAria', 'Add blank URL row')}
+                  title={qi('addBlankRowAria', 'Add blank URL row')}
                 >
-                  Add blank row
+                  {qi('addBlankRow', 'Add blank row')}
                 </Button>
                   <Button
                     size="small"
-                    aria-label="Open Inspector"
-                    title="Open Inspector"
+                    aria-label={qi('openInspector', 'Open Inspector')}
+                    title={qi('openInspector', 'Open Inspector')}
                     onClick={() => setInspectorOpen(true)}
                     disabled={!(selectedRow || selectedFile)}>
-                    Open Inspector
+                    {qi('openInspector', 'Open Inspector')}
                   </Button>
                 </div>
               </div>
             <div className="text-xs text-gray-500 mb-2">
-              Staged items appear here. Click a row to open the Inspector; badges show defaults, custom edits, or items needing attention.
+              {qi(
+                'queueDescription',
+                'Staged items appear here. Click a row to open the Inspector; badges show defaults, custom edits, or items needing attention.'
+              )}
             </div>
             <div className="max-h-[360px] space-y-2 overflow-auto pr-1">
               {rows.map((row) => {
@@ -1378,13 +1472,13 @@ export const QuickIngestModal: React.FC<Props> = ({
                 const detected = row.type === 'auto' ? detectTypeFromUrl(row.url) : row.type
                 const res = resultById.get(row.id)
                 let runTag: React.ReactNode = null
-                if (res?.status === 'ok') runTag = <Tag color="green">Done</Tag>
+                if (res?.status === 'ok') runTag = <Tag color="green">{qi('statusDone', 'Done')}</Tag>
                 else if (res?.status === 'error') runTag = (
-                  <AntTooltip title={res.error || 'Failed'}>
-                    <Tag color="red">Failed</Tag>
+                  <AntTooltip title={res.error || qi('statusFailed', 'Failed')}>
+                    <Tag color="red">{qi('statusFailed', 'Failed')}</Tag>
                   </AntTooltip>
                 )
-                else if (running) runTag = <Tag icon={<Spin size="small" />} color="blue">Running</Tag>
+                else if (running) runTag = <Tag icon={<Spin size="small" />} color="blue">{qi('statusRunning', 'Running')}</Tag>
                 const pendingTag =
                   ingestBlocked && !running && (!res || !res.status)
                     ? (
@@ -1426,11 +1520,13 @@ export const QuickIngestModal: React.FC<Props> = ({
                       {typeIcon(detected)}
                         <div className="flex flex-col">
                           <Typography.Text className="text-sm font-medium">
-                            {row.url ? row.url : 'Untitled URL'}
+                            {row.url ? row.url : qi('untitledUrl', 'Untitled URL')}
                           </Typography.Text>
                           <div className="flex items-center gap-2 text-[11px] text-gray-500">
                             <Tag color="geekblue">{detected.toUpperCase()}</Tag>
-                            {status.reason ? <span className="text-orange-600">{status.reason}</span> : <span>Defaults will be applied.</span>}
+                            {status.reason ? <span className="text-orange-600">{status.reason}</span> : (
+                              <span>{qi('defaultsApplied', 'Defaults will be applied.')}</span>
+                            )}
                           </div>
                         </div>
                       </div>
@@ -1442,13 +1538,13 @@ export const QuickIngestModal: React.FC<Props> = ({
                     </div>
                     <div className="mt-2 flex flex-col gap-2">
                       <Input
-                        placeholder="https://..."
+                        placeholder={qi('urlPlaceholder', 'https://...')}
                         value={row.url}
                         onClick={(e) => e.stopPropagation()}
                         onChange={(e) => updateRow(row.id, { url: e.target.value })}
                         disabled={running}
-                        aria-label="Source URL"
-                        title="Source URL"
+                        aria-label={qi('sourceUrlAria', 'Source URL')}
+                        title={qi('sourceUrlAria', 'Source URL')}
                       />
                       <div className="flex flex-wrap items-center gap-2 text-xs text-gray-500">
                         <Select
@@ -1456,15 +1552,15 @@ export const QuickIngestModal: React.FC<Props> = ({
                           value={row.type}
                           onClick={(e) => e.stopPropagation()}
                           onChange={(v) => updateRow(row.id, { type: v as Entry['type'] })}
-                          aria-label="Force media type"
-                          title="Force media type"
+                          aria-label={qi('forceMediaType', 'Force media type')}
+                          title={qi('forceMediaType', 'Force media type')}
                           options={[
-                            { label: 'Auto', value: 'auto' },
-                            { label: 'HTML', value: 'html' },
-                            { label: 'PDF', value: 'pdf' },
-                            { label: 'Document', value: 'document' },
-                            { label: 'Audio', value: 'audio' },
-                            { label: 'Video', value: 'video' }
+                            { label: qi('typeAuto', 'Auto'), value: 'auto' },
+                            { label: qi('typeHtml', 'HTML'), value: 'html' },
+                            { label: qi('typePdf', 'PDF'), value: 'pdf' },
+                            { label: qi('typeDocument', 'Document'), value: 'document' },
+                            { label: qi('typeAudio', 'Audio'), value: 'audio' },
+                            { label: qi('typeVideo', 'Video'), value: 'video' }
                           ]}
                           disabled={running}
                         />
@@ -1491,14 +1587,14 @@ export const QuickIngestModal: React.FC<Props> = ({
                 const match = results.find((r) => r.fileName === f.name)
                 const runStatus = match?.status
                 let runTag: React.ReactNode = null
-                if (runStatus === 'ok') runTag = <Tag color="green">Done</Tag>
+                if (runStatus === 'ok') runTag = <Tag color="green">{qi('statusDone', 'Done')}</Tag>
                 else if (runStatus === 'error') {
                   runTag = (
-                    <AntTooltip title={match?.error || 'Failed'}>
-                      <Tag color="red">Failed</Tag>
+                    <AntTooltip title={match?.error || qi('statusFailed', 'Failed')}>
+                      <Tag color="red">{qi('statusFailed', 'Failed')}</Tag>
                     </AntTooltip>
                   )
-                } else if (running) runTag = <Tag icon={<Spin size="small" />} color="blue">Running</Tag>
+                } else if (running) runTag = <Tag icon={<Spin size="small" />} color="blue">{qi('statusRunning', 'Running')}</Tag>
                 const pendingTag =
                   ingestBlocked && !running && !runStatus
                     ? (
@@ -1582,7 +1678,7 @@ export const QuickIngestModal: React.FC<Props> = ({
 
               {rows.length === 0 && localFiles.length === 0 && (
                 <div className="rounded-md border border-dashed border-gray-300 p-4 text-center text-sm text-gray-600 dark:border-gray-700 dark:text-gray-300">
-                  No items queued yet. Drop files or add URLs to start.
+                  {qi('emptyQueue', 'No items queued yet. Drop files or add URLs to start.')}
                 </div>
               )}
             </div>
@@ -1592,7 +1688,7 @@ export const QuickIngestModal: React.FC<Props> = ({
             <Typography.Title level={5} className="!mb-2">{t('quickIngest.commonOptions') || 'Ingestion options'}</Typography.Title>
             <Space wrap size="middle" align="center">
                 <Space align="center">
-                  <span>Analysis</span>
+                  <span>{qi('analysisLabel', 'Analysis')}</span>
                   <Switch
                     aria-label="Ingestion options \u2013 analysis"
                     title="Toggle analysis"
@@ -1604,7 +1700,7 @@ export const QuickIngestModal: React.FC<Props> = ({
                 />
               </Space>
                 <Space align="center">
-                  <span>Chunking</span>
+                  <span>{qi('chunkingLabel', 'Chunking')}</span>
                   <Switch
                     aria-label="Ingestion options \u2013 chunking"
                     title="Toggle chunking"
@@ -1616,7 +1712,7 @@ export const QuickIngestModal: React.FC<Props> = ({
                 />
               </Space>
                 <Space align="center">
-                  <span>Overwrite existing</span>
+                  <span>{qi('overwriteLabel', 'Overwrite existing')}</span>
                   <Switch
                     aria-label="Ingestion options \u2013 overwrite existing"
                     title="Toggle overwrite existing"
@@ -1647,23 +1743,28 @@ export const QuickIngestModal: React.FC<Props> = ({
                   />
                     <Select
                       className="min-w-40"
-                      value={firstAudioRow?.audio?.diarize ?? false}
-                      onChange={(v) => setRows((rs) => rs.map((x) => {
-                        const isAudio = x.type === 'audio' || (x.type === 'auto' && detectTypeFromUrl(x.url) === 'audio')
-                        if (!isAudio) return x
-                        return { ...x, audio: { ...(x.audio || {}), diarize: Boolean(v) } }
-                      }))}
-                      aria-label="Audio diarization toggle"
-                      title="Audio diarization toggle"
-                      options={[{ label: 'Diarization: Off', value: false }, { label: 'Diarization: On', value: true }]}
-                      disabled={running}
-                    />
+                    value={firstAudioRow?.audio?.diarize ?? false}
+                    onChange={(v) => setRows((rs) => rs.map((x) => {
+                      const isAudio = x.type === 'audio' || (x.type === 'auto' && detectTypeFromUrl(x.url) === 'audio')
+                      if (!isAudio) return x
+                      return { ...x, audio: { ...(x.audio || {}), diarize: Boolean(v) } }
+                    }))}
+                    aria-label="Audio diarization toggle"
+                    title="Audio diarization toggle"
+                    options={[
+                      { label: qi('audioDiarizationOff', 'Diarization: Off'), value: false },
+                      { label: qi('audioDiarizationOn', 'Diarization: On'), value: true }
+                    ]}
+                    disabled={running}
+                  />
                 </Space>
                 <Typography.Text type="secondary" className="text-xs">
                   {t('quickIngest.audioDiarizationHelp') || 'Turn on to separate speakers in transcripts; applies to all audio rows in this batch.'}
                 </Typography.Text>
-                <Typography.Text className="text-[11px] text-gray-500 block" title="These audio settings apply to every audio item in this run.">
-                  These settings apply to every audio item in this run.
+                <Typography.Text
+                  className="text-[11px] text-gray-500 block"
+                  title={qi('audioSettingsTitle', 'These audio settings apply to every audio item in this run.')}>
+                  {qi('audioSettingsHint', 'These settings apply to every audio item in this run.')}
                 </Typography.Text>
               </div>
             )}
@@ -1681,14 +1782,19 @@ export const QuickIngestModal: React.FC<Props> = ({
                     }))}
                     aria-label="OCR toggle"
                     title="OCR toggle"
-                    options={[{ label: 'OCR: Off', value: false }, { label: 'OCR: On', value: true }]}
+                    options={[
+                      { label: qi('ocrOff', 'OCR: Off'), value: false },
+                      { label: qi('ocrOn', 'OCR: On'), value: true }
+                    ]}
                     disabled={running}
                   />
                 <Typography.Text type="secondary" className="text-xs">
                   {t('quickIngest.ocrHelp') || 'OCR helps extract text from scanned PDFs or images; applies to all document/PDF rows.'}
                 </Typography.Text>
-                <Typography.Text className="text-[11px] text-gray-500 block" title="These document settings apply to every document/PDF in this run.">
-                  Applies to all document/PDF items in this batch.
+                <Typography.Text
+                  className="text-[11px] text-gray-500 block"
+                  title={qi('documentSettingsTitle', 'These document settings apply to every document/PDF in this run.')}>
+                  {qi('documentSettingsHint', 'Applies to all document/PDF items in this batch.')}
                 </Typography.Text>
               </div>
             )}
@@ -1706,14 +1812,19 @@ export const QuickIngestModal: React.FC<Props> = ({
                   }))}
                   aria-label="Captions toggle"
                   title="Captions toggle"
-                  options={[{ label: 'Captions: Off', value: false }, { label: 'Captions: On', value: true }]}
+                  options={[
+                    { label: qi('captionsOff', 'Captions: Off'), value: false },
+                    { label: qi('captionsOn', 'Captions: On'), value: true }
+                  ]}
                   disabled={running}
                 />
                 <Typography.Text type="secondary" className="text-xs">
                   {t('quickIngest.captionsHelp') || 'Include timestamps/captions for all video rows; helpful for search and summaries.'}
                 </Typography.Text>
-                <Typography.Text className="text-[11px] text-gray-500 block" title="These video settings apply to every video in this run.">
-                  Applies to all video items in this batch.
+                <Typography.Text
+                  className="text-[11px] text-gray-500 block"
+                  title={qi('videoSettingsTitle', 'These video settings apply to every video in this run.')}>
+                  {qi('videoSettingsHint', 'Applies to all video items in this batch.')}
                 </Typography.Text>
               </div>
             )}
@@ -1730,7 +1841,9 @@ export const QuickIngestModal: React.FC<Props> = ({
                             done,
                             total
                           })
-                        : `${plannedCount || 0} ${plannedCount === 1 ? 'item' : 'items'} ready`}
+                        : qi('itemsReadySr', '{{count}} item(s) ready', {
+                            count: plannedCount || 0
+                          })}
                     </div>
                   )
                 })()}
@@ -1846,8 +1959,8 @@ export const QuickIngestModal: React.FC<Props> = ({
                     className="mt-2 text-xs text-gray-500 dark:text-gray-400 sm:mt-0"
                     title={
                       running && (liveTotalCount || totalPlanned) > 0
-                        ? 'Current ingest progress'
-                        : 'Items ready to ingest'
+                        ? qi('ingestProgressTitle', 'Current ingest progress')
+                        : qi('itemsReadyTitle', 'Items ready to ingest')
                     }
                   >
                     {(() => {
@@ -1863,9 +1976,9 @@ export const QuickIngestModal: React.FC<Props> = ({
                           }
                         )
                       }
-                      return `${plannedCount || 0} ${
-                        plannedCount === 1 ? 'item' : 'items'
-                      } ready`
+                      return qi('itemsReady', '{{count}} item(s) ready', {
+                        count: plannedCount || 0
+                      })
                     })()}
                   </span>
                 </div>
@@ -1922,8 +2035,8 @@ export const QuickIngestModal: React.FC<Props> = ({
                 <Button
                   onClick={onClose}
                   disabled={running}
-                  aria-label="Close quick ingest"
-                  title="Close quick ingest">
+                  aria-label={qi('closeQuickIngest', 'Close quick ingest')}
+                  title={qi('closeQuickIngest', 'Close quick ingest')}>
                   {t('quickIngest.cancel') || 'Cancel'}
                 </Button>
               </div>
@@ -1939,8 +2052,20 @@ export const QuickIngestModal: React.FC<Props> = ({
                 <div className="mt-2">
                   <Progress percent={progressMeta.pct} showInfo={false} size="small" />
                   <div className="flex justify-between text-xs text-gray-600 dark:text-gray-400 mt-1">
-                    <span>{`${progressMeta.done}/${progressMeta.total} processed`}</span>
-                    {progressMeta.elapsedLabel ? <span>Elapsed {progressMeta.elapsedLabel}</span> : null}
+                    <span>
+                      {qi(
+                        'processedCount',
+                        '{{done}}/{{total}} processed',
+                        { done: progressMeta.done, total: progressMeta.total }
+                      )}
+                    </span>
+                    {progressMeta.elapsedLabel ? (
+                      <span>
+                        {qi('elapsedLabel', 'Elapsed {{time}}', {
+                          time: progressMeta.elapsedLabel
+                        })}
+                      </span>
+                    ) : null}
                   </div>
                 </div>
               )}
@@ -1956,7 +2081,7 @@ export const QuickIngestModal: React.FC<Props> = ({
         </div>
 
         <Drawer
-          title="Inspector"
+          title={qi('inspectorTitle', 'Inspector')}
           placement="right"
           onClose={() => setInspectorOpen(false)}
           open={inspectorOpen && (!!selectedRow || !!selectedFile)}
@@ -1966,27 +2091,46 @@ export const QuickIngestModal: React.FC<Props> = ({
           <div className="space-y-3">
             {showInspectorIntro && (
               <div className="rounded-md border border-blue-100 bg-blue-50 p-3 text-sm text-gray-700">
-                <Typography.Text strong className="block mb-1">How to use the Inspector</Typography.Text>
+                <Typography.Text strong className="block mb-1">
+                  {qi('inspectorIntroTitle', 'How to use the Inspector')}
+                </Typography.Text>
                 <ul className="list-disc list-inside space-y-1 text-xs">
-                  <li>Click a queued item to see its detected type, status, and warnings.</li>
-                  <li>Use per-type controls on the main panel to set defaults; any per-row override marks it Custom.</li>
-                  <li>For auth-required URLs, add cookies/headers in Advanced before ingesting.</li>
+                  <li>
+                    {qi(
+                      'inspectorIntroItem1',
+                      'Click a queued item to see its detected type, status, and warnings.'
+                    )}
+                  </li>
+                  <li>
+                    {qi(
+                      'inspectorIntroItem2',
+                      'Use per-type controls on the main panel to set defaults; any per-row override marks it Custom.'
+                    )}
+                  </li>
+                  <li>
+                    {qi(
+                      'inspectorIntroItem3',
+                      'For auth-required URLs, add cookies/headers in Advanced before ingesting.'
+                    )}
+                  </li>
                 </ul>
                 <Button
                   size="small"
                   className="mt-2"
-                  aria-label="Dismiss Inspector intro and close"
-                  title="Dismiss Inspector intro and close"
+                  aria-label={qi('inspectorIntroDismiss', 'Dismiss Inspector intro and close')}
+                  title={qi('inspectorIntroDismiss', 'Dismiss Inspector intro and close')}
                   onClick={() => {
                     setShowInspectorIntro(false)
                     try { setInspectorIntroDismissed(true) } catch {}
                     setInspectorOpen(false)
                     if (!introToast.current) {
-                      messageApi.success('Intro dismissed. Reset anytime with “Reset Inspector Intro.”')
+                      messageApi.success(
+                        qi('inspectorIntroDismissed', 'Intro dismissed. Reset anytime with “Reset Inspector Intro.”')
+                      )
                       introToast.current = true
                     }
                   }}>
-                  Got it
+                  {qi('gotIt', 'Got it')}
                 </Button>
               </div>
             )}
@@ -1995,7 +2139,7 @@ export const QuickIngestModal: React.FC<Props> = ({
                 <div className="flex items-center gap-2">
                   {typeIcon(selectedRow ? (selectedRow.type === 'auto' ? detectTypeFromUrl(selectedRow.url) : selectedRow.type) : fileTypeFromName(selectedFile!))}
                   <Typography.Text strong>
-                    {selectedRow ? (selectedRow.url || 'Untitled URL') : selectedFile?.name}
+                    {selectedRow ? (selectedRow.url || qi('untitledUrl', 'Untitled URL')) : selectedFile?.name}
                   </Typography.Text>
                 </div>
                 <div className="flex flex-wrap items-center gap-2 text-xs text-gray-600">
@@ -2005,7 +2149,9 @@ export const QuickIngestModal: React.FC<Props> = ({
                       <Tag color="geekblue">
                         {(selectedRow.type === 'auto' ? detectTypeFromUrl(selectedRow.url) : selectedRow.type).toUpperCase()}
                       </Tag>
-                      {statusForUrlRow(selectedRow).reason ? <span className="text-orange-600">{statusForUrlRow(selectedRow).reason}</span> : <span>Default settings will apply.</span>}
+                      {statusForUrlRow(selectedRow).reason ? <span className="text-orange-600">{statusForUrlRow(selectedRow).reason}</span> : (
+                        <span>{qi('defaultsApplied', 'Defaults will be applied.')}</span>
+                      )}
                     </>
                   ) : null}
                   {selectedFile ? (
@@ -2019,21 +2165,30 @@ export const QuickIngestModal: React.FC<Props> = ({
                 </div>
                 {selectedRow ? (
                   <div className="text-xs text-gray-600">
-                    Editing the URL or forcing a type marks this item as <strong>Custom</strong>.
+                    {qi(
+                      'inspectorRowEditHint',
+                      'Editing the URL or forcing a type marks this item as Custom.'
+                    )}
                   </div>
                 ) : null}
                 {selectedFile ? (
                   <div className="text-xs text-gray-600">
-                    File settings follow the per-type controls on the main panel.
+                    {qi(
+                      'inspectorFileHint',
+                      'File settings follow the per-type controls on the main panel.'
+                    )}
                   </div>
                 ) : null}
                 <div className="text-xs text-gray-500">
-                  Use Advanced options to set cookies/auth if required. Errors or warnings appear on each row.
+                  {qi(
+                    'inspectorAdvancedHint',
+                    'Use Advanced options to set cookies/auth if required. Errors or warnings appear on each row.'
+                  )}
                 </div>
               </div>
             ) : (
               <div className="text-sm text-gray-600">
-                Select a queued item to view details.
+                {qi('inspectorEmpty', 'Select a queued item to view details.')}
               </div>
             )}
           </div>
@@ -2050,7 +2205,7 @@ export const QuickIngestModal: React.FC<Props> = ({
           label: (
             <div className="flex flex-col gap-1 w-full">
               <div className="flex items-center gap-2">
-                <span>Advanced options</span>
+                <span>{qi('advancedOptionsTitle', 'Advanced options')}</span>
                 <Tag color="blue">{t('quickIngest.advancedSummary', '{{count}} advanced fields loaded', { count: advSchema.length })}</Tag>
                 {modifiedAdvancedCount > 0 && (
                   <Tag color="gold">{t('quickIngest.modifiedCount', '{{count}} modified', { count: modifiedAdvancedCount })}</Tag>
@@ -2063,12 +2218,12 @@ export const QuickIngestModal: React.FC<Props> = ({
                 )}
                 <AntTooltip
                   title={<div className="max-w-80 text-xs">{specSource === 'server'
-                    ? 'Using live server OpenAPI spec'
+                    ? qi('specTooltipLive', 'Using live server OpenAPI spec')
                     : specSource === 'server-cached'
-                      ? 'Using cached server OpenAPI spec'
+                      ? qi('specTooltipCached', 'Using cached server OpenAPI spec')
                       : specSource === 'bundled'
-                        ? 'Using bundled spec from extension'
-                        : 'No spec detected; using fallback fields'}</div>}
+                        ? qi('specTooltipBundled', 'Using bundled spec from extension')
+                        : qi('specTooltipFallback', 'No spec detected; using fallback fields')}</div>}
                 >
                   <Info className="w-4 h-4 text-gray-500" />
                 </AntTooltip>
@@ -2086,22 +2241,24 @@ export const QuickIngestModal: React.FC<Props> = ({
                 <Button
                   size="small"
                   type="default"
-                  aria-label="Reset Inspector intro helper"
-                  title="Reset Inspector intro helper"
+                  aria-label={qi('resetInspectorIntro', 'Reset Inspector intro helper')}
+                  title={qi('resetInspectorIntro', 'Reset Inspector intro helper')}
                   onClick={(e) => {
                     e.stopPropagation()
                     setInspectorIntroDismissed(false)
                     setShowInspectorIntro(true)
                     setInspectorOpen(true)
                   }}>
-                  Reset Inspector Intro
+                  {qi('resetInspectorIntro', 'Reset Inspector Intro')}
                 </Button>
                 <Space size="small" align="center">
-                  <span className="text-xs text-gray-500">Prefer server</span>
+                  <span className="text-xs text-gray-500">
+                    {qi('preferServerLabel', 'Prefer server')}
+                  </span>
                   <Switch
                     size="small"
-                    aria-label="Advanced options \u2013 prefer server OpenAPI spec"
-                    title="Prefer server OpenAPI spec"
+                    aria-label={qi('preferServerAria', 'Advanced options – prefer server OpenAPI spec')}
+                    title={qi('preferServerTitle', 'Prefer server OpenAPI spec')}
                     checked={!!specPrefs?.preferServer}
                     onChange={async (v) => {
                       persistSpecPrefs({ ...(specPrefs || {}), preferServer: v })
@@ -2111,28 +2268,28 @@ export const QuickIngestModal: React.FC<Props> = ({
                 </Space>
                 <Button
                   size="small"
-                  aria-label="Reload advanced spec from server"
-                  title="Reload advanced spec from server"
+                  aria-label={qi('reloadSpecAria', 'Reload advanced spec from server')}
+                  title={qi('reloadSpecAria', 'Reload advanced spec from server')}
                   onClick={(e) => {
                     e.stopPropagation()
                     void loadSpec(true, true)
                   }}>
-                  Reload from server
+                  {qi('reloadFromServer', 'Reload from server')}
                 </Button>
                 <span className="h-4 border-l border-gray-300 dark:border-gray-600" aria-hidden />
                 <Button
                   size="small"
                   danger
-                  aria-label="Reset advanced options and UI state"
-                  title="Reset advanced options and UI state"
+                  aria-label={qi('resetAdvancedAria', 'Reset advanced options and UI state')}
+                  title={qi('resetAdvancedAria', 'Reset advanced options and UI state')}
                   onClick={async (e) => {
                     e.stopPropagation()
                     const ok = await confirmDanger({
-                      title: 'Please confirm',
+                      title: qi('confirmResetTitle', 'Please confirm'),
                       content:
-                        'Reset all advanced options and UI state?',
-                      okText: 'Reset',
-                      cancelText: 'Cancel'
+                        qi('confirmResetContent', 'Reset all advanced options and UI state?'),
+                      okText: qi('reset', 'Reset'),
+                      cancelText: qi('cancel', 'Cancel')
                     })
                     if (!ok) return
                     setAdvancedValues({})
@@ -2144,9 +2301,9 @@ export const QuickIngestModal: React.FC<Props> = ({
                     })
                     setAdvSearch('')
                     setAdvancedOpen(false)
-                    messageApi.success('Advanced options reset')
+                    messageApi.success(qi('advancedReset', 'Advanced options reset'))
                   }}>
-                  Reset Advanced
+                  {qi('resetAdvanced', 'Reset Advanced')}
                 </Button>
               </div>
             </div>
@@ -2156,12 +2313,12 @@ export const QuickIngestModal: React.FC<Props> = ({
               <div className="flex items-center gap-2">
                 <Input
                   allowClear
-                  placeholder="Search advanced fields..."
+                  placeholder={qi('searchAdvanced', 'Search advanced fields...')}
                   value={advSearch}
                   onChange={(e) => setAdvSearch(e.target.value)}
                   className="max-w-80"
-                  aria-label="Search advanced fields"
-                  title="Search advanced fields"
+                  aria-label={qi('searchAdvanced', 'Search advanced fields...')}
+                  title={qi('searchAdvanced', 'Search advanced fields...')}
                 />
                 {modifiedAdvancedCount > 0 && (
                   <Tag color="gold">{t('quickIngest.modifiedCount', '{{count}} modified', { count: modifiedAdvancedCount })}</Tag>
@@ -2219,7 +2376,11 @@ export const QuickIngestModal: React.FC<Props> = ({
                                   options={f.enum.map((e) => ({ value: e, label: String(e) }))}
                                 />
                                 {f.description && (
-                                  <button className="text-xs underline text-gray-500" onClick={() => setOpen(!isOpen)}>{isOpen ? 'Hide details' : 'Show details'}</button>
+                                  <button className="text-xs underline text-gray-500" onClick={() => setOpen(!isOpen)}>
+                                    {isOpen
+                                      ? qi('hideDetails', 'Hide details')
+                                      : qi('showDetails', 'Show details')}
+                                  </button>
                                 )}
                               </div>
                             )
@@ -2238,13 +2399,21 @@ export const QuickIngestModal: React.FC<Props> = ({
                                   size="small"
                                   onClick={() => setAdvancedValue(f.name, undefined)}
                                   disabled={boolState === 'unset'}>
-                                  Unset
+                                  {qi('unset', 'Unset')}
                                 </Button>
                                 <Typography.Text type="secondary" className="text-[11px] text-gray-500">
-                                  {boolState === 'unset' ? 'Currently unset (server defaults)' : boolState === 'true' ? 'On' : 'Off'}
+                                  {boolState === 'unset'
+                                    ? qi('unsetLabel', 'Currently unset (server defaults)')
+                                    : boolState === 'true'
+                                      ? qi('onLabel', 'On')
+                                      : qi('offLabel', 'Off')}
                                 </Typography.Text>
                                 {f.description && (
-                                  <button className="text-xs underline text-gray-500" onClick={() => setOpen(!isOpen)}>{isOpen ? 'Hide details' : 'Show details'}</button>
+                                  <button className="text-xs underline text-gray-500" onClick={() => setOpen(!isOpen)}>
+                                    {isOpen
+                                      ? qi('hideDetails', 'Hide details')
+                                      : qi('showDetails', 'Show details')}
+                                  </button>
                                 )}
                               </div>
                             )
@@ -2260,7 +2429,11 @@ export const QuickIngestModal: React.FC<Props> = ({
                                   onChange={setV as any}
                                 />
                                 {f.description && (
-                                  <button className="text-xs underline text-gray-500" onClick={() => setOpen(!isOpen)}>{isOpen ? 'Hide details' : 'Show details'}</button>
+                                  <button className="text-xs underline text-gray-500" onClick={() => setOpen(!isOpen)}>
+                                    {isOpen
+                                      ? qi('hideDetails', 'Hide details')
+                                      : qi('showDetails', 'Show details')}
+                                  </button>
                                 )}
                               </div>
                             )
@@ -2275,7 +2448,11 @@ export const QuickIngestModal: React.FC<Props> = ({
                                 onChange={(e) => setV(e.target.value)}
                               />
                               {f.description && (
-                                <button className="text-xs underline text-gray-500" onClick={() => setOpen(!isOpen)}>{isOpen ? 'Hide details' : 'Show details'}</button>
+                                <button className="text-xs underline text-gray-500" onClick={() => setOpen(!isOpen)}>
+                                  {isOpen
+                                    ? qi('hideDetails', 'Hide details')
+                                    : qi('showDetails', 'Show details')}
+                                </button>
                               )}
                             </div>
                           )
@@ -2302,9 +2479,14 @@ export const QuickIngestModal: React.FC<Props> = ({
             <div className="flex items-center justify-between">
               <Typography.Title level={5} className="!mb-0">{t('quickIngest.results') || 'Results'}</Typography.Title>
               <div className="flex items-center gap-2 text-xs">
-                <Tag color="blue">{results.length} item{results.length === 1 ? '' : 's'}</Tag>
-                <Button size="small" onClick={retryFailedUrls} disabled={!results.some((r) => r.status === 'error')}>
-                  Retry failed URLs
+                <Tag color="blue">
+                  {qi('resultsCount', '{{count}} item(s)', { count: results.length })}
+                </Tag>
+                <Button
+                  size="small"
+                  onClick={retryFailedUrls}
+                  disabled={!results.some((r) => r.status === 'error')}>
+                  {qi('retryFailedUrls', 'Retry failed URLs')}
                 </Button>
               </div>
             </div>
