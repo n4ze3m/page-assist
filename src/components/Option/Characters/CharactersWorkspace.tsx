@@ -21,7 +21,22 @@ export const CharactersWorkspace: React.FC = () => {
     () => location.search.includes("from=server-chat-persistence-error"),
     [location.search]
   )
+  const fromHeaderSelect = React.useMemo(
+    () => location.search.includes("from=header-select"),
+    [location.search]
+  )
   const newButtonRef = React.useRef<HTMLButtonElement | null>(null)
+
+  React.useEffect(() => {
+    if (!fromHeaderSelect) return
+    if (capsLoading || !hasCharacters) return
+
+    const id = window.setTimeout(() => {
+      newButtonRef.current?.focus()
+    }, 300)
+
+    return () => window.clearTimeout(id)
+  }, [fromHeaderSelect, capsLoading, hasCharacters])
 
   if (!isOnline) {
     return demoEnabled ? (
@@ -115,6 +130,14 @@ export const CharactersWorkspace: React.FC = () => {
               "Create reusable characters you can pick from the chat header and reuse across conversations."
           })}
         </p>
+        {fromHeaderSelect && (
+          <p className="mt-1 max-w-xl text-[11px] text-blue-700 dark:text-blue-300">
+            {t("option:charactersEmpty.headerSelectHint", {
+              defaultValue:
+                "Create a character to reuse their persona across chats. Use “New character” to get started."
+            })}
+          </p>
+        )}
         {fromPersistenceError && (
           <p className="mt-1 max-w-xl text-[11px] text-blue-700 dark:text-blue-300">
             <span className="font-semibold">

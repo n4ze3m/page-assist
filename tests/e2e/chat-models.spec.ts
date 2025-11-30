@@ -79,10 +79,18 @@ test.describe('Chat across tldw models', () => {
     await input.fill('hello (should error)')
     await input.press('Enter')
 
-    // Error from chat-helper is rendered as an assistant message
+    // Error from chat-helper is rendered as a friendly assistant error bubble
     await expect(
-      page.getByText(/Error: Chat failed in test/i)
+      page.getByText(
+        /Something went wrong while talking to your tldw server/i
+      )
     ).toBeVisible({ timeout: 10_000 })
+
+    const toggle = page.getByRole('button', {
+      name: /show technical details/i
+    })
+    await toggle.click()
+    await expect(page.getByText(/Chat failed in test/i)).toBeVisible()
 
     await context.close()
     await errorServer.stop()

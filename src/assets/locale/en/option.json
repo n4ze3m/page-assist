@@ -201,7 +201,12 @@
     "modifiedCount": "{{count}} modified",
     "progress": "Processing {{done}} / {{total}} items…",
     "pendingLabel": "Pending — will run when connected",
-    "readyToast": "Server back online — ready to process {{count}} queued items."
+    "readyToast": "Server back online — ready to process {{count}} queued items.",
+    "processQueuedItemsShort": "Process queued items",
+    "errorSummary": "We couldn’t process ingest items right now.",
+    "errorHint": "Try again after checking your tldw server. Health & diagnostics can help troubleshoot ingest issues.",
+    "checkHealthLink": "Check server health in Health & diagnostics",
+    "healthAriaHint": "Recent runs failed — open Health & diagnostics from the header for more details."
   },
   "libraryView": "Library View",
   "notes": "Notes",
@@ -282,6 +287,7 @@
     "connectExample1": "Open Settings → tldw server to add your server URL.",
     "connectExample2": "Use Diagnostics if your server is running but not reachable.",
     "headerDescription": "Create reusable characters you can pick from the chat header and reuse across conversations.",
+    "headerSelectHint": "Create a character to reuse their persona across chats. Use “New character” to get started.",
     "offlineTitle": "Characters API not available on this server",
     "offlineDescription": "This server does not advertise /api/v1/characters.",
     "offlineExample1": "Open Diagnostics to confirm your server version and available APIs for Characters.",

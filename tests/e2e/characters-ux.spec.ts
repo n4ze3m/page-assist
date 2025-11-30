@@ -218,4 +218,60 @@ test.describe('Characters workspace UX', () => {
     await context.close()
     await server.stop()
   })
+
+  test('header character select offers a Create character path when list is empty', async () => {
+    const server = new MockTldwServer()
+    await server.start()
+
+    const { context, page, extensionId, optionsUrl } =
+      await launchWithBuiltExtension()
+
+    const granted = await grantHostPermission(
+      context,
+      extensionId,
+      `${server.url}/*`
+    )
+    if (!granted) {
+      test.skip(true, 'Host permission not granted for mock server')
+    }
+
+    await page.goto(optionsUrl)
+    await seedConfig(page, server.url)
+
+    await page.goto(`${optionsUrl}#/playground`)
+
+    const trigger = page
+      .getByRole('button', { name: /Select character/i })
+      .first()
+    await expect(trigger).toBeVisible()
+    await trigger.click()
+
+    // Empty state copy and CTA should be visible inside the menu.
+    await expect(
+      page.getByText(/No characters yet/i).first()
+    ).toBeVisible()
+    const createFromMenu = page.getByText(/Create character/i).first()
+    await expect(createFromMenu).toBeVisible()
+
+    // Use the menu action to navigate to the Characters workspace.
+    await createFromMenu.click()
+
+    await expect(page).toHaveURL(/#\/characters/)
+    await expect(
+      page.getByRole('button', { name: /New character/i })
+    ).toBeVisible({ timeout: 15_000 })
+
+    // Inline hint for header-select path should be visible and the New button focused.
+    await expect(
+      page.getByText(
+        /Create a character to reuse their persona across chats/i
+      )
+    ).toBeVisible()
+    await expect(
+      page.getByRole('button', { name: /New character/i })
+    ).toBeFocused()
+
+    await context.close()
+    await server.stop()
+  })
 })

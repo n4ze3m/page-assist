@@ -23,7 +23,8 @@
     "speechToTextBrowser": "Dictation via browser speech recognition",
     "speechToTextDetails": "Uses {{model}} · {{task}} · {{format}}. Configure in Settings → General → Speech-to-Text.",
     "vision": "[Experimental] Vision Chat",
-    "uploadDocuments": "Upload Documents (beta)"
+    "uploadDocuments": "Upload Documents (beta)",
+    "quickIngest": "Stage URLs and files for processing, even while your server is offline."
   },
   "sendWhenEnter": "Senden bei Drücken der Eingabetaste",
   "welcome": "Hallo! Wie kann ich Ihnen heute helfen?",

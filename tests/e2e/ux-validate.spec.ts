@@ -54,8 +54,11 @@ test.describe('UX validation (connected server)', () => {
     await sp.getByText(/Save current page on server/i).click()
     await expect(ingestBtn).toHaveAttribute('aria-expanded', 'false')
 
-    // Health Status back button + copy diagnostics
+    // Health Status descriptions, back button + copy diagnostics
     await page.goto(optionsUrl + '#/settings/health')
+    await expect(
+      page.getByText(/Knowledge search & retrieval/i)
+    ).toBeVisible()
     await expect(page.getByRole('button', { name: /Back to chat/i })).toBeVisible()
     const copyBtn = page.getByRole('button', { name: /Copy diagnostics/i })
     await copyBtn.click()

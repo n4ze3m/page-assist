@@ -157,10 +157,18 @@ test.describe('Timeouts', () => {
     await input.fill('hello (should timeout)')
     await input.press('Enter')
 
-    // Error from background stream idle handler should be rendered as assistant message
+    // Error from background stream idle handler should be rendered as a friendly assistant error bubble
     await expect(
-      page.getByText(/Error: Stream timeout: no updates received/i)
+      page.getByText(/Your chat timed out/i)
     ).toBeVisible({ timeout: 15_000 })
+
+    const toggle = page.getByRole('button', {
+      name: /show technical details/i
+    })
+    await toggle.click()
+    await expect(
+      page.getByText(/Stream timeout: no updates received/i)
+    ).toBeVisible()
 
     await context.close()
     await new Promise<void>((r) => srv.close(() => r()))

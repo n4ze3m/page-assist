@@ -26,6 +26,7 @@ type ResultItem = { id: string; status: 'ok' | 'error'; url?: string; fileName?:
 type Props = {
   open: boolean
   onClose: () => void
+  autoProcessQueued?: boolean
 }
 
 const isLikelyUrl = (raw: string) => {
@@ -84,8 +85,12 @@ function mediaIdFromPayload(
   return null
 }
 
-export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
-  const { t } = useTranslation(['option'])
+export const QuickIngestModal: React.FC<Props> = ({
+  open,
+  onClose,
+  autoProcessQueued = false
+}) => {
+  const { t } = useTranslation(['option', 'settings'])
   const [messageApi, contextHolder] = message.useMessage({
     top: 12,
     getContainer: () =>
@@ -142,10 +147,14 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
   const ingestBlocked = !isConnected || Boolean(offlineBypass)
   const ingestBlockedPrevRef = React.useRef(ingestBlocked)
   const hadOfflineQueuedRef = React.useRef(false)
-  const { setQueuedCount, clearQueued } = useQuickIngestStore((s) => ({
-    setQueuedCount: s.setQueuedCount,
-    clearQueued: s.clearQueued
-  }))
+  const { setQueuedCount, clearQueued, markFailure, clearFailure } =
+    useQuickIngestStore((s) => ({
+      setQueuedCount: s.setQueuedCount,
+      clearQueued: s.clearQueued,
+      markFailure: s.markFailure,
+      clearFailure: s.clearFailure
+    }))
+  const [lastRunError, setLastRunError] = React.useState<string | null>(null)
 
   const formatBytes = React.useCallback((bytes?: number) => {
     if (!bytes || Number.isNaN(bytes)) return ''
@@ -377,6 +386,10 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
     !ingestBlocked && stagedCount > 0 && hadOfflineQueuedRef.current
 
   const run = async () => {
+    // Reset any previous error state before a new attempt.
+    setLastRunError(null)
+    clearFailure()
+
     if (ingestBlocked) {
       messageApi.warning(
         t(
@@ -393,6 +406,21 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
     }
     const total = valid.length + localFiles.length
     setTotalPlanned(total)
+
+  const autoProcessedRef = React.useRef(false)
+
+  React.useEffect(() => {
+    if (!open) {
+      autoProcessedRef.current = false
+      return
+    }
+    if (!autoProcessQueued) return
+    if (autoProcessedRef.current) return
+    if (!showProcessQueuedButton) return
+    if (running) return
+    autoProcessedRef.current = true
+    void run()
+  }, [autoProcessQueued, open, running, showProcessQueuedButton])
     setProcessedCount(0)
     setLiveTotalCount(total)
     setRunStartedAt(Date.now())
@@ -442,6 +470,8 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
       if (!resp?.ok) {
         const msg = resp?.error || "Quick ingest failed. Check tldw server settings and try again."
         messageApi.error(msg)
+        setLastRunError(msg)
+        markFailure()
         setRunning(false)
         setRunStartedAt(null)
         return
@@ -461,10 +491,16 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
         if (failCount > 0) messageApi.warning(summary)
         else messageApi.success(summary)
       }
+      // Successful run (even with some item-level failures) clears the global failure flag.
+      clearFailure()
+      setLastRunError(null)
     } catch (e: any) {
       setRunning(false)
       setRunStartedAt(null)
-      messageApi.error(e?.message || 'Quick ingest failed.')
+      const msg = e?.message || "Quick ingest failed."
+      messageApi.error(msg)
+      setLastRunError(msg)
+      markFailure()
     }
   }
 
@@ -761,6 +797,35 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
     }, SAVE_DEBOUNCE_MS)
     return () => clearTimeout(id)
   }, [SAVE_DEBOUNCE_MS, advancedOpen, fieldDetailsOpen, setUiPrefs])
+
+  const openHealthDiagnostics = React.useCallback(() => {
+    try {
+      const hash = "#/settings/health"
+      const path = window.location.pathname || ""
+      if (path.includes("options.html")) {
+        window.location.hash = hash
+        return
+      }
+      try {
+        const url = browser.runtime.getURL(`/options.html${hash}`)
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        if (browser.tabs?.create) {
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          browser.tabs.create({ url })
+        } else {
+          window.open(url, "_blank")
+        }
+        return
+      } catch {
+        // fall through
+      }
+      window.open(`/options.html${hash}`, "_blank")
+    } catch {
+      // best-effort; avoid throwing from modal
+    }
+  }, [])
 
   const downloadJson = (item: ResultItem) => {
     const blob = new Blob([JSON.stringify(item.data ?? {}, null, 2)], { type: 'application/json' })
@@ -1071,6 +1136,38 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
             <li>Use the Inspector to see status, type, and quick checks before ingesting.</li>
           </ul>
         </div>
+        {lastRunError && (
+          <div className="mt-2 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-800 dark:border-red-600 dark:bg-red-900/30 dark:text-red-100">
+            <div className="font-medium">
+              {t(
+                "quickIngest.errorSummary",
+                "We couldn’t process ingest items right now."
+              )}
+            </div>
+            <div className="mt-1">
+              {t(
+                "quickIngest.errorHint",
+                "Try again after checking your tldw server. Health & diagnostics can help troubleshoot ingest issues."
+              )}
+            </div>
+            <div className="mt-2 flex flex-wrap items-center gap-2">
+              <Button
+                size="small"
+                type="primary"
+                onClick={openHealthDiagnostics}
+                data-testid="quick-ingest-open-health"
+              >
+                {t(
+                  "settings:healthSummary.diagnostics",
+                  "Health & diagnostics"
+                )}
+              </Button>
+              <Typography.Text className="text-[11px] text-red-700 dark:text-red-200">
+                {lastRunError}
+              </Typography.Text>
+            </div>
+          </div>
+        )}
         {ingestBlocked && (
           <div className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800 dark:border-amber-600 dark:bg-amber-900/20 dark:text-amber-100">
             <div className="font-medium">
@@ -1082,6 +1179,16 @@ export const QuickIngestModal: React.FC<Props> = ({ open, onClose }) => {
                 "You can queue URLs and files here and inspect fields, but ingestion will not run until your tldw server is online. Reconnect to process pending items."
               )}
             </div>
+            <button
+              type="button"
+              onClick={openHealthDiagnostics}
+              className="mt-1 inline-flex items-center text-[11px] font-medium text-amber-900 underline underline-offset-2 dark:text-amber-100"
+            >
+              {t(
+                "quickIngest.checkHealthLink",
+                "Check server health in Health & diagnostics"
+              )}
+            </button>
           </div>
         )}
         <div className="space-y-3">

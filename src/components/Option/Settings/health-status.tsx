@@ -14,17 +14,87 @@ type Check = {
   key: string
   label: string
   path: AllowedPath
+  descriptionKey: string
+  descriptionDefault: string
+  docsUrlKey?: string
+  docsUrlDefault?: string
 }
 
-const makeChecks = (t: TFunction): Check[] => [
-  { key: 'core', label: t('settings:healthPage.checks.core', 'Core API'), path: '/api/v1/health' },
-  { key: 'rag', label: t('settings:healthPage.checks.rag', 'RAG'), path: '/api/v1/rag/health' },
-  { key: 'audio', label: t('settings:healthPage.checks.audio', 'Audio'), path: '/api/v1/audio/health' },
-  { key: 'embeddings', label: t('settings:healthPage.checks.embeddings', 'Embeddings'), path: '/api/v1/embeddings/health' },
-  { key: 'metrics', label: t('settings:healthPage.checks.metrics', 'Metrics Health'), path: '/api/v1/metrics/health' },
-  { key: 'chatMetrics', label: t('settings:healthPage.checks.chatMetrics', 'Chat Metrics'), path: '/api/v1/metrics/chat' },
-  { key: 'mcp', label: t('settings:healthPage.checks.mcp', 'MCP'), path: '/api/v1/mcp/health' },
-]
+const makeChecks = (t: TFunction): Check[] => {
+  const base = 'settings:healthPage.checks'
+  return [
+    {
+      key: 'core',
+      label: t(`${base}.core`, 'Core API'),
+      path: '/api/v1/health',
+      descriptionKey: `${base}.coreDescription`,
+      descriptionDefault:
+        'Verifies the main chat API. If this is unhealthy, confirm your server URL, API key, and core logs.',
+      docsUrlKey: `${base}.coreDocsUrl`,
+      docsUrlDefault: 'https://docs.tldw.app/health/core'
+    },
+    {
+      key: 'rag',
+      label: t(`${base}.rag`, 'RAG'),
+      path: '/api/v1/rag/health',
+      descriptionKey: `${base}.ragDescription`,
+      descriptionDefault:
+        'Powers Knowledge search & retrieval. If this is unhealthy, ensure RAG is enabled and the knowledge index has been built on your server.',
+      docsUrlKey: `${base}.ragDocsUrl`,
+      docsUrlDefault: 'https://docs.tldw.app/health/rag'
+    },
+    {
+      key: 'audio',
+      label: t(`${base}.audio`, 'Audio'),
+      path: '/api/v1/audio/health',
+      descriptionKey: `${base}.audioDescription`,
+      descriptionDefault:
+        'Covers text-to-speech and speech-to-text APIs. If this is unhealthy, confirm your audio endpoints are enabled and reachable.',
+      docsUrlKey: `${base}.audioDocsUrl`,
+      docsUrlDefault: 'https://docs.tldw.app/health/audio'
+    },
+    {
+      key: 'embeddings',
+      label: t(`${base}.embeddings`, 'Embeddings'),
+      path: '/api/v1/embeddings/health',
+      descriptionKey: `${base}.embeddingsDescription`,
+      descriptionDefault:
+        'Checks the embeddings and indexing services used for retrieval. If this is unhealthy, rebuild your embedding index or restart the worker.',
+      docsUrlKey: `${base}.embeddingsDocsUrl`,
+      docsUrlDefault: 'https://docs.tldw.app/health/embeddings'
+    },
+    {
+      key: 'metrics',
+      label: t(`${base}.metrics`, 'Metrics Health'),
+      path: '/api/v1/metrics/health',
+      descriptionKey: `${base}.metricsDescription`,
+      descriptionDefault:
+        'Verifies metrics and monitoring endpoints. If this is unhealthy, metrics dashboards or alerting may be unavailable.',
+      docsUrlKey: `${base}.metricsDocsUrl`,
+      docsUrlDefault: 'https://docs.tldw.app/health/metrics'
+    },
+    {
+      key: 'chatMetrics',
+      label: t(`${base}.chatMetrics`, 'Chat Metrics'),
+      path: '/api/v1/metrics/chat',
+      descriptionKey: `${base}.chatMetricsDescription`,
+      descriptionDefault:
+        'Tracks chat analytics such as volume and latency. If this is unhealthy, chat metrics collection or endpoints may be failing.',
+      docsUrlKey: `${base}.chatMetricsDocsUrl`,
+      docsUrlDefault: 'https://docs.tldw.app/health/chat-metrics'
+    },
+    {
+      key: 'mcp',
+      label: t(`${base}.mcp`, 'MCP'),
+      path: '/api/v1/mcp/health',
+      descriptionKey: `${base}.mcpDescription`,
+      descriptionDefault:
+        'Checks Model Context Protocol (MCP) tools. If this is unhealthy, external tools and plugins may not be available in chat.',
+      docsUrlKey: `${base}.mcpDocsUrl`,
+      docsUrlDefault: 'https://docs.tldw.app/health/mcp'
+    }
+  ]
+}
 
 type Result = { status: 'unknown'|'healthy'|'unhealthy', detail?: any, statusCode?: number, durationMs?: number }
 
@@ -320,6 +390,12 @@ export default function HealthStatus() {
           {checks.map(c => {
             const r = results[c.key] || { status: 'unknown' }
             const statusLabel = describeStatus(r.status)
+            const description = t(c.descriptionKey, c.descriptionDefault)
+            const docsUrl =
+              c.docsUrlKey || c.docsUrlDefault
+                ? t(c.docsUrlKey || '', c.docsUrlDefault || '')
+                : ''
+            const isUnhealthy = r.status === 'unhealthy'
             return (
               <Card
                 key={c.key}
@@ -352,13 +428,41 @@ export default function HealthStatus() {
                     <Tag>{r.durationMs} ms</Tag>
                   )}
                 </Space>
+                {description && (
+                  <Typography.Paragraph
+                    type="secondary"
+                    className="!mt-3 !mb-1 text-xs md:text-sm"
+                  >
+                    {description}
+                  </Typography.Paragraph>
+                )}
+                {isUnhealthy && docsUrl && (
+                  <Typography.Link
+                    className="text-xs"
+                    onClick={() => {
+                      try {
+                        browser.tabs.create({ url: docsUrl })
+                      } catch {
+                        window.open(docsUrl, '_blank')
+                      }
+                    }}
+                  >
+                    {t(
+                      'healthPage.troubleshootLink',
+                      'Troubleshooting tips'
+                    )}
+                  </Typography.Link>
+                )}
                 {r.detail && (
                   <>
                     <div className="mt-3 flex items-center justify-between">
                       <Typography.Text
                         type="secondary"
                         className="text-xs">
-                        {t('healthPage.errorDetailsLabel', 'Details')}
+                        {t(
+                          'healthPage.errorDetailsLabel',
+                          'Technical details (for advanced users)'
+                        )}
                       </Typography.Text>
                       <Button
                         size="small"
@@ -380,6 +484,16 @@ export default function HealthStatus() {
                         {t('healthPage.copyError', 'Copy error')}
                       </Button>
                     </div>
+                    <Typography.Text
+                      type="secondary"
+                      className="mt-1 block text-[10px] md:text-xs"
+                    >
+                      {t(
+                        'healthPage.rawResponseFrom',
+                        'Raw response from {{path}}',
+                        { path: c.path }
+                      )}
+                    </Typography.Text>
                     <pre className="mt-1 p-2 bg-gray-50 dark:bg-[#262626] rounded text-xs overflow-auto max-h-40">
                       {JSON.stringify(r.detail, null, 2)}
                     </pre>

@@ -146,7 +146,13 @@ export const Header: React.FC<Props> = ({
   const [chatTitle, setChatTitle] = React.useState("")
   const [isEditingTitle, setIsEditingTitle] = React.useState(false)
   const [quickIngestOpen, setQuickIngestOpen] = React.useState(false)
-  const queuedQuickIngestCount = useQuickIngestStore((s) => s.queuedCount)
+  const [quickIngestAutoProcessQueued, setQuickIngestAutoProcessQueued] =
+    React.useState(false)
+  const { queuedQuickIngestCount, quickIngestHadFailure } =
+    useQuickIngestStore((s) => ({
+      queuedQuickIngestCount: s.queuedCount,
+      quickIngestHadFailure: s.hadRecentFailure
+    }))
 
   const {
     phase,
@@ -161,6 +167,7 @@ export const Header: React.FC<Props> = ({
 
   React.useEffect(() => {
     const handler = () => {
+      setQuickIngestAutoProcessQueued(false)
       setQuickIngestOpen(true)
       requestAnimationFrame(() => {
         quickIngestBtnRef.current?.focus()
@@ -174,6 +181,7 @@ export const Header: React.FC<Props> = ({
 
   React.useEffect(() => {
     const handler = () => {
+      setQuickIngestAutoProcessQueued(false)
       setQuickIngestOpen(true)
       // Nudge the modal to show the intro drawer once mounted
       window.setTimeout(() => {
@@ -831,17 +839,34 @@ export const Header: React.FC<Props> = ({
             <button
               type="button"
               ref={quickIngestBtnRef}
-              onClick={() => setQuickIngestOpen(true)}
+              onClick={() => {
+                setQuickIngestAutoProcessQueued(false)
+                setQuickIngestOpen(true)
+              }}
               data-testid="open-quick-ingest"
               aria-label={
                 hasQueuedQuickIngest
-                  ? `${t(
-                      "option:header.quickIngest",
-                      "Quick ingest"
-                    )} — ${queuedQuickIngestCount} ${t(
-                      "quickIngest.pendingLabel",
-                      "Pending — will run when connected"
-                    )}`
+                  ? [
+                      t(
+                        "option:header.quickIngestQueuedAria",
+                        "{{label}} — {{count}} items queued — click to review and process",
+                        {
+                          label: t(
+                            "option:header.quickIngest",
+                            "Quick ingest"
+                          ),
+                          count: queuedQuickIngestCount
+                        }
+                      ),
+                      quickIngestHadFailure
+                        ? t(
+                            "quickIngest.healthAriaHint",
+                            "Recent runs failed — open Health & diagnostics from the header for more details."
+                          )
+                        : ""
+                    ]
+                      .filter(Boolean)
+                      .join(" ")
                   : t("option:header.quickIngest", "Quick ingest")
               }
               title={
@@ -869,6 +894,21 @@ export const Header: React.FC<Props> = ({
                 </span>
               )}
             </button>
+            {hasQueuedQuickIngest && (
+              <button
+                type="button"
+                data-testid="process-queued-ingest-header"
+                onClick={() => {
+                  setQuickIngestAutoProcessQueued(true)
+                  setQuickIngestOpen(true)
+                }}
+                className="inline-flex items-center rounded-full border border-transparent px-2 py-1 text-xs text-blue-600 hover:text-blue-500 dark:text-blue-400">
+                {t(
+                  "quickIngest.processQueuedItemsShort",
+                  "Process queued items"
+                )}
+              </button>
+            )}
             <button
               type="button"
               onClick={() => navigate("/settings/health")}
@@ -1212,15 +1252,15 @@ export const Header: React.FC<Props> = ({
         </div>
       </div>
 
-      {quickIngestOpen && (
-        <QuickIngestModal
-          open={quickIngestOpen}
-          onClose={() => {
-            setQuickIngestOpen(false)
-            requestAnimationFrame(() => quickIngestBtnRef.current?.focus())
-          }}
-        />
-      )}
+      <QuickIngestModal
+        open={quickIngestOpen}
+        autoProcessQueued={quickIngestAutoProcessQueued}
+        onClose={() => {
+          setQuickIngestOpen(false)
+          setQuickIngestAutoProcessQueued(false)
+          requestAnimationFrame(() => quickIngestBtnRef.current?.focus())
+        }}
+      />
     </header>
   )
 }

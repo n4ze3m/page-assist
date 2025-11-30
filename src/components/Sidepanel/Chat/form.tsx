@@ -85,7 +85,11 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
   )
   const [sttSegEmbeddingsProvider] = useStorage("sttSegEmbeddingsProvider", "")
   const [sttSegEmbeddingsModel] = useStorage("sttSegEmbeddingsModel", "")
-  const queuedQuickIngestCount = useQuickIngestStore((s) => s.queuedCount)
+  const { queuedQuickIngestCount, quickIngestHadFailure } =
+    useQuickIngestStore((s) => ({
+      queuedQuickIngestCount: s.queuedCount,
+      quickIngestHadFailure: s.hadRecentFailure
+    }))
   const form = useForm({
     initialValues: {
       message: "",
@@ -157,6 +161,8 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
   })
   const [wsSttActive, setWsSttActive] = React.useState(false)
   const [ingestOpen, setIngestOpen] = React.useState(false)
+  const [autoProcessQueuedIngest, setAutoProcessQueuedIngest] =
+    React.useState(false)
   const quickIngestBtnRef = React.useRef<HTMLButtonElement>(null)
   const { phase, isConnected } = useConnectionState()
   const isConnectionReady = isConnected && phase === ConnectionPhase.CONNECTED
@@ -555,14 +561,22 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
   }, [])
 
   const handleQuickIngestOpen = React.useCallback(() => {
+    setAutoProcessQueuedIngest(false)
     setIngestOpen(true)
   }, [])
+
+  const handleProcessQueuedIngest = React.useCallback(() => {
+    if (!isConnectionReady || queuedQuickIngestCount <= 0) return
+    setAutoProcessQueuedIngest(true)
+    setIngestOpen(true)
+  }, [isConnectionReady, queuedQuickIngestCount])
 
   React.useEffect(() => {
     const handler = () => {
       if (!isConnectionReady) {
         return
       }
+      setAutoProcessQueuedIngest(false)
       setIngestOpen(true)
       requestAnimationFrame(() => {
         quickIngestBtnRef.current?.focus()
@@ -677,9 +691,22 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
           onClick={handleQuickIngestOpen}
           disabled={!isConnectionReady}
           title={
-            !isConnectionReady
-              ? t("playground:actions.ingestDisabled", "Connect to your tldw server to ingest.")
-              : t("playground:actions.ingestHint", "Upload URLs or files with advanced options.")
+            (!isConnectionReady
+              ? t(
+                  "playground:actions.ingestDisabled",
+                  "Connect to your tldw server to ingest."
+                )
+              : t(
+                  "playground:actions.ingestHint",
+                  "Upload URLs or files with advanced options."
+                )) +
+            (queuedQuickIngestCount > 0 && quickIngestHadFailure
+              ? " " +
+                t(
+                  "quickIngest.healthAriaHint",
+                  "Recent runs failed — open Health & diagnostics from the header for more details."
+                )
+              : "")
           }
           className="relative flex w-full items-center justify-between rounded-md px-2 py-1 text-sm text-gray-700 transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50 dark:text-gray-200 dark:hover:bg-[#2a2a2a]"
           data-has-queued-ingest={
@@ -701,6 +728,18 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
             )}
           </div>
         </button>
+        {queuedQuickIngestCount > 0 && (
+          <button
+            type="button"
+            onClick={handleProcessQueuedIngest}
+            className="mt-1 text-[11px] text-blue-600 hover:text-blue-500 dark:text-blue-400"
+          >
+            {t(
+              "quickIngest.processQueuedItemsShort",
+              "Process queued items"
+            )}
+          </button>
+        )}
         <button
           type="button"
           onClick={handleImageUpload}
@@ -1367,15 +1406,15 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
         isOCREnabled={useOCR}
       />
       {/* Quick ingest modal */}
-      {ingestOpen && (
-        <QuickIngestModal
-          open={ingestOpen}
-          onClose={() => {
-            setIngestOpen(false)
-            requestAnimationFrame(() => quickIngestBtnRef.current?.focus())
-          }}
-        />
-      )}
+      <QuickIngestModal
+        open={ingestOpen}
+        autoProcessQueued={autoProcessQueuedIngest}
+        onClose={() => {
+          setIngestOpen(false)
+          setAutoProcessQueuedIngest(false)
+          requestAnimationFrame(() => quickIngestBtnRef.current?.focus())
+        }}
+      />
     </div>
   )
 }

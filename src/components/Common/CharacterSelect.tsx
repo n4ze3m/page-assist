@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query"
-import { Dropdown, Empty, Tooltip } from "antd"
+import { Dropdown, Tooltip } from "antd"
 import { UserCircle2 } from "lucide-react"
 import React from "react"
 import { useStorage } from "@plasmohq/storage/hook"
@@ -17,7 +17,7 @@ export const CharacterSelect: React.FC<Props> = ({
   className = "dark:text-gray-300",
   iconClassName = "size-5"
 }) => {
-  const { t } = useTranslation(["option", "common"])
+  const { t } = useTranslation(["option", "common", "settings"])
   const notification = useAntdNotification()
   const [selectedCharacter, setSelectedCharacter] = useStorage<any>(
     "selectedCharacter",
@@ -51,6 +51,16 @@ export const CharacterSelect: React.FC<Props> = ({
   const clearLabel = t("option:characters.clearCharacter", {
     defaultValue: "Clear character"
   }) as string
+  const emptyTitle = t("settings:manageCharacters.emptyTitle", {
+    defaultValue: "No characters yet"
+  }) as string
+  const emptyDescription = t("settings:manageCharacters.emptyDescription", {
+    defaultValue:
+      "Create a reusable character with a name, description, and system prompt you can chat with."
+  }) as string
+  const emptyCreateLabel = t("settings:manageCharacters.emptyPrimaryCta", {
+    defaultValue: "Create character"
+  }) as string
 
   React.useEffect(() => {
     if (!initialized.current) {
@@ -74,6 +84,45 @@ export const CharacterSelect: React.FC<Props> = ({
 
     previousCharacterId.current = selectedCharacter?.id ?? null
   }, [notification, selectedCharacter?.id, selectedCharacter?.name, t])
+
+  const handleOpenCharacters = React.useCallback(() => {
+    try {
+      if (typeof window === "undefined") return
+
+      const hash = "#/characters?from=header-select"
+      const pathname = window.location.pathname || ""
+
+      // If we're already inside the options UI, just switch routes in-place.
+      if (pathname.includes("options.html")) {
+        const base = window.location.href.replace(/#.*$/, "")
+        window.location.href = `${base}${hash}`
+        return
+      }
+
+      // Otherwise, try to open the options page in a new tab.
+      try {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore - browser is provided by the extension runtime.
+        const url = browser.runtime.getURL(`/options.html${hash}`)
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        if (browser.tabs?.create) {
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          browser.tabs.create({ url })
+        } else {
+          window.open(url, "_blank")
+        }
+        return
+      } catch {
+        // fall through to window.open fallback
+      }
+
+      window.open(`/options.html${hash}`, "_blank")
+    } catch {
+      // ignore navigation errors
+    }
+  }, [])
 
   const items =
     (data || []).map((c: any) => ({
@@ -172,10 +221,30 @@ export const CharacterSelect: React.FC<Props> = ({
   if (items.length > 0) {
     menuItems.push({ type: "divider", key: "__divider_items__" } as any, ...items)
   } else {
-    menuItems.push({ type: "divider", key: "__divider_empty__" } as any, {
-      key: "empty",
-      label: <Empty />
-    })
+    menuItems.push(
+      { type: "divider", key: "__divider_empty__" } as any,
+      {
+        key: "empty",
+        label: (
+          <div className="w-56 px-2 py-2 text-xs text-gray-600 dark:text-gray-300">
+            <div className="font-medium text-gray-800 dark:text-gray-100">
+              {emptyTitle}
+            </div>
+            <div className="mt-1 text-[11px] text-gray-600 dark:text-gray-300">
+              {emptyDescription}
+            </div>
+            <button
+              type="button"
+              className="mt-2 inline-flex items-center rounded border border-gray-300 bg-white px-2 py-1 text-xs font-medium text-blue-600 hover:border-blue-500 hover:text-blue-700 dark:border-gray-600 dark:bg-[#0f1115] dark:text-blue-400 dark:hover:border-blue-400 dark:hover:text-blue-300">
+              {emptyCreateLabel}
+            </button>
+          </div>
+        ),
+        onClick: () => {
+          handleOpenCharacters()
+        }
+      }
+    )
   }
 
   if (clearItem) {

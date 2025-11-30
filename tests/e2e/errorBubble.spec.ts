@@ -25,9 +25,27 @@ test.describe('Error bubble in chat', () => {
     await input.fill('hello')
     await input.press('Enter')
 
-    await expect(page.getByText(/Error: Invalid X-API-KEY/i)).toBeVisible({ timeout: 10_000 })
+    // Friendly summary and next-step guidance
+    const summary = page.getByText(/couldn.?t reach your tldw server/i)
+    await expect(summary).toBeVisible({ timeout: 10_000 })
+    await expect(
+      page.getByText(/open settings .*tldw server/i)
+    ).toBeVisible()
+
+    // Error bubble should be announced as an alert
+    const alert = page
+      .getByRole('alert')
+      .filter({ hasText: /couldn.?t reach your tldw server/i })
+    await expect(alert).toBeVisible()
+
+    // Technical details remain available behind a toggle
+    const toggle = page.getByRole('button', {
+      name: /show technical details/i
+    })
+    await expect(toggle).toBeVisible()
+    await toggle.click()
+    await expect(page.getByText(/Invalid X-API-KEY/i)).toBeVisible()
 
     await context.close()
   })
 })
-

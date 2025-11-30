@@ -236,5 +236,15 @@
   "cancelPullingModel": {
     "confirm": "Are you sure you want to cancel the download? This will stop the download process. If supported by the provider, you can resume later."
   },
-  "privateModeSaveErrorTitle": "tldw Assistant can't save data"
+  "privateModeSaveErrorTitle": "tldw Assistant can't save data",
+  "error": {
+    "friendlyApiKeySummary": "We couldn\u2019t reach your tldw server.",
+    "friendlyApiKeyHint": "Your API key may be invalid. Open Settings \u2192 tldw server to check your URL and API key, then try again.",
+    "friendlyTimeoutSummary": "Your chat timed out.",
+    "friendlyTimeoutHint": "The server stopped streaming responses. Try again, or open Health & diagnostics to check server status.",
+    "friendlyGenericSummary": "Something went wrong while talking to your tldw server.",
+    "friendlyGenericHint": "Try again in a moment, or open Health & diagnostics to inspect server health.",
+    "showDetails": "Show technical details",
+    "hideDetails": "Hide technical details"
+  }
 }

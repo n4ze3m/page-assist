@@ -767,6 +767,9 @@
     "statusUnknown": "Unknown",
     "updatedJustNow": "Updated just now",
     "updatedSecondsAgo": "Updated {{seconds}}s ago",
+    "troubleshootLink": "Troubleshooting tips",
+    "errorDetailsLabel": "Technical details (for advanced users)",
+    "rawResponseFrom": "Raw response from {{path}}",
     "checks": {
       "core": "Core API",
       "rag": "RAG",
@@ -774,7 +777,21 @@
       "embeddings": "Embeddings",
       "metrics": "Metrics Health",
       "chatMetrics": "Chat Metrics",
-      "mcp": "MCP"
+      "mcp": "MCP",
+      "coreDescription": "Verifies the main chat API. If this is unhealthy, confirm your server URL, API key, and core logs.",
+      "ragDescription": "Powers Knowledge search & retrieval. If this is unhealthy, ensure RAG is enabled and the knowledge index has been built on your server.",
+      "audioDescription": "Covers text-to-speech and speech-to-text APIs. If this is unhealthy, confirm your audio endpoints are enabled and reachable.",
+      "embeddingsDescription": "Checks the embeddings and indexing services used for retrieval. If this is unhealthy, rebuild your embedding index or restart the worker.",
+      "metricsDescription": "Verifies metrics and monitoring endpoints. If this is unhealthy, metrics dashboards or alerting may be unavailable.",
+      "chatMetricsDescription": "Tracks chat analytics such as volume and latency. If this is unhealthy, chat metrics collection or endpoints may be failing.",
+      "mcpDescription": "Checks Model Context Protocol (MCP) tools. If this is unhealthy, external tools and plugins may not be available in chat.",
+      "coreDocsUrl": "https://docs.tldw.app/health/core",
+      "ragDocsUrl": "https://docs.tldw.app/health/rag",
+      "audioDocsUrl": "https://docs.tldw.app/health/audio",
+      "embeddingsDocsUrl": "https://docs.tldw.app/health/embeddings",
+      "metricsDocsUrl": "https://docs.tldw.app/health/metrics",
+      "chatMetricsDocsUrl": "https://docs.tldw.app/health/chat-metrics",
+      "mcpDocsUrl": "https://docs.tldw.app/health/mcp"
     }
   },
   "healthSummary": {

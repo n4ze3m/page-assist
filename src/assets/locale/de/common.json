@@ -236,5 +236,15 @@
   "mermaid": "Mermaid-Diagramme",
   "search": "Suchen",
   "searchResults": "Suchergebnisse",
-  "newBranch": "Neuer Zweig"
+  "newBranch": "Neuer Zweig",
+  "error": {
+    "friendlyApiKeySummary": "Wir konnten Ihren tldw server nicht erreichen.",
+    "friendlyApiKeyHint": "Ihr API-Schlüssel ist möglicherweise ungültig. Öffnen Sie Einstellungen \u2192 tldw server, um URL und API-Schlüssel zu prüfen, und versuchen Sie es erneut.",
+    "friendlyTimeoutSummary": "Ihr Chat ist abgelaufen.",
+    "friendlyTimeoutHint": "Der Server hat aufgehört, Antworten zu senden. Versuchen Sie es erneut oder öffnen Sie Health & diagnostics, um den Serverstatus zu prüfen.",
+    "friendlyGenericSummary": "Beim Kontakt mit Ihrem tldw server ist ein Fehler aufgetreten.",
+    "friendlyGenericHint": "Versuchen Sie es in einem Moment erneut oder öffnen Sie Health & diagnostics, um den Serverzustand zu prüfen.",
+    "showDetails": "Technische Details anzeigen",
+    "hideDetails": "Technische Details ausblenden"
+  }
 }

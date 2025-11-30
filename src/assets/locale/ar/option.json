@@ -353,6 +353,7 @@
     "connectExample1": "افتح الإعدادات → خادم tldw لإضافة عنوان URL لخادمك.",
     "connectExample2": "استخدم صفحة التشخيص إذا كان خادمك يعمل ولكنه غير قابل للوصول.",
     "headerDescription": "أنشئ شخصيات قابلة لإعادة الاستخدام يمكنك اختيارها من ترويسة الدردشة وإعادة استخدامها عبر المحادثات.",
+    "headerSelectHint": "Create a character to reuse their persona across chats. Use “New character” to get started.",
     "offlineTitle": "واجهة برمجة تطبيقات الشخصيات غير متوفرة على هذا الخادم",
     "offlineDescription": "هذا الخادم لا يعلن عن ‎/api/v1/characters‎.",
     "offlineExample1": "افتح صفحة التشخيص لتأكيد إصدار الخادم وواجهات برمجة التطبيقات المتاحة للشخصيات.",
