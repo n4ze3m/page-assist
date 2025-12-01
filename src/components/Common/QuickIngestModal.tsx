@@ -8,7 +8,7 @@ import { useStorage } from '@plasmohq/storage/hook'
 import { useConfirmDanger } from '@/components/Common/confirm-danger'
 import { defaultEmbeddingModelForRag } from '@/services/ollama'
 import { tldwModels } from '@/services/tldw'
-import { useConnectionState } from '@/hooks/useConnectionState'
+import { useConnectionActions, useConnectionState } from '@/hooks/useConnectionState'
 import { useQuickIngestStore } from "@/store/quick-ingest"
 
 type Entry = {
@@ -155,6 +155,7 @@ export const QuickIngestModal: React.FC<Props> = ({
   const confirmDanger = useConfirmDanger()
   const introToast = React.useRef(false)
   const { isConnected, offlineBypass } = useConnectionState()
+  const { checkOnce } = useConnectionActions?.() || {}
   const ingestBlocked = !isConnected || Boolean(offlineBypass)
   const ingestBlockedPrevRef = React.useRef(ingestBlocked)
   const hadOfflineQueuedRef = React.useRef(false)
@@ -1987,7 +1988,7 @@ export const QuickIngestModal: React.FC<Props> = ({
                 {showProcessQueuedButton && (
                   <Button
                     onClick={run}
-                    disabled={running || plannedCount === 0}
+                    disabled={running || plannedCount === 0 || ingestBlocked}
                     aria-label={t(
                       "quickIngest.processQueuedItemsAria",
                       "Process queued Quick Ingest items"
@@ -2006,7 +2007,7 @@ export const QuickIngestModal: React.FC<Props> = ({
                   type="primary"
                   loading={running}
                   onClick={run}
-                  disabled={plannedCount === 0 || running}
+                  disabled={plannedCount === 0 || running || ingestBlocked}
                   aria-label={
                     ingestBlocked
                       ? t(
@@ -2041,11 +2042,26 @@ export const QuickIngestModal: React.FC<Props> = ({
                 </Button>
               </div>
               {ingestBlocked && (
-                <div className="mt-1 text-xs text-amber-700 dark:text-amber-200">
-                  {t(
-                    "quickIngest.offlineFooter",
-                    "Offline mode: items are staged here and will process once your server reconnects."
-                  )}
+                <div className="mt-1 flex items-center gap-2 text-xs text-amber-700 dark:text-amber-200">
+                  <span>
+                    {t(
+                      "quickIngest.offlineFooter",
+                      "Offline mode: items are staged here and will process once your server reconnects."
+                    )}
+                  </span>
+                  {checkOnce ? (
+                    <Button
+                      size="small"
+                      onClick={() => {
+                        try {
+                          checkOnce?.()
+                        } catch {
+                          // ignore check errors; footer is informational
+                        }
+                      }}>
+                      {qi('retryConnection', 'Retry connection')}
+                    </Button>
+                  ) : null}
                 </div>
               )}
               {progressMeta.total > 0 && (
@@ -2125,7 +2141,10 @@ export const QuickIngestModal: React.FC<Props> = ({
                     setInspectorOpen(false)
                     if (!introToast.current) {
                       messageApi.success(
-                        qi('inspectorIntroDismissed', 'Intro dismissed. Reset anytime with “Reset Inspector Intro.”')
+                        qi(
+                          'inspectorIntroDismissed',
+                          'Intro dismissed — reset anytime in Settings > Quick Ingest (Reset Intro).'
+                        )
                       )
                       introToast.current = true
                     }

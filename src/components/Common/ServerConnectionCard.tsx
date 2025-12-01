@@ -414,8 +414,11 @@ export const ServerConnectionCard: React.FC<Props> = ({
     const { state } = useConnectionStore.getState()
     const canOpen = state.offlineBypass || state.isConnected
     if (!canOpen) {
-      setOfflineHintVisible(true)
-      return
+      try {
+        await enableOfflineBypass()
+      } catch {
+        // allow fallback to regular open even if bypass enabling fails
+      }
     }
     window.dispatchEvent(new CustomEvent("tldw:open-quick-ingest"))
   }
@@ -715,6 +718,12 @@ export const ServerConnectionCard: React.FC<Props> = ({
                       "Health & diagnostics"
                     )}
                   </Button>
+                </div>
+                <div className="text-[11px] text-gray-500 dark:text-gray-400">
+                  {t(
+                    "option:connectionCard.quickIngestHelpInline",
+                    "Tip: The ? icon reopens the Quick Ingest intro. You can stage items offline; they will process after you reconnect."
+                  )}
                 </div>
                 {offlineHintVisible || offlineBypass ? (
                   <span className="text-[11px] text-gray-500 dark:text-gray-400">
