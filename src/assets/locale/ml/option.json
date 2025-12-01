@@ -199,7 +199,7 @@
     "advancedSummary": "{{count}} advanced fields loaded",
     "advancedEmpty": "No advanced options detected — try reloading the spec.",
     "modifiedCount": "{{count}} modified",
-    "progress": "Processing {{done}} / {{total}} items…",
+    "progress": "പ്രോസസ്സ് ചെയ്യുന്നു {{done}} / {{total}} ഇനങ്ങൾ…",
     "errorSummary": "ഇപ്പോൾ ഇൻജെസ്റ്റ് ഐറ്റങ്ങൾ പ്രോസസ്സ് ചെയ്യാൻ കഴിഞ്ഞില്ല.",
     "errorHint": "നിങ്ങളുടെ tldw സർവർ ശരിയായി പ്രവർത്തിക്കുന്നുണ്ടോെന്ന് പരിശോധിച്ചതിന് ശേഷം വീണ്ടും ശ്രമിക്കുക. Health & diagnostics വിഭാഗം ഇൻജെസ്റ്റ് പ്രശ്നങ്ങൾ കണ്ടെത്താനും പരിഹരിക്കാനും സഹായിക്കും.",
     "checkHealthLink": "Health & diagnostics ൽ സർവറിന്റെ ആരോഗ്യസ്ഥിതി പരിശോധിക്കുക",

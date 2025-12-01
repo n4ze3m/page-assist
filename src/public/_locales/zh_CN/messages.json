@@ -14,6 +14,9 @@
   "buttonOpenQuickIngest": {
     "message": "打开快速导入"
   },
+  "buttonTryDemo": {
+    "message": "试用演示"
+  },
   "learnMoreTldw": {
     "message": "了解 tldw 服务器的工作方式"
   },

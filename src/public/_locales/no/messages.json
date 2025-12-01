@@ -17,6 +17,9 @@
   "buttonOpenQuickIngest": {
     "message": "Åpne Quick Ingest"
   },
+  "buttonTryDemo": {
+    "message": "Prøv en demo"
+  },
   "learnMoreTldw": {
     "message": "Lær hvordan tldw-serveren fungerer"
   },

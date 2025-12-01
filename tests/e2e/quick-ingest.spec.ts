@@ -4,7 +4,8 @@ import os from 'os'
 import path from 'path'
 
 const EXT_REL_PATH = ['build', 'chrome-mv3']
-const API_KEY = 'THIS-IS-A-SECURE-KEY-123-FAKE-KEY'
+const SERVER_URL = process.env.TLDW_URL || 'http://127.0.0.1:8000'
+const API_KEY = process.env.TLDW_API_KEY || 'THIS-IS-A-SECURE-KEY-123-FAKE-KEY'
 
 test.describe('Quick Ingest UX smoke (extension context)', () => {
   test('open modal, add URLs, attach a file, view inspector', async ({}, testInfo) => {
@@ -40,13 +41,13 @@ test.describe('Quick Ingest UX smoke (extension context)', () => {
       await page.goto(`chrome-extension://${extId}/options.html#/playground`, { waitUntil: 'domcontentloaded' })
       await page.waitForLoadState('networkidle')
       await page.evaluate(
-        (key) =>
+        ({ key, url }) =>
           new Promise<void>((resolve) => {
             // @ts-ignore
             chrome.storage?.local?.set(
               {
                 tldwConfig: {
-                  serverUrl: 'http://127.0.0.1:8000',
+                  serverUrl: url,
                   authMode: 'single-user',
                   apiKey: key
                 },
@@ -55,9 +56,13 @@ test.describe('Quick Ingest UX smoke (extension context)', () => {
               () => resolve()
             )
           }),
-        API_KEY
+        { key: API_KEY, url: SERVER_URL }
       )
       await page.reload({ waitUntil: 'domcontentloaded' })
+      // Force a connection check with the seeded config
+      await page.evaluate(() => {
+        window.dispatchEvent(new CustomEvent('tldw:check-connection'))
+      })
 
       // Open Quick Ingest modal (prefer on-card CTA which also enables offline bypass)
       const trigger = page
@@ -81,6 +86,11 @@ test.describe('Quick Ingest UX smoke (extension context)', () => {
         // Wait for modal content (root may briefly stay hidden)
         await expect(page.locator('.quick-ingest-modal')).not.toHaveAttribute('hidden', 'true', { timeout: 10_000 })
         await expect(page.locator('.quick-ingest-modal [data-state="ready"]')).toBeVisible({ timeout: 10_000 })
+        // Wait for offline banner to clear or ingest button to lose "server offline" text
+        const offlineBanner = page.getByText(/server offline — staging only/i).first()
+        await offlineBanner.waitFor({ state: 'hidden', timeout: 10_000 }).catch(() => {})
+        const ingestBtn = page.getByRole('button', { name: /ingest|process/i }).first()
+        await expect(ingestBtn).not.toHaveText(/server offline/i, { timeout: 10_000 })
       } catch {
         // allow skip when the trigger selector is missing in this view
         test.skip(true, 'Quick Ingest trigger not found on options page; adjust selector or open manually.')

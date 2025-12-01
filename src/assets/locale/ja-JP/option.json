@@ -305,10 +305,10 @@
     "pendingLabel": "保留中 — 接続時に実行されます",
     "readyToast": "サーバーが復帰しました — {{count}} 件のキューを処理できます。",
     "processQueuedItemsShort": "キュー処理",
-    "errorSummary": "We couldn’t process ingest items right now.",
-    "errorHint": "Try again after checking your tldw server. Health & diagnostics can help troubleshoot ingest issues.",
-    "checkHealthLink": "Check server health in Health & diagnostics",
-    "healthAriaHint": "Recent runs failed — open Health & diagnostics from the header for more details."
+    "errorSummary": "現在、取り込みアイテムを処理できませんでした。",
+    "errorHint": "tldw サーバーを確認してから再試行してください。問題の切り分けには「ヘルスと診断」をご利用ください。",
+    "checkHealthLink": "「ヘルスと診断」でサーバーの状態を確認する",
+    "healthAriaHint": "最近の実行に失敗しています — 詳細はヘッダーの「ヘルスと診断」を開いて確認してください。"
   },
   "notesSearch": {
     "placeholder": "Search titles and contents",

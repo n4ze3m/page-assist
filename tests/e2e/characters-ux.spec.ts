@@ -224,7 +224,7 @@ test.describe('Characters workspace UX', () => {
 
     const { context, page, optionsUrl, granted } =
       await setupExtensionForServer(server)
-    if (!granted || !context || !page || !optionsUrl) {
+    if (!granted) {
       await server.stop()
       test.skip('host permission not granted')
       return
@@ -290,7 +290,7 @@ test.describe('Characters workspace UX', () => {
 
     const { context, page, optionsUrl, granted } =
       await setupExtensionForServer(server)
-    if (!granted || !context || !page || !optionsUrl) {
+    if (!granted) {
       await server.stop()
       test.skip('host permission not granted')
       return

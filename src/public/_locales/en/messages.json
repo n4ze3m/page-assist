@@ -17,6 +17,9 @@
   "buttonOpenQuickIngest": {
     "message": "Open Quick Ingest"
   },
+  "buttonTryDemo": {
+    "message": "Try a demo"
+  },
   "learnMoreTldw": {
     "message": "Learn how tldw server works"
   },

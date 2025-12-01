@@ -17,6 +17,9 @@
   "buttonOpenQuickIngest": {
     "message": "Öppna snabbimport"
   },
+  "buttonTryDemo": {
+    "message": "Prova en demo"
+  },
   "learnMoreTldw": {
     "message": "Lär dig hur tldw-servern fungerar"
   },

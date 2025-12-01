@@ -17,6 +17,9 @@
   "buttonOpenQuickIngest": {
     "message": "باز کردن درون‌ریزی سریع"
   },
+  "buttonTryDemo": {
+    "message": "امتحان نسخه آزمایشی"
+  },
   "learnMoreTldw": {
     "message": "درباره نحوه کار سرور tldw بیشتر بدانید"
   },

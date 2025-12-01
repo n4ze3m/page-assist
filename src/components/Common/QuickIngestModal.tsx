@@ -417,6 +417,30 @@ export const QuickIngestModal: React.FC<Props> = ({
 
   const autoProcessedRef = React.useRef(false)
 
+  // Allow external callers (e.g., tests) to force a connection check
+  React.useEffect(() => {
+    const handler = () => {
+      try {
+        checkOnce?.()
+      } catch {
+        // ignore check errors
+      }
+    }
+    window.addEventListener("tldw:check-connection", handler)
+    return () => window.removeEventListener("tldw:check-connection", handler)
+  }, [checkOnce])
+
+  // When modal opens and we are offline, automatically retry connection
+  React.useEffect(() => {
+    if (open && ingestBlocked) {
+      try {
+        checkOnce?.()
+      } catch {
+        // ignore retry failures
+      }
+    }
+  }, [open, ingestBlocked, checkOnce])
+
   const run = React.useCallback(async () => {
     // Reset any previous error state before a new attempt.
     setLastRunError(null)

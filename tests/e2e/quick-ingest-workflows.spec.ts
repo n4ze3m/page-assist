@@ -2,7 +2,8 @@ import { expect, test, type BrowserContext } from '@playwright/test'
 import path from 'path'
 import { launchWithBuiltExtension } from './utils/extension-build'
 
-const API_KEY = 'THIS-IS-A-SECURE-KEY-123-FAKE-KEY'
+const SERVER_URL = process.env.TLDW_URL || 'http://127.0.0.1:8000'
+const API_KEY = process.env.TLDW_API_KEY || 'THIS-IS-A-SECURE-KEY-123-FAKE-KEY'
 
 test.describe('Quick Ingest workflows and UX', () => {
   test('URLs, files, inspector intro, and help flows', async ({}, testInfo) => {
@@ -11,7 +12,7 @@ test.describe('Quick Ingest workflows and UX', () => {
     try {
       const launchResult = await launchWithBuiltExtension({
         seedConfig: {
-          serverUrl: 'http://127.0.0.1:8000',
+          serverUrl: SERVER_URL,
           authMode: 'single-user',
           apiKey: API_KEY
         },
@@ -22,6 +23,10 @@ test.describe('Quick Ingest workflows and UX', () => {
 
       await page.goto(optionsUrl + '#/playground', { waitUntil: 'domcontentloaded' })
       await page.waitForLoadState('networkidle')
+      // Force a connection check with the seeded config
+      await page.evaluate(() => {
+        window.dispatchEvent(new CustomEvent('tldw:check-connection'))
+      })
 
       // Click header trigger directly (online path), fallback to media route if missing
       let trigger = page
@@ -46,6 +51,10 @@ test.describe('Quick Ingest workflows and UX', () => {
       // Wait for modal content (root may briefly stay hidden)
       await expect(page.locator('.quick-ingest-modal')).not.toHaveAttribute('hidden', 'true', { timeout: 10_000 })
       await expect(page.locator('.quick-ingest-modal [data-state="ready"]')).toBeVisible({ timeout: 10_000 })
+      const offlineBanner = page.getByText(/server offline — staging only/i).first()
+      await offlineBanner.waitFor({ state: 'hidden', timeout: 10_000 }).catch(() => {})
+      const ingestBtn = page.getByRole('button', { name: /ingest|process/i }).first()
+      await expect(ingestBtn).not.toHaveText(/server offline/i, { timeout: 10_000 })
 
       // Workflow 1: add URLs and see queue + Inspector intro
       const urlInput = page

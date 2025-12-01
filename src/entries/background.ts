@@ -14,7 +14,7 @@ import {
   notify
 } from "@/services/background-helpers"
 
-const warmModels = async (force?: boolean, throwOnError?: boolean) => {
+const warmModels = async (force = false, throwOnError = false) => {
   try {
     return await tldwModels.warmCache(Boolean(force))
   } catch (e) {
