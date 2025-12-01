@@ -384,9 +384,7 @@ export const ServerConnectionCard: React.FC<Props> = ({
   }
 
   const handleOpenSettings = () => {
-    try {
-      if (onOpenSettings) return onOpenSettings()
-    } finally {}
+    if (onOpenSettings) return onOpenSettings()
     defaultOpenSettings()
   }
 
@@ -428,7 +426,11 @@ export const ServerConnectionCard: React.FC<Props> = ({
       await enableOfflineBypass()
     } catch {
       // ignore enable failures; fallback to a regular check
-      await checkOnce()
+      try {
+        await checkOnce()
+      } catch {
+        // swallow fallback failures
+      }
     }
     setOfflineHintVisible(true)
   }
@@ -438,7 +440,11 @@ export const ServerConnectionCard: React.FC<Props> = ({
       await disableOfflineBypass()
     } catch {
       // ignore disable failures; fallback to a regular check
-      await checkOnce()
+      try {
+        await checkOnce()
+      } catch {
+        // swallow fallback failures
+      }
     }
     setOfflineHintVisible(false)
   }
@@ -630,10 +636,7 @@ export const ServerConnectionCard: React.FC<Props> = ({
             icon={<Settings className="h-4 w-4" />}
             onClick={handleOpenSettings}
             block>
-            {t(
-              "option:connectionCard.buttonChangeServer",
-              t("tldwState.changeServer", "Change server")
-            )}
+            {t("option:connectionCard.buttonChangeServer", "Change server")}
           </Button>
         </div>
 
@@ -725,6 +728,15 @@ export const ServerConnectionCard: React.FC<Props> = ({
                     "Tip: The ? icon reopens the Quick Ingest intro. You can stage items offline; they will process after you reconnect."
                   )}
                 </div>
+                {isSearching && serverHost ? (
+                  <div className="text-[11px] text-gray-500 dark:text-gray-400">
+                    {t(
+                      "option:connectionCard.checkingWithConfig",
+                      "Checking {{host}} with your saved API key…",
+                      { host: serverHost }
+                    )}
+                  </div>
+                ) : null}
                 {offlineHintVisible || offlineBypass ? (
                   <span className="text-[11px] text-gray-500 dark:text-gray-400">
                     {t(

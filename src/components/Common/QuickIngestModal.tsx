@@ -170,6 +170,7 @@ export const QuickIngestModal: React.FC<Props> = ({
   const [progressTick, setProgressTick] = React.useState<number>(0)
   const advancedHydratedRef = React.useRef(false)
   const uiPrefsHydratedRef = React.useRef(false)
+  const [modalReady, setModalReady] = React.useState(false)
 
   const unmountedRef = React.useRef(false)
 
@@ -389,6 +390,13 @@ export const QuickIngestModal: React.FC<Props> = ({
     }
     ingestBlockedPrevRef.current = ingestBlocked
   }, [ingestBlocked, stagedCount, messageApi, t])
+
+  // Mark modal as ready once we have evaluated connection state at least once
+  React.useEffect(() => {
+    if (!modalReady) {
+      setModalReady(true)
+    }
+  }, [modalReady, ingestBlocked])
 
   React.useEffect(() => {
     if (hadOfflineQueuedRef.current && stagedCount > 0) {
@@ -1212,7 +1220,7 @@ export const QuickIngestModal: React.FC<Props> = ({
       maskClosable={!running}
     >
       {contextHolder}
-      <div className="relative">
+      <div className="relative" data-state={modalReady ? 'ready' : 'loading'}>
       <Space direction="vertical" className="w-full">
         <div className="flex flex-col gap-1">
           <Typography.Text strong>{t('quickIngest.howItWorks', 'How this works')}</Typography.Text>

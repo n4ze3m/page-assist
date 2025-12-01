@@ -45,7 +45,7 @@ test.describe('Quick Ingest workflows and UX', () => {
 
       // Wait for modal content (root may briefly stay hidden)
       await expect(page.locator('.quick-ingest-modal')).not.toHaveAttribute('hidden', 'true', { timeout: 10_000 })
-      await expect(page.locator('.quick-ingest-modal .ant-modal-content')).toBeVisible({ timeout: 10_000 })
+      await expect(page.locator('.quick-ingest-modal [data-state="ready"]')).toBeVisible({ timeout: 10_000 })
 
       // Workflow 1: add URLs and see queue + Inspector intro
       const urlInput = page

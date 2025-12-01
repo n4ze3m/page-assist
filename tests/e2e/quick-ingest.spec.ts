@@ -80,7 +80,7 @@ test.describe('Quick Ingest UX smoke (extension context)', () => {
       try {
         // Wait for modal content (root may briefly stay hidden)
         await expect(page.locator('.quick-ingest-modal')).not.toHaveAttribute('hidden', 'true', { timeout: 10_000 })
-        await expect(page.locator('.quick-ingest-modal .ant-modal-content')).toBeVisible({ timeout: 10_000 })
+        await expect(page.locator('.quick-ingest-modal [data-state="ready"]')).toBeVisible({ timeout: 10_000 })
       } catch {
         // allow skip when the trigger selector is missing in this view
         test.skip(true, 'Quick Ingest trigger not found on options page; adjust selector or open manually.')
