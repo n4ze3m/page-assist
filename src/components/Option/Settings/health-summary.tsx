@@ -53,7 +53,11 @@ export default function HealthSummary() {
 
   // Map shared knowledgeStatus into a simple dot state.
   useEffect(() => {
-    if (knowledgeStatus === "ready" || knowledgeStatus === "indexing") {
+    if (
+      knowledgeStatus === "ready" ||
+      knowledgeStatus === "indexing" ||
+      knowledgeStatus === "empty"
+    ) {
       setRag("ok")
     } else if (knowledgeStatus === "offline") {
       setRag("fail")

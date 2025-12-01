@@ -72,9 +72,18 @@ export const FlashcardsPage: React.FC = () => {
   if (!isOnline) {
     return demoEnabled ? (
       <FeatureEmptyState
-        title={t("option:flashcards.demoTitle", {
-          defaultValue: "Explore Flashcards in demo mode"
-        })}
+        title={
+          <span className="inline-flex items-center gap-2">
+            <span className="rounded-full bg-blue-50 px-2 py-0.5 text-[11px] font-medium text-blue-700 dark:bg-blue-900/40 dark:text-blue-200">
+              Demo
+            </span>
+            <span>
+              {t("option:flashcards.demoTitle", {
+                defaultValue: "Explore Flashcards in demo mode"
+              })}
+            </span>
+          </span>
+        }
         description={t("option:flashcards.demoDescription", {
           defaultValue:
             "This demo shows how Flashcards can turn your content into spaced‑repetition cards. Connect your own server later to generate and review cards from your own notes and media."
@@ -96,9 +105,18 @@ export const FlashcardsPage: React.FC = () => {
       />
     ) : (
       <FeatureEmptyState
-        title={t("option:flashcards.emptyConnectTitle", {
-          defaultValue: "Connect to use Flashcards"
-        })}
+        title={
+          <span className="inline-flex items-center gap-2">
+            <span className="rounded-full bg-yellow-50 px-2 py-0.5 text-[11px] font-medium text-yellow-700 dark:bg-yellow-900/40 dark:text-yellow-200">
+              Not connected
+            </span>
+            <span>
+              {t("option:flashcards.emptyConnectTitle", {
+                defaultValue: "Connect to use Flashcards"
+              })}
+            </span>
+          </span>
+        }
         description={t("option:flashcards.emptyConnectDescription", {
           defaultValue:
             "This view needs a connected server. Use the server connection card above to fix your connection, then return here to review and generate flashcards."
@@ -123,9 +141,18 @@ export const FlashcardsPage: React.FC = () => {
   if (isOnline && flashcardsUnsupported) {
     return (
       <FeatureEmptyState
-        title={t("option:flashcards.offlineTitle", {
-          defaultValue: "Flashcards API not available on this server"
-        })}
+        title={
+          <span className="inline-flex items-center gap-2">
+            <span className="rounded-full bg-amber-50 px-2 py-0.5 text-[11px] font-medium text-amber-700 dark:bg-amber-900/40 dark:text-amber-200">
+              Feature unavailable
+            </span>
+            <span>
+              {t("option:flashcards.offlineTitle", {
+                defaultValue: "Flashcards API not available on this server"
+              })}
+            </span>
+          </span>
+        }
         description={t("option:flashcards.offlineDescription", {
           defaultValue:
             "This tldw server does not advertise the Flashcards endpoints. Upgrade your server to a version that includes /api/v1/flashcards… to use this workspace."

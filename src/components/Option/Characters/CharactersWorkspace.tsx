@@ -41,9 +41,18 @@ export const CharactersWorkspace: React.FC = () => {
   if (!isOnline) {
     return demoEnabled ? (
       <FeatureEmptyState
-        title={t("option:charactersEmpty.demoTitle", {
-          defaultValue: "Explore Characters in demo mode"
-        })}
+        title={
+          <span className="inline-flex items-center gap-2">
+            <span className="rounded-full bg-blue-50 px-2 py-0.5 text-[11px] font-medium text-blue-700 dark:bg-blue-900/40 dark:text-blue-200">
+              Demo
+            </span>
+            <span>
+              {t("option:charactersEmpty.demoTitle", {
+                defaultValue: "Explore Characters in demo mode"
+              })}
+            </span>
+          </span>
+        }
         description={t("option:charactersEmpty.demoDescription", {
           defaultValue:
             "This demo shows how Characters encapsulate a persona and system prompt that you can chat with."
@@ -65,9 +74,18 @@ export const CharactersWorkspace: React.FC = () => {
       />
     ) : (
       <FeatureEmptyState
-        title={t("option:charactersEmpty.connectTitle", {
-          defaultValue: "Connect to use Characters"
-        })}
+        title={
+          <span className="inline-flex items-center gap-2">
+            <span className="rounded-full bg-yellow-50 px-2 py-0.5 text-[11px] font-medium text-yellow-700 dark:bg-yellow-900/40 dark:text-yellow-200">
+              Not connected
+            </span>
+            <span>
+              {t("option:charactersEmpty.connectTitle", {
+                defaultValue: "Connect to use Characters"
+              })}
+            </span>
+          </span>
+        }
         description={t("option:charactersEmpty.connectDescription", {
           defaultValue:
             "To use Characters, first connect to your tldw server so character definitions can be stored."
@@ -93,9 +111,18 @@ export const CharactersWorkspace: React.FC = () => {
   if (isOnline && !capsLoading && !hasCharacters) {
     return (
       <FeatureEmptyState
-        title={t("option:charactersEmpty.offlineTitle", {
-          defaultValue: "Characters API not available on this server"
-        })}
+        title={
+          <span className="inline-flex items-center gap-2">
+            <span className="rounded-full bg-amber-50 px-2 py-0.5 text-[11px] font-medium text-amber-700 dark:bg-amber-900/40 dark:text-amber-200">
+              Feature unavailable
+            </span>
+            <span>
+              {t("option:charactersEmpty.offlineTitle", {
+                defaultValue: "Characters API not available on this server"
+              })}
+            </span>
+          </span>
+        }
         description={t("option:charactersEmpty.offlineDescription", {
           defaultValue:
             "This server does not advertise /api/v1/characters."

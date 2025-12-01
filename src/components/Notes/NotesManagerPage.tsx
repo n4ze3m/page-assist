@@ -639,9 +639,18 @@ const NotesManagerPage: React.FC = () => {
           ) : !isOnline ? (
             demoEnabled ? (
               <FeatureEmptyState
-                title={t('option:notesEmpty.demoTitle', {
-                  defaultValue: 'Explore Notes in demo mode'
-                })}
+                title={
+                  <span className="inline-flex items-center gap-2">
+                    <span className="rounded-full bg-blue-50 px-2 py-0.5 text-[11px] font-medium text-blue-700 dark:bg-blue-900/40 dark:text-blue-200">
+                      Demo
+                    </span>
+                    <span>
+                      {t('option:notesEmpty.demoTitle', {
+                        defaultValue: 'Explore Notes in demo mode'
+                      })}
+                    </span>
+                  </span>
+                }
                 description={t('option:notesEmpty.demoDescription', {
                   defaultValue:
                     'This demo shows how Notes can organize your insights. Connect your own server later to create and save real notes.'
@@ -663,9 +672,18 @@ const NotesManagerPage: React.FC = () => {
               />
             ) : (
               <FeatureEmptyState
-                title={t('option:notesEmpty.connectTitle', {
-                  defaultValue: 'Connect to use Notes'
-                })}
+                title={
+                  <span className="inline-flex items-center gap-2">
+                    <span className="rounded-full bg-yellow-50 px-2 py-0.5 text-[11px] font-medium text-yellow-700 dark:bg-yellow-900/40 dark:text-yellow-200">
+                      Not connected
+                    </span>
+                    <span>
+                      {t('option:notesEmpty.connectTitle', {
+                        defaultValue: 'Connect to use Notes'
+                      })}
+                    </span>
+                  </span>
+                }
                 description={t('option:notesEmpty.connectDescription', {
                   defaultValue: 'This view needs a connected server. Use the server connection card above to fix your connection, then return here to capture and organize notes.'
                 })}
@@ -683,9 +701,18 @@ const NotesManagerPage: React.FC = () => {
             )
           ) : (!capsLoading && capabilities && !capabilities.hasNotes) ? (
             <FeatureEmptyState
-              title={t('option:notesEmpty.offlineTitle', {
-                defaultValue: 'Notes API not available on this server'
-              })}
+              title={
+                <span className="inline-flex items-center gap-2">
+                  <span className="rounded-full bg-amber-50 px-2 py-0.5 text-[11px] font-medium text-amber-700 dark:bg-amber-900/40 dark:text-amber-200">
+                    Feature unavailable
+                  </span>
+                  <span>
+                    {t('option:notesEmpty.offlineTitle', {
+                      defaultValue: 'Notes API not available on this server'
+                    })}
+                  </span>
+                </span>
+              }
               description={t('option:notesEmpty.offlineDescription', {
                 defaultValue:
                   'This tldw server does not advertise the Notes endpoints (for example, /api/v1/notes/). Upgrade your server to a version that includes the Notes API to use this workspace.'
@@ -723,10 +750,18 @@ const NotesManagerPage: React.FC = () => {
                     role="button"
                     tabIndex={0}
                     aria-selected={selectedId === item.id}
-                    className={`cursor-pointer hover:bg-gray-50 dark:hover:bg-[#262626] rounded px-2 ${selectedId === item.id ? '!bg-gray-100 dark:!bg-gray-800' : ''}`}
+                    className={`cursor-pointer rounded-md border px-2 py-2 transition-colors ${
+                      selectedId === item.id
+                        ? 'border-amber-500 bg-gray-50 dark:border-amber-400 dark:bg-[#1f1f1f]'
+                        : 'border-transparent hover:border-gray-300 hover:bg-gray-50 dark:border-transparent dark:hover:border-gray-600 dark:hover:bg-[#262626]'
+                    }`}
                   >
                     <div className="w-full">
-                      <Typography.Text strong ellipsis className="max-w-[18rem]">
+                      <Typography.Text
+                        strong
+                        ellipsis
+                        className="max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg"
+                      >
                         {truncateText(item.title || `Note ${item.id}`, MAX_TITLE_LENGTH)}
                       </Typography.Text>
                       {item.content && (
@@ -757,7 +792,16 @@ const NotesManagerPage: React.FC = () => {
             </>
           ) : (
             <FeatureEmptyState
-              title={t('option:notesEmpty.title', { defaultValue: 'No notes yet' })}
+              title={
+                <span className="inline-flex items-center gap-2">
+                  <span className="rounded-full bg-gray-100 px-2 py-0.5 text-[11px] font-medium text-gray-700 dark:bg-gray-800 dark:text-gray-200">
+                    Getting started
+                  </span>
+                  <span>
+                    {t('option:notesEmpty.title', { defaultValue: 'No notes yet' })}
+                  </span>
+                </span>
+              }
               description={t('option:notesEmpty.description', {
                 defaultValue: 'Capture and organize free-form notes connected to your tldw insights.'
               })}

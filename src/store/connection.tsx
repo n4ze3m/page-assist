@@ -121,6 +121,38 @@ const ensurePlaceholderConfig = async (): Promise<string | null> => {
   }
 }
 
+const deriveKnowledgeStatusFromHealth = (raw: any): KnowledgeStatus => {
+  try {
+    if (!raw || typeof raw !== "object") {
+      return "ready"
+    }
+    const components = (raw as any).components
+    if (components && typeof components === "object") {
+      const search =
+        (components as any).search_index || (components as any).searchIndex
+      if (search && typeof search === "object") {
+        const status = String((search as any).status || "").toLowerCase()
+        const message = String((search as any).message || "")
+        const rawCount = (search as any).fts_table_count
+        const ftsCount =
+          typeof rawCount === "number" && Number.isFinite(rawCount)
+            ? rawCount
+            : null
+
+        const noIndexByCount = ftsCount !== null && ftsCount <= 0
+        const noIndexByMessage = /no fts indexes found/i.test(message)
+
+        if ((noIndexByCount || noIndexByMessage) && status !== "unhealthy") {
+          return "empty"
+        }
+      }
+    }
+  } catch {
+    // ignore parse errors and fall back to ready
+  }
+  return "ready"
+}
+
 type ConnectionStore = {
   state: ConnectionState
   checkOnce: () => Promise<void>
@@ -328,10 +360,11 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
 
       if (ok) {
         try {
-          await tldwClient.ragHealth()
-          knowledgeStatus = "ready"
+          const rag = await tldwClient.ragHealth()
+          knowledgeStatus = deriveKnowledgeStatusFromHealth(rag)
           knowledgeLastCheckedAt = Date.now()
-          knowledgeError = null
+          knowledgeError =
+            knowledgeStatus === "empty" ? "no-index" : null
         } catch (e) {
           knowledgeStatus = "offline"
           knowledgeLastCheckedAt = Date.now()

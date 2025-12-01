@@ -7,6 +7,7 @@ import { tldwClient, TldwConfig } from '@/services/tldw/TldwApiClient'
 import { getTldwServerURL, DEFAULT_TLDW_API_KEY } from '@/services/tldw-server'
 import { tldwAuth } from '@/services/tldw/TldwAuth'
 import { mapMultiUserLoginErrorMessage } from '@/services/auth-errors'
+import { useConnectionStore } from '@/store/connection'
 
 type Props = {
   onFinish?: () => void
@@ -75,6 +76,11 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
     const cfg: Partial<TldwConfig> = { serverUrl, authMode }
     if (authMode === 'single-user') cfg.apiKey = apiKey
     await tldwClient.updateConfig(cfg)
+    try {
+      await useConnectionStore.getState().checkOnce()
+    } catch {
+      // Best-effort only; onboarding should not hard-fail on connection refresh.
+    }
   }
 
   const resetReachabilityTimers = () => {

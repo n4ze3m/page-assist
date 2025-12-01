@@ -154,9 +154,18 @@ export const KnowledgeSettings = () => {
   if (!isOnline) {
     return demoEnabled ? (
       <FeatureEmptyState
-        title={t("knowledge:empty.demoTitle", {
-          defaultValue: "Explore Knowledge in demo mode"
-        })}
+        title={
+          <span className="inline-flex items-center gap-2">
+            <span className="rounded-full bg-blue-50 px-2 py-0.5 text-[11px] font-medium text-blue-700 dark:bg-blue-900/40 dark:text-blue-200">
+              Demo
+            </span>
+            <span>
+              {t("knowledge:empty.demoTitle", {
+                defaultValue: "Explore Knowledge in demo mode"
+              })}
+            </span>
+          </span>
+        }
         description={t("knowledge:empty.demoDescription", {
           defaultValue:
             "This demo shows how Knowledge can organize your sources for better search. Connect your own server later to index your real documents and transcripts."
@@ -178,9 +187,18 @@ export const KnowledgeSettings = () => {
       />
     ) : (
       <FeatureEmptyState
-        title={t("knowledge:empty.connectTitle", {
-          defaultValue: "Connect to use Knowledge"
-        })}
+        title={
+          <span className="inline-flex items-center gap-2">
+            <span className="rounded-full bg-yellow-50 px-2 py-0.5 text-[11px] font-medium text-yellow-700 dark:bg-yellow-900/40 dark:text-yellow-200">
+              Not connected
+            </span>
+            <span>
+              {t("knowledge:empty.connectTitle", {
+                defaultValue: "Connect to use Knowledge"
+              })}
+            </span>
+          </span>
+        }
         description={t("knowledge:empty.connectDescription", {
           defaultValue:
             "To use Knowledge, first connect to your tldw server so new sources can be indexed."

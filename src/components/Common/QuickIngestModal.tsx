@@ -10,6 +10,7 @@ import { defaultEmbeddingModelForRag } from '@/services/ollama'
 import { tldwModels } from '@/services/tldw'
 import { useConnectionActions, useConnectionState } from '@/hooks/useConnectionState'
 import { useQuickIngestStore } from "@/store/quick-ingest"
+import { ConnectionPhase } from "@/types/connection"
 
 type Entry = {
   id: string
@@ -154,9 +155,39 @@ export const QuickIngestModal: React.FC<Props> = ({
   const [inspectorIntroDismissed, setInspectorIntroDismissed] = useStorage<boolean>('quickIngestInspectorIntroDismissed', false)
   const confirmDanger = useConfirmDanger()
   const introToast = React.useRef(false)
-  const { isConnected, offlineBypass } = useConnectionState()
-  const { checkOnce } = useConnectionActions?.() || {}
-  const ingestBlocked = !isConnected || Boolean(offlineBypass)
+  const { phase, isConnected, offlineBypass } = useConnectionState()
+  const { checkOnce, disableOfflineBypass } = useConnectionActions?.() || {}
+
+  type IngestConnectionStatus =
+    | "online"
+    | "offline"
+    | "unconfigured"
+    | "offlineBypass"
+    | "unknown"
+
+  const ingestConnectionStatus: IngestConnectionStatus = React.useMemo(() => {
+    if (offlineBypass) {
+      return "offlineBypass"
+    }
+    if (phase === ConnectionPhase.UNCONFIGURED) {
+      return "unconfigured"
+    }
+    if (phase === ConnectionPhase.CONNECTED && isConnected) {
+      return "online"
+    }
+    if (phase === ConnectionPhase.ERROR) {
+      return "offline"
+    }
+    if (!isConnected) {
+      return "offline"
+    }
+    if (phase === ConnectionPhase.SEARCHING) {
+      return "unknown"
+    }
+    return "unknown"
+  }, [phase, isConnected, offlineBypass])
+
+  const ingestBlocked = ingestConnectionStatus !== "online"
   const ingestBlockedPrevRef = React.useRef(ingestBlocked)
   const hadOfflineQueuedRef = React.useRef(false)
   const { setQueuedCount, clearQueued, markFailure, clearFailure } =
@@ -372,6 +403,28 @@ export const QuickIngestModal: React.FC<Props> = ({
     return count
   }, [rows, localFiles, resultById, results])
 
+  const pendingLabel = React.useMemo(() => {
+    if (!ingestBlocked) {
+      return ""
+    }
+    if (ingestConnectionStatus === "unconfigured") {
+      return t(
+        "quickIngest.pendingUnconfigured",
+        "Pending — will run after you configure a server."
+      )
+    }
+    if (ingestConnectionStatus === "offlineBypass") {
+      return t(
+        "quickIngest.pendingOfflineBypass",
+        "Pending — will run when offline mode is disabled."
+      )
+    }
+    return t(
+      "quickIngest.pendingLabel",
+      "Pending — will run when connected."
+    )
+  }, [ingestBlocked, ingestConnectionStatus, t])
+
   React.useEffect(() => {
     if (ingestBlocked && stagedCount > 0) {
       hadOfflineQueuedRef.current = true
@@ -447,12 +500,21 @@ export const QuickIngestModal: React.FC<Props> = ({
     clearFailure()
 
     if (ingestBlocked) {
-      messageApi.warning(
-        t(
-          "quickIngest.offlineQueueToast",
-          "Offline mode: items are queued here until your server is back online."
-        )
-      )
+      let key = "quickIngest.offlineQueueToast"
+      let fallback =
+        "Offline mode: items are queued here until your server is back online."
+
+      if (ingestConnectionStatus === "unconfigured") {
+        key = "quickIngest.unconfiguredQueueToast"
+        fallback =
+          "Server not configured: items are staged here and will not run until you configure a server under Settings → tldw server."
+      } else if (ingestConnectionStatus === "offlineBypass") {
+        key = "quickIngest.offlineBypassQueueToast"
+        fallback =
+          "Offline mode enabled: items are staged here and will process once you disable offline mode."
+      }
+
+      messageApi.warning(t(key, fallback))
       return
     }
     const valid = rows.filter((r) => r.url.trim().length > 0)
@@ -586,6 +648,7 @@ export const QuickIngestModal: React.FC<Props> = ({
     clearFailure,
     common,
     ingestBlocked,
+    ingestConnectionStatus,
     localFiles,
     formatBytes,
     messageApi,
@@ -1516,10 +1579,7 @@ export const QuickIngestModal: React.FC<Props> = ({
                   ingestBlocked && !running && (!res || !res.status)
                     ? (
                       <Tag>
-                        {t(
-                          "quickIngest.pendingLabel",
-                          "Pending — will run when connected"
-                        )}
+                        {pendingLabel}
                       </Tag>
                     )
                     : null
@@ -2042,25 +2102,55 @@ export const QuickIngestModal: React.FC<Props> = ({
                   disabled={plannedCount === 0 || running || ingestBlocked}
                   aria-label={
                     ingestBlocked
-                      ? t(
-                          "quickIngest.queueOnlyOfflineAria",
-                          "Offline \u2014 queue items to process later"
-                        )
+                      ? ingestConnectionStatus === "unconfigured"
+                        ? t(
+                            "quickIngest.queueOnlyUnconfiguredAria",
+                            "Server not configured \u2014 queue items to process after you configure a server."
+                          )
+                        : ingestConnectionStatus === "offlineBypass"
+                          ? t(
+                              "quickIngest.queueOnlyOfflineBypassAria",
+                              "Offline mode enabled \u2014 queue items to process after you disable offline mode."
+                            )
+                          : t(
+                              "quickIngest.queueOnlyOfflineAria",
+                              "Offline \u2014 queue items to process later"
+                            )
                       : t("quickIngest.runAria", "Run quick ingest")
                   }
                   title={
                     ingestBlocked
-                      ? t(
-                          "quickIngest.queueOnlyOffline",
-                          "Queue only \u2014 server offline"
-                        )
+                      ? ingestConnectionStatus === "unconfigured"
+                        ? t(
+                            "quickIngest.queueOnlyUnconfigured",
+                            "Queue only \u2014 server not configured"
+                          )
+                        : ingestConnectionStatus === "offlineBypass"
+                          ? t(
+                              "quickIngest.queueOnlyOfflineBypass",
+                              "Queue only \u2014 offline mode enabled"
+                            )
+                          : t(
+                              "quickIngest.queueOnlyOffline",
+                              "Queue only \u2014 server offline"
+                            )
                       : t("quickIngest.runLabel", "Run quick ingest")
                   }>
                   {ingestBlocked
-                    ? t(
-                        "quickIngest.queueOnlyOffline",
-                        "Queue only \u2014 server offline"
-                      )
+                    ? ingestConnectionStatus === "unconfigured"
+                      ? t(
+                          "quickIngest.queueOnlyUnconfigured",
+                          "Queue only \u2014 server not configured"
+                        )
+                      : ingestConnectionStatus === "offlineBypass"
+                        ? t(
+                            "quickIngest.queueOnlyOfflineBypass",
+                            "Queue only \u2014 offline mode enabled"
+                          )
+                        : t(
+                            "quickIngest.queueOnlyOffline",
+                            "Queue only \u2014 server offline"
+                          )
                     : storeRemote
                       ? t("quickIngest.ingest", "Ingest")
                       : t("quickIngest.process", "Process")}
@@ -2074,14 +2164,24 @@ export const QuickIngestModal: React.FC<Props> = ({
                 </Button>
               </div>
               {ingestBlocked && (
-                <div className="mt-1 flex items-center gap-2 text-xs text-amber-700 dark:text-amber-200">
+                <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-amber-700 dark:text-amber-200">
                   <span>
-                    {t(
-                      "quickIngest.offlineFooter",
-                      "Offline mode: items are staged here and will process once your server reconnects."
-                    )}
+                    {ingestConnectionStatus === "unconfigured"
+                      ? t(
+                          "quickIngest.unconfiguredFooter",
+                          "Server not configured: items are staged here and will process after you configure a server URL and API key under Settings \u2192 tldw server."
+                        )
+                      : ingestConnectionStatus === "offlineBypass"
+                        ? t(
+                            "quickIngest.offlineBypassFooter",
+                            "Offline mode enabled: items are staged here and will process once you disable offline mode."
+                          )
+                        : t(
+                            "quickIngest.offlineFooter",
+                            "Offline mode: items are staged here and will process once your server reconnects."
+                          )}
                   </span>
-                  {checkOnce ? (
+                  {ingestConnectionStatus === "offline" && checkOnce ? (
                     <Button
                       size="small"
                       onClick={() => {
@@ -2091,9 +2191,26 @@ export const QuickIngestModal: React.FC<Props> = ({
                           // ignore check errors; footer is informational
                         }
                       }}>
-                      {qi('retryConnection', 'Retry connection')}
+                      {qi("retryConnection", "Retry connection")}
                     </Button>
                   ) : null}
+                  {ingestConnectionStatus === "offlineBypass" &&
+                    disableOfflineBypass && (
+                      <Button
+                        size="small"
+                        onClick={async () => {
+                          try {
+                            await disableOfflineBypass()
+                          } catch {
+                            // ignore disable errors; Quick Ingest will update when connection state changes
+                          }
+                        }}>
+                        {t(
+                          "quickIngest.disableOfflineMode",
+                          "Disable offline mode"
+                        )}
+                      </Button>
+                    )}
                 </div>
               )}
               {progressMeta.total > 0 && (

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Button } from 'antd'
 import { getAllProcessed, deleteProcessed, clearProcessed } from '@/db/dexie/processed'
 import type { ProcessedMedia } from '@/db/dexie/types'
 
@@ -27,8 +28,17 @@ export default function OptionProcessed() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-semibold">Processed Items (Local)</h2>
-        <button className="px-3 py-1 rounded bg-gray-200 dark:bg-gray-700" onClick={handleClear} disabled={loading || items.length === 0}>Clear All</button>
+        <Button
+          size="small"
+          onClick={handleClear}
+          disabled={loading || items.length === 0}
+        >
+          Clear all
+        </Button>
       </div>
+      <p className="text-xs text-gray-500 dark:text-gray-400">
+        These items are cached locally in your browser after media runs. Clearing them does not delete anything from your tldw server.
+      </p>
       {loading ? (
         <div>Loading…</div>
       ) : items.length === 0 ? (
@@ -46,8 +56,22 @@ export default function OptionProcessed() {
                   )}
                 </div>
                 <div className="shrink-0 flex items-center gap-2">
-                  <a className="px-2 py-1 rounded bg-blue-600 text-white text-sm" href={it.url} target="_blank" rel="noreferrer">Open</a>
-                  <button className="px-2 py-1 rounded bg-red-600 text-white text-sm" onClick={() => handleDelete(it.id)}>Delete</button>
+                  <Button
+                    size="small"
+                    type="link"
+                    href={it.url}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    Open
+                  </Button>
+                  <Button
+                    danger
+                    size="small"
+                    onClick={() => handleDelete(it.id)}
+                  >
+                    Delete
+                  </Button>
                 </div>
               </div>
             </li>
@@ -57,4 +81,3 @@ export default function OptionProcessed() {
     </div>
   )
 }
-

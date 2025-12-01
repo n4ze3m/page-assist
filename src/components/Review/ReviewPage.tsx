@@ -1024,13 +1024,20 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true, 
     const baseEmpty = demoEnabled ? (
       <FeatureEmptyState
         title={
-          isViewMediaMode
-            ? t('review:mediaEmpty.demoTitle', {
-              defaultValue: 'Explore Media in demo mode'
-            })
-            : t('review:empty.demoTitle', {
-              defaultValue: 'Explore Review in demo mode'
-            })
+          <span className="inline-flex items-center gap-2">
+            <span className="rounded-full bg-blue-50 px-2 py-0.5 text-[11px] font-medium text-blue-700 dark:bg-blue-900/40 dark:text-blue-200">
+              Demo
+            </span>
+            <span>
+              {isViewMediaMode
+                ? t('review:mediaEmpty.demoTitle', {
+                  defaultValue: 'Explore Media in demo mode'
+                })
+                : t('review:empty.demoTitle', {
+                  defaultValue: 'Explore Review in demo mode'
+                })}
+            </span>
+          </span>
         }
         description={
           isViewMediaMode
@@ -1079,13 +1086,20 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true, 
     ) : (
       <FeatureEmptyState
         title={
-          isViewMediaMode
-            ? t('review:mediaEmpty.connectTitle', {
-              defaultValue: 'Connect to use Media'
-            })
-            : t('review:empty.connectTitle', {
-              defaultValue: 'Connect to use Review'
-            })
+          <span className="inline-flex items-center gap-2">
+            <span className="rounded-full bg-yellow-50 px-2 py-0.5 text-[11px] font-medium text-yellow-700 dark:bg-yellow-900/40 dark:text-yellow-200">
+              Not connected
+            </span>
+            <span>
+              {isViewMediaMode
+                ? t('review:mediaEmpty.connectTitle', {
+                  defaultValue: 'Connect to use Media'
+                })
+                : t('review:empty.connectTitle', {
+                  defaultValue: 'Connect to use Review'
+                })}
+            </span>
+          </span>
         }
         description={
           isViewMediaMode

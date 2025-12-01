@@ -499,18 +499,23 @@ export const Header: React.FC<Props> = ({
       ? "unknown"
       : isConnected && phase === ConnectionPhase.CONNECTED
         ? "ok"
-        : phase === ConnectionPhase.ERROR || phase === ConnectionPhase.UNCONFIGURED
+        : phase === ConnectionPhase.ERROR
           ? "fail"
           : "unknown"
 
   const ragStatus: StatusKind =
-    knowledgeStatus === "ready" || knowledgeStatus === "indexing"
+    knowledgeStatus === "ready" ||
+    knowledgeStatus === "indexing" ||
+    knowledgeStatus === "empty"
       ? "ok"
       : knowledgeStatus === "offline"
         ? "fail"
         : "unknown"
 
   const statusLabelForCore = (status: StatusKind): string => {
+    if (phase === ConnectionPhase.UNCONFIGURED) {
+      return t("settings:healthSummary.coreUnconfigured", "Server: Not configured")
+    }
     if (status === "ok") {
       return t("settings:healthSummary.coreOnline", "Server: Online")
     }
@@ -521,6 +526,12 @@ export const Header: React.FC<Props> = ({
   }
 
   const statusLabelForRag = (status: StatusKind): string => {
+    if (knowledgeStatus === "empty") {
+      return t(
+        "settings:healthSummary.ragEmpty",
+        "Knowledge: No sources yet"
+      )
+    }
     if (status === "ok") {
       return t("settings:healthSummary.ragReady", "Knowledge: Ready")
     }

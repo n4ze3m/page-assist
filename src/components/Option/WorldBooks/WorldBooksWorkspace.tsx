@@ -18,9 +18,18 @@ export const WorldBooksWorkspace: React.FC = () => {
   if (!isOnline) {
     return demoEnabled ? (
       <FeatureEmptyState
-        title={t("option:worldBooksEmpty.demoTitle", {
-          defaultValue: "Explore World Books in demo mode"
-        })}
+        title={
+          <span className="inline-flex items-center gap-2">
+            <span className="rounded-full bg-blue-50 px-2 py-0.5 text-[11px] font-medium text-blue-700 dark:bg-blue-900/40 dark:text-blue-200">
+              Demo
+            </span>
+            <span>
+              {t("option:worldBooksEmpty.demoTitle", {
+                defaultValue: "Explore World Books in demo mode"
+              })}
+            </span>
+          </span>
+        }
         description={t("option:worldBooksEmpty.demoDescription", {
           defaultValue:
             "This demo shows how World Books can organize structured knowledge about your worlds, settings, or products."
@@ -42,9 +51,18 @@ export const WorldBooksWorkspace: React.FC = () => {
       />
     ) : (
       <FeatureEmptyState
-        title={t("option:worldBooksEmpty.connectTitle", {
-          defaultValue: "Connect to use World Books"
-        })}
+        title={
+          <span className="inline-flex items-center gap-2">
+            <span className="rounded-full bg-yellow-50 px-2 py-0.5 text-[11px] font-medium text-yellow-700 dark:bg-yellow-900/40 dark:text-yellow-200">
+              Not connected
+            </span>
+            <span>
+              {t("option:worldBooksEmpty.connectTitle", {
+                defaultValue: "Connect to use World Books"
+              })}
+            </span>
+          </span>
+        }
         description={t("option:worldBooksEmpty.connectDescription", {
           defaultValue:
             "To use World Books, first connect to your tldw server so world knowledge can be saved and retrieved."
@@ -73,9 +91,18 @@ export const WorldBooksWorkspace: React.FC = () => {
   if (isOnline && worldBooksUnsupported) {
     return (
       <FeatureEmptyState
-        title={t("option:worldBooksEmpty.offlineTitle", {
-          defaultValue: "World Books API not available on this server"
-        })}
+        title={
+          <span className="inline-flex items-center gap-2">
+            <span className="rounded-full bg-amber-50 px-2 py-0.5 text-[11px] font-medium text-amber-700 dark:bg-amber-900/40 dark:text-amber-200">
+              Feature unavailable
+            </span>
+            <span>
+              {t("option:worldBooksEmpty.offlineTitle", {
+                defaultValue: "World Books API not available on this server"
+              })}
+            </span>
+          </span>
+        }
         description={t("option:worldBooksEmpty.offlineDescription", {
           defaultValue:
             "This tldw server does not advertise the World Books endpoints (for example, /api/v1/characters/world-books). Upgrade your server to a version that includes World Books to use this workspace."

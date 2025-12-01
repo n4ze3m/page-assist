@@ -16,9 +16,18 @@ export const DictionariesWorkspace: React.FC = () => {
   if (!isOnline) {
     return demoEnabled ? (
       <FeatureEmptyState
-        title={t("option:dictionariesEmpty.demoTitle", {
-          defaultValue: "Explore Chat dictionaries in demo mode"
-        })}
+        title={
+          <span className="inline-flex items-center gap-2">
+            <span className="rounded-full bg-blue-50 px-2 py-0.5 text-[11px] font-medium text-blue-700 dark:bg-blue-900/40 dark:text-blue-200">
+              Demo
+            </span>
+            <span>
+              {t("option:dictionariesEmpty.demoTitle", {
+                defaultValue: "Explore Chat dictionaries in demo mode"
+              })}
+            </span>
+          </span>
+        }
         description={t("option:dictionariesEmpty.demoDescription", {
           defaultValue:
             "This demo shows how Chat dictionaries can normalize names, acronyms, and terms before they reach the model."
@@ -40,9 +49,18 @@ export const DictionariesWorkspace: React.FC = () => {
       />
     ) : (
       <FeatureEmptyState
-        title={t("option:dictionariesEmpty.connectTitle", {
-          defaultValue: "Connect to use Chat dictionaries"
-        })}
+        title={
+          <span className="inline-flex items-center gap-2">
+            <span className="rounded-full bg-yellow-50 px-2 py-0.5 text-[11px] font-medium text-yellow-700 dark:bg-yellow-900/40 dark:text-yellow-200">
+              Not connected
+            </span>
+            <span>
+              {t("option:dictionariesEmpty.connectTitle", {
+                defaultValue: "Connect to use Chat dictionaries"
+              })}
+            </span>
+          </span>
+        }
         description={t("option:dictionariesEmpty.connectDescription", {
           defaultValue:
             "To use Chat dictionaries, first connect to your tldw server so substitutions can be stored."

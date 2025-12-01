@@ -5,7 +5,12 @@ export enum ConnectionPhase {
   ERROR = "error"
 }
 
-export type KnowledgeStatus = "unknown" | "ready" | "indexing" | "offline"
+export type KnowledgeStatus =
+  | "unknown"
+  | "ready"
+  | "indexing"
+  | "offline"
+  | "empty"
 
 export type ConnectionState = {
   phase: ConnectionPhase
