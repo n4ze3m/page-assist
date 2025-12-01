@@ -222,7 +222,13 @@ test.describe('Characters workspace UX', () => {
     const server = new MockTldwServer()
     await server.start()
 
-    const { context, page, optionsUrl } = await setupExtensionForServer(server)
+    const { context, page, optionsUrl, granted } =
+      await setupExtensionForServer(server)
+    if (!granted || !context || !page || !optionsUrl) {
+      await server.stop()
+      test.skip('host permission not granted')
+      return
+    }
 
     await page.goto(`${optionsUrl}#/playground`)
 
@@ -282,7 +288,13 @@ test.describe('Characters workspace UX', () => {
       characters: manyCharacters
     })
 
-    const { context, page, optionsUrl } = await setupExtensionForServer(server)
+    const { context, page, optionsUrl, granted } =
+      await setupExtensionForServer(server)
+    if (!granted || !context || !page || !optionsUrl) {
+      await server.stop()
+      test.skip('host permission not granted')
+      return
+    }
 
     await page.goto(`${optionsUrl}#/playground`)
 

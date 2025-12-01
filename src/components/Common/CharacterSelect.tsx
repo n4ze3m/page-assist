@@ -361,11 +361,11 @@ export const CharacterSelect: React.FC<Props> = ({
   const renderMenuWithRef = React.useCallback(
     (menuNode: React.ReactNode) => {
       if (!React.isValidElement(menuNode)) return menuNode
-      const menuElement = menuNode as React.ReactElement<HTMLUListElement>
-      const originalRef = menuElement.ref as React.Ref<HTMLUListElement> | undefined
+      const menuElement = menuNode as React.ReactElement
+      const originalRef = (menuElement as any).ref as React.Ref<HTMLUListElement> | undefined
       return React.cloneElement(menuElement, {
         ref: (node: HTMLUListElement | null) => attachMenuRef(node, originalRef)
-      })
+      } as any)
     },
     [attachMenuRef]
   )

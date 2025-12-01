@@ -14,11 +14,14 @@ import {
   notify
 } from "@/services/background-helpers"
 
-const warmModels = async (force?: boolean) => {
+const warmModels = async (force?: boolean, throwOnError?: boolean) => {
   try {
     return await tldwModels.warmCache(Boolean(force))
   } catch (e) {
     console.debug("[tldw] model warmup failed", e)
+    if (throwOnError) {
+      throw e
+    }
     return null
   }
 }
@@ -463,7 +466,7 @@ export default defineBackground({
       }
       if (message.type === 'tldw:models:refresh') {
         try {
-          const models = await warmModels(true)
+          const models = await warmModels(true, true)
           const count = Array.isArray(models) ? models.length : 0
           return { ok: true, count }
         } catch (e: any) {
