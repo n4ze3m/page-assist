@@ -11,6 +11,7 @@ import { tldwClient } from "@/services/tldw/TldwApiClient"
 import { getNoOfRetrievedDocs } from "@/services/app"
 import { RagDocsPerReplyHint } from "./RagDocsPerReplyHint"
 import { useAntdMessage } from "@/hooks/useAntdMessage"
+import { useKnowledgeStatus } from "@/hooks/useConnectionState"
 
 export const KnowledgeSettings = () => {
   const { t } = useTranslation(["knowledge", "common"])
@@ -45,6 +46,7 @@ export const KnowledgeSettings = () => {
   const [enableReranking, setEnableReranking] = useState<boolean | null>(null)
   const [enableCache, setEnableCache] = useState<boolean | null>(null)
   const message = useAntdMessage()
+  const { knowledgeStatus } = useKnowledgeStatus()
 
   const ragUnsupported = !capsLoading && capabilities && !capabilities.hasRag
 
@@ -217,6 +219,59 @@ export const KnowledgeSettings = () => {
           defaultValue: "Connect to server"
         })}
         onPrimaryAction={() => navigate("/settings/tldw")}
+      />
+    )
+  }
+
+  if (knowledgeStatus === "empty") {
+    return (
+      <FeatureEmptyState
+        title={
+          <span className="inline-flex items-center gap-2">
+            <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-[11px] font-medium text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-200">
+              {t("knowledge:empty.noSourcesPill", {
+                defaultValue: "No sources yet"
+              })}
+            </span>
+            <span>
+              {t("knowledge:empty.noSourcesTitle", {
+                defaultValue: "Index knowledge to use Knowledge QA"
+              })}
+            </span>
+          </span>
+        }
+        description={t("knowledge:empty.noSourcesDescription", {
+          defaultValue:
+            "Your server is online, but no knowledge indexes were found. Add notes or ingest media to start using Knowledge search and grounded chat."
+        })}
+        examples={[
+          t("knowledge:empty.noSourcesExample1", {
+            defaultValue:
+              "Use Quick ingest to add documents, web pages, and media for RAG."
+          }),
+          t("knowledge:empty.noSourcesExample2", {
+            defaultValue:
+              "Create notes from Chat or the Notes view to capture key ideas."
+          }),
+          t("knowledge:empty.noSourcesExample3", {
+            defaultValue:
+              "Once content is indexed, Knowledge QA can ground answers in your sources."
+          })
+        ]}
+        primaryActionLabel={t("knowledge:empty.noSourcesPrimaryCta", {
+          defaultValue: "Open Quick ingest"
+        })}
+        onPrimaryAction={() => {
+          try {
+            window.dispatchEvent(new CustomEvent("tldw:open-quick-ingest-intro"))
+          } catch {
+            // ignore dispatch errors
+          }
+        }}
+        secondaryActionLabel={t("knowledge:empty.noSourcesSecondaryCta", {
+          defaultValue: "Open Notes"
+        })}
+        onSecondaryAction={() => navigate("/notes")}
       />
     )
   }

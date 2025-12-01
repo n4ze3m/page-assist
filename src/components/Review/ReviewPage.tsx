@@ -166,6 +166,82 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true, 
       .replace(/\u00A0/g, ' ')
   }, [])
 
+  const formatDuration = (seconds: number | null | undefined): string | null => {
+    if (seconds == null || !Number.isFinite(Number(seconds))) return null
+    const total = Math.max(0, Math.floor(Number(seconds)))
+    const h = Math.floor(total / 3600)
+    const m = Math.floor((total % 3600) / 60)
+    const s = total % 60
+    if (h > 0) {
+      return `${h}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`
+    }
+    return `${m}:${String(s).padStart(2, '0')}`
+  }
+
+  const deriveMediaMeta = (m: any): {
+    type: string
+    created_at?: string
+    status?: any
+    source?: string | null
+    duration?: number | null
+  } => {
+    const type = String(m?.type || m?.media_type || "").toLowerCase()
+    const status =
+      m?.status ??
+      m?.ingest_status ??
+      m?.ingestStatus ??
+      m?.processing_state ??
+      m?.processingStatus
+
+    let source: string | null = null
+    const rawSource =
+      (m?.source as string | null | undefined) ??
+      (m?.origin as string | null | undefined) ??
+      (m?.provider as string | null | undefined)
+    if (typeof rawSource === "string" && rawSource.trim().length > 0) {
+      source = rawSource.trim()
+    } else if (m?.url) {
+      try {
+        const u = new URL(String(m.url))
+        const host = u.hostname.replace(/^www\./i, "")
+        if (/youtube\.com|youtu\.be/i.test(host)) {
+          source = "YouTube"
+        } else if (/vimeo\.com/i.test(host)) {
+          source = "Vimeo"
+        } else if (/soundcloud\.com/i.test(host)) {
+          source = "SoundCloud"
+        } else {
+          source = host
+        }
+      } catch {
+        // ignore URL parse errors; leave source null
+      }
+    }
+
+    let duration: number | null = null
+    const rawDuration =
+      (m?.duration as number | string | null | undefined) ??
+      (m?.media_duration as number | string | null | undefined) ??
+      (m?.length_seconds as number | string | null | undefined) ??
+      (m?.duration_seconds as number | string | null | undefined)
+    if (typeof rawDuration === "number") {
+      duration = rawDuration
+    } else if (typeof rawDuration === "string") {
+      const n = Number(rawDuration)
+      if (!Number.isNaN(n)) {
+        duration = n
+      }
+    }
+
+    return {
+      type,
+      created_at: m?.created_at,
+      status,
+      source,
+      duration
+    }
+  }
+
   const runSearch = async (): Promise<ResultItem[]> => {
     const results: ResultItem[] = []
     const hasQuery = query.trim().length > 0
@@ -184,7 +260,8 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true, 
           setMediaTotal(Number(pagination?.total_items || items.length || 0))
           for (const m of items) {
             const id = m?.id ?? m?.media_id ?? m?.pk ?? m?.uuid
-            const type = String(m?.type || m?.media_type || "").toLowerCase()
+            const meta = deriveMediaMeta(m)
+            const type = meta.type
             if (type && !availableMediaTypes.includes(type)) {
               setAvailableMediaTypes((prev) =>
                 prev.includes(type) ? prev : [...prev, type]
@@ -195,10 +272,7 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true, 
               id,
               title: m?.title || m?.filename || `Media ${id}`,
               snippet: m?.snippet || m?.summary || "",
-              meta: {
-                type,
-                created_at: m?.created_at
-              },
+              meta: meta,
               raw: m
             })
           }
@@ -226,7 +300,8 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true, 
           setMediaTotal(Number(pagination?.total_items || items.length || 0))
           for (const m of items) {
             const id = m?.id ?? m?.media_id ?? m?.pk ?? m?.uuid
-            const type = String(m?.type || m?.media_type || "").toLowerCase()
+            const meta = deriveMediaMeta(m)
+            const type = meta.type
             if (type && !availableMediaTypes.includes(type)) {
               setAvailableMediaTypes((prev) =>
                 prev.includes(type) ? prev : [...prev, type]
@@ -237,10 +312,7 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true, 
               id,
               title: m?.title || m?.filename || `Media ${id}`,
               snippet: m?.snippet || m?.summary || "",
-              meta: {
-                type,
-                created_at: m?.created_at
-              },
+              meta: meta,
               raw: m
             })
           }
@@ -1480,6 +1552,39 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true, 
                   !!selected &&
                   selected.id === item.id &&
                   selected.kind === item.kind
+                const rawStatus = (item.meta?.status ??
+                  item.meta?.ingest_status ??
+                  item.meta?.processing_state) as string | undefined
+                let statusLabel: string | null = null
+                let statusColor: string = "default"
+                if (rawStatus) {
+                  const v = String(rawStatus).toLowerCase()
+                  if (/(processing|running|in_progress)/.test(v)) {
+                    statusLabel = t(
+                      "review:reviewPage.statusProcessing",
+                      "Processing"
+                    )
+                    statusColor = "orange"
+                  } else if (/(queued|pending)/.test(v)) {
+                    statusLabel = t(
+                      "review:reviewPage.statusQueued",
+                      "Queued"
+                    )
+                    statusColor = "gold"
+                  } else if (/(error|failed|timeout)/.test(v)) {
+                    statusLabel = t(
+                      "review:reviewPage.statusError",
+                      "Error"
+                    )
+                    statusColor = "red"
+                  } else if (/(ready|completed|done|success)/.test(v)) {
+                    statusLabel = t(
+                      "review:reviewPage.statusReady",
+                      "Ready"
+                    )
+                    statusColor = "green"
+                  }
+                }
                 return (
                   <List.Item
                     key={`${item.kind}:${item.id}`}
@@ -1504,34 +1609,67 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true, 
                         ? 'border-l-blue-500 !bg-gray-100 dark:!bg-gray-800'
                         : 'border-l-transparent'
                     }`}>
-                    <div className="w-full">
-                      <div className="flex items-center gap-2">
-                        <Tag color={item.kind === "media" ? "blue" : "gold"}>
-                          {item.kind.toUpperCase()}
-                        </Tag>
-                        <Typography.Text
-                          strong
-                          ellipsis
-                          className="max-w-[18rem]">
-                          {item.title || String(item.id)}
-                        </Typography.Text>
-                        {isSelected && (
-                          <Tag color="green" className="text-[10px]">
-                            {t('review:reviewPage.selectedBadge', 'Selected')}
+                    <div className="w-full flex items-start justify-between gap-3">
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-2">
+                          <Tag color={item.kind === "media" ? "blue" : "gold"}>
+                            {item.kind.toUpperCase()}
                           </Tag>
-                        )}
-                      </div>
-                      {item.snippet && (
-                        <div className="text-xs text-gray-500 truncate mt-0.5">
-                          {item.snippet}
+                          <Typography.Text
+                            strong
+                            ellipsis
+                            className="max-w-[18rem]">
+                            {item.title || String(item.id)}
+                          </Typography.Text>
+                          {isSelected && (
+                            <Tag color="green" className="text-[10px]">
+                              {t('review:reviewPage.selectedBadge', 'Selected')}
+                            </Tag>
+                          )}
                         </div>
-                      )}
-                      <div className="text-[10px] text-gray-400 mt-0.5">
-                        {item.meta?.type ? String(item.meta.type) : ""}{" "}
-                        {item.meta?.created_at
-                          ? `· ${new Date(item.meta.created_at).toLocaleString()}`
-                          : ""}
+                        {item.snippet && (
+                          <div className="text-xs text-gray-500 truncate mt-0.5">
+                            {item.snippet}
+                          </div>
+                        )}
+                        {(() => {
+                          const sourceLabel =
+                            typeof item.meta?.source === "string" &&
+                            item.meta.source.trim().length > 0
+                              ? item.meta.source.trim()
+                              : null
+                          const durationSeconds =
+                            typeof item.meta?.duration === "number"
+                              ? item.meta.duration
+                              : null
+                          const durationLabel = formatDuration(durationSeconds)
+                          const parts: string[] = []
+                          if (sourceLabel) parts.push(sourceLabel)
+                          if (durationLabel) parts.push(durationLabel)
+                          if (parts.length === 0) return null
+                          return (
+                            <div className="text-[10px] text-gray-500 mt-0.5">
+                              {parts.join(" · ")}
+                            </div>
+                          )
+                        })()}
+                        <div className="text-[10px] text-gray-400 mt-0.5">
+                          {item.meta?.type ? String(item.meta.type) : ""}{" "}
+                          {item.meta?.created_at
+                            ? `· ${new Date(
+                                item.meta.created_at
+                              ).toLocaleString()}`
+                            : ""}
+                        </div>
                       </div>
+                      {statusLabel && (
+                        <Tag
+                          color={statusColor}
+                          className="text-[10px] flex-shrink-0"
+                        >
+                          {statusLabel}
+                        </Tag>
+                      )}
                     </div>
                   </List.Item>
                 )

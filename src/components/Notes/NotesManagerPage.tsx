@@ -7,7 +7,7 @@ import { useServerOnline } from '@/hooks/useServerOnline'
 import { Copy as CopyIcon, Save as SaveIcon, Trash2 as TrashIcon, FileDown as FileDownIcon, Plus as PlusIcon, Search as SearchIcon, Link2 as LinkIcon } from 'lucide-react'
 import { useConfirmDanger } from '@/components/Common/confirm-danger'
 import { useTranslation } from 'react-i18next'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, unstable_useBlocker as useBlocker } from 'react-router-dom'
 import FeatureEmptyState from '@/components/Common/FeatureEmptyState'
 import { useDemoMode } from '@/context/demo-mode'
 import { useServerCapabilities } from '@/hooks/useServerCapabilities'
@@ -201,6 +201,29 @@ const NotesManagerPage: React.FC = () => {
     })
     return ok
   }, [isDirty])
+
+  // Intercept route changes away from /notes when the editor has unsaved
+  // changes and reuse the same discard dialog used for list actions.
+  const navigationBlocker = useBlocker(isDirty)
+
+  React.useEffect(() => {
+    if (!navigationBlocker || navigationBlocker.state !== "blocked") {
+      return
+    }
+    let cancelled = false
+    ;(async () => {
+      const ok = await confirmDiscardIfDirty()
+      if (cancelled) return
+      if (ok) {
+        navigationBlocker.proceed()
+      } else {
+        navigationBlocker.reset()
+      }
+    })()
+    return () => {
+      cancelled = true
+    }
+  }, [confirmDiscardIfDirty, navigationBlocker])
 
   const handleNewNote = React.useCallback(async () => {
     const ok = await confirmDiscardIfDirty()
@@ -881,6 +904,7 @@ const NotesManagerPage: React.FC = () => {
                   size="small"
                   onClick={copySelected}
                   icon={(<CopyIcon className="w-4 h-4" />) as any}
+                  disabled={editorDisabled || !content}
                   aria-label={t('option:notesSearch.toolbarCopyTooltip', {
                     defaultValue: 'Copy note content'
                   })}
@@ -894,6 +918,7 @@ const NotesManagerPage: React.FC = () => {
                   size="small"
                   onClick={exportSelected}
                   icon={(<FileDownIcon className="w-4 h-4" />) as any}
+                  disabled={editorDisabled || (!title && !content)}
                   aria-label={t('option:notesSearch.toolbarExportMdTooltip', {
                     defaultValue: 'Export note as Markdown (.md)'
                   })}
@@ -910,6 +935,9 @@ const NotesManagerPage: React.FC = () => {
                   size="small"
                   onClick={saveNote}
                   loading={saving}
+                  disabled={
+                    editorDisabled || (!title.trim() && !content.trim())
+                  }
                   icon={(<SaveIcon className="w-4 h-4" />) as any}
                   aria-label={t('option:notesSearch.toolbarSaveTooltip', {
                     defaultValue: 'Save note'
@@ -928,7 +956,7 @@ const NotesManagerPage: React.FC = () => {
                   size="small"
                   onClick={() => void deleteNote()}
                   icon={(<TrashIcon className="w-4 h-4" />) as any}
-                  disabled={selectedId == null}
+                  disabled={editorDisabled || selectedId == null}
                   aria-label={t('option:notesSearch.toolbarDeleteTooltip', {
                     defaultValue: 'Delete note'
                   })}

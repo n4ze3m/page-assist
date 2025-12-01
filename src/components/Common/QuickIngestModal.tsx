@@ -172,6 +172,9 @@ export const QuickIngestModal: React.FC<Props> = ({
     if (phase === ConnectionPhase.UNCONFIGURED) {
       return "unconfigured"
     }
+    if (phase === ConnectionPhase.SEARCHING) {
+      return "unknown"
+    }
     if (phase === ConnectionPhase.CONNECTED && isConnected) {
       return "online"
     }
@@ -180,9 +183,6 @@ export const QuickIngestModal: React.FC<Props> = ({
     }
     if (!isConnected) {
       return "offline"
-    }
-    if (phase === ConnectionPhase.SEARCHING) {
-      return "unknown"
     }
     return "unknown"
   }, [phase, isConnected, offlineBypass])
@@ -1106,13 +1106,14 @@ export const QuickIngestModal: React.FC<Props> = ({
     }
   }, [inspectorIntroDismissed])
 
-  // Auto-open inspector on first meaningful selection to guide users
+  // Track whether the Inspector has been used at least once so we can
+  // tune future onboarding copy, but avoid auto-opening it so the queue
+  // stays visually dominant until the user explicitly opts in.
   React.useEffect(() => {
-    if ((selectedRow || selectedFile) && !hasOpenedInspector) {
-      setInspectorOpen(true)
+    if ((selectedRow || selectedFile) && inspectorOpen && !hasOpenedInspector) {
       setHasOpenedInspector(true)
     }
-  }, [hasOpenedInspector, selectedFile, selectedRow])
+  }, [hasOpenedInspector, inspectorOpen, selectedFile, selectedRow])
 
   React.useEffect(() => {
     setSelectedFileIndex((prev) => {
@@ -1149,6 +1150,15 @@ export const QuickIngestModal: React.FC<Props> = ({
         : null
     return { total, done, pct, elapsedLabel }
   }, [liveTotalCount, processedCount, progressTick, results.length, runStartedAt, totalPlanned])
+
+  const resultSummary = React.useMemo(() => {
+    if (!results || results.length === 0) {
+      return null
+    }
+    const successCount = results.filter((r) => r.status === "ok").length
+    const failCount = results.length - successCount
+    return { successCount, failCount }
+  }, [results])
 
   const modifiedAdvancedCount = React.useMemo(
     () => Object.keys(advancedValues || {}).length,
@@ -1279,6 +1289,57 @@ export const QuickIngestModal: React.FC<Props> = ({
     return () => window.removeEventListener('tldw:quick-ingest-force-intro', forceIntro)
   }, [setInspectorIntroDismissed])
 
+  // Derive a short, state-aware connectivity banner message so users
+  // immediately understand whether Quick Ingest will run or only queue.
+  const isOnlineForIngest = ingestConnectionStatus === "online"
+  let connectionBannerTitle: string | null = null
+  let connectionBannerBody: string | null = null
+  let showHealthLink = false
+
+  if (!isOnlineForIngest) {
+    if (ingestConnectionStatus === "unconfigured") {
+      connectionBannerTitle = t(
+        "quickIngest.unconfiguredTitle",
+        "Server not configured — queue only"
+      )
+      connectionBannerBody = t(
+        "quickIngest.unconfiguredDescription",
+        "You can queue URLs and files now; ingestion will run after you configure a server URL and API key under Settings → tldw server."
+      )
+      showHealthLink = true
+    } else if (ingestConnectionStatus === "offlineBypass") {
+      connectionBannerTitle = t(
+        "quickIngest.offlineBypassTitle",
+        "Offline mode enabled — queue only"
+      )
+      connectionBannerBody = t(
+        "quickIngest.offlineBypassDescription",
+        "Items are staged here and will process once you disable offline mode or re-enable live server checks."
+      )
+      showHealthLink = true
+    } else if (ingestConnectionStatus === "offline") {
+      connectionBannerTitle = t(
+        "quickIngest.offlineTitle",
+        "Server offline — staging only"
+      )
+      connectionBannerBody = t(
+        "quickIngest.offlineDescription",
+        "You can queue URLs and files here and inspect fields, but ingestion will not run until your tldw server is online."
+      )
+      showHealthLink = true
+    } else {
+      connectionBannerTitle = t(
+        "quickIngest.checkingTitle",
+        "Checking server connection…"
+      )
+      connectionBannerBody = t(
+        "quickIngest.checkingDescription",
+        "We’re checking your tldw server before running ingest. You can start queuing items while we confirm reachability."
+      )
+      showHealthLink = false
+    }
+  }
+
   return (
     <Modal
       title={
@@ -1309,6 +1370,90 @@ export const QuickIngestModal: React.FC<Props> = ({
       {contextHolder}
       <div className="relative" data-state={modalReady ? 'ready' : 'loading'}>
       <Space direction="vertical" className="w-full">
+        {!isOnlineForIngest && connectionBannerTitle && (
+          <div className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800 dark:border-amber-600 dark:bg-amber-900/20 dark:text-amber-100">
+            <div className="font-medium">{connectionBannerTitle}</div>
+            {connectionBannerBody ? (
+              <div className="mt-0.5">{connectionBannerBody}</div>
+            ) : null}
+            <div className="mt-1 flex flex-wrap items-center gap-2">
+              {showHealthLink && (
+                <button
+                  type="button"
+                  onClick={openHealthDiagnostics}
+                  className="inline-flex items-center text-[11px] font-medium text-amber-900 underline underline-offset-2 dark:text-amber-100"
+                >
+                  {t(
+                    "quickIngest.checkHealthLink",
+                    "Check server health in Health & diagnostics"
+                  )}
+                </button>
+              )}
+              {ingestConnectionStatus === "offline" && checkOnce ? (
+                <Button
+                  size="small"
+                  onClick={() => {
+                    try {
+                      checkOnce?.()
+                    } catch {
+                      // ignore retry failures
+                    }
+                  }}>
+                  {qi("retryConnection", "Retry connection")}
+                </Button>
+              ) : null}
+              {ingestConnectionStatus === "offlineBypass" &&
+                disableOfflineBypass && (
+                  <Button
+                    size="small"
+                    onClick={async () => {
+                      try {
+                        await disableOfflineBypass()
+                      } catch {
+                        // ignore disable errors; Quick Ingest will update when connection state changes
+                      }
+                    }}>
+                    {t(
+                      "quickIngest.disableOfflineMode",
+                      "Disable offline mode"
+                    )}
+                  </Button>
+                )}
+            </div>
+          </div>
+        )}
+        {lastRunError && (
+          <div className="mt-2 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-800 dark:border-red-600 dark:bg-red-900/30 dark:text-red-100">
+            <div className="font-medium">
+              {t(
+                "quickIngest.errorSummary",
+                "We couldn’t process ingest items right now."
+              )}
+            </div>
+            <div className="mt-1">
+              {t(
+                "quickIngest.errorHint",
+                "Try again after checking your tldw server. Health & diagnostics can help troubleshoot ingest issues."
+              )}
+            </div>
+            <div className="mt-2 flex flex-wrap items-center gap-2">
+              <Button
+                size="small"
+                type="primary"
+                onClick={openHealthDiagnostics}
+                data-testid="quick-ingest-open-health"
+              >
+                {t(
+                  "settings:healthSummary.diagnostics",
+                  "Health & diagnostics"
+                )}
+              </Button>
+              <Typography.Text className="text-[11px] text-red-700 dark:text-red-200">
+                {lastRunError}
+              </Typography.Text>
+            </div>
+          </div>
+        )}
         <div className="flex flex-col gap-1">
           <Typography.Text strong>{t('quickIngest.howItWorks', 'How this works')}</Typography.Text>
           <Typography.Paragraph type="secondary" className="!mb-1 text-sm text-gray-600">
@@ -1343,61 +1488,6 @@ export const QuickIngestModal: React.FC<Props> = ({
             </li>
           </ul>
         </div>
-        {lastRunError && (
-          <div className="mt-2 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-800 dark:border-red-600 dark:bg-red-900/30 dark:text-red-100">
-            <div className="font-medium">
-              {t(
-                "quickIngest.errorSummary",
-                "We couldn’t process ingest items right now."
-              )}
-            </div>
-            <div className="mt-1">
-              {t(
-                "quickIngest.errorHint",
-                "Try again after checking your tldw server. Health & diagnostics can help troubleshoot ingest issues."
-              )}
-            </div>
-            <div className="mt-2 flex flex-wrap items-center gap-2">
-              <Button
-                size="small"
-                type="primary"
-                onClick={openHealthDiagnostics}
-                data-testid="quick-ingest-open-health"
-              >
-                {t(
-                  "settings:healthSummary.diagnostics",
-                  "Health & diagnostics"
-                )}
-              </Button>
-              <Typography.Text className="text-[11px] text-red-700 dark:text-red-200">
-                {lastRunError}
-              </Typography.Text>
-            </div>
-          </div>
-        )}
-        {ingestBlocked && (
-          <div className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800 dark:border-amber-600 dark:bg-amber-900/20 dark:text-amber-100">
-            <div className="font-medium">
-              {t("quickIngest.offlineTitle", "Server offline — staging only")}
-            </div>
-            <div>
-              {t(
-                "quickIngest.offlineDescription",
-                "You can queue URLs and files here and inspect fields, but ingestion will not run until your tldw server is online. Reconnect to process pending items."
-              )}
-            </div>
-            <button
-              type="button"
-              onClick={openHealthDiagnostics}
-              className="mt-1 inline-flex items-center text-[11px] font-medium text-amber-900 underline underline-offset-2 dark:text-amber-100"
-            >
-              {t(
-                "quickIngest.checkHealthLink",
-                "Check server health in Health & diagnostics"
-              )}
-            </button>
-          </div>
-        )}
         <div className="space-y-3">
           <div className="rounded-md border border-gray-200 bg-white p-3 dark:border-gray-700 dark:bg-[#121212]">
             <div className="flex items-start justify-between gap-2">
@@ -2060,14 +2150,10 @@ export const QuickIngestModal: React.FC<Props> = ({
                       const done = processedCount || results.length
                       const total = liveTotalCount || totalPlanned
                       if (running && total > 0) {
-                        return t(
-                          'quickIngest.progress',
-                          'Processing {{done}} / {{total}} items…',
-                          {
-                            done,
-                            total
-                          }
-                        )
+                        return t('quickIngest.progress', 'Running quick ingest — processing {{done}} / {{total}} items…', {
+                          done,
+                          total
+                        })
                       }
                       return qi('itemsReady', '{{count}} item(s) ready', {
                         count: plannedCount || 0
@@ -2658,6 +2744,51 @@ export const QuickIngestModal: React.FC<Props> = ({
                 </Button>
               </div>
             </div>
+            {resultSummary && !running && (
+              <div className="mt-2 rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-xs text-gray-700 dark:border-gray-700 dark:bg-[#161616] dark:text-gray-200">
+                <div className="font-medium">
+                  {resultSummary.failCount === 0
+                    ? t(
+                        "quickIngest.summaryAllSucceeded",
+                        "Quick ingest completed successfully."
+                      )
+                    : t(
+                        "quickIngest.summarySomeFailed",
+                        "Quick ingest completed with some errors."
+                      )}
+                </div>
+                <div className="mt-1">
+                  {t(
+                    "quickIngest.summaryCounts",
+                    "{{success}} succeeded \u00b7 {{failed}} failed",
+                    {
+                      success: resultSummary.successCount,
+                      failed: resultSummary.failCount
+                    }
+                  )}
+                </div>
+                <div className="mt-2 flex flex-wrap items-center gap-2">
+                  {resultSummary.failCount > 0 && (
+                    <Button
+                      size="small"
+                      onClick={retryFailedUrls}
+                    >
+                      {qi("retryFailedUrls", "Retry failed URLs")}
+                    </Button>
+                  )}
+                  <Button
+                    size="small"
+                    type="default"
+                    onClick={openHealthDiagnostics}
+                  >
+                    {t(
+                      "settings:healthSummary.diagnostics",
+                      "Health & diagnostics"
+                    )}
+                  </Button>
+                </div>
+              </div>
+            )}
             <List
               size="small"
               dataSource={results}

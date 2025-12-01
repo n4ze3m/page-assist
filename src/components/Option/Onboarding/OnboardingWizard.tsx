@@ -49,7 +49,13 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
         if (!cfg?.serverUrl) {
           try {
             const fallback = await getTldwServerURL()
-            if (fallback) setServerUrl(fallback)
+            if (fallback) {
+              setServerUrl(fallback)
+              // Treat a detected fallback URL as an active candidate so we
+              // proactively run reachability checks and enable Next once the
+              // server responds, without requiring a manual edit first.
+              setServerTouched(true)
+            }
           } catch {}
         }
       } catch {}
