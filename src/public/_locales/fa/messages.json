@@ -100,5 +100,11 @@
   },
   "hfPullException": {
     "message": "[tldw Assistant] هنگام ارسال درخواست دریافت \"$1\" به tldw_server شما خطایی رخ داد. مطمئن شوید tldw_server و افزونه فعال هستند و دوباره تلاش کنید."
+  },
+  "review.mediaEmpty.featureUnavailableBadge": {
+    "message": "قابلیت در دسترس نیست"
+  },
+  "connectionCard.buttonGoToServerCard": {
+    "message": "رفتن به کارت سرور"
   }
 }

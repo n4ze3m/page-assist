@@ -260,6 +260,8 @@
   "quickIngest": {
     "title": "Quick Ingest Media",
     "subtitle": "Enter one or more URLs. Force type per row if needed.",
+    "offlineTitle": "Server offline — staging only",
+    "offlineDescription": "You can queue URLs and files here and inspect fields, but ingestion will not run until your tldw server is online. Reconnect to process pending items.",
     "sourceHeading": "Source URLs or files",
     "storeRemote": "Store to remote DB",
     "storeRemoteAria": "将摄取结果存储到你的 tldw 服务器",

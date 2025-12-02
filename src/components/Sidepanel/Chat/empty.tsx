@@ -207,10 +207,7 @@ export const EmptySidePanel = () => {
           placement="bottom"
           title={t(
             "playground:tooltip.quickIngest",
-            t(
-              "sidepanel:quickIngestHint",
-              "Stage URLs and files for processing, even while your server is offline."
-            )
+            "Stage URLs and files for processing, even while your server is offline."
           )}
         >
           <Button

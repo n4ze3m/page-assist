@@ -260,8 +260,8 @@
   "quickIngest": {
     "title": "Quick Ingest Media",
     "subtitle": "Enter one or more URLs. Force type per row if needed.",
-    "offlineTitle": "Server offline — staging only",
-    "offlineDescription": "You can queue URLs and files here and inspect fields, but ingestion will not run until your tldw server is online. Reconnect to process pending items.",
+    "offlineTitle": "サーバーがオフライン — ステージングのみ",
+    "offlineDescription": "ここでURLやファイルをキューに入れ、フィールドを確認できますが、tldwサーバーがオンラインになるまで取り込みは実行されません。保留中の項目を処理するには再接続してください。",
     "sourceHeading": "Source URLs or files",
     "storeRemote": "Store to remote DB",
     "storeRemoteAria": "インジェスト結果を tldw サーバーに保存する",
@@ -355,8 +355,8 @@
     "connectExample1": "Open Settings → tldw server to add your server URL.",
     "connectExample2": "Use Diagnostics if your server is running but not reachable.",
     "headerDescription": "Create and manage structured knowledge bases that characters and chats can reference.",
-    "offlineTitle": "World Books are offline",
-    "offlineDescription": "Connect to your tldw server from the main settings page to view and edit World Books."
+    "offlineTitle": "World Books はオフラインです",
+    "offlineDescription": "World Books を表示・編集するには、メイン設定ページから tldw サーバーに接続してください。"
   },
   "dictionariesEmpty": {
     "demoTitle": "Explore Chat dictionaries in demo mode",
@@ -368,8 +368,8 @@
     "connectExample1": "Open Settings → tldw server to add your server URL.",
     "connectExample2": "Use Diagnostics if your server is running but not reachable.",
     "headerDescription": "Define reusable substitutions so tldw understands your organization’s names, acronyms, and terminology.",
-    "offlineTitle": "Chat dictionaries are offline",
-    "offlineDescription": "Connect to your tldw server from the main settings page to view and edit Chat dictionaries."
+    "offlineTitle": "チャット辞書はオフラインです",
+    "offlineDescription": "チャット辞書を表示・編集するには、メイン設定ページから tldw サーバーに接続してください。"
   },
   "charactersEmpty": {
     "demoTitle": "Explore Characters in demo mode",
@@ -382,8 +382,8 @@
     "connectExample2": "Use Diagnostics if your server is running but not reachable.",
     "headerDescription": "Create reusable characters you can pick from the chat header and reuse across conversations.",
     "headerSelectHint": "キャラクターを作成すると、その人格を複数のチャットで再利用できます。開始するには「新しいキャラクター」を使ってください。",
-    "offlineTitle": "Characters API not available on this server",
-    "offlineDescription": "This server does not advertise /api/v1/characters.",
+    "offlineTitle": "このサーバーでは Characters API を利用できません",
+    "offlineDescription": "このサーバーは /api/v1/characters エンドポイントを公開していません。",
     "offlineExample1": "Open Diagnostics to confirm your server version and available APIs for Characters.",
     "offlineExample2": "If you upgrade your server, reload the extension and return to Characters."
   },

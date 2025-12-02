@@ -2,7 +2,7 @@
   "empty": {
     "connectTitle": "Connect to use Review",
     "connectDescription": "Connect to your tldw server in Settings to send messages and view media. After connecting, you can review media and notes here.",
-    "connectExample1": "Open Settings \u2192 tldw server to add your server URL.",
+    "connectExample1": "Open Settings → tldw server to add your server URL.",
     "connectExample2": "Once connected, browse media and notes, then generate structured reviews and summaries.",
     "demoTitle": "Explore Review in demo mode",
     "demoDescription": "This demo shows how tldw Assistant can turn media and notes into structured reviews. Connect your own server later to analyze your own content.",
@@ -94,6 +94,8 @@
     "chatAboutMediaHint": "Open RAG chat scoped to this media only.",
     "chatAboutMediaRagSent": "Opened media-scoped RAG chat.",
     "chatAboutMediaInvalidId": "This media item does not have a numeric id yet.",
+    "demoBadge": "Demo",
+    "notConnectedBadge": "Not connected",
     "analyze": {
       "none": "No content available to analyze",
       "saved": "Analysis saved as note",
@@ -107,12 +109,13 @@
     "demoExample2": "When you connect, you’ll be able to browse and inspect media ingested from your own recordings and files.",
     "connectTitle": "Connect to use Media",
     "connectDescription": "Connect to your tldw server in Settings to send messages and view media. After connecting, processed recordings and documents will be listed here.",
-    "connectExample1": "Open Settings \u2192 tldw server to add your server URL.",
+    "connectExample1": "Open Settings → tldw server to add your server URL.",
     "connectExample2": "Once connected, use Quick ingest in the header to add media from your own recordings and files.",
     "offlineTitle": "Media API not available on this server",
     "offlineDescription": "This tldw server does not advertise the Media endpoints (for example, /api/v1/media and /api/v1/media/search). Upgrade your server to a version that includes Media to use this workspace.",
     "offlineExample1": "Open Diagnostics to confirm your server version and available APIs.",
-    "offlineExample2": "After upgrading, reload the extension and return to Media."
+    "offlineExample2": "After upgrading, reload the extension and return to Media.",
+    "featureUnavailableBadge": "Feature unavailable"
   },
   "mediaPage": {
     "searchPlaceholder": "Search media (title/content)",

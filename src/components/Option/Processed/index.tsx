@@ -61,7 +61,7 @@ export default function OptionProcessed() {
                     type="link"
                     href={it.url}
                     target="_blank"
-                    rel="noreferrer"
+                    rel="noopener noreferrer"
                   >
                     Open
                   </Button>

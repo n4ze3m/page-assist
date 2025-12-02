@@ -15,7 +15,7 @@
     "message": "Åpne hurtigimport"
   },
   "buttonOpenQuickIngest": {
-    "message": "Åpne Quick Ingest"
+    "message": "Åpne hurtigimport"
   },
   "buttonTryDemo": {
     "message": "Prøv en demo"
@@ -100,5 +100,11 @@
   },
   "hfPullException": {
     "message": "[tldw Assistant] Noe gikk galt da vi sendte en pull-forespørsel for «$1» til tldw_server. Kontroller at tldw_server og utvidelsen kjører, og prøv igjen."
+  },
+  "review.mediaEmpty.featureUnavailableBadge": {
+    "message": "Funksjon ikke tilgjengelig"
+  },
+  "connectionCard.buttonGoToServerCard": {
+    "message": "Gå til serverkortet"
   }
 }

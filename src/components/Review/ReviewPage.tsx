@@ -1098,7 +1098,7 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true, 
         title={
           <span className="inline-flex items-center gap-2">
             <span className="rounded-full bg-blue-50 px-2 py-0.5 text-[11px] font-medium text-blue-700 dark:bg-blue-900/40 dark:text-blue-200">
-              Demo
+              {t('review:reviewPage.demoBadge', { defaultValue: 'Demo' })}
             </span>
             <span>
               {isViewMediaMode
@@ -1160,7 +1160,9 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true, 
         title={
           <span className="inline-flex items-center gap-2">
             <span className="rounded-full bg-yellow-50 px-2 py-0.5 text-[11px] font-medium text-yellow-700 dark:bg-yellow-900/40 dark:text-yellow-200">
-              Not connected
+              {t('review:reviewPage.notConnectedBadge', {
+                defaultValue: 'Not connected'
+              })}
             </span>
             <span>
               {isViewMediaMode

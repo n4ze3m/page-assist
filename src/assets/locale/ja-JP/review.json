@@ -89,7 +89,9 @@
     "chatPrepared": "Prepared chat with this media in the composer.",
     "chatAboutMediaHint": "Open RAG chat scoped to this media only.",
     "chatAboutMediaRagSent": "Opened media-scoped RAG chat.",
-    "chatAboutMediaInvalidId": "This media item does not have a numeric id yet."
+    "chatAboutMediaInvalidId": "This media item does not have a numeric id yet.",
+    "demoBadge": "デモ",
+    "notConnectedBadge": "未接続"
   },
   "mediaPage": {
     "searchPlaceholder": "Search media (title/content)",
@@ -144,9 +146,10 @@
     "connectDescription": "Connect to your tldw server in Settings to send messages and view media. After connecting, processed recordings and documents will be listed here.",
     "connectExample1": "Open Settings → tldw server to add your server URL.",
     "connectExample2": "Once connected, use Quick ingest in the header to add media from your own recordings and files.",
-    "offlineTitle": "Media API not available on this server",
-    "offlineDescription": "This tldw server does not advertise the Media endpoints (for example, /api/v1/media and /api/v1/media/search). Upgrade your server to a version that includes Media to use this workspace.",
+    "offlineTitle": "このサーバーでは Media API を利用できません",
+    "offlineDescription": "この tldw サーバーは Media エンドポイント（/api/v1/media や /api/v1/media/search など）を公開していません。Media ワークスペースを利用するには、Media を含むバージョンにサーバーをアップグレードしてください。",
     "offlineExample1": "Open Diagnostics to confirm your server version and available APIs.",
-    "offlineExample2": "After upgrading, reload the extension and return to Media."
+    "offlineExample2": "After upgrading, reload the extension and return to Media.",
+    "featureUnavailableBadge": "機能は利用できません"
   }
 }

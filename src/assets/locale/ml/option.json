@@ -36,7 +36,7 @@
     "groupKnowledge": "നോളജ്",
     "groupSettings": "സജ്ജീകരണ ഷോർട്ട്കട്ടുകൾ",
     "backToHome": "Back to home",
-    "openSidebar": "Open Sidebar",
+    "openSidebar": "സൈഡ്‌ബാർ തുറക്കുക",
     "untitledChat": "Untitled",
     "modelLabel": "Model",
     "promptLabel": "Prompt",
@@ -168,6 +168,8 @@
   "quickIngest": {
     "title": "Quick Ingest Media",
     "subtitle": "Enter one or more URLs. Force type per row if needed.",
+    "offlineTitle": "Server offline — staging only",
+    "offlineDescription": "You can queue URLs and files here and inspect fields, but ingestion will not run until your tldw server is online. Reconnect to process pending items.",
     "sourceHeading": "Source URLs or files",
     "storeRemote": "Store to remote DB",
     "storeRemoteAria": "ഇൻജെസ്റ്റ് ഫലങ്ങൾ നിങ്ങളുടെ tldw സർവറിൽ സംഭരിക്കുക",

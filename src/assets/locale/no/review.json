@@ -89,7 +89,9 @@
     "chatPrepared": "Prepared chat with this media in the composer.",
     "chatAboutMediaHint": "Open RAG chat scoped to this media only.",
     "chatAboutMediaRagSent": "Opened media-scoped RAG chat.",
-    "chatAboutMediaInvalidId": "This media item does not have a numeric id yet."
+    "chatAboutMediaInvalidId": "This media item does not have a numeric id yet.",
+    "demoBadge": "Demo",
+    "notConnectedBadge": "Ikke tilkoblet"
   },
   "mediaPage": {
     "searchPlaceholder": "Search media (title/content)",
@@ -147,6 +149,7 @@
     "offlineTitle": "Media API not available on this server",
     "offlineDescription": "This tldw server does not advertise the Media endpoints (for example, /api/v1/media and /api/v1/media/search). Upgrade your server to a version that includes Media to use this workspace.",
     "offlineExample1": "Open Diagnostics to confirm your server version and available APIs.",
-    "offlineExample2": "After upgrading, reload the extension and return to Media."
+    "offlineExample2": "After upgrading, reload the extension and return to Media.",
+    "featureUnavailableBadge": "Funksjon ikke tilgjengelig"
   }
 }

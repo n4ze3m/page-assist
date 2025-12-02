@@ -100,5 +100,11 @@
   },
   "hfPullException": {
     "message": "[tldw Assistant] \"$1\" മോഡലിന്റെ പുൾ അഭ്യർത്ഥന tldw_server-ലേക്ക് അയയ്ക്കുമ്പോൾ പ്രശ്നം സംഭവിച്ചു. tldw_serverയും എക്‌സ്റ്റൻഷനും പ്രവർത്തിക്കുന്നുണ്ടോ എന്ന് ഉറപ്പാക്കി വീണ്ടും ശ്രമിക്കുക."
+  },
+  "review.mediaEmpty.featureUnavailableBadge": {
+    "message": "സവിശേഷത ലഭ്യമല്ല"
+  },
+  "connectionCard.buttonGoToServerCard": {
+    "message": "സർവർ കാർഡിലേക്ക് പോകുക"
   }
 }

@@ -265,7 +265,7 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
           isConnected: true,
           isChecking: false,
           offlineBypass: true,
-           errorKind: "none",
+          errorKind: "none",
           lastCheckedAt: Date.now(),
           lastError: null,
           lastStatusCode: null,

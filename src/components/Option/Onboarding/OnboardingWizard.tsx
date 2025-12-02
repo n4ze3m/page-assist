@@ -47,7 +47,6 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
         const cfg = await tldwClient.getConfig()
         if (cfg?.serverUrl) {
           setServerUrl(cfg.serverUrl)
-          setServerTouched(true)
         }
         if ((cfg as any)?.authMode) setAuthMode((cfg as any).authMode)
         if ((cfg as any)?.apiKey) setApiKey((cfg as any).apiKey)
@@ -55,13 +54,7 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
         if (!cfg?.serverUrl) {
           try {
             const fallback = await getTldwServerURL()
-            if (fallback) {
-              setServerUrl(fallback)
-              // Treat a detected fallback URL as an active candidate so we
-              // proactively run reachability checks and enable Next once the
-              // server responds, without requiring a manual edit first.
-              setServerTouched(true)
-            }
+            if (fallback) setServerUrl(fallback)
           } catch {}
         }
       } catch {}
