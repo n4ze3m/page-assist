@@ -6,7 +6,8 @@ import { Clock, ExternalLink, Send, Server, Settings } from "lucide-react"
 import { cleanUrl } from "@/libs/clean-url"
 import {
   useConnectionActions,
-  useConnectionState
+  useConnectionState,
+  useConnectionUxState
 } from "@/hooks/useConnectionState"
 import { useConnectionStore } from "@/store/connection"
 import { ConnectionPhase } from "@/types/connection"
@@ -15,6 +16,7 @@ import { focusComposer } from "@/hooks/useComposerFocus"
 import { getReturnTo, clearReturnTo } from "@/utils/return-to"
 import { useNavigate } from "react-router-dom"
 import { ServerOverviewHint } from "@/components/Common/ServerOverviewHint"
+import { useDemoMode } from "@/context/demo-mode"
 
 type Props = {
   onOpenSettings?: () => void
@@ -127,16 +129,20 @@ export const ServerConnectionCard: React.FC<Props> = ({
     lastStatusCode,
     offlineBypass
   } = useConnectionState()
+  const { uxState, errorKind, mode } = useConnectionUxState()
   const {
     checkOnce,
     enableOfflineBypass,
-    disableOfflineBypass
+    disableOfflineBypass,
+    setDemoMode
   } = useConnectionActions()
+  const { setDemoEnabled } = useDemoMode()
   const notification = useAntdNotification()
   const [knownServerUrl, setKnownServerUrl] = React.useState<string | null>(null)
   const [showAdvanced, setShowAdvanced] = React.useState(false)
   const [offlineHintVisible, setOfflineHintVisible] = React.useState(false)
   const [returnTo, setReturnToState] = React.useState<string | null>(null)
+  const [showErrorDetails, setShowErrorDetails] = React.useState(false)
 
   React.useEffect(() => {
     const target = getReturnTo()
@@ -165,15 +171,40 @@ export const ServerConnectionCard: React.FC<Props> = ({
   const displayServerUrl = serverUrl || knownServerUrl
   const serverHost = displayServerUrl ? cleanUrl(displayServerUrl) : null
 
-  const isSearching = phase === ConnectionPhase.SEARCHING && isChecking
+  const isSearching =
+    uxState === "testing" ||
+    (phase === ConnectionPhase.SEARCHING && isChecking)
   const elapsed = useElapsedTimer(isSearching)
   const secondsSinceLastCheck = useElapsedSince(lastCheckedAt)
 
   let statusVariant: "loading" | "ok" | "error" | "missing" = "loading"
-  if (phase === ConnectionPhase.UNCONFIGURED) statusVariant = "missing"
-  else if (phase === ConnectionPhase.SEARCHING) statusVariant = "loading"
-  else if (phase === ConnectionPhase.CONNECTED) statusVariant = "ok"
-  else if (phase === ConnectionPhase.ERROR) statusVariant = "error"
+  switch (uxState) {
+    case "unconfigured":
+    case "configuring_url":
+    case "configuring_auth":
+      statusVariant = "missing"
+      break
+    case "testing":
+      statusVariant = "loading"
+      break
+    case "connected_ok":
+    case "connected_degraded":
+    case "demo_mode":
+      statusVariant = "ok"
+      break
+    case "error_unreachable":
+    case "error_auth":
+      statusVariant = "error"
+      break
+    default:
+      statusVariant = "loading"
+  }
+
+  React.useEffect(() => {
+    if (statusVariant !== "error") {
+      setShowErrorDetails(false)
+    }
+  }, [statusVariant])
 
   const canStealFocus = React.useCallback((): boolean => {
     if (typeof document === "undefined") return false
@@ -261,14 +292,24 @@ export const ServerConnectionCard: React.FC<Props> = ({
             "Searching for your tldw server…"
           )
         : statusVariant === "ok"
-          ? t(
-              "option:connectionCard.headlineConnected",
-              "Connected to your tldw server"
-            )
-          : t(
-              "option:connectionCard.headlineError",
-              "Can’t reach your tldw server"
-            )
+          ? uxState === "connected_degraded"
+            ? t(
+                "option:connectionCard.headlineConnectedDegraded",
+                "Chat is ready — Knowledge still warming up"
+              )
+            : t(
+                "option:connectionCard.headlineConnected",
+                "Connected to your tldw server"
+              )
+          : errorKind === "auth"
+            ? t(
+                "option:connectionCard.headlineErrorAuth",
+                "API key needs attention"
+              )
+            : t(
+                "option:connectionCard.headlineError",
+                "Can’t reach your tldw server"
+              )
 
   const descriptionCopy =
     statusVariant === "missing"
@@ -285,20 +326,40 @@ export const ServerConnectionCard: React.FC<Props> = ({
         : statusVariant === "ok"
           ? isCompact
             ? t(
-                "option:connectionCard.descriptionConnectedCompact",
-                "Connected to {{host}}.",
+                uxState === "connected_degraded"
+                  ? "option:connectionCard.descriptionConnectedDegradedCompact"
+                  : "option:connectionCard.descriptionConnectedCompact",
+                uxState === "connected_degraded"
+                  ? "Chat is connected. Knowledge search may be limited until your server finishes indexing."
+                  : mode === "demo"
+                    ? "Demo mode is enabled."
+                    : "Connected to {{host}}.",
                 { host: serverHost ?? "tldw_server" }
               )
             : t(
-                "option:connectionCard.descriptionConnected",
-                "Connected to {{host}}. Start chatting in the main view or sidebar.",
+                uxState === "connected_degraded"
+                  ? "option:connectionCard.descriptionConnectedDegraded"
+                  : "option:connectionCard.descriptionConnected",
+                uxState === "connected_degraded"
+                  ? "Chat is connected to {{host}}. Knowledge search may be offline or limited until indexing completes. You can still chat normally while your server catches up."
+                  : mode === "demo"
+                    ? "Demo mode is enabled. Explore the workspace with sample data."
+                    : "Connected to {{host}}. Start chatting in the main view or sidebar.",
                 { host: serverHost ?? "tldw_server" }
               )
-          : t(
-              "option:connectionCard.descriptionError",
-              "Add or update your API key in Settings → tldw server, then retry. Double-check the server URL and that your browser can reach it.",
-              { host: serverHost ?? "tldw_server" }
-            )
+          : errorKind === "auth"
+            ? t(
+                "option:connectionCard.descriptionErrorAuth",
+                "Your server is up but the API key is wrong or missing. Fix the key in Settings → tldw server, then retry."
+              )
+            : t(
+                "option:connectionCard.descriptionError",
+                "We couldn’t reach {{host}}. Check that your tldw_server is running and that your browser can reach it, then open diagnostics or update the URL.",
+                { host: serverHost ?? "tldw_server" }
+              )
+
+  const diagnosticsLabel =
+    t("settings:healthSummary.diagnostics", "Health & diagnostics")
 
   const primaryLabel =
     statusVariant === "ok"
@@ -309,20 +370,64 @@ export const ServerConnectionCard: React.FC<Props> = ({
       : statusVariant === "missing"
         ? t("settings:tldw.setupLink", "Set up server")
         : statusVariant === "error"
-          ? t(
-              "option:connectionCard.buttonTroubleshoot",
-              "Troubleshoot connection"
-            )
+          ? errorKind === "auth"
+            ? t(
+                "option:connectionCard.buttonFixApiKey",
+                "Fix API key"
+              )
+            : diagnosticsLabel
           : t(
               "option:connectionCard.buttonChecking",
               "Checking…"
             )
 
-  const diagnosticsLabel =
-    t("settings:healthSummary.diagnostics", "Health & diagnostics")
+  const openOnboarding = () => {
+    // Open the options page on the onboarding (home) route.
+    try {
+      // @ts-ignore
+      if (typeof browser !== "undefined" && browser.runtime?.getURL) {
+        // @ts-ignore
+        const url = browser.runtime.getURL("/options.html#/")
+        // @ts-ignore
+        if (browser.tabs?.create) {
+          // @ts-ignore
+          browser.tabs.create({ url })
+        } else {
+          window.open(url, "_blank")
+        }
+        return
+      }
+    } catch {
+      // Fall through to chrome.* / window.open below.
+    }
+
+    try {
+      // @ts-ignore
+      if (chrome?.runtime?.getURL) {
+        // @ts-ignore
+        const url = chrome.runtime.getURL("/options.html#/")
+        window.open(url, "_blank")
+        return
+      }
+      // @ts-ignore
+      if (chrome?.runtime?.openOptionsPage) {
+        // @ts-ignore
+        chrome.runtime.openOptionsPage()
+        return
+      }
+    } catch {
+      // ignore and fall back to plain window.open
+    }
+
+    window.open("/options.html#/", "_blank")
+  }
 
   const handlePrimary = () => {
-    if (statusVariant === "ok") {
+    if (
+      uxState === "connected_ok" ||
+      uxState === "connected_degraded" ||
+      uxState === "demo_mode"
+    ) {
       if (onStartChat) {
         try {
           onStartChat()
@@ -333,10 +438,26 @@ export const ServerConnectionCard: React.FC<Props> = ({
       } else {
         focusComposer()
       }
-    } else if (statusVariant === "missing") {
+      return
+    }
+
+    if (
+      uxState === "unconfigured" ||
+      uxState === "configuring_url" ||
+      uxState === "configuring_auth"
+    ) {
+      openOnboarding()
+      return
+    }
+
+    if (uxState === "error_auth") {
       handleOpenSettings()
-    } else if (statusVariant === "error") {
+      return
+    }
+
+    if (uxState === "error_unreachable") {
       handleOpenDiagnostics()
+      return
     }
   }
 
@@ -521,11 +642,25 @@ export const ServerConnectionCard: React.FC<Props> = ({
               {elapsed > 0 ? ` · ${elapsed}s` : ""}
             </Tag>
           )}
-          {statusVariant === "ok" && (
+          {statusVariant === "ok" && mode === "demo" ? (
+            <Tag color="blue" className="px-4 py-1 text-sm">
+              {t(
+                "option:connectionCard.demoModeBadge",
+                "Demo mode"
+              )}
+            </Tag>
+          ) : statusVariant === "ok" && uxState === "connected_degraded" ? (
+            <Tag color="gold" className="px-4 py-1 text-sm">
+              {t(
+                "option:connectionCard.degradedBadge",
+                "Connected · Knowledge limited"
+              )}
+            </Tag>
+          ) : statusVariant === "ok" ? (
             <Tag color="green" className="px-4 py-1 text-sm">
               {t("tldwState.running")}
             </Tag>
-          )}
+          ) : null}
           {statusVariant === "missing" && (
             <Tag color="orange" className="px-4 py-1 text-sm">
               {t("tldwState.missing", "Server URL not configured")}
@@ -573,16 +708,6 @@ export const ServerConnectionCard: React.FC<Props> = ({
               {t("tldwState.connectedHint", "Connected to {{host}}.", { host: serverHost })}
             </span>
           )}
-          {statusVariant === "error" && lastError && (
-            <span className="inline-flex items-center gap-1 text-xs text-red-500">
-              <span>
-                {t("tldwState.errorDetailsLabel", "Details:")}
-              </span>
-              <span className="rounded bg-red-50 px-1.5 py-0.5 text-[0.7rem] text-red-700 dark:bg-red-900/30 dark:text-red-200">
-                {lastError}
-              </span>
-            </span>
-          )}
           {secondsSinceLastCheck != null &&
             !(phase === ConnectionPhase.SEARCHING && isChecking) && (
             <span className="inline-flex items-center gap-1 text-sm text-gray-600 dark:text-gray-300">
@@ -591,6 +716,42 @@ export const ServerConnectionCard: React.FC<Props> = ({
             </span>
           )}
         </div>
+
+        {statusVariant === "error" && lastError && (
+          <div className="flex flex-col items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
+            <button
+              type="button"
+              onClick={() => setShowErrorDetails((prev) => !prev)}
+              className="text-[11px] text-blue-600 hover:text-blue-500 dark:text-blue-400"
+            >
+              {showErrorDetails
+                ? t("tldwState.hideDetails", "Hide details")
+                : t("tldwState.showDetails", "Show details")}
+            </button>
+            {showErrorDetails && (
+              <div className="mt-1 w-full max-w-md rounded-md bg-red-50 px-3 py-2 text-left text-[11px] text-red-700 dark:bg-red-900/30 dark:text-red-200">
+                <div className="font-medium">
+                  {t(
+                    "tldwState.errorDetailsLabel",
+                    "Technical details"
+                  )}
+                </div>
+                <div className="mt-1 break-words">
+                  {lastError}
+                </div>
+                {lastStatusCode && (
+                  <div className="mt-1">
+                    {t(
+                      "tldwState.connectionFailedWithCode",
+                      "Connection failed (HTTP {{code}})",
+                      { code: lastStatusCode }
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        )}
 
         <div className="flex w-full flex-col gap-2 sm:flex-row">
           <Button
@@ -621,18 +782,24 @@ export const ServerConnectionCard: React.FC<Props> = ({
           )}
           {enableDemo && statusVariant === "missing" && (
             <Button
-              onClick={() =>
-                window.dispatchEvent(
-                  new CustomEvent("tldw:demo-mode-toggle", {
-                    detail: { enabled: true }
-                  })
-                )
-              }
+              onClick={() => {
+                try {
+                  setDemoEnabled(true)
+                } catch {
+                  // ignore demo storage errors
+                }
+                try {
+                  setDemoMode()
+                } catch {
+                  // ignore connection store failures
+                }
+              }}
               block>
               {t("option:connectionCard.buttonTryDemo", "Try a demo")}
             </Button>
           )}
           <Button
+            type="link"
             icon={<Settings className="h-4 w-4" />}
             onClick={handleOpenSettings}
             block>

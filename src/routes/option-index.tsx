@@ -5,7 +5,8 @@ import { useNavigate } from "react-router-dom"
 import ServerConnectionCard from "@/components/Common/ServerConnectionCard"
 import {
   useConnectionActions,
-  useConnectionState
+  useConnectionState,
+  useConnectionUxState
 } from "@/hooks/useConnectionState"
 import { ConnectionPhase } from "@/types/connection"
 import { useFocusComposerOnConnect } from "@/hooks/useComposerFocus"
@@ -18,6 +19,7 @@ const OptionIndex = () => {
   const navigate = useNavigate()
 
   const { phase } = useConnectionState()
+  const { uxState, hasCompletedFirstRun } = useConnectionUxState()
   const { checkOnce } = useConnectionActions()
 
   React.useEffect(() => {
@@ -26,12 +28,28 @@ const OptionIndex = () => {
 
   useFocusComposerOnConnect(phase as ConnectionPhase | null)
 
-  const showConnectionShell = phase !== ConnectionPhase.CONNECTED
-  const isUnconfigured = phase === ConnectionPhase.UNCONFIGURED
+  const isFirstRunShell = !hasCompletedFirstRun && uxState !== "demo_mode"
+  const showConnectionShell = isFirstRunShell
+
+  const showWizard =
+    uxState === "unconfigured" ||
+    uxState === "configuring_url" ||
+    uxState === "configuring_auth" ||
+    uxState === "testing" ||
+    uxState === "error_auth" ||
+    uxState === "error_unreachable"
+
+  const hideHeader =
+    uxState === "unconfigured" ||
+    uxState === "configuring_url" ||
+    uxState === "configuring_auth" ||
+    uxState === "testing" ||
+    uxState === "error_auth" ||
+    uxState === "error_unreachable"
 
   return (
     <OptionLayout
-      hideHeader={showConnectionShell}
+      hideHeader={hideHeader}
       showHeaderSelectors={false}
     >
       {showConnectionShell ? (
@@ -45,7 +63,7 @@ const OptionIndex = () => {
             }}
             enableDemo
           />
-          {isUnconfigured ? (
+          {showWizard ? (
             <div className="mt-6">
               <OnboardingWizard
                 onFinish={() => {

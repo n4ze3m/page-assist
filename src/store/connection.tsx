@@ -1,6 +1,6 @@
 import { create } from "zustand"
 
-import { tldwClient } from "@/services/tldw/TldwApiClient"
+import { tldwClient, type TldwConfig } from "@/services/tldw/TldwApiClient"
 import { getStoredTldwServerURL } from "@/services/tldw-server"
 import { apiSend } from "@/services/api-send"
 import {
@@ -159,6 +159,11 @@ type ConnectionStore = {
   setServerUrl: (url: string) => Promise<void>
   enableOfflineBypass: () => Promise<void>
   disableOfflineBypass: () => Promise<void>
+  beginOnboarding: () => void
+  setConfigPartial: (config: Partial<TldwConfig>) => Promise<void>
+  testConnectionFromOnboarding: () => Promise<void>
+  setDemoMode: () => void
+  markFirstRunComplete: () => void
 }
 
 const initialState: ConnectionState = {
@@ -172,7 +177,13 @@ const initialState: ConnectionState = {
   offlineBypass: false,
   knowledgeStatus: "unknown",
   knowledgeLastCheckedAt: null,
-  knowledgeError: null
+  knowledgeError: null,
+  mode: "normal",
+  configStep: "none",
+  errorKind: "none",
+  hasCompletedFirstRun: false,
+  lastConfigUpdatedAt: null,
+  checksSinceConfigChange: 0
 }
 
 const getPersistedServerUrl = async (): Promise<string | null> => {
@@ -218,6 +229,7 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
       set({
         state: {
           ...prev,
+          errorKind: "none",
           phase: ConnectionPhase.UNCONFIGURED,
           serverUrl: persistedServerUrl,
           isConnected: false,
@@ -244,6 +256,7 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
         (await ensurePlaceholderConfig()) ??
         prev.serverUrl ??
         "offline://local"
+
       set({
         state: {
           ...prev,
@@ -252,6 +265,7 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
           isConnected: true,
           isChecking: false,
           offlineBypass: true,
+           errorKind: "none",
           lastCheckedAt: Date.now(),
           lastError: null,
           lastStatusCode: null,
@@ -266,6 +280,7 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
     // Throttle repeated checks when already connected recently.
     // This prevents the landing page/header from hammering the server.
     const now = Date.now()
+    const nextChecksSinceConfigChange = prev.checksSinceConfigChange + 1
     if (
       prev.isConnected &&
       prev.phase === ConnectionPhase.CONNECTED &&
@@ -280,9 +295,11 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
         ...prev,
         phase: ConnectionPhase.SEARCHING,
         serverUrl: persistedServerUrl ?? prev.serverUrl,
+        errorKind: "none",
         isChecking: true,
         offlineBypass: false,
-        lastError: null
+        lastError: null,
+        checksSinceConfigChange: nextChecksSinceConfigChange
       }
     })
 
@@ -319,6 +336,7 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
             isConnected: false,
             isChecking: false,
             offlineBypass: false,
+            errorKind: "none",
             lastCheckedAt: Date.now(),
             lastError: null,
             lastStatusCode: null,
@@ -376,6 +394,23 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
         knowledgeError = "core-offline"
       }
 
+      let errorKind: ConnectionState["errorKind"] = "none"
+
+      if (ok) {
+        if (knowledgeStatus === "offline") {
+          errorKind = "partial"
+        } else {
+          errorKind = "none"
+        }
+      } else {
+        const status = raced.status
+        if (status === 401 || status === 403) {
+          errorKind = "auth"
+        } else {
+          errorKind = "unreachable"
+        }
+      }
+
       set({
         state: {
           ...prev,
@@ -389,7 +424,9 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
           lastStatusCode: ok ? null : raced.status,
           knowledgeStatus,
           knowledgeLastCheckedAt,
-          knowledgeError
+          knowledgeError,
+          errorKind,
+          checksSinceConfigChange: nextChecksSinceConfigChange
         }
       })
     } catch (error) {
@@ -405,7 +442,9 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
           lastStatusCode: 0,
           knowledgeStatus: "offline",
           knowledgeLastCheckedAt: Date.now(),
-          knowledgeError: (error as Error)?.message ?? "unknown-error"
+          knowledgeError: (error as Error)?.message ?? "unknown-error",
+          errorKind: "unreachable",
+          checksSinceConfigChange: nextChecksSinceConfigChange
         }
       })
     }
@@ -424,6 +463,92 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
   async disableOfflineBypass() {
     await setOfflineBypassFlag(false)
     await get().checkOnce()
+  },
+
+  beginOnboarding() {
+    const prev = get().state
+    set({
+      state: {
+        ...prev,
+        phase: ConnectionPhase.UNCONFIGURED,
+        configStep: "url",
+        hasCompletedFirstRun: false
+      }
+    })
+  },
+
+  async setConfigPartial(config: Partial<TldwConfig>) {
+    await tldwClient.updateConfig(config)
+    const prev = get().state
+
+    let nextStep: ConnectionState["configStep"] = prev.configStep
+    const now = Date.now()
+
+    if (typeof config.serverUrl === "string" && config.serverUrl.trim()) {
+      nextStep = "auth"
+    }
+
+    if (
+      typeof config.authMode !== "undefined" ||
+      typeof config.apiKey !== "undefined" ||
+      typeof config.accessToken !== "undefined"
+    ) {
+      nextStep = "auth"
+    }
+
+    set({
+      state: {
+        ...prev,
+        serverUrl:
+          typeof config.serverUrl === "string"
+            ? config.serverUrl
+            : prev.serverUrl,
+        configStep: nextStep,
+        lastConfigUpdatedAt: now,
+        checksSinceConfigChange: 0
+      }
+    })
+  },
+
+  async testConnectionFromOnboarding() {
+    const prev = get().state
+    set({
+      state: {
+        ...prev,
+        configStep: "health"
+      }
+    })
+    await get().checkOnce()
+  },
+
+  setDemoMode() {
+    const prev = get().state
+    set({
+      state: {
+        ...prev,
+        mode: "demo",
+        phase: ConnectionPhase.CONNECTED,
+        isConnected: true,
+        offlineBypass: false,
+        errorKind: "none",
+        lastError: null,
+        lastStatusCode: null,
+        hasCompletedFirstRun: true
+      }
+    })
+  },
+
+  markFirstRunComplete() {
+    const prev = get().state
+    if (prev.hasCompletedFirstRun) {
+      return
+    }
+    set({
+      state: {
+        ...prev,
+        hasCompletedFirstRun: true
+      }
+    })
   }
 }))
 

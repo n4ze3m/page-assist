@@ -18,26 +18,6 @@ export const DemoModeProvider: React.FC<{ children: React.ReactNode }> = ({
     false
   )
 
-  React.useEffect(() => {
-    const handler = (event: Event) => {
-      try {
-        const detail = (event as CustomEvent)?.detail
-        const enabled =
-          typeof detail?.enabled === "boolean" ? detail.enabled : true
-        setDemoEnabled(enabled)
-      } catch {
-        setDemoEnabled(true)
-      }
-    }
-    window.addEventListener("tldw:demo-mode-toggle", handler as EventListener)
-    return () => {
-      window.removeEventListener(
-        "tldw:demo-mode-toggle",
-        handler as EventListener
-      )
-    }
-  }, [setDemoEnabled])
-
   const value = React.useMemo(
     () => ({
       demoEnabled,
@@ -60,4 +40,3 @@ export const useDemoMode = (): DemoModeContextValue => {
   }
   return ctx
 }
-

@@ -3,7 +3,8 @@ import { Drawer, Button, Tooltip } from "antd"
 
 import {
   useConnectionActions,
-  useConnectionState
+  useConnectionState,
+  useConnectionUxState
 } from "@/hooks/useConnectionState"
 import { ConnectionPhase } from "@/types/connection"
 import { useTranslation } from "react-i18next"
@@ -17,6 +18,7 @@ export default function HealthSummary() {
     knowledgeStatus,
     knowledgeLastCheckedAt
   } = useConnectionState()
+  const { uxState, errorKind } = useConnectionUxState()
   const { checkOnce } = useConnectionActions()
 
   const [core, setCore] = useState<"unknown" | "ok" | "fail">("unknown")
@@ -84,6 +86,29 @@ export default function HealthSummary() {
       }`}
     />
   )
+
+  let issueLabel: string | null = null
+  let issueBody: string | null = null
+
+  if (uxState === "error_auth" || errorKind === "auth") {
+    issueLabel = t("healthSummary.issueAuth", "Authentication")
+    issueBody = t(
+      "healthSummary.issueAuthHint",
+      "Your server responded but the API key or login is invalid. Fix your credentials in Settings → tldw server, then retry."
+    )
+  } else if (uxState === "error_unreachable" || errorKind === "unreachable") {
+    issueLabel = t("healthSummary.issueConnectivity", "Connectivity")
+    issueBody = t(
+      "healthSummary.issueConnectivityHint",
+      "We couldn’t reach your tldw server. Check that it’s running, your browser has site access, and any proxies or firewalls allow the connection."
+    )
+  } else if (rag === "fail") {
+    issueLabel = t("healthSummary.issueRag", "Knowledge index")
+    issueBody = t(
+      "healthSummary.issueRagHint",
+      "Chat is available, but the knowledge index looks offline. Re-run indexing or inspect RAG components in the detailed diagnostics."
+    )
+  }
 
   return (
     <div className="mb-3 p-2 rounded border border-transparent bg-transparent flex items-center justify-between transition-colors duration-150 hover:border-gray-200 hover:bg-gray-50 dark:border-transparent dark:hover:border-gray-700 dark:hover:bg-[#1c1c1c]">
@@ -156,6 +181,21 @@ export default function HealthSummary() {
               {ragCheckedAt ? new Date(ragCheckedAt).toLocaleString() : ""}
             </span>
           </div>
+          {issueLabel && issueBody && (
+            <div className="pt-2 text-xs text-gray-600 dark:text-gray-300">
+              <div className="font-medium">
+                {t(
+                  "healthSummary.currentIssueLabel",
+                  "Current focus"
+                )}
+                {": "}
+                {issueLabel}
+              </div>
+              <div className="mt-1">
+                {issueBody}
+              </div>
+            </div>
+          )}
           <div className="pt-3 text-xs text-gray-500">
             {t(
               "healthSummary.footerInfo",
