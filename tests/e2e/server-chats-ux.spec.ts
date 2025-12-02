@@ -72,8 +72,8 @@ test.describe('Server-backed chats UX', () => {
     await page.goto(optionsUrl)
     await page.waitForLoadState('networkidle')
 
-    // Open the chat sidebar
-    await page.getByRole('button', { name: /Open chat sidebar/i }).click()
+    // Open the sidebar
+    await page.getByRole('button', { name: /Open sidebar/i }).click()
 
     // Server chats section should appear
     await expect(page.getByText(/Server chats/i)).toBeVisible()

@@ -192,11 +192,6 @@ test.describe('ServerConnectionCard states', () => {
     await page.getByRole('button', { name: /Knowledge:/i }).click()
     await expect(page).toHaveURL(/options\.html#\/settings\/health/i)
 
-    // Navigate back again and verify the header Diagnostics link
-    await page.goto(`${optionsUrl}#/media`)
-    await page.getByRole('link', { name: /Health & diagnostics/i }).click()
-    await expect(page).toHaveURL(/options\.html#\/settings\/health/i)
-
     await context.close()
   })
 })

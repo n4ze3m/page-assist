@@ -32,7 +32,7 @@ const OptionIndex = () => {
   return (
     <OptionLayout
       hideHeader={showConnectionShell}
-      showHeaderSelectors={!showConnectionShell}
+      showHeaderSelectors={false}
     >
       {showConnectionShell ? (
         <div className="w-full">
@@ -65,8 +65,8 @@ const OptionIndex = () => {
                   </li>
                   <li>
                     {t(
-                      "playground:tips.pickModelPrompt",
-                      "Pick a Model and a Prompt from the header."
+                      "playground:tips.focusComposer",
+                      "Use the composer to start chatting once connected."
                     )}
                   </li>
                   <li>

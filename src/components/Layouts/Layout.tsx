@@ -30,7 +30,7 @@ type OptionLayoutProps = {
 const OptionLayoutInner: React.FC<OptionLayoutProps> = ({
   children,
   hideHeader = false,
-  showHeaderSelectors = true
+  showHeaderSelectors = false
 }) => {
   const confirmDanger = useConfirmDanger()
   const [sidebarOpen, setSidebarOpen] = useState(false)

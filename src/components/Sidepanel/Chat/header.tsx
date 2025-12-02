@@ -34,6 +34,7 @@ import React from "react"
 import { IconButton } from "@/components/Common/IconButton"
 import { useStorage } from "@plasmohq/storage/hook"
 import { CharacterSelect } from "@/components/Common/CharacterSelect"
+import { PromptSelect } from "@/components/Common/PromptSelect"
 import { Sidebar } from "@/components/Option/Sidebar"
 // import { BsIncognito } from "react-icons/bs"
 import { isFireFoxPrivateMode } from "@/utils/is-private-mode"
@@ -568,6 +569,13 @@ export const SidepanelHeader = ({
             <HistoryIcon className="size-4 text-gray-500 dark:text-gray-400" />
           </IconButton>
         </Tooltip>
+        <PromptSelect
+          selectedSystemPrompt={selectedSystemPrompt}
+          setSelectedSystemPrompt={setSelectedSystemPrompt}
+          setSelectedQuickPrompt={setSelectedQuickPrompt}
+          className="text-gray-500 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+          iconClassName="size-4"
+        />
         <CharacterSelect className="text-gray-500 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors" iconClassName="size-4" />
         {/* Conversation settings button moved next to submit in input bar */}
         <Link to="/settings">
