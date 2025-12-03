@@ -12,43 +12,43 @@
     "message": "Configurações"
   },
   "connectionCard.headlineMissing": {
-    "message": "Connect tldw Assistant to your server"
+    "message": "Conecte o tldw Assistant ao seu servidor"
   },
   "connectionCard.headlineSearching": {
-    "message": "Searching for your tldw server…"
+    "message": "Procurando seu servidor tldw…"
   },
   "connectionCard.headlineConnected": {
-    "message": "Connected to your tldw server"
+    "message": "Conectado ao seu servidor tldw"
   },
   "connectionCard.headlineError": {
-    "message": "Can’t reach your tldw server"
+    "message": "Não foi possível alcançar seu servidor tldw"
   },
   "connectionCard.descriptionMissing": {
-    "message": "tldw_server is the backend that powers chat, knowledge search, and media processing. Connect your own tldw server URL to start using the assistant."
+    "message": "tldw_server é o backend que alimenta o chat, a busca de conhecimento e o processamento de mídia. Conecte a URL do seu próprio tldw_server para começar a usar o assistente."
   },
   "connectionCard.descriptionSearching": {
-    "message": "We’re checking {{host}} to see if your tldw server is reachable. This may take a moment while we wait for a response."
+    "message": "Estamos verificando {{host}} para ver se o seu servidor tldw está acessível. Isso pode levar alguns instantes enquanto aguardamos uma resposta."
   },
   "connectionCard.descriptionConnected": {
-    "message": "Connected to your tldw server at {{host}}. You can start chatting or use Review, Knowledge, and other tools."
+    "message": "Conectado ao seu servidor tldw em {{host}}. Você pode começar a conversar ou usar Revisão, Conhecimento e outras ferramentas."
   },
   "connectionCard.descriptionError": {
-    "message": "We couldn’t reach your tldw server at {{host}}. Make sure the server is running, the URL is correct, and your browser can reach it over the network."
+    "message": "Não conseguimos alcançar seu servidor tldw em {{host}}. Verifique se o servidor está em execução, se a URL está correta e se o navegador consegue acessá‑lo pela rede."
   },
   "connectionCard.buttonStartChat": {
-    "message": "Start chatting"
+    "message": "Começar a conversar"
   },
   "connectionCard.buttonRetry": {
-    "message": "Retry connection"
+    "message": "Tentar conexão novamente"
   },
   "connectionCard.buttonChangeServer": {
-    "message": "Change server"
+    "message": "Alterar servidor"
   },
   "connectionCard.buttonOpenDiagnostics": {
-    "message": "Open diagnostics"
+    "message": "Abrir diagnósticos"
   },
   "connectionCard.buttonViewDiagnostics": {
-    "message": "View diagnostics"
+    "message": "Ver diagnósticos"
   },
   "connectionCard.buttonOpenQuickIngest": {
     "message": "Abrir ingestão rápida"
@@ -96,52 +96,52 @@
     "message": "Atalhos de configurações"
   },
   "header.backToHome": {
-    "message": "Back to home"
+    "message": "Voltar para início"
   },
   "header.openSidebar": {
-    "message": "Open Sidebar"
+    "message": "Abrir barra lateral"
   },
   "header.untitledChat": {
-    "message": "Untitled"
+    "message": "Sem título"
   },
   "header.modelLabel": {
-    "message": "Model"
+    "message": "Modelo"
   },
   "header.promptLabel": {
     "message": "Prompt"
   },
   "header.review": {
-    "message": "Review"
+    "message": "Revisão"
   },
   "header.flashcards": {
     "message": "Flashcards"
   },
   "header.media": {
-    "message": "Media"
+    "message": "Mídia"
   },
   "header.libraryView": {
-    "message": "Multi-Item Review"
+    "message": "Revisão de vários itens"
   },
   "header.notes": {
-    "message": "Notes"
+    "message": "Notas"
   },
   "header.modesLabel": {
-    "message": "Modes"
+    "message": "Modos"
   },
   "header.modePlayground": {
     "message": "Chat"
   },
   "header.modeReview": {
-    "message": "Review"
+    "message": "Revisão"
   },
   "header.modeMedia": {
-    "message": "Media"
+    "message": "Mídia"
   },
   "header.modeKnowledge": {
-    "message": "Knowledge QA"
+    "message": "Perguntas sobre conhecimento"
   },
   "header.modeNotes": {
-    "message": "Notes"
+    "message": "Notas"
   },
   "header.modePrompts": {
     "message": "Prompts"
@@ -162,43 +162,43 @@
     "message": "World Books"
   },
   "header.modeDictionaries": {
-    "message": "Chat dictionaries"
+    "message": "Dicionários de chat"
   },
   "header.modeCharacters": {
-    "message": "Characters"
+    "message": "Personagens"
   },
   "header.modeShortcutHint": {
-    "message": "{{shortcut}} to switch"
+    "message": "{{shortcut}} para alternar"
   },
   "header.quickIngest": {
-    "message": "Quick ingest"
+    "message": "Ingestão rápida"
   },
   "header.modelSettings": {
-    "message": "Model settings"
+    "message": "Configurações de modelo"
   },
   "header.serverSettings": {
-    "message": "Server settings"
+    "message": "Configurações do servidor"
   },
   "header.more": {
-    "message": "AI tools"
+    "message": "Ferramentas de IA"
   },
   "header.moreMenu.title": {
-    "message": "Advanced tools"
+    "message": "Ferramentas avançadas"
   },
   "header.moreMenu.tooltip": {
-    "message": "Advanced tools like sidebar, repository, and debug options"
+    "message": "Ferramentas avançadas como barra lateral, repositório e opções de depuração"
   },
   "header.moreActions": {
-    "message": "More actions"
+    "message": "Mais ações"
   },
   "header.toolsMenu": {
-    "message": "Chat tools"
+    "message": "Ferramentas de chat"
   },
   "header.serverBackedLabel": {
-    "message": "Server-backed chat"
+    "message": "Chat com servidor"
   },
   "header.serverBackedTooltip": {
-    "message": "Messages in this chat are also saved on your tldw server."
+    "message": "As mensagens deste chat também são salvas no seu servidor tldw."
   },
   "sidebarTitle": {
     "message": "Histórico de Chat"
@@ -252,10 +252,10 @@
     "message": "Compartilhar"
   },
   "libraryView": {
-    "message": "Library View"
+    "message": "Visualização da biblioteca"
   },
   "notes": {
-    "message": "Notes"
+    "message": "Notas"
   },
   "upload.fileTooLargeTitle": {
     "message": "Arquivo muito grande"
@@ -486,16 +486,16 @@
     "message": "https://docs.tldw.app/extension/media-ingest-storage"
   },
   "quickIngest.bulkPlaceholder": {
-    "message": "Paste URLs (one per line)"
+    "message": "Cole URLs (uma por linha)"
   },
   "quickIngest.or": {
-    "message": "or"
+    "message": "ou"
   },
   "quickIngest.remove": {
-    "message": "Remove"
+    "message": "Remover"
   },
   "quickIngest.add": {
-    "message": "Add URL"
+    "message": "Adicionar URL"
   },
   "quickIngest.commonOptions": {
     "message": "Opções de ingestão"
@@ -594,91 +594,91 @@
     "message": "As últimas execuções falharam — abra Saúde e diagnóstico no cabeçalho para mais detalhes."
   },
   "notesSearch.placeholder": {
-    "message": "Search titles and contents"
+    "message": "Buscar títulos e conteúdos"
   },
   "notesSearch.clear": {
-    "message": "Clear search & filters"
+    "message": "Limpar busca e filtros"
   },
   "notesSearch.keywordsPlaceholder": {
-    "message": "Filter by keyword"
+    "message": "Filtrar por palavra‑chave"
   },
   "notesSearch.new": {
-    "message": "New note"
+    "message": "Nova nota"
   },
   "notesSearch.newTooltip": {
-    "message": "Create a new note"
+    "message": "Criar uma nova nota"
   },
   "notesSearch.listCount": {
-    "message": "{{count}} notes"
+    "message": "{{count}} notas"
   },
   "notesSearch.exportMdTooltip": {
-    "message": "Export matching notes as Markdown (.md)"
+    "message": "Exportar notas correspondentes como Markdown (.md)"
   },
   "notesSearch.exportCsvTooltip": {
-    "message": "Export matching notes as CSV"
+    "message": "Exportar notas correspondentes como CSV"
   },
   "notesSearch.exportJsonTooltip": {
-    "message": "Export matching notes as JSON"
+    "message": "Exportar notas correspondentes como JSON"
   },
   "notesSearch.toolbarExportMdTooltip": {
-    "message": "Export note as Markdown (.md)"
+    "message": "Exportar nota como Markdown (.md)"
   },
   "notesSearch.toolbarSaveTooltip": {
-    "message": "Save note"
+    "message": "Salvar nota"
   },
   "notesSearch.toolbarCopyTooltip": {
-    "message": "Copy note content"
+    "message": "Copiar conteúdo da nota"
   },
   "notesSearch.toolbarDeleteTooltip": {
-    "message": "Delete note"
+    "message": "Excluir nota"
   },
   "notesSearch.exportMenuTrigger": {
-    "message": "Export"
+    "message": "Exportar"
   },
   "notesSearch.tagsHelp": {
-    "message": "Keywords help you find this note using the keyword filter on the left."
+    "message": "Palavras‑chave ajudam você a encontrar esta nota usando o filtro de palavras‑chave à esquerda."
   },
   "tts.playground": {
-    "message": "TTS Playground"
+    "message": "Playground de TTS"
   },
   "notesEmpty.connectTitle": {
-    "message": "Connect to use Notes"
+    "message": "Conecte‑se para usar Notas"
   },
   "notesEmpty.connectDescription": {
-    "message": "To use Notes, first connect to your tldw server."
+    "message": "Para usar Notas, primeiro conecte‑se ao seu servidor tldw."
   },
   "notesEmpty.connectExample1": {
-    "message": "Open Settings → tldw server to add your server URL."
+    "message": "Abra Configurações → servidor tldw para adicionar a URL do seu servidor."
   },
   "notesEmpty.connectExample2": {
-    "message": "Use Diagnostics if your server is running but not reachable."
+    "message": "Use Diagnóstico se o seu servidor estiver em execução mas não acessível."
   },
   "notesEmpty.demoTitle": {
-    "message": "Explore Notes in demo mode"
+    "message": "Explore Notas no modo demonstração"
   },
   "notesEmpty.demoDescription": {
-    "message": "This demo shows how Notes can organize your insights. Connect your own server later to create and save real notes."
+    "message": "Esta demonstração mostra como Notas pode organizar seus insights. Conecte seu próprio servidor depois para criar e salvar notas reais."
   },
   "notesEmpty.demoExample1": {
-    "message": "See how note titles, previews, and timestamps appear in the list."
+    "message": "Veja como títulos, pré‑vias e horários das notas aparecem na lista."
   },
   "notesEmpty.demoExample2": {
-    "message": "When you connect, you’ll be able to create notes from meetings, reviews, and more."
+    "message": "Quando você se conectar, poderá criar notas a partir de reuniões, revisões e mais."
   },
   "notesEmpty.title": {
-    "message": "No notes yet"
+    "message": "Ainda não há notas"
   },
   "notesEmpty.description": {
-    "message": "Capture and organize free-form notes connected to your tldw insights."
+    "message": "Capture e organize notas livres conectadas aos seus insights do tldw."
   },
   "notesEmpty.exampleCreate": {
-    "message": "Create a new note for a recent meeting or transcript."
+    "message": "Crie uma nova nota sobre uma reunião ou transcrição recente."
   },
   "notesEmpty.exampleLink": {
-    "message": "Save review outputs into Notes so you can revisit them later."
+    "message": "Salve resultados de revisões em Notas para revisitá‑los depois."
   },
   "notesEmpty.primaryCta": {
-    "message": "Create note"
+    "message": "Criar nota"
   },
   "worldBooksEmpty.demoTitle": {
     "message": "Explore World Books in demo mode"

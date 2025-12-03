@@ -721,7 +721,7 @@ const NotesManagerPage: React.FC = () => {
               examples={[
                 t('option:notesEmpty.offlineExample1', {
                   defaultValue:
-                    'Open Diagnostics to confirm your server version and available APIs.'
+                    'Open Health & diagnostics to confirm your server version and available APIs.'
                 }),
                 t('option:notesEmpty.offlineExample2', {
                   defaultValue:
@@ -841,38 +841,46 @@ const NotesManagerPage: React.FC = () => {
                   </div>
                 )}
               </div>
-              {!editorDisabled && (
-                <Space>
-                  {backlinkConversationId && (
+              <Space>
+                {!editorDisabled && (
+                  <>
+                    {backlinkConversationId && (
+                      <Tooltip
+                        title={t("option:notesSearch.openConversationTooltip", {
+                          defaultValue: "Open linked conversation"
+                        })}>
+                        <Button
+                          size="small"
+                          loading={openingLinkedChat}
+                          onClick={() => {
+                            void openLinkedConversation()
+                          }}
+                          icon={(<LinkIcon className="w-4 h-4" />) as any}
+                        >
+                          {t("option:notesSearch.openConversation", {
+                            defaultValue: "Open conversation"
+                          })}
+                        </Button>
+                      </Tooltip>
+                    )}
                     <Tooltip
-                      title={t("option:notesSearch.openConversationTooltip", {
-                        defaultValue: "Open linked conversation"
+                      title={t("option:notesSearch.newTooltip", {
+                        defaultValue: "Create a new note"
                       })}>
                       <Button
                         size="small"
-                        loading={openingLinkedChat}
                         onClick={() => {
-                          void openLinkedConversation()
+                          void handleNewNote()
                         }}
-                        icon={(<LinkIcon className="w-4 h-4" />) as any}
+                        icon={(<PlusIcon className="w-4 h-4" />) as any}
                       >
-                        {t("option:notesSearch.openConversation", {
-                          defaultValue: "Open conversation"
+                        {t("option:notesSearch.new", {
+                          defaultValue: "New note"
                         })}
                       </Button>
                     </Tooltip>
-                  )}
-                  <Tooltip title={t('option:notesSearch.newTooltip', {
-                    defaultValue: 'Create a new note'
-                  })}>
-                    <Button
-                      size="small"
-                      onClick={() => { void handleNewNote() }}
-                      icon={(<PlusIcon className="w-4 h-4" />) as any}
-                    >
-                      {t('option:notesSearch.new', { defaultValue: 'New note' })}
-                    </Button>
-                  </Tooltip>
+                  </>
+                )}
               <Tooltip
                 title={t('option:notesSearch.toolbarCopyTooltip', {
                   defaultValue: 'Copy note content'
@@ -882,7 +890,7 @@ const NotesManagerPage: React.FC = () => {
                   size="small"
                   onClick={copySelected}
                   icon={(<CopyIcon className="w-4 h-4" />) as any}
-                  disabled={editorDisabled || !content}
+                  disabled={!content}
                   aria-label={t('option:notesSearch.toolbarCopyTooltip', {
                     defaultValue: 'Copy note content'
                   })}
@@ -896,7 +904,7 @@ const NotesManagerPage: React.FC = () => {
                   size="small"
                   onClick={exportSelected}
                   icon={(<FileDownIcon className="w-4 h-4" />) as any}
-                  disabled={editorDisabled || (!title && !content)}
+                  disabled={!title && !content}
                   aria-label={t('option:notesSearch.toolbarExportMdTooltip', {
                     defaultValue: 'Export note as Markdown (.md)'
                   })}
@@ -943,7 +951,6 @@ const NotesManagerPage: React.FC = () => {
                 </Button>
               </Tooltip>
             </Space>
-            )}
         </div>
         <div className="mt-2">
           <Input

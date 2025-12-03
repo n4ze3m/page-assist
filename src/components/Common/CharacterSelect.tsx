@@ -160,14 +160,8 @@ export const CharacterSelect: React.FC<Props> = ({
 
       // Otherwise, try to open the options page in a new tab.
       try {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore - browser is provided by the extension runtime.
         const url = browser.runtime.getURL(`/options.html${hash}`)
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
         if (browser.tabs?.create) {
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
           browser.tabs.create({ url })
         } else {
           window.open(url, "_blank")

@@ -21,12 +21,7 @@ import { getSystemPromptForWeb, isQueryHaveWebsite } from "@/web/web"
 import { getMaxContextSize } from "@/services/kb"
 import { tldwClient } from "@/services/tldw/TldwApiClient"
 import type { ActorSettings } from "@/types/actor"
-import {
-  buildActorPrompt,
-  buildActorMessage,
-  injectActorMessageIntoHistory,
-  shouldInjectActorForTemplates
-} from "@/utils/actor"
+import { maybeInjectActorMessage } from "@/utils/actor"
 
 export const documentChatMode = async (
   message: string,
@@ -329,27 +324,11 @@ export const documentChatMode = async (
     let applicationChatHistory = generateHistory(history, selectedModel)
 
     const templatesActive = false
-    if (
-      shouldInjectActorForTemplates({
-        settings: actorSettings || null,
-        templatesActive
-      })
-    ) {
-      const actorText = buildActorPrompt(actorSettings || null)
-      if (actorText) {
-        const actorMessage = await buildActorMessage(
-          actorSettings || null,
-          actorText
-        )
-        if (actorMessage) {
-          applicationChatHistory = injectActorMessageIntoHistory(
-            applicationChatHistory,
-            actorMessage,
-            actorSettings || null
-          )
-        }
-      }
-    }
+    applicationChatHistory = await maybeInjectActorMessage(
+      applicationChatHistory,
+      actorSettings || null,
+      templatesActive
+    )
 
     let generationInfo: any | undefined = undefined
 

@@ -90,6 +90,7 @@
     "@types/html-to-text": "^9.0.4",
     "@types/node": "20.19.0",
     "@types/pubsub-js": "^1.8.6",
+    "@types/firefox-webext-browser": "^120.0.0",
     "@types/react": "18.2.48",
     "@types/react-dom": "18.2.18",
     "@types/react-speech-recognition": "^3.9.5",

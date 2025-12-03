@@ -6,11 +6,16 @@ export const ServerOverviewHint: React.FC = () => {
 
   const openDocs = () => {
     try {
-      const docsUrl =
+      const fallbackUrl =
         t(
           "onboarding.serverDocsUrl",
           "https://docs.tldw.app/extension/server-setup"
         ) || "https://docs.tldw.app/extension/server-setup"
+      const docsUrl =
+        t("serverOverview.docsUrl", fallbackUrl) || fallbackUrl
+      if (!docsUrl) {
+        return
+      }
       window.open(docsUrl, "_blank", "noopener,noreferrer")
     } catch {
       // ignore navigation errors
@@ -60,4 +65,3 @@ export const ServerOverviewHint: React.FC = () => {
 }
 
 export default ServerOverviewHint
-

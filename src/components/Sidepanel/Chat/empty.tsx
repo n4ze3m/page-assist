@@ -17,7 +17,7 @@ export const EmptySidePanel = () => {
   const isConnectionReady =
     isConnected && phase === ConnectionPhase.CONNECTED
 
-  const openSettings = () => {
+  const openExtensionUrl = (path: string) => {
     try {
       // Prefer opening the extension's options.html directly so users land
       // on the tldw settings page instead of the generic extensions manager.
@@ -25,7 +25,7 @@ export const EmptySidePanel = () => {
       // @ts-ignore
       if (typeof browser !== "undefined" && browser.runtime?.getURL) {
         // @ts-ignore
-        const url = browser.runtime.getURL("/options.html#/settings/tldw")
+        const url = browser.runtime.getURL(path)
         // @ts-ignore
         if (browser.tabs?.create) {
           // @ts-ignore
@@ -43,12 +43,12 @@ export const EmptySidePanel = () => {
       // @ts-ignore
       if (chrome?.runtime?.getURL) {
         // @ts-ignore
-        const url = chrome.runtime.getURL("/options.html#/settings/tldw")
+        const url = chrome.runtime.getURL(path)
         window.open(url, "_blank")
         return
       }
       // @ts-ignore
-      if (chrome?.runtime?.openOptionsPage) {
+      if (chrome?.runtime?.openOptionsPage && path === "/options.html#/settings/tldw") {
         // @ts-ignore
         chrome.runtime.openOptionsPage()
         return
@@ -57,7 +57,11 @@ export const EmptySidePanel = () => {
       // ignore and fall back to plain window.open
     }
 
-    window.open("/options.html#/settings/tldw", "_blank")
+    window.open(path, "_blank")
+  }
+
+  const openSettings = () => {
+    openExtensionUrl("/options.html#/settings/tldw")
   }
 
   const showConnectionCard = !isConnectionReady
@@ -102,37 +106,7 @@ export const EmptySidePanel = () => {
   })()
 
   const openOnboarding = () => {
-    try {
-      // @ts-ignore
-      if (typeof browser !== "undefined" && browser.runtime?.getURL) {
-        // @ts-ignore
-        const url = browser.runtime.getURL("/options.html#/")
-        // @ts-ignore
-        if (browser.tabs?.create) {
-          // @ts-ignore
-          browser.tabs.create({ url })
-        } else {
-          window.open(url, "_blank")
-        }
-        return
-      }
-    } catch {
-      // ignore and fall through
-    }
-
-    try {
-      // @ts-ignore
-      if (chrome?.runtime?.getURL) {
-        // @ts-ignore
-        const url = chrome.runtime.getURL("/options.html#/")
-        window.open(url, "_blank")
-        return
-      }
-    } catch {
-      // ignore
-    }
-
-    window.open("/options.html#/", "_blank")
+    openExtensionUrl("/options.html#/")
   }
 
   const handleQuickIngest = () => {

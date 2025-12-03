@@ -32,6 +32,9 @@ export function useActorWorldBooks(): ActorWorldBooksState {
     Record<string, boolean>
   >({})
 
+  const entriesRef = React.useRef(entriesByWorldBook)
+  entriesRef.current = entriesByWorldBook
+
   const { data: worldBooks, isLoading: worldBooksLoading } = useQuery({
     queryKey: ["tldw:actorWorldBooks"],
     queryFn: async () => {
@@ -48,42 +51,39 @@ export function useActorWorldBooks(): ActorWorldBooksState {
     staleTime: 60_000
   })
 
-  const loadEntriesForWorldBook = React.useCallback(
-    async (worldBookId: string) => {
-      const id = String(worldBookId || "")
-      if (!id) return
-      if (entriesByWorldBook[id]) return
+  const loadEntriesForWorldBook = React.useCallback(async (worldBookId: string) => {
+    const id = String(worldBookId || "")
+    if (!id) return
+    if (entriesRef.current[id]) return
 
-      setEntriesLoading((prev) => ({ ...prev, [id]: true }))
-      try {
-        await tldwClient.initialize()
-        const res = await tldwClient.listWorldBookEntries(id, true)
-        const rawEntries = (res?.entries || []) as any[]
-        const entries: ActorWorldBookEntry[] = rawEntries.map((entry) => ({
-          entry_id: String(entry.entry_id),
-          keywords: entry.keywords || [],
-          content: entry.content || "",
-          enabled: entry.enabled
-        }))
-        setEntriesByWorldBook((prev) => ({
-          ...prev,
-          [id]: entries
-        }))
-      } catch (error) {
-        console.error("Failed to load world book entries", error)
-        setEntriesByWorldBook((prev) => ({
-          ...prev,
-          [id]: []
-        }))
-      } finally {
-        setEntriesLoading((prev) => ({
-          ...prev,
-          [id]: false
-        }))
-      }
-    },
-    [entriesByWorldBook]
-  )
+    setEntriesLoading((prev) => ({ ...prev, [id]: true }))
+    try {
+      await tldwClient.initialize()
+      const res = await tldwClient.listWorldBookEntries(id, true)
+      const rawEntries = (res?.entries || []) as any[]
+      const entries: ActorWorldBookEntry[] = rawEntries.map((entry) => ({
+        entry_id: String(entry.entry_id),
+        keywords: entry.keywords || [],
+        content: entry.content || "",
+        enabled: entry.enabled
+      }))
+      setEntriesByWorldBook((prev) => ({
+        ...prev,
+        [id]: entries
+      }))
+    } catch (error) {
+      console.error("Failed to load world book entries", error)
+      setEntriesByWorldBook((prev) => ({
+        ...prev,
+        [id]: []
+      }))
+    } finally {
+      setEntriesLoading((prev) => ({
+        ...prev,
+        [id]: false
+      }))
+    }
+  }, [])
 
   return {
     worldBooks: worldBooks || [],
@@ -93,4 +93,3 @@ export function useActorWorldBooks(): ActorWorldBooksState {
     loadEntriesForWorldBook
   }
 }
-

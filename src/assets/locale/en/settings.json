@@ -1142,5 +1142,8 @@
   },
   "models": {
     "privateModeDescription": "Firefox Private Mode does not support saving data to IndexedDB. Please add custom model from a normal window."
+  },
+  "serverOverview": {
+    "docsUrl": "https://docs.tldw.app/extension/server-setup"
   }
 }

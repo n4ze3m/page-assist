@@ -11,12 +11,7 @@ import {
 } from "@/libs/reasoning"
 import { systemPromptFormatter } from "@/utils/system-message"
 import type { ActorSettings } from "@/types/actor"
-import {
-  buildActorPrompt,
-  buildActorMessage,
-  injectActorMessageIntoHistory,
-  shouldInjectActorForTemplates
-} from "@/utils/actor"
+import { maybeInjectActorMessage } from "@/utils/actor"
 
 export const continueChatMode = async (
   messages: Message[],
@@ -111,29 +106,13 @@ export const continueChatMode = async (
     // Inject Actor prompt for "continue" turns as well, respecting templateMode
     // when a scene template is selected in Chat Settings.
     const templatesActive = !!selectedSystemPrompt
-    if (
-      shouldInjectActorForTemplates({
-        settings: actorSettings || null,
-        templatesActive
-      })
-    ) {
-      const actorText = buildActorPrompt(actorSettings || null)
-      if (actorText) {
-        const actorMessage = await buildActorMessage(
-          actorSettings || null,
-          actorText
-        )
-        if (actorMessage) {
-          const nextHistory = injectActorMessageIntoHistory(
-            applicationChatHistory,
-            actorMessage,
-            actorSettings || null
-          )
-          applicationChatHistory.length = 0
-          applicationChatHistory.push(...nextHistory)
-        }
-      }
-    }
+    const nextHistory = await maybeInjectActorMessage(
+      applicationChatHistory,
+      actorSettings || null,
+      templatesActive
+    )
+    applicationChatHistory.length = 0
+    applicationChatHistory.push(...nextHistory)
 
     let generationInfo: any | undefined = undefined
 

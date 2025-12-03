@@ -291,6 +291,25 @@ export const TldwSettings = () => {
     
     try {
       const values = form.getFieldsValue()
+      try {
+        await form.validateFields(["serverUrl"])
+      } catch {
+        const urlRaw = String(values?.serverUrl || "").trim()
+        const friendly = urlRaw
+          ? (t(
+              "settings:tldw.fields.serverUrl.invalid",
+              "Please enter a valid URL"
+            ) as string)
+          : (t(
+              "settings:tldw.fields.serverUrl.required",
+              "Please enter the server URL"
+            ) as string)
+        setConnectionStatus("error")
+        setCoreStatus("failed")
+        setConnectionDetail(friendly)
+        message.error(friendly)
+        return
+      }
       let success = false
 
       // Test core connectivity via the health endpoint only, so we never

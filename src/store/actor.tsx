@@ -37,7 +37,7 @@ export const useActorStore = create<ActorUiStoreState>((set) => ({
   tokenCount: 0,
   setSettings: (next: ActorSettings | null) => {
     set({
-      settings: next ?? createDefaultActorSettings()
+      settings: next
     })
   },
   setPreviewAndTokens: (preview: string, tokenCount: number) =>
@@ -52,4 +52,3 @@ export const useActorStore = create<ActorUiStoreState>((set) => ({
       tokenCount: 0
     })
 }))
-

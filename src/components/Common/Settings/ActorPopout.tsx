@@ -8,7 +8,11 @@ import {
   getActorSettingsForChatWithCharacterFallback,
   saveActorSettingsForChat
 } from "@/services/actor-settings"
-import { buildActorPrompt, estimateActorTokens } from "@/utils/actor"
+import {
+  buildActorPrompt,
+  buildActorSettingsFromForm,
+  estimateActorTokens
+} from "@/utils/actor"
 import { ActorEditor } from "@/components/Common/Settings/ActorEditor"
 import { useActorStore } from "@/store/actor"
 import type { Character } from "@/types/character"
@@ -39,18 +43,18 @@ export const ActorPopout: React.FC<Props> = ({ open, setOpen }) => {
     React.useState<ActorTarget>("user")
   const [newAspectName, setNewAspectName] = React.useState("")
   const actorPositionValue = Form.useWatch("actorChatPosition", form)
+  const hydratedRef = React.useRef(false)
+  const timeoutRef = React.useRef<number | undefined>()
 
   const hydrate = React.useCallback(async () => {
     if (!open) return
     setLoading(true)
     try {
-      const actor =
-        settings ??
-        (await getActorSettingsForChatWithCharacterFallback({
-          historyId,
-          serverChatId,
-          characterId: selectedCharacter?.id ?? null
-        }))
+      const actor = await getActorSettingsForChatWithCharacterFallback({
+        historyId,
+        serverChatId,
+        characterId: selectedCharacter?.id ?? null
+      })
       setSettings(actor)
 
       const baseFields: Record<string, any> = {
@@ -76,60 +80,46 @@ export const ActorPopout: React.FC<Props> = ({ open, setOpen }) => {
   }, [
     form,
     historyId,
-    open,
     selectedCharacter?.id,
     serverChatId,
     setPreviewAndTokens,
-    setSettings,
-    settings
+    setSettings
   ])
 
   React.useEffect(() => {
-    void hydrate()
-  }, [hydrate])
+    if (open && !hydratedRef.current) {
+      hydratedRef.current = true
+      void hydrate()
+    }
+    if (!open) {
+      hydratedRef.current = false
+    }
+  }, [open, hydrate])
+
+  React.useEffect(() => {
+    return () => {
+      if (timeoutRef.current !== undefined) {
+        window.clearTimeout(timeoutRef.current)
+      }
+    }
+  }, [])
 
   const recompute = React.useCallback(() => {
     const base = settings ?? createDefaultActorSettings()
     const values = form.getFieldsValue()
 
-    const next: ActorSettings = {
-      ...base,
-      isEnabled: !!values.actorEnabled,
-      notes: values.actorNotes ?? "",
-      notesGmOnly: !!values.actorNotesGmOnly,
-      chatPosition: values.actorChatPosition || base.chatPosition,
-      chatDepth: (() => {
-        const raw =
-          typeof values.actorChatDepth === "number"
-            ? values.actorChatDepth
-            : base.chatDepth
-        if (!Number.isFinite(raw)) {
-          return base.chatDepth
-        }
-        return Math.min(Math.max(0, raw), 999)
-      })(),
-      chatRole: (values.actorChatRole as any) || base.chatRole,
-      templateMode:
-        (values.actorTemplateMode as any) ||
-        base.templateMode ||
-        "merge",
-      aspects: (base.aspects || []).map((a) => ({
-        ...a,
-        value: values[`actor_${a.id}`] ?? ""
-      }))
-    }
+    const next: ActorSettings = buildActorSettingsFromForm(base, values)
 
     const text = buildActorPrompt(next)
     setPreviewAndTokens(text, estimateActorTokens(text))
   }, [form, setPreviewAndTokens, settings])
 
   const debouncedRecompute = React.useMemo(() => {
-    let timeout: number | undefined
     return () => {
-      if (timeout !== undefined) {
-        window.clearTimeout(timeout)
+      if (timeoutRef.current !== undefined) {
+        window.clearTimeout(timeoutRef.current)
       }
-      timeout = window.setTimeout(() => {
+      timeoutRef.current = window.setTimeout(() => {
         recompute()
       }, 150)
     }
@@ -137,32 +127,7 @@ export const ActorPopout: React.FC<Props> = ({ open, setOpen }) => {
 
   const handleSave = async (values: any) => {
     const base = settings ?? createDefaultActorSettings()
-    const next: ActorSettings = {
-      ...base,
-      isEnabled: !!values.actorEnabled,
-      notes: values.actorNotes ?? "",
-      notesGmOnly: !!values.actorNotesGmOnly,
-      chatPosition: values.actorChatPosition || base.chatPosition,
-      chatDepth: (() => {
-        const raw =
-          typeof values.actorChatDepth === "number"
-            ? values.actorChatDepth
-            : base.chatDepth
-        if (!Number.isFinite(raw)) {
-          return base.chatDepth
-        }
-        return Math.min(Math.max(0, raw), 999)
-      })(),
-      chatRole: (values.actorChatRole as any) || base.chatRole,
-      templateMode:
-        (values.actorTemplateMode as any) ||
-        base.templateMode ||
-        "merge",
-      aspects: (base.aspects || []).map((a) => ({
-        ...a,
-        value: values[`actor_${a.id}`] ?? ""
-      }))
-    }
+    const next: ActorSettings = buildActorSettingsFromForm(base, values)
     setSettings(next)
     await saveActorSettingsForChat({
       historyId,
@@ -226,21 +191,19 @@ export const ActorPopout: React.FC<Props> = ({ open, setOpen }) => {
               </Form.Item>
             </div>
 
-            {settings && (
-              <ActorEditor
-                form={form}
-                settings={settings}
-                setSettings={setSettings}
-                actorPreview={preview}
-                actorTokenCount={tokenCount}
-                onRecompute={recompute}
-                newAspectTarget={newAspectTarget}
-                setNewAspectTarget={setNewAspectTarget}
-                newAspectName={newAspectName}
-                setNewAspectName={setNewAspectName}
-                actorPositionValue={actorPositionValue}
-              />
-            )}
+            <ActorEditor
+              form={form}
+              settings={settings}
+              setSettings={setSettings}
+              actorPreview={preview}
+              actorTokenCount={tokenCount}
+              onRecompute={recompute}
+              newAspectTarget={newAspectTarget}
+              setNewAspectTarget={setNewAspectTarget}
+              newAspectName={newAspectName}
+              setNewAspectName={setNewAspectName}
+              actorPositionValue={actorPositionValue}
+            />
 
             <div className="pt-2 flex justify-end gap-2">
               <Button onClick={() => setOpen(false)}>

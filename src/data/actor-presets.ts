@@ -20,7 +20,7 @@ export const ACTOR_PRESETS: ActorPreset[] = [
   {
     id: "slice_of_life",
     apply: (base: ActorSettings): ActorSettings => {
-      const next = base ?? createDefaultActorSettings()
+      const next = base
       const aspects = (next.aspects || []).map((aspect) => {
         if (aspect.id === "user_state") {
           return {
@@ -86,7 +86,7 @@ export const ACTOR_PRESETS: ActorPreset[] = [
   {
     id: "dungeon_crawl",
     apply: (base: ActorSettings): ActorSettings => {
-      const next = base ?? createDefaultActorSettings()
+      const next = base
       const aspects = (next.aspects || []).map((aspect) => {
         if (aspect.id === "user_role") {
           return {
@@ -168,7 +168,7 @@ export const ACTOR_PRESETS: ActorPreset[] = [
   {
     id: "romance",
     apply: (base: ActorSettings): ActorSettings => {
-      const next = base ?? createDefaultActorSettings()
+      const next = base
       const aspects = (next.aspects || []).map((aspect) => {
         if (aspect.id === "user_state") {
           return {
@@ -236,7 +236,7 @@ export const ACTOR_PRESETS: ActorPreset[] = [
   {
     id: "work_session",
     apply: (base: ActorSettings): ActorSettings => {
-      const next = base ?? createDefaultActorSettings()
+      const next = base
       const aspects = (next.aspects || []).map((aspect) => {
         if (aspect.id === "user_role") {
           return {
@@ -343,7 +343,7 @@ export const applyActorPresetById = (
 ): ActorSettings => {
   const preset = ACTOR_PRESETS.find((p) => p.id === presetId)
   if (!preset) {
-    return base ?? createDefaultActorSettings()
+    return base
   }
-  return preset.apply(base ?? createDefaultActorSettings())
+  return preset.apply(base)
 }

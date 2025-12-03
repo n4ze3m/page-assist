@@ -2,6 +2,7 @@ import { Storage } from "@plasmohq/storage"
 import {
   ACTOR_SETTINGS_VERSION,
   ActorSettings,
+  ActorAspect,
   createDefaultActorSettings
 } from "@/types/actor"
 
@@ -30,6 +31,94 @@ export const resolveActorChatKey = (params: {
   return "scratch"
 }
 
+const isValidActorAspect = (value: any): value is ActorAspect => {
+  if (!value || typeof value !== "object") return false
+
+  const { id, key, target, name, source, value: aspectValue } = value as {
+    id: unknown
+    key: unknown
+    target: unknown
+    name: unknown
+    source: unknown
+    value: unknown
+  }
+
+  const isString = (v: unknown): v is string => typeof v === "string"
+
+  if (
+    !isString(id) ||
+    !isString(key) ||
+    !isString(target) ||
+    !isString(name) ||
+    !isString(source) ||
+    !isString(aspectValue)
+  ) {
+    return false
+  }
+
+  // Basic enum checks; if these ever expand, this guard can be relaxed.
+  const validTargets = ["user", "char", "world"]
+  const validSources = ["free", "lore"]
+
+  if (!validTargets.includes(target) || !validSources.includes(source)) {
+    return false
+  }
+
+  return true
+}
+
+const isValidActorSettings = (raw: any): raw is ActorSettings => {
+  if (!raw || typeof raw !== "object") {
+    return false
+  }
+
+  const isNumber = (v: unknown): v is number =>
+    typeof v === "number" && Number.isFinite(v)
+  const isBoolean = (v: unknown): v is boolean => typeof v === "boolean"
+  const isString = (v: unknown): v is string => typeof v === "string"
+
+  const {
+    version,
+    isEnabled,
+    aspects,
+    notes,
+    notesGmOnly,
+    chatPosition,
+    chatDepth,
+    chatRole,
+    templateMode
+  } = raw as Partial<ActorSettings>
+
+  if (!isNumber(version)) return false
+  if (!isBoolean(isEnabled)) return false
+  if (!Array.isArray(aspects) || !aspects.every(isValidActorAspect)) {
+    return false
+  }
+  if (!isString(notes)) return false
+
+  if (notesGmOnly !== undefined && !isBoolean(notesGmOnly)) {
+    return false
+  }
+
+  if (!isString(chatPosition)) return false
+  const validPositions = ["before", "after", "depth"]
+  if (!validPositions.includes(chatPosition)) return false
+
+  if (!isNumber(chatDepth)) return false
+
+  if (!isString(chatRole)) return false
+  const validRoles = ["system", "user", "assistant"]
+  if (!validRoles.includes(chatRole)) return false
+
+  if (templateMode !== undefined) {
+    if (!isString(templateMode)) return false
+    const validTemplateModes = ["merge", "override", "ignore"]
+    if (!validTemplateModes.includes(templateMode)) return false
+  }
+
+  return true
+}
+
 const migrateSettings = (raw: any): ActorSettings => {
   if (!raw || typeof raw !== "object") {
     return createDefaultActorSettings()
@@ -37,8 +126,16 @@ const migrateSettings = (raw: any): ActorSettings => {
 
   const version: number = Number(raw.version ?? 0)
 
-  if (!version || version < ACTOR_SETTINGS_VERSION) {
+  if (version < ACTOR_SETTINGS_VERSION) {
     // No legacy prompts to preserve; reset to new neutral defaults.
+    return createDefaultActorSettings()
+  }
+
+  if (!isValidActorSettings(raw)) {
+    console.warn(
+      "Invalid Actor settings found in storage; resetting to defaults.",
+      raw
+    )
     return createDefaultActorSettings()
   }
 
@@ -78,7 +175,7 @@ export const saveActorSettingsForChat = async (params: {
   historyId: string | null
   serverChatId: string | null
   settings: ActorSettings
-}): Promise<void> => {
+}): Promise<boolean> => {
   try {
     const chatKey = resolveActorChatKey(params)
     const key = getActorStorageKey(chatKey)
@@ -87,8 +184,10 @@ export const saveActorSettingsForChat = async (params: {
       version: ACTOR_SETTINGS_VERSION
     }
     await storage.set(key, payload)
+    return true
   } catch (error) {
     console.error("Failed to save Actor settings", error)
+    return false
   }
 }
 

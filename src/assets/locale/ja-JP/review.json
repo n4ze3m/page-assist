@@ -89,7 +89,7 @@
     "chatPrepared": "Prepared chat with this media in the composer.",
     "chatAboutMediaHint": "Open RAG chat scoped to this media only.",
     "chatAboutMediaRagSent": "Opened media-scoped RAG chat.",
-    "chatAboutMediaInvalidId": "This media item does not have a numeric id yet.",
+    "chatAboutMediaInvalidId": "このメディア項目にはまだ数値 ID がありません。",
     "demoBadge": "デモ",
     "notConnectedBadge": "未接続"
   },
@@ -149,7 +149,7 @@
     "offlineTitle": "このサーバーでは Media API を利用できません",
     "offlineDescription": "この tldw サーバーは Media エンドポイント（/api/v1/media や /api/v1/media/search など）を公開していません。Media ワークスペースを利用するには、Media を含むバージョンにサーバーをアップグレードしてください。",
     "offlineExample1": "Open Diagnostics to confirm your server version and available APIs.",
-    "offlineExample2": "After upgrading, reload the extension and return to Media.",
+    "offlineExample2": "アップグレード後に拡張機能を再読み込みし、メディアに戻ってください。",
     "featureUnavailableBadge": "機能は利用できません"
   }
 }

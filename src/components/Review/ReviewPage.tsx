@@ -176,7 +176,7 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true, 
     if (h > 0) {
       return `${h}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`
     }
-    return `${m}:${String(s).padStart(2, '0')}`
+    return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`
   }
 
   const deriveMediaMeta = (m: any): {
@@ -186,7 +186,7 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true, 
     source?: string | null
     duration?: number | null
   } => {
-    const type = String(m?.type || m?.media_type || "").toLowerCase()
+    const type = String(m?.type || m?.media_type || "").toLowerCase().trim()
     const status =
       m?.status ??
       m?.ingest_status ??
@@ -242,6 +242,44 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true, 
       duration
     }
   }
+
+  const deriveStatusBadge = React.useCallback(
+    (
+      status: any
+    ): {
+      label: string | null
+      color: string
+    } => {
+      if (!status) return { label: null, color: "default" }
+      const v = String(status).toLowerCase()
+      if (/(processing|running|in_progress)/.test(v)) {
+        return {
+          label: t("review:reviewPage.statusProcessing", "Processing"),
+          color: "orange"
+        }
+      }
+      if (/(queued|pending)/.test(v)) {
+        return {
+          label: t("review:reviewPage.statusQueued", "Queued"),
+          color: "gold"
+        }
+      }
+      if (/(error|failed|timeout)/.test(v)) {
+        return {
+          label: t("review:reviewPage.statusError", "Error"),
+          color: "red"
+        }
+      }
+      if (/(ready|completed|done|success)/.test(v)) {
+        return {
+          label: t("review:reviewPage.statusReady", "Ready"),
+          color: "green"
+        }
+      }
+      return { label: null, color: "default" }
+    },
+    [t]
+  )
 
   const runSearch = async (): Promise<ResultItem[]> => {
     const results: ResultItem[] = []
@@ -427,9 +465,7 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true, 
           for (const listing of listings) {
             const items = Array.isArray(listing?.items) ? listing.items : []
             for (const m of items) {
-              const t = String(m?.type || m?.media_type || "")
-                .toLowerCase()
-                .trim()
+              const t = deriveMediaMeta(m).type
               if (t) typeSet.add(t)
             }
           }
@@ -1555,39 +1591,12 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true, 
                   !!selected &&
                   selected.id === item.id &&
                   selected.kind === item.kind
-                const rawStatus = (item.meta?.status ??
-                  item.meta?.ingest_status ??
-                  item.meta?.processing_state) as string | undefined
-                let statusLabel: string | null = null
-                let statusColor: string = "default"
-                if (rawStatus) {
-                  const v = String(rawStatus).toLowerCase()
-                  if (/(processing|running|in_progress)/.test(v)) {
-                    statusLabel = t(
-                      "review:reviewPage.statusProcessing",
-                      "Processing"
-                    )
-                    statusColor = "orange"
-                  } else if (/(queued|pending)/.test(v)) {
-                    statusLabel = t(
-                      "review:reviewPage.statusQueued",
-                      "Queued"
-                    )
-                    statusColor = "gold"
-                  } else if (/(error|failed|timeout)/.test(v)) {
-                    statusLabel = t(
-                      "review:reviewPage.statusError",
-                      "Error"
-                    )
-                    statusColor = "red"
-                  } else if (/(ready|completed|done|success)/.test(v)) {
-                    statusLabel = t(
-                      "review:reviewPage.statusReady",
-                      "Ready"
-                    )
-                    statusColor = "green"
-                  }
-                }
+                const { label: statusLabel, color: statusColor } = deriveStatusBadge(
+                  item.meta?.status ??
+                    item.meta?.ingest_status ??
+                    item.meta?.processing_state ??
+                    item.meta?.processingStatus
+                )
                 return (
                   <List.Item
                     key={`${item.kind}:${item.id}`}
@@ -2542,15 +2551,21 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true, 
             <div className="flex flex-col gap-3 flex-1 min-h-0">
               <div className="rounded border dark:border-gray-700 p-2 overflow-auto min-h-[14rem] md:h-[32vh]">
                 <div className="flex items-center justify-between">
-                  <Typography.Text type="secondary">Media Content</Typography.Text>
+                  <Typography.Text type="secondary">
+                    {t("review:reviewPage.mediaContent", "Media Content")}
+                  </Typography.Text>
                   <div className="flex items-center gap-2">
                     <Button size="small" type="link" onClick={() => setContentCollapsed((v) => !v)}>
                       {contentCollapsed ? t('review:reviewPage.expandContent', 'Expand') : t('review:reviewPage.collapseContent', 'Collapse')}
                     </Button>
-                    <Tooltip title="Copy content">
+                    <Tooltip title={t("review:reviewPage.copyContent", "Copy content")}>
                       <Button size="small" onClick={async () => { try { await navigator.clipboard.writeText(selectedContent || '') ; message.success('Content copied') } catch { message.error('Copy failed') } }} icon={(<CopyIcon className="w-4 h-4" />) as any} />
                     </Tooltip>
-                    <Button size="small" onClick={() => setMediaJsonOpen(v => !v)}>{mediaJsonOpen ? 'Hide raw' : 'Show raw'}</Button>
+                    <Button size="small" onClick={() => setMediaJsonOpen(v => !v)}>
+                      {mediaJsonOpen
+                        ? t("review:reviewPage.hideRaw", "Hide raw")
+                        : t("review:reviewPage.showRaw", "Show raw")}
+                    </Button>
                   </div>
                 </div>
                 <div className="mt-2 text-sm text-gray-700 dark:text-gray-300">
@@ -2583,14 +2598,19 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true, 
                           <button
                             className="ml-2 underline text-xs"
                             onClick={() => setMediaExpanded((v) => !v)}>
-                            {mediaExpanded ? "Show less" : "Show more"}
+                            {mediaExpanded
+                              ? t("review:reviewPage.showLess", "Show less")
+                              : t("review:reviewPage.showMore", "Show more")}
                           </button>
                         )}
                       </>
                     )
                   ) : (
                     <span className="text-xs text-gray-500">
-                      No content available
+                      {t(
+                        "review:reviewPage.noContent",
+                        "No content available"
+                      )}
                     </span>
                   )}
                 </div>
@@ -2602,15 +2622,17 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true, 
               </div>
               <div className="rounded border dark:border-gray-700 p-2 overflow-auto min-h-[14rem] md:h-[32vh] bg-gray-50 dark:bg-[#121212]">
                 <div className="flex items-center justify-between">
-                  <Typography.Text type="secondary">Analysis</Typography.Text>
+                  <Typography.Text type="secondary">
+                    {t("review:reviewPage.analysisTitle", "Analysis")}
+                  </Typography.Text>
                   <div className="flex items-center gap-2">
                     <Button size="small" type="link" onClick={() => setAnalysisCollapsed((v) => !v)}>
                       {analysisCollapsed ? t('review:reviewPage.expandAnalysis', 'Expand') : t('review:reviewPage.collapseAnalysis', 'Collapse')}
                     </Button>
-                    <Tooltip title="Copy analysis">
+                    <Tooltip title={t("review:reviewPage.copyAnalysis", "Copy analysis")}>
                       <Button size="small" onClick={async () => { try { await navigator.clipboard.writeText(analysis || '') ; message.success('Analysis copied') } catch { message.error('Copy failed') } }} icon={(<CopyIcon className="w-4 h-4" />) as any} />
                     </Tooltip>
-                    <Tooltip title="Send analysis to chat">
+                    <Tooltip title={t("review:reviewPage.sendAnalysisToChat", "Send analysis to chat")}>
                       <Button size="small" onClick={async () => {
                         if (!analysis.trim()) { message.warning('Nothing to send'); return }
                         try {
@@ -2643,10 +2665,10 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true, 
                   <Checkbox checked={onlyWithAnalysis} onChange={(e) => setOnlyWithAnalysis(e.target.checked)} className="text-xs">Only with analysis</Checkbox>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Tooltip title="Copy all as plain text">
+                  <Tooltip title={t("review:reviewPage.copyAllPlain", "Copy all as plain text")}>
                     <Button size="small" onClick={async () => { const text = (existingAnalyses || []).map((n, idx) => `Note ${n?.id ?? idx+1}\n\n${String(n?.content || '')}`).join("\n\n---\n\n"); try { await navigator.clipboard.writeText(text); message.success('Copied all notes') } catch { message.error('Copy failed') } }}>Copy All</Button>
                   </Tooltip>
-                  <Tooltip title="Copy all as Markdown">
+                  <Tooltip title={t("review:reviewPage.copyAllMarkdown", "Copy all as Markdown")}>
                     <Button size="small" onClick={async () => { const md = (existingAnalyses || []).map((n, idx) => `### Note ${n?.id ?? idx+1}\n\n${toMarkdown(String(n?.content || ''))}`).join("\n\n---\n\n"); try { await navigator.clipboard.writeText(md); message.success('Copied all notes as Markdown') } catch { message.error('Copy failed') } }}>Copy MD</Button>
                   </Tooltip>
                 </div>
@@ -2756,7 +2778,11 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true, 
                     </Dropdown>
                   </div>
                 ) : null}
-                <Button size="small" onClick={() => setNotesJsonOpen(v => !v)}>{notesJsonOpen ? 'Hide raw' : 'Show raw'}</Button>
+                <Button size="small" onClick={() => setNotesJsonOpen(v => !v)}>
+                  {notesJsonOpen
+                    ? t("review:reviewPage.hideRaw", "Hide raw")
+                    : t("review:reviewPage.showRaw", "Show raw")}
+                </Button>
               </div>
                 {displayedVersionIndices.length === 0 ? (
                   <div className="text-xs text-gray-500 mt-2">No saved analyses for this item yet.</div>
@@ -2774,7 +2800,14 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true, 
                             const isLong = a.length > 2500
                             const expanded = expandedAnalyses.has(key)
                             if (!a) {
-                              return <span className="opacity-60">No analysis text</span>
+                              return (
+                                <span className="opacity-60">
+                                  {t(
+                                    "review:reviewPage.noAnalysis",
+                                    "No analysis yet"
+                                  )}
+                                </span>
+                              )
                             }
                             if (!expanded && isLong) {
                               return (
@@ -2792,7 +2825,10 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true, 
                                         return ns
                                       })
                                     }}>
-                                    Show more
+                                    {t(
+                                      "review:reviewPage.showMore",
+                                      "Show more"
+                                    )}
                                   </button>
                                 </>
                               )
@@ -2822,7 +2858,15 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true, 
                                         return ns
                                       })
                                     }}>
-                                    {expanded ? "Show less" : "Show more"}
+                                    {expanded
+                                      ? t(
+                                          "review:reviewPage.showLess",
+                                          "Show less"
+                                        )
+                                      : t(
+                                          "review:reviewPage.showMore",
+                                          "Show more"
+                                        )}
                                   </button>
                                 )}
                               </>

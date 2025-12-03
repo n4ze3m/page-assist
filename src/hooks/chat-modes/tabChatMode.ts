@@ -14,12 +14,7 @@ import {
 import { getModelNicknameByID } from "@/db/dexie/nickname"
 import { ChatDocuments } from "@/models/ChatTypes"
 import type { ActorSettings } from "@/types/actor"
-import {
-  buildActorPrompt,
-  buildActorMessage,
-  injectActorMessageIntoHistory,
-  shouldInjectActorForTemplates
-} from "@/utils/actor"
+import { maybeInjectActorMessage } from "@/utils/actor"
 import { getTabContents } from "@/libs/get-tab-contents"
 
 export const tabChatMode = async (
@@ -166,28 +161,12 @@ export const tabChatMode = async (
 
     let applicationChatHistory = generateHistory(history, selectedModel)
 
-    const templatesActive = false
-    if (
-      shouldInjectActorForTemplates({
-        settings: actorSettings || null,
-        templatesActive
-      })
-    ) {
-      const actorText = buildActorPrompt(actorSettings || null)
-      if (actorText) {
-        const actorMessage = await buildActorMessage(
-          actorSettings || null,
-          actorText
-        )
-        if (actorMessage) {
-          applicationChatHistory = injectActorMessageIntoHistory(
-            applicationChatHistory,
-            actorMessage,
-            actorSettings || null
-          )
-        }
-      }
-    }
+    const templatesActive = !!selectedSystemPrompt
+    applicationChatHistory = await maybeInjectActorMessage(
+      applicationChatHistory,
+      actorSettings || null,
+      templatesActive
+    )
 
     let generationInfo: any | undefined = undefined
 

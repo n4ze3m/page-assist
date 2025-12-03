@@ -33,7 +33,11 @@ import {
   getActorSettingsForChatWithCharacterFallback,
   saveActorSettingsForChat
 } from "@/services/actor-settings"
-import { buildActorPrompt, estimateActorTokens } from "@/utils/actor"
+import {
+  buildActorPrompt,
+  buildActorSettingsFromForm,
+  estimateActorTokens
+} from "@/utils/actor"
 import { ActorEditor } from "@/components/Common/Settings/ActorEditor"
 import type { Character } from "@/types/character"
 import { useStorage } from "@plasmohq/storage/hook"
@@ -120,48 +124,32 @@ export const CurrentChatModelSettings = ({
     const values = form.getFieldsValue()
     const base = actorSettings ?? createDefaultActorSettings()
 
-    const next: ActorSettings = {
-      ...base,
-      isEnabled: !!values.actorEnabled,
-      notes: values.actorNotes ?? "",
-      notesGmOnly: !!values.actorNotesGmOnly,
-      chatPosition: values.actorChatPosition || base.chatPosition,
-      chatDepth: (() => {
-        const raw =
-          typeof values.actorChatDepth === "number"
-            ? values.actorChatDepth
-            : base.chatDepth
-        if (!Number.isFinite(raw)) {
-          return base.chatDepth
-        }
-        return Math.min(Math.max(0, raw), 999)
-      })(),
-      chatRole: (values.actorChatRole as any) || base.chatRole,
-      templateMode:
-        (values.actorTemplateMode as any) ||
-        base.templateMode ||
-        "merge",
-      aspects: (base.aspects || []).map((aspect) => ({
-        ...aspect,
-        value: values[`actor_${aspect.id}`] ?? ""
-      }))
-    }
+    const next: ActorSettings = buildActorSettingsFromForm(base, values)
 
     const preview = buildActorPrompt(next)
     setPreviewAndTokens(preview, estimateActorTokens(preview))
   }, [actorSettings, form, setPreviewAndTokens])
 
+  const timeoutRef = React.useRef<number | undefined>()
+
   const debouncedRecomputeActorPreview = React.useMemo(() => {
-    let timeout: number | undefined
     return () => {
-      if (timeout !== undefined) {
-        window.clearTimeout(timeout)
+      if (timeoutRef.current !== undefined) {
+        window.clearTimeout(timeoutRef.current)
       }
-      timeout = window.setTimeout(() => {
+      timeoutRef.current = window.setTimeout(() => {
         recomputeActorPreview()
       }, 150)
     }
   }, [recomputeActorPreview])
+
+  React.useEffect(() => {
+    return () => {
+      if (timeoutRef.current !== undefined) {
+        window.clearTimeout(timeoutRef.current)
+      }
+    }
+  }, [])
 
   React.useEffect(() => {
     if (!open) return
@@ -187,32 +175,7 @@ export const CurrentChatModelSettings = ({
       })
 
       const base = actorSettings ?? createDefaultActorSettings()
-      const next: ActorSettings = {
-        ...base,
-        isEnabled: !!values.actorEnabled,
-        notes: values.actorNotes ?? "",
-        notesGmOnly: !!values.actorNotesGmOnly,
-        chatPosition: values.actorChatPosition || base.chatPosition,
-        chatDepth: (() => {
-          const raw =
-            typeof values.actorChatDepth === "number"
-              ? values.actorChatDepth
-              : base.chatDepth
-          if (!Number.isFinite(raw)) {
-            return base.chatDepth
-          }
-          return Math.min(Math.max(0, raw), 999)
-        })(),
-        chatRole: (values.actorChatRole as any) || base.chatRole,
-        templateMode:
-          (values.actorTemplateMode as any) ||
-          base.templateMode ||
-          "merge",
-        aspects: (base.aspects || []).map((aspect) => ({
-          ...aspect,
-          value: values[`actor_${aspect.id}`] ?? ""
-        }))
-      }
+      const next: ActorSettings = buildActorSettingsFromForm(base, values)
 
       setActorSettings(next)
       void saveActorSettingsForChat({
@@ -482,20 +445,20 @@ export const CurrentChatModelSettings = ({
             }}
             onValuesChange={(changedValues) => {
               const keys = Object.keys(changedValues || {})
-            const shouldUpdate = keys.some(
-              (k) =>
-                k === "actorEnabled" ||
-                k === "actorNotes" ||
-                k === "actorNotesGmOnly" ||
-                k === "actorChatPosition" ||
+              const shouldUpdate = keys.some(
+                (k) =>
+                  k === "actorEnabled" ||
+                  k === "actorNotes" ||
+                  k === "actorNotesGmOnly" ||
+                  k === "actorChatPosition" ||
                   k === "actorChatDepth" ||
-                k === "actorChatRole" ||
-                k.startsWith("actor_")
-            )
-            if (shouldUpdate) {
-              debouncedRecomputeActorPreview()
-            }
-          }}>
+                  k === "actorChatRole" ||
+                  k.startsWith("actor_")
+              )
+              if (shouldUpdate) {
+                debouncedRecomputeActorPreview()
+              }
+            }}>
             {useDrawer && (
               <>
                 <Form.Item

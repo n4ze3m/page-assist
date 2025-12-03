@@ -9,6 +9,7 @@ import {
   Switch,
   Tooltip
 } from "antd"
+import type { FormInstance } from "antd"
 import { X } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import type {
@@ -43,7 +44,7 @@ const parseWorldBookEntryOptions = (content: string): string[] => {
 }
 
 type Props = {
-  form: any
+  form: FormInstance
   settings: ActorSettings | null
   setSettings: (next: ActorSettings) => void
   actorPreview: string

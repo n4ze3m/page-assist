@@ -48,8 +48,12 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
         if (cfg?.serverUrl) {
           setServerUrl(cfg.serverUrl)
         }
-        if ((cfg as any)?.authMode) setAuthMode((cfg as any).authMode)
-        if ((cfg as any)?.apiKey) setApiKey((cfg as any).apiKey)
+        if (cfg?.authMode) {
+          setAuthMode(cfg.authMode)
+        }
+        if (cfg?.apiKey) {
+          setApiKey(cfg.apiKey)
+        }
         // If no configured URL yet, prefill with default/fallback to reduce friction
         if (!cfg?.serverUrl) {
           try {
@@ -529,17 +533,6 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
               {t('settings:onboarding.buttons.recheck')}
             </Button>
           </div>
-          {(uxState === 'error_auth' || uxState === 'error_unreachable') && (
-            <Alert
-              type="warning"
-              showIcon
-              message={t('settings:onboarding.connectionFailed')}
-              description={t(
-                'settings:onboarding.connection.continueAnyway',
-                'You can finish setup now and explore the UI without a server. Chat, media ingest, and Knowledge search will remain limited until you connect a tldw server from Settings → tldw Server.'
-              )}
-            />
-          )}
           <div className="space-y-1">
             <div className="flex items-center gap-2">
               <span className="text-sm font-medium">
@@ -569,7 +562,17 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
               type="error"
               showIcon
               message={t('settings:onboarding.connectionFailed')}
-              description={connectionErrorDescription}
+              description={
+                <span className="inline-flex flex-col gap-1 text-xs">
+                  <span>{connectionErrorDescription}</span>
+                  <span className="text-gray-600 dark:text-gray-400">
+                    {t(
+                      'settings:onboarding.connection.continueAnyway',
+                      'You can finish setup now and explore the UI without a server. Chat, media ingest, and Knowledge search will remain limited until you connect a tldw server from Settings → tldw Server.'
+                    )}
+                  </span>
+                </span>
+              }
             />
           )}
           <div className="flex justify-end">

@@ -50,13 +50,59 @@ import { useDemoMode } from "@/context/demo-mode"
 import { useServerCapabilities } from "@/hooks/useServerCapabilities"
 import { useAntdMessage } from "@/hooks/useAntdMessage"
 import { useScrollToServerCard } from "@/hooks/useScrollToServerCard"
+import { MarkdownErrorBoundary } from "@/components/Common/MarkdownErrorBoundary"
+import { StatusBadge } from "@/components/Common/StatusBadge"
 
 dayjs.extend(relativeTime)
 
 const { Text, Title } = Typography
-const Markdown = React.lazy(() => import("@/components/Common/Markdown"))
 
 type DueStatus = "new" | "learning" | "due" | "all"
+
+const Markdown = React.lazy(() => import("@/components/Common/Markdown"))
+
+type SafeMarkdownProps = {
+  content: string
+  className?: string
+  size?: "xs" | "sm" | "base"
+}
+
+const MarkdownWithBoundary: React.FC<SafeMarkdownProps> = ({
+  content,
+  className = "",
+  size = "sm"
+}) => {
+  const sizeClass =
+    size === "xs" ? "prose-xs" : size === "sm" ? "prose-sm" : "prose"
+
+  return (
+    <MarkdownErrorBoundary fallbackText={content}>
+      <React.Suspense
+        fallback={<div className="whitespace-pre-wrap">{content}</div>}
+      >
+        <Markdown
+          message={content}
+          className={`${sizeClass} break-words dark:prose-invert max-w-none prose-p:leading-relaxed prose-pre:p-0 dark:prose-dark ${className}`}
+        />
+      </React.Suspense>
+    </MarkdownErrorBoundary>
+  )
+}
+
+function useDebouncedFormField(form: any, name: string, delay = 300): string {
+  const value = Form.useWatch(name, form)
+  const [debounced, setDebounced] = React.useState<string>(value ?? "")
+
+  React.useEffect(() => {
+    const nextValue = value ?? ""
+    const timer = window.setTimeout(() => {
+      setDebounced(nextValue)
+    }, delay)
+    return () => window.clearTimeout(timer)
+  }, [value, delay])
+
+  return debounced
+}
 
 export const FlashcardsPage: React.FC = () => {
   const { t } = useTranslation(["option", "common"]) // keys use defaultValue fallbacks
@@ -75,9 +121,7 @@ export const FlashcardsPage: React.FC = () => {
       <FeatureEmptyState
         title={
           <span className="inline-flex items-center gap-2">
-            <span className="rounded-full bg-blue-50 px-2 py-0.5 text-[11px] font-medium text-blue-700 dark:bg-blue-900/40 dark:text-blue-200">
-              Demo
-            </span>
+            <StatusBadge variant="demo">Demo</StatusBadge>
             <span>
               {t("option:flashcards.demoTitle", {
                 defaultValue: "Explore Flashcards in demo mode"
@@ -108,9 +152,9 @@ export const FlashcardsPage: React.FC = () => {
       <FeatureEmptyState
         title={
           <span className="inline-flex items-center gap-2">
-            <span className="rounded-full bg-yellow-50 px-2 py-0.5 text-[11px] font-medium text-yellow-700 dark:bg-yellow-900/40 dark:text-yellow-200">
+            <StatusBadge variant="warning">
               Not connected
-            </span>
+            </StatusBadge>
             <span>
               {t("option:flashcards.emptyConnectTitle", {
                 defaultValue: "Connect to use Flashcards"
@@ -144,9 +188,9 @@ export const FlashcardsPage: React.FC = () => {
       <FeatureEmptyState
         title={
           <span className="inline-flex items-center gap-2">
-            <span className="rounded-full bg-amber-50 px-2 py-0.5 text-[11px] font-medium text-amber-700 dark:bg-amber-900/40 dark:text-amber-200">
+            <StatusBadge variant="error">
               Feature unavailable
-            </span>
+            </StatusBadge>
             <span>
               {t("option:flashcards.offlineTitle", {
                 defaultValue: "Flashcards API not available on this server"
@@ -226,6 +270,10 @@ export const FlashcardsPage: React.FC = () => {
 
   // CREATE TAB STATE
   const [createForm] = Form.useForm<FlashcardCreate>()
+  const createFrontPreview = useDebouncedFormField(createForm, "front")
+  const createBackPreview = useDebouncedFormField(createForm, "back")
+  const createExtraPreview = useDebouncedFormField(createForm, "extra")
+  const createNotesPreview = useDebouncedFormField(createForm, "notes")
   const createMutation = useMutation({
     mutationKey: ["flashcards:create"],
     mutationFn: (payload: FlashcardCreate) => createFlashcard(payload),
@@ -416,6 +464,10 @@ export const FlashcardsPage: React.FC = () => {
   const [editOpen, setEditOpen] = React.useState(false)
   const [editing, setEditing] = React.useState<Flashcard | null>(null)
   const [editForm] = Form.useForm<FlashcardUpdate & { tags_text?: string[] }>()
+  const editFrontPreview = useDebouncedFormField(editForm, "front")
+  const editBackPreview = useDebouncedFormField(editForm, "back")
+  const editExtraPreview = useDebouncedFormField(editForm, "extra")
+  const editNotesPreview = useDebouncedFormField(editForm, "notes")
 
   // Quick actions: review
   const [quickReviewOpen, setQuickReviewOpen] = React.useState(false)
@@ -654,17 +706,10 @@ export const FlashcardsPage: React.FC = () => {
                           {t("option:flashcards.front", { defaultValue: "Front" })}
                         </Title>
                         <div className="border rounded p-3 bg-white dark:bg-[#111] text-sm">
-                          <React.Suspense
-                            fallback={
-                              <div className="whitespace-pre-wrap">
-                                {reviewQuery.data.front}
-                              </div>
-                            }>
-                            <Markdown
-                              message={reviewQuery.data.front}
-                              className="prose-sm break-words dark:prose-invert max-w-none prose-p:leading-relaxed prose-pre:p-0 dark:prose-dark"
-                            />
-                          </React.Suspense>
+                          <MarkdownWithBoundary
+                            content={reviewQuery.data.front}
+                            size="sm"
+                          />
                         </div>
                       </div>
                       {showAnswer && (
@@ -673,31 +718,17 @@ export const FlashcardsPage: React.FC = () => {
                             {t("option:flashcards.back", { defaultValue: "Back" })}
                           </Title>
                           <div className="border rounded p-3 bg-white dark:bg-[#111] text-sm">
-                            <React.Suspense
-                              fallback={
-                                <div className="whitespace-pre-wrap">
-                                  {reviewQuery.data.back}
-                                </div>
-                              }>
-                              <Markdown
-                                message={reviewQuery.data.back}
-                                className="prose-sm break-words dark:prose-invert max-w-none prose-p:leading-relaxed prose-pre:p-0 dark:prose-dark"
-                              />
-                            </React.Suspense>
+                            <MarkdownWithBoundary
+                              content={reviewQuery.data.back}
+                              size="sm"
+                            />
                           </div>
                           {reviewQuery.data.extra && (
                             <div className="mt-2 text-sm opacity-80">
-                              <React.Suspense
-                                fallback={
-                                  <div className="whitespace-pre-wrap">
-                                    {reviewQuery.data.extra}
-                                  </div>
-                                }>
-                                <Markdown
-                                  message={reviewQuery.data.extra}
-                                  className="prose-xs break-words dark:prose-invert max-w-none prose-p:leading-relaxed prose-pre:p-0 dark:prose-dark"
-                                />
-                              </React.Suspense>
+                              <MarkdownWithBoundary
+                                content={reviewQuery.data.extra}
+                                size="xs"
+                              />
                             </div>
                           )}
                         </div>
@@ -893,22 +924,15 @@ export const FlashcardsPage: React.FC = () => {
                       Supports Markdown and LaTeX (e.g. <code>$x^2$</code>,
                       <code>$$\\int_0^1 x^2 dx$$</code>).
                     </Text>
-                    {createForm.getFieldValue("front") && (
+                    {createFrontPreview && (
                       <div className="mt-2 border rounded p-2 text-xs bg-white dark:bg-[#111]">
                         <Text type="secondary" className="block text-[11px] mb-1">
                           Preview
                         </Text>
-                        <React.Suspense
-                          fallback={
-                            <div className="whitespace-pre-wrap">
-                              {createForm.getFieldValue("front")}
-                            </div>
-                          }>
-                          <Markdown
-                            message={createForm.getFieldValue("front") || ""}
-                            className="prose-xs break-words dark:prose-invert max-w-none prose-p:leading-relaxed prose-pre:p-0 dark:prose-dark"
-                          />
-                        </React.Suspense>
+                        <MarkdownWithBoundary
+                          content={createFrontPreview || ""}
+                          size="xs"
+                        />
                       </div>
                     )}
                   </Form.Item>
@@ -920,22 +944,15 @@ export const FlashcardsPage: React.FC = () => {
                     <Text type="secondary" className="block text-[11px] mt-1">
                       Supports Markdown and LaTeX for formulas, lists, and code.
                     </Text>
-                    {createForm.getFieldValue("back") && (
+                    {createBackPreview && (
                       <div className="mt-2 border rounded p-2 text-xs bg-white dark:bg-[#111]">
                         <Text type="secondary" className="block text-[11px] mb-1">
                           Preview
                         </Text>
-                        <React.Suspense
-                          fallback={
-                            <div className="whitespace-pre-wrap">
-                              {createForm.getFieldValue("back")}
-                            </div>
-                          }>
-                          <Markdown
-                            message={createForm.getFieldValue("back") || ""}
-                            className="prose-xs break-words dark:prose-invert max-w-none prose-p:leading-relaxed prose-pre:p-0 dark:prose-dark"
-                          />
-                        </React.Suspense>
+                        <MarkdownWithBoundary
+                          content={createBackPreview || ""}
+                          size="xs"
+                        />
                       </div>
                     )}
                   </Form.Item>
@@ -946,22 +963,15 @@ export const FlashcardsPage: React.FC = () => {
                     <Text type="secondary" className="block text-[11px] mt-1">
                       Optional hints or explanations (Markdown + LaTeX supported).
                     </Text>
-                    {createForm.getFieldValue("extra") && (
+                    {createExtraPreview && (
                       <div className="mt-2 border rounded p-2 text-xs bg-white dark:bg-[#111]">
                         <Text type="secondary" className="block text-[11px] mb-1">
                           Preview
                         </Text>
-                        <React.Suspense
-                          fallback={
-                            <div className="whitespace-pre-wrap">
-                              {createForm.getFieldValue("extra")}
-                            </div>
-                          }>
-                          <Markdown
-                            message={createForm.getFieldValue("extra") || ""}
-                            className="prose-xs break-words dark:prose-invert max-w-none prose-p:leading-relaxed prose-pre:p-0 dark:prose-dark"
-                          />
-                        </React.Suspense>
+                        <MarkdownWithBoundary
+                          content={createExtraPreview || ""}
+                          size="xs"
+                        />
                       </div>
                     )}
                   </Form.Item>
@@ -972,22 +982,15 @@ export const FlashcardsPage: React.FC = () => {
                     <Text type="secondary" className="block text-[11px] mt-1">
                       Internal notes (Markdown + LaTeX supported).
                     </Text>
-                    {createForm.getFieldValue("notes") && (
+                    {createNotesPreview && (
                       <div className="mt-2 border rounded p-2 text-xs bg-white dark:bg-[#111]">
                         <Text type="secondary" className="block text-[11px] mb-1">
                           Preview
                         </Text>
-                        <React.Suspense
-                          fallback={
-                            <div className="whitespace-pre-wrap">
-                              {createForm.getFieldValue("notes")}
-                            </div>
-                          }>
-                          <Markdown
-                            message={createForm.getFieldValue("notes") || ""}
-                            className="prose-xs break-words dark:prose-invert max-w-none prose-p:leading-relaxed prose-pre:p-0 dark:prose-dark"
-                          />
-                        </React.Suspense>
+                        <MarkdownWithBoundary
+                          content={createNotesPreview || ""}
+                          size="xs"
+                        />
                       </div>
                     )}
                   </Form.Item>
@@ -1220,31 +1223,18 @@ export const FlashcardsPage: React.FC = () => {
                       {previewOpen.has(item.uuid) && (
                         <div className="mt-2">
                           <div className="border rounded p-2 bg-white dark:bg-[#111] text-xs sm:text-sm">
-                            <React.Suspense
-                              fallback={
-                                <div className="whitespace-pre-wrap">
-                                  {item.back}
-                                </div>
-                              }>
-                              <Markdown
-                                message={item.back}
-                                className="prose-xs sm:prose-sm break-words dark:prose-invert max-w-none prose-p:leading-relaxed prose-pre:p-0 dark:prose-dark"
-                              />
-                            </React.Suspense>
+                            <MarkdownWithBoundary
+                              content={item.back}
+                              size="xs"
+                              className="sm:prose-sm"
+                            />
                           </div>
                           {item.extra && (
                             <div className="opacity-80 text-xs mt-1">
-                              <React.Suspense
-                                fallback={
-                                  <div className="whitespace-pre-wrap">
-                                    {item.extra}
-                                  </div>
-                                }>
-                                <Markdown
-                                  message={item.extra}
-                                  className="prose-xs break-words dark:prose-invert max-w-none prose-p:leading-relaxed prose-pre:p-0 dark:prose-dark"
-                                />
-                              </React.Suspense>
+                              <MarkdownWithBoundary
+                                content={item.extra}
+                                size="xs"
+                              />
                             </div>
                           )}
                         </div>
@@ -1275,44 +1265,23 @@ export const FlashcardsPage: React.FC = () => {
                   {quickReviewCard && (
                     <div className="flex flex-col gap-3">
                       <div className="border rounded p-3 text-sm">
-                        <React.Suspense
-                          fallback={
-                            <div className="whitespace-pre-wrap">
-                              {quickReviewCard.front}
-                            </div>
-                          }>
-                          <Markdown
-                            message={quickReviewCard.front}
-                            className="prose-sm break-words dark:prose-invert max-w-none prose-p:leading-relaxed prose-pre:p-0 dark:prose-dark"
-                          />
-                        </React.Suspense>
+                        <MarkdownWithBoundary
+                          content={quickReviewCard.front}
+                          size="sm"
+                        />
                       </div>
                       <div className="border rounded p-3 text-sm">
-                        <React.Suspense
-                          fallback={
-                            <div className="whitespace-pre-wrap">
-                              {quickReviewCard.back}
-                            </div>
-                          }>
-                          <Markdown
-                            message={quickReviewCard.back}
-                            className="prose-sm break-words dark:prose-invert max-w-none prose-p:leading-relaxed prose-pre:p-0 dark:prose-dark"
-                          />
-                        </React.Suspense>
+                        <MarkdownWithBoundary
+                          content={quickReviewCard.back}
+                          size="sm"
+                        />
                       </div>
                       {quickReviewCard.extra && (
                         <div className="opacity-80 text-sm">
-                          <React.Suspense
-                            fallback={
-                              <div className="whitespace-pre-wrap">
-                                {quickReviewCard.extra}
-                              </div>
-                            }>
-                            <Markdown
-                              message={quickReviewCard.extra}
-                              className="prose-xs break-words dark:prose-invert max-w-none prose-p:leading-relaxed prose-pre:p-0 dark:prose-dark"
-                            />
-                          </React.Suspense>
+                          <MarkdownWithBoundary
+                            content={quickReviewCard.extra}
+                            size="xs"
+                          />
                         </div>
                       )}
                       <div className="flex flex-wrap gap-2">
@@ -1400,22 +1369,15 @@ export const FlashcardsPage: React.FC = () => {
                       <Text type="secondary" className="block text-[11px] mt-1">
                         Supports Markdown and LaTeX.
                       </Text>
-                      {editForm.getFieldValue("front") && (
+                      {editFrontPreview && (
                         <div className="mt-2 border rounded p-2 text-xs bg-white dark:bg-[#111]">
-                          <Text type="secondary" className="block text-[11px] mb-1">
-                            Preview
-                          </Text>
-                          <React.Suspense
-                            fallback={
-                              <div className="whitespace-pre-wrap">
-                                {editForm.getFieldValue("front")}
-                              </div>
-                            }>
-                            <Markdown
-                              message={editForm.getFieldValue("front") || ""}
-                              className="prose-xs break-words dark:prose-invert max-w-none prose-p:leading-relaxed prose-pre:p-0 dark:prose-dark"
-                            />
-                          </React.Suspense>
+                      <Text type="secondary" className="block text-[11px] mb-1">
+                        Preview
+                      </Text>
+                      <MarkdownWithBoundary
+                        content={editFrontPreview || ""}
+                        size="xs"
+                      />
                         </div>
                       )}
                     </Form.Item>
@@ -1427,22 +1389,15 @@ export const FlashcardsPage: React.FC = () => {
                       <Text type="secondary" className="block text-[11px] mt-1">
                         Supports Markdown and LaTeX.
                       </Text>
-                      {editForm.getFieldValue("back") && (
+                      {editBackPreview && (
                         <div className="mt-2 border rounded p-2 text-xs bg-white dark:bg-[#111]">
-                          <Text type="secondary" className="block text-[11px] mb-1">
-                            Preview
-                          </Text>
-                          <React.Suspense
-                            fallback={
-                              <div className="whitespace-pre-wrap">
-                                {editForm.getFieldValue("back")}
-                              </div>
-                            }>
-                            <Markdown
-                              message={editForm.getFieldValue("back") || ""}
-                              className="prose-xs break-words dark:prose-invert max-w-none prose-p:leading-relaxed prose-pre:p-0 dark:prose-dark"
-                            />
-                          </React.Suspense>
+                      <Text type="secondary" className="block text-[11px] mb-1">
+                        Preview
+                      </Text>
+                      <MarkdownWithBoundary
+                        content={editBackPreview || ""}
+                        size="xs"
+                      />
                         </div>
                       )}
                     </Form.Item>
@@ -1453,22 +1408,15 @@ export const FlashcardsPage: React.FC = () => {
                       <Text type="secondary" className="block text-[11px] mt-1">
                         Optional hints/explanations (Markdown + LaTeX supported).
                       </Text>
-                      {editForm.getFieldValue("extra") && (
+                      {editExtraPreview && (
                         <div className="mt-2 border rounded p-2 text-xs bg-white dark:bg-[#111]">
-                          <Text type="secondary" className="block text-[11px] mb-1">
-                            Preview
-                          </Text>
-                          <React.Suspense
-                            fallback={
-                              <div className="whitespace-pre-wrap">
-                                {editForm.getFieldValue("extra")}
-                              </div>
-                            }>
-                            <Markdown
-                              message={editForm.getFieldValue("extra") || ""}
-                              className="prose-xs break-words dark:prose-invert max-w-none prose-p:leading-relaxed prose-pre:p-0 dark:prose-dark"
-                            />
-                          </React.Suspense>
+                      <Text type="secondary" className="block text-[11px] mb-1">
+                        Preview
+                      </Text>
+                      <MarkdownWithBoundary
+                        content={editExtraPreview || ""}
+                        size="xs"
+                      />
                         </div>
                       )}
                     </Form.Item>
@@ -1479,22 +1427,15 @@ export const FlashcardsPage: React.FC = () => {
                       <Text type="secondary" className="block text-[11px] mt-1">
                         Internal notes (Markdown + LaTeX supported).
                       </Text>
-                      {editForm.getFieldValue("notes") && (
+                      {editNotesPreview && (
                         <div className="mt-2 border rounded p-2 text-xs bg-white dark:bg-[#111]">
-                          <Text type="secondary" className="block text-[11px] mb-1">
-                            Preview
-                          </Text>
-                          <React.Suspense
-                            fallback={
-                              <div className="whitespace-pre-wrap">
-                                {editForm.getFieldValue("notes")}
-                              </div>
-                            }>
-                            <Markdown
-                              message={editForm.getFieldValue("notes") || ""}
-                              className="prose-xs break-words dark:prose-invert max-w-none prose-p:leading-relaxed prose-pre:p-0 dark:prose-dark"
-                            />
-                          </React.Suspense>
+                      <Text type="secondary" className="block text-[11px] mb-1">
+                        Preview
+                      </Text>
+                      <MarkdownWithBoundary
+                        content={editNotesPreview || ""}
+                        size="xs"
+                      />
                         </div>
                       )}
                     </Form.Item>

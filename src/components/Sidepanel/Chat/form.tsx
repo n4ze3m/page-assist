@@ -599,7 +599,16 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
   }, [])
 
   const handleProcessQueuedIngest = React.useCallback(() => {
-    if (!isConnectionReady || queuedQuickIngestCount <= 0) return
+    if (!isConnectionReady) return
+
+    // Snapshot the current queue size; if it has been cleared between
+    // render and click, we still open the modal but skip auto-processing.
+    if (queuedQuickIngestCount <= 0) {
+      setAutoProcessQueuedIngest(false)
+      setIngestOpen(true)
+      return
+    }
+
     setAutoProcessQueuedIngest(true)
     setIngestOpen(true)
   }, [isConnectionReady, queuedQuickIngestCount])

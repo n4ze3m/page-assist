@@ -13,12 +13,7 @@ import {
 import { getModelNicknameByID } from "@/db/dexie/nickname"
 import { systemPromptFormatter } from "@/utils/system-message"
 import type { ActorSettings } from "@/types/actor"
-import {
-  buildActorPrompt,
-  buildActorMessage,
-  injectActorMessageIntoHistory,
-  shouldInjectActorForTemplates
-} from "@/utils/actor"
+import { maybeInjectActorMessage } from "@/utils/actor"
 
 export const normalChatMode = async (
   message: string,
@@ -153,7 +148,7 @@ export const normalChatMode = async (
       })
     }
 
-    const applicationChatHistory = generateHistory(history, selectedModel)
+    let applicationChatHistory = generateHistory(history, selectedModel)
 
     if (prompt && !selectedPrompt) {
       applicationChatHistory.unshift(
@@ -189,29 +184,11 @@ export const normalChatMode = async (
     // respecting templateMode when a scene template is selected
     // in Chat Settings (represented by selectedSystemPrompt).
     const templatesActive = !!selectedSystemPrompt
-    if (
-      shouldInjectActorForTemplates({
-        settings: actorSettings || null,
-        templatesActive
-      })
-    ) {
-      const actorText = buildActorPrompt(actorSettings || null)
-      if (actorText) {
-        const actorMessage = await buildActorMessage(
-          actorSettings || null,
-          actorText
-        )
-        if (actorMessage) {
-          const nextHistory = injectActorMessageIntoHistory(
-            applicationChatHistory,
-            actorMessage,
-            actorSettings || null
-          )
-          applicationChatHistory.length = 0
-          applicationChatHistory.push(...nextHistory)
-        }
-      }
-    }
+    applicationChatHistory = await maybeInjectActorMessage(
+      applicationChatHistory,
+      actorSettings || null,
+      templatesActive
+    )
 
     let generationInfo: any | undefined = undefined
 

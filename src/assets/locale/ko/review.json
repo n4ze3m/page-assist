@@ -89,7 +89,7 @@
     "chatPrepared": "Prepared chat with this media in the composer.",
     "chatAboutMediaHint": "Open RAG chat scoped to this media only.",
     "chatAboutMediaRagSent": "Opened media-scoped RAG chat.",
-    "chatAboutMediaInvalidId": "This media item does not have a numeric id yet.",
+    "chatAboutMediaInvalidId": "이 미디어 항목에는 아직 숫자 ID가 없습니다.",
     "demoBadge": "데모",
     "notConnectedBadge": "연결되지 않음"
   },
@@ -149,7 +149,7 @@
     "offlineTitle": "Media API not available on this server",
     "offlineDescription": "This tldw server does not advertise the Media endpoints (for example, /api/v1/media and /api/v1/media/search). Upgrade your server to a version that includes Media to use this workspace.",
     "offlineExample1": "Open Diagnostics to confirm your server version and available APIs.",
-    "offlineExample2": "After upgrading, reload the extension and return to Media.",
+    "offlineExample2": "업그레이드 후 확장을 다시 로드하고 미디어로 돌아가세요.",
     "featureUnavailableBadge": "기능을 사용할 수 없습니다"
   }
 }

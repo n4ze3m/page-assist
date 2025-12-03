@@ -4,8 +4,38 @@ import type {
   ActorTemplateInteractionMode
 } from "@/types/actor"
 import type { BaseMessage } from "@langchain/core/messages"
-import { AIMessage, HumanMessage } from "@langchain/core/messages"
+import { AIMessage, HumanMessage, SystemMessage } from "@langchain/core/messages"
 import { systemPromptFormatter } from "@/utils/system-message"
+
+export const buildActorSettingsFromForm = (
+  base: ActorSettings,
+  values: Record<string, any>
+): ActorSettings => ({
+  ...base,
+  isEnabled: !!values.actorEnabled,
+  notes: values.actorNotes ?? "",
+  notesGmOnly: !!values.actorNotesGmOnly,
+  chatPosition: values.actorChatPosition || base.chatPosition,
+  chatDepth: (() => {
+    const raw =
+      typeof values.actorChatDepth === "number"
+        ? values.actorChatDepth
+        : base.chatDepth
+    if (!Number.isFinite(raw)) {
+      return base.chatDepth
+    }
+    return Math.min(Math.max(0, raw), 999)
+  })(),
+  chatRole: (values.actorChatRole as any) || base.chatRole,
+  templateMode:
+    (values.actorTemplateMode as any) ||
+    base.templateMode ||
+    "merge",
+  aspects: (base.aspects || []).map((aspect) => ({
+    ...aspect,
+    value: values[`actor_${aspect.id}`] ?? ""
+  }))
+})
 
 export type ActorDictionaryToken = {
   /**
@@ -38,9 +68,10 @@ export type ActorDictionaryToken = {
  * Build per-aspect dictionary-style tokens from Actor settings.
  *
  * Tokens follow the convention:
- *   [[actor_<key>]]
+ *   [[actor_<target>_<key>]]
  *
- * where `key` is the stable ActorAspect.key (e.g. "user_clothes").
+ * where `target` is user/char/world and `key` is the stable
+ * ActorAspect.key (e.g. "role" -> [[actor_user_role]]).
  */
 export const buildActorDictionaryTokens = (
   settings: ActorSettings | null
@@ -50,16 +81,20 @@ export const buildActorDictionaryTokens = (
   const tokens: ActorDictionaryToken[] = []
 
   for (const aspect of settings.aspects || []) {
-    const key = aspect.key?.trim()
-    if (!key) continue
+    const keyRaw = aspect.key?.trim()
+    if (!keyRaw) continue
 
-    const token = `[[actor_${key}]]`
+    const targetPrefix = `${aspect.target}_`
+    const normalizedKey = keyRaw.startsWith(targetPrefix)
+      ? keyRaw
+      : `${targetPrefix}${keyRaw}`
+    const token = `[[actor_${normalizedKey}]]`
     const value = aspect.value?.trim() || ""
 
     tokens.push({
       token,
       aspectId: aspect.id,
-      key,
+      key: normalizedKey,
       target: aspect.target,
       name: aspect.name,
       value
@@ -209,6 +244,36 @@ export const buildActorMessage = async (
   })
 }
 
+export const maybeInjectActorMessage = async (
+  history: BaseMessage[],
+  actorSettings: ActorSettings | null | undefined,
+  templatesActive: boolean
+): Promise<BaseMessage[]> => {
+  if (
+    !shouldInjectActorForTemplates({
+      settings: actorSettings,
+      templatesActive
+    })
+  ) {
+    return history
+  }
+
+  const actorText = buildActorPrompt(actorSettings || null)
+  if (!actorText) return history
+
+  const actorMessage = await buildActorMessage(
+    actorSettings || null,
+    actorText
+  )
+  if (!actorMessage) return history
+
+  return injectActorMessageIntoHistory(
+    history,
+    actorMessage,
+    actorSettings || null
+  )
+}
+
 /**
  * Insert the Actor message into an existing LangChain history with
  * support for before / after / depth semantics.
@@ -237,8 +302,7 @@ export const injectActorMessageIntoHistory = (
     let insertIndex = 0
     while (
       insertIndex < next.length &&
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (next[insertIndex] as any)?._getType?.() === "system"
+      next[insertIndex] instanceof SystemMessage
     ) {
       insertIndex++
     }
@@ -258,16 +322,16 @@ export const injectActorMessageIntoHistory = (
   let inserted = false
 
   for (const msg of history) {
-    const msgType = (msg as any)?._getType?.()
+    const isSystem = msg instanceof SystemMessage
 
-    if (!inserted && msgType !== "system" && seenNonSystem >= depth) {
+    if (!inserted && !isSystem && seenNonSystem >= depth) {
       result.push(actorMessage)
       inserted = true
     }
 
     result.push(msg)
 
-    if (msgType !== "system") {
+    if (!isSystem) {
       seenNonSystem++
     }
   }

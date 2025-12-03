@@ -89,7 +89,7 @@
     "chatPrepared": "Prepared chat with this media in the composer.",
     "chatAboutMediaHint": "Open RAG chat scoped to this media only.",
     "chatAboutMediaRagSent": "Opened media-scoped RAG chat.",
-    "chatAboutMediaInvalidId": "This media item does not have a numeric id yet.",
+    "chatAboutMediaInvalidId": "此媒體項目尚未有數值 ID。",
     "demoBadge": "示範",
     "notConnectedBadge": "未連線"
   },
@@ -149,7 +149,7 @@
     "offlineTitle": "Media API not available on this server",
     "offlineDescription": "This tldw server does not advertise the Media endpoints (for example, /api/v1/media and /api/v1/media/search). Upgrade your server to a version that includes Media to use this workspace.",
     "offlineExample1": "Open Diagnostics to confirm your server version and available APIs.",
-    "offlineExample2": "After upgrading, reload the extension and return to Media.",
+    "offlineExample2": "升級後，請重新載入擴充功能並返回媒體。",
     "featureUnavailableBadge": "功能無法使用"
   }
 }

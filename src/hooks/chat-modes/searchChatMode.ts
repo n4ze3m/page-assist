@@ -15,12 +15,7 @@ import {
 import { getModelNicknameByID } from "@/db/dexie/nickname"
 import { systemPromptFormatter } from "@/utils/system-message"
 import type { ActorSettings } from "@/types/actor"
-import {
-  buildActorPrompt,
-  buildActorMessage,
-  injectActorMessageIntoHistory,
-  shouldInjectActorForTemplates
-} from "@/utils/actor"
+import { maybeInjectActorMessage } from "@/utils/actor"
 
 export const searchChatMode = async (
   message: string,
@@ -200,7 +195,7 @@ export const searchChatMode = async (
       })
     }
 
-    const applicationChatHistory = generateHistory(history, selectedModel)
+    let applicationChatHistory = generateHistory(history, selectedModel)
 
     if (prompt) {
       applicationChatHistory.unshift(
@@ -211,29 +206,11 @@ export const searchChatMode = async (
     }
 
     const templatesActive = false
-    if (
-      shouldInjectActorForTemplates({
-        settings: actorSettings || null,
-        templatesActive
-      })
-    ) {
-      const actorText = buildActorPrompt(actorSettings || null)
-      if (actorText) {
-        const actorMessage = await buildActorMessage(
-          actorSettings || null,
-          actorText
-        )
-        if (actorMessage) {
-          const nextHistory = injectActorMessageIntoHistory(
-            applicationChatHistory,
-            actorMessage,
-            actorSettings || null
-          )
-          applicationChatHistory.length = 0
-          applicationChatHistory.push(...nextHistory)
-        }
-      }
-    }
+    applicationChatHistory = await maybeInjectActorMessage(
+      applicationChatHistory,
+      actorSettings || null,
+      templatesActive
+    )
 
     let generationInfo: any | undefined = undefined
 
