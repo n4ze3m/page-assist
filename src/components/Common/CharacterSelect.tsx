@@ -67,7 +67,7 @@ export const CharacterSelect: React.FC<Props> = ({
   className = "dark:text-gray-300",
   iconClassName = "size-5"
 }) => {
-  const { t } = useTranslation(["option", "common", "settings"])
+  const { t } = useTranslation(["option", "common", "settings", "playground"])
   const notification = useAntdNotification()
   const [selectedCharacter, setSelectedCharacter] = useStorage<
     CharacterSelection | null
@@ -340,6 +340,31 @@ export const CharacterSelect: React.FC<Props> = ({
     menuItems.push(dividerItem("__divider_clear__"), clearItem)
   }
 
+  const actorItem: MenuProps["items"][number] = {
+    key: "__actor__",
+    label: (
+      <button
+        type="button"
+        className="w-full text-left text-xs font-medium text-gray-700 hover:text-gray-900 dark:text-gray-200 dark:hover:text-gray-50"
+      >
+        {t(
+          "playground:composer.actorTitle",
+          "Scene Director (Actor)"
+        ) as string}
+      </button>
+    ),
+    onClick: () => {
+      try {
+        if (typeof window !== "undefined") {
+          window.dispatchEvent(new CustomEvent("tldw:open-actor-settings"))
+        }
+      } catch {
+        // no-op
+      }
+    }
+  }
+
+  menuItems.push(dividerItem("__divider_actor__"), actorItem)
   menuItems.push(dividerItem("__divider_refresh__"), refreshItem)
 
   const menuContainerRef = React.useRef<HTMLDivElement | null>(null)

@@ -189,6 +189,15 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
     }
   }
 
+  React.useEffect(() => {
+    if (typeof window === "undefined") return
+    const handler = () => setOpenActorSettings(true)
+    window.addEventListener("tldw:open-actor-settings", handler)
+    return () => {
+      window.removeEventListener("tldw:open-actor-settings", handler)
+    }
+  }, [])
+
   // When sidepanel connection transitions to CONNECTED, focus the composer
   useFocusComposerOnConnect(phase)
 
@@ -1278,26 +1287,6 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                                   {t(
                                     'playground:composer.openModelSettings',
                                     'Open current chat settings'
-                                  )}
-                                </span>
-                              </button>
-                            </Tooltip>
-                            <Tooltip
-                              title={
-                                t(
-                                  "playground:composer.actorTitle",
-                                  "Scene Director (Actor)"
-                                ) as string
-                              }>
-                              <button
-                                type="button"
-                                onClick={() => setOpenActorSettings(true)}
-                                className="text-gray-700 dark:text-gray-300 p-1 hover:text-gray-900 dark:hover:text-gray-100">
-                                <Gauge className="h-4 w-4" />
-                                <span className="sr-only">
-                                  {t(
-                                    "playground:composer.actorTitle",
-                                    "Scene Director (Actor)"
                                   )}
                                 </span>
                               </button>

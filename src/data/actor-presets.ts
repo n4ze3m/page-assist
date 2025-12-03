@@ -1,7 +1,11 @@
 import type { ActorSettings } from "@/types/actor"
 import { createDefaultActorSettings } from "@/types/actor"
 
-export type ActorPresetId = "slice_of_life" | "dungeon_crawl" | "romance"
+export type ActorPresetId =
+  | "slice_of_life"
+  | "dungeon_crawl"
+  | "romance"
+  | "work_session"
 
 export type ActorPreset = {
   id: ActorPresetId
@@ -18,16 +22,32 @@ export const ACTOR_PRESETS: ActorPreset[] = [
     apply: (base: ActorSettings): ActorSettings => {
       const next = base ?? createDefaultActorSettings()
       const aspects = (next.aspects || []).map((aspect) => {
-        if (aspect.id === "user_mood") {
+        if (aspect.id === "user_state") {
           return {
             ...aspect,
             value: aspect.value || "relaxed, casual"
           }
         }
-        if (aspect.id === "char_mood") {
+        if (aspect.id === "user_focus") {
+          return {
+            ...aspect,
+            value:
+              aspect.value ||
+              "day-to-day routines, small tasks, and low-stakes choices"
+          }
+        }
+        if (aspect.id === "char_state") {
           return {
             ...aspect,
             value: aspect.value || "warm, approachable"
+          }
+        }
+        if (aspect.id === "char_goal") {
+          return {
+            ...aspect,
+            value:
+              aspect.value ||
+              "maintain relationships, share everyday moments, and offer support"
           }
         }
         if (aspect.id === "world_location") {
@@ -68,6 +88,42 @@ export const ACTOR_PRESETS: ActorPreset[] = [
     apply: (base: ActorSettings): ActorSettings => {
       const next = base ?? createDefaultActorSettings()
       const aspects = (next.aspects || []).map((aspect) => {
+        if (aspect.id === "user_role") {
+          return {
+            ...aspect,
+            value:
+              aspect.value ||
+              "adventurer or party leader responsible for decisions and tactics"
+          }
+        }
+        if (aspect.id === "char_role") {
+          return {
+            ...aspect,
+            value:
+              aspect.value ||
+              "adventurer, party member, or companion with unique skills"
+          }
+        }
+        if (aspect.id === "user_state") {
+          return {
+            ...aspect,
+            value: aspect.value || "alert, tactical, mildly anxious"
+          }
+        }
+        if (aspect.id === "char_state") {
+          return {
+            ...aspect,
+            value: aspect.value || "focused, battle-ready, occasionally sardonic"
+          }
+        }
+        if (aspect.id === "char_goal") {
+          return {
+            ...aspect,
+            value:
+              aspect.value ||
+              "survive, explore deeper, and secure treasure or key objectives"
+          }
+        }
         if (aspect.id === "world_location") {
           return {
             ...aspect,
@@ -94,18 +150,6 @@ export const ACTOR_PRESETS: ActorPreset[] = [
             value: aspect.value || "timeless underground environment"
           }
         }
-        if (aspect.id === "user_mood") {
-          return {
-            ...aspect,
-            value: aspect.value || "alert, tactical, mildly anxious"
-          }
-        }
-        if (aspect.id === "char_mood") {
-          return {
-            ...aspect,
-            value: aspect.value || "focused, battle-ready, occasionally sardonic"
-          }
-        }
         return aspect
       })
 
@@ -126,16 +170,32 @@ export const ACTOR_PRESETS: ActorPreset[] = [
     apply: (base: ActorSettings): ActorSettings => {
       const next = base ?? createDefaultActorSettings()
       const aspects = (next.aspects || []).map((aspect) => {
-        if (aspect.id === "user_mood") {
+        if (aspect.id === "user_state") {
           return {
             ...aspect,
             value: aspect.value || "curious, a little vulnerable, open to connection"
           }
         }
-        if (aspect.id === "char_mood") {
+        if (aspect.id === "user_focus") {
+          return {
+            ...aspect,
+            value:
+              aspect.value ||
+              "explore emotional intimacy, understand the other person, and build trust"
+          }
+        }
+        if (aspect.id === "char_state") {
           return {
             ...aspect,
             value: aspect.value || "affectionate, attentive, emotionally present"
+          }
+        }
+        if (aspect.id === "char_goal") {
+          return {
+            ...aspect,
+            value:
+              aspect.value ||
+              "deepen the connection and create a sense of mutual safety and care"
           }
         }
         if (aspect.id === "world_location") {
@@ -172,6 +232,108 @@ export const ACTOR_PRESETS: ActorPreset[] = [
         notes
       }
     }
+  },
+  {
+    id: "work_session",
+    apply: (base: ActorSettings): ActorSettings => {
+      const next = base ?? createDefaultActorSettings()
+      const aspects = (next.aspects || []).map((aspect) => {
+        if (aspect.id === "user_role") {
+          return {
+            ...aspect,
+            value:
+              aspect.value ||
+              "knowledge worker, student, or independent creator focusing on a concrete task"
+          }
+        }
+        if (aspect.id === "user_state") {
+          return {
+            ...aspect,
+            value: aspect.value || "focused, mildly time-pressured, wants clarity"
+          }
+        }
+        if (aspect.id === "user_focus") {
+          return {
+            ...aspect,
+            value:
+              aspect.value ||
+              "making progress on the current project, document, or study topic"
+          }
+        }
+        if (aspect.id === "char_role") {
+          return {
+            ...aspect,
+            value:
+              aspect.value ||
+              "assistant or collaborator helping with planning, writing, or problem-solving"
+          }
+        }
+        if (aspect.id === "char_state") {
+          return {
+            ...aspect,
+            value:
+              aspect.value ||
+              "calm, organized, and task-oriented, with a focus on useful next steps"
+          }
+        }
+        if (aspect.id === "char_goal") {
+          return {
+            ...aspect,
+            value:
+              aspect.value ||
+              "help the user break down work, clarify questions, and move tasks forward"
+          }
+        }
+        if (aspect.id === "world_location") {
+          return {
+            ...aspect,
+            value:
+              aspect.value ||
+              "desk, office, or home workspace with access to necessary tools and documents"
+          }
+        }
+        if (aspect.id === "world_time_of_day") {
+          return {
+            ...aspect,
+            value: aspect.value || "normal working hours or a focused study session"
+          }
+        }
+        if (aspect.id === "world_weather") {
+          return {
+            ...aspect,
+            value:
+              aspect.value ||
+              "background conditions are irrelevant; attention is on the work at hand"
+          }
+        }
+        if (aspect.id === "world_lighting") {
+          return {
+            ...aspect,
+            value: aspect.value || "clear, functional lighting suitable for reading or screens"
+          }
+        }
+        if (aspect.id === "world_tone") {
+          return {
+            ...aspect,
+            value:
+              aspect.value ||
+              "focused, practical, and supportive; prioritize clarity, structure, and actionable outcomes"
+          }
+        }
+        return aspect
+      })
+
+      const notes =
+        next.notes && next.notes.trim().length > 0
+          ? next.notes
+          : "Keep the conversation anchored to concrete tasks, questions, or documents. Favor structured suggestions, checklists, and clear next steps over long digressions."
+
+      return {
+        ...next,
+        aspects,
+        notes
+      }
+    }
   }
 ]
 
@@ -185,4 +347,3 @@ export const applyActorPresetById = (
   }
   return preset.apply(base ?? createDefaultActorSettings())
 }
-

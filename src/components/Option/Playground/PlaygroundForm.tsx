@@ -173,6 +173,15 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
   const [showServerPersistenceHint, setShowServerPersistenceHint] =
     React.useState(false)
 
+  React.useEffect(() => {
+    if (typeof window === "undefined") return
+    const handler = () => setOpenActorSettings(true)
+    window.addEventListener("tldw:open-actor-settings", handler)
+    return () => {
+      window.removeEventListener("tldw:open-actor-settings", handler)
+    }
+  }, [])
+
   const {
     tabMentionsEnabled,
     showMentions,
@@ -1653,34 +1662,6 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                                   </span>
                                   <span className="text-[11px] text-gray-500 dark:text-gray-400">
                                     {modelSummaryLabel} • {promptSummaryLabel}
-                                  </span>
-                                </span>
-                              </button>
-                            </Tooltip>
-                            <Tooltip
-                              title={
-                                t(
-                                  "playground:composer.actorTitle",
-                                  "Scene Director (Actor)"
-                                ) as string
-                              }>
-                              <button
-                                type="button"
-                                onClick={() => setOpenActorSettings(true)}
-                                aria-label={
-                                  t(
-                                    "playground:composer.actorTitle",
-                                    "Scene Director (Actor)"
-                                  ) as string
-                                }
-                                className="inline-flex items-center justify-center rounded-md border border-gray-200 px-2.5 py-1.5 text-xs text-gray-700 transition hover:bg-gray-100 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-[#2a2a2a]">
-                                <span className="flex items-center gap-1">
-                                  <Gauge className="h-3.5 w-3.5" />
-                                  <span className="hidden sm:inline">
-                                    {t(
-                                      "playground:composer.actorButton",
-                                      "Actor"
-                                    )}
                                   </span>
                                 </span>
                               </button>

@@ -14,7 +14,8 @@ import type { ActorSettings } from "@/types/actor"
 import {
   buildActorPrompt,
   buildActorMessage,
-  injectActorMessageIntoHistory
+  injectActorMessageIntoHistory,
+  shouldInjectActorForTemplates
 } from "@/utils/actor"
 
 export const continueChatMode = async (
@@ -107,18 +108,30 @@ export const continueChatMode = async (
       promptContent = currentChatModelSettings.systemPrompt
     }
 
-    // Inject Actor prompt for "continue" turns as well.
-    const actorText = buildActorPrompt(actorSettings || null)
-    if (actorText) {
-      const actorMessage = await buildActorMessage(actorSettings || null, actorText)
-      if (actorMessage) {
-        const nextHistory = injectActorMessageIntoHistory(
-          applicationChatHistory,
-          actorMessage,
-          actorSettings || null
+    // Inject Actor prompt for "continue" turns as well, respecting templateMode
+    // when a scene template is selected in Chat Settings.
+    const templatesActive = !!selectedSystemPrompt
+    if (
+      shouldInjectActorForTemplates({
+        settings: actorSettings || null,
+        templatesActive
+      })
+    ) {
+      const actorText = buildActorPrompt(actorSettings || null)
+      if (actorText) {
+        const actorMessage = await buildActorMessage(
+          actorSettings || null,
+          actorText
         )
-        applicationChatHistory.length = 0
-        applicationChatHistory.push(...nextHistory)
+        if (actorMessage) {
+          const nextHistory = injectActorMessageIntoHistory(
+            applicationChatHistory,
+            actorMessage,
+            actorSettings || null
+          )
+          applicationChatHistory.length = 0
+          applicationChatHistory.push(...nextHistory)
+        }
       }
     }
 

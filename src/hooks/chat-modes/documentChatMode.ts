@@ -24,7 +24,8 @@ import type { ActorSettings } from "@/types/actor"
 import {
   buildActorPrompt,
   buildActorMessage,
-  injectActorMessageIntoHistory
+  injectActorMessageIntoHistory,
+  shouldInjectActorForTemplates
 } from "@/utils/actor"
 
 export const documentChatMode = async (
@@ -327,15 +328,26 @@ export const documentChatMode = async (
 
     let applicationChatHistory = generateHistory(history, selectedModel)
 
-    const actorText = buildActorPrompt(actorSettings || null)
-    if (actorText) {
-      const actorMessage = await buildActorMessage(actorSettings || null, actorText)
-      if (actorMessage) {
-        applicationChatHistory = injectActorMessageIntoHistory(
-          applicationChatHistory,
-          actorMessage,
-          actorSettings || null
+    const templatesActive = false
+    if (
+      shouldInjectActorForTemplates({
+        settings: actorSettings || null,
+        templatesActive
+      })
+    ) {
+      const actorText = buildActorPrompt(actorSettings || null)
+      if (actorText) {
+        const actorMessage = await buildActorMessage(
+          actorSettings || null,
+          actorText
         )
+        if (actorMessage) {
+          applicationChatHistory = injectActorMessageIntoHistory(
+            applicationChatHistory,
+            actorMessage,
+            actorSettings || null
+          )
+        }
       }
     }
 

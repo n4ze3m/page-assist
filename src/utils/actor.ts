@@ -1,4 +1,8 @@
-import type { ActorSettings, ActorTarget } from "@/types/actor"
+import type {
+  ActorSettings,
+  ActorTarget,
+  ActorTemplateInteractionMode
+} from "@/types/actor"
 import type { BaseMessage } from "@langchain/core/messages"
 import { AIMessage, HumanMessage } from "@langchain/core/messages"
 import { systemPromptFormatter } from "@/utils/system-message"
@@ -63,6 +67,57 @@ export const buildActorDictionaryTokens = (
   }
 
   return tokens
+}
+
+export type ActorTemplateDecision = "merge" | "override" | "ignore"
+
+/**
+ * Decide how Actor should behave when scene templates are active.
+ *
+ * This is a small helper that centralizes interpretation of
+ * ActorSettings.templateMode. Callers can use the returned value to:
+ * - skip Actor injection entirely when "ignore"
+ * - treat "override" differently once a template system exists
+ * - default to "merge" in all other cases.
+ */
+export const getActorTemplateDecision = (params: {
+  settings: ActorSettings | null | undefined
+  templatesActive: boolean
+}): ActorTemplateDecision => {
+  const { settings, templatesActive } = params
+  const mode: ActorTemplateInteractionMode =
+    settings?.templateMode || "merge"
+
+  if (!templatesActive) {
+    // When templates are not active, Actor behaves as a normal merge.
+    return "merge"
+  }
+
+  if (mode === "ignore") {
+    return "ignore"
+  }
+
+  if (mode === "override") {
+    return "override"
+  }
+
+  return "merge"
+}
+
+/**
+ * Convenience helper to answer "should we inject Actor at all?"
+ * in a template-aware pipeline.
+ *
+ * - When templates are inactive, this always returns true (Actor is allowed).
+ * - When templates are active and templateMode === "ignore", this returns false.
+ * - In all other cases, it returns true.
+ */
+export const shouldInjectActorForTemplates = (params: {
+  settings: ActorSettings | null | undefined
+  templatesActive: boolean
+}): boolean => {
+  const decision = getActorTemplateDecision(params)
+  return decision !== "ignore"
 }
 
 export const buildActorPrompt = (settings: ActorSettings | null): string => {

@@ -13,7 +13,12 @@ import {
 import { getModelNicknameByID } from "@/db/dexie/nickname"
 import { systemPromptFormatter } from "@/utils/system-message"
 import type { ActorSettings } from "@/types/actor"
-import { buildActorPrompt, buildActorMessage, injectActorMessageIntoHistory } from "@/utils/actor"
+import {
+  buildActorPrompt,
+  buildActorMessage,
+  injectActorMessageIntoHistory,
+  shouldInjectActorForTemplates
+} from "@/utils/actor"
 
 export const normalChatMode = async (
   message: string,
@@ -180,18 +185,31 @@ export const normalChatMode = async (
       promptContent = currentChatModelSettings.systemPrompt
     }
 
-    // Inject Actor prompt according to chatPosition / depth / role.
-    const actorText = buildActorPrompt(actorSettings || null)
-    if (actorText) {
-      const actorMessage = await buildActorMessage(actorSettings || null, actorText)
-      if (actorMessage) {
-        const nextHistory = injectActorMessageIntoHistory(
-          applicationChatHistory,
-          actorMessage,
-          actorSettings || null
+    // Inject Actor prompt according to chatPosition / depth / role,
+    // respecting templateMode when a scene template is selected
+    // in Chat Settings (represented by selectedSystemPrompt).
+    const templatesActive = !!selectedSystemPrompt
+    if (
+      shouldInjectActorForTemplates({
+        settings: actorSettings || null,
+        templatesActive
+      })
+    ) {
+      const actorText = buildActorPrompt(actorSettings || null)
+      if (actorText) {
+        const actorMessage = await buildActorMessage(
+          actorSettings || null,
+          actorText
         )
-        applicationChatHistory.length = 0
-        applicationChatHistory.push(...nextHistory)
+        if (actorMessage) {
+          const nextHistory = injectActorMessageIntoHistory(
+            applicationChatHistory,
+            actorMessage,
+            actorSettings || null
+          )
+          applicationChatHistory.length = 0
+          applicationChatHistory.push(...nextHistory)
+        }
       }
     }
 

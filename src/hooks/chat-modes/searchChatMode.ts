@@ -18,7 +18,8 @@ import type { ActorSettings } from "@/types/actor"
 import {
   buildActorPrompt,
   buildActorMessage,
-  injectActorMessageIntoHistory
+  injectActorMessageIntoHistory,
+  shouldInjectActorForTemplates
 } from "@/utils/actor"
 
 export const searchChatMode = async (
@@ -209,17 +210,28 @@ export const searchChatMode = async (
       )
     }
 
-    const actorText = buildActorPrompt(actorSettings || null)
-    if (actorText) {
-      const actorMessage = await buildActorMessage(actorSettings || null, actorText)
-      if (actorMessage) {
-        const nextHistory = injectActorMessageIntoHistory(
-          applicationChatHistory,
-          actorMessage,
-          actorSettings || null
+    const templatesActive = false
+    if (
+      shouldInjectActorForTemplates({
+        settings: actorSettings || null,
+        templatesActive
+      })
+    ) {
+      const actorText = buildActorPrompt(actorSettings || null)
+      if (actorText) {
+        const actorMessage = await buildActorMessage(
+          actorSettings || null,
+          actorText
         )
-        applicationChatHistory.length = 0
-        applicationChatHistory.push(...nextHistory)
+        if (actorMessage) {
+          const nextHistory = injectActorMessageIntoHistory(
+            applicationChatHistory,
+            actorMessage,
+            actorSettings || null
+          )
+          applicationChatHistory.length = 0
+          applicationChatHistory.push(...nextHistory)
+        }
       }
     }
 

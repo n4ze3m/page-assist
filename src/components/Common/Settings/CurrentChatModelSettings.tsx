@@ -502,13 +502,26 @@ export const CurrentChatModelSettings = ({
                   name="systemPrompt"
                   help={t("modelSettings.form.systemPrompt.help")}
                   label={t("modelSettings.form.systemPrompt.label")}>
-                  <Input.TextArea
-                    rows={4}
-                    placeholder={t(
-                      "modelSettings.form.systemPrompt.placeholder"
+                  <div className="space-y-1">
+                    <Input.TextArea
+                      rows={4}
+                      placeholder={t(
+                        "modelSettings.form.systemPrompt.placeholder"
+                      )}
+                      onChange={(e) => savePrompt(e.target.value)}
+                    />
+                    {selectedSystemPrompt && (
+                      <div className="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-2 py-0.5 text-[11px] text-blue-700 dark:border-blue-500/40 dark:bg-blue-900/20 dark:text-blue-100">
+                        <span className="inline-block h-1.5 w-1.5 rounded-full bg-blue-500" />
+                        <span>
+                          {t(
+                            "playground:composer.sceneTemplateActive",
+                            "Scene template active: Actor respects template interaction settings."
+                          )}
+                        </span>
+                      </div>
                     )}
-                    onChange={(e) => savePrompt(e.target.value)}
-                  />
+                  </div>
                 </Form.Item>
                 <Divider />
               </>
@@ -880,7 +893,7 @@ export const CurrentChatModelSettings = ({
                 <span className="text-xs text-gray-500 dark:text-gray-400">
                   {t(
                     "playground:composer.actorHelp",
-                    "Configure per-chat scene context: appearance, mood, world, and notes."
+                    "Configure per-chat scene context: roles, mood, world, goals, and notes."
                   )}
                 </span>
               </div>

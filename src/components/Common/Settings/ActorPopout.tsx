@@ -214,7 +214,7 @@ export const ActorPopout: React.FC<Props> = ({ open, setOpen }) => {
                 <span className="text-xs text-gray-500 dark:text-gray-400">
                   {t(
                     "playground:composer.actorHelp",
-                    "Configure per-chat scene context: appearance, mood, world, and notes."
+                    "Configure per-chat scene context: roles, mood, world, goals, and notes."
                   )}
                 </span>
               </div>

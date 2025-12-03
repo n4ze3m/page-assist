@@ -24,6 +24,7 @@ import {
 } from "@/types/actor"
 import { useActorWorldBooks } from "@/hooks/useActorWorldBooks"
 import { ActorTokens } from "@/components/Common/Settings/ActorTokens"
+import { buildActorDictionaryTokens } from "@/utils/actor"
 const Markdown = React.lazy(() => import("@/components/Common/Markdown"))
 import { applyActorPresetById } from "@/data/actor-presets"
 import type { ActorPresetId } from "@/data/actor-presets"
@@ -55,6 +56,8 @@ type Props = {
   actorPositionValue?: string
 }
 
+type ActorBladeId = "aspects" | "notes" | "placement" | "tokens"
+
 export const ActorEditor: React.FC<Props> = ({
   form,
   settings,
@@ -82,6 +85,8 @@ export const ActorEditor: React.FC<Props> = ({
   const [showNotesPreview, setShowNotesPreview] = React.useState(false)
   const [selectedPreset, setSelectedPreset] =
     React.useState<ActorPresetId | null>(null)
+  const [activeBlade, setActiveBlade] =
+    React.useState<ActorBladeId>("aspects")
 
   // Currently active assistant/character (from CharacterSelect).
   // Used to label per-character defaults and profiles.
@@ -581,499 +586,659 @@ export const ActorEditor: React.FC<Props> = ({
   if (!settings) return null
 
   const notesValue: string = Form.useWatch("actorNotes", form) || ""
+  const chatPositionValue: string =
+    Form.useWatch("actorChatPosition", form) || settings.chatPosition
+  const chatDepthValue: number =
+    Form.useWatch("actorChatDepth", form) ?? settings.chatDepth
+  const chatRoleValue: string =
+    Form.useWatch("actorChatRole", form) || settings.chatRole
   const aspectCount = settings.aspects?.length ?? 0
   const tokensOverLimit = actorTokenCount > ACTOR_TOKENS_WARNING_THRESHOLD
+  const actorDictionaryTokens = buildActorDictionaryTokens(settings)
+
+  const aspectsSummary =
+    aspectCount === 0
+      ? t("playground:actor.summaryAspectsEmpty", "No aspects configured yet.")
+      : t(
+          "playground:actor.summaryAspectsCount",
+          "{{count}} aspects configured.",
+          { count: aspectCount }
+        )
+
+  const notesSummary =
+    notesValue && notesValue.length > 0
+      ? t(
+          "playground:actor.summaryNotes",
+          "{{chars}} characters{{gmSuffix}}.",
+          {
+            chars: notesValue.length,
+            gmSuffix:
+              settings.notesGmOnly === true
+                ? t("playground:actor.summaryNotesGmOnly", " · GM-only")
+                : ""
+          }
+        )
+      : t("playground:actor.summaryNotesEmpty", "No scene notes yet.")
+
+  const placementSummary = (() => {
+    if (chatPositionValue === "before") {
+      return t(
+        "playground:actor.summaryPlacementBefore",
+        "Before main prompt/story."
+      )
+    }
+    if (chatPositionValue === "after") {
+      return t(
+        "playground:actor.summaryPlacementAfter",
+        "After main prompt/story."
+      )
+    }
+    // depth
+    return t(
+      "playground:actor.summaryPlacementDepth",
+      "Depth {{depth}} · Role: {{role}}.",
+      {
+        depth: chatDepthValue,
+        role:
+          chatRoleValue === "user"
+            ? t("playground:composer.actorRoleUser", "User")
+            : chatRoleValue === "assistant"
+            ? t("playground:composer.actorRoleAssistant", "Assistant")
+            : t("playground:composer.actorRoleSystem", "System")
+      }
+    )
+  })()
+
+  const tokensSummary =
+    actorDictionaryTokens.length === 0
+      ? t(
+          "playground:actor.summaryTokensEmpty",
+          "No tokens defined yet; set aspect values."
+        )
+      : t(
+          "playground:actor.summaryTokensCount",
+          "{{tokens}} tokens · ~{{estimate}} tokens in prompt.",
+          {
+            tokens: actorDictionaryTokens.length,
+            estimate: actorTokenCount
+          }
+        )
+
+  const renderBladeHeader = (
+    id: ActorBladeId,
+    title: string,
+    summary: string
+  ) => {
+    const isActive = activeBlade === id
+    return (
+      <button
+        type="button"
+        onClick={() => setActiveBlade(id)}
+        className={`w-full rounded-md border px-3 py-2 text-left transition-colors ${
+          isActive
+            ? "border-gray-400 bg-gray-50 dark:border-gray-500 dark:bg-[#1b1b1b]"
+            : "border-gray-200 bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-[#111] dark:hover:bg-[#181818]"
+        }`}
+        aria-expanded={isActive}>
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex flex-col">
+            <span className="text-xs font-semibold uppercase text-gray-700 dark:text-gray-200">
+              {title}
+            </span>
+            <span className="text-[11px] text-gray-500 dark:text-gray-400">
+              {summary}
+            </span>
+          </div>
+          <span className="text-xs text-gray-400 dark:text-gray-500">
+            {isActive ? "▾" : "▸"}
+          </span>
+        </div>
+      </button>
+    )
+  }
 
   return (
     <div className="space-y-3">
-      <div className="flex flex-col md:flex-row md:items-center gap-2">
-        <span className="text-xs text-gray-600 dark:text-gray-300">
-          {t(
-            "playground:composer.actorAddLabel",
-            "Add or remove aspects to focus the scene."
-          )}
-        </span>
-        <div className="flex flex-col sm:flex-row sm:items-center gap-2 flex-1">
-          <Select
-            size="small"
-            value={newAspectTarget}
-            onChange={(val) => setNewAspectTarget(val as ActorTarget)}
-            style={{ width: 140 }}
-            options={[
-              {
-                value: "user",
-                label: t("playground:composer.actorUser", "User")
-              },
-              {
-                value: "char",
-                label: t("playground:composer.actorChar", "Character")
-              },
-              {
-                value: "world",
-                label: t("playground:composer.actorWorld", "World")
-              }
-            ]}
-          />
-          <Input
-            size="small"
-            value={newAspectName}
-            onChange={(e) => setNewAspectName(e.target.value)}
-            placeholder={t(
-              "playground:composer.actorNewAspectPlaceholder",
-              "Aspect name (e.g., Mood, Outfit)"
-            )}
-          />
-          <button
-            type="button"
-            onClick={() => handleAddAspect()}
-            disabled={!newAspectName.trim()}
-            className="inline-flex items-center justify-center rounded-md border border-gray-300 px-2 py-1 text-xs text-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:text-gray-100 dark:hover:bg-[#2a2a2a] disabled:opacity-50">
-            {t("playground:composer.actorAddButton", "Add aspect")}
-          </button>
-        </div>
+      <div className="space-y-2">
+        {renderBladeHeader(
+          "aspects",
+          t("playground:actor.bladeAspectsTitle", "Aspects"),
+          aspectsSummary
+        )}
+        {renderBladeHeader(
+          "notes",
+          t("playground:actor.bladeNotesTitle", "Scene notes"),
+          notesSummary
+        )}
+        {renderBladeHeader(
+          "placement",
+          t("playground:actor.bladePlacementTitle", "Placement & templates"),
+          placementSummary
+        )}
+        {renderBladeHeader(
+          "tokens",
+          t("playground:actor.bladeTokensTitle", "Tokens & preview"),
+          tokensSummary
+        )}
       </div>
 
-      <div className="flex flex-col md:flex-row md:items-center gap-2">
-        <div className="flex items-center gap-2 flex-1">
-          <span className="text-xs text-gray-600 dark:text-gray-300">
-            {t("playground:actor.presetLabel", "Presets")}
-          </span>
-          <Select
-            size="small"
-            value={selectedPreset || undefined}
-            onChange={(val) => setSelectedPreset(val as ActorPresetId)}
-            placeholder={t(
-              "playground:actor.presetPlaceholder",
-              "Choose a preset"
-            )}
-            style={{ minWidth: 180 }}
-            allowClear
-            options={[
-              {
-                value: "slice_of_life",
-                label: t(
-                  "playground:actor.preset.sliceOfLife",
-                  "Slice of life"
-                )
-              },
-              {
-                value: "dungeon_crawl",
-                label: t(
-                  "playground:actor.preset.dungeonCrawl",
-                  "Dungeon crawl"
-                )
-              },
-              {
-                value: "romance",
-                label: t("playground:actor.preset.romance", "Romance")
-              }
-            ]}
-          />
-          <button
-            type="button"
-            onClick={() => {
-              if (!selectedPreset || !settings) return
-              const base = settings ?? createDefaultActorSettings()
-              const next = applyActorPresetById(base, selectedPreset)
-              setSettings(next)
-              const fieldValues: Record<string, any> = {
-                actorNotes: next.notes ?? ""
-              }
-              for (const aspect of next.aspects || []) {
-                fieldValues[`actor_${aspect.id}`] = aspect.value ?? ""
-              }
-              form.setFieldsValue(fieldValues)
-              onRecompute()
-            }}
-            disabled={!selectedPreset}
-            className="inline-flex items-center justify-center rounded-md border border-gray-300 px-2 py-1 text-xs text-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:text-gray-100 dark:hover:bg-[#2a2a2a] disabled:opacity-50">
-            {t("playground:actor.applyPreset", "Apply")}
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              const base = createDefaultActorSettings()
-              setSettings(base)
-              const fieldValues: Record<string, any> = {
-                actorNotes: base.notes ?? "",
-                actorChatPosition: base.chatPosition,
-                actorChatDepth: base.chatDepth,
-                actorChatRole: base.chatRole
-              }
-              for (const aspect of base.aspects || []) {
-                fieldValues[`actor_${aspect.id}`] = aspect.value ?? ""
-                fieldValues[`actor_key_${aspect.id}`] = aspect.key
-              }
-              form.setFieldsValue(fieldValues)
-              onRecompute()
-            }}
-            className="inline-flex items-center justify-center rounded-md border border-gray-300 px-2 py-1 text-xs text-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:text-gray-100 dark:hover:bg-[#2a2a2a]">
-            {t("playground:actor.resetChat", "Reset for this chat")}
-          </button>
-        </div>
-        <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-          <button
-            type="button"
-            onClick={async () => {
-              if (!settings) return
-              const characterId = selectedCharacter?.id
-              if (!characterId) return
-              const { saveActorProfileForCharacter } = await import(
-                "@/services/actor-settings"
-              )
-              await saveActorProfileForCharacter({
-                characterId,
-                settings
-              })
-            }}
-            disabled={!selectedCharacter?.id}
-            className="inline-flex items-center justify-center rounded-md border border-gray-300 px-2 py-1 text-xs text-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:text-gray-100 dark:hover:bg-[#2a2a2a] disabled:opacity-50">
-            {t(
-              "playground:actor.saveAsCharacterDefault",
-              "Save as {{name}}’s default",
-              { name: selectedCharacter?.name || "character" }
-            )}
-          </button>
-          <button
-            type="button"
-            onClick={async () => {
-              const characterId = selectedCharacter?.id
-              if (!characterId) return
-              const {
-                getActorProfileForCharacter
-              } = await import("@/services/actor-settings")
-              const profile = await getActorProfileForCharacter(characterId)
-              if (!profile) return
-              setSettings(profile)
-              const fieldValues: Record<string, any> = {
-                actorNotes: profile.notes ?? "",
-                actorChatPosition: profile.chatPosition,
-                actorChatDepth: profile.chatDepth,
-                actorChatRole: profile.chatRole
-              }
-              for (const aspect of profile.aspects || []) {
-                fieldValues[`actor_${aspect.id}`] = aspect.value ?? ""
-                fieldValues[`actor_key_${aspect.id}`] = aspect.key
-              }
-              form.setFieldsValue(fieldValues)
-              onRecompute()
-            }}
-            disabled={!selectedCharacter?.id}
-            className="inline-flex items-center justify-center rounded-md border border-gray-300 px-2 py-1 text-xs text-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:text-gray-100 dark:hover:bg-[#2a2a2a] disabled:opacity-50">
-            {t(
-              "playground:actor.applyCharacterDefault",
-              "Apply {{name}}’s default",
-              { name: selectedCharacter?.name || "character" }
-            )}
-          </button>
-        </div>
-      </div>
-
-      {!worldBooksLoading && !worldBooks.length && (
-        <div className="rounded-md border border-amber-300 bg-amber-50 px-3 py-2 text-xs text-amber-800 dark:border-amber-700 dark:bg-amber-900/30 dark:text-amber-100">
-          <div className="font-medium">
-            {t(
-              "playground:composer.actorOfflineHintTitle",
-              "World Books not available for Actor"
-            )}
-          </div>
-          <div className="mt-0.5">
-            {t(
-              "playground:composer.actorOfflineHintBody",
-              "Connect to your tldw server from Settings to use World Books for Actor aspects, or keep using free-text values."
-            )}
-          </div>
-        </div>
-      )}
-
-      {aspectCount > ACTOR_ASPECT_SOFT_LIMIT && (
-        <div className="rounded-md border border-amber-300 bg-amber-50 px-3 py-2 text-xs text-amber-800 dark:border-amber-700 dark:bg-amber-900/30 dark:text-amber-100">
-          <div className="font-medium">
-            {t(
-              "playground:actor.aspectLimitWarningTitle",
-              "Many aspects configured for this chat"
-            )}
-          </div>
-          <div className="mt-0.5">
-            {t(
-              "playground:actor.aspectLimitWarningBody",
-              "You have {{count}} aspects (soft limit {{limit}}). Consider trimming to focus the scene and save tokens.",
-              {
-                count: aspectCount,
-                limit: ACTOR_ASPECT_SOFT_LIMIT
-              }
-            )}
-          </div>
-        </div>
-      )}
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="space-y-2">
-          <div className="text-xs font-semibold uppercase text-gray-500 dark:text-gray-400">
-            {t("playground:composer.actorUser", "User")}
-          </div>
-          {settings.aspects
-            .filter((a) => a.target === "user")
-            .map((aspect) => renderActorAspectField(aspect))}
-        </div>
-
-        <div className="space-y-2">
-          <div className="text-xs font-semibold uppercase text-gray-500 dark:text-gray-400">
-            {t("playground:composer.actorChar", "Character")}
-          </div>
-          {settings.aspects
-            .filter((a) => a.target === "char")
-            .map((aspect) => renderActorAspectField(aspect))}
-        </div>
-
-        <div className="space-y-2">
-          <div className="text-xs font-semibold uppercase text-gray-500 dark:text-gray-400">
-            {t("playground:composer.actorWorld", "World")}
-          </div>
-          {settings.aspects
-            .filter((a) => a.target === "world")
-            .map((aspect) => renderActorAspectField(aspect))}
-        </div>
-      </div>
-
-      <Form.Item
-        name="actorNotes"
-        label={t("playground:composer.actorNotes", "Scene notes")}
-        help={t(
-          "playground:composer.actorNotesHelp",
-          "Optional notes sent to the model. Supports Markdown and LaTeX."
-        )}>
-        <Input.TextArea rows={3} />
-      </Form.Item>
-
-      <Form.Item
-        name="actorNotesGmOnly"
-        valuePropName="checked"
-        className="!-mt-3 mb-2">
-        <label className="inline-flex items-center gap-2 text-[11px] text-gray-600 dark:text-gray-300">
-          <input type="checkbox" className="h-3 w-3" />
-          <span>
-            {t(
-              "playground:actor.notesGmOnly",
-              "GM-only: do not send notes to the model"
-            )}
-          </span>
-        </label>
-      </Form.Item>
-
-      {notesValue && (
-        <div className="space-y-1">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase text-gray-500 dark:text-gray-400">
+      {activeBlade === "aspects" && (
+        <div className="space-y-3">
+          <div className="flex flex-col md:flex-row md:items-center gap-2">
+            <span className="text-xs text-gray-600 dark:text-gray-300">
               {t(
-                "playground:actor.notesPreviewTitle",
-                "Scene notes preview"
+                "playground:composer.actorAddLabel",
+                "Add or remove aspects to focus the scene."
               )}
             </span>
-            <label className="inline-flex items-center gap-2 text-[11px] text-gray-500 dark:text-gray-400">
-              <input
-                type="checkbox"
-                className="h-3 w-3"
-                checked={showNotesPreview}
-                onChange={(e) => setShowNotesPreview(e.target.checked)}
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2 flex-1">
+              <Select
+                size="small"
+                value={newAspectTarget}
+                onChange={(val) => setNewAspectTarget(val as ActorTarget)}
+                style={{ width: 140 }}
+                options={[
+                  {
+                    value: "user",
+                    label: t("playground:composer.actorUser", "User")
+                  },
+                  {
+                    value: "char",
+                    label: t("playground:composer.actorChar", "Character")
+                  },
+                  {
+                    value: "world",
+                    label: t("playground:composer.actorWorld", "World")
+                  }
+                ]}
               />
+              <Input
+                size="small"
+                value={newAspectName}
+                onChange={(e) => setNewAspectName(e.target.value)}
+                placeholder={t(
+                  "playground:composer.actorNewAspectPlaceholder",
+                  "Aspect name (e.g., Mood, Role, Location)"
+                )}
+              />
+              <button
+                type="button"
+                onClick={() => handleAddAspect()}
+                disabled={!newAspectName.trim()}
+                className="inline-flex items-center justify-center rounded-md border border-gray-300 px-2 py-1 text-xs text-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:text-gray-100 dark:hover:bg-[#2a2a2a] disabled:opacity-50">
+                {t("playground:composer.actorAddButton", "Add aspect")}
+              </button>
+            </div>
+          </div>
+
+          <div className="flex flex-col md:flex-row md:items-center gap-2">
+            <div className="flex items-center gap-2 flex-1">
+              <span className="text-xs text-gray-600 dark:text-gray-300">
+                {t("playground:actor.presetLabel", "Presets")}
+              </span>
+              <Select
+                size="small"
+                value={selectedPreset || undefined}
+                onChange={(val) => setSelectedPreset(val as ActorPresetId)}
+                placeholder={t(
+                  "playground:actor.presetPlaceholder",
+                  "Choose a preset"
+                )}
+                style={{ minWidth: 180 }}
+                allowClear
+                options={[
+                  {
+                    value: "slice_of_life",
+                    label: t(
+                      "playground:actor.preset.sliceOfLife",
+                      "Slice of life"
+                    )
+                  },
+                  {
+                    value: "dungeon_crawl",
+                    label: t(
+                      "playground:actor.preset.dungeonCrawl",
+                      "Dungeon crawl"
+                    )
+                  },
+                  {
+                    value: "romance",
+                    label: t("playground:actor.preset.romance", "Romance")
+                  },
+                  {
+                    value: "work_session",
+                    label: t(
+                      "playground:actor.preset.workSession",
+                      "Work session"
+                    )
+                  }
+                ]}
+              />
+              <button
+                type="button"
+                onClick={() => {
+                  if (!selectedPreset || !settings) return
+                  const base = settings ?? createDefaultActorSettings()
+                  const next = applyActorPresetById(base, selectedPreset)
+                  setSettings(next)
+                  const fieldValues: Record<string, any> = {
+                    actorNotes: next.notes ?? ""
+                  }
+                  for (const aspect of next.aspects || []) {
+                    fieldValues[`actor_${aspect.id}`] = aspect.value ?? ""
+                  }
+                  form.setFieldsValue(fieldValues)
+                  onRecompute()
+                }}
+                disabled={!selectedPreset}
+                className="inline-flex items-center justify-center rounded-md border border-gray-300 px-2 py-1 text-xs text-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:text-gray-100 dark:hover:bg-[#2a2a2a] disabled:opacity-50">
+                {t("playground:actor.applyPreset", "Apply")}
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  const base = createDefaultActorSettings()
+                  setSettings(base)
+                  const fieldValues: Record<string, any> = {
+                    actorNotes: base.notes ?? "",
+                    actorChatPosition: base.chatPosition,
+                    actorChatDepth: base.chatDepth,
+                    actorChatRole: base.chatRole
+                  }
+                  for (const aspect of base.aspects || []) {
+                    fieldValues[`actor_${aspect.id}`] = aspect.value ?? ""
+                    fieldValues[`actor_key_${aspect.id}`] = aspect.key
+                  }
+                  form.setFieldsValue(fieldValues)
+                  onRecompute()
+                }}
+                className="inline-flex items-center justify-center rounded-md border border-gray-300 px-2 py-1 text-xs text-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:text-gray-100 dark:hover:bg-[#2a2a2a]">
+                {t("playground:actor.resetChat", "Reset for this chat")}
+              </button>
+            </div>
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+              <button
+                type="button"
+                onClick={async () => {
+                  if (!settings) return
+                  const characterId = selectedCharacter?.id
+                  if (!characterId) return
+                  const { saveActorProfileForCharacter } = await import(
+                    "@/services/actor-settings"
+                  )
+                  await saveActorProfileForCharacter({
+                    characterId,
+                    settings
+                  })
+                }}
+                disabled={!selectedCharacter?.id}
+                className="inline-flex items-center justify-center rounded-md border border-gray-300 px-2 py-1 text-xs text-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:text-gray-100 dark:hover:bg-[#2a2a2a] disabled:opacity-50">
+                {t(
+                  "playground:actor.saveAsCharacterDefault",
+                  "Save as {{name}}’s default",
+                  { name: selectedCharacter?.name || "character" }
+                )}
+              </button>
+              <button
+                type="button"
+                onClick={async () => {
+                  const characterId = selectedCharacter?.id
+                  if (!characterId) return
+                  const {
+                    getActorProfileForCharacter
+                  } = await import("@/services/actor-settings")
+                  const profile = await getActorProfileForCharacter(characterId)
+                  if (!profile) return
+                  setSettings(profile)
+                  const fieldValues: Record<string, any> = {
+                    actorNotes: profile.notes ?? "",
+                    actorChatPosition: profile.chatPosition,
+                    actorChatDepth: profile.chatDepth,
+                    actorChatRole: profile.chatRole
+                  }
+                  for (const aspect of profile.aspects || []) {
+                    fieldValues[`actor_${aspect.id}`] = aspect.value ?? ""
+                    fieldValues[`actor_key_${aspect.id}`] = aspect.key
+                  }
+                  form.setFieldsValue(fieldValues)
+                  onRecompute()
+                }}
+                disabled={!selectedCharacter?.id}
+                className="inline-flex items-center justify-center rounded-md border border-gray-300 px-2 py-1 text-xs text-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:text-gray-100 dark:hover:bg-[#2a2a2a] disabled:opacity-50">
+                {t(
+                  "playground:actor.applyCharacterDefault",
+                  "Apply {{name}}’s default",
+                  { name: selectedCharacter?.name || "character" }
+                )}
+              </button>
+            </div>
+          </div>
+
+          {!worldBooksLoading && !worldBooks.length && (
+            <div className="rounded-md border border-amber-300 bg-amber-50 px-3 py-2 text-xs text-amber-800 dark:border-amber-700 dark:bg-amber-900/30 dark:text-amber-100">
+              <div className="font-medium">
+                {t(
+                  "playground:composer.actorOfflineHintTitle",
+                  "World Books not available for Actor"
+                )}
+              </div>
+              <div className="mt-0.5">
+                {t(
+                  "playground:composer.actorOfflineHintBody",
+                  "Connect to your tldw server from Settings to use World Books for Actor aspects, or keep using free-text values."
+                )}
+              </div>
+            </div>
+          )}
+
+          {aspectCount > ACTOR_ASPECT_SOFT_LIMIT && (
+            <div className="rounded-md border border-amber-300 bg-amber-50 px-3 py-2 text-xs text-amber-800 dark:border-amber-700 dark:bg-amber-900/30 dark:text-amber-100">
+              <div className="font-medium">
+                {t(
+                  "playground:actor.aspectLimitWarningTitle",
+                  "Many aspects configured for this chat"
+                )}
+              </div>
+              <div className="mt-0.5">
+                {t(
+                  "playground:actor.aspectLimitWarningBody",
+                  "You have {{count}} aspects (soft limit {{limit}}). Consider trimming to focus the scene and save tokens.",
+                  {
+                    count: aspectCount,
+                    limit: ACTOR_ASPECT_SOFT_LIMIT
+                  }
+                )}
+              </div>
+            </div>
+          )}
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="space-y-2">
+              <div className="text-xs font-semibold uppercase text-gray-500 dark:text-gray-400">
+                {t("playground:composer.actorUser", "User")}
+              </div>
+              {settings.aspects
+                .filter((a) => a.target === "user")
+                .map((aspect) => renderActorAspectField(aspect))}
+            </div>
+
+            <div className="space-y-2">
+              <div className="text-xs font-semibold uppercase text-gray-500 dark:text-gray-400">
+                {t("playground:composer.actorChar", "Character")}
+              </div>
+              {settings.aspects
+                .filter((a) => a.target === "char")
+                .map((aspect) => renderActorAspectField(aspect))}
+            </div>
+
+            <div className="space-y-2">
+              <div className="text-xs font-semibold uppercase text-gray-500 dark:text-gray-400">
+                {t("playground:composer.actorWorld", "World")}
+              </div>
+              {settings.aspects
+                .filter((a) => a.target === "world")
+                .map((aspect) => renderActorAspectField(aspect))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {activeBlade === "notes" && (
+        <div className="space-y-3">
+          <Form.Item
+            name="actorNotes"
+            label={t("playground:composer.actorNotes", "Scene notes")}
+            help={t(
+              "playground:composer.actorNotesHelp",
+              "Optional notes sent to the model. Supports Markdown and LaTeX."
+            )}>
+            <Input.TextArea rows={3} />
+          </Form.Item>
+
+          <Form.Item
+            name="actorNotesGmOnly"
+            valuePropName="checked"
+            className="!-mt-3 mb-2">
+            <label className="inline-flex items-center gap-2 text-[11px] text-gray-600 dark:text-gray-300">
+              <input type="checkbox" className="h-3 w-3" />
               <span>
                 {t(
-                  "playground:actor.notesPreviewToggle",
-                  "Show Markdown + LaTeX preview"
+                  "playground:actor.notesGmOnly",
+                  "GM-only: do not send notes to the model"
                 )}
               </span>
             </label>
-          </div>
-          {showNotesPreview && (
-            <div className="border rounded-md px-2 py-1 bg-gray-50 dark:bg-[#111] max-h-40 overflow-y-auto">
-              <React.Suspense fallback={null}>
-                <Markdown message={notesValue} />
-              </React.Suspense>
+          </Form.Item>
+
+          {notesValue && (
+            <div className="space-y-1">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-semibold uppercase text-gray-500 dark:text-gray-400">
+                  {t(
+                    "playground:actor.notesPreviewTitle",
+                    "Scene notes preview"
+                  )}
+                </span>
+                <label className="inline-flex items-center gap-2 text-[11px] text-gray-500 dark:text-gray-400">
+                  <input
+                    type="checkbox"
+                    className="h-3 w-3"
+                    checked={showNotesPreview}
+                    onChange={(e) => setShowNotesPreview(e.target.checked)}
+                  />
+                  <span>
+                    {t(
+                      "playground:actor.notesPreviewToggle",
+                      "Show Markdown + LaTeX preview"
+                    )}
+                  </span>
+                </label>
+              </div>
+              {showNotesPreview && (
+                <div className="border rounded-md px-2 py-1 bg-gray-50 dark:bg-[#111] max-h-40 overflow-y-auto">
+                  <React.Suspense fallback={null}>
+                    <Markdown message={notesValue} />
+                  </React.Suspense>
+                </div>
+              )}
             </div>
           )}
         </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-        <Form.Item
-          name="actorChatPosition"
-          label={t(
-            "playground:composer.actorPosition",
-            "Actor prompt position"
-          )}
-          help={t(
-            "playground:composer.actorPositionHelp",
-            'Depth is only used when position is "In-chat at depth". Role controls whether Actor appears as system, user, or assistant.'
-          )}>
-          <Select
-            options={[
-              {
-                value: "before",
-                label: t(
-                  "playground:composer.actorBefore",
-                  "Before main prompt/story"
-                )
-              },
-              {
-                value: "after",
-                label: t(
-                  "playground:composer.actorAfter",
-                  "After main prompt/story"
-                )
-              },
-              {
-                value: "depth",
-                label: t(
-                  "playground:composer.actorDepth",
-                  "In-chat at depth"
-                )
-              }
-            ]}
-          />
-        </Form.Item>
-
-        <Form.Item
-          name="actorChatDepth"
-          label={
-            <span className="inline-flex items-center gap-1">
-              {t(
-                "playground:composer.actorDepthLabel",
-                "Depth (non-system messages)"
+      {activeBlade === "placement" && (
+        <div className="space-y-3">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <Form.Item
+              name="actorChatPosition"
+              label={t(
+                "playground:composer.actorPosition",
+                "Actor prompt position"
               )}
-              <Tooltip
-                title={t(
-                  "playground:composer.actorDepthHelp",
-                  'Used only when position is "In-chat at depth". Counts non-system messages from the top of the chat.'
-                )}>
-                <span className="text-xs text-gray-400 cursor-help">?</span>
-              </Tooltip>
-            </span>
-          }
-          help={t(
-            "playground:actor.depthRangeHelp",
-            "Depth must be between 0 and 999; values beyond history length are clamped."
-          )}>
-          <InputNumber
-            min={0}
-            max={999}
-            style={{ width: "100%" }}
-            disabled={actorPositionValue !== "depth"}
-            className={actorPositionValue !== "depth" ? "opacity-60" : ""}
-            placeholder={t(
-              "playground:composer.actorDepthPlaceholder",
-              "0 = top of chat"
-            )}
-            controls
-          />
-        </Form.Item>
+              help={t(
+                "playground:composer.actorPositionHelp",
+                'Depth is only used when position is "In-chat at depth". Role controls whether Actor appears as system, user, or assistant.'
+              )}>
+              <Select
+                options={[
+                  {
+                    value: "before",
+                    label: t(
+                      "playground:composer.actorBefore",
+                      "Before main prompt/story"
+                    )
+                  },
+                  {
+                    value: "after",
+                    label: t(
+                      "playground:composer.actorAfter",
+                      "After main prompt/story"
+                    )
+                  },
+                  {
+                    value: "depth",
+                    label: t(
+                      "playground:composer.actorDepth",
+                      "In-chat at depth"
+                    )
+                  }
+                ]}
+              />
+            </Form.Item>
 
-        <Form.Item
-          name="actorChatRole"
-          label={t(
-            "playground:composer.actorRoleLabel",
-            "Actor message role"
-          )}>
-          <Select
-            options={[
-              {
-                value: "system",
-                label: t(
-                  "playground:composer.actorRoleSystem",
-                  "System"
-                )
-              },
-              {
-                value: "user",
-                label: t("playground:composer.actorRoleUser", "User")
-              },
-              {
-                value: "assistant",
-                label: t(
-                  "playground:composer.actorRoleAssistant",
-                  "Assistant"
-                )
+            <Form.Item
+              name="actorChatDepth"
+              label={
+                <span className="inline-flex items-center gap-1">
+                  {t(
+                    "playground:composer.actorDepthLabel",
+                    "Depth (non-system messages)"
+                  )}
+                  <Tooltip
+                    title={t(
+                      "playground:composer.actorDepthHelp",
+                      'Used only when position is "In-chat at depth". Counts non-system messages from the top of the chat.'
+                    )}>
+                    <span className="text-xs text-gray-400 cursor-help">
+                      ?
+                    </span>
+                  </Tooltip>
+                </span>
               }
-            ]}
-          />
-        </Form.Item>
-      </div>
+              help={t(
+                "playground:actor.depthRangeHelp",
+                "Depth must be between 0 and 999; values beyond history length are clamped."
+              )}>
+              <InputNumber
+                min={0}
+                max={999}
+                style={{ width: "100%" }}
+                disabled={actorPositionValue !== "depth"}
+                className={actorPositionValue !== "depth" ? "opacity-60" : ""}
+                placeholder={t(
+                  "playground:composer.actorDepthPlaceholder",
+                  "0 = top of chat"
+                )}
+                controls
+              />
+            </Form.Item>
 
-      <Form.Item
-        name="actorTemplateMode"
-        label={t(
-          "playground:actor.templateModeLabel",
-          "Scene template interaction"
-        )}
-        help={t(
-          "playground:actor.templateModeHelp",
-          "Controls how Actor interacts with active scene templates. Merge keeps both; Override lets Actor replace overlapping fields; Ignore skips Actor when templates are active."
-        )}>
-        <Select
-          options={[
-            {
-              value: "merge",
-              label: t(
-                "playground:actor.templateMode.merge",
-                "Merge with templates"
-              )
-            },
-            {
-              value: "override",
-              label: t(
-                "playground:actor.templateMode.override",
-                "Override templates"
-              )
-            },
-            {
-              value: "ignore",
-              label: t(
-                "playground:actor.templateMode.ignore",
-                "Ignore when templates active"
-              )
-            }
-          ]}
-        />
-      </Form.Item>
-
-      <div className="space-y-1">
-        <div className="flex items-center justify-between">
-          <span className="text-xs font-semibold uppercase text-gray-500 dark:text-gray-400">
-            {t(
-              "playground:composer.actorPreview",
-              "Actor prompt preview"
-            )}
-          </span>
-          <span className="text-xs text-gray-500 dark:text-gray-400">
-            {t("playground:composer.actorTokens", "Tokens: {{count}}", {
-              count: actorTokenCount
-            })}
-          </span>
-        </div>
-        {tokensOverLimit && (
-          <div className="mt-0.5 text-[11px] text-amber-600 dark:text-amber-400">
-            {t(
-              "playground:actor.tokenWarning",
-              "Actor prompt is long ({{count}} tokens; soft limit {{limit}}). Consider trimming aspects or notes to save context.",
-              {
-                count: actorTokenCount,
-                limit: ACTOR_TOKENS_WARNING_THRESHOLD
-              }
-            )}
+            <Form.Item
+              name="actorChatRole"
+              label={t(
+                "playground:composer.actorRoleLabel",
+                "Actor message role"
+              )}>
+              <Select
+                options={[
+                  {
+                    value: "system",
+                    label: t(
+                      "playground:composer.actorRoleSystem",
+                      "System"
+                    )
+                  },
+                  {
+                    value: "user",
+                    label: t("playground:composer.actorRoleUser", "User")
+                  },
+                  {
+                    value: "assistant",
+                    label: t(
+                      "playground:composer.actorRoleAssistant",
+                      "Assistant"
+                    )
+                  }
+                ]}
+              />
+            </Form.Item>
           </div>
-        )}
-        <div className="border rounded-md px-2 py-1 bg-gray-50 dark:bg-[#111] max-h-40 overflow-y-auto">
-          <pre className="whitespace-pre-wrap text-xs text-gray-800 dark:text-gray-100">
-            {actorPreview ||
-              t(
-                "playground:composer.actorPreviewEmpty",
-                "Nothing to send yet."
-              )}
-          </pre>
-        </div>
-      </div>
 
-      <ActorTokens settings={settings} />
+          <Form.Item
+            name="actorTemplateMode"
+            label={t(
+              "playground:actor.templateModeLabel",
+              "Scene template interaction"
+            )}
+            help={t(
+              "playground:actor.templateModeHelp",
+              "Controls how Actor interacts with active scene templates. Merge keeps both; Override lets Actor replace overlapping fields; Ignore skips Actor when templates are active."
+            )}>
+            <Select
+              options={[
+                {
+                  value: "merge",
+                  label: t(
+                    "playground:actor.templateMode.merge",
+                    "Merge with templates"
+                  )
+                },
+                {
+                  value: "override",
+                  label: t(
+                    "playground:actor.templateMode.override",
+                    "Override templates"
+                  )
+                },
+                {
+                  value: "ignore",
+                  label: t(
+                    "playground:actor.templateMode.ignore",
+                    "Ignore when templates active"
+                  )
+                }
+              ]}
+            />
+          </Form.Item>
+        </div>
+      )}
+
+      {activeBlade === "tokens" && (
+        <div className="space-y-3">
+          <div className="space-y-1">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-semibold uppercase text-gray-500 dark:text-gray-400">
+                {t(
+                  "playground:composer.actorPreview",
+                  "Actor prompt preview"
+                )}
+              </span>
+              <span className="text-xs text-gray-500 dark:text-gray-400">
+                {t(
+                  "playground:composer.actorTokens",
+                  "Tokens: {{count}}",
+                  {
+                    count: actorTokenCount
+                  }
+                )}
+              </span>
+            </div>
+            {tokensOverLimit && (
+              <div className="mt-0.5 text-[11px] text-amber-600 dark:text-amber-400">
+                {t(
+                  "playground:actor.tokenWarning",
+                  "Actor prompt is long ({{count}} tokens; soft limit {{limit}}). Consider trimming aspects or notes to save context.",
+                  {
+                    count: actorTokenCount,
+                    limit: ACTOR_TOKENS_WARNING_THRESHOLD
+                  }
+                )}
+              </div>
+            )}
+            <div className="border rounded-md px-2 py-1 bg-gray-50 dark:bg-[#111] max-h-40 overflow-y-auto">
+              <pre className="whitespace-pre-wrap text-xs text-gray-800 dark:text-gray-100">
+                {actorPreview ||
+                  t(
+                    "playground:composer.actorPreviewEmpty",
+                    "Nothing to send yet."
+                  )}
+              </pre>
+            </div>
+          </div>
+
+          <ActorTokens settings={settings} />
+        </div>
+      )}
 
       <Divider />
     </div>
