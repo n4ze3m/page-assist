@@ -201,7 +201,7 @@
     "advancedSummary": "{{count}} advanced fields loaded",
     "advancedEmpty": "No advanced options detected — try reloading the spec.",
     "modifiedCount": "{{count}} modified",
-    "progress": "Processing {{done}} / {{total}} items…",
+    "progress": "Behandler {{done}} av {{total}} elementer…",
     "errorSummary": "Vi kunne ikke behandle ingest-elementene akkurat nå.",
     "errorHint": "Prøv igjen etter at du har sjekket tldw-serveren din. Health & diagnostics kan hjelpe med å feilsøke ingest-problemer.",
     "checkHealthLink": "Sjekk serverhelsen i Health & diagnostics",

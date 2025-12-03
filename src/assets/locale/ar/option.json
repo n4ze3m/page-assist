@@ -265,8 +265,8 @@
   "quickIngest": {
     "title": "استيعاب سريع للوسائط",
     "subtitle": "أدخل عنوان URL واحداً أو أكثر. يمكنك فرض النوع لكل سطر إذا لزم الأمر.",
-    "offlineTitle": "Server offline — staging only",
-    "offlineDescription": "You can queue URLs and files here and inspect fields, but ingestion will not run until your tldw server is online. Reconnect to process pending items.",
+    "offlineTitle": "الخادم غير متصل — للاختبار فقط",
+    "offlineDescription": "يمكنك وضع روابط وملفات في قائمة الانتظار هنا وتفقد الحقول، لكن لن يتم الاستيعاب حتى يعود خادم tldw إلى العمل. أعد الاتصال لمعالجة العناصر المعلقة.",
     "sourceHeading": "عناوين URL أو ملفات المصدر",
     "storeRemote": "التخزين في قاعدة بيانات بعيدة",
     "storeRemoteAria": "خزن نتائج الاستيعاب على خادم tldw الخاص بك",

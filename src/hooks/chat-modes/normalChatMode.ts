@@ -12,6 +12,8 @@ import {
 } from "@/libs/reasoning"
 import { getModelNicknameByID } from "@/db/dexie/nickname"
 import { systemPromptFormatter } from "@/utils/system-message"
+import type { ActorSettings } from "@/types/actor"
+import { buildActorPrompt, buildActorMessage, injectActorMessageIntoHistory } from "@/utils/actor"
 
 export const normalChatMode = async (
   message: string,
@@ -34,7 +36,8 @@ export const normalChatMode = async (
     setAbortController,
     historyId,
     setHistoryId,
-    uploadedFiles
+    uploadedFiles,
+    actorSettings
   }: {
     selectedModel: string
     useOCR: boolean
@@ -50,6 +53,7 @@ export const normalChatMode = async (
     historyId: string | null
     setHistoryId: (id: string) => void
     uploadedFiles?: any[]
+    actorSettings?: ActorSettings
   }
 ) => {
   console.log("Using normalChatMode")
@@ -174,6 +178,21 @@ export const normalChatMode = async (
         })
       )
       promptContent = currentChatModelSettings.systemPrompt
+    }
+
+    // Inject Actor prompt according to chatPosition / depth / role.
+    const actorText = buildActorPrompt(actorSettings || null)
+    if (actorText) {
+      const actorMessage = await buildActorMessage(actorSettings || null, actorText)
+      if (actorMessage) {
+        const nextHistory = injectActorMessageIntoHistory(
+          applicationChatHistory,
+          actorMessage,
+          actorSettings || null
+        )
+        applicationChatHistory.length = 0
+        applicationChatHistory.push(...nextHistory)
+      }
     }
 
     let generationInfo: any | undefined = undefined

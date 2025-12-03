@@ -43,6 +43,7 @@ import { otherUnsupportedTypes } from "../Knowledge/utils/unsupported-types"
 import { PASTED_TEXT_CHAR_LIMIT } from "@/utils/constant"
 import { isFireFoxPrivateMode } from "@/utils/is-private-mode"
 import { CurrentChatModelSettings } from "@/components/Common/Settings/CurrentChatModelSettings"
+import { ActorPopout } from "@/components/Common/Settings/ActorPopout"
 import { PromptSelect } from "@/components/Common/PromptSelect"
 import { useConnectionState } from "@/hooks/useConnectionState"
 import { ConnectionPhase } from "@/types/connection"
@@ -131,6 +132,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
   const [autoSubmitVoiceMessage] = useStorage("autoSubmitVoiceMessage", false)
   const [openModelSettings, setOpenModelSettings] = React.useState(false)
   const [isContextModalOpen, setIsContextModalOpen] = React.useState(false)
+  const [openActorSettings, setOpenActorSettings] = React.useState(false)
 
   const { phase, isConnected } = useConnectionState()
   const isConnectionReady = isConnected && phase === ConnectionPhase.CONNECTED
@@ -1655,6 +1657,34 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                                 </span>
                               </button>
                             </Tooltip>
+                            <Tooltip
+                              title={
+                                t(
+                                  "playground:composer.actorTitle",
+                                  "Scene Director (Actor)"
+                                ) as string
+                              }>
+                              <button
+                                type="button"
+                                onClick={() => setOpenActorSettings(true)}
+                                aria-label={
+                                  t(
+                                    "playground:composer.actorTitle",
+                                    "Scene Director (Actor)"
+                                  ) as string
+                                }
+                                className="inline-flex items-center justify-center rounded-md border border-gray-200 px-2.5 py-1.5 text-xs text-gray-700 transition hover:bg-gray-100 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-[#2a2a2a]">
+                                <span className="flex items-center gap-1">
+                                  <Gauge className="h-3.5 w-3.5" />
+                                  <span className="hidden sm:inline">
+                                    {t(
+                                      "playground:composer.actorButton",
+                                      "Actor"
+                                    )}
+                                  </span>
+                                </span>
+                              </button>
+                            </Tooltip>
                           <Popover
                             trigger="click"
                             placement="topRight"
@@ -2048,6 +2078,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
         setOpen={setOpenModelSettings}
         isOCREnabled={useOCR}
       />
+      <ActorPopout open={openActorSettings} setOpen={setOpenActorSettings} />
     </div>
   )
 }

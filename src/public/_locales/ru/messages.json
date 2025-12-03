@@ -100,11 +100,5 @@
   },
   "hfPullException": {
     "message": "[tldw Assistant] При отправке запроса на загрузку \"$1\" на ваш tldw_server что-то пошло не так. Убедитесь, что ваш tldw_server и расширение запущены, затем повторите попытку."
-  },
-  "review.mediaEmpty.featureUnavailableBadge": {
-    "message": "Функция недоступна"
-  },
-  "connectionCard.buttonGoToServerCard": {
-    "message": "Перейти к карточке сервера"
   }
 }

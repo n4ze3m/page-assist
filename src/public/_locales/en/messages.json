@@ -100,11 +100,5 @@
   },
   "hfPullException": {
     "message": "[tldw Assistant] Something went wrong while sending a pull request for \"$1\" to your tldw_server. Check that your tldw_server and the extension are running, then try again."
-  },
-  "review.mediaEmpty.featureUnavailableBadge": {
-    "message": "Feature unavailable"
-  },
-  "connectionCard.buttonGoToServerCard": {
-    "message": "Go to server card"
   }
 }

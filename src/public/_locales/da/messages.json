@@ -100,11 +100,5 @@
   },
   "hfPullException": {
     "message": "[tldw Assistant] Noget gik galt, da en henteanmodning for \"$1\" blev sendt til din tldw_server. Kontrollér, at din tldw_server og udvidelsen kører, og prøv igen."
-  },
-  "review.mediaEmpty.featureUnavailableBadge": {
-    "message": "Funktion ikke tilgængelig"
-  },
-  "connectionCard.buttonGoToServerCard": {
-    "message": "Gå til serverkortet"
   }
 }

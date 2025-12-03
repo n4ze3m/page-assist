@@ -293,51 +293,57 @@ export const TldwSettings = () => {
       const values = form.getFieldsValue()
       let success = false
 
-      if (values.authMode === 'single-user' && values.apiKey) {
-        // Validate against a strictly protected endpoint by provoking a non-auth error (400) vs 401
-        // We intentionally use an invalid model id; if auth is valid, server should respond 400/404/422, not 401
-        const resp = await apiSend({
-          path: `${String(values.serverUrl).replace(/\/$/, '')}/api/v1/chat/completions` as any,
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'X-API-KEY': String(values.apiKey).trim() },
-          body: { model: '__validation__', messages: [{ role: 'user', content: 'ping' }], stream: false },
-          noAuth: true
-        })
-        // Treat a positive response as valid auth; 401/403 mean invalid/forbidden.
-        success = !!resp?.ok
-        setCoreStatus(success ? "connected" : "failed")
-        if (!success) {
-          const code = resp?.status
-          const hint = code === 401
-            ? t('settings:tldw.errors.invalidApiKey', 'Invalid API key')
-            : code === 403
-              ? t('settings:tldw.errors.forbidden', 'Forbidden (check permissions)')
-              : (resp?.error || t('settings:tldw.errors.apiKeyValidationFailed', 'API key validation failed'))
+      // Test core connectivity via the health endpoint only, so we never
+      // rely on the LLM provider for connection checks.
+      const baseUrl = String(values.serverUrl || '').replace(/\/$/, '')
+      const singleUser = values.authMode === "single-user"
+      const hasApiKey =
+        singleUser && typeof values.apiKey === "string" && values.apiKey.trim().length > 0
+
+      const resp = await apiSend({
+        path: `${baseUrl}/api/v1/health` as any,
+        method: "GET",
+        // For single-user mode, send the API key explicitly and bypass
+        // background auth injection so we validate the current form values.
+        headers:
+          hasApiKey && baseUrl
+            ? { "X-API-KEY": String(values.apiKey).trim() }
+            : undefined,
+        noAuth: hasApiKey && baseUrl ? true : false
+      })
+
+      success = !!resp?.ok
+      setCoreStatus(success ? "connected" : "failed")
+
+      if (!success) {
+        const code = resp?.status
+        const detail = resp?.error || ""
+
+        if (code === 401 || code === 403) {
+          const hint =
+            code === 401
+              ? t(
+                  "settings:tldw.errors.invalidApiKey",
+                  "Invalid API key"
+                )
+              : t(
+                  "settings:tldw.errors.forbidden",
+                  "Forbidden (check permissions)"
+                )
           const healthHint = t(
-            'settings:tldw.errors.seeHealth',
-            'Open Health & diagnostics for more details.'
+            "settings:tldw.errors.seeHealth",
+            "Open Health & diagnostics for more details."
           )
-          setConnectionDetail(
-            `${hint}${code ? ` — HTTP ${code}` : ''} — ${healthHint}`
-          )
-        }
-      } else {
-        // Test basic health endpoint via background proxy
-        const resp = await apiSend({
-          path: `${String(values.serverUrl).replace(/\/$/, '')}/api/v1/health` as any,
-          method: 'GET'
-        })
-        success = !!resp?.ok
-        setCoreStatus(success ? "connected" : "failed")
-        if (!success) {
+          const suffix = code ? ` — HTTP ${code}` : ""
+          const extra = detail ? ` (${detail})` : ""
+          setConnectionDetail(`${hint}${suffix} — ${healthHint}${extra}`)
+        } else {
           const base = t(
-            'settings:tldw.errors.serverUnreachableDetailed',
-            'Server not reachable. Check that your tldw_server is running and that your browser can reach it, then try again. Health & diagnostics can help debug connectivity issues.'
+            "settings:tldw.errors.serverUnreachableDetailed",
+            "Server not reachable. Check that your tldw_server is running and that your browser can reach it, then try again. Health & diagnostics can help debug connectivity issues."
           )
-          const detail = resp?.error || ''
-          const code = resp?.status
-          const suffix = code ? ` — HTTP ${code}` : ''
-          const extra = detail ? ` (${detail})` : ''
+          const suffix = code ? ` — HTTP ${code}` : ""
+          const extra = detail ? ` (${detail})` : ""
           setConnectionDetail(`${base}${suffix}${extra}`)
         }
       }

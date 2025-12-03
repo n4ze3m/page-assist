@@ -7,7 +7,7 @@ import { useServerOnline } from '@/hooks/useServerOnline'
 import { Copy as CopyIcon, Save as SaveIcon, Trash2 as TrashIcon, FileDown as FileDownIcon, Plus as PlusIcon, Search as SearchIcon, Link2 as LinkIcon } from 'lucide-react'
 import { useConfirmDanger } from '@/components/Common/confirm-danger'
 import { useTranslation } from 'react-i18next'
-import { useNavigate, useBlocker } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import FeatureEmptyState from '@/components/Common/FeatureEmptyState'
 import { useDemoMode } from '@/context/demo-mode'
 import { useServerCapabilities } from '@/hooks/useServerCapabilities'
@@ -16,6 +16,7 @@ import { useAntdMessage } from '@/hooks/useAntdMessage'
 import { useStoreMessageOption } from "@/store/option"
 import { updatePageTitle } from "@/utils/update-page-title"
 import { useScrollToServerCard } from "@/hooks/useScrollToServerCard"
+const Markdown = React.lazy(() => import("@/components/Common/Markdown"))
 
 type NoteListItem = {
   id: string | number
@@ -201,29 +202,6 @@ const NotesManagerPage: React.FC = () => {
     })
     return ok
   }, [isDirty])
-
-  // Intercept route changes away from /notes when the editor has unsaved
-  // changes and reuse the same discard dialog used for list actions.
-  const navigationBlocker = useBlocker(isDirty)
-
-  React.useEffect(() => {
-    if (!navigationBlocker || navigationBlocker.state !== "blocked") {
-      return
-    }
-    let cancelled = false
-    ;(async () => {
-      const ok = await confirmDiscardIfDirty()
-      if (cancelled) return
-      if (ok) {
-        navigationBlocker.proceed()
-      } else {
-        navigationBlocker.reset()
-      }
-    })()
-    return () => {
-      cancelled = true
-    }
-  }, [confirmDiscardIfDirty, navigationBlocker])
 
   const handleNewNote = React.useCallback(async () => {
     const ok = await confirmDiscardIfDirty()
@@ -1005,6 +983,26 @@ const NotesManagerPage: React.FC = () => {
             readOnly={editorDisabled}
           />
         </div>
+        {content.trim().length > 0 && (
+          <div className="mt-4">
+            <Typography.Text type="secondary" className="block text-[11px] mb-1">
+              Preview (Markdown + LaTeX)
+            </Typography.Text>
+            <div className="w-full min-h-[6rem] text-sm p-2 rounded border dark:border-gray-700 dark:bg-[#171717] overflow-auto">
+              <React.Suspense
+                fallback={
+                  <Typography.Text type="secondary" className="text-xs">
+                    Rendering preview…
+                  </Typography.Text>
+                }>
+                <Markdown
+                  message={content}
+                  className="prose-sm break-words dark:prose-invert max-w-none prose-p:leading-relaxed prose-pre:p-0 dark:prose-dark"
+                />
+              </React.Suspense>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )

@@ -100,11 +100,5 @@
   },
   "hfPullException": {
     "message": "[tldw Assistant] 「$1」モデルのプルリクエストを tldw_server に送信中に問題が発生しました。tldw_server と拡張機能が実行中であることを確認し、もう一度お試しください。"
-  },
-  "review.mediaEmpty.featureUnavailableBadge": {
-    "message": "機能は利用できません"
-  },
-  "connectionCard.buttonGoToServerCard": {
-    "message": "サーバーカードに移動"
   }
 }

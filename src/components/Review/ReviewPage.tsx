@@ -40,6 +40,7 @@ import { useAntdNotification } from "@/hooks/useAntdNotification"
 import { useDemoMode } from "@/context/demo-mode"
 import { useAntdMessage } from "@/hooks/useAntdMessage"
 import { useScrollToServerCard } from "@/hooks/useScrollToServerCard"
+const Markdown = React.lazy(() => import("@/components/Common/Markdown"))
 
 type MediaItem = any
 type NoteItem = any
@@ -2552,27 +2553,45 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true, 
                     <Button size="small" onClick={() => setMediaJsonOpen(v => !v)}>{mediaJsonOpen ? 'Hide raw' : 'Show raw'}</Button>
                   </div>
                 </div>
-                <div className="mt-2 prose prose-sm dark:prose-invert max-w-none whitespace-pre-wrap break-words text-sm text-gray-700 dark:text-gray-300">
+                <div className="mt-2 text-sm text-gray-700 dark:text-gray-300">
                   {selectedContent ? (
-                    contentCollapsed
-                      ? <span className="text-xs text-gray-500">{selectedContent.slice(0, 160)}{selectedContent.length > 160 ? '…' : ''}</span>
-                      : (
-                        <>
-                          {mediaExpanded || selectedContent.length <= 2500
-                            ? selectedContent
-                            : (selectedContent.slice(0, 2500) + '…')}
-                          {selectedContent.length > 2500 && (
-                            <button
-                              className="ml-2 underline text-xs"
-                              onClick={() => setMediaExpanded((v) => !v)}
-                            >
-                              {mediaExpanded ? 'Show less' : 'Show more'}
-                            </button>
-                          )}
-                        </>
-                      )
+                    contentCollapsed ? (
+                      <span className="text-xs text-gray-500">
+                        {selectedContent.slice(0, 160)}
+                        {selectedContent.length > 160 ? "…" : ""}
+                      </span>
+                    ) : (
+                      <>
+                        {mediaExpanded || selectedContent.length <= 2500 ? (
+                          <React.Suspense
+                            fallback={
+                              <span className="text-xs text-gray-500 whitespace-pre-wrap break-words">
+                                {selectedContent}
+                              </span>
+                            }>
+                            <Markdown
+                              message={selectedContent}
+                              className="prose prose-sm break-words dark:prose-invert max-w-none prose-p:leading-relaxed prose-pre:p-0 dark:prose-dark"
+                            />
+                          </React.Suspense>
+                        ) : (
+                          <span className="text-xs text-gray-500 whitespace-pre-wrap break-words">
+                            {selectedContent.slice(0, 2500) + "…"}
+                          </span>
+                        )}
+                        {selectedContent.length > 2500 && (
+                          <button
+                            className="ml-2 underline text-xs"
+                            onClick={() => setMediaExpanded((v) => !v)}>
+                            {mediaExpanded ? "Show less" : "Show more"}
+                          </button>
+                        )}
+                      </>
+                    )
                   ) : (
-                    <span className="text-xs text-gray-500">No content available</span>
+                    <span className="text-xs text-gray-500">
+                      No content available
+                    </span>
                   )}
                 </div>
                 {mediaJsonOpen && (
@@ -2746,22 +2765,64 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true, 
                     <List.Item className={`!px-1 flex items-start justify-between gap-2 ${displayedVersionIndices[i] === selectedExistingIndex ? 'bg-gray-50 dark:bg-[#262626] rounded' : ''}`} onClick={() => setSelectedExistingIndex(displayedVersionIndices[i])}>
                       <div className="min-w-0">
                         <div className="text-xs font-medium">v{getVersionNumber(n) || (i+1)} {getVersionTimestamp(n) ? `· ${getVersionTimestamp(n)}` : ''} {currentVersionNumber && getVersionNumber(n) === currentVersionNumber ? (<Tag color="green">Current</Tag>) : null}</div>
-                        <div className="text-xs text-gray-500 whitespace-pre-wrap max-w-[48rem]">
+                        <div className="text-xs text-gray-500 max-w-[48rem]">
                           {(() => {
-                            const key = String(getVersionNumber(n) ?? displayedVersionIndices[i])
-                            const a = getVersionAnalysis(n) || ''
+                            const key = String(
+                              getVersionNumber(n) ?? displayedVersionIndices[i]
+                            )
+                            const a = getVersionAnalysis(n) || ""
                             const isLong = a.length > 2500
                             const expanded = expandedAnalyses.has(key)
-                            const shown = expanded || !isLong ? a : (a.slice(0, 2500) + '…')
+                            if (!a) {
+                              return <span className="opacity-60">No analysis text</span>
+                            }
+                            if (!expanded && isLong) {
+                              return (
+                                <>
+                                  <span className="whitespace-pre-wrap">
+                                    {a.slice(0, 2500) + "…"}
+                                  </span>
+                                  <button
+                                    className="ml-2 underline text-[10px]"
+                                    onClick={(e) => {
+                                      e.stopPropagation()
+                                      setExpandedAnalyses((prev) => {
+                                        const ns = new Set(prev)
+                                        ns.add(key)
+                                        return ns
+                                      })
+                                    }}>
+                                    Show more
+                                  </button>
+                                </>
+                              )
+                            }
                             return (
                               <>
-                                {shown}
+                                <React.Suspense
+                                  fallback={
+                                    <span className="whitespace-pre-wrap">
+                                      {a}
+                                    </span>
+                                  }>
+                                  <Markdown
+                                    message={a}
+                                    className="prose-xs break-words dark:prose-invert max-w-none prose-p:leading-relaxed prose-pre:p-0 dark:prose-dark"
+                                  />
+                                </React.Suspense>
                                 {isLong && (
                                   <button
                                     className="ml-2 underline text-[10px]"
-                                    onClick={(e) => { e.stopPropagation(); setExpandedAnalyses(prev => { const ns = new Set(prev); if (ns.has(key)) ns.delete(key); else ns.add(key); return ns }) }}
-                                  >
-                                    {expanded ? 'Show less' : 'Show more'}
+                                    onClick={(e) => {
+                                      e.stopPropagation()
+                                      setExpandedAnalyses((prev) => {
+                                        const ns = new Set(prev)
+                                        if (ns.has(key)) ns.delete(key)
+                                        else ns.add(key)
+                                        return ns
+                                      })
+                                    }}>
+                                    {expanded ? "Show less" : "Show more"}
                                   </button>
                                 )}
                               </>

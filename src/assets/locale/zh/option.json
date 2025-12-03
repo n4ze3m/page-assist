@@ -293,7 +293,7 @@
     "advancedSummary": "{{count}} advanced fields loaded",
     "advancedEmpty": "No advanced options detected — try reloading the spec.",
     "modifiedCount": "{{count}} modified",
-    "progress": "Processing {{done}} / {{total}} items…",
+    "progress": "正在处理 {{done}} / {{total}} 个项目…",
     "errorSummary": "当前无法处理这些摄取任务。",
     "errorHint": "检查你的 tldw 服务器后再试一次。Health & diagnostics 可以帮助排查摄取相关的问题。",
     "checkHealthLink": "在 Health & diagnostics 中检查服务器健康状态",

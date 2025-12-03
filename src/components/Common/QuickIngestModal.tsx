@@ -934,17 +934,6 @@ export const QuickIngestModal: React.FC<Props> = ({
     }
   }, [savedAdvValues, advancedHydratedRef])
 
-  // Persist advanced values when they change (debounced to reduce storage writes)
-  React.useEffect(() => {
-    const id = setTimeout(() => {
-      const serialized = JSON.stringify(advancedValues || {})
-      if (lastSavedAdvValuesRef.current === serialized) return
-      lastSavedAdvValuesRef.current = serialized
-      try { setSavedAdvValues(advancedValues) } catch {}
-    }, SAVE_DEBOUNCE_MS)
-    return () => clearTimeout(id)
-  }, [SAVE_DEBOUNCE_MS, advancedValues, setSavedAdvValues])
-
   // Restore UI prefs for Advanced section and details (once)
   React.useEffect(() => {
     if (uiPrefsHydratedRef.current) return
@@ -1164,6 +1153,12 @@ export const QuickIngestModal: React.FC<Props> = ({
     () => Object.keys(advancedValues || {}).length,
     [advancedValues]
   )
+
+  const advancedDefaultsDirty = React.useMemo(() => {
+    const current = JSON.stringify(advancedValues || {})
+    const saved = JSON.stringify(savedAdvValues || {})
+    return current !== saved
+  }, [advancedValues, savedAdvValues])
   const specSourceLabel = React.useMemo(() => {
     switch (specSource) {
       case 'server':
@@ -2529,6 +2524,37 @@ export const QuickIngestModal: React.FC<Props> = ({
                     void loadSpec(true, true)
                   }}>
                   {qi('reloadFromServer', 'Reload from server')}
+                </Button>
+                <span className="h-4 border-l border-gray-300 dark:border-gray-600" aria-hidden />
+                <Button
+                  size="small"
+                  aria-label={qi('saveAdvancedDefaultsAria', 'Save current advanced options as defaults')}
+                  title={qi('saveAdvancedDefaultsAria', 'Save current advanced options as defaults')}
+                  disabled={!advancedDefaultsDirty}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    try {
+                      setSavedAdvValues(advancedValues)
+                      lastSavedAdvValuesRef.current = JSON.stringify(
+                        advancedValues || {}
+                      )
+                      messageApi.success(
+                        qi(
+                          'advancedSaved',
+                          'Advanced options saved as defaults for future sessions.'
+                        )
+                      )
+                    } catch {
+                      messageApi.error(
+                        qi(
+                          'advancedSaveFailed',
+                          'Could not save advanced defaults — storage quota may be limited.'
+                        )
+                      )
+                    }
+                  }}
+                >
+                  {qi('saveAdvancedDefaults', 'Save as default')}
                 </Button>
                 <span className="h-4 border-l border-gray-300 dark:border-gray-600" aria-hidden />
                 <Button

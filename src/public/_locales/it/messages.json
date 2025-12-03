@@ -100,11 +100,5 @@
   },
   "hfPullException": {
     "message": "[tldw Assistant] Si è verificato un problema durante l’invio di una richiesta di download per \"$1\" al tuo tldw_server. Assicurati che tldw_server e l’estensione siano in esecuzione، quindi riprova."
-  },
-  "review.mediaEmpty.featureUnavailableBadge": {
-    "message": "Funzionalité non disponibile"
-  },
-  "connectionCard.buttonGoToServerCard": {
-    "message": "Vai alla scheda server"
   }
 }

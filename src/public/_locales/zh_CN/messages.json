@@ -100,11 +100,5 @@
   },
   "hfPullException": {
     "message": "[tldw Assistant] 在向您的 tldw_server 发送拉取 \"$1\" 的请求时出现问题。请检查 tldw_server 和扩展是否正在运行，然后重试。"
-  },
-  "review.mediaEmpty.featureUnavailableBadge": {
-    "message": "功能不可用"
-  },
-  "connectionCard.buttonGoToServerCard": {
-    "message": "前往服务器卡片"
   }
 }

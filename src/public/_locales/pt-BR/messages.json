@@ -65,9 +65,6 @@
   "connectionCard.offlineModeBadge": {
     "message": "Modo off-line — apenas staging"
   },
-  "connectionCard.buttonGoToServerCard": {
-    "message": "Ir para o cartão do servidor"
-  },
   "connectionCard.tipQuickIngest": {
     "message": "Dica: precisa de ajuda com a ingestão enquanto estiver off-line?"
   },
@@ -1102,8 +1099,5 @@
   },
   "flashcards.exportHelp": {
     "message": "Filter by deck, tag, or search, then export as CSV/TSV for spreadsheets or Anki (.apkg) for Anki clients."
-  },
-  "review.mediaEmpty.featureUnavailableBadge": {
-    "message": "Recurso indisponível"
   }
 }

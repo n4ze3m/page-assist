@@ -240,13 +240,11 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
   }
 
   const handleBackToUrl = () => {
-    ;(useConnectionStore as any).setState((prev: any) => ({
-      state: {
-        ...prev.state,
-        phase: ConnectionPhase.UNCONFIGURED,
-        configStep: "url"
-      }
-    }))
+    try {
+      useConnectionStore.getState().beginOnboarding()
+    } catch {
+      // ignore store errors; wizard will continue to read current state
+    }
   }
 
   const handleContinueFromAuth = async () => {

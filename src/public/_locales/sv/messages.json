@@ -100,11 +100,5 @@
   },
   "hfPullException": {
     "message": "[tldw Assistant] Något gick fel när en hämtbegäran för \"$1\" skickades till din tldw_server. Kontrollera att din tldw_server och tillägget körs och försök igen."
-  },
-  "review.mediaEmpty.featureUnavailableBadge": {
-    "message": "Funktionen är nicht tillgänglig"
-  },
-  "connectionCard.buttonGoToServerCard": {
-    "message": "Gå till serverkortet"
   }
 }

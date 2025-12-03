@@ -42,6 +42,7 @@ import { isFireFoxPrivateMode } from "@/utils/is-private-mode"
 import { useFocusShortcuts } from "@/hooks/keyboard"
 import { RagSearchBar } from "@/components/Sidepanel/Chat/RagSearchBar"
 import { CurrentChatModelSettings } from "@/components/Common/Settings/CurrentChatModelSettings"
+import { ActorPopout } from "@/components/Common/Settings/ActorPopout"
 import QuickIngestModal from "@/components/Common/QuickIngestModal"
 import { useConnectionState } from "@/hooks/useConnectionState"
 import { ConnectionPhase } from "@/types/connection"
@@ -161,6 +162,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
   const [autoProcessQueuedIngest, setAutoProcessQueuedIngest] =
     React.useState(false)
   const quickIngestBtnRef = React.useRef<HTMLButtonElement>(null)
+  const [openActorSettings, setOpenActorSettings] = React.useState(false)
   const { phase, isConnected } = useConnectionState()
   const isConnectionReady = isConnected && phase === ConnectionPhase.CONNECTED
   const { capabilities, loading: capsLoading } = useServerCapabilities()
@@ -1280,6 +1282,26 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                                 </span>
                               </button>
                             </Tooltip>
+                            <Tooltip
+                              title={
+                                t(
+                                  "playground:composer.actorTitle",
+                                  "Scene Director (Actor)"
+                                ) as string
+                              }>
+                              <button
+                                type="button"
+                                onClick={() => setOpenActorSettings(true)}
+                                className="text-gray-700 dark:text-gray-300 p-1 hover:text-gray-900 dark:hover:text-gray-100">
+                                <Gauge className="h-4 w-4" />
+                                <span className="sr-only">
+                                  {t(
+                                    "playground:composer.actorTitle",
+                                    "Scene Director (Actor)"
+                                  )}
+                                </span>
+                              </button>
+                            </Tooltip>
                           </>
                         ) : (
                           <Tooltip title={t("tooltip.stopStreaming")}>
@@ -1428,6 +1450,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
         setOpen={setOpenModelSettings}
         isOCREnabled={useOCR}
       />
+      <ActorPopout open={openActorSettings} setOpen={setOpenActorSettings} />
       {/* Quick ingest modal */}
       <QuickIngestModal
         open={ingestOpen}

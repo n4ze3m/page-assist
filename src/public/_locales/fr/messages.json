@@ -100,11 +100,5 @@
   },
   "hfPullException": {
     "message": "[tldw Assistant] Une erreur s’est produite lors de l’envoi d’une requête de récupération pour « $1 » à votre tldw_server. Assurez-vous que votre tldw_server et l’extension sont en cours d’exécution, puis réessayez."
-  },
-  "review.mediaEmpty.featureUnavailableBadge": {
-    "message": "Fonctionnalité indisponible"
-  },
-  "connectionCard.buttonGoToServerCard": {
-    "message": "Accéder à la carte du serveur"
   }
 }

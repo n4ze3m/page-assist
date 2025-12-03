@@ -10,6 +10,12 @@ import {
   mergeReasoningContent
 } from "@/libs/reasoning"
 import { systemPromptFormatter } from "@/utils/system-message"
+import type { ActorSettings } from "@/types/actor"
+import {
+  buildActorPrompt,
+  buildActorMessage,
+  injectActorMessageIntoHistory
+} from "@/utils/actor"
 
 export const continueChatMode = async (
   messages: Message[],
@@ -27,7 +33,8 @@ export const continueChatMode = async (
     setStreaming,
     setAbortController,
     historyId,
-    setHistoryId
+    setHistoryId,
+    actorSettings
   }: {
     selectedModel: string
     selectedSystemPrompt: string
@@ -41,6 +48,7 @@ export const continueChatMode = async (
     setAbortController: (controller: AbortController | null) => void
     historyId: string | null
     setHistoryId: (id: string) => void
+    actorSettings?: ActorSettings
   }
 ) => {
   console.log("Using continueChatMode")
@@ -97,6 +105,21 @@ export const continueChatMode = async (
         })
       )
       promptContent = currentChatModelSettings.systemPrompt
+    }
+
+    // Inject Actor prompt for "continue" turns as well.
+    const actorText = buildActorPrompt(actorSettings || null)
+    if (actorText) {
+      const actorMessage = await buildActorMessage(actorSettings || null, actorText)
+      if (actorMessage) {
+        const nextHistory = injectActorMessageIntoHistory(
+          applicationChatHistory,
+          actorMessage,
+          actorSettings || null
+        )
+        applicationChatHistory.length = 0
+        applicationChatHistory.push(...nextHistory)
+      }
     }
 
     let generationInfo: any | undefined = undefined

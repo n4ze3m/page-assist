@@ -20,7 +20,7 @@ const OptionIndex = () => {
 
   const { phase } = useConnectionState()
   const { uxState, hasCompletedFirstRun } = useConnectionUxState()
-  const { checkOnce } = useConnectionActions()
+  const { checkOnce, markFirstRunComplete } = useConnectionActions()
 
   React.useEffect(() => {
     void checkOnce()
@@ -28,7 +28,21 @@ const OptionIndex = () => {
 
   useFocusComposerOnConnect(phase as ConnectionPhase | null)
 
-  const isFirstRunShell = !hasCompletedFirstRun && uxState !== "demo_mode"
+  const isConnectedUx =
+    uxState === "connected_ok" ||
+    uxState === "connected_degraded" ||
+    uxState === "demo_mode"
+
+  // If the user connected via Settings/tldw without explicitly finishing
+  // onboarding, mark first run complete on first successful connection so
+  // the playground/chat composer becomes available.
+  React.useEffect(() => {
+    if (!hasCompletedFirstRun && isConnectedUx) {
+      markFirstRunComplete()
+    }
+  }, [hasCompletedFirstRun, isConnectedUx, markFirstRunComplete])
+
+  const isFirstRunShell = !hasCompletedFirstRun && !isConnectedUx
   const showConnectionShell = isFirstRunShell
 
   const showWizard =

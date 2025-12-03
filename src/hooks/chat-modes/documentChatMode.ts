@@ -20,6 +20,12 @@ import { getSystemPromptForWeb, isQueryHaveWebsite } from "@/web/web"
 // Server-backed RAG replaces local vectorstore
 import { getMaxContextSize } from "@/services/kb"
 import { tldwClient } from "@/services/tldw/TldwApiClient"
+import type { ActorSettings } from "@/types/actor"
+import {
+  buildActorPrompt,
+  buildActorMessage,
+  injectActorMessageIntoHistory
+} from "@/utils/actor"
 
 export const documentChatMode = async (
   message: string,
@@ -44,7 +50,8 @@ export const documentChatMode = async (
     setHistoryId,
     fileRetrievalEnabled,
     setActionInfo,
-    webSearch
+    webSearch,
+    actorSettings
   }: {
     selectedModel: string
     useOCR: boolean
@@ -63,6 +70,7 @@ export const documentChatMode = async (
     fileRetrievalEnabled: boolean
     setActionInfo: (actionInfo: string | null) => void
     webSearch: boolean
+    actorSettings?: ActorSettings
   }
 ) => {
   const userDefaultModelSettings = await getAllDefaultModelSettings()
@@ -317,7 +325,19 @@ export const documentChatMode = async (
       useOCR: useOCR
     })
 
-    const applicationChatHistory = generateHistory(history, selectedModel)
+    let applicationChatHistory = generateHistory(history, selectedModel)
+
+    const actorText = buildActorPrompt(actorSettings || null)
+    if (actorText) {
+      const actorMessage = await buildActorMessage(actorSettings || null, actorText)
+      if (actorMessage) {
+        applicationChatHistory = injectActorMessageIntoHistory(
+          applicationChatHistory,
+          actorMessage,
+          actorSettings || null
+        )
+      }
+    }
 
     let generationInfo: any | undefined = undefined
 

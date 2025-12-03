@@ -100,11 +100,5 @@
   },
   "hfPullException": {
     "message": "[tldw Assistant] Beim Senden einer Abrufanforderung für \"$1\" an Ihren tldw_server ist ein Fehler aufgetreten. Stellen Sie sicher, dass Ihr tldw_server und die Erweiterung ausgeführt werden, und versuchen Sie es erneut."
-  },
-  "review.mediaEmpty.featureUnavailableBadge": {
-    "message": "Funktion nicht verfügbar"
-  },
-  "connectionCard.buttonGoToServerCard": {
-    "message": "Zum Serverbereich"
   }
 }

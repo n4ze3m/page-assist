@@ -3,6 +3,7 @@ import { useMessageOption } from "@/hooks/useMessageOption"
 import { FileIcon, X } from "lucide-react"
 import { getAllModelSettings } from "@/services/model-settings"
 import { useStoreChatModelSettings } from "@/store/model"
+import { useActorStore } from "@/store/actor"
 import { useQuery } from "@tanstack/react-query"
 import {
   Collapse,
@@ -11,11 +12,12 @@ import {
   Form,
   Input,
   InputNumber,
-  notification,
   Modal,
+  notification,
   Select,
   Skeleton,
-  Switch
+  Switch,
+  Tooltip
 } from "antd"
 import React, { useCallback, useMemo } from "react"
 import { useTranslation } from "react-i18next"
@@ -25,6 +27,16 @@ import { ocrLanguages } from "@/data/ocr-language"
 import { fetchChatModels } from "@/services/tldw-server"
 import { ProviderIcons } from "@/components/Common/ProviderIcon"
 import { tldwClient } from "@/services/tldw/TldwApiClient"
+import type { ActorSettings, ActorTarget } from "@/types/actor"
+import { createDefaultActorSettings } from "@/types/actor"
+import {
+  getActorSettingsForChatWithCharacterFallback,
+  saveActorSettingsForChat
+} from "@/services/actor-settings"
+import { buildActorPrompt, estimateActorTokens } from "@/utils/actor"
+import { ActorEditor } from "@/components/Common/Settings/ActorEditor"
+import type { Character } from "@/types/character"
+import { useStorage } from "@plasmohq/storage/hook"
 
 type Props = {
   open: boolean
@@ -43,6 +55,7 @@ export const CurrentChatModelSettings = ({
   const [form] = Form.useForm()
   const cUserSettings = useStoreChatModelSettings()
   const {
+    historyId,
     selectedSystemPrompt,
     uploadedFiles,
     removeUploadedFile,
@@ -56,6 +69,23 @@ export const CurrentChatModelSettings = ({
     serverChatState,
     setServerChatState
   } = useMessageOption()
+
+  const [selectedCharacter] = useStorage<Character | null>(
+    "selectedCharacter",
+    null
+  )
+
+  const {
+    settings: actorSettings,
+    setSettings: setActorSettings,
+    preview: actorPreview,
+    tokenCount: actorTokenCount,
+    setPreviewAndTokens
+  } = useActorStore()
+  const [newAspectTarget, setNewAspectTarget] =
+    React.useState<ActorTarget>("user")
+  const [newAspectName, setNewAspectName] = React.useState<string>("")
+  const actorPositionValue = Form.useWatch("actorChatPosition", form)
 
   const conversationStateOptions: { value: string; label: string }[] = useMemo(
     () => [
@@ -86,15 +116,112 @@ export const CurrentChatModelSettings = ({
     [cUserSettings]
   )
 
+  const recomputeActorPreview = useCallback(() => {
+    const values = form.getFieldsValue()
+    const base = actorSettings ?? createDefaultActorSettings()
+
+    const next: ActorSettings = {
+      ...base,
+      isEnabled: !!values.actorEnabled,
+      notes: values.actorNotes ?? "",
+      notesGmOnly: !!values.actorNotesGmOnly,
+      chatPosition: values.actorChatPosition || base.chatPosition,
+      chatDepth: (() => {
+        const raw =
+          typeof values.actorChatDepth === "number"
+            ? values.actorChatDepth
+            : base.chatDepth
+        if (!Number.isFinite(raw)) {
+          return base.chatDepth
+        }
+        return Math.min(Math.max(0, raw), 999)
+      })(),
+      chatRole: (values.actorChatRole as any) || base.chatRole,
+      templateMode:
+        (values.actorTemplateMode as any) ||
+        base.templateMode ||
+        "merge",
+      aspects: (base.aspects || []).map((aspect) => ({
+        ...aspect,
+        value: values[`actor_${aspect.id}`] ?? ""
+      }))
+    }
+
+    const preview = buildActorPrompt(next)
+    setPreviewAndTokens(preview, estimateActorTokens(preview))
+  }, [actorSettings, form, setPreviewAndTokens])
+
+  const debouncedRecomputeActorPreview = React.useMemo(() => {
+    let timeout: number | undefined
+    return () => {
+      if (timeout !== undefined) {
+        window.clearTimeout(timeout)
+      }
+      timeout = window.setTimeout(() => {
+        recomputeActorPreview()
+      }, 150)
+    }
+  }, [recomputeActorPreview])
+
+  React.useEffect(() => {
+    if (!open) return
+    recomputeActorPreview()
+  }, [actorSettings, open, recomputeActorPreview])
+
   const saveSettings = useCallback(
     (values: any) => {
       Object.entries(values).forEach(([key, value]) => {
-        if (key !== "systemPrompt" && key !== "ocrLanguage") {
+        if (
+          key !== "systemPrompt" &&
+          key !== "ocrLanguage" &&
+          key !== "actorEnabled" &&
+          key !== "actorNotes" &&
+          key !== "actorNotesGmOnly" &&
+          key !== "actorChatPosition" &&
+          key !== "actorChatDepth" &&
+          key !== "actorChatRole" &&
+          !key.startsWith("actor_")
+        ) {
           cUserSettings.setX(key, value)
         }
       })
+
+      const base = actorSettings ?? createDefaultActorSettings()
+      const next: ActorSettings = {
+        ...base,
+        isEnabled: !!values.actorEnabled,
+        notes: values.actorNotes ?? "",
+        notesGmOnly: !!values.actorNotesGmOnly,
+        chatPosition: values.actorChatPosition || base.chatPosition,
+        chatDepth: (() => {
+          const raw =
+            typeof values.actorChatDepth === "number"
+              ? values.actorChatDepth
+              : base.chatDepth
+          if (!Number.isFinite(raw)) {
+            return base.chatDepth
+          }
+          return Math.min(Math.max(0, raw), 999)
+        })(),
+        chatRole: (values.actorChatRole as any) || base.chatRole,
+        templateMode:
+          (values.actorTemplateMode as any) ||
+          base.templateMode ||
+          "merge",
+        aspects: (base.aspects || []).map((aspect) => ({
+          ...aspect,
+          value: values[`actor_${aspect.id}`] ?? ""
+        }))
+      }
+
+      setActorSettings(next)
+      void saveActorSettingsForChat({
+        historyId,
+        serverChatId,
+        settings: next
+      })
     },
-    [cUserSettings]
+    [actorSettings, cUserSettings, historyId, serverChatId]
   )
 
   const { isPending: isLoading } = useQuery({
@@ -115,7 +242,7 @@ export const CurrentChatModelSettings = ({
         tempSystemPrompt = prompt?.content ?? ""
       }
 
-      form.setFieldsValue({
+      const baseValues: Record<string, any> = {
         temperature: cUserSettings.temperature ?? data.temperature,
         topK: cUserSettings.topK ?? data.topK,
         topP: cUserSettings.topP ?? data.topP,
@@ -135,7 +262,38 @@ export const CurrentChatModelSettings = ({
         numThread: cUserSettings.numThread ?? data.numThread,
         reasoningEffort: cUserSettings?.reasoningEffort,
         thinking: cUserSettings?.thinking
+      }
+
+      const actor =
+        actorSettings ??
+        (await getActorSettingsForChatWithCharacterFallback({
+          historyId,
+          serverChatId,
+          characterId: selectedCharacter?.id ?? null
+        }))
+      setActorSettings(actor)
+
+      const actorFields: Record<string, any> = {
+        actorEnabled: actor.isEnabled,
+        actorNotes: actor.notes,
+        actorNotesGmOnly: actor.notesGmOnly ?? false,
+        actorChatPosition: actor.chatPosition,
+        actorChatDepth: actor.chatDepth,
+        actorChatRole: actor.chatRole,
+        actorTemplateMode: actor.templateMode ?? "merge"
+      }
+      for (const aspect of actor.aspects || []) {
+        actorFields[`actor_${aspect.id}`] = aspect.value
+        actorFields[`actor_key_${aspect.id}`] = aspect.key
+      }
+
+      form.setFieldsValue({
+        ...baseValues,
+        ...actorFields
       })
+
+      const preview = buildActorPrompt(actor)
+      setPreviewAndTokens(preview, estimateActorTokens(preview))
       return data
     },
     enabled: open,
@@ -321,7 +479,23 @@ export const CurrentChatModelSettings = ({
             onFinish={(values) => {
               saveSettings(values)
               setOpen(false)
-            }}>
+            }}
+            onValuesChange={(changedValues) => {
+              const keys = Object.keys(changedValues || {})
+            const shouldUpdate = keys.some(
+              (k) =>
+                k === "actorEnabled" ||
+                k === "actorNotes" ||
+                k === "actorNotesGmOnly" ||
+                k === "actorChatPosition" ||
+                  k === "actorChatDepth" ||
+                k === "actorChatRole" ||
+                k.startsWith("actor_")
+            )
+            if (shouldUpdate) {
+              debouncedRecomputeActorPreview()
+            }
+          }}>
             {useDrawer && (
               <>
                 <Form.Item
@@ -691,6 +865,46 @@ export const CurrentChatModelSettings = ({
                 )}
               />
             </Form.Item>
+
+            <Divider />
+
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+              <div className="flex flex-col">
+                <span className="font-medium text-gray-900 dark:text-gray-100">
+                  {t(
+                    "playground:composer.actorTitle",
+                    "Scene Director (Actor)"
+                  )}
+                </span>
+                <span className="text-xs text-gray-500 dark:text-gray-400">
+                  {t(
+                    "playground:composer.actorHelp",
+                    "Configure per-chat scene context: appearance, mood, world, and notes."
+                  )}
+                </span>
+              </div>
+              <Form.Item name="actorEnabled" valuePropName="checked" className="mb-0">
+                <Switch />
+              </Form.Item>
+            </div>
+
+              {actorSettings && (
+                <ActorEditor
+                  form={form}
+                  settings={actorSettings}
+                  setSettings={(next) => setActorSettings(next)}
+                  actorPreview={actorPreview}
+                  actorTokenCount={actorTokenCount}
+                  onRecompute={recomputeActorPreview}
+                  newAspectTarget={newAspectTarget}
+                  setNewAspectTarget={setNewAspectTarget}
+                  newAspectName={newAspectName}
+                  setNewAspectName={setNewAspectName}
+                  actorPositionValue={actorPositionValue}
+                />
+              )}
+            </div>
 
             <SaveButton
               className="w-full text-center inline-flex items-center justify-center"

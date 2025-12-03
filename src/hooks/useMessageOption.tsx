@@ -32,6 +32,7 @@ import { UploadedFile } from "@/db/dexie/types"
 import { updatePageTitle } from "@/utils/update-page-title"
 import { useAntdNotification } from "./useAntdNotification"
 import { tldwClient } from "@/services/tldw/TldwApiClient"
+import { getActorSettingsForChat } from "@/services/actor-settings"
 
 export const useMessageOption = () => {
   const {
@@ -366,6 +367,11 @@ export const useMessageOption = () => {
       signal = controller.signal
     }
 
+    const actorSettings = await getActorSettingsForChat({
+      historyId,
+      serverChatId
+    })
+
     const chatModeParams = {
       selectedModel,
       useOCR,
@@ -391,7 +397,8 @@ export const useMessageOption = () => {
       ragSources,
       ragAdvancedOptions,
       setActionInfo,
-      webSearch
+      webSearch,
+      actorSettings
     }
 
     try {

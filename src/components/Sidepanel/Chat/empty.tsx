@@ -205,10 +205,10 @@ export const EmptySidePanel = () => {
       <div className="mt-3">
         <Tooltip
           placement="bottom"
-          title={t(
-            "playground:tooltip.quickIngest",
-            "Stage URLs and files for processing, even while your server is offline."
-          )}
+          title={t("playground:tooltip.quickIngest", {
+            defaultValue:
+              "Stage URLs and files for processing, even while your server is offline."
+          })}
         >
           <Button
             type="default"

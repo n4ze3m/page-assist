@@ -44,6 +44,16 @@ export default defineBackground({
     }
     const saveToNotesMenuId = "save-to-notes-pa"
     let modelWarmTimer: ReturnType<typeof setInterval> | null = null
+
+    // Clear the periodic model warm timer when the background worker is
+    // terminated. For service-worker style backgrounds the `unload` handler
+    // must be registered during initial evaluation, not inside async logic.
+    if (typeof self !== "undefined" && "addEventListener" in self) {
+      self.addEventListener("unload", () => {
+        if (modelWarmTimer) clearInterval(modelWarmTimer)
+      })
+    }
+
     const initialize = async () => {
       try {
         // Clear any existing menu items to avoid duplicate-id errors
@@ -202,13 +212,6 @@ export default defineBackground({
         } catch (e) {
           // Best-effort warning; no-op on failure
           console.debug('[tldw] OpenAPI check skipped:', (e as any)?.message || e)
-        }
-
-        // Clear timer if the background is torn down (service worker termination)
-        if (typeof self !== 'undefined' && 'addEventListener' in self) {
-          self.addEventListener('unload', () => {
-            if (modelWarmTimer) clearInterval(modelWarmTimer)
-          })
         }
 
         await warmModels(true)

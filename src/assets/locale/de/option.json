@@ -301,7 +301,7 @@
     "advancedSummary": "{{count}} advanced fields loaded",
     "advancedEmpty": "No advanced options detected — try reloading the spec.",
     "modifiedCount": "{{count}} modified",
-    "progress": "Processing {{done}} / {{total}} items…",
+    "progress": "Verarbeite {{done}} von {{total}} Elementen…",
     "pendingLabel": "Pending — will run when connected",
     "readyToast": "Server back online — ready to process {{count}} queued items.",
     "processQueuedItemsShort": "Process queued items",

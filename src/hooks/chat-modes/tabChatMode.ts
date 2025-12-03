@@ -13,6 +13,12 @@ import {
 } from "@/libs/reasoning"
 import { getModelNicknameByID } from "@/db/dexie/nickname"
 import { ChatDocuments } from "@/models/ChatTypes"
+import type { ActorSettings } from "@/types/actor"
+import {
+  buildActorPrompt,
+  buildActorMessage,
+  injectActorMessageIntoHistory
+} from "@/utils/actor"
 import { getTabContents } from "@/libs/get-tab-contents"
 
 export const tabChatMode = async (
@@ -36,7 +42,8 @@ export const tabChatMode = async (
     setStreaming,
     setAbortController,
     historyId,
-    setHistoryId
+    setHistoryId,
+    actorSettings
   }: {
     selectedModel: string
     useOCR: boolean
@@ -51,6 +58,7 @@ export const tabChatMode = async (
     setAbortController: (controller: AbortController | null) => void
     historyId: string | null
     setHistoryId: (id: string) => void
+    actorSettings?: ActorSettings
   }
 ) => {
   console.log("Using tabChatMode")
@@ -155,7 +163,19 @@ export const tabChatMode = async (
     let source: any[] = []
 
 
-    const applicationChatHistory = generateHistory(history, selectedModel)
+    let applicationChatHistory = generateHistory(history, selectedModel)
+
+    const actorText = buildActorPrompt(actorSettings || null)
+    if (actorText) {
+      const actorMessage = await buildActorMessage(actorSettings || null, actorText)
+      if (actorMessage) {
+        applicationChatHistory = injectActorMessageIntoHistory(
+          applicationChatHistory,
+          actorMessage,
+          actorSettings || null
+        )
+      }
+    }
 
     let generationInfo: any | undefined = undefined
 

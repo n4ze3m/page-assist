@@ -54,6 +54,7 @@ import { useScrollToServerCard } from "@/hooks/useScrollToServerCard"
 dayjs.extend(relativeTime)
 
 const { Text, Title } = Typography
+const Markdown = React.lazy(() => import("@/components/Common/Markdown"))
 
 type DueStatus = "new" | "learning" | "due" | "all"
 
@@ -649,15 +650,55 @@ export const FlashcardsPage: React.FC = () => {
                         ))}
                       </div>
                       <div>
-                        <Title level={5} className="!mb-2">{t("option:flashcards.front", { defaultValue: "Front" })}</Title>
-                        <div className="whitespace-pre-wrap border rounded p-3 bg-white dark:bg-[#111]">{reviewQuery.data.front}</div>
+                        <Title level={5} className="!mb-2">
+                          {t("option:flashcards.front", { defaultValue: "Front" })}
+                        </Title>
+                        <div className="border rounded p-3 bg-white dark:bg-[#111] text-sm">
+                          <React.Suspense
+                            fallback={
+                              <div className="whitespace-pre-wrap">
+                                {reviewQuery.data.front}
+                              </div>
+                            }>
+                            <Markdown
+                              message={reviewQuery.data.front}
+                              className="prose-sm break-words dark:prose-invert max-w-none prose-p:leading-relaxed prose-pre:p-0 dark:prose-dark"
+                            />
+                          </React.Suspense>
+                        </div>
                       </div>
                       {showAnswer && (
                         <div>
-                          <Title level={5} className="!mb-2">{t("option:flashcards.back", { defaultValue: "Back" })}</Title>
-                          <div className="whitespace-pre-wrap border rounded p-3 bg-white dark:bg-[#111]">{reviewQuery.data.back}</div>
+                          <Title level={5} className="!mb-2">
+                            {t("option:flashcards.back", { defaultValue: "Back" })}
+                          </Title>
+                          <div className="border rounded p-3 bg-white dark:bg-[#111] text-sm">
+                            <React.Suspense
+                              fallback={
+                                <div className="whitespace-pre-wrap">
+                                  {reviewQuery.data.back}
+                                </div>
+                              }>
+                              <Markdown
+                                message={reviewQuery.data.back}
+                                className="prose-sm break-words dark:prose-invert max-w-none prose-p:leading-relaxed prose-pre:p-0 dark:prose-dark"
+                              />
+                            </React.Suspense>
+                          </div>
                           {reviewQuery.data.extra && (
-                            <div className="mt-2 text-sm opacity-80 whitespace-pre-wrap">{reviewQuery.data.extra}</div>
+                            <div className="mt-2 text-sm opacity-80">
+                              <React.Suspense
+                                fallback={
+                                  <div className="whitespace-pre-wrap">
+                                    {reviewQuery.data.extra}
+                                  </div>
+                                }>
+                                <Markdown
+                                  message={reviewQuery.data.extra}
+                                  className="prose-xs break-words dark:prose-invert max-w-none prose-p:leading-relaxed prose-pre:p-0 dark:prose-dark"
+                                />
+                              </React.Suspense>
+                            </div>
                           )}
                         </div>
                       )}
@@ -781,7 +822,10 @@ export const FlashcardsPage: React.FC = () => {
                     })}
                   </Text>
                 </div>
-                <Form form={createForm} layout="vertical" initialValues={{ is_cloze: false, model_type: "basic", reverse: false }}>
+                <Form
+                  form={createForm}
+                  layout="vertical"
+                  initialValues={{ is_cloze: false, model_type: "basic", reverse: false }}>
                   <Space align="end" className="mb-2">
                     <Form.Item name="deck_id" label={t("option:flashcards.deck", { defaultValue: "Deck" })} className="!mb-0">
                       <Select
@@ -835,13 +879,118 @@ export const FlashcardsPage: React.FC = () => {
                       </Text>
                     </div>
                   </Form.Item>
-                  <Form.Item name="tags" label={t("option:flashcards.tags", { defaultValue: "Tags" })}>
+                  <Form.Item
+                    name="tags"
+                    label={t("option:flashcards.tags", { defaultValue: "Tags" })}>
                     <Select mode="tags" placeholder="tag1, tag2" open={false} allowClear />
                   </Form.Item>
-                  <Form.Item name="front" label={t("option:flashcards.front", { defaultValue: "Front" })} rules={[{ required: true }]}> <Input.TextArea rows={3} /></Form.Item>
-                  <Form.Item name="back" label={t("option:flashcards.back", { defaultValue: "Back" })} rules={[{ required: true }]}> <Input.TextArea rows={6} /></Form.Item>
-                  <Form.Item name="extra" label={t("option:flashcards.extra", { defaultValue: "Extra" })}> <Input.TextArea rows={3} /></Form.Item>
-                  <Form.Item name="notes" label={t("option:flashcards.notes", { defaultValue: "Notes" })}> <Input.TextArea rows={2} /></Form.Item>
+                  <Form.Item
+                    name="front"
+                    label={t("option:flashcards.front", { defaultValue: "Front" })}
+                    rules={[{ required: true }]}>
+                    <Input.TextArea rows={3} />
+                    <Text type="secondary" className="block text-[11px] mt-1">
+                      Supports Markdown and LaTeX (e.g. <code>$x^2$</code>,
+                      <code>$$\\int_0^1 x^2 dx$$</code>).
+                    </Text>
+                    {createForm.getFieldValue("front") && (
+                      <div className="mt-2 border rounded p-2 text-xs bg-white dark:bg-[#111]">
+                        <Text type="secondary" className="block text-[11px] mb-1">
+                          Preview
+                        </Text>
+                        <React.Suspense
+                          fallback={
+                            <div className="whitespace-pre-wrap">
+                              {createForm.getFieldValue("front")}
+                            </div>
+                          }>
+                          <Markdown
+                            message={createForm.getFieldValue("front") || ""}
+                            className="prose-xs break-words dark:prose-invert max-w-none prose-p:leading-relaxed prose-pre:p-0 dark:prose-dark"
+                          />
+                        </React.Suspense>
+                      </div>
+                    )}
+                  </Form.Item>
+                  <Form.Item
+                    name="back"
+                    label={t("option:flashcards.back", { defaultValue: "Back" })}
+                    rules={[{ required: true }]}>
+                    <Input.TextArea rows={6} />
+                    <Text type="secondary" className="block text-[11px] mt-1">
+                      Supports Markdown and LaTeX for formulas, lists, and code.
+                    </Text>
+                    {createForm.getFieldValue("back") && (
+                      <div className="mt-2 border rounded p-2 text-xs bg-white dark:bg-[#111]">
+                        <Text type="secondary" className="block text-[11px] mb-1">
+                          Preview
+                        </Text>
+                        <React.Suspense
+                          fallback={
+                            <div className="whitespace-pre-wrap">
+                              {createForm.getFieldValue("back")}
+                            </div>
+                          }>
+                          <Markdown
+                            message={createForm.getFieldValue("back") || ""}
+                            className="prose-xs break-words dark:prose-invert max-w-none prose-p:leading-relaxed prose-pre:p-0 dark:prose-dark"
+                          />
+                        </React.Suspense>
+                      </div>
+                    )}
+                  </Form.Item>
+                  <Form.Item
+                    name="extra"
+                    label={t("option:flashcards.extra", { defaultValue: "Extra" })}>
+                    <Input.TextArea rows={3} />
+                    <Text type="secondary" className="block text-[11px] mt-1">
+                      Optional hints or explanations (Markdown + LaTeX supported).
+                    </Text>
+                    {createForm.getFieldValue("extra") && (
+                      <div className="mt-2 border rounded p-2 text-xs bg-white dark:bg-[#111]">
+                        <Text type="secondary" className="block text-[11px] mb-1">
+                          Preview
+                        </Text>
+                        <React.Suspense
+                          fallback={
+                            <div className="whitespace-pre-wrap">
+                              {createForm.getFieldValue("extra")}
+                            </div>
+                          }>
+                          <Markdown
+                            message={createForm.getFieldValue("extra") || ""}
+                            className="prose-xs break-words dark:prose-invert max-w-none prose-p:leading-relaxed prose-pre:p-0 dark:prose-dark"
+                          />
+                        </React.Suspense>
+                      </div>
+                    )}
+                  </Form.Item>
+                  <Form.Item
+                    name="notes"
+                    label={t("option:flashcards.notes", { defaultValue: "Notes" })}>
+                    <Input.TextArea rows={2} />
+                    <Text type="secondary" className="block text-[11px] mt-1">
+                      Internal notes (Markdown + LaTeX supported).
+                    </Text>
+                    {createForm.getFieldValue("notes") && (
+                      <div className="mt-2 border rounded p-2 text-xs bg-white dark:bg-[#111]">
+                        <Text type="secondary" className="block text-[11px] mb-1">
+                          Preview
+                        </Text>
+                        <React.Suspense
+                          fallback={
+                            <div className="whitespace-pre-wrap">
+                              {createForm.getFieldValue("notes")}
+                            </div>
+                          }>
+                          <Markdown
+                            message={createForm.getFieldValue("notes") || ""}
+                            className="prose-xs break-words dark:prose-invert max-w-none prose-p:leading-relaxed prose-pre:p-0 dark:prose-dark"
+                          />
+                        </React.Suspense>
+                      </div>
+                    )}
+                  </Form.Item>
                   <Space>
                     <Button type="primary" onClick={() => {
                       createForm
@@ -1070,8 +1219,34 @@ export const FlashcardsPage: React.FC = () => {
                       />
                       {previewOpen.has(item.uuid) && (
                         <div className="mt-2">
-                          <div className="whitespace-pre-wrap border rounded p-2 bg-white dark:bg-[#111]">{item.back}</div>
-                          {item.extra && <div className="opacity-80 text-xs whitespace-pre-wrap mt-1">{item.extra}</div>}
+                          <div className="border rounded p-2 bg-white dark:bg-[#111] text-xs sm:text-sm">
+                            <React.Suspense
+                              fallback={
+                                <div className="whitespace-pre-wrap">
+                                  {item.back}
+                                </div>
+                              }>
+                              <Markdown
+                                message={item.back}
+                                className="prose-xs sm:prose-sm break-words dark:prose-invert max-w-none prose-p:leading-relaxed prose-pre:p-0 dark:prose-dark"
+                              />
+                            </React.Suspense>
+                          </div>
+                          {item.extra && (
+                            <div className="opacity-80 text-xs mt-1">
+                              <React.Suspense
+                                fallback={
+                                  <div className="whitespace-pre-wrap">
+                                    {item.extra}
+                                  </div>
+                                }>
+                                <Markdown
+                                  message={item.extra}
+                                  className="prose-xs break-words dark:prose-invert max-w-none prose-p:leading-relaxed prose-pre:p-0 dark:prose-dark"
+                                />
+                              </React.Suspense>
+                            </div>
+                          )}
                         </div>
                       )}
                     </List.Item>
@@ -1099,9 +1274,47 @@ export const FlashcardsPage: React.FC = () => {
                 >
                   {quickReviewCard && (
                     <div className="flex flex-col gap-3">
-                      <div className="whitespace-pre-wrap border rounded p-3">{quickReviewCard.front}</div>
-                      <div className="whitespace-pre-wrap border rounded p-3">{quickReviewCard.back}</div>
-                      {quickReviewCard.extra && <div className="opacity-80 text-sm whitespace-pre-wrap">{quickReviewCard.extra}</div>}
+                      <div className="border rounded p-3 text-sm">
+                        <React.Suspense
+                          fallback={
+                            <div className="whitespace-pre-wrap">
+                              {quickReviewCard.front}
+                            </div>
+                          }>
+                          <Markdown
+                            message={quickReviewCard.front}
+                            className="prose-sm break-words dark:prose-invert max-w-none prose-p:leading-relaxed prose-pre:p-0 dark:prose-dark"
+                          />
+                        </React.Suspense>
+                      </div>
+                      <div className="border rounded p-3 text-sm">
+                        <React.Suspense
+                          fallback={
+                            <div className="whitespace-pre-wrap">
+                              {quickReviewCard.back}
+                            </div>
+                          }>
+                          <Markdown
+                            message={quickReviewCard.back}
+                            className="prose-sm break-words dark:prose-invert max-w-none prose-p:leading-relaxed prose-pre:p-0 dark:prose-dark"
+                          />
+                        </React.Suspense>
+                      </div>
+                      {quickReviewCard.extra && (
+                        <div className="opacity-80 text-sm">
+                          <React.Suspense
+                            fallback={
+                              <div className="whitespace-pre-wrap">
+                                {quickReviewCard.extra}
+                              </div>
+                            }>
+                            <Markdown
+                              message={quickReviewCard.extra}
+                              className="prose-xs break-words dark:prose-invert max-w-none prose-p:leading-relaxed prose-pre:p-0 dark:prose-dark"
+                            />
+                          </React.Suspense>
+                        </div>
+                      )}
                       <div className="flex flex-wrap gap-2">
                         {ratingOptions.map((opt) => (
                           <Tooltip key={opt.value} title={opt.description}>
@@ -1174,13 +1387,117 @@ export const FlashcardsPage: React.FC = () => {
                     <Form.Item name="is_cloze" label={t("option:flashcards.isCloze", { defaultValue: "Is Cloze" })} valuePropName="checked">
                       <Switch />
                     </Form.Item>
-                    <Form.Item name="tags" label={t("option:flashcards.tags", { defaultValue: "Tags" })}>
+                    <Form.Item
+                      name="tags"
+                      label={t("option:flashcards.tags", { defaultValue: "Tags" })}>
                       <Select mode="tags" open={false} allowClear />
                     </Form.Item>
-                    <Form.Item name="front" label={t("option:flashcards.front", { defaultValue: "Front" })} rules={[{ required: true }]}> <Input.TextArea rows={3} /></Form.Item>
-                    <Form.Item name="back" label={t("option:flashcards.back", { defaultValue: "Back" })} rules={[{ required: true }]}> <Input.TextArea rows={6} /></Form.Item>
-                    <Form.Item name="extra" label={t("option:flashcards.extra", { defaultValue: "Extra" })}> <Input.TextArea rows={3} /></Form.Item>
-                    <Form.Item name="notes" label={t("option:flashcards.notes", { defaultValue: "Notes" })}> <Input.TextArea rows={2} /></Form.Item>
+                    <Form.Item
+                      name="front"
+                      label={t("option:flashcards.front", { defaultValue: "Front" })}
+                      rules={[{ required: true }]}>
+                      <Input.TextArea rows={3} />
+                      <Text type="secondary" className="block text-[11px] mt-1">
+                        Supports Markdown and LaTeX.
+                      </Text>
+                      {editForm.getFieldValue("front") && (
+                        <div className="mt-2 border rounded p-2 text-xs bg-white dark:bg-[#111]">
+                          <Text type="secondary" className="block text-[11px] mb-1">
+                            Preview
+                          </Text>
+                          <React.Suspense
+                            fallback={
+                              <div className="whitespace-pre-wrap">
+                                {editForm.getFieldValue("front")}
+                              </div>
+                            }>
+                            <Markdown
+                              message={editForm.getFieldValue("front") || ""}
+                              className="prose-xs break-words dark:prose-invert max-w-none prose-p:leading-relaxed prose-pre:p-0 dark:prose-dark"
+                            />
+                          </React.Suspense>
+                        </div>
+                      )}
+                    </Form.Item>
+                    <Form.Item
+                      name="back"
+                      label={t("option:flashcards.back", { defaultValue: "Back" })}
+                      rules={[{ required: true }]}>
+                      <Input.TextArea rows={6} />
+                      <Text type="secondary" className="block text-[11px] mt-1">
+                        Supports Markdown and LaTeX.
+                      </Text>
+                      {editForm.getFieldValue("back") && (
+                        <div className="mt-2 border rounded p-2 text-xs bg-white dark:bg-[#111]">
+                          <Text type="secondary" className="block text-[11px] mb-1">
+                            Preview
+                          </Text>
+                          <React.Suspense
+                            fallback={
+                              <div className="whitespace-pre-wrap">
+                                {editForm.getFieldValue("back")}
+                              </div>
+                            }>
+                            <Markdown
+                              message={editForm.getFieldValue("back") || ""}
+                              className="prose-xs break-words dark:prose-invert max-w-none prose-p:leading-relaxed prose-pre:p-0 dark:prose-dark"
+                            />
+                          </React.Suspense>
+                        </div>
+                      )}
+                    </Form.Item>
+                    <Form.Item
+                      name="extra"
+                      label={t("option:flashcards.extra", { defaultValue: "Extra" })}>
+                      <Input.TextArea rows={3} />
+                      <Text type="secondary" className="block text-[11px] mt-1">
+                        Optional hints/explanations (Markdown + LaTeX supported).
+                      </Text>
+                      {editForm.getFieldValue("extra") && (
+                        <div className="mt-2 border rounded p-2 text-xs bg-white dark:bg-[#111]">
+                          <Text type="secondary" className="block text-[11px] mb-1">
+                            Preview
+                          </Text>
+                          <React.Suspense
+                            fallback={
+                              <div className="whitespace-pre-wrap">
+                                {editForm.getFieldValue("extra")}
+                              </div>
+                            }>
+                            <Markdown
+                              message={editForm.getFieldValue("extra") || ""}
+                              className="prose-xs break-words dark:prose-invert max-w-none prose-p:leading-relaxed prose-pre:p-0 dark:prose-dark"
+                            />
+                          </React.Suspense>
+                        </div>
+                      )}
+                    </Form.Item>
+                    <Form.Item
+                      name="notes"
+                      label={t("option:flashcards.notes", { defaultValue: "Notes" })}>
+                      <Input.TextArea rows={2} />
+                      <Text type="secondary" className="block text-[11px] mt-1">
+                        Internal notes (Markdown + LaTeX supported).
+                      </Text>
+                      {editForm.getFieldValue("notes") && (
+                        <div className="mt-2 border rounded p-2 text-xs bg-white dark:bg-[#111]">
+                          <Text type="secondary" className="block text-[11px] mb-1">
+                            Preview
+                          </Text>
+                          <React.Suspense
+                            fallback={
+                              <div className="whitespace-pre-wrap">
+                                {editForm.getFieldValue("notes")}
+                              </div>
+                            }>
+                            <Markdown
+                              message={editForm.getFieldValue("notes") || ""}
+                              className="prose-xs break-words dark:prose-invert max-w-none prose-p:leading-relaxed prose-pre:p-0 dark:prose-dark"
+                            />
+                          </React.Suspense>
+                        </div>
+                      )}
+                    </Form.Item>
                     <Form.Item name="expected_version" hidden>
                       <Input type="number" />
                     </Form.Item>
