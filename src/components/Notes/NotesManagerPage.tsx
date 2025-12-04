@@ -1,10 +1,9 @@
 import React from 'react'
 import type { InputRef } from 'antd'
-import { Button, Input, List, Pagination, Space, Spin, Tooltip, Typography, Select, Dropdown } from 'antd'
+import { Input, Typography, Select } from 'antd'
 import { bgRequest } from '@/services/background-proxy'
 import { useQuery, keepPreviousData, useQueryClient } from '@tanstack/react-query'
 import { useServerOnline } from '@/hooks/useServerOnline'
-import { Copy as CopyIcon, Save as SaveIcon, Trash2 as TrashIcon, FileDown as FileDownIcon, Plus as PlusIcon, Search as SearchIcon, Link2 as LinkIcon } from 'lucide-react'
 import { useConfirmDanger } from '@/components/Common/confirm-danger'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
@@ -17,6 +16,9 @@ import { useStoreMessageOption } from "@/store/option"
 import { updatePageTitle } from "@/utils/update-page-title"
 import { useScrollToServerCard } from "@/hooks/useScrollToServerCard"
 import { MarkdownPreview } from "@/components/Common/MarkdownPreview"
+import NotesToolbar from "@/components/Notes/NotesToolbar"
+import NotesEditorHeader from "@/components/Notes/NotesEditorHeader"
+import NotesListPanel from "@/components/Notes/NotesListPanel"
 
 type NoteListItem = {
   id: string | number
@@ -26,10 +28,6 @@ type NoteListItem = {
   conversation_id?: string | null
   message_id?: string | null
 }
-
-const MAX_TITLE_LENGTH = 80
-const MAX_PREVIEW_LENGTH = 100
-
 const extractBacklink = (note: any) => {
   const meta = note?.metadata || {}
   const backlinks = meta?.backlinks || meta || {}
@@ -75,6 +73,7 @@ const NotesManagerPage: React.FC = () => {
   const [backlinkConversationId, setBacklinkConversationId] = React.useState<string | null>(null)
   const [backlinkMessageId, setBacklinkMessageId] = React.useState<string | null>(null)
   const [openingLinkedChat, setOpeningLinkedChat] = React.useState(false)
+  const [showPreview, setShowPreview] = React.useState(false)
   const isOnline = useServerOnline()
   const { demoEnabled } = useDemoMode()
   const queryClient = useQueryClient()
@@ -160,6 +159,9 @@ const NotesManagerPage: React.FC = () => {
     placeholderData: keepPreviousData,
     enabled: isOnline
   })
+
+  const filteredCount = Array.isArray(data) ? data.length : 0
+  const hasActiveFilters = query.trim().length > 0 || keywordTokens.length > 0
 
   const loadDetail = React.useCallback(async (id: string | number) => {
     setLoadingDetail(true)
@@ -509,6 +511,11 @@ const NotesManagerPage: React.FC = () => {
     return () => window.removeEventListener('beforeunload', handler)
   }, [isDirty])
 
+  React.useEffect(() => {
+    // When selecting a different note, default back to edit mode so users can start typing immediately.
+    setShowPreview(false)
+  }, [selectedId])
+
   // Deep-link support: if tldw:lastNoteId is set (e.g., from omni-search),
   // automatically load that note once when the list is available.
   const [pendingNoteId, setPendingNoteId] = React.useState<string | null>(() => {
@@ -542,51 +549,40 @@ const NotesManagerPage: React.FC = () => {
     <div className="w-full h-full flex flex-col lg:flex-row gap-4 mt-16">
       {/* Left: search + list */}
       <div className="w-full lg:w-1/3 min-w-0 lg:sticky lg:top-16 lg:self-start">
-        <div className="p-3 rounded-lg border dark:border-gray-700 bg-white dark:bg-[#171717]">
-          <div className="flex items-center gap-2">
-            <Input
-              allowClear
-              placeholder={t('option:notesSearch.placeholder', {
-                defaultValue: 'Search titles and contents'
-              })}
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              onPressEnter={() => { setPage(1); refetch() }}
-              className="flex-1 min-w-[12rem]"
-            />
-            <Button type="primary" onClick={() => { setPage(1); refetch() }} icon={(<SearchIcon className="w-4 h-4" />) as any}>Search</Button>
-            <Tooltip title={t('option:notesSearch.clearTooltip', { defaultValue: 'Clear search and filters' })}>
-              <Button onClick={() => { setQuery(''); setKeywordTokens([]); setPage(1); refetch() }}>
-                {t('option:notesSearch.clear', {
-                  defaultValue: 'Clear'
-                })}
-              </Button>
-            </Tooltip>
-            <Tooltip
-              title={t('option:notesSearch.newTooltip', {
-                defaultValue: 'Create a new note'
-              })}>
-              <Button onClick={() => { void handleNewNote() }} icon={(<PlusIcon className="w-4 h-4" />) as any}>
-                {t('option:notesSearch.new', { defaultValue: 'New note' })}
-              </Button>
-            </Tooltip>
-          </div>
-          <div className="mt-2 flex items-center gap-2">
-            <Select
-              mode="tags"
-              allowClear
-              placeholder={t('option:notesSearch.keywordsPlaceholder', {
-                defaultValue: 'Filter by keyword'
-              })}
-              className="min-w-[12rem] flex-1"
-              value={keywordTokens}
-              onSearch={(txt) => { if (isOnline) void loadKeywordSuggestions(txt) }}
-              onChange={(vals) => { setKeywordTokens(vals as string[]); setPage(1); refetch() }}
-              options={keywordOptions.map((k) => ({ label: k, value: k }))}
-            />
-          </div>
-        </div>
-          <div className="mt-3 p-3 rounded-lg border dark:border-gray-700 bg-white dark:bg-[#171717] max-h-[50vh] md:max-h-[60vh] lg:max-h-[calc(100dvh-18rem)] overflow-auto">
+        <NotesToolbar
+          query={query}
+          total={total}
+          visibleCount={filteredCount}
+          keywordTokens={keywordTokens}
+          keywordOptions={keywordOptions}
+          hasActiveFilters={hasActiveFilters}
+          onQueryChange={(value) => {
+            setQuery(value)
+            setPage(1)
+          }}
+          onSubmitSearch={() => {
+            setPage(1)
+            refetch()
+          }}
+          onKeywordChange={(vals) => {
+            setKeywordTokens(vals)
+            setPage(1)
+            refetch()
+          }}
+          onKeywordSearch={(txt) => {
+            if (isOnline) void loadKeywordSuggestions(txt)
+          }}
+          onClearFilters={() => {
+            setQuery('')
+            setKeywordTokens([])
+            setPage(1)
+            refetch()
+          }}
+          onNewNote={() => {
+            void handleNewNote()
+          }}
+        />
+        <div className="mt-3 p-3 rounded-lg border dark:border-gray-700 bg-white dark:bg-[#171717] max-h-[50vh] md:max-h-[60vh] lg:max-h-[calc(100dvh-18rem)] overflow-auto">
           <div className="sticky -m-3 mb-2 top-0 z-10 px-3 py-2 bg-white dark:bg-[#171717] border-b dark:border-gray-700 flex items-center justify-between">
             <span className="text-xs text-gray-500">
               <span className="uppercase tracking-wide">Notes</span>
@@ -741,22 +737,24 @@ const NotesManagerPage: React.FC = () => {
                     renderItem={(item) => (
                       <List.Item
                         key={String(item.id)}
-                        onClick={() => { void handleSelectNote(item.id) }}
+                        onClick={() => {
+                          void handleSelectNote(item.id)
+                        }}
                         onKeyDown={(e) => {
                           if (e.key === 'Enter' || e.key === ' ') {
                             e.preventDefault()
                             void handleSelectNote(item.id)
                           }
                         }}
-                    role="button"
-                    tabIndex={0}
-                    aria-selected={selectedId === item.id}
-                    className={`cursor-pointer rounded-md border px-2 py-2 transition-colors ${
-                      selectedId === item.id
-                        ? 'border-amber-500 bg-gray-50 dark:border-amber-400 dark:bg-[#1f1f1f]'
-                        : 'border-transparent hover:border-gray-300 hover:bg-gray-50 dark:border-transparent dark:hover:border-gray-600 dark:hover:bg-[#262626]'
-                    }`}
-                  >
+                        role="button"
+                        tabIndex={0}
+                        aria-selected={selectedId === item.id}
+                        className={`cursor-pointer rounded-md border px-3 py-2 text-left transition-colors ${
+                          selectedId === item.id
+                            ? 'border-blue-500 bg-blue-50/80 dark:border-blue-400 dark:bg-blue-900/30'
+                            : 'border-transparent hover:border-gray-600 hover:bg-gray-50 dark:border-transparent dark:hover:border-gray-600 dark:hover:bg-[#262626]'
+                        }`}
+                      >
                     <div className="w-full">
                       <Typography.Text
                         strong
@@ -826,132 +824,42 @@ const NotesManagerPage: React.FC = () => {
           className="relative flex-1 p-3 rounded-lg border dark:border-gray-700 bg-white dark:bg-[#171717] min-h-[70vh] min-w-0 lg:h-[calc(100dvh-8rem)] overflow-auto"
           aria-disabled={editorDisabled}
         >
-            <div className="flex items-center justify-between">
-              <div className="flex flex-col gap-0.5">
-                <Typography.Title level={5} className="!mb-0">
-                  {selectedId == null ? "New Note" : title || `Note ${selectedId}`}
-                </Typography.Title>
-                {backlinkConversationId && (
-                  <div className="text-xs text-blue-600 dark:text-blue-300">
-                    {t("option:notesSearch.linkedConversation", {
-                      defaultValue: "Linked to conversation"
-                    })}{" "}
-                    {backlinkConversationId}
-                    {backlinkMessageId ? ` · msg ${backlinkMessageId}` : ""}
-                  </div>
-                )}
-              </div>
-              <Space>
-                {!editorDisabled && (
-                  <>
-                    {backlinkConversationId && (
-                      <Tooltip
-                        title={t("option:notesSearch.openConversationTooltip", {
-                          defaultValue: "Open linked conversation"
-                        })}>
-                        <Button
-                          size="small"
-                          loading={openingLinkedChat}
-                          onClick={() => {
-                            void openLinkedConversation()
-                          }}
-                          icon={(<LinkIcon className="w-4 h-4" />) as any}
-                        >
-                          {t("option:notesSearch.openConversation", {
-                            defaultValue: "Open conversation"
-                          })}
-                        </Button>
-                      </Tooltip>
-                    )}
-                    <Tooltip
-                      title={t("option:notesSearch.newTooltip", {
-                        defaultValue: "Create a new note"
-                      })}>
-                      <Button
-                        size="small"
-                        onClick={() => {
-                          void handleNewNote()
-                        }}
-                        icon={(<PlusIcon className="w-4 h-4" />) as any}
-                      >
-                        {t("option:notesSearch.new", {
-                          defaultValue: "New note"
-                        })}
-                      </Button>
-                    </Tooltip>
-                  </>
-                )}
-              <Tooltip
-                title={t('option:notesSearch.toolbarCopyTooltip', {
-                  defaultValue: 'Copy note content'
-                })}
-              >
-                <Button
-                  size="small"
-                  onClick={copySelected}
-                  icon={(<CopyIcon className="w-4 h-4" />) as any}
-                  disabled={!content}
-                  aria-label={t('option:notesSearch.toolbarCopyTooltip', {
-                    defaultValue: 'Copy note content'
-                  })}
-                />
-              </Tooltip>
-              <Tooltip
-                title={t('option:notesSearch.toolbarExportMdTooltip', {
-                  defaultValue: 'Export note as Markdown (.md)'
-                })}>
-                <Button
-                  size="small"
-                  onClick={exportSelected}
-                  icon={(<FileDownIcon className="w-4 h-4" />) as any}
-                  disabled={!title && !content}
-                  aria-label={t('option:notesSearch.toolbarExportMdTooltip', {
-                    defaultValue: 'Export note as Markdown (.md)'
-                  })}
-                >
-                  MD
-                </Button>
-              </Tooltip>
-              <Tooltip
-                title={t('option:notesSearch.toolbarSaveTooltip', {
-                  defaultValue: 'Save note'
-                })}>
-                <Button
-                  type="primary"
-                  size="small"
-                  onClick={saveNote}
-                  loading={saving}
-                  disabled={
-                    editorDisabled || (!title.trim() && !content.trim())
-                  }
-                  icon={(<SaveIcon className="w-4 h-4" />) as any}
-                  aria-label={t('option:notesSearch.toolbarSaveTooltip', {
-                    defaultValue: 'Save note'
-                  })}
-                >
-                  Save
-                </Button>
-              </Tooltip>
-              <Tooltip
-                title={t('option:notesSearch.toolbarDeleteTooltip', {
-                  defaultValue: 'Delete note'
-                })}
-              >
-                <Button
-                  danger
-                  size="small"
-                  onClick={() => void deleteNote()}
-                  icon={(<TrashIcon className="w-4 h-4" />) as any}
-                  disabled={editorDisabled || selectedId == null}
-                  aria-label={t('option:notesSearch.toolbarDeleteTooltip', {
-                    defaultValue: 'Delete note'
-                  })}
-                >
-                  {t('common:delete', { defaultValue: 'Delete' })}
-                </Button>
-              </Tooltip>
-            </Space>
-        </div>
+          <NotesEditorHeader
+            title={title}
+            selectedId={selectedId}
+            backlinkConversationId={backlinkConversationId}
+            backlinkMessageId={backlinkMessageId}
+            editorDisabled={editorDisabled}
+            openingLinkedChat={openingLinkedChat}
+            showPreview={showPreview}
+            hasContent={content.trim().length > 0}
+            canSave={
+              !editorDisabled &&
+              (title.trim().length > 0 || content.trim().length > 0)
+            }
+            canExport={Boolean(title || content)}
+            isSaving={saving}
+            canDelete={!editorDisabled && selectedId != null}
+            onOpenLinkedConversation={() => {
+              void openLinkedConversation()
+            }}
+            onNewNote={() => {
+              void handleNewNote()
+            }}
+            onTogglePreview={() => {
+              setShowPreview((prev) => !prev)
+            }}
+            onCopy={() => {
+              void copySelected()
+            }}
+            onExport={exportSelected}
+            onSave={() => {
+              void saveNote()
+            }}
+            onDelete={() => {
+              void deleteNote()
+            }}
+          />
         <div className="mt-2">
           <Input
             placeholder="Title"
@@ -982,27 +890,46 @@ const NotesManagerPage: React.FC = () => {
           </Typography.Text>
         </div>
         <div className="mt-2">
-          <textarea
-            className="w-full min-h-[50vh] text-sm p-2 rounded border dark:border-gray-700 dark:bg-[#171717] resize-y leading-relaxed"
-            value={content}
-            onChange={(e) => { setContent(e.target.value); setIsDirty(true) }}
-            placeholder="Write your note here..."
-            readOnly={editorDisabled}
-          />
+          {showPreview ? (
+            content.trim().length > 0 ? (
+              <div>
+                <Typography.Text
+                  type="secondary"
+                  className="block text-[11px] mb-1"
+                >
+                  {t('option:notesSearch.previewTitle', {
+                    defaultValue: 'Preview (Markdown + LaTeX)'
+                  })}
+                </Typography.Text>
+                <div className="w-full min-h-[6rem] text-sm p-2 rounded border dark:border-gray-700 dark:bg-[#171717] overflow-auto">
+                  <MarkdownPreview content={content} size="sm" />
+                </div>
+              </div>
+            ) : (
+              <Typography.Text
+                type="secondary"
+                className="block text-[11px] mt-1"
+              >
+                {t('option:notesSearch.emptyPreview', {
+                  defaultValue: 'Start typing to see a live preview of your note.'
+                })}
+              </Typography.Text>
+            )
+          ) : (
+            <textarea
+              className="w-full min-h-[50vh] text-sm p-2 rounded border dark:border-gray-700 dark:bg-[#171717] resize-y leading-relaxed"
+              value={content}
+              onChange={(e) => {
+                setContent(e.target.value)
+                setIsDirty(true)
+              }}
+              placeholder={t('option:notesSearch.editorPlaceholder', {
+                defaultValue: 'Write your note here... (Markdown supported)'
+              })}
+              readOnly={editorDisabled}
+            />
+          )}
         </div>
-        {content.trim().length > 0 && (
-          <div className="mt-4">
-            <Typography.Text type="secondary" className="block text-[11px] mb-1">
-              Preview (Markdown + LaTeX)
-            </Typography.Text>
-            <div className="w-full min-h-[6rem] text-sm p-2 rounded border dark:border-gray-700 dark:bg-[#171717] overflow-auto">
-              <MarkdownPreview
-                content={content}
-                size="sm"
-              />
-            </div>
-          </div>
-        )}
       </div>
     </div>
   )

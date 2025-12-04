@@ -61,3 +61,4 @@ node_modules/
 /playwright/.cache/
 /playwright/.auth/
 /tmp-playwright-profile
+/UX
