@@ -1,17 +1,9 @@
 import React from 'react'
-import { Button, Dropdown, List, Pagination, Spin, Typography } from 'antd'
+import { Button, Dropdown, List, Pagination, Spin, Tooltip, Typography } from 'antd'
 import { useTranslation } from 'react-i18next'
 import FeatureEmptyState from '@/components/Common/FeatureEmptyState'
 import type { ServerCapabilities } from '@/services/tldw/server-capabilities'
-
-type NotesListItem = {
-  id: string | number
-  title?: string
-  content?: string
-  updated_at?: string
-  conversation_id?: string | null
-  message_id?: string | null
-}
+import type { NoteListItem } from '@/components/Notes/types'
 
 const MAX_TITLE_LENGTH = 80
 const MAX_PREVIEW_LENGTH = 100
@@ -28,7 +20,7 @@ type NotesListPanelProps = {
   demoEnabled: boolean
   capsLoading: boolean
   capabilities: ServerCapabilities | null
-  notes: NotesListItem[] | undefined
+  notes: NoteListItem[] | undefined
   total: number
   page: number
   pageSize: number
@@ -66,10 +58,10 @@ const NotesListPanel: React.FC<NotesListPanelProps> = ({
   const { t } = useTranslation(['option', 'settings'])
 
   return (
-    <div className="mt-3 p-3 rounded-lg border dark:border-gray-700 bg-white dark:bg-[#171717] max-h-[50vh] md:max-h-[60vh] lg:max-h-[calc(100dvh-18rem)] overflow-auto">
-      <div className="sticky -m-3 mb-2 top-0 z-10 px-3 py-2 bg-white dark:bg-[#171717] border-b dark:border-gray-700 flex items-center justify-between">
+    <div className="mt-3 p-4 rounded-lg border dark:border-gray-700 bg-white dark:bg-[#111111] max-h-[50vh] md:max-h-[60vh] lg:max-h-[calc(100dvh-18rem)] overflow-auto">
+      <div className="sticky -m-4 mb-3 top-0 z-10 px-4 py-2.5 bg-white dark:bg-[#111111] border-b dark:border-gray-700 flex items-center justify-between">
         <span className="text-xs text-gray-500">
-          <span className="uppercase tracking-wide">Notes</span>
+          <span className="uppercase tracking-[0.14em]">Notes</span>
           <span className="text-gray-400 ml-1">
             {t('option:notesSearch.listCount', {
               defaultValue: '{{count}} notes',
@@ -239,7 +231,7 @@ const NotesListPanel: React.FC<NotesListPanelProps> = ({
                 className={`cursor-pointer rounded-md border px-3 py-2 text-left transition-colors ${
                   selectedId === item.id
                     ? 'border-blue-500 bg-blue-50/80 dark:border-blue-400 dark:bg-blue-900/30'
-                    : 'border-transparent hover:border-gray-600 hover:bg-gray-50 dark:border-transparent dark:hover:border-gray-600 dark:hover:bg-[#262626]'
+                    : 'border-transparent hover:border-gray-300 hover:bg-gray-50 dark:border-transparent dark:hover:border-gray-700 dark:hover:bg-[#18181b]'
                 }`}
               >
                 <div className="w-full">
@@ -258,6 +250,30 @@ const NotesListPanel: React.FC<NotesListPanelProps> = ({
                       {truncateText(
                         String(item.content),
                         MAX_PREVIEW_LENGTH
+                      )}
+                    </div>
+                  )}
+                  {Array.isArray(item.keywords) && item.keywords.length > 0 && (
+                    <div className="mt-1 flex flex-wrap gap-1">
+                      {item.keywords.slice(0, 5).map((keyword) => (
+                        <span
+                          key={keyword}
+                          className="px-2 py-0.5 text-[11px] rounded-full bg-gray-100 text-gray-700 dark:bg-[#27272a] dark:text-gray-200"
+                        >
+                          {keyword}
+                        </span>
+                      ))}
+                      {item.keywords.length > 5 && (
+                        <Tooltip
+                          title={t('option:notesSearch.moreTagsTooltip', {
+                            defaultValue: '+{{count}} more tags',
+                            count: item.keywords.length - 5
+                          })}
+                        >
+                          <span className="px-2 py-0.5 text-[11px] text-gray-500 dark:text-gray-400">
+                            +{item.keywords.length - 5}
+                          </span>
+                        </Tooltip>
                       )}
                     </div>
                   )}
@@ -331,4 +347,3 @@ const NotesListPanel: React.FC<NotesListPanelProps> = ({
 }
 
 export default NotesListPanel
-
