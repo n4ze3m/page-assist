@@ -19,6 +19,7 @@ import { tldwAuth } from "@/services/tldw/TldwAuth"
 import { SettingsSkeleton } from "@/components/Common/Settings/SettingsSkeleton"
 import { DEFAULT_TLDW_API_KEY } from "@/services/tldw-server"
 import { apiSend } from "@/services/api-send"
+import type { PathOrUrl } from "@/services/tldw/openapi-guard"
 import { useAntdMessage } from "@/hooks/useAntdMessage"
 import { useConnectionStore } from "@/store/connection"
 import { mapMultiUserLoginErrorMessage } from "@/services/auth-errors"
@@ -291,23 +292,8 @@ export const TldwSettings = () => {
     
     try {
       const values = form.getFieldsValue()
-      try {
-        await form.validateFields(["serverUrl"])
-      } catch {
-        const urlRaw = String(values?.serverUrl || "").trim()
-        const friendly = urlRaw
-          ? (t(
-              "settings:tldw.fields.serverUrl.invalid",
-              "Please enter a valid URL"
-            ) as string)
-          : (t(
-              "settings:tldw.fields.serverUrl.required",
-              "Please enter the server URL"
-            ) as string)
-        setConnectionStatus("error")
-        setCoreStatus("failed")
-        setConnectionDetail(friendly)
-        message.error(friendly)
+      const errors = await form.validateFields(["serverUrl"]).catch(e => e)
+      if (errors?.errorFields?.length) {
         return
       }
       let success = false
@@ -315,12 +301,13 @@ export const TldwSettings = () => {
       // Test core connectivity via the health endpoint only, so we never
       // rely on the LLM provider for connection checks.
       const baseUrl = String(values.serverUrl || '').replace(/\/$/, '')
+      const healthPath: PathOrUrl = baseUrl ? `${baseUrl}/api/v1/health` : "/api/v1/health"
       const singleUser = values.authMode === "single-user"
       const hasApiKey =
         singleUser && typeof values.apiKey === "string" && values.apiKey.trim().length > 0
 
       const resp = await apiSend({
-        path: `${baseUrl}/api/v1/health` as any,
+        path: healthPath,
         method: "GET",
         // For single-user mode, send the API key explicitly and bypass
         // background auth injection so we validate the current form values.
@@ -491,6 +478,10 @@ export const TldwSettings = () => {
     } finally {
       setLoading(false)
     }
+  }
+
+  const openHealthDiagnostics = () => {
+    navigate("/settings/health")
   }
 
   if (initializing) {
@@ -716,13 +707,7 @@ export const TldwSettings = () => {
                   <button
                     type="button"
                     className="underline text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
-                    onClick={() => {
-                      try {
-                        navigate("/settings/health")
-                      } catch {
-                        // ignore navigation failure
-                      }
-                    }}>
+                    onClick={openHealthDiagnostics}>
                     {t(
                       "settings:healthSummary.diagnostics",
                       "Health & diagnostics"

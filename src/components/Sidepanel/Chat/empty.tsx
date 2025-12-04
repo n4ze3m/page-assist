@@ -34,8 +34,9 @@ export const EmptySidePanel = () => {
         }
         return
       }
-    } catch {
+    } catch (err) {
       // Fall through to chrome.* / window.open below.
+      console.debug("[EmptySidePanel] openExtensionUrl browser API unavailable:", err)
     }
 
     try {
@@ -47,13 +48,14 @@ export const EmptySidePanel = () => {
         return
       }
       // @ts-ignore
-      if (chrome?.runtime?.openOptionsPage && path === "/options.html#/settings/tldw") {
+      if (chrome?.runtime?.openOptionsPage && path.includes("/options.html")) {
         // @ts-ignore
         chrome.runtime.openOptionsPage()
         return
       }
-    } catch {
+    } catch (err) {
       // ignore and fall back to plain window.open
+      console.debug("[EmptySidePanel] openExtensionUrl chrome API unavailable:", err)
     }
 
     window.open(path, "_blank")
@@ -62,7 +64,6 @@ export const EmptySidePanel = () => {
   const showConnectionCard = !isConnectionReady
   const host = serverUrl ? cleanUrl(serverUrl) : "tldw_server"
 
-  const totalSteps = 3
   const activeStep = (() => {
     if (configStep === "url") return 1
     if (configStep === "auth") return 2

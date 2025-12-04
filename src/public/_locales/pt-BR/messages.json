@@ -483,7 +483,7 @@
     "message": "Saiba mais sobre ingest e armazenamento"
   },
   "quickIngest.storageDocsUrl": {
-    "message": "https://docs.tldw.app/extension/media-ingest-storage"
+    "message": "https://github.com/rmusser01/tldw_browser_assistant"
   },
   "quickIngest.bulkPlaceholder": {
     "message": "Cole URLs (uma por linha)"

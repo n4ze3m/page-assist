@@ -16,7 +16,7 @@ import { useAntdMessage } from '@/hooks/useAntdMessage'
 import { useStoreMessageOption } from "@/store/option"
 import { updatePageTitle } from "@/utils/update-page-title"
 import { useScrollToServerCard } from "@/hooks/useScrollToServerCard"
-const Markdown = React.lazy(() => import("@/components/Common/Markdown"))
+import { MarkdownPreview } from "@/components/Common/MarkdownPreview"
 
 type NoteListItem = {
   id: string | number
@@ -996,17 +996,10 @@ const NotesManagerPage: React.FC = () => {
               Preview (Markdown + LaTeX)
             </Typography.Text>
             <div className="w-full min-h-[6rem] text-sm p-2 rounded border dark:border-gray-700 dark:bg-[#171717] overflow-auto">
-              <React.Suspense
-                fallback={
-                  <Typography.Text type="secondary" className="text-xs">
-                    Rendering preview…
-                  </Typography.Text>
-                }>
-                <Markdown
-                  message={content}
-                  className="prose-sm break-words dark:prose-invert max-w-none prose-p:leading-relaxed prose-pre:p-0 dark:prose-dark"
-                />
-              </React.Suspense>
+              <MarkdownPreview
+                content={content}
+                size="sm"
+              />
             </div>
           </div>
         )}

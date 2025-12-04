@@ -40,6 +40,7 @@ import { useAntdNotification } from "@/hooks/useAntdNotification"
 import { useDemoMode } from "@/context/demo-mode"
 import { useAntdMessage } from "@/hooks/useAntdMessage"
 import { useScrollToServerCard } from "@/hooks/useScrollToServerCard"
+import { MarkdownErrorBoundary } from "@/components/Common/MarkdownErrorBoundary"
 const Markdown = React.lazy(() => import("@/components/Common/Markdown"))
 
 type MediaItem = any
@@ -186,7 +187,9 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true, 
     source?: string | null
     duration?: number | null
   } => {
-    const type = String(m?.type || m?.media_type || "").toLowerCase().trim()
+    const rawType = m?.type ?? m?.media_type ?? ""
+    const type =
+      typeof rawType === "string" ? rawType.toLowerCase().trim() : ""
     const status =
       m?.status ??
       m?.ingest_status ??
@@ -2578,17 +2581,19 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true, 
                     ) : (
                       <>
                         {mediaExpanded || selectedContent.length <= 2500 ? (
-                          <React.Suspense
-                            fallback={
-                              <span className="text-xs text-gray-500 whitespace-pre-wrap break-words">
-                                {selectedContent}
-                              </span>
-                            }>
-                            <Markdown
-                              message={selectedContent}
-                              className="prose prose-sm break-words dark:prose-invert max-w-none prose-p:leading-relaxed prose-pre:p-0 dark:prose-dark"
-                            />
-                          </React.Suspense>
+                          <MarkdownErrorBoundary fallbackText={selectedContent}>
+                            <React.Suspense
+                              fallback={
+                                <span className="text-xs text-gray-500 whitespace-pre-wrap break-words">
+                                  {selectedContent}
+                                </span>
+                              }>
+                              <Markdown
+                                message={selectedContent}
+                                className="prose prose-sm break-words dark:prose-invert max-w-none prose-p:leading-relaxed prose-pre:p-0 dark:prose-dark"
+                              />
+                            </React.Suspense>
+                          </MarkdownErrorBoundary>
                         ) : (
                           <span className="text-xs text-gray-500 whitespace-pre-wrap break-words">
                             {selectedContent.slice(0, 2500) + "…"}
@@ -2835,17 +2840,19 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true, 
                             }
                             return (
                               <>
-                                <React.Suspense
-                                  fallback={
-                                    <span className="whitespace-pre-wrap">
-                                      {a}
-                                    </span>
-                                  }>
-                                  <Markdown
-                                    message={a}
-                                    className="prose-xs break-words dark:prose-invert max-w-none prose-p:leading-relaxed prose-pre:p-0 dark:prose-dark"
-                                  />
-                                </React.Suspense>
+                                <MarkdownErrorBoundary fallbackText={a}>
+                                  <React.Suspense
+                                    fallback={
+                                      <span className="whitespace-pre-wrap">
+                                        {a}
+                                      </span>
+                                    }>
+                                    <Markdown
+                                      message={a}
+                                      className="prose-xs break-words dark:prose-invert max-w-none prose-p:leading-relaxed prose-pre:p-0 dark:prose-dark"
+                                    />
+                                  </React.Suspense>
+                                </MarkdownErrorBoundary>
                                 {isLong && (
                                   <button
                                     className="ml-2 underline text-[10px]"

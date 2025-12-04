@@ -272,7 +272,7 @@
     "storageServerDescription": "tldw 서버에 저장됩니다( RAG 및 공유 워크스페이스에 권장).",
     "storageLocalDescription": "이 브라우저에만 보관되며 서버에는 데이터가 기록되지 않습니다.",
     "storageDocsLink": "인제스트와 저장소에 대해 자세히 알아보기",
-    "storageDocsUrl": "https://docs.tldw.app/extension/media-ingest-storage",
+    "storageDocsUrl": "https://github.com/rmusser01/tldw_browser_assistant",
     "bulkPlaceholder": "URL을 붙여넣기 (줄당 하나)",
     "or": "또는",
     "remove": "제거",

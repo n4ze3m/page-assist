@@ -272,7 +272,7 @@
     "storageServerDescription": "tldw サーバーに保存（RAG や共有ワークスペースに推奨）。",
     "storageLocalDescription": "このブラウザーのみに保存され、サーバーには書き込みません。",
     "storageDocsLink": "インジェストと保存について詳しく見る",
-    "storageDocsUrl": "https://docs.tldw.app/extension/media-ingest-storage",
+    "storageDocsUrl": "https://github.com/rmusser01/tldw_browser_assistant",
     "bulkPlaceholder": "Paste URLs (one per line)",
     "or": "or",
     "remove": "Remove",

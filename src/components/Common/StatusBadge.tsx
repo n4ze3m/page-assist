@@ -11,7 +11,7 @@ const VARIANT_CLASSES: Record<StatusBadgeProps["variant"], string> = {
   warning:
     "bg-yellow-50 text-yellow-700 dark:bg-yellow-900/40 dark:text-yellow-200",
   error:
-    "bg-amber-50 text-amber-700 dark:bg-amber-900/40 dark:text-amber-200"
+    "bg-red-50 text-red-700 dark:bg-red-900/40 dark:text-red-200"
 }
 
 export const StatusBadge: React.FC<StatusBadgeProps> = ({
@@ -28,4 +28,3 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({
 }
 
 export default StatusBadge
-

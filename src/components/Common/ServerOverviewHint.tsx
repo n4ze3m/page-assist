@@ -5,21 +5,14 @@ export const ServerOverviewHint: React.FC = () => {
   const { t } = useTranslation("settings")
 
   const openDocs = () => {
-    try {
       const fallbackUrl =
         t(
           "onboarding.serverDocsUrl",
-          "https://docs.tldw.app/extension/server-setup"
-        ) || "https://docs.tldw.app/extension/server-setup"
-      const docsUrl =
-        t("serverOverview.docsUrl", fallbackUrl) || fallbackUrl
-      if (!docsUrl) {
-        return
-      }
-      window.open(docsUrl, "_blank", "noopener,noreferrer")
-    } catch {
-      // ignore navigation errors
-    }
+          "https://github.com/rmusser01/tldw_browser_assistant"
+        ) || "https://github.com/rmusser01/tldw_browser_assistant"
+    const docsUrl =
+      t("serverOverview.docsUrl", fallbackUrl) || fallbackUrl
+    window.open(docsUrl, "_blank", "noopener,noreferrer")
   }
 
   return (

@@ -181,7 +181,7 @@
     "storageServerDescription": "Gemt på din tldw-server (anbefales til RAG og delte arbejdsområder).",
     "storageLocalDescription": "Beholdes kun i denne browser; ingen data skrives til din server.",
     "storageDocsLink": "Få mere at vide om ingest og lagring",
-    "storageDocsUrl": "https://docs.tldw.app/extension/media-ingest-storage",
+    "storageDocsUrl": "https://github.com/rmusser01/tldw_browser_assistant",
     "bulkPlaceholder": "Indsæt URL’er (én pr. linje)",
     "or": "eller",
     "remove": "Fjern",

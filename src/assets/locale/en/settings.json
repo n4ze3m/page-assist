@@ -825,13 +825,13 @@
       "metricsDescription": "Verifies metrics and monitoring endpoints. If this is unhealthy, metrics dashboards or alerting may be unavailable.",
       "chatMetricsDescription": "Tracks chat analytics such as volume and latency. If this is unhealthy, chat metrics collection or endpoints may be failing.",
       "mcpDescription": "Checks Model Context Protocol (MCP) tools. If this is unhealthy, external tools and plugins may not be available in chat.",
-      "coreDocsUrl": "https://docs.tldw.app/health/core",
-      "ragDocsUrl": "https://docs.tldw.app/health/rag",
-      "audioDocsUrl": "https://docs.tldw.app/health/audio",
-      "embeddingsDocsUrl": "https://docs.tldw.app/health/embeddings",
-      "metricsDocsUrl": "https://docs.tldw.app/health/metrics",
-      "chatMetricsDocsUrl": "https://docs.tldw.app/health/chat-metrics",
-      "mcpDocsUrl": "https://docs.tldw.app/health/mcp"
+      "coreDocsUrl": "https://github.com/rmusser01/tldw_browser_assistant",
+      "ragDocsUrl": "https://github.com/rmusser01/tldw_browser_assistant",
+      "audioDocsUrl": "https://github.com/rmusser01/tldw_browser_assistant",
+      "embeddingsDocsUrl": "https://github.com/rmusser01/tldw_browser_assistant",
+      "metricsDocsUrl": "https://github.com/rmusser01/tldw_browser_assistant",
+      "chatMetricsDocsUrl": "https://github.com/rmusser01/tldw_browser_assistant",
+      "mcpDocsUrl": "https://github.com/rmusser01/tldw_browser_assistant"
     }
   },
   "healthSummary": {
@@ -860,12 +860,12 @@
   "siteAccessGranted": "Host permission granted for {{origin}}",
   "onboarding": {
     "title": "Welcome — Let’s get you connected",
-  "description": "Connect this extension to your tldw server (a separate app running on your machine or server). We’ll walk through adding the URL, API key, and checking that everything is reachable.",
-  "exploreWithoutServer": "You can explore the UI without a server; some features (chat, media ingest, Knowledge search) will stay disabled until you connect.",
-  "serverDocsUrl": "https://docs.tldw.app/extension/server-setup",
-  "serverDocsCta": "Learn how tldw server works",
-  "learnMoreTldw": "Learn how tldw server works",
-  "serverUrl": {
+    "description": "Connect this extension to your tldw server (a separate app running on your machine or server). We’ll walk through adding the URL, API key, and checking that everything is reachable.",
+    "exploreWithoutServer": "You can explore the UI without a server; some features (chat, media ingest, Knowledge search) will stay disabled until you connect.",
+    "serverDocsUrl": "https://github.com/rmusser01/tldw_browser_assistant",
+    "serverDocsCta": "Learn how tldw server works",
+    "learnMoreTldw": "Learn how tldw server works",
+    "serverUrl": {
       "label": "Server URL",
       "placeholder": "http://127.0.0.1:8000",
       "help": "Example: http://127.0.0.1:8000",
@@ -1176,6 +1176,6 @@
     "privateModeDescription": "Firefox Private Mode does not support saving data to IndexedDB. Please add custom model from a normal window."
   },
   "serverOverview": {
-    "docsUrl": "https://docs.tldw.app/extension/server-setup"
+    "docsUrl": "https://github.com/rmusser01/tldw_browser_assistant"
   }
 }

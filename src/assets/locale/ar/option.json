@@ -277,7 +277,7 @@
     "storageServerDescription": "مخزَّنة على خادم tldw الخاص بك (موصى به لـ RAG ومساحات العمل المشتركة).",
     "storageLocalDescription": "محفوظة في هذا المتصفح فقط؛ لا تُكتب بيانات على الخادم.",
     "storageDocsLink": "معرفة المزيد عن الاستيعاب والتخزين",
-    "storageDocsUrl": "https://docs.tldw.app/extension/media-ingest-storage",
+    "storageDocsUrl": "https://github.com/rmusser01/tldw_browser_assistant",
     "bulkPlaceholder": "الصق عناوين URL (واحد في كل سطر)",
     "or": "أو",
     "remove": "إزالة",

@@ -272,7 +272,7 @@
     "storageServerDescription": "存储在你的 tldw 服务器上（推荐用于 RAG 和共享工作区）。",
     "storageLocalDescription": "仅保存在此浏览器中；不会向服务器写入数据。",
     "storageDocsLink": "了解更多摄取与存储信息",
-    "storageDocsUrl": "https://docs.tldw.app/extension/media-ingest-storage",
+    "storageDocsUrl": "https://github.com/rmusser01/tldw_browser_assistant",
     "bulkPlaceholder": "Paste URLs (one per line)",
     "or": "or",
     "remove": "Remove",

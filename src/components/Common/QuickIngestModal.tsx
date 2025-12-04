@@ -2121,9 +2121,9 @@ export const QuickIngestModal: React.FC<Props> = ({
                                     const docsUrl =
                                       t(
                                         'quickIngest.storageDocsUrl',
-                                        'https://docs.tldw.app/extension/media-ingest-storage'
+                                        'https://github.com/rmusser01/tldw_browser_assistant'
                                       ) ||
-                                      'https://docs.tldw.app/extension/media-ingest-storage'
+                                      'https://github.com/rmusser01/tldw_browser_assistant'
                                     window.open(
                                       docsUrl,
                                       '_blank',

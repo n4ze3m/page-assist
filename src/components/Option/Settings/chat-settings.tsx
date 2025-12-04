@@ -1,73 +1,87 @@
 import { Select, Switch } from "antd"
 import { useTranslation } from "react-i18next"
 import { useStorage } from "@plasmohq/storage/hook"
+import { DEFAULT_CHAT_SETTINGS } from "@/types/chat-settings"
 
 export const ChatSettings = () => {
   const { t } = useTranslation("settings")
 
   const [webUIResumeLastChat, setWebUIResumeLastChat] = useStorage(
     "webUIResumeLastChat",
-    false
+    DEFAULT_CHAT_SETTINGS.webUIResumeLastChat
   )
 
   const [restoreLastChatModel, setRestoreLastChatModel] = useStorage(
     "restoreLastChatModel",
-    false
+    DEFAULT_CHAT_SETTINGS.restoreLastChatModel
   )
 
   const [hideCurrentChatModelSettings, setHideCurrentChatModelSettings] =
-    useStorage("hideCurrentChatModelSettings", false)
+    useStorage(
+      "hideCurrentChatModelSettings",
+      DEFAULT_CHAT_SETTINGS.hideCurrentChatModelSettings
+    )
 
-  const [checkWideMode, setCheckWideMode] = useStorage("checkWideMode", false)
+  const [checkWideMode, setCheckWideMode] = useStorage(
+    "checkWideMode",
+    DEFAULT_CHAT_SETTINGS.checkWideMode
+  )
 
-  const [openReasoning, setOpenReasoning] = useStorage("openReasoning", false)
+  const [openReasoning, setOpenReasoning] = useStorage(
+    "openReasoning",
+    DEFAULT_CHAT_SETTINGS.openReasoning
+  )
 
   const [userChatBubble, setUserChatBubble] = useStorage(
     "userChatBubble",
-    true
+    DEFAULT_CHAT_SETTINGS.userChatBubble
   )
 
   const [autoCopyResponseToClipboard, setAutoCopyResponseToClipboard] =
-    useStorage("autoCopyResponseToClipboard", false)
+    useStorage(
+      "autoCopyResponseToClipboard",
+      DEFAULT_CHAT_SETTINGS.autoCopyResponseToClipboard
+    )
 
-  const [useMarkdownForUserMessage, setUseMarkdownForUserMessage] = useStorage(
-    "useMarkdownForUserMessage",
-    false
-  )
+  const [useMarkdownForUserMessage, setUseMarkdownForUserMessage] =
+    useStorage(
+      "useMarkdownForUserMessage",
+      DEFAULT_CHAT_SETTINGS.useMarkdownForUserMessage
+    )
 
   const [copyAsFormattedText, setCopyAsFormattedText] = useStorage(
     "copyAsFormattedText",
-    false
+    DEFAULT_CHAT_SETTINGS.copyAsFormattedText
   )
 
   const [menuDensity, setMenuDensity] = useStorage(
     "menuDensity",
-    "comfortable"
+    DEFAULT_CHAT_SETTINGS.menuDensity
   )
 
   const [userTextColor, setUserTextColor] = useStorage(
     "chatUserTextColor",
-    "default"
+    DEFAULT_CHAT_SETTINGS.chatUserTextColor
   )
   const [assistantTextColor, setAssistantTextColor] = useStorage(
     "chatAssistantTextColor",
-    "default"
+    DEFAULT_CHAT_SETTINGS.chatAssistantTextColor
   )
   const [userTextFont, setUserTextFont] = useStorage(
     "chatUserTextFont",
-    "default"
+    DEFAULT_CHAT_SETTINGS.chatUserTextFont
   )
   const [assistantTextFont, setAssistantTextFont] = useStorage(
     "chatAssistantTextFont",
-    "default"
+    DEFAULT_CHAT_SETTINGS.chatAssistantTextFont
   )
   const [userTextSize, setUserTextSize] = useStorage(
     "chatUserTextSize",
-    "md"
+    DEFAULT_CHAT_SETTINGS.chatUserTextSize
   )
   const [assistantTextSize, setAssistantTextSize] = useStorage(
     "chatAssistantTextSize",
-    "md"
+    DEFAULT_CHAT_SETTINGS.chatAssistantTextSize
   )
 
   const colorOptions = [

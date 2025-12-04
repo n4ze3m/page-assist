@@ -37,7 +37,7 @@ const makeChecks = (t: TFunction): Check[] => {
       descriptionDefault:
         'Verifies the main chat API. If this is unhealthy, confirm your server URL, API key, and core logs.',
       docsUrlKey: `${base}.coreDocsUrl`,
-      docsUrlDefault: 'https://docs.tldw.app/health/core'
+      docsUrlDefault: 'https://github.com/rmusser01/tldw_browser_assistant'
     },
     {
       key: 'rag',
@@ -47,7 +47,7 @@ const makeChecks = (t: TFunction): Check[] => {
       descriptionDefault:
         'Powers Knowledge search & retrieval. If this is unhealthy, ensure RAG is enabled and the knowledge index has been built on your server.',
       docsUrlKey: `${base}.ragDocsUrl`,
-      docsUrlDefault: 'https://docs.tldw.app/health/rag'
+      docsUrlDefault: 'https://github.com/rmusser01/tldw_browser_assistant'
     },
     {
       key: 'audio',
@@ -57,7 +57,7 @@ const makeChecks = (t: TFunction): Check[] => {
       descriptionDefault:
         'Covers text-to-speech and speech-to-text APIs. If this is unhealthy, confirm your audio endpoints are enabled and reachable.',
       docsUrlKey: `${base}.audioDocsUrl`,
-      docsUrlDefault: 'https://docs.tldw.app/health/audio'
+      docsUrlDefault: 'https://github.com/rmusser01/tldw_browser_assistant'
     },
     {
       key: 'embeddings',
@@ -67,7 +67,7 @@ const makeChecks = (t: TFunction): Check[] => {
       descriptionDefault:
         'Checks the embeddings and indexing services used for retrieval. If this is unhealthy, rebuild your embedding index or restart the worker.',
       docsUrlKey: `${base}.embeddingsDocsUrl`,
-      docsUrlDefault: 'https://docs.tldw.app/health/embeddings'
+      docsUrlDefault: 'https://github.com/rmusser01/tldw_browser_assistant'
     },
     {
       key: 'metrics',
@@ -77,7 +77,7 @@ const makeChecks = (t: TFunction): Check[] => {
       descriptionDefault:
         'Verifies metrics and monitoring endpoints. If this is unhealthy, metrics dashboards or alerting may be unavailable.',
       docsUrlKey: `${base}.metricsDocsUrl`,
-      docsUrlDefault: 'https://docs.tldw.app/health/metrics'
+      docsUrlDefault: 'https://github.com/rmusser01/tldw_browser_assistant'
     },
     {
       key: 'chatMetrics',
@@ -87,7 +87,7 @@ const makeChecks = (t: TFunction): Check[] => {
       descriptionDefault:
         'Tracks chat analytics such as volume and latency. If this is unhealthy, chat metrics collection or endpoints may be failing.',
       docsUrlKey: `${base}.chatMetricsDocsUrl`,
-      docsUrlDefault: 'https://docs.tldw.app/health/chat-metrics'
+      docsUrlDefault: 'https://github.com/rmusser01/tldw_browser_assistant'
     },
     {
       key: 'mcp',
@@ -97,7 +97,7 @@ const makeChecks = (t: TFunction): Check[] => {
       descriptionDefault:
         'Checks Model Context Protocol (MCP) tools. If this is unhealthy, external tools and plugins may not be available in chat.',
       docsUrlKey: `${base}.mcpDocsUrl`,
-      docsUrlDefault: 'https://docs.tldw.app/health/mcp'
+      docsUrlDefault: 'https://github.com/rmusser01/tldw_browser_assistant'
     }
   ]
 }
@@ -207,6 +207,7 @@ export default function HealthStatus() {
   }
 
   const recheckOne = async (c: Check) => {
+    if (loading || isRunningRef.current) return
     const prev = results[c.key]?.status
     const ok = await runSingle(c)
     if (ok && prev !== 'healthy') {
@@ -249,6 +250,10 @@ export default function HealthStatus() {
       await testCoreConnection()
       await runChecks()
     })()
+    // We intentionally run the initial health checks only once on mount.
+    // This avoids duplicate calls when dependencies such as `checks`
+    // or `results` change over time.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
@@ -324,7 +329,7 @@ export default function HealthStatus() {
           </Button>
           <Tooltip title={t('healthPage.copyDiagnosticsHelp', 'Copies JSON diagnostics to clipboard') as string}>
             <Button
-              onClick={() => {
+              onClick={async () => {
                 try {
                   const payload = {
                     serverUrl,
@@ -333,10 +338,26 @@ export default function HealthStatus() {
                     results
                   }
                   const text = JSON.stringify(payload, null, 2)
-                  void navigator.clipboard.writeText(text)
-                } catch {}
-              }}
-            >
+                  await navigator.clipboard.writeText(text)
+                  notification.success({
+                    message: t(
+                      'healthPage.copiedDiagnostics',
+                      'Diagnostics copied'
+                    ),
+                    placement: 'bottomRight',
+                    duration: 2
+                  })
+                } catch {
+                  notification.error({
+                    message: t(
+                      'healthPage.copyFailed',
+                      'Failed to copy diagnostics'
+                    ),
+                    placement: 'bottomRight',
+                    duration: 2
+                  })
+                }
+              }}>
               {t('healthPage.copyDiagnostics', 'Copy diagnostics')}
             </Button>
           </Tooltip>
@@ -572,11 +593,23 @@ export default function HealthStatus() {
             const r = results[c.key] || { status: 'unknown' }
             const statusLabel = describeStatus(r.status)
             const description = t(c.descriptionKey, c.descriptionDefault)
-            const docsUrl =
-              c.docsUrlKey || c.docsUrlDefault
-                ? t(c.docsUrlKey || '', c.docsUrlDefault || '')
-                : ''
+            const docsUrl = c.docsUrlDefault
+              ? t(c.docsUrlKey ?? '', c.docsUrlDefault)
+              : ''
             const isUnhealthy = r.status === 'unhealthy'
+            const detailText = (() => {
+              if (!r.detail) return ""
+              try {
+                return JSON.stringify(r.detail, null, 2)
+              } catch {
+                return String(r.detail)
+              }
+            })()
+            const MAX_DETAIL_CHARS = 5000
+            const displayedDetail =
+              detailText.length > MAX_DETAIL_CHARS
+                ? `${detailText.slice(0, MAX_DETAIL_CHARS)}…`
+                : detailText
             return (
               <Card
                 key={c.key}
@@ -648,7 +681,7 @@ export default function HealthStatus() {
                       <Button
                         size="small"
                         type="link"
-                        onClick={() => {
+                        onClick={async () => {
                           try {
                             const payload = {
                               check: c.key,
@@ -659,8 +692,25 @@ export default function HealthStatus() {
                               detail: r.detail
                             }
                             const text = JSON.stringify(payload, null, 2)
-                            void navigator.clipboard.writeText(text)
-                          } catch {}
+                            await navigator.clipboard.writeText(text)
+                            notification.success({
+                              message: t(
+                                'healthPage.copiedError',
+                                'Error details copied'
+                              ),
+                              placement: 'bottomRight',
+                              duration: 2
+                            })
+                          } catch {
+                            notification.error({
+                              message: t(
+                                'healthPage.copyFailed',
+                                'Failed to copy diagnostics'
+                              ),
+                              placement: 'bottomRight',
+                              duration: 2
+                            })
+                          }
                         }}>
                         {t('healthPage.copyError', 'Copy error')}
                       </Button>
@@ -676,7 +726,7 @@ export default function HealthStatus() {
                       )}
                     </Typography.Text>
                     <pre className="mt-1 p-2 bg-gray-50 dark:bg-[#262626] rounded text-xs overflow-auto max-h-40">
-                      {JSON.stringify(r.detail, null, 2)}
+                      {displayedDetail}
                     </pre>
                   </>
                 )}

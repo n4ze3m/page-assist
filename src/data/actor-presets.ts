@@ -1,5 +1,4 @@
 import type { ActorSettings } from "@/types/actor"
-import { createDefaultActorSettings } from "@/types/actor"
 
 export type ActorPresetId =
   | "slice_of_life"

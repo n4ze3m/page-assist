@@ -90,7 +90,7 @@
     "chatAboutMediaHint": "Open RAG chat scoped to this media only.",
     "chatAboutMediaRagSent": "Opened media-scoped RAG chat.",
     "chatAboutMediaInvalidId": "Dette medieelementet har ikke et numerisk ID ennå.",
-    "demoBadge": "Demo",
+    "demoBadge": "Demonstrasjon",
     "notConnectedBadge": "Ikke tilkoblet"
   },
   "mediaPage": {

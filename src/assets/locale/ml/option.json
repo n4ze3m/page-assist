@@ -180,7 +180,7 @@
     "storageServerDescription": "നിങ്ങളുടെ tldw സർവറിൽ സൂക്ഷിക്കുന്നു (RAG-നും പങ്കിട്ട വർക്ക്‌സ്പേസുകൾക്കും ശുപാർശ).",
     "storageLocalDescription": "ഈ ബ്രൗസറിൽ മാത്രം സൂക്ഷിക്കുന്നു; നിങ്ങളുടെ സർവറിൽ ഡാറ്റ എഴുതുന്നില്ല.",
     "storageDocsLink": "ഇൻജെസ്റ്റും സംഭരണവും കുറിച്ച് കൂടുതൽ അറിയുക",
-    "storageDocsUrl": "https://docs.tldw.app/extension/media-ingest-storage",
+    "storageDocsUrl": "https://github.com/rmusser01/tldw_browser_assistant",
     "bulkPlaceholder": "Paste URLs (one per line)",
     "or": "or",
     "remove": "Remove",

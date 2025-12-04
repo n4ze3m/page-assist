@@ -42,9 +42,6 @@ const ErrorBubble: React.FC<{
 }> = ({ payload, toggleLabels }) => {
   const [showDetails, setShowDetails] = React.useState(false)
 
-  const MARKDOWN_BASE_CLASSES =
-    "prose break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0 dark:prose-dark"
-
   return (
     <div
       role="alert"
@@ -214,7 +211,6 @@ export const PlaygroundMessage = (props: Props) => {
     props.isStreaming,
     props.isProcessing,
     props.message,
-    copyAsFormattedText,
     errorPayload
   ])
 

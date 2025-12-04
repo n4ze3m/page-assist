@@ -162,6 +162,37 @@ export const Header: React.FC<Props> = ({
   const quickIngestBtnRef = React.useRef<HTMLButtonElement>(null)
   const hasQueuedQuickIngest = queuedQuickIngestCount > 0
 
+  const quickIngestAriaLabel = React.useMemo(() => {
+    const base = t("option:header.quickIngest", "Quick ingest")
+    if (!hasQueuedQuickIngest) {
+      return base
+    }
+
+    const queuedText = t(
+      "option:header.quickIngestQueuedAria",
+      "{{label}} — {{count}} items queued — click to review and process",
+      {
+        label: base,
+        count: queuedQuickIngestCount
+      }
+    )
+
+    if (quickIngestHadFailure) {
+      const failureHint = t(
+        "quickIngest.healthAriaHint",
+        "Recent runs failed — open Health & diagnostics from the header for more details."
+      )
+      return `${queuedText} ${failureHint}`
+    }
+
+    return queuedText
+  }, [
+    hasQueuedQuickIngest,
+    queuedQuickIngestCount,
+    quickIngestHadFailure,
+    t
+  ])
+
   const openQuickIngest = React.useCallback(
     (options?: { autoProcessQueued?: boolean; focusTrigger?: boolean }) => {
       const { autoProcessQueued = false, focusTrigger = true } = options || {}
@@ -189,7 +220,10 @@ export const Header: React.FC<Props> = ({
   React.useEffect(() => {
     const handler = () => {
       openQuickIngest({ focusTrigger: false })
-      // Nudge the modal to show the intro drawer once mounted
+      // Wait briefly for the Quick Ingest modal to mount and render
+      // before forcing the intro drawer open. The 150ms delay ensures
+      // the modal's internal event listeners are registered so the
+      // tldw:quick-ingest-force-intro event is handled reliably.
       window.setTimeout(() => {
         window.dispatchEvent(new CustomEvent("tldw:quick-ingest-force-intro"))
       }, 150)
@@ -245,11 +279,15 @@ export const Header: React.FC<Props> = ({
         await browser.sidebarAction.open()
       } else {
         // Chromium sidePanel API
-        // @ts-ignore
-        const tabs = await chrome.tabs.query({ active: true, currentWindow: true })
-        if (tabs?.[0]?.id) {
-          // @ts-ignore
-          await chrome.sidePanel.open({ tabId: tabs[0].id })
+        if (typeof chrome !== "undefined" && chrome?.tabs?.query) {
+          const tabs = await chrome.tabs.query({
+            active: true,
+            currentWindow: true
+          })
+          const tabId = tabs?.[0]?.id
+          if (tabId && chrome.sidePanel?.open) {
+            await chrome.sidePanel.open({ tabId })
+          }
         }
       }
     } catch {}
@@ -736,8 +774,14 @@ export const Header: React.FC<Props> = ({
                     localStorage.setItem("selectedModel", value)
                   }}
                   filterOption={(input, option) => {
-                    // @ts-ignore
-                    const haystack = option?.label?.props?.["data-title"] as string | undefined
+                    const rawLabel = option?.label
+                    const haystack =
+                      typeof rawLabel === "string"
+                        ? rawLabel
+                        : React.isValidElement(rawLabel) &&
+                            typeof rawLabel.props?.["data-title"] === "string"
+                          ? (rawLabel.props["data-title"] as string)
+                          : undefined
                     return haystack?.toLowerCase().includes(input.toLowerCase()) ?? false
                   }}
                   showSearch
@@ -825,31 +869,7 @@ export const Header: React.FC<Props> = ({
                   openQuickIngest()
                 }}
                 data-testid="open-quick-ingest"
-                aria-label={
-                  hasQueuedQuickIngest
-                    ? [
-                        t(
-                          "option:header.quickIngestQueuedAria",
-                          "{{label}} — {{count}} items queued — click to review and process",
-                          {
-                            label: t(
-                              "option:header.quickIngest",
-                              "Quick ingest"
-                            ),
-                            count: queuedQuickIngestCount
-                          }
-                        ),
-                        quickIngestHadFailure
-                          ? t(
-                              "quickIngest.healthAriaHint",
-                              "Recent runs failed — open Health & diagnostics from the header for more details."
-                            )
-                          : ""
-                      ]
-                        .filter(Boolean)
-                        .join(" ")
-                    : t("option:header.quickIngest", "Quick ingest")
-                }
+                aria-label={quickIngestAriaLabel}
                 title={
                   t(
                     "playground:tooltip.quickIngest",

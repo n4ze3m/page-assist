@@ -41,6 +41,11 @@ const normalizeCharacter = (character: CharacterSummary): CharacterSelection => 
   const idSource =
     character.id ?? character.slug ?? character.name ?? character.title ?? ""
   const nameSource = character.name ?? character.title ?? character.slug ?? ""
+
+  if (!idSource || !nameSource) {
+    throw new Error("Character must have a valid id and name")
+  }
+
   const avatar =
     character.avatar_url ||
     (character.image_base64
@@ -50,8 +55,8 @@ const normalizeCharacter = (character: CharacterSummary): CharacterSelection => 
       : "")
 
   return {
-    id: idSource ? String(idSource) : "",
-    name: nameSource ? String(nameSource) : "",
+    id: String(idSource),
+    name: String(nameSource),
     system_prompt:
       character.system_prompt ||
       character.systemPrompt ||
@@ -81,19 +86,29 @@ export const CharacterSelect: React.FC<Props> = ({
   const { data, refetch, isFetching } = useQuery<CharacterSummary[]>({
     queryKey: ["tldw:listCharacters"],
     queryFn: async () => {
-      try {
-        await tldwClient.initialize()
-        const list = await tldwClient.listCharacters()
-        return Array.isArray(list) ? list : []
-      } catch {
-        return []
-      }
+      await tldwClient.initialize()
+      const list = await tldwClient.listCharacters()
+      return Array.isArray(list) ? list : []
     },
     // Cache characters so we don't refetch on every open.
     staleTime: 1000 * 60 * 10,
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
-    refetchOnMount: false
+    refetchOnMount: false,
+    onError: () => {
+      notification.error({
+        message: t(
+          "option:characters.fetchErrorTitle",
+          "Unable to load characters"
+        ),
+        description: t(
+          "option:characters.fetchErrorBody",
+          "Check your connection or server health, then try again."
+        ),
+        placement: "bottomRight",
+        duration: 3
+      })
+    }
   })
 
   const [menuDensity] = useStorage<"comfortable" | "compact">(
@@ -193,40 +208,50 @@ export const CharacterSelect: React.FC<Props> = ({
   }, [data, searchQuery])
 
   const characterItems = React.useMemo<MenuProps["items"]>(() => {
-    return filteredCharacters.map((character, index) => {
-      const normalized = normalizeCharacter(character)
-      const displayName =
-        normalized.name || character.slug || character.title || ""
-      const menuKey =
-        character.id ??
-        character.slug ??
-        character.name ??
-        character.title ??
-        `character-${index}`
+    return filteredCharacters.reduce<MenuProps["items"]>((items, character, index) => {
+      try {
+        const normalized = normalizeCharacter(character)
+        const displayName =
+          normalized.name || character.slug || character.title || ""
+        const menuKey =
+          character.id ??
+          character.slug ??
+          character.name ??
+          character.title ??
+          `character-${index}`
 
-      return {
-        key: String(menuKey),
-        label: (
-          <div className="w-56 gap-2 text-sm truncate inline-flex items-center leading-5 dark:border-gray-700">
-            {normalized.avatar_url ? (
-              <img
-                src={normalized.avatar_url}
-                alt={displayName || normalized.id || ""}
-                className="w-4 h-4 rounded-full"
-              />
-            ) : (
-              <UserCircle2 className="w-4 h-4" />
-            )}
-            <span className="truncate">
-              {displayName || normalized.id || String(menuKey)}
-            </span>
-          </div>
-        ),
-        onClick: () => {
-          setSelectedCharacter(normalized)
-        }
+        items.push({
+          key: String(menuKey),
+          label: (
+            <div className="w-56 gap-2 text-sm truncate inline-flex items-center leading-5 dark:border-gray-700">
+              {normalized.avatar_url ? (
+                <img
+                  src={normalized.avatar_url}
+                  alt={displayName || normalized.id || `Character ${menuKey}`}
+                  className="w-4 h-4 rounded-full"
+                />
+              ) : (
+                <UserCircle2 className="w-4 h-4" />
+              )}
+              <span className="truncate">
+                {displayName || normalized.id || String(menuKey)}
+              </span>
+            </div>
+          ),
+          onClick: () => {
+            setSelectedCharacter(normalized)
+          }
+        })
+      } catch (err) {
+        // Skip characters with invalid identifiers but log for debugging.
+        console.debug(
+          "[CharacterSelect] Skipping character with invalid id/name",
+          character,
+          err
+        )
       }
-    })
+      return items
+    }, [] as MenuProps["items"])
   }, [filteredCharacters, setSelectedCharacter])
 
   const clearItem: MenuProps["items"][number] | null =
@@ -399,6 +424,11 @@ export const CharacterSelect: React.FC<Props> = ({
   return (
     <div className="flex items-center gap-2">
       <Dropdown
+        onOpenChange={(open) => {
+          if (!open) {
+            setSearchQuery("")
+          }
+        }}
         dropdownRender={(menu) => (
           <div className="w-64" ref={menuContainerRef}>
             <div className="px-2 py-2 border-b border-gray-100 dark:border-gray-700">

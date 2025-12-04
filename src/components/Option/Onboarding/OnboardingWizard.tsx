@@ -39,10 +39,15 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
   React.useEffect(() => {
     try {
       useConnectionStore.getState().beginOnboarding()
-    } catch {
-      // ignore store init errors; Onboarding will still read existing state
+    } catch (err) {
+      // Store init failures should not block the wizard, but log for diagnostics.
+      // eslint-disable-next-line no-console
+      console.debug(
+        "[OnboardingWizard] Failed to begin onboarding from connection store",
+        err
+      )
     }
-    (async () => {
+    ;(async () => {
       try {
         const cfg = await tldwClient.getConfig()
         if (cfg?.serverUrl) {
@@ -59,9 +64,21 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
           try {
             const fallback = await getTldwServerURL()
             if (fallback) setServerUrl(fallback)
-          } catch {}
+          } catch (err) {
+            // eslint-disable-next-line no-console
+            console.debug(
+              "[OnboardingWizard] Failed to derive fallback server URL",
+              err
+            )
+          }
         }
-      } catch {}
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        console.debug(
+          "[OnboardingWizard] Failed to load initial tldw config",
+          err
+        )
+      }
     })()
   }, [])
 
@@ -206,6 +223,9 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
           'settings:onboarding.startServer.optionLocal',
           'Run locally with Python'
         ),
+        // Keep this aligned with the tldw_server README / docs.
+        // If the server package or app path changes, update this
+        // command string to match the recommended local dev command.
         command:
           'python -m uvicorn tldw_Server_API.app.main:app --reload',
         hint: t(
@@ -238,6 +258,12 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
     setLoading(true)
     try {
       await useConnectionStore.getState().setConfigPartial({ serverUrl })
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.debug(
+        "[OnboardingWizard] Failed to persist serverUrl via setConfigPartial",
+        err
+      )
     } finally {
       setLoading(false)
     }
@@ -246,13 +272,26 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
   const handleBackToUrl = () => {
     try {
       useConnectionStore.getState().beginOnboarding()
-    } catch {
-      // ignore store errors; wizard will continue to read current state
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.debug(
+        "[OnboardingWizard] Failed to reset onboarding step to URL",
+        err
+      )
     }
   }
 
   const handleContinueFromAuth = async () => {
     setAuthError(null)
+    if (authMode === 'multi-user' && (!username || !password)) {
+      setAuthError(
+        t(
+          'settings:onboarding.auth.missingCredentials',
+          'Enter both a username and password to continue.'
+        ) as string
+      )
+      return
+    }
     setLoading(true)
     try {
       if (authMode === 'multi-user' && username && password) {
@@ -274,6 +313,12 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
         apiKey: authMode === 'single-user' ? apiKey : undefined
       })
       await useConnectionStore.getState().testConnectionFromOnboarding()
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.debug(
+        "[OnboardingWizard] Failed to persist auth config or run connection test",
+        err
+      )
     } finally {
       setLoading(false)
     }
@@ -424,8 +469,8 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
               onClick={() => {
                 try {
                   const docsUrl =
-                    t('settings:onboarding.serverDocsUrl', 'https://docs.tldw.app/extension/server-setup') ||
-                    'https://docs.tldw.app/extension/server-setup'
+                    t('settings:onboarding.serverDocsUrl', 'https://github.com/rmusser01/tldw_browser_assistant') ||
+                    'https://github.com/rmusser01/tldw_browser_assistant'
                   window.open(docsUrl, '_blank', 'noopener,noreferrer')
                 } catch {
                   // ignore navigation errors

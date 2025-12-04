@@ -53,6 +53,7 @@ export function useActorWorldBooks(): ActorWorldBooksState {
 
   const loadEntriesForWorldBook = React.useCallback(async (worldBookId: string) => {
     const id = String(worldBookId || "")
+    if (!isOnline) return
     if (!id) return
     if (entriesRef.current[id]) return
 
@@ -83,7 +84,7 @@ export function useActorWorldBooks(): ActorWorldBooksState {
         [id]: false
       }))
     }
-  }, [])
+  }, [isOnline])
 
   return {
     worldBooks: worldBooks || [],

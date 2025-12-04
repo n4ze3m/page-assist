@@ -180,7 +180,7 @@
     "storageServerDescription": "روی سرور tldw شما ذخیره می‌شود (پیشنهادی برای RAG و محیط‌های کاری مشترک).",
     "storageLocalDescription": "فقط در این مرورگر نگه داشته می‌شود؛ هیچ داده‌ای روی سرورتان نوشته نمی‌شود.",
     "storageDocsLink": "درباره درون‌ریزی و ذخیره‌سازی بیشتر بدانید",
-    "storageDocsUrl": "https://docs.tldw.app/extension/media-ingest-storage",
+    "storageDocsUrl": "https://github.com/rmusser01/tldw_browser_assistant",
     "bulkPlaceholder": "Paste URLs (one per line)",
     "or": "or",
     "remove": "Remove",

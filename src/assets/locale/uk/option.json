@@ -180,7 +180,7 @@
     "storageServerDescription": "Зберігаються на вашому сервері tldw (рекомендовано для RAG і спільних просторів).",
     "storageLocalDescription": "Зберігаються лише в цьому браузері; дані не надсилаються на сервер.",
     "storageDocsLink": "Дізнайтесь більше про інжест і зберігання",
-    "storageDocsUrl": "https://docs.tldw.app/extension/media-ingest-storage",
+    "storageDocsUrl": "https://github.com/rmusser01/tldw_browser_assistant",
     "bulkPlaceholder": "Paste URLs (one per line)",
     "or": "or",
     "remove": "Remove",

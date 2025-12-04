@@ -602,7 +602,14 @@
       "embeddings": "Embeddings",
       "metrics": "Metrics Health",
       "chatMetrics": "Chat Metrics",
-      "mcp": "MCP"
+      "mcp": "MCP",
+      "coreDocsUrl": "https://github.com/rmusser01/tldw_browser_assistant",
+      "ragDocsUrl": "https://github.com/rmusser01/tldw_browser_assistant",
+      "audioDocsUrl": "https://github.com/rmusser01/tldw_browser_assistant",
+      "embeddingsDocsUrl": "https://github.com/rmusser01/tldw_browser_assistant",
+      "metricsDocsUrl": "https://github.com/rmusser01/tldw_browser_assistant",
+      "chatMetricsDocsUrl": "https://github.com/rmusser01/tldw_browser_assistant",
+      "mcpDocsUrl": "https://github.com/rmusser01/tldw_browser_assistant"
     },
     "copyDiagnosticsHelp": "Copies JSON diagnostics to clipboard",
     "statusHealthy": "Healthy",
@@ -792,6 +799,7 @@
     "title": "Welcome — Let’s get you connected",
     "description": "Configure your server and authentication. We’ll verify the connection and RAG health inline.",
     "learnMoreTldw": "了解 tldw 伺服器的運作方式",
+    "serverDocsUrl": "https://github.com/rmusser01/tldw_browser_assistant",
     "serverUrl": {
       "placeholder": "http://127.0.0.1:8000",
       "help": "範例：http://127.0.0.1:8000",

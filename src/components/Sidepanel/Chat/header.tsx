@@ -93,7 +93,7 @@ export const SidepanelHeader = ({
 
   React.useEffect(() => {
     const onMsg = (msg: any) => {
-      if (msg?.type === 'tldw:stream-debug' && msg?.payload) {
+      if (msg?.type === "tldw:stream-debug" && msg?.payload) {
         setDebugLogs((prev) => {
           const next = [...prev, msg.payload]
           if (next.length > 200) next.shift()
@@ -101,10 +101,15 @@ export const SidepanelHeader = ({
         })
       }
     }
-    // @ts-ignore
-    browser.runtime.onMessage.addListener(onMsg)
-    return () => {
-      try { /* @ts-ignore */ browser.runtime.onMessage.removeListener(onMsg) } catch {}
+    if (typeof browser !== "undefined" && browser.runtime?.onMessage?.addListener) {
+      browser.runtime.onMessage.addListener(onMsg)
+      return () => {
+        try {
+          browser.runtime.onMessage.removeListener(onMsg)
+        } catch {
+          // ignore cleanup errors
+        }
+      }
     }
   }, [])
 
@@ -178,22 +183,76 @@ export const SidepanelHeader = ({
     }),
     [sendQuickIngest, t]
   )
-  const { uxState, mode } = useConnectionUxState()
+  const { uxState, mode, isConnectedUx, isChecking, isConfigOrError } =
+    useConnectionUxState()
   const { checkOnce } = useConnectionActions()
 
-  const isConnectedUx =
-    uxState === "connected_ok" ||
-    uxState === "connected_degraded" ||
-    uxState === "demo_mode"
-  const isChecking = uxState === "testing"
-  const isConfigOrError =
-    uxState === "unconfigured" ||
-    uxState === "configuring_url" ||
-    uxState === "configuring_auth" ||
-    uxState === "error_unreachable" ||
-    uxState === "error_auth"
-
   const ingestDisabled = !isConnectedUx
+
+  const connectionTooltip = React.useMemo(() => {
+    if (isChecking) {
+      return t(
+        "sidepanel:header.connection.checking",
+        "Checking connection to your tldw server…"
+      )
+    }
+    if (isConnectedUx && mode === "demo") {
+      return t(
+        "sidepanel:header.connection.demo",
+        "Demo mode: explore with a sample workspace. Open Options to connect your own server."
+      )
+    }
+    if (isConnectedUx) {
+      return t(
+        "sidepanel:header.connection.ok",
+        "Connected to your tldw server"
+      )
+    }
+    if (isConfigOrError) {
+      return t(
+        "sidepanel:header.connection.unconfigured",
+        "Finish setup in Options to connect your tldw server."
+      )
+    }
+    return t(
+      "sidepanel:header.connection.failed",
+      "We couldn’t reach your tldw server. Open Options to review your setup."
+    )
+  }, [isChecking, isConnectedUx, isConfigOrError, mode, t])
+
+  const connectionClassName = React.useMemo(() => {
+    const base =
+      "inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-xs font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-700"
+    if (isConnectedUx) {
+      return `${base} border-emerald-500/60 bg-emerald-50 text-emerald-700 dark:border-emerald-400/60 dark:bg-emerald-900/40 dark:text-emerald-100`
+    }
+    if (isChecking) {
+      return `${base} border-blue-400/60 bg-blue-50 text-blue-700 dark:border-blue-300/60 dark:bg-blue-900/40 dark:text-blue-100`
+    }
+    return `${base} border-amber-500/60 bg-amber-50 text-amber-700 dark:border-amber-400/60 dark:bg-amber-900/40 dark:text-amber-100`
+  }, [isConnectedUx, isChecking])
+
+  const connectionDotClassName = React.useMemo(() => {
+    if (isConnectedUx) return "h-2 w-2 rounded-full bg-emerald-500"
+    if (isChecking) return "h-2 w-2 rounded-full bg-blue-500"
+    return "h-2 w-2 rounded-full bg-amber-500"
+  }, [isConnectedUx, isChecking])
+
+  const connectionLabel = React.useMemo(() => {
+    if (isChecking) {
+      return t("sidepanel:header.connection.checking", "Checking…")
+    }
+    if (uxState === "demo_mode") {
+      return t("sidepanel:header.connection.demoLabel", "Demo mode")
+    }
+    if (isConnectedUx) {
+      return t("sidepanel:header.connection.connected", "Connected")
+    }
+    if (isConfigOrError) {
+      return t("sidepanel:header.connection.configure", "Connect")
+    }
+    return t("sidepanel:header.connection.retry", "Retry")
+  }, [isChecking, isConnectedUx, isConfigOrError, t, uxState])
 
   return (
     <div
@@ -210,32 +269,7 @@ export const SidepanelHeader = ({
 
       <div className="flex items-center space-x-3">
         <Tooltip
-          title={
-            isChecking
-              ? t(
-                  "sidepanel:header.connection.checking",
-                  "Checking connection to your tldw server…"
-                )
-              : isConnectedUx && mode === "demo"
-                ? t(
-                    "sidepanel:header.connection.demo",
-                    "Demo mode: explore with a sample workspace. Open Options to connect your own server."
-                  )
-                : isConnectedUx
-                  ? t(
-                      "sidepanel:header.connection.ok",
-                      "Connected to your tldw server"
-                    )
-                  : isConfigOrError
-                    ? t(
-                        "sidepanel:header.connection.unconfigured",
-                        "Finish setup in Options to connect your tldw server."
-                      )
-                    : t(
-                        "sidepanel:header.connection.failed",
-                        "We couldn’t reach your tldw server. Open Options to review your setup."
-                      )
-          }>
+          title={connectionTooltip}>
           <button
             type="button"
             onClick={() => {
@@ -247,52 +281,13 @@ export const SidepanelHeader = ({
               void checkOnce()
             }}
             disabled={isChecking}
-            className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-xs font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-700 ${
-              isConnectedUx
-                ? "border-emerald-500/60 bg-emerald-50 text-emerald-700 dark:border-emerald-400/60 dark:bg-emerald-900/40 dark:text-emerald-100"
-                : isChecking
-                  ? "border-blue-400/60 bg-blue-50 text-blue-700 dark:border-blue-300/60 dark:bg-blue-900/40 dark:text-blue-100"
-                  : "border-amber-500/60 bg-amber-50 text-amber-700 dark:border-amber-400/60 dark:bg-amber-900/40 dark:text-amber-100"
-            }`}
+            className={connectionClassName}
             aria-label={t(
               "sidepanel:header.connection.label",
               "Server connection status"
             ) as string}>
-            <span
-              className={`h-2 w-2 rounded-full ${
-                isConnectedUx
-                  ? "bg-emerald-500"
-                  : isChecking
-                    ? "bg-blue-500"
-                    : "bg-amber-500"
-              }`}
-            />
-            <span>
-              {isChecking
-                ? t(
-                    "sidepanel:header.connection.checking",
-                    "Checking…"
-                  )
-                : uxState === "demo_mode"
-                  ? t(
-                      "sidepanel:header.connection.demoLabel",
-                      "Demo mode"
-                    )
-                  : isConnectedUx
-                    ? t(
-                        "sidepanel:header.connection.connected",
-                        "Connected"
-                      )
-                    : isConfigOrError
-                      ? t(
-                          "sidepanel:header.connection.configure",
-                          "Connect"
-                        )
-                      : t(
-                          "sidepanel:header.connection.retry",
-                          "Retry"
-                        )}
-            </span>
+            <span className={connectionDotClassName} />
+            <span>{connectionLabel}</span>
           </button>
         </Tooltip>
         <Popover
