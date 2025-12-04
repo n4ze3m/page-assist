@@ -12,9 +12,10 @@ test.describe('ServerConnectionCard loading CTAs', () => {
       // @ts-ignore
       const store = (window as any).__tldw_useConnectionStore
       if (store?.setState) {
-        const now = Date.now()
+        const prev = store.getState().state
         store.setState({
           state: {
+            ...prev,
             phase: 'searching',
             serverUrl: 'http://192.0.2.1:12345',
             lastCheckedAt: null,
@@ -24,7 +25,11 @@ test.describe('ServerConnectionCard loading CTAs', () => {
             isChecking: true,
             knowledgeStatus: 'unknown',
             knowledgeLastCheckedAt: null,
-            knowledgeError: null
+            knowledgeError: null,
+            mode: 'normal',
+            configStep: prev.configStep || 'url',
+            errorKind: 'none',
+            hasCompletedFirstRun: false
           },
           checkOnce: async () => {}
         })

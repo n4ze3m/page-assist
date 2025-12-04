@@ -44,13 +44,17 @@ import { RagSearchBar } from "@/components/Sidepanel/Chat/RagSearchBar"
 import { CurrentChatModelSettings } from "@/components/Common/Settings/CurrentChatModelSettings"
 import { ActorPopout } from "@/components/Common/Settings/ActorPopout"
 import QuickIngestModal from "@/components/Common/QuickIngestModal"
-import { useConnectionState } from "@/hooks/useConnectionState"
+import {
+  useConnectionState,
+  useConnectionUxState
+} from "@/hooks/useConnectionState"
 import { ConnectionPhase } from "@/types/connection"
 import { useServerCapabilities } from "@/hooks/useServerCapabilities"
 import { tldwClient } from "@/services/tldw/TldwApiClient"
 import { useAntdNotification } from "@/hooks/useAntdNotification"
 import { useFocusComposerOnConnect, focusComposer } from "@/hooks/useComposerFocus"
 import { useQuickIngestStore } from "@/store/quick-ingest"
+import { cleanUrl } from "@/libs/clean-url"
 
 type Props = {
   dropedFile: File | undefined
@@ -163,12 +167,37 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
     React.useState(false)
   const quickIngestBtnRef = React.useRef<HTMLButtonElement>(null)
   const [openActorSettings, setOpenActorSettings] = React.useState(false)
-  const { phase, isConnected } = useConnectionState()
+  const { phase, isConnected, serverUrl } = useConnectionState()
+  const { uxState } = useConnectionUxState()
   const isConnectionReady = isConnected && phase === ConnectionPhase.CONNECTED
   const { capabilities, loading: capsLoading } = useServerCapabilities()
   const hasServerAudio = isConnectionReady && !capsLoading && capabilities?.hasAudio
   const [hasShownConnectBanner, setHasShownConnectBanner] = React.useState(false)
   const [showConnectBanner, setShowConnectBanner] = React.useState(false)
+  const host = React.useMemo(
+    () => (serverUrl ? cleanUrl(serverUrl) : "tldw_server"),
+    [serverUrl]
+  )
+
+  const connectBannerCopy = React.useMemo(() => {
+    if (uxState === "error_auth") {
+      return t(
+        "option:connectionCard.descriptionErrorAuth",
+        "Your server is up but the API key is wrong or missing. Fix the key in Settings → tldw server, then retry."
+      )
+    }
+    if (uxState === "error_unreachable") {
+      return t(
+        "option:connectionCard.descriptionError",
+        "We couldn’t reach {{host}}. Check that your tldw_server is running and that your browser can reach it, then open diagnostics or update the URL.",
+        { host }
+      )
+    }
+    return t(
+      "sidepanel:composer.connectHint",
+      "Finish setup in Options to start chatting."
+    )
+  }, [host, t, uxState])
 
   const onInputChange = async (
     e: React.ChangeEvent<HTMLInputElement> | File
@@ -329,7 +358,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
         return
       }
     } catch {}
-    window.open("/options.html#/settings/tldw", "_blank")
+    window.open("/options.html#/", "_blank")
   }, [])
 
   const openDiagnostics = React.useCallback(() => {
@@ -1338,10 +1367,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                     {showConnectBanner && !isConnectionReady && (
                       <div className="mt-2 flex flex-wrap items-center justify-between gap-2 rounded-md border border-amber-300 bg-amber-50 px-3 py-2 text-xs text-amber-900 dark:border-amber-500 dark:bg-[#2a2310] dark:text-amber-100">
                         <p className="max-w-xs text-left">
-                          {t(
-                            "sidepanel:composer.connectHint",
-                            "Connect to your tldw server in Settings to send messages."
-                          )}
+                          {connectBannerCopy}
                         </p>
                         <div className="flex flex-wrap items-center gap-2">
                           <button
@@ -1349,7 +1375,10 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                             onClick={openSettings}
                             className="rounded-md border border-amber-300 bg-white px-2 py-1 text-xs font-medium text-amber-900 hover:bg-amber-100 dark:bg-[#3a2b10] dark:text-amber-50 dark:hover:bg-[#4a3512]"
                           >
-                            {t("settings:tldw.setupLink", "Set up server")}
+                            {t(
+                              "sidepanel:composer.connectPrimaryCta",
+                              "Finish setup in Options"
+                            )}
                           </button>
                           <button
                             type="button"

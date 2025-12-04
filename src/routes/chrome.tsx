@@ -35,6 +35,7 @@ import OptionSettingsPromptStudio from "./option-settings-prompt-studio"
 import OptionAdminServer from "./option-admin-server"
 import OptionAdminLlamacpp from "./option-admin-llamacpp"
 import OptionAdminMlx from "./option-admin-mlx"
+import OptionChatSettings from "./option-settings-chat"
 
 export const OptionRoutingChrome = () => {
   return (
@@ -47,6 +48,7 @@ export const OptionRoutingChrome = () => {
       <Route path="/settings/evaluations" element={<OptionSettingsEvaluations />} />
       {/** Ollama settings removed in favor of tldw_server */}
       <Route path="/settings/chrome" element={<OptionChrome />} />
+      <Route path="/settings/chat" element={<OptionChatSettings />} />
       <Route path="/settings/openai" element={<OptionOpenAI />} />
       <Route path="/settings/share" element={<OptionShare />} />
       <Route path="/settings/processed" element={<OptionProcessed />} />

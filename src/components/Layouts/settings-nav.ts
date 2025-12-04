@@ -16,7 +16,8 @@ import {
   Layers,
   StickyNote,
   Microscope,
-  FlaskConical
+  FlaskConical,
+  MessageSquare
 } from "lucide-react"
 
 export type SettingsNavItem = {
@@ -39,6 +40,7 @@ export const SETTINGS_NAV_GROUPS: SettingsNavGroup[] = [
     items: [
       { to: "/settings/tldw", icon: ServerIcon, labelToken: "settings:tldw.serverNav" },
       { to: "/settings", icon: OrbitIcon, labelToken: "settings:generalSettings.title" },
+      { to: "/settings/chat", icon: MessageSquare, labelToken: "settings:chatSettingsNav" },
       { to: "/settings/rag", icon: CombineIcon, labelToken: "settings:rag.title" },
       {
         to: "/settings/chrome",

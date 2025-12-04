@@ -49,11 +49,13 @@ test.describe('Sidepanel first-run and connection panel', () => {
       // @ts-ignore
       const store = (window as any).__tldw_useConnectionStore
       if (store?.setState) {
+        const prev = store.getState().state
         const now = Date.now()
         store.setState({
           state: {
+            ...prev,
             phase: 'connected',
-            serverUrl: 'http://127.0.0.1:8000',
+            serverUrl: prev.serverUrl || 'http://127.0.0.1:8000',
             lastCheckedAt: now,
             lastError: null,
             lastStatusCode: null,
@@ -61,7 +63,11 @@ test.describe('Sidepanel first-run and connection panel', () => {
             isChecking: false,
             knowledgeStatus: 'ready',
             knowledgeLastCheckedAt: now,
-            knowledgeError: null
+            knowledgeError: null,
+            mode: 'normal',
+            configStep: 'health',
+            errorKind: 'none',
+            hasCompletedFirstRun: true
           },
           checkOnce: async () => {}
         })

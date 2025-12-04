@@ -104,9 +104,11 @@ test.describe('Options first-run and connection panel', () => {
       // @ts-ignore
       const store = window.__tldw_useConnectionStore
       if (store?.setState) {
+        const prev = store.getState().state
         const now = Date.now()
         store.setState({
           state: {
+            ...prev,
             phase: 'connected',
             serverUrl: url,
             lastCheckedAt: now,
@@ -116,7 +118,11 @@ test.describe('Options first-run and connection panel', () => {
             isChecking: false,
             knowledgeStatus: 'ready',
             knowledgeLastCheckedAt: now,
-            knowledgeError: null
+            knowledgeError: null,
+            mode: 'normal',
+            configStep: 'health',
+            errorKind: 'none',
+            hasCompletedFirstRun: true
           },
           checkOnce: async () => {}
         })

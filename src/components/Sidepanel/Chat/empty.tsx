@@ -1,7 +1,6 @@
 import React from "react"
 import { useTranslation } from "react-i18next"
 import { Button, Tooltip } from "antd"
-import { ServerConnectionCard } from "@/components/Common/ServerConnectionCard"
 import {
   useConnectionState,
   useConnectionUxState
@@ -60,11 +59,8 @@ export const EmptySidePanel = () => {
     window.open(path, "_blank")
   }
 
-  const openSettings = () => {
-    openExtensionUrl("/options.html#/settings/tldw")
-  }
-
   const showConnectionCard = !isConnectionReady
+  const host = serverUrl ? cleanUrl(serverUrl) : "tldw_server"
 
   const totalSteps = 3
   const activeStep = (() => {
@@ -116,41 +112,72 @@ export const EmptySidePanel = () => {
     window.dispatchEvent(new CustomEvent("tldw:open-quick-ingest"))
   }
 
+  const bannerHeading = (() => {
+    if (uxState === "error_auth") {
+      return t(
+        "option:connectionCard.headlineErrorAuth",
+        "API key needs attention"
+      )
+    }
+    if (uxState === "error_unreachable") {
+      return t(
+        "option:connectionCard.headlineError",
+        "Can’t reach your tldw server"
+      )
+    }
+    return t(
+      "option:connectionCard.headlineMissing",
+      "Connect tldw Assistant to your server"
+    )
+  })()
+
+  const bannerBody = (() => {
+    if (uxState === "error_auth") {
+      return t(
+        "option:connectionCard.descriptionErrorAuth",
+        "Your server is up but the API key is wrong or missing. Fix the key in Settings → tldw server, then retry."
+      )
+    }
+    if (uxState === "error_unreachable") {
+      return t(
+        "option:connectionCard.descriptionError",
+        "We couldn’t reach {{host}}. Check that your tldw_server is running and that your browser can reach it, then open diagnostics or update the URL.",
+        { host }
+      )
+    }
+    return t(
+      "option:connectionCard.descriptionMissing",
+      "tldw_server is your private AI workspace that keeps chats, notes, and media on your own machine. Add your server URL to get started."
+    )
+  })()
+
   if (showConnectionCard) {
     return (
-      <div className="mt-2 flex w-full flex-col items-stretch gap-3">
-        <ServerConnectionCard
-          onOpenSettings={openSettings}
-          variant="compact"
-        />
-        <p className="px-3 text-[11px] text-gray-600 dark:text-gray-300">
-          {t(
-            "sidepanel:firstRun.finishInOptions",
-            "Finish setup in the full Options view. Once connected, this sidepanel will unlock so you can chat while you browse."
-          )}
-        </p>
-        {stepSummary && (
-          <p className="px-3 text-[11px] text-gray-500 dark:text-gray-400">
-            {stepSummary}
-          </p>
-        )}
-        <div className="px-3 pb-1">
+      <div className="mt-4 flex w-full flex-col items-stretch gap-3 px-3">
+        <div className="flex flex-wrap items-start justify-between gap-3 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-[11px] text-amber-900 dark:border-amber-500 dark:bg-[#2a2310] dark:text-amber-100">
+          <div className="flex-1 space-y-1">
+            <p className="font-medium">{bannerHeading}</p>
+            <p className="text-[11px] leading-snug">{bannerBody}</p>
+          </div>
           <button
             type="button"
             onClick={openOnboarding}
-            className="text-[11px] text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
+            className="rounded-md border border-amber-300 bg-white px-2 py-1 text-[11px] font-medium text-amber-900 hover:bg-amber-100 dark:bg-[#3a2b10] dark:text-amber-50 dark:hover:bg-[#4a3512]"
           >
             {t(
-              "sidepanel:firstRun.openOptions",
-              "Open setup in Options"
+              "sidepanel:firstRun.openOptionsPrimary",
+              "Finish setup in Options"
             )}
           </button>
         </div>
+        {stepSummary && (
+          <p className="px-1 text-[11px] text-gray-600 dark:text-gray-300">
+            {stepSummary}
+          </p>
+        )}
       </div>
     )
   }
-
-  const host = serverUrl ? cleanUrl(serverUrl) : "tldw_server"
 
   return (
     <div className="mt-4 w-full px-6">

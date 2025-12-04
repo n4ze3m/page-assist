@@ -32,6 +32,7 @@ import { PlaygroundUserMessageBubble } from "./PlaygroundUserMessage"
 import { copyToClipboard } from "@/utils/clipboard"
 import { ChatDocuments } from "@/models/ChatTypes"
 import { PiGitBranch } from "react-icons/pi"
+import { buildChatTextClass } from "@/utils/chat-style"
 
 const Markdown = React.lazy(() => import("../../Common/Markdown"))
 
@@ -40,6 +41,9 @@ const ErrorBubble: React.FC<{
   toggleLabels: { show: string; hide: string }
 }> = ({ payload, toggleLabels }) => {
   const [showDetails, setShowDetails] = React.useState(false)
+
+  const MARKDOWN_BASE_CLASSES =
+    "prose break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0 dark:prose-dark"
 
   return (
     <div
@@ -117,6 +121,12 @@ export const PlaygroundMessage = (props: Props) => {
   )
   const [autoPlayTTS] = useStorage("isTTSAutoPlayEnabled", false)
   const [copyAsFormattedText] = useStorage("copyAsFormattedText", false)
+  const [userTextColor] = useStorage("chatUserTextColor", "default")
+  const [assistantTextColor] = useStorage("chatAssistantTextColor", "default")
+  const [userTextFont] = useStorage("chatUserTextFont", "default")
+  const [assistantTextFont] = useStorage("chatAssistantTextFont", "default")
+  const [userTextSize] = useStorage("chatUserTextSize", "md")
+  const [assistantTextSize] = useStorage("chatAssistantTextSize", "md")
   const { t } = useTranslation("common")
   const { cancel, isSpeaking, speak } = useTTS()
   const isLastMessage: boolean =
@@ -161,6 +171,23 @@ export const PlaygroundMessage = (props: Props) => {
     props.isProcessing,
     props.message
   ])
+
+  const userTextClass = React.useMemo(
+    () => buildChatTextClass(userTextColor, userTextFont, userTextSize),
+    [userTextColor, userTextFont, userTextSize]
+  )
+
+  const assistantTextClass = React.useMemo(
+    () =>
+      buildChatTextClass(
+        assistantTextColor,
+        assistantTextFont,
+        assistantTextSize
+      ),
+    [assistantTextColor, assistantTextFont, assistantTextSize]
+  )
+
+  const chatTextClass = props.isBot ? assistantTextClass : userTextClass
   useEffect(() => {
     if (
       autoPlayTTS &&
@@ -194,6 +221,9 @@ export const PlaygroundMessage = (props: Props) => {
   if (isUserChatBubble && !props.isBot) {
     return <PlaygroundUserMessageBubble {...props} />
   }
+
+  const MARKDOWN_BASE_CLASSES =
+    "prose break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0 dark:prose-dark"
 
   return (
     <div
@@ -320,11 +350,15 @@ export const PlaygroundMessage = (props: Props) => {
                                 children: (
                                   <React.Suspense
                                     fallback={
-                                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                                      <p
+                                        className={`text-sm text-gray-500 dark:text-gray-400 ${assistantTextClass}`}>
                                         {t("reasoning.loading")}
                                       </p>
                                     }>
-                                    <Markdown message={e.content} />
+                                    <Markdown
+                                      message={e.content}
+                                      className={`${MARKDOWN_BASE_CLASSES} ${assistantTextClass}`}
+                                    />
                                   </React.Suspense>
                                 )
                               }
@@ -337,11 +371,15 @@ export const PlaygroundMessage = (props: Props) => {
                         <React.Suspense
                           key={i}
                           fallback={
-                            <p className="text-sm text-gray-500 dark:text-gray-400">
+                            <p
+                              className={`text-sm text-gray-500 dark:text-gray-400 ${assistantTextClass}`}>
                               {t("loading.content")}
                             </p>
                           }>
-                          <Markdown message={e.content} />
+                          <Markdown
+                            message={e.content}
+                            className={`${MARKDOWN_BASE_CLASSES} ${assistantTextClass}`}
+                          />
                         </React.Suspense>
                       )
                     })}
@@ -349,7 +387,7 @@ export const PlaygroundMessage = (props: Props) => {
                 )
               ) : (
                 <p
-                  className={`prose dark:prose-invert whitespace-pre-line prose-p:leading-relaxed prose-pre:p-0 dark:prose-dark ${
+                  className={`prose dark:prose-invert whitespace-pre-line prose-p:leading-relaxed prose-pre:p-0 dark:prose-dark ${chatTextClass} ${
                     props.message_type &&
                     "italic text-gray-500 dark:text-gray-400 text-sm"
                   }

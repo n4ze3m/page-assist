@@ -9,6 +9,7 @@ import { HumanMessage } from "./HumanMessge"
 import { ChatDocuments } from "@/models/ChatTypes"
 import { DocumentChip } from "./DocumentChip"
 import { DocumentFile } from "./DocumentFile"
+import { buildChatTextClass } from "@/utils/chat-style"
 
 type Props = {
   message: string
@@ -41,10 +42,18 @@ type Props = {
 
 export const PlaygroundUserMessageBubble: React.FC<Props> = (props) => {
   const [checkWideMode] = useStorage("checkWideMode", false)
+  const [userTextColor] = useStorage("chatUserTextColor", "default")
+  const [userTextFont] = useStorage("chatUserTextFont", "default")
+  const [userTextSize] = useStorage("chatUserTextSize", "md")
   const [isBtnPressed, setIsBtnPressed] = React.useState(false)
   const [editMode, setEditMode] = React.useState(false)
   const { t } = useTranslation("common")
   const { cancel, isSpeaking, speak } = useTTS()
+
+  const userTextClass = React.useMemo(
+    () => buildChatTextClass(userTextColor, userTextFont, userTextSize),
+    [userTextColor, userTextFont, userTextSize]
+  )
 
   return (
     <div
@@ -96,7 +105,7 @@ export const PlaygroundUserMessageBubble: React.FC<Props> = (props) => {
         <div
           dir="auto"
           data-is-not-editable={!editMode}
-          className={`message-bubble bg-gray-50 dark:bg-[#242424] rounded-3xl prose dark:prose-invert break-words text-primary min-h-7 prose-p:opacity-95 prose-strong:opacity-100 bg-foreground border border-input-border max-w-[100%] sm:max-w-[90%] px-4 py-2.5 rounded-br-lg dark:border-[#2D2D2D] ${
+          className={`message-bubble bg-gray-50 dark:bg-[#242424] rounded-3xl prose dark:prose-invert break-words text-gray-800 dark:text-gray-100 min-h-7 prose-p:opacity-95 prose-strong:opacity-100 bg-foreground border border-input-border max-w-[100%] sm:max-w-[90%] px-4 py-2.5 rounded-br-lg dark:border-[#2D2D2D] ${userTextClass} ${
             props.message_type && !editMode ? "italic" : ""
           }`}>
           <HumanMessage message={props.message} />
@@ -106,7 +115,7 @@ export const PlaygroundUserMessageBubble: React.FC<Props> = (props) => {
       {editMode && (
         <div
           dir="auto"
-          className={`message-bubble bg-gray-50 dark:bg-[#242424] rounded-3xl prose dark:prose-invert break-words text-primary min-h-7 prose-p:opacity-95 prose-strong:opacity-100 bg-foreground border border-input-border max-w-[100%] sm:max-w-[90%] px-4 py-2.5 rounded-br-lg dark:border-[#2D2D2D] ${
+          className={`message-bubble bg-gray-50 dark:bg-[#242424] rounded-3xl prose dark:prose-invert break-words text-gray-800 dark:text-gray-100 min-h-7 prose-p:opacity-95 prose-strong:opacity-100 bg-foreground border border-input-border max-w-[100%] sm:max-w-[90%] px-4 py-2.5 rounded-br-lg dark:border-[#2D2D2D] ${userTextClass} ${
             props.message_type && !editMode ? "italic" : ""
           }`}>
           <div className="w-screen max-w-[100%]">

@@ -57,7 +57,10 @@ test.describe('Composer readiness based on connection state', () => {
           ...prev,
           phase: 'connected',
           isConnected: false,
-          isChecking: false
+          isChecking: false,
+          mode: 'normal',
+          configStep: prev.configStep || 'health',
+          errorKind: 'none'
         }
       })
     })

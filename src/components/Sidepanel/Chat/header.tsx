@@ -39,8 +39,10 @@ import { Sidebar } from "@/components/Option/Sidebar"
 // import { BsIncognito } from "react-icons/bs"
 import { isFireFoxPrivateMode } from "@/utils/is-private-mode"
 import { useAntdNotification } from "@/hooks/useAntdNotification"
-import { useConnectionActions, useConnectionState } from "@/hooks/useConnectionState"
-import { ConnectionPhase } from "@/types/connection"
+import {
+  useConnectionActions,
+  useConnectionUxState
+} from "@/hooks/useConnectionState"
 import { Storage } from "@plasmohq/storage"
 
 type SidepanelHeaderProps = {
@@ -176,9 +178,22 @@ export const SidepanelHeader = ({
     }),
     [sendQuickIngest, t]
   )
-  const { isConnected, phase } = useConnectionState()
+  const { uxState, mode } = useConnectionUxState()
   const { checkOnce } = useConnectionActions()
-  const ingestDisabled = phase === ConnectionPhase.UNCONFIGURED
+
+  const isConnectedUx =
+    uxState === "connected_ok" ||
+    uxState === "connected_degraded" ||
+    uxState === "demo_mode"
+  const isChecking = uxState === "testing"
+  const isConfigOrError =
+    uxState === "unconfigured" ||
+    uxState === "configuring_url" ||
+    uxState === "configuring_auth" ||
+    uxState === "error_unreachable" ||
+    uxState === "error_auth"
+
+  const ingestDisabled = !isConnectedUx
 
   return (
     <div
@@ -196,35 +211,46 @@ export const SidepanelHeader = ({
       <div className="flex items-center space-x-3">
         <Tooltip
           title={
-            isConnected
+            isChecking
               ? t(
-                  "sidepanel:header.connection.ok",
-                  "Connected to your tldw server"
+                  "sidepanel:header.connection.checking",
+                  "Checking connection to your tldw server…"
                 )
-              : phase === ConnectionPhase.UNCONFIGURED
+              : isConnectedUx && mode === "demo"
                 ? t(
-                    "sidepanel:header.connection.unconfigured",
-                    "Open Settings to configure your tldw server."
+                    "sidepanel:header.connection.demo",
+                    "Demo mode: explore with a sample workspace. Open Options to connect your own server."
                   )
-                : t(
-                    "sidepanel:header.connection.failed",
-                    "We couldn’t reach your tldw server. Retry or open Settings."
-                  )
+                : isConnectedUx
+                  ? t(
+                      "sidepanel:header.connection.ok",
+                      "Connected to your tldw server"
+                    )
+                  : isConfigOrError
+                    ? t(
+                        "sidepanel:header.connection.unconfigured",
+                        "Finish setup in Options to connect your tldw server."
+                      )
+                    : t(
+                        "sidepanel:header.connection.failed",
+                        "We couldn’t reach your tldw server. Open Options to review your setup."
+                      )
           }>
           <button
             type="button"
             onClick={() => {
-              if (phase === ConnectionPhase.UNCONFIGURED) {
-                openOptionsPage("#/settings/tldw")
-              } else if (phase !== ConnectionPhase.SEARCHING) {
-                void checkOnce()
+              if (isChecking) return
+              if (isConfigOrError) {
+                openOptionsPage("#/")
+                return
               }
+              void checkOnce()
             }}
-            disabled={phase === ConnectionPhase.SEARCHING}
+            disabled={isChecking}
             className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-xs font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-700 ${
-              isConnected
+              isConnectedUx
                 ? "border-emerald-500/60 bg-emerald-50 text-emerald-700 dark:border-emerald-400/60 dark:bg-emerald-900/40 dark:text-emerald-100"
-                : phase === ConnectionPhase.SEARCHING
+                : isChecking
                   ? "border-blue-400/60 bg-blue-50 text-blue-700 dark:border-blue-300/60 dark:bg-blue-900/40 dark:text-blue-100"
                   : "border-amber-500/60 bg-amber-50 text-amber-700 dark:border-amber-400/60 dark:bg-amber-900/40 dark:text-amber-100"
             }`}
@@ -234,33 +260,38 @@ export const SidepanelHeader = ({
             ) as string}>
             <span
               className={`h-2 w-2 rounded-full ${
-                isConnected
+                isConnectedUx
                   ? "bg-emerald-500"
-                  : phase === ConnectionPhase.SEARCHING
+                  : isChecking
                     ? "bg-blue-500"
                     : "bg-amber-500"
               }`}
             />
             <span>
-              {phase === ConnectionPhase.SEARCHING
+              {isChecking
                 ? t(
                     "sidepanel:header.connection.checking",
                     "Checking…"
                   )
-                : isConnected
+                : uxState === "demo_mode"
                   ? t(
-                      "sidepanel:header.connection.connected",
-                      "Connected"
+                      "sidepanel:header.connection.demoLabel",
+                      "Demo mode"
                     )
-                  : phase === ConnectionPhase.UNCONFIGURED
+                  : isConnectedUx
                     ? t(
-                        "sidepanel:header.connection.configure",
-                        "Connect"
+                        "sidepanel:header.connection.connected",
+                        "Connected"
                       )
-                    : t(
-                        "sidepanel:header.connection.retry",
-                        "Retry"
-                      )}
+                    : isConfigOrError
+                      ? t(
+                          "sidepanel:header.connection.configure",
+                          "Connect"
+                        )
+                      : t(
+                          "sidepanel:header.connection.retry",
+                          "Retry"
+                        )}
             </span>
           </button>
         </Tooltip>
@@ -378,31 +409,6 @@ export const SidepanelHeader = ({
             </button>
           </Tooltip>
         </Dropdown>
-        <Tooltip
-          title={
-            t(
-              "settings:healthSummary.diagnosticsTooltip",
-              "Open detailed diagnostics to troubleshoot or inspect health checks."
-            ) as string
-          }>
-          <IconButton
-            ariaLabel={
-              t(
-                "settings:healthSummary.diagnostics",
-                "Health & diagnostics"
-              ) as string
-            }
-            title={
-              t(
-                "settings:healthSummary.diagnostics",
-                "Health & diagnostics"
-              ) as string
-            }
-            onClick={() => openOptionsPage("#/settings/health")}
-            className="flex items-center space-x-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-700">
-            <Microscope className="size-4 text-gray-500 dark:text-gray-400" />
-          </IconButton>
-        </Tooltip>
         <Tooltip title={t('settings:managePrompts.title')}>
           <button
             type="button"

@@ -10,6 +10,11 @@ import type { TFunction } from 'i18next'
 import { useAntdNotification } from '@/hooks/useAntdNotification'
 import { getReturnTo, clearReturnTo } from "@/utils/return-to"
 import { ServerOverviewHint } from "@/components/Common/ServerOverviewHint"
+import {
+  useConnectionState,
+  useConnectionUxState
+} from "@/hooks/useConnectionState"
+import { cleanUrl } from "@/libs/clean-url"
 
 type Check = {
   key: string
@@ -100,7 +105,7 @@ const makeChecks = (t: TFunction): Check[] => {
 type Result = { status: 'unknown'|'healthy'|'unhealthy', detail?: any, statusCode?: number, durationMs?: number }
 
 export default function HealthStatus() {
-  const { t } = useTranslation(['settings', 'common'])
+  const { t } = useTranslation(['settings', 'common', 'option'])
   const notification = useAntdNotification()
   const checks = makeChecks(t)
   const [results, setResults] = useState<Record<string, Result>>({})
@@ -116,6 +121,13 @@ export default function HealthStatus() {
   const navigate = useNavigate()
   const MIN_INTERVAL_SEC = 5
   const SAFE_FLOOR_SEC = 15
+  const {
+    serverUrl: storeServerUrl,
+    lastStatusCode,
+    lastError
+  } = useConnectionState()
+  const { uxState, errorKind } = useConnectionUxState()
+  const storeHost = storeServerUrl ? cleanUrl(storeServerUrl) : null
 
   const runSingle = async (c: Check): Promise<boolean> => {
     const t0 = performance.now()
@@ -279,6 +291,12 @@ export default function HealthStatus() {
     return t('healthPage.statusUnknown', 'Unknown')
   }
 
+  const showAuthCallout =
+    uxState === "error_auth" || errorKind === "auth"
+  const showUnreachableCallout =
+    uxState === "error_unreachable" || errorKind === "unreachable"
+  const showDegradedCallout = uxState === "connected_degraded"
+
   return (
     <Space direction="vertical" size="large" className="w-full">
       <div className="flex items-center justify-between">
@@ -339,6 +357,105 @@ export default function HealthStatus() {
           </Link>
         </Space>
       </div>
+
+      {(showAuthCallout || showUnreachableCallout || showDegradedCallout) && (
+        <Alert
+          type={showDegradedCallout ? "info" : "error"}
+          showIcon
+          className="mt-3"
+          message={
+            showAuthCallout
+              ? t(
+                  "option:connectionCard.headlineErrorAuth",
+                  "API key needs attention"
+                )
+              : showUnreachableCallout
+                ? t(
+                    "option:connectionCard.headlineError",
+                    "Can’t reach your tldw server"
+                  )
+                : t(
+                    "healthPage.degradedTitle",
+                    "Chat is ready — some tools are offline"
+                  )
+          }
+          description={
+            <div className="space-y-1 text-sm">
+              <div>
+                {showAuthCallout
+                  ? t(
+                      "healthSummary.issueAuthHint",
+                      "Your server responded but the API key or login is invalid. Fix your credentials, then re-run checks."
+                    )
+                  : showUnreachableCallout
+                    ? t(
+                        "healthSummary.issueConnectivityHint",
+                        "We couldn’t reach your tldw server. Check that it’s running, your browser has site access, and any proxies or firewalls allow the connection."
+                      )
+                    : t(
+                        "healthPage.degradedBody",
+                        "Core chat is connected, but some health checks are failing. You can continue using the assistant while you investigate."
+                      )}
+              </div>
+              {(typeof lastStatusCode === "number" && lastStatusCode > 0) ||
+              lastError ? (
+                <div className="text-[11px] text-gray-600 dark:text-gray-400">
+                  {t(
+                    "healthPage.lastErrorSummary",
+                    "Most recent connection error: {{code}} {{message}}",
+                    {
+                      code:
+                        typeof lastStatusCode === "number" &&
+                        lastStatusCode > 0
+                          ? `HTTP ${lastStatusCode}`
+                          : t(
+                              "healthPage.lastErrorNetwork",
+                              "network/timeout"
+                            ),
+                      message: lastError || ""
+                    }
+                  )}
+                </div>
+              ) : null}
+              <div>
+                {showAuthCallout ? (
+                  <Button
+                    type="primary"
+                    size="small"
+                    onClick={() => navigate("/")}
+                  >
+                    {t("healthPage.fixApiKeyCta", "Fix API key")}
+                  </Button>
+                ) : showUnreachableCallout ? (
+                  <Button
+                    type="primary"
+                    size="small"
+                    onClick={() => navigate("/")}
+                  >
+                    {t("healthPage.editUrlCta", "Edit server URL")}
+                  </Button>
+                ) : (
+                  <Button
+                    type="primary"
+                    size="small"
+                    onClick={() => {
+                      const target = getReturnTo()
+                      if (target) {
+                        clearReturnTo()
+                        navigate(target)
+                      } else {
+                        navigate(-1)
+                      }
+                    }}
+                  >
+                    {t("healthPage.backToAppCta", "Back to app")}
+                  </Button>
+                )}
+              </div>
+            </div>
+          }
+        />
+      )}
 
       {!serverUrl && (
         <Alert
@@ -420,6 +537,36 @@ export default function HealthStatus() {
       </div>
 
       <div aria-live="polite" aria-atomic="false">
+        <div className="mt-4">
+          <Typography.Title
+            level={5}
+            className="!mb-1 text-sm md:text-base"
+          >
+            {t(
+              "healthPage.technicalSummaryTitle",
+              "Technical details"
+            )}
+          </Typography.Title>
+          <Typography.Paragraph
+            type="secondary"
+            className="!mb-2 text-xs md:text-sm"
+          >
+            {t(
+              "healthPage.technicalSummaryBody",
+              "Each check below hits a specific health endpoint and shows the raw JSON response so you can debug server-side issues."
+            )}
+          </Typography.Paragraph>
+          {storeHost && (
+            <Typography.Text className="text-[11px] text-gray-500 dark:text-gray-400">
+              {t(
+                "healthPage.technicalSummaryHost",
+                "Current server: {{host}}",
+                { host: storeHost }
+              )}
+            </Typography.Text>
+          )}
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {checks.map(c => {
             const r = results[c.key] || { status: 'unknown' }

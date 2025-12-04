@@ -35,6 +35,7 @@ const OptionEvaluations = lazy(() => import("./option-evaluations"))
 const OptionSettingsEvaluations = lazy(() => import("./option-settings-evaluations"))
 const OptionPromptStudio = lazy(() => import("./option-prompt-studio"))
 const OptionSettingsPromptStudio = lazy(() => import("./option-settings-prompt-studio"))
+const OptionChatSettings = lazy(() => import("./option-settings-chat"))
 
 export const OptionRoutingFirefox = () => {
   return (
@@ -46,6 +47,7 @@ export const OptionRoutingFirefox = () => {
       <Route path="/settings/prompt" element={<OptionPrompt />} />
       {/** Ollama settings removed in favor of tldw_server */}
       <Route path="/settings/openai" element={<OptionOpenAI />} />
+      <Route path="/settings/chat" element={<OptionChatSettings />} />
       <Route path="/settings/share" element={<OptionShare />} />
       <Route path="/settings/processed" element={<OptionProcessed />} />
       <Route path="/settings/health" element={<OptionHealth />} />

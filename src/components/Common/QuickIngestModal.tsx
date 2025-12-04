@@ -11,6 +11,7 @@ import { tldwModels } from '@/services/tldw'
 import { useConnectionActions, useConnectionState } from '@/hooks/useConnectionState'
 import { useQuickIngestStore } from "@/store/quick-ingest"
 import { ConnectionPhase } from "@/types/connection"
+import { cleanUrl } from "@/libs/clean-url"
 
 type Entry = {
   id: string
@@ -155,7 +156,8 @@ export const QuickIngestModal: React.FC<Props> = ({
   const [inspectorIntroDismissed, setInspectorIntroDismissed] = useStorage<boolean>('quickIngestInspectorIntroDismissed', false)
   const confirmDanger = useConfirmDanger()
   const introToast = React.useRef(false)
-  const { phase, isConnected, offlineBypass } = useConnectionState()
+  const { phase, isConnected, offlineBypass, serverUrl, errorKind } =
+    useConnectionState()
   const { checkOnce, disableOfflineBypass } = useConnectionActions?.() || {}
 
   type IngestConnectionStatus =
@@ -186,6 +188,10 @@ export const QuickIngestModal: React.FC<Props> = ({
     }
     return "unknown"
   }, [phase, isConnected, offlineBypass])
+  const ingestHost = React.useMemo(
+    () => (serverUrl ? cleanUrl(serverUrl) : "tldw_server"),
+    [serverUrl]
+  )
 
   const ingestBlocked = ingestConnectionStatus !== "online"
   const ingestBlockedPrevRef = React.useRef(ingestBlocked)
@@ -1313,14 +1319,26 @@ export const QuickIngestModal: React.FC<Props> = ({
       )
       showHealthLink = true
     } else if (ingestConnectionStatus === "offline") {
-      connectionBannerTitle = t(
-        "quickIngest.offlineTitle",
-        "Server offline — staging only"
-      )
-      connectionBannerBody = t(
-        "quickIngest.offlineDescription",
-        "You can queue URLs and files here and inspect fields, but ingestion will not run until your tldw server is online."
-      )
+      if ((errorKind as any) === "auth") {
+        connectionBannerTitle = t(
+          "option:connectionCard.headlineErrorAuth",
+          "API key needs attention"
+        )
+        connectionBannerBody = t(
+          "option:connectionCard.descriptionErrorAuth",
+          "Your server is up but the API key is wrong or missing. Fix the key in Settings → tldw server, then retry."
+        )
+      } else {
+        connectionBannerTitle = t(
+          "option:connectionCard.headlineError",
+          "Can’t reach your tldw server"
+        )
+        connectionBannerBody = t(
+          "option:connectionCard.descriptionError",
+          "We couldn’t reach {{host}}. Check that your tldw_server is running and that your browser can reach it, then open diagnostics or update the URL.",
+          { host: ingestHost }
+        )
+      }
       showHealthLink = true
     } else {
       connectionBannerTitle = t(

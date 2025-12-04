@@ -12,6 +12,7 @@
   "mediaNav": "Media",
   "evaluationsSettingsNav": "Evaluations",
   "promptStudioNav": "Prompt Studio",
+  "chatSettingsNav": "Chat",
   "admin": {
     "adminGuardForbiddenTitle": "Admin access required for these controls",
     "adminGuardNotFoundTitle": "Admin APIs are not available on this server",
@@ -47,6 +48,37 @@
     "evalMaxTokens": "Max tokens",
     "unavailable": "Prompt Studio isn’t available on the server yet.",
     "unavailableBody": "Once enabled, you can monitor queue health and set defaults here."
+  },
+  "chatSettings": {
+    "title": "Chat settings",
+    "description": "Control default behavior for the chat playground and composer.",
+    "userHeading": "User messages",
+    "assistantHeading": "Assistant messages",
+    "userColor": "User text color",
+    "assistantColor": "Assistant text color",
+    "userFont": "User font",
+    "assistantFont": "Assistant font",
+    "userSize": "User text size",
+    "assistantSize": "Assistant text size",
+    "color": {
+      "default": "Default",
+      "blue": "Blue",
+      "green": "Green",
+      "purple": "Purple",
+      "orange": "Orange",
+      "red": "Red"
+    },
+    "font": {
+      "default": "Default",
+      "sans": "Sans serif",
+      "serif": "Serif",
+      "mono": "Monospace"
+    },
+    "size": {
+      "sm": "Small",
+      "md": "Medium",
+      "lg": "Large"
+    }
   },
   "generalSettings": {
     "title": "General Settings",

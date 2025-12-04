@@ -13,6 +13,7 @@ test.describe('Queued messages banners', () => {
       const msgStore: any = (window as any).__tldw_useStoreMessageOption
       if (!conn || !msgStore) return
       const prevState = conn.getState().state
+      const now = Date.now()
       conn.setState({
         state: {
           ...prevState,
@@ -20,12 +21,16 @@ test.describe('Queued messages banners', () => {
           isConnected: true,
           isChecking: false,
           serverUrl: prevState.serverUrl || 'http://127.0.0.1:8000',
-          lastCheckedAt: Date.now(),
+          lastCheckedAt: now,
           lastError: null,
           lastStatusCode: null,
           knowledgeStatus: 'ready',
-          knowledgeLastCheckedAt: Date.now(),
-          knowledgeError: null
+          knowledgeLastCheckedAt: now,
+          knowledgeError: null,
+          mode: 'normal',
+          configStep: 'health',
+          errorKind: 'none',
+          hasCompletedFirstRun: true
         }
       })
 
@@ -70,6 +75,7 @@ test.describe('Queued messages banners', () => {
       const msgStore: any = (window as any).__tldw_useStoreMessageOption
       if (!conn || !msgStore) return
       const prevState = conn.getState().state
+      const now = Date.now()
       conn.setState({
         state: {
           ...prevState,
@@ -77,12 +83,16 @@ test.describe('Queued messages banners', () => {
           isConnected: true,
           isChecking: false,
           serverUrl: prevState.serverUrl || 'http://127.0.0.1:8000',
-          lastCheckedAt: Date.now(),
+          lastCheckedAt: now,
           lastError: null,
           lastStatusCode: null,
           knowledgeStatus: 'ready',
-          knowledgeLastCheckedAt: Date.now(),
-          knowledgeError: null
+          knowledgeLastCheckedAt: now,
+          knowledgeError: null,
+          mode: 'normal',
+          configStep: 'health',
+          errorKind: 'none',
+          hasCompletedFirstRun: true
         }
       })
 
@@ -128,6 +138,7 @@ test.describe('Queued messages banners', () => {
       const msgStore: any = (window as any).__tldw_useStoreMessageOption
       if (!conn || !msgStore) return
       const prevState = conn.getState().state
+      const now = Date.now()
       conn.setState({
         state: {
           ...prevState,
@@ -135,12 +146,16 @@ test.describe('Queued messages banners', () => {
           isConnected: true,
           isChecking: false,
           serverUrl: prevState.serverUrl || 'http://127.0.0.1:8000',
-          lastCheckedAt: Date.now(),
+          lastCheckedAt: now,
           lastError: null,
           lastStatusCode: null,
           knowledgeStatus: 'ready',
-          knowledgeLastCheckedAt: Date.now(),
-          knowledgeError: null
+          knowledgeLastCheckedAt: now,
+          knowledgeError: null,
+          mode: 'normal',
+          configStep: 'health',
+          errorKind: 'none',
+          hasCompletedFirstRun: true
         }
       })
 
