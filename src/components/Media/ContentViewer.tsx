@@ -9,13 +9,16 @@ import {
   Sparkles
 } from 'lucide-react'
 import React, { useState, useRef, useEffect } from 'react'
+import { Select } from 'antd'
 import { AnalysisModal } from './AnalysisModal'
+import { bgRequest } from '@/services/background-proxy'
 
 interface Result {
   id: string | number
   title?: string
   kind: 'media' | 'note'
   snippet?: string
+  keywords?: string[]
   meta?: {
     type?: string
     source?: string | null
@@ -38,6 +41,7 @@ interface ContentViewerProps {
   onChatWithMedia?: () => void
   onChatAboutMedia?: () => void
   onRefreshMedia?: () => void
+  onKeywordsUpdated?: (mediaId: string | number, keywords: string[]) => void
   contentRef?: (node: HTMLDivElement | null) => void
 }
 
@@ -54,6 +58,7 @@ export function ContentViewer({
   onChatWithMedia,
   onChatAboutMedia,
   onRefreshMedia,
+  onKeywordsUpdated,
   contentRef
 }: ContentViewerProps) {
   const [collapsedSections, setCollapsedSections] = useState<
@@ -66,7 +71,36 @@ export function ContentViewer({
   })
   const [showMoreActions, setShowMoreActions] = useState(false)
   const [analysisModalOpen, setAnalysisModalOpen] = useState(false)
+  const [editingKeywords, setEditingKeywords] = useState<string[]>([])
+  const [savingKeywords, setSavingKeywords] = useState(false)
   const moreActionsRef = useRef<HTMLDivElement>(null)
+
+  // Sync editing keywords with selected media
+  useEffect(() => {
+    setEditingKeywords(selectedMedia?.keywords || [])
+  }, [selectedMedia?.id, selectedMedia?.keywords])
+
+  // Save keywords to API
+  const handleSaveKeywords = async (newKeywords: string[]) => {
+    if (!selectedMedia) return
+    setSavingKeywords(true)
+    try {
+      await bgRequest({
+        path: `/api/v1/media/${selectedMedia.id}` as any,
+        method: 'PUT' as any,
+        headers: { 'Content-Type': 'application/json' },
+        body: { keywords: newKeywords }
+      })
+      setEditingKeywords(newKeywords)
+      if (onKeywordsUpdated) {
+        onKeywordsUpdated(selectedMedia.id, newKeywords)
+      }
+    } catch (err) {
+      console.error('Failed to save keywords:', err)
+    } finally {
+      setSavingKeywords(false)
+    }
+  }
 
   // Extract analyses from media detail
   const existingAnalyses = React.useMemo(() => {
@@ -228,6 +262,26 @@ export function ContentViewer({
             <h3 className="text-gray-900 dark:text-gray-100 mb-2 text-2xl font-semibold">
               {selectedMedia.title || `${selectedMedia.kind} ${selectedMedia.id}`}
             </h3>
+            {/* Keywords - Editable */}
+            <div className="mb-3">
+              <div className="text-sm text-gray-600 dark:text-gray-400 font-medium mb-1">Keywords</div>
+              <Select
+                mode="tags"
+                allowClear
+                placeholder="Add keywords..."
+                className="w-full max-w-md"
+                value={editingKeywords}
+                onChange={(vals) => {
+                  handleSaveKeywords(vals as string[])
+                }}
+                loading={savingKeywords}
+                disabled={savingKeywords}
+                tokenSeparators={[',']}
+              />
+              <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                Keywords help you find this media using the keyword filter on the left.
+              </div>
+            </div>
             <div className="flex items-center gap-2 flex-wrap">
               {selectedMedia.meta?.type && (
                 <span className="inline-flex items-center px-2 py-1 rounded text-sm bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 capitalize">

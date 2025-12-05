@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, Dropdown, List, Pagination, Spin, Tooltip, Typography } from 'antd'
+import { Button, Dropdown, Pagination, Spin, Tooltip } from 'antd'
 import { useTranslation } from 'react-i18next'
 import FeatureEmptyState from '@/components/Common/FeatureEmptyState'
 import type { ServerCapabilities } from '@/services/tldw/server-capabilities'
@@ -58,18 +58,13 @@ const NotesListPanel: React.FC<NotesListPanelProps> = ({
   const { t } = useTranslation(['option', 'settings'])
 
   return (
-    <div className="mt-3 p-4 rounded-lg border dark:border-gray-700 bg-white dark:bg-[#111111] max-h-[50vh] md:max-h-[60vh] lg:max-h-[calc(100dvh-18rem)] overflow-auto">
-      <div className="sticky -m-4 mb-3 top-0 z-10 px-4 py-2.5 bg-white dark:bg-[#111111] border-b dark:border-gray-700 flex items-center justify-between">
-        <span className="text-xs text-gray-500">
-          <span className="uppercase tracking-[0.14em]">Notes</span>
-          <span className="text-gray-400 ml-1">
-            {t('option:notesSearch.listCount', {
-              defaultValue: '{{count}} notes',
-              count: total
-            })}
+    <div className="flex flex-col h-full">
+      {/* Export header */}
+      <div className="flex-shrink-0 px-4 py-2 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-[#0c0c0c]">
+        <div className="flex items-center justify-between">
+          <span className="text-xs uppercase tracking-[0.14em] text-gray-500 dark:text-gray-400">
+            Results
           </span>
-        </span>
-        <div className="flex items-center gap-2">
           <Dropdown
             menu={{
               items: [
@@ -99,7 +94,7 @@ const NotesListPanel: React.FC<NotesListPanelProps> = ({
               }
             }}
           >
-            <Button size="small">
+            <Button size="small" type="text" className="text-xs">
               {t('option:notesSearch.exportMenuTrigger', {
                 defaultValue: 'Export'
               })}
@@ -107,6 +102,9 @@ const NotesListPanel: React.FC<NotesListPanelProps> = ({
           </Dropdown>
         </div>
       </div>
+
+      {/* Content area */}
+      <div className="flex-1 overflow-auto p-4">
       {isFetching ? (
         <div className="flex items-center justify-center py-10">
           <Spin />
@@ -210,43 +208,28 @@ const NotesListPanel: React.FC<NotesListPanelProps> = ({
         />
       ) : Array.isArray(notes) && notes.length > 0 ? (
         <>
-          <List
-            size="small"
-            dataSource={notes}
-            renderItem={(item) => (
-              <List.Item
+          <div className="divide-y divide-gray-200 dark:divide-gray-700">
+            {notes.map((item) => (
+              <button
                 key={String(item.id)}
                 onClick={() => {
                   onSelectNote(item.id)
                 }}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault()
-                    onSelectNote(item.id)
-                  }
-                }}
-                role="button"
-                tabIndex={0}
-                aria-selected={selectedId === item.id}
-                className={`cursor-pointer rounded-md border px-3 py-2 text-left transition-colors ${
+                className={`w-full py-3 text-left hover:bg-gray-50 dark:hover:bg-[#262626] transition-colors ${
                   selectedId === item.id
-                    ? 'border-blue-500 bg-blue-50/80 dark:border-blue-400 dark:bg-blue-900/30'
-                    : 'border-transparent hover:border-gray-300 hover:bg-gray-50 dark:border-transparent dark:hover:border-gray-700 dark:hover:bg-[#18181b]'
+                    ? 'bg-blue-50 dark:bg-blue-900/40 border-l-4 border-l-blue-600 dark:border-l-blue-500 px-3'
+                    : 'px-4'
                 }`}
               >
                 <div className="w-full">
-                  <Typography.Text
-                    strong
-                    ellipsis
-                    className="max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg"
-                  >
+                  <div className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
                     {truncateText(
                       item.title || `Note ${item.id}`,
                       MAX_TITLE_LENGTH
                     )}
-                  </Typography.Text>
+                  </div>
                   {item.content && (
-                    <div className="text-xs text-gray-500 truncate mt-0.5">
+                    <div className="text-xs text-gray-500 dark:text-gray-400 truncate mt-1">
                       {truncateText(
                         String(item.content),
                         MAX_PREVIEW_LENGTH
@@ -254,11 +237,11 @@ const NotesListPanel: React.FC<NotesListPanelProps> = ({
                     </div>
                   )}
                   {Array.isArray(item.keywords) && item.keywords.length > 0 && (
-                    <div className="mt-1 flex flex-wrap gap-1">
+                    <div className="mt-2 flex flex-wrap gap-1">
                       {item.keywords.slice(0, 5).map((keyword) => (
                         <span
                           key={keyword}
-                          className="px-2 py-0.5 text-[11px] rounded-full bg-gray-100 text-gray-700 dark:bg-[#27272a] dark:text-gray-200"
+                          className="inline-flex items-center px-2 py-0.5 rounded text-xs bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300"
                         >
                           {keyword}
                         </span>
@@ -270,7 +253,7 @@ const NotesListPanel: React.FC<NotesListPanelProps> = ({
                             count: item.keywords.length - 5
                           })}
                         >
-                          <span className="px-2 py-0.5 text-[11px] text-gray-500 dark:text-gray-400">
+                          <span className="inline-flex items-center px-2 py-0.5 text-xs text-gray-500 dark:text-gray-400">
                             +{item.keywords.length - 5}
                           </span>
                         </Tooltip>
@@ -278,7 +261,7 @@ const NotesListPanel: React.FC<NotesListPanelProps> = ({
                     </div>
                   )}
                   {item.conversation_id && (
-                    <div className="text-[11px] text-blue-600 dark:text-blue-300 mt-0.5">
+                    <div className="text-xs text-blue-600 dark:text-blue-400 mt-1">
                       {t('option:notesSearch.linkedConversation', {
                         defaultValue: 'Linked to conversation'
                       })}
@@ -287,27 +270,14 @@ const NotesListPanel: React.FC<NotesListPanelProps> = ({
                       {item.message_id ? ` · msg ${String(item.message_id)}` : ''}
                     </div>
                   )}
-                  <div className="text-[10px] text-gray-400 mt-0.5">
+                  <div className="text-xs text-gray-400 dark:text-gray-500 mt-1">
                     {item.updated_at
                       ? new Date(item.updated_at).toLocaleString()
                       : ''}
                   </div>
                 </div>
-              </List.Item>
-            )}
-          />
-          <div className="mt-2 flex justify-center">
-            <Pagination
-              size="small"
-              current={page}
-              pageSize={pageSize}
-              total={total}
-              showSizeChanger
-              pageSizeOptions={[10, 20, 50, 100] as any}
-              onChange={(p, ps) => {
-                onChangePage(p, ps)
-              }}
-            />
+              </button>
+            ))}
           </div>
         </>
       ) : (
@@ -341,6 +311,29 @@ const NotesListPanel: React.FC<NotesListPanelProps> = ({
           })}
           onPrimaryAction={onResetEditor}
         />
+      )}
+      </div>
+
+      {/* Pagination Footer */}
+      {Array.isArray(notes) && notes.length > 0 && (
+        <div className="flex-shrink-0 px-4 py-3 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-[#171717]">
+          <div className="flex items-center justify-between text-xs text-gray-600 dark:text-gray-400">
+            <div>
+              Showing {(page - 1) * pageSize + 1}-{Math.min(page * pageSize, total)} of {total}
+            </div>
+            <Pagination
+              simple
+              size="small"
+              current={page}
+              pageSize={pageSize}
+              total={total}
+              onChange={(p) => {
+                onChangePage(p, pageSize)
+              }}
+              showSizeChanger={false}
+            />
+          </div>
+        </div>
       )}
     </div>
   )

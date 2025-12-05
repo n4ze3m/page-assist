@@ -1,6 +1,7 @@
 import React from 'react'
 import type { InputRef } from 'antd'
-import { Input, Typography, Select } from 'antd'
+import { Input, Typography, Select, Button, Tooltip } from 'antd'
+import { Plus as PlusIcon, Search as SearchIcon, ChevronLeft, ChevronRight } from 'lucide-react'
 import { bgRequest } from '@/services/background-proxy'
 import { useQuery, keepPreviousData, useQueryClient } from '@tanstack/react-query'
 import { useServerOnline } from '@/hooks/useServerOnline'
@@ -16,7 +17,6 @@ import { useStoreMessageOption } from "@/store/option"
 import { updatePageTitle } from "@/utils/update-page-title"
 import { useScrollToServerCard } from "@/hooks/useScrollToServerCard"
 import { MarkdownPreview } from "@/components/Common/MarkdownPreview"
-import NotesToolbar from "@/components/Notes/NotesToolbar"
 import NotesEditorHeader from "@/components/Notes/NotesEditorHeader"
 import NotesListPanel from "@/components/Notes/NotesListPanel"
 import type { NoteListItem } from "@/components/Notes/types"
@@ -563,200 +563,300 @@ const NotesManagerPage: React.FC = () => {
     })()
   }, [data, handleSelectNote, isOnline, pendingNoteId, selectedId])
 
-  return (
-    <div className="w-full h-full flex flex-col lg:flex-row gap-4 mt-16">
-      {/* Left: search + list */}
-      <div className="w-full lg:w-1/3 min-w-0 lg:sticky lg:top-16 lg:self-start">
-        <NotesToolbar
-          query={query}
-          total={total}
-          visibleCount={filteredCount}
-          keywordTokens={keywordTokens}
-          keywordOptions={keywordOptions}
-          hasActiveFilters={hasActiveFilters}
-          onQueryChange={(value) => {
-            setQuery(value)
-            setPage(1)
-          }}
-          onSubmitSearch={() => {
-            setPage(1)
-            refetch()
-          }}
-          onKeywordChange={(vals) => {
-            setKeywordTokens(vals)
-            setPage(1)
-            refetch()
-          }}
-          onKeywordSearch={(txt) => {
-            if (isOnline) void loadKeywordSuggestions(txt)
-          }}
-          onClearFilters={() => {
-            setQuery('')
-            setKeywordTokens([])
-            setPage(1)
-            refetch()
-          }}
-          onNewNote={() => {
-            void handleNewNote()
-          }}
-        />
-        <NotesListPanel
-          isOnline={isOnline}
-          isFetching={isFetching}
-          demoEnabled={demoEnabled}
-          capsLoading={capsLoading}
-          capabilities={capabilities || null}
-          notes={Array.isArray(data) ? data : undefined}
-          total={total}
-          page={page}
-          pageSize={pageSize}
-          selectedId={selectedId}
-          onSelectNote={(id) => {
-            void handleSelectNote(id)
-          }}
-          onChangePage={(nextPage, nextPageSize) => {
-            setPage(nextPage)
-            setPageSize(nextPageSize)
-          }}
-          onResetEditor={resetEditor}
-          onScrollToServerCard={scrollToServerCard}
-          onOpenHealth={() => navigate('/settings/health')}
-          onExportAllMd={() => {
-            void exportAll()
-          }}
-          onExportAllCsv={() => {
-            void exportAllCSV()
-          }}
-          onExportAllJson={() => {
-            void exportAllJSON()
-          }}
-        />
-      </div>
+  const [sidebarCollapsed, setSidebarCollapsed] = React.useState(false)
 
-        {/* Right: editor */}
-        <div
-          className="relative flex-1 flex flex-col p-3 rounded-lg border dark:border-gray-700 bg-white dark:bg-[#171717] min-h-[70vh] min-w-0 lg:h-[calc(100dvh-8rem)] overflow-hidden"
-          aria-disabled={editorDisabled}
-        >
-          <NotesEditorHeader
-            title={title}
-            selectedId={selectedId}
-            backlinkConversationId={backlinkConversationId}
-            backlinkMessageId={backlinkMessageId}
-            editorDisabled={editorDisabled}
-            openingLinkedChat={openingLinkedChat}
-            showPreview={showPreview}
-            hasContent={content.trim().length > 0}
-            canSave={
-              !editorDisabled &&
-              (title.trim().length > 0 || content.trim().length > 0)
-            }
-            canExport={Boolean(title || content)}
-            isSaving={saving}
-            canDelete={!editorDisabled && selectedId != null}
-            onOpenLinkedConversation={() => {
-              void openLinkedConversation()
-            }}
-            onNewNote={() => {
-              void handleNewNote()
-            }}
-            onTogglePreview={() => {
-              setShowPreview((prev) => !prev)
-            }}
-            onCopy={() => {
-              void copySelected()
-            }}
-            onExport={exportSelected}
-            onSave={() => {
-              void saveNote()
-            }}
-            onDelete={() => {
-              void deleteNote()
-            }}
-          />
-          <div className="mt-2 flex flex-col flex-1 min-h-0 overflow-auto">
-            <Input
-              placeholder="Title"
-              value={title}
-              onChange={(e) => {
-                setTitle(e.target.value)
-                setIsDirty(true)
-              }}
-              disabled={editorDisabled}
-              ref={titleInputRef}
-              className="bg-transparent hover:bg-white focus:bg-white dark:bg-transparent dark:hover:bg-[#1f1f1f] dark:focus:bg-[#1f1f1f] transition-colors"
-            />
-            <div className="mt-2">
+  const calculateSidebarHeight = () => {
+    const minHeight = 850
+    const vh = typeof window !== 'undefined' ? window.innerHeight : minHeight
+    return Math.max(minHeight, vh - 120)
+  }
+
+  const [sidebarHeight, setSidebarHeight] = React.useState(calculateSidebarHeight())
+
+  React.useEffect(() => {
+    const handleResize = () => {
+      setSidebarHeight(calculateSidebarHeight())
+    }
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
+  return (
+    <div className="flex h-full w-full bg-gray-50 dark:bg-[#101010] p-4 mt-16">
+      {/* Collapsible Sidebar */}
+      <div
+        className={`flex-shrink-0 transition-all duration-300 ease-in-out ${
+          sidebarCollapsed ? 'w-0 overflow-hidden' : 'w-[380px]'
+        }`}
+        style={{ minHeight: '850px', height: `${sidebarHeight}px` }}
+      >
+        <div className="flex h-full flex-col overflow-hidden rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-[#171717]">
+          {/* Toolbar Section */}
+          <div className="flex-shrink-0 border-b border-gray-200 dark:border-gray-700 p-4 bg-white dark:bg-[#171717]">
+            <div className="flex items-center justify-between mb-3">
+              <div className="text-xs uppercase tracking-[0.16em] text-gray-500 dark:text-gray-400">
+                {t('option:notesSearch.headerLabel', { defaultValue: 'Notes' })}
+                <span className="ml-2 text-gray-400 dark:text-gray-500">
+                  {filteredCount > 0 && total > 0
+                    ? t('option:notesSearch.headerCount', {
+                        defaultValue: '{{visible}} of {{total}}',
+                        visible: filteredCount,
+                        total
+                      })
+                    : t('option:notesSearch.headerCountFallback', {
+                        defaultValue: '{{total}} total',
+                        total
+                      })}
+                </span>
+              </div>
+              <Tooltip
+                title={t('option:notesSearch.newTooltip', {
+                  defaultValue: 'Create a new note'
+                })}
+              >
+                <Button
+                  type="text"
+                  shape="circle"
+                  onClick={() => void handleNewNote()}
+                  className="flex items-center justify-center"
+                  icon={(<PlusIcon className="w-4 h-4" />) as any}
+                  aria-label={t('option:notesSearch.new', {
+                    defaultValue: 'New note'
+                  })}
+                />
+              </Tooltip>
+            </div>
+            <div className="space-y-2">
+              <Input
+                allowClear
+                placeholder={t('option:notesSearch.placeholder', {
+                  defaultValue: 'Search notes...'
+                })}
+                prefix={(<SearchIcon className="w-4 h-4 text-gray-400" />) as any}
+                value={query}
+                onChange={(e) => {
+                  setQuery(e.target.value)
+                  setPage(1)
+                }}
+                onPressEnter={() => {
+                  setPage(1)
+                  refetch()
+                }}
+              />
               <Select
                 mode="tags"
                 allowClear
-                placeholder="Keywords (tags)"
-                className="min-w-[12rem] w-full"
-                value={editorKeywords}
+                placeholder={t('option:notesSearch.keywordsPlaceholder', {
+                  defaultValue: 'Filter by keyword'
+                })}
+                className="w-full"
+                value={keywordTokens}
                 onSearch={(txt) => {
                   if (isOnline) void loadKeywordSuggestions(txt)
                 }}
                 onChange={(vals) => {
-                  setEditorKeywords(vals as string[])
-                  setIsDirty(true)
+                  setKeywordTokens(vals as string[])
+                  setPage(1)
+                  refetch()
                 }}
                 options={keywordOptions.map((k) => ({ label: k, value: k }))}
-                disabled={editorDisabled}
               />
-              <Typography.Text
-                type="secondary"
-                className="block text-[11px] mt-1"
-              >
-                {t('option:notesSearch.tagsHelp', {
-                  defaultValue:
-                    'Keywords help you find this note using the keyword filter on the left.'
-                })}
-              </Typography.Text>
-            </div>
-            <div className="mt-2 flex-1 min-h-0">
-              {showPreview ? (
-                content.trim().length > 0 ? (
-                  <div className="h-full flex flex-col">
-                    <Typography.Text
-                      type="secondary"
-                      className="block text-[11px] mb-1"
-                    >
-                      {t('option:notesSearch.previewTitle', {
-                        defaultValue: 'Preview (Markdown + LaTeX)'
-                      })}
-                    </Typography.Text>
-                    <div className="w-full flex-1 text-sm p-2 rounded border dark:border-gray-700 dark:bg-[#171717] overflow-auto">
-                      <MarkdownPreview content={content} size="sm" />
-                    </div>
-                  </div>
-                ) : (
-                  <Typography.Text
-                    type="secondary"
-                    className="block text-[11px] mt-1"
-                  >
-                    {t('option:notesSearch.emptyPreview', {
-                      defaultValue:
-                        'Start typing to see a live preview of your note.'
-                    })}
-                  </Typography.Text>
-                )
-              ) : (
-                <textarea
-                  className="w-full h-full min-h-0 text-sm p-2 rounded border dark:border-gray-700 dark:bg-[#171717] resize-none leading-relaxed"
-                  value={content}
-                  onChange={(e) => {
-                    setContent(e.target.value)
-                    setIsDirty(true)
+              {hasActiveFilters && (
+                <Button
+                  size="small"
+                  onClick={() => {
+                    setQuery('')
+                    setKeywordTokens([])
+                    setPage(1)
+                    refetch()
                   }}
-                  placeholder={t('option:notesSearch.editorPlaceholder', {
-                    defaultValue: 'Write your note here... (Markdown supported)'
+                  className="w-full text-xs"
+                >
+                  {t('option:notesSearch.clear', {
+                    defaultValue: 'Clear search & filters'
                   })}
-                  readOnly={editorDisabled}
-                />
+                </Button>
               )}
             </div>
           </div>
+
+          {/* Notes List Section */}
+          <div className="flex-1 overflow-y-auto">
+            <NotesListPanel
+              isOnline={isOnline}
+              isFetching={isFetching}
+              demoEnabled={demoEnabled}
+              capsLoading={capsLoading}
+              capabilities={capabilities || null}
+              notes={Array.isArray(data) ? data : undefined}
+              total={total}
+              page={page}
+              pageSize={pageSize}
+              selectedId={selectedId}
+              onSelectNote={(id) => {
+                void handleSelectNote(id)
+              }}
+              onChangePage={(nextPage, nextPageSize) => {
+                setPage(nextPage)
+                setPageSize(nextPageSize)
+              }}
+              onResetEditor={resetEditor}
+              onScrollToServerCard={scrollToServerCard}
+              onOpenHealth={() => navigate('/settings/health')}
+              onExportAllMd={() => {
+                void exportAll()
+              }}
+              onExportAllCsv={() => {
+                void exportAllCSV()
+              }}
+              onExportAllJson={() => {
+                void exportAllJSON()
+              }}
+            />
+          </div>
         </div>
+      </div>
+
+      {/* Collapse Button - Simple style like Media page */}
+      <button
+        onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+        className="relative w-6 bg-white dark:bg-[#171717] border-y border-r border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-[#262626] flex items-center justify-center group transition-colors rounded-r-lg"
+        style={{ minHeight: '850px', height: `${sidebarHeight}px` }}
+        aria-label={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+      >
+        <div className="flex items-center justify-center w-full h-full">
+          {sidebarCollapsed ? (
+            <ChevronRight className="w-4 h-4 text-gray-400 dark:text-gray-500 group-hover:text-gray-600 dark:group-hover:text-gray-300" />
+          ) : (
+            <ChevronLeft className="w-4 h-4 text-gray-400 dark:text-gray-500 group-hover:text-gray-600 dark:group-hover:text-gray-300" />
+          )}
+        </div>
+      </button>
+
+      {/* Editor Panel */}
+      <div
+        className="flex-1 flex flex-col overflow-hidden rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-[#171717] ml-4"
+        aria-disabled={editorDisabled}
+      >
+        <NotesEditorHeader
+          title={title}
+          selectedId={selectedId}
+          backlinkConversationId={backlinkConversationId}
+          backlinkMessageId={backlinkMessageId}
+          editorDisabled={editorDisabled}
+          openingLinkedChat={openingLinkedChat}
+          showPreview={showPreview}
+          hasContent={content.trim().length > 0}
+          canSave={
+            !editorDisabled &&
+            (title.trim().length > 0 || content.trim().length > 0)
+          }
+          canExport={Boolean(title || content)}
+          isSaving={saving}
+          canDelete={!editorDisabled && selectedId != null}
+          onOpenLinkedConversation={() => {
+            void openLinkedConversation()
+          }}
+          onNewNote={() => {
+            void handleNewNote()
+          }}
+          onTogglePreview={() => {
+            setShowPreview((prev) => !prev)
+          }}
+          onCopy={() => {
+            void copySelected()
+          }}
+          onExport={exportSelected}
+          onSave={() => {
+            void saveNote()
+          }}
+          onDelete={() => {
+            void deleteNote()
+          }}
+        />
+        <div className="flex-1 flex flex-col px-4 py-3 overflow-auto">
+          <Input
+            placeholder="Title"
+            value={title}
+            onChange={(e) => {
+              setTitle(e.target.value)
+              setIsDirty(true)
+            }}
+            disabled={editorDisabled}
+            ref={titleInputRef}
+            className="bg-transparent hover:bg-gray-50 focus:bg-gray-50 dark:bg-transparent dark:hover:bg-[#262626] dark:focus:bg-[#262626] transition-colors"
+          />
+          <div className="mt-3">
+            <Select
+              mode="tags"
+              allowClear
+              placeholder="Keywords (tags)"
+              className="w-full"
+              value={editorKeywords}
+              onSearch={(txt) => {
+                if (isOnline) void loadKeywordSuggestions(txt)
+              }}
+              onChange={(vals) => {
+                setEditorKeywords(vals as string[])
+                setIsDirty(true)
+              }}
+              options={keywordOptions.map((k) => ({ label: k, value: k }))}
+              disabled={editorDisabled}
+            />
+            <Typography.Text
+              type="secondary"
+              className="block text-[11px] mt-1 text-gray-500 dark:text-gray-400"
+            >
+              {t('option:notesSearch.tagsHelp', {
+                defaultValue:
+                  'Keywords help you find this note using the keyword filter on the left.'
+              })}
+            </Typography.Text>
+          </div>
+          <div className="mt-3 flex-1 min-h-0">
+            {showPreview ? (
+              content.trim().length > 0 ? (
+                <div className="h-full flex flex-col">
+                  <Typography.Text
+                    type="secondary"
+                    className="block text-[11px] mb-2 text-gray-500 dark:text-gray-400"
+                  >
+                    {t('option:notesSearch.previewTitle', {
+                      defaultValue: 'Preview (Markdown + LaTeX)'
+                    })}
+                  </Typography.Text>
+                  <div className="w-full flex-1 text-sm p-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-[#0c0c0c] overflow-auto">
+                    <MarkdownPreview content={content} size="sm" />
+                  </div>
+                </div>
+              ) : (
+                <Typography.Text
+                  type="secondary"
+                  className="block text-[11px] mt-1 text-gray-500 dark:text-gray-400"
+                >
+                  {t('option:notesSearch.emptyPreview', {
+                    defaultValue:
+                      'Start typing to see a live preview of your note.'
+                  })}
+                </Typography.Text>
+              )
+            ) : (
+              <textarea
+                className="w-full h-full min-h-0 text-sm p-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-[#0c0c0c] text-gray-900 dark:text-gray-100 resize-none leading-relaxed focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600"
+                value={content}
+                onChange={(e) => {
+                  setContent(e.target.value)
+                  setIsDirty(true)
+                }}
+                placeholder={t('option:notesSearch.editorPlaceholder', {
+                  defaultValue: 'Write your note here... (Markdown supported)'
+                })}
+                readOnly={editorDisabled}
+              />
+            )}
+          </div>
+        </div>
+      </div>
     </div>
   )
 }

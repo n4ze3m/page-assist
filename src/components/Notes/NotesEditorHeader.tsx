@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, Tooltip, Typography, Space } from 'antd'
+import { Button, Tooltip, Typography } from 'antd'
 import { useTranslation } from 'react-i18next'
 import {
   Link2 as LinkIcon,
@@ -66,9 +66,9 @@ const NotesEditorHeader: React.FC<NotesEditorHeaderProps> = ({
         })
 
   return (
-    <div className="flex items-center justify-between gap-4 pb-3 border-b dark:border-gray-700 mb-3">
+    <div className="flex items-center justify-between gap-4 px-4 py-3 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-[#171717]">
       <div className="flex flex-col gap-0.5 min-w-0">
-        <Typography.Title level={5} className="!mb-0 truncate">
+        <Typography.Title level={5} className="!mb-0 truncate !text-gray-900 dark:!text-gray-100">
           {displayTitle}
         </Typography.Title>
         {backlinkConversationId && (
@@ -81,7 +81,7 @@ const NotesEditorHeader: React.FC<NotesEditorHeaderProps> = ({
           </div>
         )}
       </div>
-      <Space>
+      <div className="flex items-center gap-2">
         {!editorDisabled && (
           <>
             {backlinkConversationId && (
@@ -228,7 +228,7 @@ const NotesEditorHeader: React.FC<NotesEditorHeaderProps> = ({
             {t('common:delete', { defaultValue: 'Delete' })}
           </Button>
         </Tooltip>
-      </Space>
+      </div>
     </div>
   )
 }

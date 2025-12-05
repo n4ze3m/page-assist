@@ -22,6 +22,7 @@ type ResultItem = {
   id: string | number
   title?: string
   snippet?: string
+  keywords?: string[]
   meta?: Record<string, any>
   raw: any
 }
@@ -150,6 +151,7 @@ const MediaPageContent: React.FC = () => {
   const [mediaTypes, setMediaTypes] = useState<string[]>([])
   const [availableMediaTypes, setAvailableMediaTypes] = useState<string[]>([])
   const [keywordTokens, setKeywordTokens] = useState<string[]>([])
+  const [keywordOptions, setKeywordOptions] = useState<string[]>([])
   const [selectedContent, setSelectedContent] = useState<string>('')
   const [selectedDetail, setSelectedDetail] = useState<any>(null)
   const [contentHeight, setContentHeight] = useState<number>(0)
@@ -266,7 +268,7 @@ const MediaPageContent: React.FC = () => {
         if (!hasQuery && !hasMediaFilters) {
           // Blank browse: GET listing with pagination
           const listing = await bgRequest<any>({
-            path: `/api/v1/media/?page=${page}&results_per_page=${pageSize}` as any,
+            path: `/api/v1/media/?page=${page}&results_per_page=${pageSize}&include_keywords=true` as any,
             method: 'GET' as any
           })
           const items = Array.isArray(listing?.items) ? listing.items : []
@@ -281,11 +283,42 @@ const MediaPageContent: React.FC = () => {
                 prev.includes(type) ? prev : [...prev, type]
               )
             }
+            // Extract keywords from media - check multiple possible fields
+            let keywords: string[] = []
+
+            // Try different possible keyword locations
+            const possibleKeywordFields = [
+              m?.metadata?.keywords,
+              m?.keywords,
+              m?.tags,
+              m?.metadata?.tags,
+              m?.processing?.keywords
+            ]
+
+            for (const field of possibleKeywordFields) {
+              if (field && Array.isArray(field) && field.length > 0) {
+                keywords = field
+                  .map((k: any) => {
+                    if (typeof k === 'string') return k
+                    if (k && typeof k === 'object' && k.keyword) return k.keyword
+                    if (k && typeof k === 'object' && k.text) return k.text
+                    if (k && typeof k === 'object' && k.tag) return k.tag
+                    if (k && typeof k === 'object' && k.name) return k.name
+                    return null
+                  })
+                  .filter((k): k is string => k !== null && k.trim().length > 0)
+
+                if (keywords.length > 0) break
+              }
+            }
+
+
             results.push({
               kind: 'media',
               id,
               title: m?.title || m?.filename || `Media ${id}`,
               snippet: m?.snippet || m?.summary || '',
+              keywords,
               meta: meta,
               raw: m
             })
@@ -300,7 +333,7 @@ const MediaPageContent: React.FC = () => {
           if (mediaTypes.length > 0) body.media_types = mediaTypes
           if (keywordTokens.length > 0) body.must_have = keywordTokens
           const mediaResp = await bgRequest<any>({
-            path: `/api/v1/media/search?page=${page}&results_per_page=${pageSize}` as any,
+            path: `/api/v1/media/search?page=${page}&results_per_page=${pageSize}&include_keywords=true` as any,
             method: 'POST' as any,
             headers: { 'Content-Type': 'application/json' },
             body
@@ -321,11 +354,42 @@ const MediaPageContent: React.FC = () => {
                 prev.includes(type) ? prev : [...prev, type]
               )
             }
+            // Extract keywords from media - check multiple possible fields
+            let keywords: string[] = []
+
+            // Try different possible keyword locations
+            const possibleKeywordFields = [
+              m?.metadata?.keywords,
+              m?.keywords,
+              m?.tags,
+              m?.metadata?.tags,
+              m?.processing?.keywords
+            ]
+
+            for (const field of possibleKeywordFields) {
+              if (field && Array.isArray(field) && field.length > 0) {
+                keywords = field
+                  .map((k: any) => {
+                    if (typeof k === 'string') return k
+                    if (k && typeof k === 'object' && k.keyword) return k.keyword
+                    if (k && typeof k === 'object' && k.text) return k.text
+                    if (k && typeof k === 'object' && k.tag) return k.tag
+                    if (k && typeof k === 'object' && k.name) return k.name
+                    return null
+                  })
+                  .filter((k): k is string => k !== null && k.trim().length > 0)
+
+                if (keywords.length > 0) break
+              }
+            }
+
+
             results.push({
               kind: 'media',
               id,
               title: m?.title || m?.filename || `Media ${id}`,
               snippet: m?.snippet || m?.summary || '',
+              keywords,
               meta: meta,
               raw: m
             })
@@ -432,6 +496,50 @@ const MediaPageContent: React.FC = () => {
     })()
   }, [])
 
+  // Load keyword suggestions for the filter dropdown
+  const loadKeywordSuggestions = useCallback(async (searchText?: string) => {
+    try {
+      // Try to get keywords from media API
+      const endpoint = searchText && searchText.trim().length > 0
+        ? `/api/v1/media/keywords/search?query=${encodeURIComponent(searchText)}&limit=20`
+        : `/api/v1/media/keywords?limit=50`
+
+      const response = await bgRequest<any>({
+        path: endpoint as any,
+        method: 'GET' as any
+      })
+
+      let keywords: string[] = []
+      if (Array.isArray(response)) {
+        keywords = response
+          .map((x: any) => String(x?.keyword || x?.keyword_text || x?.text || x?.name || (typeof x === 'string' ? x : '')))
+          .filter(Boolean)
+      } else if (response?.items && Array.isArray(response.items)) {
+        keywords = response.items
+          .map((x: any) => String(x?.keyword || x?.keyword_text || x?.text || x?.name || (typeof x === 'string' ? x : '')))
+          .filter(Boolean)
+      }
+
+      setKeywordOptions(keywords)
+    } catch {
+      // Fallback: collect keywords from current results
+      const keywordsFromResults = new Set<string>()
+      for (const result of results) {
+        if (result.keywords) {
+          for (const kw of result.keywords) {
+            keywordsFromResults.add(kw)
+          }
+        }
+      }
+      setKeywordOptions(Array.from(keywordsFromResults))
+    }
+  }, [results])
+
+  // Load initial keyword suggestions
+  useEffect(() => {
+    loadKeywordSuggestions()
+  }, [])
+
   const fetchSelectedDetails = useCallback(async (item: ResultItem) => {
     try {
       if (item.kind === 'media') {
@@ -513,24 +621,72 @@ const MediaPageContent: React.FC = () => {
     return ''
   }
 
+  // Extract keywords from media detail
+  const extractKeywordsFromDetail = (detail: any): string[] => {
+    if (!detail) return []
+
+    const possibleKeywordFields = [
+      detail?.metadata?.keywords,
+      detail?.keywords,
+      detail?.tags,
+      detail?.metadata?.tags,
+      detail?.processing?.keywords
+    ]
+
+    for (const field of possibleKeywordFields) {
+      if (field && Array.isArray(field) && field.length > 0) {
+        const keywords = field
+          .map((k: any) => {
+            if (typeof k === 'string') return k
+            if (k && typeof k === 'object' && k.keyword) return k.keyword
+            if (k && typeof k === 'object' && k.text) return k.text
+            if (k && typeof k === 'object' && k.tag) return k.tag
+            if (k && typeof k === 'object' && k.name) return k.name
+            return null
+          })
+          .filter((k): k is string => k !== null && k.trim().length > 0)
+
+        if (keywords.length > 0) return keywords
+      }
+    }
+    return []
+  }
+
+  // Track selected ID to avoid re-fetching on keyword updates
+  const [lastFetchedId, setLastFetchedId] = useState<string | number | null>(null)
+
   // Load selected item content
   useEffect(() => {
     ;(async () => {
       try {
         if (!selected) {
           setSelectedContent('')
+          setLastFetchedId(null)
           return
         }
+
+        // Skip if we already fetched this item's details
+        if (selected.id === lastFetchedId) {
+          return
+        }
+
         const detail = await fetchSelectedDetails(selected)
         const content = contentFromDetail(detail)
         setSelectedContent(String(content || ''))
         setSelectedDetail(detail)
+        setLastFetchedId(selected.id)
+
+        // Extract keywords from detail and update selected item
+        const keywords = extractKeywordsFromDetail(detail)
+        if (keywords.length > 0 && (!selected.keywords || selected.keywords.length === 0)) {
+          setSelected({ ...selected, keywords })
+        }
       } catch {
         setSelectedContent('')
         setSelectedDetail(null)
       }
     })()
-  }, [selected, fetchSelectedDetails])
+  }, [selected?.id, fetchSelectedDetails])
 
   // Refresh media details (e.g., after generating analysis)
   const handleRefreshMedia = useCallback(async () => {
@@ -721,7 +877,15 @@ const MediaPageContent: React.FC = () => {
             onMediaTypesChange={setMediaTypes}
             keywords={[]}
             selectedKeywords={keywordTokens}
-            onKeywordsChange={setKeywordTokens}
+            onKeywordsChange={(kws) => {
+              setKeywordTokens(kws)
+              setPage(1)
+              refetch()
+            }}
+            keywordOptions={keywordOptions}
+            onKeywordSearch={(txt) => {
+              loadKeywordSuggestions(txt)
+            }}
           />
         </div>
 
@@ -780,6 +944,14 @@ const MediaPageContent: React.FC = () => {
           onChatWithMedia={handleChatWithMedia}
           onChatAboutMedia={handleChatAboutMedia}
           onRefreshMedia={handleRefreshMedia}
+          onKeywordsUpdated={(mediaId, keywords) => {
+            // Update the selected item with new keywords
+            if (selected && selected.id === mediaId) {
+              setSelected({ ...selected, keywords })
+            }
+            // Refresh the list to show updated keywords
+            refetch()
+          }}
           contentRef={contentRef}
         />
       </div>

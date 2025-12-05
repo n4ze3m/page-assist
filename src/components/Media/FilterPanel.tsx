@@ -1,5 +1,6 @@
 import { ChevronDown, Filter } from 'lucide-react'
 import { useState } from 'react'
+import { Select } from 'antd'
 
 interface FilterPanelProps {
   activeFilters: {
@@ -13,6 +14,8 @@ interface FilterPanelProps {
   keywords: string[]
   selectedKeywords: string[]
   onKeywordsChange: (keywords: string[]) => void
+  keywordOptions?: string[]
+  onKeywordSearch?: (text: string) => void
 }
 
 export function FilterPanel({
@@ -23,12 +26,13 @@ export function FilterPanel({
   onMediaTypesChange,
   keywords,
   selectedKeywords,
-  onKeywordsChange
+  onKeywordsChange,
+  keywordOptions = [],
+  onKeywordSearch
 }: FilterPanelProps) {
   const [expandedSections, setExpandedSections] = useState({
     resultTypes: true,
     mediaTypes: false,
-    keywords: false,
   })
 
   const toggleSection = (section: keyof typeof expandedSections) => {
@@ -43,14 +47,6 @@ export function FilterPanel({
       onMediaTypesChange(selectedMediaTypes.filter(t => t !== type))
     } else {
       onMediaTypesChange([...selectedMediaTypes, type])
-    }
-  }
-
-  const handleKeywordToggle = (keyword: string) => {
-    if (selectedKeywords.includes(keyword)) {
-      onKeywordsChange(selectedKeywords.filter(k => k !== keyword))
-    } else {
-      onKeywordsChange([...selectedKeywords, keyword])
     }
   }
 
@@ -146,38 +142,26 @@ export function FilterPanel({
 
       {/* Keywords */}
       <div className="space-y-2">
-        <button
-          onClick={() => toggleSection('keywords')}
-          className="flex items-center justify-between w-full text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100"
-        >
-          <span>Keywords</span>
-          <ChevronDown
-            className={`w-4 h-4 transition-transform ${expandedSections.keywords ? 'rotate-180' : ''}`}
-          />
-        </button>
-        {expandedSections.keywords && (
-          <div className="pl-1">
-            {keywords.length > 0 ? (
-              <div className="space-y-2">
-                {keywords.map(keyword => (
-                  <label key={keyword} className="flex items-center gap-2 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={selectedKeywords.includes(keyword)}
-                      onChange={() => handleKeywordToggle(keyword)}
-                      className="w-4 h-4 rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600"
-                    />
-                    <span className="text-sm text-gray-700 dark:text-gray-300">{keyword}</span>
-                  </label>
-                ))}
-              </div>
-            ) : (
-              <div className="text-sm text-gray-500 dark:text-gray-400">
-                Search matches title and content; keywords further narrow the results.
-              </div>
-            )}
-          </div>
-        )}
+        <div className="text-sm text-gray-700 dark:text-gray-300">
+          Keywords
+        </div>
+        <Select
+          mode="tags"
+          allowClear
+          placeholder="Filter by keyword"
+          className="w-full"
+          value={selectedKeywords}
+          onSearch={(txt) => {
+            if (onKeywordSearch) onKeywordSearch(txt)
+          }}
+          onChange={(vals) => {
+            onKeywordsChange(vals as string[])
+          }}
+          options={keywordOptions.map((k) => ({ label: k, value: k }))}
+        />
+        <div className="text-xs text-gray-500 dark:text-gray-400">
+          Keywords help you find this media using the keyword filter on the left.
+        </div>
       </div>
     </div>
   )

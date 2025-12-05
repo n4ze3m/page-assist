@@ -1022,6 +1022,11 @@ export const Header: React.FC<Props> = ({
                     shortcut: shortcutConfig.modeMedia
                   },
                   {
+                    key: "mediaMulti",
+                    label: t("option:header.libraryView", "Multi-Item Review"),
+                    shortcut: undefined
+                  },
+                  {
                     key: "knowledge",
                     label: t("option:header.modeKnowledge", "Knowledge QA"),
                     shortcut: shortcutConfig.modeKnowledge
@@ -1035,6 +1040,11 @@ export const Header: React.FC<Props> = ({
                     key: "flashcards",
                     label: t("option:header.modeFlashcards", "Flashcards"),
                     shortcut: shortcutConfig.modeFlashcards
+                  },
+                  {
+                    key: "prompts",
+                    label: t("option:header.modePromptsPlayground", "Prompts"),
+                    shortcut: shortcutConfig.modePrompts
                   }
                 ]
                 const secondaryModes: Array<{
@@ -1043,19 +1053,9 @@ export const Header: React.FC<Props> = ({
                   shortcut?: import("@/hooks/keyboard/useKeyboardShortcuts").KeyboardShortcut
                 }> = [
                   {
-                    key: "mediaMulti",
-                    label: t("option:header.libraryView", "Multi-Item Review"),
-                    shortcut: undefined
-                  },
-                  {
                     key: "stt",
                     label: t("option:header.modeStt", "STT Playground"),
                     shortcut: undefined
-                  },
-                  {
-                    key: "prompts",
-                    label: t("option:header.modePromptsPlayground", "Prompts"),
-                    shortcut: shortcutConfig.modePrompts
                   },
                   {
                     key: "promptStudio",
