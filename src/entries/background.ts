@@ -13,13 +13,50 @@ import {
   clampText,
   notify
 } from "@/services/background-helpers"
+import { ModelDb, generateID, isLookupExist } from "@/db/models"
 
 const warmModels = async (
   force = false,
   throwOnError = false
 ): Promise<any[] | null> => {
   try {
-    return await tldwModels.warmCache(Boolean(force))
+    const models = await tldwModels.warmCache(Boolean(force))
+
+    // Sync models to local database
+    if (models && models.length > 0) {
+      const db = new ModelDb()
+
+      for (const model of models) {
+        try {
+          // Create lookup key to check for duplicates
+          const lookup = `${model.id}_tldw_${model.provider}`
+
+          // Skip if model already exists
+          const exists = await isLookupExist(lookup)
+          if (exists) {
+            continue
+          }
+
+          // Transform ModelInfo to Model format
+          const dbModel = {
+            id: `${model.id}_${generateID()}`,
+            model_id: model.id,
+            name: model.name,
+            provider_id: `tldw_${model.provider}`,
+            lookup: lookup,
+            model_type: model.type || 'chat',
+            db_type: 'openai_model'
+          }
+
+          await db.create(dbModel)
+        } catch (err) {
+          // Log but don't fail the entire sync if one model fails
+          console.debug('[tldw] Failed to sync model to DB:', model.id, err)
+        }
+      }
+    }
+
+    return models
   } catch (e) {
     console.debug("[tldw] model warmup failed", e)
     if (throwOnError) {

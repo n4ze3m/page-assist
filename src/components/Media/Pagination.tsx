@@ -93,8 +93,8 @@ export function Pagination({
 
   if (totalPages <= 1) {
     return (
-      <div className="px-4 py-2 border-t border-slate-200 bg-white">
-        <div className="text-xs text-slate-600 text-center">
+      <div className="px-4 py-2 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-[#171717]">
+        <div className="text-xs text-gray-600 dark:text-gray-400 text-center">
           {currentItemsCount} of {totalItems} results
         </div>
       </div>
@@ -102,9 +102,9 @@ export function Pagination({
   }
 
   return (
-    <div className="px-4 py-2 border-t border-slate-200 bg-white">
+    <div className="px-4 py-2 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-[#171717]">
       {/* Items count */}
-      <div className="text-xs text-slate-600 mb-2 text-center">
+      <div className="text-xs text-gray-600 dark:text-gray-400 mb-2 text-center">
         Showing {startItem}-{endItem} of {totalItems}
       </div>
 
@@ -114,10 +114,10 @@ export function Pagination({
         <button
           onClick={handlePrevious}
           disabled={currentPage === 1}
-          className="px-1.5 py-0.5 rounded hover:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          className="px-1.5 py-0.5 rounded hover:bg-gray-100 dark:hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           aria-label="Previous page"
         >
-          <ChevronLeft className="w-3.5 h-3.5 text-slate-600" />
+          <ChevronLeft className="w-3.5 h-3.5 text-gray-600 dark:text-gray-400" />
         </button>
 
         {/* Page numbers */}
@@ -126,7 +126,7 @@ export function Pagination({
             return (
               <span
                 key={`ellipsis-${index}`}
-                className="px-1.5 py-0.5 text-slate-400 text-xs"
+                className="px-1.5 py-0.5 text-gray-400 dark:text-gray-500 text-xs"
               >
                 ...
               </span>
@@ -142,8 +142,8 @@ export function Pagination({
               onClick={() => handlePageClick(pageNum)}
               className={`px-2 py-0.5 rounded text-xs transition-colors ${
                 isActive
-                  ? 'bg-blue-600 text-white font-medium'
-                  : 'text-slate-700 hover:bg-slate-100'
+                  ? 'bg-blue-600 dark:bg-blue-600 text-white font-medium'
+                  : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
               }`}
             >
               {pageNum}
@@ -155,17 +155,17 @@ export function Pagination({
         <button
           onClick={handleNext}
           disabled={currentPage === totalPages}
-          className="px-1.5 py-0.5 rounded hover:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          className="px-1.5 py-0.5 rounded hover:bg-gray-100 dark:hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           aria-label="Next page"
         >
-          <ChevronRight className="w-3.5 h-3.5 text-slate-600" />
+          <ChevronRight className="w-3.5 h-3.5 text-gray-600 dark:text-gray-400" />
         </button>
       </div>
 
       {/* Jump to page - only show if there are many pages */}
       {totalPages > 5 && (
         <div className="flex items-center justify-center gap-1.5">
-          <label htmlFor="jump-to-page" className="text-xs text-slate-600">
+          <label htmlFor="jump-to-page" className="text-xs text-gray-600 dark:text-gray-400">
             Page:
           </label>
           <input
@@ -177,11 +177,11 @@ export function Pagination({
             onChange={(e) => setJumpToPage(e.target.value)}
             onKeyPress={handleJumpKeyPress}
             placeholder={`1-${totalPages}`}
-            className="w-16 px-1.5 py-0.5 text-xs border border-slate-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-16 px-1.5 py-0.5 text-xs border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#0c0c0c] text-gray-900 dark:text-gray-100 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-transparent"
           />
           <button
             onClick={handleJumpToPage}
-            className="px-2 py-0.5 text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 rounded transition-colors"
+            className="px-2 py-0.5 text-xs bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 rounded transition-colors"
           >
             Go
           </button>

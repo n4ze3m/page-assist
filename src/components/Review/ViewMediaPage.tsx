@@ -152,6 +152,44 @@ const MediaPageContent: React.FC = () => {
   const [keywordTokens, setKeywordTokens] = useState<string[]>([])
   const [selectedContent, setSelectedContent] = useState<string>('')
   const [selectedDetail, setSelectedDetail] = useState<any>(null)
+  const [contentHeight, setContentHeight] = useState<number>(0)
+  const contentDivRef = React.useRef<HTMLDivElement | null>(null)
+
+  // Measure content height whenever content changes
+  useEffect(() => {
+    const measureHeight = () => {
+      if (contentDivRef.current) {
+        const height = contentDivRef.current.scrollHeight
+        setContentHeight(height)
+      }
+    }
+
+    // Measure after a short delay to ensure content is rendered
+    const timer = setTimeout(measureHeight, 200)
+
+    // Set up ResizeObserver for dynamic updates
+    let observer: ResizeObserver | null = null
+    if (contentDivRef.current) {
+      observer = new ResizeObserver(measureHeight)
+      observer.observe(contentDivRef.current)
+    }
+
+    return () => {
+      clearTimeout(timer)
+      if (observer) observer.disconnect()
+    }
+  }, [selectedContent, selected, contentDivRef])
+
+  const contentRef = useCallback((node: HTMLDivElement | null) => {
+    contentDivRef.current = node
+    if (node) {
+      // Initial measurement
+      setTimeout(() => {
+        const height = node.scrollHeight
+        setContentHeight(height)
+      }, 100)
+    }
+  }, [])
 
   const deriveMediaMeta = (m: any): {
     type: string
@@ -406,50 +444,68 @@ const MediaPageContent: React.FC = () => {
       if (item.kind === 'note') {
         return item.raw
       }
-    } catch {}
+    } catch (err) {
+      console.error('Error fetching media details:', err)
+    }
     return null
   }, [])
 
   const contentFromDetail = (detail: any): string => {
     if (!detail) return ''
+
     const firstString = (...vals: any[]): string => {
       for (const v of vals) {
         if (typeof v === 'string' && v.trim().length > 0) return v
       }
       return ''
     }
+
     if (typeof detail === 'string') return detail
     if (typeof detail !== 'object') return ''
 
+    // Check content object first (tldw API structure)
+    if (detail.content && typeof detail.content === 'object') {
+      const contentText = firstString(
+        detail.content.text,
+        detail.content.content,
+        detail.content.raw_text
+      )
+      if (contentText) return contentText
+    }
+
+    // Try root level string fields
     const fromRoot = firstString(
-      detail.content,
       detail.text,
+      detail.transcript,
       detail.raw_text,
       detail.rawText,
-      detail.summary
+      detail.raw_content,
+      detail.rawContent
     )
     if (fromRoot) return fromRoot
 
+    // Try latest_version object
     const lv = detail.latest_version || detail.latestVersion
     if (lv && typeof lv === 'object') {
       const fromLatest = firstString(
         lv.content,
         lv.text,
+        lv.transcript,
         lv.raw_text,
-        lv.rawText,
-        lv.summary
+        lv.rawText
       )
       if (fromLatest) return fromLatest
     }
 
+    // Try data object
     const data = detail.data
     if (data && typeof data === 'object') {
       const fromData = firstString(
         data.content,
         data.text,
+        data.transcript,
         data.raw_text,
-        data.rawText,
-        data.summary
+        data.rawText
       )
       if (fromData) return fromData
     }
@@ -475,6 +531,20 @@ const MediaPageContent: React.FC = () => {
       }
     })()
   }, [selected, fetchSelectedDetails])
+
+  // Refresh media details (e.g., after generating analysis)
+  const handleRefreshMedia = useCallback(async () => {
+    if (!selected) return
+    try {
+      const detail = await fetchSelectedDetails(selected)
+      const content = contentFromDetail(detail)
+      setSelectedContent(String(content || ''))
+      setSelectedDetail(detail)
+    } catch {
+      setSelectedContent('')
+      setSelectedDetail(null)
+    }
+  }, [selected, fetchSelectedDetails, contentFromDetail])
 
   const handleSearch = () => {
     setPage(1)
@@ -502,6 +572,36 @@ const MediaPageContent: React.FC = () => {
       setSelected(results[selectedIndex + 1])
     }
   }
+
+  // Calculate dynamic sidebar height
+  const calculateSidebarHeight = () => {
+    const minHeight = 850 // Minimum height in pixels
+
+    // If we have measured content height, use it
+    if (contentHeight > 0 && selected) {
+      // Use content height to match article length
+      const dynamicHeight = Math.max(minHeight, contentHeight)
+      const maxHeight = 10000 // Cap at reasonable maximum
+      return Math.min(maxHeight, dynamicHeight)
+    }
+
+    // If no content selected, calculate based on results to show
+    const headerHeight = 48
+    const searchHeight = 90
+    const filtersHeight = 120
+    const paginationHeight = 70
+    const itemHeight = 65
+    const fixedHeight = headerHeight + searchHeight + filtersHeight + paginationHeight
+
+    // Show at least 5 items, or all items if fewer than 10
+    const itemsToShow = results.length <= 10 ? results.length : Math.min(5, results.length)
+    const resultsHeight = itemsToShow * itemHeight
+    const heightForResults = fixedHeight + resultsHeight
+
+    return Math.max(minHeight, heightForResults)
+  }
+
+  const sidebarHeight = calculateSidebarHeight()
 
   const handleChatWithMedia = useCallback(() => {
     if (!selected) return
@@ -578,36 +678,41 @@ const MediaPageContent: React.FC = () => {
   }, [selected, setSelectedKnowledge, setRagMediaIds, setChatMode, navigate, message, t])
 
   return (
-    <div className="flex h-full bg-slate-50">
+    <div className="flex bg-slate-50 dark:bg-[#101010]" style={{ minHeight: '100vh' }}>
       {/* Left Sidebar */}
       <div
-        className={`bg-white border-r border-slate-200 flex flex-col transition-all duration-300 ${
+        className={`bg-white dark:bg-[#171717] border-r border-gray-200 dark:border-gray-700 flex flex-col ${
           sidebarCollapsed ? 'w-0' : 'w-96'
         }`}
-        style={{ overflow: sidebarCollapsed ? 'hidden' : 'visible' }}
+        style={{
+          overflow: sidebarCollapsed ? 'hidden' : 'visible',
+          height: `${sidebarHeight}px`,
+          minHeight: '850px',
+          transition: 'width 300ms ease-in-out, height 200ms ease-out'
+        }}
       >
         {/* Header */}
-        <div className="px-4 py-3 border-b border-slate-200">
-          <h1 className="text-slate-900 text-base font-semibold">
+        <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+          <h1 className="text-gray-900 dark:text-gray-100 text-base font-semibold">
             Media Inspector
           </h1>
         </div>
 
         {/* Search */}
-        <div className="px-4 py-3 border-b border-slate-200">
+        <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
           <div onKeyPress={handleKeyPress}>
             <SearchBar value={query} onChange={setQuery} />
           </div>
           <button
             onClick={handleSearch}
-            className="mt-2 w-full px-3 py-1.5 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            className="mt-2 w-full px-3 py-1.5 text-sm bg-blue-600 dark:bg-blue-600 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-700 transition-colors"
           >
             Search
           </button>
         </div>
 
         {/* Filters */}
-        <div className="px-4 py-2 border-b border-slate-200">
+        <div className="px-4 py-2 border-b border-gray-200 dark:border-gray-700">
           <FilterPanel
             activeFilters={kinds}
             onFilterChange={setKinds}
@@ -621,7 +726,7 @@ const MediaPageContent: React.FC = () => {
         </div>
 
         {/* Results */}
-        <div className="flex-1 overflow-y-auto min-h-[400px]">
+        <div className="flex-1 overflow-y-auto">
           <ResultsList
             results={results}
             selectedId={selected?.id || null}
@@ -648,14 +753,14 @@ const MediaPageContent: React.FC = () => {
       {/* Collapse Button */}
       <button
         onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-        className="relative w-6 bg-white border-r border-slate-200 hover:bg-slate-50 flex items-center justify-center group transition-colors"
+        className="relative w-6 bg-white dark:bg-[#171717] border-r border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-[#262626] flex items-center justify-center group transition-colors"
         aria-label={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
       >
         <div className="flex items-center justify-center w-full h-full">
           {sidebarCollapsed ? (
-            <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-slate-600" />
+            <ChevronRight className="w-4 h-4 text-gray-400 dark:text-gray-500 group-hover:text-gray-600 dark:group-hover:text-gray-300" />
           ) : (
-            <ChevronLeft className="w-4 h-4 text-slate-400 group-hover:text-slate-600" />
+            <ChevronLeft className="w-4 h-4 text-gray-400 dark:text-gray-500 group-hover:text-gray-600 dark:group-hover:text-gray-300" />
           )}
         </div>
       </button>
@@ -665,6 +770,7 @@ const MediaPageContent: React.FC = () => {
         <ContentViewer
           selectedMedia={selected}
           content={selectedContent}
+          mediaDetail={selectedDetail}
           onPrevious={handlePrevious}
           onNext={handleNext}
           hasPrevious={hasPrevious}
@@ -673,6 +779,8 @@ const MediaPageContent: React.FC = () => {
           totalResults={results.length}
           onChatWithMedia={handleChatWithMedia}
           onChatAboutMedia={handleChatAboutMedia}
+          onRefreshMedia={handleRefreshMedia}
+          contentRef={contentRef}
         />
       </div>
     </div>

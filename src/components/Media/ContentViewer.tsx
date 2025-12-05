@@ -6,9 +6,10 @@ import {
   ChevronUp,
   Send,
   Copy,
-  MoreVertical
+  Sparkles
 } from 'lucide-react'
-import { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
+import { AnalysisModal } from './AnalysisModal'
 
 interface Result {
   id: string | number
@@ -27,6 +28,7 @@ interface Result {
 interface ContentViewerProps {
   selectedMedia: Result | null
   content: string
+  mediaDetail?: any
   onPrevious?: () => void
   onNext?: () => void
   hasPrevious?: boolean
@@ -35,11 +37,14 @@ interface ContentViewerProps {
   totalResults?: number
   onChatWithMedia?: () => void
   onChatAboutMedia?: () => void
+  onRefreshMedia?: () => void
+  contentRef?: (node: HTMLDivElement | null) => void
 }
 
 export function ContentViewer({
   selectedMedia,
   content,
+  mediaDetail,
   onPrevious,
   onNext,
   hasPrevious = false,
@@ -47,7 +52,9 @@ export function ContentViewer({
   currentIndex = 0,
   totalResults = 0,
   onChatWithMedia,
-  onChatAboutMedia
+  onChatAboutMedia,
+  onRefreshMedia,
+  contentRef
 }: ContentViewerProps) {
   const [collapsedSections, setCollapsedSections] = useState<
     Record<string, boolean>
@@ -55,11 +62,55 @@ export function ContentViewer({
     statistics: false,
     content: false,
     metadata: false,
-    analysis: false,
-    existingAnalyses: false
+    analysis: false
   })
   const [showMoreActions, setShowMoreActions] = useState(false)
+  const [analysisModalOpen, setAnalysisModalOpen] = useState(false)
   const moreActionsRef = useRef<HTMLDivElement>(null)
+
+  // Extract analyses from media detail
+  const existingAnalyses = React.useMemo(() => {
+    if (!mediaDetail) return []
+    const analyses: Array<{ type: string; text: string }> = []
+
+    // Check processing.analysis (tldw API structure)
+    if (mediaDetail.processing?.analysis && typeof mediaDetail.processing.analysis === 'string' && mediaDetail.processing.analysis.trim()) {
+      analyses.push({ type: 'Analysis', text: mediaDetail.processing.analysis })
+    }
+
+    // Check for summary field (root level)
+    if (mediaDetail.summary && typeof mediaDetail.summary === 'string' && mediaDetail.summary.trim()) {
+      analyses.push({ type: 'Summary', text: mediaDetail.summary })
+    }
+
+    // Check for analysis field (root level)
+    if (mediaDetail.analysis && typeof mediaDetail.analysis === 'string' && mediaDetail.analysis.trim()) {
+      analyses.push({ type: 'Analysis', text: mediaDetail.analysis })
+    }
+
+    // Check for analyses array
+    if (Array.isArray(mediaDetail.analyses)) {
+      mediaDetail.analyses.forEach((a: any, idx: number) => {
+        const text = typeof a === 'string' ? a : (a?.content || a?.text || a?.summary || a?.analysis_content || '')
+        const type = typeof a === 'object' && a?.type ? a.type : `Analysis ${idx + 1}`
+        if (text && text.trim()) {
+          analyses.push({ type, text })
+        }
+      })
+    }
+
+    // Check versions array for analysis_content
+    if (Array.isArray(mediaDetail.versions)) {
+      mediaDetail.versions.forEach((v: any, idx: number) => {
+        if (v?.analysis_content && typeof v.analysis_content === 'string' && v.analysis_content.trim()) {
+          const versionNum = v?.version_number || idx + 1
+          analyses.push({ type: `Analysis (Version ${versionNum})`, text: v.analysis_content })
+        }
+      })
+    }
+
+    return analyses
+  }, [mediaDetail])
 
   const toggleSection = (section: string) => {
     setCollapsedSections((prev) => ({
@@ -108,17 +159,17 @@ export function ContentViewer({
 
   if (!selectedMedia) {
     return (
-      <div className="flex-1 flex items-center justify-center bg-slate-50">
+      <div className="flex-1 flex items-center justify-center bg-gray-50 dark:bg-[#101010]">
         <div className="text-center max-w-md px-6">
           <div className="mb-6 flex justify-center">
-            <div className="w-48 h-48 bg-slate-200 rounded-lg flex items-center justify-center">
-              <FileSearch className="w-24 h-24 text-slate-400" />
+            <div className="w-48 h-48 bg-gray-200 dark:bg-gray-800 rounded-lg flex items-center justify-center">
+              <FileSearch className="w-24 h-24 text-gray-400 dark:text-gray-500" />
             </div>
           </div>
-          <h2 className="text-slate-900 mb-2 text-xl font-semibold">
+          <h2 className="text-gray-900 dark:text-gray-100 mb-2 text-xl font-semibold">
             No media item selected
           </h2>
-          <p className="text-slate-600">
+          <p className="text-gray-600 dark:text-gray-400">
             Select a media item from the left sidebar to view its content and
             analyses here.
           </p>
@@ -127,22 +178,24 @@ export function ContentViewer({
     )
   }
 
-  const wordCount = content ? content.split(/\s+/).length : 0
+  // Use API-provided word count if available, otherwise calculate
+  const wordCount = mediaDetail?.content?.word_count ||
+    (content && content.trim() ? content.trim().split(/\s+/).filter(w => w.length > 0).length : 0)
   const charCount = content ? content.length : 0
-  const paragraphCount = content
-    ? content.split('\n\n').filter((p: string) => p.trim().length > 0).length
+  const paragraphCount = content && content.trim()
+    ? content.split(/\n\n/).filter((p: string) => p.trim().length > 0).length
     : 0
 
   return (
-    <div className="flex-1 flex flex-col bg-white">
+    <div ref={contentRef} className="flex-1 flex flex-col bg-gray-50 dark:bg-[#101010]">
       {/* Header Controls */}
-      <div className="px-6 py-4 border-b border-slate-200">
+      <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-[#111]">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
-            <FileSearch className="w-5 h-5 text-slate-400" />
-            <h2 className="text-slate-900">Review Controls</h2>
+            <FileSearch className="w-5 h-5 text-gray-400 dark:text-gray-500" />
+            <h2 className="text-gray-900 dark:text-gray-100">Review Controls</h2>
             {totalResults > 0 && (
-              <span className="text-sm text-slate-500">
+              <span className="text-sm text-gray-500 dark:text-gray-400">
                 {currentIndex + 1} / {totalResults}
               </span>
             )}
@@ -151,7 +204,7 @@ export function ContentViewer({
             <button
               onClick={onPrevious}
               disabled={!hasPrevious}
-              className="px-3 py-1.5 text-sm text-slate-700 hover:bg-slate-100 rounded-md flex items-center gap-1 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-3 py-1.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#262626] rounded-md flex items-center gap-1 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <ChevronLeft className="w-4 h-4" />
               Previous
@@ -159,7 +212,7 @@ export function ContentViewer({
             <button
               onClick={onNext}
               disabled={!hasNext}
-              className="px-3 py-1.5 text-sm text-slate-700 hover:bg-slate-100 rounded-md flex items-center gap-1 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-3 py-1.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#262626] rounded-md flex items-center gap-1 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Next
               <ChevronRight className="w-4 h-4" />
@@ -172,22 +225,22 @@ export function ContentViewer({
       <div className="flex-1 overflow-y-auto p-6">
         <div className="max-w-4xl mx-auto">
           <div className="mb-6">
-            <h3 className="text-slate-900 mb-2 text-2xl font-semibold">
+            <h3 className="text-gray-900 dark:text-gray-100 mb-2 text-2xl font-semibold">
               {selectedMedia.title || `${selectedMedia.kind} ${selectedMedia.id}`}
             </h3>
             <div className="flex items-center gap-2 flex-wrap">
               {selectedMedia.meta?.type && (
-                <span className="inline-flex items-center px-2 py-1 rounded text-sm bg-slate-100 text-slate-700 capitalize">
+                <span className="inline-flex items-center px-2 py-1 rounded text-sm bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 capitalize">
                   {selectedMedia.meta.type}
                 </span>
               )}
               {selectedMedia.meta?.source && (
-                <span className="text-slate-600 text-sm">
+                <span className="text-gray-600 dark:text-gray-400 text-sm">
                   Source: {selectedMedia.meta.source}
                 </span>
               )}
               {selectedMedia.meta?.duration && (
-                <span className="text-slate-600 text-sm">
+                <span className="text-gray-600 dark:text-gray-400 text-sm">
                   Duration: {formatDuration(selectedMedia.meta.duration)}
                 </span>
               )}
@@ -197,12 +250,12 @@ export function ContentViewer({
           {/* Ask the assistant */}
           {(onChatWithMedia || onChatAboutMedia) && (
             <div className="mb-6">
-              <h4 className="text-slate-600 mb-3 text-sm">Ask the assistant</h4>
+              <h4 className="text-gray-600 dark:text-gray-400 mb-3 text-sm">Ask the assistant</h4>
               <div className="flex gap-3">
                 {onChatWithMedia && (
                   <button
                     onClick={onChatWithMedia}
-                    className="flex-1 px-4 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-lg flex items-center justify-center gap-2 transition-colors text-sm font-medium"
+                    className="flex-1 px-4 py-2.5 bg-gray-900 dark:bg-gray-800 hover:bg-gray-800 dark:hover:bg-gray-700 text-white rounded-lg flex items-center justify-center gap-2 transition-colors text-sm font-medium"
                   >
                     <Send className="w-4 h-4" />
                     Chat with this media
@@ -211,7 +264,7 @@ export function ContentViewer({
                 {onChatAboutMedia && (
                   <button
                     onClick={onChatAboutMedia}
-                    className="flex-1 px-4 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-lg transition-colors text-sm font-medium"
+                    className="flex-1 px-4 py-2.5 bg-gray-900 dark:bg-gray-800 hover:bg-gray-800 dark:hover:bg-gray-700 text-white rounded-lg transition-colors text-sm font-medium"
                   >
                     Chat about this media
                   </button>
@@ -219,23 +272,23 @@ export function ContentViewer({
                 <div className="relative" ref={moreActionsRef}>
                   <button
                     onClick={() => setShowMoreActions(!showMoreActions)}
-                    className="flex-1 px-4 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-lg flex items-center justify-center gap-2 transition-colors text-sm font-medium min-w-[160px]"
+                    className="flex-1 px-4 py-2.5 bg-gray-900 dark:bg-gray-800 hover:bg-gray-800 dark:hover:bg-gray-700 text-white rounded-lg flex items-center justify-center gap-2 transition-colors text-sm font-medium min-w-[160px]"
                   >
                     More actions
                     <ChevronDown className="w-4 h-4" />
                   </button>
                   {showMoreActions && (
-                    <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-slate-200 py-1 z-10">
+                    <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-[#171717] rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 py-1 z-10">
                       <button
                         onClick={handleCopyContent}
-                        className="w-full px-4 py-2 text-left text-sm text-slate-700 hover:bg-slate-50 flex items-center gap-2"
+                        className="w-full px-4 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#262626] flex items-center gap-2"
                       >
                         <Copy className="w-4 h-4" />
                         Copy content
                       </button>
                       <button
                         onClick={handleCopyMetadata}
-                        className="w-full px-4 py-2 text-left text-sm text-slate-700 hover:bg-slate-50 flex items-center gap-2"
+                        className="w-full px-4 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#262626] flex items-center gap-2"
                       >
                         <Copy className="w-4 h-4" />
                         Copy metadata
@@ -248,12 +301,12 @@ export function ContentViewer({
           )}
 
           {/* Content Statistics */}
-          <div className="bg-slate-50 border border-slate-200 rounded-lg mb-4 overflow-hidden transition-all duration-200">
-            <div className="flex items-center justify-between p-4 bg-slate-100">
-              <h4 className="text-slate-900 font-medium">Document Statistics</h4>
+          <div className="bg-white dark:bg-[#171717] border border-gray-200 dark:border-gray-700 rounded-lg mb-4 overflow-hidden transition-all duration-200">
+            <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-[#0c0c0c]">
+              <h4 className="text-gray-900 dark:text-gray-100 font-medium">Document Statistics</h4>
               <button
                 onClick={() => toggleSection('statistics')}
-                className="text-blue-600 hover:text-blue-700 text-sm flex items-center gap-1 transition-colors"
+                className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 text-sm flex items-center gap-1 transition-colors"
               >
                 {collapsedSections.statistics ? (
                   <>
@@ -269,23 +322,23 @@ export function ContentViewer({
               </button>
             </div>
             {!collapsedSections.statistics && (
-              <div className="p-4 animate-in fade-in slide-in-from-top-2 duration-200">
+              <div className="p-4 bg-white dark:bg-[#171717] animate-in fade-in slide-in-from-top-2 duration-200">
                 <div className="grid grid-cols-3 gap-4 text-sm">
                   <div className="flex flex-col">
-                    <span className="text-slate-600">Word Count</span>
-                    <span className="text-slate-900 mt-1 font-medium">
+                    <span className="text-gray-600 dark:text-gray-400">Word Count</span>
+                    <span className="text-gray-900 dark:text-gray-100 mt-1 font-medium">
                       {wordCount}
                     </span>
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-slate-600">Characters</span>
-                    <span className="text-slate-900 mt-1 font-medium">
+                    <span className="text-gray-600 dark:text-gray-400">Characters</span>
+                    <span className="text-gray-900 dark:text-gray-100 mt-1 font-medium">
                       {charCount}
                     </span>
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-slate-600">Paragraphs</span>
-                    <span className="text-slate-900 mt-1 font-medium">
+                    <span className="text-gray-600 dark:text-gray-400">Paragraphs</span>
+                    <span className="text-gray-900 dark:text-gray-100 mt-1 font-medium">
                       {paragraphCount}
                     </span>
                   </div>
@@ -295,12 +348,12 @@ export function ContentViewer({
           </div>
 
           {/* Main Content */}
-          <div className="bg-white border border-slate-200 rounded-lg mb-4 overflow-hidden transition-all duration-200">
-            <div className="flex items-center justify-between p-4 bg-slate-100">
-              <h4 className="text-slate-900 font-medium">Content</h4>
+          <div className="bg-white dark:bg-[#171717] border border-gray-200 dark:border-gray-700 rounded-lg mb-4 overflow-hidden transition-all duration-200">
+            <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-[#0c0c0c]">
+              <h4 className="text-gray-900 dark:text-gray-100 font-medium">Content</h4>
               <button
                 onClick={() => toggleSection('content')}
-                className="text-blue-600 hover:text-blue-700 text-sm flex items-center gap-1 transition-colors"
+                className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 text-sm flex items-center gap-1 transition-colors"
               >
                 {collapsedSections.content ? (
                   <>
@@ -316,9 +369,9 @@ export function ContentViewer({
               </button>
             </div>
             {!collapsedSections.content && (
-              <div className="p-4 animate-in fade-in slide-in-from-top-2 duration-200">
-                <div className="prose prose-slate max-w-none">
-                  <div className="text-slate-700 whitespace-pre-wrap leading-relaxed">
+              <div className="p-4 bg-white dark:bg-[#171717] animate-in fade-in slide-in-from-top-2 duration-200">
+                <div className="prose prose-slate dark:prose-invert max-w-none">
+                  <div className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap leading-relaxed">
                     {content || 'No content available'}
                   </div>
                 </div>
@@ -327,13 +380,21 @@ export function ContentViewer({
           </div>
 
           {/* Analysis */}
-          <div className="bg-white border border-slate-200 rounded-lg mb-4 overflow-hidden transition-all duration-200">
-            <div className="flex items-center justify-between p-4 bg-slate-100">
-              <h4 className="text-slate-900 font-medium">Analysis</h4>
+          <div className="bg-white dark:bg-[#171717] border border-gray-200 dark:border-gray-700 rounded-lg mb-4 overflow-hidden transition-all duration-200">
+            <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-[#0c0c0c]">
+              <h4 className="text-gray-900 dark:text-gray-100 font-medium">Analysis</h4>
               <div className="flex items-center gap-2">
                 <button
+                  onClick={() => setAnalysisModalOpen(true)}
+                  className="px-3 py-1.5 bg-blue-600 dark:bg-blue-600 hover:bg-blue-700 dark:hover:bg-blue-700 text-white rounded text-xs font-medium flex items-center gap-1.5 transition-colors"
+                  title="Generate new analysis"
+                >
+                  <Sparkles className="w-3.5 h-3.5" />
+                  Generate
+                </button>
+                <button
                   onClick={() => toggleSection('analysis')}
-                  className="text-blue-600 hover:text-blue-700 text-sm flex items-center gap-1 transition-colors"
+                  className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 text-sm flex items-center gap-1 transition-colors"
                 >
                   {collapsedSections.analysis ? (
                     <>
@@ -347,31 +408,62 @@ export function ContentViewer({
                     </>
                   )}
                 </button>
-                <button className="text-slate-600 hover:text-slate-700 transition-colors">
-                  <Copy className="w-4 h-4" />
-                </button>
-                <button className="text-slate-600 hover:text-slate-700 transition-colors">
-                  <Send className="w-4 h-4" />
-                </button>
+                {existingAnalyses.length > 0 && (
+                  <button
+                    onClick={() => {
+                      if (existingAnalyses.length > 0) {
+                        navigator.clipboard.writeText(existingAnalyses[0].text)
+                      }
+                    }}
+                    className="text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
+                  >
+                    <Copy className="w-4 h-4" />
+                  </button>
+                )}
               </div>
             </div>
             {!collapsedSections.analysis && (
-              <div className="p-4 bg-slate-50 animate-in fade-in slide-in-from-top-2 duration-200">
-                <textarea
-                  placeholder="Run Review or Summarize, then edit here..."
-                  className="w-full min-h-[200px] p-3 bg-white border border-slate-300 rounded text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-y"
-                />
+              <div className="p-4 bg-white dark:bg-[#171717] animate-in fade-in slide-in-from-top-2 duration-200">
+                {existingAnalyses.length > 0 ? (
+                  <div className="space-y-4">
+                    {existingAnalyses.map((analysis, idx) => (
+                      <div key={idx} className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
+                            {analysis.type}
+                          </span>
+                          <button
+                            onClick={() => navigator.clipboard.writeText(analysis.text)}
+                            className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
+                          >
+                            <Copy className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                        <div className="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap leading-relaxed">
+                          {analysis.text}
+                        </div>
+                        {idx < existingAnalyses.length - 1 && (
+                          <div className="border-t border-gray-200 dark:border-gray-700 pt-4" />
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-sm text-gray-500 dark:text-gray-400 text-center py-8">
+                    No analysis available for this media item
+                  </div>
+                )}
               </div>
             )}
           </div>
 
           {/* Metadata */}
-          <div className="bg-slate-50 border border-slate-200 rounded-lg overflow-hidden transition-all duration-200">
-            <div className="flex items-center justify-between p-4 bg-slate-100">
-              <h4 className="text-slate-900 font-medium">Metadata</h4>
+          <div className="bg-white dark:bg-[#171717] border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden transition-all duration-200">
+            <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-[#0c0c0c]">
+              <h4 className="text-gray-900 dark:text-gray-100 font-medium">Metadata</h4>
               <button
                 onClick={() => toggleSection('metadata')}
-                className="text-blue-600 hover:text-blue-700 text-sm flex items-center gap-1 transition-colors"
+                className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 text-sm flex items-center gap-1 transition-colors"
               >
                 {collapsedSections.metadata ? (
                   <>
@@ -387,32 +479,32 @@ export function ContentViewer({
               </button>
             </div>
             {!collapsedSections.metadata && (
-              <div className="p-4 animate-in fade-in slide-in-from-top-2 duration-200">
+              <div className="p-4 bg-white dark:bg-[#171717] animate-in fade-in slide-in-from-top-2 duration-200">
                 <div className="space-y-2 text-sm">
-                  <div className="flex justify-between py-2 border-b border-slate-200">
-                    <span className="text-slate-600">ID:</span>
-                    <span className="text-slate-900 font-mono text-xs">
+                  <div className="flex justify-between py-2 border-b border-gray-200 dark:border-gray-700">
+                    <span className="text-gray-600 dark:text-gray-400">ID:</span>
+                    <span className="text-gray-900 dark:text-gray-100 font-mono text-xs">
                       {selectedMedia.id}
                     </span>
                   </div>
                   {selectedMedia.meta?.type && (
-                    <div className="flex justify-between py-2 border-b border-slate-200">
-                      <span className="text-slate-600">Type:</span>
-                      <span className="text-slate-900 capitalize">
+                    <div className="flex justify-between py-2 border-b border-gray-200 dark:border-gray-700">
+                      <span className="text-gray-600 dark:text-gray-400">Type:</span>
+                      <span className="text-gray-900 dark:text-gray-100 capitalize">
                         {selectedMedia.meta.type}
                       </span>
                     </div>
                   )}
-                  <div className="flex justify-between py-2 border-b border-slate-200">
-                    <span className="text-slate-600">Title:</span>
-                    <span className="text-slate-900">
+                  <div className="flex justify-between py-2 border-b border-gray-200 dark:border-gray-700">
+                    <span className="text-gray-600 dark:text-gray-400">Title:</span>
+                    <span className="text-gray-900 dark:text-gray-100">
                       {selectedMedia.title || 'N/A'}
                     </span>
                   </div>
                   {selectedMedia.meta?.source && (
                     <div className="flex justify-between py-2">
-                      <span className="text-slate-600">Source:</span>
-                      <span className="text-slate-900">
+                      <span className="text-gray-600 dark:text-gray-400">Source:</span>
+                      <span className="text-gray-900 dark:text-gray-100">
                         {selectedMedia.meta.source}
                       </span>
                     </div>
@@ -423,6 +515,21 @@ export function ContentViewer({
           </div>
         </div>
       </div>
+
+      {/* Analysis Generation Modal */}
+      {selectedMedia && (
+        <AnalysisModal
+          open={analysisModalOpen}
+          onClose={() => setAnalysisModalOpen(false)}
+          mediaId={selectedMedia.id}
+          mediaContent={content}
+          onAnalysisGenerated={() => {
+            if (onRefreshMedia) {
+              onRefreshMedia()
+            }
+          }}
+        />
+      )}
     </div>
   )
 }

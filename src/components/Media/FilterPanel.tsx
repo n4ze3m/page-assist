@@ -57,7 +57,7 @@ export function FilterPanel({
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2 text-slate-700">
+        <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
           <Filter className="w-4 h-4" />
           <span>Filters</span>
         </div>
@@ -67,7 +67,7 @@ export function FilterPanel({
             onMediaTypesChange([])
             onKeywordsChange([])
           }}
-          className="text-sm text-blue-600 hover:text-blue-700"
+          className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300"
         >
           Clear all
         </button>
@@ -77,7 +77,7 @@ export function FilterPanel({
       <div className="space-y-2">
         <button
           onClick={() => toggleSection('resultTypes')}
-          className="flex items-center justify-between w-full text-sm text-slate-700 hover:text-slate-900"
+          className="flex items-center justify-between w-full text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100"
         >
           <span>Result types</span>
           <ChevronDown
@@ -91,18 +91,18 @@ export function FilterPanel({
                 type="checkbox"
                 checked={activeFilters.media}
                 onChange={(e) => onFilterChange({ ...activeFilters, media: e.target.checked })}
-                className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-2 focus:ring-blue-500"
+                className="w-4 h-4 rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600"
               />
-              <span className="text-sm text-slate-700">Media</span>
+              <span className="text-sm text-gray-700 dark:text-gray-300">Media</span>
             </label>
             <label className="flex items-center gap-2 cursor-pointer">
               <input
                 type="checkbox"
                 checked={activeFilters.notes}
                 onChange={(e) => onFilterChange({ ...activeFilters, notes: e.target.checked })}
-                className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-2 focus:ring-blue-500"
+                className="w-4 h-4 rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600"
               />
-              <span className="text-sm text-slate-700">Notes</span>
+              <span className="text-sm text-gray-700 dark:text-gray-300">Notes</span>
             </label>
           </div>
         )}
@@ -112,7 +112,7 @@ export function FilterPanel({
       <div className="space-y-2">
         <button
           onClick={() => toggleSection('mediaTypes')}
-          className="flex items-center justify-between w-full text-sm text-slate-700 hover:text-slate-900"
+          className="flex items-center justify-between w-full text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100"
         >
           <span>Media types</span>
           <ChevronDown
@@ -129,14 +129,14 @@ export function FilterPanel({
                       type="checkbox"
                       checked={selectedMediaTypes.includes(type)}
                       onChange={() => handleMediaTypeToggle(type)}
-                      className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-2 focus:ring-blue-500"
+                      className="w-4 h-4 rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600"
                     />
-                    <span className="text-sm text-slate-700 capitalize">{type}</span>
+                    <span className="text-sm text-gray-700 dark:text-gray-300 capitalize">{type}</span>
                   </label>
                 ))}
               </div>
             ) : (
-              <div className="text-sm text-slate-500">
+              <div className="text-sm text-gray-500 dark:text-gray-400">
                 No media types available
               </div>
             )}
@@ -148,7 +148,7 @@ export function FilterPanel({
       <div className="space-y-2">
         <button
           onClick={() => toggleSection('keywords')}
-          className="flex items-center justify-between w-full text-sm text-slate-700 hover:text-slate-900"
+          className="flex items-center justify-between w-full text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100"
         >
           <span>Keywords</span>
           <ChevronDown
@@ -165,14 +165,14 @@ export function FilterPanel({
                       type="checkbox"
                       checked={selectedKeywords.includes(keyword)}
                       onChange={() => handleKeywordToggle(keyword)}
-                      className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-2 focus:ring-blue-500"
+                      className="w-4 h-4 rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600"
                     />
-                    <span className="text-sm text-slate-700">{keyword}</span>
+                    <span className="text-sm text-gray-700 dark:text-gray-300">{keyword}</span>
                   </label>
                 ))}
               </div>
             ) : (
-              <div className="text-sm text-slate-500">
+              <div className="text-sm text-gray-500 dark:text-gray-400">
                 Search matches title and content; keywords further narrow the results.
               </div>
             )}
