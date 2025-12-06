@@ -83,6 +83,26 @@ export const Sidebar = ({
   const debouncedSearchQuery = useDebounce(searchQuery, 300)
   const [deleteGroup, setDeleteGroup] = useState<string | null>(null)
   const [dexiePrivateWindowError, setDexiePrivateWindowError] = useState(false)
+  const [editingHistoryId, setEditingHistoryId] = useState<string | null>(null)
+  const [editTitle, setEditTitle] = useState("")
+
+  const handleEditStart = (chat: any) => {
+    setEditingHistoryId(chat.id)
+    setEditTitle(chat.title)
+  }
+
+  const handleEditCancel = () => {
+    setEditingHistoryId(null)
+    setEditTitle("")
+  }
+
+  const handleEditSave = (id: string, currentTitle: string) => {
+    if (editTitle.trim() && editTitle.trim() !== currentTitle) {
+      editHistory({ id, title: editTitle.trim() })
+    }
+    setEditingHistoryId(null)
+    setEditTitle("")
+  }
 
   // Using infinite query for pagination
   const {
@@ -397,46 +417,69 @@ export const Sidebar = ({
                     {chat?.message_source === "branch" && (
                       <GitBranch className="size-3 text-gray-500 dark:text-gray-400" />
                     )}
-                    <button
-                      className="flex-1 overflow-hidden break-all text-start truncate w-full"
-                      onClick={async () => {
-                        const db = new PageAssistDatabase()
-                        const history = await db.getChatHistory(chat.id)
-                        const historyDetails = await db.getHistoryInfo(chat.id)
-                        setHistoryId(chat.id)
-                        setHistory(formatToChatHistory(history))
-                        setMessages(formatToMessage(history))
-                        const isLastUsedChatModel =
-                          await lastUsedChatModelEnabled()
-                        if (isLastUsedChatModel) {
-                          const currentChatModel = historyDetails?.model_id
-                          if (currentChatModel) {
-                            setSelectedModel(currentChatModel)
+                    {editingHistoryId === chat.id ? (
+                      <input
+                        value={editTitle}
+                        onChange={(e) => setEditTitle(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            handleEditSave(chat.id, chat.title)
+                          } else if (e.key === "Escape") {
+                            handleEditCancel()
                           }
-                        }
-                        const lastUsedPrompt = historyDetails?.last_used_prompt
-                        if (lastUsedPrompt) {
-                          if (lastUsedPrompt.prompt_id) {
-                            const prompt = await getPromptById(
-                              lastUsedPrompt.prompt_id
-                            )
-                            if (prompt) {
-                              setSelectedSystemPrompt(lastUsedPrompt.prompt_id)
+                          e.stopPropagation()
+                        }}
+                        onClick={(e) => e.stopPropagation()}
+                        onBlur={() => handleEditSave(chat.id, chat.title)}
+                        autoFocus
+                        className={`flex-1 h-8 text-sm mr-2 z-20 px-0 bg-transparent outline-none border-none dark:focus:ring-[#404040] focus:ring-gray-300 focus:rounded-md focus:p-2 caret-current selection:bg-gray-300 dark:selection:bg-gray-600 ${
+                          historyId === chat.id
+                            ? "text-gray-900 dark:text-gray-100 placeholder-gray-500"
+                            : "text-gray-800 dark:text-gray-100 placeholder-gray-400"
+                        }`}
+                      />
+                    ) : (
+                      <button
+                        className="flex-1 overflow-hidden break-all text-start truncate w-full"
+                        onClick={async () => {
+                          const db = new PageAssistDatabase()
+                          const history = await db.getChatHistory(chat.id)
+                          const historyDetails = await db.getHistoryInfo(chat.id)
+                          setHistoryId(chat.id)
+                          setHistory(formatToChatHistory(history))
+                          setMessages(formatToMessage(history))
+                          const isLastUsedChatModel =
+                            await lastUsedChatModelEnabled()
+                          if (isLastUsedChatModel) {
+                            const currentChatModel = historyDetails?.model_id
+                            if (currentChatModel) {
+                              setSelectedModel(currentChatModel)
                             }
                           }
-                          setSystemPrompt(lastUsedPrompt.prompt_content)
-                        }
+                          const lastUsedPrompt = historyDetails?.last_used_prompt
+                          if (lastUsedPrompt) {
+                            if (lastUsedPrompt.prompt_id) {
+                              const prompt = await getPromptById(
+                                lastUsedPrompt.prompt_id
+                              )
+                              if (prompt) {
+                                setSelectedSystemPrompt(lastUsedPrompt.prompt_id)
+                              }
+                            }
+                            setSystemPrompt(lastUsedPrompt.prompt_content)
+                          }
 
-                        if (setContext) {
-                          const session = await getSessionFiles(chat.id)
-                          setContext(session)
-                        }
-                        updatePageTitle(chat.title)
-                        navigate("/")
-                        onClose()
-                      }}>
-                      <span className="flex-grow truncate">{chat.title}</span>
-                    </button>
+                          if (setContext) {
+                            const session = await getSessionFiles(chat.id)
+                            setContext(session)
+                          }
+                          updatePageTitle(chat.title)
+                          navigate("/")
+                          onClose()
+                        }}>
+                        <span className="flex-grow truncate">{chat.title}</span>
+                      </button>
+                    )}
                     <div className="flex items-center gap-2">
                       <Dropdown
                         overlay={
@@ -464,14 +507,10 @@ export const Sidebar = ({
                             <Menu.Item
                               key="edit"
                               icon={<PencilIcon className="w-4 h-4" />}
-                              onClick={() => {
-                                const newTitle = prompt(
-                                  t("editHistoryTitle"),
-                                  chat.title
-                                )
-                                if (newTitle) {
-                                  editHistory({ id: chat.id, title: newTitle })
-                                }
+                              onClick={(e) => {
+                                // prevent menu closing immediately if needed, but usually we want it to close so we can see the input
+                                e.domEvent.stopPropagation()
+                                handleEditStart(chat)
                               }}>
                               {t("common:edit")}
                             </Menu.Item>
