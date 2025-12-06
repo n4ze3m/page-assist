@@ -121,22 +121,15 @@ export function AnalysisModal({
         return
       }
 
-      // Save the analysis to the media item
+      // Save the analysis to the media item (MediaUpdateRequest)
       try {
         await bgRequest<any>({
           path: `/api/v1/media/${mediaId}`,
-          method: 'PATCH',
+          method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: {
-            processing: {
-              analysis: analysisText,
-              model: selectedModel || 'default',
-              prompt: systemPrompt,
-              prompt_metadata: {
-                system_prompt: systemPrompt,
-                user_prefix: userPrefix || ''
-              }
-            }
+            analysis: analysisText,
+            prompt: systemPrompt
           }
         })
 

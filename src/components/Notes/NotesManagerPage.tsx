@@ -48,15 +48,15 @@ const extractKeywords = (note: any): string[] => {
       ? note.keywords
       : []) as any[]
   return (rawKeywords || [])
-    .map((item: any) =>
-      String(
-        item?.keyword ||
-          item?.keyword_text ||
-          item?.text ||
-          item
-      )
-    )
-    .filter((s) => s && s.trim().length > 0)
+    .map((item: any) => {
+      const raw =
+        item?.keyword ??
+        item?.keyword_text ??
+        item?.text ??
+        item
+      return typeof raw === 'string' ? raw : null
+    })
+    .filter((s): s is string => !!s && s.trim().length > 0)
 }
 
 const MIN_SIDEBAR_HEIGHT = 600
@@ -113,11 +113,9 @@ const NotesManagerPage: React.FC = () => {
     q: string,
     toks: string[]
   ): Promise<any[]> => {
-    const cfg = await tldwClient.getConfig().catch(() => null)
-    const base = String(cfg?.serverUrl || '').replace(/\/$/, '')
     const qstr = q || toks.join(' ')
     const abs = await bgRequest<any>({
-      path: `${base}/api/v1/notes/search/?query=${encodeURIComponent(qstr)}` as any,
+      path: `/api/v1/notes/search/?query=${encodeURIComponent(qstr)}` as any,
       method: 'GET' as any
     })
     let raw: any[] = Array.isArray(abs) ? abs : []
@@ -180,7 +178,7 @@ const NotesManagerPage: React.FC = () => {
   }
 
   const { data, isFetching, refetch } = useQuery({
-    queryKey: ['notes', query, page, pageSize],
+    queryKey: ['notes', query, page, pageSize, keywordTokens.join('|')],
     queryFn: fetchNotes,
     placeholderData: keepPreviousData,
     enabled: isOnline
@@ -461,8 +459,21 @@ const NotesManagerPage: React.FC = () => {
       const arr = await gatherAllMatching()
       if (!arr.length) { message.info('No notes to export'); return }
       const escape = (s: any) => '"' + String(s ?? '').replace(/"/g, '""') + '"'
-      const header = ['id','title','content','updated_at']
-      const rows = [header.join(','), ...arr.map(n => [n.id, n.title || '', (n.content || '').replace(/\r?\n/g, '\\n'), n.updated_at || ''].map(escape).join(','))]
+      const header = ['id','title','content','updated_at','keywords']
+      const rows = [
+        header.join(','),
+        ...arr.map((n) =>
+          [
+            n.id,
+            n.title || '',
+            (n.content || '').replace(/\r?\n/g, '\\n'),
+            n.updated_at || '',
+            (n.keywords || []).join('; ')
+          ]
+            .map(escape)
+            .join(',')
+        )
+      ]
       const blob = new Blob([rows.join('\n')], { type: 'text/csv;charset=utf-8' })
       const url = URL.createObjectURL(blob)
       const a = document.createElement('a')
@@ -495,11 +506,9 @@ const NotesManagerPage: React.FC = () => {
 
   const loadKeywordSuggestions = React.useCallback(async (text?: string) => {
     try {
-      const cfg = await tldwClient.getConfig().catch(() => null)
-      const base = String(cfg?.serverUrl || '').replace(/\/$/, '')
       if (text && text.trim().length > 0) {
         const abs = await bgRequest<any>({
-          path: `${base}/api/v1/notes/keywords/search/?query=${encodeURIComponent(text)}&limit=10` as any,
+          path: `/api/v1/notes/keywords/search/?query=${encodeURIComponent(text)}&limit=10` as any,
           method: 'GET' as any
         })
         const arr = Array.isArray(abs)
@@ -512,7 +521,7 @@ const NotesManagerPage: React.FC = () => {
         setKeywordOptions(arr)
       } else {
         const abs = await bgRequest<any>({
-          path: `${base}/api/v1/notes/keywords/?limit=200` as any,
+          path: `/api/v1/notes/keywords/?limit=200` as any,
           method: 'GET' as any
         })
         const arr = Array.isArray(abs)
@@ -529,6 +538,10 @@ const NotesManagerPage: React.FC = () => {
 
   const debouncedLoadKeywordSuggestions = React.useCallback(
     (text?: string) => {
+      if (typeof window === 'undefined') {
+        void loadKeywordSuggestions(text)
+        return
+      }
       if (keywordSearchTimeoutRef.current != null) {
         clearTimeout(keywordSearchTimeoutRef.current)
       }
@@ -619,7 +632,7 @@ const NotesManagerPage: React.FC = () => {
               <div className="text-xs uppercase tracking-[0.16em] text-gray-500 dark:text-gray-400">
                 {t('option:notesSearch.headerLabel', { defaultValue: 'Notes' })}
                 <span className="ml-2 text-gray-400 dark:text-gray-500">
-                  {filteredCount > 0 && total > 0
+                  {hasActiveFilters && filteredCount > 0 && total > 0
                     ? t('option:notesSearch.headerCount', {
                         defaultValue: '{{visible}} of {{total}}',
                         visible: filteredCount,
@@ -662,7 +675,6 @@ const NotesManagerPage: React.FC = () => {
                 }}
                 onPressEnter={() => {
                   setPage(1)
-                  refetch()
                 }}
               />
               <Select
@@ -679,7 +691,6 @@ const NotesManagerPage: React.FC = () => {
                 onChange={(vals) => {
                   setKeywordTokens(vals as string[])
                   setPage(1)
-                  refetch()
                 }}
                 options={keywordOptions.map((k) => ({ label: k, value: k }))}
               />
@@ -690,7 +701,6 @@ const NotesManagerPage: React.FC = () => {
                     setQuery('')
                     setKeywordTokens([])
                     setPage(1)
-                    refetch()
                   }}
                   className="w-full text-xs"
                 >
