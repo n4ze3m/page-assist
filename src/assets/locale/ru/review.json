@@ -154,7 +154,17 @@
     "titleLabel": "Заголовок",
     "source": "Источник",
     "notAvailable": "Н/Д",
-    "developerTools": "Инструменты разработчика"
+    "developerTools": "Инструменты разработчика",
+    "nothingToSend": "Нечего отправлять",
+    "emptyAnalysis": "Анализ не может быть пустым",
+    "noMediaId": "Нет доступного идентификатора медиа",
+    "versionSaved": "Сохранено как новая версия",
+    "saveFailed": "Не удалось сохранить версию",
+    "sendToChat": "Отправить в чат",
+    "saveAsVersion": "Сохранить как новую версию",
+    "analysisPlaceholder": "Введите текст анализа...",
+    "wordCount": "{{count}} слов",
+    "charCount": "{{count}} символов"
   },
   "empty": {
     "connectTitle": "Connect to use Review",

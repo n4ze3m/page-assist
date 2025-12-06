@@ -154,7 +154,17 @@
     "titleLabel": "標題",
     "source": "來源",
     "notAvailable": "無",
-    "developerTools": "開發人員工具"
+    "developerTools": "開發人員工具",
+    "nothingToSend": "沒有可傳送的內容",
+    "emptyAnalysis": "分析內容不能為空",
+    "noMediaId": "沒有可用的媒體 ID",
+    "versionSaved": "已儲存為新版本",
+    "saveFailed": "儲存版本失敗",
+    "sendToChat": "傳送到聊天",
+    "saveAsVersion": "儲存為新版本",
+    "analysisPlaceholder": "請輸入分析文字...",
+    "wordCount": "{{count}} 個單詞",
+    "charCount": "{{count}} 個字元"
   },
   "empty": {
     "connectTitle": "Connect to use Review",

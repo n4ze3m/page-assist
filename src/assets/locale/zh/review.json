@@ -154,7 +154,17 @@
     "titleLabel": "标题",
     "source": "来源",
     "notAvailable": "不可用",
-    "developerTools": "开发者工具"
+    "developerTools": "开发者工具",
+    "nothingToSend": "没有可发送的内容",
+    "emptyAnalysis": "分析内容不能为空",
+    "noMediaId": "没有可用的媒体 ID",
+    "versionSaved": "已保存为新版本",
+    "saveFailed": "保存版本失败",
+    "sendToChat": "发送到聊天",
+    "saveAsVersion": "保存为新版本",
+    "analysisPlaceholder": "请输入分析文本...",
+    "wordCount": "{{count}} 个单词",
+    "charCount": "{{count}} 个字符"
   },
   "empty": {
     "connectTitle": "Connect to use Review",

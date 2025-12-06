@@ -209,6 +209,16 @@
     "presetComprehensiveAnalysis": "Comprehensive analysis",
     "presetExecutiveSummary": "Executive summary",
     "presetCriticalReview": "Critical review",
-    "presetQAAnalysis": "Q&A analysis"
+    "presetQAAnalysis": "Q&A analysis",
+    "nothingToSend": "Nothing to send",
+    "emptyAnalysis": "Analysis cannot be empty",
+    "noMediaId": "No media ID available",
+    "versionSaved": "Saved as new version",
+    "saveFailed": "Failed to save version",
+    "sendToChat": "Send to Chat",
+    "saveAsVersion": "Save as New Version",
+    "analysisPlaceholder": "Enter analysis text...",
+    "wordCount": "{{count}} words",
+    "charCount": "{{count}} characters"
   }
 }

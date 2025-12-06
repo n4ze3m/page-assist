@@ -154,7 +154,17 @@
     "titleLabel": "العنوان",
     "source": "المصدر",
     "notAvailable": "غير متوفر",
-    "developerTools": "أدوات المطوّر"
+    "developerTools": "أدوات المطوّر",
+    "nothingToSend": "لا يوجد ما يتم إرساله",
+    "emptyAnalysis": "لا يمكن أن يكون التحليل فارغاً",
+    "noMediaId": "لا تتوفر هوية وسائط",
+    "versionSaved": "تم الحفظ كإصدار جديد",
+    "saveFailed": "فشل حفظ الإصدار",
+    "sendToChat": "إرسال إلى الدردشة",
+    "saveAsVersion": "حفظ كإصدار جديد",
+    "analysisPlaceholder": "أدخل نص التحليل...",
+    "wordCount": "{{count}} كلمة",
+    "charCount": "{{count}} حرف"
   },
   "empty": {
     "connectTitle": "Connect to use Review",

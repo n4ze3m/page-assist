@@ -154,7 +154,17 @@
     "titleLabel": "タイトル",
     "source": "ソース",
     "notAvailable": "該当なし",
-    "developerTools": "開発者ツール"
+    "developerTools": "開発者ツール",
+    "nothingToSend": "送信する内容がありません",
+    "emptyAnalysis": "分析は空にできません",
+    "noMediaId": "メディア ID がありません",
+    "versionSaved": "新しいバージョンとして保存しました",
+    "saveFailed": "バージョンの保存に失敗しました",
+    "sendToChat": "チャットに送信",
+    "saveAsVersion": "新しいバージョンとして保存",
+    "analysisPlaceholder": "分析テキストを入力してください...",
+    "wordCount": "{{count}}語",
+    "charCount": "{{count}}文字"
   },
   "empty": {
     "connectTitle": "Connect to use Review",

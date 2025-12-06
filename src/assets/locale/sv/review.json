@@ -154,7 +154,17 @@
     "titleLabel": "Titel",
     "source": "Källa",
     "notAvailable": "Inte tillgänglig",
-    "developerTools": "Utvecklingsverktyg"
+    "developerTools": "Utvecklingsverktyg",
+    "nothingToSend": "Inget att skicka",
+    "emptyAnalysis": "Analysen kan inte vara tom",
+    "noMediaId": "Inget media-ID tillgängligt",
+    "versionSaved": "Sparad som ny version",
+    "saveFailed": "Det gick inte att spara versionen",
+    "sendToChat": "Skicka till chatten",
+    "saveAsVersion": "Spara som ny version",
+    "analysisPlaceholder": "Ange analys-text...",
+    "wordCount": "{{count}} ord",
+    "charCount": "{{count}} tecken"
   },
   "empty": {
     "connectTitle": "Connect to use Review",

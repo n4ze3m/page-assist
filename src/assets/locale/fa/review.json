@@ -154,7 +154,17 @@
     "titleLabel": "عنوان",
     "source": "منبع",
     "notAvailable": "ناموجود",
-    "developerTools": "ابزارهای توسعه‌دهنده"
+    "developerTools": "ابزارهای توسعه‌دهنده",
+    "nothingToSend": "موردی برای ارسال وجود ندارد",
+    "emptyAnalysis": "تحلیل نمی‌تواند خالی باشد",
+    "noMediaId": "شناسه رسانه‌ای در دسترس نیست",
+    "versionSaved": "به‌عنوان نسخه جدید ذخیره شد",
+    "saveFailed": "ذخیره نسخه ناموفق بود",
+    "sendToChat": "ارسال به چت",
+    "saveAsVersion": "ذخیره به‌عنوان نسخه جدید",
+    "analysisPlaceholder": "متن تحلیل را وارد کنید...",
+    "wordCount": "{{count}} کلمه",
+    "charCount": "{{count}} نویسه"
   },
   "empty": {
     "connectTitle": "Connect to use Review",

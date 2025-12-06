@@ -154,7 +154,17 @@
     "titleLabel": "ശീർഷകം",
     "source": "ഉറവ്",
     "notAvailable": "ലഭ്യമല്ല",
-    "developerTools": "ഡെവലപ്പർ ഉപകരണങ്ങൾ"
+    "developerTools": "ഡെവലപ്പർ ഉപകരണങ്ങൾ",
+    "nothingToSend": "അയയ്ക്കാൻ ഉള്ള ഉള്ളടക്കം ഒന്നുമില്ല",
+    "emptyAnalysis": "വിശകലനം ഒഴിഞ്ഞതാകാൻ പാടില്ല",
+    "noMediaId": "ലഭ്യമായ മീഡിയ ID ഇല്ല",
+    "versionSaved": "പുതിയ പതിപ്പായി സേവ് ചെയ്തു",
+    "saveFailed": "പതിപ്പ് സേവ് ചെയ്യാൻ കഴിഞ്ഞില്ല",
+    "sendToChat": "ചാറ്റിലേക്ക് അയയ്ക്കുക",
+    "saveAsVersion": "പുതിയ പതിപ്പായി സേവ് ചെയ്യുക",
+    "analysisPlaceholder": "വിശകലന ടെക്സ്റ്റ് നൽകുക...",
+    "wordCount": "{{count}} വാക്കുകൾ",
+    "charCount": "{{count}} അക്ഷരങ്ങൾ"
   },
   "empty": {
     "connectTitle": "Connect to use Review",

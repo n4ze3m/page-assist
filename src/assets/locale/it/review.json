@@ -154,7 +154,17 @@
     "titleLabel": "Titolo",
     "source": "Fonte",
     "notAvailable": "N/D",
-    "developerTools": "Strumenti per sviluppatori"
+    "developerTools": "Strumenti per sviluppatori",
+    "nothingToSend": "Niente da inviare",
+    "emptyAnalysis": "L'analisi non può essere vuota",
+    "noMediaId": "Nessun ID media disponibile",
+    "versionSaved": "Salvato come nuova versione",
+    "saveFailed": "Impossibile salvare la versione",
+    "sendToChat": "Invia alla chat",
+    "saveAsVersion": "Salva come nuova versione",
+    "analysisPlaceholder": "Inserisci il testo dell'analisi...",
+    "wordCount": "{{count}} parole",
+    "charCount": "{{count}} caratteri"
   },
   "empty": {
     "connectTitle": "Connect to use Review",

@@ -154,7 +154,17 @@
     "titleLabel": "제목",
     "source": "소스",
     "notAvailable": "해당 없음",
-    "developerTools": "개발자 도구"
+    "developerTools": "개발자 도구",
+    "nothingToSend": "보낼 내용이 없습니다",
+    "emptyAnalysis": "분석 내용은 비워둘 수 없습니다",
+    "noMediaId": "미디어 ID가 없습니다",
+    "versionSaved": "새 버전으로 저장되었습니다",
+    "saveFailed": "버전을 저장하지 못했습니다",
+    "sendToChat": "채팅으로 보내기",
+    "saveAsVersion": "새 버전으로 저장",
+    "analysisPlaceholder": "분석 내용을 입력하세요...",
+    "wordCount": "{{count}} 단어",
+    "charCount": "{{count}}자"
   },
   "empty": {
     "connectTitle": "Connect to use Review",

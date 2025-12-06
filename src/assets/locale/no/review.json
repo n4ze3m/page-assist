@@ -154,7 +154,17 @@
     "titleLabel": "Tittel",
     "source": "Kilde",
     "notAvailable": "Ikke tilgjengelig",
-    "developerTools": "Utviklerverktøy"
+    "developerTools": "Utviklerverktøy",
+    "nothingToSend": "Ingenting å sende",
+    "emptyAnalysis": "Analysen kan ikke være tom",
+    "noMediaId": "Ingen medie-ID tilgjengelig",
+    "versionSaved": "Lagret som ny versjon",
+    "saveFailed": "Kunne ikke lagre versjonen",
+    "sendToChat": "Send til chat",
+    "saveAsVersion": "Lagre som ny versjon",
+    "analysisPlaceholder": "Skriv inn analysetekst...",
+    "wordCount": "{{count}} ord",
+    "charCount": "{{count}} tegn"
   },
   "empty": {
     "connectTitle": "Connect to use Review",

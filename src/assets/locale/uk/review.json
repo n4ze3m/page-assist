@@ -154,7 +154,17 @@
     "titleLabel": "Заголовок",
     "source": "Джерело",
     "notAvailable": "Немає",
-    "developerTools": "Засоби розробника"
+    "developerTools": "Засоби розробника",
+    "nothingToSend": "Нічого надсилати",
+    "emptyAnalysis": "Аналіз не може бути порожнім",
+    "noMediaId": "Немає доступного ID медіа",
+    "versionSaved": "Збережено як нову версію",
+    "saveFailed": "Не вдалося зберегти версію",
+    "sendToChat": "Надіслати в чат",
+    "saveAsVersion": "Зберегти як нову версію",
+    "analysisPlaceholder": "Введіть текст аналізу...",
+    "wordCount": "{{count}} слів",
+    "charCount": "{{count}} символів"
   },
   "empty": {
     "connectTitle": "Connect to use Review",
