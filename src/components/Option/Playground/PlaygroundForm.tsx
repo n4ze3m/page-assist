@@ -26,7 +26,7 @@ import { useSpeechRecognition } from "@/hooks/useSpeechRecognition"
 import { PiGlobe } from "react-icons/pi"
 import { handleChatInputKeyDown } from "@/utils/key-down"
 import { getIsSimpleInternetSearch } from "@/services/search"
-import { useStorage } from "@plasmohq/storage/hook"
+import { useDynamicStorage } from "@/hooks/useDynamicStorage"
 import { useTabMentions } from "~/hooks/useTabMentions"
 import { useFocusShortcuts } from "~/hooks/keyboard"
 import { MentionsDropdown } from "./MentionsDropdown"
@@ -46,7 +46,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
   const fileInputRef = React.useRef<HTMLInputElement>(null)
 
   const [typing, setTyping] = React.useState<boolean>(false)
-  const [checkWideMode] = useStorage("checkWideMode", false)
+  const [checkWideMode] = useDynamicStorage("checkWideMode", false)
   const {
     onSubmit,
     selectedModel,
@@ -74,12 +74,12 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
     clearUploadedFiles
   } = useMessageOption()
 
-  const [autoSubmitVoiceMessage] = useStorage("autoSubmitVoiceMessage", false)
+  const [autoSubmitVoiceMessage] = useDynamicStorage("autoSubmitVoiceMessage", false)
 
-  const [autoStopTimeout] = useStorage("autoStopTimeout", 2000)
+  const [autoStopTimeout] = useDynamicStorage("autoStopTimeout", 2000)
 
   // Thinking mode state
-  const [defaultThinkingMode] = useStorage("defaultThinkingMode", false)
+  const [defaultThinkingMode] = useDynamicStorage("defaultThinkingMode", false)
   const thinking = useStoreChatModelSettings((state) => state.thinking)
   const setThinking = useStoreChatModelSettings((state) => state.setThinking)
 
@@ -101,7 +101,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
   // Enable focus shortcuts (Shift+Esc to focus textarea)
   useFocusShortcuts(textareaRef, true)
 
-  const [pasteLargeTextAsFile] = useStorage("pasteLargeTextAsFile", false)
+  const [pasteLargeTextAsFile] = useDynamicStorage("pasteLargeTextAsFile", false)
   const isMobile = () => {
     return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
       navigator.userAgent

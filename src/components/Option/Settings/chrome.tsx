@@ -1,4 +1,4 @@
-import { useStorage } from "@plasmohq/storage/hook"
+import { useDynamicStorage } from "@/hooks/useDynamicStorage"
 import { useQuery } from "@tanstack/react-query"
 import { Alert, Skeleton, Switch, Modal, Progress, message } from "antd"
 import { useTranslation } from "react-i18next"
@@ -9,11 +9,11 @@ import { useState } from "react"
 
 export const ChromeApp = () => {
   const { t } = useTranslation("chrome")
-  const [chromeAIStatus, setChromeAIStatus] = useStorage(
+  const [chromeAIStatus, setChromeAIStatus] = useDynamicStorage(
     "chromeAIStatus",
     false
   )
-  const [selectedModel, setSelectedModel] = useStorage("selectedModel")
+  const [selectedModel, setSelectedModel] = useDynamicStorage("selectedModel")
   const [showWarningModal, setShowWarningModal] = useState(false)
   const [isDownloading, setIsDownloading] = useState(false)
   const [downloadProgress, setDownloadProgress] = useState(0)

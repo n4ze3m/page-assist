@@ -1,4 +1,4 @@
-import { useStorage } from "@plasmohq/storage/hook"
+import { useDynamicStorage } from "@/hooks/useDynamicStorage"
 import Markdown from "../Markdown"
 
 type Props = {
@@ -7,7 +7,7 @@ type Props = {
 }
 
 export const HumanMessage = ({ message }: Props) => {
-   const [useMarkdownForUserMessage] = useStorage("useMarkdownForUserMessage", false)
+   const [useMarkdownForUserMessage] = useDynamicStorage("useMarkdownForUserMessage", false)
 
    if(useMarkdownForUserMessage) {
     return <Markdown message={message} />

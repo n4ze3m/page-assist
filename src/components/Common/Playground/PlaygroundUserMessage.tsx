@@ -1,5 +1,5 @@
 import { useTTS } from "@/hooks/useTTS"
-import { useStorage } from "@plasmohq/storage/hook"
+import { useDynamicStorage } from "@/hooks/useDynamicStorage"
 import React from "react"
 import { useTranslation } from "react-i18next"
 import { EditMessageForm } from "./EditMessageForm"
@@ -40,7 +40,7 @@ type Props = {
 }
 
 export const PlaygroundUserMessageBubble: React.FC<Props> = (props) => {
-  const [checkWideMode] = useStorage("checkWideMode", false)
+  const [checkWideMode] = useDynamicStorage("checkWideMode", false)
   const [isBtnPressed, setIsBtnPressed] = React.useState(false)
   const [editMode, setEditMode] = React.useState(false)
   const { t } = useTranslation("common")

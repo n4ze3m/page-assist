@@ -23,7 +23,7 @@ import { notification } from "antd"
 import { useTranslation } from "react-i18next"
 import { usePageAssist } from "@/context"
 import { formatDocs } from "@/chain/chat-with-x"
-import { useStorage } from "@plasmohq/storage/hook"
+import { useDynamicStorage } from "@/hooks/useDynamicStorage"
 import { useStoreChatModelSettings } from "@/store/model"
 import { getAllDefaultModelSettings } from "@/services/model-settings"
 import { getSystemPromptForWeb, isQueryHaveWebsite } from "@/web/web"
@@ -59,7 +59,7 @@ export const useMessage = () => {
     setEmbeddingController
   } = usePageAssist()
   const { t } = useTranslation("option")
-  const [selectedModel, setSelectedModel] = useStorage("selectedModel")
+  const [selectedModel, setSelectedModel] = useDynamicStorage("selectedModel")
   const currentChatModelSettings = useStoreChatModelSettings()
   const {
     setIsSearchingInternet,
@@ -69,15 +69,15 @@ export const useMessage = () => {
     temporaryChat,
     setTemporaryChat
   } = useStoreMessageOption()
-  const [defaultInternetSearchOn] = useStorage("defaultInternetSearchOn", false)
+  const [defaultInternetSearchOn] = useDynamicStorage("defaultInternetSearchOn", false)
 
-  const [defaultChatWithWebsite] = useStorage("defaultChatWithWebsite", false)
+  const [defaultChatWithWebsite] = useDynamicStorage("defaultChatWithWebsite", false)
 
-  const [chatWithWebsiteEmbedding] = useStorage(
+  const [chatWithWebsiteEmbedding] = useDynamicStorage(
     "chatWithWebsiteEmbedding",
     false
   )
-  const [maxWebsiteContext] = useStorage("maxWebsiteContext", 4028)
+  const [maxWebsiteContext] = useDynamicStorage("maxWebsiteContext", 4028)
 
   const {
     history,
@@ -104,8 +104,8 @@ export const useMessage = () => {
     useOCR,
     setUseOCR
   } = useStoreMessage()
-  const [sidepanelTemporaryChat] = useStorage("sidepanelTemporaryChat", false)
-  const [speechToTextLanguage, setSpeechToTextLanguage] = useStorage(
+  const [sidepanelTemporaryChat] = useDynamicStorage("sidepanelTemporaryChat", false)
+  const [speechToTextLanguage, setSpeechToTextLanguage] = useDynamicStorage(
     "speechToTextLanguage",
     "en-US"
   )

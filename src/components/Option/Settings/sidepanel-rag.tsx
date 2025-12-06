@@ -1,14 +1,14 @@
-import { useStorage } from "@plasmohq/storage/hook"
+import { useDynamicStorage } from "@/hooks/useDynamicStorage"
 import { InputNumber, Switch } from "antd"
 import { useTranslation } from "react-i18next"
 
 export const SidepanelRag = ({ hideBorder }: { hideBorder?: boolean }) => {
   const { t } = useTranslation("settings")
-  const [chatWithWebsiteEmbedding, setChatWithWebsiteEmbedding] = useStorage(
+  const [chatWithWebsiteEmbedding, setChatWithWebsiteEmbedding] = useDynamicStorage(
     "chatWithWebsiteEmbedding",
     false
   )
-  const [maxWebsiteContext, setMaxWebsiteContext] = useStorage(
+  const [maxWebsiteContext, setMaxWebsiteContext] = useDynamicStorage(
     "maxWebsiteContext",
     7028
   )

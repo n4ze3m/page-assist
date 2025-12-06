@@ -1,5 +1,5 @@
 import React from "react"
-import { useStorage } from "@plasmohq/storage/hook"
+import { useDynamicStorage } from "@/hooks/useDynamicStorage"
 
 export interface TabInfo {
   id: number
@@ -15,7 +15,7 @@ export interface MentionPosition {
 }
 
 export const useTabMentions = (textareaRef: React.RefObject<HTMLTextAreaElement>) => {
-  const [tabMentionsEnabled] = useStorage("tabMentionsEnabled", false)
+  const [tabMentionsEnabled] = useDynamicStorage("tabMentionsEnabled", false)
   const [showMentions, setShowMentions] = React.useState(false)
   const [mentionPosition, setMentionPosition] = React.useState<MentionPosition | null>(null)
   const [availableTabs, setAvailableTabs] = React.useState<TabInfo[]>([])

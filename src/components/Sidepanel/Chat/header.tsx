@@ -16,7 +16,7 @@ import {
 import { useTranslation } from "react-i18next"
 import { CurrentChatModelSettings } from "@/components/Common/Settings/CurrentChatModelSettings"
 import React from "react"
-import { useStorage } from "@plasmohq/storage/hook"
+import { useDynamicStorage } from "@/hooks/useDynamicStorage"
 import { PromptSelect } from "@/components/Common/PromptSelect"
 import { Sidebar } from "@/components/Option/Sidebar"
 import { BsIncognito } from "react-icons/bs"
@@ -31,7 +31,7 @@ export const SidepanelHeader = ({
   sidebarOpen: propSidebarOpen, 
   setSidebarOpen: propSetSidebarOpen 
 }: SidepanelHeaderProps = {}) => {
-  const [hideCurrentChatModelSettings] = useStorage(
+  const [hideCurrentChatModelSettings] = useDynamicStorage(
     "hideCurrentChatModelSettings",
     false
   )
@@ -57,7 +57,7 @@ export const SidepanelHeader = ({
   const { t } = useTranslation(["sidepanel", "common", "option"])
   const [openModelSettings, setOpenModelSettings] = React.useState(false)
   const [localSidebarOpen, setLocalSidebarOpen] = React.useState(false)
-  const [webuiBtnSidePanel, setWebuiBtnSidePanel] = useStorage(
+  const [webuiBtnSidePanel, setWebuiBtnSidePanel] = useDynamicStorage(
     "webuiBtnSidePanel",
     false
   )

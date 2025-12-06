@@ -1,4 +1,4 @@
-import { useStorage } from "@plasmohq/storage/hook"
+import { useDynamicStorage } from "@/hooks/useDynamicStorage"
 import {
   BrainCog,
   ChevronLeft,
@@ -34,8 +34,8 @@ export const Header: React.FC<Props> = ({
   const { t, i18n } = useTranslation(["option", "common"])
   const isRTL = i18n?.dir() === "rtl"
 
-  const [shareModeEnabled] = useStorage("shareMode", false)
-  const [hideCurrentChatModelSettings] = useStorage(
+  const [shareModeEnabled] = useDynamicStorage("shareMode", false)
+  const [hideCurrentChatModelSettings] = useDynamicStorage(
     "hideCurrentChatModelSettings",
     false
   )

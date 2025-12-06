@@ -15,6 +15,7 @@ import { toBase64 } from "@/libs/to-base64"
 import { PageAssistDatabase } from "@/db/dexie/chat"
 import { isFireFox, isFireFoxPrivateMode } from "@/utils/is-private-mode"
 import { firefoxSyncDataForPrivateMode } from "@/db/dexie/firefox-sync"
+import { migrateStorageData } from "@/utils/storage"
 
 export const SystemSettings = () => {
   const { t } = useTranslation(["settings", "knowledge"])
@@ -23,7 +24,12 @@ export const SystemSettings = () => {
   const { increase, decrease, scale } = useFontSize()
 
   const [webuiBtnSidePanel, setWebuiBtnSidePanel] = useStorage(
-    "webuiBtnSidePanel",
+    {
+      key: "webuiBtnSidePanel",
+      instance: new Storage({
+        area: "local"
+      })
+    },
     false
   )
 
@@ -236,8 +242,23 @@ export const SystemSettings = () => {
         <div>
           <Switch
             checked={storageSyncEnabled}
-            onChange={(checked) => {
-              setStorageSyncEnabled(checked)
+            onChange={async (checked) => {
+              try {
+                // Migrate data first
+                await migrateStorageData(checked)
+                // Then update the setting
+                setStorageSyncEnabled(checked)
+                notification.success({
+                  message: checked
+                    ? "Browser sync enabled. Settings will be synchronized across devices."
+                    : "Browser sync disabled. Settings will only be stored locally."
+                })
+              } catch (error) {
+                console.error("Error toggling storage sync:", error)
+                notification.error({
+                  message: "Failed to toggle storage sync"
+                })
+              }
             }}
           />
         </div>

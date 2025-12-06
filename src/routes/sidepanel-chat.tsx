@@ -14,7 +14,7 @@ import {
 } from "@/hooks/keyboard/useKeyboardShortcuts"
 import { copilotResumeLastChat } from "@/services/app"
 import { Storage } from "@plasmohq/storage"
-import { useStorage } from "@plasmohq/storage/hook"
+import { useDynamicStorage } from "@/hooks/useDynamicStorage"
 import { notification } from "antd"
 import { ChevronDown } from "lucide-react"
 import React from "react"
@@ -34,7 +34,7 @@ const SidepanelChat = () => {
     "idle" | "dragging" | "error"
   >("idle")
 
-  const [defaultCopilotPrompt] = useStorage("defaultCopilotPrompt", undefined)
+  const [defaultCopilotPrompt] = useDynamicStorage("defaultCopilotPrompt", undefined)
 
   useMigration()
   const {
@@ -69,7 +69,7 @@ const SidepanelChat = () => {
   useSidebarShortcuts(toggleSidebar, true)
   useChatModeShortcuts(toggleChatMode, true)
 
-  const [chatBackgroundImage] = useStorage({
+  const [chatBackgroundImage] = useDynamicStorage({
     key: "chatBackgroundImage",
     instance: new Storage({
       area: "local"

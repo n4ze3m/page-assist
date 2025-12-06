@@ -1,6 +1,6 @@
-import { Storage } from "@plasmohq/storage"
+import { DynamicStorage } from "@/utils/storage"
 import { browser } from "wxt/browser"
-const storage = new Storage()
+const storage = new DynamicStorage()
 
 const DEFAULT_SUMMARY_PROMPT = `Provide a concise summary of the following text, capturing its main ideas and key points:
 

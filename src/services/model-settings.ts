@@ -1,9 +1,7 @@
-import { Storage } from "@plasmohq/storage"
-const storage = new Storage({
-  area: "local"
-})
+import { DynamicStorage, getLocalStorage } from "@/utils/storage"
+const storage = new DynamicStorage()
 
-const storage2 = new Storage()
+const storage2 = getLocalStorage()
 
 type ModelSettings = {
   f16KV?: boolean

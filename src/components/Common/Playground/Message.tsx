@@ -22,7 +22,7 @@ import { removeModelSuffix } from "@/db/dexie/models"
 import { GenerationInfo } from "./GenerationInfo"
 import { parseReasoning } from "@/libs/reasoning"
 import { humanizeMilliseconds } from "@/utils/humanize-milliseconds"
-import { useStorage } from "@plasmohq/storage/hook"
+import { useDynamicStorage } from "@/hooks/useDynamicStorage"
 import { PlaygroundUserMessageBubble } from "./PlaygroundUserMessage"
 import { copyToClipboard } from "@/utils/clipboard"
 import { ChatDocuments } from "@/models/ChatTypes"
@@ -65,14 +65,14 @@ type Props = {
 export const PlaygroundMessage = (props: Props) => {
   const [isBtnPressed, setIsBtnPressed] = React.useState(false)
   const [editMode, setEditMode] = React.useState(false)
-  const [checkWideMode] = useStorage("checkWideMode", false)
-  const [isUserChatBubble] = useStorage("userChatBubble", true)
-  const [autoCopyResponseToClipboard] = useStorage(
+  const [checkWideMode] = useDynamicStorage("checkWideMode", false)
+  const [isUserChatBubble] = useDynamicStorage("userChatBubble", true)
+  const [autoCopyResponseToClipboard] = useDynamicStorage(
     "autoCopyResponseToClipboard",
     false
   )
-  const [autoPlayTTS] = useStorage("isTTSAutoPlayEnabled", false)
-  const [copyAsFormattedText] = useStorage("copyAsFormattedText", false)
+  const [autoPlayTTS] = useDynamicStorage("isTTSAutoPlayEnabled", false)
+  const [copyAsFormattedText] = useDynamicStorage("copyAsFormattedText", false)
   const { t } = useTranslation("common")
   const { cancel, isSpeaking, speak } = useTTS()
   const isLastMessage: boolean =

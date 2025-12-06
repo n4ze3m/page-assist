@@ -1,6 +1,6 @@
-import { Storage } from "@plasmohq/storage"
+import { DynamicStorage } from "@/utils/storage"
 
-const storage = new Storage()
+const storage = new DynamicStorage()
 
 export const isChatWithWebsiteEnabled = async (): Promise<boolean> => {
     const isChatWithWebsiteEnabled = await storage.get<boolean | undefined>(

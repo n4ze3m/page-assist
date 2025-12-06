@@ -12,15 +12,15 @@ import {
 import { useStoreChatModelSettings } from "@/store/model"
 import { useSmartScroll } from "@/hooks/useSmartScroll"
 import { ChevronDown } from "lucide-react"
-import { useStorage } from "@plasmohq/storage/hook"
+import { useDynamicStorage } from "@/hooks/useDynamicStorage"
 import { Storage } from "@plasmohq/storage"
 import { otherUnsupportedTypes } from "../Knowledge/utils/unsupported-types"
 export const Playground = () => {
   const drop = React.useRef<HTMLDivElement>(null)
   const [dropedFile, setDropedFile] = React.useState<File | undefined>()
-  const [defaultWebUIPrompt] = useStorage("defaultWebUIPrompt", undefined)
+  const [defaultWebUIPrompt] = useDynamicStorage("defaultWebUIPrompt", undefined)
 
-  const [chatBackgroundImage] = useStorage({
+  const [chatBackgroundImage] = useDynamicStorage({
     key: "chatBackgroundImage",
     instance: new Storage({
       area: "local"

@@ -23,7 +23,7 @@ import { useSpeechRecognition } from "@/hooks/useSpeechRecognition"
 import { PiGlobeX, PiGlobe } from "react-icons/pi"
 import { handleChatInputKeyDown } from "@/utils/key-down"
 import { getIsSimpleInternetSearch } from "@/services/search"
-import { useStorage } from "@plasmohq/storage/hook"
+import { useDynamicStorage } from "@/hooks/useDynamicStorage"
 import { useFocusShortcuts } from "@/hooks/keyboard"
 import { isThinkingCapableModel, isGptOssModel } from "~/libs/model-utils"
 import { useStoreChatModelSettings } from "~/store/model"
@@ -39,7 +39,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
   const { sendWhenEnter, setSendWhenEnter } = useWebUI()
   const [typing, setTyping] = React.useState<boolean>(false)
   const { t } = useTranslation(["playground", "common"])
-  const [chatWithWebsiteEmbedding] = useStorage(
+  const [chatWithWebsiteEmbedding] = useDynamicStorage(
     "chatWithWebsiteEmbedding",
     false
   )
@@ -156,7 +156,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
   } = useMessage()
 
   // Thinking mode state
-  const [defaultThinkingMode] = useStorage("defaultThinkingMode", false)
+  const [defaultThinkingMode] = useDynamicStorage("defaultThinkingMode", false)
   const thinking = useStoreChatModelSettings((state) => state.thinking)
   const setThinking = useStoreChatModelSettings((state) => state.setThinking)
 

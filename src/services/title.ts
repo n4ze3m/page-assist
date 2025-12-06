@@ -1,10 +1,10 @@
 import { pageAssistModel } from "@/models"
-import { Storage } from "@plasmohq/storage"
+import { DynamicStorage } from "@/utils/storage"
 import { getOllamaURL } from "./ollama"
 import { cleanUrl } from "@/libs/clean-url"
 import { HumanMessage } from "langchain/schema"
 import { removeReasoning } from "@/libs/reasoning"
-const storage = new Storage()
+const storage = new DynamicStorage()
 
 // this prompt is copied from the OpenWebUI codebase
 export const DEFAULT_TITLE_GEN_PROMPT = `Here is the query:

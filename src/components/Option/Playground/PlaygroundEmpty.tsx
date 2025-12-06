@@ -1,5 +1,5 @@
 import { cleanUrl } from "@/libs/clean-url"
-import { useStorage } from "@plasmohq/storage/hook"
+import { useDynamicStorage } from "@/hooks/useDynamicStorage"
 import { useQuery } from "@tanstack/react-query"
 import { RotateCcw } from "lucide-react"
 import { useEffect, useState } from "react"
@@ -14,7 +14,7 @@ export const PlaygroundEmpty = () => {
   const [ollamaURL, setOllamaURL] = useState<string>("")
   const { t } = useTranslation(["playground", "common"])
 
-  const [checkOllamaStatus] = useStorage("checkOllamaStatus", true)
+  const [checkOllamaStatus] = useDynamicStorage("checkOllamaStatus", true)
 
   const {
     data: ollamaInfo,
