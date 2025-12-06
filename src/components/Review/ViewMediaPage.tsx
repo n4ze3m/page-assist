@@ -833,6 +833,26 @@ const MediaPageContent: React.FC = () => {
     )
   }, [selected, setSelectedKnowledge, setRagMediaIds, setChatMode, navigate, message, t])
 
+  const handleCreateNoteWithContent = useCallback(async (noteContent: string, title: string) => {
+    try {
+      await bgRequest({
+        path: '/api/v1/notes/' as any,
+        method: 'POST' as any,
+        headers: { 'Content-Type': 'application/json' },
+        body: {
+          title: title,
+          content: noteContent,
+          keywords: selected?.keywords || []
+        }
+      })
+      message.success('Note created successfully')
+      navigate('/notes')
+    } catch (err) {
+      console.error('Failed to create note:', err)
+      message.error('Failed to create note')
+    }
+  }, [selected, message, navigate])
+
   return (
     <div className="flex bg-slate-50 dark:bg-[#101010]" style={{ minHeight: '100vh' }}>
       {/* Left Sidebar */}
@@ -952,6 +972,7 @@ const MediaPageContent: React.FC = () => {
             // Refresh the list to show updated keywords
             refetch()
           }}
+          onCreateNoteWithContent={handleCreateNoteWithContent}
           contentRef={contentRef}
         />
       </div>
