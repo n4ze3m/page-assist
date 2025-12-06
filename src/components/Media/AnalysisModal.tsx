@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { Modal, Button, Select, Input, message } from 'antd'
 import { Storage } from '@plasmohq/storage'
 import { useStorage } from '@plasmohq/storage/hook'
@@ -32,11 +32,15 @@ export function AnalysisModal({
   const [generating, setGenerating] = useState(false)
   const [showPresets, setShowPresets] = useState(false)
 
-  const presets = ANALYSIS_PRESETS.map((preset) => ({
-    name: t(preset.nameKey, preset.nameDefault),
-    system: preset.systemPrompt,
-    user: preset.userPrefix
-  }))
+  const presets = useMemo(
+    () =>
+      ANALYSIS_PRESETS.map((preset) => ({
+        name: t(preset.nameKey, preset.nameDefault),
+        system: preset.systemPrompt,
+        user: preset.userPrefix ?? ''
+      })),
+    [t]
+  )
 
   // Load models from database
   useEffect(() => {
@@ -99,7 +103,9 @@ export function AnalysisModal({
       return
     }
 
-    const effectiveModel = selectedModel || models[0]?.id
+    const validSelectedModel =
+      selectedModel && models.find((m) => m.id === selectedModel)?.id
+    const effectiveModel = validSelectedModel || models[0]?.id
     if (!effectiveModel) {
       message.warning(
         t(

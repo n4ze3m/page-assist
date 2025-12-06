@@ -20,6 +20,12 @@ import { MarkdownPreview } from "@/components/Common/MarkdownPreview"
 import NotesEditorHeader from "@/components/Notes/NotesEditorHeader"
 import NotesListPanel from "@/components/Notes/NotesListPanel"
 import type { NoteListItem } from "@/components/Notes/types"
+
+type NoteWithKeywords = {
+  metadata?: { keywords?: any[] }
+  keywords?: any[]
+}
+
 const extractBacklink = (note: any) => {
   const meta = note?.metadata || {}
   const backlinks = meta?.backlinks || meta || {}
@@ -41,7 +47,7 @@ const extractBacklink = (note: any) => {
   }
 }
 
-const extractKeywords = (note: any): string[] => {
+const extractKeywords = (note: NoteWithKeywords | any): string[] => {
   const rawKeywords = (Array.isArray(note?.metadata?.keywords)
     ? note.metadata.keywords
     : Array.isArray(note?.keywords)
@@ -59,6 +65,7 @@ const extractKeywords = (note: any): string[] => {
     .filter((s): s is string => !!s && s.trim().length > 0)
 }
 
+// 120px offset accounts for page header and padding
 const MIN_SIDEBAR_HEIGHT = 600
 const calculateSidebarHeight = () => {
   const vh = typeof window !== 'undefined' ? window.innerHeight : MIN_SIDEBAR_HEIGHT
@@ -85,7 +92,7 @@ const NotesManagerPage: React.FC = () => {
   const [backlinkMessageId, setBacklinkMessageId] = React.useState<string | null>(null)
   const [openingLinkedChat, setOpeningLinkedChat] = React.useState(false)
   const [showPreview, setShowPreview] = React.useState(false)
-  const keywordSearchTimeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null)
+  const keywordSearchTimeoutRef = React.useRef<number | null>(null)
   const isOnline = useServerOnline()
   const { demoEnabled } = useDemoMode()
   const queryClient = useQueryClient()
@@ -600,9 +607,9 @@ const NotesManagerPage: React.FC = () => {
         return
       }
       if (keywordSearchTimeoutRef.current != null) {
-        clearTimeout(keywordSearchTimeoutRef.current)
+        window.clearTimeout(keywordSearchTimeoutRef.current)
       }
-      keywordSearchTimeoutRef.current = setTimeout(() => {
+      keywordSearchTimeoutRef.current = window.setTimeout(() => {
         void loadKeywordSuggestions(text)
       }, 300)
     },
