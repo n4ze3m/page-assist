@@ -265,12 +265,17 @@ export const OpenAIApp = () => {
                 setProvider(e)
               }}
               filterOption={(input, option) => {
-                const rawLabel = option?.label as any
+                const rawLabel = option?.label
                 let haystack: string | undefined
                 if (typeof rawLabel === "string") {
                   haystack = rawLabel
                 } else if (React.isValidElement(rawLabel)) {
-                  haystack = rawLabel.props?.["data-title"]
+                  haystack = (rawLabel.props as { "data-title"?: string })?.[
+                    "data-title"
+                  ]
+                }
+                if (!haystack && option?.value != null) {
+                  haystack = String(option.value)
                 }
                 return haystack
                   ?.toLowerCase()

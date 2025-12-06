@@ -131,6 +131,11 @@ export function ContentViewer({
         if (onKeywordsUpdated) {
           onKeywordsUpdated(selectedMedia.id, newKeywords)
         }
+        message.success(
+          t('review:mediaPage.keywordsSaved', {
+            defaultValue: 'Keywords saved'
+          })
+        )
       } catch (err) {
         console.error('Failed to save keywords:', err)
         message.error(
@@ -141,11 +146,6 @@ export function ContentViewer({
       } finally {
         setSavingKeywords(false)
       }
-      message.success(
-        t('review:mediaPage.keywordsSaved', {
-          defaultValue: 'Keywords saved'
-        })
-      )
     },
     [selectedMedia, onKeywordsUpdated]
   )

@@ -326,12 +326,12 @@
     "toolbarCopyTooltip": "Copy note content",
     "toolbarDeleteTooltip": "Delete note",
     "exportMenuTrigger": "Export",
-    "resultsLabel": "Results",
-    "showingRange": "Showing {{start}}-{{end}} of {{total}}",
-    "expandSidebar": "Expand sidebar",
-    "collapseSidebar": "Collapse sidebar",
-    "titlePlaceholder": "Title",
-    "keywordsEditorPlaceholder": "Keywords (tags)",
+    "resultsLabel": "Résultats",
+    "showingRange": "Affichage {{start}}-{{end}} sur {{total}}",
+    "expandSidebar": "Développer la barre latérale",
+    "collapseSidebar": "Réduire la barre latérale",
+    "titlePlaceholder": "Titre",
+    "keywordsEditorPlaceholder": "Mots-clés (étiquettes)",
     "tagsHelp": "Keywords help you find this note using the keyword filter on the left."
   },
   "tts": {
@@ -416,12 +416,14 @@
   }
 ,
   "quickChatHelper": {
-    "tooltip": "Quick Chat Helper",
-    "title": "Quick Chat Helper",
-    "inputPlaceholder": "Ask a quick question...",
-    "sendButton": "Send",
-    "emptyState": "Start a quick side chat to keep your main thread clean.",
-    "popOutButton": "Pop out",
-    "noModelWarning": "Please select a model in the main chat first."
+    "tooltip": "Assistant de discussion rapide",
+    "title": "Assistant de discussion rapide",
+    "inputPlaceholder": "Posez une question rapide...",
+    "sendButton": "Envoyer",
+    "emptyState": "Lancez une discussion rapide sur le côté pour garder votre fil principal propre.",
+    "popOutButton": "Ouvrir dans une fenêtre séparée",
+    "noModelWarning": "Veuillez d’abord sélectionner un modèle dans la discussion principale.",
+    "userMessageAria": "Votre message",
+    "assistantMessageAria": "Message de l’assistant"
   }
 }

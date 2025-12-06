@@ -154,6 +154,9 @@ export const AddCustomModelModal: React.FC<Props> = ({ open, setOpen }) => {
               } else if (React.isValidElement(rawLabel)) {
                 haystack = rawLabel.props?.["data-title"]
               }
+              if (!haystack && option?.value != null) {
+                haystack = String(option.value)
+              }
               return haystack
                 ?.toLowerCase()
                 .includes(input.toLowerCase()) ?? false

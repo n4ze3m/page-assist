@@ -417,10 +417,12 @@
   "quickChatHelper": {
     "tooltip": "クイックチャットヘルパー",
     "title": "クイックチャットヘルパー",
-    "inputPlaceholder": "質問を入力...",
+    "inputPlaceholder": "素早く質問を入力...",
     "sendButton": "送信",
-    "emptyState": "メインスレッドをクリーンに保つためのサイドチャットを始めましょう。",
-    "popOutButton": "ポップアウト",
-    "noModelWarning": "まずメインチャットでモデルを選択してください。"
+    "emptyState": "メインのスレッドをすっきり保つために、クイックなサイドチャットを開始しましょう。",
+    "popOutButton": "別ウィンドウで開く",
+    "noModelWarning": "まずメインチャットでモデルを選択してください。",
+    "userMessageAria": "あなたのメッセージ",
+    "assistantMessageAria": "アシスタントのメッセージ"
   }
 }

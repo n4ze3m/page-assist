@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { Modal, Button, Select, Input, message } from 'antd'
 import { Storage } from '@plasmohq/storage'
 import { useStorage } from '@plasmohq/storage/hook'
+import { useTranslation } from 'react-i18next'
 import { bgRequest } from '@/services/background-proxy'
 import { getAllModelsExT } from '@/db/models'
 
@@ -20,6 +21,7 @@ export function AnalysisModal({
   mediaContent,
   onAnalysisGenerated
 }: AnalysisModalProps) {
+  const { t } = useTranslation(['review', 'common'])
   const [selectedModel, setSelectedModel] = useStorage('selectedModel')
   const [models, setModels] = useState<Array<{ id: string; name?: string }>>([])
   const [systemPrompt, setSystemPrompt] = useState(
@@ -64,15 +66,15 @@ export function AnalysisModal({
     try {
       const storage = new Storage({ area: 'local' })
       await storage.set('media:analysisPrompts', { systemPrompt, userPrefix })
-      message.success('Saved as default prompts')
+      message.success(t('mediaPage.savedAsDefault', 'Saved as default prompts'))
     } catch {
-      message.error('Failed to save prompts')
+      message.error(t('mediaPage.savePromptsFailed', 'Failed to save prompts'))
     }
   }
 
   const handleGenerate = async () => {
     if (!mediaContent || !mediaContent.trim()) {
-      message.warning('No content available for analysis')
+      message.warning(t('mediaPage.noContentForAnalysis', 'No content available for analysis'))
       return
     }
 
@@ -91,8 +93,8 @@ export function AnalysisModal({
       }
 
       const resp = await bgRequest<any>({
-        path: '/api/v1/chat/completions' as any,
-        method: 'POST' as any,
+        path: '/api/v1/chat/completions',
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body
       })
@@ -101,15 +103,15 @@ export function AnalysisModal({
         resp?.choices?.[0]?.message?.content || resp?.content || ''
 
       if (!analysisText) {
-        message.error('No analysis returned from API')
+        message.error(t('mediaPage.noAnalysisReturned', 'No analysis returned from API'))
         return
       }
 
       // Save the analysis to the media item
       try {
         await bgRequest<any>({
-          path: `/api/v1/media/${mediaId}` as any,
-          method: 'PATCH' as any,
+          path: `/api/v1/media/${mediaId}`,
+          method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
           body: {
             processing: {
@@ -120,15 +122,15 @@ export function AnalysisModal({
           }
         })
 
-        message.success('Analysis generated and saved')
+        message.success(t('mediaPage.analysisGeneratedAndSaved', 'Analysis generated and saved'))
         onAnalysisGenerated()
         onClose()
       } catch (err) {
-        message.error('Failed to save analysis to media item')
+        message.error(t('mediaPage.analysisSaveFailed', 'Failed to save analysis to media item'))
         console.error('Save error:', err)
       }
     } catch (err) {
-      message.error('Failed to generate analysis')
+      message.error(t('mediaPage.analysisGenerateFailed', 'Failed to generate analysis'))
       console.error('Generation error:', err)
     } finally {
       setGenerating(false)
@@ -164,16 +166,16 @@ export function AnalysisModal({
 
   return (
     <Modal
-      title="Generate Analysis"
+      title={t('mediaPage.generateAnalysis', 'Generate Analysis')}
       open={open}
       onCancel={onClose}
       width={700}
       footer={[
         <Button key="save" onClick={handleSaveAsDefault}>
-          Save as default
+          {t('mediaPage.saveAsDefault', 'Save as default')}
         </Button>,
         <Button key="cancel" onClick={onClose}>
-          Cancel
+          {t('common:cancel', 'Cancel')}
         </Button>,
         <Button
           key="generate"
@@ -182,7 +184,7 @@ export function AnalysisModal({
           onClick={handleGenerate}
           disabled={!mediaContent || !mediaContent.trim()}
         >
-          Generate Analysis
+          {t('mediaPage.generateAnalysis', 'Generate Analysis')}
         </Button>
       ]}
     >

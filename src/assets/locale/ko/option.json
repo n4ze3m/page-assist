@@ -326,12 +326,12 @@
     "toolbarCopyTooltip": "Copy note content",
     "toolbarDeleteTooltip": "Delete note",
     "exportMenuTrigger": "Export",
-    "resultsLabel": "Results",
-    "showingRange": "Showing {{start}}-{{end}} of {{total}}",
-    "expandSidebar": "Expand sidebar",
-    "collapseSidebar": "Collapse sidebar",
-    "titlePlaceholder": "Title",
-    "keywordsEditorPlaceholder": "Keywords (tags)",
+    "resultsLabel": "결과 목록",
+    "showingRange": "전체 {{total}}개 중 {{start}}-{{end}} 표시 중",
+    "expandSidebar": "사이드바 펼치기",
+    "collapseSidebar": "사이드바 접기",
+    "titlePlaceholder": "제목",
+    "keywordsEditorPlaceholder": "키워드 (태그)",
     "tagsHelp": "Keywords help you find this note using the keyword filter on the left."
   },
   "tts": {
@@ -416,12 +416,14 @@
   }
 ,
   "quickChatHelper": {
-    "tooltip": "Quick Chat Helper",
-    "title": "Quick Chat Helper",
-    "inputPlaceholder": "Ask a quick question...",
-    "sendButton": "Send",
-    "emptyState": "Start a quick side chat to keep your main thread clean.",
-    "popOutButton": "Pop out",
-    "noModelWarning": "Please select a model in the main chat first."
+    "tooltip": "빠른 채팅 도우미",
+    "title": "빠른 채팅 도우미",
+    "inputPlaceholder": "빠르게 질문을 입력하세요...",
+    "sendButton": "보내기",
+    "emptyState": "빠른 보조 채팅을 시작하여 기본 대화를 깔끔하게 유지하세요.",
+    "popOutButton": "별도 창으로 열기",
+    "noModelWarning": "먼저 기본 채팅에서 모델을 선택하세요.",
+    "userMessageAria": "내 메시지",
+    "assistantMessageAria": "어시스턴트 메시지"
   }
 }

@@ -405,12 +405,14 @@
   }
 ,
   "quickChatHelper": {
-    "tooltip": "Quick Chat Helper",
-    "title": "Quick Chat Helper",
-    "inputPlaceholder": "Ask a quick question...",
-    "sendButton": "Send",
-    "emptyState": "Start a quick side chat to keep your main thread clean.",
-    "popOutButton": "Pop out",
-    "noModelWarning": "Please select a model in the main chat first."
+    "tooltip": "دستیار گفتگوی سریع",
+    "title": "دستیار گفتگوی سریع",
+    "inputPlaceholder": "یک سؤال کوتاه بپرسید...",
+    "sendButton": "ارسال",
+    "emptyState": "یک گفتگوی جانبی سریع شروع کنید تا رشتهٔ اصلی تمیز بماند.",
+    "popOutButton": "باز کردن در پنجرهٔ جداگانه",
+    "noModelWarning": "لطفاً ابتدا یک مدل را در گفتگوی اصلی انتخاب کنید.",
+    "userMessageAria": "پیام شما",
+    "assistantMessageAria": "پیام دستیار"
   }
 }

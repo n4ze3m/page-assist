@@ -59,6 +59,7 @@ const NotesListPanel: React.FC<NotesListPanelProps> = ({
   const hasNotes = Array.isArray(notes) && notes.length > 0
   const startItem = hasNotes ? (page - 1) * pageSize + 1 : 0
   const endItem = hasNotes ? Math.min(page * pageSize, total) : 0
+  const exportDisabled = !isOnline || !hasNotes
 
   return (
     <div className="flex flex-col h-full">
@@ -68,41 +69,60 @@ const NotesListPanel: React.FC<NotesListPanelProps> = ({
           <span className="text-xs uppercase tracking-[0.14em] text-gray-500 dark:text-gray-400">
             {t('option:notesSearch.resultsLabel', { defaultValue: 'Results' })}
           </span>
-          <Dropdown
-            menu={{
-              items: [
-                {
-                  key: 'md',
-                  label: t('option:notesSearch.exportMdTooltip', {
-                    defaultValue: 'Export matching notes as Markdown (.md)'
+          <Tooltip
+            title={
+              exportDisabled
+                ? t('option:notesSearch.exportDisabled', {
+                    defaultValue: isOnline
+                      ? 'No results to export'
+                      : 'Connect to export notes'
                   })
-                },
-                {
-                  key: 'csv',
-                  label: t('option:notesSearch.exportCsvTooltip', {
-                    defaultValue: 'Export matching notes as CSV'
-                  })
-                },
-                {
-                  key: 'json',
-                  label: t('option:notesSearch.exportJsonTooltip', {
-                    defaultValue: 'Export matching notes as JSON'
-                  })
-                }
-              ],
-              onClick: ({ key }) => {
-                if (key === 'md') onExportAllMd()
-                if (key === 'csv') onExportAllCsv()
-                if (key === 'json') onExportAllJson()
-              }
-            }}
+                : undefined
+            }
           >
-            <Button size="small" type="text" className="text-xs">
-              {t('option:notesSearch.exportMenuTrigger', {
-                defaultValue: 'Export'
-              })}
-            </Button>
-          </Dropdown>
+            <Dropdown
+              menu={{
+                items: [
+                  {
+                    key: 'md',
+                    label: t('option:notesSearch.exportMdTooltip', {
+                      defaultValue: 'Export matching notes as Markdown (.md)'
+                    })
+                  },
+                  {
+                    key: 'csv',
+                    label: t('option:notesSearch.exportCsvTooltip', {
+                      defaultValue: 'Export matching notes as CSV'
+                    })
+                  },
+                  {
+                    key: 'json',
+                    label: t('option:notesSearch.exportJsonTooltip', {
+                      defaultValue: 'Export matching notes as JSON'
+                    })
+                  }
+                ],
+                onClick: ({ key }) => {
+                  if (exportDisabled) return
+                  if (key === 'md') onExportAllMd()
+                  if (key === 'csv') onExportAllCsv()
+                  if (key === 'json') onExportAllJson()
+                }
+              }}
+              disabled={exportDisabled}
+            >
+              <Button
+                size="small"
+                type="text"
+                className="text-xs"
+                disabled={exportDisabled}
+              >
+                {t('option:notesSearch.exportMenuTrigger', {
+                  defaultValue: 'Export'
+                })}
+              </Button>
+            </Dropdown>
+          </Tooltip>
         </div>
       </div>
 
@@ -215,6 +235,7 @@ const NotesListPanel: React.FC<NotesListPanelProps> = ({
             {notes.map((item) => (
               <button
                 key={String(item.id)}
+                type="button"
                 onClick={() => {
                   onSelectNote(item.id)
                 }}
@@ -241,9 +262,9 @@ const NotesListPanel: React.FC<NotesListPanelProps> = ({
                   )}
                   {Array.isArray(item.keywords) && item.keywords.length > 0 && (
                     <div className="mt-2 flex flex-wrap gap-1">
-                      {item.keywords.slice(0, 5).map((keyword) => (
+                      {item.keywords.slice(0, 5).map((keyword, idx) => (
                         <span
-                          key={keyword}
+                          key={`${keyword}-${idx}`}
                           className="inline-flex items-center px-2 py-0.5 rounded text-xs bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300"
                         >
                           {keyword}
@@ -275,7 +296,10 @@ const NotesListPanel: React.FC<NotesListPanelProps> = ({
                   )}
                   <div className="text-xs text-gray-400 dark:text-gray-500 mt-1">
                     {item.updated_at
-                      ? new Date(item.updated_at).toLocaleString()
+                      ? (() => {
+                          const d = new Date(item.updated_at)
+                          return isNaN(d.getTime()) ? '' : d.toLocaleString()
+                        })()
                       : ''}
                   </div>
                 </div>

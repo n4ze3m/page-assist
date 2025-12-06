@@ -803,9 +803,24 @@ export const Header: React.FC<Props> = ({
                     if (typeof rawLabel === "string") {
                       haystack = rawLabel
                     } else if (React.isValidElement(rawLabel)) {
-                      haystack = rawLabel.props?.["data-title"]
+                      const props = rawLabel.props as {
+                        "data-title"?: string
+                        children?: React.ReactNode
+                      }
+                      haystack =
+                        props["data-title"] ||
+                        (typeof props.children === "string"
+                          ? props.children
+                          : undefined)
                     }
-                    return haystack?.toLowerCase().includes(input.toLowerCase()) ?? false
+                    if (!haystack && option?.value != null) {
+                      haystack = String(option.value)
+                    }
+                    return (
+                      haystack
+                        ?.toLowerCase()
+                        .includes(input.toLowerCase()) ?? false
+                    )
                   }}
                   showSearch
                   loading={isModelsLoading}

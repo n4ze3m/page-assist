@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import {
   ChevronDown,
   ChevronUp,
@@ -56,6 +56,7 @@ export function VersionHistoryPanel({
   const [selectedIndex, setSelectedIndex] = useState(-1)
   const [onlyWithAnalysis, setOnlyWithAnalysis] = useState(false)
   const [page, setPage] = useState(1)
+  const selectedIndexRef = useRef(selectedIndex)
   const pageSize = 10
 
   // Helper functions
@@ -82,6 +83,10 @@ export function VersionHistoryPanel({
     }
   }
 
+  useEffect(() => {
+    selectedIndexRef.current = selectedIndex
+  }, [selectedIndex])
+
   // Load versions
   const loadVersions = useCallback(async () => {
     if (!mediaId) return
@@ -93,7 +98,7 @@ export function VersionHistoryPanel({
       })
       const arr = Array.isArray(data) ? data : (data?.items || [])
       setVersions(arr)
-      if (arr.length > 0 && selectedIndex < 0) {
+      if (arr.length > 0 && selectedIndexRef.current < 0) {
         setSelectedIndex(0)
       }
     } catch (err) {
@@ -102,7 +107,7 @@ export function VersionHistoryPanel({
     } finally {
       setLoading(false)
     }
-  }, [mediaId, selectedIndex])
+  }, [mediaId])
 
   useEffect(() => {
     if (expanded && mediaId) {
@@ -211,7 +216,8 @@ export function VersionHistoryPanel({
 
     if (texts) {
       navigator.clipboard.writeText(texts)
-      message.success(t('mediaPage.allCopied', 'All analyses copied'))
+        .then(() => message.success(t('mediaPage.allCopied', 'All analyses copied')))
+        .catch(() => message.error(t('mediaPage.copyFailed', 'Copy failed')))
     } else {
       message.info(t('mediaPage.nothingToCopy', 'No analyses to copy'))
     }
@@ -231,7 +237,8 @@ export function VersionHistoryPanel({
 
     if (md) {
       navigator.clipboard.writeText(md)
-      message.success(t('mediaPage.markdownCopied', 'Copied as markdown'))
+        .then(() => message.success(t('mediaPage.markdownCopied', 'Copied as markdown')))
+        .catch(() => message.error(t('mediaPage.copyFailed', 'Copy failed')))
     } else {
       message.info(t('mediaPage.nothingToCopy', 'No analyses to copy'))
     }

@@ -416,12 +416,14 @@
   }
 ,
   "quickChatHelper": {
-    "tooltip": "Quick Chat Helper",
-    "title": "Quick Chat Helper",
-    "inputPlaceholder": "Ask a quick question...",
-    "sendButton": "Send",
-    "emptyState": "Start a quick side chat to keep your main thread clean.",
-    "popOutButton": "Pop out",
-    "noModelWarning": "Please select a model in the main chat first."
+    "tooltip": "Помощник быстрого чата",
+    "title": "Помощник быстрого чата",
+    "inputPlaceholder": "Задайте быстрый вопрос...",
+    "sendButton": "Отправить",
+    "emptyState": "Начните быстрый боковой чат, чтобы основной диалог оставался аккуратным.",
+    "popOutButton": "Открыть в отдельном окне",
+    "noModelWarning": "Сначала выберите модель в основном чате.",
+    "userMessageAria": "Ваше сообщение",
+    "assistantMessageAria": "Сообщение ассистента"
   }
 }

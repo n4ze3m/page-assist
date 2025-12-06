@@ -405,12 +405,14 @@
   }
 ,
   "quickChatHelper": {
-    "tooltip": "Quick Chat Helper",
-    "title": "Quick Chat Helper",
-    "inputPlaceholder": "Ask a quick question...",
-    "sendButton": "Send",
-    "emptyState": "Start a quick side chat to keep your main thread clean.",
-    "popOutButton": "Pop out",
-    "noModelWarning": "Please select a model in the main chat first."
+    "tooltip": "Snabbchatsassistent",
+    "title": "Snabbchatsassistent",
+    "inputPlaceholder": "Ställ en snabb fråga...",
+    "sendButton": "Skicka",
+    "emptyState": "Starta en snabb sidokonversation för att hålla huvudtråden ren.",
+    "popOutButton": "Öppna i separat fönster",
+    "noModelWarning": "Välj först en modell i huvudchatten.",
+    "userMessageAria": "Ditt meddelande",
+    "assistantMessageAria": "Assistentens meddelande"
   }
 }

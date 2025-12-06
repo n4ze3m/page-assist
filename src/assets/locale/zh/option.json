@@ -409,7 +409,9 @@
     "inputPlaceholder": "快速提问...",
     "sendButton": "发送",
     "emptyState": "开始一个快速侧边聊天，保持主对话干净整洁。",
-    "popOutButton": "弹出窗口",
-    "noModelWarning": "请先在主聊天中选择一个模型。"
+    "popOutButton": "在单独窗口中打开",
+    "noModelWarning": "请先在主聊天中选择一个模型。",
+    "userMessageAria": "你的消息",
+    "assistantMessageAria": "助手的消息"
   }
 }

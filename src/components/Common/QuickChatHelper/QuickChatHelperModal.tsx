@@ -59,12 +59,14 @@ export const QuickChatHelperModal: React.FC<Props> = ({ open, onClose }) => {
     "Start a quick side chat to keep your main thread clean."
   )
   const popOutLabel = t("quickChatHelper.popOutButton", "Pop out")
+  const descriptionId =
+    messages.length === 0 ? "quick-chat-description" : undefined
 
   return (
     <Modal
       title={
         <div className="flex items-center justify-between pr-8">
-          <span>{title}</span>
+          <span id="quick-chat-title">{title}</span>
           <Tooltip title={popOutLabel}>
             <Button
               type="text"
@@ -86,7 +88,7 @@ export const QuickChatHelperModal: React.FC<Props> = ({ open, onClose }) => {
       maskClosable={true}
       keyboard={true}
       aria-labelledby="quick-chat-title"
-      aria-describedby="quick-chat-description">
+      aria-describedby={descriptionId}>
       <div className="flex flex-col h-[50vh] max-h-[400px]">
         {/* Messages area */}
         <div

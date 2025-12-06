@@ -187,7 +187,7 @@ export function Pagination({
             max={totalPages}
             value={jumpToPage}
             onChange={(e) => setJumpToPage(e.target.value)}
-            onKeyPress={handleJumpKeyPress}
+            onKeyDown={handleJumpKeyPress}
             placeholder={`1-${totalPages}`}
             className="w-16 px-1.5 py-0.5 text-xs border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#0c0c0c] text-gray-900 dark:text-gray-100 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-transparent"
           />

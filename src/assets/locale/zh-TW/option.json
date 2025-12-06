@@ -405,12 +405,14 @@
   }
 ,
   "quickChatHelper": {
-    "tooltip": "Quick Chat Helper",
-    "title": "Quick Chat Helper",
-    "inputPlaceholder": "Ask a quick question...",
-    "sendButton": "Send",
-    "emptyState": "Start a quick side chat to keep your main thread clean.",
-    "popOutButton": "Pop out",
-    "noModelWarning": "Please select a model in the main chat first."
+    "tooltip": "快速聊天小幫手",
+    "title": "快速聊天小幫手",
+    "inputPlaceholder": "快速提問...",
+    "sendButton": "送出",
+    "emptyState": "開始一個快速側邊聊天，讓主要對話保持乾淨整潔。",
+    "popOutButton": "在獨立視窗中開啟",
+    "noModelWarning": "請先在主要聊天中選擇模型。",
+    "userMessageAria": "你的訊息",
+    "assistantMessageAria": "助理的訊息"
   }
 }

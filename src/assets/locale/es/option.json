@@ -416,12 +416,14 @@
   }
 ,
   "quickChatHelper": {
-    "tooltip": "Quick Chat Helper",
-    "title": "Quick Chat Helper",
-    "inputPlaceholder": "Ask a quick question...",
-    "sendButton": "Send",
-    "emptyState": "Start a quick side chat to keep your main thread clean.",
-    "popOutButton": "Pop out",
-    "noModelWarning": "Please select a model in the main chat first."
+    "tooltip": "Asistente de chat rápido",
+    "title": "Asistente de chat rápido",
+    "inputPlaceholder": "Haz una pregunta rápida...",
+    "sendButton": "Enviar",
+    "emptyState": "Inicia un chat rápido en paralelo para mantener limpia la conversación principal.",
+    "popOutButton": "Abrir en una ventana independiente",
+    "noModelWarning": "Selecciona primero un modelo en el chat principal.",
+    "userMessageAria": "Tu mensaje",
+    "assistantMessageAria": "Mensaje del asistente"
   }
 }

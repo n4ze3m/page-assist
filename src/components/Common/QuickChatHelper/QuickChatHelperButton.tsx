@@ -7,7 +7,9 @@ import { useQuickChatStore } from "@/store/quick-chat"
 import { classNames } from "@/libs/class-name"
 
 // Lazy load the modal for bundle optimization
-const QuickChatHelperModal = lazy(() => import("./QuickChatHelperModal"))
+const QuickChatHelperModal = lazy(() =>
+  import("./QuickChatHelperModal").then((m) => ({ default: m.QuickChatHelperModal }))
+)
 
 export const QuickChatHelperButton: React.FC = () => {
   const { t } = useTranslation("option")

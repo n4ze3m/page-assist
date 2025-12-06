@@ -2,6 +2,7 @@ import React from "react"
 import { QuickChatMessage as QuickChatMessageType } from "@/store/quick-chat"
 import Markdown from "@/components/Common/Markdown"
 import { classNames } from "@/libs/class-name"
+import { useTranslation } from "react-i18next"
 
 type Props = {
   message: QuickChatMessageType
@@ -14,6 +15,7 @@ export const QuickChatMessage: React.FC<Props> = ({
   isStreaming = false,
   isLast = false
 }) => {
+  const { t } = useTranslation("option")
   const isUser = message.role === "user"
   const showStreamingCursor = isStreaming && isLast && !isUser
 
@@ -24,7 +26,11 @@ export const QuickChatMessage: React.FC<Props> = ({
         isUser ? "justify-end" : "justify-start"
       )}
       role="article"
-      aria-label={isUser ? "Your message" : "Assistant message"}>
+      aria-label={
+        isUser
+          ? t("quickChatHelper.userMessageAria", "Your message")
+          : t("quickChatHelper.assistantMessageAria", "Assistant message")
+      }>
       <div
         className={classNames(
           "max-w-[85%] rounded-lg px-3 py-2",

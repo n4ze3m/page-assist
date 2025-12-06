@@ -1,4 +1,4 @@
-import { useCallback, useRef } from "react"
+import { useCallback } from "react"
 import { useStorage } from "@plasmohq/storage/hook"
 import { useQuickChatStore, QuickChatMessage } from "@/store/quick-chat"
 import { TldwChatService, TldwChatOptions } from "@/services/tldw/TldwChat"
@@ -9,7 +9,6 @@ const quickChatService = new TldwChatService()
 
 export const useQuickChat = () => {
   const [selectedModel] = useStorage<string>("selectedModel")
-  const abortControllerRef = useRef<AbortController | null>(null)
 
   const {
     messages,
@@ -74,7 +73,6 @@ export const useQuickChat = () => {
         updateLastMessage(`Error: ${errorMessage}`)
       } finally {
         setIsStreaming(false)
-        abortControllerRef.current = null
       }
     },
     [selectedModel, isStreaming, addMessage, updateLastMessage, setIsStreaming]

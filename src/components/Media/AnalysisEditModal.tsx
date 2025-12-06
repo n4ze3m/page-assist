@@ -74,8 +74,8 @@ export function AnalysisEditModal({
     setSaving(true)
     try {
       await bgRequest({
-        path: `/api/v1/media/${mediaId}/versions` as any,
-        method: 'POST' as any,
+        path: `/api/v1/media/${mediaId}/versions`,
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: {
           analysis_content: text

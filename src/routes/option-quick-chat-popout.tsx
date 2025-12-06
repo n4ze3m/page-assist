@@ -49,9 +49,10 @@ const QuickChatPopout: React.FC = () => {
     }
   }, [messages])
 
-  // Clear messages on window close
+  // Clear messages and cancel any active stream on window close
   useEffect(() => {
     const handleBeforeUnload = () => {
+      cancelStream()
       useQuickChatStore.getState().clearMessages()
     }
     window.addEventListener("beforeunload", handleBeforeUnload)

@@ -320,12 +320,12 @@
     "toolbarCopyTooltip": "نسخ محتوى الملاحظة",
     "toolbarDeleteTooltip": "حذف الملاحظة",
     "exportMenuTrigger": "تصدير",
-    "resultsLabel": "Results",
-    "showingRange": "Showing {{start}}-{{end}} of {{total}}",
-    "expandSidebar": "Expand sidebar",
-    "collapseSidebar": "Collapse sidebar",
-    "titlePlaceholder": "Title",
-    "keywordsEditorPlaceholder": "Keywords (tags)",
+    "resultsLabel": "النتائج",
+    "showingRange": "عرض {{start}}-{{end}} من أصل {{total}}",
+    "expandSidebar": "توسيع الشريط الجانبي",
+    "collapseSidebar": "طيّ الشريط الجانبي",
+    "titlePlaceholder": "العنوان",
+    "keywordsEditorPlaceholder": "الكلمات المفتاحية (الوسوم)",
     "tagsHelp": "تساعدك الكلمات المفتاحية على العثور على هذه الملاحظة باستخدام عامل التصفية في الجهة اليسرى."
   },
   "tts": {
@@ -410,12 +410,14 @@
   }
 ,
   "quickChatHelper": {
-    "tooltip": "Quick Chat Helper",
-    "title": "Quick Chat Helper",
-    "inputPlaceholder": "Ask a quick question...",
-    "sendButton": "Send",
-    "emptyState": "Start a quick side chat to keep your main thread clean.",
-    "popOutButton": "Pop out",
-    "noModelWarning": "Please select a model in the main chat first."
+    "tooltip": "مساعد الدردشة السريعة",
+    "title": "مساعد الدردشة السريعة",
+    "inputPlaceholder": "اطرح سؤالاً سريعاً...",
+    "sendButton": "إرسال",
+    "emptyState": "ابدأ محادثة جانبية سريعة للحفاظ على نظافة المحادثة الرئيسية.",
+    "popOutButton": "فتح في نافذة منفصلة",
+    "noModelWarning": "يرجى اختيار نموذج في المحادثة الرئيسية أولاً.",
+    "userMessageAria": "رسالتك",
+    "assistantMessageAria": "رسالة المساعد"
   }
 }

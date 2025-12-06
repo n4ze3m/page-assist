@@ -4,11 +4,6 @@ import { Select } from 'antd'
 import { useTranslation } from 'react-i18next'
 
 interface FilterPanelProps {
-  activeFilters: {
-    media: boolean
-    notes: boolean
-  }
-  onFilterChange: (filters: { media: boolean; notes: boolean }) => void
   mediaTypes: string[]
   selectedMediaTypes: string[]
   onMediaTypesChange: (types: string[]) => void
@@ -16,29 +11,19 @@ interface FilterPanelProps {
   onKeywordsChange: (keywords: string[]) => void
   keywordOptions?: string[]
   onKeywordSearch?: (text: string) => void
-  hideResultTypes?: boolean
-}
-
-export const DEFAULT_FILTERS: FilterPanelProps["activeFilters"] = {
-  media: true,
-  notes: false
 }
 
 export function FilterPanel({
-  activeFilters,
-  onFilterChange,
   mediaTypes,
   selectedMediaTypes,
   onMediaTypesChange,
   selectedKeywords,
   onKeywordsChange,
   keywordOptions = [],
-  onKeywordSearch,
-  hideResultTypes = false
+  onKeywordSearch
 }: FilterPanelProps) {
   const { t } = useTranslation(['review'])
   const [expandedSections, setExpandedSections] = useState({
-    resultTypes: true,
     mediaTypes: false,
   })
 
@@ -68,7 +53,6 @@ export function FilterPanel({
         </div>
         <button
           onClick={() => {
-            onFilterChange(DEFAULT_FILTERS)
             onMediaTypesChange([])
             onKeywordsChange([])
           }}
@@ -77,51 +61,6 @@ export function FilterPanel({
           {t('review:mediaPage.clearAll', { defaultValue: 'Clear all' })}
         </button>
       </div>
-
-      {/* Result Types */}
-      {!hideResultTypes && (
-        <div className="space-y-2">
-          <button
-            onClick={() => toggleSection('resultTypes')}
-            className="flex items-center justify-between w-full text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100"
-          >
-            <span>
-              {t('review:reviewPage.resultTypes', {
-                defaultValue: 'Result types'
-              })}
-            </span>
-            <ChevronDown
-              className={`w-4 h-4 transition-transform ${expandedSections.resultTypes ? 'rotate-180' : ''}`}
-            />
-          </button>
-          {expandedSections.resultTypes && (
-            <div className="space-y-2 pl-1">
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={activeFilters.media}
-                  onChange={(e) => onFilterChange({ ...activeFilters, media: e.target.checked })}
-                  className="w-4 h-4 rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600"
-                />
-                <span className="text-sm text-gray-700 dark:text-gray-300">
-                  {t('review:reviewPage.media', { defaultValue: 'Media' })}
-                </span>
-              </label>
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={activeFilters.notes}
-                  onChange={(e) => onFilterChange({ ...activeFilters, notes: e.target.checked })}
-                  className="w-4 h-4 rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600"
-                />
-                <span className="text-sm text-gray-700 dark:text-gray-300">
-                  {t('review:reviewPage.notes', { defaultValue: 'Notes' })}
-                </span>
-              </label>
-            </div>
-          )}
-        </div>
-      )}
 
       {/* Media Types */}
       <div className="space-y-2">

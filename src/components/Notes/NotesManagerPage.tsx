@@ -59,6 +59,12 @@ const extractKeywords = (note: any): string[] => {
     .filter((s) => s && s.trim().length > 0)
 }
 
+const MIN_SIDEBAR_HEIGHT = 850
+const calculateSidebarHeight = () => {
+  const vh = typeof window !== 'undefined' ? window.innerHeight : MIN_SIDEBAR_HEIGHT
+  return Math.max(MIN_SIDEBAR_HEIGHT, vh - 120)
+}
+
 const NotesManagerPage: React.FC = () => {
   const { t } = useTranslation(['option', 'common'])
   const [query, setQuery] = React.useState('')
@@ -565,12 +571,6 @@ const NotesManagerPage: React.FC = () => {
 
   const [sidebarCollapsed, setSidebarCollapsed] = React.useState(false)
 
-  const calculateSidebarHeight = () => {
-    const minHeight = 850
-    const vh = typeof window !== 'undefined' ? window.innerHeight : minHeight
-    return Math.max(minHeight, vh - 120)
-  }
-
   const [sidebarHeight, setSidebarHeight] = React.useState(calculateSidebarHeight())
 
   React.useEffect(() => {
@@ -588,7 +588,7 @@ const NotesManagerPage: React.FC = () => {
         className={`flex-shrink-0 transition-all duration-300 ease-in-out ${
           sidebarCollapsed ? 'w-0 overflow-hidden' : 'w-[380px]'
         }`}
-        style={{ minHeight: '850px', height: `${sidebarHeight}px` }}
+        style={{ minHeight: `${MIN_SIDEBAR_HEIGHT}px`, height: `${sidebarHeight}px` }}
       >
         <div className="flex h-full flex-col overflow-hidden rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-[#171717]">
           {/* Toolbar Section */}

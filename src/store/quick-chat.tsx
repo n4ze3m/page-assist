@@ -97,8 +97,11 @@ export const useQuickChatStore = create<QuickChatStore>((set, get) => ({
   }
 }))
 
-// Expose for debugging in development
-if (typeof window !== "undefined") {
+// Expose for debugging in non-production builds
+if (
+  typeof window !== "undefined" &&
+  process.env.NODE_ENV !== "production"
+) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ;(window as any).__tldw_useQuickChatStore = useQuickChatStore
 }

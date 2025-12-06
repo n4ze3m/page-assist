@@ -376,14 +376,15 @@ const MediaPageContent: React.FC = () => {
         }
 
         if (hasQuery) {
-          // Search notes
+          // Search notes with server-side pagination
           const notesResp = await bgRequest<any>({
-            path: `/api/v1/notes/search/?query=${encodeURIComponent(query)}` as any,
+            path: `/api/v1/notes/search/?query=${encodeURIComponent(query)}&page=${page}&results_per_page=${pageSize}` as any,
             method: 'GET' as any
           })
           const items = Array.isArray(notesResp) ? notesResp : (notesResp?.items || [])
+          const pagination = notesResp?.pagination
 
-          // Client-side filter by keywords if needed
+          // Client-side filter by keywords if needed (API may not support keyword filtering)
           let filteredItems = items
           if (keywordTokens.length > 0) {
             filteredItems = items.filter((n: any) => {
@@ -394,13 +395,10 @@ const MediaPageContent: React.FC = () => {
             })
           }
 
-          setNotesTotal(filteredItems.length)
+          // Use server pagination total if available, otherwise use filtered count
+          setNotesTotal(Number(pagination?.total_items || filteredItems.length || 0))
 
-          // Paginate client-side
-          const startIdx = (page - 1) * pageSize
-          const pageItems = filteredItems.slice(startIdx, startIdx + pageSize)
-
-          for (const n of pageItems) {
+          for (const n of filteredItems) {
             const id = n?.id ?? n?.note_id ?? n?.pk ?? n?.uuid
             results.push({
               kind: 'note',
@@ -543,12 +541,13 @@ const MediaPageContent: React.FC = () => {
 
       // Auto-browse: if there is no query or filters, fetch first page
       try {
-        if (!query.trim() && mediaTypes.length === 0 && keywordTokens.length === 0) {
+        // Always fetch on mount - filters are guaranteed empty at this point
+        if (true) {
           await refetch()
         }
       } catch {}
     })()
-  }, [])
+  }, []) // Intentionally empty - runs only on mount with initial (empty) filters
 
   // Load keyword suggestions for the filter dropdown
   const loadKeywordSuggestions = useCallback(async (searchText?: string) => {
@@ -592,6 +591,7 @@ const MediaPageContent: React.FC = () => {
   // Load initial keyword suggestions
   useEffect(() => {
     loadKeywordSuggestions()
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- run once on mount to fetch initial suggestions
   }, [])
 
   const fetchSelectedDetails = useCallback(async (item: MediaResultItem) => {
@@ -978,8 +978,6 @@ const MediaPageContent: React.FC = () => {
         {/* Filters */}
         <div className="px-4 py-2 border-b border-gray-200 dark:border-gray-700">
           <FilterPanel
-            activeFilters={kinds}
-            onFilterChange={setKinds}
             mediaTypes={availableMediaTypes}
             selectedMediaTypes={mediaTypes}
             onMediaTypesChange={setMediaTypes}
@@ -993,7 +991,6 @@ const MediaPageContent: React.FC = () => {
             onKeywordSearch={(txt) => {
               loadKeywordSuggestions(txt)
             }}
-            hideResultTypes
           />
         </div>
 

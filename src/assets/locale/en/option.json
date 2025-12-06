@@ -560,6 +560,8 @@
     "sendButton": "Send",
     "emptyState": "Start a quick side chat to keep your main thread clean.",
     "popOutButton": "Pop out",
-    "noModelWarning": "Please select a model in the main chat first."
+    "noModelWarning": "Please select a model in the main chat first.",
+    "userMessageAria": "Your message",
+    "assistantMessageAria": "Assistant message"
   }
 }
