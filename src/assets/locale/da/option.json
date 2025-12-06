@@ -72,7 +72,8 @@
     "moreActions": "Flere handlinger",
     "toolsMenu": "Chat-værktøjer",
     "serverBackedLabel": "Server-understøttet chat",
-    "serverBackedTooltip": "Beskeder i denne chat gemmes også på din tldw-server."
+    "serverBackedTooltip": "Beskeder i denne chat gemmes også på din tldw-server.",
+    "quickIngestQueuedAria": "{{label}} — {{count}} elementer i kø — klik for at gennemgå og behandle"
   },
   "sidebarTitle": "Chathistorik",
   "error": "Fejl",
@@ -234,6 +235,12 @@
     "toolbarCopyTooltip": "Kopiér noteindhold",
     "toolbarDeleteTooltip": "Slet note",
     "exportMenuTrigger": "Eksportér",
+    "resultsLabel": "Results",
+    "showingRange": "Showing {{start}}-{{end}} of {{total}}",
+    "expandSidebar": "Expand sidebar",
+    "collapseSidebar": "Collapse sidebar",
+    "titlePlaceholder": "Title",
+    "keywordsEditorPlaceholder": "Keywords (tags)",
     "tagsHelp": "Nøgleord hjælper dig med at finde denne note via nøgleordsfilteret til venstre."
   },
   "tts": {
@@ -300,6 +307,8 @@
     "selectCharacter": "Vælg karakter",
     "chattingAs": "Du chatter nu som {{name}}.",
     "clearCharacter": "Ryd karakter",
+    "fetchErrorTitle": "Kan ikke indlæse karakterer",
+    "fetchErrorBody": "Kontrollér din forbindelse eller serverens status, og prøv igen.",
     "none": "Ingen (ingen karakter)",
     "refresh": "Opdater karakterer",
     "refreshing": "Opdaterer karakterer…"
@@ -403,5 +412,15 @@
     "mapping": "Kolonnetilknytning",
     "mappingPreview": "Forhåndsvisning af de første par tilknyttede rækker:",
     "exportHelp": "Filtrér efter sæt, tag eller søgning, og eksportér derefter som CSV/TSV til regneark eller Anki (.apkg) til Anki-klienter."
+  }
+,
+  "quickChatHelper": {
+    "tooltip": "Quick Chat Helper",
+    "title": "Quick Chat Helper",
+    "inputPlaceholder": "Ask a quick question...",
+    "sendButton": "Send",
+    "emptyState": "Start a quick side chat to keep your main thread clean.",
+    "popOutButton": "Pop out",
+    "noModelWarning": "Please select a model in the main chat first."
   }
 }

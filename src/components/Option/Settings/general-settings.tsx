@@ -55,6 +55,11 @@ export const GeneralSettings = () => {
   const [hideCurrentChatModelSettings, setHideCurrentChatModelSettings] =
     useStorage("hideCurrentChatModelSettings", false)
 
+  const [hideQuickChatHelper, setHideQuickChatHelper] = useStorage(
+    "hideQuickChatHelper",
+    false
+  )
+
   const [sendNotificationAfterIndexing, setSendNotificationAfterIndexing] =
     useStorage("sendNotificationAfterIndexing", false)
 
@@ -248,6 +253,18 @@ export const GeneralSettings = () => {
         <Switch
           checked={hideCurrentChatModelSettings}
           onChange={(checked) => setHideCurrentChatModelSettings(checked)}
+        />
+      </div>
+      <div className="flex flex-row justify-between">
+        <div className="inline-flex items-center gap-2">
+          <span className="text-gray-700   dark:text-neutral-50">
+            {t("generalSettings.settings.hideQuickChatHelper.label", "Hide Quick Chat Helper button")}
+          </span>
+        </div>
+
+        <Switch
+          checked={hideQuickChatHelper}
+          onChange={(checked) => setHideQuickChatHelper(checked)}
         />
       </div>
       <div className="flex flex-row justify-between">

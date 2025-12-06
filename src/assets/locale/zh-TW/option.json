@@ -71,7 +71,8 @@
     "moreActions": "More actions",
     "toolsMenu": "Chat tools",
     "serverBackedLabel": "Server-backed chat",
-    "serverBackedTooltip": "Messages in this chat are also saved on your tldw server."
+    "serverBackedTooltip": "Messages in this chat are also saved on your tldw server.",
+    "quickIngestQueuedAria": "{{label}} — 已排隊 {{count}} 個項目 — 按一下以檢視並處理"
   },
   "sidebarTitle": "聊天紀錄",
   "error": "錯誤",
@@ -314,6 +315,12 @@
     "toolbarCopyTooltip": "Copy note content",
     "toolbarDeleteTooltip": "Delete note",
     "exportMenuTrigger": "Export",
+    "resultsLabel": "Results",
+    "showingRange": "Showing {{start}}-{{end}} of {{total}}",
+    "expandSidebar": "Expand sidebar",
+    "collapseSidebar": "Collapse sidebar",
+    "titlePlaceholder": "Title",
+    "keywordsEditorPlaceholder": "Keywords (tags)",
     "tagsHelp": "Keywords help you find this note using the keyword filter on the left."
   },
   "tts": {
@@ -380,6 +387,8 @@
     "selectCharacter": "選擇角色",
     "chattingAs": "你現在以 {{name}} 的身分聊天。",
     "clearCharacter": "清除角色",
+    "fetchErrorTitle": "無法載入角色",
+    "fetchErrorBody": "請檢查您的連線或伺服器狀態，然後再試一次。",
     "none": "無（未選擇角色）",
     "searchPlaceholder": "依名稱搜尋角色",
     "noMatches": "目前沒有符合你搜尋條件的角色。",
@@ -393,5 +402,15 @@
     "confirmDescription": "Your message already has text. Do you want to overwrite it with this prompt or append the prompt below it?",
     "overwrite": "Overwrite message",
     "append": "Append"
+  }
+,
+  "quickChatHelper": {
+    "tooltip": "Quick Chat Helper",
+    "title": "Quick Chat Helper",
+    "inputPlaceholder": "Ask a quick question...",
+    "sendButton": "Send",
+    "emptyState": "Start a quick side chat to keep your main thread clean.",
+    "popOutButton": "Pop out",
+    "noModelWarning": "Please select a model in the main chat first."
   }
 }

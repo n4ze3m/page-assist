@@ -35,7 +35,8 @@ export function AnalysisModal({
       try {
         const allModels = await getAllModelsExT()
         setModels(allModels || [])
-      } catch {
+      } catch (err) {
+        console.warn('Failed to load models:', err)
         setModels([])
       }
     })()
@@ -52,7 +53,9 @@ export function AnalysisModal({
             if (typeof data.systemPrompt === 'string') setSystemPrompt(data.systemPrompt)
             if (typeof data.userPrefix === 'string') setUserPrefix(data.userPrefix)
           }
-        } catch {}
+        } catch (err) {
+          console.warn('Failed to load saved prompts:', err)
+        }
       })()
     }
   }, [open])
@@ -194,6 +197,7 @@ export function AnalysisModal({
             onChange={setSelectedModel}
             className="w-full"
             placeholder="Select a model"
+            notFoundContent={models.length === 0 ? "No models available" : undefined}
           >
             {models.map((model) => (
               <Select.Option key={model.id} value={model.id}>

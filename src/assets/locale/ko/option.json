@@ -71,7 +71,8 @@
     "moreActions": "More actions",
     "toolsMenu": "Chat tools",
     "serverBackedLabel": "Server-backed chat",
-    "serverBackedTooltip": "Messages in this chat are also saved on your tldw server."
+    "serverBackedTooltip": "Messages in this chat are also saved on your tldw server.",
+    "quickIngestQueuedAria": "{{label}} — {{count}}개 항목이 대기 중 — 검토 및 처리하려면 클릭하세요"
   },
   "sidebarTitle": "채팅 기록",
   "error": "오류",
@@ -325,6 +326,12 @@
     "toolbarCopyTooltip": "Copy note content",
     "toolbarDeleteTooltip": "Delete note",
     "exportMenuTrigger": "Export",
+    "resultsLabel": "Results",
+    "showingRange": "Showing {{start}}-{{end}} of {{total}}",
+    "expandSidebar": "Expand sidebar",
+    "collapseSidebar": "Collapse sidebar",
+    "titlePlaceholder": "Title",
+    "keywordsEditorPlaceholder": "Keywords (tags)",
     "tagsHelp": "Keywords help you find this note using the keyword filter on the left."
   },
   "tts": {
@@ -391,6 +398,8 @@
     "selectCharacter": "캐릭터 선택",
     "chattingAs": "지금 {{name}} 캐릭터로 대화 중입니다.",
     "clearCharacter": "캐릭터 제거",
+    "fetchErrorTitle": "캐릭터를 불러올 수 없습니다",
+    "fetchErrorBody": "연결 상태나 서버 상태를 확인한 후 다시 시도하세요.",
     "none": "없음 (캐릭터 없음)",
     "searchPlaceholder": "이름으로 캐릭터 검색",
     "noMatches": "검색과 일치하는 캐릭터가 아직 없습니다.",
@@ -404,5 +413,15 @@
     "confirmDescription": "Your message already has text. Do you want to overwrite it with this prompt or append the prompt below it?",
     "overwrite": "Overwrite message",
     "append": "Append"
+  }
+,
+  "quickChatHelper": {
+    "tooltip": "Quick Chat Helper",
+    "title": "Quick Chat Helper",
+    "inputPlaceholder": "Ask a quick question...",
+    "sendButton": "Send",
+    "emptyState": "Start a quick side chat to keep your main thread clean.",
+    "popOutButton": "Pop out",
+    "noModelWarning": "Please select a model in the main chat first."
   }
 }

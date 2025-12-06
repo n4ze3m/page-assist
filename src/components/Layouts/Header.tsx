@@ -148,6 +148,8 @@ export const Header: React.FC<Props> = ({
   const [quickIngestOpen, setQuickIngestOpen] = React.useState(false)
   const [quickIngestAutoProcessQueued, setQuickIngestAutoProcessQueued] =
     React.useState(false)
+  const quickIngestReadyRef = React.useRef(false)
+  const pendingQuickIngestIntroRef = React.useRef(false)
   const { queuedQuickIngestCount, quickIngestHadFailure } =
     useQuickIngestStore((s) => ({
       queuedQuickIngestCount: s.queuedCount,
@@ -218,15 +220,32 @@ export const Header: React.FC<Props> = ({
   }, [openQuickIngest])
 
   React.useEffect(() => {
+    const markQuickIngestReady = () => {
+      quickIngestReadyRef.current = true
+      if (pendingQuickIngestIntroRef.current) {
+        pendingQuickIngestIntroRef.current = false
+        window.dispatchEvent(
+          new CustomEvent("tldw:quick-ingest-force-intro")
+        )
+      }
+    }
+    window.addEventListener("tldw:quick-ingest-ready", markQuickIngestReady)
+    return () => {
+      window.removeEventListener(
+        "tldw:quick-ingest-ready",
+        markQuickIngestReady
+      )
+    }
+  }, [])
+
+  React.useEffect(() => {
     const handler = () => {
       openQuickIngest({ focusTrigger: false })
-      // Wait briefly for the Quick Ingest modal to mount and render
-      // before forcing the intro drawer open. The 150ms delay ensures
-      // the modal's internal event listeners are registered so the
-      // tldw:quick-ingest-force-intro event is handled reliably.
-      window.setTimeout(() => {
+      if (quickIngestReadyRef.current) {
         window.dispatchEvent(new CustomEvent("tldw:quick-ingest-force-intro"))
-      }, 150)
+      } else {
+        pendingQuickIngestIntroRef.current = true
+      }
     }
     window.addEventListener("tldw:open-quick-ingest-intro", handler)
     return () => {
@@ -279,15 +298,20 @@ export const Header: React.FC<Props> = ({
         await browser.sidebarAction.open()
       } else {
         // Chromium sidePanel API
-        if (typeof chrome !== "undefined" && chrome?.tabs?.query) {
-          const tabs = await chrome.tabs.query({
-            active: true,
-            currentWindow: true
-          })
-          const tabId = tabs?.[0]?.id
-          if (tabId && chrome.sidePanel?.open) {
-            await chrome.sidePanel.open({ tabId })
-          }
+        if (
+          typeof chrome === "undefined" ||
+          !chrome?.tabs?.query ||
+          !chrome?.sidePanel?.open
+        ) {
+          return
+        }
+        const tabs = await chrome.tabs.query({
+          active: true,
+          currentWindow: true
+        })
+        const tabId = tabs?.[0]?.id
+        if (tabId) {
+          await chrome.sidePanel.open({ tabId })
         }
       }
     } catch {}
@@ -775,13 +799,12 @@ export const Header: React.FC<Props> = ({
                   }}
                   filterOption={(input, option) => {
                     const rawLabel = option?.label
-                    const haystack =
-                      typeof rawLabel === "string"
-                        ? rawLabel
-                        : React.isValidElement(rawLabel) &&
-                            typeof rawLabel.props?.["data-title"] === "string"
-                          ? (rawLabel.props["data-title"] as string)
-                          : undefined
+                    let haystack: string | undefined
+                    if (typeof rawLabel === "string") {
+                      haystack = rawLabel
+                    } else if (React.isValidElement(rawLabel)) {
+                      haystack = rawLabel.props?.["data-title"]
+                    }
                     return haystack?.toLowerCase().includes(input.toLowerCase()) ?? false
                   }}
                   showSearch

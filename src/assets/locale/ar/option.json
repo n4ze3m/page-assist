@@ -76,7 +76,8 @@
     "toolsMenu": "أدوات الدردشة",
     "serverBackedLabel": "دردشة مدعومة بالخادم",
     "serverBackedTooltip": "يتم حفظ الرسائل في هذه الدردشة أيضاً على خادم tldw الخاص بك.",
-    "omniSearchPlaceholder": "ابحث في الشاشات، المحادثات، الوسائط، الملاحظات…"
+    "omniSearchPlaceholder": "ابحث في الشاشات، المحادثات، الوسائط، الملاحظات…",
+    "quickIngestQueuedAria": "{{label}} — {{count}} عناصر في الطابور — انقر للمراجعة والمعالجة"
   },
   "sidebarTitle": "سجل المحادثات",
   "error": "خطأ",
@@ -319,6 +320,12 @@
     "toolbarCopyTooltip": "نسخ محتوى الملاحظة",
     "toolbarDeleteTooltip": "حذف الملاحظة",
     "exportMenuTrigger": "تصدير",
+    "resultsLabel": "Results",
+    "showingRange": "Showing {{start}}-{{end}} of {{total}}",
+    "expandSidebar": "Expand sidebar",
+    "collapseSidebar": "Collapse sidebar",
+    "titlePlaceholder": "Title",
+    "keywordsEditorPlaceholder": "Keywords (tags)",
     "tagsHelp": "تساعدك الكلمات المفتاحية على العثور على هذه الملاحظة باستخدام عامل التصفية في الجهة اليسرى."
   },
   "tts": {
@@ -385,6 +392,8 @@
     "selectCharacter": "اختر شخصية",
     "chattingAs": "أنت الآن تتحدث كشخصية {{name}}.",
     "clearCharacter": "مسح الشخصية",
+    "fetchErrorTitle": "تعذّر تحميل الشخصيات",
+    "fetchErrorBody": "تحقق من الاتصال أو من حالة الخادم ثم حاول مرة أخرى.",
     "none": "لا شيء (بدون شخصية)",
     "searchPlaceholder": "ابحث عن الشخصيات بالاسم",
     "noMatches": "لا توجد شخصيات مطابقة لبحثك حتى الآن.",
@@ -398,5 +407,15 @@
     "confirmDescription": "رسالتك تحتوي بالفعل على نص. هل تريد استبداله بهذا الموجّه أم إلحاق الموجّه أسفل النص الحالي؟",
     "overwrite": "استبدال الرسالة",
     "append": "إلحاق"
+  }
+,
+  "quickChatHelper": {
+    "tooltip": "Quick Chat Helper",
+    "title": "Quick Chat Helper",
+    "inputPlaceholder": "Ask a quick question...",
+    "sendButton": "Send",
+    "emptyState": "Start a quick side chat to keep your main thread clean.",
+    "popOutButton": "Pop out",
+    "noModelWarning": "Please select a model in the main chat first."
   }
 }

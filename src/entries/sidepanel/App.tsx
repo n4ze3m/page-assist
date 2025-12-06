@@ -10,6 +10,7 @@ import "~/i18n"
 import { useTranslation } from "react-i18next"
 import { PageAssistProvider } from "@/components/Common/PageAssistProvider"
 import { FontSizeProvider } from "@/context/FontSizeProvider"
+import { QuickChatHelperButton } from "@/components/Common/QuickChatHelper"
 
 function IndexSidepanel() {
   const { mode } = useDarkMode()
@@ -66,6 +67,7 @@ function IndexSidepanel() {
               <PageAssistProvider>
                 <FontSizeProvider>
                   {isVisible ? <SidepanelRouting /> : null}
+                  <QuickChatHelperButton />
                 </FontSizeProvider>
               </PageAssistProvider>
             </QueryClientProvider>

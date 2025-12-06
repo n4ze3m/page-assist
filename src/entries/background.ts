@@ -13,7 +13,8 @@ import {
   clampText,
   notify
 } from "@/services/background-helpers"
-import { ModelDb, generateID, isLookupExist } from "@/db/models"
+import { ModelDb } from "@/db/models"
+import { generateID } from "@/db"
 
 const warmModels = async (
   force = false,
@@ -25,17 +26,15 @@ const warmModels = async (
     // Sync models to local database
     if (models && models.length > 0) {
       const db = new ModelDb()
+      const existing = await db.getAll()
+      const existingLookups = new Set(
+        existing.map((m: any) => m?.lookup).filter(Boolean)
+      )
 
       for (const model of models) {
         try {
-          // Create lookup key to check for duplicates
           const lookup = `${model.id}_tldw_${model.provider}`
-
-          // Skip if model already exists
-          const exists = await isLookupExist(lookup)
-          if (exists) {
-            continue
-          }
+          if (existingLookups.has(lookup)) continue
 
           // Transform ModelInfo to Model format
           const dbModel = {
@@ -43,12 +42,13 @@ const warmModels = async (
             model_id: model.id,
             name: model.name,
             provider_id: `tldw_${model.provider}`,
-            lookup: lookup,
+            lookup,
             model_type: model.type || 'chat',
             db_type: 'openai_model'
           }
 
           await db.create(dbModel)
+          existingLookups.add(lookup)
         } catch (err) {
           // Log but don't fail the entire sync if one model fails
           console.debug('[tldw] Failed to sync model to DB:', model.id, err)

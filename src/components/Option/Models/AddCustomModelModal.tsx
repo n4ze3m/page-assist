@@ -5,7 +5,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Input, Modal, Form, Select, Radio, AutoComplete, Spin } from "antd"
 import { Loader2 } from "lucide-react"
 import { useTranslation } from "react-i18next"
-import { useMemo } from "react"
+import React, { useMemo } from "react"
 import { ProviderIcons } from "@/components/Common/ProviderIcon"
 
 type Props = {
@@ -147,12 +147,16 @@ export const AddCustomModelModal: React.FC<Props> = ({ open, setOpen }) => {
             loading={isPending}
             showSearch
             filterOption={(input, option) => {
-              //@ts-ignore
-              return (
-                option?.label?.props["data-title"]
-                  ?.toLowerCase()
-                  ?.indexOf(input.toLowerCase()) >= 0
-              )
+              const rawLabel = option?.label as any
+              let haystack: string | undefined
+              if (typeof rawLabel === "string") {
+                haystack = rawLabel
+              } else if (React.isValidElement(rawLabel)) {
+                haystack = rawLabel.props?.["data-title"]
+              }
+              return haystack
+                ?.toLowerCase()
+                .includes(input.toLowerCase()) ?? false
             }}
             options={data?.map((e: any) => ({
               value: e.id,

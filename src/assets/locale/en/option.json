@@ -76,7 +76,8 @@
     "toolsMenu": "Chat tools",
     "serverBackedLabel": "Server-backed chat",
     "serverBackedTooltip": "Messages in this chat are also saved on your tldw server.",
-    "omniSearchPlaceholder": "Search screens, chats, media, notes…"
+    "omniSearchPlaceholder": "Search screens, chats, media, notes…",
+    "quickIngestQueuedAria": "{{label}} — {{count}} items queued — click to review and process"
   },
   "promptStudio": {
     "title": "Prompt Studio Playground",
@@ -362,6 +363,12 @@
     "openConversationError": "Failed to open linked conversation.",
     "noLinkedConversation": "No linked conversation to open.",
     "exportMenuTrigger": "Export",
+    "resultsLabel": "Results",
+    "showingRange": "Showing {{start}}-{{end}} of {{total}}",
+    "expandSidebar": "Expand sidebar",
+    "collapseSidebar": "Collapse sidebar",
+    "titlePlaceholder": "Title",
+    "keywordsEditorPlaceholder": "Keywords (tags)",
     "tagsHelp": "Keywords help you find this note using the keyword filter on the left."
   },
   "tts": {
@@ -428,6 +435,8 @@
     "selectCharacter": "Select character",
     "chattingAs": "You're now chatting as {{name}}.",
     "clearCharacter": "Clear character",
+    "fetchErrorTitle": "Unable to load characters",
+    "fetchErrorBody": "Check your connection or server health, then try again.",
     "none": "None (no character)",
     "searchPlaceholder": "Search characters by name",
     "noMatches": "No characters match your search yet.",
@@ -543,5 +552,14 @@
     "fileTooLargeDescription": "File size must be less than 10MB",
     "uploadFailedTitle": "Upload Failed",
     "uploadFailedDescription": "Failed to upload file. Please try again."
+  },
+  "quickChatHelper": {
+    "tooltip": "Quick Chat Helper",
+    "title": "Quick Chat Helper",
+    "inputPlaceholder": "Ask a quick question...",
+    "sendButton": "Send",
+    "emptyState": "Start a quick side chat to keep your main thread clean.",
+    "popOutButton": "Pop out",
+    "noModelWarning": "Please select a model in the main chat first."
   }
 }

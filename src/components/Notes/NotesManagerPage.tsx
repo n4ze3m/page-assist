@@ -722,7 +722,15 @@ const NotesManagerPage: React.FC = () => {
         onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
         className="relative w-6 bg-white dark:bg-[#171717] border-y border-r border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-[#262626] flex items-center justify-center group transition-colors rounded-r-lg"
         style={{ minHeight: '850px', height: `${sidebarHeight}px` }}
-        aria-label={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+        aria-label={
+          sidebarCollapsed
+            ? t('option:notesSearch.expandSidebar', {
+                defaultValue: 'Expand sidebar'
+              })
+            : t('option:notesSearch.collapseSidebar', {
+                defaultValue: 'Collapse sidebar'
+              })
+        }
       >
         <div className="flex items-center justify-center w-full h-full">
           {sidebarCollapsed ? (
@@ -776,7 +784,9 @@ const NotesManagerPage: React.FC = () => {
         />
         <div className="flex-1 flex flex-col px-4 py-3 overflow-auto">
           <Input
-            placeholder="Title"
+            placeholder={t('option:notesSearch.titlePlaceholder', {
+              defaultValue: 'Title'
+            })}
             value={title}
             onChange={(e) => {
               setTitle(e.target.value)
@@ -790,7 +800,9 @@ const NotesManagerPage: React.FC = () => {
             <Select
               mode="tags"
               allowClear
-              placeholder="Keywords (tags)"
+              placeholder={t('option:notesSearch.keywordsEditorPlaceholder', {
+                defaultValue: 'Keywords (tags)'
+              })}
               className="w-full"
               value={editorKeywords}
               onSearch={(txt) => {

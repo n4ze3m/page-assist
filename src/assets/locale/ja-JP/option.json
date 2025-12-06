@@ -71,7 +71,8 @@
     "moreActions": "More actions",
     "toolsMenu": "Chat tools",
     "serverBackedLabel": "Server-backed chat",
-    "serverBackedTooltip": "Messages in this chat are also saved on your tldw server."
+    "serverBackedTooltip": "Messages in this chat are also saved on your tldw server.",
+    "quickIngestQueuedAria": "{{label}} — {{count}} 件がキューにあります — クリックして確認および処理します"
   },
   "sidebarTitle": "チャット履歴",
   "error": "エラー",
@@ -325,6 +326,12 @@
     "toolbarCopyTooltip": "Copy note content",
     "toolbarDeleteTooltip": "Delete note",
     "exportMenuTrigger": "Export",
+    "resultsLabel": "Results",
+    "showingRange": "Showing {{start}}-{{end}} of {{total}}",
+    "expandSidebar": "Expand sidebar",
+    "collapseSidebar": "Collapse sidebar",
+    "titlePlaceholder": "Title",
+    "keywordsEditorPlaceholder": "Keywords (tags)",
     "tagsHelp": "Keywords help you find this note using the keyword filter on the left."
   },
   "tts": {
@@ -391,6 +398,8 @@
     "selectCharacter": "キャラクターを選択",
     "chattingAs": "現在のチャット表示名：{{name}}",
     "clearCharacter": "キャラクターをクリア",
+    "fetchErrorTitle": "キャラクターを読み込めません",
+    "fetchErrorBody": "接続状況またはサーバーの状態を確認してから、もう一度お試しください。",
     "none": "なし（キャラクターなし）",
     "searchPlaceholder": "名前でキャラクターを検索",
     "noMatches": "検索条件に一致するキャラクターはまだありません。",
@@ -404,5 +413,14 @@
     "confirmDescription": "Your message already has text. Do you want to overwrite it with this prompt or append the prompt below it?",
     "overwrite": "Overwrite message",
     "append": "Append"
+  },
+  "quickChatHelper": {
+    "tooltip": "クイックチャットヘルパー",
+    "title": "クイックチャットヘルパー",
+    "inputPlaceholder": "質問を入力...",
+    "sendButton": "送信",
+    "emptyState": "メインスレッドをクリーンに保つためのサイドチャットを始めましょう。",
+    "popOutButton": "ポップアウト",
+    "noModelWarning": "まずメインチャットでモデルを選択してください。"
   }
 }

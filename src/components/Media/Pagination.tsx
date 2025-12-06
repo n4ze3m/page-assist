@@ -19,6 +19,18 @@ export function Pagination({
   currentItemsCount
 }: PaginationProps) {
   const [jumpToPage, setJumpToPage] = useState('')
+
+  // Handle empty results case
+  if (currentItemsCount === 0) {
+    return (
+      <div className="px-4 py-2 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-[#171717]">
+        <div className="text-xs text-gray-600 dark:text-gray-400 text-center">
+          0 of {totalItems} results
+        </div>
+      </div>
+    )
+  }
+
   const startItem = (currentPage - 1) * itemsPerPage + 1
   const endItem = (currentPage - 1) * itemsPerPage + currentItemsCount
 

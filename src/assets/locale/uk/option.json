@@ -71,7 +71,8 @@
     "moreActions": "More actions",
     "toolsMenu": "Chat tools",
     "serverBackedLabel": "Server-backed chat",
-    "serverBackedTooltip": "Messages in this chat are also saved on your tldw server."
+    "serverBackedTooltip": "Messages in this chat are also saved on your tldw server.",
+    "quickIngestQueuedAria": "{{label}} — {{count}} елементів у черзі — натисніть, щоб переглянути та обробити"
   },
   "sidebarTitle": "Історія чату",
   "error": "Збій",
@@ -222,6 +223,12 @@
     "toolbarCopyTooltip": "Copy note content",
     "toolbarDeleteTooltip": "Delete note",
     "exportMenuTrigger": "Export",
+    "resultsLabel": "Results",
+    "showingRange": "Showing {{start}}-{{end}} of {{total}}",
+    "expandSidebar": "Expand sidebar",
+    "collapseSidebar": "Collapse sidebar",
+    "titlePlaceholder": "Title",
+    "keywordsEditorPlaceholder": "Keywords (tags)",
     "tagsHelp": "Keywords help you find this note using the keyword filter on the left."
   },
   "tts": {
@@ -288,6 +295,8 @@
     "selectCharacter": "Вибрати персонажа",
     "chattingAs": "Зараз ви спілкуєтеся як {{name}}",
     "clearCharacter": "Очистити персонажа",
+    "fetchErrorTitle": "Не вдалося завантажити персонажів",
+    "fetchErrorBody": "Перевірте підключення або стан сервера й спробуйте ще раз.",
     "none": "Немає (без персонажа)",
     "searchPlaceholder": "Пошук за ім'ям персонажа",
     "noMatches": "Поки що немає персонажів, що відповідають цьому пошуку.",
@@ -393,5 +402,15 @@
     "mapping": "Column mapping",
     "mappingPreview": "Preview of the first few mapped rows:",
     "exportHelp": "Filter by deck, tag, or search, then export as CSV/TSV for spreadsheets or Anki (.apkg) for Anki clients."
+  }
+,
+  "quickChatHelper": {
+    "tooltip": "Quick Chat Helper",
+    "title": "Quick Chat Helper",
+    "inputPlaceholder": "Ask a quick question...",
+    "sendButton": "Send",
+    "emptyState": "Start a quick side chat to keep your main thread clean.",
+    "popOutButton": "Pop out",
+    "noModelWarning": "Please select a model in the main chat first."
   }
 }

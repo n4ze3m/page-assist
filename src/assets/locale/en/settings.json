@@ -111,6 +111,9 @@
       "hideCurrentChatModelSettings": {
         "label": "Hide the current Chat Model Settings"
       },
+      "hideQuickChatHelper": {
+        "label": "Hide Quick Chat Helper button"
+      },
       "restoreLastChatModel": {
         "label": "Restore last used model for previous chats"
       },

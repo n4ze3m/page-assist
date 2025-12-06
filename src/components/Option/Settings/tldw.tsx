@@ -301,7 +301,9 @@ export const TldwSettings = () => {
       // Test core connectivity via the health endpoint only, so we never
       // rely on the LLM provider for connection checks.
       const baseUrl = String(values.serverUrl || '').replace(/\/$/, '')
-      const healthPath: PathOrUrl = baseUrl ? `${baseUrl}/api/v1/health` : "/api/v1/health"
+      const healthPath: PathOrUrl = (baseUrl
+        ? `${baseUrl}/api/v1/health`
+        : "/api/v1/health") as PathOrUrl
       const singleUser = values.authMode === "single-user"
       const hasApiKey =
         singleUser && typeof values.apiKey === "string" && values.apiKey.trim().length > 0

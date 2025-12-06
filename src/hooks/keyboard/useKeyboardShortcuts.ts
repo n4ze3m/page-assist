@@ -206,3 +206,35 @@ export const useChatModeShortcuts = (
     shortcuts
   }
 }
+
+/**
+ * Hook specifically for Quick Chat Helper shortcuts
+ * @param toggleQuickChat Function to toggle Quick Chat Helper modal
+ * @param enabled Whether the shortcuts are enabled
+ */
+export const useQuickChatShortcuts = (
+  toggleQuickChat: () => void,
+  enabled: boolean = true
+) => {
+  const { shortcuts: configuredShortcuts } = useShortcutConfig()
+
+  const toggleQuickChatAction = useCallback(() => {
+    toggleQuickChat()
+  }, [toggleQuickChat])
+
+  const shortcuts: KeyboardShortcutConfig[] = [
+    {
+      shortcut: configuredShortcuts.toggleQuickChatHelper,
+      action: toggleQuickChatAction,
+      enabled,
+      description: 'Toggle Quick Chat Helper'
+    }
+  ]
+
+  useKeyboardShortcuts(shortcuts)
+
+  return {
+    toggleQuickChat: toggleQuickChatAction,
+    shortcuts
+  }
+}

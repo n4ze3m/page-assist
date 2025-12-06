@@ -36,6 +36,7 @@ import OptionAdminServer from "./option-admin-server"
 import OptionAdminLlamacpp from "./option-admin-llamacpp"
 import OptionAdminMlx from "./option-admin-mlx"
 import OptionChatSettings from "./option-settings-chat"
+import OptionQuickChatPopout from "./option-quick-chat-popout"
 
 export const OptionRoutingChrome = () => {
   return (
@@ -77,6 +78,7 @@ export const OptionRoutingChrome = () => {
       <Route path="/admin/server" element={<OptionAdminServer />} />
       <Route path="/admin/llamacpp" element={<OptionAdminLlamacpp />} />
       <Route path="/admin/mlx" element={<OptionAdminMlx />} />
+      <Route path="/quick-chat-popout" element={<OptionQuickChatPopout />} />
     </Routes>
   )
 }

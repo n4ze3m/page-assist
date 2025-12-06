@@ -71,7 +71,8 @@
     "moreActions": "More actions",
     "toolsMenu": "Chat tools",
     "serverBackedLabel": "Server-backed chat",
-    "serverBackedTooltip": "Messages in this chat are also saved on your tldw server."
+    "serverBackedTooltip": "Messages in this chat are also saved on your tldw server.",
+    "quickIngestQueuedAria": "{{label}} — {{count}} objekt i kö — klicka för att granska och bearbeta"
   },
   "sidebarTitle": "Chatthistorik",
   "error": "Fel",
@@ -222,6 +223,12 @@
     "toolbarCopyTooltip": "Copy note content",
     "toolbarDeleteTooltip": "Delete note",
     "exportMenuTrigger": "Export",
+    "resultsLabel": "Results",
+    "showingRange": "Showing {{start}}-{{end}} of {{total}}",
+    "expandSidebar": "Expand sidebar",
+    "collapseSidebar": "Collapse sidebar",
+    "titlePlaceholder": "Title",
+    "keywordsEditorPlaceholder": "Keywords (tags)",
     "tagsHelp": "Keywords help you find this note using the keyword filter on the left."
   },
   "tts": {
@@ -288,6 +295,8 @@
     "selectCharacter": "Välj karaktär",
     "chattingAs": "Du chattar nu som {{name}}.",
     "clearCharacter": "Rensa karaktär",
+    "fetchErrorTitle": "Det gick inte att läsa in karaktärer",
+    "fetchErrorBody": "Kontrollera din anslutning eller serverns status och försök igen.",
     "none": "Ingen (ingen karaktär)",
     "searchPlaceholder": "Sök karaktärer efter namn",
     "noMatches": "Inga karaktärer matchar din sökning ännu.",
@@ -393,5 +402,15 @@
     "mapping": "Column mapping",
     "mappingPreview": "Preview of the first few mapped rows:",
     "exportHelp": "Filter by deck, tag, or search, then export as CSV/TSV for spreadsheets or Anki (.apkg) for Anki clients."
+  }
+,
+  "quickChatHelper": {
+    "tooltip": "Quick Chat Helper",
+    "title": "Quick Chat Helper",
+    "inputPlaceholder": "Ask a quick question...",
+    "sendButton": "Send",
+    "emptyState": "Start a quick side chat to keep your main thread clean.",
+    "popOutButton": "Pop out",
+    "noModelWarning": "Please select a model in the main chat first."
   }
 }

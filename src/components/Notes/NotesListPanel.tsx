@@ -56,6 +56,9 @@ const NotesListPanel: React.FC<NotesListPanelProps> = ({
   onExportAllJson
 }) => {
   const { t } = useTranslation(['option', 'settings'])
+  const hasNotes = Array.isArray(notes) && notes.length > 0
+  const startItem = hasNotes ? (page - 1) * pageSize + 1 : 0
+  const endItem = hasNotes ? Math.min(page * pageSize, total) : 0
 
   return (
     <div className="flex flex-col h-full">
@@ -63,7 +66,7 @@ const NotesListPanel: React.FC<NotesListPanelProps> = ({
       <div className="flex-shrink-0 px-4 py-2 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-[#0c0c0c]">
         <div className="flex items-center justify-between">
           <span className="text-xs uppercase tracking-[0.14em] text-gray-500 dark:text-gray-400">
-            Results
+            {t('option:notesSearch.resultsLabel', { defaultValue: 'Results' })}
           </span>
           <Dropdown
             menu={{
@@ -315,11 +318,16 @@ const NotesListPanel: React.FC<NotesListPanelProps> = ({
       </div>
 
       {/* Pagination Footer */}
-      {Array.isArray(notes) && notes.length > 0 && (
+      {hasNotes && (
         <div className="flex-shrink-0 px-4 py-3 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-[#171717]">
           <div className="flex items-center justify-between text-xs text-gray-600 dark:text-gray-400">
             <div>
-              Showing {(page - 1) * pageSize + 1}-{Math.min(page * pageSize, total)} of {total}
+              {t('option:notesSearch.showingRange', {
+                defaultValue: 'Showing {{start}}-{{end}} of {{total}}',
+                start: startItem,
+                end: endItem,
+                total
+              })}
             </div>
             <Pagination
               simple

@@ -71,7 +71,8 @@
     "moreActions": "More actions",
     "toolsMenu": "Chat tools",
     "serverBackedLabel": "Server-backed chat",
-    "serverBackedTooltip": "Messages in this chat are also saved on your tldw server."
+    "serverBackedTooltip": "Messages in this chat are also saved on your tldw server.",
+    "quickIngestQueuedAria": "{{label}} — {{count}} ഇനം ക്യൂ ചെയ്തിരിക്കുന്നു — പരിശോധിച്ച് പ്രോസസ്സ് ചെയ്യാൻ ക്ലിക്ക് ചെയ്യുക"
   },
   "sidebarTitle": "ചാറ്റ് ചരിത്രം",
   "error": "പിശക്",
@@ -222,6 +223,12 @@
     "toolbarCopyTooltip": "Copy note content",
     "toolbarDeleteTooltip": "Delete note",
     "exportMenuTrigger": "Export",
+    "resultsLabel": "Results",
+    "showingRange": "Showing {{start}}-{{end}} of {{total}}",
+    "expandSidebar": "Expand sidebar",
+    "collapseSidebar": "Collapse sidebar",
+    "titlePlaceholder": "Title",
+    "keywordsEditorPlaceholder": "Keywords (tags)",
     "tagsHelp": "Keywords help you find this note using the keyword filter on the left."
   },
   "tts": {
@@ -288,6 +295,8 @@
     "selectCharacter": "കഥാപാത്രം തിരഞ്ഞെടുക്കുക",
     "chattingAs": "ഇപ്പോൾ നിങ്ങൾ {{name}} ആയി സംസാരിക്കുന്നു.",
     "clearCharacter": "കഥാപാത്രം നീക്കുക",
+    "fetchErrorTitle": "കഥാപാത്രങ്ങൾ ലോഡ് ചെയ്യാൻ കഴിഞ്ഞില്ല",
+    "fetchErrorBody": "നിങ്ങളുടെ കണക്ഷൻ അല്ലെങ്കിൽ സർവർ നില പരിശോധിച്ച് വീണ്ടും ശ്രമിക്കുക.",
     "none": "ഒന്നുമില്ല (കഥാപാത്രമില്ല)",
     "searchPlaceholder": "പേരുപയോഗിച്ച് കഥാപാത്രങ്ങളെ തിരയുക",
     "noMatches": "നിങ്ങളുടെ തിരച്ചിലിന് യോജിക്കുന്ന കഥാപാത്രങ്ങൾ ഇതുവരെ ഒന്നും ഇല്ല.",
@@ -393,5 +402,15 @@
     "mapping": "Column mapping",
     "mappingPreview": "Preview of the first few mapped rows:",
     "exportHelp": "Filter by deck, tag, or search, then export as CSV/TSV for spreadsheets or Anki (.apkg) for Anki clients."
+  }
+,
+  "quickChatHelper": {
+    "tooltip": "Quick Chat Helper",
+    "title": "Quick Chat Helper",
+    "inputPlaceholder": "Ask a quick question...",
+    "sendButton": "Send",
+    "emptyState": "Start a quick side chat to keep your main thread clean.",
+    "popOutButton": "Pop out",
+    "noModelWarning": "Please select a model in the main chat first."
   }
 }

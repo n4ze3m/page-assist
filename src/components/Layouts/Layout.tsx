@@ -11,8 +11,11 @@ import { PageAssistDatabase } from "@/db/dexie/chat"
 import { useMessageOption } from "@/hooks/useMessageOption"
 import {
   useChatShortcuts,
-  useSidebarShortcuts
+  useSidebarShortcuts,
+  useQuickChatShortcuts
 } from "@/hooks/keyboard/useKeyboardShortcuts"
+import { useQuickChatStore } from "@/store/quick-chat"
+import { QuickChatHelperButton } from "@/components/Common/QuickChatHelper"
 import { useStoreChatModelSettings } from "@/store/model"
 import { CurrentChatModelSettings } from "../Common/Settings/CurrentChatModelSettings"
 import { Sidebar } from "../Option/Sidebar"
@@ -58,9 +61,16 @@ const OptionLayoutInner: React.FC<OptionLayoutProps> = ({
     setSidebarOpen(prev => !prev)
   }
 
+  // Quick Chat Helper toggle
+  const { isOpen: quickChatOpen, setIsOpen: setQuickChatOpen } = useQuickChatStore()
+  const toggleQuickChat = () => {
+    setQuickChatOpen(!quickChatOpen)
+  }
+
   // Initialize shortcuts
   useChatShortcuts(clearChat, true)
   useSidebarShortcuts(toggleSidebar, true)
+  useQuickChatShortcuts(toggleQuickChat, true)
 
   if (migrationLoading) {
     return (
@@ -193,6 +203,9 @@ const OptionLayoutInner: React.FC<OptionLayoutProps> = ({
             isOCREnabled={useOCR}
           />
         )}
+
+        {/* Quick Chat Helper floating button */}
+        {!hideHeader && <QuickChatHelperButton />}
       </main>
     </div>
   )

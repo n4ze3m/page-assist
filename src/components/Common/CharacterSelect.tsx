@@ -82,8 +82,9 @@ export const CharacterSelect: React.FC<Props> = ({
   )
   const previousCharacterId = React.useRef<string | null>(null)
   const initialized = React.useRef(false)
+  const lastErrorRef = React.useRef<unknown | null>(null)
 
-  const { data, refetch, isFetching } = useQuery<CharacterSummary[]>({
+  const { data, refetch, isFetching, error } = useQuery<CharacterSummary[]>({
     queryKey: ["tldw:listCharacters"],
     queryFn: async () => {
       await tldwClient.initialize()
@@ -94,21 +95,7 @@ export const CharacterSelect: React.FC<Props> = ({
     staleTime: 1000 * 60 * 10,
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
-    refetchOnMount: false,
-    onError: () => {
-      notification.error({
-        message: t(
-          "option:characters.fetchErrorTitle",
-          "Unable to load characters"
-        ),
-        description: t(
-          "option:characters.fetchErrorBody",
-          "Check your connection or server health, then try again."
-        ),
-        placement: "bottomRight",
-        duration: 3
-      })
-    }
+    refetchOnMount: false
   })
 
   const [menuDensity] = useStorage<"comfortable" | "compact">(
@@ -135,6 +122,32 @@ export const CharacterSelect: React.FC<Props> = ({
   const searchPlaceholder = t("option:characters.searchPlaceholder", {
     defaultValue: "Search characters by name"
   }) as string
+
+  React.useEffect(() => {
+    if (!error || isFetching) {
+      lastErrorRef.current = null
+      return
+    }
+
+    if (lastErrorRef.current === error) {
+      return
+    }
+
+    lastErrorRef.current = error
+
+    notification.error({
+      message: t(
+        "option:characters.fetchErrorTitle",
+        "Unable to load characters"
+      ),
+      description: t(
+        "option:characters.fetchErrorBody",
+        "Check your connection or server health, then try again."
+      ),
+      placement: "bottomRight",
+      duration: 3
+    })
+  }, [error, isFetching, notification, t])
 
   React.useEffect(() => {
     if (!initialized.current) {

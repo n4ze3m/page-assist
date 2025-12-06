@@ -14,7 +14,7 @@ import {
   Switch,
   notification
 } from "antd"
-import { useState } from "react"
+import React, { useState } from "react"
 import { useTranslation } from "react-i18next"
 import {
   addOpenAICofig,
@@ -265,12 +265,16 @@ export const OpenAIApp = () => {
                 setProvider(e)
               }}
               filterOption={(input, option) => {
-                //@ts-ignore
-                return (
-                  option?.label?.props["data-title"]
-                    ?.toLowerCase()
-                    ?.indexOf(input.toLowerCase()) >= 0
-                )
+                const rawLabel = option?.label as any
+                let haystack: string | undefined
+                if (typeof rawLabel === "string") {
+                  haystack = rawLabel
+                } else if (React.isValidElement(rawLabel)) {
+                  haystack = rawLabel.props?.["data-title"]
+                }
+                return haystack
+                  ?.toLowerCase()
+                  .includes(input.toLowerCase()) ?? false
               }}
               showSearch
               className="w-full !mb-4"

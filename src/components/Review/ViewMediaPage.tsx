@@ -16,16 +16,8 @@ import { FilterPanel } from '@/components/Media/FilterPanel'
 import { ResultsList } from '@/components/Media/ResultsList'
 import { ContentViewer } from '@/components/Media/ContentViewer'
 import { Pagination } from '@/components/Media/Pagination'
-
-type ResultItem = {
-  kind: 'media' | 'note'
-  id: string | number
-  title?: string
-  snippet?: string
-  keywords?: string[]
-  meta?: Record<string, any>
-  raw: any
-}
+import { JumpToNavigator } from '@/components/Media/JumpToNavigator'
+import type { MediaResultItem } from '@/components/Media/types'
 
 const ViewMediaPage: React.FC = () => {
   const { t } = useTranslation(['review', 'common', 'settings'])
@@ -33,23 +25,6 @@ const ViewMediaPage: React.FC = () => {
   const isOnline = useServerOnline()
   const { capabilities, loading: capsLoading } = useServerCapabilities()
   const { demoEnabled } = useDemoMode()
-
-  // State
-  const [query, setQuery] = useState<string>('')
-  const [kinds, setKinds] = useState<{ media: boolean; notes: boolean }>({
-    media: true,
-    notes: false
-  })
-  const [selected, setSelected] = useState<ResultItem | null>(null)
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
-  const [page, setPage] = useState<number>(1)
-  const [pageSize] = useState<number>(20)
-  const [mediaTotal, setMediaTotal] = useState<number>(0)
-  const [mediaTypes, setMediaTypes] = useState<string[]>([])
-  const [availableMediaTypes, setAvailableMediaTypes] = useState<string[]>([])
-  const [keywordTokens, setKeywordTokens] = useState<string[]>([])
-  const [selectedContent, setSelectedContent] = useState<string>('')
-  const [selectedDetail, setSelectedDetail] = useState<any>(null)
 
   // Check media support
   const mediaUnsupported = !capsLoading && capabilities && !capabilities.hasMedia
@@ -143,11 +118,12 @@ const MediaPageContent: React.FC = () => {
     media: true,
     notes: false
   })
-  const [selected, setSelected] = useState<ResultItem | null>(null)
+  const [selected, setSelected] = useState<MediaResultItem | null>(null)
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [page, setPage] = useState<number>(1)
   const [pageSize] = useState<number>(20)
   const [mediaTotal, setMediaTotal] = useState<number>(0)
+  const [notesTotal, setNotesTotal] = useState<number>(0)
   const [mediaTypes, setMediaTypes] = useState<string[]>([])
   const [availableMediaTypes, setAvailableMediaTypes] = useState<string[]>([])
   const [keywordTokens, setKeywordTokens] = useState<string[]>([])
@@ -258,8 +234,36 @@ const MediaPageContent: React.FC = () => {
     }
   }
 
-  const runSearch = async (): Promise<ResultItem[]> => {
-    const results: ResultItem[] = []
+  const extractKeywordsFromMedia = (m: any): string[] => {
+    const possibleKeywordFields = [
+      m?.metadata?.keywords,
+      m?.keywords,
+      m?.tags,
+      m?.metadata?.tags,
+      m?.processing?.keywords
+    ]
+
+    for (const field of possibleKeywordFields) {
+      if (field && Array.isArray(field) && field.length > 0) {
+        const keywords = field
+          .map((k: any) => {
+            if (typeof k === 'string') return k
+            if (k && typeof k === 'object' && k.keyword) return k.keyword
+            if (k && typeof k === 'object' && k.text) return k.text
+            if (k && typeof k === 'object' && k.tag) return k.tag
+            if (k && typeof k === 'object' && k.name) return k.name
+            return null
+          })
+          .filter((k): k is string => k !== null && k.trim().length > 0)
+
+        if (keywords.length > 0) return keywords
+      }
+    }
+    return []
+  }
+
+  const runSearch = useCallback(async (): Promise<MediaResultItem[]> => {
+    const results: MediaResultItem[] = []
     const hasQuery = query.trim().length > 0
     const hasMediaFilters = mediaTypes.length > 0 || keywordTokens.length > 0
 
@@ -283,35 +287,7 @@ const MediaPageContent: React.FC = () => {
                 prev.includes(type) ? prev : [...prev, type]
               )
             }
-            // Extract keywords from media - check multiple possible fields
-            let keywords: string[] = []
-
-            // Try different possible keyword locations
-            const possibleKeywordFields = [
-              m?.metadata?.keywords,
-              m?.keywords,
-              m?.tags,
-              m?.metadata?.tags,
-              m?.processing?.keywords
-            ]
-
-            for (const field of possibleKeywordFields) {
-              if (field && Array.isArray(field) && field.length > 0) {
-                keywords = field
-                  .map((k: any) => {
-                    if (typeof k === 'string') return k
-                    if (k && typeof k === 'object' && k.keyword) return k.keyword
-                    if (k && typeof k === 'object' && k.text) return k.text
-                    if (k && typeof k === 'object' && k.tag) return k.tag
-                    if (k && typeof k === 'object' && k.name) return k.name
-                    return null
-                  })
-                  .filter((k): k is string => k !== null && k.trim().length > 0)
-
-                if (keywords.length > 0) break
-              }
-            }
-
+            const keywords = extractKeywordsFromMedia(m)
 
             results.push({
               kind: 'media',
@@ -354,35 +330,7 @@ const MediaPageContent: React.FC = () => {
                 prev.includes(type) ? prev : [...prev, type]
               )
             }
-            // Extract keywords from media - check multiple possible fields
-            let keywords: string[] = []
-
-            // Try different possible keyword locations
-            const possibleKeywordFields = [
-              m?.metadata?.keywords,
-              m?.keywords,
-              m?.tags,
-              m?.metadata?.tags,
-              m?.processing?.keywords
-            ]
-
-            for (const field of possibleKeywordFields) {
-              if (field && Array.isArray(field) && field.length > 0) {
-                keywords = field
-                  .map((k: any) => {
-                    if (typeof k === 'string') return k
-                    if (k && typeof k === 'object' && k.keyword) return k.keyword
-                    if (k && typeof k === 'object' && k.text) return k.text
-                    if (k && typeof k === 'object' && k.tag) return k.tag
-                    if (k && typeof k === 'object' && k.name) return k.name
-                    return null
-                  })
-                  .filter((k): k is string => k !== null && k.trim().length > 0)
-
-                if (keywords.length > 0) break
-              }
-            }
-
+            const keywords = extractKeywordsFromMedia(m)
 
             results.push({
               kind: 'media',
@@ -400,8 +348,114 @@ const MediaPageContent: React.FC = () => {
       }
     }
 
+    // Fetch notes if enabled
+    if (kinds.notes) {
+      try {
+        const hasQuery = query.trim().length > 0
+
+        // Helper to extract keywords from note
+        const extractNoteKeywords = (note: any): string[] => {
+          const possibleFields = [
+            note?.metadata?.keywords,
+            note?.keywords,
+            note?.tags
+          ]
+          for (const field of possibleFields) {
+            if (field && Array.isArray(field) && field.length > 0) {
+              return field
+                .map((k: any) => {
+                  if (typeof k === 'string') return k
+                  if (k && typeof k === 'object' && k.keyword) return k.keyword
+                  if (k && typeof k === 'object' && k.text) return k.text
+                  return null
+                })
+                .filter((k): k is string => k !== null && k.trim().length > 0)
+            }
+          }
+          return []
+        }
+
+        if (hasQuery) {
+          // Search notes
+          const notesResp = await bgRequest<any>({
+            path: `/api/v1/notes/search/?query=${encodeURIComponent(query)}` as any,
+            method: 'GET' as any
+          })
+          const items = Array.isArray(notesResp) ? notesResp : (notesResp?.items || [])
+
+          // Client-side filter by keywords if needed
+          let filteredItems = items
+          if (keywordTokens.length > 0) {
+            filteredItems = items.filter((n: any) => {
+              const noteKws = extractNoteKeywords(n)
+              return keywordTokens.some(kw =>
+                noteKws.some(nkw => nkw.toLowerCase().includes(kw.toLowerCase()))
+              )
+            })
+          }
+
+          setNotesTotal(filteredItems.length)
+
+          // Paginate client-side
+          const startIdx = (page - 1) * pageSize
+          const pageItems = filteredItems.slice(startIdx, startIdx + pageSize)
+
+          for (const n of pageItems) {
+            const id = n?.id ?? n?.note_id ?? n?.pk ?? n?.uuid
+            results.push({
+              kind: 'note',
+              id,
+              title: n?.title || `Note ${id}`,
+              snippet: n?.content?.substring(0, 200) || '',
+              keywords: extractNoteKeywords(n),
+              meta: {
+                type: 'note',
+                source: n?.metadata?.conversation_id ? 'conversation' : null
+              },
+              raw: n
+            })
+          }
+        } else {
+          // Browse notes with pagination
+          const notesResp = await bgRequest<any>({
+            path: `/api/v1/notes/?page=${page}&results_per_page=${pageSize}` as any,
+            method: 'GET' as any
+          })
+          const items = Array.isArray(notesResp?.items) ? notesResp.items : []
+          const pagination = notesResp?.pagination
+          setNotesTotal(Number(pagination?.total_items || items.length || 0))
+
+          for (const n of items) {
+            const id = n?.id ?? n?.note_id ?? n?.pk ?? n?.uuid
+            results.push({
+              kind: 'note',
+              id,
+              title: n?.title || `Note ${id}`,
+              snippet: n?.content?.substring(0, 200) || '',
+              keywords: extractNoteKeywords(n),
+              meta: {
+                type: 'note',
+                source: n?.metadata?.conversation_id ? 'conversation' : null
+              },
+              raw: n
+            })
+          }
+        }
+      } catch (err) {
+        console.error('Notes search error:', err)
+      }
+    }
+
     return results
-  }
+  }, [
+    query,
+    kinds,
+    mediaTypes,
+    keywordTokens,
+    page,
+    pageSize,
+    availableMediaTypes
+  ])
 
   const { data: results = [], refetch } = useQuery({
     queryKey: [
@@ -540,7 +594,7 @@ const MediaPageContent: React.FC = () => {
     loadKeywordSuggestions()
   }, [])
 
-  const fetchSelectedDetails = useCallback(async (item: ResultItem) => {
+  const fetchSelectedDetails = useCallback(async (item: MediaResultItem) => {
     try {
       if (item.kind === 'media') {
         const detail = await bgRequest<any>({
@@ -558,7 +612,7 @@ const MediaPageContent: React.FC = () => {
     return null
   }, [])
 
-  const contentFromDetail = (detail: any): string => {
+  const contentFromDetail = useCallback((detail: any): string => {
     if (!detail) return ''
 
     const firstString = (...vals: any[]): string => {
@@ -619,37 +673,11 @@ const MediaPageContent: React.FC = () => {
     }
 
     return ''
-  }
+  }, [])
 
   // Extract keywords from media detail
   const extractKeywordsFromDetail = (detail: any): string[] => {
-    if (!detail) return []
-
-    const possibleKeywordFields = [
-      detail?.metadata?.keywords,
-      detail?.keywords,
-      detail?.tags,
-      detail?.metadata?.tags,
-      detail?.processing?.keywords
-    ]
-
-    for (const field of possibleKeywordFields) {
-      if (field && Array.isArray(field) && field.length > 0) {
-        const keywords = field
-          .map((k: any) => {
-            if (typeof k === 'string') return k
-            if (k && typeof k === 'object' && k.keyword) return k.keyword
-            if (k && typeof k === 'object' && k.text) return k.text
-            if (k && typeof k === 'object' && k.tag) return k.tag
-            if (k && typeof k === 'object' && k.name) return k.name
-            return null
-          })
-          .filter((k): k is string => k !== null && k.trim().length > 0)
-
-        if (keywords.length > 0) return keywords
-      }
-    }
-    return []
+    return extractKeywordsFromMedia(detail)
   }
 
   // Track selected ID to avoid re-fetching on keyword updates
@@ -686,7 +714,7 @@ const MediaPageContent: React.FC = () => {
         setSelectedDetail(null)
       }
     })()
-  }, [selected?.id, fetchSelectedDetails])
+  }, [selected?.id, fetchSelectedDetails, contentFromDetail])
 
   // Refresh media details (e.g., after generating analysis)
   const handleRefreshMedia = useCallback(async () => {
@@ -853,6 +881,41 @@ const MediaPageContent: React.FC = () => {
     }
   }, [selected, message, navigate])
 
+  const handleOpenInMultiReview = useCallback(() => {
+    if (!selected) return
+    try {
+      localStorage.setItem('tldw:lastMediaId', String(selected.id))
+    } catch {
+      // ignore storage errors
+    }
+    navigate('/media-multi')
+  }, [selected, navigate])
+
+  const handleSendAnalysisToChat = useCallback((text: string) => {
+    if (!text.trim()) {
+      message.warning(t('review:reviewPage.nothingToSend', 'Nothing to send'))
+      return
+    }
+    try {
+      const payload = {
+        mediaId: selected ? String(selected.id) : undefined,
+        title: selected?.title || 'Analysis',
+        content: `Please review this analysis and continue the discussion:\n\n${text}`
+      }
+      if (typeof window !== 'undefined') {
+        window.localStorage.setItem('tldw:discussMediaPrompt', JSON.stringify(payload))
+        window.dispatchEvent(new CustomEvent('tldw:discuss-media', { detail: payload }))
+      }
+    } catch {
+      // ignore storage errors
+    }
+    setChatMode('normal')
+    setSelectedKnowledge(null as any)
+    setRagMediaIds(null)
+    navigate('/')
+    message.success(t('review:reviewPage.sentToChat', 'Sent to chat'))
+  }, [selected, setChatMode, setSelectedKnowledge, setRagMediaIds, navigate, message, t])
+
   return (
     <div className="flex bg-slate-50 dark:bg-[#101010]" style={{ minHeight: '100vh' }}>
       {/* Left Sidebar */}
@@ -869,9 +932,20 @@ const MediaPageContent: React.FC = () => {
       >
         {/* Header */}
         <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
-          <h1 className="text-gray-900 dark:text-gray-100 text-base font-semibold">
-            Media Inspector
-          </h1>
+          <div className="flex items-center justify-between">
+            <h1 className="text-gray-900 dark:text-gray-100 text-base font-semibold">
+              {t('review:mediaPage.mediaInspector', { defaultValue: 'Media Inspector' })}
+            </h1>
+            <span className="text-xs text-gray-500 dark:text-gray-400">
+              {results.length} / {
+                kinds.media && kinds.notes
+                  ? mediaTotal + notesTotal
+                  : kinds.notes
+                    ? notesTotal
+                    : mediaTotal
+              }
+            </span>
+          </div>
         </div>
 
         {/* Search */}
@@ -883,8 +957,22 @@ const MediaPageContent: React.FC = () => {
             onClick={handleSearch}
             className="mt-2 w-full px-3 py-1.5 text-sm bg-blue-600 dark:bg-blue-600 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-700 transition-colors"
           >
-            Search
+            {t('review:mediaPage.search', { defaultValue: 'Search' })}
           </button>
+          {/* Jump To Navigator */}
+          {results.length > 5 && (
+            <div className="mt-3">
+              <JumpToNavigator
+                results={results.map(r => ({ id: r.id, title: r.title }))}
+                selectedId={selected?.id || null}
+                onSelect={(id) => {
+                  const item = results.find(r => r.id === id)
+                  if (item) setSelected(item)
+                }}
+                maxButtons={12}
+              />
+            </div>
+          )}
         </div>
 
         {/* Filters */}
@@ -895,7 +983,6 @@ const MediaPageContent: React.FC = () => {
             mediaTypes={availableMediaTypes}
             selectedMediaTypes={mediaTypes}
             onMediaTypesChange={setMediaTypes}
-            keywords={[]}
             selectedKeywords={keywordTokens}
             onKeywordsChange={(kws) => {
               setKeywordTokens(kws)
@@ -906,11 +993,12 @@ const MediaPageContent: React.FC = () => {
             onKeywordSearch={(txt) => {
               loadKeywordSuggestions(txt)
             }}
+            hideResultTypes
           />
         </div>
 
         {/* Results */}
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 overflow-y-auto" style={{ minHeight: '325px' }}>
           <ResultsList
             results={results}
             selectedId={selected?.id || null}
@@ -918,7 +1006,13 @@ const MediaPageContent: React.FC = () => {
               const item = results.find((r) => r.id === id)
               if (item) setSelected(item)
             }}
-            totalCount={mediaTotal}
+            totalCount={
+              kinds.media && kinds.notes
+                ? mediaTotal + notesTotal
+                : kinds.notes
+                  ? notesTotal
+                  : mediaTotal
+            }
             loadedCount={results.length}
           />
         </div>
@@ -926,9 +1020,21 @@ const MediaPageContent: React.FC = () => {
         {/* Pagination */}
         <Pagination
           currentPage={page}
-          totalPages={Math.ceil(mediaTotal / pageSize)}
+          totalPages={Math.ceil(
+            (kinds.media && kinds.notes
+              ? mediaTotal + notesTotal
+              : kinds.notes
+                ? notesTotal
+                : mediaTotal) / pageSize
+          )}
           onPageChange={setPage}
-          totalItems={mediaTotal}
+          totalItems={
+            kinds.media && kinds.notes
+              ? mediaTotal + notesTotal
+              : kinds.notes
+                ? notesTotal
+                : mediaTotal
+          }
           itemsPerPage={pageSize}
           currentItemsCount={results.length}
         />
@@ -973,6 +1079,8 @@ const MediaPageContent: React.FC = () => {
             refetch()
           }}
           onCreateNoteWithContent={handleCreateNoteWithContent}
+          onOpenInMultiReview={handleOpenInMultiReview}
+          onSendAnalysisToChat={handleSendAnalysisToChat}
           contentRef={contentRef}
         />
       </div>
