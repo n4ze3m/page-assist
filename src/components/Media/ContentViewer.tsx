@@ -334,6 +334,27 @@ export function ContentViewer({
     ] : [])
   ]
 
+  // Use API-provided word count if available, otherwise calculate
+  const { wordCount, charCount, paragraphCount } = useMemo(() => {
+    const text = content || ''
+    const apiWordCount = mediaDetail?.content?.word_count
+    const wordCountValue =
+      typeof apiWordCount === 'number'
+        ? apiWordCount
+        : text.trim()
+          ? text.trim().split(/\s+/).filter((w) => w.length > 0).length
+          : 0
+    const charCountValue = text.length
+    const paragraphCountValue = text.trim()
+      ? text.split(/\n\n/).filter((p: string) => p.trim().length > 0).length
+      : 0
+    return {
+      wordCount: wordCountValue,
+      charCount: charCountValue,
+      paragraphCount: paragraphCountValue
+    }
+  }, [content, mediaDetail])
+
   if (!selectedMedia) {
     return (
       <div className="flex-1 flex items-center justify-center bg-gray-50 dark:bg-[#101010]">
@@ -358,27 +379,6 @@ export function ContentViewer({
       </div>
     )
   }
-
-  // Use API-provided word count if available, otherwise calculate
-  const { wordCount, charCount, paragraphCount } = useMemo(() => {
-    const text = content || ''
-    const apiWordCount = mediaDetail?.content?.word_count
-    const wordCountValue =
-      typeof apiWordCount === 'number'
-        ? apiWordCount
-        : text.trim()
-          ? text.trim().split(/\s+/).filter((w) => w.length > 0).length
-          : 0
-    const charCountValue = text.length
-    const paragraphCountValue = text.trim()
-      ? text.split(/\n\n/).filter((p: string) => p.trim().length > 0).length
-      : 0
-    return {
-      wordCount: wordCountValue,
-      charCount: charCountValue,
-      paragraphCount: paragraphCountValue
-    }
-  }, [content, mediaDetail])
 
   return (
     <div ref={contentRef} className="flex-1 flex flex-col bg-gray-50 dark:bg-[#101010]">

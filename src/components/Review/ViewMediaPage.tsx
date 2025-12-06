@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react'
+import React, { useState, useCallback, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
@@ -103,6 +103,99 @@ const ViewMediaPage: React.FC = () => {
   return <MediaPageContent />
 }
 
+const deriveMediaMeta = (m: any): {
+  type: string
+  created_at?: string
+  status?: any
+  source?: string | null
+  duration?: number | null
+} => {
+  const rawType = m?.type ?? m?.media_type ?? ''
+  const type = typeof rawType === 'string' ? rawType.toLowerCase().trim() : ''
+  const status =
+    m?.status ??
+    m?.ingest_status ??
+    m?.ingestStatus ??
+    m?.processing_state ??
+    m?.processingStatus
+
+  let source: string | null = null
+  const rawSource =
+    (m?.source as string | null | undefined) ??
+    (m?.origin as string | null | undefined) ??
+    (m?.provider as string | null | undefined)
+  if (typeof rawSource === 'string' && rawSource.trim().length > 0) {
+    source = rawSource.trim()
+  } else if (m?.url) {
+    try {
+      const u = new URL(String(m.url))
+      const host = u.hostname.replace(/^www\./i, '')
+      if (/youtube\.com|youtu\.be/i.test(host)) {
+        source = 'YouTube'
+      } else if (/vimeo\.com/i.test(host)) {
+        source = 'Vimeo'
+      } else if (/soundcloud\.com/i.test(host)) {
+        source = 'SoundCloud'
+      } else {
+        source = host
+      }
+    } catch {
+      // ignore URL parse errors
+    }
+  }
+
+  let duration: number | null = null
+  const rawDuration =
+    (m?.duration as number | string | null | undefined) ??
+    (m?.media_duration as number | string | null | undefined) ??
+    (m?.length_seconds as number | string | null | undefined) ??
+    (m?.duration_seconds as number | string | null | undefined)
+  if (typeof rawDuration === 'number') {
+    duration = rawDuration
+  } else if (typeof rawDuration === 'string') {
+    const n = Number(rawDuration)
+    if (!Number.isNaN(n)) {
+      duration = n
+    }
+  }
+
+  return {
+    type,
+    created_at: m?.created_at,
+    status,
+    source,
+    duration
+  }
+}
+
+const extractKeywordsFromMedia = (m: any): string[] => {
+  const possibleKeywordFields = [
+    m?.metadata?.keywords,
+    m?.keywords,
+    m?.tags,
+    m?.metadata?.tags,
+    m?.processing?.keywords
+  ]
+
+  for (const field of possibleKeywordFields) {
+    if (field && Array.isArray(field) && field.length > 0) {
+      const keywords = field
+        .map((k: any) => {
+          if (typeof k === 'string') return k
+          if (k && typeof k === 'object' && k.keyword) return k.keyword
+          if (k && typeof k === 'object' && k.text) return k.text
+          if (k && typeof k === 'object' && k.tag) return k.tag
+          if (k && typeof k === 'object' && k.name) return k.name
+          return null
+        })
+        .filter((k): k is string => k !== null && k.trim().length > 0)
+
+      if (keywords.length > 0) return keywords
+    }
+  }
+  return []
+}
+
 const MediaPageContent: React.FC = () => {
   const { t } = useTranslation(['review', 'common'])
   const navigate = useNavigate()
@@ -169,99 +262,6 @@ const MediaPageContent: React.FC = () => {
       }, 100)
     }
   }, [])
-
-  const deriveMediaMeta = (m: any): {
-    type: string
-    created_at?: string
-    status?: any
-    source?: string | null
-    duration?: number | null
-  } => {
-    const rawType = m?.type ?? m?.media_type ?? ''
-    const type = typeof rawType === 'string' ? rawType.toLowerCase().trim() : ''
-    const status =
-      m?.status ??
-      m?.ingest_status ??
-      m?.ingestStatus ??
-      m?.processing_state ??
-      m?.processingStatus
-
-    let source: string | null = null
-    const rawSource =
-      (m?.source as string | null | undefined) ??
-      (m?.origin as string | null | undefined) ??
-      (m?.provider as string | null | undefined)
-    if (typeof rawSource === 'string' && rawSource.trim().length > 0) {
-      source = rawSource.trim()
-    } else if (m?.url) {
-      try {
-        const u = new URL(String(m.url))
-        const host = u.hostname.replace(/^www\./i, '')
-        if (/youtube\.com|youtu\.be/i.test(host)) {
-          source = 'YouTube'
-        } else if (/vimeo\.com/i.test(host)) {
-          source = 'Vimeo'
-        } else if (/soundcloud\.com/i.test(host)) {
-          source = 'SoundCloud'
-        } else {
-          source = host
-        }
-      } catch {
-        // ignore URL parse errors
-      }
-    }
-
-    let duration: number | null = null
-    const rawDuration =
-      (m?.duration as number | string | null | undefined) ??
-      (m?.media_duration as number | string | null | undefined) ??
-      (m?.length_seconds as number | string | null | undefined) ??
-      (m?.duration_seconds as number | string | null | undefined)
-    if (typeof rawDuration === 'number') {
-      duration = rawDuration
-    } else if (typeof rawDuration === 'string') {
-      const n = Number(rawDuration)
-      if (!Number.isNaN(n)) {
-        duration = n
-      }
-    }
-
-    return {
-      type,
-      created_at: m?.created_at,
-      status,
-      source,
-      duration
-    }
-  }
-
-  const extractKeywordsFromMedia = (m: any): string[] => {
-    const possibleKeywordFields = [
-      m?.metadata?.keywords,
-      m?.keywords,
-      m?.tags,
-      m?.metadata?.tags,
-      m?.processing?.keywords
-    ]
-
-    for (const field of possibleKeywordFields) {
-      if (field && Array.isArray(field) && field.length > 0) {
-        const keywords = field
-          .map((k: any) => {
-            if (typeof k === 'string') return k
-            if (k && typeof k === 'object' && k.keyword) return k.keyword
-            if (k && typeof k === 'object' && k.text) return k.text
-            if (k && typeof k === 'object' && k.tag) return k.tag
-            if (k && typeof k === 'object' && k.name) return k.name
-            return null
-          })
-          .filter((k): k is string => k !== null && k.trim().length > 0)
-
-        if (keywords.length > 0) return keywords
-      }
-    }
-    return []
-  }
 
   const runSearch = useCallback(async (): Promise<MediaResultItem[]> => {
     const results: MediaResultItem[] = []
@@ -375,27 +375,58 @@ const MediaPageContent: React.FC = () => {
         }
 
         if (hasQuery) {
-          // Search notes with server-side pagination
-          const notesResp = await bgRequest<any>({
-            path: `/api/v1/notes/search/?query=${encodeURIComponent(query)}&page=${page}&results_per_page=${pageSize}` as any,
-            method: 'GET' as any
-          })
+          // Search notes with server-side pagination.
+          // Prefer POST /api/v1/notes/search/ with SearchRequest so the server can
+          // apply keyword filtering; fall back to GET on older servers.
+          const keywordFilterActive = keywordTokens.length > 0
+          let notesResp: any
+          let usedKeywordServerFilter = false
+
+          try {
+            const body: any = { query }
+            if (keywordFilterActive) {
+              body.must_have = keywordTokens
+              usedKeywordServerFilter = true
+            }
+            notesResp = await bgRequest<any>({
+              path: `/api/v1/notes/search/?page=${page}&results_per_page=${pageSize}&include_keywords=true` as any,
+              method: 'POST' as any,
+              headers: { 'Content-Type': 'application/json' },
+              body
+            })
+          } catch {
+            // Fallback: legacy GET search without keyword-aware pagination
+            usedKeywordServerFilter = false
+            notesResp = await bgRequest<any>({
+              path: `/api/v1/notes/search/?query=${encodeURIComponent(
+                query
+              )}&page=${page}&results_per_page=${pageSize}&include_keywords=true` as any,
+              method: 'GET' as any
+            })
+          }
+
           const items = Array.isArray(notesResp) ? notesResp : (notesResp?.items || [])
           const pagination = notesResp?.pagination
 
-          // Client-side filter by keywords if needed (API may not support keyword filtering)
+          // If the API cannot filter by keywords, apply client-side filtering and
+          // base the total on the filtered subset so pagination reflects what is visible.
           let filteredItems = items
-          if (keywordTokens.length > 0) {
+          if (keywordFilterActive && !usedKeywordServerFilter) {
             filteredItems = items.filter((n: any) => {
               const noteKws = extractNoteKeywords(n)
-              return keywordTokens.some(kw =>
-                noteKws.some(nkw => nkw.toLowerCase().includes(kw.toLowerCase()))
+              return keywordTokens.some((kw) =>
+                noteKws.some((nkw) => nkw.toLowerCase().includes(kw.toLowerCase()))
               )
             })
           }
 
-          // Use server pagination total if available, otherwise use filtered count
-          setNotesTotal(Number(pagination?.total_items || filteredItems.length || 0))
+          if (keywordFilterActive && !usedKeywordServerFilter) {
+            setNotesTotal(filteredItems.length)
+          } else {
+            setNotesTotal(
+              Number(pagination?.total_items || items.length || 0)
+            )
+          }
 
           for (const n of filteredItems) {
             const id = n?.id ?? n?.note_id ?? n?.pk ?? n?.uuid
@@ -755,7 +786,7 @@ const MediaPageContent: React.FC = () => {
   }
 
   // Calculate dynamic sidebar height
-  const calculateSidebarHeight = () => {
+  const sidebarHeight = useMemo(() => {
     const minHeight = 850 // Minimum height in pixels
 
     // If we have measured content height, use it
@@ -775,14 +806,13 @@ const MediaPageContent: React.FC = () => {
     const fixedHeight = headerHeight + searchHeight + filtersHeight + paginationHeight
 
     // Show at least 5 items, or all items if fewer than 10
-    const itemsToShow = results.length <= 10 ? results.length : Math.min(5, results.length)
+    const itemsToShow =
+      results.length <= 10 ? results.length : Math.min(5, results.length)
     const resultsHeight = itemsToShow * itemHeight
     const heightForResults = fixedHeight + resultsHeight
 
     return Math.max(minHeight, heightForResults)
-  }
-
-  const sidebarHeight = calculateSidebarHeight()
+  }, [contentHeight, selected, results])
 
   const handleChatWithMedia = useCallback(() => {
     if (!selected) return

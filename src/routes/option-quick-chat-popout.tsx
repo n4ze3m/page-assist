@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useCallback } from "react"
+import React, { useEffect, useRef } from "react"
 import { useSearchParams } from "react-router-dom"
 import { useTranslation } from "react-i18next"
 import { useQuickChatStore } from "@/store/quick-chat"
@@ -29,21 +29,22 @@ const QuickChatPopout: React.FC = () => {
     if (stateKey) {
       try {
         const savedState = sessionStorage.getItem(stateKey)
-        if (savedState) {
-          const parsed = JSON.parse(savedState)
-          // Validate parsed state structure before restoring
-          if (parsed && typeof parsed === "object" && Array.isArray((parsed as { messages?: unknown }).messages)) {
-            useQuickChatStore.getState().restoreFromState(
-              parsed as { messages: typeof useQuickChatStore.getState()["messages"] }
-            )
-          } else {
-            console.warn("Invalid quick chat state structure in sessionStorage")
-          }
-          // Clean up sessionStorage regardless of validity
-          sessionStorage.removeItem(stateKey)
+        if (!savedState) return
+
+        const parsed: any = JSON.parse(savedState)
+        // Validate parsed state structure before restoring
+        if (parsed && typeof parsed === "object" && Array.isArray(parsed.messages)) {
+          useQuickChatStore.getState().restoreFromState({
+            messages: parsed.messages
+          })
+        } else {
+          console.warn("Invalid quick chat state structure in sessionStorage")
         }
       } catch (error) {
         console.error("Failed to restore quick chat state:", error)
+      } finally {
+        // Clean up sessionStorage regardless of validity or parse errors
+        sessionStorage.removeItem(stateKey)
       }
     }
     hasRestoredRef.current = true

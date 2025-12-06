@@ -33,25 +33,35 @@ export function AnalysisModal({
 
   // Load models from database
   useEffect(() => {
+    let cancelled = false
     ;(async () => {
       try {
         const allModels = await getAllModelsExT()
-        setModels(allModels || [])
+        if (!cancelled) {
+          setModels(allModels || [])
+        }
       } catch (err) {
         console.warn('Failed to load models:', err)
-        setModels([])
+        if (!cancelled) {
+          setModels([])
+        }
       }
     })()
+
+    return () => {
+      cancelled = true
+    }
   }, [])
 
   // Load saved prompts from storage
   useEffect(() => {
     if (open) {
+      let cancelled = false
       ;(async () => {
         try {
           const storage = new Storage({ area: 'local' })
           const data = (await storage.get('media:analysisPrompts').catch(() => null)) as any
-          if (data && typeof data === 'object') {
+          if (!cancelled && data && typeof data === 'object') {
             if (typeof data.systemPrompt === 'string') setSystemPrompt(data.systemPrompt)
             if (typeof data.userPrefix === 'string') setUserPrefix(data.userPrefix)
           }
@@ -59,6 +69,10 @@ export function AnalysisModal({
           console.warn('Failed to load saved prompts:', err)
         }
       })()
+
+      return () => {
+        cancelled = true
+      }
     }
   }, [open])
 
@@ -117,7 +131,11 @@ export function AnalysisModal({
             processing: {
               analysis: analysisText,
               model: selectedModel || 'default',
-              prompt: systemPrompt
+              prompt: systemPrompt,
+              prompt_metadata: {
+                system_prompt: systemPrompt,
+                user_prefix: userPrefix || ''
+              }
             }
           }
         })

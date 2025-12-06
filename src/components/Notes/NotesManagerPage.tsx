@@ -84,6 +84,7 @@ const NotesManagerPage: React.FC = () => {
   const [backlinkMessageId, setBacklinkMessageId] = React.useState<string | null>(null)
   const [openingLinkedChat, setOpeningLinkedChat] = React.useState(false)
   const [showPreview, setShowPreview] = React.useState(false)
+  const keywordSearchTimeoutRef = React.useRef<number | null>(null)
   const isOnline = useServerOnline()
   const { demoEnabled } = useDemoMode()
   const queryClient = useQueryClient()
@@ -108,30 +109,41 @@ const NotesManagerPage: React.FC = () => {
 
   const scrollToServerCard = useScrollToServerCard("/notes")
 
+  const fetchFilteredNotesRaw = async (
+    q: string,
+    toks: string[]
+  ): Promise<any[]> => {
+    const cfg = await tldwClient.getConfig().catch(() => null)
+    const base = String(cfg?.serverUrl || '').replace(/\/$/, '')
+    const qstr = q || toks.join(' ')
+    const abs = await bgRequest<any>({
+      path: `${base}/api/v1/notes/search/?query=${encodeURIComponent(qstr)}` as any,
+      method: 'GET' as any
+    })
+    let raw: any[] = Array.isArray(abs) ? abs : []
+    if (toks.length > 0) {
+      raw = raw.filter((n) => {
+        const hay = `${n?.title || ''} ${n?.content || ''}`.toLowerCase()
+        return toks.every((k) => hay.includes(k))
+      })
+    }
+    if (q) {
+      const ql = q.toLowerCase()
+      raw = raw.filter((n) =>
+        (`${n?.title || ''} ${n?.content || ''}`.toLowerCase()).includes(ql)
+      )
+    }
+    return raw
+  }
+
   const fetchNotes = async (): Promise<NoteListItem[]> => {
     const q = query.trim()
     const toks = keywordTokens.map((k) => k.toLowerCase())
     // Prefer search when query or keyword filters are present
     if (q || toks.length > 0) {
-      const cfg = await (async () => {
-        try { return await tldwClient.getConfig() } catch { return null }
-      })()
-      const base = String(cfg?.serverUrl || '').replace(/\/$/, '')
-      const qstr = q || toks.join(' ')
-      const abs = await bgRequest<any>({ path: `${base}/api/v1/notes/search/?query=${encodeURIComponent(qstr)}` as any, method: 'GET' as any })
-      let arr: any[] = Array.isArray(abs) ? abs : []
-      if (toks.length > 0) {
-        arr = arr.filter((n) => {
-          const hay = `${n?.title || ''} ${n?.content || ''}`.toLowerCase()
-          return toks.every((k) => hay.includes(k))
-        })
-      }
-      if (q) {
-        const ql = q.toLowerCase()
-        arr = arr.filter((n) => (`${n?.title || ''} ${n?.content || ''}`.toLowerCase()).includes(ql))
-      }
-      setTotal(arr.length)
-      return arr
+      const raw = await fetchFilteredNotesRaw(q, toks)
+      setTotal(raw.length)
+      return raw
         .slice((page - 1) * pageSize, (page - 1) * pageSize + pageSize)
         .map((n: any) => {
           const links = extractBacklink(n)
@@ -375,21 +387,7 @@ const NotesManagerPage: React.FC = () => {
       const q = query.trim()
       const toks = keywordTokens.map((k) => k.toLowerCase())
       if (q || toks.length > 0) {
-        const cfg = await tldwClient.getConfig().catch(() => null)
-        const base = String(cfg?.serverUrl || '').replace(/\/$/, '')
-        const qstr = q || toks.join(' ')
-        const abs = await bgRequest<any>({ path: `${base}/api/v1/notes/search/?query=${encodeURIComponent(qstr)}` as any, method: 'GET' as any })
-        let raw: any[] = Array.isArray(abs) ? abs : []
-        if (toks.length > 0) {
-          raw = raw.filter((n) => {
-            const hay = `${n?.title || ''} ${n?.content || ''}`.toLowerCase()
-            return toks.every((k) => hay.includes(k))
-          })
-        }
-        if (q) {
-          const ql = q.toLowerCase()
-          raw = raw.filter((n) => (`${n?.title || ''} ${n?.content || ''}`.toLowerCase()).includes(ql))
-        }
+        const raw = await fetchFilteredNotesRaw(q, toks)
         arr = raw.map((n: any) => ({ id: n?.id, title: n?.title, content: n?.content }))
       } else {
         // Iterate pages (chunk by 100)
@@ -425,21 +423,7 @@ const NotesManagerPage: React.FC = () => {
     const q = query.trim()
     const toks = keywordTokens.map((k) => k.toLowerCase())
     if (q || toks.length > 0) {
-      const cfg = await tldwClient.getConfig().catch(() => null)
-      const base = String(cfg?.serverUrl || '').replace(/\/$/, '')
-      const qstr = q || toks.join(' ')
-      const abs = await bgRequest<any>({ path: `${base}/api/v1/notes/search/?query=${encodeURIComponent(qstr)}` as any, method: 'GET' as any })
-      let raw: any[] = Array.isArray(abs) ? abs : []
-      if (toks.length > 0) {
-        raw = raw.filter((n) => {
-          const hay = `${n?.title || ''} ${n?.content || ''}`.toLowerCase()
-          return toks.every((k) => hay.includes(k))
-        })
-      }
-      if (q) {
-        const ql = q.toLowerCase()
-        raw = raw.filter((n) => (`${n?.title || ''} ${n?.content || ''}`.toLowerCase()).includes(ql))
-      }
+      const raw = await fetchFilteredNotesRaw(q, toks)
       arr = raw.map((n: any) => ({
         id: n?.id,
         title: n?.title,
@@ -514,16 +498,46 @@ const NotesManagerPage: React.FC = () => {
       const cfg = await tldwClient.getConfig().catch(() => null)
       const base = String(cfg?.serverUrl || '').replace(/\/$/, '')
       if (text && text.trim().length > 0) {
-        const abs = await bgRequest<any>({ path: `${base}/api/v1/notes/keywords/search/?query=${encodeURIComponent(text)}&limit=10` as any, method: 'GET' as any })
-        const arr = Array.isArray(abs) ? abs.map((x: any) => String(x?.keyword || x?.keyword_text || x?.text || "")).filter(Boolean) : []
+        const abs = await bgRequest<any>({
+          path: `${base}/api/v1/notes/keywords/search/?query=${encodeURIComponent(text)}&limit=10` as any,
+          method: 'GET' as any
+        })
+        const arr = Array.isArray(abs)
+          ? abs
+              .map((x: any) =>
+                String(x?.keyword || x?.keyword_text || x?.text || '')
+              )
+              .filter(Boolean)
+          : []
         setKeywordOptions(arr)
       } else {
-        const abs = await bgRequest<any>({ path: `${base}/api/v1/notes/keywords/?limit=200` as any, method: 'GET' as any })
-        const arr = Array.isArray(abs) ? abs.map((x: any) => String(x?.keyword || x?.keyword_text || x?.text || "")).filter(Boolean) : []
+        const abs = await bgRequest<any>({
+          path: `${base}/api/v1/notes/keywords/?limit=200` as any,
+          method: 'GET' as any
+        })
+        const arr = Array.isArray(abs)
+          ? abs
+              .map((x: any) =>
+                String(x?.keyword || x?.keyword_text || x?.text || '')
+              )
+              .filter(Boolean)
+          : []
         setKeywordOptions(arr)
       }
     } catch {}
   }, [])
+
+  const debouncedLoadKeywordSuggestions = React.useCallback(
+    (text?: string) => {
+      if (keywordSearchTimeoutRef.current != null) {
+        clearTimeout(keywordSearchTimeoutRef.current)
+      }
+      keywordSearchTimeoutRef.current = window.setTimeout(() => {
+        void loadKeywordSuggestions(text)
+      }, 300)
+    },
+    [loadKeywordSuggestions]
+  )
 
   React.useEffect(() => {
     const handler = (e: BeforeUnloadEvent) => {
@@ -534,6 +548,14 @@ const NotesManagerPage: React.FC = () => {
     window.addEventListener('beforeunload', handler)
     return () => window.removeEventListener('beforeunload', handler)
   }, [isDirty])
+
+  React.useEffect(() => {
+    return () => {
+      if (keywordSearchTimeoutRef.current != null) {
+        clearTimeout(keywordSearchTimeoutRef.current)
+      }
+    }
+  }, [])
 
   React.useEffect(() => {
     // When selecting a different note, default back to edit mode so users can start typing immediately.
@@ -652,7 +674,7 @@ const NotesManagerPage: React.FC = () => {
                 className="w-full"
                 value={keywordTokens}
                 onSearch={(txt) => {
-                  if (isOnline) void loadKeywordSuggestions(txt)
+                  if (isOnline) void debouncedLoadKeywordSuggestions(txt)
                 }}
                 onChange={(vals) => {
                   setKeywordTokens(vals as string[])
@@ -797,16 +819,16 @@ const NotesManagerPage: React.FC = () => {
             className="bg-transparent hover:bg-gray-50 focus:bg-gray-50 dark:bg-transparent dark:hover:bg-[#262626] dark:focus:bg-[#262626] transition-colors"
           />
           <div className="mt-3">
-            <Select
-              mode="tags"
-              allowClear
+              <Select
+                mode="tags"
+                allowClear
               placeholder={t('option:notesSearch.keywordsEditorPlaceholder', {
                 defaultValue: 'Keywords (tags)'
               })}
               className="w-full"
               value={editorKeywords}
               onSearch={(txt) => {
-                if (isOnline) void loadKeywordSuggestions(txt)
+                if (isOnline) void debouncedLoadKeywordSuggestions(txt)
               }}
               onChange={(vals) => {
                 setEditorKeywords(vals as string[])
