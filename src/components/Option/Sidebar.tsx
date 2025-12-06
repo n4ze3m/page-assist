@@ -24,7 +24,8 @@ import {
   Trash2Icon,
   Loader2,
   ChevronDown,
-  GitBranch
+  GitBranch,
+  Sparkles
 } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { useTranslation } from "react-i18next"
@@ -45,6 +46,7 @@ import {
 import { UploadedFile } from "@/db/dexie/types"
 import { isDatabaseClosedError } from "@/utils/ff-error"
 import { updatePageTitle } from "@/utils/update-page-title"
+import { generateTitle } from "@/services/title"
 
 type Props = {
   onClose: () => void
@@ -85,6 +87,7 @@ export const Sidebar = ({
   const [dexiePrivateWindowError, setDexiePrivateWindowError] = useState(false)
   const [editingHistoryId, setEditingHistoryId] = useState<string | null>(null)
   const [editTitle, setEditTitle] = useState("")
+  const [generatingTitleId, setGeneratingTitleId] = useState<string | null>(null)
 
   const handleEditStart = (chat: any) => {
     setEditingHistoryId(chat.id)
@@ -94,6 +97,27 @@ export const Sidebar = ({
   const handleEditCancel = () => {
     setEditingHistoryId(null)
     setEditTitle("")
+  }
+
+  const handleGenerateTitle = async (chat: any) => {
+    setGeneratingTitleId(chat.id)
+    try {
+      const db = new PageAssistDatabase()
+      const history = await db.getChatHistory(chat.id)
+      const historyDetails = await db.getHistoryInfo(chat.id)
+      const chatHistory = formatToChatHistory(history)
+      const model = historyDetails?.model_id || ""
+      
+      const generatedTitle = await generateTitle(model, chatHistory, chat.title)
+      if (generatedTitle && generatedTitle !== chat.title) {
+        setEditTitle(generatedTitle)
+      }
+    } catch (error) {
+      console.error("Error generating title:", error)
+      message.error(t("common:generateTitleError", { defaultValue: "Failed to generate title" }))
+    } finally {
+      setGeneratingTitleId(null)
+    }
   }
 
   const handleEditSave = (id: string, currentTitle: string) => {
@@ -418,26 +442,60 @@ export const Sidebar = ({
                       <GitBranch className="size-3 text-gray-500 dark:text-gray-400" />
                     )}
                     {editingHistoryId === chat.id ? (
-                      <input
-                        value={editTitle}
-                        onChange={(e) => setEditTitle(e.target.value)}
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter") {
+                      <div className="flex items-center flex-1 gap-1">
+                        <input
+                          value={editTitle}
+                          onChange={(e) => setEditTitle(e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                              handleEditSave(chat.id, chat.title)
+                            } else if (e.key === "Escape") {
+                              handleEditCancel()
+                            }
+                            e.stopPropagation()
+                          }}
+                          onClick={(e) => e.stopPropagation()}
+                          onBlur={(e) => {
+                            // Don't save if clicking on the generate button
+                            if (e.relatedTarget?.closest('[data-generate-btn]')) {
+                              return
+                            }
                             handleEditSave(chat.id, chat.title)
-                          } else if (e.key === "Escape") {
-                            handleEditCancel()
-                          }
-                          e.stopPropagation()
-                        }}
-                        onClick={(e) => e.stopPropagation()}
-                        onBlur={() => handleEditSave(chat.id, chat.title)}
-                        autoFocus
-                        className={`flex-1 h-8 text-sm mr-2 z-20 px-0 bg-transparent outline-none border-none dark:focus:ring-[#404040] focus:ring-gray-300 focus:rounded-md focus:p-2 caret-current selection:bg-gray-300 dark:selection:bg-gray-600 ${
-                          historyId === chat.id
-                            ? "text-gray-900 dark:text-gray-100 placeholder-gray-500"
-                            : "text-gray-800 dark:text-gray-100 placeholder-gray-400"
-                        }`}
-                      />
+                          }}
+                          autoFocus
+                          disabled={generatingTitleId === chat.id}
+                          className={`flex-1 h-8 text-sm z-20 px-0 bg-transparent outline-none border-none dark:focus:ring-[#404040] focus:ring-gray-300 focus:rounded-md focus:p-2 caret-current selection:bg-gray-300 dark:selection:bg-gray-600 ${
+                            historyId === chat.id
+                              ? "text-gray-900 dark:text-gray-100 placeholder-gray-500"
+                              : "text-gray-800 dark:text-gray-100 placeholder-gray-400"
+                          } ${generatingTitleId === chat.id ? "opacity-50" : ""}`}
+                        />
+                        <Tooltip title={t("common:generateTitle", { defaultValue: "Generate title with AI" })}>
+                          <button
+                            data-generate-btn
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              handleGenerateTitle(chat)
+                            }}
+                            disabled={generatingTitleId === chat.id}
+                            className={`p-1 rounded-md transition-all duration-200 ${
+                              generatingTitleId === chat.id
+                                ? "text-purple-500 dark:text-purple-400"
+                                : "text-gray-400 hover:text-purple-500 dark:hover:text-purple-400 hover:bg-gray-200 dark:hover:bg-gray-700"
+                            }`}>
+                            <Sparkles
+                              className={`w-4 h-4 ${
+                                generatingTitleId === chat.id
+                                  ? "animate-pulse"
+                                  : ""
+                              }`}
+                              style={generatingTitleId === chat.id ? {
+                                filter: "drop-shadow(0 0 4px rgba(168, 85, 247, 0.6))"
+                              } : undefined}
+                            />
+                          </button>
+                        </Tooltip>
+                      </div>
                     ) : (
                       <button
                         className="flex-1 overflow-hidden break-all text-start truncate w-full"
