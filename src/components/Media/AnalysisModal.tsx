@@ -5,6 +5,7 @@ import { useStorage } from '@plasmohq/storage/hook'
 import { useTranslation } from 'react-i18next'
 import { bgRequest } from '@/services/background-proxy'
 import { getAllModelsExT } from '@/db/models'
+import { ANALYSIS_PRESETS } from "@/components/Media/analysisPresets"
 
 interface AnalysisModalProps {
   open: boolean
@@ -30,6 +31,12 @@ export function AnalysisModal({
   const [userPrefix, setUserPrefix] = useState('')
   const [generating, setGenerating] = useState(false)
   const [showPresets, setShowPresets] = useState(false)
+
+  const presets = ANALYSIS_PRESETS.map((preset) => ({
+    name: t(preset.nameKey, preset.nameDefault),
+    system: preset.systemPrompt,
+    user: preset.userPrefix
+  }))
 
   // Load models from database
   useEffect(() => {
@@ -159,36 +166,6 @@ export function AnalysisModal({
     }
   }
 
-  const presets = [
-    {
-      name: t(
-        'mediaPage.presetComprehensiveAnalysis',
-        'Comprehensive Analysis'
-      ),
-      system:
-        'You are an expert analyst. Provide a comprehensive analysis of the following content, including key themes, insights, and actionable takeaways.',
-      user: ''
-    },
-    {
-      name: t('mediaPage.presetExecutiveSummary', 'Executive Summary'),
-      system:
-        'Provide an executive summary with key points, main conclusions, and recommendations. Keep it concise and actionable.',
-      user: ''
-    },
-    {
-      name: t('mediaPage.presetCriticalReview', 'Critical Review'),
-      system:
-        'Act as a critical reviewer. Identify strengths, weaknesses, gaps in logic, and areas for improvement. Provide specific, actionable feedback.',
-      user: ''
-    },
-    {
-      name: t('mediaPage.presetQAAnalysis', 'Q&A Analysis'),
-      system:
-        'Analyze the content and create a Q&A format response covering: What is it about? Who is it for? What are the key takeaways? What actions should be taken?',
-      user: ''
-    }
-  ]
-
   return (
     <Modal
       title={t('mediaPage.generateAnalysis', 'Generate Analysis')}
@@ -219,10 +196,14 @@ export function AnalysisModal({
     >
       <div className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          <label
+            htmlFor="media-analysis-model"
+            className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
             {t('mediaPage.model', 'Model')}
           </label>
           <Select
+            id="media-analysis-model"
+            aria-label={t('mediaPage.model', 'Model')}
             value={selectedModel}
             onChange={setSelectedModel}
             className="w-full"
@@ -276,10 +257,14 @@ export function AnalysisModal({
 
         {/* System Prompt */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          <label
+            htmlFor="systemPrompt"
+            className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
             {t('mediaPage.systemPromptLabel', 'System Prompt')}
           </label>
           <Input.TextArea
+            id="systemPrompt"
+            aria-label={t('mediaPage.systemPromptLabel', 'System Prompt')}
             value={systemPrompt}
             onChange={(e) => setSystemPrompt(e.target.value)}
             rows={4}
@@ -293,7 +278,9 @@ export function AnalysisModal({
 
         {/* User Prefix */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          <label
+            htmlFor="userPromptPrefix"
+            className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
             {t('mediaPage.userPromptPrefixLabel', 'User Prompt Prefix')}
             <span className="text-xs text-gray-500 ml-2">
               {t(
@@ -303,6 +290,8 @@ export function AnalysisModal({
             </span>
           </label>
           <Input.TextArea
+            id="userPromptPrefix"
+            aria-label={t('mediaPage.userPromptPrefixLabel', 'User Prompt Prefix')}
             value={userPrefix}
             onChange={(e) => setUserPrefix(e.target.value)}
             rows={3}

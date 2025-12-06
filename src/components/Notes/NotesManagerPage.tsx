@@ -79,6 +79,7 @@ const NotesManagerPage: React.FC = () => {
   const [keywordTokens, setKeywordTokens] = React.useState<string[]>([])
   const [keywordOptions, setKeywordOptions] = React.useState<string[]>([])
   const [editorKeywords, setEditorKeywords] = React.useState<string[]>([])
+  const [originalMetadata, setOriginalMetadata] = React.useState<Record<string, any> | null>(null)
   const [isDirty, setIsDirty] = React.useState(false)
   const [backlinkConversationId, setBacklinkConversationId] = React.useState<string | null>(null)
   const [backlinkMessageId, setBacklinkMessageId] = React.useState<string | null>(null)
@@ -217,6 +218,10 @@ const NotesManagerPage: React.FC = () => {
       setTitle(String(d?.title || ''))
       setContent(String(d?.content || ''))
       setEditorKeywords(extractKeywords(d))
+      const rawMeta = d && typeof d === "object" ? (d as any).metadata : null
+      setOriginalMetadata(
+        rawMeta && typeof rawMeta === "object" ? { ...(rawMeta as Record<string, any>) } : null
+      )
       const links = extractBacklink(d)
       setBacklinkConversationId(links.conversation_id)
       setBacklinkMessageId(links.message_id)
@@ -231,6 +236,7 @@ const NotesManagerPage: React.FC = () => {
     setTitle('')
     setContent('')
     setEditorKeywords([])
+    setOriginalMetadata(null)
     setBacklinkConversationId(null)
     setBacklinkMessageId(null)
     setIsDirty(false)
@@ -269,7 +275,10 @@ const NotesManagerPage: React.FC = () => {
     if (!content.trim() && !title.trim()) { message.warning('Nothing to save'); return }
     setSaving(true)
     try {
-      const metadata: Record<string, any> = { keywords: editorKeywords }
+      const metadata: Record<string, any> = {
+        ...(originalMetadata || {}),
+        keywords: editorKeywords
+      }
       if (backlinkConversationId) metadata.conversation_id = backlinkConversationId
       if (backlinkMessageId) metadata.message_id = backlinkMessageId
       if (selectedId == null) {
@@ -412,7 +421,7 @@ const NotesManagerPage: React.FC = () => {
         const ps = 100
         // eslint-disable-next-line no-constant-condition
         while (true) {
-          const { items, total } = await fetchFilteredNotesRaw(q, toks, p, ps)
+          const { items } = await fetchFilteredNotesRaw(q, toks, p, ps)
           if (!items.length) break
           arr.push(
             ...items.map((n: any) => ({
@@ -421,7 +430,7 @@ const NotesManagerPage: React.FC = () => {
               content: n?.content
             }))
           )
-          if (arr.length >= total || items.length < ps) break
+          if (items.length < ps) break
           p++
         }
       } else {
@@ -463,7 +472,7 @@ const NotesManagerPage: React.FC = () => {
       const ps = 100
       // eslint-disable-next-line no-constant-condition
       while (true) {
-        const { items, total } = await fetchFilteredNotesRaw(q, toks, p, ps)
+        const { items } = await fetchFilteredNotesRaw(q, toks, p, ps)
         if (!items.length) break
         arr.push(
           ...items.map((n: any) => ({
@@ -474,7 +483,7 @@ const NotesManagerPage: React.FC = () => {
             keywords: extractKeywords(n)
           }))
         )
-        if (arr.length >= total || items.length < ps) break
+        if (items.length < ps) break
         p++
       }
     } else {
@@ -657,6 +666,9 @@ const NotesManagerPage: React.FC = () => {
   const [sidebarHeight, setSidebarHeight] = React.useState(calculateSidebarHeight())
 
   React.useEffect(() => {
+    if (typeof window === 'undefined') {
+      return
+    }
     const handleResize = () => {
       setSidebarHeight(calculateSidebarHeight())
     }
