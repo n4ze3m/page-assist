@@ -117,6 +117,8 @@ export const GeneralSettings = () => {
     },
     false
   )
+    const [hideReasoningWidget, setHideReasoningWidget] = useStorage('hideReasoningWidget', false)
+  
 
   const { mode, toggleDarkMode } = useDarkMode()
   const { t } = useTranslation("settings")
@@ -501,6 +503,19 @@ export const GeneralSettings = () => {
         <Switch
           checked={defaultThinkingMode}
           onChange={(checked) => setDefaultThinkingMode(checked)}
+        />
+      </div>
+
+      <div className="flex flex-row justify-between">
+        <div className="inline-flex items-center gap-2">
+          <span className="text-gray-700   dark:text-neutral-50">
+            {t("generalSettings.settings.hideReasoningWidget.label")}
+          </span>
+        </div>
+
+        <Switch
+          checked={hideReasoningWidget}
+          onChange={(checked) => setHideReasoningWidget(checked)}
         />
       </div>
 

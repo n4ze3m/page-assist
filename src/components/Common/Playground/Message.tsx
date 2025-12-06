@@ -67,6 +67,7 @@ export const PlaygroundMessage = (props: Props) => {
   const [editMode, setEditMode] = React.useState(false)
   const [checkWideMode] = useStorage("checkWideMode", false)
   const [isUserChatBubble] = useStorage("userChatBubble", true)
+  const [hideReasoningWidget] = useStorage('hideReasoningWidget', false)
   const [autoCopyResponseToClipboard] = useStorage(
     "autoCopyResponseToClipboard",
     false
@@ -199,7 +200,7 @@ export const PlaygroundMessage = (props: Props) => {
               props.isBot ? (
                 <>
                   {parseReasoning(props.message).map((e, i) => {
-                    if (e.type === "reasoning") {
+                    if (e.type === "reasoning" && !hideReasoningWidget) {
                       return (
                         <Collapse
                           key={i}
