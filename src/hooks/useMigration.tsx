@@ -1,10 +1,10 @@
 import { useEffect } from "react"
 import { useMutation } from "@tanstack/react-query"
 import { runAllMigrations } from "~/db/dexie/migration"
-import { Storage } from "@plasmohq/storage"
+import { DynamicStorage } from "@/utils/storage"
 import { message, notification } from "antd"
 
-const storage = new Storage()
+const storage = new DynamicStorage()
 
 export const getIsMigrated = async () => {
   const isMigrated = await storage.get("isMigrated")

@@ -5,7 +5,7 @@ import { SearchModeSettings } from "./search-mode"
 import { useTranslation } from "react-i18next"
 import { useI18n } from "@/hooks/useI18n"
 import { TTSModeSettings } from "./tts-mode"
-import { useStorage } from "@plasmohq/storage/hook"
+import { useDynamicStorage } from "@/hooks/useDynamicStorage"
 import { SystemSettings } from "./system-settings"
 import { SSTSettings } from "./sst-settings"
 import { BetaTag } from "@/components/Common/Beta"
@@ -15,100 +15,100 @@ import { useQuery } from "@tanstack/react-query"
 import { getAllPrompts, getAllPromptsSystem } from "@/db/dexie/helpers"
 
 export const GeneralSettings = () => {
-  const [userChatBubble, setUserChatBubble] = useStorage("userChatBubble", true)
+  const [userChatBubble, setUserChatBubble] = useDynamicStorage("userChatBubble", true)
 
-  const [defaultCopilotPrompt, setDefaultCopilotPrompt] = useStorage(
+  const [defaultCopilotPrompt, setDefaultCopilotPrompt] = useDynamicStorage(
     "defaultCopilotPrompt",
     undefined
   )
 
-  const [defaultWebUIPrompt, setDefaultWebUIPrompt] = useStorage(
+  const [defaultWebUIPrompt, setDefaultWebUIPrompt] = useDynamicStorage(
     "defaultWebUIPrompt",
     undefined
   )
 
-  const [copilotResumeLastChat, setCopilotResumeLastChat] = useStorage(
+  const [copilotResumeLastChat, setCopilotResumeLastChat] = useDynamicStorage(
     "copilotResumeLastChat",
     false
   )
 
-  const [webUIResumeLastChat, setWebUIResumeLastChat] = useStorage(
+  const [webUIResumeLastChat, setWebUIResumeLastChat] = useDynamicStorage(
     "webUIResumeLastChat",
     false
   )
-  const [defaultChatWithWebsite, setDefaultChatWithWebsite] = useStorage(
+  const [defaultChatWithWebsite, setDefaultChatWithWebsite] = useDynamicStorage(
     "defaultChatWithWebsite",
     false
   )
 
-  const [restoreLastChatModel, setRestoreLastChatModel] = useStorage(
+  const [restoreLastChatModel, setRestoreLastChatModel] = useDynamicStorage(
     "restoreLastChatModel",
     false
   )
 
-  const [copyAsFormattedText, setCopyAsFormattedText] = useStorage(
+  const [copyAsFormattedText, setCopyAsFormattedText] = useDynamicStorage(
     "copyAsFormattedText",
     false
   )
 
   const [autoCopyResponseToClipboard, setAutoCopyResponseToClipboard] =
-    useStorage("autoCopyResponseToClipboard", false)
+    useDynamicStorage("autoCopyResponseToClipboard", false)
 
-  const [generateTitle, setGenerateTitle] = useStorage("titleGenEnabled", false)
+  const [generateTitle, setGenerateTitle] = useDynamicStorage("titleGenEnabled", false)
 
   const [hideCurrentChatModelSettings, setHideCurrentChatModelSettings] =
-    useStorage("hideCurrentChatModelSettings", false)
+    useDynamicStorage("hideCurrentChatModelSettings", false)
 
   const [sendNotificationAfterIndexing, setSendNotificationAfterIndexing] =
-    useStorage("sendNotificationAfterIndexing", false)
+    useDynamicStorage("sendNotificationAfterIndexing", false)
 
-  const [checkOllamaStatus, setCheckOllamaStatus] = useStorage(
+  const [checkOllamaStatus, setCheckOllamaStatus] = useDynamicStorage(
     "checkOllamaStatus",
     true
   )
 
-  const [checkWideMode, setCheckWideMode] = useStorage("checkWideMode", false)
+  const [checkWideMode, setCheckWideMode] = useDynamicStorage("checkWideMode", false)
 
-  const [openReasoning, setOpenReasoning] = useStorage("openReasoning", false)
+  const [openReasoning, setOpenReasoning] = useDynamicStorage("openReasoning", false)
 
-  const [defaultThinkingMode, setDefaultThinkingMode] = useStorage(
+  const [defaultThinkingMode, setDefaultThinkingMode] = useDynamicStorage(
     "defaultThinkingMode",
     false
   )
 
-  const [useMarkdownForUserMessage, setUseMarkdownForUserMessage] = useStorage(
+  const [useMarkdownForUserMessage, setUseMarkdownForUserMessage] = useDynamicStorage(
     "useMarkdownForUserMessage",
     false
   )
 
-  const [tabMentionsEnabled, setTabMentionsEnabled] = useStorage(
+  const [tabMentionsEnabled, setTabMentionsEnabled] = useDynamicStorage(
     "tabMentionsEnabled",
     false
   )
-  const [pasteLargeTextAsFile, setPasteLargeTextAsFile] = useStorage(
+  const [pasteLargeTextAsFile, setPasteLargeTextAsFile] = useDynamicStorage(
     "pasteLargeTextAsFile",
     false
   )
 
-  const [defaultOCRLanguage, setDefaultOCRLanguage] = useStorage(
+  const [defaultOCRLanguage, setDefaultOCRLanguage] = useDynamicStorage(
     "defaultOCRLanguage",
     getDefaultOcrLanguage()
   )
 
-  const [sidepanelTemporaryChat, setSidepanelTemporaryChat] = useStorage(
+  const [sidepanelTemporaryChat, setSidepanelTemporaryChat] = useDynamicStorage(
     "sidepanelTemporaryChat",
     false
   )
 
-  const [webuiTemporaryChat, setWebuiTemporaryChat] = useStorage(
+  const [webuiTemporaryChat, setWebuiTemporaryChat] = useDynamicStorage(
     "webuiTemporaryChat",
     false
   )
 
   const [removeReasoningTagFromCopy, setRemoveReasoningTagFromCopy] =
-    useStorage("removeReasoningTagFromCopy", true)
+    useDynamicStorage("removeReasoningTagFromCopy", true)
 
-  const [youtubeAutoSummarize, setYoutubeAutoSummarize] = useStorage(
+  const [youtubeAutoSummarize, setYoutubeAutoSummarize] = useDynamicStorage(
     {
       key: "youtubeAutoSummarize",
       instance: new Storage({

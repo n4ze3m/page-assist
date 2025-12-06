@@ -1,5 +1,5 @@
-import { Storage } from "@plasmohq/storage"
-const storage = new Storage()
+import { DynamicStorage } from "@/utils/storage"
+const storage = new DynamicStorage()
 
 export const sendNotification = async (title: string, message: string) => {
   try {

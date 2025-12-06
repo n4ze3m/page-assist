@@ -32,7 +32,7 @@ import { Trans, useTranslation } from "react-i18next"
 import { useI18n } from "@/hooks/useI18n"
 import { TTSModeSettings } from "@/components/Option/Settings/tts-mode"
 import { AdvanceOllamaSettings } from "@/components/Common/Settings/AdvanceOllamaSettings"
-import { useStorage } from "@plasmohq/storage/hook"
+import { useDynamicStorage } from "@/hooks/useDynamicStorage"
 import { getTotalFilePerKB } from "@/services/app"
 import { SidepanelRag } from "@/components/Option/Settings/sidepanel-rag"
 import { SSTSettings } from "@/components/Option/Settings/sst-settings"
@@ -46,15 +46,15 @@ export const SettingsBody = () => {
   const [selectedValue, setSelectedValue] = React.useState<"normal" | "rag">(
     "normal"
   )
-  const [copilotResumeLastChat, setCopilotResumeLastChat] = useStorage(
+  const [copilotResumeLastChat, setCopilotResumeLastChat] = useDynamicStorage(
     "copilotResumeLastChat",
     false
   )
 
   const [hideCurrentChatModelSettings, setHideCurrentChatModelSettings] =
-    useStorage("hideCurrentChatModelSettings", false)
+    useDynamicStorage("hideCurrentChatModelSettings", false)
 
-  const [speechToTextLanguage, setSpeechToTextLanguage] = useStorage(
+  const [speechToTextLanguage, setSpeechToTextLanguage] = useDynamicStorage(
     "speechToTextLanguage",
     "en-US"
   )

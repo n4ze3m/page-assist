@@ -1,6 +1,6 @@
 import { ProviderIcons } from "@/components/Common/ProviderIcon"
 import { cleanUrl } from "@/libs/clean-url"
-import { useStorage } from "@plasmohq/storage/hook"
+import { useDynamicStorage } from "@/hooks/useDynamicStorage"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { Avatar, Select } from "antd"
 import { Loader2, RotateCcw } from "lucide-react"
@@ -18,7 +18,7 @@ export const EmptySidePanel = () => {
   const [ollamaURL, setOllamaURL] = useState<string>("")
   const { t } = useTranslation(["playground", "common"])
   const queryClient = useQueryClient()
-  const [checkOllamaStatus] = useStorage("checkOllamaStatus", true)
+  const [checkOllamaStatus] = useDynamicStorage("checkOllamaStatus", true)
 
   const {
     data: ollamaInfo,

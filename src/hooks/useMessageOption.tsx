@@ -7,7 +7,7 @@ import { notification } from "antd"
 import { useTranslation } from "react-i18next"
 import { usePageAssist } from "@/context"
 import { useWebUI } from "@/store/webui"
-import { useStorage } from "@plasmohq/storage/hook"
+import { useDynamicStorage } from "@/hooks/useDynamicStorage"
 import { useStoreChatModelSettings } from "@/store/model"
 import { ChatDocuments } from "@/models/ChatTypes"
 import { searchChatMode } from "./chat-modes/searchChatMode"
@@ -78,12 +78,12 @@ export const useMessageOption = () => {
     setFileRetrievalEnabled,
     fileRetrievalEnabled
   } = useStoreMessageOption()
-  const [webuiTemporaryChat] = useStorage("webuiTemporaryChat", false)
+  const [webuiTemporaryChat] = useDynamicStorage("webuiTemporaryChat", false)
 
   const currentChatModelSettings = useStoreChatModelSettings()
-  const [selectedModel, setSelectedModel] = useStorage("selectedModel")
-  const [defaultInternetSearchOn] = useStorage("defaultInternetSearchOn", false)
-  const [speechToTextLanguage, setSpeechToTextLanguage] = useStorage(
+  const [selectedModel, setSelectedModel] = useDynamicStorage("selectedModel")
+  const [defaultInternetSearchOn] = useDynamicStorage("defaultInternetSearchOn", false)
+  const [speechToTextLanguage, setSpeechToTextLanguage] = useDynamicStorage(
     "speechToTextLanguage",
     "en-US"
   )

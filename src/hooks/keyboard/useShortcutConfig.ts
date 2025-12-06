@@ -1,4 +1,4 @@
-import { useStorage } from "@plasmohq/storage/hook"
+import { useDynamicStorage } from "@/hooks/useDynamicStorage"
 import { KeyboardShortcut } from "./useKeyboardShortcuts"
 
 export interface ShortcutConfig {
@@ -41,7 +41,7 @@ export const defaultShortcuts: ShortcutConfig = {
  * Allows users to customize their keyboard shortcuts
  */
 export const useShortcutConfig = () => {
-  const [shortcuts, setShortcuts] = useStorage<ShortcutConfig>(
+  const [shortcuts, setShortcuts] = useDynamicStorage<ShortcutConfig>(
     "keyboardShortcuts",
     defaultShortcuts
   )

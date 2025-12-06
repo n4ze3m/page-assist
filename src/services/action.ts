@@ -1,8 +1,6 @@
-import { Storage } from "@plasmohq/storage"
+import { DynamicStorage } from "@/utils/storage"
 
-const storage = new Storage({
-    area: "local"
-})
+const storage = new DynamicStorage()
 
 
 export const getInitialConfig = async () => {

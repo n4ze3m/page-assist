@@ -1,9 +1,7 @@
-import { Storage } from "@plasmohq/storage"
+import { DynamicStorage, getLocalStorage } from "@/utils/storage"
 
-const storage = new Storage()
-const storage2 = new Storage({
-  area: "local"
-})
+const storage = new DynamicStorage()
+const storage2 = getLocalStorage()
 
 const TOTAL_SEARCH_RESULTS = 2
 const DEFAULT_PROVIDER = "duckduckgo"

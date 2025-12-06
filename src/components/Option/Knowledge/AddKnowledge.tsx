@@ -8,7 +8,7 @@ import { InboxIcon } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import PubSub from "pubsub-js"
 import { KNOWLEDGE_QUEUE } from "@/queue"
-import { useStorage } from "@plasmohq/storage/hook"
+import { useDynamicStorage } from "@/hooks/useDynamicStorage"
 import { unsupportedTypes } from "./utils/unsupported-types"
 import React from "react"
 
@@ -20,7 +20,7 @@ type Props = {
 export const AddKnowledge = ({ open, setOpen }: Props) => {
   const { t } = useTranslation(["knowledge", "common"])
   const [form] = Form.useForm()
-  const [totalFilePerKB] = useStorage("totalFilePerKB", 5)
+  const [totalFilePerKB] = useDynamicStorage("totalFilePerKB", 5)
   const [mode, setMode] = React.useState<"upload" | "text">("upload")
 
   const onUploadHandler = async (data: any) => {

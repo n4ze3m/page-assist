@@ -1,21 +1,21 @@
-import { useStorage } from "@plasmohq/storage/hook"
+import { useDynamicStorage } from "@/hooks/useDynamicStorage"
 import { InputNumber, Select, Switch } from "antd"
 import { useTranslation } from "react-i18next"
 import { SUPPORTED_LANGUAGES } from "~/utils/supported-languages"
 
 export const SSTSettings = ({ hideBorder }: { hideBorder?: boolean }) => {
   const { t } = useTranslation("settings")
-  const [speechToTextLanguage, setSpeechToTextLanguage] = useStorage(
+  const [speechToTextLanguage, setSpeechToTextLanguage] = useDynamicStorage(
     "speechToTextLanguage",
     "en-US"
   )
 
-  const [autoSubmitVoiceMessage, setAutoSubmitVoiceMessage] = useStorage(
+  const [autoSubmitVoiceMessage, setAutoSubmitVoiceMessage] = useDynamicStorage(
     "autoSubmitVoiceMessage",
     false
   )
 
-  const [autoStopTimeout, setAutoStopTimeout] = useStorage(
+  const [autoStopTimeout, setAutoStopTimeout] = useDynamicStorage(
     "autoStopTimeout",
     2000
   )

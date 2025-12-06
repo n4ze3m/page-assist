@@ -6,13 +6,13 @@ import { SaveButton } from "~/components/Common/SaveButton"
 import { deleteWebshare, getAllWebshares, getUserId } from "@/db/dexie/helpers"
 import { getPageShareUrl, setPageShareUrl } from "~/services/ollama"
 import { verifyPageShareURL } from "~/utils/verify-page-share"
-import { useStorage } from "@plasmohq/storage/hook"
+import { useDynamicStorage } from "@/hooks/useDynamicStorage"
 import fetcher from "@/libs/fetcher"
 
 export const OptionShareBody = () => {
   const queryClient = useQueryClient()
   const { t } = useTranslation(["settings"])
-  const [shareModeEnabled, setShareModelEnabled] = useStorage(
+  const [shareModeEnabled, setShareModelEnabled] = useDynamicStorage(
     "shareMode",
     false
   )

@@ -14,7 +14,7 @@ import {
   X
 } from "lucide-react"
 import { useTranslation } from "react-i18next"
-import { useStorage } from "@plasmohq/storage/hook"
+import { useDynamicStorage } from "@/hooks/useDynamicStorage"
 import { ModelNickModelNicknameModal } from "./ModelNicknameModal"
 import { useState, useEffect } from "react"
 import { AddUpdateModelSettings } from "./AddUpdateModelSettings"
@@ -27,7 +27,7 @@ dayjs.extend(relativeTime)
 export const OllamaModelsTable = () => {
   const queryClient = useQueryClient()
   const { t } = useTranslation(["settings", "common", "openai"])
-  const [selectedModel, setSelectedModel] = useStorage("selectedModel")
+  const [selectedModel, setSelectedModel] = useDynamicStorage("selectedModel")
   const [openNicknameModal, setOpenNicknameModal] = useState(false)
   const [openSettingsModal, setOpenSettingsModal] = useState(false)
   const [downloadState, setDownloadState] = useState({

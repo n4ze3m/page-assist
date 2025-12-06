@@ -1,5 +1,5 @@
 import { getAllCustomModels, deleteModel } from "@/db/dexie/models"
-import { useStorage } from "@plasmohq/storage/hook"
+import { useDynamicStorage } from "@/hooks/useDynamicStorage"
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query"
 import { Avatar, Skeleton, Table, Tag, Tooltip } from "antd"
 import { Pencil, Settings, Trash2 } from "lucide-react"
@@ -10,7 +10,7 @@ import { AddUpdateOAIModelSettings } from "./AddUpdateOAIModelSettings"
 import { isFireFoxPrivateMode } from "@/utils/is-private-mode"
 
 export const CustomModelsTable = () => {
-  const [selectedModel, setSelectedModel] = useStorage("selectedModel")
+  const [selectedModel, setSelectedModel] = useDynamicStorage("selectedModel")
   const [openNicknameModal, setOpenNicknameModal] = useState(false)
   const [model, setModel] = useState<{
     model_id: string

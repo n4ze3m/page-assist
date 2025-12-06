@@ -10,7 +10,7 @@ import React from "react"
 import { CodeBlock } from "./CodeBlock"
 import { TableBlock } from "./TableBlock"
 import { preprocessLaTeX } from "@/utils/latex"
-import { useStorage } from "@plasmohq/storage/hook"
+import { useDynamicStorage } from "@/hooks/useDynamicStorage"
 
 function Markdown({
   message,
@@ -19,7 +19,7 @@ function Markdown({
   message: string
   className?: string
 }) {
-  const [checkWideMode] = useStorage("checkWideMode", false)
+  const [checkWideMode] = useDynamicStorage("checkWideMode", false)
   if (checkWideMode) {
     className += " max-w-none"
   }

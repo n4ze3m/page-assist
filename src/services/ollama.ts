@@ -1,4 +1,4 @@
-import { Storage } from "@plasmohq/storage"
+import { DynamicStorage } from "@/utils/storage"
 import { cleanUrl } from "../libs/clean-url"
 import { urlRewriteRuntime } from "../libs/runtime"
 import { getChromeAIModel } from "./chrome"
@@ -11,7 +11,7 @@ import fetcher from "@/libs/fetcher"
 import { ollamaFormatAllCustomModels } from "@/db/dexie/models"
 import { getAllModelNicknames } from "@/db/dexie/nickname"
 
-const storage = new Storage()
+const storage = new DynamicStorage()
 
 const DEFAULT_OLLAMA_URL = "http://127.0.0.1:11434"
 const DEFAULT_ASK_FOR_MODEL_SELECTION_EVERY_TIME = true

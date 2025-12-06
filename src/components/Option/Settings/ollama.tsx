@@ -6,16 +6,16 @@ import { getOllamaURL, setOllamaURL as saveOllamaURL } from "~/services/ollama"
 import { Trans, useTranslation } from "react-i18next"
 import { AdvanceOllamaSettings } from "@/components/Common/Settings/AdvanceOllamaSettings"
 import { ModelSettings } from "./model-settings"
-import { useStorage } from "@plasmohq/storage/hook"
+import { useDynamicStorage } from "@/hooks/useDynamicStorage"
 import { AlertCircleIcon } from "lucide-react"
 import { Link } from "react-router-dom"
 export const SettingsOllama = () => {
   const [ollamaURL, setOllamaURL] = useState<string>("")
-  const [ollamaEnabled, setOllamaEnabled] = useStorage(
+  const [ollamaEnabled, setOllamaEnabled] = useDynamicStorage(
     "ollamaEnabledStatus",
     true
   )
-  const [_, setCheckOllamaStatus] = useStorage("checkOllamaStatus", true)
+  const [_, setCheckOllamaStatus] = useDynamicStorage("checkOllamaStatus", true)
   const { t } = useTranslation("settings")
 
   const { status } = useQuery({

@@ -11,7 +11,6 @@ import {
   setTitleGenerationModel
 } from "~/services/title"
 import { ProviderIcons } from "@/components/Common/ProviderIcon"
-import { useStorage } from "@plasmohq/storage/hook"
 import { fetchChatModels } from "@/services/ollama"
 
 export const SettingTitle = () => {
