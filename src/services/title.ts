@@ -4,10 +4,10 @@ import { getOllamaURL } from "./ollama"
 import { cleanUrl } from "@/libs/clean-url"
 import { HumanMessage } from "langchain/schema"
 import { removeReasoning } from "@/libs/reasoning"
+import { ChatHistory } from "@/store/option"
 const storage = new Storage()
 
-// this prompt is copied from the OpenWebUI codebase
-export const DEFAULT_TITLE_GEN_PROMPT = `Here is the query:
+export const DEFAULT_TITLE_GEN_PROMPT = `Here is the conversation:
 
 --------------
 
@@ -15,8 +15,7 @@ export const DEFAULT_TITLE_GEN_PROMPT = `Here is the query:
 
 --------------
 
-Create a concise, 3-5 word phrase as a title for the previous query. Avoid quotation marks or special formatting. RESPOND ONLY WITH THE TITLE TEXT. ANSWER USING THE SAME LANGUAGE AS THE QUERY.
-
+Create a concise, 3-5 word phrase as a title for this conversation. Avoid quotation marks or special formatting. RESPOND ONLY WITH THE TITLE TEXT. ANSWER USING THE SAME LANGUAGE AS THE CONVERSATION.
 
 Examples of titles:
 
@@ -29,6 +28,18 @@ Shakespeare Analyse Literarische
 Древнегреческая Философия Обзор
 
 Response:`
+
+const formatHistoryAsQuery = (history: ChatHistory): string => {
+    if (history.length === 0) return ""
+
+    if (history.length === 1) {
+        return history[0].content
+    }
+
+    return history
+        .map(msg => `${msg.role === "user" ? "User" : "Assistant"}: ${removeReasoning(msg.content)}`)
+        .join("\n")
+}
 
 
 export const isTitleGenEnabled = async () => {
@@ -60,7 +71,7 @@ export const setTitleGenerationModel = async (model: string) => {
     await storage.set("titleGenerationModel", model)
 }
 
-export const generateTitle = async (model: string, query: string, fallBackTitle: string) => {
+export const generateTitle = async (model: string, history: ChatHistory, fallBackTitle: string) => {
 
     const isEnabled = await isTitleGenEnabled()
 
@@ -82,13 +93,13 @@ export const generateTitle = async (model: string, query: string, fallBackTitle:
 
         const titlePrompt = await getTitleGenerationPrompt()
 
-        const prompt = titlePrompt.replace("{{query}}", query)
+        const query = formatHistoryAsQuery(history) || fallBackTitle
 
-        const title = await titleModel.invoke([
-            new HumanMessage({
-                content: prompt
-            })
-        ])
+        const formattedPrompt = titlePrompt.replace("{{query}}", query)
+
+        const messages = [new HumanMessage(formattedPrompt)]
+
+        const title = await titleModel.invoke(messages)
 
         return removeReasoning(title.content.toString())
     } catch (error) {
