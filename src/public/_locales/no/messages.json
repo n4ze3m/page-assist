@@ -100,5 +100,32 @@
   },
   "hfPullException": {
     "message": "[tldw Assistant] Noe gikk galt da vi sendte en pull-forespørsel for «$1» til tldw_server. Kontroller at tldw_server og utvidelsen kjører, og prøv igjen."
+  },
+  "quickChatHelper.tooltip": {
+    "message": "Hurtig chat-hjelper"
+  },
+  "quickChatHelper.title": {
+    "message": "Hurtig chat-hjelper"
+  },
+  "quickChatHelper.inputPlaceholder": {
+    "message": "Still et raskt spørsmål..."
+  },
+  "quickChatHelper.sendButton": {
+    "message": "Send"
+  },
+  "quickChatHelper.emptyState": {
+    "message": "Start en rask sidechat for å holde hovedsamtalen ryddig."
+  },
+  "quickChatHelper.popOutButton": {
+    "message": "Åpne i eget vindu"
+  },
+  "quickChatHelper.noModelWarning": {
+    "message": "Velg først en modell i hovedchatten."
+  },
+  "quickChatHelper.userMessageAria": {
+    "message": "Meldingen din"
+  },
+  "quickChatHelper.assistantMessageAria": {
+    "message": "Assistentens melding"
   }
 }

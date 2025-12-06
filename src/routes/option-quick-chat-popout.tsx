@@ -31,8 +31,15 @@ const QuickChatPopout: React.FC = () => {
         const savedState = sessionStorage.getItem(stateKey)
         if (savedState) {
           const parsed = JSON.parse(savedState)
-          useQuickChatStore.getState().restoreFromState(parsed)
-          // Clean up sessionStorage
+          // Validate parsed state structure before restoring
+          if (parsed && typeof parsed === "object" && Array.isArray((parsed as { messages?: unknown }).messages)) {
+            useQuickChatStore.getState().restoreFromState(
+              parsed as { messages: typeof useQuickChatStore.getState()["messages"] }
+            )
+          } else {
+            console.warn("Invalid quick chat state structure in sessionStorage")
+          }
+          // Clean up sessionStorage regardless of validity
           sessionStorage.removeItem(stateKey)
         }
       } catch (error) {
@@ -59,7 +66,7 @@ const QuickChatPopout: React.FC = () => {
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload)
     }
-  }, [])
+  }, [cancelStream])
 
   const title = t("quickChatHelper.title", "Quick Chat Helper")
   const emptyState = t(

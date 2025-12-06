@@ -100,5 +100,32 @@
   },
   "hfPullException": {
     "message": "[tldw Assistant] При отправке запроса на загрузку \"$1\" на ваш tldw_server что-то пошло не так. Убедитесь, что ваш tldw_server и расширение запущены, затем повторите попытку."
+  },
+  "quickChatHelper.tooltip": {
+    "message": "Помощник быстрого чата"
+  },
+  "quickChatHelper.title": {
+    "message": "Помощник быстрого чата"
+  },
+  "quickChatHelper.inputPlaceholder": {
+    "message": "Задайте быстрый вопрос..."
+  },
+  "quickChatHelper.sendButton": {
+    "message": "Отправить"
+  },
+  "quickChatHelper.emptyState": {
+    "message": "Начните быстрый боковой чат, чтобы основной диалог оставался аккуратным."
+  },
+  "quickChatHelper.popOutButton": {
+    "message": "Открыть в отдельном окне"
+  },
+  "quickChatHelper.noModelWarning": {
+    "message": "Сначала выберите модель в основном чате."
+  },
+  "quickChatHelper.userMessageAria": {
+    "message": "Ваше сообщение"
+  },
+  "quickChatHelper.assistantMessageAria": {
+    "message": "Сообщение ассистента"
   }
 }

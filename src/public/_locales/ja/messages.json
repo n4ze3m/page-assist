@@ -100,5 +100,32 @@
   },
   "hfPullException": {
     "message": "[tldw Assistant] 「$1」モデルのプルリクエストを tldw_server に送信中に問題が発生しました。tldw_server と拡張機能が実行中であることを確認し、もう一度お試しください。"
+  },
+  "quickChatHelper.tooltip": {
+    "message": "クイックチャットヘルパー"
+  },
+  "quickChatHelper.title": {
+    "message": "クイックチャットヘルパー"
+  },
+  "quickChatHelper.inputPlaceholder": {
+    "message": "素早く質問を入力..."
+  },
+  "quickChatHelper.sendButton": {
+    "message": "送信"
+  },
+  "quickChatHelper.emptyState": {
+    "message": "メインのスレッドをすっきり保つために、クイックなサイドチャットを開始しましょう。"
+  },
+  "quickChatHelper.popOutButton": {
+    "message": "別ウィンドウで開く"
+  },
+  "quickChatHelper.noModelWarning": {
+    "message": "まずメインチャットでモデルを選択してください。"
+  },
+  "quickChatHelper.userMessageAria": {
+    "message": "あなたのメッセージ"
+  },
+  "quickChatHelper.assistantMessageAria": {
+    "message": "アシスタントのメッセージ"
   }
 }

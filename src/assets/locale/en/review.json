@@ -194,6 +194,21 @@
     "titleLabel": "Title",
     "source": "Source",
     "notAvailable": "N/A",
-    "developerTools": "Developer Tools"
+    "developerTools": "Developer Tools",
+    "model": "Model",
+    "selectModel": "Select a model",
+    "noModelsAvailable": "No models available",
+    "promptPresets": "Prompt presets",
+    "showPresets": "Show presets",
+    "hidePresets": "Hide presets",
+    "systemPromptLabel": "System prompt",
+    "systemPromptPlaceholder": "Enter system prompt...",
+    "userPromptPrefixLabel": "User prompt prefix",
+    "prependedBeforeContent": "(prepended before content)",
+    "userPrefixPlaceholder": "Optional: Enter text to prepend before the media content...",
+    "presetComprehensiveAnalysis": "Comprehensive analysis",
+    "presetExecutiveSummary": "Executive summary",
+    "presetCriticalReview": "Critical review",
+    "presetQAAnalysis": "Q&A analysis"
   }
 }

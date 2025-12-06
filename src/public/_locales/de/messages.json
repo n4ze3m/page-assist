@@ -100,5 +100,32 @@
   },
   "hfPullException": {
     "message": "[tldw Assistant] Beim Senden einer Abrufanforderung für \"$1\" an Ihren tldw_server ist ein Fehler aufgetreten. Stellen Sie sicher, dass Ihr tldw_server und die Erweiterung ausgeführt werden, und versuchen Sie es erneut."
+  },
+  "quickChatHelper.tooltip": {
+    "message": "Schnellchat-Hilfe"
+  },
+  "quickChatHelper.title": {
+    "message": "Schnellchat-Hilfe"
+  },
+  "quickChatHelper.inputPlaceholder": {
+    "message": "Stell eine schnelle Frage..."
+  },
+  "quickChatHelper.sendButton": {
+    "message": "Senden"
+  },
+  "quickChatHelper.emptyState": {
+    "message": "Starte einen schnellen Nebenchat, um deinen Hauptverlauf übersichtlich zu halten."
+  },
+  "quickChatHelper.popOutButton": {
+    "message": "In separatem Fenster öffnen"
+  },
+  "quickChatHelper.noModelWarning": {
+    "message": "Bitte wähle zuerst ein Modell im Hauptchat aus."
+  },
+  "quickChatHelper.userMessageAria": {
+    "message": "Deine Nachricht"
+  },
+  "quickChatHelper.assistantMessageAria": {
+    "message": "Nachricht des Assistenten"
   }
 }

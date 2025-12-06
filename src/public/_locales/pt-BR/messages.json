@@ -1099,5 +1099,32 @@
   },
   "flashcards.exportHelp": {
     "message": "Filter by deck, tag, or search, then export as CSV/TSV for spreadsheets or Anki (.apkg) for Anki clients."
+  },
+  "quickChatHelper.tooltip": {
+    "message": "Assistente de bate-papo rápido"
+  },
+  "quickChatHelper.title": {
+    "message": "Assistente de bate-papo rápido"
+  },
+  "quickChatHelper.inputPlaceholder": {
+    "message": "Faça uma pergunta rápida..."
+  },
+  "quickChatHelper.sendButton": {
+    "message": "Enviar"
+  },
+  "quickChatHelper.emptyState": {
+    "message": "Inicie um bate-papo rápido lateral para manter a conversa principal organizada."
+  },
+  "quickChatHelper.popOutButton": {
+    "message": "Abrir em uma janela separada"
+  },
+  "quickChatHelper.noModelWarning": {
+    "message": "Selecione primeiro um modelo no chat principal."
+  },
+  "quickChatHelper.userMessageAria": {
+    "message": "Sua mensagem"
+  },
+  "quickChatHelper.assistantMessageAria": {
+    "message": "Mensagem do assistente"
   }
 }

@@ -156,7 +156,8 @@ const MediaPageContent: React.FC = () => {
       clearTimeout(timer)
       if (observer) observer.disconnect()
     }
-  }, [selectedContent, selected, contentDivRef])
+    // Note: contentDivRef excluded as refs are stable
+  }, [selectedContent, selected])
 
   const contentRef = useCallback((node: HTMLDivElement | null) => {
     contentDivRef.current = node
@@ -351,8 +352,6 @@ const MediaPageContent: React.FC = () => {
     // Fetch notes if enabled
     if (kinds.notes) {
       try {
-        const hasQuery = query.trim().length > 0
-
         // Helper to extract keywords from note
         const extractNoteKeywords = (note: any): string[] => {
           const possibleFields = [
@@ -542,9 +541,7 @@ const MediaPageContent: React.FC = () => {
       // Auto-browse: if there is no query or filters, fetch first page
       try {
         // Always fetch on mount - filters are guaranteed empty at this point
-        if (true) {
-          await refetch()
-        }
+        await refetch()
       } catch {}
     })()
   }, []) // Intentionally empty - runs only on mount with initial (empty) filters
@@ -950,7 +947,7 @@ const MediaPageContent: React.FC = () => {
 
         {/* Search */}
         <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
-          <div onKeyPress={handleKeyPress}>
+          <div onKeyDown={handleKeyPress}>
             <SearchBar value={query} onChange={setQuery} />
           </div>
           <button

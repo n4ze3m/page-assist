@@ -139,25 +139,28 @@ export function AnalysisModal({
 
   const presets = [
     {
-      name: 'Comprehensive Analysis',
+      name: t(
+        'mediaPage.presetComprehensiveAnalysis',
+        'Comprehensive Analysis'
+      ),
       system:
         'You are an expert analyst. Provide a comprehensive analysis of the following content, including key themes, insights, and actionable takeaways.',
       user: ''
     },
     {
-      name: 'Executive Summary',
+      name: t('mediaPage.presetExecutiveSummary', 'Executive Summary'),
       system:
         'Provide an executive summary with key points, main conclusions, and recommendations. Keep it concise and actionable.',
       user: ''
     },
     {
-      name: 'Critical Review',
+      name: t('mediaPage.presetCriticalReview', 'Critical Review'),
       system:
         'Act as a critical reviewer. Identify strengths, weaknesses, gaps in logic, and areas for improvement. Provide specific, actionable feedback.',
       user: ''
     },
     {
-      name: 'Q&A Analysis',
+      name: t('mediaPage.presetQAAnalysis', 'Q&A Analysis'),
       system:
         'Analyze the content and create a Q&A format response covering: What is it about? Who is it for? What are the key takeaways? What actions should be taken?',
       user: ''
@@ -189,17 +192,20 @@ export function AnalysisModal({
       ]}
     >
       <div className="space-y-4">
-        {/* Model Selection */}
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            Model
+            {t('mediaPage.model', 'Model')}
           </label>
           <Select
             value={selectedModel}
             onChange={setSelectedModel}
             className="w-full"
-            placeholder="Select a model"
-            notFoundContent={models.length === 0 ? "No models available" : undefined}
+            placeholder={t('mediaPage.selectModel', 'Select a model')}
+            notFoundContent={
+              models.length === 0
+                ? t('mediaPage.noModelsAvailable', 'No models available')
+                : undefined
+            }
           >
             {models.map((model) => (
               <Select.Option key={model.id} value={model.id}>
@@ -209,18 +215,19 @@ export function AnalysisModal({
           </Select>
         </div>
 
-        {/* Presets */}
         <div>
           <div className="flex items-center justify-between mb-2">
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-              Prompt Presets
+              {t('mediaPage.promptPresets', 'Prompt Presets')}
             </label>
             <Button
               size="small"
               type="link"
               onClick={() => setShowPresets(!showPresets)}
             >
-              {showPresets ? 'Hide' : 'Show'} Presets
+              {showPresets
+                ? t('mediaPage.hidePresets', 'Hide Presets')
+                : t('mediaPage.showPresets', 'Show Presets')}
             </Button>
           </div>
           {showPresets && (
@@ -244,13 +251,16 @@ export function AnalysisModal({
         {/* System Prompt */}
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            System Prompt
+            {t('mediaPage.systemPromptLabel', 'System Prompt')}
           </label>
           <Input.TextArea
             value={systemPrompt}
             onChange={(e) => setSystemPrompt(e.target.value)}
             rows={4}
-            placeholder="Enter system prompt..."
+            placeholder={t(
+              'mediaPage.systemPromptPlaceholder',
+              'Enter system prompt...'
+            )}
             className="text-sm"
           />
         </div>
@@ -258,16 +268,22 @@ export function AnalysisModal({
         {/* User Prefix */}
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            User Prompt Prefix
+            {t('mediaPage.userPromptPrefixLabel', 'User Prompt Prefix')}
             <span className="text-xs text-gray-500 ml-2">
-              (prepended before content)
+              {t(
+                'mediaPage.prependedBeforeContent',
+                '(prepended before content)'
+              )}
             </span>
           </label>
           <Input.TextArea
             value={userPrefix}
             onChange={(e) => setUserPrefix(e.target.value)}
             rows={3}
-            placeholder="Optional: Enter text to prepend before the media content..."
+            placeholder={t(
+              'mediaPage.userPrefixPlaceholder',
+              'Optional: Enter text to prepend before the media content...'
+            )}
             className="text-sm"
           />
         </div>

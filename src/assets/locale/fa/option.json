@@ -223,12 +223,12 @@
     "toolbarCopyTooltip": "Copy note content",
     "toolbarDeleteTooltip": "Delete note",
     "exportMenuTrigger": "Export",
-    "resultsLabel": "Results",
-    "showingRange": "Showing {{start}}-{{end}} of {{total}}",
-    "expandSidebar": "Expand sidebar",
-    "collapseSidebar": "Collapse sidebar",
-    "titlePlaceholder": "Title",
-    "keywordsEditorPlaceholder": "Keywords (tags)",
+    "resultsLabel": "نتایج",
+    "showingRange": "نمایش {{start}}-{{end}} از {{total}}",
+    "expandSidebar": "گسترش نوار کناری",
+    "collapseSidebar": "بستن نوار کناری",
+    "titlePlaceholder": "عنوان",
+    "keywordsEditorPlaceholder": "کلیدواژه‌ها (تگ‌ها)",
     "tagsHelp": "Keywords help you find this note using the keyword filter on the left."
   },
   "tts": {

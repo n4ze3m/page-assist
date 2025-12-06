@@ -100,5 +100,32 @@
   },
   "hfPullException": {
     "message": "[tldw Assistant] Une erreur s’est produite lors de l’envoi d’une requête de récupération pour « $1 » à votre tldw_server. Assurez-vous que votre tldw_server et l’extension sont en cours d’exécution, puis réessayez."
+  },
+  "quickChatHelper.tooltip": {
+    "message": "Assistant de discussion rapide"
+  },
+  "quickChatHelper.title": {
+    "message": "Assistant de discussion rapide"
+  },
+  "quickChatHelper.inputPlaceholder": {
+    "message": "Posez une question rapide..."
+  },
+  "quickChatHelper.sendButton": {
+    "message": "Envoyer"
+  },
+  "quickChatHelper.emptyState": {
+    "message": "Lancez une discussion rapide sur le côté pour garder votre fil principal propre."
+  },
+  "quickChatHelper.popOutButton": {
+    "message": "Ouvrir dans une fenêtre séparée"
+  },
+  "quickChatHelper.noModelWarning": {
+    "message": "Veuillez d’abord sélectionner un modèle dans la discussion principale."
+  },
+  "quickChatHelper.userMessageAria": {
+    "message": "Votre message"
+  },
+  "quickChatHelper.assistantMessageAria": {
+    "message": "Message de l’assistant"
   }
 }

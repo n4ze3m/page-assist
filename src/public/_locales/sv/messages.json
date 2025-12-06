@@ -100,5 +100,32 @@
   },
   "hfPullException": {
     "message": "[tldw Assistant] Något gick fel när en hämtbegäran för \"$1\" skickades till din tldw_server. Kontrollera att din tldw_server och tillägget körs och försök igen."
+  },
+  "quickChatHelper.tooltip": {
+    "message": "Snabbchatsassistent"
+  },
+  "quickChatHelper.title": {
+    "message": "Snabbchatsassistent"
+  },
+  "quickChatHelper.inputPlaceholder": {
+    "message": "Ställ en snabb fråga..."
+  },
+  "quickChatHelper.sendButton": {
+    "message": "Skicka"
+  },
+  "quickChatHelper.emptyState": {
+    "message": "Starta en snabb sidokonversation för att hålla huvudtråden ren."
+  },
+  "quickChatHelper.popOutButton": {
+    "message": "Öppna i separat fönster"
+  },
+  "quickChatHelper.noModelWarning": {
+    "message": "Välj först en modell i huvudchatten."
+  },
+  "quickChatHelper.userMessageAria": {
+    "message": "Ditt meddelande"
+  },
+  "quickChatHelper.assistantMessageAria": {
+    "message": "Assistentens meddelande"
   }
 }

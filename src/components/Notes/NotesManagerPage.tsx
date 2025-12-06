@@ -59,7 +59,7 @@ const extractKeywords = (note: any): string[] => {
     .filter((s) => s && s.trim().length > 0)
 }
 
-const MIN_SIDEBAR_HEIGHT = 850
+const MIN_SIDEBAR_HEIGHT = 600
 const calculateSidebarHeight = () => {
   const vh = typeof window !== 'undefined' ? window.innerHeight : MIN_SIDEBAR_HEIGHT
   return Math.max(MIN_SIDEBAR_HEIGHT, vh - 120)
@@ -721,7 +721,7 @@ const NotesManagerPage: React.FC = () => {
       <button
         onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
         className="relative w-6 bg-white dark:bg-[#171717] border-y border-r border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-[#262626] flex items-center justify-center group transition-colors rounded-r-lg"
-        style={{ minHeight: '850px', height: `${sidebarHeight}px` }}
+        style={{ minHeight: `${MIN_SIDEBAR_HEIGHT}px`, height: `${sidebarHeight}px` }}
         aria-label={
           sidebarCollapsed
             ? t('option:notesSearch.expandSidebar', {

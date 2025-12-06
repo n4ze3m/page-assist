@@ -56,6 +56,10 @@ export function AnalysisEditModal({
 
   const handleSave = async () => {
     if (onSave) {
+      if (!text.trim()) {
+        message.warning(t('mediaPage.emptyAnalysis', 'Analysis cannot be empty'))
+        return
+      }
       onSave(text)
       onClose()
     }

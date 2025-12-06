@@ -70,8 +70,8 @@
     },
     "moreActions": "More actions",
     "toolsMenu": "Chat tools",
-    "serverBackedLabel": "Server-backed chat",
-    "serverBackedTooltip": "Messages in this chat are also saved on your tldw server.",
+    "serverBackedLabel": "Serverlagrad chatt",
+    "serverBackedTooltip": "Meddelanden i den här chatten sparas också på din tldw-server.",
     "quickIngestQueuedAria": "{{label}} — {{count}} objekt i kö — klicka för att granska och bearbeta"
   },
   "sidebarTitle": "Chatthistorik",

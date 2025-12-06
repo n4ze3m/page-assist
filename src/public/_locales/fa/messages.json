@@ -100,5 +100,32 @@
   },
   "hfPullException": {
     "message": "[tldw Assistant] هنگام ارسال درخواست دریافت \"$1\" به tldw_server شما خطایی رخ داد. مطمئن شوید tldw_server و افزونه فعال هستند و دوباره تلاش کنید."
+  },
+  "quickChatHelper.tooltip": {
+    "message": "دستیار گفتگوی سریع"
+  },
+  "quickChatHelper.title": {
+    "message": "دستیار گفتگوی سریع"
+  },
+  "quickChatHelper.inputPlaceholder": {
+    "message": "یک سؤال کوتاه بپرسید..."
+  },
+  "quickChatHelper.sendButton": {
+    "message": "ارسال"
+  },
+  "quickChatHelper.emptyState": {
+    "message": "یک گفتگوی جانبی سریع شروع کنید تا رشتهٔ اصلی تمیز بماند."
+  },
+  "quickChatHelper.popOutButton": {
+    "message": "باز کردن در پنجرهٔ جداگانه"
+  },
+  "quickChatHelper.noModelWarning": {
+    "message": "لطفاً ابتدا یک مدل را در گفتگوی اصلی انتخاب کنید."
+  },
+  "quickChatHelper.userMessageAria": {
+    "message": "پیام شما"
+  },
+  "quickChatHelper.assistantMessageAria": {
+    "message": "پیام دستیار"
   }
 }

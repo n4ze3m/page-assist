@@ -100,5 +100,32 @@
   },
   "hfPullException": {
     "message": "[tldw Assistant] Something went wrong while sending a pull request for \"$1\" to your tldw_server. Check that your tldw_server and the extension are running, then try again."
+  },
+  "quickChatHelper.tooltip": {
+    "message": "Quick Chat Helper"
+  },
+  "quickChatHelper.title": {
+    "message": "Quick Chat Helper"
+  },
+  "quickChatHelper.inputPlaceholder": {
+    "message": "Ask a quick question..."
+  },
+  "quickChatHelper.sendButton": {
+    "message": "Send"
+  },
+  "quickChatHelper.emptyState": {
+    "message": "Start a quick side chat to keep your main thread clean."
+  },
+  "quickChatHelper.popOutButton": {
+    "message": "Pop out"
+  },
+  "quickChatHelper.noModelWarning": {
+    "message": "Please select a model in the main chat first."
+  },
+  "quickChatHelper.userMessageAria": {
+    "message": "Your message"
+  },
+  "quickChatHelper.assistantMessageAria": {
+    "message": "Assistant message"
   }
 }

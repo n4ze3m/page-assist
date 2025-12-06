@@ -78,9 +78,7 @@ export function ContentViewer({
     statistics: true,
     content: true,
     metadata: true,
-    analysis: true,
-    versionHistory: true,
-    developerTools: true
+    analysis: true
   })
   const [analysisModalOpen, setAnalysisModalOpen] = useState(false)
   const [editingKeywords, setEditingKeywords] = useState<string[]>([])
@@ -219,22 +217,33 @@ export function ContentViewer({
     }))
   }
 
-  const handleCopyContent = async () => {
-    if (!content) return
-    try {
-      await navigator.clipboard.writeText(content)
-      message.success(
-        t('review:mediaPage.contentCopied', { defaultValue: 'Content copied' })
-      )
-    } catch (err) {
-      console.error('Failed to copy content:', err)
+  const copyTextWithToasts = async (
+    text: string,
+    successKey: string,
+    defaultSuccess: string
+  ) => {
+    if (!text) return
+    if (!navigator.clipboard?.writeText) {
       message.error(
-        t('review:mediaPage.copyFailed', { defaultValue: 'Copy failed' })
+        t('mediaPage.copyNotSupported', 'Copy is not supported here')
       )
+      return
+    }
+    try {
+      await navigator.clipboard.writeText(text)
+      message.success(t(successKey, { defaultValue: defaultSuccess }))
+    } catch (err) {
+      console.error('Failed to copy text:', err)
+      message.error(t('mediaPage.copyFailed', 'Failed to copy'))
     }
   }
 
-  const handleCopyMetadata = async () => {
+  const handleCopyContent = () => {
+    if (!content) return
+    copyTextWithToasts(content, 'mediaPage.contentCopied', 'Content copied')
+  }
+
+  const handleCopyMetadata = () => {
     if (!selectedMedia) return
     const metadata = {
       id: selectedMedia.id,
@@ -243,19 +252,11 @@ export function ContentViewer({
       source: selectedMedia.meta?.source,
       duration: selectedMedia.meta?.duration
     }
-    try {
-      await navigator.clipboard.writeText(JSON.stringify(metadata, null, 2))
-      message.success(
-        t('review:mediaPage.metadataCopied', {
-          defaultValue: 'Metadata copied'
-        })
-      )
-    } catch (err) {
-      console.error('Failed to copy metadata:', err)
-      message.error(
-        t('review:mediaPage.copyFailed', { defaultValue: 'Copy failed' })
-      )
-    }
+    copyTextWithToasts(
+      JSON.stringify(metadata, null, 2),
+      'mediaPage.metadataCopied',
+      'Metadata copied'
+    )
   }
 
   // Get the first/selected analysis for creating note with analysis
@@ -359,15 +360,25 @@ export function ContentViewer({
   }
 
   // Use API-provided word count if available, otherwise calculate
-  const wordCount =
-    mediaDetail?.content?.word_count ??
-    (content && content.trim()
-      ? content.trim().split(/\s+/).filter(w => w.length > 0).length
-      : 0)
-  const charCount = content ? content.length : 0
-  const paragraphCount = content && content.trim()
-    ? content.split(/\n\n/).filter((p: string) => p.trim().length > 0).length
-    : 0
+  const { wordCount, charCount, paragraphCount } = useMemo(() => {
+    const text = content || ''
+    const apiWordCount = mediaDetail?.content?.word_count
+    const wordCountValue =
+      typeof apiWordCount === 'number'
+        ? apiWordCount
+        : text.trim()
+          ? text.trim().split(/\s+/).filter((w) => w.length > 0).length
+          : 0
+    const charCountValue = text.length
+    const paragraphCountValue = text.trim()
+      ? text.split(/\n\n/).filter((p: string) => p.trim().length > 0).length
+      : 0
+    return {
+      wordCount: wordCountValue,
+      charCount: charCountValue,
+      paragraphCount: paragraphCountValue
+    }
+  }, [content, mediaDetail])
 
   return (
     <div ref={contentRef} className="flex-1 flex flex-col bg-gray-50 dark:bg-[#101010]">
@@ -445,12 +456,27 @@ export function ContentViewer({
                 {selectedMedia.meta.source}
               </span>
             )}
-            {selectedMedia.meta?.duration && (
-              <span className="flex items-center gap-1">
-                <Clock className="w-3 h-3" />
-                {formatDuration(selectedMedia.meta.duration)}
-              </span>
-            )}
+            {(() => {
+              const rawDuration = selectedMedia.meta?.duration as
+                | number
+                | string
+                | null
+                | undefined
+              const durationSeconds =
+                typeof rawDuration === 'number'
+                  ? rawDuration
+                  : typeof rawDuration === 'string'
+                    ? Number(rawDuration)
+                    : null
+              const durationLabel = formatDuration(durationSeconds)
+              if (!durationLabel) return null
+              return (
+                <span className="flex items-center gap-1">
+                  <Clock className="w-3 h-3" />
+                  {durationLabel}
+                </span>
+              )
+            })()}
             <span className="flex items-center gap-1">
               <FileText className="w-3 h-3" />
               {wordCount.toLocaleString()} {t('review:mediaPage.words', { defaultValue: 'words' })}
@@ -606,23 +632,13 @@ export function ContentViewer({
                       )}
                       {/* Copy analysis button */}
                       <button
-                        onClick={async () => {
-                          try {
-                            await navigator.clipboard.writeText(existingAnalyses[0].text)
-                            message.success(
-                              t('review:mediaPage.analysisCopied', {
-                                defaultValue: 'Analysis copied'
-                              })
-                            )
-                          } catch (err) {
-                            console.error('Failed to copy analysis:', err)
-                            message.error(
-                              t('review:mediaPage.copyFailed', {
-                                defaultValue: 'Copy failed'
-                              })
-                            )
-                          }
-                        }}
+                        onClick={() =>
+                          copyTextWithToasts(
+                            existingAnalyses[0].text,
+                            'mediaPage.analysisCopied',
+                            'Analysis copied'
+                          )
+                        }
                         className="p-1 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
                         title={t('review:reviewPage.copyAnalysis', { defaultValue: 'Copy analysis' })}
                       >
@@ -643,23 +659,13 @@ export function ContentViewer({
                             {analysis.type}
                           </span>
                           <button
-                            onClick={async () => {
-                              try {
-                                await navigator.clipboard.writeText(analysis.text)
-                                message.success(
-                                  t('review:mediaPage.analysisCopied', {
-                                    defaultValue: 'Analysis copied'
-                                  })
-                                )
-                              } catch (err) {
-                                console.error('Failed to copy analysis:', err)
-                                message.error(
-                                  t('review:mediaPage.copyFailed', {
-                                    defaultValue: 'Copy failed'
-                                  })
-                                )
-                              }
-                            }}
+                            onClick={() =>
+                              copyTextWithToasts(
+                                analysis.text,
+                                'mediaPage.analysisCopied',
+                                'Analysis copied'
+                              )
+                            }
                           className="p-0.5 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
                               aria-label={t('review:mediaPage.copyAnalysis', {
                                 defaultValue: 'Copy analysis to clipboard'
@@ -869,10 +875,12 @@ export function ContentViewer({
   )
 }
 
-function formatDuration(seconds: number): string {
-  const hours = Math.floor(seconds / 3600)
-  const minutes = Math.floor((seconds % 3600) / 60)
-  const secs = Math.floor(seconds % 60)
+function formatDuration(seconds: number | null | undefined): string | null {
+  if (seconds == null || !Number.isFinite(Number(seconds))) return null
+  const total = Math.max(0, Math.floor(Number(seconds)))
+  const hours = Math.floor(total / 3600)
+  const minutes = Math.floor((total % 3600) / 60)
+  const secs = total % 60
 
   if (hours > 0) {
     return `${hours}:${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`
