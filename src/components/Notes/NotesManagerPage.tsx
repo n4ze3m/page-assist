@@ -84,7 +84,7 @@ const NotesManagerPage: React.FC = () => {
   const [backlinkMessageId, setBacklinkMessageId] = React.useState<string | null>(null)
   const [openingLinkedChat, setOpeningLinkedChat] = React.useState(false)
   const [showPreview, setShowPreview] = React.useState(false)
-  const keywordSearchTimeoutRef = React.useRef<number | null>(null)
+  const keywordSearchTimeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null)
   const isOnline = useServerOnline()
   const { demoEnabled } = useDemoMode()
   const queryClient = useQueryClient()
@@ -111,27 +111,51 @@ const NotesManagerPage: React.FC = () => {
 
   const fetchFilteredNotesRaw = async (
     q: string,
-    toks: string[]
-  ): Promise<any[]> => {
+    toks: string[],
+    page: number,
+    pageSize: number
+  ): Promise<{ items: any[]; total: number }> => {
     const qstr = q || toks.join(' ')
+    if (!qstr.trim()) {
+      return { items: [], total: 0 }
+    }
+
+    const params = new URLSearchParams()
+    params.set('query', qstr)
+    params.set('limit', String(pageSize))
+    params.set('offset', String((page - 1) * pageSize))
+    params.set('include_keywords', 'true')
+    toks.forEach((tok) => {
+      const v = tok.trim()
+      if (v.length > 0) {
+        params.append('tokens', v)
+      }
+    })
+
     const abs = await bgRequest<any>({
-      path: `/api/v1/notes/search/?query=${encodeURIComponent(qstr)}` as any,
+      path: `/api/v1/notes/search/?${params.toString()}` as any,
       method: 'GET' as any
     })
-    let raw: any[] = Array.isArray(abs) ? abs : []
-    if (toks.length > 0) {
-      raw = raw.filter((n) => {
-        const hay = `${n?.title || ''} ${n?.content || ''}`.toLowerCase()
-        return toks.every((k) => hay.includes(k))
-      })
+
+    let items: any[] = []
+    let total = 0
+
+    if (Array.isArray(abs)) {
+      items = abs
+      total = abs.length
+    } else if (abs && typeof abs === 'object') {
+      if (Array.isArray((abs as any).items)) {
+        items = (abs as any).items
+      }
+      const pagination = (abs as any).pagination
+      if (pagination && typeof pagination.total_items === 'number') {
+        total = Number(pagination.total_items)
+      } else if (Array.isArray((abs as any).items)) {
+        total = (abs as any).items.length
+      }
     }
-    if (q) {
-      const ql = q.toLowerCase()
-      raw = raw.filter((n) =>
-        (`${n?.title || ''} ${n?.content || ''}`.toLowerCase()).includes(ql)
-      )
-    }
-    return raw
+
+    return { items, total }
   }
 
   const fetchNotes = async (): Promise<NoteListItem[]> => {
@@ -139,23 +163,21 @@ const NotesManagerPage: React.FC = () => {
     const toks = keywordTokens.map((k) => k.toLowerCase())
     // Prefer search when query or keyword filters are present
     if (q || toks.length > 0) {
-      const raw = await fetchFilteredNotesRaw(q, toks)
-      setTotal(raw.length)
-      return raw
-        .slice((page - 1) * pageSize, (page - 1) * pageSize + pageSize)
-        .map((n: any) => {
-          const links = extractBacklink(n)
-          const keywords = extractKeywords(n)
-          return {
-            id: n?.id,
-            title: n?.title,
-            content: n?.content,
-            updated_at: n?.updated_at,
-            conversation_id: links.conversation_id,
-            message_id: links.message_id,
-            keywords
-          }
-        })
+      const { items, total } = await fetchFilteredNotesRaw(q, toks, page, pageSize)
+      setTotal(total)
+      return items.map((n: any) => {
+        const links = extractBacklink(n)
+        const keywords = extractKeywords(n)
+        return {
+          id: n?.id,
+          title: n?.title,
+          content: n?.content,
+          updated_at: n?.updated_at,
+          conversation_id: links.conversation_id,
+          message_id: links.message_id,
+          keywords
+        }
+      })
     }
     // Browse list with pagination when no filters
     const res = await bgRequest<any>({ path: `/api/v1/notes/?page=${page}&results_per_page=${pageSize}` as any, method: 'GET' as any })
@@ -385,8 +407,23 @@ const NotesManagerPage: React.FC = () => {
       const q = query.trim()
       const toks = keywordTokens.map((k) => k.toLowerCase())
       if (q || toks.length > 0) {
-        const raw = await fetchFilteredNotesRaw(q, toks)
-        arr = raw.map((n: any) => ({ id: n?.id, title: n?.title, content: n?.content }))
+        // Fetch all matching notes in chunks using server-side filtering
+        let p = 1
+        const ps = 100
+        // eslint-disable-next-line no-constant-condition
+        while (true) {
+          const { items, total } = await fetchFilteredNotesRaw(q, toks, p, ps)
+          if (!items.length) break
+          arr.push(
+            ...items.map((n: any) => ({
+              id: n?.id,
+              title: n?.title,
+              content: n?.content
+            }))
+          )
+          if (arr.length >= total || items.length < ps) break
+          p++
+        }
       } else {
         // Iterate pages (chunk by 100)
         let p = 1
@@ -421,14 +458,25 @@ const NotesManagerPage: React.FC = () => {
     const q = query.trim()
     const toks = keywordTokens.map((k) => k.toLowerCase())
     if (q || toks.length > 0) {
-      const raw = await fetchFilteredNotesRaw(q, toks)
-      arr = raw.map((n: any) => ({
-        id: n?.id,
-        title: n?.title,
-        content: n?.content,
-        updated_at: n?.updated_at,
-        keywords: extractKeywords(n)
-      }))
+      // Fetch all matching notes in chunks using server-side filtering
+      let p = 1
+      const ps = 100
+      // eslint-disable-next-line no-constant-condition
+      while (true) {
+        const { items, total } = await fetchFilteredNotesRaw(q, toks, p, ps)
+        if (!items.length) break
+        arr.push(
+          ...items.map((n: any) => ({
+            id: n?.id,
+            title: n?.title,
+            content: n?.content,
+            updated_at: n?.updated_at,
+            keywords: extractKeywords(n)
+          }))
+        )
+        if (arr.length >= total || items.length < ps) break
+        p++
+      }
     } else {
       // Iterate pages (chunk by 100)
       let p = 1
@@ -545,7 +593,7 @@ const NotesManagerPage: React.FC = () => {
       if (keywordSearchTimeoutRef.current != null) {
         clearTimeout(keywordSearchTimeoutRef.current)
       }
-      keywordSearchTimeoutRef.current = window.setTimeout(() => {
+      keywordSearchTimeoutRef.current = setTimeout(() => {
         void loadKeywordSuggestions(text)
       }, 300)
     },

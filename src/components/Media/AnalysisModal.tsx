@@ -22,7 +22,7 @@ export function AnalysisModal({
   onAnalysisGenerated
 }: AnalysisModalProps) {
   const { t } = useTranslation(['review', 'common'])
-  const [selectedModel, setSelectedModel] = useStorage('selectedModel')
+  const [selectedModel, setSelectedModel] = useStorage<string | undefined>('selectedModel')
   const [models, setModels] = useState<Array<{ id: string; name?: string }>>([])
   const [systemPrompt, setSystemPrompt] = useState(
     'You are an expert analyst. Provide a comprehensive analysis of the following content, including key themes, insights, and actionable takeaways.'
@@ -92,10 +92,21 @@ export function AnalysisModal({
       return
     }
 
+    const effectiveModel = selectedModel || models[0]?.id
+    if (!effectiveModel) {
+      message.warning(
+        t(
+          'mediaPage.noModelSelected',
+          'Select a model before generating analysis'
+        )
+      )
+      return
+    }
+
     setGenerating(true)
     try {
       const body = {
-        model: selectedModel || 'default',
+        model: effectiveModel,
         stream: false,
         messages: [
           { role: 'system', content: systemPrompt },
@@ -196,7 +207,11 @@ export function AnalysisModal({
           type="primary"
           loading={generating}
           onClick={handleGenerate}
-          disabled={!mediaContent || !mediaContent.trim()}
+          disabled={
+            !mediaContent ||
+            !mediaContent.trim() ||
+            models.length === 0
+          }
         >
           {t('mediaPage.generateAnalysis', 'Generate Analysis')}
         </Button>
