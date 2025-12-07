@@ -54,7 +54,9 @@ const OptionIndex = () => {
       uxState === "configuring_auth" ||
       uxState === "testing" ||
       uxState === "error_auth" ||
-      uxState === "error_unreachable")
+      uxState === "error_unreachable" ||
+      uxState === "connected_ok" ||
+      uxState === "connected_degraded")
 
   const hideHeader = showWizard
 

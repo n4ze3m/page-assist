@@ -129,7 +129,8 @@ export const ServerConnectionCard: React.FC<Props> = ({
     lastStatusCode,
     offlineBypass
   } = useConnectionState()
-  const { uxState, errorKind, mode } = useConnectionUxState()
+  const { uxState, errorKind, mode, hasCompletedFirstRun } =
+    useConnectionUxState()
   const {
     checkOnce,
     enableOfflineBypass,
@@ -363,10 +364,15 @@ export const ServerConnectionCard: React.FC<Props> = ({
 
   const primaryLabel =
     statusVariant === "ok"
-      ? t(
-          "option:connectionCard.buttonStartChat",
-          t("common:startChat", "Start chatting")
-        )
+      ? hasCompletedFirstRun
+        ? t(
+            "option:connectionCard.buttonStartChat",
+            t("common:startChat", "Start chatting")
+          )
+        : t(
+            "option:connectionCard.buttonFinishSetup",
+            "Finish setup"
+          )
       : statusVariant === "missing"
         ? t("settings:tldw.setupLink", "Set up server")
         : statusVariant === "error"
@@ -423,6 +429,11 @@ export const ServerConnectionCard: React.FC<Props> = ({
   }
 
   const handlePrimary = () => {
+    if (!hasCompletedFirstRun) {
+      openOnboarding()
+      return
+    }
+
     if (
       uxState === "connected_ok" ||
       uxState === "connected_degraded" ||
