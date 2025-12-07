@@ -269,24 +269,66 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
     return null
   }, [uxState, t])
 
-  const totalSteps = 3
+  const totalSteps = 4
+
+  const visualSteps = React.useMemo(
+    () => [
+      {
+        index: 1,
+        label: t(
+          "settings:onboarding.stepLabel.welcome",
+          "Welcome"
+        )
+      },
+      {
+        index: 2,
+        label: t(
+          "settings:onboarding.stepLabel.url",
+          "Connect to your tldw server"
+        )
+      },
+      {
+        index: 3,
+        label: t(
+          "settings:onboarding.stepLabel.auth",
+          "Choose how you sign in"
+        )
+      },
+      {
+        index: 4,
+        label: t(
+          "settings:onboarding.stepLabel.health",
+          "Confirm connection & Knowledge"
+        )
+      }
+    ],
+    [t]
+  )
+
+  const displayStep = React.useMemo(() => {
+    // Map the three internal config steps (URL/Auth/Health) onto steps 2–4.
+    if (activeStep === 1) return 2
+    if (activeStep === 2) return 3
+    if (activeStep === 3) return 4
+    return 2
+  }, [activeStep])
 
   const stepTitle = React.useMemo(() => {
     if (activeStep === 1) {
       return t(
-        'settings:onboarding.stepLabel.url',
-        'Tell the extension where your server is'
+        "settings:onboarding.stepLabel.url",
+        "Tell the extension where your server is"
       )
     }
     if (activeStep === 2) {
       return t(
-        'settings:onboarding.stepLabel.auth',
-        'Set up authentication'
+        "settings:onboarding.stepLabel.auth",
+        "Set up authentication"
       )
     }
     return t(
-      'settings:onboarding.stepLabel.health',
-      'Check connection and Knowledge'
+      "settings:onboarding.stepLabel.health",
+      "Check connection and Knowledge"
     )
   }, [activeStep, t])
 
@@ -532,8 +574,8 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
                     }}
                   >
                     {t(
-                      'settings:onboarding.path.openSetupGuide',
-                      'Open setup guide'
+                        'settings:onboarding.path.openSetupGuide',
+                        'Open setup guide'
                     )}
                   </Button>
                   <Button
@@ -585,15 +627,50 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
         )}
       </div>
 
-      <div className="mb-4 flex items-center justify-between text-xs text-gray-600 dark:text-gray-400">
+      <div className="mb-3 flex items-center justify-between text-xs text-gray-600 dark:text-gray-400">
         <span>
           {t('settings:onboarding.progress', 'Step {{current}} of {{total}}', {
-            current: activeStep,
+            current: displayStep,
             total: totalSteps
           })}
         </span>
         <span className="text-right">{stepTitle}</span>
       </div>
+      <nav
+        aria-label={t(
+          "settings:onboarding.progressAria",
+          "Onboarding progress"
+        )}
+        className="mb-4"
+      >
+        <ol className="flex items-center gap-2 text-[11px] text-gray-500 dark:text-gray-400">
+          {visualSteps.map((step) => (
+            <li
+              key={step.index}
+              aria-current={step.index === displayStep ? "step" : undefined}
+              className={`inline-flex items-center gap-1 ${
+                step.index === displayStep
+                  ? "font-semibold text-blue-600 dark:text-blue-400"
+                  : ""
+              }`}
+            >
+              <span
+                className={`flex h-4 w-4 items-center justify-center rounded-full border text-[10px] ${
+                  step.index <= displayStep
+                    ? "border-blue-500 bg-blue-500 text-white"
+                    : "border-gray-300 bg-white text-gray-600 dark:border-gray-600 dark:bg-[#111] dark:text-gray-300"
+                }`}
+              >
+                {step.index}
+              </span>
+              <span>{step.label}</span>
+              {step.index < visualSteps.length && (
+                <span className="mx-1 text-gray-400">›</span>
+              )}
+            </li>
+          ))}
+        </ol>
+      </nav>
 
       {activeStep === 1 && (
         <div className="space-y-3">
@@ -733,7 +810,7 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
             />
             <p className="mt-2 text-xs text-gray-600 dark:text-gray-400">
               {t(
-                'settings:onboarding.authMode.help',
+                'settings:onboarding.authModeHelp',
                 'Single User (API Key) is recommended for personal or small-team servers. Multi User (Login) is for shared deployments where people sign in with usernames or SSO. Choose the mode that matches how your tldw_server is set up.'
               )}
             </p>
@@ -744,7 +821,7 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
               <Input.Password placeholder={t('settings:onboarding.apiKey.placeholder')} value={apiKey} onChange={(e) => setApiKey(e.target.value)} />
               <p className="mt-1 text-xs text-gray-600 dark:text-gray-400">
                 {t(
-                  'settings:onboarding.apiKey.help',
+                  'settings:onboarding.apiKeyHelp',
                   'Find your API key in tldw_server → Settings → API Keys. Generate a key there and paste it here.'
                 )}
               </p>

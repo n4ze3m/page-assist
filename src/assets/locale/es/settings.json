@@ -834,7 +834,29 @@
       "unknown": "Unknown"
     },
     "connectionFailed": "Connection failed",
-    "footerHelp": "Once connected, you can revisit these settings anytime from the extension menu."
+    "footerHelp": "Once connected, you can revisit these settings anytime from the extension menu.",
+    "progressAria": "Onboarding progress",
+    "stepLabel": {
+      "welcome": "Welcome",
+      "url": "Connect to your tldw server",
+      "auth": "Choose how you sign in",
+      "health": "Confirm connection & Knowledge"
+    },
+    "path": {
+      "heading": "How would you like to get started?",
+      "hasServer": "I already run tldw_server",
+      "noServer": "I don’t have a server yet",
+      "demo": "Just explore with a local demo",
+      "noServerTitle": "No server yet? You can still explore.",
+      "noServerBody": "tldw_server is a separate, self-hosted app. You can follow the setup guide now, or come back later and continue in demo mode.",
+      "openSetupGuide": "Open setup guide",
+      "useDemoFromNoServer": "Use local demo mode",
+      "demoTitle": "Explore the extension in demo mode",
+      "demoBody": "Demo mode lets you try chat, notes, and media with sample data. Server-dependent features like Knowledge search will stay limited until you connect your own tldw_server.",
+      "demoCta": "Use local demo mode"
+    },
+    "authModeHelp": "Single User (API Key) is recommended for personal or small-team servers. Multi User (Login) is for shared deployments where people sign in with usernames or SSO. Choose the mode that matches how your tldw_server is set up.",
+    "apiKeyHelp": "Find your API key in tldw_server → Settings → API Keys. Generate a key there and paste it here."
   },
   "manageCharacters": {
     "title": "Gestionar personajes",
