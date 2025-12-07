@@ -857,7 +857,20 @@
       "demoCta": "Use local demo mode"
     },
     "authModeHelp": "Single User (API Key) is recommended for personal or small-team servers. Multi User (Login) is for shared deployments where people sign in with usernames or SSO. Choose the mode that matches how your tldw_server is set up.",
-    "apiKeyHelp": "Find your API key in tldw_server → Settings → API Keys. Generate a key there and paste it here."
+    "apiKeyHelp": "Find your API key in tldw_server → Settings → API Keys. Generate a key there and paste it here.",
+    "authStepAria": "Step 3 of 4 — authentication configuration",
+    "confirmStepAria": "Step 4 of 4 — connection summary and next steps",
+    "nextSteps": {
+      "title": "You’re ready to go",
+      "subtitle": "From here you can open the sidepanel, ingest a page, or explore media and notes.",
+      "chatTitle": "Start chatting",
+      "chatBody": "Open the sidepanel and ask your first question.",
+      "chatCta": "Open sidepanel",
+      "ingestTitle": "Ingest your first page",
+      "ingestBody": "Use Quick ingest from the header to save the current tab to your server.",
+      "mediaTitle": "Explore media & notes",
+      "mediaBody": "Visit Media and Notes in Options to see what’s stored and searchable."
+    }
   },
   "manageCharacters": {
     "title": "Gérer les personnages",

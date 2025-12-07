@@ -357,7 +357,16 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
         try {
           const resp = await apiSend({
             path: '/api/v1/health',
-            method: 'GET'
+            method: 'GET',
+            // Allow unauthenticated health checks when no credentials have
+            // been configured yet so first‑run onboarding can still detect a
+            // reachable server URL. Once an API key or access token exists,
+            // health should run with auth.
+            noAuth:
+              !cfg ||
+              (!cfg.apiKey &&
+                !cfg.accessToken &&
+                cfg.authMode !== "multi-user")
           })
           return { ok: Boolean(resp?.ok), status: Number(resp?.status) || 0, error: resp?.ok ? null : (resp?.error || null) }
         } catch (e) {
@@ -471,8 +480,20 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
       state: {
         ...prev,
         phase: ConnectionPhase.UNCONFIGURED,
+        // Always return to the guided config flow when onboarding starts.
         configStep: "url",
-        hasCompletedFirstRun: false
+        hasCompletedFirstRun: false,
+        // Exit demo/offline modes so the wizard can take over again.
+        mode: "normal",
+        isConnected: false,
+        isChecking: false,
+        offlineBypass: false,
+        errorKind: "none",
+        lastError: null,
+        lastStatusCode: null,
+        knowledgeStatus: "unknown",
+        knowledgeLastCheckedAt: null,
+        knowledgeError: null
       }
     })
   },

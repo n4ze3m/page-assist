@@ -39,6 +39,10 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
   const { uxState, configStep } = useConnectionUxState()
   const connectionState = useConnectionState()
 
+  const urlInputRef = React.useRef<HTMLInputElement | null>(null)
+  const authStepRef = React.useRef<HTMLDivElement | null>(null)
+  const confirmStepRef = React.useRef<HTMLDivElement | null>(null)
+
   React.useEffect(() => {
     try {
       useConnectionStore.getState().beginOnboarding()
@@ -488,6 +492,21 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
     uxState
   ])
 
+  React.useEffect(() => {
+    // Basic focus management between steps for accessibility.
+    try {
+      if (activeStep === 1 && urlInputRef.current) {
+        urlInputRef.current.focus()
+      } else if (activeStep === 2 && authStepRef.current) {
+        authStepRef.current.focus()
+      } else if (activeStep === 3 && confirmStepRef.current) {
+        confirmStepRef.current.focus()
+      }
+    } catch {
+      // ignore focus errors
+    }
+  }, [activeStep])
+
   return (
     <div className="mx-auto w-full max-w-2xl rounded-xl border border-gray-200 bg-white px-6 py-6 text-gray-900 shadow-sm dark:border-gray-700 dark:bg-[#171717] dark:text-gray-100">
       <h2 className="text-lg font-semibold mb-2 text-gray-900 dark:text-gray-100">{t('settings:onboarding.title')}</h2>
@@ -673,7 +692,7 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
       </nav>
 
       {activeStep === 1 && (
-        <div className="space-y-3">
+        <div className="space-y-3" ref={urlInputRef as any}>
           <div className="rounded-md border border-dashed border-gray-300 bg-gray-50 px-3 py-2 text-xs text-gray-700 dark:border-gray-600 dark:bg-[#1d1d1d] dark:text-gray-200">
             <div className="font-medium text-sm mb-1">
               {t(
@@ -791,7 +810,15 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
       )}
 
       {activeStep === 2 && (
-        <div className="space-y-4">
+        <div
+          className="space-y-4"
+          ref={authStepRef}
+          tabIndex={-1}
+          aria-label={t(
+            'settings:onboarding.authStepAria',
+            'Step 3 of 4 — authentication configuration'
+          )}
+        >
           <div>
             <label className="block text-sm font-medium mb-1 text-gray-800 dark:text-gray-100">{t('settings:onboarding.authMode.label')}</label>
             <Segmented
@@ -871,7 +898,15 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
       )}
 
       {activeStep === 3 && (
-        <div className="space-y-3">
+        <div
+          className="space-y-3"
+          ref={confirmStepRef}
+          tabIndex={-1}
+          aria-label={t(
+            'settings:onboarding.confirmStepAria',
+            'Step 4 of 4 — connection summary and next steps'
+          )}
+        >
           <div>
             <Checkbox
               checked={autoFinishOnSuccess}
@@ -919,6 +954,87 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
               )}
             </p>
           </div>
+          <div className="mt-3 grid gap-3 rounded-md border border-gray-200 bg-gray-50 p-3 text-xs text-gray-700 dark:border-gray-700 dark:bg-[#1b1b1b] dark:text-gray-200">
+            <div>
+              <div className="text-sm font-semibold">
+                {t(
+                  'settings:onboarding.nextSteps.title',
+                  'You’re ready to go'
+                )}
+              </div>
+              <p className="mt-1">
+                {t(
+                  'settings:onboarding.nextSteps.subtitle',
+                  'From here you can open the sidepanel, ingest a page, or explore media and notes.'
+                )}
+              </p>
+            </div>
+            <div className="grid gap-2 md:grid-cols-3">
+              <div className="rounded border border-gray-200 bg-white p-2 dark:border-gray-600 dark:bg-[#121212]">
+                <div className="text-xs font-semibold">
+                  {t(
+                    'settings:onboarding.nextSteps.chatTitle',
+                    'Start chatting'
+                  )}
+                </div>
+                <p className="mt-1 text-[11px]">
+                  {t(
+                    'settings:onboarding.nextSteps.chatBody',
+                    'Open the sidepanel and ask your first question.'
+                  )}
+                </p>
+                <Button
+                  size="small"
+                  className="mt-2"
+                  onClick={() => {
+                    try {
+                      // @ts-ignore
+                      const runtime = typeof browser !== 'undefined' ? browser.runtime : chrome?.runtime
+                      if (runtime?.getURL) {
+                        const url = runtime.getURL('/sidepanel.html')
+                        window.open(url, '_blank')
+                      }
+                    } catch {
+                      // ignore navigation errors
+                    }
+                  }}
+                >
+                  {t(
+                    'settings:onboarding.nextSteps.chatCta',
+                    'Open sidepanel'
+                  )}
+                </Button>
+              </div>
+              <div className="rounded border border-gray-200 bg-white p-2 dark:border-gray-600 dark:bg-[#121212]">
+                <div className="text-xs font-semibold">
+                  {t(
+                    'settings:onboarding.nextSteps.ingestTitle',
+                    'Ingest your first page'
+                  )}
+                </div>
+                <p className="mt-1 text-[11px]">
+                  {t(
+                    'settings:onboarding.nextSteps.ingestBody',
+                    'Use Quick ingest from the header to save the current tab to your server.'
+                  )}
+                </p>
+              </div>
+              <div className="rounded border border-gray-200 bg-white p-2 dark:border-gray-600 dark:bg-[#121212]">
+                <div className="text-xs font-semibold">
+                  {t(
+                    'settings:onboarding.nextSteps.mediaTitle',
+                    'Explore media & notes'
+                  )}
+                </div>
+                <p className="mt-1 text-[11px]">
+                  {t(
+                    'settings:onboarding.nextSteps.mediaBody',
+                    'Visit Media and Notes in Options to see what’s stored and searchable.'
+                  )}
+                </p>
+              </div>
+            </div>
+          </div>
           {connectionErrorDescription && (
             <Alert
               type="error"
@@ -952,8 +1068,8 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
                         'Finish setup for now — connect later from Settings → tldw Server.'
                       )
                     : t(
-                        'settings:onboarding.buttons.finishAndStart',
-                        'Done, start using assistant'
+                        'settings:onboarding.buttons.finish',
+                        'Finish'
                       )
                 }
               >
@@ -963,8 +1079,8 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
                       'Finish without connecting'
                     )
                   : t(
-                      'settings:onboarding.buttons.finishAndStart',
-                      'Done, start using assistant'
+                      'settings:onboarding.buttons.finish',
+                      'Finish'
                     )}
               </Button>
             </Space>

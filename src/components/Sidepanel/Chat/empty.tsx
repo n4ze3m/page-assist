@@ -15,6 +15,7 @@ export const EmptySidePanel = () => {
     useConnectionUxState()
   const isConnectionReady =
     isConnected && phase === ConnectionPhase.CONNECTED
+  const primaryButtonRef = React.useRef<HTMLButtonElement | null>(null)
 
   const openExtensionUrl = (path: string) => {
     try {
@@ -126,10 +127,17 @@ export const EmptySidePanel = () => {
         "Can’t reach your tldw server"
       )
     }
-    return t(
-      "option:connectionCard.headlineMissing",
-      "Connect tldw Assistant to your server to start chatting"
-    )
+    // First-run emphasis: make it clear that setup must be finished
+    // before chat is available from the sidepanel.
+    return hasCompletedFirstRun
+      ? t(
+          "option:connectionCard.headlineMissing",
+          "Connect tldw Assistant to your server to start chatting"
+        )
+      : t(
+          "sidepanel:firstRun.headline",
+          "Finish setup to start chatting"
+        )
   })()
 
   const bannerBody = (() => {
@@ -146,11 +154,28 @@ export const EmptySidePanel = () => {
         { host }
       )
     }
+    if (!hasCompletedFirstRun) {
+      return t(
+        "sidepanel:firstRun.description",
+        "Before you can chat here, finish the short setup flow in Options to connect tldw Assistant to your tldw server or choose demo mode."
+      )
+    }
     return t(
       "option:connectionCard.descriptionMissing",
       "tldw_server is your private AI workspace that keeps chats, notes, and media on your own machine. Add your server URL to get started."
     )
   })()
+
+  React.useEffect(() => {
+    if (!showConnectionCard) return
+    if (!primaryButtonRef.current) return
+    if (hasCompletedFirstRun) return
+    try {
+      primaryButtonRef.current.focus()
+    } catch {
+      // ignore focus failures
+    }
+  }, [showConnectionCard, hasCompletedFirstRun])
 
   if (showConnectionCard) {
     return (
@@ -163,6 +188,7 @@ export const EmptySidePanel = () => {
           <button
             type="button"
             onClick={openOnboarding}
+            ref={primaryButtonRef}
             className="rounded-md border border-amber-300 bg-white px-2 py-1 text-[11px] font-medium text-amber-900 hover:bg-amber-100 dark:bg-[#3a2b10] dark:text-amber-50 dark:hover:bg-[#4a3512]"
           >
             {t(

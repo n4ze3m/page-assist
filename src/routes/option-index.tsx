@@ -20,7 +20,7 @@ const OptionIndex = () => {
 
   const { phase } = useConnectionState()
   const { uxState, hasCompletedFirstRun } = useConnectionUxState()
-  const { checkOnce, markFirstRunComplete } = useConnectionActions()
+  const { checkOnce } = useConnectionActions()
 
   React.useEffect(() => {
     void checkOnce()
@@ -28,30 +28,13 @@ const OptionIndex = () => {
 
   useFocusComposerOnConnect(phase as ConnectionPhase | null)
 
-  const isConnectedUx =
-    uxState === "connected_ok" ||
-    uxState === "connected_degraded" ||
-    uxState === "demo_mode"
-
-  // If the user connected via Settings/tldw without explicitly finishing
-  // onboarding, mark first run complete on first successful connection so
-  // the playground/chat composer becomes available.
-  React.useEffect(() => {
-    if (!hasCompletedFirstRun && isConnectedUx) {
-      markFirstRunComplete()
-    }
-  }, [hasCompletedFirstRun, isConnectedUx, markFirstRunComplete])
-
-  const isFirstRunShell = !hasCompletedFirstRun && !isConnectedUx
+  // Treat any state where onboarding has not been marked complete as
+  // "first run", even if the server is already reachable. This keeps the
+  // wizard visible until the user explicitly finishes or chooses demo mode.
+  const isFirstRunShell = !hasCompletedFirstRun
   const showConnectionShell = isFirstRunShell
 
-  const showWizard =
-    uxState === "unconfigured" ||
-    uxState === "configuring_url" ||
-    uxState === "configuring_auth" ||
-    uxState === "testing" ||
-    uxState === "error_auth" ||
-    uxState === "error_unreachable"
+  const showWizard = !hasCompletedFirstRun && uxState !== "demo_mode"
 
   const hideHeader = showWizard
 
