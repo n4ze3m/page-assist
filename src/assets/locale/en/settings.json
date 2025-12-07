@@ -92,6 +92,9 @@
       },
       "youtubeAutoSummarize": {
         "label": "Show the 'Summarize' button on YouTube videos."
+      },
+      "hideReasoningWidget": {
+        "label": "Hide Reasoning Widget from AI Messages"
       }
     },
     "sidepanelRag": {

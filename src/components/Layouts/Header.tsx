@@ -91,7 +91,7 @@ export const Header: React.FC<Props> = ({
   return (
     <div
       data-istemporary-chat={temporaryChat}
-      className={`absolute top-0 z-10 flex h-14 w-full flex-row items-center justify-center p-3 overflow-x-auto lg:overflow-x-visible bg-gray-50 border-b  dark:bg-[#1a1a1a] dark:border-gray-600 data-[istemporary-chat='true']:bg-gray-200 data-[istemporary-chat='true']:dark:bg-black`}>
+      className={`absolute top-0 z-10 flex h-14 w-full flex-row items-center justify-center p-3 overflow-x-auto lg:overflow-x-visible bg-gray-50/80 backdrop-blur-3xl border-b  dark:bg-[#1a1a1a]/80 dark:border-gray-600 data-[istemporary-chat='true']:bg-gray-200/80 data-[istemporary-chat='true']:dark:bg-black/80`}>
       <div className="flex gap-2 items-center">
         {pathname !== "/" && (
           <div>

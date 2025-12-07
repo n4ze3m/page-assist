@@ -24,7 +24,8 @@ import {
   Trash2Icon,
   Loader2,
   ChevronDown,
-  GitBranch
+  GitBranch,
+  Sparkles
 } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { useTranslation } from "react-i18next"
@@ -45,6 +46,7 @@ import {
 import { UploadedFile } from "@/db/dexie/types"
 import { isDatabaseClosedError } from "@/utils/ff-error"
 import { updatePageTitle } from "@/utils/update-page-title"
+import { generateTitle } from "@/services/title"
 
 type Props = {
   onClose: () => void
@@ -60,6 +62,7 @@ type Props = {
   historyId: string
   history: any
   isOpen: boolean
+  selectedModel: string
 }
 
 export const Sidebar = ({
@@ -74,7 +77,8 @@ export const Sidebar = ({
   setSystemPrompt,
   temporaryChat,
   isOpen,
-  setContext
+  setContext,
+  selectedModel
 }: Props) => {
   const { t } = useTranslation(["option", "common"])
   const client = useQueryClient()
@@ -83,6 +87,48 @@ export const Sidebar = ({
   const debouncedSearchQuery = useDebounce(searchQuery, 300)
   const [deleteGroup, setDeleteGroup] = useState<string | null>(null)
   const [dexiePrivateWindowError, setDexiePrivateWindowError] = useState(false)
+  const [editingHistoryId, setEditingHistoryId] = useState<string | null>(null)
+  const [editTitle, setEditTitle] = useState("")
+  const [generatingTitleId, setGeneratingTitleId] = useState<string | null>(null)
+
+  const handleEditStart = (chat: any) => {
+    setEditingHistoryId(chat.id)
+    setEditTitle(chat.title)
+  }
+
+  const handleEditCancel = () => {
+    setEditingHistoryId(null)
+    setEditTitle("")
+  }
+
+  const handleGenerateTitle = async (chat: any) => {
+    setGeneratingTitleId(chat.id)
+    try {
+      const db = new PageAssistDatabase()
+      const history = await db.getChatHistory(chat.id)
+      const historyDetails = await db.getHistoryInfo(chat.id)
+      const chatHistory = formatToChatHistory(history)
+      const model = selectedModel
+      
+      const generatedTitle = await generateTitle(model, chatHistory, chat.title)
+      if (generatedTitle && generatedTitle !== chat.title) {
+        setEditTitle(generatedTitle)
+      }
+    } catch (error) {
+      console.error("Error generating title:", error)
+      message.error(t("common:generateTitleError", { defaultValue: "Failed to generate title" }))
+    } finally {
+      setGeneratingTitleId(null)
+    }
+  }
+
+  const handleEditSave = (id: string, currentTitle: string) => {
+    if (editTitle.trim() && editTitle.trim() !== currentTitle) {
+      editHistory({ id, title: editTitle.trim() })
+    }
+    setEditingHistoryId(null)
+    setEditTitle("")
+  }
 
   // Using infinite query for pagination
   const {
@@ -397,46 +443,103 @@ export const Sidebar = ({
                     {chat?.message_source === "branch" && (
                       <GitBranch className="size-3 text-gray-500 dark:text-gray-400" />
                     )}
-                    <button
-                      className="flex-1 overflow-hidden break-all text-start truncate w-full"
-                      onClick={async () => {
-                        const db = new PageAssistDatabase()
-                        const history = await db.getChatHistory(chat.id)
-                        const historyDetails = await db.getHistoryInfo(chat.id)
-                        setHistoryId(chat.id)
-                        setHistory(formatToChatHistory(history))
-                        setMessages(formatToMessage(history))
-                        const isLastUsedChatModel =
-                          await lastUsedChatModelEnabled()
-                        if (isLastUsedChatModel) {
-                          const currentChatModel = historyDetails?.model_id
-                          if (currentChatModel) {
-                            setSelectedModel(currentChatModel)
-                          }
-                        }
-                        const lastUsedPrompt = historyDetails?.last_used_prompt
-                        if (lastUsedPrompt) {
-                          if (lastUsedPrompt.prompt_id) {
-                            const prompt = await getPromptById(
-                              lastUsedPrompt.prompt_id
-                            )
-                            if (prompt) {
-                              setSelectedSystemPrompt(lastUsedPrompt.prompt_id)
+                    {editingHistoryId === chat.id ? (
+                      <div className="flex items-center flex-1 gap-1">
+                        <input
+                          value={editTitle}
+                          onChange={(e) => setEditTitle(e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                              handleEditSave(chat.id, chat.title)
+                            } else if (e.key === "Escape") {
+                              handleEditCancel()
+                            }
+                            e.stopPropagation()
+                          }}
+                          onClick={(e) => e.stopPropagation()}
+                          onBlur={(e) => {
+                            // Don't save if clicking on the generate button
+                            if (e.relatedTarget?.closest('[data-generate-btn]')) {
+                              return
+                            }
+                            handleEditSave(chat.id, chat.title)
+                          }}
+                          autoFocus
+                          disabled={generatingTitleId === chat.id}
+                          className={`flex-1 h-8 text-sm z-20 px-0 bg-transparent outline-none border-none dark:focus:ring-[#404040] focus:ring-gray-300 focus:rounded-md focus:p-2 caret-current selection:bg-gray-300 dark:selection:bg-gray-600 ${
+                            historyId === chat.id
+                              ? "text-gray-900 dark:text-gray-100 placeholder-gray-500"
+                              : "text-gray-800 dark:text-gray-100 placeholder-gray-400"
+                          } ${generatingTitleId === chat.id ? "opacity-50" : ""}`}
+                        />
+                        <Tooltip title={t("common:generateTitle", { defaultValue: "Generate title with AI" })}>
+                          <button
+                            data-generate-btn
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              handleGenerateTitle(chat)
+                            }}
+                            disabled={generatingTitleId === chat.id}
+                            className={`p-1 rounded-md transition-all duration-200 ${
+                              generatingTitleId === chat.id
+                                ? "text-purple-500 dark:text-purple-400"
+                                : "text-gray-400 hover:text-purple-500 dark:hover:text-purple-400 hover:bg-gray-200 dark:hover:bg-gray-700"
+                            }`}>
+                            <Sparkles
+                              className={`w-4 h-4 ${
+                                generatingTitleId === chat.id
+                                  ? "animate-pulse"
+                                  : ""
+                              }`}
+                              style={generatingTitleId === chat.id ? {
+                                filter: "drop-shadow(0 0 4px rgba(168, 85, 247, 0.6))"
+                              } : undefined}
+                            />
+                          </button>
+                        </Tooltip>
+                      </div>
+                    ) : (
+                      <button
+                        className="flex-1 overflow-hidden break-all text-start truncate w-full"
+                        onClick={async () => {
+                          const db = new PageAssistDatabase()
+                          const history = await db.getChatHistory(chat.id)
+                          const historyDetails = await db.getHistoryInfo(chat.id)
+                          setHistoryId(chat.id)
+                          setHistory(formatToChatHistory(history))
+                          setMessages(formatToMessage(history))
+                          const isLastUsedChatModel =
+                            await lastUsedChatModelEnabled()
+                          if (isLastUsedChatModel) {
+                            const currentChatModel = historyDetails?.model_id
+                            if (currentChatModel) {
+                              setSelectedModel(currentChatModel)
                             }
                           }
-                          setSystemPrompt(lastUsedPrompt.prompt_content)
-                        }
+                          const lastUsedPrompt = historyDetails?.last_used_prompt
+                          if (lastUsedPrompt) {
+                            if (lastUsedPrompt.prompt_id) {
+                              const prompt = await getPromptById(
+                                lastUsedPrompt.prompt_id
+                              )
+                              if (prompt) {
+                                setSelectedSystemPrompt(lastUsedPrompt.prompt_id)
+                              }
+                            }
+                            setSystemPrompt(lastUsedPrompt.prompt_content)
+                          }
 
-                        if (setContext) {
-                          const session = await getSessionFiles(chat.id)
-                          setContext(session)
-                        }
-                        updatePageTitle(chat.title)
-                        navigate("/")
-                        onClose()
-                      }}>
-                      <span className="flex-grow truncate">{chat.title}</span>
-                    </button>
+                          if (setContext) {
+                            const session = await getSessionFiles(chat.id)
+                            setContext(session)
+                          }
+                          updatePageTitle(chat.title)
+                          navigate("/")
+                          onClose()
+                        }}>
+                        <span className="flex-grow truncate">{chat.title}</span>
+                      </button>
+                    )}
                     <div className="flex items-center gap-2">
                       <Dropdown
                         overlay={
@@ -464,14 +567,10 @@ export const Sidebar = ({
                             <Menu.Item
                               key="edit"
                               icon={<PencilIcon className="w-4 h-4" />}
-                              onClick={() => {
-                                const newTitle = prompt(
-                                  t("editHistoryTitle"),
-                                  chat.title
-                                )
-                                if (newTitle) {
-                                  editHistory({ id: chat.id, title: newTitle })
-                                }
+                              onClick={(e) => {
+                                // prevent menu closing immediately if needed, but usually we want it to close so we can see the input
+                                e.domEvent.stopPropagation()
+                                handleEditStart(chat)
                               }}>
                               {t("common:edit")}
                             </Menu.Item>

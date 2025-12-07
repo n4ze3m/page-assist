@@ -106,7 +106,18 @@ export const saveMessageOnError = async ({
 
       return historyId
     } else {
-      const title = await generateTitle(selectedModel, userMessage, userMessage)
+      const title = await generateTitle(selectedModel, [
+        ...history,
+        {
+          role: "user",
+          content: userMessage,
+          image
+        },
+        {
+          role: "assistant",
+          content: botMessage
+        }
+      ], userMessage)
       const newHistoryId = await saveHistory(title, false, message_source)
       updatePageTitle(title)
       if (!isRegenerating) {
@@ -243,7 +254,17 @@ export const saveMessageOnSuccess = async ({
 
     return historyId
   } else {
-    const title = await generateTitle(selectedModel, message, message)
+    const title = await generateTitle(selectedModel, [
+      {
+        role: "user",
+        content: message,
+        image
+      },
+      {
+        role: "assistant",
+        content: fullText
+      }
+    ], message)
     updatePageTitle(title)
     const newHistoryId = await saveHistory(title, false, message_source)
 

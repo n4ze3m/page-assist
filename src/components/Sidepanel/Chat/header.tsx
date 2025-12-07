@@ -27,9 +27,9 @@ type SidepanelHeaderProps = {
   setSidebarOpen?: (open: boolean) => void
 }
 
-export const SidepanelHeader = ({ 
-  sidebarOpen: propSidebarOpen, 
-  setSidebarOpen: propSetSidebarOpen 
+export const SidepanelHeader = ({
+  sidebarOpen: propSidebarOpen,
+  setSidebarOpen: propSetSidebarOpen
 }: SidepanelHeaderProps = {}) => {
   const [hideCurrentChatModelSettings] = useStorage(
     "hideCurrentChatModelSettings",
@@ -52,7 +52,8 @@ export const SidepanelHeader = ({
     history,
     useOCR,
     temporaryChat,
-    setTemporaryChat
+    setTemporaryChat,
+    selectedModel
   } = useMessage()
   const { t } = useTranslation(["sidepanel", "common", "option"])
   const [openModelSettings, setOpenModelSettings] = React.useState(false)
@@ -63,7 +64,8 @@ export const SidepanelHeader = ({
   )
 
   // Use prop state if provided, otherwise use local state
-  const sidebarOpen = propSidebarOpen !== undefined ? propSidebarOpen : localSidebarOpen
+  const sidebarOpen =
+    propSidebarOpen !== undefined ? propSidebarOpen : localSidebarOpen
   const setSidebarOpen = propSetSidebarOpen || setLocalSidebarOpen
 
   return (
@@ -205,6 +207,7 @@ export const SidepanelHeader = ({
           setSystemPrompt={(e) => {}}
           temporaryChat={false}
           history={history}
+          selectedModel={selectedModel}
         />
       </Drawer>
     </div>
