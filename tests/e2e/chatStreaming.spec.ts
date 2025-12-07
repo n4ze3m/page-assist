@@ -13,9 +13,12 @@ test.describe('Chat streaming', () => {
 
   test('streams tokens to chat', async () => {
     const extPath = path.resolve('.output/chrome-mv3')
-    const { context, page } = await launchWithExtension(extPath)
+    const { context, page, optionsUrl } = await launchWithExtension(extPath)
 
     // Configure server + API key
+    await page.goto(optionsUrl + '#/settings/tldw', {
+      waitUntil: 'domcontentloaded'
+    })
     await page.getByLabel('Server URL').fill(server.url)
     await page.getByText('Authentication Mode').scrollIntoViewIfNeeded()
     await page.getByText('Single User (API Key)').click()

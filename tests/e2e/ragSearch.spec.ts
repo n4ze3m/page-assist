@@ -2,6 +2,10 @@ import { test, expect } from '@playwright/test'
 import path from 'path'
 import { launchWithExtension } from './utils/extension'
 import { MockTldwServer } from './utils/mock-server'
+import {
+  waitForConnectionStore,
+  forceConnected
+} from './utils/connection'
 
 test.describe('RAG search in sidepanel', () => {
   let server: MockTldwServer
@@ -10,9 +14,12 @@ test.describe('RAG search in sidepanel', () => {
 
   test('search, insert and ask from results', async () => {
     const extPath = path.resolve('.output/chrome-mv3')
-    const { context, page, openSidepanel } = await launchWithExtension(extPath)
+    const { context, page, openSidepanel, optionsUrl } = await launchWithExtension(extPath)
 
-    // Configure server + key on options page
+    // Configure server + key on Settings → tldw page
+    await page.goto(optionsUrl + '#/settings/tldw', {
+      waitUntil: 'domcontentloaded'
+    })
     await page.getByLabel('Server URL').fill(server.url)
     await page.getByText('Authentication Mode').scrollIntoViewIfNeeded()
     await page.getByText('Single User (API Key)').click()
@@ -54,19 +61,11 @@ test.describe('RAG search in sidepanel', () => {
     const { context, page } = await launchWithExtension(extPath)
 
     // Seed connection + a selected tab via exposed stores
+    await waitForConnectionStore(page, 'rag-context-connected')
+    await forceConnected(page, {}, 'rag-context-connected')
     await page.evaluate(() => {
-      const conn: any = (window as any).__tldw_useConnectionStore
       const msgStore: any = (window as any).__tldw_useStoreMessageOption
-      if (!conn || !msgStore) return
-      const prevState = conn.getState().state
-      conn.setState({
-        state: {
-          ...prevState,
-          phase: 'connected',
-          isConnected: true,
-          isChecking: false
-        }
-      })
+      if (!msgStore) return
       msgStore.setState({
         selectedDocuments: [
           { id: 'tab-1', title: 'Example tab', url: 'https://example.com', favIconUrl: '' }

@@ -547,8 +547,13 @@ export const Header: React.FC<Props> = ({
     [t]
   )
 
-  // Track the shortcuts collapse state locally to avoid storage write quotas
-  const [shortcutsExpanded, setShortcutsExpanded] = React.useState(false)
+	  const [shortcutsPreference, setShortcutsPreference] = useStorage<boolean>(
+	    "headerShortcutsExpanded",
+	    false
+	  )
+	  // Track the shortcuts collapse state locally; onboarding and settings
+	  // may choose a default, but we avoid frequent writes while toggling.
+	  const [shortcutsExpanded, setShortcutsExpanded] = React.useState(false)
   const shortcutsToggleRef = React.useRef<HTMLButtonElement>(null)
   const shortcutsContainerRef = React.useRef<HTMLDivElement>(null)
   const shortcutsSectionId = "header-shortcuts-section"
@@ -590,33 +595,37 @@ export const Header: React.FC<Props> = ({
     />
   )
 
-  const isChatRoute = React.useMemo(
-    () => currentCoreMode === "playground",
-    [currentCoreMode]
-  )
+	  const isChatRoute = React.useMemo(
+	    () => currentCoreMode === "playground",
+	    [currentCoreMode]
+	  )
 
-  // Manage focus for accessibility when expanding/collapsing
-  React.useEffect(() => {
-    if (shortcutsExpanded) {
-      // Wait for the shortcuts container to mount, then focus the first
-      // interactive element so keyboard users can continue naturally
-      requestAnimationFrame(() => {
-        const container = shortcutsContainerRef.current
-        if (!container) return
-        const firstFocusable = container.querySelector<HTMLElement>(
-          'a, button, [tabindex]:not([tabindex="-1"])'
-        )
-        firstFocusable?.focus()
-      })
-    } else {
-      // If focus is currently inside the shortcuts container, return it to the toggle
-      const container = shortcutsContainerRef.current
-      const active = document.activeElement
-      if (container && active && container.contains(active)) {
-        shortcutsToggleRef.current?.focus()
-      }
-    }
-  }, [shortcutsExpanded])
+	  React.useEffect(() => {
+	    setShortcutsExpanded(Boolean(shortcutsPreference))
+	  }, [shortcutsPreference])
+	
+	  // Manage focus for accessibility when expanding/collapsing
+	  React.useEffect(() => {
+	    if (shortcutsExpanded) {
+	      // Wait for the shortcuts container to mount, then focus the first
+	      // interactive element so keyboard users can continue naturally
+	      requestAnimationFrame(() => {
+	        const container = shortcutsContainerRef.current
+	        if (!container) return
+	        const firstFocusable = container.querySelector<HTMLElement>(
+	          'a, button, [tabindex]:not([tabindex="-1"])'
+	        )
+	        firstFocusable?.focus()
+	      })
+	    } else {
+	      // If focus is currently inside the shortcuts container, return it to the toggle
+	      const container = shortcutsContainerRef.current
+	      const active = document.activeElement
+	      if (container && active && container.contains(active)) {
+	        shortcutsToggleRef.current?.focus()
+	      }
+	    }
+	  }, [shortcutsExpanded])
 
   return (
     <header
@@ -1181,7 +1190,15 @@ export const Header: React.FC<Props> = ({
 
           <button
             type="button"
-            onClick={() => setShortcutsExpanded(!shortcutsExpanded)}
+            onClick={() => {
+              const next = !shortcutsExpanded
+              setShortcutsExpanded(next)
+              try {
+                setShortcutsPreference(next)
+              } catch {
+                // ignore storage write failures
+              }
+            }}
             aria-expanded={shortcutsExpanded}
             aria-controls={shortcutsSectionId}
             ref={shortcutsToggleRef}

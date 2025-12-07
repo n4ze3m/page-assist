@@ -2,6 +2,10 @@ import { test, expect } from '@playwright/test'
 import path from 'path'
 import { launchWithExtension } from './utils/extension'
 import { launchWithBuiltExtension } from './utils/extension-build'
+import {
+  waitForConnectionStore,
+  logConnectionSnapshot
+} from './utils/connection'
 
 // Live server URL + API key.
 // These defaults match local dev expectations, but tests are only
@@ -80,6 +84,7 @@ describeLive('Live server UX review (no mocks)', () => {
 
     try {
       // Step 1: server URL + reachability hint
+      await waitForConnectionStore(page, 'live-onboarding-initial')
       await expect(
         page.getByText(/Let’s get you connected|Let's get you connected/i)
       ).toBeVisible({ timeout: 15_000 })
@@ -121,6 +126,8 @@ describeLive('Live server UX review (no mocks)', () => {
       await page
         .getByRole('button', { name: /Continue/i })
         .click()
+
+      await logConnectionSnapshot(page, 'live-onboarding-after-auth')
 
       // Either the wizard auto‑finishes into chat, or shows Step 3 with
       // connected tags. Accept either outcome.

@@ -3,6 +3,10 @@ import path from "path"
 import { launchWithExtension } from "./utils/extension"
 import { grantHostPermission } from "./utils/permissions"
 import { requireRealServerConfig } from "./utils/real-server"
+import {
+  waitForConnectionStore,
+  forceConnectionState
+} from "./utils/connection"
 
 test.describe('Composer readiness based on connection state', () => {
   test('sidepanel composer is disabled and shows connection helper when server is not configured', async () => {
@@ -48,22 +52,19 @@ test.describe('Composer readiness based on connection state', () => {
     const { context, page } = await launchWithExtension(extPath)
 
     // Force the shared connection state into a "connected phase but not ready" state
-    await page.evaluate(() => {
-      const conn: any = (window as any).__tldw_useConnectionStore
-      if (!conn) return
-      const prev = conn.getState().state
-      conn.setState({
-        state: {
-          ...prev,
-          phase: 'connected',
-          isConnected: false,
-          isChecking: false,
-          mode: 'normal',
-          configStep: prev.configStep || 'health',
-          errorKind: 'none'
-        }
-      })
-    })
+    await waitForConnectionStore(page, "composer-not-ready")
+    await forceConnectionState(
+      page,
+      {
+        phase: "connected",
+        isConnected: false,
+        isChecking: false,
+        mode: "normal",
+        configStep: "health",
+        errorKind: "none"
+      },
+      "composer-not-ready"
+    )
 
     await page.reload()
 

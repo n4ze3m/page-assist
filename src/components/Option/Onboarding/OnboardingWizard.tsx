@@ -13,6 +13,7 @@ import {
 } from '@/hooks/useConnectionState'
 import { useConnectionStore } from '@/store/connection'
 import { ConnectionPhase } from '@/types/connection'
+import { useDemoMode } from '@/context/demo-mode'
 
 type Props = {
   onFinish?: () => void
@@ -20,6 +21,7 @@ type Props = {
 
 export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
   const { t } = useTranslation(['settings', 'common'])
+  const { setDemoEnabled } = useDemoMode()
   const [loading, setLoading] = React.useState(false)
   const [serverUrl, setServerUrl] = React.useState('')
   const [serverTouched, setServerTouched] = React.useState(false)
@@ -34,6 +36,10 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
   const [autoFinishOnSuccess, setAutoFinishOnSuccess] = useStorage(
     { key: 'onboardingAutoFinish', instance: new Storage({ area: 'local' }) },
     false
+  )
+  const [headerShortcutsPref, setHeaderShortcutsPref] = useStorage(
+    { key: 'headerShortcutsExpanded', instance: new Storage({ area: 'local' }) },
+    true
   )
 
   const { uxState, configStep } = useConnectionUxState()
@@ -106,6 +112,10 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
   }, [serverUrl])
 
   const activeStep = React.useMemo(() => {
+    // 0: Welcome + path selection
+    // 1: Server URL
+    // 2: Authentication
+    // 3: Health / confirmation
     if (configStep === 'url') return 1
     if (configStep === 'auth') return 2
     if (configStep === 'health') return 3
@@ -404,6 +414,15 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
 
   const handleContinueFromAuth = async () => {
     setAuthError(null)
+    if (authMode === 'single-user' && !apiKey.trim()) {
+      setAuthError(
+        t(
+          'settings:onboarding.auth.missingApiKey',
+          'API key is required.'
+        ) as string
+      )
+      return
+    }
     if (authMode === 'multi-user' && (!username || !password)) {
       setAuthError(
         t(
@@ -451,6 +470,11 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
 
   const handleUseDemoMode = () => {
     try {
+      try {
+        setDemoEnabled(true)
+      } catch {
+        // Ignore demo storage failures; connection store mode still applies.
+      }
       useConnectionStore.getState().setDemoMode()
     } catch (err) {
       // eslint-disable-next-line no-console
@@ -571,6 +595,26 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
                     'tldw_server is a separate, self-hosted app. You can follow the setup guide now, or come back later and continue in demo mode.'
                   )}
                 </span>
+                <ul className="ml-4 list-disc space-y-1 text-[11px]">
+                  <li>
+                    {t(
+                      'settings:onboarding.path.noServerOptionLocal',
+                      'Run locally with Docker or Python on your own machine.'
+                    )}
+                  </li>
+                  <li>
+                    {t(
+                      'settings:onboarding.path.noServerOptionRemote',
+                      'Deploy tldw_server to a remote VPS or managed hosting.'
+                    )}
+                  </li>
+                  <li>
+                    {t(
+                      'settings:onboarding.path.noServerOptionManaged',
+                      'Use a managed commercial tldw_server deployment when available.'
+                    )}
+                  </li>
+                </ul>
                 <span className="inline-flex flex-wrap items-center gap-2">
                   <Button
                     size="small"
@@ -593,8 +637,8 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
                     }}
                   >
                     {t(
-                        'settings:onboarding.path.openSetupGuide',
-                        'Open setup guide'
+                      'settings:onboarding.path.openSetupGuide',
+                      'Open setup guide'
                     )}
                   </Button>
                   <Button
@@ -604,6 +648,16 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
                     {t(
                       'settings:onboarding.path.useDemoFromNoServer',
                       'Use local demo mode'
+                    )}
+                  </Button>
+                  <Button
+                    size="small"
+                    type="link"
+                    onClick={finish}
+                  >
+                    {t(
+                      'settings:onboarding.path.remindMeLater',
+                      'Remind me later'
                     )}
                   </Button>
                 </span>
@@ -876,12 +930,18 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
               }
             />
           )}
-          <div>
+          <div className="flex flex-col gap-2">
             <Checkbox
               checked={autoFinishOnSuccess}
               onChange={(e) => setAutoFinishOnSuccess(e.target.checked)}
             >
               {t('settings:onboarding.autoFinish', 'Finish automatically when connection and RAG are healthy')}
+            </Checkbox>
+            <Checkbox
+              checked={headerShortcutsPref}
+              onChange={(e) => setHeaderShortcutsPref(e.target.checked)}
+            >
+              {t('settings:onboarding.headerShortcuts', 'Show quick shortcuts in the header')}
             </Checkbox>
           </div>
           <div className="flex justify-between">

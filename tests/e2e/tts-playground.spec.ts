@@ -44,15 +44,19 @@ test.describe('TTS Playground UX', () => {
 
   test('shows provider-specific settings and lets user play sample text', async () => {
     const extPath = path.resolve('.output/chrome-mv3')
-    const { context, page } = await launchWithExtension(extPath)
+    const { context, page, optionsUrl } = await launchWithExtension(extPath)
 
     // Configure mock tldw server URL (no auth required for this test)
-    await page.getByRole('link', { name: 'Settings' }).click()
+    await page.goto(optionsUrl + '#/settings/tldw', {
+      waitUntil: 'domcontentloaded'
+    })
     await page.getByLabel('Server URL').fill(server.url)
     await page.getByRole('button', { name: 'Save' }).click()
 
-    // Navigate to TTS Playground from the header navigation
-    await page.getByRole('link', { name: /TTS Playground/i }).click()
+    // Navigate to TTS Playground
+    await page.goto(optionsUrl + '#/tts', {
+      waitUntil: 'domcontentloaded'
+    })
 
     // Provider summary and settings form should be visible
     await expect(page.getByText(/Current provider/i)).toBeVisible()
@@ -93,15 +97,19 @@ test.describe('TTS Playground UX', () => {
 
   test('shows tldw provider capabilities and voices preview from /audio/providers', async () => {
     const extPath = path.resolve('.output/chrome-mv3')
-    const { context, page } = await launchWithExtension(extPath)
+    const { context, page, optionsUrl } = await launchWithExtension(extPath)
 
     // Configure mock tldw server URL
-    await page.getByRole('link', { name: 'Settings' }).click()
+    await page.goto(optionsUrl + '#/settings/tldw', {
+      waitUntil: 'domcontentloaded'
+    })
     await page.getByLabel('Server URL').fill(server.url)
     await page.getByRole('button', { name: 'Save' }).click()
 
     // Go to TTS Playground
-    await page.getByRole('link', { name: /TTS Playground/i }).click()
+    await page.goto(optionsUrl + '#/tts', {
+      waitUntil: 'domcontentloaded'
+    })
 
     // Switch provider to tldw and save settings so the playground summary uses tldw config
     await page.getByText('Text to speech').scrollIntoViewIfNeeded()

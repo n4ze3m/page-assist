@@ -1,6 +1,10 @@
 import { test, expect } from '@playwright/test'
 import path from 'path'
 import { launchWithBuiltExtension } from './utils/extension-build'
+import {
+  waitForConnectionStore,
+  logConnectionSnapshot
+} from './utils/connection'
 
 const SERVER_URL =
   process.env.TLDW_SERVER_URL ?? 'http://127.0.0.1:8000'
@@ -44,6 +48,8 @@ describeLive('Live server media + notes UX (no mocks)', () => {
       await page.goto(optionsUrl + '#/media', {
         waitUntil: 'domcontentloaded'
       })
+      await waitForConnectionStore(page, 'live-media-initial')
+      await logConnectionSnapshot(page, 'live-media-initial')
 
       const resultsHeader = page.getByTestId('review-results-header')
       await expect(resultsHeader).toBeVisible({ timeout: 20_000 })
@@ -81,6 +87,8 @@ describeLive('Live server media + notes UX (no mocks)', () => {
       await page.goto(optionsUrl + '#/notes', {
         waitUntil: 'domcontentloaded'
       })
+      await waitForConnectionStore(page, 'live-notes-initial')
+      await logConnectionSnapshot(page, 'live-notes-initial')
 
       // Create a new note and type some content.
       await page
@@ -138,4 +146,3 @@ describeLive('Live server media + notes UX (no mocks)', () => {
     }
   })
 })
-

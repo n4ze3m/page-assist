@@ -13,8 +13,11 @@ test.describe('Error bubble in chat', () => {
 
   test('shows Invalid API key error as assistant message', async () => {
     const extPath = path.resolve('.output/chrome-mv3')
-    const { context, page } = await launchWithExtension(extPath)
+    const { context, page, optionsUrl } = await launchWithExtension(extPath)
 
+    await page.goto(optionsUrl + '#/settings/tldw', {
+      waitUntil: 'domcontentloaded'
+    })
     await page.getByLabel('Server URL').fill(server.url)
     await page.getByText('Authentication Mode').scrollIntoViewIfNeeded()
     await page.getByText('Single User (API Key)').click()

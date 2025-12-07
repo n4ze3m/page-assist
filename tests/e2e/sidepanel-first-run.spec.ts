@@ -3,6 +3,10 @@ import path from 'path'
 import { launchWithExtension } from './utils/extension'
 import { grantHostPermission } from './utils/permissions'
 import { MockTldwServer } from './utils/mock-server'
+import {
+  waitForConnectionStore,
+  forceConnected
+} from './utils/connection'
 
 test.describe('Sidepanel first-run and connection panel', () => {
   test('shows connection card and Open/Change settings opens tldw settings in a new tab', async () => {
@@ -45,34 +49,12 @@ test.describe('Sidepanel first-run and connection panel', () => {
     const page = await openSidepanel()
 
     // Force connected state via the shared connection store test hook
-    await page.evaluate(() => {
-      // @ts-ignore
-      const store = (window as any).__tldw_useConnectionStore
-      if (store?.setState) {
-        const prev = store.getState().state
-        const now = Date.now()
-        store.setState({
-          state: {
-            ...prev,
-            phase: 'connected',
-            serverUrl: prev.serverUrl || 'http://127.0.0.1:8000',
-            lastCheckedAt: now,
-            lastError: null,
-            lastStatusCode: null,
-            isConnected: true,
-            isChecking: false,
-            knowledgeStatus: 'ready',
-            knowledgeLastCheckedAt: now,
-            knowledgeError: null,
-            mode: 'normal',
-            configStep: 'health',
-            errorKind: 'none',
-            hasCompletedFirstRun: true
-          },
-          checkOnce: async () => {}
-        })
-      }
-    })
+    await waitForConnectionStore(page, 'sidepanel-connected')
+    await forceConnected(
+      page,
+      { serverUrl: 'http://127.0.0.1:8000' },
+      'sidepanel-connected'
+    )
 
     // Composer should be enabled and focused without an extra Start chatting button
     const composer = page.getByPlaceholder('Type a message...')

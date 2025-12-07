@@ -67,9 +67,12 @@ test.describe('Media ingest context menu & Quick Ingest progress', () => {
 
   test('context menu calls /media/add and /media/process-* and Quick Ingest shows progress', async () => {
     const extPath = path.resolve('.output/chrome-mv3')
-    const { context, page } = await launchWithExtension(extPath)
+    const { context, page, optionsUrl } = await launchWithExtension(extPath)
 
     // Configure tldw server URL in settings (no auth required for this smoke server)
+    await page.goto(optionsUrl + '#/settings/tldw', {
+      waitUntil: 'domcontentloaded'
+    })
     await page.getByLabel('Server URL').fill(baseUrl)
     await page.getByRole('button', { name: 'Save' }).click()
 
@@ -142,9 +145,12 @@ test.describe('tldw TTS provider', () => {
 
   test('clicking TTS icon with provider=tldw calls /api/v1/audio/speech', async () => {
     const extPath = path.resolve('.output/chrome-mv3')
-    const { context, page } = await launchWithExtension(extPath)
+    const { context, page, optionsUrl } = await launchWithExtension(extPath)
 
     // Configure tldw server and API key (MockTldwServer validates X-API-KEY)
+    await page.goto(optionsUrl + '#/settings/tldw', {
+      waitUntil: 'domcontentloaded'
+    })
     await page.getByLabel('Server URL').fill(server.url)
     await page.getByText('Authentication Mode').scrollIntoViewIfNeeded()
     await page.getByText('Single User (API Key)').click()
@@ -152,7 +158,9 @@ test.describe('tldw TTS provider', () => {
     await page.getByRole('button', { name: 'Save' }).click()
 
     // Switch TTS provider to tldw and enable TTS
-    await page.getByRole('link', { name: 'Settings' }).click()
+    await page.goto(optionsUrl + '#/settings', {
+      waitUntil: 'domcontentloaded'
+    })
     await page.getByText('Text to speech').scrollIntoViewIfNeeded()
     await page.getByText('Text to speech').click()
 
@@ -166,7 +174,9 @@ test.describe('tldw TTS provider', () => {
     await page.getByRole('button', { name: 'Save' }).click()
 
     // Back to Playground, send a simple chat message
-    await page.getByRole('link', { name: 'Playground' }).click()
+    await page.goto(optionsUrl + '#/', {
+      waitUntil: 'domcontentloaded'
+    })
     const input = page.getByPlaceholder('Type a message...')
     await input.fill('Hello from TTS test')
     await input.press('Enter')

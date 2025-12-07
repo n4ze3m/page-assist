@@ -1,5 +1,9 @@
 import { test, expect } from "@playwright/test"
 import { launchWithBuiltExtension } from "./utils/extension-build"
+import {
+  waitForConnectionStore,
+  forceConnected
+} from "./utils/connection"
 
 test.describe("Media multi page", () => {
   test("renders offline empty state (no crash)", async () => {
@@ -18,18 +22,13 @@ test.describe("Media multi page", () => {
     const { context, page, optionsUrl } = await launchWithBuiltExtension()
 
     // Seed connection as connected so the page renders controls
-    await page.goto(optionsUrl)
-    await page.waitForLoadState("networkidle")
-    await page.evaluate(() => {
-      const store = (window as any).__tldw_useConnectionStore
-      if (!store) return
-      const prev = store.getState()
-      store.setState({
-        ...prev,
-        state: { ...prev.state, phase: "connected", isConnected: true, serverUrl: "http://127.0.0.1:0" },
-        checkOnce: async () => {}
-      })
-    })
+    await page.goto(optionsUrl, { waitUntil: "networkidle" })
+    await waitForConnectionStore(page, "media-multi-connected")
+    await forceConnected(
+      page,
+      { serverUrl: "http://127.0.0.1:0" },
+      "media-multi-connected"
+    )
 
     await page.goto(optionsUrl + "#/media-multi")
     await page.waitForLoadState("networkidle")

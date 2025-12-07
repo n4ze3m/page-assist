@@ -1,5 +1,9 @@
 import { test, expect } from '@playwright/test'
 import { launchWithBuiltExtension } from './utils/extension-build'
+import {
+  waitForConnectionStore,
+  forceConnected
+} from './utils/connection'
 
 test.describe('Notes workspace UX', () => {
   test('shows offline empty state and disables editor when not connected', async () => {
@@ -43,24 +47,9 @@ test.describe('Notes workspace UX', () => {
   test('asks before discarding unsaved editor changes', async () => {
     const { context, page, optionsUrl } = await launchWithBuiltExtension()
 
-    await page.goto(optionsUrl)
-    await page.waitForLoadState('networkidle')
-
-    await page.evaluate(() => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const store = (window as any).__tldw_useConnectionStore
-      if (!store) return
-      store.setState((prev: any) => ({
-        ...prev,
-        state: {
-          ...prev.state,
-          isConnected: true,
-          phase: 'CONNECTED',
-          serverUrl: 'http://dummy-tldw'
-        },
-        checkOnce: async () => {}
-      }))
-    })
+    await page.goto(optionsUrl, { waitUntil: 'networkidle' })
+    await waitForConnectionStore(page, 'notes-connected')
+    await forceConnected(page, { serverUrl: 'http://dummy-tldw' }, 'notes-connected')
 
     await page.goto(optionsUrl + '#/notes')
     await page.waitForLoadState('networkidle')

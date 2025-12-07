@@ -2,6 +2,10 @@ import { test, expect } from '@playwright/test'
 import http from 'node:http'
 import { AddressInfo } from 'node:net'
 import { launchWithBuiltExtension } from './utils/extension-build'
+import {
+  waitForConnectionStore,
+  forceConnected
+} from './utils/connection'
 
 function startMediaMockServer() {
   const items = [
@@ -125,26 +129,9 @@ test.describe('Review page UX', () => {
     })
 
     // Seed the connection store so useServerOnline() reports "online"
-    await page.goto(optionsUrl)
-    await page.waitForLoadState('networkidle')
-
-    await page.evaluate(() => {
-      const store = (window as any).__tldw_useConnectionStore
-      if (!store) return
-      const prev = store.getState()
-      // Disable active network checks for this test run
-      store.setState({
-        ...prev,
-        checkOnce: async () => {}
-      })
-      store.setState({
-        ...store.getState(),
-        state: {
-          ...store.getState().state,
-          isConnected: true
-        }
-      })
-    })
+    await page.goto(optionsUrl, { waitUntil: 'networkidle' })
+    await waitForConnectionStore(page, 'review-ux-connected')
+    await forceConnected(page, { serverUrl: baseUrl }, 'review-ux-connected')
 
     await page.goto(optionsUrl + '#/review')
     await page.waitForLoadState('networkidle')

@@ -1,6 +1,10 @@
 import { test, expect } from '@playwright/test'
 import path from 'path'
 import { launchWithExtension } from './utils/extension'
+import {
+  waitForConnectionStore,
+  forceConnectionState
+} from './utils/connection'
 
 test.describe('ServerConnectionCard loading CTAs', () => {
   test('shows loading state and opens settings from primary CTA', async () => {
@@ -8,33 +12,27 @@ test.describe('ServerConnectionCard loading CTAs', () => {
     const { context, page } = await launchWithExtension(extPath)
 
     // Force a loading/searching state via the shared connection store
-    await page.evaluate(() => {
-      // @ts-ignore
-      const store = (window as any).__tldw_useConnectionStore
-      if (store?.setState) {
-        const prev = store.getState().state
-        store.setState({
-          state: {
-            ...prev,
-            phase: 'searching',
-            serverUrl: 'http://192.0.2.1:12345',
-            lastCheckedAt: null,
-            lastError: null,
-            lastStatusCode: null,
-            isConnected: false,
-            isChecking: true,
-            knowledgeStatus: 'unknown',
-            knowledgeLastCheckedAt: null,
-            knowledgeError: null,
-            mode: 'normal',
-            configStep: prev.configStep || 'url',
-            errorKind: 'none',
-            hasCompletedFirstRun: false
-          },
-          checkOnce: async () => {}
-        })
-      }
-    })
+    await waitForConnectionStore(page, 'connection-loading-searching')
+    await forceConnectionState(
+      page,
+      {
+        phase: 'searching',
+        serverUrl: 'http://192.0.2.1:12345',
+        lastCheckedAt: null,
+        lastError: null,
+        lastStatusCode: null,
+        isConnected: false,
+        isChecking: true,
+        knowledgeStatus: 'unknown',
+        knowledgeLastCheckedAt: null,
+        knowledgeError: null,
+        mode: 'normal',
+        configStep: 'url',
+        errorKind: 'none',
+        hasCompletedFirstRun: false
+      },
+      'connection-loading-searching'
+    )
 
     // Loading state should show a Searching tag and a primary "Checking…" CTA
     await expect(page.getByText(/Searching for your tldw server/i)).toBeVisible()

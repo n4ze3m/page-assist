@@ -12,7 +12,7 @@ import {
  * tldwClient.healthCheck directly in each consumer.
  */
 export function useServerOnline(pollMs: number = 0): boolean {
-  const { isConnected } = useConnectionState()
+  const { isConnected, mode } = useConnectionState()
   const { checkOnce } = useConnectionActions()
 
   React.useEffect(() => {
@@ -32,5 +32,5 @@ export function useServerOnline(pollMs: number = 0): boolean {
     }
   }, [pollMs, checkOnce])
 
-  return isConnected
+  return isConnected && mode !== "demo"
 }

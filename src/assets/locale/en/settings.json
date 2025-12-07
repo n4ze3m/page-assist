@@ -932,13 +932,21 @@
       "demo": "Just explore with a local demo",
       "noServerTitle": "No server yet? You can still explore.",
       "noServerBody": "tldw_server is a separate, self-hosted app. You can follow the setup guide now, or come back later and continue in demo mode.",
+      "noServerOptionLocal": "Run locally with Docker or Python on your own machine.",
+      "noServerOptionRemote": "Deploy tldw_server to a remote VPS or managed hosting.",
+      "noServerOptionManaged": "Use a managed commercial tldw_server deployment when available.",
       "openSetupGuide": "Open setup guide",
       "useDemoFromNoServer": "Use local demo mode",
+      "remindMeLater": "Remind me later",
       "demoTitle": "Explore the extension in demo mode",
       "demoBody": "Demo mode lets you try chat, notes, and media with sample data. Server-dependent features like Knowledge search will stay limited until you connect your own tldw_server.",
       "demoCta": "Use local demo mode"
     },
     "authModeHelp": "Single User (API Key) is recommended for personal or small-team servers. Multi User (Login) is for shared deployments where people sign in with usernames or SSO. Choose the mode that matches how your tldw_server is set up.",
+    "auth": {
+      "missingCredentials": "Enter both a username and password to continue.",
+      "missingApiKey": "API key is required."
+    },
     "apiKeyHelp": "Find your API key in tldw_server → Settings → API Keys. Generate a key there and paste it here.",
     "authStepAria": "Step 3 of 4 — Choose how you sign in",
     "confirmStepAria": "Step 4 of 4 — Confirm connection and review next steps",
@@ -953,6 +961,7 @@
       "mediaTitle": "Explore media & notes",
       "mediaBody": "Visit Media and Notes in Options to see what’s stored and searchable."
     },
+    "headerShortcuts": "Show quick shortcuts in the header",
     "footerHelp": "Once connected, you can revisit these settings anytime from the extension menu.",
     "errors": {
       "invalidCredentials": "Login failed. Check your username and password or confirm multi-user login is enabled on your tldw server.",

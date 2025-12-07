@@ -35,11 +35,23 @@ import OptionAdminLlamacpp from "./option-admin-llamacpp"
 import OptionAdminMlx from "./option-admin-mlx"
 import OptionChatSettings from "./option-settings-chat"
 import OptionQuickChatPopout from "./option-quick-chat-popout"
+import OptionLayout from "~/components/Layouts/Layout"
+import { OnboardingWizard } from "@/components/Option/Onboarding/OnboardingWizard"
 
 export const OptionRoutingChrome = () => {
   return (
     <Routes>
       <Route path="/" element={<OptionIndex />} />
+      {/* Dedicated route for Playwright onboarding tests so they can
+          exercise the wizard independently of first-run gating logic. */}
+      <Route
+        path="/onboarding-test"
+        element={
+          <OptionLayout hideHeader={true} showHeaderSelectors={false}>
+            <OnboardingWizard />
+          </OptionLayout>
+        }
+      />
       <Route path="/settings" element={<OptionSettings />} />
       <Route path="/settings/tldw" element={<OptionTldwSettings />} />
       <Route path="/settings/model" element={<OptionModal />} />

@@ -1,5 +1,9 @@
 import { test, expect } from '@playwright/test'
 import { launchWithBuiltExtension } from './utils/extension-build'
+import {
+  waitForConnectionStore,
+  forceConnected
+} from './utils/connection'
 
 const API_KEY = 'THIS-IS-A-SECURE-KEY-123-FAKE-KEY'
 
@@ -185,22 +189,17 @@ test.describe('Quick ingest modal', () => {
 
     // Simulate the server coming back online; queued items should be processable.
     await page.evaluate(async () => {
-      // @ts-ignore
       const w: any = window
       if (typeof w.__tldw_disableOfflineBypass === "function") {
         await w.__tldw_disableOfflineBypass()
       }
-      if (w.__tldw_useConnectionStore) {
-        const store = w.__tldw_useConnectionStore
-        store.setState((prev: any) => ({
-          state: {
-            ...prev.state,
-            isConnected: true,
-            offlineBypass: false
-          }
-        }))
-      }
     })
+    await waitForConnectionStore(page, 'quick-ingest-modal-reconnect')
+    await forceConnected(
+      page,
+      { offlineBypass: false },
+      'quick-ingest-modal-reconnect'
+    )
 
     await expect(
       modal.getByRole('button', { name: /Process queued items/i })
@@ -262,22 +261,17 @@ test.describe('Quick ingest modal', () => {
 
     // Simulate the server coming back online so queued items are processable.
     await page.evaluate(async () => {
-      // @ts-ignore
       const w: any = window
       if (typeof w.__tldw_disableOfflineBypass === 'function') {
         await w.__tldw_disableOfflineBypass()
       }
-      if (w.__tldw_useConnectionStore) {
-        const store = w.__tldw_useConnectionStore
-        store.setState((prev: any) => ({
-          state: {
-            ...prev.state,
-            isConnected: true,
-            offlineBypass: false
-          }
-        }))
-      }
     })
+    await waitForConnectionStore(page, 'quick-ingest-header-reconnect')
+    await forceConnected(
+      page,
+      { offlineBypass: false },
+      'quick-ingest-header-reconnect'
+    )
 
     // Global CTA near the header button should be visible.
     const processCta = page.getByTestId('process-queued-ingest-header')

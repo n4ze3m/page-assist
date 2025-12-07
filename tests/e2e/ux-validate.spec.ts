@@ -1,5 +1,9 @@
 import { test, expect } from '@playwright/test'
 import { launchWithBuiltExtension } from './utils/extension-build'
+import {
+  waitForConnectionStore,
+  logConnectionSnapshot
+} from './utils/connection'
 
 // Requires env vars for connected flow
 //   TLDW_URL (e.g., http://127.0.0.1:8000)
@@ -21,6 +25,8 @@ test.describe('UX validation (connected server)', () => {
       }), [url, key])
       await page.reload()
       await page.waitForLoadState('networkidle')
+      await waitForConnectionStore(page, 'ux-validate-after-seed')
+      await logConnectionSnapshot(page, 'ux-validate-after-seed')
     }
 
     // Navigate to a route that always renders the header (bypasses onboarding layout)

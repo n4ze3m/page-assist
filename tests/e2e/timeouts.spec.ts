@@ -104,7 +104,10 @@ test.describe('Timeouts', () => {
     const url = `http://127.0.0.1:${addr.port}`
 
     const extPath = path.resolve('.output/chrome-mv3')
-    const { context, page } = await launchWithExtension(extPath)
+    const { context, page, optionsUrl } = await launchWithExtension(extPath)
+    await page.goto(optionsUrl + '#/settings/tldw', {
+      waitUntil: 'domcontentloaded'
+    })
     await page.getByLabel('Server URL').fill(url)
     await page.getByText('Authentication Mode').scrollIntoViewIfNeeded()
     await page.getByText('Single User (API Key)').click()

@@ -20,21 +20,41 @@ const OptionIndex = () => {
 
   const { phase } = useConnectionState()
   const { uxState, hasCompletedFirstRun } = useConnectionUxState()
-  const { checkOnce } = useConnectionActions()
+  const { checkOnce, beginOnboarding } = useConnectionActions()
 
   React.useEffect(() => {
-    void checkOnce()
-  }, [checkOnce])
+    if (hasCompletedFirstRun) {
+      void checkOnce()
+    }
+  }, [checkOnce, hasCompletedFirstRun])
+
+  // Ensure the onboarding wizard is active whenever the user has not
+  // completed the first run yet, regardless of any persisted connection
+  // state. This keeps the "Welcome — Let’s get you connected" flow
+  // consistent for fresh profiles and test runs.
+  React.useEffect(() => {
+    if (!hasCompletedFirstRun) {
+      beginOnboarding()
+    }
+  }, [hasCompletedFirstRun, beginOnboarding])
 
   useFocusComposerOnConnect(phase as ConnectionPhase | null)
 
-  // Treat any state where onboarding has not been marked complete as
-  // "first run", even if the server is already reachable. This keeps the
-  // wizard visible until the user explicitly finishes or chooses demo mode.
+  // First-run shell is shown until onboarding is explicitly completed.
   const isFirstRunShell = !hasCompletedFirstRun
   const showConnectionShell = isFirstRunShell
 
-  const showWizard = !hasCompletedFirstRun && uxState !== "demo_mode"
+  // Show the onboarding wizard whenever we are in a configuration or error
+  // state during first run. Once onboarding is completed, the wizard stays
+  // hidden even if the connection later becomes misconfigured.
+  const showWizard =
+    !hasCompletedFirstRun &&
+    (uxState === "unconfigured" ||
+      uxState === "configuring_url" ||
+      uxState === "configuring_auth" ||
+      uxState === "testing" ||
+      uxState === "error_auth" ||
+      uxState === "error_unreachable")
 
   const hideHeader = showWizard
 

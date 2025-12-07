@@ -6,7 +6,8 @@ import { apiSend } from "@/services/api-send"
 import {
   ConnectionPhase,
   type ConnectionState,
-  type KnowledgeStatus
+  type KnowledgeStatus,
+  deriveConnectionUxState
 } from "@/types/connection"
 
 // Shared timeout before treating the server as unreachable.
@@ -533,6 +534,34 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
 
   async testConnectionFromOnboarding() {
     const prev = get().state
+    const isTestBypass =
+      prev.offlineBypass ||
+      ((import.meta as any)?.env?.VITE_TLDW_E2E_ALLOW_OFFLINE === "true")
+
+    // When offline bypass is enabled (Playwright/CI path), treat the
+    // connection as healthy immediately so onboarding can progress
+    // without waiting on real network checks. In normal production
+    // runs offlineBypass is false and we fall back to checkOnce().
+    if (isTestBypass) {
+      set({
+        state: {
+          ...prev,
+          configStep: "health",
+          phase: ConnectionPhase.CONNECTED,
+          isConnected: true,
+          isChecking: false,
+          offlineBypass: true,
+          errorKind: "none",
+          lastError: null,
+          lastStatusCode: null,
+          knowledgeStatus: "ready",
+          knowledgeLastCheckedAt: Date.now(),
+          knowledgeError: null
+        }
+      })
+      return
+    }
+
     set({
       state: {
         ...prev,
@@ -577,6 +606,17 @@ if (typeof window !== "undefined") {
   // Expose for Playwright tests and debugging only.
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ;(window as any).__tldw_useConnectionStore = useConnectionStore
+
+  // Optional helper so tests can derive the UX state from a raw
+  // ConnectionState snapshot without re‑implementing the logic.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ;(window as any).__tldw_deriveUx = (state: any) => {
+    try {
+      return deriveConnectionUxState(state as ConnectionState)
+    } catch {
+      return "unknown"
+    }
+  }
 
   // Allow tests to flip the offline bypass without rebuilding the extension.
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

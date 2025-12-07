@@ -2,6 +2,10 @@ import { test, expect } from '@playwright/test'
 import path from 'path'
 import { launchWithExtension } from './utils/extension'
 import { launchWithBuiltExtension } from './utils/extension-build'
+import {
+  waitForConnectionStore,
+  logConnectionSnapshot
+} from './utils/connection'
 
 const SERVER_URL =
   process.env.TLDW_SERVER_URL ?? 'http://127.0.0.1:8000'
@@ -39,6 +43,8 @@ describeLive('Live server UX workflows (no mocks)', () => {
         page.getByText(/Let’s get you connected|Let's get you connected/i)
       ).toBeVisible()
 
+      await waitForConnectionStore(page, 'live-workflows-onboarding')
+
       const urlInput = page.getByLabel(/Server URL/i)
       await urlInput.scrollIntoViewIfNeeded()
       await urlInput.fill(SERVER_URL)
@@ -60,6 +66,7 @@ describeLive('Live server UX workflows (no mocks)', () => {
       const nextButton = page.getByRole('button', { name: /Next/i })
       await expect(nextButton).toBeVisible()
       await expect(nextButton).toBeEnabled()
+      await logConnectionSnapshot(page, 'live-workflows-after-url')
     } finally {
       await context.close()
     }

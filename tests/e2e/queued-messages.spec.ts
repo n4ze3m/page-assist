@@ -1,6 +1,10 @@
 import { test, expect } from '@playwright/test'
 import path from 'path'
 import { launchWithExtension } from './utils/extension'
+import {
+  waitForConnectionStore,
+  forceConnected
+} from './utils/connection'
 
 test.describe('Queued messages banners', () => {
   test('Playground shows queued banner when connected with queued messages', async () => {
@@ -8,32 +12,11 @@ test.describe('Queued messages banners', () => {
     const { context, page } = await launchWithExtension(extPath)
 
     // Force connection store into a connected state and seed a queued message
+    await waitForConnectionStore(page, 'queued-playground-banner')
+    await forceConnected(page, {}, 'queued-playground-banner')
     await page.evaluate(() => {
-      const conn: any = (window as any).__tldw_useConnectionStore
       const msgStore: any = (window as any).__tldw_useStoreMessageOption
-      if (!conn || !msgStore) return
-      const prevState = conn.getState().state
-      const now = Date.now()
-      conn.setState({
-        state: {
-          ...prevState,
-          phase: 'connected',
-          isConnected: true,
-          isChecking: false,
-          serverUrl: prevState.serverUrl || 'http://127.0.0.1:8000',
-          lastCheckedAt: now,
-          lastError: null,
-          lastStatusCode: null,
-          knowledgeStatus: 'ready',
-          knowledgeLastCheckedAt: now,
-          knowledgeError: null,
-          mode: 'normal',
-          configStep: 'health',
-          errorKind: 'none',
-          hasCompletedFirstRun: true
-        }
-      })
-
+      if (!msgStore) return
       const prevQueued = msgStore.getState().queuedMessages || []
       msgStore.setState({
         queuedMessages: [
@@ -70,32 +53,11 @@ test.describe('Queued messages banners', () => {
     const { context, page } = await launchWithExtension(extPath)
 
     // Force connection store into a connected state and seed a queued message
+    await waitForConnectionStore(page, 'queued-playground-clear')
+    await forceConnected(page, {}, 'queued-playground-clear')
     await page.evaluate(() => {
-      const conn: any = (window as any).__tldw_useConnectionStore
       const msgStore: any = (window as any).__tldw_useStoreMessageOption
-      if (!conn || !msgStore) return
-      const prevState = conn.getState().state
-      const now = Date.now()
-      conn.setState({
-        state: {
-          ...prevState,
-          phase: 'connected',
-          isConnected: true,
-          isChecking: false,
-          serverUrl: prevState.serverUrl || 'http://127.0.0.1:8000',
-          lastCheckedAt: now,
-          lastError: null,
-          lastStatusCode: null,
-          knowledgeStatus: 'ready',
-          knowledgeLastCheckedAt: now,
-          knowledgeError: null,
-          mode: 'normal',
-          configStep: 'health',
-          errorKind: 'none',
-          hasCompletedFirstRun: true
-        }
-      })
-
+      if (!msgStore) return
       msgStore.setState({
         messages: [],
         queuedMessages: [{ message: 'Queued from test', image: '' }]
@@ -133,32 +95,11 @@ test.describe('Queued messages banners', () => {
     const page = await openSidepanel()
 
     // Seed connection + queued messages via exposed stores
+    await waitForConnectionStore(page, 'queued-sidepanel')
+    await forceConnected(page, {}, 'queued-sidepanel')
     await page.evaluate(() => {
-      const conn: any = (window as any).__tldw_useConnectionStore
       const msgStore: any = (window as any).__tldw_useStoreMessageOption
-      if (!conn || !msgStore) return
-      const prevState = conn.getState().state
-      const now = Date.now()
-      conn.setState({
-        state: {
-          ...prevState,
-          phase: 'connected',
-          isConnected: true,
-          isChecking: false,
-          serverUrl: prevState.serverUrl || 'http://127.0.0.1:8000',
-          lastCheckedAt: now,
-          lastError: null,
-          lastStatusCode: null,
-          knowledgeStatus: 'ready',
-          knowledgeLastCheckedAt: now,
-          knowledgeError: null,
-          mode: 'normal',
-          configStep: 'health',
-          errorKind: 'none',
-          hasCompletedFirstRun: true
-        }
-      })
-
+      if (!msgStore) return
       msgStore.setState({
         queuedMessages: [{ message: 'Queued from sidepanel', image: '' }]
       })

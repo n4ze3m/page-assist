@@ -1,27 +1,21 @@
 import { test, expect } from '@playwright/test'
 import { launchWithBuiltExtension } from './utils/extension-build'
+import {
+  waitForConnectionStore,
+  forceConnected
+} from './utils/connection'
 
 test.describe('Knowledge RAG workspace UX', () => {
   test('shows RAG workspace and (when available) allows toggling per-reply RAG', async () => {
     const { context, page, optionsUrl } = await launchWithBuiltExtension()
 
     // Pretend the server is connected so the Knowledge workspace renders
-    await page.evaluate(() => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const store = (window as any).__tldw_useConnectionStore
-      if (!store) return
-      store.setState((prev: any) => ({
-        ...prev,
-        state: {
-          ...prev.state,
-          isConnected: true,
-          phase: 'CONNECTED',
-          serverUrl: 'http://dummy-tldw'
-        },
-        // Avoid background health checks from flipping the state during the test
-        checkOnce: async () => {}
-      }))
-    })
+    await waitForConnectionStore(page, 'knowledge-rag-connected')
+    await forceConnected(
+      page,
+      { serverUrl: 'http://dummy-tldw' },
+      'knowledge-rag-connected'
+    )
 
     await page.goto(optionsUrl + '#/settings/knowledge')
     await page.waitForLoadState('networkidle')
