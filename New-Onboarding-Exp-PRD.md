@@ -192,16 +192,34 @@ If user chose “No server yet,” the flow branches to a “No server / demo mo
 - Env seeding:
   - If `VITE_TLDW_API_KEY` is detected, it may prefill but should still be editable; optional hint: “Loaded from your environment. You can change this at any time.”
 
-**Multi‑User panel (if supported; optional v2)**
+**Non-Commercial Multi‑User panel**
+
+- Field: `API Key`
+  - “Your credentials are sent only to your tldw_server.”
+  - Input type: `password` by default.
+  - Show/hide toggle icon.
+  - Placeholder: `Enter your API key`.
+- Help text:
+  - “Find your API key in tldw_server → Settings → API Keys.”
+  - Small `Where do I find this?` link with a short explanation of the path; can open docs/screenshot.
+- Validation:
+  - If blank on `Connect`: show error “API key is required.”
+  - If server responds 401/403 on health or model list:
+    - Show message: “Authentication failed. Please check your API key.”
+    - Provide link/button: “Open tldw server settings” (to let the user verify).
+- Env seeding:
+  - If `VITE_TLDW_API_KEY` is detected, it may prefill but should still be editable; optional hint: “Loaded from your environment. You can change this at any time.”
+
+**Commercial Multi‑User panel**
 
 - Fields:
   - `Email or Username`
   - `Password`
-  - Optional: “Sign in with SSO” button, depending on server capabilities.
+  - “Sign in with SSO” button, depending on server capabilities. (just a placeholder for now)
 - Copy:
   - “Your credentials are sent only to your tldw_server.”
 - MVP behavior:
-  - If the connected server does not advertise multi‑user capabilities (or if this feature is not yet implemented), the UI MAY hide the Multi‑User option entirely and only show the Single User (API Key) path.
+  - If the connected server does not advertise Commercial multi‑user capabilities (or if this feature is not yet implemented), the UI MAY hide the Multi‑User option entirely and only show the Single User (API Key) path.
   - Implementing the full multi‑user login flow (SSO, password forms, etc.) is out of scope for the initial release of this onboarding experience.
 
 **Navigation**
@@ -394,9 +412,13 @@ These are out of immediate scope but should be kept in mind for instrumenting th
 ## 9. Open Questions
 
 1. Should demo mode pre‑seed any local example data (notes/media/flashcards), or remain mostly empty?
+  - Yes, it should pre-seed 3 examples for each
 2. Do we want an explicit “self‑host vs managed” choice in the “No server yet” branch, or keep it as doc‑only guidance?
+  - Yes, the goal is to offer a commercial managed tldw_server service, so that users can use the open source extension or the branded one and point them at their own server or at the managed commercial instance.
 3. Are there server capabilities (e.g., multi‑tenant auth providers) that we should surface on Step 2 when reading `/api/v1/health` or `/`?
+  - Not currently.
 4. Should we support importing connection settings (URL + API key) from another browser profile or a file?
+  - As a placeholder yes, nothing for that currently exists but is planned to be created
 
 These can be refined during implementation and UX design review.
 

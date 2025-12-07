@@ -128,7 +128,7 @@ export const EmptySidePanel = () => {
     }
     return t(
       "option:connectionCard.headlineMissing",
-      "Connect tldw Assistant to your server"
+      "Connect tldw Assistant to your server to start chatting"
     )
   })()
 

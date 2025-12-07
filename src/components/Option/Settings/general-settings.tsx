@@ -44,7 +44,7 @@ export const GeneralSettings = () => {
   // Persisted preference: auto-finish onboarding when connection & RAG are healthy
   const [onboardingAutoFinish, setOnboardingAutoFinish] = useStorage(
     "onboardingAutoFinish",
-    true
+    false
   )
 
   const [autoCopyResponseToClipboard, setAutoCopyResponseToClipboard] =

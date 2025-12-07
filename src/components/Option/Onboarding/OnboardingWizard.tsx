@@ -28,9 +28,12 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
   const [username, setUsername] = React.useState('')
   const [password, setPassword] = React.useState('')
   const [authError, setAuthError] = React.useState<string | null>(null)
+  const [pathChoice, setPathChoice] = React.useState<'has-server' | 'no-server' | 'demo'>(
+    'has-server'
+  )
   const [autoFinishOnSuccess, setAutoFinishOnSuccess] = useStorage(
     { key: 'onboardingAutoFinish', instance: new Storage({ area: 'local' }) },
-    true
+    false
   )
 
   const { uxState, configStep } = useConnectionUxState()
@@ -118,6 +121,7 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
   }, [configStep, uxState])
 
   const serverHint = React.useMemo(() => {
+    // Basic format validation errors always take precedence.
     if (!urlState.valid) {
       const tone = urlState.reason === 'empty' ? 'neutral' : 'error'
       const message = urlState.reason === 'empty'
@@ -137,6 +141,61 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
       return { valid: false as const, tone, message }
     }
 
+    const trimmed = serverUrl.trim()
+    // If the current URL matches the connection config and we are actively
+    // checking, surface a "checking" hint.
+    if (
+      trimmed &&
+      connectionState.serverUrl &&
+      trimmed === connectionState.serverUrl &&
+      connectionState.isChecking
+    ) {
+      return {
+        valid: true as const,
+        tone: 'neutral' as const,
+        message: t(
+          'settings:onboarding.serverUrl.checking',
+          'Checking reachability…'
+        )
+      }
+    }
+
+    // If the connection store reports a reachable/connected state for this URL,
+    // show the positive success hint that UX tests look for.
+    if (
+      trimmed &&
+      connectionState.serverUrl &&
+      trimmed === connectionState.serverUrl &&
+      (uxState === 'connected_ok' || uxState === 'connected_degraded')
+    ) {
+      return {
+        valid: true as const,
+        tone: 'success' as const,
+        message: t(
+          'settings:onboarding.serverUrl.reachable',
+          'Server responded successfully. You can continue.'
+        )
+      }
+    }
+
+    // If the server URL matches and we are in an unreachable error state,
+    // show explicit unreachable copy.
+    if (
+      trimmed &&
+      connectionState.serverUrl &&
+      trimmed === connectionState.serverUrl &&
+      uxState === 'error_unreachable'
+    ) {
+      return {
+        valid: true as const,
+        tone: 'error' as const,
+        message: t(
+          'settings:onboarding.serverUrl.unreachable',
+          'We couldn’t reach this address yet. Double-check the URL or try again.'
+        )
+      }
+    }
+
     const tone: 'neutral' | 'success' | 'error' = 'neutral'
     const message = t(
       'settings:onboarding.serverUrl.ready',
@@ -144,7 +203,23 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
     )
 
     return { valid: true as const, tone, message }
-  }, [urlState, t])
+  }, [urlState, t, serverUrl, connectionState.serverUrl, connectionState.isChecking, uxState])
+
+  React.useEffect(() => {
+    const trimmed = serverUrl.trim()
+    if (!urlState.valid || !trimmed) return
+    // Keep the connection store config/server URL in sync with the field so
+    // health checks (and success copy) can update while staying on Step 1.
+    try {
+      void useConnectionStore.getState().setServerUrl(trimmed)
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.debug(
+        "[OnboardingWizard] Failed to sync serverUrl into connection store",
+        err
+      )
+    }
+  }, [serverUrl, urlState.valid])
 
   const connectionStatusTag = React.useMemo(() => {
     if (uxState === 'connected_ok' || uxState === 'connected_degraded') {
@@ -328,6 +403,19 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
     await useConnectionStore.getState().testConnectionFromOnboarding()
   }
 
+  const handleUseDemoMode = () => {
+    try {
+      useConnectionStore.getState().setDemoMode()
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.debug(
+        "[OnboardingWizard] Failed to enable demo mode from onboarding",
+        err
+      )
+    }
+    onFinish?.()
+  }
+
   const finish = React.useCallback(() => {
     useConnectionStore.getState().markFirstRunComplete()
     onFinish?.()
@@ -368,6 +456,134 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
           'You can explore the UI without a server; some features (chat, media ingest, Knowledge search) will stay disabled until you connect.'
         )}
       </p>
+
+      <div className="mb-4 space-y-2">
+        <div className="text-xs font-medium text-gray-700 dark:text-gray-300">
+          {t(
+            'settings:onboarding.path.heading',
+            'How would you like to get started?'
+          )}
+        </div>
+        <Segmented
+          size="small"
+          value={pathChoice}
+          onChange={(value) => setPathChoice(value as any)}
+          options={[
+            {
+              label: t(
+                'settings:onboarding.path.hasServer',
+                'I already run tldw_server'
+              ),
+              value: 'has-server'
+            },
+            {
+              label: t(
+                'settings:onboarding.path.noServer',
+                "I don’t have a server yet"
+              ),
+              value: 'no-server'
+            },
+            {
+              label: t(
+                'settings:onboarding.path.demo',
+                'Just explore with a local demo'
+              ),
+              value: 'demo'
+            }
+          ]}
+          className="w-full"
+        />
+        {pathChoice === 'no-server' && (
+          <Alert
+            className="mt-2 text-xs"
+            type="info"
+            showIcon
+            message={t(
+              'settings:onboarding.path.noServerTitle',
+              'No server yet? You can still explore.'
+            )}
+            description={
+              <span className="inline-flex flex-col gap-2">
+                <span>
+                  {t(
+                    'settings:onboarding.path.noServerBody',
+                    'tldw_server is a separate, self-hosted app. You can follow the setup guide now, or come back later and continue in demo mode.'
+                  )}
+                </span>
+                <span className="inline-flex flex-wrap items-center gap-2">
+                  <Button
+                    size="small"
+                    onClick={() => {
+                      try {
+                        const docsUrl =
+                          t(
+                            'settings:onboarding.serverDocsUrl',
+                            'https://github.com/rmusser01/tldw_browser_assistant'
+                          ) ||
+                          'https://github.com/rmusser01/tldw_browser_assistant'
+                        window.open(
+                          docsUrl,
+                          '_blank',
+                          'noopener,noreferrer'
+                        )
+                      } catch {
+                        // ignore navigation errors
+                      }
+                    }}
+                  >
+                    {t(
+                      'settings:onboarding.path.openSetupGuide',
+                      'Open setup guide'
+                    )}
+                  </Button>
+                  <Button
+                    size="small"
+                    onClick={handleUseDemoMode}
+                  >
+                    {t(
+                      'settings:onboarding.path.useDemoFromNoServer',
+                      'Use local demo mode'
+                    )}
+                  </Button>
+                </span>
+              </span>
+            }
+          />
+        )}
+        {pathChoice === 'demo' && (
+          <Alert
+            className="mt-2 text-xs"
+            type="info"
+            showIcon
+            message={t(
+              'settings:onboarding.path.demoTitle',
+              'Explore the extension in demo mode'
+            )}
+            description={
+              <span className="inline-flex flex-col gap-2">
+                <span>
+                  {t(
+                    'settings:onboarding.path.demoBody',
+                    'Demo mode lets you try chat, notes, and media with sample data. Server-dependent features like Knowledge search will stay limited until you connect your own tldw_server.'
+                  )}
+                </span>
+                <span>
+                  <Button
+                    size="small"
+                    type="primary"
+                    onClick={handleUseDemoMode}
+                  >
+                    {t(
+                      'settings:onboarding.path.demoCta',
+                      'Use local demo mode'
+                    )}
+                  </Button>
+                </span>
+              </span>
+            }
+          />
+        )}
+      </div>
 
       <div className="mb-4 flex items-center justify-between text-xs text-gray-600 dark:text-gray-400">
         <span>
@@ -448,6 +664,9 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
             status={serverHint.tone === 'error' && serverTouched ? 'error' : ''}
           />
           <div
+            role="status"
+            aria-live="polite"
+            aria-atomic="true"
             className={
               'text-xs ' +
               (serverHint.tone === 'error'
@@ -499,15 +718,36 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
           <div>
             <label className="block text-sm font-medium mb-1 text-gray-800 dark:text-gray-100">{t('settings:onboarding.authMode.label')}</label>
             <Segmented
-              options={[{ label: t('settings:onboarding.authMode.single'), value: 'single-user' }, { label: t('settings:onboarding.authMode.multi'), value: 'multi-user' }]}
+              options={[
+                {
+                  label: t('settings:onboarding.authMode.single'),
+                  value: 'single-user'
+                },
+                {
+                  label: t('settings:onboarding.authMode.multi'),
+                  value: 'multi-user'
+                }
+              ]}
               value={authMode}
               onChange={(v) => setAuthMode(v as any)}
             />
+            <p className="mt-2 text-xs text-gray-600 dark:text-gray-400">
+              {t(
+                'settings:onboarding.authMode.help',
+                'Single User (API Key) is recommended for personal or small-team servers. Multi User (Login) is for shared deployments where people sign in with usernames or SSO. Choose the mode that matches how your tldw_server is set up.'
+              )}
+            </p>
           </div>
           {authMode === 'single-user' ? (
             <div>
               <label className="block text-sm font-medium text-gray-800 dark:text-gray-100">{t('settings:onboarding.apiKey.label')}</label>
               <Input.Password placeholder={t('settings:onboarding.apiKey.placeholder')} value={apiKey} onChange={(e) => setApiKey(e.target.value)} />
+              <p className="mt-1 text-xs text-gray-600 dark:text-gray-400">
+                {t(
+                  'settings:onboarding.apiKey.help',
+                  'Find your API key in tldw_server → Settings → API Keys. Generate a key there and paste it here.'
+                )}
+              </p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
