@@ -10,7 +10,10 @@ import { Header } from "./Header"
 import { EraserIcon, XIcon } from "lucide-react"
 // import { PageAssitDatabase } from "@/db/"
 import { useMessageOption } from "@/hooks/useMessageOption"
-import { useChatShortcuts, useSidebarShortcuts } from "@/hooks/keyboard/useKeyboardShortcuts"
+import {
+  useChatShortcuts,
+  useSidebarShortcuts
+} from "@/hooks/keyboard/useKeyboardShortcuts"
 import { useQueryClient } from "@tanstack/react-query"
 import { useStoreChatModelSettings } from "@/store/model"
 import { PageAssistDatabase } from "@/db/dexie/chat"
@@ -35,14 +38,15 @@ export default function OptionLayout({
     temporaryChat,
     setSelectedSystemPrompt,
     setContextFiles,
-    useOCR
+    useOCR,
+    selectedModel
   } = useMessageOption()
   const queryClient = useQueryClient()
   const { setSystemPrompt } = useStoreChatModelSettings()
 
   // Create toggle function for sidebar
   const toggleSidebar = () => {
-    setSidebarOpen(prev => !prev)
+    setSidebarOpen((prev) => !prev)
   }
 
   // Initialize shortcuts
@@ -119,6 +123,7 @@ export default function OptionLayout({
             temporaryChat={temporaryChat}
             history={history}
             setContext={setContextFiles}
+            selectedModel={selectedModel}
           />
         </Drawer>
 
@@ -126,7 +131,7 @@ export default function OptionLayout({
           open={openModelSettings}
           setOpen={setOpenModelSettings}
           useDrawer
-          isOCREnabled={useOCR} 
+          isOCREnabled={useOCR}
         />
       </main>
     </div>

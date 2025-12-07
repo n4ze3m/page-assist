@@ -62,6 +62,7 @@ type Props = {
   historyId: string
   history: any
   isOpen: boolean
+  selectedModel: string
 }
 
 export const Sidebar = ({
@@ -76,7 +77,8 @@ export const Sidebar = ({
   setSystemPrompt,
   temporaryChat,
   isOpen,
-  setContext
+  setContext,
+  selectedModel
 }: Props) => {
   const { t } = useTranslation(["option", "common"])
   const client = useQueryClient()
@@ -106,7 +108,7 @@ export const Sidebar = ({
       const history = await db.getChatHistory(chat.id)
       const historyDetails = await db.getHistoryInfo(chat.id)
       const chatHistory = formatToChatHistory(history)
-      const model = historyDetails?.model_id || ""
+      const model = selectedModel
       
       const generatedTitle = await generateTitle(model, chatHistory, chat.title)
       if (generatedTitle && generatedTitle !== chat.title) {
