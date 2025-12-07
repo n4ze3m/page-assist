@@ -1,5 +1,5 @@
 import { cleanUrl } from "~/libs/clean-url"
-import { systemPromptForNonRagOption } from "~/services/ollama"
+import { systemPromptForNonRagOption } from "~/services/tldw-server"
 import { type ChatHistory, type Message } from "~/store/option"
 import { getPromptById } from "@/db/dexie/helpers"
 import { generateHistory } from "@/utils/generate-history"

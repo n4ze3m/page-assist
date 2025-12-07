@@ -1,23 +1,19 @@
 /**
- * Rewrites the URL of a request to set the 'Origin' header based on the user's Ollama settings.
+ * Rewrites the URL of a request to set the 'Origin' header based on the user's CORS settings.
  *
  * This function is used to handle CORS issues that may arise when making requests to certain domains.
- * It checks the user's Ollama settings to determine if URL rewriting is enabled, and if so, it updates the
+ * It checks the user's advanced settings to determine if URL rewriting is enabled, and if so, it updates the
  * 'Origin' header of the request to the specified rewrite URL.
  *
  * @param domain - The domain of the request to be rewritten.
- * @param type - The type of request, defaults to 'ollama'.
  * @returns - A Promise that resolves when the URL rewriting is complete.
  */
-import { getAdvancedOllamaSettings } from "@/services/app"
+import { getAdvancedCORSSettings } from "@/services/app"
 
-export const urlRewriteRuntime = async function (
-  domain: string,
-  type = "ollama"
-) {
+export const urlRewriteRuntime = async function (domain: string) {
   if (browser.runtime && browser.runtime.id) {
     const { isEnableRewriteUrl, rewriteUrl, autoCORSFix } =
-      await getAdvancedOllamaSettings()
+      await getAdvancedCORSSettings()
 
     if (!autoCORSFix) {
       if (
@@ -48,7 +44,7 @@ export const urlRewriteRuntime = async function (
       const url = new URL(domain)
       const domains = [url.hostname]
       let origin = `${url.protocol}//${url.hostname}`
-      if (isEnableRewriteUrl && rewriteUrl && type === "ollama") {
+      if (isEnableRewriteUrl && rewriteUrl) {
         origin = rewriteUrl
       }
       const rules = [
@@ -83,7 +79,7 @@ export const urlRewriteRuntime = async function (
       browser.webRequest.onBeforeSendHeaders.addListener(
         (details) => {
           let origin = `${url.protocol}//${url.hostname}`
-          if (isEnableRewriteUrl && rewriteUrl && type === "ollama") {
+          if (isEnableRewriteUrl && rewriteUrl) {
             origin = rewriteUrl
           }
           for (let i = 0; i < details.requestHeaders.length; i++) {

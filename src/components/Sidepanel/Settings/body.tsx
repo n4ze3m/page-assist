@@ -12,7 +12,7 @@ import {
   defaultEmbeddingModelForRag,
   saveForRag,
   getEmbeddingModels
-} from "~/services/ollama"
+} from "~/services/tldw-server"
 
 import {
   Skeleton,
@@ -31,7 +31,7 @@ import { MoonIcon, SunIcon } from "lucide-react"
 import { Trans, useTranslation } from "react-i18next"
 import { useI18n } from "@/hooks/useI18n"
 import { TTSModeSettings } from "@/components/Option/Settings/tts-mode"
-import { AdvanceOllamaSettings } from "@/components/Common/Settings/AdvanceOllamaSettings"
+import { AdvancedCORSSettings } from "@/components/Common/Settings/AdvancedCORSSettings"
 import { useStorage } from "@plasmohq/storage/hook"
 import { getTotalFilePerKB } from "@/services/app"
 import { SidepanelRag } from "@/components/Option/Settings/sidepanel-rag"
@@ -79,7 +79,7 @@ export const SettingsBody = () => {
         getOllamaURL(),
         systemPromptForNonRag(),
         promptForRag(),
-        getEmbeddingModels({ returnEmpty: true }),
+        getEmbeddingModels(),
         defaultEmbeddingChunkOverlap(),
         defaultEmbeddingChunkSize(),
         defaultEmbeddingModelForRag(),
@@ -251,7 +251,7 @@ export const SettingsBody = () => {
                   </p>
                 </div>
               ),
-              children: <AdvanceOllamaSettings />
+              children: <AdvancedCORSSettings />
             }
           ]}
         />

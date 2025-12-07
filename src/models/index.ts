@@ -1,4 +1,4 @@
-import { getModelInfo, isCustomModel, isOllamaModel } from "@/db/dexie/models"
+import { getModelInfo, isCustomModel } from "@/db/dexie/models"
 import { ChatChromeAI } from "./ChatChromeAi"
 import { ChatTldw } from "./ChatTldw"
 import { getOpenAIConfigById } from "@/db/dexie/openai"
@@ -91,10 +91,6 @@ export const pageAssistModel = async ({
     const modelInfo = await getModelInfo(model)
     const providerInfo = await getOpenAIConfigById(modelInfo.provider_id)
 
-    if (isOllamaModel(model)) {
-      await urlRewriteRuntime(providerInfo.baseUrl || "")
-    }
-
     if (providerInfo?.fix_cors) {
       console.log("Fixing CORS for provider:", providerInfo.provider)
       await urlRewriteRuntime(providerInfo.baseUrl || "")
@@ -144,17 +140,6 @@ export const pageAssistModel = async ({
           }
         },
         reasoning_effort: modelConfig?.reasoningEffort as any
-      }) as any
-    }
-
-    if (providerInfo.provider === "ollama2") {
-      // Redirect Ollama models to tldw_server Chat
-      return new ChatTldw({
-        model: modelInfo.model_id,
-        temperature: modelSettings?.temperature || temperature,
-        topP: modelSettings?.topP || topP,
-        maxTokens: modelSettings?.numPredict || numPredict,
-        streaming: true
       }) as any
     }
 

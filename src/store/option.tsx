@@ -1,9 +1,15 @@
-import { Knowledge } from "@/db/knowledge"
 import { ChatDocuments } from "@/models/ChatTypes"
 import { create } from "zustand"
 import { type UploadedFile } from "@/db/dexie/types"
 import { isFireFoxPrivateMode } from "@/utils/is-private-mode"
 import { type ConversationState } from "@/services/tldw/TldwApiClient"
+
+// Knowledge type is now server-side only; this is a placeholder for legacy compatibility
+type Knowledge = {
+  id: string
+  title: string
+  [key: string]: any
+}
 
 type WebSearch = {
   search_engine: string

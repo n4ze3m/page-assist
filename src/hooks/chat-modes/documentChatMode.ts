@@ -1,5 +1,5 @@
 import { cleanUrl } from "~/libs/clean-url"
-import { geWebSearchFollowUpPrompt, promptForRag } from "~/services/ollama"
+import { geWebSearchFollowUpPrompt, promptForRag } from "~/services/tldw-server"
 import { type ChatHistory, type Message } from "~/store/option"
 import { addFileToSession, generateID, getSessionFiles } from "@/db/dexie/helpers"
 import { generateHistory } from "@/utils/generate-history"

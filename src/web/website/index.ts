@@ -3,7 +3,7 @@ import { PageAssistHtmlLoader } from "@/loader/html"
 import { pageAssistEmbeddingModel } from "@/models/embedding"
 import { getNoOfRetrievedDocs } from "@/services/app"
 import { getMaxContextSize, isChatWithWebsiteEnabled } from "@/services/kb"
-import { defaultEmbeddingModelForRag, getOllamaURL } from "@/services/ollama"
+import { defaultEmbeddingModelForRag, getOllamaURL } from "@/services/tldw-server"
 import { getPageAssistTextSplitter } from "@/utils/text-splitter"
 
 import { MemoryVectorStore } from "langchain/vectorstores/memory"

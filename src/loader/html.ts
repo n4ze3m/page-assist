@@ -1,111 +1,77 @@
-import { BaseDocumentLoader } from "langchain/document_loaders/base"
 import { Document } from "@langchain/core/documents"
-import { isWikipedia, parseWikipedia } from "@/parser/wiki"
-import { extractReadabilityContent } from "@/parser/reader"
-import { isYoutubeLink } from "@/utils/is-youtube"
 
-
-
-const getTranscript = async (url: string) => {
-  try {
-    // Avoid Vite pre-bundling; load only at runtime in environments that support it
-    const mod = await import(/* @vite-ignore */ 'yt-transcript')
-    const YtTranscript = (mod as any).YtTranscript || mod
-    const ytTranscript = new YtTranscript({ url })
-    return await ytTranscript.getTranscript()
-  } catch (e) {
-    console.warn('YouTube transcript disabled in this environment:', e)
-    return null
-  }
-}
-
-export interface WebLoaderParams {
+interface PageAssistHtmlLoaderOptions {
   html: string
   url: string
 }
 
-export class PageAssistHtmlLoader
-  extends BaseDocumentLoader
-  implements WebLoaderParams {
-  html: string
-  url: string
+/**
+ * Simple HTML loader that extracts text content from HTML documents.
+ * Used for web search result processing.
+ */
+export class PageAssistHtmlLoader {
+  private html: string
+  private url: string
 
-  constructor({ html, url }: WebLoaderParams) {
-    super()
-    this.html = html
-    this.url = url
+  constructor(options: PageAssistHtmlLoaderOptions) {
+    this.html = options.html
+    this.url = options.url
   }
 
-  async load(): Promise<Document<Record<string, any>>[]> {
-    console.log("Loading HTML...", this.url)
-    if (isYoutubeLink(this.url)) {
-      console.log("Youtube link detected")
-      const transcript = await getTranscript(this.url)
-      if (!transcript) {
-        throw new Error("Transcript not found for this video.")
-      }
+  async load(): Promise<Document[]> {
+    const parser = new DOMParser()
+    const doc = parser.parseFromString(this.html, "text/html")
 
-      let text = ""
+    // Remove scripts, styles, and other non-content elements
+    const elementsToRemove = doc.querySelectorAll(
+      "script, style, noscript, iframe, nav, footer, header, aside"
+    )
+    elementsToRemove.forEach((el) => el.remove())
 
-      transcript.forEach((item) => {
-        text += `[${item?.start}] ${item?.text}\n`
+    // Get text content
+    const textContent = doc.body?.textContent || ""
+    const cleanedText = textContent
+      .replace(/\s+/g, " ")
+      .trim()
+
+    if (!cleanedText) {
+      return []
+    }
+
+    return [
+      new Document({
+        pageContent: cleanedText,
+        metadata: {
+          url: this.url,
+          title: doc.title || ""
+        }
+      })
+    ]
+  }
+
+  async loadByURL(): Promise<Document[]> {
+    try {
+      const abortController = new AbortController()
+      setTimeout(() => abortController.abort(), 10000)
+
+      const response = await fetch(this.url, {
+        signal: abortController.signal,
+        headers: {
+          "User-Agent": navigator.userAgent,
+          Accept:
+            "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
+        }
       })
 
-      return [
-        {
-          metadata: {
-            source: this.url,
-            url: this.url,
-            audio: { chunks: transcript }
-          },
-          pageContent: text
-        }
-      ]
-    }
-    const metadata = { source: this.url, url: this.url, }
-    return [new Document({ pageContent: this.html, metadata })]
-  }
-
-  async loadByURL(): Promise<Document<Record<string, any>>[]> {
-    try {
-      console.log("Loading HTML...", this.url)
-      if (isYoutubeLink(this.url)) {
-        console.log("Youtube link detected")
-        const transcript = await getTranscript(this.url)
-        if (!transcript) {
-          throw new Error("Transcript not found for this video.")
-        }
-
-        let text = ""
-
-        transcript?.forEach((item) => {
-          text += `[${item?.start}] ${item?.text}\n`
-        })
-
-        return [
-          {
-            metadata: {
-              url: this.url,
-              source: this.url,
-              audio: { chunks: transcript }
-            },
-            pageContent: text
-          }
-        ]
-      }
-      // await urlRewriteRuntime(this.url, "web")
-      let text = "";
-      if (isWikipedia(this.url)) {
-        const fetchHTML = await fetch(this.url)
-        text = parseWikipedia(await fetchHTML.text())
-      } else {
-        text = await extractReadabilityContent(this.url)
+      if (!response.ok) {
+        return []
       }
 
-      const metadata = { url: this.url }
-      return [new Document({ pageContent: text, metadata })]
-    } catch (e) {
-      console.log("[PageAssistHtmlLoader] loadByURL", e)
+      const html = await response.text()
+      this.html = html
+      return this.load()
+    } catch (error) {
+      console.error(`Failed to load URL ${this.url}:`, error)
       return []
     }
   }

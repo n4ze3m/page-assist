@@ -6,7 +6,7 @@ import {
     defaultEmbeddingModelForRag,
     getOllamaURL,
     getSelectedModel
-} from "@/services/ollama"
+} from "@/services/tldw-server"
 import {
     getIsSimpleInternetSearch,
     totalSearchResults
@@ -18,7 +18,7 @@ import * as cheerio from "cheerio"
 import { MemoryVectorStore } from "langchain/vectorstores/memory"
 
 export const localBraveSearch = async (query: string) => {
-    await urlRewriteRuntime(cleanUrl("https://search.brave.com/search?q=" + query), "duckduckgo")
+    await urlRewriteRuntime(cleanUrl("https://search.brave.com/search?q=" + query))
 
     const abortController = new AbortController()
     setTimeout(() => abortController.abort(), 10000)

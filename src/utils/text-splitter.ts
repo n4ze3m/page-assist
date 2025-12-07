@@ -1,36 +1,19 @@
-import {
-  RecursiveCharacterTextSplitter,
-  CharacterTextSplitter
-} from "langchain/text_splitter"
-
+import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters"
 import {
   defaultEmbeddingChunkOverlap,
-  defaultEmbeddingChunkSize,
-  defaultSsplttingSeparator,
-  defaultSplittingStrategy
-} from "@/services/ollama"
+  defaultEmbeddingChunkSize
+} from "@/services/tldw-server"
 
+/**
+ * Returns a text splitter configured with user preferences.
+ * Used for web search result processing.
+ */
 export const getPageAssistTextSplitter = async () => {
   const chunkSize = await defaultEmbeddingChunkSize()
   const chunkOverlap = await defaultEmbeddingChunkOverlap()
-  const splittingStrategy = await defaultSplittingStrategy()
 
-  switch (splittingStrategy) {
-    case "CharacterTextSplitter":
-      const splittingSeparator = await defaultSsplttingSeparator()
-      const processedSeparator = splittingSeparator
-        .replace(/\\n/g, "\n")
-        .replace(/\\t/g, "\t")
-        .replace(/\\r/g, "\r")
-      return new CharacterTextSplitter({
-        chunkSize,
-        chunkOverlap,
-        separator: processedSeparator
-      })
-    default:
-      return new RecursiveCharacterTextSplitter({
-        chunkSize,
-        chunkOverlap
-      })
-  }
+  return new RecursiveCharacterTextSplitter({
+    chunkSize,
+    chunkOverlap
+  })
 }

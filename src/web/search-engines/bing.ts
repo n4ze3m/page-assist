@@ -6,7 +6,7 @@ import {
     defaultEmbeddingModelForRag,
     getOllamaURL,
     getSelectedModel
-} from "@/services/ollama"
+} from "@/services/tldw-server"
 import {
     getIsSimpleInternetSearch,
     totalSearchResults
@@ -19,10 +19,7 @@ import { MemoryVectorStore } from "langchain/vectorstores/memory"
 const BING_SEARCH_URL = "https://www.bing.com/search?q="
 
 export const localBingSearch = async (query: string) => {
-    await urlRewriteRuntime(
-        cleanUrl(BING_SEARCH_URL + query),
-        "bing"
-    )
+    await urlRewriteRuntime(cleanUrl(BING_SEARCH_URL + query))
 
     const abortController = new AbortController()
     setTimeout(() => abortController.abort(), 10000)

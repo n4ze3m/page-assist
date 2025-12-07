@@ -26,7 +26,6 @@ export const removeModelSuffix = (id: string) => {
     .replace(/_model-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{3,4}-[a-f0-9]{4}/, "")
     .replace(/_lmstudio_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/, "")
     .replace(/_llamafile_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/, "")
-    .replace(/_ollama2_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/, "")
     .replace(/_llamacpp_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/, "")
     .replace(/_vllm_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/, "")
 }
@@ -53,10 +52,6 @@ export const isVLLMModel = (model: string) => {
   return vllmModelRegex.test(model)
 }
 
-export const isOllamaModel = (model: string) => {
-  const ollamaModelRegex = /_ollama2_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/
-  return ollamaModelRegex.test(model)
-}
 export const getLMStudioModelId = (
   model: string
 ): { model_id: string; provider_id: string } => {
@@ -66,18 +61,6 @@ export const getLMStudioModelId = (
   if (match) {
     const modelId = match[0]
     const providerId = match[0].replace("_lmstudio_openai-", "")
-    return { model_id: modelId, provider_id: providerId }
-  }
-  return null
-}
-export const getOllamaModelId = (
-  model: string
-): { model_id: string; provider_id: string } => {
-  const ollamaModelRegex = /_ollama2_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/
-  const match = model.match(ollamaModelRegex)
-  if (match) {
-    const modelId = match[0]
-    const providerId = match[0].replace("_ollama2_openai-", "")
     return { model_id: modelId, provider_id: providerId }
   }
   return null
@@ -129,10 +112,6 @@ export const isCustomModel = (model: string) => {
   }
 
   if (isLlamafileModel(model)) {
-    return true
-  }
-
-  if (isOllamaModel(model)) {
     return true
   }
 
@@ -327,24 +306,6 @@ export const getModelInfo = async (id: string) => {
       }
     }
 
-    if (isOllamaModel(id)) {
-      const ollamaId = getOllamaModelId(id)
-      if (!ollamaId) {
-        throw new Error("Invalid LMStudio model ID")
-      }
-      return {
-        model_id: id.replace(
-          /_ollama2_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/,
-          ""
-        ),
-        provider_id: `openai-${ollamaId.provider_id}`,
-        name: id.replace(
-          /_ollama2_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/,
-          ""
-        )
-      }
-    }
-
     const model = await db.getById(id)
     return model
   } catch (e) {
@@ -478,53 +439,6 @@ export const dynamicFetchVLLM = async ({
   return vllmModels
 }
 
-export const dynamicFetchOllama2 = async ({
-  baseUrl,
-  providerId,
-  customHeaders = []
-}: {
-  baseUrl: string
-  providerId: string
-  customHeaders?: { key: string; value: string }[]
-}) => {
-  if (baseUrl.includes("ollama.com")) {
-    // ollama.com is turbo pro something it only have 2 models
-    // we are currenly hardcoding it i don't why
-    const models = [
-      {
-        name: "gpt-oss:20b",
-        id: "gpt-oss:20b"
-      },
-      {
-        name: "gpt-oss:120b",
-        id: "gpt-oss:120b"
-      }
-    ]
-
-    return models.map((e) => {
-      return {
-        name: e?.name || e?.id,
-        id: `${e?.id}_ollama2_${providerId}`,
-        provider: providerId,
-        lookup: `${e?.id}_${providerId}`,
-        provider_id: providerId
-      }
-    })
-  }
-  const models = await getAllOpenAIModels({ baseUrl, customHeaders })
-  const ollama2Models = models.map((e) => {
-    return {
-      name: e?.name || e?.id,
-      id: `${e?.id}_ollama2_${providerId}`,
-      provider: providerId,
-      lookup: `${e?.id}_${providerId}`,
-      provider_id: providerId
-    }
-  })
-
-  return ollama2Models
-}
-
 export const dynamicFetchLlamafile = async ({
   baseUrl,
   providerId,
@@ -548,7 +462,7 @@ export const dynamicFetchLlamafile = async ({
   return llamafileModels
 }
 
-export const ollamaFormatAllCustomModels = async (
+export const formatAllCustomModels = async (
   modelType: "all" | "chat" | "embedding" = "all"
 ) => {
   try {
@@ -563,10 +477,6 @@ export const ollamaFormatAllCustomModels = async (
 
     const llamafileProviders = allProviders.filter(
       (provider) => provider.provider === "llamafile"
-    )
-
-    const ollamaProviders = allProviders.filter(
-      (provider) => provider.provider === "ollama2"
     )
 
     const llamacppProvider = allProviders.filter(
@@ -593,14 +503,6 @@ export const ollamaFormatAllCustomModels = async (
       })
     )
 
-    const ollamaModelsPromises = ollamaProviders.map((provider) =>
-      dynamicFetchOllama2({
-        baseUrl: provider.baseUrl,
-        providerId: provider.id,
-        customHeaders: provider.headers
-      })
-    )
-
     const llamacppModelsPromises = llamacppProvider.map((provider) =>
       dynamicFetchLLamaCpp({
         baseUrl: provider.baseUrl,
@@ -621,8 +523,6 @@ export const ollamaFormatAllCustomModels = async (
 
     const llamafileModelsFetch = await Promise.all(llamafileModelsPromises)
 
-    const ollamaModelsFetch = await Promise.all(ollamaModelsPromises)
-
     const llamacppModelsFetch = await Promise.all(llamacppModelsPromises)
 
     const vllmModelsFetch = await Promise.all(vllmModelsPromises)
@@ -631,25 +531,22 @@ export const ollamaFormatAllCustomModels = async (
 
     const llamafileModels = llamafileModelsFetch.flat()
 
-    const ollama2Models = ollamaModelsFetch.flat()
-
     const llamacppModels = llamacppModelsFetch.flat()
 
     const vllmModels = vllmModelsFetch.flat()
 
-    // merge allModels and lmModels
-    const allModlesWithLMStudio = [
+    // merge allModels with dynamic providers
+    const allModelsWithProviders = [
       ...(modelType !== "all"
         ? allModles.filter((model) => model.model_type === modelType)
         : allModles),
       ...lmModels,
       ...llamafileModels,
-      ...ollama2Models,
       ...llamacppModels,
       ...vllmModels
     ]
 
-    const ollamaModels = allModlesWithLMStudio.map((model) => {
+    const customModels = allModelsWithProviders.map((model) => {
       return {
         name: model.name,
         model: model.id,
@@ -670,7 +567,7 @@ export const ollamaFormatAllCustomModels = async (
       }
     })
 
-    return ollamaModels.map((model) => {
+    return customModels.map((model) => {
       return {
         ...model,
         nickname: modelNicknames[model.model]?.model_name || model.name,

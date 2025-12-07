@@ -6,10 +6,10 @@ import {
   defaultEmbeddingChunkSize,
   defaultEmbeddingModelForRag,
   defaultSplittingStrategy,
-  defaultSsplttingSeparator,
+  defaultSplittingSeparator,
   getEmbeddingModels,
   saveForRag
-} from "~/services/ollama"
+} from "~/services/tldw-server"
 import { SettingPrompt } from "./prompt"
 import { useTranslation } from "react-i18next"
 import { getNoOfRetrievedDocs, getTotalFilePerKB } from "@/services/app"
@@ -35,14 +35,14 @@ export const RagSettings = () => {
         splittingStrategy,
         splittingSeparator
       ] = await Promise.all([
-        getEmbeddingModels({ returnEmpty: true }),
+        getEmbeddingModels(),
         defaultEmbeddingChunkOverlap(),
         defaultEmbeddingChunkSize(),
         defaultEmbeddingModelForRag(),
         getTotalFilePerKB(),
         getNoOfRetrievedDocs(),
         defaultSplittingStrategy(),
-        defaultSsplttingSeparator()
+        defaultSplittingSeparator()
       ])
       return {
         models: allModels,

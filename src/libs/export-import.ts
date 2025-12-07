@@ -11,52 +11,17 @@ import {
   importOAIConfigsV2,
   importPromptsV2
 } from "@/db/dexie/helpers"
-import { exportKnowledge, importKnowledgeV2 } from "@/db/dexie/knowledge"
 import { db } from "@/db/dexie/schema"
-import { exportVectors, importVectorsV2 } from "@/db/dexie/vector"
-import { importKnowledge } from "@/db/knowledge"
-import { importVectors } from "@/db/vector"
 
-export const formatKnowledge = (knowledge: any[]) => {
-  const kb = []
-  for (const k of knowledge) {
-    if (Array.isArray(k)) {
-      kb.push(...formatKnowledge(k))
-    } else {
-      if (k?.db_type === "knowledge") {
-        kb.push(k)
-      }
-    }
-  }
-
-  return kb
-}
-export const formatVector = (vector: any[]) => {
-  const vec = []
-  for (const v of vector) {
-    if (Array.isArray(v)) {
-      vector.push(...formatVector(v))
-    } else {
-      if (v?.vectors) {
-        vec.push(v)
-      }
-    }
-  }
-  return vec
-}
 export const exportPageAssistData = async () => {
-  const knowledge = await exportKnowledge()
   const chat = await exportChatHistory()
-  const vector = await exportVectors()
   const prompts = await exportPrompts()
   const oaiConfigs = await exportOAIConfigs()
   const nicknames = await exportNicknames()
   const models = await exportModels()
 
   const data = {
-    knowledge,
     chat,
-    vector,
     prompts,
     oaiConfigs,
     nicknames,
@@ -74,6 +39,7 @@ export const exportPageAssistData = async () => {
   a.click()
   URL.revokeObjectURL(url)
 }
+
 export const importPageAssistData = async (file: File) => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader()
@@ -87,24 +53,14 @@ export const importPageAssistData = async (file: File) => {
             db.chatHistories,
             db.messages,
             db.prompts,
-            db.knowledge,
-            db.vectors,
             db.sessionFiles,
             db.openaiConfigs,
             db.modelNickname,
             db.customModels
           ],
           async () => {
-            if (data?.knowledge && Array.isArray(data.knowledge)) {
-              await importKnowledgeV2(formatKnowledge(data?.knowledge), options)
-            }
-
             if (data?.chat && Array.isArray(data.chat)) {
               await importChatHistoryV2(data.chat, options)
-            }
-
-            if (data?.vector && Array.isArray(data.vector)) {
-              await importVectorsV2(formatVector(data.vector), options)
             }
 
             if (data?.prompts && Array.isArray(data.prompts)) {
@@ -144,16 +100,8 @@ export const importPageAssistDataOld = async (file: File) => {
       try {
         const data = JSON.parse(reader.result as string)
 
-        if (data?.knowledge) {
-          await importKnowledge(data.knowledge)
-        }
-
         if (data?.chat) {
           await importChatHistory(data.chat)
-        }
-
-        if (data?.vector) {
-          await importVectors(data.vector)
         }
 
         if (data?.prompts) {

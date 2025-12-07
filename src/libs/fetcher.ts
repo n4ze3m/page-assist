@@ -1,11 +1,11 @@
-import { getCustomOllamaHeaders } from "@/services/app"
+import { getCustomHeaders } from "@/services/app"
 
 
 const fetcher = async (input: string | URL | globalThis.Request, init?: RequestInit) : Promise<Response> => {
     const update = {...init} || {}
-    const customHeaders = await getCustomOllamaHeaders()
+    const customHdrs = await getCustomHeaders()
     update.headers = {
-        ...customHeaders,
+        ...customHdrs,
         ...update?.headers
     }
     return fetch(input, update)

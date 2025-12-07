@@ -3,19 +3,19 @@ import { useTranslation } from "react-i18next"
 import { Form } from "antd"
 import React from "react"
 import {
-  customOllamaHeaders,
+  customHeaders,
   getIsAutoCORSFix,
   getRewriteUrl,
   isUrlRewriteEnabled,
   setAutoCORSFix,
-  setCustomOllamaHeaders,
+  setCustomHeaders,
   setRewriteUrl,
   setUrlRewriteEnabled
 } from "@/services/app"
 import { Trash2Icon } from "lucide-react"
 import { SaveButton } from "../SaveButton"
 
-export const AdvanceOllamaSettings = () => {
+export const AdvancedCORSSettings = () => {
   const [form] = Form.useForm()
   const watchUrlRewriteEnabled = Form.useWatch("urlRewriteEnabled", form)
   const { t } = useTranslation("settings")
@@ -26,7 +26,7 @@ export const AdvanceOllamaSettings = () => {
         await Promise.all([
           isUrlRewriteEnabled(),
           getRewriteUrl(),
-          customOllamaHeaders(),
+          customHeaders(),
           getIsAutoCORSFix()
         ])
       form.setFieldsValue({
@@ -52,7 +52,7 @@ export const AdvanceOllamaSettings = () => {
         )
         setUrlRewriteEnabled(e.urlRewriteEnabled)
         setRewriteUrl(e.rewriteUrl)
-        setCustomOllamaHeaders(headers)
+        setCustomHeaders(headers)
         setAutoCORSFix(e.autoCORSFix)
       }}
       form={form}

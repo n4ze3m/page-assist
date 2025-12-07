@@ -13,110 +13,57 @@ const getMessage = (key: string, fallback: string, substitutions?: string | stri
 }
 
 export default defineContentScript({
-  main(ctx) {
-    let isPulling = false
-
-    const extractOllamaModelName = (cmd: string): string | null => {
-      const line = cmd
-        .split("\n")
-        .find((l) => {
-          const trimmed = l.trim()
-          return (
-            trimmed.startsWith("ollama run") ||
-            trimmed.startsWith("ollama pull")
-          )
+  main() {
+    const sendToTldw = async () => {
+      const url = window.location.href
+      // The path is declared in the OpenAPI spec; annotate for compile-time safety
+      const path = '/api/v1/media/add' as AllowedPath
+      try {
+        const resp = await apiSend({
+          path,
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: { url }
         })
-      if (!line) return null
-      const [, , ...rest] = line.trim().split(/\s+/)
-      if (!rest.length) return null
-      // Ignore flags and grab the first non-flag token as the model name
-      const modelToken = rest.find((token) => !token.startsWith("-"))
-      return modelToken || null
-    }
 
-    const downloadModel = async (modelName: string) => {
-      if (isPulling) {
-        alert(
-          getMessage(
-            "hfPullInProgress",
-            "[tldw Assistant] A model pull request is already in progress. Please wait for it to finish before starting another one."
-          )
-        )
-        return false
-      }
-
-      const ok = confirm(
-        getMessage(
-          "hfPullConfirm",
-          `[tldw Assistant] Do you want to send a request to your tldw_server to pull the "${modelName}" model? This is independent of the huggingface.co website. Your server will start pulling the model after you confirm.`,
-          [modelName]
-        )
-      )
-      if (ok) {
-        isPulling = true
-        alert(
-          getMessage(
-            "hfPullSending",
-            `[tldw Assistant] Sending a request to your tldw_server to pull "${modelName}". Check the extension icon or your tldw_server logs for progress.`,
-            [modelName]
-          )
-        )
-
-        // Path is declared in OpenAPI; annotate for compile-time safety
-        const path = '/api/v1/media/add' as AllowedPath
-        try {
-          const resp = await apiSend({
-            path,
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: { url: window.location.href, model: modelName }
-          })
-          if (!resp?.ok) {
-            console.error(
-              "[tldw Assistant] Model pull request rejected by tldw_server",
-              resp
-            )
-            const msg =
-              resp.error && resp.error.length <= 140
-                ? getMessage(
-                    "hfPullErrorWithDetail",
-                    `[tldw Assistant] Failed to send a pull request for "${modelName}": ${resp.error}. Check Settings → tldw server and try again.`,
-                    [modelName, resp.error]
-                  )
-                : getMessage(
-                    "hfPullError",
-                    `[tldw Assistant] Failed to send a pull request for "${modelName}". Check Settings → tldw server and try again.`,
-                    [modelName]
-                  )
-            alert(msg)
-            return false
-          }
-          alert(
-            getMessage(
-              "hfPullSuccess",
-              `[tldw Assistant] Request sent to your tldw_server to pull "${modelName}". Monitor the extension icon or tldw_server logs for status.`,
-              [modelName]
-            )
-          )
-          return true
-        } catch (error) {
+        if (!resp?.ok) {
           console.error(
-            "[tldw Assistant] Failed to send model pull request to tldw_server",
-            error
+            "[tldw] Page send request rejected by tldw_server",
+            resp
           )
-          alert(
-            getMessage(
-              "hfPullException",
-              `[tldw Assistant] Something went wrong while sending a pull request for "${modelName}" to your tldw_server. Check that your tldw_server and the extension are running, then try again.`,
-              [modelName]
-            )
-          )
-          return false
-        } finally {
-          isPulling = false
+          const msg =
+            resp?.error && resp.error.length <= 140
+              ? getMessage(
+                  "hfSendPageErrorWithDetail",
+                  `[tldw] Failed to send this page to tldw_server: ${resp.error}. Check Settings → tldw server and try again.`,
+                  [resp.error]
+                )
+              : getMessage(
+                  "hfSendPageError",
+                  "[tldw] Failed to send this page to tldw_server. Check Settings → tldw server and try again."
+                )
+          alert(msg)
+          return
         }
+
+        alert(
+          getMessage(
+            "hfSendPageSuccess",
+            "[tldw] Sent page to tldw_server for processing"
+          )
+        )
+      } catch (error) {
+        console.error(
+          "[tldw] Failed to send page to tldw_server for processing",
+          error
+        )
+        alert(
+          getMessage(
+            "hfSendPageException",
+            "[tldw] Something went wrong while sending this page to tldw_server. Check that your tldw_server and the extension are running, then try again."
+          )
+        )
       }
-      return false
     }
 
     const createDownloadIcon = () => {
@@ -136,132 +83,28 @@ export default defineContentScript({
       return svg
     }
 
-    const injectDownloadButton = (modal: HTMLElement) => {
-      const copyButton = modal.querySelector(
-        'button[title="Copy snippet to clipboard"]'
-      )
-      
-      if (!copyButton && !modal.querySelector(".pageassist-download-button")) {
-        const downloadButton = document.createElement("button")
-        downloadButton.classList.add("pageassist-download-button", "focus:outline-hidden", "inline-flex", "cursor-pointer", "items-center", "text-sm", "bg-white", "shadow-xs", "rounded-md", "border", "px-2", "py-1", "text-gray-600")
-        const sendLabel = getMessage("contextSendToTldw", "Send to tldw_server")
-        downloadButton.title = sendLabel
-        const icon = createDownloadIcon()
-        const label = document.createElement("span")
-        label.classList.add("ml-1.5")
-        label.textContent = sendLabel
-        downloadButton.append(icon, label)
-        
-        downloadButton.addEventListener("click", async () => {
-          const preElement = modal.querySelector("pre")
-          if (!preElement) return
-
-          const modelCommand = preElement.textContent?.trim() || ""
-          const modelName = extractOllamaModelName(modelCommand)
-          if (!modelName) return
-
-          await downloadModel(modelName)
-        })
-        
-        modal.appendChild(downloadButton)
-        return
-      }
-      
-      // Original logic for complex modals
-      if (copyButton && !modal.querySelector(".pageassist-download-button")) {
-        const downloadButton = copyButton.cloneNode(true) as HTMLElement
-        downloadButton.classList.add("pageassist-download-button")
-        const existingIcon = downloadButton.querySelector("svg")
-        if (existingIcon) {
-          existingIcon.replaceWith(createDownloadIcon())
-        }
-        const sendLabel = getMessage("contextSendToTldw", "Send to tldw_server")
-        downloadButton.querySelector("span")!.textContent = sendLabel
-        downloadButton.addEventListener("click", async () => {
-          const preElement = modal.querySelector("pre")
-          if (!preElement) return
-
-          let modelCommand = ""
-          preElement.childNodes.forEach((node) => {
-            if (node.nodeType === Node.TEXT_NODE) {
-              modelCommand += node.textContent
-            } else if (node instanceof HTMLSelectElement) {
-              modelCommand += node.value
-            } else if (node instanceof HTMLElement) {
-              const selectElement = node.querySelector(
-                "select"
-              ) as HTMLSelectElement
-              if (selectElement) {
-                modelCommand += selectElement.value
-              } else {
-                modelCommand += node.textContent
-              }
-            }
-          })
-
-          modelCommand = modelCommand.trim()
-          const modelName = extractOllamaModelName(modelCommand)
-          if (!modelName) return
-
-          await downloadModel(modelName)
-        })
-        const buttonContainer = document.createElement('div')
-        buttonContainer.classList.add("mb-3")
-        buttonContainer.style.display = 'flex'
-        buttonContainer.style.justifyContent = 'flex-end'
-        buttonContainer.appendChild(downloadButton)
-        modal.querySelector("pre")!.insertAdjacentElement("afterend", buttonContainer)
-      }
+    const injectButton = () => {
+      if (document.querySelector('.tldw-send-button')) return
+      const btn = document.createElement('button')
+      btn.className = 'tldw-send-button focus:outline-hidden inline-flex cursor-pointer items-center text-sm bg-white shadow-xs rounded-md border px-2 py-1 text-gray-600'
+      const sendLabel = getMessage("contextSendToTldw", "Send to tldw_server")
+      btn.title = sendLabel
+      const icon = createDownloadIcon()
+      const label = document.createElement("span")
+      label.classList.add("ml-1.5")
+      label.textContent = sendLabel
+      btn.append(icon, label)
+      btn.style.position = 'fixed'
+      btn.style.bottom = '60px'
+      btn.style.right = '20px'
+      btn.style.zIndex = '2147483647'
+      btn.addEventListener('click', sendToTldw)
+      document.body.appendChild(btn)
     }
 
-    const checkForOllamaCommands = (element: HTMLElement) => {
-      const modal = element.querySelector(".shadow-alternate") as HTMLElement
-      if (modal) {
-        injectDownloadButton(modal)
-        return
-      }
-      const preElements = element.querySelectorAll("pre")
-      preElements.forEach((preElement) => {
-        const text = preElement.textContent || ""
-        if ((text.includes("ollama run") || text.includes("ollama pull")) && 
-            !preElement.parentElement?.querySelector(".pageassist-download-button")) {
-          const container = preElement.closest("div")
-          const copyButton = container?.querySelector('button[title="Copy snippet to clipboard"]')
-          
-          if (copyButton) {
-            const mockModal = document.createElement("div")
-            mockModal.appendChild(preElement.cloneNode(true))
-            
-            injectDownloadButton(mockModal)
-            
-            const downloadButton = mockModal.querySelector(".pageassist-download-button")
-            if (downloadButton) {
-              const buttonContainer = document.createElement('div')
-              buttonContainer.classList.add("mb-3")
-              buttonContainer.style.display = 'flex'
-              buttonContainer.style.justifyContent = 'flex-end'
-              buttonContainer.appendChild(downloadButton)
-              
-              preElement.insertAdjacentElement("afterend", buttonContainer)
-            }
-          }
-        }
-      })
-    }
-
-    const observer = new MutationObserver((mutations) => {
-      for (const mutation of mutations) {
-        mutation.addedNodes.forEach((node) => {
-          if (node instanceof HTMLElement) {
-            checkForOllamaCommands(node)
-          }
-        })
-      }
-    })
-
-    observer.observe(document.body, { childList: true, subtree: true })
-    
-    checkForOllamaCommands(document.body)
+    const observer = new MutationObserver(() => injectButton())
+    observer.observe(document.documentElement, { childList: true, subtree: true })
+    injectButton()
   },
   allFrames: true,
   matches: ["*://huggingface.co/*"]

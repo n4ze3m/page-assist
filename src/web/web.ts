@@ -1,4 +1,4 @@
-import { getWebSearchPrompt } from "~/services/ollama"
+import { getWebSearchPrompt } from "~/services/tldw-server"
 import { webGoogleSearch } from "./search-engines/google"
 import { webDuckDuckGoSearch } from "./search-engines/duckduckgo"
 import { getIsVisitSpecificWebsite, getSearchProvider } from "@/services/search"

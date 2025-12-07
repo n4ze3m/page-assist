@@ -12,7 +12,7 @@ import {
   defaultEmbeddingModelForRag,
   getOllamaURL,
   getSelectedModel
-} from "~/services/ollama"
+} from "~/services/tldw-server"
 import { getPageAssistTextSplitter } from "@/utils/text-splitter"
 
 interface ExaAPIResult {

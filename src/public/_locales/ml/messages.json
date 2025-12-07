@@ -100,32 +100,5 @@
   },
   "hfPullException": {
     "message": "[tldw Assistant] \"$1\" മോഡലിന്റെ പുൾ അഭ്യർത്ഥന tldw_server-ലേക്ക് അയയ്ക്കുമ്പോൾ പ്രശ്നം സംഭവിച്ചു. tldw_serverയും എക്‌സ്റ്റൻഷനും പ്രവർത്തിക്കുന്നുണ്ടോ എന്ന് ഉറപ്പാക്കി വീണ്ടും ശ്രമിക്കുക."
-  },
-  "quickChatHelper.tooltip": {
-    "message": "ക്വിക്ക് ചാറ്റ് സഹായകാങ്ക്"
-  },
-  "quickChatHelper.title": {
-    "message": "ക്വിക്ക് ചാറ്റ് സഹായകാംശം"
-  },
-  "quickChatHelper.inputPlaceholder": {
-    "message": "എളുപ്പത്തില്‍ ഒരു വഴി ചോദിക്കൂ..."
-  },
-  "quickChatHelper.sendButton": {
-    "message": "യൂഴിക്കുക"
-  },
-  "quickChatHelper.emptyState": {
-    "message": "പ്രധാന ചര്‍ച്ച ശുദ്ധമാക്കാന്‍ ഒരു ചുരുങ്ങിയ വശചാറ്റ് ആരംഭിക്കൂ."
-  },
-  "quickChatHelper.popOutButton": {
-    "message": "പോപ്പ് ഔട്ട് ചെയ്യുക"
-  },
-  "quickChatHelper.noModelWarning": {
-    "message": "ദയവായി ആദ്യം മുഖ്യ ചാറ്റില്‍ ഒരു മോഡല്‍ തിരഞ്ഞെടുക്കുക."
-  },
-  "quickChatHelper.userMessageAria": {
-    "message": "നിങ്ങളുടെ സന്ദേശം"
-  },
-  "quickChatHelper.assistantMessageAria": {
-    "message": "അസിസ്റ്റന്റിന്റെ സന്ദേശം"
   }
 }

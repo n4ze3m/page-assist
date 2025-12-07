@@ -6,7 +6,7 @@ import {
   defaultEmbeddingModelForRag,
   getOllamaURL,
   getSelectedModel
-} from "@/services/ollama"
+} from "@/services/tldw-server"
 import {
   getIsSimpleInternetSearch,
   totalSearchResults
@@ -25,10 +25,7 @@ const getCorrectTargeUrl = async (url: string) => {
 }
 export const localSogouSearch = async (query: string) => {
   try {
-    await urlRewriteRuntime(
-      cleanUrl("https://www.sogou.com/web?query=" + query),
-      "sogou"
-    )
+    await urlRewriteRuntime(cleanUrl("https://www.sogou.com/web?query=" + query))
 
     const abortController = new AbortController()
     setTimeout(() => abortController.abort(), 10000)

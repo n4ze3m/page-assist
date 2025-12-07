@@ -1,7 +1,7 @@
-import { getModelInfo, isCustomModel, isOllamaModel } from "@/db/dexie/models"
-import { OllamaEmbeddingsPageAssist } from "./OllamaEmbedding"
+import { getModelInfo, isCustomModel } from "@/db/dexie/models"
 import { OAIEmbedding } from "./OAIEmbedding"
 import { getOpenAIConfigById } from "@/db/dexie/openai"
+import { getTldwServerURL } from "@/services/tldw-server"
 
 type EmbeddingModel = {
     model: string
@@ -28,10 +28,16 @@ export const pageAssistEmbeddingModel = async ({ baseUrl, model, keepAlive, sign
         }) as any
     }
 
-    return new OllamaEmbeddingsPageAssist({
-        model,
-        baseUrl,
-        keepAlive,
-        signal
-    })
+    // Default to tldw_server embeddings endpoint
+    const tldwUrl = await getTldwServerURL()
+    return new OAIEmbedding({
+        modelName: model,
+        model: model,
+        signal,
+        openAIApiKey: "tldw",
+        configuration: {
+            apiKey: "tldw",
+            baseURL: `${tldwUrl}/api/v1`,
+        }
+    }) as any
 }

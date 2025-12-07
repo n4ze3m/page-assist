@@ -13,7 +13,7 @@ import {
   Popover
 } from "antd"
 import { useWebUI } from "~/store/webui"
-import { defaultEmbeddingModelForRag } from "~/services/ollama"
+import { defaultEmbeddingModelForRag } from "~/services/tldw-server"
 import {
   ImageIcon,
   MicIcon,

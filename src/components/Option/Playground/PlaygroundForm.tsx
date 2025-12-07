@@ -17,7 +17,7 @@ import {
 } from "antd"
 import { Image } from "antd"
 import { useWebUI } from "~/store/webui"
-import { defaultEmbeddingModelForRag } from "~/services/ollama"
+import { defaultEmbeddingModelForRag } from "~/services/tldw-server"
 import {
   EraserIcon,
   ImageIcon,

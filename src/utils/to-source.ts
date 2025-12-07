@@ -1,5 +1,13 @@
-import { Source } from "@/db/knowledge"
 import { UploadFile } from "antd"
+
+// Source type for file uploads
+type Source = {
+  source_id: string
+  type: string
+  filename?: string
+  content: string
+  sourceType?: string
+}
 
 export const toBase64 = (file: File | Blob): Promise<string> => {
   return new Promise((resolve, reject) => {

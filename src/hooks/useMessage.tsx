@@ -1,6 +1,6 @@
 import React from "react"
 import { cleanUrl } from "~/libs/clean-url"
-import { geWebSearchFollowUpPrompt, promptForRag, systemPromptForNonRag } from "~/services/ollama"
+import { geWebSearchFollowUpPrompt, promptForRag, systemPromptForNonRag } from "~/services/tldw-server"
 import { useStoreMessageOption, type Message } from "~/store/option"
 import { useStoreMessage } from "~/store"
 import { getContentFromCurrentTab } from "~/libs/get-html"

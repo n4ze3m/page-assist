@@ -6,7 +6,7 @@ import { tldwClient } from '@/services/tldw/TldwApiClient'
 import { HelpCircle, Headphones, Layers, Database, FileText, Film, Cookie, Info, Clock, Grid, BookText, Link2, File as FileIcon, AlertTriangle } from 'lucide-react'
 import { useStorage } from '@plasmohq/storage/hook'
 import { useConfirmDanger } from '@/components/Common/confirm-danger'
-import { defaultEmbeddingModelForRag } from '@/services/ollama'
+import { defaultEmbeddingModelForRag } from '@/services/tldw-server'
 import { tldwModels } from '@/services/tldw'
 import { useConnectionActions, useConnectionState } from '@/hooks/useConnectionState'
 import { useQuickIngestStore } from "@/store/quick-ingest"

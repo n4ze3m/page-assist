@@ -4,7 +4,7 @@ const storage2 = new Storage({
   area: "local"
 })
 
-const DEFAULT_URL_REWRITE_URL = "http://127.0.0.1:11434"
+const DEFAULT_URL_REWRITE_URL = "http://127.0.0.1:8000"
 
 export const isUrlRewriteEnabled = async () => {
   const enabled = await storage.get<boolean | undefined>("urlRewriteEnabled")
@@ -27,21 +27,6 @@ export const setAutoCORSFix = async (enabled: boolean) => {
   await storage2.set("autoCORSFix", enabled)
 }
 
-export const getOllamaEnabled = async () => {
-  try {
-    const enabled = await storage.get<boolean | undefined>(
-      "ollamaEnabledStatus"
-    )
-    return enabled ?? true
-  } catch (e) {
-    return true
-  }
-}
-
-export const setOllamaEnabled = async (enabled: boolean) => {
-  await storage.set("ollamaEnabledStatus", enabled)
-}
-
 export const getRewriteUrl = async () => {
   const rewriteUrl = await storage.get("rewriteUrl")
   if (!rewriteUrl || rewriteUrl.trim() === "") {
@@ -54,7 +39,7 @@ export const setRewriteUrl = async (url: string) => {
   await storage.set("rewriteUrl", url)
 }
 
-export const getAdvancedOllamaSettings = async () => {
+export const getAdvancedCORSSettings = async () => {
   const [isEnableRewriteUrl, rewriteUrl, autoCORSFix] = await Promise.all([
     isUrlRewriteEnabled(),
     getRewriteUrl(),
@@ -67,6 +52,9 @@ export const getAdvancedOllamaSettings = async () => {
     autoCORSFix
   }
 }
+
+// Legacy alias for backward compatibility
+export const getAdvancedOllamaSettings = getAdvancedCORSSettings
 
 export const copilotResumeLastChat = async () => {
   return await storage.get<boolean>("copilotResumeLastChat")
@@ -88,35 +76,40 @@ export const setSidebarOpen = async (sidebarOpen: string) => {
   await storage.set("sidebarOpen", sidebarOpen)
 }
 
-export const customOllamaHeaders = async (): Promise<
+export const customHeaders = async (): Promise<
   { key: string; value: string }[]
 > => {
   const headers = await storage.get<
     { key: string; value: string }[] | undefined
-  >("customOllamaHeaders")
+  >("customHeaders")
   if (!headers) {
     return []
   }
   return headers
 }
 
-export const setCustomOllamaHeaders = async (headers: string[]) => {
-  await storage.set("customOllamaHeaders", headers)
+export const setCustomHeaders = async (headers: { key: string; value: string }[]) => {
+  await storage.set("customHeaders", headers)
 }
 
-export const getCustomOllamaHeaders = async (): Promise<
+export const getCustomHeaders = async (): Promise<
   Record<string, string>
 > => {
-  const headers = await customOllamaHeaders()
+  const hdrs = await customHeaders()
 
   const headerMap: Record<string, string> = {}
 
-  for (const header of headers) {
+  for (const header of hdrs) {
     headerMap[header.key] = header.value
   }
 
   return headerMap
 }
+
+// Legacy aliases for backward compatibility
+export const customOllamaHeaders = customHeaders
+export const setCustomOllamaHeaders = setCustomHeaders
+export const getCustomOllamaHeaders = getCustomHeaders
 
 export const getOpenOnIconClick = async (): Promise<string> => {
   const openOnIconClick = await storage.get<string>("openOnIconClick")

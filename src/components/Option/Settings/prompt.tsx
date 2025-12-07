@@ -9,7 +9,7 @@ import {
   setWebPrompts,
   promptForRag,
   setPromptForRag
-} from "~/services/ollama"
+} from "~/services/tldw-server"
 
 export const SettingPrompt = () => {
   const { t } = useTranslation("settings")

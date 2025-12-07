@@ -13,7 +13,7 @@ import {
   defaultEmbeddingModelForRag,
   getOllamaURL,
   getSelectedModel
-} from "~/services/ollama"
+} from "~/services/tldw-server"
 
 
 export const localGoogleSearch = async (query: string, start: number = 0) => {

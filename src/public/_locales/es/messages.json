@@ -100,32 +100,5 @@
   },
   "hfPullException": {
     "message": "[tldw Assistant] Ocurrió un problema al enviar una solicitud de descarga de \"$1\" a tu tldw_server. Comprueba que tu tldw_server y la extensión estén en ejecución y vuelve a intentarlo."
-  },
-  "quickChatHelper.tooltip": {
-    "message": "Asistente de chat rápido"
-  },
-  "quickChatHelper.title": {
-    "message": "Asistente de chat rápido"
-  },
-  "quickChatHelper.inputPlaceholder": {
-    "message": "Haz una pregunta rápida..."
-  },
-  "quickChatHelper.sendButton": {
-    "message": "Enviar"
-  },
-  "quickChatHelper.emptyState": {
-    "message": "Inicia un chat rápido en paralelo para mantener limpia la conversación principal."
-  },
-  "quickChatHelper.popOutButton": {
-    "message": "Abrir en una ventana independiente"
-  },
-  "quickChatHelper.noModelWarning": {
-    "message": "Selecciona primero un modelo en el chat principal."
-  },
-  "quickChatHelper.userMessageAria": {
-    "message": "Tu mensaje"
-  },
-  "quickChatHelper.assistantMessageAria": {
-    "message": "Mensaje del asistente"
   }
 }

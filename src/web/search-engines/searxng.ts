@@ -9,7 +9,7 @@ import {
   defaultEmbeddingModelForRag,
   getOllamaURL,
   getSelectedModel
-} from "~/services/ollama"
+} from "~/services/tldw-server"
 import { getPageAssistTextSplitter } from "@/utils/text-splitter"
 
 interface SearxNGJSONResult {
@@ -126,7 +126,7 @@ const searxngJSONSearch = async (baseURL: string, query: string) => {
 const searxngWebSearch = async (baseURL: string, query: string) => {
   const searchURL = `${cleanUrl(baseURL)}?q=${encodeURIComponent(query)}`
 
-  await urlRewriteRuntime(cleanUrl(searchURL), "searxng")
+  await urlRewriteRuntime(cleanUrl(searchURL))
 
   const abortController = new AbortController()
   setTimeout(() => abortController.abort(), 10000)

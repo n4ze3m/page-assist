@@ -5,7 +5,7 @@ import {
     defaultEmbeddingModelForRag,
     getOllamaURL,
     getSelectedModel
-} from "@/services/ollama"
+} from "@/services/tldw-server"
 import {
     getIsSimpleInternetSearch,
     totalSearchResults
