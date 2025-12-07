@@ -4,7 +4,7 @@ import common from "@/assets/locale/ko/common.json";
 import sidepanel from "@/assets/locale/ko/sidepanel.json";
 import settings from "@/assets/locale/ko/settings.json";
 import knowledge from "@/assets/locale/ko/knowledge.json";
-import chrome from "@/assets/locale/ko/chrome.json";
+import review from "@/assets/locale/ko/review.json";
 
 export const ko = {
     option,
@@ -13,5 +13,5 @@ export const ko = {
     sidepanel,
     settings,
     knowledge,
-    chrome,
+    review,
 }

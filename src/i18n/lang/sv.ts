@@ -4,7 +4,7 @@ import common from "@/assets/locale/sv/common.json";
 import sidepanel from "@/assets/locale/sv/sidepanel.json";
 import settings from "@/assets/locale/sv/settings.json";
 import knowledge from "@/assets/locale/sv/knowledge.json";
-import chrome from "@/assets/locale/sv/chrome.json";
+import review from "@/assets/locale/sv/review.json";
 
 export const sv = {
     option,
@@ -13,5 +13,5 @@ export const sv = {
     sidepanel,
     settings,
     knowledge,
-    chrome,
+    review,
 }

@@ -2,808 +2,240 @@
 
 ## Overview
 
-Remove all LangChain packages (`langchain`, `@langchain/core`, `@langchain/community`, `@langchain/openai`) from the tldw Assistant browser extension and replace with lightweight, purpose-built alternatives.
+Goal: fully decouple the tldw Assistant browser extension from LangChain.
 
-## Motivation
-
-1. **Bundle Size**: LangChain adds significant bundle weight for functionality we use minimally
-2. **Complexity**: We only use a small subset of LangChain's features
-3. **Maintenance**: Pinned version (`@langchain/core": "0.1.45"`) suggests compatibility issues
-4. **Simplicity**: Custom types and simple implementations are easier to maintain
-
----
-
-## Current LangChain Usage Analysis
-
-### Category 1: Message Types (High Usage)
-Used throughout the codebase as a standardized message format.
-
-| File | Imports |
-|------|---------|
-| `src/utils/actor.ts` | `AIMessage`, `HumanMessage`, `SystemMessage`, `BaseMessage` |
-| `src/utils/system-message.ts` | `SystemMessage` |
-| `src/utils/human-message.tsx` | `HumanMessage`, `MessageContent` |
-| `src/services/title.ts` | `HumanMessage` |
-| `src/models/ChatTldw.ts` | `BaseMessage`, `AIMessage`, `HumanMessage`, `SystemMessage` |
-| `src/models/ChatChromeAi.ts` | `BaseMessage`, `AIMessageChunk` |
-| `src/models/CustomChatOpenAI.ts` | `AIMessage`, `BaseMessage`, `ChatMessage`, various chunk types |
-
-### Category 2: Document Types (Medium Usage)
-Simple data structure for representing parsed content.
-
-| File | Imports |
-|------|---------|
-| `src/loader/html.ts` | `Document`, `BaseDocumentLoader` |
-| `src/loader/pdf.ts` | `Document`, `BaseDocumentLoader` |
-| `src/loader/pdf-url.ts` | `Document`, `BaseDocumentLoader` |
-| `src/loader/csv.ts` | `Document`, `BaseDocumentLoader` |
-| `src/utils/rerank.ts` | `Document` |
-| `src/web/search-engines/*.ts` (13 files) | `Document` |
-| `src/web/website/index.ts` | `Document` |
-
-### Category 3: Vector Store (Medium Usage)
-In-memory vector store for semantic search on web results.
-
-| File | Imports |
-|------|---------|
-| `src/web/search-engines/google.ts` | `MemoryVectorStore` |
-| `src/web/search-engines/bing.ts` | `MemoryVectorStore` |
-| `src/web/search-engines/brave.ts` | `MemoryVectorStore` |
-| `src/web/search-engines/brave-api.ts` | `MemoryVectorStore` |
-| `src/web/search-engines/duckduckgo.ts` | `MemoryVectorStore` |
-| `src/web/search-engines/searxng.ts` | `MemoryVectorStore` |
-| `src/web/search-engines/sogou.ts` | `MemoryVectorStore` |
-| `src/web/search-engines/startpage.ts` | `MemoryVectorStore` |
-| `src/web/search-engines/stract.ts` | `MemoryVectorStore` |
-| `src/web/search-engines/tavily-api.ts` | `MemoryVectorStore` |
-| `src/web/search-engines/exa.ts` | `MemoryVectorStore` |
-| `src/web/search-engines/firecrawl.ts` | `MemoryVectorStore` |
-| `src/web/website/index.ts` | `MemoryVectorStore` |
-
-### Category 4: Text Splitter (Low Usage)
-
-| File | Imports |
-|------|---------|
-| `src/utils/text-splitter.ts` | `RecursiveCharacterTextSplitter`, `CharacterTextSplitter` |
-
-### Category 5: LLM Base Classes (High Complexity - CRITICAL)
-Used to create custom chat model wrappers that extend LangChain base classes.
-
-| File | Imports |
-|------|---------|
-| `src/models/ChatChromeAi.ts` | `SimpleChatModel`, `BaseChatModelParams`, `CallbackManagerForLLMRun`, `ChatGenerationChunk`, `IterableReadableStream` |
-| `src/models/CustomChatOpenAI.ts` | `BaseChatModel`, `BaseChatModelParams`, various parsers, runnables, callbacks, `@langchain/openai` types |
-| `src/models/utils/ollama.ts` | `IterableReadableStream`, `StringWithAutocomplete`, `BaseLanguageModelCallOptions` |
-
-### Category 6: Embeddings (Medium Complexity)
-
-| File | Imports |
-|------|---------|
-| `src/models/OAIEmbedding.ts` | `Embeddings`, `EmbeddingsParams` (extends base class), `chunkArray` |
-| `src/utils/rerank.ts` | `EmbeddingsInterface` |
-
-### Category 7: Chain/Runnable System (ACTIVELY USED)
-**NOTE: These files ARE used despite being marked `@ts-nocheck`**
-
-| File | Used By | Imports |
-|------|---------|---------|
-| `src/chain/chat-with-x.ts` | `src/hooks/useMessage.tsx`, `src/hooks/chat-modes/ragMode.ts`, `src/hooks/chat-modes/documentChatMode.ts` | Full chain system |
-| `src/chain/chat-with-website.ts` | Documented feature | Full chain system |
+As of the current codebase state, the extension already uses custom, lightweight
+types and delegates RAG/text-processing logic to `tldw_server`. LangChain now
+only appears as unused npm dependencies and in a few pieces of configuration
+and documentation. This document captures the current state and the remaining
+cleanup work needed to finish the deprecation.
 
 ---
 
-## Critical Issues with Original PRD
+## Current State (tldw-assistant repo)
 
-### Issue 1: Chain Files Are NOT Unused
+- There are **no runtime imports** of `langchain`, `@langchain/core`,
+  `@langchain/community`, or `@langchain/openai` anywhere under `src/`.
+- Custom types and helpers have replaced LangChain primitives:
+  - `src/types/document.ts` defines a local `Document` type and helper for
+    representing parsed content.
+  - `src/types/messages.ts` defines `BaseMessage`, `SystemMessage`,
+    `HumanMessage`, `AIMessage`, `FunctionMessage`, `ToolMessage`, and
+    `AIMessageChunk`. These preserve the previous `_getType()` behavior and
+    `instanceof` checks that upstream code expects, without depending on
+    LangChain classes.
+  - `src/utils/format-docs.ts` implements the `formatDocs` helper used by RAG
+    modes to format documents for prompting. This logic was previously coupled
+    to LangChain chain files in another codebase.
+  - `src/models/ChatTldw.ts` is a custom chat model that talks directly to
+    `tldw_server` using the message types above. It no longer extends any
+    LangChain base class.
+- Chain, loader, vector store, and embedding classes mentioned in older plans
+  (for example: `src/chain/chat-with-x.ts`, `src/chain/chat-with-website.ts`,
+  `src/models/CustomChatOpenAI.ts`, `src/models/OAIEmbedding.ts`,
+  `src/web/search-engines/*`) **do not exist in this repo**. Those belonged to
+  a different extension codebase and are out of scope here.
+- RAG configuration in the UI (splitting strategy, chunk size, overlap, etc.):
+  - `src/components/Option/Settings/rag.tsx` exposes options such as
+    `"RecursiveCharacterTextSplitter"` and `"CharacterTextSplitter"`.
+  - These values are treated as configuration sent to `tldw_server`. The
+    frontend does **not** implement its own text splitter or vector store; that
+    logic lives server-side.
 
-The original PRD incorrectly stated that `src/chain/chat-with-website.ts` and `src/chain/chat-with-x.ts` are "potentially unused legacy code."
-
-**Reality:** These files are actively used:
-- `formatDocs()` from `chat-with-x.ts` is imported by:
-  - `src/hooks/useMessage.tsx`
-  - `src/hooks/chat-modes/ragMode.ts`
-  - `src/hooks/chat-modes/documentChatMode.ts`
-- The "Chat with Website" feature is documented and referenced in `/docs/features/Sidebar-Features.md`
-
-**Good news:** Only `formatDocs()` is imported - the chain creator functions (`createChatWithXChain`, `createChatWithWebsiteChain`) are NOT used elsewhere.
-
-**Impact:**
-- Extract `formatDocs()` to a standalone utility (trivial - it's just a simple function)
-- The rest of the chain files can be deleted
-
-### Issue 2: CustomChatOpenAI is Heavily LangChain-Coupled (927 lines)
-
-`src/models/CustomChatOpenAI.ts` is a **927-line file** that:
-- Extends `BaseChatModel` from LangChain
-- Uses 15+ LangChain imports including:
-  - Message chunk types (`HumanMessageChunk`, `SystemMessageChunk`, `FunctionMessageChunk`, `ToolMessageChunk`)
-  - Output types (`ChatGenerationChunk`, `ChatResult`)
-  - Callback system (`CallbackManagerForLLMRun`)
-  - Tool conversion (`convertToOpenAITool`)
-  - Runnables (`RunnablePassthrough`, `RunnableSequence`)
-  - Parsers (`JsonOutputParser`, `StructuredOutputParser`, `JsonOutputKeyToolsParser`)
-  - Types from `@langchain/openai` (`ChatOpenAICallOptions`, `getEndpoint`, `OpenAIChatInput`)
-- Implements complex LangChain lifecycle methods (`_generate`, `_streamResponseChunks`, `withStructuredOutput`)
-- Has token counting logic tied to LangChain's `getNumTokens`
-
-**Impact:** This is not a simple "swap imports" task. This is a **full rewrite** of an 927-line OpenAI client wrapper.
-
-### Issue 3: Message Types Have Methods, Not Just Data
-
-LangChain messages are classes with methods, not plain objects:
-- `message._getType()` is used throughout to determine message role
-- `instanceof SystemMessage` checks are used in `src/utils/actor.ts`
-- `BaseMessage` is a class with specific behavior
-
-**Impact:** Simple type aliases won't work. Need either:
-1. Create class implementations that mimic LangChain behavior
-2. Refactor all code that uses `_getType()` and `instanceof` checks
-
-### Issue 4: Embedding Classes Extend LangChain
-
-`src/models/OAIEmbedding.ts` **extends** `Embeddings` from LangChain:
-```typescript
-import { Embeddings, EmbeddingsParams } from "@langchain/core/embeddings"
-import { chunkArray } from "@langchain/core/utils/chunk_array"
-
-export class OAIEmbedding extends Embeddings {
-  // ...uses this.caller.call() from base class
-}
-```
-
-This is used by `pageAssistEmbeddingModel()` which is called by all 13 search engine files.
-
-**Impact:**
-- Must rewrite `OAIEmbedding` without extending `Embeddings`
-- The `this.caller` pattern from LangChain provides retry/concurrency logic
-- Custom vector store must accept the new embedding interface
-
-### Issue 5: Underestimated Scope
-
-| Original Estimate | Actual Scope |
-|-------------------|--------------|
-| "Rewrite `CustomChatOpenAI.ts`" | 927-line full rewrite with complex OpenAI streaming, token counting, structured output |
-| "Delete chain files" | Actively used - need to extract or rewrite |
-| "Simple type aliases" | Need class implementations with methods |
-| ~35 files | 35+ files but several are complex rewrites, not simple import swaps |
+Summary: the browser extension’s runtime logic is already decoupled from
+LangChain. Remaining work is about dependency/config cleanup and tightening up
+documentation so it matches this architecture.
 
 ---
 
-## Revised Risk Assessment
+## Remaining LangChain Footprint
 
-| Risk | Severity | Notes |
-|------|----------|-------|
-| Breaking OpenAI/custom provider chat | **HIGH** | `CustomChatOpenAI` is complex and heavily used |
-| Breaking RAG/document chat modes | **HIGH** | Chain files are actively used |
-| Breaking Chrome AI | **MEDIUM** | `ChatChromeAI` is simpler (160 lines) |
-| Breaking web search | **MEDIUM** | Vector store + embeddings coupling |
-| Breaking message handling | **MEDIUM** | Need to preserve `_getType()` behavior |
-| Type errors cascade | **MEDIUM** | Many files depend on LangChain types |
+Even though the code no longer imports LangChain, a few references remain:
 
----
-
-## Revised Recommendation
-
-## Selected Approach: Option A - Phased Removal
-
-Remove LangChain in 6 phases, validating after each phase to catch regressions early.
-
----
-
-## Phase 1: Document Types & Loaders (Low Risk)
-
-**Goal:** Replace `Document` type and `BaseDocumentLoader` with custom implementations.
-
-### Files to Modify
-
-| File | Change |
-|------|--------|
-| `src/types/document.ts` | **CREATE** - Custom Document type |
-| `src/loader/html.ts` | Remove `BaseDocumentLoader` extension |
-| `src/loader/pdf.ts` | Remove `BaseDocumentLoader` extension |
-| `src/loader/pdf-url.ts` | Remove `BaseDocumentLoader` extension |
-| `src/loader/csv.ts` | Remove `BaseDocumentLoader` extension |
-
-### Implementation
-
-```typescript
-// src/types/document.ts
-export interface DocumentMetadata {
-  url?: string
-  source?: string
-  [key: string]: any
-}
-
-export interface Document {
-  pageContent: string
-  metadata: DocumentMetadata
-}
-```
-
-```typescript
-// src/loader/html.ts - BEFORE
-import { BaseDocumentLoader } from "langchain/document_loaders/base"
-import { Document } from "@langchain/core/documents"
-
-export class PageAssistHtmlLoader extends BaseDocumentLoader {
-  // ...
-}
-
-// src/loader/html.ts - AFTER
-import type { Document } from "@/types/document"
-
-export class PageAssistHtmlLoader {
-  // Same implementation, just remove "extends BaseDocumentLoader"
-}
-```
-
-### Validation
-```bash
-bun run compile
-# Verify no import errors for Document type
-```
+- `package.json`
+  - `dependencies` still include:
+    - `langchain`
+    - `@langchain/community`
+    - `@langchain/openai`
+  - `resolutions` still defines a pinned version for:
+    - `@langchain/core`
+- `wxt.config.ts`
+  - `rollupOptions.external` includes:
+    - `"langchain"`
+    - `"@langchain/community"`
+  - These externals currently have no effect because nothing imports them.
+- Configuration and docs
+  - This PRD previously described rewriting a number of LangChain-based classes
+    that do not exist in this repo.
+  - UI and service code still use LangChain-style names such as
+    `"RecursiveCharacterTextSplitter"` purely as string identifiers passed to
+    `tldw_server`. They no longer correspond to frontend classes.
 
 ---
 
-## Phase 2: Text Splitter (Low Risk)
+## Scope
 
-**Goal:** Replace LangChain's `RecursiveCharacterTextSplitter` with custom implementation.
+In this repository, “removing LangChain” means:
 
-### Files to Modify
+- No runtime references to LangChain types, helpers, or base classes in the
+  browser extension.
+- No LangChain packages in `dependencies`, `devDependencies`, or
+  `resolutions` in `package.json`.
+- No bundler configuration that assumes LangChain is present (for example,
+  `rollupOptions.external` entries that only exist to keep LangChain out of the
+  bundle).
+- Updated docs/UX so that any remaining LangChain terminology is clearly
+  documented as **server-side behavior** (implemented in `tldw_server`) rather
+  than a frontend implementation detail.
 
-| File | Change |
-|------|--------|
-| `src/utils/text-splitter.ts` | Rewrite without LangChain |
+Out of scope for this PRD:
 
-### Implementation
-
-```typescript
-// src/utils/text-splitter.ts
-import type { Document } from "@/types/document"
-
-export interface TextSplitterOptions {
-  chunkSize?: number
-  chunkOverlap?: number
-  separators?: string[]
-}
-
-export class RecursiveTextSplitter {
-  private chunkSize: number
-  private chunkOverlap: number
-  private separators: string[]
-
-  constructor(options: TextSplitterOptions = {}) {
-    this.chunkSize = options.chunkSize ?? 1000
-    this.chunkOverlap = options.chunkOverlap ?? 200
-    this.separators = options.separators ?? ['\n\n', '\n', ' ', '']
-  }
-
-  splitText(text: string): string[] {
-    return this.recursiveSplit(text, this.separators)
-  }
-
-  private recursiveSplit(text: string, separators: string[]): string[] {
-    if (text.length <= this.chunkSize) {
-      return [text]
-    }
-
-    const [sep, ...rest] = separators
-    if (sep === undefined || sep === '') {
-      // Character-level split with overlap
-      const chunks: string[] = []
-      let start = 0
-      while (start < text.length) {
-        chunks.push(text.slice(start, start + this.chunkSize))
-        start += this.chunkSize - this.chunkOverlap
-      }
-      return chunks
-    }
-
-    const parts = text.split(sep)
-    const chunks: string[] = []
-    let current = ''
-
-    for (const part of parts) {
-      const candidate = current ? current + sep + part : part
-      if (candidate.length <= this.chunkSize) {
-        current = candidate
-      } else {
-        if (current) chunks.push(current)
-        if (part.length > this.chunkSize) {
-          chunks.push(...this.recursiveSplit(part, rest))
-          current = ''
-        } else {
-          current = part
-        }
-      }
-    }
-    if (current) chunks.push(current)
-    return chunks
-  }
-
-  splitDocuments(docs: Document[]): Document[] {
-    return docs.flatMap(doc =>
-      this.splitText(doc.pageContent).map(chunk => ({
-        pageContent: chunk,
-        metadata: { ...doc.metadata }
-      }))
-    )
-  }
-}
-
-// Keep the same export name for compatibility
-export const getPageAssistTextSplitter = async () => {
-  // Read settings and return configured splitter
-  return new RecursiveTextSplitter({ chunkSize: 1000, chunkOverlap: 200 })
-}
-```
-
-### Validation
-```bash
-bun run compile
-# Manual test: verify text splitting produces similar chunks
-```
+- Changes to `tldw_server` itself (RAG implementation, text-splitting
+  strategies, embedding providers, indexing, etc.).
+- Reintroducing client-side vector stores or text splitters in the extension.
 
 ---
 
-## Phase 3: Embeddings & Vector Store (Medium Risk)
+## Current Risk Assessment
 
-**Goal:** Replace `OAIEmbedding` (extends LangChain) and `MemoryVectorStore`.
+Because the extension no longer imports LangChain at runtime, the remaining
+work is mostly dependency and configuration cleanup.
 
-### Files to Modify
+### Risks
 
-| File | Change |
-|------|--------|
-| `src/types/embedding.ts` | **CREATE** - Embedding interface |
-| `src/utils/memory-vector-store.ts` | **CREATE** - Custom vector store |
-| `src/models/OAIEmbedding.ts` | Rewrite without extending `Embeddings` |
-| `src/web/search-engines/*.ts` (13 files) | Update imports |
-| `src/web/website/index.ts` | Update imports |
-| `src/utils/rerank.ts` | Update `EmbeddingsInterface` usage |
+- **Hidden import risk (Low)**
+  - Removing LangChain packages could surface a hidden import if any exists.
+  - Mitigation: run `bun run compile` and at least one build target
+    (`bun run build:chrome`) after dependency removal.
+- **Build configuration risk (Low)**
+  - Changing `rollupOptions.external` could break builds if the entries are
+    still needed (they are not, today).
+  - Mitigation: rebuild for all targets (Chrome, Firefox, Edge) after
+    adjusting the externals.
+- **Behavioral risk (Already realized)**
+  - Behavioral changes from removing LangChain base classes have already
+    happened via the `ChatTldw`, `Document`, and `Message` migrations. Those
+    changes should be validated via normal manual/E2E testing, but they are not
+    part of the remaining cleanup.
 
-### Implementation
-
-```typescript
-// src/types/embedding.ts
-export interface EmbeddingModel {
-  embedDocuments(texts: string[]): Promise<number[][]>
-  embedQuery(text: string): Promise<number[]>
-}
-```
-
-```typescript
-// src/utils/memory-vector-store.ts
-import type { Document } from "@/types/document"
-import type { EmbeddingModel } from "@/types/embedding"
-
-export class MemoryVectorStore {
-  private documents: Document[] = []
-  private embeddings: number[][] = []
-
-  constructor(private embeddingModel: EmbeddingModel) {}
-
-  async addDocuments(docs: Document[]): Promise<void> {
-    const texts = docs.map(d => d.pageContent)
-    const newEmbeddings = await this.embeddingModel.embedDocuments(texts)
-    this.documents.push(...docs)
-    this.embeddings.push(...newEmbeddings)
-  }
-
-  async similaritySearch(query: string, k: number = 4): Promise<Document[]> {
-    if (this.documents.length === 0) return []
-
-    const queryEmb = await this.embeddingModel.embedQuery(query)
-    const scored = this.embeddings.map((emb, i) => ({
-      doc: this.documents[i],
-      score: this.cosine(queryEmb, emb)
-    }))
-
-    return scored
-      .sort((a, b) => b.score - a.score)
-      .slice(0, k)
-      .map(s => s.doc)
-  }
-
-  private cosine(a: number[], b: number[]): number {
-    let dot = 0, normA = 0, normB = 0
-    for (let i = 0; i < a.length; i++) {
-      dot += a[i] * b[i]
-      normA += a[i] * a[i]
-      normB += b[i] * b[i]
-    }
-    return dot / (Math.sqrt(normA) * Math.sqrt(normB) || 1)
-  }
-}
-```
-
-```typescript
-// src/models/OAIEmbedding.ts - Rewrite
-import { OpenAI as OpenAIClient } from "openai"
-import type { EmbeddingModel } from "@/types/embedding"
-
-export class OAIEmbedding implements EmbeddingModel {
-  private client: OpenAIClient
-  private model: string
-  private batchSize: number
-
-  constructor(options: {
-    modelName: string
-    openAIApiKey: string
-    configuration?: { baseURL?: string; apiKey?: string }
-    batchSize?: number
-  }) {
-    this.model = options.modelName
-    this.batchSize = options.batchSize ?? 512
-    this.client = new OpenAIClient({
-      apiKey: options.openAIApiKey,
-      baseURL: options.configuration?.baseURL,
-      dangerouslyAllowBrowser: true
-    })
-  }
-
-  async embedDocuments(texts: string[]): Promise<number[][]> {
-    const results: number[][] = []
-    for (let i = 0; i < texts.length; i += this.batchSize) {
-      const batch = texts.slice(i, i + this.batchSize)
-      const response = await this.client.embeddings.create({
-        model: this.model,
-        input: batch,
-        encoding_format: "float"
-      })
-      results.push(...response.data.map(d => d.embedding))
-    }
-    return results
-  }
-
-  async embedQuery(text: string): Promise<number[]> {
-    const response = await this.client.embeddings.create({
-      model: this.model,
-      input: text,
-      encoding_format: "float"
-    })
-    return response.data[0].embedding
-  }
-}
-```
-
-### Validation
-```bash
-bun run compile
-bun run test:e2e  # Test web search functionality
-```
+Overall, the residual work is **low risk** and mainly concerns keeping
+dependencies and documentation accurate.
 
 ---
 
-## Phase 4: Message Types & Utilities (Medium Risk)
+## Implementation Summary vs. Original Plan
 
-**Goal:** Replace LangChain message classes with custom classes that preserve `_getType()` and `instanceof` behavior.
+An earlier PRD (for a different, LangChain-heavy extension) proposed six phases:
 
-### Files to Modify
+1. Replace LangChain `Document` and loader classes.
+2. Re-implement text splitters (`RecursiveCharacterTextSplitter`, etc.).
+3. Rewrite vector store and embedding classes (`MemoryVectorStore`,
+   `OAIEmbedding`) used for web search.
+4. Replace LangChain message classes with custom implementations while
+   preserving `_getType()` and `instanceof` behavior.
+5. Rewrite several LangChain-based chat models (`CustomChatOpenAI`,
+   `ChatChromeAi`, etc.) to call OpenAI-style APIs directly.
+6. Delete chain files (`chat-with-x.ts`, `chat-with-website.ts`) and remove all
+   LangChain dependencies from `package.json` and bundler config.
 
-| File | Change |
-|------|--------|
-| `src/types/messages.ts` | **CREATE** - Message classes |
-| `src/utils/actor.ts` | Update imports |
-| `src/utils/system-message.ts` | Update imports |
-| `src/utils/human-message.tsx` | Update imports |
-| `src/services/title.ts` | Update imports |
-| `src/models/ChatTldw.ts` | Update imports |
-| `src/chain/chat-with-x.ts` | Extract `formatDocs()`, delete rest |
+For this `tldw-assistant` repo:
 
-### Implementation
+- Many of the modules mentioned above **never existed** here:
+  - There is no `src/chain` directory.
+  - There is no `src/web/search-engines` directory.
+  - There are no `CustomChatOpenAI.ts`, `ChatChromeAi.ts`, or `OAIEmbedding.ts`
+    files.
+  - Vector store and web search concerns have been pushed into `tldw_server`.
+- The parts of that plan that **are relevant** have already been implemented
+  in a simpler way:
+  - Document types: replaced by `src/types/document.ts`.
+  - Message types: replaced by `src/types/messages.ts`.
+  - Chain utilities: `formatDocs` extracted into `src/utils/format-docs.ts`.
+  - Chat models: `src/models/ChatTldw.ts` talks directly to `tldw_server`
+    without any LangChain base classes.
 
-```typescript
-// src/types/messages.ts
-export type MessageRole = 'system' | 'human' | 'ai' | 'function' | 'tool'
-
-export type MessageContent = string | Array<{
-  type: 'text' | 'image_url'
-  text?: string
-  image_url?: { url: string }
-}>
-
-export abstract class BaseMessage {
-  content: MessageContent
-  additional_kwargs: Record<string, any>
-
-  constructor(content: MessageContent, kwargs: Record<string, any> = {}) {
-    this.content = content
-    this.additional_kwargs = kwargs
-  }
-
-  abstract _getType(): MessageRole
-}
-
-export class SystemMessage extends BaseMessage {
-  constructor(fields: { content: MessageContent } | MessageContent) {
-    const content = typeof fields === 'string' || Array.isArray(fields)
-      ? fields
-      : fields.content
-    super(content)
-  }
-  _getType(): MessageRole { return 'system' }
-}
-
-export class HumanMessage extends BaseMessage {
-  constructor(fields: { content: MessageContent } | MessageContent) {
-    const content = typeof fields === 'string' || Array.isArray(fields)
-      ? fields
-      : fields.content
-    super(content)
-  }
-  _getType(): MessageRole { return 'human' }
-}
-
-export class AIMessage extends BaseMessage {
-  constructor(fields: { content: MessageContent } | MessageContent) {
-    const content = typeof fields === 'string' || Array.isArray(fields)
-      ? fields
-      : fields.content
-    super(content)
-  }
-  _getType(): MessageRole { return 'ai' }
-}
-
-export class AIMessageChunk extends AIMessage {
-  constructor(fields: { content: MessageContent; additional_kwargs?: Record<string, any> }) {
-    super(fields.content)
-    this.additional_kwargs = fields.additional_kwargs ?? {}
-  }
-}
-```
-
-```typescript
-// src/utils/format-docs.ts - Extract from chain file
-import type { Document } from "@/types/document"
-
-export const formatDocs = (docs: Document[]) => {
-  return docs
-    .filter((doc, i, self) =>
-      self.findIndex((d) => d.pageContent === doc.pageContent) === i
-    )
-    .map((doc, i) => `<doc id='${i}'>${doc.pageContent}</doc>`)
-    .join("\n")
-}
-```
-
-### Validation
-```bash
-bun run compile
-# Test chat functionality manually
-bun run test:e2e
-```
+As a result, the remaining work for this repo is much smaller than the original
+six-phase proposal and is focused on cleanup rather than core behavior changes.
 
 ---
 
-## Phase 5: Model Classes (HIGH RISK)
+## Remaining Tasks
 
-**Goal:** Rewrite `ChatChromeAI`, `ChatTldw`, and `CustomChatOpenAI` without LangChain base classes.
+These are the concrete tasks needed to fully complete “LangChain removal” for
+this repository.
 
-### Priority Order
-1. `ChatTldw` - Already mostly custom, lowest risk
-2. `ChatChromeAI` - 160 lines, medium complexity
-3. `CustomChatOpenAI` - 927 lines, highest complexity
+### 1. Remove unused LangChain dependencies
 
-### Files to Modify
+- [ ] Delete `langchain`, `@langchain/community`, and `@langchain/openai` from
+      `dependencies` in `package.json`.
+- [ ] Remove the `resolutions` entry for `@langchain/core` from `package.json`.
+- [ ] Run `bun install` to refresh the lockfile and `node_modules`.
+- [ ] Run `bun run compile` to ensure there are no missing imports.
+- [ ] Run `bun run build:chrome` (and optionally `build:firefox`, `build:edge`)
+      to verify builds still succeed without LangChain.
 
-| File | Change | Effort |
-|------|--------|--------|
-| `src/models/ChatTldw.ts` | Update message imports | Low |
-| `src/models/ChatChromeAi.ts` | Remove `SimpleChatModel` extension | Medium |
-| `src/models/CustomChatOpenAI.ts` | Full rewrite | **HIGH** |
-| `src/models/CustomAIMessageChunk.ts` | Update or remove | Medium |
-| `src/models/utils/ollama.ts` | Remove LangChain utils | Low |
+### 2. Clean up bundler configuration
 
-### Implementation Strategy for CustomChatOpenAI
+- [ ] In `wxt.config.ts`, remove `"langchain"` and `"@langchain/community"`
+      from `rollupOptions.external`.
+- [ ] Rebuild all targets and confirm there is no change in behavior or
+      bundle output other than the absence of those externals.
 
-The 927-line `CustomChatOpenAI` is the hardest part. Strategy:
+### 3. Doc and UX alignment
 
-1. **Keep the OpenAI client logic** - This is independent of LangChain
-2. **Replace base class methods** with direct implementations:
-   - `_generate` → `generate()`
-   - `_streamResponseChunks` → `streamResponse()`
-3. **Remove unused features**:
-   - `withStructuredOutput` (uses Runnables) - likely unused
-   - Token counting via `getNumTokens` - can simplify or remove
-4. **Preserve the public API** that `src/models/index.ts` uses
+- [ ] Audit the UI and docs for remaining LangChain-specific implementation
+      language that no longer applies to this repo (for example, references to
+      `CustomChatOpenAI` or client-side vector stores).
+- [ ] Where LangChain terminology is still used as a **configuration value**
+      (for example, `"RecursiveCharacterTextSplitter"` in
+      `src/components/Option/Settings/rag.tsx`), ensure it is documented as:
+      - A server-side strategy name understood by `tldw_server`.
+      - Not a local class or dependency.
+- [ ] Update any developer-facing docs that still describe rewriting large
+      LangChain-based model classes that don’t exist in this codebase, or
+      explicitly label those sections as legacy context.
 
-```typescript
-// Simplified CustomChatOpenAI structure
-export class CustomChatOpenAI {
-  private client: OpenAIClient
-  // ... config fields ...
+### 4. Validation
 
-  constructor(options: OpenAIChatOptions) {
-    // Same initialization
-  }
-
-  async *stream(
-    messages: BaseMessage[],
-    options?: { signal?: AbortSignal }
-  ): AsyncGenerator<string> {
-    // Streaming implementation using OpenAI client directly
-  }
-
-  async invoke(messages: BaseMessage[]): Promise<AIMessage> {
-    // Non-streaming implementation
-  }
-}
-```
-
-### Validation
-```bash
-bun run compile
-# Test with each provider type:
-# - Chrome AI (gemini-nano)
-# - tldw_server
-# - OpenRouter
-# - Custom OpenAI-compatible
-bun run test:e2e
-```
+- [ ] `bun run compile`
+- [ ] `bun run build:chrome`
+- [ ] `bun run build:firefox`
+- [ ] `bun run build:edge`
+- [ ] `bun run test:e2e` (or at minimum, manual smoke tests of:
+      - Chat flows using `tldw_server`.
+      - RAG/document chat flows.
+      - Web search flows, if configured against `tldw_server`.
+      - Options/Settings pages related to RAG configuration.)
 
 ---
 
-## Phase 6: Cleanup & Dependency Removal (Final)
+## Acceptance Criteria
 
-**Goal:** Remove all LangChain packages and verify build.
+The LangChain removal work is considered complete when all of the following are
+true:
 
-### Files to Modify
-
-| File | Change |
-|------|--------|
-| `package.json` | Remove: `langchain`, `@langchain/community`, `@langchain/openai` |
-| `package.json` (resolutions) | Remove: `@langchain/core` |
-| `wxt.config.ts` | Remove from `external` array |
-| `src/chain/chat-with-website.ts` | **DELETE** |
-| `src/chain/chat-with-x.ts` | **DELETE** (after extracting `formatDocs`) |
-
-### Validation
-```bash
-rm -rf node_modules bun.lockb
-bun install
-bun run compile
-bun run build:chrome
-bun run test:e2e
-
-# Measure bundle size
-ls -la .output/chrome-mv3/
-```
+- [ ] `rg "@langchain|langchain" src` only returns references inside comments
+      or string literals that are explicitly documented as server-side strategy
+      names.
+- [ ] `package.json` contains no LangChain packages and no `@langchain/core`
+      resolution overrides.
+- [ ] `wxt.config.ts` has no LangChain entries in `rollupOptions.external`.
+- [ ] All builds (`bun run compile`, `bun run build:chrome`, `bun run build:firefox`,
+      `bun run build:edge`) succeed.
+- [ ] Chat and RAG features work end-to-end via `tldw_server` across supported
+      browsers (Chrome/Firefox/Edge).
 
 ---
 
-## Implementation Tasks Checklist
+## Notes for Future Maintainers
 
-### Phase 1: Document Types & Loaders
-- [ ] Create `src/types/document.ts`
-- [ ] Update `src/loader/html.ts` - remove BaseDocumentLoader
-- [ ] Update `src/loader/pdf.ts` - remove BaseDocumentLoader
-- [ ] Update `src/loader/pdf-url.ts` - remove BaseDocumentLoader
-- [ ] Update `src/loader/csv.ts` - remove BaseDocumentLoader
-- [ ] Run `bun run compile` ✓
+- If the extension ever reintroduces client-side embeddings, text splitting, or
+  vector search, prefer small, purpose-built utilities (similar in spirit to
+  `src/types/messages.ts`, `src/types/document.ts`, and `src/utils/format-docs.ts`)
+  instead of pulling in a large orchestration framework.
+- Keep the responsibility boundary clear:
+  - The browser extension should focus on UX, local storage, and lightweight
+    orchestration.
+  - Heavy lifting (RAG pipelines, embeddings, indexing, long-running
+    processing) should remain in `tldw_server` or other backend services.
 
-### Phase 2: Text Splitter
-- [ ] Rewrite `src/utils/text-splitter.ts`
-- [ ] Run `bun run compile` ✓
-
-### Phase 3: Embeddings & Vector Store
-- [ ] Create `src/types/embedding.ts`
-- [ ] Create `src/utils/memory-vector-store.ts`
-- [ ] Rewrite `src/models/OAIEmbedding.ts`
-- [ ] Update 13 search engine files
-- [ ] Update `src/web/website/index.ts`
-- [ ] Update `src/utils/rerank.ts`
-- [ ] Run `bun run compile` ✓
-- [ ] Run `bun run test:e2e` ✓
-
-### Phase 4: Message Types
-- [ ] Create `src/types/messages.ts`
-- [ ] Create `src/utils/format-docs.ts`
-- [ ] Update `src/utils/actor.ts`
-- [ ] Update `src/utils/system-message.ts`
-- [ ] Update `src/utils/human-message.tsx`
-- [ ] Update `src/services/title.ts`
-- [ ] Update imports in chat mode files
-- [ ] Run `bun run compile` ✓
-- [ ] Run `bun run test:e2e` ✓
-
-### Phase 5: Model Classes
-- [ ] Update `src/models/ChatTldw.ts`
-- [ ] Rewrite `src/models/ChatChromeAi.ts`
-- [ ] Rewrite `src/models/CustomChatOpenAI.ts` ⚠️ HIGH EFFORT
-- [ ] Update `src/models/CustomAIMessageChunk.ts`
-- [ ] Update `src/models/utils/ollama.ts`
-- [ ] Run `bun run compile` ✓
-- [ ] Run `bun run test:e2e` ✓
-
-### Phase 6: Cleanup
-- [ ] Delete `src/chain/chat-with-website.ts`
-- [ ] Delete `src/chain/chat-with-x.ts`
-- [ ] Remove LangChain from `package.json`
-- [ ] Remove from `wxt.config.ts` externals
-- [ ] Fresh install and build
-- [ ] Run `bun run compile` ✓
-- [ ] Run `bun run test:e2e` ✓
-- [ ] Measure bundle size reduction
-
----
-
-## Complete File List by Phase
-
-### Phase 1 Files
-- `src/types/document.ts` - **CREATE**
-- `src/loader/html.ts` - Remove BaseDocumentLoader
-- `src/loader/pdf.ts` - Remove BaseDocumentLoader
-- `src/loader/pdf-url.ts` - Remove BaseDocumentLoader
-- `src/loader/csv.ts` - Remove BaseDocumentLoader
-
-### Phase 2 Files
-- `src/utils/text-splitter.ts` - Rewrite
-
-### Phase 3 Files
-- `src/types/embedding.ts` - **CREATE**
-- `src/utils/memory-vector-store.ts` - **CREATE**
-- `src/models/OAIEmbedding.ts` - Rewrite
-- `src/utils/rerank.ts` - Update imports
-- `src/web/website/index.ts` - Update imports
-- `src/web/search-engines/google.ts` - Update imports
-- `src/web/search-engines/bing.ts` - Update imports
-- `src/web/search-engines/brave.ts` - Update imports
-- `src/web/search-engines/brave-api.ts` - Update imports
-- `src/web/search-engines/duckduckgo.ts` - Update imports
-- `src/web/search-engines/searxng.ts` - Update imports
-- `src/web/search-engines/sogou.ts` - Update imports
-- `src/web/search-engines/startpage.ts` - Update imports
-- `src/web/search-engines/stract.ts` - Update imports
-- `src/web/search-engines/tavily-api.ts` - Update imports
-- `src/web/search-engines/exa.ts` - Update imports
-- `src/web/search-engines/firecrawl.ts` - Update imports
-- `src/web/search-engines/baidu.ts` - Update imports
-
-### Phase 4 Files
-- `src/types/messages.ts` - **CREATE**
-- `src/utils/format-docs.ts` - **CREATE** (extract from chain file)
-- `src/utils/actor.ts` - Update imports
-- `src/utils/system-message.ts` - Update imports
-- `src/utils/human-message.tsx` - Update imports
-- `src/services/title.ts` - Update imports
-- `src/hooks/useMessage.tsx` - Update formatDocs import
-- `src/hooks/chat-modes/ragMode.ts` - Update formatDocs import
-- `src/hooks/chat-modes/documentChatMode.ts` - Update formatDocs import
-
-### Phase 5 Files
-- `src/models/ChatTldw.ts` - Update imports
-- `src/models/ChatChromeAi.ts` - Rewrite (160 lines)
-- `src/models/CustomChatOpenAI.ts` - Rewrite (927 lines) ⚠️ **HIGH EFFORT**
-- `src/models/CustomAIMessageChunk.ts` - Update
-- `src/models/utils/ollama.ts` - Update imports
-- `src/models/ChatGoogleAI.ts` - Check for LangChain usage
-
-### Phase 6 Files
-- `package.json` - Remove dependencies
-- `wxt.config.ts` - Remove externals
-- `src/chain/chat-with-website.ts` - **DELETE**
-- `src/chain/chat-with-x.ts` - **DELETE**
-
----
-
-## Risks & Mitigations
-
-| Risk | Severity | Mitigation |
-|------|----------|------------|
-| Breaking web search | High | Test all 13 search engines after Phase 3 |
-| Breaking chat streaming | High | Test with each provider after Phase 5 |
-| Text splitting produces different chunks | Medium | Compare outputs before/after |
-| `instanceof` checks break | Medium | Custom classes preserve behavior |
-| Hidden LangChain usage | Medium | Run `bun run compile` after each phase |
-
----
-
-## Success Criteria
-
-1. ✅ All LangChain packages removed from `package.json`
-2. ✅ `bun run compile` passes with no errors
-3. ✅ All E2E tests pass
-4. ✅ Bundle size reduced (measure before/after)
-5. ✅ Chat works with: tldw_server, OpenRouter, custom providers, Chrome AI
-6. ✅ Web search works with all 13 search engines
-7. ✅ Document loading works (PDF, HTML, CSV)

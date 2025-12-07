@@ -167,10 +167,7 @@ export default defineConfig({
     build: {
       // Firefox MV2 validator chokes on modern ESM in chunks; downlevel and turn off module preload there.
       target: isFirefox ? "es2017" : "esnext",
-      modulePreload: isFirefox ? false : undefined,
-      rollupOptions: {
-        external: ["langchain", "@langchain/community"]
-      }
+      modulePreload: isFirefox ? false : undefined
     }
   }),
   entrypointsDir:

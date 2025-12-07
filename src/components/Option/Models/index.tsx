@@ -105,7 +105,8 @@ export const ModelsBody = () => {
               )}
             </div>
           </div>
-        <AvailableModelsList />
+          <AvailableModelsList />
+        </div>
       </div>
     </div>
   )

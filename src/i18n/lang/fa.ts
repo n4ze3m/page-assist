@@ -4,7 +4,7 @@ import common from "@/assets/locale/fa/common.json"
 import sidepanel from "@/assets/locale/fa/sidepanel.json"
 import settings from "@/assets/locale/fa/settings.json"
 import knowledge from "@/assets/locale/fa/knowledge.json"
-import chrome from "@/assets/locale/fa/chrome.json"
+import review from "@/assets/locale/fa/review.json"
 
 export const fa = {
     option,
@@ -13,5 +13,5 @@ export const fa = {
     sidepanel,
     settings,
     knowledge,
-    chrome,
+    review,
 }
