@@ -3,8 +3,12 @@ import type {
   ActorTarget,
   ActorTemplateInteractionMode
 } from "@/types/actor"
-import type { BaseMessage } from "@langchain/core/messages"
-import { AIMessage, HumanMessage, SystemMessage } from "@langchain/core/messages"
+import {
+  type BaseMessage,
+  AIMessage,
+  HumanMessage,
+  SystemMessage
+} from "@/types/messages"
 import { systemPromptFormatter } from "@/utils/system-message"
 
 export const buildActorSettingsFromForm = (

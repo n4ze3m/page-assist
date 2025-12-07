@@ -9,7 +9,6 @@ import { useWebUI } from "@/store/webui"
 import { useStorage } from "@plasmohq/storage/hook"
 import { useStoreChatModelSettings } from "@/store/model"
 import { ChatDocuments } from "@/models/ChatTypes"
-import { searchChatMode } from "./chat-modes/searchChatMode"
 import { normalChatMode } from "./chat-modes/normalChatMode"
 import { continueChatMode } from "./chat-modes/continueChatMode"
 import { ragMode } from "./chat-modes/ragMode"
@@ -459,33 +458,21 @@ export const useMessageOption = () => {
           chatModeParams
         )
       } else {
-        if (webSearch) {
-          await searchChatMode(
-            message,
-            image,
-            isRegenerate,
-            chatHistory || messages,
-            memory || history,
-            signal,
-            chatModeParams
-          )
-        } else {
-          // Include uploaded files info even in normal mode
-          const enhancedChatModeParams = {
-            ...chatModeParams,
-            uploadedFiles: uploadedFiles
-          }
-
-          await normalChatMode(
-            message,
-            image,
-            isRegenerate,
-            chatHistory || messages,
-            memory || history,
-            signal,
-            enhancedChatModeParams
-          )
+        // Include uploaded files info even in normal mode
+        const enhancedChatModeParams = {
+          ...chatModeParams,
+          uploadedFiles: uploadedFiles
         }
+
+        await normalChatMode(
+          message,
+          image,
+          isRegenerate,
+          chatHistory || messages,
+          memory || history,
+          signal,
+          enhancedChatModeParams
+        )
       }
     } catch (e: any) {
       notification.error({

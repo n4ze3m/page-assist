@@ -1,4 +1,4 @@
-import { SystemMessage } from "@langchain/core/messages"
+import { SystemMessage } from "@/types/messages"
 import { getSelectedModelName } from "./model"
 
 export const systemPromptFormatter = async ({ content }: { content: string }) => {

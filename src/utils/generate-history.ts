@@ -4,7 +4,7 @@ import {
   HumanMessage,
   AIMessage,
   type MessageContent
-} from "@langchain/core/messages"
+} from "@/types/messages"
 
 export const generateHistory = (
   messages: {

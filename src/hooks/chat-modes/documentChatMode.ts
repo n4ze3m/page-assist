@@ -1,5 +1,5 @@
 import { cleanUrl } from "~/libs/clean-url"
-import { geWebSearchFollowUpPrompt, promptForRag } from "~/services/tldw-server"
+import { promptForRag } from "~/services/tldw-server"
 import { type ChatHistory, type Message } from "~/store/option"
 import { addFileToSession, generateID, getSessionFiles } from "@/db/dexie/helpers"
 import { generateHistory } from "@/utils/generate-history"
@@ -12,11 +12,10 @@ import {
   removeReasoning
 } from "@/libs/reasoning"
 import { getModelNicknameByID } from "@/db/dexie/nickname"
-import { formatDocs } from "@/chain/chat-with-x"
+import { formatDocs } from "@/utils/format-docs"
 import { getAllDefaultModelSettings } from "@/services/model-settings"
 import { getNoOfRetrievedDocs } from "@/services/app"
 import { UploadedFile } from "@/db/dexie/types"
-import { getSystemPromptForWeb, isQueryHaveWebsite } from "@/web/web"
 // Server-backed RAG replaces local vectorstore
 import { getMaxContextSize } from "@/services/kb"
 import { tldwClient } from "@/services/tldw/TldwApiClient"
@@ -46,7 +45,6 @@ export const documentChatMode = async (
     setHistoryId,
     fileRetrievalEnabled,
     setActionInfo,
-    webSearch,
     actorSettings
   }: {
     selectedModel: string
@@ -65,7 +63,6 @@ export const documentChatMode = async (
     setHistoryId: (id: string) => void
     fileRetrievalEnabled: boolean
     setActionInfo: (actionInfo: string | null) => void
-    webSearch: boolean
     actorSettings?: ActorSettings
   }
 ) => {
@@ -144,82 +141,6 @@ export const documentChatMode = async (
     let source: any[] = []
     const docSize = await getNoOfRetrievedDocs()
 
-    if (webSearch) {
-      //  setIsSearchingInternet(true)
-      setActionInfo("webSearch")
-
-      let query = message
-
-      // if (newMessage.length > 2) {
-      let questionPrompt = await geWebSearchFollowUpPrompt()
-      const lastTenMessages = newMessage.slice(-10)
-      lastTenMessages.pop()
-      const chat_history = lastTenMessages
-        .map((message) => {
-          return `${message.isBot ? "Assistant: " : "Human: "}${message.message}`
-        })
-        .join("\n")
-      const promptForQuestion = questionPrompt
-        .replaceAll("{chat_history}", chat_history)
-        .replaceAll("{question}", message)
-      const questionModel = await pageAssistModel({ model: selectedModel!, baseUrl: "" })
-
-      let questionMessage = await humanMessageFormatter({
-        content: [
-          {
-            text: promptForQuestion,
-            type: "text"
-          }
-        ],
-        model: selectedModel,
-        useOCR: useOCR
-      })
-
-      if (image.length > 0) {
-        questionMessage = await humanMessageFormatter({
-          content: [
-            {
-              text: promptForQuestion,
-              type: "text"
-            },
-            {
-              image_url: image,
-              type: "image_url"
-            }
-          ],
-          model: selectedModel,
-          useOCR: useOCR
-        })
-      }
-      try {
-        const isWebQuery = await isQueryHaveWebsite(query)
-        if (!isWebQuery) {
-          const response = await questionModel.invoke([questionMessage])
-          query = response?.content?.toString() || message
-          query = removeReasoning(query)
-        }
-      } catch (error) {
-        console.error("Error in questionModel.invoke:", error)
-      }
-
-      const { prompt, source: webSource } = await getSystemPromptForWeb(
-        query,
-        true
-      )
-
-      context += prompt + "\n"
-      source = [
-        ...source,
-        ...webSource.map((source) => {
-          return {
-            ...source,
-            type: "url"
-          }
-        })
-      ]
-
-      setActionInfo(null)
-    }
     if (newMessage.length > 2) {
       const lastTenMessages = newMessage.slice(-10)
       lastTenMessages.pop()

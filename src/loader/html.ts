@@ -1,4 +1,4 @@
-import { Document } from "@langchain/core/documents"
+import type { Document } from "@/types/document"
 
 interface PageAssistHtmlLoaderOptions {
   html: string
@@ -39,13 +39,13 @@ export class PageAssistHtmlLoader {
     }
 
     return [
-      new Document({
+      {
         pageContent: cleanedText,
         metadata: {
           url: this.url,
           title: doc.title || ""
         }
-      })
+      }
     ]
   }
 

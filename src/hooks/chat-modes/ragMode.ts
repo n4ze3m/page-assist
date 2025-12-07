@@ -12,7 +12,7 @@ import {
   removeReasoning
 } from "@/libs/reasoning"
 import { getModelNicknameByID } from "@/db/dexie/nickname"
-import { formatDocs } from "@/chain/chat-with-x"
+import { formatDocs } from "@/utils/format-docs"
 import { getNoOfRetrievedDocs } from "@/services/app"
 import { tldwClient } from "@/services/tldw/TldwApiClient"
 import type { ActorSettings } from "@/types/actor"

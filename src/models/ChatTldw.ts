@@ -2,9 +2,8 @@ import {
   BaseMessage,
   AIMessage,
   HumanMessage,
-  SystemMessage,
-  MessageContent
-} from "@langchain/core/messages"
+  SystemMessage
+} from "@/types/messages"
 import { tldwChat, ChatMessage } from "@/services/tldw"
 
 export interface ChatTldwOptions {

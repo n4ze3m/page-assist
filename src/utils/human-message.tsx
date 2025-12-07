@@ -1,5 +1,5 @@
 import { isCustomModel } from "@/db/dexie/models"
-import { HumanMessage, type MessageContent } from "@langchain/core/messages"
+import { HumanMessage, type MessageContent } from "@/types/messages"
 
 type HumanMessageType = {
   content: MessageContent
