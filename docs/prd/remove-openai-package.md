@@ -1,473 +1,272 @@
-# PRD: Remove Direct OpenAI SDK Dependency
+# PRD: Remove OpenAI JS SDK
 
 ## Overview
 
-Remove the `openai` npm package from the extension by routing all OpenAI-compatible API calls through tldw_server. This consolidates API communication through a single backend, simplifying authentication, error handling, and provider management.
+The tldw Assistant browser extension should not ship the official `openai` JavaScript SDK. All OpenAI‑compatible traffic should flow through tldw_server via the existing `tldwClient` APIs.
 
-**Related PRD:** LangChain removal (separate effort) - see [Dependencies](#dependencies) for coordination points.
+This PRD defines the work required to:
 
-## Problem Statement
+- Remove the `openai` package from `package.json`.
+- Remove or replace all code that imports from `openai`.
+- Preserve chat and TTS functionality through tldw_server.
 
-The extension currently uses the `openai` package to directly call OpenAI-compatible APIs for:
-- Chat completions
-- Embeddings (for web search)
-- Text-to-speech
+LangChain removal is covered by a separate PRD. This document only coordinates with it where strictly necessary.
 
-This creates several issues:
-1. **Duplicate authentication paths** - API keys managed both in extension storage and passed directly to OpenAI SDK
-2. **Inconsistent error handling** - Different error formats from direct SDK calls vs tldw_server
-3. **Provider fragmentation** - Some calls go through tldw_server, others bypass it
-4. **Bundle size** - The `openai` package adds unnecessary weight when tldw_server already provides these endpoints
+## Scope
 
-## Goals
+**In scope**
 
-1. Remove `openai` package from `package.json`
-2. Route all LLM API calls through tldw_server
-3. Maintain feature parity (chat, embeddings, TTS)
-4. Reduce bundle size
-5. Simplify provider configuration (single point: tldw_server)
+- Removing the `openai` dependency from the extension bundle.
+- Deleting or refactoring extension code that uses the `openai` SDK.
+- Using existing tldw_server chat and TTS endpoints for all LLM calls.
 
-## Non-Goals
+**Out of scope**
 
-- Removing `@langchain/openai` (separate PRD)
-- Changing the tldw_server API
-- Adding new features
+- Rewriting or removing LangChain packages (`langchain`, `@langchain/core`, `@langchain/community`, `@langchain/openai`) beyond what is required to drop the `openai` SDK.
+- Changing tldw_server APIs; this PRD only depends on capabilities implemented and owned by the server team.
+- Adding new user‑visible features.
 
 ## Current State
 
-### Files Using `openai` Package
+### RAG / Embeddings
 
-| File | Usage | tldw_server Equivalent |
-|------|-------|------------------------|
-| `src/services/openai-tts.ts` | `openai.audio.speech.create()` | `tldwClient.synthesizeSpeech()` exists |
-| `src/models/CustomChatOpenAI.ts` | `openai.chat.completions.create()` | `tldwClient.streamChatCompletion()` exists |
-| `src/models/OAIEmbedding.ts` | `openai.embeddings.create()` | Endpoint exists, method needs adding |
-| `src/models/utils/openai.ts` | Error wrapping utilities | Can be removed/adapted |
+Local RAG and embedding logic has already been removed. These files no longer exist:
 
-### Files Using `@langchain/openai` (Coordination Required)
+- `src/models/OAIEmbedding.ts`
+- `src/models/embedding.ts`
+- `src/web/search-engines/*`
+- `src/web/website/*`
+- `src/loader/*`
+- `src/utils/text-splitter.ts`
 
-| File | Usage | Notes |
-|------|-------|-------|
-| `src/models/ChatGoogleAI.ts` | Extends `ChatOpenAI` | Blocked by LangChain PRD |
+All RAG‑like behavior now goes through tldw_server RAG endpoints.
 
-### Existing tldw_server Methods (in TldwApiClient.ts)
+### OpenAI SDK Usage
 
-```typescript
-// Already implemented
-synthesizeSpeech(text, voice, model, responseFormat, speed): Promise<ArrayBuffer>
-createChatCompletion(messages, model, options): Promise<ChatCompletion>
-streamChatCompletion(messages, model, options): AsyncGenerator<string>
+The `openai` package is currently installed in `package.json`:
 
-// Needs to be added
-embedQuery(text, model?): Promise<number[]>
-embedDocuments(texts, model?): Promise<number[][]>
-```
+- `openai`: `^4.95.1` (`dependencies`)
 
-### ChatTldw Feature Gap Analysis
+The remaining imports from `openai` in the extension source are:
 
-Current `ChatTldw` is missing features that `CustomChatOpenAI` provides:
+- `src/models/CustomChatOpenAI.ts`
+  - Uses `OpenAI` from `openai` as the chat client, in combination with LangChain’s `BaseChatModel` and `@langchain/openai` types.
+  - Powers custom OpenAI‑compatible providers (OpenRouter, generic OpenAI‑compatible configs) via `pageAssistModel`.
 
-| Feature | CustomChatOpenAI | ChatTldw | Required |
-|---------|------------------|----------|----------|
-| Streaming | ✅ | ✅ | ✅ |
-| Temperature/TopP | ✅ | ✅ | ✅ |
-| Max tokens | ✅ | ✅ | ✅ |
-| `reasoning_effort` | ✅ | ❌ | ✅ Must add |
-| Multimodal (images) | ✅ | ❌ | ✅ Must add |
-| Token counting | ✅ | ❌ | ⚠️ Nice to have |
-| Custom headers | ✅ | ❌ | See note below |
+- `src/models/utils/openai.ts`
+  - Wraps `openai` error types and defines `OpenAIToolChoice` helpers.
+  - Only used by `CustomChatOpenAI`.
 
-**Note on custom headers:** Currently, custom providers (OpenRouter, etc.) pass headers directly to the OpenAI SDK. After migration, tldw_server must handle provider-specific headers.
+Supporting types used only by the OpenAI‑backed chat model:
 
-## Architectural Decision: Custom Provider Routing
+- `src/models/CustomAIMessageChunk.ts`
+  - Custom message chunk type carrying `reasoning_content` and other metadata.
+  - Only used by `CustomChatOpenAI`.
 
-### Current Behavior
+- `src/models/types.ts`
+  - `OpenAICoreRequestOptions` and `LegacyOpenAIInput`, used by `CustomChatOpenAI` as helper types.
 
-```
-Custom Model (OpenRouter, Gemini, etc.)
-    │
-    ▼
-pageAssistModel() checks isCustomModel()
-    │
-    ├─► CustomChatOpenAI ──► Direct API call with provider's baseUrl/apiKey
-    │
-Non-custom Model
-    │
-    ▼
-ChatTldw ──► tldw_server ──► Provider
-```
+### Chat Models
 
-### Target Behavior (Option A - Recommended)
+- **Non‑custom models**
+  - `src/models/ChatTldw.ts` wraps `tldwChat` and sends chat completions to tldw_server using `TldwApiClient.createChatCompletion` / `streamChatCompletion`.
+  - `pageAssistModel` uses `ChatTldw` for built‑in tldw_server models.
 
-```
-All Models
-    │
-    ▼
-ChatTldw ──► tldw_server ──► Routes to correct provider
-```
+- **Custom OpenAI‑compatible models**
+  - `src/models/CustomChatOpenAI.ts` uses the `openai` SDK and LangChain to call provider APIs directly from the extension.
+  - `pageAssistModel` instantiates `CustomChatOpenAI` for OpenRouter and other user‑configured providers and passes provider‑specific headers and base URLs directly into the SDK.
 
-**Requirements for Option A:**
-1. tldw_server must support dynamic provider configuration
-2. Provider credentials stored in tldw_server (or passed per-request)
-3. tldw_server handles provider-specific headers (e.g., OpenRouter's `HTTP-Referer`)
+- **Gemini**
+  - `src/models/ChatGoogleAI.ts` extends `ChatOpenAI` from `@langchain/openai`.
+  - This file does not import `openai` directly, but is relevant for LangChain cleanup.
 
-### Alternative (Option B - Interim)
+### Text‑to‑Speech (TTS)
 
-Keep `openai` package for custom providers only, remove for tldw-native models. This is NOT recommended as it doesn't achieve the goal of removing the package.
+- `src/services/openai-tts.ts` implements the “OpenAI TTS” provider, but is already wired to tldw_server:
+  - Calls `tldwClient.synthesizeSpeech(text, { model, voice })`.
+  - Does not import `openai`.
 
-**Decision:** Proceed with Option A. If tldw_server changes are needed, document them as blockers.
+- TTS hooks (`src/hooks/useTTS.tsx`, `src/hooks/useTtsPlayground.tsx`) call:
+  - `generateOpenAITTS` for the “OpenAI” TTS provider, which internally delegates to `tldwClient.synthesizeSpeech`.
+  - `tldwClient.synthesizeSpeech` directly for the “tldw” TTS provider.
 
----
+Net: TTS no longer uses the OpenAI SDK; only chat still depends on it.
+
+## Goals
+
+1. Remove the `openai` package from `package.json`.
+2. Eliminate all imports from `openai` in the extension source.
+3. Route all chat and TTS calls through tldw_server (`tldwClient`), including custom providers.
+4. Maintain behavioral parity for:
+   - Streaming chat
+   - Custom OpenAI‑compatible providers (OpenRouter, user‑defined)
+   - Reasoning‑style models where feasible
+   - TTS playback and playground flows
+5. Keep LangChain removal logically separate and avoid adding new LangChain dependencies.
+
+## Non‑Goals
+
+- Re‑architecting the chat pipeline beyond what is necessary to remove the `openai` SDK.
+- Changing tldw_server contracts; where extra server behavior is needed (provider routing, headers, reasoning, multimodal), we treat it as a dependency on the server, not something this PRD specifies in detail.
+- Implementing precise token accounting on the client; rough estimates are acceptable if needed.
+
+## High‑Level Design
+
+### Direction
+
+All models — built‑in and custom — should be served via tldw_server. The extension becomes a thin client that:
+
+- Chooses a model ID and options (temperature, max tokens, etc.).
+- Sends chat requests through `tldwChat` / `TldwApiClient`.
+- Receives streamed or non‑streamed responses and adapts them to the UI.
+
+Custom providers (OpenRouter, generic OpenAI‑compatible endpoints) become configuration in tldw_server rather than being called directly from the extension.
+
+### Key Changes
+
+1. **ChatTldw as the single chat implementation**
+
+   Extend `ChatTldw` so it can carry the options we need to replace `CustomChatOpenAI`:
+
+   ```ts
+   export interface ChatTldwOptions {
+     model: string
+     temperature?: number
+     maxTokens?: number
+     topP?: number
+     frequencyPenalty?: number
+     presencePenalty?: number
+     systemPrompt?: string
+     streaming?: boolean
+     reasoningEffort?: "low" | "medium" | "high"
+   }
+   ```
+
+   - When present, `reasoningEffort` is passed through the `ChatCompletionRequest` and forwarded by tldw_server to providers that support it.
+   - For multimodal models, `ChatTldw.convertToTldwMessages` should preserve image content in a form tldw_server accepts instead of flattening to plain text. The exact wire format is owned by the server; on the client we ensure we do not silently drop images.
+
+2. **Custom models routed through tldw_server**
+
+   - `pageAssistModel` stops instantiating `CustomChatOpenAI` and, instead, always returns a `ChatTldw` instance for OpenAI‑compatible providers.
+   - The model identifier encodes the provider and model ID in whatever format tldw_server expects (for example, `openrouter/<model_id>` or a plain server model ID if the server already exposes them).
+   - Provider‑specific headers and API keys are moved to tldw_server configuration. The extension no longer sends them directly to provider APIs via the OpenAI SDK.
+
+3. **TTS stays as‑is, with minor cleanup**
+
+   - Keep using `tldwClient.synthesizeSpeech` from `openai-tts.ts` and TTS hooks.
+   - Optionally, rename “OpenAI” TTS configuration fields to make clear they are “server‑backed OpenAI‑compatible TTS” if/when the UI copy is updated. This is cosmetic and not required to remove the SDK.
 
 ## Implementation Plan
 
-### Prerequisites (Before Any Phase)
+### Phase 0 – Prep and API Alignment
 
-#### P0: Update ChatTldw for Feature Parity
+**Objective:** Align `ChatTldw` / `TldwApiClient` with the server features needed to replace `CustomChatOpenAI`.
 
-**File:** `src/models/ChatTldw.ts`
+1. **Update `ChatTldw` options and request payload**
 
-Add missing capabilities:
+   - File: `src/models/ChatTldw.ts`
+   - Tasks:
+     - Add optional `reasoningEffort` to `ChatTldwOptions` and store it on the instance.
+     - When calling `tldwChat.sendMessage` / `tldwChat.streamMessage`, include `reasoningEffort` in the options.
+   - Acceptance:
+     - `ChatTldw` compiles and existing non‑reasoning models behave unchanged.
+     - New option is ignored by models / server that do not support it.
 
-```typescript
-export interface ChatTldwOptions {
-  model: string
-  temperature?: number
-  maxTokens?: number
-  topP?: number
-  frequencyPenalty?: number
-  presencePenalty?: number
-  systemPrompt?: string
-  streaming?: boolean
-  reasoningEffort?: 'low' | 'medium' | 'high' | null  // ADD
-}
+2. **Preserve multimodal content**
 
-// In convertToTldwMessages(), handle images:
-if (item.type === 'image_url') {
-  // Pass image data to tldw_server
-  return { type: 'image_url', image_url: item.image_url }
-}
-```
+   - File: `src/models/ChatTldw.ts`
+   - Tasks:
+     - Update `convertToTldwMessages` so that array content items are not reduced to text only. At minimum, treat `{ type: "image_url", image_url: ... }` as structured content and pass it through to tldw_server rather than discarding it.
+   - Acceptance:
+     - Vision / multimodal models still receive their image data via tldw_server.
 
-**Acceptance Criteria:**
-- [ ] `reasoningEffort` parameter supported and passed to tldw_server
-- [ ] Image content in messages is preserved and sent to tldw_server
-- [ ] tldw_server returns token usage in response (verify existing behavior)
+### Phase 1 – Route Custom Providers Through ChatTldw
 
----
+**Objective:** Replace `CustomChatOpenAI` usage with `ChatTldw` so that all chat goes through tldw_server.
 
-### Phase 1: TTS Migration
+1. **Refactor `pageAssistModel`**
 
-**Effort:** Low
-**Risk:** Low
-**Blocked By:** None
+   - File: `src/models/index.ts`
+   - Tasks:
+     - For custom providers (OpenRouter and other OpenAI‑compatible configs), stop returning `CustomChatOpenAI`.
+     - Build an appropriate `model` string and options object and return `new ChatTldw({ ... })` instead.
+     - Preserve temperature/topP/maxTokens and reasoning settings when available.
+   - Acceptance:
+     - Chat continues to work for:
+       - Built‑in tldw_server models.
+       - OpenRouter models.
+       - Other user‑configured OpenAI‑compatible providers supported by tldw_server.
+     - Streaming behavior remains intact for all these models.
 
-#### Changes
+2. **Keep `ChatGoogleAI` as a LangChain concern**
 
-1. **`src/services/openai-tts.ts`**
-   - Replace OpenAI SDK instantiation with `tldwClient.synthesizeSpeech()`
-   - Remove `import OpenAI from "openai"`
+   - File: `src/models/ChatGoogleAI.ts`
+   - Tasks:
+     - No functional change in this PRD.
+     - Document that `ChatGoogleAI` is a LangChain‑specific implementation owned by the LangChain cleanup PRD.
 
-   ```typescript
-   // Before
-   const openai = new OpenAI({ baseURL, apiKey, dangerouslyAllowBrowser: true })
-   const mp3 = await openai.audio.speech.create({ model, voice, input: text })
+### Phase 2 – Remove OpenAI SDK and Supporting Types
 
-   // After
-   import { tldwClient } from "@/services/tldw"
-   const audio = await tldwClient.synthesizeSpeech(text, voice, model)
-   ```
+**Objective:** Delete all remaining `openai` imports and remove the package.
 
-2. **`src/hooks/useTTS.tsx`** and **`src/hooks/useTtsPlayground.tsx`**
-   - No changes needed if service layer handles migration
+1. **Delete OpenAI‑specific model and helpers**
 
-#### Acceptance Criteria
-- [ ] TTS playback works in chat
-- [ ] TTS playground generates audio
-- [ ] No direct OpenAI SDK calls for audio
+   - Files:
+     - `src/models/CustomChatOpenAI.ts`
+     - `src/models/utils/openai.ts`
+     - `src/models/CustomAIMessageChunk.ts`
+     - `src/models/types.ts` (only if it is no longer referenced elsewhere)
+   - Preconditions:
+     - `pageAssistModel` no longer references `CustomChatOpenAI` or its helper types.
+   - Acceptance:
+     - Project builds and extension runs without these files.
+     - `rg "openai\""` in `src/` returns no application code imports.
 
----
+2. **Remove the `openai` dependency**
 
-### Phase 2: Embeddings Migration
-
-**Effort:** Medium
-**Risk:** Low
-**Blocked By:** LangChain PRD (partially - see note)
-
-> **Note:** Web search engines use `MemoryVectorStore` from LangChain, which requires an `Embeddings` interface. Full removal of `OAIEmbedding` requires the LangChain PRD to address `MemoryVectorStore` replacement. However, we can still route the underlying API calls through tldw_server.
-
-#### Changes
-
-1. **`src/services/tldw/TldwApiClient.ts`**
-   - Add embedding methods:
-
-   ```typescript
-   async embedQuery(text: string, model?: string): Promise<number[]> {
-     const response = await this.request('/api/v1/embeddings', {
-       method: 'POST',
-       body: { input: text, model }
-     })
-     return response.data[0].embedding
-   }
-
-   async embedDocuments(texts: string[], model?: string): Promise<number[][]> {
-     const response = await this.request('/api/v1/embeddings', {
-       method: 'POST',
-       body: { input: texts, model }
-     })
-     return response.data.map(d => d.embedding)
-   }
-   ```
-
-2. **`src/models/OAIEmbedding.ts`**
-   - Refactor to use `tldwClient` instead of OpenAI SDK:
-
-   ```typescript
-   // Before
-   import { OpenAI as OpenAIClient } from "openai"
-   this.client = new OpenAIClient(this.clientConfig)
-   const res = await this.client.embeddings.create(request)
-
-   // After
-   import { tldwClient } from "@/services/tldw"
-   const res = await tldwClient.embedQuery(text, this.model)
-   ```
-
-   > **Note:** Keep the class interface for LangChain compatibility until LangChain PRD completes.
-
-3. **`src/models/embedding.ts`**
-   - Update to use tldw-backed embedding wrapper
-
-#### Acceptance Criteria
-- [ ] Web search with embeddings works
-- [ ] No direct OpenAI SDK calls for embeddings
-- [ ] `OAIEmbedding` uses tldwClient internally
-
----
-
-### Phase 3: Chat Completions Migration
-
-**Effort:** High
-**Risk:** Medium
-**Blocked By:** P0 (ChatTldw updates), LangChain PRD (for ChatGoogleAI)
-
-#### Changes
-
-1. **`src/models/index.ts`** - `pageAssistModel()` function
-   - Remove `CustomChatOpenAI` instantiation for all providers
-   - Route all models through `ChatTldw`
-
-   ```typescript
-   // Before
-   if (providerInfo.provider === "openrouter") {
-     return new CustomChatOpenAI({
-       modelName: modelInfo.model_id,
-       openAIApiKey: providerInfo.apiKey,
-       configuration: {
-         baseURL: providerInfo.baseUrl,
-         defaultHeaders: { "HTTP-Referer": "..." }
-       },
-       reasoning_effort: modelConfig?.reasoningEffort
-     })
-   }
-
-   // After
-   // All providers route through tldw_server
-   return new ChatTldw({
-     model: `${providerInfo.provider}/${modelInfo.model_id}`,
-     temperature: modelConfig?.temperature,
-     topP: modelConfig?.topP,
-     maxTokens: modelConfig?.maxTokens,
-     reasoningEffort: modelConfig?.reasoningEffort
-   })
-   ```
-
-   > **Prerequisite:** tldw_server must support provider routing. The model identifier format (e.g., `openrouter/model-name`) tells tldw_server which provider to use.
-
-2. **`src/models/CustomChatOpenAI.ts`**
-   - Delete file after migration (~900 lines)
-
-3. **`src/models/ChatGoogleAI.ts`**
-   - **Blocked by LangChain PRD** - This file extends `ChatOpenAI` from `@langchain/openai`
-   - Options:
-     a. Route Gemini through tldw_server (requires tldw_server Gemini support)
-     b. Keep until LangChain PRD addresses it
-
-4. **`src/models/utils/openai.ts`**
-   - Delete file (error wrapping utilities no longer needed)
-
-5. **`src/models/CustomAIMessageChunk.ts`**
-   - Delete if only used by CustomChatOpenAI
-
-#### Acceptance Criteria
-- [ ] Chat works with tldw-native models
-- [ ] Chat works with OpenRouter models
-- [ ] Chat works with custom OpenAI-compatible providers
-- [ ] Streaming works for all providers
-- [ ] Reasoning models (o1, DeepSeek-R1) work with `reasoning_effort`
-- [ ] Vision/multimodal models work with image inputs
-- [ ] No direct OpenAI SDK calls for chat
-- [ ] `CustomChatOpenAI.ts` deleted
-- [ ] `utils/openai.ts` deleted
-
----
-
-## Migration Order
-
-```
-P0: ChatTldw Updates
-    │
-    ▼
-Phase 1 (TTS) ──► Phase 2 (Embeddings) ──► Phase 3 (Chat)
-     │                    │                      │
-     │                    │                      ▼
-     │                    │              Delete CustomChatOpenAI.ts
-     │                    │              Delete utils/openai.ts
-     │                    │              Delete CustomAIMessageChunk.ts
-     │                    ▼
-     │              Refactor OAIEmbedding.ts
-     ▼                    │
-Update openai-tts.ts      │
-                          ▼
-                    [LangChain PRD]
-                          │
-                          ▼
-                    Delete OAIEmbedding.ts
-                    Delete ChatGoogleAI.ts
-```
-
-After all phases complete:
-```bash
-bun remove openai
-```
-
----
+   - File: `package.json`
+   - Tasks:
+     - Remove `"openai": "^4.95.1"` from `dependencies`.
+   - Acceptance:
+     - `bun install` / `npm install` completes without pulling `openai` into the bundle.
+     - Bundle size decreases thanks to removal of the SDK and `CustomChatOpenAI.ts`.
 
 ## Dependencies
 
-### Blocked By
-- **tldw_server provider routing** - Server must support routing requests to external providers (OpenRouter, Gemini, etc.) with proper header handling
+- **tldw_server capabilities**
+  - Provider routing for external OpenAI‑compatible providers (OpenRouter, etc.).
+  - Ability to attach provider‑specific headers and credentials on the server side.
+  - Optional: support for `reasoning_effort` and multimodal message formats for models that understand them.
 
-### Blocks
-- Final bundle size optimization
+- **LangChain removal PRD**
+  - Owns:
+    - Removal or rewrite of `ChatGoogleAI` (`@langchain/openai`).
+    - Removal of LangChain packages from `package.json`.
+  - Coordination:
+    - Once `CustomChatOpenAI` is deleted here, a significant portion of LangChain usage disappears automatically.
+    - `ChatTldw` does not need to extend LangChain base types.
 
-### Coordinates With: LangChain PRD
+## Testing
 
-| This PRD | LangChain PRD | Coordination |
-|----------|---------------|--------------|
-| Phase 2: Embeddings | `MemoryVectorStore` removal | OAIEmbedding deletion blocked until MemoryVectorStore replaced |
-| Phase 3: Chat | `BaseChatModel` interface | ChatTldw may need to implement interface if LangChain partially retained |
-| Phase 3: ChatGoogleAI | `ChatOpenAI` base class | ChatGoogleAI deletion blocked until LangChain PRD addresses it |
+At minimum:
 
----
+- **Regression tests (manual or E2E)**
+  - Chat with a tldw_server native model.
+  - Chat with an OpenRouter model.
+  - Chat with a user‑configured OpenAI‑compatible provider.
+  - Streaming chat across all of the above.
+  - TTS in chat and TTS playground for:
+    - tldw_server TTS provider.
+    - “OpenAI” TTS provider (now just a tldw_server call).
 
-## Risks & Mitigations
+- **Targeted checks**
+  - Reasoning‑style models (e.g., o‑series, DeepSeek‑like) continue to work when configured server‑side.
+  - Vision / multimodal models receive image inputs correctly via tldw_server.
 
-| Risk | Likelihood | Impact | Mitigation |
-|------|------------|--------|------------|
-| Feature regression in chat | Medium | High | Test all provider types before migration |
-| Reasoning models break | High | High | P0 adds `reasoning_effort` to ChatTldw |
-| Vision/multimodal breaks | High | High | P0 adds image handling to ChatTldw |
-| Streaming behavior differs | Low | Medium | Verify chunk format matches current |
-| tldw_server missing provider support | Medium | High | Verify server capabilities before Phase 3 |
-| Custom provider headers lost | Medium | Medium | Document required tldw_server changes |
+## Success Criteria
 
----
-
-## Testing Plan
-
-### Unit Tests
-- TldwApiClient embedding methods
-- ChatTldw streaming with reasoning_effort
-- ChatTldw multimodal message handling
-
-### E2E Tests
-- `chatStreaming.spec.ts` - verify streaming still works
-- Add TTS test if not exists
-- Web search with embedding test
-- Add test for reasoning model (o1 or DeepSeek-R1)
-- Add test for vision model with image input
-
-### Manual Testing Checklist
-- [ ] tldw-native model chat
-- [ ] OpenRouter model chat
-- [ ] Gemini model chat
-- [ ] Custom OpenAI-compatible provider
-- [ ] Reasoning model with effort setting
-- [ ] Vision model with image upload
-- [ ] TTS in chat
-- [ ] TTS playground
-- [ ] Web search "deep" mode (uses embeddings)
-
----
-
-## Success Metrics
-
-1. `openai` package removed from `package.json`
-2. Bundle size reduced by ~200KB (estimated)
-3. All existing E2E tests pass
-4. No regression in chat/TTS/search functionality
-5. Reasoning and vision models work correctly
-
----
-
-## Timeline
-
-| Phase | Estimated Effort | Dependencies |
-|-------|------------------|--------------|
-| P0: ChatTldw updates | 2-4 hours | None |
-| Phase 1: TTS | 1-2 hours | None |
-| Phase 2: Embeddings | 2-4 hours | Partial LangChain PRD |
-| Phase 3: Chat | 4-8 hours | P0, tldw_server provider routing |
-| Testing & Polish | 2-4 hours | All phases |
-
-**Total:** 11-22 hours
-
----
-
-## Appendix: Files to Modify
-
-| File | Action | Phase |
-|------|--------|-------|
-| `src/models/ChatTldw.ts` | Add reasoning_effort, image support | P0 |
-| `src/services/openai-tts.ts` | Replace with tldwClient | Phase 1 |
-| `src/services/tldw/TldwApiClient.ts` | Add embedding methods | Phase 2 |
-| `src/models/OAIEmbedding.ts` | Refactor to use tldwClient | Phase 2 |
-| `src/models/embedding.ts` | Update to use tldw embeddings | Phase 2 |
-| `src/models/index.ts` | Remove CustomChatOpenAI usage | Phase 3 |
-
-## Appendix: Files to Delete
-
-| File | Lines | Phase | Blocked By |
-|------|-------|-------|------------|
-| `src/models/CustomChatOpenAI.ts` | ~900 | Phase 3 | - |
-| `src/models/utils/openai.ts` | ~50 | Phase 3 | - |
-| `src/models/CustomAIMessageChunk.ts` | ~30 | Phase 3 | Verify not used elsewhere |
-| `src/models/OAIEmbedding.ts` | ~170 | Post-LangChain | LangChain PRD |
-| `src/models/ChatGoogleAI.ts` | ~12 | Post-LangChain | LangChain PRD |
-| `src/models/types.ts` | ~20 | Phase 3 | Verify only contains LegacyOpenAIInput |
-
-## Appendix: Package.json Change
-
-```diff
-  "dependencies": {
--   "openai": "^4.95.1",
-    // ... other deps
-  }
-```
-
-## Appendix: tldw_server Requirements
-
-For Phase 3 to complete, tldw_server must support:
-
-1. **Provider routing** - Accept model IDs like `openrouter/gpt-4` and route to correct provider
-2. **Provider credentials** - Either:
-   - Store provider API keys in server config, OR
-   - Accept credentials per-request
-3. **Provider-specific headers** - Handle headers like:
-   - OpenRouter: `HTTP-Referer`, `X-Title`
-   - Custom providers: User-defined headers
-4. **Reasoning effort** - Pass through `reasoning_effort` parameter to supporting models
-5. **Multimodal** - Handle image content in messages
-
-If any of these are missing, document as blockers before starting Phase 3.
+1. No code in `src/` imports from `"openai"`.
+2. `openai` is removed from `package.json` dependencies.
+3. Chat and TTS functionality are unchanged from a user perspective for supported models and providers.
+4. Custom provider traffic (OpenRouter, generic OpenAI‑compatible) flows through tldw_server, not directly from the extension.
+5. This PRD reduces, rather than increases, LangChain and provider‑specific complexity in the extension.

@@ -777,9 +777,6 @@
       "webSearchFollowUpPromptPlaceholder": "پرامپت پیگیری جستجوی وب شما"
     }
   },
-  "chromeAiSettings": {
-    "title": "تنظیمات هوش مصنوعی کروم"
-  },
   "manageCharacters": {
     "title": "مدیریت شخصیت‌ها",
     "addBtn": "شخصیت جدید",

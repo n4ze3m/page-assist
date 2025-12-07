@@ -1,8 +1,6 @@
 import { Storage } from "@plasmohq/storage"
 import { tldwClient, tldwModels } from "./tldw"
 import { bgRequest } from "@/services/background-proxy"
-import { getChromeAIModel } from "./chrome"
-import { formatAllCustomModels } from "@/db/dexie/models"
 
 const storage = new Storage()
 
@@ -103,18 +101,12 @@ export const fetchChatModels = async ({ returnEmpty = false }: { returnEmpty?: b
     // Primary: tldw_server aggregated models
     const tldw = await getAllModels({ returnEmpty })
 
-    // Also include Chrome AI and user-defined custom models (OpenAI-compatible)
-    const chromeModel = await getChromeAIModel()
-    const customModels = await formatAllCustomModels("chat")
-
-    // Normalize providers for display; keep existing fields from custom/chrome entries
-    const combined = [...tldw, ...chromeModel, ...customModels]
+    // Only tldw_server models are exposed as chat models
+    const combined = [...tldw]
 
     if (import.meta.env?.DEV) {
       console.debug("tldw_server: fetchChatModels resolved", {
         tldwCount: tldw.length,
-        chromeCount: chromeModel.length,
-        customCount: customModels.length,
         total: combined.length
       })
     }

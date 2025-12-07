@@ -4,24 +4,19 @@ import {
 } from "@/services/model-settings"
 import { PageAssitDatabase as ChromeDB } from "../index"
 import { PageAssistDatabase as DexieDB } from "./chat"
-import { OpenAIModelDb as DexieDBOAI } from "./openai"
 import { ModelNickname as DexieDBNick } from "./nickname"
 import { ModelDb as DexieDBM } from "./models"
-import { getAllOpenAIConfig } from "../openai"
-import { getAllModelsExT } from "../models"
 import { getAllModelNicknamesMig } from "../nickname"
 
 export class DatabaseMigration {
   private chromeDB: ChromeDB
   private dexieDB: DexieDB
-  private dexieDBOAI: DexieDBOAI
   private dexieDBM: DexieDBM
   private dexieNick: DexieDBNick
 
   constructor() {
     this.chromeDB = new ChromeDB()
     this.dexieDB = new DexieDB()
-    this.dexieDBOAI = new DexieDBOAI()
     this.dexieDBM = new DexieDBM()
     this.dexieNick = new DexieDBNick()
   }
@@ -109,22 +104,8 @@ export class DatabaseMigration {
       }
 
 
-      // Migrate OpenAI config
-      try {
-        const configs = await getAllOpenAIConfig()
-        await this.dexieDBOAI.importDataV2(configs)
-      } catch(error) {
-        errors.push(`Failed to migrate OAI: ${error}`)
-      }
-
-      // Migrate Custom models
-
-      try {
-        const models = await getAllModelsExT()
-        await this.dexieDBM.importDataV2(models)
-      } catch(error) {
-        errors.push(`Failed to migrate OAI: ${error}`)
-      }
+      // Skip migration of legacy OpenAI configs and custom models; the
+      // extension is now tldw_server-only.
 
      // Migrate nickname
       try {

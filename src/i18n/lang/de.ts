@@ -5,7 +5,6 @@ import sidepanel from "@/assets/locale/de/sidepanel.json";
 import settings from "@/assets/locale/de/settings.json";
 import knowledge from "@/assets/locale/de/knowledge.json";
 import chrome from "@/assets/locale/de/chrome.json";
-import openai from "@/assets/locale/de/openai.json";
 
 export const de = {
     option,
@@ -15,5 +14,4 @@ export const de = {
     settings,
     knowledge,
     chrome,
-    openai
 }

@@ -264,14 +264,12 @@ export const PlaygroundMessage = (props: Props) => {
         <div className="flex w-[calc(100%-50px)] flex-col gap-2 lg:w-[calc(100%-115px)]">
           <span className="text-xs font-bold text-gray-800 dark:text-white">
             {props.isBot
-              ? props.name === "chrome::gemini-nano::page-assist"
-                ? "Gemini Nano"
-                : removeModelSuffix(
-                    `${props?.modelName || props?.name}`?.replaceAll(
-                      /accounts\/[^\/]+\/models\//g,
-                      ""
-                    )
+              ? removeModelSuffix(
+                  `${props?.modelName || props?.name}`?.replaceAll(
+                    /accounts\/[^\/]+\/models\//g,
+                    ""
                   )
+                )
               : "You"}
           </span>
 

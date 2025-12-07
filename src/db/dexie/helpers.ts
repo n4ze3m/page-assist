@@ -13,7 +13,6 @@ import {
   type Webshare,
   Prompt,
   LastUsedModelType,
-  OpenAIModelConfigs,
   ModelNicknames,
   Models
 } from "./types"
@@ -26,7 +25,6 @@ import {
   savePromptFB,
   updatePromptFB
 } from ".."
-import { OpenAIModelDb } from "./openai"
 import { ModelNickname } from "./nickname"
 import { ModelDb } from "./models"
 
@@ -448,8 +446,9 @@ export const exportPrompts = async () => {
 }
 
 export const exportOAIConfigs = async () => {
-  const db = new OpenAIModelDb()
-  return await db.getAll()
+  // OpenAI-compatible provider configs are no longer used; keep the
+  // export shape but always return an empty list.
+  return []
 }
 
 export const exportNicknames = async () => {
@@ -492,11 +491,10 @@ export const importPrompts = async (prompts: Prompts) => {
   }
 }
 
-export const importOAIConfigs = async (configs: OpenAIModelConfigs) => {
-  const db = new OpenAIModelDb()
-  for (const config of configs) {
-    await db.create(config)
-  }
+export const importOAIConfigs = async (configs: any[]) => {
+  // Legacy OpenAI provider configs are ignored now that the
+  // extension is tldw_server-only.
+  void configs
 }
 
 // Utility Functions
@@ -676,14 +674,15 @@ export const importPromptsV2 = async (
 }
 
 export const importOAIConfigsV2 = async (
-  data: OpenAIModelConfigs,
+  data: any[],
   options: {
     replaceExisting?: boolean
     mergeData?: boolean
   } = {}
 ) => {
-  const db = new OpenAIModelDb()
-  return db.importDataV2(data, options)
+  // Legacy OpenAI provider configs are ignored.
+  void data
+  void options
 }
 
 export const updateLastUsedModel = async (

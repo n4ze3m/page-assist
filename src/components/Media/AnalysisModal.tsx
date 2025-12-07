@@ -4,7 +4,7 @@ import { Storage } from '@plasmohq/storage'
 import { useStorage } from '@plasmohq/storage/hook'
 import { useTranslation } from 'react-i18next'
 import { bgRequest } from '@/services/background-proxy'
-import { getAllModelsExT } from '@/db/models'
+import { tldwModels } from '@/services/tldw'
 import { ANALYSIS_PRESETS } from "@/components/Media/analysisPresets"
 
 interface AnalysisModalProps {
@@ -42,12 +42,16 @@ export function AnalysisModal({
     [t]
   )
 
-  // Load models from database
+  // Load models from tldw_server
   useEffect(() => {
     let cancelled = false
     ;(async () => {
       try {
-        const allModels = await getAllModelsExT()
+        const chatModels = await tldwModels.getChatModels(true)
+        const allModels = chatModels.map((m) => ({
+          id: m.id,
+          name: m.name || m.id
+        }))
         if (!cancelled) {
           setModels(allModels || [])
         }

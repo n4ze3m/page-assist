@@ -11,8 +11,6 @@ import OptionAbout from "./option-settings-about"
 import SidepanelChat from "./sidepanel-chat"
 import SidepanelSettings from "./sidepanel-settings"
 import OptionRagSettings from "./option-rag"
-import OptionChrome from "./option-settings-chrome"
-import OptionOpenAI from "./option-settings-openai"
 import { OptionTldwSettings } from "./option-settings-tldw"
 import OptionMedia from "./option-media"
 import OptionMediaMulti from "./option-media-multi"
@@ -47,10 +45,8 @@ export const OptionRoutingChrome = () => {
       <Route path="/settings/model" element={<OptionModal />} />
       <Route path="/settings/prompt" element={<OptionPrompt />} />
       <Route path="/settings/evaluations" element={<OptionSettingsEvaluations />} />
-      {/** Ollama settings removed in favor of tldw_server */}
-      <Route path="/settings/chrome" element={<OptionChrome />} />
+      {/** Chrome AI and OpenAI/custom provider settings removed; extension is tldw_server-only */}
       <Route path="/settings/chat" element={<OptionChatSettings />} />
-      <Route path="/settings/openai" element={<OptionOpenAI />} />
       <Route path="/settings/share" element={<OptionShare />} />
       <Route path="/settings/processed" element={<OptionProcessed />} />
       <Route path="/settings/health" element={<OptionHealth />} />

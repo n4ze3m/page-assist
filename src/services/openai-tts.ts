@@ -1,7 +1,5 @@
-import OpenAI from "openai"
+import { tldwClient } from "@/services/tldw"
 import {
-  getOpenAITTSApiKey,
-  getOpenAITTSBaseUrl,
   getOpenAITTSModel,
   getOpenAITTSVoice
 } from "./tts"
@@ -9,9 +7,7 @@ import {
 export const generateOpenAITTS = async ({
   text,
   model: overrideModel,
-  voice: overrideVoice,
-  baseURL: overrideBaseUrl,
-  apiKey: overrideApiKey
+  voice: overrideVoice
 }: {
   text: string
   model?: string
@@ -19,24 +15,13 @@ export const generateOpenAITTS = async ({
   baseURL?: string
   apiKey?: string
 }): Promise<ArrayBuffer> => {
-  const baseURL = overrideBaseUrl || (await getOpenAITTSBaseUrl())
-  const apiKey = overrideApiKey || (await getOpenAITTSApiKey())
   const model = overrideModel || (await getOpenAITTSModel())
   const voice = overrideVoice || (await getOpenAITTSVoice())
 
-  const openai = new OpenAI({
-    baseURL,
-    apiKey,
-    dangerouslyAllowBrowser: true
+  const audio = await tldwClient.synthesizeSpeech(text, {
+    model,
+    voice
   })
 
-  const mp3 = await openai.audio.speech.create({
-    model: model,
-    voice: voice,
-    input: text
-  })
-
-  const arrBuff = await mp3.arrayBuffer()
-
-  return arrBuff
+  return audio
 }

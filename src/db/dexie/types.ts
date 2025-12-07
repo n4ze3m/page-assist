@@ -94,18 +94,6 @@ export type UserSettings = {
   user_id: string;
 };
 
-export type OpenAIModelConfig = {
-  id: string
-  name: string
-  baseUrl: string
-  apiKey?: string
-  createdAt: number
-  provider?: string
-  db_type: string
-  fix_cors?: boolean
-  headers?: { key: string; value: string }[]
-}
-
 export type Model = {
   id: string
   model_id: string
@@ -129,7 +117,6 @@ export type ModelNickname = {
 export type MessageHistory = Message[];
 export type ChatHistory = HistoryInfo[];
 export type Prompts = Prompt[];
-export type OpenAIModelConfigs = OpenAIModelConfig[]
 export type Models = Model[]
 export type ModelNicknames = ModelNickname[]
 

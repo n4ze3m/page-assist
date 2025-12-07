@@ -8,7 +8,6 @@ import {
   importChatHistoryV2,
   importModelsV2,
   importNicknamesV2,
-  importOAIConfigsV2,
   importPromptsV2
 } from "@/db/dexie/helpers"
 import { db } from "@/db/dexie/schema"
@@ -54,7 +53,6 @@ export const importPageAssistData = async (file: File) => {
             db.messages,
             db.prompts,
             db.sessionFiles,
-            db.openaiConfigs,
             db.modelNickname,
             db.customModels
           ],
@@ -65,9 +63,6 @@ export const importPageAssistData = async (file: File) => {
 
             if (data?.prompts && Array.isArray(data.prompts)) {
               await importPromptsV2(data.prompts, options)
-            }
-            if (data?.oaiConfigs && Array.isArray(data.oaiConfigs)) {
-              await importOAIConfigsV2(data.oaiConfigs, options)
             }
 
             if (data?.nicknames && Array.isArray(data.nicknames)) {

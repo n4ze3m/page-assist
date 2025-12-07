@@ -9,6 +9,7 @@ export interface TldwChatOptions {
   presencePenalty?: number
   stream?: boolean
   systemPrompt?: string
+  reasoningEffort?: "low" | "medium" | "high"
 }
 
 export interface ChatStreamChunk {
@@ -47,7 +48,8 @@ export class TldwChatService {
         max_tokens: options.maxTokens,
         top_p: options.topP,
         frequency_penalty: options.frequencyPenalty,
-        presence_penalty: options.presencePenalty
+        presence_penalty: options.presencePenalty,
+        reasoning_effort: options.reasoningEffort
       }
 
       // Add system prompt if provided
@@ -96,7 +98,8 @@ export class TldwChatService {
         max_tokens: options.maxTokens,
         top_p: options.topP,
         frequency_penalty: options.frequencyPenalty,
-        presence_penalty: options.presencePenalty
+        presence_penalty: options.presencePenalty,
+        reasoning_effort: options.reasoningEffort
       }
 
       // Add system prompt if provided
@@ -201,7 +204,28 @@ export class TldwChatService {
   estimateTokens(messages: ChatMessage[]): number {
     let totalChars = 0
     for (const msg of messages) {
-      totalChars += msg.content.length
+      const content = msg.content
+      if (typeof content === "string") {
+        totalChars += content.length
+      } else if (Array.isArray(content)) {
+        // Roughly approximate by concatenating any text fields
+        const text = content
+          .map((part: any) => {
+            if (typeof part === "string") return part
+            if (part?.type === "text" && typeof part.text === "string") {
+              return part.text
+            }
+            return ""
+          })
+          .join(" ")
+        totalChars += text.length
+      } else if (content != null) {
+        try {
+          totalChars += JSON.stringify(content).length
+        } catch {
+          // Fallback if serialization fails
+        }
+      }
     }
     // Rough estimate: 1 token ≈ 4 characters
     return Math.ceil(totalChars / 4)

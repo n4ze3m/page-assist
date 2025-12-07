@@ -792,9 +792,6 @@
       "webSearchFollowUpPromptPlaceholder": "請輸入網路搜尋後續提示詞"
     }
   },
-  "chromeAiSettings": {
-    "title": "Chrome AI 設定"
-  },
   "onboarding": {
     "title": "Welcome — Let’s get you connected",
     "description": "Configure your server and authentication. We’ll verify the connection and RAG health inline.",

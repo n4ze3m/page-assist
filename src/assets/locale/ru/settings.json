@@ -777,9 +777,6 @@
       "webSearchFollowUpPromptPlaceholder": "Ваша подсказка для последующего веб-поиска"
     }
   },
-  "chromeAiSettings": {
-    "title": "Настройки ИИ Chrome"
-  },
   "onboarding": {
     "title": "Welcome — Let’s get you connected",
     "description": "Configure your server and authentication. We’ll verify the connection and RAG health inline.",

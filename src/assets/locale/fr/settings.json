@@ -777,9 +777,6 @@
       "webSearchFollowUpPromptPlaceholder": "Votre prompt de suivi de recherche Web"
     }
   },
-  "chromeAiSettings": {
-    "title": "Paramètres Chrome AI"
-  },
   "mermaid": "Mermaid",
   "onboarding": {
     "title": "Welcome — Let’s get you connected",

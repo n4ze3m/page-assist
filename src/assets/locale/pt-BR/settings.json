@@ -777,9 +777,6 @@
       "webSearchFollowUpPromptPlaceholder": "Seu Prompt de Acompanhamento da Pesquisa na Web"
     }
   },
-  "chromeAiSettings": {
-    "title": "Configurações do Chrome AI"
-  },
   "onboarding": {
     "title": "Welcome — Let’s get you connected",
     "description": "Configure your server and authentication. We’ll verify the connection and RAG health inline.",

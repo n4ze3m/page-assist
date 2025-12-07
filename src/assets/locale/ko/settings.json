@@ -780,9 +780,6 @@
       "webSearchFollowUpPromptPlaceholder": "웹 검색 후속 프롬프트"
     }
   },
-  "chromeAiSettings": {
-    "title": "Chrome AI 설정"
-  },
   "onboarding": {
     "title": "Welcome — Let’s get you connected",
     "description": "Configure your server and authentication. We’ll verify the connection and RAG health inline.",

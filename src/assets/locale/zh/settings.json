@@ -781,9 +781,6 @@
       "webSearchFollowUpPromptPlaceholder": "您的网页搜索追问提示词"
     }
   },
-  "chromeAiSettings": {
-    "title": "Chrome AI 设置"
-  },
   "onboarding": {
     "title": "Welcome — Let’s get you connected",
     "description": "Configure your server and authentication. We’ll verify the connection and RAG health inline.",

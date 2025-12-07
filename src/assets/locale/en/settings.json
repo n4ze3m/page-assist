@@ -771,9 +771,6 @@
       "webSearchFollowUpPromptPlaceholder": "Your Web Search Follow Up Prompt"
     }
   },
-  "chromeAiSettings": {
-    "title": "Chrome AI Settings"
-  },
   "mermaid": "Mermaid",
   "switchToSidebar": "Switch to Sidebar",
   "healthPage": {

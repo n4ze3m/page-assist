@@ -778,9 +778,6 @@
       "webSearchFollowUpPromptPlaceholder": "Din oppfølgingsprompt for websøking"
     }
   },
-  "chromeAiSettings": {
-    "title": "Chrome AI Innstillinger"
-  },
   "onboarding": {
     "title": "Welcome — Let’s get you connected",
     "description": "Configure your server and authentication. We’ll verify the connection and RAG health inline.",

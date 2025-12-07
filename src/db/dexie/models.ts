@@ -1,8 +1,4 @@
 import { getAllOpenAIModels } from "@/libs/openai"
-import {
-  getAllOpenAIConfig,
-  getOpenAIConfigById as providerInfo
-} from "./openai"
 import { getAllModelNicknames } from "./nickname"
 import { Model, Models } from "./types"
 import { db } from "./schema"
@@ -324,14 +320,8 @@ export const getAllCustomModels = async () => {
     const models = (await db.getAll()).filter(
       (model) => model?.db_type === "openai_model"
     )
-    const modelsWithProvider = await Promise.all(
-      models.map(async (model) => {
-        const provider = await providerInfo(model.provider_id)
-        return { ...model, provider }
-      })
-    )
 
-    return modelsWithProvider.map((model) => {
+    return models.map((model) => {
       return {
         ...model,
         nickname: modelNicknames[model.id]?.model_name || model.model_id,
@@ -465,117 +455,8 @@ export const dynamicFetchLlamafile = async ({
 export const formatAllCustomModels = async (
   modelType: "all" | "chat" | "embedding" = "all"
 ) => {
-  try {
-    const [allModles, allProviders] = await Promise.all([
-      getAllCustomModels(),
-      getAllOpenAIConfig()
-    ])
-    const modelNicknames = await getAllModelNicknames()
-    const lmstudioProviders = allProviders.filter(
-      (provider) => provider.provider === "lmstudio"
-    )
-
-    const llamafileProviders = allProviders.filter(
-      (provider) => provider.provider === "llamafile"
-    )
-
-    const llamacppProvider = allProviders.filter(
-      (model) => model.provider === "llamacpp"
-    )
-
-    const vllmProviders = allProviders.filter(
-      (model) => model.provider === "vllm"
-    )
-
-    const lmModelsPromises = lmstudioProviders.map((provider) =>
-      dynamicFetchLMStudio({
-        baseUrl: provider.baseUrl,
-        providerId: provider.id,
-        customHeaders: provider.headers
-      })
-    )
-
-    const llamafileModelsPromises = llamafileProviders.map((provider) =>
-      dynamicFetchLlamafile({
-        baseUrl: provider.baseUrl,
-        providerId: provider.id,
-        customHeaders: provider.headers
-      })
-    )
-
-    const llamacppModelsPromises = llamacppProvider.map((provider) =>
-      dynamicFetchLLamaCpp({
-        baseUrl: provider.baseUrl,
-        providerId: provider.id,
-        customHeaders: provider.headers
-      })
-    )
-
-    const vllmModelsPromises = vllmProviders.map((provider) =>
-      dynamicFetchVLLM({
-        baseUrl: provider.baseUrl,
-        providerId: provider.id,
-        customHeaders: provider.headers
-      })
-    )
-
-    const lmModelsFetch = await Promise.all(lmModelsPromises)
-
-    const llamafileModelsFetch = await Promise.all(llamafileModelsPromises)
-
-    const llamacppModelsFetch = await Promise.all(llamacppModelsPromises)
-
-    const vllmModelsFetch = await Promise.all(vllmModelsPromises)
-
-    const lmModels = lmModelsFetch.flat()
-
-    const llamafileModels = llamafileModelsFetch.flat()
-
-    const llamacppModels = llamacppModelsFetch.flat()
-
-    const vllmModels = vllmModelsFetch.flat()
-
-    // merge allModels with dynamic providers
-    const allModelsWithProviders = [
-      ...(modelType !== "all"
-        ? allModles.filter((model) => model.model_type === modelType)
-        : allModles),
-      ...lmModels,
-      ...llamafileModels,
-      ...llamacppModels,
-      ...vllmModels
-    ]
-
-    const customModels = allModelsWithProviders.map((model) => {
-      return {
-        name: model.name,
-        model: model.id,
-        modified_at: "",
-        provider:
-          allProviders.find((provider) => provider.id === model.provider_id)
-            ?.provider || "custom",
-        size: 0,
-        digest: "",
-        details: {
-          parent_model: "",
-          format: "",
-          family: "",
-          families: [],
-          parameter_size: "",
-          quantization_level: ""
-        }
-      }
-    })
-
-    return customModels.map((model) => {
-      return {
-        ...model,
-        nickname: modelNicknames[model.model]?.model_name || model.name,
-        avatar: modelNicknames[model.model]?.model_avatar || undefined
-      }
-    })
-  } catch (e) {
-    console.error(e)
-    return []
-  }
+  // Legacy helper for aggregating custom OpenAI-compatible models.
+  // Custom providers have been removed; return an empty list.
+  void modelType
+  return []
 }

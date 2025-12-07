@@ -26,7 +26,10 @@ export interface TldwModel {
 
 export interface ChatMessage {
   role: 'system' | 'user' | 'assistant'
-  content: string
+  // Allow either plain text or structured content (e.g. multimodal parts).
+  // Most callers use strings; structured content is forwarded as-is to tldw_server.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  content: any
 }
 
 export interface ChatCompletionRequest {
@@ -38,6 +41,7 @@ export interface ChatCompletionRequest {
   top_p?: number
   frequency_penalty?: number
   presence_penalty?: number
+  reasoning_effort?: "low" | "medium" | "high"
 }
 
 export interface ServerChatSummary {
