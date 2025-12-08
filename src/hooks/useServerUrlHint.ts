@@ -8,7 +8,7 @@ export type UrlState =
 
 export type ServerUrlHintTone = "neutral" | "error" | "success"
 
-export type ServerUrlHint = {
+export interface ServerUrlHint {
   valid: boolean
   tone: ServerUrlHintTone
   message: string
@@ -25,21 +25,23 @@ export const useServerUrlHint = (
     if (!urlState.valid) {
       const tone: ServerUrlHintTone =
         urlState.reason === "empty" ? "neutral" : "error"
-      const message =
-        urlState.reason === "empty"
-          ? t(
-              "settings:onboarding.serverUrl.emptyHint",
-              "Enter your tldw server URL to enable Next."
-            )
-          : urlState.reason === "protocol"
-            ? t(
-                "settings:onboarding.serverUrl.invalidProtocol",
-                "Use http or https URLs, for example http://127.0.0.1:8000."
-              )
-            : t(
-                "settings:onboarding.serverUrl.invalid",
-                "Enter a full URL such as http://127.0.0.1:8000."
-              )
+      let message: string
+      if (urlState.reason === "empty") {
+        message = t(
+          "settings:onboarding.serverUrl.emptyHint",
+          "Enter your tldw server URL to enable Next."
+        )
+      } else if (urlState.reason === "protocol") {
+        message = t(
+          "settings:onboarding.serverUrl.invalidProtocol",
+          "Use http or https URLs, for example http://127.0.0.1:8000."
+        )
+      } else {
+        message = t(
+          "settings:onboarding.serverUrl.invalid",
+          "Enter a full URL such as http://127.0.0.1:8000."
+        )
+      }
 
       return { valid: false, tone, message }
     }

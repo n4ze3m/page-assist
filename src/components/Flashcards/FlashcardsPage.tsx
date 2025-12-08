@@ -1769,97 +1769,104 @@ My deck	What is a closure?	A function with preserved outer scope.	javascript; fu
           }
         />
       )}
-      {useMapping && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          <div>
-            <Text type="secondary">
-              {t("option:flashcards.deck", { defaultValue: "Deck" })}
-            </Text>
-            <Select
-              className="w-full"
-              value={mapping?.deck}
-              onChange={(v) => {
-                setMappingDirty(true)
-                setMapping((m) => ({ ...(m as any), deck: v }))
-              }}
-              options={Array.from({ length: colCount }, (_, i) => ({
-                label: `Col ${i + 1}`,
-                value: i
-              }))}
-            />
+      {useMapping &&
+        (colCount === 0 ? (
+          <Text type="secondary" className="text-xs">
+            {t("option:flashcards.mappingHint", {
+              defaultValue: "Paste some rows above to configure mapping."
+            })}
+          </Text>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div>
+              <Text type="secondary">
+                {t("option:flashcards.deck", { defaultValue: "Deck" })}
+              </Text>
+              <Select
+                className="w-full"
+                value={mapping?.deck}
+                onChange={(v) => {
+                  setMappingDirty(true)
+                  setMapping((m) => ({ ...(m as any), deck: v }))
+                }}
+                options={Array.from({ length: colCount }, (_, i) => ({
+                  label: `Col ${i + 1}`,
+                  value: i
+                }))}
+              />
+            </div>
+            <div>
+              <Text type="secondary">
+                {t("option:flashcards.front", { defaultValue: "Front" })}
+              </Text>
+              <Select
+                className="w-full"
+                value={mapping?.front}
+                onChange={(v) => {
+                  setMappingDirty(true)
+                  setMapping((m) => ({ ...(m as any), front: v }))
+                }}
+                options={Array.from({ length: colCount }, (_, i) => ({
+                  label: `Col ${i + 1}`,
+                  value: i
+                }))}
+              />
+            </div>
+            <div>
+              <Text type="secondary">
+                {t("option:flashcards.back", { defaultValue: "Back" })}
+              </Text>
+              <Select
+                className="w-full"
+                value={mapping?.back}
+                onChange={(v) => {
+                  setMappingDirty(true)
+                  setMapping((m) => ({ ...(m as any), back: v }))
+                }}
+                options={Array.from({ length: colCount }, (_, i) => ({
+                  label: `Col ${i + 1}`,
+                  value: i
+                }))}
+              />
+            </div>
+            <div>
+              <Text type="secondary">
+                {t("option:flashcards.tags", { defaultValue: "Tags" })}
+              </Text>
+              <Select
+                className="w-full"
+                allowClear
+                value={mapping?.tags}
+                onChange={(v) => {
+                  setMappingDirty(true)
+                  setMapping((m) => ({ ...(m as any), tags: v }))
+                }}
+                options={Array.from({ length: colCount }, (_, i) => ({
+                  label: `Col ${i + 1}`,
+                  value: i
+                }))}
+              />
+            </div>
+            <div>
+              <Text type="secondary">
+                {t("option:flashcards.notes", { defaultValue: "Notes" })}
+              </Text>
+              <Select
+                className="w-full"
+                allowClear
+                value={mapping?.notes}
+                onChange={(v) => {
+                  setMappingDirty(true)
+                  setMapping((m) => ({ ...(m as any), notes: v }))
+                }}
+                options={Array.from({ length: colCount }, (_, i) => ({
+                  label: `Col ${i + 1}`,
+                  value: i
+                }))}
+              />
+            </div>
           </div>
-          <div>
-            <Text type="secondary">
-              {t("option:flashcards.front", { defaultValue: "Front" })}
-            </Text>
-            <Select
-              className="w-full"
-              value={mapping?.front}
-              onChange={(v) => {
-                setMappingDirty(true)
-                setMapping((m) => ({ ...(m as any), front: v }))
-              }}
-              options={Array.from({ length: colCount }, (_, i) => ({
-                label: `Col ${i + 1}`,
-                value: i
-              }))}
-            />
-          </div>
-          <div>
-            <Text type="secondary">
-              {t("option:flashcards.back", { defaultValue: "Back" })}
-            </Text>
-            <Select
-              className="w-full"
-              value={mapping?.back}
-              onChange={(v) => {
-                setMappingDirty(true)
-                setMapping((m) => ({ ...(m as any), back: v }))
-              }}
-              options={Array.from({ length: colCount }, (_, i) => ({
-                label: `Col ${i + 1}`,
-                value: i
-              }))}
-            />
-          </div>
-          <div>
-            <Text type="secondary">
-              {t("option:flashcards.tags", { defaultValue: "Tags" })}
-            </Text>
-            <Select
-              className="w-full"
-              allowClear
-              value={mapping?.tags}
-              onChange={(v) => {
-                setMappingDirty(true)
-                setMapping((m) => ({ ...(m as any), tags: v }))
-              }}
-              options={Array.from({ length: colCount }, (_, i) => ({
-                label: `Col ${i + 1}`,
-                value: i
-              }))}
-            />
-          </div>
-          <div>
-            <Text type="secondary">
-              {t("option:flashcards.notes", { defaultValue: "Notes" })}
-            </Text>
-            <Select
-              className="w-full"
-              allowClear
-              value={mapping?.notes}
-              onChange={(v) => {
-                setMappingDirty(true)
-                setMapping((m) => ({ ...(m as any), notes: v }))
-              }}
-              options={Array.from({ length: colCount }, (_, i) => ({
-                label: `Col ${i + 1}`,
-                value: i
-              }))}
-            />
-          </div>
-        </div>
-      )}
+        ))}
       {useMapping && previewMapped && (
         <div className="mt-2">
           <Text type="secondary" className="text-xs">

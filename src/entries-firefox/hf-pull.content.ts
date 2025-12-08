@@ -263,6 +263,7 @@ export default defineContentScript({
       const sendLabel = getMessage("contextSendToTldw", "Send to tldw_server")
       btn.title = sendLabel
       const icon = createDownloadIcon()
+      icon.setAttribute("aria-hidden", "true")
       const label = document.createElement("span")
       label.classList.add("ml-1.5")
       label.textContent = sendLabel
