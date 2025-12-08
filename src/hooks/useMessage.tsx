@@ -877,9 +877,9 @@ export const useMessage = () => {
 
       // Add user message to server (only if not regenerate)
       if (!isRegenerate) {
-        const payload: any = { role: 'user', content: message }
-        if (image && image.startsWith('data:')) {
-          const b64 = image.split(',')[1]
+        const payload: any = { role: "user", content: message }
+        if (image && image.startsWith("data:")) {
+          const b64 = image.includes(",") ? image.split(",")[1] : undefined
           if (b64) payload.image_base64 = b64
         }
         const createdUser = await tldwClient.addChatMessage(chatId, payload)

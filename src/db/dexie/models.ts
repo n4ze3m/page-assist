@@ -111,9 +111,24 @@ export const createManyModels = async (
     }
 
     await db.create(model)
-    const createdInFallback = await createModelFB(model)
-    if (!createdInFallback) {
-      throw new Error("Failed to persist model to fallback storage")
+    try {
+      const createdInFallback = await createModelFB(model)
+      if (!createdInFallback) {
+        throw new Error("Failed to persist model to fallback storage")
+      }
+    } catch (error) {
+      try {
+        await db.delete(model.id)
+      } catch (deleteError) {
+        console.warn(
+          "Failed to rollback Dexie model after fallback persistence error",
+          {
+            modelId: model.id,
+            error: deleteError
+          }
+        )
+      }
+      throw error
     }
   }
 }
@@ -136,9 +151,24 @@ export const createModel = async (
     model_type: model_type
   }
   await db.create(model)
-  const createdInFallback = await createModelFB(model)
-  if (!createdInFallback) {
-    throw new Error("Failed to persist model to fallback storage")
+  try {
+    const createdInFallback = await createModelFB(model)
+    if (!createdInFallback) {
+      throw new Error("Failed to persist model to fallback storage")
+    }
+  } catch (error) {
+    try {
+      await db.delete(model.id)
+    } catch (deleteError) {
+      console.warn(
+        "Failed to rollback Dexie model after fallback persistence error",
+        {
+          modelId: model.id,
+          error: deleteError
+        }
+      )
+    }
+    throw error
   }
   return model
 }
@@ -152,34 +182,24 @@ export const getModelInfo = async (id: string) => {
       if (!lmstudioId) {
         throw new Error("Invalid LMStudio model ID")
       }
+      const cleanId = removeModelSuffix(id)
       return {
-        model_id: id.replace(
-          /_lmstudio_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/,
-          ""
-        ),
+        model_id: cleanId,
         provider_id: `openai-${lmstudioId.provider_id}`,
-        name: id.replace(
-          /_lmstudio_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/,
-          ""
-        )
+        name: cleanId
       }
     }
 
     if (isLlamafileModel(id)) {
       const llamafileId = getLlamafileModelId(id)
       if (!llamafileId) {
-        throw new Error("Invalid LMStudio model ID")
+        throw new Error("Invalid Llamafile model ID")
       }
+      const cleanId = removeModelSuffix(id)
       return {
-        model_id: id.replace(
-          /_llamafile_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/,
-          ""
-        ),
+        model_id: cleanId,
         provider_id: `openai-${llamafileId.provider_id}`,
-        name: id.replace(
-          /_llamafile_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/,
-          ""
-        )
+        name: cleanId
       }
     }
 
@@ -189,16 +209,11 @@ export const getModelInfo = async (id: string) => {
         throw new Error("Invalid llamaCPP model ID")
       }
 
+      const cleanId = removeModelSuffix(id)
       return {
-        model_id: id.replace(
-          /_llamacpp_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/,
-          ""
-        ),
+        model_id: cleanId,
         provider_id: `openai-${llamaCppId.provider_id}`,
-        name: id.replace(
-          /_llamacpp_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/,
-          ""
-        )
+        name: cleanId
       }
     }
 
@@ -207,13 +222,11 @@ export const getModelInfo = async (id: string) => {
       if (!vllmId) {
         throw new Error("Invalid Vllm model ID")
       }
+      const cleanId = removeModelSuffix(id)
       return {
-        model_id: id.replace(
-          /_vllm_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/,
-          ""
-        ),
+        model_id: cleanId,
         provider_id: `openai-${vllmId.provider_id}`,
-        name: id.replace(/_vllm_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/, "")
+        name: cleanId
       }
     }
 

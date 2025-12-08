@@ -41,8 +41,8 @@ export const getLMStudioModelId = (
 ): { model_id: string; provider_id: string } | null => {
   const match = model.match(LMSTUDIO_SUFFIX_REGEX)
   if (match) {
-    const modelId = match[0]
     const providerId = match[0].replace("_lmstudio_openai-", "")
+    const modelId = removeModelSuffix(model)
     return { model_id: modelId, provider_id: providerId }
   }
   return null
@@ -53,8 +53,8 @@ export const getLlamafileModelId = (
 ): { model_id: string; provider_id: string } | null => {
   const match = model.match(LLAMAFILE_SUFFIX_REGEX)
   if (match) {
-    const modelId = match[0]
     const providerId = match[0].replace("_llamafile_openai-", "")
+    const modelId = removeModelSuffix(model)
     return { model_id: modelId, provider_id: providerId }
   }
   return null
@@ -65,8 +65,8 @@ export const getLLamaCppModelId = (
 ): { model_id: string; provider_id: string } | null => {
   const match = model.match(LLAMACPP_SUFFIX_REGEX)
   if (match) {
-    const modelId = match[0]
     const providerId = match[0].replace("_llamacpp_openai-", "")
+    const modelId = removeModelSuffix(model)
     return { model_id: modelId, provider_id: providerId }
   }
   return null
@@ -77,8 +77,8 @@ export const getVLLMModelId = (
 ): { model_id: string; provider_id: string } | null => {
   const match = model.match(VLLM_SUFFIX_REGEX)
   if (match) {
-    const modelId = match[0]
     const providerId = match[0].replace("_vllm_openai-", "")
+    const modelId = removeModelSuffix(model)
     return { model_id: modelId, provider_id: providerId }
   }
   return null
@@ -130,21 +130,56 @@ const dynamicFetchModels = async ({
 
 export const dynamicFetchLMStudio = async (
   params: DynamicFetchParams
-): Promise<DynamicModelListing[]> =>
-  dynamicFetchModels({ ...params, providerPrefix: "lmstudio" })
+): Promise<DynamicModelListing[]> => {
+  try {
+    return await dynamicFetchModels({ ...params, providerPrefix: "lmstudio" })
+  } catch (e) {
+    throw new Error(
+      `Failed to fetch LMStudio models: ${
+        e instanceof Error ? e.message : String(e)
+      }`
+    )
+  }
+}
 
 export const dynamicFetchLLamaCpp = async (
   params: DynamicFetchParams
-): Promise<DynamicModelListing[]> =>
-  dynamicFetchModels({ ...params, providerPrefix: "llamacpp" })
+): Promise<DynamicModelListing[]> => {
+  try {
+    return await dynamicFetchModels({ ...params, providerPrefix: "llamacpp" })
+  } catch (e) {
+    throw new Error(
+      `Failed to fetch LlamaCpp models: ${
+        e instanceof Error ? e.message : String(e)
+      }`
+    )
+  }
+}
 
 export const dynamicFetchVLLM = async (
   params: DynamicFetchParams
-): Promise<DynamicModelListing[]> =>
-  dynamicFetchModels({ ...params, providerPrefix: "vllm" })
+): Promise<DynamicModelListing[]> => {
+  try {
+    return await dynamicFetchModels({ ...params, providerPrefix: "vllm" })
+  } catch (e) {
+    throw new Error(
+      `Failed to fetch vLLM models: ${
+        e instanceof Error ? e.message : String(e)
+      }`
+    )
+  }
+}
 
 export const dynamicFetchLlamafile = async (
   params: DynamicFetchParams
-): Promise<DynamicModelListing[]> =>
-  dynamicFetchModels({ ...params, providerPrefix: "llamafile" })
-
+): Promise<DynamicModelListing[]> => {
+  try {
+    return await dynamicFetchModels({ ...params, providerPrefix: "llamafile" })
+  } catch (e) {
+    throw new Error(
+      `Failed to fetch Llamafile models: ${
+        e instanceof Error ? e.message : String(e)
+      }`
+    )
+  }
+}

@@ -16,7 +16,6 @@ import {
 import { useConnectionStore } from '@/store/connection'
 import { ConnectionPhase } from '@/types/connection'
 import { useDemoMode } from '@/context/demo-mode'
-import { getBrowserRuntime } from '@/utils/browser-runtime'
 
 const localStorageInstance = new Storage({ area: 'local' })
 
@@ -247,6 +246,7 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
   React.useEffect(() => {
     const trimmed = serverUrl.trim()
     if (!urlState.valid || !trimmed) return
+    if (connectionState.serverUrl === trimmed) return
     // Keep the connection store config/server URL in sync with the field so
     // health checks (and success copy) can update while staying on Step 1.
     const timeout = window.setTimeout(() => {
@@ -261,7 +261,7 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
       }
     }, 500)
     return () => window.clearTimeout(timeout)
-  }, [serverUrl, urlState.valid])
+  }, [serverUrl, urlState.valid, connectionState.serverUrl])
 
   const connectionStatusTag = React.useMemo(() => {
     if (uxState === 'connected_ok' || uxState === 'connected_degraded') {
@@ -1056,10 +1056,10 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
                   className="mt-2"
                   onClick={async () => {
                     try {
-                      const runtime = getBrowserRuntime()
-                      const chromeGlobal = (globalThis as any).chrome as
-                        | typeof chrome
-                        | undefined
+                      const globalScope = globalThis as typeof globalThis & {
+                        chrome?: typeof chrome
+                      }
+                      const chromeGlobal = globalScope.chrome
 
                       const sidePanelApi = chromeGlobal?.sidePanel
                       const tabsApi = chromeGlobal?.tabs

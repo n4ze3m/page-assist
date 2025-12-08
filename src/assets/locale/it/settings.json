@@ -81,17 +81,17 @@
         "label": "Abilita Chat Temporanea nel Pannello Laterale per impostazione predefinita"
       },
       "enableOcrAssets": {
-        "label": "Enable OCR (downloads ~5MB on first use)"
+        "label": "Abilita OCR (scarica ~5MB al primo utilizzo)"
       },
       "ocrLanguage": {
-        "label": "Default OCR Language",
-        "placeholder": "Select an OCR language"
+        "label": "Lingua predefinita OCR",
+        "placeholder": "Seleziona una lingua OCR"
       },
       "removeReasoningTagFromCopy": {
-        "label": "Remove Reasoning Tag from Copied Text"
+        "label": "Rimuovi il tag di ragionamento dal testo copiato"
       },
       "promptSearchIncludeServer": {
-        "label": "Include server prompts in prompt search"
+        "label": "Includi i prompt del server nella ricerca dei prompt"
       },
       "restartOnboarding": {
         "label": "Riavvia l'onboarding dall'inizio",

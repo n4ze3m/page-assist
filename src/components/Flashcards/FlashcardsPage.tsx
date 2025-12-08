@@ -52,6 +52,7 @@ import { useAntdMessage } from "@/hooks/useAntdMessage"
 import { useScrollToServerCard } from "@/hooks/useScrollToServerCard"
 import { MarkdownErrorBoundary } from "@/components/Common/MarkdownErrorBoundary"
 import { StatusBadge } from "@/components/Common/StatusBadge"
+import { processInChunks } from "@/utils/chunk-processing"
 
 dayjs.extend(relativeTime)
 
@@ -458,17 +459,6 @@ export const FlashcardsPage: React.FC = () => {
     setMoveOpen(true)
   }
 
-  async function processInChunks<T>(
-    items: T[],
-    size: number,
-    fn: (chunk: T[]) => Promise<void>
-  ): Promise<void> {
-    for (let i = 0; i < items.length; i += size) {
-      const chunk = items.slice(i, i + size)
-      await fn(chunk)
-    }
-  }
-
   const handleBulkDelete = async () => {
     const toDelete = await getSelectedItems()
     if (!toDelete.length) return
@@ -670,36 +660,39 @@ export const FlashcardsPage: React.FC = () => {
     }
   }
 
-  const ratingOptions = [
-    {
-      value: 0,
-      label: t("option:flashcards.ratingAgain", { defaultValue: "Again" }),
-      description: t("option:flashcards.ratingAgainHelp", {
-        defaultValue: "I didn’t remember this card."
-      })
-    },
-    {
-      value: 2,
-      label: t("option:flashcards.ratingHard", { defaultValue: "Hard" }),
-      description: t("option:flashcards.ratingHardHelp", {
-        defaultValue: "I barely remembered; it felt difficult."
-      })
-    },
-    {
-      value: 3,
-      label: t("option:flashcards.ratingGood", { defaultValue: "Good" }),
-      description: t("option:flashcards.ratingGoodHelp", {
-        defaultValue: "I remembered with a bit of effort."
-      })
-    },
-    {
-      value: 5,
-      label: t("option:flashcards.ratingEasy", { defaultValue: "Easy" }),
-      description: t("option:flashcards.ratingEasyHelp", {
-        defaultValue: "I recalled it quickly and confidently."
-      })
-    }
-  ]
+  const ratingOptions = React.useMemo(
+    () => [
+      {
+        value: 0,
+        label: t("option:flashcards.ratingAgain", { defaultValue: "Again" }),
+        description: t("option:flashcards.ratingAgainHelp", {
+          defaultValue: "I didn’t remember this card."
+        })
+      },
+      {
+        value: 2,
+        label: t("option:flashcards.ratingHard", { defaultValue: "Hard" }),
+        description: t("option:flashcards.ratingHardHelp", {
+          defaultValue: "I barely remembered; it felt difficult."
+        })
+      },
+      {
+        value: 3,
+        label: t("option:flashcards.ratingGood", { defaultValue: "Good" }),
+        description: t("option:flashcards.ratingGoodHelp", {
+          defaultValue: "I remembered with a bit of effort."
+        })
+      },
+      {
+        value: 5,
+        label: t("option:flashcards.ratingEasy", { defaultValue: "Easy" }),
+        description: t("option:flashcards.ratingEasyHelp", {
+          defaultValue: "I recalled it quickly and confidently."
+        })
+      }
+    ],
+    [t]
+  )
 
   // Deep-link support: if tldw:lastDeckId is set (e.g., from omni-search),
   // select that deck in both Review and Manage views once decks are loaded.
@@ -1634,14 +1627,19 @@ const ImportPanel: React.FC = () => {
   const importMutation = useMutation({
     mutationKey: ["flashcards:import"],
     mutationFn: () => {
-      const payload = useMapping
+      type ImportPayload =
+        | { content: string; delimiter: string; has_header: false }
+        | { content: string; delimiter: string; has_header: boolean }
+
+      const payload: ImportPayload = useMapping
         ? {
-            content: buildMappedTSV(),
+            content: buildMappedTSV() || "",
             delimiter: MAPPING_OUTPUT_DELIMITER,
             has_header: false
           }
         : { content, delimiter, has_header: hasHeader }
-      return importFlashcards(payload as any)
+
+      return importFlashcards(payload)
     },
     onSuccess: () => {
       message.success(t("option:flashcards.imported", { defaultValue: "Imported" }))

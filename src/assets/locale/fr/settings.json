@@ -81,17 +81,17 @@
         "label": "Activer le chat temporaire dans le panneau latéral par défaut"
       },
       "enableOcrAssets": {
-        "label": "Enable OCR (downloads ~5MB on first use)"
+        "label": "Activer l’OCR (télécharge ~5 Mo lors de la première utilisation)"
       },
       "ocrLanguage": {
-        "label": "Default OCR Language",
-        "placeholder": "Select an OCR language"
+        "label": "Langue OCR par défaut",
+        "placeholder": "Sélectionner une langue OCR"
       },
       "removeReasoningTagFromCopy": {
-        "label": "Remove Reasoning Tag from Copied Text"
+        "label": "Supprimer le tag de raisonnement du texte copié"
       },
       "promptSearchIncludeServer": {
-        "label": "Include server prompts in prompt search"
+        "label": "Inclure les prompts du serveur dans la recherche de prompts"
       },
       "restartOnboarding": {
         "label": "Redémarrer le parcours d’accueil depuis le début",
@@ -840,7 +840,8 @@
       "label": "Recherche Knowledge (RAG) :",
       "healthy": "Opérationnel",
       "unhealthy": "En difficulté",
-      "unknown": "Inconnu"
+      "unknown": "Inconnu",
+      "help": "Vérifie si votre serveur peut rechercher dans vos notes, médias et autres sources de connaissances connectées."
     },
     "connectionFailed": "Échec de la connexion",
     "footerHelp": "Une fois la connexion établie, vous pouvez revenir à ces paramètres à tout moment depuis le menu de l’extension.",

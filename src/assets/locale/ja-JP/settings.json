@@ -74,9 +74,9 @@
       "copyAsFormattedText": {
         "label": "書式付きテキストとしてコピー"
       },
-      "tabMentionsEnabled": {
-        "label": "Abilita menzioni scheda (@tab)"
-      },
+	      "tabMentionsEnabled": {
+	        "label": "タブメンション（@tab）を有効にする"
+	      },
       "pasteLargeTextAsFile": {
         "label": "大きなテキストをファイルとして貼り付け"
       },

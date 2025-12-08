@@ -146,7 +146,7 @@ export default defineContentScript({
     const injectButton = () => {
       if (!document.body) return
       if (document.querySelector(".tldw-send-button")) return
-      const btn = document.createElement('button')
+      const btn = document.createElement("button")
       btn.className =
         "tldw-send-button inline-flex cursor-pointer items-center text-sm bg-white shadow-xs rounded-md border px-2 py-1 text-gray-600"
       const sendLabel = getMessage("contextSendToTldw", "Send to tldw_server")
@@ -160,8 +160,41 @@ export default defineContentScript({
       btn.style.bottom = "60px"
       btn.style.right = "20px"
       btn.style.zIndex = "9999"
-      btn.addEventListener('click', () => void sendToTldw(btn))
+      btn.addEventListener("click", () => void sendToTldw(btn))
       document.body.appendChild(btn)
+    }
+
+    const setupSpaNavigationListener = () => {
+      let lastHref = window.location.href
+
+      const handleUrlChange = () => {
+        const href = window.location.href
+        if (href === lastHref) return
+        lastHref = href
+        injectButton()
+      }
+
+      const originalPushState = history.pushState
+      history.pushState = function (
+        data: unknown,
+        unused: string,
+        url?: string | URL | null
+      ): void {
+        originalPushState.call(this, data, unused, url as string | undefined)
+        handleUrlChange()
+      }
+
+      const originalReplaceState = history.replaceState
+      history.replaceState = function (
+        data: unknown,
+        unused: string,
+        url?: string | URL | null
+      ): void {
+        originalReplaceState.call(this, data, unused, url as string | undefined)
+        handleUrlChange()
+      }
+
+      window.addEventListener("popstate", handleUrlChange)
     }
 
     if (document.body) {
@@ -177,6 +210,8 @@ export default defineContentScript({
         childList: true
       })
     }
+
+    setupSpaNavigationListener()
   },
   allFrames: false,
   matches: ["*://huggingface.co/*"]
