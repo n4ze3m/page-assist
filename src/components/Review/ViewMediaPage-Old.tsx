@@ -48,7 +48,7 @@ const ViewMediaPage: React.FC = () => {
         }
         description={t("review:mediaEmpty.offlineDescription", {
           defaultValue:
-            "This tldw server does not advertise the Media endpoints (for example, /api/v1/media and /api/v1/media/search). Upgrade your server to a version that includes Media to use this workspace."
+            "This workspace depends on Media Review support in your tldw server. You can continue using chat, notes, and other tools while you upgrade to a version that includes Media."
         })}
         examples={[
           t("review:mediaEmpty.offlineExample1", {
@@ -58,6 +58,10 @@ const ViewMediaPage: React.FC = () => {
           t("review:mediaEmpty.offlineExample2", {
             defaultValue:
               "After upgrading, reload the extension and return to Media."
+          }),
+          t("review:mediaEmpty.offlineTechnicalDetails", {
+            defaultValue:
+              "Technical details: this tldw server does not advertise the Media endpoints (for example, /api/v1/media and /api/v1/media/search)."
           })
         ]}
         primaryActionLabel={t("settings:healthSummary.diagnostics", {

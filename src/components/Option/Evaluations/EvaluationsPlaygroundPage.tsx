@@ -817,9 +817,7 @@ export const EvaluationsPlaygroundPage = () => {
               "Once connected, you can define evaluations and inspect metrics here."
           })
         ]}
-        primaryActionLabel={t("common:connectToServer", {
-          defaultValue: "Connect to server"
-        })}
+        primaryActionLabel={t("settings:tldw.setupLink", "Set up server")}
         onPrimaryAction={() => navigate("/settings/tldw")}
       />
     )

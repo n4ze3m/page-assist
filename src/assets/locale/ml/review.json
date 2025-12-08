@@ -185,10 +185,11 @@
     "connectDescription": "Connect to your tldw server in Settings to send messages and view media. After connecting, processed recordings and documents will be listed here.",
     "connectExample1": "Open Settings → tldw server to add your server URL.",
     "connectExample2": "Once connected, use Quick ingest in the header to add media from your own recordings and files.",
-    "offlineTitle": "Media API not available on this server",
-    "offlineDescription": "This tldw server does not advertise the Media endpoints (for example, /api/v1/media and /api/v1/media/search). Upgrade your server to a version that includes Media to use this workspace.",
+    "offlineTitle": "Media Review isn’t available on this server yet",
+    "offlineDescription": "This workspace depends on Media Review support in your tldw server. You can continue using chat, notes, and other tools while you upgrade to a version that includes Media.",
     "offlineExample1": "Open Diagnostics to confirm your server version and available APIs.",
     "offlineExample2": "അപ്‌ഗ്രേഡ് കഴിഞ്ഞാൽ എക്സ്റ്റൻഷൻ വീണ്ടും ലോഡ് ചെയ്ത് മീഡിയയിലേക്ക് മടങ്ങുക.",
+    "offlineTechnicalDetails": "Technical details: this tldw server does not advertise the Media endpoints (for example, /api/v1/media and /api/v1/media/search).",
     "featureUnavailableBadge": "സവിശേഷത ലഭ്യമല്ല"
   }
 }

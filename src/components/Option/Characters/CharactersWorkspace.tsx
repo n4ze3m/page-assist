@@ -67,9 +67,7 @@ export const CharactersWorkspace: React.FC = () => {
               "When you connect, you’ll be able to create characters that appear in the chat header and selection."
           })
         ]}
-        primaryActionLabel={t("common:connectToServer", {
-          defaultValue: "Connect to server"
-        })}
+        primaryActionLabel={t("settings:tldw.setupLink", "Set up server")}
         onPrimaryAction={() => navigate("/settings/tldw")}
       />
     ) : (
@@ -100,9 +98,7 @@ export const CharactersWorkspace: React.FC = () => {
               "Use Diagnostics if your server is running but not reachable."
           })
         ]}
-        primaryActionLabel={t("common:connectToServer", {
-          defaultValue: "Connect to server"
-        })}
+        primaryActionLabel={t("settings:tldw.setupLink", "Set up server")}
         onPrimaryAction={() => navigate("/settings/tldw")}
       />
     )

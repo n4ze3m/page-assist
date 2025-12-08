@@ -97,7 +97,7 @@ test.describe('Review page UX', () => {
     await expect(headline).toBeVisible()
 
     const connectCta = page.getByRole('button', {
-      name: /Go to server card/i
+      name: /Set up server|Open tldw server settings/i
     })
     await expect(connectCta).toBeVisible()
 

@@ -115,8 +115,6 @@ const NotesManagerPage: React.FC = () => {
 
   const editorDisabled = !isOnline || (!capsLoading && capabilities && !capabilities.hasNotes)
 
-  const scrollToServerCard = useScrollToServerCard("/notes")
-
   const fetchFilteredNotesRaw = async (
     q: string,
     toks: string[],
@@ -800,7 +798,7 @@ const NotesManagerPage: React.FC = () => {
                 setPageSize(nextPageSize)
               }}
               onResetEditor={resetEditor}
-              onScrollToServerCard={scrollToServerCard}
+              onOpenSettings={() => navigate('/settings/tldw')}
               onOpenHealth={() => navigate('/settings/health')}
               onExportAllMd={() => {
                 void exportAll()

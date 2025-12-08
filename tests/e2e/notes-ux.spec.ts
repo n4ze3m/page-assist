@@ -31,10 +31,10 @@ test.describe('Notes workspace UX', () => {
       page.getByRole('button', { name: /Delete note/i })
     ).toHaveCount(1)
 
-    const goToServerCard = page.getByRole('button', {
-      name: /Go to server card/i
+    const settingsCta = page.getByRole('button', {
+      name: /Set up server|Open tldw server settings/i
     })
-    await goToServerCard.click()
+    await settingsCta.click()
     const card = page.locator('#server-connection-card')
     await expect(card).toBeVisible()
     await expect(

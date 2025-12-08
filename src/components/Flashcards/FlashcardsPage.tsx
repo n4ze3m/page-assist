@@ -52,6 +52,8 @@ import { useAntdMessage } from "@/hooks/useAntdMessage"
 import { useScrollToServerCard } from "@/hooks/useScrollToServerCard"
 import { MarkdownErrorBoundary } from "@/components/Common/MarkdownErrorBoundary"
 import { StatusBadge } from "@/components/Common/StatusBadge"
+import ConnectionProblemBanner from "@/components/Common/ConnectionProblemBanner"
+import { useConnectionActions } from "@/hooks/useConnectionState"
 import { processInChunks } from "@/utils/chunk-processing"
 import { getDemoFlashcardDecks } from "@/utils/demo-content"
 
@@ -119,6 +121,7 @@ export const FlashcardsPage: React.FC = () => {
   const message = useAntdMessage()
   const confirmDanger = useConfirmDanger()
   const scrollToServerCard = useScrollToServerCard("/flashcards")
+  const { checkOnce } = useConnectionActions()
 
   const demoDecks = React.useMemo(() => getDemoFlashcardDecks(t), [t])
 
@@ -180,19 +183,11 @@ export const FlashcardsPage: React.FC = () => {
         </div>
       </div>
     ) : (
-      <FeatureEmptyState
-        title={
-          <span className="inline-flex items-center gap-2">
-            <StatusBadge variant="warning">
-              Not connected
-            </StatusBadge>
-            <span>
-              {t("option:flashcards.emptyConnectTitle", {
-                defaultValue: "Connect to use Flashcards"
-              })}
-            </span>
-          </span>
-        }
+      <ConnectionProblemBanner
+        badgeLabel="Not connected"
+        title={t("option:flashcards.emptyConnectTitle", {
+          defaultValue: "Connect to use Flashcards"
+        })}
         description={t("option:flashcards.emptyConnectDescription", {
           defaultValue:
             "This view needs a connected server. Use the server connection card above to fix your connection, then return here to review and generate flashcards."
@@ -207,6 +202,10 @@ export const FlashcardsPage: React.FC = () => {
           defaultValue: "Go to server card"
         })}
         onPrimaryAction={scrollToServerCard}
+        retryActionLabel={t("option:buttonRetry", "Retry connection")}
+        onRetry={() => {
+          void checkOnce()
+        }}
       />
     )
   }

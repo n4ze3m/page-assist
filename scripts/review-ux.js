@@ -6,6 +6,14 @@ const fs = require('fs')
 const { chromium } = require('@playwright/test')
 const { spawn } = require('child_process')
 
+function makeTempProfileDirs() {
+  const root = path.resolve('tmp-playwright-profile')
+  fs.mkdirSync(root, { recursive: true })
+  const homeDir = fs.mkdtempSync(path.join(root, 'ux-home-'))
+  const userDataDir = fs.mkdtempSync(path.join(root, 'ux-user-data-'))
+  return { homeDir, userDataDir }
+}
+
 async function waitForExtensionId(context, timeoutMs = 10000) {
   const start = Date.now()
   // MV3 uses service workers; poll until one appears
@@ -27,8 +35,7 @@ async function main() {
     throw new Error(`Extension build not found at: ${extensionPath}`)
   }
 
-  const userDataDir = path.resolve(__dirname, '..', 'playwright-mcp-artifacts', 'chrome-user-data')
-  fs.mkdirSync(userDataDir, { recursive: true })
+  const { homeDir, userDataDir } = makeTempProfileDirs()
 
   // Start a lightweight mock tldw_server so health/model calls succeed
   const mock = spawn(process.execPath, [path.resolve(__dirname, 'mock-tldw.js')], {
@@ -36,10 +43,16 @@ async function main() {
   })
 
   const context = await chromium.launchPersistentContext(userDataDir, {
-    headless: false,
+    headless: !!process.env.CI,
+    env: {
+      ...process.env,
+      HOME: homeDir
+    },
     args: [
       `--disable-extensions-except=${extensionPath}`,
-      `--load-extension=${extensionPath}`
+      `--load-extension=${extensionPath}`,
+      '--disable-crash-reporter',
+      '--crash-dumps-dir=/tmp'
     ]
   })
 
@@ -47,12 +60,16 @@ async function main() {
     // Obtain the extension id from the registered service worker
     const extensionId = await waitForExtensionId(context)
     const base = `chrome-extension://${extensionId}`
+    const apiKey =
+      process.env.TLDW_E2E_API_KEY ||
+      process.env.TLDW_WALKTHROUGH_API_KEY ||
+      'THIS-IS-A-SECURE-KEY-123-FAKE-KEY'
 
     const page = await context.newPage()
     await page.goto(`${base}/options.html`, { waitUntil: 'load' })
     await page.waitForSelector('#root', { timeout: 10000 })
     // Preconfigure server URL + auth in extension storage
-    await page.evaluate(async () => {
+    await page.evaluate(async (apiKeyValue) => {
       // Request host permissions so background fetches are allowed
       try {
         await new Promise((resolve) => chrome.permissions.request({ origins: ['http://127.0.0.1/*'] }, resolve))
@@ -62,11 +79,11 @@ async function main() {
         tldwConfig: {
           serverUrl: 'http://127.0.0.1:8000',
           authMode: 'single-user',
-          apiKey: 'test-key'
+          apiKey: apiKeyValue
         },
         tldwServerUrl: 'http://127.0.0.1:8000'
       })
-    })
+    }, apiKey)
     await page.reload({ waitUntil: 'load' })
     // Give background time to start and health check to settle
     await page.waitForTimeout(1000)

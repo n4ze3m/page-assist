@@ -16,7 +16,7 @@ test.describe('Feature empty states (connected vs not connected)', () => {
       page.getByText(/Connect to use Notes/i)
     ).toBeVisible()
     const cta = page.getByRole('button', {
-      name: /Go to server card/i
+      name: /Set up server|Open tldw server settings/i
     })
     await expect(cta).toBeVisible()
 
@@ -37,7 +37,9 @@ test.describe('Feature empty states (connected vs not connected)', () => {
       page.getByText(/Connect to use Knowledge/i)
     ).toBeVisible()
     await expect(
-      page.getByRole('button', { name: /Connect to server/i })
+      page.getByRole('button', {
+        name: /Set up server|Open tldw server settings/i
+      })
     ).toBeVisible()
 
     await context.close()

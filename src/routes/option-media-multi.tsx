@@ -72,14 +72,13 @@ const MediaMultiInner = () => {
                 "Use Media together with Review to summarize or analyze recordings."
             })
           ]}
-          primaryActionLabel={t("common:connectToServer", {
-            defaultValue: "Connect to server"
-          })}
+          primaryActionLabel={t("settings:tldw.setupLink", "Set up server")}
           onPrimaryAction={() => navigate("/settings/tldw")}
-          secondaryActionLabel={t("option:header.quickIngest", "Quick ingest")}
-          onSecondaryAction={() =>
-            window.dispatchEvent(new CustomEvent("tldw:open-quick-ingest"))
-          }
+          secondaryActionLabel={t(
+            "settings:healthSummary.diagnostics",
+            "Health & diagnostics"
+          )}
+          onSecondaryAction={() => navigate("/settings/health")}
         />
         <div className="rounded-lg border border-dashed border-gray-300 bg-white p-3 text-xs text-gray-700 dark:border-gray-700 dark:bg-[#111] dark:text-gray-200">
           <div className="mb-2 font-semibold">
@@ -119,9 +118,7 @@ const MediaMultiInner = () => {
               "Once connected, use Quick ingest in the header to add media from your own recordings and files."
           })
         ]}
-        primaryActionLabel={t("common:connectToServer", {
-          defaultValue: "Connect to server"
-        })}
+        primaryActionLabel={t("settings:tldw.setupLink", "Set up server")}
         onPrimaryAction={() => navigate("/settings/tldw")}
       />
     )
@@ -133,11 +130,11 @@ const MediaMultiInner = () => {
     return (
       <FeatureEmptyState
         title={t("review:mediaEmpty.offlineTitle", {
-          defaultValue: "Media API not available on this server"
+          defaultValue: "Media Review isn’t available on this server yet"
         })}
         description={t("review:mediaEmpty.offlineDescription", {
           defaultValue:
-            "This tldw server does not advertise the Media endpoints (for example, /api/v1/media and /api/v1/media/search). Upgrade your server to a version that includes Media to use this workspace."
+            "This workspace depends on Media Review support in your tldw server. You can continue using chat, notes, and other tools while you upgrade to a version that includes Media."
         })}
         examples={[
           t("review:mediaEmpty.offlineExample1", {
@@ -147,6 +144,10 @@ const MediaMultiInner = () => {
           t("review:mediaEmpty.offlineExample2", {
             defaultValue:
               "After upgrading, reload the extension and return to Media."
+          }),
+          t("review:mediaEmpty.offlineTechnicalDetails", {
+            defaultValue:
+              "Technical details: this tldw server does not advertise the Media endpoints (for example, /api/v1/media and /api/v1/media/search)."
           })
         ]}
         primaryActionLabel={t("settings:healthSummary.diagnostics", {

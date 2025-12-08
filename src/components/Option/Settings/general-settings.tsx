@@ -145,9 +145,7 @@ export const GeneralSettings = () => {
                   "Use Diagnostics to confirm your server is healthy before trying advanced tools."
               })
             ]}
-            primaryActionLabel={t("common:connectToServer", {
-              defaultValue: "Connect to server"
-            })}
+            primaryActionLabel={t("settings:tldw.setupLink", "Set up server")}
             onPrimaryAction={() => navigate("/settings/tldw")}
           />
         </div>

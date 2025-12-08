@@ -42,9 +42,7 @@ export const DictionariesWorkspace: React.FC = () => {
               "When you connect, you’ll be able to activate dictionaries across all chats."
           })
         ]}
-        primaryActionLabel={t("common:connectToServer", {
-          defaultValue: "Connect to server"
-        })}
+        primaryActionLabel={t("settings:tldw.setupLink", "Set up server")}
         onPrimaryAction={() => navigate("/settings/tldw")}
       />
     ) : (
@@ -75,9 +73,7 @@ export const DictionariesWorkspace: React.FC = () => {
               "Use Diagnostics if your server is running but not reachable."
           })
         ]}
-        primaryActionLabel={t("common:connectToServer", {
-          defaultValue: "Connect to server"
-        })}
+        primaryActionLabel={t("settings:tldw.setupLink", "Set up server")}
         onPrimaryAction={() => navigate("/settings/tldw")}
       />
     )

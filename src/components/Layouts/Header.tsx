@@ -36,7 +36,10 @@ import { browser } from "wxt/browser"
 import { CharacterSelect } from "../Common/CharacterSelect"
 import { PrimaryToolbar } from "./PrimaryToolbar"
 import { useConnectionState } from "@/hooks/useConnectionState"
-import { useShortcutConfig, formatShortcut } from "@/hooks/keyboard/useShortcutConfig"
+import {
+  useShortcutConfig,
+  formatShortcut
+} from "@/hooks/keyboard/useShortcutConfig"
 import { ConnectionPhase } from "@/types/connection"
 import type { Character } from "@/types/character"
 import type { TFunction } from "i18next"
@@ -88,7 +91,12 @@ export const Header: React.FC<Props> = ({
   setSidebarOpen,
   showSelectors = true
 }) => {
-  const { t, i18n } = useTranslation(["option", "common", "settings", "playground"])
+  const { t, i18n } = useTranslation([
+    "option",
+    "common",
+    "settings",
+    "playground"
+  ])
   const isRTL = i18n?.dir() === "rtl"
 
   const [shareModeEnabled] = useStorage("shareMode", false)
@@ -150,16 +158,14 @@ export const Header: React.FC<Props> = ({
     React.useState(false)
   const quickIngestReadyRef = React.useRef(false)
   const pendingQuickIngestIntroRef = React.useRef(false)
-  const { queuedQuickIngestCount, quickIngestHadFailure } =
-    useQuickIngestStore((s) => ({
+  const { queuedQuickIngestCount, quickIngestHadFailure } = useQuickIngestStore(
+    (s) => ({
       queuedQuickIngestCount: s.queuedCount,
       quickIngestHadFailure: s.hadRecentFailure
-    }))
+    })
+  )
 
-  const {
-    phase,
-    isConnected
-  } = useConnectionState()
+  const { phase, isConnected } = useConnectionState()
   const { shortcuts: shortcutConfig } = useShortcutConfig()
   const quickIngestBtnRef = React.useRef<HTMLButtonElement>(null)
   const hasQueuedQuickIngest = queuedQuickIngestCount > 0
@@ -188,12 +194,7 @@ export const Header: React.FC<Props> = ({
     }
 
     return queuedText
-  }, [
-    hasQueuedQuickIngest,
-    queuedQuickIngestCount,
-    quickIngestHadFailure,
-    t
-  ])
+  }, [hasQueuedQuickIngest, queuedQuickIngestCount, quickIngestHadFailure, t])
 
   const openQuickIngest = React.useCallback(
     (options?: { autoProcessQueued?: boolean; focusTrigger?: boolean }) => {
@@ -224,9 +225,7 @@ export const Header: React.FC<Props> = ({
       quickIngestReadyRef.current = true
       if (pendingQuickIngestIntroRef.current) {
         pendingQuickIngestIntroRef.current = false
-        window.dispatchEvent(
-          new CustomEvent("tldw:quick-ingest-force-intro")
-        )
+        window.dispatchEvent(new CustomEvent("tldw:quick-ingest-force-intro"))
       }
     }
     window.addEventListener("tldw:quick-ingest-ready", markQuickIngestReady)
@@ -256,15 +255,17 @@ export const Header: React.FC<Props> = ({
   const currentCoreMode: CoreMode = React.useMemo(() => {
     if (pathname.startsWith("/review") || pathname.startsWith("/media-multi"))
       return "mediaMulti"
-    if (pathname.startsWith("/media"))
-      return "media"
+    if (pathname.startsWith("/media")) return "media"
     if (
       pathname.startsWith("/settings/knowledge") ||
       pathname.startsWith("/knowledge")
     )
       return "knowledge"
     if (pathname.startsWith("/notes")) return "notes"
-    if (pathname.startsWith("/prompts") || pathname.startsWith("/settings/prompt"))
+    if (
+      pathname.startsWith("/prompts") ||
+      pathname.startsWith("/settings/prompt")
+    )
       return "prompts"
     if (
       pathname.startsWith("/prompt-studio") ||
@@ -365,21 +366,23 @@ export const Header: React.FC<Props> = ({
   React.useEffect(() => {
     if (!moreMenuOpen) return
     const id = requestAnimationFrame(() => {
-      const menu = document.getElementById('header-more-menu')
-      const first = menu?.querySelector<HTMLElement>('button, a, [tabindex]:not([tabindex="-1"])')
+      const menu = document.getElementById("header-more-menu")
+      const first = menu?.querySelector<HTMLElement>(
+        'button, a, [tabindex]:not([tabindex="-1"])'
+      )
       first?.focus()
     })
     return () => cancelAnimationFrame(id)
   }, [moreMenuOpen])
 
   React.useEffect(() => {
-    (async () => {
+    ;(async () => {
       try {
-        if (historyId && historyId !== 'temp' && !temporaryChat) {
+        if (historyId && historyId !== "temp" && !temporaryChat) {
           const title = await getTitleById(historyId)
-          setChatTitle(title || '')
+          setChatTitle(title || "")
         } else {
-          setChatTitle('')
+          setChatTitle("")
         }
       } catch {}
     })()
@@ -387,11 +390,11 @@ export const Header: React.FC<Props> = ({
 
   const saveTitle = async (value: string) => {
     try {
-      if (historyId && historyId !== 'temp' && !temporaryChat) {
-        await updateHistory(historyId, value.trim() || 'Untitled')
+      if (historyId && historyId !== "temp" && !temporaryChat) {
+        await updateHistory(historyId, value.trim() || "Untitled")
       }
     } catch (e) {
-      console.error('Failed to update chat title', e)
+      console.error("Failed to update chat title", e)
     }
   }
 
@@ -480,26 +483,26 @@ export const Header: React.FC<Props> = ({
           }
         ]
       },
-  {
-    title: t("option:header.groupWorkspace", "Workspace"),
-    items: [
       {
-        type: "link" as const,
-        to: "/evaluations",
-        icon: Microscope,
-        label: t("option:header.evaluations", "Evaluations")
-      },
-      {
-        type: "link" as const,
-        to: "/stt",
-        icon: Mic,
-        label: t("option:header.modeStt", "STT Playground")
-      },
-      {
-        type: "link" as const,
-        to: "/tts",
-        icon: Gauge,
-        label: t("option:tts.playground", "TTS Playground")
+        title: t("option:header.groupWorkspace", "Workspace"),
+        items: [
+          {
+            type: "link" as const,
+            to: "/evaluations",
+            icon: Microscope,
+            label: t("option:header.evaluations", "Evaluations")
+          },
+          {
+            type: "link" as const,
+            to: "/stt",
+            icon: Mic,
+            label: t("option:header.modeStt", "STT Playground")
+          },
+          {
+            type: "link" as const,
+            to: "/tts",
+            icon: Gauge,
+            label: t("option:tts.playground", "TTS Playground")
           },
           {
             type: "link" as const,
@@ -556,8 +559,8 @@ export const Header: React.FC<Props> = ({
     cancel: () => void
   }
 
-  const debouncedSetShortcutsPreference = React.useMemo<DebouncedShortcutsSetter>(
-    () => {
+  const debouncedSetShortcutsPreference =
+    React.useMemo<DebouncedShortcutsSetter>(() => {
       let timeoutId: number | undefined
 
       const fn = ((value: boolean) => {
@@ -582,14 +585,12 @@ export const Header: React.FC<Props> = ({
       }
 
       return fn
-    },
-    [setShortcutsPreference]
-  )
+    }, [setShortcutsPreference])
 
   // Track the shortcuts collapse state locally; onboarding and settings
   // may choose a default, but we avoid frequent writes while toggling.
-  const [shortcutsExpanded, setShortcutsExpanded] = React.useState(
-    () => Boolean(shortcutsPreference)
+  const [shortcutsExpanded, setShortcutsExpanded] = React.useState(() =>
+    Boolean(shortcutsPreference)
   )
   const shortcutsToggleRef = React.useRef<HTMLButtonElement>(null)
   const shortcutsContainerRef = React.useRef<HTMLDivElement>(null)
@@ -608,7 +609,10 @@ export const Header: React.FC<Props> = ({
 
   const statusLabelForCore = (status: StatusKind): string => {
     if (phase === ConnectionPhase.UNCONFIGURED) {
-      return t("settings:healthSummary.coreUnconfigured", "Server: Not configured")
+      return t(
+        "settings:healthSummary.coreUnconfigured",
+        "Server: Not configured"
+      )
     }
     if (status === "ok") {
       return t("settings:healthSummary.coreOnline", "Server: Online")
@@ -681,7 +685,7 @@ export const Header: React.FC<Props> = ({
           onToggleSidebar={() => setSidebarOpen(true)}
           showBack={pathname !== "/"}
           isRTL={isRTL}>
-            <div className="flex w-full items-center gap-3 min-w-0">
+          <div className="flex w-full items-center gap-3 min-w-0">
             <div className="flex items-center gap-3 min-w-0 flex-shrink-0">
               <NewChat clearChat={clearChat} />
               {isChatRoute && (
@@ -689,8 +693,7 @@ export const Header: React.FC<Props> = ({
                   <button
                     type="button"
                     onClick={() => setOpenModelSettings(true)}
-                    className="inline-flex items-center gap-1 rounded-md border border-transparent px-2 py-1 text-xs text-gray-600 transition hover:border-gray-300 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-amber-500 dark:text-gray-200 dark:hover:border-gray-500 dark:hover:bg-[#1f1f1f]"
-                  >
+                    className="inline-flex items-center gap-1 rounded-md border border-transparent px-2 py-1 text-xs text-gray-600 transition hover:border-gray-300 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-amber-500 dark:text-gray-200 dark:hover:border-gray-500 dark:hover:bg-[#1f1f1f]">
                     <Gauge className="h-4 w-4" aria-hidden="true" />
                     <span className="hidden sm:inline">
                       {t("option:header.modelSettings", "Model settings")}
@@ -721,8 +724,7 @@ export const Header: React.FC<Props> = ({
                       type="button"
                       onClick={() => setIsEditingTitle(true)}
                       className="truncate text-left text-sm text-gray-700 hover:underline dark:text-gray-200"
-                      title={chatTitle || "Untitled"}
-                    >
+                      title={chatTitle || "Untitled"}>
                       {chatTitle || t("option:header.untitledChat", "Untitled")}
                     </button>
                   )}
@@ -761,7 +763,8 @@ export const Header: React.FC<Props> = ({
                     {t("option:header.promptLabel", "Prompt")}:
                     <span className="max-w-[140px] truncate">
                       {selectedSystemPrompt
-                        ? (getPromptInfoById(selectedSystemPrompt)?.title || t("option:header.systemPrompt", "System prompt"))
+                        ? getPromptInfoById(selectedSystemPrompt)?.title ||
+                          t("option:header.systemPrompt", "System prompt")
                         : t("option:header.customPrompt", "Custom")}
                     </span>
                   </span>
@@ -803,7 +806,9 @@ export const Header: React.FC<Props> = ({
                   } catch {}
                 }}
                 className="inline-flex items-center justify-center rounded-md border border-transparent p-1 text-gray-600 transition hover:border-gray-300 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-amber-500 dark:text-gray-200 dark:hover:border-gray-500 dark:hover:bg-[#1f1f1f]"
-                aria-label={t("option:githubRepository", "GitHub Repository") as string}>
+                aria-label={
+                  t("option:githubRepository", "GitHub Repository") as string
+                }>
                 <Github className="h-4 w-4" aria-hidden="true" />
               </button>
               {selectedModel && (
@@ -829,8 +834,7 @@ export const Header: React.FC<Props> = ({
                 return (
                   <span
                     id={id}
-                    className="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
-                  >
+                    className="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
                     {t("option:header.modelLabel", "Model")}
                   </span>
                 )
@@ -866,9 +870,8 @@ export const Header: React.FC<Props> = ({
                       haystack = String(option.value)
                     }
                     return (
-                      haystack
-                        ?.toLowerCase()
-                        .includes(input.toLowerCase()) ?? false
+                      haystack?.toLowerCase().includes(input.toLowerCase()) ??
+                      false
                     )
                   }}
                   showSearch
@@ -880,9 +883,16 @@ export const Header: React.FC<Props> = ({
                         data-title={model.name}
                         className="flex items-center gap-2">
                         {model?.avatar ? (
-                          <Avatar src={model.avatar} alt={model.name} size="small" />
+                          <Avatar
+                            src={model.avatar}
+                            alt={model.name}
+                            size="small"
+                          />
                         ) : (
-                          <ProviderIcons provider={model?.provider} className="h-4 w-4" />
+                          <ProviderIcons
+                            provider={model?.provider}
+                            className="h-4 w-4"
+                          />
                         )}
                         <span className="truncate">
                           {model?.nickname || model.model}
@@ -905,15 +915,16 @@ export const Header: React.FC<Props> = ({
                 return (
                   <span
                     id={id}
-                    className="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
-                  >
+                    className="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
                     {t("option:header.promptLabel", "Prompt")}
                   </span>
                 )
               })()}
               <PromptSearch
                 inputId="header-prompt-search"
-                ariaLabel={t("option:selectAPrompt", "Select a Prompt") as string}
+                ariaLabel={
+                  t("option:selectAPrompt", "Select a Prompt") as string
+                }
                 ariaLabelledby="header-prompt-label"
                 onInsertMessage={(content) => {
                   setSelectedSystemPrompt(undefined)
@@ -922,7 +933,8 @@ export const Header: React.FC<Props> = ({
                 onInsertSystem={(content) => {
                   setSelectedSystemPrompt(undefined)
                   const { setSystemPrompt } =
-                    useStoreChatModelSettings.getState?.() || ({ setSystemPrompt: undefined } as any)
+                    useStoreChatModelSettings.getState?.() ||
+                    ({ setSystemPrompt: undefined } as any)
                   setSystemPrompt?.(content)
                 }}
               />
@@ -970,9 +982,7 @@ export const Header: React.FC<Props> = ({
                   "relative inline-flex min-w-[180px] items-center justify-center gap-2 rounded-full border border-transparent px-4 py-2 text-sm font-medium transition hover:border-gray-300 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500 dark:hover:border-gray-500 dark:hover:bg-[#1f1f1f]",
                   "text-gray-600 dark:text-gray-200"
                 )}
-                data-has-queued-ingest={
-                  hasQueuedQuickIngest ? "true" : "false"
-                }
+                data-has-queued-ingest={hasQueuedQuickIngest ? "true" : "false"}
                 aria-disabled={false}>
                 <UploadCloud className="h-3 w-3" aria-hidden="true" />
                 <span>{t("option:header.quickIngest", "Quick ingest")}</span>
@@ -1007,10 +1017,12 @@ export const Header: React.FC<Props> = ({
               type="button"
               onClick={() => navigate("/settings/health")}
               className="inline-flex items-center gap-1 rounded-full border border-transparent px-2 py-1 text-xs transition hover:border-gray-300 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500 dark:hover:border-gray-500 dark:hover:bg-[#1f1f1f]"
-              title={t(
-                "settings:healthSummary.coreAria",
-                "Server status — click for diagnostics"
-              ) as string}
+              title={
+                t(
+                  "settings:healthSummary.coreAria",
+                  "Server status — click for diagnostics"
+                ) as string
+              }
               aria-label={
                 t(
                   "settings:healthSummary.diagnostics",
@@ -1038,10 +1050,11 @@ export const Header: React.FC<Props> = ({
                 <button
                   type="button"
                   onClick={() => setOpenModelSettings(true)}
-                  className="flex w-full items-center gap-2 rounded-md border border-transparent px-3 py-2 text-sm text-gray-600 transition hover:border-gray-300 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500 dark:text-gray-200 dark:hover:border-gray-500 dark:hover:bg-[#1f1f1f] sm:w-auto"
-                >
+                  className="flex w-full items-center gap-2 rounded-md border border-transparent px-3 py-2 text-sm text-gray-600 transition hover:border-gray-300 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500 dark:text-gray-200 dark:hover:border-gray-500 dark:hover:bg-[#1f1f1f] sm:w-auto">
                   <Gauge className="h-4 w-4" aria-hidden="true" />
-                  <span>{t("option:header.modelSettings", "Model settings")}</span>
+                  <span>
+                    {t("option:header.modelSettings", "Model settings")}
+                  </span>
                 </button>
 
                 {messages.length > 0 && !streaming && (
@@ -1051,15 +1064,18 @@ export const Header: React.FC<Props> = ({
                       historyId={historyId}
                       messages={messages}
                     />
-                    <span className="sr-only">{t("option:header.moreActions", "More actions")}</span>
+                    <span className="sr-only">
+                      {t("option:header.moreActions", "More actions")}
+                    </span>
                   </div>
                 )}
 
                 <button
                   type="button"
-                  onClick={() => { void openSidebar() }}
-                  className="flex w-full items-center gap-2 rounded-md border border-transparent px-3 py-2 text-sm text-gray-600 transition hover:border-gray-300 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500 dark:text-gray-200 dark:hover:border-gray-500 dark:hover:bg-[#1f1f1f] sm:w-auto"
-                >
+                  onClick={() => {
+                    void openSidebar()
+                  }}
+                  className="flex w-full items-center gap-2 rounded-md border border-transparent px-3 py-2 text-sm text-gray-600 transition hover:border-gray-300 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500 dark:text-gray-200 dark:hover:border-gray-500 dark:hover:bg-[#1f1f1f] sm:w-auto">
                   <LayoutGrid className="h-4 w-4" aria-hidden="true" />
                   <span>{t("option:header.openSidebar", "Open sidebar")}</span>
                 </button>
@@ -1075,15 +1091,18 @@ export const Header: React.FC<Props> = ({
                       historyId={historyId}
                       messages={messages}
                     />
-                    <span className="sr-only">{t("option:header.moreActions", "More actions")}</span>
+                    <span className="sr-only">
+                      {t("option:header.moreActions", "More actions")}
+                    </span>
                   </div>
                 )}
 
                 <button
                   type="button"
-                  onClick={() => { void openSidebar() }}
-                  className="flex w-full items-center gap-2 rounded-md border border-transparent px-3 py-2 text-sm text-gray-600 transition hover:border-gray-300 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500 dark:text-gray-200 dark:hover:border-gray-500 dark:hover:bg-[#1f1f1f] sm:w-auto"
-                >
+                  onClick={() => {
+                    void openSidebar()
+                  }}
+                  className="flex w-full items-center gap-2 rounded-md border border-transparent px-3 py-2 text-sm text-gray-600 transition hover:border-gray-300 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500 dark:text-gray-200 dark:hover:border-gray-500 dark:hover:bg-[#1f1f1f] sm:w-auto">
                   <LayoutGrid className="h-4 w-4" aria-hidden="true" />
                   <span>{t("option:header.openSidebar", "Open sidebar")}</span>
                 </button>
@@ -1092,16 +1111,18 @@ export const Header: React.FC<Props> = ({
           </div>
         </div>
 
-          <div className="flex flex-col gap-2 lg:flex-1">
-            <div className="flex flex-wrap items-center gap-2 text-xs">
-              <span className="font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
-                {t("option:header.modesLabel", "Modes")}
-              </span>
+        <div className="flex flex-col gap-2 lg:flex-1">
+          <div className="flex flex-wrap items-center gap-2 text-xs">
+            <span className="font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
+              {t("option:header.modesLabel", "Modes")}
+            </span>
             <div
               className="flex flex-wrap gap-1"
               role="tablist"
-              aria-label={t("option:header.modesAriaLabel", "Application modes")}
-            >
+              aria-label={t(
+                "option:header.modesAriaLabel",
+                "Application modes"
+              )}>
               {(() => {
                 const primaryModes: Array<{
                   key: CoreMode
@@ -1166,7 +1187,10 @@ export const Header: React.FC<Props> = ({
                   },
                   {
                     key: "dictionaries",
-                    label: t("option:header.modeDictionaries", "Chat dictionaries"),
+                    label: t(
+                      "option:header.modeDictionaries",
+                      "Chat dictionaries"
+                    ),
                     shortcut: shortcutConfig.modeDictionaries
                   },
                   {
@@ -1175,8 +1199,10 @@ export const Header: React.FC<Props> = ({
                     shortcut: shortcutConfig.modeCharacters
                   }
                 ]
-                const renderModeButton = (mode: typeof primaryModes[0]) => {
-                  const promptStudioUnavailable = mode.key === "promptStudio" && promptStudioCapability.data === false
+                const renderModeButton = (mode: (typeof primaryModes)[0]) => {
+                  const promptStudioUnavailable =
+                    mode.key === "promptStudio" &&
+                    promptStudioCapability.data === false
                   const isSelected = currentCoreMode === mode.key
                   return (
                     <button
@@ -1192,19 +1218,25 @@ export const Header: React.FC<Props> = ({
                       aria-disabled={promptStudioUnavailable}
                       title={
                         mode.shortcut
-                          ? t("option:header.modeShortcutHint", "{{shortcut}} to switch", {
-                              shortcut: formatShortcut(mode.shortcut)
-                            }) || undefined
+                          ? t(
+                              "option:header.modeShortcutHint",
+                              "{{shortcut}} to switch",
+                              {
+                                shortcut: formatShortcut(mode.shortcut)
+                              }
+                            ) || undefined
                           : undefined
                       }
                       className={classNames(
-                        "rounded-full px-3 py-1 text-xs font-medium transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500",
+                        "core-mode-button rounded-full px-3 py-1 text-xs font-medium transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500",
                         isSelected
-                          ? "bg-amber-500 text-gray-900 shadow-sm dark:bg-amber-400 dark:text-gray-900"
+                          ? "core-mode-button--active active bg-amber-500 text-gray-900 shadow-sm dark:bg-amber-400 dark:text-gray-900"
                           : "bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-[#262626] dark:text-gray-200 dark:hover:bg-[#333333]",
-                        promptStudioUnavailable ? "opacity-60 cursor-not-allowed" : ""
+                        promptStudioUnavailable
+                          ? "opacity-60 cursor-not-allowed"
+                          : ""
                       )}
-                    >
+                      data-active={isSelected ? "true" : undefined}>
                       {mode.label}
                     </button>
                   )
@@ -1217,18 +1249,19 @@ export const Header: React.FC<Props> = ({
                         items: secondaryModes.map((mode) => ({
                           key: mode.key,
                           label: mode.label,
-                          disabled: mode.key === "promptStudio" && promptStudioCapability.data === false
+                          disabled:
+                            mode.key === "promptStudio" &&
+                            promptStudioCapability.data === false
                         })),
-                        onClick: ({ key }) => handleCoreModeChange(key as CoreMode)
-                      }}
-                    >
+                        onClick: ({ key }) =>
+                          handleCoreModeChange(key as CoreMode)
+                      }}>
                       <button
                         type="button"
                         className={classNames(
-                          "rounded-full px-3 py-1 text-xs font-medium transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500",
+                          "core-mode-button rounded-full px-3 py-1 text-xs font-medium transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500",
                           "bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-[#262626] dark:text-gray-200 dark:hover:bg-[#333333]"
-                        )}
-                      >
+                        )}>
                         {t("option:header.moreTools", "More...")}
                       </button>
                     </Dropdown>
@@ -1248,7 +1281,10 @@ export const Header: React.FC<Props> = ({
             aria-expanded={shortcutsExpanded}
             aria-controls={shortcutsSectionId}
             ref={shortcutsToggleRef}
-            title={t("option:header.shortcutsKeyHint", "Press ? to toggle shortcuts")}
+            title={t(
+              "option:header.shortcutsKeyHint",
+              "Press ? to toggle shortcuts"
+            )}
             className="inline-flex items-center self-start rounded-md border border-transparent px-2 py-1 text-xs font-semibold uppercase tracking-wide text-gray-500 transition hover:border-gray-300 hover:bg-white dark:text-gray-300 dark:hover:border-gray-500 dark:hover:bg-[#1f1f1f]">
             <ChevronDown
               className={classNames(
@@ -1281,8 +1317,7 @@ export const Header: React.FC<Props> = ({
               }}
               className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between"
               role="region"
-              aria-label={t("option:header.showShortcuts", "Shortcuts")}
-            >
+              aria-label={t("option:header.showShortcuts", "Shortcuts")}>
               <div className="flex flex-col gap-4 lg:flex-1">
                 {navigationGroups.map((group, index) => {
                   const groupId = `header-shortcuts-group-${index}`
@@ -1296,34 +1331,34 @@ export const Header: React.FC<Props> = ({
                         className="text-xs font-semibold uppercase tracking-wide text-gray-400">
                         {group.title}
                       </h3>
-                    <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
-                      {group.items.map((item) => {
-                        if (item.type === "component") {
+                      <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
+                        {group.items.map((item) => {
+                          if (item.type === "component") {
+                            return (
+                              <div key={item.key} className="w-full sm:w-auto">
+                                {item.node}
+                              </div>
+                            )
+                          }
+                          const Icon = item.icon
                           return (
-                            <div key={item.key} className="w-full sm:w-auto">
-                              {item.node}
-                            </div>
+                            <NavLink
+                              key={item.to}
+                              to={item.to}
+                              className={({ isActive }) =>
+                                classNames(
+                                  "flex w-full items-center gap-2 rounded-md border px-3 py-2 text-sm transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500 sm:w-auto",
+                                  isActive
+                                    ? "border-gray-300 bg-white text-gray-900 dark:border-gray-500 dark:bg-[#1f1f1f] dark:text-white"
+                                    : "border-transparent text-gray-600 hover:border-gray-300 hover:bg-white dark:text-gray-200 dark:hover:border-gray-500 dark:hover:bg-[#1f1f1f]"
+                                )
+                              }>
+                              <Icon className="h-4 w-4" aria-hidden="true" />
+                              <span className="truncate">{item.label}</span>
+                            </NavLink>
                           )
-                        }
-                        const Icon = item.icon
-                        return (
-                          <NavLink
-                            key={item.to}
-                            to={item.to}
-                            className={({ isActive }) =>
-                              classNames(
-                                "flex w-full items-center gap-2 rounded-md border px-3 py-2 text-sm transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500 sm:w-auto",
-                                isActive
-                                  ? "border-gray-300 bg-white text-gray-900 dark:border-gray-500 dark:bg-[#1f1f1f] dark:text-white"
-                                  : "border-transparent text-gray-600 hover:border-gray-300 hover:bg-white dark:text-gray-200 dark:hover:border-gray-500 dark:hover:bg-[#1f1f1f]"
-                              )
-                            }>
-                            <Icon className="h-4 w-4" aria-hidden="true" />
-                            <span className="truncate">{item.label}</span>
-                          </NavLink>
-                        )
-                      })}
-                    </div>
+                        })}
+                      </div>
                     </section>
                   )
                 })}

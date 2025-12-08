@@ -29,6 +29,7 @@
     "sidepanelOpenSettingsHint": "Settings open in a new browser tab so you can configure your tldw server.",
     "quickIngestInlineHint": "Quick Ingest can queue URLs and files while your server is offline so you can process them once you reconnect."
   },
+  "buttonRetry": "Retry connection",
   "header": {
     "backToHome": "Back to home",
     "openSidebar": "Open Sidebar",

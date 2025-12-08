@@ -182,9 +182,7 @@ export const KnowledgeSettings = () => {
               "When you connect, you’ll be able to upload files and text that tldw can search across."
           })
         ]}
-        primaryActionLabel={t("common:connectToServer", {
-          defaultValue: "Connect to server"
-        })}
+        primaryActionLabel={t("settings:tldw.setupLink", "Set up server")}
         onPrimaryAction={() => navigate("/settings/tldw")}
       />
     ) : (
@@ -215,10 +213,13 @@ export const KnowledgeSettings = () => {
               "Use Diagnostics if your server is running but not reachable."
           })
         ]}
-        primaryActionLabel={t("common:connectToServer", {
-          defaultValue: "Connect to server"
-        })}
+        primaryActionLabel={t("settings:tldw.setupLink", "Set up server")}
         onPrimaryAction={() => navigate("/settings/tldw")}
+        secondaryActionLabel={t(
+          "settings:healthSummary.diagnostics",
+          "Health & diagnostics"
+        )}
+        onSecondaryAction={() => navigate("/settings/health")}
       />
     )
   }

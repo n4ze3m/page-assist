@@ -1,3 +1,4 @@
+import React from "react"
 import { useTranslation } from "react-i18next"
 import { Link, useLocation, useNavigate } from "react-router-dom"
 import { BetaTag } from "../Common/Beta"
@@ -22,7 +23,22 @@ export const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
     import.meta.env.BROWSER === "firefox"
       ? !!(browser as any)?.sidebarAction?.open
       : // @ts-ignore
-        (typeof chrome !== "undefined" && !!(chrome as any).sidePanel)
+        typeof chrome !== "undefined" && !!(chrome as any).sidePanel
+  const currentNavItem = React.useMemo(() => {
+    for (const group of SETTINGS_NAV_GROUPS) {
+      for (const item of group.items) {
+        if (item.to === location.pathname) {
+          return item
+        }
+      }
+    }
+    return null
+  }, [location.pathname])
+
+  const currentBreadcrumbLabel = currentNavItem
+    ? t(currentNavItem.labelToken)
+    : null
+
   return (
     <div className="flex min-h-screen  w-full flex-col">
       <main className="relative w-full flex-1">
@@ -35,10 +51,10 @@ export const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
                     className="text-xs border rounded px-2 py-1 text-gray-700 dark:text-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
                     disabled={!sidepanelSupported}
                     onClick={async () => {
-                      const storage = new Storage({ area: 'local' })
-                      await storage.set('uiMode', 'sidePanel')
-                      await storage.set('actionIconClick', 'sidePanel')
-                      await storage.set('contextMenuClick', 'sidePanel')
+                      const storage = new Storage({ area: "local" })
+                      await storage.set("uiMode", "sidePanel")
+                      await storage.set("actionIconClick", "sidePanel")
+                      await storage.set("contextMenuClick", "sidePanel")
                       try {
                         if (import.meta.env.BROWSER === "firefox") {
                           if ((browser as any)?.sidebarAction?.open) {
@@ -47,7 +63,10 @@ export const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
                         } else {
                           // Chromium sidePanel API
                           // @ts-ignore
-                          const tabs = await chrome.tabs.query({ active: true, currentWindow: true })
+                          const tabs = await chrome.tabs.query({
+                            active: true,
+                            currentWindow: true
+                          })
                           if (tabs?.[0]?.id) {
                             // @ts-ignore
                             await chrome.sidePanel.open({ tabId: tabs[0].id })
@@ -55,13 +74,15 @@ export const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
                         }
                       } catch {}
                     }}
-                    title={t('settings:switchToSidebar', 'Switch to Sidebar')}>
-                    {t('settings:switchToSidebar', 'Switch to Sidebar')}
+                    title={t("settings:switchToSidebar", "Switch to Sidebar")}>
+                    {t("settings:switchToSidebar", "Switch to Sidebar")}
                   </button>
                 </div>
                 <div className="flex flex-col gap-6">
                   {SETTINGS_NAV_GROUPS.map((group) => {
-                    const items = group.items.filter((item) => !shouldHideForBrowser(item))
+                    const items = group.items.filter(
+                      (item) => !shouldHideForBrowser(item)
+                    )
                     if (items.length === 0) {
                       return null
                     }
@@ -72,9 +93,13 @@ export const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
                             {t(group.titleToken)}
                           </span>
                         </div>
-                        <ul role="list" className="flex flex-row flex-wrap gap-2 lg:flex-col">
+                        <ul
+                          role="list"
+                          className="flex flex-row flex-wrap gap-2 lg:flex-col">
                           {items.map((item) => (
-                            <li key={item.to} className="inline-flex items-center">
+                            <li
+                              key={item.to}
+                              className="inline-flex items-center">
                               <Link
                                 to={item.to}
                                 className={classNames(
@@ -83,7 +108,11 @@ export const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
                                     : "text-gray-700 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-200 dark:hover:text-white dark:hover:bg-[#262626]",
                                   "group flex gap-x-3 rounded-md py-2 pl-2 pr-3 text-sm font-semibold"
                                 )}
-                                aria-current={location.pathname === item.to ? "page" : undefined}>
+                                aria-current={
+                                  location.pathname === item.to
+                                    ? "page"
+                                    : undefined
+                                }>
                                 <item.icon
                                   className={classNames(
                                     location.pathname === item.to
@@ -92,7 +121,9 @@ export const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
                                     "h-6 w-6 shrink-0"
                                   )}
                                 />
-                                <span className="truncate">{t(item.labelToken)}</span>
+                                <span className="truncate">
+                                  {t(item.labelToken)}
+                                </span>
                               </Link>
                               {item.beta && <BetaTag />}
                             </li>
@@ -109,21 +140,33 @@ export const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
               <div className="absolute right-4 top-4 lg:right-0 lg:top-6 lg:translate-x-[-1rem]">
                 <button
                   className="inline-flex items-center gap-1 text-xs border rounded px-2 py-1 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-[#262626]"
-                  title={t('common:close', 'Close')}
+                  title={t("common:close", "Close")}
                   onClick={(e) => {
                     e.preventDefault()
                     try {
                       navigate(-1)
                     } catch {
-                      navigate('/')
+                      navigate("/")
                     }
-                  }}
-                >
+                  }}>
                   <XIcon className="h-4 w-4" />
-                  <span>{t('common:close', 'Close')}</span>
+                  <span>{t("common:close", "Close")}</span>
                 </button>
               </div>
               <div className="mx-auto max-w-4xl space-y-8 sm:space-y-10">
+                {currentBreadcrumbLabel &&
+                  location.pathname !== "/settings" && (
+                    <p
+                      className="text-xs text-gray-500 dark:text-gray-400"
+                      aria-label={t(
+                        "settings:breadcrumb.ariaLabel",
+                        "Current settings location"
+                      )}>
+                      <span>{t("settings", "Settings")}</span>
+                      <span className="mx-1">/</span>
+                      <span>{currentBreadcrumbLabel}</span>
+                    </p>
+                  )}
                 {children}
               </div>
             </main>

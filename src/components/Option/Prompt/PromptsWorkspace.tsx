@@ -31,9 +31,7 @@ export const PromptsWorkspace: React.FC = () => {
               "Once connected, create custom prompts you can reuse across chats."
           })
         ]}
-        primaryActionLabel={t("common:connectToServer", {
-          defaultValue: "Connect to server"
-        })}
+        primaryActionLabel={t("settings:tldw.setupLink", "Set up server")}
         onPrimaryAction={() => navigate("/settings/tldw")}
       />
     )
