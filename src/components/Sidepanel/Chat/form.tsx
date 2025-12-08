@@ -241,27 +241,6 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
     return () => window.removeEventListener('tldw:focus-composer', handler)
   }, [])
 
-  const handleDisconnectedFocus = () => {
-    // When there are no messages, the shared connection card in the body
-    // provides the primary CTA. Only show the inline banner when there is
-    // existing history and the connection drops.
-    if (!isConnectionReady && messages.length > 0 && !hasShownConnectBanner) {
-      setShowConnectBanner(true)
-      setHasShownConnectBanner(true)
-    }
-  }
-
-  const handlePaste = (e: React.ClipboardEvent) => {
-    if (e.clipboardData.files.length > 0) {
-      const file = e.clipboardData.files[0]
-      // Only handle image files from paste
-      if (file.type.startsWith("image/")) {
-        e.preventDefault()
-        onInputChange(file)
-      }
-    }
-  }
-
   const {
     onSubmit,
     selectedModel,
@@ -288,6 +267,27 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
     addQueuedMessage,
     clearQueuedMessages
   } = useMessage()
+
+  const handleDisconnectedFocus = () => {
+    // When there are no messages, the shared connection card in the body
+    // provides the primary CTA. Only show the inline banner when there is
+    // existing history and the connection drops.
+    if (!isConnectionReady && messages.length > 0 && !hasShownConnectBanner) {
+      setShowConnectBanner(true)
+      setHasShownConnectBanner(true)
+    }
+  }
+
+  const handlePaste = (e: React.ClipboardEvent) => {
+    if (e.clipboardData.files.length > 0) {
+      const file = e.clipboardData.files[0]
+      // Only handle image files from paste
+      if (file.type.startsWith("image/")) {
+        e.preventDefault()
+        onInputChange(file)
+      }
+    }
+  }
 
   useFocusShortcuts(textareaRef, true)
 
@@ -916,10 +916,6 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
       form.setFieldError("message", t("formError.noModel"))
       return
     }
-    const hasEmbedding = await ensureEmbeddingModelAvailable()
-    if (!hasEmbedding) {
-      return
-    }
     await sendMessage({
       image,
       message
@@ -1406,8 +1402,16 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                               type="button"
                               onClick={async () => {
                                 if (!isConnectionReady) return
+                                const hasEmbedding =
+                                  await ensureEmbeddingModelAvailable()
+                                if (!hasEmbedding) {
+                                  return
+                                }
                                 for (const item of queuedMessages) {
-                                  await submitQueuedInSidepanel(item.message, item.image)
+                                  await submitQueuedInSidepanel(
+                                    item.message,
+                                    item.image
+                                  )
                                 }
                                 clearQueuedMessages()
                               }}

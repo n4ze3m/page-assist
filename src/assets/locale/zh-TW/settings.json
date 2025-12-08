@@ -92,6 +92,14 @@
       },
       "promptSearchIncludeServer": {
         "label": "Include server prompts in prompt search"
+      },
+      "restartOnboarding": {
+        "label": "從頭重新開始引導設定",
+        "button": "重新開始引導",
+        "confirmTitle": "要重新開始引導嗎？",
+        "confirmMessage": "這會重設你的引導狀態，並將你帶回設定流程的起始步驟。",
+        "toast": "引導已重設",
+        "toastBody": "我們會帶你回到歡迎步驟，好讓你再次檢查伺服器 URL 和 API 金鑰。"
       }
     },
     "sidepanelRag": {
@@ -876,18 +884,18 @@
     },
     "authModeHelp": "Single User（API Key）適合個人或小型團隊的伺服器。Multi User（Login）適用於多人共用的部署，使用者以帳號或 SSO 登入。請選擇符合你 tldw_server 設定方式的模式。",
     "apiKeyHelp": "在 tldw_server → Settings → API Keys 中可以找到你的 API 金鑰。在那裡產生金鑰後，將其貼到這裡。",
-    "authStepAria": "Step 2 of 3 — authentication configuration",
-    "confirmStepAria": "Step 3 of 3 — connection summary and next steps",
+    "authStepAria": "步驟 2 / 3 — 驗證設定",
+    "confirmStepAria": "步驟 3 / 3 — 連線摘要與後續步驟",
     "nextSteps": {
-      "title": "You’re ready to go",
-      "subtitle": "From here you can open the sidepanel, ingest a page, or explore media and notes.",
-      "chatTitle": "Start chatting",
-      "chatBody": "Open the sidepanel and ask your first question.",
-      "chatCta": "Open sidepanel",
-      "ingestTitle": "Ingest your first page",
-      "ingestBody": "Use Quick ingest from the header to save the current tab to your server.",
-      "mediaTitle": "Explore media & notes",
-      "mediaBody": "Visit Media and Notes in Options to see what’s stored and searchable."
+      "title": "你已準備好了",
+      "subtitle": "接下來你可以開啟側邊面板、匯入頁面，或探索媒體和筆記。",
+      "chatTitle": "開始聊天",
+      "chatBody": "開啟側邊面板並提出你的第一個問題。",
+      "chatCta": "開啟側邊面板",
+      "ingestTitle": "匯入你的第一個頁面",
+      "ingestBody": "使用標頭中的快速匯入將目前分頁儲存到你的伺服器。",
+      "mediaTitle": "探索媒體與筆記",
+      "mediaBody": "造訪選項中的媒體與筆記，查看已儲存和可搜尋的內容。"
     },
     "headerShortcuts": "在標頭顯示快速捷徑"
   },

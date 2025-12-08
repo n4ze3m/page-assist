@@ -501,7 +501,7 @@ export const useMessage = () => {
       setIsProcessing(false)
       setStreaming(false)
     } catch (e) {
-      console.log(e)
+      console.error(e)
       const errorSave = await saveMessageOnError({
         e,
         botMessage: fullText,
@@ -797,6 +797,12 @@ export const useMessage = () => {
     signal: AbortSignal
   ) => {
     setStreaming(true)
+    let fullText = ""
+
+    if (!selectedCharacter?.id) {
+      throw new Error("No character selected")
+    }
+
     try {
       await tldwClient.initialize()
 
@@ -866,11 +872,13 @@ export const useMessage = () => {
       }
 
       // Get messages formatted for completions with character context
-      const formatted: any = await tldwClient.listChatMessages(chatId, { include_character_context: 'true', format_for_completions: 'true' })
+      const formatted: any = await tldwClient.listChatMessages(chatId, {
+        include_character_context: true,
+        format_for_completions: true
+      })
       const msgs = Array.isArray(formatted) ? formatted : (formatted?.messages || [])
 
       // Stream completion from server /chat/completions
-      let fullText = ''
       let count = 0
       for await (const chunk of tldwClient.streamChatCompletion({ messages: msgs, model: selectedModel!, stream: true }, { signal })) {
         const token = chunk?.choices?.[0]?.delta?.content || chunk?.content || ''
@@ -924,7 +932,26 @@ export const useMessage = () => {
       setIsProcessing(false)
       setStreaming(false)
     } catch (e) {
-      notification.error({ message: t('error'), description: e?.message || t('somethingWentWrong') })
+      const errorSave = await saveMessageOnError({
+        e,
+        botMessage: fullText,
+        history,
+        historyId,
+        image,
+        selectedModel,
+        setHistory,
+        setHistoryId,
+        userMessage: message,
+        isRegenerating: isRegenerate,
+        message_source: "copilot"
+      })
+
+      if (!errorSave) {
+        notification.error({
+          message: t("error"),
+          description: e?.message || t("somethingWentWrong")
+        })
+      }
       setIsProcessing(false)
       setStreaming(false)
     } finally {

@@ -92,6 +92,14 @@
       },
       "promptSearchIncludeServer": {
         "label": "Include server prompts in prompt search"
+      },
+      "restartOnboarding": {
+        "label": "Снова пройти мастер настройки с самого начала",
+        "button": "Перезапустить мастер настройки",
+        "confirmTitle": "Перезапустить мастер настройки?",
+        "confirmMessage": "Это сбросит состояние мастера настройки и вернёт вас к началу процесса.",
+        "toast": "Мастер настройки был сброшен",
+        "toastBody": "Мы вернём вас на шаг приветствия, чтобы вы могли проверить URL сервера и API‑ключ."
       }
     },
     "sidepanelRag": {
@@ -840,7 +848,7 @@
       "welcome": "Добро пожаловать",
       "url": "Подключите свой сервер tldw",
       "auth": "Выберите способ входа",
-      "health": "Подтвердите подключение и Knowledge"
+      "health": "Подтвердите подключение и Знания"
     },
     "path": {
       "heading": "С чего вы хотите начать?",
@@ -865,14 +873,14 @@
     "confirmStepAria": "Шаг 3 из 3 — сводка подключения и следующие шаги",
     "nextSteps": {
       "title": "Вы готовы к работе",
-      "subtitle": "From here you can open the sidepanel, ingest a page, or explore media and notes.",
-      "chatTitle": "Start chatting",
-      "chatBody": "Open the sidepanel and ask your first question.",
-      "chatCta": "Open sidepanel",
-      "ingestTitle": "Ingest your first page",
-      "ingestBody": "Use Quick ingest from the header to save the current tab to your server.",
-      "mediaTitle": "Explore media & notes",
-      "mediaBody": "Visit Media and Notes in Options to see what’s stored and searchable."
+      "subtitle": "Отсюда вы можете открыть боковую панель, импортировать страницу или просмотреть медиа и заметки.",
+      "chatTitle": "Начните чат",
+      "chatBody": "Откройте боковую панель и задайте свой первый вопрос.",
+      "chatCta": "Открыть боковую панель",
+      "ingestTitle": "Импортируйте свою первую страницу",
+      "ingestBody": "Используйте «Быстрый импорт» в заголовке, чтобы сохранить текущую вкладку на сервер.",
+      "mediaTitle": "Изучите медиа и заметки",
+      "mediaBody": "Зайдите в раздел «Медиа и заметки» в настройках, чтобы увидеть, что сохранено и доступно для поиска."
     },
     "headerShortcuts": "Показать быстрые ярлыки в заголовке"
   },

@@ -153,11 +153,18 @@ export const normalChatMode = async (
         payload.result_count = totalSearchResults
       }
 
-      const res = await tldwClient.webSearch(payload)
+      const res = await tldwClient.webSearch({
+        ...payload,
+        signal
+      })
 
       const answer =
         (res?.final_answer?.text && String(res.final_answer.text)) ||
         ""
+
+      if (res?.error) {
+        throw new Error(res.error.message || "Web search failed")
+      }
 
       fullText =
         answer && answer.trim().length > 0

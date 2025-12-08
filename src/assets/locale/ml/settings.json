@@ -95,6 +95,14 @@
       },
       "promptSearchIncludeServer": {
         "label": "Include server prompts in prompt search"
+      },
+      "restartOnboarding": {
+        "label": "ഓൺബോർഡിംഗ് തുടക്കം മുതൽ വീണ്ടും ആരംഭിക്കുക",
+        "button": "ഓൺബോർഡിംഗ് വീണ്ടും ആരംഭിക്കുക",
+        "confirmTitle": "ഓൺബോർഡിംഗ് വീണ്ടും ആരംഭിക്കണോ?",
+        "confirmMessage": "ഇത് നിങ്ങളുടെ ഓൺബോർഡിംഗ് നില റീസെറ്റ് ചെയ്ത് നിങ്ങളെ സജ്ജീകരണ പ്രവാഹത്തിന്റെ തുടക്കത്തിലേക്ക് തിരികെ കൊണ്ടുപോകും.",
+        "toast": "ഓൺബോർഡിംഗ് റീസെറ്റ് ചെയ്തു",
+        "toastBody": "സർവർ URLയും API കീയുമെല്ലാം വീണ്ടും പരിശോധിക്കാനായി നിങ്ങളെ സ്വാഗത ഘട്ടത്തിലേക്ക് തിരികെ കൊണ്ടുപോകും."
       }
     },
     "sidepanelRag": {
@@ -864,18 +872,18 @@
     },
     "authModeHelp": "Single User (API Key) വ്യക്തിഗത അല്ലെങ്കിൽ ചെറിയ ടീങ്ങളുടെ സർവർകൾക്ക് ശുപാർശ ചെയ്യുന്നു. Multi User (Login) എന്നത് ഉപയോക്താക്കൾ യൂസർനെയിം അല്ലെങ്കിൽ SSO ഉപയോഗിച്ച് ലോഗിൻ ചെയ്യുന്ന ഷെയർ ചെയ്ത ഡിപ്ലോയ്മെന്റുകൾക്കാണ്. നിങ്ങളുടെ tldw_server എങ്ങനെ സജ്ജീകരിച്ചിട്ടുണ്ടോ അതിനൊത്തു വരുന്ന മോഡ് തിരഞ്ഞെടുക്കുക.",
     "apiKeyHelp": "നിങ്ങളുടെ API കീ, tldw_server → Settings → API Keys എന്നിടത്ത് ലഭിക്കും. അവിടെ ഒരു കീ സൃഷ്ടിച്ച് ഇവിടെ പേസ്റ്റ് ചെയ്യുക.",
-    "authStepAria": "Step 2 of 3 — authentication configuration",
-    "confirmStepAria": "Step 3 of 3 — connection summary and next steps",
+    "authStepAria": "3ൽ 2-ാം പടി — ഓതന്റിക്കേഷൻ ക്രമീകരണം",
+    "confirmStepAria": "3ൽ 3-ാം പടി — കണക്ഷൻ സംഗ്രഹവും അടുത്ത ചുവടുകളും",
     "nextSteps": {
-      "title": "You’re ready to go",
-      "subtitle": "From here you can open the sidepanel, ingest a page, or explore media and notes.",
-      "chatTitle": "Start chatting",
-      "chatBody": "Open the sidepanel and ask your first question.",
-      "chatCta": "Open sidepanel",
-      "ingestTitle": "Ingest your first page",
-      "ingestBody": "Use Quick ingest from the header to save the current tab to your server.",
-      "mediaTitle": "Explore media & notes",
-      "mediaBody": "Visit Media and Notes in Options to see what’s stored and searchable."
+      "title": "തുടങ്ങാൻ നിങ്ങൾ തയ്യാറായി",
+      "subtitle": "ഇവിടെ നിന്ന് നിങ്ങൾക്ക് സൈഡ്‌പാനൽ തുറക്കുകയോ ഒരു പേജ് ഇൻജെസ്റ്റ് ചെയ്യുകയോ മീഡിയയും നോട്ടുകളും പരിശോധിക്കുകയോ ചെയ്യാം.",
+      "chatTitle": "ചാറ്റ് ആരംഭിക്കുക",
+      "chatBody": "സൈഡ്‌പാനൽ തുറന്ന് നിങ്ങളുടെ ആദ്യ ചോദ്യം ചോദിക്കുക.",
+      "chatCta": "സൈഡ്‌പാനൽ തുറക്കുക",
+      "ingestTitle": "നിങ്ങളുടെ ആദ്യ പേജ് ഇൻജെസ്റ്റ് ചെയ്യുക",
+      "ingestBody": "മുകളിൽ ഉള്ള ഹെഡറിലെ ‘Quick ingest’ ഉപയോഗിച്ച് നിലവിലെ ടാബ് നിങ്ങളുടെ സർവറിൽ സംരക്ഷിക്കുക.",
+      "mediaTitle": "മീഡിയയും നോട്ടുകളും പരിശോധിക്കുക",
+      "mediaBody": "ഓപ്ഷൻസിലെ ‘Media’യും ‘Notes’ഉം സന്ദർശിച്ച് എന്തൊക്കെ സൂക്ഷിച്ചിട്ടുണ്ടെന്നും തിരയാനാവുന്നതെന്നും കാണുക."
     },
     "headerShortcuts": "തലക്കെട്ടിൽ ദ്രുത ഷോർട്ട്‌കട്ടുകൾ കാണിക്കുക"
   },

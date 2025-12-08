@@ -92,6 +92,14 @@
       },
       "promptSearchIncludeServer": {
         "label": "Include server prompts in prompt search"
+      },
+      "restartOnboarding": {
+        "label": "إعادة بدء عملية الإعداد من البداية",
+        "button": "إعادة بدء الإعداد",
+        "confirmTitle": "هل تريد إعادة بدء الإعداد؟",
+        "confirmMessage": "سيؤدي هذا إلى إعادة تعيين حالة الإعداد وإعادتك إلى مسار الإعداد من جديد.",
+        "toast": "تمت إعادة تعيين عملية الإعداد",
+        "toastBody": "سنرجعك إلى خطوة الترحيب حتى تتمكن من مراجعة عنوان خادمك (URL) ومفتاح الـ API."
       }
     },
     "sidepanelRag": {

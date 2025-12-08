@@ -126,15 +126,15 @@
     "description": "API കീ എവിടെ കണ്ടെത്താം എന്ന് വിശദീകരിക്കുന്ന സഹായ വാചകം."
   },
   "authStepAria": {
-    "message": "Step 3 of 4 \u2014 authentication configuration",
-    "description": "ഓൺബോർഡിംഗിലെ പ്രാമാണീകരണ ക്രമീകരണ ഘട്ടത്തിനുള്ള aria ലേബൽ (ഇപ്പോൾ ഇംഗ്ലീഷിലാണ്)."
+    "message": "{{total}} ൽ {{current}}‑ാം പടി — ഓതന്റിക്കേഷൻ ക്രമീകരണം",
+    "description": "ഓൺബോർഡിംഗിലെ പ്രാമാണീകരണ ക്രമീകരണ ഘട്ടത്തിനുള്ള aria ലേബൽ."
   },
   "confirmStepAria": {
-    "message": "Step 4 of 4 \u2014 connection summary and next steps",
-    "description": "ഓൺബോർഡിംഗിലെ കണക്ഷൻ സ്ഥിരീകരണ ഘട്ടത്തിനുള്ള aria ലേബൽ (ഇപ്പോൾ ഇംഗ്ലീഷിലാണ്)."
+    "message": "{{total}} ൽ {{current}}‑ാം പടി — കണക്ഷൻ സംഗ്രഹവും അടുത്ത ചുവടുകളും",
+    "description": "ഓൺബോർഡിംഗിലെ കണക്ഷൻ സ്ഥിരീകരണ ഘട്ടത്തിനുള്ള aria ലേബൽ."
   },
   "nextSteps": {
-    "message": "You\u2019re ready to go",
-    "description": "ഓൺബോർഡിംഗ് അവസാന ഘട്ടത്തിലെ തലക്കെട്ട് (ഇപ്പോൾ ഇംഗ്ലീഷിലാണ്)."
+    "message": "നിങ്ങൾ തുടക്കം കുറിക്കാൻ തയ്യാറാണ്",
+    "description": "ഓൺബോർഡിംഗ് അവസാന ഘട്ടത്തിലെ തലക്കെട്ട്."
   }
 }

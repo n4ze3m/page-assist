@@ -17,7 +17,7 @@ export const pageAssistModel = async ({
 }: {
   model: string
   baseUrl: string
-}) => {
+}): Promise<ChatTldw> => {
   const currentChatModelSettings = useStoreChatModelSettings.getState()
   const userDefaultModelSettings = await getAllDefaultModelSettings()
 
@@ -96,7 +96,7 @@ export const pageAssistModel = async ({
     tfsZ: modelSettings?.tfsZ || tfsZ,
     numKeep: modelSettings?.numKeep || numKeep,
     numThread: modelSettings?.numThread || numThread,
-    useMlock: modelSettings?.useMLock || useMlock
+    useMlock: modelSettings?.useMlock || useMlock
   }
 
   // Default to tldw_server chat model
@@ -111,5 +111,5 @@ export const pageAssistModel = async ({
       : isValidReasoningEffort(reasoningEffort)
         ? reasoningEffort
         : undefined
-  }) as any
+  })
 }

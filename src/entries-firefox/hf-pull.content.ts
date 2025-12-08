@@ -2,9 +2,24 @@ import { apiSend } from "@/services/api-send"
 import type { AllowedPath } from "@/services/tldw/openapi-guard"
 import { browser } from "wxt/browser"
 
-const getMessage = (key: string, fallback: string, substitutions?: string | string[]) => {
+type I18nKey =
+  | "contextSendToTldw"
+  | "contextSendingToTldw"
+  | "hfSendPageErrorWithDetail"
+  | "hfSendPageError"
+  | "hfSendPageSuccess"
+  | "hfSendPageException"
+
+const getMessage = (
+  key: I18nKey,
+  fallback: string,
+  substitutions?: string | string[]
+) => {
   try {
-    const msg = browser.i18n?.getMessage(key, substitutions)
+    const msg = browser.i18n?.getMessage(
+      key as Parameters<typeof browser.i18n.getMessage>[0],
+      substitutions
+    )
     if (msg && msg.length > 0) return msg
   } catch {
     // ignore
@@ -116,7 +131,7 @@ export default defineContentScript({
 
     const injectButton = () => {
       if (!document.body) return
-      if (document.querySelector('.tldw-send-button')) return
+      if (document.querySelector(".tldw-send-button")) return
       const btn = document.createElement('button')
       btn.className = 'tldw-send-button focus:outline-hidden inline-flex cursor-pointer items-center text-sm bg-white shadow-xs rounded-md border px-2 py-1 text-gray-600'
       const sendLabel = getMessage("contextSendToTldw", "Send to tldw_server")
@@ -134,8 +149,16 @@ export default defineContentScript({
       document.body.appendChild(btn)
     }
 
-    const observer = new MutationObserver(() => injectButton())
-    observer.observe(document.documentElement, { childList: true, subtree: true })
+    const observer = new MutationObserver(() => {
+      injectButton()
+      if (document.querySelector(".tldw-send-button")) {
+        observer.disconnect()
+      }
+    })
+    observer.observe(document.documentElement, {
+      childList: true,
+      subtree: true
+    })
     injectButton()
   },
   allFrames: false,

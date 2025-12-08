@@ -126,11 +126,11 @@
     "description": "API キーの確認場所を説明するヘルプテキスト。"
   },
   "authStepAria": {
-    "message": "Step 3 of 4 \u2014 authentication configuration",
+    "message": "Step {{current}} of {{total}} \u2014 authentication configuration",
     "description": "オンボーディングにおける認証設定ステップの aria ラベル（現在は英語のまま）。"
   },
   "confirmStepAria": {
-    "message": "Step 4 of 4 \u2014 connection summary and next steps",
+    "message": "Step {{current}} of {{total}} \u2014 connection summary and next steps",
     "description": "オンボーディングにおける接続確認ステップの aria ラベル（現在は英語のまま）。"
   },
   "nextSteps": {

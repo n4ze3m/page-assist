@@ -92,10 +92,10 @@ export const ModelsBody = () => {
                 {refreshing ? (
                   <>
                     <Spin size="small" className="mr-2" />
-                    {t("common:loading", "Loading…")}
+                    {t("common:loading", { defaultValue: "Loading…" })}
                   </>
                 ) : (
-                  t("common:refresh", "Refresh")
+                  t("common:refresh", { defaultValue: "Refresh" })
                 )}
               </button>
               {lastRefreshedAt && (

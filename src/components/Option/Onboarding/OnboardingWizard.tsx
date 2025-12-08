@@ -18,6 +18,8 @@ import { ConnectionPhase } from '@/types/connection'
 import { useDemoMode } from '@/context/demo-mode'
 import { getBrowserRuntime } from '@/utils/browser-runtime'
 
+const localStorageInstance = new Storage({ area: 'local' })
+
 type Props = {
   onFinish?: () => void
 }
@@ -43,19 +45,19 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
   const [password, setPassword] = React.useState('')
   const [authError, setAuthError] = React.useState<string | null>(null)
   const [pathChoice, setPathChoice] = React.useState<PathChoice>('has-server')
-  const [autoFinishOnSuccess, setAutoFinishOnSuccess] = useStorage(
-    { key: 'onboardingAutoFinish', instance: new Storage({ area: 'local' }) },
-    false
-  )
-  const [headerShortcutsPref, setHeaderShortcutsPref] = useStorage(
-    { key: 'headerShortcutsExpanded', instance: new Storage({ area: 'local' }) },
-    true
-  )
+	  const [autoFinishOnSuccess, setAutoFinishOnSuccess] = useStorage(
+	    { key: 'onboardingAutoFinish', instance: localStorageInstance },
+	    false
+	  )
+	  const [headerShortcutsPref, setHeaderShortcutsPref] = useStorage(
+	    { key: 'headerShortcutsExpanded', instance: localStorageInstance },
+	    true
+	  )
 
   const { uxState, configStep } = useConnectionUxState()
   const connectionState = useConnectionState()
 
-  const urlInputRef = React.useRef<HTMLInputElement | null>(null)
+	  const urlInputRef = React.useRef<HTMLInputElement | HTMLTextAreaElement | null>(null)
   const authStepRef = React.useRef<HTMLDivElement | null>(null)
   const confirmStepRef = React.useRef<HTMLDivElement | null>(null)
 
@@ -473,10 +475,10 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
     await useConnectionStore.getState().testConnectionFromOnboarding()
   }
 
-  const handleUseDemoMode = () => {
-    try {
-      setDemoEnabled(true)
-    } catch {
+	  const handleUseDemoMode = () => {
+	    try {
+	      setDemoEnabled(true)
+	    } catch {
       // Ignore demo storage failures; connection store mode still applies.
     }
     try {
@@ -486,10 +488,10 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
       console.debug(
         "[OnboardingWizard] Failed to enable demo mode from onboarding",
         err
-      )
-    }
-    onFinish?.()
-  }
+	      )
+	    }
+	    finish()
+	  }
 
   const finish = React.useCallback(() => {
     useConnectionStore.getState().markFirstRunComplete()
@@ -881,8 +883,9 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
           ref={authStepRef}
           tabIndex={-1}
           aria-label={t(
-            'settings:onboarding.authStepAria',
-            'Step 2 of 3 — authentication configuration'
+            "settings:onboarding.authStepAria",
+            "Step {{current}} of {{total}} — authentication configuration",
+            { current: displayStep, total: totalSteps }
           )}
         >
           <div>
@@ -979,8 +982,9 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
           ref={confirmStepRef}
           tabIndex={-1}
           aria-label={t(
-            'settings:onboarding.confirmStepAria',
-            'Step 3 of 3 — connection summary and next steps'
+            "settings:onboarding.confirmStepAria",
+            "Step {{current}} of {{total}} — connection summary and next steps",
+            { current: displayStep, total: totalSteps }
           )}
         >
           <div>

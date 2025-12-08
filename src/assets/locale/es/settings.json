@@ -92,6 +92,14 @@
       },
       "promptSearchIncludeServer": {
         "label": "Include server prompts in prompt search"
+      },
+      "restartOnboarding": {
+        "label": "Reiniciar la incorporación desde el principio",
+        "button": "Reiniciar incorporación",
+        "confirmTitle": "¿Reiniciar la incorporación?",
+        "confirmMessage": "Esto restablecerá tu estado de incorporación y te llevará de nuevo al flujo de configuración.",
+        "toast": "La incorporación se ha restablecido",
+        "toastBody": "Te llevaremos de nuevo al paso de bienvenida para que puedas revisar la URL de tu servidor y la clave de API."
       }
     },
     "sidepanelRag": {
@@ -821,26 +829,27 @@
       "placeholder": "Password"
     },
     "connection": {
-      "label": "Connection:",
-      "unknown": "Unknown",
-      "connected": "Connected",
-      "failed": "Failed",
-      "continueAnyway": "You can continue and complete setup now. You’ll be able to verify the connection later from Settings."
+      "label": "Conexión:",
+      "unknown": "Desconocido",
+      "connected": "Conectado",
+      "failed": "Error",
+      "continueAnyway": "Puedes continuar y completar la configuración ahora. Más adelante podrás verificar la conexión desde Ajustes."
     },
     "rag": {
-      "label": "RAG:",
-      "healthy": "Healthy",
-      "unhealthy": "Unhealthy",
-      "unknown": "Unknown"
+      "label": "Búsqueda y recuperación (Knowledge):",
+      "healthy": "Correcto",
+      "unhealthy": "Con problemas",
+      "unknown": "Desconocido",
+      "help": "Comprueba si tu servidor puede buscar en tus notas, contenido multimedia y otras fuentes de conocimiento conectadas."
     },
-    "connectionFailed": "Connection failed",
+    "connectionFailed": "La conexión ha fallado",
     "footerHelp": "Una vez conectado, puedes volver a estos ajustes en cualquier momento desde el menú de la extensión.",
     "progressAria": "Progreso de incorporación",
     "stepLabel": {
       "welcome": "Bienvenido",
       "url": "Conecta tu servidor tldw",
       "auth": "Elige cómo iniciar sesión",
-      "health": "Confirma la conexión y Knowledge"
+      "health": "Confirma la conexión y Conocimiento"
     },
     "path": {
       "heading": "¿Cómo quieres empezar?",
@@ -861,18 +870,18 @@
     },
     "authModeHelp": "Se recomienda Single User (API Key) para servidores personales o de equipos pequeños. Multi User (Login) está pensado para despliegues compartidos donde las personas inician sesión con nombres de usuario o SSO. Elige el modo que coincida con la configuración de tu tldw_server.",
     "apiKeyHelp": "Busca tu clave de API en tldw_server → Settings → API Keys. Genera allí una clave y pégala aquí.",
-    "authStepAria": "Step 2 of 3 — authentication configuration",
-    "confirmStepAria": "Step 3 of 3 — connection summary and next steps",
+    "authStepAria": "Paso 2 de 3 — configuración de autenticación",
+    "confirmStepAria": "Paso 3 de 3 — resumen de conexión y próximos pasos",
     "nextSteps": {
-      "title": "You’re ready to go",
-      "subtitle": "From here you can open the sidepanel, ingest a page, or explore media and notes.",
-      "chatTitle": "Start chatting",
-      "chatBody": "Open the sidepanel and ask your first question.",
-      "chatCta": "Open sidepanel",
-      "ingestTitle": "Ingest your first page",
-      "ingestBody": "Use Quick ingest from the header to save the current tab to your server.",
-      "mediaTitle": "Explore media & notes",
-      "mediaBody": "Visit Media and Notes in Options to see what’s stored and searchable."
+      "title": "Ya está todo listo",
+      "subtitle": "Desde aquí puedes abrir la barra lateral, ingerir una página o explorar contenido multimedia y notas.",
+      "chatTitle": "Empieza a chatear",
+      "chatBody": "Abre la barra lateral y haz tu primera pregunta.",
+      "chatCta": "Abrir barra lateral",
+      "ingestTitle": "Ingresa tu primera página",
+      "ingestBody": "Usa la opción de ingesta rápida en el encabezado para guardar la pestaña actual en tu servidor.",
+      "mediaTitle": "Explora contenido multimedia y notas",
+      "mediaBody": "Visita «Media» y «Notes» en Opciones para ver qué se ha guardado y es posible buscar."
     },
     "headerShortcuts": "Mostrar accesos rápidos en el encabezado"
   },

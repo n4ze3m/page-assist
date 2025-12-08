@@ -712,13 +712,14 @@ export class TldwApiClient {
 
   // Research / Web search
   async webSearch(options: any): Promise<any> {
-    const { timeoutMs, ...rest } = options || {}
+    const { timeoutMs, signal, ...rest } = options || {}
     return await bgRequest<any>({
       path: "/api/v1/research/websearch",
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: rest,
-      timeoutMs
+      timeoutMs,
+      abortSignal: signal
     })
   }
 

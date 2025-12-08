@@ -876,15 +876,15 @@
     "authStepAria": "Step 2 of 3 — authentication configuration",
     "confirmStepAria": "Step 3 of 3 — connection summary and next steps",
     "nextSteps": {
-      "title": "You’re ready to go",
-      "subtitle": "From here you can open the sidepanel, ingest a page, or explore media and notes.",
-      "chatTitle": "Start chatting",
-      "chatBody": "Open the sidepanel and ask your first question.",
-      "chatCta": "Open sidepanel",
-      "ingestTitle": "Ingest your first page",
-      "ingestBody": "Use Quick ingest from the header to save the current tab to your server.",
-      "mediaTitle": "Explore media & notes",
-      "mediaBody": "Visit Media and Notes in Options to see what’s stored and searchable."
+      "title": "你已准备好开始了",
+      "subtitle": "从这里你可以打开侧边栏、摄取页面或探索媒体和笔记。",
+      "chatTitle": "开始聊天",
+      "chatBody": "打开侧边栏并提出你的第一个问题。",
+      "chatCta": "打开侧边栏",
+      "ingestTitle": "摄取你的第一个页面",
+      "ingestBody": "从页眉使用快速摄取将当前选项卡保存到你的服务器。",
+      "mediaTitle": "探索媒体和笔记",
+      "mediaBody": "访问选项中的媒体和笔记以查看存储和可搜索的内容。"
     },
     "headerShortcuts": "在页眉显示快捷方式"
   },

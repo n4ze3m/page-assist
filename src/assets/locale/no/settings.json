@@ -92,6 +92,14 @@
       },
       "promptSearchIncludeServer": {
         "label": "Include server prompts in prompt search"
+      },
+      "restartOnboarding": {
+        "label": "Start onboarding på nytt fra begynnelsen",
+        "button": "Start onboarding på nytt",
+        "confirmTitle": "Starte onboarding på nytt?",
+        "confirmMessage": "Dette tilbakestiller onboarding-statusen din og tar deg tilbake til oppsettflyten.",
+        "toast": "Onboarding er tilbakestilt",
+        "toastBody": "Vi tar deg tilbake til velkomststeget slik at du kan kontrollere server‑URL og API‑nøkkel."
       }
     },
     "sidepanelRag": {

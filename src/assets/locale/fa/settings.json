@@ -92,6 +92,14 @@
       },
       "promptSearchIncludeServer": {
         "label": "Include server prompts in prompt search"
+      },
+      "restartOnboarding": {
+        "label": "شروع دوباره فرایند راه‌اندازی از ابتدا",
+        "button": "شروع دوباره راه‌اندازی",
+        "confirmTitle": "شروع دوباره راه‌اندازی؟",
+        "confirmMessage": "با این کار وضعیت راه‌اندازی شما بازنشانی می‌شود و دوباره به جریان تنظیمات اولیه برمی‌گردید.",
+        "toast": "فرایند راه‌اندازی بازنشانی شد",
+        "toastBody": "شما را به مرحله خوش‌آمدگویی برمی‌گردانیم تا بتوانید URL سرور و کلید API خود را بازبینی کنید."
       }
     },
     "sidepanelRag": {

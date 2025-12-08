@@ -92,6 +92,14 @@
       },
       "promptSearchIncludeServer": {
         "label": "Include server prompts in prompt search"
+      },
+      "restartOnboarding": {
+        "label": "Redémarrer le parcours d’accueil depuis le début",
+        "button": "Redémarrer le parcours d’accueil",
+        "confirmTitle": "Redémarrer le parcours d’accueil\u00a0?",
+        "confirmMessage": "Cela réinitialisera votre état de parcours d’accueil et vous ramènera au flux de configuration.",
+        "toast": "Le parcours d’accueil a été réinitialisé",
+        "toastBody": "Nous vous ramènerons à l’étape de bienvenue pour que vous puissiez vérifier l’URL de votre serveur et votre clé API."
       }
     },
     "sidepanelRag": {
@@ -862,18 +870,18 @@
     },
     "authModeHelp": "Le mode Single User (clé API) est recommandé pour les serveurs personnels ou les petites équipes. Le mode Multi User (connexion) est destiné aux déploiements partagés où les utilisateurs se connectent avec un nom d’utilisateur ou via SSO. Choisissez le mode qui correspond à la configuration de votre tldw_server.",
     "apiKeyHelp": "Trouvez votre clé API dans tldw_server → Settings → API Keys. Générez-y une clé puis collez-la ici.",
-    "authStepAria": "Step 2 of 3 — authentication configuration",
-    "confirmStepAria": "Step 3 of 3 — connection summary and next steps",
+    "authStepAria": "Étape 2 sur 3 — configuration de l’authentification",
+    "confirmStepAria": "Étape 3 sur 3 — récapitulatif de la connexion et prochaines étapes",
     "nextSteps": {
-      "title": "You’re ready to go",
-      "subtitle": "From here you can open the sidepanel, ingest a page, or explore media and notes.",
-      "chatTitle": "Start chatting",
-      "chatBody": "Open the sidepanel and ask your first question.",
-      "chatCta": "Open sidepanel",
-      "ingestTitle": "Ingest your first page",
-      "ingestBody": "Use Quick ingest from the header to save the current tab to your server.",
-      "mediaTitle": "Explore media & notes",
-      "mediaBody": "Visit Media and Notes in Options to see what’s stored and searchable."
+      "title": "Tout est prêt",
+      "subtitle": "Vous pouvez maintenant ouvrir le panneau latéral, ingérer une page ou explorer les médias et les notes.",
+      "chatTitle": "Commencer à discuter",
+      "chatBody": "Ouvrez le panneau latéral et posez votre première question.",
+      "chatCta": "Ouvrir le panneau latéral",
+      "ingestTitle": "Ingestion de votre première page",
+      "ingestBody": "Utilisez Quick Ingest dans l’en-tête pour enregistrer l’onglet actuel sur votre serveur.",
+      "mediaTitle": "Explorer les médias et les notes",
+      "mediaBody": "Visitez Médias et Notes dans Options pour voir ce qui est stocké et consultable."
     },
     "headerShortcuts": "Afficher les raccourcis rapides dans l’en-tête"
   },

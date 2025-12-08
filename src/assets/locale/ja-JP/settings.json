@@ -95,6 +95,14 @@
       },
       "promptSearchIncludeServer": {
         "label": "Include server prompts in prompt search"
+      },
+      "restartOnboarding": {
+        "label": "オンボーディングを最初からやり直す",
+        "button": "オンボーディングをやり直す",
+        "confirmTitle": "オンボーディングをやり直しますか？",
+        "confirmMessage": "オンボーディングの状態をリセットし、設定フローの最初に戻します。",
+        "toast": "オンボーディングをリセットしました",
+        "toastBody": "サーバー URL と API キーを確認できるよう、ようこそステップに戻ります。"
       }
     },
     "sidepanelRag": {

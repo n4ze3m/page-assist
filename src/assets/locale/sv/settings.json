@@ -92,6 +92,14 @@
       },
       "promptSearchIncludeServer": {
         "label": "Include server prompts in prompt search"
+      },
+      "restartOnboarding": {
+        "label": "Starta om onboarding från början",
+        "button": "Starta om onboarding",
+        "confirmTitle": "Starta om onboarding?",
+        "confirmMessage": "Detta återställer din onboarding‑status och tar dig tillbaka till installationsflödet.",
+        "toast": "Onboarding har återställts",
+        "toastBody": "Vi tar dig tillbaka till välkomststeget så att du kan granska server‑URL och API‑nyckel."
       }
     },
     "sidepanelRag": {
@@ -865,14 +873,14 @@
     "confirmStepAria": "Steg 3 av 3 — sammanfattning av anslutning och nästa steg",
     "nextSteps": {
       "title": "Du är redo att börja",
-      "subtitle": "From here you can open the sidepanel, ingest a page, or explore media and notes.",
-      "chatTitle": "Start chatting",
-      "chatBody": "Open the sidepanel and ask your first question.",
-      "chatCta": "Open sidepanel",
-      "ingestTitle": "Ingest your first page",
-      "ingestBody": "Use Quick ingest from the header to save the current tab to your server.",
-      "mediaTitle": "Explore media & notes",
-      "mediaBody": "Visit Media and Notes in Options to see what’s stored and searchable."
+      "subtitle": "Härifrån kan du öppna sidopanelen, ingestera en sida eller utforska media och anteckningar.",
+      "chatTitle": "Börja chatta",
+      "chatBody": "Öppna sidopanelen och ställ din första fråga.",
+      "chatCta": "Öppna sidopanel",
+      "ingestTitle": "Ingestera din första sida",
+      "ingestBody": "Använd Snabbingest i sidhuvudet för att spara den aktuella fliken till din server.",
+      "mediaTitle": "Utforska media och anteckningar",
+      "mediaBody": "Gå till Media och Anteckningar i Alternativ för att se vad som är sparat och sökbart."
     },
     "headerShortcuts": "Visa snabba genvägar i sidhuvudet"
   },

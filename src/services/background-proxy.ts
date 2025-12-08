@@ -10,19 +10,56 @@ export interface BgRequestInit<P extends PathOrUrl = AllowedPath, M extends Allo
   body?: any
   noAuth?: boolean
   timeoutMs?: number
+  abortSignal?: AbortSignal
 }
 
 export async function bgRequest<T = any, P extends PathOrUrl = AllowedPath, M extends AllowedMethodFor<P> = AllowedMethodFor<P>>(
-  { path, method = 'GET' as UpperLower<M>, headers = {}, body, noAuth = false, timeoutMs }: BgRequestInit<P, M>
+  { path, method = 'GET' as UpperLower<M>, headers = {}, body, noAuth = false, timeoutMs, abortSignal }: BgRequestInit<P, M>
 ): Promise<T> {
   // If extension messaging is available, use it (extension context)
   try {
     // @ts-ignore
     if (browser?.runtime?.sendMessage) {
-      const resp = await browser.runtime.sendMessage({
+      const payload = {
         type: 'tldw:request',
         payload: { path, method, headers, body, noAuth, timeoutMs }
-      }) as { ok: boolean; error?: string; status?: number; data: T } | undefined
+      }
+
+      if (!abortSignal) {
+        const resp = await browser.runtime.sendMessage(payload) as { ok: boolean; error?: string; status?: number; data: T } | undefined
+        if (!resp?.ok) {
+          const msg = resp?.error || `Request failed: ${resp?.status}`
+          throw new Error(msg)
+        }
+        return resp.data as T
+      }
+
+      if (abortSignal.aborted) {
+        throw new Error('Aborted')
+      }
+
+      const messagePromise = browser.runtime.sendMessage(payload) as Promise<
+        { ok: boolean; error?: string; status?: number; data: T } | undefined
+      >
+
+      const resp = await new Promise<
+        { ok: boolean; error?: string; status?: number; data: T } | undefined
+      >((resolve, reject) => {
+        const onAbort = () => {
+          reject(new Error('Aborted'))
+        }
+        abortSignal.addEventListener('abort', onAbort, { once: true })
+        messagePromise
+          .then((r) => {
+            abortSignal.removeEventListener('abort', onAbort)
+            resolve(r)
+          })
+          .catch((e) => {
+            abortSignal.removeEventListener('abort', onAbort)
+            reject(e)
+          })
+      })
+
       if (!resp?.ok) {
         const msg = resp?.error || `Request failed: ${resp?.status}`
         throw new Error(msg)
@@ -70,6 +107,18 @@ export async function bgRequest<T = any, P extends PathOrUrl = AllowedPath, M ex
   }
 
   const controller = new AbortController()
+  const onAbort = () => {
+    try {
+      controller.abort()
+    } catch {}
+  }
+  if (abortSignal) {
+    if (abortSignal.aborted) {
+      controller.abort()
+    } else {
+      abortSignal.addEventListener('abort', onAbort, { once: true })
+    }
+  }
   const id = timeoutMs ? setTimeout(() => controller.abort(), timeoutMs) : null
   try {
     const res = await fetch(url, {
@@ -91,6 +140,11 @@ export async function bgRequest<T = any, P extends PathOrUrl = AllowedPath, M ex
     return (await res.text()) as any as T
   } finally {
     if (id) clearTimeout(id)
+    if (abortSignal) {
+      try {
+        abortSignal.removeEventListener('abort', onAbort)
+      } catch {}
+    }
   }
 }
 

@@ -95,6 +95,14 @@
       },
       "promptSearchIncludeServer": {
         "label": "Include server prompts in prompt search"
+      },
+      "restartOnboarding": {
+        "label": "온보딩을 처음부터 다시 시작",
+        "button": "온보딩 다시 시작",
+        "confirmTitle": "온보딩을 다시 시작할까요?",
+        "confirmMessage": "온보딩 상태가 초기화되고 설정 흐름의 처음으로 돌아갑니다.",
+        "toast": "온보딩이 초기화되었습니다",
+        "toastBody": "서버 URL과 API 키를 다시 확인할 수 있도록 환영 단계로 돌아갑니다."
       }
     },
     "sidepanelRag": {

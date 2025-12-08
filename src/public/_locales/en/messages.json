@@ -126,11 +126,11 @@
     "description": "Help text describing where to find the API key."
   },
   "authStepAria": {
-    "message": "Step 3 of 4 \u2014 Choose how you sign in",
+    "message": "Step {{current}} of {{total}} \u2014 Choose how you sign in",
     "description": "Aria label for the authentication step in onboarding."
   },
   "confirmStepAria": {
-    "message": "Step 4 of 4 \u2014 Confirm connection and review next steps",
+    "message": "Step {{current}} of {{total}} \u2014 Confirm connection and review next steps",
     "description": "Aria label for the confirmation step in onboarding."
   },
   "nextSteps": {

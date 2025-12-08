@@ -126,11 +126,11 @@
     "description": "Texte d’aide indiquant où trouver la clé API."
   },
   "authStepAria": {
-    "message": "Step 3 of 4 \u2014 authentication configuration",
+    "message": "Step {{current}} of {{total}} \u2014 authentication configuration",
     "description": "Libellé aria pour l’étape de configuration de l’authentification (actuellement en anglais)."
   },
   "confirmStepAria": {
-    "message": "Step 4 of 4 \u2014 connection summary and next steps",
+    "message": "Step {{current}} of {{total}} \u2014 connection summary and next steps",
     "description": "Libellé aria pour l’étape de confirmation de la connexion (actuellement en anglais)."
   },
   "nextSteps": {

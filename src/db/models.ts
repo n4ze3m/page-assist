@@ -1,16 +1,10 @@
 import { getAllOpenAIModels } from "@/libs/openai"
 import { getAllModelNicknames } from "./nickname"
+import type { Model } from "@/db/dexie/types"
 
-interface Model {
-  id: string
-  model_id: string
-  name: string
-  model_name?: string
-  model_image?: string
-  provider_id: string
-  lookup: string
-  model_type: string
-  db_type: string
+interface CustomModelView extends Model {
+  nickname: string
+  avatar?: string
 }
 export const generateID = () => {
   return "model-xxxx-xxxx-xxx-xxxx".replace(/[x]/g, () => {
@@ -214,11 +208,17 @@ export const createManyModels = async (
   }
 }
 
-export const createModelFB = async (model: Model) => {
+export const createModelFB = async (model: Model): Promise<boolean> => {
   try {
     const db = new ModelDb()
     await db.create(model)
-  } catch (e) {}
+    return true
+  } catch (e) {
+    // Surface storage failures instead of silently swallowing them
+    // eslint-disable-next-line no-console
+    console.error("Failed to create model", e)
+    return false
+  }
 }
 
 export const getAllModelsExT = async () => {
@@ -289,7 +289,7 @@ export const getModelInfoFB = async (id: string) => {
   return model
 }
 
-export const getAllCustomModelsFB = async () => {
+export const getAllCustomModelsFB = async (): Promise<CustomModelView[]> => {
   const db = new ModelDb()
   const modelNicknames = await getAllModelNicknames()
   const models = (await db.getAll()).filter(
@@ -342,10 +342,18 @@ export const isLookupExist = async (lookup: string) => {
   return !!model
 }
 
-type DynamicFetchParams = {
+interface DynamicFetchParams {
   baseUrl: string
   providerId: string
   customHeaders?: { key: string; value: string }[]
+}
+
+type DynamicModelListing = {
+  name: string
+  id: string
+  provider: string
+  lookup: string
+  provider_id: string
 }
 
 const dynamicFetchModels = async ({
@@ -355,7 +363,7 @@ const dynamicFetchModels = async ({
   customHeaders = []
 }: DynamicFetchParams & {
   providerPrefix: "lmstudio" | "llamacpp" | "llamafile"
-}) => {
+}): Promise<DynamicModelListing[]> => {
   const models = await getAllOpenAIModels({ baseUrl, customHeaders })
   return models.map((e) => ({
     name: e?.name || e?.id,
@@ -366,11 +374,17 @@ const dynamicFetchModels = async ({
   }))
 }
 
-export const dynamicFetchLMStudio = async (params: DynamicFetchParams) =>
+export const dynamicFetchLMStudio = async (
+  params: DynamicFetchParams
+): Promise<DynamicModelListing[]> =>
   dynamicFetchModels({ ...params, providerPrefix: "lmstudio" })
 
-export const dynamicFetchLLamaCpp = async (params: DynamicFetchParams) =>
+export const dynamicFetchLLamaCpp = async (
+  params: DynamicFetchParams
+): Promise<DynamicModelListing[]> =>
   dynamicFetchModels({ ...params, providerPrefix: "llamacpp" })
 
-export const dynamicFetchLlamafile = async (params: DynamicFetchParams) =>
+export const dynamicFetchLlamafile = async (
+  params: DynamicFetchParams
+): Promise<DynamicModelListing[]> =>
   dynamicFetchModels({ ...params, providerPrefix: "llamafile" })
