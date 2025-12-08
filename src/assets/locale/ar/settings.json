@@ -339,7 +339,7 @@
       "modifiedAt": "تم التعديل في",
       "size": "الحجم",
       "actions": "الإجراءات",
-      "nickname": "Nickname"
+      "nickname": "الاسم المستعار"
     },
     "expandedColumns": {
       "parentModel": "النموذج الأصلي",
@@ -348,10 +348,10 @@
       "parameterSize": "حجم المعلمة",
       "quantizationLevel": "مستوى التكميم"
     },
-    "tooltip": {
+      "tooltip": {
       "delete": "حذف النموذج",
       "repull": "إعادة سحب النموذج",
-      "editNickname": "Edit Nickname"
+      "editNickname": "تحرير الاسم المستعار"
     },
     "confirm": {
       "delete": "هل أنت متأكد أنك تريد حذف هذا النموذج؟",

@@ -342,7 +342,7 @@
       "modifiedAt": "修正日時",
       "size": "サイズ",
       "actions": "アクション",
-      "nickname": "Nickname"
+      "nickname": "ニックネーム"
     },
     "expandedColumns": {
       "parentModel": "親モデル",
@@ -351,10 +351,10 @@
       "parameterSize": "パラメータサイズ",
       "quantizationLevel": "量子化レベル"
     },
-    "tooltip": {
+      "tooltip": {
       "delete": "モデルを削除",
       "repull": "モデルを再取得",
-      "editNickname": "Edit Nickname"
+      "editNickname": "ニックネームを編集"
     },
     "confirm": {
       "delete": "本当にこのモデルを削除しますか？",

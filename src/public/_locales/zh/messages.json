@@ -1,0 +1,74 @@
+{
+  "footerHelp": {
+    "message": "连接完成后，你可以随时从扩展菜单重新打开这些设置。",
+    "description": "设置中引导流程底部的帮助文本（简体中文）。"
+  },
+  "progressAria": {
+    "message": "引导进度",
+    "description": "引导进度指示器的 aria 标签。"
+  },
+  "stepLabel": {
+    "message": "欢迎",
+    "description": "引导流程第一步（欢迎）的标签。"
+  },
+  "path": {
+    "message": "你想如何开始？",
+    "description": "用于选择如何开始引导流程的标题。"
+  },
+  "authModeHelp": {
+    "message": "Single User（API Key）适合个人或小团队服务器。Multi User（Login）适合多人共享部署，用户使用用户名或 SSO 登录。请选择与 tldw_server 实际配置相匹配的模式。",
+    "description": "解释 Single User 与 Multi User 身份验证模式差异的说明文本。"
+  },
+  "apiKeyHelp": {
+    "message": "在 tldw_server \u2192 Settings \u2192 API Keys 中找到你的 API 密钥。在那里生成密钥并粘贴到这里。",
+    "description": "说明在哪里可以找到 API 密钥的帮助文本。"
+  },
+  "authStepAria": {
+    "message": "Step 2 of 3 \u2014 authentication configuration",
+    "description": "引导流程中身份验证配置步骤的 aria 标签（当前为英文）。"
+  },
+  "confirmStepAria": {
+    "message": "Step 3 of 3 \u2014 connection summary and next steps",
+    "description": "引导流程中连接确认步骤的 aria 标签（当前为英文）。"
+  },
+  "nextSteps": {
+    "message": "你已准备好开始了",
+    "description": "引导流程最后一页的标题。"
+  },
+  "nextStepsSubtitle": {
+    "message": "从这里你可以打开侧边栏、摄取页面或探索媒体和笔记。",
+    "description": "引导流程最后一页的副标题。"
+  },
+  "nextStepsChatTitle": {
+    "message": "开始聊天",
+    "description": "下一步卡片中“开始聊天”选项的标题。"
+  },
+  "nextStepsChatBody": {
+    "message": "打开侧边栏并提出你的第一个问题。",
+    "description": "下一步卡片中“开始聊天”选项的说明。"
+  },
+  "nextStepsChatCta": {
+    "message": "打开侧边栏",
+    "description": "用于打开带有聊天的侧边栏按钮上的文本。"
+  },
+  "nextStepsIngestTitle": {
+    "message": "摄取你的第一个页面",
+    "description": "下一步卡片中“摄取页面”选项的标题。"
+  },
+  "nextStepsIngestBody": {
+    "message": "从页眉使用快速摄取将当前选项卡保存到你的服务器。",
+    "description": "下一步卡片中“摄取页面”选项的说明。"
+  },
+  "nextStepsMediaTitle": {
+    "message": "探索媒体和笔记",
+    "description": "下一步卡片中“探索媒体和笔记”选项的标题。"
+  },
+  "nextStepsMediaBody": {
+    "message": "访问选项中的媒体和笔记以查看存储和可搜索的内容。",
+    "description": "下一步卡片中“探索媒体和笔记”选项的说明。"
+  },
+  "headerShortcuts": {
+    "message": "在页眉显示快捷方式",
+    "description": "控制是否在页眉显示快速快捷方式的设置。"
+  }
+}

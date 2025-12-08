@@ -57,6 +57,19 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
   const { uxState, configStep } = useConnectionUxState()
   const connectionState = useConnectionState()
 
+  const openServerDocs = React.useCallback(() => {
+    try {
+      const docsUrl =
+        t(
+          'settings:onboarding.serverDocsUrl',
+          'https://github.com/rmusser01/tldw_browser_assistant'
+        ) || 'https://github.com/rmusser01/tldw_browser_assistant'
+      window.open(docsUrl, '_blank', 'noopener,noreferrer')
+    } catch {
+      // ignore navigation errors
+    }
+  }, [t])
+
 	  const urlInputRef = React.useRef<HTMLInputElement | HTMLTextAreaElement | null>(null)
   const authStepRef = React.useRef<HTMLDivElement | null>(null)
   const confirmStepRef = React.useRef<HTMLDivElement | null>(null)
@@ -629,23 +642,7 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
                 <span className="inline-flex flex-wrap items-center gap-2">
                   <Button
                     size="small"
-                    onClick={() => {
-                      try {
-                        const docsUrl =
-                          t(
-                            'settings:onboarding.serverDocsUrl',
-                            'https://github.com/rmusser01/tldw_browser_assistant'
-                          ) ||
-                          'https://github.com/rmusser01/tldw_browser_assistant'
-                        window.open(
-                          docsUrl,
-                          '_blank',
-                          'noopener,noreferrer'
-                        )
-                      } catch {
-                        // ignore navigation errors
-                      }
-                    }}
+                    onClick={openServerDocs}
                   >
                     {t(
                       'settings:onboarding.path.openSetupGuide',
@@ -849,16 +846,7 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
             <button
               type="button"
               className="underline text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
-              onClick={() => {
-                try {
-                  const docsUrl =
-                    t('settings:onboarding.serverDocsUrl', 'https://github.com/rmusser01/tldw_browser_assistant') ||
-                    'https://github.com/rmusser01/tldw_browser_assistant'
-                  window.open(docsUrl, '_blank', 'noopener,noreferrer')
-                } catch {
-                  // ignore navigation errors
-                }
-              }}>
+              onClick={openServerDocs}>
               {t(
                 'settings:onboarding.serverDocsCta',
                 'Learn how tldw server works'

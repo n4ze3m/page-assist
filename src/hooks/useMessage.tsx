@@ -22,6 +22,7 @@ import { getAllDefaultModelSettings } from "@/services/model-settings"
 import { pageAssistModel } from "@/models"
 import { getPrompt } from "@/services/application"
 import { humanMessageFormatter } from "@/utils/human-message"
+import { generateHistory } from "@/utils/generate-history"
 import { tldwClient } from "@/services/tldw/TldwApiClient"
 import { getScreenshotFromCurrentTab } from "@/libs/get-screenshot"
 import {
@@ -297,7 +298,17 @@ export const useMessage = () => {
           .replaceAll("{chat_history}", chat_history)
           .replaceAll("{question}", message)
         const questionOllama = await pageAssistModel({ model: selectedModel!, baseUrl: "" })
-        const response = await questionOllama.invoke(promptForQuestion)
+        const questionMessage = await humanMessageFormatter({
+          content: [
+            {
+              text: promptForQuestion,
+              type: "text"
+            }
+          ],
+          model: selectedModel,
+          useOCR
+        })
+        const response = await questionOllama.invoke([questionMessage])
         query = response.content.toString()
         query = removeReasoning(query)
       }
@@ -801,6 +812,9 @@ export const useMessage = () => {
 
     if (!selectedCharacter?.id) {
       throw new Error("No character selected")
+    }
+    if (!selectedModel) {
+      throw new Error("No model selected")
     }
 
     try {

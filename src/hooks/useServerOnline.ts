@@ -8,6 +8,9 @@ import { useConnectionStore } from "@/store/connection"
  *
  * Uses the central connection state (and checkOnce) instead of calling
  * tldwClient.healthCheck directly in each consumer.
+ *
+ * Returns false when the connection mode is "demo", even if the server
+ * is otherwise connected.
  */
 export function useServerOnline(pollMs: number = 0): boolean {
   const isConnected = useConnectionStore((s) => s.state.isConnected)

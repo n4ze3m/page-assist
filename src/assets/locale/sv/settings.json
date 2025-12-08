@@ -336,10 +336,10 @@
     "columns": {
       "name": "Namn",
       "digest": "Sammanfattning",
-      "modifiedAt": "Modifierad Den",
+      "modifiedAt": "Modifierad den",
       "size": "Storlek",
       "actions": "Åtgärder",
-      "nickname": "Nickname"
+      "nickname": "Smeknamn"
     },
     "expandedColumns": {
       "parentModel": "Föräldramodell",
@@ -348,10 +348,10 @@
       "parameterSize": "Parameterstorlek",
       "quantizationLevel": "Kvantifieringsnivå"
     },
-    "tooltip": {
+      "tooltip": {
       "delete": "Radera Modell",
       "repull": "Hämta Modell Igen",
-      "editNickname": "Edit Nickname"
+      "editNickname": "Redigera smeknamn"
     },
     "confirm": {
       "delete": "Är du säker på att du vill radera denna modell?",

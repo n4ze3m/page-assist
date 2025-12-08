@@ -342,7 +342,7 @@
       "modifiedAt": "수정 일시",
       "size": "크기",
       "actions": "동작",
-      "nickname": "Nickname"
+      "nickname": "별칭"
     },
     "expandedColumns": {
       "parentModel": "상위 모델",
@@ -351,10 +351,10 @@
       "parameterSize": "파라미터 크기",
       "quantizationLevel": "양자화 수준"
     },
-    "tooltip": {
+      "tooltip": {
       "delete": "모델 삭제",
       "repull": "모델 다시 가져오기",
-      "editNickname": "Edit Nickname"
+      "editNickname": "별칭 편집"
     },
     "confirm": {
       "delete": "이 모델을 정말 삭제하시겠습니까?",

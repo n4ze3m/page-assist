@@ -8,6 +8,7 @@ type I18nKey =
   | "hfSendPageErrorWithDetail"
   | "hfSendPageError"
   | "hfSendPageSuccess"
+  | "hfInvalidPage"
   | "hfSendPageException"
 
 const getMessage = (
@@ -29,14 +30,25 @@ const getMessage = (
 
 export default defineContentScript({
   main() {
-    if (window.top !== window) return
-
     const sendToTldw = async (btn?: HTMLButtonElement) => {
       const labelEl = btn?.querySelector("span")
       const originalDisabled = btn?.disabled ?? false
       const originalLabel = labelEl?.textContent
 
       const url = window.location.href
+      // Only send model, dataset, or space pages, not search results or settings.
+      const isValidPath = /^https?:\/\/huggingface\.co\/[^/]+\/[^/]+(\/|$)/.test(
+        url
+      )
+      if (!isValidPath) {
+        alert(
+          getMessage(
+            "hfInvalidPage",
+            "This page cannot be sent to tldw_server."
+          )
+        )
+        return
+      }
       // The path is declared in the OpenAPI spec; annotate for compile-time safety
       const path = '/api/v1/media/add' as AllowedPath
 
@@ -133,7 +145,8 @@ export default defineContentScript({
       if (!document.body) return
       if (document.querySelector(".tldw-send-button")) return
       const btn = document.createElement('button')
-      btn.className = 'tldw-send-button focus:outline-hidden inline-flex cursor-pointer items-center text-sm bg-white shadow-xs rounded-md border px-2 py-1 text-gray-600'
+      btn.className =
+        "tldw-send-button inline-flex cursor-pointer items-center text-sm bg-white shadow-xs rounded-md border px-2 py-1 text-gray-600"
       const sendLabel = getMessage("contextSendToTldw", "Send to tldw_server")
       btn.title = sendLabel
       const icon = createDownloadIcon()
@@ -141,25 +154,27 @@ export default defineContentScript({
       label.classList.add("ml-1.5")
       label.textContent = sendLabel
       btn.append(icon, label)
-      btn.style.position = 'fixed'
-      btn.style.bottom = '60px'
-      btn.style.right = '20px'
-      btn.style.zIndex = '2147483647'
+      btn.style.position = "fixed"
+      btn.style.bottom = "60px"
+      btn.style.right = "20px"
+      btn.style.zIndex = "999999"
       btn.addEventListener('click', () => void sendToTldw(btn))
       document.body.appendChild(btn)
     }
 
-    const observer = new MutationObserver(() => {
+    if (document.body) {
       injectButton()
-      if (document.querySelector(".tldw-send-button")) {
-        observer.disconnect()
-      }
-    })
-    observer.observe(document.documentElement, {
-      childList: true,
-      subtree: true
-    })
-    injectButton()
+    } else {
+      const observer = new MutationObserver(() => {
+        if (document.body) {
+          injectButton()
+          observer.disconnect()
+        }
+      })
+      observer.observe(document.documentElement, {
+        childList: true
+      })
+    }
   },
   allFrames: false,
   matches: ["*://huggingface.co/*"]

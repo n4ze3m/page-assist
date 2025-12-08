@@ -81,17 +81,17 @@
         "label": "Aktiver midlertidig chat i sidepanelet som standard"
       },
       "enableOcrAssets": {
-        "label": "Enable OCR (downloads ~5MB on first use)"
+        "label": "Aktiver OCR (laster ned ~5 MB ved første bruk)"
       },
       "ocrLanguage": {
-        "label": "Default OCR Language",
-        "placeholder": "Select an OCR language"
+        "label": "Standard OCR-språk",
+        "placeholder": "Velg et OCR-språk"
       },
       "removeReasoningTagFromCopy": {
-        "label": "Remove Reasoning Tag from Copied Text"
+        "label": "Fjern Resonneringsmerke fra kopiert tekst"
       },
       "promptSearchIncludeServer": {
-        "label": "Include server prompts in prompt search"
+        "label": "Inkluder server-spørsmål i prompt-søk"
       },
       "restartOnboarding": {
         "label": "Start onboarding på nytt fra begynnelsen",
@@ -217,56 +217,56 @@
       "autoSubmitVoiceMessage": {
         "label": "Auto-send Talemelding"
       },
-      "usedByChat": "These Speech-to-Text defaults are used by the chat dictation button in the Playground and Sidebar.",
+      "usedByChat": "Disse tale-til-tekst standardene brukes av dikteringsknappen i Playground og sidepanelet.",
       "model": {
-        "label": "Transcription model (tldw_server)"
+        "label": "Transkripsjonsmodell (tldw_server)"
       },
       "useSegmentation": {
-        "label": "Run segmentation for transcripts (TreeSeg)"
+        "label": "Kjør segmentering for transkripsjoner (TreeSeg)"
       },
       "timestampGranularities": {
-        "label": "Timestamp granularity",
+        "label": "Tidsstempel-nivå",
         "segment": "Per segment",
-        "word": "Per word",
-        "segmentWord": "Segment + word"
+        "word": "Per ord",
+        "segmentWord": "Segment + ord"
       },
       "task": {
-        "label": "Transcription task",
-        "transcribe": "Transcribe (same language)",
-        "translate": "Translate to English"
+        "label": "Transkripsjonsoppgave",
+        "transcribe": "Transkriber (samme språk)",
+        "translate": "Oversett til engelsk"
       },
       "responseFormat": {
-        "label": "Response format",
-        "json": "JSON (text + segments)",
-        "verboseJson": "Verbose JSON",
-        "text": "Plain text",
-        "srt": "SRT subtitles",
-        "vtt": "VTT subtitles"
+        "label": "Svarformat",
+        "json": "JSON (tekst + segmenter)",
+        "verboseJson": "Detaljert JSON",
+        "text": "Ren tekst",
+        "srt": "SRT-undertekster",
+        "vtt": "VTT-undertekster"
       },
       "temperature": {
-        "label": "Sampling temperature"
+        "label": "Sampling-temperatur"
       },
       "prompt": {
-        "label": "Default transcription prompt",
-        "placeholder": "Optional text to guide style"
+        "label": "Standard transkripsjons-prompt",
+        "placeholder": "Valgfri tekst for å styre stil"
       },
       "segK": {
-        "label": "Max segments (TreeSeg K)"
+        "label": "Maks segmenter (TreeSeg K)"
       },
       "segMinSegmentSize": {
-        "label": "Minimum items per segment"
+        "label": "Minimum elementer per segment"
       },
       "segLambdaBalance": {
-        "label": "Balance penalty (TreeSeg λ)"
+        "label": "Balanse-penalitet (TreeSeg λ)"
       },
       "segUtteranceExpansionWidth": {
-        "label": "Utterance expansion width"
+        "label": "Utvidelsesbredde for ytring"
       },
       "segEmbeddingsProvider": {
-        "label": "Segmentation embeddings provider"
+        "label": "Leverandør for segmenterings-embedding"
       },
       "segEmbeddingsModel": {
-        "label": "Segmentation embeddings model"
+        "label": "Modell for segmenterings-embedding"
       }
     },
     "systemBasics": {
@@ -339,7 +339,7 @@
       "modifiedAt": "Endret den",
       "size": "Størrelse",
       "actions": "Handlinger",
-      "nickname": "Nickname"
+      "nickname": "Kallenavn"
     },
     "expandedColumns": {
       "parentModel": "Overordnet modell",
@@ -348,10 +348,10 @@
       "parameterSize": "Parameterstørrelse",
       "quantizationLevel": "Kvantifiseringsnivå"
     },
-    "tooltip": {
+      "tooltip": {
       "delete": "Slett Modell",
       "repull": "Hent Modell På Nytt",
-      "editNickname": "Edit Nickname"
+      "editNickname": "Rediger kallenavn"
     },
     "confirm": {
       "delete": "Er du sikker på at du vil slette denne modellen?",

@@ -575,36 +575,36 @@ export const FlashcardsPage: React.FC = () => {
   const openMove = async (card: Flashcard) => {
     try { const full = await getFlashcard(card.uuid); setMoveCard(full); setMoveDeckId(full.deck_id ?? null); setMoveOpen(true) } catch (e: any) { message.error(e?.message || 'Failed to load card') }
   }
-	  const submitMove = async () => {
-	    try {
-	      if (moveCard) {
-	        const full = await getFlashcard(moveCard.uuid)
-	        await updateFlashcard(moveCard.uuid, { deck_id: moveDeckId ?? null, expected_version: full.version })
-	      } else {
-	        // bulk move: respect selectAllAcross/deselectedIds
-	        const toMove = await getSelectedItems()
-	        if (toMove.length) {
-	          const chunkSize = 50
-	          for (let i = 0; i < toMove.length; i += chunkSize) {
-	            const chunk = toMove.slice(i, i + chunkSize)
-	            await Promise.all(
-	              chunk.map((c) =>
-	                updateFlashcard(c.uuid, {
-	                  deck_id: moveDeckId ?? null,
-	                  expected_version: c.version
-	                })
-	              )
-	            )
-	          }
-	        }
-	        clearSelection()
-	      }
-	      setMoveOpen(false)
-	      setMoveCard(null)
-	      await qc.invalidateQueries({ queryKey: ["flashcards:list"] })
-	      message.success(t("common:updated", { defaultValue: "Updated" }))
-	    } catch (e: any) { message.error(e?.message || 'Move failed') }
-	  }
+  const submitMove = async () => {
+    try {
+      if (moveCard) {
+        const full = await getFlashcard(moveCard.uuid)
+        await updateFlashcard(moveCard.uuid, { deck_id: moveDeckId ?? null, expected_version: full.version })
+      } else {
+        // bulk move: respect selectAllAcross/deselectedIds
+        const toMove = await getSelectedItems()
+        if (toMove.length) {
+          const chunkSize = 50
+          for (let i = 0; i < toMove.length; i += chunkSize) {
+            const chunk = toMove.slice(i, i + chunkSize)
+            await Promise.all(
+              chunk.map((c) =>
+                updateFlashcard(c.uuid, {
+                  deck_id: moveDeckId ?? null,
+                  expected_version: c.version
+                })
+              )
+            )
+          }
+        }
+        clearSelection()
+      }
+      setMoveOpen(false)
+      setMoveCard(null)
+      await qc.invalidateQueries({ queryKey: ["flashcards:list"] })
+      message.success(t("common:updated", { defaultValue: "Updated" }))
+    } catch (e: any) { message.error(e?.message || 'Move failed') }
+  }
 
   const openEdit = async (card: Flashcard) => {
     try {
@@ -1590,14 +1590,15 @@ const ImportPanel: React.FC = () => {
 
   const buildMappedTSV = React.useCallback(() => {
     if (!useMapping || !mapping) return content
-    const rows = (content || '').split(/\r?\n/)
+    const rows = (content || "").split(/\r?\n/)
     const out: string[] = []
     for (let i = 0; i < rows.length; i++) {
       const raw = rows[i]
       if (!raw.trim()) continue
       if (i === 0 && hasHeader) continue
       const cols = raw.split(delimiter || MAPPING_OUTPUT_DELIMITER)
-      const safe = (idx?: number) => (typeof idx === 'number' && idx >= 0 && idx < cols.length ? cols[idx] : '')
+      const safe = (idx?: number) =>
+        typeof idx === "number" && idx >= 0 && idx < cols.length ? cols[idx] : ""
       const deck = safe(mapping.deck)
       const front = safe(mapping.front)
       const back = safe(mapping.back)
@@ -1605,21 +1606,21 @@ const ImportPanel: React.FC = () => {
       const notes = safe(mapping.notes)
       out.push([deck, front, back, tags, notes].join(MAPPING_OUTPUT_DELIMITER))
     }
-	    return out.join('\n')
-	  }, [content, delimiter, hasHeader, mapping, useMapping])
+    return out.join("\n")
+  }, [content, delimiter, hasHeader, mapping, useMapping])
 
-	  React.useEffect(() => {
-	    if (!useMapping) {
-	      setPreviewMapped("")
-	      return
-	    }
-	    const mapped = buildMappedTSV()
-	    if (!mapped) {
-	      setPreviewMapped("")
-	      return
-	    }
-	    setPreviewMapped(mapped.split(/\r?\n/).slice(0, 3).join("\n"))
-	  }, [buildMappedTSV, useMapping])
+  React.useEffect(() => {
+    if (!useMapping) {
+      setPreviewMapped("")
+      return
+    }
+    const mapped = buildMappedTSV()
+    if (!mapped) {
+      setPreviewMapped("")
+      return
+    }
+    setPreviewMapped(mapped.split(/\r?\n/).slice(0, 3).join("\n"))
+  }, [buildMappedTSV, useMapping])
 
   const importMutation = useMutation({
     mutationKey: ["flashcards:import"],
@@ -1641,23 +1642,33 @@ const ImportPanel: React.FC = () => {
     onError: (e: any) => message.error(e?.message || "Import failed")
   })
 
-	  return (
-	    <div className="flex flex-col gap-3">
+  return (
+    <div className="flex flex-col gap-3">
       {!isOnline && (
-        <Alert type="warning" showIcon message={t("common:serverOffline", { defaultValue: "Server offline or not configured" })} />
+        <Alert
+          type="warning"
+          showIcon
+          message={t("common:serverOffline", {
+            defaultValue: "Server offline or not configured"
+          })}
+        />
       )}
-	      <div>
-	        <Text type="secondary">
-	          {t("option:flashcards.importHelp", { defaultValue: "Paste TSV/CSV lines: Deck, Front, Back, Tags, Notes" })}
-	        </Text>
-	        <pre className="mt-1 rounded bg-gray-50 p-2 text-xs text-gray-700 dark:bg-[#111] dark:text-gray-200">
+      <div>
+        <Text type="secondary">
+          {t("option:flashcards.importHelp", {
+            defaultValue: "Paste TSV/CSV lines: Deck, Front, Back, Tags, Notes"
+          })}
+        </Text>
+        <pre className="mt-1 rounded bg-gray-50 p-2 text-xs text-gray-700 dark:bg-[#111] dark:text-gray-200">
 Deck	Front	Back	Tags	Notes
 My deck	What is a closure?	A function with preserved outer scope.	javascript; fundamentals	Lecture 3
-	        </pre>
-	      </div>
+        </pre>
+      </div>
       <Input.TextArea
         rows={10}
-        placeholder={t("option:flashcards.pasteContent", { defaultValue: "Paste content here..." })}
+        placeholder={t("option:flashcards.pasteContent", {
+          defaultValue: "Paste content here..."
+        })}
         value={content}
         onChange={(e) => setContent(e.target.value)}
       />
@@ -1667,13 +1678,24 @@ My deck	What is a closure?	A function with preserved outer scope.	javascript; fu
           onChange={setDelimiter}
           options={[
             { label: t("option:flashcards.tab", { defaultValue: "Tab" }), value: "\t" },
-            { label: t("option:flashcards.comma", { defaultValue: ", (Comma)" }), value: "," },
-            { label: t("option:flashcards.semicolon", { defaultValue: "; (Semicolon)" }), value: ";" },
-            { label: t("option:flashcards.pipe", { defaultValue: "| (Pipe)" }), value: "|" }
+            {
+              label: t("option:flashcards.comma", { defaultValue: ", (Comma)" }),
+              value: ","
+            },
+            {
+              label: t("option:flashcards.semicolon", { defaultValue: "; (Semicolon)" }),
+              value: ";"
+            },
+            {
+              label: t("option:flashcards.pipe", { defaultValue: "| (Pipe)" }),
+              value: "|"
+            }
           ]}
         />
         <Space>
-          <Text>{t("option:flashcards.hasHeader", { defaultValue: "Has header" })}</Text>
+          <Text>
+            {t("option:flashcards.hasHeader", { defaultValue: "Has header" })}
+          </Text>
           <Switch checked={hasHeader} onChange={setHasHeader} />
         </Space>
       </Space>
@@ -1689,7 +1711,9 @@ My deck	What is a closure?	A function with preserved outer scope.	javascript; fu
         {limitsQuery.data && (
           <Tooltip
             title={
-              <pre className="whitespace-pre-wrap text-xs">{JSON.stringify(limitsQuery.data, null, 2)}</pre>
+              <pre className="whitespace-pre-wrap text-xs">
+                {JSON.stringify(limitsQuery.data, null, 2)}
+              </pre>
             }
           >
             <Text type="secondary" className="cursor-help">
@@ -1699,13 +1723,17 @@ My deck	What is a closure?	A function with preserved outer scope.	javascript; fu
         )}
       </div>
       <Space align="center">
-        <Text>{t("option:flashcards.mapping", { defaultValue: "Column mapping" })}</Text>
+        <Text>
+          {t("option:flashcards.mapping", { defaultValue: "Column mapping" })}
+        </Text>
         <Switch checked={useMapping} onChange={setUseMapping} />
       </Space>
       {useMapping && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           <div>
-            <Text type="secondary">{t("option:flashcards.deck", { defaultValue: "Deck" })}</Text>
+            <Text type="secondary">
+              {t("option:flashcards.deck", { defaultValue: "Deck" })}
+            </Text>
             <Select
               className="w-full"
               value={mapping?.deck}
@@ -1713,11 +1741,16 @@ My deck	What is a closure?	A function with preserved outer scope.	javascript; fu
                 setMappingDirty(true)
                 setMapping((m) => ({ ...(m as any), deck: v }))
               }}
-              options={Array.from({ length: colCount }, (_, i) => ({ label: `Col ${i + 1}`, value: i }))}
+              options={Array.from({ length: colCount }, (_, i) => ({
+                label: `Col ${i + 1}`,
+                value: i
+              }))}
             />
           </div>
           <div>
-            <Text type="secondary">{t("option:flashcards.front", { defaultValue: "Front" })}</Text>
+            <Text type="secondary">
+              {t("option:flashcards.front", { defaultValue: "Front" })}
+            </Text>
             <Select
               className="w-full"
               value={mapping?.front}
@@ -1725,11 +1758,16 @@ My deck	What is a closure?	A function with preserved outer scope.	javascript; fu
                 setMappingDirty(true)
                 setMapping((m) => ({ ...(m as any), front: v }))
               }}
-              options={Array.from({ length: colCount }, (_, i) => ({ label: `Col ${i + 1}`, value: i }))}
+              options={Array.from({ length: colCount }, (_, i) => ({
+                label: `Col ${i + 1}`,
+                value: i
+              }))}
             />
           </div>
           <div>
-            <Text type="secondary">{t("option:flashcards.back", { defaultValue: "Back" })}</Text>
+            <Text type="secondary">
+              {t("option:flashcards.back", { defaultValue: "Back" })}
+            </Text>
             <Select
               className="w-full"
               value={mapping?.back}
@@ -1737,11 +1775,16 @@ My deck	What is a closure?	A function with preserved outer scope.	javascript; fu
                 setMappingDirty(true)
                 setMapping((m) => ({ ...(m as any), back: v }))
               }}
-              options={Array.from({ length: colCount }, (_, i) => ({ label: `Col ${i + 1}`, value: i }))}
+              options={Array.from({ length: colCount }, (_, i) => ({
+                label: `Col ${i + 1}`,
+                value: i
+              }))}
             />
           </div>
           <div>
-            <Text type="secondary">{t("option:flashcards.tags", { defaultValue: "Tags" })}</Text>
+            <Text type="secondary">
+              {t("option:flashcards.tags", { defaultValue: "Tags" })}
+            </Text>
             <Select
               className="w-full"
               allowClear
@@ -1750,11 +1793,16 @@ My deck	What is a closure?	A function with preserved outer scope.	javascript; fu
                 setMappingDirty(true)
                 setMapping((m) => ({ ...(m as any), tags: v }))
               }}
-              options={Array.from({ length: colCount }, (_, i) => ({ label: `Col ${i + 1}`, value: i }))}
+              options={Array.from({ length: colCount }, (_, i) => ({
+                label: `Col ${i + 1}`,
+                value: i
+              }))}
             />
           </div>
           <div>
-            <Text type="secondary">{t("option:flashcards.notes", { defaultValue: "Notes" })}</Text>
+            <Text type="secondary">
+              {t("option:flashcards.notes", { defaultValue: "Notes" })}
+            </Text>
             <Select
               className="w-full"
               allowClear
@@ -1763,23 +1811,26 @@ My deck	What is a closure?	A function with preserved outer scope.	javascript; fu
                 setMappingDirty(true)
                 setMapping((m) => ({ ...(m as any), notes: v }))
               }}
-              options={Array.from({ length: colCount }, (_, i) => ({ label: `Col ${i + 1}`, value: i }))}
+              options={Array.from({ length: colCount }, (_, i) => ({
+                label: `Col ${i + 1}`,
+                value: i
+              }))}
             />
           </div>
         </div>
       )}
-	      {useMapping && previewMapped && (
-	        <div className="mt-2">
-	          <Text type="secondary" className="text-xs">
-	            {t("option:flashcards.mappingPreview", {
-	              defaultValue: "Preview of the first few mapped rows:"
-	            })}
-	          </Text>
-	          <pre className="mt-1 rounded bg-gray-50 p-2 text-xs text-gray-700 dark:bg-[#111] dark:text-gray-200 whitespace-pre-wrap">
-	            {previewMapped}
-	          </pre>
-	        </div>
-	      )}
+      {useMapping && previewMapped && (
+        <div className="mt-2">
+          <Text type="secondary" className="text-xs">
+            {t("option:flashcards.mappingPreview", {
+              defaultValue: "Preview of the first few mapped rows:"
+            })}
+          </Text>
+          <pre className="mt-1 rounded bg-gray-50 p-2 text-xs text-gray-700 dark:bg-[#111] dark:text-gray-200 whitespace-pre-wrap">
+            {previewMapped}
+          </pre>
+        </div>
+      )}
     </div>
   )
 }
@@ -1809,12 +1860,12 @@ const ExportPanel: React.FC = () => {
     try {
       setDownloading(true)
       let blob: Blob
-      if (format === 'apkg') {
+      if (format === "apkg") {
         blob = await exportFlashcardsFile({
           deck_id: deckId ?? null,
           q: query || null,
           tag: tag || null,
-          format: 'apkg',
+          format: "apkg",
           include_reverse: includeReverse,
           delimiter,
           include_header: includeHeader,
@@ -1831,12 +1882,12 @@ const ExportPanel: React.FC = () => {
           include_header: includeHeader,
           extended_header: extendedHeader
         })
-        blob = new Blob([text], { type: 'text/csv;charset=utf-8' })
+        blob = new Blob([text], { type: "text/csv;charset=utf-8" })
       }
       const url = URL.createObjectURL(blob)
-      const a = document.createElement('a')
+      const a = document.createElement("a")
       a.href = url
-      a.download = format === 'csv' ? 'flashcards.csv' : 'flashcards.apkg'
+      a.download = format === "csv" ? "flashcards.csv" : "flashcards.apkg"
       document.body.appendChild(a)
       a.click()
       a.remove()
@@ -1848,20 +1899,26 @@ const ExportPanel: React.FC = () => {
     }
   }
 
-	  return (
-	    <div className="flex flex-col gap-3">
-	      {!isOnline && (
-	        <Alert type="warning" showIcon message={t("common:serverOffline", { defaultValue: "Server offline or not configured" })} />
-	      )}
-	      <div>
-	        <Text type="secondary">
-	          {t("option:flashcards.exportHelp", {
-	            defaultValue:
-	              "Filter by deck, tag, or search, then export as CSV/TSV for spreadsheets or Anki (.apkg) for Anki clients."
-	          })}
-	        </Text>
-	      </div>
-	      <Space wrap>
+  return (
+    <div className="flex flex-col gap-3">
+      {!isOnline && (
+        <Alert
+          type="warning"
+          showIcon
+          message={t("common:serverOffline", {
+            defaultValue: "Server offline or not configured"
+          })}
+        />
+      )}
+      <div>
+        <Text type="secondary">
+          {t("option:flashcards.exportHelp", {
+            defaultValue:
+              "Filter by deck, tag, or search, then export as CSV/TSV for spreadsheets or Anki (.apkg) for Anki clients."
+          })}
+        </Text>
+      </div>
+      <Space wrap>
         <Select
           placeholder={t("option:flashcards.deck", { defaultValue: "Deck" })}
           allowClear
@@ -1888,13 +1945,20 @@ const ExportPanel: React.FC = () => {
           onChange={(v) => setFormat(v)}
           options={[
             { label: t("option:flashcards.csv", { defaultValue: "CSV/TSV" }), value: "csv" },
-            { label: t("option:flashcards.apkg", { defaultValue: "Anki (.apkg)" }), value: "apkg" }
+            {
+              label: t("option:flashcards.apkg", { defaultValue: "Anki (.apkg)" }),
+              value: "apkg"
+            }
           ]}
         />
       </Space>
       <Space wrap>
         <Space>
-          <Text>{t("option:flashcards.includeReverse", { defaultValue: "Include reverse" })}</Text>
+          <Text>
+            {t("option:flashcards.includeReverse", {
+              defaultValue: "Include reverse"
+            })}
+          </Text>
           <Switch checked={includeReverse} onChange={setIncludeReverse} />
         </Space>
         <Select
@@ -1902,19 +1966,36 @@ const ExportPanel: React.FC = () => {
           onChange={setDelimiter}
           options={[
             { label: t("option:flashcards.tab", { defaultValue: "Tab" }), value: "\t" },
-            { label: t("option:flashcards.comma", { defaultValue: ", (Comma)" }), value: "," },
-            { label: t("option:flashcards.semicolon", { defaultValue: "; (Semicolon)" }), value: ";" },
-            { label: t("option:flashcards.pipe", { defaultValue: "| (Pipe)" }), value: "|" }
+            {
+              label: t("option:flashcards.comma", { defaultValue: ", (Comma)" }),
+              value: ","
+            },
+            {
+              label: t("option:flashcards.semicolon", { defaultValue: "; (Semicolon)" }),
+              value: ";"
+            },
+            {
+              label: t("option:flashcards.pipe", { defaultValue: "| (Pipe)" }),
+              value: "|"
+            }
           ]}
         />
-	        <Space>
-	          <Text>{t("option:flashcards.includeHeader", { defaultValue: "Include header row" })}</Text>
-	          <Switch checked={includeHeader} onChange={setIncludeHeader} />
-	        </Space>
-	        <Space>
-	          <Text>{t("option:flashcards.extendedHeader", { defaultValue: "Extended header (technical metadata)" })}</Text>
-	          <Switch checked={extendedHeader} onChange={setExtendedHeader} />
-	        </Space>
+        <Space>
+          <Text>
+            {t("option:flashcards.includeHeader", {
+              defaultValue: "Include header row"
+            })}
+          </Text>
+          <Switch checked={includeHeader} onChange={setIncludeHeader} />
+        </Space>
+        <Space>
+          <Text>
+            {t("option:flashcards.extendedHeader", {
+              defaultValue: "Extended header (technical metadata)"
+            })}
+          </Text>
+          <Switch checked={extendedHeader} onChange={setExtendedHeader} />
+        </Space>
       </Space>
       <div>
         <Button type="primary" onClick={doExport} loading={downloading}>

@@ -339,7 +339,7 @@
       "modifiedAt": "Modificado em",
       "size": "Tamanho",
       "actions": "Ações",
-      "nickname": "Nickname"
+      "nickname": "Apelido"
     },
     "expandedColumns": {
       "parentModel": "Modelo Pai",
@@ -348,10 +348,10 @@
       "parameterSize": "Tamanho do Parâmetro",
       "quantizationLevel": "Nível de Quantização"
     },
-    "tooltip": {
+      "tooltip": {
       "delete": "Excluir Modelo",
       "repull": "Baixar Novamente o Modelo",
-      "editNickname": "Edit Nickname"
+      "editNickname": "Editar apelido"
     },
     "confirm": {
       "delete": "Tem certeza de que deseja excluir este modelo?",

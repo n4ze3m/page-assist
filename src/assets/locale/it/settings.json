@@ -339,7 +339,7 @@
       "modifiedAt": "Modificato il",
       "size": "Dimensioni",
       "actions": "Azioni",
-      "nickname": "Nickname"
+      "nickname": "Soprannome"
     },
     "expandedColumns": {
       "parentModel": "Modello Padre",
@@ -348,10 +348,10 @@
       "parameterSize": "Numero di Parametri",
       "quantizationLevel": "Livello di Quantizzazione"
     },
-    "tooltip": {
+      "tooltip": {
       "delete": "Elimina Modello",
       "repull": "Ri-Scarica Modello",
-      "editNickname": "Edit Nickname"
+      "editNickname": "Modifica soprannome"
     },
     "confirm": {
       "delete": "Sei sicuro di voler eliminare questo modello?",

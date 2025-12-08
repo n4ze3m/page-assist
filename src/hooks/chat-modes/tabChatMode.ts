@@ -152,7 +152,17 @@ export const tabChatMode = async (
         .replaceAll("{chat_history}", chat_history)
         .replaceAll("{question}", message)
       const questionOllama = await pageAssistModel({ model: selectedModel!, baseUrl: "" })
-      const response = await questionOllama.invoke(promptForQuestion)
+      const questionMessage = await humanMessageFormatter({
+        content: [
+          {
+            text: promptForQuestion,
+            type: "text"
+          }
+        ],
+        model: selectedModel,
+        useOCR
+      })
+      const response = await questionOllama.invoke([questionMessage])
       query = response.content.toString()
       query = removeReasoning(query)
     }

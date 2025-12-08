@@ -81,17 +81,17 @@
         "label": "Habilitar Chat Temporal en el Panel Lateral por defecto"
       },
       "enableOcrAssets": {
-        "label": "Enable OCR (downloads ~5MB on first use)"
+        "label": "Habilitar OCR (descarga ~5 MB la primera vez)"
       },
       "ocrLanguage": {
-        "label": "Default OCR Language",
-        "placeholder": "Select an OCR language"
+        "label": "Idioma predeterminado de OCR",
+        "placeholder": "Selecciona un idioma de OCR"
       },
       "removeReasoningTagFromCopy": {
-        "label": "Remove Reasoning Tag from Copied Text"
+        "label": "Eliminar la etiqueta de razonamiento del texto copiado"
       },
       "promptSearchIncludeServer": {
-        "label": "Include server prompts in prompt search"
+        "label": "Incluir prompts del servidor en la búsqueda de prompts"
       },
       "restartOnboarding": {
         "label": "Reiniciar la incorporación desde el principio",
@@ -141,19 +141,19 @@
         "label": "Búsqueda en Internet activada por defecto"
       },
       "tavilyApi": {
-        "label": "Tavily API Key ",
-        "placeholder": "Enter your Tavily API key"
+        "label": "Clave API de Tavily",
+        "placeholder": "Introduce tu clave API de Tavily"
       },
       "exa": {
-        "label": "Exa API Key",
-        "placeholder": "Enter your Exa API key"
+        "label": "Clave API de Exa",
+        "placeholder": "Introduce tu clave API de Exa"
       },
       "googleDomain": {
         "label": "Google Domain"
       },
       "firecrawlAPIKey": {
-        "label": "Firecrawl API Key",
-        "placeholder": "Enter your Firecrawl API key"
+        "label": "Clave API de Firecrawl",
+        "placeholder": "Introduce tu clave API de Firecrawl"
       }
     },
     "system": {
@@ -205,7 +205,7 @@
         "label": "Eliminar Etiqueta de Razonamiento del TTS"
       },
       "responseSplitting": {
-        "label": "Response Splitting"
+        "label": "Dividir respuesta"
       }
     },
     "stt": {
@@ -217,56 +217,56 @@
       "autoSubmitVoiceMessage": {
         "label": "Auto-Enviar Mensaje de Voz"
       },
-      "usedByChat": "These Speech-to-Text defaults are used by the chat dictation button in the Playground and Sidebar.",
+      "usedByChat": "Estos valores predeterminados de voz a texto se usan en el botón de dictado del chat en el Playground y en la barra lateral.",
       "model": {
-        "label": "Transcription model (tldw_server)"
+        "label": "Modelo de transcripción (tldw_server)"
       },
       "useSegmentation": {
-        "label": "Run segmentation for transcripts (TreeSeg)"
+        "label": "Ejecutar segmentación para transcripciones (TreeSeg)"
       },
       "timestampGranularities": {
-        "label": "Timestamp granularity",
-        "segment": "Per segment",
-        "word": "Per word",
-        "segmentWord": "Segment + word"
+        "label": "Granularidad de marcas de tiempo",
+        "segment": "Por segmento",
+        "word": "Por palabra",
+        "segmentWord": "Segmento + palabra"
       },
       "task": {
-        "label": "Transcription task",
-        "transcribe": "Transcribe (same language)",
-        "translate": "Translate to English"
+        "label": "Tarea de transcripción",
+        "transcribe": "Transcribir (mismo idioma)",
+        "translate": "Traducir al inglés"
       },
       "responseFormat": {
-        "label": "Response format",
-        "json": "JSON (text + segments)",
-        "verboseJson": "Verbose JSON",
-        "text": "Plain text",
-        "srt": "SRT subtitles",
-        "vtt": "VTT subtitles"
+        "label": "Formato de respuesta",
+        "json": "JSON (texto + segmentos)",
+        "verboseJson": "JSON detallado",
+        "text": "Texto sin formato",
+        "srt": "Subtítulos SRT",
+        "vtt": "Subtítulos VTT"
       },
       "temperature": {
-        "label": "Sampling temperature"
+        "label": "Temperatura de muestreo"
       },
       "prompt": {
-        "label": "Default transcription prompt",
-        "placeholder": "Optional text to guide style"
+        "label": "Prompt de transcripción predeterminado",
+        "placeholder": "Texto opcional para guiar el estilo"
       },
       "segK": {
-        "label": "Max segments (TreeSeg K)"
+        "label": "Máximo de segmentos (TreeSeg K)"
       },
       "segMinSegmentSize": {
-        "label": "Minimum items per segment"
+        "label": "Elementos mínimos por segmento"
       },
       "segLambdaBalance": {
-        "label": "Balance penalty (TreeSeg λ)"
+        "label": "Penalización de equilibrio (TreeSeg λ)"
       },
       "segUtteranceExpansionWidth": {
-        "label": "Utterance expansion width"
+        "label": "Ancho de expansión de enunciados"
       },
       "segEmbeddingsProvider": {
-        "label": "Segmentation embeddings provider"
+        "label": "Proveedor de embeddings para segmentación"
       },
       "segEmbeddingsModel": {
-        "label": "Segmentation embeddings model"
+        "label": "Modelo de embeddings para segmentación"
       }
     },
     "systemBasics": {
@@ -339,7 +339,7 @@
       "modifiedAt": "Modificado",
       "size": "Tamaño",
       "actions": "Acciones",
-      "nickname": "Nickname"
+      "nickname": "Alias"
     },
     "expandedColumns": {
       "parentModel": "Modelo Padre",
@@ -348,10 +348,10 @@
       "parameterSize": "Tamaño de Parametros",
       "quantizationLevel": "Nível de Quantización"
     },
-    "tooltip": {
+      "tooltip": {
       "delete": "Borrar Modelo",
       "repull": "Traer nuevamente el Modelo",
-      "editNickname": "Edit Nickname"
+      "editNickname": "Editar alias"
     },
     "confirm": {
       "delete": "¿Esta seguro que desea borrar este modelos?",
@@ -786,8 +786,8 @@
     }
   },
   "onboarding": {
-    "title": "Welcome — Let’s get you connected",
-    "description": "Configure your server and authentication. We’ll verify the connection and RAG health inline.",
+    "title": "Bienvenido: vamos a conectarte",
+    "description": "Configura tu servidor y la autenticación. Verificaremos en línea la conexión y el estado de RAG.",
     "learnMoreTldw": "Aprende cómo funciona el servidor tldw",
     "serverDocsUrl": "https://github.com/rmusser01/tldw_browser_assistant",
     "serverUrl": {
@@ -795,38 +795,38 @@
       "help": "Ejemplo: http://127.0.0.1:8000",
       "invalid": "Introduce una URL completa como http://127.0.0.1:8000.",
       "invalidProtocol": "Usa URLs http o https, por ejemplo http://127.0.0.1:8000.",
-      "label": "Server URL",
-      "emptyHint": "Enter your tldw server URL to enable Next.",
-      "ready": "We’ll enable Next once we can reach this address.",
-      "checking": "Checking reachability…",
-      "reachable": "Server responded successfully. You can continue.",
-      "unreachable": "We couldn’t reach this address yet. Double-check the URL or try again."
+      "label": "URL del servidor",
+      "emptyHint": "Introduce la URL de tu servidor tldw para habilitar Siguiente.",
+      "ready": "Habilitaremos Siguiente cuando podamos alcanzar esta dirección.",
+      "checking": "Comprobando accesibilidad…",
+      "reachable": "El servidor respondió correctamente. Puedes continuar.",
+      "unreachable": "Todavía no pudimos alcanzar esta dirección. Revisa la URL o inténtalo de nuevo."
     },
     "buttons": {
-      "next": "Next",
-      "back": "Back",
-      "continue": "Continue",
-      "recheck": "Recheck",
-      "finish": "Finish",
-      "finishAnyway": "Finish without connecting",
-      "skip": "Skip for now"
+      "next": "Siguiente",
+      "back": "Atrás",
+      "continue": "Continuar",
+      "recheck": "Volver a comprobar",
+      "finish": "Finalizar",
+      "finishAnyway": "Finalizar sin conectarse",
+      "skip": "Omitir por ahora"
     },
     "authMode": {
-      "label": "Authentication Mode",
-      "single": "Single User (API Key)",
-      "multi": "Multi User (Login)"
+      "label": "Modo de autenticación",
+      "single": "Usuario único (clave API)",
+      "multi": "Varios usuarios (inicio de sesión)"
     },
     "apiKey": {
-      "label": "API Key",
-      "placeholder": "Enter your API key (or use the default demo key THIS-IS-A-SECURE-KEY-123-REPLACE-ME for local single-user setups)"
+      "label": "Clave API",
+      "placeholder": "Introduce tu clave API (o usa la clave de demostración THIS-IS-A-SECURE-KEY-123-REPLACE-ME para configuraciones locales de un solo usuario)"
     },
     "username": {
-      "label": "Username",
-      "placeholder": "Username"
+      "label": "Nombre de usuario",
+      "placeholder": "Nombre de usuario"
     },
     "password": {
-      "label": "Password",
-      "placeholder": "Password"
+      "label": "Contraseña",
+      "placeholder": "Contraseña"
     },
     "connection": {
       "label": "Conexión:",

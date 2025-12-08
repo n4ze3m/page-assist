@@ -339,7 +339,7 @@
       "modifiedAt": "Оновлено",
       "size": "Розмір",
       "actions": "Дії",
-      "nickname": "Nickname"
+      "nickname": "Псевдонім"
     },
     "expandedColumns": {
       "parentModel": "Батьківська модель",
@@ -348,10 +348,10 @@
       "parameterSize": "Розмір параметрів",
       "quantizationLevel": "Рівень квантування"
     },
-    "tooltip": {
+      "tooltip": {
       "delete": "Видалити модель",
       "repull": "Повторно завантажити модель",
-      "editNickname": "Edit Nickname"
+      "editNickname": "Редагувати псевдонім"
     },
     "confirm": {
       "delete": "Ви впевнені, що хочете видалити цю модель?",

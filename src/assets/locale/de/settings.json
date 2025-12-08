@@ -63,35 +63,35 @@
         "label": "Chat-Blase für Benutzernachrichten verwenden"
       },
       "autoCopyResponseToClipboard": {
-        "label": "Automatically Copy Response to Clipboard"
+        "label": "Antwort automatisch in die Zwischenablage kopieren"
       },
       "useMarkdownForUserMessage": {
-        "label": "Enable Markdown formatting for User messages"
+        "label": "Markdown-Formatierung für Benutzernachrichten aktivieren"
       },
       "copyAsFormattedText": {
-        "label": "Copy as Formatted Text"
+        "label": "Als formatierten Text kopieren"
       },
       "tabMentionsEnabled": {
-        "label": "Enable Tab Mentions (@tab)"
+        "label": "Tab-Erwähnungen (@tab) aktivieren"
       },
       "pasteLargeTextAsFile": {
-        "label": "Paste Large Text as File"
+        "label": "Langen Text als Datei einfügen"
       },
       "enableOcrAssets": {
-        "label": "Enable OCR (downloads ~5MB on first use)"
+        "label": "OCR aktivieren (lädt beim ersten Gebrauch ~5 MB herunter)"
       },
       "ocrLanguage": {
-        "label": "Default OCR Language",
-        "placeholder": "Select an OCR language"
+        "label": "Standard-OCR-Sprache",
+        "placeholder": "Wählen Sie eine OCR-Sprache aus"
       },
       "sidepanelTemporaryChat": {
-        "label": "Enable Temporary Chat in Sidebar by default"
+        "label": "Temporären Chat in der Seitenleiste standardmäßig aktivieren"
       },
       "removeReasoningTagFromCopy": {
-        "label": "Remove Reasoning Tag from Copied Text"
+        "label": "Reasoning-Tag aus kopiertem Text entfernen"
       },
       "promptSearchIncludeServer": {
-        "label": "Include server prompts in prompt search"
+        "label": "Server-Prompts in die Prompt-Suche einbeziehen"
       },
       "restartOnboarding": {
         "label": "Onboarding von vorne starten",
@@ -205,7 +205,7 @@
         "label": "Reasoning-Tag aus Text-zu-Sprache entfernen"
       },
       "responseSplitting": {
-        "label": "Response Splitting"
+        "label": "Antwortaufteilung"
       }
     },
     "stt": {
@@ -217,56 +217,56 @@
       "autoSubmitVoiceMessage": {
         "label": "Sprachnachricht automatisch senden"
       },
-      "usedByChat": "These Speech-to-Text defaults are used by the chat dictation button in the Playground and Sidebar.",
+      "usedByChat": "Diese Sprache-zu-Text-Standardeinstellungen werden vom Diktierknopf im Playground und in der Seitenleiste verwendet.",
       "model": {
-        "label": "Transcription model (tldw_server)"
+        "label": "Transkriptionsmodell (tldw_server)"
       },
       "useSegmentation": {
-        "label": "Run segmentation for transcripts (TreeSeg)"
+        "label": "Segmentierung für Transkripte ausführen (TreeSeg)"
       },
       "timestampGranularities": {
-        "label": "Timestamp granularity",
-        "segment": "Per segment",
-        "word": "Per word",
-        "segmentWord": "Segment + word"
+        "label": "Zeitstempel-Granularität",
+        "segment": "Pro Segment",
+        "word": "Pro Wort",
+        "segmentWord": "Segment + Wort"
       },
       "task": {
-        "label": "Transcription task",
-        "transcribe": "Transcribe (same language)",
-        "translate": "Translate to English"
+        "label": "Transkriptionsaufgabe",
+        "transcribe": "Transkribieren (gleiche Sprache)",
+        "translate": "Ins Englische übersetzen"
       },
       "responseFormat": {
-        "label": "Response format",
-        "json": "JSON (text + segments)",
-        "verboseJson": "Verbose JSON",
-        "text": "Plain text",
-        "srt": "SRT subtitles",
-        "vtt": "VTT subtitles"
+        "label": "Antwortformat",
+        "json": "JSON (Text + Segmente)",
+        "verboseJson": "Ausführliches JSON",
+        "text": "Reiner Text",
+        "srt": "SRT-Untertitel",
+        "vtt": "VTT-Untertitel"
       },
       "temperature": {
-        "label": "Sampling temperature"
+        "label": "Sampling-Temperatur"
       },
       "prompt": {
-        "label": "Default transcription prompt",
-        "placeholder": "Optional text to guide style"
+        "label": "Standard-Transkriptions-Prompt",
+        "placeholder": "Optionaler Text zur Stilvorgabe"
       },
       "segK": {
-        "label": "Max segments (TreeSeg K)"
+        "label": "Maximale Segmente (TreeSeg K)"
       },
       "segMinSegmentSize": {
-        "label": "Minimum items per segment"
+        "label": "Minimale Elemente pro Segment"
       },
       "segLambdaBalance": {
-        "label": "Balance penalty (TreeSeg λ)"
+        "label": "Balance-Strafwert (TreeSeg λ)"
       },
       "segUtteranceExpansionWidth": {
-        "label": "Utterance expansion width"
+        "label": "Erweiterungsbreite der Äußerung"
       },
       "segEmbeddingsProvider": {
-        "label": "Segmentation embeddings provider"
+        "label": "Anbieter der Segmentierungs-Embeddings"
       },
       "segEmbeddingsModel": {
-        "label": "Segmentation embeddings model"
+        "label": "Modell der Segmentierungs-Embeddings"
       }
     },
     "systemBasics": {
@@ -339,7 +339,7 @@
       "modifiedAt": "Zuletzt geändert",
       "size": "Größe",
       "actions": "Aktionen",
-      "nickname": "Nickname"
+      "nickname": "Spitzname"
     },
     "expandedColumns": {
       "parentModel": "Übergeordnetes Modell",
@@ -348,10 +348,10 @@
       "parameterSize": "Parametergröße",
       "quantizationLevel": "Quantisierungsstufe"
     },
-    "tooltip": {
+      "tooltip": {
       "delete": "Modell löschen",
       "repull": "Modell erneut herunterladen",
-      "editNickname": "Edit Nickname"
+      "editNickname": "Spitznamen bearbeiten"
     },
     "confirm": {
       "delete": "Sind Sie sicher, dass Sie dieses Modell löschen möchten?",

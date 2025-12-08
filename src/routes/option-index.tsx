@@ -17,7 +17,7 @@ const OptionIndex = () => {
 
   const { phase } = useConnectionState()
   const { uxState, hasCompletedFirstRun } = useConnectionUxState()
-  const { checkOnce, beginOnboarding } = useConnectionActions()
+  const { checkOnce, beginOnboarding, markFirstRunComplete } = useConnectionActions()
   const onboardingInitiated = React.useRef(false)
 
   React.useEffect(() => {
@@ -43,6 +43,7 @@ const OptionIndex = () => {
         <OnboardingWizard
           onFinish={() => {
             void checkOnce()
+            markFirstRunComplete()
           }}
         />
       </OptionLayout>

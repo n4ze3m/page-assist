@@ -136,5 +136,407 @@
   "nextSteps": {
     "message": "您已准备就绪",
     "description": "引导流程最后一页的标题（当前为英文）。"
+  },
+  "nextStepsSubtitle": {
+    "message": "从这里你可以打开侧边栏、摄取页面或探索媒体和笔记。",
+    "description": "引导流程最后一页的副标题。"
+  },
+  "nextStepsChatTitle": {
+    "message": "开始聊天",
+    "description": "下一步卡片中“开始聊天”选项的标题。"
+  },
+  "nextStepsChatBody": {
+    "message": "打开侧边栏并提出你的第一个问题。",
+    "description": "下一步卡片中“开始聊天”选项的说明。"
+  },
+  "nextStepsChatCta": {
+    "message": "打开侧边栏",
+    "description": "用于打开带有聊天的侧边栏按钮上的文本。"
+  },
+  "nextStepsIngestTitle": {
+    "message": "摄取你的第一个页面",
+    "description": "下一步卡片中“摄取页面”选项的标题。"
+  },
+  "nextStepsIngestBody": {
+    "message": "从页眉使用快速摄取将当前选项卡保存到你的服务器。",
+    "description": "下一步卡片中“摄取页面”选项的说明。"
+  },
+  "nextStepsMediaTitle": {
+    "message": "探索媒体和笔记",
+    "description": "下一步卡片中“探索媒体和笔记”选项的标题。"
+  },
+  "nextStepsMediaBody": {
+    "message": "访问选项中的媒体和笔记以查看存储和可搜索的内容。",
+    "description": "下一步卡片中“探索媒体和笔记”选项的说明。"
+  },
+  "headerShortcuts": {
+    "message": "在页眉显示快捷方式",
+    "description": "控制是否在页眉显示快速快捷方式的设置。"
+  },
+  "notesEmpty.connectTitle": {
+    "message": "Connect to use Notes"
+  },
+  "notesEmpty.connectDescription": {
+    "message": "To use Notes, first connect to your tldw server."
+  },
+  "notesEmpty.connectExample1": {
+    "message": "Open Settings \u2192 tldw server to add your server URL."
+  },
+  "notesEmpty.connectExample2": {
+    "message": "Use Diagnostics if your server is running but not reachable."
+  },
+  "notesEmpty.demoTitle": {
+    "message": "Explore Notes in demo mode"
+  },
+  "notesEmpty.demoDescription": {
+    "message": "This demo shows how Notes can organize your insights. Connect your own server later to create and save real notes."
+  },
+  "notesEmpty.demoExample1": {
+    "message": "See how note titles, previews, and timestamps appear in the list."
+  },
+  "notesEmpty.demoExample2": {
+    "message": "When you connect, you\u2019ll be able to create notes from meetings, reviews, and more."
+  },
+  "notesEmpty.demoExample3": {
+    "message": "Use Notes alongside Media and Review to keep track of your findings."
+  },
+  "notesEmpty.demoPreviewHeading": {
+    "message": "Example notes (preview only)"
+  },
+  "notesEmpty.demoSample1Title": {
+    "message": "Demo note: Weekly meeting recap"
+  },
+  "notesEmpty.demoSample1Preview": {
+    "message": "Decisions, blockers, and follow-ups from a recent team sync."
+  },
+  "notesEmpty.demoSample1Meta": {
+    "message": "Today \u00b7 9:32 AM"
+  },
+  "notesEmpty.demoSample2Title": {
+    "message": "Demo note: Research highlights"
+  },
+  "notesEmpty.demoSample2Preview": {
+    "message": "Key insights pulled from a long article or paper."
+  },
+  "notesEmpty.demoSample2Meta": {
+    "message": "Yesterday \u00b7 4:10 PM"
+  },
+  "notesEmpty.demoSample3Title": {
+    "message": "Demo note: Call summary"
+  },
+  "notesEmpty.demoSample3Preview": {
+    "message": "Summary of a customer call with next steps and owners."
+  },
+  "notesEmpty.demoSample3Meta": {
+    "message": "This week"
+  },
+  "notesEmpty.title": {
+    "message": "No notes yet"
+  },
+  "notesEmpty.description": {
+    "message": "Capture and organize free-form notes connected to your tldw insights."
+  },
+  "notesEmpty.exampleCreate": {
+    "message": "Create a new note for a recent meeting or transcript."
+  },
+  "notesEmpty.exampleLink": {
+    "message": "Save review outputs into Notes so you can revisit them later."
+  },
+  "notesEmpty.primaryCta": {
+    "message": "Create note"
+  },
+  "flashcards.review": {
+    "message": "Review"
+  },
+  "flashcards.create": {
+    "message": "Create"
+  },
+  "flashcards.manage": {
+    "message": "Manage"
+  },
+  "flashcards.importExport": {
+    "message": "Import / Export"
+  },
+  "flashcards.selectDeck": {
+    "message": "Select deck"
+  },
+  "flashcards.nextDue": {
+    "message": "Next due"
+  },
+  "flashcards.front": {
+    "message": "Front"
+  },
+  "flashcards.back": {
+    "message": "Back"
+  },
+  "flashcards.extra": {
+    "message": "Extra"
+  },
+  "flashcards.showAnswer": {
+    "message": "Show Answer"
+  },
+  "flashcards.hideAnswer": {
+    "message": "Hide Answer"
+  },
+  "flashcards.preview": {
+    "message": "Preview"
+  },
+  "flashcards.rate": {
+    "message": "Rate"
+  },
+  "flashcards.answerMs": {
+    "message": "Answer ms (opt)"
+  },
+  "flashcards.noDue": {
+    "message": "No due cards"
+  },
+  "flashcards.deck": {
+    "message": "Deck"
+  },
+  "flashcards.newDeck": {
+    "message": "New Deck"
+  },
+  "flashcards.modelType": {
+    "message": "Model Type"
+  },
+  "flashcards.reverse": {
+    "message": "Reverse"
+  },
+  "flashcards.isCloze": {
+    "message": "Is Cloze"
+  },
+  "flashcards.tags": {
+    "message": "Tags"
+  },
+  "flashcards.dueStatus": {
+    "message": "Due status"
+  },
+  "flashcards.tag": {
+    "message": "Tag"
+  },
+  "flashcards.noCards": {
+    "message": "No cards"
+  },
+  "flashcards.due": {
+    "message": "Due"
+  },
+  "flashcards.editCard": {
+    "message": "Edit Card"
+  },
+  "flashcards.importTitle": {
+    "message": "Import Flashcards"
+  },
+  "flashcards.exportTitle": {
+    "message": "Export Flashcards"
+  },
+  "flashcards.importHelp": {
+    "message": "Paste TSV/CSV lines: Deck, Front, Back, Tags, Notes"
+  },
+  "flashcards.pasteContent": {
+    "message": "Paste content here..."
+  },
+  "flashcards.tab": {
+    "message": "Tab"
+  },
+  "flashcards.comma": {
+    "message": ", (Comma)"
+  },
+  "flashcards.semicolon": {
+    "message": "; (Semicolon)"
+  },
+  "flashcards.pipe": {
+    "message": "| (Pipe)"
+  },
+  "flashcards.hasHeader": {
+    "message": "Has header"
+  },
+  "flashcards.import": {
+    "message": "Import"
+  },
+  "flashcards.imported": {
+    "message": "Imported"
+  },
+  "flashcards.importLimits": {
+    "message": "匯入限制"
+  },
+  "flashcards.csv": {
+    "message": "CSV/TSV"
+  },
+  "flashcards.apkg": {
+    "message": "Anki (.apkg)"
+  },
+  "flashcards.includeReverse": {
+    "message": "包含反向卡片"
+  },
+  "flashcards.includeHeader": {
+    "message": "包含標題列"
+  },
+  "flashcards.extendedHeader": {
+    "message": "延伸標題列"
+  },
+  "flashcards.download": {
+    "message": "下載"
+  },
+  "flashcards.duplicate": {
+    "message": "重複"
+  },
+  "flashcards.move": {
+    "message": "移動"
+  },
+  "flashcards.bulkMove": {
+    "message": "批次移動"
+  },
+  "flashcards.bulkDelete": {
+    "message": "批次刪除"
+  },
+  "flashcards.exportSelectedCsv": {
+    "message": "匯出所選項目（CSV/TSV）"
+  },
+  "flashcards.selectedCount": {
+    "message": "已選取"
+  },
+  "flashcards.selectAllOnPage": {
+    "message": "選取此頁全部"
+  },
+  "flashcards.selectAllAcross": {
+    "message": "選取所有符合結果的卡片"
+  },
+  "flashcards.clearSelection": {
+    "message": "清除選取"
+  },
+  "flashcards.emptyConnectTitle": {
+    "message": "連線以使用抽認卡"
+  },
+  "flashcards.emptyConnectDescription": {
+    "message": "若要複習或產生抽認卡，請先連線至你的 tldw 伺服器。"
+  },
+  "flashcards.emptyConnectExample1": {
+    "message": "前往「設定」→「tldw server」，新增你的伺服器 URL。"
+  },
+  "flashcards.emptyConnectExample2": {
+    "message": "完成連線後，你可以複習到期的卡片，或從筆記與媒體建立新的卡片組。"
+  },
+  "flashcards.demoTitle": {
+    "message": "在示範模式中探索抽認卡"
+  },
+  "flashcards.demoDescription": {
+    "message": "此示範會說明抽認卡如何把你的內容轉成間隔複習卡片。之後你可以連線自己的伺服器，從個人的筆記與媒體產生並複習卡片。"
+  },
+  "flashcards.demoExample1": {
+    "message": "看看在「複習」與「管理」分頁中，卡片組、卡片與標籤是如何組織的。"
+  },
+  "flashcards.demoExample2": {
+    "message": "連線後，你就能從課程、會議或筆記中產生卡片，並依排程進行複習。"
+  },
+  "flashcards.demoExample3": {
+    "message": "將抽認卡搭配筆記與媒體一起使用，讓重要的想法保持新鮮記憶。"
+  },
+  "flashcards.demoPreviewHeading": {
+    "message": "範例卡片組（僅供預覽）"
+  },
+  "flashcards.demoSample1Title": {
+    "message": "示範卡片組：核心概念"
+  },
+  "flashcards.demoSample1Summary": {
+    "message": "10 張卡片 · 適合用來測試間隔與評分。"
+  },
+  "flashcards.demoSample2Title": {
+    "message": "示範卡片組：產品術語"
+  },
+  "flashcards.demoSample2Summary": {
+    "message": "8 張卡片 · 包含名稱、縮寫與重要定義。"
+  },
+  "flashcards.demoSample3Title": {
+    "message": "示範卡片組：會議後續事項"
+  },
+  "flashcards.demoSample3Summary": {
+    "message": "6 張卡片 · 範例待辦事項，可用來複習。"
+  },
+  "flashcards.ratingAgain": {
+    "message": "再看一次"
+  },
+  "flashcards.ratingAgainHelp": {
+    "message": "我完全不記得這張卡片。"
+  },
+  "flashcards.ratingHard": {
+    "message": "困難"
+  },
+  "flashcards.ratingHardHelp": {
+    "message": "勉強想起來，感覺相當吃力。"
+  },
+  "flashcards.ratingGood": {
+    "message": "良好"
+  },
+  "flashcards.ratingGoodHelp": {
+    "message": "稍微費點力才想起來。"
+  },
+  "flashcards.ratingEasy": {
+    "message": "容易"
+  },
+  "flashcards.ratingEasyHelp": {
+    "message": "我很快、很有把握地回想起來。"
+  },
+  "flashcards.showTiming": {
+    "message": "追蹤作答時間"
+  },
+  "flashcards.hideTiming": {
+    "message": "隱藏作答時間"
+  },
+  "flashcards.noDueTitle": {
+    "message": "目前沒有到期要複習的卡片"
+  },
+  "flashcards.noDueDescription": {
+    "message": "你已經全部追上進度。建立新卡片或匯入既有牌組來開始複習。"
+  },
+  "flashcards.noDueCreateCta": {
+    "message": "建立新卡片"
+  },
+  "flashcards.noDueImportCta": {
+    "message": "匯入牌組"
+  },
+  "flashcards.createTitle": {
+    "message": "從筆記建立抽認卡"
+  },
+  "flashcards.createDescription": {
+    "message": "將題目放在正面、答案放在背面。你可以把卡片分組到不同牌組，並加上標籤以加快搜尋。"
+  },
+  "flashcards.modelTypeHelp": {
+    "message": "「基本」會在正面顯示問題、背面顯示答案。「反向」也會建立一張相反方向的卡片。「完形填空」會使用 {{...}} 隱藏部分文字。"
+  },
+  "flashcards.reverseHelp": {
+    "message": "同時建立一張將背面內容當作問題的卡片。"
+  },
+  "flashcards.isClozeHelp": {
+    "message": "適合填空題型。請在正面用 {{...}} 包住要隱藏的文字。"
+  },
+  "flashcards.bulkActions": {
+    "message": "批次操作"
+  },
+  "flashcards.selectionHelp": {
+    "message": "「選取所有符合結果的卡片」會將操作套用到所有符合篩選條件的卡片，而不只這一頁。"
+  },
+  "flashcards.noCardsTitle": {
+    "message": "尚未有任何抽認卡"
+  },
+  "flashcards.noCardsDescription": {
+    "message": "從筆記與媒體建立卡片，或匯入現有牌組。"
+  },
+  "flashcards.clearFilters": {
+    "message": "清除篩選條件"
+  },
+  "flashcards.noCardsCreateCta": {
+    "message": "建立你的第一張卡片"
+  },
+  "flashcards.noCardsImportCta": {
+    "message": "匯入抽認卡"
+  },
+  "flashcards.mapping": {
+    "message": "欄位對應"
+  },
+  "flashcards.mappingPreview": {
+    "message": "預覽前幾列對應後的資料："
+  },
+  "flashcards.exportHelp": {
+    "message": "可先依牌組、標籤或搜尋條件篩選，再匯出為 CSV/TSV 供試算表使用，或匯出為 Anki (.apkg) 供 Anki 用戶端使用。"
   }
 }

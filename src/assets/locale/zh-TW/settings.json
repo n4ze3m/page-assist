@@ -354,7 +354,7 @@
       "modifiedAt": "修改時間",
       "size": "大小",
       "actions": "操作",
-      "nickname": "Nickname"
+      "nickname": "暱稱"
     },
     "expandedColumns": {
       "parentModel": "父模型",
@@ -363,10 +363,10 @@
       "parameterSize": "參數大小",
       "quantizationLevel": "量化級別"
     },
-    "tooltip": {
+      "tooltip": {
       "delete": "刪除模型",
       "repull": "重新下載模型",
-      "editNickname": "Edit Nickname"
+      "editNickname": "編輯暱稱"
     },
     "confirm": {
       "delete": "您確定要刪除該模型嗎？",

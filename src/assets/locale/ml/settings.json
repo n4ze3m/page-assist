@@ -342,7 +342,7 @@
       "modifiedAt": "അവസാനമായി പരിഷ്‌കരിച്ചത്",
       "size": "വലുപ്പം",
       "actions": "പ്രവർത്തനങ്ങൾ",
-      "nickname": "Nickname"
+      "nickname": "പേരുപേര്"
     },
     "expandedColumns": {
       "parentModel": "പാരന്റ് മോഡല്‍",
@@ -351,10 +351,10 @@
       "parameterSize": "പാരാമീറ്റര്‍ വലുപ്പം",
       "quantizationLevel": "ക്വാണ്ടൈസേഷന്‍ ലെവല്‍"
     },
-    "tooltip": {
+      "tooltip": {
       "delete": "മോഡല്‍ ഇല്ലാതാക്കുക",
       "repull": "മോഡല്‍ വീണ്ടും ലഭ്യമാക്കുക",
-      "editNickname": "Edit Nickname"
+      "editNickname": "പേരുപേര് തിരുത്തുക"
     },
     "confirm": {
       "delete": "ഈ മോഡല്‍ ഇല്ലാതാക്കണമെന്ന് തീർച്ചയാണോ?",

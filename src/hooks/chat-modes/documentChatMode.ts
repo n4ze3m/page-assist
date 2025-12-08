@@ -156,7 +156,17 @@ export const documentChatMode = async (
         model: selectedModel!,
         baseUrl: ""
       })
-      const response = await questionOllama.invoke(promptForQuestion)
+      const questionMessage = await humanMessageFormatter({
+        content: [
+          {
+            text: promptForQuestion,
+            type: "text"
+          }
+        ],
+        model: selectedModel,
+        useOCR
+      })
+      const response = await questionOllama.invoke([questionMessage])
       query = response.content.toString()
       query = removeReasoning(query)
     }

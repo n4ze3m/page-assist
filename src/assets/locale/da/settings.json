@@ -339,7 +339,7 @@
       "modifiedAt": "Ændret den",
       "size": "Størrelse",
       "actions": "Handlinger",
-      "nickname": "Nickname"
+      "nickname": "Kaldenavn"
     },
     "expandedColumns": {
       "parentModel": "Forælder model",
@@ -348,10 +348,10 @@
       "parameterSize": "Parameterstørrelse",
       "quantizationLevel": "kvantificeringsniveau"
     },
-    "tooltip": {
+      "tooltip": {
       "delete": "Slet Model",
       "repull": "Hent Model Igen",
-      "editNickname": "Edit Nickname"
+      "editNickname": "Rediger kaldenavn"
     },
     "confirm": {
       "delete": "Er du sikker på, at du vil slette denne model?",

@@ -141,7 +141,17 @@ export const ragMode = async (
         model: selectedModel!,
         baseUrl: cleanUrl(url)
       })
-      const response = await questionOllama.invoke(promptForQuestion)
+      const questionMessage = await humanMessageFormatter({
+        content: [
+          {
+            text: promptForQuestion,
+            type: "text"
+          }
+        ],
+        model: selectedModel,
+        useOCR
+      })
+      const response = await questionOllama.invoke([questionMessage])
       query = response.content.toString()
       query = removeReasoning(query)
     }

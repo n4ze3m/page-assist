@@ -158,13 +158,13 @@ export const normalChatMode = async (
         signal
       })
 
-      const answer =
-        (res?.final_answer?.text && String(res.final_answer.text)) ||
-        ""
-
       if (res?.error) {
         throw new Error(res.error.message || "Web search failed")
       }
+
+      const answer =
+        (res?.final_answer?.text && String(res.final_answer.text)) ||
+        ""
 
       fullText =
         answer && answer.trim().length > 0

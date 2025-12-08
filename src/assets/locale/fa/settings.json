@@ -339,7 +339,7 @@
       "modifiedAt": "اصلاح شده در",
       "size": "اندازه",
       "actions": "اقدامات",
-      "nickname": "Nickname"
+      "nickname": "نام مستعار"
     },
     "expandedColumns": {
       "parentModel": "مدل والد",
@@ -348,10 +348,10 @@
       "parameterSize": "اندازه پارامترها",
       "quantizationLevel": "سطح کوانتیزاسیون"
     },
-    "tooltip": {
+      "tooltip": {
       "delete": "حذف مدل",
       "repull": "دریافت دوباره مدل",
-      "editNickname": "Edit Nickname"
+      "editNickname": "ویرایش نام مستعار"
     },
     "confirm": {
       "delete": "آیا مطمئن هستید که می خواهید این مدل را حذف کنید؟",
