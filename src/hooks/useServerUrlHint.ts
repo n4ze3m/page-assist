@@ -45,13 +45,12 @@ export const useServerUrlHint = (
     }
 
     const trimmed = serverUrl.trim()
-
-    if (
+    const matchesCurrentServer =
       trimmed &&
       connectionState.serverUrl &&
-      trimmed === connectionState.serverUrl &&
-      connectionState.isChecking
-    ) {
+      trimmed === connectionState.serverUrl
+
+    if (matchesCurrentServer && connectionState.isChecking) {
       return {
         valid: true,
         tone: "neutral",
@@ -63,9 +62,7 @@ export const useServerUrlHint = (
     }
 
     if (
-      trimmed &&
-      connectionState.serverUrl &&
-      trimmed === connectionState.serverUrl &&
+      matchesCurrentServer &&
       (uxState === "connected_ok" || uxState === "connected_degraded")
     ) {
       return {
@@ -78,12 +75,7 @@ export const useServerUrlHint = (
       }
     }
 
-    if (
-      trimmed &&
-      connectionState.serverUrl &&
-      trimmed === connectionState.serverUrl &&
-      uxState === "error_unreachable"
-    ) {
+    if (matchesCurrentServer && uxState === "error_unreachable") {
       return {
         valid: true,
         tone: "error",
@@ -103,4 +95,3 @@ export const useServerUrlHint = (
       )
     }
   }, [serverUrl, urlState, connectionState.serverUrl, connectionState.isChecking, uxState, t])
-

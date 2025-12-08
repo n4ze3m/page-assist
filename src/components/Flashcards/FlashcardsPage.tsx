@@ -1655,13 +1655,16 @@ const ImportPanel: React.FC = () => {
       setMappingError(null)
     },
     onError: (e: any) => {
-      if (!e?.message || e.message === mappingError) {
-        if (e?.message) {
-          message.error(e.message)
-        }
+      const msg =
+        e && (e as any).message
+          ? (e as any).message
+          : "Import failed"
+
+      if (mappingError && msg === mappingError) {
         return
       }
-      message.error(e.message || "Import failed")
+
+      message.error(msg)
     }
   })
 
@@ -1929,7 +1932,13 @@ const ExportPanel: React.FC = () => {
       const url = URL.createObjectURL(blob)
       const a = document.createElement("a")
       a.href = url
-      a.download = format === "csv" ? "flashcards.csv" : "flashcards.apkg"
+      const filename =
+        format === "apkg"
+          ? "flashcards.apkg"
+          : delimiter === "\t"
+            ? "flashcards.tsv"
+            : "flashcards.csv"
+      a.download = filename
       document.body.appendChild(a)
       a.click()
       a.remove()

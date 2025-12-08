@@ -297,7 +297,7 @@ export default defineContentScript({
         unused: string,
         url?: string | URL | null
       ): void {
-        originalPushState.call(this, data, unused, url as string | undefined)
+        originalPushState.call(this, data, unused, url)
         handleUrlChange()
       }
 
@@ -307,7 +307,7 @@ export default defineContentScript({
         unused: string,
         url?: string | URL | null
       ): void {
-        originalReplaceState.call(this, data, unused, url as string | undefined)
+        originalReplaceState.call(this, data, unused, url)
         handleUrlChange()
       }
 
