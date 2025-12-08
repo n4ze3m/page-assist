@@ -1,7 +1,7 @@
-import { test, expect } from '@playwright/test'
-import path from 'path'
-import { launchWithExtension } from './utils/extension'
-import { MockTldwServer } from './utils/mock-server'
+import { test, expect } from "@playwright/test"
+import path from "path"
+import { launchWithExtension } from "./utils/extension"
+import { requireRealServerConfig } from "./utils/real-server"
 
 test.describe('ServerConnectionCard states', () => {
   test('missing-config shows Open settings and navigates', async () => {
@@ -29,28 +29,32 @@ test.describe('ServerConnectionCard states', () => {
     await context.close()
   })
 
-  test('connected state focuses composer on Start chatting', async () => {
-    const server = new MockTldwServer()
-    await server.start()
+  test("connected state focuses composer on Start chatting", async () => {
+    const { serverUrl, apiKey } = requireRealServerConfig(test)
 
-    const extPath = path.resolve('.output/chrome-mv3')
+    const extPath = path.resolve(".output/chrome-mv3")
     const { context, page } = await launchWithExtension(extPath)
 
     // Seed config directly in extension storage
-    await page.evaluate((cfg) => new Promise<void>((resolve) => {
-      // @ts-ignore
-      chrome.storage.local.set({ tldwConfig: cfg }, () => resolve())
-    }), { serverUrl: server.url, authMode: 'single-user', apiKey: 'THIS-IS-A-SECURE-KEY-123-FAKE-KEY' })
+    await page.evaluate(
+      (cfg) =>
+        new Promise<void>((resolve) => {
+          // @ts-ignore
+          chrome.storage.local.set({ tldwConfig: cfg }, () => resolve())
+        }),
+      { serverUrl, authMode: "single-user", apiKey }
+    )
 
     await page.reload()
 
     // Should show Start chatting and focus the textarea on click
-    await expect(page.getByRole('button', { name: /Start chatting/i })).toBeVisible()
-    await page.getByRole('button', { name: /Start chatting/i }).click()
-    await expect(page.locator('#textarea-message')).toBeFocused()
+    await expect(
+      page.getByRole("button", { name: /Start chatting/i })
+    ).toBeVisible()
+    await page.getByRole("button", { name: /Start chatting/i }).click()
+    await expect(page.locator("#textarea-message")).toBeFocused()
 
     await context.close()
-    await server.stop()
   })
 
   test('unreachable state shows Troubleshooting guide', async () => {

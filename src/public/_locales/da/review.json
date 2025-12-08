@@ -1,0 +1,32 @@
+{
+  "mediaPage.nothingToSend": {
+    "message": "Intet at sende"
+  },
+  "mediaPage.emptyAnalysis": {
+    "message": "Analysen må ikke være tom"
+  },
+  "mediaPage.noMediaId": {
+    "message": "Ingen medie-ID tilgængelig"
+  },
+  "mediaPage.versionSaved": {
+    "message": "Gemt som ny version"
+  },
+  "mediaPage.saveFailed": {
+    "message": "Kunne ikke gemme versionen"
+  },
+  "mediaPage.sendToChat": {
+    "message": "Send til chat"
+  },
+  "mediaPage.saveAsVersion": {
+    "message": "Gem som ny version"
+  },
+  "mediaPage.analysisPlaceholder": {
+    "message": "Indtast analysetekst..."
+  },
+  "mediaPage.wordCount": {
+    "message": "{{count}} ord"
+  },
+  "mediaPage.charCount": {
+    "message": "{{count}} tegn"
+  }
+}

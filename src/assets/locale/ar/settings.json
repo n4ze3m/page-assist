@@ -834,29 +834,33 @@
       "unknown": "Unknown"
     },
     "connectionFailed": "Connection failed",
-    "footerHelp": "Once connected, you can revisit these settings anytime from the extension menu.",
-    "progressAria": "Onboarding progress",
+    "footerHelp": "بعد الاتصال، يمكنك العودة إلى هذه الإعدادات في أي وقت من قائمة الامتداد.",
+    "progressAria": "تقدّم الإعداد الأولي",
     "stepLabel": {
-      "welcome": "Welcome",
-      "url": "Connect to your tldw server",
-      "auth": "Choose how you sign in",
-      "health": "Confirm connection & Knowledge"
+      "welcome": "مرحبًا",
+      "url": "اتصال بخادم tldw الخاص بك",
+      "auth": "اختر طريقة تسجيل الدخول",
+      "health": "تأكيد الاتصال وفحص المعرفة"
     },
     "path": {
-      "heading": "How would you like to get started?",
-      "hasServer": "I already run tldw_server",
-      "noServer": "I don’t have a server yet",
-      "demo": "Just explore with a local demo",
-      "noServerTitle": "No server yet? You can still explore.",
-      "noServerBody": "tldw_server is a separate, self-hosted app. You can follow the setup guide now, or come back later and continue in demo mode.",
-      "openSetupGuide": "Open setup guide",
-      "useDemoFromNoServer": "Use local demo mode",
-      "demoTitle": "Explore the extension in demo mode",
-      "demoBody": "Demo mode lets you try chat, notes, and media with sample data. Server-dependent features like Knowledge search will stay limited until you connect your own tldw_server.",
-      "demoCta": "Use local demo mode"
+      "heading": "كيف تود أن تبدأ؟",
+      "hasServer": "أقوم بتشغيل tldw_server بالفعل",
+      "noServer": "لا يوجد لدي خادم بعد",
+      "demo": "استكشف فقط من خلال وضع تجريبي محلي",
+      "noServerTitle": "لا يوجد خادم بعد؟ لا يزال بإمكانك الاستكشاف.",
+      "noServerBody": "tldw_server تطبيق منفصل تستضيفه بنفسك. يمكنك اتباع دليل الإعداد الآن، أو العودة لاحقًا والمتابعة في الوضع التجريبي.",
+      "noServerOptionLocal": "شغِّله محليًا باستخدام Docker أو Python على جهازك.",
+      "noServerOptionRemote": "انشر tldw_server على خادم VPS بعيد أو استضافة مُدارة.",
+      "noServerOptionManaged": "استخدم نشرًا تجاريًا مدارًا لـ tldw_server عندما يكون متاحًا.",
+      "openSetupGuide": "فتح دليل الإعداد",
+      "useDemoFromNoServer": "استخدام الوضع التجريبي المحلي",
+      "remindMeLater": "ذكّرني لاحقًا",
+      "demoTitle": "استكشف الامتداد في الوضع التجريبي",
+      "demoBody": "يتيح لك الوضع التجريبي تجربة الدردشة والملاحظات والوسائط باستخدام بيانات نموذجية. ستظل الميزات المعتمدة على الخادم مثل بحث «المعرفة» محدودة إلى أن تتصل بخادم tldw_server الخاص بك.",
+      "demoCta": "استخدام الوضع التجريبي المحلي"
     },
-    "authModeHelp": "Single User (API Key) is recommended for personal or small-team servers. Multi User (Login) is for shared deployments where people sign in with usernames or SSO. Choose the mode that matches how your tldw_server is set up.",
-    "apiKeyHelp": "Find your API key in tldw_server → Settings → API Keys. Generate a key there and paste it here.",
+    "authModeHelp": "يوصى بوضع المستخدم الواحد (مفتاح API) للخوادم الشخصية أو خوادم الفرق الصغيرة. وضع متعددي المستخدمين (تسجيل الدخول) مخصص للنشر المشترك حيث يسجّل الأشخاص الدخول بأسماء مستخدمين أو عبر SSO. اختر الوضع الذي يطابق طريقة إعداد tldw_server لديك.",
+    "apiKeyHelp": "ستجد مفتاح الـ API في tldw_server → الإعدادات → مفاتيح API. أنشئ مفتاحًا هناك ثم الصقه هنا.",
     "authStepAria": "Step 3 of 4 — authentication configuration",
     "confirmStepAria": "Step 4 of 4 — connection summary and next steps",
     "nextSteps": {
@@ -869,7 +873,8 @@
       "ingestBody": "Use Quick ingest from the header to save the current tab to your server.",
       "mediaTitle": "Explore media & notes",
       "mediaBody": "Visit Media and Notes in Options to see what’s stored and searchable."
-    }
+    },
+    "headerShortcuts": "إظهار الاختصارات السريعة في الشريط العلوي"
   },
   "manageCharacters": {
     "title": "إدارة الشخصيات",

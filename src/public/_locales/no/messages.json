@@ -100,5 +100,41 @@
   },
   "hfPullException": {
     "message": "[tldw Assistant] Noe gikk galt da vi sendte en pull-forespørsel for «$1» til tldw_server. Kontroller at tldw_server og utvidelsen kjører, og prøv igjen."
+  },
+  "footerHelp": {
+    "message": "Når du er tilkoblet, kan du når som helst åpne disse innstillingene igjen fra utvidelsesmenyen.",
+    "description": "Hjelpetekst i bunnteksten for onboarding i innstillingene."
+  },
+  "progressAria": {
+    "message": "Fremdrift for onboarding",
+    "description": "Aria-etikett for fremdriftsindikatoren i onboarding."
+  },
+  "stepLabel": {
+    "message": "Velkommen",
+    "description": "Etikett for det første steget i onboarding (velkommen)."
+  },
+  "path": {
+    "message": "Hvordan vil du komme i gang?",
+    "description": "Overskrift for valg av hvordan brukeren vil starte i onboarding."
+  },
+  "authModeHelp": {
+    "message": "Single User (API Key) anbefales for personlige servere eller små team. Multi User (Login) er for delte miljøer der brukere logger inn med brukernavn eller SSO. Velg modusen som samsvarer med hvordan tldw_server er satt opp.",
+    "description": "Hjelpetekst som forklarer autentiseringsmodusene Single User og Multi User."
+  },
+  "apiKeyHelp": {
+    "message": "Finn API-nøkkelen din i tldw_server \u2192 Settings \u2192 API Keys. Generer en nøkkel der og lim den inn her.",
+    "description": "Hjelpetekst som forklarer hvor API-nøkkelen finnes."
+  },
+  "authStepAria": {
+    "message": "Trinn 3 av 4 \u2014 velg hvordan du logger inn",
+    "description": "Aria-etikett for autentiseringssteget i onboarding."
+  },
+  "confirmStepAria": {
+    "message": "Trinn 4 av 4 \u2014 bekreft tilkoblingen og se gjennom neste trinn",
+    "description": "Aria-etikett for bekreftelsessteget i onboarding."
+  },
+  "nextSteps": {
+    "message": "Du er klar til å komme i gang",
+    "description": "Tittel for siste onboarding-panel med neste steg."
   }
 }

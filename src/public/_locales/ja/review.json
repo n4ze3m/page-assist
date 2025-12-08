@@ -1,0 +1,32 @@
+{
+  "mediaPage.nothingToSend": {
+    "message": "送信する内容がありません"
+  },
+  "mediaPage.emptyAnalysis": {
+    "message": "分析は空にできません"
+  },
+  "mediaPage.noMediaId": {
+    "message": "メディア ID がありません"
+  },
+  "mediaPage.versionSaved": {
+    "message": "新しいバージョンとして保存しました"
+  },
+  "mediaPage.saveFailed": {
+    "message": "バージョンの保存に失敗しました"
+  },
+  "mediaPage.sendToChat": {
+    "message": "チャットに送信"
+  },
+  "mediaPage.saveAsVersion": {
+    "message": "新しいバージョンとして保存"
+  },
+  "mediaPage.analysisPlaceholder": {
+    "message": "分析テキストを入力してください..."
+  },
+  "mediaPage.wordCount": {
+    "message": "{{count}}語"
+  },
+  "mediaPage.charCount": {
+    "message": "{{count}}文字"
+  }
+}

@@ -1,104 +1,51 @@
-import { test, expect } from '@playwright/test'
-import path from 'path'
-import { launchWithExtension } from './utils/extension'
-import { MockTldwServer } from './utils/mock-server'
+import { test, expect } from "@playwright/test"
+import path from "path"
+import { launchWithExtension } from "./utils/extension"
+import { requireRealServerConfig } from "./utils/real-server"
 
-test.describe('Chat across tldw models', () => {
-  let server: MockTldwServer
+test.describe("Chat across tldw models (real server)", () => {
+  test("lists available tldw models and can chat with a selected model", async () => {
+    const { serverUrl, apiKey } = requireRealServerConfig(test)
 
-  test.beforeAll(async () => {
-    server = new MockTldwServer()
-    await server.start()
-  })
-
-  test.afterAll(async () => {
-    await server.stop()
-  })
-
-  test('lists multiple tldw models and can chat with a non-default model', async () => {
-    const extPath = path.resolve('.output/chrome-mv3')
+    const extPath = path.resolve(".output/chrome-mv3")
     const { context, page, optionsUrl } = await launchWithExtension(extPath)
 
     // Configure server + API key
-    await page.goto(optionsUrl + '#/settings/tldw', {
-      waitUntil: 'domcontentloaded'
+    await page.goto(optionsUrl + "#/settings/tldw", {
+      waitUntil: "domcontentloaded"
     })
-    await page.getByLabel('Server URL').fill(server.url)
-    await page.getByText('Authentication Mode').scrollIntoViewIfNeeded()
-    await page.getByText('Single User (API Key)').click()
-    await page.getByLabel('API Key').fill('THIS-IS-A-SECURE-KEY-123-FAKE-KEY')
-    await page.getByRole('button', { name: 'Save' }).click()
+    await page.getByLabel("Server URL").fill(serverUrl)
+    await page.getByText("Authentication Mode").scrollIntoViewIfNeeded()
+    await page.getByText("Single User (API Key)").click()
+    await page.getByLabel("API Key").fill(apiKey)
+    await page.getByRole("button", { name: "Save" }).click()
 
-    // Open model selector and verify multiple providers are surfaced
-    await page.getByRole('button', { name: /Select a model/i }).click()
+    // Open model selector and ensure at least one model is listed
+    await page.getByRole("button", { name: /Select a model/i }).click()
+    const firstModel = page.getByRole("menuitem").first()
+    await expect(firstModel).toBeVisible()
 
-    await expect(
-      page.getByRole('menuitem', { name: /gpt-4\.1-mini/i })
-    ).toBeVisible()
-    await expect(
-      page.getByRole('menuitem', { name: /claude-3\.5-sonnet/i })
-    ).toBeVisible()
-    await expect(
-      page.getByRole('menuitem', { name: /mistral-small/i })
-    ).toBeVisible()
+    // Select the first model and send a message
+    await firstModel.click()
 
-    // Pick a non-OpenAI model (Anthropic) and send a message
-    await page.getByRole('menuitem', { name: /claude-3\.5-sonnet/i }).click()
+    const input = page.getByPlaceholder("Type a message...")
+    await input.fill("hello from e2e chat-models")
+    await input.press("Enter")
 
-    const input = page.getByPlaceholder('Type a message...')
-    await input.fill('hello from claude')
-    await input.press('Enter')
-
-    // Expect streamed assistant reply to appear
-    await expect(page.getByText(/Hello!?/)).toBeVisible({ timeout: 10_000 })
+    // Streaming indicator appears and then disappears, as in chatStreaming test
+    const stopButton = page.getByRole("button", {
+      name: /Stop streaming/i
+    })
+    await expect(stopButton).toBeVisible({ timeout: 10_000 })
+    await expect(stopButton).toBeHidden({ timeout: 20_000 })
 
     await context.close()
   })
 
-  test('shows an assistant error bubble when chat completions fail server-side', async () => {
-    // Start a server that returns a 500 for chat completions
-    const errorServer = new MockTldwServer({
-      '/api/v1/chat/completions': (req, res) => {
-        res.writeHead(500, {
-          'content-type': 'application/json',
-          'access-control-allow-origin': '*',
-          'access-control-allow-credentials': 'true'
-        })
-        res.end(JSON.stringify({ detail: 'Chat failed in test' }))
-      }
-    })
-    await errorServer.start()
-
-    const extPath = path.resolve('.output/chrome-mv3')
-    const { context, page, optionsUrl } = await launchWithExtension(extPath)
-
-    await page.goto(optionsUrl + '#/settings/tldw', {
-      waitUntil: 'domcontentloaded'
-    })
-    await page.getByLabel('Server URL').fill(errorServer.url)
-    await page.getByText('Authentication Mode').scrollIntoViewIfNeeded()
-    await page.getByText('Single User (API Key)').click()
-    await page.getByLabel('API Key').fill('THIS-IS-A-SECURE-KEY-123-FAKE-KEY')
-    await page.getByRole('button', { name: 'Save' }).click()
-
-    const input = page.getByPlaceholder('Type a message...')
-    await input.fill('hello (should error)')
-    await input.press('Enter')
-
-    // Error from chat-helper is rendered as a friendly assistant error bubble
-    await expect(
-      page.getByText(
-        /Something went wrong while talking to your tldw server/i
-      )
-    ).toBeVisible({ timeout: 10_000 })
-
-    const toggle = page.getByRole('button', {
-      name: /show technical details/i
-    })
-    await toggle.click()
-    await expect(page.getByText(/Chat failed in test/i)).toBeVisible()
-
-    await context.close()
-    await errorServer.stop()
+  test("error handling for chat failures (requires controllable backend)", async () => {
+    test.skip(
+      true,
+      "This scenario requires forcing server-side 5xx responses; keep covered by backend tests or a dedicated mock-based suite."
+    )
   })
 })

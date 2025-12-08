@@ -21,7 +21,7 @@ export const ModelNickModelNicknameModal: React.FC<Props> = ({
   model_name
 }) => {
   const [form] = Form.useForm()
-  const { t } = useTranslation("openai")
+  const { t } = useTranslation(["option"])
   const queryClient = useQueryClient()
 
   React.useEffect(() => {
@@ -50,7 +50,7 @@ export const ModelNickModelNicknameModal: React.FC<Props> = ({
 
   return (
     <Modal
-      title={t("nicknameModal.title")}
+      title={t("option:nicknameModal.title", "Set a nickname for this model")}
       open={open}
       onCancel={() => setOpen(false)}
       footer={null}>
@@ -69,19 +69,31 @@ export const ModelNickModelNicknameModal: React.FC<Props> = ({
         }}>
         <Form.Item
           name="model_name"
-          label={t("nicknameModal.form.modelName.label")}
+          label={t(
+            "option:nicknameModal.form.modelName.label",
+            "Display name"
+          )}
           rules={[
             {
               required: true,
-              message: t("nicknameModal.form.modelName.required")
+              message: t(
+                "option:nicknameModal.form.modelName.required",
+                "Enter a display name for this model."
+              )
             }
           ]}>
           <Input placeholder="DeepSeek R1" />
         </Form.Item>
         <Form.Item
           name="model_avatar"
-          label={t("nicknameModal.form.modelAvatar.label")}
-          help={t("nicknameModal.form.modelAvatar.help")}>
+          label={t(
+            "option:nicknameModal.form.modelAvatar.label",
+            "Avatar image URL"
+          )}
+          help={t(
+            "option:nicknameModal.form.modelAvatar.help",
+            "Optional: paste a URL for an image to show next to this model."
+          )}>
           <Input placeholder={"https://example.com/model.png"} />
         </Form.Item>
         <SaveButton btnType="submit" className="w-full flex justify-center" />

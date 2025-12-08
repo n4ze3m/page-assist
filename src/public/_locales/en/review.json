@@ -1,0 +1,32 @@
+{
+  "mediaPage.nothingToSend": {
+    "message": "Nothing to send"
+  },
+  "mediaPage.emptyAnalysis": {
+    "message": "Analysis cannot be empty"
+  },
+  "mediaPage.noMediaId": {
+    "message": "No media ID available"
+  },
+  "mediaPage.versionSaved": {
+    "message": "Saved as new version"
+  },
+  "mediaPage.saveFailed": {
+    "message": "Failed to save version"
+  },
+  "mediaPage.sendToChat": {
+    "message": "Send to Chat"
+  },
+  "mediaPage.saveAsVersion": {
+    "message": "Save as New Version"
+  },
+  "mediaPage.analysisPlaceholder": {
+    "message": "Enter analysis text..."
+  },
+  "mediaPage.wordCount": {
+    "message": "{{count}} words"
+  },
+  "mediaPage.charCount": {
+    "message": "{{count}} characters"
+  }
+}

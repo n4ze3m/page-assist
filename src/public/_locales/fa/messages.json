@@ -100,5 +100,41 @@
   },
   "hfPullException": {
     "message": "[tldw Assistant] هنگام ارسال درخواست دریافت \"$1\" به tldw_server شما خطایی رخ داد. مطمئن شوید tldw_server و افزونه فعال هستند و دوباره تلاش کنید."
+  },
+  "footerHelp": {
+    "message": "پس از برقراری اتصال، می‌توانید هر زمان از منوی افزونه دوباره به این تنظیمات برگردید.",
+    "description": "متن راهنما در پایین صفحه برای مرحله راه‌اندازی."
+  },
+  "progressAria": {
+    "message": "پیشرفت راه‌اندازی اولیه",
+    "description": "برچسب aria برای نشانگر پیشرفت راه‌اندازی اولیه."
+  },
+  "stepLabel": {
+    "message": "خوش آمدید",
+    "description": "برچسب برای اولین گام راه‌اندازی (خوش‌آمدگویی)."
+  },
+  "path": {
+    "message": "دوست دارید چگونه شروع کنید؟",
+    "description": "عنوان برای انتخاب نحوه شروع در جریان راه‌اندازی."
+  },
+  "authModeHelp": {
+    "message": "حالت Single User (کلید API) برای سرورهای شخصی یا تیم‌های کوچک توصیه می‌شود. حالت Multi User (ورود) برای استقرارهای مشترک است که در آن کاربران با نام کاربری یا SSO وارد می‌شوند. حالتی را انتخاب کنید که با نحوه‌ی پیکربندی tldw_server شما مطابقت دارد.",
+    "description": "متن راهنما برای توضیح حالت‌های احراز هویت Single User و Multi User."
+  },
+  "apiKeyHelp": {
+    "message": "کلید API خود را در tldw_server \u2192 Settings \u2192 API Keys پیدا کنید. در آنجا یک کلید تولید کرده و آن را اینجا جای‌گذاری کنید.",
+    "description": "متن راهنما برای توضیح محل یافتن کلید API."
+  },
+  "authStepAria": {
+    "message": "Step 3 of 4 \u2014 authentication configuration",
+    "description": "برچسب aria برای گام تنظیم احراز هویت در جریان راه‌اندازی (فعلاً به انگلیسی)."
+  },
+  "confirmStepAria": {
+    "message": "Step 4 of 4 \u2014 connection summary and next steps",
+    "description": "برچسب aria برای گام تأیید اتصال در جریان راه‌اندازی (فعلاً به انگلیسی)."
+  },
+  "nextSteps": {
+    "message": "You\u2019re ready to go",
+    "description": "عنوان بخش پایانی راه‌اندازی با مراحل بعدی (در حال حاضر به انگلیسی)."
   }
 }

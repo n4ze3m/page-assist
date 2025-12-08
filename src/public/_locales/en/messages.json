@@ -100,5 +100,41 @@
   },
   "hfPullException": {
     "message": "[tldw Assistant] Something went wrong while sending a pull request for \"$1\" to your tldw_server. Check that your tldw_server and the extension are running, then try again."
+  },
+  "footerHelp": {
+    "message": "Once connected, you can revisit these settings anytime from the extension menu.",
+    "description": "Onboarding footer help text in Settings."
+  },
+  "progressAria": {
+    "message": "Onboarding progress",
+    "description": "Aria label for onboarding progress indicator."
+  },
+  "stepLabel": {
+    "message": "Welcome",
+    "description": "Label for the first onboarding step (welcome)."
+  },
+  "path": {
+    "message": "How would you like to get started?",
+    "description": "Heading for choosing how to get started in onboarding."
+  },
+  "authModeHelp": {
+    "message": "Single User (API Key) is recommended for personal or small-team servers. Multi User (Login) is for shared deployments where people sign in with usernames or SSO. Choose the mode that matches how your tldw_server is set up.",
+    "description": "Help text explaining Single User vs Multi User authentication modes."
+  },
+  "apiKeyHelp": {
+    "message": "Find your API key in tldw_server \u2192 Settings \u2192 API Keys. Generate a key there and paste it here.",
+    "description": "Help text describing where to find the API key."
+  },
+  "authStepAria": {
+    "message": "Step 3 of 4 \u2014 Choose how you sign in",
+    "description": "Aria label for the authentication step in onboarding."
+  },
+  "confirmStepAria": {
+    "message": "Step 4 of 4 \u2014 Confirm connection and review next steps",
+    "description": "Aria label for the confirmation step in onboarding."
+  },
+  "nextSteps": {
+    "message": "You\u2019re ready to go",
+    "description": "Title for the final onboarding panel describing next steps."
   }
 }

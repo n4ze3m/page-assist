@@ -21,7 +21,7 @@ export type MessageContent = string | MessageContentPart[]
 
 export interface MessageFields {
   content: MessageContent
-  additional_kwargs?: Record<string, any>
+  additional_kwargs?: Record<string, unknown>
 }
 
 /**
@@ -29,7 +29,7 @@ export interface MessageFields {
  */
 export abstract class BaseMessage {
   content: MessageContent
-  additional_kwargs: Record<string, any>
+  additional_kwargs: Record<string, unknown>
 
   constructor(fields: MessageFields | MessageContent) {
     if (typeof fields === "string" || Array.isArray(fields)) {
@@ -75,9 +75,6 @@ export class AIMessage extends BaseMessage {
  * Streaming chunk of an AI message.
  */
 export class AIMessageChunk extends AIMessage {
-  constructor(fields: MessageFields | MessageContent) {
-    super(fields)
-  }
 }
 
 /**

@@ -1,20 +1,15 @@
 import { tldwClient } from "@/services/tldw"
-import {
-  getOpenAITTSModel,
-  getOpenAITTSVoice
-} from "./tts"
+import { getOpenAITTSModel, getOpenAITTSVoice } from "./tts"
 
-export const generateOpenAITTS = async ({
-  text,
-  model: overrideModel,
-  voice: overrideVoice
-}: {
+export const generateOpenAITTS: (params: {
   text: string
   model?: string
   voice?: string
-  baseURL?: string
-  apiKey?: string
-}): Promise<ArrayBuffer> => {
+}) => Promise<ArrayBuffer> = async ({
+  text,
+  model: overrideModel,
+  voice: overrideVoice
+}) => {
   const model = overrideModel || (await getOpenAITTSModel())
   const voice = overrideVoice || (await getOpenAITTSVoice())
 

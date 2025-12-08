@@ -4,7 +4,7 @@ import { browser } from "wxt/browser"
 
 const getMessage = (key: string, fallback: string, substitutions?: string | string[]) => {
   try {
-    const msg = browser.i18n?.getMessage(key as any, substitutions as any)
+    const msg = browser.i18n?.getMessage(key, substitutions)
     if (msg && msg.length > 0) return msg
   } catch {
     // ignore
@@ -14,12 +14,34 @@ const getMessage = (key: string, fallback: string, substitutions?: string | stri
 
 export default defineContentScript({
   main() {
-    const sendToTldw = async () => {
+    if (window.top !== window) return
+
+    const sendToTldw = async (btn?: HTMLButtonElement) => {
+      const labelEl = btn?.querySelector("span")
+      const originalDisabled = btn?.disabled ?? false
+      const originalLabel = labelEl?.textContent
+
       const url = window.location.href
       // The path is declared in the OpenAPI spec; annotate for compile-time safety
       const path = '/api/v1/media/add' as AllowedPath
+
       try {
-        const resp = await apiSend({
+        if (btn) {
+          btn.disabled = true
+          const sendingLabel = getMessage(
+            "contextSendingToTldw",
+            "Sending…"
+          )
+          if (labelEl) {
+            labelEl.textContent = sendingLabel
+          }
+        }
+      } catch {
+        // If we fail to update button UI, continue with the send anyway.
+      }
+
+      try {
+        const resp = await apiSend<unknown>({
           path,
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -31,12 +53,14 @@ export default defineContentScript({
             "[tldw] Page send request rejected by tldw_server",
             resp
           )
+          const errorText =
+            typeof resp?.error === "string" ? resp.error : undefined
           const msg =
-            resp?.error && resp.error.length <= 140
+            errorText && errorText.length <= 140
               ? getMessage(
                   "hfSendPageErrorWithDetail",
-                  `[tldw] Failed to send this page to tldw_server: ${resp.error}. Check Settings → tldw server and try again.`,
-                  [resp.error]
+                  `[tldw] Failed to send this page to tldw_server: ${errorText}. Check Settings → tldw server and try again.`,
+                  [errorText]
                 )
               : getMessage(
                   "hfSendPageError",
@@ -84,6 +108,7 @@ export default defineContentScript({
     }
 
     const injectButton = () => {
+      if (!document.body) return
       if (document.querySelector('.tldw-send-button')) return
       const btn = document.createElement('button')
       btn.className = 'tldw-send-button focus:outline-hidden inline-flex cursor-pointer items-center text-sm bg-white shadow-xs rounded-md border px-2 py-1 text-gray-600'
@@ -98,7 +123,7 @@ export default defineContentScript({
       btn.style.bottom = '60px'
       btn.style.right = '20px'
       btn.style.zIndex = '2147483647'
-      btn.addEventListener('click', sendToTldw)
+      btn.addEventListener('click', () => void sendToTldw(btn))
       document.body.appendChild(btn)
     }
 

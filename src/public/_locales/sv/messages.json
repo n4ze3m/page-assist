@@ -100,5 +100,41 @@
   },
   "hfPullException": {
     "message": "[tldw Assistant] Något gick fel när en hämtbegäran för \"$1\" skickades till din tldw_server. Kontrollera att din tldw_server och tillägget körs och försök igen."
+  },
+  "footerHelp": {
+    "message": "När du är ansluten kan du när som helst gå tillbaka till dessa inställningar via tilläggsmenyn.",
+    "description": "Hjälptext i sidfoten för onboarding i inställningarna."
+  },
+  "progressAria": {
+    "message": "Förloppsindikator för onboarding",
+    "description": "Aria-etikett för indikatorn för onboardingförlopp."
+  },
+  "stepLabel": {
+    "message": "Välkommen",
+    "description": "Etikett för det första steget i onboarding (välkommen)."
+  },
+  "path": {
+    "message": "Hur vill du komma igång?",
+    "description": "Rubrik för valet av hur användaren vill börja i onboarding."
+  },
+  "authModeHelp": {
+    "message": "Single User (API-nyckel) rekommenderas för personliga servrar eller små team. Multi User (Login) är för delade installationer där användare loggar in med användarnamn eller SSO. Välj det läge som stämmer med hur din tldw_server är konfigurerad.",
+    "description": "Hjälptext som förklarar autentiseringslägena Single User och Multi User."
+  },
+  "apiKeyHelp": {
+    "message": "Hitta din API-nyckel i tldw_server \u2192 Settings \u2192 API Keys. Skapa en nyckel där och klistra in den här.",
+    "description": "Hjälptext som anger var API-nyckeln finns."
+  },
+  "authStepAria": {
+    "message": "Step 3 of 4 \u2014 authentication configuration",
+    "description": "Aria-etikett för autentiseringssteget i onboarding (för närvarande på engelska)."
+  },
+  "confirmStepAria": {
+    "message": "Step 4 of 4 \u2014 connection summary and next steps",
+    "description": "Aria-etikett för bekräftelsesteget i onboarding (för närvarande på engelska)."
+  },
+  "nextSteps": {
+    "message": "You\u2019re ready to go",
+    "description": "Rubrik för sista onboarding-panelen med nästa steg (för närvarande på engelska)."
   }
 }

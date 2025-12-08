@@ -251,7 +251,7 @@ export const getModelInfoFB = async (id: string) => {
   if (isLlamafileModel(id)) {
     const llamafileId = getLlamafileModelId(id)
     if (!llamafileId) {
-      throw new Error("Invalid LMStudio model ID")
+      throw new Error("Invalid Llamafile model ID")
     }
     return {
       model_id: id.replace(
@@ -269,7 +269,7 @@ export const getModelInfoFB = async (id: string) => {
   if (isLLamaCppModel(id)) {
     const llamaCppId = getLLamaCppModelId(id)
     if (!llamaCppId) {
-      throw new Error("Invalid LMStudio model ID")
+      throw new Error("Invalid LlamaCpp model ID")
     }
 
     return {
@@ -409,13 +409,4 @@ export const dynamicFetchLlamafile = async ({
   })
 
   return llamafileModels
-}
-
-export const formatAllCustomModelsFallback = async (
-  modelType: "all" | "chat" | "embedding" = "all"
-) => {
-  // Legacy helper for aggregating custom OpenAI-compatible models.
-  // Custom providers have been removed; return an empty list.
-  void modelType
-  return []
 }

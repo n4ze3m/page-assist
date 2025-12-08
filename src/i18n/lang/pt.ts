@@ -13,5 +13,5 @@ export const pt = {
     sidepanel,
     settings,
     knowledge,
-    review
+    review,
 }

@@ -833,42 +833,57 @@
       "unhealthy": "Unhealthy",
       "unknown": "Unknown"
     },
-    "connectionFailed": "Connection failed",
-    "footerHelp": "Once connected, you can revisit these settings anytime from the extension menu.",
-    "progressAria": "Onboarding progress",
+    "connectionFailed": "Verbindung fehlgeschlagen",
+    "progressAria": "Fortschritt der Einrichtung",
     "stepLabel": {
-      "welcome": "Welcome",
-      "url": "Connect to your tldw server",
-      "auth": "Choose how you sign in",
-      "health": "Confirm connection & Knowledge"
+      "welcome": "Willkommen",
+      "url": "Verbinde dich mit deinem tldw-Server",
+      "auth": "Wähle, wie du dich anmeldest",
+      "health": "Verbindung und Knowledge bestätigen"
     },
     "path": {
-      "heading": "How would you like to get started?",
-      "hasServer": "I already run tldw_server",
-      "noServer": "I don’t have a server yet",
-      "demo": "Just explore with a local demo",
-      "noServerTitle": "No server yet? You can still explore.",
-      "noServerBody": "tldw_server is a separate, self-hosted app. You can follow the setup guide now, or come back later and continue in demo mode.",
-      "openSetupGuide": "Open setup guide",
-      "useDemoFromNoServer": "Use local demo mode",
-      "demoTitle": "Explore the extension in demo mode",
-      "demoBody": "Demo mode lets you try chat, notes, and media with sample data. Server-dependent features like Knowledge search will stay limited until you connect your own tldw_server.",
-      "demoCta": "Use local demo mode"
+      "heading": "Wie möchtest du loslegen?",
+      "hasServer": "Ich betreibe bereits tldw_server",
+      "noServer": "Ich habe noch keinen Server",
+      "demo": "Nur mit einer lokalen Demo erkunden",
+      "noServerTitle": "Noch kein Server? Du kannst trotzdem erkunden.",
+      "noServerBody": "tldw_server ist eine separate, selbst gehostete App. Du kannst jetzt der Einrichtungsanleitung folgen oder später zurückkehren und im Demomodus weitermachen.",
+      "noServerOptionLocal": "Lokal mit Docker oder Python auf deinem eigenen Rechner ausführen.",
+      "noServerOptionRemote": "tldw_server auf einem entfernten VPS oder Managed Hosting bereitstellen.",
+      "noServerOptionManaged": "Eine verwaltete, kommerzielle tldw_server-Instanz verwenden, wenn verfügbar.",
+      "openSetupGuide": "Einrichtungsanleitung öffnen",
+      "useDemoFromNoServer": "Lokalen Demomodus verwenden",
+      "remindMeLater": "Später erinnern",
+      "demoTitle": "Die Erweiterung im Demomodus erkunden",
+      "demoBody": "Im Demomodus kannst du Chat, Notizen und Medien mit Beispieldaten ausprobieren. Serverabhängige Funktionen wie die Knowledge-Suche bleiben eingeschränkt, bis du deinen eigenen tldw_server verbindest.",
+      "demoCta": "Lokalen Demomodus verwenden"
     },
-    "authModeHelp": "Single User (API Key) is recommended for personal or small-team servers. Multi User (Login) is for shared deployments where people sign in with usernames or SSO. Choose the mode that matches how your tldw_server is set up.",
-    "apiKeyHelp": "Find your API key in tldw_server → Settings → API Keys. Generate a key there and paste it here.",
-    "authStepAria": "Step 3 of 4 — authentication configuration",
-    "confirmStepAria": "Step 4 of 4 — connection summary and next steps",
+    "authModeHelp": "Single User (API-Key) wird für persönliche oder kleine Team-Server empfohlen. Multi User (Login) ist für gemeinsame Umgebungen, in denen sich Personen mit Benutzernamen oder SSO anmelden. Wähle den Modus, der zur Konfiguration deines tldw_server passt.",
+    "auth": {
+      "missingCredentials": "Gib sowohl einen Benutzernamen als auch ein Passwort ein, um fortzufahren.",
+      "missingApiKey": "Ein API-Key ist erforderlich."
+    },
+    "apiKeyHelp": "Du findest deinen API-Key in tldw_server → Settings → API Keys. Erzeuge dort einen Schlüssel und füge ihn hier ein.",
+    "authStepAria": "Schritt 3 von 4 — Wähle, wie du dich anmeldest",
+    "confirmStepAria": "Schritt 4 von 4 — Verbindung bestätigen und nächste Schritte ansehen",
     "nextSteps": {
-      "title": "You’re ready to go",
-      "subtitle": "From here you can open the sidepanel, ingest a page, or explore media and notes.",
-      "chatTitle": "Start chatting",
-      "chatBody": "Open the sidepanel and ask your first question.",
-      "chatCta": "Open sidepanel",
-      "ingestTitle": "Ingest your first page",
-      "ingestBody": "Use Quick ingest from the header to save the current tab to your server.",
-      "mediaTitle": "Explore media & notes",
-      "mediaBody": "Visit Media and Notes in Options to see what’s stored and searchable."
+      "title": "Du bist startklar",
+      "subtitle": "Von hier aus kannst du das Seitenpanel öffnen, eine Seite erfassen oder Medien und Notizen erkunden.",
+      "chatTitle": "Mit dem Chat beginnen",
+      "chatBody": "Öffne das Seitenpanel und stelle deine erste Frage.",
+      "chatCta": "Seitenpanel öffnen",
+      "ingestTitle": "Deine erste Seite erfassen",
+      "ingestBody": "Verwende „Schnell erfassen“ in der Kopfzeile, um den aktuellen Tab auf deinem Server zu speichern.",
+      "mediaTitle": "Medien und Notizen erkunden",
+      "mediaBody": "Öffne in den Optionen „Medien“ und „Notizen“, um zu sehen, was gespeichert und durchsuchbar ist."
+    },
+    "headerShortcuts": "Schnellzugriffe in der Kopfzeile anzeigen",
+    "footerHelp": "Sobald die Verbindung hergestellt ist, kannst du diese Einstellungen jederzeit über das Erweiterungsmenü erneut öffnen.",
+    "errors": {
+      "invalidCredentials": "Anmeldung fehlgeschlagen. Überprüfe deinen Benutzernamen und dein Passwort oder stelle sicher, dass die Mehrbenutzer-Anmeldung auf deinem tldw-Server aktiviert ist.",
+      "forbidden": "Zugriff verweigert. Prüfe, ob dein Benutzerkonto berechtigt ist, sich anzumelden.",
+      "serverUnreachable": "Dein tldw-Server konnte nicht erreicht werden. Überprüfe die Server-URL oder öffne „Health & Diagnostics“ für weitere Details.",
+      "generic": "Anmeldung fehlgeschlagen. Öffne „Health & Diagnostics“ in der Kopfzeile, um Serverfehler zu prüfen."
     }
   },
   "manageCharacters": {

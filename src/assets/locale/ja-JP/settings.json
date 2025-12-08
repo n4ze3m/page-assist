@@ -837,29 +837,33 @@
       "unknown": "Unknown"
     },
     "connectionFailed": "Connection failed",
-    "footerHelp": "Once connected, you can revisit these settings anytime from the extension menu.",
-    "progressAria": "Onboarding progress",
+    "footerHelp": "接続が完了すると、拡張機能のメニューからいつでもこの設定画面に戻ることができます。",
+    "progressAria": "オンボーディングの進行状況",
     "stepLabel": {
-      "welcome": "Welcome",
-      "url": "Connect to your tldw server",
-      "auth": "Choose how you sign in",
-      "health": "Confirm connection & Knowledge"
+      "welcome": "ようこそ",
+      "url": "tldw サーバーに接続",
+      "auth": "サインイン方法を選択",
+      "health": "接続と Knowledge を確認"
     },
     "path": {
-      "heading": "How would you like to get started?",
-      "hasServer": "I already run tldw_server",
-      "noServer": "I don’t have a server yet",
-      "demo": "Just explore with a local demo",
-      "noServerTitle": "No server yet? You can still explore.",
-      "noServerBody": "tldw_server is a separate, self-hosted app. You can follow the setup guide now, or come back later and continue in demo mode.",
-      "openSetupGuide": "Open setup guide",
-      "useDemoFromNoServer": "Use local demo mode",
-      "demoTitle": "Explore the extension in demo mode",
-      "demoBody": "Demo mode lets you try chat, notes, and media with sample data. Server-dependent features like Knowledge search will stay limited until you connect your own tldw_server.",
-      "demoCta": "Use local demo mode"
+      "heading": "どのように始めますか？",
+      "hasServer": "すでに tldw_server を稼働させています",
+      "noServer": "まだサーバーを持っていません",
+      "demo": "ローカルのデモで試してみるだけ",
+      "noServerTitle": "まだサーバーがなくても、機能を確認できます。",
+      "noServerBody": "tldw_server は別途動かすセルフホスト型アプリです。今すぐセットアップガイドに沿って設定することも、後で戻ってデモモードのまま続けることもできます。",
+      "noServerOptionLocal": "自分のマシン上で Docker または Python を使ってローカルで実行します。",
+      "noServerOptionRemote": "tldw_server をリモート VPS やマネージドホスティングにデプロイします。",
+      "noServerOptionManaged": "利用可能な場合は、マネージド型の商用 tldw_server を利用します。",
+      "openSetupGuide": "セットアップガイドを開く",
+      "useDemoFromNoServer": "ローカルのデモモードを使う",
+      "remindMeLater": "あとで通知する",
+      "demoTitle": "デモモードで拡張機能を試す",
+      "demoBody": "デモモードでは、サンプルデータを使ってチャット、メモ、メディアを試すことができます。Knowledge 検索などサーバーに依存する機能は、ご自身の tldw_server を接続するまで制限されたままになります。",
+      "demoCta": "ローカルのデモモードを使う"
     },
-    "authModeHelp": "Single User (API Key) is recommended for personal or small-team servers. Multi User (Login) is for shared deployments where people sign in with usernames or SSO. Choose the mode that matches how your tldw_server is set up.",
-    "apiKeyHelp": "Find your API key in tldw_server → Settings → API Keys. Generate a key there and paste it here.",
+    "authModeHelp": "Single User（API キー）は個人または小規模チームのサーバーに推奨されます。Multi User（ログイン）は、ユーザー名や SSO でサインインする共有環境向けです。お使いの tldw_server の構成に合ったモードを選択してください。",
+    "apiKeyHelp": "tldw_server の「Settings」→「API Keys」で API キーを確認できます。そこでキーを作成し、この欄に貼り付けてください。",
     "authStepAria": "Step 3 of 4 — authentication configuration",
     "confirmStepAria": "Step 4 of 4 — connection summary and next steps",
     "nextSteps": {
@@ -872,7 +876,8 @@
       "ingestBody": "Use Quick ingest from the header to save the current tab to your server.",
       "mediaTitle": "Explore media & notes",
       "mediaBody": "Visit Media and Notes in Options to see what’s stored and searchable."
-    }
+    },
+    "headerShortcuts": "ヘッダーにクイックショートカットを表示する"
   },
   "manageCharacters": {
     "title": "Manage Characters",

@@ -1099,5 +1099,41 @@
   },
   "flashcards.exportHelp": {
     "message": "Filter by deck, tag, or search, then export as CSV/TSV for spreadsheets or Anki (.apkg) for Anki clients."
+  },
+  "footerHelp": {
+    "message": "Depois de conectado, você pode voltar a estas configurações a qualquer momento pelo menu da extensão.",
+    "description": "Texto de ajuda no rodapé para o fluxo de onboarding nas configurações."
+  },
+  "progressAria": {
+    "message": "Progresso da configuração inicial",
+    "description": "Rótulo aria para o indicador de progresso da configuração inicial."
+  },
+  "stepLabel": {
+    "message": "Bem-vindo",
+    "description": "Rótulo para a primeira etapa do onboarding (boas-vindas)."
+  },
+  "path": {
+    "message": "Como você quer começar?",
+    "description": "Título para escolher como começar no fluxo de onboarding."
+  },
+  "authModeHelp": {
+    "message": "Single User (API Key) é recomendado para servidores pessoais ou de equipes pequenas. Multi User (Login) é voltado para implantações compartilhadas, nas quais as pessoas fazem login com nome de usuário ou SSO. Escolha o modo que corresponde à forma como o seu tldw_server está configurado.",
+    "description": "Texto explicativo sobre os modos de autenticação Single User e Multi User."
+  },
+  "apiKeyHelp": {
+    "message": "Encontre sua chave de API em tldw_server \u2192 Settings \u2192 API Keys. Gere uma chave lá e cole aqui.",
+    "description": "Texto que explica onde encontrar a chave de API."
+  },
+  "authStepAria": {
+    "message": "Etapa 3 de 4 \u2014 escolha como você faz login",
+    "description": "Rótulo aria para a etapa de configuração de autenticação no onboarding."
+  },
+  "confirmStepAria": {
+    "message": "Etapa 4 de 4 \u2014 confirme a conexão e revise os próximos passos",
+    "description": "Rótulo aria para a etapa de confirmação de conexão no onboarding."
+  },
+  "nextSteps": {
+    "message": "Tudo pronto para começar",
+    "description": "Título do painel final do onboarding com os próximos passos."
   }
 }

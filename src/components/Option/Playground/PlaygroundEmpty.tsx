@@ -54,7 +54,7 @@ export const PlaygroundEmpty = () => {
         onPrimaryAction={handleStartChat}
         secondaryActionLabel={t("option:header.quickIngest", "Quick ingest")}
         onSecondaryAction={handleOpenQuickIngest}
-        secondaryDisabled={!isOnline}
+        secondaryDisabled={!isOnline && !demoEnabled}
       />
     </div>
   )

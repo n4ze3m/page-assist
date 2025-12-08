@@ -1,9 +1,7 @@
 import React from "react"
 
-import {
-  useConnectionActions,
-  useConnectionState
-} from "@/hooks/useConnectionState"
+import { useConnectionActions } from "@/hooks/useConnectionState"
+import { useConnectionStore } from "@/store/connection"
 
 /**
  * Derived "online" flag backed by the shared connection store.
@@ -12,7 +10,8 @@ import {
  * tldwClient.healthCheck directly in each consumer.
  */
 export function useServerOnline(pollMs: number = 0): boolean {
-  const { isConnected, mode } = useConnectionState()
+  const isConnected = useConnectionStore((s) => s.state.isConnected)
+  const mode = useConnectionStore((s) => s.state.mode)
   const { checkOnce } = useConnectionActions()
 
   React.useEffect(() => {

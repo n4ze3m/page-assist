@@ -100,5 +100,41 @@
   },
   "hfPullException": {
     "message": "[tldw Assistant] Beim Senden einer Abrufanforderung für \"$1\" an Ihren tldw_server ist ein Fehler aufgetreten. Stellen Sie sicher, dass Ihr tldw_server und die Erweiterung ausgeführt werden, und versuchen Sie es erneut."
+  },
+  "footerHelp": {
+    "message": "Sobald die Verbindung hergestellt ist, kannst du diese Einstellungen jederzeit über das Erweiterungsmenü erneut öffnen.",
+    "description": "Onboarding-Fußzeilentext in den Einstellungen."
+  },
+  "progressAria": {
+    "message": "Fortschritt der Einrichtung",
+    "description": "Aria-Label für den Fortschrittsindikator der Einrichtung."
+  },
+  "stepLabel": {
+    "message": "Willkommen",
+    "description": "Bezeichnung für den ersten Schritt der Einrichtung (Willkommen)."
+  },
+  "path": {
+    "message": "Wie möchtest du loslegen?",
+    "description": "Überschrift zur Auswahl, wie der Onboarding-Prozess gestartet werden soll."
+  },
+  "authModeHelp": {
+    "message": "Single User (API-Key) wird für persönliche oder kleine Team-Server empfohlen. Multi User (Login) ist für gemeinsame Umgebungen, in denen sich Personen mit Benutzernamen oder SSO anmelden. Wähle den Modus, der zur Konfiguration deines tldw_server passt.",
+    "description": "Hilfetext, der die Authentifizierungsmodi Single User vs Multi User erklärt."
+  },
+  "apiKeyHelp": {
+    "message": "Du findest deinen API-Key in tldw_server \u2192 Settings \u2192 API Keys. Erzeuge dort einen Schlüssel und füge ihn hier ein.",
+    "description": "Hilfetext, der beschreibt, wo der API-Key zu finden ist."
+  },
+  "authStepAria": {
+    "message": "Schritt 3 von 4 \u2014 Wähle, wie du dich anmeldest",
+    "description": "Aria-Label für den Authentifizierungsschritt im Onboarding."
+  },
+  "confirmStepAria": {
+    "message": "Schritt 4 von 4 \u2014 Verbindung bestätigen und nächste Schritte ansehen",
+    "description": "Aria-Label für den Bestätigungsschritt im Onboarding."
+  },
+  "nextSteps": {
+    "message": "Du bist startklar",
+    "description": "Titel des letzten Onboarding-Abschnitts mit nächsten Schritten."
   }
 }

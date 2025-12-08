@@ -1,5 +1,7 @@
 import React from 'react'
+import type { InputRef } from 'antd'
 import { Alert, Button, Input, Segmented, Space, Tag, Checkbox } from 'antd'
+import type { SegmentedValue } from 'antd/es/segmented'
 import { useStorage } from '@plasmohq/storage/hook'
 import { Storage } from '@plasmohq/storage'
 import { useTranslation } from 'react-i18next'
@@ -19,20 +21,27 @@ type Props = {
   onFinish?: () => void
 }
 
+type PathChoice = 'has-server' | 'no-server' | 'demo'
+type AuthMode = 'single-user' | 'multi-user'
+
+const isPathChoice = (value: SegmentedValue): value is PathChoice =>
+  value === 'has-server' || value === 'no-server' || value === 'demo'
+
+const isAuthMode = (value: SegmentedValue): value is AuthMode =>
+  value === 'single-user' || value === 'multi-user'
+
 export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
   const { t } = useTranslation(['settings', 'common'])
   const { setDemoEnabled } = useDemoMode()
   const [loading, setLoading] = React.useState(false)
   const [serverUrl, setServerUrl] = React.useState('')
   const [serverTouched, setServerTouched] = React.useState(false)
-  const [authMode, setAuthMode] = React.useState<'single-user'|'multi-user'>('single-user')
+  const [authMode, setAuthMode] = React.useState<AuthMode>('single-user')
   const [apiKey, setApiKey] = React.useState(DEFAULT_TLDW_API_KEY)
   const [username, setUsername] = React.useState('')
   const [password, setPassword] = React.useState('')
   const [authError, setAuthError] = React.useState<string | null>(null)
-  const [pathChoice, setPathChoice] = React.useState<'has-server' | 'no-server' | 'demo'>(
-    'has-server'
-  )
+  const [pathChoice, setPathChoice] = React.useState<PathChoice>('has-server')
   const [autoFinishOnSuccess, setAutoFinishOnSuccess] = useStorage(
     { key: 'onboardingAutoFinish', instance: new Storage({ area: 'local' }) },
     false
@@ -283,33 +292,26 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
     return null
   }, [uxState, t])
 
-  const totalSteps = 4
+  const totalSteps = 3
 
   const visualSteps = React.useMemo(
     () => [
       {
         index: 1,
         label: t(
-          "settings:onboarding.stepLabel.welcome",
-          "Welcome"
-        )
-      },
-      {
-        index: 2,
-        label: t(
           "settings:onboarding.stepLabel.url",
           "Connect to your tldw server"
         )
       },
       {
-        index: 3,
+        index: 2,
         label: t(
           "settings:onboarding.stepLabel.auth",
           "Choose how you sign in"
         )
       },
       {
-        index: 4,
+        index: 3,
         label: t(
           "settings:onboarding.stepLabel.health",
           "Confirm connection & Knowledge"
@@ -320,11 +322,10 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
   )
 
   const displayStep = React.useMemo(() => {
-    // Map the three internal config steps (URL/Auth/Health) onto steps 2–4.
-    if (activeStep === 1) return 2
-    if (activeStep === 2) return 3
-    if (activeStep === 3) return 4
-    return 2
+    if (activeStep === 1) return 1
+    if (activeStep === 2) return 2
+    if (activeStep === 3) return 3
+    return 1
   }, [activeStep])
 
   const stepTitle = React.useMemo(() => {
@@ -552,7 +553,11 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
         <Segmented
           size="small"
           value={pathChoice}
-          onChange={(value) => setPathChoice(value as any)}
+          onChange={(value: SegmentedValue) => {
+            if (isPathChoice(value)) {
+              setPathChoice(value)
+            }
+          }}
           options={[
             {
               label: t(
@@ -746,7 +751,7 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
       </nav>
 
       {activeStep === 1 && (
-        <div className="space-y-3" ref={urlInputRef as any}>
+        <div className="space-y-3">
           <div className="rounded-md border border-dashed border-gray-300 bg-gray-50 px-3 py-2 text-xs text-gray-700 dark:border-gray-600 dark:bg-[#1d1d1d] dark:text-gray-200">
             <div className="font-medium text-sm mb-1">
               {t(
@@ -804,6 +809,9 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
           </label>
           <Input
             id="onboarding-server-url"
+            ref={(instance: InputRef | null) => {
+              urlInputRef.current = instance?.input ?? null
+            }}
             placeholder={t('settings:onboarding.serverUrl.placeholder')}
             value={serverUrl}
             onChange={(e) => {
@@ -887,7 +895,11 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
                 }
               ]}
               value={authMode}
-              onChange={(v) => setAuthMode(v as any)}
+              onChange={(value: SegmentedValue) => {
+                if (isAuthMode(value)) {
+                  setAuthMode(value)
+                }
+              }}
             />
             <p className="mt-2 text-xs text-gray-600 dark:text-gray-400">
               {t(

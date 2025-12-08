@@ -1,6 +1,5 @@
 import { Storage } from "@plasmohq/storage"
 import { tldwClient, tldwModels } from "./tldw"
-import { bgRequest } from "@/services/background-proxy"
 
 const storage = new Storage()
 
@@ -266,10 +265,12 @@ export const defaultEmbeddingModelForRag = async () => {
     return embeddingMode
   }
 
-  // Fallback: derive from tldw_server embeddings providers-config
+  // Fallback: derive from tldw_server embeddings providers-config, if available
   try {
-    // @ts-ignore - method may be defined on TldwApiClient instance
-    const cfg = await tldwClient.getEmbeddingProvidersConfig?.()
+    const cfg =
+      typeof (tldwClient as any).getEmbeddingProvidersConfig === "function"
+        ? await (tldwClient as any).getEmbeddingProvidersConfig()
+        : null
 
     const provider = cfg?.default_provider
     const model = cfg?.default_model
@@ -390,16 +391,17 @@ export const getEmbeddingModels = async () => {
   try {
     const models = await tldwModels.getModels(false)
     // Filter for embedding-capable models if available
-    const embeddingModels = models.filter(m =>
-      m.capabilities?.includes('embeddings') ||
-      m.id.toLowerCase().includes('embed')
+    const embeddingModels = models.filter(
+      (m) =>
+        m.capabilities?.includes("embeddings") ||
+        m.id.toLowerCase().includes("embed")
     )
     return embeddingModels.map(m => ({
       name: m.name || m.id,
       model: m.id,
       provider: m.provider,
       nickname: m.name || m.id,
-      avatar: undefined as string | undefined
+      avatar: undefined
     }))
   } catch (e) {
     console.error("Failed to fetch embedding models:", e)

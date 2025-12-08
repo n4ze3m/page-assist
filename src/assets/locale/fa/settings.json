@@ -986,29 +986,33 @@
       "unknown": "Unknown"
     },
     "connectionFailed": "Connection failed",
-    "footerHelp": "Once connected, you can revisit these settings anytime from the extension menu.",
-    "progressAria": "Onboarding progress",
+    "footerHelp": "پس از برقراری اتصال، می‌توانید هر زمان از منوی افزونه دوباره به این تنظیمات برگردید.",
+    "progressAria": "پیشرفت راه‌اندازی اولیه",
     "stepLabel": {
-      "welcome": "Welcome",
-      "url": "Connect to your tldw server",
-      "auth": "Choose how you sign in",
-      "health": "Confirm connection & Knowledge"
+      "welcome": "خوش آمدید",
+      "url": "اتصال به سرور tldw خود",
+      "auth": "روش ورود خود را انتخاب کنید",
+      "health": "تأیید اتصال و وضعیت Knowledge"
     },
     "path": {
-      "heading": "How would you like to get started?",
-      "hasServer": "I already run tldw_server",
-      "noServer": "I don’t have a server yet",
-      "demo": "Just explore with a local demo",
-      "noServerTitle": "No server yet? You can still explore.",
-      "noServerBody": "tldw_server is a separate, self-hosted app. You can follow the setup guide now, or come back later and continue in demo mode.",
-      "openSetupGuide": "Open setup guide",
-      "useDemoFromNoServer": "Use local demo mode",
-      "demoTitle": "Explore the extension in demo mode",
-      "demoBody": "Demo mode lets you try chat, notes, and media with sample data. Server-dependent features like Knowledge search will stay limited until you connect your own tldw_server.",
-      "demoCta": "Use local demo mode"
+      "heading": "دوست دارید چگونه شروع کنید؟",
+      "hasServer": "در حال حاضر tldw_server را اجرا می‌کنم",
+      "noServer": "هنوز سروری ندارم",
+      "demo": "فقط با نسخه‌ی نمایشی محلی کاوش کن",
+      "noServerTitle": "هنوز سروری ندارید؟ همچنان می‌توانید کاوش کنید.",
+      "noServerBody": "tldw_server یک برنامه‌ی جداگانه و خودمیزبان است. می‌توانید اکنون راهنمای راه‌اندازی را دنبال کنید، یا بعداً برگردید و در حالت نمایشی ادامه دهید.",
+      "noServerOptionLocal": "آن را به‌صورت محلی با Docker یا Python روی دستگاه خود اجرا کنید.",
+      "noServerOptionRemote": "tldw_server را روی یک VPS راه دور یا میزبانی مدیریت‌شده مستقر کنید.",
+      "noServerOptionManaged": "در صورت دسترس بودن، از یک استقرار تجاریِ مدیریت‌شده‌ی tldw_server استفاده کنید.",
+      "openSetupGuide": "باز کردن راهنمای راه‌اندازی",
+      "useDemoFromNoServer": "استفاده از حالت نمایشی محلی",
+      "remindMeLater": "بعداً یادآوری کن",
+      "demoTitle": "کاوش افزونه در حالت نمایشی",
+      "demoBody": "حالت نمایشی به شما اجازه می‌دهد چت، یادداشت‌ها و رسانه‌ها را با داده‌های نمونه امتحان کنید. قابلیت‌هایی که به سرور وابسته‌اند، مانند جست‌وجوی Knowledge، تا زمانی که tldw_server خودتان را متصل نکنید محدود می‌مانند.",
+      "demoCta": "استفاده از حالت نمایشی محلی"
     },
-    "authModeHelp": "Single User (API Key) is recommended for personal or small-team servers. Multi User (Login) is for shared deployments where people sign in with usernames or SSO. Choose the mode that matches how your tldw_server is set up.",
-    "apiKeyHelp": "Find your API key in tldw_server → Settings → API Keys. Generate a key there and paste it here.",
+    "authModeHelp": "حالت Single User (کلید API) برای سرورهای شخصی یا تیم‌های کوچک توصیه می‌شود. حالت Multi User (ورود) برای استقرارهای مشترک است که در آن کاربران با نام کاربری یا SSO وارد می‌شوند. حالتی را انتخاب کنید که با نحوه‌ی پیکربندی tldw_server شما مطابقت دارد.",
+    "apiKeyHelp": "کلید API خود را در tldw_server → Settings → API Keys پیدا کنید. در آنجا یک کلید تولید کرده و آن را اینجا جای‌گذاری کنید.",
     "authStepAria": "Step 3 of 4 — authentication configuration",
     "confirmStepAria": "Step 4 of 4 — connection summary and next steps",
     "nextSteps": {
@@ -1021,7 +1025,8 @@
       "ingestBody": "Use Quick ingest from the header to save the current tab to your server.",
       "mediaTitle": "Explore media & notes",
       "mediaBody": "Visit Media and Notes in Options to see what’s stored and searchable."
-    }
+    },
+    "headerShortcuts": "نمایش میانبرهای سریع در سربرگ"
   },
   "evaluations": {
     "title": "Evaluations playground",

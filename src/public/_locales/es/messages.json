@@ -100,5 +100,41 @@
   },
   "hfPullException": {
     "message": "[tldw Assistant] Ocurrió un problema al enviar una solicitud de descarga de \"$1\" a tu tldw_server. Comprueba que tu tldw_server y la extensión estén en ejecución y vuelve a intentarlo."
+  },
+  "footerHelp": {
+    "message": "Una vez conectado, puedes volver a estos ajustes en cualquier momento desde el menú de la extensión.",
+    "description": "Texto de ayuda en el pie de página del asistente de configuración."
+  },
+  "progressAria": {
+    "message": "Progreso de incorporación",
+    "description": "Etiqueta aria para el indicador de progreso de la incorporación."
+  },
+  "stepLabel": {
+    "message": "Bienvenido",
+    "description": "Etiqueta para el primer paso de la incorporación (bienvenida)."
+  },
+  "path": {
+    "message": "¿Cómo quieres empezar?",
+    "description": "Encabezado para elegir cómo empezar en el flujo de incorporación."
+  },
+  "authModeHelp": {
+    "message": "Se recomienda Single User (API Key) para servidores personales o de equipos pequeños. Multi User (Login) está pensado para despliegues compartidos donde las personas inician sesión con nombres de usuario o SSO. Elige el modo que coincida con la configuración de tu tldw_server.",
+    "description": "Texto de ayuda que explica los modos de autenticación Single User y Multi User."
+  },
+  "apiKeyHelp": {
+    "message": "Busca tu clave de API en tldw_server \u2192 Settings \u2192 API Keys. Genera allí una clave y pégala aquí.",
+    "description": "Texto de ayuda que indica dónde encontrar la clave de API."
+  },
+  "authStepAria": {
+    "message": "Step 3 of 4 \u2014 authentication configuration",
+    "description": "Etiqueta aria para el paso de configuración de autenticación en la incorporación (aún en inglés)."
+  },
+  "confirmStepAria": {
+    "message": "Step 4 of 4 \u2014 connection summary and next steps",
+    "description": "Etiqueta aria para el paso de confirmación de la conexión en la incorporación (aún en inglés)."
+  },
+  "nextSteps": {
+    "message": "You\u2019re ready to go",
+    "description": "Título del panel final de incorporación con los siguientes pasos (actualmente en inglés)."
   }
 }

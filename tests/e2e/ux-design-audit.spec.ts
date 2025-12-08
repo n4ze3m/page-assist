@@ -6,13 +6,12 @@
  * and missing steps in typical workflows.
  */
 
-import { test, expect } from '@playwright/test'
-import { MockTldwServer } from './utils/mock-server'
-import { launchWithExtension } from './utils/extension'
-import path from 'path'
+import { test as base, expect } from "@playwright/test"
+import { launchWithExtension } from "./utils/extension"
+import path from "path"
+import { requireRealServerConfig } from "./utils/real-server"
 
-const API_KEY = 'THIS-IS-A-SECURE-KEY-123-FAKE-KEY'
-const TEST_EXT_PATH = path.resolve('.output/chrome-mv3')
+const TEST_EXT_PATH = path.resolve(".output/chrome-mv3")
 
 interface UXIssue {
   severity: 'critical' | 'major' | 'minor' | 'enhancement'
@@ -22,9 +21,17 @@ interface UXIssue {
   location?: string
 }
 
-const uxIssues: UXIssue[] = []
+const allUxIssues: UXIssue[] = []
 
-function logIssue(issue: UXIssue) {
+const test = base.extend<{ uxIssues: UXIssue[] }>({
+  uxIssues: async ({}, use) => {
+    const issues: UXIssue[] = []
+    await use(issues)
+    allUxIssues.push(...issues)
+  }
+})
+
+function logIssue(uxIssues: UXIssue[], issue: UXIssue) {
   uxIssues.push(issue)
   console.log(`[UX ${issue.severity.toUpperCase()}] ${issue.workflow}: ${issue.issue}`)
 }
@@ -34,27 +41,27 @@ async function launchExtension(options?: { seedConfig?: Record<string, any> }) {
 }
 
 test.describe('UX Design Audit', () => {
-  let server: MockTldwServer
+  let serverUrl: string
+  let apiKey: string
 
   test.beforeAll(async () => {
-    server = new MockTldwServer()
-    await server.start()
+    const cfg = requireRealServerConfig(test)
+    serverUrl = cfg.serverUrl
+    apiKey = cfg.apiKey
   })
 
   test.afterAll(async () => {
-    await server.stop()
-
     // Print summary report
     console.log('\n' + '='.repeat(80))
     console.log('UX AUDIT SUMMARY REPORT')
     console.log('='.repeat(80))
 
-    const critical = uxIssues.filter(i => i.severity === 'critical')
-    const major = uxIssues.filter(i => i.severity === 'major')
-    const minor = uxIssues.filter(i => i.severity === 'minor')
-    const enhancement = uxIssues.filter(i => i.severity === 'enhancement')
+    const critical = allUxIssues.filter(i => i.severity === 'critical')
+    const major = allUxIssues.filter(i => i.severity === 'major')
+    const minor = allUxIssues.filter(i => i.severity === 'minor')
+    const enhancement = allUxIssues.filter(i => i.severity === 'enhancement')
 
-    console.log(`\nTotal Issues Found: ${uxIssues.length}`)
+    console.log(`\nTotal Issues Found: ${allUxIssues.length}`)
     console.log(`  Critical: ${critical.length}`)
     console.log(`  Major: ${major.length}`)
     console.log(`  Minor: ${minor.length}`)
@@ -100,13 +107,12 @@ test.describe('UX Design Audit', () => {
   })
 
   test.describe('1. First-Run Onboarding Experience', () => {
-    test('fresh install shows clear onboarding with progress indication', async () => {
+    test('fresh install shows clear onboarding with progress indication', async ({ uxIssues }) => {
       const { context, page } = await launchExtension()
 
       try {
         // Check for welcome/onboarding UI on first load
         await page.waitForLoadState('networkidle')
-        await page.waitForTimeout(1000)
 
         // Look for onboarding indicators
         const hasWelcome = await page.getByText(/welcome|get started|let's connect/i).isVisible().catch(() => false)
@@ -114,7 +120,7 @@ test.describe('UX Design Audit', () => {
         const hasProgressBar = await page.locator('[role="progressbar"], .progress, .stepper').isVisible().catch(() => false)
 
         if (!hasWelcome) {
-          logIssue({
+          logIssue(uxIssues, {
             severity: 'major',
             workflow: 'Onboarding',
             issue: 'No clear welcome message on first run',
@@ -123,7 +129,7 @@ test.describe('UX Design Audit', () => {
         }
 
         if (!hasStepIndicator && !hasProgressBar) {
-          logIssue({
+          logIssue(uxIssues, {
             severity: 'minor',
             workflow: 'Onboarding',
             issue: 'No progress indicator during onboarding wizard',
@@ -139,7 +145,7 @@ test.describe('UX Design Audit', () => {
           // Check for placeholder/example text
           const placeholder = await urlInput.getAttribute('placeholder')
           if (!placeholder || !placeholder.includes('http')) {
-            logIssue({
+            logIssue(uxIssues, {
               severity: 'minor',
               workflow: 'Onboarding',
               issue: 'Server URL input lacks helpful placeholder example',
@@ -150,7 +156,7 @@ test.describe('UX Design Audit', () => {
           // Check for help text explaining what a tldw server is
           const hasHelpText = await page.getByText(/tldw.*server|what.*server|where.*find/i).isVisible().catch(() => false)
           if (!hasHelpText) {
-            logIssue({
+            logIssue(uxIssues, {
               severity: 'major',
               workflow: 'Onboarding',
               issue: 'No explanation of what a "tldw server" is or where to get one',
@@ -166,7 +172,7 @@ test.describe('UX Design Audit', () => {
       }
     })
 
-    test('server URL validation provides real-time feedback', async () => {
+    test('server URL validation provides real-time feedback', async ({ uxIssues }) => {
       const { context, page } = await launchExtension()
 
       try {
@@ -177,7 +183,6 @@ test.describe('UX Design Audit', () => {
         if (await urlInput.isVisible()) {
           // Test invalid URL
           await urlInput.fill('not-a-valid-url')
-          await page.waitForTimeout(500)
 
           const hasErrorIndicator = await page.getByText(/invalid|error|not.*valid/i).isVisible().catch(() => false)
           const hasRedBorder = await urlInput.evaluate(el => {
@@ -186,7 +191,7 @@ test.describe('UX Design Audit', () => {
           }).catch(() => false)
 
           if (!hasErrorIndicator && !hasRedBorder) {
-            logIssue({
+            logIssue(uxIssues, {
               severity: 'minor',
               workflow: 'Onboarding',
               issue: 'Invalid URL input shows no immediate validation feedback',
@@ -196,11 +201,10 @@ test.describe('UX Design Audit', () => {
 
           // Test valid URL that's unreachable
           await urlInput.fill('http://localhost:9999')
-          await page.waitForTimeout(2000)
 
           const hasReachabilityFeedback = await page.getByText(/cannot.*reach|unreachable|connection.*failed|offline/i).isVisible().catch(() => false)
           if (!hasReachabilityFeedback) {
-            logIssue({
+            logIssue(uxIssues, {
               severity: 'major',
               workflow: 'Onboarding',
               issue: 'No feedback when server URL is valid format but unreachable',
@@ -209,12 +213,11 @@ test.describe('UX Design Audit', () => {
           }
 
           // Test valid + reachable URL
-          await urlInput.fill(server.url)
-          await page.waitForTimeout(2000)
+          await urlInput.fill(serverUrl)
 
           const hasSuccessFeedback = await page.getByText(/connected|reachable|success|ready/i).isVisible().catch(() => false)
           if (!hasSuccessFeedback) {
-            logIssue({
+            logIssue(uxIssues, {
               severity: 'minor',
               workflow: 'Onboarding',
               issue: 'No positive feedback when server is successfully reached',
@@ -228,7 +231,7 @@ test.describe('UX Design Audit', () => {
       }
     })
 
-    test('auth mode selection is clear and complete', async () => {
+    test('auth mode selection is clear and complete', async ({ uxIssues }) => {
       const { context, page } = await launchExtension()
 
       try {
@@ -237,11 +240,10 @@ test.describe('UX Design Audit', () => {
         // Navigate past URL step if needed
         const urlInput = page.getByLabel(/server\s*url/i).or(page.getByPlaceholder(/server|url|http/i)).first()
         if (await urlInput.isVisible()) {
-          await urlInput.fill(server.url)
+          await urlInput.fill(serverUrl)
           const nextBtn = page.getByRole('button', { name: /next|continue/i })
           if (await nextBtn.isVisible()) {
             await nextBtn.click()
-            await page.waitForTimeout(500)
           }
         }
 
@@ -253,7 +255,7 @@ test.describe('UX Design Audit', () => {
           // Check for explanatory text about each mode
           const hasAuthExplanation = await page.getByText(/recommended|choose|when.*use/i).isVisible().catch(() => false)
           if (!hasAuthExplanation) {
-            logIssue({
+            logIssue(uxIssues, {
               severity: 'minor',
               workflow: 'Onboarding',
               issue: 'Auth modes lack explanation of when to use each',
@@ -268,7 +270,7 @@ test.describe('UX Design Audit', () => {
           // Check if it's a password field for security
           const inputType = await apiKeyInput.getAttribute('type')
           if (inputType !== 'password') {
-            logIssue({
+            logIssue(uxIssues, {
               severity: 'minor',
               workflow: 'Onboarding',
               issue: 'API key input is not masked (type="password")',
@@ -279,7 +281,7 @@ test.describe('UX Design Audit', () => {
           // Check for "where to find API key" help
           const hasKeyHelp = await page.getByText(/where.*find|how.*get|generate/i).isVisible().catch(() => false)
           if (!hasKeyHelp) {
-            logIssue({
+            logIssue(uxIssues, {
               severity: 'major',
               workflow: 'Onboarding',
               issue: 'No guidance on where to find/generate API key',
@@ -297,13 +299,13 @@ test.describe('UX Design Audit', () => {
   })
 
   test.describe('2. Main Navigation & Orientation', () => {
-    test('navigation clearly indicates current location', async () => {
-      const { context, page, extensionId, optionsUrl } = await launchExtension({
+    test('navigation clearly indicates current location', async ({ uxIssues }) => {
+      const { context, page, optionsUrl } = await launchExtension({
         seedConfig: {
           tldwConfig: {
-            serverUrl: server.url,
+            serverUrl,
             authMode: 'single-user',
-            apiKey: API_KEY
+            apiKey
           }
         }
       })
@@ -315,7 +317,6 @@ test.describe('UX Design Audit', () => {
         for (const route of routes) {
           await page.goto(optionsUrl + route)
           await page.waitForLoadState('networkidle')
-          await page.waitForTimeout(500)
 
           // Check for active state indicator
           const navLinks = page.locator('nav a, [role="navigation"] a, .nav-link, .menu-item')
@@ -326,7 +327,7 @@ test.describe('UX Design Audit', () => {
             // Check for visual active state via class
             const anyActiveState = await page.locator('[class*="active"], [class*="selected"], [class*="current"]').count() > 0
             if (!anyActiveState) {
-              logIssue({
+              logIssue(uxIssues, {
                 severity: 'minor',
                 workflow: 'Navigation',
                 issue: `No clear active state indicator on route ${route}`,
@@ -345,7 +346,7 @@ test.describe('UX Design Audit', () => {
         const hasBackButton = await page.getByRole('button', { name: /back|←/i }).isVisible().catch(() => false)
 
         if (!hasBreadcrumb && !hasBackButton) {
-          logIssue({
+          logIssue(uxIssues, {
             severity: 'minor',
             workflow: 'Navigation',
             issue: 'Nested settings pages lack breadcrumbs or back navigation',
@@ -360,13 +361,13 @@ test.describe('UX Design Audit', () => {
       }
     })
 
-    test('keyboard navigation works throughout the app', async () => {
+    test('keyboard navigation works throughout the app', async ({ uxIssues }) => {
       const { context, page, optionsUrl } = await launchExtension({
         seedConfig: {
           tldwConfig: {
-            serverUrl: server.url,
+            serverUrl,
             authMode: 'single-user',
-            apiKey: API_KEY
+            apiKey
           }
         }
       })
@@ -382,7 +383,7 @@ test.describe('UX Design Audit', () => {
 
         const focusedElement = await page.locator(':focus').count()
         if (focusedElement === 0) {
-          logIssue({
+          logIssue(uxIssues, {
             severity: 'major',
             workflow: 'Accessibility',
             issue: 'Tab navigation does not focus interactive elements',
@@ -398,7 +399,7 @@ test.describe('UX Design Audit', () => {
         }).catch(() => false)
 
         if (!hasFocusRing) {
-          logIssue({
+          logIssue(uxIssues, {
             severity: 'major',
             workflow: 'Accessibility',
             issue: 'Focused elements lack visible focus indicator',
@@ -413,13 +414,13 @@ test.describe('UX Design Audit', () => {
   })
 
   test.describe('3. Chat Experience', () => {
-    test('empty chat state guides user action', async () => {
+    test('empty chat state guides user action', async ({ uxIssues }) => {
       const { context, page, openSidepanel } = await launchExtension({
         seedConfig: {
           tldwConfig: {
-            serverUrl: server.url,
+            serverUrl,
             authMode: 'single-user',
-            apiKey: API_KEY
+            apiKey
           }
         }
       })
@@ -428,14 +429,13 @@ test.describe('UX Design Audit', () => {
         // Test sidepanel chat
         const sidepanel = await openSidepanel()
         await sidepanel.waitForLoadState('networkidle')
-        await sidepanel.waitForTimeout(1000)
 
         // Check for empty state messaging
         const hasEmptyStateMessage = await sidepanel.getByText(/start.*conversation|type.*message|ask.*question/i).isVisible().catch(() => false)
         const hasExamples = await sidepanel.getByText(/example|try asking|suggest/i).isVisible().catch(() => false)
 
         if (!hasEmptyStateMessage) {
-          logIssue({
+          logIssue(uxIssues, {
             severity: 'minor',
             workflow: 'Chat',
             issue: 'Empty chat shows no guidance or prompts',
@@ -448,7 +448,7 @@ test.describe('UX Design Audit', () => {
         const inputVisible = await messageInput.isVisible().catch(() => false)
 
         if (!inputVisible) {
-          logIssue({
+          logIssue(uxIssues, {
             severity: 'critical',
             workflow: 'Chat',
             issue: 'Message input not visible or discoverable in sidepanel',
@@ -462,7 +462,7 @@ test.describe('UX Design Audit', () => {
 
         // This is informational - just note if model selection is present
         if (!hasModelSelector && !hasNoModelWarning) {
-          logIssue({
+          logIssue(uxIssues, {
             severity: 'enhancement',
             workflow: 'Chat',
             issue: 'Model selection not visible in chat interface',
@@ -477,13 +477,13 @@ test.describe('UX Design Audit', () => {
       }
     })
 
-    test('sending message shows clear feedback states', async () => {
+    test('sending message shows clear feedback states', async ({ uxIssues }) => {
       const { context, openSidepanel } = await launchExtension({
         seedConfig: {
           tldwConfig: {
-            serverUrl: server.url,
+            serverUrl,
             authMode: 'single-user',
-            apiKey: API_KEY
+            apiKey
           }
         }
       })
@@ -491,7 +491,6 @@ test.describe('UX Design Audit', () => {
       try {
         const sidepanel = await openSidepanel()
         await sidepanel.waitForLoadState('networkidle')
-        await sidepanel.waitForTimeout(500)
 
         const messageInput = sidepanel.getByPlaceholder(/type.*message/i).or(sidepanel.getByRole('textbox')).first()
 
@@ -504,7 +503,7 @@ test.describe('UX Design Audit', () => {
           const hasSendButton = await sendButton.isVisible().catch(() => false)
 
           if (!hasSendButton) {
-            logIssue({
+            logIssue(uxIssues, {
               severity: 'minor',
               workflow: 'Chat',
               issue: 'No visible send button (Enter-only submission)',
@@ -516,11 +515,10 @@ test.describe('UX Design Audit', () => {
           await messageInput.press('Enter')
 
           // Check for loading/thinking indicator
-          await sidepanel.waitForTimeout(200)
           const hasLoadingIndicator = await sidepanel.locator('.loading, .thinking, .typing, [class*="spinner"], [class*="loading"]').or(sidepanel.getByText(/thinking|generating|typing/i)).isVisible().catch(() => false)
 
           if (!hasLoadingIndicator) {
-            logIssue({
+            logIssue(uxIssues, {
               severity: 'minor',
               workflow: 'Chat',
               issue: 'No loading indicator while waiting for AI response',
@@ -528,13 +526,10 @@ test.describe('UX Design Audit', () => {
             })
           }
 
-          // Wait for response
-          await sidepanel.waitForTimeout(3000)
-
           // Check that user message is shown
           const userMessageVisible = await sidepanel.getByText('Hello, this is a test message').isVisible().catch(() => false)
           if (!userMessageVisible) {
-            logIssue({
+            logIssue(uxIssues, {
               severity: 'major',
               workflow: 'Chat',
               issue: 'Sent message not displayed in chat history',
@@ -552,13 +547,13 @@ test.describe('UX Design Audit', () => {
   })
 
   test.describe('4. Feature Empty States', () => {
-    test('Media page shows helpful empty state', async () => {
+    test('Media page shows helpful empty state', async ({ uxIssues }) => {
       const { context, page, optionsUrl } = await launchExtension({
         seedConfig: {
           tldwConfig: {
-            serverUrl: server.url,
+            serverUrl,
             authMode: 'single-user',
-            apiKey: API_KEY
+            apiKey
           }
         }
       })
@@ -566,7 +561,6 @@ test.describe('UX Design Audit', () => {
       try {
         await page.goto(optionsUrl + '#/media')
         await page.waitForLoadState('networkidle')
-        await page.waitForTimeout(1000)
 
         // Check for empty state
         const hasEmptyStateText = await page.getByText(/no.*media|no.*content|get.*started|nothing.*here/i).isVisible().catch(() => false)
@@ -574,7 +568,7 @@ test.describe('UX Design Audit', () => {
         const hasHelpfulGuide = await page.getByText(/how.*add|import.*media|get.*content/i).isVisible().catch(() => false)
 
         if (!hasEmptyStateText && !hasAddButton) {
-          logIssue({
+          logIssue(uxIssues, {
             severity: 'major',
             workflow: 'Media',
             issue: 'Media page with no content shows no empty state guidance',
@@ -583,7 +577,7 @@ test.describe('UX Design Audit', () => {
         }
 
         if (!hasAddButton) {
-          logIssue({
+          logIssue(uxIssues, {
             severity: 'major',
             workflow: 'Media',
             issue: 'No clear action button to add first media item',
@@ -598,13 +592,13 @@ test.describe('UX Design Audit', () => {
       }
     })
 
-    test('Notes page shows helpful empty state', async () => {
+    test('Notes page shows helpful empty state', async ({ uxIssues }) => {
       const { context, page, optionsUrl } = await launchExtension({
         seedConfig: {
           tldwConfig: {
-            serverUrl: server.url,
+            serverUrl,
             authMode: 'single-user',
-            apiKey: API_KEY
+            apiKey
           }
         }
       })
@@ -612,13 +606,12 @@ test.describe('UX Design Audit', () => {
       try {
         await page.goto(optionsUrl + '#/notes')
         await page.waitForLoadState('networkidle')
-        await page.waitForTimeout(1000)
 
         const hasEmptyState = await page.getByText(/no.*notes|create.*first|get.*started/i).isVisible().catch(() => false)
         const hasCreateButton = await page.getByRole('button', { name: /create|new|add/i }).isVisible().catch(() => false)
 
         if (!hasEmptyState && !hasCreateButton) {
-          logIssue({
+          logIssue(uxIssues, {
             severity: 'major',
             workflow: 'Notes',
             issue: 'Notes page with no content shows no empty state',
@@ -633,13 +626,13 @@ test.describe('UX Design Audit', () => {
       }
     })
 
-    test('Flashcards page shows helpful empty state', async () => {
+    test('Flashcards page shows helpful empty state', async ({ uxIssues }) => {
       const { context, page, optionsUrl } = await launchExtension({
         seedConfig: {
           tldwConfig: {
-            serverUrl: server.url,
+            serverUrl,
             authMode: 'single-user',
-            apiKey: API_KEY
+            apiKey
           }
         }
       })
@@ -647,13 +640,12 @@ test.describe('UX Design Audit', () => {
       try {
         await page.goto(optionsUrl + '#/flashcards')
         await page.waitForLoadState('networkidle')
-        await page.waitForTimeout(1000)
 
         const hasEmptyState = await page.getByText(/no.*flashcard|no.*deck|create.*first|start.*learning/i).isVisible().catch(() => false)
         const hasCreateButton = await page.getByRole('button', { name: /create|new|add|import/i }).isVisible().catch(() => false)
 
         if (!hasEmptyState) {
-          logIssue({
+          logIssue(uxIssues, {
             severity: 'minor',
             workflow: 'Flashcards',
             issue: 'Flashcards empty state lacks motivational messaging',
@@ -670,13 +662,13 @@ test.describe('UX Design Audit', () => {
   })
 
   test.describe('5. Error States & Recovery', () => {
-    test('server disconnection shows clear error with retry option', async () => {
+    test('server disconnection shows clear error with retry option', async ({ uxIssues }) => {
       const { context, page, optionsUrl } = await launchExtension({
         seedConfig: {
           tldwConfig: {
             serverUrl: 'http://localhost:9999', // Non-existent server
             authMode: 'single-user',
-            apiKey: API_KEY
+            apiKey
           }
         }
       })
@@ -684,7 +676,6 @@ test.describe('UX Design Audit', () => {
       try {
         await page.goto(optionsUrl)
         await page.waitForLoadState('networkidle')
-        await page.waitForTimeout(2000)
 
         // Check for connection error indication
         const hasErrorIndicator = await page.getByText(/cannot.*connect|connection.*failed|offline|unreachable|error/i).isVisible().catch(() => false)
@@ -692,7 +683,7 @@ test.describe('UX Design Audit', () => {
         const hasSettingsLink = await page.getByRole('link', { name: /settings|configure/i }).or(page.getByRole('button', { name: /settings|configure/i })).isVisible().catch(() => false)
 
         if (!hasErrorIndicator) {
-          logIssue({
+          logIssue(uxIssues, {
             severity: 'critical',
             workflow: 'Error Recovery',
             issue: 'Server connection failure shows no error message',
@@ -701,7 +692,7 @@ test.describe('UX Design Audit', () => {
         }
 
         if (!hasRetryButton) {
-          logIssue({
+          logIssue(uxIssues, {
             severity: 'major',
             workflow: 'Error Recovery',
             issue: 'No retry button when server is unreachable',
@@ -710,7 +701,7 @@ test.describe('UX Design Audit', () => {
         }
 
         if (!hasSettingsLink) {
-          logIssue({
+          logIssue(uxIssues, {
             severity: 'minor',
             workflow: 'Error Recovery',
             issue: 'No link to settings to fix connection issues',
@@ -725,11 +716,11 @@ test.describe('UX Design Audit', () => {
       }
     })
 
-    test('invalid API key shows helpful error message', async () => {
+    test('invalid API key shows helpful error message', async ({ uxIssues }) => {
       const { context, openSidepanel } = await launchExtension({
         seedConfig: {
           tldwConfig: {
-            serverUrl: server.url,
+            serverUrl,
             authMode: 'single-user',
             apiKey: 'invalid-key-12345'
           }
@@ -739,7 +730,6 @@ test.describe('UX Design Audit', () => {
       try {
         const sidepanel = await openSidepanel()
         await sidepanel.waitForLoadState('networkidle')
-        await sidepanel.waitForTimeout(500)
 
         // Try to use a feature that requires auth
         const messageInput = sidepanel.getByPlaceholder(/type.*message/i).or(sidepanel.getByRole('textbox')).first()
@@ -747,13 +737,12 @@ test.describe('UX Design Audit', () => {
         if (await messageInput.isVisible()) {
           await messageInput.fill('test')
           await messageInput.press('Enter')
-          await sidepanel.waitForTimeout(2000)
 
           const hasAuthError = await sidepanel.getByText(/invalid.*key|unauthorized|authentication.*failed|401/i).isVisible().catch(() => false)
           const hasFixLink = await sidepanel.getByRole('button', { name: /update.*key|fix|settings/i }).or(sidepanel.getByRole('link', { name: /settings/i })).isVisible().catch(() => false)
 
           if (!hasAuthError) {
-            logIssue({
+            logIssue(uxIssues, {
               severity: 'major',
               workflow: 'Error Recovery',
               issue: 'Invalid API key error is not clearly communicated',
@@ -762,7 +751,7 @@ test.describe('UX Design Audit', () => {
           }
 
           if (!hasFixLink) {
-            logIssue({
+            logIssue(uxIssues, {
               severity: 'minor',
               workflow: 'Error Recovery',
               issue: 'No quick link to fix authentication issues',
@@ -780,13 +769,13 @@ test.describe('UX Design Audit', () => {
   })
 
   test.describe('6. Settings Configuration UX', () => {
-    test('settings are organized logically with clear labels', async () => {
+    test('settings are organized logically with clear labels', async ({ uxIssues }) => {
       const { context, page, optionsUrl } = await launchExtension({
         seedConfig: {
           tldwConfig: {
-            serverUrl: server.url,
+            serverUrl,
             authMode: 'single-user',
-            apiKey: API_KEY
+            apiKey
           }
         }
       })
@@ -794,12 +783,11 @@ test.describe('UX Design Audit', () => {
       try {
         await page.goto(optionsUrl + '#/settings')
         await page.waitForLoadState('networkidle')
-        await page.waitForTimeout(1000)
 
         // Check for settings categories
         const hasCategories = await page.locator('h2, h3, [role="heading"]').count() > 0
         if (!hasCategories) {
-          logIssue({
+          logIssue(uxIssues, {
             severity: 'minor',
             workflow: 'Settings',
             issue: 'Settings page lacks clear section headings',
@@ -818,7 +806,7 @@ test.describe('UX Design Audit', () => {
           const placeholder = await input.getAttribute('placeholder')
 
           if (!id && !ariaLabel && !placeholder) {
-            logIssue({
+            logIssue(uxIssues, {
               severity: 'major',
               workflow: 'Settings',
               issue: 'Settings input lacks accessible label',
@@ -835,13 +823,13 @@ test.describe('UX Design Audit', () => {
       }
     })
 
-    test('save actions provide clear feedback', async () => {
+    test('save actions provide clear feedback', async ({ uxIssues }) => {
       const { context, page, optionsUrl } = await launchExtension({
         seedConfig: {
           tldwConfig: {
-            serverUrl: server.url,
+            serverUrl,
             authMode: 'single-user',
-            apiKey: API_KEY
+            apiKey
           }
         }
       })
@@ -849,7 +837,6 @@ test.describe('UX Design Audit', () => {
       try {
         await page.goto(optionsUrl + '#/settings')
         await page.waitForLoadState('networkidle')
-        await page.waitForTimeout(500)
 
         // Look for a save button
         const saveButton = page.getByRole('button', { name: /save|apply|update/i })
@@ -857,14 +844,13 @@ test.describe('UX Design Audit', () => {
 
         if (hasSaveButton) {
           await saveButton.click()
-          await page.waitForTimeout(1000)
 
           // Check for save confirmation
           const hasSuccessToast = await page.getByText(/saved|updated|success/i).isVisible().catch(() => false)
           const hasSuccessIndicator = await page.locator('.toast, .notification, [role="alert"], [class*="success"]').isVisible().catch(() => false)
 
           if (!hasSuccessToast && !hasSuccessIndicator) {
-            logIssue({
+            logIssue(uxIssues, {
               severity: 'minor',
               workflow: 'Settings',
               issue: 'Save action provides no confirmation feedback',
@@ -875,7 +861,7 @@ test.describe('UX Design Audit', () => {
           // Check for auto-save indication
           const hasAutoSave = await page.getByText(/auto.*save|changes.*saved.*automatic/i).isVisible().catch(() => false)
           if (!hasAutoSave) {
-            logIssue({
+            logIssue(uxIssues, {
               severity: 'enhancement',
               workflow: 'Settings',
               issue: 'Unclear whether settings auto-save or require manual save',
@@ -891,13 +877,13 @@ test.describe('UX Design Audit', () => {
   })
 
   test.describe('7. Sidepanel Quick Actions', () => {
-    test('sidepanel actions are discoverable', async () => {
+    test('sidepanel actions are discoverable', async ({ uxIssues }) => {
       const { context, openSidepanel } = await launchExtension({
         seedConfig: {
           tldwConfig: {
-            serverUrl: server.url,
+            serverUrl,
             authMode: 'single-user',
-            apiKey: API_KEY
+            apiKey
           }
         }
       })
@@ -905,7 +891,6 @@ test.describe('UX Design Audit', () => {
       try {
         const sidepanel = await openSidepanel()
         await sidepanel.waitForLoadState('networkidle')
-        await sidepanel.waitForTimeout(1000)
 
         // Check for main action buttons
         const ingestButton = sidepanel.getByRole('button', { name: /ingest|add|import/i })
@@ -917,7 +902,7 @@ test.describe('UX Design Audit', () => {
         const hasNewChat = await newChatButton.isVisible().catch(() => false)
 
         if (!hasIngest) {
-          logIssue({
+          logIssue(uxIssues, {
             severity: 'enhancement',
             workflow: 'Sidepanel',
             issue: 'Quick ingest/import action not visible in sidepanel',
@@ -926,7 +911,7 @@ test.describe('UX Design Audit', () => {
         }
 
         if (!hasSettings) {
-          logIssue({
+          logIssue(uxIssues, {
             severity: 'minor',
             workflow: 'Sidepanel',
             issue: 'Settings access not visible in sidepanel',
@@ -945,7 +930,7 @@ test.describe('UX Design Audit', () => {
           const innerText = await btn.innerText()
 
           if (!title && !ariaLabel && !innerText.trim()) {
-            logIssue({
+            logIssue(uxIssues, {
               severity: 'minor',
               workflow: 'Sidepanel',
               issue: 'Icon button lacks tooltip or accessible label',
@@ -962,11 +947,4 @@ test.describe('UX Design Audit', () => {
       }
     })
   })
-})
-
-// Final summary test that always runs last
-test('Print UX Audit Summary', async () => {
-  // This test exists to ensure the afterAll hook runs
-  // The actual summary is printed in the afterAll callback above
-  expect(true).toBe(true)
 })

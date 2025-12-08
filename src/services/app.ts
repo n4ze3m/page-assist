@@ -82,6 +82,18 @@ export const customHeaders = async (): Promise<
   const headers = await storage.get<
     { key: string; value: string }[] | undefined
   >("customHeaders")
+
+  // One-time migration from old key
+  if (!headers) {
+    const oldHeaders = await storage.get<
+      { key: string; value: string }[] | undefined
+    >("customOllamaHeaders")
+    if (oldHeaders) {
+      await storage.set("customHeaders", oldHeaders)
+      return oldHeaders
+    }
+  }
+
   if (!headers) {
     return []
   }

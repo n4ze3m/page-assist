@@ -834,29 +834,33 @@
       "unknown": "Unknown"
     },
     "connectionFailed": "Connection failed",
-    "footerHelp": "Once connected, you can revisit these settings anytime from the extension menu.",
-    "progressAria": "Onboarding progress",
+    "footerHelp": "Після підключення ви можете будь-коли повернутися до цих налаштувань через меню розширення.",
+    "progressAria": "Прогрес початкового налаштування",
     "stepLabel": {
-      "welcome": "Welcome",
-      "url": "Connect to your tldw server",
-      "auth": "Choose how you sign in",
-      "health": "Confirm connection & Knowledge"
+      "welcome": "Ласкаво просимо",
+      "url": "Підключіть свій сервер tldw",
+      "auth": "Виберіть спосіб входу",
+      "health": "Підтвердіть підключення та Knowledge"
     },
     "path": {
-      "heading": "How would you like to get started?",
-      "hasServer": "I already run tldw_server",
-      "noServer": "I don’t have a server yet",
-      "demo": "Just explore with a local demo",
-      "noServerTitle": "No server yet? You can still explore.",
-      "noServerBody": "tldw_server is a separate, self-hosted app. You can follow the setup guide now, or come back later and continue in demo mode.",
-      "openSetupGuide": "Open setup guide",
-      "useDemoFromNoServer": "Use local demo mode",
-      "demoTitle": "Explore the extension in demo mode",
-      "demoBody": "Demo mode lets you try chat, notes, and media with sample data. Server-dependent features like Knowledge search will stay limited until you connect your own tldw_server.",
-      "demoCta": "Use local demo mode"
+      "heading": "З чого ви хочете почати?",
+      "hasServer": "Я вже запускаю tldw_server",
+      "noServer": "У мене ще немає сервера",
+      "demo": "Просто дослідити за допомогою локальної демо-версії",
+      "noServerTitle": "Ще немає сервера? Ви все одно можете продовжити знайомство.",
+      "noServerBody": "tldw_server — це окремий застосунок із самостійним хостингом. Ви можете пройти інструкцію з налаштування зараз або повернутися пізніше й продовжити в демо-режимі.",
+      "noServerOptionLocal": "Запустити локально за допомогою Docker або Python на вашій машині.",
+      "noServerOptionRemote": "Розгорнути tldw_server на віддаленому VPS або керованому хостингу.",
+      "noServerOptionManaged": "Використовувати кероване комерційне розгортання tldw_server, коли воно доступне.",
+      "openSetupGuide": "Відкрити інструкцію з налаштування",
+      "useDemoFromNoServer": "Використовувати локальний демо-режим",
+      "remindMeLater": "Нагадати пізніше",
+      "demoTitle": "Ознайомитися з розширенням у демо-режимі",
+      "demoBody": "Демо-режим дозволяє випробувати чат, нотатки та медіа на прикладних даних. Функції, що залежать від сервера, як-от пошук у Knowledge, залишатимуться обмеженими, доки ви не підключите власний tldw_server.",
+      "demoCta": "Використовувати локальний демо-режим"
     },
-    "authModeHelp": "Single User (API Key) is recommended for personal or small-team servers. Multi User (Login) is for shared deployments where people sign in with usernames or SSO. Choose the mode that matches how your tldw_server is set up.",
-    "apiKeyHelp": "Find your API key in tldw_server → Settings → API Keys. Generate a key there and paste it here.",
+    "authModeHelp": "Режим Single User (API Key) рекомендовано для персональних серверів або серверів невеликих команд. Multi User (Login) підходить для спільних розгортань, де користувачі входять за допомогою імені користувача або SSO. Оберіть режим, що відповідає конфігурації вашого tldw_server.",
+    "apiKeyHelp": "Знайдіть свій API-ключ у tldw_server → Settings → API Keys. Згенеруйте там ключ і вставте його тут.",
     "authStepAria": "Step 3 of 4 — authentication configuration",
     "confirmStepAria": "Step 4 of 4 — connection summary and next steps",
     "nextSteps": {
@@ -869,7 +873,8 @@
       "ingestBody": "Use Quick ingest from the header to save the current tab to your server.",
       "mediaTitle": "Explore media & notes",
       "mediaBody": "Visit Media and Notes in Options to see what’s stored and searchable."
-    }
+    },
+    "headerShortcuts": "Показувати швидкі ярлики в заголовку"
   },
   "manageCharacters": {
     "title": "Manage Characters",

@@ -1,0 +1,32 @@
+{
+  "mediaPage.nothingToSend": {
+    "message": "Inget att skicka"
+  },
+  "mediaPage.emptyAnalysis": {
+    "message": "Analysen kan inte vara tom"
+  },
+  "mediaPage.noMediaId": {
+    "message": "Inget media-ID tillgängligt"
+  },
+  "mediaPage.versionSaved": {
+    "message": "Sparad som ny version"
+  },
+  "mediaPage.saveFailed": {
+    "message": "Det gick inte att spara versionen"
+  },
+  "mediaPage.sendToChat": {
+    "message": "Skicka till chatten"
+  },
+  "mediaPage.saveAsVersion": {
+    "message": "Spara som ny version"
+  },
+  "mediaPage.analysisPlaceholder": {
+    "message": "Ange analys-text..."
+  },
+  "mediaPage.wordCount": {
+    "message": "{{count}} ord"
+  },
+  "mediaPage.charCount": {
+    "message": "{{count}} tecken"
+  }
+}

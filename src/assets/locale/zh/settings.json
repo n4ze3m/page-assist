@@ -838,29 +838,33 @@
       "unknown": "Unknown"
     },
     "connectionFailed": "Connection failed",
-    "footerHelp": "Once connected, you can revisit these settings anytime from the extension menu.",
-    "progressAria": "Onboarding progress",
+    "footerHelp": "连接完成后，你可以随时从扩展菜单重新打开这些设置。",
+    "progressAria": "引导进度",
     "stepLabel": {
-      "welcome": "Welcome",
-      "url": "Connect to your tldw server",
-      "auth": "Choose how you sign in",
-      "health": "Confirm connection & Knowledge"
+      "welcome": "欢迎",
+      "url": "连接到你的 tldw 服务器",
+      "auth": "选择登录方式",
+      "health": "确认连接和 Knowledge 状态"
     },
     "path": {
-      "heading": "How would you like to get started?",
-      "hasServer": "I already run tldw_server",
-      "noServer": "I don’t have a server yet",
-      "demo": "Just explore with a local demo",
-      "noServerTitle": "No server yet? You can still explore.",
-      "noServerBody": "tldw_server is a separate, self-hosted app. You can follow the setup guide now, or come back later and continue in demo mode.",
-      "openSetupGuide": "Open setup guide",
-      "useDemoFromNoServer": "Use local demo mode",
-      "demoTitle": "Explore the extension in demo mode",
-      "demoBody": "Demo mode lets you try chat, notes, and media with sample data. Server-dependent features like Knowledge search will stay limited until you connect your own tldw_server.",
-      "demoCta": "Use local demo mode"
+      "heading": "你想如何开始？",
+      "hasServer": "我已经在运行 tldw_server",
+      "noServer": "我还没有服务器",
+      "demo": "只用本地演示体验一下",
+      "noServerTitle": "还没有服务器？仍然可以先体验。",
+      "noServerBody": "tldw_server 是一个独立的自托管应用。你可以现在按照安装指南进行设置，或者稍后再回来，以演示模式继续。",
+      "noServerOptionLocal": "在自己的电脑上使用 Docker 或 Python 本地运行。",
+      "noServerOptionRemote": "将 tldw_server 部署到远程 VPS 或托管服务。",
+      "noServerOptionManaged": "在可用时使用托管的商用 tldw_server 部署。",
+      "openSetupGuide": "打开安装指南",
+      "useDemoFromNoServer": "使用本地演示模式",
+      "remindMeLater": "稍后再提醒我",
+      "demoTitle": "在演示模式下体验此扩展",
+      "demoBody": "演示模式可让你使用示例数据体验聊天、笔记和媒体。依赖服务器的功能（例如 Knowledge 搜索）会保持受限，直到你连接自己的 tldw_server 为止。",
+      "demoCta": "使用本地演示模式"
     },
-    "authModeHelp": "Single User (API Key) is recommended for personal or small-team servers. Multi User (Login) is for shared deployments where people sign in with usernames or SSO. Choose the mode that matches how your tldw_server is set up.",
-    "apiKeyHelp": "Find your API key in tldw_server → Settings → API Keys. Generate a key there and paste it here.",
+    "authModeHelp": "Single User（API Key）适合个人或小团队服务器。Multi User（Login）适合多人共享部署，用户使用用户名或 SSO 登录。请选择与 tldw_server 实际配置相匹配的模式。",
+    "apiKeyHelp": "在 tldw_server → Settings → API Keys 中找到你的 API 密钥。在那里生成密钥并粘贴到这里。",
     "authStepAria": "Step 3 of 4 — authentication configuration",
     "confirmStepAria": "Step 4 of 4 — connection summary and next steps",
     "nextSteps": {
@@ -873,7 +877,8 @@
       "ingestBody": "Use Quick ingest from the header to save the current tab to your server.",
       "mediaTitle": "Explore media & notes",
       "mediaBody": "Visit Media and Notes in Options to see what’s stored and searchable."
-    }
+    },
+    "headerShortcuts": "在页眉显示快捷方式"
   },
   "manageCharacters": {
     "title": "Manage Characters",

@@ -116,38 +116,96 @@ export const FlashcardsPage: React.FC = () => {
   const confirmDanger = useConfirmDanger()
   const scrollToServerCard = useScrollToServerCard("/flashcards")
 
+  const demoDecks = React.useMemo(
+    () => [
+      {
+        id: "demo-deck-1",
+        name: t("option:flashcards.demoSample1Title", {
+          defaultValue: "Demo deck: Core concepts"
+        }),
+        summary: t("option:flashcards.demoSample1Summary", {
+          defaultValue: "10 cards · Great for testing spacing and ratings."
+        })
+      },
+      {
+        id: "demo-deck-2",
+        name: t("option:flashcards.demoSample2Title", {
+          defaultValue: "Demo deck: Product terms"
+        }),
+        summary: t("option:flashcards.demoSample2Summary", {
+          defaultValue: "8 cards · Names, acronyms, and key definitions."
+        })
+      },
+      {
+        id: "demo-deck-3",
+        name: t("option:flashcards.demoSample3Title", {
+          defaultValue: "Demo deck: Meeting follow-ups"
+        }),
+        summary: t("option:flashcards.demoSample3Summary", {
+          defaultValue: "6 cards · Example action items to review."
+        })
+      }
+    ],
+    [t]
+  )
+
   if (!isOnline) {
     return demoEnabled ? (
-      <FeatureEmptyState
-        title={
-          <span className="inline-flex items-center gap-2">
-            <StatusBadge variant="demo">Demo</StatusBadge>
-            <span>
-              {t("option:flashcards.demoTitle", {
-                defaultValue: "Explore Flashcards in demo mode"
-              })}
+      <div className="space-y-4">
+        <FeatureEmptyState
+          title={
+            <span className="inline-flex items-center gap-2">
+              <StatusBadge variant="demo">Demo</StatusBadge>
+              <span>
+                {t("option:flashcards.demoTitle", {
+                  defaultValue: "Explore Flashcards in demo mode"
+                })}
+              </span>
             </span>
-          </span>
-        }
-        description={t("option:flashcards.demoDescription", {
-          defaultValue:
-            "This demo shows how Flashcards can turn your content into spaced‑repetition cards. Connect your own server later to generate and review cards from your own notes and media."
-        })}
-        examples={[
-          t("option:flashcards.demoExample1", {
+          }
+          description={t("option:flashcards.demoDescription", {
             defaultValue:
-              "See how decks, cards, and tags are organized across Review and Manage tabs."
-          }),
-          t("option:flashcards.demoExample2", {
-            defaultValue:
-              "When you connect, you’ll be able to generate cards from lectures, meetings, or notes and review them on a schedule."
-          })
-        ]}
-        primaryActionLabel={t("option:connectionCard.buttonGoToServerCard", {
-          defaultValue: "Go to server card"
-        })}
-        onPrimaryAction={scrollToServerCard}
-      />
+              "This demo shows how Flashcards can turn your content into spaced‑repetition cards. Connect your own server later to generate and review cards from your own notes and media."
+          })}
+          examples={[
+            t("option:flashcards.demoExample1", {
+              defaultValue:
+                "See how decks, cards, and tags are organized across Review and Manage tabs."
+            }),
+            t("option:flashcards.demoExample2", {
+              defaultValue:
+                "When you connect, you’ll be able to generate cards from lectures, meetings, or notes and review them on a schedule."
+            }),
+            t("option:flashcards.demoExample3", {
+              defaultValue:
+                "Use Flashcards together with Notes and Media to keep important ideas fresh."
+            })
+          ]}
+          primaryActionLabel={t("option:connectionCard.buttonGoToServerCard", {
+            defaultValue: "Go to server card"
+          })}
+          onPrimaryAction={scrollToServerCard}
+        />
+        <div className="rounded-lg border border-dashed border-gray-300 bg-white p-3 text-xs text-gray-700 dark:border-gray-700 dark:bg-[#111] dark:text-gray-200">
+          <div className="mb-2 font-semibold">
+            {t("option:flashcards.demoPreviewHeading", {
+              defaultValue: "Example decks (preview only)"
+            })}
+          </div>
+          <div className="divide-y divide-gray-200 dark:divide-gray-800">
+            {demoDecks.map((deck) => (
+              <div key={deck.id} className="py-2">
+                <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                  {deck.name}
+                </div>
+                <div className="mt-1 text-[11px] text-gray-600 dark:text-gray-300">
+                  {deck.summary}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
     ) : (
       <FeatureEmptyState
         title={

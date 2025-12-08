@@ -835,29 +835,33 @@
       "unknown": "Unknown"
     },
     "connectionFailed": "Connection failed",
-    "footerHelp": "Once connected, you can revisit these settings anytime from the extension menu.",
-    "progressAria": "Onboarding progress",
+    "footerHelp": "Une fois la connexion établie, vous pouvez revenir à ces paramètres à tout moment depuis le menu de l’extension.",
+    "progressAria": "Progression de la configuration",
     "stepLabel": {
-      "welcome": "Welcome",
-      "url": "Connect to your tldw server",
-      "auth": "Choose how you sign in",
-      "health": "Confirm connection & Knowledge"
+      "welcome": "Bienvenue",
+      "url": "Connecter votre serveur tldw",
+      "auth": "Choisissez votre mode de connexion",
+      "health": "Confirmer la connexion et Knowledge"
     },
     "path": {
-      "heading": "How would you like to get started?",
-      "hasServer": "I already run tldw_server",
-      "noServer": "I don’t have a server yet",
-      "demo": "Just explore with a local demo",
-      "noServerTitle": "No server yet? You can still explore.",
-      "noServerBody": "tldw_server is a separate, self-hosted app. You can follow the setup guide now, or come back later and continue in demo mode.",
-      "openSetupGuide": "Open setup guide",
-      "useDemoFromNoServer": "Use local demo mode",
-      "demoTitle": "Explore the extension in demo mode",
-      "demoBody": "Demo mode lets you try chat, notes, and media with sample data. Server-dependent features like Knowledge search will stay limited until you connect your own tldw_server.",
-      "demoCta": "Use local demo mode"
+      "heading": "Comment souhaitez-vous commencer ?",
+      "hasServer": "J’exécute déjà tldw_server",
+      "noServer": "Je n’ai pas encore de serveur",
+      "demo": "Simplement explorer avec une démo locale",
+      "noServerTitle": "Pas encore de serveur ? Vous pouvez quand même explorer.",
+      "noServerBody": "tldw_server est une application distincte, auto-hébergée. Vous pouvez suivre le guide de configuration maintenant ou revenir plus tard et continuer en mode démo.",
+      "noServerOptionLocal": "Lancer en local avec Docker ou Python sur votre propre machine.",
+      "noServerOptionRemote": "Déployer tldw_server sur un VPS distant ou un hébergement managé.",
+      "noServerOptionManaged": "Utiliser un déploiement tldw_server commercial managé lorsqu’il est disponible.",
+      "openSetupGuide": "Ouvrir le guide de configuration",
+      "useDemoFromNoServer": "Utiliser le mode démo local",
+      "remindMeLater": "Me le rappeler plus tard",
+      "demoTitle": "Explorer l’extension en mode démo",
+      "demoBody": "Le mode démo vous permet d’essayer le chat, les notes et les médias avec des données d’exemple. Les fonctionnalités dépendantes du serveur, comme la recherche Knowledge, resteront limitées tant que vous n’aurez pas connecté votre propre tldw_server.",
+      "demoCta": "Utiliser le mode démo local"
     },
-    "authModeHelp": "Single User (API Key) is recommended for personal or small-team servers. Multi User (Login) is for shared deployments where people sign in with usernames or SSO. Choose the mode that matches how your tldw_server is set up.",
-    "apiKeyHelp": "Find your API key in tldw_server → Settings → API Keys. Generate a key there and paste it here.",
+    "authModeHelp": "Le mode Single User (clé API) est recommandé pour les serveurs personnels ou les petites équipes. Le mode Multi User (connexion) est destiné aux déploiements partagés où les utilisateurs se connectent avec un nom d’utilisateur ou via SSO. Choisissez le mode qui correspond à la configuration de votre tldw_server.",
+    "apiKeyHelp": "Trouvez votre clé API dans tldw_server → Settings → API Keys. Générez-y une clé puis collez-la ici.",
     "authStepAria": "Step 3 of 4 — authentication configuration",
     "confirmStepAria": "Step 4 of 4 — connection summary and next steps",
     "nextSteps": {
@@ -870,7 +874,8 @@
       "ingestBody": "Use Quick ingest from the header to save the current tab to your server.",
       "mediaTitle": "Explore media & notes",
       "mediaBody": "Visit Media and Notes in Options to see what’s stored and searchable."
-    }
+    },
+    "headerShortcuts": "Afficher les raccourcis rapides dans l’en-tête"
   },
   "manageCharacters": {
     "title": "Gérer les personnages",

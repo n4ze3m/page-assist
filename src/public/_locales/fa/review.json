@@ -1,0 +1,32 @@
+{
+  "mediaPage.nothingToSend": {
+    "message": "موردی برای ارسال وجود ندارد"
+  },
+  "mediaPage.emptyAnalysis": {
+    "message": "تحلیل نمی‌تواند خالی باشد"
+  },
+  "mediaPage.noMediaId": {
+    "message": "شناسه رسانه‌ای در دسترس نیست"
+  },
+  "mediaPage.versionSaved": {
+    "message": "به\u200cعنوان نسخه جدید ذخیره شد"
+  },
+  "mediaPage.saveFailed": {
+    "message": "ذخیره نسخه ناموفق بود"
+  },
+  "mediaPage.sendToChat": {
+    "message": "ارسال به چت"
+  },
+  "mediaPage.saveAsVersion": {
+    "message": "ذخیره به\u200cعنوان نسخه جدید"
+  },
+  "mediaPage.analysisPlaceholder": {
+    "message": "متن تحلیل را وارد کنید..."
+  },
+  "mediaPage.wordCount": {
+    "message": "{{count}} کلمه"
+  },
+  "mediaPage.charCount": {
+    "message": "{{count}} نویسه"
+  }
+}

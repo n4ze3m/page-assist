@@ -162,23 +162,23 @@ export const documentChatMode = async (
     }
     // Try server-backed RAG over media_db first
     try {
-      const keyword_filter = uploadedFiles.map(f => f.filename).slice(0, 10)
-      const ragPayload: any = {
+      const keyword_filter = uploadedFiles.map((f) => f.filename).slice(0, 10)
+      const ragPayload = {
         query,
         sources: ["media_db"],
-        search_mode: 'hybrid',
+        search_mode: "hybrid",
         hybrid_alpha: 0.7,
         top_k: docSize,
         min_score: 0,
         enable_reranking: true,
-        reranking_strategy: 'flashrank',
+        reranking_strategy: "flashrank",
         rerank_top_k: Math.max(docSize * 2, 10),
         keyword_filter,
         enable_cache: true,
         adaptive_cache: true,
         enable_chunk_citations: true,
         enable_generation: false
-      }
+      } as const
       const ragRes = await tldwClient.ragSearch(query, ragPayload)
       const docs = ragRes?.results || ragRes?.documents || ragRes?.docs || []
       if (docs.length > 0) {
@@ -385,7 +385,7 @@ export const documentChatMode = async (
     setIsProcessing(false)
     setStreaming(false)
   } catch (e) {
-    console.log(e)
+    console.error(e)
     const errorSave = await saveMessageOnError({
       e,
       botMessage: fullText,

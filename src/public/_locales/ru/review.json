@@ -1,0 +1,32 @@
+{
+  "mediaPage.nothingToSend": {
+    "message": "Нечего отправлять"
+  },
+  "mediaPage.emptyAnalysis": {
+    "message": "Анализ не может быть пустым"
+  },
+  "mediaPage.noMediaId": {
+    "message": "Нет доступного идентификатора медиа"
+  },
+  "mediaPage.versionSaved": {
+    "message": "Сохранено как новая версия"
+  },
+  "mediaPage.saveFailed": {
+    "message": "Не удалось сохранить версию"
+  },
+  "mediaPage.sendToChat": {
+    "message": "Отправить в чат"
+  },
+  "mediaPage.saveAsVersion": {
+    "message": "Сохранить как новую версию"
+  },
+  "mediaPage.analysisPlaceholder": {
+    "message": "Введите текст анализа..."
+  },
+  "mediaPage.wordCount": {
+    "message": "{{count}} слов"
+  },
+  "mediaPage.charCount": {
+    "message": "{{count}} символов"
+  }
+}

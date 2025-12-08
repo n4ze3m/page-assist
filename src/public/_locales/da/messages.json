@@ -100,5 +100,41 @@
   },
   "hfPullException": {
     "message": "[tldw Assistant] Noget gik galt, da en henteanmodning for \"$1\" blev sendt til din tldw_server. Kontrollér, at din tldw_server og udvidelsen kører, og prøv igen."
+  },
+  "footerHelp": {
+    "message": "Når du er tilsluttet, kan du til enhver tid vende tilbage til disse indstillinger fra udvidelsesmenuen.",
+    "description": "Onboarding-footertekst i indstillinger."
+  },
+  "progressAria": {
+    "message": "Introduktionsforløb",
+    "description": "Aria-etiket for fremskridt i onboarding-forløbet."
+  },
+  "stepLabel": {
+    "message": "Velkommen",
+    "description": "Etiket for det første onboarding-trin (velkomst)."
+  },
+  "path": {
+    "message": "Hvordan vil du gerne starte?",
+    "description": "Overskrift for valg af, hvordan brugeren vil starte onboarding."
+  },
+  "authModeHelp": {
+    "message": "Single User (API-nøgle) anbefales til personlige eller små team-servere. Multi User (login) er til delte installationer, hvor brugere logger ind med brugernavne eller SSO. Vælg den tilstand, der matcher, hvordan din tldw_server er konfigureret.",
+    "description": "Hjælpetekst, der forklarer Single User vs Multi User-godkendelsestilstande."
+  },
+  "apiKeyHelp": {
+    "message": "Find din API-nøgle i tldw_server \u2192 Settings \u2192 API Keys. Opret en nøgle dér og indsæt den her.",
+    "description": "Hjælpetekst, der beskriver, hvor API-nøglen findes."
+  },
+  "authStepAria": {
+    "message": "Trin 3 af 4 \u2014 vælg, hvordan du logger ind",
+    "description": "Aria-etiket for godkendelsestrinnet i onboarding."
+  },
+  "confirmStepAria": {
+    "message": "Trin 4 af 4 \u2014 bekræft forbindelsen og gennemgå næste trin",
+    "description": "Aria-etiket for bekræftelsestrinnet i onboarding."
+  },
+  "nextSteps": {
+    "message": "Du er klar til at gå i gang",
+    "description": "Titel for den sidste onboarding-sektion med næste trin."
   }
 }

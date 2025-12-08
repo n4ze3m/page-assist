@@ -5,7 +5,11 @@ import path from 'path'
 export default async function globalSetup() {
   // If a built chrome extension already exists, skip rebuilding.
   const builtChromePath = path.resolve('build/chrome-mv3')
-  if (fs.existsSync(builtChromePath)) {
+  const forceBuildChrome =
+    process.env.FORCE_BUILD_CHROME === '1' ||
+    process.env.FORCE_BUILD_CHROME === 'true'
+
+  if (fs.existsSync(builtChromePath) && !forceBuildChrome) {
     return
   }
 

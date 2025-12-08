@@ -1,7 +1,7 @@
 import { UploadFile } from "antd"
 
 // Source type for file uploads
-type Source = {
+interface Source {
   source_id: string
   type: string
   filename?: string

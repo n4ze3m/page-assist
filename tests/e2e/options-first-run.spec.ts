@@ -1,10 +1,9 @@
-import { test, expect } from '@playwright/test'
-import path from 'path'
-import { launchWithExtension } from './utils/extension'
-import { grantHostPermission } from './utils/permissions'
-import { MockTldwServer } from './utils/mock-server'
-import { waitForConnectionStore, forceConnected } from './utils/connection'
-const DEFAULT_TLDW_API_KEY = 'THIS-IS-A-SECURE-KEY-123-FAKE-KEY'
+import { test, expect } from "@playwright/test"
+import path from "path"
+import { launchWithExtension } from "./utils/extension"
+import { grantHostPermission } from "./utils/permissions"
+import { waitForConnectionStore, forceConnected } from "./utils/connection"
+import { requireRealServerConfig } from "./utils/real-server"
 
 test.describe('Options first-run and connection panel', () => {
   test('shows connection card and inline Set up server link navigates to tldw settings', async () => {
@@ -53,18 +52,16 @@ test.describe('Options first-run and connection panel', () => {
   })
 
   test('Start chatting focuses the composer when connected', async () => {
-    const server = new MockTldwServer()
-    server.setApiKey(DEFAULT_TLDW_API_KEY)
-    const serverPort = await server.start(0)
-    const serverBaseUrl = `http://127.0.0.1:${serverPort}`
-    const hostPermissionOrigin = `${serverBaseUrl}/*`
+    const { serverUrl, apiKey } = requireRealServerConfig(test)
+    const serverBaseUrl = serverUrl
+    const hostPermissionOrigin = `${new URL(serverBaseUrl).origin}/*`
 
     const extPath = path.resolve('.output/chrome-mv3')
     const seed = {
       tldwConfig: {
         serverUrl: serverBaseUrl,
         authMode: 'single-user',
-        apiKey: DEFAULT_TLDW_API_KEY
+        apiKey
       }
     }
     const { context, page: initialPage, extensionId } = await launchWithExtension(extPath, {
@@ -83,7 +80,7 @@ test.describe('Options first-run and connection panel', () => {
     await page.evaluate((cfg) => new Promise<void>((resolve) => {
       // @ts-ignore
       chrome.storage.local.set({ tldwConfig: cfg }, () => resolve())
-    }), { serverUrl: serverBaseUrl, authMode: 'single-user', apiKey: DEFAULT_TLDW_API_KEY })
+    }), { serverUrl: serverBaseUrl, authMode: 'single-user', apiKey })
     await page.reload()
     page = await context.newPage()
     page.on('console', (msg) => console.log('console', msg.type(), msg.text()))
@@ -106,6 +103,5 @@ test.describe('Options first-run and connection panel', () => {
     await expect(page.locator('#textarea-message')).toBeFocused()
 
     await context.close()
-    await server.stop()
   })
 })

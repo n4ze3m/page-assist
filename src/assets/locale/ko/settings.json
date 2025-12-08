@@ -837,29 +837,33 @@
       "unknown": "Unknown"
     },
     "connectionFailed": "Connection failed",
-    "footerHelp": "Once connected, you can revisit these settings anytime from the extension menu.",
-    "progressAria": "Onboarding progress",
+    "footerHelp": "연결이 완료되면 확장 프로그램 메뉴에서 언제든지 이 설정으로 다시 돌아올 수 있습니다.",
+    "progressAria": "온보딩 진행 상황",
     "stepLabel": {
-      "welcome": "Welcome",
-      "url": "Connect to your tldw server",
-      "auth": "Choose how you sign in",
-      "health": "Confirm connection & Knowledge"
+      "welcome": "환영합니다",
+      "url": "tldw 서버에 연결",
+      "auth": "로그인 방법 선택",
+      "health": "연결 및 Knowledge 확인"
     },
     "path": {
-      "heading": "How would you like to get started?",
-      "hasServer": "I already run tldw_server",
-      "noServer": "I don’t have a server yet",
-      "demo": "Just explore with a local demo",
-      "noServerTitle": "No server yet? You can still explore.",
-      "noServerBody": "tldw_server is a separate, self-hosted app. You can follow the setup guide now, or come back later and continue in demo mode.",
-      "openSetupGuide": "Open setup guide",
-      "useDemoFromNoServer": "Use local demo mode",
-      "demoTitle": "Explore the extension in demo mode",
-      "demoBody": "Demo mode lets you try chat, notes, and media with sample data. Server-dependent features like Knowledge search will stay limited until you connect your own tldw_server.",
-      "demoCta": "Use local demo mode"
+      "heading": "어떻게 시작하시겠어요?",
+      "hasServer": "이미 tldw_server를 운영하고 있습니다",
+      "noServer": "아직 서버가 없습니다",
+      "demo": "로컬 데모로만 살펴보기",
+      "noServerTitle": "아직 서버가 없나요? 그래도 둘러볼 수 있습니다.",
+      "noServerBody": "tldw_server는 별도로 실행하는 자체 호스팅 앱입니다. 지금 설정 가이드를 따라 진행하거나, 나중에 다시 돌아와 데모 모드로 계속할 수 있습니다.",
+      "noServerOptionLocal": "내 컴퓨터에서 Docker 또는 Python으로 로컬 실행합니다.",
+      "noServerOptionRemote": "tldw_server를 원격 VPS나 관리형 호스팅에 배포합니다.",
+      "noServerOptionManaged": "가능한 경우 관리형 상용 tldw_server 배포를 사용합니다.",
+      "openSetupGuide": "설정 가이드 열기",
+      "useDemoFromNoServer": "로컬 데모 모드 사용",
+      "remindMeLater": "나중에 다시 알려주기",
+      "demoTitle": "데모 모드에서 확장 프로그램 살펴보기",
+      "demoBody": "데모 모드에서는 샘플 데이터를 사용해 채팅, 노트 및 미디어를 시험해 볼 수 있습니다. Knowledge 검색처럼 서버에 의존하는 기능은, 직접 운영하는 tldw_server를 연결할 때까지 제한된 상태로 유지됩니다.",
+      "demoCta": "로컬 데모 모드 사용"
     },
-    "authModeHelp": "Single User (API Key) is recommended for personal or small-team servers. Multi User (Login) is for shared deployments where people sign in with usernames or SSO. Choose the mode that matches how your tldw_server is set up.",
-    "apiKeyHelp": "Find your API key in tldw_server → Settings → API Keys. Generate a key there and paste it here.",
+    "authModeHelp": "Single User(API 키)는 개인 또는 소규모 팀 서버에 권장됩니다. Multi User(로그인)는 사람들이 사용자 이름이나 SSO로 로그인하는 공유 배포 환경에 적합합니다. tldw_server 설정 방식에 맞는 모드를 선택하세요.",
+    "apiKeyHelp": "tldw_server → Settings → API Keys에서 API 키를 찾을 수 있습니다. 그곳에서 키를 생성한 뒤 여기에 붙여넣으세요.",
     "authStepAria": "Step 3 of 4 — authentication configuration",
     "confirmStepAria": "Step 4 of 4 — connection summary and next steps",
     "nextSteps": {
@@ -872,7 +876,8 @@
       "ingestBody": "Use Quick ingest from the header to save the current tab to your server.",
       "mediaTitle": "Explore media & notes",
       "mediaBody": "Visit Media and Notes in Options to see what’s stored and searchable."
-    }
+    },
+    "headerShortcuts": "헤더에 빠른 바로가기를 표시하기"
   },
   "manageCharacters": {
     "title": "Manage Characters",

@@ -6,8 +6,8 @@
 export interface DocumentMetadata {
   url?: string
   source?: string
-  audio?: { chunks: any[] }
-  [key: string]: any
+  audio?: { chunks: unknown[] }
+  [key: string]: unknown
 }
 
 export interface Document<T extends DocumentMetadata = DocumentMetadata> {
@@ -20,8 +20,8 @@ export interface Document<T extends DocumentMetadata = DocumentMetadata> {
  */
 export const createDocument = <T extends DocumentMetadata = DocumentMetadata>(
   pageContent: string,
-  metadata: T = {} as T
+  metadata?: T
 ): Document<T> => ({
   pageContent,
-  metadata
+  metadata: metadata ?? ({} as T)
 })

@@ -61,6 +61,51 @@ const NotesListPanel: React.FC<NotesListPanelProps> = ({
   const endItem = hasNotes ? Math.min(page * pageSize, total) : 0
   const exportDisabled = !isOnline || !hasNotes
 
+  const demoNotes = React.useMemo(
+    () => [
+      {
+        id: "demo-1",
+        title: t("option:notesEmpty.demoSample1Title", {
+          defaultValue: "Demo note: Weekly meeting recap"
+        }),
+        preview: t("option:notesEmpty.demoSample1Preview", {
+          defaultValue:
+            "Decisions, blockers, and follow-ups from a recent team sync."
+        }),
+        updated_at: t("option:notesEmpty.demoSample1Meta", {
+          defaultValue: "Today · 9:32 AM"
+        })
+      },
+      {
+        id: "demo-2",
+        title: t("option:notesEmpty.demoSample2Title", {
+          defaultValue: "Demo note: Research highlights"
+        }),
+        preview: t("option:notesEmpty.demoSample2Preview", {
+          defaultValue:
+            "Key insights pulled from a long article or paper."
+        }),
+        updated_at: t("option:notesEmpty.demoSample2Meta", {
+          defaultValue: "Yesterday · 4:10 PM"
+        })
+      },
+      {
+        id: "demo-3",
+        title: t("option:notesEmpty.demoSample3Title", {
+          defaultValue: "Demo note: Call summary"
+        }),
+        preview: t("option:notesEmpty.demoSample3Preview", {
+          defaultValue:
+            "Summary of a customer call with next steps and owners."
+        }),
+        updated_at: t("option:notesEmpty.demoSample3Meta", {
+          defaultValue: "This week"
+        })
+      }
+    ],
+    [t]
+  )
+
   return (
     <div className="flex flex-col h-full">
       {/* Export header */}
@@ -134,38 +179,66 @@ const NotesListPanel: React.FC<NotesListPanelProps> = ({
         </div>
       ) : !isOnline ? (
         demoEnabled ? (
-          <FeatureEmptyState
-            title={
-              <span className="inline-flex items-center gap-2">
-                <span className="rounded-full bg-blue-50 px-2 py-0.5 text-[11px] font-medium text-blue-700 dark:bg-blue-900/40 dark:text-blue-200">
-                  Demo
+          <div className="space-y-4">
+            <FeatureEmptyState
+              title={
+                <span className="inline-flex items-center gap-2">
+                  <span className="rounded-full bg-blue-50 px-2 py-0.5 text-[11px] font-medium text-blue-700 dark:bg-blue-900/40 dark:text-blue-200">
+                    Demo
+                  </span>
+                  <span>
+                    {t('option:notesEmpty.demoTitle', {
+                      defaultValue: 'Explore Notes in demo mode'
+                    })}
+                  </span>
                 </span>
-                <span>
-                  {t('option:notesEmpty.demoTitle', {
-                    defaultValue: 'Explore Notes in demo mode'
-                  })}
-                </span>
-              </span>
-            }
-            description={t('option:notesEmpty.demoDescription', {
-              defaultValue:
-                'This demo shows how Notes can organize your insights. Connect your own server later to create and save real notes.'
-            })}
-            examples={[
-              t('option:notesEmpty.demoExample1', {
+              }
+              description={t('option:notesEmpty.demoDescription', {
                 defaultValue:
-                  'See how note titles, previews, and timestamps appear in this list.'
-              }),
-              t('option:notesEmpty.demoExample2', {
-                defaultValue:
-                  'When you connect, you’ll be able to create notes from meetings, reviews, and more.'
-              })
-            ]}
-            primaryActionLabel={t('option:connectionCard.buttonGoToServerCard', {
-              defaultValue: 'Go to server card'
-            })}
-            onPrimaryAction={onScrollToServerCard}
-          />
+                  'This demo shows how Notes can organize your insights. Connect your own server later to create and save real notes.'
+              })}
+              examples={[
+                t('option:notesEmpty.demoExample1', {
+                  defaultValue:
+                    'See how note titles, previews, and timestamps appear in this list.'
+                }),
+                t('option:notesEmpty.demoExample2', {
+                  defaultValue:
+                    'When you connect, you’ll be able to create notes from meetings, reviews, and more.'
+                }),
+                t('option:notesEmpty.demoExample3', {
+                  defaultValue:
+                    'Use Notes alongside Media and Review to keep track of your findings.'
+                })
+              ]}
+              primaryActionLabel={t('option:connectionCard.buttonGoToServerCard', {
+                defaultValue: 'Go to server card'
+              })}
+              onPrimaryAction={onScrollToServerCard}
+            />
+            <div className="rounded-lg border border-dashed border-gray-300 bg-white p-3 text-xs text-gray-700 dark:border-gray-700 dark:bg-[#111] dark:text-gray-200">
+              <div className="mb-2 font-semibold">
+                {t("option:notesEmpty.demoPreviewHeading", {
+                  defaultValue: "Example notes (preview only)"
+                })}
+              </div>
+              <div className="divide-y divide-gray-200 dark:divide-gray-800">
+                {demoNotes.map((note) => (
+                  <div key={note.id} className="py-2">
+                    <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                      {note.title}
+                    </div>
+                    <div className="mt-1 text-[11px] text-gray-600 dark:text-gray-300">
+                      {note.preview}
+                    </div>
+                    <div className="mt-1 text-[11px] text-gray-400 dark:text-gray-500">
+                      {note.updated_at}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         ) : (
           <FeatureEmptyState
             title={

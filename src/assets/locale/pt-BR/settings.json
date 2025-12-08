@@ -778,97 +778,115 @@
     }
   },
   "onboarding": {
-    "title": "Welcome — Let’s get you connected",
-    "description": "Configure your server and authentication. We’ll verify the connection and RAG health inline.",
-    "learnMoreTldw": "Saiba como o servidor tldw funciona",
+    "title": "Bem-vindo(a) ao tldw Browser Assistant — vamos conectar você",
+    "description": "Conecte esta extensão ao seu servidor tldw (um aplicativo separado em execução na sua máquina ou servidor). Vamos orientar você para adicionar a URL, a chave API e verificar se tudo está acessível.",
+    "exploreWithoutServer": "Você pode explorar a interface sem um servidor; alguns recursos (chat, ingestão de mídia, busca no Knowledge) permanecerão desativados até você se conectar.",
     "serverDocsUrl": "https://github.com/rmusser01/tldw_browser_assistant",
+    "serverDocsCta": "Saiba como o servidor tldw funciona",
+    "learnMoreTldw": "Saiba como o servidor tldw funciona",
     "serverUrl": {
+      "label": "URL do servidor",
       "placeholder": "http://127.0.0.1:8000",
       "help": "Exemplo: http://127.0.0.1:8000",
+      "emptyHint": "Digite a URL do seu servidor tldw para ativar o Próximo.",
       "invalid": "Insira uma URL completa como http://127.0.0.1:8000.",
       "invalidProtocol": "Use URLs http ou https, por exemplo http://127.0.0.1:8000.",
-      "label": "Server URL",
-      "emptyHint": "Enter your tldw server URL to enable Next.",
-      "ready": "We’ll enable Next once we can reach this address.",
-      "checking": "Checking reachability…",
-      "reachable": "Server responded successfully. You can continue.",
-      "unreachable": "We couldn’t reach this address yet. Double-check the URL or try again."
-    },
-    "buttons": {
-      "next": "Next",
-      "back": "Back",
-      "continue": "Continue",
-      "recheck": "Recheck",
-      "finish": "Finish",
-      "finishAnyway": "Finish without connecting",
-      "skip": "Skip for now"
+      "ready": "Vamos ativar Próximo assim que conseguirmos acessar esse endereço.",
+      "checking": "Verificando acessibilidade…",
+      "reachable": "O servidor respondeu com sucesso. Você pode continuar.",
+      "unreachable": "Ainda não conseguimos acessar esse endereço. Verifique a URL ou tente novamente."
     },
     "authMode": {
-      "label": "Authentication Mode",
-      "single": "Single User (API Key)",
-      "multi": "Multi User (Login)"
+      "label": "Modo de autenticação",
+      "single": "Usuário único (chave API)",
+      "multi": "Multiusuário (login)"
     },
     "apiKey": {
-      "label": "API Key",
-      "placeholder": "Enter your API key (or use the default demo key THIS-IS-A-SECURE-KEY-123-REPLACE-ME for local single-user setups)"
+      "label": "Chave API",
+      "placeholder": "Insira sua chave API (ou use a chave de demonstração padrão THIS-IS-A-SECURE-KEY-123-REPLACE-ME para ambientes locais de usuário único)"
     },
     "username": {
-      "label": "Username",
-      "placeholder": "Username"
+      "label": "Nome de usuário",
+      "placeholder": "Nome de usuário"
     },
     "password": {
-      "label": "Password",
-      "placeholder": "Password"
+      "label": "Senha",
+      "placeholder": "Senha"
+    },
+    "buttons": {
+      "next": "Próximo",
+      "back": "Voltar",
+      "continue": "Continuar",
+      "recheck": "Verificar novamente",
+      "finish": "Concluir",
+      "finishAnyway": "Concluir sem conectar",
+      "skip": "Pular por enquanto"
     },
     "connection": {
-      "label": "Connection:",
-      "unknown": "Unknown",
-      "connected": "Connected",
-      "failed": "Failed",
-      "continueAnyway": "You can continue and complete setup now. You’ll be able to verify the connection later from Settings."
+      "label": "Conexão:",
+      "unknown": "Desconhecida",
+      "connected": "Conectado",
+      "failed": "Falhou",
+      "continueAnyway": "Você pode concluir a configuração agora e explorar a interface sem um servidor. Chat, ingestão de mídia e busca no Knowledge permanecerão limitados até você conectar um servidor tldw em Configurações → Servidor tldw."
     },
     "rag": {
-      "label": "RAG:",
-      "healthy": "Healthy",
-      "unhealthy": "Unhealthy",
-      "unknown": "Unknown"
+      "label": "Busca e recuperação de Knowledge:",
+      "healthy": "Saudável",
+      "unhealthy": "Com problemas",
+      "unknown": "Desconhecido",
+      "help": "Verifica se o seu servidor consegue pesquisar suas notas, mídias e outras fontes de conhecimento conectadas."
     },
-    "connectionFailed": "Connection failed",
-    "footerHelp": "Once connected, you can revisit these settings anytime from the extension menu.",
-    "progressAria": "Onboarding progress",
+    "connectionFailed": "Falha na conexão",
+    "footerHelp": "Depois de conectado, você pode voltar a estas configurações a qualquer momento pelo menu da extensão.",
+    "progressAria": "Progresso da configuração inicial",
     "stepLabel": {
-      "welcome": "Welcome",
-      "url": "Connect to your tldw server",
-      "auth": "Choose how you sign in",
-      "health": "Confirm connection & Knowledge"
+      "welcome": "Bem-vindo",
+      "url": "Conecte-se ao seu servidor tldw",
+      "auth": "Escolha como fazer login",
+      "health": "Confirme a conexão e o Knowledge"
     },
     "path": {
-      "heading": "How would you like to get started?",
-      "hasServer": "I already run tldw_server",
-      "noServer": "I don’t have a server yet",
-      "demo": "Just explore with a local demo",
-      "noServerTitle": "No server yet? You can still explore.",
-      "noServerBody": "tldw_server is a separate, self-hosted app. You can follow the setup guide now, or come back later and continue in demo mode.",
-      "openSetupGuide": "Open setup guide",
-      "useDemoFromNoServer": "Use local demo mode",
-      "demoTitle": "Explore the extension in demo mode",
-      "demoBody": "Demo mode lets you try chat, notes, and media with sample data. Server-dependent features like Knowledge search will stay limited until you connect your own tldw_server.",
-      "demoCta": "Use local demo mode"
+      "heading": "Como você quer começar?",
+      "hasServer": "Já estou executando o tldw_server",
+      "noServer": "Ainda não tenho um servidor",
+      "demo": "Apenas explorar com uma demonstração local",
+      "noServerTitle": "Ainda sem servidor? Você ainda pode explorar.",
+      "noServerBody": "tldw_server é um aplicativo separado, auto-hospedado. Você pode seguir o guia de configuração agora ou voltar depois e continuar no modo de demonstração.",
+      "noServerOptionLocal": "Execute localmente com Docker ou Python na sua própria máquina.",
+      "noServerOptionRemote": "Faça o deploy do tldw_server em um VPS remoto ou serviço de hospedagem gerenciado.",
+      "noServerOptionManaged": "Use uma instância comercial gerenciada do tldw_server quando estiver disponível.",
+      "openSetupGuide": "Abrir guia de configuração",
+      "useDemoFromNoServer": "Usar modo de demonstração local",
+      "remindMeLater": "Lembrar mais tarde",
+      "demoTitle": "Explorar a extensão no modo de demonstração",
+      "demoBody": "O modo de demonstração permite testar chat, notas e mídia com dados de exemplo. Funcionalidades que dependem do servidor, como a busca no Knowledge, continuarão limitadas até você conectar o seu próprio tldw_server.",
+      "demoCta": "Usar modo de demonstração local"
     },
-    "authModeHelp": "Single User (API Key) is recommended for personal or small-team servers. Multi User (Login) is for shared deployments where people sign in with usernames or SSO. Choose the mode that matches how your tldw_server is set up.",
-    "apiKeyHelp": "Find your API key in tldw_server → Settings → API Keys. Generate a key there and paste it here.",
-    "authStepAria": "Step 3 of 4 — authentication configuration",
-    "confirmStepAria": "Step 4 of 4 — connection summary and next steps",
+    "authModeHelp": "Single User (API Key) é recomendado para servidores pessoais ou de equipes pequenas. Multi User (Login) é voltado para implantações compartilhadas, nas quais as pessoas fazem login com nome de usuário ou SSO. Escolha o modo que corresponde à forma como o seu tldw_server está configurado.",
+    "auth": {
+      "missingCredentials": "Insira um nome de usuário e uma senha para continuar.",
+      "missingApiKey": "A chave API é obrigatória."
+    },
+    "apiKeyHelp": "Encontre sua chave de API em tldw_server → Settings → API Keys. Gere uma chave lá e cole aqui.",
+    "authStepAria": "Etapa 3 de 4 — escolha como você faz login",
+    "confirmStepAria": "Etapa 4 de 4 — confirme a conexão e revise os próximos passos",
     "nextSteps": {
-      "title": "You’re ready to go",
-      "subtitle": "From here you can open the sidepanel, ingest a page, or explore media and notes.",
-      "chatTitle": "Start chatting",
-      "chatBody": "Open the sidepanel and ask your first question.",
-      "chatCta": "Open sidepanel",
-      "ingestTitle": "Ingest your first page",
-      "ingestBody": "Use Quick ingest from the header to save the current tab to your server.",
-      "mediaTitle": "Explore media & notes",
-      "mediaBody": "Visit Media and Notes in Options to see what’s stored and searchable."
+      "title": "Tudo pronto para começar",
+      "subtitle": "A partir daqui você pode abrir o painel lateral, ingerir uma página ou explorar mídias e notas.",
+      "chatTitle": "Comece a conversar",
+      "chatBody": "Abra o painel lateral e faça sua primeira pergunta.",
+      "chatCta": "Abrir painel lateral",
+      "ingestTitle": "Ingerir sua primeira página",
+      "ingestBody": "Use a Ingestão rápida no cabeçalho para salvar a guia atual no seu servidor.",
+      "mediaTitle": "Explorar mídias e notas",
+      "mediaBody": "Acesse Mídia e Notas em Opções para ver o que está armazenado e pesquisável."
+    },
+    "headerShortcuts": "Mostrar atalhos rápidos no cabeçalho",
+    "errors": {
+      "invalidCredentials": "Falha no login. Verifique seu nome de usuário e senha ou confirme se o login multiusuário está habilitado no seu servidor tldw.",
+      "forbidden": "Acesso negado. Verifique se sua conta de usuário tem permissão para fazer login.",
+      "serverUnreachable": "Não foi possível alcançar seu servidor tldw. Verifique a URL do servidor ou abra Saúde e diagnósticos para mais detalhes.",
+      "generic": "Falha no login. Abra Saúde e diagnósticos no cabeçalho para inspecionar os erros do servidor."
     }
   },
   "manageCharacters": {

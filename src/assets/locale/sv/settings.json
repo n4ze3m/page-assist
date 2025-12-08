@@ -834,29 +834,33 @@
       "unknown": "Unknown"
     },
     "connectionFailed": "Connection failed",
-    "footerHelp": "Once connected, you can revisit these settings anytime from the extension menu.",
-    "progressAria": "Onboarding progress",
+    "footerHelp": "När du är ansluten kan du när som helst gå tillbaka till dessa inställningar via tilläggsmenyn.",
+    "progressAria": "Förloppsindikator för onboarding",
     "stepLabel": {
-      "welcome": "Welcome",
-      "url": "Connect to your tldw server",
-      "auth": "Choose how you sign in",
-      "health": "Confirm connection & Knowledge"
+      "welcome": "Välkommen",
+      "url": "Anslut till din tldw-server",
+      "auth": "Välj hur du loggar in",
+      "health": "Bekräfta anslutning och Knowledge"
     },
     "path": {
-      "heading": "How would you like to get started?",
-      "hasServer": "I already run tldw_server",
-      "noServer": "I don’t have a server yet",
-      "demo": "Just explore with a local demo",
-      "noServerTitle": "No server yet? You can still explore.",
-      "noServerBody": "tldw_server is a separate, self-hosted app. You can follow the setup guide now, or come back later and continue in demo mode.",
-      "openSetupGuide": "Open setup guide",
-      "useDemoFromNoServer": "Use local demo mode",
-      "demoTitle": "Explore the extension in demo mode",
-      "demoBody": "Demo mode lets you try chat, notes, and media with sample data. Server-dependent features like Knowledge search will stay limited until you connect your own tldw_server.",
-      "demoCta": "Use local demo mode"
+      "heading": "Hur vill du komma igång?",
+      "hasServer": "Jag kör redan tldw_server",
+      "noServer": "Jag har ingen server ännu",
+      "demo": "Utforska bara med en lokal demo",
+      "noServerTitle": "Ingen server än? Du kan ändå utforska.",
+      "noServerBody": "tldw_server är en separat, egenhostad app. Du kan följa installationsguiden nu eller komma tillbaka senare och fortsätta i demoläge.",
+      "noServerOptionLocal": "Kör lokalt med Docker eller Python på din egen dator.",
+      "noServerOptionRemote": "Distribuera tldw_server till en fjärr-VPS eller ett hanterat webbhotell.",
+      "noServerOptionManaged": "Använd ett hanterat kommersiellt tldw_server-erbjudande när det finns tillgängligt.",
+      "openSetupGuide": "Öppna installationsguide",
+      "useDemoFromNoServer": "Använd lokalt demoläge",
+      "remindMeLater": "Påminn mig senare",
+      "demoTitle": "Utforska tillägget i demoläge",
+      "demoBody": "Demoläget låter dig testa chatt, anteckningar och media med exempeldata. Serverberoende funktioner, som Knowledge-sökning, förblir begränsade tills du ansluter din egen tldw_server.",
+      "demoCta": "Använd lokalt demoläge"
     },
-    "authModeHelp": "Single User (API Key) is recommended for personal or small-team servers. Multi User (Login) is for shared deployments where people sign in with usernames or SSO. Choose the mode that matches how your tldw_server is set up.",
-    "apiKeyHelp": "Find your API key in tldw_server → Settings → API Keys. Generate a key there and paste it here.",
+    "authModeHelp": "Single User (API-nyckel) rekommenderas för personliga servrar eller små team. Multi User (Login) är för delade installationer där användare loggar in med användarnamn eller SSO. Välj det läge som stämmer med hur din tldw_server är konfigurerad.",
+    "apiKeyHelp": "Hitta din API-nyckel i tldw_server → Settings → API Keys. Skapa en nyckel där och klistra in den här.",
     "authStepAria": "Step 3 of 4 — authentication configuration",
     "confirmStepAria": "Step 4 of 4 — connection summary and next steps",
     "nextSteps": {
@@ -869,7 +873,8 @@
       "ingestBody": "Use Quick ingest from the header to save the current tab to your server.",
       "mediaTitle": "Explore media & notes",
       "mediaBody": "Visit Media and Notes in Options to see what’s stored and searchable."
-    }
+    },
+    "headerShortcuts": "Visa snabba genvägar i sidhuvudet"
   },
   "manageCharacters": {
     "title": "Manage Characters",

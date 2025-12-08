@@ -100,5 +100,41 @@
   },
   "hfPullException": {
     "message": "[tldw Assistant] Si è verificato un problema durante l’invio di una richiesta di download per \"$1\" al tuo tldw_server. Assicurati che tldw_server e l’estensione siano in esecuzione، quindi riprova."
+  },
+  "footerHelp": {
+    "message": "Una volta connesso, puoi tornare a queste impostazioni in qualsiasi momento dal menu dell’estensione.",
+    "description": "Testo di aiuto nel piè di pagina per la procedura di onboarding nelle impostazioni."
+  },
+  "progressAria": {
+    "message": "Avanzamento della configurazione",
+    "description": "Etichetta aria per l’indicatore di avanzamento della configurazione."
+  },
+  "stepLabel": {
+    "message": "Benvenuto",
+    "description": "Etichetta per il primo passaggio dell’onboarding (benvenuto)."
+  },
+  "path": {
+    "message": "Come vuoi iniziare?",
+    "description": "Titolo per la scelta di come iniziare il flusso di onboarding."
+  },
+  "authModeHelp": {
+    "message": "Single User (API Key) è consigliato per server personali o di piccoli team. Multi User (Login) è pensato per deployment condivisi in cui le persone accedono con nome utente o SSO. Scegli la modalità che corrisponde alla configurazione del tuo tldw_server.",
+    "description": "Testo esplicativo per le modalità di autenticazione Single User e Multi User."
+  },
+  "apiKeyHelp": {
+    "message": "Trova la tua API key in tldw_server \u2192 Settings \u2192 API Keys. Genera lì una chiave e incollala qui.",
+    "description": "Testo che indica dove trovare la API key."
+  },
+  "authStepAria": {
+    "message": "Passaggio 3 di 4 \u2014 scegli come effettuare l’accesso",
+    "description": "Etichetta aria per il passaggio di scelta della modalità di accesso."
+  },
+  "confirmStepAria": {
+    "message": "Passaggio 4 di 4 \u2014 conferma la connessione e verifica i prossimi passi",
+    "description": "Etichetta aria per il passaggio di conferma della connessione."
+  },
+  "nextSteps": {
+    "message": "Sei pronto per iniziare",
+    "description": "Titolo del pannello finale dell’onboarding con i passi successivi."
   }
 }

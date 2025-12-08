@@ -1,0 +1,32 @@
+{
+  "mediaPage.nothingToSend": {
+    "message": "അയയ്ക്കാൻ ഉള്ള ഉള്ളടക്കം ഒന്നുമില്ല"
+  },
+  "mediaPage.emptyAnalysis": {
+    "message": "വിശകലനം ഒഴിഞ്ഞതാകാൻ പാടില്ല"
+  },
+  "mediaPage.noMediaId": {
+    "message": "ലഭ്യമായ മീഡിയ ID ഇല്ല"
+  },
+  "mediaPage.versionSaved": {
+    "message": "പുതിയ പതിപ്പായി സേവ് ചെയ്തു"
+  },
+  "mediaPage.saveFailed": {
+    "message": "പതിപ്പ് സേവ് ചെയ്യാൻ കഴിഞ്ഞില്ല"
+  },
+  "mediaPage.sendToChat": {
+    "message": "ചാറ്റിലേക്ക് അയയ്ക്കുക"
+  },
+  "mediaPage.saveAsVersion": {
+    "message": "പുതിയ പതിപ്പായി സേവ് ചെയ്യുക"
+  },
+  "mediaPage.analysisPlaceholder": {
+    "message": "വിശകലന ടെക്സ്റ്റ് നൽകുക..."
+  },
+  "mediaPage.wordCount": {
+    "message": "{{count}} വാക്കുകൾ"
+  },
+  "mediaPage.charCount": {
+    "message": "{{count}} അക്ഷരങ്ങൾ"
+  }
+}

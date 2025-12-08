@@ -834,29 +834,33 @@
       "unknown": "Unknown"
     },
     "connectionFailed": "Connection failed",
-    "footerHelp": "Once connected, you can revisit these settings anytime from the extension menu.",
-    "progressAria": "Onboarding progress",
+    "footerHelp": "После подключения вы можете в любое время вернуться к этим настройкам через меню расширения.",
+    "progressAria": "Ход первоначальной настройки",
     "stepLabel": {
-      "welcome": "Welcome",
-      "url": "Connect to your tldw server",
-      "auth": "Choose how you sign in",
-      "health": "Confirm connection & Knowledge"
+      "welcome": "Добро пожаловать",
+      "url": "Подключите свой сервер tldw",
+      "auth": "Выберите способ входа",
+      "health": "Подтвердите подключение и Knowledge"
     },
     "path": {
-      "heading": "How would you like to get started?",
-      "hasServer": "I already run tldw_server",
-      "noServer": "I don’t have a server yet",
-      "demo": "Just explore with a local demo",
-      "noServerTitle": "No server yet? You can still explore.",
-      "noServerBody": "tldw_server is a separate, self-hosted app. You can follow the setup guide now, or come back later and continue in demo mode.",
-      "openSetupGuide": "Open setup guide",
-      "useDemoFromNoServer": "Use local demo mode",
-      "demoTitle": "Explore the extension in demo mode",
-      "demoBody": "Demo mode lets you try chat, notes, and media with sample data. Server-dependent features like Knowledge search will stay limited until you connect your own tldw_server.",
-      "demoCta": "Use local demo mode"
+      "heading": "С чего вы хотите начать?",
+      "hasServer": "Я уже запускаю tldw_server",
+      "noServer": "У меня пока нет сервера",
+      "demo": "Просто посмотреть с локальной демо-версией",
+      "noServerTitle": "Пока нет сервера? Вы всё равно можете попробовать.",
+      "noServerBody": "tldw_server — это отдельное, самостоятельно размещаемое приложение. Вы можете пройти руководство по настройке сейчас или вернуться позже и продолжить в демо-режиме.",
+      "noServerOptionLocal": "Запустите локально с помощью Docker или Python на своём компьютере.",
+      "noServerOptionRemote": "Разверните tldw_server на удалённом VPS или управляемом хостинге.",
+      "noServerOptionManaged": "Используйте управляемый коммерческий развёртывание tldw_server, когда оно доступно.",
+      "openSetupGuide": "Открыть руководство по настройке",
+      "useDemoFromNoServer": "Использовать локальный демо-режим",
+      "remindMeLater": "Напомнить позже",
+      "demoTitle": "Изучить расширение в демо-режиме",
+      "demoBody": "Демо-режим позволяет протестировать чат, заметки и медиа на основе примерных данных. Функции, зависящие от сервера, например поиск по Knowledge, останутся ограниченными, пока вы не подключите собственный tldw_server.",
+      "demoCta": "Использовать локальный демо-режим"
     },
-    "authModeHelp": "Single User (API Key) is recommended for personal or small-team servers. Multi User (Login) is for shared deployments where people sign in with usernames or SSO. Choose the mode that matches how your tldw_server is set up.",
-    "apiKeyHelp": "Find your API key in tldw_server → Settings → API Keys. Generate a key there and paste it here.",
+    "authModeHelp": "Режим Single User (API Key) рекомендуется для личных серверов или серверов небольших команд. Multi User (Login) предназначен для общих установок, где пользователи входят под учётной записью или через SSO. Выберите режим, соответствующий конфигурации вашего tldw_server.",
+    "apiKeyHelp": "Найдите свой API-ключ в tldw_server → Settings → API Keys. Сгенерируйте там ключ и вставьте его сюда.",
     "authStepAria": "Step 3 of 4 — authentication configuration",
     "confirmStepAria": "Step 4 of 4 — connection summary and next steps",
     "nextSteps": {
@@ -869,7 +873,8 @@
       "ingestBody": "Use Quick ingest from the header to save the current tab to your server.",
       "mediaTitle": "Explore media & notes",
       "mediaBody": "Visit Media and Notes in Options to see what’s stored and searchable."
-    }
+    },
+    "headerShortcuts": "Показать быстрые ярлыки в заголовке"
   },
   "manageCharacters": {
     "title": "Управление персонажами",

@@ -73,7 +73,6 @@ export class ChatTldw {
       reasoningEffort: this.reasoningEffort
     })
 
-    const self = this
     async function* generator() {
       let fullText = ""
       try {

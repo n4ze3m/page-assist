@@ -100,5 +100,41 @@
   },
   "hfPullException": {
     "message": "[tldw Assistant] 「$1」モデルのプルリクエストを tldw_server に送信中に問題が発生しました。tldw_server と拡張機能が実行中であることを確認し、もう一度お試しください。"
+  },
+  "footerHelp": {
+    "message": "接続が完了すると、拡張機能のメニューからいつでもこの設定画面に戻ることができます。",
+    "description": "設定画面のオンボーディングで使われるフッターヘルプテキスト。"
+  },
+  "progressAria": {
+    "message": "オンボーディングの進行状況",
+    "description": "オンボーディング進行状況インジケーターの aria ラベル。"
+  },
+  "stepLabel": {
+    "message": "ようこそ",
+    "description": "オンボーディングの最初のステップ（ようこそ）のラベル。"
+  },
+  "path": {
+    "message": "どのように始めますか？",
+    "description": "オンボーディングで開始方法を選択するセクションの見出し。"
+  },
+  "authModeHelp": {
+    "message": "Single User（API キー）は個人または小規模チームのサーバーに推奨されます。Multi User（ログイン）は、ユーザー名や SSO でサインインする共有環境向けです。お使いの tldw_server の構成に合ったモードを選択してください。",
+    "description": "Single User と Multi User の認証モードの違いを説明するヘルプテキスト。"
+  },
+  "apiKeyHelp": {
+    "message": "tldw_server の「Settings」→「API Keys」で API キーを確認できます。そこでキーを作成し、この欄に貼り付けてください。",
+    "description": "API キーの確認場所を説明するヘルプテキスト。"
+  },
+  "authStepAria": {
+    "message": "Step 3 of 4 \u2014 authentication configuration",
+    "description": "オンボーディングにおける認証設定ステップの aria ラベル（現在は英語のまま）。"
+  },
+  "confirmStepAria": {
+    "message": "Step 4 of 4 \u2014 connection summary and next steps",
+    "description": "オンボーディングにおける接続確認ステップの aria ラベル（現在は英語のまま）。"
+  },
+  "nextSteps": {
+    "message": "You\u2019re ready to go",
+    "description": "オンボーディングの最後のパネルのタイトル（現在は英語のまま）。"
   }
 }

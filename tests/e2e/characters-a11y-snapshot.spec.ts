@@ -1,25 +1,24 @@
-import { test } from '@playwright/test'
-import fs from 'node:fs'
-import path from 'node:path'
+import { test } from "@playwright/test"
+import fs from "node:fs"
+import path from "node:path"
 
-import { launchWithBuiltExtension } from './utils/extension-build'
-import { MockTldwServer } from './utils/mock-server'
-import { grantHostPermission } from './utils/permissions'
+import { launchWithBuiltExtension } from "./utils/extension-build"
+import { grantHostPermission } from "./utils/permissions"
+import { requireRealServerConfig } from "./utils/real-server"
 
-const seedConfig = (page: any, serverUrl: string) =>
+const seedConfig = (page: any, serverUrl: string, apiKey: string) =>
   page.evaluate(
     (cfg) =>
       new Promise<void>((resolve) => {
         // @ts-ignore
         chrome.storage.local.set({ tldwConfig: cfg }, () => resolve())
       }),
-    { serverUrl, authMode: 'single-user', apiKey: 'THIS-IS-A-SECURE-KEY-123-FAKE-KEY' }
+    { serverUrl, authMode: "single-user", apiKey }
   )
 
 test.describe('Characters workspace snapshots', () => {
   test('capture a11y tree and full-page screenshot', async () => {
-    const server = new MockTldwServer()
-    await server.start()
+    const { serverUrl, apiKey } = requireRealServerConfig(test)
 
     const { context, page, extensionId, optionsUrl } =
       await launchWithBuiltExtension()
@@ -32,14 +31,17 @@ test.describe('Characters workspace snapshots', () => {
     const granted = await grantHostPermission(
       context,
       extensionId,
-      `${server.url}/*`
+      new URL(serverUrl).origin + "/*"
     )
     if (!granted) {
-      test.skip(true, 'Host permission not granted for mock server')
+      test.skip(
+        true,
+        "Host permission not granted for tldw_server origin"
+      )
     }
 
     await page.goto(optionsUrl)
-    await seedConfig(page, server.url)
+    await seedConfig(page, serverUrl, apiKey)
 
     await page.goto(`${optionsUrl}#/characters`)
 
@@ -71,6 +73,5 @@ test.describe('Characters workspace snapshots', () => {
     })
 
     await context.close()
-    await server.stop()
   })
 })

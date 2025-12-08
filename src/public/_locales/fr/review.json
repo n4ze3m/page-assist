@@ -1,0 +1,32 @@
+{
+  "mediaPage.nothingToSend": {
+    "message": "Rien à envoyer"
+  },
+  "mediaPage.emptyAnalysis": {
+    "message": "L'analyse ne peut pas être vide"
+  },
+  "mediaPage.noMediaId": {
+    "message": "Aucun ID de média disponible"
+  },
+  "mediaPage.versionSaved": {
+    "message": "Enregistré comme nouvelle version"
+  },
+  "mediaPage.saveFailed": {
+    "message": "Échec de l'enregistrement de la version"
+  },
+  "mediaPage.sendToChat": {
+    "message": "Envoyer au chat"
+  },
+  "mediaPage.saveAsVersion": {
+    "message": "Enregistrer comme nouvelle version"
+  },
+  "mediaPage.analysisPlaceholder": {
+    "message": "Saisissez le texte de l'analyse..."
+  },
+  "mediaPage.wordCount": {
+    "message": "{{count}} mots"
+  },
+  "mediaPage.charCount": {
+    "message": "{{count}} caractères"
+  }
+}

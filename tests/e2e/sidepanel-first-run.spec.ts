@@ -1,12 +1,9 @@
-import { test, expect } from '@playwright/test'
-import path from 'path'
-import { launchWithExtension } from './utils/extension'
-import { grantHostPermission } from './utils/permissions'
-import { MockTldwServer } from './utils/mock-server'
-import {
-  waitForConnectionStore,
-  forceConnected
-} from './utils/connection'
+import { test, expect } from "@playwright/test"
+import path from "path"
+import { launchWithExtension } from "./utils/extension"
+import { grantHostPermission } from "./utils/permissions"
+import { waitForConnectionStore, forceConnected } from "./utils/connection"
+import { requireRealServerConfig } from "./utils/real-server"
 
 test.describe('Sidepanel first-run and connection panel', () => {
   test('shows connection card and Open/Change settings opens tldw settings in a new tab', async () => {
@@ -44,6 +41,8 @@ test.describe('Sidepanel first-run and connection panel', () => {
   })
 
   test('Connected sidepanel focuses the composer (no extra Start chatting CTA)', async () => {
+    const { serverUrl, apiKey } = requireRealServerConfig(test)
+
     const extPath = path.resolve('.output/chrome-mv3')
     const { context, openSidepanel } = (await launchWithExtension(extPath)) as any
     const page = await openSidepanel()
@@ -52,7 +51,7 @@ test.describe('Sidepanel first-run and connection panel', () => {
     await waitForConnectionStore(page, 'sidepanel-connected')
     await forceConnected(
       page,
-      { serverUrl: 'http://127.0.0.1:8000' },
+      { serverUrl, apiKey },
       'sidepanel-connected'
     )
 

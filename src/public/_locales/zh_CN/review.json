@@ -1,0 +1,32 @@
+{
+  "mediaPage.nothingToSend": {
+    "message": "没有可发送的内容"
+  },
+  "mediaPage.emptyAnalysis": {
+    "message": "分析内容不能为空"
+  },
+  "mediaPage.noMediaId": {
+    "message": "没有可用的媒体 ID"
+  },
+  "mediaPage.versionSaved": {
+    "message": "已保存为新版本"
+  },
+  "mediaPage.saveFailed": {
+    "message": "保存版本失败"
+  },
+  "mediaPage.sendToChat": {
+    "message": "发送到聊天"
+  },
+  "mediaPage.saveAsVersion": {
+    "message": "保存为新版本"
+  },
+  "mediaPage.analysisPlaceholder": {
+    "message": "请输入分析文本..."
+  },
+  "mediaPage.wordCount": {
+    "message": "{{count}} 个单词"
+  },
+  "mediaPage.charCount": {
+    "message": "{{count}} 个字符"
+  }
+}

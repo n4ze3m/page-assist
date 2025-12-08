@@ -6,7 +6,6 @@ import { useTranslation } from "react-i18next"
 import { useQueryClient } from "@tanstack/react-query"
 import { browser } from "wxt/browser"
 import { AvailableModelsList } from "./AvailableModelsList"
-import { isFireFoxPrivateMode } from "@/utils/is-private-mode"
 import { useAntdNotification } from "@/hooks/useAntdNotification"
 import { tldwModels } from "@/services/tldw"
 

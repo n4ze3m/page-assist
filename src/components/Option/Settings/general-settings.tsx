@@ -446,11 +446,7 @@ export const GeneralSettings = () => {
           type="button"
           className="text-xs text-blue-600 hover:text-blue-500 dark:text-blue-400"
           onClick={() => {
-            try {
-              beginOnboarding()
-            } catch {
-              // ignore store failures; still navigate back to the main view
-            }
+            beginOnboarding()
             notification.success({
               message: t(
                 "generalSettings.settings.restartOnboarding.toast",
@@ -461,7 +457,9 @@ export const GeneralSettings = () => {
                 "We’ll take you back to the welcome step so you can review your server URL and API key."
               )
             })
-            navigate("/")
+            setTimeout(() => {
+              navigate("/")
+            }, 500)
           }}
         >
           {t(

@@ -32,6 +32,7 @@ import {
 } from "@/libs/reasoning"
 import { getModelNicknameByID } from "@/db/dexie/nickname"
 import { systemPromptFormatter } from "@/utils/system-message"
+import type { Character } from "@/types/character"
 import { createBranchMessage } from "./handlers/messageHandlers"
 import {
   createSaveMessageOnError,
@@ -77,7 +78,10 @@ export const useMessage = () => {
     false
   )
   const [maxWebsiteContext] = useStorage("maxWebsiteContext", 4028)
-  const [selectedCharacter] = useStorage<any>("selectedCharacter", null)
+  const [selectedCharacter] = useStorage<Character | null>(
+    "selectedCharacter",
+    null
+  )
 
   const {
     history,
@@ -119,10 +123,7 @@ export const useMessage = () => {
     setServerChatExternalRef
   } = useStoreMessageOption()
   const notification = useAntdNotification()
- const [sidepanelTemporaryChat, ] = useStorage(
-    "sidepanelTemporaryChat",
-    false
-  )
+  const [sidepanelTemporaryChat] = useStorage("sidepanelTemporaryChat", false)
   const [speechToTextLanguage, setSpeechToTextLanguage] = useStorage(
     "speechToTextLanguage",
     "en-US"
@@ -522,8 +523,6 @@ export const useMessage = () => {
       }
       setIsProcessing(false)
       setStreaming(false)
-      setIsProcessing(false)
-      setStreaming(false)
       setIsEmbedding(false)
     } finally {
       setAbortController(null)
@@ -779,8 +778,6 @@ export const useMessage = () => {
           description: e?.message || t("somethingWentWrong")
         })
       }
-      setIsProcessing(false)
-      setStreaming(false)
       setIsProcessing(false)
       setStreaming(false)
       setIsEmbedding(false)
@@ -1150,8 +1147,20 @@ export const useMessage = () => {
       // Persist assistant reply on server
       try {
         const createdAsst = await tldwClient.addChatMessage(chatId, { role: 'assistant', content: fullText })
-        setMessages((prev) => (prev as ServerBackedMessage[]).map((m) => (m.id === generateMessageId ? { ...m, serverMessageId: createdAsst?.id, serverMessageVersion: createdAsst?.version } : m)))
-      } catch {}
+        setMessages((prev) =>
+          (prev as ServerBackedMessage[]).map((m) =>
+            m.id === generateMessageId
+              ? {
+                  ...m,
+                  serverMessageId: createdAsst?.id,
+                  serverMessageVersion: createdAsst?.version
+                }
+              : m
+          )
+        )
+      } catch (e) {
+        console.error("Failed to persist assistant message to server:", e)
+      }
 
       // Update local history as well (keeps local features consistent)
       setHistory([

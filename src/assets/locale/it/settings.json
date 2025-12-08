@@ -778,8 +778,8 @@
     }
   },
   "onboarding": {
-    "title": "Welcome — Let’s get you connected",
-    "description": "Configure your server and authentication. We’ll verify the connection and RAG health inline.",
+    "title": "Benvenuto — colleghiamo il tuo server",
+    "description": "Configura il server e l’autenticazione. Verificheremo la connessione e lo stato di RAG direttamente in questa schermata.",
     "learnMoreTldw": "Scopri come funziona il server tldw",
     "serverDocsUrl": "https://github.com/rmusser01/tldw_browser_assistant",
     "serverUrl": {
@@ -787,88 +787,104 @@
       "help": "Esempio: http://127.0.0.1:8000",
       "invalid": "Inserisci un URL completo come http://127.0.0.1:8000.",
       "invalidProtocol": "Usa URL http o https, ad esempio http://127.0.0.1:8000.",
-      "label": "Server URL",
-      "emptyHint": "Enter your tldw server URL to enable Next.",
-      "ready": "We’ll enable Next once we can reach this address.",
-      "checking": "Checking reachability…",
-      "reachable": "Server responded successfully. You can continue.",
-      "unreachable": "We couldn’t reach this address yet. Double-check the URL or try again."
+      "label": "URL del server",
+      "emptyHint": "Inserisci l’URL del tuo server tldw per abilitare Avanti.",
+      "ready": "Abiliteremo Avanti non appena riusciremo a raggiungere questo indirizzo.",
+      "checking": "Verifica della raggiungibilità…",
+      "reachable": "Il server ha risposto correttamente. Puoi continuare.",
+      "unreachable": "Non siamo ancora riusciti a raggiungere questo indirizzo. Controlla l’URL o riprova."
     },
     "buttons": {
-      "next": "Next",
-      "back": "Back",
-      "continue": "Continue",
-      "recheck": "Recheck",
-      "finish": "Finish",
-      "finishAnyway": "Finish without connecting",
-      "skip": "Skip for now"
+      "next": "Avanti",
+      "back": "Indietro",
+      "continue": "Continua",
+      "recheck": "Ricontrolla",
+      "finish": "Fine",
+      "finishAnyway": "Termina senza connettere",
+      "skip": "Salta per ora"
     },
     "authMode": {
-      "label": "Authentication Mode",
-      "single": "Single User (API Key)",
-      "multi": "Multi User (Login)"
+      "label": "Modalità di autenticazione",
+      "single": "Utente singolo (API Key)",
+      "multi": "Multiutente (accesso)"
     },
     "apiKey": {
       "label": "API Key",
-      "placeholder": "Enter your API key (or use the default demo key THIS-IS-A-SECURE-KEY-123-REPLACE-ME for local single-user setups)"
+      "placeholder": "Inserisci la tua API key (oppure usa la chiave demo predefinita THIS-IS-A-SECURE-KEY-123-REPLACE-ME per configurazioni locali a utente singolo)"
     },
     "username": {
-      "label": "Username",
-      "placeholder": "Username"
+      "label": "Nome utente",
+      "placeholder": "Nome utente"
     },
     "password": {
       "label": "Password",
       "placeholder": "Password"
     },
     "connection": {
-      "label": "Connection:",
-      "unknown": "Unknown",
-      "connected": "Connected",
-      "failed": "Failed",
-      "continueAnyway": "You can continue and complete setup now. You’ll be able to verify the connection later from Settings."
+      "label": "Connessione:",
+      "unknown": "Sconosciuta",
+      "connected": "Connesso",
+      "failed": "Non riuscita",
+      "continueAnyway": "Puoi continuare e completare la configurazione ora. Potrai verificare la connessione più tardi da Impostazioni."
     },
     "rag": {
-      "label": "RAG:",
-      "healthy": "Healthy",
-      "unhealthy": "Unhealthy",
-      "unknown": "Unknown"
+      "label": "Ricerca e recupero Knowledge:",
+      "healthy": "Attivo",
+      "unhealthy": "Non attivo",
+      "unknown": "Sconosciuto",
+      "help": "Verifica se il server può cercare nelle tue note, nei contenuti multimediali e in altre fonti di conoscenza collegate."
     },
-    "connectionFailed": "Connection failed",
-    "footerHelp": "Once connected, you can revisit these settings anytime from the extension menu.",
-    "progressAria": "Onboarding progress",
+    "connectionFailed": "Connessione non riuscita",
+    "progressAria": "Avanzamento della configurazione",
     "stepLabel": {
-      "welcome": "Welcome",
-      "url": "Connect to your tldw server",
-      "auth": "Choose how you sign in",
-      "health": "Confirm connection & Knowledge"
+      "welcome": "Benvenuto",
+      "url": "Collega il tuo server tldw",
+      "auth": "Scegli come effettuare l’accesso",
+      "health": "Conferma connessione e Knowledge"
     },
     "path": {
-      "heading": "How would you like to get started?",
-      "hasServer": "I already run tldw_server",
-      "noServer": "I don’t have a server yet",
-      "demo": "Just explore with a local demo",
-      "noServerTitle": "No server yet? You can still explore.",
-      "noServerBody": "tldw_server is a separate, self-hosted app. You can follow the setup guide now, or come back later and continue in demo mode.",
-      "openSetupGuide": "Open setup guide",
-      "useDemoFromNoServer": "Use local demo mode",
-      "demoTitle": "Explore the extension in demo mode",
-      "demoBody": "Demo mode lets you try chat, notes, and media with sample data. Server-dependent features like Knowledge search will stay limited until you connect your own tldw_server.",
-      "demoCta": "Use local demo mode"
+      "heading": "Come vuoi iniziare?",
+      "hasServer": "Eseguo già tldw_server",
+      "noServer": "Non ho ancora un server",
+      "demo": "Esplora soltanto con una demo locale",
+      "noServerTitle": "Nessun server ancora? Puoi comunque esplorare.",
+      "noServerBody": "tldw_server è un’app separata, self-hosted. Puoi seguire ora la guida di configurazione oppure tornare più tardi e continuare in modalità demo.",
+      "noServerOptionLocal": "Esegui in locale con Docker o Python sulla tua macchina.",
+      "noServerOptionRemote": "Distribuisci tldw_server su un VPS remoto o un hosting gestito.",
+      "noServerOptionManaged": "Usa una distribuzione commerciale gestita di tldw_server quando è disponibile.",
+      "openSetupGuide": "Apri la guida di configurazione",
+      "useDemoFromNoServer": "Usa la modalità demo locale",
+      "remindMeLater": "Ricordamelo più tardi",
+      "demoTitle": "Esplora l’estensione in modalità demo",
+      "demoBody": "La modalità demo ti permette di provare chat, note e contenuti multimediali con dati di esempio. Le funzionalità che dipendono dal server, come la ricerca Knowledge, resteranno limitate finché non colleghi il tuo tldw_server.",
+      "demoCta": "Usa la modalità demo locale"
     },
-    "authModeHelp": "Single User (API Key) is recommended for personal or small-team servers. Multi User (Login) is for shared deployments where people sign in with usernames or SSO. Choose the mode that matches how your tldw_server is set up.",
-    "apiKeyHelp": "Find your API key in tldw_server → Settings → API Keys. Generate a key there and paste it here.",
-    "authStepAria": "Step 3 of 4 — authentication configuration",
-    "confirmStepAria": "Step 4 of 4 — connection summary and next steps",
+    "authModeHelp": "Single User (API Key) è consigliato per server personali o di piccoli team. Multi User (Login) è pensato per deployment condivisi in cui le persone accedono con nome utente o SSO. Scegli la modalità che corrisponde alla configurazione del tuo tldw_server.",
+    "auth": {
+      "missingCredentials": "Inserisci sia nome utente che password per continuare.",
+      "missingApiKey": "È richiesta una API key."
+    },
+    "apiKeyHelp": "Trova la tua API key in tldw_server → Settings → API Keys. Genera lì una chiave e incollala qui.",
+    "authStepAria": "Passaggio 3 di 4 — scegli come effettuare l’accesso",
+    "confirmStepAria": "Passaggio 4 di 4 — conferma la connessione e verifica i prossimi passi",
     "nextSteps": {
-      "title": "You’re ready to go",
-      "subtitle": "From here you can open the sidepanel, ingest a page, or explore media and notes.",
-      "chatTitle": "Start chatting",
-      "chatBody": "Open the sidepanel and ask your first question.",
-      "chatCta": "Open sidepanel",
-      "ingestTitle": "Ingest your first page",
-      "ingestBody": "Use Quick ingest from the header to save the current tab to your server.",
-      "mediaTitle": "Explore media & notes",
-      "mediaBody": "Visit Media and Notes in Options to see what’s stored and searchable."
+      "title": "Sei pronto per iniziare",
+      "subtitle": "Da qui puoi aprire il pannello laterale, acquisire una pagina o esplorare media e note.",
+      "chatTitle": "Inizia a chattare",
+      "chatBody": "Apri il pannello laterale e fai la tua prima domanda.",
+      "chatCta": "Apri pannello laterale",
+      "ingestTitle": "Acquisisci la tua prima pagina",
+      "ingestBody": "Usa \"Quick ingest\" nell’intestazione per salvare la scheda corrente sul server.",
+      "mediaTitle": "Esplora media e note",
+      "mediaBody": "Vai alle sezioni Media e Note nelle Opzioni per vedere cosa è stato salvato ed è ricercabile."
+    },
+    "headerShortcuts": "Mostra scorciatoie rapide nell’intestazione",
+    "footerHelp": "Una volta connesso, puoi tornare a queste impostazioni in qualsiasi momento dal menu dell’estensione.",
+    "errors": {
+      "invalidCredentials": "Accesso non riuscito. Controlla nome utente e password oppure verifica che l’accesso multiutente sia abilitato sul tuo server tldw.",
+      "forbidden": "Accesso negato. Verifica che il tuo account utente abbia l’autorizzazione per accedere.",
+      "serverUnreachable": "Impossibile raggiungere il server tldw. Controlla l’URL del server oppure apri \"Health & diagnostics\" per maggiori dettagli.",
+      "generic": "Accesso non riuscito. Apri \"Health & diagnostics\" dall’intestazione per esaminare gli errori del server."
     }
   },
   "manageCharacters": {

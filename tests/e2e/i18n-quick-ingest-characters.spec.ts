@@ -1,29 +1,31 @@
-import { test, expect } from '@playwright/test'
-import { launchWithBuiltExtension } from './utils/extension-build'
-import { MockTldwServer } from './utils/mock-server'
-import { grantHostPermission } from './utils/permissions'
+import { test, expect } from "@playwright/test"
+import { launchWithBuiltExtension } from "./utils/extension-build"
+import { grantHostPermission } from "./utils/permissions"
+import { requireRealServerConfig } from "./utils/real-server"
 
 test.describe('i18n smoke test for Quick Ingest & Characters', () => {
   test('non-English locale loads Quick Ingest hint and None character option', async () => {
-    const server = new MockTldwServer()
-    await server.start()
+    const { serverUrl, apiKey } = requireRealServerConfig(test)
 
     const { context, page, extensionId, optionsUrl } =
       await launchWithBuiltExtension({
         seedConfig: {
-          serverUrl: server.url,
+          serverUrl,
           authMode: 'single-user',
-          apiKey: 'THIS-IS-A-SECURE-KEY-123-FAKE-KEY'
+          apiKey
         }
       })
 
     const granted = await grantHostPermission(
       context,
       extensionId,
-      `${server.url}/*`
+      new URL(serverUrl).origin + "/*"
     )
     if (!granted) {
-      test.skip(true, 'Host permission not granted for mock server')
+      test.skip(
+        true,
+        "Host permission not granted for tldw_server origin"
+      )
     }
 
     await page.goto(optionsUrl)
@@ -69,6 +71,5 @@ test.describe('i18n smoke test for Quick Ingest & Characters', () => {
     await expect(noneOption).toBeVisible()
 
     await context.close()
-    await server.stop()
   })
 })

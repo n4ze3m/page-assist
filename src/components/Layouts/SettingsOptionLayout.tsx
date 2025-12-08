@@ -17,7 +17,7 @@ const shouldHideForBrowser = (item: SettingsNavItem) =>
 export const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
   const location = useLocation()
   const navigate = useNavigate()
-  const { t } = useTranslation(["settings", "common", "openai"])
+  const { t } = useTranslation(["settings", "common"])
   const sidepanelSupported =
     import.meta.env.BROWSER === "firefox"
       ? !!(browser as any)?.sidebarAction?.open
