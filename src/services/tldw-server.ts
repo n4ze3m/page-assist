@@ -1,5 +1,6 @@
 import { Storage } from "@plasmohq/storage"
 import { tldwClient, tldwModels } from "./tldw"
+import { setNoOfRetrievedDocs, setTotalFilePerKB } from "./app"
 
 const storage = new Storage()
 
@@ -173,10 +174,10 @@ Follow-up question: {question}
 
 export const getPageShareUrl = async () => {
   const pageShareUrl = await storage.get("pageShareUrl")
-  if (!pageShareUrl || (pageShareUrl as string).length === 0) {
+  if (!pageShareUrl || typeof pageShareUrl !== "string" || pageShareUrl.length === 0) {
     return DEFAULT_PAGE_SHARE_URL
   }
-  return pageShareUrl as string
+  return pageShareUrl
 }
 
 export const setPageShareUrl = async (pageShareUrl: string) => {
@@ -185,7 +186,10 @@ export const setPageShareUrl = async (pageShareUrl: string) => {
 
 export const systemPromptForNonRag = async () => {
   const prompt = await storage.get("systemPromptForNonRag")
-  return prompt as string | undefined
+  if (typeof prompt !== "string" || prompt.length === 0) {
+    return undefined
+  }
+  return prompt
 }
 
 export const setSystemPromptForNonRag = async (prompt: string) => {
@@ -194,7 +198,10 @@ export const setSystemPromptForNonRag = async (prompt: string) => {
 
 export const systemPromptForNonRagOption = async () => {
   const prompt = await storage.get("systemPromptForNonRagOption")
-  return prompt as string | undefined
+  if (typeof prompt !== "string" || prompt.length === 0) {
+    return undefined
+  }
+  return prompt
 }
 
 export const setSystemPromptForNonRagOption = async (prompt: string) => {
@@ -205,8 +212,8 @@ export const promptForRag = async () => {
   const prompt = await storage.get("systemPromptForRag")
   const questionPrompt = await storage.get("questionPromptForRag")
 
-  let ragPrompt = prompt as string | undefined
-  let ragQuestionPrompt = questionPrompt as string | undefined
+  let ragPrompt = typeof prompt === "string" ? prompt : undefined
+  let ragQuestionPrompt = typeof questionPrompt === "string" ? questionPrompt : undefined
 
   if (!ragPrompt || ragPrompt.length === 0) {
     ragPrompt = DEFAULT_RAG_SYSTEM_PROMPT
@@ -232,10 +239,10 @@ export const setPromptForRag = async (
 
 export const getWebSearchPrompt = async () => {
   const prompt = await storage.get("webSearchPrompt")
-  if (!prompt || (prompt as string).length === 0) {
+  if (!prompt || typeof prompt !== "string" || prompt.length === 0) {
     return DEFAULT_WEBSEARCH_PROMPT
   }
-  return prompt as string
+  return prompt
 }
 
 export const setWebSearchPrompt = async (prompt: string) => {
@@ -244,10 +251,10 @@ export const setWebSearchPrompt = async (prompt: string) => {
 
 export const geWebSearchFollowUpPrompt = async () => {
   const prompt = await storage.get("webSearchFollowUpPrompt")
-  if (!prompt || (prompt as string).length === 0) {
+  if (!prompt || typeof prompt !== "string" || prompt.length === 0) {
     return DEFAULT_WEBSEARCH_FOLLOWUP_PROMPT
   }
-  return prompt as string
+  return prompt
 }
 
 export const setWebSearchFollowUpPrompt = async (prompt: string) => {
@@ -272,13 +279,15 @@ export const defaultEmbeddingModelForRag = async () => {
         ? await (tldwClient as any).getEmbeddingProvidersConfig()
         : null
 
-    const provider = cfg?.default_provider
-    const model = cfg?.default_model
+    if (cfg) {
+      const provider = cfg?.default_provider
+      const model = cfg?.default_model
 
-    if (provider && model) {
-      const id = `${provider}/${model}`
-      await storage.set("defaultEmbeddingModel", id)
-      return id
+      if (provider && model) {
+        const id = `${provider}/${model}`
+        await storage.set("defaultEmbeddingModel", id)
+        return id
+      }
     }
   } catch (e) {
     if (import.meta.env?.DEV) {
@@ -298,7 +307,8 @@ export const defaultEmbeddingChunkSize = async () => {
   if (!embeddingChunkSize || (embeddingChunkSize as string).length === 0) {
     return 1000
   }
-  return parseInt(embeddingChunkSize as string)
+  const parsed = parseInt(embeddingChunkSize as string, 10)
+  return Number.isNaN(parsed) ? 1000 : parsed
 }
 
 export const setDefaultEmbeddingChunkSize = async (size: number) => {
@@ -310,7 +320,8 @@ export const defaultEmbeddingChunkOverlap = async () => {
   if (!embeddingChunkOverlap || (embeddingChunkOverlap as string).length === 0) {
     return 200
   }
-  return parseInt(embeddingChunkOverlap as string)
+  const parsed = parseInt(embeddingChunkOverlap as string, 10)
+  return Number.isNaN(parsed) ? 200 : parsed
 }
 
 export const setDefaultEmbeddingChunkOverlap = async (overlap: number) => {
@@ -319,10 +330,10 @@ export const setDefaultEmbeddingChunkOverlap = async (overlap: number) => {
 
 export const defaultSplittingStrategy = async () => {
   const splittingStrategy = await storage.get("defaultSplittingStrategy")
-  if (!splittingStrategy || (splittingStrategy as string).length === 0) {
+  if (!splittingStrategy || typeof splittingStrategy !== "string" || splittingStrategy.length === 0) {
     return "RecursiveCharacterTextSplitter"
   }
-  return splittingStrategy as string
+  return splittingStrategy
 }
 
 export const setDefaultSplittingStrategy = async (strategy: string) => {
@@ -331,10 +342,10 @@ export const setDefaultSplittingStrategy = async (strategy: string) => {
 
 export const defaultSplittingSeparator = async () => {
   const splittingSeparator = await storage.get("defaultSplittingSeparator")
-  if (!splittingSeparator || (splittingSeparator as string).length === 0) {
+  if (!splittingSeparator || typeof splittingSeparator !== "string" || splittingSeparator.length === 0) {
     return "\\n\\n"
   }
-  return splittingSeparator as string
+  return splittingSeparator
 }
 
 export const setDefaultSplittingSeparator = async (separator: string) => {
@@ -350,7 +361,6 @@ export const saveForRag = async (
   strategy?: string,
   separator?: string
 ) => {
-  const { setTotalFilePerKB, setNoOfRetrievedDocs } = await import("./app")
   await setDefaultEmbeddingModelForRag(model)
   await setDefaultEmbeddingChunkSize(chunkSize)
   await setDefaultEmbeddingChunkOverlap(overlap)
@@ -368,7 +378,7 @@ export const saveForRag = async (
 
 export const sendWhenEnter = async () => {
   const sendWhenEnterVal = await storage.get("sendWhenEnter")
-  if (!sendWhenEnterVal || (sendWhenEnterVal as string).length === 0) {
+  if (!sendWhenEnterVal || typeof sendWhenEnterVal !== "string" || sendWhenEnterVal.length === 0) {
     return true
   }
   return sendWhenEnterVal === "true"
@@ -380,7 +390,7 @@ export const setSendWhenEnter = async (sendWhenEnterVal: boolean) => {
 
 export const getSelectedModel = async (): Promise<string | null> => {
   const model = await storage.get("selectedModel")
-  return model as string | null
+  return typeof model === "string" ? model : null
 }
 
 export const setSelectedModel = async (model: string) => {
@@ -389,14 +399,8 @@ export const setSelectedModel = async (model: string) => {
 
 export const getEmbeddingModels = async () => {
   try {
-    const models = await tldwModels.getModels(false)
-    // Filter for embedding-capable models if available
-    const embeddingModels = models.filter(
-      (m) =>
-        m.capabilities?.includes("embeddings") ||
-        m.id.toLowerCase().includes("embed")
-    )
-    return embeddingModels.map(m => ({
+    const models = await tldwModels.getEmbeddingModels(false)
+    return models.map((m) => ({
       name: m.name || m.id,
       model: m.id,
       provider: m.provider,

@@ -365,10 +365,7 @@ export const ServerConnectionCard: React.FC<Props> = ({
   const primaryLabel =
     statusVariant === "ok"
       ? hasCompletedFirstRun
-        ? t(
-            "option:connectionCard.buttonStartChat",
-            t("common:startChat", "Start chatting")
-          )
+        ? t("common:startChat", "Start chatting")
         : t(
             "option:connectionCard.buttonFinishSetup",
             "Finish setup"

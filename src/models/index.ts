@@ -5,6 +5,12 @@ import {
 } from "@/services/model-settings"
 import { useStoreChatModelSettings } from "@/store/model"
 
+const isValidReasoningEffort = (
+  value: unknown
+): value is "low" | "medium" | "high" => {
+  return value === "low" || value === "medium" || value === "high"
+}
+
 export const pageAssistModel = async ({
   model,
   baseUrl
@@ -98,7 +104,10 @@ export const pageAssistModel = async ({
     topP: payload.topP,
     maxTokens: payload.numPredict,
     streaming: true,
-    reasoningEffort:
-      (modelSettings?.reasoningEffort as any) || (reasoningEffort as any)
+    reasoningEffort: isValidReasoningEffort(modelSettings?.reasoningEffort)
+      ? modelSettings.reasoningEffort
+      : isValidReasoningEffort(reasoningEffort)
+        ? reasoningEffort
+        : undefined
   }) as any
 }

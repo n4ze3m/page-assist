@@ -1,6 +1,6 @@
-import { bulkAddPromptsFB } from "../index"
-import { bulkAddModelsFB } from "../models"
-import { db } from "./schema"
+import { bulkAddPromptsFB } from "@/db/index"
+import { bulkAddModelsFB } from "@/db/models"
+import { db } from "@/db/dexie/schema"
 
 export const firefoxSyncDataForPrivateMode = async () => {
 

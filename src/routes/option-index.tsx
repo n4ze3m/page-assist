@@ -1,6 +1,5 @@
 import React from "react"
 import { useTranslation } from "react-i18next"
-import { useNavigate } from "react-router-dom"
 
 import {
   useConnectionActions,
@@ -15,11 +14,11 @@ import { Playground } from "~/components/Option/Playground/Playground"
 
 const OptionIndex = () => {
   const { t } = useTranslation(["settings", "playground"])
-  const navigate = useNavigate()
 
   const { phase } = useConnectionState()
   const { uxState, hasCompletedFirstRun } = useConnectionUxState()
   const { checkOnce, beginOnboarding } = useConnectionActions()
+  const onboardingInitiated = React.useRef(false)
 
   React.useEffect(() => {
     if (hasCompletedFirstRun) {
@@ -28,7 +27,8 @@ const OptionIndex = () => {
   }, [checkOnce, hasCompletedFirstRun])
 
   React.useEffect(() => {
-    if (!hasCompletedFirstRun) {
+    if (!hasCompletedFirstRun && !onboardingInitiated.current) {
+      onboardingInitiated.current = true
       beginOnboarding()
     }
   }, [hasCompletedFirstRun, beginOnboarding])
@@ -38,15 +38,7 @@ const OptionIndex = () => {
   // During first-time setup, hide the connection shell entirely and show only
   // the onboarding wizard (“Welcome — Let’s get you connected”).
   if (!hasCompletedFirstRun) {
-    const showWizard =
-      uxState === "unconfigured" ||
-      uxState === "configuring_url" ||
-      uxState === "configuring_auth" ||
-      uxState === "testing" ||
-      uxState === "error_auth" ||
-      uxState === "error_unreachable" ||
-      uxState === "connected_ok" ||
-      uxState === "connected_degraded"
+    const showWizard = true
 
     return (
       <OptionLayout hideHeader={showWizard} showHeaderSelectors={false}>
@@ -61,11 +53,8 @@ const OptionIndex = () => {
     )
   }
 
-  const hideHeader = false
-
   return (
     <OptionLayout
-      hideHeader={hideHeader}
       showHeaderSelectors={false}
     >
       <Playground />

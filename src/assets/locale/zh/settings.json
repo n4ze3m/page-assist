@@ -95,6 +95,14 @@
       },
       "promptSearchIncludeServer": {
         "label": "Include server prompts in prompt search"
+      },
+      "restartOnboarding": {
+        "label": "从头重新开始引导设置",
+        "button": "重新开始引导",
+        "confirmTitle": "重新开始引导？",
+        "confirmMessage": "这将重置您的引导状态，并带您返回设置流程的起始步骤。",
+        "toast": "引导已重置",
+        "toastBody": "我们将带您回到欢迎步骤，以便您再次检查服务器 URL 和 API 密钥。"
       }
     },
     "sidepanelRag": {

@@ -1,5 +1,5 @@
 import { useDarkMode } from "~/hooks/useDarkmode"
-import { Select, Switch, notification } from "antd"
+import { Modal, Select, Switch, notification } from "antd"
 import { MoonIcon, SunIcon } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { SearchModeSettings } from "./search-mode"
@@ -446,20 +446,28 @@ export const GeneralSettings = () => {
           type="button"
           className="text-xs text-blue-600 hover:text-blue-500 dark:text-blue-400"
           onClick={() => {
-            beginOnboarding()
-            notification.success({
-              message: t(
-                "generalSettings.settings.restartOnboarding.toast",
-                "Onboarding has been reset"
+            Modal.confirm({
+              title: t(
+                "generalSettings.settings.restartOnboarding.confirmTitle",
+                "Restart onboarding?"
               ),
-              description: t(
-                "generalSettings.settings.restartOnboarding.toastBody",
-                "We’ll take you back to the welcome step so you can review your server URL and API key."
-              )
+              content: t(
+                "generalSettings.settings.restartOnboarding.confirmMessage",
+                "This will reset your onboarding state and take you back to the setup flow."
+              ),
+              onOk: () => {
+                beginOnboarding()
+                notification.success({
+                  message: t(
+                    "generalSettings.settings.restartOnboarding.toast",
+                    "Onboarding has been reset"
+                  )
+                })
+                setTimeout(() => {
+                  navigate("/")
+                }, 800)
+              }
             })
-            setTimeout(() => {
-              navigate("/")
-            }, 500)
           }}
         >
           {t(

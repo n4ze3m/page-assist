@@ -113,7 +113,7 @@ const ensurePlaceholderConfig = async (): Promise<string | null> => {
   try {
     await tldwClient.updateConfig({
       serverUrl: placeholderUrl,
-      authMode: "single-user" as any,
+      authMode: "single-user",
       apiKey: "test-bypass"
     })
     return placeholderUrl
@@ -535,8 +535,7 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
   async testConnectionFromOnboarding() {
     const prev = get().state
     const isTestBypass =
-      prev.offlineBypass ||
-      ((import.meta as any)?.env?.VITE_TLDW_E2E_ALLOW_OFFLINE === "true")
+      prev.offlineBypass || (await getOfflineBypassFlag())
 
     // When offline bypass is enabled (Playwright/CI path), treat the
     // connection as healthy immediately so onboarding can progress

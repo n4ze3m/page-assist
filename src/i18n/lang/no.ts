@@ -1,10 +1,10 @@
-import option from "@/assets/locale/no/option.json"
-import playground from "@/assets/locale/no/playground.json"
-import common from "@/assets/locale/no/common.json"
-import sidepanel from "@/assets/locale/no/sidepanel.json"
-import settings from "@/assets/locale/no/settings.json"
-import knowledge from "@/assets/locale/no/knowledge.json"
-import review from "@/assets/locale/no/review.json"
+import option from "@/assets/locale/no/option.json";
+import playground from "@/assets/locale/no/playground.json";
+import common from "@/assets/locale/no/common.json";
+import sidepanel from "@/assets/locale/no/sidepanel.json";
+import settings from "@/assets/locale/no/settings.json";
+import knowledge from "@/assets/locale/no/knowledge.json";
+import review from "@/assets/locale/no/review.json";
 
 export const no = {
   option,

@@ -92,6 +92,14 @@
       },
       "promptSearchIncludeServer": {
         "label": "Include server prompts in prompt search"
+      },
+      "restartOnboarding": {
+        "label": "Genstart onboarding fra begyndelsen",
+        "button": "Genstart onboarding",
+        "confirmTitle": "Genstart onboarding?",
+        "confirmMessage": "Dette nulstiller din onboarding-status og fører dig tilbage til opsætningsflowet.",
+        "toast": "Onboarding er blevet nulstillet",
+        "toastBody": "Vi fører dig tilbage til velkomsttrinnet, så du kan gennemgå server-URL og API-nøgle."
       }
     },
     "sidepanelRag": {

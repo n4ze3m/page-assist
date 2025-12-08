@@ -16,6 +16,7 @@ import {
 import { useConnectionStore } from '@/store/connection'
 import { ConnectionPhase } from '@/types/connection'
 import { useDemoMode } from '@/context/demo-mode'
+import { getBrowserRuntime } from '@/utils/browser-runtime'
 
 type Props = {
   onFinish?: () => void
@@ -219,7 +220,7 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
       }
     }
 
-    const tone: 'neutral' | 'success' | 'error' = 'neutral'
+    const tone = 'neutral' as const
     const message = t(
       'settings:onboarding.serverUrl.ready',
       'Enter your tldw server URL, then click Next to test your connection.'
@@ -233,15 +234,18 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
     if (!urlState.valid || !trimmed) return
     // Keep the connection store config/server URL in sync with the field so
     // health checks (and success copy) can update while staying on Step 1.
-    try {
-      void useConnectionStore.getState().setServerUrl(trimmed)
-    } catch (err) {
-      // eslint-disable-next-line no-console
-      console.debug(
-        "[OnboardingWizard] Failed to sync serverUrl into connection store",
-        err
-      )
-    }
+    const timeout = window.setTimeout(() => {
+      try {
+        void useConnectionStore.getState().setServerUrl(trimmed)
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        console.debug(
+          "[OnboardingWizard] Failed to sync serverUrl into connection store",
+          err
+        )
+      }
+    }, 500)
+    return () => window.clearTimeout(timeout)
   }, [serverUrl, urlState.valid])
 
   const connectionStatusTag = React.useMemo(() => {
@@ -292,8 +296,6 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
     return null
   }, [uxState, t])
 
-  const totalSteps = 3
-
   const visualSteps = React.useMemo(
     () => [
       {
@@ -320,6 +322,8 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
     ],
     [t]
   )
+
+  const totalSteps = visualSteps.length
 
   const displayStep = React.useMemo(() => {
     if (activeStep === 1) return 1
@@ -438,7 +442,7 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
       if (authMode === 'multi-user' && username && password) {
         try {
           await tldwAuth.login({ username, password })
-        } catch (error: any) {
+        } catch (error: unknown) {
           const friendly = mapMultiUserLoginErrorMessage(
             t,
             error,
@@ -1060,8 +1064,7 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
                   className="mt-2"
                   onClick={() => {
                     try {
-                      // @ts-ignore
-                      const runtime = typeof browser !== 'undefined' ? browser.runtime : chrome?.runtime
+                      const runtime = getBrowserRuntime()
                       if (runtime?.getURL) {
                         const url = runtime.getURL('/sidepanel.html')
                         window.open(url, '_blank')

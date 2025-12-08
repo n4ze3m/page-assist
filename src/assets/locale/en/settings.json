@@ -165,6 +165,14 @@
       },
       "promptSearchIncludeServer": {
         "label": "Include server prompts in prompt search"
+      },
+      "restartOnboarding": {
+        "label": "Restart onboarding from the beginning",
+        "button": "Restart onboarding",
+        "confirmTitle": "Restart onboarding?",
+        "confirmMessage": "This will reset your onboarding state and take you back to the setup flow.",
+        "toast": "Onboarding has been reset",
+        "toastBody": "We’ll take you back to the welcome step so you can review your server URL and API key."
       }
     },
     "systemBasics": {

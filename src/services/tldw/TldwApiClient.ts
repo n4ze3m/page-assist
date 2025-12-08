@@ -24,12 +24,24 @@ export interface TldwModel {
   json_output?: boolean
 }
 
+type TextContent = string
+type ImageUrlPart = {
+  type: "image_url"
+  image_url: {
+    url: string
+    detail?: string
+  }
+}
+type TextPart = {
+  type: "text"
+  text: string
+}
+type ContentPart = string | TextPart | ImageUrlPart
+export type MessageContent = string | ContentPart[]
+
 export interface ChatMessage {
   role: 'system' | 'user' | 'assistant'
-  // Allow either plain text or structured content (e.g. multimodal parts).
-  // Most callers use strings; structured content is forwarded as-is to tldw_server.
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  content: any
+  content: MessageContent
 }
 
 export interface ChatCompletionRequest {

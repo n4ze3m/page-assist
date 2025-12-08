@@ -92,6 +92,14 @@
       },
       "promptSearchIncludeServer": {
         "label": "Include server prompts in prompt search"
+      },
+      "restartOnboarding": {
+        "label": "Riavvia l'onboarding dall'inizio",
+        "button": "Riavvia onboarding",
+        "confirmTitle": "Riavviare l'onboarding?",
+        "confirmMessage": "Questo reimposterà lo stato di onboarding e ti riporterà al flusso di configurazione.",
+        "toast": "Onboarding è stato reimpostato",
+        "toastBody": "Ti riporteremo al passaggio di benvenuto così puoi rivedere l'URL del server e la chiave API."
       }
     },
     "sidepanelRag": {

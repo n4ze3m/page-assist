@@ -65,10 +65,11 @@ export const ModelsBody = () => {
           })
         })
       }
-    } catch (e: any) {
+    } catch (e: unknown) {
+      const message = e instanceof Error ? e.message : String(e)
       notification.error({
         message: t("settings:models.refreshFailed", { defaultValue: "Failed to refresh models" }),
-        description: e?.message
+        description: message
       })
     } finally {
       setRefreshing(false)
