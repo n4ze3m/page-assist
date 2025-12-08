@@ -60,6 +60,8 @@ const { Text, Title } = Typography
 
 type DueStatus = "new" | "learning" | "due" | "all"
 
+const BULK_MUTATION_CHUNK_SIZE = 50
+
 const Markdown = React.lazy(() => import("@/components/Common/Markdown"))
 
 type SafeMarkdownProps = {
@@ -473,8 +475,7 @@ export const FlashcardsPage: React.FC = () => {
     })
     if (!ok) return
     try {
-      const chunkSize = 50
-      await processInChunks(toDelete, chunkSize, async (chunk) => {
+      await processInChunks(toDelete, BULK_MUTATION_CHUNK_SIZE, async (chunk) => {
         // Fire a bounded number of requests in parallel
         await Promise.all(
           chunk.map((c) => deleteFlashcard(c.uuid, c.version))
@@ -584,8 +585,7 @@ export const FlashcardsPage: React.FC = () => {
         // bulk move: respect selectAllAcross/deselectedIds
         const toMove = await getSelectedItems()
         if (toMove.length) {
-          const chunkSize = 50
-          await processInChunks(toMove, chunkSize, async (chunk) => {
+          await processInChunks(toMove, BULK_MUTATION_CHUNK_SIZE, async (chunk) => {
             await Promise.all(
               chunk.map((c) =>
                 updateFlashcard(c.uuid, {
@@ -1566,6 +1566,7 @@ const ImportPanel: React.FC = () => {
   const [mapping, setMapping] = React.useState<{ deck: number; front: number; back: number; tags?: number; notes?: number } | null>(null)
   const [previewMapped, setPreviewMapped] = React.useState<string>("")
   const [mappingDirty, setMappingDirty] = React.useState<boolean>(false)
+  const [mappingError, setMappingError] = React.useState<string | null>(null)
 
   React.useEffect(() => {
     const lines = (content || "").split(/\r?\n/).filter((l) => l.trim().length)
@@ -1592,6 +1593,7 @@ const ImportPanel: React.FC = () => {
 
   const buildMappedTSV = React.useCallback(() => {
     if (!useMapping || !mapping) return content
+    setMappingError(null)
     const rows = (content || "").split(/\r?\n/)
     const out: string[] = []
     for (let i = 0; i < rows.length; i++) {
@@ -1627,9 +1629,19 @@ const ImportPanel: React.FC = () => {
   const importMutation = useMutation({
     mutationKey: ["flashcards:import"],
     mutationFn: () => {
+      const mapped = buildMappedTSV()
+      if (useMapping && !mapped?.trim()) {
+        const msg =
+          t("option:flashcards.mappingEmpty", {
+            defaultValue: "No rows left after applying the current mapping. Adjust your mapping or turn it off before importing."
+          }) || "No rows left after applying the current mapping. Adjust your mapping or turn it off before importing."
+        setMappingError(msg)
+        throw new Error(msg)
+      }
+
       const payload = useMapping
         ? {
-            content: buildMappedTSV() || "",
+            content: mapped,
             delimiter: MAPPING_OUTPUT_DELIMITER,
             has_header: false
           }
@@ -1640,8 +1652,17 @@ const ImportPanel: React.FC = () => {
     onSuccess: () => {
       message.success(t("option:flashcards.imported", { defaultValue: "Imported" }))
       setContent("")
+      setMappingError(null)
     },
-    onError: (e: any) => message.error(e?.message || "Import failed")
+    onError: (e: any) => {
+      if (!e?.message || e.message === mappingError) {
+        if (e?.message) {
+          message.error(e.message)
+        }
+        return
+      }
+      message.error(e.message || "Import failed")
+    }
   })
 
   return (
@@ -1730,6 +1751,21 @@ My deck	What is a closure?	A function with preserved outer scope.	javascript; fu
         </Text>
         <Switch checked={useMapping} onChange={setUseMapping} />
       </Space>
+      {mappingError && (
+        <Alert
+          className="mt-2"
+          type="error"
+          showIcon
+          message={t("option:flashcards.mappingErrorTitle", {
+            defaultValue: "Nothing to import"
+          })}
+          description={
+            <span className="inline-flex flex-col gap-1 text-xs">
+              {mappingError}
+            </span>
+          }
+        />
+      )}
       {useMapping && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           <div>
@@ -1884,7 +1920,11 @@ const ExportPanel: React.FC = () => {
           include_header: includeHeader,
           extended_header: extendedHeader
         })
-        blob = new Blob([text], { type: "text/csv;charset=utf-8" })
+        const mimeType =
+          delimiter === "\t"
+            ? "text/tab-separated-values;charset=utf-8"
+            : "text/csv;charset=utf-8"
+        blob = new Blob([text], { type: mimeType })
       }
       const url = URL.createObjectURL(blob)
       const a = document.createElement("a")
@@ -1966,6 +2006,7 @@ const ExportPanel: React.FC = () => {
         <Select
           value={delimiter}
           onChange={setDelimiter}
+          disabled={format === "apkg"}
           options={[
             { label: t("option:flashcards.tab", { defaultValue: "Tab" }), value: "\t" },
             {
@@ -1988,7 +2029,11 @@ const ExportPanel: React.FC = () => {
               defaultValue: "Include header row"
             })}
           </Text>
-          <Switch checked={includeHeader} onChange={setIncludeHeader} />
+          <Switch
+            checked={includeHeader}
+            onChange={setIncludeHeader}
+            disabled={format === "apkg"}
+          />
         </Space>
         <Space>
           <Text>
@@ -1996,7 +2041,11 @@ const ExportPanel: React.FC = () => {
               defaultValue: "Extended header (technical metadata)"
             })}
           </Text>
-          <Switch checked={extendedHeader} onChange={setExtendedHeader} />
+          <Switch
+            checked={extendedHeader}
+            onChange={setExtendedHeader}
+            disabled={format === "apkg"}
+          />
         </Space>
       </Space>
       <div>

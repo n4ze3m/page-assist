@@ -13,9 +13,11 @@ import {
   useConnectionState,
   useConnectionUxState
 } from '@/hooks/useConnectionState'
+import { useServerUrlHint, type UrlState } from '@/hooks/useServerUrlHint'
 import { useConnectionStore } from '@/store/connection'
 import { ConnectionPhase } from '@/types/connection'
 import { useDemoMode } from '@/context/demo-mode'
+import { openSidepanelForActiveTab } from '@/utils/sidepanel'
 
 const localStorageInstance = new Storage({ area: 'local' })
 
@@ -119,7 +121,7 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
     })()
   }, [])
 
-  const urlState = React.useMemo(() => {
+  const urlState = React.useMemo<UrlState>(() => {
     const trimmed = serverUrl.trim()
     if (!trimmed) {
       return { valid: false, reason: 'empty' as const }
@@ -159,90 +161,13 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
     return 1
   }, [configStep, uxState])
 
-  const serverHint = React.useMemo(() => {
-    // Basic format validation errors always take precedence.
-    if (!urlState.valid) {
-      const tone = urlState.reason === 'empty' ? 'neutral' : 'error'
-      const message = urlState.reason === 'empty'
-        ? t(
-            'settings:onboarding.serverUrl.emptyHint',
-            'Enter your tldw server URL to enable Next.'
-          )
-        : urlState.reason === 'protocol'
-        ? t(
-            'settings:onboarding.serverUrl.invalidProtocol',
-            'Use http or https URLs, for example http://127.0.0.1:8000.'
-          )
-        : t(
-            'settings:onboarding.serverUrl.invalid',
-            'Enter a full URL such as http://127.0.0.1:8000.'
-          )
-      return { valid: false as const, tone, message }
-    }
-
-    const trimmed = serverUrl.trim()
-    // If the current URL matches the connection config and we are actively
-    // checking, surface a "checking" hint.
-    if (
-      trimmed &&
-      connectionState.serverUrl &&
-      trimmed === connectionState.serverUrl &&
-      connectionState.isChecking
-    ) {
-      return {
-        valid: true as const,
-        tone: 'neutral' as const,
-        message: t(
-          'settings:onboarding.serverUrl.checking',
-          'Checking reachability…'
-        )
-      }
-    }
-
-    // If the connection store reports a reachable/connected state for this URL,
-    // show the positive success hint that UX tests look for.
-    if (
-      trimmed &&
-      connectionState.serverUrl &&
-      trimmed === connectionState.serverUrl &&
-      (uxState === 'connected_ok' || uxState === 'connected_degraded')
-    ) {
-      return {
-        valid: true as const,
-        tone: 'success' as const,
-        message: t(
-          'settings:onboarding.serverUrl.reachable',
-          'Server responded successfully. You can continue.'
-        )
-      }
-    }
-
-    // If the server URL matches and we are in an unreachable error state,
-    // show explicit unreachable copy.
-    if (
-      trimmed &&
-      connectionState.serverUrl &&
-      trimmed === connectionState.serverUrl &&
-      uxState === 'error_unreachable'
-    ) {
-      return {
-        valid: true as const,
-        tone: 'error' as const,
-        message: t(
-          'settings:onboarding.serverUrl.unreachable',
-          'We couldn’t reach this address yet. Double-check the URL or try again.'
-        )
-      }
-    }
-
-    const tone = 'neutral' as const
-    const message = t(
-      'settings:onboarding.serverUrl.ready',
-      'Enter your tldw server URL, then click Next to test your connection.'
-    )
-
-    return { valid: true as const, tone, message }
-  }, [urlState, t, serverUrl, connectionState.serverUrl, connectionState.isChecking, uxState])
+  const serverHint = useServerUrlHint(
+    serverUrl,
+    urlState,
+    connectionState,
+    uxState,
+    t
+  )
 
   React.useEffect(() => {
     const trimmed = serverUrl.trim()
@@ -1039,51 +964,24 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
               </p>
             </div>
             <div className="grid gap-2 md:grid-cols-3">
-              <div className="rounded border border-gray-200 bg-white p-2 dark:border-gray-600 dark:bg-[#121212]">
-                <div className="text-xs font-semibold">
-                  {t(
-                    'settings:onboarding.nextSteps.chatTitle',
-                    'Start chatting'
+	              <div className="rounded border border-gray-200 bg-white p-2 dark:border-gray-600 dark:bg-[#121212]">
+	                <div className="text-xs font-semibold">
+	                  {t(
+	                    'settings:onboarding.nextSteps.chatTitle',
+	                    'Start chatting'
                   )}
                 </div>
-                <p className="mt-1 text-[11px]">
-                  {t(
-                    'settings:onboarding.nextSteps.chatBody',
-                    'Open the sidepanel and ask your first question.'
-                  )}
-                </p>
-                <Button
-                  size="small"
-                  className="mt-2"
-                  onClick={async () => {
-                    try {
-                      const globalScope = globalThis as typeof globalThis & {
-                        chrome?: typeof chrome
-                      }
-                      const chromeGlobal = globalScope.chrome
-
-                      const sidePanelApi = chromeGlobal?.sidePanel
-                      const tabsApi = chromeGlobal?.tabs
-
-                      if (!sidePanelApi || !tabsApi) {
-                        return
-                      }
-
-                      const tabs = await tabsApi.query({
-                        active: true,
-                        currentWindow: true
-                      })
-                      const activeTab = tabs?.[0]
-                      if (!activeTab?.id) {
-                        return
-                      }
-
-                      await sidePanelApi.open({ tabId: activeTab.id })
-                    } catch {
-                      // ignore navigation errors
-                    }
-                  }}
-                >
+	                <p className="mt-1 text-[11px]">
+	                  {t(
+	                    'settings:onboarding.nextSteps.chatBody',
+	                    'Open the sidepanel and ask your first question.'
+	                  )}
+	                </p>
+	                <Button
+	                  size="small"
+	                  className="mt-2"
+	                  onClick={() => void openSidepanelForActiveTab()}
+	                >
                   {t(
                     'settings:onboarding.nextSteps.chatCta',
                     'Open sidepanel'

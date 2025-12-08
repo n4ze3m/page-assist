@@ -19,7 +19,7 @@ const showToast = (message: string, variant: ToastVariant = "info") => {
     container = document.createElement("div")
     container.id = containerId
     container.style.position = "fixed"
-    container.style.zIndex = "2147483647"
+    container.style.zIndex = "999999"
     container.style.bottom = "16px"
     container.style.right = "16px"
     container.style.display = "flex"
@@ -120,9 +120,37 @@ export default defineContentScript({
 
       const url = window.location.href
       // Only send model, dataset, or space pages, not search results or settings.
-      const isValidPath = /^https?:\/\/huggingface\.co\/[^/]+\/[^/]+(\/|$)/.test(
-        url
-      )
+      let isValidPath = false
+      try {
+        const parsedUrl = new URL(url)
+        const segments = parsedUrl.pathname.split("/").filter(Boolean)
+
+        if (segments.length >= 2) {
+          if (
+            (segments[0] === "datasets" || segments[0] === "spaces") &&
+            segments.length >= 3
+          ) {
+            // /datasets/{owner}/{dataset} or /spaces/{owner}/{space}
+            isValidPath = true
+          } else if (
+            ![
+              "settings",
+              "docs",
+              "organizations",
+              "tasks",
+              "models",
+              "datasets",
+              "spaces"
+            ].includes(segments[0])
+          ) {
+            // Treat /{owner}/{repo} (and deeper) as model/content pages,
+            // while excluding known non-content roots.
+            isValidPath = true
+          }
+        }
+      } catch {
+        isValidPath = false
+      }
       if (!isValidPath) {
         showToast(
           getMessage(
@@ -248,6 +276,12 @@ export default defineContentScript({
     }
 
     const setupSpaNavigationListener = () => {
+      const win = window as typeof window & {
+        __tldwHfHistoryPatched?: boolean
+      }
+      if (win.__tldwHfHistoryPatched) return
+      win.__tldwHfHistoryPatched = true
+
       let lastHref = window.location.href
 
       const handleUrlChange = () => {

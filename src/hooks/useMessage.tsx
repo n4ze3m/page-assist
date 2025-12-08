@@ -23,7 +23,7 @@ import { pageAssistModel } from "@/models"
 import { getPrompt } from "@/services/application"
 import { humanMessageFormatter } from "@/utils/human-message"
 import { generateHistory } from "@/utils/generate-history"
-import { tldwClient } from "@/services/tldw/TldwApiClient"
+import { tldwClient, type ConversationState } from "@/services/tldw/TldwApiClient"
 import { getScreenshotFromCurrentTab } from "@/libs/get-screenshot"
 import {
   isReasoningEnded,
@@ -46,6 +46,20 @@ import { useAntdNotification } from "./useAntdNotification"
 type ServerBackedMessage = Message & {
   serverMessageId?: string
   serverMessageVersion?: number
+}
+
+const normalizeConversationState = (
+  raw: string | null | undefined
+): ConversationState => {
+  if (
+    raw === "in-progress" ||
+    raw === "resolved" ||
+    raw === "backlog" ||
+    raw === "non-viable"
+  ) {
+    return raw
+  }
+  return "in-progress"
 }
 
 export const useMessage = () => {
@@ -875,15 +889,35 @@ export const useMessage = () => {
 
         let rawId: string | number | undefined
         if (created && typeof created === "object") {
-          rawId = created.id ?? created.chat_id
-          setServerChatState(
-            created.state ?? created.conversation_state ?? "in-progress"
+          const {
+            id,
+            chat_id,
+            state,
+            conversation_state,
+            topic_label,
+            cluster_id,
+            source,
+            external_ref
+          } = created as {
+            id?: string | number
+            chat_id?: string | number
+            state?: string | null
+            conversation_state?: string | null
+            topic_label?: string | null
+            cluster_id?: string | null
+            source?: string | null
+            external_ref?: string | null
+          }
+          rawId = id ?? chat_id
+          const normalizedState = normalizeConversationState(
+            state ?? conversation_state ?? null
           )
-          setServerChatTopic(created.topic_label ?? null)
-          setServerChatClusterId(created.cluster_id ?? null)
-          setServerChatSource(created.source ?? null)
-          setServerChatExternalRef(created.external_ref ?? null)
-        } else if (created != null) {
+          setServerChatState(normalizedState)
+          setServerChatTopic(topic_label ?? null)
+          setServerChatClusterId(cluster_id ?? null)
+          setServerChatSource(source ?? null)
+          setServerChatExternalRef(external_ref ?? null)
+        } else if (typeof created === "string" || typeof created === "number") {
           rawId = created
         }
 
@@ -918,13 +952,20 @@ export const useMessage = () => {
         )) as TldwChatMessage | null
         setMessages((prev) => {
           const updated = [...prev] as ServerBackedMessage[]
+          const serverMessageId =
+            createdUser?.id != null ? String(createdUser.id) : undefined
+          const serverMessageVersion = createdUser?.version
           for (let i = updated.length - 1; i >= 0; i--) {
             if (!updated[i].isBot) {
-              updated[i] = { ...updated[i], serverMessageId: createdUser?.id, serverMessageVersion: createdUser?.version }
+              updated[i] = {
+                ...updated[i],
+                serverMessageId,
+                serverMessageVersion
+              }
               break
             }
           }
-          return updated
+          return updated as Message[]
         })
       }
 
@@ -1024,15 +1065,16 @@ export const useMessage = () => {
           content: fullText
         })) as { id?: string | number; version?: number } | null
         setMessages((prev) =>
-          (prev as ServerBackedMessage[]).map((m) =>
-            m.id === generateMessageId
-              ? {
-                  ...m,
-                  serverMessageId: createdAsst?.id,
-                  serverMessageVersion: createdAsst?.version
-                }
-              : m
-          )
+          ((prev as ServerBackedMessage[]).map((m) => {
+            if (m.id !== generateMessageId) return m
+            const serverMessageId =
+              createdAsst?.id != null ? String(createdAsst.id) : undefined
+            return {
+              ...m,
+              serverMessageId,
+              serverMessageVersion: createdAsst?.version
+            }
+          }) as Message[])
         )
       } catch (e) {
         console.error("Failed to persist assistant message to server:", e)
