@@ -859,7 +859,7 @@
   "saveFailed": "Failed to save settings",
   "siteAccessGranted": "Host permission granted for {{origin}}",
   "onboarding": {
-    "title": "Welcome — Let’s get you connected",
+    "title": "Welcome to tldw Browser Assistant— Let’s get you connected",
     "description": "Connect this extension to your tldw server (a separate app running on your machine or server). We’ll walk through adding the URL, API key, and checking that everything is reachable.",
     "exploreWithoutServer": "You can explore the UI without a server; some features (chat, media ingest, Knowledge search) will stay disabled until you connect.",
     "serverDocsUrl": "https://github.com/rmusser01/tldw_browser_assistant",
