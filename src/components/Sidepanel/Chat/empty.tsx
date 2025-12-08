@@ -193,7 +193,7 @@ export const EmptySidePanel = () => {
           >
             {t(
               "sidepanel:firstRun.openOptionsPrimary",
-              "Finish setup in Options"
+              "Open tldw Settings"
             )}
           </button>
         </div>

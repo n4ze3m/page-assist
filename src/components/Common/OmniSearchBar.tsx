@@ -5,6 +5,7 @@ import { useDebounce } from "@/hooks/useDebounce"
 import {
   omniSearch,
   type OmniSearchDependencies,
+  type OmniSearchEntityType,
   type OmniSearchResponse,
   type OmniSearchResult
 } from "@/utils/omni-search"
@@ -53,6 +54,19 @@ export const OmniSearchBar: React.FC<Props> = ({ deps }) => {
     return items
   }, [response])
 
+  const activeFilterLabel = React.useMemo(() => {
+    if (!response?.query.filterType) return null
+    const map: Record<OmniSearchEntityType, string> = {
+      screen: "Screens",
+      chat: "Chats",
+      media: "Media",
+      note: "Notes",
+      flashcards: "Flashcard Collections",
+      prompt: "Prompts"
+    }
+    return map[response.query.filterType] ?? null
+  }, [response])
+
   React.useEffect(() => {
     if (!trimmedQuery) {
       setResponse(null)
@@ -66,7 +80,10 @@ export const OmniSearchBar: React.FC<Props> = ({ deps }) => {
       const requestId = ++latestRequestId.current
       setLoading(true)
       try {
-        const res = await omniSearch(trimmedQuery, deps, { limitPerSection: 5 })
+        const res = await omniSearch(trimmedQuery, deps, {
+          limitPerSection: 5,
+          flags: { enableTypePrefixes: true }
+        })
         if (latestRequestId.current !== requestId) {
           return
         }
@@ -164,6 +181,22 @@ export const OmniSearchBar: React.FC<Props> = ({ deps }) => {
     setActive({ sectionIndex: next.sectionIndex, itemIndex: next.itemIndex })
   }
 
+  const invokeNoResultsPrimary = () => {
+    if (!response) return
+    const q = displayQuery.trim()
+    if (!q) return
+
+    if (response.query.filterType === "note") {
+      deps.createNoteFromOmni?.(q)
+    } else if (response.query.filterType === "flashcards") {
+      deps.createFlashcardCollectionFromOmni?.(q)
+    } else if (!response.query.filterType) {
+      deps.startNewChatFromOmni?.(q)
+    }
+
+    setOpen(false)
+  }
+
   const activateCurrent = () => {
     if (!response || !active) return
     const section = response.sections[active.sectionIndex]
@@ -183,7 +216,11 @@ export const OmniSearchBar: React.FC<Props> = ({ deps }) => {
     } else if (event.key === "Enter") {
       if (open) {
         event.preventDefault()
-        activateCurrent()
+        if (hasResults) {
+          activateCurrent()
+        } else {
+          invokeNoResultsPrimary()
+        }
       }
     } else if (event.key === "Escape") {
       if (open) {
@@ -195,6 +232,20 @@ export const OmniSearchBar: React.FC<Props> = ({ deps }) => {
 
   const hasResults =
     response && response.sections.some((section) => section.results.length > 0)
+
+  const normalizedQuery = React.useMemo(
+    () => trimmedQuery || query.trim(),
+    [trimmedQuery, query]
+  )
+
+  const displayQuery = React.useMemo(() => {
+    if (!response) return normalizedQuery
+    const raw = response.query.raw.trim()
+    if (!response.query.filterType) return raw || normalizedQuery
+    const match = /^(\w+):\s*(.*)$/i.exec(raw)
+    if (!match) return raw || normalizedQuery
+    return match[2] || normalizedQuery
+  }, [normalizedQuery, response])
 
   return (
     <div className="relative w-full max-w-xl" aria-label="Omni-search">
@@ -237,6 +288,11 @@ export const OmniSearchBar: React.FC<Props> = ({ deps }) => {
           role="listbox"
           className="absolute z-40 mt-1 max-h-80 w-full overflow-auto rounded-md border border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-[#111111]"
         >
+          {activeFilterLabel && (
+            <div className="px-3 py-1 text-xs text-gray-500 dark:text-gray-400">
+              Filtering by: {activeFilterLabel}
+            </div>
+          )}
           {hasResults ? (
             response.sections.map((section, sectionIndex) =>
               section.results.length ? (
@@ -292,7 +348,61 @@ export const OmniSearchBar: React.FC<Props> = ({ deps }) => {
             )
           ) : (
             <div className="px-3 py-2 text-sm text-gray-500 dark:text-gray-400">
-              {t("common:noData", "No data")}
+              <div>
+                {t("option:header.omniSearchNoResults", {
+                  defaultValue: 'No matches for "{{query}}".',
+                  query: normalizedQuery
+                })}
+              </div>
+              {normalizedQuery && (
+                <div className="mt-2 flex flex-col gap-1">
+                  {response?.query.filterType === "note" && (
+                    <button
+                      type="button"
+                      className="w-full rounded-md border border-dashed border-gray-300 px-3 py-1.5 text-left text-sm text-gray-700 hover:border-amber-400 hover:bg-amber-50 dark:border-gray-700 dark:text-gray-200 dark:hover:border-amber-500 dark:hover:bg-amber-500/10"
+                      onClick={() => {
+                        deps.createNoteFromOmni?.(displayQuery)
+                        setOpen(false)
+                      }}
+                    >
+                      {t("option:header.omniSearchCreateNote", {
+                        defaultValue: 'Create note "{{query}}"',
+                        query: displayQuery
+                      })}
+                    </button>
+                  )}
+                  {response?.query.filterType === "flashcards" && (
+                    <button
+                      type="button"
+                      className="w-full rounded-md border border-dashed border-gray-300 px-3 py-1.5 text-left text-sm text-gray-700 hover:border-amber-400 hover:bg-amber-50 dark:border-gray-700 dark:text-gray-200 dark:hover:border-amber-500 dark:hover:bg-amber-500/10"
+                      onClick={() => {
+                        deps.createFlashcardCollectionFromOmni?.(displayQuery)
+                        setOpen(false)
+                      }}
+                    >
+                      {t("option:header.omniSearchCreateFlashcards", {
+                        defaultValue: 'Create flashcard collection "{{query}}"',
+                        query: displayQuery
+                      })}
+                    </button>
+                  )}
+                  {!response?.query.filterType && (
+                    <button
+                      type="button"
+                      className="w-full rounded-md border border-dashed border-gray-300 px-3 py-1.5 text-left text-sm text-gray-700 hover:border-amber-400 hover:bg-amber-50 dark:border-gray-700 dark:text-gray-200 dark:hover:border-amber-500 dark:hover:bg-amber-500/10"
+                      onClick={() => {
+                        deps.startNewChatFromOmni?.(displayQuery)
+                        setOpen(false)
+                      }}
+                    >
+                      {t("option:header.omniSearchStartChat", {
+                        defaultValue: 'Start new chat "{{query}}"',
+                        query: displayQuery
+                      })}
+                    </button>
+                  )}
+                </div>
+              )}
             </div>
           )}
         </div>

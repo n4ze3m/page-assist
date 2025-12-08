@@ -2,6 +2,7 @@ import React from 'react'
 import { Button, Dropdown, Pagination, Spin, Tooltip } from 'antd'
 import { useTranslation } from 'react-i18next'
 import FeatureEmptyState from '@/components/Common/FeatureEmptyState'
+import { getDemoNotes } from '@/utils/demo-content'
 import type { ServerCapabilities } from '@/services/tldw/server-capabilities'
 import type { NoteListItem } from '@/components/Notes/types'
 
@@ -61,50 +62,7 @@ const NotesListPanel: React.FC<NotesListPanelProps> = ({
   const endItem = hasNotes ? Math.min(page * pageSize, total) : 0
   const exportDisabled = !isOnline || !hasNotes
 
-  const demoNotes = React.useMemo(
-    () => [
-      {
-        id: "demo-1",
-        title: t("option:notesEmpty.demoSample1Title", {
-          defaultValue: "Demo note: Weekly meeting recap"
-        }),
-        preview: t("option:notesEmpty.demoSample1Preview", {
-          defaultValue:
-            "Decisions, blockers, and follow-ups from a recent team sync."
-        }),
-        updated_at: t("option:notesEmpty.demoSample1Meta", {
-          defaultValue: "Today · 9:32 AM"
-        })
-      },
-      {
-        id: "demo-2",
-        title: t("option:notesEmpty.demoSample2Title", {
-          defaultValue: "Demo note: Research highlights"
-        }),
-        preview: t("option:notesEmpty.demoSample2Preview", {
-          defaultValue:
-            "Key insights pulled from a long article or paper."
-        }),
-        updated_at: t("option:notesEmpty.demoSample2Meta", {
-          defaultValue: "Yesterday · 4:10 PM"
-        })
-      },
-      {
-        id: "demo-3",
-        title: t("option:notesEmpty.demoSample3Title", {
-          defaultValue: "Demo note: Call summary"
-        }),
-        preview: t("option:notesEmpty.demoSample3Preview", {
-          defaultValue:
-            "Summary of a customer call with next steps and owners."
-        }),
-        updated_at: t("option:notesEmpty.demoSample3Meta", {
-          defaultValue: "This week"
-        })
-      }
-    ],
-    [t]
-  )
+  const demoNotes = React.useMemo(() => getDemoNotes(t), [t])
 
   return (
     <div className="flex flex-col h-full">

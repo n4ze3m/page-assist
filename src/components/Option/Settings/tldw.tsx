@@ -572,9 +572,17 @@ export const TldwSettings = () => {
               { required: true, message: t('settings:tldw.fields.serverUrl.required', 'Please enter the server URL') as string },
               { type: 'url', message: t('settings:tldw.fields.serverUrl.invalid', 'Please enter a valid URL') as string }
             ]}
-            extra={t('settings:tldw.fields.serverUrl.extra', 'The URL of your tldw_server instance (e.g., http://localhost:8000)')}
+            extra={t(
+              'settings:tldw.fields.serverUrl.extra',
+              'The URL of your tldw_server instance. Default address for local installs: http://127.0.0.1:8000'
+            )}
           >
-            <Input placeholder={t('settings:tldw.fields.serverUrl.placeholder', 'http://localhost:8000') as string} />
+            <Input
+              placeholder={t(
+                'settings:tldw.fields.serverUrl.placeholder',
+                'http://127.0.0.1:8000'
+              ) as string}
+            />
           </Form.Item>
           <Form.Item
             label={t('settings:tldw.authMode.label', 'Authentication Mode')}

@@ -1012,6 +1012,11 @@ export const Header: React.FC<Props> = ({
                 "Server status — click for diagnostics"
               ) as string}
               aria-label={
+                t(
+                  "settings:healthSummary.diagnostics",
+                  "Health & diagnostics"
+                ) +
+                ". " +
                 statusLabelForCore(coreStatus) +
                 ". " +
                 t(
@@ -1020,7 +1025,12 @@ export const Header: React.FC<Props> = ({
                 )
               }>
               <StatusDot status={coreStatus} />
-              <span>{statusLabelForCore(coreStatus)}</span>
+              <span>
+                {t(
+                  "settings:healthSummary.diagnostics",
+                  "Health & diagnostics"
+                )}
+              </span>
             </button>
 
             {!isChatRoute && (

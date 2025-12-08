@@ -873,10 +873,10 @@
     "serverDocsUrl": "https://github.com/rmusser01/tldw_browser_assistant",
     "serverDocsCta": "Learn how tldw server works",
     "learnMoreTldw": "Learn how tldw server works",
-    "serverUrl": {
+      "serverUrl": {
       "label": "Server URL",
       "placeholder": "http://127.0.0.1:8000",
-      "help": "Example: http://127.0.0.1:8000",
+      "help": "Default address for local installs: http://127.0.0.1:8000",
       "emptyHint": "Enter your tldw server URL to enable Next.",
       "invalid": "Enter a full URL such as http://127.0.0.1:8000.",
       "invalidProtocol": "Use http or https URLs, for example http://127.0.0.1:8000.",
@@ -1000,10 +1000,10 @@
       },
       "serverUrl": {
         "label": "Server URL",
-        "placeholder": "http://localhost:8000",
+        "placeholder": "http://127.0.0.1:8000",
         "required": "Please enter the server URL",
         "invalid": "Please enter a valid URL",
-        "extra": "The URL of your tldw_server instance (e.g., http://localhost:8000)"
+        "extra": "The URL of your tldw_server instance. Default address for local installs: http://127.0.0.1:8000"
       }
     },
     "errors": {

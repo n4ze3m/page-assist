@@ -616,26 +616,34 @@ export const ServerConnectionCard: React.FC<Props> = ({
         )}
 
         {!isCompact && statusVariant === "ok" && (
-          <ul className="mt-1 max-w-sm list-disc text-left text-xs text-gray-600 dark:text-gray-300">
-            <li>
+          <>
+            <ul className="mt-1 max-w-sm list-disc text-left text-xs text-gray-600 dark:text-gray-300">
+              <li>
+                {t(
+                  "option:connectionCard.descriptionConnectedList.reviewMedia",
+                  "Review media & transcripts"
+                )}
+              </li>
+              <li>
+                {t(
+                  "option:connectionCard.descriptionConnectedList.searchKnowledge",
+                  "Search knowledge and notes"
+                )}
+              </li>
+              <li>
+                {t(
+                  "option:connectionCard.descriptionConnectedList.useRag",
+                  "Use RAG with your own documents"
+                )}
+              </li>
+            </ul>
+            <p className="mt-1 max-w-sm text-xs text-gray-600 dark:text-gray-300">
               {t(
-                "option:connectionCard.descriptionConnectedList.reviewMedia",
-                "Review media & transcripts"
+                "option:connectionCard.connectedCaption",
+                "Chat and tools are now available in Options and the sidepanel."
               )}
-            </li>
-            <li>
-              {t(
-                "option:connectionCard.descriptionConnectedList.searchKnowledge",
-                "Search knowledge and notes"
-              )}
-            </li>
-            <li>
-              {t(
-                "option:connectionCard.descriptionConnectedList.useRag",
-                "Use RAG with your own documents"
-              )}
-            </li>
-          </ul>
+            </p>
+          </>
         )}
 
         <div
@@ -779,6 +787,14 @@ export const ServerConnectionCard: React.FC<Props> = ({
             block>
             {primaryLabel}
           </Button>
+          {(statusVariant === "missing" || statusVariant === "loading") && (
+            <Button
+              icon={<ExternalLink className="h-4 w-4" />}
+              onClick={handleOpenDiagnostics}
+              block>
+              {diagnosticsLabel}
+            </Button>
+          )}
           {returnTo && (
             <Button
               onClick={handleReturn}

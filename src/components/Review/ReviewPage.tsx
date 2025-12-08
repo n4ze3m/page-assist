@@ -41,6 +41,7 @@ import { useDemoMode } from "@/context/demo-mode"
 import { useAntdMessage } from "@/hooks/useAntdMessage"
 import { useScrollToServerCard } from "@/hooks/useScrollToServerCard"
 import { MarkdownErrorBoundary } from "@/components/Common/MarkdownErrorBoundary"
+import { getDemoMediaItems } from "@/utils/demo-content"
 const Markdown = React.lazy(() => import("@/components/Common/Markdown"))
 
 type MediaItem = any
@@ -1126,11 +1127,7 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true, 
 
   const { demoEnabled } = useDemoMode()
   const [previewExpanded, setPreviewExpanded] = React.useState<{ content: boolean; analysis: boolean }>({ content: false, analysis: false })
-  const previewCards = React.useMemo(() => ([
-    { title: 'Sample media item 1', meta: 'Video · 12:34', status: 'Ready' },
-    { title: 'Sample media item 2', meta: 'Audio · 08:12', status: 'Processing' },
-    { title: 'Sample media item 3', meta: 'PDF · 4 pages', status: 'Ready' }
-  ]), [])
+  const previewCards = React.useMemo(() => getDemoMediaItems(), [])
 
   if (!isOnline) {
     const baseEmpty = demoEnabled ? (

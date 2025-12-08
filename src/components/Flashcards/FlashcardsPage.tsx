@@ -53,6 +53,7 @@ import { useScrollToServerCard } from "@/hooks/useScrollToServerCard"
 import { MarkdownErrorBoundary } from "@/components/Common/MarkdownErrorBoundary"
 import { StatusBadge } from "@/components/Common/StatusBadge"
 import { processInChunks } from "@/utils/chunk-processing"
+import { getDemoFlashcardDecks } from "@/utils/demo-content"
 
 dayjs.extend(relativeTime)
 
@@ -119,35 +120,7 @@ export const FlashcardsPage: React.FC = () => {
   const confirmDanger = useConfirmDanger()
   const scrollToServerCard = useScrollToServerCard("/flashcards")
 
-  const demoDecks = [
-    {
-      id: "demo-deck-1",
-      name: t("option:flashcards.demoSample1Title", {
-        defaultValue: "Demo deck: Core concepts"
-      }),
-      summary: t("option:flashcards.demoSample1Summary", {
-        defaultValue: "10 cards · Great for testing spacing and ratings."
-      })
-    },
-    {
-      id: "demo-deck-2",
-      name: t("option:flashcards.demoSample2Title", {
-        defaultValue: "Demo deck: Product terms"
-      }),
-      summary: t("option:flashcards.demoSample2Summary", {
-        defaultValue: "8 cards · Names, acronyms, and key definitions."
-      })
-    },
-    {
-      id: "demo-deck-3",
-      name: t("option:flashcards.demoSample3Title", {
-        defaultValue: "Demo deck: Meeting follow-ups"
-      }),
-      summary: t("option:flashcards.demoSample3Summary", {
-        defaultValue: "6 cards · Example action items to review."
-      })
-    }
-  ]
+  const demoDecks = React.useMemo(() => getDemoFlashcardDecks(t), [t])
 
   if (!isOnline) {
     return demoEnabled ? (

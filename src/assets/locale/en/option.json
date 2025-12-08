@@ -77,6 +77,11 @@
     "serverBackedLabel": "Server-backed chat",
     "serverBackedTooltip": "Messages in this chat are also saved on your tldw server.",
     "omniSearchPlaceholder": "Search screens, chats, media, notes…",
+    "omniSearchNoResults": "No matches for \"{{query}}\".",
+    "omniSearchCreateNote": "Create note \"{{query}}\"",
+    "omniSearchCreateFlashcards": "Create flashcard collection \"{{query}}\"",
+    "omniSearchStartChat": "Start new chat \"{{query}}\"",
+    "connectionCard.connectedCaption": "Chat and tools are now available in Options and the sidepanel.",
     "quickIngestQueuedAria": "{{label}} — {{count}} items queued — click to review and process"
   },
   "promptStudio": {

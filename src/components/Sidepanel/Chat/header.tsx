@@ -368,8 +368,11 @@ export const SidepanelHeader = ({
               aria-haspopup="menu"
               aria-expanded={modeOpen}
               aria-controls="sidepanel-modes-menu"
-              className="flex items-center space-x-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-700">
+              className="flex items-center gap-1 rounded-full px-2 py-1 text-xs text-gray-700 hover:bg-gray-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-700 dark:text-gray-200 dark:hover:bg-[#2a2a2a]">
               <LayoutGrid className="size-4 text-gray-500 dark:text-gray-400" />
+              <span className="hidden sm:inline">
+                {t("sidepanel:header.modesShortLabel", "Modes")}
+              </span>
             </button>
           </Tooltip>
         </Popover>
@@ -399,8 +402,15 @@ export const SidepanelHeader = ({
               aria-disabled={ingestDisabled}
               disabled={ingestDisabled}
               ref={ingestBtnRef}
-              className={`flex items-center space-x-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-700 ${ingestDisabled ? 'cursor-not-allowed text-gray-400 dark:text-gray-600' : ''}`}>
+              className={`flex items-center gap-1 rounded-full px-2 py-1 text-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-700 ${
+                ingestDisabled
+                  ? 'cursor-not-allowed text-gray-400 dark:text-gray-600'
+                  : 'text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-[#2a2a2a]'
+              }`}>
               <UploadCloud className="size-4 text-gray-500 dark:text-gray-400" />
+              <span className="hidden sm:inline">
+                {t('sidepanel:header.ingestShortLabel', 'Quick ingest')}
+              </span>
             </button>
           </Tooltip>
         </Dropdown>
@@ -409,8 +419,11 @@ export const SidepanelHeader = ({
             type="button"
             aria-label={t('settings:managePrompts.title')}
             onClick={() => openOptionsPage('#/settings/prompt')}
-            className="flex items-center space-x-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-700">
+            className="flex items-center gap-1 rounded-full px-2 py-1 text-xs text-gray-700 hover:bg-gray-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-700 dark:text-gray-200 dark:hover:bg-[#2a2a2a]">
             <NotebookPen className="size-4 text-gray-500 dark:text-gray-400" />
+            <span className="hidden sm:inline">
+              {t('sidepanel:header.promptsShortLabel', 'Prompts')}
+            </span>
           </button>
         </Tooltip>
         <Tooltip title={t('sidepanel:header.openModelSettingsAria')}>
@@ -418,8 +431,11 @@ export const SidepanelHeader = ({
             type="button"
             aria-label={t('sidepanel:header.openModelSettingsAria')}
             onClick={() => openOptionsPage('#/settings/model')}
-            className="flex items-center space-x-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-700">
+            className="flex items-center gap-1 rounded-full px-2 py-1 text-xs text-gray-700 hover:bg-gray-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-700 dark:text-gray-200 dark:hover:bg-[#2a2a2a]">
             <Gauge className="size-4 text-gray-500 dark:text-gray-400" />
+            <span className="hidden sm:inline">
+              {t('sidepanel:header.modelShortLabel', 'Model')}
+            </span>
           </button>
         </Tooltip>
         {/* Consolidate less-used actions into kebab menu */}
@@ -519,8 +535,11 @@ export const SidepanelHeader = ({
                 const url = browser.runtime.getURL("/options.html")
                 browser.tabs.create({ url })
               }}
-              className="flex items-center space-x-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-700">
+              className="flex items-center gap-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-700">
               <MessageSquareShareIcon className="size-4 text-gray-500 dark:text-gray-400" />
+              <span className="hidden sm:inline text-xs text-gray-700 dark:text-gray-200">
+                {t('sidepanel:header.openWebuiLabel', 'Open full app')}
+              </span>
             </IconButton>
           </Tooltip>
         ) : null}
@@ -579,8 +598,15 @@ export const SidepanelHeader = ({
         />
         <CharacterSelect className="text-gray-500 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors" iconClassName="size-4" />
         {/* Conversation settings button moved next to submit in input bar */}
-        <Link to="/settings">
-          <CogIcon aria-label={t('sidepanel:header.openSettingsAria')} className="size-4 text-gray-500 dark:text-gray-400" />
+        <Link
+          to="/settings"
+          aria-label={t('sidepanel:header.openSettingsAria') as string}
+          className="flex items-center gap-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-700"
+        >
+          <CogIcon className="size-4 text-gray-500 dark:text-gray-400" aria-hidden="true" />
+          <span className="hidden sm:inline text-xs text-gray-700 dark:text-gray-200">
+            {t('sidepanel:header.settingsShortLabel', 'Settings')}
+          </span>
         </Link>
       </div>
       {/** Settings modal moved to input area; header trigger removed */}

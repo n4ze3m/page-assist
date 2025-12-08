@@ -81,6 +81,7 @@ export interface OmniSearchQuery {
 
 export interface OmniSearchOptions {
   limitPerSection?: number
+  flags?: Partial<OmniSearchFeatureFlags>
 }
 
 export interface OmniSearchResponse {
@@ -115,14 +116,21 @@ export interface OmniSearchDependencies {
   openNote: (noteId: string) => void
   openFlashcardCollection: (collectionId: string) => void
   openPrompt: (promptId: string) => void
+  createNoteFromOmni?: (title: string) => void
+  createFlashcardCollectionFromOmni?: (name: string) => void
+  startNewChatFromOmni?: (title: string) => void
 }
 
-export function parseOmniSearchQuery(raw: string): OmniSearchQuery {
+export function parseOmniSearchQuery(
+  raw: string,
+  flags: Partial<OmniSearchFeatureFlags> = {}
+): OmniSearchQuery {
   const trimmed = raw.trim()
+  const enableTypePrefixes =
+    flags.enableTypePrefixes ?? defaultOmniSearchFlags.enableTypePrefixes
 
-  // In v1, type-prefix parsing (e.g., "n: query") is disabled by default.
-  // It can be enabled later via feature flags.
-  if (!defaultOmniSearchFlags.enableTypePrefixes) {
+  // When type prefixes are disabled, treat the whole string as the query.
+  if (!enableTypePrefixes) {
     return {
       raw,
       normalized: trimmed.toLowerCase()
@@ -174,7 +182,7 @@ export async function omniSearch(
   deps: OmniSearchDependencies,
   options: OmniSearchOptions = {}
 ): Promise<OmniSearchResponse> {
-  const query = parseOmniSearchQuery(rawQuery)
+  const query = parseOmniSearchQuery(rawQuery, options.flags ?? {})
   const limitPerSection = options.limitPerSection ?? 3
 
   const shouldSearchType = (type: OmniSearchEntityType) =>
@@ -322,4 +330,3 @@ export const defaultOmniSearchFlags: OmniSearchFeatureFlags = {
   enableContextualBoosts: false,
   enableShowMorePerSection: false
 }
-

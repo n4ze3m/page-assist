@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom"
 import { useTranslation } from "react-i18next"
 
 import { useServerOnline } from "@/hooks/useServerOnline"
+import { useAntdMessage } from "@/hooks/useAntdMessage"
 import { useMessageOption } from "~/hooks/useMessageOption"
 import { useStoreChatModelSettings } from "@/store/model"
 import { PageAssistDatabase } from "@/db/dexie/chat"
@@ -16,7 +17,7 @@ import {
 import { lastUsedChatModelEnabled } from "@/services/model-settings"
 import { bgRequest } from "@/services/background-proxy"
 import type { AllowedPath } from "@/services/tldw/openapi-guard"
-import { listDecks, type Deck } from "@/services/flashcards"
+import { listDecks, type Deck, createDeck } from "@/services/flashcards"
 import { updatePageTitle } from "@/utils/update-page-title"
 import type {
   ChatSummary,
@@ -223,6 +224,7 @@ export const useOmniSearchDeps = (): OmniSearchDependencies => {
   const { t } = useTranslation(["option", "common", "settings"])
   const navigate = useNavigate()
   const isOnline = useServerOnline()
+  const message = useAntdMessage()
   const {
     setHistory,
     setMessages,
@@ -230,7 +232,8 @@ export const useOmniSearchDeps = (): OmniSearchDependencies => {
     setSelectedModel,
     setSelectedSystemPrompt,
     setContextFiles,
-    setServerChatId
+    setServerChatId,
+    clearChat
   } = useMessageOption()
   const chatModelSettings = useStoreChatModelSettings()
 
@@ -306,7 +309,7 @@ export const useOmniSearchDeps = (): OmniSearchDependencies => {
       if (!q || !isOnline) return []
       try {
         const body: any = {
-          query: query.raw.trim() || q,
+          query: q,
           fields: ["title", "content"],
           sort_by: "relevance"
         }
@@ -340,9 +343,7 @@ export const useOmniSearchDeps = (): OmniSearchDependencies => {
       if (!q || !isOnline) return []
       try {
         const res = await bgRequest<any, AllowedPath, "GET">({
-          path: `/api/v1/notes/search/?query=${encodeURIComponent(
-            query.raw.trim() || q
-          )}` as AllowedPath,
+          path: `/api/v1/notes/search/?query=${encodeURIComponent(q)}` as AllowedPath,
           method: "GET"
         })
         const items = Array.isArray(res?.items)
@@ -564,6 +565,67 @@ export const useOmniSearchDeps = (): OmniSearchDependencies => {
     [navigate]
   )
 
+  const createNoteFromOmni = React.useCallback(
+    async (title: string) => {
+      const trimmed = title.trim()
+      if (!trimmed) return
+      try {
+        await bgRequest<any, AllowedPath, "POST">({
+          path: "/api/v1/notes/" as AllowedPath,
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: {
+            title: trimmed,
+            content: ""
+          }
+        })
+        message.success(
+          t("option:header.omniSearchCreateNote", {
+            defaultValue: 'Create note "{{query}}"',
+            query: trimmed
+          })
+        )
+      } catch (e: any) {
+        message.error(e?.message || "Failed to create note")
+      } finally {
+        navigate("/notes")
+      }
+    },
+    [message, navigate, t]
+  )
+
+  const createFlashcardCollectionFromOmni = React.useCallback(
+    async (name: string) => {
+      const trimmed = name.trim()
+      if (!trimmed) return
+      try {
+        await createDeck({ name: trimmed, description: null })
+        message.success(
+          t("option:header.omniSearchCreateFlashcards", {
+            defaultValue: 'Create flashcard collection "{{query}}"',
+            query: trimmed
+          })
+        )
+      } catch (e: any) {
+        message.error(e?.message || "Failed to create flashcard collection")
+      } finally {
+        navigate("/flashcards")
+      }
+    },
+    [message, navigate, t]
+  )
+
+  const startNewChatFromOmni = React.useCallback(
+    (title: string) => {
+      const trimmed = title.trim()
+      clearChat()
+      if (trimmed) {
+        updatePageTitle(trimmed)
+      }
+    },
+    [clearChat]
+  )
+
   const deps: OmniSearchDependencies = React.useMemo(
     () => ({
       searchScreens,
@@ -577,7 +639,10 @@ export const useOmniSearchDeps = (): OmniSearchDependencies => {
       openMediaItem,
       openNote,
       openFlashcardCollection,
-      openPrompt
+      openPrompt,
+      createNoteFromOmni,
+      createFlashcardCollectionFromOmni,
+      startNewChatFromOmni
     }),
     [
       openChat,
@@ -591,7 +656,10 @@ export const useOmniSearchDeps = (): OmniSearchDependencies => {
       searchMedia,
       searchNotes,
       searchPrompts,
-      searchScreens
+      searchScreens,
+      createNoteFromOmni,
+      createFlashcardCollectionFromOmni,
+      startNewChatFromOmni
     ]
   )
 
