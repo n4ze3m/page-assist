@@ -1,8 +1,89 @@
 import { apiSend } from "@/services/api-send"
-import type { AllowedPath } from "@/services/tldw/openapi-guard"
+import { API_PATHS } from "@/services/tldw/openapi-guard"
 import { browser } from "wxt/browser"
 
 const MAX_ERROR_MESSAGE_LENGTH = 140
+
+type ToastVariant = "success" | "error" | "info"
+
+const showToast = (message: string, variant: ToastVariant = "info") => {
+  if (typeof document === "undefined") {
+    console.warn("[tldw] Toast message:", message)
+    return
+  }
+
+  const containerId = "tldw-toast-container"
+  let container = document.getElementById(containerId)
+
+  if (!container) {
+    container = document.createElement("div")
+    container.id = containerId
+    container.style.position = "fixed"
+    container.style.zIndex = "2147483647"
+    container.style.bottom = "16px"
+    container.style.right = "16px"
+    container.style.display = "flex"
+    container.style.flexDirection = "column"
+    container.style.gap = "8px"
+    container.style.pointerEvents = "none"
+    container.setAttribute("role", "status")
+    container.setAttribute("aria-live", "polite")
+    document.body.appendChild(container)
+  }
+
+  const toast = document.createElement("div")
+  toast.textContent = message
+  toast.style.maxWidth = "360px"
+  toast.style.fontSize = "13px"
+  toast.style.lineHeight = "1.4"
+  toast.style.borderRadius = "9999px"
+  toast.style.padding = "8px 12px"
+  toast.style.display = "inline-flex"
+  toast.style.alignItems = "center"
+  toast.style.boxShadow =
+    "0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05)"
+  toast.style.pointerEvents = "auto"
+  toast.style.cursor = "pointer"
+  toast.style.opacity = "0"
+  toast.style.transform = "translateY(6px)"
+  toast.style.transition =
+    "opacity 150ms ease-out, transform 150ms ease-out, filter 150ms ease-out"
+
+  if (variant === "success") {
+    toast.style.background = "rgba(22, 163, 74, 0.96)"
+    toast.style.color = "#ECFDF3"
+  } else if (variant === "error") {
+    toast.style.background = "rgba(220, 38, 38, 0.96)"
+    toast.style.color = "#FEF2F2"
+  } else {
+    toast.style.background = "rgba(15, 23, 42, 0.96)"
+    toast.style.color = "#E5E7EB"
+  }
+
+  const dismiss = () => {
+    toast.style.opacity = "0"
+    toast.style.transform = "translateY(6px)"
+    toast.style.filter = "blur(0.5px)"
+    window.setTimeout(() => {
+      toast.remove()
+      if (container && container.childElementCount === 0) {
+        container.remove()
+      }
+    }, 180)
+  }
+
+  toast.addEventListener("click", dismiss)
+
+  container.appendChild(toast)
+
+  requestAnimationFrame(() => {
+    toast.style.opacity = "1"
+    toast.style.transform = "translateY(0)"
+    toast.style.filter = "blur(0)"
+  })
+
+  window.setTimeout(dismiss, 5000)
+}
 
 type I18nKey =
   | "contextSendToTldw"
@@ -43,16 +124,16 @@ export default defineContentScript({
         url
       )
       if (!isValidPath) {
-        alert(
+        showToast(
           getMessage(
             "hfInvalidPage",
             "This page cannot be sent to tldw_server."
-          )
+          ),
+          "error"
         )
         return
       }
-      // The path is declared in the OpenAPI spec; annotate for compile-time safety
-      const path = '/api/v1/media/add' as AllowedPath
+      const path = API_PATHS.MEDIA_ADD
 
       try {
         if (btn) {
@@ -95,26 +176,28 @@ export default defineContentScript({
                   "hfSendPageError",
                   "[tldw] Failed to send this page to tldw_server. Check Settings → tldw server and try again."
                 )
-          alert(msg)
+          showToast(msg, "error")
           return
         }
 
-        alert(
+        showToast(
           getMessage(
             "hfSendPageSuccess",
             "[tldw] Sent page to tldw_server for processing"
-          )
+          ),
+          "success"
         )
       } catch (error) {
         console.error(
           "[tldw] Failed to send page to tldw_server for processing",
           error
         )
-        alert(
+        showToast(
           getMessage(
             "hfSendPageException",
             "[tldw] Something went wrong while sending this page to tldw_server. Check that your tldw_server and the extension are running, then try again."
-          )
+          ),
+          "error"
         )
       } finally {
         if (btn) {

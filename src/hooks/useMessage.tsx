@@ -131,6 +131,14 @@ export const useMessage = () => {
     "en-US"
   )
 
+  const resetServerChatState = () => {
+    setServerChatState("in-progress")
+    setServerChatTopic(null)
+    setServerChatClusterId(null)
+    setServerChatSource(null)
+    setServerChatExternalRef(null)
+  }
+
   React.useEffect(() => {
     if (!serverChatId) return
     const loadChatMeta = async () => {
@@ -163,11 +171,7 @@ export const useMessage = () => {
   React.useEffect(() => {
     // Reset server chat when character changes
     setServerChatId(null)
-    setServerChatState("in-progress")
-    setServerChatTopic(null)
-    setServerChatClusterId(null)
-    setServerChatSource(null)
-    setServerChatExternalRef(null)
+    resetServerChatState()
   }, [selectedCharacter?.id])
 
   // Local embedding store removed; rely on tldw_server RAG
@@ -184,11 +188,7 @@ export const useMessage = () => {
     updatePageTitle() 
     currentChatModelSettings.reset()
     setServerChatId(null)
-    setServerChatState("in-progress")
-    setServerChatTopic(null)
-    setServerChatClusterId(null)
-    setServerChatSource(null)
-    setServerChatExternalRef(null)
+    resetServerChatState()
     if (defaultInternetSearchOn) {
       setWebSearch(true)
     }
@@ -848,41 +848,74 @@ export const useMessage = () => {
       // Ensure server chat session exists
       let chatId = serverChatId
       if (!chatId) {
-        const created = await tldwClient.createChat({
+        type TldwChatMeta =
+          | {
+              id?: string | number
+              chat_id?: string | number
+              state?: string
+              conversation_state?: string
+              topic_label?: string | null
+              cluster_id?: string | null
+              source?: string | null
+              external_ref?: string | null
+            }
+          | string
+          | number
+          | null
+          | undefined
+
+        const created = (await tldwClient.createChat({
           character_id: selectedCharacter.id,
           state: serverChatState || "in-progress",
           topic_label: serverChatTopic || undefined,
           cluster_id: serverChatClusterId || undefined,
           source: serverChatSource || undefined,
           external_ref: serverChatExternalRef || undefined
-        })
-        const rawId =
-          (created as any)?.id ??
-          (created as any)?.chat_id ??
-          created
+        })) as TldwChatMeta
+
+        let rawId: string | number | undefined
+        if (created && typeof created === "object") {
+          rawId = created.id ?? created.chat_id
+          setServerChatState(
+            created.state ?? created.conversation_state ?? "in-progress"
+          )
+          setServerChatTopic(created.topic_label ?? null)
+          setServerChatClusterId(created.cluster_id ?? null)
+          setServerChatSource(created.source ?? null)
+          setServerChatExternalRef(created.external_ref ?? null)
+        } else if (created != null) {
+          rawId = created
+        }
+
         const normalizedId = rawId != null ? String(rawId) : ""
         if (!normalizedId) {
           throw new Error('Failed to create character chat session')
         }
         chatId = normalizedId
         setServerChatId(normalizedId)
-        setServerChatState(
-          (created as any)?.state ?? (created as any)?.conversation_state ?? "in-progress"
-        )
-        setServerChatTopic((created as any)?.topic_label ?? null)
-        setServerChatClusterId((created as any)?.cluster_id ?? null)
-        setServerChatSource((created as any)?.source ?? null)
-        setServerChatExternalRef((created as any)?.external_ref ?? null)
       }
 
       // Add user message to server (only if not regenerate)
       if (!isRegenerate) {
-        const payload: any = { role: "user", content: message }
+        type TldwChatMessage = {
+          id?: string | number
+          version?: number
+          role?: string
+          content?: string
+          image_base64?: string
+        }
+
+        const payload: TldwChatMessage = { role: "user", content: message }
         if (image && image.startsWith("data:")) {
           const b64 = image.includes(",") ? image.split(",")[1] : undefined
-          if (b64) payload.image_base64 = b64
+          if (b64) {
+            payload.image_base64 = b64
+          }
         }
-        const createdUser = await tldwClient.addChatMessage(chatId, payload)
+        const createdUser = (await tldwClient.addChatMessage(
+          chatId,
+          payload
+        )) as TldwChatMessage | null
         setMessages((prev) => {
           const updated = [...prev] as ServerBackedMessage[]
           for (let i = updated.length - 1; i >= 0; i--) {
@@ -896,21 +929,78 @@ export const useMessage = () => {
       }
 
       // Get messages formatted for completions with character context
-      const formatted: any = await tldwClient.listChatMessages(chatId, {
+      type TldwListMessagesResponse =
+        | {
+            messages?: any[]
+          }
+        | any[]
+        | null
+        | undefined
+
+      const formatted = (await tldwClient.listChatMessages(chatId, {
         include_character_context: true,
         format_for_completions: true
-      })
-      const msgs = Array.isArray(formatted) ? formatted : (formatted?.messages || [])
+      })) as TldwListMessagesResponse
+      const msgs = Array.isArray(formatted)
+        ? formatted
+        : formatted?.messages || []
 
       // Stream completion from server /chat/completions
       let count = 0
+      let reasoningStartTime: Date | null = null
+      let reasoningEndTime: Date | null = null
+      let timetaken = 0
+      let apiReasoning = false
+
       for await (const chunk of tldwClient.streamChatCompletion({ messages: msgs, model: selectedModel!, stream: true }, { signal })) {
-        const token = chunk?.choices?.[0]?.delta?.content || chunk?.content || ''
+        const reasoningDelta =
+          chunk?.choices?.[0]?.delta?.reasoning_content ??
+          chunk?.additional_kwargs?.reasoning_content
+        if (reasoningDelta) {
+          const reasoningText =
+            typeof reasoningDelta === "string"
+              ? reasoningDelta
+              : ""
+          const reasoningContent = mergeReasoningContent(
+            fullText,
+            reasoningText || ""
+          )
+          fullText = reasoningContent
+          apiReasoning = true
+        } else if (apiReasoning) {
+          fullText += "</think>"
+          apiReasoning = false
+        }
+
+        const token =
+          chunk?.choices?.[0]?.delta?.content || chunk?.content || ""
         if (token) {
           fullText += token
-          setMessages((prev) => prev.map((m) => (m.id === generateMessageId ? { ...m, message: fullText + '▋' } : m)))
+          setMessages((prev) =>
+            prev.map((m) =>
+              m.id === generateMessageId
+                ? { ...m, message: fullText + "▋", reasoning_time_taken: timetaken }
+                : m
+            )
+          )
         }
         if (count === 0) setIsProcessing(true)
+
+        if (isReasoningStarted(fullText) && !reasoningStartTime) {
+          reasoningStartTime = new Date()
+        }
+
+        if (
+          reasoningStartTime &&
+          !reasoningEndTime &&
+          isReasoningEnded(fullText)
+        ) {
+          reasoningEndTime = new Date()
+          const reasoningTime =
+            reasoningEndTime.getTime() - reasoningStartTime.getTime()
+          timetaken = reasoningTime
+        }
+
         count++
         if (signal?.aborted) break
       }
@@ -919,11 +1009,20 @@ export const useMessage = () => {
         ;(abortError as any).name = "AbortError"
         throw abortError
       }
-      setMessages((prev) => prev.map((m) => (m.id === generateMessageId ? { ...m, message: fullText } : m)))
+      setMessages((prev) =>
+        prev.map((m) =>
+          m.id === generateMessageId
+            ? { ...m, message: fullText, reasoning_time_taken: timetaken }
+            : m
+        )
+      )
 
       // Persist assistant reply on server
       try {
-        const createdAsst = await tldwClient.addChatMessage(chatId, { role: 'assistant', content: fullText })
+        const createdAsst = (await tldwClient.addChatMessage(chatId, {
+          role: "assistant",
+          content: fullText
+        })) as { id?: string | number; version?: number } | null
         setMessages((prev) =>
           (prev as ServerBackedMessage[]).map((m) =>
             m.id === generateMessageId
@@ -955,7 +1054,8 @@ export const useMessage = () => {
         image,
         fullText,
         source: [],
-        message_source: 'copilot'
+        message_source: "copilot",
+        reasoning_time_taken: timetaken
       })
 
       setIsProcessing(false)
@@ -1002,9 +1102,11 @@ export const useMessage = () => {
     setStreaming(true)
 
     if (image.length > 0) {
-      const payload = image.includes(",") ? image.split(",")[1] : image
-      if (payload && payload.length > 0) {
-        image = `data:image/jpeg;base64,${payload}`
+      if (!image.startsWith("data:")) {
+        const payload = image.includes(",") ? image.split(",")[1] : image
+        if (payload && payload.length > 0) {
+          image = `data:image/jpeg;base64,${payload}`
+        }
       }
     }
 

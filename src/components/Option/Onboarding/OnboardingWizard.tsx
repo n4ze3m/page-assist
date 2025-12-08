@@ -136,10 +136,11 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
   }, [serverUrl])
 
   const activeStep = React.useMemo(() => {
-    // 0: Welcome + path selection
+    // activeStep covers the three in-wizard steps:
     // 1: Server URL
     // 2: Authentication
     // 3: Health / confirmation
+    // (Path selection above the wizard is treated as a pre-step.)
     if (configStep === 'url') return 1
     if (configStep === 'auth') return 2
     if (configStep === 'health') return 3

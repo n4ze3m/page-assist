@@ -1184,5 +1184,11 @@
   },
   "restartOnboardingConfirmMessage": {
     "message": "Isso irá redefinir o seu estado de onboarding e levá‑lo de volta ao fluxo de configuração."
+  },
+  "restartOnboardingToast": {
+    "message": "O onboarding foi redefinido"
+  },
+  "restartOnboardingToastBody": {
+    "message": "Vamos levá‑lo de volta à etapa de boas‑vindas para que você possa revisar a URL do servidor e a chave de API."
   }
 }

@@ -85,6 +85,13 @@ export type ClientPath =
   | "/api/v1/auth/refresh"
   | "/api/v1/auth/register"
 
+// Centralized, typed API paths for use across the extension. Values are
+// checked against ClientPath so that any drift from the OpenAPI spec is
+// caught at compile time.
+export const API_PATHS = {
+  MEDIA_ADD: "/api/v1/media/add" as const
+} as const satisfies Record<string, ClientPath>
+
 // Allowed relative API path: anything beginning with a slash. We keep
 // this wide to avoid breaking existing call sites, but use ClientPath
 // + SpecPathKey below as a compatibility safety net.

@@ -351,7 +351,7 @@
       "parameterSize": "パラメータサイズ",
       "quantizationLevel": "量子化レベル"
     },
-      "tooltip": {
+    "tooltip": {
       "delete": "モデルを削除",
       "repull": "モデルを再取得",
       "editNickname": "ニックネームを編集"

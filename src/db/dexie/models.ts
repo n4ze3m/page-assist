@@ -23,7 +23,7 @@ import {
   dynamicFetchLLamaCpp,
   dynamicFetchLlamafile,
   dynamicFetchVLLM
-} from "../model-provider-utils"
+} from "@/db/model-provider-utils"
 
 export const generateID = () => {
   return "model-xxxx-xxxx-xxx-xxxx".replace(/[x]/g, () => {
@@ -297,6 +297,9 @@ export const formatAllCustomModels = async (
   return []
 }
 
+// Re-export model-provider utilities for backward compatibility so that
+// existing imports from this module keep working. Prefer importing directly
+// from "@/db/model-provider-utils" in new code.
 export {
   removeModelSuffix,
   isLMStudioModel,

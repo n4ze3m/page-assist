@@ -1627,11 +1627,7 @@ const ImportPanel: React.FC = () => {
   const importMutation = useMutation({
     mutationKey: ["flashcards:import"],
     mutationFn: () => {
-      type ImportPayload =
-        | { content: string; delimiter: string; has_header: false }
-        | { content: string; delimiter: string; has_header: boolean }
-
-      const payload: ImportPayload = useMapping
+      const payload = useMapping
         ? {
             content: buildMappedTSV() || "",
             delimiter: MAPPING_OUTPUT_DELIMITER,
