@@ -208,20 +208,16 @@
   },
   "notesEmpty.primaryCta": {
     "message": "Create note"
+  "authStepAria": {
+    "message": "Étape 3 sur 4 — configuration de l'authentification",
+    "description": "Libellé aria pour l'étape de configuration de l'authentification (actuellement en anglais)."
   },
-  "headerShortcuts": {
-    "message": "Afficher les raccourcis rapides dans l’en-tête"
+  "confirmStepAria": {
+    "message": "Étape 4 sur 4 — résumé de la connexion et étapes suivantes",
+    "description": "Libellé aria pour l'étape de confirmation de la connexion (actuellement en anglais)."
   },
-  "restartOnboardingLabel": {
-    "message": "Redémarrer le parcours d’accueil depuis le début"
-  },
-  "restartOnboardingButton": {
-    "message": "Redémarrer le parcours d’accueil"
-  },
-  "restartOnboardingConfirmTitle": {
-    "message": "Redémarrer le parcours d’accueil ?"
-  },
-  "restartOnboardingConfirmMessage": {
-    "message": "Cela réinitialisera votre état de parcours d’accueil et vous ramènera au flux de configuration."
+  "nextSteps": {
+    "message": "Vous êtes prêt à commencer",
+    "description": "Titre du panneau final de l'onboarding avec les prochaines étapes (actuellement en anglais)."
   }
 }
