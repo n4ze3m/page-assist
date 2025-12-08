@@ -3,7 +3,7 @@ import { Modal, Button, Input, Select, Space, Switch, Typography, List, Tag, mes
 import { useTranslation } from 'react-i18next'
 import { browser } from "wxt/browser"
 import { tldwClient } from '@/services/tldw/TldwApiClient'
-import { HelpCircle, Headphones, Layers, Database, FileText, Film, Cookie, Info, Clock, Grid, BookText, Link2, File as FileIcon, AlertTriangle } from 'lucide-react'
+import { HelpCircle, Headphones, Layers, Database, FileText, Film, Cookie, Info, Clock, Grid, BookText, Link2, File as FileIcon, AlertTriangle, Star } from 'lucide-react'
 import { useStorage } from '@plasmohq/storage/hook'
 import { useConfirmDanger } from '@/components/Common/confirm-danger'
 import { defaultEmbeddingModelForRag } from '@/services/tldw-server'
@@ -678,6 +678,18 @@ export const QuickIngestModal: React.FC<Props> = ({
   // Load OpenAPI schema to build advanced fields (best-effort)
   const groupForField = (name: string): string => {
     const n = name.toLowerCase()
+    if (
+      n === 'cookies' ||
+      n === 'cookie' ||
+      n === 'headers' ||
+      n === 'authorization' ||
+      n === 'auth_header' ||
+      n === 'embedding_model' ||
+      n === 'default_embedding_model' ||
+      n === 'context_strategy'
+    ) {
+      return 'Recommended'
+    }
     if (n.startsWith('transcription_') || ['diarize','vad_use','chunk_language'].includes(n)) return 'Transcription'
     if (n.startsWith('chunk_') || ['use_adaptive_chunking','enable_contextual_chunking','use_multi_level_chunking','perform_chunking','contextual_llm_model'].includes(n)) return 'Chunking'
     if (n.includes('embedding')) return 'Embeddings'
@@ -694,6 +706,8 @@ export const QuickIngestModal: React.FC<Props> = ({
   const iconForGroup = (group: string) => {
     const cls = 'w-4 h-4 mr-1 text-gray-500'
     switch (group) {
+      case 'Recommended':
+        return <Star className={cls} />
       case 'Transcription':
         return <Headphones className={cls} />
       case 'Chunking':
@@ -989,6 +1003,35 @@ export const QuickIngestModal: React.FC<Props> = ({
     }
   }, [])
 
+  const openModelSettings = React.useCallback(() => {
+    try {
+      const hash = "#/settings/model"
+      const path = window.location.pathname || ""
+      if (path.includes("options.html")) {
+        window.location.hash = hash
+        return
+      }
+      try {
+        const url = browser.runtime.getURL(`/options.html${hash}`)
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        if (browser.tabs?.create) {
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          browser.tabs.create({ url })
+        } else {
+          window.open(url, "_blank")
+        }
+        return
+      } catch {
+        // fall through
+      }
+      window.open(`/options.html${hash}`, "_blank")
+    } catch {
+      // best-effort; avoid throwing from modal
+    }
+  }, [])
+
   const downloadJson = (item: ResultItem) => {
     const blob = new Blob([JSON.stringify(item.data ?? {}, null, 2)], { type: 'application/json' })
     const a = document.createElement('a')
@@ -1155,6 +1198,24 @@ export const QuickIngestModal: React.FC<Props> = ({
     return { successCount, failCount }
   }, [results])
 
+  const [resultsFilter, setResultsFilter] =
+    React.useState<"all" | "success" | "error">("all")
+
+  const visibleResults = React.useMemo(() => {
+    let items = results || []
+    if (resultsFilter === "success") {
+      items = items.filter((r) => r.status === "ok")
+    } else if (resultsFilter === "error") {
+      items = items.filter((r) => r.status === "error")
+    }
+    const ranked = [...items].sort((a, b) => {
+      const rank = (s: ResultItem["status"]) =>
+        s === "error" ? 0 : s === "ok" ? 1 : 2
+      return rank(a.status) - rank(b.status)
+    })
+    return ranked
+  }, [results, resultsFilter])
+
   const modifiedAdvancedCount = React.useMemo(
     () => Object.keys(advancedValues || {}).length,
     [advancedValues]
@@ -1305,8 +1366,8 @@ export const QuickIngestModal: React.FC<Props> = ({
   if (!isOnlineForIngest) {
     if (ingestConnectionStatus === "unconfigured") {
       connectionBannerTitle = t(
-        "quickIngest.unconfiguredTitle",
-        "Server not configured — queue only"
+        "option:connectionCard.headlineError",
+        "Can’t reach your tldw server"
       )
       connectionBannerBody = t(
         "quickIngest.unconfiguredDescription",
@@ -1315,8 +1376,8 @@ export const QuickIngestModal: React.FC<Props> = ({
       showHealthLink = true
     } else if (ingestConnectionStatus === "offlineBypass") {
       connectionBannerTitle = t(
-        "quickIngest.offlineBypassTitle",
-        "Offline mode enabled — queue only"
+        "option:connectionCard.headlineError",
+        "Can’t reach your tldw server"
       )
       connectionBannerBody = t(
         "quickIngest.offlineBypassDescription",
@@ -1906,7 +1967,7 @@ export const QuickIngestModal: React.FC<Props> = ({
                     aria-label="Ingestion options \u2013 chunking"
                     title="Toggle chunking"
                     checked={common.perform_chunking}
-                    onChange={(v) =>
+                  onChange={(v) =>
                       setCommon((c) => ({ ...c, perform_chunking: v }))
                     }
                     disabled={running}
@@ -1925,6 +1986,25 @@ export const QuickIngestModal: React.FC<Props> = ({
                 />
               </Space>
             </Space>
+
+            {ragEmbeddingLabel && (
+              <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-gray-500">
+                <span>
+                  {t(
+                    "quickIngest.ragEmbeddingHintInline",
+                    "Uses {{label}} for RAG search.",
+                    { label: ragEmbeddingLabel }
+                  )}
+                </span>
+                <button
+                  type="button"
+                  onClick={openModelSettings}
+                  className="text-blue-600 underline underline-offset-2"
+                >
+                  {t("option:header.modelSettings", "Model settings")}
+                </button>
+              </div>
+            )}
 
             {rows.some((r) => (r.type === 'audio' || (r.type === 'auto' && detectTypeFromUrl(r.url) === 'audio'))) && (
               <div className="space-y-1">
@@ -2632,6 +2712,7 @@ export const QuickIngestModal: React.FC<Props> = ({
               ) : (
                 (() => {
                   const grouped: Record<string, typeof advSchema> = {}
+                  const recommended: typeof advSchema = []
                   const q = advSearch.trim().toLowerCase()
                   const match = (f: { name: string; title?: string; description?: string }) => {
                     if (!q) return true
@@ -2641,16 +2722,59 @@ export const QuickIngestModal: React.FC<Props> = ({
                       (f.description || '').toLowerCase().includes(q)
                     )
                   }
-                  for (const f of advSchema.filter(match)) {
-                    if (!grouped[f.group]) grouped[f.group] = []
-                    grouped[f.group].push(f)
+                  const allMatched = advSchema.filter(match)
+
+                  // Derive a small "Recommended fields" subset for common
+                  // parameters. We keep these also in their original groups
+                  // so users can still find them where they logically live.
+                  for (const f of allMatched) {
+                    const n = f.name.toLowerCase()
+                    const isRecommended =
+                      f.group === 'Recommended' ||
+                      f.group === 'Cookies/Auth' ||
+                      f.group === 'Embeddings' ||
+                      f.group === 'Chunking' ||
+                      f.group === 'Analysis/Summarization' ||
+                      n === 'cookies' ||
+                      n === 'cookie' ||
+                      n === 'headers' ||
+                      n === 'authorization' ||
+                      n === 'auth_header' ||
+                      n.includes('embedding') ||
+                      n === 'context_strategy'
+
+                    if (isRecommended && recommended.length < 12) {
+                      recommended.push(f)
+                    }
+
+                    const groupKey = f.group === 'Recommended' ? groupForField(f.name) : f.group
+                    if (!grouped[groupKey]) grouped[groupKey] = []
+                    grouped[groupKey].push(f)
                   }
-                  const order = Object.keys(grouped).sort()
+
+                  const order: string[] = []
+                  if (recommended.length > 0) {
+                    order.push('Recommended')
+                  }
+                  order.push(
+                    ...Object.keys(grouped)
+                      .filter((g) => g !== 'Recommended')
+                      .sort()
+                  )
+
                   return order.map((g) => (
                     <div key={g} className="mb-2">
-                      <Typography.Title level={5} className="!mb-2 flex items-center">{iconForGroup(g)}{g}</Typography.Title>
+                      <Typography.Title level={5} className="!mb-2 flex items-center">
+                        {iconForGroup(g)}
+                        {g === 'Recommended'
+                          ? t(
+                              'quickIngest.recommendedGroup',
+                              'Recommended fields'
+                            )
+                          : g}
+                      </Typography.Title>
                       <Space direction="vertical" className="w-full">
-                        {grouped[g].map((f) => {
+                        {(g === 'Recommended' ? recommended : grouped[g]).map((f) => {
                           const v = advancedValues[f.name]
                           const setV = (nv: any) => setAdvancedValue(f.name, nv)
                           const isOpen = fieldDetailsOpen[f.name]
@@ -2791,6 +2915,41 @@ export const QuickIngestModal: React.FC<Props> = ({
                   disabled={!results.some((r) => r.status === 'error')}>
                   {qi('retryFailedUrls', 'Retry failed URLs')}
                 </Button>
+                <Select
+                  size="small"
+                  className="w-32"
+                  aria-label={t(
+                    "quickIngest.resultsFilterAria",
+                    "Filter results by status"
+                  ) as string}
+                  value={resultsFilter}
+                  onChange={(value) =>
+                    setResultsFilter(value as "all" | "success" | "error")
+                  }
+                  options={[
+                    {
+                      value: "all",
+                      label: t(
+                        "quickIngest.resultsFilterAll",
+                        "All"
+                      )
+                    },
+                    {
+                      value: "error",
+                      label: t(
+                        "quickIngest.resultsFilterFailed",
+                        "Failed only"
+                      )
+                    },
+                    {
+                      value: "success",
+                      label: t(
+                        "quickIngest.resultsFilterSucceeded",
+                        "Succeeded only"
+                      )
+                    }
+                  ]}
+                />
               </div>
             </div>
             {resultSummary && !running && (
@@ -2817,6 +2976,25 @@ export const QuickIngestModal: React.FC<Props> = ({
                   )}
                 </div>
                 <div className="mt-2 flex flex-wrap items-center gap-2">
+                  {/* Primary next-step CTA: open the first successful media item in Review. */}
+                  {storeRemote && results.some((r) => r.status === "ok" && mediaIdFromPayload(r.data)) && (
+                    <Button
+                      size="small"
+                      type="primary"
+                      data-testid="quick-ingest-open-media-primary"
+                      onClick={() => {
+                        const firstOk = results.find(
+                          (r) => r.status === "ok" && mediaIdFromPayload(r.data)
+                        )
+                        if (!firstOk) return
+                        openInMediaViewer(firstOk)
+                      }}>
+                      {t(
+                        "quickIngest.openFirstInMedia",
+                        "Open in Media viewer"
+                      )}
+                    </Button>
+                  )}
                   {resultSummary.failCount > 0 && (
                     <Button
                       size="small"
@@ -2840,7 +3018,7 @@ export const QuickIngestModal: React.FC<Props> = ({
             )}
             <List
               size="small"
-              dataSource={results}
+              dataSource={visibleResults}
               renderItem={(item) => {
                 const mediaId = item.status === "ok" && storeRemote ? mediaIdFromPayload(item.data) : null
                 const hasMediaId = mediaId != null
