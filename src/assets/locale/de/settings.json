@@ -872,8 +872,8 @@
       "missingApiKey": "Ein API-Key ist erforderlich."
     },
     "apiKeyHelp": "Du findest deinen API-Key in tldw_server → Settings → API Keys. Erzeuge dort einen Schlüssel und füge ihn hier ein.",
-    "authStepAria": "Schritt 3 von 4 — Wähle, wie du dich anmeldest",
-    "confirmStepAria": "Schritt 4 von 4 — Verbindung bestätigen und nächste Schritte ansehen",
+    "authStepAria": "Schritt 2 von 3 — Wähle, wie du dich anmeldest",
+    "confirmStepAria": "Schritt 3 von 3 — Verbindung bestätigen und nächste Schritte ansehen",
     "nextSteps": {
       "title": "Du bist startklar",
       "subtitle": "Von hier aus kannst du das Seitenpanel öffnen, eine Seite erfassen oder Medien und Notizen erkunden.",

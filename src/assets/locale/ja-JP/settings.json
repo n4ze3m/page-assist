@@ -864,8 +864,8 @@
     },
     "authModeHelp": "Single User（API キー）は個人または小規模チームのサーバーに推奨されます。Multi User（ログイン）は、ユーザー名や SSO でサインインする共有環境向けです。お使いの tldw_server の構成に合ったモードを選択してください。",
     "apiKeyHelp": "tldw_server の「Settings」→「API Keys」で API キーを確認できます。そこでキーを作成し、この欄に貼り付けてください。",
-    "authStepAria": "Step 3 of 4 — authentication configuration",
-    "confirmStepAria": "Step 4 of 4 — connection summary and next steps",
+    "authStepAria": "Step 2 of 3 — authentication configuration",
+    "confirmStepAria": "Step 3 of 3 — connection summary and next steps",
     "nextSteps": {
       "title": "You’re ready to go",
       "subtitle": "From here you can open the sidepanel, ingest a page, or explore media and notes.",

@@ -475,11 +475,11 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
 
   const handleUseDemoMode = () => {
     try {
-      try {
-        setDemoEnabled(true)
-      } catch {
-        // Ignore demo storage failures; connection store mode still applies.
-      }
+      setDemoEnabled(true)
+    } catch {
+      // Ignore demo storage failures; connection store mode still applies.
+    }
+    try {
       useConnectionStore.getState().setDemoMode()
     } catch (err) {
       // eslint-disable-next-line no-console
@@ -882,7 +882,7 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
           tabIndex={-1}
           aria-label={t(
             'settings:onboarding.authStepAria',
-            'Step 3 of 4 — authentication configuration'
+            'Step 2 of 3 — authentication configuration'
           )}
         >
           <div>
@@ -980,7 +980,7 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
           tabIndex={-1}
           aria-label={t(
             'settings:onboarding.confirmStepAria',
-            'Step 4 of 4 — connection summary and next steps'
+            'Step 3 of 3 — connection summary and next steps'
           )}
         >
           <div>

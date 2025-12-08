@@ -139,6 +139,8 @@ export const normalChatMode = async (
       else if (provider === "brave" || provider === "brave-api") engine = "brave"
       else if (provider === "searxng") engine = "searx"
       else if (provider === "tavily-api") engine = "tavily"
+      else if (provider === "exa") engine = "exa"
+      else if (provider === "firecrawl") engine = "firecrawl"
 
       const payload: any = {
         query: message,
@@ -205,7 +207,7 @@ export const normalChatMode = async (
       setIsProcessing(false)
       setStreaming(false)
     } catch (e) {
-      console.log(e)
+      console.error(e)
       const errorSave = await saveMessageOnError({
         e,
         botMessage: fullText,
@@ -437,8 +439,7 @@ export const normalChatMode = async (
     setIsProcessing(false)
     setStreaming(false)
   } catch (e) {
-
-    console.log(e)
+    console.error(e)
 
     const errorSave = await saveMessageOnError({
       e,

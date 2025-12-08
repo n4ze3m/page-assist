@@ -33,22 +33,18 @@ const OptionIndex = () => {
     }
   }, [hasCompletedFirstRun, beginOnboarding])
 
-  useFocusComposerOnConnect(phase as ConnectionPhase | null)
+  useFocusComposerOnConnect(phase ?? null)
 
   // During first-time setup, hide the connection shell entirely and show only
   // the onboarding wizard (“Welcome — Let’s get you connected”).
   if (!hasCompletedFirstRun) {
-    const showWizard = true
-
     return (
-      <OptionLayout hideHeader={showWizard} showHeaderSelectors={false}>
-        {showWizard && (
-          <OnboardingWizard
-            onFinish={() => {
-              void checkOnce()
-            }}
-          />
-        )}
+      <OptionLayout hideHeader showHeaderSelectors={false}>
+        <OnboardingWizard
+          onFinish={() => {
+            void checkOnce()
+          }}
+        />
       </OptionLayout>
     )
   }

@@ -87,6 +87,13 @@ export default defineContentScript({
             "[tldw] Something went wrong while sending this page to tldw_server. Check that your tldw_server and the extension are running, then try again."
           )
         )
+      } finally {
+        if (btn) {
+          btn.disabled = originalDisabled
+          if (labelEl && originalLabel !== undefined) {
+            labelEl.textContent = originalLabel
+          }
+        }
       }
     }
 
@@ -131,6 +138,6 @@ export default defineContentScript({
     observer.observe(document.documentElement, { childList: true, subtree: true })
     injectButton()
   },
-  allFrames: true,
+  allFrames: false,
   matches: ["*://huggingface.co/*"]
 })

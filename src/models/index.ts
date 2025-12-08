@@ -73,7 +73,9 @@ export const pageAssistModel = async ({
       userDefaultModelSettings?.numThread,
     useMlock:
       currentChatModelSettings?.useMlock ?? userDefaultModelSettings?.useMlock,
-    reasoningEffort: currentChatModelSettings?.reasoningEffort
+    reasoningEffort:
+      currentChatModelSettings?.reasoningEffort ??
+      userDefaultModelSettings?.reasoningEffort
   }
 
   const modelSettings = await getModelSettings(model)

@@ -1,7 +1,7 @@
 import { getAllOpenAIModels } from "@/libs/openai"
 import { getAllModelNicknames } from "./nickname"
 
-type Model = {
+interface Model {
   id: string
   model_id: string
   name: string
@@ -214,7 +214,7 @@ export const createManyModels = async (
   }
 }
 
-export const createModelFB = async (model: any) => {
+export const createModelFB = async (model: Model) => {
   try {
     const db = new ModelDb()
     await db.create(model)
@@ -339,74 +339,38 @@ export const isLookupExist = async (lookup: string) => {
   const db = new ModelDb()
   const models = await db.getAll()
   const model = models.find((model) => model?.lookup === lookup)
-  return model ? true : false
+  return !!model
 }
 
-export const dynamicFetchLMStudio = async ({
-  baseUrl,
-  providerId,
-  customHeaders = []
-}: {
+type DynamicFetchParams = {
   baseUrl: string
   providerId: string
   customHeaders?: { key: string; value: string }[]
-}) => {
-  const models = await getAllOpenAIModels({ baseUrl, customHeaders })
-  const lmstudioModels = models.map((e) => {
-    return {
-      name: e?.name || e?.id,
-      id: `${e?.id}_lmstudio_${providerId}`,
-      provider: providerId,
-      lookup: `${e?.id}_${providerId}`,
-      provider_id: providerId
-    }
-  })
-
-  return lmstudioModels
 }
 
-export const dynamicFetchLLamaCpp = async ({
+const dynamicFetchModels = async ({
   baseUrl,
   providerId,
+  providerPrefix,
   customHeaders = []
-}: {
-  baseUrl: string
-  providerId: string
-  customHeaders?: { key: string; value: string }[]
+}: DynamicFetchParams & {
+  providerPrefix: "lmstudio" | "llamacpp" | "llamafile"
 }) => {
   const models = await getAllOpenAIModels({ baseUrl, customHeaders })
-  const llamaCppModels = models.map((e) => {
-    return {
-      name: e?.name || e?.id,
-      id: `${e?.id}_llamacpp_${providerId}`,
-      provider: providerId,
-      lookup: `${e?.id}_${providerId}`,
-      provider_id: providerId
-    }
-  })
-
-  return llamaCppModels
+  return models.map((e) => ({
+    name: e?.name || e?.id,
+    id: `${e?.id}_${providerPrefix}_${providerId}`,
+    provider: providerId,
+    lookup: `${e?.id}_${providerId}`,
+    provider_id: providerId
+  }))
 }
 
-export const dynamicFetchLlamafile = async ({
-  baseUrl,
-  providerId,
-  customHeaders = []
-}: {
-  baseUrl: string
-  providerId: string
-  customHeaders?: { key: string; value: string }[]
-}) => {
-  const models = await getAllOpenAIModels({ baseUrl, customHeaders })
-  const llamafileModels = models.map((e) => {
-    return {
-      name: e?.name || e?.id,
-      id: `${e?.id}_llamafile_${providerId}`,
-      provider: providerId,
-      lookup: `${e?.id}_${providerId}`,
-      provider_id: providerId
-    }
-  })
+export const dynamicFetchLMStudio = async (params: DynamicFetchParams) =>
+  dynamicFetchModels({ ...params, providerPrefix: "lmstudio" })
 
-  return llamafileModels
-}
+export const dynamicFetchLLamaCpp = async (params: DynamicFetchParams) =>
+  dynamicFetchModels({ ...params, providerPrefix: "llamacpp" })
+
+export const dynamicFetchLlamafile = async (params: DynamicFetchParams) =>
+  dynamicFetchModels({ ...params, providerPrefix: "llamafile" })

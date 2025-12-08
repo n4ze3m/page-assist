@@ -876,8 +876,8 @@
     },
     "authModeHelp": "Single User（API Key）適合個人或小型團隊的伺服器。Multi User（Login）適用於多人共用的部署，使用者以帳號或 SSO 登入。請選擇符合你 tldw_server 設定方式的模式。",
     "apiKeyHelp": "在 tldw_server → Settings → API Keys 中可以找到你的 API 金鑰。在那裡產生金鑰後，將其貼到這裡。",
-    "authStepAria": "Step 3 of 4 — authentication configuration",
-    "confirmStepAria": "Step 4 of 4 — connection summary and next steps",
+    "authStepAria": "Step 2 of 3 — authentication configuration",
+    "confirmStepAria": "Step 3 of 3 — connection summary and next steps",
     "nextSteps": {
       "title": "You’re ready to go",
       "subtitle": "From here you can open the sidepanel, ingest a page, or explore media and notes.",

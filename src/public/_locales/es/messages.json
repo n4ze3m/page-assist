@@ -126,15 +126,15 @@
     "description": "Texto de ayuda que indica dónde encontrar la clave de API."
   },
   "authStepAria": {
-    "message": "Step 3 of 4 \u2014 authentication configuration",
+    "message": "Paso 3 de 4 \u2014 configuraci\u00f3n de autenticaci\u00f3n",
     "description": "Etiqueta aria para el paso de configuración de autenticación en la incorporación (aún en inglés)."
   },
   "confirmStepAria": {
-    "message": "Step 4 of 4 \u2014 connection summary and next steps",
+    "message": "Paso 4 de 4 \u2014 resumen de la conexión y siguientes pasos",
     "description": "Etiqueta aria para el paso de confirmación de la conexión en la incorporación (aún en inglés)."
   },
   "nextSteps": {
-    "message": "You\u2019re ready to go",
+    "message": "Ya est\u00e1s listo",
     "description": "Título del panel final de incorporación con los siguientes pasos (actualmente en inglés)."
   }
 }

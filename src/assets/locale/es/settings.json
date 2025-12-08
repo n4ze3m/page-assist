@@ -861,8 +861,8 @@
     },
     "authModeHelp": "Se recomienda Single User (API Key) para servidores personales o de equipos pequeños. Multi User (Login) está pensado para despliegues compartidos donde las personas inician sesión con nombres de usuario o SSO. Elige el modo que coincida con la configuración de tu tldw_server.",
     "apiKeyHelp": "Busca tu clave de API en tldw_server → Settings → API Keys. Genera allí una clave y pégala aquí.",
-    "authStepAria": "Step 3 of 4 — authentication configuration",
-    "confirmStepAria": "Step 4 of 4 — connection summary and next steps",
+    "authStepAria": "Step 2 of 3 — authentication configuration",
+    "confirmStepAria": "Step 3 of 3 — connection summary and next steps",
     "nextSteps": {
       "title": "You’re ready to go",
       "subtitle": "From here you can open the sidepanel, ingest a page, or explore media and notes.",

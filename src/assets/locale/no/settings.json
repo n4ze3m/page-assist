@@ -862,8 +862,8 @@
     },
     "authModeHelp": "Single User (API Key) anbefales for personlige servere eller små team. Multi User (Login) er for delte miljøer der brukere logger inn med brukernavn eller SSO. Velg modusen som samsvarer med hvordan tldw_server er satt opp.",
     "apiKeyHelp": "Finn API-nøkkelen din i tldw_server → Settings → API Keys. Generer en nøkkel der og lim den inn her.",
-    "authStepAria": "Trinn 3 av 4 — velg hvordan du logger inn",
-    "confirmStepAria": "Trinn 4 av 4 — bekreft tilkoblingen og se gjennom neste trinn",
+    "authStepAria": "Trinn 2 av 3 — velg hvordan du logger inn",
+    "confirmStepAria": "Trinn 3 av 3 — bekreft tilkoblingen og se gjennom neste trinn",
     "nextSteps": {
       "title": "Du er klar til å komme i gang",
       "subtitle": "Herfra kan du åpne sidepanelet, lese inn en side eller utforske medier og notater.",

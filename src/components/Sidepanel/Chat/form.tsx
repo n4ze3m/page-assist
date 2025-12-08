@@ -52,7 +52,7 @@ import { ConnectionPhase } from "@/types/connection"
 import { useServerCapabilities } from "@/hooks/useServerCapabilities"
 import { tldwClient } from "@/services/tldw/TldwApiClient"
 import { useAntdNotification } from "@/hooks/useAntdNotification"
-import { useFocusComposerOnConnect, focusComposer } from "@/hooks/useComposerFocus"
+import { useFocusComposerOnConnect } from "@/hooks/useComposerFocus"
 import { useQuickIngestStore } from "@/store/quick-ingest"
 import { cleanUrl } from "@/libs/clean-url"
 
@@ -253,7 +253,12 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
 
   const handlePaste = (e: React.ClipboardEvent) => {
     if (e.clipboardData.files.length > 0) {
-      onInputChange(e.clipboardData.files[0])
+      const file = e.clipboardData.files[0]
+      // Only handle image files from paste
+      if (file.type.startsWith("image/")) {
+        e.preventDefault()
+        onInputChange(file)
+      }
     }
   }
 

@@ -126,15 +126,15 @@
     "description": "Справочный текст, описывающий, где найти API-ключ."
   },
   "authStepAria": {
-    "message": "Step 3 of 4 \u2014 authentication configuration",
+    "message": "Шаг 3 из 4 — настройка аутентификации",
     "description": "Aria-метка для шага настройки аутентификации в мастере (пока на английском)."
   },
   "confirmStepAria": {
-    "message": "Step 4 of 4 \u2014 connection summary and next steps",
+    "message": "Шаг 4 из 4 — сводка подключения и следующие шаги",
     "description": "Aria-метка для шага подтверждения подключения в мастере (пока на английском)."
   },
   "nextSteps": {
-    "message": "You\u2019re ready to go",
+    "message": "Вы готовы к работе",
     "description": "Заголовок финального шага мастера настройки (пока на английском)."
   }
 }

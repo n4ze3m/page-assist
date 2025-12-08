@@ -861,10 +861,10 @@
     },
     "authModeHelp": "Single User (API-nyckel) rekommenderas för personliga servrar eller små team. Multi User (Login) är för delade installationer där användare loggar in med användarnamn eller SSO. Välj det läge som stämmer med hur din tldw_server är konfigurerad.",
     "apiKeyHelp": "Hitta din API-nyckel i tldw_server → Settings → API Keys. Skapa en nyckel där och klistra in den här.",
-    "authStepAria": "Step 3 of 4 — authentication configuration",
-    "confirmStepAria": "Step 4 of 4 — connection summary and next steps",
+    "authStepAria": "Steg 2 av 3 — konfiguration av autentisering",
+    "confirmStepAria": "Steg 3 av 3 — sammanfattning av anslutning och nästa steg",
     "nextSteps": {
-      "title": "You’re ready to go",
+      "title": "Du är redo att börja",
       "subtitle": "From here you can open the sidepanel, ingest a page, or explore media and notes.",
       "chatTitle": "Start chatting",
       "chatBody": "Open the sidepanel and ask your first question.",

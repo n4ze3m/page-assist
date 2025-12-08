@@ -66,7 +66,10 @@ export const ModelsBody = () => {
         })
       }
     } catch (e: unknown) {
-      const message = e instanceof Error ? e.message : String(e)
+      console.error("[tldw] Failed to refresh models", e)
+      const rawMessage = e instanceof Error ? e.message : String(e)
+      const message =
+        rawMessage.length > 200 ? `${rawMessage.slice(0, 197)}...` : rawMessage
       notification.error({
         message: t("settings:models.refreshFailed", { defaultValue: "Failed to refresh models" }),
         description: message

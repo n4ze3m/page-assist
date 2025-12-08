@@ -868,8 +868,8 @@
       "missingApiKey": "A chave API é obrigatória."
     },
     "apiKeyHelp": "Encontre sua chave de API em tldw_server → Settings → API Keys. Gere uma chave lá e cole aqui.",
-    "authStepAria": "Etapa 3 de 4 — escolha como você faz login",
-    "confirmStepAria": "Etapa 4 de 4 — confirme a conexão e revise os próximos passos",
+    "authStepAria": "Etapa 2 de 3 — escolha como você faz login",
+    "confirmStepAria": "Etapa 3 de 3 — confirme a conexão e revise os próximos passos",
     "nextSteps": {
       "title": "Tudo pronto para começar",
       "subtitle": "A partir daqui você pode abrir o painel lateral, ingerir uma página ou explorar mídias e notas.",

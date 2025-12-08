@@ -126,15 +126,15 @@
     "description": "Hjälptext som anger var API-nyckeln finns."
   },
   "authStepAria": {
-    "message": "Step 3 of 4 \u2014 authentication configuration",
-    "description": "Aria-etikett för autentiseringssteget i onboarding (för närvarande på engelska)."
+    "message": "Steg 3 av 4 \u2014 konfiguration av autentisering",
+    "description": "Aria-etikett för autentiseringssteget i onboarding."
   },
   "confirmStepAria": {
-    "message": "Step 4 of 4 \u2014 connection summary and next steps",
-    "description": "Aria-etikett för bekräftelsesteget i onboarding (för närvarande på engelska)."
+    "message": "Steg 4 av 4 \u2014 sammanfattning av anslutning och nästa steg",
+    "description": "Aria-etikett för bekräftelsesteget i onboarding."
   },
   "nextSteps": {
-    "message": "You\u2019re ready to go",
-    "description": "Rubrik för sista onboarding-panelen med nästa steg (för närvarande på engelska)."
+    "message": "Du \u00e4r redo att b\u00f6rja",
+    "description": "Rubrik för sista onboarding-panelen med nästa steg."
   }
 }

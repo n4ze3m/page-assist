@@ -1193,7 +1193,7 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true, 
         onSecondaryAction={() =>
           window.dispatchEvent(new CustomEvent("tldw:open-quick-ingest"))
         }
-        secondaryDisabled={!isOnline && !demoEnabled}
+        secondaryDisabled={!demoEnabled}
       />
     ) : (
       <FeatureEmptyState
@@ -1249,7 +1249,7 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({ allowGeneration = true, 
         onSecondaryAction={() =>
           window.dispatchEvent(new CustomEvent("tldw:open-quick-ingest"))
         }
-        secondaryDisabled={!isOnline && !demoEnabled}
+        secondaryDisabled={!demoEnabled}
       />
     )
 

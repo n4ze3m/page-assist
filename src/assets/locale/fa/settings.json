@@ -1013,8 +1013,8 @@
     },
     "authModeHelp": "حالت Single User (کلید API) برای سرورهای شخصی یا تیم‌های کوچک توصیه می‌شود. حالت Multi User (ورود) برای استقرارهای مشترک است که در آن کاربران با نام کاربری یا SSO وارد می‌شوند. حالتی را انتخاب کنید که با نحوه‌ی پیکربندی tldw_server شما مطابقت دارد.",
     "apiKeyHelp": "کلید API خود را در tldw_server → Settings → API Keys پیدا کنید. در آنجا یک کلید تولید کرده و آن را اینجا جای‌گذاری کنید.",
-    "authStepAria": "Step 3 of 4 — authentication configuration",
-    "confirmStepAria": "Step 4 of 4 — connection summary and next steps",
+    "authStepAria": "Step 2 of 3 — authentication configuration",
+    "confirmStepAria": "Step 3 of 3 — connection summary and next steps",
     "nextSteps": {
       "title": "You’re ready to go",
       "subtitle": "From here you can open the sidepanel, ingest a page, or explore media and notes.",

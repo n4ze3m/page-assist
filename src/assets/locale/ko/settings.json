@@ -864,8 +864,8 @@
     },
     "authModeHelp": "Single User(API 키)는 개인 또는 소규모 팀 서버에 권장됩니다. Multi User(로그인)는 사람들이 사용자 이름이나 SSO로 로그인하는 공유 배포 환경에 적합합니다. tldw_server 설정 방식에 맞는 모드를 선택하세요.",
     "apiKeyHelp": "tldw_server → Settings → API Keys에서 API 키를 찾을 수 있습니다. 그곳에서 키를 생성한 뒤 여기에 붙여넣으세요.",
-    "authStepAria": "Step 3 of 4 — authentication configuration",
-    "confirmStepAria": "Step 4 of 4 — connection summary and next steps",
+    "authStepAria": "Step 2 of 3 — authentication configuration",
+    "confirmStepAria": "Step 3 of 3 — connection summary and next steps",
     "nextSteps": {
       "title": "You’re ready to go",
       "subtitle": "From here you can open the sidepanel, ingest a page, or explore media and notes.",

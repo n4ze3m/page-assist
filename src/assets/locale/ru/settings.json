@@ -861,10 +861,10 @@
     },
     "authModeHelp": "Режим Single User (API Key) рекомендуется для личных серверов или серверов небольших команд. Multi User (Login) предназначен для общих установок, где пользователи входят под учётной записью или через SSO. Выберите режим, соответствующий конфигурации вашего tldw_server.",
     "apiKeyHelp": "Найдите свой API-ключ в tldw_server → Settings → API Keys. Сгенерируйте там ключ и вставьте его сюда.",
-    "authStepAria": "Step 3 of 4 — authentication configuration",
-    "confirmStepAria": "Step 4 of 4 — connection summary and next steps",
+    "authStepAria": "Шаг 2 из 3 — настройка аутентификации",
+    "confirmStepAria": "Шаг 3 из 3 — сводка подключения и следующие шаги",
     "nextSteps": {
-      "title": "You’re ready to go",
+      "title": "Вы готовы к работе",
       "subtitle": "From here you can open the sidepanel, ingest a page, or explore media and notes.",
       "chatTitle": "Start chatting",
       "chatBody": "Open the sidepanel and ask your first question.",

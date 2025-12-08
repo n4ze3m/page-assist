@@ -126,15 +126,15 @@
     "description": "متن راهنما برای توضیح محل یافتن کلید API."
   },
   "authStepAria": {
-    "message": "Step 3 of 4 \u2014 authentication configuration",
-    "description": "برچسب aria برای گام تنظیم احراز هویت در جریان راه‌اندازی (فعلاً به انگلیسی)."
+    "message": "گام ۳ از ۴ — پیکربندی احراز هویت",
+    "description": "برچسب aria برای گام تنظیم احراز هویت در جریان راه‌اندازی."
   },
   "confirmStepAria": {
-    "message": "Step 4 of 4 \u2014 connection summary and next steps",
-    "description": "برچسب aria برای گام تأیید اتصال در جریان راه‌اندازی (فعلاً به انگلیسی)."
+    "message": "گام ۴ از ۴ — خلاصه اتصال و مراحل بعدی",
+    "description": "برچسب aria برای گام تأیید اتصال در جریان راه‌اندازی."
   },
   "nextSteps": {
-    "message": "You\u2019re ready to go",
-    "description": "عنوان بخش پایانی راه‌اندازی با مراحل بعدی (در حال حاضر به انگلیسی)."
+    "message": "شما آماده‌اید",
+    "description": "عنوان بخش پایانی راه‌اندازی با مراحل بعدی."
   }
 }

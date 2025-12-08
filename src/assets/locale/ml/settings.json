@@ -862,10 +862,10 @@
       "demoBody": "ഡെമോ മോഡ് ഉപയോഗിച്ച് സാമ്പിൾ ഡാറ്റ ഉപയോഗിച്ചു് ചാറ്റ്, നോട്ടുകൾ, മീഡിയ എന്നിവ പരീക്ഷിക്കാൻ കഴിയും. സർവർ ആശ്രയിക്കുന്ന സവിശേഷതകൾ (ഉദാ. Knowledge സെർച്ച്) നിങ്ങൾ നിങ്ങളുടെ സ്വന്തം tldw_server കണക്റ്റ് ചെയ്യുന്നതുവരെ നിയന്ത്രിച്ച നിലയിൽ തുടരും.",
       "demoCta": "ലോകൽ ഡെമോ മോഡ് ഉപയോഗിക്കുക"
     },
-    "authModeHelp": "Single User (API Key) വ്യക്തിഗത അല്ലെങ്കിൽ ചെറിയ ടീമുകളുടെ സർവർകൾക്ക് ശുപാർശ ചെയ്യുന്നു. Multi User (Login) എന്നത് ഉപയോക്താക്കൾ യൂസർനെയിം അല്ലെങ്കിൽ SSO ഉപയോഗിച്ച് ലോഗിൻ ചെയ്യുന്ന ഷെയർ ചെയ്ത ഡിപ്ലോയ്മെന്റുകൾക്കാണ്. നിങ്ങളുടെ tldw_server എങ്ങനെ സജ്ജീകരിച്ചിട്ടുണ്ടോ അതിനൊത്തു വരുന്ന മോഡ് തിരഞ്ഞെടുക്കുക.",
+    "authModeHelp": "Single User (API Key) വ്യക്തിഗത അല്ലെങ്കിൽ ചെറിയ ടീങ്ങളുടെ സർവർകൾക്ക് ശുപാർശ ചെയ്യുന്നു. Multi User (Login) എന്നത് ഉപയോക്താക്കൾ യൂസർനെയിം അല്ലെങ്കിൽ SSO ഉപയോഗിച്ച് ലോഗിൻ ചെയ്യുന്ന ഷെയർ ചെയ്ത ഡിപ്ലോയ്മെന്റുകൾക്കാണ്. നിങ്ങളുടെ tldw_server എങ്ങനെ സജ്ജീകരിച്ചിട്ടുണ്ടോ അതിനൊത്തു വരുന്ന മോഡ് തിരഞ്ഞെടുക്കുക.",
     "apiKeyHelp": "നിങ്ങളുടെ API കീ, tldw_server → Settings → API Keys എന്നിടത്ത് ലഭിക്കും. അവിടെ ഒരു കീ സൃഷ്ടിച്ച് ഇവിടെ പേസ്റ്റ് ചെയ്യുക.",
-    "authStepAria": "Step 3 of 4 — authentication configuration",
-    "confirmStepAria": "Step 4 of 4 — connection summary and next steps",
+    "authStepAria": "Step 2 of 3 — authentication configuration",
+    "confirmStepAria": "Step 3 of 3 — connection summary and next steps",
     "nextSteps": {
       "title": "You’re ready to go",
       "subtitle": "From here you can open the sidepanel, ingest a page, or explore media and notes.",

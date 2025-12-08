@@ -116,38 +116,35 @@ export const FlashcardsPage: React.FC = () => {
   const confirmDanger = useConfirmDanger()
   const scrollToServerCard = useScrollToServerCard("/flashcards")
 
-  const demoDecks = React.useMemo(
-    () => [
-      {
-        id: "demo-deck-1",
-        name: t("option:flashcards.demoSample1Title", {
-          defaultValue: "Demo deck: Core concepts"
-        }),
-        summary: t("option:flashcards.demoSample1Summary", {
-          defaultValue: "10 cards · Great for testing spacing and ratings."
-        })
-      },
-      {
-        id: "demo-deck-2",
-        name: t("option:flashcards.demoSample2Title", {
-          defaultValue: "Demo deck: Product terms"
-        }),
-        summary: t("option:flashcards.demoSample2Summary", {
-          defaultValue: "8 cards · Names, acronyms, and key definitions."
-        })
-      },
-      {
-        id: "demo-deck-3",
-        name: t("option:flashcards.demoSample3Title", {
-          defaultValue: "Demo deck: Meeting follow-ups"
-        }),
-        summary: t("option:flashcards.demoSample3Summary", {
-          defaultValue: "6 cards · Example action items to review."
-        })
-      }
-    ],
-    [t]
-  )
+  const demoDecks = [
+    {
+      id: "demo-deck-1",
+      name: t("option:flashcards.demoSample1Title", {
+        defaultValue: "Demo deck: Core concepts"
+      }),
+      summary: t("option:flashcards.demoSample1Summary", {
+        defaultValue: "10 cards · Great for testing spacing and ratings."
+      })
+    },
+    {
+      id: "demo-deck-2",
+      name: t("option:flashcards.demoSample2Title", {
+        defaultValue: "Demo deck: Product terms"
+      }),
+      summary: t("option:flashcards.demoSample2Summary", {
+        defaultValue: "8 cards · Names, acronyms, and key definitions."
+      })
+    },
+    {
+      id: "demo-deck-3",
+      name: t("option:flashcards.demoSample3Title", {
+        defaultValue: "Demo deck: Meeting follow-ups"
+      }),
+      summary: t("option:flashcards.demoSample3Summary", {
+        defaultValue: "6 cards · Example action items to review."
+      })
+    }
+  ]
 
   if (!isOnline) {
     return demoEnabled ? (
@@ -475,7 +472,14 @@ export const FlashcardsPage: React.FC = () => {
     })
     if (!ok) return
     try {
-      await Promise.all(toDelete.map((i) => deleteFlashcard(i.uuid, i.version)))
+      const chunkSize = 50
+      for (let i = 0; i < toDelete.length; i += chunkSize) {
+        const chunk = toDelete.slice(i, i + chunkSize)
+        // Fire a bounded number of requests in parallel
+        await Promise.all(
+          chunk.map((c) => deleteFlashcard(c.uuid, c.version))
+        )
+      }
       message.success(t("common:deleted", { defaultValue: "Deleted" }))
       clearSelection()
       await qc.invalidateQueries({ queryKey: ["flashcards:list"] })
@@ -580,9 +584,18 @@ export const FlashcardsPage: React.FC = () => {
         // bulk move
         const items = manageQuery.data?.items || []
         const toMove = items.filter((i) => selectedIds.has(i.uuid))
-        await Promise.all(
-          toMove.map((i) => updateFlashcard(i.uuid, { deck_id: moveDeckId ?? null, expected_version: i.version }))
-        )
+        const chunkSize = 50
+        for (let i = 0; i < toMove.length; i += chunkSize) {
+          const chunk = toMove.slice(i, i + chunkSize)
+          await Promise.all(
+            chunk.map((c) =>
+              updateFlashcard(c.uuid, {
+                deck_id: moveDeckId ?? null,
+                expected_version: c.version
+              })
+            )
+          )
+        }
         clearSelection()
       }
       setMoveOpen(false)
@@ -647,39 +660,36 @@ export const FlashcardsPage: React.FC = () => {
     }
   }
 
-  const ratingOptions = React.useMemo(
-    () => [
-      {
-        value: 0,
-        label: t("option:flashcards.ratingAgain", { defaultValue: "Again" }),
-        description: t("option:flashcards.ratingAgainHelp", {
-          defaultValue: "I didn’t remember this card."
-        })
-      },
-      {
-        value: 2,
-        label: t("option:flashcards.ratingHard", { defaultValue: "Hard" }),
-        description: t("option:flashcards.ratingHardHelp", {
-          defaultValue: "I barely remembered; it felt difficult."
-        })
-      },
-      {
-        value: 3,
-        label: t("option:flashcards.ratingGood", { defaultValue: "Good" }),
-        description: t("option:flashcards.ratingGoodHelp", {
-          defaultValue: "I remembered with a bit of effort."
-        })
-      },
-      {
-        value: 5,
-        label: t("option:flashcards.ratingEasy", { defaultValue: "Easy" }),
-        description: t("option:flashcards.ratingEasyHelp", {
-          defaultValue: "I recalled it quickly and confidently."
-        })
-      }
-    ],
-    [t]
-  )
+  const ratingOptions = [
+    {
+      value: 0,
+      label: t("option:flashcards.ratingAgain", { defaultValue: "Again" }),
+      description: t("option:flashcards.ratingAgainHelp", {
+        defaultValue: "I didn’t remember this card."
+      })
+    },
+    {
+      value: 2,
+      label: t("option:flashcards.ratingHard", { defaultValue: "Hard" }),
+      description: t("option:flashcards.ratingHardHelp", {
+        defaultValue: "I barely remembered; it felt difficult."
+      })
+    },
+    {
+      value: 3,
+      label: t("option:flashcards.ratingGood", { defaultValue: "Good" }),
+      description: t("option:flashcards.ratingGoodHelp", {
+        defaultValue: "I remembered with a bit of effort."
+      })
+    },
+    {
+      value: 5,
+      label: t("option:flashcards.ratingEasy", { defaultValue: "Easy" }),
+      description: t("option:flashcards.ratingEasyHelp", {
+        defaultValue: "I recalled it quickly and confidently."
+      })
+    }
+  ]
 
   // Deep-link support: if tldw:lastDeckId is set (e.g., from omni-search),
   // select that deck in both Review and Manage views once decks are loaded.
@@ -1535,6 +1545,7 @@ const ImportPanel: React.FC = () => {
   const message = useAntdMessage()
   const { t } = useTranslation(["option", "common"]) 
   const isOnline = useServerOnline()
+  const MAPPING_OUTPUT_DELIMITER = "\t"
   const [content, setContent] = React.useState("")
   const [delimiter, setDelimiter] = React.useState<string>("\t")
   const [hasHeader, setHasHeader] = React.useState<boolean>(false)
@@ -1555,7 +1566,7 @@ const ImportPanel: React.FC = () => {
 	    const lines = (content || '').split(/\r?\n/).filter((l) => l.trim().length)
 	    const first = lines[0]
 	    if (!first) { setColCount(0); setMapping(null); setPreviewMapped(""); return }
-	    const cols = first.split(delimiter || '\t')
+	    const cols = first.split(delimiter || MAPPING_OUTPUT_DELIMITER)
 	    setColCount(cols.length)
 	    setMapping((m) => m || ({ deck: 0, front: Math.min(1, cols.length-1), back: Math.min(2, cols.length-1), tags: cols.length > 3 ? 3 : undefined, notes: cols.length > 4 ? 4 : undefined }))
 	    // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -1569,14 +1580,14 @@ const ImportPanel: React.FC = () => {
       const raw = rows[i]
       if (!raw.trim()) continue
       if (i === 0 && hasHeader) continue
-      const cols = raw.split(delimiter || '\t')
+      const cols = raw.split(delimiter || MAPPING_OUTPUT_DELIMITER)
       const safe = (idx?: number) => (typeof idx === 'number' && idx >= 0 && idx < cols.length ? cols[idx] : '')
       const deck = safe(mapping.deck)
       const front = safe(mapping.front)
       const back = safe(mapping.back)
       const tags = safe(mapping.tags)
       const notes = safe(mapping.notes)
-      out.push([deck, front, back, tags, notes].join('\t'))
+      out.push([deck, front, back, tags, notes].join(MAPPING_OUTPUT_DELIMITER))
     }
 	    return out.join('\n')
 	  }, [content, delimiter, hasHeader, mapping, useMapping])
@@ -1598,7 +1609,13 @@ const ImportPanel: React.FC = () => {
     mutationKey: ["flashcards:import"],
     mutationFn: () => {
       const mapped = buildMappedTSV()
-      const payload = useMapping ? { content: mapped, delimiter: '\\t', has_header: false } : { content, delimiter, has_header: hasHeader }
+      const payload = useMapping
+        ? {
+            content: mapped,
+            delimiter: MAPPING_OUTPUT_DELIMITER,
+            has_header: false
+          }
+        : { content, delimiter, has_header: hasHeader }
       return importFlashcards(payload as any)
     },
     onSuccess: () => {

@@ -873,8 +873,8 @@
     },
     "authModeHelp": "Single User（API Key）适合个人或小团队服务器。Multi User（Login）适合多人共享部署，用户使用用户名或 SSO 登录。请选择与 tldw_server 实际配置相匹配的模式。",
     "apiKeyHelp": "在 tldw_server → Settings → API Keys 中找到你的 API 密钥。在那里生成密钥并粘贴到这里。",
-    "authStepAria": "Step 3 of 4 — authentication configuration",
-    "confirmStepAria": "Step 4 of 4 — connection summary and next steps",
+    "authStepAria": "Step 2 of 3 — authentication configuration",
+    "confirmStepAria": "Step 3 of 3 — connection summary and next steps",
     "nextSteps": {
       "title": "You’re ready to go",
       "subtitle": "From here you can open the sidepanel, ingest a page, or explore media and notes.",

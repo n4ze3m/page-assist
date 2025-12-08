@@ -73,7 +73,11 @@ export const importPageAssistData = async (file: File) => {
               await importModelsV2(data.models, options)
             }
 
-            if (data?.oaiConfigs?.length > 0) {
+            if (
+              data?.oaiConfigs &&
+              Array.isArray(data.oaiConfigs) &&
+              data.oaiConfigs.length > 0
+            ) {
               console.info(
                 "[import] Skipping legacy oaiConfigs – extension now uses tldw_server"
               )

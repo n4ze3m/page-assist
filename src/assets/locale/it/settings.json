@@ -873,8 +873,8 @@
       "missingApiKey": "È richiesta una API key."
     },
     "apiKeyHelp": "Trova la tua API key in tldw_server → Settings → API Keys. Genera lì una chiave e incollala qui.",
-    "authStepAria": "Passaggio 3 di 4 — scegli come effettuare l’accesso",
-    "confirmStepAria": "Passaggio 4 di 4 — conferma la connessione e verifica i prossimi passi",
+    "authStepAria": "Passaggio 2 di 3 — scegli come effettuare l’accesso",
+    "confirmStepAria": "Passaggio 3 di 3 — conferma la connessione e verifica i prossimi passi",
     "nextSteps": {
       "title": "Sei pronto per iniziare",
       "subtitle": "Da qui puoi aprire il pannello laterale, acquisire una pagina o esplorare media e note.",

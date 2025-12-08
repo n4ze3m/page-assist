@@ -551,6 +551,41 @@ export const Header: React.FC<Props> = ({
     "headerShortcutsExpanded",
     false
   )
+
+  type DebouncedShortcutsSetter = ((value: boolean) => void) & {
+    cancel: () => void
+  }
+
+  const debouncedSetShortcutsPreference = React.useMemo<DebouncedShortcutsSetter>(
+    () => {
+      let timeoutId: number | undefined
+
+      const fn = ((value: boolean) => {
+        if (timeoutId !== undefined) {
+          window.clearTimeout(timeoutId)
+        }
+        timeoutId = window.setTimeout(() => {
+          timeoutId = undefined
+          try {
+            setShortcutsPreference(value)
+          } catch {
+            // ignore storage write failures
+          }
+        }, 500)
+      }) as DebouncedShortcutsSetter
+
+      fn.cancel = () => {
+        if (timeoutId !== undefined) {
+          window.clearTimeout(timeoutId)
+          timeoutId = undefined
+        }
+      }
+
+      return fn
+    },
+    [setShortcutsPreference]
+  )
+
   // Track the shortcuts collapse state locally; onboarding and settings
   // may choose a default, but we avoid frequent writes while toggling.
   const [shortcutsExpanded, setShortcutsExpanded] = React.useState(
@@ -602,6 +637,12 @@ export const Header: React.FC<Props> = ({
   React.useEffect(() => {
     setShortcutsExpanded(Boolean(shortcutsPreference))
   }, [shortcutsPreference])
+
+  React.useEffect(() => {
+    return () => {
+      debouncedSetShortcutsPreference.cancel()
+    }
+  }, [debouncedSetShortcutsPreference])
 
   // Manage focus for accessibility when expanding/collapsing
   React.useEffect(() => {
@@ -1192,11 +1233,7 @@ export const Header: React.FC<Props> = ({
             onClick={() => {
               const next = !shortcutsExpanded
               setShortcutsExpanded(next)
-              try {
-                setShortcutsPreference(next)
-              } catch {
-                // ignore storage write failures
-              }
+              debouncedSetShortcutsPreference(next)
             }}
             aria-expanded={shortcutsExpanded}
             aria-controls={shortcutsSectionId}
