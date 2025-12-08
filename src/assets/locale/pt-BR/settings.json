@@ -838,7 +838,7 @@
       "continueAnyway": "Você pode concluir a configuração agora e explorar a interface sem um servidor. Chat, ingestão de mídia e busca no Knowledge permanecerão limitados até você conectar um servidor tldw em Configurações → Servidor tldw."
     },
     "rag": {
-      "label": "Busca e recuperação de Knowledge:",
+      "label": "Busca e recuperação de Conhecimento:",
       "healthy": "Saudável",
       "unhealthy": "Com problemas",
       "unknown": "Desconhecido",

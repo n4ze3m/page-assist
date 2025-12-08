@@ -439,7 +439,7 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
         t(
           'settings:onboarding.auth.missingApiKey',
           'API key is required.'
-        ) as string
+        ) ?? 'API key is required.'
       )
       return
     }
@@ -448,7 +448,7 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
         t(
           'settings:onboarding.auth.missingCredentials',
           'Enter both a username and password to continue.'
-        ) as string
+        ) ?? 'Enter both a username and password to continue.'
       )
       return
     }
@@ -1054,13 +1054,30 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
                 <Button
                   size="small"
                   className="mt-2"
-                  onClick={() => {
+                  onClick={async () => {
                     try {
                       const runtime = getBrowserRuntime()
-                      if (runtime?.getURL) {
-                        const url = runtime.getURL('/sidepanel.html')
-                        window.open(url, '_blank')
+                      const chromeGlobal = (globalThis as any).chrome as
+                        | typeof chrome
+                        | undefined
+
+                      const sidePanelApi = chromeGlobal?.sidePanel
+                      const tabsApi = chromeGlobal?.tabs
+
+                      if (!sidePanelApi || !tabsApi) {
+                        return
                       }
+
+                      const tabs = await tabsApi.query({
+                        active: true,
+                        currentWindow: true
+                      })
+                      const activeTab = tabs?.[0]
+                      if (!activeTab?.id) {
+                        return
+                      }
+
+                      await sidePanelApi.open({ tabId: activeTab.id })
                     } catch {
                       // ignore navigation errors
                     }

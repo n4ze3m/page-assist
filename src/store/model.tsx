@@ -82,6 +82,8 @@ type CurrentChatModelSettings = {
   setOcrLanguage?: (ocrLanguage: string) => void 
 }
 
+export type ChatModelSettings = CurrentChatModelSettings
+
 export const useStoreChatModelSettings = create<CurrentChatModelSettings>(
   (set) => ({
     setF16KV: (f16KV: boolean) => set({ f16KV }),

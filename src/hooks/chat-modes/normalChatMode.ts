@@ -16,6 +16,13 @@ import { maybeInjectActorMessage } from "@/utils/actor"
 import { tldwClient } from "@/services/tldw/TldwApiClient"
 import { getSearchSettings } from "@/services/search"
 
+interface WebSearchPayload {
+  query: string
+  aggregate: boolean
+  engine?: string
+  result_count?: number
+}
+
 export const normalChatMode = async (
   message: string,
   image: string,
@@ -132,17 +139,20 @@ export const normalChatMode = async (
       const { searchProvider, totalSearchResults } = await getSearchSettings()
 
       // Map UI provider to server-side engine where possible
+      const engineMap: Record<string, string> = {
+        google: "google",
+        duckduckgo: "duckduckgo",
+        brave: "brave",
+        "brave-api": "brave",
+        searxng: "searx",
+        "tavily-api": "tavily",
+        exa: "exa",
+        firecrawl: "firecrawl"
+      }
       const provider = (searchProvider || "").toLowerCase()
-      let engine: string | undefined
-      if (provider === "google") engine = "google"
-      else if (provider === "duckduckgo") engine = "duckduckgo"
-      else if (provider === "brave" || provider === "brave-api") engine = "brave"
-      else if (provider === "searxng") engine = "searx"
-      else if (provider === "tavily-api") engine = "tavily"
-      else if (provider === "exa") engine = "exa"
-      else if (provider === "firecrawl") engine = "firecrawl"
+      const engine = engineMap[provider]
 
-      const payload: any = {
+      const payload: WebSearchPayload = {
         query: message,
         aggregate: true
       }
@@ -159,7 +169,11 @@ export const normalChatMode = async (
       })
 
       if (res?.error) {
-        throw new Error(res.error.message || "Web search failed")
+        throw new Error(
+          typeof res.error === "string"
+            ? res.error
+            : res.error?.message || "Web search failed"
+        )
       }
 
       const answer =
@@ -245,7 +259,7 @@ export const normalChatMode = async (
     return
   }
 
-  const ollama = await pageAssistModel({ model: selectedModel!, baseUrl: "" })
+  const ollama = await pageAssistModel({ model: selectedModel, baseUrl: "" })
 
   try {
     const prompt = await systemPromptForNonRagOption()

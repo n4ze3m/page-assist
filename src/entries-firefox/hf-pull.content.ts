@@ -2,6 +2,8 @@ import { apiSend } from "@/services/api-send"
 import type { AllowedPath } from "@/services/tldw/openapi-guard"
 import { browser } from "wxt/browser"
 
+const MAX_ERROR_MESSAGE_LENGTH = 140
+
 type I18nKey =
   | "contextSendToTldw"
   | "contextSendingToTldw"
@@ -83,7 +85,7 @@ export default defineContentScript({
           const errorText =
             typeof resp?.error === "string" ? resp.error : undefined
           const msg =
-            errorText && errorText.length <= 140
+            errorText && errorText.length <= MAX_ERROR_MESSAGE_LENGTH
               ? getMessage(
                   "hfSendPageErrorWithDetail",
                   `[tldw] Failed to send this page to tldw_server: ${errorText}. Check Settings → tldw server and try again.`,
@@ -157,7 +159,7 @@ export default defineContentScript({
       btn.style.position = "fixed"
       btn.style.bottom = "60px"
       btn.style.right = "20px"
-      btn.style.zIndex = "999999"
+      btn.style.zIndex = "9999"
       btn.addEventListener('click', () => void sendToTldw(btn))
       document.body.appendChild(btn)
     }

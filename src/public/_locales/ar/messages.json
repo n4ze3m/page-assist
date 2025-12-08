@@ -70,5 +70,17 @@
   "headerShortcuts": {
     "message": "إظهار الاختصارات السريعة في الشريط العلوي",
     "description": "خيار يتيح إظهار اختصارات سريعة في شريط العنوان أثناء الإعداد."
+  },
+  "restartOnboardingLabel": {
+    "message": "إعادة بدء عملية الإعداد من البداية"
+  },
+  "restartOnboardingButton": {
+    "message": "إعادة بدء الإعداد"
+  },
+  "restartOnboardingConfirmTitle": {
+    "message": "هل تريد إعادة بدء الإعداد؟"
+  },
+  "restartOnboardingConfirmMessage": {
+    "message": "سيؤدي هذا إلى إعادة تعيين حالة الإعداد وإعادتك إلى مسار الإعداد من جديد."
   }
 }

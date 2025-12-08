@@ -1,6 +1,23 @@
-import { getAllOpenAIModels } from "@/libs/openai"
 import { getAllModelNicknames } from "./nickname"
 import type { Model } from "@/db/dexie/types"
+import {
+  getLLamaCppModelId,
+  getLMStudioModelId,
+  getLlamafileModelId,
+  getVLLMModelId,
+  isCustomModel,
+  isLLamaCppModel,
+  isLMStudioModel,
+  isLlamafileModel,
+  isVLLMModel,
+  removeModelSuffix,
+  type DynamicFetchParams,
+  type DynamicModelListing,
+  dynamicFetchLMStudio,
+  dynamicFetchLLamaCpp,
+  dynamicFetchLlamafile,
+  dynamicFetchVLLM
+} from "./model-provider-utils"
 
 interface CustomModelView extends Model {
   nickname: string
@@ -11,113 +28,6 @@ export const generateID = () => {
     const r = Math.floor(Math.random() * 16)
     return r.toString(16)
   })
-}
-
-export const removeModelSuffix = (id: string) => {
-  return id
-    .replace(/_model-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{3,4}-[a-f0-9]{4}/, "")
-    .replace(/_lmstudio_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/, "")
-    .replace(/_llamafile_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/, "")
-    .replace(/_llamacpp_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/, "")
-    .replace(/_vllm_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/, "")
-}
-export const isLMStudioModel = (model: string) => {
-  const lmstudioModelRegex =
-    /_lmstudio_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/
-  return lmstudioModelRegex.test(model)
-}
-
-export const isLlamafileModel = (model: string) => {
-  const llamafileModelRegex =
-    /_llamafile_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/
-  return llamafileModelRegex.test(model)
-}
-
-export const isLLamaCppModel = (model: string) => {
-  const llamaCppModelRegex =
-    /_llamacpp_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/
-  return llamaCppModelRegex.test(model)
-}
-
-export const isVLLMModel = (model: string) => {
-  const vllmModelRegex = /_vllm_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/
-  return vllmModelRegex.test(model)
-}
-
-export const getLMStudioModelId = (
-  model: string
-): { model_id: string; provider_id: string } => {
-  const lmstudioModelRegex =
-    /_lmstudio_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/
-  const match = model.match(lmstudioModelRegex)
-  if (match) {
-    const modelId = match[0]
-    const providerId = match[0].replace("_lmstudio_openai-", "")
-    return { model_id: modelId, provider_id: providerId }
-  }
-  return null
-}
-export const getLlamafileModelId = (
-  model: string
-): { model_id: string; provider_id: string } => {
-  const llamafileModelRegex =
-    /_llamafile_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/
-  const match = model.match(llamafileModelRegex)
-  if (match) {
-    const modelId = match[0]
-    const providerId = match[0].replace("_llamafile_openai-", "")
-    return { model_id: modelId, provider_id: providerId }
-  }
-  return null
-}
-
-export const getLLamaCppModelId = (
-  model: string
-): { model_id: string; provider_id: string } => {
-  const llamaCppModelRegex =
-    /_llamacpp_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/
-  const match = model.match(llamaCppModelRegex)
-  if (match) {
-    const modelId = match[0]
-    const providerId = match[0].replace("_llamacpp_openai-", "")
-    return { model_id: modelId, provider_id: providerId }
-  }
-  return null
-}
-
-export const getVLLMModelId = (
-  model: string
-): { model_id: string; provider_id: string } => {
-  const vllmModelRegex = /_vllm_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/
-  const match = model.match(vllmModelRegex)
-  if (match) {
-    const modelId = match[0]
-    const providerId = match[0].replace("_vllm_openai-", "")
-    return { model_id: modelId, provider_id: providerId }
-  }
-  return null
-}
-
-export const isCustomModel = (model: string) => {
-  if (isLMStudioModel(model)) {
-    return true
-  }
-
-  if (isLlamafileModel(model)) {
-    return true
-  }
-
-  if (isLLamaCppModel(model)) {
-    return true
-  }
-
-  if (isVLLMModel(model)) {
-    return true
-  }
-
-  const customModelRegex =
-    /_model-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{3,4}-[a-f0-9]{4}/
-  return customModelRegex.test(model)
 }
 export class ModelDb {
   db: chrome.storage.StorageArea
@@ -336,8 +246,8 @@ export const getAllCustomModelsFB = async (): Promise<CustomModelView[]> => {
   return models.map((model) => {
     return {
       ...model,
-      nickname: modelNicknames[model.id]?.model_name || model.model_id,
-      avatar: modelNicknames[model.id]?.model_avatar || undefined
+      nickname: modelNicknames[model.model_id]?.model_name || model.model_id,
+      avatar: modelNicknames[model.model_id]?.model_avatar || undefined
     }
   })
 }
@@ -380,54 +290,20 @@ export const isLookupExist = async (lookup: string) => {
   return !!model
 }
 
-interface DynamicFetchParams {
-  baseUrl: string
-  providerId: string
-  customHeaders?: { key: string; value: string }[]
+export type { DynamicFetchParams, DynamicModelListing }
+export {
+  removeModelSuffix,
+  isLMStudioModel,
+  isLlamafileModel,
+  isLLamaCppModel,
+  isVLLMModel,
+  getLMStudioModelId,
+  getLlamafileModelId,
+  getLLamaCppModelId,
+  getVLLMModelId,
+  isCustomModel,
+  dynamicFetchLMStudio,
+  dynamicFetchLLamaCpp,
+  dynamicFetchVLLM,
+  dynamicFetchLlamafile
 }
-
-type DynamicModelListing = {
-  name: string
-  id: string
-  provider: string
-  lookup: string
-  provider_id: string
-}
-
-const dynamicFetchModels = async ({
-  baseUrl,
-  providerId,
-  providerPrefix,
-  customHeaders = []
-}: DynamicFetchParams & {
-  providerPrefix: "lmstudio" | "llamacpp" | "llamafile" | "vllm"
-}): Promise<DynamicModelListing[]> => {
-  const models = await getAllOpenAIModels({ baseUrl, customHeaders })
-  return models.map((e) => ({
-    name: e?.name || e?.id,
-    id: `${e?.id}_${providerPrefix}_${providerId}`,
-    provider: providerId,
-    lookup: `${e?.id}_${providerId}`,
-    provider_id: providerId
-  }))
-}
-
-export const dynamicFetchLMStudio = async (
-  params: DynamicFetchParams
-): Promise<DynamicModelListing[]> =>
-  dynamicFetchModels({ ...params, providerPrefix: "lmstudio" })
-
-export const dynamicFetchLLamaCpp = async (
-  params: DynamicFetchParams
-): Promise<DynamicModelListing[]> =>
-  dynamicFetchModels({ ...params, providerPrefix: "llamacpp" })
-
-export const dynamicFetchVLLM = async (
-  params: DynamicFetchParams
-): Promise<DynamicModelListing[]> =>
-  dynamicFetchModels({ ...params, providerPrefix: "vllm" })
-
-export const dynamicFetchLlamafile = async (
-  params: DynamicFetchParams
-): Promise<DynamicModelListing[]> =>
-  dynamicFetchModels({ ...params, providerPrefix: "llamafile" })

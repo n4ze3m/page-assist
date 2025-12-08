@@ -70,5 +70,17 @@
   "headerShortcuts": {
     "message": "Показувати швидкі ярлики в заголовку",
     "description": "Налаштування, що вмикає показ швидких ярликів у заголовку під час налаштування."
+  },
+  "restartOnboardingLabel": {
+    "message": "Перезапустити онбординг з самого початку"
+  },
+  "restartOnboardingButton": {
+    "message": "Перезапустити онбординг"
+  },
+  "restartOnboardingConfirmTitle": {
+    "message": "Перезапустити онбординг?"
+  },
+  "restartOnboardingConfirmMessage": {
+    "message": "Це скине стан онбордингу та поверне вас на початок процесу налаштування."
   }
 }

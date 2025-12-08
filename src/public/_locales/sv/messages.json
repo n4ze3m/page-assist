@@ -212,5 +212,17 @@
   "headerShortcuts": {
     "message": "Visa snabba genvägar i sidhuvudet",
     "description": "Inställningsalternativ för att visa snabba genvägar i sidhuvudet under onboarding."
+  },
+  "restartOnboardingLabel": {
+    "message": "Starta om onboarding från början"
+  },
+  "restartOnboardingButton": {
+    "message": "Starta om onboarding"
+  },
+  "restartOnboardingConfirmTitle": {
+    "message": "Starta om onboarding?"
+  },
+  "restartOnboardingConfirmMessage": {
+    "message": "Detta återställer din onboarding‑status och tar dig tillbaka till installationsflödet."
   }
 }

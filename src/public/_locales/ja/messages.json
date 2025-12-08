@@ -208,5 +208,20 @@
   },
   "notesEmpty.primaryCta": {
     "message": "Create note"
+  },
+  "headerShortcuts": {
+    "message": "ヘッダーにクイックショートカットを表示する"
+  },
+  "restartOnboardingLabel": {
+    "message": "オンボーディングを最初からやり直す"
+  },
+  "restartOnboardingButton": {
+    "message": "オンボーディングをやり直す"
+  },
+  "restartOnboardingConfirmTitle": {
+    "message": "オンボーディングをやり直しますか？"
+  },
+  "restartOnboardingConfirmMessage": {
+    "message": "オンボーディングの状態をリセットし、設定フローの最初に戻します。"
   }
 }

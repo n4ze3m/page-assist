@@ -787,8 +787,8 @@
   },
   "mermaid": "Mermaid",
   "onboarding": {
-    "title": "Welcome — Let’s get you connected",
-    "description": "Configure your server and authentication. We’ll verify the connection and RAG health inline.",
+    "title": "Bienvenue — connectons votre extension",
+    "description": "Configurez votre serveur et l’authentification. Nous vérifierons en direct la connexion et l’état de la recherche Knowledge (RAG).",
     "learnMoreTldw": "Découvrir le fonctionnement du serveur tldw",
     "serverDocsUrl": "https://github.com/rmusser01/tldw_browser_assistant",
     "serverUrl": {
@@ -796,53 +796,53 @@
       "help": "Exemple : http://127.0.0.1:8000",
       "invalid": "Saisissez une URL complète telle que http://127.0.0.1:8000.",
       "invalidProtocol": "Utilisez des URL http ou https, par exemple http://127.0.0.1:8000.",
-      "label": "Server URL",
-      "emptyHint": "Enter your tldw server URL to enable Next.",
-      "ready": "We’ll enable Next once we can reach this address.",
-      "checking": "Checking reachability…",
-      "reachable": "Server responded successfully. You can continue.",
-      "unreachable": "We couldn’t reach this address yet. Double-check the URL or try again."
+      "label": "URL du serveur tldw",
+      "emptyHint": "Saisissez l’URL de votre serveur tldw pour activer « Suivant ».",
+      "ready": "Nous activerons « Suivant » dès que cette adresse sera joignable.",
+      "checking": "Vérification de l’accessibilité…",
+      "reachable": "Le serveur a répondu correctement. Vous pouvez continuer.",
+      "unreachable": "Nous ne parvenons pas encore à joindre cette adresse. Vérifiez l’URL ou réessayez."
     },
     "buttons": {
-      "next": "Next",
-      "back": "Back",
-      "continue": "Continue",
-      "recheck": "Recheck",
-      "finish": "Finish",
-      "finishAnyway": "Finish without connecting",
-      "skip": "Skip for now"
+      "next": "Suivant",
+      "back": "Retour",
+      "continue": "Continuer",
+      "recheck": "Revérifier",
+      "finish": "Terminer",
+      "finishAnyway": "Terminer sans se connecter",
+      "skip": "Ignorer pour l’instant"
     },
     "authMode": {
-      "label": "Authentication Mode",
-      "single": "Single User (API Key)",
-      "multi": "Multi User (Login)"
+      "label": "Mode d’authentification",
+      "single": "Utilisateur unique (clé API)",
+      "multi": "Multi-utilisateurs (connexion)"
     },
     "apiKey": {
-      "label": "API Key",
-      "placeholder": "Enter your API key (or use the default demo key THIS-IS-A-SECURE-KEY-123-REPLACE-ME for local single-user setups)"
+      "label": "Clé API",
+      "placeholder": "Saisissez votre clé API (ou utilisez la clé de démonstration THIS-IS-A-SECURE-KEY-123-REPLACE-ME pour une configuration locale à utilisateur unique)."
     },
     "username": {
-      "label": "Username",
-      "placeholder": "Username"
+      "label": "Nom d’utilisateur",
+      "placeholder": "Nom d’utilisateur"
     },
     "password": {
-      "label": "Password",
-      "placeholder": "Password"
+      "label": "Mot de passe",
+      "placeholder": "Mot de passe"
     },
     "connection": {
-      "label": "Connection:",
-      "unknown": "Unknown",
-      "connected": "Connected",
-      "failed": "Failed",
-      "continueAnyway": "You can continue and complete setup now. You’ll be able to verify the connection later from Settings."
+      "label": "Connexion :",
+      "unknown": "Inconnue",
+      "connected": "Connecté",
+      "failed": "Échec",
+      "continueAnyway": "Vous pouvez continuer et terminer la configuration maintenant. Vous pourrez vérifier la connexion plus tard depuis les paramètres."
     },
     "rag": {
-      "label": "RAG:",
-      "healthy": "Healthy",
-      "unhealthy": "Unhealthy",
-      "unknown": "Unknown"
+      "label": "Recherche Knowledge (RAG) :",
+      "healthy": "Opérationnel",
+      "unhealthy": "En difficulté",
+      "unknown": "Inconnu"
     },
-    "connectionFailed": "Connection failed",
+    "connectionFailed": "Échec de la connexion",
     "footerHelp": "Une fois la connexion établie, vous pouvez revenir à ces paramètres à tout moment depuis le menu de l’extension.",
     "progressAria": "Progression de la configuration",
     "stepLabel": {

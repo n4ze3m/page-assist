@@ -1,4 +1,3 @@
-import { getAllOpenAIModels } from "@/libs/openai"
 import { getAllModelNicknames } from "./nickname"
 import { Model, Models } from "./types"
 import { db } from "./schema"
@@ -9,6 +8,22 @@ import {
   getModelInfoFB
 } from "../models"
 import { isDatabaseClosedError } from "@/utils/ff-error"
+import {
+  getLLamaCppModelId,
+  getLMStudioModelId,
+  getLlamafileModelId,
+  getVLLMModelId,
+  isCustomModel,
+  isLLamaCppModel,
+  isLMStudioModel,
+  isLlamafileModel,
+  isVLLMModel,
+  removeModelSuffix,
+  dynamicFetchLMStudio,
+  dynamicFetchLLamaCpp,
+  dynamicFetchLlamafile,
+  dynamicFetchVLLM
+} from "../model-provider-utils"
 
 export const generateID = () => {
   return "model-xxxx-xxxx-xxx-xxxx".replace(/[x]/g, () => {
@@ -17,112 +32,6 @@ export const generateID = () => {
   })
 }
 
-export const removeModelSuffix = (id: string) => {
-  return id
-    .replace(/_model-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{3,4}-[a-f0-9]{4}/, "")
-    .replace(/_lmstudio_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/, "")
-    .replace(/_llamafile_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/, "")
-    .replace(/_llamacpp_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/, "")
-    .replace(/_vllm_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/, "")
-}
-export const isLMStudioModel = (model: string) => {
-  const lmstudioModelRegex =
-    /_lmstudio_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/
-  return lmstudioModelRegex.test(model)
-}
-
-export const isLlamafileModel = (model: string) => {
-  const llamafileModelRegex =
-    /_llamafile_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/
-  return llamafileModelRegex.test(model)
-}
-
-export const isLLamaCppModel = (model: string) => {
-  const llamaCppModelRegex =
-    /_llamacpp_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/
-  return llamaCppModelRegex.test(model)
-}
-
-export const isVLLMModel = (model: string) => {
-  const vllmModelRegex = /_vllm_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/
-  return vllmModelRegex.test(model)
-}
-
-export const getLMStudioModelId = (
-  model: string
-): { model_id: string; provider_id: string } => {
-  const lmstudioModelRegex =
-    /_lmstudio_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/
-  const match = model.match(lmstudioModelRegex)
-  if (match) {
-    const modelId = match[0]
-    const providerId = match[0].replace("_lmstudio_openai-", "")
-    return { model_id: modelId, provider_id: providerId }
-  }
-  return null
-}
-export const getLlamafileModelId = (
-  model: string
-): { model_id: string; provider_id: string } => {
-  const llamafileModelRegex =
-    /_llamafile_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/
-  const match = model.match(llamafileModelRegex)
-  if (match) {
-    const modelId = match[0]
-    const providerId = match[0].replace("_llamafile_openai-", "")
-    return { model_id: modelId, provider_id: providerId }
-  }
-  return null
-}
-
-export const getLLamaCppModelId = (
-  model: string
-): { model_id: string; provider_id: string } => {
-  const llamaCppModelRegex =
-    /_llamacpp_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/
-  const match = model.match(llamaCppModelRegex)
-  if (match) {
-    const modelId = match[0]
-    const providerId = match[0].replace("_llamacpp_openai-", "")
-    return { model_id: modelId, provider_id: providerId }
-  }
-  return null
-}
-
-export const getVLLMModelId = (
-  model: string
-): { model_id: string; provider_id: string } => {
-  const vllmModelRegex = /_vllm_openai-[a-f0-9]{4}-[a-f0-9]{3}-[a-f0-9]{4}/
-  const match = model.match(vllmModelRegex)
-  if (match) {
-    const modelId = match[0]
-    const providerId = match[0].replace("_vllm_openai-", "")
-    return { model_id: modelId, provider_id: providerId }
-  }
-  return null
-}
-
-export const isCustomModel = (model: string) => {
-  if (isLMStudioModel(model)) {
-    return true
-  }
-
-  if (isLlamafileModel(model)) {
-    return true
-  }
-
-  if (isLLamaCppModel(model)) {
-    return true
-  }
-
-  if (isVLLMModel(model)) {
-    return true
-  }
-
-  const customModelRegex =
-    /_model-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{3,4}-[a-f0-9]{4}/
-  return customModelRegex.test(model)
-}
 export class ModelDb {
   getAll = async (): Promise<Models> => {
     return await db.customModels.reverse().toArray()
@@ -202,7 +111,10 @@ export const createManyModels = async (
     }
 
     await db.create(model)
-    await createModelFB(model)
+    const createdInFallback = await createModelFB(model)
+    if (!createdInFallback) {
+      throw new Error("Failed to persist model to fallback storage")
+    }
   }
 }
 
@@ -224,7 +136,10 @@ export const createModel = async (
     model_type: model_type
   }
   await db.create(model)
-  await createModelFB(model)
+  const createdInFallback = await createModelFB(model)
+  if (!createdInFallback) {
+    throw new Error("Failed to persist model to fallback storage")
+  }
   return model
 }
 
@@ -360,98 +275,6 @@ export const isLookupExist = async (lookup: string) => {
   return model ? true : false
 }
 
-export const dynamicFetchLMStudio = async ({
-  baseUrl,
-  providerId,
-  customHeaders = []
-}: {
-  baseUrl: string
-  providerId: string
-  customHeaders?: { key: string; value: string }[]
-}) => {
-  const models = await getAllOpenAIModels({ baseUrl, customHeaders })
-  const lmstudioModels = models.map((e) => {
-    return {
-      name: e?.name || e?.id,
-      id: `${e?.id}_lmstudio_${providerId}`,
-      provider: providerId,
-      lookup: `${e?.id}_${providerId}`,
-      provider_id: providerId
-    }
-  })
-
-  return lmstudioModels
-}
-
-export const dynamicFetchLLamaCpp = async ({
-  baseUrl,
-  providerId,
-  customHeaders = []
-}: {
-  baseUrl: string
-  providerId: string
-  customHeaders?: { key: string; value: string }[]
-}) => {
-  const models = await getAllOpenAIModels({ baseUrl, customHeaders })
-  const llamaCppModels = models.map((e) => {
-    return {
-      name: e?.name || e?.id,
-      id: `${e?.id}_llamacpp_${providerId}`,
-      provider: providerId,
-      lookup: `${e?.id}_${providerId}`,
-      provider_id: providerId
-    }
-  })
-
-  return llamaCppModels
-}
-
-export const dynamicFetchVLLM = async ({
-  baseUrl,
-  providerId,
-  customHeaders = []
-}: {
-  baseUrl: string
-  providerId: string
-  customHeaders?: { key: string; value: string }[]
-}) => {
-  const models = await getAllOpenAIModels({ baseUrl, customHeaders })
-  const vllmModels = models.map((e) => {
-    return {
-      name: e?.name || e?.id,
-      id: `${e?.id}_vllm_${providerId}`,
-      provider: providerId,
-      lookup: `${e?.id}_${providerId}`,
-      provider_id: providerId
-    }
-  })
-
-  return vllmModels
-}
-
-export const dynamicFetchLlamafile = async ({
-  baseUrl,
-  providerId,
-  customHeaders = []
-}: {
-  baseUrl: string
-  providerId: string
-  customHeaders?: { key: string; value: string }[]
-}) => {
-  const models = await getAllOpenAIModels({ baseUrl, customHeaders })
-  const llamafileModels = models.map((e) => {
-    return {
-      name: e?.name || e?.id,
-      id: `${e?.id}_llamafile_${providerId}`,
-      provider: providerId,
-      lookup: `${e?.id}_${providerId}`,
-      provider_id: providerId
-    }
-  })
-
-  return llamafileModels
-}
-
 export const formatAllCustomModels = async (
   modelType: "all" | "chat" | "embedding" = "all"
 ) => {
@@ -459,4 +282,21 @@ export const formatAllCustomModels = async (
   // Custom providers have been removed; return an empty list.
   void modelType
   return []
+}
+
+export {
+  removeModelSuffix,
+  isLMStudioModel,
+  isLlamafileModel,
+  isLLamaCppModel,
+  isVLLMModel,
+  getLMStudioModelId,
+  getLlamafileModelId,
+  getLLamaCppModelId,
+  getVLLMModelId,
+  isCustomModel,
+  dynamicFetchLMStudio,
+  dynamicFetchLLamaCpp,
+  dynamicFetchVLLM,
+  dynamicFetchLlamafile
 }

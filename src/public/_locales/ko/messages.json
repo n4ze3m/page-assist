@@ -70,5 +70,17 @@
   "headerShortcuts": {
     "message": "헤더에 빠른 바로가기를 표시하기",
     "description": "온보딩 중 상단 헤더에 빠른 바로가기를 표시할지 제어하는 설정."
+  },
+  "restartOnboardingLabel": {
+    "message": "온보딩을 처음부터 다시 시작"
+  },
+  "restartOnboardingButton": {
+    "message": "온보딩 다시 시작"
+  },
+  "restartOnboardingConfirmTitle": {
+    "message": "온보딩을 다시 시작할까요?"
+  },
+  "restartOnboardingConfirmMessage": {
+    "message": "온보딩 상태가 초기화되고 설정 흐름의 처음으로 돌아갑니다."
   }
 }

@@ -208,5 +208,20 @@
   },
   "notesEmpty.primaryCta": {
     "message": "Create note"
+  },
+  "headerShortcuts": {
+    "message": "Afficher les raccourcis rapides dans l’en-tête"
+  },
+  "restartOnboardingLabel": {
+    "message": "Redémarrer le parcours d’accueil depuis le début"
+  },
+  "restartOnboardingButton": {
+    "message": "Redémarrer le parcours d’accueil"
+  },
+  "restartOnboardingConfirmTitle": {
+    "message": "Redémarrer le parcours d’accueil ?"
+  },
+  "restartOnboardingConfirmMessage": {
+    "message": "Cela réinitialisera votre état de parcours d’accueil et vous ramènera au flux de configuration."
   }
 }

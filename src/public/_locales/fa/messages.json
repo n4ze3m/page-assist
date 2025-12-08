@@ -208,5 +208,20 @@
   },
   "notesEmpty.primaryCta": {
     "message": "Create note"
+  },
+  "headerShortcuts": {
+    "message": "نمایش میانبرهای سریع در سربرگ"
+  },
+  "restartOnboardingLabel": {
+    "message": "شروع دوباره فرایند راه‌اندازی از ابتدا"
+  },
+  "restartOnboardingButton": {
+    "message": "شروع دوباره راه‌اندازی"
+  },
+  "restartOnboardingConfirmTitle": {
+    "message": "شروع دوباره راه‌اندازی؟"
+  },
+  "restartOnboardingConfirmMessage": {
+    "message": "با این کار وضعیت راه‌اندازی شما بازنشانی می‌شود و دوباره به جریان تنظیمات اولیه برمی‌گردید."
   }
 }

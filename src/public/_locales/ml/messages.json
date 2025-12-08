@@ -208,5 +208,20 @@
   },
   "notesEmpty.primaryCta": {
     "message": "Create note"
+  },
+  "headerShortcuts": {
+    "message": "തലക്കെട്ടിൽ ദ്രുത ഷോർട്ട്‌കട്ടുകൾ കാണിക്കുക"
+  },
+  "restartOnboardingLabel": {
+    "message": "ഓൺബോർഡിംഗ് തുടക്കം മുതൽ വീണ്ടും ആരംഭിക്കുക"
+  },
+  "restartOnboardingButton": {
+    "message": "ഓൺബോർഡിംഗ് വീണ്ടും ആരംഭിക്കുക"
+  },
+  "restartOnboardingConfirmTitle": {
+    "message": "ഓൺബോർഡിംഗ് വീണ്ടും ആരംഭിക്കണോ?"
+  },
+  "restartOnboardingConfirmMessage": {
+    "message": "ഇത് നിങ്ങളുടെ ഓൺബോർഡിംഗ് നില റീസെറ്റ് ചെയ്ത് നിങ്ങളെ സജ്ജീകരണ പ്രവാഹത്തിന്റെ തുടക്കത്തിലേക്ക് തിരികെ കൊണ്ടുപോകും."
   }
 }

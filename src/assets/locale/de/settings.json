@@ -786,8 +786,8 @@
     }
   },
   "onboarding": {
-    "title": "Welcome — Let’s get you connected",
-    "description": "Configure your server and authentication. We’ll verify the connection and RAG health inline.",
+    "title": "Willkommen — Lass uns die Verbindung einrichten",
+    "description": "Konfiguriere Server und Anmeldung. Wir prüfen Verbindung und RAG‑Status direkt im Ablauf.",
     "learnMoreTldw": "Erfahren Sie, wie der tldw-Server funktioniert",
     "serverDocsUrl": "https://github.com/rmusser01/tldw_browser_assistant",
     "serverUrl": {

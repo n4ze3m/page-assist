@@ -789,8 +789,8 @@
     }
   },
   "onboarding": {
-    "title": "Welcome — Let’s get you connected",
-    "description": "Configure your server and authentication. We’ll verify the connection and RAG health inline.",
+    "title": "സ്വാഗതം — നിങ്ങൾക്ക് കണക്റ്റ് ആകാം",
+    "description": "നിങ്ങളുടെ സർവറും ഓതന്റിക്കേഷനും സജ്ജമാക്കുക. കണക്ഷനും Knowledge/RAG നിലയും നാം ഇവിടെ തന്നെ പരിശോധിക്കും.",
     "learnMoreTldw": "tldw സർവർ എങ്ങനെ പ്രവർത്തിക്കുന്നു എന്ന് അറിയുക",
     "serverDocsUrl": "https://github.com/rmusser01/tldw_browser_assistant",
     "serverUrl": {
@@ -798,53 +798,53 @@
       "help": "ഉദാഹരണം: http://127.0.0.1:8000",
       "invalid": "http://127.0.0.1:8000 പോലുള്ള പൂർണ്ണ URL നൽകുക.",
       "invalidProtocol": "http അല്ലെങ്കിൽ https URL ഉപയോഗിക്കുക (ഉദാ: http://127.0.0.1:8000).",
-      "label": "Server URL",
-      "emptyHint": "Enter your tldw server URL to enable Next.",
-      "ready": "We’ll enable Next once we can reach this address.",
-      "checking": "Checking reachability…",
-      "reachable": "Server responded successfully. You can continue.",
-      "unreachable": "We couldn’t reach this address yet. Double-check the URL or try again."
+      "label": "tldw സർവർ URL",
+      "emptyHint": "‘Next’ എനേബിൾ ചെയ്യാൻ നിങ്ങളുടെ tldw സർവർ URL നൽകുക.",
+      "ready": "ഈ അഡ്രസിലെത്താൻ കഴിയുമ്പോൾ ഞങ്ങൾ ‘Next’ എനേബിൾ ചെയ്യും.",
+      "checking": "ആക്‌സസിബിലിറ്റി പരിശോധിക്കുന്നു…",
+      "reachable": "സർവർ വിജയകരമായി പ്രതികരിച്ചു. നിങ്ങൾക്ക് തുടരാം.",
+      "unreachable": "ഇനിയും ഈ അഡ്രസിലെത്താൻ കഴിഞ്ഞില്ല. URL വീണ്ടും പരിശോധിക്കുകയോ പിന്നീട് വീണ്ടും ശ്രമിക്കുകയോ ചെയ്യൂ."
     },
     "buttons": {
-      "next": "Next",
-      "back": "Back",
-      "continue": "Continue",
-      "recheck": "Recheck",
-      "finish": "Finish",
-      "finishAnyway": "Finish without connecting",
-      "skip": "Skip for now"
+      "next": "അടുത്തത്",
+      "back": "തിരികെ",
+      "continue": "തുടരുക",
+      "recheck": "വീണ്ടും പരിശോധിക്കുക",
+      "finish": "പൂർത്തിയാക്കുക",
+      "finishAnyway": "കണക്റ്റ് ചെയ്യാതെ പൂർത്തിയാക്കുക",
+      "skip": "ഇപ്പോൾ ഒഴിവാക്കുക"
     },
     "authMode": {
-      "label": "Authentication Mode",
-      "single": "Single User (API Key)",
-      "multi": "Multi User (Login)"
+      "label": "ഓതന്റിക്കേഷൻ മോഡ്",
+      "single": "ഒരു ഉപയോക്താവ് (API കീ)",
+      "multi": "ഒന്നിലധികം ഉപയോക്താക്കൾ (ലോഗിൻ)"
     },
     "apiKey": {
-      "label": "API Key",
-      "placeholder": "Enter your API key (or use the default demo key THIS-IS-A-SECURE-KEY-123-REPLACE-ME for local single-user setups)"
+      "label": "API കീ",
+      "placeholder": "നിങ്ങളുടെ API കീ നൽകുക (അല്ലെങ്കിൽ ലോക്കൽ സിംഗിൾ-യൂസർ സജ്ജീകരണങ്ങൾക്ക് ഡീഫോൾട്ട് ഡെമോ കീ THIS-IS-A-SECURE-KEY-123-REPLACE-ME ഉപയോഗിക്കുക)"
     },
     "username": {
-      "label": "Username",
-      "placeholder": "Username"
+      "label": "യൂസർനെയിം",
+      "placeholder": "യൂസർനെയിം"
     },
     "password": {
-      "label": "Password",
-      "placeholder": "Password"
+      "label": "പാസ്‌വേഡ്",
+      "placeholder": "പാസ്‌വേഡ്"
     },
     "connection": {
-      "label": "Connection:",
-      "unknown": "Unknown",
-      "connected": "Connected",
-      "failed": "Failed",
-      "continueAnyway": "You can continue and complete setup now. You’ll be able to verify the connection later from Settings."
+      "label": "കണക്ഷൻ:",
+      "unknown": "അജ്ഞാതം",
+      "connected": "കണക്റ്റ് ചെയ്തു",
+      "failed": "പരാജയപ്പെട്ടു",
+      "continueAnyway": "ഇപ്പോൾ തുടരുകയും സജ്ജീകരണം പൂർത്തിയാക്കുകയും ചെയ്യാം. പിന്നീട് Settingsൽ നിന്ന് കണക്ഷൻ പരിശോധിക്കാൻ കഴിയും."
     },
     "rag": {
-      "label": "RAG:",
-      "healthy": "Healthy",
-      "unhealthy": "Unhealthy",
-      "unknown": "Unknown"
+      "label": "Knowledge തിരയൽ (RAG):",
+      "healthy": "സാധാരണ",
+      "unhealthy": "പ്രശ്നങ്ങളുണ്ട്",
+      "unknown": "അജ്ഞാതം"
     },
-    "connectionFailed": "Connection failed",
+    "connectionFailed": "കണക്ഷൻ പരാജയപ്പെട്ടു",
     "footerHelp": "കണക്റ്റ് ചെയ്ത ശേഷം ഈ ക്രമീകരണങ്ങളിലേക്ക് നിങ്ങൾക്ക് എപ്പോഴും എക്സ്റ്റൻഷൻ മെനുവിൽ നിന്ന് മടങ്ങി വരാം.",
     "progressAria": "ഓൺബോർഡിംഗ് പുരോഗതി",
     "stepLabel": {

@@ -458,6 +458,17 @@ export const FlashcardsPage: React.FC = () => {
     setMoveOpen(true)
   }
 
+  async function processInChunks<T>(
+    items: T[],
+    size: number,
+    fn: (chunk: T[]) => Promise<void>
+  ): Promise<void> {
+    for (let i = 0; i < items.length; i += size) {
+      const chunk = items.slice(i, i + size)
+      await fn(chunk)
+    }
+  }
+
   const handleBulkDelete = async () => {
     const toDelete = await getSelectedItems()
     if (!toDelete.length) return
@@ -473,13 +484,12 @@ export const FlashcardsPage: React.FC = () => {
     if (!ok) return
     try {
       const chunkSize = 50
-      for (let i = 0; i < toDelete.length; i += chunkSize) {
-        const chunk = toDelete.slice(i, i + chunkSize)
+      await processInChunks(toDelete, chunkSize, async (chunk) => {
         // Fire a bounded number of requests in parallel
         await Promise.all(
           chunk.map((c) => deleteFlashcard(c.uuid, c.version))
         )
-      }
+      })
       message.success(t("common:deleted", { defaultValue: "Deleted" }))
       clearSelection()
       await qc.invalidateQueries({ queryKey: ["flashcards:list"] })
@@ -585,8 +595,7 @@ export const FlashcardsPage: React.FC = () => {
         const toMove = await getSelectedItems()
         if (toMove.length) {
           const chunkSize = 50
-          for (let i = 0; i < toMove.length; i += chunkSize) {
-            const chunk = toMove.slice(i, i + chunkSize)
+          await processInChunks(toMove, chunkSize, async (chunk) => {
             await Promise.all(
               chunk.map((c) =>
                 updateFlashcard(c.uuid, {
@@ -595,7 +604,7 @@ export const FlashcardsPage: React.FC = () => {
                 })
               )
             )
-          }
+          })
         }
         clearSelection()
       }
@@ -1625,10 +1634,9 @@ const ImportPanel: React.FC = () => {
   const importMutation = useMutation({
     mutationKey: ["flashcards:import"],
     mutationFn: () => {
-      const mapped = buildMappedTSV()
       const payload = useMapping
         ? {
-            content: mapped,
+            content: buildMappedTSV(),
             delimiter: MAPPING_OUTPUT_DELIMITER,
             has_header: false
           }

@@ -1168,5 +1168,21 @@
   "nextSteps": {
     "message": "Tudo pronto para começar",
     "description": "Título do painel final do onboarding com os próximos passos."
+  },
+  "headerShortcuts": {
+    "message": "Mostrar atalhos rápidos no cabeçalho",
+    "description": "Opção de configuração para mostrar atalhos rápidos no cabeçalho durante o onboarding."
+  },
+  "restartOnboardingLabel": {
+    "message": "Reiniciar o onboarding desde o início"
+  },
+  "restartOnboardingButton": {
+    "message": "Reiniciar onboarding"
+  },
+  "restartOnboardingConfirmTitle": {
+    "message": "Reiniciar o onboarding?"
+  },
+  "restartOnboardingConfirmMessage": {
+    "message": "Isso irá redefinir o seu estado de onboarding e levá‑lo de volta ao fluxo de configuração."
   }
 }

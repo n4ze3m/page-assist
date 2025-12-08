@@ -786,62 +786,62 @@
     }
   },
   "onboarding": {
-    "title": "Welcome — Let’s get you connected",
-    "description": "Configure your server and authentication. We’ll verify the connection and RAG health inline.",
+    "title": "مرحبًا — لنقم بتوصيلك",
+    "description": "قم بإعداد الخادم وطريقة المصادقة. سنتحقق مباشرة من اتصال الخادم وحالة نظام البحث المعرفي (RAG).",
     "learnMoreTldw": "تعرّف على كيفية عمل خادم tldw",
     "serverDocsUrl": "https://github.com/rmusser01/tldw_browser_assistant",
     "serverUrl": {
       "placeholder": "http://127.0.0.1:8000",
       "help": "مثال: http://127.0.0.1:8000",
-      "invalid": "أدخل عنوان URL كاملاً مثل http://127.0.0.1:8000.",
+      "invalid": "أدخل عنوان URL كاملًا مثل http://127.0.0.1:8000.",
       "invalidProtocol": "استخدم عناوين http أو https، على سبيل المثال http://127.0.0.1:8000.",
-      "label": "Server URL",
-      "emptyHint": "Enter your tldw server URL to enable Next.",
-      "ready": "We’ll enable Next once we can reach this address.",
-      "checking": "Checking reachability…",
-      "reachable": "Server responded successfully. You can continue.",
-      "unreachable": "We couldn’t reach this address yet. Double-check the URL or try again."
+      "label": "عنوان خادم tldw",
+      "emptyHint": "أدخل عنوان خادم tldw لتمكين زر «التالي».",
+      "ready": "سنفعّل زر «التالي» عندما نتمكن من الوصول إلى هذا العنوان.",
+      "checking": "جارٍ التحقق من إمكانية الوصول…",
+      "reachable": "استجاب الخادم بنجاح. يمكنك المتابعة.",
+      "unreachable": "لم نتمكن من الوصول إلى هذا العنوان بعد. تحقّق من العنوان أو حاول مرة أخرى."
     },
     "buttons": {
-      "next": "Next",
-      "back": "Back",
-      "continue": "Continue",
-      "recheck": "Recheck",
-      "finish": "Finish",
-      "finishAnyway": "Finish without connecting",
-      "skip": "Skip for now"
+      "next": "التالي",
+      "back": "رجوع",
+      "continue": "متابعة",
+      "recheck": "إعادة التحقق",
+      "finish": "إنهاء",
+      "finishAnyway": "إنهاء بدون اتصال",
+      "skip": "تخطي الآن"
     },
     "authMode": {
-      "label": "Authentication Mode",
-      "single": "Single User (API Key)",
-      "multi": "Multi User (Login)"
+      "label": "وضع المصادقة",
+      "single": "مستخدم واحد (مفتاح API)",
+      "multi": "متعدد المستخدمين (تسجيل الدخول)"
     },
     "apiKey": {
-      "label": "API Key",
-      "placeholder": "Enter your API key (or use the default demo key THIS-IS-A-SECURE-KEY-123-REPLACE-ME for local single-user setups)"
+      "label": "مفتاح API",
+      "placeholder": "أدخل مفتاح الـ API الخاص بك (أو استخدم مفتاح التجربة الافتراضي THIS-IS-A-SECURE-KEY-123-REPLACE-ME للإعدادات المحلية ذات المستخدم الواحد)"
     },
     "username": {
-      "label": "Username",
-      "placeholder": "Username"
+      "label": "اسم المستخدم",
+      "placeholder": "اسم المستخدم"
     },
     "password": {
-      "label": "Password",
-      "placeholder": "Password"
+      "label": "كلمة المرور",
+      "placeholder": "كلمة المرور"
     },
     "connection": {
-      "label": "Connection:",
-      "unknown": "Unknown",
-      "connected": "Connected",
-      "failed": "Failed",
-      "continueAnyway": "You can continue and complete setup now. You’ll be able to verify the connection later from Settings."
+      "label": "الاتصال:",
+      "unknown": "غير معروف",
+      "connected": "متصل",
+      "failed": "فشل",
+      "continueAnyway": "يمكنك المتابعة وإكمال الإعداد الآن، وستتمكن من التحقق من الاتصال لاحقًا من صفحة الإعدادات."
     },
     "rag": {
-      "label": "RAG:",
-      "healthy": "Healthy",
-      "unhealthy": "Unhealthy",
-      "unknown": "Unknown"
+      "label": "البحث المعرفي (RAG):",
+      "healthy": "سليم",
+      "unhealthy": "به مشكلات",
+      "unknown": "غير معروف"
     },
-    "connectionFailed": "Connection failed",
+    "connectionFailed": "فشل الاتصال",
     "footerHelp": "بعد الاتصال، يمكنك العودة إلى هذه الإعدادات في أي وقت من قائمة الامتداد.",
     "progressAria": "تقدّم الإعداد الأولي",
     "stepLabel": {

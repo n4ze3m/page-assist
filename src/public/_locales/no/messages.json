@@ -208,5 +208,20 @@
   },
   "notesEmpty.primaryCta": {
     "message": "Create note"
+  },
+  "headerShortcuts": {
+    "message": "Vis hurtige snarveier i toppfeltet"
+  },
+  "restartOnboardingLabel": {
+    "message": "Start onboarding på nytt fra begynnelsen"
+  },
+  "restartOnboardingButton": {
+    "message": "Start onboarding på nytt"
+  },
+  "restartOnboardingConfirmTitle": {
+    "message": "Starte onboarding på nytt?"
+  },
+  "restartOnboardingConfirmMessage": {
+    "message": "Dette tilbakestiller onboarding-statusen din og tar deg tilbake til oppsettflyten."
   }
 }

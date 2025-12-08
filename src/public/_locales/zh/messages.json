@@ -70,5 +70,17 @@
   "headerShortcuts": {
     "message": "在页眉显示快捷方式",
     "description": "控制是否在页眉显示快速快捷方式的设置。"
+  },
+  "restartOnboardingLabel": {
+    "message": "从头重新开始引导设置"
+  },
+  "restartOnboardingButton": {
+    "message": "重新开始引导"
+  },
+  "restartOnboardingConfirmTitle": {
+    "message": "重新开始引导？"
+  },
+  "restartOnboardingConfirmMessage": {
+    "message": "这将重置您的引导状态，并带您返回设置流程的起始步骤。"
   }
 }

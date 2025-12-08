@@ -208,5 +208,25 @@
   },
   "notesEmpty.primaryCta": {
     "message": "Create note"
+  },
+  "headerShortcuts": {
+    "message": "Show quick shortcuts in the header",
+    "description": "Setting option to show quick shortcuts in the header during onboarding."
+  },
+  "restartOnboardingLabel": {
+    "message": "Restart onboarding from the beginning",
+    "description": "Label for the setting that restarts the onboarding flow."
+  },
+  "restartOnboardingButton": {
+    "message": "Restart onboarding",
+    "description": "Button text to restart onboarding from Settings."
+  },
+  "restartOnboardingConfirmTitle": {
+    "message": "Restart onboarding?",
+    "description": "Confirmation dialog title when restarting onboarding."
+  },
+  "restartOnboardingConfirmMessage": {
+    "message": "This will reset your onboarding state and take you back to the setup flow.",
+    "description": "Confirmation dialog body explaining what restarting onboarding does."
   }
 }

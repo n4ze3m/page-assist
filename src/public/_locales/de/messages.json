@@ -208,5 +208,20 @@
   },
   "notesEmpty.primaryCta": {
     "message": "Create note"
+  },
+  "headerShortcuts": {
+    "message": "Schnellzugriffe in der Kopfzeile anzeigen"
+  },
+  "restartOnboardingLabel": {
+    "message": "Onboarding von vorne starten"
+  },
+  "restartOnboardingButton": {
+    "message": "Onboarding neu starten"
+  },
+  "restartOnboardingConfirmTitle": {
+    "message": "Onboarding neu starten?"
+  },
+  "restartOnboardingConfirmMessage": {
+    "message": "Dadurch wird dein Onboarding-Status zurückgesetzt und du kehrst zum Einrichtungsablauf zurück."
   }
 }

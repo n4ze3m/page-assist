@@ -240,5 +240,20 @@
   },
   "notesEmpty.primaryCta": {
     "message": "Create note"
+  },
+  "headerShortcuts": {
+    "message": "Показать быстрые ярлыки в заголовке"
+  },
+  "restartOnboardingLabel": {
+    "message": "Снова пройти мастер настройки с самого начала"
+  },
+  "restartOnboardingButton": {
+    "message": "Перезапустить мастер настройки"
+  },
+  "restartOnboardingConfirmTitle": {
+    "message": "Перезапустить мастер настройки?"
+  },
+  "restartOnboardingConfirmMessage": {
+    "message": "Это сбросит состояние мастера настройки и вернёт вас к началу процесса."
   }
 }

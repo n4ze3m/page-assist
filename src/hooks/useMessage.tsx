@@ -163,6 +163,11 @@ export const useMessage = () => {
   React.useEffect(() => {
     // Reset server chat when character changes
     setServerChatId(null)
+    setServerChatState("in-progress")
+    setServerChatTopic(null)
+    setServerChatClusterId(null)
+    setServerChatSource(null)
+    setServerChatExternalRef(null)
   }, [selectedCharacter?.id])
 
   // Local embedding store removed; rely on tldw_server RAG
@@ -179,6 +184,11 @@ export const useMessage = () => {
     updatePageTitle() 
     currentChatModelSettings.reset()
     setServerChatId(null)
+    setServerChatState("in-progress")
+    setServerChatTopic(null)
+    setServerChatClusterId(null)
+    setServerChatSource(null)
+    setServerChatExternalRef(null)
     if (defaultInternetSearchOn) {
       setWebSearch(true)
     }
@@ -904,6 +914,11 @@ export const useMessage = () => {
         count++
         if (signal?.aborted) break
       }
+      if (signal?.aborted) {
+        const abortError = new Error("AbortError")
+        ;(abortError as any).name = "AbortError"
+        throw abortError
+      }
       setMessages((prev) => prev.map((m) => (m.id === generateMessageId ? { ...m, message: fullText } : m)))
 
       // Persist assistant reply on server
@@ -987,7 +1002,10 @@ export const useMessage = () => {
     setStreaming(true)
 
     if (image.length > 0) {
-      image = `data:image/jpeg;base64,${image.split(",")[1]}`
+      const payload = image.includes(",") ? image.split(",")[1] : image
+      if (payload && payload.length > 0) {
+        image = `data:image/jpeg;base64,${payload}`
+      }
     }
 
     const ollama = await pageAssistModel({ model: selectedModel!, baseUrl: "" })

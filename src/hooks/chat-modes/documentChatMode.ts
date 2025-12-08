@@ -21,6 +21,29 @@ import { getMaxContextSize } from "@/services/kb"
 import { tldwClient } from "@/services/tldw/TldwApiClient"
 import type { ActorSettings } from "@/types/actor"
 import { maybeInjectActorMessage } from "@/utils/actor"
+import type { ChatModelSettings } from "@/store/model"
+import { extractTokenFromChunk } from "@/utils/extract-token-from-chunk"
+
+interface RagDocumentMetadata {
+  filename?: string
+  title?: string
+  type?: string
+  url?: string
+  [key: string]: unknown
+}
+
+interface RagDocument {
+  content?: string
+  text?: string
+  chunk?: string
+  metadata?: RagDocumentMetadata
+}
+
+interface RagResponse {
+  results?: RagDocument[]
+  documents?: RagDocument[]
+  docs?: RagDocument[]
+}
 
 export const documentChatMode = async (
   message: string,
@@ -49,7 +72,7 @@ export const documentChatMode = async (
   }: {
     selectedModel: string
     useOCR: boolean
-    currentChatModelSettings: any
+    currentChatModelSettings: ChatModelSettings | null
     setMessages: (
       messages: Message[] | ((prev: Message[]) => Message[])
     ) => void
@@ -80,7 +103,7 @@ export const documentChatMode = async (
   )
 
   const allFiles = [...sessionFiles, ...newFiles]
-  const ollama = await pageAssistModel({ model: selectedModel!, baseUrl: "" })
+  const ollama = await pageAssistModel({ model: selectedModel, baseUrl: "" })
 
   let newMessage: Message[] = []
   let generateMessageId = generateID()
@@ -152,10 +175,6 @@ export const documentChatMode = async (
       const promptForQuestion = questionPrompt
         .replaceAll("{chat_history}", chat_history)
         .replaceAll("{question}", message)
-      const questionOllama = await pageAssistModel({
-        model: selectedModel!,
-        baseUrl: ""
-      })
       const questionMessage = await humanMessageFormatter({
         content: [
           {
@@ -166,13 +185,16 @@ export const documentChatMode = async (
         model: selectedModel,
         useOCR
       })
-      const response = await questionOllama.invoke([questionMessage])
+      const response = await ollama.invoke([questionMessage])
       query = response.content.toString()
       query = removeReasoning(query)
     }
     // Try server-backed RAG over media_db first
     try {
       const keyword_filter = uploadedFiles.map((f) => f.filename).slice(0, 10)
+      if (uploadedFiles.length > 10) {
+        setActionInfo("Only the first 10 uploaded files are used for filtering")
+      }
       const ragPayload = {
         query,
         sources: ["media_db"],
@@ -189,26 +211,33 @@ export const documentChatMode = async (
         enable_chunk_citations: true,
         enable_generation: false
       } as const
-      const ragRes = await tldwClient.ragSearch(query, ragPayload)
-      const docs = ragRes?.results || ragRes?.documents || ragRes?.docs || []
+      const ragRes = (await tldwClient.ragSearch(
+        query,
+        ragPayload
+      )) as RagResponse
+      const docs: RagDocument[] =
+        ragRes?.results || ragRes?.documents || ragRes?.docs || []
       if (docs.length > 0) {
         context += formatDocs(
-          docs.map((d: any) => ({ pageContent: d.content || d.text || d.chunk || '', metadata: d.metadata || {} }))
+          docs.map((d) => ({
+            pageContent: d.content || d.text || d.chunk || "",
+            metadata: d.metadata || {}
+          }))
         )
         source = [
           ...source,
-          ...docs.map((d: any) => ({
-            name: d.metadata?.filename || d.metadata?.title || 'media',
-            type: d.metadata?.type || 'media',
-            mode: 'rag',
-            url: d.metadata?.url || '',
-            pageContent: d.content || d.text || d.chunk || '',
+          ...docs.map((d) => ({
+            name: d.metadata?.filename || d.metadata?.title || "media",
+            type: d.metadata?.type || "media",
+            mode: "rag",
+            url: d.metadata?.url || "",
+            pageContent: d.content || d.text || d.chunk || "",
             metadata: d.metadata || {}
           }))
         ]
       }
     } catch (e) {
-      console.error('media_db RAG failed; will fallback to inline context', e)
+      console.error("media_db RAG failed; will fallback to inline context", e)
     }
 
     // Fallback inline if no RAG context
@@ -286,11 +315,11 @@ export const documentChatMode = async (
     let apiReasoning = false
 
     for await (const chunk of chunks) {
-      const token = typeof chunk === 'string' ? chunk : (chunk?.content ?? (chunk?.choices?.[0]?.delta?.content ?? ''))
-      if (chunk?.additional_kwargs?.reasoning_content) {
+      const token = extractTokenFromChunk(chunk)
+      if ((chunk as any)?.additional_kwargs?.reasoning_content) {
         const reasoningContent = mergeReasoningContent(
           fullText,
-          chunk?.additional_kwargs?.reasoning_content || ""
+          (chunk as any)?.additional_kwargs?.reasoning_content || ""
         )
         contentToSave = reasoningContent
         fullText = reasoningContent

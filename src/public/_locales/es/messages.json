@@ -208,5 +208,20 @@
   },
   "notesEmpty.primaryCta": {
     "message": "Create note"
+  },
+  "headerShortcuts": {
+    "message": "Mostrar accesos rápidos en el encabezado"
+  },
+  "restartOnboardingLabel": {
+    "message": "Reiniciar la incorporación desde el principio"
+  },
+  "restartOnboardingButton": {
+    "message": "Reiniciar incorporación"
+  },
+  "restartOnboardingConfirmTitle": {
+    "message": "¿Reiniciar la incorporación?"
+  },
+  "restartOnboardingConfirmMessage": {
+    "message": "Esto restablecerá tu estado de incorporación y te llevará de nuevo al flujo de configuración."
   }
 }

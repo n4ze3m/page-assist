@@ -867,7 +867,7 @@
       "demoBody": "La modalità demo ti permette di provare chat, note e contenuti multimediali con dati di esempio. Le funzionalità che dipendono dal server, come la ricerca Knowledge, resteranno limitate finché non colleghi il tuo tldw_server.",
       "demoCta": "Usa la modalità demo locale"
     },
-    "authModeHelp": "Single User (API Key) è consigliato per server personali o di piccoli team. Multi User (Login) è pensato per deployment condivisi in cui le persone accedono con nome utente o SSO. Scegli la modalità che corrisponde alla configurazione del tuo tldw_server.",
+    "authModeHelp": "Utente singolo (API Key) è consigliato per server personali o di piccoli team. Multiutente (accesso) è pensato per deployment condivisi in cui le persone accedono con nome utente o SSO. Scegli la modalità che corrisponde alla configurazione del tuo tldw_server.",
     "auth": {
       "missingCredentials": "Inserisci sia nome utente che password per continuare.",
       "missingApiKey": "È richiesta una API key."

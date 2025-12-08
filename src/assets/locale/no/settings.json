@@ -91,7 +91,7 @@
         "label": "Fjern Resonneringsmerke fra kopiert tekst"
       },
       "promptSearchIncludeServer": {
-        "label": "Inkluder server-spørsmål i prompt-søk"
+        "label": "Inkluder server-prompter i prompt-søk"
       },
       "restartOnboarding": {
         "label": "Start onboarding på nytt fra begynnelsen",
