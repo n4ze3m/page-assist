@@ -582,14 +582,22 @@ export const FlashcardsPage: React.FC = () => {
         const full = await getFlashcard(moveCard.uuid)
         await updateFlashcard(moveCard.uuid, { deck_id: moveDeckId ?? null, expected_version: full.version })
       } else {
-        // bulk move: respect selectAllAcross/deselectedIds
+        // bulk move: require an explicit target deck and respect selectAllAcross/deselectedIds
+        if (moveDeckId == null) {
+          message.error(
+            t("option:flashcards.bulkMoveSelectDeck", {
+              defaultValue: "Select a target deck before moving cards."
+            })
+          )
+          return
+        }
         const toMove = await getSelectedItems()
         if (toMove.length) {
           await processInChunks(toMove, BULK_MUTATION_CHUNK_SIZE, async (chunk) => {
             await Promise.all(
               chunk.map((c) =>
                 updateFlashcard(c.uuid, {
-                  deck_id: moveDeckId ?? null,
+                  deck_id: moveDeckId,
                   expected_version: c.version
                 })
               )

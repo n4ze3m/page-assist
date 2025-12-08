@@ -3,6 +3,10 @@ import { API_PATHS } from "@/services/tldw/openapi-guard"
 import { browser } from "wxt/browser"
 
 const MAX_ERROR_MESSAGE_LENGTH = 140
+const TOAST_Z_INDEX = 999999
+const TOAST_AUTO_DISMISS_MS = 5000
+const TOAST_ANIMATION_DURATION_MS = 180
+const BUTTON_Z_INDEX = 9999
 
 type ToastVariant = "success" | "error" | "info"
 
@@ -19,7 +23,7 @@ const showToast = (message: string, variant: ToastVariant = "info") => {
     container = document.createElement("div")
     container.id = containerId
     container.style.position = "fixed"
-    container.style.zIndex = "999999"
+    container.style.zIndex = TOAST_Z_INDEX.toString()
     container.style.bottom = "16px"
     container.style.right = "16px"
     container.style.display = "flex"
@@ -49,16 +53,27 @@ const showToast = (message: string, variant: ToastVariant = "info") => {
   toast.style.transition =
     "opacity 150ms ease-out, transform 150ms ease-out, filter 150ms ease-out"
 
-  if (variant === "success") {
-    toast.style.background = "rgba(22, 163, 74, 0.96)"
-    toast.style.color = "#ECFDF3"
-  } else if (variant === "error") {
-    toast.style.background = "rgba(220, 38, 38, 0.96)"
-    toast.style.color = "#FEF2F2"
-  } else {
-    toast.style.background = "rgba(15, 23, 42, 0.96)"
-    toast.style.color = "#E5E7EB"
+  const variantStyles: Record<
+    ToastVariant,
+    { background: string; color: string }
+  > = {
+    success: {
+      background: "rgba(22, 163, 74, 0.96)",
+      color: "#ECFDF3"
+    },
+    error: {
+      background: "rgba(220, 38, 38, 0.96)",
+      color: "#FEF2F2"
+    },
+    info: {
+      background: "rgba(15, 23, 42, 0.96)",
+      color: "#E5E7EB"
+    }
   }
+
+  const styles = variantStyles[variant] || variantStyles.info
+  toast.style.background = styles.background
+  toast.style.color = styles.color
 
   const dismiss = () => {
     toast.style.opacity = "0"
@@ -69,7 +84,7 @@ const showToast = (message: string, variant: ToastVariant = "info") => {
       if (container && container.childElementCount === 0) {
         container.remove()
       }
-    }, 180)
+    }, TOAST_ANIMATION_DURATION_MS)
   }
 
   toast.addEventListener("click", dismiss)
@@ -82,7 +97,7 @@ const showToast = (message: string, variant: ToastVariant = "info") => {
     toast.style.filter = "blur(0)"
   })
 
-  window.setTimeout(dismiss, 5000)
+  window.setTimeout(dismiss, TOAST_AUTO_DISMISS_MS)
 }
 
 type I18nKey =
@@ -111,6 +126,37 @@ const getMessage = (
   return fallback
 }
 
+const isValidHuggingFacePage = (url: string): boolean => {
+  try {
+    const parsedUrl = new URL(url)
+    const segments = parsedUrl.pathname.split("/").filter(Boolean)
+
+    if (segments.length < 2) return false
+
+    // /datasets/{owner}/{dataset} or /spaces/{owner}/{space}
+    if (
+      (segments[0] === "datasets" || segments[0] === "spaces") &&
+      segments.length >= 3
+    ) {
+      return true
+    }
+
+    const excludedRoots = [
+      "settings",
+      "docs",
+      "organizations",
+      "tasks",
+      "models",
+      "datasets",
+      "spaces"
+    ]
+
+    return !excludedRoots.includes(segments[0])
+  } catch {
+    return false
+  }
+}
+
 export default defineContentScript({
   main() {
     const sendToTldw = async (btn?: HTMLButtonElement) => {
@@ -120,38 +166,7 @@ export default defineContentScript({
 
       const url = window.location.href
       // Only send model, dataset, or space pages, not search results or settings.
-      let isValidPath = false
-      try {
-        const parsedUrl = new URL(url)
-        const segments = parsedUrl.pathname.split("/").filter(Boolean)
-
-        if (segments.length >= 2) {
-          if (
-            (segments[0] === "datasets" || segments[0] === "spaces") &&
-            segments.length >= 3
-          ) {
-            // /datasets/{owner}/{dataset} or /spaces/{owner}/{space}
-            isValidPath = true
-          } else if (
-            ![
-              "settings",
-              "docs",
-              "organizations",
-              "tasks",
-              "models",
-              "datasets",
-              "spaces"
-            ].includes(segments[0])
-          ) {
-            // Treat /{owner}/{repo} (and deeper) as model/content pages,
-            // while excluding known non-content roots.
-            isValidPath = true
-          }
-        }
-      } catch {
-        isValidPath = false
-      }
-      if (!isValidPath) {
+      if (!isValidHuggingFacePage(url)) {
         showToast(
           getMessage(
             "hfInvalidPage",
@@ -271,7 +286,7 @@ export default defineContentScript({
       btn.style.position = "fixed"
       btn.style.bottom = "60px"
       btn.style.right = "20px"
-      btn.style.zIndex = "9999"
+      btn.style.zIndex = BUTTON_Z_INDEX.toString()
       btn.addEventListener("click", () => void sendToTldw(btn))
       document.body.appendChild(btn)
     }

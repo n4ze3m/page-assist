@@ -88,6 +88,17 @@ export const useServerUrlHint = (
       }
     }
 
+    if (matchesCurrentServer && uxState === "error_auth") {
+      return {
+        valid: false,
+        tone: "error",
+        message: t(
+          "settings:onboarding.serverUrl.auth",
+          "Authentication failed. Please verify your credentials or sign in."
+        )
+      }
+    }
+
     return {
       valid: true,
       tone: "neutral",

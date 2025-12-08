@@ -530,6 +530,7 @@
     "duplicate": "Duplicate",
     "move": "Move",
     "bulkMove": "Bulk Move",
+    "bulkMoveSelectDeck": "Select a target deck before moving cards.",
     "bulkDelete": "Bulk Delete",
     "exportSelectedCsv": "Export selected (CSV/TSV)",
     "selectedCount": "Selected",
