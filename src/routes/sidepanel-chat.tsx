@@ -23,7 +23,8 @@ import React from "react"
 import { useTranslation } from "react-i18next"
 import { SidePanelBody } from "~/components/Sidepanel/Chat/body"
 import { SidepanelForm } from "~/components/Sidepanel/Chat/form"
-import { SidepanelHeader } from "~/components/Sidepanel/Chat/header"
+// import { SidepanelHeader } from "~/components/Sidepanel/Chat/header"
+import { SidepanelHeaderSimple } from "~/components/Sidepanel/Chat/SidepanelHeaderSimple"
 import NoteQuickSaveModal from "~/components/Sidepanel/Notes/NoteQuickSaveModal"
 import { useMessage } from "~/hooks/useMessage"
 import type { ChatHistory, Message as ChatMessage } from "~/store/option"
@@ -521,7 +522,7 @@ const SidepanelChat = () => {
     <div className="flex h-full w-full">
       <main className="relative h-dvh w-full">
         <div className="relative z-20 w-full">
-          <SidepanelHeader
+          <SidepanelHeaderSimple
             sidebarOpen={sidebarOpen}
             setSidebarOpen={setSidebarOpen}
           />

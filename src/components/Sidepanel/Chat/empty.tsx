@@ -206,54 +206,15 @@ export const EmptySidePanel = () => {
     )
   }
 
+  // Connected state: show minimal empty chat guidance
+  // (Status dot in header already shows connection status)
   return (
-    <div className="mt-4 w-full px-6">
-      {mode === "demo" ? (
-        <div className="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-xs text-blue-800 dark:border-blue-400 dark:bg-[#102538] dark:text-blue-50">
-          <span className="inline-block h-2 w-2 rounded-full bg-blue-500" />
-          <span>
-            {t(
-              "sidepanel:connectedHintDemo",
-              "Demo mode: sample workspace — chats may be cleared when you reset."
-            )}
-          </span>
-        </div>
-      ) : (
-        <div className="inline-flex items-center gap-2 rounded-full border border-green-200 bg-green-50 px-3 py-1 text-xs text-green-800 dark:border-green-500 dark:bg-[#102a10] dark:text-green-100">
-          <span className="inline-block h-2 w-2 rounded-full bg-green-500" />
-          <span>
-            {t(
-              "sidepanel:connectedHint",
-              "Connected to {{host}}. Start chatting below.",
-              { host }
-            )}
-          </span>
-        </div>
-      )}
-      <div className="mt-3">
-        <Tooltip
-          placement="bottom"
-          title={t("playground:tooltip.quickIngest", {
-            defaultValue:
-              "Stage URLs and files for processing, even while your server is offline."
-          })}
-        >
-          <Button
-            type="default"
-            size="small"
-            block
-            onClick={handleQuickIngest}
-            disabled={!isConnectionReady}
-            aria-disabled={!isConnectionReady}
-            aria-label={t(
-              "sidepanel:quickIngestAria",
-              "Open Quick ingest to add media"
-            )}
-          >
-            {t("option:header.quickIngest", "Quick ingest")}
-          </Button>
-        </Tooltip>
-      </div>
+    <div className="mt-4 w-full px-6 flex flex-col items-center justify-center text-center">
+      <p className="text-sm text-gray-500 dark:text-gray-400">
+        {mode === "demo"
+          ? t("sidepanel:emptyChat.demoHint", "Demo mode — try sending a message")
+          : t("sidepanel:emptyChat.hint", "Start a conversation below")}
+      </p>
     </div>
   )
 }

@@ -5,7 +5,7 @@
  * screenshots and observations about the real user experience.
  */
 
-import { test, expect } from "@playwright/test"
+import { test } from "@playwright/test"
 import { launchWithExtension } from "./utils/extension"
 import path from "path"
 
@@ -251,6 +251,46 @@ test.describe("Manual UX Walkthrough", () => {
       const spText = await sidepanel.locator("body").innerText()
       console.log("\n=== ERROR STATE - SIDEPANEL ===")
       console.log(spText.substring(0, 1500))
+
+    } finally {
+      await context.close()
+    }
+  })
+
+  test("8. Redesigned sidepanel - verify new layout", async () => {
+    const { context, openSidepanel } = await launchWithExtension(TEST_EXT_PATH, {
+      seedConfig: {
+        serverUrl: SERVER_URL,
+        authMode: "single-user",
+        apiKey: API_KEY
+      }
+    })
+
+    try {
+      const sidepanel = await openSidepanel()
+      await sidepanel.waitForLoadState("networkidle")
+      await sidepanel.waitForTimeout(3000)
+
+      await sidepanel.screenshot({
+        path: "test-results/ux-redesign/01-sidepanel-new-layout.png",
+        fullPage: true
+      })
+
+      const bodyText = await sidepanel.locator("body").innerText()
+      console.log("=== NEW SIDEPANEL LAYOUT ===")
+      console.log(bodyText.substring(0, 2000))
+
+      // Check for key elements
+      const hasStatusDot = await sidepanel.locator("button span.rounded-full").count()
+      console.log(`\n=== Status dot present: ${hasStatusDot > 0} ===`)
+
+      // Check control row
+      const controlRow = await sidepanel.locator("[class*='ControlRow'], [class*='control-row']").count()
+      console.log(`Control row present: ${controlRow > 0}`)
+
+      // Check for simplified header
+      const headerButtons = await sidepanel.locator("header button, .header button, [class*='header'] button").allTextContents()
+      console.log(`\nHeader buttons: ${headerButtons.filter(b => b.trim()).join(", ")}`)
 
     } finally {
       await context.close()

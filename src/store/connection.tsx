@@ -13,6 +13,10 @@ import {
 // Shared timeout before treating the server as unreachable.
 // See New-Views-PRD.md §5.1.x / §10.1 (20 seconds).
 export const CONNECTION_TIMEOUT_MS = 20_000
+// When already connected, throttle background health checks so we do not
+// spam the server. This is intentionally lower than the 30s polling
+// interval in useServerOnline so that periodic checks are not skipped.
+const CONNECTED_THROTTLE_MS = 25_000
 
 const TEST_BYPASS_KEY = "__tldw_allow_offline"
 const FORCE_UNCONFIGURED_KEY = "__tldw_force_unconfigured"
@@ -286,7 +290,7 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
       prev.isConnected &&
       prev.phase === ConnectionPhase.CONNECTED &&
       prev.lastCheckedAt != null &&
-      now - prev.lastCheckedAt < 60_000
+      now - prev.lastCheckedAt < CONNECTED_THROTTLE_MS
     ) {
       return
     }

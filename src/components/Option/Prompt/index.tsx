@@ -34,6 +34,7 @@ import { isFireFoxPrivateMode } from "@/utils/is-private-mode"
 import { useConfirmDanger } from "@/components/Common/confirm-danger"
 import { useServerOnline } from "@/hooks/useServerOnline"
 import FeatureEmptyState from "@/components/Common/FeatureEmptyState"
+import ConnectFeatureBanner from "@/components/Common/ConnectFeatureBanner"
 import { useMessageOption } from "@/hooks/useMessageOption"
 
 export const PromptBody = () => {
@@ -771,7 +772,7 @@ export const PromptBody = () => {
 
   if (!isOnline) {
     return (
-      <FeatureEmptyState
+      <ConnectFeatureBanner
         title={t("settings:managePrompts.emptyConnectTitle", {
           defaultValue: "Connect to use Prompts"
         })}
@@ -789,8 +790,6 @@ export const PromptBody = () => {
               "Once connected, create custom prompts you can reuse across chats."
           })
         ]}
-        primaryActionLabel={t("settings:tldw.setupLink", "Set up server")}
-        onPrimaryAction={() => navigate("/settings/tldw")}
       />
     )
   }

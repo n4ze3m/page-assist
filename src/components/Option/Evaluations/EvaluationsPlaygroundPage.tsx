@@ -20,6 +20,7 @@ import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
 
 import FeatureEmptyState from "@/components/Common/FeatureEmptyState"
+import ConnectFeatureBanner from "@/components/Common/ConnectFeatureBanner"
 import { useServerOnline } from "@/hooks/useServerOnline"
 import { useAntdNotification } from "@/hooks/useAntdNotification"
 import {
@@ -799,7 +800,7 @@ export const EvaluationsPlaygroundPage = () => {
 
   if (!isOnline) {
     return (
-      <FeatureEmptyState
+      <ConnectFeatureBanner
         title={t("settings:evaluations.emptyConnectTitle", {
           defaultValue: "Connect to use Evaluations"
         })}
@@ -817,8 +818,6 @@ export const EvaluationsPlaygroundPage = () => {
               "Once connected, you can define evaluations and inspect metrics here."
           })
         ]}
-        primaryActionLabel={t("settings:tldw.setupLink", "Set up server")}
-        onPrimaryAction={() => navigate("/settings/tldw")}
       />
     )
   }

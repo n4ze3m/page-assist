@@ -1,6 +1,7 @@
 import React from "react"
 import { useTranslation } from "react-i18next"
 import FeatureEmptyState from "@/components/Common/FeatureEmptyState"
+import ConnectFeatureBanner from "@/components/Common/ConnectFeatureBanner"
 import { PageShell } from "@/components/Common/PageShell"
 import { useServerOnline } from "@/hooks/useServerOnline"
 import { useNavigate } from "react-router-dom"
@@ -13,7 +14,7 @@ export const PromptsWorkspace: React.FC = () => {
 
   if (!isOnline) {
     return (
-      <FeatureEmptyState
+      <ConnectFeatureBanner
         title={t("settings:managePrompts.emptyConnectTitle", {
           defaultValue: "Connect to use Prompts"
         })}
@@ -31,8 +32,6 @@ export const PromptsWorkspace: React.FC = () => {
               "Once connected, create custom prompts you can reuse across chats."
           })
         ]}
-        primaryActionLabel={t("settings:tldw.setupLink", "Set up server")}
-        onPrimaryAction={() => navigate("/settings/tldw")}
       />
     )
   }

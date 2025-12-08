@@ -5,6 +5,7 @@ import { useMessageOption } from "@/hooks/useMessageOption"
 import { useNavigate } from "react-router-dom"
 import { useServerOnline } from "@/hooks/useServerOnline"
 import FeatureEmptyState from "@/components/Common/FeatureEmptyState"
+import ConnectFeatureBanner from "@/components/Common/ConnectFeatureBanner"
 import { useDemoMode } from "@/context/demo-mode"
 import { useServerCapabilities } from "@/hooks/useServerCapabilities"
 import { tldwClient } from "@/services/tldw/TldwApiClient"
@@ -186,7 +187,7 @@ export const KnowledgeSettings = () => {
         onPrimaryAction={() => navigate("/settings/tldw")}
       />
     ) : (
-      <FeatureEmptyState
+      <ConnectFeatureBanner
         title={
           <span className="inline-flex items-center gap-2">
             <span className="rounded-full bg-yellow-50 px-2 py-0.5 text-[11px] font-medium text-yellow-700 dark:bg-yellow-900/40 dark:text-yellow-200">
@@ -213,13 +214,6 @@ export const KnowledgeSettings = () => {
               "Use Diagnostics if your server is running but not reachable."
           })
         ]}
-        primaryActionLabel={t("settings:tldw.setupLink", "Set up server")}
-        onPrimaryAction={() => navigate("/settings/tldw")}
-        secondaryActionLabel={t(
-          "settings:healthSummary.diagnostics",
-          "Health & diagnostics"
-        )}
-        onSecondaryAction={() => navigate("/settings/health")}
       />
     )
   }

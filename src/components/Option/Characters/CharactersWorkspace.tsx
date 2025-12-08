@@ -3,6 +3,7 @@ import { Skeleton } from "antd"
 import { useTranslation } from "react-i18next"
 import { useLocation, useNavigate } from "react-router-dom"
 import FeatureEmptyState from "@/components/Common/FeatureEmptyState"
+import ConnectFeatureBanner from "@/components/Common/ConnectFeatureBanner"
 import { PageShell } from "@/components/Common/PageShell"
 import { useServerOnline } from "@/hooks/useServerOnline"
 import { useDemoMode } from "@/context/demo-mode"
@@ -67,11 +68,9 @@ export const CharactersWorkspace: React.FC = () => {
               "When you connect, you’ll be able to create characters that appear in the chat header and selection."
           })
         ]}
-        primaryActionLabel={t("settings:tldw.setupLink", "Set up server")}
-        onPrimaryAction={() => navigate("/settings/tldw")}
       />
     ) : (
-      <FeatureEmptyState
+      <ConnectFeatureBanner
         title={
           <span className="inline-flex items-center gap-2">
             <span className="rounded-full bg-yellow-50 px-2 py-0.5 text-[11px] font-medium text-yellow-700 dark:bg-yellow-900/40 dark:text-yellow-200">
@@ -98,8 +97,6 @@ export const CharactersWorkspace: React.FC = () => {
               "Use Diagnostics if your server is running but not reachable."
           })
         ]}
-        primaryActionLabel={t("settings:tldw.setupLink", "Set up server")}
-        onPrimaryAction={() => navigate("/settings/tldw")}
       />
     )
   }

@@ -14,6 +14,7 @@ import { getDefaultOcrLanguage, ocrLanguages } from "@/data/ocr-language"
 import { useServerOnline } from "@/hooks/useServerOnline"
 import { useConnectionActions } from "@/hooks/useConnectionState"
 import FeatureEmptyState from "@/components/Common/FeatureEmptyState"
+import ConnectFeatureBanner from "@/components/Common/ConnectFeatureBanner"
 
 export const GeneralSettings = () => {
   const [userChatBubble, setUserChatBubble] = useStorage("userChatBubble", true)
@@ -127,7 +128,7 @@ export const GeneralSettings = () => {
     <dl className="flex flex-col space-y-6 text-sm">
       {!isOnline && (
         <div>
-          <FeatureEmptyState
+          <ConnectFeatureBanner
             title={t("generalSettings.empty.connectTitle", {
               defaultValue: "Connect tldw Assistant to your server"
             })}
@@ -145,8 +146,6 @@ export const GeneralSettings = () => {
                   "Use Diagnostics to confirm your server is healthy before trying advanced tools."
               })
             ]}
-            primaryActionLabel={t("settings:tldw.setupLink", "Set up server")}
-            onPrimaryAction={() => navigate("/settings/tldw")}
           />
         </div>
       )}

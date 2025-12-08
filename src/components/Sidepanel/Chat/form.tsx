@@ -34,6 +34,7 @@ import { useStorage } from "@plasmohq/storage/hook"
 import { isFireFoxPrivateMode } from "@/utils/is-private-mode"
 import { useFocusShortcuts } from "@/hooks/keyboard"
 import { RagSearchBar } from "@/components/Sidepanel/Chat/RagSearchBar"
+import { ControlRow } from "@/components/Sidepanel/Chat/ControlRow"
 import { CurrentChatModelSettings } from "@/components/Common/Settings/CurrentChatModelSettings"
 import { ActorPopout } from "@/components/Common/Settings/ActorPopout"
 import QuickIngestModal from "@/components/Common/QuickIngestModal"
@@ -272,7 +273,8 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
     clearChat,
     queuedMessages,
     addQueuedMessage,
-    clearQueuedMessages
+    clearQueuedMessages,
+    serverChatId
   } = useMessage()
 
   const handleDisconnectedFocus = () => {
@@ -668,6 +670,10 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
     inputRef.current?.click()
   }, [])
 
+  const handleRagToggle = React.useCallback(() => {
+    window.dispatchEvent(new CustomEvent("tldw:toggle-rag"))
+  }, [])
+
   const handleQuickIngestOpen = React.useCallback(() => {
     setAutoProcessQueuedIngest(false)
     setIngestOpen(true)
@@ -1056,6 +1062,22 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                     aria-hidden="true"
                     onChange={onInputChange}
                   />
+                  {/* Control Row with Prompt, Model, RAG, Save, More */}
+                  <ControlRow
+                    selectedSystemPrompt={selectedSystemPrompt}
+                    setSelectedSystemPrompt={setSelectedSystemPrompt}
+                    setSelectedQuickPrompt={setSelectedQuickPrompt}
+                    temporaryChat={temporaryChat}
+                    serverChatId={serverChatId}
+                    setTemporaryChat={handleToggleTemporaryChat}
+                    webSearch={webSearch}
+                    setWebSearch={setWebSearch}
+                    chatMode={chatMode}
+                    setChatMode={setChatMode}
+                    onImageUpload={onInputChange}
+                    onToggleRag={handleRagToggle}
+                    isConnected={isConnectionReady}
+                  />
                   <div
                     className={`w-full flex flex-col px-1 ${
                       !isConnectionReady
@@ -1130,15 +1152,21 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                       placeholder={
                         isConnectionReady
                           ? t("form.textarea.placeholder")
-                          : t(
-                              "playground:composer.connectionPlaceholder",
-                              "Connect to tldw to start chatting."
-                            )
+                          : uxState === "testing"
+                            ? t(
+                                "sidepanel:composer.connectingPlaceholder",
+                                "Connecting..."
+                              )
+                            : t(
+                                "sidepanel:composer.disconnectedPlaceholder",
+                                "Connect to your tldw server in Settings to send messages and view media."
+                              )
                       }
                       {...form.getInputProps("message")}
                     />
                     <div className="mt-4 flex w-full flex-col gap-3 md:flex-row md:items-center md:justify-between">
-                      <div className="flex flex-wrap items-start gap-2 text-xs text-gray-700 dark:text-gray-200">
+                      {/* Hidden: Save toggle (now in ControlRow) */}
+                      <div className="hidden flex-wrap items-start gap-2 text-xs text-gray-700 dark:text-gray-200">
                         <div className="flex flex-col gap-0.5">
                           <div className="flex items-center gap-1">
                             <Switch
@@ -1178,16 +1206,16 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                         </div>
                       </div>
                       <div className="flex flex-wrap items-center justify-end gap-2">
-                        {selectedModel && (
-                          <span className="mr-2 text-[11px] text-gray-500 dark:text-gray-400">
-                            {t(
+                        {/* Hidden: Model label, RAG, Prompt, Model, More (now in ControlRow) */}
+                        <span className="hidden mr-2 text-[11px] text-gray-500 dark:text-gray-400">
+                          {selectedModel &&
+                            t(
                               "sidepanel:composer.currentModelLabel",
                               "Model: {{model}}",
                               { model: selectedModel }
                             )}
-                          </span>
-                        )}
-                        {/* RAG toggle for better discoverability */}
+                        </span>
+                        {/* Hidden: RAG toggle (now in ControlRow) */}
                         <button
                           type="button"
                           onClick={() =>
@@ -1195,7 +1223,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                               new CustomEvent("tldw:toggle-rag")
                             )
                           }
-                          className="inline-flex items-center gap-2 rounded-md border border-gray-200 px-3 py-1.5 text-xs font-semibold text-gray-700 transition hover:bg-gray-100 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-[#2a2a2a]"
+                          className="hidden inline-flex items-center gap-2 rounded-md border border-gray-200 px-3 py-1.5 text-xs font-semibold text-gray-700 transition hover:bg-gray-100 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-[#2a2a2a]"
                           title={
                             t(
                               "sidepanel:toolbar.ragSearch",
@@ -1213,41 +1241,47 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                             {t("sidepanel:toolbar.ragSearch", "RAG Search")}
                           </span>
                         </button>
-                        {/* Move Prompt and Model selectors next to More Tools */}
-                        <PromptSelect
-                          selectedSystemPrompt={selectedSystemPrompt}
-                          setSelectedSystemPrompt={setSelectedSystemPrompt}
-                          setSelectedQuickPrompt={setSelectedQuickPrompt}
-                          iconClassName="size-4"
-                          className="text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-gray-100"
-                        />
-                        <ModelSelect iconClassName="size-4" />
-                        <Popover
-                          trigger="click"
-                          placement="topRight"
-                          content={moreToolsContent}
-                          overlayClassName="sidepanel-more-tools">
-                          <button
-                            type="button"
-                            aria-label={
-                              t(
-                                "playground:composer.moreTools",
-                                "More tools"
-                              ) as string
-                            }
-                            title={
-                              t(
-                                "playground:composer.moreTools",
-                                "More tools"
-                              ) as string
-                            }
-                            className="inline-flex items-center gap-2 rounded-md border border-gray-200 px-3 py-1.5 text-xs font-semibold text-gray-700 transition hover:bg-gray-100 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-[#2a2a2a]">
-                            <MoreHorizontal className="h-4 w-4" />
-                            <span>
-                              {t("playground:composer.moreTools", "More tools")}
-                            </span>
-                          </button>
-                        </Popover>
+                        {/* Hidden: Prompt and Model selectors (now in ControlRow) */}
+                        <div className="hidden">
+                          <PromptSelect
+                            selectedSystemPrompt={selectedSystemPrompt}
+                            setSelectedSystemPrompt={setSelectedSystemPrompt}
+                            setSelectedQuickPrompt={setSelectedQuickPrompt}
+                            iconClassName="size-4"
+                            className="text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-gray-100"
+                          />
+                        </div>
+                        <div className="hidden">
+                          <ModelSelect iconClassName="size-4" />
+                        </div>
+                        <div className="hidden">
+                          <Popover
+                            trigger="click"
+                            placement="topRight"
+                            content={moreToolsContent}
+                            overlayClassName="sidepanel-more-tools">
+                            <button
+                              type="button"
+                              aria-label={
+                                t(
+                                  "playground:composer.moreTools",
+                                  "More tools"
+                                ) as string
+                              }
+                              title={
+                                t(
+                                  "playground:composer.moreTools",
+                                  "More tools"
+                                ) as string
+                              }
+                              className="inline-flex items-center gap-2 rounded-md border border-gray-200 px-3 py-1.5 text-xs font-semibold text-gray-700 transition hover:bg-gray-100 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-[#2a2a2a]">
+                              <MoreHorizontal className="h-4 w-4" />
+                              <span>
+                                {t("playground:composer.moreTools", "More tools")}
+                              </span>
+                            </button>
+                          </Popover>
+                        </div>
                         <div
                           role="group"
                           aria-label={t(
