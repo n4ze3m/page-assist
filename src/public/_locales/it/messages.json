@@ -137,76 +137,76 @@
     "message": "Sei pronto per iniziare",
     "description": "Titolo del pannello finale dell’onboarding con i passi successivi."
   },
-  "notesEmpty.connectTitle": {
+  "notesEmpty_connectTitle": {
     "message": "Connettiti per usare Note"
   },
-  "notesEmpty.connectDescription": {
+  "notesEmpty_connectDescription": {
     "message": "Per usare Note, collega prima il tuo server tldw."
   },
-  "notesEmpty.connectExample1": {
+  "notesEmpty_connectExample1": {
     "message": "Apri Impostazioni \u2192 server tldw per aggiungere l'URL del tuo server."
   },
-  "notesEmpty.connectExample2": {
+  "notesEmpty_connectExample2": {
     "message": "Usa Diagnostica se il server \u00e8 in esecuzione ma non \u00e8 raggiungibile."
   },
-  "notesEmpty.demoTitle": {
+  "notesEmpty_demoTitle": {
     "message": "Esplora Note in modalit\u00e0 demo"
   },
-  "notesEmpty.demoDescription": {
+  "notesEmpty_demoDescription": {
     "message": "Questa demo mostra come Note pu\u00f2 organizzare le tue informazioni. Pi\u00f9 tardi potrai collegare il tuo server per creare e salvare note reali."
   },
-  "notesEmpty.demoExample1": {
+  "notesEmpty_demoExample1": {
     "message": "Guarda come titoli, anteprime e orari delle note compaiono nell'elenco."
   },
-  "notesEmpty.demoExample2": {
+  "notesEmpty_demoExample2": {
     "message": "Quando ti connetti, potrai creare note da riunioni, revisioni e altro."
   },
-  "notesEmpty.demoExample3": {
+  "notesEmpty_demoExample3": {
     "message": "Usa Note insieme a Media e Review per tenere traccia delle tue scoperte."
   },
-  "notesEmpty.demoPreviewHeading": {
+  "notesEmpty_demoPreviewHeading": {
     "message": "Note di esempio (solo anteprima)"
   },
-  "notesEmpty.demoSample1Title": {
+  "notesEmpty_demoSample1Title": {
     "message": "Nota di esempio: riepilogo della riunione settimanale"
   },
-  "notesEmpty.demoSample1Preview": {
+  "notesEmpty_demoSample1Preview": {
     "message": "Decisioni, blocchi e attivit\u00e0 di follow-up da un recente allineamento del team."
   },
-  "notesEmpty.demoSample1Meta": {
+  "notesEmpty_demoSample1Meta": {
     "message": "Oggi \u00b7 9:32"
   },
-  "notesEmpty.demoSample2Title": {
+  "notesEmpty_demoSample2Title": {
     "message": "Nota di esempio: punti salienti della ricerca"
   },
-  "notesEmpty.demoSample2Preview": {
+  "notesEmpty_demoSample2Preview": {
     "message": "Approfondimenti chiave estratti da un lungo articolo o da un paper."
   },
-  "notesEmpty.demoSample2Meta": {
+  "notesEmpty_demoSample2Meta": {
     "message": "Ieri \u00b7 16:10"
   },
-  "notesEmpty.demoSample3Title": {
+  "notesEmpty_demoSample3Title": {
     "message": "Nota di esempio: riepilogo chiamata"
   },
-  "notesEmpty.demoSample3Preview": {
+  "notesEmpty_demoSample3Preview": {
     "message": "Riepilogo di una chiamata con il cliente con le prossime azioni e i responsabili."
   },
-  "notesEmpty.demoSample3Meta": {
+  "notesEmpty_demoSample3Meta": {
     "message": "Questa settimana"
   },
-  "notesEmpty.title": {
+  "notesEmpty_title": {
     "message": "Ancora nessuna nota"
   },
-  "notesEmpty.description": {
+  "notesEmpty_description": {
     "message": "Cattura e organizza note libere collegate agli insight di tldw."
   },
-  "notesEmpty.exampleCreate": {
+  "notesEmpty_exampleCreate": {
     "message": "Crea una nuova nota per una riunione recente o una trascrizione."
   },
-  "notesEmpty.exampleLink": {
+  "notesEmpty_exampleLink": {
     "message": "Salva i risultati delle revisioni in Note cos\u00ec potrai rivederli in seguito."
   },
-  "notesEmpty.primaryCta": {
+  "notesEmpty_primaryCta": {
     "message": "Crea nota"
   },
   "headerShortcuts": {

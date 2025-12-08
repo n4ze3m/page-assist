@@ -5,7 +5,7 @@ import { MockTldwServer } from './utils/mock-server'
 
 test.describe('Chat persistence UX', () => {
   test('exposes clear labels for temporary vs local-only chats', async () => {
-    const extPath = path.resolve('.output/chrome-mv3')
+    const extPath = path.resolve('build/chrome-mv3')
     const { context, page } = await launchWithExtension(extPath)
 
     // Ensure the playground composer is rendered
@@ -32,7 +32,7 @@ test.describe('Chat persistence UX', () => {
   })
 
   test('shows a connect hint when server save is unavailable', async () => {
-    const extPath = path.resolve('.output/chrome-mv3')
+    const extPath = path.resolve('build/chrome-mv3')
     const { context, page } = await launchWithExtension(extPath)
 
     const textarea = page.getByPlaceholder(
@@ -64,7 +64,7 @@ test.describe('Chat persistence UX', () => {
       await server.start()
       serverStarted = true
 
-      const extPath = path.resolve('.output/chrome-mv3')
+      const extPath = path.resolve('build/chrome-mv3')
       const launched = await launchWithExtension(extPath)
       context = launched.context
       const { page } = launched

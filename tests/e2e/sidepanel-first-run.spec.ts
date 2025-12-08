@@ -7,7 +7,7 @@ import { requireRealServerConfig } from "./utils/real-server"
 
 test.describe('Sidepanel first-run and connection panel', () => {
   test('shows connection card and Open/Change settings opens tldw settings in a new tab', async () => {
-    const extPath = path.resolve('.output/chrome-mv3')
+    const extPath = path.resolve('build/chrome-mv3')
     const { context, openSidepanel, extensionId } = await launchWithExtension(extPath) as any
     const page = await openSidepanel()
 
@@ -43,7 +43,7 @@ test.describe('Sidepanel first-run and connection panel', () => {
   test('Connected sidepanel focuses the composer (no extra Start chatting CTA)', async () => {
     const { serverUrl, apiKey } = requireRealServerConfig(test)
 
-    const extPath = path.resolve('.output/chrome-mv3')
+    const extPath = path.resolve('build/chrome-mv3')
     const { context, openSidepanel } = (await launchWithExtension(extPath)) as any
     const page = await openSidepanel()
 
@@ -64,7 +64,7 @@ test.describe('Sidepanel first-run and connection panel', () => {
   })
 
   test('sidepanel shows the same persistence mode labels as the playground', async () => {
-    const extPath = path.resolve('.output/chrome-mv3')
+    const extPath = path.resolve('build/chrome-mv3')
     const { context, openSidepanel } = (await launchWithExtension(extPath)) as any
     const page = await openSidepanel()
 
@@ -92,7 +92,7 @@ test.describe('Sidepanel first-run and connection panel', () => {
   })
 
   test('sidepanel header links to Health & diagnostics', async () => {
-    const extPath = path.resolve('.output/chrome-mv3')
+    const extPath = path.resolve('build/chrome-mv3')
     const { context, openSidepanel } = (await launchWithExtension(extPath)) as any
     const page = await openSidepanel()
 

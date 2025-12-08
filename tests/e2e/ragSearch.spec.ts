@@ -11,7 +11,7 @@ test.describe("RAG search in sidepanel", () => {
   test("search, insert and ask from results (real server)", async () => {
     const { serverUrl, apiKey } = requireRealServerConfig(test)
 
-    const extPath = path.resolve(".output/chrome-mv3")
+    const extPath = path.resolve("build/chrome-mv3")
     const { context, page, openSidepanel, optionsUrl } =
       await launchWithExtension(extPath)
 
@@ -68,7 +68,7 @@ test.describe("RAG search in sidepanel", () => {
   })
 
   test("Playground shows context summary when knowledge + tabs are active", async () => {
-    const extPath = path.resolve(".output/chrome-mv3")
+    const extPath = path.resolve("build/chrome-mv3")
     const { context, page } = await launchWithExtension(extPath)
 
     // Seed connection + a selected tab via exposed stores

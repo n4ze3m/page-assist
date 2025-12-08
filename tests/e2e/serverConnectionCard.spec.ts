@@ -5,7 +5,7 @@ import { requireRealServerConfig } from "./utils/real-server"
 
 test.describe('ServerConnectionCard states', () => {
   test('missing-config shows Open settings and navigates', async () => {
-    const extPath = path.resolve('.output/chrome-mv3')
+    const extPath = path.resolve('build/chrome-mv3')
     const { context, page } = await launchWithExtension(extPath)
 
     // Card visible with missing-config state (headline + primary CTA)
@@ -32,7 +32,7 @@ test.describe('ServerConnectionCard states', () => {
   test("connected state focuses composer on Start chatting", async () => {
     const { serverUrl, apiKey } = requireRealServerConfig(test)
 
-    const extPath = path.resolve(".output/chrome-mv3")
+    const extPath = path.resolve("build/chrome-mv3")
     const { context, page } = await launchWithExtension(extPath)
 
     // Seed config directly in extension storage
@@ -58,7 +58,7 @@ test.describe('ServerConnectionCard states', () => {
   })
 
   test('unreachable state shows Troubleshooting guide', async () => {
-    const extPath = path.resolve('.output/chrome-mv3')
+    const extPath = path.resolve('build/chrome-mv3')
     const { context, page } = await launchWithExtension(extPath)
 
     // Unreachable URL (ensure any existing config is cleared first)
@@ -144,7 +144,7 @@ test.describe('ServerConnectionCard states', () => {
   })
 
   test('diagnostics link from connection card opens Health & diagnostics in a new tab', async () => {
-    const extPath = path.resolve('.output/chrome-mv3')
+    const extPath = path.resolve('build/chrome-mv3')
     const { context, page } = await launchWithExtension(extPath)
 
     // First-run: connection card should be visible with diagnostics entry point
@@ -171,7 +171,7 @@ test.describe('ServerConnectionCard states', () => {
   })
 
   test('header status chips and Diagnostics link navigate to Health & diagnostics', async () => {
-    const extPath = path.resolve('.output/chrome-mv3')
+    const extPath = path.resolve('build/chrome-mv3')
     const { context, page, extensionId } = (await launchWithExtension(extPath)) as any
     const optionsUrl = `chrome-extension://${extensionId}/options.html`
 

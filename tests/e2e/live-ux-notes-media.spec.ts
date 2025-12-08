@@ -11,7 +11,7 @@ const SERVER_URL =
 const API_KEY =
   process.env.TLDW_API_KEY ?? 'THIS-IS-A-SECURE-KEY-123-FAKE-KEY'
 
-const TEST_EXT_PATH = path.resolve('.output/chrome-mv3')
+const TEST_EXT_PATH = path.resolve('build/chrome-mv3')
 
 const describeLive = process.env.TLDW_LIVE_E2E
   ? test.describe

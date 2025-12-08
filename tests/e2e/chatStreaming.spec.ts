@@ -7,7 +7,7 @@ test.describe("Chat streaming", () => {
   test("streams tokens to chat (real server)", async () => {
     const { serverUrl, apiKey } = requireRealServerConfig(test)
 
-    const extPath = path.resolve(".output/chrome-mv3")
+    const extPath = path.resolve("build/chrome-mv3")
     const { context, page, optionsUrl } = await launchWithExtension(extPath)
 
     // Configure server + API key

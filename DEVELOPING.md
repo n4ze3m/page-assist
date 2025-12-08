@@ -92,10 +92,14 @@ When `checkOnce()` runs with bypass enabled, the connection state goes to `CONNE
 - Source: `src/components/Common/ServerConnectionCard.tsx`.
 - Connection phases map to variants:
   - `UNCONFIGURED → missing`, `SEARCHING → loading`, `CONNECTED → ok`, `ERROR → error`.
-- Primary action per state:
-  - Missing: **Set up server** → opens `options.html#/settings/tldw`.
-  - Error: **Troubleshoot connection** → opens `options.html#/settings/health`.
-  - Connected: **Start chatting** → focuses the main composer / sidepanel input.
+- Primary action per state (Options home):
+  - Missing/unconfigured: **Set up server** (primary button) → opens `options.html#/settings/tldw`.
+  - Error (unreachable): **Health & diagnostics** (primary button) → opens `options.html#/settings/health`.
+  - Auth error: **Fix API key** (primary button) → opens `options.html#/settings/tldw`.
+  - Connected: **Start chatting** (primary button) → focuses the main composer / sidepanel input.
+  - First‑run completed vs not:
+    - Before `hasCompletedFirstRun`: primary label is **Finish setup** and routes back into onboarding.
+    - After first‑run: primary labels follow the mapping above.
 - Offline mode UX:
   - When `offlineBypass` is true:
     - A gold tag is shown: “Offline mode — staging only”.
@@ -107,8 +111,30 @@ When `checkOnce()` runs with bypass enabled, the connection state goes to `CONNE
     - Error → offline toggle.
     - Offline badge visibility.
     - Reverting back to the error state after disabling offline mode.
+  - `tests/e2e/options-first-run.spec.ts` expects:
+    - Disconnected: a primary **Set up server** button on the card that routes to `/settings/tldw`.
+    - Connected: **Start chatting** visible as the primary CTA, focusing the composer when clicked.
+
+### Options / Sidepanel connection UX
 
 If you change card copy or button labels, update the i18n keys in `src/assets/locale/*/option.json` and adjust the Playwright expectations accordingly.
+
+- Options home:
+  - Before first‑run is complete, `OptionIndex` renders only the onboarding wizard (no header/card).
+  - After first‑run, the main Options view shows the chat Playground with:
+    - A single primary CTA on the connection card per the mapping above.
+    - Any inline “Set up server” links (e.g., composer banners) styled as secondary text links, not primary buttons.
+- Sidepanel:
+  - When not connected, the composer remains visible but:
+    - Is read‑only with a connection‑specific placeholder.
+    - Is wrapped in a muted/dashed container to signal “Not ready”.
+    - Has a shared connection banner above it (see `EmptySidePanel`) with a single primary action **Open tldw Settings**.
+  - When the connection transitions to connected:
+    - `useFocusComposerOnConnect` shifts focus into the composer.
+    - No extra, large “Start chatting” button is shown; the composer itself is the next step.
+  - Icon buttons in Options and Sidepanel headers should either:
+    - Include short visible labels at ≥`sm` breakpoints (e.g., “Quick ingest”, “Model”, “Modes”), or
+    - Have descriptive `aria-label` + tooltip text if space is constrained.
 
 ### Quick Ingest staging semantics
 

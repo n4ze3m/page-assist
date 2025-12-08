@@ -7,7 +7,7 @@ import { requireRealServerConfig } from "./utils/real-server"
 
 test.describe('Options first-run and connection panel', () => {
   test('shows connection card and inline Set up server link navigates to tldw settings', async () => {
-    const extPath = path.resolve('.output/chrome-mv3')
+    const extPath = path.resolve('build/chrome-mv3')
     const { context, page } = await launchWithExtension(extPath)
 
     // Seed default config so the card deterministically shows the connection error state.
@@ -56,7 +56,7 @@ test.describe('Options first-run and connection panel', () => {
     const serverBaseUrl = serverUrl
     const hostPermissionOrigin = `${new URL(serverBaseUrl).origin}/*`
 
-    const extPath = path.resolve('.output/chrome-mv3')
+    const extPath = path.resolve('build/chrome-mv3')
     const seed = {
       tldwConfig: {
         serverUrl: serverBaseUrl,

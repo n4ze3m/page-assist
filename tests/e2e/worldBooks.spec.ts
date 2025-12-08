@@ -4,7 +4,7 @@ import { launchWithExtension } from './utils/extension'
 
 test.describe('World Books page', () => {
   test('renders World Books manager and actions', async () => {
-    const extPath = path.resolve('.output/chrome-mv3')
+    const extPath = path.resolve('build/chrome-mv3')
     const { context, page } = await launchWithExtension(extPath)
 
     // Navigate to World Books
@@ -20,4 +20,3 @@ test.describe('World Books page', () => {
     await context.close()
   })
 })
-

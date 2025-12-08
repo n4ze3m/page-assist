@@ -10,7 +10,7 @@ import {
 const SERVER_URL =
   process.env.TLDW_SERVER_URL ?? 'http://127.0.0.1:8000'
 const API_KEY = 'THIS-IS-A-SECURE-KEY-123-FAKE-KEY'
-const TEST_EXT_PATH = path.resolve('.output/chrome-mv3')
+const TEST_EXT_PATH = path.resolve('build/chrome-mv3')
 
 // Gate all tests behind an opt-in env flag and a live
 // health check so they never run against a missing server.

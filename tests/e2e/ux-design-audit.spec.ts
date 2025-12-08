@@ -11,7 +11,7 @@ import { launchWithExtension } from "./utils/extension"
 import path from "path"
 import { requireRealServerConfig } from "./utils/real-server"
 
-const TEST_EXT_PATH = path.resolve(".output/chrome-mv3")
+const TEST_EXT_PATH = path.resolve("build/chrome-mv3")
 
 interface UXIssue {
   severity: 'critical' | 'major' | 'minor' | 'enhancement'

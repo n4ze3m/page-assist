@@ -1796,7 +1796,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                         <div className="flex flex-wrap items-center gap-2">
                           <Link
                             to="/settings/tldw"
-                            className="rounded-md border border-amber-300 bg-white px-2 py-1 text-xs font-medium text-amber-900 hover:bg-amber-100 dark:bg-[#3a2b10] dark:text-amber-50 dark:hover:bg-[#4a3512]"
+                            className="text-xs font-medium text-amber-900 underline hover:text-amber-700 dark:text-amber-100 dark:hover:text-amber-300"
                           >
                             {t("settings:tldw.setupLink", "Set up server")}
                           </Link>

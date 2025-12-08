@@ -6,7 +6,7 @@ import { requireRealServerConfig } from "./utils/real-server"
 
 test.describe('Flashcards workspace UX', () => {
   test('shows connection-focused empty state when server is offline', async () => {
-    const extPath = path.resolve('.output/chrome-mv3')
+    const extPath = path.resolve('build/chrome-mv3')
     const { context, page, extensionId } = (await launchWithExtension(extPath)) as any
     const optionsUrl = `chrome-extension://${extensionId}/options.html`
 
@@ -39,7 +39,7 @@ test.describe('Flashcards workspace UX', () => {
   test("connected workspace shows tabbed UX and helpful empty states or content", async () => {
     const { serverUrl, apiKey } = requireRealServerConfig(test)
 
-    const extPath = path.resolve(".output/chrome-mv3")
+    const extPath = path.resolve("build/chrome-mv3")
     const { context, page, extensionId } =
       (await launchWithExtension(extPath)) as any
     const optionsUrl = `chrome-extension://${extensionId}/options.html`

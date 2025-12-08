@@ -4,7 +4,7 @@ import { launchWithExtension } from './utils/extension'
 
 test.describe('PageAssistLoader accessibility', () => {
   test('has dialog/progressbar roles and manages focus', async () => {
-    const extPath = path.resolve('.output/chrome-mv3')
+    const extPath = path.resolve('build/chrome-mv3')
     const { context, page } = await launchWithExtension(extPath)
 
     // Snapshot current active element tag before loader steals focus
@@ -31,4 +31,3 @@ test.describe('PageAssistLoader accessibility', () => {
     await context.close()
   })
 })
-

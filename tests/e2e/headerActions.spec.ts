@@ -4,7 +4,7 @@ import { launchWithExtension } from './utils/extension'
 
 test.describe('Sidepanel header actions', () => {
   test('incognito toggle and kebab ingest actions', async () => {
-    const extPath = path.resolve('.output/chrome-mv3')
+    const extPath = path.resolve('build/chrome-mv3')
     const { context, page, openSidepanel } = await launchWithExtension(extPath)
 
     // Open sidepanel page
@@ -29,4 +29,3 @@ test.describe('Sidepanel header actions', () => {
     await context.close()
   })
 })
-

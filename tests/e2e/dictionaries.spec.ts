@@ -4,7 +4,7 @@ import { launchWithExtension } from './utils/extension'
 
 test.describe('Chat Dictionaries page', () => {
   test('renders Dictionaries manager and actions', async () => {
-    const extPath = path.resolve('.output/chrome-mv3')
+    const extPath = path.resolve('build/chrome-mv3')
     const { context, page } = await launchWithExtension(extPath)
 
     // Navigate to Chat Dictionaries
@@ -20,4 +20,3 @@ test.describe('Chat Dictionaries page', () => {
     await context.close()
   })
 })
-

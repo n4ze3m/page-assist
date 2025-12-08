@@ -8,7 +8,7 @@ import {
 
 test.describe('ServerConnectionCard loading CTAs', () => {
   test('shows loading state and opens settings from primary CTA', async () => {
-    const extPath = path.resolve('.output/chrome-mv3')
+    const extPath = path.resolve('build/chrome-mv3')
     const { context, page } = await launchWithExtension(extPath)
 
     // Force a loading/searching state via the shared connection store

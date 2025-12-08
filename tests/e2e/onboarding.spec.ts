@@ -7,7 +7,7 @@ import {
   forceErrorUnreachable
 } from './utils/connection'
 
-const TEST_EXT_PATH = path.resolve('.output/chrome-mv3')
+const TEST_EXT_PATH = path.resolve('build/chrome-mv3')
 
 // For onboarding tests we exercise the wizard directly on a dedicated
 // /onboarding-test route and optionally enable the offline bypass so

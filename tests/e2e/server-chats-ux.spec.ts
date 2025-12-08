@@ -51,7 +51,7 @@ test.describe('Server-backed chats UX', () => {
     const port = await server.start(0)
     const serverBaseUrl = `http://127.0.0.1:${port}`
 
-    const extPath = path.resolve('.output/chrome-mv3')
+    const extPath = path.resolve('build/chrome-mv3')
     const { context, page, extensionId } = (await launchWithExtension(extPath, {
       seedConfig: {
         tldwConfig: {
@@ -114,7 +114,7 @@ test.describe('Server-backed chats UX', () => {
     const port = await server.start(0)
     const serverBaseUrl = `http://127.0.0.1:${port}`
 
-    const extPath = path.resolve('.output/chrome-mv3')
+    const extPath = path.resolve('build/chrome-mv3')
     const { context, page, extensionId } = (await launchWithExtension(extPath, {
       seedConfig: {
         tldwConfig: {

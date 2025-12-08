@@ -66,7 +66,7 @@ test.describe('Media ingest context menu & Quick Ingest progress', () => {
   })
 
   test('context menu calls /media/add and /media/process-* and Quick Ingest shows progress', async () => {
-    const extPath = path.resolve('.output/chrome-mv3')
+    const extPath = path.resolve('build/chrome-mv3')
     const { context, page, optionsUrl } = await launchWithExtension(extPath)
 
     // Configure tldw server URL in settings (no auth required for this smoke server)
@@ -144,7 +144,7 @@ test.describe('tldw TTS provider', () => {
   })
 
   test('clicking TTS icon with provider=tldw calls /api/v1/audio/speech', async () => {
-    const extPath = path.resolve('.output/chrome-mv3')
+    const extPath = path.resolve('build/chrome-mv3')
     const { context, page, optionsUrl } = await launchWithExtension(extPath)
 
     // Configure tldw server and API key (MockTldwServer validates X-API-KEY)

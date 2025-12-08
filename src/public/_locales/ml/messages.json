@@ -137,76 +137,76 @@
     "message": "നിങ്ങൾ തുടക്കം കുറിക്കാൻ തയ്യാറാണ്",
     "description": "ഓൺബോർഡിംഗ് അവസാന ഘട്ടത്തിലെ തലക്കെട്ട്."
   },
-  "notesEmpty.connectTitle": {
+  "notesEmpty_connectTitle": {
     "message": "Connect to use Notes"
   },
-  "notesEmpty.connectDescription": {
+  "notesEmpty_connectDescription": {
     "message": "To use Notes, first connect to your tldw server."
   },
-  "notesEmpty.connectExample1": {
+  "notesEmpty_connectExample1": {
     "message": "Open Settings \u2192 tldw server to add your server URL."
   },
-  "notesEmpty.connectExample2": {
+  "notesEmpty_connectExample2": {
     "message": "Use Diagnostics if your server is running but not reachable."
   },
-  "notesEmpty.demoTitle": {
+  "notesEmpty_demoTitle": {
     "message": "Explore Notes in demo mode"
   },
-  "notesEmpty.demoDescription": {
+  "notesEmpty_demoDescription": {
     "message": "This demo shows how Notes can organize your insights. Connect your own server later to create and save real notes."
   },
-  "notesEmpty.demoExample1": {
+  "notesEmpty_demoExample1": {
     "message": "See how note titles, previews, and timestamps appear in the list."
   },
-  "notesEmpty.demoExample2": {
+  "notesEmpty_demoExample2": {
     "message": "When you connect, you\u2019ll be able to create notes from meetings, reviews, and more."
   },
-  "notesEmpty.demoExample3": {
+  "notesEmpty_demoExample3": {
     "message": "Use Notes alongside Media and Review to keep track of your findings."
   },
-  "notesEmpty.demoPreviewHeading": {
+  "notesEmpty_demoPreviewHeading": {
     "message": "Example notes (preview only)"
   },
-  "notesEmpty.demoSample1Title": {
+  "notesEmpty_demoSample1Title": {
     "message": "Demo note: Weekly meeting recap"
   },
-  "notesEmpty.demoSample1Preview": {
+  "notesEmpty_demoSample1Preview": {
     "message": "Decisions, blockers, and follow-ups from a recent team sync."
   },
-  "notesEmpty.demoSample1Meta": {
+  "notesEmpty_demoSample1Meta": {
     "message": "Today \u00b7 9:32 AM"
   },
-  "notesEmpty.demoSample2Title": {
+  "notesEmpty_demoSample2Title": {
     "message": "Demo note: Research highlights"
   },
-  "notesEmpty.demoSample2Preview": {
+  "notesEmpty_demoSample2Preview": {
     "message": "Key insights pulled from a long article or paper."
   },
-  "notesEmpty.demoSample2Meta": {
+  "notesEmpty_demoSample2Meta": {
     "message": "Yesterday \u00b7 4:10 PM"
   },
-  "notesEmpty.demoSample3Title": {
+  "notesEmpty_demoSample3Title": {
     "message": "Demo note: Call summary"
   },
-  "notesEmpty.demoSample3Preview": {
+  "notesEmpty_demoSample3Preview": {
     "message": "Summary of a customer call with next steps and owners."
   },
-  "notesEmpty.demoSample3Meta": {
+  "notesEmpty_demoSample3Meta": {
     "message": "This week"
   },
-  "notesEmpty.title": {
+  "notesEmpty_title": {
     "message": "No notes yet"
   },
-  "notesEmpty.description": {
+  "notesEmpty_description": {
     "message": "Capture and organize free-form notes connected to your tldw insights."
   },
-  "notesEmpty.exampleCreate": {
+  "notesEmpty_exampleCreate": {
     "message": "Create a new note for a recent meeting or transcript."
   },
-  "notesEmpty.exampleLink": {
+  "notesEmpty_exampleLink": {
     "message": "Save review outputs into Notes so you can revisit them later."
   },
-  "notesEmpty.primaryCta": {
+  "notesEmpty_primaryCta": {
     "message": "Create note"
   },
   "headerShortcuts": {

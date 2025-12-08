@@ -10,7 +10,7 @@ import {
 
 test.describe('Composer readiness based on connection state', () => {
   test('sidepanel composer is disabled and shows connection helper when server is not configured', async () => {
-    const extPath = path.resolve('.output/chrome-mv3')
+    const extPath = path.resolve('build/chrome-mv3')
     const { context, openSidepanel } = (await launchWithExtension(extPath)) as any
     const page = await openSidepanel()
 
@@ -48,7 +48,7 @@ test.describe('Composer readiness based on connection state', () => {
   })
 
   test('options Playground composer shows connection chip when connection is not ready', async () => {
-    const extPath = path.resolve('.output/chrome-mv3')
+    const extPath = path.resolve('build/chrome-mv3')
     const { context, page } = await launchWithExtension(extPath)
 
     // Force the shared connection state into a "connected phase but not ready" state
@@ -90,7 +90,7 @@ test.describe('Composer readiness based on connection state', () => {
   test("sidepanel composer is enabled with normal placeholder when connected", async () => {
     const { serverUrl, apiKey } = requireRealServerConfig(test)
 
-    const extPath = path.resolve(".output/chrome-mv3")
+    const extPath = path.resolve("build/chrome-mv3")
     const { context, openSidepanel, extensionId } =
       (await launchWithExtension(extPath)) as any
 

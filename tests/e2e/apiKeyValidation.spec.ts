@@ -7,7 +7,7 @@ test.describe("API Key validation", () => {
   test("rejects invalid key and accepts valid key (real server)", async () => {
     const { serverUrl, apiKey } = requireRealServerConfig(test)
 
-    const extPath = path.resolve(".output/chrome-mv3")
+    const extPath = path.resolve("build/chrome-mv3")
     const { context, page, optionsUrl } = await launchWithExtension(extPath)
 
     await page.goto(optionsUrl + "#/settings/tldw", {

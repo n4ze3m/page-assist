@@ -185,370 +185,370 @@
   "restartOnboardingConfirmMessage": {
     "message": "这将重置您的引导状态，并带您返回设置流程的起始步骤。"
   },
-  "notesEmpty.connectTitle": {
+  "notesEmpty_connectTitle": {
     "message": "Connect to use Notes"
   },
-  "notesEmpty.connectDescription": {
+  "notesEmpty_connectDescription": {
     "message": "To use Notes, first connect to your tldw server."
   },
-  "notesEmpty.connectExample1": {
+  "notesEmpty_connectExample1": {
     "message": "Open Settings \u2192 tldw server to add your server URL."
   },
-  "notesEmpty.connectExample2": {
+  "notesEmpty_connectExample2": {
     "message": "Use Diagnostics if your server is running but not reachable."
   },
-  "notesEmpty.demoTitle": {
+  "notesEmpty_demoTitle": {
     "message": "Explore Notes in demo mode"
   },
-  "notesEmpty.demoDescription": {
+  "notesEmpty_demoDescription": {
     "message": "This demo shows how Notes can organize your insights. Connect your own server later to create and save real notes."
   },
-  "notesEmpty.demoExample1": {
+  "notesEmpty_demoExample1": {
     "message": "See how note titles, previews, and timestamps appear in the list."
   },
-  "notesEmpty.demoExample2": {
+  "notesEmpty_demoExample2": {
     "message": "When you connect, you\u2019ll be able to create notes from meetings, reviews, and more."
   },
-  "notesEmpty.demoExample3": {
+  "notesEmpty_demoExample3": {
     "message": "Use Notes alongside Media and Review to keep track of your findings."
   },
-  "notesEmpty.demoPreviewHeading": {
+  "notesEmpty_demoPreviewHeading": {
     "message": "Example notes (preview only)"
   },
-  "notesEmpty.demoSample1Title": {
+  "notesEmpty_demoSample1Title": {
     "message": "Demo note: Weekly meeting recap"
   },
-  "notesEmpty.demoSample1Preview": {
+  "notesEmpty_demoSample1Preview": {
     "message": "Decisions, blockers, and follow-ups from a recent team sync."
   },
-  "notesEmpty.demoSample1Meta": {
+  "notesEmpty_demoSample1Meta": {
     "message": "Today \u00b7 9:32 AM"
   },
-  "notesEmpty.demoSample2Title": {
+  "notesEmpty_demoSample2Title": {
     "message": "Demo note: Research highlights"
   },
-  "notesEmpty.demoSample2Preview": {
+  "notesEmpty_demoSample2Preview": {
     "message": "Key insights pulled from a long article or paper."
   },
-  "notesEmpty.demoSample2Meta": {
+  "notesEmpty_demoSample2Meta": {
     "message": "Yesterday \u00b7 4:10 PM"
   },
-  "notesEmpty.demoSample3Title": {
+  "notesEmpty_demoSample3Title": {
     "message": "Demo note: Call summary"
   },
-  "notesEmpty.demoSample3Preview": {
+  "notesEmpty_demoSample3Preview": {
     "message": "Summary of a customer call with next steps and owners."
   },
-  "notesEmpty.demoSample3Meta": {
+  "notesEmpty_demoSample3Meta": {
     "message": "This week"
   },
-  "notesEmpty.title": {
+  "notesEmpty_title": {
     "message": "No notes yet"
   },
-  "notesEmpty.description": {
+  "notesEmpty_description": {
     "message": "Capture and organize free-form notes connected to your tldw insights."
   },
-  "notesEmpty.exampleCreate": {
+  "notesEmpty_exampleCreate": {
     "message": "Create a new note for a recent meeting or transcript."
   },
-  "notesEmpty.exampleLink": {
+  "notesEmpty_exampleLink": {
     "message": "Save review outputs into Notes so you can revisit them later."
   },
-  "notesEmpty.primaryCta": {
+  "notesEmpty_primaryCta": {
     "message": "Create note"
   },
-  "flashcards.review": {
+  "flashcards_review": {
     "message": "Review"
   },
-  "flashcards.create": {
+  "flashcards_create": {
     "message": "Create"
   },
-  "flashcards.manage": {
+  "flashcards_manage": {
     "message": "Manage"
   },
-  "flashcards.importExport": {
+  "flashcards_importExport": {
     "message": "Import / Export"
   },
-  "flashcards.selectDeck": {
+  "flashcards_selectDeck": {
     "message": "Select deck"
   },
-  "flashcards.nextDue": {
+  "flashcards_nextDue": {
     "message": "Next due"
   },
-  "flashcards.front": {
+  "flashcards_front": {
     "message": "Front"
   },
-  "flashcards.back": {
+  "flashcards_back": {
     "message": "Back"
   },
-  "flashcards.extra": {
+  "flashcards_extra": {
     "message": "Extra"
   },
-  "flashcards.showAnswer": {
+  "flashcards_showAnswer": {
     "message": "Show Answer"
   },
-  "flashcards.hideAnswer": {
+  "flashcards_hideAnswer": {
     "message": "Hide Answer"
   },
-  "flashcards.preview": {
+  "flashcards_preview": {
     "message": "Preview"
   },
-  "flashcards.rate": {
+  "flashcards_rate": {
     "message": "Rate"
   },
-  "flashcards.answerMs": {
+  "flashcards_answerMs": {
     "message": "Answer ms (opt)"
   },
-  "flashcards.noDue": {
+  "flashcards_noDue": {
     "message": "No due cards"
   },
-  "flashcards.deck": {
+  "flashcards_deck": {
     "message": "Deck"
   },
-  "flashcards.newDeck": {
+  "flashcards_newDeck": {
     "message": "New Deck"
   },
-  "flashcards.modelType": {
+  "flashcards_modelType": {
     "message": "Model Type"
   },
-  "flashcards.reverse": {
+  "flashcards_reverse": {
     "message": "Reverse"
   },
-  "flashcards.isCloze": {
+  "flashcards_isCloze": {
     "message": "Is Cloze"
   },
-  "flashcards.tags": {
+  "flashcards_tags": {
     "message": "Tags"
   },
-  "flashcards.dueStatus": {
+  "flashcards_dueStatus": {
     "message": "Due status"
   },
-  "flashcards.tag": {
+  "flashcards_tag": {
     "message": "Tag"
   },
-  "flashcards.noCards": {
+  "flashcards_noCards": {
     "message": "No cards"
   },
-  "flashcards.due": {
+  "flashcards_due": {
     "message": "Due"
   },
-  "flashcards.editCard": {
+  "flashcards_editCard": {
     "message": "Edit Card"
   },
-  "flashcards.importTitle": {
+  "flashcards_importTitle": {
     "message": "Import Flashcards"
   },
-  "flashcards.exportTitle": {
+  "flashcards_exportTitle": {
     "message": "Export Flashcards"
   },
-  "flashcards.importHelp": {
+  "flashcards_importHelp": {
     "message": "Paste TSV/CSV lines: Deck, Front, Back, Tags, Notes"
   },
-  "flashcards.pasteContent": {
+  "flashcards_pasteContent": {
     "message": "Paste content here..."
   },
-  "flashcards.tab": {
+  "flashcards_tab": {
     "message": "Tab"
   },
-  "flashcards.comma": {
+  "flashcards_comma": {
     "message": ", (Comma)"
   },
-  "flashcards.semicolon": {
+  "flashcards_semicolon": {
     "message": "; (Semicolon)"
   },
-  "flashcards.pipe": {
+  "flashcards_pipe": {
     "message": "| (Pipe)"
   },
-  "flashcards.hasHeader": {
+  "flashcards_hasHeader": {
     "message": "Has header"
   },
-  "flashcards.import": {
+  "flashcards_import": {
     "message": "Import"
   },
-  "flashcards.imported": {
+  "flashcards_imported": {
     "message": "Imported"
   },
-  "flashcards.importLimits": {
+  "flashcards_importLimits": {
     "message": "匯入限制"
   },
-  "flashcards.csv": {
+  "flashcards_csv": {
     "message": "CSV/TSV"
   },
-  "flashcards.apkg": {
+  "flashcards_apkg": {
     "message": "Anki (.apkg)"
   },
-  "flashcards.includeReverse": {
+  "flashcards_includeReverse": {
     "message": "包含反向卡片"
   },
-  "flashcards.includeHeader": {
+  "flashcards_includeHeader": {
     "message": "包含標題列"
   },
-  "flashcards.extendedHeader": {
+  "flashcards_extendedHeader": {
     "message": "延伸標題列"
   },
-  "flashcards.download": {
+  "flashcards_download": {
     "message": "下載"
   },
-  "flashcards.duplicate": {
+  "flashcards_duplicate": {
     "message": "重複"
   },
-  "flashcards.move": {
+  "flashcards_move": {
     "message": "移動"
   },
-  "flashcards.bulkMove": {
+  "flashcards_bulkMove": {
     "message": "批次移動"
   },
-  "flashcards.bulkDelete": {
+  "flashcards_bulkDelete": {
     "message": "批次刪除"
   },
-  "flashcards.exportSelectedCsv": {
+  "flashcards_exportSelectedCsv": {
     "message": "匯出所選項目（CSV/TSV）"
   },
-  "flashcards.selectedCount": {
+  "flashcards_selectedCount": {
     "message": "已選取"
   },
-  "flashcards.selectAllOnPage": {
+  "flashcards_selectAllOnPage": {
     "message": "選取此頁全部"
   },
-  "flashcards.selectAllAcross": {
+  "flashcards_selectAllAcross": {
     "message": "選取所有符合結果的卡片"
   },
-  "flashcards.clearSelection": {
+  "flashcards_clearSelection": {
     "message": "清除選取"
   },
-  "flashcards.emptyConnectTitle": {
+  "flashcards_emptyConnectTitle": {
     "message": "連線以使用抽認卡"
   },
-  "flashcards.emptyConnectDescription": {
+  "flashcards_emptyConnectDescription": {
     "message": "若要複習或產生抽認卡，請先連線至你的 tldw 伺服器。"
   },
-  "flashcards.emptyConnectExample1": {
+  "flashcards_emptyConnectExample1": {
     "message": "前往「設定」→「tldw server」，新增你的伺服器 URL。"
   },
-  "flashcards.emptyConnectExample2": {
+  "flashcards_emptyConnectExample2": {
     "message": "完成連線後，你可以複習到期的卡片，或從筆記與媒體建立新的卡片組。"
   },
-  "flashcards.demoTitle": {
+  "flashcards_demoTitle": {
     "message": "在示範模式中探索抽認卡"
   },
-  "flashcards.demoDescription": {
+  "flashcards_demoDescription": {
     "message": "此示範會說明抽認卡如何把你的內容轉成間隔複習卡片。之後你可以連線自己的伺服器，從個人的筆記與媒體產生並複習卡片。"
   },
-  "flashcards.demoExample1": {
+  "flashcards_demoExample1": {
     "message": "看看在「複習」與「管理」分頁中，卡片組、卡片與標籤是如何組織的。"
   },
-  "flashcards.demoExample2": {
+  "flashcards_demoExample2": {
     "message": "連線後，你就能從課程、會議或筆記中產生卡片，並依排程進行複習。"
   },
-  "flashcards.demoExample3": {
+  "flashcards_demoExample3": {
     "message": "將抽認卡搭配筆記與媒體一起使用，讓重要的想法保持新鮮記憶。"
   },
-  "flashcards.demoPreviewHeading": {
+  "flashcards_demoPreviewHeading": {
     "message": "範例卡片組（僅供預覽）"
   },
-  "flashcards.demoSample1Title": {
+  "flashcards_demoSample1Title": {
     "message": "示範卡片組：核心概念"
   },
-  "flashcards.demoSample1Summary": {
+  "flashcards_demoSample1Summary": {
     "message": "10 張卡片 · 適合用來測試間隔與評分。"
   },
-  "flashcards.demoSample2Title": {
+  "flashcards_demoSample2Title": {
     "message": "示範卡片組：產品術語"
   },
-  "flashcards.demoSample2Summary": {
+  "flashcards_demoSample2Summary": {
     "message": "8 張卡片 · 包含名稱、縮寫與重要定義。"
   },
-  "flashcards.demoSample3Title": {
+  "flashcards_demoSample3Title": {
     "message": "示範卡片組：會議後續事項"
   },
-  "flashcards.demoSample3Summary": {
+  "flashcards_demoSample3Summary": {
     "message": "6 張卡片 · 範例待辦事項，可用來複習。"
   },
-  "flashcards.ratingAgain": {
+  "flashcards_ratingAgain": {
     "message": "再看一次"
   },
-  "flashcards.ratingAgainHelp": {
+  "flashcards_ratingAgainHelp": {
     "message": "我完全不記得這張卡片。"
   },
-  "flashcards.ratingHard": {
+  "flashcards_ratingHard": {
     "message": "困難"
   },
-  "flashcards.ratingHardHelp": {
+  "flashcards_ratingHardHelp": {
     "message": "勉強想起來，感覺相當吃力。"
   },
-  "flashcards.ratingGood": {
+  "flashcards_ratingGood": {
     "message": "良好"
   },
-  "flashcards.ratingGoodHelp": {
+  "flashcards_ratingGoodHelp": {
     "message": "稍微費點力才想起來。"
   },
-  "flashcards.ratingEasy": {
+  "flashcards_ratingEasy": {
     "message": "容易"
   },
-  "flashcards.ratingEasyHelp": {
+  "flashcards_ratingEasyHelp": {
     "message": "我很快、很有把握地回想起來。"
   },
-  "flashcards.showTiming": {
+  "flashcards_showTiming": {
     "message": "追蹤作答時間"
   },
-  "flashcards.hideTiming": {
+  "flashcards_hideTiming": {
     "message": "隱藏作答時間"
   },
-  "flashcards.noDueTitle": {
+  "flashcards_noDueTitle": {
     "message": "目前沒有到期要複習的卡片"
   },
-  "flashcards.noDueDescription": {
+  "flashcards_noDueDescription": {
     "message": "你已經全部追上進度。建立新卡片或匯入既有牌組來開始複習。"
   },
-  "flashcards.noDueCreateCta": {
+  "flashcards_noDueCreateCta": {
     "message": "建立新卡片"
   },
-  "flashcards.noDueImportCta": {
+  "flashcards_noDueImportCta": {
     "message": "匯入牌組"
   },
-  "flashcards.createTitle": {
+  "flashcards_createTitle": {
     "message": "從筆記建立抽認卡"
   },
-  "flashcards.createDescription": {
+  "flashcards_createDescription": {
     "message": "將題目放在正面、答案放在背面。你可以把卡片分組到不同牌組，並加上標籤以加快搜尋。"
   },
-  "flashcards.modelTypeHelp": {
+  "flashcards_modelTypeHelp": {
     "message": "「基本」會在正面顯示問題、背面顯示答案。「反向」也會建立一張相反方向的卡片。「完形填空」會使用 {{...}} 隱藏部分文字。"
   },
-  "flashcards.reverseHelp": {
+  "flashcards_reverseHelp": {
     "message": "同時建立一張將背面內容當作問題的卡片。"
   },
-  "flashcards.isClozeHelp": {
+  "flashcards_isClozeHelp": {
     "message": "適合填空題型。請在正面用 {{...}} 包住要隱藏的文字。"
   },
-  "flashcards.bulkActions": {
+  "flashcards_bulkActions": {
     "message": "批次操作"
   },
-  "flashcards.selectionHelp": {
+  "flashcards_selectionHelp": {
     "message": "「選取所有符合結果的卡片」會將操作套用到所有符合篩選條件的卡片，而不只這一頁。"
   },
-  "flashcards.noCardsTitle": {
+  "flashcards_noCardsTitle": {
     "message": "尚未有任何抽認卡"
   },
-  "flashcards.noCardsDescription": {
+  "flashcards_noCardsDescription": {
     "message": "從筆記與媒體建立卡片，或匯入現有牌組。"
   },
-  "flashcards.clearFilters": {
+  "flashcards_clearFilters": {
     "message": "清除篩選條件"
   },
-  "flashcards.noCardsCreateCta": {
+  "flashcards_noCardsCreateCta": {
     "message": "建立你的第一張卡片"
   },
-  "flashcards.noCardsImportCta": {
+  "flashcards_noCardsImportCta": {
     "message": "匯入抽認卡"
   },
-  "flashcards.mapping": {
+  "flashcards_mapping": {
     "message": "欄位對應"
   },
-  "flashcards.mappingPreview": {
+  "flashcards_mappingPreview": {
     "message": "預覽前幾列對應後的資料："
   },
-  "flashcards.exportHelp": {
+  "flashcards_exportHelp": {
     "message": "可先依牌組、標籤或搜尋條件篩選，再匯出為 CSV/TSV 供試算表使用，或匯出為 Anki (.apkg) 供 Anki 用戶端使用。"
   }
 }

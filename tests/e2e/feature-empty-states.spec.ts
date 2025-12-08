@@ -6,7 +6,7 @@ import { requireRealServerConfig } from "./utils/real-server"
 
 test.describe('Feature empty states (connected vs not connected)', () => {
   test('Notes view shows connection-focused empty state when server is offline', async () => {
-    const extPath = path.resolve('.output/chrome-mv3')
+    const extPath = path.resolve('build/chrome-mv3')
     const { context, page, extensionId } = (await launchWithExtension(extPath)) as any
     const optionsUrl = `chrome-extension://${extensionId}/options.html`
 
@@ -27,7 +27,7 @@ test.describe('Feature empty states (connected vs not connected)', () => {
   })
 
   test('Knowledge settings shows connection-focused empty state when server is offline', async () => {
-    const extPath = path.resolve('.output/chrome-mv3')
+    const extPath = path.resolve('build/chrome-mv3')
     const { context, page, extensionId } = (await launchWithExtension(extPath)) as any
     const optionsUrl = `chrome-extension://${extensionId}/options.html`
 
@@ -46,7 +46,7 @@ test.describe('Feature empty states (connected vs not connected)', () => {
   test('Knowledge settings shows connected state and knowledge UI when server is configured', async () => {
     const { serverUrl, apiKey } = requireRealServerConfig(test)
 
-    const extPath = path.resolve('.output/chrome-mv3')
+    const extPath = path.resolve('build/chrome-mv3')
     const { context, page, extensionId } = (await launchWithExtension(extPath)) as any
     const optionsUrl = `chrome-extension://${extensionId}/options.html`
 

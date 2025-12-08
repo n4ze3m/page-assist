@@ -3,12 +3,13 @@ import path from 'path'
 import { launchWithExtension } from './utils/extension'
 import {
   waitForConnectionStore,
-  forceConnected
+  forceConnected,
+  forceErrorUnreachable
 } from './utils/connection'
 
 test.describe('Queued messages banners', () => {
   test('Playground shows queued banner when connected with queued messages', async () => {
-    const extPath = path.resolve('.output/chrome-mv3')
+    const extPath = path.resolve('build/chrome-mv3')
     const { context, page } = await launchWithExtension(extPath)
 
     // Force connection store into a connected state and seed a queued message
@@ -49,7 +50,7 @@ test.describe('Queued messages banners', () => {
   })
 
   test('Playground Clear queue empties queue without sending messages', async () => {
-    const extPath = path.resolve('.output/chrome-mv3')
+    const extPath = path.resolve('build/chrome-mv3')
     const { context, page } = await launchWithExtension(extPath)
 
     // Force connection store into a connected state and seed a queued message
@@ -90,7 +91,7 @@ test.describe('Queued messages banners', () => {
   })
 
   test('Sidepanel shows queued banner and clears queue when sending', async () => {
-    const extPath = path.resolve('.output/chrome-mv3')
+    const extPath = path.resolve('build/chrome-mv3')
     const { context, openSidepanel } = await launchWithExtension(extPath) as any
     const page = await openSidepanel()
 
@@ -124,6 +125,58 @@ test.describe('Queued messages banners', () => {
       return (msgStore.getState().queuedMessages || []).length
     })
     expect(remaining).toBe(0)
+
+    await context.close()
+  })
+
+  test('Sidepanel queues messages while disconnected and shows offline placeholder', async () => {
+    const extPath = path.resolve('build/chrome-mv3')
+    const { context, openSidepanel } = (await launchWithExtension(
+      extPath
+    )) as any
+    const page = await openSidepanel()
+
+    // Force an unreachable/error state so the sidepanel composer is offline.
+    await waitForConnectionStore(page, 'queued-sidepanel-offline')
+    await forceErrorUnreachable(
+      page,
+      {
+        serverUrl: 'http://192.0.2.1:12345'
+      },
+      'queued-sidepanel-offline'
+    )
+
+    // Composer should indicate that connection is required.
+    const textarea = page
+      .getByPlaceholder(/Connect to tldw to start chatting/i)
+      .first()
+    await expect(textarea).toBeVisible()
+
+    // Type a message and press Enter; it should be queued, not sent.
+    await textarea.fill('Queued while disconnected')
+    await textarea.press('Enter')
+
+    // Queued banner appears in the sidepanel composer.
+    await expect(
+      page.getByText(/Queued while offline/i)
+    ).toBeVisible({ timeout: 10_000 })
+
+    const state = await page.evaluate(() => {
+      const msgStore: any = (window as any).__tldw_useStoreMessageOption
+      if (!msgStore) {
+        return { queuedLen: -1, lastQueued: '' }
+      }
+      const s = msgStore.getState()
+      const queued = s.queuedMessages || []
+      return {
+        queuedLen: queued.length,
+        lastQueued:
+          queued.length > 0 ? String(queued[queued.length - 1].message) : ''
+      }
+    })
+
+    expect(state.queuedLen).toBeGreaterThanOrEqual(1)
+    expect(state.lastQueued).toContain('Queued while disconnected')
 
     await context.close()
   })
