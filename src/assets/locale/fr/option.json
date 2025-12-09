@@ -11,6 +11,11 @@
     "descriptionMissing": "tldw_server is the backend that powers chat, knowledge search, and media processing. Connect your own tldw server URL to start using the assistant.",
     "descriptionSearching": "We’re checking {{host}} to see if your tldw server is reachable. This may take a moment while we wait for a response.",
     "descriptionConnected": "Connected to your tldw server at {{host}}. You can start chatting or use Review, Knowledge, and other tools.",
+    "descriptionConnectedList": {
+      "reviewMedia": "Revoir les médias et les transcriptions",
+      "searchKnowledge": "Rechercher dans les connaissances et les notes",
+      "useRag": "Utiliser RAG avec vos propres documents"
+    },
     "descriptionError": "We couldn’t reach your tldw server at {{host}}. Make sure the server is running, the URL is correct, and your browser can reach it over the network.",
     "buttonStartChat": "Start chatting",
     "buttonRetry": "Retry connection",
@@ -72,6 +77,14 @@
     "toolsMenu": "Chat tools",
     "serverBackedLabel": "Server-backed chat",
     "serverBackedTooltip": "Messages in this chat are also saved on your tldw server.",
+    "omniSearchPlaceholder": "Rechercher dans les écrans, les chats, les médias et les notes…",
+    "omniSearchNoResults": "Aucun résultat pour « {{query}} ».",
+    "omniSearchCreateNote": "Créer la note « {{query}} »",
+    "omniSearchCreateNoteSuccess": "Note « {{query}} » créée",
+    "omniSearchCreateFlashcards": "Créer la collection de Flashcards « {{query}} »",
+    "omniSearchCreateFlashcardsSuccess": "Collection de Flashcards « {{query}} » créée",
+    "omniSearchStartChat": "Démarrer un nouveau chat « {{query}} »",
+    "connectionCard.connectedCaption": "Le chat et les outils sont maintenant disponibles dans les Paramètres et la barre latérale.",
     "quickIngestQueuedAria": "{{label}} — {{count}} éléments en file d’attente — cliquez pour revoir et traiter"
   },
   "sidebarTitle": "Historique de chat",
@@ -438,6 +451,15 @@
     "append": "Append"
   }
 ,
+  "omniSearch": {
+    "filterScreen": "Écrans",
+    "filterChat": "Chats",
+    "filterMedia": "Médias",
+    "filterNote": "Notes",
+    "filterFlashcards": "Collections de Flashcards",
+    "filterPrompt": "Prompts",
+    "filteringBy": "Filtrer par :"
+  },
   "quickChatHelper": {
     "tooltip": "Assistant de discussion rapide",
     "title": "Assistant de discussion rapide",

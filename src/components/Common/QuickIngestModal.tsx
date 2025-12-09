@@ -25,6 +25,8 @@ type Entry = {
 
 type ResultItem = { id: string; status: 'ok' | 'error'; url?: string; fileName?: string; type: string; data?: any; error?: string }
 
+type OptionsHash = `#${string}`
+
 type Props = {
   open: boolean
   onClose: () => void
@@ -676,7 +678,22 @@ export const QuickIngestModal: React.FC<Props> = ({
   }, [autoProcessQueued, open, run, running, showProcessQueuedButton])
 
   // Load OpenAPI schema to build advanced fields (best-effort)
-  const groupForField = (name: string): string => {
+  const logicalGroupForField = (name: string): string => {
+    const n = name.toLowerCase()
+    if (n.startsWith('transcription_') || ['diarize', 'vad_use', 'chunk_language'].includes(n)) return 'Transcription'
+    if (n.startsWith('chunk_') || ['use_adaptive_chunking', 'enable_contextual_chunking', 'use_multi_level_chunking', 'perform_chunking', 'contextual_llm_model'].includes(n)) return 'Chunking'
+    if (n.includes('embedding')) return 'Embeddings'
+    if (n.startsWith('context_')) return 'Context'
+    if (n.includes('summarization') || n.includes('analysis') || n === 'system_prompt' || n === 'custom_prompt') return 'Analysis/Summarization'
+    if (n.includes('pdf') || n.includes('ocr')) return 'Document/PDF'
+    if (n.includes('video')) return 'Video'
+    if (n.includes('cookie') || n === 'cookies' || n === 'headers' || n === 'authorization' || n === 'auth_header') return 'Cookies/Auth'
+    if (['author', 'title', 'keywords', 'api_name'].includes(n)) return 'Metadata'
+    if (['start_time', 'end_time'].includes(n)) return 'Timing'
+    return 'Other'
+  }
+
+  const isRecommendedField = (name: string, logicalGroup: string): boolean => {
     const n = name.toLowerCase()
     if (
       n === 'cookies' ||
@@ -688,19 +705,23 @@ export const QuickIngestModal: React.FC<Props> = ({
       n === 'default_embedding_model' ||
       n === 'context_strategy'
     ) {
-      return 'Recommended'
+      return true
     }
-    if (n.startsWith('transcription_') || ['diarize','vad_use','chunk_language'].includes(n)) return 'Transcription'
-    if (n.startsWith('chunk_') || ['use_adaptive_chunking','enable_contextual_chunking','use_multi_level_chunking','perform_chunking','contextual_llm_model'].includes(n)) return 'Chunking'
-    if (n.includes('embedding')) return 'Embeddings'
-    if (n.startsWith('context_')) return 'Context'
-    if (n.includes('summarization') || n.includes('analysis') || n === 'system_prompt' || n === 'custom_prompt') return 'Analysis/Summarization'
-    if (n.includes('pdf') || n.includes('ocr')) return 'Document/PDF'
-    if (n.includes('video')) return 'Video'
-    if (n.includes('cookie')) return 'Cookies/Auth'
-    if (['author','title','keywords','api_name'].includes(n)) return 'Metadata'
-    if (['start_time','end_time'].includes(n)) return 'Timing'
-    return 'Other'
+    if (
+      logicalGroup === 'Cookies/Auth' ||
+      logicalGroup === 'Embeddings' ||
+      logicalGroup === 'Chunking' ||
+      logicalGroup === 'Analysis/Summarization'
+    ) {
+      return true
+    }
+    if (n.includes('embedding')) return true
+    return false
+  }
+
+  const groupForField = (name: string): string => {
+    const logical = logicalGroupForField(name)
+    return isRecommendedField(name, logical) ? 'Recommended' : logical
   }
 
   const iconForGroup = (group: string) => {
@@ -974,7 +995,7 @@ export const QuickIngestModal: React.FC<Props> = ({
     return () => clearTimeout(id)
   }, [SAVE_DEBOUNCE_MS, advancedOpen, fieldDetailsOpen, setUiPrefs])
 
-  const openOptionsRoute = React.useCallback((hash: string) => {
+  const openOptionsRoute = React.useCallback((hash: OptionsHash) => {
     try {
       const path = window.location.pathname || ""
       if (path.includes("options.html")) {
@@ -1175,6 +1196,14 @@ export const QuickIngestModal: React.FC<Props> = ({
     const failCount = results.length - successCount
     return { successCount, failCount }
   }, [results])
+
+  const firstResultWithMedia = React.useMemo(
+    () =>
+      results.find(
+        (r) => r.status === "ok" && mediaIdFromPayload(r.data)
+      ),
+    [results]
+  )
 
   const [resultsFilter, setResultsFilter] =
     React.useState<"all" | "success" | "error">("all")
@@ -2702,45 +2731,18 @@ export const QuickIngestModal: React.FC<Props> = ({
                   }
                   const allMatched = advSchema.filter(match)
 
-                  const getLogicalGroup = (name: string): string => {
-                    const n = name.toLowerCase()
-                    if (n.startsWith('transcription_') || ['diarize','vad_use','chunk_language'].includes(n)) return 'Transcription'
-                    if (n.startsWith('chunk_') || ['use_adaptive_chunking','enable_contextual_chunking','use_multi_level_chunking','perform_chunking','contextual_llm_model'].includes(n)) return 'Chunking'
-                    if (n.includes('embedding')) return 'Embeddings'
-                    if (n.startsWith('context_')) return 'Context'
-                    if (n.includes('summarization') || n.includes('analysis') || n === 'system_prompt' || n === 'custom_prompt') return 'Analysis/Summarization'
-                    if (n.includes('pdf') || n.includes('ocr')) return 'Document/PDF'
-                    if (n.includes('video')) return 'Video'
-                    if (n.includes('cookie') || n === 'cookies' || n === 'headers' || n === 'authorization' || n === 'auth_header') return 'Cookies/Auth'
-                    if (['author','title','keywords','api_name'].includes(n)) return 'Metadata'
-                    if (['start_time','end_time'].includes(n)) return 'Timing'
-                    return 'Other'
-                  }
-
                   // Derive a small "Recommended fields" subset for common
                   // parameters. We keep these also in their original groups
                   // so users can still find them where they logically live.
                   for (const f of allMatched) {
-                    const n = f.name.toLowerCase()
-                    const isRecommended =
-                      f.group === 'Recommended' ||
-                      f.group === 'Cookies/Auth' ||
-                      f.group === 'Embeddings' ||
-                      f.group === 'Chunking' ||
-                      f.group === 'Analysis/Summarization' ||
-                      n === 'cookies' ||
-                      n === 'cookie' ||
-                      n === 'headers' ||
-                      n === 'authorization' ||
-                      n === 'auth_header' ||
-                      n.includes('embedding') ||
-                      n === 'context_strategy'
+                    const logical = logicalGroupForField(f.name)
+                    const isRecommended = isRecommendedField(f.name, logical)
 
                     if (isRecommended && recommended.length < 12) {
                       recommended.push(f)
                     }
 
-                    const groupKey = f.group === 'Recommended' ? getLogicalGroup(f.name) : f.group
+                    const groupKey = logical
                     if (!grouped[groupKey]) grouped[groupKey] = []
                     grouped[groupKey].push(f)
                   }
@@ -2985,17 +2987,13 @@ export const QuickIngestModal: React.FC<Props> = ({
                 </div>
                 <div className="mt-2 flex flex-wrap items-center gap-2">
                   {/* Primary next-step CTA: open the first successful media item in Review. */}
-                  {storeRemote && results.some((r) => r.status === "ok" && mediaIdFromPayload(r.data)) && (
+                  {storeRemote && firstResultWithMedia && (
                     <Button
                       size="small"
                       type="primary"
                       data-testid="quick-ingest-open-media-primary"
                       onClick={() => {
-                        const firstOk = results.find(
-                          (r) => r.status === "ok" && mediaIdFromPayload(r.data)
-                        )
-                        if (!firstOk) return
-                        openInMediaViewer(firstOk)
+                        openInMediaViewer(firstResultWithMedia)
                       }}>
                       {t(
                         "quickIngest.openFirstInMedia",

@@ -210,47 +210,47 @@
     "message": "Cr\u00e9er une note"
   },
   "omniSearchPlaceholder": {
-    "message": "Search screens, chats, media, notes\u2026",
+    "message": "Rechercher dans les \u00e9crans, les chats, les m\u00e9dias et les notes\u2026",
     "description": "Placeholder text for the omni-search input in the header."
   },
   "omniSearchNoResults": {
-    "message": "No matches for \"{{query}}\".",
+    "message": "Aucun r\u00e9sultat pour \u00ab {{query}} \u00bb.",
     "description": "No-results text for omni-search when nothing matches the query."
   },
   "omniSearchCreateNote": {
-    "message": "Create note \"{{query}}\"",
+    "message": "Cr\u00e9er la note \u00ab {{query}} \u00bb",
     "description": "Omni-search action label to create a note from the current query."
   },
   "omniSearchCreateFlashcards": {
-    "message": "Create flashcard collection \"{{query}}\"",
+    "message": "Cr\u00e9er la collection de Flashcards \u00ab {{query}} \u00bb",
     "description": "Omni-search action label to create a flashcard collection from the current query."
   },
   "omniSearchStartChat": {
-    "message": "Start new chat \"{{query}}\"",
+    "message": "D\u00e9marrer un nouveau chat \u00ab {{query}} \u00bb",
     "description": "Omni-search action label to start a new chat from the current query."
   },
   "connectionCard_connectedCaption": {
-    "message": "Chat and tools are now available in Options and the sidepanel.",
+    "message": "Le chat et les outils sont maintenant disponibles dans les Param\u00e8tres et la barre lat\u00e9rale.",
     "description": "Caption under the server connection card when the extension is connected."
   },
   "quickIngestQueuedAria": {
-    "message": "{{label}} \u2014 {{count}} items queued \u2014 click to review and process",
+    "message": "{{label}} \u2014 {{count}} \u00e9l\u00e9ments en file d\u2019attente \u2014 cliquez pour revoir et traiter",
     "description": "ARIA label template for the Quick ingest button when there are queued items."
   },
   "connectionCard_descriptionConnectedList_reviewMedia": {
-    "message": "Review media & transcripts",
+    "message": "Revoir les m\u00e9dias et les transcriptions",
     "description": "First bullet in the connected-state server connection card, highlighting media review."
   },
   "connectionCard_descriptionConnectedList_searchKnowledge": {
-    "message": "Search knowledge and notes",
+    "message": "Rechercher dans les connaissances et les notes",
     "description": "Second bullet in the connected-state server connection card, highlighting knowledge/notes search."
   },
   "connectionCard_descriptionConnectedList_useRag": {
-    "message": "Use RAG with your own documents",
+    "message": "Utiliser RAG avec vos propres documents",
     "description": "Third bullet in the connected-state server connection card, highlighting retrieval-augmented generation usage."
   },
   "omniSearch_filterScreen": {
-    "message": "Screens",
+    "message": "\u00c9crans",
     "description": "Filter label for screens in omni-search."
   },
   "omniSearch_filterChat": {
@@ -258,7 +258,7 @@
     "description": "Filter label for chats in omni-search."
   },
   "omniSearch_filterMedia": {
-    "message": "Media",
+    "message": "M\u00e9dias",
     "description": "Filter label for media in omni-search."
   },
   "omniSearch_filterNote": {
@@ -266,7 +266,7 @@
     "description": "Filter label for notes in omni-search."
   },
   "omniSearch_filterFlashcards": {
-    "message": "Flashcard Collections",
+    "message": "Collections de Flashcards",
     "description": "Filter label for flashcard collections in omni-search."
   },
   "omniSearch_filterPrompt": {
@@ -274,15 +274,15 @@
     "description": "Filter label for prompts in omni-search."
   },
   "omniSearch_filteringBy": {
-    "message": "Filtering by:",
+    "message": "Filtrer par :",
     "description": "Prefix label shown before the active omni-search filter type."
   },
   "omniSearchCreateNoteSuccess": {
-    "message": "Note \"{{query}}\" created",
+    "message": "Note \u00ab {{query}} \u00bb cr\u00e9\u00e9e",
     "description": "Confirmation toast message shown after creating a note from omni-search."
   },
   "omniSearchCreateFlashcardsSuccess": {
-    "message": "Flashcard collection \"{{query}}\" created",
+    "message": "Collection de Flashcards \u00ab {{query}} \u00bb cr\u00e9\u00e9e",
     "description": "Confirmation toast message shown after creating a flashcard collection from omni-search."
   }
 }

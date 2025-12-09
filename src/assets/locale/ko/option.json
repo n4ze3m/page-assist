@@ -11,6 +11,11 @@
     "descriptionMissing": "tldw_server is the backend that powers chat, knowledge search, and media processing. Connect your own tldw server URL to start using the assistant.",
     "descriptionSearching": "We’re checking {{host}} to see if your tldw server is reachable. This may take a moment while we wait for a response.",
     "descriptionConnected": "Connected to your tldw server at {{host}}. You can start chatting or use Review, Knowledge, and other tools.",
+    "descriptionConnectedList": {
+      "reviewMedia": "미디어와 녹취를 검토",
+      "searchKnowledge": "지식과 노트 검색",
+      "useRag": "내 문서와 함께 RAG 사용"
+    },
     "descriptionError": "We couldn’t reach your tldw server at {{host}}. Make sure the server is running, the URL is correct, and your browser can reach it over the network.",
     "buttonStartChat": "Start chatting",
     "buttonRetry": "Retry connection",
@@ -72,6 +77,14 @@
     "toolsMenu": "Chat tools",
     "serverBackedLabel": "Server-backed chat",
     "serverBackedTooltip": "Messages in this chat are also saved on your tldw server.",
+    "omniSearchPlaceholder": "화면, 채팅, 미디어, 노트를 검색…",
+    "omniSearchNoResults": "\"{{query}}\"에 대한 결과가 없습니다.",
+    "omniSearchCreateNote": "노트 \"{{query}}\" 만들기",
+    "omniSearchCreateNoteSuccess": "노트 \"{{query}}\"를 만들었습니다.",
+    "omniSearchCreateFlashcards": "플래시카드 모음 \"{{query}}\" 만들기",
+    "omniSearchCreateFlashcardsSuccess": "플래시카드 모음 \"{{query}}\"을(를) 만들었습니다.",
+    "omniSearchStartChat": "새 채팅 \"{{query}}\" 시작",
+    "connectionCard.connectedCaption": "이제 옵션과 사이드패널에서 채팅과 도구를 사용할 수 있습니다.",
     "quickIngestQueuedAria": "{{label}} — {{count}}개 항목이 대기 중 — 검토 및 처리하려면 클릭하세요"
   },
   "sidebarTitle": "채팅 기록",
@@ -434,6 +447,15 @@
     "append": "Append"
   }
 ,
+  "omniSearch": {
+    "filterScreen": "화면",
+    "filterChat": "채팅",
+    "filterMedia": "미디어",
+    "filterNote": "노트",
+    "filterFlashcards": "플래시카드 모음",
+    "filterPrompt": "프롬프트",
+    "filteringBy": "다음 기준으로 필터링:"
+  },
   "quickChatHelper": {
     "tooltip": "빠른 채팅 도우미",
     "title": "빠른 채팅 도우미",

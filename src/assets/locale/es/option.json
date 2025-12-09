@@ -11,6 +11,11 @@
     "descriptionMissing": "tldw_server is the backend that powers chat, knowledge search, and media processing. Connect your own tldw server URL to start using the assistant.",
     "descriptionSearching": "We’re checking {{host}} to see if your tldw server is reachable. This may take a moment while we wait for a response.",
     "descriptionConnected": "Connected to your tldw server at {{host}}. You can start chatting or use Review, Knowledge, and other tools.",
+    "descriptionConnectedList": {
+      "reviewMedia": "Revisa medios y transcripciones",
+      "searchKnowledge": "Busca en la base de conocimiento y en las notas",
+      "useRag": "Usa RAG con tus propios documentos"
+    },
     "descriptionError": "We couldn’t reach your tldw server at {{host}}. Make sure the server is running, the URL is correct, and your browser can reach it over the network.",
     "buttonStartChat": "Start chatting",
     "buttonRetry": "Retry connection",
@@ -72,6 +77,14 @@
     "toolsMenu": "Chat tools",
     "serverBackedLabel": "Server-backed chat",
     "serverBackedTooltip": "Messages in this chat are also saved on your tldw server.",
+    "omniSearchPlaceholder": "Buscar en pantallas, chats, medios y notas…",
+    "omniSearchNoResults": "No hay coincidencias para \"{{query}}\".",
+    "omniSearchCreateNote": "Crear nota \"{{query}}\"",
+    "omniSearchCreateNoteSuccess": "Nota \"{{query}}\" creada",
+    "omniSearchCreateFlashcards": "Crear colección de tarjetas \"{{query}}\"",
+    "omniSearchCreateFlashcardsSuccess": "Colección de tarjetas \"{{query}}\" creada",
+    "omniSearchStartChat": "Iniciar nuevo chat \"{{query}}\"",
+    "connectionCard.connectedCaption": "El chat y las herramientas ya están disponibles en Opciones y en la barra lateral.",
     "quickIngestQueuedAria": "{{label}} — {{count}} elementos en cola — haz clic para revisar y procesar"
   },
   "sidebarTitle": "Histórico del Chat",
@@ -434,6 +447,15 @@
     "append": "Append"
   }
 ,
+  "omniSearch": {
+    "filterScreen": "Pantallas",
+    "filterChat": "Chats",
+    "filterMedia": "Medios",
+    "filterNote": "Notas",
+    "filterFlashcards": "Colecciones de tarjetas",
+    "filterPrompt": "Prompts",
+    "filteringBy": "Filtrando por:"
+  },
   "quickChatHelper": {
     "tooltip": "Asistente de chat rápido",
     "title": "Asistente de chat rápido",

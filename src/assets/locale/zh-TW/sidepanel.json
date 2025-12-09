@@ -58,9 +58,9 @@
     "moreTools": "更多工具"
   },
   "composer": {
-    "connectHint": "Connect to your tldw server in Settings to send messages.",
-    "connectingPlaceholder": "Connecting...",
-    "disconnectedPlaceholder": "Connect to your tldw server in Settings to send messages and view media."
+    "connectHint": "請在「設定」中連線到您的 tldw 伺服器以傳送訊息。",
+    "connectingPlaceholder": "正在連線…",
+    "disconnectedPlaceholder": "請在「設定」中連線到您的 tldw 伺服器以傳送訊息並檢視媒體。"
   },
   "notification": {
     "ingestSent": "Sent to tldw server",

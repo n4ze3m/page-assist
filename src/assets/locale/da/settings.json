@@ -852,22 +852,22 @@
       "health": "Bekræft forbindelse og Knowledge"
     },
     "startServer": {
-      "title": "Before you start — Start your tldw server",
-      "body": "If you have not started your server yet, run one of these commands in the tldw_server repository, then return here.",
-      "copy": "Copy command",
-      "optionLocal": "Run locally with Python",
-      "optionLocalHint": "Run inside your tldw_server virtualenv from the server repository root.",
-      "optionDocker": "Run with Docker Compose (single-user)",
-      "optionDockerHint": "Run from the tldw_server repository root to start the API and database."
+      "title": "Før du går i gang — start din tldw-server",
+      "body": "Hvis du endnu ikke har startet serveren, skal du køre en af disse kommandoer i tldw_server-repositoriet og derefter vende tilbage hertil.",
+      "copy": "Kopiér kommando",
+      "optionLocal": "Kør lokalt med Python",
+      "optionLocalHint": "Kør den inde i din tldw_server-virtualenv fra roden af server-repositoriet.",
+      "optionDocker": "Kør med Docker Compose (enkel bruger)",
+      "optionDockerHint": "Kør den fra roden af tldw_server-repositoriet for at starte API'et og databasen."
     },
     "path": {
       "heading": "Hvordan vil du gerne starte?",
       "hasServer": "Jeg kører allerede tldw_server",
-      "hasServerHelp": "Connect to an existing tldw_server you already run.",
+      "hasServerHelp": "Opret forbindelse til en eksisterende tldw_server, du allerede kører.",
       "noServer": "Jeg har ikke en server endnu",
-      "noServerHelp": "Follow a setup guide for tldw_server, or start in demo mode.",
+      "noServerHelp": "Følg en opsætningsvejledning til tldw_server, eller start i demotilstand.",
       "demo": "Udforsk bare med en lokal demo",
-      "demoHelp": "Try the workspace with sample data; connect your own server later.",
+      "demoHelp": "Prøv arbejdsområdet med eksempeldata; du kan forbinde din egen server senere.",
       "noServerTitle": "Ingen server endnu? Du kan stadig udforske.",
       "noServerBody": "tldw_server er en separat, selvhostet app. Du kan følge opsætningsvejledningen nu eller vende tilbage senere og fortsætte i demotilstand.",
       "noServerOptionLocal": "Kør lokalt med Docker eller Python på din egen maskine.",

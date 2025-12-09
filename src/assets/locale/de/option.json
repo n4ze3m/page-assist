@@ -11,6 +11,11 @@
     "descriptionMissing": "tldw_server is the backend that powers chat, knowledge search, and media processing. Connect your own tldw server URL to start using the assistant.",
     "descriptionSearching": "We’re checking {{host}} to see if your tldw server is reachable. This may take a moment while we wait for a response.",
     "descriptionConnected": "Connected to your tldw server at {{host}}. You can start chatting or use Review, Knowledge, and other tools.",
+    "descriptionConnectedList": {
+      "reviewMedia": "Medien und Transkripte prüfen",
+      "searchKnowledge": "Wissen und Notizen durchsuchen",
+      "useRag": "RAG mit deinen eigenen Dokumenten verwenden"
+    },
     "descriptionError": "We couldn’t reach your tldw server at {{host}}. Make sure the server is running, the URL is correct, and your browser can reach it over the network.",
     "buttonStartChat": "Start chatting",
     "buttonRetry": "Retry connection",
@@ -72,6 +77,14 @@
     "toolsMenu": "Chat tools",
     "serverBackedLabel": "Server-backed chat",
     "serverBackedTooltip": "Messages in this chat are also saved on your tldw server.",
+    "omniSearchPlaceholder": "Suche in Bildschirmen, Chats, Medien und Notizen…",
+    "omniSearchNoResults": "Keine Treffer für \"{{query}}\".",
+    "omniSearchCreateNote": "Notiz \"{{query}}\" erstellen",
+    "omniSearchCreateNoteSuccess": "Notiz \"{{query}}\" erstellt",
+    "omniSearchCreateFlashcards": "Karteikartensammlung \"{{query}}\" erstellen",
+    "omniSearchCreateFlashcardsSuccess": "Karteikartensammlung \"{{query}}\" erstellt",
+    "omniSearchStartChat": "Neuen Chat \"{{query}}\" starten",
+    "connectionCard.connectedCaption": "Chat und Tools sind jetzt in den Einstellungen und in der Seitenleiste verfügbar.",
     "quickIngestQueuedAria": "{{label}} — {{count}} Elemente in der Warteschlange — klicken, um zu prüfen und zu verarbeiten"
   },
   "sidebarTitle": "Chat-Verlauf",
@@ -434,6 +447,15 @@
     "append": "Append"
   }
 ,
+  "omniSearch": {
+    "filterScreen": "Bildschirme",
+    "filterChat": "Chats",
+    "filterMedia": "Medien",
+    "filterNote": "Notizen",
+    "filterFlashcards": "Karteikartensammlungen",
+    "filterPrompt": "Eingabeaufforderungen",
+    "filteringBy": "Gefiltert nach:"
+  },
   "quickChatHelper": {
     "tooltip": "Schnellchat-Hilfe",
     "title": "Schnellchat-Hilfe",

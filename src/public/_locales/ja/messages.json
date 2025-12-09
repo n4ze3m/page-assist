@@ -117,6 +117,46 @@
     "message": "どのように始めますか？",
     "description": "オンボーディングで開始方法を選択するセクションの見出し。"
   },
+  "startServer_title": {
+    "message": "始める前に — tldw サーバーを起動する",
+    "description": "オンボーディングでサーバー起動手順を案内するブロックのタイトル。"
+  },
+  "startServer_body": {
+    "message": "まだサーバーを起動していない場合は、tldw_server リポジトリで次のコマンドのいずれかを実行してから、この画面に戻ってください。",
+    "description": "サーバーをまだ起動していない場合の案内文。"
+  },
+  "startServer_copy": {
+    "message": "コマンドをコピー",
+    "description": "サーバー起動コマンドをクリップボードにコピーするボタンラベル。"
+  },
+  "startServer_optionLocal": {
+    "message": "Python でローカル実行",
+    "description": "Python を使ってローカルでサーバーを起動するオプションのラベル。"
+  },
+  "startServer_optionLocalHint": {
+    "message": "tldw_server の仮想環境内で、サーバーリポジトリのルートから実行します。",
+    "description": "Python でローカル起動する際の詳細な実行場所の説明。"
+  },
+  "startServer_optionDocker": {
+    "message": "Docker Compose で実行（単一ユーザー）",
+    "description": "Docker Compose を使って単一ユーザー構成でサーバーを起動するオプションのラベル。"
+  },
+  "startServer_optionDockerHint": {
+    "message": "API とデータベースを起動するために、tldw_server リポジトリのルートから実行します.",
+    "description": "Docker Compose でサーバーを起動する際の実行場所と動作の説明。"
+  },
+  "path_hasServerHelp": {
+    "message": "すでに稼働している tldw_server に接続します。",
+    "description": "既存の tldw_server に接続するパス選択肢のヘルプテキスト。"
+  },
+  "path_noServerHelp": {
+    "message": "tldw_server のセットアップガイドに従うか、デモモードで始めます。",
+    "description": "まだサーバーがないユーザー向けのセットアップまたはデモモードの案内ヘルプテキスト。"
+  },
+  "path_demoHelp": {
+    "message": "サンプルデータ入りのワークスペースを試し、あとから自分のサーバーを接続します。",
+    "description": "デモモードでワークスペースを試すパス選択肢のヘルプテキスト。"
+  },
   "authModeHelp": {
     "message": "Single User（API キー）は個人または小規模チームのサーバーに推奨されます。Multi User（ログイン）は、ユーザー名や SSO でサインインする共有環境向けです。お使いの tldw_server の構成に合ったモードを選択してください。",
     "description": "Single User と Multi User の認証モードの違いを説明するヘルプテキスト。"

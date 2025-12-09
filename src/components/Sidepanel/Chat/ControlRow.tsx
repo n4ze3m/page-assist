@@ -133,6 +133,7 @@ export const ControlRow: React.FC<ControlRowProps> = ({
         <Switch
           size="small"
           checked={chatMode === "vision"}
+          disabled={chatMode === "rag"}
           onChange={(checked) => setChatMode(checked ? "vision" : "normal")}
         />
       </div>

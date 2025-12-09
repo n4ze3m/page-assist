@@ -59,8 +59,8 @@
   },
   "composer": {
     "connectHint": "Connect to your tldw server in Settings to send messages.",
-    "connectingPlaceholder": "Connecting...",
-    "disconnectedPlaceholder": "Connect to your tldw server in Settings to send messages and view media."
+    "connectingPlaceholder": "در حال اتصال...",
+    "disconnectedPlaceholder": "برای ارسال پیام و مشاهده رسانه‌ها، در تنظیمات به سرور tldw خود متصل شوید."
   },
   "notification": {
     "ingestSent": "Sent to tldw server",

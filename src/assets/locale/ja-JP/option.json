@@ -11,6 +11,11 @@
     "descriptionMissing": "tldw_server is the backend that powers chat, knowledge search, and media processing. Connect your own tldw server URL to start using the assistant.",
     "descriptionSearching": "We’re checking {{host}} to see if your tldw server is reachable. This may take a moment while we wait for a response.",
     "descriptionConnected": "Connected to your tldw server at {{host}}. You can start chatting or use Review, Knowledge, and other tools.",
+    "descriptionConnectedList": {
+      "reviewMedia": "メディアと文字起こしを確認",
+      "searchKnowledge": "ナレッジとメモを検索",
+      "useRag": "自分のドキュメントで RAG を使用"
+    },
     "descriptionError": "We couldn’t reach your tldw server at {{host}}. Make sure the server is running, the URL is correct, and your browser can reach it over the network.",
     "buttonStartChat": "Start chatting",
     "buttonRetry": "Retry connection",
@@ -72,6 +77,14 @@
     "toolsMenu": "Chat tools",
     "serverBackedLabel": "Server-backed chat",
     "serverBackedTooltip": "Messages in this chat are also saved on your tldw server.",
+    "omniSearchPlaceholder": "画面、チャット、メディア、メモを検索…",
+    "omniSearchNoResults": "「{{query}}」に一致する結果は見つかりませんでした。",
+    "omniSearchCreateNote": "メモ「{{query}}」を作成",
+    "omniSearchCreateNoteSuccess": "メモ「{{query}}」を作成しました",
+    "omniSearchCreateFlashcards": "フラッシュカードコレクション「{{query}}」を作成",
+    "omniSearchCreateFlashcardsSuccess": "フラッシュカードコレクション「{{query}}」を作成しました",
+    "omniSearchStartChat": "新しいチャット「{{query}}」を開始",
+    "connectionCard.connectedCaption": "オプション画面とサイドパネルでチャットとツールが利用できるようになりました。",
     "quickIngestQueuedAria": "{{label}} — {{count}} 件がキューにあります — クリックして確認および処理します"
   },
   "sidebarTitle": "チャット履歴",
@@ -432,6 +445,15 @@
     "confirmDescription": "Your message already has text. Do you want to overwrite it with this prompt or append the prompt below it?",
     "overwrite": "Overwrite message",
     "append": "Append"
+  },
+  "omniSearch": {
+    "filterScreen": "画面",
+    "filterChat": "チャット",
+    "filterMedia": "メディア",
+    "filterNote": "メモ",
+    "filterFlashcards": "フラッシュカードコレクション",
+    "filterPrompt": "プロンプト",
+    "filteringBy": "絞り込み条件："
   },
   "quickChatHelper": {
     "tooltip": "クイックチャットヘルパー",

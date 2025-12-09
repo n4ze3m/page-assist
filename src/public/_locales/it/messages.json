@@ -96,10 +96,10 @@
     "message": "[tldw Assistant] Impossibile inviare una richiesta di download per \"$1\". Controlla \"Settings → tldw server\" e riprova."
   },
   "hfPullSuccess": {
-    "message": "[tldw Assistant] Richiesta inviata al tuo tldw_server per scaricare \"$1\". Monitora l’icona dell’estensione أو i log di tldw_server per lo stato."
+    "message": "[tldw Assistant] Richiesta inviata al tuo tldw_server per scaricare \"$1\". Monitora l'icona dell'estensione o i log di tldw_server per lo stato."
   },
   "hfPullException": {
-    "message": "[tldw Assistant] Si è verificato un problema durante l’invio di una richiesta di download per \"$1\" al tuo tldw_server. Assicurati che tldw_server e l’estensione siano in esecuzione، quindi riprova."
+    "message": "[tldw Assistant] Si è verificato un problema durante l'invio di una richiesta di download per \"$1\" al tuo tldw_server. Assicurati che tldw_server e l'estensione siano in esecuzione, quindi riprova."
   },
   "footerHelp": {
     "message": "Una volta connesso, puoi tornare a queste impostazioni in qualsiasi momento dal menu dell’estensione.",

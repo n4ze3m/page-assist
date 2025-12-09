@@ -851,13 +851,13 @@
       "health": "Подтвердите подключение и Знания"
     },
     "startServer": {
-      "title": "Before you start — Start your tldw server",
-      "body": "If you have not started your server yet, run one of these commands in the tldw_server repository, then return here.",
-      "copy": "Copy command",
-      "optionLocal": "Run locally with Python",
-      "optionLocalHint": "Run inside your tldw_server virtualenv from the server repository root.",
-      "optionDocker": "Run with Docker Compose (single-user)",
-      "optionDockerHint": "Run from the tldw_server repository root to start the API and database."
+      "title": "Прежде чем начать — запустите свой сервер tldw",
+      "body": "Если вы ещё не запустили сервер, выполните одну из этих команд в репозитории tldw_server, а затем вернитесь сюда.",
+      "copy": "Копировать команду",
+      "optionLocal": "Запустить локально с помощью Python",
+      "optionLocalHint": "Запустите её внутри virtualenv tldw_server из корня репозитория сервера.",
+      "optionDocker": "Запустить с Docker Compose (один пользователь)",
+      "optionDockerHint": "Запустите её из корня репозитория tldw_server, чтобы запустить API и базу данных."
     },
     "path": {
       "heading": "С чего вы хотите начать?",

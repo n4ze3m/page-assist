@@ -58,9 +58,9 @@
     "moreTools": "Fler verktyg"
   },
   "composer": {
-    "connectHint": "Connect to your tldw server in Settings to send messages.",
-    "connectingPlaceholder": "Connecting...",
-    "disconnectedPlaceholder": "Connect to your tldw server in Settings to send messages and view media."
+    "connectHint": "Anslut till din tldw-server i Inställningar för att kunna skicka meddelanden.",
+    "connectingPlaceholder": "Ansluter...",
+    "disconnectedPlaceholder": "Anslut till din tldw-server i Inställningar för att kunna skicka meddelanden och visa media."
   },
   "notification": {
     "ingestSent": "Sent to tldw server",

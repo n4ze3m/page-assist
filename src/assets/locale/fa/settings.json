@@ -1003,13 +1003,13 @@
       "health": "تأیید اتصال و وضعیت Knowledge"
     },
     "startServer": {
-      "title": "Before you start — Start your tldw server",
-      "body": "If you have not started your server yet, run one of these commands in the tldw_server repository, then return here.",
-      "copy": "Copy command",
-      "optionLocal": "Run locally with Python",
-      "optionLocalHint": "Run inside your tldw_server virtualenv from the server repository root.",
-      "optionDocker": "Run with Docker Compose (single-user)",
-      "optionDockerHint": "Run from the tldw_server repository root to start the API and database."
+      "title": "قبل از شروع — سرور tldw خود را راه‌اندازی کنید",
+      "body": "اگر هنوز سرور خود را راه‌اندازی نکرده‌اید، یکی از این دستورات را در مخزن tldw_server اجرا کنید و سپس به اینجا برگردید.",
+      "copy": "کپی دستور",
+      "optionLocal": "اجرا به‌صورت محلی با Python",
+      "optionLocalHint": "آن را داخل virtualenv مربوط به tldw_server و از ریشه مخزن سرور اجرا کنید.",
+      "optionDocker": "اجرا با Docker Compose (تک‌کاربره)",
+      "optionDockerHint": "آن را از ریشه مخزن tldw_server اجرا کنید تا API و پایگاه داده راه‌اندازی شوند."
     },
     "path": {
       "heading": "دوست دارید چگونه شروع کنید؟",

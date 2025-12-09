@@ -11,6 +11,11 @@
     "descriptionMissing": "‏tldw_server هو الخلفية التي تدعم الدردشة، والبحث في المعرفة، ومعالجة الوسائط. قم بتوصيل عنوان URL لخادم tldw الخاص بك لبدء استخدام المساعد.",
     "descriptionSearching": "نقوم بفحص {{host}} لمعرفة ما إذا كان خادم tldw الخاص بك قابلاً للوصول. قد يستغرق هذا لحظة بينما ننتظر الاستجابة.",
     "descriptionConnected": "تم الاتصال بخادم tldw الخاص بك على {{host}}. يمكنك بدء الدردشة أو استخدام المراجعة، والمعرفة، وغيرها من الأدوات.",
+    "descriptionConnectedList": {
+      "reviewMedia": "مراجعة الوسائط والنصوص",
+      "searchKnowledge": "البحث في قاعدة المعرفة والملاحظات",
+      "useRag": "استخدام RAG مع مستنداتك الخاصة"
+    },
     "descriptionError": "تعذّر الوصول إلى خادم tldw الخاص بك على {{host}}. تأكد من تشغيل الخادم، وصحة عنوان URL، وأن متصفحك يمكنه الوصول إليه عبر الشبكة.",
     "buttonStartChat": "بدء الدردشة",
     "buttonRetry": "إعادة محاولة الاتصال",
@@ -76,7 +81,14 @@
     "toolsMenu": "أدوات الدردشة",
     "serverBackedLabel": "دردشة مدعومة بالخادم",
     "serverBackedTooltip": "يتم حفظ الرسائل في هذه الدردشة أيضاً على خادم tldw الخاص بك.",
-    "omniSearchPlaceholder": "ابحث في الشاشات، المحادثات، الوسائط، الملاحظات…",
+    "omniSearchPlaceholder": "ابحث في الشاشات والدردشات والوسائط والملاحظات…",
+    "omniSearchNoResults": "لا توجد أي نتائج لـ \"{{query}}\".",
+    "omniSearchCreateNote": "إنشاء ملاحظة \"{{query}}\"",
+    "omniSearchCreateNoteSuccess": "تم إنشاء الملاحظة \"{{query}}\"",
+    "omniSearchCreateFlashcards": "إنشاء مجموعة بطاقات \"{{query}}\"",
+    "omniSearchCreateFlashcardsSuccess": "تم إنشاء مجموعة البطاقات \"{{query}}\"",
+    "omniSearchStartChat": "بدء محادثة جديدة \"{{query}}\"",
+    "connectionCard.connectedCaption": "أصبحت الدردشة والأدوات متاحة الآن في صفحة الخيارات وفي اللوحة الجانبية.",
     "quickIngestQueuedAria": "{{label}} — {{count}} عناصر في الطابور — انقر للمراجعة والمعالجة"
   },
   "sidebarTitle": "سجل المحادثات",
@@ -428,6 +440,15 @@
     "append": "إلحاق"
   }
 ,
+  "omniSearch": {
+    "filterScreen": "الشاشات",
+    "filterChat": "الدردشات",
+    "filterMedia": "الوسائط",
+    "filterNote": "الملاحظات",
+    "filterFlashcards": "مجموعات البطاقات",
+    "filterPrompt": "المطالبات",
+    "filteringBy": "التصفية حسب:"
+  },
   "quickChatHelper": {
     "tooltip": "مساعد الدردشة السريعة",
     "title": "مساعد الدردشة السريعة",

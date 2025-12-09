@@ -866,22 +866,22 @@
       "health": "確認連線與 Knowledge 狀態"
     },
     "startServer": {
-      "title": "Before you start — Start your tldw server",
-      "body": "If you have not started your server yet, run one of these commands in the tldw_server repository, then return here.",
-      "copy": "Copy command",
-      "optionLocal": "Run locally with Python",
-      "optionLocalHint": "Run inside your tldw_server virtualenv from the server repository root.",
-      "optionDocker": "Run with Docker Compose (single-user)",
-      "optionDockerHint": "Run from the tldw_server repository root to start the API and database."
+      "title": "開始之前 — 先啟動你的 tldw 伺服器",
+      "body": "如果你還沒有啟動伺服器，請在 tldw_server 儲存庫中執行以下其中一個指令，然後回到這裡。",
+      "copy": "複製指令",
+      "optionLocal": "使用 Python 在本機執行",
+      "optionLocalHint": "在 tldw_server 的 virtualenv 中，從伺服器儲存庫的根目錄執行。",
+      "optionDocker": "使用 Docker Compose 執行（單一使用者）",
+      "optionDockerHint": "從 tldw_server 儲存庫根目錄執行，以啟動 API 和資料庫."
     },
     "path": {
       "heading": "你想要如何開始？",
       "hasServer": "我已經在執行 tldw_server",
-      "hasServerHelp": "Connect to an existing tldw_server you already run.",
+      "hasServerHelp": "太好了 — 連線到你已經在執行的 tldw_server 即可開始。",
       "noServer": "我還沒有伺服器",
-      "noServerHelp": "Follow a setup guide for tldw_server, or start in demo mode.",
+      "noServerHelp": "沒關係 — 可以先依照安裝指南設定 tldw_server，或先使用示範模式。",
       "demo": "先用本機示範模式試用看看",
-      "demoHelp": "Try the workspace with sample data; connect your own server later.",
+      "demoHelp": "先用範例資料體驗工作區，之後再連線自己的伺服器。",
       "noServerTitle": "還沒有伺服器？一樣可以先體驗。",
       "noServerBody": "tldw_server 是獨立的自我託管應用程式。你可以現在依照安裝指南進行設定，或之後再回來，以示範模式繼續。",
       "noServerOptionLocal": "在自己的電腦上使用 Docker 或 Python 本機執行。",

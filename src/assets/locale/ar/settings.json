@@ -851,22 +851,22 @@
       "health": "تأكيد الاتصال وفحص المعرفة"
     },
     "startServer": {
-      "title": "Before you start — Start your tldw server",
-      "body": "If you have not started your server yet, run one of these commands in the tldw_server repository, then return here.",
-      "copy": "Copy command",
-      "optionLocal": "Run locally with Python",
-      "optionLocalHint": "Run inside your tldw_server virtualenv from the server repository root.",
-      "optionDocker": "Run with Docker Compose (single-user)",
-      "optionDockerHint": "Run from the tldw_server repository root to start the API and database."
+      "title": "قبل البدء — شغِّل خادم tldw الخاص بك",
+      "body": "إذا لم تكن قد شغَّلت الخادم بعد، نفِّذ أحد الأوامر التالية في مستودع tldw_server ثم عُد إلى هنا.",
+      "copy": "نسخ الأمر",
+      "optionLocal": "تشغيل محليًا باستخدام Python",
+      "optionLocalHint": "شغِّله داخل virtualenv الخاص بـ tldw_server من جذر مستودع الخادم.",
+      "optionDocker": "تشغيل باستخدام Docker Compose (مستخدم واحد)",
+      "optionDockerHint": "شغِّله من جذر مستودع tldw_server لبدء واجهة البرمجة وقاعدة البيانات."
     },
-    "path": {
+      "path": {
       "heading": "كيف تود أن تبدأ؟",
       "hasServer": "أقوم بتشغيل tldw_server بالفعل",
-      "hasServerHelp": "Connect to an existing tldw_server you already run.",
+      "hasServerHelp": "اتصل بخادم tldw_server موجود تشغِّله بالفعل.",
       "noServer": "لا يوجد لدي خادم بعد",
-      "noServerHelp": "Follow a setup guide for tldw_server, or start in demo mode.",
+      "noServerHelp": "ابدأ خادم tldw_server جديد محليًا أو اتبع الوثائق لإعداده عن بُعد.",
       "demo": "استكشف فقط من خلال وضع تجريبي محلي",
-      "demoHelp": "Try the workspace with sample data; connect your own server later.",
+      "demoHelp": "جرب وضع العرض التوضيحي للاتصال بخادم تجريبي دون إعداد محلي.",
       "noServerTitle": "لا يوجد خادم بعد؟ لا يزال بإمكانك الاستكشاف.",
       "noServerBody": "tldw_server تطبيق منفصل تستضيفه بنفسك. يمكنك اتباع دليل الإعداد الآن، أو العودة لاحقًا والمتابعة في الوضع التجريبي.",
       "noServerOptionLocal": "شغِّله محليًا باستخدام Docker أو Python على جهازك.",

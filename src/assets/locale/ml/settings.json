@@ -854,22 +854,22 @@
       "health": "കണക്ഷനും Knowledge ഉം സ്ഥിരീകരിക്കുക"
     },
     "startServer": {
-      "title": "Before you start — Start your tldw server",
-      "body": "If you have not started your server yet, run one of these commands in the tldw_server repository, then return here.",
-      "copy": "Copy command",
-      "optionLocal": "Run locally with Python",
-      "optionLocalHint": "Run inside your tldw_server virtualenv from the server repository root.",
-      "optionDocker": "Run with Docker Compose (single-user)",
-      "optionDockerHint": "Run from the tldw_server repository root to start the API and database."
+      "title": "തുടങ്ങുന്നതിനുമുമ്പ് — നിങ്ങളുടെ tldw സർവർ ആരംഭിക്കുക",
+      "body": "നിങ്ങളുടെ സർവർ ഇതുവരെ ആരംഭിച്ചിട്ടില്ലെങ്കിൽ, tldw_server റെപ്പോസിറ്ററിയിൽ ഈ കമാൻഡുകളിൽ ഏതെങ്കിലും ഒന്ന് റൺ ചെയ്ത് ശേഷം ഇവിടെ തിരികെ വരിക.",
+      "copy": "കമാൻഡ് കോപ്പി ചെയ്യുക",
+      "optionLocal": "Python ഉപയോഗിച്ച് ലോക്കലായി റൺ ചെയ്യുക",
+      "optionLocalHint": "tldw_server virtualenv-ൽ, സർവർ റെപ്പോസിറ്ററിയുടെ റൂട്ടിൽ നിന്ന് ഇത് റൺ ചെയ്യുക.",
+      "optionDocker": "Docker Compose ഉപയോഗിച്ച് റൺ ചെയ്യുക (ഒറ്റ ഉപയോക്താവ്)",
+      "optionDockerHint": "APIയും ഡാറ്റാബേസും ആരംഭിക്കാൻ tldw_server റെപ്പോസിറ്ററിയുടെ റൂട്ടിൽ നിന്ന് ഇത് റൺ ചെയ്യുക."
     },
     "path": {
       "heading": "തുടങ്ങാൻ നിങ്ങൾ ആഗ്രഹിക്കുന്നത് എങ്ങനെ?",
       "hasServer": "ഞാൻ ഇതിനകം tldw_server പ്രവർത്തിപ്പിച്ചുകൊണ്ടിരിക്കുന്നു",
-      "hasServerHelp": "Connect to an existing tldw_server you already run.",
+      "hasServerHelp": "നിങ്ങൾ ഇതിനകം പ്രവർത്തിപ്പിക്കുന്ന tldw_server-ലേക്ക് കണക്റ്റ് ചെയ്യുക.",
       "noServer": "എന്നെക്കൊണ്ടു് ഇനിയും ഒരു സർവർ ഇല്ല",
-      "noServerHelp": "Follow a setup guide for tldw_server, or start in demo mode.",
+      "noServerHelp": "tldw_server ന്റെ സെറ്റപ്പ് ഗൈഡ് പിന്തുടരുക, അല്ലെങ്കിൽ ഡെമോ മോഡിൽ തുടങ്ങുക.",
       "demo": "ലോകൽ ഡെമോ ഉപയോഗിച്ച് ഒന്ന് നോക്കാം",
-      "demoHelp": "Try the workspace with sample data; connect your own server later.",
+      "demoHelp": "സാമ്പിള്‍ ഡാറ്റ ഉപയോഗിച്ച് വർക്ക്സ്‌പേസ് പരീക്ഷിക്കുക; നിങ്ങളുടെ സ്വന്തം സർവർ പിന്നീട് കണക്റ്റ് ചെയ്യാം.",
       "noServerTitle": "ഇനിയും സർവർ ഇല്ലേ? നിങ്ങൾക്ക് ഇപ്പോഴും എക്സ്പ്ലോർ ചെയ്യാം.",
       "noServerBody": "tldw_server ഒരു വേറിട്ട, സ്വയം ഹോസ്റ്റ് ചെയ്യുന്ന ആപ്പാണ്. ഇപ്പോൾ സജ്ജമാക്കൽ ഗൈഡ് പിന്തുടരാം, അല്ലെങ്കിൽ പിന്നീട് തിരിച്ചെത്തി ഡെമോ മോഡിൽ തുടരാം.",
       "noServerOptionLocal": "നിങ്ങളുടെ സ്വന്തമായ മെഷീനിൽ Docker അല്ലെങ്കിൽ Python ഉപയോഗിച്ച് ലോക്കലായി റൺ ചെയ്യുക.",

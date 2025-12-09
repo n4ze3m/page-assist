@@ -11,6 +11,11 @@
     "descriptionMissing": "tldw_server is the backend that powers chat, knowledge search, and media processing. Connect your own tldw server URL to start using the assistant.",
     "descriptionSearching": "We’re checking {{host}} to see if your tldw server is reachable. This may take a moment while we wait for a response.",
     "descriptionConnected": "Connected to your tldw server at {{host}}. You can start chatting or use Review, Knowledge, and other tools.",
+    "descriptionConnectedList": {
+      "reviewMedia": "查看媒体与转录",
+      "searchKnowledge": "搜索知识与笔记",
+      "useRag": "在自己的文档上使用 RAG"
+    },
     "descriptionError": "We couldn’t reach your tldw server at {{host}}. Make sure the server is running, the URL is correct, and your browser can reach it over the network.",
     "buttonStartChat": "Start chatting",
     "buttonRetry": "Retry connection",
@@ -72,6 +77,14 @@
     "toolsMenu": "Chat tools",
     "serverBackedLabel": "Server-backed chat",
     "serverBackedTooltip": "Messages in this chat are also saved on your tldw server.",
+    "omniSearchPlaceholder": "在标题栏搜索屏幕、聊天、媒体、笔记…",
+    "omniSearchNoResults": "未找到与 \"{{query}}\" 匹配的内容。",
+    "omniSearchCreateNote": "创建笔记 \"{{query}}\"",
+    "omniSearchCreateNoteSuccess": "已创建笔记 \"{{query}}\"",
+    "omniSearchCreateFlashcards": "创建抽认卡集合 \"{{query}}\"",
+    "omniSearchCreateFlashcardsSuccess": "已创建抽认卡集合 \"{{query}}\"",
+    "omniSearchStartChat": "开始新聊天 \"{{query}}\"",
+    "connectionCard.connectedCaption": "现在可以在选项和侧边栏使用聊天和工具。",
     "quickIngestQueuedAria": "{{label}} — 已排队 {{count}} 个项目 — 单击以查看并处理"
   },
   "sidebarTitle": "聊天历史",
@@ -99,6 +112,15 @@
   },
   "libraryView": "Library View",
   "notes": "Notes",
+  "omniSearch": {
+    "filterScreen": "屏幕",
+    "filterChat": "聊天",
+    "filterMedia": "媒体",
+    "filterNote": "笔记",
+    "filterFlashcards": "抽认卡集合",
+    "filterPrompt": "提示",
+    "filteringBy": "筛选条件："
+  },
   "flashcards": {
     "review": "Review",
     "create": "Create",

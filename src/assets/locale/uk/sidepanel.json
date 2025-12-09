@@ -42,25 +42,25 @@
     "modeFlashcards": "Flashcards"
   },
   "controlRow": {
-    "saveMode": "Save Mode",
-    "ephemeral": "Ephemeral",
-    "searchSection": "Search & Vision",
-    "webSearch": "Web Search",
+    "saveMode": "Режим збереження",
+    "ephemeral": "Тимчасовий",
+    "searchSection": "Пошук і Vision",
+    "webSearch": "Пошук в інтернеті",
     "vision": "Vision",
-    "uploadImage": "Upload Image",
-    "quickIngest": "Quick Ingest Page",
-    "openInFullUI": "Open in Full UI",
-    "modeChat": "Chat",
-    "modeMedia": "Media",
-    "modeNotes": "Notes",
-    "modeFlashcards": "Flashcards",
-    "ragSearch": "RAG Search",
-    "moreTools": "More tools"
+    "uploadImage": "Завантажити зображення",
+    "quickIngest": "Швидко імпортувати сторінку",
+    "openInFullUI": "Відкрити у повному інтерфейсі",
+    "modeChat": "Чат",
+    "modeMedia": "Медіа",
+    "modeNotes": "Нотатки",
+    "modeFlashcards": "Флеш-картки",
+    "ragSearch": "RAG-пошук",
+    "moreTools": "Більше інструментів"
   },
   "composer": {
-    "connectHint": "Connect to your tldw server in Settings to send messages.",
-    "connectingPlaceholder": "Connecting...",
-    "disconnectedPlaceholder": "Connect to your tldw server in Settings to send messages and view media."
+    "connectHint": "Підключіться до свого сервера tldw у налаштуваннях, щоб надсилати повідомлення.",
+    "connectingPlaceholder": "Підключення...",
+    "disconnectedPlaceholder": "Підключіться до свого сервера tldw у налаштуваннях, щоб надсилати повідомлення й переглядати медіа."
   },
   "notification": {
     "ingestSent": "Sent to tldw server",

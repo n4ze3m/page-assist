@@ -8,7 +8,7 @@ import { useDemoMode } from "@/context/demo-mode"
 import { DictionariesManager } from "./Manager"
 
 export const DictionariesWorkspace: React.FC = () => {
-  const { t } = useTranslation(["option", "common", "settings"])
+  const { t } = useTranslation(["option", "common"])
   const isOnline = useServerOnline()
   const { demoEnabled } = useDemoMode()
 

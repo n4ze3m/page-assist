@@ -182,6 +182,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
   const [hasShownConnectBanner, setHasShownConnectBanner] =
     React.useState(false)
   const [showConnectBanner, setShowConnectBanner] = React.useState(false)
+  const [isFlushingQueue, setIsFlushingQueue] = React.useState(false)
   const host = React.useMemo(
     () => (serverUrl ? cleanUrl(serverUrl) : "tldw_server"),
     [serverUrl]
@@ -332,6 +333,31 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
     return true
   }
 
+  async function sendCurrentFormMessage(
+    rawMessage: string,
+    image: string
+  ): Promise<void> {
+    const trimmed = rawMessage.trim()
+    if (trimmed.length === 0 && image.length === 0) {
+      return
+    }
+    await stopListening()
+    if (!selectedModel || selectedModel.length === 0) {
+      form.setFieldError("message", t("formError.noModel"))
+      return
+    }
+    const hasEmbedding = await ensureEmbeddingModelAvailable()
+    if (!hasEmbedding) {
+      return
+    }
+    form.reset()
+    textAreaFocus()
+    await sendMessage({
+      image,
+      message: trimmed
+    })
+  }
+
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (!isConnectionReady) {
       if (e.key === "Enter") {
@@ -360,24 +386,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
     ) {
       e.preventDefault()
       form.onSubmit(async (value) => {
-        if (value.message.trim().length === 0 && value.image.length === 0) {
-          return
-        }
-        await stopListening()
-        if (!selectedModel || selectedModel.length === 0) {
-          form.setFieldError("message", t("formError.noModel"))
-          return
-        }
-        const hasEmbedding = await ensureEmbeddingModelAvailable()
-        if (!hasEmbedding) {
-          return
-        }
-        form.reset()
-        textAreaFocus()
-        await sendMessage({
-          image: value.image,
-          message: value.message.trim()
-        })
+        await sendCurrentFormMessage(value.message, value.image)
       })()
     }
   }
@@ -684,6 +693,13 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
               "Unable to start live captions. Check microphone permissions and server health, then try again."
             )
         })
+        try {
+          micStop()
+        } catch {}
+        try {
+          sttClose()
+        } catch {}
+        setWsSttActive(false)
       }
     }
   }, [micStart, micStop, notification, sttClose, sttConnect, t, wsSttActive])
@@ -738,16 +754,22 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
   }, [isConnectionReady])
 
   React.useEffect(() => {
-    if (sttError) {
-      notification.error({
-        message: t(
-          "playground:actions.streamErrorTitle",
-          "Live captions unavailable"
-        ),
-        description: sttError
-      })
-    }
-  }, [sttError, t])
+    if (!sttError) return
+    notification.error({
+      message: t(
+        "playground:actions.streamErrorTitle",
+        "Live captions unavailable"
+      ),
+      description: sttError
+    })
+    try {
+      micStop()
+    } catch {}
+    try {
+      sttClose()
+    } catch {}
+    setWsSttActive(false)
+  }, [micStop, setWsSttActive, sttClose, sttError, t])
 
   const persistenceModeLabel = React.useMemo(
     () => getPersistenceModeLabel(temporaryChat),
@@ -897,24 +919,16 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
       </div>
     ),
     [
-      browserSupportsSpeechRecognition,
       chatMode,
       isConnectionReady,
       handleImageUpload,
       handleLiveCaptionsToggle,
       handleProcessQueuedIngest,
       handleQuickIngestOpen,
-      handleServerDictationToggle,
-      handleSpeechToggle,
-      handleToggleTemporaryChat,
       handleVisionToggle,
       handleWebSearchToggle,
-      hasServerAudio,
-      isListening,
-      isServerDictating,
       queuedQuickIngestCount,
       quickIngestHadFailure,
-      temporaryChat,
       persistenceModeLabel,
       t,
       webSearch,
@@ -1054,27 +1068,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
               <div className="flex">
                 <form
                   onSubmit={form.onSubmit(async (value) => {
-                    if (!selectedModel || selectedModel.length === 0) {
-                      form.setFieldError("message", t("formError.noModel"))
-                      return
-                    }
-                    const hasEmbedding = await ensureEmbeddingModelAvailable()
-                    if (!hasEmbedding) {
-                      return
-                    }
-                    await stopListening()
-                    if (
-                      value.message.trim().length === 0 &&
-                      value.image.length === 0
-                    ) {
-                      return
-                    }
-                    form.reset()
-                    textAreaFocus()
-                    await sendMessage({
-                      image: value.image,
-                      message: value.message.trim()
-                    })
+                    await sendCurrentFormMessage(value.message, value.image)
                   })}
                   className="shrink-0 flex-grow  flex flex-col items-center ">
                   <input
@@ -1125,30 +1119,15 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                         const trimmed = text.trim()
                         if (!trimmed) return
                         form.setFieldValue("message", text)
-                        // Mimic Enter submit flow
-                        const value = { ...form.values, message: trimmed }
                         if (!isConnectionReady) {
                           addQueuedMessage({
-                            message: value.message,
-                            image: value.image
+                            message: trimmed,
+                            image: form.values.image
                           })
                           form.reset()
                           return
                         }
-                        // Reuse the same checks as handleKeyDown/form submit
-                        if (!selectedModel || selectedModel.length === 0) {
-                          form.setFieldError("message", t("formError.noModel"))
-                          return
-                        }
-                        const hasEmbedding =
-                          await ensureEmbeddingModelAvailable()
-                        if (!hasEmbedding) {
-                          return
-                        }
-                        await stopListening()
-                        form.reset()
-                        textAreaFocus()
-                        await sendMessage({ image: "", message: value.message })
+                        await sendCurrentFormMessage(trimmed, "")
                       }}
                     />
                     <textarea
@@ -1523,23 +1502,28 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                             <button
                               type="button"
                               onClick={async () => {
-                                if (!isConnectionReady) return
-                                const hasEmbedding =
-                                  await ensureEmbeddingModelAvailable()
-                                if (!hasEmbedding) {
-                                  return
+                                if (!isConnectionReady || isFlushingQueue) return
+                                setIsFlushingQueue(true)
+                                try {
+                                  const hasEmbedding =
+                                    await ensureEmbeddingModelAvailable()
+                                  if (!hasEmbedding) {
+                                    return
+                                  }
+                                  for (const item of queuedMessages) {
+                                    await submitQueuedInSidepanel(
+                                      item.message,
+                                      item.image
+                                    )
+                                  }
+                                  clearQueuedMessages()
+                                } finally {
+                                  setIsFlushingQueue(false)
                                 }
-                                for (const item of queuedMessages) {
-                                  await submitQueuedInSidepanel(
-                                    item.message,
-                                    item.image
-                                  )
-                                }
-                                clearQueuedMessages()
                               }}
-                              disabled={!isConnectionReady}
+                              disabled={!isConnectionReady || isFlushingQueue}
                               className={`rounded-md border border-green-300 bg-white px-2 py-1 text-xs font-medium text-green-900 hover:bg-green-100 dark:bg-[#163816] dark:text-green-50 dark:hover:bg-[#194419] ${
-                                !isConnectionReady
+                                !isConnectionReady || isFlushingQueue
                                   ? "cursor-not-allowed opacity-60"
                                   : ""
                               }`}>

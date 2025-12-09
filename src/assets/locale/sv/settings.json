@@ -851,13 +851,13 @@
       "health": "Bekräfta anslutning och Knowledge"
     },
     "startServer": {
-      "title": "Before you start — Start your tldw server",
-      "body": "If you have not started your server yet, run one of these commands in the tldw_server repository, then return here.",
-      "copy": "Copy command",
-      "optionLocal": "Run locally with Python",
-      "optionLocalHint": "Run inside your tldw_server virtualenv from the server repository root.",
-      "optionDocker": "Run with Docker Compose (single-user)",
-      "optionDockerHint": "Run from the tldw_server repository root to start the API and database."
+      "title": "Innan du börjar — starta din tldw-server",
+      "body": "Om du inte har startat servern ännu, kör ett av dessa kommandon i tldw_server-lagringsplatsen och gå sedan tillbaka hit.",
+      "copy": "Kopiera kommando",
+      "optionLocal": "Kör lokalt med Python",
+      "optionLocalHint": "Kör det i din tldw_server-virtualenv från serverlagringsplatsens rot.",
+      "optionDocker": "Kör med Docker Compose (en användare)",
+      "optionDockerHint": "Kör det från tldw_server-lagringsplatsens rot för att starta API:et och databasen."
     },
     "path": {
       "heading": "Hur vill du komma igång?",

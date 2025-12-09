@@ -11,6 +11,11 @@
     "descriptionMissing": "tldw_server er backenden, der driver chat, videnssøgning og mediebehandling. Tilslut URL’en til din egen tldw-server for at begynde at bruge assistenten.",
     "descriptionSearching": "Vi tjekker {{host}} for at se, om din tldw-server kan nås. Det kan tage et øjeblik, mens vi venter på svar.",
     "descriptionConnected": "Forbundet til din tldw-server på {{host}}. Du kan begynde at chatte eller bruge Review, Knowledge og andre værktøjer.",
+    "descriptionConnectedList": {
+      "reviewMedia": "Review media & transcripts",
+      "searchKnowledge": "Search knowledge and notes",
+      "useRag": "Use RAG with your own documents"
+    },
     "descriptionError": "Vi kunne ikke nå din tldw-server på {{host}}. Sørg for, at serveren kører, at URL’en er korrekt, og at din browser kan nå den over nettet.",
     "buttonStartChat": "Start chat",
     "buttonRetry": "Prøv at forbinde igen",
@@ -73,6 +78,14 @@
     "toolsMenu": "Chat-værktøjer",
     "serverBackedLabel": "Server-understøttet chat",
     "serverBackedTooltip": "Beskeder i denne chat gemmes også på din tldw-server.",
+    "omniSearchPlaceholder": "Search screens, chats, media, notes…",
+    "omniSearchNoResults": "No matches for \"{{query}}\".",
+    "omniSearchCreateNote": "Create note \"{{query}}\"",
+    "omniSearchCreateNoteSuccess": "Note \"{{query}}\" created",
+    "omniSearchCreateFlashcards": "Create flashcard collection \"{{query}}\"",
+    "omniSearchCreateFlashcardsSuccess": "Flashcard collection \"{{query}}\" created",
+    "omniSearchStartChat": "Start new chat \"{{query}}\"",
+    "connectionCard.connectedCaption": "Chat and tools are now available in Options and the sidepanel.",
     "quickIngestQueuedAria": "{{label}} — {{count}} elementer i kø — klik for at gennemgå og behandle"
   },
   "sidebarTitle": "Chathistorik",
@@ -431,6 +444,15 @@
     "mapping": "Kolonnetilknytning",
     "mappingPreview": "Forhåndsvisning af de første par tilknyttede rækker:",
     "exportHelp": "Filtrér efter sæt, tag eller søgning, og eksportér derefter som CSV/TSV til regneark eller Anki (.apkg) til Anki-klienter."
+  },
+  "omniSearch": {
+    "filterScreen": "Screens",
+    "filterChat": "Chats",
+    "filterMedia": "Media",
+    "filterNote": "Notes",
+    "filterFlashcards": "Flashcard Collections",
+    "filterPrompt": "Prompts",
+    "filteringBy": "Filtering by:"
   },
   "quickChatHelper": {
     "tooltip": "Hurtig chat-hjælper",
