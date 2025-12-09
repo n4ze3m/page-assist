@@ -1327,7 +1327,10 @@ export const ReviewPage: React.FC<ReviewPageProps> = ({
     content: boolean
     analysis: boolean
   }>({ content: false, analysis: false })
-  const previewCards = React.useMemo(() => getDemoMediaItems(), [])
+  const previewCards = React.useMemo(
+    () => getDemoMediaItems(t),
+    [t]
+  )
   const { checkOnce } = useConnectionActions()
 
   if (!isOnline) {

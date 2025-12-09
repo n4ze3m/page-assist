@@ -228,8 +228,9 @@ test.describe('Quick ingest – UX audit', () => {
       })
 
       if (!patched) {
-        await context.close()
-        return
+        test.info().skip(
+          'Quick-ingest message patching failed in page context; skipping mixed-results UX audit.'
+        )
       }
 
       await page.goto(optionsUrl + '#/media', { waitUntil: 'domcontentloaded' })

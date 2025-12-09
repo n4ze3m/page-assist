@@ -185,11 +185,11 @@
     "connectDescription": "Connect to your tldw server in Settings to send messages and view media. After connecting, processed recordings and documents will be listed here.",
     "connectExample1": "Open Settings → tldw server to add your server URL.",
     "connectExample2": "Once connected, use Quick ingest in the header to add media from your own recordings and files.",
-    "offlineTitle": "Media Review isn’t available on this server yet",
-    "offlineDescription": "This workspace depends on Media Review support in your tldw server. You can continue using chat, notes, and other tools while you upgrade to a version that includes Media.",
+    "offlineTitle": "مراجعة الوسائط غير متاحة بعد على هذا الخادم",
+    "offlineDescription": "تعتمد مساحة العمل هذه على دعم ميزة مراجعة الوسائط في خادم tldw الخاص بك. يمكنك الاستمرار في استخدام الدردشة والملاحظات والأدوات الأخرى أثناء الترقية إلى إصدار يتضمن الوسائط.",
     "offlineExample1": "Open Diagnostics to confirm your server version and available APIs.",
     "offlineExample2": "بعد الترقية، أعد تحميل الإضافة وارجع إلى الوسائط.",
-    "offlineTechnicalDetails": "Technical details: this tldw server does not advertise the Media endpoints (for example, /api/v1/media and /api/v1/media/search).",
+    "offlineTechnicalDetails": "التفاصيل التقنية: خادم tldw هذا لا يعلن عن نقاط نهاية الوسائط (على سبيل المثال ‎/api/v1/media و ‎/api/v1/media/search).",
     "featureUnavailableBadge": "الميزة غير متاحة"
   }
 }

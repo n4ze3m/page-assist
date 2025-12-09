@@ -1,12 +1,16 @@
 import { test, expect } from '@playwright/test'
 import { launchWithBuiltExtension } from './utils/extension-build'
 
+async function launchOnTldwSettings() {
+  const { context, page, optionsUrl } = await launchWithBuiltExtension()
+  await page.goto(optionsUrl + '#/settings/tldw')
+  await page.waitForLoadState('networkidle')
+  return { context, page }
+}
+
 test.describe('Settings navigation UX', () => {
   test('left navigation highlights the current settings page', async () => {
-    const { context, page, optionsUrl } = await launchWithBuiltExtension()
-
-    await page.goto(optionsUrl + '#/settings/tldw')
-    await page.waitForLoadState('networkidle')
+    const { context, page } = await launchOnTldwSettings()
 
     const tldwLink = page.getByRole('link', { name: /tldw Server/i })
     await expect(tldwLink).toBeVisible()
@@ -25,10 +29,7 @@ test.describe('Settings navigation UX', () => {
   })
 
   test('Health page Back to chat returns to previous settings view', async () => {
-    const { context, page, optionsUrl } = await launchWithBuiltExtension()
-
-    await page.goto(optionsUrl + '#/settings/tldw')
-    await page.waitForLoadState('networkidle')
+    const { context, page } = await launchOnTldwSettings()
 
     // Open Health from the tldw settings header controls.
     const healthButton = page.getByRole('button', { name: /Health/i }).first()
@@ -54,4 +55,3 @@ test.describe('Settings navigation UX', () => {
     await context.close()
   })
 })
-

@@ -57,15 +57,18 @@ export const OmniSearchBar: React.FC<Props> = ({ deps }) => {
   const activeFilterLabel = React.useMemo(() => {
     if (!response?.query.filterType) return null
     const map: Record<OmniSearchEntityType, string> = {
-      screen: "Screens",
-      chat: "Chats",
-      media: "Media",
-      note: "Notes",
-      flashcards: "Flashcard Collections",
-      prompt: "Prompts"
+      screen: t("option:omniSearch.filterScreen", "Screens"),
+      chat: t("option:omniSearch.filterChat", "Chats"),
+      media: t("option:omniSearch.filterMedia", "Media"),
+      note: t("option:omniSearch.filterNote", "Notes"),
+      flashcards: t(
+        "option:omniSearch.filterFlashcards",
+        "Flashcard Collections"
+      ),
+      prompt: t("option:omniSearch.filterPrompt", "Prompts")
     }
     return map[response.query.filterType] ?? null
-  }, [response])
+  }, [response, t])
 
   React.useEffect(() => {
     if (!trimmedQuery) {
@@ -290,7 +293,8 @@ export const OmniSearchBar: React.FC<Props> = ({ deps }) => {
         >
           {activeFilterLabel && (
             <div className="px-3 py-1 text-xs text-gray-500 dark:text-gray-400">
-              Filtering by: {activeFilterLabel}
+              {t("option:omniSearch.filteringBy", "Filtering by:")}{" "}
+              {activeFilterLabel}
             </div>
           )}
           {hasResults ? (

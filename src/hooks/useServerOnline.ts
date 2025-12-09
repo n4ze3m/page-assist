@@ -2,6 +2,10 @@ import React from "react"
 
 import { useConnectionActions } from "@/hooks/useConnectionState"
 import { useConnectionStore } from "@/store/connection"
+import {
+  CONNECTED_POLL_INTERVAL_MS,
+  DISCONNECTED_POLL_INTERVAL_MS
+} from "@/config/connection-timing"
 
 /**
  * Derived "online" flag backed by the shared connection store.
@@ -37,11 +41,13 @@ export function useServerOnline(pollMs: number = 0): boolean {
     }
 
     // Default behavior (pollMs === 0):
-    // - While disconnected, poll frequently (every 2 seconds) so that
-    //   newly started or fixed servers are detected quickly.
-    // - Once connected, back off to a light-touch health check every
-    //   30 seconds to avoid unnecessary network traffic.
-    const intervalMs = isConnected ? 30_000 : 2_000
+    // - While disconnected, poll frequently so that newly started or
+    //   fixed servers are detected quickly.
+    // - Once connected, back off to a light-touch health check to
+    //   avoid unnecessary network traffic.
+    const intervalMs = isConnected
+      ? CONNECTED_POLL_INTERVAL_MS
+      : DISCONNECTED_POLL_INTERVAL_MS
     const id = window.setInterval(() => {
       void checkOnce()
     }, intervalMs)

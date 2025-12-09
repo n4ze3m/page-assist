@@ -122,6 +122,19 @@ export const FlashcardsPage: React.FC = () => {
   const confirmDanger = useConfirmDanger()
   const scrollToServerCard = useScrollToServerCard("/flashcards")
   const { checkOnce } = useConnectionActions()
+  const [checkingConnection, setCheckingConnection] = React.useState(false)
+
+  const handleRetryConnection = React.useCallback(() => {
+    if (checkingConnection) return
+    setCheckingConnection(true)
+    Promise.resolve(checkOnce())
+      .catch(() => {
+        // errors are surfaced via connection UX state
+      })
+      .finally(() => {
+        setCheckingConnection(false)
+      })
+  }, [checkOnce, checkingConnection])
 
   const demoDecks = React.useMemo(() => getDemoFlashcardDecks(t), [t])
 
@@ -203,9 +216,8 @@ export const FlashcardsPage: React.FC = () => {
         })}
         onPrimaryAction={scrollToServerCard}
         retryActionLabel={t("option:buttonRetry", "Retry connection")}
-        onRetry={() => {
-          void checkOnce()
-        }}
+        onRetry={handleRetryConnection}
+        retryDisabled={checkingConnection}
       />
     )
   }

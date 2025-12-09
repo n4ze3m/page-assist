@@ -170,76 +170,76 @@
     "description": "Описание карточки следующего шага о просмотре медиа и заметок."
   },
   "notesEmpty_connectTitle": {
-    "message": "Connect to use Notes"
+    "message": "Подключитесь, чтобы использовать раздел «Заметки»"
   },
   "notesEmpty_connectDescription": {
-    "message": "To use Notes, first connect to your tldw server."
+    "message": "Чтобы использовать «Заметки», сначала подключитесь к своему серверу tldw."
   },
   "notesEmpty_connectExample1": {
-    "message": "Open Settings \u2192 tldw server to add your server URL."
+    "message": "Откройте «Настройки» \u2192 «tldw server» и добавьте URL вашего сервера."
   },
   "notesEmpty_connectExample2": {
-    "message": "Use Diagnostics if your server is running but not reachable."
+    "message": "Если сервер запущен, но недоступен, воспользуйтесь разделом «Диагностика»."
   },
   "notesEmpty_demoTitle": {
-    "message": "Explore Notes in demo mode"
+    "message": "Ознакомьтесь с разделом «Заметки» в демо-режиме"
   },
   "notesEmpty_demoDescription": {
-    "message": "This demo shows how Notes can organize your insights. Connect your own server later to create and save real notes."
+    "message": "Этот демо-режим показывает, как «Заметки» помогают упорядочивать ваши идеи. Позже вы сможете подключить свой сервер и создавать и сохранять реальные заметки."
   },
   "notesEmpty_demoExample1": {
-    "message": "See how note titles, previews, and timestamps appear in the list."
+    "message": "Посмотрите, как в списке отображаются заголовки, превью и временные метки заметок."
   },
   "notesEmpty_demoExample2": {
-    "message": "When you connect, you\u2019ll be able to create notes from meetings, reviews, and more."
+    "message": "После подключения вы сможете создавать заметки по встречам, обзорам и другим материалам."
   },
   "notesEmpty_demoExample3": {
-    "message": "Use Notes alongside Media and Review to keep track of your findings."
+    "message": "Используйте «Заметки» вместе с разделами «Медиа» и «Обзор», чтобы не терять важные находки."
   },
   "notesEmpty_demoPreviewHeading": {
-    "message": "Example notes (preview only)"
+    "message": "Пример заметок (только просмотр)"
   },
   "notesEmpty_demoSample1Title": {
-    "message": "Demo note: Weekly meeting recap"
+    "message": "Демо‑заметка: итоги еженедельного совещания"
   },
   "notesEmpty_demoSample1Preview": {
-    "message": "Decisions, blockers, and follow-ups from a recent team sync."
+    "message": "Решения, блокеры и последующие действия из недавнего командного созвона."
   },
   "notesEmpty_demoSample1Meta": {
-    "message": "Today \u00b7 9:32 AM"
+    "message": "Сегодня \u00b7 9:32"
   },
   "notesEmpty_demoSample2Title": {
-    "message": "Demo note: Research highlights"
+    "message": "Демо‑заметка: ключевые выводы исследования"
   },
   "notesEmpty_demoSample2Preview": {
-    "message": "Key insights pulled from a long article or paper."
+    "message": "Ключевые выводы, извлечённые из длинной статьи или научной работы."
   },
   "notesEmpty_demoSample2Meta": {
-    "message": "Yesterday \u00b7 4:10 PM"
+    "message": "Вчера \u00b7 16:10"
   },
   "notesEmpty_demoSample3Title": {
-    "message": "Demo note: Call summary"
+    "message": "Демо‑заметка: краткое содержание звонка"
   },
   "notesEmpty_demoSample3Preview": {
-    "message": "Summary of a customer call with next steps and owners."
+    "message": "Краткий отчёт по звонку с клиентом с указанием следующих шагов и ответственных."
   },
   "notesEmpty_demoSample3Meta": {
-    "message": "This week"
+    "message": "На этой неделе"
   },
   "notesEmpty_title": {
-    "message": "No notes yet"
+    "message": "Пока нет ни одной заметки"
   },
   "notesEmpty_description": {
-    "message": "Capture and organize free-form notes connected to your tldw insights."
+    "message": "Фиксируйте и упорядочивайте произвольные заметки, связанные с вашими инсайтами в tldw."
   },
   "notesEmpty_exampleCreate": {
-    "message": "Create a new note for a recent meeting or transcript."
+    "message": "Создайте новую заметку по недавней встрече или расшифровке записи."
   },
   "notesEmpty_exampleLink": {
-    "message": "Save review outputs into Notes so you can revisit them later."
+    "message": "Сохраняйте результаты обзоров в «Заметках», чтобы позже легко к ним вернуться."
   },
   "notesEmpty_primaryCta": {
-    "message": "Create note"
+    "message": "Создать заметку"
   },
   "headerShortcuts": {
     "message": "Показать быстрые ярлыки в заголовке"

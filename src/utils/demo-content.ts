@@ -92,24 +92,35 @@ export const getDemoNotes = (t: TFunction): DemoNotePreview[] => [
   }
 ]
 
-export const getDemoMediaItems = (): DemoMediaPreview[] => [
+export const getDemoMediaItems = (t: TFunction): DemoMediaPreview[] => [
   {
     id: "demo-media-1",
-    title: "Sample media item 1",
-    meta: "Video · 12:34",
+    title: t("review:mediaEmpty.demoSample1Title", {
+      defaultValue: "Demo media: Team call recording"
+    }),
+    meta: t("review:mediaEmpty.demoSample1Meta", {
+      defaultValue: "Video · 25 min · Keywords: standup, planning"
+    }),
     status: "Ready"
   },
   {
     id: "demo-media-2",
-    title: "Sample media item 2",
-    meta: "Audio · 08:12",
+    title: t("review:mediaEmpty.demoSample2Title", {
+      defaultValue: "Demo media: Product walkthrough"
+    }),
+    meta: t("review:mediaEmpty.demoSample2Meta", {
+      defaultValue: "Screen recording · 12 min · Keywords: onboarding"
+    }),
     status: "Processing"
   },
   {
     id: "demo-media-3",
-    title: "Sample media item 3",
-    meta: "PDF · 4 pages",
+    title: t("review:mediaEmpty.demoSample3Title", {
+      defaultValue: "Demo media: Research article PDF"
+    }),
+    meta: t("review:mediaEmpty.demoSample3Meta", {
+      defaultValue: "PDF · 6 pages · Keywords: summarization"
+    }),
     status: "Ready"
   }
 ]
-

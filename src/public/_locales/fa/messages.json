@@ -138,76 +138,76 @@
     "description": "عنوان بخش پایانی راه‌اندازی با مراحل بعدی."
   },
   "notesEmpty_connectTitle": {
-    "message": "Connect to use Notes"
+    "message": "برای استفاده از یادداشت‌ها وصل شوید"
   },
   "notesEmpty_connectDescription": {
-    "message": "To use Notes, first connect to your tldw server."
+    "message": "برای استفاده از یادداشت‌ها، ابتدا به سرور tldw خود متصل شوید."
   },
   "notesEmpty_connectExample1": {
-    "message": "Open Settings \u2192 tldw server to add your server URL."
+    "message": "برای افزودن نشانی سرور خود، «Settings \u2192 tldw server» را باز کنید."
   },
   "notesEmpty_connectExample2": {
-    "message": "Use Diagnostics if your server is running but not reachable."
+    "message": "اگر سرور شما در حال اجرا است اما در دسترس نیست، از بخش Diagnostics استفاده کنید."
   },
   "notesEmpty_demoTitle": {
-    "message": "Explore Notes in demo mode"
+    "message": "کاوش یادداشت‌ها در حالت دمو"
   },
   "notesEmpty_demoDescription": {
-    "message": "This demo shows how Notes can organize your insights. Connect your own server later to create and save real notes."
+    "message": "این دمو نشان می‌دهد چگونه یادداشت‌ها می‌توانند بینش‌های شما را سازمان‌دهی کنند. بعداً می‌توانید سرور خود را متصل کنید تا یادداشت‌های واقعی بسازید و ذخیره کنید."
   },
   "notesEmpty_demoExample1": {
-    "message": "See how note titles, previews, and timestamps appear in the list."
+    "message": "ببینید عنوان‌ها، پیش‌نمایش‌ها و زمان‌های یادداشت‌ها چطور در فهرست نمایش داده می‌شوند."
   },
   "notesEmpty_demoExample2": {
-    "message": "When you connect, you\u2019ll be able to create notes from meetings, reviews, and more."
+    "message": "وقتی متصل شوید، می‌توانید از روی جلسات، بازبینی‌ها و موارد دیگر یادداشت بسازید."
   },
   "notesEmpty_demoExample3": {
-    "message": "Use Notes alongside Media and Review to keep track of your findings."
+    "message": "از یادداشت‌ها همراه با Media و Review استفاده کنید تا یافته‌های خود را پیگیری کنید."
   },
   "notesEmpty_demoPreviewHeading": {
-    "message": "Example notes (preview only)"
+    "message": "یادداشت‌های نمونه (فقط پیش‌نمایش)"
   },
   "notesEmpty_demoSample1Title": {
-    "message": "Demo note: Weekly meeting recap"
+    "message": "یادداشت دمو: جمع‌بندی جلسه هفتگی"
   },
   "notesEmpty_demoSample1Preview": {
-    "message": "Decisions, blockers, and follow-ups from a recent team sync."
+    "message": "تصمیم‌ها، موانع و پیگیری‌ها از هماهنگی اخیر تیم."
   },
   "notesEmpty_demoSample1Meta": {
-    "message": "Today \u00b7 9:32 AM"
+    "message": "امروز \u00b7 ۹:۳۲ صبح"
   },
   "notesEmpty_demoSample2Title": {
-    "message": "Demo note: Research highlights"
+    "message": "یادداشت دمو: نکات برجسته تحقیق"
   },
   "notesEmpty_demoSample2Preview": {
-    "message": "Key insights pulled from a long article or paper."
+    "message": "نکات کلیدی استخراج‌شده از یک مقاله یا نوشته طولانی."
   },
   "notesEmpty_demoSample2Meta": {
-    "message": "Yesterday \u00b7 4:10 PM"
+    "message": "دیروز \u00b7 ۴:۱۰ عصر"
   },
   "notesEmpty_demoSample3Title": {
-    "message": "Demo note: Call summary"
+    "message": "یادداشت دمو: خلاصه تماس"
   },
   "notesEmpty_demoSample3Preview": {
-    "message": "Summary of a customer call with next steps and owners."
+    "message": "خلاصه‌ی یک تماس با مشتری به‌همراه گام‌های بعدی و مسئولان."
   },
   "notesEmpty_demoSample3Meta": {
-    "message": "This week"
+    "message": "این هفته"
   },
   "notesEmpty_title": {
-    "message": "No notes yet"
+    "message": "هنوز یادداشتی وجود ندارد"
   },
   "notesEmpty_description": {
-    "message": "Capture and organize free-form notes connected to your tldw insights."
+    "message": "یادداشت‌های آزاد مرتبط با بینش‌های tldw خود را ثبت و سازمان‌دهی کنید."
   },
   "notesEmpty_exampleCreate": {
-    "message": "Create a new note for a recent meeting or transcript."
+    "message": "برای یک جلسه یا رونوشت اخیر، یک یادداشت جدید بسازید."
   },
   "notesEmpty_exampleLink": {
-    "message": "Save review outputs into Notes so you can revisit them later."
+    "message": "خروجی‌های Review را در یادداشت‌ها ذخیره کنید تا بعداً بتوانید دوباره به آن‌ها سر بزنید."
   },
   "notesEmpty_primaryCta": {
-    "message": "Create note"
+    "message": "ایجاد یادداشت"
   },
   "headerShortcuts": {
     "message": "نمایش میانبرهای سریع در سربرگ"

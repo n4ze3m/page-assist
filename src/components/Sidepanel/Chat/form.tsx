@@ -656,11 +656,26 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
       } catch {}
       setWsSttActive(false)
     } else {
-      sttConnect()
-      await micStart()
-      setWsSttActive(true)
+      try {
+        sttConnect()
+        await micStart()
+        setWsSttActive(true)
+      } catch (e: any) {
+        notification.error({
+          message: t(
+            "playground:actions.streamErrorTitle",
+            "Live captions unavailable"
+          ),
+          description:
+            e?.message ||
+            t(
+              "playground:actions.streamMicError",
+              "Unable to start live captions. Check microphone permissions and server health, then try again."
+            )
+        })
+      }
     }
-  }, [micStart, micStop, sttClose, sttConnect, wsSttActive])
+  }, [micStart, micStop, notification, sttClose, sttConnect, t, wsSttActive])
 
   const handleVisionToggle = React.useCallback(() => {
     setChatMode(chatMode === "vision" ? "normal" : "vision")
@@ -889,6 +904,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
       queuedQuickIngestCount,
       quickIngestHadFailure,
       temporaryChat,
+      persistenceModeLabel,
       t,
       webSearch,
       wsSttActive

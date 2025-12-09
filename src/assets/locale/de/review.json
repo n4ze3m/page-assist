@@ -185,11 +185,11 @@
     "connectDescription": "Connect to your tldw server in Settings to send messages and view media. After connecting, processed recordings and documents will be listed here.",
     "connectExample1": "Open Settings → tldw server to add your server URL.",
     "connectExample2": "Once connected, use Quick ingest in the header to add media from your own recordings and files.",
-    "offlineTitle": "Media Review isn’t available on this server yet",
-    "offlineDescription": "This workspace depends on Media Review support in your tldw server. You can continue using chat, notes, and other tools while you upgrade to a version that includes Media.",
-    "offlineExample1": "Open Diagnostics to confirm your server version and available APIs.",
+    "offlineTitle": "Media Review ist auf diesem Server noch nicht verfügbar",
+    "offlineDescription": "Dieser Arbeitsbereich hängt von der Media-Review-Unterstützung in deinem tldw-Server ab. Du kannst Chat, Notizen und andere Tools weiter nutzen, während du auf eine Version mit Media-Unterstützung aktualisierst.",
+    "offlineExample1": "Öffne die Diagnose, um deine Server-Version und die verfügbaren APIs zu überprüfen.",
     "offlineExample2": "Nach dem Upgrade die Erweiterung neu laden und zur Medien-Ansicht zurückkehren.",
-    "offlineTechnicalDetails": "Technical details: this tldw server does not advertise the Media endpoints (for example, /api/v1/media and /api/v1/media/search).",
+    "offlineTechnicalDetails": "Technische Details: Dieser tldw-Server stellt keine Media-Endpunkte bereit (z. B. /api/v1/media und /api/v1/media/search).",
     "featureUnavailableBadge": "Funktion nicht verfügbar"
   }
 }

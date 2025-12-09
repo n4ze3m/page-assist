@@ -185,11 +185,11 @@
     "connectDescription": "Connect to your tldw server in Settings to send messages and view media. After connecting, processed recordings and documents will be listed here.",
     "connectExample1": "Open Settings → tldw server to add your server URL.",
     "connectExample2": "Once connected, use Quick ingest in the header to add media from your own recordings and files.",
-    "offlineTitle": "Media Review isn’t available on this server yet",
-    "offlineDescription": "This workspace depends on Media Review support in your tldw server. You can continue using chat, notes, and other tools while you upgrade to a version that includes Media.",
-    "offlineExample1": "Open Diagnostics to confirm your server version and available APIs.",
+    "offlineTitle": "بازبینی رسانه هنوز در این سرور فعال نیست",
+    "offlineDescription": "این فضای کاری به پشتیبانی بازبینی رسانه در سرور tldw شما وابسته است. می‌توانید در حین ارتقا به نسخه‌ای که رسانه را شامل می‌شود، از чат، یادداشت‌ها و سایر ابزارها استفاده کنید.",
+    "offlineExample1": "پس از ارتقا، افزونه را دوباره بارگذاری کنید و به رسانه برگردید.",
     "offlineExample2": "پس از ارتقا، افزونه را دوباره بارگذاری کنید و به رسانه برگردید.",
-    "offlineTechnicalDetails": "Technical details: this tldw server does not advertise the Media endpoints (for example, /api/v1/media and /api/v1/media/search).",
+    "offlineTechnicalDetails": "برای فعال شدن بازبینی رسانه، سرور شما باید نسخه‌ای را اجرا کند که قابلیت رسانه را پشتیبانی می‌کند؛ لطفاً سرور را به‌روز کنید یا با تیم زیرساخت تماس بگیرید.",
     "featureUnavailableBadge": "قابلیت در دسترس نیست"
   }
 }

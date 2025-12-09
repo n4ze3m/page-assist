@@ -138,76 +138,76 @@
     "description": "Rubrik för sista onboarding-panelen med nästa steg."
   },
   "notesEmpty_connectTitle": {
-    "message": "Connect to use Notes"
+    "message": "Anslut för att använda Anteckningar"
   },
   "notesEmpty_connectDescription": {
-    "message": "To use Notes, first connect to your tldw server."
+    "message": "För att använda Anteckningar måste du först ansluta till din tldw-server."
   },
   "notesEmpty_connectExample1": {
-    "message": "Open Settings \u2192 tldw server to add your server URL."
+    "message": "Öppna Settings \u2192 tldw server för att lägga till din server-URL."
   },
   "notesEmpty_connectExample2": {
-    "message": "Use Diagnostics if your server is running but not reachable."
+    "message": "Använd Diagnostics om din server körs men inte kan nås."
   },
   "notesEmpty_demoTitle": {
-    "message": "Explore Notes in demo mode"
+    "message": "Utforska Anteckningar i demoläge"
   },
   "notesEmpty_demoDescription": {
-    "message": "This demo shows how Notes can organize your insights. Connect your own server later to create and save real notes."
+    "message": "Den här demon visar hur Anteckningar kan organisera dina insikter. Senare kan du ansluta din egen server för att skapa och spara riktiga anteckningar."
   },
   "notesEmpty_demoExample1": {
-    "message": "See how note titles, previews, and timestamps appear in the list."
+    "message": "Se hur anteckningstitlar, förhandsvisningar och tidsstämplar visas i listan."
   },
   "notesEmpty_demoExample2": {
-    "message": "When you connect, you\u2019ll be able to create notes from meetings, reviews, and more."
+    "message": "När du ansluter kan du skapa anteckningar från möten, granskningar och mer."
   },
   "notesEmpty_demoExample3": {
-    "message": "Use Notes alongside Media and Review to keep track of your findings."
+    "message": "Använd Anteckningar tillsammans med Media och Review för att hålla reda på dina insikter."
   },
   "notesEmpty_demoPreviewHeading": {
-    "message": "Example notes (preview only)"
+    "message": "Exempelanteckningar (endast förhandsvisning)"
   },
   "notesEmpty_demoSample1Title": {
-    "message": "Demo note: Weekly meeting recap"
+    "message": "Demoanteckning: sammanfattning av veckomöte"
   },
   "notesEmpty_demoSample1Preview": {
-    "message": "Decisions, blockers, and follow-ups from a recent team sync."
+    "message": "Beslut, hinder och uppföljningar från en nylig teamsynk."
   },
   "notesEmpty_demoSample1Meta": {
-    "message": "Today \u00b7 9:32 AM"
+    "message": "Idag \u00b7 09:32"
   },
   "notesEmpty_demoSample2Title": {
-    "message": "Demo note: Research highlights"
+    "message": "Demoanteckning: forskningshöjdpunkter"
   },
   "notesEmpty_demoSample2Preview": {
-    "message": "Key insights pulled from a long article or paper."
+    "message": "Viktiga insikter hämtade från en lång artikel eller rapport."
   },
   "notesEmpty_demoSample2Meta": {
-    "message": "Yesterday \u00b7 4:10 PM"
+    "message": "Igår \u00b7 16:10"
   },
   "notesEmpty_demoSample3Title": {
-    "message": "Demo note: Call summary"
+    "message": "Demoanteckning: sammanfattning av samtal"
   },
   "notesEmpty_demoSample3Preview": {
-    "message": "Summary of a customer call with next steps and owners."
+    "message": "Sammanfattning av ett kundsamtal med nästa steg och ansvariga."
   },
   "notesEmpty_demoSample3Meta": {
-    "message": "This week"
+    "message": "Den här veckan"
   },
   "notesEmpty_title": {
-    "message": "No notes yet"
+    "message": "Inga anteckningar ännu"
   },
   "notesEmpty_description": {
-    "message": "Capture and organize free-form notes connected to your tldw insights."
+    "message": "Fånga och organisera fria anteckningar kopplade till dina tldw‑insikter."
   },
   "notesEmpty_exampleCreate": {
-    "message": "Create a new note for a recent meeting or transcript."
+    "message": "Skapa en ny anteckning för ett nyligen hållit möte eller en transkribering."
   },
   "notesEmpty_exampleLink": {
-    "message": "Save review outputs into Notes so you can revisit them later."
+    "message": "Spara resultat från granskningar i Anteckningar så att du kan gå tillbaka till dem senare."
   },
   "notesEmpty_primaryCta": {
-    "message": "Create note"
+    "message": "Skapa anteckning"
   },
   "headerShortcuts": {
     "message": "Visa snabba genvägar i sidhuvudet",

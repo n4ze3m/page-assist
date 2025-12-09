@@ -1025,15 +1025,19 @@ export const Header: React.FC<Props> = ({
               }
               aria-label={
                 t(
-                  "settings:healthSummary.diagnostics",
-                  "Health & diagnostics"
-                ) +
-                ". " +
-                statusLabelForCore(coreStatus) +
-                ". " +
-                t(
-                  "settings:healthSummary.diagnosticsTooltip",
-                  "Open detailed diagnostics to troubleshoot or inspect health checks."
+                  "settings:healthSummary.fullDiagnosticsAria",
+                  "{{label}}. {{status}}. {{help}}",
+                  {
+                    label: t(
+                      "settings:healthSummary.diagnostics",
+                      "Health & diagnostics"
+                    ),
+                    status: statusLabelForCore(coreStatus),
+                    help: t(
+                      "settings:healthSummary.diagnosticsTooltip",
+                      "Open detailed diagnostics to troubleshoot or inspect health checks."
+                    )
+                  }
                 )
               }>
               <StatusDot status={coreStatus} />

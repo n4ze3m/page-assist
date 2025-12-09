@@ -138,76 +138,76 @@
     "description": "Tittel for siste onboarding-panel med neste steg."
   },
   "notesEmpty_connectTitle": {
-    "message": "Connect to use Notes"
+    "message": "Koble til for å bruke Notater"
   },
   "notesEmpty_connectDescription": {
-    "message": "To use Notes, first connect to your tldw server."
+    "message": "For å bruke Notater må du først koble til tldw-serveren din."
   },
   "notesEmpty_connectExample1": {
-    "message": "Open Settings \u2192 tldw server to add your server URL."
+    "message": "\u00c5pne Innstillinger \u2192 tldw-server for å legge til server-URL-en din."
   },
   "notesEmpty_connectExample2": {
-    "message": "Use Diagnostics if your server is running but not reachable."
+    "message": "Bruk Diagnostikk hvis serveren kjører men ikke kan nås."
   },
   "notesEmpty_demoTitle": {
-    "message": "Explore Notes in demo mode"
+    "message": "Utforsk Notater i demomodus"
   },
   "notesEmpty_demoDescription": {
-    "message": "This demo shows how Notes can organize your insights. Connect your own server later to create and save real notes."
+    "message": "Denne demoen viser hvordan Notater kan organisere innsiktene dine. Senere kan du koble til din egen server for å opprette og lagre ekte notater."
   },
   "notesEmpty_demoExample1": {
-    "message": "See how note titles, previews, and timestamps appear in the list."
+    "message": "Se hvordan notattitler, forhåndsvisninger og tidsstempler vises i listen."
   },
   "notesEmpty_demoExample2": {
-    "message": "When you connect, you\u2019ll be able to create notes from meetings, reviews, and more."
+    "message": "Når du kobler til, kan du opprette notater fra møter, gjennomganger og mer."
   },
   "notesEmpty_demoExample3": {
-    "message": "Use Notes alongside Media and Review to keep track of your findings."
+    "message": "Bruk Notater sammen med Media og Review for å holde oversikt over funnene dine."
   },
   "notesEmpty_demoPreviewHeading": {
-    "message": "Example notes (preview only)"
+    "message": "Eksempelnotater (kun forhåndsvisning)"
   },
   "notesEmpty_demoSample1Title": {
-    "message": "Demo note: Weekly meeting recap"
+    "message": "Eksempelnotat: ukentlig møtereferat"
   },
   "notesEmpty_demoSample1Preview": {
-    "message": "Decisions, blockers, and follow-ups from a recent team sync."
+    "message": "Beslutninger, hindringer og oppfølgingspunkter fra et nylig teammøte."
   },
   "notesEmpty_demoSample1Meta": {
-    "message": "Today \u00b7 9:32 AM"
+    "message": "I dag \u00b7 09:32"
   },
   "notesEmpty_demoSample2Title": {
-    "message": "Demo note: Research highlights"
+    "message": "Eksempelnotat: forskningshøydepunkter"
   },
   "notesEmpty_demoSample2Preview": {
-    "message": "Key insights pulled from a long article or paper."
+    "message": "Viktige innsikter hentet fra en lang artikkel eller rapport."
   },
   "notesEmpty_demoSample2Meta": {
-    "message": "Yesterday \u00b7 4:10 PM"
+    "message": "I går \u00b7 16:10"
   },
   "notesEmpty_demoSample3Title": {
-    "message": "Demo note: Call summary"
+    "message": "Eksempelnotat: samtalereferat"
   },
   "notesEmpty_demoSample3Preview": {
-    "message": "Summary of a customer call with next steps and owners."
+    "message": "Sammendrag av en kundesamtale med neste steg og ansvarlige."
   },
   "notesEmpty_demoSample3Meta": {
-    "message": "This week"
+    "message": "Denne uken"
   },
   "notesEmpty_title": {
-    "message": "No notes yet"
+    "message": "Ingen notater ennå"
   },
   "notesEmpty_description": {
-    "message": "Capture and organize free-form notes connected to your tldw insights."
+    "message": "Fang opp og organiser friformnotater knyttet til tldw-innsiktene dine."
   },
   "notesEmpty_exampleCreate": {
-    "message": "Create a new note for a recent meeting or transcript."
+    "message": "Opprett et nytt notat for et nylig møte eller en transkripsjon."
   },
   "notesEmpty_exampleLink": {
-    "message": "Save review outputs into Notes so you can revisit them later."
+    "message": "Lagre resultatene fra gjennomganger i Notater slik at du kan se dem igjen senere."
   },
   "notesEmpty_primaryCta": {
-    "message": "Create note"
+    "message": "Opprett notat"
   },
   "headerShortcuts": {
     "message": "Vis hurtige snarveier i toppfeltet"

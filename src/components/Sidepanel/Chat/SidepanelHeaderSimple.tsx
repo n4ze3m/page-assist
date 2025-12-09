@@ -7,12 +7,18 @@ import { useTranslation } from "react-i18next"
 import React from "react"
 import { IconButton } from "@/components/Common/IconButton"
 import { Sidebar } from "@/components/Option/Sidebar"
+import { useStoreChatModelSettings } from "@/store/model"
 import { StatusDot } from "./StatusDot"
 
-type SidepanelHeaderSimpleProps = {
-  sidebarOpen?: boolean
-  setSidebarOpen?: (open: boolean) => void
-}
+type SidepanelHeaderSimpleProps =
+  | {
+      sidebarOpen: boolean
+      setSidebarOpen: (open: boolean) => void
+    }
+  | {
+      sidebarOpen?: undefined
+      setSidebarOpen?: undefined
+    }
 
 /**
  * Simplified sidepanel header with minimal controls:
@@ -42,11 +48,17 @@ export const SidepanelHeaderSimple = ({
   } = useMessage()
   const { t } = useTranslation(["sidepanel", "common", "option"])
   const [localSidebarOpen, setLocalSidebarOpen] = React.useState(false)
+  const { setSystemPrompt } = useStoreChatModelSettings()
 
-  // Use prop state if provided, otherwise use local state
-  const sidebarOpen =
-    propSidebarOpen !== undefined ? propSidebarOpen : localSidebarOpen
-  const setSidebarOpen = propSetSidebarOpen || setLocalSidebarOpen
+  const isControlled = typeof propSidebarOpen === "boolean"
+  const sidebarOpen = isControlled ? (propSidebarOpen as boolean) : localSidebarOpen
+  const handleSidebarOpenChange = (open: boolean) => {
+    if (!isControlled) {
+      setLocalSidebarOpen(open)
+    } else if (propSetSidebarOpen) {
+      propSetSidebarOpen(open)
+    }
+  }
 
   return (
     <div
@@ -104,19 +116,19 @@ export const SidepanelHeaderSimple = ({
         title={
           <div className="flex items-center justify-between">
             <span>{t("tooltip.history")}</span>
-            <button onClick={() => setSidebarOpen(false)}>
+            <button onClick={() => handleSidebarOpenChange(false)}>
               <XIcon className="size-4 text-gray-500 dark:text-gray-400" />
             </button>
           </div>
         }
         placement="left"
         closeIcon={null}
-        onClose={() => setSidebarOpen(false)}
+        onClose={() => handleSidebarOpenChange(false)}
         open={sidebarOpen}
       >
         <Sidebar
           isOpen={sidebarOpen}
-          onClose={() => setSidebarOpen(false)}
+          onClose={() => handleSidebarOpenChange(false)}
           setMessages={setMessages}
           setHistory={setHistory}
           setHistoryId={setHistoryId}
@@ -124,8 +136,8 @@ export const SidepanelHeaderSimple = ({
           setSelectedSystemPrompt={setSelectedSystemPrompt}
           clearChat={clearChat}
           historyId={historyId}
-          setSystemPrompt={() => {}}
-          temporaryChat={false}
+          setSystemPrompt={setSystemPrompt}
+          temporaryChat={temporaryChat}
           history={history}
         />
       </Drawer>

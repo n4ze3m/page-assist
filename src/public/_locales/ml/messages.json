@@ -138,76 +138,76 @@
     "description": "ഓൺബോർഡിംഗ് അവസാന ഘട്ടത്തിലെ തലക്കെട്ട്."
   },
   "notesEmpty_connectTitle": {
-    "message": "Connect to use Notes"
+    "message": "Notes ഉപയോഗിക്കാൻ കണക്റ്റ് ചെയ്യുക"
   },
   "notesEmpty_connectDescription": {
-    "message": "To use Notes, first connect to your tldw server."
+    "message": "Notes ഉപയോഗിക്കാൻ ആദ്യം നിങ്ങളുടെ tldw സർവറിലേക്ക് കണക്റ്റ് ചെയ്യണം."
   },
   "notesEmpty_connectExample1": {
-    "message": "Open Settings \u2192 tldw server to add your server URL."
+    "message": "നിങ്ങളുടെ സർവർ URL ചേർക്കാൻ Settings \u2192 tldw server തുറക്കുക."
   },
   "notesEmpty_connectExample2": {
-    "message": "Use Diagnostics if your server is running but not reachable."
+    "message": "നിങ്ങളുടെ സർവർ പ്രവർത്തിക്കുമ്പോഴും എത്തിച്ചേരാനാവുന്നില്ലെങ്കിൽ Diagnostics ഉപയോഗിക്കുക."
   },
   "notesEmpty_demoTitle": {
-    "message": "Explore Notes in demo mode"
+    "message": "ഡെമോ മോഡിൽ Notes പരീക്ഷിക്കുക"
   },
   "notesEmpty_demoDescription": {
-    "message": "This demo shows how Notes can organize your insights. Connect your own server later to create and save real notes."
+    "message": "ഈ ഡെമോയിൽ Notes നിങ്ങളുടെ ഇൻസൈറ്റുകൾ എങ്ങനെ ക്രമീകരിച്ച് സൂക്ഷിക്കാം എന്ന് കാണിക്കുന്നു. പിന്നീട് നിങ്ങളുടെ സ്വന്തം സർവർ കണക്റ്റ് ചെയ്ത് യഥാർത്ഥ കുറിപ്പുകൾ തയ്യാറാക്കി സംരക്ഷിക്കാം."
   },
   "notesEmpty_demoExample1": {
-    "message": "See how note titles, previews, and timestamps appear in the list."
+    "message": "ലിസ്റ്റിൽ കുറിപ്പുകളുടെ തലക്കെട്ട്, പ്രീവ്യൂ, ടൈംസ്റ്റാമ്പ് എന്നിവ എങ്ങനെ കാണപ്പെടുന്നു എന്ന് നോക്കിക്കാണുക."
   },
   "notesEmpty_demoExample2": {
-    "message": "When you connect, you\u2019ll be able to create notes from meetings, reviews, and more."
+    "message": "നിങ്ങൾ കണക്റ്റ് ചെയ്ത ശേഷം മീറ്റിംഗുകൾ, റിവ്യൂകൾ എന്നിവയിൽ നിന്ന് കുറിപ്പുകൾ സൃഷ്ടിക്കാനാകും."
   },
   "notesEmpty_demoExample3": {
-    "message": "Use Notes alongside Media and Review to keep track of your findings."
+    "message": "നിങ്ങളുടെ കണ്ടെത്തലുകൾ പിന്തുടരാൻ Media, Review എന്നിവയോടൊപ്പം Notes ഉപയോഗിക്കുക."
   },
   "notesEmpty_demoPreviewHeading": {
-    "message": "Example notes (preview only)"
+    "message": "ഉദാഹരണ കുറിപ്പുകൾ (പ്രീവ്യൂ മാത്രം)"
   },
   "notesEmpty_demoSample1Title": {
-    "message": "Demo note: Weekly meeting recap"
+    "message": "ഡെമോ കുറിപ്പ്: ആഴ്ചവാര മീറ്റിംഗ് റീകാപ്"
   },
   "notesEmpty_demoSample1Preview": {
-    "message": "Decisions, blockers, and follow-ups from a recent team sync."
+    "message": "അടുത്തിടെ നടന്ന ടീം സിങ്കിൽ നിന്നുള്ള തീരുമാനങ്ങൾ, തടസ്സങ്ങൾ, ഫോളോ‑അപ്പുകൾ."
   },
   "notesEmpty_demoSample1Meta": {
-    "message": "Today \u00b7 9:32 AM"
+    "message": "ഇന്ന് \u00b7 9:32 AM"
   },
   "notesEmpty_demoSample2Title": {
-    "message": "Demo note: Research highlights"
+    "message": "ഡെമോ കുറിപ്പ്: റിസർച്ച് ഹൈലൈറ്റുകൾ"
   },
   "notesEmpty_demoSample2Preview": {
-    "message": "Key insights pulled from a long article or paper."
+    "message": "ഒരു നീണ്ട ലേഖനം അല്ലെങ്കിൽ പേപ്പറിൽ നിന്നെടുത്ത പ്രധാന ഇൻസൈറ്റുകൾ."
   },
   "notesEmpty_demoSample2Meta": {
-    "message": "Yesterday \u00b7 4:10 PM"
+    "message": "ഇന്നലെ \u00b7 4:10 PM"
   },
   "notesEmpty_demoSample3Title": {
-    "message": "Demo note: Call summary"
+    "message": "ഡെമോ കുറിപ്പ്: കോൾ സംഗ്രഹം"
   },
   "notesEmpty_demoSample3Preview": {
-    "message": "Summary of a customer call with next steps and owners."
+    "message": "ഒരു കസ്റ്റമർ കോൾ ന്റെ ചുരുക്കവും അടുത്ത ചുവടുകളുടെയും ഉത്തരവാദികളുടെയും വിവരങ്ങൾ."
   },
   "notesEmpty_demoSample3Meta": {
-    "message": "This week"
+    "message": "ഈ ആഴ്ച"
   },
   "notesEmpty_title": {
-    "message": "No notes yet"
+    "message": "ഇനിയും കുറിപ്പുകളൊന്നുമില്ല"
   },
   "notesEmpty_description": {
-    "message": "Capture and organize free-form notes connected to your tldw insights."
+    "message": "നിങ്ങളുടെ tldw ഇൻസൈറ്റുകളുമായി ബന്ധപ്പെട്ട സ്വതന്ത്ര രൂപത്തിലുള്ള കുറിപ്പുകൾ ശേഖരിക്കുകയും ക്രമീകരിക്കുകയും ചെയ്യാം."
   },
   "notesEmpty_exampleCreate": {
-    "message": "Create a new note for a recent meeting or transcript."
+    "message": "അടുത്തിടെ നടന്ന ഒരു മീറ്റിംഗ് അല്ലെങ്കിൽ ട്രാൻസ്‌ക്രിപ്റ്റിനെ കുറിച്ച് ഒരു പുതിയ കുറിപ്പ് സൃഷ്ടിക്കുക."
   },
   "notesEmpty_exampleLink": {
-    "message": "Save review outputs into Notes so you can revisit them later."
+    "message": "റിവ്യൂ ഫലങ്ങൾ Notes ൽ സൂക്ഷിച്ച് പിന്നീട് വീണ്ടും പരിശോധിക്കാനാകുന്ന വിധം സംരക്ഷിക്കുക."
   },
   "notesEmpty_primaryCta": {
-    "message": "Create note"
+    "message": "കുറിപ്പ് സൃഷ്ടിക്കുക"
   },
   "headerShortcuts": {
     "message": "തലക്കെട്ടിൽ ദ്രുത ഷോർട്ട്‌കട്ടുകൾ കാണിക്കുക"

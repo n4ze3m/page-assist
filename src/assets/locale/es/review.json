@@ -189,7 +189,7 @@
     "offlineDescription": "This workspace depends on Media Review support in your tldw server. You can continue using chat, notes, and other tools while you upgrade to a version that includes Media.",
     "offlineExample1": "Open Diagnostics to confirm your server version and available APIs.",
     "offlineExample2": "Después de actualizar, vuelve a cargar la extensión y regresa a Medios.",
-    "offlineTechnicalDetails": "Technical details: this tldw server does not advertise the Media endpoints (for example, /api/v1/media and /api/v1/media/search).",
+    "offlineTechnicalDetails": "Detalles técnicos: este servidor tldw no anuncia los endpoints de Medios (por ejemplo, /api/v1/media y /api/v1/media/search).",
     "featureUnavailableBadge": "Función no disponible"
   }
 }

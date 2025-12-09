@@ -3,15 +3,39 @@
 
 const path = require('path')
 const fs = require('fs')
+const os = require('os')
 const { chromium } = require('@playwright/test')
 const { spawn } = require('child_process')
 
 function makeTempProfileDirs() {
   const root = path.resolve('tmp-playwright-profile')
-  fs.mkdirSync(root, { recursive: true })
-  const homeDir = fs.mkdtempSync(path.join(root, 'ux-home-'))
-  const userDataDir = fs.mkdtempSync(path.join(root, 'ux-user-data-'))
-  return { homeDir, userDataDir }
+  let homeDir
+  let userDataDir
+
+  try {
+    fs.mkdirSync(root, { recursive: true })
+    homeDir = fs.mkdtempSync(path.join(root, 'ux-home-'))
+    userDataDir = fs.mkdtempSync(path.join(root, 'ux-user-data-'))
+  } catch (err) {
+    const message =
+      err && err.message ? err.message : String(err || 'Unknown error')
+    throw new Error(
+      `Failed to create temporary profile directories for review-ux: ${message}`
+    )
+  }
+
+  const cleanup = () => {
+    for (const dir of [homeDir, userDataDir]) {
+      if (!dir) continue
+      try {
+        fs.rmSync(dir, { recursive: true, force: true })
+      } catch {
+        // Ignore cleanup errors (directories may already be gone)
+      }
+    }
+  }
+
+  return { homeDir, userDataDir, cleanup }
 }
 
 async function waitForExtensionId(context, timeoutMs = 10000) {
@@ -35,7 +59,8 @@ async function main() {
     throw new Error(`Extension build not found at: ${extensionPath}`)
   }
 
-  const { homeDir, userDataDir } = makeTempProfileDirs()
+  const { homeDir, userDataDir, cleanup } = makeTempProfileDirs()
+  const crashDumpsDir = String(os.tmpdir())
 
   // Start a lightweight mock tldw_server so health/model calls succeed
   const mock = spawn(process.execPath, [path.resolve(__dirname, 'mock-tldw.js')], {
@@ -52,7 +77,7 @@ async function main() {
       `--disable-extensions-except=${extensionPath}`,
       `--load-extension=${extensionPath}`,
       '--disable-crash-reporter',
-      '--crash-dumps-dir=/tmp'
+      `--crash-dumps-dir=${crashDumpsDir}`
     ]
   })
 
@@ -191,7 +216,12 @@ async function main() {
     console.log('Screenshots saved to playwright-mcp-artifacts/*.png')
   } finally {
     await context.close()
-    try { process.kill(-mock.pid) } catch {}
+    try {
+      process.kill(-mock.pid)
+    } catch {}
+    try {
+      cleanup()
+    } catch {}
   }
 }
 

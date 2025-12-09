@@ -30,8 +30,8 @@ export const QuickChatHelperButton: React.FC = () => {
   const tooltip = t("quickChatHelper.tooltip", "Quick Chat Helper")
   const toggleLabel = hideQuickChatHelper
     ? t(
-        "settings:generalSettings.settings.hideQuickChatHelper.label",
-        "Hide Quick Chat Helper button"
+        "settings:generalSettings.settings.hideQuickChatHelper.showLabel",
+        "Show Quick Chat Helper button"
       )
     : t(
         "settings:generalSettings.settings.hideQuickChatHelper.label",
@@ -67,7 +67,7 @@ export const QuickChatHelperButton: React.FC = () => {
         <Tooltip title={toggleLabel} placement="left">
           <Switch
             checked={!hideQuickChatHelper}
-            onChange={(checked) => setHideQuickChatHelper(!checked ? true : false)}
+            onChange={(checked) => setHideQuickChatHelper(!checked)}
             aria-label={toggleLabel}
           />
         </Tooltip>

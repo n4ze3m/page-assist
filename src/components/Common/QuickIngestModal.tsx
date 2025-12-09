@@ -974,9 +974,8 @@ export const QuickIngestModal: React.FC<Props> = ({
     return () => clearTimeout(id)
   }, [SAVE_DEBOUNCE_MS, advancedOpen, fieldDetailsOpen, setUiPrefs])
 
-  const openHealthDiagnostics = React.useCallback(() => {
+  const openOptionsRoute = React.useCallback((hash: string) => {
     try {
-      const hash = "#/settings/health"
       const path = window.location.pathname || ""
       if (path.includes("options.html")) {
         window.location.hash = hash
@@ -995,7 +994,7 @@ export const QuickIngestModal: React.FC<Props> = ({
         }
         return
       } catch {
-        // fall through
+        // fall through to a plain window.open below
       }
       window.open(`/options.html${hash}`, "_blank")
     } catch {
@@ -1003,34 +1002,13 @@ export const QuickIngestModal: React.FC<Props> = ({
     }
   }, [])
 
+  const openHealthDiagnostics = React.useCallback(() => {
+    openOptionsRoute("#/settings/health")
+  }, [openOptionsRoute])
+
   const openModelSettings = React.useCallback(() => {
-    try {
-      const hash = "#/settings/model"
-      const path = window.location.pathname || ""
-      if (path.includes("options.html")) {
-        window.location.hash = hash
-        return
-      }
-      try {
-        const url = browser.runtime.getURL(`/options.html${hash}`)
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        if (browser.tabs?.create) {
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          browser.tabs.create({ url })
-        } else {
-          window.open(url, "_blank")
-        }
-        return
-      } catch {
-        // fall through
-      }
-      window.open(`/options.html${hash}`, "_blank")
-    } catch {
-      // best-effort; avoid throwing from modal
-    }
-  }, [])
+    openOptionsRoute("#/settings/model")
+  }, [openOptionsRoute])
 
   const downloadJson = (item: ResultItem) => {
     const blob = new Blob([JSON.stringify(item.data ?? {}, null, 2)], { type: 'application/json' })
@@ -2885,13 +2863,17 @@ export const QuickIngestModal: React.FC<Props> = ({
                           )
                         })}
                       {/* details sections */}
-                      {grouped[g].map((f) => (
-                        f.description && fieldDetailsOpen[f.name] ? (
-                          <div key={`${f.name}-details`} className="ml-4 mt-1 p-2 rounded bg-gray-50 dark:bg-[#262626] text-xs text-gray-600 dark:text-gray-300 max-w-[48rem]">
-                            {f.description}
-                          </div>
-                        ) : null
-                      ))}
+                      {(g === 'Recommended' ? recommended : grouped[g]).map(
+                        (f) =>
+                          f.description && fieldDetailsOpen[f.name] ? (
+                            <div
+                              key={`${f.name}-details`}
+                              className="ml-4 mt-1 p-2 rounded bg-gray-50 dark:bg-[#262626] text-xs text-gray-600 dark:text-gray-300 max-w-[48rem]"
+                            >
+                              {f.description}
+                            </div>
+                          ) : null
+                      )}
                       </Space>
                     </div>
                   ))

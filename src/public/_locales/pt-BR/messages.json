@@ -270,175 +270,175 @@
     "message": "Não foi possível enviar o arquivo. Tente novamente."
   },
   "promptStudio_title": {
-    "message": "Prompt Studio Playground"
+    "message": "Playground do Prompt Studio"
   },
   "promptStudio_subtitle": {
-    "message": "Manage Prompt Studio projects, prompts, executions, test cases, and evaluations."
+    "message": "Gerencie projetos, prompts, execuções, casos de teste e avaliações do Prompt Studio."
   },
   "promptStudio_capabilityError": {
-    "message": "Unable to reach Prompt Studio"
+    "message": "Não foi possível acessar o Prompt Studio"
   },
   "promptStudio_capabilityErrorBody": {
-    "message": "Check server connectivity or disable this section until the Prompt Studio APIs are available."
+    "message": "Verifique a conectividade com o servidor ou desative esta seção até que as APIs do Prompt Studio estejam disponíveis."
   },
   "promptStudio_offline": {
-    "message": "Connect to your server to use Prompt Studio"
+    "message": "Conecte-se ao seu servidor para usar o Prompt Studio"
   },
   "promptStudio_workspaceCard": {
-    "message": "Projects & prompts"
+    "message": "Projetos e prompts"
   },
   "promptStudio_workspaceHint": {
-    "message": "Create or open a project to edit prompts."
+    "message": "Crie ou abra um projeto para editar prompts."
   },
   "promptStudio_projectsError": {
-    "message": "Could not load projects"
+    "message": "Não foi possível carregar os projetos"
   },
   "promptStudio_promptVersion": {
-    "message": "Version"
+    "message": "Versão"
   },
   "promptStudio_changeDescription": {
-    "message": "Change description"
+    "message": "Alterar descrição"
   },
   "promptStudio_systemPrompt": {
-    "message": "System prompt"
+    "message": "Prompt de sistema"
   },
   "promptStudio_userPrompt": {
-    "message": "User prompt"
+    "message": "Prompt do usuário"
   },
   "promptStudio_fewShot": {
-    "message": "Few-shot examples (JSON)"
+    "message": "Exemplos few-shot (JSON)"
   },
   "promptStudio_modulesConfig": {
-    "message": "Modules config (JSON)"
+    "message": "Configuração de módulos (JSON)"
   },
   "promptStudio_history": {
-    "message": "History"
+    "message": "Histórico"
   },
   "promptStudio_executeCard": {
-    "message": "Ad-hoc execute"
+    "message": "Execução ad hoc"
   },
   "promptStudio_executeHint": {
-    "message": "Provider, model, temperature, inputs."
+    "message": "Provedor, modelo, temperatura e entradas."
   },
   "promptStudio_provider": {
-    "message": "Provider"
+    "message": "Provedor"
   },
   "promptStudio_model": {
-    "message": "Model"
+    "message": "Modelo"
   },
   "promptStudio_runPrompt": {
-    "message": "Run prompt"
+    "message": "Executar prompt"
   },
   "promptStudio_executePlaceholder": {
-    "message": "Execution form coming soon. Use this pane to run single inputs against a prompt via /prompt-studio/prompts/execute."
+    "message": "Formulário de execução em breve. Use este painel para executar entradas individuais em um prompt via /prompt-studio/prompts/execute."
   },
   "promptStudio_testsCard": {
-    "message": "Test cases & evaluations"
+    "message": "Casos de teste e avaliações"
   },
   "promptStudio_testsHint": {
-    "message": "List/create test cases, run evaluations, poll status."
+    "message": "Liste/crie casos de teste, execute avaliações e acompanhe o status."
   },
   "promptStudio_testCases": {
-    "message": "Test cases"
+    "message": "Casos de teste"
   },
   "promptStudio_evaluations": {
-    "message": "Evaluations"
+    "message": "Avaliações"
   },
   "promptStudio_inputsJson": {
-    "message": "Inputs (JSON)"
+    "message": "Entradas (JSON)"
   },
   "promptStudio_expectedJson": {
-    "message": "Expected outputs (JSON)"
+    "message": "Saídas esperadas (JSON)"
   },
   "promptStudio_golden": {
-    "message": "Is golden?"
+    "message": "É golden?"
   },
   "promptStudio_bulkAdd": {
-    "message": "Bulk add"
+    "message": "Adicionar em lote"
   },
   "promptStudio_bulkJson": {
-    "message": "JSON array of test cases"
+    "message": "Array JSON de casos de teste"
   },
   "promptStudio_runAsync": {
-    "message": "Run async"
+    "message": "Executar de forma assíncrona"
   },
   "promptStudio_temperature": {
-    "message": "Temperature"
+    "message": "Temperatura"
   },
   "promptStudio_maxTokens": {
-    "message": "Max tokens"
+    "message": "Máximo de tokens"
   },
   "promptStudio_runEvaluation": {
-    "message": "Run evaluation"
+    "message": "Executar avaliação"
   },
   "promptStudio_testsPlaceholder": {
-    "message": "Scaffolding placeholder: hook up test case CRUD, evaluation create/list/detail, and async polling in this section."
+    "message": "Espaço reservado: conectar o CRUD de casos de teste, criação/listagem/detalhamento de avaliações e polling assíncrono nesta seção."
   },
   "promptStudio_unavailable": {
-    "message": "Prompt Studio is not enabled on this server."
+    "message": "Prompt Studio não está habilitado neste servidor."
   },
   "promptStudio_unavailableBody": {
-    "message": "When available, you will see projects, prompt history, execute flows, and evaluations here."
+    "message": "Quando estiver disponível, você verá projetos, histórico de prompts, fluxos de execução e avaliações aqui."
   },
   "promptSearch_title": {
-    "message": "Title"
+    "message": "Título"
   },
   "promptSearch_content": {
-    "message": "Content"
+    "message": "Conteúdo"
   },
   "promptSearch_systemPrompt": {
-    "message": "System prompt"
+    "message": "Prompt de sistema"
   },
   "promptSearch_alsoSaveRemote": {
-    "message": "Also save to server"
+    "message": "Também salvar no servidor"
   },
   "promptSearch_cancel": {
-    "message": "Cancel"
+    "message": "Cancelar"
   },
   "promptSearch_insert": {
-    "message": "Insert"
+    "message": "Inserir"
   },
   "promptSearch_saveAsNew": {
-    "message": "Save as new"
+    "message": "Salvar como novo"
   },
   "promptSearch_saveLocal": {
-    "message": "Save changes (local)"
+    "message": "Salvar alterações (local)"
   },
   "promptSearch_saveServer": {
-    "message": "Save changes (server)"
+    "message": "Salvar alterações (servidor)"
   },
   "promptSearch_saveLocalCopy": {
-    "message": "Save local copy"
+    "message": "Salvar cópia local"
   },
   "promptSearch_saveServerOnly": {
-    "message": "Save as new (server only)"
+    "message": "Salvar como novo (apenas servidor)"
   },
   "promptSearch_saveLocalSuccess": {
-    "message": "Prompt updated locally"
+    "message": "Prompt atualizado localmente"
   },
   "promptSearch_saveServerSuccess": {
-    "message": "Prompt updated on server"
+    "message": "Prompt atualizado no servidor"
   },
   "promptSearch_saveLocalFailed": {
-    "message": "Failed to update local prompt"
+    "message": "Falha ao atualizar o prompt local"
   },
   "promptSearch_saveServerFailed": {
-    "message": "Failed to update server prompt"
+    "message": "Falha ao atualizar o prompt no servidor"
   },
   "promptSearch_manageLink": {
-    "message": "View / Manage Prompts"
+    "message": "Ver / gerenciar prompts"
   },
   "promptSearch_overwriteLocalLabel": {
-    "message": "Overwrite local prompt (optional)"
+    "message": "Sobrescrever prompt local (opcional)"
   },
   "promptSearch_overwriteLocalPlaceholder": {
-    "message": "Select a local prompt to overwrite"
+    "message": "Selecione um prompt local para sobrescrever"
   },
   "promptSearch_saveSuccess": {
-    "message": "Prompt saved"
+    "message": "Prompt salvo"
   },
   "promptSearch_saveFailed": {
-    "message": "Failed to save prompt"
+    "message": "Falha ao salvar o prompt"
   },
   "quickIngest_title": {
     "message": "Ingestão rápida de mídia"
@@ -714,97 +714,97 @@
     "message": "Criar nota"
   },
   "worldBooksEmpty_demoTitle": {
-    "message": "Explore World Books in demo mode"
+    "message": "Explore World Books no modo demonstração"
   },
   "worldBooksEmpty_demoDescription": {
-    "message": "This demo shows how World Books can organize structured knowledge about your worlds, settings, or products."
+    "message": "Esta demonstração mostra como o World Books pode organizar conhecimento estruturado sobre seus mundos, cenários ou produtos."
   },
   "worldBooksEmpty_demoExample1": {
-    "message": "See example books like a fantasy setting, product glossary, or campaign notes."
+    "message": "Veja livros de exemplo como um cenário de fantasia, um glossário de produtos ou notas de campanha."
   },
   "worldBooksEmpty_demoExample2": {
-    "message": "When you connect, you’ll be able to create world books that tldw can use while chatting."
+    "message": "Quando você se conectar, poderá criar livros de mundo que o tldw pode usar durante o chat."
   },
   "worldBooksEmpty_connectTitle": {
-    "message": "Connect to use World Books"
+    "message": "Conecte-se para usar World Books"
   },
   "worldBooksEmpty_connectDescription": {
-    "message": "To use World Books, first connect to your tldw server so world knowledge can be saved and retrieved."
+    "message": "Para usar World Books, primeiro conecte-se ao seu servidor tldw para que o conhecimento de mundos possa ser salvo e recuperado."
   },
   "worldBooksEmpty_connectExample1": {
-    "message": "Open Settings → tldw server to add your server URL."
+    "message": "Abra Configurações → servidor tldw para adicionar a URL do seu servidor."
   },
   "worldBooksEmpty_connectExample2": {
-    "message": "Use Diagnostics if your server is running but not reachable."
+    "message": "Use Diagnóstico se o seu servidor estiver em execução mas não acessível."
   },
   "worldBooksEmpty_headerDescription": {
-    "message": "Create and manage structured knowledge bases that characters and chats can reference."
+    "message": "Crie e gerencie bases de conhecimento estruturadas que personagens e chats podem consultar."
   },
   "worldBooksEmpty_offlineTitle": {
-    "message": "World Books are offline"
+    "message": "World Books está off-line"
   },
   "worldBooksEmpty_offlineDescription": {
-    "message": "Connect to your tldw server from the main settings page to view and edit World Books."
+    "message": "Conecte-se ao seu servidor tldw na página principal de configurações para visualizar e editar World Books."
   },
   "dictionariesEmpty_demoTitle": {
-    "message": "Explore Chat dictionaries in demo mode"
+    "message": "Explore Dicionários de chat no modo demonstração"
   },
   "dictionariesEmpty_demoDescription": {
-    "message": "This demo shows how Chat dictionaries can normalize names, acronyms, and terms before they reach the model."
+    "message": "Esta demonstração mostra como os dicionários de chat podem normalizar nomes, siglas e termos antes que cheguem ao modelo."
   },
   "dictionariesEmpty_demoExample1": {
-    "message": "See example dictionaries for product names, project codenames, or company jargon."
+    "message": "Veja dicionários de exemplo para nomes de produtos, codinomes de projetos ou jargão da empresa."
   },
   "dictionariesEmpty_demoExample2": {
-    "message": "When you connect, you’ll be able to activate dictionaries across all chats."
+    "message": "Quando você se conectar, poderá ativar dicionários em todos os chats."
   },
   "dictionariesEmpty_connectTitle": {
-    "message": "Connect to use Chat dictionaries"
+    "message": "Conecte-se para usar Dicionários de chat"
   },
   "dictionariesEmpty_connectDescription": {
-    "message": "To use Chat dictionaries, first connect to your tldw server so substitutions can be stored."
+    "message": "Para usar dicionários de chat, primeiro conecte-se ao seu servidor tldw para que as substituições possam ser armazenadas."
   },
   "dictionariesEmpty_connectExample1": {
-    "message": "Open Settings → tldw server to add your server URL."
+    "message": "Abra Configurações → servidor tldw para adicionar a URL do seu servidor."
   },
   "dictionariesEmpty_connectExample2": {
-    "message": "Use Diagnostics if your server is running but not reachable."
+    "message": "Use Diagnóstico se o seu servidor estiver em execução mas não acessível."
   },
   "dictionariesEmpty_headerDescription": {
-    "message": "Define reusable substitutions so tldw understands your organization’s names, acronyms, and terminology."
+    "message": "Defina substituições reutilizáveis para que o tldw entenda os nomes, siglas e a terminologia da sua organização."
   },
   "dictionariesEmpty_offlineTitle": {
-    "message": "Chat dictionaries are offline"
+    "message": "Dicionários de chat estão off-line"
   },
   "dictionariesEmpty_offlineDescription": {
-    "message": "Connect to your tldw server from the main settings page to view and edit Chat dictionaries."
+    "message": "Conecte-se ao seu servidor tldw na página principal de configurações para visualizar e editar os dicionários de chat."
   },
   "charactersEmpty_demoTitle": {
-    "message": "Explore Characters in demo mode"
+    "message": "Explore Personagens no modo demonstração"
   },
   "charactersEmpty_demoDescription": {
-    "message": "This demo shows how Characters encapsulate a persona and system prompt that you can chat with."
+    "message": "Esta demonstração mostra como Personagens encapsulam uma persona e um prompt de sistema com os quais você pode conversar."
   },
   "charactersEmpty_demoExample1": {
-    "message": "See example characters like a writing coach, lore expert, or coding assistant."
+    "message": "Veja personagens de exemplo como um coach de escrita, um especialista em lore ou um assistente de código."
   },
   "charactersEmpty_demoExample2": {
-    "message": "When you connect, you’ll be able to create characters that appear in the chat header and selection."
+    "message": "Quando você se conectar, poderá criar personagens que aparecem no cabeçalho do chat e na seleção."
   },
   "charactersEmpty_connectTitle": {
-    "message": "Connect to use Characters"
+    "message": "Conecte-se para usar Personagens"
   },
   "charactersEmpty_connectDescription": {
-    "message": "To use Characters, first connect to your tldw server so character definitions can be stored."
+    "message": "Para usar Personagens, primeiro conecte-se ao seu servidor tldw para que as definições de personagens possam ser armazenadas."
   },
   "charactersEmpty_connectExample1": {
-    "message": "Open Settings → tldw server to add your server URL."
+    "message": "Abra Configurações → servidor tldw para adicionar a URL do seu servidor."
   },
   "charactersEmpty_connectExample2": {
-    "message": "Use Diagnostics if your server is running but not reachable."
+    "message": "Use Diagnóstico se o seu servidor estiver em execução mas não acessível."
   },
   "charactersEmpty_headerDescription": {
-    "message": "Create reusable characters you can pick from the chat header and reuse across conversations."
+    "message": "Crie personagens reutilizáveis que você pode escolher no cabeçalho do chat e reutilizar em várias conversas."
   },
   "charactersEmpty_headerSelectHint": {
     "message": "Crie um personagem para reutilizar a persona dele em vários chats. Use “Novo personagem” para começar."
@@ -846,149 +846,149 @@
     "message": "Atualizando personagens…"
   },
   "promptInsert_useInChat": {
-    "message": "Use in chat"
+    "message": "Usar no chat"
   },
   "promptInsert_useInChatTooltip": {
-    "message": "Open chat and insert this prompt into the composer."
+    "message": "Abra o chat e insira este prompt no editor."
   },
   "promptInsert_confirmTitle": {
-    "message": "Use prompt in chat?"
+    "message": "Usar o prompt no chat?"
   },
   "promptInsert_confirmDescription": {
-    "message": "Your message already has text. Do you want to overwrite it with this prompt or append the prompt below it?"
+    "message": "Sua mensagem já tem texto. Você quer sobrescrevê-la com este prompt ou acrescentar o prompt abaixo?"
   },
   "promptInsert_overwrite": {
-    "message": "Overwrite message"
+    "message": "Sobrescrever mensagem"
   },
   "promptInsert_append": {
-    "message": "Append"
+    "message": "Acrescentar"
   },
   "flashcards_review": {
-    "message": "Review"
+    "message": "Revisar"
   },
   "flashcards_create": {
-    "message": "Create"
+    "message": "Criar"
   },
   "flashcards_manage": {
-    "message": "Manage"
+    "message": "Gerenciar"
   },
   "flashcards_importExport": {
-    "message": "Import / Export"
+    "message": "Importar / exportar"
   },
   "flashcards_emptyConnectTitle": {
-    "message": "Connect to use Flashcards"
+    "message": "Conecte-se para usar Flashcards"
   },
   "flashcards_emptyConnectDescription": {
-    "message": "To review or generate flashcards, first connect to your tldw server."
+    "message": "Para revisar ou gerar flashcards, primeiro conecte-se ao seu servidor tldw."
   },
   "flashcards_emptyConnectExample1": {
-    "message": "Go to Settings → tldw server to add your server URL."
+    "message": "Vá para Configurações → servidor tldw para adicionar a URL do seu servidor."
   },
   "flashcards_emptyConnectExample2": {
-    "message": "Once connected, review due cards or create new decks from your notes and media."
+    "message": "Depois de conectado, revise cartões pendentes ou crie novos baralhos a partir de suas notas e mídias."
   },
   "flashcards_demoTitle": {
-    "message": "Explore Flashcards in demo mode"
+    "message": "Explore Flashcards no modo demonstração"
   },
   "flashcards_demoDescription": {
-    "message": "This demo shows how Flashcards can turn your content into spaced‑repetition cards. Connect your own server later to generate and review cards from your own notes and media."
+    "message": "Esta demonstração mostra como o Flashcards pode transformar seu conteúdo em cartões de repetição espaçada. Conecte seu próprio servidor depois para gerar e revisar cartões a partir de suas próprias notas e mídias."
   },
   "flashcards_demoExample1": {
-    "message": "See how decks, cards, and tags are organized across Review and Manage tabs."
+    "message": "Veja como baralhos, cartões e tags são organizados nas abas Revisar e Gerenciar."
   },
   "flashcards_demoExample2": {
-    "message": "When you connect, you’ll be able to generate cards from lectures, meetings, or notes and review them on a schedule."
+    "message": "Quando você se conectar, poderá gerar cartões de aulas, reuniões ou notas e revisá-los em um cronograma."
   },
   "flashcards_selectDeck": {
-    "message": "Select deck"
+    "message": "Selecionar baralho"
   },
   "flashcards_nextDue": {
-    "message": "Next due"
+    "message": "Próxima revisão"
   },
   "flashcards_front": {
-    "message": "Front"
+    "message": "Frente"
   },
   "flashcards_back": {
-    "message": "Back"
+    "message": "Verso"
   },
   "flashcards_extra": {
     "message": "Extra"
   },
   "flashcards_showAnswer": {
-    "message": "Show Answer"
+    "message": "Mostrar resposta"
   },
-  "flashcards_hideAnswer": { "message": "Hide Answer" },
-  "flashcards_preview": { "message": "Preview" },
-  "flashcards_rate": { "message": "Rate" },
-  "flashcards_answerMs": { "message": "Time to answer (seconds, optional)" },
-  "flashcards_noDue": { "message": "No due cards" },
-  "flashcards_deck": { "message": "Deck" },
-  "flashcards_newDeck": { "message": "New Deck" },
-  "flashcards_modelType": { "message": "Card template" },
-  "flashcards_reverse": { "message": "Also create reverse card" },
-  "flashcards_isCloze": { "message": "Cloze deletion" },
+  "flashcards_hideAnswer": { "message": "Ocultar resposta" },
+  "flashcards_preview": { "message": "Prévia" },
+  "flashcards_rate": { "message": "Avaliar" },
+  "flashcards_answerMs": { "message": "Tempo para responder (segundos, opcional)" },
+  "flashcards_noDue": { "message": "Nenhum cartão para revisar" },
+  "flashcards_deck": { "message": "Baralho" },
+  "flashcards_newDeck": { "message": "Novo baralho" },
+  "flashcards_modelType": { "message": "Modelo de cartão" },
+  "flashcards_reverse": { "message": "Também criar cartão invertido" },
+  "flashcards_isCloze": { "message": "Exclusão cloze" },
   "flashcards_tags": { "message": "Tags" },
-  "flashcards_dueStatus": { "message": "Due status" },
+  "flashcards_dueStatus": { "message": "Status de revisão" },
   "flashcards_tag": { "message": "Tag" },
-  "flashcards_noCards": { "message": "No cards" },
-  "flashcards_due": { "message": "Due" },
-  "flashcards_editCard": { "message": "Edit Card" },
-  "flashcards_importTitle": { "message": "Import Flashcards" },
-  "flashcards_exportTitle": { "message": "Export Flashcards" },
-  "flashcards_importHelp": { "message": "Paste TSV/CSV lines: Deck, Front, Back, Tags, Notes" },
-  "flashcards_pasteContent": { "message": "Paste content here..." },
-  "flashcards_tab": { "message": "Tab" },
-  "flashcards_comma": { "message": ", (Comma)" },
-  "flashcards_semicolon": { "message": "; (Semicolon)" },
-  "flashcards_pipe": { "message": "| (Pipe)" },
-  "flashcards_hasHeader": { "message": "Has header" },
-  "flashcards_import": { "message": "Import" },
-  "flashcards_imported": { "message": "Imported" },
-  "flashcards_importLimits": { "message": "Import Limits" },
+  "flashcards_noCards": { "message": "Nenhum cartão" },
+  "flashcards_due": { "message": "Pendente" },
+  "flashcards_editCard": { "message": "Editar cartão" },
+  "flashcards_importTitle": { "message": "Importar flashcards" },
+  "flashcards_exportTitle": { "message": "Exportar flashcards" },
+  "flashcards_importHelp": { "message": "Cole linhas TSV/CSV: Baralho, frente, verso, tags, notas" },
+  "flashcards_pasteContent": { "message": "Cole o conteúdo aqui..." },
+  "flashcards_tab": { "message": "Tabulação" },
+  "flashcards_comma": { "message": ", (vírgula)" },
+  "flashcards_semicolon": { "message": "; (ponto e vírgula)" },
+  "flashcards_pipe": { "message": "| (barra vertical)" },
+  "flashcards_hasHeader": { "message": "Tem linha de cabeçalho" },
+  "flashcards_import": { "message": "Importar" },
+  "flashcards_imported": { "message": "Importado" },
+  "flashcards_importLimits": { "message": "Limites de importação" },
   "flashcards_csv": { "message": "CSV/TSV" },
   "flashcards_apkg": { "message": "Anki (.apkg)" },
-  "flashcards_includeReverse": { "message": "Include reverse" },
-  "flashcards_includeHeader": { "message": "Include header row" },
-  "flashcards_extendedHeader": { "message": "Extended header (technical metadata)" },
+  "flashcards_includeReverse": { "message": "Incluir invertido" },
+  "flashcards_includeHeader": { "message": "Incluir linha de cabeçalho" },
+  "flashcards_extendedHeader": { "message": "Cabeçalho estendido (metadados técnicos)" },
   "flashcards_download": { "message": "Download" },
-  "flashcards_duplicate": { "message": "Duplicate" },
-  "flashcards_move": { "message": "Move" },
-  "flashcards_bulkMove": { "message": "Bulk Move" },
-  "flashcards_bulkDelete": { "message": "Bulk Delete" },
-  "flashcards_exportSelectedCsv": { "message": "Export selected (CSV/TSV)" },
-  "flashcards_selectedCount": { "message": "Selected" },
-  "flashcards_selectAllOnPage": { "message": "Select all on page" },
-  "flashcards_selectAllAcross": { "message": "Select all across results" },
-  "flashcards_clearSelection": { "message": "Clear selection" },
-  "flashcards_ratingAgain": { "message": "Again" },
-  "flashcards_ratingAgainHelp": { "message": "I didn’t remember this card." },
-  "flashcards_ratingHard": { "message": "Hard" },
-  "flashcards_ratingHardHelp": { "message": "I barely remembered; it felt difficult." },
-  "flashcards_ratingGood": { "message": "Good" },
-  "flashcards_ratingGoodHelp": { "message": "I remembered with a bit of effort." },
-  "flashcards_ratingEasy": { "message": "Easy" },
-  "flashcards_ratingEasyHelp": { "message": "I recalled it quickly and confidently." },
-  "flashcards_showTiming": { "message": "Track answer time" },
-  "flashcards_hideTiming": { "message": "Hide timing" },
-  "flashcards_noDueTitle": { "message": "No cards due for review" },
-  "flashcards_noDueDescription": { "message": "You’re all caught up. Create new cards or import an existing deck to start reviewing." },
-  "flashcards_noDueCreateCta": { "message": "Create a new card" },
-  "flashcards_noDueImportCta": { "message": "Import a deck" },
-  "flashcards_createTitle": { "message": "Create flashcards from your notes" },
-  "flashcards_createDescription": { "message": "Use the front for the question and the back for the answer. You can group cards into decks and add tags for faster search." },
-  "flashcards_modelTypeHelp": { "message": "Basic shows a question on the front and answer on the back. Reverse also creates the opposite card. Cloze hides parts of the text using {{...}}." },
-  "flashcards_reverseHelp": { "message": "Also create a card where the back becomes the question." },
-  "flashcards_isClozeHelp": { "message": "Use for fill‑in‑the‑blank cards. Wrap hidden text in {{...}} on the front." },
-  "flashcards_bulkActions": { "message": "Bulk actions" },
-  "flashcards_selectionHelp": { "message": "“Select all across results” applies actions to every card that matches your filters, not just this page." },
-  "flashcards_noCardsTitle": { "message": "No flashcards yet" },
-  "flashcards_noCardsDescription": { "message": "Create cards from your notes and media, or import an existing deck." },
-  "flashcards_clearFilters": { "message": "Clear filters" },
-  "flashcards_noCardsCreateCta": { "message": "Create your first card" },
-  "flashcards_noCardsImportCta": { "message": "Import flashcards" },
-  "flashcards_mapping": { "message": "Column mapping" },
-  "flashcards_mappingPreview": { "message": "Preview of the first few mapped rows:" },
-  "flashcards_exportHelp": { "message": "Filter by deck, tag, or search, then export as CSV/TSV for spreadsheets or Anki (.apkg) for Anki clients." },
+  "flashcards_duplicate": { "message": "Duplicar" },
+  "flashcards_move": { "message": "Mover" },
+  "flashcards_bulkMove": { "message": "Mover em lote" },
+  "flashcards_bulkDelete": { "message": "Excluir em massa" },
+  "flashcards_exportSelectedCsv": { "message": "Exportar selecionados (CSV/TSV)" },
+  "flashcards_selectedCount": { "message": "Selecionado" },
+  "flashcards_selectAllOnPage": { "message": "Selecionar todos na página" },
+  "flashcards_selectAllAcross": { "message": "Selecionar todos nos resultados" },
+  "flashcards_clearSelection": { "message": "Limpar seleção" },
+  "flashcards_ratingAgain": { "message": "De novo" },
+  "flashcards_ratingAgainHelp": { "message": "Eu não me lembrei deste cartão." },
+  "flashcards_ratingHard": { "message": "Difícil" },
+  "flashcards_ratingHardHelp": { "message": "Eu mal me lembrei; pareceu difícil." },
+  "flashcards_ratingGood": { "message": "Bom" },
+  "flashcards_ratingGoodHelp": { "message": "Eu me lembrei com um pouco de esforço." },
+  "flashcards_ratingEasy": { "message": "Fácil" },
+  "flashcards_ratingEasyHelp": { "message": "Eu lembrei rapidamente e com confiança." },
+  "flashcards_showTiming": { "message": "Acompanhar tempo de resposta" },
+  "flashcards_hideTiming": { "message": "Ocultar tempo" },
+  "flashcards_noDueTitle": { "message": "Nenhum cartão para revisar" },
+  "flashcards_noDueDescription": { "message": "Você está em dia. Crie novos cartões ou importe um baralho existente para começar a revisar." },
+  "flashcards_noDueCreateCta": { "message": "Criar um novo cartão" },
+  "flashcards_noDueImportCta": { "message": "Importar um baralho" },
+  "flashcards_createTitle": { "message": "Crie flashcards a partir de suas notas" },
+  "flashcards_createDescription": { "message": "Use a frente para a pergunta e o verso para a resposta. Você pode agrupar cartões em baralhos e adicionar tags para pesquisar mais rápido." },
+  "flashcards_modelTypeHelp": { "message": "Básico mostra a pergunta na frente e a resposta no verso. Invertido também cria o cartão oposto. Cloze oculta partes do texto usando {{...}}." },
+  "flashcards_reverseHelp": { "message": "Também criar um cartão em que o verso vira a pergunta." },
+  "flashcards_isClozeHelp": { "message": "Use para cartões de preencher lacunas. Envolva o texto oculto em {{...}} na frente." },
+  "flashcards_bulkActions": { "message": "Ações em massa" },
+  "flashcards_selectionHelp": { "message": "“Selecionar todos nos resultados” aplica ações a todos os cartões que correspondem aos seus filtros, não apenas a esta página." },
+  "flashcards_noCardsTitle": { "message": "Ainda não há flashcards" },
+  "flashcards_noCardsDescription": { "message": "Crie cartões a partir de suas notas e mídias ou importe um baralho existente." },
+  "flashcards_clearFilters": { "message": "Limpar filtros" },
+  "flashcards_noCardsCreateCta": { "message": "Crie seu primeiro cartão" },
+  "flashcards_noCardsImportCta": { "message": "Importar flashcards" },
+  "flashcards_mapping": { "message": "Mapeamento de colunas" },
+  "flashcards_mappingPreview": { "message": "Prévia das primeiras linhas mapeadas:" },
+  "flashcards_exportHelp": { "message": "Filtre por baralho, tag ou busca e, em seguida, exporte como CSV/TSV para planilhas ou Anki (.apkg) para clientes Anki." },
   "footerHelp": {
     "message": "Depois de conectado, você pode voltar a estas configurações a qualquer momento pelo menu da extensão.",
     "description": "Texto de ajuda no rodapé para o fluxo de onboarding nas configurações."

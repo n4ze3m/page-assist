@@ -43,14 +43,14 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
   const [password, setPassword] = React.useState('')
   const [authError, setAuthError] = React.useState<string | null>(null)
   const [pathChoice, setPathChoice] = React.useState<PathChoice>('has-server')
-	  const [autoFinishOnSuccess, setAutoFinishOnSuccess] = useStorage(
-	    { key: 'onboardingAutoFinish', instance: localStorageInstance },
-	    false
-	  )
-	  const [headerShortcutsPref, setHeaderShortcutsPref] = useStorage(
-	    { key: 'headerShortcutsExpanded', instance: localStorageInstance },
-	    true
-	  )
+  const [autoFinishOnSuccess, setAutoFinishOnSuccess] = useStorage(
+    { key: 'onboardingAutoFinish', instance: localStorageInstance },
+    false
+  )
+  const [headerShortcutsPref, setHeaderShortcutsPref] = useStorage(
+    { key: 'headerShortcutsExpanded', instance: localStorageInstance },
+    true
+  )
 
   const { uxState, configStep } = useConnectionUxState()
   const connectionState = useConnectionState()
@@ -68,9 +68,11 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
     }
   }, [t])
 
-	  const urlInputRef = React.useRef<HTMLInputElement | HTMLTextAreaElement | null>(null)
+  const urlInputRef =
+    React.useRef<HTMLInputElement | HTMLTextAreaElement | null>(null)
   const authStepRef = React.useRef<HTMLDivElement | null>(null)
   const confirmStepRef = React.useRef<HTMLDivElement | null>(null)
+  const pathRadioRefs = React.useRef<HTMLButtonElement[]>([])
 
   React.useEffect(() => {
     try {
@@ -411,10 +413,10 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
     await useConnectionStore.getState().testConnectionFromOnboarding()
   }
 
-	  const handleUseDemoMode = () => {
-	    try {
-	      setDemoEnabled(true)
-	    } catch {
+  const handleUseDemoMode = () => {
+    try {
+      setDemoEnabled(true)
+    } catch {
       // Ignore demo storage failures; connection store mode still applies.
     }
     try {
@@ -424,10 +426,10 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
       console.debug(
         "[OnboardingWizard] Failed to enable demo mode from onboarding",
         err
-	      )
-	    }
-	    finish()
-	  }
+      )
+    }
+    finish()
+  }
 
   const finish = React.useCallback(() => {
     useConnectionStore.getState().markFirstRunComplete()
@@ -474,6 +476,47 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
     }
   }, [activeStep])
 
+  const handlePathKeyDown = (
+    event: React.KeyboardEvent<HTMLButtonElement>,
+    currentIndex: number,
+    options: { value: PathChoice }[]
+  ) => {
+    const { key } = event
+    if (
+      key !== 'ArrowRight' &&
+      key !== 'ArrowLeft' &&
+      key !== 'ArrowDown' &&
+      key !== 'ArrowUp'
+    ) {
+      return
+    }
+
+    event.preventDefault()
+
+    const lastIndex = options.length - 1
+    let nextIndex = currentIndex
+
+    if (key === 'ArrowRight' || key === 'ArrowDown') {
+      nextIndex = currentIndex === lastIndex ? 0 : currentIndex + 1
+    } else if (key === 'ArrowLeft' || key === 'ArrowUp') {
+      nextIndex = currentIndex === 0 ? lastIndex : currentIndex - 1
+    }
+
+    const nextOption = options[nextIndex]
+    if (!nextOption) return
+
+    setPathChoice(nextOption.value)
+
+    const nextButton = pathRadioRefs.current[nextIndex]
+    if (nextButton) {
+      try {
+        nextButton.focus()
+      } catch {
+        // ignore focus errors
+      }
+    }
+  }
+
   return (
     <div className="mx-auto w-full max-w-2xl rounded-xl border border-gray-200 bg-white px-6 py-6 text-gray-900 shadow-sm dark:border-gray-700 dark:bg-[#171717] dark:text-gray-100">
       <h2 className="text-lg font-semibold mb-2 text-gray-900 dark:text-gray-100">{t('settings:onboarding.title')}</h2>
@@ -498,6 +541,7 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
             'settings:onboarding.path.heading',
             'How would you like to get started?'
           )}
+          aria-orientation="horizontal"
           className="grid gap-3 md:grid-cols-3"
         >
           {[
@@ -534,7 +578,7 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
                 'Try the workspace with sample data; connect your own server later.'
               )
             }
-          ].map((option) => {
+          ].map((option, index, options) => {
             const selected = pathChoice === option.value
             return (
               <button
@@ -542,7 +586,16 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
                 type="button"
                 role="radio"
                 aria-checked={selected}
+                tabIndex={selected ? 0 : -1}
                 onClick={() => setPathChoice(option.value)}
+                onKeyDown={(event) =>
+                  handlePathKeyDown(event, index, options)
+                }
+                ref={(element) => {
+                  if (element) {
+                    pathRadioRefs.current[index] = element
+                  }
+                }}
                 className={`flex h-full w-full flex-col items-start rounded-md border px-3 py-2 text-left text-xs transition-colors ${
                   selected
                     ? 'border-blue-500 bg-blue-50 text-gray-900 dark:border-blue-400 dark:bg-blue-900/20'

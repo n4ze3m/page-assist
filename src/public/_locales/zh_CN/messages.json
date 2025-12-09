@@ -186,76 +186,76 @@
     "message": "这将重置您的引导状态，并带您返回设置流程的起始步骤。"
   },
   "notesEmpty_connectTitle": {
-    "message": "Connect to use Notes"
+    "message": "连接后即可使用“笔记”功能"
   },
   "notesEmpty_connectDescription": {
-    "message": "To use Notes, first connect to your tldw server."
+    "message": "若要使用“笔记”，请先连接到你的 tldw 服务器。"
   },
   "notesEmpty_connectExample1": {
-    "message": "Open Settings \u2192 tldw server to add your server URL."
+    "message": "打开“设置” \u2192 “tldw server”，添加你的服务器 URL。"
   },
   "notesEmpty_connectExample2": {
-    "message": "Use Diagnostics if your server is running but not reachable."
+    "message": "如果服务器已运行但无法访问，请使用“诊断”功能。"
   },
   "notesEmpty_demoTitle": {
-    "message": "Explore Notes in demo mode"
+    "message": "在演示模式中体验“笔记”"
   },
   "notesEmpty_demoDescription": {
-    "message": "This demo shows how Notes can organize your insights. Connect your own server later to create and save real notes."
+    "message": "此演示展示“笔记”如何整理你的想法。以后连接你自己的服务器后即可创建并保存真实笔记。"
   },
   "notesEmpty_demoExample1": {
-    "message": "See how note titles, previews, and timestamps appear in the list."
+    "message": "查看笔记标题、预览和时间戳在列表中的展示方式。"
   },
   "notesEmpty_demoExample2": {
-    "message": "When you connect, you\u2019ll be able to create notes from meetings, reviews, and more."
+    "message": "连接后，你可以根据会议、回顾等内容创建笔记。"
   },
   "notesEmpty_demoExample3": {
-    "message": "Use Notes alongside Media and Review to keep track of your findings."
+    "message": "将“笔记”与“媒体”和“回顾”结合使用，以跟踪你的洞见。"
   },
   "notesEmpty_demoPreviewHeading": {
-    "message": "Example notes (preview only)"
+    "message": "示例笔记（仅预览）"
   },
   "notesEmpty_demoSample1Title": {
-    "message": "Demo note: Weekly meeting recap"
+    "message": "演示笔记：每周会议回顾"
   },
   "notesEmpty_demoSample1Preview": {
-    "message": "Decisions, blockers, and follow-ups from a recent team sync."
+    "message": "最近一次团队同步中的决策、阻碍及后续事项。"
   },
   "notesEmpty_demoSample1Meta": {
-    "message": "Today \u00b7 9:32 AM"
+    "message": "今天 \u00b7 上午 9:32"
   },
   "notesEmpty_demoSample2Title": {
-    "message": "Demo note: Research highlights"
+    "message": "演示笔记：研究亮点"
   },
   "notesEmpty_demoSample2Preview": {
-    "message": "Key insights pulled from a long article or paper."
+    "message": "从长篇文章或论文中提取的关键洞见。"
   },
   "notesEmpty_demoSample2Meta": {
-    "message": "Yesterday \u00b7 4:10 PM"
+    "message": "昨天 \u00b7 下午 4:10"
   },
   "notesEmpty_demoSample3Title": {
-    "message": "Demo note: Call summary"
+    "message": "演示笔记：通话摘要"
   },
   "notesEmpty_demoSample3Preview": {
-    "message": "Summary of a customer call with next steps and owners."
+    "message": "一次客户通话的摘要，包括后续步骤和责任人。"
   },
   "notesEmpty_demoSample3Meta": {
-    "message": "This week"
+    "message": "本周"
   },
   "notesEmpty_title": {
-    "message": "No notes yet"
+    "message": "暂时还没有笔记"
   },
   "notesEmpty_description": {
-    "message": "Capture and organize free-form notes connected to your tldw insights."
+    "message": "记录并整理与你的 tldw 洞见相关的自由形式笔记。"
   },
   "notesEmpty_exampleCreate": {
-    "message": "Create a new note for a recent meeting or transcript."
+    "message": "为最近的会议或转录内容创建一条新笔记。"
   },
   "notesEmpty_exampleLink": {
-    "message": "Save review outputs into Notes so you can revisit them later."
+    "message": "将回顾的结果保存到“笔记”中，方便日后查阅。"
   },
   "notesEmpty_primaryCta": {
-    "message": "Create note"
+    "message": "创建笔记"
   },
   "flashcards_review": {
     "message": "Review"

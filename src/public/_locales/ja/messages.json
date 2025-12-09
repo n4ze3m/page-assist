@@ -138,76 +138,76 @@
     "description": "オンボーディングの最後のパネルのタイトル（現在は英語のまま）。"
   },
   "notesEmpty_connectTitle": {
-    "message": "Connect to use Notes"
+    "message": "Notes を使うには接続してください"
   },
   "notesEmpty_connectDescription": {
-    "message": "To use Notes, first connect to your tldw server."
+    "message": "Notes を利用するには、まず tldw サーバーに接続してください。"
   },
   "notesEmpty_connectExample1": {
-    "message": "Open Settings \u2192 tldw server to add your server URL."
+    "message": "\u3010\u8a2d\u5b9a\u3011\u2192\u3010tldw server\u3011\u3092\u958b\u304d\u3001\u30b5\u30fc\u30d0\u30fc URL \u3092\u8ffd\u52a0\u3057\u3066\u304f\u3060\u3055\u3044\u3002"
   },
   "notesEmpty_connectExample2": {
-    "message": "Use Diagnostics if your server is running but not reachable."
+    "message": "\u30b5\u30fc\u30d0\u30fc\u304c\u52d5\u4f5c\u3057\u3066\u3044\u308b\u306e\u306b\u5230\u9054\u3067\u304d\u306a\u3044\u5834\u5408\u306f\u3001\u3010\u8a3a\u65ad\u3011\u3092\u4f7f\u7528\u3057\u3066\u304f\u3060\u3055\u3044\u3002"
   },
   "notesEmpty_demoTitle": {
-    "message": "Explore Notes in demo mode"
+    "message": "\u30c7\u30e2\u30e2\u30fc\u30c9\u3067 Notes \u3092\u8a66\u3059"
   },
   "notesEmpty_demoDescription": {
-    "message": "This demo shows how Notes can organize your insights. Connect your own server later to create and save real notes."
+    "message": "\u3053\u306e\u30c7\u30e2\u3067\u306f\u3001Notes \u304c\u30a4\u30f3\u30b5\u30a4\u30c8\u3092\u3069\u306e\u3088\u3046\u306b\u6574\u7406\u3067\u304d\u308b\u304b\u3092\u7d39\u4ecb\u3057\u307e\u3059\u3002\u3042\u3068\u304b\u3089\u81ea\u5206\u306e\u30b5\u30fc\u30d0\u30fc\u306b\u63a5\u7d9a\u3057\u3066\u3001\u672c\u7269\u306e\u30e1\u30e2\u3092\u4f5c\u6210\u30fb\u4fdd\u5b58\u3067\u304d\u307e\u3059\u3002"
   },
   "notesEmpty_demoExample1": {
-    "message": "See how note titles, previews, and timestamps appear in the list."
+    "message": "\u30ea\u30b9\u30c8\u3067\u30e1\u30e2\u306e\u30bf\u30a4\u30c8\u30eb\u3001\u30d7\u30ec\u30d3\u30e5\u30fc\u3001\u30bf\u30a4\u30e0\u30b9\u30bf\u30f3\u30d7\u304c\u3069\u306e\u3088\u3046\u306b\u8868\u793a\u3055\u308c\u308b\u304b\u3092\u78ba\u8a8d\u3067\u304d\u307e\u3059\u3002"
   },
   "notesEmpty_demoExample2": {
-    "message": "When you connect, you\u2019ll be able to create notes from meetings, reviews, and more."
+    "message": "\u63a5\u7d9a\u3059\u308b\u3068\u3001\u4f1a\u8b70\u3084\u30ec\u30d3\u30e5\u30fc\u306a\u3069\u304b\u3089\u30e1\u30e2\u3092\u4f5c\u6210\u3067\u304d\u308b\u3088\u3046\u306b\u306a\u308a\u307e\u3059\u3002"
   },
   "notesEmpty_demoExample3": {
-    "message": "Use Notes alongside Media and Review to keep track of your findings."
+    "message": "Notes \u3092 Media \u3084 Review \u3068\u4e00\u7dd2\u306b\u4f7f\u3046\u3053\u3068\u3067\u3001\u898b\u3064\u3051\u305f\u60c5\u5831\u3092\u6574\u7406\u3057\u3066\u304a\u3051\u307e\u3059\u3002"
   },
   "notesEmpty_demoPreviewHeading": {
-    "message": "Example notes (preview only)"
+    "message": "\u30b5\u30f3\u30d7\u30eb\u306e\u30e1\u30e2\uff08\u30d7\u30ec\u30d3\u30e5\u30fc\u306e\u307f\uff09"
   },
   "notesEmpty_demoSample1Title": {
-    "message": "Demo note: Weekly meeting recap"
+    "message": "\u30c7\u30e2\u30e1\u30e2: \u9031\u6b21\u30df\u30fc\u30c6\u30a3\u30f3\u30b0\u306e\u632f\u308a\u8fd4\u308a"
   },
   "notesEmpty_demoSample1Preview": {
-    "message": "Decisions, blockers, and follow-ups from a recent team sync."
+    "message": "\u6700\u8fd1\u306e\u30c1\u30fc\u30e0\u540c\u671f\u3067\u6c7a\u307e\u3063\u305f\u4e8b\u9805\u3001\u30d6\u30ed\u30c3\u30ab\u30fc\u3001\u30d5\u30a9\u30ed\u30fc\u30a2\u30c3\u30d7\u3002"
   },
   "notesEmpty_demoSample1Meta": {
-    "message": "Today \u00b7 9:32 AM"
+    "message": "\u4eca\u65e5 \u00b7 9:32"
   },
   "notesEmpty_demoSample2Title": {
-    "message": "Demo note: Research highlights"
+    "message": "\u30c7\u30e2\u30e1\u30e2: \u30ea\u30b5\u30fc\u30c1\u306e\u30cf\u30a4\u30e9\u30a4\u30c8"
   },
   "notesEmpty_demoSample2Preview": {
-    "message": "Key insights pulled from a long article or paper."
+    "message": "\u9577\u3044\u8a18\u4e8b\u3084\u8ad6\u6587\u304b\u3089\u62bd\u51fa\u3057\u305f\u4e3b\u306a\u30a4\u30f3\u30b5\u30a4\u30c8\u3002"
   },
   "notesEmpty_demoSample2Meta": {
-    "message": "Yesterday \u00b7 4:10 PM"
+    "message": "\u6628\u65e5 \u00b7 16:10"
   },
   "notesEmpty_demoSample3Title": {
-    "message": "Demo note: Call summary"
+    "message": "\u30c7\u30e2\u30e1\u30e2: \u901a\u8a71\u30b5\u30de\u30ea\u30fc"
   },
   "notesEmpty_demoSample3Preview": {
-    "message": "Summary of a customer call with next steps and owners."
+    "message": "\u9867\u5ba2\u3068\u306e\u901a\u8a71\u5185\u5bb9\u306e\u8981\u7d04\u3068\u3001\u6b21\u306e\u30b9\u30c6\u30c3\u30d7\u3084\u62c5\u5f53\u8005\u3002"
   },
   "notesEmpty_demoSample3Meta": {
-    "message": "This week"
+    "message": "\u4eca\u9031"
   },
   "notesEmpty_title": {
-    "message": "No notes yet"
+    "message": "\u307e\u3060\u30e1\u30e2\u304c\u3042\u308a\u307e\u305b\u3093"
   },
   "notesEmpty_description": {
-    "message": "Capture and organize free-form notes connected to your tldw insights."
+    "message": "tldw \u306e\u30a4\u30f3\u30b5\u30a4\u30c8\u306b\u95a2\u9023\u3059\u308b\u81ea\u7531\u5f62\u5f0f\u306e\u30e1\u30e2\u3092\u4fdd\u5b58\u30fb\u6574\u7406\u3067\u304d\u307e\u3059\u3002"
   },
   "notesEmpty_exampleCreate": {
-    "message": "Create a new note for a recent meeting or transcript."
+    "message": "\u6700\u8fd1\u306e\u30df\u30fc\u30c6\u30a3\u30f3\u30b0\u3084\u66f8\u304d\u8d77\u3053\u3057\u306b\u3064\u3044\u3066\u3001\u65b0\u3057\u3044\u30e1\u30e2\u3092\u4f5c\u6210\u3057\u3066\u307f\u3066\u304f\u3060\u3055\u3044\u3002"
   },
   "notesEmpty_exampleLink": {
-    "message": "Save review outputs into Notes so you can revisit them later."
+    "message": "\u30ec\u30d3\u30e5\u30fc\u7d50\u679c\u3092 Notes \u306b\u4fdd\u5b58\u3057\u3066\u3001\u3042\u3068\u304b\u3089\u898b\u8fd4\u305b\u308b\u3088\u3046\u306b\u3057\u307e\u3057\u3087\u3046\u3002"
   },
   "notesEmpty_primaryCta": {
-    "message": "Create note"
+    "message": "\u30e1\u30e2\u3092\u4f5c\u6210"
   },
   "headerShortcuts": {
     "message": "ヘッダーにクイックショートカットを表示する"

@@ -580,8 +580,8 @@ export const useOmniSearchDeps = (): OmniSearchDependencies => {
           }
         })
         message.success(
-          t("option:header.omniSearchCreateNote", {
-            defaultValue: 'Create note "{{query}}"',
+          t("option:header.omniSearchCreateNoteSuccess", {
+            defaultValue: 'Note "{{query}}" created',
             query: trimmed
           })
         )
@@ -601,8 +601,8 @@ export const useOmniSearchDeps = (): OmniSearchDependencies => {
       try {
         await createDeck({ name: trimmed, description: null })
         message.success(
-          t("option:header.omniSearchCreateFlashcards", {
-            defaultValue: 'Create flashcard collection "{{query}}"',
+          t("option:header.omniSearchCreateFlashcardsSuccess", {
+            defaultValue: 'Flashcard collection "{{query}}" created',
             query: trimmed
           })
         )
@@ -622,8 +622,9 @@ export const useOmniSearchDeps = (): OmniSearchDependencies => {
       if (trimmed) {
         updatePageTitle(trimmed)
       }
+      navigate("/")
     },
-    [clearChat]
+    [clearChat, navigate, updatePageTitle]
   )
 
   const deps: OmniSearchDependencies = React.useMemo(

@@ -138,75 +138,75 @@
     "description": "Titre du panneau final de l’onboarding avec les prochaines étapes (actuellement en anglais)."
   },
   "notesEmpty_connectTitle": {
-    "message": "Connect to use Notes"
+    "message": "Se connecter pour utiliser Notes"
   },
   "notesEmpty_connectDescription": {
-    "message": "To use Notes, first connect to your tldw server."
+    "message": "Pour utiliser Notes, connectez d’abord votre serveur tldw."
   },
   "notesEmpty_connectExample1": {
-    "message": "Open Settings \u2192 tldw server to add your server URL."
+    "message": "Ouvrez Param\u00e8tres \u2192 tldw server pour ajouter l’URL de votre serveur."
   },
   "notesEmpty_connectExample2": {
-    "message": "Use Diagnostics if your server is running but not reachable."
+    "message": "Utilisez Diagnostics si votre serveur est en ligne mais injoignable."
   },
   "notesEmpty_demoTitle": {
-    "message": "Explore Notes in demo mode"
+    "message": "Explorer Notes en mode d\u00e9mo"
   },
   "notesEmpty_demoDescription": {
-    "message": "This demo shows how Notes can organize your insights. Connect your own server later to create and save real notes."
+    "message": "Cette d\u00e9mo montre comment Notes peut organiser vos insights. Vous pourrez ensuite connecter votre propre serveur pour cr\u00e9er et enregistrer de vraies notes."
   },
   "notesEmpty_demoExample1": {
-    "message": "See how note titles, previews, and timestamps appear in the list."
+    "message": "Voyez comment les titres, aper\u00e7us et horodatages des notes s’affichent dans la liste."
   },
   "notesEmpty_demoExample2": {
-    "message": "When you connect, you\u2019ll be able to create notes from meetings, reviews, and more."
+    "message": "Une fois connect\u00e9, vous pourrez cr\u00e9er des notes \u00e0 partir de r\u00e9unions, de Review et plus encore."
   },
   "notesEmpty_demoExample3": {
-    "message": "Use Notes alongside Media and Review to keep track of your findings."
+    "message": "Utilisez Notes avec Media et Review pour garder une trace de vos r\u00e9sultats."
   },
   "notesEmpty_demoPreviewHeading": {
-    "message": "Example notes (preview only)"
+    "message": "Notes d’exemple (aper\u00e7u uniquement)"
   },
   "notesEmpty_demoSample1Title": {
-    "message": "Demo note: Weekly meeting recap"
+    "message": "Note de d\u00e9mo : r\u00e9capitulatif de la r\u00e9union hebdomadaire"
   },
   "notesEmpty_demoSample1Preview": {
-    "message": "Decisions, blockers, and follow-ups from a recent team sync."
+    "message": "D\u00e9cisions, blocages et actions de suivi issues d’une r\u00e9union d’\u00e9quipe r\u00e9cente."
   },
   "notesEmpty_demoSample1Meta": {
-    "message": "Today \u00b7 9:32 AM"
+    "message": "Aujourd’hui \u00b7 09:32"
   },
   "notesEmpty_demoSample2Title": {
-    "message": "Demo note: Research highlights"
+    "message": "Note de d\u00e9mo : points cl\u00e9s de la recherche"
   },
   "notesEmpty_demoSample2Preview": {
-    "message": "Key insights pulled from a long article or paper."
+    "message": "Principales id\u00e9es extraites d’un long article ou document."
   },
   "notesEmpty_demoSample2Meta": {
-    "message": "Yesterday \u00b7 4:10 PM"
+    "message": "Hier \u00b7 16:10"
   },
   "notesEmpty_demoSample3Title": {
-    "message": "Demo note: Call summary"
+    "message": "Note de d\u00e9mo : r\u00e9sum\u00e9 d’appel"
   },
   "notesEmpty_demoSample3Preview": {
-    "message": "Summary of a customer call with next steps and owners."
+    "message": "R\u00e9sum\u00e9 d’un appel client avec prochaines \u00e9tapes et responsables."
   },
   "notesEmpty_demoSample3Meta": {
-    "message": "This week"
+    "message": "Cette semaine"
   },
   "notesEmpty_title": {
-    "message": "No notes yet"
+    "message": "Pas encore de notes"
   },
   "notesEmpty_description": {
-    "message": "Capture and organize free-form notes connected to your tldw insights."
+    "message": "Capturez et organisez des notes libres li\u00e9es \u00e0 vos insights tldw."
   },
   "notesEmpty_exampleCreate": {
-    "message": "Create a new note for a recent meeting or transcript."
+    "message": "Cr\u00e9ez une nouvelle note pour une r\u00e9union r\u00e9cente ou une transcription."
   },
   "notesEmpty_exampleLink": {
-    "message": "Save review outputs into Notes so you can revisit them later."
+    "message": "Enregistrez les r\u00e9sultats de Review dans Notes pour pouvoir les consulter plus tard."
   },
   "notesEmpty_primaryCta": {
-    "message": "Create note"
+    "message": "Cr\u00e9er une note"
   }
 }

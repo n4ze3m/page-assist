@@ -80,7 +80,9 @@
     "omniSearchPlaceholder": "Search screens, chats, media, notes…",
     "omniSearchNoResults": "No matches for \"{{query}}\".",
     "omniSearchCreateNote": "Create note \"{{query}}\"",
+    "omniSearchCreateNoteSuccess": "Note \"{{query}}\" created",
     "omniSearchCreateFlashcards": "Create flashcard collection \"{{query}}\"",
+    "omniSearchCreateFlashcardsSuccess": "Flashcard collection \"{{query}}\" created",
     "omniSearchStartChat": "Start new chat \"{{query}}\"",
     "connectionCard.connectedCaption": "Chat and tools are now available in Options and the sidepanel.",
     "quickIngestQueuedAria": "{{label}} — {{count}} items queued — click to review and process"
@@ -411,6 +413,22 @@
     "exampleCreate": "Create a new note for a recent meeting or transcript.",
     "exampleLink": "Save review outputs into Notes so you can revisit them later.",
     "primaryCta": "Create note"
+  },
+  "connectionCard": {
+    "descriptionConnectedList": {
+      "reviewMedia": "Review media & transcripts",
+      "searchKnowledge": "Search knowledge and notes",
+      "useRag": "Use RAG with your own documents"
+    }
+  },
+  "omniSearch": {
+    "filterScreen": "Screens",
+    "filterChat": "Chats",
+    "filterMedia": "Media",
+    "filterNote": "Notes",
+    "filterFlashcards": "Flashcard Collections",
+    "filterPrompt": "Prompts",
+    "filteringBy": "Filtering by:"
   },
   "worldBooksEmpty": {
     "demoTitle": "Explore World Books in demo mode",
