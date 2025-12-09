@@ -852,21 +852,21 @@
     },
     "startServer": {
       "title": "Innan du börjar — starta din tldw-server",
-      "body": "Om du inte har startat servern ännu, kör ett av dessa kommandon i tldw_server-lagringsplatsen och gå sedan tillbaka hit.",
+      "body": "Om du inte har startat servern än kör du något av dessa kommandon i tldw_server-repot och kommer sedan tillbaka hit.",
       "copy": "Kopiera kommando",
       "optionLocal": "Kör lokalt med Python",
-      "optionLocalHint": "Kör det i din tldw_server-virtualenv från serverlagringsplatsens rot.",
+      "optionLocalHint": "Kör från tldw_server:s virtualenv i repots rot.",
       "optionDocker": "Kör med Docker Compose (en användare)",
-      "optionDockerHint": "Kör det från tldw_server-lagringsplatsens rot för att starta API:et och databasen."
+      "optionDockerHint": "Kör från tldw_server-repots rot för att starta API och databas."
     },
     "path": {
       "heading": "Hur vill du komma igång?",
       "hasServer": "Jag kör redan tldw_server",
-      "hasServerHelp": "Connect to an existing tldw_server you already run.",
+      "hasServerHelp": "Anslut till en tldw_server som du redan kör.",
       "noServer": "Jag har ingen server ännu",
-      "noServerHelp": "Follow a setup guide for tldw_server, or start in demo mode.",
+      "noServerHelp": "Följ en installationsguide för tldw_server eller starta i demoläge.",
       "demo": "Utforska bara med en lokal demo",
-      "demoHelp": "Try the workspace with sample data; connect your own server later.",
+      "demoHelp": "Testa arbetsytan med exempeldata; anslut din egen server senare.",
       "noServerTitle": "Ingen server än? Du kan ändå utforska.",
       "noServerBody": "tldw_server är en separat, egenhostad app. Du kan följa installationsguiden nu eller komma tillbaka senare och fortsätta i demoläge.",
       "noServerOptionLocal": "Kör lokalt med Docker eller Python på din egen dator.",

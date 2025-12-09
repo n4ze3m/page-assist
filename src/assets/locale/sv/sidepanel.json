@@ -60,7 +60,7 @@
   "composer": {
     "connectHint": "Anslut till din tldw-server i Inställningar för att kunna skicka meddelanden.",
     "connectingPlaceholder": "Ansluter...",
-    "disconnectedPlaceholder": "Anslut till din tldw-server i Inställningar för att kunna skicka meddelanden och visa media."
+    "disconnectedPlaceholder": "Anslut till din tldw-server i Inställningar för att skicka meddelanden och visa media."
   },
   "notification": {
     "ingestSent": "Sent to tldw server",

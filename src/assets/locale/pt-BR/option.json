@@ -11,6 +11,11 @@
     "descriptionMissing": "tldw_server is the backend that powers chat, knowledge search, and media processing. Connect your own tldw server URL to start using the assistant.",
     "descriptionSearching": "We’re checking {{host}} to see if your tldw server is reachable. This may take a moment while we wait for a response.",
     "descriptionConnected": "Connected to your tldw server at {{host}}. You can start chatting or use Review, Knowledge, and other tools.",
+    "descriptionConnectedList": {
+      "reviewMedia": "Revise mídias e transcrições",
+      "searchKnowledge": "Pesquise na base de conhecimento e nas notas",
+      "useRag": "Use RAG com seus próprios documentos"
+    },
     "descriptionError": "We couldn’t reach your tldw server at {{host}}. Make sure the server is running, the URL is correct, and your browser can reach it over the network.",
     "buttonStartChat": "Start chatting",
     "buttonRetry": "Retry connection",
@@ -72,6 +77,14 @@
     "toolsMenu": "Chat tools",
     "serverBackedLabel": "Server-backed chat",
     "serverBackedTooltip": "Messages in this chat are also saved on your tldw server.",
+    "omniSearchPlaceholder": "Pesquisar em telas, chats, mídias e notas…",
+    "omniSearchNoResults": "Nenhum resultado para \"{{query}}\".",
+    "omniSearchCreateNote": "Criar nota \"{{query}}\"",
+    "omniSearchCreateNoteSuccess": "Nota \"{{query}}\" criada",
+    "omniSearchCreateFlashcards": "Criar coleção de flashcards \"{{query}}\"",
+    "omniSearchCreateFlashcardsSuccess": "Coleção de flashcards \"{{query}}\" criada",
+    "omniSearchStartChat": "Iniciar novo chat \"{{query}}\"",
+    "connectionCard.connectedCaption": "Chat e ferramentas agora estão disponíveis em Opções e na barra lateral.",
     "quickIngestQueuedAria": "{{label}} — {{count}} itens em fila — clique para revisar e processar"
   },
   "sidebarTitle": "Histórico de Chat",
@@ -434,6 +447,15 @@
     "exportHelp": "Filter by deck, tag, or search, then export as CSV/TSV for spreadsheets or Anki (.apkg) for Anki clients."
   }
 ,
+  "omniSearch": {
+    "filterScreen": "Telas",
+    "filterChat": "Chats",
+    "filterMedia": "Mídias",
+    "filterNote": "Notas",
+    "filterFlashcards": "Coleções de flashcards",
+    "filterPrompt": "Prompts",
+    "filteringBy": "Filtrando por:"
+  },
   "quickChatHelper": {
     "tooltip": "Assistente de bate-papo rápido",
     "title": "Assistente de bate-papo rápido",
