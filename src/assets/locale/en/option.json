@@ -11,6 +11,11 @@
     "descriptionMissing": "tldw server is an optional backend that runs on your own machine or server. It powers chat history, Knowledge search, and media processing. You can explore the extension first, then connect your own server when you’re ready.",
     "descriptionSearching": "We’re checking {{host}} to see if your tldw server is reachable. This can take a few seconds the first time or after the server restarts.",
     "descriptionConnected": "Connected to your tldw server at {{host}}. You can start chatting, search knowledge, review media, and use other tools from the header.",
+    "descriptionConnectedList": {
+      "reviewMedia": "Review media & transcripts",
+      "searchKnowledge": "Search knowledge and notes",
+      "useRag": "Use RAG with your own documents"
+    },
     "descriptionError": "We couldn’t reach your tldw server at {{host}}. Check that the server is running, the URL matches your tldw_server, and your browser is allowed to reach it. Use Diagnostics for detailed errors and next steps.",
     "buttonStartChat": "Start chatting",
     "buttonRetry": "Retry connection",
@@ -413,13 +418,6 @@
     "exampleCreate": "Create a new note for a recent meeting or transcript.",
     "exampleLink": "Save review outputs into Notes so you can revisit them later.",
     "primaryCta": "Create note"
-  },
-  "connectionCard": {
-    "descriptionConnectedList": {
-      "reviewMedia": "Review media & transcripts",
-      "searchKnowledge": "Search knowledge and notes",
-      "useRag": "Use RAG with your own documents"
-    }
   },
   "omniSearch": {
     "filterScreen": "Screens",

@@ -1,6 +1,5 @@
 import React from "react"
 import { useTranslation } from "react-i18next"
-import { useNavigate } from "react-router-dom"
 import FeatureEmptyState from "@/components/Common/FeatureEmptyState"
 import ConnectFeatureBanner from "@/components/Common/ConnectFeatureBanner"
 import { PageShell } from "@/components/Common/PageShell"
@@ -10,7 +9,6 @@ import { DictionariesManager } from "./Manager"
 
 export const DictionariesWorkspace: React.FC = () => {
   const { t } = useTranslation(["option", "common", "settings"])
-  const navigate = useNavigate()
   const isOnline = useServerOnline()
   const { demoEnabled } = useDemoMode()
 

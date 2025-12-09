@@ -2758,9 +2758,20 @@ export const QuickIngestModal: React.FC<Props> = ({
                           const isOpen = fieldDetailsOpen[f.name]
                           const setOpen = (open: boolean) => setFieldDetailsOpen((prev) => ({ ...prev, [f.name]: open }))
                           const ariaLabel = `${g} \u2013 ${f.title || f.name}`
+                          const isAlsoRecommended =
+                            g !== 'Recommended' &&
+                            recommended.some((rf) => rf.name === f.name)
                           const Label = (
                             <div className="flex items-center gap-1">
                               <span className="min-w-60 text-sm">{f.title || f.name}</span>
+                              {isAlsoRecommended && (
+                                <Tag
+                                  color="blue"
+                                  className="border-0 text-[10px] leading-none px-1 py-0"
+                                >
+                                  {qi('recommendedBadge', 'Recommended')}
+                                </Tag>
+                              )}
                               {f.description ? (
                                 <AntTooltip placement="right" trigger={["hover","click"]} title={<div className="max-w-96 text-xs">{f.description}</div>}>
                                   <HelpCircle className="w-3.5 h-3.5 text-gray-500 cursor-help" />

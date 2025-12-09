@@ -72,7 +72,7 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
     React.useRef<HTMLInputElement | HTMLTextAreaElement | null>(null)
   const authStepRef = React.useRef<HTMLDivElement | null>(null)
   const confirmStepRef = React.useRef<HTMLDivElement | null>(null)
-  const pathRadioRefs = React.useRef<HTMLButtonElement[]>([])
+  const pathRadioRefs = React.useRef<(HTMLButtonElement | null)[]>([])
 
   React.useEffect(() => {
     try {
@@ -579,6 +579,9 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
               )
             }
           ].map((option, index, options) => {
+            if (index === 0) {
+              pathRadioRefs.current.length = options.length
+            }
             const selected = pathChoice === option.value
             return (
               <button
@@ -592,9 +595,7 @@ export const OnboardingWizard: React.FC<Props> = ({ onFinish }) => {
                   handlePathKeyDown(event, index, options)
                 }
                 ref={(element) => {
-                  if (element) {
-                    pathRadioRefs.current[index] = element
-                  }
+                  pathRadioRefs.current[index] = element
                 }}
                 className={`flex h-full w-full flex-col items-start rounded-md border px-3 py-2 text-left text-xs transition-colors ${
                   selected

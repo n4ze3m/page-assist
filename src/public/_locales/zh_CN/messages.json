@@ -185,6 +185,82 @@
   "restartOnboardingConfirmMessage": {
     "message": "这将重置您的引导状态，并带您返回设置流程的起始步骤。"
   },
+  "omniSearchPlaceholder": {
+    "message": "Search screens, chats, media, notes…",
+    "description": "Placeholder text for the omni-search input in the header."
+  },
+  "omniSearchNoResults": {
+    "message": "No matches for \"{{query}}\".",
+    "description": "No-results text for omni-search when nothing matches the query."
+  },
+  "omniSearchCreateNote": {
+    "message": "Create note \"{{query}}\"",
+    "description": "Omni-search action label to create a note from the current query."
+  },
+  "omniSearchCreateFlashcards": {
+    "message": "Create flashcard collection \"{{query}}\"",
+    "description": "Omni-search action label to create a flashcard collection from the current query."
+  },
+  "omniSearchStartChat": {
+    "message": "Start new chat \"{{query}}\"",
+    "description": "Omni-search action label to start a new chat from the current query."
+  },
+  "connectionCard_connectedCaption": {
+    "message": "Chat and tools are now available in Options and the sidepanel.",
+    "description": "Caption under the server connection card when the extension is connected."
+  },
+  "quickIngestQueuedAria": {
+    "message": "{{label}} — {{count}} items queued — click to review and process",
+    "description": "ARIA label template for the Quick ingest button when there are queued items."
+  },
+  "connectionCard_descriptionConnectedList_reviewMedia": {
+    "message": "Review media & transcripts",
+    "description": "First bullet in the connected-state server connection card, highlighting media review."
+  },
+  "connectionCard_descriptionConnectedList_searchKnowledge": {
+    "message": "Search knowledge and notes",
+    "description": "Second bullet in the connected-state server connection card, highlighting knowledge/notes search."
+  },
+  "connectionCard_descriptionConnectedList_useRag": {
+    "message": "Use RAG with your own documents",
+    "description": "Third bullet in the connected-state server connection card, highlighting retrieval-augmented generation usage."
+  },
+  "omniSearch_filterScreen": {
+    "message": "Screens",
+    "description": "Filter label for screens in omni-search."
+  },
+  "omniSearch_filterChat": {
+    "message": "Chats",
+    "description": "Filter label for chats in omni-search."
+  },
+  "omniSearch_filterMedia": {
+    "message": "Media",
+    "description": "Filter label for media in omni-search."
+  },
+  "omniSearch_filterNote": {
+    "message": "Notes",
+    "description": "Filter label for notes in omni-search."
+  },
+  "omniSearch_filterFlashcards": {
+    "message": "Flashcard Collections",
+    "description": "Filter label for flashcard collections in omni-search."
+  },
+  "omniSearch_filterPrompt": {
+    "message": "Prompts",
+    "description": "Filter label for prompts in omni-search."
+  },
+  "omniSearch_filteringBy": {
+    "message": "Filtering by:",
+    "description": "Prefix label shown before the active omni-search filter type."
+  },
+  "omniSearchCreateNoteSuccess": {
+    "message": "Note \"{{query}}\" created",
+    "description": "Confirmation toast message shown after creating a note from omni-search."
+  },
+  "omniSearchCreateFlashcardsSuccess": {
+    "message": "Flashcard collection \"{{query}}\" created",
+    "description": "Confirmation toast message shown after creating a flashcard collection from omni-search."
+  },
   "notesEmpty_connectTitle": {
     "message": "连接后即可使用“笔记”功能"
   },
@@ -258,115 +334,115 @@
     "message": "创建笔记"
   },
   "flashcards_review": {
-    "message": "Review"
+    "message": "复习"
   },
   "flashcards_create": {
-    "message": "Create"
+    "message": "创建"
   },
   "flashcards_manage": {
-    "message": "Manage"
+    "message": "管理"
   },
   "flashcards_importExport": {
-    "message": "Import / Export"
+    "message": "导入 / 导出"
   },
   "flashcards_selectDeck": {
-    "message": "Select deck"
+    "message": "选择牌组"
   },
   "flashcards_nextDue": {
-    "message": "Next due"
+    "message": "下一次到期"
   },
   "flashcards_front": {
-    "message": "Front"
+    "message": "正面"
   },
   "flashcards_back": {
-    "message": "Back"
+    "message": "背面"
   },
   "flashcards_extra": {
-    "message": "Extra"
+    "message": "附加内容"
   },
   "flashcards_showAnswer": {
-    "message": "Show Answer"
+    "message": "显示答案"
   },
   "flashcards_hideAnswer": {
-    "message": "Hide Answer"
+    "message": "隐藏答案"
   },
   "flashcards_preview": {
-    "message": "Preview"
+    "message": "预览"
   },
   "flashcards_rate": {
-    "message": "Rate"
+    "message": "评分"
   },
   "flashcards_answerMs": {
-    "message": "Answer ms (opt)"
+    "message": "答题毫秒数（可选）"
   },
   "flashcards_noDue": {
-    "message": "No due cards"
+    "message": "没有到期的卡片"
   },
   "flashcards_deck": {
-    "message": "Deck"
+    "message": "牌组"
   },
   "flashcards_newDeck": {
-    "message": "New Deck"
+    "message": "新牌组"
   },
   "flashcards_modelType": {
-    "message": "Model Type"
+    "message": "模型类型"
   },
   "flashcards_reverse": {
-    "message": "Reverse"
+    "message": "反向"
   },
   "flashcards_isCloze": {
-    "message": "Is Cloze"
+    "message": "填空（Cloze）"
   },
   "flashcards_tags": {
-    "message": "Tags"
+    "message": "标签"
   },
   "flashcards_dueStatus": {
-    "message": "Due status"
+    "message": "到期状态"
   },
   "flashcards_tag": {
-    "message": "Tag"
+    "message": "标签"
   },
   "flashcards_noCards": {
-    "message": "No cards"
+    "message": "没有卡片"
   },
   "flashcards_due": {
-    "message": "Due"
+    "message": "到期"
   },
   "flashcards_editCard": {
-    "message": "Edit Card"
+    "message": "编辑卡片"
   },
   "flashcards_importTitle": {
-    "message": "Import Flashcards"
+    "message": "导入抽认卡"
   },
   "flashcards_exportTitle": {
-    "message": "Export Flashcards"
+    "message": "导出抽认卡"
   },
   "flashcards_importHelp": {
-    "message": "Paste TSV/CSV lines: Deck, Front, Back, Tags, Notes"
+    "message": "粘贴 TSV/CSV 行：牌组、正面、背面、标签、备注"
   },
   "flashcards_pasteContent": {
-    "message": "Paste content here..."
+    "message": "在此粘贴内容..."
   },
   "flashcards_tab": {
-    "message": "Tab"
+    "message": "制表符 (Tab)"
   },
   "flashcards_comma": {
-    "message": ", (Comma)"
+    "message": "，(逗号)"
   },
   "flashcards_semicolon": {
-    "message": "; (Semicolon)"
+    "message": "；(分号)"
   },
   "flashcards_pipe": {
-    "message": "| (Pipe)"
+    "message": "| (竖线)"
   },
   "flashcards_hasHeader": {
-    "message": "Has header"
+    "message": "包含表头"
   },
   "flashcards_import": {
-    "message": "Import"
+    "message": "导入"
   },
   "flashcards_imported": {
-    "message": "Imported"
+    "message": "已导入"
   },
   "flashcards_importLimits": {
     "message": "匯入限制"

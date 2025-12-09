@@ -34,6 +34,22 @@
     "modePrompts": "Prompts",
     "modeFlashcards": "Flashcards"
   },
+  "controlRow": {
+    "saveMode": "Save Mode",
+    "ephemeral": "Ephemeral",
+    "searchSection": "Search & Vision",
+    "webSearch": "Web Search",
+    "vision": "Vision",
+    "uploadImage": "Upload Image",
+    "quickIngest": "Quick Ingest Page",
+    "openInFullUI": "Open in Full UI",
+    "modeChat": "Chat",
+    "modeMedia": "Media",
+    "modeNotes": "Notes",
+    "modeFlashcards": "Flashcards",
+    "ragSearch": "RAG Search",
+    "moreTools": "More tools"
+  },
   "toolbar": {
     "ragSearch": "RAG Search"
   },

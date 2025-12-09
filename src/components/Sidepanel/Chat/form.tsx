@@ -643,7 +643,8 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
     sttUseSegmentation,
     stopServerDictation,
     t,
-    form
+    form,
+    notification
   ])
 
   const handleLiveCaptionsToggle = React.useCallback(async () => {

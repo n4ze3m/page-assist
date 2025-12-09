@@ -666,37 +666,37 @@
     "message": "Quando você se conectar, poderá criar notas a partir de reuniões, revisões e mais."
   },
   "notesEmpty_demoExample3": {
-    "message": "Use Notes alongside Media and Review to keep track of your findings."
+    "message": "Use Notas junto com Mídia e Revisão para acompanhar seus insights."
   },
   "notesEmpty_demoPreviewHeading": {
-    "message": "Example notes (preview only)"
+    "message": "Notas de exemplo (somente visualização)"
   },
   "notesEmpty_demoSample1Title": {
-    "message": "Demo note: Weekly meeting recap"
+    "message": "Nota demo: resumo da reunião semanal"
   },
   "notesEmpty_demoSample1Preview": {
-    "message": "Decisions, blockers, and follow-ups from a recent team sync."
+    "message": "Decisões, impedimentos e próximos passos de uma sincronização recente da equipe."
   },
   "notesEmpty_demoSample1Meta": {
-    "message": "Today \u00b7 9:32 AM"
+    "message": "Hoje \u00b7 9h32"
   },
   "notesEmpty_demoSample2Title": {
-    "message": "Demo note: Research highlights"
+    "message": "Nota demo: destaques de pesquisa"
   },
   "notesEmpty_demoSample2Preview": {
-    "message": "Key insights pulled from a long article or paper."
+    "message": "Principais insights extraídos de um artigo ou texto longo."
   },
   "notesEmpty_demoSample2Meta": {
-    "message": "Yesterday \u00b7 4:10 PM"
+    "message": "Ontem \u00b7 16h10"
   },
   "notesEmpty_demoSample3Title": {
-    "message": "Demo note: Call summary"
+    "message": "Nota demo: resumo de ligação"
   },
   "notesEmpty_demoSample3Preview": {
-    "message": "Summary of a customer call with next steps and owners."
+    "message": "Resumo de uma ligação com o cliente com próximos passos e responsáveis."
   },
   "notesEmpty_demoSample3Meta": {
-    "message": "This week"
+    "message": "Esta semana"
   },
   "notesEmpty_title": {
     "message": "Ainda não há notas"
@@ -1040,6 +1040,82 @@
   },
   "restartOnboardingConfirmMessage": {
     "message": "Isso irá redefinir o seu estado de onboarding e levá‑lo de volta ao fluxo de configuração."
+  },
+  "omniSearchPlaceholder": {
+    "message": "Search screens, chats, media, notes…",
+    "description": "Placeholder text for the omni-search input in the header."
+  },
+  "omniSearchNoResults": {
+    "message": "No matches for \"{{query}}\".",
+    "description": "No-results text for omni-search when nothing matches the query."
+  },
+  "omniSearchCreateNote": {
+    "message": "Create note \"{{query}}\"",
+    "description": "Omni-search action label to create a note from the current query."
+  },
+  "omniSearchCreateFlashcards": {
+    "message": "Create flashcard collection \"{{query}}\"",
+    "description": "Omni-search action label to create a flashcard collection from the current query."
+  },
+  "omniSearchStartChat": {
+    "message": "Start new chat \"{{query}}\"",
+    "description": "Omni-search action label to start a new chat from the current query."
+  },
+  "connectionCard_connectedCaption": {
+    "message": "Chat and tools are now available in Options and the sidepanel.",
+    "description": "Caption under the server connection card when the extension is connected."
+  },
+  "quickIngestQueuedAria": {
+    "message": "{{label}} — {{count}} items queued — click to review and process",
+    "description": "ARIA label template for the Quick ingest button when there are queued items."
+  },
+  "connectionCard_descriptionConnectedList_reviewMedia": {
+    "message": "Review media & transcripts",
+    "description": "First bullet in the connected-state server connection card, highlighting media review."
+  },
+  "connectionCard_descriptionConnectedList_searchKnowledge": {
+    "message": "Search knowledge and notes",
+    "description": "Second bullet in the connected-state server connection card, highlighting knowledge/notes search."
+  },
+  "connectionCard_descriptionConnectedList_useRag": {
+    "message": "Use RAG with your own documents",
+    "description": "Third bullet in the connected-state server connection card, highlighting retrieval-augmented generation usage."
+  },
+  "omniSearch_filterScreen": {
+    "message": "Screens",
+    "description": "Filter label for screens in omni-search."
+  },
+  "omniSearch_filterChat": {
+    "message": "Chats",
+    "description": "Filter label for chats in omni-search."
+  },
+  "omniSearch_filterMedia": {
+    "message": "Media",
+    "description": "Filter label for media in omni-search."
+  },
+  "omniSearch_filterNote": {
+    "message": "Notes",
+    "description": "Filter label for notes in omni-search."
+  },
+  "omniSearch_filterFlashcards": {
+    "message": "Flashcard Collections",
+    "description": "Filter label for flashcard collections in omni-search."
+  },
+  "omniSearch_filterPrompt": {
+    "message": "Prompts",
+    "description": "Filter label for prompts in omni-search."
+  },
+  "omniSearch_filteringBy": {
+    "message": "Filtering by:",
+    "description": "Prefix label shown before the active omni-search filter type."
+  },
+  "omniSearchCreateNoteSuccess": {
+    "message": "Note \"{{query}}\" created",
+    "description": "Confirmation toast message shown after creating a note from omni-search."
+  },
+  "omniSearchCreateFlashcardsSuccess": {
+    "message": "Flashcard collection \"{{query}}\" created",
+    "description": "Confirmation toast message shown after creating a flashcard collection from omni-search."
   },
   "restartOnboardingToast": {
     "message": "O onboarding foi redefinido"

@@ -875,7 +875,7 @@
     "serverDocsUrl": "https://github.com/rmusser01/tldw_browser_assistant",
     "serverDocsCta": "Learn how tldw server works",
     "learnMoreTldw": "Learn how tldw server works",
-      "serverUrl": {
+    "serverUrl": {
       "label": "Server URL",
       "placeholder": "http://127.0.0.1:8000",
       "help": "Default address for local installs: http://127.0.0.1:8000",

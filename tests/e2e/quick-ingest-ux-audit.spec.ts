@@ -51,6 +51,20 @@ test.describe('Quick ingest – UX audit', () => {
         page.getByRole('dialog', { name: /Inspector/i })
       ).toHaveCount(0)
     } finally {
+      try {
+        await page.evaluate(() => {
+          const w = window as any
+          if (w.__origQuickIngestSendMessageMixed) {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            ;(browser as any).runtime.sendMessage =
+              w.__origQuickIngestSendMessageMixed
+            delete w.__origQuickIngestSendMessageMixed
+          }
+        })
+      } catch {
+        // ignore cleanup failures; context will be closed below
+      }
       await context.close()
     }
   })

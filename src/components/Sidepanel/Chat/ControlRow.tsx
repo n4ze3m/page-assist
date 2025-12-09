@@ -60,6 +60,14 @@ export const ControlRow: React.FC<ControlRowProps> = ({
 
   const openOptionsPage = React.useCallback((hash: string) => {
     try {
+      if (
+        typeof browser === "undefined" ||
+        !browser.runtime ||
+        !browser.tabs
+      ) {
+        window.open(`/options.html${hash}`, "_blank")
+        return
+      }
       const url = browser.runtime.getURL(`/options.html${hash}`)
       browser.tabs.create({ url })
     } catch {
