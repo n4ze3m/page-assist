@@ -1,0 +1,14 @@
+{
+  "connectionCard_descriptionConnectedList_reviewMedia": {
+    "message": "查看媒體和轉錄內容",
+    "description": "First bullet in the connected-state server connection card, highlighting media review."
+  },
+  "connectionCard_descriptionConnectedList_searchKnowledge": {
+    "message": "搜尋知識庫和筆記",
+    "description": "Second bullet in the connected-state server connection card, highlighting knowledge/notes search."
+  },
+  "connectionCard_descriptionConnectedList_useRag": {
+    "message": "在自己的文件上使用 RAG",
+    "description": "Third bullet in the connected-state server connection card, highlighting retrieval-augmented generation usage."
+  }
+}

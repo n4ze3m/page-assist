@@ -12,9 +12,9 @@
     "descriptionSearching": "We’re checking {{host}} to see if your tldw server is reachable. This may take a moment while we wait for a response.",
     "descriptionConnected": "Connected to your tldw server at {{host}}. You can start chatting or use Review, Knowledge, and other tools.",
     "descriptionConnectedList": {
-      "reviewMedia": "Review media & transcripts",
-      "searchKnowledge": "Search knowledge and notes",
-      "useRag": "Use RAG with your own documents"
+      "reviewMedia": "മീഡിയയും ട്രാൻസ്‌ക്രിപ്റ്റുകളും പരിശോധിക്കുക",
+      "searchKnowledge": "നോളജിലും കുറിപ്പുകളിലും തിരയുക",
+      "useRag": "സ്വന്തം ഡോക്യുമെന്റുകളുമായി RAG ഉപയോഗിക്കുക"
     },
     "descriptionError": "We couldn’t reach your tldw server at {{host}}. Make sure the server is running, the URL is correct, and your browser can reach it over the network.",
     "buttonStartChat": "Start chatting",
@@ -437,13 +437,13 @@
   }
 ,
   "omniSearch": {
-    "filterScreen": "Screens",
-    "filterChat": "Chats",
-    "filterMedia": "Media",
-    "filterNote": "Notes",
-    "filterFlashcards": "Flashcard Collections",
-    "filterPrompt": "Prompts",
-    "filteringBy": "Filtering by:"
+    "filterScreen": "സ്ക്രീനുകൾ",
+    "filterChat": "ചാറ്റുകൾ",
+    "filterMedia": "മീഡിയ",
+    "filterNote": "കുറിപ്പുകൾ",
+    "filterFlashcards": "ഫ്ലാഷ്കാർഡ് ശേഖരങ്ങൾ",
+    "filterPrompt": "പ്രോംപ്റ്റുകൾ",
+    "filteringBy": "ഫിൽട്ടർ ചെയ്യുന്നത്:"
   },
   "quickChatHelper": {
     "tooltip": "ക്വിക്ക് ചാറ്റ് സഹായകാങ്ക്",

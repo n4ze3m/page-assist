@@ -1052,13 +1052,7 @@ export const QuickIngestModal: React.FC<Props> = ({
       } catch {
         // ignore storage failures
       }
-      const hash = "#/media-multi"
-      const path = window.location.pathname || ""
-      if (path.includes("options.html")) {
-        window.location.hash = hash
-      } else {
-        window.open(`/options.html${hash}`, "_blank")
-      }
+      openOptionsRoute("#/media-multi")
     } catch {
       // best-effort — do not crash modal
     }
@@ -1072,23 +1066,27 @@ export const QuickIngestModal: React.FC<Props> = ({
       }
       const payload = {
         mediaId: String(id),
-        url: item.url || (item.data && (item.data.url || item.data.source_url)) || undefined
+        url:
+          item.url ||
+          (item.data && (item.data.url || item.data.source_url)) ||
+          undefined
       }
       try {
-        localStorage.setItem("tldw:discussMediaPrompt", JSON.stringify(payload))
+        localStorage.setItem(
+          "tldw:discussMediaPrompt",
+          JSON.stringify(payload)
+        )
       } catch {
         // ignore localStorage failures
       }
-      const hash = "#/"
-      const path = window.location.pathname || ""
-      if (path.includes("options.html")) {
-        window.location.hash = hash
+      try {
         window.dispatchEvent(
           new CustomEvent("tldw:discuss-media", { detail: payload })
         )
-      } else {
-        window.open(`/options.html${hash}`, "_blank")
+      } catch {
+        // ignore event errors
       }
+      openOptionsRoute("#/")
     } catch {
       // swallow errors; logging not needed here
     }
@@ -2747,6 +2745,10 @@ export const QuickIngestModal: React.FC<Props> = ({
                     grouped[groupKey].push(f)
                   }
 
+                  const recommendedNameSet = new Set(
+                    recommended.map((f) => f.name)
+                  )
+
                   const order: string[] = []
                   if (recommended.length > 0) {
                     order.push('Recommended')
@@ -2769,15 +2771,26 @@ export const QuickIngestModal: React.FC<Props> = ({
                           : g}
                       </Typography.Title>
                       <Space direction="vertical" className="w-full">
-                        {(g === 'Recommended' ? recommended : grouped[g]).map((f) => {
+                        {(g === "Recommended"
+                          ? recommended
+                          : grouped[g]
+                        ).map((f) => {
                           const v = advancedValues[f.name]
                           const setV = (nv: any) => setAdvancedValue(f.name, nv)
                           const isOpen = fieldDetailsOpen[f.name]
-                          const setOpen = (open: boolean) => setFieldDetailsOpen((prev) => ({ ...prev, [f.name]: open }))
+                          const setOpen = (open: boolean) =>
+                            setFieldDetailsOpen((prev) => ({
+                              ...prev,
+                              [f.name]: open
+                            }))
                           const ariaLabel = `${g} \u2013 ${f.title || f.name}`
                           const isAlsoRecommended =
-                            g !== 'Recommended' &&
-                            recommended.some((rf) => rf.name === f.name)
+                            g !== "Recommended" &&
+                            recommendedNameSet.has(f.name)
+                          const canShowDetailsHere =
+                            !!f.description &&
+                            (g === "Recommended" ||
+                              !recommendedNameSet.has(f.name))
                           const Label = (
                             <div className="flex items-center gap-1">
                               <span className="min-w-60 text-sm">{f.title || f.name}</span>
@@ -2808,8 +2821,11 @@ export const QuickIngestModal: React.FC<Props> = ({
                                   onChange={setV as any}
                                   options={f.enum.map((e) => ({ value: e, label: String(e) }))}
                                 />
-                                {f.description && (
-                                  <button className="text-xs underline text-gray-500" onClick={() => setOpen(!isOpen)}>
+                                {canShowDetailsHere && (
+                                  <button
+                                    className="text-xs underline text-gray-500"
+                                    onClick={() => setOpen(!isOpen)}
+                                  >
                                     {isOpen
                                       ? qi('hideDetails', 'Hide details')
                                       : qi('showDetails', 'Show details')}
@@ -2841,8 +2857,11 @@ export const QuickIngestModal: React.FC<Props> = ({
                                       ? qi('onLabel', 'On')
                                       : qi('offLabel', 'Off')}
                                 </Typography.Text>
-                                {f.description && (
-                                  <button className="text-xs underline text-gray-500" onClick={() => setOpen(!isOpen)}>
+                                {canShowDetailsHere && (
+                                  <button
+                                    className="text-xs underline text-gray-500"
+                                    onClick={() => setOpen(!isOpen)}
+                                  >
                                     {isOpen
                                       ? qi('hideDetails', 'Hide details')
                                       : qi('showDetails', 'Show details')}
@@ -2861,8 +2880,11 @@ export const QuickIngestModal: React.FC<Props> = ({
                                   value={v}
                                   onChange={setV as any}
                                 />
-                                {f.description && (
-                                  <button className="text-xs underline text-gray-500" onClick={() => setOpen(!isOpen)}>
+                                {canShowDetailsHere && (
+                                  <button
+                                    className="text-xs underline text-gray-500"
+                                    onClick={() => setOpen(!isOpen)}
+                                  >
                                     {isOpen
                                       ? qi('hideDetails', 'Hide details')
                                       : qi('showDetails', 'Show details')}
@@ -2880,8 +2902,11 @@ export const QuickIngestModal: React.FC<Props> = ({
                                 value={v}
                                 onChange={(e) => setV(e.target.value)}
                               />
-                              {f.description && (
-                                <button className="text-xs underline text-gray-500" onClick={() => setOpen(!isOpen)}>
+                              {canShowDetailsHere && (
+                                <button
+                                  className="text-xs underline text-gray-500"
+                                  onClick={() => setOpen(!isOpen)}
+                                >
                                   {isOpen
                                     ? qi('hideDetails', 'Hide details')
                                     : qi('showDetails', 'Show details')}
@@ -2891,9 +2916,14 @@ export const QuickIngestModal: React.FC<Props> = ({
                           )
                         })}
                       {/* details sections */}
-                      {(g === 'Recommended' ? recommended : grouped[g]).map(
-                        (f) =>
-                          f.description && fieldDetailsOpen[f.name] ? (
+                      {(g === "Recommended" ? recommended : grouped[g]).map(
+                        (f) => {
+                          const showHere =
+                            !!f.description &&
+                            fieldDetailsOpen[f.name] &&
+                            (g === "Recommended" ||
+                              !recommendedNameSet.has(f.name))
+                          return showHere ? (
                             <div
                               key={`${f.name}-details`}
                               className="ml-4 mt-1 p-2 rounded bg-gray-50 dark:bg-[#262626] text-xs text-gray-600 dark:text-gray-300 max-w-[48rem]"
@@ -2901,6 +2931,7 @@ export const QuickIngestModal: React.FC<Props> = ({
                               {f.description}
                             </div>
                           ) : null
+                        }
                       )}
                       </Space>
                     </div>

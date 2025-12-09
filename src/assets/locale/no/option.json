@@ -32,7 +32,8 @@
     "quickIngestHint": "Når serveren er frakoblet, fungerer Quick Ingest som et staging-område. Du kan legge URL-er og filer i kø nå og behandle dem når du kobler til igjen.",
     "backToWorkspace": "Tilbake til arbeidsområdet",
     "sidepanelOpenSettingsHint": "Innstillinger åpnes i en ny nettleserfane slik at du kan konfigurere tldw-serveren.",
-    "quickIngestInlineHint": "Quick Ingest kan legge URL-er og filer i kø mens serveren er frakoblet, så du kan behandle dem når du kobler til igjen."
+    "quickIngestInlineHint": "Quick Ingest kan legge URL-er og filer i kø mens serveren er frakoblet, så du kan behandle dem når du kobler til igjen.",
+    "connectedCaption": "Chat og verktøy er nå tilgjengelige i Innstillinger og i sidepanelet."
   },
   "header": {
     "showShortcuts": "Vis snarveier",
@@ -84,7 +85,6 @@
     "omniSearchCreateFlashcards": "Create flashcard collection \"{{query}}\"",
     "omniSearchCreateFlashcardsSuccess": "Flashcard collection \"{{query}}\" created",
     "omniSearchStartChat": "Start new chat \"{{query}}\"",
-    "connectionCard.connectedCaption": "Chat and tools are now available in Options and the sidepanel.",
     "quickIngestQueuedAria": "{{label}} — {{count}} elementer i kø — klikk for å gjennomgå og behandle"
   },
   "sidebarTitle": "Chathistorikk",
