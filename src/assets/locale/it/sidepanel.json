@@ -42,20 +42,20 @@
     "modeFlashcards": "Flashcards"
   },
   "controlRow": {
-    "saveMode": "Save Mode",
-    "ephemeral": "Ephemeral",
-    "searchSection": "Search & Vision",
-    "webSearch": "Web Search",
-    "vision": "Vision",
-    "uploadImage": "Upload Image",
-    "quickIngest": "Quick Ingest Page",
-    "openInFullUI": "Open in Full UI",
+    "saveMode": "Modalità di salvataggio",
+    "ephemeral": "Effimero",
+    "searchSection": "Ricerca e Visione",
+    "webSearch": "Ricerca sul Web",
+    "vision": "Visione",
+    "uploadImage": "Carica immagine",
+    "quickIngest": "Inserimento rapido",
+    "openInFullUI": "Apri nell'interfaccia completa",
     "modeChat": "Chat",
     "modeMedia": "Media",
-    "modeNotes": "Notes",
-    "modeFlashcards": "Flashcards",
-    "ragSearch": "RAG Search",
-    "moreTools": "More tools"
+    "modeNotes": "Note",
+    "modeFlashcards": "Flashcard",
+    "ragSearch": "Ricerca RAG",
+    "moreTools": "Altri strumenti"
   },
   "composer": {
     "connectHint": "Connect to your tldw server in Settings to send messages.",

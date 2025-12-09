@@ -193,33 +193,39 @@ test.describe('Quick ingest – UX audit', () => {
         try {
           // @ts-ignore
           const b = browser as any
-          const original = b.runtime.sendMessage.bind(b.runtime)
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          window.__origQuickIngestSendMessageMixed = original
-          b.runtime.sendMessage = async (message: any) => {
-            if (message?.type === 'tldw:quick-ingest-batch') {
-              return {
-                ok: true,
-                results: [
-                  {
-                    id: 'fail-1',
-                    status: 'error',
-                    type: 'html',
-                    url: 'https://fail.example.com',
-                    error: 'Simulated failure'
-                  },
-                  {
-                    id: 'ok-1',
-                    status: 'ok',
-                    type: 'html',
-                    url: 'https://ok.example.com',
-                    data: { id: 123 }
-                  }
-                ]
+          const original =
+            b.runtime && typeof b.runtime.sendMessage === 'function'
+              ? b.runtime.sendMessage.bind(b.runtime)
+              : undefined
+          ;(window as any).__origQuickIngestSendMessageMixed = original
+          if (b.runtime) {
+            b.runtime.sendMessage = async (message: any) => {
+              if (message?.type === 'tldw:quick-ingest-batch') {
+                return {
+                  ok: true,
+                  results: [
+                    {
+                      id: 'fail-1',
+                      status: 'error',
+                      type: 'html',
+                      url: 'https://fail.example.com',
+                      error: 'Simulated failure'
+                    },
+                    {
+                      id: 'ok-1',
+                      status: 'ok',
+                      type: 'html',
+                      url: 'https://ok.example.com',
+                      data: { id: 123 }
+                    }
+                  ]
+                }
               }
+              if (typeof original === 'function') {
+                return original(message)
+              }
+              return undefined
             }
-            return original(message)
           }
           return true
         } catch {
@@ -276,6 +282,24 @@ test.describe('Quick ingest – UX audit', () => {
       await expect(items).toHaveCount(1)
       await expect(items.first().getByText(/https:\/\/fail\.example\.com/i)).toBeVisible()
     } finally {
+      try {
+        await page.evaluate(() => {
+          try {
+            // @ts-ignore
+            const b = browser as any
+            const w: any = window
+            const original = w.__origQuickIngestSendMessageMixed
+            if (b.runtime && (typeof original === 'function' || original === undefined)) {
+              b.runtime.sendMessage = original
+            }
+            delete w.__origQuickIngestSendMessageMixed
+          } catch {
+            // ignore restore errors in page context
+          }
+        })
+      } catch {
+        // ignore if page/context is already torn down
+      }
       await context.close()
     }
   })
