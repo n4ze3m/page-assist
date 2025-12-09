@@ -54,7 +54,9 @@
     "ragSearch": "RAG Search"
   },
   "composer": {
-    "connectHint": "Connect to your tldw server in Settings to send messages."
+    "connectHint": "Connect to your tldw server in Settings to send messages.",
+    "connectingPlaceholder": "Connecting...",
+    "disconnectedPlaceholder": "Connect to your tldw server in Settings to send messages and view media."
   },
   "notification": {
     "ingestSent": "Sent to tldw server",

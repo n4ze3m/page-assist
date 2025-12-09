@@ -42,23 +42,25 @@
     "modeFlashcards": "Flashcards"
   },
   "controlRow": {
-    "saveMode": "Save Mode",
-    "ephemeral": "Ephemeral",
-    "searchSection": "Search & Vision",
-    "webSearch": "Web Search",
-    "vision": "Vision",
-    "uploadImage": "Upload Image",
-    "quickIngest": "Quick Ingest Page",
-    "openInFullUI": "Open in Full UI",
+    "saveMode": "Lagringsmodus",
+    "ephemeral": "Midlertidig",
+    "searchSection": "Søk og visjon",
+    "webSearch": "Nettsøk",
+    "vision": "Visjon",
+    "uploadImage": "Last opp bilde",
+    "quickIngest": "Hurtiginnlasting av side",
+    "openInFullUI": "Åpne i fullverdig grensesnitt",
     "modeChat": "Chat",
     "modeMedia": "Media",
-    "modeNotes": "Notes",
-    "modeFlashcards": "Flashcards",
-    "ragSearch": "RAG Search",
-    "moreTools": "More tools"
+    "modeNotes": "Notater",
+    "modeFlashcards": "Læringskort",
+    "ragSearch": "RAG-søk",
+    "moreTools": "Flere verktøy"
   },
   "composer": {
-    "connectHint": "Connect to your tldw server in Settings to send messages."
+    "connectHint": "Connect to your tldw server in Settings to send messages.",
+    "connectingPlaceholder": "Connecting...",
+    "disconnectedPlaceholder": "Connect to your tldw server in Settings to send messages and view media."
   },
   "notification": {
     "ingestSent": "Sent to tldw server",

@@ -11,6 +11,11 @@
     "descriptionMissing": "tldw_server — это бэкенд, который обеспечивает историю чатов, поиск по знаниям и обработку медиа. Подключите URL своего сервера tldw, чтобы начать пользоваться ассистентом.",
     "descriptionSearching": "Проверяем {{host}}, чтобы убедиться, что ваш сервер tldw доступен. Это может занять немного времени при первом запуске или после перезапуска сервера.",
     "descriptionConnected": "Подключено к вашему серверу tldw по адресу {{host}}. Теперь вы можете начать чат или использовать Обзор, Знания и другие инструменты.",
+    "descriptionConnectedList": {
+      "reviewMedia": "Просматривайте медиафайлы и транскрипты",
+      "searchKnowledge": "Ищите в базе знаний и заметках",
+      "useRag": "Используйте RAG с вашими собственными документами"
+    },
     "descriptionError": "Не удалось подключиться к вашему серверу tldw по адресу {{host}}. Убедитесь, что сервер запущен, URL указан верно и браузер может обратиться к нему по сети.",
     "buttonStartChat": "Начать чат",
     "buttonRetry": "Повторить подключение",
@@ -72,6 +77,14 @@
     "toolsMenu": "Chat tools",
     "serverBackedLabel": "Server-backed chat",
     "serverBackedTooltip": "Messages in this chat are also saved on your tldw server.",
+    "omniSearchPlaceholder": "Поиск по экранам, чатам, медиа и заметкам…",
+    "omniSearchNoResults": "Нет совпадений для «{{query}}».",
+    "omniSearchCreateNote": "Создать заметку «{{query}}»",
+    "omniSearchCreateNoteSuccess": "Заметка «{{query}}» создана",
+    "omniSearchCreateFlashcards": "Создать коллекцию карточек «{{query}}»",
+    "omniSearchCreateFlashcardsSuccess": "Коллекция карточек «{{query}}» создана",
+    "omniSearchStartChat": "Начать новый чат «{{query}}»",
+    "connectionCard.connectedCaption": "Чат и инструменты теперь доступны на странице настроек и в боковой панели.",
     "quickIngestQueuedAria": "{{label}} — в очереди {{count}} элементов — нажмите, чтобы просмотреть и обработать"
   },
   "sidebarTitle": "История чата",
@@ -99,6 +112,15 @@
   },
   "libraryView": "Library View",
   "notes": "Notes",
+  "omniSearch": {
+    "filterScreen": "Экраны",
+    "filterChat": "Чаты",
+    "filterMedia": "Медиа",
+    "filterNote": "Заметки",
+    "filterFlashcards": "Коллекции карточек",
+    "filterPrompt": "Подсказки",
+    "filteringBy": "Фильтрация по:"
+  },
   "flashcards": {
     "review": "Review",
     "create": "Create",

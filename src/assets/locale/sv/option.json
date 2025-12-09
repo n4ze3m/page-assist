@@ -11,6 +11,11 @@
     "descriptionMissing": "tldw-server är en valfri backend som körs på din egen dator eller server. Den driver chatthistorik, kunskapssökning och mediebearbetning. Du kan först utforska tillägget och sedan ansluta din egen server när du är redo.",
     "descriptionSearching": "Vi kontrollerar {{host}} för att se om din tldw-server går att nå. Det kan ta några sekunder första gången eller efter att servern har startats om.",
     "descriptionConnected": "Ansluten till din tldw-server på {{host}}. Du kan börja chatta, söka i kunskap, granska media och använda andra verktyg från headern.",
+    "descriptionConnectedList": {
+      "reviewMedia": "Granska media och transkriptioner",
+      "searchKnowledge": "Sök i kunskap och anteckningar",
+      "useRag": "Använd RAG med dina egna dokument"
+    },
     "descriptionError": "Vi kunde inte nå din tldw-server på {{host}}. Kontrollera att servern körs, att URL:en stämmer med din tldw_server och att din webbläsare får nå den över nätverket. Använd Diagnostik för detaljerade fel och nästa steg.",
     "buttonStartChat": "Start chatting",
     "buttonRetry": "Retry connection",
@@ -72,6 +77,14 @@
     "toolsMenu": "Chat tools",
     "serverBackedLabel": "Serverlagrad chatt",
     "serverBackedTooltip": "Meddelanden i den här chatten sparas också på din tldw-server.",
+    "omniSearchPlaceholder": "Sök i skärmar, chattar, media, anteckningar…",
+    "omniSearchNoResults": "Inga träffar för \"{{query}}\".",
+    "omniSearchCreateNote": "Skapa anteckning \"{{query}}\"",
+    "omniSearchCreateNoteSuccess": "Anteckning \"{{query}}\" skapad",
+    "omniSearchCreateFlashcards": "Skapa Flashcards-samling \"{{query}}\"",
+    "omniSearchCreateFlashcardsSuccess": "Flashcards-samling \"{{query}}\" skapad",
+    "omniSearchStartChat": "Starta ny chatt \"{{query}}\"",
+    "connectionCard.connectedCaption": "Chatt och verktyg är nu tillgängliga i Inställningar och sidopanelen.",
     "quickIngestQueuedAria": "{{label}} — {{count}} objekt i kö — klicka för att granska och bearbeta"
   },
   "sidebarTitle": "Chatthistorik",
@@ -99,6 +112,15 @@
   },
   "libraryView": "Library View",
   "notes": "Notes",
+  "omniSearch": {
+    "filterScreen": "Skärmar",
+    "filterChat": "Chattar",
+    "filterMedia": "Media",
+    "filterNote": "Anteckningar",
+    "filterFlashcards": "Flashcards-samlingar",
+    "filterPrompt": "Frågor",
+    "filteringBy": "Filtrerar efter:"
+  },
   "upload": {
     "fileTooLargeTitle": "Filen är för stor",
     "fileTooLargeDescription": "Filstorleken måste vara under 10 MB",

@@ -850,11 +850,23 @@
       "auth": "اختر طريقة تسجيل الدخول",
       "health": "تأكيد الاتصال وفحص المعرفة"
     },
+    "startServer": {
+      "title": "Before you start — Start your tldw server",
+      "body": "If you have not started your server yet, run one of these commands in the tldw_server repository, then return here.",
+      "copy": "Copy command",
+      "optionLocal": "Run locally with Python",
+      "optionLocalHint": "Run inside your tldw_server virtualenv from the server repository root.",
+      "optionDocker": "Run with Docker Compose (single-user)",
+      "optionDockerHint": "Run from the tldw_server repository root to start the API and database."
+    },
     "path": {
       "heading": "كيف تود أن تبدأ؟",
       "hasServer": "أقوم بتشغيل tldw_server بالفعل",
+      "hasServerHelp": "Connect to an existing tldw_server you already run.",
       "noServer": "لا يوجد لدي خادم بعد",
+      "noServerHelp": "Follow a setup guide for tldw_server, or start in demo mode.",
       "demo": "استكشف فقط من خلال وضع تجريبي محلي",
+      "demoHelp": "Try the workspace with sample data; connect your own server later.",
       "noServerTitle": "لا يوجد خادم بعد؟ لا يزال بإمكانك الاستكشاف.",
       "noServerBody": "tldw_server تطبيق منفصل تستضيفه بنفسك. يمكنك اتباع دليل الإعداد الآن، أو العودة لاحقًا والمتابعة في الوضع التجريبي.",
       "noServerOptionLocal": "شغِّله محليًا باستخدام Docker أو Python على جهازك.",

@@ -865,11 +865,23 @@
       "auth": "選擇你要如何登入",
       "health": "確認連線與 Knowledge 狀態"
     },
+    "startServer": {
+      "title": "Before you start — Start your tldw server",
+      "body": "If you have not started your server yet, run one of these commands in the tldw_server repository, then return here.",
+      "copy": "Copy command",
+      "optionLocal": "Run locally with Python",
+      "optionLocalHint": "Run inside your tldw_server virtualenv from the server repository root.",
+      "optionDocker": "Run with Docker Compose (single-user)",
+      "optionDockerHint": "Run from the tldw_server repository root to start the API and database."
+    },
     "path": {
       "heading": "你想要如何開始？",
       "hasServer": "我已經在執行 tldw_server",
+      "hasServerHelp": "Connect to an existing tldw_server you already run.",
       "noServer": "我還沒有伺服器",
+      "noServerHelp": "Follow a setup guide for tldw_server, or start in demo mode.",
       "demo": "先用本機示範模式試用看看",
+      "demoHelp": "Try the workspace with sample data; connect your own server later.",
       "noServerTitle": "還沒有伺服器？一樣可以先體驗。",
       "noServerBody": "tldw_server 是獨立的自我託管應用程式。你可以現在依照安裝指南進行設定，或之後再回來，以示範模式繼續。",
       "noServerOptionLocal": "在自己的電腦上使用 Docker 或 Python 本機執行。",

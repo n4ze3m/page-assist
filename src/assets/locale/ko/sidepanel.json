@@ -42,23 +42,25 @@
     "modeFlashcards": "Flashcards"
   },
   "controlRow": {
-    "saveMode": "Save Mode",
-    "ephemeral": "Ephemeral",
-    "searchSection": "Search & Vision",
-    "webSearch": "Web Search",
-    "vision": "Vision",
-    "uploadImage": "Upload Image",
-    "quickIngest": "Quick Ingest Page",
-    "openInFullUI": "Open in Full UI",
-    "modeChat": "Chat",
-    "modeMedia": "Media",
-    "modeNotes": "Notes",
-    "modeFlashcards": "Flashcards",
-    "ragSearch": "RAG Search",
-    "moreTools": "More tools"
+    "saveMode": "저장 모드",
+    "ephemeral": "임시 채팅",
+    "searchSection": "검색 및 비전",
+    "webSearch": "웹 검색",
+    "vision": "비전",
+    "uploadImage": "이미지 업로드",
+    "quickIngest": "페이지 빠른 처리",
+    "openInFullUI": "전체 UI에서 열기",
+    "modeChat": "채팅",
+    "modeMedia": "미디어",
+    "modeNotes": "노트",
+    "modeFlashcards": "플래시카드",
+    "ragSearch": "RAG 검색",
+    "moreTools": "추가 도구"
   },
   "composer": {
-    "connectHint": "Connect to your tldw server in Settings to send messages."
+    "connectHint": "Connect to your tldw server in Settings to send messages.",
+    "connectingPlaceholder": "Connecting...",
+    "disconnectedPlaceholder": "Connect to your tldw server in Settings to send messages and view media."
   },
   "notification": {
     "ingestSent": "Sent to tldw server",

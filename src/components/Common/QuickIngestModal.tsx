@@ -693,7 +693,7 @@ export const QuickIngestModal: React.FC<Props> = ({
     if (n.startsWith('transcription_') || ['diarize','vad_use','chunk_language'].includes(n)) return 'Transcription'
     if (n.startsWith('chunk_') || ['use_adaptive_chunking','enable_contextual_chunking','use_multi_level_chunking','perform_chunking','contextual_llm_model'].includes(n)) return 'Chunking'
     if (n.includes('embedding')) return 'Embeddings'
-    if (n.startsWith('context_') || n === 'context_strategy') return 'Context'
+    if (n.startsWith('context_')) return 'Context'
     if (n.includes('summarization') || n.includes('analysis') || n === 'system_prompt' || n === 'custom_prompt') return 'Analysis/Summarization'
     if (n.includes('pdf') || n.includes('ocr')) return 'Document/PDF'
     if (n.includes('video')) return 'Video'
@@ -2702,6 +2702,21 @@ export const QuickIngestModal: React.FC<Props> = ({
                   }
                   const allMatched = advSchema.filter(match)
 
+                  const getLogicalGroup = (name: string): string => {
+                    const n = name.toLowerCase()
+                    if (n.startsWith('transcription_') || ['diarize','vad_use','chunk_language'].includes(n)) return 'Transcription'
+                    if (n.startsWith('chunk_') || ['use_adaptive_chunking','enable_contextual_chunking','use_multi_level_chunking','perform_chunking','contextual_llm_model'].includes(n)) return 'Chunking'
+                    if (n.includes('embedding')) return 'Embeddings'
+                    if (n.startsWith('context_')) return 'Context'
+                    if (n.includes('summarization') || n.includes('analysis') || n === 'system_prompt' || n === 'custom_prompt') return 'Analysis/Summarization'
+                    if (n.includes('pdf') || n.includes('ocr')) return 'Document/PDF'
+                    if (n.includes('video')) return 'Video'
+                    if (n.includes('cookie') || n === 'cookies' || n === 'headers' || n === 'authorization' || n === 'auth_header') return 'Cookies/Auth'
+                    if (['author','title','keywords','api_name'].includes(n)) return 'Metadata'
+                    if (['start_time','end_time'].includes(n)) return 'Timing'
+                    return 'Other'
+                  }
+
                   // Derive a small "Recommended fields" subset for common
                   // parameters. We keep these also in their original groups
                   // so users can still find them where they logically live.
@@ -2725,7 +2740,7 @@ export const QuickIngestModal: React.FC<Props> = ({
                       recommended.push(f)
                     }
 
-                    const groupKey = f.group === 'Recommended' ? groupForField(f.name) : f.group
+                    const groupKey = f.group === 'Recommended' ? getLogicalGroup(f.name) : f.group
                     if (!grouped[groupKey]) grouped[groupKey] = []
                     grouped[groupKey].push(f)
                   }

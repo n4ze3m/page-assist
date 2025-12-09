@@ -42,23 +42,25 @@
     "modeFlashcards": "Flashcards"
   },
   "controlRow": {
-    "saveMode": "Save Mode",
-    "ephemeral": "Ephemeral",
-    "searchSection": "Search & Vision",
-    "webSearch": "Web Search",
-    "vision": "Vision",
-    "uploadImage": "Upload Image",
-    "quickIngest": "Quick Ingest Page",
-    "openInFullUI": "Open in Full UI",
-    "modeChat": "Chat",
-    "modeMedia": "Media",
-    "modeNotes": "Notes",
-    "modeFlashcards": "Flashcards",
-    "ragSearch": "RAG Search",
-    "moreTools": "More tools"
+    "saveMode": "സംരക്ഷണ മോഡ്",
+    "ephemeral": "താൽക്കാലികം",
+    "searchSection": "തിരച്ചിലും വിഷനും",
+    "webSearch": "വെബ് തിരച്ചിൽ",
+    "vision": "വിഷൻ",
+    "uploadImage": "ചിത്രം അപ്‌ലോഡ് ചെയ്യുക",
+    "quickIngest": "പേജ് പെട്ടെന്ന് പ്രോസസ്സ് ചെയ്യുക",
+    "openInFullUI": "പൂർണ്ണ UI-ൽ തുറക്കുക",
+    "modeChat": "ചാറ്റ്",
+    "modeMedia": "മീഡിയ",
+    "modeNotes": "കുറിപ്പുകൾ",
+    "modeFlashcards": "ഫ്ലാഷ് കാർഡുകൾ",
+    "ragSearch": "RAG തിരച്ചിൽ",
+    "moreTools": "കൂടുതൽ ഉപകരണങ്ങൾ"
   },
   "composer": {
-    "connectHint": "Connect to your tldw server in Settings to send messages."
+    "connectHint": "Connect to your tldw server in Settings to send messages.",
+    "connectingPlaceholder": "Connecting...",
+    "disconnectedPlaceholder": "Connect to your tldw server in Settings to send messages and view media."
   },
   "notification": {
     "ingestSent": "Sent to tldw server",

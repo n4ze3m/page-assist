@@ -42,23 +42,25 @@
     "modeFlashcards": "Flashcards"
   },
   "controlRow": {
-    "saveMode": "Save Mode",
-    "ephemeral": "Ephemeral",
-    "searchSection": "Search & Vision",
-    "webSearch": "Web Search",
-    "vision": "Vision",
-    "uploadImage": "Upload Image",
-    "quickIngest": "Quick Ingest Page",
-    "openInFullUI": "Open in Full UI",
-    "modeChat": "Chat",
-    "modeMedia": "Media",
-    "modeNotes": "Notes",
-    "modeFlashcards": "Flashcards",
-    "ragSearch": "RAG Search",
-    "moreTools": "More tools"
+    "saveMode": "保存模式",
+    "ephemeral": "临时会话",
+    "searchSection": "搜索与视觉",
+    "webSearch": "网页搜索",
+    "vision": "视觉",
+    "uploadImage": "上传图片",
+    "quickIngest": "快速抓取页面",
+    "openInFullUI": "在完整界面中打开",
+    "modeChat": "聊天",
+    "modeMedia": "媒体",
+    "modeNotes": "笔记",
+    "modeFlashcards": "抽认卡",
+    "ragSearch": "RAG 搜索",
+    "moreTools": "更多工具"
   },
   "composer": {
-    "connectHint": "Connect to your tldw server in Settings to send messages."
+    "connectHint": "Connect to your tldw server in Settings to send messages.",
+    "connectingPlaceholder": "Connecting...",
+    "disconnectedPlaceholder": "Connect to your tldw server in Settings to send messages and view media."
   },
   "notification": {
     "ingestSent": "Sent to tldw server",

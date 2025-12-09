@@ -853,11 +853,23 @@
       "auth": "サインイン方法を選択",
       "health": "接続と Knowledge を確認"
     },
+    "startServer": {
+      "title": "Before you start — Start your tldw server",
+      "body": "If you have not started your server yet, run one of these commands in the tldw_server repository, then return here.",
+      "copy": "Copy command",
+      "optionLocal": "Run locally with Python",
+      "optionLocalHint": "Run inside your tldw_server virtualenv from the server repository root.",
+      "optionDocker": "Run with Docker Compose (single-user)",
+      "optionDockerHint": "Run from the tldw_server repository root to start the API and database."
+    },
     "path": {
       "heading": "どのように始めますか？",
       "hasServer": "すでに tldw_server を稼働させています",
+      "hasServerHelp": "Connect to an existing tldw_server you already run.",
       "noServer": "まだサーバーを持っていません",
+      "noServerHelp": "Follow a setup guide for tldw_server, or start in demo mode.",
       "demo": "ローカルのデモで試してみるだけ",
+      "demoHelp": "Try the workspace with sample data; connect your own server later.",
       "noServerTitle": "まだサーバーがなくても、機能を確認できます。",
       "noServerBody": "tldw_server は別途動かすセルフホスト型アプリです。今すぐセットアップガイドに沿って設定することも、後で戻ってデモモードのまま続けることもできます。",
       "noServerOptionLocal": "自分のマシン上で Docker または Python を使ってローカルで実行します。",

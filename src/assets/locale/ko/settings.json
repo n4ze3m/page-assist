@@ -853,11 +853,23 @@
       "auth": "로그인 방법 선택",
       "health": "연결 및 Knowledge 확인"
     },
+    "startServer": {
+      "title": "Before you start — Start your tldw server",
+      "body": "If you have not started your server yet, run one of these commands in the tldw_server repository, then return here.",
+      "copy": "Copy command",
+      "optionLocal": "Run locally with Python",
+      "optionLocalHint": "Run inside your tldw_server virtualenv from the server repository root.",
+      "optionDocker": "Run with Docker Compose (single-user)",
+      "optionDockerHint": "Run from the tldw_server repository root to start the API and database."
+    },
     "path": {
       "heading": "어떻게 시작하시겠어요?",
       "hasServer": "이미 tldw_server를 운영하고 있습니다",
+      "hasServerHelp": "Connect to an existing tldw_server you already run.",
       "noServer": "아직 서버가 없습니다",
+      "noServerHelp": "Follow a setup guide for tldw_server, or start in demo mode.",
       "demo": "로컬 데모로만 살펴보기",
+      "demoHelp": "Try the workspace with sample data; connect your own server later.",
       "noServerTitle": "아직 서버가 없나요? 그래도 둘러볼 수 있습니다.",
       "noServerBody": "tldw_server는 별도로 실행하는 자체 호스팅 앱입니다. 지금 설정 가이드를 따라 진행하거나, 나중에 다시 돌아와 데모 모드로 계속할 수 있습니다.",
       "noServerOptionLocal": "내 컴퓨터에서 Docker 또는 Python으로 로컬 실행합니다.",

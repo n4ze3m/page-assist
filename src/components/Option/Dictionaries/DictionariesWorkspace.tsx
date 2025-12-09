@@ -47,7 +47,9 @@ export const DictionariesWorkspace: React.FC = () => {
         title={
           <span className="inline-flex items-center gap-2">
             <span className="rounded-full bg-yellow-50 px-2 py-0.5 text-[11px] font-medium text-yellow-700 dark:bg-yellow-900/40 dark:text-yellow-200">
-              Not connected
+              {t("option:dictionariesEmpty.notConnected", {
+                defaultValue: "Not connected"
+              })}
             </span>
             <span>
               {t("option:dictionariesEmpty.connectTitle", {
