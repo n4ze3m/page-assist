@@ -35,6 +35,15 @@ type Props = {
 
 const MAX_LOCAL_FILE_BYTES = 500 * 1024 * 1024 // 500MB soft cap for local file ingest
 const INLINE_FILE_WARN_BYTES = 100 * 1024 * 1024 // warn/block before copying very large buffers in-memory
+const MAX_RECOMMENDED_FIELDS = 12
+
+const RESULT_FILTERS = {
+  ALL: "all",
+  SUCCESS: "success",
+  ERROR: "error"
+} as const
+
+type ResultsFilter = (typeof RESULT_FILTERS)[keyof typeof RESULT_FILTERS]
 
 const isLikelyUrl = (raw: string) => {
   const val = (raw || '').trim()
@@ -677,6 +686,22 @@ export const QuickIngestModal: React.FC<Props> = ({
     void run()
   }, [autoProcessQueued, open, run, running, showProcessQueuedButton])
 
+  const RECOMMENDED_FIELD_NAMES = new Set<string>([
+    "cookies",
+    "cookie",
+    "headers",
+    "authorization",
+    "auth_header",
+    "embedding_model",
+    "default_embedding_model",
+    "context_strategy",
+    "perform_chunking",
+    "perform_analysis",
+    "overwrite_existing",
+    "system_prompt",
+    "custom_prompt"
+  ])
+
   // Load OpenAPI schema to build advanced fields (best-effort)
   const logicalGroupForField = (name: string): string => {
     const n = name.toLowerCase()
@@ -692,30 +717,17 @@ export const QuickIngestModal: React.FC<Props> = ({
     if (['start_time', 'end_time'].includes(n)) return 'Timing'
     return 'Other'
   }
-
+	
   const isRecommendedField = (name: string, logicalGroup: string): boolean => {
     const n = name.toLowerCase()
-    if (
-      n === 'cookies' ||
-      n === 'cookie' ||
-      n === 'headers' ||
-      n === 'authorization' ||
-      n === 'auth_header' ||
-      n === 'embedding_model' ||
-      n === 'default_embedding_model' ||
-      n === 'context_strategy'
-    ) {
-      return true
-    }
-    if (
-      logicalGroup === 'Cookies/Auth' ||
-      logicalGroup === 'Embeddings' ||
-      logicalGroup === 'Chunking' ||
-      logicalGroup === 'Analysis/Summarization'
-    ) {
-      return true
-    }
+    if (RECOMMENDED_FIELD_NAMES.has(n)) return true
     if (n.includes('embedding')) return true
+    if (
+      logicalGroup === 'Analysis/Summarization' &&
+      (n.includes('summary') || n.includes('summarization') || n.includes('analysis'))
+    ) {
+      return true
+    }
     return false
   }
 
@@ -1199,13 +1211,13 @@ export const QuickIngestModal: React.FC<Props> = ({
   )
 
   const [resultsFilter, setResultsFilter] =
-    React.useState<"all" | "success" | "error">("all")
+    React.useState<ResultsFilter>(RESULT_FILTERS.ALL)
 
   const visibleResults = React.useMemo(() => {
     let items = results || []
-    if (resultsFilter === "success") {
+    if (resultsFilter === RESULT_FILTERS.SUCCESS) {
       items = items.filter((r) => r.status === "ok")
-    } else if (resultsFilter === "error") {
+    } else if (resultsFilter === RESULT_FILTERS.ERROR) {
       items = items.filter((r) => r.status === "error")
     }
     const ranked = [...items].sort((a, b) => {
@@ -2722,23 +2734,23 @@ export const QuickIngestModal: React.FC<Props> = ({
                       (f.description || '').toLowerCase().includes(q)
                     )
                   }
-                  const allMatched = advSchema.filter(match)
+	                  const allMatched = advSchema.filter(match)
 
-                  // Derive a small "Recommended fields" subset for common
-                  // parameters. We keep these also in their original groups
-                  // so users can still find them where they logically live.
-                  for (const f of allMatched) {
-                    const logical = logicalGroupForField(f.name)
-                    const isRecommended = isRecommendedField(f.name, logical)
-
-                    if (isRecommended && recommended.length < 12) {
-                      recommended.push(f)
-                    }
-
-                    const groupKey = logical
-                    if (!grouped[groupKey]) grouped[groupKey] = []
-                    grouped[groupKey].push(f)
-                  }
+	                  // Derive a small "Recommended fields" subset for common
+	                  // parameters. We keep these also in their original groups
+	                  // so users can still find them where they logically live.
+	                  for (const f of allMatched) {
+	                    const logical = logicalGroupForField(f.name)
+	                    const isRecommended = isRecommendedField(f.name, logical)
+	
+	                    if (isRecommended && recommended.length < MAX_RECOMMENDED_FIELDS) {
+	                      recommended.push(f)
+	                    }
+	
+	                    const groupKey = logical
+	                    if (!grouped[groupKey]) grouped[groupKey] = []
+	                    grouped[groupKey].push(f)
+	                  }
 
                   const recommendedNameSet = new Set(
                     recommended.map((f) => f.name)
@@ -2940,10 +2952,10 @@ export const QuickIngestModal: React.FC<Props> = ({
         {results.length > 0 && (
           <div className="mt-4">
             <div className="flex items-center justify-between">
-              <Typography.Title level={5} className="!mb-0">{t('quickIngest.results') || 'Results'}</Typography.Title>
-              <div className="flex items-center gap-2 text-xs">
-                <Tag color="blue">
-                  {qi('resultsCount', '{{count}} item(s)', { count: results.length })}
+	      <Typography.Title level={5} className="!mb-0">{t('quickIngest.results') || 'Results'}</Typography.Title>
+	              <div className="flex items-center gap-2 text-xs">
+	                <Tag color="blue">
+	                  {qi('resultsCount', '{{count}} item(s)', { count: results.length })}
                 </Tag>
                 <Button
                   size="small"
@@ -2954,34 +2966,34 @@ export const QuickIngestModal: React.FC<Props> = ({
                 <Select
                   size="small"
                   className="w-32"
-                  aria-label={t(
-                    "quickIngest.resultsFilterAria",
-                    "Filter results by status"
-                  ) as string}
-                  value={resultsFilter}
-                  onChange={(value) =>
-                    setResultsFilter(value as "all" | "success" | "error")
-                  }
-                  options={[
-                    {
-                      value: "all",
-                      label: t(
-                        "quickIngest.resultsFilterAll",
-                        "All"
-                      )
-                    },
-                    {
-                      value: "error",
-                      label: t(
-                        "quickIngest.resultsFilterFailed",
-                        "Failed only"
-                      )
-                    },
-                    {
-                      value: "success",
-                      label: t(
-                        "quickIngest.resultsFilterSucceeded",
-                        "Succeeded only"
+	                  aria-label={t(
+	                    "quickIngest.resultsFilterAria",
+	                    "Filter results by status"
+	                  ) as string}
+	                  value={resultsFilter}
+	                  onChange={(value) =>
+	                    setResultsFilter(value as ResultsFilter)
+	                  }
+	                  options={[
+	                    {
+	                      value: RESULT_FILTERS.ALL,
+	                      label: t(
+	                        "quickIngest.resultsFilterAll",
+	                        "All"
+	                      )
+	                    },
+	                    {
+	                      value: RESULT_FILTERS.ERROR,
+	                      label: t(
+	                        "quickIngest.resultsFilterFailed",
+	                        "Failed only"
+	                      )
+	                    },
+	                    {
+	                      value: RESULT_FILTERS.SUCCESS,
+	                      label: t(
+	                        "quickIngest.resultsFilterSucceeded",
+	                        "Succeeded only"
                       )
                     }
                   ]}
