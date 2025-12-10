@@ -1,4 +1,4 @@
-type Translator = (key: string, options?: any) => string
+type Translator = (key: string, options?: Record<string, unknown>) => string
 
 export const translateMessage = (
   t: Translator,
@@ -8,4 +8,3 @@ export const translateMessage = (
 ): string => {
   return t(key, { defaultValue, ...(options || {}) })
 }
-

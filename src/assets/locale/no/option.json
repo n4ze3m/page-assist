@@ -12,9 +12,9 @@
     "descriptionSearching": "We’re checking {{host}} to see if your tldw server is reachable. This may take a moment while we wait for a response.",
     "descriptionConnected": "Connected to your tldw server at {{host}}. You can start chatting or use Review, Knowledge, and other tools.",
     "descriptionConnectedList": {
-      "reviewMedia": "Review media & transcripts",
-      "searchKnowledge": "Search knowledge and notes",
-      "useRag": "Use RAG with your own documents"
+      "reviewMedia": "Gjennomgå medier og transkripsjoner",
+      "searchKnowledge": "Søk i kunnskap og notater",
+      "useRag": "Bruk RAG med dine egne dokumenter"
     },
     "descriptionError": "We couldn’t reach your tldw server at {{host}}. Make sure the server is running, the URL is correct, and your browser can reach it over the network.",
     "buttonStartChat": "Start chatting",
@@ -78,13 +78,13 @@
     "toolsMenu": "Chat tools",
     "serverBackedLabel": "Server-backed chat",
     "serverBackedTooltip": "Messages in this chat are also saved on your tldw server.",
-    "omniSearchPlaceholder": "Search screens, chats, media, notes…",
-    "omniSearchNoResults": "No matches for \"{{query}}\".",
-    "omniSearchCreateNote": "Create note \"{{query}}\"",
-    "omniSearchCreateNoteSuccess": "Note \"{{query}}\" created",
-    "omniSearchCreateFlashcards": "Create flashcard collection \"{{query}}\"",
-    "omniSearchCreateFlashcardsSuccess": "Flashcard collection \"{{query}}\" created",
-    "omniSearchStartChat": "Start new chat \"{{query}}\"",
+    "omniSearchPlaceholder": "Søk i skjermer, chatter, medier, notater…",
+    "omniSearchNoResults": "Ingen treff for \"{{query}}\".",
+    "omniSearchCreateNote": "Opprett notat \"{{query}}\"",
+    "omniSearchCreateNoteSuccess": "Notat \"{{query}}\" opprettet",
+    "omniSearchCreateFlashcards": "Opprett flashkort-samling \"{{query}}\"",
+    "omniSearchCreateFlashcardsSuccess": "Flashkort-samling \"{{query}}\" opprettet",
+    "omniSearchStartChat": "Start ny chat \"{{query}}\"",
     "quickIngestQueuedAria": "{{label}} — {{count}} elementer i kø — klikk for å gjennomgå og behandle"
   },
   "sidebarTitle": "Chathistorikk",
@@ -437,13 +437,13 @@
   }
 ,
   "omniSearch": {
-    "filterScreen": "Screens",
-    "filterChat": "Chats",
+    "filterScreen": "Skjermer",
+    "filterChat": "Samtaler",
     "filterMedia": "Media",
-    "filterNote": "Notes",
-    "filterFlashcards": "Flashcard Collections",
-    "filterPrompt": "Prompts",
-    "filteringBy": "Filtering by:"
+    "filterNote": "Notater",
+    "filterFlashcards": "Flashkort-samlinger",
+    "filterPrompt": "Prompter",
+    "filteringBy": "Filtrerer etter:"
   },
   "quickChatHelper": {
     "tooltip": "Hurtig chat-hjelper",

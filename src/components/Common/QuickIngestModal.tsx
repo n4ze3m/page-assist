@@ -125,7 +125,7 @@ export const QuickIngestModal: React.FC<Props> = ({
   const [localFiles, setLocalFiles] = React.useState<File[]>([])
   const [advancedOpen, setAdvancedOpen] = React.useState<boolean>(false)
   const [advancedValues, setAdvancedValues] = React.useState<Record<string, any>>({})
-  const [advSchema, setAdvSchema] = React.useState<Array<{ name: string; type: string; enum?: any[]; description?: string; title?: string; group: string }>>([])
+  const [advSchema, setAdvSchema] = React.useState<Array<{ name: string; type: string; enum?: any[]; description?: string; title?: string }>>([])
   const [specSource, setSpecSource] = React.useState<'server' | 'server-cached' | 'bundled' | 'none'>('none')
   const [bundledSpec, setBundledSpec] = React.useState<any | null>(null)
   const [fieldDetailsOpen, setFieldDetailsOpen] = React.useState<Record<string, boolean>>({})
@@ -719,11 +719,6 @@ export const QuickIngestModal: React.FC<Props> = ({
     return false
   }
 
-  const groupForField = (name: string): string => {
-    const logical = logicalGroupForField(name)
-    return isRecommendedField(name, logical) ? 'Recommended' : logical
-  }
-
   const iconForGroup = (group: string) => {
     const cls = 'w-4 h-4 mr-1 text-gray-500'
     switch (group) {
@@ -820,7 +815,7 @@ export const QuickIngestModal: React.FC<Props> = ({
     const props = mergeProps(rootSchema)
     const flat = flattenProps(props)
 
-    const entries: Array<{ name: string; type: string; enum?: any[]; description?: string; title?: string; group: string }> = []
+    const entries: Array<{ name: string; type: string; enum?: any[]; description?: string; title?: string }> = []
     // Expose all available ingestion-time options, except input list and media type selector which are handled above
     const exclude = new Set([ 'urls', 'media_type' ])
     for (const [name, def0] of flat) {
@@ -833,7 +828,7 @@ export const QuickIngestModal: React.FC<Props> = ({
       else if (def.anyOf || def.oneOf) type = 'string'
       const en = Array.isArray(def?.enum) ? def.enum : undefined
       const description = def?.description || def?.title || undefined
-      entries.push({ name, type, enum: en, description, title: def?.title, group: groupForField(name) })
+      entries.push({ name, type, enum: en, description, title: def?.title })
     }
     entries.sort((a,b) => a.name.localeCompare(b.name))
     setAdvSchema(entries)
@@ -919,15 +914,15 @@ export const QuickIngestModal: React.FC<Props> = ({
         used = 'bundled'
       } catch {
         setAdvSchema([
-          { name: 'context_window_size', type: 'integer', group: groupForField('context_window_size') },
-          { name: 'generate_embeddings', type: 'boolean', group: groupForField('generate_embeddings') },
-          { name: 'embedding_model', type: 'string', group: groupForField('embedding_model') },
-          { name: 'embedding_provider', type: 'string', group: groupForField('embedding_provider') },
-          { name: 'perform_rolling_summarization', type: 'boolean', group: groupForField('perform_rolling_summarization') },
-          { name: 'perform_confabulation_check_of_analysis', type: 'boolean', group: groupForField('perform_confabulation_check_of_analysis') },
-          { name: 'system_prompt', type: 'string', group: groupForField('system_prompt') },
-          { name: 'custom_prompt', type: 'string', group: groupForField('custom_prompt') },
-          { name: 'title', type: 'string', group: groupForField('title') }
+          { name: 'context_window_size', type: 'integer' },
+          { name: 'generate_embeddings', type: 'boolean' },
+          { name: 'embedding_model', type: 'string' },
+          { name: 'embedding_provider', type: 'string' },
+          { name: 'perform_rolling_summarization', type: 'boolean' },
+          { name: 'perform_confabulation_check_of_analysis', type: 'boolean' },
+          { name: 'system_prompt', type: 'string' },
+          { name: 'custom_prompt', type: 'string' },
+          { name: 'title', type: 'string' }
         ])
         used = 'none'
       }
