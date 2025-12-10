@@ -209,8 +209,8 @@ export const ControlRow: React.FC<ControlRowProps> = ({
   )
 
   return (
-    <div className="flex items-center justify-between gap-1 px-2 py-1.5 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-[#1a1a1a]">
-      {/* Left side: Prompt & Model selectors */}
+    <div className="flex items-center gap-1">
+      {/* Prompt & Model selectors */}
       <div className="flex items-center gap-1">
         <PromptSelect
           selectedSystemPrompt={selectedSystemPrompt}
@@ -222,7 +222,7 @@ export const ControlRow: React.FC<ControlRowProps> = ({
         <ModelSelect iconClassName="size-4" />
       </div>
 
-      {/* Right side: RAG, Save, More */}
+      {/* RAG, Save, More */}
       <div className="flex items-center gap-0.5">
         {/* RAG Search Toggle */}
         <Tooltip title={t("sidepanel:controlRow.ragSearch", "RAG Search")}>

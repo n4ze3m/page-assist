@@ -4,7 +4,6 @@ import { defaultExtractContent } from "@/parser/default"
 import { isTwitterProfile, isTwitterTimeline, parseTweetProfile, parseTwitterTimeline } from "@/parser/twitter"
 import { isWikipedia, parseWikipedia } from "@/parser/wiki"
 import { getMaxContextSize } from "@/services/kb"
-import { processPDFFromURL } from "./pdf"
 
 const getTranscript = async (url: string) => {
   try {
@@ -92,8 +91,6 @@ export const getTabContents = async (documents: ChatDocuments) => {
                 extractedContent = parseTweetProfile(content.html)
             } else if (isTwitterTimeline(doc.url)) {
                 extractedContent = parseTwitterTimeline(content.html)
-            } else if (content.isPDF) {
-                extractedContent = await processPDFFromURL(doc.url)
             } else {
                 extractedContent = defaultExtractContent(content.html)
             }

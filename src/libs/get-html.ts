@@ -1,5 +1,4 @@
 import { defaultExtractContent } from "@/parser/default"
-import { getPdf } from "./pdf"
 import {
   isTweet,
   isTwitterTimeline,
@@ -91,37 +90,10 @@ export const getDataFromCurrentTab = async () => {
   const { content, type, url } = await result
 
   if (type === "pdf") {
-    const res = await fetch(url)
-    const data = await res.arrayBuffer()
-    let pdfHtml: {
-      content: string
-      page: number
-    }[] = []
-    const pdf = await getPdf(data)
-
-    for (let i = 1; i <= pdf.numPages; i += 1) {
-      const page = await pdf.getPage(i)
-      const content = await page.getTextContent()
-
-      if (content?.items.length === 0) {
-        continue
-      }
-
-      const text = content?.items
-        .map((item: any) => item.str)
-        .join("\n")
-        .replace(/\x00/g, "")
-        .trim()
-      pdfHtml.push({
-        content: text,
-        page: i
-      })
-    }
-
     return {
       url,
       content: "",
-      pdf: pdfHtml,
+      pdf: [],
       type: "pdf"
     }
   }

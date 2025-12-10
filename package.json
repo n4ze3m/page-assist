@@ -54,7 +54,6 @@
     "marked": "^15.0.12",
     "mermaid": "^11.4.1",
     "pa-tesseract.js": "^5.1.1",
-    "pdfjs-dist": "4.0.379",
     "property-information": "^6.4.1",
     "pubsub-js": "^1.9.4",
     "react": "18.2.0",

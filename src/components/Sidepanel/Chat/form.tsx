@@ -1083,22 +1083,6 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                     aria-hidden="true"
                     onChange={onInputChange}
                   />
-                  {/* Control Row with Prompt, Model, RAG, Save, More */}
-                  <ControlRow
-                    selectedSystemPrompt={selectedSystemPrompt}
-                    setSelectedSystemPrompt={setSelectedSystemPrompt}
-                    setSelectedQuickPrompt={setSelectedQuickPrompt}
-                    temporaryChat={temporaryChat}
-                    serverChatId={serverChatId}
-                    setTemporaryChat={handleToggleTemporaryChat}
-                    webSearch={webSearch}
-                    setWebSearch={setWebSearch}
-                    chatMode={chatMode}
-                    setChatMode={setChatMode}
-                    onImageUpload={onInputChange}
-                    onToggleRag={handleRagToggle}
-                    isConnected={isConnectionReady}
-                  />
                   <div
                     className={`w-full flex flex-col px-1 ${
                       !isConnectionReady
@@ -1170,7 +1154,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                       }
                       {...form.getInputProps("message")}
                     />
-                    <div className="mt-4 flex w-full flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                    <div className="mt-2 flex w-full flex-row items-center justify-between gap-2">
                       {/* Hidden: Save toggle (now in ControlRow) */}
                       <div className="hidden flex-wrap items-start gap-2 text-xs text-gray-700 dark:text-gray-200">
                         <div className="flex flex-col gap-0.5">
@@ -1211,6 +1195,22 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                           </p>
                         </div>
                       </div>
+                      {/* Control Row - moved here to be in same row as Send button */}
+                      <ControlRow
+                        selectedSystemPrompt={selectedSystemPrompt}
+                        setSelectedSystemPrompt={setSelectedSystemPrompt}
+                        setSelectedQuickPrompt={setSelectedQuickPrompt}
+                        temporaryChat={temporaryChat}
+                        serverChatId={serverChatId}
+                        setTemporaryChat={handleToggleTemporaryChat}
+                        webSearch={webSearch}
+                        setWebSearch={setWebSearch}
+                        chatMode={chatMode}
+                        setChatMode={setChatMode}
+                        onImageUpload={onInputChange}
+                        onToggleRag={handleRagToggle}
+                        isConnected={isConnectionReady}
+                      />
                       <div className="flex flex-wrap items-center justify-end gap-2">
                         {/* Hidden: Model label, RAG, Prompt, Model, More (now in ControlRow) */}
                         <span className="hidden mr-2 text-[11px] text-gray-500 dark:text-gray-400">
