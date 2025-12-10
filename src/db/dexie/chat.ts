@@ -164,6 +164,82 @@ export class PageAssistDatabase {
     return db.chatHistories.get(id);
   }
 
+  async getHistoryMetadata(historyId: string): Promise<{
+    messageCount: number;
+    lastMessage?: { content: string; role: string; createdAt: number };
+  }> {
+    const messages = await db.messages
+      .where('history_id')
+      .equals(historyId)
+      .toArray();
+
+    const messageCount = messages.length;
+
+    if (messageCount === 0) {
+      return { messageCount };
+    }
+
+    // Find the most recent message
+    const lastMessage = messages.reduce((latest, msg) =>
+      msg.createdAt > latest.createdAt ? msg : latest
+    , messages[0]);
+
+    return {
+      messageCount,
+      lastMessage: {
+        content: lastMessage.content,
+        role: lastMessage.role,
+        createdAt: lastMessage.createdAt
+      }
+    };
+  }
+
+  async getHistoriesWithMetadata(historyIds: string[]): Promise<Map<string, {
+    messageCount: number;
+    lastMessage?: { content: string; role: string; createdAt: number };
+  }>> {
+    const result = new Map();
+
+    // Batch fetch all messages for the given history IDs
+    const allMessages = await db.messages
+      .where('history_id')
+      .anyOf(historyIds)
+      .toArray();
+
+    // Group messages by history_id
+    const messagesByHistory = new Map<string, typeof allMessages>();
+    for (const msg of allMessages) {
+      const existing = messagesByHistory.get(msg.history_id) || [];
+      existing.push(msg);
+      messagesByHistory.set(msg.history_id, existing);
+    }
+
+    // Compute metadata for each history
+    for (const historyId of historyIds) {
+      const messages = messagesByHistory.get(historyId) || [];
+      const messageCount = messages.length;
+
+      if (messageCount === 0) {
+        result.set(historyId, { messageCount });
+      } else {
+        const lastMessage = messages.reduce((latest, msg) =>
+          msg.createdAt > latest.createdAt ? msg : latest
+        , messages[0]);
+
+        result.set(historyId, {
+          messageCount,
+          lastMessage: {
+            content: lastMessage.content,
+            role: lastMessage.role,
+            createdAt: lastMessage.createdAt
+          }
+        });
+      }
+    }
+
+    return result;
+  }
+
   async addChatHistory(history: HistoryInfo) {
     await db.chatHistories.add(history);
   }

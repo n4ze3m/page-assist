@@ -54,6 +54,7 @@ const SidepanelChat = () => {
   const drop = React.useRef<HTMLDivElement>(null)
   const [dropedFile, setDropedFile] = React.useState<File | undefined>()
   const [sidebarOpen, setSidebarOpen] = React.useState(false)
+  const [searchQuery, setSearchQuery] = React.useState("")
   const { t } = useTranslation(["playground", "sidepanel", "common"])
   // Per-tab storage (Chrome side panel) or per-window/global (Firefox sidebar).
   // tabId: undefined = not resolved yet, null = resolved but unavailable.
@@ -524,6 +525,8 @@ const SidepanelChat = () => {
           <SidepanelHeaderSimple
             sidebarOpen={sidebarOpen}
             setSidebarOpen={setSidebarOpen}
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
           />
         </div>
         <div
@@ -583,7 +586,7 @@ const SidepanelChat = () => {
             aria-relevant="additions"
             aria-label={t("playground:aria.chatTranscript", "Chat messages")}
             className="custom-scrollbar flex h-full w-full flex-col items-center overflow-x-hidden overflow-y-auto px-5 relative z-10">
-            <SidePanelBody scrollParentRef={containerRef} />
+            <SidePanelBody scrollParentRef={containerRef} searchQuery={searchQuery} />
           </div>
 
           <div className="absolute bottom-0 w-full z-10">

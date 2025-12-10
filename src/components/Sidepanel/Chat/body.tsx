@@ -6,9 +6,12 @@ import { useWebUI } from "@/store/webui"
 import { MessageSourcePopup } from "@/components/Common/Playground/MessageSourcePopup"
 import { useVirtualizer } from "@tanstack/react-virtual"
 
-type Props = { scrollParentRef?: React.RefObject<HTMLDivElement> }
+type Props = {
+  scrollParentRef?: React.RefObject<HTMLDivElement>
+  searchQuery?: string
+}
 
-export const SidePanelBody = ({ scrollParentRef }: Props) => {
+export const SidePanelBody = ({ scrollParentRef, searchQuery }: Props) => {
   const {
     messages,
     streaming,
@@ -69,6 +72,7 @@ export const SidePanelBody = ({ scrollParentRef }: Props) => {
                   onStopStreaming={stopStreamingRequest}
                   serverChatId={serverChatId}
                   serverMessageId={message.serverMessageId}
+                  searchQuery={searchQuery}
                 />
               </div>
             )

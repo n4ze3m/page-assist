@@ -11,13 +11,16 @@ import { CodeBlock } from "./CodeBlock"
 import { TableBlock } from "./TableBlock"
 import { preprocessLaTeX } from "@/utils/latex"
 import { useStorage } from "@plasmohq/storage/hook"
+import { highlightText } from "@/utils/text-highlight"
 
 function Markdown({
   message,
-  className = "prose break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0 dark:prose-dark"
+  className = "prose break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0 dark:prose-dark",
+  searchQuery
 }: {
   message: string
   className?: string
+  searchQuery?: string
 }) {
   const [checkWideMode] = useStorage("checkWideMode", false)
   const blockIndexRef = React.useRef(0)
@@ -66,6 +69,13 @@ function Markdown({
           },
           p({ children }) {
             return <p className="mb-2 last:mb-0">{children}</p>
+          },
+          // Apply search highlighting to text nodes
+          text({ children }) {
+            if (searchQuery && typeof children === "string") {
+              return highlightText(children, searchQuery)
+            }
+            return <>{children}</>
           }
         }}>
         {message}

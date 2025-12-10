@@ -1,7 +1,8 @@
 import {
   useMutation,
   useQueryClient,
-  useInfiniteQuery
+  useInfiniteQuery,
+  useQuery
 } from "@tanstack/react-query"
 import {
   Empty,
@@ -24,7 +25,8 @@ import {
   Trash2Icon,
   Loader2,
   ChevronDown,
-  GitBranch
+  GitBranch,
+  MessageSquare
 } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { useTranslation } from "react-i18next"
@@ -40,7 +42,8 @@ import {
   pinHistory,
   formatToMessage,
   getSessionFiles,
-  getPromptById
+  getPromptById,
+  getHistoriesWithMetadata
 } from "@/db/dexie/helpers"
 import { UploadedFile } from "@/db/dexie/types"
 import { isDatabaseClosedError } from "@/utils/ff-error"
@@ -219,6 +222,58 @@ export const Sidebar = ({
       },
       [] as Array<{ label: string; items: any[] }>
     ) || []
+
+  // Collect all history IDs for metadata fetching
+  const allHistoryIds = chatHistories.flatMap((group) =>
+    group.items.map((item) => item.id)
+  )
+
+  // Fetch metadata for all visible histories
+  const { data: historyMetadata } = useQuery({
+    queryKey: ["historyMetadata", allHistoryIds.join(",")],
+    queryFn: async () => {
+      if (allHistoryIds.length === 0) return new Map()
+      return getHistoriesWithMetadata(allHistoryIds)
+    },
+    enabled: isOpen && allHistoryIds.length > 0,
+    staleTime: 30000 // Cache for 30 seconds
+  })
+
+  // Helper to format relative time
+  const formatRelativeTime = (timestamp: number) => {
+    const now = Date.now()
+    const diff = now - timestamp
+    const minutes = Math.floor(diff / 60000)
+    const hours = Math.floor(diff / 3600000)
+    const days = Math.floor(diff / 86400000)
+
+    if (minutes < 1) return t("common:justNow", { defaultValue: "Just now" })
+    if (minutes < 60)
+      return t("common:minutesAgo", {
+        count: minutes,
+        defaultValue: `${minutes}m ago`
+      })
+    if (hours < 24)
+      return t("common:hoursAgo", {
+        count: hours,
+        defaultValue: `${hours}h ago`
+      })
+    if (days < 7)
+      return t("common:daysAgo", {
+        count: days,
+        defaultValue: `${days}d ago`
+      })
+    return new Date(timestamp).toLocaleDateString()
+  }
+
+  // Helper to truncate message preview
+  const truncateMessage = (content: string, maxLength: number = 60) => {
+    if (!content) return ""
+    // Remove markdown formatting for preview
+    const cleaned = content.replace(/[#*_`~\[\]]/g, "").trim()
+    if (cleaned.length <= maxLength) return cleaned
+    return cleaned.substring(0, maxLength).trim() + "..."
+  }
 
   const { mutate: deleteHistory } = useMutation({
     mutationKey: ["deleteHistory"],
@@ -414,19 +469,19 @@ export const Sidebar = ({
                 {group.items.map((chat, index) => (
                   <div
                     key={chat.id}
-                    className={`flex py-2 px-2 items-center gap-3 relative rounded-md truncate hover:pr-4 group transition-opacity duration-300 ease-in-out border ${
+                    className={`flex py-2 px-2 items-start gap-2 relative rounded-md hover:pr-4 group transition-opacity duration-300 ease-in-out border ${
                       historyId === chat.id
                         ? "bg-gray-200 dark:bg-[#454242] border-gray-400 dark:border-gray-600 text-gray-900 dark:text-gray-100"
                         : "bg-gray-50 dark:bg-[#232222] dark:text-gray-100 text-gray-800 border-gray-300 dark:border-gray-800 hover:bg-gray-200 dark:hover:bg-[#2d2d2d]"
                     }`}>
                     {chat?.message_source === "copilot" && (
-                      <BotIcon className="size-3 text-gray-500 dark:text-gray-400" />
+                      <BotIcon className="size-3 text-gray-500 dark:text-gray-400 mt-1 flex-shrink-0" />
                     )}
                     {chat?.message_source === "branch" && (
-                      <GitBranch className="size-3 text-gray-500 dark:text-gray-400" />
+                      <GitBranch className="size-3 text-gray-500 dark:text-gray-400 mt-1 flex-shrink-0" />
                     )}
                     <button
-                      className="flex-1 overflow-hidden break-all text-start truncate w-full"
+                      className="flex-1 overflow-hidden text-start w-full min-w-0"
                       onClick={async () => {
                         const db = new PageAssistDatabase()
                         const history = await db.getChatHistory(chat.id)
@@ -465,7 +520,33 @@ export const Sidebar = ({
                         navigate("/")
                         onClose()
                       }}>
-                      <span className="flex-grow truncate">{chat.title}</span>
+                      <div className="flex flex-col gap-0.5">
+                        <span className="truncate font-medium">{chat.title}</span>
+                        {historyMetadata?.get(chat.id) && (
+                          <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+                            <span className="flex items-center gap-1">
+                              <MessageSquare className="size-3" />
+                              {historyMetadata.get(chat.id)?.messageCount || 0}
+                            </span>
+                            {historyMetadata.get(chat.id)?.lastMessage && (
+                              <span>
+                                {formatRelativeTime(
+                                  historyMetadata.get(chat.id)?.lastMessage
+                                    ?.createdAt || chat.createdAt
+                                )}
+                              </span>
+                            )}
+                          </div>
+                        )}
+                        {historyMetadata?.get(chat.id)?.lastMessage && (
+                          <span className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                            {truncateMessage(
+                              historyMetadata.get(chat.id)?.lastMessage
+                                ?.content || ""
+                            )}
+                          </span>
+                        )}
+                      </div>
                     </button>
                     <div className="flex items-center gap-2">
                       <Dropdown

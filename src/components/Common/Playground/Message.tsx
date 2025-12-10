@@ -33,6 +33,7 @@ import { copyToClipboard } from "@/utils/clipboard"
 import { ChatDocuments } from "@/models/ChatTypes"
 import { PiGitBranch } from "react-icons/pi"
 import { buildChatTextClass } from "@/utils/chat-style"
+import { highlightText } from "@/utils/text-highlight"
 
 const Markdown = React.lazy(() => import("../../Common/Markdown"))
 
@@ -105,6 +106,7 @@ type Props = {
   onStopStreaming?: () => void
   serverChatId?: string | null
   serverMessageId?: string | null
+  searchQuery?: string
 }
 
 export const PlaygroundMessage = (props: Props) => {
@@ -352,6 +354,7 @@ export const PlaygroundMessage = (props: Props) => {
                                     <Markdown
                                       message={e.content}
                                       className={`${MARKDOWN_BASE_CLASSES} ${assistantTextClass}`}
+                                      searchQuery={props.searchQuery}
                                     />
                                   </React.Suspense>
                                 )
@@ -373,6 +376,7 @@ export const PlaygroundMessage = (props: Props) => {
                           <Markdown
                             message={e.content}
                             className={`${MARKDOWN_BASE_CLASSES} ${assistantTextClass}`}
+                            searchQuery={props.searchQuery}
                           />
                         </React.Suspense>
                       )
@@ -387,7 +391,9 @@ export const PlaygroundMessage = (props: Props) => {
                   }
                   ${checkWideMode ? "max-w-none" : ""}
                   `}>
-                  {props.message}
+                  {props.searchQuery
+                    ? highlightText(props.message, props.searchQuery)
+                    : props.message}
                 </p>
               )
             ) : (

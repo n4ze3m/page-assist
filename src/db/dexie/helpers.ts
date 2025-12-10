@@ -700,3 +700,8 @@ export const updateLastUsedPrompt = async (
   const chatDb = new PageAssistDatabase()
   return chatDb.updateLastUsedPrompt(history_id, usedPrompt)
 }
+
+export const getHistoriesWithMetadata = async (historyIds: string[]) => {
+  const db = new PageAssistDatabase()
+  return db.getHistoriesWithMetadata(historyIds)
+}
