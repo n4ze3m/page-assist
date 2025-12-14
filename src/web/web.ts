@@ -1,7 +1,7 @@
 import { getWebSearchPrompt } from "~/services/ollama"
 import { webGoogleSearch } from "./search-engines/google"
 import { webDuckDuckGoSearch } from "./search-engines/duckduckgo"
-import { getIsVisitSpecificWebsite, getSearchProvider } from "@/services/search"
+import { getIsVisitSpecificWebsite, getSearchProvider, getDomainFilterList, getBlockedDomainList } from "@/services/search"
 import { webSogouSearch } from "./search-engines/sogou"
 import { webBraveSearch } from "./search-engines/brave"
 import { getWebsiteFromQuery, processSingleWebsite } from "./website"
@@ -88,6 +88,38 @@ const getProvidedURLs = (
   return urlList
 }
 
+const filterResultsByDomain = (
+  results: ProviderResults[],
+  domainFilterList: string[],
+  blockedDomainList: string[]
+): ProviderResults[] => {
+  let filteredResults = results
+
+  // First, filter out blocked domains
+  if (blockedDomainList && blockedDomainList.length > 0) {
+    filteredResults = filteredResults.filter((result) => {
+      const hostname = getHostName(result.url)
+      return !blockedDomainList.some((domain) => {
+        const cleanDomain = domain.trim().toLowerCase()
+        return hostname.toLowerCase().includes(cleanDomain) || cleanDomain.includes(hostname.toLowerCase())
+      })
+    })
+  }
+
+  // Then, if allow list exists, only keep those domains
+  if (domainFilterList && domainFilterList.length > 0) {
+    filteredResults = filteredResults.filter((result) => {
+      const hostname = getHostName(result.url)
+      return domainFilterList.some((domain) => {
+        const cleanDomain = domain.trim().toLowerCase()
+        return hostname.toLowerCase().includes(cleanDomain) || cleanDomain.includes(hostname.toLowerCase())
+      })
+    })
+  }
+
+  return filteredResults
+}
+
 export const isQueryHaveWebsite = async (query: string) => {
   const websiteVisit = getWebsiteFromQuery(query)
 
@@ -100,15 +132,18 @@ export const getSystemPromptForWeb = async (query: string, returnSearchResults: 
   try {
     const websiteVisit = getWebsiteFromQuery(query)
     let searchOnAWebSite: ProviderResults[] = []
-    let searchOnProviders: SearchProviderResult | [] = []
+    let searchOnProviders: SearchProviderResult | ProviderResults[] = []
 
     const isVisitSpecificWebsite = await getIsVisitSpecificWebsite()
+    const domainFilterList = await getDomainFilterList()
+    const blockedDomainList = await getBlockedDomainList()
     let search_results: string = ""
 
     if (isVisitSpecificWebsite && websiteVisit.hasUrl) {
       const url = websiteVisit.url
       const queryWithoutUrl = websiteVisit.queryWithouUrls
       searchOnAWebSite = await processSingleWebsite(url, queryWithoutUrl)
+      searchOnAWebSite = filterResultsByDomain(searchOnAWebSite, domainFilterList, blockedDomainList)
       for (const result of searchOnAWebSite) {
         search_results += `<result source="${result.url}" id="0">${result?.content}</result>`
         search_results += (`\n`)
@@ -120,10 +155,12 @@ export const getSystemPromptForWeb = async (query: string, returnSearchResults: 
         search_results += `<result id="0">${searchOnProviders.answer}</result>`
         search_results += (`\n`)
       } else {
-        search_results = searchOnProviders.map((result: ProviderResults, idx) =>
+        const filteredResults = filterResultsByDomain(searchOnProviders as ProviderResults[], domainFilterList, blockedDomainList)
+        search_results = filteredResults.map((result: ProviderResults, idx) =>
           `<result source="${result.url}" id="${idx}">${result?.content}</result>`
         )
           .join("\n")
+        searchOnProviders = filteredResults
       }
     }
 

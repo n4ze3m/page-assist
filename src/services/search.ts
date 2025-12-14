@@ -149,6 +149,38 @@ export const setGoogleDomain = async (domain: string) => {
   await storage2.set("searchGoogleDomain", domain)
 }
 
+export const getDomainFilterList = async (): Promise<string[]> => {
+  const domainFilterList = await storage.get("domainFilterList")
+  if (!domainFilterList || domainFilterList.length === 0) {
+    return []
+  }
+  try {
+    return JSON.parse(domainFilterList)
+  } catch (e) {
+    return []
+  }
+}
+
+export const setDomainFilterList = async (domainFilterList: string[]) => {
+  await storage.set("domainFilterList", JSON.stringify(domainFilterList))
+}
+
+export const getBlockedDomainList = async (): Promise<string[]> => {
+  const blockedDomainList = await storage.get("blockedDomainList")
+  if (!blockedDomainList || blockedDomainList.length === 0) {
+    return []
+  }
+  try {
+    return JSON.parse(blockedDomainList)
+  } catch (e) {
+    return []
+  }
+}
+
+export const setBlockedDomainList = async (blockedDomainList: string[]) => {
+  await storage.set("blockedDomainList", JSON.stringify(blockedDomainList))
+}
+
 export const getInternetSearchOn = async () => {
   const defaultInternetSearchOn = await storage.get<boolean | undefined>(
     "defaultInternetSearchOn"
@@ -175,7 +207,9 @@ export const getSearchSettings = async () => {
     exaAPIKey,
     firecrawlAPIKey,
     ollamaSearchApiKey,
-    kagiApiKey
+    kagiApiKey,
+    domainFilterList,
+    blockedDomainList
   ] = await Promise.all([
     getIsSimpleInternetSearch(),
     getSearchProvider(),
@@ -190,7 +224,9 @@ export const getSearchSettings = async () => {
     getExaAPIKey(),
     getFirecrawlAPIKey(),
     getOllamaSearchApiKey(),
-    getKagiApiKey()
+    getKagiApiKey(),
+    getDomainFilterList(),
+    getBlockedDomainList()
   ])
 
   return {
@@ -207,7 +243,9 @@ export const getSearchSettings = async () => {
     exaAPIKey,
     firecrawlAPIKey,
     ollamaSearchApiKey,
-    kagiApiKey
+    kagiApiKey,
+    domainFilterList,
+    blockedDomainList
   }
 }
 
@@ -225,7 +263,9 @@ export const setSearchSettings = async ({
   exaAPIKey,
   firecrawlAPIKey,
   ollamaSearchApiKey,
-  kagiApiKey
+  kagiApiKey,
+  domainFilterList,
+  blockedDomainList
 }: {
   isSimpleInternetSearch: boolean
   searchProvider: string
@@ -241,6 +281,8 @@ export const setSearchSettings = async ({
   firecrawlAPIKey: string
   ollamaSearchApiKey: string
   kagiApiKey: string
+  domainFilterList: string[]
+  blockedDomainList: string[]
 }) => {
   await Promise.all([
     setIsSimpleInternetSearch(isSimpleInternetSearch),
@@ -256,6 +298,8 @@ export const setSearchSettings = async ({
     setExaAPIKey(exaAPIKey),
     setFirecrawlAPIKey(firecrawlAPIKey),
     setOllamaSearchApiKey(ollamaSearchApiKey),
-    setKagiApiKey(kagiApiKey)
+    setKagiApiKey(kagiApiKey),
+    setDomainFilterList(domainFilterList),
+    setBlockedDomainList(blockedDomainList)
   ])
 }

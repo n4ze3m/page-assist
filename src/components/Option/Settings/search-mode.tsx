@@ -25,7 +25,9 @@ export const SearchModeSettings = () => {
       exaAPIKey: "",
       firecrawlAPIKey: "",
       ollamaSearchApiKey: "",
-      kagiApiKey: ""
+      kagiApiKey: "",
+      domainFilterList: [] as string[],
+      blockedDomainList: [] as string[]
     }
   })
 
@@ -296,6 +298,47 @@ export const SearchModeSettings = () => {
             />
           </div>
         </div>
+
+        <div className="flex sm:flex-row flex-col space-y-4 sm:space-y-0 sm:justify-between">
+          <div className="flex flex-col space-y-1">
+            <span className="text-gray-700 dark:text-neutral-50">
+              {t("generalSettings.webSearch.domainFilter.label", "Domain Filter List")}
+            </span>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              {t("generalSettings.webSearch.domainFilter.description", "Only show results from these domains")}
+            </p>
+          </div>
+          <div className="w-full mt-4 sm:mt-0 sm:w-[200px]">
+            <Select
+              mode="tags"
+              placeholder={t("generalSettings.webSearch.domainFilter.placeholder", "e.g., example.com")}
+              className="w-full"
+              tokenSeparators={[',', ' ']}
+              {...form.getInputProps("domainFilterList")}
+            />
+          </div>
+        </div>
+
+        <div className="flex sm:flex-row flex-col space-y-4 sm:space-y-0 sm:justify-between">
+          <div className="flex flex-col space-y-1">
+            <span className="text-gray-700 dark:text-neutral-50">
+              {t("generalSettings.webSearch.blockedDomains.label", "Blocked Domains")}
+            </span>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              {t("generalSettings.webSearch.blockedDomains.description", "Exclude results from these domains")}
+            </p>
+          </div>
+          <div className="w-full mt-4 sm:mt-0 sm:w-[200px]">
+            <Select
+              mode="tags"
+              placeholder={t("generalSettings.webSearch.blockedDomains.placeholder", "e.g., spam.com")}
+              className="w-full"
+              tokenSeparators={[',', ' ']}
+              {...form.getInputProps("blockedDomainList")}
+            />
+          </div>
+        </div>
+
         <div className="flex justify-end">
           <SaveButton btnType="submit" />
         </div>
