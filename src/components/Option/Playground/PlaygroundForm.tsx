@@ -102,6 +102,12 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
   useFocusShortcuts(textareaRef, true)
 
   const [pasteLargeTextAsFile] = useStorage("pasteLargeTextAsFile", false)
+  const [persistChatInput] = useStorage("persistChatInput", false)
+  const [persistedMessage, setPersistedMessage] = useStorage(
+    "playgroundPersistedMessage",
+    ""
+  )
+
   const isMobile = () => {
     return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
       navigator.userAgent
@@ -141,6 +147,13 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
       setWebSearch(true)
     }
   }, [defaultInternetSearchOn])
+
+  // Separate effect for restoring persisted message to handle async useStorage
+  React.useEffect(() => {
+    if (persistChatInput && persistedMessage && !form.values.message) {
+      form.setFieldValue("message", persistedMessage)
+    }
+  }, [persistChatInput, persistedMessage])
 
   const onInputChange = async (
     e: React.ChangeEvent<HTMLInputElement> | File
@@ -300,6 +313,10 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
       form.reset()
       clearSelectedDocuments()
       clearUploadedFiles()
+      // Clear persisted message when sent
+      if (persistChatInput) {
+        setPersistedMessage("")
+      }
       textAreaFocus()
       await sendMessage({
         image: value.image,
@@ -453,6 +470,10 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                     form.reset()
                     clearSelectedDocuments()
                     clearUploadedFiles()
+                    // Clear persisted message when sent
+                    if (persistChatInput) {
+                      setPersistedMessage("")
+                    }
                     textAreaFocus()
                     await sendMessage({
                       image: value.image,
@@ -512,6 +533,10 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                         {...form.getInputProps("message")}
                         onChange={(e) => {
                           form.getInputProps("message").onChange(e)
+                          // Persist message as user types
+                          if (persistChatInput) {
+                            setPersistedMessage(e.target.value)
+                          }
                           if (tabMentionsEnabled && textareaRef.current) {
                             handleTextChange(
                               e.target.value,

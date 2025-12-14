@@ -95,6 +95,9 @@
       },
       "hideReasoningWidget": {
         "label": "Hide Reasoning Widget from AI Messages"
+      },
+      "persistChatInput": {
+        "label": "Persist Chat Input (Save unsent messages)"
       }
     },
     "sidepanelRag": {
@@ -149,6 +152,16 @@
       "firecrawlAPIKey": {
         "label": "Firecrawl API Key",
         "placeholder": "Enter your Firecrawl API key"
+      },
+      "domainFilter": {
+        "label": "Domain Filter List",
+        "description": "Only show results from these domains",
+        "placeholder": "e.g., example.com"
+      },
+      "blockedDomains": {
+        "label": "Blocked Domains",
+        "description": "Exclude results from these domains",
+        "placeholder": "e.g., spam.com"
       }
     },
     "system": {
