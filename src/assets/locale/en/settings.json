@@ -95,6 +95,9 @@
       },
       "hideReasoningWidget": {
         "label": "Hide Reasoning Widget from AI Messages"
+      },
+      "persistChatInput": {
+        "label": "Persist Chat Input (Save unsent messages)"
       }
     },
     "sidepanelRag": {

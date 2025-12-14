@@ -43,6 +43,12 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
     "chatWithWebsiteEmbedding",
     false
   )
+  const [persistChatInput] = useStorage("persistChatInput", false)
+  const [persistedMessage, setPersistedMessage] = useStorage(
+    "sidepanelPersistedMessage",
+    ""
+  )
+
   const form = useForm({
     initialValues: {
       message: "",
@@ -121,6 +127,10 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
           }
         }
         form.reset()
+        // Clear persisted message when sent
+        if (persistChatInput) {
+          setPersistedMessage("")
+        }
         textAreaFocus()
         await sendMessage({
           image: value.image,
@@ -233,6 +243,13 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
     }
   }, [])
 
+  // Separate effect for restoring persisted message to handle async useStorage
+  React.useEffect(() => {
+    if (persistChatInput && persistedMessage && !form.values.message) {
+      form.setFieldValue("message", persistedMessage)
+    }
+  }, [persistChatInput, persistedMessage])
+
   React.useEffect(() => {
     if (defaultInternetSearchOn) {
       setWebSearch(true)
@@ -303,6 +320,10 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                       return
                     }
                     form.reset()
+                    // Clear persisted message when sent
+                    if (persistChatInput) {
+                      setPersistedMessage("")
+                    }
                     textAreaFocus()
                     await sendMessage({
                       image: value.image,
@@ -341,6 +362,13 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                       }}
                       placeholder={t("form.textarea.placeholder")}
                       {...form.getInputProps("message")}
+                      onChange={(e) => {
+                        form.getInputProps("message").onChange(e)
+                        // Persist message as user types
+                        if (persistChatInput) {
+                          setPersistedMessage(e.target.value)
+                        }
+                      }}
                     />
                     <div className="flex mt-4 justify-end gap-3">
                       {chatMode !== "vision" && (
