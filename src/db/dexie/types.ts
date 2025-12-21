@@ -171,6 +171,12 @@ export type ModelNickname = {
   model_avatar?: string
 }
 
+export type ModelState = {
+  id: string,
+  model_id: string,
+  is_enabled: boolean
+}
+
 
 export type MessageHistory = Message[];
 export type ChatHistory = HistoryInfo[];
@@ -178,3 +184,4 @@ export type Prompts = Prompt[];
 export type OpenAIModelConfigs = OpenAIModelConfig[]
 export type Models = Model[]
 export type ModelNicknames = ModelNickname[]
+export type ModelStates = ModelState[]

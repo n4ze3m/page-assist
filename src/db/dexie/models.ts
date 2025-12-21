@@ -4,6 +4,7 @@ import {
   getOpenAIConfigById as providerInfo
 } from "./openai"
 import { getAllModelNicknames } from "./nickname"
+import { getAllModelStates } from "./modelState"
 import { Model, Models } from "./types"
 import { db } from "./schema"
 import {
@@ -549,9 +550,10 @@ export const ollamaFormatAllCustomModels = async (
   modelType: "all" | "chat" | "embedding" = "all"
 ) => {
   try {
-    const [allModles, allProviders] = await Promise.all([
+    const [allModles, allProviders, modelStates] = await Promise.all([
       getAllCustomModels(),
-      getAllOpenAIConfig()
+      getAllOpenAIConfig(),
+      getAllModelStates()
     ])
     const modelNicknames = await getAllModelNicknames()
     const lmstudioProviders = allProviders.filter(
@@ -647,6 +649,7 @@ export const ollamaFormatAllCustomModels = async (
     ]
 
     const ollamaModels = allModlesWithLMStudio.map((model) => {
+      const isEnabled = modelStates[model.id] ?? true // Default to enabled
       return {
         name: model.name,
         model: model.id,
@@ -656,6 +659,7 @@ export const ollamaFormatAllCustomModels = async (
             ?.provider || "custom",
         size: 0,
         digest: "",
+        is_enabled: isEnabled,
         details: {
           parent_model: "",
           format: "",
@@ -667,7 +671,10 @@ export const ollamaFormatAllCustomModels = async (
       }
     })
 
-    return ollamaModels.map((model) => {
+    // Filter out disabled models
+    const enabledModels = ollamaModels.filter(model => model.is_enabled)
+
+    return enabledModels.map((model) => {
       return {
         ...model,
         nickname: modelNicknames[model.model]?.model_name || model.name,

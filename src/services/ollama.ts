@@ -10,6 +10,7 @@ import {
 import fetcher from "@/libs/fetcher"
 import { ollamaFormatAllCustomModels } from "@/db/dexie/models"
 import { getAllModelNicknames } from "@/db/dexie/nickname"
+import { getAllModelStates } from "@/db/dexie/modelState"
 
 const storage = new Storage()
 
@@ -101,12 +102,15 @@ export const isOllamaRunning = async () => {
 }
 
 export const getAllModels = async ({
-  returnEmpty = false
+  returnEmpty = false,
+  includeDisabled = false
 }: {
   returnEmpty?: boolean
+  includeDisabled?: boolean
 }) => {
   try {
     const modelNicknames = await getAllModelNicknames()
+    const modelStates = await getAllModelStates()
     const isEnabled = await getOllamaEnabled()
 
     if (!isEnabled) {
@@ -123,11 +127,13 @@ export const getAllModels = async ({
     }
     const json = await response.json()
 
-    return json.models.map((model: any) => {
+    const allModels = json.models.map((model: any) => {
+      const isModelEnabled = modelStates[model.name] ?? true
       return {
         ...model,
         nickname: modelNicknames[model.name]?.model_name || model.name,
-        avatar: modelNicknames[model.name]?.model_avatar || undefined
+        avatar: modelNicknames[model.name]?.model_avatar || undefined,
+        is_enabled: isModelEnabled
       }
     }) as {
       name: string
@@ -137,6 +143,7 @@ export const getAllModels = async ({
       digest: string
       nickname?: string
       avatar?: string
+      is_enabled: boolean
       details: {
         parent_model: string
         format: string
@@ -146,6 +153,13 @@ export const getAllModels = async ({
         quantization_level: string
       }
     }[]
+
+    // Filter out disabled models unless includeDisabled is true
+    if (includeDisabled) {
+      return allModels
+    }
+
+    return allModels.filter(model => model.is_enabled)
   } catch (e) {
     console.error(e)
     return []
