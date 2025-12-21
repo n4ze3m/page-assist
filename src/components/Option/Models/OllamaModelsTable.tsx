@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { Skeleton, Table, Tag, Tooltip, notification, Avatar } from "antd"
+import { Skeleton, Table, Tag, Tooltip, notification, Avatar, Switch } from "antd"
 import { bytePerSecondFormatter } from "~/libs/byte-formater"
 import { deleteModel, getAllModels } from "~/services/ollama"
 import dayjs from "dayjs"
@@ -21,6 +21,7 @@ import { AddUpdateModelSettings } from "./AddUpdateModelSettings"
 import { getDownloadState } from "~/utils/pull-ollama"
 import { browser } from "wxt/browser"
 import { CancelPullingModel } from "./CancelPullingModel"
+import { setModelState } from "@/db/dexie/modelState"
 
 dayjs.extend(relativeTime)
 
@@ -73,7 +74,7 @@ export const OllamaModelsTable = () => {
 
   const { data, status } = useQuery({
     queryKey: ["fetchAllModels"],
-    queryFn: async () => await getAllModels({ returnEmpty: true })
+    queryFn: async () => await getAllModels({ returnEmpty: true, includeDisabled: true })
   })
 
   const { mutate: deleteOllamaModel } = useMutation({
@@ -115,6 +116,26 @@ export const OllamaModelsTable = () => {
 
   const { mutate: pullOllamaModel } = useMutation({
     mutationFn: pullModel
+  })
+
+  const { mutate: toggleModelEnabled } = useMutation({
+    mutationFn: async ({ modelId, isEnabled }: { modelId: string; isEnabled: boolean }) => {
+      await setModelState(modelId, isEnabled)
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["fetchAllModels"]
+      })
+      queryClient.invalidateQueries({
+        queryKey: ["fetchModel"]
+      })
+    },
+    onError: (error) => {
+      notification.error({
+        message: "Error",
+        description: error?.message || "Failed to update model state"
+      })
+    }
   })
 
   const cancelDownloadModel = () => {
@@ -203,7 +224,19 @@ export const OllamaModelsTable = () => {
                 {
                   title: t("manageModels.columns.actions"),
                   render: (_, record) => (
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 items-center">
+                      <Tooltip title={record.is_enabled ? "Disable model" : "Enable model"}>
+                        <Switch
+                          checked={record.is_enabled}
+                          size="small"
+                          onChange={(checked) => {
+                            toggleModelEnabled({
+                              modelId: record.name,
+                              isEnabled: checked
+                            })
+                          }}
+                        />
+                      </Tooltip>
                       <Tooltip title={t("common:modelSettings.label")}>
                         <button
                           onClick={() => {
