@@ -1,13 +1,11 @@
 import { Suspense } from "react"
-import { useDarkMode } from "~/hooks/useDarkmode"
 import { OptionRoutingFirefox, SidepanelRoutingFirefox } from "./firefox"
 import { PageAssistLoader } from "@/components/Common/PageAssistLoader"
 
 export const OptionRouting = () => {
-  const { mode } = useDarkMode()
 
   return (
-    <div className={`${mode === "dark" ? "dark" : "light"} arimo`}>
+    <div className={`arimo`}>
       <Suspense fallback={<PageAssistLoader />}>
         <OptionRoutingFirefox />
       </Suspense>
@@ -16,10 +14,9 @@ export const OptionRouting = () => {
 }
 
 export const SidepanelRouting = () => {
-  const { mode } = useDarkMode()
 
   return (
-    <div className={`${mode === "dark" ? "dark" : "light"} arimo`}>
+    <div className={`arimo`}>
       <Suspense fallback={<PageAssistLoader />}>
         <SidepanelRoutingFirefox />
       </Suspense>
