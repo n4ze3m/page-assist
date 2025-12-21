@@ -103,5 +103,10 @@
   },
   "resolutions": {
     "@langchain/core": "^1.1.31"
-  }
+  },
+  "trustedDependencies": [
+    "@swc/core",
+    "pa-tesseract.js",
+    "spawn-sync"
+  ]
 }
