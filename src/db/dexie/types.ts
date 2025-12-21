@@ -177,6 +177,12 @@ export type ModelState = {
   is_enabled: boolean
 }
 
+export type ProviderState = {
+  id: string,
+  provider_id: string,
+  is_enabled: boolean
+}
+
 
 export type MessageHistory = Message[];
 export type ChatHistory = HistoryInfo[];
@@ -185,3 +191,4 @@ export type OpenAIModelConfigs = OpenAIModelConfig[]
 export type Models = Model[]
 export type ModelNicknames = ModelNickname[]
 export type ModelStates = ModelState[]
+export type ProviderStates = ProviderState[]

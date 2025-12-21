@@ -13,7 +13,8 @@ import {
   OpenAIModelConfig,
   Model,
   ModelNickname,
-  ModelState
+  ModelState,
+  ProviderState
 } from "./types"
 
 export class PageAssistDexieDB extends Dexie {
@@ -34,6 +35,7 @@ export class PageAssistDexieDB extends Dexie {
   customModels!: Table<Model>;
   modelNickname!: Table<ModelNickname>
   modelState!: Table<ModelState>
+  providerState!: Table<ProviderState>
 
   constructor() {
     super('PageAssistDatabase');
@@ -53,7 +55,8 @@ export class PageAssistDexieDB extends Dexie {
       openaiConfigs: 'id, name, baseUrl, apiKey, createdAt, provider, db_type, headers',
       customModels: 'id, model_id, name, model_name, model_image, provider_id, lookup, model_type, db_type',
       modelNickname: 'id, model_id, model_name, model_avatar',
-      modelState: 'id, model_id, is_enabled'
+      modelState: 'id, model_id, is_enabled',
+      providerState: 'id, provider_id, is_enabled'
     });
   }
 }
