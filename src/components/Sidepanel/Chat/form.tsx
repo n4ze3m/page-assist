@@ -52,7 +52,8 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
   const form = useForm({
     initialValues: {
       message: "",
-      image: ""
+      image: "",
+      images: [] as string[]
     }
   })
   const {
@@ -75,13 +76,24 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
   ) => {
     if (e instanceof File) {
       const base64 = await toBase64(e)
-      form.setFieldValue("image", base64)
+      const currentImages = form.values.images || []
+      form.setFieldValue("images", [...currentImages, base64])
     } else {
-      if (e.target.files) {
-        const base64 = await toBase64(e.target.files[0])
-        form.setFieldValue("image", base64)
+      if (e.target.files && e.target.files.length > 0) {
+        const files = Array.from(e.target.files)
+        for (const file of files) {
+          const base64 = await toBase64(file)
+          const currentImages = form.values.images || []
+          form.setFieldValue("images", [...currentImages, base64])
+        }
       }
     }
+  }
+
+  const removeImage = (index: number) => {
+    const currentImages = form.values.images || []
+    const newImages = currentImages.filter((_, i) => i !== index)
+    form.setFieldValue("images", newImages)
   }
   const textAreaFocus = () => {
     if (textareaRef.current) {
@@ -103,7 +115,10 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
     ) {
       e.preventDefault()
       form.onSubmit(async (value) => {
-        if (value.message.trim().length === 0 && value.image.length === 0) {
+        if (
+          value.message.trim().length === 0 &&
+          (!value.images || value.images.length === 0)
+        ) {
           return
         }
         await stopListening()
@@ -133,7 +148,8 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
         }
         textAreaFocus()
         await sendMessage({
-          image: value.image,
+          image: value.images && value.images.length > 0 ? value.images[0] : "",
+          images: value.images,
           message: value.message.trim()
         })
       })()
@@ -264,25 +280,28 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
           <div
             data-istemporary-chat={temporaryChat}
             className={` bg-neutral-50  dark:bg-[#262626] relative w-full max-w-[48rem] p-1 backdrop-blur-lg duration-100 border border-gray-300 rounded-t-xl  dark:border-[#404040] data-[istemporary-chat='true']:bg-gray-200 data-[istemporary-chat='true']:dark:bg-black`}>
-            <div
-              className={`border-b border-gray-200 dark:border-[#404040] relative ${
-                form.values.image.length === 0 ? "hidden" : "block"
-              }`}>
-              <button
-                type="button"
-                onClick={() => {
-                  form.setFieldValue("image", "")
-                }}
-                className="absolute top-1 left-1 flex items-center justify-center z-10 bg-white dark:bg-[#262626] p-0.5 rounded-full hover:bg-gray-100 dark:hover:bg-[#404040] text-black dark:text-gray-100">
-                <X className="h-3 w-3" />
-              </button>{" "}
-              <Image
-                src={form.values.image}
-                alt="Uploaded Image"
-                preview={false}
-                className="rounded-md max-h-32"
-              />
-            </div>
+            {form.values.images && form.values.images.length > 0 && (
+              <div className="p-2 border-b border-gray-200 dark:border-[#404040]">
+                <div className="flex flex-wrap gap-2">
+                  {form.values.images.map((img, index) => (
+                    <div key={index} className="relative">
+                      <button
+                        type="button"
+                        onClick={() => removeImage(index)}
+                        className="absolute -top-2 -right-2 flex items-center justify-center z-10 bg-white dark:bg-[#262626] p-0.5 rounded-full hover:bg-gray-100 dark:hover:bg-[#404040] text-black dark:text-gray-100 shadow-md">
+                        <X className="h-3 w-3" />
+                      </button>
+                      <Image
+                        src={img}
+                        alt={`Uploaded Image ${index + 1}`}
+                        preview={true}
+                        className="rounded-md max-h-24 object-cover"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
             <div>
               <div className="flex">
                 <form
@@ -315,7 +334,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                     await stopListening()
                     if (
                       value.message.trim().length === 0 &&
-                      value.image.length === 0
+                      (!value.images || value.images.length === 0)
                     ) {
                       return
                     }
@@ -326,7 +345,8 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                     }
                     textAreaFocus()
                     await sendMessage({
-                      image: value.image,
+                      image: value.images && value.images.length > 0 ? value.images[0] : "",
+                      images: value.images,
                       message: value.message.trim()
                     })
                   })}
@@ -338,7 +358,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                     className="sr-only"
                     ref={inputRef}
                     accept="image/*"
-                    multiple={false}
+                    multiple={true}
                     onChange={onInputChange}
                   />
                   <div className="w-full  flex flex-col px-1">
